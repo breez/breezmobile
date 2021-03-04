@@ -376,6 +376,11 @@ class BreezBridge {
         .then((result) => PaymentsList()..mergeFromBuffer(result ?? []));
   }
 
+  Future<LSPActivity> lspActivity() {
+    return _invokeMethodWhenReady("lspActivity")
+        .then((result) => LSPActivity()..mergeFromBuffer(result ?? []));
+  }
+
   Future<Peers> getPeers() {
     return _invokeMethodImmediate("getPeers")
         .then((result) => Peers()..mergeFromBuffer(result ?? []));

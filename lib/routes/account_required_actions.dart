@@ -7,6 +7,8 @@ import 'package:breez/bloc/backup/backup_bloc.dart';
 import 'package:breez/bloc/backup/backup_model.dart';
 import 'package:breez/bloc/lsp/lsp_bloc.dart';
 import 'package:breez/bloc/lsp/lsp_model.dart';
+import 'package:breez/routes/close_warning_dialog.dart';
+import 'package:breez/services/breezlib/data/rpc.pb.dart';
 import 'package:breez/widgets/enable_backup_dialog.dart';
 import 'package:breez/widgets/flushbar.dart';
 import 'package:breez/widgets/rotator.dart';
@@ -109,6 +111,33 @@ class AccountRequiredActionsIndicatorState
     return null;
   }
 
+  int _inactiveWarningDuration(
+      List<LSPInfo> lsps, Map<String, Int64> activity) {
+    print(" --- activity -- ");
+    print(activity);
+    int warningDuration = 0;
+    int currentTimestamp = DateTime.now().millisecondsSinceEpoch ~/ 1000;
+    lsps.forEach((l) {
+      print(activity.containsKey(l.lspID));
+      if (activity.containsKey(l.lspID)) {
+        print(currentTimestamp - activity[l.lspID].toInt());
+      }
+      print("maxduration");
+      print(l.maxInactiveDuration);
+      if (activity.containsKey(l.lspID) &&
+          ((currentTimestamp - activity[l.lspID].toInt()) >
+              (l.maxInactiveDuration ~/ 1080))) {
+        print("Need to show inactive warning");
+        if ((warningDuration == 0) ||
+            (warningDuration >
+                (currentTimestamp - activity[l.lspID].toInt()))) {
+          warningDuration = (currentTimestamp - activity[l.lspID].toInt());
+        }
+      }
+    });
+    return warningDuration;
+  }
+
   @override
   Widget build(BuildContext context) {
     return StreamBuilder<LSPStatus>(
@@ -122,114 +151,162 @@ class AccountRequiredActionsIndicatorState
                   return StreamBuilder<List<PaymentInfo>>(
                     stream: widget._accountBloc.pendingChannelsStream,
                     builder: (ctx, pendingChannelsSnapshot) {
-                      return StreamBuilder<BackupSettings>(
-                        stream: widget._backupBloc.backupSettingsStream,
-                        builder: (context, backupSettingsSnapshot) =>
-                            StreamBuilder<BackupState>(
-                                stream: widget._backupBloc.backupStateStream,
-                                builder: (context, backupSnapshot) {
-                                  List<Widget> warnings = List<Widget>();
-                                  Int64 walletBalance =
-                                      accountSnapshot?.data?.walletBalance ??
-                                          Int64(0);
-                                  if (walletBalance > 0 &&
-                                      !settingsSnapshot
-                                          .data.ignoreWalletBalance) {
-                                    warnings.add(WarningAction(() =>
-                                        Navigator.of(context)
-                                            .pushNamed("/send_coins")));
-                                  }
+                      return StreamBuilder<LSPActivity>(
+                          stream: widget._accountBloc.lspActivityStream,
+                          builder: (context, lspActivitySnapshot) {
+                            return StreamBuilder<BackupSettings>(
+                              stream: widget._backupBloc.backupSettingsStream,
+                              builder: (context, backupSettingsSnapshot) =>
+                                  StreamBuilder<BackupState>(
+                                      stream:
+                                          widget._backupBloc.backupStateStream,
+                                      builder: (context, backupSnapshot) {
+                                        List<Widget> warnings = List<Widget>();
+                                        Int64 walletBalance = accountSnapshot
+                                                ?.data?.walletBalance ??
+                                            Int64(0);
+                                        if (walletBalance > 0 &&
+                                            !settingsSnapshot
+                                                .data.ignoreWalletBalance) {
+                                          warnings.add(WarningAction(() =>
+                                              Navigator.of(context)
+                                                  .pushNamed("/send_coins")));
+                                        }
 
-                                  if (backupSnapshot.hasError) {
-                                    bool signInNeeded = false;
-                                    if (backupSnapshot.error.runtimeType ==
-                                        BackupFailedException) {
-                                      signInNeeded = (backupSnapshot.error
-                                              as BackupFailedException)
-                                          .authenticationError;
-                                    }
-                                    warnings.add(WarningAction(() async {
-                                      showDialog(
-                                          useRootNavigator: false,
-                                          barrierDismissible: false,
-                                          context: context,
-                                          builder: (_) => EnableBackupDialog(
-                                              context, widget._backupBloc,
-                                              signInNeeded: signInNeeded));
-                                    }));
-                                  }
+                                        if (backupSnapshot.hasError) {
+                                          bool signInNeeded = false;
+                                          if (backupSnapshot
+                                                  .error.runtimeType ==
+                                              BackupFailedException) {
+                                            signInNeeded = (backupSnapshot.error
+                                                    as BackupFailedException)
+                                                .authenticationError;
+                                          }
+                                          warnings.add(WarningAction(() async {
+                                            showDialog(
+                                                useRootNavigator: false,
+                                                barrierDismissible: false,
+                                                context: context,
+                                                builder: (_) =>
+                                                    EnableBackupDialog(context,
+                                                        widget._backupBloc,
+                                                        signInNeeded:
+                                                            signInNeeded));
+                                          }));
+                                        }
 
-                                  var loaderIcon = _buildLoader(
-                                      backupSnapshot.data,
-                                      accountSnapshot.data);
-                                  if (loaderIcon != null) {
-                                    warnings.add(loaderIcon);
-                                  }
+                                        if (lspActivitySnapshot.data != null) {
+                                          lspStatusSnapshot.data.availableLSPs
+                                              .forEach((element) {
+                                            print(element.lspID);
+                                            print(element.maxInactiveDuration);
+                                            print(element.raw);
+                                          });
+                                          int inactiveWarningDuration = this
+                                              ._inactiveWarningDuration(
+                                                  lspStatusSnapshot
+                                                      .data.availableLSPs,
+                                                  lspActivitySnapshot
+                                                      .data.activity);
+                                          print("-- activity - inactive -- ");
+                                          print(inactiveWarningDuration);
+                                          if (inactiveWarningDuration > 0) {
+                                            warnings
+                                                .add(WarningAction(() async {
+                                              showDialog(
+                                                  useRootNavigator: false,
+                                                  barrierDismissible: false,
+                                                  context: context,
+                                                  builder: (_) =>
+                                                      CloseWarningDialog(
+                                                          inactiveWarningDuration));
+                                            }));
+                                          }
+                                        }
 
-                                  var swapStatus =
-                                      accountSnapshot?.data?.swapFundsStatus;
+                                        var loaderIcon = _buildLoader(
+                                            backupSnapshot.data,
+                                            accountSnapshot.data);
+                                        if (loaderIcon != null) {
+                                          warnings.add(loaderIcon);
+                                        }
 
-                                  // only warn on refundable addresses that weren't refunded in the past.
-                                  var shouldWarnRefund = swapStatus != null &&
-                                      swapStatus.waitingRefundAddresses.length >
-                                          0;
-                                  if (shouldWarnRefund) {
-                                    warnings.add(WarningAction(() => showDialog(
-                                        useRootNavigator: false,
-                                        barrierDismissible: false,
-                                        context: context,
-                                        builder: (_) => SwapRefundDialog(
-                                            accountBloc:
-                                                widget._accountBloc))));
-                                  }
+                                        var swapStatus = accountSnapshot
+                                            ?.data?.swapFundsStatus;
 
-                                  if (accountSnapshot?.data?.syncUIState ==
-                                      SyncUIState.COLLAPSED) {
-                                    warnings.add(WarningAction(
-                                      () => widget._accountBloc.userActionsSink
-                                          .add(ChangeSyncUIState(
-                                              SyncUIState.BLOCKING)),
-                                      iconWidget: Rotator(
-                                          child: Image(
-                                              image: AssetImage(
-                                                  "src/icon/sync.png"),
-                                              color: Theme.of(context)
-                                                  .appBarTheme
-                                                  .actionsIconTheme
-                                                  .color)),
-                                    ));
-                                  }
+                                        // only warn on refundable addresses that weren't refunded in the past.
+                                        var shouldWarnRefund =
+                                            swapStatus != null &&
+                                                swapStatus
+                                                        .waitingRefundAddresses
+                                                        .length >
+                                                    0;
+                                        if (shouldWarnRefund) {
+                                          warnings.add(WarningAction(() =>
+                                              showDialog(
+                                                  useRootNavigator: false,
+                                                  barrierDismissible: false,
+                                                  context: context,
+                                                  builder: (_) =>
+                                                      SwapRefundDialog(
+                                                          accountBloc: widget
+                                                              ._accountBloc))));
+                                        }
 
-                                  var lspStat = lspStatusSnapshot?.data;
-                                  if (lspStat?.selectionRequired == true) {
-                                    warnings.add(WarningAction(() {
-                                      if (lspStat?.lastConnectionError !=
-                                          null) {
-                                        showProviderErrorDialog(context,
-                                            lspStat?.lastConnectionError, () {
-                                          Navigator.of(context).push(
-                                              FadeInRoute(
-                                                  builder: (_) => SelectLSPPage(
-                                                      lstBloc:
-                                                          widget.lspBloc)));
-                                        });
-                                      } else {
-                                        Navigator.of(context)
-                                            .pushNamed("/select_lsp");
-                                      }
-                                    }));
-                                  }
+                                        if (accountSnapshot
+                                                ?.data?.syncUIState ==
+                                            SyncUIState.COLLAPSED) {
+                                          warnings.add(WarningAction(
+                                            () => widget
+                                                ._accountBloc.userActionsSink
+                                                .add(ChangeSyncUIState(
+                                                    SyncUIState.BLOCKING)),
+                                            iconWidget: Rotator(
+                                                child: Image(
+                                                    image: AssetImage(
+                                                        "src/icon/sync.png"),
+                                                    color: Theme.of(context)
+                                                        .appBarTheme
+                                                        .actionsIconTheme
+                                                        .color)),
+                                          ));
+                                        }
 
-                                  if (warnings.length == 0) {
-                                    return SizedBox();
-                                  }
+                                        var lspStat = lspStatusSnapshot?.data;
+                                        if (lspStat?.selectionRequired ==
+                                            true) {
+                                          warnings.add(WarningAction(() {
+                                            if (lspStat?.lastConnectionError !=
+                                                null) {
+                                              showProviderErrorDialog(context,
+                                                  lspStat?.lastConnectionError,
+                                                  () {
+                                                Navigator.of(context).push(
+                                                    FadeInRoute(
+                                                        builder: (_) =>
+                                                            SelectLSPPage(
+                                                                lstBloc: widget
+                                                                    .lspBloc)));
+                                              });
+                                            } else {
+                                              Navigator.of(context)
+                                                  .pushNamed("/select_lsp");
+                                            }
+                                          }));
+                                        }
 
-                                  return Row(
-                                      mainAxisAlignment: MainAxisAlignment.end,
-                                      mainAxisSize: MainAxisSize.min,
-                                      children: warnings);
-                                }),
-                      );
+                                        if (warnings.length == 0) {
+                                          return SizedBox();
+                                        }
+
+                                        return Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.end,
+                                            mainAxisSize: MainAxisSize.min,
+                                            children: warnings);
+                                      }),
+                            );
+                          });
                     },
                   );
                 });
