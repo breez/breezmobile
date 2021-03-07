@@ -129,7 +129,8 @@ class _PaymentAdjusterState extends State<PaymentAdjuster> {
                                     final currentAmount =
                                         snapshot.data.preferredSatsPerMinValue;
                                     var nextIndex = widget.satsPerMinuteList
-                                        .indexOf(currentAmount);
+                                            .indexOf(currentAmount) +
+                                        1;
                                     if (nextIndex >=
                                         widget.satsPerMinuteList.length) {
                                       nextIndex =

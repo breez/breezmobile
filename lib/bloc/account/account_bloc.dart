@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
+import 'dart:developer';
 import 'dart:io';
 
 import 'package:breez/bloc/account/account_actions.dart';
@@ -199,7 +200,11 @@ class AccountBloc {
       if (user.token != null) {
         var acc =
             await _accountController.firstWhere((acc) => acc.id?.isNotEmpty);
-        await _breezServer.registerDevice(user.token, acc.id);
+        try {
+          await _breezServer.registerDevice(user.token, acc.id);
+        } catch (e) {
+          log.severe("failed to register device ", e);
+        }
       }
     });
   }
