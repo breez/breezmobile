@@ -132,7 +132,7 @@ class PaymentAdjustmentState extends State<PaymentAdjustment> {
                 Padding(
                   padding: const EdgeInsets.only(top: 10.0),
                   child: Text(
-                    "Stream sats to the creators while listening to their show. The default is set to xxx sats per minute. To listen for free, set this value to 0.",
+                    "Stream sats to the creators while listening to their show. The number indicates the amount of sats sent per minute. To listen for free, set this value to 0.",
                     style: TextStyle(color: Colors.white),
                   ),
                 ),
@@ -156,7 +156,7 @@ class PaymentAdjustmentState extends State<PaymentAdjustment> {
                   child: withBreezTheme(
                       context,
                       RaisedButton(
-                        color: Theme.of(context).primaryColorLight,
+                        color: Theme.of(context).primaryColor,
                         child: Text("Gotcha!"),
                         onPressed: () {
                           AppBlocsProvider.of<UserProfileBloc>(context)
@@ -177,7 +177,7 @@ class PaymentAdjustmentState extends State<PaymentAdjustment> {
       flex: 1,
       fit: FlexFit.tight,
       child: Padding(
-        padding: const EdgeInsets.only(right: 4.0, left: 4.0),
+        padding: const EdgeInsets.only(right: 6.0, left: 6.0),
         child: OutlineButton(
             borderSide: tutorialStreamSats == sats
                 ? BorderSide(

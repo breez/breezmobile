@@ -31,48 +31,52 @@ class _PaymentAdjusterState extends State<PaymentAdjuster> {
             return SizedBox();
           }
           return Row(
-            mainAxisSize: MainAxisSize.min,
+            mainAxisSize: MainAxisSize.max,
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Container(
                 width: 120,
                 child: Stack(
                   children: [
-                    GestureDetector(
-                        child: Container(
-                            width: 32,
-                            height: 64,
-                            child: Material(
-                              color: Colors.transparent,
-                              borderRadius: BorderRadius.circular(32),
-                              child: InkWell(
-                                borderRadius: BorderRadius.circular(32),
-                                onTap: () {
-                                  final currentAmount =
-                                      snapshot.data.preferredSatsPerMinValue;
-                                  var index = widget.satsPerMinuteList
-                                      .indexOf(currentAmount);
-                                  if (index > 0) {
-                                    index--;
-                                  }
-                                  final satAmount =
-                                      widget.satsPerMinuteList.elementAt(index);
-                                  widget.onChanged(satAmount);
-                                },
-                                splashColor: Theme.of(context).splashColor,
-                                highlightColor: Colors.transparent,
-                                child: Icon(
-                                  Icons.remove_circle_outline,
-                                  size: 20,
-                                  color: Theme.of(context)
-                                      .appBarTheme
-                                      .actionsIconTheme
-                                      .color,
-                                ),
-                              ),
-                            ))),
                     Positioned(
-                      left: 24,
+                      left: 8,
+                      child: GestureDetector(
+                          child: Container(
+                              width: 32,
+                              height: 64,
+                              child: Material(
+                                color: Colors.transparent,
+                                borderRadius: BorderRadius.circular(32),
+                                child: InkWell(
+                                  borderRadius: BorderRadius.circular(32),
+                                  onTap: () {
+                                    final currentAmount =
+                                        snapshot.data.preferredSatsPerMinValue;
+                                    var index = widget.satsPerMinuteList
+                                        .indexOf(currentAmount);
+                                    if (index > 0) {
+                                      index--;
+                                    }
+                                    final satAmount = widget.satsPerMinuteList
+                                        .elementAt(index);
+                                    widget.onChanged(satAmount);
+                                  },
+                                  splashColor: Theme.of(context).splashColor,
+                                  highlightColor: Colors.transparent,
+                                  child: Icon(
+                                    Icons.remove_circle_outline,
+                                    size: 20,
+                                    color: Theme.of(context)
+                                        .appBarTheme
+                                        .actionsIconTheme
+                                        .color,
+                                  ),
+                                ),
+                              ))),
+                    ),
+                    Positioned(
+                      left: 0,
+                      right: 0,
                       top: 16,
                       child: SizedBox(
                         width: 56,
@@ -111,7 +115,7 @@ class _PaymentAdjusterState extends State<PaymentAdjuster> {
                       ),
                     ),
                     Positioned(
-                      left: 72,
+                      right: 8,
                       child: GestureDetector(
                           child: Container(
                               width: 32,
