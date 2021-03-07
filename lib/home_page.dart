@@ -213,7 +213,7 @@ class HomeState extends State<Home> with WidgetsBindingObserver {
       keyTarget: podcastMenuItemKey,
       enableOverlayTab: true,
       shape: ShapeLightFocus.RRect,
-      paddingFocus: 32,
+      paddingFocus: 8,
       contents: [
         TargetContent(
             align: ContentAlign.top,
