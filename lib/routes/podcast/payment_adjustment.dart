@@ -2,6 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:breez/bloc/blocs_provider.dart';
 import 'package:breez/bloc/podcast_payments/actions.dart';
 import 'package:breez/bloc/podcast_payments/model.dart';
@@ -13,6 +14,7 @@ import 'package:breez/bloc/user_profile/user_profile_bloc.dart';
 import 'package:breez/routes/podcast/boost.dart';
 import 'package:breez/routes/podcast/payment_adjuster.dart';
 import 'package:breez/routes/podcast/theme.dart';
+import 'package:breez/utils/min_font_size.dart';
 import 'package:breez/widgets/loader.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -32,6 +34,7 @@ class PaymentAdjustment extends StatefulWidget {
 class PaymentAdjustmentState extends State<PaymentAdjustment> {
   final GlobalKey boostWidgetKey = GlobalKey();
   final GlobalKey paymentAdjusterKey = GlobalKey();
+  AutoSizeGroup tutorialOptionGroup = AutoSizeGroup();
 
   TutorialCoachMark tutorial;
   List<TargetFocus> targets = [];
@@ -190,8 +193,16 @@ class PaymentAdjustmentState extends State<PaymentAdjustment> {
                 tutorialStreamSats = sats;
               });
             },
-            child:
-                Text(sats.toString(), style: TextStyle(color: Colors.white))),
+            child: Container(
+              child: Center(
+                child: AutoSizeText(sats.toString(),
+                    minFontSize: MinFontSize(context).minFontSize,
+                    stepGranularity: 0.1,
+                    maxLines: 1,
+                    group: tutorialOptionGroup,
+                    style: TextStyle(color: Colors.white)),
+              ),
+            )),
       ),
     );
   }
