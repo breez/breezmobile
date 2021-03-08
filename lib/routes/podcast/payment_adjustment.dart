@@ -182,6 +182,7 @@ class PaymentAdjustmentState extends State<PaymentAdjustment> {
       child: Padding(
         padding: const EdgeInsets.only(right: 6.0, left: 6.0),
         child: OutlineButton(
+            padding: EdgeInsets.zero,
             borderSide: tutorialStreamSats == sats
                 ? BorderSide(
                     width: 2.0,
@@ -196,7 +197,7 @@ class PaymentAdjustmentState extends State<PaymentAdjustment> {
             child: Container(
               child: Center(
                 child: AutoSizeText(sats.toString(),
-                    minFontSize: MinFontSize(context).minFontSize,
+                    minFontSize: 0.1,
                     stepGranularity: 0.1,
                     maxLines: 1,
                     group: tutorialOptionGroup,
