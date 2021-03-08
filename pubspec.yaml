@@ -84,7 +84,7 @@ dependency_overrides:
   podcast_search:
     git:
       url: https://github.com/breez/podcast_search.git
-      ref: 8f00e9e0df33c79eeae6cdb35466ec813a56d9ed
+      ref: 90da5fe684d5145e352fb558b90821d1c376ff7d
   intl: ^0.17.0-nullsafety.2
   tutorial_coach_mark: ^0.6.0+1
 
