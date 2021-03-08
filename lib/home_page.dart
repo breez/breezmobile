@@ -346,8 +346,11 @@ class HomeState extends State<Home> with WidgetsBindingObserver {
                                       isSelected:
                                           user.appMode == AppMode.balance,
                                       onItemSelected: (_) {
-                                        widget.userProfileBloc.userActionsSink
-                                            .add(SetAppMode(AppMode.balance));
+                                        protectAdminAction(context, user, () {
+                                          widget.userProfileBloc.userActionsSink
+                                              .add(SetAppMode(AppMode.balance));
+                                          return Future.value(null);
+                                        });
                                       },
                                     );
 
@@ -359,8 +362,12 @@ class HomeState extends State<Home> with WidgetsBindingObserver {
                                       isSelected:
                                           user.appMode == AppMode.podcasts,
                                       onItemSelected: (_) {
-                                        widget.userProfileBloc.userActionsSink
-                                            .add(SetAppMode(AppMode.podcasts));
+                                        protectAdminAction(context, user, () {
+                                          widget.userProfileBloc.userActionsSink
+                                              .add(
+                                                  SetAppMode(AppMode.podcasts));
+                                          return Future.value(null);
+                                        });
                                       },
                                     );
 
@@ -376,15 +383,15 @@ class HomeState extends State<Home> with WidgetsBindingObserver {
                                     );
 
                                     var lightningAppsItem = DrawerItemConfig(
-                                      "",
-                                      "Apps",
-                                      "src/icon/apps.png",
-                                      isSelected: user.appMode == AppMode.apps,
-                                      onItemSelected: (_) {
+                                        "", "Apps", "src/icon/apps.png",
+                                        isSelected: user.appMode ==
+                                            AppMode.apps, onItemSelected: (_) {
+                                      protectAdminAction(context, user, () {
                                         widget.userProfileBloc.userActionsSink
                                             .add(SetAppMode(AppMode.apps));
-                                      },
-                                    );
+                                        return Future.value(null);
+                                      });
+                                    });
 
                                     var appModeItems =
                                         <DrawerItemConfigGroup>[];
