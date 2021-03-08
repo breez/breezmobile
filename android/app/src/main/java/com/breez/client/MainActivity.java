@@ -32,6 +32,11 @@ public class MainActivity extends FlutterFragmentActivity {
         GeneratedPluginRegistrant.registerWith(flutterEngine);
     }
 
+    @Override
+    public void cleanUpFlutterEngine(@NonNull FlutterEngine flutterEngine) {
+        System.exit(0);
+    }
+
 
     void registerBreezPlugins(@NonNull FlutterEngine flutterEngine) {
         flutterEngine.getPlugins().add(new NfcHandler());
