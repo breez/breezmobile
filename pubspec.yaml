@@ -22,12 +22,10 @@ dependencies:
     git:
       url: https://github.com/breez/ShareExtend.git
   qr_flutter: ^2.0.0
+  optimized_cached_image: ^1.0.0
   hex: "^0.1.1"
   rxdart: "^0.24.1"
-  qr_code_tools: "^0.0.6"
-  flutter_advanced_networkimage:
-    git:
-      url: https://github.com/mchome/flutter_advanced_networkimage
+  qr_code_tools: "^0.0.6"  
   intl: ^0.16.1
   flushbar: ^1.10.4
   qr_code_scanner: ^0.0.13
@@ -75,7 +73,7 @@ dependencies:
     sdk: flutter
 
 dependency_overrides:
-  flutter_svg: ^0.18.0
+  flutter_svg: any
   flutter_downloader:
     git:
       url: https://github.com/breez/flutter_downloader.git

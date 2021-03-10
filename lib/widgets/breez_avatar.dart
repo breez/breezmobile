@@ -4,8 +4,8 @@ import 'package:breez/bloc/user_profile/default_profile_generator.dart'
     as generator;
 import 'package:breez/theme_data.dart' as theme;
 import 'package:flutter/material.dart';
-import 'package:flutter_advanced_networkimage/provider.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:optimized_cached_image/optimized_cached_image.dart';
 
 final _breezAvatarColors = {
   "salmon": Color(0xFFFA8072),
@@ -151,7 +151,12 @@ class _NetworkImageAvatar extends StatelessWidget {
   Widget build(BuildContext context) {
     return CircleAvatar(
       radius: radius,
-      backgroundImage: AdvancedNetworkImage(avatarURL, useDiskCache: true),
+      child: ClipOval(
+        child: OptimizedCacheImage(
+          imageUrl: avatarURL,
+          useScaleCacheManager: true,
+        ),
+      ),
     );
   }
 }

@@ -9,7 +9,9 @@ Future protectAdminAction(
     BuildContext context, BreezUserModel user, Future onNext()) async {
   if (user.appMode == AppMode.pos && user.hasAdminPassword) {
     bool loggedIn = await showDialog(
-        useRootNavigator: false, context: context, child: _AdminLoginDialog());
+        useRootNavigator: false,
+        context: context,
+        builder: (c) => _AdminLoginDialog());
     if (!loggedIn) {
       return;
     }
@@ -21,7 +23,9 @@ Future protectAdminRoute(
     BuildContext context, BreezUserModel user, String route) async {
   if (user.appMode == AppMode.pos && user.hasAdminPassword) {
     bool loggedIn = await showDialog(
-        useRootNavigator: false, context: context, child: _AdminLoginDialog());
+        useRootNavigator: false,
+        context: context,
+        builder: (c) => _AdminLoginDialog());
     if (!loggedIn) {
       return Future.error("Failed to authenticate as manager");
     }

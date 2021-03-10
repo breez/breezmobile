@@ -26,3 +26,4 @@ travis/config.sh
 android/key.properties
 ios/Flutter/flutter_export_environment.sh
 manual-build/
+ios/.symlinks/

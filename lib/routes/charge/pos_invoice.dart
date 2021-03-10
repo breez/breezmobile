@@ -138,7 +138,6 @@ class POSInvoiceState extends State<POSInvoice> with TickerProviderStateMixin {
         AppBlocsProvider.of<PosCatalogBloc>(context);
 
     return Scaffold(
-      resizeToAvoidBottomPadding: false,
       body: StreamBuilder<Sale>(
           stream: posCatalogBloc.currentSaleStream,
           builder: (context, saleSnapshot) {

@@ -61,7 +61,6 @@ class VendorWebViewPageState extends State<VendorWebViewPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       resizeToAvoidBottomInset: false,
-      resizeToAvoidBottomPadding: false,
       appBar: AppBar(
         actions: <Widget>[
           IconButton(
