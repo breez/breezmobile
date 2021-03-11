@@ -50,8 +50,8 @@ jobs:
           echo "got gomobile"
           go get golang.org/x/mobile/cmd/gobind
           echo "got gobind gopath=$GOPATH"
-          ls $GOPATH
-          ls $GOPATH/bin
+          echo $(ls $GOPATH)
+          echo $(ls $GOPATH/bin)
           "$GOPATH/bin/gomobile init"
           mkdir -p build/ios
           PATH=$PATH:$GOPATH/bin gomobile bind -target=ios/arm64 -tags="ios experimental signrpc walletrpc chainrpc invoicesrpc routerrpc backuprpc peerrpc submarineswaprpc breezbackuprpc" -o build/ios/bindings.framework github.com/breez/breez/bindings
