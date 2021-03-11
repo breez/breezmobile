@@ -17,7 +17,7 @@ import 'payments_list.dart';
 import 'status_text.dart';
 import 'wallet_dashboard.dart';
 
-const DASHBOARD_MAX_HEIGHT = 176.25;
+const DASHBOARD_MAX_HEIGHT = 202.25;
 const DASHBOARD_MIN_HEIGHT = 70.0;
 const FILTER_MAX_SIZE = 56.0;
 const FILTER_MIN_SIZE = 0.0;
