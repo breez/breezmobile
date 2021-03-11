@@ -35,6 +35,7 @@ jobs:
       - name: Run a multi-line script
         run: |
           mkdir go1.15.8
+          ls
           tar -C $(pwd)/go1.15.8 -xzf golang
           export PATH=$(pwd)/go1.15.8/go/bin:$PATH
           export GOROOT=$(pwd)/go1.15.8/go
