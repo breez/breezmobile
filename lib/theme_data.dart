@@ -165,7 +165,7 @@ final ThemeData blueTheme = ThemeData(
     subtitle2: TextStyle(
         color: Colors.black,
         fontSize: 12.25,
-        fontWeight: FontWeight.w400,
+        fontWeight: FontWeight.w500,
         height: 1.2,
         letterSpacing: 0.25),
     caption: TextStyle(
