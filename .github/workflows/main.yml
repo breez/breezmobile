@@ -6,9 +6,9 @@ name: CI
 on:
   # Triggers the workflow on push or pull request events but only for the master branch
   push:
-    branches: [ master,ios-flutter-stable,actions ]
+    branches: [ master,ios-flutter-stable ]
   pull_request:
-    branches: [ master,ios-flutter-stable, actions ]
+    branches: [ master,ios-flutter-stable ]
 
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
@@ -29,45 +29,30 @@ jobs:
       - name: Run a one-line script
         run: echo Hello, world!
 
-      - name: download golang
-        run: curl -o golang https://dl.google.com/go/go1.15.8.darwin-amd64.tar
-        
+      # Runs a set of commands using the runners shell
       - name: Run a multi-line script
         run: |
+          curl -o golang https://dl.google.com/go/go1.15.8.darwin-amd64.tar.gz
           mkdir go1.15.8
-          ls
           tar -C $(pwd)/go1.15.8 -xzf golang
           export PATH=$(pwd)/go1.15.8/go/bin:$PATH
           export GOROOT=$(pwd)/go1.15.8/go
           go version
-          
-      - name: brew update
-        run: brew update
-        
-      - name: brew install bazaar
-        run: brew install bazaar
-      
-      - name: clone breez
-        run: git clone https://github.com/breez/breez.git gopath/src/github.com/breez/breez
-      
-      - name: go opath
-        run: |          
+          brew update
+          brew install bazaar
+          git clone https://github.com/breez/breez.git gopath/src/github.com/breez/breez
           export TMP_GOPATH=$(pwd)/gopath
           pushd gopath/src/github.com/breez/breez
           export GOPRIVATE=github.com/btcsuite/btcd
           export GOPATH=$TMP_GOPATH
-          
-      - name: get go mobile
-        run: go get golang.org/x/mobile/cmd/gomobile
-      
-      - name: get go bind
-        run: go get golang.org/x/mobile/cmd/gobind
-      
-      - name: go mobile init
-        run: "$GOPATH/bin/gomobile init"
-      
-      - name: path
-        run: |         
+          echo "gopath= $GOPATH"
+          go get golang.org/x/mobile/cmd/gomobile
+          echo "got gomobile"
+          go get golang.org/x/mobile/cmd/gobind
+          echo "got gobind gopath=$GOPATH"
+          ls $GOPATH
+          ls $GOPATH/bin
+          "$GOPATH/bin/gomobile init"
           mkdir -p build/ios
           PATH=$PATH:$GOPATH/bin gomobile bind -target=ios/arm64 -tags="ios experimental signrpc walletrpc chainrpc invoicesrpc routerrpc backuprpc peerrpc submarineswaprpc breezbackuprpc" -o build/ios/bindings.framework github.com/breez/breez/bindings
           popd
