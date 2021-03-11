@@ -147,12 +147,12 @@ final ThemeData blueTheme = ThemeData(
     headline4: TextStyle(
         color: Color.fromRGBO(0, 133, 251, 1.0),
         fontSize: 30.0,
-        fontWeight: FontWeight.w400,
+        fontWeight: FontWeight.w600,
         height: 1.52),
     subtitle1: TextStyle(
         color: Color.fromRGBO(0, 133, 251, 1.0),
-        fontSize: 13.5,
-        fontWeight: FontWeight.w400,
+        fontSize: 15,
+        fontWeight: FontWeight.w500,
         height: 1.24,
         letterSpacing: 0.2),
     headline6: TextStyle(
@@ -164,7 +164,7 @@ final ThemeData blueTheme = ThemeData(
     subtitle2: TextStyle(
         color: Colors.black,
         fontSize: 12.25,
-        fontWeight: FontWeight.w400,
+        fontWeight: FontWeight.w500,
         height: 1.2,
         letterSpacing: 0.25),
     caption: TextStyle(
@@ -268,12 +268,12 @@ final ThemeData darkTheme = ThemeData(
       headline4: TextStyle(
           color: Colors.white,
           fontSize: 30.0,
-          fontWeight: FontWeight.w400,
-          height: 1.52),
+          fontWeight: FontWeight.w600,
+          height: 1.56),
       subtitle1: TextStyle(
           color: Colors.white,
-          fontSize: 13.5,
-          fontWeight: FontWeight.w400,
+          fontSize: 15,
+          fontWeight: FontWeight.w500,
           height: 1.24,
           letterSpacing: 0.2),
       headline6: TextStyle(
