@@ -41,7 +41,8 @@ class WalletDashboardState extends State<WalletDashboard> {
         Theme.of(context).accentTextTheme.headline4.fontSize;
     double endHeaderFontSize =
         Theme.of(context).accentTextTheme.headline4.fontSize - 8.0;
-
+    double endHeaderTailFontSize =
+        Theme.of(context).accentTextTheme.headline4.fontSize - 16.0;
     return GestureDetector(
       child: Stack(
         alignment: AlignmentDirectional.topCenter,
@@ -98,37 +99,59 @@ class WalletDashboardState extends State<WalletDashboard> {
                                               (startHeaderSize -
                                                       endHeaderFontSize) *
                                                   widget._offsetFactor))
-                              : RichText(
-                                  text: TextSpan(
+                              : Row(
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  children: [
+                                    Text(
+                                      widget._accountModel.currency.format(
+                                          widget._accountModel.balance,
+                                          removeTrailingZeros: true,
+                                          includeDisplayName: false),
                                       style: Theme.of(context)
                                           .accentTextTheme
                                           .headline4
                                           .copyWith(
+                                              height: 1,
                                               fontSize: startHeaderSize -
                                                   (startHeaderSize -
                                                           endHeaderFontSize) *
                                                       widget._offsetFactor),
-                                      text: widget._accountModel.currency
-                                          .format(widget._accountModel.balance,
-                                              removeTrailingZeros: true,
-                                              includeDisplayName: false),
-                                      children: <TextSpan>[
-                                        TextSpan(
-                                          text: "  " +
-                                              widget._accountModel.currency
-                                                  .displayName,
-                                          style: Theme.of(context)
-                                              .accentTextTheme
-                                              .headline4
-                                              .copyWith(
-                                                  fontSize: startHeaderSize *
-                                                          0.6 -
-                                                      (startHeaderSize * 0.6 -
-                                                              endHeaderFontSize) *
-                                                          widget._offsetFactor),
-                                        ),
-                                      ]),
-                                ))
+                                    ),
+                                    SizedBox(
+                                        width: 8 - 4 * widget._offsetFactor),
+                                    Container(
+                                      padding: EdgeInsets.symmetric(
+                                          vertical:
+                                              4 - 2 * widget._offsetFactor,
+                                          horizontal:
+                                              8 - 4 * widget._offsetFactor),
+                                      decoration: BoxDecoration(
+                                        color: theme.themeId == "BLUE"
+                                            ? Color(0xFFf9f9f9)
+                                            : Color(0x19ffffff),
+                                        border: Border.all(
+                                            color: Color(0x0c000000), width: 1),
+                                        borderRadius: BorderRadius.circular(20),
+                                        shape: BoxShape.rectangle,
+                                      ),
+                                      child: Text(
+                                        widget
+                                            ._accountModel.currency.displayName,
+                                        style: Theme.of(context)
+                                            .accentTextTheme
+                                            .headline4
+                                            .copyWith(
+                                                height: 1,
+                                                fontSize: startHeaderSize *
+                                                        0.6 -
+                                                    (startHeaderSize * 0.6 -
+                                                            endHeaderTailFontSize) *
+                                                        widget._offsetFactor),
+                                      ),
+                                    )
+                                  ],
+                                ),
+                    )
                   : SizedBox(),
             ),
           ),
