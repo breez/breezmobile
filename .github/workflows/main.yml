@@ -60,9 +60,9 @@ jobs:
           git clone https://github.com/flutter/flutter.git -b stable
           
           cp -r $GOPATH/src/github.com/breez/breez/build/ios/bindings.framework $GITHUB_WORKSPACE/ios/bindings.framework          
-          # git clone builderfiles@packages.breez.technology:configuration -b production $GITHUB_WORKSPACE/temp_config
-          # cp -r $GITHUB_WORKSPACE/temp_config/conf $GITHUB_WORKSPACE/conf
-          # sftp builderfiles@packages.breez.technology:config/conf/GoogleService-Info.plist $GITHUB_WORKSPACE/ios/Runner/GoogleService-Info.plist
+          git clone builderfiles@packages.breez.technology:configuration -b production $GITHUB_WORKSPACE/temp_config
+          cp -r $GITHUB_WORKSPACE/temp_config/conf $GITHUB_WORKSPACE/conf
+          sftp builderfiles@packages.breez.technology:config/conf/GoogleService-Info.plist $GITHUB_WORKSPACE/ios/Runner/GoogleService-Info.plist
 
           ./flutter/bin/flutter upgrade
           ./flutter/bin/flutter clean
