@@ -42,7 +42,7 @@ script:
 - cp -r $TRAVIS_BUILD_DIR/temp_config/conf $TRAVIS_BUILD_DIR/conf
 - sftp builderfiles@packages.breez.technology:config/conf/GoogleService-Info.plist
   $TRAVIS_BUILD_DIR/ios/Runner/GoogleService-Info.plist
-- travis_wait "./flutter/bin/flutter build ios --no-codesign --no-tree-shake-icons"
+- travis_wait ./flutter/bin/flutter build ios --no-codesign --no-tree-shake-icons
 after_success:
 - travis_wait ./travis/sign.sh
 cache:
