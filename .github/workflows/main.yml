@@ -1,0 +1,55 @@
+# This is a basic workflow to help you get started with Actions
+
+name: CI
+
+# Controls when the action will run. 
+on:
+  # Triggers the workflow on push or pull request events but only for the master branch
+  push:
+    branches: [ master,ios-flutter-stable ]
+  pull_request:
+    branches: [ master,ios-flutter-stable ]
+
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+
+# A workflow run is made up of one or more jobs that can run sequentially or in parallel
+jobs:
+  # This workflow contains a single job called "build"
+  build:
+    # The type of runner that the job will run on
+    runs-on: macOS-latest
+
+    # Steps represent a sequence of tasks that will be executed as part of the job
+    steps:
+      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+      - uses: actions/checkout@v2
+
+      # Runs a single command using the runners shell
+      - name: Run a one-line script
+        run: echo Hello, world!
+
+      # Runs a set of commands using the runners shell
+      - name: Run a multi-line script
+        run: |
+          curl -o golang https://dl.google.com/go/go1.15.8.darwin-amd64.tar.gz
+          mkdir go1.15.8
+          tar -C $(pwd)/go1.15.8 -xzf golang
+          export PATH=$(pwd)/go1.15.8/go/bin:$PATH
+          export GOROOT=$(pwd)/go1.15.8/go
+          go version
+          brew update
+          brew install bazaar
+          git clone https://github.com/breez/breez.git gopath/src/github.com/breez/breez
+          export TMP_GOPATH=$(pwd)/gopath
+          pushd gopath/src/github.com/breez/breez
+          export GOPRIVATE=github.com/btcsuite/btcd
+          go mod vendor
+          export GOPATH=$TMP_GOPATH
+          go get golang.org/x/mobile/cmd/gomobile
+          go get golang.org/x/mobile/cmd/gobind
+          "$GOPATH/bin/gomobile init"
+          mkdir -p build/ios
+          PATH=$PATH:$GOPATH/bin gomobile bind -target=ios/arm64 -tags="ios experimental signrpc walletrpc chainrpc invoicesrpc routerrpc backuprpc peerrpc submarineswaprpc breezbackuprpc" -o build/ios/bindings.framework github.com/breez/breez/bindings
+          popd
+          brew install ideviceinstaller ios-deploy
