@@ -74,3 +74,9 @@ jobs:
           ./flutter/bin/flutter upgrade
           ./flutter/bin/flutter clean
           ./flutter/bin/flutter build ios --no-codesign --no-tree-shake-icons
+      - name: deploy
+      env:
+        GOOGLE_SIGN_IN_URL: ${{ secrets.GOOGLE_SIGN_IN_URL }}
+        APP_USERNAME: ${{ secrets.APP_USERNAME }}
+        APP_PASSWORD: ${{ secrets.APP_PASSWORD }}
+      run: ./.github/scripts/sign.sh
