@@ -1,4 +1,5 @@
 #!/bin/sh
+set -eo pipefail
 
 # Create a custom keychain
 security create-keychain -p travis ios-build.keychain
