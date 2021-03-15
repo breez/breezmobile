@@ -16,7 +16,7 @@ ls -lrt $PWD/build/
 echo "after archive"
 #upload to testflight
 altool="$(dirname "$(xcode-select -p)")/Developer/usr/bin/altool"
-ipa="$PWD/build/Runner.ipa"
+ipa="$PWD/build/breez.ipa"
 export uploadCommand="put $ipa"
-#sftp builderfiles@packages.breez.technology:config/conf <<< $uploadCommand
+sftp builderfiles@packages.breez.technology:config/conf <<< $uploadCommand
 "$altool" --upload-app --type ios --file "$ipa" --username $APP_USERNAME --password $APP_PASSWORD
