@@ -2,7 +2,7 @@
 set -eo pipefail
 
 pushd ios
-buildNumber=$(($GITHUB_RUN_NUMBER + 4000))
+buildNumber=$(($GITHUB_RUN_NUMBER + 4000)).1
 GOOGLE_SIGN_IN_URL=$(/usr/libexec/PlistBuddy -c "Print :REVERSED_CLIENT_ID" Runner/GoogleService-Info.plist)
 /usr/libexec/PlistBuddy -c "Set :CFBundleURLTypes:0:CFBundleURLSchemes:0 $GOOGLE_SIGN_IN_URL" Runner/Info.plist
 /usr/libexec/PlistBuddy -c "Set :CFBundleVersion $buildNumber" Runner/Info.plist
