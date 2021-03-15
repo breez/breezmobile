@@ -2,7 +2,7 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
-	<key>kTCCServiceMediaLibrary</key>
+	<key>NSAppleMusicUsageDescription</key>
 	<string>Music is required for podcasts</string>
 	<key>NSMicrophoneUsageDescription</key>
 	<string>Microphone is used in podcasts</string>
