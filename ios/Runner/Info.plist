@@ -2,10 +2,6 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
-	<key>NSAppleMusicUsageDescription</key>
-	<string>Music is required for podcasts</string>
-	<key>NSMicrophoneUsageDescription</key>
-	<string>Microphone is used in podcasts</string>
 	<key>CFBundleDevelopmentRegion</key>
 	<string>en</string>
 	<key>CFBundleDisplayName</key>
@@ -57,14 +53,19 @@
 	<false/>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
+	<key>NSAppleMusicUsageDescription</key>
+	<string>Music is required for podcasts</string>
 	<key>NSCameraUsageDescription</key>
 	<string>Camera permission is required for QR code scanning.</string>
 	<key>NSFaceIDUsageDescription</key>
 	<string>FaceID is required for securely signing into app.</string>
+	<key>NSMicrophoneUsageDescription</key>
+	<string>Microphone is used in podcasts</string>
 	<key>NSPhotoLibraryUsageDescription</key>
 	<string>Required for selecting user avatar image.</string>
 	<key>UIBackgroundModes</key>
 	<array>
+		<string>audio</string>
 		<string>fetch</string>
 		<string>remote-notification</string>
 	</array>
