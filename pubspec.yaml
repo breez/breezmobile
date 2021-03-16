@@ -17,7 +17,7 @@ dependencies:
   anytime:
     git:
       url: https://github.com/breez/anytime_podcast_player.git
-      ref: 0a7a1da8a54697d1d64ca997b7051f4605fbe7fe
+      ref: 9e8fe1bcee31d5c5943dedc1079a403285adad84
   share_extend:
     git:
       url: https://github.com/breez/ShareExtend.git
@@ -73,7 +73,7 @@ dependencies:
     sdk: flutter
 
 dependency_overrides:
-  flutter_svg: any
+  flutter_svg: ^0.19.3
   flutter_downloader:
     git:
       url: https://github.com/breez/flutter_downloader.git

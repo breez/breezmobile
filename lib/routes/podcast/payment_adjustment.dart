@@ -215,7 +215,7 @@ class PaymentAdjustmentState extends State<PaymentAdjustment> {
 
     return WillPopScope(
       onWillPop: () {
-        tutorial.skip();
+        tutorial?.skip();
         return Future.value(true);
       },
       child: StreamBuilder<PaymentOptions>(
