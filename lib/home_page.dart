@@ -135,23 +135,23 @@ class HomeState extends State<Home> with WidgetsBindingObserver {
       });
     });
 
-    AudioService.notificationClickEventStream
-        .where((event) => event == true)
-        .listen((event) async {
-      final userBloc = AppBlocsProvider.of<UserProfileBloc>(context);
-      final userModel = await userBloc.userStream.first;
-      if (!breezPodcast.NowPlayingTransport.nowPlayingVisible) {
-        Navigator.of(context).push(
-          MaterialPageRoute<void>(
-              builder: (context) => withPodcastTheme(userModel, NowPlaying()),
-              fullscreenDialog: false),
-        );
-      }
-    }, onDone: () {
-      print("done");
-    }, onError: (e) {
-      print("error " + e.toString());
-    });
+    // AudioService.notificationClickEventStream
+    //     .where((event) => event == true)
+    //     .listen((event) async {
+    //   final userBloc = AppBlocsProvider.of<UserProfileBloc>(context);
+    //   final userModel = await userBloc.userStream.first;
+    //   if (!breezPodcast.NowPlayingTransport.nowPlayingVisible) {
+    //     Navigator.of(context).push(
+    //       MaterialPageRoute<void>(
+    //           builder: (context) => withPodcastTheme(userModel, NowPlaying()),
+    //           fullscreenDialog: false),
+    //     );
+    //   }
+    // }, onDone: () {
+    //   print("done");
+    // }, onError: (e) {
+    //   print("error " + e.toString());
+    // });
   }
 
   @override
