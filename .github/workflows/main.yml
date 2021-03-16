@@ -6,7 +6,7 @@ name: CI
 on:
   # Triggers the workflow on push or pull request events but only for the master branch
   push:
-    branches: [ master,ios-flutter-stable ]
+    branches: [ master,ios-flutter-stable, anytime-integration ]
   pull_request:
     branches: [ master,ios-flutter-stable ]
 
