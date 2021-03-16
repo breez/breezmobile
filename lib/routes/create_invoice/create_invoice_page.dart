@@ -346,8 +346,8 @@ class CreateInvoicePageState extends State<CreateInvoicePage> {
     {
       if (result == true) {
         if (currentRoute.isCurrent) {
-          navigator.push(TransparentPageRoute((navigator) {
-            return withBreezTheme(context, SuccessfulPaymentRoute());
+          navigator.push(TransparentPageRoute((ctx) {
+            return withBreezTheme(ctx, SuccessfulPaymentRoute());
           }));
         }
       } else {
