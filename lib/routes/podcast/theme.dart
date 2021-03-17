@@ -109,7 +109,7 @@ Widget withPodcastTheme(BreezUserModel user, Widget child) {
               appBarTheme: currentTheme.appBarTheme.copyWith(
                 color: currentTheme.backgroundColor,
                 backgroundColor: Color.fromRGBO(5, 93, 235, 1.0),
-                foregroundColor: Colors.black,
+                foregroundColor: Colors.white,
                 textTheme: currentTheme.appBarTheme.textTheme.copyWith(
                     headline6: currentTheme.appBarTheme.textTheme.headline6
                         .copyWith(color: Color.fromRGBO(0, 133, 251, 1.0))),
