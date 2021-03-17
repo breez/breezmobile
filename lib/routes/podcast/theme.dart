@@ -13,7 +13,7 @@ Widget withBreezTheme(BuildContext context, Widget child) {
     builder: (context, snapshot) {
       var user = snapshot.data;
       if (user == null) {
-        return child;
+        return SizedBox();
       }
       var currentTheme = theme.themeMap[user.themeId];
       return Theme(child: child, data: currentTheme);
@@ -108,7 +108,7 @@ Widget withPodcastTheme(BreezUserModel user, Widget child) {
               ),
               appBarTheme: currentTheme.appBarTheme.copyWith(
                 color: currentTheme.backgroundColor,
-                backgroundColor: Color.fromRGBO(5, 93, 235, 1.0),
+                //backgroundColor: Color.fromRGBO(5, 93, 235, 1.0),
                 foregroundColor: Colors.white,
                 textTheme: currentTheme.appBarTheme.textTheme.copyWith(
                     headline6: currentTheme.appBarTheme.textTheme.headline6
