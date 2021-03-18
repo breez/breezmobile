@@ -178,37 +178,22 @@ class _VendorAvatar extends StatelessWidget {
         ));
   }
 
-/*  Widget _bitrefillAvatar() {
-    return Container(
-      decoration: ShapeDecoration(
-          color: theme.bitrefill.iconBgColor,
-          shape: CircleBorder(
-              side: BorderSide(color: theme.bitrefill.iconBgColor)),
-          image: DecorationImage(
-              image: AssetImage(avatarURL),
-              colorFilter: ColorFilter.mode(
-                  theme.bitrefill.iconFgColor, BlendMode.color))),
-      width: radius * 2,
-      height: radius * 2,
-    );
-  }*/
-
   Widget _vendorAvatar() {
-    var _bgColor = avatarURL.contains("lnpizza")
-        ? theme.lnpizza.iconBgColor
-        : theme.bitrefill.iconBgColor;
-    var _fgColor = avatarURL.contains("lnpizza")
-        ? theme.lnpizza.iconFgColor
-        : theme.bitrefill.iconFgColor;
-    return Container(
-      decoration: ShapeDecoration(
-          color: _bgColor,
-          shape: CircleBorder(side: BorderSide(color: _bgColor)),
-          image: DecorationImage(
-              image: AssetImage(avatarURL),
-              colorFilter: ColorFilter.mode(_fgColor, BlendMode.color))),
-      width: radius * 2,
-      height: radius * 2,
+    String _vendorName =
+        new RegExp("(?<=vendors/)(.*)(?=_logo)").stringMatch(avatarURL);
+    var _bgColor = theme.vendorTheme[_vendorName]?.iconBgColor ?? Colors.white;
+    var _fgColor =
+        theme.vendorTheme[_vendorName]?.iconFgColor ?? Colors.transparent;
+    return CircleAvatar(
+      radius: radius,
+      child: Container(
+        decoration: ShapeDecoration(
+            color: _bgColor,
+            shape: CircleBorder(side: BorderSide(color: _bgColor)),
+            image: DecorationImage(
+                image: AssetImage(avatarURL),
+                colorFilter: ColorFilter.mode(_fgColor, BlendMode.color))),
+      ),
     );
   }
 
