@@ -29,13 +29,11 @@ class PaymentItemAvatar extends StatelessWidget {
           ? Icons.add
           : Icons.remove;
       Widget child = Icon(icon, color: theme.BreezColors.blue[500]);
-      return Container(
-          decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.all(Radius.circular(radius))),
-          width: radius * 2,
-          height: radius * 2,
-          child: child);
+      return CircleAvatar(
+        radius: radius,
+        backgroundColor: Colors.white,
+        child: child,
+      );
     } else {
       return BreezAvatar(paymentItem.imageURL, radius: radius);
     }

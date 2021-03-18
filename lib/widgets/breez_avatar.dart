@@ -100,13 +100,9 @@ class _GeneratedAvatar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-        width: radius * 2,
-        height: radius * 2,
-        decoration: BoxDecoration(
-          color: theme.sessionAvatarBackgroundColor,
-          shape: BoxShape.circle,
-        ),
+    return CircleAvatar(
+        radius: radius,
+        backgroundColor: theme.sessionAvatarBackgroundColor,
         child: Padding(
           padding: const EdgeInsets.all(6.0),
           child: Icon(
@@ -126,15 +122,11 @@ class _FileImageAvatar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      height: radius * 2,
-      width: radius * 2,
-      decoration: new BoxDecoration(
-        shape: BoxShape.circle,
-        image: DecorationImage(
-          image: FileImage(
-            File(filePath),
-          ),
+    return CircleAvatar(
+      radius: radius,
+      child: Image(
+        image: FileImage(
+          File(filePath),
         ),
       ),
     );
