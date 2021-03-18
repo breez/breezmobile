@@ -26,9 +26,9 @@ class PaymentItemAvatar extends StatelessWidget {
       IconData icon = [PaymentType.DEPOSIT, PaymentType.RECEIVED]
                   .indexOf(paymentItem.type) >=
               0
-          ? Icons.add
-          : Icons.remove;
-      Widget child = Icon(icon, color: theme.BreezColors.blue[500]);
+          ? Icons.add_rounded
+          : Icons.remove_rounded;
+      Widget child = Icon(icon, color: Color(0xb3303234));
       return CircleAvatar(
         radius: radius,
         backgroundColor: Colors.white,
