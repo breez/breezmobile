@@ -73,34 +73,41 @@ class PaymentFilterSliverState extends State<PaymentFilterSliver> {
         double widgetSize = _hasNoFilter
             ? (scrollOffset - widget._maxSize)
             : (scrollOffset - widget._minSize);
-        return Container(
-            decoration: BoxDecoration(
-                border: _hasNoDateFilter
-                    ? _hasNoTypeFilter
-                        ? Border(
-                            bottom: BorderSide(
-                                width: 1,
-                                color: theme.customData[theme.themeId]
-                                    .paymentListDividerColor
-                                    .withOpacity(pow(
-                                        0.00 + widgetSize.clamp(0.0, 0.3465),
-                                        2))))
-                        : Border(
-                            bottom: BorderSide(
-                                width: 1,
-                                color: theme.customData[theme.themeId]
-                                    .paymentListDividerColor
-                                    .withOpacity(0.12)))
-                    : null,
-                color: theme.customData[theme.themeId].paymentListBgColor),
-            height: widget._maxSize,
-            child: AnimatedOpacity(
-                duration: Duration(milliseconds: 100),
-                opacity: !_hasNoFilter
-                    ? 1.0
-                    : (scrollOffset - widget._maxSize / 2).clamp(0.0, 1.0),
-                child: PaymentsFilter(
-                    widget._accountBloc, widget._paymentsModel)));
+        return Padding(
+          padding: const EdgeInsets.only(left: 8, right: 8, bottom: 8),
+          child: ClipRRect(
+            borderRadius: BorderRadius.circular(5),
+            child: Container(
+                decoration: BoxDecoration(
+                    border: _hasNoDateFilter
+                        ? _hasNoTypeFilter
+                            ? Border(
+                                bottom: BorderSide(
+                                    width: 1,
+                                    color: theme.customData[theme.themeId]
+                                        .paymentListDividerColor
+                                        .withOpacity(pow(
+                                            0.00 +
+                                                widgetSize.clamp(0.0, 0.3465),
+                                            2))))
+                            : Border(
+                                bottom: BorderSide(
+                                    width: 1,
+                                    color: theme.customData[theme.themeId]
+                                        .paymentListDividerColor
+                                        .withOpacity(0.12)))
+                        : null,
+                    color: theme.customData[theme.themeId].paymentListBgColor),
+                height: widget._maxSize,
+                child: AnimatedOpacity(
+                    duration: Duration(milliseconds: 100),
+                    opacity: !_hasNoFilter
+                        ? 1.0
+                        : (scrollOffset - widget._maxSize / 2).clamp(0.0, 1.0),
+                    child: PaymentsFilter(
+                        widget._accountBloc, widget._paymentsModel))),
+          ),
+        );
       }),
     );
   }

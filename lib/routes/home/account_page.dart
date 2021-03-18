@@ -77,12 +77,7 @@ class AccountPageState extends State<AccountPage>
                       PaymentsModel paymentsModel =
                           snapshot.data ?? PaymentsModel.initial();
                       return Container(
-                        color: paymentsModel.paymentsList.length % 2 == 1 &&
-                                paymentsModel.paymentsList.length != 0
-                            ? theme.customData[theme.themeId]
-                                .paymentListAlternateBgColor
-                            : theme
-                                .customData[theme.themeId].paymentListBgColor,
+                        color: theme.customData[theme.themeId].dashboardBgColor,
                         child: _buildBalanceAndPayments(paymentsModel, account),
                       );
                     });
@@ -126,13 +121,18 @@ class AccountPageState extends State<AccountPage>
     }
     if (paymentsModel?.filter?.startDate != null &&
         paymentsModel?.filter?.endDate != null) {
-      slivers.add(SliverAppBar(
-        pinned: true,
-        elevation: 0.0,
-        expandedHeight: 32.0,
-        automaticallyImplyLeading: false,
-        backgroundColor: theme.customData[theme.themeId].paymentListBgColor,
-        flexibleSpace: _buildDateFilterChip(paymentsModel.filter),
+      slivers.add(SliverPadding(
+        padding: const EdgeInsets.only(left: 8, right: 8, bottom: 8),
+        sliver: SliverAppBar(
+          pinned: true,
+          elevation: 0.0,
+          expandedHeight: 32.0,
+          automaticallyImplyLeading: false,
+          shape: ContinuousRectangleBorder(
+              borderRadius: BorderRadius.circular(10)),
+          backgroundColor: theme.customData[theme.themeId].paymentListBgColor,
+          flexibleSpace: _buildDateFilterChip(paymentsModel.filter),
+        ),
       ));
     }
 
@@ -192,31 +192,26 @@ class AccountPageState extends State<AccountPage>
   }
 
   Widget _filterChip(PaymentFilterModel filter) {
-    return Container(
-      decoration: BoxDecoration(
-          border: Border(
-              bottom: BorderSide(
-                  width: 1,
-                  color:
-                      theme.customData[theme.themeId].paymentListDividerColor)),
-          color: theme.customData[theme.themeId].paymentListBgColor),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.start,
-        children: <Widget>[
-          Padding(
-            padding: EdgeInsets.only(
-              left: 16.0,
-              bottom: 8,
-            ),
-            child: Chip(
-              backgroundColor: Theme.of(context).bottomAppBarColor,
-              label: Text(BreezDateUtils.formatFilterDateRange(
-                  filter.startDate, filter.endDate)),
-              onDeleted: () => _accountBloc.paymentFilterSink
-                  .add(PaymentFilterModel(filter.paymentType, null, null)),
-            ),
-          )
-        ],
+    return ClipRRect(
+      borderRadius: BorderRadius.circular(5),
+      child: Container(
+        color: theme.customData[theme.themeId].paymentListBgColor,
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: <Widget>[
+            Padding(
+              padding: EdgeInsets.only(top: 8, left: 16.0, bottom: 8),
+              child: Chip(
+                backgroundColor: Theme.of(context).bottomAppBarColor,
+                label: Text(BreezDateUtils.formatFilterDateRange(
+                    filter.startDate, filter.endDate)),
+                onDeleted: () => _accountBloc.paymentFilterSink
+                    .add(PaymentFilterModel(filter.paymentType, null, null)),
+              ),
+            )
+          ],
+        ),
       ),
     );
   }

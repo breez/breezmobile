@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 
 import 'payment_item.dart';
 
+const BOTTOM_PADDING = 8.0;
+
 class PaymentsList extends StatefulWidget {
   final List<PaymentInfo> _payments;
   final double _itemHeight;
@@ -38,7 +40,7 @@ class PaymentsListState extends State<PaymentsList> {
   @override
   Widget build(BuildContext context) {
     return SliverFixedExtentList(
-      itemExtent: widget._itemHeight,
+      itemExtent: widget._itemHeight + BOTTOM_PADDING,
       delegate: SliverChildBuilderDelegate((BuildContext context, int index) {
         return PaymentItem(widget._payments[index], index, 0 == index,
             widget.firstPaymentItemKey, widget.scrollController);
