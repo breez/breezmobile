@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:io';
 
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:breez/bloc/account/account_bloc.dart';
@@ -113,7 +114,7 @@ class CreateInvoicePageState extends State<CreateInvoicePage> {
             }
             var account = snapshot.data;
             return Padding(
-              padding: const EdgeInsets.only(top: 24.0),
+              padding: EdgeInsets.only(bottom: (Platform.isIOS && _amountFocusNode.hasFocus) ? 40.0 : 0.0),
               child: SingleButtonBottomBar(
                 stickToBottom: true,
                 text: _withdrawFetchResponse == null ? "CREATE" : "REDEEM",
