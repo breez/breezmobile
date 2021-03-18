@@ -12,6 +12,7 @@ const DASHBOARD_MAX_HEIGHT = 176.25;
 const DASHBOARD_MIN_HEIGHT = 70.0;
 const FILTER_MAX_SIZE = 56.0;
 const PAYMENT_LIST_ITEM_HEIGHT = 72.0;
+const BOTTOM_PADDING = 8.0;
 const AVATAR_DIAMETER = 24.0;
 
 class PaymentItem extends StatelessWidget {
@@ -41,7 +42,8 @@ class PaymentItem extends StatelessWidget {
                 // no longer visible to transparent
                 opacity: (_scrollController.offset -
                             (DASHBOARD_MAX_HEIGHT - DASHBOARD_MIN_HEIGHT) -
-                            (PAYMENT_LIST_ITEM_HEIGHT * (_itemIndex + 1) -
+                            ((PAYMENT_LIST_ITEM_HEIGHT + BOTTOM_PADDING) *
+                                    (_itemIndex + 1) -
                                 FILTER_MAX_SIZE +
                                 AVATAR_DIAMETER) >
                         0)
@@ -68,7 +70,8 @@ class PaymentItem extends StatelessWidget {
                   // set title text to transparent when it leaves viewport
                   opacity: (_scrollController.offset -
                               (DASHBOARD_MAX_HEIGHT - DASHBOARD_MIN_HEIGHT) -
-                              (PAYMENT_LIST_ITEM_HEIGHT * (_itemIndex + 1) -
+                              ((PAYMENT_LIST_ITEM_HEIGHT + BOTTOM_PADDING) *
+                                      (_itemIndex + 1) -
                                   FILTER_MAX_SIZE +
                                   AVATAR_DIAMETER / 2) >
                           0)
@@ -120,7 +123,8 @@ class PaymentItem extends StatelessWidget {
                             opacity: (_scrollController.offset -
                                         (DASHBOARD_MAX_HEIGHT -
                                             DASHBOARD_MIN_HEIGHT) -
-                                        (PAYMENT_LIST_ITEM_HEIGHT *
+                                        ((PAYMENT_LIST_ITEM_HEIGHT +
+                                                    BOTTOM_PADDING) *
                                                 (_itemIndex + 1) -
                                             FILTER_MAX_SIZE +
                                             AVATAR_DIAMETER / 2) >
