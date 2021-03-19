@@ -19,7 +19,7 @@ import 'wallet_dashboard.dart';
 
 const DASHBOARD_MAX_HEIGHT = 202.25;
 const DASHBOARD_MIN_HEIGHT = 70.0;
-const FILTER_MAX_SIZE = 56.0;
+const FILTER_MAX_SIZE = 64.0;
 const FILTER_MIN_SIZE = 0.0;
 const PAYMENT_LIST_ITEM_HEIGHT = 72.0;
 
@@ -122,16 +122,27 @@ class AccountPageState extends State<AccountPage>
     if (paymentsModel?.filter?.startDate != null &&
         paymentsModel?.filter?.endDate != null) {
       slivers.add(SliverPadding(
-        padding: const EdgeInsets.only(left: 8, right: 8, bottom: 8),
-        sliver: SliverAppBar(
+        padding: const EdgeInsets.only(left: 8, right: 8),
+        sliver: SliverPersistentHeader(
           pinned: true,
-          elevation: 0.0,
-          expandedHeight: 32.0,
-          automaticallyImplyLeading: false,
-          shape: ContinuousRectangleBorder(
-              borderRadius: BorderRadius.circular(10)),
-          backgroundColor: theme.customData[theme.themeId].paymentListBgColor,
-          flexibleSpace: _buildDateFilterChip(paymentsModel.filter),
+          delegate: FixedSliverDelegate(FILTER_MAX_SIZE / 1.2,
+              builder: (context, shrinkedHeight, overlapContent) {
+            return Column(
+              children: [
+                Expanded(
+                  child: Container(
+                    height: FILTER_MAX_SIZE / 1.2 - 8,
+                    color: theme.customData[theme.themeId].dashboardBgColor,
+                    child: _buildDateFilterChip(paymentsModel.filter),
+                  ),
+                ),
+                Container(
+                  height: 8,
+                  color: theme.customData[theme.themeId].dashboardBgColor,
+                )
+              ],
+            );
+          }),
         ),
       ));
     }
@@ -209,7 +220,7 @@ class AccountPageState extends State<AccountPage>
                 onDeleted: () => _accountBloc.paymentFilterSink
                     .add(PaymentFilterModel(filter.paymentType, null, null)),
               ),
-            )
+            ),
           ],
         ),
       ),
