@@ -5,46 +5,20 @@ import 'payment_item.dart';
 
 const BOTTOM_PADDING = 8.0;
 
-class PaymentsList extends StatefulWidget {
+class PaymentsList extends StatelessWidget {
   final List<PaymentInfo> _payments;
   final double _itemHeight;
   final GlobalKey firstPaymentItemKey;
-  final ScrollController scrollController;
 
-  PaymentsList(this._payments, this._itemHeight, this.firstPaymentItemKey,
-      this.scrollController);
-
-  @override
-  State<StatefulWidget> createState() {
-    return PaymentsListState();
-  }
-}
-
-class PaymentsListState extends State<PaymentsList> {
-  @override
-  void initState() {
-    super.initState();
-    widget.scrollController.addListener(onScroll);
-  }
-
-  @override
-  void dispose() {
-    widget.scrollController.removeListener(onScroll);
-    super.dispose();
-  }
-
-  void onScroll() {
-    setState(() {});
-  }
+  PaymentsList(this._payments, this._itemHeight, this.firstPaymentItemKey);
 
   @override
   Widget build(BuildContext context) {
     return SliverFixedExtentList(
-      itemExtent: widget._itemHeight + BOTTOM_PADDING,
+      itemExtent: _itemHeight + BOTTOM_PADDING,
       delegate: SliverChildBuilderDelegate((BuildContext context, int index) {
-        return PaymentItem(widget._payments[index], index, 0 == index,
-            widget.firstPaymentItemKey, widget.scrollController);
-      }, childCount: widget._payments.length),
+        return PaymentItem(_payments[index], 0 == index, firstPaymentItemKey, _itemHeight);
+      }, childCount: _payments.length),
     );
   }
 }
