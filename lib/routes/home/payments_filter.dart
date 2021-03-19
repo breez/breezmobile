@@ -73,30 +73,20 @@ class PaymentFilterSliverState extends State<PaymentFilterSliver> {
           opacity: !_hasNoFilter
               ? 1.0
               : (scrollOffset - widget._maxSize / 2).clamp(0.0, 1.0),
-          child: Column(
-            children: [
-              Expanded(
+          child: Container(
+            color: theme.customData[theme.themeId].dashboardBgColor,
+            child: Padding(
+              padding: const EdgeInsets.only(left: 8, right: 8, bottom: 8),
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(5),
                 child: Container(
-                  color: theme.customData[theme.themeId].dashboardBgColor,
-                  child: Padding(
-                    padding: const EdgeInsets.only(left: 8, right: 8),
-                    child: ClipRRect(
-                      borderRadius: BorderRadius.circular(5),
-                      child: Container(
-                          color: theme
-                              .customData[theme.themeId].paymentListBgColor,
-                          height: widget._maxSize,
-                          child: PaymentsFilter(
-                              widget._accountBloc, widget._paymentsModel)),
-                    ),
-                  ),
-                ),
+                    color: theme
+                        .customData[theme.themeId].paymentListBgColor,
+                    height: widget._maxSize,
+                    child: PaymentsFilter(
+                        widget._accountBloc, widget._paymentsModel)),
               ),
-              Container(
-                height: 8,
-                color: theme.customData[theme.themeId].dashboardBgColor,
-              )
-            ],
+            ),
           ),
         );
       }),

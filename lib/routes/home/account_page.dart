@@ -127,20 +127,11 @@ class AccountPageState extends State<AccountPage>
           pinned: true,
           delegate: FixedSliverDelegate(FILTER_MAX_SIZE / 1.2,
               builder: (context, shrinkedHeight, overlapContent) {
-            return Column(
-              children: [
-                Expanded(
-                  child: Container(
-                    height: FILTER_MAX_SIZE / 1.2 - 8,
-                    color: theme.customData[theme.themeId].dashboardBgColor,
-                    child: _buildDateFilterChip(paymentsModel.filter),
-                  ),
-                ),
-                Container(
-                  height: 8,
-                  color: theme.customData[theme.themeId].dashboardBgColor,
-                )
-              ],
+            return Container(
+              padding: EdgeInsets.only(bottom: 8),
+              height: FILTER_MAX_SIZE / 1.2,
+              color: theme.customData[theme.themeId].dashboardBgColor,
+              child: _buildDateFilterChip(paymentsModel.filter),
             );
           }),
         ),
