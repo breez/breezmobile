@@ -488,6 +488,7 @@ const LSPInformation$json = const {
     const {'1': 'min_htlc_msat', '3': 11, '4': 1, '5': 3, '10': 'minHtlcMsat'},
     const {'1': 'channel_fee_permyriad', '3': 12, '4': 1, '5': 3, '10': 'channelFeePermyriad'},
     const {'1': 'lsp_pubkey', '3': 13, '4': 1, '5': 12, '10': 'lspPubkey'},
+    const {'1': 'max_inactive_duration', '3': 14, '4': 1, '5': 3, '10': 'maxInactiveDuration'},
   ],
 };
 
@@ -508,6 +509,23 @@ const LSPList_LspsEntry$json = const {
   '2': const [
     const {'1': 'key', '3': 1, '4': 1, '5': 9, '10': 'key'},
     const {'1': 'value', '3': 2, '4': 1, '5': 11, '6': '.data.LSPInformation', '10': 'value'},
+  ],
+  '7': const {'7': true},
+};
+
+const LSPActivity$json = const {
+  '1': 'LSPActivity',
+  '2': const [
+    const {'1': 'activity', '3': 1, '4': 3, '5': 11, '6': '.data.LSPActivity.ActivityEntry', '10': 'activity'},
+  ],
+  '3': const [LSPActivity_ActivityEntry$json],
+};
+
+const LSPActivity_ActivityEntry$json = const {
+  '1': 'ActivityEntry',
+  '2': const [
+    const {'1': 'key', '3': 1, '4': 1, '5': 9, '10': 'key'},
+    const {'1': 'value', '3': 2, '4': 1, '5': 3, '10': 'value'},
   ],
   '7': const {'7': true},
 };

@@ -3361,6 +3361,7 @@ class LSPInformation extends $pb.GeneratedMessage {
     ..aInt64(11, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'minHtlcMsat')
     ..aInt64(12, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'channelFeePermyriad')
     ..a<$core.List<$core.int>>(13, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'lspPubkey', $pb.PbFieldType.OY)
+    ..aInt64(14, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'maxInactiveDuration')
     ..hasRequiredFields = false
   ;
 
@@ -3379,6 +3380,7 @@ class LSPInformation extends $pb.GeneratedMessage {
     $fixnum.Int64 minHtlcMsat,
     $fixnum.Int64 channelFeePermyriad,
     $core.List<$core.int> lspPubkey,
+    $fixnum.Int64 maxInactiveDuration,
   }) {
     final _result = create();
     if (id != null) {
@@ -3419,6 +3421,9 @@ class LSPInformation extends $pb.GeneratedMessage {
     }
     if (lspPubkey != null) {
       _result.lspPubkey = lspPubkey;
+    }
+    if (maxInactiveDuration != null) {
+      _result.maxInactiveDuration = maxInactiveDuration;
     }
     return _result;
   }
@@ -3559,6 +3564,15 @@ class LSPInformation extends $pb.GeneratedMessage {
   $core.bool hasLspPubkey() => $_has(12);
   @$pb.TagNumber(13)
   void clearLspPubkey() => clearField(13);
+
+  @$pb.TagNumber(14)
+  $fixnum.Int64 get maxInactiveDuration => $_getI64(13);
+  @$pb.TagNumber(14)
+  set maxInactiveDuration($fixnum.Int64 v) { $_setInt64(13, v); }
+  @$pb.TagNumber(14)
+  $core.bool hasMaxInactiveDuration() => $_has(13);
+  @$pb.TagNumber(14)
+  void clearMaxInactiveDuration() => clearField(14);
 }
 
 class LSPListRequest extends $pb.GeneratedMessage {
@@ -3629,6 +3643,47 @@ class LSPList extends $pb.GeneratedMessage {
 
   @$pb.TagNumber(1)
   $core.Map<$core.String, LSPInformation> get lsps => $_getMap(0);
+}
+
+class LSPActivity extends $pb.GeneratedMessage {
+  static final $pb.BuilderInfo _i = $pb.BuilderInfo(const $core.bool.fromEnvironment('protobuf.omit_message_names') ? '' : 'LSPActivity', package: const $pb.PackageName(const $core.bool.fromEnvironment('protobuf.omit_message_names') ? '' : 'data'), createEmptyInstance: create)
+    ..m<$core.String, $fixnum.Int64>(1, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'activity', entryClassName: 'LSPActivity.ActivityEntry', keyFieldType: $pb.PbFieldType.OS, valueFieldType: $pb.PbFieldType.O6, packageName: const $pb.PackageName('data'))
+    ..hasRequiredFields = false
+  ;
+
+  LSPActivity._() : super();
+  factory LSPActivity({
+    $core.Map<$core.String, $fixnum.Int64> activity,
+  }) {
+    final _result = create();
+    if (activity != null) {
+      _result.activity.addAll(activity);
+    }
+    return _result;
+  }
+  factory LSPActivity.fromBuffer($core.List<$core.int> i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromBuffer(i, r);
+  factory LSPActivity.fromJson($core.String i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromJson(i, r);
+  @$core.Deprecated(
+  'Using this can add significant overhead to your binary. '
+  'Use [GeneratedMessageGenericExtensions.deepCopy] instead. '
+  'Will be removed in next major version')
+  LSPActivity clone() => LSPActivity()..mergeFromMessage(this);
+  @$core.Deprecated(
+  'Using this can add significant overhead to your binary. '
+  'Use [GeneratedMessageGenericExtensions.rebuild] instead. '
+  'Will be removed in next major version')
+  LSPActivity copyWith(void Function(LSPActivity) updates) => super.copyWith((message) => updates(message as LSPActivity)); // ignore: deprecated_member_use
+  $pb.BuilderInfo get info_ => _i;
+  @$core.pragma('dart2js:noInline')
+  static LSPActivity create() => LSPActivity._();
+  LSPActivity createEmptyInstance() => create();
+  static $pb.PbList<LSPActivity> createRepeated() => $pb.PbList<LSPActivity>();
+  @$core.pragma('dart2js:noInline')
+  static LSPActivity getDefault() => _defaultInstance ??= $pb.GeneratedMessage.$_defaultFor<LSPActivity>(create);
+  static LSPActivity _defaultInstance;
+
+  @$pb.TagNumber(1)
+  $core.Map<$core.String, $fixnum.Int64> get activity => $_getMap(0);
 }
 
 class ConnectLSPRequest extends $pb.GeneratedMessage {

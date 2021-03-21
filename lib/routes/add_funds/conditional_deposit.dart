@@ -29,7 +29,7 @@ class ConditionalDeposit extends StatelessWidget {
         bool waitingDepositConfirmation = unconfirmedTxID?.isNotEmpty == true;
         String errorMessage;
 
-        if (unconfirmedTxID?.isNotEmpty == true || account.closingConnection) {
+        if (unconfirmedTxID?.isNotEmpty == true) {
           errorMessage =
               'Breez is processing your previous ${waitingDepositConfirmation || account.processingConnection ? "deposit" : "withdrawal"}. You will be able to add more funds once this operation is completed.';
         }

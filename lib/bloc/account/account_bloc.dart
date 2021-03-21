@@ -78,6 +78,9 @@ class AccountBloc {
   Sink<PaymentFilterModel> get paymentFilterSink =>
       _paymentFilterController.sink;
 
+  final _lspActivityController = BehaviorSubject<LSPActivity>();
+  Stream<LSPActivity> get lspActivityStream => _lspActivityController.stream;
+
   final _accountNotificationsController = StreamController<String>.broadcast();
   Stream<String> get accountNotificationsStream =>
       _accountNotificationsController.stream;
@@ -635,8 +638,15 @@ class AccountBloc {
         payments.add(singles[0]);
       }
     });
-    return payments;
+    return payments;  
   }
+
+  Future _refreshLSPActivity() {
+    _breezLib.lspActivity().then((lspActivity) {
+      print("--- LSPACtivity --- ");
+      print(lspActivity);
+      _lspActivityController.add(lspActivity);
+    });
 
   _filterPayments(List<PaymentInfo> paymentsList) {
     Set<PaymentInfo> paymentsSet = _groupPayments(paymentsList)
@@ -748,6 +758,7 @@ class AccountBloc {
     await _fetchAccount()
         .then((acc) => _accountController.add(acc))
         .catchError(_accountController.addError);
+    _refreshLSPActivity();
     if (_accountController.value.onChainFeeRate == null) {
       _breezLib.getDefaultOnChainFeeRate().then((rate) {
         if (rate.toInt() > 0) {
