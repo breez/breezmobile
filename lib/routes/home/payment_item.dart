@@ -65,7 +65,7 @@ class PaymentItem extends StatelessWidget {
               ),
               key: _firstItem ? firstPaymentItemKey : null,
               title: Transform.translate(
-                offset: Offset(-8, -2),
+                offset: Offset(-8, 0),
                 child: Opacity(
                   // set title text to transparent when it leaves viewport
                   opacity: (_scrollController.offset -
@@ -85,7 +85,7 @@ class PaymentItem extends StatelessWidget {
                 ),
               ),
               subtitle: Transform.translate(
-                offset: Offset(-8, -2),
+                offset: Offset(-8, 0),
                 child: Row(
                     mainAxisAlignment: MainAxisAlignment.start,
                     mainAxisSize: MainAxisSize.min,
@@ -108,64 +108,48 @@ class PaymentItem extends StatelessWidget {
                           : SizedBox()
                     ]),
               ),
-              trailing: Padding(
-                padding: const EdgeInsets.symmetric(vertical: 8.0),
+              trailing: Container(
+                height: 44,
                 child: Column(
-                  mainAxisAlignment: MainAxisAlignment.start,
+                  mainAxisAlignment:
+                      _paymentInfo.fee == 0 || _paymentInfo.pending
+                          ? MainAxisAlignment.center
+                          : MainAxisAlignment.spaceAround,
                   crossAxisAlignment: CrossAxisAlignment.end,
                   children: <Widget>[
-                    Row(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        mainAxisSize: MainAxisSize.min,
-                        children: <Widget>[
-                          Opacity(
-                            // set amount text to transparent when it leaves viewport
-                            opacity: (_scrollController.offset -
-                                        (DASHBOARD_MAX_HEIGHT -
-                                            DASHBOARD_MIN_HEIGHT) -
-                                        ((PAYMENT_LIST_ITEM_HEIGHT +
-                                                    BOTTOM_PADDING) *
-                                                (_itemIndex + 1) -
-                                            FILTER_MAX_SIZE +
-                                            AVATAR_DIAMETER / 2) >
-                                    0)
-                                ? 0.0
-                                : 1.0,
-                            child: Text(
-                              (_paymentInfo.type == PaymentType.SENT ||
-                                          _paymentInfo.type ==
-                                              PaymentType.WITHDRAWAL ||
-                                          _paymentInfo.type ==
-                                              PaymentType.CLOSED_CHANNEL
-                                      ? "- "
-                                      : "+ ") +
-                                  _paymentInfo.currency.format(
-                                      _paymentInfo.amount,
-                                      includeDisplayName: false),
-                              style:
-                                  Theme.of(context).accentTextTheme.headline6,
-                            ),
-                          )
-                        ]),
-                    Padding(
-                      padding: const EdgeInsets.only(top: 7.0),
-                      child: Row(
-                          mainAxisAlignment: MainAxisAlignment.end,
-                          mainAxisSize: MainAxisSize.min,
-                          children: <Widget>[
-                            _paymentInfo.fee == 0 || _paymentInfo.pending
-                                ? SizedBox()
-                                : Text(
-                                    "FEE " +
-                                        _paymentInfo.currency.format(
-                                            _paymentInfo.fee,
-                                            includeDisplayName: false),
-                                    style: Theme.of(context)
-                                        .accentTextTheme
-                                        .caption,
-                                  ),
-                          ]),
+                    Opacity(
+                      // set amount text to transparent when it leaves viewport
+                      opacity: (_scrollController.offset -
+                                  (DASHBOARD_MAX_HEIGHT -
+                                      DASHBOARD_MIN_HEIGHT) -
+                                  ((PAYMENT_LIST_ITEM_HEIGHT + BOTTOM_PADDING) *
+                                          (_itemIndex + 1) -
+                                      FILTER_MAX_SIZE +
+                                      AVATAR_DIAMETER / 2) >
+                              0)
+                          ? 0.0
+                          : 1.0,
+                      child: Text(
+                        (_paymentInfo.type == PaymentType.SENT ||
+                                    _paymentInfo.type ==
+                                        PaymentType.WITHDRAWAL ||
+                                    _paymentInfo.type ==
+                                        PaymentType.CLOSED_CHANNEL
+                                ? "- "
+                                : "+ ") +
+                            _paymentInfo.currency.format(_paymentInfo.amount,
+                                includeDisplayName: false),
+                        style: Theme.of(context).accentTextTheme.headline6,
+                      ),
                     ),
+                    _paymentInfo.fee == 0 || _paymentInfo.pending
+                        ? SizedBox()
+                        : Text(
+                          "FEE " +
+                              _paymentInfo.currency.format(_paymentInfo.fee,
+                                  includeDisplayName: false),
+                          style: Theme.of(context).accentTextTheme.caption,
+                        ),
                   ],
                 ),
               ),
