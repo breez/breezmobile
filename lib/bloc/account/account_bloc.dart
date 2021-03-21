@@ -638,7 +638,7 @@ class AccountBloc {
         payments.add(singles[0]);
       }
     });
-    return payments;  
+    return payments;
   }
 
   Future _refreshLSPActivity() {
@@ -647,6 +647,7 @@ class AccountBloc {
       print(lspActivity);
       _lspActivityController.add(lspActivity);
     });
+  }
 
   _filterPayments(List<PaymentInfo> paymentsList) {
     Set<PaymentInfo> paymentsSet = _groupPayments(paymentsList)
