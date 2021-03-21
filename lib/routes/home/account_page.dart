@@ -139,8 +139,12 @@ class AccountPageState extends State<AccountPage>
     }
 
     if (paymentsModel.nonFilteredItems.length > 0) {
-      slivers.add(PaymentsList(paymentsModel.paymentsList,
-          PAYMENT_LIST_ITEM_HEIGHT, widget.firstPaymentItemKey));
+      slivers.add(PaymentsList(
+        paymentsModel.paymentsList,
+        PAYMENT_LIST_ITEM_HEIGHT,
+        widget.firstPaymentItemKey,
+        widget.scrollController,
+      ));
       slivers.add(SliverPersistentHeader(
           pinned: true,
           delegate:
