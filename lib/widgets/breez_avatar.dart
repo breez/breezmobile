@@ -101,16 +101,15 @@ class _GeneratedAvatar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return CircleAvatar(
-        radius: radius,
-        backgroundColor: theme.sessionAvatarBackgroundColor,
-        child: Padding(
-          padding: const EdgeInsets.all(6.0),
-          child: Icon(
-              IconData(0xe900 + generator.animals.indexOf(animal),
-                  fontFamily: 'animals'),
-              size: radius * 2 * 0.75,
-              color: _breezAvatarColors[color.toLowerCase()]),
-        ));
+      radius: radius,
+      backgroundColor: theme.sessionAvatarBackgroundColor,
+      child: Icon(
+        IconData(0xe900 + generator.animals.indexOf(animal),
+            fontFamily: 'animals'),
+        size: radius * 2 * 0.75,
+        color: _breezAvatarColors[color.toLowerCase()],
+      ),
+    );
   }
 }
 
