@@ -601,7 +601,7 @@ class SinglePaymentInfo implements PaymentInfo {
       return "src/icon/vendors/fastbitcoins_logo.png";
     }
     if (_paymentResponse.invoiceMemo.description.startsWith("LN.pizza")) {
-      return "src/icon/vendors/lnpizza_logo.png";
+      return "src/icon/vendors/ln.pizza_logo.png";
     }
 
     String url = (type == PaymentType.SENT

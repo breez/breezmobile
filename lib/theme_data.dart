@@ -8,7 +8,6 @@ class CustomData {
   Color pendingTextColor;
   Color dashboardBgColor;
   Color paymentListBgColor;
-  Color paymentListAlternateBgColor;
   Color paymentListDividerColor;
   Color navigationDrawerHeaderBgColor;
   Color navigationDrawerBgColor;
@@ -19,7 +18,6 @@ class CustomData {
       this.pendingTextColor,
       this.dashboardBgColor,
       this.paymentListBgColor,
-      this.paymentListAlternateBgColor,
       this.paymentListDividerColor,
       this.navigationDrawerHeaderBgColor,
       this.navigationDrawerBgColor});
@@ -31,8 +29,7 @@ final CustomData blueThemeCustomData = CustomData(
   loaderAssetPath: 'src/images/breez_loader_blue.gif',
   dashboardBgColor: Colors.white,
   pendingTextColor: Color(0xff4D88EC),
-  paymentListBgColor: Color.fromRGBO(249, 249, 249, 1),
-  paymentListAlternateBgColor: Color.fromRGBO(253, 253, 253, 1),
+  paymentListBgColor: Color(0xFFf9f9f9),
   paymentListDividerColor: Color.fromRGBO(0, 0, 0, 0.12),
   navigationDrawerBgColor: BreezColors.blue[500],
   navigationDrawerHeaderBgColor: Color.fromRGBO(0, 103, 255, 1),
@@ -42,8 +39,7 @@ final CustomData darkThemeCustomData = CustomData(
   loaderAssetPath: 'src/images/breez_loader_dark.gif',
   pendingTextColor: Color(0xFF0085fb),
   dashboardBgColor: Color(0xFF0D1F33),
-  paymentListBgColor: Color.fromRGBO(21, 42, 61, 1),
-  paymentListAlternateBgColor: Color.fromRGBO(19, 37, 54, 1),
+  paymentListBgColor: Color(0xFF152a3d),
   paymentListDividerColor: Color.fromRGBO(255, 255, 255, 0.12),
   navigationDrawerBgColor: Color(0xFF152a3d),
   navigationDrawerHeaderBgColor: Color.fromRGBO(13, 32, 50, 1),
@@ -159,16 +155,16 @@ final ThemeData blueTheme = ThemeData(
         color: Colors.black,
         fontSize: 13.5,
         fontWeight: FontWeight.w500,
-        height: 1.28,
+        height: 1.2,
         letterSpacing: 0.5),
     subtitle2: TextStyle(
         color: Colors.black,
-        fontSize: 12.25,
+        fontSize: 13.5,
         fontWeight: FontWeight.w500,
         height: 1.2,
         letterSpacing: 0.25),
     caption: TextStyle(
-        color: Colors.black.withOpacity(0.7),
+        color: Color(0xb3303234),
         fontSize: 10.5,
         fontWeight: FontWeight.w400,
         height: 1.16,
