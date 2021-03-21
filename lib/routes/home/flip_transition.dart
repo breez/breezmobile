@@ -47,19 +47,20 @@ class FlipTransitionState extends State<FlipTransition>
   @override
   Widget build(BuildContext context) {
     return AnimatedBuilder(
-        animation: _flipAnimationController,
-        builder: (BuildContext context, Widget child) {
-          return Container(
-              width: widget.radius,
-              height: widget.radius,
-              child: Transform(
-                transform: Matrix4.identity()
-                  ..rotateY(pi * _flipAnimation.value),
-                alignment: Alignment.center,
-                child: _flipAnimationController.value >= 0.4
-                    ? widget.secondChild
-                    : widget.firstChild,
-              ));
-        });
+      animation: _flipAnimationController,
+      builder: (BuildContext context, Widget child) {
+        return CircleAvatar(
+          radius: widget.radius,
+          backgroundColor: Colors.white,
+          child: Transform(
+            transform: Matrix4.identity()..rotateY(pi * _flipAnimation.value),
+            alignment: Alignment.center,
+            child: _flipAnimationController.value >= 0.4
+                ? widget.secondChild
+                : widget.firstChild,
+          ),
+        );
+      },
+    );
   }
 }
