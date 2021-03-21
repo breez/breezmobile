@@ -134,11 +134,13 @@ class PaymentItem extends StatelessWidget {
       return PaymentItemAvatar(_paymentInfo, radius: 16);
     } else {
       return FlipTransition(
-          PaymentItemAvatar(
-            _paymentInfo,
-            radius: 16,
-          ),
-          SuccessAvatar());
+        PaymentItemAvatar(
+          _paymentInfo,
+          radius: 16,
+        ),
+        SuccessAvatar(radius: 16),
+        radius: 16,
+      );
     }
   }
 
