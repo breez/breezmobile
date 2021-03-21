@@ -43,6 +43,7 @@ void main() async {
             Provider<PodcastPaymentsBloc>(
               lazy: false,
               create: (ctx) => PodcastPaymentsBloc(
+                  blocs.userProfileBloc,
                   blocs.accountBloc,
                   Provider.of<SettingsBloc>(ctx, listen: false),
                   Provider.of<AudioBloc>(ctx, listen: false),

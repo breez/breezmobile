@@ -12,6 +12,8 @@ import 'package:breez/bloc/async_actions_handler.dart';
 import 'package:breez/bloc/podcast_payments/actions.dart';
 import 'package:breez/bloc/podcast_payments/model.dart';
 import 'package:breez/bloc/podcast_payments/payment_options.dart';
+import 'package:breez/bloc/user_profile/breez_user_model.dart';
+import 'package:breez/bloc/user_profile/user_profile_bloc.dart';
 import 'package:breez/logger.dart';
 import 'package:breez/services/breezlib/breez_bridge.dart';
 import 'package:breez/services/injector.dart';
@@ -26,8 +28,7 @@ class PodcastPaymentsBloc with AsyncActionsHandler {
   final SettingsBloc settingsBloc;
   final Repository repository;
   final AccountBloc accountBloc;
-
-  final _amountController = BehaviorSubject<int>();
+  final UserProfileBloc userProfile;
 
   final _paymentOptionsController = BehaviorSubject<PaymentOptions>();
   Stream<PaymentOptions> get paymentOptionsStream =>
@@ -46,18 +47,25 @@ class PodcastPaymentsBloc with AsyncActionsHandler {
   BreezBridge _breezLib;
   Timer _paymentTimer;
   Map<String, double> _perDestinationPayments = Map<String, double>();
+  BreezUserModel user;
 
-  PodcastPaymentsBloc(
-      this.accountBloc, this.settingsBloc, this.audioBloc, this.repository) {
+  PodcastPaymentsBloc(this.userProfile, this.accountBloc, this.settingsBloc,
+      this.audioBloc, this.repository) {
     ServiceInjector injector = ServiceInjector();
     _breezLib = injector.breezBridge;
     _paymentOptionsController.add(PaymentOptions());
     listenAudioState();
     registerAsyncHandlers({
       PayBoost: _payBoost,
-      AdjustAmount: _adjustAmount,
     });
+    listenUserProfile();
     listenActions();
+  }
+
+  void listenUserProfile() {
+    userProfile.userStream.listen((u) {
+      user = u;
+    });
   }
 
   void listenAudioState() {
@@ -79,11 +87,6 @@ class PodcastPaymentsBloc with AsyncActionsHandler {
         _currentPaidEpisode = event.episode;
         final value = _getLightningPaymentValue(_currentPaidEpisode);
         if (value != null) {
-          if (_amountController.value == null) {
-            final amount =
-                (double.tryParse(value?.model?.suggested) * 100000000).floor();
-            _amountController.add(amount);
-          }
           startPaymentTimer(event.episode, value.recipients);
         }
       }
@@ -100,11 +103,6 @@ class PodcastPaymentsBloc with AsyncActionsHandler {
             boost: true);
       }
     }
-  }
-
-  Future _adjustAmount(AdjustAmount action) async {
-    _amountController.add(action.sats);
-    return Future.value();
   }
 
   void startPaymentTimer(Episode episode, List<ValueDestination> recipients) {
@@ -129,7 +127,7 @@ class PodcastPaymentsBloc with AsyncActionsHandler {
       if (nextPaidMinutes > paidMinutes) {
         paidMinutes = nextPaidMinutes;
         log.info("paying recipients " + paidMinutes.toString());
-        _payRecipients(episode, recipients, _amountController.value);
+        _payRecipients(episode, recipients, user.preferredSatsPerMinValue);
       }
     });
   }
