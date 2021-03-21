@@ -228,7 +228,7 @@ class PaymentsFilterState extends State<PaymentsFilter> {
             color: Theme.of(context).accentTextTheme.subtitle2.color,
           ),
           padding: EdgeInsets.zero,
-          offset: Offset(12, 36),
+          offset: Offset(12, 24),
           onSelected: _select,
           itemBuilder: (context) => [
             PopupMenuItem(
