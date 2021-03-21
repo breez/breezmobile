@@ -330,7 +330,13 @@ class ValueDestination {
   ValueDestination({this.name, this.address, this.type, this.split});
 
   static ValueDestination fromJson(Map<String, dynamic> json) {
-    var split = json['split'] as num;
+    var rawSplit = json['split'];
+    num split;
+    if (rawSplit is String) {
+      split = double.parse(rawSplit);
+    } else {
+      split = rawSplit as num;
+    }
     return ValueDestination(
       name: json['name'] as String,
       address: json['address'] as String,
