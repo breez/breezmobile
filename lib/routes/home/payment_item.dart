@@ -43,7 +43,7 @@ class PaymentItem extends StatelessWidget {
                   child: _buildPaymentItemAvatar()),
               key: _firstItem ? firstPaymentItemKey : null,
               title: Transform.translate(
-                offset: Offset(-8, -2),
+                offset: Offset(-8, 0),
                 child: Text(
                   _paymentInfo.title.replaceAll("\n", " "),
                   style: Theme.of(context).accentTextTheme.subtitle2,
@@ -51,7 +51,7 @@ class PaymentItem extends StatelessWidget {
                 ),
               ),
               subtitle: Transform.translate(
-                offset: Offset(-8, -2),
+                offset: Offset(-8, 0),
                 child: Row(
                     mainAxisAlignment: MainAxisAlignment.start,
                     mainAxisSize: MainAxisSize.min,
@@ -74,49 +74,35 @@ class PaymentItem extends StatelessWidget {
                           : SizedBox()
                     ]),
               ),
-              trailing: Padding(
-                padding: const EdgeInsets.symmetric(vertical: 8.0),
+              trailing: Container(
+                height: 44,
                 child: Column(
-                  mainAxisAlignment: MainAxisAlignment.start,
+                  mainAxisAlignment:
+                      _paymentInfo.fee == 0 || _paymentInfo.pending
+                          ? MainAxisAlignment.center
+                          : MainAxisAlignment.spaceAround,
                   crossAxisAlignment: CrossAxisAlignment.end,
                   children: <Widget>[
-                    Row(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        mainAxisSize: MainAxisSize.min,
-                        children: <Widget>[
-                          Text(
-                            (_paymentInfo.type == PaymentType.SENT ||
-                                        _paymentInfo.type ==
-                                            PaymentType.WITHDRAWAL ||
-                                        _paymentInfo.type ==
-                                            PaymentType.CLOSED_CHANNEL
-                                    ? "- "
-                                    : "+ ") +
-                                _paymentInfo.currency.format(
-                                    _paymentInfo.amount,
-                                    includeDisplayName: false),
-                            style: Theme.of(context).accentTextTheme.headline6,
-                          )
-                        ]),
-                    Padding(
-                      padding: const EdgeInsets.only(top: 7.0),
-                      child: Row(
-                          mainAxisAlignment: MainAxisAlignment.end,
-                          mainAxisSize: MainAxisSize.min,
-                          children: <Widget>[
-                            _paymentInfo.fee == 0 || _paymentInfo.pending
-                                ? SizedBox()
-                                : Text(
-                                    "FEE " +
-                                        _paymentInfo.currency.format(
-                                            _paymentInfo.fee,
-                                            includeDisplayName: false),
-                                    style: Theme.of(context)
-                                        .accentTextTheme
-                                        .caption,
-                                  ),
-                          ]),
+                    Text(
+                      (_paymentInfo.type == PaymentType.SENT ||
+                                  _paymentInfo.type ==
+                                      PaymentType.WITHDRAWAL ||
+                                  _paymentInfo.type ==
+                                      PaymentType.CLOSED_CHANNEL
+                              ? "- "
+                              : "+ ") +
+                          _paymentInfo.currency.format(_paymentInfo.amount,
+                              includeDisplayName: false),
+                      style: Theme.of(context).accentTextTheme.headline6,
                     ),
+                    _paymentInfo.fee == 0 || _paymentInfo.pending
+                        ? SizedBox()
+                        : Text(
+                          "FEE " +
+                              _paymentInfo.currency.format(_paymentInfo.fee,
+                                  includeDisplayName: false),
+                          style: Theme.of(context).accentTextTheme.caption,
+                        ),
                   ],
                 ),
               ),
