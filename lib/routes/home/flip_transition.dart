@@ -5,8 +5,9 @@ import 'package:flutter/material.dart';
 class FlipTransition extends StatefulWidget {
   final Widget firstChild;
   final Widget secondChild;
+  final double radius;
 
-  FlipTransition(this.firstChild, this.secondChild);
+  FlipTransition(this.firstChild, this.secondChild, {this.radius});
 
   @override
   State<StatefulWidget> createState() {
@@ -49,8 +50,8 @@ class FlipTransitionState extends State<FlipTransition>
         animation: _flipAnimationController,
         builder: (BuildContext context, Widget child) {
           return Container(
-              width: 40.0,
-              height: 40.0,
+              width: widget.radius,
+              height: widget.radius,
               child: Transform(
                 transform: Matrix4.identity()
                   ..rotateY(pi * _flipAnimation.value),

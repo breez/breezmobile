@@ -8,7 +8,7 @@ import 'flip_transition.dart';
 import 'payment_item_avatar.dart';
 import 'success_avatar.dart';
 
-const DASHBOARD_MAX_HEIGHT = 176.25;
+const DASHBOARD_MAX_HEIGHT = 202.25;
 const DASHBOARD_MIN_HEIGHT = 70.0;
 const FILTER_MAX_SIZE = 56.0;
 const PAYMENT_LIST_ITEM_HEIGHT = 72.0;
@@ -183,11 +183,13 @@ class PaymentItem extends StatelessWidget {
       return PaymentItemAvatar(_paymentInfo, radius: 16);
     } else {
       return FlipTransition(
-          PaymentItemAvatar(
-            _paymentInfo,
-            radius: 16,
-          ),
-          SuccessAvatar());
+        PaymentItemAvatar(
+          _paymentInfo,
+          radius: 16,
+        ),
+        SuccessAvatar(radius: 16),
+        radius: 16,
+      );
     }
   }
 
