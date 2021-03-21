@@ -632,10 +632,10 @@ class AccountBloc {
 
     var payments = List<PaymentInfo>();
     groupedPayments.forEach((key, singles) {
-      if (singles.length > 1) {
-        payments.add(StreamedPaymentInfo(singles, _accountController.value));
-      } else {
+      if (singles[0].paymentHash == key) {
         payments.add(singles[0]);
+      } else {
+        payments.add(StreamedPaymentInfo(singles, _accountController.value));
       }
     });
     return payments;
