@@ -231,19 +231,19 @@ class BubblePainter extends CustomPainter {
     double bubbleRadius = 12;
     double height = (MediaQuery.of(context).size.height - kToolbarHeight);
     canvas.drawCircle(
-        Offset(MediaQuery.of(context).size.width / 2, height * 0.34),
+        Offset(MediaQuery.of(context).size.width / 2, height * 0.36),
         bubbleRadius,
         bubblePaint);
     canvas.drawCircle(
-        Offset(MediaQuery.of(context).size.width * 0.39, height * 0.56),
+        Offset(MediaQuery.of(context).size.width * 0.39, height * 0.59),
         bubbleRadius * 1.5,
         bubblePaint);
     canvas.drawCircle(
-        Offset(MediaQuery.of(context).size.width * 0.65, height * 0.68),
+        Offset(MediaQuery.of(context).size.width * 0.65, height * 0.71),
         bubbleRadius * 1.25,
         bubblePaint);
     canvas.drawCircle(
-        Offset(MediaQuery.of(context).size.width / 2, height * 0.77),
+        Offset(MediaQuery.of(context).size.width / 2, height * 0.80),
         bubbleRadius * 0.75,
         bubblePaint);
   }
