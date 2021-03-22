@@ -32,6 +32,7 @@ void main() async {
   var mobileService = await MobileSettingsService.instance();
   mobileService.autoOpenNowPlaying = true;
   mobileService.showFunding = false;
+  mobileService.useMaterialDesign = true;
   final repository = SembastRepository();
   SharedPreferences.getInstance().then((preferences) async {
     await runMigration(preferences);
