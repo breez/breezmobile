@@ -182,7 +182,7 @@ Widget withPodcastTheme(BreezUserModel user, Widget child) {
                     color: Color(0xff444444),
                   ),
               appBarTheme: currentTheme.appBarTheme.copyWith(
-                  backgroundColor: Color(0xFF0c2031),
+                  //backgroundColor: Color(0xFF0c2031),
                   color: currentTheme.backgroundColor),
             ),
   );
