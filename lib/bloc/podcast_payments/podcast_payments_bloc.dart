@@ -48,6 +48,7 @@ class PodcastPaymentsBloc with AsyncActionsHandler {
   Timer _paymentTimer;
   Map<String, double> _perDestinationPayments = Map<String, double>();
   BreezUserModel user;
+  String breezReceiverNode;
 
   PodcastPaymentsBloc(this.userProfile, this.accountBloc, this.settingsBloc,
       this.audioBloc, this.repository) {
@@ -134,15 +135,21 @@ class PodcastPaymentsBloc with AsyncActionsHandler {
 
   void _payRecipients(
       Episode episode, List<ValueDestination> recipients, int total,
-      {bool boost = false}) {
+      {bool boost = false}) async {
+    if (breezReceiverNode == null) {
+      try {
+        breezReceiverNode = await _breezLib.receiverNode();
+      } catch (err) {
+        log.severe("failed to fetch receiver node: ", err);
+      }
+    }
     double totalSplits =
         recipients.map((r) => r.split).reduce((agg, next) => agg + next);
     final breezShare = totalSplits / 20;
     totalSplits += breezShare;
     final withBreez = List<ValueDestination>.from([
       ValueDestination(
-          address:
-              "031015a7839468a3c266d662d5bb21ea4cea24226936e2864a7ca4f2c3939836e0",
+          address: breezReceiverNode,
           name: "Breez",
           type: "keysend",
           split: breezShare)

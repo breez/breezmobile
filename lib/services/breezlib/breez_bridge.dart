@@ -271,6 +271,10 @@ class BreezBridge {
         .then((p) => ReverseSwapPaymentStatuses()..mergeFromBuffer(p ?? []));
   }
 
+  Future<String> receiverNode() {
+    return _invokeMethodWhenReady("receiverNode").then((s) => s as String);
+  }
+
   Future<PaymentResponse> sendSpontaneousPayment(
       String destNode, Int64 amount, String description,
       {Int64 feeLimitMsat = Int64.ZERO,
