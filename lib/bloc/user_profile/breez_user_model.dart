@@ -151,7 +151,7 @@ class BreezUserModel {
                 <String>['USD', 'EUR', 'GBP', 'JPY'],
         appMode = AppMode.values[json["appMode"] ?? 0],
         preferredBoostValue = json["preferredBoostValue"] ?? 5000,
-        preferredSatsPerMinValue = json["preferredSatsPerMinValue"] ?? 50,
+        preferredSatsPerMinValue = json["preferredSatsPerMinValue"] ?? 0,
         seenTutorials = json["seenTutorials"] == null
             ? SeenTutorials.initial()
             : SeenTutorials.fromJson(json["seenTutorials"]);
