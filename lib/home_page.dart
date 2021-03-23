@@ -622,12 +622,17 @@ class HomeState extends State<Home> with WidgetsBindingObserver {
   _homePage(BreezUserModel user) {
     switch (user.appMode) {
       case AppMode.podcasts:
-        return AnytimeHomePage(
-          topBarVisible: false,
-          inlineSearch: true,
-          noSubscriptionsMessage:
-              "Use the Discover view to find and subscribe to your first podcast",
-          title: 'Anytime Podcast Player',
+        return Container(
+          color: Theme.of(context).bottomAppBarColor,
+          child: SafeArea(
+            child: AnytimeHomePage(
+              topBarVisible: false,
+              inlineSearch: true,
+              noSubscriptionsMessage:
+                  "Use the Discover view to find and subscribe to your first podcast",
+              title: 'Anytime Podcast Player',
+            ),
+          ),
         );
       case AppMode.pos:
         return POSInvoice();

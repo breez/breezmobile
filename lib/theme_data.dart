@@ -59,6 +59,7 @@ final ThemeData blueTheme = ThemeData(
   accentColor: Colors.white,
   canvasColor: BreezColors.blue[500],
   backgroundColor: Colors.white,
+  bottomAppBarTheme: BottomAppBarTheme(elevation: 0),
   appBarTheme: AppBarTheme(
     textTheme: TextTheme(
       headline6:
@@ -183,6 +184,7 @@ final ThemeData darkTheme = ThemeData(
   accentColor: Colors.white,
   canvasColor: Color(0xFF0c2031),
   backgroundColor: Color(0xFF152a3d),
+  bottomAppBarTheme: BottomAppBarTheme(elevation: 0),
   appBarTheme: AppBarTheme(
     textTheme: TextTheme(
       headline6:
