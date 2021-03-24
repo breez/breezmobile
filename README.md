@@ -72,6 +72,7 @@ Breez is currently in a public beta, available on [Android](https://play.google.
 - [x] Support LNURL-Auth & LNURL-Fallback
 - [x] Print POS transactions
 - [x] Hide balance
+- [ ] In-app podcast player (podcasting 2.0)
 - [ ] Support LNURL-Pay
 - [ ] Async payments via Lightning Rod
 - [ ] Neutrino sync optimizations
