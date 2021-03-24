@@ -127,6 +127,7 @@ Widget withPodcastTheme(BreezUserModel user, Widget child) {
               canvasColor: Color(0xFF0c2031),
               scaffoldBackgroundColor: Color(0xFF0c2031),
               bottomAppBarColor: Color(0xff4D88EC),
+              bottomAppBarTheme: BottomAppBarTheme(elevation: 0),
               cardColor: Colors.black,
               dividerColor: Colors.white.withOpacity(0.2),
               highlightColor: Color(0xFF81acf1),
