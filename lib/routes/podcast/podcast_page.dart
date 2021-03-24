@@ -219,13 +219,10 @@ class NowPlayingTransportState extends State<NowPlayingTransport> {
               widgets.add(
                   Padding(padding: const EdgeInsets.symmetric(vertical: 8.0)));
               widgets.add(Divider(height: 0.0, thickness: 1));
-              widgets.add(PaymentAdjustment());
-              return SizedBox(
-                  height:
-                      snapshot.data.balance < userModel.preferredSatsPerMinValue
-                          ? 272.0
-                          : 208.0,
-                  child: Column(children: widgets));
+              widgets.add(Container(
+                  color: Theme.of(context).backgroundColor,
+                  child: SafeArea(child: PaymentAdjustment())));
+              return Column(mainAxisSize: MainAxisSize.min, children: widgets);
             },
           );
         });
