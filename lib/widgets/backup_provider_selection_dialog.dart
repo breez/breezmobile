@@ -31,10 +31,14 @@ class BackupProviderSelectionDialogState
   Widget createRestoreDialog() {
     return AlertDialog(
       titlePadding: EdgeInsets.fromLTRB(24.0, 22.0, 24.0, 16.0),
-      title: AutoSizeText(
-        "Backup Data Storage",
-        style: Theme.of(context).dialogTheme.titleTextStyle,
-        maxLines: 1,
+      title: Container(
+        width: MediaQuery.of(context).size.width,
+        height: 30,
+        child: AutoSizeText(
+          "Backup Data Storage",
+          style: Theme.of(context).dialogTheme.titleTextStyle,
+          maxLines: 1,
+        ),
       ),
       contentPadding: EdgeInsets.fromLTRB(24.0, 8.0, 24.0, 24.0),
       content: Column(

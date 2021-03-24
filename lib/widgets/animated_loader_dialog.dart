@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-
+import 'package:breez/theme_data.dart' as theme;
 import 'loading_animated_text.dart';
 
 AlertDialog createAnimatedLoaderDialog(BuildContext context, String text,
@@ -16,7 +16,7 @@ AlertDialog createAnimatedLoaderDialog(BuildContext context, String text,
           textAlign: TextAlign.center,
         ),
         Image.asset(
-          Theme.of(context).primaryColor == Color.fromRGBO(255, 255, 255, 1.0)
+          theme.themeId == "BLUE"
               ? 'src/images/breez_loader_blue.gif'
               : 'src/images/breez_loader_dark.gif',
           height: 64.0,
