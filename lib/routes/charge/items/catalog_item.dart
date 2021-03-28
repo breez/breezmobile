@@ -7,7 +7,6 @@ import 'package:breez/theme_data.dart';
 import 'package:breez/widgets/flushbar.dart';
 import 'package:breez/widgets/route.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_slidable/flutter_slidable.dart';
 
 import 'item_avatar.dart';
 import 'item_page.dart';
@@ -19,6 +18,7 @@ class CatalogItem extends StatelessWidget {
   final bool _lastItem;
   final Function(Item item, GlobalKey avatarKey) _addItem;
   final GlobalKey _avatarKey = GlobalKey();
+  final GlobalKey _menuKey = new GlobalKey();
 
   CatalogItem(this.accountModel, this.posCatalogBloc, this._itemInfo,
       this._lastItem, this._addItem);
@@ -26,34 +26,51 @@ class CatalogItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Stack(alignment: Alignment.bottomCenter, children: <Widget>[
-      Slidable(
-        actionPane: SlidableDrawerActionPane(),
-        actionExtentRatio: 0.20,
-        secondaryActions: <Widget>[
-          IconSlideAction(
-            foregroundColor: Colors.white,
-            color: Theme.of(context).primaryColorLight,
-            icon: Icons.edit,
-            onTap: () {
-              Navigator.of(context).push(FadeInRoute(
-                  builder: (_) => ItemPage(posCatalogBloc, item: _itemInfo)));
-            },
-          ),
-          IconSlideAction(
-            foregroundColor: Colors.white,
-            color: Theme.of(context).primaryColorLight,
-            icon: Icons.delete_forever,
-            onTap: () {
-              DeleteItem deleteItem = DeleteItem(_itemInfo.id);
-              posCatalogBloc.actionsSink.add(deleteItem);
-              deleteItem.future.catchError((err) => showFlushbar(context,
-                  message: "Failed to delete ${_itemInfo.name}"));
-            },
-          ),
-        ],
-        key: Key(_itemInfo.id.toString()),
-        child: Padding(
-          padding: const EdgeInsets.fromLTRB(0, 8, 8, 8),
+      Padding(
+        padding: const EdgeInsets.fromLTRB(0, 8, 8, 8),
+        child: PopupMenuButton(
+          key: _menuKey,
+          color: Theme.of(context).highlightColor,
+          offset: Offset(12, 24),
+          itemBuilder: (_) => <PopupMenuItem>[
+            PopupMenuItem(
+              child: TextButton.icon(
+                label: Text(
+                  "Edit Item",
+                  style: Theme.of(context).textTheme.subtitle1,
+                ),
+                icon: Icon(
+                  Icons.edit_rounded,
+                  color: Colors.white,
+                ),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                  Navigator.of(context).push(FadeInRoute(
+                      builder: (_) =>
+                          ItemPage(posCatalogBloc, item: _itemInfo)));
+                },
+              ),
+            ),
+            PopupMenuItem(
+              child: TextButton.icon(
+                label: Text(
+                  "Delete Item",
+                  style: Theme.of(context).textTheme.subtitle1,
+                ),
+                icon: Icon(
+                  Icons.delete_forever_rounded,
+                  color: Colors.white,
+                ),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                  DeleteItem deleteItem = DeleteItem(_itemInfo.id);
+                  posCatalogBloc.actionsSink.add(deleteItem);
+                  deleteItem.future.catchError((err) => showFlushbar(context,
+                      message: "Failed to delete ${_itemInfo.name}"));
+                },
+              ),
+            ),
+          ],
           child: ListTile(
             leading: ItemAvatar(_itemInfo.imageURL,
                 itemName: _itemInfo.name, key: _avatarKey),
@@ -91,6 +108,10 @@ class CatalogItem extends StatelessWidget {
             ),
             onTap: () {
               _addItem(_itemInfo, _avatarKey);
+            },
+            onLongPress: () {
+              dynamic popUpMenuState = _menuKey.currentState;
+              popUpMenuState.showButtonMenu();
             },
           ),
         ),
