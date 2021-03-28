@@ -1,5 +1,6 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:bip39/bip39.dart' as bip39;
+import 'package:breez/routes/podcast/theme.dart';
 import 'package:breez/theme_data.dart' as theme;
 import 'package:breez/utils/min_font_size.dart';
 import 'package:breez/widgets/back_button.dart' as backBtn;
@@ -118,10 +119,14 @@ class BackupPhraseGeneratorConfirmationPageState
                 onPressed: () {
                   String mnemonics = bip39.generateMnemonic(strength: 256);
                   Navigator.pushReplacement(
-                      context,
-                      FadeInRoute(
-                          builder: (BuildContext context) =>
-                              GenerateBackupPhrasePage(mnemonics)));
+                    context,
+                    FadeInRoute(
+                      builder: (BuildContext context) => withBreezTheme(
+                        context,
+                        GenerateBackupPhrasePage(mnemonics),
+                      ),
+                    ),
+                  );
                 },
               )
             : Container()

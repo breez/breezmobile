@@ -1,30 +1,63 @@
 import 'dart:convert';
-import 'dart:io' show Platform;
 
+import 'package:anytime/bloc/podcast/audio_bloc.dart';
+import 'package:anytime/bloc/settings/settings_bloc.dart';
+import 'package:anytime/repository/sembast/sembast_repository.dart';
+import 'package:anytime/ui/podcast/now_playing.dart';
+import 'package:anytime/ui/widgets/placeholder_builder.dart';
+import 'package:provider/provider.dart';
+import 'package:anytime/services/settings/mobile_settings_service.dart';
 import 'package:breez/bloc/app_blocs.dart';
 import 'package:breez/bloc/backup/backup_bloc.dart';
 import 'package:breez/bloc/blocs_provider.dart';
+import 'package:breez/bloc/podcast_payments/podcast_payments_bloc.dart';
 import 'package:breez/logger.dart';
+import 'package:breez/routes/podcast/podcast_page.dart';
 import 'package:breez/user_app.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:intl/date_symbol_data_local.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import 'bloc/account/account_bloc.dart';
 import 'bloc/backup/backup_model.dart';
 import 'bloc/user_profile/user_profile_bloc.dart';
 
-void main() {
+void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   BreezLogger();
   SystemChrome.setPreferredOrientations(
       [DeviceOrientation.portraitUp, DeviceOrientation.portraitDown]);
-  initializeDateFormatting(Platform.localeName, null);
+  //initializeDateFormatting(Platform.localeName, null);
+  var mobileService = await MobileSettingsService.instance();
+  mobileService.autoOpenNowPlaying = true;
+  mobileService.showFunding = false;
+  mobileService.useMaterialDesign = true;
+  final repository = SembastRepository();
   SharedPreferences.getInstance().then((preferences) async {
     await runMigration(preferences);
     AppBlocs blocs = AppBlocs();
-    runApp(AppBlocsProvider(child: UserApp(), appBlocs: blocs));
+    runApp(AppBlocsProvider(
+        child: AnytimePodcastApp(
+            mobileService,
+            repository,
+            Provider<PodcastPaymentsBloc>(
+              lazy: false,
+              create: (ctx) => PodcastPaymentsBloc(
+                  blocs.userProfileBloc,
+                  blocs.accountBloc,
+                  Provider.of<SettingsBloc>(ctx, listen: false),
+                  Provider.of<AudioBloc>(ctx, listen: false),
+                  repository),
+              dispose: (_, value) => value.dispose(),
+              child: PlayerControlsBuilder(
+                  builder: playerBuilder,
+                  child: PlaceholderBuilder(
+                      builder: placeholderBuilder,
+                      errorBuilder: errorPlaceholderBuilder,
+                      child: UserApp())),
+            )),
+        appBlocs: blocs));
   });
 }
 

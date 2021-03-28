@@ -69,6 +69,7 @@ fileprivate let calls : Dictionary<String, BindingExecutor> = [
     "fetchReverseSwap": SingleArgBindingExecutor(f: BindingsFetchReverseSwap),
     "setReverseSwapClaimFee": SingleArgBindingExecutor(f: BindingsSetReverseSwapClaimFee),
     "unconfirmedReverseSwapClaimTransaction": EmptyArgsBindingExecutor(f: BindingsUnconfirmedReverseSwapClaimTransaction),
+    "receiverNode": EmptyArgsBindingExecutor(f: BindingsReceiverNode),
     "reverseSwapPayments": EmptyArgsBindingExecutor(f: BindingsReverseSwapPayments),
     "maxReverseSwapAmount": MaxReverseSwapAmountExecutor(),
     "reverseSwapInfo": EmptyArgsBindingExecutor(f: BindingsReverseSwapInfo),

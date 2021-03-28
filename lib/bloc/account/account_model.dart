@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:ffi';
 import 'dart:math';
 
@@ -409,7 +410,93 @@ class PaymentFilterModel {
 
 enum PaymentType { DEPOSIT, WITHDRAWAL, SENT, RECEIVED, CLOSED_CHANNEL }
 
-class PaymentInfo {
+abstract class PaymentInfo {
+  PaymentType get type;
+  Int64 get amount;
+  Int64 get fee;
+  Int64 get creationTimestamp;
+  String get description;
+  bool get pending;
+  bool get keySend;
+  bool get isTransferRequest;
+  String get imageURL;
+  bool get containsPaymentInfo;
+  Currency get currency;
+  String get title;
+  String get dialogTitle;
+  Int64 get pendingExpirationTimestamp;
+  String get redeemTxID;
+  String get paymentHash;
+  String get preimage;
+  String get destination;
+  bool get fullPending;
+  String get paymentGroup;
+  String get paymentGroupName;
+  PaymentInfo copyWith(AccountModel account);
+}
+
+class StreamedPaymentInfo implements PaymentInfo {
+  final AccountModel account;
+  final List<PaymentInfo> singlePayments;
+
+  StreamedPaymentInfo(this.singlePayments, this.account);
+
+  PaymentType get type => PaymentType.SENT;
+  Int64 get amount => singlePayments.fold(Int64(0), (sum, p) => sum + p.amount);
+  Int64 get fee => singlePayments.fold(Int64(0), (sum, p) => sum + p.fee);
+  Int64 get creationTimestamp => singlePayments.fold(
+      Int64(0), (t, p) => Int64(max(t.toInt(), p.creationTimestamp.toInt())));
+  String get description {
+    final group = singlePayments
+        .firstWhere((p) => !p.pending, orElse: () => singlePayments[0])
+        .paymentGroup;
+
+    var desc = group;
+    try {
+      final decoded = json.decode(desc);
+      if (decoded["title"] != null) {
+        desc = decoded["title"];
+      }
+    } catch (e) {}
+    return desc;
+  }
+
+  bool get pending => singlePayments.fold(false, (t, p) => t || p.pending);
+  PaymentInfo copyWith(AccountModel account) {
+    var payments = singlePayments.map((e) => e.copyWith(account)).toList();
+    return StreamedPaymentInfo(payments, account);
+  }
+
+  Currency get currency => account.currency;
+  bool get isTransferRequest => false;
+  bool get keySend => true;
+  String get imageURL => null;
+  bool get containsPaymentInfo => false;
+  String get dialogTitle => paymentGroupName;
+  String get title => singlePayments
+      .firstWhere((p) => !p.pending, orElse: () => singlePayments[0])
+      .paymentGroupName;
+  Int64 get pendingExpirationTimestamp {
+    var pendingExpiration = 0;
+    singlePayments.forEach((p) {
+      if (p.pendingExpirationTimestamp.toInt() < pendingExpiration) {
+        pendingExpiration = p.pendingExpirationTimestamp.toInt();
+      }
+    });
+    return Int64(pendingExpiration);
+  }
+
+  bool get fullPending => singlePayments.any((p) => p.fullPending);
+  String get paymentGroup => singlePayments[0].paymentGroup;
+  String get paymentGroupName => singlePayments[0].paymentGroupName;
+
+  String get redeemTxID => "";
+  String get paymentHash => "";
+  String get preimage => "";
+  String get destination => "";
+}
+
+class SinglePaymentInfo implements PaymentInfo {
   final Payment _paymentResponse;
   final AccountModel _account;
 
@@ -429,6 +516,10 @@ class PaymentInfo {
   String get redeemTxID => _paymentResponse.redeemTxID;
   String get paymentHash => _paymentResponse.paymentHash;
   String get preimage => _paymentResponse.preimage;
+  String get paymentGroup => _paymentResponse.groupKey?.isNotEmpty == true
+      ? _paymentResponse.groupKey
+      : paymentHash;
+  String get paymentGroupName => _paymentResponse.groupName;
   bool get pending =>
       _paymentResponse.pendingExpirationHeight > 0 ||
       _paymentResponse.isChannelPending;
@@ -508,7 +599,7 @@ class PaymentInfo {
       return "src/icon/vendors/fastbitcoins_logo.png";
     }
     if (_paymentResponse.invoiceMemo.description.startsWith("LN.pizza")) {
-      return "src/icon/vendors/lnpizza_logo.png";
+      return "src/icon/vendors/ln.pizza_logo.png";
     }
 
     String url = (type == PaymentType.SENT
@@ -556,10 +647,10 @@ class PaymentInfo {
 
   Currency get currency => _account.currency;
 
-  PaymentInfo(this._paymentResponse, this._account);
+  SinglePaymentInfo(this._paymentResponse, this._account);
 
-  PaymentInfo copyWith(AccountModel account) {
-    return PaymentInfo(this._paymentResponse, account);
+  SinglePaymentInfo copyWith(AccountModel account) {
+    return SinglePaymentInfo(this._paymentResponse, account);
   }
 }
 

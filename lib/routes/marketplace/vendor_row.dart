@@ -66,7 +66,7 @@ class VendorRow extends StatelessWidget {
               border: Border.all(
                   color: _vendorBgColor == Colors.white
                       ? Theme.of(context).highlightColor
-                      : Colors.white,
+                      : Colors.transparent,
                   style: BorderStyle.solid,
                   width: 1.0),
               borderRadius: BorderRadius.circular(14.0)),

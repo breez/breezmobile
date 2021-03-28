@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
+import 'dart:developer';
 import 'dart:io';
 
 import 'package:breez/bloc/account/account_actions.dart';
@@ -19,6 +20,7 @@ import 'package:breez/services/device.dart';
 import 'package:breez/services/injector.dart';
 import 'package:breez/services/notifications.dart';
 import 'package:breez/utils/retry.dart';
+import 'package:collection/collection.dart';
 import 'package:connectivity/connectivity.dart';
 import 'package:rxdart/rxdart.dart';
 
@@ -201,7 +203,11 @@ class AccountBloc {
       if (user.token != null) {
         var acc =
             await _accountController.firstWhere((acc) => acc.id?.isNotEmpty);
-        await _breezServer.registerDevice(user.token, acc.id);
+        try {
+          await _breezServer.registerDevice(user.token, acc.id);
+        } catch (e) {
+          log.severe("failed to register device ", e);
+        }
       }
     });
   }
@@ -596,7 +602,8 @@ class AccountBloc {
     print("refreshing payments...");
     return _breezLib.getPayments().then((payments) {
       List<PaymentInfo> _paymentsList = payments.paymentsList
-          .map((payment) => PaymentInfo(payment, _accountController.value))
+          .map(
+              (payment) => SinglePaymentInfo(payment, _accountController.value))
           .toList();
       if (_paymentsList.length > 0) {
         _firstDate = DateTime.fromMillisecondsSinceEpoch(
@@ -618,6 +625,22 @@ class AccountBloc {
         .catchError(_paymentsController.addError);
   }
 
+  List<PaymentInfo> _groupPayments(List<PaymentInfo> paymentsList) {
+    var groupedPayments = groupBy<PaymentInfo, String>(paymentsList, (p) {
+      return p.paymentGroup;
+    });
+
+    var payments = List<PaymentInfo>();
+    groupedPayments.forEach((key, singles) {
+      if (singles[0].paymentHash == key) {
+        payments.add(singles[0]);
+      } else {
+        payments.add(StreamedPaymentInfo(singles, _accountController.value));
+      }
+    });
+    return payments;
+  }
+
   Future _refreshLSPActivity() {
     _breezLib.lspActivity().then((lspActivity) {
       print("--- LSPACtivity --- ");
@@ -627,7 +650,7 @@ class AccountBloc {
   }
 
   _filterPayments(List<PaymentInfo> paymentsList) {
-    Set<PaymentInfo> paymentsSet = paymentsList
+    Set<PaymentInfo> paymentsSet = _groupPayments(paymentsList)
         .where(
             (p) => _paymentFilterController.value.paymentType.contains(p.type))
         .toSet();

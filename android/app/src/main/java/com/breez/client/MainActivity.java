@@ -2,6 +2,8 @@ package com.breez.client;
 
 import com.breez.client.plugins.breez.breezlib.Breez;
 import com.breez.client.plugins.breez.*;
+import com.ryanheise.audioservice.AudioService;
+
 import android.os.Bundle;
 
 import android.content.Intent;
@@ -32,6 +34,13 @@ public class MainActivity extends FlutterFragmentActivity {
         GeneratedPluginRegistrant.registerWith(flutterEngine);
     }
 
+    @Override
+    protected void onDestroy() {
+        Log.d(TAG, "Breez activity destroyed...");
+        super.onDestroy();
+        stopService(new Intent(this, AudioService.class));
+        System.exit(0);
+    }
 
     void registerBreezPlugins(@NonNull FlutterEngine flutterEngine) {
         flutterEngine.getPlugins().add(new NfcHandler());

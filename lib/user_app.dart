@@ -1,3 +1,4 @@
+import 'package:anytime/l10n/L.dart';
 import 'package:breez/bloc/account/account_bloc.dart';
 import 'package:breez/bloc/account/add_funds_bloc.dart';
 import 'package:breez/bloc/backup/backup_bloc.dart';
@@ -9,12 +10,14 @@ import 'package:breez/bloc/user_profile/breez_user_model.dart';
 import 'package:breez/bloc/user_profile/user_actions.dart';
 import 'package:breez/bloc/user_profile/user_profile_bloc.dart';
 import 'package:breez/routes/fiat_currencies/fiat_currency_settings.dart';
+import 'package:breez/routes/podcast/theme.dart';
 import 'package:breez/routes/qr_scan.dart';
 import 'package:breez/widgets/route.dart';
 import 'package:breez/widgets/static_loader.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 
 import 'bloc/lnurl/lnurl_bloc.dart';
 import 'bloc/lsp/lsp_bloc.dart';
@@ -42,6 +45,13 @@ import 'routes/withdraw_funds/unexpected_funds.dart';
 import 'theme_data.dart' as theme;
 
 final routeObserver = RouteObserver();
+
+Widget _withTheme(BreezUserModel user, Widget child) {
+  if (user.appMode == AppMode.podcasts) {
+    return withPodcastTheme(user, child);
+  }
+  return child;
+}
 
 class UserApp extends StatelessWidget {
   GlobalKey<NavigatorState> _navigatorKey = GlobalKey<NavigatorState>();
@@ -77,6 +87,15 @@ class UserApp extends StatelessWidget {
                     navigatorKey: _navigatorKey,
                     title: 'Breez',
                     theme: theme.themeMap[user.themeId],
+                    localizationsDelegates: [
+                      const LocalisationsDelegate(),
+                      GlobalMaterialLocalizations.delegate,
+                      GlobalWidgetsLocalizations.delegate,
+                    ],
+                    supportedLocales: [
+                      const Locale('en', ''),
+                      const Locale('de', ''),
+                    ],
                     builder: (BuildContext context, Widget child) {
                       final MediaQueryData data = MediaQuery.of(context);
                       return MediaQuery(
@@ -85,7 +104,7 @@ class UserApp extends StatelessWidget {
                                 ? 1.3
                                 : data.textScaleFactor,
                           ),
-                          child: child);
+                          child: _withTheme(user, child));
                     },
                     initialRoute: user.registrationRequested
                         ? (user.locked ? '/lockscreen' : "/")
@@ -106,7 +125,9 @@ class UserApp extends StatelessWidget {
                           );
                         case '/lockscreen':
                           return NoTransitionRoute(
-                              builder: (ctx) => AppLockScreen(
+                              builder: (ctx) => withBreezTheme(
+                                  ctx,
+                                  AppLockScreen(
                                     (pinEntered) {
                                       var validateAction =
                                           ValidatePinCode(pinEntered);
@@ -131,7 +152,7 @@ class UserApp extends StatelessWidget {
                                           }
                                         : null,
                                     userProfileBloc: userProfileBloc,
-                                  ),
+                                  )),
                               settings: settings);
                         case '/':
                           return FadeInRoute(
@@ -174,8 +195,10 @@ class UserApp extends StatelessWidget {
                                       );
                                     case '/deposit_btc_address':
                                       return FadeInRoute(
-                                        builder: (_) => DepositToBTCAddressPage(
-                                            accountBloc),
+                                        builder: (_) => withBreezTheme(
+                                          context,
+                                          DepositToBTCAddressPage(accountBloc),
+                                        ),
                                         settings: settings,
                                       );
                                     case '/buy_bitcoin':
@@ -208,29 +231,44 @@ class UserApp extends StatelessWidget {
                                       );
                                     case '/create_invoice':
                                       return FadeInRoute(
-                                        builder: (_) => CreateInvoicePage(),
+                                        builder: (_) => withBreezTheme(
+                                          context,
+                                          CreateInvoicePage(),
+                                        ),
                                         settings: settings,
                                       );
                                     case '/fiat_currency':
                                       return FadeInRoute(
-                                        builder: (_) => FiatCurrencySettings(
-                                            accountBloc, userProfileBloc),
+                                        builder: (_) => withBreezTheme(
+                                          context,
+                                          FiatCurrencySettings(
+                                              accountBloc, userProfileBloc),
+                                        ),
                                         settings: settings,
                                       );
                                     case '/network':
                                       return FadeInRoute(
-                                        builder: (_) => NetworkPage(),
+                                        builder: (_) => withBreezTheme(
+                                          context,
+                                          NetworkPage(),
+                                        ),
                                         settings: settings,
                                       );
                                     case '/security':
                                       return FadeInRoute(
-                                        builder: (_) => SecurityPage(
-                                            userProfileBloc, backupBloc),
+                                        builder: (_) => withBreezTheme(
+                                          context,
+                                          SecurityPage(
+                                              userProfileBloc, backupBloc),
+                                        ),
                                         settings: settings,
                                       );
                                     case '/developers':
                                       return FadeInRoute(
-                                        builder: (_) => DevView(),
+                                        builder: (_) => withBreezTheme(
+                                          context,
+                                          DevView(),
+                                        ),
                                         settings: settings,
                                       );
                                     case '/connect_to_pay':

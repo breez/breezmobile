@@ -1,3 +1,4 @@
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:breez/bloc/account/account_actions.dart';
 import 'package:breez/bloc/account/account_bloc.dart';
 import 'package:breez/bloc/account/account_model.dart';
@@ -31,10 +32,11 @@ class SwapRefundDialogState extends State<SwapRefundDialog> {
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
-      titlePadding: EdgeInsets.fromLTRB(24.0, 22.0, 0.0, 16.0),
-      title: Text(
+      titlePadding: EdgeInsets.fromLTRB(24.0, 22.0, 24.0, 16.0),
+      title: AutoSizeText(
         "On-chain Transaction",
         style: Theme.of(context).dialogTheme.titleTextStyle,
+        maxLines: 1,
       ),
       contentPadding: EdgeInsets.fromLTRB(24.0, 8.0, 24.0, 24.0),
       content: FutureBuilder(

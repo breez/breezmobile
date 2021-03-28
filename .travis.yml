@@ -1,9 +1,10 @@
 os: osx
 language: objective-c
-osx_image: xcode11.3
+osx_image: xcode12
 addons:
   ssh_known_hosts: packages.breez.technology
 before_script:
+- gem install cocoapods
 - eval "$(ssh-agent -s)"
 - chmod 600 ./travis/build_server_key
 - ssh-add ./travis/build_server_key
@@ -32,7 +33,7 @@ before_script:
 - popd
 - brew install ideviceinstaller ios-deploy
 - pod setup
-- git clone https://github.com/flutter/flutter.git -b 1.24.0-10.2.pre
+- git clone https://github.com/flutter/flutter.git -b stable
 script:
 - mkdir -p $TRAVIS_BUILD_DIR/conf
 - cp -r $GOPATH/src/github.com/breez/breez/build/ios/bindings.framework $TRAVIS_BUILD_DIR/ios/bindings.framework
@@ -41,7 +42,9 @@ script:
 - cp -r $TRAVIS_BUILD_DIR/temp_config/conf $TRAVIS_BUILD_DIR/conf
 - sftp builderfiles@packages.breez.technology:config/conf/GoogleService-Info.plist
   $TRAVIS_BUILD_DIR/ios/Runner/GoogleService-Info.plist
-- "./flutter/bin/flutter build ios --no-codesign --no-tree-shake-icons"
+- ./flutter/bin/flutter upgrade
+- ./flutter/bin/flutter clean
+- ./flutter/bin/flutter build -v ios --no-codesign --no-tree-shake-icons
 after_success:
 - travis_wait ./travis/sign.sh
 cache:

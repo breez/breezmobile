@@ -8,7 +8,6 @@ class CustomData {
   Color pendingTextColor;
   Color dashboardBgColor;
   Color paymentListBgColor;
-  Color paymentListAlternateBgColor;
   Color paymentListDividerColor;
   Color navigationDrawerHeaderBgColor;
   Color navigationDrawerBgColor;
@@ -19,7 +18,6 @@ class CustomData {
       this.pendingTextColor,
       this.dashboardBgColor,
       this.paymentListBgColor,
-      this.paymentListAlternateBgColor,
       this.paymentListDividerColor,
       this.navigationDrawerHeaderBgColor,
       this.navigationDrawerBgColor});
@@ -31,8 +29,7 @@ final CustomData blueThemeCustomData = CustomData(
   loaderAssetPath: 'src/images/breez_loader_blue.gif',
   dashboardBgColor: Colors.white,
   pendingTextColor: Color(0xff4D88EC),
-  paymentListBgColor: Color.fromRGBO(249, 249, 249, 1),
-  paymentListAlternateBgColor: Color.fromRGBO(253, 253, 253, 1),
+  paymentListBgColor: Color(0xFFf9f9f9),
   paymentListDividerColor: Color.fromRGBO(0, 0, 0, 0.12),
   navigationDrawerBgColor: BreezColors.blue[500],
   navigationDrawerHeaderBgColor: Color.fromRGBO(0, 103, 255, 1),
@@ -42,8 +39,7 @@ final CustomData darkThemeCustomData = CustomData(
   loaderAssetPath: 'src/images/breez_loader_dark.gif',
   pendingTextColor: Color(0xFF0085fb),
   dashboardBgColor: Color(0xFF0D1F33),
-  paymentListBgColor: Color.fromRGBO(21, 42, 61, 1),
-  paymentListAlternateBgColor: Color.fromRGBO(19, 37, 54, 1),
+  paymentListBgColor: Color(0xFF152a3d),
   paymentListDividerColor: Color.fromRGBO(255, 255, 255, 0.12),
   navigationDrawerBgColor: Color(0xFF152a3d),
   navigationDrawerHeaderBgColor: Color.fromRGBO(13, 32, 50, 1),
@@ -63,6 +59,7 @@ final ThemeData blueTheme = ThemeData(
   accentColor: Colors.white,
   canvasColor: BreezColors.blue[500],
   backgroundColor: Colors.white,
+  bottomAppBarTheme: BottomAppBarTheme(elevation: 0),
   appBarTheme: AppBarTheme(
     textTheme: TextTheme(
       headline6:
@@ -147,28 +144,28 @@ final ThemeData blueTheme = ThemeData(
     headline4: TextStyle(
         color: Color.fromRGBO(0, 133, 251, 1.0),
         fontSize: 30.0,
-        fontWeight: FontWeight.w400,
+        fontWeight: FontWeight.w600,
         height: 1.52),
     subtitle1: TextStyle(
         color: Color.fromRGBO(0, 133, 251, 1.0),
-        fontSize: 13.5,
-        fontWeight: FontWeight.w400,
+        fontSize: 15,
+        fontWeight: FontWeight.w500,
         height: 1.24,
         letterSpacing: 0.2),
     headline6: TextStyle(
         color: Colors.black,
         fontSize: 13.5,
         fontWeight: FontWeight.w500,
-        height: 1.28,
+        height: 1.2,
         letterSpacing: 0.5),
     subtitle2: TextStyle(
         color: Colors.black,
-        fontSize: 12.25,
-        fontWeight: FontWeight.w400,
+        fontSize: 13.5,
+        fontWeight: FontWeight.w500,
         height: 1.2,
         letterSpacing: 0.25),
     caption: TextStyle(
-        color: Colors.black.withOpacity(0.7),
+        color: Color(0xb3303234),
         fontSize: 10.5,
         fontWeight: FontWeight.w400,
         height: 1.16,
@@ -187,6 +184,7 @@ final ThemeData darkTheme = ThemeData(
   accentColor: Colors.white,
   canvasColor: Color(0xFF0c2031),
   backgroundColor: Color(0xFF152a3d),
+  bottomAppBarTheme: BottomAppBarTheme(elevation: 0),
   appBarTheme: AppBarTheme(
     textTheme: TextTheme(
       headline6:
@@ -212,7 +210,7 @@ final ThemeData darkTheme = ThemeData(
   dividerColor: Color(0x337aa5eb),
   buttonColor: Color(0xFF4B89EB),
   cardColor: Color(0xFF121212),
-  highlightColor: Color(0xFF4B88EB),
+  highlightColor: Color(0xFF81acf1),
   textTheme: TextTheme(
       subtitle2:
           TextStyle(color: Colors.white, fontSize: 14.3, letterSpacing: 0.2),
@@ -268,12 +266,12 @@ final ThemeData darkTheme = ThemeData(
       headline4: TextStyle(
           color: Colors.white,
           fontSize: 30.0,
-          fontWeight: FontWeight.w400,
-          height: 1.52),
+          fontWeight: FontWeight.w600,
+          height: 1.56),
       subtitle1: TextStyle(
           color: Colors.white,
-          fontSize: 13.5,
-          fontWeight: FontWeight.w400,
+          fontSize: 15,
+          fontWeight: FontWeight.w500,
           height: 1.24,
           letterSpacing: 0.2),
       headline6: TextStyle(

@@ -1,3 +1,4 @@
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:breez/bloc/backup/backup_actions.dart';
 import 'package:breez/bloc/backup/backup_bloc.dart';
 import 'package:breez/bloc/backup/backup_model.dart';
@@ -29,10 +30,15 @@ class BackupProviderSelectionDialogState
 
   Widget createRestoreDialog() {
     return AlertDialog(
-      titlePadding: EdgeInsets.fromLTRB(24.0, 22.0, 0.0, 16.0),
-      title: Text(
-        "Backup Data Storage",
-        style: Theme.of(context).dialogTheme.titleTextStyle,
+      titlePadding: EdgeInsets.fromLTRB(24.0, 22.0, 24.0, 16.0),
+      title: Container(
+        width: MediaQuery.of(context).size.width,
+        height: 30,
+        child: AutoSizeText(
+          "Backup Data Storage",
+          style: Theme.of(context).dialogTheme.titleTextStyle,
+          maxLines: 1,
+        ),
       ),
       contentPadding: EdgeInsets.fromLTRB(24.0, 8.0, 24.0, 24.0),
       content: Column(

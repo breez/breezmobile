@@ -2,27 +2,29 @@ name: breez
 description: A new Flutter project.
 
 dependencies:
-  flutter:
+  flutter:    
     sdk: flutter
-  grpc: ^1.0.1
-  protobuf: ^1.0.1
-  flutter_slidable: ^0.5.4
+  grpc: ^2.9.0
+  protobuf: ^1.1.0
   path_provider: any
   firebase_core: 0.4.0+3
   firebase_database: ^3.0.0
   firebase_messaging: ^5.0.1+1
   firebase_dynamic_links: ^0.5.0
   shared_preferences: ^0.5.1+2
+  confetti: ^0.5.4+1
+  anytime:
+    git:
+      url: https://github.com/breez/anytime_podcast_player.git
+      ref: 3fbf143370f9785825fddfae58091ffb209e22e0
   share_extend:
     git:
       url: https://github.com/breez/ShareExtend.git
   qr_flutter: ^2.0.0
+  optimized_cached_image: ^1.0.0
   hex: "^0.1.1"
   rxdart: "^0.24.1"
-  qr_code_tools: "^0.0.6"
-  flutter_advanced_networkimage:
-    git:
-      url: https://github.com/mchome/flutter_advanced_networkimage
+  qr_code_tools: "^0.0.6"  
   intl: ^0.16.1
   flushbar: ^1.10.4
   qr_code_scanner: ^0.0.13
@@ -32,8 +34,7 @@ dependencies:
   uuid: ^2.2.2
   ini: ^2.0.1
   connectivity: ^2.0.0
-  logging: ^0.11.3+2
-  flutter_svg: ^0.18.0
+  logging: ^0.11.3+2  
   json_annotation: any
   http: ^0.12.0+1
   url_launcher: ^5.0.1
@@ -48,13 +49,13 @@ dependencies:
 
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
-  cupertino_icons: ^1.0.0
+  
   image_cropper: ^1.3.0
   uni_links: ^0.2.0
   nfc_in_flutter: ^2.0.4
   keyboard_actions: ^2.1.1
   flutter_secure_storage: ^3.2.1+1
-  auto_size_text: 2.0.2+1
+  auto_size_text: ^2.1.0
   app_settings: ^1.0.6+2
   bip39: ^1.0.3
   crypto: ^2.1.2
@@ -62,18 +63,32 @@ dependencies:
     git:
       url: https://github.com/breez/flutter_typeahead.git
   csv: ^4.0.3
-  flutter_downloader:
-    git:
-      url: https://github.com/breez/flutter_downloader.git
+
   local_auth:
     git:
       url: https://github.com/breez/local_auth.git
   drag_and_drop_lists: ^0.2.7
   printing: ^3.7.0
   webview_flutter: ^1.0.7
+  flutter_localizations:
+    sdk: flutter
+
+dependency_overrides:
+  flutter_svg: ^0.19.3
+  flutter_downloader:
+    git:
+      url: https://github.com/breez/flutter_downloader.git
+  cupertino_icons: ^1.0.0
+  connectivity: ^2.0.0
+  podcast_search:
+    git:
+      url: https://github.com/breez/podcast_search.git
+      ref: 90da5fe684d5145e352fb558b90821d1c376ff7d
+  intl: ^0.17.0-nullsafety.2
+  tutorial_coach_mark: ^0.6.0+1
 
 dev_dependencies:
-  mockito: "^3.0.0"
+  mockito: "4.1.3"
   protoc_plugin: ^19.0.1
   build_runner: ^1.0.0
   json_serializable: any
@@ -102,6 +117,8 @@ flutter:
     - src/animations/welcome/
     - src/scripts/
     - src/pos-icons/
+    - assets/images/
+    - assets/icons/
 
   # The following line ensures that the Material Icons font is
   # included with your application, so that you can use the icons in

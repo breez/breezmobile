@@ -3,7 +3,9 @@ import 'dart:ffi';
 import 'dart:io';
 import 'dart:math';
 import 'package:breez/bloc/blocs_provider.dart';
+import 'package:breez/bloc/user_profile/currency.dart';
 import 'package:breez/widgets/loader.dart';
+import 'package:collection/collection.dart';
 import 'package:fixnum/fixnum.dart';
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:breez/bloc/account/account_actions.dart';
@@ -244,24 +246,7 @@ Future<Null> showPaymentDetailsDialog(
                     ],
                   ),
                 ),
-          paymentInfo.preimage == null || paymentInfo.preimage.isEmpty
-              ? Container()
-              : ShareablePaymentRow(
-                  title: "Payment Preimage", sharedValue: paymentInfo.preimage),
-          paymentInfo.destination == null || paymentInfo.destination.isEmpty
-              ? Container()
-              : ShareablePaymentRow(
-                  title: "Node ID", sharedValue: paymentInfo.destination),
-          paymentInfo.paymentHash == null || paymentInfo.paymentHash.isEmpty
-              ? Container()
-              : ShareablePaymentRow(
-                  title: "Transaction Hash",
-                  sharedValue: paymentInfo.paymentHash),
-          paymentInfo.redeemTxID == null || paymentInfo.redeemTxID.isEmpty
-              ? Container()
-              : ShareablePaymentRow(
-                  title: "On-chain Transaction",
-                  sharedValue: paymentInfo.redeemTxID),
+          ..._getPaymentInfoDetails(paymentInfo),
         ],
       ),
     ),
@@ -274,6 +259,44 @@ Future<Null> showPaymentDetailsDialog(
     context: context,
     builder: (_) => _paymentDetailsDialog,
   );
+}
+
+List<Widget> _getPaymentInfoDetails(PaymentInfo paymentInfo) {
+  if (paymentInfo is StreamedPaymentInfo) {
+    return _getStreamedPaymentInfoDetails(paymentInfo);
+  }
+  return _getSinglePaymentInfoDetails(paymentInfo);
+}
+
+List<Widget> _getStreamedPaymentInfoDetails(StreamedPaymentInfo paymentInfo) {
+  return groupBy<PaymentInfo, String>(
+      paymentInfo.singlePayments, (p) => p.title).entries.map((ent) {
+    String title = ent.key;
+    Int64 amount = ent.value.fold(
+        Int64(0), (previousValue, element) => element.amount + previousValue);
+    return _Destination(title, amount, ent.value[0].currency);
+  }).toList();
+}
+
+List<Widget> _getSinglePaymentInfoDetails(PaymentInfo paymentInfo) {
+  return List<Widget>.from({
+    paymentInfo.preimage == null || paymentInfo.preimage.isEmpty
+        ? Container()
+        : ShareablePaymentRow(
+            title: "Payment Preimage", sharedValue: paymentInfo.preimage),
+    paymentInfo.destination == null || paymentInfo.destination.isEmpty
+        ? Container()
+        : ShareablePaymentRow(
+            title: "Node ID", sharedValue: paymentInfo.destination),
+    paymentInfo.paymentHash == null || paymentInfo.paymentHash.isEmpty
+        ? Container()
+        : ShareablePaymentRow(
+            title: "Transaction Hash", sharedValue: paymentInfo.paymentHash),
+    paymentInfo.redeemTxID == null || paymentInfo.redeemTxID.isEmpty
+        ? Container()
+        : ShareablePaymentRow(
+            title: "On-chain Transaction", sharedValue: paymentInfo.redeemTxID),
+  });
 }
 
 class ShareablePaymentRow extends StatelessWidget {
@@ -379,7 +402,7 @@ class ShareablePaymentRow extends StatelessWidget {
 }*/
 
 class ClosedChannelPaymentDetails extends StatefulWidget {
-  final PaymentInfo closedChannel;
+  final SinglePaymentInfo closedChannel;
   final LSPStatus lsp;
   final AccountBloc accountBloc;
 
@@ -621,5 +644,49 @@ class TxWidget extends StatelessWidget {
             ),
           ),
         ]);
+  }
+}
+
+class _Destination extends StatelessWidget {
+  final String title;
+  final Int64 amount;
+  final Currency currency;
+
+  const _Destination(this.title, this.amount, this.currency);
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      height: 36.0,
+      padding: EdgeInsets.only(left: 16.0, right: 16.0),
+      child: Row(
+        mainAxisSize: MainAxisSize.max,
+        children: <Widget>[
+          Padding(
+            padding: const EdgeInsets.only(right: 8.0),
+            child: AutoSizeText(
+              title,
+              style: Theme.of(context).primaryTextTheme.headline4,
+              textAlign: TextAlign.left,
+              maxLines: 1,
+              group: _labelGroup,
+            ),
+          ),
+          Expanded(
+            child: SingleChildScrollView(
+              scrollDirection: Axis.horizontal,
+              reverse: true,
+              child: AutoSizeText(
+                (amount < 0 ? "-" : "+") + currency.format(amount),
+                style: Theme.of(context).primaryTextTheme.headline3,
+                textAlign: TextAlign.right,
+                maxLines: 1,
+                group: _valueGroup,
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
   }
 }

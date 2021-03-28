@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:io';
 
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:breez/bloc/account/account_bloc.dart';
@@ -11,6 +12,7 @@ import 'package:breez/bloc/lnurl/lnurl_bloc.dart';
 import 'package:breez/bloc/lnurl/lnurl_model.dart';
 import 'package:breez/logger.dart';
 import 'package:breez/routes/charge/succesful_payment.dart';
+import 'package:breez/routes/podcast/theme.dart';
 import 'package:breez/services/background_task.dart';
 import 'package:breez/services/injector.dart';
 import 'package:breez/theme_data.dart' as theme;
@@ -112,7 +114,7 @@ class CreateInvoicePageState extends State<CreateInvoicePage> {
             }
             var account = snapshot.data;
             return Padding(
-              padding: const EdgeInsets.only(top: 24.0),
+              padding: EdgeInsets.only(bottom: (Platform.isIOS && _amountFocusNode.hasFocus) ? 40.0 : 0.0),
               child: SingleButtonBottomBar(
                 stickToBottom: true,
                 text: _withdrawFetchResponse == null ? "CREATE" : "REDEEM",
@@ -345,8 +347,8 @@ class CreateInvoicePageState extends State<CreateInvoicePage> {
     {
       if (result == true) {
         if (currentRoute.isCurrent) {
-          navigator.push(TransparentPageRoute((navigator) {
-            return SuccessfulPaymentRoute();
+          navigator.push(TransparentPageRoute((ctx) {
+            return withBreezTheme(ctx, SuccessfulPaymentRoute());
           }));
         }
       } else {

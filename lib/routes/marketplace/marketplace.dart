@@ -2,7 +2,7 @@ import 'package:breez/bloc/account/account_bloc.dart';
 import 'package:breez/bloc/blocs_provider.dart';
 import 'package:breez/bloc/marketplace/marketplace_bloc.dart';
 import 'package:breez/bloc/marketplace/vendor_model.dart';
-import 'package:breez/widgets/back_button.dart' as backBtn;
+import 'package:breez/theme_data.dart' as theme;
 import 'package:flutter/material.dart';
 
 import 'vendor_row.dart';
@@ -15,7 +15,6 @@ class MarketplacePage extends StatefulWidget {
 }
 
 class MarketplacePageState extends State<MarketplacePage> {
-  final String _title = "Marketplace";
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   AccountBloc _accountBloc;
   MarketplaceBloc _marketplaceBloc;
@@ -50,17 +49,9 @@ class MarketplacePageState extends State<MarketplacePage> {
   Widget _buildScaffold(Widget body) {
     return Scaffold(
       key: _scaffoldKey,
-      appBar: AppBar(
-        iconTheme: Theme.of(context).appBarTheme.iconTheme,
-        textTheme: Theme.of(context).appBarTheme.textTheme,
-        backgroundColor: Theme.of(context).canvasColor,
-        leading: backBtn.BackButton(),
-        title: Text(
-          _title,
-          style: Theme.of(context).appBarTheme.textTheme.headline6,
-        ),
-        elevation: 0.0,
-      ),
+      backgroundColor: theme.themeId == "BLUE"
+          ? Theme.of(context).backgroundColor
+          : Theme.of(context).canvasColor,
       body: body,
     );
   }

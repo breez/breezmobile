@@ -1,8 +1,8 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_advanced_networkimage/provider.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:optimized_cached_image/optimized_cached_image.dart';
 
 class ItemAvatar extends StatelessWidget {
   final String avatarURL;
@@ -44,7 +44,12 @@ class _NetworkImageAvatar extends StatelessWidget {
   Widget build(BuildContext context) {
     return CircleAvatar(
       radius: radius,
-      backgroundImage: AdvancedNetworkImage(avatarURL, useDiskCache: true),
+      child: ClipOval(
+        child: OptimizedCacheImage(
+          imageUrl: avatarURL,
+          useScaleCacheManager: true,
+        ),
+      ),
     );
   }
 }
@@ -164,7 +169,7 @@ class _UnknownAvatar extends StatelessWidget {
               _getFirstTwoLetters(),
               style: TextStyle(
                   fontSize: useDecoration ? 48 : radius,
-                  color: IconTheme.of(context).color.withOpacity(0.88),                  
+                  color: IconTheme.of(context).color.withOpacity(0.88),
                   decoration: TextDecoration.underline,
                   letterSpacing: 0.0,
                   fontFamily: "IBMPlexSans"),

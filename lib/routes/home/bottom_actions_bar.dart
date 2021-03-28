@@ -10,6 +10,7 @@ import 'package:breez/bloc/invoice/invoice_bloc.dart';
 import 'package:breez/bloc/invoice/invoice_model.dart';
 import 'package:breez/bloc/lsp/lsp_bloc.dart';
 import 'package:breez/bloc/lsp/lsp_model.dart';
+import 'package:breez/routes/podcast/theme.dart';
 import 'package:breez/routes/spontaneous_payment/spontaneous_payment_page.dart';
 import 'package:breez/theme_data.dart' as theme;
 import 'package:breez/widgets/enter_payment_info_dialog.dart';
@@ -46,7 +47,7 @@ class BottomActionsBar extends StatelessWidget {
               width: 64,
             ),
             _Action(
-              onPress: () => _showReceiveOptions(context),
+              onPress: () => showReceiveOptions(context, account),
               group: actionsGroup,
               text: "RECEIVE",
               iconAssetPath: "src/icon/receive-action.png",
@@ -185,15 +186,72 @@ class BottomActionsBar extends StatelessWidget {
               });
         });
   }
+}
 
-  Future _showReceiveOptions(BuildContext context) {
-    AddFundsBloc addFundsBloc = BlocProvider.of<AddFundsBloc>(context);
-    LSPBloc lspBloc = AppBlocsProvider.of<LSPBloc>(context);
+class _Action extends StatelessWidget {
+  final String text;
+  final AutoSizeGroup group;
+  final String iconAssetPath;
+  final Function() onPress;
+  final Alignment minimizedAlignment;
 
-    return showModalBottomSheet(
-        context: context,
-        builder: (ctx) {
-          return StreamBuilder<LSPStatus>(
+  const _Action({
+    Key key,
+    this.text,
+    this.group,
+    this.iconAssetPath,
+    this.onPress,
+    this.minimizedAlignment = Alignment.center,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Expanded(
+      child: FlatButton(
+        height: 60,
+        padding: EdgeInsets.zero,
+        onPressed: this.onPress,
+        child: Text(
+          text,
+          textAlign: TextAlign.center,
+          style: theme.bottomAppBarBtnStyle.copyWith(
+              fontSize: 13.5 / MediaQuery.of(context).textScaleFactor),
+          maxLines: 1,
+        ),
+      ),
+    );
+  }
+}
+
+class _ActionImage extends StatelessWidget {
+  final String iconAssetPath;
+  final bool enabled;
+
+  const _ActionImage({Key key, this.iconAssetPath, this.enabled = true})
+      : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Image(
+      image: AssetImage(iconAssetPath),
+      color: enabled ? Colors.white : Theme.of(context).disabledColor,
+      fit: BoxFit.contain,
+      width: 24.0,
+      height: 24.0,
+    );
+  }
+}
+
+Future showReceiveOptions(BuildContext context, AccountModel account) {
+  AddFundsBloc addFundsBloc = BlocProvider.of<AddFundsBloc>(context);
+  LSPBloc lspBloc = AppBlocsProvider.of<LSPBloc>(context);
+
+  return showModalBottomSheet(
+      context: context,
+      builder: (ctx) {
+        return withBreezTheme(
+          context,
+          StreamBuilder<LSPStatus>(
               stream: lspBloc.lspStatusStream,
               builder: (context, lspSnapshot) {
                 return StreamBuilder<List<AddFundVendorModel>>(
@@ -209,7 +267,9 @@ class BottomActionsBar extends StatelessWidget {
                           children: [
                             Divider(
                               height: 0.0,
-                              color: Colors.white.withOpacity(0.2),
+                              color: Theme.of(context)
+                                  .dividerColor
+                                  .withOpacity(0.2),
                               indent: 72.0,
                             ),
                             ListTile(
@@ -276,63 +336,7 @@ class BottomActionsBar extends StatelessWidget {
                         ],
                       );
                     });
-              });
-        });
-  }
-}
-
-class _Action extends StatelessWidget {
-  final String text;
-  final AutoSizeGroup group;
-  final String iconAssetPath;
-  final Function() onPress;
-  final Alignment minimizedAlignment;
-
-  const _Action({
-    Key key,
-    this.text,
-    this.group,
-    this.iconAssetPath,
-    this.onPress,
-    this.minimizedAlignment = Alignment.center,
-  }) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Expanded(
-      child: FlatButton(
-        height: 60,
-        padding: EdgeInsets.zero,
-        onPressed: this.onPress,
-        child: Text(
-          text,
-          textAlign: TextAlign.center,
-          style: theme.bottomAppBarBtnStyle.copyWith(
-              fontSize: 13.5 / MediaQuery.of(context).textScaleFactor),
-          maxLines: 1,
-        ),
-      ),
-    );
-  }
-}
-
-class _ActionImage extends StatelessWidget {
-  final String iconAssetPath;
-  final bool enabled;
-
-  const _ActionImage({Key key, this.iconAssetPath, this.enabled = true})
-      : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Image(
-      image: AssetImage(iconAssetPath),
-      color: enabled
-          ? DefaultTextStyle.of(context).style.color
-          : Theme.of(context).disabledColor,
-      fit: BoxFit.contain,
-      width: 24.0,
-      height: 24.0,
-    );
-  }
+              }),
+        );
+      });
 }

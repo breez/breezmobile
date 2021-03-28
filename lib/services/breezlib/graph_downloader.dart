@@ -1,40 +1,47 @@
 import 'dart:async';
 import 'dart:io';
-import 'dart:isolate';
-import 'dart:ui';
 
 import 'package:breez/logger.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter_downloader/flutter_downloader.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+
+import '../download_manager.dart';
 
 class GraphDownloader {
-
-  ReceivePort _port = ReceivePort();
+  final DownloadTaskManager downloadManager;
+  final Future<SharedPreferences> preferences;
+  final finalTaskStatuses = <DownloadTaskStatus>[
+    DownloadTaskStatus.canceled,
+    DownloadTaskStatus.failed,
+    DownloadTaskStatus.complete,
+    DownloadTaskStatus.undefined
+  ];
   bool handlingFile = false;
   Completer<File> _downloadCompleter;
 
-  Future init() async {
-    WidgetsFlutterBinding.ensureInitialized();
-    await FlutterDownloader.initialize(debug: true);
-    IsolateNameServer.registerPortWithName(
-        _port.sendPort, 'downloader_send_port');
-    _port.listen((dynamic data) async {
-      String id = data[0];
-      DownloadTaskStatus status = data[1];
-      log.info("Graph download completed id=$id status = $status");
+  GraphDownloader(this.downloadManager, this.preferences);
 
-      var tasks = await FlutterDownloader.loadTasks();
-      var currentTask = tasks.firstWhere((t) => t.taskId == id);
-       await _onTaskFinished(currentTask);
+  Future init() async {
+    downloadManager.downloadProgress.listen((event) async {
+      var tasks = await downloadManager.loadTasks();
+      var downloadURL = (await preferences).getString("graph_url");
+      var currentTask = tasks.firstWhere(
+          (t) => t.url == downloadURL && t.taskId == event.id,
+          orElse: () => null);
+      if (currentTask != null &&
+          finalTaskStatuses.contains(currentTask.status)) {
+        await _onTaskFinished(currentTask);
+      }
     });
-    FlutterDownloader.registerCallback(downloadCallback);
   }
 
   Future _onTaskFinished(DownloadTask currentTask) async {
     if (_downloadCompleter != null) {
       if (currentTask.status == DownloadTaskStatus.complete) {
-        _downloadCompleter.complete(File(currentTask.savedDir + Platform.pathSeparator + currentTask.filename));
+        _downloadCompleter.complete(File(currentTask.savedDir +
+            Platform.pathSeparator +
+            currentTask.filename));
       } else {
         _downloadCompleter.completeError("graph sync failed");
       }
@@ -45,8 +52,9 @@ class GraphDownloader {
     if (_downloadCompleter == null) {
       _downloadCompleter = Completer<File>();
     }
+    (await preferences).setString("graph_url", downloadURL);
 
-    var tasks = await FlutterDownloader.loadTasks();
+    var tasks = await downloadManager.loadTasks();
     var runningStatuses = [
       DownloadTaskStatus.running,
       DownloadTaskStatus.enqueued
@@ -56,7 +64,7 @@ class GraphDownloader {
     for (var i = 0; i < tasks.length; ++i) {
       if (tasks[i].url == downloadURL) {
         if (tasks[i].timeCreated < expiredTime) {
-          FlutterDownloader.remove(taskId: tasks[i].taskId);
+          downloadManager.removeTask(tasks[i].taskId);
           continue;
         }
 
@@ -80,47 +88,24 @@ class GraphDownloader {
     var downloadDirPath = appDir.path + Platform.pathSeparator + 'Download';
     var downloadDir = Directory(downloadDirPath);
     downloadDir.createSync(recursive: true);
-    FlutterDownloader.enqueue(
-        url: downloadURL,
-        savedDir: downloadDir.path,
-        fileName: "channel.db",
-        showNotification: false,
-        openFileFromNotification: false);
+    downloadManager.enqueTask(downloadURL, downloadDir.path, "channel.db");
 
     return _downloadCompleter.future;
   }
 
-  Future deleteDownloads() async{
-    var tasks = await FlutterDownloader.loadTasks();
+  Future deleteDownloads() async {
+    var tasks = await downloadManager.loadTasks();
     var finishedStatuses = [
       DownloadTaskStatus.complete,
       DownloadTaskStatus.canceled,
       DownloadTaskStatus.failed
     ];
+    var graphURL = (await preferences).getString("graph_url");
     tasks.forEach((t) async {
-      if (finishedStatuses.contains(t.status)) {
-        await FlutterDownloader.remove(
-            taskId: t.taskId, shouldDeleteContent: true);
+      if (t.url == graphURL && finishedStatuses.contains(t.status)) {
+        await downloadManager.removeTask(t.taskId, shouldDeleteContent: true);
       }
     });
     _downloadCompleter = null;
-  }
-
-  static void downloadCallback(
-      String id, DownloadTaskStatus status, int progress) async {
-    var finalStatuses = [
-      DownloadTaskStatus.complete,
-      DownloadTaskStatus.failed,
-      DownloadTaskStatus.canceled
-    ];
-    if (finalStatuses.contains(status)) {
-      final SendPort send =
-          IsolateNameServer.lookupPortByName('downloader_send_port');
-      if (send != null) {
-        send.send([id, status]);
-        return;
-      }
-      log.info("got downloadCallback and didn't find port for UI thread");
-    }
   }
 }

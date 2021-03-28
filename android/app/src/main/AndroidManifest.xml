@@ -11,6 +11,8 @@
     <uses-permission android:name="android.permission.GET_ACCOUNTS"/>    
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
     <uses-permission android:name="android.permission.USE_BIOMETRIC"/>
+    <uses-permission android:name="android.permission.WAKE_LOCK"/>
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE"/>
 
     <!-- io.flutter.app.FlutterApplication is an android.app.Application that
          calls FlutterMain.startInitialization(this); in its onCreate method.
@@ -23,6 +25,7 @@
         android:name=".BreezApplication"
         android:label="@string/app_name"
         android:icon="@mipmap/ic_launcher"
+        android:usesCleartextTraffic="true"
         android:allowBackup="false">
 
       <meta-data
@@ -31,6 +34,17 @@
         <meta-data android:name="com.google.firebase.messaging.default_notification_icon"
             android:resource="@drawable/breez_notify" />
 
+        <service android:name="com.ryanheise.audioservice.AudioService">
+            <intent-filter>
+                <action android:name="android.media.browse.MediaBrowserService" />
+            </intent-filter>
+        </service>
+
+        <receiver android:name="com.ryanheise.audioservice.MediaButtonReceiver" >
+            <intent-filter>
+                <action android:name="android.intent.action.MEDIA_BUTTON" />
+            </intent-filter>
+        </receiver>
         <provider
             android:name=".LogProvider"
             android:authorities="${applicationId}.log"
