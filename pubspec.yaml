@@ -6,7 +6,6 @@ dependencies:
     sdk: flutter
   grpc: ^2.9.0
   protobuf: ^1.1.0
-  flutter_slidable: ^0.5.4 
   path_provider: any
   firebase_core: 0.4.0+3
   firebase_database: ^3.0.0
