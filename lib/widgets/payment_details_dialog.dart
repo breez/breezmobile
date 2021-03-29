@@ -1,27 +1,27 @@
 import 'dart:convert';
 import 'dart:ffi';
 import 'dart:io';
-import 'dart:math';
-import 'package:breez/bloc/blocs_provider.dart';
-import 'package:breez/bloc/user_profile/currency.dart';
-import 'package:breez/widgets/loader.dart';
-import 'package:collection/collection.dart';
-import 'package:fixnum/fixnum.dart';
+
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:breez/bloc/account/account_actions.dart';
 import 'package:breez/bloc/account/account_bloc.dart';
 import 'package:breez/bloc/account/account_model.dart';
+import 'package:breez/bloc/blocs_provider.dart';
 import 'package:breez/bloc/lsp/lsp_bloc.dart';
 import 'package:breez/bloc/lsp/lsp_model.dart';
+import 'package:breez/bloc/user_profile/currency.dart';
 import 'package:breez/routes/home/payment_item_avatar.dart';
 import 'package:breez/services/breezlib/data/rpc.pb.dart';
 import 'package:breez/services/injector.dart';
 import 'package:breez/theme_data.dart' as theme;
 import 'package:breez/utils/date.dart';
+import 'package:breez/widgets/loader.dart';
+import 'package:collection/collection.dart';
+import 'package:fixnum/fixnum.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:share_extend/share_extend.dart';
 import 'package:http/http.dart' as http;
+import 'package:share_extend/share_extend.dart';
 
 import 'error_dialog.dart';
 import 'flushbar.dart';
@@ -656,37 +656,39 @@ class _Destination extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      height: 36.0,
-      padding: EdgeInsets.only(left: 16.0, right: 16.0),
-      child: Row(
-        mainAxisSize: MainAxisSize.max,
-        children: <Widget>[
-          Padding(
-            padding: const EdgeInsets.only(right: 8.0),
-            child: AutoSizeText(
-              title,
-              style: Theme.of(context).primaryTextTheme.headline4,
-              textAlign: TextAlign.left,
-              maxLines: 1,
-              group: _labelGroup,
-            ),
+    final _expansionTileTheme = Theme.of(context).copyWith(
+        unselectedWidgetColor: Theme.of(context).primaryTextTheme.button.color,
+        accentColor: Theme.of(context).primaryTextTheme.button.color,
+        dividerColor: Theme.of(context).backgroundColor);
+    return Theme(
+      data: _expansionTileTheme,
+      child: ExpansionTile(
+          title: AutoSizeText(
+            title,
+            style: Theme.of(context).primaryTextTheme.headline4,
+            textAlign: TextAlign.left,
+            maxLines: 1,
+            group: _labelGroup,
           ),
-          Expanded(
-            child: SingleChildScrollView(
-              scrollDirection: Axis.horizontal,
-              reverse: true,
-              child: AutoSizeText(
-                (amount < 0 ? "-" : "+") + currency.format(amount),
-                style: Theme.of(context).primaryTextTheme.headline3,
-                textAlign: TextAlign.right,
-                maxLines: 1,
-                group: _valueGroup,
-              ),
-            ),
-          ),
-        ],
-      ),
+          children: [
+            Row(
+              mainAxisSize: MainAxisSize.max,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[
+                Expanded(
+                  child: Padding(
+                      padding: EdgeInsets.only(left: 16.0, right: 16.0),
+                      child: AutoSizeText(
+                        currency.format(amount),
+                        style: Theme.of(context).primaryTextTheme.headline3,
+                        textAlign: TextAlign.right,
+                        maxLines: 1,
+                        group: _valueGroup,
+                      )),
+                ),
+              ],
+            )
+          ]),
     );
   }
 }
