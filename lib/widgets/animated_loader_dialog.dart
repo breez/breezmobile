@@ -1,5 +1,6 @@
-import 'package:flutter/material.dart';
 import 'package:breez/theme_data.dart' as theme;
+import 'package:flutter/material.dart';
+
 import 'loading_animated_text.dart';
 
 AlertDialog createAnimatedLoaderDialog(BuildContext context, String text,
@@ -27,7 +28,7 @@ AlertDialog createAnimatedLoaderDialog(BuildContext context, String text,
           mainAxisSize: MainAxisSize.max,
           children: withOKButton
               ? <Widget>[
-                  FlatButton(
+                  TextButton(
                     child: Text('OK',
                         style: Theme.of(context).primaryTextTheme.button),
                     onPressed: () {

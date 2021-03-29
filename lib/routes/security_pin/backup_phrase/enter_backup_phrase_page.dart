@@ -24,6 +24,7 @@ class EnterBackupPhrasePage extends StatefulWidget {
 class EnterBackupPhrasePageState extends State<EnterBackupPhrasePage> {
   final _formKey = GlobalKey<FormState>();
 
+
   List<FocusNode> focusNodes = List<FocusNode>(24);
   List<TextEditingController> textEditingControllers =
       List<TextEditingController>(24);
@@ -117,7 +118,7 @@ class EnterBackupPhrasePageState extends State<EnterBackupPhrasePage> {
   }
 
   List<Widget> _buildRestoreFormContent(UserProfileBloc userProfileBloc) {
-    List<Widget> restoreFormContent = List();
+    List<Widget> restoreFormContent = [];
     restoreFormContent..add(_buildForm());
     if (_hasError) {
       restoreFormContent

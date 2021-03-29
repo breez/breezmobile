@@ -19,7 +19,7 @@ Flushbar showFlushbar(BuildContext context,
       messageText: messageWidget ??
           Text(message, style: theme.snackBarStyle, textAlign: TextAlign.left),
       backgroundColor: theme.snackBarBackgroundColor,
-      mainButton: FlatButton(
+      mainButton: TextButton(
         onPressed: () {
           bool dismiss = onDismiss != null ? onDismiss() : true;
           if (dismiss) {

@@ -114,7 +114,10 @@ class CreateInvoicePageState extends State<CreateInvoicePage> {
             }
             var account = snapshot.data;
             return Padding(
-              padding: EdgeInsets.only(bottom: (Platform.isIOS && _amountFocusNode.hasFocus) ? 40.0 : 0.0),
+              padding: EdgeInsets.only(
+                  bottom: (Platform.isIOS && _amountFocusNode.hasFocus)
+                      ? 40.0
+                      : 0.0),
               child: SingleButtonBottomBar(
                 stickToBottom: true,
                 text: _withdrawFetchResponse == null ? "CREATE" : "REDEEM",
@@ -180,7 +183,7 @@ class CreateInvoicePageState extends State<CreateInvoicePage> {
                         textInputAction: TextInputAction.done,
                         maxLines: null,
                         maxLength: 90,
-                        maxLengthEnforced: true,
+                        maxLengthEnforcement: MaxLengthEnforcement.enforced,
                         decoration: InputDecoration(
                           labelText: "Description (optional)",
                         ),
@@ -266,7 +269,7 @@ class CreateInvoicePageState extends State<CreateInvoicePage> {
   }
 
   Future _scanBarcode(AccountModel account) async {
-    TransparentPageRoute loaderRoute = null;
+    TransparentPageRoute loaderRoute;
     try {
       FocusScope.of(context).requestFocus(FocusNode());
       String barcode = await Navigator.pushNamed<String>(context, "/qr_scan");

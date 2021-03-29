@@ -13,10 +13,6 @@ import 'address_widget.dart';
 import 'conditional_deposit.dart';
 
 class DepositToBTCAddressPage extends StatefulWidget {
-  final AccountBloc _accountBloc;
-
-  const DepositToBTCAddressPage(this._accountBloc);
-
   @override
   State<StatefulWidget> createState() {
     return DepositToBTCAddressPageState();

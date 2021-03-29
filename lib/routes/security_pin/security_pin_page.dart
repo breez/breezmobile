@@ -467,9 +467,8 @@ class SecurityPageState extends State<SecurityPage>
     });
   }
 
-  Future _updateBackupSettings(
-      BackupSettings oldBackupSettings, BackupSettings newBackupSettings,
-      {bool pinCodeChanged = false}) async {
+  Future _updateBackupSettings(BackupSettings oldBackupSettings,
+      BackupSettings newBackupSettings) async {
     _screenLocked = false;
     var action = UpdateBackupSettings(newBackupSettings);
     widget.backupBloc.backupActionsSink.add(action);

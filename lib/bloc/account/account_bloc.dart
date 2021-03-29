@@ -10,8 +10,8 @@ import 'package:breez/bloc/async_action.dart';
 import 'package:breez/bloc/csv_exporter.dart';
 import 'package:breez/bloc/user_profile/breez_user_model.dart';
 import 'package:breez/logger.dart';
-import 'package:breez/services/breez_server/server.dart';
 import 'package:breez/services/background_task.dart';
+import 'package:breez/services/breez_server/server.dart';
 import 'package:breez/services/breezlib/breez_bridge.dart';
 import 'package:breez/services/breezlib/data/rpc.pb.dart';
 import 'package:breez/services/currency_data.dart';
@@ -630,7 +630,7 @@ class AccountBloc {
       return p.paymentGroup;
     });
 
-    var payments = List<PaymentInfo>();
+    var payments = <PaymentInfo>[];
     groupedPayments.forEach((key, singles) {
       if (singles[0].paymentHash == key) {
         payments.add(singles[0]);

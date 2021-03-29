@@ -27,6 +27,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_downloader/flutter_downloader.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:share_extend/share_extend.dart';
+
 //import 'package:shared_preferences/shared_preferences.dart';
 
 import 'default_commands.dart';
@@ -275,8 +276,8 @@ class DevViewState extends State<DevView> {
                                                                     .device
                                                                     .setClipboardText(
                                                                         _cliText);
-                                                                _scaffoldKey
-                                                                    .currentState
+                                                                ScaffoldMessenger.of(
+                                                                        context)
                                                                     .showSnackBar(
                                                                         SnackBar(
                                                                   content: Text(
@@ -330,7 +331,7 @@ class DevViewState extends State<DevView> {
       AddFundsSettings addFundsSettings,
       UserProfileBloc userBloc,
       BreezUserModel userModel) {
-    List<Choice> choices = List<Choice>();
+    List<Choice> choices = <Choice>[];
     choices.addAll([
       Choice(title: 'Share Logs', icon: Icons.share, function: shareLog),
       /*

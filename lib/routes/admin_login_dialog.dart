@@ -120,14 +120,14 @@ class _AdminLoginDialogState extends State<_AdminLoginDialog> {
         ),
       ),
       actions: <Widget>[
-        FlatButton(
+        TextButton(
           child:
               Text("CANCEL", style: Theme.of(context).primaryTextTheme.button),
           onPressed: () {
             Navigator.of(context).pop(false);
           },
         ),
-        FlatButton(
+        TextButton(
           child: Text("OK", style: Theme.of(context).primaryTextTheme.button),
           onPressed: () async {
             if (_formKey.currentState.validate()) {

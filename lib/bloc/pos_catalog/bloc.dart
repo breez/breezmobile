@@ -54,7 +54,7 @@ class PosCatalogBloc with AsyncActionsHandler {
       ImportItems: _importItems,
     });
     listenActions();
-    _currentSaleController.add(Sale(saleLines: List()));
+    _currentSaleController.add(Sale(saleLines: []));
     _trackCurrentSaleRates(accountStream);
     _trackSalePayments();
     _loadIcons();

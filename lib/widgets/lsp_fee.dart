@@ -1,6 +1,5 @@
 import 'package:breez/bloc/account/account_model.dart';
 import 'package:breez/bloc/lsp/lsp_model.dart';
-import 'package:breez/bloc/user_profile/currency.dart';
 import 'package:flutter/material.dart';
 
 import 'error_dialog.dart';

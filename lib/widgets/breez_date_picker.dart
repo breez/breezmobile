@@ -972,12 +972,12 @@ class _DatePickerDialogState extends State<_DatePickerDialog> {
       data: Theme.of(context).buttonBarTheme,
       child: ButtonBar(
         children: <Widget>[
-          FlatButton(
+          TextButton(
             child: Text(localizations.cancelButtonLabel,
                 style: Theme.of(context).primaryTextTheme.button),
             onPressed: _handleCancel,
           ),
-          FlatButton(
+          TextButton(
             child: Text(localizations.okButtonLabel,
                 style: Theme.of(context).primaryTextTheme.button),
             onPressed: _handleOk,

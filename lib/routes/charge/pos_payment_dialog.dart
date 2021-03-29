@@ -158,7 +158,7 @@ class _PosPaymentDialogState extends State<PosPaymentDialog> {
           includeCurrencySymbol: true,
           removeTrailingZeros: true);
       priceInSaleCurrency =
-      saleCurrency.rtl ? "($salePrice) " : " ($salePrice)";
+          saleCurrency.rtl ? "($salePrice) " : " ($salePrice)";
     }
     return SingleChildScrollView(
       child: ListBody(
@@ -216,8 +216,10 @@ class _PosPaymentDialogState extends State<PosPaymentDialog> {
   }
 
   Widget _clearSaleButton() {
-    return FlatButton(
-      padding: EdgeInsets.only(top: 8.0, bottom: 16.0, right: 0.0),
+    return TextButton(
+      style: TextButton.styleFrom(
+        padding: EdgeInsets.only(top: 8.0, bottom: 16.0, right: 0.0),
+      ),
       child: Text(
         'CLEAR SALE',
         textAlign: TextAlign.center,
@@ -230,8 +232,10 @@ class _PosPaymentDialogState extends State<PosPaymentDialog> {
   }
 
   Widget _cancelButton() {
-    return FlatButton(
-      padding: EdgeInsets.only(top: 8.0, bottom: 16.0, left: 0.0),
+    return TextButton(
+      style: TextButton.styleFrom(
+        padding: EdgeInsets.only(top: 8.0, bottom: 16.0, right: 0.0),
+      ),
       child: Text(
         'CANCEL',
         textAlign: TextAlign.center,

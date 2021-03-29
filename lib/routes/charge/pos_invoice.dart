@@ -203,13 +203,17 @@ class POSInvoiceState extends State<POSInvoice> with TickerProviderStateMixin {
                                                                 .infinity),
                                                     child: IgnorePointer(
                                                       ignoring: false,
-                                                      child: RaisedButton(
-                                                        color: Theme.of(context)
-                                                            .primaryColorLight,
-                                                        padding:
-                                                            EdgeInsets.only(
-                                                                top: 14.0,
-                                                                bottom: 14.0),
+                                                      child: ElevatedButton(
+                                                        style: ElevatedButton
+                                                            .styleFrom(
+                                                          primary: Theme.of(
+                                                                  context)
+                                                              .primaryColorLight,
+                                                          padding:
+                                                              EdgeInsets.only(
+                                                                  top: 14.0,
+                                                                  bottom: 14.0),
+                                                        ),
                                                         child: Text(
                                                           "Charge ${currentCurrency.format(totalAmount)} ${currentCurrency.shortName}"
                                                               .toUpperCase(),
@@ -658,7 +662,7 @@ class POSInvoiceState extends State<POSInvoice> with TickerProviderStateMixin {
                     style: Theme.of(context).dialogTheme.contentTextStyle),
               ),
               actions: <Widget>[
-                FlatButton(
+                TextButton(
                   child: Text("GO TO SETTINGS",
                       style: Theme.of(context).primaryTextTheme.button),
                   onPressed: () {
@@ -743,7 +747,7 @@ class POSInvoiceState extends State<POSInvoice> with TickerProviderStateMixin {
         builder: (context) => AlertDialog(
               content: SyncProgressDialog(closeOnSync: true),
               actions: <Widget>[
-                FlatButton(
+                TextButton(
                   onPressed: (() {
                     Navigator.pop(context, false);
                   }),
@@ -963,11 +967,11 @@ class POSInvoiceState extends State<POSInvoice> with TickerProviderStateMixin {
         contentPadding:
             EdgeInsets.only(left: 24.0, right: 24.0, bottom: 12.0, top: 24.0),
         actions: <Widget>[
-          FlatButton(
+          TextButton(
               onPressed: () => Navigator.pop(context),
               child: Text("CANCEL",
                   style: Theme.of(context).primaryTextTheme.button)),
-          FlatButton(
+          TextButton(
               onPressed: () {
                 Navigator.pop(context);
                 clearSale();
@@ -988,7 +992,7 @@ class POSInvoiceState extends State<POSInvoice> with TickerProviderStateMixin {
         decoration: BoxDecoration(
             border: Border.all(
                 color: Theme.of(context).backgroundColor, width: 0.5)),
-        child: FlatButton(
+        child: TextButton(
             onPressed: () => onNumButtonPressed(currentSale, number),
             child: Text(number,
                 textAlign: TextAlign.center, style: theme.numPadNumberStyle)));
@@ -1008,7 +1012,7 @@ class POSInvoiceState extends State<POSInvoice> with TickerProviderStateMixin {
                       color: Theme.of(context).backgroundColor, width: 0.5)),
               child: GestureDetector(
                   onLongPress: () => approveClear(currentSale),
-                  child: FlatButton(
+                  child: TextButton(
                       onPressed: () {
                         _clearAmounts(currentSale);
                       },
@@ -1018,7 +1022,7 @@ class POSInvoiceState extends State<POSInvoice> with TickerProviderStateMixin {
               decoration: BoxDecoration(
                   border: Border.all(
                       color: Theme.of(context).backgroundColor, width: 0.5)),
-              child: FlatButton(
+              child: TextButton(
                   onPressed: () => onAddition(posCatalogBloc, currentSale,
                       currentCurrency.satConversionRate),
                   child: Text("+", style: theme.numPadAdditionStyle))),

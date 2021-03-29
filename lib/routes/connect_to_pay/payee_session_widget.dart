@@ -40,7 +40,10 @@ class PayeeSessionWidget extends StatelessWidget {
             mainAxisSize: MainAxisSize.max,
             children: <Widget>[
               SessionInstructions(
-                  _PayeeInstructions(sessionState, _account, _lspStatus),
+                  _PayeeInstructions(
+                    sessionState,
+                    _account,
+                  ),
                   actions: _getActions(sessionState),
                   onAction: (action) => _onAction(context, action),
                   disabledActions: _getDisabledActions(sessionState)),
@@ -94,9 +97,8 @@ class PayeeSessionWidget extends StatelessWidget {
 class _PayeeInstructions extends StatelessWidget {
   final PaymentSessionState _sessionState;
   final AccountModel _account;
-  final LSPStatus _lspStatus;
 
-  _PayeeInstructions(this._sessionState, this._account, this._lspStatus);
+  _PayeeInstructions(this._sessionState, this._account);
 
   @override
   Widget build(BuildContext context) {
@@ -123,7 +125,7 @@ class _PayeeInstructions extends StatelessWidget {
                     builder: (context) => AlertDialog(
                           content: SyncProgressDialog(),
                           actions: <Widget>[
-                            FlatButton(
+                            TextButton(
                               onPressed: (() {
                                 Navigator.pop(context);
                               }),

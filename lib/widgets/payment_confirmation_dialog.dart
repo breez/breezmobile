@@ -16,8 +16,14 @@ class PaymentConfirmationDialog extends StatefulWidget {
   final Function(SendPayment payment) _onPaymentApproved;
   final double minHeight;
 
-  PaymentConfirmationDialog(this.accountBloc, this.invoice, this._amountToPay,
-      this._amountToPayStr, this._onCancel, this._onPaymentApproved, this.minHeight);
+  PaymentConfirmationDialog(
+      this.accountBloc,
+      this.invoice,
+      this._amountToPay,
+      this._amountToPayStr,
+      this._onCancel,
+      this._onPaymentApproved,
+      this.minHeight);
 
   @override
   PaymentConfirmationDialogState createState() {
@@ -30,7 +36,7 @@ class PaymentConfirmationDialogState extends State<PaymentConfirmationDialog> {
   Widget build(BuildContext context) {
     return Dialog(
       child: Container(
-        constraints: BoxConstraints(minHeight: widget.minHeight),
+          constraints: BoxConstraints(minHeight: widget.minHeight),
           width: MediaQuery.of(context).size.width,
           child: Column(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -100,8 +106,7 @@ class PaymentConfirmationDialogState extends State<PaymentConfirmationDialog> {
         child: Text("NO", style: Theme.of(context).primaryTextTheme.button),
         splashColor: Colors.transparent,
         highlightColor: Colors.transparent,
-        onPressed: () =>
-            widget._onCancel(),
+        onPressed: () => widget._onCancel(),
       ),
       FlatButton(
         child: Text("YES", style: Theme.of(context).primaryTextTheme.button),

@@ -415,7 +415,7 @@ class HomeState extends State<Home> with WidgetsBindingObserver {
                                     ];
 
                                     var advancedFlavorItems =
-                                        List<DrawerItemConfig>();
+                                        <DrawerItemConfig>[];
                                     advancedFlavorItems =
                                         user.appMode == AppMode.pos
                                             ? [

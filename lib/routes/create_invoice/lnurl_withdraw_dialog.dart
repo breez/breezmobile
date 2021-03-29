@@ -133,7 +133,7 @@ class LNUrlWithdrawDialogState extends State<LNURlWithdrawDialog>
                                 theme.customData[theme.themeId].loaderAssetPath,
                                 gaplessPlayback: true,
                               )),
-                  FlatButton(
+                  TextButton(
                     onPressed: (() {
                       onFinish(false);
                     }),

@@ -1,27 +1,27 @@
 import 'dart:convert';
 import 'dart:ffi';
 import 'dart:io';
-import 'dart:math';
-import 'package:breez/bloc/blocs_provider.dart';
-import 'package:breez/bloc/user_profile/currency.dart';
-import 'package:breez/widgets/loader.dart';
-import 'package:collection/collection.dart';
-import 'package:fixnum/fixnum.dart';
+
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:breez/bloc/account/account_actions.dart';
 import 'package:breez/bloc/account/account_bloc.dart';
 import 'package:breez/bloc/account/account_model.dart';
+import 'package:breez/bloc/blocs_provider.dart';
 import 'package:breez/bloc/lsp/lsp_bloc.dart';
 import 'package:breez/bloc/lsp/lsp_model.dart';
+import 'package:breez/bloc/user_profile/currency.dart';
 import 'package:breez/routes/home/payment_item_avatar.dart';
 import 'package:breez/services/breezlib/data/rpc.pb.dart';
 import 'package:breez/services/injector.dart';
 import 'package:breez/theme_data.dart' as theme;
 import 'package:breez/utils/date.dart';
+import 'package:breez/widgets/loader.dart';
+import 'package:collection/collection.dart';
+import 'package:fixnum/fixnum.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:share_extend/share_extend.dart';
 import 'package:http/http.dart' as http;
+import 'package:share_extend/share_extend.dart';
 
 import 'error_dialog.dart';
 import 'flushbar.dart';
@@ -564,7 +564,7 @@ class ClosedChannelPaymentDetailsState
                 children: [
                     Padding(
                       padding: EdgeInsets.only(top: 20.0),
-                      child: FlatButton(
+                      child: TextButton(
                         onPressed: () {
                           _onResetChainInfoPressed().then((_) {
                             _promptForRestart();

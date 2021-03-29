@@ -119,7 +119,7 @@ class EscherDialogState extends State<EscherDialog> {
               ? Colors.red
               : Theme.of(context).errorColor),
       child: Form(
-        autovalidate: true,
+        autovalidateMode: AutovalidateMode.always,
         key: _formKey,
         child: Padding(
           padding: const EdgeInsets.only(left: 16.0, right: 16.0),
@@ -158,7 +158,8 @@ class EscherDialogState extends State<EscherDialog> {
             Navigator.pop(context);
             var satValue = Currency.SAT.format(parsedAmount,
                 includeDisplayName: false, userInput: true);
-            launch("https://hub.escher.app/cashout/breez?amount=$satValue", forceSafariVC: false, enableJavaScript: true);
+            launch("https://hub.escher.app/cashout/breez?amount=$satValue",
+                forceSafariVC: false, enableJavaScript: true);
           },
           child:
               Text("APPROVE", style: Theme.of(context).primaryTextTheme.button),

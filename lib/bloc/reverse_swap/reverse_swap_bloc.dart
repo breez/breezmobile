@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'package:fixnum/fixnum.dart';
 
 import 'package:breez/bloc/account/account_model.dart';
 import 'package:breez/bloc/async_actions_handler.dart';
@@ -11,6 +10,7 @@ import 'package:breez/services/breezlib/breez_bridge.dart';
 import 'package:breez/services/breezlib/data/rpc.pb.dart';
 import 'package:breez/services/injector.dart';
 import 'package:breez/services/notifications.dart';
+import 'package:fixnum/fixnum.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:rxdart/subjects.dart';
 

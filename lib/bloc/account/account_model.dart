@@ -108,7 +108,7 @@ class SwapFundStatus {
 
   List<String> get unConfirmedAddresses {
     var unConfirmedAddresses =
-        _addedFundsReply?.unConfirmedAddresses ?? List<SwapAddressInfo>();
+        _addedFundsReply?.unConfirmedAddresses ?? <SwapAddressInfo>[];
     return unConfirmedAddresses
         .where((a) => a.nonBlocking != true)
         .map((a) => a.address)
@@ -117,13 +117,13 @@ class SwapFundStatus {
 
   List<String> get confirmedAddresses {
     var unConfirmedAddresses =
-        _addedFundsReply?.confirmedAddresses ?? List<SwapAddressInfo>();
+        _addedFundsReply?.confirmedAddresses ?? <SwapAddressInfo>[];
     return unConfirmedAddresses.map((a) => a.address).toList();
   }
 
   List<RefundableAddress> get refundableAddresses {
     var refundableAddresses =
-        _addedFundsReply?.refundableAddresses ?? List<SwapAddressInfo>();
+        _addedFundsReply?.refundableAddresses ?? <SwapAddressInfo>[];
     return refundableAddresses.map((a) => RefundableAddress(a)).toList();
   }
 
@@ -142,12 +142,18 @@ class RefundableAddress {
   RefundableAddress(this._refundableInfo);
 
   String get address => _refundableInfo.address;
+
   String get lastRefundTxID => _refundableInfo.lastRefundTxID;
+
   Int64 get confirmedAmount => _refundableInfo.confirmedAmount;
+
   List<String> get confirmedTransactionIds =>
       _refundableInfo.confirmedTransactionIds;
+
   int get lockHeight => _refundableInfo.lockHeight;
+
   double get hoursToUnlock => _refundableInfo.hoursToUnlock;
+
   String get refundableError {
     switch (_refundableInfo.swapError) {
       case SwapError.FUNDS_EXCEED_LIMIT:
@@ -210,8 +216,8 @@ class AccountModel {
             Currency.SAT,
             "USD",
             null,
-            List(),
-            List(),
+            [],
+            [],
             "SAT",
             initial: true);
 
@@ -250,23 +256,36 @@ class AccountModel {
   }
 
   String get id => _accountResponse.id;
+
   List<String> get unconfirmedChannels => _accountResponse.unconfirmedChannels;
+
   SwapFundStatus get swapFundsStatus => SwapFundStatus(this.addedFundsReply);
+
   bool get disconnected =>
       _accountResponse.status == Account_AccountStatus.DISCONNECTED;
+
   bool get processingConnection =>
       _accountResponse.status == Account_AccountStatus.PROCESSING_CONNECTION;
+
   bool get connected =>
       _accountResponse.status == Account_AccountStatus.CONNECTED;
+
   Int64 get tipHeight => _accountResponse.tipHeight;
+
   Int64 get balance => _accountResponse.balance;
+
   String get formattedFiatBalance => fiatCurrency?.format(balance);
+
   Int64 get walletBalance => _accountResponse.walletBalance;
+
   String get statusLine => _accountResponse.status.toString();
+
   Currency get currency => _currency;
+
   FiatConversion get fiatCurrency => _fiatConversionList.firstWhere(
       (f) => f.currencyData.shortName == _fiatShortName,
       orElse: () => null);
+
   List<FiatConversion> get fiatConversionList => _fiatConversionList;
 
   List<FiatConversion> get preferredFiatConversionList =>
@@ -274,19 +293,29 @@ class AccountModel {
           preferredCurrencies.contains(fiatConversion.currencyData.shortName)));
 
   String get posCurrencyShortName => _posCurrencyShortName;
+
   Int64 get maxAllowedToReceive => _accountResponse.maxAllowedToReceive;
+
   Int64 get maxAllowedToPay => Int64(min(
       _accountResponse.maxAllowedToPay.toInt(),
       _accountResponse.maxPaymentAmount.toInt()));
+
   Int64 get reserveAmount => balance - maxAllowedToPay;
+
   Int64 get warningMaxChanReserveAmount => _accountResponse.maxChanReserve;
+
   Int64 get maxPaymentAmount => _accountResponse.maxPaymentAmount;
+
   bool get enabled => _accountResponse.enabled;
+
   Int64 get routingNodeFee => _accountResponse.routingNodeFee;
+
   bool get readyForPayments => _accountResponse.readyForPayments;
+
   Int64 get maxInboundLiquidity => _accountResponse.maxInboundLiquidity;
 
   bool get synced => syncedToChain;
+
   String get channelFundingTxUrl {
     if (_accountResponse.channelPoint.isEmpty) {
       return null;
@@ -367,7 +396,7 @@ class PaymentsModel {
       [this.firstDate]);
 
   PaymentsModel.initial()
-      : this(List<PaymentInfo>(), List<PaymentInfo>(),
+      : this(<PaymentInfo>[], <PaymentInfo>[],
             PaymentFilterModel.initial(), DateTime(DateTime.now().year));
 
   PaymentsModel copyWith(
@@ -412,26 +441,47 @@ enum PaymentType { DEPOSIT, WITHDRAWAL, SENT, RECEIVED, CLOSED_CHANNEL }
 
 abstract class PaymentInfo {
   PaymentType get type;
+
   Int64 get amount;
+
   Int64 get fee;
+
   Int64 get creationTimestamp;
+
   String get description;
+
   bool get pending;
+
   bool get keySend;
+
   bool get isTransferRequest;
+
   String get imageURL;
+
   bool get containsPaymentInfo;
+
   Currency get currency;
+
   String get title;
+
   String get dialogTitle;
+
   Int64 get pendingExpirationTimestamp;
+
   String get redeemTxID;
+
   String get paymentHash;
+
   String get preimage;
+
   String get destination;
+
   bool get fullPending;
+
   String get paymentGroup;
+
   String get paymentGroupName;
+
   PaymentInfo copyWith(AccountModel account);
 }
 
@@ -442,10 +492,14 @@ class StreamedPaymentInfo implements PaymentInfo {
   StreamedPaymentInfo(this.singlePayments, this.account);
 
   PaymentType get type => PaymentType.SENT;
+
   Int64 get amount => singlePayments.fold(Int64(0), (sum, p) => sum + p.amount);
+
   Int64 get fee => singlePayments.fold(Int64(0), (sum, p) => sum + p.fee);
+
   Int64 get creationTimestamp => singlePayments.fold(
       Int64(0), (t, p) => Int64(max(t.toInt(), p.creationTimestamp.toInt())));
+
   String get description {
     final group = singlePayments
         .firstWhere((p) => !p.pending, orElse: () => singlePayments[0])
@@ -462,20 +516,28 @@ class StreamedPaymentInfo implements PaymentInfo {
   }
 
   bool get pending => singlePayments.fold(false, (t, p) => t || p.pending);
+
   PaymentInfo copyWith(AccountModel account) {
     var payments = singlePayments.map((e) => e.copyWith(account)).toList();
     return StreamedPaymentInfo(payments, account);
   }
 
   Currency get currency => account.currency;
+
   bool get isTransferRequest => false;
+
   bool get keySend => true;
+
   String get imageURL => null;
+
   bool get containsPaymentInfo => false;
+
   String get dialogTitle => paymentGroupName;
+
   String get title => singlePayments
       .firstWhere((p) => !p.pending, orElse: () => singlePayments[0])
       .paymentGroupName;
+
   Int64 get pendingExpirationTimestamp {
     var pendingExpiration = 0;
     singlePayments.forEach((p) {
@@ -487,12 +549,17 @@ class StreamedPaymentInfo implements PaymentInfo {
   }
 
   bool get fullPending => singlePayments.any((p) => p.fullPending);
+
   String get paymentGroup => singlePayments[0].paymentGroup;
+
   String get paymentGroupName => singlePayments[0].paymentGroupName;
 
   String get redeemTxID => "";
+
   String get paymentHash => "";
+
   String get preimage => "";
+
   String get destination => "";
 }
 
@@ -509,22 +576,35 @@ class SinglePaymentInfo implements PaymentInfo {
   };
 
   PaymentType get type => _typeMap[_paymentResponse.type];
+
   Int64 get amount => _paymentResponse.amount;
+
   Int64 get fee => _paymentResponse.fee;
+
   Int64 get creationTimestamp => _paymentResponse.creationTimestamp;
+
   String get destination => _paymentResponse.destination;
+
   String get redeemTxID => _paymentResponse.redeemTxID;
+
   String get paymentHash => _paymentResponse.paymentHash;
+
   String get preimage => _paymentResponse.preimage;
+
   String get paymentGroup => _paymentResponse.groupKey?.isNotEmpty == true
       ? _paymentResponse.groupKey
       : paymentHash;
+
   String get paymentGroupName => _paymentResponse.groupName;
+
   bool get pending =>
       _paymentResponse.pendingExpirationHeight > 0 ||
       _paymentResponse.isChannelPending;
+
   bool get fullPending => pending && _paymentResponse.pendingFull == true;
+
   String get closedChannelPoint => _paymentResponse.closedChannelPoint;
+
   String get closeChannelTx {
     if (_paymentResponse.closedChannelSweepTxID?.isNotEmpty == true) {
       return _paymentResponse.closedChannelSweepTxID;
@@ -560,17 +640,20 @@ class SinglePaymentInfo implements PaymentInfo {
   bool get keySend => _paymentResponse.isKeySend;
 
   int get pendingExpirationHeight => _paymentResponse.pendingExpirationHeight;
+
   double get hoursToExpire =>
       max(_paymentResponse.pendingExpirationHeight - _account.tipHeight.toInt(),
           0) *
       10 /
       60;
+
   Int64 get pendingExpirationTimestamp =>
       _paymentResponse.pendingExpirationTimestamp > 0
           ? _paymentResponse.pendingExpirationTimestamp
           : Int64(DateTime.now()
               .add(Duration(hours: hoursToExpire.round()))
               .millisecondsSinceEpoch);
+
   bool get containsPaymentInfo {
     String remoteName = (type == PaymentType.SENT
         ? _paymentResponse.invoiceMemo?.payeeName
@@ -656,22 +739,31 @@ class SinglePaymentInfo implements PaymentInfo {
 
 class AddFundResponse {
   AddFundInitReply _addfundReply;
+
   AddFundResponse(this._addfundReply);
 
   String get errorMessage => _addfundReply.errorMessage;
+
   Int64 get maxAllowedDeposit => _addfundReply.maxAllowedDeposit;
+
   String get address => _addfundReply.address;
+
   String get backupJson => _addfundReply.backupJson;
+
   Int64 get requiredReserve => _addfundReply.requiredReserve;
+
   Int64 get minAllowedDeposit => _addfundReply.minAllowedDeposit;
 }
 
 class RefundableDepositModel {
   final SwapAddressInfo _address;
+
   RefundableDepositModel(this._address);
 
   String get address => _address.address;
+
   Int64 get confirmedAmount => _address.confirmedAmount;
+
   bool get refundBroadcasted =>
       _address.lastRefundTxID != null && _address.lastRefundTxID.isNotEmpty;
 }
@@ -713,6 +805,7 @@ class PaymentError implements Exception {
   final Object error;
   final String traceReport;
   final bool ignoreGlobalFeedback;
+
   bool get validationError =>
       error.toString().indexOf("rpc error") >= 0 ||
       traceReport == null ||
@@ -722,7 +815,9 @@ class PaymentError implements Exception {
       {this.ignoreGlobalFeedback = false});
 
   String errMsg() => error?.toString();
+
   String toString() => errMsg();
+
   String toDisplayMessage(Currency currency) {
     var str = toString();
     if (str.isNotEmpty) {
@@ -751,7 +846,9 @@ class TxDetail {
   TxDetail(this._tx);
 
   List<int> get txBytes => _tx.tx;
+
   String get txHash => _tx.txHash;
+
   Int64 get fees => _tx.fees;
 }
 
@@ -761,6 +858,7 @@ class SweepAllCoinsTxs {
   SweepAllCoinsTxs(this._sweepTxs);
 
   Int64 get amount => _sweepTxs.amt;
+
   Map<int, TxDetail> get transactions {
     return _sweepTxs.transactions
         .map((key, value) => MapEntry(key, TxDetail(value)));

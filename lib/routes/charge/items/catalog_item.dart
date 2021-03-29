@@ -131,7 +131,7 @@ class CatalogItem extends StatelessWidget {
         ?.symbol;
   }
 
-  String _formattedPrice({bool userInput = false, bool includeSymbol = true}) {
+  String _formattedPrice() {
     var formatter =
         CurrencyWrapper.fromShortName(_itemInfo.currency, accountModel);
     return formatter?.format(_itemInfo.price, removeTrailingZeros: true);

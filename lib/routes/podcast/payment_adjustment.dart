@@ -14,7 +14,6 @@ import 'package:breez/bloc/user_profile/user_profile_bloc.dart';
 import 'package:breez/routes/podcast/boost.dart';
 import 'package:breez/routes/podcast/payment_adjuster.dart';
 import 'package:breez/routes/podcast/theme.dart';
-import 'package:breez/utils/min_font_size.dart';
 import 'package:breez/widgets/loader.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -158,8 +157,10 @@ class PaymentAdjustmentState extends State<PaymentAdjustment> {
                   padding: const EdgeInsets.only(top: 10.0),
                   child: withBreezTheme(
                       context,
-                      RaisedButton(
-                        color: Theme.of(context).primaryColor,
+                      ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                          primary: Theme.of(context).primaryColor,
+                        ),
                         child: Text("Gotcha!"),
                         onPressed: () {
                           AppBlocsProvider.of<UserProfileBloc>(context)
@@ -181,14 +182,16 @@ class PaymentAdjustmentState extends State<PaymentAdjustment> {
       fit: FlexFit.tight,
       child: Padding(
         padding: const EdgeInsets.only(right: 6.0, left: 6.0),
-        child: OutlineButton(
-            padding: EdgeInsets.zero,
-            borderSide: tutorialStreamSats == sats
-                ? BorderSide(
-                    width: 2.0,
-                    color: Colors.white,
-                  )
-                : BorderSide(color: Colors.grey, width: 1.0),
+        child: OutlinedButton(
+            style: OutlinedButton.styleFrom(
+              padding: EdgeInsets.zero,
+              side: tutorialStreamSats == sats
+                  ? BorderSide(
+                      width: 2.0,
+                      color: Colors.white,
+                    )
+                  : BorderSide(color: Colors.grey, width: 1.0),
+            ),
             onPressed: () {
               changeState(() {
                 tutorialStreamSats = sats;
@@ -293,19 +296,5 @@ class PaymentAdjustmentState extends State<PaymentAdjustment> {
                 });
           }),
     );
-  }
-}
-
-extension StateExtension<T extends StatefulWidget> on State<T> {
-  Stream waitForStateLoading() async* {
-    while (!mounted) {
-      yield false;
-    }
-    yield true;
-  }
-
-  Future<void> postInit(VoidCallback action) async {
-    await for (var isLoaded in waitForStateLoading()) {}
-    action();
   }
 }

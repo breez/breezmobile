@@ -189,7 +189,7 @@ class InitialWalkthroughPageState extends State<InitialWalkthroughPage>
       return route.settings.name == "/intro";
     });
     if (error != null) {
-      _scaffoldKey.currentState.showSnackBar(SnackBar(
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
           duration: Duration(seconds: 3), content: Text(error.toString())));
     }
   }
@@ -258,13 +258,15 @@ class InitialWalkthroughPageState extends State<InitialWalkthroughPage>
                   Container(
                     height: 48.0,
                     width: 168.0,
-                    child: RaisedButton(
-                      padding: EdgeInsets.fromLTRB(16, 4, 16, 4),
+                    child: ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        padding: EdgeInsets.fromLTRB(16, 4, 16, 4),
+                        primary: Theme.of(context).buttonColor,
+                        elevation: 0.0,
+                        shape: const StadiumBorder(),
+                      ),
                       child: Text("LET'S BREEZ!",
                           style: Theme.of(context).textTheme.button),
-                      color: Theme.of(context).buttonColor,
-                      elevation: 0.0,
-                      shape: const StadiumBorder(),
                       onPressed: () {
                         showDialog(
                             useRootNavigator: false,

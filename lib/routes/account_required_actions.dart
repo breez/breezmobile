@@ -161,7 +161,7 @@ class AccountRequiredActionsIndicatorState
                                       stream:
                                           widget._backupBloc.backupStateStream,
                                       builder: (context, backupSnapshot) {
-                                        List<Widget> warnings = List<Widget>();
+                                        List<Widget> warnings = <Widget>[];
                                         Int64 walletBalance = accountSnapshot
                                                 ?.data?.walletBalance ??
                                             Int64(0);

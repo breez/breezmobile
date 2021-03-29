@@ -68,7 +68,7 @@ class SwapRefundDialogState extends State<SwapRefundDialog> {
                   String hoursToUnlockStr = roundedHoursToUnlock > 1
                       ? "~${roundedHoursToUnlock.toString()} hours"
                       : "in about an hour";
-                  List<TextSpan> redeemText = List<TextSpan>();
+                  List<TextSpan> redeemText = <TextSpan>[];
                   if (hoursToUnlock > 0) {
                     redeemText.add(TextSpan(
                         text:

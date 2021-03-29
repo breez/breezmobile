@@ -50,15 +50,19 @@ class _BoostWidgetState extends State<BoostWidget> {
                   children: [
                     Container(
                       width: 88,
-                      child: FlatButton.icon(
-                        shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(6.0),
-                            side: BorderSide(
-                                color: Theme.of(context).brightness ==
-                                        Brightness.light
-                                    ? Color(0xFF0085fb)
-                                    : Colors.white70,
-                                width: 1.6)),
+                      child: TextButton.icon(
+                        style: TextButton.styleFrom(
+                          padding:
+                              EdgeInsets.symmetric(vertical: 8, horizontal: 8),
+                          shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(6.0),
+                              side: BorderSide(
+                                  color: Theme.of(context).brightness ==
+                                          Brightness.light
+                                      ? Color(0xFF0085fb)
+                                      : Colors.white70,
+                                  width: 1.6)),
+                        ),
                         icon: ImageIcon(
                           AssetImage("src/icon/boost.png"),
                           size: 20,
@@ -83,8 +87,6 @@ class _BoostWidgetState extends State<BoostWidget> {
                             maxLines: 1,
                           ),
                         ),
-                        padding:
-                            EdgeInsets.symmetric(vertical: 8, horizontal: 8),
                         onPressed: () {
                           var boostAmount =
                               widget.userModel.preferredBoostValue;

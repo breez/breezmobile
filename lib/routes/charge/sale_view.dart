@@ -18,6 +18,7 @@ import 'package:breez/widgets/loader.dart';
 import 'package:breez/widgets/payment_details_dialog.dart';
 import 'package:breez/widgets/print_parameters.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_svg/svg.dart';
 
 import 'items/item_avatar.dart';
@@ -170,7 +171,8 @@ class SaleViewState extends State<SaleView> {
                                   enabled: !widget.readOnly,
                                   keyboardType: TextInputType.multiline,
                                   maxLength: 90,
-                                  maxLengthEnforced: true,
+                                  maxLengthEnforcement:
+                                      MaxLengthEnforcement.enforced,
                                   textInputAction: TextInputAction.done,
                                   onSubmitted: (_) {
                                     _noteFocus.requestFocus();
@@ -302,9 +304,11 @@ class _TotalSaleCharge extends StatelessWidget {
     var totalAmount =
         currentSale.totalChargeSat / saleCurrency.satConversionRate;
 
-    return RaisedButton(
-      color: Theme.of(context).primaryColorLight,
-      padding: EdgeInsets.only(top: 14.0, bottom: 14.0),
+    return ElevatedButton(
+      style: ElevatedButton.styleFrom(
+        primary: Theme.of(context).primaryColorLight,
+        padding: EdgeInsets.only(top: 14.0, bottom: 14.0),
+      ),
       child: Text(
         "${readOnly ? '' : 'Charge '}${saleCurrency.format(totalAmount)} ${saleCurrency.shortName}"
             .toUpperCase(),

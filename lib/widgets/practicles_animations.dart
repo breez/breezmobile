@@ -76,6 +76,7 @@ class ParticleModel {
       restart(time: time);
     }
   }
+
 }
 
 class ParticlePainter extends CustomPainter {

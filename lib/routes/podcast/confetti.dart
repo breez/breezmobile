@@ -1,11 +1,11 @@
 import 'dart:async';
+import 'dart:math';
 
 import 'package:breez/bloc/podcast_payments/model.dart';
 import 'package:breez/bloc/podcast_payments/podcast_payments_bloc.dart';
 import 'package:confetti/confetti.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'dart:math';
 
 class Confetty extends StatelessWidget {
   final ConfettiController controller;

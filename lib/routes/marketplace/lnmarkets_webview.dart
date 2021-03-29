@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:breez/bloc/account/account_bloc.dart';
 import 'package:breez/bloc/lnurl/lnurl_actions.dart';
 import 'package:breez/bloc/lnurl/lnurl_bloc.dart';
@@ -8,7 +10,6 @@ import 'package:breez/widgets/error_dialog.dart';
 import 'package:breez/widgets/loader.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
-import 'dart:convert';
 
 class LNMarketsWebViewPage extends StatefulWidget {
   final AccountBloc accountBloc;

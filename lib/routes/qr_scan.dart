@@ -1,4 +1,5 @@
 import 'dart:async';
+
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
@@ -80,8 +81,10 @@ class QRScanState extends State<QRScan> {
                           borderRadius: BorderRadius.all(Radius.circular(12.0)),
                           border:
                               Border.all(color: Colors.white.withOpacity(0.8))),
-                      child: FlatButton(
-                          padding: EdgeInsets.only(right: 35, left: 35),
+                      child: TextButton(
+                          style: TextButton.styleFrom(
+                            padding: EdgeInsets.only(right: 35, left: 35),
+                          ),
                           onPressed: () {
                             Navigator.of(context).pop();
                           },
