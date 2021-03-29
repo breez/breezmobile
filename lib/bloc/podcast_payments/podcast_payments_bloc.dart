@@ -165,7 +165,8 @@ class PodcastPaymentsBloc with AsyncActionsHandler {
         _perDestinationPayments[d.address] = aggregatedAmount;
         payPart = aggregatedAmount.toInt();
       }
-
+      final customKey = d.customKey?.toString();
+      final customValue = d.customValue?.toString();
       final lastFee = await _lastFeeForDestination(d.address);
       final netPay = payPart - lastFee.toInt();
       final maxFee = Int64((netPay * 1000 * maxFeePart).toInt());
@@ -178,7 +179,10 @@ class PodcastPaymentsBloc with AsyncActionsHandler {
                 feeLimitMsat: maxFee,
                 groupKey: _getPodcastGroupKey(episode),
                 groupName: episode.title,
-                tlv: _getTlv(boost: boost))
+                tlv: _getTlv(
+                    boost: boost,
+                    customKey: customKey,
+                    customValue: customValue))
             .then((payResponse) {
           if (payResponse.paymentError?.isNotEmpty == true) {
             log.info(
@@ -244,15 +248,23 @@ class PodcastPaymentsBloc with AsyncActionsHandler {
     _paymentOptionsController.close();
   }
 
-  Map<Int64, String> _getTlv({bool boost = false}) {
+  Map<Int64, String> _getTlv(
+      {bool boost = false, String customKey, String customValue}) {
     var tlv = Map<String, dynamic>();
     tlv["podcast"] = _getPodcastTitle(_currentPaidEpisode);
     tlv["episode"] = _currentPaidEpisode.title;
     tlv["action"] = boost ? "boost" : "stream";
     tlv["time"] = _formatDuration(_currentEpisodeDuration);
+    tlv["podcastindex_id"] = _getPodcastIndexID(_currentPaidEpisode);
     var encoded = json.encode(tlv);
     var records = Map<Int64, String>();
     records[Int64(7629169)] = encoded;
+    if (customKey != null && customValue != null) {
+      int recordKey = int.tryParse(customKey);
+      if (recordKey != null) {
+        records[Int64(recordKey)] = customValue;
+      }
+    }
     return records;
   }
 
@@ -260,6 +272,14 @@ class PodcastPaymentsBloc with AsyncActionsHandler {
     final metadata = episode?.metadata;
     if (metadata != null && metadata["feed"] != null) {
       return metadata["feed"]["title"];
+    }
+    return "";
+  }
+
+  String _getPodcastIndexID(Episode episode) {
+    final metadata = episode?.metadata;
+    if (metadata != null && metadata["feed"] != null) {
+      return metadata["feed"]["id"]?.toString();
     }
     return "";
   }
@@ -308,14 +328,17 @@ class ValueModel {
   final String method;
   final String suggested;
 
-  ValueModel({this.type, this.method, this.suggested});
+  ValueModel({
+    this.type,
+    this.method,
+    this.suggested,
+  });
 
   factory ValueModel.fromJson(Map<String, dynamic> map) {
     return ValueModel(
-      type: map['type'] as String,
-      method: map['method'] as String,
-      suggested: map['suggested'] as String,
-    );
+        type: map['type'] as String,
+        method: map['method'] as String,
+        suggested: map['suggested'] as String);
   }
   Map<String, dynamic> toJson() {
     return <String, dynamic>{
@@ -331,8 +354,16 @@ class ValueDestination {
   final String address;
   final String type;
   final double split;
+  final dynamic customKey;
+  final dynamic customValue;
 
-  ValueDestination({this.name, this.address, this.type, this.split});
+  ValueDestination(
+      {this.name,
+      this.address,
+      this.type,
+      this.split,
+      this.customKey,
+      this.customValue});
 
   static ValueDestination fromJson(Map<String, dynamic> json) {
     var rawSplit = json['split'];
@@ -343,11 +374,12 @@ class ValueDestination {
       split = rawSplit as num;
     }
     return ValueDestination(
-      name: json['name'] as String,
-      address: json['address'] as String,
-      type: json['type'] as String,
-      split: split.toDouble(),
-    );
+        name: json['name'] as String,
+        address: json['address'] as String,
+        type: json['type'] as String,
+        split: split.toDouble(),
+        customKey: json['customKey'],
+        customValue: json['customValue']);
   }
 
   Map<String, dynamic> toJson() {
@@ -355,7 +387,9 @@ class ValueDestination {
       'name': name,
       'address': address,
       'type': type,
-      'split': split
+      'split': split,
+      'customKey': customKey,
+      'customValue': customValue,
     };
   }
 }
