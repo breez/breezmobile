@@ -54,7 +54,10 @@ class PodcastIndexAPI extends PodcastApi {
         searchProvider: PodcastIndexProvider(
             key: 'XXWQEGULBJABVHZUM8NF',
             secret: 'KZ2uy4upvq4t3e\$m\$3r2TeFS2fEpFTAaF92xcNdX'),
-        queryParams: {'val': 'lightning'}).timeout(Duration(seconds: 10));
+        queryParams: {
+          'val': 'lightning',
+          'aponly': 'true'
+        }).timeout(Duration(seconds: 10));
   }
 
   static Future<Podcast> _loadFeed(String url) {
