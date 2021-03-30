@@ -264,7 +264,7 @@ class PodcastPaymentsBloc with AsyncActionsHandler {
     tlv["episode"] = _currentPaidEpisode.title;
     tlv["action"] = boost ? "boost" : "stream";
     tlv["time"] = _formatDuration(_currentEpisodeDuration);
-    tlv["podcastindex_id"] = _getPodcastIndexID(_currentPaidEpisode);
+    tlv["feedID"] = _getPodcastIndexID(_currentPaidEpisode);
     var encoded = json.encode(tlv);
     var records = Map<Int64, String>();
     records[Int64(7629169)] = encoded;
