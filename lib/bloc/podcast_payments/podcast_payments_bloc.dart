@@ -86,7 +86,7 @@ class PodcastPaymentsBloc with AsyncActionsHandler {
           event.episode.guid);
       if (event.audioState == AudioState.playing) {
         _currentPaidEpisode = event.episode;
-        final value = _getLightningPaymentValue(_currentPaidEpisode);
+        final value = await _getLightningPaymentValue(_currentPaidEpisode);
         if (value != null) {
           startPaymentTimer(event.episode, value.recipients);
         }
@@ -98,7 +98,7 @@ class PodcastPaymentsBloc with AsyncActionsHandler {
     _paymentEventsController
         .add(PaymentEvent(PaymentEventType.BoostStarted, action.sats));
     if (_currentPaidEpisode != null) {
-      final value = _getLightningPaymentValue(_currentPaidEpisode);
+      final value = await _getLightningPaymentValue(_currentPaidEpisode);
       if (value != null) {
         _payRecipients(_currentPaidEpisode, value.recipients, action.sats,
             boost: true);
@@ -203,8 +203,17 @@ class PodcastPaymentsBloc with AsyncActionsHandler {
     });
   }
 
-  Value _getLightningPaymentValue(Episode episode) {
-    final metadata = episode?.metadata;
+  Future<Value> _getLightningPaymentValue(Episode episode) async {
+    Map<String, dynamic> metadata;
+    if (episode.pguid != null && episode.pguid.isNotEmpty) {
+      var podcast = await repository.findPodcastByGuid(episode.pguid);
+      if (podcast != null) {
+        metadata = podcast.metadata;
+      }
+    }
+    if (metadata == null || metadata.isEmpty) {
+      metadata = episode.metadata;
+    }
     if (metadata != null && metadata["feed"] != null) {
       final value = metadata["feed"]["value"];
       if (value != null && value is Map<String, dynamic>) {
