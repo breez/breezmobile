@@ -62,6 +62,7 @@ dependencies:
   flutter_typeahead:
     git:
       url: https://github.com/breez/flutter_typeahead.git
+      ref: 08d9b477c50073b76e5d5c780b586f2bdea3cd47
   csv: ^4.0.3
 
   local_auth:
