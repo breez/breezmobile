@@ -68,6 +68,7 @@ class DevView extends StatefulWidget {
 class DevViewState extends State<DevView> {
   static const FORCE_RESCAN_FILE_NAME = "FORCE_RESCAN";
   String _cliText = '';
+  String _lastCommand = '';
   TextStyle _cliTextStyle = theme.smallTextStyle;
 
   var _richCliText = <TextSpan>[];
@@ -81,6 +82,7 @@ class DevViewState extends State<DevView> {
 
   void _sendCommand(String command) {
     FocusScope.of(context).requestFocus(FocusNode());
+    _lastCommand = command;
     widget._breezBridge.sendCommand(command).then((reply) {
       setState(() {
         _showDefaultCommands = false;
@@ -227,6 +229,7 @@ class DevViewState extends State<DevView> {
                                                 setState(() {
                                                   _cliInputController.clear();
                                                   _showDefaultCommands = true;
+                                                  _lastCommand = '';
                                                   _cliText = "";
                                                 });
                                               },
@@ -300,10 +303,11 @@ class DevViewState extends State<DevView> {
                                                               iconSize: 19.0,
                                                               tooltip: 'Share',
                                                               onPressed: () {
-                                                                ShareExtend
-                                                                    .share(
-                                                                        _cliText,
-                                                                        "text");
+                                                                _shareFile(
+                                                                    _lastCommand
+                                                                        .split(
+                                                                            " ")[0],
+                                                                    _cliText);
                                                               },
                                                             )
                                                           ],
@@ -472,6 +476,15 @@ class DevViewState extends State<DevView> {
     Navigator.of(_scaffoldKey.currentState.context)
         .pushReplacementNamed("/splash");
   }*/
+
+  void _shareFile(String command, String text) async {
+    Directory tempDir = await getTemporaryDirectory();
+    tempDir = await tempDir.createTemp("command");
+    String filePath = '${tempDir.path}/$command.json';
+    File file = File(filePath);
+    await file.writeAsString(text, flush: true);
+    ShareExtend.share(filePath, "file");
+  }
 
   void _showOptimizationsSettings() async {
     widget._permissionsService.requestOptimizationSettings();
