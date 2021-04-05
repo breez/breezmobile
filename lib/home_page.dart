@@ -157,21 +157,21 @@ class HomeState extends State<Home> with WidgetsBindingObserver {
     });
   }
 
-  @override
-  void didChangeAppLifecycleState(AppLifecycleState state) async {
-    final audioBloc = Provider.of<AudioBloc>(context, listen: false);
+  // @override
+  // void didChangeAppLifecycleState(AppLifecycleState state) async {
+  //   final audioBloc = Provider.of<AudioBloc>(context, listen: false);
 
-    switch (state) {
-      case AppLifecycleState.resumed:
-        audioBloc.transitionLifecycleState(LifecyleState.resume);
-        break;
-      case AppLifecycleState.paused:
-        audioBloc.transitionLifecycleState(LifecyleState.pause);
-        break;
-      default:
-        break;
-    }
-  }
+  //   switch (state) {
+  //     case AppLifecycleState.resumed:
+  //       audioBloc.transitionLifecycleState(LifecyleState.resume);
+  //       break;
+  //     case AppLifecycleState.paused:
+  //       audioBloc.transitionLifecycleState(LifecyleState.pause);
+  //       break;
+  //     default:
+  //       break;
+  //   }
+  // }
 
   @override
   void dispose() {
