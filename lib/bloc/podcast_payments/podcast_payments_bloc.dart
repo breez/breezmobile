@@ -2,11 +2,9 @@ import 'dart:async';
 import 'dart:convert';
 import 'package:anytime/bloc/podcast/audio_bloc.dart';
 import 'package:anytime/bloc/settings/settings_bloc.dart';
-import 'package:anytime/entities/app_settings.dart';
 import 'package:anytime/entities/episode.dart';
 import 'package:anytime/repository/repository.dart';
 import 'package:anytime/services/audio/audio_player_service.dart';
-import 'package:anytime/ui/widgets/transport_controls.dart';
 import 'package:breez/bloc/account/account_bloc.dart';
 import 'package:breez/bloc/async_actions_handler.dart';
 import 'package:breez/bloc/podcast_payments/actions.dart';
@@ -38,12 +36,6 @@ class PodcastPaymentsBloc with AsyncActionsHandler {
   Stream<PaymentEvent> get paymentEventsStream =>
       _paymentEventsController.stream;
 
-  StreamSubscription<PositionState> currentPositionSubscription;
-  StreamSubscription<AppSettings> currentSettingsSubscription;
-
-  Episode _currentPaidEpisode;
-  Duration _currentEpisodeDuration;
-  double _currentPlaybackSpeed = 1.0;
   BreezBridge _breezLib;
   Timer _paymentTimer;
   Map<String, double> _perDestinationPayments = Map<String, double>();
@@ -55,7 +47,7 @@ class PodcastPaymentsBloc with AsyncActionsHandler {
     ServiceInjector injector = ServiceInjector();
     _breezLib = injector.breezBridge;
     _paymentOptionsController.add(PaymentOptions());
-    listenAudioState();
+    _startTicker();
     registerAsyncHandlers({
       PayBoost: _payBoost,
     });
@@ -69,68 +61,92 @@ class PodcastPaymentsBloc with AsyncActionsHandler {
     });
   }
 
-  void listenAudioState() {
-    Rx.combineLatest2(
-            audioBloc.playingState,
-            audioBloc.nowPlaying,
-            (AudioState audioState, Episode episode) =>
-                PlayerControlState(audioState, episode))
-        .distinct((s1, s2) =>
-            s1.episode.guid == s2.episode.guid &&
-            s1.audioState == s2.audioState)
-        .listen((event) async {
-      _stopPaymentTimer();
-      print("start payment timer " +
-          event.audioState.toString() +
-          " " +
-          event.episode.guid);
-      if (event.audioState == AudioState.playing) {
-        _currentPaidEpisode = event.episode;
-        final value = await _getLightningPaymentValue(_currentPaidEpisode);
-        if (value != null) {
-          startPaymentTimer(event.episode, value.recipients);
-        }
-      }
-    });
-  }
-
   Future _payBoost(PayBoost action) async {
+    var currentEpisode = await _getCurrentPlayingEpisode();
     _paymentEventsController
         .add(PaymentEvent(PaymentEventType.BoostStarted, action.sats));
-    if (_currentPaidEpisode != null) {
-      final value = await _getLightningPaymentValue(_currentPaidEpisode);
+    if (currentEpisode != null) {
+      final value = await _getLightningPaymentValue(currentEpisode);
       if (value != null) {
-        _payRecipients(_currentPaidEpisode, value.recipients, action.sats,
+        _payRecipients(currentEpisode, value.recipients, action.sats,
             boost: true);
       }
     }
   }
 
-  void startPaymentTimer(Episode episode, List<ValueDestination> recipients) {
-    currentPositionSubscription = audioBloc.playPosition.listen((event) {
-      if (event.episode.guid == _currentPaidEpisode?.guid) {
-        _currentEpisodeDuration = event.position;
+  _startTicker() {
+    // start the payment ticker
+    _paymentTimer = Timer.periodic(Duration(seconds: 1), (t) async {
+      // calculate episode and playing state
+      var playingState = await _getAudioState();
+      if (playingState != AudioState.playing) {
+        return;
       }
-    });
 
-    currentSettingsSubscription = settingsBloc.settings.listen((event) {
-      _currentPlaybackSpeed = event.playbackSpeed;
-    });
+      // calculate episode and playing state
+      var currentPlayedEpisode = await _getCurrentPlayingEpisode();
+      if (currentPlayedEpisode == null) {
+        return;
+      }
+      // calculate payment speed
+      var playbackSpeed = await _getCurrentPlaybackSpeed();
 
-    final paidTimeOnStart = _listeningTime[episode.contentUrl] ?? 0;
-    _listeningTime[episode.contentUrl] = paidTimeOnStart;
-    var paidMinutes = Duration(seconds: paidTimeOnStart.floor()).inMinutes;
-    _paymentTimer = Timer.periodic(Duration(seconds: 1), (t) {
-      _listeningTime[episode.contentUrl] += _currentPlaybackSpeed;
-      final nextPaidMinutes =
-          Duration(seconds: _listeningTime[episode.contentUrl].floor())
-              .inMinutes;
+      if (_listeningTime[currentPlayedEpisode.contentUrl] == null) {
+        _listeningTime[currentPlayedEpisode.contentUrl] = 0.0;
+      }
+      // minutes before next payment
+      var paidMinutes = Duration(
+              seconds: _listeningTime[currentPlayedEpisode.contentUrl].floor())
+          .inMinutes;
+      _listeningTime[currentPlayedEpisode.contentUrl] += playbackSpeed;
+
+      // minutes after next payment
+      final nextPaidMinutes = Duration(
+              seconds: _listeningTime[currentPlayedEpisode.contentUrl].floor())
+          .inMinutes;
+
+      // if minutes increased
+      print("nextPaidMinutes = " +
+          nextPaidMinutes.toString() +
+          " playbackSpeed=" +
+          playbackSpeed.toString() +
+          " time = " +
+          _listeningTime[currentPlayedEpisode.contentUrl].floor().toString());
       if (nextPaidMinutes > paidMinutes) {
-        paidMinutes = nextPaidMinutes;
-        log.info("paying recipients " + paidMinutes.toString());
-        _payRecipients(episode, recipients, user.preferredSatsPerMinValue);
+        log.info("paying recipients " + nextPaidMinutes.toString());
+        final value = await _getLightningPaymentValue(currentPlayedEpisode);
+        if (value != null) {
+          _payRecipients(currentPlayedEpisode, value.recipients,
+              user.preferredSatsPerMinValue);
+        }
       }
     });
+  }
+
+  Future<AudioState> _getAudioState() {
+    try {
+      return audioBloc.playingState.first.timeout(Duration(seconds: 1));
+    } catch (e) {
+      return null;
+    }
+  }
+
+  Future<Episode> _getCurrentPlayingEpisode() {
+    try {
+      return audioBloc.nowPlaying.first.timeout(Duration(seconds: 1));
+    } catch (e) {
+      return null;
+    }
+  }
+
+  Future<double> _getCurrentPlaybackSpeed() async {
+    try {
+      var settings =
+          await settingsBloc.settings.first.timeout(Duration(seconds: 1));
+      return settings?.playbackSpeed;
+    } catch (e) {
+      return 1.0;
+    }
   }
 
   void _payRecipients(
@@ -170,10 +186,18 @@ class PodcastPaymentsBloc with AsyncActionsHandler {
       final lastFee = await _lastFeeForDestination(d.address);
       final netPay = payPart - lastFee.toInt();
       final maxFee = Int64((netPay * 1000 * maxFeePart).toInt());
+      PositionState position;
+      try {
+        position =
+            await audioBloc.playPosition.first.timeout(Duration(seconds: 1));
+      } catch (e) {}
       log.info(
           "starting recipient payment boost=$boost netPay=$netPay from total: $total with fee: $maxFee split=${d.split} lastFee = $lastFee");
       if (netPay > 0 && amount <= total && maxFee > 0) {
         log.info("trying to pay $netPay to destination ${d.address}");
+        if (!boost) {
+          _perDestinationPayments[d.address] -= payPart;
+        }
         _breezLib
             .sendSpontaneousPayment(d.address, Int64(netPay), d.name,
                 feeLimitMsat: maxFee,
@@ -181,6 +205,8 @@ class PodcastPaymentsBloc with AsyncActionsHandler {
                 groupName: episode.title,
                 tlv: _getTlv(
                     boost: boost,
+                    episode: episode,
+                    position: position,
                     customKey: customKey,
                     customValue: customValue))
             .then((payResponse) {
@@ -191,11 +217,13 @@ class PodcastPaymentsBloc with AsyncActionsHandler {
           }
           log.info("succesfully paid $netPay to destination ${d.address}");
           if (!boost) {
-            _perDestinationPayments[d.address] -= payPart;
             _paymentEventsController
                 .add(PaymentEvent(PaymentEventType.StreamCompleted, payPart));
           }
         }).catchError((err) {
+          if (!boost) {
+            _perDestinationPayments[d.address] += payPart;
+          }
           log.info(
               "failed to pay $netPay to destination ${d.address}, error=$err trying next time...");
         });
@@ -237,12 +265,6 @@ class PodcastPaymentsBloc with AsyncActionsHandler {
     return json.encode(info);
   }
 
-  void _stopPaymentTimer() {
-    currentPositionSubscription?.cancel();
-    currentSettingsSubscription?.cancel();
-    _paymentTimer?.cancel();
-  }
-
   Future<Int64> _lastFeeForDestination(String address) {
     return accountBloc.paymentsStream
         .map((ps) => ps.nonFilteredItems
@@ -258,13 +280,17 @@ class PodcastPaymentsBloc with AsyncActionsHandler {
   }
 
   Map<Int64, String> _getTlv(
-      {bool boost = false, String customKey, String customValue}) {
+      {bool boost = false,
+      String customKey,
+      String customValue,
+      Episode episode,
+      PositionState position}) {
     var tlv = Map<String, dynamic>();
-    tlv["podcast"] = _getPodcastTitle(_currentPaidEpisode);
-    tlv["episode"] = _currentPaidEpisode.title;
+    tlv["podcast"] = _getPodcastTitle(episode);
+    tlv["episode"] = episode.title;
     tlv["action"] = boost ? "boost" : "stream";
-    tlv["time"] = _formatDuration(_currentEpisodeDuration);
-    tlv["feedID"] = _getPodcastIndexID(_currentPaidEpisode);
+    tlv["time"] = _formatDuration(position.position);
+    tlv["feedID"] = _getPodcastIndexID(episode);
     var encoded = json.encode(tlv);
     var records = Map<Int64, String>();
     records[Int64(7629169)] = encoded;
