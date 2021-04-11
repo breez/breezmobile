@@ -8,6 +8,7 @@ import 'package:breez/widgets/back_button.dart' as backBtn;
 import 'package:breez/widgets/single_button_bottom_bar.dart';
 import 'package:breez/widgets/warning_box.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_i18n/flutter_i18n.dart';
 
 import 'address_widget.dart';
 import 'conditional_deposit.dart';
@@ -24,7 +25,7 @@ class DepositToBTCAddressPage extends StatefulWidget {
 }
 
 class DepositToBTCAddressPageState extends State<DepositToBTCAddressPage> {
-  final String _title = "Receive via BTC Address";
+  final String _title = "receive_via_btc_address";
   AddFundsBloc _addFundsBloc;
 
   @override
@@ -42,7 +43,7 @@ class DepositToBTCAddressPageState extends State<DepositToBTCAddressPage> {
     AccountBloc accountBloc = AppBlocsProvider.of<AccountBloc>(context);
     var lspBloc = AppBlocsProvider.of<LSPBloc>(context);
     return ConditionalDeposit(
-        title: _title,
+        title: FlutterI18n.translate(context, _title),
         enabledChild: StreamBuilder<LSPStatus>(
             stream: lspBloc.lspStatusStream,
             builder:
@@ -66,7 +67,7 @@ class DepositToBTCAddressPageState extends State<DepositToBTCAddressPage> {
                                       Theme.of(context).canvasColor,
                                   leading: backBtn.BackButton(),
                                   title: Text(
-                                    _title,
+                                    FlutterI18n.translate(context, _title),
                                     style: Theme.of(context)
                                         .appBarTheme
                                         .textTheme

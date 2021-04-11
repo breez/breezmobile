@@ -28,6 +28,7 @@ import 'package:breez/widgets/static_loader.dart';
 import 'package:breez/widgets/transparent_page_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_i18n/flutter_i18n.dart';
 
 import 'lnurl_withdraw_dialog.dart';
 import 'qr_code_dialog.dart';
@@ -99,7 +100,7 @@ class CreateInvoicePageState extends State<CreateInvoicePage> {
 
   @override
   Widget build(BuildContext context) {
-    final String _title = "Receive via Invoice";
+    final String _title = "receive_via_invoice";
     AccountBloc accountBloc = AppBlocsProvider.of<AccountBloc>(context);
     InvoiceBloc invoiceBloc = AppBlocsProvider.of<InvoiceBloc>(context);
     LNUrlBloc lnurlBloc = AppBlocsProvider.of<LNUrlBloc>(context);
@@ -152,7 +153,7 @@ class CreateInvoicePageState extends State<CreateInvoicePage> {
                 );
               })
         ],
-        title: Text(_title,
+        title: Text(FlutterI18n.translate(context, _title),
             style: Theme.of(context).appBarTheme.textTheme.headline6),
         elevation: 0.0,
       ),
@@ -182,7 +183,8 @@ class CreateInvoicePageState extends State<CreateInvoicePage> {
                         maxLength: 90,
                         maxLengthEnforced: true,
                         decoration: InputDecoration(
-                          labelText: "Description (optional)",
+                          labelText: FlutterI18n.translate(
+                              context, "description_optional"),
                         ),
                         style: theme.FieldTextStyle.textStyle,
                       ),
@@ -253,7 +255,9 @@ class CreateInvoicePageState extends State<CreateInvoicePage> {
   Widget _buildReceivableBTC(AccountModel acc) {
     return GestureDetector(
       child: AutoSizeText(
-        "Receive up to: ${acc.currency.format(acc.maxAllowedToReceive)}",
+        FlutterI18n.translate(context, "receive_up_to", translationParams: {
+          "max": acc.currency.format(acc.maxAllowedToReceive)
+        }),
         style: theme.textStyle,
         maxLines: 1,
         minFontSize: MinFontSize(context).minFontSize,

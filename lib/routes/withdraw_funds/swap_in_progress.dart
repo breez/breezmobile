@@ -6,6 +6,7 @@ import 'package:breez/widgets/flushbar.dart';
 import 'package:breez/widgets/link_launcher.dart';
 import 'package:breez/widgets/loader.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_i18n/flutter_i18n.dart';
 
 class SwapInProgress extends StatelessWidget {
   final InProgressReverseSwaps swapInProgress;
@@ -62,7 +63,7 @@ class SwapInProgress extends StatelessWidget {
           leading: backBtn.BackButton(onPressed: () {
             Navigator.of(context).pop();
           }),
-          title: Text("Send to BTC Address",
+          title: Text(FlutterI18n.translate(context, "send_to_btc_address"),
               style: Theme.of(context).appBarTheme.textTheme.headline6),
           elevation: 0.0),
       body: body,

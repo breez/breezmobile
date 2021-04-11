@@ -10,6 +10,7 @@ import 'package:breez/widgets/calendar_dialog.dart';
 import 'package:breez/widgets/flushbar.dart';
 import 'package:breez/widgets/loader.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_i18n/flutter_i18n.dart';
 import 'package:share_extend/share_extend.dart';
 
 import 'pos_payments_list.dart';
@@ -24,7 +25,7 @@ class PosTransactionsPage extends StatefulWidget {
 }
 
 class PosTransactionsPageState extends State<PosTransactionsPage> {
-  final String _title = "Transactions";
+  final String _title = "transactions";
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   final ScrollController _scrollController = ScrollController();
 
@@ -85,7 +86,7 @@ class PosTransactionsPageState extends State<PosTransactionsPage> {
         backgroundColor: Theme.of(context).canvasColor,
         leading: backBtn.BackButton(),
         title: Text(
-          _title,
+          FlutterI18n.translate(context, _title),
           style: Theme.of(context).appBarTheme.textTheme.headline6,
         ),
         actions: actions == null ? <Widget>[] : actions,

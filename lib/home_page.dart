@@ -42,6 +42,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_i18n/flutter_i18n.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:provider/provider.dart';
 import 'package:tutorial_coach_mark/tutorial_coach_mark.dart';
@@ -291,8 +292,11 @@ class HomeState extends State<Home> with WidgetsBindingObserver {
                                       snapshot.data.forEach((v) {
                                         if (v.isAllowed) {
                                           var vendorDrawerConfig =
-                                              DrawerItemConfig(v.route,
-                                                  v.shortName ?? v.name, v.icon,
+                                              DrawerItemConfig(
+                                                  v.route,
+                                                  FlutterI18n.translate(context,
+                                                      v.shortName ?? v.name),
+                                                  v.icon,
                                                   disabled: !v.enabled ||
                                                       v.requireActiveChannel &&
                                                           !account.connected,
@@ -336,7 +340,8 @@ class HomeState extends State<Home> with WidgetsBindingObserver {
                                             DrawerItemConfigGroup([
                                               DrawerItemConfig(
                                                   "/transactions",
-                                                  "Transactions",
+                                                  FlutterI18n.translate(
+                                                      context, "transactions"),
                                                   "src/icon/transactions.png")
                                             ])
                                           ]
@@ -344,7 +349,7 @@ class HomeState extends State<Home> with WidgetsBindingObserver {
 
                                     var balanceItem = DrawerItemConfig(
                                       "",
-                                      "Balance",
+                                      FlutterI18n.translate(context, "balance"),
                                       "src/icon/balance.png",
                                       isSelected:
                                           user.appMode == AppMode.balance,
@@ -359,7 +364,8 @@ class HomeState extends State<Home> with WidgetsBindingObserver {
 
                                     var podcastItem = DrawerItemConfig(
                                       "",
-                                      "Podcasts",
+                                      FlutterI18n.translate(
+                                          context, "podcasts"),
                                       "src/icon/podcast.png",
                                       key: podcastMenuItemKey,
                                       isSelected:
@@ -376,7 +382,8 @@ class HomeState extends State<Home> with WidgetsBindingObserver {
 
                                     var posItem = DrawerItemConfig(
                                       "",
-                                      "Point of Sale",
+                                      FlutterI18n.translate(
+                                          context, "point_of_sale"),
                                       "src/icon/pos.png",
                                       isSelected: user.appMode == AppMode.pos,
                                       onItemSelected: (_) {
@@ -386,7 +393,9 @@ class HomeState extends State<Home> with WidgetsBindingObserver {
                                     );
 
                                     var lightningAppsItem = DrawerItemConfig(
-                                        "", "Apps", "src/icon/apps.png",
+                                        "",
+                                        FlutterI18n.translate(context, "apps"),
+                                        "src/icon/apps.png",
                                         isSelected: user.appMode ==
                                             AppMode.apps, onItemSelected: (_) {
                                       protectAdminAction(context, user, () {
@@ -688,7 +697,7 @@ class HomeState extends State<Home> with WidgetsBindingObserver {
     }, (e) {
       promptError(
           context,
-          "Connect to Pay",
+          FlutterI18n.translate(context, "connect_to_pay"),
           Text(e.toString(),
               style: Theme.of(context).dialogTheme.contentTextStyle));
     });

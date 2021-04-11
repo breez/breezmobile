@@ -106,11 +106,11 @@ class AddFundsBloc extends Bloc {
       hasPendingOrder = timePending <= staleOrderInterval;
     }
     List<AddFundVendorModel> _vendorList = [];
-    _vendorList.add(AddFundVendorModel("Receive via BTC Address",
+    _vendorList.add(AddFundVendorModel("receive_via_btc_address",
         "src/icon/bitcoin.png", "/deposit_btc_address",
         enabled: !hasPendingOrder));
     _vendorList.add(AddFundVendorModel(
-        "Buy Bitcoin", "src/icon/credit_card.png", "/buy_bitcoin",
+        "buy_bitcoin", "src/icon/credit_card.png", "/buy_bitcoin",
         isAllowed: _isMoonpayAllowed,
         enabled: !hasPendingOrder,
         showLSPFee: true));

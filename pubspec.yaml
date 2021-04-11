@@ -73,6 +73,7 @@ dependencies:
   webview_flutter: ^1.0.7
   flutter_localizations:
     sdk: flutter
+  flutter_i18n: ^0.21.1
 
 dependency_overrides:
   flutter_svg: ^0.19.3
@@ -120,6 +121,7 @@ flutter:
     - src/pos-icons/
     - assets/images/
     - assets/icons/
+    - assets/locales/
 
   # The following line ensures that the Material Icons font is
   # included with your application, so that you can use the icons in

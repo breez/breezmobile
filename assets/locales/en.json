@@ -1,0 +1,19 @@
+{
+  "balance": "Balance",
+  "podcasts": "Podcasts",
+  "point_of_sale": "Point of Sale",
+  "apps": "Apps",
+  "transactions": "Transactions",
+  "description_optional": "Description (optional)",
+  "amount_in": "Amount in {currency}",
+  "receive_up_to": "Receive up to: {max}",
+  "receive_via_invoice": "Receive via Invoice",
+  "receive_via_btc_address": "Receive via BTC Address",
+  "buy_bitcoin": "Buy Bitcoin",
+  "paste_invoice_or_node_id": "Paste Invoice or Node ID",
+  "connect_to_pay": "Connect to Pay",
+  "send_to_btc_address": "Send to BTC Address",
+  "receive_payment": "Receive Payment",
+  "SEND": "SEND",
+  "RECEIVE": "RECEIVE"
+}

@@ -7,6 +7,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
+import 'package:flutter_i18n/flutter_i18n.dart';
 
 class AmountFormField extends TextFormField {
   final BuildContext context;
@@ -40,7 +41,10 @@ class AmountFormField extends TextFormField {
             keyboardType: TextInputType.numberWithOptions(
                 decimal: accountModel.currency != Currency.SAT),
             decoration: InputDecoration(
-              labelText: "Amount in ${accountModel.currency.displayName}",
+              labelText: FlutterI18n.translate(context, "amount_in",
+                  translationParams: {
+                    "currency": accountModel.currency.displayName
+                  }),
               suffixIcon: (readOnly ?? false)
                   ? null
                   : IconButton(

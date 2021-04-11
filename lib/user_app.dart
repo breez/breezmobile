@@ -17,6 +17,8 @@ import 'package:breez/widgets/static_loader.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_i18n/flutter_i18n.dart';
+import 'package:flutter_i18n/loaders/decoders/json_decode_strategy.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 
 import 'bloc/lnurl/lnurl_bloc.dart';
@@ -88,12 +90,22 @@ class UserApp extends StatelessWidget {
                     title: 'Breez',
                     theme: theme.themeMap[user.themeId],
                     localizationsDelegates: [
+                      FlutterI18nDelegate(
+                        translationLoader: FileTranslationLoader(
+                            basePath: "assets/locales",
+                            decodeStrategies: [JsonDecodeStrategy()]),
+                        missingTranslationHandler: (key, locale) {
+                          print(
+                              "--- Missing Key: $key, languageCode: ${locale.languageCode}");
+                        },
+                      ),
                       const LocalisationsDelegate(),
                       GlobalMaterialLocalizations.delegate,
                       GlobalWidgetsLocalizations.delegate,
                     ],
                     supportedLocales: [
                       const Locale('en', ''),
+                      const Locale('es', ''),
                       const Locale('de', ''),
                     ],
                     builder: (BuildContext context, Widget child) {
