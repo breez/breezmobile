@@ -229,6 +229,9 @@ class PodcastPaymentsBloc with AsyncActionsHandler {
                     customValue: customValue))
             .then((payResponse) {
           if (payResponse.paymentError?.isNotEmpty == true) {
+            if (!boost) {
+              _perDestinationPayments[d.address] += payPart;
+            }
             log.info(
                 "failed to pay $netPay to destination ${d.address}, error=${payResponse.paymentError} trying next time...");
             return;
