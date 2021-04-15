@@ -51,6 +51,25 @@ class DeepLinksService {
 
     return shortLink.shortUrl.toString();
   }
+
+  PodcastShareLinkModel parsePodcastShareLink(String link) {
+    return PodcastShareLinkModel.fromLinkQuery(Uri.parse(link).query);
+  }
+
+  Future<String> generatePodcastShareLink(PodcastShareLinkModel link) async {
+    ShortDynamicLink shortLink = await DynamicLinkParameters(
+            dynamicLinkParametersOptions: DynamicLinkParametersOptions(
+                shortDynamicLinkPathLength:
+                    ShortDynamicLinkPathLength.unguessable),
+            link: Uri.parse('https://breez.technology?${link.toLinkQuery()}'),
+            uriPrefix: "https://breez.page.link",
+            androidParameters:
+                AndroidParameters(packageName: "com.breez.client"),
+            iosParameters: IosParameters(bundleId: "technology.breez.client"))
+        .buildShortLink();
+
+    return shortLink.shortUrl.toString();
+  }
 }
 
 class SessionLinkModel {
@@ -68,5 +87,20 @@ class SessionLinkModel {
     Map<String, String> query = Uri.splitQueryString(queryStr);
     return SessionLinkModel(
         query["sessionID"], query["sessionSecret"], query["pubKey"]);
+  }
+}
+
+class PodcastShareLinkModel {
+  final String feedURL;
+
+  PodcastShareLinkModel(this.feedURL);
+
+  String toLinkQuery() {
+    return 'feedURL=$feedURL';
+  }
+
+  static PodcastShareLinkModel fromLinkQuery(String queryStr) {
+    Map<String, String> query = Uri.splitQueryString(queryStr);
+    return PodcastShareLinkModel(query["feedURL"]);
   }
 }
