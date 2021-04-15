@@ -26,6 +26,7 @@ import 'package:breez/routes/podcast/add_funds_message.dart';
 import 'package:breez/routes/podcast/payment_adjustment.dart';
 import 'package:breez/routes/podcast/podcast_index_api.dart';
 import 'package:breez/routes/podcast/podcast_loader.dart';
+import 'package:breez/routes/podcast/share_podcast_button.dart';
 import 'package:breez/routes/podcast/transport_controls.dart';
 import 'package:breez/theme_data.dart' as breezTheme;
 import 'package:flutter/cupertino.dart';
@@ -248,5 +249,11 @@ WidgetBuilder errorPlaceholderBuilder() {
         color: Theme.of(context).errorColor,
         strokeWidth: 1,
       );
+  return builder;
+}
+
+WidgetBuilder sharePodcastButtonBuilder(String podcastURL) {
+  final WidgetBuilder builder =
+      (BuildContext context) => SharePodcastButton(podcastURL: podcastURL);
   return builder;
 }
