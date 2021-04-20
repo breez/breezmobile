@@ -704,7 +704,7 @@ class HomeState extends State<Home> with WidgetsBindingObserver {
           messageWidget: LoadingAnimatedText("Broadcasting your transaction",
               textStyle: theme.snackBarStyle, textAlign: TextAlign.left));
     });
-    CheckVersionHandler(context, widget.userProfileBloc);
+    checkVersionDialog(context, widget.userProfileBloc);
   }
 
   void _listenBackupConflicts() {
