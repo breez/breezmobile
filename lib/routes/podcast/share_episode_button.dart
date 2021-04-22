@@ -44,7 +44,7 @@ class ShareEpisodeButtonState extends State<ShareEpisodeButton> {
               padding: const EdgeInsets.symmetric(vertical: 2.0),
             ),
             Text(
-              "Share Episode",
+              "Share",
               textAlign: TextAlign.center,
               style: TextStyle(
                 color: Theme.of(context).buttonColor,
