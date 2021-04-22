@@ -57,18 +57,7 @@ class DeepLinksService {
   }
 
   Future<String> generatePodcastShareLink(PodcastShareLinkModel link) async {
-    ShortDynamicLink shortLink = await DynamicLinkParameters(
-            dynamicLinkParametersOptions: DynamicLinkParametersOptions(
-                shortDynamicLinkPathLength:
-                    ShortDynamicLinkPathLength.unguessable),
-            link: Uri.parse('https://breez.technology?${link.toLinkQuery()}'),
-            uriPrefix: "https://breez.page.link",
-            androidParameters:
-                AndroidParameters(packageName: "com.breez.client"),
-            iosParameters: IosParameters(bundleId: "technology.breez.client"))
-        .buildShortLink();
-
-    return shortLink.shortUrl.toString();
+    return 'https://www.breez.link/p?${link.toLinkQuery()}';
   }
 }
 
