@@ -57,7 +57,7 @@ class DeepLinksService {
   }
 
   Future<String> generatePodcastShareLink(PodcastShareLinkModel link) async {
-    return 'https://www.breez.link/p?${link.toLinkQuery()}';
+    return 'https://breez.link/p?${link.toLinkQuery()}';
   }
 }
 
