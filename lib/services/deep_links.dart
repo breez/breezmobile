@@ -86,12 +86,13 @@ class PodcastShareLinkModel {
   PodcastShareLinkModel(this.feedURL, {this.episodeID});
 
   String toLinkQuery() {
-    return 'feedURL=$feedURL' +
-        (episodeID != null ? '&episodeID=$episodeID' : '');
+    return (episodeID != null ? 'episodeID=$episodeID&' : '') +
+        'feedURL=$feedURL';
   }
 
   static PodcastShareLinkModel fromLinkQuery(String queryStr) {
     Map<String, String> query = Uri.splitQueryString(queryStr);
-    return PodcastShareLinkModel(query["feedURL"], episodeID: query["episodeID"]);
+    return PodcastShareLinkModel(query["feedURL"],
+        episodeID: query["episodeID"]);
   }
 }
