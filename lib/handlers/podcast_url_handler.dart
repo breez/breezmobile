@@ -12,7 +12,7 @@ class PodcastURLHandler {
   PodcastURLHandler(
       UserProfileBloc userProfileBloc,
       BuildContext context,
-      Function(String podcastURL) onValidPodcast,
+      Function(PodcastShareLinkModel podcastShareLink) onValidPodcast,
       Function(Object error) onError) {
     Rx.merge([getInitialLink().asStream(), getLinksStream()])
         .where((l) => l != null && (l.contains("breez.link/p")))
@@ -28,7 +28,14 @@ class PodcastURLHandler {
           var podcast = await PodcastIndexAPI().loadFeed(podcastLink.feedURL);
           if (podcast != null) {
             Navigator.of(context).removeRoute(loaderRoute);
-            onValidPodcast(podcast.url);
+            if (podcastLink.episodeID != null) {
+              var episode = podcast.episodes.firstWhere(
+                  (episode) => episode.guid == podcastLink.episodeID);
+              onValidPodcast(PodcastShareLinkModel(podcast.url,
+                  episodeID: episode != null ? episode.guid : null));
+            } else {
+              onValidPodcast(PodcastShareLinkModel(podcast.url));
+            }
           }
         });
       } catch (e) {

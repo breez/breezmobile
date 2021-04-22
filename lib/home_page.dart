@@ -99,6 +99,7 @@ class HomeState extends State<Home> with WidgetsBindingObserver {
   List<TargetFocus> targets = [];
 
   String _deeplinkPodcastURL = "";
+  String _deeplinkEpisodeID = "";
 
   @override
   void initState() {
@@ -635,6 +636,7 @@ class HomeState extends State<Home> with WidgetsBindingObserver {
                   "Use the Discover view to find and subscribe to your first podcast",
               title: 'Anytime Podcast Player',
               podcastURL: _deeplinkPodcastURL,
+              episodeID: _deeplinkEpisodeID,
             ),
           ),
         );
@@ -696,9 +698,10 @@ class HomeState extends State<Home> with WidgetsBindingObserver {
           Text(e.toString(),
               style: Theme.of(context).dialogTheme.contentTextStyle));
     });
-    PodcastURLHandler(widget.userProfileBloc, this.context, (podcastURL) {
+    PodcastURLHandler(widget.userProfileBloc, this.context, (podcastShareLink) {
       setState(() {
-        _deeplinkPodcastURL = podcastURL;
+        _deeplinkPodcastURL = podcastShareLink.feedURL;
+        _deeplinkEpisodeID = podcastShareLink.episodeID;
       });
     }, (e) {
       promptError(
