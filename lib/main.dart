@@ -5,6 +5,7 @@ import 'package:anytime/bloc/settings/settings_bloc.dart';
 import 'package:anytime/repository/sembast/sembast_repository.dart';
 import 'package:anytime/ui/podcast/now_playing.dart';
 import 'package:anytime/ui/podcast/podcast_details.dart';
+import 'package:anytime/ui/widgets/episode_tile.dart';
 import 'package:anytime/ui/widgets/placeholder_builder.dart';
 import 'package:provider/provider.dart';
 import 'package:anytime/services/settings/mobile_settings_service.dart';
@@ -58,7 +59,8 @@ void main() async {
                       errorBuilder: errorPlaceholderBuilder,
                       child: SharePodcastButtonBuilder(
                           builder: sharePodcastButtonBuilder,
-                          child: UserApp()))),
+                          child: ShareEpisodeButtonBuilder(
+                            builder: shareEpisodeButtonBuilder,child: UserApp())))),
             )),
         appBlocs: blocs));
   });
