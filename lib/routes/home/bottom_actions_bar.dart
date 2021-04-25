@@ -242,15 +242,15 @@ class _ActionImage extends StatelessWidget {
   }
 }
 
-Future showReceiveOptions(BuildContext context, AccountModel account) {
-  AddFundsBloc addFundsBloc = BlocProvider.of<AddFundsBloc>(context);
-  LSPBloc lspBloc = AppBlocsProvider.of<LSPBloc>(context);
+Future showReceiveOptions(BuildContext parentContext, AccountModel account) {
+  AddFundsBloc addFundsBloc = BlocProvider.of<AddFundsBloc>(parentContext);
+  LSPBloc lspBloc = AppBlocsProvider.of<LSPBloc>(parentContext);
 
   return showModalBottomSheet(
-      context: context,
+      context: parentContext,
       builder: (ctx) {
         return withBreezTheme(
-          context,
+          parentContext,
           StreamBuilder<LSPStatus>(
               stream: lspBloc.lspStatusStream,
               builder: (context, lspSnapshot) {
@@ -287,8 +287,11 @@ Future showReceiveOptions(BuildContext context, AccountModel account) {
                                 onTap: () {
                                   Navigator.of(context).pop();
                                   if (v.showLSPFee) {
-                                    promptLSPFeeAndNavigate(context, account,
-                                        lspSnapshot.data.currentLSP, v.route);
+                                    promptLSPFeeAndNavigate(
+                                        parentContext,
+                                        account,
+                                        lspSnapshot.data.currentLSP,
+                                        v.route);
                                   } else {
                                     Navigator.of(context).pushNamed(v.route);
                                   }

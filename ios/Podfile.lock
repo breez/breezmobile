@@ -128,6 +128,8 @@ PODS:
     - Flutter
   - flutter_secure_storage (3.3.1):
     - Flutter
+  - flutter_web_browser (0.14.0):
+    - Flutter
   - FMDB (2.7.5):
     - FMDB/standard (= 2.7.5)
   - FMDB/standard (2.7.5)
@@ -260,6 +262,7 @@ DEPENDENCIES:
   - flutter_isolate (from `.symlinks/plugins/flutter_isolate/ios`)
   - flutter_keyboard_visibility (from `.symlinks/plugins/flutter_keyboard_visibility/ios`)
   - flutter_secure_storage (from `.symlinks/plugins/flutter_secure_storage/ios`)
+  - flutter_web_browser (from `.symlinks/plugins/flutter_web_browser/ios`)
   - get_version (from `.symlinks/plugins/get_version/ios`)
   - GoogleSignIn
   - image_cropper (from `.symlinks/plugins/image_cropper/ios`)
@@ -347,6 +350,8 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/flutter_keyboard_visibility/ios"
   flutter_secure_storage:
     :path: ".symlinks/plugins/flutter_secure_storage/ios"
+  flutter_web_browser:
+    :path: ".symlinks/plugins/flutter_web_browser/ios"
   get_version:
     :path: ".symlinks/plugins/get_version/ios"
   image_cropper:
@@ -416,6 +421,7 @@ SPEC CHECKSUMS:
   flutter_isolate: 0edf5081826d071adf21759d1eb10ff5c24503b5
   flutter_keyboard_visibility: 0339d06371254c3eb25eeb90ba8d17dca8f9c069
   flutter_secure_storage: 7953c38a04c3fdbb00571bcd87d8e3b5ceb9daec
+  flutter_web_browser: a719eca01d00bdc9a0e13e42194f86b90a5b8729
   FMDB: 2ce00b547f966261cd18927a3ddb07cb6f3db82a
   get_version: 2bc18c4e26a265571662cab5d38f8b50dc8c1c77
   GoogleAppMeasurement: a6a3a066369828db64eda428cb2856dc1cdc7c4e
