@@ -11,18 +11,16 @@ import 'package:breez/bloc/user_profile/user_profile_bloc.dart';
 import 'package:breez/routes/admin_login_dialog.dart';
 import 'package:breez/services/deep_links.dart';
 import 'package:breez/services/injector.dart';
+import 'package:breez/widgets/flushbar.dart';
 import 'package:breez/widgets/loader.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:uni_links/uni_links.dart';
-import 'package:provider/provider.dart';
 
 class PodcastURLHandler {
-  PodcastURLHandler(
-      UserProfileBloc userProfileBloc,
-      BuildContext context,
-      Function(PodcastShareLinkModel podcastShareLink) onValidPodcast,
+  PodcastURLHandler(UserProfileBloc userProfileBloc, BuildContext context,
       Function(Object error) onError) {
     Rx.merge([getInitialLink().asStream(), getLinksStream()])
         .where((l) => l != null && (l.contains("breez.link/p")))
@@ -41,7 +39,9 @@ class PodcastURLHandler {
               context, podcastLink.feedURL, podcastLink.episodeID);
         });
       } finally {
-        Navigator.of(context).removeRoute(loaderRoute);
+        if (loaderRoute.isActive) {
+          Navigator.of(context).removeRoute(loaderRoute);
+        }
       }
     });
   }
@@ -75,8 +75,8 @@ Future handleDeeplink(
         }
       });
     } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-          content: Text('Failed to load episode. Error:' + e.toString())));
+      showFlushbar(context,
+          message: 'Failed to load episode. Error:' + e.toString());
     }
   } else {
     try {
@@ -88,8 +88,8 @@ Future handleDeeplink(
                   Provider.of<PodcastBloc>(context, listen: false))),
           ModalRoute.withName('/'));
     } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-          content: Text('Failed to load podcast. Error:' + e.toString())));
+      showFlushbar(context,
+          message: 'Failed to load podcast. Error:' + e.toString());
     }
   }
 }

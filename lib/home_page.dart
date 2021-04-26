@@ -98,9 +98,6 @@ class HomeState extends State<Home> with WidgetsBindingObserver {
   TutorialCoachMark tutorial;
   List<TargetFocus> targets = [];
 
-  String _deeplinkPodcastURL = "";
-  String _deeplinkEpisodeID = "";
-
   @override
   void initState() {
     super.initState();
@@ -635,8 +632,6 @@ class HomeState extends State<Home> with WidgetsBindingObserver {
               noSubscriptionsMessage:
                   "Use the Discover view to find and subscribe to your first podcast",
               title: 'Anytime Podcast Player',
-              podcastURL: _deeplinkPodcastURL,
-              episodeID: _deeplinkEpisodeID,
             ),
           ),
         );
@@ -698,12 +693,7 @@ class HomeState extends State<Home> with WidgetsBindingObserver {
           Text(e.toString(),
               style: Theme.of(context).dialogTheme.contentTextStyle));
     });
-    PodcastURLHandler(widget.userProfileBloc, this.context, (podcastShareLink) {
-      setState(() {
-        _deeplinkPodcastURL = podcastShareLink.feedURL;
-        _deeplinkEpisodeID = podcastShareLink.episodeID;
-      });
-    }, (e) {
+    PodcastURLHandler(widget.userProfileBloc, this.context, (e) {
       promptError(
           context,
           "Podcast Link",
