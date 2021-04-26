@@ -38,6 +38,8 @@ class PodcastURLHandler {
           await handleDeeplink(
               context, podcastLink.feedURL, podcastLink.episodeID);
         });
+      } catch (e) {
+        showFlushbar(context, message: e.toString());
       } finally {
         if (loaderRoute.isActive) {
           Navigator.of(context).removeRoute(loaderRoute);
@@ -75,8 +77,7 @@ Future handleDeeplink(
         }
       });
     } catch (e) {
-      showFlushbar(context,
-          message: 'Failed to load episode. Error:' + e.toString());
+      throw Exception("Failed to load episode.");
     }
   } else {
     try {
@@ -88,8 +89,7 @@ Future handleDeeplink(
                   Provider.of<PodcastBloc>(context, listen: false))),
           ModalRoute.withName('/'));
     } catch (e) {
-      showFlushbar(context,
-          message: 'Failed to load podcast. Error:' + e.toString());
+      throw Exception("Failed to load podcast.");
     }
   }
 }
