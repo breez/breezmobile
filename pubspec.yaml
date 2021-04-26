@@ -71,6 +71,7 @@ dependencies:
   drag_and_drop_lists: ^0.2.7
   printing: ^3.7.0
   webview_flutter: ^1.0.7
+  flutter_web_browser: ^0.14.0
   flutter_localizations:
     sdk: flutter
 
