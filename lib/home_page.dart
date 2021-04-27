@@ -635,8 +635,6 @@ class HomeState extends State<Home> with WidgetsBindingObserver {
               noSubscriptionsMessage:
                   "Use the Discover view to find and subscribe to your first podcast",
               title: 'Anytime Podcast Player',
-              podcastURL: _deeplinkPodcastURL,
-              episodeID: _deeplinkEpisodeID,
             ),
           ),
         );
