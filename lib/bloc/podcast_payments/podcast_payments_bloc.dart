@@ -80,7 +80,7 @@ class PodcastPaymentsBloc with AsyncActionsHandler {
     var sharedPreferences = await injector.sharedPreferences;
     _aggregatedPayments = AggregatedPayments(sharedPreferences);
     // start the payment ticker
-    _paymentTimer = Timer.periodic(Duration(seconds: 1), (t) async {
+    Timer.periodic(Duration(seconds: 1), (t) async {
       // calculate episode and playing state
       var playingState = await _getAudioState();
       if (playingState != AudioState.playing) {

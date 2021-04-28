@@ -7,7 +7,7 @@ import '../../logger.dart';
 class AggregatedPayments {
   static const String AGGREGATED_PAYMENTS_KEY = "AGGREGATED_PAYMENTS_KEY";
 
-  Map<String, double> aggregatedAmount;
+  Map<String, double> aggregatedAmount = Map<String, double>();
   SharedPreferences sharedPreferences;
 
   AggregatedPayments(SharedPreferences sharedPreferences) {
@@ -16,7 +16,8 @@ class AggregatedPayments {
         sharedPreferences.getString(AGGREGATED_PAYMENTS_KEY);
     if (persistedAggregation != null) {
       try {
-        aggregatedAmount = json.decode(persistedAggregation);
+        Map<String, dynamic> amounts = json.decode(persistedAggregation);
+        aggregatedAmount = amounts.cast<String, double>();
         log.info("loaded persisted aggregation: $aggregatedAmount");
       } catch (err) {
         log.severe("failed to load persisted aggregation", err);
