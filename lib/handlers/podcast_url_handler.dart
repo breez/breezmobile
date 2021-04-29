@@ -3,6 +3,7 @@ import 'package:anytime/bloc/podcast/podcast_bloc.dart';
 import 'package:anytime/bloc/settings/settings_bloc.dart';
 import 'package:anytime/entities/feed.dart';
 import 'package:anytime/entities/podcast.dart';
+import 'package:anytime/state/bloc_state.dart';
 import 'package:anytime/ui/podcast/now_playing.dart';
 import 'package:anytime/ui/podcast/podcast_details.dart';
 import 'package:breez/bloc/user_profile/breez_user_model.dart';
@@ -58,11 +59,17 @@ Future handleDeeplink(
       var podcast = Podcast.fromUrl(url: podcastURL);
       // Load the details of the Podcast specified in the URL
       podcastBloc.load(Feed(podcast: podcast));
-      // Wait for the episode list to load
-      var episodeList = await podcastBloc.episodes
-          .firstWhere((episodeList) => episodeList.isNotEmpty);
-      episodeList.forEach((episode) {
-        if (episode.guid == episodeID) {
+      // Wait for the podcast details to load
+      var blocstate = await podcastBloc.details.first;
+      if (blocstate is BlocErrorState) {
+        throw "Failed to load episode.";
+      } else if (blocstate is BlocPopulatedState) {
+        // Retrieve episode list and play matching episode
+        var episodeList = await podcastBloc.episodes
+            .firstWhere((episodeList) => episodeList.isNotEmpty);
+        var episode =
+            episodeList.firstWhere((episode) => episode.guid == episodeID);
+        if (episode != null) {
           final audioBloc = Provider.of<AudioBloc>(context, listen: false);
           audioBloc.play(episode);
           final settings =
@@ -75,11 +82,12 @@ Future handleDeeplink(
                     fullscreenDialog: false),
                 ModalRoute.withName('/'));
           }
+        } else {
+          throw "Episode not found.";
         }
-      });
-      throw Exception();
+      }
     } catch (e) {
-      throw Exception("Failed to load episode.");
+      throw Exception(e.toString());
     }
   } else {
     try {
