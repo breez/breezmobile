@@ -39,6 +39,7 @@ class PodcastURLHandler {
               context, podcastLink.feedURL, podcastLink.episodeID);
         });
       } catch (e) {
+        Navigator.popUntil(context, (route) => route.settings.name == "/");
         showFlushbar(context, message: e.toString());
       } finally {
         if (loaderRoute.isActive) {
@@ -76,6 +77,7 @@ Future handleDeeplink(
           }
         }
       });
+      throw Exception();
     } catch (e) {
       throw Exception("Failed to load episode.");
     }
