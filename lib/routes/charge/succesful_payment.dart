@@ -90,7 +90,7 @@ class SuccessfulPaymentRouteState extends State<SuccessfulPaymentRoute>
       mainAxisSize: MainAxisSize.min,
       children: <Widget>[
         Text(
-          'Payment received!',
+          'Payment approved!',
           textAlign: TextAlign.center,
           style: Theme.of(context)
               .primaryTextTheme
