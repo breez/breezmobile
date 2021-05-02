@@ -41,6 +41,7 @@ class PodcastPaymentsBloc with AsyncActionsHandler {
   Map<String, double> _perDestinationPayments = Map<String, double>();
   BreezUserModel user;
   String breezReceiverNode;
+  Map<String, bool> paidPositions = Map<String, bool>();
 
   PodcastPaymentsBloc(this.userProfile, this.accountBloc, this.settingsBloc,
       this.audioBloc, this.repository) {
@@ -172,6 +173,27 @@ class PodcastPaymentsBloc with AsyncActionsHandler {
     ])
       ..addAll(recipients);
 
+    // get current podcast listening position
+    PositionState position;
+    try {
+      position =
+          await audioBloc.playPosition.first.timeout(Duration(seconds: 1));
+    } catch (e) {}
+
+    // calculate the minute to pay.
+    var minuteToPay = position.position.inMinutes;
+
+    // construct a position key (minute + episode guid)
+    var paidPositionKey = "${episode.guid}-$minuteToPay";
+
+    // in case not boost we want to ensure any minutes is not paid more than one time.
+    if (!boost && paidPositions[paidPositionKey] == true) {
+      log.info(
+          "skipping paying minute $minuteToPay for episode ${episode.title}");
+      return;
+    }
+    paidPositions[paidPositionKey] = true;
+
     withBreez.forEach((d) async {
       final amount = (d.split * total / totalSplits);
       var payPart = amount.toInt();
@@ -186,11 +208,7 @@ class PodcastPaymentsBloc with AsyncActionsHandler {
       final lastFee = await _lastFeeForDestination(d.address);
       final netPay = payPart - lastFee.toInt();
       final maxFee = Int64((netPay * 1000 * maxFeePart).toInt());
-      PositionState position;
-      try {
-        position =
-            await audioBloc.playPosition.first.timeout(Duration(seconds: 1));
-      } catch (e) {}
+
       log.info(
           "starting recipient payment boost=$boost netPay=$netPay from total: $total with fee: $maxFee split=${d.split} lastFee = $lastFee");
       if (netPay > 0 && amount <= total && maxFee > 0) {
@@ -211,6 +229,9 @@ class PodcastPaymentsBloc with AsyncActionsHandler {
                     customValue: customValue))
             .then((payResponse) {
           if (payResponse.paymentError?.isNotEmpty == true) {
+            if (!boost) {
+              _perDestinationPayments[d.address] += payPart;
+            }
             log.info(
                 "failed to pay $netPay to destination ${d.address}, error=${payResponse.paymentError} trying next time...");
             return;
