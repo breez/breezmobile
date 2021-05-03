@@ -62,13 +62,14 @@ Future handleDeeplink(
       // Wait for the podcast details to load
       var blocstate = await podcastBloc.details.first;
       if (blocstate is BlocErrorState) {
-        throw "Failed to load episode.";
+        throw "Failed to load episode. Please check your connection.";
       } else if (blocstate is BlocPopulatedState) {
         // Retrieve episode list and play matching episode
         var episodeList = await podcastBloc.episodes
             .firstWhere((episodeList) => episodeList.isNotEmpty);
-        var episode =
-            episodeList.firstWhere((episode) => episode.guid == episodeID);
+        var episode = episodeList.firstWhere(
+            (episode) => episode.guid == episodeID,
+            orElse: () => null);
         if (episode != null) {
           final audioBloc = Provider.of<AudioBloc>(context, listen: false);
           audioBloc.play(episode);
@@ -83,23 +84,26 @@ Future handleDeeplink(
                 ModalRoute.withName('/'));
           }
         } else {
-          throw "Episode not found.";
+          await _navigateToPodcast(context, podcastURL);
         }
       }
     } catch (e) {
-      throw Exception(e.toString());
+      throw e.toString();
     }
   } else {
     try {
-      await Navigator.pushAndRemoveUntil(
-          context,
-          MaterialPageRoute<void>(
-              builder: (context) => PodcastDetails(
-                  Podcast.fromUrl(url: podcastURL),
-                  Provider.of<PodcastBloc>(context, listen: false))),
-          ModalRoute.withName('/'));
+      await _navigateToPodcast(context, podcastURL);
     } catch (e) {
       throw Exception("Failed to load podcast.");
     }
   }
+}
+
+Future _navigateToPodcast(BuildContext context, String podcastURL) {
+  return Navigator.pushAndRemoveUntil(
+      context,
+      MaterialPageRoute<void>(
+          builder: (context) => PodcastDetails(Podcast.fromUrl(url: podcastURL),
+              Provider.of<PodcastBloc>(context, listen: false))),
+      ModalRoute.withName('/'));
 }
