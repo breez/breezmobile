@@ -8,6 +8,7 @@ import '../logger.dart';
 class LightningLinksService {
   final StreamController<String> _linksNotificationsController =
       BehaviorSubject<String>();
+
   Stream<String> get linksNotifications => _linksNotificationsController.stream;
 
   LightningLinksService() {

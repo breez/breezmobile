@@ -118,7 +118,7 @@ class SpontaneousPaymentPageState extends State<SpontaneousPaymentPage> {
                     textInputAction: TextInputAction.done,
                     maxLines: null,
                     maxLength: 90,
-                    maxLengthEnforced: true,
+                    maxLengthEnforcement: MaxLengthEnforcement.enforced,
                     decoration: InputDecoration(
                       labelText: "Tip Message (optional)",
                     ),

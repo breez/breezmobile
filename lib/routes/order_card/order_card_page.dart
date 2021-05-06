@@ -45,10 +45,10 @@ class OrderCardPageState extends State<OrderCardPage> {
   String _userCountryShort = "";
   Map _countriesJSON = Map();
   Map _statesJSON = Map();
-  List<String> _specialCountriesShort = List();
-  List<String> _states = List();
-  List<String> _statesShow = List();
-  List<String> _countriesShow = List();
+  List<String> _specialCountriesShort = [];
+  List<String> _states = [];
+  List<String> _statesShow = [];
+  List<String> _countriesShow = [];
   bool _showStatesList = false;
   bool _showCountriesList = false;
   bool _autoValidateState = false;
@@ -254,7 +254,7 @@ class OrderCardPageState extends State<OrderCardPage> {
   }
 
   Widget _getFutureWidgetStates() {
-    List<InkWell> list = List();
+    List<InkWell> list = [];
     int number = _statesShow.length > 2 ? 3 : _statesShow.length;
     for (int i = 0; i < number; i++) {
       list.add(InkWell(
@@ -278,7 +278,7 @@ class OrderCardPageState extends State<OrderCardPage> {
   }
 
   Widget _getFutureWidgetCountries() {
-    List<InkWell> list = List();
+    List<InkWell> list = [];
     int number = _countriesShow.length > 2 ? 3 : _countriesShow.length;
     for (int i = 0; i < number; i++) {
       list.add(InkWell(
@@ -324,7 +324,7 @@ class OrderCardPageState extends State<OrderCardPage> {
           "Name and address are required for sending you a Breez card. Any information provided will be deleted from our systems after card has been sent. You may skip this step and continue using Breez without a card.",
           style: Theme.of(context).dialogTheme.contentTextStyle),
       actions: <Widget>[
-        FlatButton(
+        TextButton(
             onPressed: () => Navigator.pop(context),
             child: Text("OK", style: Theme.of(context).primaryTextTheme.button))
       ],
@@ -618,7 +618,7 @@ class OrderCardPageState extends State<OrderCardPage> {
                   "Breez card will be sent shortly to the address you have specified.");
             }).catchError((error) {
               print(error.toString());
-              Scaffold.of(context)
+              ScaffoldMessenger.of(context)
                   .showSnackBar(SnackBar(content: Text(error.toString())));
             });
           } else {}

@@ -40,12 +40,12 @@ class _BackupPhraseWarningDialogState extends State<BackupPhraseWarningDialog> {
             children: _getContent(),
           ),
           actions: [
-            FlatButton(
+            TextButton(
               onPressed: () => Navigator.of(context).pop(false),
               child:
                   Text("NO", style: Theme.of(context).primaryTextTheme.button),
             ),
-            FlatButton(
+            TextButton(
               onPressed: () => Navigator.of(context).pop(true),
               child:
                   Text("YES", style: Theme.of(context).primaryTextTheme.button),

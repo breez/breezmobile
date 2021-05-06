@@ -1,5 +1,3 @@
-import 'package:fixnum/fixnum.dart';
-
 enum PaymentEventType { BoostStarted, StreamCompleted }
 
 class PaymentEvent {

@@ -146,7 +146,7 @@ class PaymentsFilterState extends State<PaymentsFilter> {
                         startDate: result[0],
                         endDate: result[1]));
               })
-            : Scaffold.of(context).showSnackBar(SnackBar(
+            : ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                 content:
                     Text("Please wait while Breez is loading transactions."))),
       ),

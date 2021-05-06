@@ -57,7 +57,19 @@ class WalletDashboardState extends State<WalletDashboard> {
             child: Center(
               child: widget._accountModel != null &&
                       !widget._accountModel.initial
-                  ? FlatButton(
+                  ? TextButton(
+                      style: ButtonStyle(
+                        overlayColor: MaterialStateProperty.resolveWith<Color>(
+                            (Set<MaterialState> states) {
+                          if (states.contains(MaterialState.focused))
+                            return theme
+                                .customData[theme.themeId].paymentListBgColor;
+                          if (states.contains(MaterialState.hovered))
+                            return theme
+                                .customData[theme.themeId].paymentListBgColor;
+                          return null; // Defer to the widget's default.
+                        }),
+                      ),
                       onPressed: () {
                         if (widget._userModel.hideBalance) {
                           widget._onPrivacyChange(false);
@@ -73,8 +85,6 @@ class WalletDashboardState extends State<WalletDashboard> {
                         widget._onCurrencyChange(
                             Currency.currencies[nextCurrencyIndex]);
                       },
-                      highlightColor:
-                          theme.customData[theme.themeId].paymentListBgColor,
                       child: widget._userModel.hideBalance
                           ? Text("******",
                               style: Theme.of(context)
@@ -140,15 +150,25 @@ class WalletDashboardState extends State<WalletDashboard> {
                       widget._accountModel.fiatConversionList.isNotEmpty &&
                       isAboveMinAmount(widget._accountModel?.fiatCurrency) &&
                       !widget._userModel.hideBalance
-                  ? FlatButton(
+                  ? TextButton(
+                      style: ButtonStyle(
+                        overlayColor: MaterialStateProperty.resolveWith<Color>(
+                            (Set<MaterialState> states) {
+                          if (states.contains(MaterialState.focused))
+                            return theme
+                                .customData[theme.themeId].paymentListBgColor;
+                          if (states.contains(MaterialState.hovered))
+                            return theme
+                                .customData[theme.themeId].paymentListBgColor;
+                          return null; // Defer to the widget's default.
+                        }),
+                      ),
                       onPressed: () {
                         var newFiatConversion = nextValidFiatConversion();
                         if (newFiatConversion != null)
                           widget._onFiatCurrencyChange(
                               newFiatConversion.currencyData.shortName);
                       },
-                      highlightColor:
-                          theme.customData[theme.themeId].paymentListBgColor,
                       child: Text(
                           "${widget._accountModel.formattedFiatBalance}",
                           style: Theme.of(context)

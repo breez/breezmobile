@@ -67,10 +67,12 @@ Widget breezAvatarDialog(BuildContext context, UserProfileBloc userBloc) {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
                   Expanded(
-                    child: FlatButton(
-                      padding: EdgeInsets.only(
-                        bottom: 20.0,
-                        top: 26.0,
+                    child: TextButton(
+                      style: TextButton.styleFrom(
+                        padding: EdgeInsets.only(
+                          bottom: 20.0,
+                          top: 26.0,
+                        ),
                       ),
                       child: AutoSizeText(
                         'RANDOM',
@@ -129,10 +131,12 @@ Widget breezAvatarDialog(BuildContext context, UserProfileBloc userBloc) {
                     },
                   ),
                   Expanded(
-                    child: FlatButton(
-                      padding: EdgeInsets.only(
-                        bottom: 20.0,
-                        top: 26.0,
+                    child: TextButton(
+                      style: TextButton.styleFrom(
+                        padding: EdgeInsets.only(
+                          bottom: 20.0,
+                          top: 26.0,
+                        ),
                       ),
                       child: AutoSizeText(
                         'GALLERY',
@@ -177,7 +181,7 @@ Widget breezAvatarDialog(BuildContext context, UserProfileBloc userBloc) {
             ),
           ),
           actions: <Widget>[
-            FlatButton(
+            TextButton(
               child: Text('CANCEL',
                   style: Theme.of(context).primaryTextTheme.button),
               onPressed: _isUploading
@@ -186,7 +190,7 @@ Widget breezAvatarDialog(BuildContext context, UserProfileBloc userBloc) {
                       Navigator.of(context).pop();
                     },
             ),
-            FlatButton(
+            TextButton(
               child: Text('SAVE',
                   style: Theme.of(context).primaryTextTheme.button),
               onPressed: _isUploading

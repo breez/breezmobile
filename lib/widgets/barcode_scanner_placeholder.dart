@@ -54,9 +54,14 @@ class BarcodeScannerPlaceholderState extends State<BarcodeScannerPlaceholder> {
                 Padding(
                   padding: EdgeInsets.only(top: 16.0),
                 ),
-                RaisedButton(
-                  padding: EdgeInsets.only(
-                      top: 8.0, bottom: 8.0, right: 12.0, left: 12.0),
+                ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    primary: theme.BreezColors.white[500],
+                    elevation: 0.0,
+                    shape: const StadiumBorder(),
+                    padding: EdgeInsets.only(
+                        top: 8.0, bottom: 8.0, right: 12.0, left: 12.0),
+                  ),
                   child: Row(
                     mainAxisSize: MainAxisSize.min,
                     children: <Widget>[
@@ -73,9 +78,6 @@ class BarcodeScannerPlaceholderState extends State<BarcodeScannerPlaceholder> {
                       )
                     ],
                   ),
-                  color: theme.BreezColors.white[500],
-                  elevation: 0.0,
-                  shape: const StadiumBorder(),
                   onPressed: () async {
                     AppSettings.openAppSettings();
                     Navigator.pop(context);

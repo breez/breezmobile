@@ -197,7 +197,7 @@ class UserApp extends StatelessWidget {
                                       return FadeInRoute(
                                         builder: (_) => withBreezTheme(
                                           context,
-                                          DepositToBTCAddressPage(accountBloc),
+                                          DepositToBTCAddressPage(),
                                         ),
                                         settings: settings,
                                       );

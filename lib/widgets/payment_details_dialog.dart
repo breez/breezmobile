@@ -564,7 +564,7 @@ class ClosedChannelPaymentDetailsState
                 children: [
                     Padding(
                       padding: EdgeInsets.only(top: 20.0),
-                      child: FlatButton(
+                      child: TextButton(
                         onPressed: () {
                           _onResetChainInfoPressed().then((_) {
                             _promptForRestart();

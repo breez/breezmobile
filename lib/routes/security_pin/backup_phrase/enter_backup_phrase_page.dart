@@ -117,7 +117,7 @@ class EnterBackupPhrasePageState extends State<EnterBackupPhrasePage> {
   }
 
   List<Widget> _buildRestoreFormContent(UserProfileBloc userProfileBloc) {
-    List<Widget> restoreFormContent = List();
+    List<Widget> restoreFormContent = [];
     restoreFormContent..add(_buildForm());
     if (_hasError) {
       restoreFormContent

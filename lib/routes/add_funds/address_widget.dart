@@ -82,7 +82,7 @@ class AddressWidget extends StatelessWidget {
   }
 
   List<Widget> _buildShareAndCopyIcons(BuildContext context) {
-    List<Widget> _icons = List();
+    List<Widget> _icons = [];
     if (address == null) {
       _icons.add(SizedBox(
         height: 48.0,
@@ -137,7 +137,7 @@ class AddressWidget extends StatelessWidget {
             ]),
       ),
       actions: <Widget>[
-        FlatButton(
+        TextButton(
             onPressed: () {
               Navigator.pop(context);
             },
