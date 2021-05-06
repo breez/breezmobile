@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:io';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
@@ -56,17 +57,19 @@ class QRScanState extends State<QRScan> {
                 width: 32,
                 height: 32,
               ),
-              onPressed: () {
-                ImagePicker.pickImage(source: ImageSource.gallery)
-                    .then((file) async {
-                  try {
-                    if (file == null) {
-                      return;
-                    }
-                    String data = await QrCodeToolsPlugin.decodeFrom(file.path);
-                    Navigator.of(context).pop(data);
-                  } catch (e) {}
+              onPressed: () async {
+                final _picker = ImagePicker();
+                PickedFile pickedFile =
+                    await _picker.getImage(source: ImageSource.gallery).catchError((err) {
                 });
+                final File file = File(pickedFile.path);
+                try {
+                  if (file == null) {
+                    return;
+                  }
+                  String data = await QrCodeToolsPlugin.decodeFrom(file.path);
+                  Navigator.of(context).pop(data);
+                } catch (e) {}
               },
             ))),
         Positioned(
@@ -110,7 +113,7 @@ class QRScanState extends State<QRScan> {
     this.controller = controller;
     StreamSubscription sub;
     sub = controller.scannedDataStream.listen((scanData) async {
-      if (scanData?.isNotEmpty == true) {
+      if (scanData.code?.isNotEmpty == true) {
         await sub.cancel();
         Navigator.of(context).pop(scanData);
       }

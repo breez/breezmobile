@@ -63,11 +63,15 @@ class FiatCurrencySettingsState extends State<FiatCurrencySettings> {
           lastListTargetSize: 0,
           lastItemTargetHeight: 8,
           scrollController: _scrollController,
+          onListReorder: (oldListIndex, newListIndex) => null,
           onItemReorder: (from, oldListIndex, to, newListIndex) =>
               _onReorder(account, from, to),
-          dragHandle: Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: Icon(Icons.drag_handle, color: theme.BreezColors.white[200]),
+          itemDragHandle: DragHandle(
+            child: Padding(
+              padding: const EdgeInsets.all(16.0),
+              child:
+                  Icon(Icons.drag_handle, color: theme.BreezColors.white[200]),
+            ),
           ),
         ),
       );

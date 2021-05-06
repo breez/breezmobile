@@ -190,8 +190,9 @@ class OrderCardPageState extends State<OrderCardPage> {
   void _loadData() async {
     _specialCountriesShort.add("US");
     _specialCountriesShort.add("CA");
-    final response = await http.get(
-        'http://api.ipstack.com/check?access_key=025a14ce39e8588578966edfe7e7d70a&output=json&fields=country_code');
+    Uri uri = Uri.http("api.ipstack.com",
+        "check?access_key=025a14ce39e8588578966edfe7e7d70a&output=json&fields=country_code");
+    final response = await http.get(uri);
     if (response.statusCode == 200) {
       Map data = json.decode(response.body);
       _userCountryShort = data["country_code"];

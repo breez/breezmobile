@@ -1,5 +1,5 @@
 import 'dart:async';
-import 'dart:io';
+
 import 'package:breez/bloc/account/account_model.dart';
 import 'package:breez/bloc/blocs_provider.dart';
 import 'package:breez/bloc/invoice/invoice_bloc.dart';
@@ -20,20 +20,12 @@ import 'package:breez/widgets/loader.dart';
 import 'package:breez/widgets/route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:image_picker/image_picker.dart';
-import 'package:qr_code_tools/qr_code_tools.dart';
 
 class QrActionButton extends StatelessWidget {
   final AccountModel account;
   final GlobalKey firstPaymentItemKey;
 
   QrActionButton(this.account, this.firstPaymentItemKey);
-
-  Future<File> _pickImage() async {
-    return ImagePicker.pickImage(source: ImageSource.gallery).then((file) {
-      return file;
-    });
-  }
 
   @override
   Widget build(BuildContext context) {

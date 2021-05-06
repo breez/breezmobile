@@ -12,9 +12,32 @@ class FormActionsWrapper extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return FormKeyboardActions(
-        child:
-            _KeyboardActionsWrapper(focusNode: numericFieldNode, child: child));
+    return KeyboardActions(
+      child: _KeyboardActionsWrapper(focusNode: numericFieldNode, child: child),
+      config: KeyboardActionsConfig(
+          keyboardActionsPlatform: KeyboardActionsPlatform.ALL,
+          keyboardBarColor: Colors.grey[200],
+          nextFocus: true,
+          actions: [
+            KeyboardActionsItem(
+              focusNode: numericFieldNode,
+              toolbarButtons: [
+                (node) {
+                  return GestureDetector(
+                    onTap: () => node.unfocus(),
+                    child: Padding(
+                      padding: EdgeInsets.all(8.0),
+                      child: Text("DONE",
+                          style: TextStyle(
+                              color: theme.BreezColors.blue[500],
+                              fontWeight: FontWeight.bold)),
+                    ),
+                  );
+                }
+              ],
+            )
+          ]),
+    );
   }
 }
 
@@ -36,27 +59,34 @@ class _KeyboardActionsWrapperState extends State<_KeyboardActionsWrapper> {
   void initState() {
     // Configure keyboard actions
     if (defaultTargetPlatform == TargetPlatform.iOS) {
-      FormKeyboardActions.setKeyboardActions(
-          context, _buildActionsConfig(context));
+      KeyboardActionstate().setConfig(_buildActionsConfig());
     }
     super.initState();
   }
 
-  KeyboardActionsConfig _buildActionsConfig(BuildContext context) {
+  KeyboardActionsConfig _buildActionsConfig() {
     return KeyboardActionsConfig(
         keyboardActionsPlatform: KeyboardActionsPlatform.IOS,
         keyboardBarColor: Colors.grey[200],
         nextFocus: true,
         actions: [
-          KeyboardAction(
-              focusNode: widget.focusNode,
-              closeWidget: Padding(
-                padding: EdgeInsets.all(8.0),
-                child: Text("DONE",
-                    style: TextStyle(
-                        color: theme.BreezColors.blue[500],
-                        fontWeight: FontWeight.bold)),
-              ))
+          KeyboardActionsItem(
+            focusNode: widget.focusNode,
+            toolbarButtons: [
+              (node) {
+                return GestureDetector(
+                  onTap: () => node.unfocus(),
+                  child: Padding(
+                    padding: EdgeInsets.all(8.0),
+                    child: Text("DONE",
+                        style: TextStyle(
+                            color: theme.BreezColors.blue[500],
+                            fontWeight: FontWeight.bold)),
+                  ),
+                );
+              }
+            ],
+          )
         ]);
   }
 
