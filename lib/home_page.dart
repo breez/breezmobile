@@ -51,6 +51,7 @@ import 'bloc/user_profile/user_actions.dart';
 import 'handlers/check_version_handler.dart';
 import 'handlers/ctp_join_session_handler.dart';
 import 'handlers/lnurl_handler.dart';
+import 'handlers/podcast_url_handler.dart';
 import 'handlers/received_invoice_notification.dart';
 import 'handlers/showPinHandler.dart';
 import 'handlers/sync_ui_handler.dart';
@@ -689,6 +690,13 @@ class HomeState extends State<Home> with WidgetsBindingObserver {
       promptError(
           context,
           "Connect to Pay",
+          Text(e.toString(),
+              style: Theme.of(context).dialogTheme.contentTextStyle));
+    });
+    PodcastURLHandler(widget.userProfileBloc, this.context, (e) {
+      promptError(
+          context,
+          "Podcast Link",
           Text(e.toString(),
               style: Theme.of(context).dialogTheme.contentTextStyle));
     });
