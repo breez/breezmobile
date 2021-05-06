@@ -117,7 +117,7 @@ class QRScanState extends State<QRScan> {
     sub = controller.scannedDataStream.listen((scanData) async {
       if (scanData.code?.isNotEmpty == true) {
         await sub.cancel();
-        Navigator.of(context).pop(scanData);
+        Navigator.of(context).pop(scanData.code);
       }
     });
   }
