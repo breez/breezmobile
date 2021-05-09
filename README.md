@@ -117,11 +117,11 @@ Modify the files under the `conf/` directory:
 -network=mainnet
 +network=testnet
 -peer=btcd-mainnet.lightning.computer
-+peer=btcd-testnet.lightning.computer
++peer=<your btcd node address on testnet>
 
 # lnd.conf
 -neutrino.connect=btcd-mainnet.lightning.computer
-+neutrino.connect=btcd-testnet.lightning.computer
++neutrino.connect=<your btcd node address on testnet>
 ```
 
 After the initial sync, go to the _Developer_ menu, get an address to fund with testnet coins with `newaddress p2wkh`, then fund it, and use `connect 03d5e17a3c213fe490e1b0c389f8cfcfcea08a29717d50a9f453735e0ab2a7c003@3.16.119.191:9735` then `openchannel --private --conf_target 1 03d5e17a3c213fe490e1b0c389f8cfcfcea08a29717d50a9f453735e0ab2a7c003 90000` to open a channel to that public node (adjust the amounts and the node id/address if you wish).
