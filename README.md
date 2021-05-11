@@ -96,10 +96,9 @@ Check our [active bounties](https://github.com/breez/breezmobile/wiki/Bounties).
 - Create a firebase iOS app using the [firebase console](https://console.firebase.google.com/)
 - Generate the GoogleServices-info.plist and copy it to ios/Runner directory
 - Run `pod install` from `breezmobile/ios`
-3. Flutter beta channel
+3. Flutter stable channel
 - Install [flutter](https://flutter.dev/docs/get-started/install)
-Run these command to switch to beta channel:
-- flutter channel beta
+Run these command:
 - flutter upgrade
 
 ## Run
