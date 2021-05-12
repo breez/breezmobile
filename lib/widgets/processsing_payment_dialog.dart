@@ -122,7 +122,7 @@ class ProcessingPaymentDialogState extends State<ProcessingPaymentDialog>
       });
     } else {
       syncState = channelsStatusState.SYNCHRONIZED;
-      timer.cancel();
+      timer?.cancel();
       timer = null;
       synchronizedCompleter.complete(true);
     }
