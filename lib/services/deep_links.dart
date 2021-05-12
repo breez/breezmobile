@@ -94,9 +94,9 @@ class PodcastShareLinkModel {
 
   static PodcastShareLinkModel fromLinkQuery(String queryStr) {
     Map<String, String> query = Uri.splitQueryString(queryStr);
-    return PodcastShareLinkModel(Uri.decodeQueryComponent(query["feedURL"]),
+    return PodcastShareLinkModel(Uri.decodeComponent(query["feedURL"]),
         episodeID: query["episodeID"] == null
             ? null
-            : Uri.decodeQueryComponent(query["episodeID"]));
+            : Uri.decodeComponent(query["episodeID"]));
   }
 }
