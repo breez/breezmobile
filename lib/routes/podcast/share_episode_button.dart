@@ -5,10 +5,17 @@ import 'package:flutter/material.dart';
 import 'package:share_extend/share_extend.dart';
 
 class ShareEpisodeButton extends StatefulWidget {
+  final String podcastTitle;
   final String podcastURL;
+  final String episodeTitle;
   final String episodeID;
 
-  const ShareEpisodeButton({Key key, this.podcastURL, this.episodeID})
+  const ShareEpisodeButton(
+      {Key key,
+      this.podcastTitle,
+      this.podcastURL,
+      this.episodeTitle,
+      this.episodeID})
       : super(key: key);
 
   @override
@@ -32,7 +39,13 @@ class ShareEpisodeButtonState extends State<ShareEpisodeButton> {
           var podcastShareLink = await _deepLinks.generatePodcastShareLink(
               PodcastShareLinkModel(widget.podcastURL,
                   episodeID: widget.episodeID));
-          ShareExtend.share(podcastShareLink, "text");
+          ShareExtend.share(
+              widget.podcastTitle +
+                  '\n' +
+                  widget.episodeTitle +
+                  '\n' +
+                  podcastShareLink,
+              "text");
         },
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
