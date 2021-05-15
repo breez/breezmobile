@@ -38,7 +38,6 @@ dependencies:
   ini: ^2.1.0
   intl: ^0.17.0
   json_annotation: ^4.0.1
-  keyboard_actions: ^3.4.0
   logging: ^1.0.1
   nfc_in_flutter: ^2.0.5
   optimized_cached_image: ^2.0.1
@@ -85,7 +84,6 @@ dependency_overrides:
 dev_dependencies:
   flutter_test:
     sdk: flutter
-
   build_runner: ^2.0.2
   json_serializable: ^4.1.1
   mockito: ^5.0.7
