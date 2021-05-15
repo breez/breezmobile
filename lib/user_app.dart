@@ -53,7 +53,7 @@ Widget _withTheme(BreezUserModel user, Widget child) {
   return child;
 }
 
-class UserApp extends StatelessWidget {
+class UserApp extends StatelessWidget { // ignore: must_be_immutable
   GlobalKey<NavigatorState> _navigatorKey = GlobalKey<NavigatorState>();
   GlobalKey<NavigatorState> _homeNavigatorKey = GlobalKey<NavigatorState>();
 

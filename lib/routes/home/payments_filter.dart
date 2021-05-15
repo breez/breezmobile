@@ -242,7 +242,7 @@ class PaymentsFilterState extends State<PaymentsFilter> {
     }
     return Padding(
       padding: const EdgeInsets.only(right: 0),
-      child: IconButton(
+      child: IconButton( // ignore: missing_required_param
         icon: Icon(
           Icons.more_vert,
           color: theme.themeId == "BLUE"

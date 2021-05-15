@@ -8,7 +8,7 @@ import 'package:image/image.dart' as DartImage;
 import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
 
-class AvatarPicker extends StatelessWidget {
+class AvatarPicker extends StatelessWidget { // ignore: must_be_immutable
   final String imagePath;
   final bool renderLoading;
   final Function(List<int> selectedImage) onImageSelected;

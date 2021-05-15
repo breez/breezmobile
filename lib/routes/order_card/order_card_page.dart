@@ -51,9 +51,9 @@ class OrderCardPageState extends State<OrderCardPage> {
   List<String> _countriesShow = [];
   bool _showStatesList = false;
   bool _showCountriesList = false;
-  bool _autoValidateState = false;
-  bool _autoValidateCountry = false;
-  bool _autoValidateZip = false;
+  AutovalidateMode _autoValidateState = AutovalidateMode.disabled;
+  AutovalidateMode _autoValidateCountry = AutovalidateMode.disabled;
+  AutovalidateMode _autoValidateZip = AutovalidateMode.disabled;
 
   _CustomerData _data = _CustomerData();
 
@@ -112,19 +112,19 @@ class OrderCardPageState extends State<OrderCardPage> {
           _stateFocusNode.hasFocus) {
         _statesShow.sort();
         setState(() {
-          _autoValidateState = false;
+          _autoValidateState = AutovalidateMode.disabled;
           _showStatesList = true;
           _scroll(40.0);
         });
       } else {
         setState(() {
-          _autoValidateState = true;
+          _autoValidateState = AutovalidateMode.always;
           _showStatesList = false;
         });
       }
     } else {
       setState(() {
-        _autoValidateState = false;
+        _autoValidateState = AutovalidateMode.disabled;
         _showStatesList = false;
       });
     }
@@ -144,13 +144,13 @@ class OrderCardPageState extends State<OrderCardPage> {
           _countryFocusNode.hasFocus) {
         _countriesShow.sort();
         setState(() {
-          _autoValidateCountry = false;
+          _autoValidateCountry = AutovalidateMode.disabled;
           _showCountriesList = true;
           _scroll(115.0);
         });
       } else {
         setState(() {
-          _autoValidateCountry = true;
+          _autoValidateCountry = AutovalidateMode.always;
           _showCountriesList = false;
         });
       }
@@ -159,7 +159,7 @@ class OrderCardPageState extends State<OrderCardPage> {
       _countriesShow.clear();
 
       setState(() {
-        _autoValidateCountry = false;
+        _autoValidateCountry = AutovalidateMode.disabled;
         _showCountriesList = false;
       });
     }
@@ -168,7 +168,7 @@ class OrderCardPageState extends State<OrderCardPage> {
   void _onChangeZip() {
     setState(() {
       _autoValidateZip =
-          (_zipController.text.length > 0 && !_zipFocusNode.hasFocus);
+          (_zipController.text.length > 0 && !_zipFocusNode.hasFocus) ? AutovalidateMode.always : AutovalidateMode.disabled;
     });
   }
 
@@ -464,7 +464,7 @@ class OrderCardPageState extends State<OrderCardPage> {
                                     child: Container(
                                       margin: EdgeInsets.only(left: 8.0),
                                       child: TextFormField(
-                                        autovalidate: _autoValidateState,
+                                        autovalidateMode: _autoValidateState,
                                         controller: _stateController,
                                         focusNode: _stateFocusNode,
                                         decoration:
@@ -506,7 +506,7 @@ class OrderCardPageState extends State<OrderCardPage> {
                                         flex: 200,
                                         child: Container(
                                           child: TextFormField(
-                                            autovalidate: _autoValidateCountry,
+                                            autovalidateMode: _autoValidateCountry,
                                             controller: _countryController,
                                             focusNode: _countryFocusNode,
                                             decoration: InputDecoration(
@@ -535,7 +535,7 @@ class OrderCardPageState extends State<OrderCardPage> {
                                         child: Container(
                                           margin: EdgeInsets.only(left: 8.0),
                                           child: TextFormField(
-                                            autovalidate: _autoValidateZip,
+                                            autovalidateMode: _autoValidateZip,
                                             controller: _zipController,
                                             focusNode: _zipFocusNode,
                                             decoration: InputDecoration(
