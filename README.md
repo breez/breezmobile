@@ -14,6 +14,8 @@
 [Breez](https://breez.technology) is a Lightning Network [mobile client](https://github.com/breez/breezmobile) and a [hub](https://github.com/breez/server). It provides a platform for simple, instantaneous bitcoin payments. <br>
 Breez is currently in a public beta, available on [Android](https://play.google.com/apps/testing/com.breez.client) and on [iOS](https://testflight.apple.com/join/wPju2Du7).
 
+Check our [active bounties](https://github.com/breez/breezmobile/wiki/Bounties).
+
 ## Features
 
 - [x] lnd on Android
@@ -73,7 +75,7 @@ Breez is currently in a public beta, available on [Android](https://play.google.
 - [x] Print POS transactions
 - [x] Hide balance
 - [x] In-app podcast player (podcasting 2.0)
-- [ ] Support LNURL-Pay
+- [ ] Support LNURL-Pay ([open bounty](https://github.com/breez/breezmobile/wiki/Bounties))
 - [ ] Support LNURL-Withdraw balance check
 - [ ] Async payments via Lightning Rod
 - [ ] Neutrino sync optimizations
@@ -94,10 +96,9 @@ Breez is currently in a public beta, available on [Android](https://play.google.
 - Create a firebase iOS app using the [firebase console](https://console.firebase.google.com/)
 - Generate the GoogleServices-info.plist and copy it to ios/Runner directory
 - Run `pod install` from `breezmobile/ios`
-3. Flutter beta channel
+3. Flutter stable channel
 - Install [flutter](https://flutter.dev/docs/get-started/install)
-Run these command to switch to beta channel:
-- flutter channel beta
+Run these command:
 - flutter upgrade
 
 ## Run
@@ -115,11 +116,11 @@ Modify the files under the `conf/` directory:
 -network=mainnet
 +network=testnet
 -peer=btcd-mainnet.lightning.computer
-+peer=btcd-testnet.lightning.computer
++peer=<your btcd node address on testnet>
 
 # lnd.conf
 -neutrino.connect=btcd-mainnet.lightning.computer
-+neutrino.connect=btcd-testnet.lightning.computer
++neutrino.connect=<your btcd node address on testnet>
 ```
 
 After the initial sync, go to the _Developer_ menu, get an address to fund with testnet coins with `newaddress p2wkh`, then fund it, and use `connect 03d5e17a3c213fe490e1b0c389f8cfcfcea08a29717d50a9f453735e0ab2a7c003@3.16.119.191:9735` then `openchannel --private --conf_target 1 03d5e17a3c213fe490e1b0c389f8cfcfcea08a29717d50a9f453735e0ab2a7c003 90000` to open a channel to that public node (adjust the amounts and the node id/address if you wish).
