@@ -136,8 +136,10 @@ class BreezBridge {
   }
 
   Future<LNUrlResponse> fetchLNUrl(String lnurl) {
-    return _invokeMethodImmediate("fetchLnurl", {"argument": lnurl})
+    var result = _invokeMethodImmediate("fetchLnurl", {"argument": lnurl})
         .then((result) => LNUrlResponse()..mergeFromBuffer(result ?? []));
+    logger.log.info("fetchLNUrl: ${result}");
+    return result;
   }
 
   Future withdrawLNUrl(String bolt11Invoice) {
@@ -148,6 +150,25 @@ class BreezBridge {
     return _invokeMethodWhenReady(
             "finishLNURLAuth", {"argument": response.response.writeToBuffer()})
         .then((value) => value as String);
+  }
+
+  Future<LNUrlPayInfo> fetchLNUrlPayInvoice(PayFetchResponse response) {
+    return _invokeMethodWhenReady(
+            "finishLNURLPay", {"argument": response.response.writeToBuffer()})
+        .then((result) => LNUrlPayInfo()..mergeFromBuffer(result ?? []));
+  }
+
+  Future<SuccessAction> getLNUrlPaySuccessAction(String paymentHash) {
+    logger.log.info("getLNUrlPaySuccessAction");
+    return _invokeMethodImmediate(
+            'getLNUrlPaySuccessAction', {'paymentHash': paymentHash})
+        .then((result) => SuccessAction()..mergeFromBuffer(result ?? []));
+  }
+
+  Future<LNUrlPayInfoList> getLNUrlPayInfos() {
+    logger.log.info("getLNUrlPayInfos");
+    return _invokeMethodImmediate('getLNUrlPayInfos')
+        .then((result) => LNUrlPayInfoList()..mergeFromBuffer(result ?? []));
   }
 
   Future<String> getLogPath() {

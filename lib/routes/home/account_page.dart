@@ -6,10 +6,12 @@ import 'package:breez/bloc/lsp/lsp_model.dart';
 import 'package:breez/bloc/user_profile/breez_user_model.dart';
 import 'package:breez/bloc/user_profile/currency.dart';
 import 'package:breez/bloc/user_profile/user_profile_bloc.dart';
+import 'package:breez/bloc/lnurl/lnurl_bloc.dart';
 import 'package:breez/theme_data.dart' as theme;
 import 'package:breez/utils/date.dart';
 import 'package:breez/widgets/fixed_sliver_delegate.dart';
 import 'package:flutter/material.dart';
+import 'package:breez/services/breezlib/data/rpc.pb.dart' show LNUrlPayInfo;
 
 import 'payments_filter.dart';
 import 'payments_list.dart';
@@ -41,6 +43,7 @@ class AccountPageState extends State<AccountPage>
 
   AccountBloc _accountBloc;
   UserProfileBloc _userProfileBloc;
+  LNUrlBloc _lnurlBloc;
   bool _isInit = false;
 
   @override
@@ -48,6 +51,8 @@ class AccountPageState extends State<AccountPage>
     if (!_isInit) {
       _accountBloc = AppBlocsProvider.of<AccountBloc>(context);
       _userProfileBloc = AppBlocsProvider.of<UserProfileBloc>(context);
+      _lnurlBloc = AppBlocsProvider.of<LNUrlBloc>(context);
+
       //a listener that rebuilds our widget tree when payment filter changes
       _accountBloc.paymentFilterStream.listen((event) {
         widget.scrollController.position
@@ -75,15 +80,16 @@ class AccountPageState extends State<AccountPage>
                           snapshot.data ?? PaymentsModel.initial();
                       return Container(
                         color: theme.customData[theme.themeId].dashboardBgColor,
-                        child: _buildBalanceAndPayments(paymentsModel, account),
+                        child: _buildBalanceAndPayments(paymentsModel, account,
+                            _lnurlBloc.payInfoController.valueWrapper.value),
                       );
                     });
               });
         });
   }
 
-  Widget _buildBalanceAndPayments(
-      PaymentsModel paymentsModel, AccountModel account) {
+  Widget _buildBalanceAndPayments(PaymentsModel paymentsModel,
+      AccountModel account, List<LNUrlPayInfo> lnurlPayInfos) {
     LSPBloc lspBloc = AppBlocsProvider.of<LSPBloc>(context);
 
     double listHeightSpace = MediaQuery.of(context).size.height -
@@ -138,6 +144,7 @@ class AccountPageState extends State<AccountPage>
     if (paymentsModel.nonFilteredItems.length > 0) {
       slivers.add(PaymentsList(
         paymentsModel.paymentsList,
+        lnurlPayInfos,
         PAYMENT_LIST_ITEM_HEIGHT,
         widget.firstPaymentItemKey,
         widget.scrollController,

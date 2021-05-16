@@ -62,6 +62,7 @@ Future<Null> showPaymentDetailsDialog(
           );
         });
   }
+  // FIXME Use SingleChildScrollView because AlertDialog overflows.
   AlertDialog _paymentDetailsDialog = AlertDialog(
     titlePadding: EdgeInsets.zero,
     title: Stack(children: <Widget>[
@@ -245,6 +246,11 @@ Future<Null> showPaymentDetailsDialog(
                     ],
                   ),
                 ),
+          // FIXME Show the user's comment
+          // FIXME In general users should be able to label/comment their transactions.
+          if (paymentInfo.lnurlPaySuccessAction != null)
+            ..._getLNUrlSuccessActionForPayment(
+                context, paymentInfo.lnurlPaySuccessAction),
           ..._getPaymentInfoDetails(paymentInfo),
         ],
       ),
@@ -275,6 +281,18 @@ List<Widget> _getStreamedPaymentInfoDetails(StreamedPaymentInfo paymentInfo) {
         Int64(0), (previousValue, element) => element.amount + previousValue);
     return _Destination(title, amount, ent.value[0].currency);
   }).toList();
+}
+
+List<Widget> _getLNUrlSuccessActionForPayment(
+    BuildContext context, SuccessAction sa) {
+  return <Widget>[
+    if (sa.tag == 'url')
+      ShareablePaymentRow(title: "Description", sharedValue: sa.description),
+    if (sa.tag == 'url')
+      ShareablePaymentRow(title: "URL", sharedValue: sa.url), // TODO Hyperlink.
+    if (sa.tag == 'message' || sa.tag == 'aes')
+      ShareablePaymentRow(title: 'Message', sharedValue: sa.message),
+  ];
 }
 
 List<Widget> _getSinglePaymentInfoDetails(PaymentInfo paymentInfo) {

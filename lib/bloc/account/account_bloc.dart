@@ -706,12 +706,32 @@ class AccountBloc {
         _nodeConflictController.add(null);
       }
       if (event.type == NotificationEvent_NotificationType.PAYMENT_SUCCEEDED) {
+        log.info(
+            "NotificationEvent accountBloc: Payment succeeded."); // TODO FINDOUT Why does this not appear in the log?
         var paymentRequest = event.data[0];
         var paymentHash = event.data[1];
         PayRequest pqyreq;
+
         if (paymentRequest.isNotEmpty) {
           var invoice = await _breezLib.decodePaymentRequest(paymentRequest);
           pqyreq = PayRequest(paymentRequest, invoice.amount);
+        }
+
+        // FIXME We can't use this because showFlushBar overflows and throws exceptions.
+        final sa = await _breezLib.getLNUrlPaySuccessAction(paymentHash);
+
+        switch (sa?.tag) {
+          case 'url':
+            {
+              pqyreq.lnurlSuccessActionMessage = '${sa.description}\n${sa.url}';
+            }
+            break;
+          case 'message':
+          case 'aes':
+            {
+              pqyreq.lnurlSuccessActionMessage = sa.message;
+            }
+            break;
         }
 
         _completedPaymentsController.add(CompletedPayment(pqyreq, paymentHash,

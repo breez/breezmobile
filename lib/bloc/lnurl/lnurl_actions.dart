@@ -28,3 +28,12 @@ class Login extends AsyncAction {
 
   Login(this.response, {this.jwt = false});
 }
+
+class FetchInvoice extends AsyncAction {
+  final PayFetchResponse response;
+
+  FetchInvoice(this.response);
+}
+
+// FIXME Delete this if unneccessary
+class FetchLNUrlPayInfos extends AsyncAction {}

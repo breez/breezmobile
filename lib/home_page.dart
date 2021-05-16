@@ -674,7 +674,16 @@ class HomeState extends State<Home> with WidgetsBindingObserver {
           !fulfilledPayment.ignoreGlobalFeedback) {
         scrollController.animateTo(scrollController.position.minScrollExtent,
             duration: Duration(milliseconds: 10), curve: Curves.ease);
-        showFlushbar(context, message: "Payment was successfully sent!");
+
+        var message = "Payment was successfully sent!";
+        /* FIXME We can't use this because showFlushBar overflows and throws exceptions.
+        if (fulfilledPayment.paymentRequest?.lnurlSuccessActionMessage != "") {
+          message +=
+              '\n${fulfilledPayment.paymentRequest.lnurlSuccessActionMessage}';
+        }
+
+        */
+        showFlushbar(context, message: message);
       }
     }, onError: (err) async {
       var error = err as PaymentError;

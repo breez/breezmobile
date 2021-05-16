@@ -32,7 +32,7 @@ class ListPaymentsRequest extends $pb.GeneratedMessage {
   'Using this can add significant overhead to your binary. '
   'Use [GeneratedMessageGenericExtensions.rebuild] instead. '
   'Will be removed in next major version')
-  ListPaymentsRequest copyWith(void Function(ListPaymentsRequest) updates) => super.copyWith((message) => updates(message as ListPaymentsRequest)) as ListPaymentsRequest; // ignore: deprecated_member_use
+  ListPaymentsRequest copyWith(void Function(ListPaymentsRequest) updates) => super.copyWith((message) => updates(message as ListPaymentsRequest)); // ignore: deprecated_member_use
   $pb.BuilderInfo get info_ => _i;
   @$core.pragma('dart2js:noInline')
   static ListPaymentsRequest create() => ListPaymentsRequest._();
@@ -61,7 +61,7 @@ class RestartDaemonRequest extends $pb.GeneratedMessage {
   'Using this can add significant overhead to your binary. '
   'Use [GeneratedMessageGenericExtensions.rebuild] instead. '
   'Will be removed in next major version')
-  RestartDaemonRequest copyWith(void Function(RestartDaemonRequest) updates) => super.copyWith((message) => updates(message as RestartDaemonRequest)) as RestartDaemonRequest; // ignore: deprecated_member_use
+  RestartDaemonRequest copyWith(void Function(RestartDaemonRequest) updates) => super.copyWith((message) => updates(message as RestartDaemonRequest)); // ignore: deprecated_member_use
   $pb.BuilderInfo get info_ => _i;
   @$core.pragma('dart2js:noInline')
   static RestartDaemonRequest create() => RestartDaemonRequest._();
@@ -90,7 +90,7 @@ class RestartDaemonReply extends $pb.GeneratedMessage {
   'Using this can add significant overhead to your binary. '
   'Use [GeneratedMessageGenericExtensions.rebuild] instead. '
   'Will be removed in next major version')
-  RestartDaemonReply copyWith(void Function(RestartDaemonReply) updates) => super.copyWith((message) => updates(message as RestartDaemonReply)) as RestartDaemonReply; // ignore: deprecated_member_use
+  RestartDaemonReply copyWith(void Function(RestartDaemonReply) updates) => super.copyWith((message) => updates(message as RestartDaemonReply)); // ignore: deprecated_member_use
   $pb.BuilderInfo get info_ => _i;
   @$core.pragma('dart2js:noInline')
   static RestartDaemonReply create() => RestartDaemonReply._();
@@ -133,7 +133,7 @@ class AddFundInitRequest extends $pb.GeneratedMessage {
   'Using this can add significant overhead to your binary. '
   'Use [GeneratedMessageGenericExtensions.rebuild] instead. '
   'Will be removed in next major version')
-  AddFundInitRequest copyWith(void Function(AddFundInitRequest) updates) => super.copyWith((message) => updates(message as AddFundInitRequest)) as AddFundInitRequest; // ignore: deprecated_member_use
+  AddFundInitRequest copyWith(void Function(AddFundInitRequest) updates) => super.copyWith((message) => updates(message as AddFundInitRequest)); // ignore: deprecated_member_use
   $pb.BuilderInfo get info_ => _i;
   @$core.pragma('dart2js:noInline')
   static AddFundInitRequest create() => AddFundInitRequest._();
@@ -189,7 +189,7 @@ class FundStatusRequest extends $pb.GeneratedMessage {
   'Using this can add significant overhead to your binary. '
   'Use [GeneratedMessageGenericExtensions.rebuild] instead. '
   'Will be removed in next major version')
-  FundStatusRequest copyWith(void Function(FundStatusRequest) updates) => super.copyWith((message) => updates(message as FundStatusRequest)) as FundStatusRequest; // ignore: deprecated_member_use
+  FundStatusRequest copyWith(void Function(FundStatusRequest) updates) => super.copyWith((message) => updates(message as FundStatusRequest)); // ignore: deprecated_member_use
   $pb.BuilderInfo get info_ => _i;
   @$core.pragma('dart2js:noInline')
   static FundStatusRequest create() => FundStatusRequest._();
@@ -241,7 +241,7 @@ class AddInvoiceReply extends $pb.GeneratedMessage {
   'Using this can add significant overhead to your binary. '
   'Use [GeneratedMessageGenericExtensions.rebuild] instead. '
   'Will be removed in next major version')
-  AddInvoiceReply copyWith(void Function(AddInvoiceReply) updates) => super.copyWith((message) => updates(message as AddInvoiceReply)) as AddInvoiceReply; // ignore: deprecated_member_use
+  AddInvoiceReply copyWith(void Function(AddInvoiceReply) updates) => super.copyWith((message) => updates(message as AddInvoiceReply)); // ignore: deprecated_member_use
   $pb.BuilderInfo get info_ => _i;
   @$core.pragma('dart2js:noInline')
   static AddInvoiceReply create() => AddInvoiceReply._();
@@ -302,7 +302,7 @@ class ChainStatus extends $pb.GeneratedMessage {
   'Using this can add significant overhead to your binary. '
   'Use [GeneratedMessageGenericExtensions.rebuild] instead. '
   'Will be removed in next major version')
-  ChainStatus copyWith(void Function(ChainStatus) updates) => super.copyWith((message) => updates(message as ChainStatus)) as ChainStatus; // ignore: deprecated_member_use
+  ChainStatus copyWith(void Function(ChainStatus) updates) => super.copyWith((message) => updates(message as ChainStatus)); // ignore: deprecated_member_use
   $pb.BuilderInfo get info_ => _i;
   @$core.pragma('dart2js:noInline')
   static ChainStatus create() => ChainStatus._();
@@ -433,7 +433,7 @@ class Account extends $pb.GeneratedMessage {
   'Using this can add significant overhead to your binary. '
   'Use [GeneratedMessageGenericExtensions.rebuild] instead. '
   'Will be removed in next major version')
-  Account copyWith(void Function(Account) updates) => super.copyWith((message) => updates(message as Account)) as Account; // ignore: deprecated_member_use
+  Account copyWith(void Function(Account) updates) => super.copyWith((message) => updates(message as Account)); // ignore: deprecated_member_use
   $pb.BuilderInfo get info_ => _i;
   @$core.pragma('dart2js:noInline')
   static Account create() => Account._();
@@ -703,7 +703,7 @@ class Payment extends $pb.GeneratedMessage {
   'Using this can add significant overhead to your binary. '
   'Use [GeneratedMessageGenericExtensions.rebuild] instead. '
   'Will be removed in next major version')
-  Payment copyWith(void Function(Payment) updates) => super.copyWith((message) => updates(message as Payment)) as Payment; // ignore: deprecated_member_use
+  Payment copyWith(void Function(Payment) updates) => super.copyWith((message) => updates(message as Payment)); // ignore: deprecated_member_use
   $pb.BuilderInfo get info_ => _i;
   @$core.pragma('dart2js:noInline')
   static Payment create() => Payment._();
@@ -932,7 +932,7 @@ class PaymentsList extends $pb.GeneratedMessage {
   'Using this can add significant overhead to your binary. '
   'Use [GeneratedMessageGenericExtensions.rebuild] instead. '
   'Will be removed in next major version')
-  PaymentsList copyWith(void Function(PaymentsList) updates) => super.copyWith((message) => updates(message as PaymentsList)) as PaymentsList; // ignore: deprecated_member_use
+  PaymentsList copyWith(void Function(PaymentsList) updates) => super.copyWith((message) => updates(message as PaymentsList)); // ignore: deprecated_member_use
   $pb.BuilderInfo get info_ => _i;
   @$core.pragma('dart2js:noInline')
   static PaymentsList create() => PaymentsList._();
@@ -978,7 +978,7 @@ class PaymentResponse extends $pb.GeneratedMessage {
   'Using this can add significant overhead to your binary. '
   'Use [GeneratedMessageGenericExtensions.rebuild] instead. '
   'Will be removed in next major version')
-  PaymentResponse copyWith(void Function(PaymentResponse) updates) => super.copyWith((message) => updates(message as PaymentResponse)) as PaymentResponse; // ignore: deprecated_member_use
+  PaymentResponse copyWith(void Function(PaymentResponse) updates) => super.copyWith((message) => updates(message as PaymentResponse)); // ignore: deprecated_member_use
   $pb.BuilderInfo get info_ => _i;
   @$core.pragma('dart2js:noInline')
   static PaymentResponse create() => PaymentResponse._();
@@ -1039,7 +1039,7 @@ class SendWalletCoinsRequest extends $pb.GeneratedMessage {
   'Using this can add significant overhead to your binary. '
   'Use [GeneratedMessageGenericExtensions.rebuild] instead. '
   'Will be removed in next major version')
-  SendWalletCoinsRequest copyWith(void Function(SendWalletCoinsRequest) updates) => super.copyWith((message) => updates(message as SendWalletCoinsRequest)) as SendWalletCoinsRequest; // ignore: deprecated_member_use
+  SendWalletCoinsRequest copyWith(void Function(SendWalletCoinsRequest) updates) => super.copyWith((message) => updates(message as SendWalletCoinsRequest)); // ignore: deprecated_member_use
   $pb.BuilderInfo get info_ => _i;
   @$core.pragma('dart2js:noInline')
   static SendWalletCoinsRequest create() => SendWalletCoinsRequest._();
@@ -1100,7 +1100,7 @@ class PayInvoiceRequest extends $pb.GeneratedMessage {
   'Using this can add significant overhead to your binary. '
   'Use [GeneratedMessageGenericExtensions.rebuild] instead. '
   'Will be removed in next major version')
-  PayInvoiceRequest copyWith(void Function(PayInvoiceRequest) updates) => super.copyWith((message) => updates(message as PayInvoiceRequest)) as PayInvoiceRequest; // ignore: deprecated_member_use
+  PayInvoiceRequest copyWith(void Function(PayInvoiceRequest) updates) => super.copyWith((message) => updates(message as PayInvoiceRequest)); // ignore: deprecated_member_use
   $pb.BuilderInfo get info_ => _i;
   @$core.pragma('dart2js:noInline')
   static PayInvoiceRequest create() => PayInvoiceRequest._();
@@ -1186,7 +1186,7 @@ class SpontaneousPaymentRequest extends $pb.GeneratedMessage {
   'Using this can add significant overhead to your binary. '
   'Use [GeneratedMessageGenericExtensions.rebuild] instead. '
   'Will be removed in next major version')
-  SpontaneousPaymentRequest copyWith(void Function(SpontaneousPaymentRequest) updates) => super.copyWith((message) => updates(message as SpontaneousPaymentRequest)) as SpontaneousPaymentRequest; // ignore: deprecated_member_use
+  SpontaneousPaymentRequest copyWith(void Function(SpontaneousPaymentRequest) updates) => super.copyWith((message) => updates(message as SpontaneousPaymentRequest)); // ignore: deprecated_member_use
   $pb.BuilderInfo get info_ => _i;
   @$core.pragma('dart2js:noInline')
   static SpontaneousPaymentRequest create() => SpontaneousPaymentRequest._();
@@ -1321,7 +1321,7 @@ class InvoiceMemo extends $pb.GeneratedMessage {
   'Using this can add significant overhead to your binary. '
   'Use [GeneratedMessageGenericExtensions.rebuild] instead. '
   'Will be removed in next major version')
-  InvoiceMemo copyWith(void Function(InvoiceMemo) updates) => super.copyWith((message) => updates(message as InvoiceMemo)) as InvoiceMemo; // ignore: deprecated_member_use
+  InvoiceMemo copyWith(void Function(InvoiceMemo) updates) => super.copyWith((message) => updates(message as InvoiceMemo)); // ignore: deprecated_member_use
   $pb.BuilderInfo get info_ => _i;
   @$core.pragma('dart2js:noInline')
   static InvoiceMemo create() => InvoiceMemo._();
@@ -1445,7 +1445,7 @@ class AddInvoiceRequest extends $pb.GeneratedMessage {
   'Using this can add significant overhead to your binary. '
   'Use [GeneratedMessageGenericExtensions.rebuild] instead. '
   'Will be removed in next major version')
-  AddInvoiceRequest copyWith(void Function(AddInvoiceRequest) updates) => super.copyWith((message) => updates(message as AddInvoiceRequest)) as AddInvoiceRequest; // ignore: deprecated_member_use
+  AddInvoiceRequest copyWith(void Function(AddInvoiceRequest) updates) => super.copyWith((message) => updates(message as AddInvoiceRequest)); // ignore: deprecated_member_use
   $pb.BuilderInfo get info_ => _i;
   @$core.pragma('dart2js:noInline')
   static AddInvoiceRequest create() => AddInvoiceRequest._();
@@ -1515,7 +1515,7 @@ class Invoice extends $pb.GeneratedMessage {
   'Using this can add significant overhead to your binary. '
   'Use [GeneratedMessageGenericExtensions.rebuild] instead. '
   'Will be removed in next major version')
-  Invoice copyWith(void Function(Invoice) updates) => super.copyWith((message) => updates(message as Invoice)) as Invoice; // ignore: deprecated_member_use
+  Invoice copyWith(void Function(Invoice) updates) => super.copyWith((message) => updates(message as Invoice)); // ignore: deprecated_member_use
   $pb.BuilderInfo get info_ => _i;
   @$core.pragma('dart2js:noInline')
   static Invoice create() => Invoice._();
@@ -1582,7 +1582,7 @@ class SyncLSPChannelsRequest extends $pb.GeneratedMessage {
   'Using this can add significant overhead to your binary. '
   'Use [GeneratedMessageGenericExtensions.rebuild] instead. '
   'Will be removed in next major version')
-  SyncLSPChannelsRequest copyWith(void Function(SyncLSPChannelsRequest) updates) => super.copyWith((message) => updates(message as SyncLSPChannelsRequest)) as SyncLSPChannelsRequest; // ignore: deprecated_member_use
+  SyncLSPChannelsRequest copyWith(void Function(SyncLSPChannelsRequest) updates) => super.copyWith((message) => updates(message as SyncLSPChannelsRequest)); // ignore: deprecated_member_use
   $pb.BuilderInfo get info_ => _i;
   @$core.pragma('dart2js:noInline')
   static SyncLSPChannelsRequest create() => SyncLSPChannelsRequest._();
@@ -1631,7 +1631,7 @@ class SyncLSPChannelsResponse extends $pb.GeneratedMessage {
   'Using this can add significant overhead to your binary. '
   'Use [GeneratedMessageGenericExtensions.rebuild] instead. '
   'Will be removed in next major version')
-  SyncLSPChannelsResponse copyWith(void Function(SyncLSPChannelsResponse) updates) => super.copyWith((message) => updates(message as SyncLSPChannelsResponse)) as SyncLSPChannelsResponse; // ignore: deprecated_member_use
+  SyncLSPChannelsResponse copyWith(void Function(SyncLSPChannelsResponse) updates) => super.copyWith((message) => updates(message as SyncLSPChannelsResponse)); // ignore: deprecated_member_use
   $pb.BuilderInfo get info_ => _i;
   @$core.pragma('dart2js:noInline')
   static SyncLSPChannelsResponse create() => SyncLSPChannelsResponse._();
@@ -1678,7 +1678,7 @@ class UnconfirmedChannelsStatus extends $pb.GeneratedMessage {
   'Using this can add significant overhead to your binary. '
   'Use [GeneratedMessageGenericExtensions.rebuild] instead. '
   'Will be removed in next major version')
-  UnconfirmedChannelsStatus copyWith(void Function(UnconfirmedChannelsStatus) updates) => super.copyWith((message) => updates(message as UnconfirmedChannelsStatus)) as UnconfirmedChannelsStatus; // ignore: deprecated_member_use
+  UnconfirmedChannelsStatus copyWith(void Function(UnconfirmedChannelsStatus) updates) => super.copyWith((message) => updates(message as UnconfirmedChannelsStatus)); // ignore: deprecated_member_use
   $pb.BuilderInfo get info_ => _i;
   @$core.pragma('dart2js:noInline')
   static UnconfirmedChannelsStatus create() => UnconfirmedChannelsStatus._();
@@ -1729,7 +1729,7 @@ class UnconfirmedChannelStatus extends $pb.GeneratedMessage {
   'Using this can add significant overhead to your binary. '
   'Use [GeneratedMessageGenericExtensions.rebuild] instead. '
   'Will be removed in next major version')
-  UnconfirmedChannelStatus copyWith(void Function(UnconfirmedChannelStatus) updates) => super.copyWith((message) => updates(message as UnconfirmedChannelStatus)) as UnconfirmedChannelStatus; // ignore: deprecated_member_use
+  UnconfirmedChannelStatus copyWith(void Function(UnconfirmedChannelStatus) updates) => super.copyWith((message) => updates(message as UnconfirmedChannelStatus)); // ignore: deprecated_member_use
   $pb.BuilderInfo get info_ => _i;
   @$core.pragma('dart2js:noInline')
   static UnconfirmedChannelStatus create() => UnconfirmedChannelStatus._();
@@ -1799,7 +1799,7 @@ class CheckLSPClosedChannelMismatchRequest extends $pb.GeneratedMessage {
   'Using this can add significant overhead to your binary. '
   'Use [GeneratedMessageGenericExtensions.rebuild] instead. '
   'Will be removed in next major version')
-  CheckLSPClosedChannelMismatchRequest copyWith(void Function(CheckLSPClosedChannelMismatchRequest) updates) => super.copyWith((message) => updates(message as CheckLSPClosedChannelMismatchRequest)) as CheckLSPClosedChannelMismatchRequest; // ignore: deprecated_member_use
+  CheckLSPClosedChannelMismatchRequest copyWith(void Function(CheckLSPClosedChannelMismatchRequest) updates) => super.copyWith((message) => updates(message as CheckLSPClosedChannelMismatchRequest)); // ignore: deprecated_member_use
   $pb.BuilderInfo get info_ => _i;
   @$core.pragma('dart2js:noInline')
   static CheckLSPClosedChannelMismatchRequest create() => CheckLSPClosedChannelMismatchRequest._();
@@ -1857,7 +1857,7 @@ class CheckLSPClosedChannelMismatchResponse extends $pb.GeneratedMessage {
   'Using this can add significant overhead to your binary. '
   'Use [GeneratedMessageGenericExtensions.rebuild] instead. '
   'Will be removed in next major version')
-  CheckLSPClosedChannelMismatchResponse copyWith(void Function(CheckLSPClosedChannelMismatchResponse) updates) => super.copyWith((message) => updates(message as CheckLSPClosedChannelMismatchResponse)) as CheckLSPClosedChannelMismatchResponse; // ignore: deprecated_member_use
+  CheckLSPClosedChannelMismatchResponse copyWith(void Function(CheckLSPClosedChannelMismatchResponse) updates) => super.copyWith((message) => updates(message as CheckLSPClosedChannelMismatchResponse)); // ignore: deprecated_member_use
   $pb.BuilderInfo get info_ => _i;
   @$core.pragma('dart2js:noInline')
   static CheckLSPClosedChannelMismatchResponse create() => CheckLSPClosedChannelMismatchResponse._();
@@ -1909,7 +1909,7 @@ class ResetClosedChannelChainInfoRequest extends $pb.GeneratedMessage {
   'Using this can add significant overhead to your binary. '
   'Use [GeneratedMessageGenericExtensions.rebuild] instead. '
   'Will be removed in next major version')
-  ResetClosedChannelChainInfoRequest copyWith(void Function(ResetClosedChannelChainInfoRequest) updates) => super.copyWith((message) => updates(message as ResetClosedChannelChainInfoRequest)) as ResetClosedChannelChainInfoRequest; // ignore: deprecated_member_use
+  ResetClosedChannelChainInfoRequest copyWith(void Function(ResetClosedChannelChainInfoRequest) updates) => super.copyWith((message) => updates(message as ResetClosedChannelChainInfoRequest)); // ignore: deprecated_member_use
   $pb.BuilderInfo get info_ => _i;
   @$core.pragma('dart2js:noInline')
   static ResetClosedChannelChainInfoRequest create() => ResetClosedChannelChainInfoRequest._();
@@ -1956,7 +1956,7 @@ class ResetClosedChannelChainInfoReply extends $pb.GeneratedMessage {
   'Using this can add significant overhead to your binary. '
   'Use [GeneratedMessageGenericExtensions.rebuild] instead. '
   'Will be removed in next major version')
-  ResetClosedChannelChainInfoReply copyWith(void Function(ResetClosedChannelChainInfoReply) updates) => super.copyWith((message) => updates(message as ResetClosedChannelChainInfoReply)) as ResetClosedChannelChainInfoReply; // ignore: deprecated_member_use
+  ResetClosedChannelChainInfoReply copyWith(void Function(ResetClosedChannelChainInfoReply) updates) => super.copyWith((message) => updates(message as ResetClosedChannelChainInfoReply)); // ignore: deprecated_member_use
   $pb.BuilderInfo get info_ => _i;
   @$core.pragma('dart2js:noInline')
   static ResetClosedChannelChainInfoReply create() => ResetClosedChannelChainInfoReply._();
@@ -1999,7 +1999,7 @@ class NotificationEvent extends $pb.GeneratedMessage {
   'Using this can add significant overhead to your binary. '
   'Use [GeneratedMessageGenericExtensions.rebuild] instead. '
   'Will be removed in next major version')
-  NotificationEvent copyWith(void Function(NotificationEvent) updates) => super.copyWith((message) => updates(message as NotificationEvent)) as NotificationEvent; // ignore: deprecated_member_use
+  NotificationEvent copyWith(void Function(NotificationEvent) updates) => super.copyWith((message) => updates(message as NotificationEvent)); // ignore: deprecated_member_use
   $pb.BuilderInfo get info_ => _i;
   @$core.pragma('dart2js:noInline')
   static NotificationEvent create() => NotificationEvent._();
@@ -2074,7 +2074,7 @@ class AddFundInitReply extends $pb.GeneratedMessage {
   'Using this can add significant overhead to your binary. '
   'Use [GeneratedMessageGenericExtensions.rebuild] instead. '
   'Will be removed in next major version')
-  AddFundInitReply copyWith(void Function(AddFundInitReply) updates) => super.copyWith((message) => updates(message as AddFundInitReply)) as AddFundInitReply; // ignore: deprecated_member_use
+  AddFundInitReply copyWith(void Function(AddFundInitReply) updates) => super.copyWith((message) => updates(message as AddFundInitReply)); // ignore: deprecated_member_use
   $pb.BuilderInfo get info_ => _i;
   @$core.pragma('dart2js:noInline')
   static AddFundInitReply create() => AddFundInitReply._();
@@ -2166,7 +2166,7 @@ class AddFundReply extends $pb.GeneratedMessage {
   'Using this can add significant overhead to your binary. '
   'Use [GeneratedMessageGenericExtensions.rebuild] instead. '
   'Will be removed in next major version')
-  AddFundReply copyWith(void Function(AddFundReply) updates) => super.copyWith((message) => updates(message as AddFundReply)) as AddFundReply; // ignore: deprecated_member_use
+  AddFundReply copyWith(void Function(AddFundReply) updates) => super.copyWith((message) => updates(message as AddFundReply)); // ignore: deprecated_member_use
   $pb.BuilderInfo get info_ => _i;
   @$core.pragma('dart2js:noInline')
   static AddFundReply create() => AddFundReply._();
@@ -2228,7 +2228,7 @@ class RefundRequest extends $pb.GeneratedMessage {
   'Using this can add significant overhead to your binary. '
   'Use [GeneratedMessageGenericExtensions.rebuild] instead. '
   'Will be removed in next major version')
-  RefundRequest copyWith(void Function(RefundRequest) updates) => super.copyWith((message) => updates(message as RefundRequest)) as RefundRequest; // ignore: deprecated_member_use
+  RefundRequest copyWith(void Function(RefundRequest) updates) => super.copyWith((message) => updates(message as RefundRequest)); // ignore: deprecated_member_use
   $pb.BuilderInfo get info_ => _i;
   @$core.pragma('dart2js:noInline')
   static RefundRequest create() => RefundRequest._();
@@ -2307,7 +2307,7 @@ class AddFundError extends $pb.GeneratedMessage {
   'Using this can add significant overhead to your binary. '
   'Use [GeneratedMessageGenericExtensions.rebuild] instead. '
   'Will be removed in next major version')
-  AddFundError copyWith(void Function(AddFundError) updates) => super.copyWith((message) => updates(message as AddFundError)) as AddFundError; // ignore: deprecated_member_use
+  AddFundError copyWith(void Function(AddFundError) updates) => super.copyWith((message) => updates(message as AddFundError)); // ignore: deprecated_member_use
   $pb.BuilderInfo get info_ => _i;
   @$core.pragma('dart2js:noInline')
   static AddFundError create() => AddFundError._();
@@ -2375,7 +2375,7 @@ class FundStatusReply extends $pb.GeneratedMessage {
   'Using this can add significant overhead to your binary. '
   'Use [GeneratedMessageGenericExtensions.rebuild] instead. '
   'Will be removed in next major version')
-  FundStatusReply copyWith(void Function(FundStatusReply) updates) => super.copyWith((message) => updates(message as FundStatusReply)) as FundStatusReply; // ignore: deprecated_member_use
+  FundStatusReply copyWith(void Function(FundStatusReply) updates) => super.copyWith((message) => updates(message as FundStatusReply)); // ignore: deprecated_member_use
   $pb.BuilderInfo get info_ => _i;
   @$core.pragma('dart2js:noInline')
   static FundStatusReply create() => FundStatusReply._();
@@ -2427,7 +2427,7 @@ class RemoveFundRequest extends $pb.GeneratedMessage {
   'Using this can add significant overhead to your binary. '
   'Use [GeneratedMessageGenericExtensions.rebuild] instead. '
   'Will be removed in next major version')
-  RemoveFundRequest copyWith(void Function(RemoveFundRequest) updates) => super.copyWith((message) => updates(message as RemoveFundRequest)) as RemoveFundRequest; // ignore: deprecated_member_use
+  RemoveFundRequest copyWith(void Function(RemoveFundRequest) updates) => super.copyWith((message) => updates(message as RemoveFundRequest)); // ignore: deprecated_member_use
   $pb.BuilderInfo get info_ => _i;
   @$core.pragma('dart2js:noInline')
   static RemoveFundRequest create() => RemoveFundRequest._();
@@ -2488,7 +2488,7 @@ class RemoveFundReply extends $pb.GeneratedMessage {
   'Using this can add significant overhead to your binary. '
   'Use [GeneratedMessageGenericExtensions.rebuild] instead. '
   'Will be removed in next major version')
-  RemoveFundReply copyWith(void Function(RemoveFundReply) updates) => super.copyWith((message) => updates(message as RemoveFundReply)) as RemoveFundReply; // ignore: deprecated_member_use
+  RemoveFundReply copyWith(void Function(RemoveFundReply) updates) => super.copyWith((message) => updates(message as RemoveFundReply)); // ignore: deprecated_member_use
   $pb.BuilderInfo get info_ => _i;
   @$core.pragma('dart2js:noInline')
   static RemoveFundReply create() => RemoveFundReply._();
@@ -2599,7 +2599,7 @@ class SwapAddressInfo extends $pb.GeneratedMessage {
   'Using this can add significant overhead to your binary. '
   'Use [GeneratedMessageGenericExtensions.rebuild] instead. '
   'Will be removed in next major version')
-  SwapAddressInfo copyWith(void Function(SwapAddressInfo) updates) => super.copyWith((message) => updates(message as SwapAddressInfo)) as SwapAddressInfo; // ignore: deprecated_member_use
+  SwapAddressInfo copyWith(void Function(SwapAddressInfo) updates) => super.copyWith((message) => updates(message as SwapAddressInfo)); // ignore: deprecated_member_use
   $pb.BuilderInfo get info_ => _i;
   @$core.pragma('dart2js:noInline')
   static SwapAddressInfo create() => SwapAddressInfo._();
@@ -2739,7 +2739,7 @@ class SwapAddressList extends $pb.GeneratedMessage {
   'Using this can add significant overhead to your binary. '
   'Use [GeneratedMessageGenericExtensions.rebuild] instead. '
   'Will be removed in next major version')
-  SwapAddressList copyWith(void Function(SwapAddressList) updates) => super.copyWith((message) => updates(message as SwapAddressList)) as SwapAddressList; // ignore: deprecated_member_use
+  SwapAddressList copyWith(void Function(SwapAddressList) updates) => super.copyWith((message) => updates(message as SwapAddressList)); // ignore: deprecated_member_use
   $pb.BuilderInfo get info_ => _i;
   @$core.pragma('dart2js:noInline')
   static SwapAddressList create() => SwapAddressList._();
@@ -2795,7 +2795,7 @@ class CreateRatchetSessionRequest extends $pb.GeneratedMessage {
   'Using this can add significant overhead to your binary. '
   'Use [GeneratedMessageGenericExtensions.rebuild] instead. '
   'Will be removed in next major version')
-  CreateRatchetSessionRequest copyWith(void Function(CreateRatchetSessionRequest) updates) => super.copyWith((message) => updates(message as CreateRatchetSessionRequest)) as CreateRatchetSessionRequest; // ignore: deprecated_member_use
+  CreateRatchetSessionRequest copyWith(void Function(CreateRatchetSessionRequest) updates) => super.copyWith((message) => updates(message as CreateRatchetSessionRequest)); // ignore: deprecated_member_use
   $pb.BuilderInfo get info_ => _i;
   @$core.pragma('dart2js:noInline')
   static CreateRatchetSessionRequest create() => CreateRatchetSessionRequest._();
@@ -2879,7 +2879,7 @@ class CreateRatchetSessionReply extends $pb.GeneratedMessage {
   'Using this can add significant overhead to your binary. '
   'Use [GeneratedMessageGenericExtensions.rebuild] instead. '
   'Will be removed in next major version')
-  CreateRatchetSessionReply copyWith(void Function(CreateRatchetSessionReply) updates) => super.copyWith((message) => updates(message as CreateRatchetSessionReply)) as CreateRatchetSessionReply; // ignore: deprecated_member_use
+  CreateRatchetSessionReply copyWith(void Function(CreateRatchetSessionReply) updates) => super.copyWith((message) => updates(message as CreateRatchetSessionReply)); // ignore: deprecated_member_use
   $pb.BuilderInfo get info_ => _i;
   @$core.pragma('dart2js:noInline')
   static CreateRatchetSessionReply create() => CreateRatchetSessionReply._();
@@ -2954,7 +2954,7 @@ class RatchetSessionInfoReply extends $pb.GeneratedMessage {
   'Using this can add significant overhead to your binary. '
   'Use [GeneratedMessageGenericExtensions.rebuild] instead. '
   'Will be removed in next major version')
-  RatchetSessionInfoReply copyWith(void Function(RatchetSessionInfoReply) updates) => super.copyWith((message) => updates(message as RatchetSessionInfoReply)) as RatchetSessionInfoReply; // ignore: deprecated_member_use
+  RatchetSessionInfoReply copyWith(void Function(RatchetSessionInfoReply) updates) => super.copyWith((message) => updates(message as RatchetSessionInfoReply)); // ignore: deprecated_member_use
   $pb.BuilderInfo get info_ => _i;
   @$core.pragma('dart2js:noInline')
   static RatchetSessionInfoReply create() => RatchetSessionInfoReply._();
@@ -3024,7 +3024,7 @@ class RatchetSessionSetInfoRequest extends $pb.GeneratedMessage {
   'Using this can add significant overhead to your binary. '
   'Use [GeneratedMessageGenericExtensions.rebuild] instead. '
   'Will be removed in next major version')
-  RatchetSessionSetInfoRequest copyWith(void Function(RatchetSessionSetInfoRequest) updates) => super.copyWith((message) => updates(message as RatchetSessionSetInfoRequest)) as RatchetSessionSetInfoRequest; // ignore: deprecated_member_use
+  RatchetSessionSetInfoRequest copyWith(void Function(RatchetSessionSetInfoRequest) updates) => super.copyWith((message) => updates(message as RatchetSessionSetInfoRequest)); // ignore: deprecated_member_use
   $pb.BuilderInfo get info_ => _i;
   @$core.pragma('dart2js:noInline')
   static RatchetSessionSetInfoRequest create() => RatchetSessionSetInfoRequest._();
@@ -3085,7 +3085,7 @@ class RatchetEncryptRequest extends $pb.GeneratedMessage {
   'Using this can add significant overhead to your binary. '
   'Use [GeneratedMessageGenericExtensions.rebuild] instead. '
   'Will be removed in next major version')
-  RatchetEncryptRequest copyWith(void Function(RatchetEncryptRequest) updates) => super.copyWith((message) => updates(message as RatchetEncryptRequest)) as RatchetEncryptRequest; // ignore: deprecated_member_use
+  RatchetEncryptRequest copyWith(void Function(RatchetEncryptRequest) updates) => super.copyWith((message) => updates(message as RatchetEncryptRequest)); // ignore: deprecated_member_use
   $pb.BuilderInfo get info_ => _i;
   @$core.pragma('dart2js:noInline')
   static RatchetEncryptRequest create() => RatchetEncryptRequest._();
@@ -3146,7 +3146,7 @@ class RatchetDecryptRequest extends $pb.GeneratedMessage {
   'Using this can add significant overhead to your binary. '
   'Use [GeneratedMessageGenericExtensions.rebuild] instead. '
   'Will be removed in next major version')
-  RatchetDecryptRequest copyWith(void Function(RatchetDecryptRequest) updates) => super.copyWith((message) => updates(message as RatchetDecryptRequest)) as RatchetDecryptRequest; // ignore: deprecated_member_use
+  RatchetDecryptRequest copyWith(void Function(RatchetDecryptRequest) updates) => super.copyWith((message) => updates(message as RatchetDecryptRequest)); // ignore: deprecated_member_use
   $pb.BuilderInfo get info_ => _i;
   @$core.pragma('dart2js:noInline')
   static RatchetDecryptRequest create() => RatchetDecryptRequest._();
@@ -3207,7 +3207,7 @@ class BootstrapFilesRequest extends $pb.GeneratedMessage {
   'Using this can add significant overhead to your binary. '
   'Use [GeneratedMessageGenericExtensions.rebuild] instead. '
   'Will be removed in next major version')
-  BootstrapFilesRequest copyWith(void Function(BootstrapFilesRequest) updates) => super.copyWith((message) => updates(message as BootstrapFilesRequest)) as BootstrapFilesRequest; // ignore: deprecated_member_use
+  BootstrapFilesRequest copyWith(void Function(BootstrapFilesRequest) updates) => super.copyWith((message) => updates(message as BootstrapFilesRequest)); // ignore: deprecated_member_use
   $pb.BuilderInfo get info_ => _i;
   @$core.pragma('dart2js:noInline')
   static BootstrapFilesRequest create() => BootstrapFilesRequest._();
@@ -3262,7 +3262,7 @@ class Peers extends $pb.GeneratedMessage {
   'Using this can add significant overhead to your binary. '
   'Use [GeneratedMessageGenericExtensions.rebuild] instead. '
   'Will be removed in next major version')
-  Peers copyWith(void Function(Peers) updates) => super.copyWith((message) => updates(message as Peers)) as Peers; // ignore: deprecated_member_use
+  Peers copyWith(void Function(Peers) updates) => super.copyWith((message) => updates(message as Peers)); // ignore: deprecated_member_use
   $pb.BuilderInfo get info_ => _i;
   @$core.pragma('dart2js:noInline')
   static Peers create() => Peers._();
@@ -3322,7 +3322,7 @@ class TxSpentURL extends $pb.GeneratedMessage {
   'Using this can add significant overhead to your binary. '
   'Use [GeneratedMessageGenericExtensions.rebuild] instead. '
   'Will be removed in next major version')
-  TxSpentURL copyWith(void Function(TxSpentURL) updates) => super.copyWith((message) => updates(message as TxSpentURL)) as TxSpentURL; // ignore: deprecated_member_use
+  TxSpentURL copyWith(void Function(TxSpentURL) updates) => super.copyWith((message) => updates(message as TxSpentURL)); // ignore: deprecated_member_use
   $pb.BuilderInfo get info_ => _i;
   @$core.pragma('dart2js:noInline')
   static TxSpentURL create() => TxSpentURL._();
@@ -3392,7 +3392,7 @@ class rate extends $pb.GeneratedMessage {
   'Using this can add significant overhead to your binary. '
   'Use [GeneratedMessageGenericExtensions.rebuild] instead. '
   'Will be removed in next major version')
-  rate copyWith(void Function(rate) updates) => super.copyWith((message) => updates(message as rate)) as rate; // ignore: deprecated_member_use
+  rate copyWith(void Function(rate) updates) => super.copyWith((message) => updates(message as rate)); // ignore: deprecated_member_use
   $pb.BuilderInfo get info_ => _i;
   @$core.pragma('dart2js:noInline')
   static rate create() => rate._();
@@ -3448,7 +3448,7 @@ class Rates extends $pb.GeneratedMessage {
   'Using this can add significant overhead to your binary. '
   'Use [GeneratedMessageGenericExtensions.rebuild] instead. '
   'Will be removed in next major version')
-  Rates copyWith(void Function(Rates) updates) => super.copyWith((message) => updates(message as Rates)) as Rates; // ignore: deprecated_member_use
+  Rates copyWith(void Function(Rates) updates) => super.copyWith((message) => updates(message as Rates)); // ignore: deprecated_member_use
   $pb.BuilderInfo get info_ => _i;
   @$core.pragma('dart2js:noInline')
   static Rates create() => Rates._();
@@ -3559,7 +3559,7 @@ class LSPInformation extends $pb.GeneratedMessage {
   'Using this can add significant overhead to your binary. '
   'Use [GeneratedMessageGenericExtensions.rebuild] instead. '
   'Will be removed in next major version')
-  LSPInformation copyWith(void Function(LSPInformation) updates) => super.copyWith((message) => updates(message as LSPInformation)) as LSPInformation; // ignore: deprecated_member_use
+  LSPInformation copyWith(void Function(LSPInformation) updates) => super.copyWith((message) => updates(message as LSPInformation)); // ignore: deprecated_member_use
   $pb.BuilderInfo get info_ => _i;
   @$core.pragma('dart2js:noInline')
   static LSPInformation create() => LSPInformation._();
@@ -3723,7 +3723,7 @@ class LSPListRequest extends $pb.GeneratedMessage {
   'Using this can add significant overhead to your binary. '
   'Use [GeneratedMessageGenericExtensions.rebuild] instead. '
   'Will be removed in next major version')
-  LSPListRequest copyWith(void Function(LSPListRequest) updates) => super.copyWith((message) => updates(message as LSPListRequest)) as LSPListRequest; // ignore: deprecated_member_use
+  LSPListRequest copyWith(void Function(LSPListRequest) updates) => super.copyWith((message) => updates(message as LSPListRequest)); // ignore: deprecated_member_use
   $pb.BuilderInfo get info_ => _i;
   @$core.pragma('dart2js:noInline')
   static LSPListRequest create() => LSPListRequest._();
@@ -3761,7 +3761,7 @@ class LSPList extends $pb.GeneratedMessage {
   'Using this can add significant overhead to your binary. '
   'Use [GeneratedMessageGenericExtensions.rebuild] instead. '
   'Will be removed in next major version')
-  LSPList copyWith(void Function(LSPList) updates) => super.copyWith((message) => updates(message as LSPList)) as LSPList; // ignore: deprecated_member_use
+  LSPList copyWith(void Function(LSPList) updates) => super.copyWith((message) => updates(message as LSPList)); // ignore: deprecated_member_use
   $pb.BuilderInfo get info_ => _i;
   @$core.pragma('dart2js:noInline')
   static LSPList create() => LSPList._();
@@ -3802,7 +3802,7 @@ class LSPActivity extends $pb.GeneratedMessage {
   'Using this can add significant overhead to your binary. '
   'Use [GeneratedMessageGenericExtensions.rebuild] instead. '
   'Will be removed in next major version')
-  LSPActivity copyWith(void Function(LSPActivity) updates) => super.copyWith((message) => updates(message as LSPActivity)) as LSPActivity; // ignore: deprecated_member_use
+  LSPActivity copyWith(void Function(LSPActivity) updates) => super.copyWith((message) => updates(message as LSPActivity)); // ignore: deprecated_member_use
   $pb.BuilderInfo get info_ => _i;
   @$core.pragma('dart2js:noInline')
   static LSPActivity create() => LSPActivity._();
@@ -3843,7 +3843,7 @@ class ConnectLSPRequest extends $pb.GeneratedMessage {
   'Using this can add significant overhead to your binary. '
   'Use [GeneratedMessageGenericExtensions.rebuild] instead. '
   'Will be removed in next major version')
-  ConnectLSPRequest copyWith(void Function(ConnectLSPRequest) updates) => super.copyWith((message) => updates(message as ConnectLSPRequest)) as ConnectLSPRequest; // ignore: deprecated_member_use
+  ConnectLSPRequest copyWith(void Function(ConnectLSPRequest) updates) => super.copyWith((message) => updates(message as ConnectLSPRequest)); // ignore: deprecated_member_use
   $pb.BuilderInfo get info_ => _i;
   @$core.pragma('dart2js:noInline')
   static ConnectLSPRequest create() => ConnectLSPRequest._();
@@ -3881,7 +3881,7 @@ class ConnectLSPReply extends $pb.GeneratedMessage {
   'Using this can add significant overhead to your binary. '
   'Use [GeneratedMessageGenericExtensions.rebuild] instead. '
   'Will be removed in next major version')
-  ConnectLSPReply copyWith(void Function(ConnectLSPReply) updates) => super.copyWith((message) => updates(message as ConnectLSPReply)) as ConnectLSPReply; // ignore: deprecated_member_use
+  ConnectLSPReply copyWith(void Function(ConnectLSPReply) updates) => super.copyWith((message) => updates(message as ConnectLSPReply)); // ignore: deprecated_member_use
   $pb.BuilderInfo get info_ => _i;
   @$core.pragma('dart2js:noInline')
   static ConnectLSPReply create() => ConnectLSPReply._();
@@ -3896,6 +3896,7 @@ enum LNUrlResponse_Action {
   withdraw, 
   channel, 
   auth, 
+  payResponse1, 
   notSet
 }
 
@@ -3904,13 +3905,15 @@ class LNUrlResponse extends $pb.GeneratedMessage {
     1 : LNUrlResponse_Action.withdraw,
     2 : LNUrlResponse_Action.channel,
     3 : LNUrlResponse_Action.auth,
+    4 : LNUrlResponse_Action.payResponse1,
     0 : LNUrlResponse_Action.notSet
   };
   static final $pb.BuilderInfo _i = $pb.BuilderInfo(const $core.bool.fromEnvironment('protobuf.omit_message_names') ? '' : 'LNUrlResponse', package: const $pb.PackageName(const $core.bool.fromEnvironment('protobuf.omit_message_names') ? '' : 'data'), createEmptyInstance: create)
-    ..oo(0, [1, 2, 3])
+    ..oo(0, [1, 2, 3, 4])
     ..aOM<LNUrlWithdraw>(1, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'withdraw', subBuilder: LNUrlWithdraw.create)
     ..aOM<LNURLChannel>(2, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'channel', subBuilder: LNURLChannel.create)
     ..aOM<LNURLAuth>(3, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'auth', subBuilder: LNURLAuth.create)
+    ..aOM<LNURLPayResponse1>(4, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'payResponse1', protoName: 'payResponse1', subBuilder: LNURLPayResponse1.create)
     ..hasRequiredFields = false
   ;
 
@@ -3919,6 +3922,7 @@ class LNUrlResponse extends $pb.GeneratedMessage {
     LNUrlWithdraw withdraw,
     LNURLChannel channel,
     LNURLAuth auth,
+    LNURLPayResponse1 payResponse1,
   }) {
     final _result = create();
     if (withdraw != null) {
@@ -3929,6 +3933,9 @@ class LNUrlResponse extends $pb.GeneratedMessage {
     }
     if (auth != null) {
       _result.auth = auth;
+    }
+    if (payResponse1 != null) {
+      _result.payResponse1 = payResponse1;
     }
     return _result;
   }
@@ -3943,7 +3950,7 @@ class LNUrlResponse extends $pb.GeneratedMessage {
   'Using this can add significant overhead to your binary. '
   'Use [GeneratedMessageGenericExtensions.rebuild] instead. '
   'Will be removed in next major version')
-  LNUrlResponse copyWith(void Function(LNUrlResponse) updates) => super.copyWith((message) => updates(message as LNUrlResponse)) as LNUrlResponse; // ignore: deprecated_member_use
+  LNUrlResponse copyWith(void Function(LNUrlResponse) updates) => super.copyWith((message) => updates(message as LNUrlResponse)); // ignore: deprecated_member_use
   $pb.BuilderInfo get info_ => _i;
   @$core.pragma('dart2js:noInline')
   static LNUrlResponse create() => LNUrlResponse._();
@@ -3988,6 +3995,17 @@ class LNUrlResponse extends $pb.GeneratedMessage {
   void clearAuth() => clearField(3);
   @$pb.TagNumber(3)
   LNURLAuth ensureAuth() => $_ensure(2);
+
+  @$pb.TagNumber(4)
+  LNURLPayResponse1 get payResponse1 => $_getN(3);
+  @$pb.TagNumber(4)
+  set payResponse1(LNURLPayResponse1 v) { setField(4, v); }
+  @$pb.TagNumber(4)
+  $core.bool hasPayResponse1() => $_has(3);
+  @$pb.TagNumber(4)
+  void clearPayResponse1() => clearField(4);
+  @$pb.TagNumber(4)
+  LNURLPayResponse1 ensurePayResponse1() => $_ensure(3);
 }
 
 class LNUrlWithdraw extends $pb.GeneratedMessage {
@@ -4027,7 +4045,7 @@ class LNUrlWithdraw extends $pb.GeneratedMessage {
   'Using this can add significant overhead to your binary. '
   'Use [GeneratedMessageGenericExtensions.rebuild] instead. '
   'Will be removed in next major version')
-  LNUrlWithdraw copyWith(void Function(LNUrlWithdraw) updates) => super.copyWith((message) => updates(message as LNUrlWithdraw)) as LNUrlWithdraw; // ignore: deprecated_member_use
+  LNUrlWithdraw copyWith(void Function(LNUrlWithdraw) updates) => super.copyWith((message) => updates(message as LNUrlWithdraw)); // ignore: deprecated_member_use
   $pb.BuilderInfo get info_ => _i;
   @$core.pragma('dart2js:noInline')
   static LNUrlWithdraw create() => LNUrlWithdraw._();
@@ -4102,7 +4120,7 @@ class LNURLChannel extends $pb.GeneratedMessage {
   'Using this can add significant overhead to your binary. '
   'Use [GeneratedMessageGenericExtensions.rebuild] instead. '
   'Will be removed in next major version')
-  LNURLChannel copyWith(void Function(LNURLChannel) updates) => super.copyWith((message) => updates(message as LNURLChannel)) as LNURLChannel; // ignore: deprecated_member_use
+  LNURLChannel copyWith(void Function(LNURLChannel) updates) => super.copyWith((message) => updates(message as LNURLChannel)); // ignore: deprecated_member_use
   $pb.BuilderInfo get info_ => _i;
   @$core.pragma('dart2js:noInline')
   static LNURLChannel create() => LNURLChannel._();
@@ -4187,7 +4205,7 @@ class LNURLAuth extends $pb.GeneratedMessage {
   'Using this can add significant overhead to your binary. '
   'Use [GeneratedMessageGenericExtensions.rebuild] instead. '
   'Will be removed in next major version')
-  LNURLAuth copyWith(void Function(LNURLAuth) updates) => super.copyWith((message) => updates(message as LNURLAuth)) as LNURLAuth; // ignore: deprecated_member_use
+  LNURLAuth copyWith(void Function(LNURLAuth) updates) => super.copyWith((message) => updates(message as LNURLAuth)); // ignore: deprecated_member_use
   $pb.BuilderInfo get info_ => _i;
   @$core.pragma('dart2js:noInline')
   static LNURLAuth create() => LNURLAuth._();
@@ -4243,6 +4261,463 @@ class LNURLAuth extends $pb.GeneratedMessage {
   void clearJwt() => clearField(5);
 }
 
+class LNURLPayResponse1_Metadata extends $pb.GeneratedMessage {
+  static final $pb.BuilderInfo _i = $pb.BuilderInfo(const $core.bool.fromEnvironment('protobuf.omit_message_names') ? '' : 'LNURLPayResponse1.Metadata', package: const $pb.PackageName(const $core.bool.fromEnvironment('protobuf.omit_message_names') ? '' : 'data'), createEmptyInstance: create)
+    ..pPS(1, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'entry')
+    ..hasRequiredFields = false
+  ;
+
+  LNURLPayResponse1_Metadata._() : super();
+  factory LNURLPayResponse1_Metadata({
+    $core.Iterable<$core.String> entry,
+  }) {
+    final _result = create();
+    if (entry != null) {
+      _result.entry.addAll(entry);
+    }
+    return _result;
+  }
+  factory LNURLPayResponse1_Metadata.fromBuffer($core.List<$core.int> i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromBuffer(i, r);
+  factory LNURLPayResponse1_Metadata.fromJson($core.String i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromJson(i, r);
+  @$core.Deprecated(
+  'Using this can add significant overhead to your binary. '
+  'Use [GeneratedMessageGenericExtensions.deepCopy] instead. '
+  'Will be removed in next major version')
+  LNURLPayResponse1_Metadata clone() => LNURLPayResponse1_Metadata()..mergeFromMessage(this);
+  @$core.Deprecated(
+  'Using this can add significant overhead to your binary. '
+  'Use [GeneratedMessageGenericExtensions.rebuild] instead. '
+  'Will be removed in next major version')
+  LNURLPayResponse1_Metadata copyWith(void Function(LNURLPayResponse1_Metadata) updates) => super.copyWith((message) => updates(message as LNURLPayResponse1_Metadata)); // ignore: deprecated_member_use
+  $pb.BuilderInfo get info_ => _i;
+  @$core.pragma('dart2js:noInline')
+  static LNURLPayResponse1_Metadata create() => LNURLPayResponse1_Metadata._();
+  LNURLPayResponse1_Metadata createEmptyInstance() => create();
+  static $pb.PbList<LNURLPayResponse1_Metadata> createRepeated() => $pb.PbList<LNURLPayResponse1_Metadata>();
+  @$core.pragma('dart2js:noInline')
+  static LNURLPayResponse1_Metadata getDefault() => _defaultInstance ??= $pb.GeneratedMessage.$_defaultFor<LNURLPayResponse1_Metadata>(create);
+  static LNURLPayResponse1_Metadata _defaultInstance;
+
+  @$pb.TagNumber(1)
+  $core.List<$core.String> get entry => $_getList(0);
+}
+
+class LNURLPayResponse1 extends $pb.GeneratedMessage {
+  static final $pb.BuilderInfo _i = $pb.BuilderInfo(const $core.bool.fromEnvironment('protobuf.omit_message_names') ? '' : 'LNURLPayResponse1', package: const $pb.PackageName(const $core.bool.fromEnvironment('protobuf.omit_message_names') ? '' : 'data'), createEmptyInstance: create)
+    ..aOS(1, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'callback')
+    ..aInt64(2, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'minAmount')
+    ..aInt64(3, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'maxAmount')
+    ..pc<LNURLPayResponse1_Metadata>(4, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'metadata', $pb.PbFieldType.PM, subBuilder: LNURLPayResponse1_Metadata.create)
+    ..aOS(5, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'tag')
+    ..a<$fixnum.Int64>(6, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'amount', $pb.PbFieldType.OU6, defaultOrMaker: $fixnum.Int64.ZERO)
+    ..aOS(7, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'fromNodes')
+    ..aOS(8, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'comment')
+    ..aOS(9, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'host')
+    ..hasRequiredFields = false
+  ;
+
+  LNURLPayResponse1._() : super();
+  factory LNURLPayResponse1({
+    $core.String callback,
+    $fixnum.Int64 minAmount,
+    $fixnum.Int64 maxAmount,
+    $core.Iterable<LNURLPayResponse1_Metadata> metadata,
+    $core.String tag,
+    $fixnum.Int64 amount,
+    $core.String fromNodes,
+    $core.String comment,
+    $core.String host,
+  }) {
+    final _result = create();
+    if (callback != null) {
+      _result.callback = callback;
+    }
+    if (minAmount != null) {
+      _result.minAmount = minAmount;
+    }
+    if (maxAmount != null) {
+      _result.maxAmount = maxAmount;
+    }
+    if (metadata != null) {
+      _result.metadata.addAll(metadata);
+    }
+    if (tag != null) {
+      _result.tag = tag;
+    }
+    if (amount != null) {
+      _result.amount = amount;
+    }
+    if (fromNodes != null) {
+      _result.fromNodes = fromNodes;
+    }
+    if (comment != null) {
+      _result.comment = comment;
+    }
+    if (host != null) {
+      _result.host = host;
+    }
+    return _result;
+  }
+  factory LNURLPayResponse1.fromBuffer($core.List<$core.int> i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromBuffer(i, r);
+  factory LNURLPayResponse1.fromJson($core.String i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromJson(i, r);
+  @$core.Deprecated(
+  'Using this can add significant overhead to your binary. '
+  'Use [GeneratedMessageGenericExtensions.deepCopy] instead. '
+  'Will be removed in next major version')
+  LNURLPayResponse1 clone() => LNURLPayResponse1()..mergeFromMessage(this);
+  @$core.Deprecated(
+  'Using this can add significant overhead to your binary. '
+  'Use [GeneratedMessageGenericExtensions.rebuild] instead. '
+  'Will be removed in next major version')
+  LNURLPayResponse1 copyWith(void Function(LNURLPayResponse1) updates) => super.copyWith((message) => updates(message as LNURLPayResponse1)); // ignore: deprecated_member_use
+  $pb.BuilderInfo get info_ => _i;
+  @$core.pragma('dart2js:noInline')
+  static LNURLPayResponse1 create() => LNURLPayResponse1._();
+  LNURLPayResponse1 createEmptyInstance() => create();
+  static $pb.PbList<LNURLPayResponse1> createRepeated() => $pb.PbList<LNURLPayResponse1>();
+  @$core.pragma('dart2js:noInline')
+  static LNURLPayResponse1 getDefault() => _defaultInstance ??= $pb.GeneratedMessage.$_defaultFor<LNURLPayResponse1>(create);
+  static LNURLPayResponse1 _defaultInstance;
+
+  @$pb.TagNumber(1)
+  $core.String get callback => $_getSZ(0);
+  @$pb.TagNumber(1)
+  set callback($core.String v) { $_setString(0, v); }
+  @$pb.TagNumber(1)
+  $core.bool hasCallback() => $_has(0);
+  @$pb.TagNumber(1)
+  void clearCallback() => clearField(1);
+
+  @$pb.TagNumber(2)
+  $fixnum.Int64 get minAmount => $_getI64(1);
+  @$pb.TagNumber(2)
+  set minAmount($fixnum.Int64 v) { $_setInt64(1, v); }
+  @$pb.TagNumber(2)
+  $core.bool hasMinAmount() => $_has(1);
+  @$pb.TagNumber(2)
+  void clearMinAmount() => clearField(2);
+
+  @$pb.TagNumber(3)
+  $fixnum.Int64 get maxAmount => $_getI64(2);
+  @$pb.TagNumber(3)
+  set maxAmount($fixnum.Int64 v) { $_setInt64(2, v); }
+  @$pb.TagNumber(3)
+  $core.bool hasMaxAmount() => $_has(2);
+  @$pb.TagNumber(3)
+  void clearMaxAmount() => clearField(3);
+
+  @$pb.TagNumber(4)
+  $core.List<LNURLPayResponse1_Metadata> get metadata => $_getList(3);
+
+  @$pb.TagNumber(5)
+  $core.String get tag => $_getSZ(4);
+  @$pb.TagNumber(5)
+  set tag($core.String v) { $_setString(4, v); }
+  @$pb.TagNumber(5)
+  $core.bool hasTag() => $_has(4);
+  @$pb.TagNumber(5)
+  void clearTag() => clearField(5);
+
+  @$pb.TagNumber(6)
+  $fixnum.Int64 get amount => $_getI64(5);
+  @$pb.TagNumber(6)
+  set amount($fixnum.Int64 v) { $_setInt64(5, v); }
+  @$pb.TagNumber(6)
+  $core.bool hasAmount() => $_has(5);
+  @$pb.TagNumber(6)
+  void clearAmount() => clearField(6);
+
+  @$pb.TagNumber(7)
+  $core.String get fromNodes => $_getSZ(6);
+  @$pb.TagNumber(7)
+  set fromNodes($core.String v) { $_setString(6, v); }
+  @$pb.TagNumber(7)
+  $core.bool hasFromNodes() => $_has(6);
+  @$pb.TagNumber(7)
+  void clearFromNodes() => clearField(7);
+
+  @$pb.TagNumber(8)
+  $core.String get comment => $_getSZ(7);
+  @$pb.TagNumber(8)
+  set comment($core.String v) { $_setString(7, v); }
+  @$pb.TagNumber(8)
+  $core.bool hasComment() => $_has(7);
+  @$pb.TagNumber(8)
+  void clearComment() => clearField(8);
+
+  @$pb.TagNumber(9)
+  $core.String get host => $_getSZ(8);
+  @$pb.TagNumber(9)
+  set host($core.String v) { $_setString(8, v); }
+  @$pb.TagNumber(9)
+  $core.bool hasHost() => $_has(8);
+  @$pb.TagNumber(9)
+  void clearHost() => clearField(9);
+}
+
+class SuccessAction extends $pb.GeneratedMessage {
+  static final $pb.BuilderInfo _i = $pb.BuilderInfo(const $core.bool.fromEnvironment('protobuf.omit_message_names') ? '' : 'SuccessAction', package: const $pb.PackageName(const $core.bool.fromEnvironment('protobuf.omit_message_names') ? '' : 'data'), createEmptyInstance: create)
+    ..aOS(1, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'tag')
+    ..aOS(2, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'description')
+    ..aOS(3, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'url')
+    ..aOS(4, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'message')
+    ..aOS(5, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'ciphertext')
+    ..aOS(6, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'iv')
+    ..hasRequiredFields = false
+  ;
+
+  SuccessAction._() : super();
+  factory SuccessAction({
+    $core.String tag,
+    $core.String description,
+    $core.String url,
+    $core.String message,
+    $core.String ciphertext,
+    $core.String iv,
+  }) {
+    final _result = create();
+    if (tag != null) {
+      _result.tag = tag;
+    }
+    if (description != null) {
+      _result.description = description;
+    }
+    if (url != null) {
+      _result.url = url;
+    }
+    if (message != null) {
+      _result.message = message;
+    }
+    if (ciphertext != null) {
+      _result.ciphertext = ciphertext;
+    }
+    if (iv != null) {
+      _result.iv = iv;
+    }
+    return _result;
+  }
+  factory SuccessAction.fromBuffer($core.List<$core.int> i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromBuffer(i, r);
+  factory SuccessAction.fromJson($core.String i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromJson(i, r);
+  @$core.Deprecated(
+  'Using this can add significant overhead to your binary. '
+  'Use [GeneratedMessageGenericExtensions.deepCopy] instead. '
+  'Will be removed in next major version')
+  SuccessAction clone() => SuccessAction()..mergeFromMessage(this);
+  @$core.Deprecated(
+  'Using this can add significant overhead to your binary. '
+  'Use [GeneratedMessageGenericExtensions.rebuild] instead. '
+  'Will be removed in next major version')
+  SuccessAction copyWith(void Function(SuccessAction) updates) => super.copyWith((message) => updates(message as SuccessAction)); // ignore: deprecated_member_use
+  $pb.BuilderInfo get info_ => _i;
+  @$core.pragma('dart2js:noInline')
+  static SuccessAction create() => SuccessAction._();
+  SuccessAction createEmptyInstance() => create();
+  static $pb.PbList<SuccessAction> createRepeated() => $pb.PbList<SuccessAction>();
+  @$core.pragma('dart2js:noInline')
+  static SuccessAction getDefault() => _defaultInstance ??= $pb.GeneratedMessage.$_defaultFor<SuccessAction>(create);
+  static SuccessAction _defaultInstance;
+
+  @$pb.TagNumber(1)
+  $core.String get tag => $_getSZ(0);
+  @$pb.TagNumber(1)
+  set tag($core.String v) { $_setString(0, v); }
+  @$pb.TagNumber(1)
+  $core.bool hasTag() => $_has(0);
+  @$pb.TagNumber(1)
+  void clearTag() => clearField(1);
+
+  @$pb.TagNumber(2)
+  $core.String get description => $_getSZ(1);
+  @$pb.TagNumber(2)
+  set description($core.String v) { $_setString(1, v); }
+  @$pb.TagNumber(2)
+  $core.bool hasDescription() => $_has(1);
+  @$pb.TagNumber(2)
+  void clearDescription() => clearField(2);
+
+  @$pb.TagNumber(3)
+  $core.String get url => $_getSZ(2);
+  @$pb.TagNumber(3)
+  set url($core.String v) { $_setString(2, v); }
+  @$pb.TagNumber(3)
+  $core.bool hasUrl() => $_has(2);
+  @$pb.TagNumber(3)
+  void clearUrl() => clearField(3);
+
+  @$pb.TagNumber(4)
+  $core.String get message => $_getSZ(3);
+  @$pb.TagNumber(4)
+  set message($core.String v) { $_setString(3, v); }
+  @$pb.TagNumber(4)
+  $core.bool hasMessage() => $_has(3);
+  @$pb.TagNumber(4)
+  void clearMessage() => clearField(4);
+
+  @$pb.TagNumber(5)
+  $core.String get ciphertext => $_getSZ(4);
+  @$pb.TagNumber(5)
+  set ciphertext($core.String v) { $_setString(4, v); }
+  @$pb.TagNumber(5)
+  $core.bool hasCiphertext() => $_has(4);
+  @$pb.TagNumber(5)
+  void clearCiphertext() => clearField(5);
+
+  @$pb.TagNumber(6)
+  $core.String get iv => $_getSZ(5);
+  @$pb.TagNumber(6)
+  set iv($core.String v) { $_setString(5, v); }
+  @$pb.TagNumber(6)
+  $core.bool hasIv() => $_has(5);
+  @$pb.TagNumber(6)
+  void clearIv() => clearField(6);
+}
+
+class LNUrlPayInfo extends $pb.GeneratedMessage {
+  static final $pb.BuilderInfo _i = $pb.BuilderInfo(const $core.bool.fromEnvironment('protobuf.omit_message_names') ? '' : 'LNUrlPayInfo', package: const $pb.PackageName(const $core.bool.fromEnvironment('protobuf.omit_message_names') ? '' : 'data'), createEmptyInstance: create)
+    ..aOM<SuccessAction>(1, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'successAction', subBuilder: SuccessAction.create)
+    ..aOS(2, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'invoice')
+    ..aOS(3, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'paymentHash', protoName: 'paymentHash')
+    ..aOS(4, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'comment')
+    ..aOS(5, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'invoiceDescription')
+    ..hasRequiredFields = false
+  ;
+
+  LNUrlPayInfo._() : super();
+  factory LNUrlPayInfo({
+    SuccessAction successAction,
+    $core.String invoice,
+    $core.String paymentHash,
+    $core.String comment,
+    $core.String invoiceDescription,
+  }) {
+    final _result = create();
+    if (successAction != null) {
+      _result.successAction = successAction;
+    }
+    if (invoice != null) {
+      _result.invoice = invoice;
+    }
+    if (paymentHash != null) {
+      _result.paymentHash = paymentHash;
+    }
+    if (comment != null) {
+      _result.comment = comment;
+    }
+    if (invoiceDescription != null) {
+      _result.invoiceDescription = invoiceDescription;
+    }
+    return _result;
+  }
+  factory LNUrlPayInfo.fromBuffer($core.List<$core.int> i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromBuffer(i, r);
+  factory LNUrlPayInfo.fromJson($core.String i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromJson(i, r);
+  @$core.Deprecated(
+  'Using this can add significant overhead to your binary. '
+  'Use [GeneratedMessageGenericExtensions.deepCopy] instead. '
+  'Will be removed in next major version')
+  LNUrlPayInfo clone() => LNUrlPayInfo()..mergeFromMessage(this);
+  @$core.Deprecated(
+  'Using this can add significant overhead to your binary. '
+  'Use [GeneratedMessageGenericExtensions.rebuild] instead. '
+  'Will be removed in next major version')
+  LNUrlPayInfo copyWith(void Function(LNUrlPayInfo) updates) => super.copyWith((message) => updates(message as LNUrlPayInfo)); // ignore: deprecated_member_use
+  $pb.BuilderInfo get info_ => _i;
+  @$core.pragma('dart2js:noInline')
+  static LNUrlPayInfo create() => LNUrlPayInfo._();
+  LNUrlPayInfo createEmptyInstance() => create();
+  static $pb.PbList<LNUrlPayInfo> createRepeated() => $pb.PbList<LNUrlPayInfo>();
+  @$core.pragma('dart2js:noInline')
+  static LNUrlPayInfo getDefault() => _defaultInstance ??= $pb.GeneratedMessage.$_defaultFor<LNUrlPayInfo>(create);
+  static LNUrlPayInfo _defaultInstance;
+
+  @$pb.TagNumber(1)
+  SuccessAction get successAction => $_getN(0);
+  @$pb.TagNumber(1)
+  set successAction(SuccessAction v) { setField(1, v); }
+  @$pb.TagNumber(1)
+  $core.bool hasSuccessAction() => $_has(0);
+  @$pb.TagNumber(1)
+  void clearSuccessAction() => clearField(1);
+  @$pb.TagNumber(1)
+  SuccessAction ensureSuccessAction() => $_ensure(0);
+
+  @$pb.TagNumber(2)
+  $core.String get invoice => $_getSZ(1);
+  @$pb.TagNumber(2)
+  set invoice($core.String v) { $_setString(1, v); }
+  @$pb.TagNumber(2)
+  $core.bool hasInvoice() => $_has(1);
+  @$pb.TagNumber(2)
+  void clearInvoice() => clearField(2);
+
+  @$pb.TagNumber(3)
+  $core.String get paymentHash => $_getSZ(2);
+  @$pb.TagNumber(3)
+  set paymentHash($core.String v) { $_setString(2, v); }
+  @$pb.TagNumber(3)
+  $core.bool hasPaymentHash() => $_has(2);
+  @$pb.TagNumber(3)
+  void clearPaymentHash() => clearField(3);
+
+  @$pb.TagNumber(4)
+  $core.String get comment => $_getSZ(3);
+  @$pb.TagNumber(4)
+  set comment($core.String v) { $_setString(3, v); }
+  @$pb.TagNumber(4)
+  $core.bool hasComment() => $_has(3);
+  @$pb.TagNumber(4)
+  void clearComment() => clearField(4);
+
+  @$pb.TagNumber(5)
+  $core.String get invoiceDescription => $_getSZ(4);
+  @$pb.TagNumber(5)
+  set invoiceDescription($core.String v) { $_setString(4, v); }
+  @$pb.TagNumber(5)
+  $core.bool hasInvoiceDescription() => $_has(4);
+  @$pb.TagNumber(5)
+  void clearInvoiceDescription() => clearField(5);
+}
+
+class LNUrlPayInfoList extends $pb.GeneratedMessage {
+  static final $pb.BuilderInfo _i = $pb.BuilderInfo(const $core.bool.fromEnvironment('protobuf.omit_message_names') ? '' : 'LNUrlPayInfoList', package: const $pb.PackageName(const $core.bool.fromEnvironment('protobuf.omit_message_names') ? '' : 'data'), createEmptyInstance: create)
+    ..pc<LNUrlPayInfo>(1, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'infoList', $pb.PbFieldType.PM, protoName: 'infoList', subBuilder: LNUrlPayInfo.create)
+    ..hasRequiredFields = false
+  ;
+
+  LNUrlPayInfoList._() : super();
+  factory LNUrlPayInfoList({
+    $core.Iterable<LNUrlPayInfo> infoList,
+  }) {
+    final _result = create();
+    if (infoList != null) {
+      _result.infoList.addAll(infoList);
+    }
+    return _result;
+  }
+  factory LNUrlPayInfoList.fromBuffer($core.List<$core.int> i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromBuffer(i, r);
+  factory LNUrlPayInfoList.fromJson($core.String i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromJson(i, r);
+  @$core.Deprecated(
+  'Using this can add significant overhead to your binary. '
+  'Use [GeneratedMessageGenericExtensions.deepCopy] instead. '
+  'Will be removed in next major version')
+  LNUrlPayInfoList clone() => LNUrlPayInfoList()..mergeFromMessage(this);
+  @$core.Deprecated(
+  'Using this can add significant overhead to your binary. '
+  'Use [GeneratedMessageGenericExtensions.rebuild] instead. '
+  'Will be removed in next major version')
+  LNUrlPayInfoList copyWith(void Function(LNUrlPayInfoList) updates) => super.copyWith((message) => updates(message as LNUrlPayInfoList)); // ignore: deprecated_member_use
+  $pb.BuilderInfo get info_ => _i;
+  @$core.pragma('dart2js:noInline')
+  static LNUrlPayInfoList create() => LNUrlPayInfoList._();
+  LNUrlPayInfoList createEmptyInstance() => create();
+  static $pb.PbList<LNUrlPayInfoList> createRepeated() => $pb.PbList<LNUrlPayInfoList>();
+  @$core.pragma('dart2js:noInline')
+  static LNUrlPayInfoList getDefault() => _defaultInstance ??= $pb.GeneratedMessage.$_defaultFor<LNUrlPayInfoList>(create);
+  static LNUrlPayInfoList _defaultInstance;
+
+  @$pb.TagNumber(1)
+  $core.List<LNUrlPayInfo> get infoList => $_getList(0);
+}
+
 class ReverseSwapRequest extends $pb.GeneratedMessage {
   static final $pb.BuilderInfo _i = $pb.BuilderInfo(const $core.bool.fromEnvironment('protobuf.omit_message_names') ? '' : 'ReverseSwapRequest', package: const $pb.PackageName(const $core.bool.fromEnvironment('protobuf.omit_message_names') ? '' : 'data'), createEmptyInstance: create)
     ..aOS(1, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'address')
@@ -4280,7 +4755,7 @@ class ReverseSwapRequest extends $pb.GeneratedMessage {
   'Using this can add significant overhead to your binary. '
   'Use [GeneratedMessageGenericExtensions.rebuild] instead. '
   'Will be removed in next major version')
-  ReverseSwapRequest copyWith(void Function(ReverseSwapRequest) updates) => super.copyWith((message) => updates(message as ReverseSwapRequest)) as ReverseSwapRequest; // ignore: deprecated_member_use
+  ReverseSwapRequest copyWith(void Function(ReverseSwapRequest) updates) => super.copyWith((message) => updates(message as ReverseSwapRequest)); // ignore: deprecated_member_use
   $pb.BuilderInfo get info_ => _i;
   @$core.pragma('dart2js:noInline')
   static ReverseSwapRequest create() => ReverseSwapRequest._();
@@ -4405,7 +4880,7 @@ class ReverseSwap extends $pb.GeneratedMessage {
   'Using this can add significant overhead to your binary. '
   'Use [GeneratedMessageGenericExtensions.rebuild] instead. '
   'Will be removed in next major version')
-  ReverseSwap copyWith(void Function(ReverseSwap) updates) => super.copyWith((message) => updates(message as ReverseSwap)) as ReverseSwap; // ignore: deprecated_member_use
+  ReverseSwap copyWith(void Function(ReverseSwap) updates) => super.copyWith((message) => updates(message as ReverseSwap)); // ignore: deprecated_member_use
   $pb.BuilderInfo get info_ => _i;
   @$core.pragma('dart2js:noInline')
   static ReverseSwap create() => ReverseSwap._();
@@ -4570,7 +5045,7 @@ class ReverseSwapFees extends $pb.GeneratedMessage {
   'Using this can add significant overhead to your binary. '
   'Use [GeneratedMessageGenericExtensions.rebuild] instead. '
   'Will be removed in next major version')
-  ReverseSwapFees copyWith(void Function(ReverseSwapFees) updates) => super.copyWith((message) => updates(message as ReverseSwapFees)) as ReverseSwapFees; // ignore: deprecated_member_use
+  ReverseSwapFees copyWith(void Function(ReverseSwapFees) updates) => super.copyWith((message) => updates(message as ReverseSwapFees)); // ignore: deprecated_member_use
   $pb.BuilderInfo get info_ => _i;
   @$core.pragma('dart2js:noInline')
   static ReverseSwapFees create() => ReverseSwapFees._();
@@ -4650,7 +5125,7 @@ class ReverseSwapInfo extends $pb.GeneratedMessage {
   'Using this can add significant overhead to your binary. '
   'Use [GeneratedMessageGenericExtensions.rebuild] instead. '
   'Will be removed in next major version')
-  ReverseSwapInfo copyWith(void Function(ReverseSwapInfo) updates) => super.copyWith((message) => updates(message as ReverseSwapInfo)) as ReverseSwapInfo; // ignore: deprecated_member_use
+  ReverseSwapInfo copyWith(void Function(ReverseSwapInfo) updates) => super.copyWith((message) => updates(message as ReverseSwapInfo)); // ignore: deprecated_member_use
   $pb.BuilderInfo get info_ => _i;
   @$core.pragma('dart2js:noInline')
   static ReverseSwapInfo create() => ReverseSwapInfo._();
@@ -4731,7 +5206,7 @@ class ReverseSwapPaymentRequest extends $pb.GeneratedMessage {
   'Using this can add significant overhead to your binary. '
   'Use [GeneratedMessageGenericExtensions.rebuild] instead. '
   'Will be removed in next major version')
-  ReverseSwapPaymentRequest copyWith(void Function(ReverseSwapPaymentRequest) updates) => super.copyWith((message) => updates(message as ReverseSwapPaymentRequest)) as ReverseSwapPaymentRequest; // ignore: deprecated_member_use
+  ReverseSwapPaymentRequest copyWith(void Function(ReverseSwapPaymentRequest) updates) => super.copyWith((message) => updates(message as ReverseSwapPaymentRequest)); // ignore: deprecated_member_use
   $pb.BuilderInfo get info_ => _i;
   @$core.pragma('dart2js:noInline')
   static ReverseSwapPaymentRequest create() => ReverseSwapPaymentRequest._();
@@ -4799,7 +5274,7 @@ class PushNotificationDetails extends $pb.GeneratedMessage {
   'Using this can add significant overhead to your binary. '
   'Use [GeneratedMessageGenericExtensions.rebuild] instead. '
   'Will be removed in next major version')
-  PushNotificationDetails copyWith(void Function(PushNotificationDetails) updates) => super.copyWith((message) => updates(message as PushNotificationDetails)) as PushNotificationDetails; // ignore: deprecated_member_use
+  PushNotificationDetails copyWith(void Function(PushNotificationDetails) updates) => super.copyWith((message) => updates(message as PushNotificationDetails)); // ignore: deprecated_member_use
   $pb.BuilderInfo get info_ => _i;
   @$core.pragma('dart2js:noInline')
   static PushNotificationDetails create() => PushNotificationDetails._();
@@ -4869,7 +5344,7 @@ class ReverseSwapPaymentStatus extends $pb.GeneratedMessage {
   'Using this can add significant overhead to your binary. '
   'Use [GeneratedMessageGenericExtensions.rebuild] instead. '
   'Will be removed in next major version')
-  ReverseSwapPaymentStatus copyWith(void Function(ReverseSwapPaymentStatus) updates) => super.copyWith((message) => updates(message as ReverseSwapPaymentStatus)) as ReverseSwapPaymentStatus; // ignore: deprecated_member_use
+  ReverseSwapPaymentStatus copyWith(void Function(ReverseSwapPaymentStatus) updates) => super.copyWith((message) => updates(message as ReverseSwapPaymentStatus)); // ignore: deprecated_member_use
   $pb.BuilderInfo get info_ => _i;
   @$core.pragma('dart2js:noInline')
   static ReverseSwapPaymentStatus create() => ReverseSwapPaymentStatus._();
@@ -4925,7 +5400,7 @@ class ReverseSwapPaymentStatuses extends $pb.GeneratedMessage {
   'Using this can add significant overhead to your binary. '
   'Use [GeneratedMessageGenericExtensions.rebuild] instead. '
   'Will be removed in next major version')
-  ReverseSwapPaymentStatuses copyWith(void Function(ReverseSwapPaymentStatuses) updates) => super.copyWith((message) => updates(message as ReverseSwapPaymentStatuses)) as ReverseSwapPaymentStatuses; // ignore: deprecated_member_use
+  ReverseSwapPaymentStatuses copyWith(void Function(ReverseSwapPaymentStatuses) updates) => super.copyWith((message) => updates(message as ReverseSwapPaymentStatuses)); // ignore: deprecated_member_use
   $pb.BuilderInfo get info_ => _i;
   @$core.pragma('dart2js:noInline')
   static ReverseSwapPaymentStatuses create() => ReverseSwapPaymentStatuses._();
@@ -4971,7 +5446,7 @@ class ReverseSwapClaimFee extends $pb.GeneratedMessage {
   'Using this can add significant overhead to your binary. '
   'Use [GeneratedMessageGenericExtensions.rebuild] instead. '
   'Will be removed in next major version')
-  ReverseSwapClaimFee copyWith(void Function(ReverseSwapClaimFee) updates) => super.copyWith((message) => updates(message as ReverseSwapClaimFee)) as ReverseSwapClaimFee; // ignore: deprecated_member_use
+  ReverseSwapClaimFee copyWith(void Function(ReverseSwapClaimFee) updates) => super.copyWith((message) => updates(message as ReverseSwapClaimFee)); // ignore: deprecated_member_use
   $pb.BuilderInfo get info_ => _i;
   @$core.pragma('dart2js:noInline')
   static ReverseSwapClaimFee create() => ReverseSwapClaimFee._();
@@ -5027,7 +5502,7 @@ class ClaimFeeEstimates extends $pb.GeneratedMessage {
   'Using this can add significant overhead to your binary. '
   'Use [GeneratedMessageGenericExtensions.rebuild] instead. '
   'Will be removed in next major version')
-  ClaimFeeEstimates copyWith(void Function(ClaimFeeEstimates) updates) => super.copyWith((message) => updates(message as ClaimFeeEstimates)) as ClaimFeeEstimates; // ignore: deprecated_member_use
+  ClaimFeeEstimates copyWith(void Function(ClaimFeeEstimates) updates) => super.copyWith((message) => updates(message as ClaimFeeEstimates)); // ignore: deprecated_member_use
   $pb.BuilderInfo get info_ => _i;
   @$core.pragma('dart2js:noInline')
   static ClaimFeeEstimates create() => ClaimFeeEstimates._();
@@ -5078,7 +5553,7 @@ class UnspendLockupInformation extends $pb.GeneratedMessage {
   'Using this can add significant overhead to your binary. '
   'Use [GeneratedMessageGenericExtensions.rebuild] instead. '
   'Will be removed in next major version')
-  UnspendLockupInformation copyWith(void Function(UnspendLockupInformation) updates) => super.copyWith((message) => updates(message as UnspendLockupInformation)) as UnspendLockupInformation; // ignore: deprecated_member_use
+  UnspendLockupInformation copyWith(void Function(UnspendLockupInformation) updates) => super.copyWith((message) => updates(message as UnspendLockupInformation)); // ignore: deprecated_member_use
   $pb.BuilderInfo get info_ => _i;
   @$core.pragma('dart2js:noInline')
   static UnspendLockupInformation create() => UnspendLockupInformation._();
@@ -5153,7 +5628,7 @@ class TransactionDetails extends $pb.GeneratedMessage {
   'Using this can add significant overhead to your binary. '
   'Use [GeneratedMessageGenericExtensions.rebuild] instead. '
   'Will be removed in next major version')
-  TransactionDetails copyWith(void Function(TransactionDetails) updates) => super.copyWith((message) => updates(message as TransactionDetails)) as TransactionDetails; // ignore: deprecated_member_use
+  TransactionDetails copyWith(void Function(TransactionDetails) updates) => super.copyWith((message) => updates(message as TransactionDetails)); // ignore: deprecated_member_use
   $pb.BuilderInfo get info_ => _i;
   @$core.pragma('dart2js:noInline')
   static TransactionDetails create() => TransactionDetails._();
@@ -5223,7 +5698,7 @@ class SweepAllCoinsTransactions extends $pb.GeneratedMessage {
   'Using this can add significant overhead to your binary. '
   'Use [GeneratedMessageGenericExtensions.rebuild] instead. '
   'Will be removed in next major version')
-  SweepAllCoinsTransactions copyWith(void Function(SweepAllCoinsTransactions) updates) => super.copyWith((message) => updates(message as SweepAllCoinsTransactions)) as SweepAllCoinsTransactions; // ignore: deprecated_member_use
+  SweepAllCoinsTransactions copyWith(void Function(SweepAllCoinsTransactions) updates) => super.copyWith((message) => updates(message as SweepAllCoinsTransactions)); // ignore: deprecated_member_use
   $pb.BuilderInfo get info_ => _i;
   @$core.pragma('dart2js:noInline')
   static SweepAllCoinsTransactions create() => SweepAllCoinsTransactions._();
@@ -5273,7 +5748,7 @@ class DownloadBackupResponse extends $pb.GeneratedMessage {
   'Using this can add significant overhead to your binary. '
   'Use [GeneratedMessageGenericExtensions.rebuild] instead. '
   'Will be removed in next major version')
-  DownloadBackupResponse copyWith(void Function(DownloadBackupResponse) updates) => super.copyWith((message) => updates(message as DownloadBackupResponse)) as DownloadBackupResponse; // ignore: deprecated_member_use
+  DownloadBackupResponse copyWith(void Function(DownloadBackupResponse) updates) => super.copyWith((message) => updates(message as DownloadBackupResponse)); // ignore: deprecated_member_use
   $pb.BuilderInfo get info_ => _i;
   @$core.pragma('dart2js:noInline')
   static DownloadBackupResponse create() => DownloadBackupResponse._();

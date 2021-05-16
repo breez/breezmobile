@@ -432,6 +432,7 @@ abstract class PaymentInfo {
   bool get fullPending;
   String get paymentGroup;
   String get paymentGroupName;
+  SuccessAction lnurlPaySuccessAction;
   PaymentInfo copyWith(AccountModel account);
 }
 
@@ -494,6 +495,9 @@ class StreamedPaymentInfo implements PaymentInfo {
   String get paymentHash => "";
   String get preimage => "";
   String get destination => "";
+
+  SuccessAction get lnurlPaySuccessAction => null;
+  set lnurlPaySuccessAction(SuccessAction s) => {};
 }
 
 class SinglePaymentInfo implements PaymentInfo {
@@ -647,6 +651,10 @@ class SinglePaymentInfo implements PaymentInfo {
 
   Currency get currency => _account.currency;
 
+  SuccessAction _lnurlPaySuccessAction;
+  SuccessAction get lnurlPaySuccessAction => _lnurlPaySuccessAction;
+  set lnurlPaySuccessAction(SuccessAction s) => _lnurlPaySuccessAction = s;
+
   SinglePaymentInfo(this._paymentResponse, this._account);
 
   SinglePaymentInfo copyWith(AccountModel account) {
@@ -694,8 +702,10 @@ class BroadcastRefundResponseModel {
 class PayRequest {
   final String paymentRequest;
   final Int64 amount;
+  String lnurlSuccessActionMessage;
 
-  PayRequest(this.paymentRequest, this.amount);
+  PayRequest(this.paymentRequest, this.amount,
+      {this.lnurlSuccessActionMessage});
 }
 
 class CompletedPayment {
