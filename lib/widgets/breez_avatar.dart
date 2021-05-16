@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'dart:convert' show UriData;
 
 import 'package:breez/bloc/user_profile/default_profile_generator.dart'
     as generator;
@@ -60,6 +61,10 @@ class BreezAvatar extends StatelessWidget {
 
       if (Uri.tryParse(avatarURL)?.scheme?.startsWith("http") ?? false) {
         return _NetworkImageAvatar(avatarURL, radius);
+      }
+
+      if (Uri.tryParse(avatarURL)?.scheme?.startsWith("data") ?? false) {
+        return _DataImageAvatar(avatarURL, radius);
       }
 
       return _FileImageAvatar(radius, avatarURL);
@@ -147,6 +152,25 @@ class _NetworkImageAvatar extends StatelessWidget {
           imageUrl: avatarURL,
           useScaleCacheManager: true,
         ),
+      ),
+    );
+  }
+}
+
+class _DataImageAvatar extends StatelessWidget {
+  final double radius;
+  final String avatarURL;
+
+  _DataImageAvatar(this.avatarURL, this.radius);
+
+  @override
+  Widget build(BuildContext context) {
+      final uri = UriData.parse(this.avatarURL);
+      final _bytes = uri.contentAsBytes();
+    return CircleAvatar(
+      radius: radius,
+      child: ClipOval(
+        child: Image.memory(_bytes) ,
       ),
     );
   }

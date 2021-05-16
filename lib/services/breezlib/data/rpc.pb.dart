@@ -1,8 +1,8 @@
 ///
 //  Generated code. Do not modify.
-//  source: rpc.proto
+//  source: messages.proto
 //
-// @dart = 2.7
+// @dart = 2.12
 // ignore_for_file: annotate_overrides,camel_case_types,unnecessary_const,non_constant_identifier_names,library_prefixes,unused_import,unused_shown_name,return_of_invalid_type,unnecessary_this,prefer_final_fields
 
 import 'dart:core' as $core;
@@ -32,7 +32,7 @@ class ListPaymentsRequest extends $pb.GeneratedMessage {
   'Using this can add significant overhead to your binary. '
   'Use [GeneratedMessageGenericExtensions.rebuild] instead. '
   'Will be removed in next major version')
-  ListPaymentsRequest copyWith(void Function(ListPaymentsRequest) updates) => super.copyWith((message) => updates(message as ListPaymentsRequest)); // ignore: deprecated_member_use
+  ListPaymentsRequest copyWith(void Function(ListPaymentsRequest) updates) => super.copyWith((message) => updates(message as ListPaymentsRequest)) as ListPaymentsRequest; // ignore: deprecated_member_use
   $pb.BuilderInfo get info_ => _i;
   @$core.pragma('dart2js:noInline')
   static ListPaymentsRequest create() => ListPaymentsRequest._();
@@ -40,7 +40,7 @@ class ListPaymentsRequest extends $pb.GeneratedMessage {
   static $pb.PbList<ListPaymentsRequest> createRepeated() => $pb.PbList<ListPaymentsRequest>();
   @$core.pragma('dart2js:noInline')
   static ListPaymentsRequest getDefault() => _defaultInstance ??= $pb.GeneratedMessage.$_defaultFor<ListPaymentsRequest>(create);
-  static ListPaymentsRequest _defaultInstance;
+  static ListPaymentsRequest? _defaultInstance;
 }
 
 class RestartDaemonRequest extends $pb.GeneratedMessage {
@@ -61,7 +61,7 @@ class RestartDaemonRequest extends $pb.GeneratedMessage {
   'Using this can add significant overhead to your binary. '
   'Use [GeneratedMessageGenericExtensions.rebuild] instead. '
   'Will be removed in next major version')
-  RestartDaemonRequest copyWith(void Function(RestartDaemonRequest) updates) => super.copyWith((message) => updates(message as RestartDaemonRequest)); // ignore: deprecated_member_use
+  RestartDaemonRequest copyWith(void Function(RestartDaemonRequest) updates) => super.copyWith((message) => updates(message as RestartDaemonRequest)) as RestartDaemonRequest; // ignore: deprecated_member_use
   $pb.BuilderInfo get info_ => _i;
   @$core.pragma('dart2js:noInline')
   static RestartDaemonRequest create() => RestartDaemonRequest._();
@@ -69,7 +69,7 @@ class RestartDaemonRequest extends $pb.GeneratedMessage {
   static $pb.PbList<RestartDaemonRequest> createRepeated() => $pb.PbList<RestartDaemonRequest>();
   @$core.pragma('dart2js:noInline')
   static RestartDaemonRequest getDefault() => _defaultInstance ??= $pb.GeneratedMessage.$_defaultFor<RestartDaemonRequest>(create);
-  static RestartDaemonRequest _defaultInstance;
+  static RestartDaemonRequest? _defaultInstance;
 }
 
 class RestartDaemonReply extends $pb.GeneratedMessage {
@@ -90,7 +90,7 @@ class RestartDaemonReply extends $pb.GeneratedMessage {
   'Using this can add significant overhead to your binary. '
   'Use [GeneratedMessageGenericExtensions.rebuild] instead. '
   'Will be removed in next major version')
-  RestartDaemonReply copyWith(void Function(RestartDaemonReply) updates) => super.copyWith((message) => updates(message as RestartDaemonReply)); // ignore: deprecated_member_use
+  RestartDaemonReply copyWith(void Function(RestartDaemonReply) updates) => super.copyWith((message) => updates(message as RestartDaemonReply)) as RestartDaemonReply; // ignore: deprecated_member_use
   $pb.BuilderInfo get info_ => _i;
   @$core.pragma('dart2js:noInline')
   static RestartDaemonReply create() => RestartDaemonReply._();
@@ -98,7 +98,7 @@ class RestartDaemonReply extends $pb.GeneratedMessage {
   static $pb.PbList<RestartDaemonReply> createRepeated() => $pb.PbList<RestartDaemonReply>();
   @$core.pragma('dart2js:noInline')
   static RestartDaemonReply getDefault() => _defaultInstance ??= $pb.GeneratedMessage.$_defaultFor<RestartDaemonReply>(create);
-  static RestartDaemonReply _defaultInstance;
+  static RestartDaemonReply? _defaultInstance;
 }
 
 class AddFundInitRequest extends $pb.GeneratedMessage {
@@ -110,8 +110,8 @@ class AddFundInitRequest extends $pb.GeneratedMessage {
 
   AddFundInitRequest._() : super();
   factory AddFundInitRequest({
-    $core.String notificationToken,
-    $core.String lspID,
+    $core.String? notificationToken,
+    $core.String? lspID,
   }) {
     final _result = create();
     if (notificationToken != null) {
@@ -133,7 +133,7 @@ class AddFundInitRequest extends $pb.GeneratedMessage {
   'Using this can add significant overhead to your binary. '
   'Use [GeneratedMessageGenericExtensions.rebuild] instead. '
   'Will be removed in next major version')
-  AddFundInitRequest copyWith(void Function(AddFundInitRequest) updates) => super.copyWith((message) => updates(message as AddFundInitRequest)); // ignore: deprecated_member_use
+  AddFundInitRequest copyWith(void Function(AddFundInitRequest) updates) => super.copyWith((message) => updates(message as AddFundInitRequest)) as AddFundInitRequest; // ignore: deprecated_member_use
   $pb.BuilderInfo get info_ => _i;
   @$core.pragma('dart2js:noInline')
   static AddFundInitRequest create() => AddFundInitRequest._();
@@ -141,7 +141,7 @@ class AddFundInitRequest extends $pb.GeneratedMessage {
   static $pb.PbList<AddFundInitRequest> createRepeated() => $pb.PbList<AddFundInitRequest>();
   @$core.pragma('dart2js:noInline')
   static AddFundInitRequest getDefault() => _defaultInstance ??= $pb.GeneratedMessage.$_defaultFor<AddFundInitRequest>(create);
-  static AddFundInitRequest _defaultInstance;
+  static AddFundInitRequest? _defaultInstance;
 
   @$pb.TagNumber(1)
   $core.String get notificationToken => $_getSZ(0);
@@ -170,7 +170,7 @@ class FundStatusRequest extends $pb.GeneratedMessage {
 
   FundStatusRequest._() : super();
   factory FundStatusRequest({
-    $core.String notificationToken,
+    $core.String? notificationToken,
   }) {
     final _result = create();
     if (notificationToken != null) {
@@ -189,7 +189,7 @@ class FundStatusRequest extends $pb.GeneratedMessage {
   'Using this can add significant overhead to your binary. '
   'Use [GeneratedMessageGenericExtensions.rebuild] instead. '
   'Will be removed in next major version')
-  FundStatusRequest copyWith(void Function(FundStatusRequest) updates) => super.copyWith((message) => updates(message as FundStatusRequest)); // ignore: deprecated_member_use
+  FundStatusRequest copyWith(void Function(FundStatusRequest) updates) => super.copyWith((message) => updates(message as FundStatusRequest)) as FundStatusRequest; // ignore: deprecated_member_use
   $pb.BuilderInfo get info_ => _i;
   @$core.pragma('dart2js:noInline')
   static FundStatusRequest create() => FundStatusRequest._();
@@ -197,7 +197,7 @@ class FundStatusRequest extends $pb.GeneratedMessage {
   static $pb.PbList<FundStatusRequest> createRepeated() => $pb.PbList<FundStatusRequest>();
   @$core.pragma('dart2js:noInline')
   static FundStatusRequest getDefault() => _defaultInstance ??= $pb.GeneratedMessage.$_defaultFor<FundStatusRequest>(create);
-  static FundStatusRequest _defaultInstance;
+  static FundStatusRequest? _defaultInstance;
 
   @$pb.TagNumber(1)
   $core.String get notificationToken => $_getSZ(0);
@@ -218,8 +218,8 @@ class AddInvoiceReply extends $pb.GeneratedMessage {
 
   AddInvoiceReply._() : super();
   factory AddInvoiceReply({
-    $core.String paymentRequest,
-    $fixnum.Int64 lspFee,
+    $core.String? paymentRequest,
+    $fixnum.Int64? lspFee,
   }) {
     final _result = create();
     if (paymentRequest != null) {
@@ -241,7 +241,7 @@ class AddInvoiceReply extends $pb.GeneratedMessage {
   'Using this can add significant overhead to your binary. '
   'Use [GeneratedMessageGenericExtensions.rebuild] instead. '
   'Will be removed in next major version')
-  AddInvoiceReply copyWith(void Function(AddInvoiceReply) updates) => super.copyWith((message) => updates(message as AddInvoiceReply)); // ignore: deprecated_member_use
+  AddInvoiceReply copyWith(void Function(AddInvoiceReply) updates) => super.copyWith((message) => updates(message as AddInvoiceReply)) as AddInvoiceReply; // ignore: deprecated_member_use
   $pb.BuilderInfo get info_ => _i;
   @$core.pragma('dart2js:noInline')
   static AddInvoiceReply create() => AddInvoiceReply._();
@@ -249,7 +249,7 @@ class AddInvoiceReply extends $pb.GeneratedMessage {
   static $pb.PbList<AddInvoiceReply> createRepeated() => $pb.PbList<AddInvoiceReply>();
   @$core.pragma('dart2js:noInline')
   static AddInvoiceReply getDefault() => _defaultInstance ??= $pb.GeneratedMessage.$_defaultFor<AddInvoiceReply>(create);
-  static AddInvoiceReply _defaultInstance;
+  static AddInvoiceReply? _defaultInstance;
 
   @$pb.TagNumber(1)
   $core.String get paymentRequest => $_getSZ(0);
@@ -279,8 +279,8 @@ class ChainStatus extends $pb.GeneratedMessage {
 
   ChainStatus._() : super();
   factory ChainStatus({
-    $core.int blockHeight,
-    $core.bool syncedToChain,
+    $core.int? blockHeight,
+    $core.bool? syncedToChain,
   }) {
     final _result = create();
     if (blockHeight != null) {
@@ -302,7 +302,7 @@ class ChainStatus extends $pb.GeneratedMessage {
   'Using this can add significant overhead to your binary. '
   'Use [GeneratedMessageGenericExtensions.rebuild] instead. '
   'Will be removed in next major version')
-  ChainStatus copyWith(void Function(ChainStatus) updates) => super.copyWith((message) => updates(message as ChainStatus)); // ignore: deprecated_member_use
+  ChainStatus copyWith(void Function(ChainStatus) updates) => super.copyWith((message) => updates(message as ChainStatus)) as ChainStatus; // ignore: deprecated_member_use
   $pb.BuilderInfo get info_ => _i;
   @$core.pragma('dart2js:noInline')
   static ChainStatus create() => ChainStatus._();
@@ -310,7 +310,7 @@ class ChainStatus extends $pb.GeneratedMessage {
   static $pb.PbList<ChainStatus> createRepeated() => $pb.PbList<ChainStatus>();
   @$core.pragma('dart2js:noInline')
   static ChainStatus getDefault() => _defaultInstance ??= $pb.GeneratedMessage.$_defaultFor<ChainStatus>(create);
-  static ChainStatus _defaultInstance;
+  static ChainStatus? _defaultInstance;
 
   @$pb.TagNumber(1)
   $core.int get blockHeight => $_getIZ(0);
@@ -354,22 +354,22 @@ class Account extends $pb.GeneratedMessage {
 
   Account._() : super();
   factory Account({
-    $core.String id,
-    $fixnum.Int64 balance,
-    $fixnum.Int64 walletBalance,
-    Account_AccountStatus status,
-    $fixnum.Int64 maxAllowedToReceive,
-    $fixnum.Int64 maxAllowedToPay,
-    $fixnum.Int64 maxPaymentAmount,
-    $fixnum.Int64 routingNodeFee,
-    $core.bool enabled,
-    $fixnum.Int64 maxChanReserve,
-    $core.String channelPoint,
-    $core.bool readyForPayments,
-    $fixnum.Int64 tipHeight,
-    $core.Iterable<$core.String> connectedPeers,
-    $fixnum.Int64 maxInboundLiquidity,
-    $core.Iterable<$core.String> unconfirmedChannels,
+    $core.String? id,
+    $fixnum.Int64? balance,
+    $fixnum.Int64? walletBalance,
+    Account_AccountStatus? status,
+    $fixnum.Int64? maxAllowedToReceive,
+    $fixnum.Int64? maxAllowedToPay,
+    $fixnum.Int64? maxPaymentAmount,
+    $fixnum.Int64? routingNodeFee,
+    $core.bool? enabled,
+    $fixnum.Int64? maxChanReserve,
+    $core.String? channelPoint,
+    $core.bool? readyForPayments,
+    $fixnum.Int64? tipHeight,
+    $core.Iterable<$core.String>? connectedPeers,
+    $fixnum.Int64? maxInboundLiquidity,
+    $core.Iterable<$core.String>? unconfirmedChannels,
   }) {
     final _result = create();
     if (id != null) {
@@ -433,7 +433,7 @@ class Account extends $pb.GeneratedMessage {
   'Using this can add significant overhead to your binary. '
   'Use [GeneratedMessageGenericExtensions.rebuild] instead. '
   'Will be removed in next major version')
-  Account copyWith(void Function(Account) updates) => super.copyWith((message) => updates(message as Account)); // ignore: deprecated_member_use
+  Account copyWith(void Function(Account) updates) => super.copyWith((message) => updates(message as Account)) as Account; // ignore: deprecated_member_use
   $pb.BuilderInfo get info_ => _i;
   @$core.pragma('dart2js:noInline')
   static Account create() => Account._();
@@ -441,7 +441,7 @@ class Account extends $pb.GeneratedMessage {
   static $pb.PbList<Account> createRepeated() => $pb.PbList<Account>();
   @$core.pragma('dart2js:noInline')
   static Account getDefault() => _defaultInstance ??= $pb.GeneratedMessage.$_defaultFor<Account>(create);
-  static Account _defaultInstance;
+  static Account? _defaultInstance;
 
   @$pb.TagNumber(1)
   $core.String get id => $_getSZ(0);
@@ -604,27 +604,27 @@ class Payment extends $pb.GeneratedMessage {
 
   Payment._() : super();
   factory Payment({
-    Payment_PaymentType type,
-    $fixnum.Int64 amount,
-    $fixnum.Int64 creationTimestamp,
-    InvoiceMemo invoiceMemo,
-    $core.String redeemTxID,
-    $core.String paymentHash,
-    $core.String destination,
-    $core.int pendingExpirationHeight,
-    $fixnum.Int64 pendingExpirationTimestamp,
-    $fixnum.Int64 fee,
-    $core.String preimage,
-    $core.String closedChannelPoint,
-    $core.bool isChannelPending,
-    $core.bool isChannelCloseConfimed,
-    $core.String closedChannelTxID,
-    $core.bool isKeySend,
-    $core.bool pendingFull,
-    $core.String closedChannelRemoteTxID,
-    $core.String closedChannelSweepTxID,
-    $core.String groupKey,
-    $core.String groupName,
+    Payment_PaymentType? type,
+    $fixnum.Int64? amount,
+    $fixnum.Int64? creationTimestamp,
+    InvoiceMemo? invoiceMemo,
+    $core.String? redeemTxID,
+    $core.String? paymentHash,
+    $core.String? destination,
+    $core.int? pendingExpirationHeight,
+    $fixnum.Int64? pendingExpirationTimestamp,
+    $fixnum.Int64? fee,
+    $core.String? preimage,
+    $core.String? closedChannelPoint,
+    $core.bool? isChannelPending,
+    $core.bool? isChannelCloseConfimed,
+    $core.String? closedChannelTxID,
+    $core.bool? isKeySend,
+    $core.bool? pendingFull,
+    $core.String? closedChannelRemoteTxID,
+    $core.String? closedChannelSweepTxID,
+    $core.String? groupKey,
+    $core.String? groupName,
   }) {
     final _result = create();
     if (type != null) {
@@ -703,7 +703,7 @@ class Payment extends $pb.GeneratedMessage {
   'Using this can add significant overhead to your binary. '
   'Use [GeneratedMessageGenericExtensions.rebuild] instead. '
   'Will be removed in next major version')
-  Payment copyWith(void Function(Payment) updates) => super.copyWith((message) => updates(message as Payment)); // ignore: deprecated_member_use
+  Payment copyWith(void Function(Payment) updates) => super.copyWith((message) => updates(message as Payment)) as Payment; // ignore: deprecated_member_use
   $pb.BuilderInfo get info_ => _i;
   @$core.pragma('dart2js:noInline')
   static Payment create() => Payment._();
@@ -711,7 +711,7 @@ class Payment extends $pb.GeneratedMessage {
   static $pb.PbList<Payment> createRepeated() => $pb.PbList<Payment>();
   @$core.pragma('dart2js:noInline')
   static Payment getDefault() => _defaultInstance ??= $pb.GeneratedMessage.$_defaultFor<Payment>(create);
-  static Payment _defaultInstance;
+  static Payment? _defaultInstance;
 
   @$pb.TagNumber(1)
   Payment_PaymentType get type => $_getN(0);
@@ -913,7 +913,7 @@ class PaymentsList extends $pb.GeneratedMessage {
 
   PaymentsList._() : super();
   factory PaymentsList({
-    $core.Iterable<Payment> paymentsList,
+    $core.Iterable<Payment>? paymentsList,
   }) {
     final _result = create();
     if (paymentsList != null) {
@@ -932,7 +932,7 @@ class PaymentsList extends $pb.GeneratedMessage {
   'Using this can add significant overhead to your binary. '
   'Use [GeneratedMessageGenericExtensions.rebuild] instead. '
   'Will be removed in next major version')
-  PaymentsList copyWith(void Function(PaymentsList) updates) => super.copyWith((message) => updates(message as PaymentsList)); // ignore: deprecated_member_use
+  PaymentsList copyWith(void Function(PaymentsList) updates) => super.copyWith((message) => updates(message as PaymentsList)) as PaymentsList; // ignore: deprecated_member_use
   $pb.BuilderInfo get info_ => _i;
   @$core.pragma('dart2js:noInline')
   static PaymentsList create() => PaymentsList._();
@@ -940,7 +940,7 @@ class PaymentsList extends $pb.GeneratedMessage {
   static $pb.PbList<PaymentsList> createRepeated() => $pb.PbList<PaymentsList>();
   @$core.pragma('dart2js:noInline')
   static PaymentsList getDefault() => _defaultInstance ??= $pb.GeneratedMessage.$_defaultFor<PaymentsList>(create);
-  static PaymentsList _defaultInstance;
+  static PaymentsList? _defaultInstance;
 
   @$pb.TagNumber(1)
   $core.List<Payment> get paymentsList => $_getList(0);
@@ -955,8 +955,8 @@ class PaymentResponse extends $pb.GeneratedMessage {
 
   PaymentResponse._() : super();
   factory PaymentResponse({
-    $core.String paymentError,
-    $core.String traceReport,
+    $core.String? paymentError,
+    $core.String? traceReport,
   }) {
     final _result = create();
     if (paymentError != null) {
@@ -978,7 +978,7 @@ class PaymentResponse extends $pb.GeneratedMessage {
   'Using this can add significant overhead to your binary. '
   'Use [GeneratedMessageGenericExtensions.rebuild] instead. '
   'Will be removed in next major version')
-  PaymentResponse copyWith(void Function(PaymentResponse) updates) => super.copyWith((message) => updates(message as PaymentResponse)); // ignore: deprecated_member_use
+  PaymentResponse copyWith(void Function(PaymentResponse) updates) => super.copyWith((message) => updates(message as PaymentResponse)) as PaymentResponse; // ignore: deprecated_member_use
   $pb.BuilderInfo get info_ => _i;
   @$core.pragma('dart2js:noInline')
   static PaymentResponse create() => PaymentResponse._();
@@ -986,7 +986,7 @@ class PaymentResponse extends $pb.GeneratedMessage {
   static $pb.PbList<PaymentResponse> createRepeated() => $pb.PbList<PaymentResponse>();
   @$core.pragma('dart2js:noInline')
   static PaymentResponse getDefault() => _defaultInstance ??= $pb.GeneratedMessage.$_defaultFor<PaymentResponse>(create);
-  static PaymentResponse _defaultInstance;
+  static PaymentResponse? _defaultInstance;
 
   @$pb.TagNumber(1)
   $core.String get paymentError => $_getSZ(0);
@@ -1016,8 +1016,8 @@ class SendWalletCoinsRequest extends $pb.GeneratedMessage {
 
   SendWalletCoinsRequest._() : super();
   factory SendWalletCoinsRequest({
-    $core.String address,
-    $fixnum.Int64 satPerByteFee,
+    $core.String? address,
+    $fixnum.Int64? satPerByteFee,
   }) {
     final _result = create();
     if (address != null) {
@@ -1039,7 +1039,7 @@ class SendWalletCoinsRequest extends $pb.GeneratedMessage {
   'Using this can add significant overhead to your binary. '
   'Use [GeneratedMessageGenericExtensions.rebuild] instead. '
   'Will be removed in next major version')
-  SendWalletCoinsRequest copyWith(void Function(SendWalletCoinsRequest) updates) => super.copyWith((message) => updates(message as SendWalletCoinsRequest)); // ignore: deprecated_member_use
+  SendWalletCoinsRequest copyWith(void Function(SendWalletCoinsRequest) updates) => super.copyWith((message) => updates(message as SendWalletCoinsRequest)) as SendWalletCoinsRequest; // ignore: deprecated_member_use
   $pb.BuilderInfo get info_ => _i;
   @$core.pragma('dart2js:noInline')
   static SendWalletCoinsRequest create() => SendWalletCoinsRequest._();
@@ -1047,7 +1047,7 @@ class SendWalletCoinsRequest extends $pb.GeneratedMessage {
   static $pb.PbList<SendWalletCoinsRequest> createRepeated() => $pb.PbList<SendWalletCoinsRequest>();
   @$core.pragma('dart2js:noInline')
   static SendWalletCoinsRequest getDefault() => _defaultInstance ??= $pb.GeneratedMessage.$_defaultFor<SendWalletCoinsRequest>(create);
-  static SendWalletCoinsRequest _defaultInstance;
+  static SendWalletCoinsRequest? _defaultInstance;
 
   @$pb.TagNumber(1)
   $core.String get address => $_getSZ(0);
@@ -1077,8 +1077,8 @@ class PayInvoiceRequest extends $pb.GeneratedMessage {
 
   PayInvoiceRequest._() : super();
   factory PayInvoiceRequest({
-    $fixnum.Int64 amount,
-    $core.String paymentRequest,
+    $fixnum.Int64? amount,
+    $core.String? paymentRequest,
   }) {
     final _result = create();
     if (amount != null) {
@@ -1100,7 +1100,7 @@ class PayInvoiceRequest extends $pb.GeneratedMessage {
   'Using this can add significant overhead to your binary. '
   'Use [GeneratedMessageGenericExtensions.rebuild] instead. '
   'Will be removed in next major version')
-  PayInvoiceRequest copyWith(void Function(PayInvoiceRequest) updates) => super.copyWith((message) => updates(message as PayInvoiceRequest)); // ignore: deprecated_member_use
+  PayInvoiceRequest copyWith(void Function(PayInvoiceRequest) updates) => super.copyWith((message) => updates(message as PayInvoiceRequest)) as PayInvoiceRequest; // ignore: deprecated_member_use
   $pb.BuilderInfo get info_ => _i;
   @$core.pragma('dart2js:noInline')
   static PayInvoiceRequest create() => PayInvoiceRequest._();
@@ -1108,7 +1108,7 @@ class PayInvoiceRequest extends $pb.GeneratedMessage {
   static $pb.PbList<PayInvoiceRequest> createRepeated() => $pb.PbList<PayInvoiceRequest>();
   @$core.pragma('dart2js:noInline')
   static PayInvoiceRequest getDefault() => _defaultInstance ??= $pb.GeneratedMessage.$_defaultFor<PayInvoiceRequest>(create);
-  static PayInvoiceRequest _defaultInstance;
+  static PayInvoiceRequest? _defaultInstance;
 
   @$pb.TagNumber(1)
   $fixnum.Int64 get amount => $_getI64(0);
@@ -1143,13 +1143,13 @@ class SpontaneousPaymentRequest extends $pb.GeneratedMessage {
 
   SpontaneousPaymentRequest._() : super();
   factory SpontaneousPaymentRequest({
-    $fixnum.Int64 amount,
-    $core.String destNode,
-    $core.String description,
-    $core.String groupKey,
-    $core.String groupName,
-    $fixnum.Int64 feeLimitMsat,
-    $core.Map<$fixnum.Int64, $core.String> tlv,
+    $fixnum.Int64? amount,
+    $core.String? destNode,
+    $core.String? description,
+    $core.String? groupKey,
+    $core.String? groupName,
+    $fixnum.Int64? feeLimitMsat,
+    $core.Map<$fixnum.Int64, $core.String>? tlv,
   }) {
     final _result = create();
     if (amount != null) {
@@ -1186,7 +1186,7 @@ class SpontaneousPaymentRequest extends $pb.GeneratedMessage {
   'Using this can add significant overhead to your binary. '
   'Use [GeneratedMessageGenericExtensions.rebuild] instead. '
   'Will be removed in next major version')
-  SpontaneousPaymentRequest copyWith(void Function(SpontaneousPaymentRequest) updates) => super.copyWith((message) => updates(message as SpontaneousPaymentRequest)); // ignore: deprecated_member_use
+  SpontaneousPaymentRequest copyWith(void Function(SpontaneousPaymentRequest) updates) => super.copyWith((message) => updates(message as SpontaneousPaymentRequest)) as SpontaneousPaymentRequest; // ignore: deprecated_member_use
   $pb.BuilderInfo get info_ => _i;
   @$core.pragma('dart2js:noInline')
   static SpontaneousPaymentRequest create() => SpontaneousPaymentRequest._();
@@ -1194,7 +1194,7 @@ class SpontaneousPaymentRequest extends $pb.GeneratedMessage {
   static $pb.PbList<SpontaneousPaymentRequest> createRepeated() => $pb.PbList<SpontaneousPaymentRequest>();
   @$core.pragma('dart2js:noInline')
   static SpontaneousPaymentRequest getDefault() => _defaultInstance ??= $pb.GeneratedMessage.$_defaultFor<SpontaneousPaymentRequest>(create);
-  static SpontaneousPaymentRequest _defaultInstance;
+  static SpontaneousPaymentRequest? _defaultInstance;
 
   @$pb.TagNumber(1)
   $fixnum.Int64 get amount => $_getI64(0);
@@ -1270,15 +1270,15 @@ class InvoiceMemo extends $pb.GeneratedMessage {
 
   InvoiceMemo._() : super();
   factory InvoiceMemo({
-    $core.String description,
-    $fixnum.Int64 amount,
-    $core.String payeeName,
-    $core.String payeeImageURL,
-    $core.String payerName,
-    $core.String payerImageURL,
-    $core.bool transferRequest,
-    $fixnum.Int64 expiry,
-    $core.List<$core.int> preimage,
+    $core.String? description,
+    $fixnum.Int64? amount,
+    $core.String? payeeName,
+    $core.String? payeeImageURL,
+    $core.String? payerName,
+    $core.String? payerImageURL,
+    $core.bool? transferRequest,
+    $fixnum.Int64? expiry,
+    $core.List<$core.int>? preimage,
   }) {
     final _result = create();
     if (description != null) {
@@ -1321,7 +1321,7 @@ class InvoiceMemo extends $pb.GeneratedMessage {
   'Using this can add significant overhead to your binary. '
   'Use [GeneratedMessageGenericExtensions.rebuild] instead. '
   'Will be removed in next major version')
-  InvoiceMemo copyWith(void Function(InvoiceMemo) updates) => super.copyWith((message) => updates(message as InvoiceMemo)); // ignore: deprecated_member_use
+  InvoiceMemo copyWith(void Function(InvoiceMemo) updates) => super.copyWith((message) => updates(message as InvoiceMemo)) as InvoiceMemo; // ignore: deprecated_member_use
   $pb.BuilderInfo get info_ => _i;
   @$core.pragma('dart2js:noInline')
   static InvoiceMemo create() => InvoiceMemo._();
@@ -1329,7 +1329,7 @@ class InvoiceMemo extends $pb.GeneratedMessage {
   static $pb.PbList<InvoiceMemo> createRepeated() => $pb.PbList<InvoiceMemo>();
   @$core.pragma('dart2js:noInline')
   static InvoiceMemo getDefault() => _defaultInstance ??= $pb.GeneratedMessage.$_defaultFor<InvoiceMemo>(create);
-  static InvoiceMemo _defaultInstance;
+  static InvoiceMemo? _defaultInstance;
 
   @$pb.TagNumber(1)
   $core.String get description => $_getSZ(0);
@@ -1422,8 +1422,8 @@ class AddInvoiceRequest extends $pb.GeneratedMessage {
 
   AddInvoiceRequest._() : super();
   factory AddInvoiceRequest({
-    InvoiceMemo invoiceDetails,
-    LSPInformation lspInfo,
+    InvoiceMemo? invoiceDetails,
+    LSPInformation? lspInfo,
   }) {
     final _result = create();
     if (invoiceDetails != null) {
@@ -1445,7 +1445,7 @@ class AddInvoiceRequest extends $pb.GeneratedMessage {
   'Using this can add significant overhead to your binary. '
   'Use [GeneratedMessageGenericExtensions.rebuild] instead. '
   'Will be removed in next major version')
-  AddInvoiceRequest copyWith(void Function(AddInvoiceRequest) updates) => super.copyWith((message) => updates(message as AddInvoiceRequest)); // ignore: deprecated_member_use
+  AddInvoiceRequest copyWith(void Function(AddInvoiceRequest) updates) => super.copyWith((message) => updates(message as AddInvoiceRequest)) as AddInvoiceRequest; // ignore: deprecated_member_use
   $pb.BuilderInfo get info_ => _i;
   @$core.pragma('dart2js:noInline')
   static AddInvoiceRequest create() => AddInvoiceRequest._();
@@ -1453,7 +1453,7 @@ class AddInvoiceRequest extends $pb.GeneratedMessage {
   static $pb.PbList<AddInvoiceRequest> createRepeated() => $pb.PbList<AddInvoiceRequest>();
   @$core.pragma('dart2js:noInline')
   static AddInvoiceRequest getDefault() => _defaultInstance ??= $pb.GeneratedMessage.$_defaultFor<AddInvoiceRequest>(create);
-  static AddInvoiceRequest _defaultInstance;
+  static AddInvoiceRequest? _defaultInstance;
 
   @$pb.TagNumber(1)
   InvoiceMemo get invoiceDetails => $_getN(0);
@@ -1488,9 +1488,9 @@ class Invoice extends $pb.GeneratedMessage {
 
   Invoice._() : super();
   factory Invoice({
-    InvoiceMemo memo,
-    $core.bool settled,
-    $fixnum.Int64 amtPaid,
+    InvoiceMemo? memo,
+    $core.bool? settled,
+    $fixnum.Int64? amtPaid,
   }) {
     final _result = create();
     if (memo != null) {
@@ -1515,7 +1515,7 @@ class Invoice extends $pb.GeneratedMessage {
   'Using this can add significant overhead to your binary. '
   'Use [GeneratedMessageGenericExtensions.rebuild] instead. '
   'Will be removed in next major version')
-  Invoice copyWith(void Function(Invoice) updates) => super.copyWith((message) => updates(message as Invoice)); // ignore: deprecated_member_use
+  Invoice copyWith(void Function(Invoice) updates) => super.copyWith((message) => updates(message as Invoice)) as Invoice; // ignore: deprecated_member_use
   $pb.BuilderInfo get info_ => _i;
   @$core.pragma('dart2js:noInline')
   static Invoice create() => Invoice._();
@@ -1523,7 +1523,7 @@ class Invoice extends $pb.GeneratedMessage {
   static $pb.PbList<Invoice> createRepeated() => $pb.PbList<Invoice>();
   @$core.pragma('dart2js:noInline')
   static Invoice getDefault() => _defaultInstance ??= $pb.GeneratedMessage.$_defaultFor<Invoice>(create);
-  static Invoice _defaultInstance;
+  static Invoice? _defaultInstance;
 
   @$pb.TagNumber(1)
   InvoiceMemo get memo => $_getN(0);
@@ -1563,7 +1563,7 @@ class SyncLSPChannelsRequest extends $pb.GeneratedMessage {
 
   SyncLSPChannelsRequest._() : super();
   factory SyncLSPChannelsRequest({
-    LSPInformation lspInfo,
+    LSPInformation? lspInfo,
   }) {
     final _result = create();
     if (lspInfo != null) {
@@ -1582,7 +1582,7 @@ class SyncLSPChannelsRequest extends $pb.GeneratedMessage {
   'Using this can add significant overhead to your binary. '
   'Use [GeneratedMessageGenericExtensions.rebuild] instead. '
   'Will be removed in next major version')
-  SyncLSPChannelsRequest copyWith(void Function(SyncLSPChannelsRequest) updates) => super.copyWith((message) => updates(message as SyncLSPChannelsRequest)); // ignore: deprecated_member_use
+  SyncLSPChannelsRequest copyWith(void Function(SyncLSPChannelsRequest) updates) => super.copyWith((message) => updates(message as SyncLSPChannelsRequest)) as SyncLSPChannelsRequest; // ignore: deprecated_member_use
   $pb.BuilderInfo get info_ => _i;
   @$core.pragma('dart2js:noInline')
   static SyncLSPChannelsRequest create() => SyncLSPChannelsRequest._();
@@ -1590,7 +1590,7 @@ class SyncLSPChannelsRequest extends $pb.GeneratedMessage {
   static $pb.PbList<SyncLSPChannelsRequest> createRepeated() => $pb.PbList<SyncLSPChannelsRequest>();
   @$core.pragma('dart2js:noInline')
   static SyncLSPChannelsRequest getDefault() => _defaultInstance ??= $pb.GeneratedMessage.$_defaultFor<SyncLSPChannelsRequest>(create);
-  static SyncLSPChannelsRequest _defaultInstance;
+  static SyncLSPChannelsRequest? _defaultInstance;
 
   @$pb.TagNumber(1)
   LSPInformation get lspInfo => $_getN(0);
@@ -1612,7 +1612,7 @@ class SyncLSPChannelsResponse extends $pb.GeneratedMessage {
 
   SyncLSPChannelsResponse._() : super();
   factory SyncLSPChannelsResponse({
-    $core.bool hasMismatch,
+    $core.bool? hasMismatch,
   }) {
     final _result = create();
     if (hasMismatch != null) {
@@ -1631,7 +1631,7 @@ class SyncLSPChannelsResponse extends $pb.GeneratedMessage {
   'Using this can add significant overhead to your binary. '
   'Use [GeneratedMessageGenericExtensions.rebuild] instead. '
   'Will be removed in next major version')
-  SyncLSPChannelsResponse copyWith(void Function(SyncLSPChannelsResponse) updates) => super.copyWith((message) => updates(message as SyncLSPChannelsResponse)); // ignore: deprecated_member_use
+  SyncLSPChannelsResponse copyWith(void Function(SyncLSPChannelsResponse) updates) => super.copyWith((message) => updates(message as SyncLSPChannelsResponse)) as SyncLSPChannelsResponse; // ignore: deprecated_member_use
   $pb.BuilderInfo get info_ => _i;
   @$core.pragma('dart2js:noInline')
   static SyncLSPChannelsResponse create() => SyncLSPChannelsResponse._();
@@ -1639,7 +1639,7 @@ class SyncLSPChannelsResponse extends $pb.GeneratedMessage {
   static $pb.PbList<SyncLSPChannelsResponse> createRepeated() => $pb.PbList<SyncLSPChannelsResponse>();
   @$core.pragma('dart2js:noInline')
   static SyncLSPChannelsResponse getDefault() => _defaultInstance ??= $pb.GeneratedMessage.$_defaultFor<SyncLSPChannelsResponse>(create);
-  static SyncLSPChannelsResponse _defaultInstance;
+  static SyncLSPChannelsResponse? _defaultInstance;
 
   @$pb.TagNumber(1)
   $core.bool get hasMismatch => $_getBF(0);
@@ -1660,8 +1660,8 @@ class CheckLSPClosedChannelMismatchRequest extends $pb.GeneratedMessage {
 
   CheckLSPClosedChannelMismatchRequest._() : super();
   factory CheckLSPClosedChannelMismatchRequest({
-    LSPInformation lspInfo,
-    $core.String chanPoint,
+    LSPInformation? lspInfo,
+    $core.String? chanPoint,
   }) {
     final _result = create();
     if (lspInfo != null) {
@@ -1683,7 +1683,7 @@ class CheckLSPClosedChannelMismatchRequest extends $pb.GeneratedMessage {
   'Using this can add significant overhead to your binary. '
   'Use [GeneratedMessageGenericExtensions.rebuild] instead. '
   'Will be removed in next major version')
-  CheckLSPClosedChannelMismatchRequest copyWith(void Function(CheckLSPClosedChannelMismatchRequest) updates) => super.copyWith((message) => updates(message as CheckLSPClosedChannelMismatchRequest)); // ignore: deprecated_member_use
+  CheckLSPClosedChannelMismatchRequest copyWith(void Function(CheckLSPClosedChannelMismatchRequest) updates) => super.copyWith((message) => updates(message as CheckLSPClosedChannelMismatchRequest)) as CheckLSPClosedChannelMismatchRequest; // ignore: deprecated_member_use
   $pb.BuilderInfo get info_ => _i;
   @$core.pragma('dart2js:noInline')
   static CheckLSPClosedChannelMismatchRequest create() => CheckLSPClosedChannelMismatchRequest._();
@@ -1691,7 +1691,7 @@ class CheckLSPClosedChannelMismatchRequest extends $pb.GeneratedMessage {
   static $pb.PbList<CheckLSPClosedChannelMismatchRequest> createRepeated() => $pb.PbList<CheckLSPClosedChannelMismatchRequest>();
   @$core.pragma('dart2js:noInline')
   static CheckLSPClosedChannelMismatchRequest getDefault() => _defaultInstance ??= $pb.GeneratedMessage.$_defaultFor<CheckLSPClosedChannelMismatchRequest>(create);
-  static CheckLSPClosedChannelMismatchRequest _defaultInstance;
+  static CheckLSPClosedChannelMismatchRequest? _defaultInstance;
 
   @$pb.TagNumber(1)
   LSPInformation get lspInfo => $_getN(0);
@@ -1722,7 +1722,7 @@ class CheckLSPClosedChannelMismatchResponse extends $pb.GeneratedMessage {
 
   CheckLSPClosedChannelMismatchResponse._() : super();
   factory CheckLSPClosedChannelMismatchResponse({
-    $core.bool mismatch,
+    $core.bool? mismatch,
   }) {
     final _result = create();
     if (mismatch != null) {
@@ -1741,7 +1741,7 @@ class CheckLSPClosedChannelMismatchResponse extends $pb.GeneratedMessage {
   'Using this can add significant overhead to your binary. '
   'Use [GeneratedMessageGenericExtensions.rebuild] instead. '
   'Will be removed in next major version')
-  CheckLSPClosedChannelMismatchResponse copyWith(void Function(CheckLSPClosedChannelMismatchResponse) updates) => super.copyWith((message) => updates(message as CheckLSPClosedChannelMismatchResponse)); // ignore: deprecated_member_use
+  CheckLSPClosedChannelMismatchResponse copyWith(void Function(CheckLSPClosedChannelMismatchResponse) updates) => super.copyWith((message) => updates(message as CheckLSPClosedChannelMismatchResponse)) as CheckLSPClosedChannelMismatchResponse; // ignore: deprecated_member_use
   $pb.BuilderInfo get info_ => _i;
   @$core.pragma('dart2js:noInline')
   static CheckLSPClosedChannelMismatchResponse create() => CheckLSPClosedChannelMismatchResponse._();
@@ -1749,7 +1749,7 @@ class CheckLSPClosedChannelMismatchResponse extends $pb.GeneratedMessage {
   static $pb.PbList<CheckLSPClosedChannelMismatchResponse> createRepeated() => $pb.PbList<CheckLSPClosedChannelMismatchResponse>();
   @$core.pragma('dart2js:noInline')
   static CheckLSPClosedChannelMismatchResponse getDefault() => _defaultInstance ??= $pb.GeneratedMessage.$_defaultFor<CheckLSPClosedChannelMismatchResponse>(create);
-  static CheckLSPClosedChannelMismatchResponse _defaultInstance;
+  static CheckLSPClosedChannelMismatchResponse? _defaultInstance;
 
   @$pb.TagNumber(1)
   $core.bool get mismatch => $_getBF(0);
@@ -1770,8 +1770,8 @@ class ResetClosedChannelChainInfoRequest extends $pb.GeneratedMessage {
 
   ResetClosedChannelChainInfoRequest._() : super();
   factory ResetClosedChannelChainInfoRequest({
-    $core.String chanPoint,
-    $fixnum.Int64 blockHeight,
+    $core.String? chanPoint,
+    $fixnum.Int64? blockHeight,
   }) {
     final _result = create();
     if (chanPoint != null) {
@@ -1793,7 +1793,7 @@ class ResetClosedChannelChainInfoRequest extends $pb.GeneratedMessage {
   'Using this can add significant overhead to your binary. '
   'Use [GeneratedMessageGenericExtensions.rebuild] instead. '
   'Will be removed in next major version')
-  ResetClosedChannelChainInfoRequest copyWith(void Function(ResetClosedChannelChainInfoRequest) updates) => super.copyWith((message) => updates(message as ResetClosedChannelChainInfoRequest)); // ignore: deprecated_member_use
+  ResetClosedChannelChainInfoRequest copyWith(void Function(ResetClosedChannelChainInfoRequest) updates) => super.copyWith((message) => updates(message as ResetClosedChannelChainInfoRequest)) as ResetClosedChannelChainInfoRequest; // ignore: deprecated_member_use
   $pb.BuilderInfo get info_ => _i;
   @$core.pragma('dart2js:noInline')
   static ResetClosedChannelChainInfoRequest create() => ResetClosedChannelChainInfoRequest._();
@@ -1801,7 +1801,7 @@ class ResetClosedChannelChainInfoRequest extends $pb.GeneratedMessage {
   static $pb.PbList<ResetClosedChannelChainInfoRequest> createRepeated() => $pb.PbList<ResetClosedChannelChainInfoRequest>();
   @$core.pragma('dart2js:noInline')
   static ResetClosedChannelChainInfoRequest getDefault() => _defaultInstance ??= $pb.GeneratedMessage.$_defaultFor<ResetClosedChannelChainInfoRequest>(create);
-  static ResetClosedChannelChainInfoRequest _defaultInstance;
+  static ResetClosedChannelChainInfoRequest? _defaultInstance;
 
   @$pb.TagNumber(1)
   $core.String get chanPoint => $_getSZ(0);
@@ -1840,7 +1840,7 @@ class ResetClosedChannelChainInfoReply extends $pb.GeneratedMessage {
   'Using this can add significant overhead to your binary. '
   'Use [GeneratedMessageGenericExtensions.rebuild] instead. '
   'Will be removed in next major version')
-  ResetClosedChannelChainInfoReply copyWith(void Function(ResetClosedChannelChainInfoReply) updates) => super.copyWith((message) => updates(message as ResetClosedChannelChainInfoReply)); // ignore: deprecated_member_use
+  ResetClosedChannelChainInfoReply copyWith(void Function(ResetClosedChannelChainInfoReply) updates) => super.copyWith((message) => updates(message as ResetClosedChannelChainInfoReply)) as ResetClosedChannelChainInfoReply; // ignore: deprecated_member_use
   $pb.BuilderInfo get info_ => _i;
   @$core.pragma('dart2js:noInline')
   static ResetClosedChannelChainInfoReply create() => ResetClosedChannelChainInfoReply._();
@@ -1848,7 +1848,7 @@ class ResetClosedChannelChainInfoReply extends $pb.GeneratedMessage {
   static $pb.PbList<ResetClosedChannelChainInfoReply> createRepeated() => $pb.PbList<ResetClosedChannelChainInfoReply>();
   @$core.pragma('dart2js:noInline')
   static ResetClosedChannelChainInfoReply getDefault() => _defaultInstance ??= $pb.GeneratedMessage.$_defaultFor<ResetClosedChannelChainInfoReply>(create);
-  static ResetClosedChannelChainInfoReply _defaultInstance;
+  static ResetClosedChannelChainInfoReply? _defaultInstance;
 }
 
 class NotificationEvent extends $pb.GeneratedMessage {
@@ -1860,8 +1860,8 @@ class NotificationEvent extends $pb.GeneratedMessage {
 
   NotificationEvent._() : super();
   factory NotificationEvent({
-    NotificationEvent_NotificationType type,
-    $core.Iterable<$core.String> data,
+    NotificationEvent_NotificationType? type,
+    $core.Iterable<$core.String>? data,
   }) {
     final _result = create();
     if (type != null) {
@@ -1883,7 +1883,7 @@ class NotificationEvent extends $pb.GeneratedMessage {
   'Using this can add significant overhead to your binary. '
   'Use [GeneratedMessageGenericExtensions.rebuild] instead. '
   'Will be removed in next major version')
-  NotificationEvent copyWith(void Function(NotificationEvent) updates) => super.copyWith((message) => updates(message as NotificationEvent)); // ignore: deprecated_member_use
+  NotificationEvent copyWith(void Function(NotificationEvent) updates) => super.copyWith((message) => updates(message as NotificationEvent)) as NotificationEvent; // ignore: deprecated_member_use
   $pb.BuilderInfo get info_ => _i;
   @$core.pragma('dart2js:noInline')
   static NotificationEvent create() => NotificationEvent._();
@@ -1891,7 +1891,7 @@ class NotificationEvent extends $pb.GeneratedMessage {
   static $pb.PbList<NotificationEvent> createRepeated() => $pb.PbList<NotificationEvent>();
   @$core.pragma('dart2js:noInline')
   static NotificationEvent getDefault() => _defaultInstance ??= $pb.GeneratedMessage.$_defaultFor<NotificationEvent>(create);
-  static NotificationEvent _defaultInstance;
+  static NotificationEvent? _defaultInstance;
 
   @$pb.TagNumber(1)
   NotificationEvent_NotificationType get type => $_getN(0);
@@ -1919,12 +1919,12 @@ class AddFundInitReply extends $pb.GeneratedMessage {
 
   AddFundInitReply._() : super();
   factory AddFundInitReply({
-    $core.String address,
-    $fixnum.Int64 maxAllowedDeposit,
-    $core.String errorMessage,
-    $core.String backupJson,
-    $fixnum.Int64 requiredReserve,
-    $fixnum.Int64 minAllowedDeposit,
+    $core.String? address,
+    $fixnum.Int64? maxAllowedDeposit,
+    $core.String? errorMessage,
+    $core.String? backupJson,
+    $fixnum.Int64? requiredReserve,
+    $fixnum.Int64? minAllowedDeposit,
   }) {
     final _result = create();
     if (address != null) {
@@ -1958,7 +1958,7 @@ class AddFundInitReply extends $pb.GeneratedMessage {
   'Using this can add significant overhead to your binary. '
   'Use [GeneratedMessageGenericExtensions.rebuild] instead. '
   'Will be removed in next major version')
-  AddFundInitReply copyWith(void Function(AddFundInitReply) updates) => super.copyWith((message) => updates(message as AddFundInitReply)); // ignore: deprecated_member_use
+  AddFundInitReply copyWith(void Function(AddFundInitReply) updates) => super.copyWith((message) => updates(message as AddFundInitReply)) as AddFundInitReply; // ignore: deprecated_member_use
   $pb.BuilderInfo get info_ => _i;
   @$core.pragma('dart2js:noInline')
   static AddFundInitReply create() => AddFundInitReply._();
@@ -1966,7 +1966,7 @@ class AddFundInitReply extends $pb.GeneratedMessage {
   static $pb.PbList<AddFundInitReply> createRepeated() => $pb.PbList<AddFundInitReply>();
   @$core.pragma('dart2js:noInline')
   static AddFundInitReply getDefault() => _defaultInstance ??= $pb.GeneratedMessage.$_defaultFor<AddFundInitReply>(create);
-  static AddFundInitReply _defaultInstance;
+  static AddFundInitReply? _defaultInstance;
 
   @$pb.TagNumber(1)
   $core.String get address => $_getSZ(0);
@@ -2031,7 +2031,7 @@ class AddFundReply extends $pb.GeneratedMessage {
 
   AddFundReply._() : super();
   factory AddFundReply({
-    $core.String errorMessage,
+    $core.String? errorMessage,
   }) {
     final _result = create();
     if (errorMessage != null) {
@@ -2050,7 +2050,7 @@ class AddFundReply extends $pb.GeneratedMessage {
   'Using this can add significant overhead to your binary. '
   'Use [GeneratedMessageGenericExtensions.rebuild] instead. '
   'Will be removed in next major version')
-  AddFundReply copyWith(void Function(AddFundReply) updates) => super.copyWith((message) => updates(message as AddFundReply)); // ignore: deprecated_member_use
+  AddFundReply copyWith(void Function(AddFundReply) updates) => super.copyWith((message) => updates(message as AddFundReply)) as AddFundReply; // ignore: deprecated_member_use
   $pb.BuilderInfo get info_ => _i;
   @$core.pragma('dart2js:noInline')
   static AddFundReply create() => AddFundReply._();
@@ -2058,7 +2058,7 @@ class AddFundReply extends $pb.GeneratedMessage {
   static $pb.PbList<AddFundReply> createRepeated() => $pb.PbList<AddFundReply>();
   @$core.pragma('dart2js:noInline')
   static AddFundReply getDefault() => _defaultInstance ??= $pb.GeneratedMessage.$_defaultFor<AddFundReply>(create);
-  static AddFundReply _defaultInstance;
+  static AddFundReply? _defaultInstance;
 
   @$pb.TagNumber(1)
   $core.String get errorMessage => $_getSZ(0);
@@ -2081,10 +2081,10 @@ class RefundRequest extends $pb.GeneratedMessage {
 
   RefundRequest._() : super();
   factory RefundRequest({
-    $core.String address,
-    $core.String refundAddress,
-    $core.int targetConf,
-    $fixnum.Int64 satPerByte,
+    $core.String? address,
+    $core.String? refundAddress,
+    $core.int? targetConf,
+    $fixnum.Int64? satPerByte,
   }) {
     final _result = create();
     if (address != null) {
@@ -2112,7 +2112,7 @@ class RefundRequest extends $pb.GeneratedMessage {
   'Using this can add significant overhead to your binary. '
   'Use [GeneratedMessageGenericExtensions.rebuild] instead. '
   'Will be removed in next major version')
-  RefundRequest copyWith(void Function(RefundRequest) updates) => super.copyWith((message) => updates(message as RefundRequest)); // ignore: deprecated_member_use
+  RefundRequest copyWith(void Function(RefundRequest) updates) => super.copyWith((message) => updates(message as RefundRequest)) as RefundRequest; // ignore: deprecated_member_use
   $pb.BuilderInfo get info_ => _i;
   @$core.pragma('dart2js:noInline')
   static RefundRequest create() => RefundRequest._();
@@ -2120,7 +2120,7 @@ class RefundRequest extends $pb.GeneratedMessage {
   static $pb.PbList<RefundRequest> createRepeated() => $pb.PbList<RefundRequest>();
   @$core.pragma('dart2js:noInline')
   static RefundRequest getDefault() => _defaultInstance ??= $pb.GeneratedMessage.$_defaultFor<RefundRequest>(create);
-  static RefundRequest _defaultInstance;
+  static RefundRequest? _defaultInstance;
 
   @$pb.TagNumber(1)
   $core.String get address => $_getSZ(0);
@@ -2168,8 +2168,8 @@ class AddFundError extends $pb.GeneratedMessage {
 
   AddFundError._() : super();
   factory AddFundError({
-    SwapAddressInfo swapAddressInfo,
-    $core.double hoursToUnlock,
+    SwapAddressInfo? swapAddressInfo,
+    $core.double? hoursToUnlock,
   }) {
     final _result = create();
     if (swapAddressInfo != null) {
@@ -2191,7 +2191,7 @@ class AddFundError extends $pb.GeneratedMessage {
   'Using this can add significant overhead to your binary. '
   'Use [GeneratedMessageGenericExtensions.rebuild] instead. '
   'Will be removed in next major version')
-  AddFundError copyWith(void Function(AddFundError) updates) => super.copyWith((message) => updates(message as AddFundError)); // ignore: deprecated_member_use
+  AddFundError copyWith(void Function(AddFundError) updates) => super.copyWith((message) => updates(message as AddFundError)) as AddFundError; // ignore: deprecated_member_use
   $pb.BuilderInfo get info_ => _i;
   @$core.pragma('dart2js:noInline')
   static AddFundError create() => AddFundError._();
@@ -2199,7 +2199,7 @@ class AddFundError extends $pb.GeneratedMessage {
   static $pb.PbList<AddFundError> createRepeated() => $pb.PbList<AddFundError>();
   @$core.pragma('dart2js:noInline')
   static AddFundError getDefault() => _defaultInstance ??= $pb.GeneratedMessage.$_defaultFor<AddFundError>(create);
-  static AddFundError _defaultInstance;
+  static AddFundError? _defaultInstance;
 
   @$pb.TagNumber(1)
   SwapAddressInfo get swapAddressInfo => $_getN(0);
@@ -2232,9 +2232,9 @@ class FundStatusReply extends $pb.GeneratedMessage {
 
   FundStatusReply._() : super();
   factory FundStatusReply({
-    $core.Iterable<SwapAddressInfo> unConfirmedAddresses,
-    $core.Iterable<SwapAddressInfo> confirmedAddresses,
-    $core.Iterable<SwapAddressInfo> refundableAddresses,
+    $core.Iterable<SwapAddressInfo>? unConfirmedAddresses,
+    $core.Iterable<SwapAddressInfo>? confirmedAddresses,
+    $core.Iterable<SwapAddressInfo>? refundableAddresses,
   }) {
     final _result = create();
     if (unConfirmedAddresses != null) {
@@ -2259,7 +2259,7 @@ class FundStatusReply extends $pb.GeneratedMessage {
   'Using this can add significant overhead to your binary. '
   'Use [GeneratedMessageGenericExtensions.rebuild] instead. '
   'Will be removed in next major version')
-  FundStatusReply copyWith(void Function(FundStatusReply) updates) => super.copyWith((message) => updates(message as FundStatusReply)); // ignore: deprecated_member_use
+  FundStatusReply copyWith(void Function(FundStatusReply) updates) => super.copyWith((message) => updates(message as FundStatusReply)) as FundStatusReply; // ignore: deprecated_member_use
   $pb.BuilderInfo get info_ => _i;
   @$core.pragma('dart2js:noInline')
   static FundStatusReply create() => FundStatusReply._();
@@ -2267,7 +2267,7 @@ class FundStatusReply extends $pb.GeneratedMessage {
   static $pb.PbList<FundStatusReply> createRepeated() => $pb.PbList<FundStatusReply>();
   @$core.pragma('dart2js:noInline')
   static FundStatusReply getDefault() => _defaultInstance ??= $pb.GeneratedMessage.$_defaultFor<FundStatusReply>(create);
-  static FundStatusReply _defaultInstance;
+  static FundStatusReply? _defaultInstance;
 
   @$pb.TagNumber(1)
   $core.List<SwapAddressInfo> get unConfirmedAddresses => $_getList(0);
@@ -2288,8 +2288,8 @@ class RemoveFundRequest extends $pb.GeneratedMessage {
 
   RemoveFundRequest._() : super();
   factory RemoveFundRequest({
-    $core.String address,
-    $fixnum.Int64 amount,
+    $core.String? address,
+    $fixnum.Int64? amount,
   }) {
     final _result = create();
     if (address != null) {
@@ -2311,7 +2311,7 @@ class RemoveFundRequest extends $pb.GeneratedMessage {
   'Using this can add significant overhead to your binary. '
   'Use [GeneratedMessageGenericExtensions.rebuild] instead. '
   'Will be removed in next major version')
-  RemoveFundRequest copyWith(void Function(RemoveFundRequest) updates) => super.copyWith((message) => updates(message as RemoveFundRequest)); // ignore: deprecated_member_use
+  RemoveFundRequest copyWith(void Function(RemoveFundRequest) updates) => super.copyWith((message) => updates(message as RemoveFundRequest)) as RemoveFundRequest; // ignore: deprecated_member_use
   $pb.BuilderInfo get info_ => _i;
   @$core.pragma('dart2js:noInline')
   static RemoveFundRequest create() => RemoveFundRequest._();
@@ -2319,7 +2319,7 @@ class RemoveFundRequest extends $pb.GeneratedMessage {
   static $pb.PbList<RemoveFundRequest> createRepeated() => $pb.PbList<RemoveFundRequest>();
   @$core.pragma('dart2js:noInline')
   static RemoveFundRequest getDefault() => _defaultInstance ??= $pb.GeneratedMessage.$_defaultFor<RemoveFundRequest>(create);
-  static RemoveFundRequest _defaultInstance;
+  static RemoveFundRequest? _defaultInstance;
 
   @$pb.TagNumber(1)
   $core.String get address => $_getSZ(0);
@@ -2349,8 +2349,8 @@ class RemoveFundReply extends $pb.GeneratedMessage {
 
   RemoveFundReply._() : super();
   factory RemoveFundReply({
-    $core.String txid,
-    $core.String errorMessage,
+    $core.String? txid,
+    $core.String? errorMessage,
   }) {
     final _result = create();
     if (txid != null) {
@@ -2372,7 +2372,7 @@ class RemoveFundReply extends $pb.GeneratedMessage {
   'Using this can add significant overhead to your binary. '
   'Use [GeneratedMessageGenericExtensions.rebuild] instead. '
   'Will be removed in next major version')
-  RemoveFundReply copyWith(void Function(RemoveFundReply) updates) => super.copyWith((message) => updates(message as RemoveFundReply)); // ignore: deprecated_member_use
+  RemoveFundReply copyWith(void Function(RemoveFundReply) updates) => super.copyWith((message) => updates(message as RemoveFundReply)) as RemoveFundReply; // ignore: deprecated_member_use
   $pb.BuilderInfo get info_ => _i;
   @$core.pragma('dart2js:noInline')
   static RemoveFundReply create() => RemoveFundReply._();
@@ -2380,7 +2380,7 @@ class RemoveFundReply extends $pb.GeneratedMessage {
   static $pb.PbList<RemoveFundReply> createRepeated() => $pb.PbList<RemoveFundReply>();
   @$core.pragma('dart2js:noInline')
   static RemoveFundReply getDefault() => _defaultInstance ??= $pb.GeneratedMessage.$_defaultFor<RemoveFundReply>(create);
-  static RemoveFundReply _defaultInstance;
+  static RemoveFundReply? _defaultInstance;
 
   @$pb.TagNumber(1)
   $core.String get txid => $_getSZ(0);
@@ -2420,18 +2420,18 @@ class SwapAddressInfo extends $pb.GeneratedMessage {
 
   SwapAddressInfo._() : super();
   factory SwapAddressInfo({
-    $core.String address,
-    $core.String paymentHash,
-    $fixnum.Int64 confirmedAmount,
-    $core.Iterable<$core.String> confirmedTransactionIds,
-    $fixnum.Int64 paidAmount,
-    $core.int lockHeight,
-    $core.String errorMessage,
-    $core.String lastRefundTxID,
-    SwapError swapError,
-    $core.String fundingTxID,
-    $core.double hoursToUnlock,
-    $core.bool nonBlocking,
+    $core.String? address,
+    $core.String? paymentHash,
+    $fixnum.Int64? confirmedAmount,
+    $core.Iterable<$core.String>? confirmedTransactionIds,
+    $fixnum.Int64? paidAmount,
+    $core.int? lockHeight,
+    $core.String? errorMessage,
+    $core.String? lastRefundTxID,
+    SwapError? swapError,
+    $core.String? fundingTxID,
+    $core.double? hoursToUnlock,
+    $core.bool? nonBlocking,
   }) {
     final _result = create();
     if (address != null) {
@@ -2483,7 +2483,7 @@ class SwapAddressInfo extends $pb.GeneratedMessage {
   'Using this can add significant overhead to your binary. '
   'Use [GeneratedMessageGenericExtensions.rebuild] instead. '
   'Will be removed in next major version')
-  SwapAddressInfo copyWith(void Function(SwapAddressInfo) updates) => super.copyWith((message) => updates(message as SwapAddressInfo)); // ignore: deprecated_member_use
+  SwapAddressInfo copyWith(void Function(SwapAddressInfo) updates) => super.copyWith((message) => updates(message as SwapAddressInfo)) as SwapAddressInfo; // ignore: deprecated_member_use
   $pb.BuilderInfo get info_ => _i;
   @$core.pragma('dart2js:noInline')
   static SwapAddressInfo create() => SwapAddressInfo._();
@@ -2491,7 +2491,7 @@ class SwapAddressInfo extends $pb.GeneratedMessage {
   static $pb.PbList<SwapAddressInfo> createRepeated() => $pb.PbList<SwapAddressInfo>();
   @$core.pragma('dart2js:noInline')
   static SwapAddressInfo getDefault() => _defaultInstance ??= $pb.GeneratedMessage.$_defaultFor<SwapAddressInfo>(create);
-  static SwapAddressInfo _defaultInstance;
+  static SwapAddressInfo? _defaultInstance;
 
   @$pb.TagNumber(1)
   $core.String get address => $_getSZ(0);
@@ -2604,7 +2604,7 @@ class SwapAddressList extends $pb.GeneratedMessage {
 
   SwapAddressList._() : super();
   factory SwapAddressList({
-    $core.Iterable<SwapAddressInfo> addresses,
+    $core.Iterable<SwapAddressInfo>? addresses,
   }) {
     final _result = create();
     if (addresses != null) {
@@ -2623,7 +2623,7 @@ class SwapAddressList extends $pb.GeneratedMessage {
   'Using this can add significant overhead to your binary. '
   'Use [GeneratedMessageGenericExtensions.rebuild] instead. '
   'Will be removed in next major version')
-  SwapAddressList copyWith(void Function(SwapAddressList) updates) => super.copyWith((message) => updates(message as SwapAddressList)); // ignore: deprecated_member_use
+  SwapAddressList copyWith(void Function(SwapAddressList) updates) => super.copyWith((message) => updates(message as SwapAddressList)) as SwapAddressList; // ignore: deprecated_member_use
   $pb.BuilderInfo get info_ => _i;
   @$core.pragma('dart2js:noInline')
   static SwapAddressList create() => SwapAddressList._();
@@ -2631,7 +2631,7 @@ class SwapAddressList extends $pb.GeneratedMessage {
   static $pb.PbList<SwapAddressList> createRepeated() => $pb.PbList<SwapAddressList>();
   @$core.pragma('dart2js:noInline')
   static SwapAddressList getDefault() => _defaultInstance ??= $pb.GeneratedMessage.$_defaultFor<SwapAddressList>(create);
-  static SwapAddressList _defaultInstance;
+  static SwapAddressList? _defaultInstance;
 
   @$pb.TagNumber(1)
   $core.List<SwapAddressInfo> get addresses => $_getList(0);
@@ -2648,10 +2648,10 @@ class CreateRatchetSessionRequest extends $pb.GeneratedMessage {
 
   CreateRatchetSessionRequest._() : super();
   factory CreateRatchetSessionRequest({
-    $core.String secret,
-    $core.String remotePubKey,
-    $core.String sessionID,
-    $fixnum.Int64 expiry,
+    $core.String? secret,
+    $core.String? remotePubKey,
+    $core.String? sessionID,
+    $fixnum.Int64? expiry,
   }) {
     final _result = create();
     if (secret != null) {
@@ -2679,7 +2679,7 @@ class CreateRatchetSessionRequest extends $pb.GeneratedMessage {
   'Using this can add significant overhead to your binary. '
   'Use [GeneratedMessageGenericExtensions.rebuild] instead. '
   'Will be removed in next major version')
-  CreateRatchetSessionRequest copyWith(void Function(CreateRatchetSessionRequest) updates) => super.copyWith((message) => updates(message as CreateRatchetSessionRequest)); // ignore: deprecated_member_use
+  CreateRatchetSessionRequest copyWith(void Function(CreateRatchetSessionRequest) updates) => super.copyWith((message) => updates(message as CreateRatchetSessionRequest)) as CreateRatchetSessionRequest; // ignore: deprecated_member_use
   $pb.BuilderInfo get info_ => _i;
   @$core.pragma('dart2js:noInline')
   static CreateRatchetSessionRequest create() => CreateRatchetSessionRequest._();
@@ -2687,7 +2687,7 @@ class CreateRatchetSessionRequest extends $pb.GeneratedMessage {
   static $pb.PbList<CreateRatchetSessionRequest> createRepeated() => $pb.PbList<CreateRatchetSessionRequest>();
   @$core.pragma('dart2js:noInline')
   static CreateRatchetSessionRequest getDefault() => _defaultInstance ??= $pb.GeneratedMessage.$_defaultFor<CreateRatchetSessionRequest>(create);
-  static CreateRatchetSessionRequest _defaultInstance;
+  static CreateRatchetSessionRequest? _defaultInstance;
 
   @$pb.TagNumber(1)
   $core.String get secret => $_getSZ(0);
@@ -2736,9 +2736,9 @@ class CreateRatchetSessionReply extends $pb.GeneratedMessage {
 
   CreateRatchetSessionReply._() : super();
   factory CreateRatchetSessionReply({
-    $core.String sessionID,
-    $core.String secret,
-    $core.String pubKey,
+    $core.String? sessionID,
+    $core.String? secret,
+    $core.String? pubKey,
   }) {
     final _result = create();
     if (sessionID != null) {
@@ -2763,7 +2763,7 @@ class CreateRatchetSessionReply extends $pb.GeneratedMessage {
   'Using this can add significant overhead to your binary. '
   'Use [GeneratedMessageGenericExtensions.rebuild] instead. '
   'Will be removed in next major version')
-  CreateRatchetSessionReply copyWith(void Function(CreateRatchetSessionReply) updates) => super.copyWith((message) => updates(message as CreateRatchetSessionReply)); // ignore: deprecated_member_use
+  CreateRatchetSessionReply copyWith(void Function(CreateRatchetSessionReply) updates) => super.copyWith((message) => updates(message as CreateRatchetSessionReply)) as CreateRatchetSessionReply; // ignore: deprecated_member_use
   $pb.BuilderInfo get info_ => _i;
   @$core.pragma('dart2js:noInline')
   static CreateRatchetSessionReply create() => CreateRatchetSessionReply._();
@@ -2771,7 +2771,7 @@ class CreateRatchetSessionReply extends $pb.GeneratedMessage {
   static $pb.PbList<CreateRatchetSessionReply> createRepeated() => $pb.PbList<CreateRatchetSessionReply>();
   @$core.pragma('dart2js:noInline')
   static CreateRatchetSessionReply getDefault() => _defaultInstance ??= $pb.GeneratedMessage.$_defaultFor<CreateRatchetSessionReply>(create);
-  static CreateRatchetSessionReply _defaultInstance;
+  static CreateRatchetSessionReply? _defaultInstance;
 
   @$pb.TagNumber(1)
   $core.String get sessionID => $_getSZ(0);
@@ -2811,9 +2811,9 @@ class RatchetSessionInfoReply extends $pb.GeneratedMessage {
 
   RatchetSessionInfoReply._() : super();
   factory RatchetSessionInfoReply({
-    $core.String sessionID,
-    $core.bool initiated,
-    $core.String userInfo,
+    $core.String? sessionID,
+    $core.bool? initiated,
+    $core.String? userInfo,
   }) {
     final _result = create();
     if (sessionID != null) {
@@ -2838,7 +2838,7 @@ class RatchetSessionInfoReply extends $pb.GeneratedMessage {
   'Using this can add significant overhead to your binary. '
   'Use [GeneratedMessageGenericExtensions.rebuild] instead. '
   'Will be removed in next major version')
-  RatchetSessionInfoReply copyWith(void Function(RatchetSessionInfoReply) updates) => super.copyWith((message) => updates(message as RatchetSessionInfoReply)); // ignore: deprecated_member_use
+  RatchetSessionInfoReply copyWith(void Function(RatchetSessionInfoReply) updates) => super.copyWith((message) => updates(message as RatchetSessionInfoReply)) as RatchetSessionInfoReply; // ignore: deprecated_member_use
   $pb.BuilderInfo get info_ => _i;
   @$core.pragma('dart2js:noInline')
   static RatchetSessionInfoReply create() => RatchetSessionInfoReply._();
@@ -2846,7 +2846,7 @@ class RatchetSessionInfoReply extends $pb.GeneratedMessage {
   static $pb.PbList<RatchetSessionInfoReply> createRepeated() => $pb.PbList<RatchetSessionInfoReply>();
   @$core.pragma('dart2js:noInline')
   static RatchetSessionInfoReply getDefault() => _defaultInstance ??= $pb.GeneratedMessage.$_defaultFor<RatchetSessionInfoReply>(create);
-  static RatchetSessionInfoReply _defaultInstance;
+  static RatchetSessionInfoReply? _defaultInstance;
 
   @$pb.TagNumber(1)
   $core.String get sessionID => $_getSZ(0);
@@ -2885,8 +2885,8 @@ class RatchetSessionSetInfoRequest extends $pb.GeneratedMessage {
 
   RatchetSessionSetInfoRequest._() : super();
   factory RatchetSessionSetInfoRequest({
-    $core.String sessionID,
-    $core.String userInfo,
+    $core.String? sessionID,
+    $core.String? userInfo,
   }) {
     final _result = create();
     if (sessionID != null) {
@@ -2908,7 +2908,7 @@ class RatchetSessionSetInfoRequest extends $pb.GeneratedMessage {
   'Using this can add significant overhead to your binary. '
   'Use [GeneratedMessageGenericExtensions.rebuild] instead. '
   'Will be removed in next major version')
-  RatchetSessionSetInfoRequest copyWith(void Function(RatchetSessionSetInfoRequest) updates) => super.copyWith((message) => updates(message as RatchetSessionSetInfoRequest)); // ignore: deprecated_member_use
+  RatchetSessionSetInfoRequest copyWith(void Function(RatchetSessionSetInfoRequest) updates) => super.copyWith((message) => updates(message as RatchetSessionSetInfoRequest)) as RatchetSessionSetInfoRequest; // ignore: deprecated_member_use
   $pb.BuilderInfo get info_ => _i;
   @$core.pragma('dart2js:noInline')
   static RatchetSessionSetInfoRequest create() => RatchetSessionSetInfoRequest._();
@@ -2916,7 +2916,7 @@ class RatchetSessionSetInfoRequest extends $pb.GeneratedMessage {
   static $pb.PbList<RatchetSessionSetInfoRequest> createRepeated() => $pb.PbList<RatchetSessionSetInfoRequest>();
   @$core.pragma('dart2js:noInline')
   static RatchetSessionSetInfoRequest getDefault() => _defaultInstance ??= $pb.GeneratedMessage.$_defaultFor<RatchetSessionSetInfoRequest>(create);
-  static RatchetSessionSetInfoRequest _defaultInstance;
+  static RatchetSessionSetInfoRequest? _defaultInstance;
 
   @$pb.TagNumber(1)
   $core.String get sessionID => $_getSZ(0);
@@ -2946,8 +2946,8 @@ class RatchetEncryptRequest extends $pb.GeneratedMessage {
 
   RatchetEncryptRequest._() : super();
   factory RatchetEncryptRequest({
-    $core.String sessionID,
-    $core.String message,
+    $core.String? sessionID,
+    $core.String? message,
   }) {
     final _result = create();
     if (sessionID != null) {
@@ -2969,7 +2969,7 @@ class RatchetEncryptRequest extends $pb.GeneratedMessage {
   'Using this can add significant overhead to your binary. '
   'Use [GeneratedMessageGenericExtensions.rebuild] instead. '
   'Will be removed in next major version')
-  RatchetEncryptRequest copyWith(void Function(RatchetEncryptRequest) updates) => super.copyWith((message) => updates(message as RatchetEncryptRequest)); // ignore: deprecated_member_use
+  RatchetEncryptRequest copyWith(void Function(RatchetEncryptRequest) updates) => super.copyWith((message) => updates(message as RatchetEncryptRequest)) as RatchetEncryptRequest; // ignore: deprecated_member_use
   $pb.BuilderInfo get info_ => _i;
   @$core.pragma('dart2js:noInline')
   static RatchetEncryptRequest create() => RatchetEncryptRequest._();
@@ -2977,7 +2977,7 @@ class RatchetEncryptRequest extends $pb.GeneratedMessage {
   static $pb.PbList<RatchetEncryptRequest> createRepeated() => $pb.PbList<RatchetEncryptRequest>();
   @$core.pragma('dart2js:noInline')
   static RatchetEncryptRequest getDefault() => _defaultInstance ??= $pb.GeneratedMessage.$_defaultFor<RatchetEncryptRequest>(create);
-  static RatchetEncryptRequest _defaultInstance;
+  static RatchetEncryptRequest? _defaultInstance;
 
   @$pb.TagNumber(1)
   $core.String get sessionID => $_getSZ(0);
@@ -3007,8 +3007,8 @@ class RatchetDecryptRequest extends $pb.GeneratedMessage {
 
   RatchetDecryptRequest._() : super();
   factory RatchetDecryptRequest({
-    $core.String sessionID,
-    $core.String encryptedMessage,
+    $core.String? sessionID,
+    $core.String? encryptedMessage,
   }) {
     final _result = create();
     if (sessionID != null) {
@@ -3030,7 +3030,7 @@ class RatchetDecryptRequest extends $pb.GeneratedMessage {
   'Using this can add significant overhead to your binary. '
   'Use [GeneratedMessageGenericExtensions.rebuild] instead. '
   'Will be removed in next major version')
-  RatchetDecryptRequest copyWith(void Function(RatchetDecryptRequest) updates) => super.copyWith((message) => updates(message as RatchetDecryptRequest)); // ignore: deprecated_member_use
+  RatchetDecryptRequest copyWith(void Function(RatchetDecryptRequest) updates) => super.copyWith((message) => updates(message as RatchetDecryptRequest)) as RatchetDecryptRequest; // ignore: deprecated_member_use
   $pb.BuilderInfo get info_ => _i;
   @$core.pragma('dart2js:noInline')
   static RatchetDecryptRequest create() => RatchetDecryptRequest._();
@@ -3038,7 +3038,7 @@ class RatchetDecryptRequest extends $pb.GeneratedMessage {
   static $pb.PbList<RatchetDecryptRequest> createRepeated() => $pb.PbList<RatchetDecryptRequest>();
   @$core.pragma('dart2js:noInline')
   static RatchetDecryptRequest getDefault() => _defaultInstance ??= $pb.GeneratedMessage.$_defaultFor<RatchetDecryptRequest>(create);
-  static RatchetDecryptRequest _defaultInstance;
+  static RatchetDecryptRequest? _defaultInstance;
 
   @$pb.TagNumber(1)
   $core.String get sessionID => $_getSZ(0);
@@ -3068,8 +3068,8 @@ class BootstrapFilesRequest extends $pb.GeneratedMessage {
 
   BootstrapFilesRequest._() : super();
   factory BootstrapFilesRequest({
-    $core.String workingDir,
-    $core.Iterable<$core.String> fullPaths,
+    $core.String? workingDir,
+    $core.Iterable<$core.String>? fullPaths,
   }) {
     final _result = create();
     if (workingDir != null) {
@@ -3091,7 +3091,7 @@ class BootstrapFilesRequest extends $pb.GeneratedMessage {
   'Using this can add significant overhead to your binary. '
   'Use [GeneratedMessageGenericExtensions.rebuild] instead. '
   'Will be removed in next major version')
-  BootstrapFilesRequest copyWith(void Function(BootstrapFilesRequest) updates) => super.copyWith((message) => updates(message as BootstrapFilesRequest)); // ignore: deprecated_member_use
+  BootstrapFilesRequest copyWith(void Function(BootstrapFilesRequest) updates) => super.copyWith((message) => updates(message as BootstrapFilesRequest)) as BootstrapFilesRequest; // ignore: deprecated_member_use
   $pb.BuilderInfo get info_ => _i;
   @$core.pragma('dart2js:noInline')
   static BootstrapFilesRequest create() => BootstrapFilesRequest._();
@@ -3099,7 +3099,7 @@ class BootstrapFilesRequest extends $pb.GeneratedMessage {
   static $pb.PbList<BootstrapFilesRequest> createRepeated() => $pb.PbList<BootstrapFilesRequest>();
   @$core.pragma('dart2js:noInline')
   static BootstrapFilesRequest getDefault() => _defaultInstance ??= $pb.GeneratedMessage.$_defaultFor<BootstrapFilesRequest>(create);
-  static BootstrapFilesRequest _defaultInstance;
+  static BootstrapFilesRequest? _defaultInstance;
 
   @$pb.TagNumber(1)
   $core.String get workingDir => $_getSZ(0);
@@ -3123,8 +3123,8 @@ class Peers extends $pb.GeneratedMessage {
 
   Peers._() : super();
   factory Peers({
-    $core.bool isDefault,
-    $core.Iterable<$core.String> peer,
+    $core.bool? isDefault,
+    $core.Iterable<$core.String>? peer,
   }) {
     final _result = create();
     if (isDefault != null) {
@@ -3146,7 +3146,7 @@ class Peers extends $pb.GeneratedMessage {
   'Using this can add significant overhead to your binary. '
   'Use [GeneratedMessageGenericExtensions.rebuild] instead. '
   'Will be removed in next major version')
-  Peers copyWith(void Function(Peers) updates) => super.copyWith((message) => updates(message as Peers)); // ignore: deprecated_member_use
+  Peers copyWith(void Function(Peers) updates) => super.copyWith((message) => updates(message as Peers)) as Peers; // ignore: deprecated_member_use
   $pb.BuilderInfo get info_ => _i;
   @$core.pragma('dart2js:noInline')
   static Peers create() => Peers._();
@@ -3154,7 +3154,7 @@ class Peers extends $pb.GeneratedMessage {
   static $pb.PbList<Peers> createRepeated() => $pb.PbList<Peers>();
   @$core.pragma('dart2js:noInline')
   static Peers getDefault() => _defaultInstance ??= $pb.GeneratedMessage.$_defaultFor<Peers>(create);
-  static Peers _defaultInstance;
+  static Peers? _defaultInstance;
 
   @$pb.TagNumber(1)
   $core.bool get isDefault => $_getBF(0);
@@ -3179,9 +3179,9 @@ class TxSpentURL extends $pb.GeneratedMessage {
 
   TxSpentURL._() : super();
   factory TxSpentURL({
-    $core.String uRL,
-    $core.bool isDefault,
-    $core.bool disabled,
+    $core.String? uRL,
+    $core.bool? isDefault,
+    $core.bool? disabled,
   }) {
     final _result = create();
     if (uRL != null) {
@@ -3206,7 +3206,7 @@ class TxSpentURL extends $pb.GeneratedMessage {
   'Using this can add significant overhead to your binary. '
   'Use [GeneratedMessageGenericExtensions.rebuild] instead. '
   'Will be removed in next major version')
-  TxSpentURL copyWith(void Function(TxSpentURL) updates) => super.copyWith((message) => updates(message as TxSpentURL)); // ignore: deprecated_member_use
+  TxSpentURL copyWith(void Function(TxSpentURL) updates) => super.copyWith((message) => updates(message as TxSpentURL)) as TxSpentURL; // ignore: deprecated_member_use
   $pb.BuilderInfo get info_ => _i;
   @$core.pragma('dart2js:noInline')
   static TxSpentURL create() => TxSpentURL._();
@@ -3214,7 +3214,7 @@ class TxSpentURL extends $pb.GeneratedMessage {
   static $pb.PbList<TxSpentURL> createRepeated() => $pb.PbList<TxSpentURL>();
   @$core.pragma('dart2js:noInline')
   static TxSpentURL getDefault() => _defaultInstance ??= $pb.GeneratedMessage.$_defaultFor<TxSpentURL>(create);
-  static TxSpentURL _defaultInstance;
+  static TxSpentURL? _defaultInstance;
 
   @$pb.TagNumber(1)
   $core.String get uRL => $_getSZ(0);
@@ -3253,8 +3253,8 @@ class rate extends $pb.GeneratedMessage {
 
   rate._() : super();
   factory rate({
-    $core.String coin,
-    $core.double value,
+    $core.String? coin,
+    $core.double? value,
   }) {
     final _result = create();
     if (coin != null) {
@@ -3276,7 +3276,7 @@ class rate extends $pb.GeneratedMessage {
   'Using this can add significant overhead to your binary. '
   'Use [GeneratedMessageGenericExtensions.rebuild] instead. '
   'Will be removed in next major version')
-  rate copyWith(void Function(rate) updates) => super.copyWith((message) => updates(message as rate)); // ignore: deprecated_member_use
+  rate copyWith(void Function(rate) updates) => super.copyWith((message) => updates(message as rate)) as rate; // ignore: deprecated_member_use
   $pb.BuilderInfo get info_ => _i;
   @$core.pragma('dart2js:noInline')
   static rate create() => rate._();
@@ -3284,7 +3284,7 @@ class rate extends $pb.GeneratedMessage {
   static $pb.PbList<rate> createRepeated() => $pb.PbList<rate>();
   @$core.pragma('dart2js:noInline')
   static rate getDefault() => _defaultInstance ??= $pb.GeneratedMessage.$_defaultFor<rate>(create);
-  static rate _defaultInstance;
+  static rate? _defaultInstance;
 
   @$pb.TagNumber(1)
   $core.String get coin => $_getSZ(0);
@@ -3313,7 +3313,7 @@ class Rates extends $pb.GeneratedMessage {
 
   Rates._() : super();
   factory Rates({
-    $core.Iterable<rate> rates,
+    $core.Iterable<rate>? rates,
   }) {
     final _result = create();
     if (rates != null) {
@@ -3332,7 +3332,7 @@ class Rates extends $pb.GeneratedMessage {
   'Using this can add significant overhead to your binary. '
   'Use [GeneratedMessageGenericExtensions.rebuild] instead. '
   'Will be removed in next major version')
-  Rates copyWith(void Function(Rates) updates) => super.copyWith((message) => updates(message as Rates)); // ignore: deprecated_member_use
+  Rates copyWith(void Function(Rates) updates) => super.copyWith((message) => updates(message as Rates)) as Rates; // ignore: deprecated_member_use
   $pb.BuilderInfo get info_ => _i;
   @$core.pragma('dart2js:noInline')
   static Rates create() => Rates._();
@@ -3340,7 +3340,7 @@ class Rates extends $pb.GeneratedMessage {
   static $pb.PbList<Rates> createRepeated() => $pb.PbList<Rates>();
   @$core.pragma('dart2js:noInline')
   static Rates getDefault() => _defaultInstance ??= $pb.GeneratedMessage.$_defaultFor<Rates>(create);
-  static Rates _defaultInstance;
+  static Rates? _defaultInstance;
 
   @$pb.TagNumber(1)
   $core.List<rate> get rates => $_getList(0);
@@ -3367,20 +3367,20 @@ class LSPInformation extends $pb.GeneratedMessage {
 
   LSPInformation._() : super();
   factory LSPInformation({
-    $core.String id,
-    $core.String name,
-    $core.String widgetUrl,
-    $core.String pubkey,
-    $core.String host,
-    $fixnum.Int64 channelCapacity,
-    $core.int targetConf,
-    $fixnum.Int64 baseFeeMsat,
-    $core.double feeRate,
-    $core.int timeLockDelta,
-    $fixnum.Int64 minHtlcMsat,
-    $fixnum.Int64 channelFeePermyriad,
-    $core.List<$core.int> lspPubkey,
-    $fixnum.Int64 maxInactiveDuration,
+    $core.String? id,
+    $core.String? name,
+    $core.String? widgetUrl,
+    $core.String? pubkey,
+    $core.String? host,
+    $fixnum.Int64? channelCapacity,
+    $core.int? targetConf,
+    $fixnum.Int64? baseFeeMsat,
+    $core.double? feeRate,
+    $core.int? timeLockDelta,
+    $fixnum.Int64? minHtlcMsat,
+    $fixnum.Int64? channelFeePermyriad,
+    $core.List<$core.int>? lspPubkey,
+    $fixnum.Int64? maxInactiveDuration,
   }) {
     final _result = create();
     if (id != null) {
@@ -3438,7 +3438,7 @@ class LSPInformation extends $pb.GeneratedMessage {
   'Using this can add significant overhead to your binary. '
   'Use [GeneratedMessageGenericExtensions.rebuild] instead. '
   'Will be removed in next major version')
-  LSPInformation copyWith(void Function(LSPInformation) updates) => super.copyWith((message) => updates(message as LSPInformation)); // ignore: deprecated_member_use
+  LSPInformation copyWith(void Function(LSPInformation) updates) => super.copyWith((message) => updates(message as LSPInformation)) as LSPInformation; // ignore: deprecated_member_use
   $pb.BuilderInfo get info_ => _i;
   @$core.pragma('dart2js:noInline')
   static LSPInformation create() => LSPInformation._();
@@ -3446,7 +3446,7 @@ class LSPInformation extends $pb.GeneratedMessage {
   static $pb.PbList<LSPInformation> createRepeated() => $pb.PbList<LSPInformation>();
   @$core.pragma('dart2js:noInline')
   static LSPInformation getDefault() => _defaultInstance ??= $pb.GeneratedMessage.$_defaultFor<LSPInformation>(create);
-  static LSPInformation _defaultInstance;
+  static LSPInformation? _defaultInstance;
 
   @$pb.TagNumber(1)
   $core.String get id => $_getSZ(0);
@@ -3593,7 +3593,7 @@ class LSPListRequest extends $pb.GeneratedMessage {
   'Using this can add significant overhead to your binary. '
   'Use [GeneratedMessageGenericExtensions.rebuild] instead. '
   'Will be removed in next major version')
-  LSPListRequest copyWith(void Function(LSPListRequest) updates) => super.copyWith((message) => updates(message as LSPListRequest)); // ignore: deprecated_member_use
+  LSPListRequest copyWith(void Function(LSPListRequest) updates) => super.copyWith((message) => updates(message as LSPListRequest)) as LSPListRequest; // ignore: deprecated_member_use
   $pb.BuilderInfo get info_ => _i;
   @$core.pragma('dart2js:noInline')
   static LSPListRequest create() => LSPListRequest._();
@@ -3601,7 +3601,7 @@ class LSPListRequest extends $pb.GeneratedMessage {
   static $pb.PbList<LSPListRequest> createRepeated() => $pb.PbList<LSPListRequest>();
   @$core.pragma('dart2js:noInline')
   static LSPListRequest getDefault() => _defaultInstance ??= $pb.GeneratedMessage.$_defaultFor<LSPListRequest>(create);
-  static LSPListRequest _defaultInstance;
+  static LSPListRequest? _defaultInstance;
 }
 
 class LSPList extends $pb.GeneratedMessage {
@@ -3612,7 +3612,7 @@ class LSPList extends $pb.GeneratedMessage {
 
   LSPList._() : super();
   factory LSPList({
-    $core.Map<$core.String, LSPInformation> lsps,
+    $core.Map<$core.String, LSPInformation>? lsps,
   }) {
     final _result = create();
     if (lsps != null) {
@@ -3631,7 +3631,7 @@ class LSPList extends $pb.GeneratedMessage {
   'Using this can add significant overhead to your binary. '
   'Use [GeneratedMessageGenericExtensions.rebuild] instead. '
   'Will be removed in next major version')
-  LSPList copyWith(void Function(LSPList) updates) => super.copyWith((message) => updates(message as LSPList)); // ignore: deprecated_member_use
+  LSPList copyWith(void Function(LSPList) updates) => super.copyWith((message) => updates(message as LSPList)) as LSPList; // ignore: deprecated_member_use
   $pb.BuilderInfo get info_ => _i;
   @$core.pragma('dart2js:noInline')
   static LSPList create() => LSPList._();
@@ -3639,7 +3639,7 @@ class LSPList extends $pb.GeneratedMessage {
   static $pb.PbList<LSPList> createRepeated() => $pb.PbList<LSPList>();
   @$core.pragma('dart2js:noInline')
   static LSPList getDefault() => _defaultInstance ??= $pb.GeneratedMessage.$_defaultFor<LSPList>(create);
-  static LSPList _defaultInstance;
+  static LSPList? _defaultInstance;
 
   @$pb.TagNumber(1)
   $core.Map<$core.String, LSPInformation> get lsps => $_getMap(0);
@@ -3653,7 +3653,7 @@ class LSPActivity extends $pb.GeneratedMessage {
 
   LSPActivity._() : super();
   factory LSPActivity({
-    $core.Map<$core.String, $fixnum.Int64> activity,
+    $core.Map<$core.String, $fixnum.Int64>? activity,
   }) {
     final _result = create();
     if (activity != null) {
@@ -3672,7 +3672,7 @@ class LSPActivity extends $pb.GeneratedMessage {
   'Using this can add significant overhead to your binary. '
   'Use [GeneratedMessageGenericExtensions.rebuild] instead. '
   'Will be removed in next major version')
-  LSPActivity copyWith(void Function(LSPActivity) updates) => super.copyWith((message) => updates(message as LSPActivity)); // ignore: deprecated_member_use
+  LSPActivity copyWith(void Function(LSPActivity) updates) => super.copyWith((message) => updates(message as LSPActivity)) as LSPActivity; // ignore: deprecated_member_use
   $pb.BuilderInfo get info_ => _i;
   @$core.pragma('dart2js:noInline')
   static LSPActivity create() => LSPActivity._();
@@ -3680,7 +3680,7 @@ class LSPActivity extends $pb.GeneratedMessage {
   static $pb.PbList<LSPActivity> createRepeated() => $pb.PbList<LSPActivity>();
   @$core.pragma('dart2js:noInline')
   static LSPActivity getDefault() => _defaultInstance ??= $pb.GeneratedMessage.$_defaultFor<LSPActivity>(create);
-  static LSPActivity _defaultInstance;
+  static LSPActivity? _defaultInstance;
 
   @$pb.TagNumber(1)
   $core.Map<$core.String, $fixnum.Int64> get activity => $_getMap(0);
@@ -3694,7 +3694,7 @@ class ConnectLSPRequest extends $pb.GeneratedMessage {
 
   ConnectLSPRequest._() : super();
   factory ConnectLSPRequest({
-    $core.String lspId,
+    $core.String? lspId,
   }) {
     final _result = create();
     if (lspId != null) {
@@ -3713,7 +3713,7 @@ class ConnectLSPRequest extends $pb.GeneratedMessage {
   'Using this can add significant overhead to your binary. '
   'Use [GeneratedMessageGenericExtensions.rebuild] instead. '
   'Will be removed in next major version')
-  ConnectLSPRequest copyWith(void Function(ConnectLSPRequest) updates) => super.copyWith((message) => updates(message as ConnectLSPRequest)); // ignore: deprecated_member_use
+  ConnectLSPRequest copyWith(void Function(ConnectLSPRequest) updates) => super.copyWith((message) => updates(message as ConnectLSPRequest)) as ConnectLSPRequest; // ignore: deprecated_member_use
   $pb.BuilderInfo get info_ => _i;
   @$core.pragma('dart2js:noInline')
   static ConnectLSPRequest create() => ConnectLSPRequest._();
@@ -3721,7 +3721,7 @@ class ConnectLSPRequest extends $pb.GeneratedMessage {
   static $pb.PbList<ConnectLSPRequest> createRepeated() => $pb.PbList<ConnectLSPRequest>();
   @$core.pragma('dart2js:noInline')
   static ConnectLSPRequest getDefault() => _defaultInstance ??= $pb.GeneratedMessage.$_defaultFor<ConnectLSPRequest>(create);
-  static ConnectLSPRequest _defaultInstance;
+  static ConnectLSPRequest? _defaultInstance;
 
   @$pb.TagNumber(1)
   $core.String get lspId => $_getSZ(0);
@@ -3751,7 +3751,7 @@ class ConnectLSPReply extends $pb.GeneratedMessage {
   'Using this can add significant overhead to your binary. '
   'Use [GeneratedMessageGenericExtensions.rebuild] instead. '
   'Will be removed in next major version')
-  ConnectLSPReply copyWith(void Function(ConnectLSPReply) updates) => super.copyWith((message) => updates(message as ConnectLSPReply)); // ignore: deprecated_member_use
+  ConnectLSPReply copyWith(void Function(ConnectLSPReply) updates) => super.copyWith((message) => updates(message as ConnectLSPReply)) as ConnectLSPReply; // ignore: deprecated_member_use
   $pb.BuilderInfo get info_ => _i;
   @$core.pragma('dart2js:noInline')
   static ConnectLSPReply create() => ConnectLSPReply._();
@@ -3759,13 +3759,14 @@ class ConnectLSPReply extends $pb.GeneratedMessage {
   static $pb.PbList<ConnectLSPReply> createRepeated() => $pb.PbList<ConnectLSPReply>();
   @$core.pragma('dart2js:noInline')
   static ConnectLSPReply getDefault() => _defaultInstance ??= $pb.GeneratedMessage.$_defaultFor<ConnectLSPReply>(create);
-  static ConnectLSPReply _defaultInstance;
+  static ConnectLSPReply? _defaultInstance;
 }
 
 enum LNUrlResponse_Action {
   withdraw, 
   channel, 
   auth, 
+  payResponse1, 
   notSet
 }
 
@@ -3774,21 +3775,24 @@ class LNUrlResponse extends $pb.GeneratedMessage {
     1 : LNUrlResponse_Action.withdraw,
     2 : LNUrlResponse_Action.channel,
     3 : LNUrlResponse_Action.auth,
+    4 : LNUrlResponse_Action.payResponse1,
     0 : LNUrlResponse_Action.notSet
   };
   static final $pb.BuilderInfo _i = $pb.BuilderInfo(const $core.bool.fromEnvironment('protobuf.omit_message_names') ? '' : 'LNUrlResponse', package: const $pb.PackageName(const $core.bool.fromEnvironment('protobuf.omit_message_names') ? '' : 'data'), createEmptyInstance: create)
-    ..oo(0, [1, 2, 3])
+    ..oo(0, [1, 2, 3, 4])
     ..aOM<LNUrlWithdraw>(1, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'withdraw', subBuilder: LNUrlWithdraw.create)
     ..aOM<LNURLChannel>(2, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'channel', subBuilder: LNURLChannel.create)
     ..aOM<LNURLAuth>(3, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'auth', subBuilder: LNURLAuth.create)
+    ..aOM<LNURLPayResponse1>(4, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'payResponse1', protoName: 'payResponse1', subBuilder: LNURLPayResponse1.create)
     ..hasRequiredFields = false
   ;
 
   LNUrlResponse._() : super();
   factory LNUrlResponse({
-    LNUrlWithdraw withdraw,
-    LNURLChannel channel,
-    LNURLAuth auth,
+    LNUrlWithdraw? withdraw,
+    LNURLChannel? channel,
+    LNURLAuth? auth,
+    LNURLPayResponse1? payResponse1,
   }) {
     final _result = create();
     if (withdraw != null) {
@@ -3799,6 +3803,9 @@ class LNUrlResponse extends $pb.GeneratedMessage {
     }
     if (auth != null) {
       _result.auth = auth;
+    }
+    if (payResponse1 != null) {
+      _result.payResponse1 = payResponse1;
     }
     return _result;
   }
@@ -3813,7 +3820,7 @@ class LNUrlResponse extends $pb.GeneratedMessage {
   'Using this can add significant overhead to your binary. '
   'Use [GeneratedMessageGenericExtensions.rebuild] instead. '
   'Will be removed in next major version')
-  LNUrlResponse copyWith(void Function(LNUrlResponse) updates) => super.copyWith((message) => updates(message as LNUrlResponse)); // ignore: deprecated_member_use
+  LNUrlResponse copyWith(void Function(LNUrlResponse) updates) => super.copyWith((message) => updates(message as LNUrlResponse)) as LNUrlResponse; // ignore: deprecated_member_use
   $pb.BuilderInfo get info_ => _i;
   @$core.pragma('dart2js:noInline')
   static LNUrlResponse create() => LNUrlResponse._();
@@ -3821,9 +3828,9 @@ class LNUrlResponse extends $pb.GeneratedMessage {
   static $pb.PbList<LNUrlResponse> createRepeated() => $pb.PbList<LNUrlResponse>();
   @$core.pragma('dart2js:noInline')
   static LNUrlResponse getDefault() => _defaultInstance ??= $pb.GeneratedMessage.$_defaultFor<LNUrlResponse>(create);
-  static LNUrlResponse _defaultInstance;
+  static LNUrlResponse? _defaultInstance;
 
-  LNUrlResponse_Action whichAction() => _LNUrlResponse_ActionByTag[$_whichOneof(0)];
+  LNUrlResponse_Action whichAction() => _LNUrlResponse_ActionByTag[$_whichOneof(0)]!;
   void clearAction() => clearField($_whichOneof(0));
 
   @$pb.TagNumber(1)
@@ -3858,6 +3865,17 @@ class LNUrlResponse extends $pb.GeneratedMessage {
   void clearAuth() => clearField(3);
   @$pb.TagNumber(3)
   LNURLAuth ensureAuth() => $_ensure(2);
+
+  @$pb.TagNumber(4)
+  LNURLPayResponse1 get payResponse1 => $_getN(3);
+  @$pb.TagNumber(4)
+  set payResponse1(LNURLPayResponse1 v) { setField(4, v); }
+  @$pb.TagNumber(4)
+  $core.bool hasPayResponse1() => $_has(3);
+  @$pb.TagNumber(4)
+  void clearPayResponse1() => clearField(4);
+  @$pb.TagNumber(4)
+  LNURLPayResponse1 ensurePayResponse1() => $_ensure(3);
 }
 
 class LNUrlWithdraw extends $pb.GeneratedMessage {
@@ -3870,9 +3888,9 @@ class LNUrlWithdraw extends $pb.GeneratedMessage {
 
   LNUrlWithdraw._() : super();
   factory LNUrlWithdraw({
-    $fixnum.Int64 minAmount,
-    $fixnum.Int64 maxAmount,
-    $core.String defaultDescription,
+    $fixnum.Int64? minAmount,
+    $fixnum.Int64? maxAmount,
+    $core.String? defaultDescription,
   }) {
     final _result = create();
     if (minAmount != null) {
@@ -3897,7 +3915,7 @@ class LNUrlWithdraw extends $pb.GeneratedMessage {
   'Using this can add significant overhead to your binary. '
   'Use [GeneratedMessageGenericExtensions.rebuild] instead. '
   'Will be removed in next major version')
-  LNUrlWithdraw copyWith(void Function(LNUrlWithdraw) updates) => super.copyWith((message) => updates(message as LNUrlWithdraw)); // ignore: deprecated_member_use
+  LNUrlWithdraw copyWith(void Function(LNUrlWithdraw) updates) => super.copyWith((message) => updates(message as LNUrlWithdraw)) as LNUrlWithdraw; // ignore: deprecated_member_use
   $pb.BuilderInfo get info_ => _i;
   @$core.pragma('dart2js:noInline')
   static LNUrlWithdraw create() => LNUrlWithdraw._();
@@ -3905,7 +3923,7 @@ class LNUrlWithdraw extends $pb.GeneratedMessage {
   static $pb.PbList<LNUrlWithdraw> createRepeated() => $pb.PbList<LNUrlWithdraw>();
   @$core.pragma('dart2js:noInline')
   static LNUrlWithdraw getDefault() => _defaultInstance ??= $pb.GeneratedMessage.$_defaultFor<LNUrlWithdraw>(create);
-  static LNUrlWithdraw _defaultInstance;
+  static LNUrlWithdraw? _defaultInstance;
 
   @$pb.TagNumber(1)
   $fixnum.Int64 get minAmount => $_getI64(0);
@@ -3945,9 +3963,9 @@ class LNURLChannel extends $pb.GeneratedMessage {
 
   LNURLChannel._() : super();
   factory LNURLChannel({
-    $core.String k1,
-    $core.String callback,
-    $core.String uri,
+    $core.String? k1,
+    $core.String? callback,
+    $core.String? uri,
   }) {
     final _result = create();
     if (k1 != null) {
@@ -3972,7 +3990,7 @@ class LNURLChannel extends $pb.GeneratedMessage {
   'Using this can add significant overhead to your binary. '
   'Use [GeneratedMessageGenericExtensions.rebuild] instead. '
   'Will be removed in next major version')
-  LNURLChannel copyWith(void Function(LNURLChannel) updates) => super.copyWith((message) => updates(message as LNURLChannel)); // ignore: deprecated_member_use
+  LNURLChannel copyWith(void Function(LNURLChannel) updates) => super.copyWith((message) => updates(message as LNURLChannel)) as LNURLChannel; // ignore: deprecated_member_use
   $pb.BuilderInfo get info_ => _i;
   @$core.pragma('dart2js:noInline')
   static LNURLChannel create() => LNURLChannel._();
@@ -3980,7 +3998,7 @@ class LNURLChannel extends $pb.GeneratedMessage {
   static $pb.PbList<LNURLChannel> createRepeated() => $pb.PbList<LNURLChannel>();
   @$core.pragma('dart2js:noInline')
   static LNURLChannel getDefault() => _defaultInstance ??= $pb.GeneratedMessage.$_defaultFor<LNURLChannel>(create);
-  static LNURLChannel _defaultInstance;
+  static LNURLChannel? _defaultInstance;
 
   @$pb.TagNumber(1)
   $core.String get k1 => $_getSZ(0);
@@ -4022,11 +4040,11 @@ class LNURLAuth extends $pb.GeneratedMessage {
 
   LNURLAuth._() : super();
   factory LNURLAuth({
-    $core.String tag,
-    $core.String k1,
-    $core.String callback,
-    $core.String host,
-    $core.bool jwt,
+    $core.String? tag,
+    $core.String? k1,
+    $core.String? callback,
+    $core.String? host,
+    $core.bool? jwt,
   }) {
     final _result = create();
     if (tag != null) {
@@ -4057,7 +4075,7 @@ class LNURLAuth extends $pb.GeneratedMessage {
   'Using this can add significant overhead to your binary. '
   'Use [GeneratedMessageGenericExtensions.rebuild] instead. '
   'Will be removed in next major version')
-  LNURLAuth copyWith(void Function(LNURLAuth) updates) => super.copyWith((message) => updates(message as LNURLAuth)); // ignore: deprecated_member_use
+  LNURLAuth copyWith(void Function(LNURLAuth) updates) => super.copyWith((message) => updates(message as LNURLAuth)) as LNURLAuth; // ignore: deprecated_member_use
   $pb.BuilderInfo get info_ => _i;
   @$core.pragma('dart2js:noInline')
   static LNURLAuth create() => LNURLAuth._();
@@ -4065,7 +4083,7 @@ class LNURLAuth extends $pb.GeneratedMessage {
   static $pb.PbList<LNURLAuth> createRepeated() => $pb.PbList<LNURLAuth>();
   @$core.pragma('dart2js:noInline')
   static LNURLAuth getDefault() => _defaultInstance ??= $pb.GeneratedMessage.$_defaultFor<LNURLAuth>(create);
-  static LNURLAuth _defaultInstance;
+  static LNURLAuth? _defaultInstance;
 
   @$pb.TagNumber(1)
   $core.String get tag => $_getSZ(0);
@@ -4113,6 +4131,485 @@ class LNURLAuth extends $pb.GeneratedMessage {
   void clearJwt() => clearField(5);
 }
 
+class LNUrlPayMetadata extends $pb.GeneratedMessage {
+  static final $pb.BuilderInfo _i = $pb.BuilderInfo(const $core.bool.fromEnvironment('protobuf.omit_message_names') ? '' : 'LNUrlPayMetadata', package: const $pb.PackageName(const $core.bool.fromEnvironment('protobuf.omit_message_names') ? '' : 'data'), createEmptyInstance: create)
+    ..pPS(1, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'entry')
+    ..hasRequiredFields = false
+  ;
+
+  LNUrlPayMetadata._() : super();
+  factory LNUrlPayMetadata({
+    $core.Iterable<$core.String>? entry,
+  }) {
+    final _result = create();
+    if (entry != null) {
+      _result.entry.addAll(entry);
+    }
+    return _result;
+  }
+  factory LNUrlPayMetadata.fromBuffer($core.List<$core.int> i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromBuffer(i, r);
+  factory LNUrlPayMetadata.fromJson($core.String i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromJson(i, r);
+  @$core.Deprecated(
+  'Using this can add significant overhead to your binary. '
+  'Use [GeneratedMessageGenericExtensions.deepCopy] instead. '
+  'Will be removed in next major version')
+  LNUrlPayMetadata clone() => LNUrlPayMetadata()..mergeFromMessage(this);
+  @$core.Deprecated(
+  'Using this can add significant overhead to your binary. '
+  'Use [GeneratedMessageGenericExtensions.rebuild] instead. '
+  'Will be removed in next major version')
+  LNUrlPayMetadata copyWith(void Function(LNUrlPayMetadata) updates) => super.copyWith((message) => updates(message as LNUrlPayMetadata)) as LNUrlPayMetadata; // ignore: deprecated_member_use
+  $pb.BuilderInfo get info_ => _i;
+  @$core.pragma('dart2js:noInline')
+  static LNUrlPayMetadata create() => LNUrlPayMetadata._();
+  LNUrlPayMetadata createEmptyInstance() => create();
+  static $pb.PbList<LNUrlPayMetadata> createRepeated() => $pb.PbList<LNUrlPayMetadata>();
+  @$core.pragma('dart2js:noInline')
+  static LNUrlPayMetadata getDefault() => _defaultInstance ??= $pb.GeneratedMessage.$_defaultFor<LNUrlPayMetadata>(create);
+  static LNUrlPayMetadata? _defaultInstance;
+
+  @$pb.TagNumber(1)
+  $core.List<$core.String> get entry => $_getList(0);
+}
+
+class LNURLPayResponse1 extends $pb.GeneratedMessage {
+  static final $pb.BuilderInfo _i = $pb.BuilderInfo(const $core.bool.fromEnvironment('protobuf.omit_message_names') ? '' : 'LNURLPayResponse1', package: const $pb.PackageName(const $core.bool.fromEnvironment('protobuf.omit_message_names') ? '' : 'data'), createEmptyInstance: create)
+    ..aOS(1, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'callback')
+    ..aInt64(2, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'minAmount')
+    ..aInt64(3, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'maxAmount')
+    ..pc<LNUrlPayMetadata>(4, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'metadata', $pb.PbFieldType.PM, subBuilder: LNUrlPayMetadata.create)
+    ..aOS(5, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'tag')
+    ..a<$fixnum.Int64>(6, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'amount', $pb.PbFieldType.OU6, defaultOrMaker: $fixnum.Int64.ZERO)
+    ..aOS(7, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'fromNodes')
+    ..aOS(8, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'comment')
+    ..aOS(9, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'host')
+    ..hasRequiredFields = false
+  ;
+
+  LNURLPayResponse1._() : super();
+  factory LNURLPayResponse1({
+    $core.String? callback,
+    $fixnum.Int64? minAmount,
+    $fixnum.Int64? maxAmount,
+    $core.Iterable<LNUrlPayMetadata>? metadata,
+    $core.String? tag,
+    $fixnum.Int64? amount,
+    $core.String? fromNodes,
+    $core.String? comment,
+    $core.String? host,
+  }) {
+    final _result = create();
+    if (callback != null) {
+      _result.callback = callback;
+    }
+    if (minAmount != null) {
+      _result.minAmount = minAmount;
+    }
+    if (maxAmount != null) {
+      _result.maxAmount = maxAmount;
+    }
+    if (metadata != null) {
+      _result.metadata.addAll(metadata);
+    }
+    if (tag != null) {
+      _result.tag = tag;
+    }
+    if (amount != null) {
+      _result.amount = amount;
+    }
+    if (fromNodes != null) {
+      _result.fromNodes = fromNodes;
+    }
+    if (comment != null) {
+      _result.comment = comment;
+    }
+    if (host != null) {
+      _result.host = host;
+    }
+    return _result;
+  }
+  factory LNURLPayResponse1.fromBuffer($core.List<$core.int> i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromBuffer(i, r);
+  factory LNURLPayResponse1.fromJson($core.String i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromJson(i, r);
+  @$core.Deprecated(
+  'Using this can add significant overhead to your binary. '
+  'Use [GeneratedMessageGenericExtensions.deepCopy] instead. '
+  'Will be removed in next major version')
+  LNURLPayResponse1 clone() => LNURLPayResponse1()..mergeFromMessage(this);
+  @$core.Deprecated(
+  'Using this can add significant overhead to your binary. '
+  'Use [GeneratedMessageGenericExtensions.rebuild] instead. '
+  'Will be removed in next major version')
+  LNURLPayResponse1 copyWith(void Function(LNURLPayResponse1) updates) => super.copyWith((message) => updates(message as LNURLPayResponse1)) as LNURLPayResponse1; // ignore: deprecated_member_use
+  $pb.BuilderInfo get info_ => _i;
+  @$core.pragma('dart2js:noInline')
+  static LNURLPayResponse1 create() => LNURLPayResponse1._();
+  LNURLPayResponse1 createEmptyInstance() => create();
+  static $pb.PbList<LNURLPayResponse1> createRepeated() => $pb.PbList<LNURLPayResponse1>();
+  @$core.pragma('dart2js:noInline')
+  static LNURLPayResponse1 getDefault() => _defaultInstance ??= $pb.GeneratedMessage.$_defaultFor<LNURLPayResponse1>(create);
+  static LNURLPayResponse1? _defaultInstance;
+
+  @$pb.TagNumber(1)
+  $core.String get callback => $_getSZ(0);
+  @$pb.TagNumber(1)
+  set callback($core.String v) { $_setString(0, v); }
+  @$pb.TagNumber(1)
+  $core.bool hasCallback() => $_has(0);
+  @$pb.TagNumber(1)
+  void clearCallback() => clearField(1);
+
+  @$pb.TagNumber(2)
+  $fixnum.Int64 get minAmount => $_getI64(1);
+  @$pb.TagNumber(2)
+  set minAmount($fixnum.Int64 v) { $_setInt64(1, v); }
+  @$pb.TagNumber(2)
+  $core.bool hasMinAmount() => $_has(1);
+  @$pb.TagNumber(2)
+  void clearMinAmount() => clearField(2);
+
+  @$pb.TagNumber(3)
+  $fixnum.Int64 get maxAmount => $_getI64(2);
+  @$pb.TagNumber(3)
+  set maxAmount($fixnum.Int64 v) { $_setInt64(2, v); }
+  @$pb.TagNumber(3)
+  $core.bool hasMaxAmount() => $_has(2);
+  @$pb.TagNumber(3)
+  void clearMaxAmount() => clearField(3);
+
+  @$pb.TagNumber(4)
+  $core.List<LNUrlPayMetadata> get metadata => $_getList(3);
+
+  @$pb.TagNumber(5)
+  $core.String get tag => $_getSZ(4);
+  @$pb.TagNumber(5)
+  set tag($core.String v) { $_setString(4, v); }
+  @$pb.TagNumber(5)
+  $core.bool hasTag() => $_has(4);
+  @$pb.TagNumber(5)
+  void clearTag() => clearField(5);
+
+  @$pb.TagNumber(6)
+  $fixnum.Int64 get amount => $_getI64(5);
+  @$pb.TagNumber(6)
+  set amount($fixnum.Int64 v) { $_setInt64(5, v); }
+  @$pb.TagNumber(6)
+  $core.bool hasAmount() => $_has(5);
+  @$pb.TagNumber(6)
+  void clearAmount() => clearField(6);
+
+  @$pb.TagNumber(7)
+  $core.String get fromNodes => $_getSZ(6);
+  @$pb.TagNumber(7)
+  set fromNodes($core.String v) { $_setString(6, v); }
+  @$pb.TagNumber(7)
+  $core.bool hasFromNodes() => $_has(6);
+  @$pb.TagNumber(7)
+  void clearFromNodes() => clearField(7);
+
+  @$pb.TagNumber(8)
+  $core.String get comment => $_getSZ(7);
+  @$pb.TagNumber(8)
+  set comment($core.String v) { $_setString(7, v); }
+  @$pb.TagNumber(8)
+  $core.bool hasComment() => $_has(7);
+  @$pb.TagNumber(8)
+  void clearComment() => clearField(8);
+
+  @$pb.TagNumber(9)
+  $core.String get host => $_getSZ(8);
+  @$pb.TagNumber(9)
+  set host($core.String v) { $_setString(8, v); }
+  @$pb.TagNumber(9)
+  $core.bool hasHost() => $_has(8);
+  @$pb.TagNumber(9)
+  void clearHost() => clearField(9);
+}
+
+class SuccessAction extends $pb.GeneratedMessage {
+  static final $pb.BuilderInfo _i = $pb.BuilderInfo(const $core.bool.fromEnvironment('protobuf.omit_message_names') ? '' : 'SuccessAction', package: const $pb.PackageName(const $core.bool.fromEnvironment('protobuf.omit_message_names') ? '' : 'data'), createEmptyInstance: create)
+    ..aOS(1, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'tag')
+    ..aOS(2, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'description')
+    ..aOS(3, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'url')
+    ..aOS(4, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'message')
+    ..aOS(5, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'ciphertext')
+    ..aOS(6, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'iv')
+    ..hasRequiredFields = false
+  ;
+
+  SuccessAction._() : super();
+  factory SuccessAction({
+    $core.String? tag,
+    $core.String? description,
+    $core.String? url,
+    $core.String? message,
+    $core.String? ciphertext,
+    $core.String? iv,
+  }) {
+    final _result = create();
+    if (tag != null) {
+      _result.tag = tag;
+    }
+    if (description != null) {
+      _result.description = description;
+    }
+    if (url != null) {
+      _result.url = url;
+    }
+    if (message != null) {
+      _result.message = message;
+    }
+    if (ciphertext != null) {
+      _result.ciphertext = ciphertext;
+    }
+    if (iv != null) {
+      _result.iv = iv;
+    }
+    return _result;
+  }
+  factory SuccessAction.fromBuffer($core.List<$core.int> i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromBuffer(i, r);
+  factory SuccessAction.fromJson($core.String i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromJson(i, r);
+  @$core.Deprecated(
+  'Using this can add significant overhead to your binary. '
+  'Use [GeneratedMessageGenericExtensions.deepCopy] instead. '
+  'Will be removed in next major version')
+  SuccessAction clone() => SuccessAction()..mergeFromMessage(this);
+  @$core.Deprecated(
+  'Using this can add significant overhead to your binary. '
+  'Use [GeneratedMessageGenericExtensions.rebuild] instead. '
+  'Will be removed in next major version')
+  SuccessAction copyWith(void Function(SuccessAction) updates) => super.copyWith((message) => updates(message as SuccessAction)) as SuccessAction; // ignore: deprecated_member_use
+  $pb.BuilderInfo get info_ => _i;
+  @$core.pragma('dart2js:noInline')
+  static SuccessAction create() => SuccessAction._();
+  SuccessAction createEmptyInstance() => create();
+  static $pb.PbList<SuccessAction> createRepeated() => $pb.PbList<SuccessAction>();
+  @$core.pragma('dart2js:noInline')
+  static SuccessAction getDefault() => _defaultInstance ??= $pb.GeneratedMessage.$_defaultFor<SuccessAction>(create);
+  static SuccessAction? _defaultInstance;
+
+  @$pb.TagNumber(1)
+  $core.String get tag => $_getSZ(0);
+  @$pb.TagNumber(1)
+  set tag($core.String v) { $_setString(0, v); }
+  @$pb.TagNumber(1)
+  $core.bool hasTag() => $_has(0);
+  @$pb.TagNumber(1)
+  void clearTag() => clearField(1);
+
+  @$pb.TagNumber(2)
+  $core.String get description => $_getSZ(1);
+  @$pb.TagNumber(2)
+  set description($core.String v) { $_setString(1, v); }
+  @$pb.TagNumber(2)
+  $core.bool hasDescription() => $_has(1);
+  @$pb.TagNumber(2)
+  void clearDescription() => clearField(2);
+
+  @$pb.TagNumber(3)
+  $core.String get url => $_getSZ(2);
+  @$pb.TagNumber(3)
+  set url($core.String v) { $_setString(2, v); }
+  @$pb.TagNumber(3)
+  $core.bool hasUrl() => $_has(2);
+  @$pb.TagNumber(3)
+  void clearUrl() => clearField(3);
+
+  @$pb.TagNumber(4)
+  $core.String get message => $_getSZ(3);
+  @$pb.TagNumber(4)
+  set message($core.String v) { $_setString(3, v); }
+  @$pb.TagNumber(4)
+  $core.bool hasMessage() => $_has(3);
+  @$pb.TagNumber(4)
+  void clearMessage() => clearField(4);
+
+  @$pb.TagNumber(5)
+  $core.String get ciphertext => $_getSZ(4);
+  @$pb.TagNumber(5)
+  set ciphertext($core.String v) { $_setString(4, v); }
+  @$pb.TagNumber(5)
+  $core.bool hasCiphertext() => $_has(4);
+  @$pb.TagNumber(5)
+  void clearCiphertext() => clearField(5);
+
+  @$pb.TagNumber(6)
+  $core.String get iv => $_getSZ(5);
+  @$pb.TagNumber(6)
+  set iv($core.String v) { $_setString(5, v); }
+  @$pb.TagNumber(6)
+  $core.bool hasIv() => $_has(5);
+  @$pb.TagNumber(6)
+  void clearIv() => clearField(6);
+}
+
+class LNUrlPayInfo extends $pb.GeneratedMessage {
+  static final $pb.BuilderInfo _i = $pb.BuilderInfo(const $core.bool.fromEnvironment('protobuf.omit_message_names') ? '' : 'LNUrlPayInfo', package: const $pb.PackageName(const $core.bool.fromEnvironment('protobuf.omit_message_names') ? '' : 'data'), createEmptyInstance: create)
+    ..aOS(1, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'paymentHash', protoName: 'paymentHash')
+    ..aOS(2, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'invoice')
+    ..aOM<SuccessAction>(3, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'successAction', subBuilder: SuccessAction.create)
+    ..aOS(4, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'comment')
+    ..aOS(5, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'invoiceDescription')
+    ..pc<LNUrlPayMetadata>(6, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'metadata', $pb.PbFieldType.PM, subBuilder: LNUrlPayMetadata.create)
+    ..aOS(7, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'host')
+    ..hasRequiredFields = false
+  ;
+
+  LNUrlPayInfo._() : super();
+  factory LNUrlPayInfo({
+    $core.String? paymentHash,
+    $core.String? invoice,
+    SuccessAction? successAction,
+    $core.String? comment,
+    $core.String? invoiceDescription,
+    $core.Iterable<LNUrlPayMetadata>? metadata,
+    $core.String? host,
+  }) {
+    final _result = create();
+    if (paymentHash != null) {
+      _result.paymentHash = paymentHash;
+    }
+    if (invoice != null) {
+      _result.invoice = invoice;
+    }
+    if (successAction != null) {
+      _result.successAction = successAction;
+    }
+    if (comment != null) {
+      _result.comment = comment;
+    }
+    if (invoiceDescription != null) {
+      _result.invoiceDescription = invoiceDescription;
+    }
+    if (metadata != null) {
+      _result.metadata.addAll(metadata);
+    }
+    if (host != null) {
+      _result.host = host;
+    }
+    return _result;
+  }
+  factory LNUrlPayInfo.fromBuffer($core.List<$core.int> i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromBuffer(i, r);
+  factory LNUrlPayInfo.fromJson($core.String i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromJson(i, r);
+  @$core.Deprecated(
+  'Using this can add significant overhead to your binary. '
+  'Use [GeneratedMessageGenericExtensions.deepCopy] instead. '
+  'Will be removed in next major version')
+  LNUrlPayInfo clone() => LNUrlPayInfo()..mergeFromMessage(this);
+  @$core.Deprecated(
+  'Using this can add significant overhead to your binary. '
+  'Use [GeneratedMessageGenericExtensions.rebuild] instead. '
+  'Will be removed in next major version')
+  LNUrlPayInfo copyWith(void Function(LNUrlPayInfo) updates) => super.copyWith((message) => updates(message as LNUrlPayInfo)) as LNUrlPayInfo; // ignore: deprecated_member_use
+  $pb.BuilderInfo get info_ => _i;
+  @$core.pragma('dart2js:noInline')
+  static LNUrlPayInfo create() => LNUrlPayInfo._();
+  LNUrlPayInfo createEmptyInstance() => create();
+  static $pb.PbList<LNUrlPayInfo> createRepeated() => $pb.PbList<LNUrlPayInfo>();
+  @$core.pragma('dart2js:noInline')
+  static LNUrlPayInfo getDefault() => _defaultInstance ??= $pb.GeneratedMessage.$_defaultFor<LNUrlPayInfo>(create);
+  static LNUrlPayInfo? _defaultInstance;
+
+  @$pb.TagNumber(1)
+  $core.String get paymentHash => $_getSZ(0);
+  @$pb.TagNumber(1)
+  set paymentHash($core.String v) { $_setString(0, v); }
+  @$pb.TagNumber(1)
+  $core.bool hasPaymentHash() => $_has(0);
+  @$pb.TagNumber(1)
+  void clearPaymentHash() => clearField(1);
+
+  @$pb.TagNumber(2)
+  $core.String get invoice => $_getSZ(1);
+  @$pb.TagNumber(2)
+  set invoice($core.String v) { $_setString(1, v); }
+  @$pb.TagNumber(2)
+  $core.bool hasInvoice() => $_has(1);
+  @$pb.TagNumber(2)
+  void clearInvoice() => clearField(2);
+
+  @$pb.TagNumber(3)
+  SuccessAction get successAction => $_getN(2);
+  @$pb.TagNumber(3)
+  set successAction(SuccessAction v) { setField(3, v); }
+  @$pb.TagNumber(3)
+  $core.bool hasSuccessAction() => $_has(2);
+  @$pb.TagNumber(3)
+  void clearSuccessAction() => clearField(3);
+  @$pb.TagNumber(3)
+  SuccessAction ensureSuccessAction() => $_ensure(2);
+
+  @$pb.TagNumber(4)
+  $core.String get comment => $_getSZ(3);
+  @$pb.TagNumber(4)
+  set comment($core.String v) { $_setString(3, v); }
+  @$pb.TagNumber(4)
+  $core.bool hasComment() => $_has(3);
+  @$pb.TagNumber(4)
+  void clearComment() => clearField(4);
+
+  @$pb.TagNumber(5)
+  $core.String get invoiceDescription => $_getSZ(4);
+  @$pb.TagNumber(5)
+  set invoiceDescription($core.String v) { $_setString(4, v); }
+  @$pb.TagNumber(5)
+  $core.bool hasInvoiceDescription() => $_has(4);
+  @$pb.TagNumber(5)
+  void clearInvoiceDescription() => clearField(5);
+
+  @$pb.TagNumber(6)
+  $core.List<LNUrlPayMetadata> get metadata => $_getList(5);
+
+  @$pb.TagNumber(7)
+  $core.String get host => $_getSZ(6);
+  @$pb.TagNumber(7)
+  set host($core.String v) { $_setString(6, v); }
+  @$pb.TagNumber(7)
+  $core.bool hasHost() => $_has(6);
+  @$pb.TagNumber(7)
+  void clearHost() => clearField(7);
+}
+
+class LNUrlPayInfoList extends $pb.GeneratedMessage {
+  static final $pb.BuilderInfo _i = $pb.BuilderInfo(const $core.bool.fromEnvironment('protobuf.omit_message_names') ? '' : 'LNUrlPayInfoList', package: const $pb.PackageName(const $core.bool.fromEnvironment('protobuf.omit_message_names') ? '' : 'data'), createEmptyInstance: create)
+    ..pc<LNUrlPayInfo>(1, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'infoList', $pb.PbFieldType.PM, protoName: 'infoList', subBuilder: LNUrlPayInfo.create)
+    ..hasRequiredFields = false
+  ;
+
+  LNUrlPayInfoList._() : super();
+  factory LNUrlPayInfoList({
+    $core.Iterable<LNUrlPayInfo>? infoList,
+  }) {
+    final _result = create();
+    if (infoList != null) {
+      _result.infoList.addAll(infoList);
+    }
+    return _result;
+  }
+  factory LNUrlPayInfoList.fromBuffer($core.List<$core.int> i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromBuffer(i, r);
+  factory LNUrlPayInfoList.fromJson($core.String i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromJson(i, r);
+  @$core.Deprecated(
+  'Using this can add significant overhead to your binary. '
+  'Use [GeneratedMessageGenericExtensions.deepCopy] instead. '
+  'Will be removed in next major version')
+  LNUrlPayInfoList clone() => LNUrlPayInfoList()..mergeFromMessage(this);
+  @$core.Deprecated(
+  'Using this can add significant overhead to your binary. '
+  'Use [GeneratedMessageGenericExtensions.rebuild] instead. '
+  'Will be removed in next major version')
+  LNUrlPayInfoList copyWith(void Function(LNUrlPayInfoList) updates) => super.copyWith((message) => updates(message as LNUrlPayInfoList)) as LNUrlPayInfoList; // ignore: deprecated_member_use
+  $pb.BuilderInfo get info_ => _i;
+  @$core.pragma('dart2js:noInline')
+  static LNUrlPayInfoList create() => LNUrlPayInfoList._();
+  LNUrlPayInfoList createEmptyInstance() => create();
+  static $pb.PbList<LNUrlPayInfoList> createRepeated() => $pb.PbList<LNUrlPayInfoList>();
+  @$core.pragma('dart2js:noInline')
+  static LNUrlPayInfoList getDefault() => _defaultInstance ??= $pb.GeneratedMessage.$_defaultFor<LNUrlPayInfoList>(create);
+  static LNUrlPayInfoList? _defaultInstance;
+
+  @$pb.TagNumber(1)
+  $core.List<LNUrlPayInfo> get infoList => $_getList(0);
+}
+
 class ReverseSwapRequest extends $pb.GeneratedMessage {
   static final $pb.BuilderInfo _i = $pb.BuilderInfo(const $core.bool.fromEnvironment('protobuf.omit_message_names') ? '' : 'ReverseSwapRequest', package: const $pb.PackageName(const $core.bool.fromEnvironment('protobuf.omit_message_names') ? '' : 'data'), createEmptyInstance: create)
     ..aOS(1, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'address')
@@ -4123,9 +4620,9 @@ class ReverseSwapRequest extends $pb.GeneratedMessage {
 
   ReverseSwapRequest._() : super();
   factory ReverseSwapRequest({
-    $core.String address,
-    $fixnum.Int64 amount,
-    $core.String feesHash,
+    $core.String? address,
+    $fixnum.Int64? amount,
+    $core.String? feesHash,
   }) {
     final _result = create();
     if (address != null) {
@@ -4150,7 +4647,7 @@ class ReverseSwapRequest extends $pb.GeneratedMessage {
   'Using this can add significant overhead to your binary. '
   'Use [GeneratedMessageGenericExtensions.rebuild] instead. '
   'Will be removed in next major version')
-  ReverseSwapRequest copyWith(void Function(ReverseSwapRequest) updates) => super.copyWith((message) => updates(message as ReverseSwapRequest)); // ignore: deprecated_member_use
+  ReverseSwapRequest copyWith(void Function(ReverseSwapRequest) updates) => super.copyWith((message) => updates(message as ReverseSwapRequest)) as ReverseSwapRequest; // ignore: deprecated_member_use
   $pb.BuilderInfo get info_ => _i;
   @$core.pragma('dart2js:noInline')
   static ReverseSwapRequest create() => ReverseSwapRequest._();
@@ -4158,7 +4655,7 @@ class ReverseSwapRequest extends $pb.GeneratedMessage {
   static $pb.PbList<ReverseSwapRequest> createRepeated() => $pb.PbList<ReverseSwapRequest>();
   @$core.pragma('dart2js:noInline')
   static ReverseSwapRequest getDefault() => _defaultInstance ??= $pb.GeneratedMessage.$_defaultFor<ReverseSwapRequest>(create);
-  static ReverseSwapRequest _defaultInstance;
+  static ReverseSwapRequest? _defaultInstance;
 
   @$pb.TagNumber(1)
   $core.String get address => $_getSZ(0);
@@ -4208,19 +4705,19 @@ class ReverseSwap extends $pb.GeneratedMessage {
 
   ReverseSwap._() : super();
   factory ReverseSwap({
-    $core.String id,
-    $core.String invoice,
-    $core.String script,
-    $core.String lockupAddress,
-    $core.String preimage,
-    $core.String key,
-    $core.String claimAddress,
-    $fixnum.Int64 lnAmount,
-    $fixnum.Int64 onchainAmount,
-    $fixnum.Int64 timeoutBlockHeight,
-    $fixnum.Int64 startBlockHeight,
-    $fixnum.Int64 claimFee,
-    $core.String claimTxid,
+    $core.String? id,
+    $core.String? invoice,
+    $core.String? script,
+    $core.String? lockupAddress,
+    $core.String? preimage,
+    $core.String? key,
+    $core.String? claimAddress,
+    $fixnum.Int64? lnAmount,
+    $fixnum.Int64? onchainAmount,
+    $fixnum.Int64? timeoutBlockHeight,
+    $fixnum.Int64? startBlockHeight,
+    $fixnum.Int64? claimFee,
+    $core.String? claimTxid,
   }) {
     final _result = create();
     if (id != null) {
@@ -4275,7 +4772,7 @@ class ReverseSwap extends $pb.GeneratedMessage {
   'Using this can add significant overhead to your binary. '
   'Use [GeneratedMessageGenericExtensions.rebuild] instead. '
   'Will be removed in next major version')
-  ReverseSwap copyWith(void Function(ReverseSwap) updates) => super.copyWith((message) => updates(message as ReverseSwap)); // ignore: deprecated_member_use
+  ReverseSwap copyWith(void Function(ReverseSwap) updates) => super.copyWith((message) => updates(message as ReverseSwap)) as ReverseSwap; // ignore: deprecated_member_use
   $pb.BuilderInfo get info_ => _i;
   @$core.pragma('dart2js:noInline')
   static ReverseSwap create() => ReverseSwap._();
@@ -4283,7 +4780,7 @@ class ReverseSwap extends $pb.GeneratedMessage {
   static $pb.PbList<ReverseSwap> createRepeated() => $pb.PbList<ReverseSwap>();
   @$core.pragma('dart2js:noInline')
   static ReverseSwap getDefault() => _defaultInstance ??= $pb.GeneratedMessage.$_defaultFor<ReverseSwap>(create);
-  static ReverseSwap _defaultInstance;
+  static ReverseSwap? _defaultInstance;
 
   @$pb.TagNumber(1)
   $core.String get id => $_getSZ(0);
@@ -4413,9 +4910,9 @@ class ReverseSwapFees extends $pb.GeneratedMessage {
 
   ReverseSwapFees._() : super();
   factory ReverseSwapFees({
-    $core.double percentage,
-    $fixnum.Int64 lockup,
-    $fixnum.Int64 claim,
+    $core.double? percentage,
+    $fixnum.Int64? lockup,
+    $fixnum.Int64? claim,
   }) {
     final _result = create();
     if (percentage != null) {
@@ -4440,7 +4937,7 @@ class ReverseSwapFees extends $pb.GeneratedMessage {
   'Using this can add significant overhead to your binary. '
   'Use [GeneratedMessageGenericExtensions.rebuild] instead. '
   'Will be removed in next major version')
-  ReverseSwapFees copyWith(void Function(ReverseSwapFees) updates) => super.copyWith((message) => updates(message as ReverseSwapFees)); // ignore: deprecated_member_use
+  ReverseSwapFees copyWith(void Function(ReverseSwapFees) updates) => super.copyWith((message) => updates(message as ReverseSwapFees)) as ReverseSwapFees; // ignore: deprecated_member_use
   $pb.BuilderInfo get info_ => _i;
   @$core.pragma('dart2js:noInline')
   static ReverseSwapFees create() => ReverseSwapFees._();
@@ -4448,7 +4945,7 @@ class ReverseSwapFees extends $pb.GeneratedMessage {
   static $pb.PbList<ReverseSwapFees> createRepeated() => $pb.PbList<ReverseSwapFees>();
   @$core.pragma('dart2js:noInline')
   static ReverseSwapFees getDefault() => _defaultInstance ??= $pb.GeneratedMessage.$_defaultFor<ReverseSwapFees>(create);
-  static ReverseSwapFees _defaultInstance;
+  static ReverseSwapFees? _defaultInstance;
 
   @$pb.TagNumber(1)
   $core.double get percentage => $_getN(0);
@@ -4489,10 +4986,10 @@ class ReverseSwapInfo extends $pb.GeneratedMessage {
 
   ReverseSwapInfo._() : super();
   factory ReverseSwapInfo({
-    $fixnum.Int64 min,
-    $fixnum.Int64 max,
-    ReverseSwapFees fees,
-    $core.String feesHash,
+    $fixnum.Int64? min,
+    $fixnum.Int64? max,
+    ReverseSwapFees? fees,
+    $core.String? feesHash,
   }) {
     final _result = create();
     if (min != null) {
@@ -4520,7 +5017,7 @@ class ReverseSwapInfo extends $pb.GeneratedMessage {
   'Using this can add significant overhead to your binary. '
   'Use [GeneratedMessageGenericExtensions.rebuild] instead. '
   'Will be removed in next major version')
-  ReverseSwapInfo copyWith(void Function(ReverseSwapInfo) updates) => super.copyWith((message) => updates(message as ReverseSwapInfo)); // ignore: deprecated_member_use
+  ReverseSwapInfo copyWith(void Function(ReverseSwapInfo) updates) => super.copyWith((message) => updates(message as ReverseSwapInfo)) as ReverseSwapInfo; // ignore: deprecated_member_use
   $pb.BuilderInfo get info_ => _i;
   @$core.pragma('dart2js:noInline')
   static ReverseSwapInfo create() => ReverseSwapInfo._();
@@ -4528,7 +5025,7 @@ class ReverseSwapInfo extends $pb.GeneratedMessage {
   static $pb.PbList<ReverseSwapInfo> createRepeated() => $pb.PbList<ReverseSwapInfo>();
   @$core.pragma('dart2js:noInline')
   static ReverseSwapInfo getDefault() => _defaultInstance ??= $pb.GeneratedMessage.$_defaultFor<ReverseSwapInfo>(create);
-  static ReverseSwapInfo _defaultInstance;
+  static ReverseSwapInfo? _defaultInstance;
 
   @$pb.TagNumber(1)
   $fixnum.Int64 get min => $_getI64(0);
@@ -4578,8 +5075,8 @@ class ReverseSwapPaymentRequest extends $pb.GeneratedMessage {
 
   ReverseSwapPaymentRequest._() : super();
   factory ReverseSwapPaymentRequest({
-    $core.String hash,
-    PushNotificationDetails pushNotificationDetails,
+    $core.String? hash,
+    PushNotificationDetails? pushNotificationDetails,
   }) {
     final _result = create();
     if (hash != null) {
@@ -4601,7 +5098,7 @@ class ReverseSwapPaymentRequest extends $pb.GeneratedMessage {
   'Using this can add significant overhead to your binary. '
   'Use [GeneratedMessageGenericExtensions.rebuild] instead. '
   'Will be removed in next major version')
-  ReverseSwapPaymentRequest copyWith(void Function(ReverseSwapPaymentRequest) updates) => super.copyWith((message) => updates(message as ReverseSwapPaymentRequest)); // ignore: deprecated_member_use
+  ReverseSwapPaymentRequest copyWith(void Function(ReverseSwapPaymentRequest) updates) => super.copyWith((message) => updates(message as ReverseSwapPaymentRequest)) as ReverseSwapPaymentRequest; // ignore: deprecated_member_use
   $pb.BuilderInfo get info_ => _i;
   @$core.pragma('dart2js:noInline')
   static ReverseSwapPaymentRequest create() => ReverseSwapPaymentRequest._();
@@ -4609,7 +5106,7 @@ class ReverseSwapPaymentRequest extends $pb.GeneratedMessage {
   static $pb.PbList<ReverseSwapPaymentRequest> createRepeated() => $pb.PbList<ReverseSwapPaymentRequest>();
   @$core.pragma('dart2js:noInline')
   static ReverseSwapPaymentRequest getDefault() => _defaultInstance ??= $pb.GeneratedMessage.$_defaultFor<ReverseSwapPaymentRequest>(create);
-  static ReverseSwapPaymentRequest _defaultInstance;
+  static ReverseSwapPaymentRequest? _defaultInstance;
 
   @$pb.TagNumber(1)
   $core.String get hash => $_getSZ(0);
@@ -4642,9 +5139,9 @@ class PushNotificationDetails extends $pb.GeneratedMessage {
 
   PushNotificationDetails._() : super();
   factory PushNotificationDetails({
-    $core.String deviceId,
-    $core.String title,
-    $core.String body,
+    $core.String? deviceId,
+    $core.String? title,
+    $core.String? body,
   }) {
     final _result = create();
     if (deviceId != null) {
@@ -4669,7 +5166,7 @@ class PushNotificationDetails extends $pb.GeneratedMessage {
   'Using this can add significant overhead to your binary. '
   'Use [GeneratedMessageGenericExtensions.rebuild] instead. '
   'Will be removed in next major version')
-  PushNotificationDetails copyWith(void Function(PushNotificationDetails) updates) => super.copyWith((message) => updates(message as PushNotificationDetails)); // ignore: deprecated_member_use
+  PushNotificationDetails copyWith(void Function(PushNotificationDetails) updates) => super.copyWith((message) => updates(message as PushNotificationDetails)) as PushNotificationDetails; // ignore: deprecated_member_use
   $pb.BuilderInfo get info_ => _i;
   @$core.pragma('dart2js:noInline')
   static PushNotificationDetails create() => PushNotificationDetails._();
@@ -4677,7 +5174,7 @@ class PushNotificationDetails extends $pb.GeneratedMessage {
   static $pb.PbList<PushNotificationDetails> createRepeated() => $pb.PbList<PushNotificationDetails>();
   @$core.pragma('dart2js:noInline')
   static PushNotificationDetails getDefault() => _defaultInstance ??= $pb.GeneratedMessage.$_defaultFor<PushNotificationDetails>(create);
-  static PushNotificationDetails _defaultInstance;
+  static PushNotificationDetails? _defaultInstance;
 
   @$pb.TagNumber(1)
   $core.String get deviceId => $_getSZ(0);
@@ -4716,8 +5213,8 @@ class ReverseSwapPaymentStatus extends $pb.GeneratedMessage {
 
   ReverseSwapPaymentStatus._() : super();
   factory ReverseSwapPaymentStatus({
-    $core.String hash,
-    $core.int eta,
+    $core.String? hash,
+    $core.int? eta,
   }) {
     final _result = create();
     if (hash != null) {
@@ -4739,7 +5236,7 @@ class ReverseSwapPaymentStatus extends $pb.GeneratedMessage {
   'Using this can add significant overhead to your binary. '
   'Use [GeneratedMessageGenericExtensions.rebuild] instead. '
   'Will be removed in next major version')
-  ReverseSwapPaymentStatus copyWith(void Function(ReverseSwapPaymentStatus) updates) => super.copyWith((message) => updates(message as ReverseSwapPaymentStatus)); // ignore: deprecated_member_use
+  ReverseSwapPaymentStatus copyWith(void Function(ReverseSwapPaymentStatus) updates) => super.copyWith((message) => updates(message as ReverseSwapPaymentStatus)) as ReverseSwapPaymentStatus; // ignore: deprecated_member_use
   $pb.BuilderInfo get info_ => _i;
   @$core.pragma('dart2js:noInline')
   static ReverseSwapPaymentStatus create() => ReverseSwapPaymentStatus._();
@@ -4747,7 +5244,7 @@ class ReverseSwapPaymentStatus extends $pb.GeneratedMessage {
   static $pb.PbList<ReverseSwapPaymentStatus> createRepeated() => $pb.PbList<ReverseSwapPaymentStatus>();
   @$core.pragma('dart2js:noInline')
   static ReverseSwapPaymentStatus getDefault() => _defaultInstance ??= $pb.GeneratedMessage.$_defaultFor<ReverseSwapPaymentStatus>(create);
-  static ReverseSwapPaymentStatus _defaultInstance;
+  static ReverseSwapPaymentStatus? _defaultInstance;
 
   @$pb.TagNumber(1)
   $core.String get hash => $_getSZ(0);
@@ -4776,7 +5273,7 @@ class ReverseSwapPaymentStatuses extends $pb.GeneratedMessage {
 
   ReverseSwapPaymentStatuses._() : super();
   factory ReverseSwapPaymentStatuses({
-    $core.Iterable<ReverseSwapPaymentStatus> paymentsStatus,
+    $core.Iterable<ReverseSwapPaymentStatus>? paymentsStatus,
   }) {
     final _result = create();
     if (paymentsStatus != null) {
@@ -4795,7 +5292,7 @@ class ReverseSwapPaymentStatuses extends $pb.GeneratedMessage {
   'Using this can add significant overhead to your binary. '
   'Use [GeneratedMessageGenericExtensions.rebuild] instead. '
   'Will be removed in next major version')
-  ReverseSwapPaymentStatuses copyWith(void Function(ReverseSwapPaymentStatuses) updates) => super.copyWith((message) => updates(message as ReverseSwapPaymentStatuses)); // ignore: deprecated_member_use
+  ReverseSwapPaymentStatuses copyWith(void Function(ReverseSwapPaymentStatuses) updates) => super.copyWith((message) => updates(message as ReverseSwapPaymentStatuses)) as ReverseSwapPaymentStatuses; // ignore: deprecated_member_use
   $pb.BuilderInfo get info_ => _i;
   @$core.pragma('dart2js:noInline')
   static ReverseSwapPaymentStatuses create() => ReverseSwapPaymentStatuses._();
@@ -4803,7 +5300,7 @@ class ReverseSwapPaymentStatuses extends $pb.GeneratedMessage {
   static $pb.PbList<ReverseSwapPaymentStatuses> createRepeated() => $pb.PbList<ReverseSwapPaymentStatuses>();
   @$core.pragma('dart2js:noInline')
   static ReverseSwapPaymentStatuses getDefault() => _defaultInstance ??= $pb.GeneratedMessage.$_defaultFor<ReverseSwapPaymentStatuses>(create);
-  static ReverseSwapPaymentStatuses _defaultInstance;
+  static ReverseSwapPaymentStatuses? _defaultInstance;
 
   @$pb.TagNumber(1)
   $core.List<ReverseSwapPaymentStatus> get paymentsStatus => $_getList(0);
@@ -4818,8 +5315,8 @@ class ReverseSwapClaimFee extends $pb.GeneratedMessage {
 
   ReverseSwapClaimFee._() : super();
   factory ReverseSwapClaimFee({
-    $core.String hash,
-    $fixnum.Int64 fee,
+    $core.String? hash,
+    $fixnum.Int64? fee,
   }) {
     final _result = create();
     if (hash != null) {
@@ -4841,7 +5338,7 @@ class ReverseSwapClaimFee extends $pb.GeneratedMessage {
   'Using this can add significant overhead to your binary. '
   'Use [GeneratedMessageGenericExtensions.rebuild] instead. '
   'Will be removed in next major version')
-  ReverseSwapClaimFee copyWith(void Function(ReverseSwapClaimFee) updates) => super.copyWith((message) => updates(message as ReverseSwapClaimFee)); // ignore: deprecated_member_use
+  ReverseSwapClaimFee copyWith(void Function(ReverseSwapClaimFee) updates) => super.copyWith((message) => updates(message as ReverseSwapClaimFee)) as ReverseSwapClaimFee; // ignore: deprecated_member_use
   $pb.BuilderInfo get info_ => _i;
   @$core.pragma('dart2js:noInline')
   static ReverseSwapClaimFee create() => ReverseSwapClaimFee._();
@@ -4849,7 +5346,7 @@ class ReverseSwapClaimFee extends $pb.GeneratedMessage {
   static $pb.PbList<ReverseSwapClaimFee> createRepeated() => $pb.PbList<ReverseSwapClaimFee>();
   @$core.pragma('dart2js:noInline')
   static ReverseSwapClaimFee getDefault() => _defaultInstance ??= $pb.GeneratedMessage.$_defaultFor<ReverseSwapClaimFee>(create);
-  static ReverseSwapClaimFee _defaultInstance;
+  static ReverseSwapClaimFee? _defaultInstance;
 
   @$pb.TagNumber(1)
   $core.String get hash => $_getSZ(0);
@@ -4878,7 +5375,7 @@ class ClaimFeeEstimates extends $pb.GeneratedMessage {
 
   ClaimFeeEstimates._() : super();
   factory ClaimFeeEstimates({
-    $core.Map<$core.int, $fixnum.Int64> fees,
+    $core.Map<$core.int, $fixnum.Int64>? fees,
   }) {
     final _result = create();
     if (fees != null) {
@@ -4897,7 +5394,7 @@ class ClaimFeeEstimates extends $pb.GeneratedMessage {
   'Using this can add significant overhead to your binary. '
   'Use [GeneratedMessageGenericExtensions.rebuild] instead. '
   'Will be removed in next major version')
-  ClaimFeeEstimates copyWith(void Function(ClaimFeeEstimates) updates) => super.copyWith((message) => updates(message as ClaimFeeEstimates)); // ignore: deprecated_member_use
+  ClaimFeeEstimates copyWith(void Function(ClaimFeeEstimates) updates) => super.copyWith((message) => updates(message as ClaimFeeEstimates)) as ClaimFeeEstimates; // ignore: deprecated_member_use
   $pb.BuilderInfo get info_ => _i;
   @$core.pragma('dart2js:noInline')
   static ClaimFeeEstimates create() => ClaimFeeEstimates._();
@@ -4905,7 +5402,7 @@ class ClaimFeeEstimates extends $pb.GeneratedMessage {
   static $pb.PbList<ClaimFeeEstimates> createRepeated() => $pb.PbList<ClaimFeeEstimates>();
   @$core.pragma('dart2js:noInline')
   static ClaimFeeEstimates getDefault() => _defaultInstance ??= $pb.GeneratedMessage.$_defaultFor<ClaimFeeEstimates>(create);
-  static ClaimFeeEstimates _defaultInstance;
+  static ClaimFeeEstimates? _defaultInstance;
 
   @$pb.TagNumber(1)
   $core.Map<$core.int, $fixnum.Int64> get fees => $_getMap(0);
@@ -4921,9 +5418,9 @@ class UnspendLockupInformation extends $pb.GeneratedMessage {
 
   UnspendLockupInformation._() : super();
   factory UnspendLockupInformation({
-    $core.int heightHint,
-    $core.List<$core.int> lockupScript,
-    $core.List<$core.int> claimTxHash,
+    $core.int? heightHint,
+    $core.List<$core.int>? lockupScript,
+    $core.List<$core.int>? claimTxHash,
   }) {
     final _result = create();
     if (heightHint != null) {
@@ -4948,7 +5445,7 @@ class UnspendLockupInformation extends $pb.GeneratedMessage {
   'Using this can add significant overhead to your binary. '
   'Use [GeneratedMessageGenericExtensions.rebuild] instead. '
   'Will be removed in next major version')
-  UnspendLockupInformation copyWith(void Function(UnspendLockupInformation) updates) => super.copyWith((message) => updates(message as UnspendLockupInformation)); // ignore: deprecated_member_use
+  UnspendLockupInformation copyWith(void Function(UnspendLockupInformation) updates) => super.copyWith((message) => updates(message as UnspendLockupInformation)) as UnspendLockupInformation; // ignore: deprecated_member_use
   $pb.BuilderInfo get info_ => _i;
   @$core.pragma('dart2js:noInline')
   static UnspendLockupInformation create() => UnspendLockupInformation._();
@@ -4956,7 +5453,7 @@ class UnspendLockupInformation extends $pb.GeneratedMessage {
   static $pb.PbList<UnspendLockupInformation> createRepeated() => $pb.PbList<UnspendLockupInformation>();
   @$core.pragma('dart2js:noInline')
   static UnspendLockupInformation getDefault() => _defaultInstance ??= $pb.GeneratedMessage.$_defaultFor<UnspendLockupInformation>(create);
-  static UnspendLockupInformation _defaultInstance;
+  static UnspendLockupInformation? _defaultInstance;
 
   @$pb.TagNumber(1)
   $core.int get heightHint => $_getIZ(0);
@@ -4996,9 +5493,9 @@ class TransactionDetails extends $pb.GeneratedMessage {
 
   TransactionDetails._() : super();
   factory TransactionDetails({
-    $core.List<$core.int> tx,
-    $core.String txHash,
-    $fixnum.Int64 fees,
+    $core.List<$core.int>? tx,
+    $core.String? txHash,
+    $fixnum.Int64? fees,
   }) {
     final _result = create();
     if (tx != null) {
@@ -5023,7 +5520,7 @@ class TransactionDetails extends $pb.GeneratedMessage {
   'Using this can add significant overhead to your binary. '
   'Use [GeneratedMessageGenericExtensions.rebuild] instead. '
   'Will be removed in next major version')
-  TransactionDetails copyWith(void Function(TransactionDetails) updates) => super.copyWith((message) => updates(message as TransactionDetails)); // ignore: deprecated_member_use
+  TransactionDetails copyWith(void Function(TransactionDetails) updates) => super.copyWith((message) => updates(message as TransactionDetails)) as TransactionDetails; // ignore: deprecated_member_use
   $pb.BuilderInfo get info_ => _i;
   @$core.pragma('dart2js:noInline')
   static TransactionDetails create() => TransactionDetails._();
@@ -5031,7 +5528,7 @@ class TransactionDetails extends $pb.GeneratedMessage {
   static $pb.PbList<TransactionDetails> createRepeated() => $pb.PbList<TransactionDetails>();
   @$core.pragma('dart2js:noInline')
   static TransactionDetails getDefault() => _defaultInstance ??= $pb.GeneratedMessage.$_defaultFor<TransactionDetails>(create);
-  static TransactionDetails _defaultInstance;
+  static TransactionDetails? _defaultInstance;
 
   @$pb.TagNumber(1)
   $core.List<$core.int> get tx => $_getN(0);
@@ -5070,8 +5567,8 @@ class SweepAllCoinsTransactions extends $pb.GeneratedMessage {
 
   SweepAllCoinsTransactions._() : super();
   factory SweepAllCoinsTransactions({
-    $fixnum.Int64 amt,
-    $core.Map<$core.int, TransactionDetails> transactions,
+    $fixnum.Int64? amt,
+    $core.Map<$core.int, TransactionDetails>? transactions,
   }) {
     final _result = create();
     if (amt != null) {
@@ -5093,7 +5590,7 @@ class SweepAllCoinsTransactions extends $pb.GeneratedMessage {
   'Using this can add significant overhead to your binary. '
   'Use [GeneratedMessageGenericExtensions.rebuild] instead. '
   'Will be removed in next major version')
-  SweepAllCoinsTransactions copyWith(void Function(SweepAllCoinsTransactions) updates) => super.copyWith((message) => updates(message as SweepAllCoinsTransactions)); // ignore: deprecated_member_use
+  SweepAllCoinsTransactions copyWith(void Function(SweepAllCoinsTransactions) updates) => super.copyWith((message) => updates(message as SweepAllCoinsTransactions)) as SweepAllCoinsTransactions; // ignore: deprecated_member_use
   $pb.BuilderInfo get info_ => _i;
   @$core.pragma('dart2js:noInline')
   static SweepAllCoinsTransactions create() => SweepAllCoinsTransactions._();
@@ -5101,7 +5598,7 @@ class SweepAllCoinsTransactions extends $pb.GeneratedMessage {
   static $pb.PbList<SweepAllCoinsTransactions> createRepeated() => $pb.PbList<SweepAllCoinsTransactions>();
   @$core.pragma('dart2js:noInline')
   static SweepAllCoinsTransactions getDefault() => _defaultInstance ??= $pb.GeneratedMessage.$_defaultFor<SweepAllCoinsTransactions>(create);
-  static SweepAllCoinsTransactions _defaultInstance;
+  static SweepAllCoinsTransactions? _defaultInstance;
 
   @$pb.TagNumber(1)
   $fixnum.Int64 get amt => $_getI64(0);
@@ -5124,7 +5621,7 @@ class DownloadBackupResponse extends $pb.GeneratedMessage {
 
   DownloadBackupResponse._() : super();
   factory DownloadBackupResponse({
-    $core.Iterable<$core.String> files,
+    $core.Iterable<$core.String>? files,
   }) {
     final _result = create();
     if (files != null) {
@@ -5143,7 +5640,7 @@ class DownloadBackupResponse extends $pb.GeneratedMessage {
   'Using this can add significant overhead to your binary. '
   'Use [GeneratedMessageGenericExtensions.rebuild] instead. '
   'Will be removed in next major version')
-  DownloadBackupResponse copyWith(void Function(DownloadBackupResponse) updates) => super.copyWith((message) => updates(message as DownloadBackupResponse)); // ignore: deprecated_member_use
+  DownloadBackupResponse copyWith(void Function(DownloadBackupResponse) updates) => super.copyWith((message) => updates(message as DownloadBackupResponse)) as DownloadBackupResponse; // ignore: deprecated_member_use
   $pb.BuilderInfo get info_ => _i;
   @$core.pragma('dart2js:noInline')
   static DownloadBackupResponse create() => DownloadBackupResponse._();
@@ -5151,7 +5648,7 @@ class DownloadBackupResponse extends $pb.GeneratedMessage {
   static $pb.PbList<DownloadBackupResponse> createRepeated() => $pb.PbList<DownloadBackupResponse>();
   @$core.pragma('dart2js:noInline')
   static DownloadBackupResponse getDefault() => _defaultInstance ??= $pb.GeneratedMessage.$_defaultFor<DownloadBackupResponse>(create);
-  static DownloadBackupResponse _defaultInstance;
+  static DownloadBackupResponse? _defaultInstance;
 
   @$pb.TagNumber(1)
   $core.List<$core.String> get files => $_getList(0);

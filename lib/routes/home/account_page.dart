@@ -51,6 +51,7 @@ class AccountPageState extends State<AccountPage>
       _accountBloc = AppBlocsProvider.of<AccountBloc>(context);
       _userProfileBloc = AppBlocsProvider.of<UserProfileBloc>(context);
       _connectPayBloc = AppBlocsProvider.of<ConnectPayBloc>(context);
+
       //a listener that rebuilds our widget tree when payment filter changes
       _accountBloc.paymentFilterStream.listen((event) {
         widget.scrollController.position
@@ -78,7 +79,10 @@ class AccountPageState extends State<AccountPage>
                           snapshot.data ?? PaymentsModel.initial();
                       return Container(
                         color: theme.customData[theme.themeId].dashboardBgColor,
-                        child: _buildBalanceAndPayments(paymentsModel, account),
+                        child: _buildBalanceAndPayments(
+                          paymentsModel,
+                          account,
+                        ),
                       );
                     });
               });
@@ -86,7 +90,9 @@ class AccountPageState extends State<AccountPage>
   }
 
   Widget _buildBalanceAndPayments(
-      PaymentsModel paymentsModel, AccountModel account) {
+    PaymentsModel paymentsModel,
+    AccountModel account,
+  ) {
     LSPBloc lspBloc = AppBlocsProvider.of<LSPBloc>(context);
 
     double listHeightSpace = MediaQuery.of(context).size.height -

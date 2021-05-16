@@ -367,8 +367,8 @@ class PaymentsModel {
       [this.firstDate]);
 
   PaymentsModel.initial()
-      : this(List<PaymentInfo>(), List<PaymentInfo>(),
-            PaymentFilterModel.initial(), DateTime(DateTime.now().year));
+      : this(<PaymentInfo>[], <PaymentInfo>[], PaymentFilterModel.initial(),
+            DateTime(DateTime.now().year));
 
   PaymentsModel copyWith(
       {List<PaymentInfo> nonFilteredItems,
@@ -432,6 +432,7 @@ abstract class PaymentInfo {
   bool get fullPending;
   String get paymentGroup;
   String get paymentGroupName;
+  LNUrlPayInfo lnurlPayInfo;
   PaymentInfo copyWith(AccountModel account);
 }
 
@@ -494,6 +495,9 @@ class StreamedPaymentInfo implements PaymentInfo {
   String get paymentHash => "";
   String get preimage => "";
   String get destination => "";
+
+  LNUrlPayInfo get lnurlPayInfo => null;
+  set lnurlPayInfo(LNUrlPayInfo i) => {};
 }
 
 class SinglePaymentInfo implements PaymentInfo {
@@ -605,10 +609,28 @@ class SinglePaymentInfo implements PaymentInfo {
     String url = (type == PaymentType.SENT
         ? _paymentResponse.invoiceMemo?.payeeImageURL
         : _paymentResponse.invoiceMemo?.payerImageURL);
+
+    // Check _lnurlPayInfo.metadata for the first usable image.
+    if (url == '' && _lnurlPayInfo != null) {
+      for (var datum in _lnurlPayInfo.metadata) {
+        if (datum.entry[0].startsWith('image')) {
+          url = 'data:' + datum.entry[0] + ',' + datum.entry[1];
+          break;
+        }
+      }
+    }
+
     return (url == null || url.isEmpty) ? null : url;
   }
 
   String get title {
+    if (_paymentResponse.invoiceMemo.description == '') {
+      if (_lnurlPayInfo != null) {
+        _paymentResponse.invoiceMemo.description =
+            _lnurlPayInfo.invoiceDescription;
+      }
+    }
+
     if (_paymentResponse.invoiceMemo.description.startsWith("Bitrefill")) {
       return "Bitrefill";
     }
@@ -646,6 +668,10 @@ class SinglePaymentInfo implements PaymentInfo {
   }
 
   Currency get currency => _account.currency;
+
+  LNUrlPayInfo _lnurlPayInfo;
+  LNUrlPayInfo get lnurlPayInfo => _lnurlPayInfo;
+  set lnurlPayInfo(LNUrlPayInfo i) => _lnurlPayInfo = i;
 
   SinglePaymentInfo(this._paymentResponse, this._account);
 
@@ -694,8 +720,10 @@ class BroadcastRefundResponseModel {
 class PayRequest {
   final String paymentRequest;
   final Int64 amount;
+  String lnurlSuccessActionMessage;
 
-  PayRequest(this.paymentRequest, this.amount);
+  PayRequest(this.paymentRequest, this.amount,
+      {this.lnurlSuccessActionMessage = ''});
 }
 
 class CompletedPayment {

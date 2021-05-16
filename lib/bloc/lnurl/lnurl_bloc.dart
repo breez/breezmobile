@@ -26,6 +26,7 @@ class LNUrlBloc with AsyncActionsHandler {
       Withdraw: _withdraw,
       OpenChannel: _openChannel,
       Login: _login,
+      FetchInvoice: _fetchInvoice,
     });
     listenActions();
   }
@@ -53,6 +54,8 @@ class LNUrlBloc with AsyncActionsHandler {
             _lnUrlStreamController.add(ChannelFetchResponse(response.channel));
           } else if (response.hasAuth()) {
             _lnUrlStreamController.add(AuthFetchResponse(response.auth));
+          } else if (response.hasPayResponse1()) {
+            _lnUrlStreamController.add(PayFetchResponse(response.payResponse1));
           } else {
             _lnUrlStreamController.addError("Unsupported LNUrl");
           }
@@ -67,6 +70,7 @@ class LNUrlBloc with AsyncActionsHandler {
 
   Future _fetch(Fetch action) async {
     LNUrlResponse res = await _breezLib.fetchLNUrl(action.lnurl);
+
     if (res.hasWithdraw()) {
       action.resolve(WithdrawFetchResponse(res.withdraw));
       return;
@@ -79,6 +83,10 @@ class LNUrlBloc with AsyncActionsHandler {
       action.resolve(AuthFetchResponse(res.auth));
       return;
     }
+    if (res.hasPayResponse1()) {
+      action.resolve(PayFetchResponse(res.payResponse1));
+      return;
+    }
     throw "Unsupported LNUrl action";
   }
 
@@ -89,6 +97,10 @@ class LNUrlBloc with AsyncActionsHandler {
   Future _login(Login action) async {
     action.response.response.jwt = action.jwt;
     action.resolve(await _breezLib.loginLNUrl(action.response));
+  }
+
+  Future _fetchInvoice(FetchInvoice action) async {
+    action.resolve(await _breezLib.fetchLNUrlPayInvoice(action.response));
   }
 
   Future _openChannel(OpenChannel action) async {

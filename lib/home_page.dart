@@ -752,11 +752,23 @@ class HomeState extends State<Home> with WidgetsBindingObserver {
 
   void _listenPaymentResults() {
     widget.accountBloc.completedPaymentsStream.listen((fulfilledPayment) {
+      print(
+          '_listenPaymentResults processing: ${fulfilledPayment.paymentHash}');
+
       if (!fulfilledPayment.cancelled &&
           !fulfilledPayment.ignoreGlobalFeedback) {
         scrollController.animateTo(scrollController.position.minScrollExtent,
             duration: Duration(milliseconds: 10), curve: Curves.ease);
-        showFlushbar(context, message: "Payment was successfully sent!");
+
+        var message = 'Payment was successfully sent!';
+        if (fulfilledPayment.paymentRequest != null) {
+          message +=
+              '\n${fulfilledPayment.paymentRequest.lnurlSuccessActionMessage}';
+
+          showFlushbar(context,
+              messageWidget: SingleChildScrollView(child: Text(message)));
+          // showFlushbar(context, message: message);
+        }
       }
     }, onError: (err) async {
       var error = err as PaymentError;
