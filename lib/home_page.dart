@@ -55,6 +55,7 @@ import 'handlers/podcast_url_handler.dart';
 import 'handlers/received_invoice_notification.dart';
 import 'handlers/showPinHandler.dart';
 import 'handlers/sync_ui_handler.dart';
+import 'lnurl_success_action_dialog.dart';
 import 'routes/account_required_actions.dart';
 import 'routes/connect_to_pay/connect_to_pay_page.dart';
 import 'routes/home/account_page.dart';
@@ -670,11 +671,23 @@ class HomeState extends State<Home> with WidgetsBindingObserver {
 
   void _listenPaymentResults() {
     widget.accountBloc.completedPaymentsStream.listen((fulfilledPayment) {
+      print(
+          '_listenPaymentResults processing: ${fulfilledPayment.paymentHash}');
+
       if (!fulfilledPayment.cancelled &&
           !fulfilledPayment.ignoreGlobalFeedback) {
         scrollController.animateTo(scrollController.position.minScrollExtent,
             duration: Duration(milliseconds: 10), curve: Curves.ease);
-        showFlushbar(context, message: "Payment was successfully sent!");
+
+        if (fulfilledPayment?.paymentItem?.lnurlPayInfo?.successAction?.hasTag() ==
+            true) {
+          showLNURLSuccessAction(
+              context, fulfilledPayment.paymentItem.lnurlPayInfo.successAction);
+        } else {
+          showFlushbar(context,
+              messageWidget: SingleChildScrollView(
+                  child: Text('Payment was successfully sent!')));
+        }
       }
     }, onError: (err) async {
       var error = err as PaymentError;
