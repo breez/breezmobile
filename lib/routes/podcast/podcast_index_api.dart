@@ -120,6 +120,9 @@ class PodcastIndexAPI extends PodcastApi {
   static Dio _createClient() {
     var unixTime = (DateTime.now().millisecondsSinceEpoch / 1000).round();
     var newUnixTime = unixTime.toString();
+    log.info("current time = ${DateTime.now().toString()}");
+    log.info("unixTime = $unixTime");
+    log.info("unixTime = $newUnixTime");
     var firstChunk = utf8.encode(PODCAST_INDEX_KEY);
     var secondChunk = utf8.encode(PODCAST_INDEX_SECRET);
     var thirdChunk = utf8.encode(newUnixTime);
