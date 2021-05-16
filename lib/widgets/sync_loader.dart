@@ -81,3 +81,26 @@ class TransparentRouteLoaderState extends State<TransparentRouteLoader> {
     );
   }
 }
+
+class SyncProgressLoader extends StatelessWidget {
+  final double value;
+  final String title;
+  final Color progressColor;
+
+  const SyncProgressLoader(
+      {Key key, this.value, this.title, this.progressColor})
+      : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: MediaQuery.of(context).size.width,
+      height: 150.0,
+      child: CircularProgress(
+          color: progressColor ?? Theme.of(context).textTheme.button.color,
+          size: 100.0,
+          value: value,
+          title: title),
+    );
+  }
+}

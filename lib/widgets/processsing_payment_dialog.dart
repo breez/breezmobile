@@ -1,9 +1,8 @@
 import 'dart:async';
 
-import 'package:breez/bloc/account/account_actions.dart';
 import 'package:breez/bloc/account/account_bloc.dart';
 import 'package:breez/bloc/account/account_model.dart';
-import 'package:breez/services/breezlib/data/rpc.pbgrpc.dart';
+import 'package:breez/bloc/channels_status_poller.dart';
 import 'package:breez/theme_data.dart' as theme;
 import 'package:breez/widgets/loading_animated_text.dart';
 import 'package:breez/widgets/payment_request_dialog.dart';
@@ -13,8 +12,6 @@ import 'package:flutter/material.dart';
 import 'package:rxdart/rxdart.dart';
 
 const PAYMENT_LIST_ITEM_HEIGHT = 72.0;
-
-enum channelsStatusState { INITIATING, SYNCHRONIZING, SYNCHRONIZED }
 
 class ProcessingPaymentDialog extends StatefulWidget {
   final BuildContext context;
@@ -47,17 +44,26 @@ class ProcessingPaymentDialogState extends State<ProcessingPaymentDialog>
   final GlobalKey _dialogKey = GlobalKey();
   StreamSubscription<PaymentInfo> _pendingPaymentSubscription;
   ModalRoute _currentRoute;
-  channelsStatusState syncState = channelsStatusState.INITIATING;
+  double channelsSyncProgress;
   final Completer synchronizedCompleter = Completer<bool>();
-  UnconfirmedChannelsStatus channelsStatus;
-  Timer timer;
+  UnconfirmedChannelsStatusPoller _channelsStatusPoller;
 
   bool _isInit = false;
 
   @override
   void initState() {
     super.initState();
-    _pollUnconfirmedChannelsStatus();
+    _channelsStatusPoller = UnconfirmedChannelsStatusPoller(
+        widget.accountBloc.userActionsSink, (progress) {
+      setState(() {
+        channelsSyncProgress = progress;
+      });
+      if (progress == 1.0) {
+        _channelsStatusPoller?.dispose();
+        synchronizedCompleter.complete(true);
+      }
+    });
+    _channelsStatusPoller.start();
   }
 
   void didChangeDependencies() {
@@ -103,29 +109,6 @@ class ProcessingPaymentDialogState extends State<ProcessingPaymentDialog>
       Navigator.of(context).removeRoute(_currentRoute);
     }
     widget._onStateChange(PaymentRequestState.USER_CANCELLED);
-  }
-
-  _pollUnconfirmedChannelsStatus() async {
-    _onNewUnconfirmedStatus(
-        await _checkUnconfirmedChannelStatus(widget.accountBloc));
-    timer = Timer.periodic(Duration(seconds: 3), (timer) async {
-      var result = await _checkUnconfirmedChannelStatus(widget.accountBloc);
-      _onNewUnconfirmedStatus(result);
-    });
-  }
-
-  _onNewUnconfirmedStatus(UnconfirmedChannelsStatus result) {
-    channelsStatus = result;
-    if (result.statuses.length > 0) {
-      setState(() {
-        syncState = channelsStatusState.SYNCHRONIZING;
-      });
-    } else {
-      syncState = channelsStatusState.SYNCHRONIZED;
-      timer?.cancel();
-      timer = null;
-      synchronizedCompleter.complete(true);
-    }
   }
 
   _payAncClose() {
@@ -182,7 +165,7 @@ class ProcessingPaymentDialogState extends State<ProcessingPaymentDialog>
 
   @override
   void dispose() {
-    timer?.cancel();
+    _channelsStatusPoller?.dispose();
     _pendingPaymentSubscription?.cancel();
     controller?.dispose();
     super.dispose();
@@ -190,14 +173,22 @@ class ProcessingPaymentDialogState extends State<ProcessingPaymentDialog>
 
   @override
   Widget build(BuildContext context) {
-    if (syncState == channelsStatusState.INITIATING ||
-        synchronizedCompleter.isCompleted) {
+    if (channelsSyncProgress == null || synchronizedCompleter.isCompleted) {
       return _animating ? _createAnimatedContent() : _createContentDialog();
     }
-    return ChanelsSyncLoader(
-      accountBloc: widget.accountBloc,
-      status: channelsStatus,
-      onClose: _closeDialog,
+    return AlertDialog(
+      content: SyncProgressLoader(
+          value: channelsSyncProgress ?? 0,
+          title: "Synchronizing to the network"),
+      actions: <Widget>[
+        FlatButton(
+          onPressed: (() {
+            _closeDialog();
+          }),
+          child:
+              Text("CLOSE", style: Theme.of(context).primaryTextTheme.button),
+        )
+      ],
     );
   }
 
@@ -300,82 +291,20 @@ class ProcessingPaymentDialogState extends State<ProcessingPaymentDialog>
   }
 }
 
-class ChanelsSyncLoader extends StatefulWidget {
-  final AccountBloc accountBloc;
-  final UnconfirmedChannelsStatus status;
+class ChanelsSyncLoader extends StatelessWidget {
+  final double progress;
   final Function onClose;
 
-  const ChanelsSyncLoader(
-      {Key key,
-      @required this.accountBloc,
-      @required this.status,
-      @required this.onClose})
+  const ChanelsSyncLoader({Key key, this.progress, this.onClose})
       : super(key: key);
-
-  @override
-  State<StatefulWidget> createState() {
-    return ChanelsSyncLoaderState();
-  }
-}
-
-class ChanelsSyncLoaderState extends State<ChanelsSyncLoader> {
-  double initialHint = 0;
-  Timer timer;
-
-  @override
-  void initState() {
-    super.initState();
-    initialHint = _minUnconfirmed;
-  }
-
-  @override
-  void dispose() {
-    timer?.cancel();
-    super.dispose();
-  }
-
-  double get _minUnconfirmed {
-    double min = 0;
-    if (widget.status.statuses.length > 0) {
-      widget.status.statuses.forEach((status) {
-        if (status.heightHint.toDouble() < min || min == 0) {
-          min = status.heightHint.toDouble();
-        }
-      });
-    }
-    return min;
-  }
-
-  double get _maxConfirmed {
-    double max = double.maxFinite;
-    if (widget.status.statuses.length > 0) {
-      widget.status.statuses.forEach((status) {
-        if (status.lspConfirmedHeight.toDouble() > max ||
-            max == double.maxFinite) {
-          max = status.lspConfirmedHeight.toDouble();
-        }
-      });
-    }
-    return max;
-  }
-
-  double get _progress =>
-      (_minUnconfirmed - initialHint) / (_maxConfirmed - initialHint);
 
   @override
   Widget build(BuildContext context) {
     return TransparentRouteLoader(
       message: "Breez is synchronizing your channels",
-      value: _progress,
+      value: progress,
       opacity: 0.9,
-      onClose: this.widget.onClose,
+      onClose: onClose,
     );
   }
-}
-
-Future<UnconfirmedChannelsStatus> _checkUnconfirmedChannelStatus(
-    AccountBloc accountBloc) async {
-  var action = UnconfirmedChannelsStatusAction(null);
-  accountBloc.userActionsSink.add(action);
-  return (await action.future) as UnconfirmedChannelsStatus;
 }

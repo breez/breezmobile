@@ -125,7 +125,7 @@ class BreezBridge {
   }
 
   Future unconfirmedChannelsStatus(UnconfirmedChannelsStatus status) {
-    return _invokeMethodImmediate("unconfirmedChannelsStatus", {
+    return _invokeMethodWhenReady("unconfirmedChannelsStatus", {
       "argument": status?.writeToBuffer()
     }).then(
         (result) => UnconfirmedChannelsStatus()..mergeFromBuffer(result ?? []));
