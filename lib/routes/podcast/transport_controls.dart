@@ -187,7 +187,7 @@ class _PlayButton extends StatelessWidget {
           shape: CircleBorder(
               side: BorderSide(
                   color: Theme.of(context).highlightColor, width: 0.0)),
-          primary: Theme.of(context).primaryColor,
+          backgroundColor: Theme.of(context).primaryColor,
           padding: const EdgeInsets.all(8.0),
         ),
         onPressed: () {
