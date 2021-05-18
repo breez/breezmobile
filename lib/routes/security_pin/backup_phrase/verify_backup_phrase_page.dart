@@ -23,7 +23,7 @@ class VerifyBackupPhrasePage extends StatefulWidget {
 
 class VerifyBackupPhrasePageState extends State<VerifyBackupPhrasePage> {
   final _formKey = GlobalKey<FormState>();
-  List _randomlySelectedIndexes = List();
+  List _randomlySelectedIndexes = [];
   List<String> _mnemonicsList;
   bool _hasError;
 

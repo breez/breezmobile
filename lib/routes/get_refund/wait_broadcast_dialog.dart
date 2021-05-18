@@ -68,7 +68,7 @@ class _WaitBroadcastDialog extends State<WaitBroadcastDialog> {
         actions: _response == null && _error == null
             ? []
             : <Widget>[
-                FlatButton(
+                TextButton(
                     onPressed: () {
                       Navigator.of(context).pop(_error != null &&
                           _response?.txID?.isNotEmpty == true);

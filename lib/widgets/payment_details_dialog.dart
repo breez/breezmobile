@@ -486,8 +486,8 @@ class ClosedChannelPaymentDetailsState
   }
 
   Future<int> _getTXConfirmationHeight(String chanPoint) async {
-    String txUrl = "https://blockstream.info/api/tx/${chanPoint.split(":")[0]}";
-    var response = await http.get(txUrl);
+    Uri txUri = Uri.https("blockstream.info", "api/tx/${chanPoint.split(":")[0]}");
+    var response = await http.get(txUri);
     if (response.statusCode == 200) {
       Map<String, dynamic> userData = json.decode(response.body);
       var status = userData["status"];
@@ -564,7 +564,7 @@ class ClosedChannelPaymentDetailsState
                 children: [
                     Padding(
                       padding: EdgeInsets.only(top: 20.0),
-                      child: FlatButton(
+                      child: TextButton(
                         onPressed: () {
                           _onResetChainInfoPressed().then((_) {
                             _promptForRestart();

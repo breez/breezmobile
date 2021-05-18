@@ -134,10 +134,12 @@ final ThemeData blueTheme = ThemeData(
         color: BreezColors.blue[500], fontSize: 14.3, letterSpacing: 1.25),
     caption: TextStyle(color: BreezColors.grey[500], fontSize: 12.0),
   ),
-  textSelectionColor: Color.fromRGBO(255, 255, 255, 0.5),
+  textSelectionTheme: TextSelectionThemeData(
+    selectionColor: Color.fromRGBO(255, 255, 255, 0.5),
+    selectionHandleColor: Color(0xFF0085fb),
+  ),
   primaryIconTheme: IconThemeData(color: BreezColors.grey[500]),
   bottomAppBarColor: Color(0xFF0085fb),
-  textSelectionHandleColor: Color(0xFF0085fb),
   fontFamily: 'IBMPlexSans',
   accentTextTheme: TextTheme(
     bodyText2: TextStyle(color: BreezColors.grey[600]),
@@ -171,6 +173,9 @@ final ThemeData blueTheme = ThemeData(
         height: 1.16,
         letterSpacing: 0.39),
   ),
+  textButtonTheme: TextButtonThemeData(),
+  outlinedButtonTheme: OutlinedButtonThemeData(),
+  elevatedButtonTheme: ElevatedButtonThemeData(),
 );
 
 // Color(0xFF121212) values are tbd
@@ -256,10 +261,12 @@ final ThemeData darkTheme = ThemeData(
         color: BreezColors.white[500], fontSize: 10.0, letterSpacing: 0.09),
     caption: TextStyle(color: BreezColors.white[400], fontSize: 12.0),
   ),
+  textSelectionTheme: TextSelectionThemeData(
+    selectionColor: Color.fromRGBO(255, 255, 255, 0.5),
+    selectionHandleColor: Color(0xff4D88EC),
+  ),
   primaryIconTheme: IconThemeData(color: Color(0xFF7aa5eb)),
-  textSelectionColor: Color.fromRGBO(255, 255, 255, 0.5),
   bottomAppBarColor: Color(0xff4D88EC),
-  textSelectionHandleColor: Color(0xff4D88EC),
   fontFamily: 'IBMPlexSans',
   accentTextTheme: TextTheme(
       bodyText2: TextStyle(color: Colors.white),
@@ -292,6 +299,9 @@ final ThemeData darkTheme = ThemeData(
           fontWeight: FontWeight.w400,
           height: 1.16,
           letterSpacing: 0.39)),
+  textButtonTheme: TextButtonThemeData(),
+  outlinedButtonTheme: OutlinedButtonThemeData(),
+  elevatedButtonTheme: ElevatedButtonThemeData(),
 );
 
 final VendorTheme bitrefill = VendorTheme(

@@ -119,7 +119,7 @@ class EscherDialogState extends State<EscherDialog> {
               ? Colors.red
               : Theme.of(context).errorColor),
       child: Form(
-        autovalidate: true,
+        autovalidateMode: AutovalidateMode.always,
         key: _formKey,
         child: Padding(
           padding: const EdgeInsets.only(left: 16.0, right: 16.0),

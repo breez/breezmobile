@@ -207,9 +207,10 @@ class _Action extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Expanded(
-      child: FlatButton(
-        height: 60,
-        padding: EdgeInsets.zero,
+      child: TextButton(
+        style: TextButton.styleFrom(
+          padding: EdgeInsets.zero,
+        ),
         onPressed: this.onPress,
         child: Text(
           text,

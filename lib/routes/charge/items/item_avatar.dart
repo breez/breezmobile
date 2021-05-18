@@ -47,7 +47,6 @@ class _NetworkImageAvatar extends StatelessWidget {
       child: ClipOval(
         child: OptimizedCacheImage(
           imageUrl: avatarURL,
-          useScaleCacheManager: true,
         ),
       ),
     );

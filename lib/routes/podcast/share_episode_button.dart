@@ -21,9 +21,12 @@ class ShareEpisodeButtonState extends State<ShareEpisodeButton> {
   @override
   Widget build(BuildContext context) {
     return Expanded(
-      child: FlatButton(
-        padding: EdgeInsets.zero,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(0.0)),
+      child: TextButton(
+        style: TextButton.styleFrom(
+          padding: EdgeInsets.only(top: 8.0, bottom: 16.0, right: 0.0),
+          shape:
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(0.0)),
+        ),
         onPressed: () async {
           DeepLinksService _deepLinks = ServiceInjector().deepLinks;
           var podcastShareLink = await _deepLinks.generatePodcastShareLink(

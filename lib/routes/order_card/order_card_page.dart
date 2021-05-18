@@ -45,15 +45,15 @@ class OrderCardPageState extends State<OrderCardPage> {
   String _userCountryShort = "";
   Map _countriesJSON = Map();
   Map _statesJSON = Map();
-  List<String> _specialCountriesShort = List();
-  List<String> _states = List();
-  List<String> _statesShow = List();
-  List<String> _countriesShow = List();
+  List<String> _specialCountriesShort = [];
+  List<String> _states = [];
+  List<String> _statesShow = [];
+  List<String> _countriesShow = [];
   bool _showStatesList = false;
   bool _showCountriesList = false;
-  bool _autoValidateState = false;
-  bool _autoValidateCountry = false;
-  bool _autoValidateZip = false;
+  AutovalidateMode _autoValidateState = AutovalidateMode.disabled;
+  AutovalidateMode _autoValidateCountry = AutovalidateMode.disabled;
+  AutovalidateMode _autoValidateZip = AutovalidateMode.disabled;
 
   _CustomerData _data = _CustomerData();
 
@@ -112,19 +112,19 @@ class OrderCardPageState extends State<OrderCardPage> {
           _stateFocusNode.hasFocus) {
         _statesShow.sort();
         setState(() {
-          _autoValidateState = false;
+          _autoValidateState = AutovalidateMode.disabled;
           _showStatesList = true;
           _scroll(40.0);
         });
       } else {
         setState(() {
-          _autoValidateState = true;
+          _autoValidateState = AutovalidateMode.always;
           _showStatesList = false;
         });
       }
     } else {
       setState(() {
-        _autoValidateState = false;
+        _autoValidateState = AutovalidateMode.disabled;
         _showStatesList = false;
       });
     }
@@ -144,13 +144,13 @@ class OrderCardPageState extends State<OrderCardPage> {
           _countryFocusNode.hasFocus) {
         _countriesShow.sort();
         setState(() {
-          _autoValidateCountry = false;
+          _autoValidateCountry = AutovalidateMode.disabled;
           _showCountriesList = true;
           _scroll(115.0);
         });
       } else {
         setState(() {
-          _autoValidateCountry = true;
+          _autoValidateCountry = AutovalidateMode.always;
           _showCountriesList = false;
         });
       }
@@ -159,7 +159,7 @@ class OrderCardPageState extends State<OrderCardPage> {
       _countriesShow.clear();
 
       setState(() {
-        _autoValidateCountry = false;
+        _autoValidateCountry = AutovalidateMode.disabled;
         _showCountriesList = false;
       });
     }
@@ -168,7 +168,7 @@ class OrderCardPageState extends State<OrderCardPage> {
   void _onChangeZip() {
     setState(() {
       _autoValidateZip =
-          (_zipController.text.length > 0 && !_zipFocusNode.hasFocus);
+          (_zipController.text.length > 0 && !_zipFocusNode.hasFocus) ? AutovalidateMode.always : AutovalidateMode.disabled;
     });
   }
 
@@ -190,8 +190,16 @@ class OrderCardPageState extends State<OrderCardPage> {
   void _loadData() async {
     _specialCountriesShort.add("US");
     _specialCountriesShort.add("CA");
-    final response = await http.get(
-        'http://api.ipstack.com/check?access_key=025a14ce39e8588578966edfe7e7d70a&output=json&fields=country_code');
+    Uri uri = Uri.http(
+      "api.ipstack.com",
+      "check",
+      {
+        "access_key": "025a14ce39e8588578966edfe7e7d70a",
+        "output": "json",
+        "fields": "country_code"
+      },
+    );
+    final response = await http.get(uri);
     if (response.statusCode == 200) {
       Map data = json.decode(response.body);
       _userCountryShort = data["country_code"];
@@ -253,7 +261,7 @@ class OrderCardPageState extends State<OrderCardPage> {
   }
 
   Widget _getFutureWidgetStates() {
-    List<InkWell> list = List();
+    List<InkWell> list = [];
     int number = _statesShow.length > 2 ? 3 : _statesShow.length;
     for (int i = 0; i < number; i++) {
       list.add(InkWell(
@@ -277,7 +285,7 @@ class OrderCardPageState extends State<OrderCardPage> {
   }
 
   Widget _getFutureWidgetCountries() {
-    List<InkWell> list = List();
+    List<InkWell> list = [];
     int number = _countriesShow.length > 2 ? 3 : _countriesShow.length;
     for (int i = 0; i < number; i++) {
       list.add(InkWell(
@@ -323,7 +331,7 @@ class OrderCardPageState extends State<OrderCardPage> {
           "Name and address are required for sending you a Breez card. Any information provided will be deleted from our systems after card has been sent. You may skip this step and continue using Breez without a card.",
           style: Theme.of(context).dialogTheme.contentTextStyle),
       actions: <Widget>[
-        FlatButton(
+        TextButton(
             onPressed: () => Navigator.pop(context),
             child: Text("OK", style: Theme.of(context).primaryTextTheme.button))
       ],
@@ -456,7 +464,7 @@ class OrderCardPageState extends State<OrderCardPage> {
                                     child: Container(
                                       margin: EdgeInsets.only(left: 8.0),
                                       child: TextFormField(
-                                        autovalidate: _autoValidateState,
+                                        autovalidateMode: _autoValidateState,
                                         controller: _stateController,
                                         focusNode: _stateFocusNode,
                                         decoration:
@@ -498,7 +506,7 @@ class OrderCardPageState extends State<OrderCardPage> {
                                         flex: 200,
                                         child: Container(
                                           child: TextFormField(
-                                            autovalidate: _autoValidateCountry,
+                                            autovalidateMode: _autoValidateCountry,
                                             controller: _countryController,
                                             focusNode: _countryFocusNode,
                                             decoration: InputDecoration(
@@ -527,7 +535,7 @@ class OrderCardPageState extends State<OrderCardPage> {
                                         child: Container(
                                           margin: EdgeInsets.only(left: 8.0),
                                           child: TextFormField(
-                                            autovalidate: _autoValidateZip,
+                                            autovalidateMode: _autoValidateZip,
                                             controller: _zipController,
                                             focusNode: _zipFocusNode,
                                             decoration: InputDecoration(
@@ -617,7 +625,7 @@ class OrderCardPageState extends State<OrderCardPage> {
                   "Breez card will be sent shortly to the address you have specified.");
             }).catchError((error) {
               print(error.toString());
-              Scaffold.of(context)
+              ScaffoldMessenger.of(context)
                   .showSnackBar(SnackBar(content: Text(error.toString())));
             });
           } else {}

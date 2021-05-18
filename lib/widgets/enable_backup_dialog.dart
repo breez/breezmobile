@@ -105,7 +105,7 @@ class EnableBackupDialogState extends State<EnableBackupDialog> {
                 );
               }),
           actions: [
-            FlatButton(
+            TextButton(
               onPressed: () => Navigator.pop(widget.context),
               child: Text(
                 "LATER",
@@ -116,7 +116,7 @@ class EnableBackupDialogState extends State<EnableBackupDialog> {
             StreamBuilder<BackupSettings>(
                 stream: widget.backupBloc.backupSettingsStream,
                 builder: (context, snapshot) {
-                  return FlatButton(
+                  return TextButton(
                     onPressed: (() async {
                       Navigator.pop(widget.context);
                       var provider = snapshot.data.backupProvider;

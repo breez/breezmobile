@@ -52,7 +52,8 @@ class FastbitcoinsBloc {
   void _listenValidateRequests() {
     _validateRequestController.stream.listen((request) async {
       try {
-        var response = await http.post(_baseURL + "/quote",
+        Uri uri = Uri.https(_baseURL, "/quote");
+        var response = await http.post(uri,
             body: jsonEncode(request.toJson()));
         _validateResponse(response);
         ValidateResponseModel res =
@@ -75,7 +76,8 @@ class FastbitcoinsBloc {
             description: "Fastbitcoins.com Voucher");
         request.lightningInvoice = payreq.paymentRequest;
         log.info("fastbicoins request: " + jsonEncode(request.toJson()));
-        var response = await http.post(_baseURL + "/redeem",
+        Uri uri = Uri.https(_baseURL, "/redeem");
+        var response = await http.post(uri,
             body: jsonEncode(request.toJson()));
         _validateResponse(response);
         RedeemResponseModel res =

@@ -69,7 +69,7 @@ class FeeChooser extends StatelessWidget {
               ? Theme.of(context).colorScheme.onSurface
               : Theme.of(context).canvasColor,
           border: border),
-      child: FlatButton(
+      child: TextButton(
           onPressed: disabled
               ? null
               : () {

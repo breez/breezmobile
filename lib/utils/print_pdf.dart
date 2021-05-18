@@ -91,7 +91,7 @@ class PrintService {
   pw.Table _buildTable(Map<String, ByteData> fontMap) {
     return pw.Table(
         children: _buildTableContent(fontMap),
-        border: pw.TableBorder(width: 1),
+        border: pw.TableBorder.all(width: 1),
         defaultColumnWidth: pw.IntrinsicColumnWidth());
   }
 
