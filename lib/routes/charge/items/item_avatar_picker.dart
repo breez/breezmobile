@@ -1,3 +1,4 @@
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:badges/badges.dart';
 import 'package:breez/bloc/blocs_provider.dart';
 import 'package:breez/bloc/pos_catalog/bloc.dart';
@@ -7,6 +8,7 @@ import 'package:breez/widgets/back_button.dart' as backBtn;
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 
+import '../../../utils/min_font_size.dart';
 import 'item_avatar.dart';
 
 class ItemAvatarPicker extends StatefulWidget {
@@ -77,8 +79,48 @@ class ItemAvatarPickerState extends State<ItemAvatarPicker> {
       animationType: BadgeAnimationType.fade,
       badgeColor: Theme.of(context).primaryTextTheme.subtitle2.color,
       badgeContent: _buildResetIconBadge(context),
-      child: ItemAvatar(_selectedImage ?? null,
-          itemName: widget.itemName, radius: 48, useDecoration: true),
+      child: _selectedImage == "" && widget.itemName == ""
+          ? Container(
+              width: 96,
+              height: 96,
+              decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  border: Border.all(
+                      color: Colors.white,
+                      width: 1.0,
+                      style: BorderStyle.solid),
+                  image: DecorationImage(
+                      colorFilter: ColorFilter.mode(
+                          Theme.of(context).primaryColorLight,
+                          BlendMode.srcATop),
+                      image: AssetImage("src/images/avatarbg.png"),
+                      fit: BoxFit.cover)),
+              child: Column(
+                mainAxisSize: MainAxisSize.max,
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: <Widget>[
+                  Icon(Icons.edit, size: 24),
+                  Padding(
+                    padding: const EdgeInsets.only(left: 8, right: 8),
+                    child: AutoSizeText(
+                      "Select Image",
+                      textAlign: TextAlign.center,
+                      maxLines: 1,
+                      minFontSize: MinFontSize(context).minFontSize,
+                      stepGranularity: 0.1,
+                      style: TextStyle(
+                          fontSize: 12.3,
+                          color: Color.fromRGBO(255, 255, 255, 0.88),
+                          letterSpacing: 0.0,
+                          fontFamily: "IBMPlexSans"),
+                    ),
+                  ),
+                ],
+              ),
+            )
+          : ItemAvatar(_selectedImage,
+              itemName: widget.itemName, radius: 48, useDecoration: true),
     );
   }
 
