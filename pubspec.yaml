@@ -64,7 +64,7 @@ dependencies:
   local_auth:
     git:
       url: https://github.com/breez/local_auth.git
-      ref: c8dc477
+      ref: 89649dd86f61f60cf0037d7c3dd418a00fd87692
   share_extend:
     git:
       url: https://github.com/breez/ShareExtend.git
