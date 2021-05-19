@@ -80,6 +80,9 @@ post_install do |installer|
 
            ## dart: PermissionGroup.sensors
            'PERMISSION_SENSORS=0'
+
+           ## dart: PermissionGroup.bluetooth
+           'PERMISSION_BLUETOOTH=0'
          ]
        end
    end
