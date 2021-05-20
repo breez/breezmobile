@@ -30,7 +30,7 @@ class ShareEpisodeButtonState extends State<ShareEpisodeButton> {
     return Expanded(
       child: TextButton(
         style: TextButton.styleFrom(
-          padding: EdgeInsets.only(top: 8.0, bottom: 16.0, right: 0.0),
+          padding: EdgeInsets.zero,
           shape:
               RoundedRectangleBorder(borderRadius: BorderRadius.circular(0.0)),
         ),
