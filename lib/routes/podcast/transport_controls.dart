@@ -167,7 +167,7 @@ class _PlayButton extends StatelessWidget {
               : L.of(context).play_button_label,
           child: TextButton(
             style: TextButton.styleFrom(
-              padding: const EdgeInsets.all(8.0),
+              shape: CircleBorder(),
             ),
             onPressed: null,
             child: SpinKitRing(
