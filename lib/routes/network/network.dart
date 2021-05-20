@@ -132,6 +132,7 @@ class NetworkPageState extends State<NetworkPage> {
                             OutlinedButton(
                               style: OutlinedButton.styleFrom(
                                 side: BorderSide(color: Colors.white),
+                                primary: Colors.white,
                               ),
                               child: Text(
                                 "Reset",
@@ -163,6 +164,7 @@ class NetworkPageState extends State<NetworkPage> {
                             OutlinedButton(
                               style: OutlinedButton.styleFrom(
                                 side: BorderSide(color: Colors.white),
+                                primary: Colors.white,
                               ),
                               child: Text(
                                 "Save",
