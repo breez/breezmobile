@@ -12,7 +12,10 @@ import 'package:podcast_search/podcast_search.dart';
 
 const PODCAST_INDEX_KEY = "XXWQEGULBJABVHZUM8NF";
 const PODCAST_INDEX_SECRET = "KZ2uy4upvq4t3e\$m\$3r2TeFS2fEpFTAaF92xcNdX";
-const BYFEED_API_ENDPOINT = 'https://api.podcastindex.org/api/1.0/podcasts/byfeedurl';
+const BYFEED_API_ENDPOINT =
+    'https://api.podcastindex.org/api/1.0/podcasts/byfeedurl';
+const EPISODES_BYFEED_API_ENDPOINT =
+    'https://api.podcastindex.org/api/1.0/episodes/byfeedurl';
 
 class PodcastIndexClient {
   static Dio _createClient() {
