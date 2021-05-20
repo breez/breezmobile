@@ -1,5 +1,5 @@
 PODS:
-  - "app_settings (1.0.6+2)":
+  - "app_settings (3.0.0+1)":
     - Flutter
   - AppAuth (1.4.0):
     - AppAuth/Core (= 1.4.0)
@@ -133,8 +133,6 @@ PODS:
   - FMDB (2.7.5):
     - FMDB/standard (= 2.7.5)
   - FMDB/standard (2.7.5)
-  - get_version (0.0.1):
-    - Flutter
   - GoogleAppMeasurement (6.9.0):
     - GoogleUtilities/AppDelegateSwizzler (~> 6.7)
     - GoogleUtilities/MethodSwizzler (~> 6.7)
@@ -210,14 +208,14 @@ PODS:
     - Flutter
   - "permission_handler (5.1.0+2)":
     - Flutter
-  - printing (0.0.1):
+  - printing (1.0.0):
     - Flutter
   - PromisesObjC (1.2.11)
   - Protobuf (3.13.0)
-  - qr_code_scanner (0.0.2):
+  - qr_code_scanner (0.2.0):
     - Flutter
     - MTBBarcodeScanner
-  - qr_code_tools (0.0.1):
+  - qr_code_tools (0.0.7):
     - Flutter
   - Reachability (3.2)
   - SDWebImage (5.9.3):
@@ -263,7 +261,6 @@ DEPENDENCIES:
   - flutter_keyboard_visibility (from `.symlinks/plugins/flutter_keyboard_visibility/ios`)
   - flutter_secure_storage (from `.symlinks/plugins/flutter_secure_storage/ios`)
   - flutter_web_browser (from `.symlinks/plugins/flutter_web_browser/ios`)
-  - get_version (from `.symlinks/plugins/get_version/ios`)
   - GoogleSignIn
   - image_cropper (from `.symlinks/plugins/image_cropper/ios`)
   - image_picker (from `.symlinks/plugins/image_picker/ios`)
@@ -352,8 +349,6 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/flutter_secure_storage/ios"
   flutter_web_browser:
     :path: ".symlinks/plugins/flutter_web_browser/ios"
-  get_version:
-    :path: ".symlinks/plugins/get_version/ios"
   image_cropper:
     :path: ".symlinks/plugins/image_cropper/ios"
   image_picker:
@@ -394,7 +389,7 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/webview_flutter/ios"
 
 SPEC CHECKSUMS:
-  app_settings: 27651d311385d34d91afa163c0e4539cfd0c4c5d
+  app_settings: d103828c9f5d515c4df9ee754dabd443f7cedcf3
   AppAuth: 31bcec809a638d7bd2f86ea8a52bd45f6e81e7c7
   audio_service: f509d65da41b9521a61f1c404dd58651f265a567
   audio_session: 4f3e461722055d21515cf3261b64c973c062f345
@@ -423,7 +418,6 @@ SPEC CHECKSUMS:
   flutter_secure_storage: 7953c38a04c3fdbb00571bcd87d8e3b5ceb9daec
   flutter_web_browser: a719eca01d00bdc9a0e13e42194f86b90a5b8729
   FMDB: 2ce00b547f966261cd18927a3ddb07cb6f3db82a
-  get_version: 2bc18c4e26a265571662cab5d38f8b50dc8c1c77
   GoogleAppMeasurement: a6a3a066369828db64eda428cb2856dc1cdc7c4e
   GoogleDataTransport: f56af7caa4ed338dc8e138a5d7c5973e66440833
   GoogleSignIn: 7137d297ddc022a7e0aa4619c86d72c909fa7213
@@ -431,11 +425,11 @@ SPEC CHECKSUMS:
   GTMAppAuth: 197a8dabfea5d665224aa00d17f164fc2248dab9
   GTMSessionFetcher: 6f5c8abbab8a9bce4bb3f057e317728ec6182b10
   image_cropper: f1668dd8d2cad2d357955caad15a40547856edcb
-  image_picker: 16e5fec1fbc87fd3b297c53e4048521eaf17cd06
+  image_picker: 50e7c7ff960e5f58faa4d1f4af84a771c671bc4a
   just_audio: baa7252489dbcf47a4c7cc9ca663e9661c99aafa
   leveldb-library: 55d93ee664b4007aac644a782d11da33fba316f7
   libwebp: e90b9c01d99205d03b6bb8f2c8c415e5a4ef66f0
-  local_auth: 2571c49920ae469f46d5557435fad8fa473a5e88
+  local_auth: 25938960984c3a7f6e3253e3f8d962fdd16852bd
   Mantle: 4c0ed6ce47c96eccc4dc3bb071deb3def0e2c3be
   MTBBarcodeScanner: f453b33c4b7dfe545d8c6484ed744d55671788cb
   nanopb: 59317e09cf1f1a0af72f12af412d54edf52603fc
@@ -443,11 +437,11 @@ SPEC CHECKSUMS:
   package_info: 873975fc26034f0b863a300ad47e7f1ac6c7ec62
   path_provider: abfe2b5c733d04e238b0d8691db0cfd63a27a93c
   permission_handler: ccb20a9fad0ee9b1314a52b70b76b473c5f8dab0
-  printing: 5ec249946ebbd51cead5ed9b0b48113bb5141bcf
+  printing: eafa00acb682c0ca029d4d98d0798f55a1e27102
   PromisesObjC: 8c196f5a328c2cba3e74624585467a557dcb482f
   Protobuf: 3dac39b34a08151c6d949560efe3f86134a3f748
-  qr_code_scanner: 16107718bdad7d708cdf6a5eacdca24b56cdf471
-  qr_code_tools: bd0c76036813e6251a1df7d130b9c366fe961444
+  qr_code_scanner: bb67d64904c3b9658ada8c402e8b4d406d5d796e
+  qr_code_tools: 5b5dd44ccdfa4b81f645c251e421f61003254b81
   Reachability: 33e18b67625424e47b6cde6d202dce689ad7af96
   SDWebImage: a31ee8e90a97303529e03fb0c333eae0eacb88e9
   SDWebImageWebPCoder: d0dac55073088d24b2ac1b191a71a8f8d0adac21
@@ -459,8 +453,8 @@ SPEC CHECKSUMS:
   uni_links: d97da20c7701486ba192624d99bffaaffcfc298a
   url_launcher: 6fef411d543ceb26efce54b05a0a40bfd74cbbef
   video_player: 9cc823b1d9da7e8427ee591e8438bfbcde500e6e
-  wakelock: bfc7955c418d0db797614075aabbc58a39ab5107
-  webview_flutter: d2b4d6c66968ad042ad94cbb791f5b72b4678a96
+  wakelock: b0843b2479edbf6504d8d262c2959446f35373aa
+  webview_flutter: 9f491a9b5a66f2573946a389b2677987b0ff8c0b
 
 PODFILE CHECKSUM: db89302530577e0ab5bfb64490becc338c8c19b0
 

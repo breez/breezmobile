@@ -8,7 +8,8 @@ import 'package:image/image.dart' as DartImage;
 import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
 
-class AvatarPicker extends StatelessWidget { // ignore: must_be_immutable
+class AvatarPicker extends StatelessWidget {
+  // ignore: must_be_immutable
   final String imagePath;
   final bool renderLoading;
   final Function(List<int> selectedImage) onImageSelected;
@@ -93,6 +94,7 @@ class AvatarPicker extends StatelessWidget { // ignore: must_be_immutable
     final File file = File(pickedFile.path);
     return ImageCropper.cropImage(
             sourcePath: file.path,
+            cropStyle: CropStyle.circle,
             aspectRatio: CropAspectRatio(ratioX: 1.0, ratioY: 1.0))
         .then((file) {
       if (file != null) {

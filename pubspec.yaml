@@ -10,7 +10,7 @@ dependencies:
   app_settings: ^4.1.0
   archive: ^3.1.2
   auto_size_text: ^2.1.0
-  badges: ^1.2.0
+  badges: ^2.0.1
   bip39: ^1.0.6
   collection: ^1.15.0
   confetti: ^0.5.5
@@ -55,16 +55,16 @@ dependencies:
   tutorial_coach_mark: ^1.0.0
   uni_links: ^0.5.1
   url_launcher: ^6.0.3
-  webview_flutter: ^2.0.4
+  webview_flutter: 2.0.4
 
   anytime:
     git:
       url: https://github.com/breez/anytime_podcast_player.git
-      ref: f865bf0
+      ref: 2f007785fdd736f46d288ca96aeee38738951024
   local_auth:
     git:
       url: https://github.com/breez/local_auth.git
-      ref: c8dc477
+      ref: 89649dd86f61f60cf0037d7c3dd418a00fd87692
   share_extend:
     git:
       url: https://github.com/breez/ShareExtend.git

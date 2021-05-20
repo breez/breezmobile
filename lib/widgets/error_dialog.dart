@@ -50,7 +50,7 @@ Future<Null> promptError(BuildContext context, String title, Widget body,
                         optionFunc();
                       },
                     )
-                  : null,
+                  : Container(),
               TextButton(
                 child: Text(okText,
                     style: Theme.of(context).primaryTextTheme.button),
