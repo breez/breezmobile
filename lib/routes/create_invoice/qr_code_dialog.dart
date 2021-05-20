@@ -281,7 +281,7 @@ class QrCodeDialogState extends State<QrCodeDialog>
   }
 
   Widget _buildCloseButton() {
-    return FlatButton(
+    return TextButton(
       onPressed: (() {
         onFinish(false);
       }),

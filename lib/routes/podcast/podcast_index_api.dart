@@ -4,7 +4,6 @@
 
 import 'package:anytime/api/podcast/podcast_api.dart';
 import 'package:anytime/core/environment.dart';
-import 'package:anytime/ui/anytime_podcast_app.dart';
 import 'package:flutter/foundation.dart';
 import 'package:podcast_search/podcast_search.dart';
 

@@ -42,15 +42,17 @@ class AddFundsMessageState extends State<AddFundsMessage> {
             SizedBox(width: 16),
             Container(
               width: 100,
-              child: RaisedButton(
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(6.0),
+              child: ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(6.0),
+                  ),
+                  padding: EdgeInsets.symmetric(vertical: 12, horizontal: 12),
+                  primary: Theme.of(context).primaryColor,
                 ),
-                padding: EdgeInsets.symmetric(vertical: 12, horizontal: 12),
                 onPressed: () {
                   showReceiveOptions(context, widget.accountModel);
                 },
-                color: Theme.of(context).primaryColor,
                 child: AutoSizeText(
                   "ADD FUNDS",
                   minFontSize: MinFontSize(context).minFontSize,

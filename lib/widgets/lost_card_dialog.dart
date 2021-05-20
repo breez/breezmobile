@@ -25,7 +25,7 @@ class LostCardDialog extends StatelessWidget {
             textAlign: TextAlign.left),
         duration: Duration(seconds: 8),
         backgroundColor: theme.snackBarBackgroundColor,
-        mainButton: FlatButton(
+        mainButton: TextButton(
           onPressed: () {
             _lostCardFlush.dismiss(true);
             Navigator.pushReplacementNamed(context, "/order_card");
@@ -48,12 +48,12 @@ class LostCardDialog extends StatelessWidget {
       ),
       contentPadding: EdgeInsets.fromLTRB(24.0, 0.0, 24.0, 8.0),
       actions: <Widget>[
-        FlatButton(
+        TextButton(
           onPressed: () => Navigator.pop(context),
           child:
               Text("CANCEL", style: Theme.of(context).primaryTextTheme.button),
         ),
-        FlatButton(
+        TextButton(
           onPressed: (() {
             Navigator.pop(context);
             _lostCardFlush.show(context);

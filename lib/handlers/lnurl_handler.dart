@@ -105,7 +105,7 @@ class LNURLHandler {
               return AlertDialog(
                 content: SyncProgressDialog(closeOnSync: true),
                 actions: <Widget>[
-                  FlatButton(
+                  TextButton(
                     child: Text("CANCEL",
                         style: Theme.of(context).primaryTextTheme.button),
                     onPressed: () {

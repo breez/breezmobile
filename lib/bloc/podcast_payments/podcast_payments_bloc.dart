@@ -18,6 +18,8 @@ import 'package:breez/services/injector.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:fixnum/fixnum.dart';
 
+import 'aggregated_payments.dart';
+
 const maxFeePart = 0.2;
 
 class PodcastPaymentsBloc with AsyncActionsHandler {
@@ -37,8 +39,7 @@ class PodcastPaymentsBloc with AsyncActionsHandler {
       _paymentEventsController.stream;
 
   BreezBridge _breezLib;
-  Timer _paymentTimer;
-  Map<String, double> _perDestinationPayments = Map<String, double>();
+  AggregatedPayments _aggregatedPayments;
   BreezUserModel user;
   String breezReceiverNode;
 
@@ -47,7 +48,7 @@ class PodcastPaymentsBloc with AsyncActionsHandler {
     ServiceInjector injector = ServiceInjector();
     _breezLib = injector.breezBridge;
     _paymentOptionsController.add(PaymentOptions());
-    _startTicker();
+    _startTicker(injector);
     registerAsyncHandlers({
       PayBoost: _payBoost,
     });
@@ -74,9 +75,11 @@ class PodcastPaymentsBloc with AsyncActionsHandler {
     }
   }
 
-  _startTicker() {
+  _startTicker(ServiceInjector injector) async {
+    var sharedPreferences = await injector.sharedPreferences;
+    _aggregatedPayments = AggregatedPayments(sharedPreferences);
     // start the payment ticker
-    _paymentTimer = Timer.periodic(Duration(seconds: 1), (t) async {
+    Timer.periodic(Duration(seconds: 1), (t) async {
       // calculate episode and playing state
       var playingState = await _getAudioState();
       if (playingState != AudioState.playing) {
@@ -176,10 +179,8 @@ class PodcastPaymentsBloc with AsyncActionsHandler {
       final amount = (d.split * total / totalSplits);
       var payPart = amount.toInt();
       if (!boost) {
-        var aggregatedAmount =
-            (_perDestinationPayments[d.address] ?? 0.0) + amount;
-        _perDestinationPayments[d.address] = aggregatedAmount;
-        payPart = aggregatedAmount.toInt();
+        payPart =
+            (await _aggregatedPayments.addAmount(d.address, amount)).toInt();
       }
       final customKey = d.customKey?.toString();
       final customValue = d.customValue?.toString();
@@ -196,7 +197,7 @@ class PodcastPaymentsBloc with AsyncActionsHandler {
       if (netPay > 0 && amount <= total && maxFee > 0) {
         log.info("trying to pay $netPay to destination ${d.address}");
         if (!boost) {
-          _perDestinationPayments[d.address] -= payPart;
+          await _aggregatedPayments.addAmount(d.address, -payPart.toDouble());
         }
         _breezLib
             .sendSpontaneousPayment(d.address, Int64(netPay), d.name,
@@ -209,8 +210,12 @@ class PodcastPaymentsBloc with AsyncActionsHandler {
                     position: position,
                     customKey: customKey,
                     customValue: customValue))
-            .then((payResponse) {
+            .then((payResponse) async {
           if (payResponse.paymentError?.isNotEmpty == true) {
+            if (!boost) {
+              await _aggregatedPayments.addAmount(
+                  d.address, payPart.toDouble());
+            }
             log.info(
                 "failed to pay $netPay to destination ${d.address}, error=${payResponse.paymentError} trying next time...");
             return;
@@ -220,9 +225,9 @@ class PodcastPaymentsBloc with AsyncActionsHandler {
             _paymentEventsController
                 .add(PaymentEvent(PaymentEventType.StreamCompleted, payPart));
           }
-        }).catchError((err) {
+        }).catchError((err) async {
           if (!boost) {
-            _perDestinationPayments[d.address] += payPart;
+            await _aggregatedPayments.addAmount(d.address, payPart.toDouble());
           }
           log.info(
               "failed to pay $netPay to destination ${d.address}, error=$err trying next time...");

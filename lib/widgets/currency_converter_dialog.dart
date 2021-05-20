@@ -233,7 +233,7 @@ class CurrencyConverterDialogState extends State<CurrencyConverterDialog>
                         )),
                     // Do not allow '.' when fractionSize is 0 and only allow fiat currencies fractionSize number of digits after decimal point
                     inputFormatters: [
-                      WhitelistingTextInputFormatter(account
+                      FilteringTextInputFormatter.allow(account
                                   .fiatCurrency.currencyData.fractionSize ==
                               0
                           ? RegExp(r'\d+')
@@ -278,7 +278,7 @@ class CurrencyConverterDialogState extends State<CurrencyConverterDialog>
 
   List<Widget> _buildActions(AccountModel account) {
     List<Widget> actions = [
-      FlatButton(
+      TextButton(
           onPressed: () => Navigator.pop(context),
           child:
               Text("CANCEL", style: Theme.of(context).primaryTextTheme.button))
@@ -287,7 +287,7 @@ class CurrencyConverterDialogState extends State<CurrencyConverterDialog>
     // Show done button only when the converted amount is bigger than 0
     if (_fiatAmountController.text.isNotEmpty &&
         _convertedSatoshies(account) > 0) {
-      actions.add(FlatButton(
+      actions.add(TextButton(
           onPressed: () {
             if (_formKey.currentState.validate()) {
               widget._onConvert(account.currency.format(

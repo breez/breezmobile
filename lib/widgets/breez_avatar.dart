@@ -121,11 +121,14 @@ class _FileImageAvatar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return CircleAvatar(
-      radius: radius,
-      child: Image(
-        image: FileImage(
-          File(filePath),
+    return ClipRRect(
+      borderRadius: BorderRadius.circular(radius),
+      child: CircleAvatar(
+        radius: radius,
+        child: Image(
+          image: FileImage(
+            File(filePath),
+          ),
         ),
       ),
     );
@@ -145,7 +148,6 @@ class _NetworkImageAvatar extends StatelessWidget {
       child: ClipOval(
         child: OptimizedCacheImage(
           imageUrl: avatarURL,
-          useScaleCacheManager: true,
         ),
       ),
     );

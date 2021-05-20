@@ -55,7 +55,7 @@ class NavigationDrawer extends StatelessWidget {
     UserProfileBloc userProfileBloc =
         AppBlocsProvider.of<UserProfileBloc>(context);
 
-    List<Widget> children = List<Widget>();
+    List<Widget> children = <Widget>[];
     children.insert(0, Padding(padding: EdgeInsets.only(top: 16)));
     _drawerGroupedItems.forEach((groupItems) {
       children.addAll(_createDrawerGroupWidgets(
@@ -90,7 +90,7 @@ class NavigationDrawer extends StatelessWidget {
               action, context, action.onItemSelected ?? _onItemSelected,
               subTile: true))
           .toList();
-      groupItems = List<Widget>()
+      groupItems = <Widget>[]
         ..add(_ExpansionTile(
             items: groupItems,
             title: group.groupTitle,
@@ -131,7 +131,7 @@ StreamBuilder<BreezUserModel> _buildDrawerHeaderContent(
         if (!snapshot.hasData) {
           return Container();
         } else {
-          List<Widget> drawerHeaderContent = List<Widget>();
+          List<Widget> drawerHeaderContent = <Widget>[];
           drawerHeaderContent.add(_buildThemeSwitch(snapshot, user, context));
           if (drawAvatar) {
             drawerHeaderContent
@@ -251,7 +251,7 @@ Widget _actionTile(
     DrawerItemConfig action, BuildContext context, Function onItemSelected,
     {bool subTile}) {
   TextStyle itemStyle = theme.drawerItemTextStyle;
-  Color color = null;
+  Color color;
   //DefaultTextStyle.of(context).style.color;
   if (action.disabled) {
     color = Theme.of(context).disabledColor;

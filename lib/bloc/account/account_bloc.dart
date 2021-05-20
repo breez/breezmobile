@@ -630,7 +630,7 @@ class AccountBloc {
       return p.paymentGroup;
     });
 
-    var payments = List<PaymentInfo>();
+    var payments = <PaymentInfo>[];
     groupedPayments.forEach((key, singles) {
       if (singles[0].paymentHash == key) {
         payments.add(singles[0]);
@@ -641,7 +641,7 @@ class AccountBloc {
     return payments;
   }
 
-  Future _refreshLSPActivity() {
+  _refreshLSPActivity() {
     _breezLib.lspActivity().then((lspActivity) {
       print("--- LSPACtivity --- ");
       print(lspActivity);

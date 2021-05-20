@@ -153,14 +153,15 @@ class RestoreDialogState extends State<RestoreDialog> {
         ],
       ),
       actions: <Widget>[
-        FlatButton(
+        TextButton(
           onPressed: () => Navigator.pop(widget.context, null),
           child:
               Text("CANCEL", style: Theme.of(context).primaryTextTheme.button),
         ),
-        FlatButton(
-          textColor: theme.BreezColors.blue[500],
-          disabledTextColor: theme.BreezColors.blue[500].withOpacity(0.4),
+        TextButton(
+          style: TextButton.styleFrom(
+            primary: theme.BreezColors.blue[500],
+          ),
           onPressed: _selectedSnapshot == null
               ? null
               : () {

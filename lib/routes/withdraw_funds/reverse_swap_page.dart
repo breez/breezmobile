@@ -10,7 +10,6 @@ import 'package:breez/widgets/back_button.dart' as backBtn;
 import 'package:breez/widgets/error_dialog.dart';
 import 'package:breez/widgets/loader.dart';
 import 'package:breez/widgets/payment_details_dialog.dart';
-import 'package:fixnum/fixnum.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_i18n/flutter_i18n.dart';
 import 'package:rxdart/subjects.dart';

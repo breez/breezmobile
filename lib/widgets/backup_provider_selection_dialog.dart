@@ -105,24 +105,23 @@ class BackupProviderSelectionDialogState
         ],
       ),
       actions: <Widget>[
-        FlatButton(
+        TextButton(
+          style: TextButton.styleFrom(
+            primary: Theme.of(context).primaryTextTheme.button.color,
+          ),
           onPressed: () => Navigator.pop(context, null),
           child: Text(
             "CANCEL",
             style: Theme.of(context).textTheme.button,
           ),
-          textColor: Theme.of(context).primaryTextTheme.button.color,
         ),
         StreamBuilder<BackupSettings>(
             stream: widget.backupBloc.backupSettingsStream,
             builder: (context, snapshot) {
-              return FlatButton(
-                textColor: Theme.of(context).primaryTextTheme.button.color,
-                disabledTextColor: Theme.of(context)
-                    .primaryTextTheme
-                    .button
-                    .color
-                    .withOpacity(0.4),
+              return TextButton(
+                style: TextButton.styleFrom(
+                  onSurface: Theme.of(context).primaryTextTheme.button.color,
+                ),
                 onPressed: !snapshot.hasData
                     ? null
                     : () {

@@ -26,7 +26,7 @@ class CsvExporter {
     log.info("generating payment list started");
     List<List<dynamic>> paymentList =
         List.generate(this.paymentList.length, (index) {
-      List paymentItem = List();
+      List paymentItem = [];
       var paymentInfo = this.paymentList.elementAt(index);
       paymentItem.add(BreezDateUtils.formatYearMonthDayHourMinute(
           DateTime.fromMillisecondsSinceEpoch(

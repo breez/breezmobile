@@ -116,7 +116,7 @@ class SendOnchainState extends State<SendOnchain> {
             child: Row(
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: <Widget>[
-                  FlatButton(
+                  TextButton(
                     onPressed: () {
                       _asyncValidate().then((validated) {
                         if (validated) {
@@ -200,7 +200,7 @@ class SendOnchainState extends State<SendOnchain> {
                         focusNode: _feeFocusNode,
                         controller: _feeController,
                         inputFormatters: [
-                          WhitelistingTextInputFormatter.digitsOnly
+                          FilteringTextInputFormatter.digitsOnly
                         ],
                         keyboardType: TextInputType.number,
                         decoration:

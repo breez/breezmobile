@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:flutter/gestures.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -74,7 +72,7 @@ Should this happen, Breez will generate an on-chain address and sweep your funds
             children: _getContent(),
           ),
           actions: [
-            FlatButton(
+            TextButton(
               onPressed: (() {
                 Navigator.of(context).pop();
               }),

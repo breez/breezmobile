@@ -27,7 +27,7 @@ AlertDialog createAnimatedLoaderDialog(BuildContext context, String text,
           mainAxisSize: MainAxisSize.max,
           children: withOKButton
               ? <Widget>[
-                  FlatButton(
+                  TextButton(
                     child: Text('OK',
                         style: Theme.of(context).primaryTextTheme.button),
                     onPressed: () {

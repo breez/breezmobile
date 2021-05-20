@@ -1,6 +1,5 @@
 import 'package:breez/bloc/reverse_swap/reverse_swap_model.dart';
 import 'package:breez/services/injector.dart';
-import 'package:breez/utils/conf_estimate.dart';
 import 'package:breez/widgets/back_button.dart' as backBtn;
 import 'package:breez/widgets/flushbar.dart';
 import 'package:breez/widgets/link_launcher.dart';

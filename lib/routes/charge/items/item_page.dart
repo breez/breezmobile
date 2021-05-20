@@ -122,7 +122,7 @@ class ItemPageState extends State<ItemPage> {
                               keyboardType: TextInputType.numberWithOptions(
                                   decimal: true),
                               inputFormatters: [
-                                WhitelistingTextInputFormatter(
+                                FilteringTextInputFormatter.allow(
                                     _selectedCurrency.whitelistedPattern)
                               ],
                               controller: _priceController,

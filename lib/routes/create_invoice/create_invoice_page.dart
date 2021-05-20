@@ -181,7 +181,7 @@ class CreateInvoicePageState extends State<CreateInvoicePage> {
                         textInputAction: TextInputAction.done,
                         maxLines: null,
                         maxLength: 90,
-                        maxLengthEnforced: true,
+                        maxLengthEnforcement: MaxLengthEnforcement.enforced,
                         decoration: InputDecoration(
                           labelText: FlutterI18n.translate(
                               context, "description_optional"),
@@ -270,7 +270,7 @@ class CreateInvoicePageState extends State<CreateInvoicePage> {
   }
 
   Future _scanBarcode(AccountModel account) async {
-    TransparentPageRoute loaderRoute = null;
+    TransparentPageRoute loaderRoute;
     try {
       FocusScope.of(context).requestFocus(FocusNode());
       String barcode = await Navigator.pushNamed<String>(context, "/qr_scan");

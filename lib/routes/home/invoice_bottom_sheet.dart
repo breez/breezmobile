@@ -97,24 +97,27 @@ class InvoiceBottomSheetState extends State<InvoiceBottomSheet>
       width: widget.isSmallView ? 56.0 : 126.0,
       height: isFirst ? 50.0 : 56.0,
       duration: Duration(milliseconds: 150),
-      child: RaisedButton(
+      child: ElevatedButton(
+        style: ElevatedButton.styleFrom(
+          primary: (themeId == "BLUE")
+              ? isFirst
+              ? Colors.white
+              : Theme.of(context).primaryColorLight
+              : isFirst
+              ? Theme.of(context).buttonColor
+              : Theme.of(context).backgroundColor,
+          padding: EdgeInsets.fromLTRB(16.0, 12.0, 16.0, 12.0),
+          shape: isFirst
+              ? RoundedRectangleBorder(
+              borderRadius:
+              BorderRadius.only(topLeft: Radius.circular(20.0)))
+              : Border(
+              top: BorderSide(
+                  color: Theme.of(context).dividerColor.withOpacity(0.12),
+                  width: 1,
+                  style: BorderStyle.solid)),
+        ),
         onPressed: function,
-        color: (themeId == "BLUE")
-            ? isFirst
-                ? Colors.white
-                : Theme.of(context).primaryColorLight
-            : isFirst
-                ? Theme.of(context).buttonColor
-                : Theme.of(context).backgroundColor,
-        padding: EdgeInsets.fromLTRB(16.0, 12.0, 16.0, 12.0),
-        shape: isFirst
-            ? RoundedRectangleBorder(
-                borderRadius: BorderRadius.only(topLeft: Radius.circular(20.0)))
-            : Border(
-                top: BorderSide(
-                    color: Theme.of(context).dividerColor.withOpacity(0.12),
-                    width: 1,
-                    style: BorderStyle.solid)),
         child: Row(
             mainAxisSize: MainAxisSize.max,
             children: widget.isSmallView

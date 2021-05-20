@@ -61,12 +61,14 @@ class SessionInstructions extends StatelessWidget {
                 children: (_actions ?? []).map((action) {
                   return Padding(
                     padding: EdgeInsets.only(left: 4, right: 4),
-                    child: OutlineButton(
-                        shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(6.0)),
-                        borderSide: BorderSide(
-                            color: theme.BreezColors.white[500],
-                            style: BorderStyle.solid),
+                    child: OutlinedButton(
+                        style: OutlinedButton.styleFrom(
+                          shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(6.0)),
+                          side: BorderSide(
+                              color: theme.BreezColors.white[500],
+                              style: BorderStyle.solid),
+                        ),
                         child: Text(
                           action.toUpperCase(),
                           style: theme.sessionActionBtnStyle,

@@ -134,7 +134,7 @@ class PosTransactionsPageState extends State<PosTransactionsPage> {
     }
     return Padding(
       padding: const EdgeInsets.only(right: 16.0),
-      child: IconButton(
+      child: IconButton( // ignore: missing_required_param
         icon: Icon(
           Icons.more_vert,
           color: Theme.of(context).disabledColor,
