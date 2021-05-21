@@ -52,16 +52,18 @@ class PaymentItem extends StatelessWidget {
                       : 1.0,
                   child: Container(
                       height: PAYMENT_LIST_ITEM_HEIGHT,
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        shape: BoxShape.circle,
-                        boxShadow: [
-                          BoxShadow(
-                              color: Colors.black.withOpacity(0.1),
-                              offset: Offset(0.5, 0.5),
-                              blurRadius: 5.0),
-                        ],
-                      ),
+                      decoration: _createdWithin(Duration(seconds: 10))
+                          ? BoxDecoration(
+                              color: Colors.white,
+                              shape: BoxShape.circle,
+                              boxShadow: [
+                                BoxShadow(
+                                    color: Colors.black.withOpacity(0.1),
+                                    offset: Offset(0.5, 0.5),
+                                    blurRadius: 5.0),
+                              ],
+                            )
+                          : null,
                       child: _buildPaymentItemAvatar()),
                 ),
                 key: _firstItem ? firstPaymentItemKey : null,

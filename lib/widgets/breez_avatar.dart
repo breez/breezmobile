@@ -121,10 +121,11 @@ class _FileImageAvatar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ClipRRect(
-      borderRadius: BorderRadius.circular(radius),
-      child: CircleAvatar(
-        radius: radius,
+    return CircleAvatar(
+      radius: radius,
+      backgroundColor: Colors.yellow,
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(radius),
         child: Image(
           image: FileImage(
             File(filePath),
@@ -145,7 +146,8 @@ class _NetworkImageAvatar extends StatelessWidget {
   Widget build(BuildContext context) {
     return CircleAvatar(
       radius: radius,
-      child: ClipOval(
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(radius),
         child: OptimizedCacheImage(
           imageUrl: avatarURL,
         ),
@@ -162,13 +164,17 @@ class _VendorAvatar extends StatelessWidget {
 
   Widget _fastbitcoinsAvatar() {
     return CircleAvatar(
-        backgroundColor: theme.fastbitcoins.iconBgColor,
-        radius: radius,
+      backgroundColor: theme.fastbitcoins.iconBgColor,
+      radius: radius,
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(radius),
         child: ImageIcon(
           AssetImage(avatarURL),
           color: theme.fastbitcoins.iconFgColor,
           size: 0.6 * radius * 2,
-        ));
+        ),
+      ),
+    );
   }
 
   Widget _vendorAvatar() {
