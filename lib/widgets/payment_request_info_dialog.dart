@@ -174,7 +174,7 @@ class PaymentRequestInfoDialogState extends State<PaymentRequestInfoDialog> {
                     UnderlineInputBorder(borderSide: theme.greyBorderSide)),
             hintColor: Theme.of(context).dialogTheme.contentTextStyle.color,
             colorScheme: ColorScheme.dark(
-              primary: Theme.of(context).primaryTextTheme.button.color,
+              primary: Theme.of(context).textTheme.button.color,
             ),
             primaryColor: Theme.of(context).textTheme.button.color,
             errorColor: theme.themeId == "BLUE"
