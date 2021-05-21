@@ -51,6 +51,7 @@ final Map<String, CustomData> customData = {
 
 final ThemeData blueTheme = ThemeData(
   brightness: Brightness.dark,
+  colorScheme: ColorScheme.dark().copyWith(primary: Colors.white),
   primaryColor: Color.fromRGBO(255, 255, 255, 1.0),
   primaryColorDark: BreezColors.blue[900],
   primaryColorLight: Color.fromRGBO(0, 133, 251, 1.0),
@@ -181,6 +182,7 @@ final ThemeData blueTheme = ThemeData(
 // Color(0xFF121212) values are tbd
 final ThemeData darkTheme = ThemeData(
   brightness: Brightness.dark,
+  colorScheme: ColorScheme.dark().copyWith(primary: Colors.white),
   primaryColor: Color(0xFF7aa5eb),
   primaryColorDark: Color(0xFF00081C),
   primaryColorLight: Color(0xFF4B89EB),
