@@ -150,6 +150,17 @@ class _NetworkImageAvatar extends StatelessWidget {
         borderRadius: BorderRadius.circular(radius),
         child: OptimizedCacheImage(
           imageUrl: avatarURL,
+          imageBuilder: (context, imageProvider) => Container(
+            width: radius * 2,
+            height: radius * 2,
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              image: DecorationImage(
+                image: imageProvider,
+                fit: BoxFit.contain,
+              ),
+            ),
+          ),
         ),
       ),
     );
