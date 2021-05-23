@@ -136,7 +136,7 @@ final ThemeData blueTheme = ThemeData(
     caption: TextStyle(color: BreezColors.grey[500], fontSize: 12.0),
   ),
   textSelectionTheme: TextSelectionThemeData(
-    selectionColor: Color.fromRGBO(255, 255, 255, 0.5),
+    selectionColor: Color.fromRGBO(0, 133, 251, 0.25),
     selectionHandleColor: Color(0xFF0085fb),
   ),
   primaryIconTheme: IconThemeData(color: BreezColors.grey[500]),

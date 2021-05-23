@@ -105,6 +105,16 @@ class PaymentAdjustmentState extends State<PaymentAdjustment> {
                     "Send a one-time tip to a show's creators.",
                     style: TextStyle(color: Colors.white),
                   ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.only(top: 10.0),
+                  child: Text(
+                    "Click on boost amount to set a boost value of your choosing.",
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontStyle: FontStyle.italic,
+                    ),
+                  ),
                 )
               ],
             ))
@@ -155,13 +165,29 @@ class PaymentAdjustmentState extends State<PaymentAdjustment> {
                 }),
                 Padding(
                   padding: const EdgeInsets.only(top: 10.0),
+                  child: Text(
+                    "Click on sats/min amount to set a sat/min value of your choosing.",
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontStyle: FontStyle.italic,
+                    ),
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.only(top: 10.0),
                   child: withBreezTheme(
                       context,
                       ElevatedButton(
                         style: ElevatedButton.styleFrom(
                           primary: Theme.of(context).primaryColor,
                         ),
-                        child: Text("Gotcha!"),
+                        child: Text(
+                          "Gotcha!",
+                          style: Theme.of(context)
+                              .primaryTextTheme
+                              .button
+                              .copyWith(color: Colors.white),
+                        ),
                         onPressed: () {
                           AppBlocsProvider.of<UserProfileBloc>(context)
                               .userActionsSink

@@ -92,20 +92,11 @@ class _PaymentAdjusterState extends State<PaymentAdjuster> {
                       right: 0,
                       top: 16,
                       child: GestureDetector(
-                        onTap: () {
-                          if (!widget.satsPerMinuteList.contains(
-                              widget.userModel.preferredSatsPerMinValue)) {
-                            widget.onChanged(
-                              _getClosestSatsPerMinAmount(
-                                  widget.userModel.preferredSatsPerMinValue,
-                                  widget.satsPerMinuteList),
-                            );
-                          }
-                        },
-                        onDoubleTap: () => showDialog(
+                        onTap: () => showDialog(
                           useRootNavigator: true,
                           context: context,
                           builder: (c) => CustomAmountDialog(
+                            widget.userModel.preferredSatsPerMinValue,
                             widget.satsPerMinuteList,
                             (int satsPerMinute) {
                               widget.onChanged(satsPerMinute);

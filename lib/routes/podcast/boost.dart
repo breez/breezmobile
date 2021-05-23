@@ -166,23 +166,11 @@ class _BoostWidgetState extends State<BoostWidget> {
                                 left: 24,
                                 top: 16,
                                 child: GestureDetector(
-                                  onTap: () {
-                                    if (!widget.boostAmountList.contains(
-                                        widget.userModel.preferredBoostValue)) {
-                                      userBloc.userActionsSink.add(
-                                        SetBoostAmount(
-                                          _getClosestBoostAmount(
-                                              widget.userModel
-                                                  .preferredBoostValue,
-                                              widget.boostAmountList),
-                                        ),
-                                      );
-                                    }
-                                  },
-                                  onDoubleTap: () => showDialog(
+                                  onTap: () => showDialog(
                                     useRootNavigator: true,
                                     context: context,
                                     builder: (c) => CustomAmountDialog(
+                                      widget.userModel.preferredBoostValue,
                                       widget.boostAmountList,
                                       (int boostAmount) {
                                         userBloc.userActionsSink.add(

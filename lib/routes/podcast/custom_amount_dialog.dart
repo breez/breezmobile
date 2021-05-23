@@ -1,15 +1,14 @@
 import 'package:auto_size_text/auto_size_text.dart';
-import 'package:breez/theme_data.dart' as theme;
-import 'package:breez/widgets/keyboard_done_action.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 class CustomAmountDialog extends StatefulWidget {
+  final int customAmount;
   final List presetAmountsList;
   final Function(int customAmount) setAmount;
 
-  CustomAmountDialog(this.presetAmountsList, this.setAmount);
+  CustomAmountDialog(this.customAmount, this.presetAmountsList, this.setAmount);
 
   @override
   State<StatefulWidget> createState() {
@@ -21,7 +20,6 @@ class CustomAmountDialogState extends State<CustomAmountDialog> {
   final _formKey = GlobalKey<FormState>();
   TextEditingController _customAmountController = TextEditingController();
   final FocusNode _amountFocusNode = FocusNode();
-  KeyboardDoneAction _doneAction;
 
   @override
   void initState() {
@@ -29,13 +27,11 @@ class CustomAmountDialogState extends State<CustomAmountDialog> {
     _customAmountController.addListener(() {
       setState(() {});
     });
-    _doneAction = KeyboardDoneAction(<FocusNode>[_amountFocusNode]);
-  }
-
-  @override
-  void dispose() {
-    _doneAction.dispose();
-    super.dispose();
+    _customAmountController.text =
+        !widget.presetAmountsList.contains(widget.customAmount)
+            ? widget.customAmount.toString()
+            : null;
+    if (_customAmountController.text.isEmpty) _amountFocusNode.requestFocus();
   }
 
   @override
@@ -47,7 +43,8 @@ class CustomAmountDialogState extends State<CustomAmountDialog> {
     return AlertDialog(
       title: AutoSizeText(
         "Enter a Custom Amount:",
-        style: Theme.of(context).dialogTheme.titleTextStyle,
+        style:
+            Theme.of(context).dialogTheme.titleTextStyle.copyWith(fontSize: 16),
         maxLines: 1,
       ),
       content: _buildAmountWidget(),
@@ -56,41 +53,28 @@ class CustomAmountDialogState extends State<CustomAmountDialog> {
   }
 
   Widget _buildAmountWidget() {
-    return Theme(
-      data: Theme.of(context).copyWith(
-          inputDecorationTheme: InputDecorationTheme(
-            enabledBorder:
-                UnderlineInputBorder(borderSide: theme.greyBorderSide),
-          ),
-          hintColor: Theme.of(context).dialogTheme.contentTextStyle.color,
-          colorScheme: ColorScheme.dark(
-            primary: Theme.of(context).textTheme.button.color,
-          ),
-          primaryColor: Theme.of(context).textTheme.button.color,
-          errorColor: theme.themeId == "BLUE"
-              ? Colors.red
-              : Theme.of(context).errorColor),
-      child: Form(
-        key: _formKey,
-        child: TextFormField(
-          focusNode: _amountFocusNode,
-          controller: _customAmountController,
-          keyboardType: TextInputType.number,
-          inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-          validator: (value) {
-            if (value.length == 0) {
-              return "Please enter a custom amount";
-            }
-            if (int.parse(value) < widget.presetAmountsList[0]) {
-              return "Must be at least ${widget.presetAmountsList[0]} sats.";
-            }
-            return null;
-          },
-          style: Theme.of(context)
-              .dialogTheme
-              .contentTextStyle
-              .copyWith(height: 1.0),
-        ),
+    return Form(
+      key: _formKey,
+      autovalidateMode: AutovalidateMode.disabled,
+      child: TextFormField(
+        autovalidateMode: AutovalidateMode.disabled,
+        focusNode: _amountFocusNode,
+        controller: _customAmountController,
+        keyboardType: TextInputType.number,
+        inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+        validator: (value) {
+          if (value.length == 0) {
+            return "Please enter a custom amount";
+          }
+          if (int.parse(value) < widget.presetAmountsList[0]) {
+            return "Must be at least ${widget.presetAmountsList[0]} sats.";
+          }
+          return null;
+        },
+        style: Theme.of(context)
+            .dialogTheme
+            .contentTextStyle
+            .copyWith(height: 1.0),
       ),
     );
   }
@@ -102,15 +86,16 @@ class CustomAmountDialogState extends State<CustomAmountDialog> {
         child: Text("CANCEL", style: Theme.of(context).primaryTextTheme.button),
       ),
     ];
-    if (_customAmountController.text.isNotEmpty &&
-        _formKey.currentState.validate()) {
+    if (_customAmountController.text.isNotEmpty) {
       actions.add(
         TextButton(
           onPressed: () {
-            Navigator.pop(context);
-            widget.setAmount(
-              int.parse(_customAmountController.text),
-            );
+            if (_formKey.currentState.validate()) {
+              Navigator.pop(context);
+              widget.setAmount(
+                int.parse(_customAmountController.text),
+              );
+            }
           },
           child:
               Text("APPROVE", style: Theme.of(context).primaryTextTheme.button),
