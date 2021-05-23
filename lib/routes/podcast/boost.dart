@@ -11,6 +11,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
+import 'custom_amount_dialog.dart';
+
 class BoostWidget extends StatefulWidget {
   final BreezUserModel userModel;
   final List boostAmountList;
@@ -55,13 +57,14 @@ class _BoostWidgetState extends State<BoostWidget> {
                           padding:
                               EdgeInsets.symmetric(vertical: 8, horizontal: 8),
                           shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(6.0),
-                              side: BorderSide(
-                                  color: Theme.of(context).brightness ==
-                                          Brightness.light
-                                      ? Color(0xFF0085fb)
-                                      : Colors.white70,
-                                  width: 1.6)),
+                            borderRadius: BorderRadius.circular(6.0),
+                            side: BorderSide(
+                                color: Theme.of(context).brightness ==
+                                        Brightness.light
+                                    ? Color(0xFF0085fb)
+                                    : Colors.white70,
+                                width: 1.6),
+                          ),
                         ),
                         icon: ImageIcon(
                           AssetImage("src/icon/boost.png"),
@@ -97,7 +100,8 @@ class _BoostWidgetState extends State<BoostWidget> {
                             return;
                           }
                           widget.onBoost(
-                              widget.boostAmountList.elementAt(selectedIndex));
+                            widget.boostAmountList.elementAt(selectedIndex),
+                          );
                         },
                       ),
                     ),
@@ -111,119 +115,178 @@ class _BoostWidgetState extends State<BoostWidget> {
                             fit: StackFit.loose,
                             children: [
                               GestureDetector(
-                                  child: Container(
-                                      width: 32,
-                                      height: 64,
-                                      child: Material(
-                                        color: Colors.transparent,
-                                        borderRadius: BorderRadius.circular(32),
-                                        child: InkWell(
-                                          borderRadius:
-                                              BorderRadius.circular(32),
-                                          onTap: () {
-                                            var nextIndex = (selectedIndex == 0)
-                                                ? selectedIndex
-                                                : selectedIndex - 1;
-                                            final nextAmount = widget
-                                                .boostAmountList
-                                                .elementAt(nextIndex);
-                                            userBloc.userActionsSink.add(
-                                                SetBoostAmount(nextAmount));
-                                          },
-                                          splashColor:
-                                              Theme.of(context).splashColor,
-                                          highlightColor: Colors.transparent,
-                                          child: Icon(
-                                            Icons.remove_circle_outline,
-                                            size: 20,
-                                            color: Theme.of(context)
-                                                .appBarTheme
-                                                .actionsIconTheme
-                                                .color,
-                                          ),
-                                        ),
-                                      ))),
+                                child: Container(
+                                  width: 32,
+                                  height: 64,
+                                  child: Material(
+                                    color: Colors.transparent,
+                                    borderRadius: BorderRadius.circular(32),
+                                    child: InkWell(
+                                      borderRadius: BorderRadius.circular(32),
+                                      onTap: () {
+                                        if (widget.boostAmountList.contains(
+                                            widget.userModel
+                                                .preferredBoostValue)) {
+                                          var nextIndex = (selectedIndex == 0)
+                                              ? selectedIndex
+                                              : selectedIndex - 1;
+                                          final nextAmount = widget
+                                              .boostAmountList
+                                              .elementAt(nextIndex);
+                                          userBloc.userActionsSink.add(
+                                            SetBoostAmount(nextAmount),
+                                          );
+                                        } else {
+                                          userBloc.userActionsSink.add(
+                                            SetBoostAmount(
+                                              _getClosestBoostAmount(
+                                                  widget.userModel
+                                                      .preferredBoostValue,
+                                                  widget.boostAmountList),
+                                            ),
+                                          );
+                                        }
+                                      },
+                                      splashColor:
+                                          Theme.of(context).splashColor,
+                                      highlightColor: Colors.transparent,
+                                      child: Icon(
+                                        Icons.remove_circle_outline,
+                                        size: 20,
+                                        color: Theme.of(context)
+                                            .appBarTheme
+                                            .actionsIconTheme
+                                            .color,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ),
                               Positioned(
                                 left: 24,
                                 top: 16,
-                                child: SizedBox(
-                                  width: 42,
-                                  child: Column(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.center,
-                                    children: [
-                                      Container(
-                                        width: 32,
-                                        height: 20,
-                                        child: AutoSizeText(
-                                          NumberFormat.compact().format(snapshot
-                                              .data.preferredBoostValue),
+                                child: GestureDetector(
+                                  onTap: () {
+                                    userBloc.userActionsSink.add(
+                                      SetBoostAmount(
+                                        _getClosestBoostAmount(
+                                            widget
+                                                .userModel.preferredBoostValue,
+                                            widget.boostAmountList),
+                                      ),
+                                    );
+                                  },
+                                  onDoubleTap: () => showDialog(
+                                    useRootNavigator: true,
+                                    context: context,
+                                    builder: (c) => CustomAmountDialog(
+                                      widget.boostAmountList,
+                                      (int boostAmount) {
+                                        userBloc.userActionsSink.add(
+                                          SetBoostAmount(boostAmount),
+                                        );
+                                      },
+                                    ),
+                                  ),
+                                  child: SizedBox(
+                                    width: 42,
+                                    child: Column(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.center,
+                                      children: [
+                                        Container(
+                                          width: 32,
+                                          height: 20,
+                                          child: AutoSizeText(
+                                            NumberFormat.compact().format(
+                                                snapshot
+                                                    .data.preferredBoostValue),
+                                            textAlign: TextAlign.center,
+                                            style: TextStyle(
+                                              fontSize: 14.3,
+                                              letterSpacing: 1,
+                                              fontWeight: FontWeight.w600,
+                                              height: 1.2,
+                                            ),
+                                            minFontSize: ((10) /
+                                                    MediaQuery.of(this.context)
+                                                        .textScaleFactor)
+                                                .floorToDouble(),
+                                            stepGranularity: 0.1,
+                                            maxLines: 1,
+                                          ),
+                                        ),
+                                        AutoSizeText(
+                                          "sats",
                                           textAlign: TextAlign.center,
                                           style: TextStyle(
-                                            fontSize: 14.3,
-                                            letterSpacing: 1,
-                                            fontWeight: FontWeight.w600,
-                                            height: 1.2,
-                                          ),
+                                              fontSize: 10, letterSpacing: 1),
                                           minFontSize:
                                               MinFontSize(context).minFontSize,
                                           stepGranularity: 0.1,
-                                          maxLines: 1,
-                                        ),
-                                      ),
-                                      AutoSizeText(
-                                        "sats",
-                                        textAlign: TextAlign.center,
-                                        style: TextStyle(
-                                            fontSize: 10, letterSpacing: 1),
-                                        minFontSize:
-                                            MinFontSize(context).minFontSize,
-                                        stepGranularity: 0.1,
-                                      )
-                                    ],
+                                        )
+                                      ],
+                                    ),
                                   ),
                                 ),
                               ),
                               Positioned(
                                 left: 60,
                                 child: GestureDetector(
-                                    child: Container(
-                                        width: 32,
-                                        height: 64,
-                                        child: Material(
-                                          color: Colors.transparent,
-                                          borderRadius:
-                                              BorderRadius.circular(32),
-                                          child: InkWell(
-                                            borderRadius:
-                                                BorderRadius.circular(32),
-                                            onTap: () {
-                                              var nextIndex = (selectedIndex >=
-                                                      widget.boostAmountList
-                                                              .length -
-                                                          1)
-                                                  ? selectedIndex
-                                                  : selectedIndex + 1;
-                                              final nextAmount = widget
-                                                  .boostAmountList
-                                                  .elementAt(nextIndex);
-                                              userBloc.userActionsSink.add(
-                                                  SetBoostAmount(nextAmount));
-                                            },
-                                            splashColor:
-                                                Theme.of(context).splashColor,
-                                            highlightColor: Colors.transparent,
-                                            child: Icon(
-                                              Icons.add_circle_outline,
-                                              size: 20,
-                                              color: Theme.of(context)
-                                                  .appBarTheme
-                                                  .actionsIconTheme
-                                                  .color,
-                                            ),
-                                          ),
-                                        ))),
+                                  child: Container(
+                                    width: 32,
+                                    height: 64,
+                                    child: Material(
+                                      color: Colors.transparent,
+                                      borderRadius: BorderRadius.circular(32),
+                                      child: InkWell(
+                                        borderRadius: BorderRadius.circular(32),
+                                        onTap: () {
+                                          if (widget.boostAmountList.contains(
+                                              widget.userModel
+                                                  .preferredBoostValue)) {
+                                            var nextIndex = (selectedIndex >=
+                                                    widget.boostAmountList
+                                                            .length -
+                                                        1)
+                                                ? selectedIndex
+                                                : selectedIndex + 1;
+                                            final nextAmount = widget
+                                                .boostAmountList
+                                                .elementAt(nextIndex);
+                                            userBloc.userActionsSink.add(
+                                              SetBoostAmount(nextAmount),
+                                            );
+                                          } else {
+                                            userBloc.userActionsSink.add(
+                                              SetBoostAmount(
+                                                _getClosestBoostAmount(
+                                                  widget.userModel
+                                                      .preferredBoostValue,
+                                                  widget.boostAmountList,
+                                                  bigger: true,
+                                                ),
+                                              ),
+                                            );
+                                          }
+                                        },
+                                        splashColor:
+                                            Theme.of(context).splashColor,
+                                        highlightColor: Colors.transparent,
+                                        child: Icon(
+                                          Icons.add_circle_outline,
+                                          size: 20,
+                                          color: Theme.of(context)
+                                              .appBarTheme
+                                              .actionsIconTheme
+                                              .color,
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ),
                               ),
                             ],
                           ),
@@ -234,5 +297,16 @@ class _BoostWidgetState extends State<BoostWidget> {
                 );
               });
         });
+  }
+
+  static int _getClosestBoostAmount(int customAmount, List presetAmountList,
+      {bool bigger = false}) {
+    try {
+      return presetAmountList[presetAmountList
+              .indexWhere((presetAmount) => customAmount < presetAmount) -
+          (bigger ? 0 : 1)];
+    } catch (RangeError) {
+      return presetAmountList.last;
+    }
   }
 }
