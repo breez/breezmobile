@@ -93,11 +93,14 @@ class _PaymentAdjusterState extends State<PaymentAdjuster> {
                       top: 16,
                       child: GestureDetector(
                         onTap: () {
-                          widget.onChanged(
-                            _getClosestSatsPerMinAmount(
-                                widget.userModel.preferredSatsPerMinValue,
-                                widget.satsPerMinuteList),
-                          );
+                          if (!widget.satsPerMinuteList.contains(
+                              widget.userModel.preferredSatsPerMinValue)) {
+                            widget.onChanged(
+                              _getClosestSatsPerMinAmount(
+                                  widget.userModel.preferredSatsPerMinValue,
+                                  widget.satsPerMinuteList),
+                            );
+                          }
                         },
                         onDoubleTap: () => showDialog(
                           useRootNavigator: true,
@@ -128,7 +131,7 @@ class _PaymentAdjusterState extends State<PaymentAdjuster> {
                                     fontWeight: FontWeight.w600,
                                     height: 1.2,
                                   ),
-                                  minFontSize: ((10) /
+                                  minFontSize: ((9) /
                                           MediaQuery.of(this.context)
                                               .textScaleFactor)
                                       .floorToDouble(),

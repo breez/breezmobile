@@ -167,14 +167,17 @@ class _BoostWidgetState extends State<BoostWidget> {
                                 top: 16,
                                 child: GestureDetector(
                                   onTap: () {
-                                    userBloc.userActionsSink.add(
-                                      SetBoostAmount(
-                                        _getClosestBoostAmount(
-                                            widget
-                                                .userModel.preferredBoostValue,
-                                            widget.boostAmountList),
-                                      ),
-                                    );
+                                    if (!widget.boostAmountList.contains(
+                                        widget.userModel.preferredBoostValue)) {
+                                      userBloc.userActionsSink.add(
+                                        SetBoostAmount(
+                                          _getClosestBoostAmount(
+                                              widget.userModel
+                                                  .preferredBoostValue,
+                                              widget.boostAmountList),
+                                        ),
+                                      );
+                                    }
                                   },
                                   onDoubleTap: () => showDialog(
                                     useRootNavigator: true,
@@ -210,7 +213,7 @@ class _BoostWidgetState extends State<BoostWidget> {
                                               fontWeight: FontWeight.w600,
                                               height: 1.2,
                                             ),
-                                            minFontSize: ((10) /
+                                            minFontSize: ((9) /
                                                     MediaQuery.of(this.context)
                                                         .textScaleFactor)
                                                 .floorToDouble(),
