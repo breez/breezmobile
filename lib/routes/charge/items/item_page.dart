@@ -156,6 +156,7 @@ class ItemPageState extends State<ItemPage> {
 
                                     return DropdownButtonHideUnderline(
                                       child: DropdownButtonFormField(
+                                        iconEnabledColor: Colors.white,
                                         isDense: true,
                                         decoration: InputDecoration(
                                           labelText: 'Currency',

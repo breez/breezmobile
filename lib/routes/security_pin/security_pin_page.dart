@@ -222,6 +222,7 @@ class SecurityPageState extends State<SecurityPage>
       ),
       trailing: DropdownButtonHideUnderline(
         child: DropdownButton<BackupProvider>(
+          iconEnabledColor: Colors.white,
           value: backupSettings.backupProvider,
           isDense: true,
           onChanged: (BackupProvider newValue) {
@@ -262,6 +263,7 @@ class SecurityPageState extends State<SecurityPage>
       ),
       trailing: DropdownButtonHideUnderline(
         child: DropdownButton(
+          iconEnabledColor: Colors.white,
           value: securityModel.automaticallyLockInterval,
           isDense: true,
           onChanged: (int newValue) {
