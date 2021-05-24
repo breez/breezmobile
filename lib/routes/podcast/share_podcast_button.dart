@@ -20,19 +20,21 @@ class SharePodcastButtonState extends State<SharePodcastButton> {
   @override
   Widget build(BuildContext context) {
     return Expanded(
-      child: IconButton(
-          alignment: Alignment.centerRight,
-          icon: Icon(
-            Icons.share_rounded,
-            color: Theme.of(context).buttonColor,
-            size: 22,
-          ),
-          onPressed: () async {
-            DeepLinksService _deepLinks = ServiceInjector().deepLinks;
-            var podcastShareLink = await _deepLinks.generatePodcastShareLink(
-                PodcastShareLinkModel(widget.podcastURL));
-            ShareExtend.share(widget.podcastTitle + '\n' + podcastShareLink, "text");
-          }),
+      child: Align(
+        alignment: Alignment.centerRight,
+        child: IconButton(
+            icon: Icon(
+              Icons.share_rounded,
+              color: Theme.of(context).buttonColor,
+              size: 22,
+            ),
+            onPressed: () async {
+              DeepLinksService _deepLinks = ServiceInjector().deepLinks;
+              var podcastShareLink = await _deepLinks.generatePodcastShareLink(
+                  PodcastShareLinkModel(widget.podcastURL));
+              ShareExtend.share(widget.podcastTitle + '\n' + podcastShareLink, "text");
+            }),
+      ),
     );
   }
 }
