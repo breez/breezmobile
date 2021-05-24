@@ -33,6 +33,7 @@ Widget withPodcastTheme(BreezUserModel user, Widget child) {
               primaryColorLight: Color.fromRGBO(0, 117, 255, 1.0),
               primaryColorDark: Color.fromRGBO(19, 85, 191, 1.0),
               colorScheme: ColorScheme.light(
+                  primary: Color.fromRGBO(0, 117, 255, 1.0),
                   secondary: Color.fromRGBO(0, 133, 251, 1.0)),
               sliderTheme: SliderThemeData(
                 valueIndicatorColor: Color.fromRGBO(0, 117, 255, 1.0),
@@ -131,6 +132,7 @@ Widget withPodcastTheme(BreezUserModel user, Widget child) {
               primaryColorLight: Color(0xFF81acf1),
               primaryColorDark: Color(0xFF00081C),
               colorScheme: ColorScheme.dark(
+                primary: Colors.white,
                 secondary: Colors.white,
               ),
               sliderTheme: SliderThemeData(
