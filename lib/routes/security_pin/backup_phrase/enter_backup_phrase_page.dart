@@ -146,8 +146,7 @@ class EnterBackupPhrasePageState extends State<EnterBackupPhrasePage> {
       },
       onSuggestionSelected: (suggestion) {
         textEditingControllers[itemIndex].text = suggestion;
-        FocusScope.of(context).requestFocus(
-            (itemIndex < 23) ? focusNodes[itemIndex + 1] : FocusNode());
+        focusNodes[itemIndex + 1].requestFocus();
       },
     );
   }
@@ -174,8 +173,7 @@ class EnterBackupPhrasePageState extends State<EnterBackupPhrasePage> {
       textInputAction: TextInputAction.next,
       onSubmitted: (text) {
         textEditingControllers[itemIndex].text = text;
-        FocusScope.of(context).requestFocus(
-            (itemIndex < 23) ? focusNodes[itemIndex + 1] : FocusNode());
+        focusNodes[itemIndex + 1].requestFocus();
       },
       focusNode: focusNodes[itemIndex],
       decoration: InputDecoration(
@@ -204,7 +202,6 @@ class EnterBackupPhrasePageState extends State<EnterBackupPhrasePage> {
             if (_currentPage + 1 == 5) {
               _validateBackupPhrase(userProfileBloc);
             } else {
-              FocusScope.of(context).requestFocus(FocusNode());
               _formKey.currentState.reset();
               _currentPage++;
             }
