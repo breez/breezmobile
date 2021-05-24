@@ -27,10 +27,7 @@ class CustomAmountDialogState extends State<CustomAmountDialog> {
     _customAmountController.addListener(() {
       setState(() {});
     });
-    _customAmountController.text =
-        !widget.presetAmountsList.contains(widget.customAmount)
-            ? widget.customAmount.toString()
-            : null;
+    _customAmountController.text = widget.customAmount?.toString();
     if (_customAmountController.text.isEmpty) _amountFocusNode.requestFocus();
   }
 

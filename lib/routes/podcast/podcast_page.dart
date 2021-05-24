@@ -210,7 +210,8 @@ class NowPlayingTransportState extends State<NowPlayingTransport> {
               List<Widget> widgets = [];
               widgets.add(Divider(height: 0.0, thickness: 1));
               // We'll also show add funds message if user tries to boost and has no balance
-              if (snapshot.data.balance < userModel.preferredSatsPerMinValue) {
+              if (snapshot.data.balance <
+                  userModel.paymentOptions.preferredSatsPerMinValue) {
                 widgets.add(AddFundsMessage(accountModel: snapshot.data));
                 widgets.add(Divider(height: 0.0, thickness: 1));
               }

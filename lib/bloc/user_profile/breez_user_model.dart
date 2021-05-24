@@ -1,3 +1,4 @@
+import 'package:breez/bloc/podcast_payments/payment_options.dart';
 import 'package:breez/bloc/user_profile/currency.dart';
 import 'package:breez/bloc/user_profile/security_model.dart';
 
@@ -26,8 +27,7 @@ class BreezUserModel {
   final String posCurrencyShortName;
   final List<String> preferredCurrencies;
   final AppMode appMode;
-  final int preferredBoostValue;
-  final int preferredSatsPerMinValue;
+  final PaymentOptions paymentOptions;
   final SeenTutorials seenTutorials;
 
   BreezUserModel._(
@@ -50,8 +50,7 @@ class BreezUserModel {
     this.posCurrencyShortName = "SAT",
     this.preferredCurrencies,
     this.appMode = AppMode.balance,
-    this.preferredBoostValue = 5000,
-    this.preferredSatsPerMinValue = 0,
+    this.paymentOptions,
     this.seenTutorials,
   });
 
@@ -75,8 +74,7 @@ class BreezUserModel {
     String posCurrencyShortName,
     List<String> preferredCurrencies,
     AppMode appMode,
-    int preferredBoostValue,
-    int preferredSatsPerMinValue,
+    PaymentOptions paymentOptions,
     SeenTutorials seenTutorials,
   }) {
     return BreezUserModel._(
@@ -101,9 +99,7 @@ class BreezUserModel {
       posCurrencyShortName: posCurrencyShortName ?? this.posCurrencyShortName,
       preferredCurrencies: preferredCurrencies ?? this.preferredCurrencies,
       appMode: appMode ?? this.appMode,
-      preferredBoostValue: preferredBoostValue ?? this.preferredBoostValue,
-      preferredSatsPerMinValue:
-          preferredSatsPerMinValue ?? this.preferredSatsPerMinValue,
+      paymentOptions: paymentOptions ?? this.paymentOptions,
       seenTutorials: seenTutorials ?? this.seenTutorials,
     );
   }
@@ -150,8 +146,9 @@ class BreezUserModel {
             (json['preferredCurrencies'] as List<dynamic>)?.cast<String>() ??
                 <String>['USD', 'EUR', 'GBP', 'JPY'],
         appMode = AppMode.values[json["appMode"] ?? 0],
-        preferredBoostValue = json["preferredBoostValue"] ?? 5000,
-        preferredSatsPerMinValue = json["preferredSatsPerMinValue"] ?? 0,
+        paymentOptions = json["paymentOptions"] == null
+            ? PaymentOptions.initial()
+            : PaymentOptions.fromJson(json["paymentOptions"]),
         seenTutorials = json["seenTutorials"] == null
             ? SeenTutorials.initial()
             : SeenTutorials.fromJson(json["seenTutorials"]);
@@ -175,8 +172,7 @@ class BreezUserModel {
         'businessAddress': businessAddress,
         'preferredCurrencies': preferredCurrencies,
         'appMode': appMode.index,
-        'preferredBoostValue': preferredBoostValue,
-        'preferredSatsPerMinValue': preferredSatsPerMinValue,
+        'paymentOptions': paymentOptions,
         'seenTutorials': seenTutorials,
       };
 }

@@ -95,6 +95,18 @@ class SetSatsPerMinAmount extends AsyncAction {
   SetSatsPerMinAmount(this.satsPerMin);
 }
 
+class SetCustomBoostAmount extends AsyncAction {
+  final int boostAmount;
+
+  SetCustomBoostAmount(this.boostAmount);
+}
+
+class SetCustomSatsPerMinAmount extends AsyncAction {
+  final int satsPerMin;
+
+  SetCustomSatsPerMinAmount(this.satsPerMin);
+}
+
 class SetSeenPodcastTutorial extends AsyncAction {
   final bool seen;
 

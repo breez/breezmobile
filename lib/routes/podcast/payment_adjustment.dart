@@ -6,7 +6,6 @@ import 'package:auto_size_text/auto_size_text.dart';
 import 'package:breez/bloc/blocs_provider.dart';
 import 'package:breez/bloc/podcast_payments/actions.dart';
 import 'package:breez/bloc/podcast_payments/model.dart';
-import 'package:breez/bloc/podcast_payments/payment_options.dart';
 import 'package:breez/bloc/podcast_payments/podcast_payments_bloc.dart';
 import 'package:breez/bloc/user_profile/breez_user_model.dart';
 import 'package:breez/bloc/user_profile/user_actions.dart';
@@ -247,80 +246,66 @@ class PaymentAdjustmentState extends State<PaymentAdjustment> {
         tutorial?.skip();
         return Future.value(true);
       },
-      child: StreamBuilder<PaymentOptions>(
-          stream: paymentsBloc.paymentOptionsStream,
-          builder: (context, snapshot) {
-            if (!snapshot.hasData) {
-              return Center(child: Loader());
-            }
-
-            var paymentOptions = snapshot.data;
-
-            return StreamBuilder<BreezUserModel>(
-                stream: userProfileBloc.userStream,
-                builder: (context, snapshot) {
-                  if (!snapshot.hasData) {
-                    return Center(child: Loader());
-                  }
-                  var userModel = snapshot.data;
-                  return Container(
-                    height: 64,
-                    color: Theme.of(context).backgroundColor,
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: <Widget>[
-                        Flexible(
-                          flex: 5,
-                          child: Padding(
-                            padding: const EdgeInsets.only(left: 16, right: 0),
-                            child: WithConfettyPaymentEffect(
-                                type: PaymentEventType.BoostStarted,
-                                child: BoostWidget(
-                                  key: boostWidgetKey,
-                                  userModel: userModel,
-                                  boostAmountList:
-                                      paymentOptions.boostAmountList,
-                                  onBoost: (int boostAmount) {
-                                    paymentsBloc.actionsSink
-                                        .add(PayBoost(boostAmount));
-                                    userProfileBloc.userActionsSink
-                                        .add(SetBoostAmount(boostAmount));
-                                  },
-                                )),
-                          ),
-                        ),
-                        Container(
-                          height: 64,
-                          width: 1,
-                          child: VerticalDivider(
-                            thickness: 1,
-                            color: Theme.of(context).dividerColor,
-                          ),
-                        ),
-                        Flexible(
-                          flex: 3,
-                          child: Padding(
-                            padding: EdgeInsets.only(left: 0, right: 0),
-                            child: Center(
-                              child: PaymentAdjuster(
-                                  key: paymentAdjusterKey,
-                                  userModel: userModel,
-                                  satsPerMinuteList:
-                                      paymentOptions.satsPerMinuteIntervalsList,
-                                  onChanged: (int satsPerMinute) {
-                                    paymentsBloc.actionsSink
-                                        .add(AdjustAmount(satsPerMinute));
-                                    userProfileBloc.userActionsSink.add(
-                                        SetSatsPerMinAmount(satsPerMinute));
-                                  }),
-                            ),
-                          ),
-                        ),
-                      ],
+      child: StreamBuilder<BreezUserModel>(
+        stream: userProfileBloc.userStream,
+        builder: (context, snapshot) {
+          if (!snapshot.hasData) {
+            return Center(child: Loader());
+          }
+          var userModel = snapshot.data;
+          return Container(
+            height: 64,
+            color: Theme.of(context).backgroundColor,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: <Widget>[
+                Flexible(
+                  flex: 5,
+                  child: Padding(
+                    padding: const EdgeInsets.only(left: 16, right: 0),
+                    child: WithConfettyPaymentEffect(
+                        type: PaymentEventType.BoostStarted,
+                        child: BoostWidget(
+                          key: boostWidgetKey,
+                          userModel: userModel,
+                          onBoost: (int boostAmount) {
+                            paymentsBloc.actionsSink.add(PayBoost(boostAmount));
+                            userProfileBloc.userActionsSink
+                                .add(SetBoostAmount(boostAmount));
+                          },
+                        )),
+                  ),
+                ),
+                Container(
+                  height: 64,
+                  width: 1,
+                  child: VerticalDivider(
+                    thickness: 1,
+                    color: Theme.of(context).dividerColor,
+                  ),
+                ),
+                Flexible(
+                  flex: 3,
+                  child: Padding(
+                    padding: EdgeInsets.only(left: 0, right: 0),
+                    child: Center(
+                      child: PaymentAdjuster(
+                          key: paymentAdjusterKey,
+                          userModel: userModel,
+                          onChanged: (int satsPerMinute) {
+                            paymentsBloc.actionsSink
+                                .add(AdjustAmount(satsPerMinute));
+                            userProfileBloc.userActionsSink
+                                .add(SetSatsPerMinAmount(satsPerMinute));
+                          }),
                     ),
-                  );
-                });
-          }),
+                  ),
+                ),
+              ],
+            ),
+          );
+        },
+      ),
     );
   }
 }

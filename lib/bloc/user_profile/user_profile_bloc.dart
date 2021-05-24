@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:breez/bloc/async_action.dart';
+import 'package:breez/bloc/podcast_payments/payment_options.dart';
 import 'package:breez/bloc/user_profile/breez_user_model.dart';
 import 'package:breez/bloc/user_profile/currency.dart';
 import 'package:breez/bloc/user_profile/default_profile_generator.dart';
@@ -87,6 +88,8 @@ class UserProfileBloc {
       SetPOSCurrency: _setPOSCurrency,
       SetBoostAmount: _setBoostAmount,
       SetSatsPerMinAmount: _setSatsPerMinAmount,
+      SetCustomBoostAmount: _setCustomBoostAmount,
+      SetCustomSatsPerMinAmount: _setCustomSatsPerMinAmount,
       SetSeenPodcastTutorial: _setSeenPodcastTutorial,
       SetSeenPaymentStripTutorial: _setSeenPaymentStripTutorial,
     };
@@ -197,14 +200,63 @@ class UserProfileBloc {
   }
 
   Future _setBoostAmount(SetBoostAmount action) async {
-    _saveChanges(await _preferences,
-        _currentUser.copyWith(preferredBoostValue: action.boostAmount));
+    _saveChanges(
+        await _preferences,
+        _currentUser.copyWith(
+            paymentOptions: _currentUser.paymentOptions
+                .copyWith(preferredBoostValue: action.boostAmount)));
     action.resolve(action.boostAmount);
   }
 
   Future _setSatsPerMinAmount(SetSatsPerMinAmount action) async {
-    _saveChanges(await _preferences,
-        _currentUser.copyWith(preferredSatsPerMinValue: action.satsPerMin));
+    _saveChanges(
+        await _preferences,
+        _currentUser.copyWith(
+            paymentOptions: _currentUser.paymentOptions
+                .copyWith(preferredSatsPerMinValue: action.satsPerMin)));
+    action.resolve(action.satsPerMin);
+  }
+
+  Future _setCustomBoostAmount(SetCustomBoostAmount action) async {
+    if (!_currentUser.paymentOptions.presetBoostAmountsList
+        .contains(action.boostAmount)) {
+      _saveChanges(
+          await _preferences,
+          _currentUser.copyWith(
+              paymentOptions: _currentUser.paymentOptions
+                  .copyWith(customBoostValue: action.boostAmount)));
+    } else {
+      _saveChanges(
+          await _preferences,
+          _currentUser.copyWith(
+              paymentOptions: PaymentOptions.initial().copyWith(
+                  preferredBoostValue:
+                      _currentUser.paymentOptions.preferredBoostValue,
+                  preferredSatsPerMinValue:
+                      _currentUser.paymentOptions.preferredSatsPerMinValue)));
+    }
+
+    action.resolve(action.boostAmount);
+  }
+
+  Future _setCustomSatsPerMinAmount(SetCustomSatsPerMinAmount action) async {
+    if (!_currentUser.paymentOptions.presetSatsPerMinuteAmountsList
+        .contains(action.satsPerMin)) {
+      _saveChanges(
+          await _preferences,
+          _currentUser.copyWith(
+              paymentOptions: _currentUser.paymentOptions
+                  .copyWith(customSatsPerMinValue: action.satsPerMin)));
+    } else {
+      _saveChanges(
+          await _preferences,
+          _currentUser.copyWith(
+              paymentOptions: PaymentOptions.initial().copyWith(
+                  preferredBoostValue:
+                      _currentUser.paymentOptions.preferredBoostValue,
+                  preferredSatsPerMinValue:
+                      _currentUser.paymentOptions.preferredSatsPerMinValue)));
+    }
     action.resolve(action.satsPerMin);
   }
 
