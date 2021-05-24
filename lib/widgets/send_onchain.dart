@@ -1,4 +1,5 @@
 import 'dart:async';
+
 import 'package:breez/bloc/account/account_model.dart';
 import 'package:breez/services/breezlib/breez_bridge.dart';
 import 'package:breez/services/injector.dart';
@@ -81,7 +82,9 @@ class SendOnchainState extends State<SendOnchain> {
               enabledBorder:
                   UnderlineInputBorder(borderSide: theme.greyBorderSide)),
           hintColor: Theme.of(context).dialogTheme.contentTextStyle.color,
-          accentColor: Theme.of(context).textTheme.button.color,
+          colorScheme: ColorScheme.dark(
+            primary: Theme.of(context).textTheme.button.color,
+          ),
           primaryColor: Theme.of(context).textTheme.button.color,
           unselectedWidgetColor: Theme.of(context).canvasColor,
           errorColor: theme.themeId == "BLUE"

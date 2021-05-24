@@ -253,14 +253,19 @@ WidgetBuilder errorPlaceholderBuilder() {
   return builder;
 }
 
-WidgetBuilder sharePodcastButtonBuilder(String podcastURL) {
-  final WidgetBuilder builder =
-      (BuildContext context) => SharePodcastButton(podcastURL: podcastURL);
+WidgetBuilder sharePodcastButtonBuilder(
+    String podcastTitle, String podcastURL) {
+  final WidgetBuilder builder = (BuildContext context) =>
+      SharePodcastButton(podcastTitle: podcastTitle, podcastURL: podcastURL);
   return builder;
 }
 
-WidgetBuilder shareEpisodeButtonBuilder(String podcastURL, String episodeID) {
-  final WidgetBuilder builder = (BuildContext context) =>
-      ShareEpisodeButton(podcastURL: podcastURL, episodeID: episodeID);
+WidgetBuilder shareEpisodeButtonBuilder(String podcastTitle, String podcastURL,
+    String episodeTitle, String episodeID) {
+  final WidgetBuilder builder = (BuildContext context) => ShareEpisodeButton(
+      podcastTitle: podcastTitle,
+      podcastURL: podcastURL,
+      episodeTitle: episodeTitle,
+      episodeID: episodeID);
   return builder;
 }

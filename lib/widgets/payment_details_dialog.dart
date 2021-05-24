@@ -1,5 +1,4 @@
 import 'dart:convert';
-import 'dart:ffi';
 import 'dart:io';
 
 import 'package:auto_size_text/auto_size_text.dart';
@@ -310,7 +309,9 @@ class ShareablePaymentRow extends StatelessWidget {
   Widget build(BuildContext context) {
     final _expansionTileTheme = Theme.of(context).copyWith(
         unselectedWidgetColor: Theme.of(context).primaryTextTheme.button.color,
-        accentColor: Theme.of(context).primaryTextTheme.button.color,
+        colorScheme: ColorScheme.dark(
+          secondary: Theme.of(context).primaryTextTheme.button.color,
+        ),
         dividerColor: Theme.of(context).backgroundColor);
     return Theme(
       data: _expansionTileTheme,
@@ -658,7 +659,9 @@ class _Destination extends StatelessWidget {
   Widget build(BuildContext context) {
     final _expansionTileTheme = Theme.of(context).copyWith(
         unselectedWidgetColor: Theme.of(context).primaryTextTheme.button.color,
-        accentColor: Theme.of(context).primaryTextTheme.button.color,
+        colorScheme: ColorScheme.dark(
+          secondary: Theme.of(context).primaryTextTheme.button.color,
+        ),
         dividerColor: Theme.of(context).backgroundColor);
     return Theme(
       data: _expansionTileTheme,

@@ -317,10 +317,14 @@ class NoLSPWidget extends StatelessWidget {
               shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(6.0)),
               side: BorderSide(
-                  color: Theme.of(context).buttonColor,
+                  color: Theme.of(context).textTheme.button.color,
                   style: BorderStyle.solid),
             ),
-            child: Text("SELECT...", style: TextStyle(fontSize: 12.3)),
+            child: Text("SELECT...",
+                style: TextStyle(
+                  fontSize: 12.3,
+                  color: Theme.of(context).textTheme.button.color,
+                )),
             onPressed: () {
               Navigator.of(context).pushNamed("/select_lsp");
             }),

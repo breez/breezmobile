@@ -60,7 +60,7 @@ dependencies:
   anytime:
     git:
       url: https://github.com/breez/anytime_podcast_player.git
-      ref: 9541c77
+      ref: 2f007785fdd736f46d288ca96aeee38738951024
   local_auth:
     git:
       url: https://github.com/breez/local_auth.git

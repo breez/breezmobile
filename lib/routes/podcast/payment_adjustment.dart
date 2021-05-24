@@ -161,7 +161,13 @@ class PaymentAdjustmentState extends State<PaymentAdjustment> {
                         style: ElevatedButton.styleFrom(
                           primary: Theme.of(context).primaryColor,
                         ),
-                        child: Text("Gotcha!"),
+                        child: Text(
+                          "Gotcha!",
+                          style: Theme.of(context)
+                              .primaryTextTheme
+                              .button
+                              .copyWith(color: Colors.white),
+                        ),
                         onPressed: () {
                           AppBlocsProvider.of<UserProfileBloc>(context)
                               .userActionsSink

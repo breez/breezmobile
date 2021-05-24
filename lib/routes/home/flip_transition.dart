@@ -1,6 +1,7 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
+import 'package:breez/theme_data.dart' as theme;
 
 class FlipTransition extends StatefulWidget {
   final Widget firstChild;
@@ -51,13 +52,16 @@ class FlipTransitionState extends State<FlipTransition>
       builder: (BuildContext context, Widget child) {
         return CircleAvatar(
           radius: widget.radius,
-          backgroundColor: Colors.white,
-          child: Transform(
-            transform: Matrix4.identity()..rotateY(pi * _flipAnimation.value),
-            alignment: Alignment.center,
-            child: _flipAnimationController.value >= 0.4
-                ? widget.secondChild
-                : widget.firstChild,
+          backgroundColor: theme.customData[theme.themeId].paymentListBgColor,
+          child: ClipRRect(
+            borderRadius: BorderRadius.circular(widget.radius),
+            child: Transform(
+              transform: Matrix4.identity()..rotateY(pi * _flipAnimation.value),
+              alignment: Alignment.center,
+              child: _flipAnimationController.value >= 0.4
+                  ? widget.secondChild
+                  : widget.firstChild,
+            ),
           ),
         );
       },

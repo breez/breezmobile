@@ -116,7 +116,7 @@ class TransparentRouteLoaderState extends State<TransparentRouteLoader> {
                 width: MediaQuery.of(context).size.width,
                 child: CircularProgress(
                     size: 160.0,
-                    color: Theme.of(context).accentColor,
+                    color: Theme.of(context).colorScheme.secondary,
                     value: widget.value,
                     title: widget.message)),
           ),

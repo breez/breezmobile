@@ -113,7 +113,9 @@ class EscherDialogState extends State<EscherDialog> {
               enabledBorder:
                   UnderlineInputBorder(borderSide: theme.greyBorderSide)),
           hintColor: Theme.of(context).dialogTheme.contentTextStyle.color,
-          accentColor: Theme.of(context).textTheme.button.color,
+          colorScheme: ColorScheme.dark(
+            primary: Theme.of(context).textTheme.button.color,
+          ),
           primaryColor: Theme.of(context).textTheme.button.color,
           errorColor: theme.themeId == "BLUE"
               ? Colors.red
