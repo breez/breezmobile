@@ -172,7 +172,7 @@ class _PlayButton extends StatelessWidget {
             onPressed: null,
             child: SpinKitRing(
               lineWidth: 2.0,
-              color: Theme.of(context).accentColor,
+              color: Theme.of(context).colorScheme.secondary,
               size: 60,
             ),
           ));
