@@ -28,10 +28,6 @@ dependencies:
   flushbar: ^1.10.4
   flutter_secure_storage: ^4.2.0
   flutter_svg: ^0.22.0
-  flutter_typeahead:
-    git:
-      url: https://github.com/breez/flutter_typeahead.git
-      ref: 7405b9e3e3a32f605f5951499d2eddc8e45c1f74
   flutter_web_browser: ^0.14.0
   grpc: ^3.0.0
   hex: ^0.2.0
@@ -63,7 +59,11 @@ dependencies:
   anytime:
     git:
       url: https://github.com/breez/anytime_podcast_player.git
-      ref: 2f007785fdd736f46d288ca96aeee38738951024
+      ref: e34cae17d498e3ee86b060c2155c386b9724a25c
+  flutter_typeahead:
+    git:
+      url: https://github.com/breez/flutter_typeahead.git
+      ref: 7405b9e3e3a32f605f5951499d2eddc8e45c1f74
   local_auth:
     git:
       url: https://github.com/breez/local_auth.git
