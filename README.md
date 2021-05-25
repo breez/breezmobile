@@ -108,5 +108,5 @@ Now you can use the following commands to run in a connected device the client a
  - flutter build apk --target-platform=android-arm64 --flavor=client --debug   --target=lib/main.dart
  - flutter build apk --target-platform=android-arm64 --flavor=pos    --debug   --target=lib/main_pos.dart
 
-## [[Overview for Developers]]
-## [[Running Breez in simnet]]
+## [Overview for Developers](https://github.com/breez/breezmobile/wiki/Overview-for-Developers)
+## [Running Breez in simnet](https://github.com/breez/breezmobile/wiki/Running-Breez-in-simnet)
