@@ -46,7 +46,7 @@ class PaymentAdjustmentState extends State<PaymentAdjustment> {
         final userBloc = AppBlocsProvider.of<UserProfileBloc>(context);
         final user = await userBloc.userStream.first;
         if (!user.seenTutorials.paymentStripTutorial) {
-          _buildTutorial();
+          _buildTutorial(user);
           tutorial.show();
           setState(() {});
         }
@@ -54,7 +54,7 @@ class PaymentAdjustmentState extends State<PaymentAdjustment> {
     });
   }
 
-  void _buildTutorial() {
+  void _buildTutorial(BreezUserModel user) {
     tutorial = TutorialCoachMark(context,
         targets: targets,
         onClickOverlay: (t) {
@@ -73,10 +73,10 @@ class PaymentAdjustmentState extends State<PaymentAdjustment> {
           final userBloc = AppBlocsProvider.of<UserProfileBloc>(context);
           userBloc.userActionsSink.add(SetSeenPaymentStripTutorial(true));
         });
-    _buildTutorialTargets();
+    _buildTutorialTargets(user);
   }
 
-  void _buildTutorialTargets() {
+  void _buildTutorialTargets(BreezUserModel user) {
     targets.add(TargetFocus(
       identify: "BoostWidget",
       keyTarget: boostWidgetKey,
@@ -190,7 +190,10 @@ class PaymentAdjustmentState extends State<PaymentAdjustment> {
                         onPressed: () {
                           AppBlocsProvider.of<UserProfileBloc>(context)
                               .userActionsSink
-                              .add(SetSatsPerMinAmount(tutorialStreamSats));
+                              .add(SetPaymentOptions(user.paymentOptions
+                                  .copyWith(
+                                      preferredSatsPerMinValue:
+                                          tutorialStreamSats)));
                           tutorial.finish();
                         },
                       )),
@@ -270,8 +273,12 @@ class PaymentAdjustmentState extends State<PaymentAdjustment> {
                           userModel: userModel,
                           onBoost: (int boostAmount) {
                             paymentsBloc.actionsSink.add(PayBoost(boostAmount));
-                            userProfileBloc.userActionsSink
-                                .add(SetBoostAmount(boostAmount));
+                          },
+                          onChanged: (int boostAmount) {
+                            userProfileBloc.userActionsSink.add(
+                                SetPaymentOptions(userModel.paymentOptions
+                                    .copyWith(
+                                        preferredBoostValue: boostAmount)));
                           },
                         )),
                   ),
@@ -295,8 +302,11 @@ class PaymentAdjustmentState extends State<PaymentAdjustment> {
                           onChanged: (int satsPerMinute) {
                             paymentsBloc.actionsSink
                                 .add(AdjustAmount(satsPerMinute));
-                            userProfileBloc.userActionsSink
-                                .add(SetSatsPerMinAmount(satsPerMinute));
+                            userProfileBloc.userActionsSink.add(
+                                SetPaymentOptions(userModel.paymentOptions
+                                    .copyWith(
+                                        preferredSatsPerMinValue:
+                                            satsPerMinute)));
                           }),
                     ),
                   ),

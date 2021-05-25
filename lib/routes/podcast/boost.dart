@@ -16,8 +16,10 @@ import 'custom_amount_dialog.dart';
 class BoostWidget extends StatefulWidget {
   final BreezUserModel userModel;
   final ValueChanged<int> onBoost;
+  final ValueChanged<int> onChanged;
 
-  BoostWidget({Key key, this.userModel, this.onBoost}) : super(key: key);
+  BoostWidget({Key key, this.userModel, this.onBoost, this.onChanged})
+      : super(key: key);
 
   @override
   _BoostWidgetState createState() => _BoostWidgetState();
@@ -113,9 +115,7 @@ class _BoostWidgetState extends State<BoostWidget> {
                               child: InkWell(
                                 borderRadius: BorderRadius.circular(32),
                                 onTap: () {
-                                  userBloc.userActionsSink.add(
-                                    SetBoostAmount(_getPreviousAmount()),
-                                  );
+                                  widget.onChanged(_getPreviousAmount());
                                 },
                                 splashColor: Theme.of(context).splashColor,
                                 highlightColor: Colors.transparent,
@@ -143,11 +143,12 @@ class _BoostWidgetState extends State<BoostWidget> {
                                     .userModel.paymentOptions.customBoostValue,
                                 widget.userModel.paymentOptions.boostAmountList,
                                 (int boostAmount) {
-                                  userBloc.userActionsSink
-                                      .add(SetCustomBoostAmount(boostAmount));
                                   userBloc.userActionsSink.add(
-                                    SetBoostAmount(boostAmount),
-                                  );
+                                      SetPaymentOptions(widget
+                                          .userModel.paymentOptions
+                                          .copyWith(
+                                              preferredBoostValue: boostAmount,
+                                              customBoostValue: boostAmount)));
                                 },
                               ),
                             ),
@@ -206,9 +207,7 @@ class _BoostWidgetState extends State<BoostWidget> {
                                 child: InkWell(
                                   borderRadius: BorderRadius.circular(32),
                                   onTap: () {
-                                    userBloc.userActionsSink.add(
-                                      SetBoostAmount(_getNextAmount()),
-                                    );
+                                    widget.onChanged(_getNextAmount());
                                   },
                                   splashColor: Theme.of(context).splashColor,
                                   highlightColor: Colors.transparent,

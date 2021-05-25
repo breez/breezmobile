@@ -74,9 +74,10 @@ class _PaymentAdjusterState extends State<PaymentAdjuster> {
                       widget
                           .userModel.paymentOptions.satsPerMinuteIntervalsList,
                       (int satsPerMinute) {
-                        userBloc.userActionsSink
-                            .add(SetCustomSatsPerMinAmount(satsPerMinute));
-                        widget.onChanged(satsPerMinute);
+                        userBloc.userActionsSink.add(SetPaymentOptions(
+                            widget.userModel.paymentOptions.copyWith(
+                                preferredSatsPerMinValue: satsPerMinute,
+                                customSatsPerMinValue: satsPerMinute)));
                       },
                     ),
                   ),
