@@ -71,8 +71,8 @@ class _PaymentAdjusterState extends State<PaymentAdjuster> {
                     context: context,
                     builder: (c) => CustomAmountDialog(
                       widget.userModel.paymentOptions.customSatsPerMinValue,
-                      widget
-                          .userModel.paymentOptions.satsPerMinuteIntervalsList,
+                      widget.userModel.paymentOptions
+                          .presetSatsPerMinuteAmountsList,
                       (int satsPerMinute) {
                         userBloc.userActionsSink.add(SetPaymentOptions(
                             widget.userModel.paymentOptions.copyWith(

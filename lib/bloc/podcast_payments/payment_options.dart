@@ -49,7 +49,10 @@ class PaymentOptions {
     List boostAmountList = presetBoostAmountsList;
     if (customBoostValue != null) boostAmountList.add(customBoostValue);
     boostAmountList.sort();
-    return boostAmountList;
+    // short-hand for toSet().toList() which removes duplicates
+    return [
+      ...{...boostAmountList}
+    ];
   }
 
   List get presetSatsPerMinuteAmountsList =>
@@ -60,6 +63,9 @@ class PaymentOptions {
     if (customSatsPerMinValue != null)
       satsPerMinuteIntervalsList.add(customSatsPerMinValue);
     satsPerMinuteIntervalsList.sort();
-    return satsPerMinuteIntervalsList;
+    // short-hand for toSet().toList() which removes duplicates
+    return [
+      ...{...satsPerMinuteIntervalsList}
+    ];
   }
 }

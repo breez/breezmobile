@@ -141,7 +141,8 @@ class _BoostWidgetState extends State<BoostWidget> {
                               builder: (c) => CustomAmountDialog(
                                 widget
                                     .userModel.paymentOptions.customBoostValue,
-                                widget.userModel.paymentOptions.boostAmountList,
+                                widget.userModel.paymentOptions
+                                    .presetBoostAmountsList,
                                 (int boostAmount) {
                                   userBloc.userActionsSink.add(
                                       SetPaymentOptions(widget
