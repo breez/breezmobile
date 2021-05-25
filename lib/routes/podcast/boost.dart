@@ -113,30 +113,9 @@ class _BoostWidgetState extends State<BoostWidget> {
                               child: InkWell(
                                 borderRadius: BorderRadius.circular(32),
                                 onTap: () {
-                                  if (widget
-                                      .userModel.paymentOptions.boostAmountList
-                                      .contains(widget.userModel.paymentOptions
-                                          .preferredBoostValue)) {
-                                    var nextIndex = (selectedIndex == 0)
-                                        ? selectedIndex
-                                        : selectedIndex - 1;
-                                    final nextAmount = widget.userModel
-                                        .paymentOptions.boostAmountList
-                                        .elementAt(nextIndex);
-                                    userBloc.userActionsSink.add(
-                                      SetBoostAmount(nextAmount),
-                                    );
-                                  } else {
-                                    userBloc.userActionsSink.add(
-                                      SetBoostAmount(
-                                        _getClosestBoostAmount(
-                                            widget.userModel.paymentOptions
-                                                .preferredBoostValue,
-                                            widget.userModel.paymentOptions
-                                                .boostAmountList),
-                                      ),
-                                    );
-                                  }
+                                  userBloc.userActionsSink.add(
+                                    SetBoostAmount(_getPreviousAmount()),
+                                  );
                                 },
                                 splashColor: Theme.of(context).splashColor,
                                 highlightColor: Colors.transparent,
@@ -227,40 +206,9 @@ class _BoostWidgetState extends State<BoostWidget> {
                                 child: InkWell(
                                   borderRadius: BorderRadius.circular(32),
                                   onTap: () {
-                                    print("LOL");
-                                    print(widget.userModel.paymentOptions
-                                        .boostAmountList);
-                                    if (widget.userModel.paymentOptions
-                                        .boostAmountList
-                                        .contains(widget
-                                            .userModel
-                                            .paymentOptions
-                                            .preferredBoostValue)) {
-                                      var nextIndex = (selectedIndex >=
-                                              widget.userModel.paymentOptions
-                                                      .boostAmountList.length -
-                                                  1)
-                                          ? selectedIndex
-                                          : selectedIndex + 1;
-                                      final nextAmount = widget.userModel
-                                          .paymentOptions.boostAmountList
-                                          .elementAt(nextIndex);
-                                      userBloc.userActionsSink.add(
-                                        SetBoostAmount(nextAmount),
-                                      );
-                                    } else {
-                                      userBloc.userActionsSink.add(
-                                        SetBoostAmount(
-                                          _getClosestBoostAmount(
-                                            widget.userModel.paymentOptions
-                                                .preferredBoostValue,
-                                            widget.userModel.paymentOptions
-                                                .boostAmountList,
-                                            bigger: true,
-                                          ),
-                                        ),
-                                      );
-                                    }
+                                    userBloc.userActionsSink.add(
+                                      SetBoostAmount(_getNextAmount()),
+                                    );
                                   },
                                   splashColor: Theme.of(context).splashColor,
                                   highlightColor: Colors.transparent,
@@ -287,14 +235,23 @@ class _BoostWidgetState extends State<BoostWidget> {
         });
   }
 
-  static int _getClosestBoostAmount(int customAmount, List presetAmountList,
-      {bool bigger = false}) {
+  int _getPreviousAmount() {
+    var currentAmount = widget.userModel.paymentOptions.preferredBoostValue;
+    var amountList = widget.userModel.paymentOptions.boostAmountList;
     try {
-      return presetAmountList[presetAmountList
-              .indexWhere((presetAmount) => customAmount < presetAmount) -
-          (bigger ? 0 : 1)];
+      return amountList[amountList.indexOf(currentAmount) - 1];
     } catch (RangeError) {
-      return presetAmountList.last;
+      return amountList.first;
+    }
+  }
+
+  int _getNextAmount() {
+    var currentAmount = widget.userModel.paymentOptions.preferredBoostValue;
+    var amountList = widget.userModel.paymentOptions.boostAmountList;
+    try {
+      return amountList[amountList.indexOf(currentAmount) + 1];
+    } catch (RangeError) {
+      return amountList.last;
     }
   }
 }

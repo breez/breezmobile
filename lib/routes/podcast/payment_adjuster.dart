@@ -44,31 +44,7 @@ class _PaymentAdjusterState extends State<PaymentAdjuster> {
                       child: InkWell(
                         borderRadius: BorderRadius.circular(32),
                         onTap: () {
-                          if (widget.userModel.paymentOptions
-                              .satsPerMinuteIntervalsList
-                              .contains(widget.userModel.paymentOptions
-                                  .preferredSatsPerMinValue)) {
-                            final currentAmount = widget.userModel
-                                .paymentOptions.preferredSatsPerMinValue;
-                            var index = widget.userModel.paymentOptions
-                                .satsPerMinuteIntervalsList
-                                .indexOf(currentAmount);
-                            if (index > 0) {
-                              index--;
-                            }
-                            final satAmount = widget.userModel.paymentOptions
-                                .satsPerMinuteIntervalsList
-                                .elementAt(index);
-                            widget.onChanged(satAmount);
-                          } else {
-                            widget.onChanged(
-                              _getClosestSatsPerMinAmount(
-                                  widget.userModel.paymentOptions
-                                      .preferredSatsPerMinValue,
-                                  widget.userModel.paymentOptions
-                                      .satsPerMinuteIntervalsList),
-                            );
-                          }
+                          widget.onChanged(_getPreviousAmount());
                         },
                         splashColor: Theme.of(context).splashColor,
                         highlightColor: Colors.transparent,
@@ -155,37 +131,7 @@ class _PaymentAdjusterState extends State<PaymentAdjuster> {
                       child: InkWell(
                         borderRadius: BorderRadius.circular(32),
                         onTap: () {
-                          if (widget.userModel.paymentOptions
-                              .satsPerMinuteIntervalsList
-                              .contains(widget.userModel.paymentOptions
-                                  .preferredSatsPerMinValue)) {
-                            final currentAmount = widget.userModel
-                                .paymentOptions.preferredSatsPerMinValue;
-                            var nextIndex = widget.userModel.paymentOptions
-                                    .satsPerMinuteIntervalsList
-                                    .indexOf(currentAmount) +
-                                1;
-                            if (nextIndex >=
-                                widget.userModel.paymentOptions
-                                    .satsPerMinuteIntervalsList.length) {
-                              nextIndex = widget.userModel.paymentOptions
-                                      .satsPerMinuteIntervalsList.length -
-                                  1;
-                            }
-                            final satAmount = widget.userModel.paymentOptions
-                                .satsPerMinuteIntervalsList
-                                .elementAt(nextIndex);
-                            widget.onChanged(satAmount);
-                          } else {
-                            widget.onChanged(
-                              _getClosestSatsPerMinAmount(
-                                  widget.userModel.paymentOptions
-                                      .preferredSatsPerMinValue,
-                                  widget.userModel.paymentOptions
-                                      .satsPerMinuteIntervalsList,
-                                  bigger: true),
-                            );
-                          }
+                          widget.onChanged(_getNextAmount());
                         },
                         splashColor: Theme.of(context).splashColor,
                         highlightColor: Colors.transparent,
@@ -209,15 +155,25 @@ class _PaymentAdjusterState extends State<PaymentAdjuster> {
     );
   }
 
-  static int _getClosestSatsPerMinAmount(
-      int customAmount, List presetAmountList,
-      {bool bigger = false}) {
+  int _getPreviousAmount() {
+    var currentAmount =
+        widget.userModel.paymentOptions.preferredSatsPerMinValue;
+    var amountList = widget.userModel.paymentOptions.satsPerMinuteIntervalsList;
     try {
-      return presetAmountList[presetAmountList
-              .indexWhere((presetAmount) => customAmount < presetAmount) -
-          (bigger ? 0 : 1)];
+      return amountList[amountList.indexOf(currentAmount) - 1];
     } catch (RangeError) {
-      return presetAmountList.last;
+      return amountList.first;
+    }
+  }
+
+  int _getNextAmount() {
+    var currentAmount =
+        widget.userModel.paymentOptions.preferredSatsPerMinValue;
+    var amountList = widget.userModel.paymentOptions.satsPerMinuteIntervalsList;
+    try {
+      return amountList[amountList.indexOf(currentAmount) + 1];
+    } catch (RangeError) {
+      return amountList.last;
     }
   }
 }
