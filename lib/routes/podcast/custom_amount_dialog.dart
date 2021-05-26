@@ -67,7 +67,7 @@ class CustomAmountDialogState extends State<CustomAmountDialog> {
             return "Please enter a custom amount";
           }
           if (int.parse(value) < widget.presetAmountsList[0]) {
-            return "Must be at least ${widget.presetAmountsList[0]} sats.";
+            return "Please enter at least ${widget.presetAmountsList[0]} sats.";
           }
           return null;
         },
