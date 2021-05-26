@@ -90,7 +90,7 @@ class _PaymentAdjusterState extends State<PaymentAdjuster> {
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
                         Container(
-                          width: 32,
+                          width: 42,
                           height: 20,
                           child: AutoSizeText(
                             _formatSatsPerMinAmount(),

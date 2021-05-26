@@ -162,7 +162,7 @@ class _BoostWidgetState extends State<BoostWidget> {
                                 crossAxisAlignment: CrossAxisAlignment.center,
                                 children: [
                                   Container(
-                                    width: 32,
+                                    width: 38,
                                     height: 20,
                                     child: AutoSizeText(
                                       _formatBoostAmount(),
