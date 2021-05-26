@@ -105,16 +105,6 @@ class PaymentAdjustmentState extends State<PaymentAdjustment> {
                     style: TextStyle(color: Colors.white),
                   ),
                 ),
-                Padding(
-                  padding: const EdgeInsets.only(top: 10.0),
-                  child: Text(
-                    "Click on boost amount to set a boost value of your choosing.",
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontStyle: FontStyle.italic,
-                    ),
-                  ),
-                )
               ],
             ))
       ],
@@ -162,16 +152,6 @@ class PaymentAdjustmentState extends State<PaymentAdjustment> {
                     ),
                   );
                 }),
-                Padding(
-                  padding: const EdgeInsets.only(top: 10.0),
-                  child: Text(
-                    "Click on sats/min amount to set a sat/min value of your choosing.",
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontStyle: FontStyle.italic,
-                    ),
-                  ),
-                ),
                 Padding(
                   padding: const EdgeInsets.only(top: 10.0),
                   child: withBreezTheme(
