@@ -35,7 +35,7 @@ class _PaymentAdjusterState extends State<PaymentAdjuster> {
           child: Stack(
             children: [
               Positioned(
-                left: 0,
+                left: 8,
                 child: GestureDetector(
                   child: Container(
                     width: 32,
@@ -90,7 +90,7 @@ class _PaymentAdjusterState extends State<PaymentAdjuster> {
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
                         Container(
-                          width: 56,
+                          width: 32,
                           height: 20,
                           child: AutoSizeText(
                             _formatSatsPerMinAmount(),
@@ -122,7 +122,7 @@ class _PaymentAdjusterState extends State<PaymentAdjuster> {
                 ),
               ),
               Positioned(
-                right: 0,
+                right: 8,
                 child: GestureDetector(
                   child: Container(
                     width: 32,
