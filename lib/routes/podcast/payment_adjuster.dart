@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:breez/bloc/blocs_provider.dart';
 import 'package:breez/bloc/user_profile/breez_user_model.dart';
@@ -33,7 +35,7 @@ class _PaymentAdjusterState extends State<PaymentAdjuster> {
           child: Stack(
             children: [
               Positioned(
-                left: 8,
+                left: 0,
                 child: GestureDetector(
                   child: Container(
                     width: 32,
@@ -88,11 +90,10 @@ class _PaymentAdjusterState extends State<PaymentAdjuster> {
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
                         Container(
-                          width: 32,
+                          width: 56,
                           height: 20,
                           child: AutoSizeText(
-                            NumberFormat.compact().format(widget.userModel
-                                .paymentOptions.preferredSatsPerMinValue),
+                            _formatSatsPerMinAmount(),
                             textAlign: TextAlign.center,
                             style: TextStyle(
                               fontSize: 14.3,
@@ -121,7 +122,7 @@ class _PaymentAdjusterState extends State<PaymentAdjuster> {
                 ),
               ),
               Positioned(
-                right: 8,
+                right: 0,
                 child: GestureDetector(
                   child: Container(
                     width: 32,
@@ -154,6 +155,23 @@ class _PaymentAdjusterState extends State<PaymentAdjuster> {
         ),
       ],
     );
+  }
+
+  String _formatSatsPerMinAmount() {
+    var satsPerMinValue =
+        widget.userModel.paymentOptions.preferredSatsPerMinValue;
+    if (!widget.userModel.paymentOptions.presetSatsPerMinuteAmountsList
+        .contains(satsPerMinValue)) {
+      final count = pow(10, (satsPerMinValue.toString().length - 3));
+      var roundedValue = satsPerMinValue / count;
+      return NumberFormat.compactCurrency(
+              decimalDigits: 3,
+              symbol:
+                  satsPerMinValue != roundedValue.round() * count ? '~' : '')
+          .format(roundedValue.round() * count);
+    } else {
+      return NumberFormat.compact().format(satsPerMinValue);
+    }
   }
 
   int _getPreviousAmount() {

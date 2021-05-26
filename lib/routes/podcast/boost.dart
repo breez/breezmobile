@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:breez/bloc/account/account_bloc.dart';
 import 'package:breez/bloc/account/account_model.dart';
@@ -44,8 +46,9 @@ class _BoostWidgetState extends State<BoostWidget> {
             mainAxisSize: MainAxisSize.max,
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Container(
-                width: 88,
+              Flexible(
+                fit: FlexFit.tight,
+                flex: 0,
                 child: TextButton.icon(
                   style: TextButton.styleFrom(
                     padding: EdgeInsets.symmetric(vertical: 8, horizontal: 8),
@@ -101,31 +104,34 @@ class _BoostWidgetState extends State<BoostWidget> {
                 flex: 1,
                 child: Center(
                   child: Container(
-                    width: 92,
+                    width: 99,
                     child: Stack(
                       fit: StackFit.loose,
                       children: [
-                        GestureDetector(
-                          child: Container(
-                            width: 32,
-                            height: 64,
-                            child: Material(
-                              color: Colors.transparent,
-                              borderRadius: BorderRadius.circular(32),
-                              child: InkWell(
+                        Positioned(
+                          left: 0,
+                          child: GestureDetector(
+                            child: Container(
+                              width: 32,
+                              height: 64,
+                              child: Material(
+                                color: Colors.transparent,
                                 borderRadius: BorderRadius.circular(32),
-                                onTap: () {
-                                  widget.onChanged(_getPreviousAmount());
-                                },
-                                splashColor: Theme.of(context).splashColor,
-                                highlightColor: Colors.transparent,
-                                child: Icon(
-                                  Icons.remove_circle_outline,
-                                  size: 20,
-                                  color: Theme.of(context)
-                                      .appBarTheme
-                                      .actionsIconTheme
-                                      .color,
+                                child: InkWell(
+                                  borderRadius: BorderRadius.circular(32),
+                                  onTap: () {
+                                    widget.onChanged(_getPreviousAmount());
+                                  },
+                                  splashColor: Theme.of(context).splashColor,
+                                  highlightColor: Colors.transparent,
+                                  child: Icon(
+                                    Icons.remove_circle_outline,
+                                    size: 20,
+                                    color: Theme.of(context)
+                                        .appBarTheme
+                                        .actionsIconTheme
+                                        .color,
+                                  ),
                                 ),
                               ),
                             ),
@@ -154,19 +160,16 @@ class _BoostWidgetState extends State<BoostWidget> {
                               ),
                             ),
                             child: SizedBox(
-                              width: 42,
+                              width: 52,
                               child: Column(
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 crossAxisAlignment: CrossAxisAlignment.center,
                                 children: [
                                   Container(
-                                    width: 32,
+                                    width: 52,
                                     height: 20,
                                     child: AutoSizeText(
-                                      NumberFormat.compact().format(widget
-                                          .userModel
-                                          .paymentOptions
-                                          .preferredBoostValue),
+                                      _formatBoostAmount(),
                                       textAlign: TextAlign.center,
                                       style: TextStyle(
                                         fontSize: 14.3,
@@ -197,7 +200,7 @@ class _BoostWidgetState extends State<BoostWidget> {
                           ),
                         ),
                         Positioned(
-                          left: 60,
+                          left: 68,
                           child: GestureDetector(
                             child: Container(
                               width: 32,
@@ -233,6 +236,16 @@ class _BoostWidgetState extends State<BoostWidget> {
             ],
           );
         });
+  }
+
+  String _formatBoostAmount() {
+    var boostValue = widget.userModel.paymentOptions.preferredBoostValue;
+    final count = pow(10, (boostValue.toString().length - 3));
+    var roundedValue = boostValue / count;
+    return NumberFormat.compactCurrency(
+            decimalDigits: 3,
+            symbol: boostValue != roundedValue.round() * count ? '~' : '')
+        .format(roundedValue.round() * count);
   }
 
   int _getPreviousAmount() {
