@@ -238,10 +238,10 @@ class _BoostWidgetState extends State<BoostWidget> {
     var boostValue = widget.userModel.paymentOptions.preferredBoostValue;
     final count = pow(10, (boostValue.toString().length - 3));
     var roundedValue = boostValue / count;
-    return NumberFormat.compactCurrency(
-            decimalDigits: 3,
-            symbol: boostValue != roundedValue.round() * count ? '~' : '')
-        .format(roundedValue.round() * count);
+    return boostValue != roundedValue.round() * count
+        ? NumberFormat.compactCurrency(decimalDigits: 3, symbol: '~')
+            .format(roundedValue.round() * count)
+        : NumberFormat.compact().format(boostValue);
   }
 
   int _getPreviousAmount() {

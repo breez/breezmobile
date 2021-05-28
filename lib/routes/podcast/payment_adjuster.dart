@@ -160,18 +160,12 @@ class _PaymentAdjusterState extends State<PaymentAdjuster> {
   String _formatSatsPerMinAmount() {
     var satsPerMinValue =
         widget.userModel.paymentOptions.preferredSatsPerMinValue;
-    if (!widget.userModel.paymentOptions.presetSatsPerMinuteAmountsList
-        .contains(satsPerMinValue)) {
-      final count = pow(10, (satsPerMinValue.toString().length - 3));
-      var roundedValue = satsPerMinValue / count;
-      return NumberFormat.compactCurrency(
-              decimalDigits: 3,
-              symbol:
-                  satsPerMinValue != roundedValue.round() * count ? '~' : '')
-          .format(roundedValue.round() * count);
-    } else {
-      return NumberFormat.compact().format(satsPerMinValue);
-    }
+    final count = pow(10, (satsPerMinValue.toString().length - 3));
+    var roundedValue = satsPerMinValue / count;
+    return satsPerMinValue != roundedValue.round() * count
+        ? NumberFormat.compactCurrency(decimalDigits: 3, symbol: '~')
+            .format(roundedValue.round() * count)
+        : NumberFormat.compact().format(satsPerMinValue);
   }
 
   int _getPreviousAmount() {
