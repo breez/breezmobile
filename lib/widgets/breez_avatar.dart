@@ -3,9 +3,9 @@ import 'dart:io';
 import 'package:breez/bloc/user_profile/default_profile_generator.dart'
     as generator;
 import 'package:breez/theme_data.dart' as theme;
+import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:optimized_cached_image/optimized_cached_image.dart';
 
 final _breezAvatarColors = {
   "salmon": Color(0xFFFA8072),
@@ -148,20 +148,7 @@ class _NetworkImageAvatar extends StatelessWidget {
       radius: radius,
       child: ClipRRect(
         borderRadius: BorderRadius.circular(radius),
-        child: OptimizedCacheImage(
-          imageUrl: avatarURL,
-          imageBuilder: (context, imageProvider) => Container(
-            width: radius * 2,
-            height: radius * 2,
-            decoration: BoxDecoration(
-              shape: BoxShape.circle,
-              image: DecorationImage(
-                image: imageProvider,
-                fit: BoxFit.contain,
-              ),
-            ),
-          ),
-        ),
+        child: ExtendedImage.network(avatarURL),
       ),
     );
   }
