@@ -138,6 +138,7 @@ class AccountBloc {
     _backgroundService = injector.backgroundTaskService;
     _currencyService = injector.currencyService;
     _actionHandlers = {
+      UnconfirmedChannelsStatusAction: unconfirmedChannelsStatusAction,
       SendPaymentFailureReport: _handleSendQueryRoute,
       ResetNetwork: _handleResetNetwork,
       RestartDaemon: _handleRestartDaemon,
@@ -185,6 +186,11 @@ class AccountBloc {
         .where(
             (item) => item.type == PaymentType.CLOSED_CHANNEL && item.pending)
         .toList());
+  }
+
+  Future unconfirmedChannelsStatusAction(
+      UnconfirmedChannelsStatusAction action) async {
+    action.resolve(await _breezLib.unconfirmedChannelsStatus(action.oldStatus));
   }
 
   void _listenEnableAccount() {
