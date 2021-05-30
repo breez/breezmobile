@@ -23,7 +23,7 @@ class UnconfirmedChannelsStatusPoller {
       log.severe("failed to query unconfimredChannelsStatus ${e.toString()}");
     }
     _unconfirmedChannelsStatusTimer =
-        Timer.periodic(Duration(seconds: 3), (timer) async {
+        Timer.periodic(Duration(seconds: 10), (timer) async {
       var result = await _checkUnconfirmedChannelStatus();
       _onNewUnconfirmedStatus(result);
     });
