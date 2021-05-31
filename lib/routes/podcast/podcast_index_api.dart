@@ -34,6 +34,9 @@ class PodcastIndexAPI extends PodcastApi {
   }
 
   @override
+  Future<SearchResult> mostRecent() => _mostRecent();
+
+  @override
   Future<Podcast> loadFeed(String url) async {
     return _loadFeed(url);
   }
@@ -50,6 +53,17 @@ class PodcastIndexAPI extends PodcastApi {
 
   static Future<SearchResult> _charts(int size) {
     return Search(userAgent: Environment.userAgent()).charts(
+        searchProvider: PodcastIndexProvider(
+            key: 'NBVJ9GPWMLPXJMFFD3KV',
+            secret: 'be7kR2CWeCFk4nkKCKV4XAX35y2eXrDeCPvs#v4F'),
+        queryParams: {
+          'val': 'lightning',
+          'aponly': 'true'
+        }).timeout(Duration(seconds: 10));
+  }
+
+  static Future<SearchResult> _mostRecent() {
+    return Search(userAgent: Environment.userAgent()).mostRecent(
         searchProvider: PodcastIndexProvider(
             key: 'NBVJ9GPWMLPXJMFFD3KV',
             secret: 'be7kR2CWeCFk4nkKCKV4XAX35y2eXrDeCPvs#v4F'),
