@@ -1,5 +1,6 @@
 import 'package:anytime/api/podcast/podcast_api.dart';
 import 'package:anytime/bloc/discovery/discovery_bloc.dart';
+import 'package:anytime/bloc/new_podcasts/new_podcasts_bloc.dart';
 import 'package:anytime/bloc/podcast/audio_bloc.dart';
 import 'package:anytime/bloc/podcast/episode_bloc.dart';
 import 'package:anytime/bloc/podcast/podcast_bloc.dart';
@@ -125,6 +126,15 @@ class _AnytimePodcastAppState extends State<AnytimePodcastApp> {
             repository: widget.repository,
             settingsService: widget.mobileSettingsService,
           )),
+          dispose: (_, value) => value.dispose(),
+        ),
+        Provider<NewPodcastsBloc>(
+          create: (_) => NewPodcastsBloc(
+              podcastService: MobilePodcastService(
+                api: widget.podcastApi,
+                repository: widget.repository,
+                settingsService: widget.mobileSettingsService,
+              )),
           dispose: (_, value) => value.dispose(),
         ),
         Provider<EpisodeBloc>(
