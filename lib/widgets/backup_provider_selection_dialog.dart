@@ -111,16 +111,14 @@ class BackupProviderSelectionDialogState
           ),
           onPressed: () => Navigator.pop(context, null),
           child: Text(
-            "CANCEL",
-            style: Theme.of(context).textTheme.button,
-          ),
+            "CANCEL"),
         ),
         StreamBuilder<BackupSettings>(
             stream: widget.backupBloc.backupSettingsStream,
             builder: (context, snapshot) {
               return TextButton(
                 style: TextButton.styleFrom(
-                  onSurface: Theme.of(context).primaryTextTheme.button.color,
+                  primary: Theme.of(context).primaryTextTheme.button.color,
                 ),
                 onPressed: !snapshot.hasData
                     ? null
