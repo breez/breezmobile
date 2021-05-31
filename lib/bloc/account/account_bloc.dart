@@ -190,7 +190,8 @@ class AccountBloc {
 
   Future unconfirmedChannelsStatusAction(
       UnconfirmedChannelsStatusAction action) async {
-    action.resolve(await _breezLib.unconfirmedChannelsStatus(action.oldStatus));
+    action.resolve(await _breezLib.unconfirmedChannelsStatus(
+        action.oldStatus ?? UnconfirmedChannelsStatus()));
   }
 
   void _listenEnableAccount() {
