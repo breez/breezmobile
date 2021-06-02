@@ -293,7 +293,7 @@ class BackupBloc {
       if (request == null) {
         _breezLib.getAvailableBackups().then((backups) {
           List snapshotsArray = json.decode(backups) as List;
-          List<SnapshotInfo> snapshots = List<SnapshotInfo>();
+          List<SnapshotInfo> snapshots = <SnapshotInfo>[];
           if (snapshotsArray != null) {
             snapshots = snapshotsArray.map((s) {
               return SnapshotInfo.fromJson(s);

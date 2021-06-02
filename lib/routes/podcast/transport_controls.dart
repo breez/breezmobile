@@ -165,12 +165,14 @@ class _PlayButton extends StatelessWidget {
           message: playing
               ? L.of(context).pause_button_label
               : L.of(context).play_button_label,
-          child: FlatButton(
+          child: TextButton(
+            style: TextButton.styleFrom(
+              shape: CircleBorder(),
+            ),
             onPressed: null,
-            padding: const EdgeInsets.all(8.0),
             child: SpinKitRing(
               lineWidth: 2.0,
-              color: Theme.of(context).accentColor,
+              color: Theme.of(context).colorScheme.secondary,
               size: 60,
             ),
           ));
@@ -180,7 +182,14 @@ class _PlayButton extends StatelessWidget {
       message: playing
           ? L.of(context).pause_button_label
           : L.of(context).play_button_label,
-      child: FlatButton(
+      child: TextButton(
+        style: TextButton.styleFrom(
+          shape: CircleBorder(
+              side: BorderSide(
+                  color: Theme.of(context).highlightColor, width: 0.0)),
+          backgroundColor: Theme.of(context).primaryColor,
+          padding: const EdgeInsets.all(8.0),
+        ),
         onPressed: () {
           if (playing) {
             onPause();
@@ -188,17 +197,10 @@ class _PlayButton extends StatelessWidget {
             onPlay();
           }
         },
-        shape: CircleBorder(
-            side: BorderSide(
-                color: Theme.of(context).highlightColor, width: 0.0)),
-        color: Theme.of(context).primaryColor,
-        padding: const EdgeInsets.all(8.0),
         child: AnimatedIcon(
           size: 60.0,
           icon: AnimatedIcons.play_pause,
-          color: Theme.of(context).primaryColor == Colors.white
-              ? Theme.of(context).scaffoldBackgroundColor
-              : Colors.white,
+          color: Colors.white,
           progress: playPauseController,
         ),
       ),

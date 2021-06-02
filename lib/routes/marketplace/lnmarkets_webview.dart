@@ -36,7 +36,8 @@ class LNMarketsWebViewPageState extends State<LNMarketsWebViewPage> {
   }
 
   Future _handleLNUrlAuth() async {
-    var response = await http.get("https://api.lnmarkets.com/lnurl/a/c");
+    Uri uri = Uri.https("api.lnmarkets.com", "lnurl/a/c");
+    var response = await http.get(uri);
     if (response.statusCode != 200) {
       throw Exception("Failed to call LN Markets API");
     }

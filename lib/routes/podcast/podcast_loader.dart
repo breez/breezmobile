@@ -12,7 +12,10 @@ import 'package:podcast_search/podcast_search.dart';
 
 const PODCAST_INDEX_KEY = "XXWQEGULBJABVHZUM8NF";
 const PODCAST_INDEX_SECRET = "KZ2uy4upvq4t3e\$m\$3r2TeFS2fEpFTAaF92xcNdX";
-const BYFEED_API_ENDPOINT = 'https://api.podcastindex.org/api/1.0/podcasts/byfeedurl';
+const BYFEED_API_ENDPOINT =
+    'https://api.podcastindex.org/api/1.0/podcasts/byfeedurl';
+const EPISODES_BYFEED_API_ENDPOINT =
+    'https://api.podcastindex.org/api/1.0/episodes/byfeedurl';
 
 class PodcastIndexClient {
   static Dio _createClient() {
@@ -57,16 +60,48 @@ class PodcastIndexClient {
     }).catchError((e) {
       if (e is DioError) {
         switch (e.type) {
-          case DioErrorType.CONNECT_TIMEOUT:
-          case DioErrorType.SEND_TIMEOUT:
-          case DioErrorType.RECEIVE_TIMEOUT:
-          case DioErrorType.DEFAULT:
+          case DioErrorType.connectTimeout:
+          case DioErrorType.sendTimeout:
+          case DioErrorType.receiveTimeout:
+          case DioErrorType.other:
             throw PodcastTimeoutException(e.message);
             break;
-          case DioErrorType.RESPONSE:
+          case DioErrorType.response:
             throw PodcastFailedException(e.message);
             break;
-          case DioErrorType.CANCEL:
+          case DioErrorType.cancel:
+            throw PodcastCancelledException(e.message);
+            break;
+        }
+      }
+      throw e;
+    });
+  }
+
+  Future<Map<String, dynamic>> loadEpisodes({
+    @required String url,
+    int timeout = 20000,
+    int max = 100,
+    String userAgent,
+  }) {
+    return _createClient().get(EPISODES_BYFEED_API_ENDPOINT, queryParameters: {
+      "url": url,
+      "max": max,
+    }).then((res) {
+      return res.data as Map<String, dynamic>;
+    }).catchError((e) {
+      if (e is DioError) {
+        switch (e.type) {
+          case DioErrorType.connectTimeout:
+          case DioErrorType.sendTimeout:
+          case DioErrorType.receiveTimeout:
+          case DioErrorType.other:
+            throw PodcastTimeoutException(e.message);
+            break;
+          case DioErrorType.response:
+            throw PodcastFailedException(e.message);
+            break;
+          case DioErrorType.cancel:
             throw PodcastCancelledException(e.message);
             break;
         }

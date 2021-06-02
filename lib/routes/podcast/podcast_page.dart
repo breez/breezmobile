@@ -1,5 +1,6 @@
 import 'package:anytime/api/podcast/podcast_api.dart';
 import 'package:anytime/bloc/discovery/discovery_bloc.dart';
+import 'package:anytime/bloc/new_podcasts/new_podcasts_bloc.dart';
 import 'package:anytime/bloc/podcast/audio_bloc.dart';
 import 'package:anytime/bloc/podcast/episode_bloc.dart';
 import 'package:anytime/bloc/podcast/podcast_bloc.dart';
@@ -26,6 +27,8 @@ import 'package:breez/routes/podcast/add_funds_message.dart';
 import 'package:breez/routes/podcast/payment_adjustment.dart';
 import 'package:breez/routes/podcast/podcast_index_api.dart';
 import 'package:breez/routes/podcast/podcast_loader.dart';
+import 'package:breez/routes/podcast/share_episode_button.dart';
+import 'package:breez/routes/podcast/share_podcast_button.dart';
 import 'package:breez/routes/podcast/transport_controls.dart';
 import 'package:breez/theme_data.dart' as breezTheme;
 import 'package:flutter/cupertino.dart';
@@ -125,6 +128,15 @@ class _AnytimePodcastAppState extends State<AnytimePodcastApp> {
           )),
           dispose: (_, value) => value.dispose(),
         ),
+        Provider<NewPodcastsBloc>(
+          create: (_) => NewPodcastsBloc(
+              podcastService: MobilePodcastService(
+                api: widget.podcastApi,
+                repository: widget.repository,
+                settingsService: widget.mobileSettingsService,
+              )),
+          dispose: (_, value) => value.dispose(),
+        ),
         Provider<EpisodeBloc>(
           create: (_) => EpisodeBloc(
               podcastService: MobilePodcastService(
@@ -208,7 +220,8 @@ class NowPlayingTransportState extends State<NowPlayingTransport> {
               List<Widget> widgets = [];
               widgets.add(Divider(height: 0.0, thickness: 1));
               // We'll also show add funds message if user tries to boost and has no balance
-              if (snapshot.data.balance < userModel.preferredSatsPerMinValue) {
+              if (snapshot.data.balance <
+                  userModel.paymentOptions.preferredSatsPerMinValue) {
                 widgets.add(AddFundsMessage(accountModel: snapshot.data));
                 widgets.add(Divider(height: 0.0, thickness: 1));
               }
@@ -248,5 +261,22 @@ WidgetBuilder errorPlaceholderBuilder() {
         color: Theme.of(context).errorColor,
         strokeWidth: 1,
       );
+  return builder;
+}
+
+WidgetBuilder sharePodcastButtonBuilder(
+    String podcastTitle, String podcastURL) {
+  final WidgetBuilder builder = (BuildContext context) =>
+      SharePodcastButton(podcastTitle: podcastTitle, podcastURL: podcastURL);
+  return builder;
+}
+
+WidgetBuilder shareEpisodeButtonBuilder(String podcastTitle, String podcastURL,
+    String episodeTitle, String episodeID) {
+  final WidgetBuilder builder = (BuildContext context) => ShareEpisodeButton(
+      podcastTitle: podcastTitle,
+      podcastURL: podcastURL,
+      episodeTitle: episodeTitle,
+      episodeID: episodeID);
   return builder;
 }

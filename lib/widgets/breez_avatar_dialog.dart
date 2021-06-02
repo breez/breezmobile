@@ -31,11 +31,15 @@ Widget breezAvatarDialog(BuildContext context, UserProfileBloc userBloc) {
   });
 
   Future<File> _pickImage() async {
-    return ImagePicker.pickImage(source: ImageSource.gallery).then((file) {
-      return ImageCropper.cropImage(
-          sourcePath: file.path,
-          aspectRatio: CropAspectRatio(ratioX: 1.0, ratioY: 1.0));
-    });
+    final _picker = ImagePicker();
+    PickedFile pickedFile = await _picker.getImage(source: ImageSource.gallery);
+    final File file = File(pickedFile.path);
+    final File croppedFile = await ImageCropper.cropImage(
+      sourcePath: file.path,
+      cropStyle: CropStyle.circle,
+      aspectRatioPresets: [CropAspectRatioPreset.square],
+    );
+    return croppedFile;
   }
 
   return WillPopScope(
@@ -66,10 +70,12 @@ Widget breezAvatarDialog(BuildContext context, UserProfileBloc userBloc) {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
                   Expanded(
-                    child: FlatButton(
-                      padding: EdgeInsets.only(
-                        bottom: 20.0,
-                        top: 26.0,
+                    child: TextButton(
+                      style: TextButton.styleFrom(
+                        padding: EdgeInsets.only(
+                          bottom: 20.0,
+                          top: 26.0,
+                        ),
                       ),
                       child: AutoSizeText(
                         'RANDOM',
@@ -128,10 +134,12 @@ Widget breezAvatarDialog(BuildContext context, UserProfileBloc userBloc) {
                     },
                   ),
                   Expanded(
-                    child: FlatButton(
-                      padding: EdgeInsets.only(
-                        bottom: 20.0,
-                        top: 26.0,
+                    child: TextButton(
+                      style: TextButton.styleFrom(
+                        padding: EdgeInsets.only(
+                          bottom: 20.0,
+                          top: 26.0,
+                        ),
                       ),
                       child: AutoSizeText(
                         'GALLERY',
@@ -176,7 +184,7 @@ Widget breezAvatarDialog(BuildContext context, UserProfileBloc userBloc) {
             ),
           ),
           actions: <Widget>[
-            FlatButton(
+            TextButton(
               child: Text('CANCEL',
                   style: Theme.of(context).primaryTextTheme.button),
               onPressed: _isUploading
@@ -185,7 +193,7 @@ Widget breezAvatarDialog(BuildContext context, UserProfileBloc userBloc) {
                       Navigator.of(context).pop();
                     },
             ),
-            FlatButton(
+            TextButton(
               child: Text('SAVE',
                   style: Theme.of(context).primaryTextTheme.button),
               onPressed: _isUploading

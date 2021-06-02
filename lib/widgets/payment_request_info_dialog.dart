@@ -22,8 +22,15 @@ class PaymentRequestInfoDialog extends StatefulWidget {
   final Function(Map map) _setAmountToPay;
   final double minHeight;
 
-  PaymentRequestInfoDialog(this.context, this.accountBloc, this.invoice,
-      this._onCancel, this._onWaitingConfirmation, this._onPaymentApproved, this._setAmountToPay, this.minHeight);
+  PaymentRequestInfoDialog(
+      this.context,
+      this.accountBloc,
+      this.invoice,
+      this._onCancel,
+      this._onWaitingConfirmation,
+      this._onPaymentApproved,
+      this._setAmountToPay,
+      this.minHeight);
 
   @override
   State<StatefulWidget> createState() {
@@ -166,13 +173,15 @@ class PaymentRequestInfoDialogState extends State<PaymentRequestInfoDialog> {
                 enabledBorder:
                     UnderlineInputBorder(borderSide: theme.greyBorderSide)),
             hintColor: Theme.of(context).dialogTheme.contentTextStyle.color,
-            accentColor: Theme.of(context).textTheme.button.color,
+            colorScheme: ColorScheme.dark(
+              primary: Theme.of(context).textTheme.button.color,
+            ),
             primaryColor: Theme.of(context).textTheme.button.color,
             errorColor: theme.themeId == "BLUE"
                 ? Colors.red
                 : Theme.of(context).errorColor),
         child: Form(
-          autovalidate: true,
+          autovalidateMode: AutovalidateMode.always,
           key: _formKey,
           child: Padding(
             padding: const EdgeInsets.only(left: 16.0, right: 16.0),
@@ -271,8 +280,7 @@ class PaymentRequestInfoDialogState extends State<PaymentRequestInfoDialog> {
   Widget _buildActions(AccountModel account) {
     List<Widget> actions = [
       SimpleDialogOption(
-        onPressed: () =>
-            widget._onCancel(),
+        onPressed: () => widget._onCancel(),
         child: Text("CANCEL", style: Theme.of(context).primaryTextTheme.button),
       )
     ];

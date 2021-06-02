@@ -65,7 +65,9 @@ class _AdminLoginDialogState extends State<_AdminLoginDialog> {
                 enabledBorder:
                     UnderlineInputBorder(borderSide: theme.greyBorderSide)),
             hintColor: Theme.of(context).dialogTheme.contentTextStyle.color,
-            accentColor: Theme.of(context).textTheme.button.color,
+            colorScheme: ColorScheme.dark(
+              primary: Theme.of(context).textTheme.button.color,
+            ),
             primaryColor: Theme.of(context).textTheme.button.color,
             errorColor: theme.themeId == "BLUE"
                 ? Colors.red
@@ -120,14 +122,14 @@ class _AdminLoginDialogState extends State<_AdminLoginDialog> {
         ),
       ),
       actions: <Widget>[
-        FlatButton(
+        TextButton(
           child:
               Text("CANCEL", style: Theme.of(context).primaryTextTheme.button),
           onPressed: () {
             Navigator.of(context).pop(false);
           },
         ),
-        FlatButton(
+        TextButton(
           child: Text("OK", style: Theme.of(context).primaryTextTheme.button),
           onPressed: () async {
             if (_formKey.currentState.validate()) {

@@ -54,7 +54,7 @@ class PosCatalogBloc with AsyncActionsHandler {
       ImportItems: _importItems,
     });
     listenActions();
-    _currentSaleController.add(Sale(saleLines: List()));
+    _currentSaleController.add(Sale(saleLines: []));
     _trackCurrentSaleRates(accountStream);
     _trackSalePayments();
     _loadIcons();
@@ -77,7 +77,7 @@ class PosCatalogBloc with AsyncActionsHandler {
         .listen((event) async {
       var paymentHash = await breezBridge.getPaymentRequestHash(event.data[0]);
       var paidSale = await _repository.fetchSaleByPaymentHash(paymentHash);
-      if (paidSale != null && paidSale.id == _currentSaleController.value.id) {
+      if (paidSale != null && paidSale.id == _currentSaleController.valueWrapper.value.id) {
         _currentSaleController.add(Sale(saleLines: []));
       }
     });
@@ -85,7 +85,7 @@ class PosCatalogBloc with AsyncActionsHandler {
 
   void _trackCurrentSaleRates(Stream<AccountModel> accountStream) {
     accountStream.listen((acc) {
-      var currentSale = _currentSaleController.value;
+      var currentSale = _currentSaleController.valueWrapper.value;
 
       // In case the price is locked we don't calculate the charge.
       if (currentSale.priceLocked) {
@@ -154,7 +154,7 @@ class PosCatalogBloc with AsyncActionsHandler {
   }
 
   Future _submitSale(SubmitCurrentSale action) async {
-    var currentSale = _currentSaleController.value.copyNew();
+    var currentSale = _currentSaleController.valueWrapper.value.copyNew();
     int saleID = await _repository.addSale(currentSale, action.paymentHash);
     var submittedSale = await _repository.fetchSaleByID(saleID);
     _currentSaleController.add(submittedSale);

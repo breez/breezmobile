@@ -4,6 +4,7 @@ import 'package:breez/bloc/account/account_actions.dart';
 import 'package:breez/bloc/account/account_bloc.dart';
 import 'package:breez/bloc/account/account_model.dart';
 import 'package:breez/bloc/invoice/invoice_model.dart';
+import 'package:breez/routes/podcast/theme.dart';
 import 'package:breez/widgets/payment_confirmation_dialog.dart';
 import 'package:breez/widgets/payment_request_info_dialog.dart';
 import 'package:breez/widgets/processsing_payment_dialog.dart';
@@ -59,7 +60,9 @@ class PaymentRequestDialogState extends State<PaymentRequestDialog> {
   @override
   Widget build(BuildContext context) {
     return WillPopScope(
-        onWillPop: _onWillPop, child: showPaymentRequestDialog());
+      onWillPop: _onWillPop,
+      child: withBreezTheme(context, showPaymentRequestDialog()),
+    );
   }
 
   // Do not pop dialog if there's a payment being processed

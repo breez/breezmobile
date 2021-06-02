@@ -146,7 +146,7 @@ class PaymentsFilterState extends State<PaymentsFilter> {
                         startDate: result[0],
                         endDate: result[1]));
               })
-            : Scaffold.of(context).showSnackBar(SnackBar(
+            : ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                 content:
                     Text("Please wait while Breez is loading transactions."))),
       ),
@@ -242,7 +242,7 @@ class PaymentsFilterState extends State<PaymentsFilter> {
     }
     return Padding(
       padding: const EdgeInsets.only(right: 0),
-      child: IconButton(
+      child: IconButton( // ignore: missing_required_param
         icon: Icon(
           Icons.more_vert,
           color: theme.themeId == "BLUE"

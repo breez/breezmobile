@@ -91,6 +91,7 @@ fileprivate let calls : Dictionary<String, BindingExecutor> = [
     "populateChannelPolicy": VoidBindingExecutor(f: BindingsPopulateChannelPolicy),
     "syncLSPChannels": SingleArgBindingExecutor(f: BindingsSyncLSPChannels),
     "checkLSPClosedChannelMismatch": SingleArgBindingExecutor(f: BindingsCheckLSPClosedChannelMismatch),
+    "unconfirmedChannelsStatus": SingleArgBindingExecutor(f: BindingsUnconfirmedChannelsStatus),
     "resetClosedChannelChainInfo": SingleArgBindingExecutor(f: BindingsResetClosedChannelChainInfo),
     "setNonBlockingUnconfirmedSwaps": EmptyArgsBindingExecutor(f: BindingsSetNonBlockingUnconfirmedSwaps),
     

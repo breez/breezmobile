@@ -1,4 +1,5 @@
 import 'package:breez/bloc/async_action.dart';
+import 'package:breez/bloc/podcast_payments/payment_options.dart';
 
 import 'breez_user_model.dart';
 import 'security_model.dart';
@@ -83,16 +84,10 @@ class SetPOSCurrency extends AsyncAction {
   SetPOSCurrency(this.shortName);
 }
 
-class SetBoostAmount extends AsyncAction {
-  final int boostAmount;
+class SetPaymentOptions extends AsyncAction {
+  final PaymentOptions paymentOptions;
 
-  SetBoostAmount(this.boostAmount);
-}
-
-class SetSatsPerMinAmount extends AsyncAction {
-  final int satsPerMin;
-
-  SetSatsPerMinAmount(this.satsPerMin);
+  SetPaymentOptions(this.paymentOptions);
 }
 
 class SetSeenPodcastTutorial extends AsyncAction {

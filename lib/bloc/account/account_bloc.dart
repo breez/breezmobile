@@ -138,6 +138,7 @@ class AccountBloc {
     _backgroundService = injector.backgroundTaskService;
     _currencyService = injector.currencyService;
     _actionHandlers = {
+      UnconfirmedChannelsStatusAction: unconfirmedChannelsStatusAction,
       SendPaymentFailureReport: _handleSendQueryRoute,
       ResetNetwork: _handleResetNetwork,
       RestartDaemon: _handleRestartDaemon,
@@ -185,6 +186,12 @@ class AccountBloc {
         .where(
             (item) => item.type == PaymentType.CLOSED_CHANNEL && item.pending)
         .toList());
+  }
+
+  Future unconfirmedChannelsStatusAction(
+      UnconfirmedChannelsStatusAction action) async {
+    action.resolve(await _breezLib.unconfirmedChannelsStatus(
+        action.oldStatus ?? UnconfirmedChannelsStatus()));
   }
 
   void _listenEnableAccount() {
@@ -630,7 +637,7 @@ class AccountBloc {
       return p.paymentGroup;
     });
 
-    var payments = List<PaymentInfo>();
+    var payments = <PaymentInfo>[];
     groupedPayments.forEach((key, singles) {
       if (singles[0].paymentHash == key) {
         payments.add(singles[0]);
@@ -641,7 +648,7 @@ class AccountBloc {
     return payments;
   }
 
-  Future _refreshLSPActivity() {
+  _refreshLSPActivity() {
     _breezLib.lspActivity().then((lspActivity) {
       print("--- LSPACtivity --- ");
       print(lspActivity);

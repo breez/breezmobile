@@ -231,6 +231,22 @@ const SyncLSPChannelsResponse$json = const {
   ],
 };
 
+const UnconfirmedChannelsStatus$json = const {
+  '1': 'UnconfirmedChannelsStatus',
+  '2': const [
+    const {'1': 'statuses', '3': 1, '4': 3, '5': 11, '6': '.data.UnconfirmedChannelStatus', '10': 'statuses'},
+  ],
+};
+
+const UnconfirmedChannelStatus$json = const {
+  '1': 'UnconfirmedChannelStatus',
+  '2': const [
+    const {'1': 'channelPoint', '3': 1, '4': 1, '5': 9, '10': 'channelPoint'},
+    const {'1': 'heightHint', '3': 2, '4': 1, '5': 3, '10': 'heightHint'},
+    const {'1': 'lspConfirmedHeight', '3': 3, '4': 1, '5': 3, '10': 'lspConfirmedHeight'},
+  ],
+};
+
 const CheckLSPClosedChannelMismatchRequest$json = const {
   '1': 'CheckLSPClosedChannelMismatchRequest',
   '2': const [
