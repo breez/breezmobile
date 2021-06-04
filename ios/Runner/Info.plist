@@ -61,11 +61,11 @@
 	<key>NSAppleMusicUsageDescription</key>
 	<string>Music is required for podcasts</string>
 	<key>NSCameraUsageDescription</key>
-	<string>Camera permission is required for QR code scanning.</string>
+	<string>Camera permission is required for QR code scanning and video conferencing.</string>
 	<key>NSFaceIDUsageDescription</key>
 	<string>FaceID is required for securely signing into app.</string>
 	<key>NSMicrophoneUsageDescription</key>
-	<string>Microphone is used in podcasts</string>
+	<string>Microphone is used in podcasts and video conferencing.</string>
 	<key>NSPhotoLibraryUsageDescription</key>
 	<string>Required for selecting user avatar image.</string>
 	<key>UIBackgroundModes</key>
