@@ -34,6 +34,7 @@ void main() async {
   mobileService.autoOpenNowPlaying = true;
   mobileService.showFunding = false;
   mobileService.useMaterialDesign = true;
+  mobileService.searchProvider = 'podcastindex';
   final repository = SembastRepository();
   SharedPreferences.getInstance().then((preferences) async {
     await runMigration(preferences);

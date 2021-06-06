@@ -51,7 +51,7 @@ class ConnectPayBloc {
   }
 
   PayerRemoteSession createPayerRemoteSession() {
-    return PayerRemoteSession(_currentUser, _sendPayment);
+    return PayerRemoteSession(_currentUser, _sendPayment, _accountActions);
   }
 
   Future startSession(PayerRemoteSession currentSession) {
@@ -99,7 +99,8 @@ class ConnectPayBloc {
           sessionID: sessionLink.sessionID);
       //if we have already a session and it is our initiated then we are a returning payer
       if (sessionInfo.initiated) {
-        currentSession = PayerRemoteSession(_currentUser, _sendPayment);
+        currentSession =
+            PayerRemoteSession(_currentUser, _sendPayment, _accountActions);
       } else {
         //otherwise we are payee
         if (!existingSession) {

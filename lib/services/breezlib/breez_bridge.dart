@@ -124,6 +124,13 @@ class BreezBridge {
         "syncGraphFromFile", {"argument": sourceFilePath});
   }
 
+  Future unconfirmedChannelsStatus(UnconfirmedChannelsStatus status) {
+    return _invokeMethodWhenReady("unconfirmedChannelsStatus", {
+      "argument": status?.writeToBuffer()
+    }).then(
+        (result) => UnconfirmedChannelsStatus()..mergeFromBuffer(result ?? []));
+  }
+
   void log(String msg, String level) {
     _invokeMethodImmediate("log", {"msg": msg, "lvl": level});
   }

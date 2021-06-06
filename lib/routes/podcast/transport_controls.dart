@@ -167,12 +167,12 @@ class _PlayButton extends StatelessWidget {
               : L.of(context).play_button_label,
           child: TextButton(
             style: TextButton.styleFrom(
-              padding: const EdgeInsets.all(8.0),
+              shape: CircleBorder(),
             ),
             onPressed: null,
             child: SpinKitRing(
               lineWidth: 2.0,
-              color: Theme.of(context).accentColor,
+              color: Theme.of(context).colorScheme.secondary,
               size: 60,
             ),
           ));
@@ -200,9 +200,7 @@ class _PlayButton extends StatelessWidget {
         child: AnimatedIcon(
           size: 60.0,
           icon: AnimatedIcons.play_pause,
-          color: Theme.of(context).primaryColor == Colors.white
-              ? Theme.of(context).scaffoldBackgroundColor
-              : Colors.white,
+          color: Colors.white,
           progress: playPauseController,
         ),
       ),

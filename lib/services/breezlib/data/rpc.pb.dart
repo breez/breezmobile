@@ -1651,6 +1651,122 @@ class SyncLSPChannelsResponse extends $pb.GeneratedMessage {
   void clearHasMismatch() => clearField(1);
 }
 
+class UnconfirmedChannelsStatus extends $pb.GeneratedMessage {
+  static final $pb.BuilderInfo _i = $pb.BuilderInfo(const $core.bool.fromEnvironment('protobuf.omit_message_names') ? '' : 'UnconfirmedChannelsStatus', package: const $pb.PackageName(const $core.bool.fromEnvironment('protobuf.omit_message_names') ? '' : 'data'), createEmptyInstance: create)
+    ..pc<UnconfirmedChannelStatus>(1, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'statuses', $pb.PbFieldType.PM, subBuilder: UnconfirmedChannelStatus.create)
+    ..hasRequiredFields = false
+  ;
+
+  UnconfirmedChannelsStatus._() : super();
+  factory UnconfirmedChannelsStatus({
+    $core.Iterable<UnconfirmedChannelStatus> statuses,
+  }) {
+    final _result = create();
+    if (statuses != null) {
+      _result.statuses.addAll(statuses);
+    }
+    return _result;
+  }
+  factory UnconfirmedChannelsStatus.fromBuffer($core.List<$core.int> i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromBuffer(i, r);
+  factory UnconfirmedChannelsStatus.fromJson($core.String i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromJson(i, r);
+  @$core.Deprecated(
+  'Using this can add significant overhead to your binary. '
+  'Use [GeneratedMessageGenericExtensions.deepCopy] instead. '
+  'Will be removed in next major version')
+  UnconfirmedChannelsStatus clone() => UnconfirmedChannelsStatus()..mergeFromMessage(this);
+  @$core.Deprecated(
+  'Using this can add significant overhead to your binary. '
+  'Use [GeneratedMessageGenericExtensions.rebuild] instead. '
+  'Will be removed in next major version')
+  UnconfirmedChannelsStatus copyWith(void Function(UnconfirmedChannelsStatus) updates) => super.copyWith((message) => updates(message as UnconfirmedChannelsStatus)); // ignore: deprecated_member_use
+  $pb.BuilderInfo get info_ => _i;
+  @$core.pragma('dart2js:noInline')
+  static UnconfirmedChannelsStatus create() => UnconfirmedChannelsStatus._();
+  UnconfirmedChannelsStatus createEmptyInstance() => create();
+  static $pb.PbList<UnconfirmedChannelsStatus> createRepeated() => $pb.PbList<UnconfirmedChannelsStatus>();
+  @$core.pragma('dart2js:noInline')
+  static UnconfirmedChannelsStatus getDefault() => _defaultInstance ??= $pb.GeneratedMessage.$_defaultFor<UnconfirmedChannelsStatus>(create);
+  static UnconfirmedChannelsStatus _defaultInstance;
+
+  @$pb.TagNumber(1)
+  $core.List<UnconfirmedChannelStatus> get statuses => $_getList(0);
+}
+
+class UnconfirmedChannelStatus extends $pb.GeneratedMessage {
+  static final $pb.BuilderInfo _i = $pb.BuilderInfo(const $core.bool.fromEnvironment('protobuf.omit_message_names') ? '' : 'UnconfirmedChannelStatus', package: const $pb.PackageName(const $core.bool.fromEnvironment('protobuf.omit_message_names') ? '' : 'data'), createEmptyInstance: create)
+    ..aOS(1, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'channelPoint', protoName: 'channelPoint')
+    ..aInt64(2, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'heightHint', protoName: 'heightHint')
+    ..aInt64(3, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'lspConfirmedHeight', protoName: 'lspConfirmedHeight')
+    ..hasRequiredFields = false
+  ;
+
+  UnconfirmedChannelStatus._() : super();
+  factory UnconfirmedChannelStatus({
+    $core.String channelPoint,
+    $fixnum.Int64 heightHint,
+    $fixnum.Int64 lspConfirmedHeight,
+  }) {
+    final _result = create();
+    if (channelPoint != null) {
+      _result.channelPoint = channelPoint;
+    }
+    if (heightHint != null) {
+      _result.heightHint = heightHint;
+    }
+    if (lspConfirmedHeight != null) {
+      _result.lspConfirmedHeight = lspConfirmedHeight;
+    }
+    return _result;
+  }
+  factory UnconfirmedChannelStatus.fromBuffer($core.List<$core.int> i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromBuffer(i, r);
+  factory UnconfirmedChannelStatus.fromJson($core.String i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromJson(i, r);
+  @$core.Deprecated(
+  'Using this can add significant overhead to your binary. '
+  'Use [GeneratedMessageGenericExtensions.deepCopy] instead. '
+  'Will be removed in next major version')
+  UnconfirmedChannelStatus clone() => UnconfirmedChannelStatus()..mergeFromMessage(this);
+  @$core.Deprecated(
+  'Using this can add significant overhead to your binary. '
+  'Use [GeneratedMessageGenericExtensions.rebuild] instead. '
+  'Will be removed in next major version')
+  UnconfirmedChannelStatus copyWith(void Function(UnconfirmedChannelStatus) updates) => super.copyWith((message) => updates(message as UnconfirmedChannelStatus)); // ignore: deprecated_member_use
+  $pb.BuilderInfo get info_ => _i;
+  @$core.pragma('dart2js:noInline')
+  static UnconfirmedChannelStatus create() => UnconfirmedChannelStatus._();
+  UnconfirmedChannelStatus createEmptyInstance() => create();
+  static $pb.PbList<UnconfirmedChannelStatus> createRepeated() => $pb.PbList<UnconfirmedChannelStatus>();
+  @$core.pragma('dart2js:noInline')
+  static UnconfirmedChannelStatus getDefault() => _defaultInstance ??= $pb.GeneratedMessage.$_defaultFor<UnconfirmedChannelStatus>(create);
+  static UnconfirmedChannelStatus _defaultInstance;
+
+  @$pb.TagNumber(1)
+  $core.String get channelPoint => $_getSZ(0);
+  @$pb.TagNumber(1)
+  set channelPoint($core.String v) { $_setString(0, v); }
+  @$pb.TagNumber(1)
+  $core.bool hasChannelPoint() => $_has(0);
+  @$pb.TagNumber(1)
+  void clearChannelPoint() => clearField(1);
+
+  @$pb.TagNumber(2)
+  $fixnum.Int64 get heightHint => $_getI64(1);
+  @$pb.TagNumber(2)
+  set heightHint($fixnum.Int64 v) { $_setInt64(1, v); }
+  @$pb.TagNumber(2)
+  $core.bool hasHeightHint() => $_has(1);
+  @$pb.TagNumber(2)
+  void clearHeightHint() => clearField(2);
+
+  @$pb.TagNumber(3)
+  $fixnum.Int64 get lspConfirmedHeight => $_getI64(2);
+  @$pb.TagNumber(3)
+  set lspConfirmedHeight($fixnum.Int64 v) { $_setInt64(2, v); }
+  @$pb.TagNumber(3)
+  $core.bool hasLspConfirmedHeight() => $_has(2);
+  @$pb.TagNumber(3)
+  void clearLspConfirmedHeight() => clearField(3);
+}
+
 class CheckLSPClosedChannelMismatchRequest extends $pb.GeneratedMessage {
   static final $pb.BuilderInfo _i = $pb.BuilderInfo(const $core.bool.fromEnvironment('protobuf.omit_message_names') ? '' : 'CheckLSPClosedChannelMismatchRequest', package: const $pb.PackageName(const $core.bool.fromEnvironment('protobuf.omit_message_names') ? '' : 'data'), createEmptyInstance: create)
     ..aOM<LSPInformation>(1, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'lspInfo', protoName: 'lspInfo', subBuilder: LSPInformation.create)

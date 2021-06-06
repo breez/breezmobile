@@ -156,6 +156,7 @@ class ItemPageState extends State<ItemPage> {
 
                                     return DropdownButtonHideUnderline(
                                       child: DropdownButtonFormField(
+                                        iconEnabledColor: Colors.white,
                                         isDense: true,
                                         decoration: InputDecoration(
                                           labelText: 'Currency',
@@ -177,7 +178,7 @@ class ItemPageState extends State<ItemPage> {
                                                   .FieldTextStyle.textStyle
                                                   .copyWith(
                                                       color: Theme.of(context)
-                                                          .accentColor),
+                                                          .colorScheme.secondary),
                                             ),
                                           );
                                         }).toList()
@@ -192,7 +193,7 @@ class ItemPageState extends State<ItemPage> {
                                                     .FieldTextStyle.textStyle
                                                     .copyWith(
                                                         color: Theme.of(context)
-                                                            .accentColor),
+                                                            .colorScheme.secondary),
                                               ),
                                             );
                                           }).toList()),

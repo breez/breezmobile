@@ -68,6 +68,7 @@ class SessionInstructions extends StatelessWidget {
                           side: BorderSide(
                               color: theme.BreezColors.white[500],
                               style: BorderStyle.solid),
+                          primary: theme.BreezColors.white[500],
                         ),
                         child: Text(
                           action.toUpperCase(),

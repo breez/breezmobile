@@ -1,5 +1,6 @@
 import 'package:anytime/api/podcast/podcast_api.dart';
 import 'package:anytime/bloc/discovery/discovery_bloc.dart';
+import 'package:anytime/bloc/new_podcasts/new_podcasts_bloc.dart';
 import 'package:anytime/bloc/podcast/audio_bloc.dart';
 import 'package:anytime/bloc/podcast/episode_bloc.dart';
 import 'package:anytime/bloc/podcast/podcast_bloc.dart';
@@ -127,6 +128,15 @@ class _AnytimePodcastAppState extends State<AnytimePodcastApp> {
           )),
           dispose: (_, value) => value.dispose(),
         ),
+        Provider<NewPodcastsBloc>(
+          create: (_) => NewPodcastsBloc(
+              podcastService: MobilePodcastService(
+                api: widget.podcastApi,
+                repository: widget.repository,
+                settingsService: widget.mobileSettingsService,
+              )),
+          dispose: (_, value) => value.dispose(),
+        ),
         Provider<EpisodeBloc>(
           create: (_) => EpisodeBloc(
               podcastService: MobilePodcastService(
@@ -210,7 +220,8 @@ class NowPlayingTransportState extends State<NowPlayingTransport> {
               List<Widget> widgets = [];
               widgets.add(Divider(height: 0.0, thickness: 1));
               // We'll also show add funds message if user tries to boost and has no balance
-              if (snapshot.data.balance < userModel.preferredSatsPerMinValue) {
+              if (snapshot.data.balance <
+                  userModel.paymentOptions.preferredSatsPerMinValue) {
                 widgets.add(AddFundsMessage(accountModel: snapshot.data));
                 widgets.add(Divider(height: 0.0, thickness: 1));
               }
@@ -253,14 +264,19 @@ WidgetBuilder errorPlaceholderBuilder() {
   return builder;
 }
 
-WidgetBuilder sharePodcastButtonBuilder(String podcastURL) {
-  final WidgetBuilder builder =
-      (BuildContext context) => SharePodcastButton(podcastURL: podcastURL);
+WidgetBuilder sharePodcastButtonBuilder(
+    String podcastTitle, String podcastURL) {
+  final WidgetBuilder builder = (BuildContext context) =>
+      SharePodcastButton(podcastTitle: podcastTitle, podcastURL: podcastURL);
   return builder;
 }
 
-WidgetBuilder shareEpisodeButtonBuilder(String podcastURL, String episodeID) {
-  final WidgetBuilder builder = (BuildContext context) =>
-      ShareEpisodeButton(podcastURL: podcastURL, episodeID: episodeID);
+WidgetBuilder shareEpisodeButtonBuilder(String podcastTitle, String podcastURL,
+    String episodeTitle, String episodeID) {
+  final WidgetBuilder builder = (BuildContext context) => ShareEpisodeButton(
+      podcastTitle: podcastTitle,
+      podcastURL: podcastURL,
+      episodeTitle: episodeTitle,
+      episodeID: episodeID);
   return builder;
 }

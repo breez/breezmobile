@@ -18,11 +18,15 @@ import 'package:breez/services/injector.dart';
 import 'package:fixnum/fixnum.dart';
 import 'package:rxdart/rxdart.dart';
 
+import '../async_action.dart';
+import '../channels_status_poller.dart';
 import 'connect_pay_model.dart';
 
 // A concrete implementation of RemoteSession from the payer side.
 class PayerRemoteSession extends RemoteSession with OnlineStatusUpdater {
   String _currentSessionInvite;
+  Sink<AsyncAction> accountActions;
+  UnconfirmedChannelsStatusPoller _channelsStatusPoller;
 
   final StreamController<void> _terminationStreamController =
       StreamController<void>();
@@ -59,7 +63,7 @@ class PayerRemoteSession extends RemoteSession with OnlineStatusUpdater {
 
   String get sessionID => sessionLink?.sessionID;
 
-  PayerRemoteSession(this._currentUser, this.sendPayment,
+  PayerRemoteSession(this._currentUser, this.sendPayment, this.accountActions,
       {PayeeSessionData existingPayeeData})
       : super(_currentUser) {
     var initialState = PaymentSessionState.payerStart(
@@ -155,6 +159,7 @@ class PayerRemoteSession extends RemoteSession with OnlineStatusUpdater {
     if (_isTerminated) {
       return Future.value(null);
     }
+    _channelsStatusPoller?.dispose();
     _sessionCompleter.complete();
 
     await stopStatusUpdates();
@@ -217,9 +222,17 @@ class PayerRemoteSession extends RemoteSession with OnlineStatusUpdater {
 
       String paymentRequest = nextState.payeeData.paymentRequest;
       if (paymentRequest != null) {
-        if (!this._paymentSent) {
-          this._paymentSent = true;
-          _sendPayment(paymentRequest, nextState);
+        if (_channelsStatusPoller == null) {
+          _channelsStatusPoller =
+              UnconfirmedChannelsStatusPoller(accountActions, (progress) {
+            _paymentSessionController.add(nextState.copyWith(
+                payerData: nextState.payerData
+                    .copyWith(unconfirmedChannelsProgress: progress)));
+            if (progress == 1.0) {
+              _sendPayment(paymentRequest, nextState);
+            }
+          });
+          _channelsStatusPoller.start();
         }
       } else {
         _paymentSessionController.add(nextState);
