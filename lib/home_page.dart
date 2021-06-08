@@ -25,6 +25,7 @@ import 'package:breez/routes/charge/pos_invoice.dart';
 import 'package:breez/routes/home/bottom_actions_bar.dart';
 import 'package:breez/routes/home/qr_action_button.dart';
 import 'package:breez/routes/marketplace/marketplace.dart';
+import 'package:breez/routes/sats_rooms/sats_rooms.dart';
 import 'package:breez/routes/podcast/podcast_page.dart' as breezPodcast;
 import 'package:breez/routes/podcast/theme.dart';
 import 'package:breez/theme_data.dart' as theme;
@@ -90,6 +91,7 @@ class Home extends StatefulWidget {
 
 class HomeState extends State<Home> with WidgetsBindingObserver {
   final GlobalKey podcastMenuItemKey = GlobalKey();
+  final GlobalKey satsRoomsMenuItemKey = GlobalKey();
   String _activeScreen = "breezHome";
   Set _hiddenRoutes = Set<String>();
   StreamSubscription<String> _accountNotificationsSubscription;
@@ -196,11 +198,22 @@ class HomeState extends State<Home> with WidgetsBindingObserver {
         opacityShadow: 0.9,
         textSkip: "DISMISS",
         colorShadow: Theme.of(context).primaryColorLight,
-        onClickOverlay: (s) => tutorial.finish(),
-        onClickTarget: (s) {
+        onClickOverlay: (o) {
+          if (o.keyTarget == podcastMenuItemKey) {
+            tutorial.next();
+          } else if (o.keyTarget == satsRoomsMenuItemKey) {
+            tutorial.finish();
+          }
+        },
+        onClickTarget: (t) {
+          var appMode;
+          if (t.keyTarget == podcastMenuItemKey) {
+            appMode = AppMode.podcasts;
+          } else if (t.keyTarget == satsRoomsMenuItemKey) {
+            appMode = AppMode.satsRooms;
+          }
           tutorial.finish();
-          widget.userProfileBloc.userActionsSink
-              .add(SetAppMode(AppMode.podcasts));
+          widget.userProfileBloc.userActionsSink.add(SetAppMode(appMode));
           Navigator.pop(context);
         },
         onSkip: () => tutorial.finish(),
@@ -236,6 +249,37 @@ class HomeState extends State<Home> with WidgetsBindingObserver {
                   padding: const EdgeInsets.only(top: 10.0),
                   child: Text(
                     "Stream sats to your favorite podcasters while they stream ideas back to you.",
+                    style: TextStyle(color: Colors.white),
+                  ),
+                )
+              ],
+            ))
+      ],
+    ));
+    targets.add(TargetFocus(
+      identify: "SatsRoomsMenuItem",
+      keyTarget: satsRoomsMenuItemKey,
+      enableOverlayTab: true,
+      shape: ShapeLightFocus.RRect,
+      paddingFocus: 8,
+      contents: [
+        TargetContent(
+            align: ContentAlign.top,
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[
+                Text(
+                  "New!",
+                  style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      color: Colors.white,
+                      fontSize: 20.0),
+                ),
+                Padding(
+                  padding: const EdgeInsets.only(top: 10.0),
+                  child: Text(
+                    "Create a Sats Room to interact with your audience where they can streams sats to you.",
                     style: TextStyle(color: Colors.white),
                   ),
                 )
@@ -375,6 +419,23 @@ class HomeState extends State<Home> with WidgetsBindingObserver {
                                       },
                                     );
 
+                                    var satsRoomsItem = DrawerItemConfig(
+                                      "",
+                                      "Sats Rooms",
+                                      "src/icon/sats_rooms.png",
+                                      key: satsRoomsMenuItemKey,
+                                      isSelected:
+                                          user.appMode == AppMode.satsRooms,
+                                      onItemSelected: (_) {
+                                        protectAdminAction(context, user, () {
+                                          widget.userProfileBloc.userActionsSink
+                                              .add(
+                                                  SetAppMode(AppMode.satsRooms));
+                                          return Future.value(null);
+                                        });
+                                      },
+                                    );
+
                                     var posItem = DrawerItemConfig(
                                       "",
                                       "Point of Sale",
@@ -405,6 +466,9 @@ class HomeState extends State<Home> with WidgetsBindingObserver {
                                       ]),
                                       DrawerItemConfigGroup([
                                         podcastItem,
+                                      ]),
+                                      DrawerItemConfigGroup([
+                                        satsRoomsItem,
                                       ]),
                                       DrawerItemConfigGroup([
                                         posItem,
@@ -607,6 +671,8 @@ class HomeState extends State<Home> with WidgetsBindingObserver {
     switch (appMode) {
       case (AppMode.podcasts):
         return "src/icon/podcast.png";
+      case (AppMode.satsRooms):
+        return "src/icon/sats_rooms.png";
       case (AppMode.pos):
         return "src/icon/pos.png";
       case (AppMode.apps):
@@ -635,6 +701,8 @@ class HomeState extends State<Home> with WidgetsBindingObserver {
             ),
           ),
         );
+      case AppMode.satsRooms:
+        return SatsRooms();
       case AppMode.pos:
         return POSInvoice();
       case AppMode.apps:
