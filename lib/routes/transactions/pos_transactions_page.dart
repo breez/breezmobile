@@ -10,7 +10,7 @@ import 'package:breez/widgets/calendar_dialog.dart';
 import 'package:breez/widgets/flushbar.dart';
 import 'package:breez/widgets/loader.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_i18n/flutter_i18n.dart';
+import 'package:breez/utils/i18n.dart';
 import 'package:share_extend/share_extend.dart';
 
 import 'pos_payments_list.dart';
@@ -86,7 +86,7 @@ class PosTransactionsPageState extends State<PosTransactionsPage> {
         backgroundColor: Theme.of(context).canvasColor,
         leading: backBtn.BackButton(),
         title: Text(
-          FlutterI18n.translate(context, _title),
+          I18N.t(context, _title),
           style: Theme.of(context).appBarTheme.textTheme.headline6,
         ),
         actions: actions == null ? <Widget>[] : actions,
@@ -134,7 +134,8 @@ class PosTransactionsPageState extends State<PosTransactionsPage> {
     }
     return Padding(
       padding: const EdgeInsets.only(right: 16.0),
-      child: IconButton( // ignore: missing_required_param
+      child: IconButton(
+        // ignore: missing_required_param
         icon: Icon(
           Icons.more_vert,
           color: Theme.of(context).disabledColor,

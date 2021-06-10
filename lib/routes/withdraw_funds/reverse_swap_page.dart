@@ -11,7 +11,7 @@ import 'package:breez/widgets/error_dialog.dart';
 import 'package:breez/widgets/loader.dart';
 import 'package:breez/widgets/payment_details_dialog.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_i18n/flutter_i18n.dart';
+import 'package:breez/utils/i18n.dart';
 import 'package:rxdart/subjects.dart';
 
 import '../sync_progress_dialog.dart';
@@ -98,8 +98,7 @@ class ReverseSwapPageState extends State<ReverseSwapPage> {
                       leading: backBtn.BackButton(onPressed: () {
                         Navigator.of(context).pop();
                       }),
-                      title: Text(
-                          FlutterI18n.translate(context, "send_to_btc_address"),
+                      title: Text(I18N.t(context, "send_to_btc_address"),
                           style: Theme.of(context)
                               .appBarTheme
                               .textTheme
@@ -166,7 +165,7 @@ class ReverseSwapPageState extends State<ReverseSwapPage> {
                                   physics: NeverScrollableScrollPhysics(),
                                   children: <Widget>[
                                     WithdrawFundsPage(
-                                        title: FlutterI18n.translate(
+                                        title: I18N.t(
                                             context, "send_to_btc_address"),
                                         policy: WithdrawFundsPolicy(
                                           policy.minValue,

@@ -13,6 +13,7 @@ import 'package:breez/widgets/loader.dart';
 import 'package:fixnum/fixnum.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:breez/utils/i18n.dart';
 
 import 'flushbar.dart';
 
@@ -139,7 +140,7 @@ class CurrencyConverterDialogState extends State<CurrencyConverterDialog>
                     Expanded(
                       child: Padding(
                         child: AutoSizeText(
-                          "Enter amount in",
+                          I18N.t(context, "enter_amount_in"),
                           style: Theme.of(context).dialogTheme.titleTextStyle,
                           maxLines: 1,
                           minFontSize: MinFontSize(context).minFontSize,

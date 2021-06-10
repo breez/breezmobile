@@ -4,6 +4,7 @@ import 'package:breez/bloc/backup/backup_model.dart';
 import 'package:breez/utils/min_font_size.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:breez/utils/i18n.dart';
 
 import 'backup_provider_selection_dialog.dart';
 import 'error_dialog.dart';
@@ -37,7 +38,7 @@ class EnableBackupDialogState extends State<EnableBackupDialog> {
         child: AlertDialog(
           titlePadding: EdgeInsets.fromLTRB(24.0, 22.0, 0.0, 16.0),
           title: Text(
-            "Backup",
+            I18N.t(context, "backup"),
             style: Theme.of(context).dialogTheme.titleTextStyle,
           ),
           contentPadding: EdgeInsets.fromLTRB(8.0, 8.0, 8.0, 24.0),
@@ -56,7 +57,7 @@ class EnableBackupDialogState extends State<EnableBackupDialog> {
                       Padding(
                         padding: const EdgeInsets.only(left: 15.0, right: 12.0),
                         child: AutoSizeText(
-                          "If you want to be able to restore your funds in case this mobile device or this app are no longer available (e.g. lost or stolen device or app uninstall), you are required to backup your information.",
+                          I18N.t(context, "backup_message"),
                           style: Theme.of(context)
                               .primaryTextTheme
                               .headline3
@@ -87,7 +88,7 @@ class EnableBackupDialogState extends State<EnableBackupDialog> {
                             ),
                             Expanded(
                                 child: AutoSizeText(
-                              "Don't prompt again",
+                              I18N.t(context, "dont_prompt_again"),
                               style: Theme.of(context)
                                   .primaryTextTheme
                                   .headline3
@@ -108,7 +109,7 @@ class EnableBackupDialogState extends State<EnableBackupDialog> {
             TextButton(
               onPressed: () => Navigator.pop(widget.context),
               child: Text(
-                "LATER",
+                I18N.t(context, "LATER"),
                 style: Theme.of(context).primaryTextTheme.button,
                 maxLines: 1,
               ),
@@ -133,9 +134,8 @@ class EnableBackupDialogState extends State<EnableBackupDialog> {
                             provider == BackupSettings.icloudBackupProvider) {
                           await promptError(
                               context,
-                              "Sign in to iCloud",
-                              Text(
-                                  "Sign in to your iCloud account. On the Home screen, launch Settings, tap iCloud, and enter your Apple ID. Turn iCloud Drive on. If you don't have an iCloud account, tap Create a new Apple ID.",
+                              I18N.t(context, "sign_in_icloud"),
+                              Text(I18N.t(context, "sign_in_icloud_message"),
                                   style: Theme.of(context)
                                       .dialogTheme
                                       .contentTextStyle));
@@ -145,7 +145,7 @@ class EnableBackupDialogState extends State<EnableBackupDialog> {
                       }
                     }),
                     child: Text(
-                      "BACKUP NOW",
+                      I18N.t(context, "BACKUP_NOW"),
                       style: Theme.of(context).primaryTextTheme.button,
                       maxLines: 1,
                     ),

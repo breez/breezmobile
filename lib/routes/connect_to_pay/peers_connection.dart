@@ -2,6 +2,7 @@ import 'package:auto_size_text/auto_size_text.dart';
 import 'package:breez/bloc/connect_pay/connect_pay_model.dart';
 import 'package:breez/widgets/layouts.dart';
 import 'package:flutter/material.dart';
+import 'package:breez/utils/i18n.dart';
 
 import 'connected_peer.dart';
 import 'connection_status.dart';
@@ -90,20 +91,22 @@ class PeersConnection extends StatelessWidget {
                     child: AlignMiddle(
                         width: peerContainerSize,
                         child: _UserNameWidget(
-                            _sessionState.payerData.userName ?? "Unknown")),
+                            _sessionState.payerData.userName ??
+                                I18N.t(context, "unknown"))),
                   ),
                   Positioned(
                     top: nameMargin,
                     right: 0.0,
                     child: AlignMiddle(
-                        width: peerContainerSize, child: buildPayeeWidget()),
+                        width: peerContainerSize,
+                        child: buildPayeeWidget(context)),
                   )
                 ],
               ))
         ]);
   }
 
-  Widget buildPayeeWidget() {
+  Widget buildPayeeWidget(BuildContext context) {
     if (_sessionState.payeeData.userName != null) {
       return _UserNameWidget(_sessionState.payeeData.userName);
     }
@@ -111,7 +114,7 @@ class PeersConnection extends StatelessWidget {
     if (!_sessionState.invitationSent) {
       return SizedBox();
     }
-    return _UserNameWidget("Unknown");
+    return _UserNameWidget(I18N.t(context, "unknown"));
   }
 }
 

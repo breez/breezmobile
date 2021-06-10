@@ -9,6 +9,7 @@ import 'package:breez/widgets/payment_request_dialog.dart';
 import 'package:breez/widgets/sync_loader.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:breez/utils/i18n.dart';
 import 'package:rxdart/rxdart.dart';
 
 const PAYMENT_LIST_ITEM_HEIGHT = 72.0;
@@ -179,7 +180,7 @@ class ProcessingPaymentDialogState extends State<ProcessingPaymentDialog>
     return AlertDialog(
       content: SyncProgressLoader(
           value: channelsSyncProgress ?? 0,
-          title: "Synchronizing to the network"),
+          title: I18N.t(context, "synchronizing_to_the_network")),
       actions: <Widget>[
         FlatButton(
           onPressed: (() {

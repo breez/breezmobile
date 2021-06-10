@@ -13,6 +13,7 @@ import 'package:fixnum/fixnum.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:breez/utils/i18n.dart';
 import 'package:rxdart/subjects.dart';
 
 import 'payment_details_form.dart';
@@ -176,7 +177,8 @@ class WaitingChannelsSyncUIState extends State<WaitingChannelsSyncUI> {
                             builder: (context, snapshot) {
                               return SyncProgressLoader(
                                   value: snapshot.data ?? 0,
-                                  title: "Synchronizing to the network");
+                                  title: I18N.t(
+                                      context, "synchronizing_to_the_network"));
                             }),
                         actions: <Widget>[
                           FlatButton(

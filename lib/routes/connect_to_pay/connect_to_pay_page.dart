@@ -13,7 +13,7 @@ import 'package:breez/widgets/flushbar.dart';
 import 'package:breez/widgets/loader.dart';
 import 'package:fixnum/fixnum.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_i18n/flutter_i18n.dart';
+import 'package:breez/utils/i18n.dart';
 
 import 'payee_session_widget.dart';
 import 'payer_session_widget.dart';
@@ -164,7 +164,7 @@ class ConnectToPayPageState extends State<ConnectToPayPage> {
           backgroundColor: Theme.of(context).canvasColor,
           leading: backBtn.BackButton(onPressed: _onBackPressed),
           title: Text(
-            FlutterI18n.translate(context, _title),
+            I18N.t(context, _title),
             style: Theme.of(context).appBarTheme.textTheme.headline6,
           ),
           elevation: 0.0,

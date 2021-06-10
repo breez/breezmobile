@@ -1,6 +1,7 @@
 import 'package:breez/bloc/account/account_bloc.dart';
 import 'package:breez/bloc/account/account_model.dart';
 import 'package:breez/bloc/blocs_provider.dart';
+import 'package:breez/utils/i18n.dart';
 import 'package:breez/widgets/circular_progress.dart';
 import 'package:flutter/material.dart';
 
@@ -57,8 +58,8 @@ class SyncProgressDialogState extends State<SyncProgressDialog> {
               size: 100.0,
               value: acc.serverReady ? acc.syncProgress : null,
               title: acc.serverReady
-                  ? "Synchronizing to the network"
-                  : "Waiting for network"),
+                  ? I18N.t(context, "synchronizing_to_the_network")
+                  : I18N.t(context, "waiting_for_network")),
         );
       },
     );

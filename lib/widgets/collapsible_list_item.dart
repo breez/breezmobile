@@ -1,6 +1,7 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:breez/services/injector.dart';
 import 'package:flutter/material.dart';
+import 'package:breez/utils/i18n.dart';
 import 'package:share_extend/share_extend.dart';
 
 import 'flushbar.dart';
@@ -65,7 +66,8 @@ class CollapsibleListItem extends StatelessWidget {
                             IconButton(
                               alignment: Alignment.centerRight,
                               padding: EdgeInsets.only(right: 8.0),
-                              tooltip: "Copy $title",
+                              tooltip: I18N.t(context, "copy_text",
+                                  translationParams: {"text": title}),
                               iconSize: 16.0,
                               color: this.userStyle.color ??
                                   Theme.of(context)
@@ -81,8 +83,9 @@ class CollapsibleListItem extends StatelessWidget {
                                     .setClipboardText(sharedValue);
                                 Navigator.pop(context);
                                 showFlushbar(context,
-                                    message:
-                                        "$title was copied to your clipboard.",
+                                    message: I18N.t(context,
+                                        "text_was_copied_to_your_clipboard",
+                                        translationParams: {"text": title}),
                                     duration: Duration(seconds: 4));
                               },
                             ),

@@ -14,6 +14,7 @@ import 'package:breez/widgets/compact_qr_image.dart';
 import 'package:breez/widgets/flushbar.dart';
 import 'package:breez/widgets/loader.dart';
 import 'package:flutter/material.dart';
+import 'package:breez/utils/i18n.dart';
 import 'package:share_extend/share_extend.dart';
 
 class PosPaymentResult {
@@ -135,7 +136,8 @@ class _PosPaymentDialogState extends State<PosPaymentDialog> {
                     .device
                     .setClipboardText(widget.paymentRequest.rawPayReq);
                 showFlushbar(context,
-                    message: "Invoice data was copied to your clipboard.",
+                    message: I18N.t(
+                        context, "invoice_data_was_copied_to_your_clipboard"),
                     duration: Duration(seconds: 3));
               },
             )
@@ -158,7 +160,7 @@ class _PosPaymentDialogState extends State<PosPaymentDialog> {
           includeCurrencySymbol: true,
           removeTrailingZeros: true);
       priceInSaleCurrency =
-      saleCurrency.rtl ? "($salePrice) " : " ($salePrice)";
+          saleCurrency.rtl ? "($salePrice) " : " ($salePrice)";
     }
     return SingleChildScrollView(
       child: ListBody(

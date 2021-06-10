@@ -4,6 +4,7 @@ import 'package:breez/widgets/compact_qr_image.dart';
 import 'package:breez/widgets/flushbar.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:breez/utils/i18n.dart';
 import 'package:share_extend/share_extend.dart';
 
 class AddressWidget extends StatelessWidget {
@@ -23,7 +24,7 @@ class AddressWidget extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: <Widget>[
               Text(
-                "Deposit Address",
+                I18N.t(context, "deposit_address"),
                 style: theme.FieldTextStyle.labelStyle,
               ),
               Container(
@@ -54,8 +55,11 @@ class AddressWidget extends StatelessWidget {
                     onTap: () {
                       ServiceInjector().device.setClipboardText(address);
                       showFlushbar(context,
-                          message:
-                              "Deposit address was copied to your clipboard.");
+                          message: I18N.t(
+                              context, "text_was_copied_to_your_clipboard",
+                              translationParams: {
+                                "text": I18N.t(context, "deposit_address")
+                              }));
                     },
                     child: Text(
                       address,
@@ -104,7 +108,10 @@ class AddressWidget extends StatelessWidget {
       onPressed: () {
         ServiceInjector().device.setClipboardText(address);
         showFlushbar(context,
-            message: "Deposit address was copied to your clipboard.");
+            message: I18N.t(context, "text_was_copied_to_your_clipboard",
+                translationParams: {
+                  "text": I18N.t(context, "deposit_address")
+                }));
       },
     );
     _icons.add(_shareIcon);

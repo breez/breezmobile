@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:breez/bloc/backup/backup_model.dart';
 import 'package:breez/widgets/animated_loader_dialog.dart';
 import 'package:flutter/material.dart';
+import 'package:breez/utils/i18n.dart';
 
 Widget buildBackupInProgressDialog(
     BuildContext context, Stream<BackupState> backupStateStream) {
@@ -45,6 +46,7 @@ class _BackupInProgressDialogState extends State<_BackupInProgressDialog> {
 
   @override
   Widget build(BuildContext context) {
-    return createAnimatedLoaderDialog(context, "Backup is in progress");
+    return createAnimatedLoaderDialog(
+        context, I18N.t(context, "backup_is_in_progress"));
   }
 }

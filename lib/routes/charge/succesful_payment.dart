@@ -1,6 +1,7 @@
 import 'package:breez/theme_data.dart' as theme;
 import 'package:breez/widgets/practicles_animations.dart';
 import 'package:flutter/material.dart';
+import 'package:breez/utils/i18n.dart';
 import 'package:flutter_svg/svg.dart';
 
 class SuccessfulPaymentRoute extends StatefulWidget {
@@ -90,7 +91,7 @@ class SuccessfulPaymentRouteState extends State<SuccessfulPaymentRoute>
       mainAxisSize: MainAxisSize.min,
       children: <Widget>[
         Text(
-          'Payment approved!',
+          I18N.t(context, "payment_approved"),
           textAlign: TextAlign.center,
           style: Theme.of(context)
               .primaryTextTheme

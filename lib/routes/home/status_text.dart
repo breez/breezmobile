@@ -4,6 +4,7 @@ import 'package:breez/utils/min_font_size.dart';
 import 'package:breez/widgets/loading_animated_text.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:breez/utils/i18n.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class StatusText extends StatefulWidget {
@@ -50,7 +51,7 @@ class _StatusTextState extends State<StatusText> {
 
     if (widget.account == null || widget.account.statusMessage == null) {
       return AutoSizeText(
-        "Breez is ready to receive funds.",
+        I18N.t(context, "breez_is_ready_to_receive_funds"),
         style: Theme.of(context).accentTextTheme.bodyText2,
         textAlign: TextAlign.center,
         minFontSize: MinFontSize(context).minFontSize,

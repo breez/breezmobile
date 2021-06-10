@@ -42,7 +42,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_i18n/flutter_i18n.dart';
+import 'package:breez/utils/i18n.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:provider/provider.dart';
 import 'package:tutorial_coach_mark/tutorial_coach_mark.dart';
@@ -295,7 +295,7 @@ class HomeState extends State<Home> with WidgetsBindingObserver {
                                           var vendorDrawerConfig =
                                               DrawerItemConfig(
                                                   v.route,
-                                                  FlutterI18n.translate(context,
+                                                  I18N.t(context,
                                                       v.shortName ?? v.name),
                                                   v.icon,
                                                   disabled: !v.enabled ||
@@ -341,7 +341,7 @@ class HomeState extends State<Home> with WidgetsBindingObserver {
                                             DrawerItemConfigGroup([
                                               DrawerItemConfig(
                                                   "/transactions",
-                                                  FlutterI18n.translate(
+                                                  I18N.t(
                                                       context, "transactions"),
                                                   "src/icon/transactions.png")
                                             ])
@@ -350,7 +350,7 @@ class HomeState extends State<Home> with WidgetsBindingObserver {
 
                                     var balanceItem = DrawerItemConfig(
                                       "",
-                                      FlutterI18n.translate(context, "balance"),
+                                      I18N.t(context, "balance"),
                                       "src/icon/balance.png",
                                       isSelected:
                                           user.appMode == AppMode.balance,
@@ -365,8 +365,7 @@ class HomeState extends State<Home> with WidgetsBindingObserver {
 
                                     var podcastItem = DrawerItemConfig(
                                       "",
-                                      FlutterI18n.translate(
-                                          context, "podcasts"),
+                                      I18N.t(context, "podcasts"),
                                       "src/icon/podcast.png",
                                       key: podcastMenuItemKey,
                                       isSelected:
@@ -383,8 +382,7 @@ class HomeState extends State<Home> with WidgetsBindingObserver {
 
                                     var posItem = DrawerItemConfig(
                                       "",
-                                      FlutterI18n.translate(
-                                          context, "point_of_sale"),
+                                      I18N.t(context, "point_of_sale"),
                                       "src/icon/pos.png",
                                       isSelected: user.appMode == AppMode.pos,
                                       onItemSelected: (_) {
@@ -395,7 +393,7 @@ class HomeState extends State<Home> with WidgetsBindingObserver {
 
                                     var lightningAppsItem = DrawerItemConfig(
                                         "",
-                                        FlutterI18n.translate(context, "apps"),
+                                        I18N.t(context, "apps"),
                                         "src/icon/apps.png",
                                         isSelected: user.appMode ==
                                             AppMode.apps, onItemSelected: (_) {
@@ -698,7 +696,7 @@ class HomeState extends State<Home> with WidgetsBindingObserver {
     }, (e) {
       promptError(
           context,
-          FlutterI18n.translate(context, "connect_to_pay"),
+          I18N.t(context, "connect_to_pay"),
           Text(e.toString(),
               style: Theme.of(context).dialogTheme.contentTextStyle));
     });

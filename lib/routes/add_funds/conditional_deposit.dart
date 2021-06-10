@@ -6,6 +6,7 @@ import 'package:breez/widgets/back_button.dart' as backBtn;
 import 'package:breez/widgets/flushbar.dart';
 import 'package:breez/widgets/link_launcher.dart';
 import 'package:flutter/material.dart';
+import 'package:breez/utils/i18n.dart';
 
 class ConditionalDeposit extends StatelessWidget {
   final Widget enabledChild;
@@ -74,8 +75,12 @@ class ConditionalDeposit extends StatelessWidget {
                                       .device
                                       .setClipboardText(unconfirmedTxID);
                                   showFlushbar(context,
-                                      message:
-                                          "Transaction ID was copied to your clipboard.",
+                                      message: I18N.t(context,
+                                          "text_was_copied_to_your_clipboard",
+                                          translationParams: {
+                                            "text": I18N.t(
+                                                context, "transaction_id")
+                                          }),
                                       duration: Duration(seconds: 3));
                                 },
                               ),

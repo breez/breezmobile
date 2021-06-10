@@ -19,7 +19,7 @@ import 'package:breez/widgets/lsp_fee.dart';
 import 'package:breez/widgets/route.dart';
 import 'package:breez/widgets/warning_box.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_i18n/flutter_i18n.dart';
+import 'package:breez/utils/i18n.dart';
 
 class BottomActionsBar extends StatelessWidget {
   final AccountModel account;
@@ -41,7 +41,7 @@ class BottomActionsBar extends StatelessWidget {
             _Action(
               onPress: () => _showSendOptions(context),
               group: actionsGroup,
-              text: FlutterI18n.translate(context, "SEND"),
+              text: I18N.t(context, "SEND"),
               iconAssetPath: "src/icon/send-action.png",
             ),
             Container(
@@ -50,7 +50,7 @@ class BottomActionsBar extends StatelessWidget {
             _Action(
               onPress: () => showReceiveOptions(context, account),
               group: actionsGroup,
-              text: FlutterI18n.translate(context, "RECEIVE"),
+              text: I18N.t(context, "RECEIVE"),
               iconAssetPath: "src/icon/receive-action.png",
             ),
           ],
@@ -79,8 +79,7 @@ class BottomActionsBar extends StatelessWidget {
                           iconAssetPath: "src/icon/paste.png",
                           enabled: account.connected),
                       title: Text(
-                        FlutterI18n.translate(
-                            context, "paste_invoice_or_node_id"),
+                        I18N.t(context, "paste_invoice_or_node_id"),
                         style: theme.bottomSheetTextStyle,
                       ),
                       onTap: () async {
@@ -118,7 +117,7 @@ class BottomActionsBar extends StatelessWidget {
                             iconAssetPath: "src/icon/connect_to_pay.png",
                             enabled: account.connected),
                         title: Text(
-                          FlutterI18n.translate(context, "connect_to_pay"),
+                          I18N.t(context, "connect_to_pay"),
                           style: theme.bottomSheetTextStyle,
                         ),
                         onTap: () {
@@ -136,7 +135,7 @@ class BottomActionsBar extends StatelessWidget {
                             iconAssetPath: "src/icon/bitcoin.png",
                             enabled: account.connected),
                         title: Text(
-                          FlutterI18n.translate(context, "send_to_btc_address"),
+                          I18N.t(context, "send_to_btc_address"),
                           style: theme.bottomSheetTextStyle,
                         ),
                         onTap: () {
@@ -284,8 +283,7 @@ Future showReceiveOptions(BuildContext parentContext, AccountModel account) {
                                     enabled: account.connected ||
                                         !v.requireActiveChannel),
                                 title: Text(
-                                  FlutterI18n.translate(
-                                      context, v.shortName ?? v.name),
+                                  I18N.t(context, v.shortName ?? v.name),
                                   style: theme.bottomSheetTextStyle,
                                 ),
                                 onTap: () {
@@ -314,8 +312,7 @@ Future showReceiveOptions(BuildContext parentContext, AccountModel account) {
                                   iconAssetPath: "src/icon/paste.png",
                                   enabled: true),
                               title: Text(
-                                FlutterI18n.translate(
-                                    context, "receive_via_invoice"),
+                                I18N.t(context, "receive_via_invoice"),
                                 style: theme.bottomSheetTextStyle,
                               ),
                               onTap: () {
