@@ -1,13 +1,18 @@
+import 'dart:typed_data';
+
 import 'package:breez/bloc/pos_catalog/model.dart';
 import 'package:breez/bloc/pos_catalog/sqlite/repository.dart';
 import 'package:flutter/material.dart';
 import 'package:test/test.dart';
 
+import 'mocks.dart';
+
 SqliteRepository repo;
 void main() {
   WidgetsFlutterBinding.ensureInitialized();  
   group('sqlite_repo_test', () {
-    setUp(() async {      
+    setUp(() async {
+      sqfliteFfiInitAsMockMethodCallHandler();
       await SqliteRepository().dropDB();
       repo = SqliteRepository();
     });
@@ -59,7 +64,8 @@ void main() {
     });
 
     test("should test assets", () async {
-      String url = await repo.addAsset([1,2,3]);
+      Uint8List items = Uint8List.fromList([1, 2, 3]);
+      String url = await repo.addAsset(items);
       var assetData = await repo.fetchAssetByURL(url);
       expect(assetData.length, 3);
       await repo.deleteAsset(url);

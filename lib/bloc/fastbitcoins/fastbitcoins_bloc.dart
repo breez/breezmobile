@@ -7,14 +7,11 @@ import 'package:breez/services/breezlib/breez_bridge.dart';
 import 'package:breez/services/breezlib/data/rpc.pbgrpc.dart';
 import 'package:breez/services/injector.dart';
 import 'package:fixnum/fixnum.dart';
-import 'package:http/http.dart' as http;
 import 'package:http/http.dart';
 
 class FastbitcoinsBloc {
-  static const PRODUCTION_URL =
-      "https://wallet-api.fastbitcoins.com/w-api/v1/breez";
-  static const TESTING_URL =
-      "https://wallet-api-test.aao-tech.com/w-api/v1/breez";
+  static const PRODUCTION_URL = "wallet-api.fastbitcoins.com";
+  static const TESTING_URL = "wallet-api-test.aao-tech.com";
 
   final _validateRequestController =
       StreamController<ValidateRequestModel>.broadcast();
@@ -39,12 +36,15 @@ class FastbitcoinsBloc {
   String _baseURL = TESTING_URL;
 
   BreezBridge _breezLib;
+  Client _client;
 
   FastbitcoinsBloc({bool production}) {
     if (production == true) {
       _baseURL = PRODUCTION_URL;
     }
-    _breezLib = ServiceInjector().breezBridge;
+    var injector = ServiceInjector();
+    _breezLib = injector.breezBridge;
+    _client = injector.client;
     _listenValidateRequests();
     _listenRedeemRequests();
   }
@@ -52,8 +52,8 @@ class FastbitcoinsBloc {
   void _listenValidateRequests() {
     _validateRequestController.stream.listen((request) async {
       try {
-        Uri uri = Uri.https(_baseURL, "/quote");
-        var response = await http.post(uri,
+        Uri uri = Uri.https(_baseURL, "w-api/v1/breez/quote");
+        var response = await _client.post(uri,
             body: jsonEncode(request.toJson()));
         _validateResponse(response);
         ValidateResponseModel res =
@@ -76,8 +76,8 @@ class FastbitcoinsBloc {
             description: "Fastbitcoins.com Voucher");
         request.lightningInvoice = payreq.paymentRequest;
         log.info("fastbicoins request: " + jsonEncode(request.toJson()));
-        Uri uri = Uri.https(_baseURL, "/redeem");
-        var response = await http.post(uri,
+        Uri uri = Uri.https(_baseURL, "w-api/v1/breez/redeem");
+        var response = await _client.post(uri,
             body: jsonEncode(request.toJson()));
         _validateResponse(response);
         RedeemResponseModel res =
