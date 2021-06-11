@@ -141,7 +141,7 @@ Future<Null> showPaymentDetailsDialog(
                       Padding(
                         padding: const EdgeInsets.only(right: 8.0),
                         child: AutoSizeText(
-                          I18N.t(context, "amount"),
+                          t(context, "amount"),
                           style: Theme.of(context).primaryTextTheme.headline4,
                           textAlign: TextAlign.left,
                           maxLines: 1,
@@ -180,7 +180,7 @@ Future<Null> showPaymentDetailsDialog(
                       Padding(
                         padding: const EdgeInsets.only(right: 8.0),
                         child: AutoSizeText(
-                          I18N.t(context, "date_and_time"),
+                          t(context, "date_and_time"),
                           style: Theme.of(context).primaryTextTheme.headline4,
                           textAlign: TextAlign.left,
                           maxLines: 1,
@@ -218,7 +218,7 @@ Future<Null> showPaymentDetailsDialog(
                       Padding(
                         padding: const EdgeInsets.only(right: 8.0),
                         child: AutoSizeText(
-                          I18N.t(context, "expiration"),
+                          t(context, "expiration"),
                           style: Theme.of(context).primaryTextTheme.headline4,
                           textAlign: TextAlign.left,
                           maxLines: 1,
@@ -285,22 +285,21 @@ List<Widget> _getSinglePaymentInfoDetails(
     paymentInfo.preimage == null || paymentInfo.preimage.isEmpty
         ? Container()
         : ShareablePaymentRow(
-            title: I18N.t(context, "payment_preimage"),
+            title: t(context, "payment_preimage"),
             sharedValue: paymentInfo.preimage),
     paymentInfo.destination == null || paymentInfo.destination.isEmpty
         ? Container()
         : ShareablePaymentRow(
-            title: I18N.t(context, "node_id"),
-            sharedValue: paymentInfo.destination),
+            title: t(context, "node_id"), sharedValue: paymentInfo.destination),
     paymentInfo.paymentHash == null || paymentInfo.paymentHash.isEmpty
         ? Container()
         : ShareablePaymentRow(
-            title: I18N.t(context, "transaction_hash"),
+            title: t(context, "transaction_hash"),
             sharedValue: paymentInfo.paymentHash),
     paymentInfo.redeemTxID == null || paymentInfo.redeemTxID.isEmpty
         ? Container()
         : ShareablePaymentRow(
-            title: I18N.t(context, "onchain_transaction"),
+            title: t(context, "onchain_transaction"),
             sharedValue: paymentInfo.redeemTxID),
   });
 }
@@ -358,8 +357,8 @@ class ShareablePaymentRow extends StatelessWidget {
                           IconButton(
                             alignment: Alignment.centerRight,
                             padding: EdgeInsets.only(right: 8.0),
-                            tooltip: I18N.t(context, "copy_text",
-                                translationParams: {"text": title}),
+                            tooltip: t(context, "copy_text",
+                                params: {"text": title}),
                             iconSize: 16.0,
                             color:
                                 Theme.of(context).primaryTextTheme.button.color,
@@ -372,16 +371,16 @@ class ShareablePaymentRow extends StatelessWidget {
                                   .setClipboardText(sharedValue);
                               Navigator.pop(context);
                               showFlushbar(context,
-                                  message: I18N.t(context,
+                                  message: t(context,
                                       "text_was_copied_to_your_clipboard",
-                                      translationParams: {"text": title}),
+                                      params: {"text": title}),
                                   duration: Duration(seconds: 4));
                             },
                           ),
                           IconButton(
                             padding: EdgeInsets.only(right: 8.0),
-                            tooltip: I18N.t(context, "share_text",
-                                translationParams: {"text": title}),
+                            tooltip: t(context, "share_text",
+                                params: {"text": title}),
                             iconSize: 16.0,
                             color:
                                 Theme.of(context).primaryTextTheme.button.color,
@@ -650,11 +649,8 @@ class TxWidget extends StatelessWidget {
               onCopy: () {
                 ServiceInjector().device.setClipboardText(this.txID);
                 showFlushbar(context,
-                    message: I18N.t(
-                        context, "text_was_copied_to_your_clipboard",
-                        translationParams: {
-                          "text": I18N.t(context, "transaction_id")
-                        }),
+                    message: t(context, "text_was_copied_to_your_clipboard",
+                        params: {"text": t(context, "transaction_id")}),
                     duration: Duration(seconds: 3));
               },
             ),

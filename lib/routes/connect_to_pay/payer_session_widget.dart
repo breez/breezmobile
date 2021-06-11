@@ -177,7 +177,7 @@ class WaitingChannelsSyncUIState extends State<WaitingChannelsSyncUI> {
                             builder: (context, snapshot) {
                               return SyncProgressLoader(
                                   value: snapshot.data ?? 0,
-                                  title: I18N.t(
+                                  title: t(
                                       context, "synchronizing_to_the_network"));
                             }),
                         actions: <Widget>[

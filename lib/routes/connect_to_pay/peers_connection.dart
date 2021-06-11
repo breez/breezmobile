@@ -92,7 +92,7 @@ class PeersConnection extends StatelessWidget {
                         width: peerContainerSize,
                         child: _UserNameWidget(
                             _sessionState.payerData.userName ??
-                                I18N.t(context, "unknown"))),
+                                t(context, "unknown"))),
                   ),
                   Positioned(
                     top: nameMargin,
@@ -114,7 +114,7 @@ class PeersConnection extends StatelessWidget {
     if (!_sessionState.invitationSent) {
       return SizedBox();
     }
-    return _UserNameWidget(I18N.t(context, "unknown"));
+    return _UserNameWidget(t(context, "unknown"));
   }
 }
 

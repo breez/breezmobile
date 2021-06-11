@@ -109,7 +109,7 @@ class QrCodeDialogState extends State<QrCodeDialog>
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text(
-                    I18N.t(context, "invoice"),
+                    t(context, "invoice"),
                     style: Theme.of(context).dialogTheme.titleTextStyle,
                   ),
                   StreamBuilder<AccountModel>(
@@ -162,7 +162,7 @@ class QrCodeDialogState extends State<QrCodeDialog>
                                     ServiceInjector().device.setClipboardText(
                                         snapshot.data.rawPayReq);
                                     showFlushbar(context,
-                                        message: I18N.t(context,
+                                        message: t(context,
                                             "invoice_data_was_copied_to_your_clipboard"),
                                         duration: Duration(seconds: 3));
                                   },
@@ -196,7 +196,7 @@ class QrCodeDialogState extends State<QrCodeDialog>
                                       Theme.of(context).textTheme.button.color,
                                   size: 100.0,
                                   value: syncProgress,
-                                  title: I18N.t(
+                                  title: t(
                                       context, "synchronizing_to_the_network"))
                               : Align(
                                   alignment: Alignment(0, -0.33),
@@ -261,20 +261,18 @@ class QrCodeDialogState extends State<QrCodeDialog>
               !accSnapshot.hasData ||
               snapshot.hasError ||
               !snapshot.hasData) {
-            _message = I18N.t(context, "failed_to_create_invoice");
+            _message = t(context, "failed_to_create_invoice");
           } else {
             _hasError = false;
-            _message =
-                I18N.t(context, "keep_breez_open_until_payment_is_completed");
+            _message = t(context, "keep_breez_open_until_payment_is_completed");
 
             if (snapshot.data.lspFee != 0) {
-              _message += I18N.t(
-                  context, "a_setup_fee_is_applied_to_this_invoice",
-                  translationParams: {
-                    "satFee": Currency.SAT.format(snapshot.data.lspFee),
-                    "fiatFee": accSnapshot.data.fiatCurrency
-                        .format(snapshot.data.lspFee)
-                  });
+              _message +=
+                  t(context, "a_setup_fee_is_applied_to_this_invoice", params: {
+                "satFee": Currency.SAT.format(snapshot.data.lspFee),
+                "fiatFee":
+                    accSnapshot.data.fiatCurrency.format(snapshot.data.lspFee)
+              });
             }
           }
 
@@ -293,7 +291,7 @@ class QrCodeDialogState extends State<QrCodeDialog>
       onPressed: (() {
         onFinish(false);
       }),
-      child: Text(I18N.t(context, "CLOSE"),
+      child: Text(t(context, "CLOSE"),
           style: Theme.of(context).primaryTextTheme.button),
     );
   }

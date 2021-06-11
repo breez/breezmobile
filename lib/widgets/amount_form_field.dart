@@ -41,9 +41,8 @@ class AmountFormField extends TextFormField {
             keyboardType: TextInputType.numberWithOptions(
                 decimal: accountModel.currency != Currency.SAT),
             decoration: InputDecoration(
-              labelText: I18N.t(context, "amount_in", translationParams: {
-                "currency": accountModel.currency.displayName
-              }),
+              labelText: t(context, "amount_in",
+                  params: {"currency": accountModel.currency.displayName}),
               suffixIcon: (readOnly ?? false)
                   ? null
                   : IconButton(

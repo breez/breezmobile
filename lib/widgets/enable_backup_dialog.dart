@@ -38,7 +38,7 @@ class EnableBackupDialogState extends State<EnableBackupDialog> {
         child: AlertDialog(
           titlePadding: EdgeInsets.fromLTRB(24.0, 22.0, 0.0, 16.0),
           title: Text(
-            I18N.t(context, "backup"),
+            t(context, "backup"),
             style: Theme.of(context).dialogTheme.titleTextStyle,
           ),
           contentPadding: EdgeInsets.fromLTRB(8.0, 8.0, 8.0, 24.0),
@@ -57,7 +57,7 @@ class EnableBackupDialogState extends State<EnableBackupDialog> {
                       Padding(
                         padding: const EdgeInsets.only(left: 15.0, right: 12.0),
                         child: AutoSizeText(
-                          I18N.t(context, "backup_message"),
+                          t(context, "backup_message"),
                           style: Theme.of(context)
                               .primaryTextTheme
                               .headline3
@@ -88,7 +88,7 @@ class EnableBackupDialogState extends State<EnableBackupDialog> {
                             ),
                             Expanded(
                                 child: AutoSizeText(
-                              I18N.t(context, "dont_prompt_again"),
+                              t(context, "dont_prompt_again"),
                               style: Theme.of(context)
                                   .primaryTextTheme
                                   .headline3
@@ -109,7 +109,7 @@ class EnableBackupDialogState extends State<EnableBackupDialog> {
             TextButton(
               onPressed: () => Navigator.pop(widget.context),
               child: Text(
-                I18N.t(context, "LATER"),
+                t(context, "LATER"),
                 style: Theme.of(context).primaryTextTheme.button,
                 maxLines: 1,
               ),
@@ -134,8 +134,8 @@ class EnableBackupDialogState extends State<EnableBackupDialog> {
                             provider == BackupSettings.icloudBackupProvider) {
                           await promptError(
                               context,
-                              I18N.t(context, "sign_in_icloud"),
-                              Text(I18N.t(context, "sign_in_icloud_message"),
+                              t(context, "sign_in_icloud"),
+                              Text(t(context, "sign_in_icloud_message"),
                                   style: Theme.of(context)
                                       .dialogTheme
                                       .contentTextStyle));
@@ -145,7 +145,7 @@ class EnableBackupDialogState extends State<EnableBackupDialog> {
                       }
                     }),
                     child: Text(
-                      I18N.t(context, "BACKUP_NOW"),
+                      t(context, "BACKUP_NOW"),
                       style: Theme.of(context).primaryTextTheme.button,
                       maxLines: 1,
                     ),

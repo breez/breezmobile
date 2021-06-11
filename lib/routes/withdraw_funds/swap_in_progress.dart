@@ -43,11 +43,9 @@ class SwapInProgress extends StatelessWidget {
                             .device
                             .setClipboardText(swapInProgress.claimTxId);
                         showFlushbar(context,
-                            message: I18N.t(
+                            message: t(
                                 context, "text_was_copied_to_your_clipboard",
-                                translationParams: {
-                                  "text": I18N.t(context, "transaction_id")
-                                }),
+                                params: {"text": t(context, "transaction_id")}),
                             duration: Duration(seconds: 3));
                       },
                     ),
@@ -65,7 +63,7 @@ class SwapInProgress extends StatelessWidget {
           leading: backBtn.BackButton(onPressed: () {
             Navigator.of(context).pop();
           }),
-          title: Text(I18N.t(context, "send_to_btc_address"),
+          title: Text(t(context, "send_to_btc_address"),
               style: Theme.of(context).appBarTheme.textTheme.headline6),
           elevation: 0.0),
       body: body,

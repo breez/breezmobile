@@ -75,11 +75,10 @@ class ConditionalDeposit extends StatelessWidget {
                                       .device
                                       .setClipboardText(unconfirmedTxID);
                                   showFlushbar(context,
-                                      message: I18N.t(context,
+                                      message: t(context,
                                           "text_was_copied_to_your_clipboard",
-                                          translationParams: {
-                                            "text": I18N.t(
-                                                context, "transaction_id")
+                                          params: {
+                                            "text": t(context, "transaction_id")
                                           }),
                                       duration: Duration(seconds: 3));
                                 },

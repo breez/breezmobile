@@ -66,8 +66,8 @@ class CollapsibleListItem extends StatelessWidget {
                             IconButton(
                               alignment: Alignment.centerRight,
                               padding: EdgeInsets.only(right: 8.0),
-                              tooltip: I18N.t(context, "copy_text",
-                                  translationParams: {"text": title}),
+                              tooltip: t(context, "copy_text",
+                                  params: {"text": title}),
                               iconSize: 16.0,
                               color: this.userStyle.color ??
                                   Theme.of(context)
@@ -83,9 +83,9 @@ class CollapsibleListItem extends StatelessWidget {
                                     .setClipboardText(sharedValue);
                                 Navigator.pop(context);
                                 showFlushbar(context,
-                                    message: I18N.t(context,
+                                    message: t(context,
                                         "text_was_copied_to_your_clipboard",
-                                        translationParams: {"text": title}),
+                                        params: {"text": title}),
                                     duration: Duration(seconds: 4));
                               },
                             ),

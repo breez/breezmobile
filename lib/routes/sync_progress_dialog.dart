@@ -58,8 +58,8 @@ class SyncProgressDialogState extends State<SyncProgressDialog> {
               size: 100.0,
               value: acc.serverReady ? acc.syncProgress : null,
               title: acc.serverReady
-                  ? I18N.t(context, "synchronizing_to_the_network")
-                  : I18N.t(context, "waiting_for_network")),
+                  ? t(context, "synchronizing_to_the_network")
+                  : t(context, "waiting_for_network")),
         );
       },
     );

@@ -75,7 +75,7 @@ class _WaitBroadcastDialog extends State<WaitBroadcastDialog> {
                       Navigator.of(context).pop(_error != null &&
                           _response?.txID?.isNotEmpty == true);
                     },
-                    child: Text(I18N.t(context, "CLOSE"),
+                    child: Text(t(context, "CLOSE"),
                         style: Theme.of(context).primaryTextTheme.button)),
               ],
       ),
@@ -84,15 +84,15 @@ class _WaitBroadcastDialog extends State<WaitBroadcastDialog> {
 
   String getTitleText() {
     if (_error != null) {
-      return I18N.t(context, "refund_error");
+      return t(context, "refund_error");
     }
-    return I18N.t(context, "refund_transaction");
+    return t(context, "refund_transaction");
   }
 
   getContent() {
     if (_error != null) {
       return Text(
-          I18N.t(context, "error_in_broadcasting_transaction") +
+          t(context, "error_in_broadcasting_transaction") +
               ": " +
               _error.toString(),
           style: Theme.of(context).dialogTheme.contentTextStyle,
@@ -110,7 +110,7 @@ class _WaitBroadcastDialog extends State<WaitBroadcastDialog> {
       mainAxisSize: MainAxisSize.min,
       children: <Widget>[
         Text(
-          I18N.t(context,
+          t(context,
               "please_wait_while_breez_is_sending_the_funds_to_the_specified_address"),
           style: Theme.of(context).dialogTheme.contentTextStyle,
           textAlign: TextAlign.center,
@@ -135,7 +135,7 @@ class _WaitBroadcastDialog extends State<WaitBroadcastDialog> {
             child: Row(children: <Widget>[
               Expanded(
                 child: Text(
-                  I18N.t(context,
+                  t(context,
                       "funds_were_successfully_sent_to_the_specified_address"),
                   style: Theme.of(context).dialogTheme.contentTextStyle,
                   textAlign: TextAlign.center,
@@ -150,7 +150,7 @@ class _WaitBroadcastDialog extends State<WaitBroadcastDialog> {
             children: <Widget>[
               Expanded(
                 flex: 1,
-                child: Text(I18N.t(context, "transaction_id") + ":",
+                child: Text(t(context, "transaction_id") + ":",
                     style: Theme.of(context).primaryTextTheme.headline4),
               ),
               Expanded(
@@ -162,9 +162,8 @@ class _WaitBroadcastDialog extends State<WaitBroadcastDialog> {
                     IconButton(
                       alignment: Alignment.topRight,
                       padding: EdgeInsets.only(top: 4.0, right: 0.0, left: 0.0),
-                      tooltip: I18N.t(context, "copy_text", translationParams: {
-                        "text": I18N.t(context, "transaction_hash")
-                      }),
+                      tooltip: t(context, "copy_text",
+                          params: {"text": t(context, "transaction_hash")}),
                       iconSize: 16.0,
                       color: Theme.of(context).primaryTextTheme.button.color,
                       icon: Icon(

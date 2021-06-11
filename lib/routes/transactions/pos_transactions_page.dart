@@ -25,7 +25,6 @@ class PosTransactionsPage extends StatefulWidget {
 }
 
 class PosTransactionsPageState extends State<PosTransactionsPage> {
-  final String _title = "transactions";
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   final ScrollController _scrollController = ScrollController();
 
@@ -86,7 +85,7 @@ class PosTransactionsPageState extends State<PosTransactionsPage> {
         backgroundColor: Theme.of(context).canvasColor,
         leading: backBtn.BackButton(),
         title: Text(
-          I18N.t(context, _title),
+          t(context, "transactions"),
           style: Theme.of(context).appBarTheme.textTheme.headline6,
         ),
         actions: actions == null ? <Widget>[] : actions,

@@ -47,6 +47,6 @@ class _BackupInProgressDialogState extends State<_BackupInProgressDialog> {
   @override
   Widget build(BuildContext context) {
     return createAnimatedLoaderDialog(
-        context, I18N.t(context, "backup_is_in_progress"));
+        context, t(context, "backup_is_in_progress"));
   }
 }

@@ -68,7 +68,7 @@ class SecurityPageState extends State<SecurityPage>
 
   @override
   Widget build(BuildContext context) {
-    String _title = I18N.t(context, "security_and_backup");
+    String _title = t(context, "security_and_backup");
     return StreamBuilder<BackupState>(
       stream: widget.backupBloc.backupStateStream,
       builder: (ctx, backupStateSnapshot) => StreamBuilder<BackupSettings>(

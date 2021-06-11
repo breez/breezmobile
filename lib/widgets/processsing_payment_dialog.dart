@@ -180,7 +180,7 @@ class ProcessingPaymentDialogState extends State<ProcessingPaymentDialog>
     return AlertDialog(
       content: SyncProgressLoader(
           value: channelsSyncProgress ?? 0,
-          title: I18N.t(context, "synchronizing_to_the_network")),
+          title: t(context, "synchronizing_to_the_network")),
       actions: <Widget>[
         FlatButton(
           onPressed: (() {

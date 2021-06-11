@@ -98,7 +98,7 @@ class ReverseSwapPageState extends State<ReverseSwapPage> {
                       leading: backBtn.BackButton(onPressed: () {
                         Navigator.of(context).pop();
                       }),
-                      title: Text(I18N.t(context, "send_to_btc_address"),
+                      title: Text(t(context, "send_to_btc_address"),
                           style: Theme.of(context)
                               .appBarTheme
                               .textTheme
@@ -165,8 +165,8 @@ class ReverseSwapPageState extends State<ReverseSwapPage> {
                                   physics: NeverScrollableScrollPhysics(),
                                   children: <Widget>[
                                     WithdrawFundsPage(
-                                        title: I18N.t(
-                                            context, "send_to_btc_address"),
+                                        title:
+                                            t(context, "send_to_btc_address"),
                                         policy: WithdrawFundsPolicy(
                                           policy.minValue,
                                           policy.maxValue,

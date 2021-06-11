@@ -41,7 +41,7 @@ class DepositToBTCAddressPageState extends State<DepositToBTCAddressPage> {
     AccountBloc accountBloc = AppBlocsProvider.of<AccountBloc>(context);
     var lspBloc = AppBlocsProvider.of<LSPBloc>(context);
     return ConditionalDeposit(
-        title: I18N.t(context, _title),
+        title: t(context, _title),
         enabledChild: StreamBuilder<LSPStatus>(
             stream: lspBloc.lspStatusStream,
             builder:
@@ -65,7 +65,7 @@ class DepositToBTCAddressPageState extends State<DepositToBTCAddressPage> {
                                       Theme.of(context).canvasColor,
                                   leading: backBtn.BackButton(),
                                   title: Text(
-                                    I18N.t(context, _title),
+                                    t(context, _title),
                                     style: Theme.of(context)
                                         .appBarTheme
                                         .textTheme

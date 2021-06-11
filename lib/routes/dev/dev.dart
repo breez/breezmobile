@@ -187,7 +187,7 @@ class DevViewState extends State<DevView> {
                                     ),
                                   ],
                                   title: Text(
-                                    I18N.t(context, "developers"),
+                                    t(context, "developers"),
                                     style: Theme.of(context)
                                         .appBarTheme
                                         .textTheme

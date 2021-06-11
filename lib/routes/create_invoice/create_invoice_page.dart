@@ -121,7 +121,7 @@ class CreateInvoicePageState extends State<CreateInvoicePage> {
                       : 0.0),
               child: SingleButtonBottomBar(
                 stickToBottom: true,
-                text: I18N.t(context,
+                text: t(context,
                     _withdrawFetchResponse == null ? "CREATE" : "REDEEM"),
                 onPressed: () {
                   if (_formKey.currentState.validate()) {
@@ -157,7 +157,7 @@ class CreateInvoicePageState extends State<CreateInvoicePage> {
                 );
               })
         ],
-        title: Text(I18N.t(context, _title),
+        title: Text(t(context, _title),
             style: Theme.of(context).appBarTheme.textTheme.headline6),
         elevation: 0.0,
       ),
@@ -187,7 +187,7 @@ class CreateInvoicePageState extends State<CreateInvoicePage> {
                         maxLength: 90,
                         maxLengthEnforcement: MaxLengthEnforcement.enforced,
                         decoration: InputDecoration(
-                          labelText: I18N.t(context, "description_optional"),
+                          labelText: t(context, "description_optional"),
                         ),
                         style: theme.FieldTextStyle.textStyle,
                       ),
@@ -258,9 +258,8 @@ class CreateInvoicePageState extends State<CreateInvoicePage> {
   Widget _buildReceivableBTC(AccountModel acc) {
     return GestureDetector(
       child: AutoSizeText(
-        I18N.t(context, "receive_up_to", translationParams: {
-          "max": acc.currency.format(acc.maxAllowedToReceive)
-        }),
+        t(context, "receive_up_to",
+            params: {"max": acc.currency.format(acc.maxAllowedToReceive)}),
         style: theme.textStyle,
         maxLines: 1,
         minFontSize: MinFontSize(context).minFontSize,

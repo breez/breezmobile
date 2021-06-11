@@ -195,7 +195,7 @@ class HomeState extends State<Home> with WidgetsBindingObserver {
     tutorial = TutorialCoachMark(context,
         targets: targets,
         opacityShadow: 0.9,
-        textSkip: I18N.t(context, "DISMISS"),
+        textSkip: t(context, "DISMISS"),
         colorShadow: Theme.of(context).primaryColorLight,
         onClickOverlay: (s) => tutorial.finish(),
         onClickTarget: (s) {
@@ -295,7 +295,7 @@ class HomeState extends State<Home> with WidgetsBindingObserver {
                                           var vendorDrawerConfig =
                                               DrawerItemConfig(
                                                   v.route,
-                                                  I18N.t(context,
+                                                  t(context,
                                                       v.shortName ?? v.name),
                                                   v.icon,
                                                   disabled: !v.enabled ||
@@ -341,8 +341,7 @@ class HomeState extends State<Home> with WidgetsBindingObserver {
                                             DrawerItemConfigGroup([
                                               DrawerItemConfig(
                                                   "/transactions",
-                                                  I18N.t(
-                                                      context, "transactions"),
+                                                  t(context, "transactions"),
                                                   "src/icon/transactions.png")
                                             ])
                                           ]
@@ -350,7 +349,7 @@ class HomeState extends State<Home> with WidgetsBindingObserver {
 
                                     var balanceItem = DrawerItemConfig(
                                       "",
-                                      I18N.t(context, "balance"),
+                                      t(context, "balance"),
                                       "src/icon/balance.png",
                                       isSelected:
                                           user.appMode == AppMode.balance,
@@ -365,7 +364,7 @@ class HomeState extends State<Home> with WidgetsBindingObserver {
 
                                     var podcastItem = DrawerItemConfig(
                                       "",
-                                      I18N.t(context, "podcasts"),
+                                      t(context, "podcasts"),
                                       "src/icon/podcast.png",
                                       key: podcastMenuItemKey,
                                       isSelected:
@@ -382,7 +381,7 @@ class HomeState extends State<Home> with WidgetsBindingObserver {
 
                                     var posItem = DrawerItemConfig(
                                       "",
-                                      I18N.t(context, "point_of_sale"),
+                                      t(context, "point_of_sale"),
                                       "src/icon/pos.png",
                                       isSelected: user.appMode == AppMode.pos,
                                       onItemSelected: (_) {
@@ -391,10 +390,8 @@ class HomeState extends State<Home> with WidgetsBindingObserver {
                                       },
                                     );
 
-                                    var lightningAppsItem = DrawerItemConfig(
-                                        "",
-                                        I18N.t(context, "apps"),
-                                        "src/icon/apps.png",
+                                    var lightningAppsItem = DrawerItemConfig("",
+                                        t(context, "apps"), "src/icon/apps.png",
                                         isSelected: user.appMode ==
                                             AppMode.apps, onItemSelected: (_) {
                                       protectAdminAction(context, user, () {
@@ -424,21 +421,25 @@ class HomeState extends State<Home> with WidgetsBindingObserver {
 
                                     var advancedFlavorItems =
                                         <DrawerItemConfig>[];
-                                    advancedFlavorItems = user.appMode ==
-                                            AppMode.pos
-                                        ? [
-                                            DrawerItemConfig("", "POS Settings",
-                                                "src/icon/settings.png",
-                                                onItemSelected: (_) =>
-                                                    protectAdminRoute(context,
-                                                        user, "/settings")),
-                                          ]
-                                        : [
-                                            DrawerItemConfig(
-                                                "/developers",
-                                                I18N.t(context, "developers"),
-                                                "src/icon/developers.png")
-                                          ];
+                                    advancedFlavorItems =
+                                        user.appMode == AppMode.pos
+                                            ? [
+                                                DrawerItemConfig(
+                                                    "",
+                                                    "POS Settings",
+                                                    "src/icon/settings.png",
+                                                    onItemSelected: (_) =>
+                                                        protectAdminRoute(
+                                                            context,
+                                                            user,
+                                                            "/settings")),
+                                              ]
+                                            : [
+                                                DrawerItemConfig(
+                                                    "/developers",
+                                                    t(context, "developers"),
+                                                    "src/icon/developers.png")
+                                              ];
 
                                     return StreamBuilder<
                                             Future<DecodedClipboardData>>(
@@ -543,25 +544,22 @@ class HomeState extends State<Home> with WidgetsBindingObserver {
                                                             _filterItems([
                                                               DrawerItemConfig(
                                                                   "/fiat_currency",
-                                                                  I18N.t(
-                                                                      context,
+                                                                  t(context,
                                                                       "fiat_currencies"),
                                                                   "src/icon/fiat_currencies.png"),
                                                               DrawerItemConfig(
                                                                   "/network",
-                                                                  I18N.t(
-                                                                      context,
+                                                                  t(context,
                                                                       "network"),
                                                                   "src/icon/network.png"),
                                                               DrawerItemConfig(
                                                                   "/security",
-                                                                  I18N.t(
-                                                                      context,
+                                                                  t(context,
                                                                       "security_and_backup"),
                                                                   "src/icon/security.png"),
                                                               ...advancedFlavorItems,
                                                             ]),
-                                                            groupTitle: I18N.t(
+                                                            groupTitle: t(
                                                                 context,
                                                                 "preferences"),
                                                             groupAssetImage: "",
@@ -699,7 +697,7 @@ class HomeState extends State<Home> with WidgetsBindingObserver {
     }, (e) {
       promptError(
           context,
-          I18N.t(context, "connect_to_pay"),
+          t(context, "connect_to_pay"),
           Text(e.toString(),
               style: Theme.of(context).dialogTheme.contentTextStyle));
     });

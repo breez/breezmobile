@@ -140,7 +140,7 @@ class CurrencyConverterDialogState extends State<CurrencyConverterDialog>
                     Expanded(
                       child: Padding(
                         child: AutoSizeText(
-                          I18N.t(context, "enter_amount_in"),
+                          t(context, "enter_amount_in"),
                           style: Theme.of(context).dialogTheme.titleTextStyle,
                           maxLines: 1,
                           minFontSize: MinFontSize(context).minFontSize,

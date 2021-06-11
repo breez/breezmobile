@@ -89,7 +89,7 @@ class NetworkPageState extends State<NetworkPage> {
 
   @override
   Widget build(BuildContext context) {
-    String _title = I18N.t(context, "network");
+    String _title = t(context, "network");
     return ButtonTheme(
       height: 28.0,
       child: Scaffold(
@@ -117,8 +117,7 @@ class NetworkPageState extends State<NetworkPage> {
                           padding: EdgeInsets.only(top: 8.0),
                           child: TextFormField(
                             decoration: InputDecoration(
-                                labelText:
-                                    I18N.t(context, "bitcoin_node_bip_157")),
+                                labelText: t(context, "bitcoin_node_bip_157")),
                             style: theme.FieldTextStyle.textStyle,
                             onSaved: (String value) {
                               this._data.peer = value;
@@ -137,7 +136,7 @@ class NetworkPageState extends State<NetworkPage> {
                                 primary: Colors.white,
                               ),
                               child: Text(
-                                I18N.t(context, "reset"),
+                                t(context, "reset"),
                               ),
                               onPressed: () async {
                                 var error = await showDialog(
@@ -169,7 +168,7 @@ class NetworkPageState extends State<NetworkPage> {
                                 primary: Colors.white,
                               ),
                               child: Text(
-                                I18N.t(context, "save"),
+                                t(context, "save"),
                               ),
                               onPressed: () async {
                                 if (_formKey.currentState.validate()) {

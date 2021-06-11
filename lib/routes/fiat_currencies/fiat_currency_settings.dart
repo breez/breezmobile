@@ -51,7 +51,7 @@ class FiatCurrencySettingsState extends State<FiatCurrencySettings> {
           backgroundColor: Theme.of(context).canvasColor,
           leading: backBtn.BackButton(),
           title: Text(
-            I18N.t(context, "fiat_currencies"),
+            t(context, "fiat_currencies"),
             style: Theme.of(context).appBarTheme.textTheme.headline6,
           ),
           elevation: 0.0,
