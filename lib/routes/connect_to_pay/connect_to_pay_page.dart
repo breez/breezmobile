@@ -54,7 +54,9 @@ class ConnectToPayPageState extends State<ConnectToPayPage> {
           ctpBloc.startSession(_currentSession);
         }
         _payer = _currentSession.runtimeType == PayerRemoteSession;
-        _title = _payer ? "connect_to_pay" : "receive_payment";
+        _title = _payer
+            ? t(context, "connect_to_pay")
+            : t(context, "receive_payment");
         registerErrorsListener();
         registerEndOfSessionListener();
         _isInit = true;
@@ -164,7 +166,7 @@ class ConnectToPayPageState extends State<ConnectToPayPage> {
           backgroundColor: Theme.of(context).canvasColor,
           leading: backBtn.BackButton(onPressed: _onBackPressed),
           title: Text(
-            I18N.t(context, _title),
+            _title,
             style: Theme.of(context).appBarTheme.textTheme.headline6,
           ),
           elevation: 0.0,
