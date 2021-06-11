@@ -10,6 +10,7 @@ import 'package:breez/routes/backup_in_progress_dialog.dart';
 import 'package:breez/routes/podcast/theme.dart';
 import 'package:breez/theme_data.dart' as theme;
 import 'package:breez/utils/date.dart';
+import 'package:breez/utils/i18n.dart';
 import 'package:breez/utils/min_font_size.dart';
 import 'package:breez/widgets/back_button.dart' as backBtn;
 import 'package:breez/widgets/error_dialog.dart';
@@ -67,7 +68,7 @@ class SecurityPageState extends State<SecurityPage>
 
   @override
   Widget build(BuildContext context) {
-    String _title = "Security & Backup";
+    String _title = t(context, "security_and_backup");
     return StreamBuilder<BackupState>(
       stream: widget.backupBloc.backupStateStream,
       builder: (ctx, backupStateSnapshot) => StreamBuilder<BackupSettings>(
@@ -118,11 +119,19 @@ class SecurityPageState extends State<SecurityPage>
                     child: backupStateSnapshot.data != null &&
                             backupStateSnapshot.data.lastBackupTime != null
                         ? Text(
-                            "Last backup: ${BreezDateUtils.formatYearMonthDayHourMinute(backupState.lastBackupTime)}" +
+                            t(context, "last_backup_date", params: {
+                                  "date": BreezDateUtils
+                                      .formatYearMonthDayHourMinute(
+                                          backupState.lastBackupTime)
+                                }) +
                                 (backupState.lastBackupAccountName
                                             ?.isNotEmpty ==
                                         true
-                                    ? "\nAccount: ${backupState.lastBackupAccountName}"
+                                    ? "\n" +
+                                        t(context, "account_name", params: {
+                                          "name":
+                                              backupState.lastBackupAccountName
+                                        })
                                     : ""),
                             textAlign: TextAlign.left)
                         : SizedBox(),
@@ -164,7 +173,7 @@ class SecurityPageState extends State<SecurityPage>
     return ListTile(
       title: Container(
         child: AutoSizeText(
-          "Encrypt Cloud Backup",
+          t(context, "encrypt_cloud_backup"),
           style: TextStyle(color: Colors.white),
           maxLines: 1,
           minFontSize: MinFontSize(context).minFontSize,
@@ -212,7 +221,7 @@ class SecurityPageState extends State<SecurityPage>
     return ListTile(
       title: Container(
         child: AutoSizeText(
-          "Store Backup Data in",
+          t(context, "store_backup_data_in"),
           style: TextStyle(color: Colors.white),
           maxLines: 1,
           minFontSize: MinFontSize(context).minFontSize,
@@ -253,7 +262,7 @@ class SecurityPageState extends State<SecurityPage>
     return ListTile(
       title: Container(
         child: AutoSizeText(
-          "Lock Automatically",
+          t(context, "lock_automatically"),
           style: TextStyle(color: Colors.white),
           maxLines: 1,
           minFontSize: MinFontSize(context).minFontSize,
@@ -293,7 +302,7 @@ class SecurityPageState extends State<SecurityPage>
 
   String _formatSeconds(int seconds) {
     if (seconds == 0) {
-      return "Immediate";
+      return t(context, "immediate");
     }
     return printDuration(Duration(seconds: seconds));
   }
@@ -303,7 +312,7 @@ class SecurityPageState extends State<SecurityPage>
     return ListTile(
       title: Container(
         child: AutoSizeText(
-          "Change PIN",
+          t(context, "change_pin"),
           style: TextStyle(color: Colors.white),
           maxLines: 1,
           minFontSize: MinFontSize(context).minFontSize,
@@ -321,7 +330,7 @@ class SecurityPageState extends State<SecurityPage>
       SecurityModel securityModel, BackupSettings backupSettings) {
     return ListTile(
       title: AutoSizeText(
-        "Enable $_enrolledBiometrics",
+        t(context, "enable") + " $_enrolledBiometrics",
         style: TextStyle(color: Colors.white),
         maxLines: 1,
         minFontSize: MinFontSize(context).minFontSize,
@@ -351,7 +360,7 @@ class SecurityPageState extends State<SecurityPage>
   Future _validateBiometrics(
       SecurityModel securityModel, BackupSettings backupSettings) async {
     var validateBiometricsAction = ValidateBiometrics(
-        localizedReason: "Authenticate to enable this setting");
+        localizedReason: t(context, "authenticate_to_enable_setting"));
     widget.userProfileBloc.userActionsSink.add(validateBiometricsAction);
     validateBiometricsAction.future.then((isValid) async {
       _updateSecurityModel(
@@ -366,7 +375,7 @@ class SecurityPageState extends State<SecurityPage>
       SecurityModel securityModel, BackupSettings backupSettings) {
     return ListTile(
       title: AutoSizeText(
-        securityModel.requiresPin ? "Activate PIN" : "Create PIN",
+        t(context, securityModel.requiresPin ? "activate_pin" : "create_pin"),
         style: TextStyle(color: Colors.white),
         maxLines: 1,
         minFontSize: MinFontSize(context).minFontSize,

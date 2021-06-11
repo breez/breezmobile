@@ -6,6 +6,7 @@ dependencies:
     sdk: flutter
   flutter_localizations:
     sdk: flutter
+  flutter_i18n: ^0.22.3
 
   app_settings: ^4.1.0
   archive: ^3.1.2
@@ -116,6 +117,7 @@ flutter:
     - src/pos-icons/
     - assets/images/
     - assets/icons/
+    - assets/locales/
 
   # The following line ensures that the Material Icons font is
   # included with your application, so that you can use the icons in

@@ -11,6 +11,7 @@ import 'package:breez/widgets/error_dialog.dart';
 import 'package:breez/widgets/loader.dart';
 import 'package:breez/widgets/payment_details_dialog.dart';
 import 'package:flutter/material.dart';
+import 'package:breez/utils/i18n.dart';
 import 'package:rxdart/subjects.dart';
 
 import '../sync_progress_dialog.dart';
@@ -97,7 +98,7 @@ class ReverseSwapPageState extends State<ReverseSwapPage> {
                       leading: backBtn.BackButton(onPressed: () {
                         Navigator.of(context).pop();
                       }),
-                      title: Text("Send to BTC Address",
+                      title: Text(t(context, "send_to_btc_address"),
                           style: Theme.of(context)
                               .appBarTheme
                               .textTheme
@@ -164,7 +165,8 @@ class ReverseSwapPageState extends State<ReverseSwapPage> {
                                   physics: NeverScrollableScrollPhysics(),
                                   children: <Widget>[
                                     WithdrawFundsPage(
-                                        title: "Send to BTC Address",
+                                        title:
+                                            t(context, "send_to_btc_address"),
                                         policy: WithdrawFundsPolicy(
                                           policy.minValue,
                                           policy.maxValue,

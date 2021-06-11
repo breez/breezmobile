@@ -5,6 +5,7 @@ import 'package:breez/services/breezlib/breez_bridge.dart';
 import 'package:breez/services/breezlib/data/rpc.pb.dart';
 import 'package:breez/services/injector.dart';
 import 'package:breez/theme_data.dart' as theme;
+import 'package:breez/utils/i18n.dart';
 import 'package:breez/widgets/animated_loader_dialog.dart';
 import 'package:breez/widgets/back_button.dart' as backBtn;
 import 'package:breez/widgets/error_dialog.dart';
@@ -73,11 +74,10 @@ class NetworkPageState extends State<NetworkPage> {
     return promptAreYouSure(
             context,
             null,
-            Text(
-                "Please restart Breez to switch to the new Bitcoin Node configuration.",
+            Text(t(context, "restart_to_switch_node_config"),
                 style: Theme.of(context).dialogTheme.contentTextStyle),
-            cancelText: "CANCEL",
-            okText: "EXIT BREEZ")
+            cancelText: t(context, "CANCEL"),
+            okText: t(context, "EXIT_BREEZ"))
         .then((shouldExit) {
       if (shouldExit) {
         exit(0);
@@ -88,7 +88,7 @@ class NetworkPageState extends State<NetworkPage> {
 
   @override
   Widget build(BuildContext context) {
-    String _title = "Network";
+    String _title = t(context, "network");
     return ButtonTheme(
       height: 28.0,
       child: Scaffold(
@@ -116,7 +116,7 @@ class NetworkPageState extends State<NetworkPage> {
                           padding: EdgeInsets.only(top: 8.0),
                           child: TextFormField(
                             decoration: InputDecoration(
-                                labelText: "Bitcoin Node (BIP 157)"),
+                                labelText: t(context, "bitcoin_node_bip_157")),
                             style: theme.FieldTextStyle.textStyle,
                             onSaved: (String value) {
                               this._data.peer = value;
@@ -135,7 +135,7 @@ class NetworkPageState extends State<NetworkPage> {
                                 primary: Colors.white,
                               ),
                               child: Text(
-                                "Reset",
+                                t(context, "reset"),
                               ),
                               onPressed: () async {
                                 var error = await showDialog(
@@ -149,7 +149,8 @@ class NetworkPageState extends State<NetworkPage> {
                                       context,
                                       null,
                                       Text(
-                                          "Breez is unable to use the default node.",
+                                          t(context,
+                                              "breez_unable_to_use_default_node"),
                                           style: Theme.of(context)
                                               .dialogTheme
                                               .contentTextStyle));
@@ -167,7 +168,7 @@ class NetworkPageState extends State<NetworkPage> {
                                 primary: Colors.white,
                               ),
                               child: Text(
-                                "Save",
+                                t(context, "save"),
                               ),
                               onPressed: () async {
                                 if (_formKey.currentState.validate()) {
@@ -185,7 +186,8 @@ class NetworkPageState extends State<NetworkPage> {
                                           context,
                                           null,
                                           Text(
-                                              "Breez is unable to connect to the specified node. Please make sure this node supports BIP 157.",
+                                              t(context,
+                                                  "breez_unable_to_connect_to_node"),
                                               style: Theme.of(context)
                                                   .dialogTheme
                                                   .contentTextStyle));
@@ -242,7 +244,7 @@ class _TestingPeerDialogState extends State<_TestingPeerDialog> {
   Widget build(BuildContext context) {
     return WillPopScope(
         onWillPop: () => Future.value(_allowPop),
-        child: createAnimatedLoaderDialog(context, "Testing node",
+        child: createAnimatedLoaderDialog(context, t(context, "testing_node"),
             withOKButton: false));
   }
 }

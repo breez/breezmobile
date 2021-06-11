@@ -28,6 +28,7 @@ import 'package:breez/widgets/static_loader.dart';
 import 'package:breez/widgets/transparent_page_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:breez/utils/i18n.dart';
 
 import 'lnurl_withdraw_dialog.dart';
 import 'qr_code_dialog.dart';
@@ -99,7 +100,7 @@ class CreateInvoicePageState extends State<CreateInvoicePage> {
 
   @override
   Widget build(BuildContext context) {
-    final String _title = "Receive via Invoice";
+    final String _title = "receive_via_invoice";
     AccountBloc accountBloc = AppBlocsProvider.of<AccountBloc>(context);
     InvoiceBloc invoiceBloc = AppBlocsProvider.of<InvoiceBloc>(context);
     LNUrlBloc lnurlBloc = AppBlocsProvider.of<LNUrlBloc>(context);
@@ -114,10 +115,14 @@ class CreateInvoicePageState extends State<CreateInvoicePage> {
             }
             var account = snapshot.data;
             return Padding(
-              padding: EdgeInsets.only(bottom: (Platform.isIOS && _amountFocusNode.hasFocus) ? 40.0 : 0.0),
+              padding: EdgeInsets.only(
+                  bottom: (Platform.isIOS && _amountFocusNode.hasFocus)
+                      ? 40.0
+                      : 0.0),
               child: SingleButtonBottomBar(
                 stickToBottom: true,
-                text: _withdrawFetchResponse == null ? "CREATE" : "REDEEM",
+                text: t(context,
+                    _withdrawFetchResponse == null ? "CREATE" : "REDEEM"),
                 onPressed: () {
                   if (_formKey.currentState.validate()) {
                     _createInvoice(
@@ -152,7 +157,7 @@ class CreateInvoicePageState extends State<CreateInvoicePage> {
                 );
               })
         ],
-        title: Text(_title,
+        title: Text(t(context, _title),
             style: Theme.of(context).appBarTheme.textTheme.headline6),
         elevation: 0.0,
       ),
@@ -182,7 +187,7 @@ class CreateInvoicePageState extends State<CreateInvoicePage> {
                         maxLength: 90,
                         maxLengthEnforcement: MaxLengthEnforcement.enforced,
                         decoration: InputDecoration(
-                          labelText: "Description (optional)",
+                          labelText: t(context, "description_optional"),
                         ),
                         style: theme.FieldTextStyle.textStyle,
                       ),
@@ -253,7 +258,8 @@ class CreateInvoicePageState extends State<CreateInvoicePage> {
   Widget _buildReceivableBTC(AccountModel acc) {
     return GestureDetector(
       child: AutoSizeText(
-        "Receive up to: ${acc.currency.format(acc.maxAllowedToReceive)}",
+        t(context, "receive_up_to",
+            params: {"max": acc.currency.format(acc.maxAllowedToReceive)}),
         style: theme.textStyle,
         maxLines: 1,
         minFontSize: MinFontSize(context).minFontSize,

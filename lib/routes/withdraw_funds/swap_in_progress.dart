@@ -5,6 +5,7 @@ import 'package:breez/widgets/flushbar.dart';
 import 'package:breez/widgets/link_launcher.dart';
 import 'package:breez/widgets/loader.dart';
 import 'package:flutter/material.dart';
+import 'package:breez/utils/i18n.dart';
 
 class SwapInProgress extends StatelessWidget {
   final InProgressReverseSwaps swapInProgress;
@@ -42,8 +43,9 @@ class SwapInProgress extends StatelessWidget {
                             .device
                             .setClipboardText(swapInProgress.claimTxId);
                         showFlushbar(context,
-                            message:
-                                "Transaction ID was copied to your clipboard.",
+                            message: t(
+                                context, "text_was_copied_to_your_clipboard",
+                                params: {"text": t(context, "transaction_id")}),
                             duration: Duration(seconds: 3));
                       },
                     ),
@@ -61,7 +63,7 @@ class SwapInProgress extends StatelessWidget {
           leading: backBtn.BackButton(onPressed: () {
             Navigator.of(context).pop();
           }),
-          title: Text("Send to BTC Address",
+          title: Text(t(context, "send_to_btc_address"),
               style: Theme.of(context).appBarTheme.textTheme.headline6),
           elevation: 0.0),
       body: body,

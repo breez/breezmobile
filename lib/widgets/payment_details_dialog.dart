@@ -19,6 +19,7 @@ import 'package:collection/collection.dart';
 import 'package:fixnum/fixnum.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:breez/utils/i18n.dart';
 import 'package:http/http.dart' as http;
 import 'package:share_extend/share_extend.dart';
 
@@ -140,7 +141,7 @@ Future<Null> showPaymentDetailsDialog(
                       Padding(
                         padding: const EdgeInsets.only(right: 8.0),
                         child: AutoSizeText(
-                          "Amount",
+                          t(context, "amount"),
                           style: Theme.of(context).primaryTextTheme.headline4,
                           textAlign: TextAlign.left,
                           maxLines: 1,
@@ -179,7 +180,7 @@ Future<Null> showPaymentDetailsDialog(
                       Padding(
                         padding: const EdgeInsets.only(right: 8.0),
                         child: AutoSizeText(
-                          "Date & Time",
+                          t(context, "date_and_time"),
                           style: Theme.of(context).primaryTextTheme.headline4,
                           textAlign: TextAlign.left,
                           maxLines: 1,
@@ -217,7 +218,7 @@ Future<Null> showPaymentDetailsDialog(
                       Padding(
                         padding: const EdgeInsets.only(right: 8.0),
                         child: AutoSizeText(
-                          "Expiration",
+                          t(context, "expiration"),
                           style: Theme.of(context).primaryTextTheme.headline4,
                           textAlign: TextAlign.left,
                           maxLines: 1,
@@ -245,7 +246,7 @@ Future<Null> showPaymentDetailsDialog(
                     ],
                   ),
                 ),
-          ..._getPaymentInfoDetails(paymentInfo),
+          ..._getPaymentInfoDetails(context, paymentInfo),
         ],
       ),
     ),
@@ -260,11 +261,12 @@ Future<Null> showPaymentDetailsDialog(
   );
 }
 
-List<Widget> _getPaymentInfoDetails(PaymentInfo paymentInfo) {
+List<Widget> _getPaymentInfoDetails(
+    BuildContext context, PaymentInfo paymentInfo) {
   if (paymentInfo is StreamedPaymentInfo) {
     return _getStreamedPaymentInfoDetails(paymentInfo);
   }
-  return _getSinglePaymentInfoDetails(paymentInfo);
+  return _getSinglePaymentInfoDetails(context, paymentInfo);
 }
 
 List<Widget> _getStreamedPaymentInfoDetails(StreamedPaymentInfo paymentInfo) {
@@ -277,24 +279,28 @@ List<Widget> _getStreamedPaymentInfoDetails(StreamedPaymentInfo paymentInfo) {
   }).toList();
 }
 
-List<Widget> _getSinglePaymentInfoDetails(PaymentInfo paymentInfo) {
+List<Widget> _getSinglePaymentInfoDetails(
+    BuildContext context, PaymentInfo paymentInfo) {
   return List<Widget>.from({
     paymentInfo.preimage == null || paymentInfo.preimage.isEmpty
         ? Container()
         : ShareablePaymentRow(
-            title: "Payment Preimage", sharedValue: paymentInfo.preimage),
+            title: t(context, "payment_preimage"),
+            sharedValue: paymentInfo.preimage),
     paymentInfo.destination == null || paymentInfo.destination.isEmpty
         ? Container()
         : ShareablePaymentRow(
-            title: "Node ID", sharedValue: paymentInfo.destination),
+            title: t(context, "node_id"), sharedValue: paymentInfo.destination),
     paymentInfo.paymentHash == null || paymentInfo.paymentHash.isEmpty
         ? Container()
         : ShareablePaymentRow(
-            title: "Transaction Hash", sharedValue: paymentInfo.paymentHash),
+            title: t(context, "transaction_hash"),
+            sharedValue: paymentInfo.paymentHash),
     paymentInfo.redeemTxID == null || paymentInfo.redeemTxID.isEmpty
         ? Container()
         : ShareablePaymentRow(
-            title: "On-chain Transaction", sharedValue: paymentInfo.redeemTxID),
+            title: t(context, "onchain_transaction"),
+            sharedValue: paymentInfo.redeemTxID),
   });
 }
 
@@ -351,7 +357,8 @@ class ShareablePaymentRow extends StatelessWidget {
                           IconButton(
                             alignment: Alignment.centerRight,
                             padding: EdgeInsets.only(right: 8.0),
-                            tooltip: "Copy $title",
+                            tooltip: t(context, "copy_text",
+                                params: {"text": title}),
                             iconSize: 16.0,
                             color:
                                 Theme.of(context).primaryTextTheme.button.color,
@@ -364,14 +371,16 @@ class ShareablePaymentRow extends StatelessWidget {
                                   .setClipboardText(sharedValue);
                               Navigator.pop(context);
                               showFlushbar(context,
-                                  message:
-                                      "$title was copied to your clipboard.",
+                                  message: t(context,
+                                      "text_was_copied_to_your_clipboard",
+                                      params: {"text": title}),
                                   duration: Duration(seconds: 4));
                             },
                           ),
                           IconButton(
                             padding: EdgeInsets.only(right: 8.0),
-                            tooltip: "Share Transaction Hash",
+                            tooltip: t(context, "share_text",
+                                params: {"text": title}),
                             iconSize: 16.0,
                             color:
                                 Theme.of(context).primaryTextTheme.button.color,
@@ -487,7 +496,8 @@ class ClosedChannelPaymentDetailsState
   }
 
   Future<int> _getTXConfirmationHeight(String chanPoint) async {
-    Uri txUri = Uri.https("blockstream.info", "api/tx/${chanPoint.split(":")[0]}");
+    Uri txUri =
+        Uri.https("blockstream.info", "api/tx/${chanPoint.split(":")[0]}");
     var response = await http.get(txUri);
     if (response.statusCode == 200) {
       Map<String, dynamic> userData = json.decode(response.body);
@@ -639,7 +649,8 @@ class TxWidget extends StatelessWidget {
               onCopy: () {
                 ServiceInjector().device.setClipboardText(this.txID);
                 showFlushbar(context,
-                    message: "Transaction ID was copied to your clipboard.",
+                    message: t(context, "text_was_copied_to_your_clipboard",
+                        params: {"text": t(context, "transaction_id")}),
                     duration: Duration(seconds: 3));
               },
             ),

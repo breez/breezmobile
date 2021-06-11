@@ -13,6 +13,7 @@ import 'package:breez/widgets/flushbar.dart';
 import 'package:breez/widgets/loader.dart';
 import 'package:fixnum/fixnum.dart';
 import 'package:flutter/material.dart';
+import 'package:breez/utils/i18n.dart';
 
 import 'payee_session_widget.dart';
 import 'payer_session_widget.dart';
@@ -53,7 +54,9 @@ class ConnectToPayPageState extends State<ConnectToPayPage> {
           ctpBloc.startSession(_currentSession);
         }
         _payer = _currentSession.runtimeType == PayerRemoteSession;
-        _title = _payer ? "Connect To Pay" : "Receive Payment";
+        _title = _payer
+            ? t(context, "connect_to_pay")
+            : t(context, "receive_payment");
         registerErrorsListener();
         registerEndOfSessionListener();
         _isInit = true;

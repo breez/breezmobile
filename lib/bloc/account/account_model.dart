@@ -367,8 +367,8 @@ class PaymentsModel {
       [this.firstDate]);
 
   PaymentsModel.initial()
-      : this(<PaymentInfo>[], <PaymentInfo>[],
-            PaymentFilterModel.initial(), DateTime(DateTime.now().year));
+      : this(<PaymentInfo>[], <PaymentInfo>[], PaymentFilterModel.initial(),
+            DateTime(DateTime.now().year));
 
   PaymentsModel copyWith(
       {List<PaymentInfo> nonFilteredItems,
