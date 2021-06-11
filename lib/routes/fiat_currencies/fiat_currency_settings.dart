@@ -5,6 +5,7 @@ import 'package:breez/bloc/account/account_model.dart';
 import 'package:breez/bloc/user_profile/user_actions.dart';
 import 'package:breez/bloc/user_profile/user_profile_bloc.dart';
 import 'package:breez/theme_data.dart' as theme;
+import 'package:breez/utils/i18n.dart';
 import 'package:breez/widgets/back_button.dart' as backBtn;
 import 'package:breez/widgets/flushbar.dart';
 import 'package:breez/widgets/loader.dart';
@@ -50,7 +51,7 @@ class FiatCurrencySettingsState extends State<FiatCurrencySettings> {
           backgroundColor: Theme.of(context).canvasColor,
           leading: backBtn.BackButton(),
           title: Text(
-            "Fiat Currencies",
+            I18N.t(context, "fiat_currencies"),
             style: Theme.of(context).appBarTheme.textTheme.headline6,
           ),
           elevation: 0.0,

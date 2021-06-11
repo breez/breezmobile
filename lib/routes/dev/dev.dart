@@ -19,6 +19,7 @@ import 'package:breez/services/breezlib/breez_bridge.dart';
 import 'package:breez/services/injector.dart';
 import 'package:breez/services/permissions.dart';
 import 'package:breez/theme_data.dart' as theme;
+import 'package:breez/utils/i18n.dart';
 import 'package:breez/widgets/back_button.dart' as backBtn;
 import 'package:breez/widgets/error_dialog.dart';
 import 'package:breez/widgets/loader.dart';
@@ -44,7 +45,8 @@ class Choice {
 
 final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
-class DevView extends StatefulWidget { // ignore: must_be_immutable
+class DevView extends StatefulWidget {
+  // ignore: must_be_immutable
   BreezBridge _breezBridge;
   Permissions _permissionsService;
 
@@ -185,7 +187,7 @@ class DevViewState extends State<DevView> {
                                     ),
                                   ],
                                   title: Text(
-                                    "Developers",
+                                    I18N.t(context, "developers"),
                                     style: Theme.of(context)
                                         .appBarTheme
                                         .textTheme
@@ -277,19 +279,22 @@ class DevViewState extends State<DevView> {
                                                                     .device
                                                                     .setClipboardText(
                                                                         _cliText);
-                                                                ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                                                                ScaffoldMessenger.of(
+                                                                        context)
+                                                                    .showSnackBar(
+                                                                        SnackBar(
                                                                   content: Text(
                                                                     'Copied to clipboard.',
                                                                     style: theme
                                                                         .snackBarStyle,
                                                                   ),
                                                                   backgroundColor:
-                                                                  theme
-                                                                      .snackBarBackgroundColor,
+                                                                      theme
+                                                                          .snackBarBackgroundColor,
                                                                   duration:
-                                                                  Duration(
-                                                                      seconds:
-                                                                      2),
+                                                                      Duration(
+                                                                          seconds:
+                                                                              2),
                                                                 ));
                                                               },
                                                             ),

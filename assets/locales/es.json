@@ -54,5 +54,14 @@
   "LATER": "MAS TARDE",
   "BACKUP_NOW": "RESPALDAR AHORA",
   "sign_in_icloud": "Iniciar sesión en iCloud",
-  "sign_in_icloud_message": "Inicie sesión en su cuenta de iCloud. En la pantalla de inicio, inicie Configuración, toque iCloud e ingrese su ID de Apple. Enciende iCloud Drive. Si no tiene una cuenta de iCloud, toque Crear una nueva ID de Apple."
+  "sign_in_icloud_message": "Inicie sesión en su cuenta de iCloud. En la pantalla de inicio, inicie Configuración, toque iCloud e ingrese su ID de Apple. Enciende iCloud Drive. Si no tiene una cuenta de iCloud, toque Crear una nueva ID de Apple.",
+  "preferences": "Preferencias",
+  "DISMISS": "DESECHAR",
+  "fiat_currencies": "Monedas Fíat",
+  "network": "Red",
+  "security_and_backup": "Seguridad & Respaldo",
+  "developers": "Desarrolladores",
+  "bitcoin_node_bip_157": "Nodo Bitcoin (BIP 157)",
+  "reset": "Restaurar",
+  "save": "Guardar"
 }

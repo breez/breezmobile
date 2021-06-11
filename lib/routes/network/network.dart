@@ -5,6 +5,7 @@ import 'package:breez/services/breezlib/breez_bridge.dart';
 import 'package:breez/services/breezlib/data/rpc.pb.dart';
 import 'package:breez/services/injector.dart';
 import 'package:breez/theme_data.dart' as theme;
+import 'package:breez/utils/i18n.dart';
 import 'package:breez/widgets/animated_loader_dialog.dart';
 import 'package:breez/widgets/back_button.dart' as backBtn;
 import 'package:breez/widgets/error_dialog.dart';
@@ -88,7 +89,7 @@ class NetworkPageState extends State<NetworkPage> {
 
   @override
   Widget build(BuildContext context) {
-    String _title = "Network";
+    String _title = I18N.t(context, "network");
     return ButtonTheme(
       height: 28.0,
       child: Scaffold(
@@ -116,7 +117,8 @@ class NetworkPageState extends State<NetworkPage> {
                           padding: EdgeInsets.only(top: 8.0),
                           child: TextFormField(
                             decoration: InputDecoration(
-                                labelText: "Bitcoin Node (BIP 157)"),
+                                labelText:
+                                    I18N.t(context, "bitcoin_node_bip_157")),
                             style: theme.FieldTextStyle.textStyle,
                             onSaved: (String value) {
                               this._data.peer = value;
@@ -135,7 +137,7 @@ class NetworkPageState extends State<NetworkPage> {
                                 primary: Colors.white,
                               ),
                               child: Text(
-                                "Reset",
+                                I18N.t(context, "reset"),
                               ),
                               onPressed: () async {
                                 var error = await showDialog(
@@ -167,7 +169,7 @@ class NetworkPageState extends State<NetworkPage> {
                                 primary: Colors.white,
                               ),
                               child: Text(
-                                "Save",
+                                I18N.t(context, "save"),
                               ),
                               onPressed: () async {
                                 if (_formKey.currentState.validate()) {

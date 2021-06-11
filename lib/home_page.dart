@@ -195,7 +195,7 @@ class HomeState extends State<Home> with WidgetsBindingObserver {
     tutorial = TutorialCoachMark(context,
         targets: targets,
         opacityShadow: 0.9,
-        textSkip: "DISMISS",
+        textSkip: I18N.t(context, "DISMISS"),
         colorShadow: Theme.of(context).primaryColorLight,
         onClickOverlay: (s) => tutorial.finish(),
         onClickTarget: (s) {
@@ -424,25 +424,21 @@ class HomeState extends State<Home> with WidgetsBindingObserver {
 
                                     var advancedFlavorItems =
                                         <DrawerItemConfig>[];
-                                    advancedFlavorItems =
-                                        user.appMode == AppMode.pos
-                                            ? [
-                                                DrawerItemConfig(
-                                                    "",
-                                                    "POS Settings",
-                                                    "src/icon/settings.png",
-                                                    onItemSelected: (_) =>
-                                                        protectAdminRoute(
-                                                            context,
-                                                            user,
-                                                            "/settings")),
-                                              ]
-                                            : [
-                                                DrawerItemConfig(
-                                                    "/developers",
-                                                    "Developers",
-                                                    "src/icon/developers.png")
-                                              ];
+                                    advancedFlavorItems = user.appMode ==
+                                            AppMode.pos
+                                        ? [
+                                            DrawerItemConfig("", "POS Settings",
+                                                "src/icon/settings.png",
+                                                onItemSelected: (_) =>
+                                                    protectAdminRoute(context,
+                                                        user, "/settings")),
+                                          ]
+                                        : [
+                                            DrawerItemConfig(
+                                                "/developers",
+                                                I18N.t(context, "developers"),
+                                                "src/icon/developers.png")
+                                          ];
 
                                     return StreamBuilder<
                                             Future<DecodedClipboardData>>(
@@ -547,20 +543,27 @@ class HomeState extends State<Home> with WidgetsBindingObserver {
                                                             _filterItems([
                                                               DrawerItemConfig(
                                                                   "/fiat_currency",
-                                                                  "Fiat Currencies",
+                                                                  I18N.t(
+                                                                      context,
+                                                                      "fiat_currencies"),
                                                                   "src/icon/fiat_currencies.png"),
                                                               DrawerItemConfig(
                                                                   "/network",
-                                                                  "Network",
+                                                                  I18N.t(
+                                                                      context,
+                                                                      "network"),
                                                                   "src/icon/network.png"),
                                                               DrawerItemConfig(
                                                                   "/security",
-                                                                  "Security & Backup",
+                                                                  I18N.t(
+                                                                      context,
+                                                                      "security_and_backup"),
                                                                   "src/icon/security.png"),
                                                               ...advancedFlavorItems,
                                                             ]),
-                                                            groupTitle:
-                                                                "Preferences",
+                                                            groupTitle: I18N.t(
+                                                                context,
+                                                                "preferences"),
                                                             groupAssetImage: "",
                                                           ),
                                                         ],
