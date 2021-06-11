@@ -71,6 +71,40 @@ void main() {
       await repo.deleteAsset(url);
       assetData = await repo.fetchAssetByURL(url);
       expect(assetData, null);      
-    });   
+    });
+
+    test("replaceDB should replace items", () async {
+      int id = await repo.addItem(
+        Item(name: "item1", currency: "USD", price: 1.0),
+      );
+      expect(id, 1);
+      await repo.replaceDB([
+        Item(name: "itemReplace", currency: "USD", price: 1.0),
+      ]);
+      var items = await repo.fetchItems();
+      expect(items.length, 1);
+      expect(items[0].id, 1);
+      var item1 = await repo.fetchItemByID(1);
+      expect(item1.name, "itemReplace");
+      expect(item1.currency, "USD");
+      expect(item1.price, 1.0);
+      expect(item1.imageURL, null);
+    });
+
+    test("fetchSaleByPaymentHash when paymentHash is unknown should return null", () async {
+      final hash = "a_hash";
+      final sale = await repo.fetchSaleByPaymentHash(hash);
+      expect(sale, isNull);
+    });
+
+    test("fetchSaleByPaymentHash when paymentHash is valid should return sale", () async {
+      final hash = "a_hash";
+      await repo.addSale(Sale(saleLines: [
+        SaleLine(itemName: "SaleLine1", quantity: 1, itemImageURL: "testURL1", pricePerItem: 1.0, currency: "USD", satConversionRate: 1.5),
+        SaleLine(itemName: "SaleLine2", quantity: 1, itemImageURL: "testURL2", pricePerItem: 2.0, currency: "USD", satConversionRate: 2.5),
+      ]), hash);
+      final sale = await repo.fetchSaleByPaymentHash(hash);
+      expect(sale, isNotNull);
+    });
   });
 }
