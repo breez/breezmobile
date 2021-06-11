@@ -209,15 +209,15 @@ class DevViewState extends State<DevView> {
                                               focusNode: _cliEntryFocusNode,
                                               controller: _cliInputController,
                                               decoration: InputDecoration(
-                                                  hintText:
-                                                      'Enter a command or use the links below'),
+                                                  hintText: t(context,
+                                                      "enter_command_or_use_the_links")),
                                               onSubmitted: (command) {
                                                 _sendCommand(command);
                                               },
                                             )),
                                             IconButton(
                                               icon: Icon(Icons.play_arrow),
-                                              tooltip: 'Run',
+                                              tooltip: t(context, 'run'),
                                               onPressed: () {
                                                 _sendCommand(
                                                     _cliInputController.text);
@@ -225,7 +225,7 @@ class DevViewState extends State<DevView> {
                                             ),
                                             IconButton(
                                               icon: Icon(Icons.clear),
-                                              tooltip: 'Clear',
+                                              tooltip: t(context, 'clear'),
                                               onPressed: () {
                                                 setState(() {
                                                   _cliInputController.clear();
@@ -284,7 +284,8 @@ class DevViewState extends State<DevView> {
                                                                     .showSnackBar(
                                                                         SnackBar(
                                                                   content: Text(
-                                                                    'Copied to clipboard.',
+                                                                    t(context,
+                                                                        'copied_to_clipboard'),
                                                                     style: theme
                                                                         .snackBarStyle,
                                                                   ),
@@ -302,7 +303,9 @@ class DevViewState extends State<DevView> {
                                                               icon: Icon(
                                                                   Icons.share),
                                                               iconSize: 19.0,
-                                                              tooltip: 'Share',
+                                                              tooltip: t(
+                                                                  context,
+                                                                  'share'),
                                                               onPressed: () {
                                                                 _shareFile(
                                                                     _lastCommand
@@ -337,7 +340,10 @@ class DevViewState extends State<DevView> {
       BreezUserModel userModel) {
     List<Choice> choices = <Choice>[];
     choices.addAll([
-      Choice(title: 'Share Logs', icon: Icons.share, function: shareLog),
+      Choice(
+          title: t(context, 'share_logs'),
+          icon: Icons.share,
+          function: shareLog),
       /*
       Choice(
           title: 'Show Initial Screen',
@@ -352,30 +358,30 @@ class DevViewState extends State<DevView> {
           }),
           */
       Choice(
-          title: 'Describe Graph',
+          title: t(context, 'describe_graph'),
           icon: Icons.phone_android,
           function: _describeGraph),
       Choice(
-          title: 'Update Graph',
+          title: t(context, 'update_graph'),
           icon: Icons.phone_android,
           function: _refreshGraph),
     ]);
 
     if (Platform.isAndroid) {
       choices.add(Choice(
-          title: 'Battery Optimization',
+          title: t(context, "battery_optimization"),
           icon: Icons.phone_android,
           function: _showOptimizationsSettings));
     }
     if (settings.ignoreWalletBalance) {
       choices.add(Choice(
-          title: "Show Excess Funds",
+          title: t(context, "show_excess_funds"),
           icon: Icons.phone_android,
           function: () => _setShowExcessFunds(accBloc, settings)));
     }
     if (settings.failedPaymentBehavior != BugReportBehavior.PROMPT) {
       choices.add(Choice(
-          title: 'Reset Payment Report',
+          title: t(context, "reset_payment_report"),
           icon: Icons.phone_android,
           function: () {
             _resetBugReportBehavior(accBloc, settings);
@@ -383,21 +389,25 @@ class DevViewState extends State<DevView> {
     }
     choices.add(Choice(
         title:
-            "${addFundsSettings.moonpayIpCheck ? "Disable" : "Enable"} MoonPay IP Check",
+            t(context, addFundsSettings.moonpayIpCheck ? "disable" : "enable") +
+                " " +
+                t(context, "moonpay_ip_check"),
         icon: Icons.network_check,
         function: () => _enableMoonpayIpCheck(addFundsBloc, addFundsSettings)));
     choices.add(Choice(
-        title: "${settings.isEscherEnabled ? "Disable" : "Enable"} Escher",
+        title: t(context, settings.isEscherEnabled ? "disable" : "enable") +
+            " " +
+            t(context, "escher"),
         icon: Icons.monetization_on,
         function: () => _enableEscher(accBloc, settings)));
     choices.add(Choice(
-        title: 'Reset Refunds Status',
+        title: t(context, "reset_refunds_status"),
         icon: Icons.phone_android,
         function: () {
           allowRebroadcastRefunds = true;
         }));
     choices.add(Choice(
-        title: "Recover Chain Information",
+        title: t(context, "recover_chain_information"),
         icon: Icons.phone_android,
         function: () async {
           ResetChainService resetAction = ResetChainService();
@@ -406,13 +416,13 @@ class DevViewState extends State<DevView> {
           _promptForRestart();
         }));
     choices.add(Choice(
-        title: "Refresh Private Channels",
+        title: t(context, "refresh_private_channels"),
         icon: Icons.phone_android,
         function: () async {
           await widget._breezBridge.populateChannePolicy();
         }));
     choices.add(Choice(
-        title: "Reset Unconfirmed Swap",
+        title: t(context, "reset_unconfirmed_swap"),
         icon: Icons.phone_android,
         function: () async {
           await widget._breezBridge.setNonBlockingUnconfirmedSwaps();
@@ -421,7 +431,7 @@ class DevViewState extends State<DevView> {
         }));
 
     choices.add(Choice(
-        title: "Export DB Files",
+        title: t(context, "export_db_files"),
         icon: Icons.phone_android,
         function: () async {
           Directory tempDir = await getTemporaryDirectory();
@@ -443,14 +453,14 @@ class DevViewState extends State<DevView> {
         }));
 
     choices.add(Choice(
-        title: 'Reset POS DB',
+        title: t(context, "reset_pos_db"),
         icon: Icons.phone_android,
         function: () {
           PosCatalogBloc bloc = AppBlocsProvider.of<PosCatalogBloc>(context);
           bloc.resetDB();
         }));
     choices.add(Choice(
-        title: "Set Height Hint",
+        title: t(context, "set_height_hint"),
         icon: Icons.phone_android,
         function: () async {
           final success = await Navigator.of(context).push(FadeInRoute(
@@ -461,7 +471,7 @@ class DevViewState extends State<DevView> {
           }
         }));
     choices.add(Choice(
-        title: 'Show Tutorials',
+        title: t(context, "show_tutorials"),
         icon: Icons.phone_android,
         function: () {
           UserProfileBloc bloc = AppBlocsProvider.of<UserProfileBloc>(context);
@@ -526,7 +536,7 @@ class DevViewState extends State<DevView> {
     Navigator.push(
             context,
             createLoaderRoute(context,
-                message: "Generating graph data...", opacity: 0.8))
+                message: t(context, "generating_graph_data"), opacity: 0.8))
         .whenComplete(() => userCancelled = true);
 
     widget._breezBridge
@@ -549,8 +559,10 @@ class DevViewState extends State<DevView> {
 
   void _refreshGraph() async {
     FlutterDownloader.cancelAll();
-    Navigator.push(context,
-        createLoaderRoute(context, message: "Deleting graph...", opacity: 0.8));
+    Navigator.push(
+        context,
+        createLoaderRoute(context,
+            message: t(context, "deleting_graph"), opacity: 0.8));
     widget._breezBridge.deleteGraph().whenComplete(() {
       Navigator.pop(context);
       _promptForRestart();
@@ -561,10 +573,10 @@ class DevViewState extends State<DevView> {
     return promptAreYouSure(
             context,
             null,
-            Text("Please restart to resynchronize Breez.",
+            Text(t(context, "restart_to_resynchronise"),
                 style: Theme.of(context).dialogTheme.contentTextStyle),
-            cancelText: "CANCEL",
-            okText: "EXIT BREEZ")
+            cancelText: t(context, "CANCEL"),
+            okText: t(context, "EXIT_BREEZ"))
         .then((shouldExit) {
       if (shouldExit) {
         exit(0);

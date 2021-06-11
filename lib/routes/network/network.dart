@@ -74,11 +74,10 @@ class NetworkPageState extends State<NetworkPage> {
     return promptAreYouSure(
             context,
             null,
-            Text(
-                "Please restart Breez to switch to the new Bitcoin Node configuration.",
+            Text(t(context, "restart_to_switch_node_config"),
                 style: Theme.of(context).dialogTheme.contentTextStyle),
-            cancelText: "CANCEL",
-            okText: "EXIT BREEZ")
+            cancelText: t(context, "CANCEL"),
+            okText: t(context, "EXIT_BREEZ"))
         .then((shouldExit) {
       if (shouldExit) {
         exit(0);
@@ -150,7 +149,8 @@ class NetworkPageState extends State<NetworkPage> {
                                       context,
                                       null,
                                       Text(
-                                          "Breez is unable to use the default node.",
+                                          t(context,
+                                              "breez_unable_to_use_default_node"),
                                           style: Theme.of(context)
                                               .dialogTheme
                                               .contentTextStyle));
@@ -186,7 +186,8 @@ class NetworkPageState extends State<NetworkPage> {
                                           context,
                                           null,
                                           Text(
-                                              "Breez is unable to connect to the specified node. Please make sure this node supports BIP 157.",
+                                              t(context,
+                                                  "breez_unable_to_connect_to_node"),
                                               style: Theme.of(context)
                                                   .dialogTheme
                                                   .contentTextStyle));
@@ -243,7 +244,7 @@ class _TestingPeerDialogState extends State<_TestingPeerDialog> {
   Widget build(BuildContext context) {
     return WillPopScope(
         onWillPop: () => Future.value(_allowPop),
-        child: createAnimatedLoaderDialog(context, "Testing node",
+        child: createAnimatedLoaderDialog(context, t(context, "testing_node"),
             withOKButton: false));
   }
 }
