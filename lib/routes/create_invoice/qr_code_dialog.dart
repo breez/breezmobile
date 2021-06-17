@@ -6,9 +6,11 @@ import 'package:breez/bloc/invoice/invoice_bloc.dart';
 import 'package:breez/bloc/invoice/invoice_model.dart';
 import 'package:breez/bloc/user_profile/currency.dart';
 import 'package:breez/services/injector.dart';
+import 'package:breez/theme_data.dart' as theme;
 import 'package:breez/widgets/circular_progress.dart';
 import 'package:breez/widgets/compact_qr_image.dart';
 import 'package:breez/widgets/flushbar.dart';
+import 'package:breez/widgets/warning_box.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:share_extend/share_extend.dart';
@@ -175,7 +177,7 @@ class QrCodeDialogState extends State<QrCodeDialog>
               ),
               titlePadding: EdgeInsets.fromLTRB(20.0, 22.0, 0.0, 8.0),
               contentPadding:
-                  EdgeInsets.only(left: 20.0, right: 20.0, bottom: 20.0),
+                  EdgeInsets.only(left: 0.0, right: 0.0, bottom: 20.0),
               children: <Widget>[
                 StreamBuilder<AccountModel>(
                   stream: widget._accountBloc.accountStream,
@@ -215,17 +217,21 @@ class QrCodeDialogState extends State<QrCodeDialog>
                           ? SizedBox()
                           : Column(
                               children: [
-                                AspectRatio(
-                                  aspectRatio: 1,
-                                  child: Container(
-                                    width: 230.0,
-                                    height: 230.0,
-                                    child: CompactQRImage(
-                                      data: snapshot.data?.rawPayReq,
+                                Padding(
+                                  padding:
+                                      EdgeInsets.only(left: 20.0, right: 20.0),
+                                  child: AspectRatio(
+                                    aspectRatio: 1,
+                                    child: Container(
+                                      width: 230.0,
+                                      height: 230.0,
+                                      child: CompactQRImage(
+                                        data: snapshot.data?.rawPayReq,
+                                      ),
                                     ),
                                   ),
                                 ),
-                                Padding(padding: EdgeInsets.only(top: 24.0)),
+                                Padding(padding: EdgeInsets.only(top: 16.0)),
                                 Container(
                                     width: MediaQuery.of(context).size.width,
                                     child: _buildExpiryAndFeeMessage(snapshot)),
@@ -262,20 +268,24 @@ class QrCodeDialogState extends State<QrCodeDialog>
             _message = "Failed to create invoice";
           } else {
             _hasError = false;
-            _message = "Keep Breez open until payment is completed.";
-
             if (snapshot.data.lspFee != 0) {
-              _message +=
-                  " A setup fee of ${Currency.SAT.format(snapshot.data.lspFee)} (${accSnapshot.data.fiatCurrency.format(snapshot.data.lspFee)}) is applied to this invoice.";
+              _message =
+                  "A setup fee of ${Currency.SAT.format(snapshot.data.lspFee)} (${accSnapshot.data.fiatCurrency.format(snapshot.data.lspFee)}) is applied to this invoice. ";
             }
+            _message += "Keep Breez open until the payment is completed.";
           }
-
-          return Text(
-            _message,
-            textAlign: TextAlign.center,
-            style: (_hasError)
-                ? Theme.of(context).dialogTheme.contentTextStyle
-                : Theme.of(context).primaryTextTheme.caption,
+          return WarningBox(
+            boxPadding: EdgeInsets.symmetric(horizontal: 20),
+            contentPadding: EdgeInsets.symmetric(vertical: 12, horizontal: 8),
+            backgroundColor: theme.themeId == "BLUE" ? Color(0xFFf3f8fc) : null,
+            borderColor: theme.themeId == "BLUE" ? Color(0xFF0085fb) : null,
+            child: Text(
+              _message,
+              textAlign: TextAlign.center,
+              style: (_hasError)
+                  ? Theme.of(context).dialogTheme.contentTextStyle
+                  : Theme.of(context).primaryTextTheme.caption,
+            ),
           );
         });
   }
