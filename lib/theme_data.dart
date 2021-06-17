@@ -328,9 +328,6 @@ final VendorTheme fixedfloat = VendorTheme(
 final VendorTheme spendl = VendorTheme(
   iconBgColor: Color(0xFFffffff),
 );
-final VendorTheme lnroulette = VendorTheme(
-  iconBgColor: Color(0xFF0c532d),
-);
 final VendorTheme boltz = VendorTheme(
   iconBgColor: Color(0xFF001524),
 );
@@ -347,7 +344,6 @@ final Map<String, VendorTheme> vendorTheme = {
   "lightnite": lightnite,
   "fixedfloat": fixedfloat,
   "spendl": spendl,
-  "lightningroulette": lnroulette,
   "boltz": boltz,
   "lnmarkets": lnmarkets,
 };
