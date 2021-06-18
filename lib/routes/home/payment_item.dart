@@ -95,7 +95,7 @@ class PaymentItem extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: <Widget>[
                         Text(
-                          BreezDateUtils.formatMonthDate(
+                          BreezDateUtils.formatTimelineRelative(
                               DateTime.fromMillisecondsSinceEpoch(
                                   _paymentInfo.creationTimestamp.toInt() *
                                       1000)),
