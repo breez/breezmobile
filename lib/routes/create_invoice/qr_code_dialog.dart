@@ -267,6 +267,7 @@ class QrCodeDialogState extends State<QrCodeDialog>
               !snapshot.hasData) {
             _message = "Failed to create invoice";
           } else {
+            _message = "";
             _hasError = false;
             if (snapshot.data.lspFee != 0) {
               _message =
