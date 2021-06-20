@@ -14,6 +14,7 @@ import io.flutter.embedding.android.SplashScreen;
 import io.flutter.embedding.engine.FlutterEngine;
 import io.flutter.plugin.common.MethodChannel;
 import io.flutter.plugins.GeneratedPluginRegistrant;
+import android.view.WindowManager.LayoutParams;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
@@ -29,9 +30,20 @@ public class MainActivity extends FlutterFragmentActivity {
         Log.d(TAG, "Breez activity created...");
         BreezApplication.isRunning = true;
 
-
         registerBreezPlugins(flutterEngine);
         GeneratedPluginRegistrant.registerWith(flutterEngine);
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        getWindow().addFlags(LayoutParams.FLAG_SECURE);
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        getWindow().clearFlags(LayoutParams.FLAG_SECURE);
     }
 
     @Override
