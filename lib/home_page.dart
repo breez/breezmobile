@@ -58,7 +58,7 @@ import 'handlers/sync_ui_handler.dart';
 import 'routes/account_required_actions.dart';
 import 'routes/connect_to_pay/connect_to_pay_page.dart';
 import 'routes/home/account_page.dart';
-import 'routes/no_connection_dialog.dart';
+import 'routes/unexpected_error_dialog.dart';
 
 final GlobalKey firstPaymentItemKey = GlobalKey();
 final ScrollController scrollController = ScrollController();
@@ -106,7 +106,7 @@ class HomeState extends State<Home> with WidgetsBindingObserver {
     audioBloc.transitionLifecycleState(LifecyleState.resume);
 
     _registerNotificationHandlers();
-    listenNoConnection(context, widget.accountBloc);
+    listenUnexpectedError(context, widget.accountBloc);
     _listenBackupConflicts();
     _listenWhitelistPermissionsRequest();
     _listenLSPSelectionPrompt();
@@ -712,7 +712,7 @@ class HomeState extends State<Home> with WidgetsBindingObserver {
           messageWidget: LoadingAnimatedText("Broadcasting your transaction",
               textStyle: theme.snackBarStyle, textAlign: TextAlign.left));
     });
-    CheckVersionHandler(context, widget.userProfileBloc);
+    checkVersionDialog(context, widget.userProfileBloc);
   }
 
   void _listenBackupConflicts() {
