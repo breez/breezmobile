@@ -127,9 +127,23 @@ class SatAmountFormFieldFormatter extends TextInputFormatter {
       includeDisplayName: false,
       includeCurrencySymbol: false,
     );
+
+    var diff = formatted.length - oldValue.text.length;
+    var newOffset = newValue.selection.start;
+    if (formatted != oldValue.text) {
+      if (diff > 1) {
+        newOffset += 1;
+      }
+      if (diff < -1) {
+        newOffset -= 1;
+      }
+    } else {
+      newOffset = oldValue.selection.start;
+    }
+
     return newValue.copyWith(
       text: formatted,
-      selection: TextSelection.collapsed(offset: formatted.length),
+      selection: TextSelection.collapsed(offset: newOffset),
     );
   }
 }
