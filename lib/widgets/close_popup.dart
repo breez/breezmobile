@@ -7,13 +7,17 @@ WillPopCallback willPopCallback(
   BuildContext context, {
   String title: 'Exit Breez',
   String message: 'Do you really want to quit Breez?',
+  Future<bool> canCancel,
 }) {
   return () {
-    return promptAreYouSure(context, title, Text(message)).then((shouldExit) {
-      if (shouldExit) {
-        exit(0);
-      }
-      return false;
+    return (canCancel ?? Future.value(false)).then((canCancel) {
+      if (canCancel) return true;
+      return promptAreYouSure(context, title, Text(message)).then((shouldExit) {
+        if (shouldExit) {
+          exit(0);
+        }
+        return false;
+      });
     });
   };
 }
