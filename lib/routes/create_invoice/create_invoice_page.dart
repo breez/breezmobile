@@ -10,6 +10,8 @@ import 'package:breez/bloc/invoice/invoice_model.dart';
 import 'package:breez/bloc/lnurl/lnurl_actions.dart';
 import 'package:breez/bloc/lnurl/lnurl_bloc.dart';
 import 'package:breez/bloc/lnurl/lnurl_model.dart';
+import 'package:breez/bloc/lsp/lsp_bloc.dart';
+import 'package:breez/bloc/lsp/lsp_model.dart';
 import 'package:breez/logger.dart';
 import 'package:breez/routes/charge/succesful_payment.dart';
 import 'package:breez/routes/podcast/theme.dart';
@@ -28,6 +30,7 @@ import 'package:breez/widgets/static_loader.dart';
 import 'package:breez/widgets/transparent_page_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:fixnum/fixnum.dart';
 
 import 'lnurl_withdraw_dialog.dart';
 import 'qr_code_dialog.dart';
@@ -103,6 +106,7 @@ class CreateInvoicePageState extends State<CreateInvoicePage> {
     AccountBloc accountBloc = AppBlocsProvider.of<AccountBloc>(context);
     InvoiceBloc invoiceBloc = AppBlocsProvider.of<InvoiceBloc>(context);
     LNUrlBloc lnurlBloc = AppBlocsProvider.of<LNUrlBloc>(context);
+    LSPBloc lspBloc = AppBlocsProvider.of<LSPBloc>(context);
 
     return Scaffold(
       key: _scaffoldKey,
@@ -186,13 +190,26 @@ class CreateInvoicePageState extends State<CreateInvoicePage> {
                         ),
                         style: theme.FieldTextStyle.textStyle,
                       ),
-                      AmountFormField(
-                          context: context,
-                          accountModel: acc,
-                          focusNode: _amountFocusNode,
-                          controller: _amountController,
-                          validatorFn: acc.validateIncomingPayment,
-                          style: theme.FieldTextStyle.textStyle),
+                      StreamBuilder<LSPStatus>(
+                        stream: lspBloc.lspStatusStream,
+                        builder: (context, snapshot) {
+                          LSPStatus lspStatus = snapshot.data;
+                          String validatePayment(Int64 amount) {
+                            Int64 channelMinimumFee = new Int64(lspStatus.currentLSP.channelMinimumFeeMsat ~/ 1000);
+                            if (amount>acc.maxInboundLiquidity && amount<=channelMinimumFee) {
+                              return "Insufficient amount to cover the setup fees of ${acc.currency.format(channelMinimumFee)}";
+                            }
+                            return acc.validateIncomingPayment(amount);
+                          }
+                          return AmountFormField(
+                            context: context,
+                            accountModel: acc,
+                            focusNode: _amountFocusNode,
+                            controller: _amountController,
+                            validatorFn: validatePayment,
+                            style: theme.FieldTextStyle.textStyle);
+                        }
+                      ),
                       Container(
                         width: MediaQuery.of(context).size.width,
                         height: 48,

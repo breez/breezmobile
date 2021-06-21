@@ -49,5 +49,6 @@ class LSPInfo {
   int get channelCapacity => _lspInformation.channelCapacity.toInt();
   int get channelFeePermyriad => _lspInformation.channelFeePermyriad.toInt();
   int get maxInactiveDuration => _lspInformation.maxInactiveDuration.toInt();
+  int get channelMinimumFeeMsat => _lspInformation.channelMinimumFeeMsat.toInt();
   LSPInformation get raw => _lspInformation;
 }

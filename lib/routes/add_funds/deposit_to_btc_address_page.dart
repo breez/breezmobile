@@ -147,9 +147,9 @@ class DepositToBTCAddressPageState extends State<DepositToBTCAddressPage> {
   String formatFeeMessage(AccountModel acc, LSPInfo lsp) {
     if (acc.connected) {
       var liquidity = acc.currency.format(acc.maxInboundLiquidity);
-      return "A setup fee of ${lsp.channelFeePermyriad / 100}% will be applied for sending more than $liquidity.";
+      return "A setup fee of ${lsp.channelFeePermyriad / 100}% with a minimum of ${lsp.channelMinimumFeeMsat / 1000} sats will be applied for sending more than $liquidity.";
     }
-    return "A setup fee of ${lsp.channelFeePermyriad / 100}% will be applied on the received amount.";
+    return "A setup fee of ${lsp.channelFeePermyriad / 100}% with a minimum of ${lsp.channelMinimumFeeMsat / 1000} sats will be applied on the received amount.";
   }
 
   Widget _buildBottomBar(AddFundResponse response, AccountModel account,
