@@ -35,15 +35,9 @@ public class MainActivity extends FlutterFragmentActivity {
     }
 
     @Override
-    public void onPause() {
-        super.onPause();
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
         getWindow().addFlags(LayoutParams.FLAG_SECURE);
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-        getWindow().clearFlags(LayoutParams.FLAG_SECURE);
     }
 
     @Override
