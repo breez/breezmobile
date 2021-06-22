@@ -28,6 +28,7 @@ import 'package:breez/routes/marketplace/marketplace.dart';
 import 'package:breez/routes/podcast/podcast_page.dart' as breezPodcast;
 import 'package:breez/routes/podcast/theme.dart';
 import 'package:breez/theme_data.dart' as theme;
+import 'package:breez/widgets/close_popup.dart';
 import 'package:breez/widgets/error_dialog.dart';
 import 'package:breez/widgets/fade_in_widget.dart';
 import 'package:breez/widgets/flushbar.dart';
@@ -251,16 +252,7 @@ class HomeState extends State<Home> with WidgetsBindingObserver {
     AddFundsBloc addFundsBloc = BlocProvider.of<AddFundsBloc>(context);
     LSPBloc lspBloc = AppBlocsProvider.of<LSPBloc>(context);
     return WillPopScope(
-      onWillPop: () {
-        return promptAreYouSure(context, "Exit Breez",
-                Text("Do you really want to quit Breez?"))
-            .then((shouldExit) {
-          if (shouldExit) {
-            exit(0);
-          }
-          return false;
-        });
-      },
+      onWillPop: willPopCallback(context),
       child: StreamBuilder<BreezUserModel>(
           stream: widget.userProfileBloc.userStream,
           builder: (context, userSnapshot) {
