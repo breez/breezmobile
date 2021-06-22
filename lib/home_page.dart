@@ -252,7 +252,10 @@ class HomeState extends State<Home> with WidgetsBindingObserver {
     AddFundsBloc addFundsBloc = BlocProvider.of<AddFundsBloc>(context);
     LSPBloc lspBloc = AppBlocsProvider.of<LSPBloc>(context);
     return WillPopScope(
-      onWillPop: willPopCallback(context),
+      onWillPop: willPopCallback(
+        context,
+        canCancel: () => _scaffoldKey.currentState?.isDrawerOpen ?? false,
+      ),
       child: StreamBuilder<BreezUserModel>(
           stream: widget.userProfileBloc.userStream,
           builder: (context, userSnapshot) {
