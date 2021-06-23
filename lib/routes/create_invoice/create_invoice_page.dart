@@ -195,9 +195,11 @@ class CreateInvoicePageState extends State<CreateInvoicePage> {
                         builder: (context, snapshot) {
                           LSPStatus lspStatus = snapshot.data;
                           String validatePayment(Int64 amount) {
-                            Int64 channelMinimumFee = new Int64(lspStatus.currentLSP.channelMinimumFeeMsat ~/ 1000);
-                            if (amount>acc.maxInboundLiquidity && amount<=channelMinimumFee) {
-                              return "Insufficient amount to cover the setup fees of ${acc.currency.format(channelMinimumFee)}";
+                            if (lspStatus?.currentLSP != null) {
+                              Int64 channelMinimumFee = new Int64(lspStatus.currentLSP.channelMinimumFeeMsat ~/ 1000);
+                              if (amount>acc.maxInboundLiquidity && amount<=channelMinimumFee) {
+                                return "Insufficient amount to cover the setup fees of ${acc.currency.format(channelMinimumFee)}";
+                              }
                             }
                             return acc.validateIncomingPayment(amount);
                           }
