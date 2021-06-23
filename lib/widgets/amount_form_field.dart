@@ -60,7 +60,11 @@ class AmountFormField extends TextFormField {
                         builder: (_) => CurrencyConverterDialog(
                             returnFN != null
                                 ? returnFN
-                                : (value) => controller.text = value,
+                                : (value) => controller.text = accountModel
+                                    .currency
+                                    .format(accountModel.currency.parse(value),
+                                        includeCurrencySymbol: false,
+                                        includeDisplayName: false),
                             validatorFn),
                       ),
                     ),
