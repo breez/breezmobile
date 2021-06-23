@@ -33,7 +33,7 @@ class _AppLockScreenState extends State<AppLockScreen> {
     return WillPopScope(
       onWillPop: willPopCallback(
         context,
-        canCancel: Future.value(widget.canCancel),
+        canCancel: () => widget.canCancel,
       ),
       child: Scaffold(
         appBar: widget.canCancel == true
