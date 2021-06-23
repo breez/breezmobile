@@ -173,6 +173,9 @@ _formatFeeMessage(AccountModel acc, LSPStatus lspStatus, int amount) {
   num feeSats = 0;
   if (amount > acc.maxInboundLiquidity.toInt()) {
     feeSats = (amount * lspStatus.currentLSP.channelFeePermyriad / 10000);
+    if (feeSats < lspStatus.currentLSP.channelMinimumFeeMsat/1000) {
+      feeSats = lspStatus.currentLSP.channelMinimumFeeMsat/1000;
+    }
   }
   var intSats = feeSats.toInt();
   if (intSats == 0) {
