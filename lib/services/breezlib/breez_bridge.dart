@@ -643,9 +643,9 @@ class BreezBridge {
     });
   }
 
-  Future setBackupProvider(String backupProvider) {
-    return _invokeMethodImmediate(
-        "setBackupProvider", {"argument": backupProvider});
+  Future setBackupProvider(String backupProvider, String backupAuthData) {
+    return _invokeMethodImmediate("setBackupProvider",
+        {"provider": backupProvider, "authData": backupAuthData});
   }
 
   Future<String> getAvailableBackups() async {

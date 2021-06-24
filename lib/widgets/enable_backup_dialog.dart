@@ -1,7 +1,11 @@
 import 'package:auto_size_text/auto_size_text.dart';
+import 'package:breez/bloc/backup/backup_actions.dart';
 import 'package:breez/bloc/backup/backup_bloc.dart';
 import 'package:breez/bloc/backup/backup_model.dart';
+import 'package:breez/routes/podcast/theme.dart';
+import 'package:breez/routes/security_pin/next_cloud_auth.dart';
 import 'package:breez/utils/min_font_size.dart';
+import 'package:breez/widgets/route.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
@@ -129,17 +133,28 @@ class EnableBackupDialogState extends State<EnableBackupDialog> {
                       }
 
                       if (provider != null) {
-                        if (widget.signInNeeded &&
-                            provider == BackupSettings.icloudBackupProvider) {
-                          await promptError(
-                              context,
-                              "Sign in to iCloud",
-                              Text(
-                                  "Sign in to your iCloud account. On the Home screen, launch Settings, tap iCloud, and enter your Apple ID. Turn iCloud Drive on. If you don't have an iCloud account, tap Create a new Apple ID.",
-                                  style: Theme.of(context)
-                                      .dialogTheme
-                                      .contentTextStyle));
-                          return;
+                        if (widget.signInNeeded) {
+                          if (provider == BackupSettings.icloudBackupProvider) {
+                            await promptError(
+                                context,
+                                "Sign in to iCloud",
+                                Text(
+                                    "Sign in to your iCloud account. On the Home screen, launch Settings, tap iCloud, and enter your Apple ID. Turn iCloud Drive on. If you don't have an iCloud account, tap Create a new Apple ID.",
+                                    style: Theme.of(context)
+                                        .dialogTheme
+                                        .contentTextStyle));
+                            return;
+                          }
+                          if (provider ==
+                              BackupSettings.nextcloudBackupProvider) {
+                            promptAuthData(context).then((auth) {
+                              if (auth != null) {
+                                var action = UpdateBackupSettings(snapshot.data
+                                    .copyWith(nextCloudAuthData: auth));
+                                widget.backupBloc.backupActionsSink.add(action);
+                              }
+                            });
+                          }
                         }
                         widget.backupBloc.backupNowSink.add(true);
                       }

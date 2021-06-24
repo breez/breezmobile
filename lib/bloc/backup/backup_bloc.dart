@@ -82,7 +82,7 @@ class BackupBloc {
     SharedPreferences.getInstance().then((sp) async {
       _sharedPreferences = sp;
       // Read the backupKey from the secure storage and initialize the breez user model appropriately
-      _initializePersistentData();
+      await _initializePersistentData();
       _listenBackupPaths();
       _listenBackupNowRequests();
       _listenRestoreRequests();
@@ -91,8 +91,7 @@ class BackupBloc {
       // Read the backupKey from the secure storage and initialize the breez user model appropriately
       _setBreezLibBackupKey();
       if (_backupSettingsController.value.backupProvider != null) {
-        _breezLib.setBackupProvider(
-            _backupSettingsController.value.backupProvider.name);
+        await _updateBackupProvider(_backupSettingsController.value);
       }
       _listenPinCodeChange(userStream);
       _listenActions();
@@ -114,13 +113,26 @@ class BackupBloc {
     if (action.settings.backupKeyType != currentSettings.backupKeyType) {
       await _setBreezLibBackupKey(backupKeyType: action.settings.backupKeyType);
     }
-    if (action.settings.backupProvider != currentSettings.backupProvider) {
-      await _breezLib.setBackupProvider(action.settings.backupProvider.name);
+    if (action.settings.backupProvider != currentSettings.backupProvider ||
+        !currentSettings.nextCloudAuthData
+            .equal(action.settings.nextCloudAuthData)) {
+      await _updateBackupProvider(action.settings);
+      _backupNowController.add(true);
     }
     action.resolve(action.settings);
   }
 
-  void _initializePersistentData() {
+  Future _updateBackupProvider(BackupSettings settings) async {
+    String authData;
+    if (settings.backupProvider.name ==
+        BackupSettings.nextcloudBackupProvider.name) {
+      var map = settings.nextCloudAuthData.toJson();
+      authData = json.encode(map);
+    }
+    await _breezLib.setBackupProvider(settings.backupProvider.name, authData);
+  }
+
+  Future _initializePersistentData() async {
     //last backup time persistency
     String backupStateJson =
         _sharedPreferences.getString(LAST_BACKUP_STATE_PREFERENCE_KEY);
@@ -143,7 +155,6 @@ class BackupBloc {
     if (backupSettings != null) {
       Map<String, dynamic> settings = json.decode(backupSettings);
       var backupSettingsModel = BackupSettings.fromJson(settings);
-
       // For backward compatibility migrate backup provider by assigning "Google Drive"
       // in case we had backup and the provider is not set.
       if (backupSettingsModel.backupProvider == null &&
@@ -151,12 +162,28 @@ class BackupBloc {
         backupSettingsModel = backupSettingsModel.copyWith(
             backupProvider: BackupSettings.googleBackupProvider);
       }
+      if (backupSettingsModel.backupProvider?.name ==
+          BackupSettings.nextcloudBackupProvider.name) {
+        String authdata = await _secureStorage.read(key: "nextCloudAuthData");
+        if (authdata != null) {
+          NextCloudAuthData auth =
+              NextCloudAuthData.fromJson(json.decode(authdata));
+          backupSettingsModel =
+              backupSettingsModel.copyWith(nextCloudAuthData: auth);
+        }
+      }
+
       _backupSettingsController.add(backupSettingsModel);
     }
 
-    _backupSettingsController.stream.listen((settings) {
+    _backupSettingsController.stream.listen((settings) async {
       _sharedPreferences.setString(
           BACKUP_SETTINGS_PREFERENCES_KEY, json.encode(settings.toJson()));
+      if (settings.nextCloudAuthData != null) {
+        String secureValue = json.encode(settings.nextCloudAuthData.toJson());
+        await _secureStorage.write(
+            key: "nextCloudAuthData", value: secureValue);
+      }
     });
   }
 
@@ -254,9 +281,9 @@ class BackupBloc {
       if (event.type == NotificationEvent_NotificationType.BACKUP_REQUEST) {
         _backupServiceNeedLogin = false;
         _backupStateController.add((BackupState(
-            _backupStateController.value.lastBackupTime,
+            _backupStateController.value?.lastBackupTime,
             true,
-            _backupStateController.value.lastBackupAccountName)));
+            _backupStateController.value?.lastBackupAccountName)));
       }
       if (event.type == NotificationEvent_NotificationType.BACKUP_AUTH_FAILED) {
         _backupServiceNeedLogin = true;

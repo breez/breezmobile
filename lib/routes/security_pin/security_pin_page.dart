@@ -8,6 +8,7 @@ import 'package:breez/bloc/user_profile/user_actions.dart';
 import 'package:breez/bloc/user_profile/user_profile_bloc.dart';
 import 'package:breez/routes/backup_in_progress_dialog.dart';
 import 'package:breez/routes/podcast/theme.dart';
+import 'package:breez/routes/security_pin/next_cloud_auth.dart';
 import 'package:breez/theme_data.dart' as theme;
 import 'package:breez/utils/date.dart';
 import 'package:breez/utils/min_font_size.dart';
@@ -153,7 +154,14 @@ class SecurityPageState extends State<SecurityPage>
     }
     _tiles
       ..add(Divider())
-      ..add(_buildBackupProviderTitle(securityModel, backupSettings))
+      ..add(_buildBackupProviderTitle(securityModel, backupSettings));
+    if (backupSettings.backupProvider.name ==
+        BackupSettings.nextcloudBackupProvider.name) {
+      _tiles
+        ..add(Divider())
+        ..add(_buildNextCloudAuthDataTile(securityModel, backupSettings));
+    }
+    _tiles
       ..add(Divider())
       ..add(_buildGenerateBackupPhraseTile(securityModel, backupSettings));
     return _tiles;
@@ -296,6 +304,28 @@ class SecurityPageState extends State<SecurityPage>
       return "Immediate";
     }
     return printDuration(Duration(seconds: seconds));
+  }
+
+  ListTile _buildNextCloudAuthDataTile(
+      SecurityModel securityModel, BackupSettings backupSettings) {
+    return ListTile(
+        title: Container(
+          child: AutoSizeText(
+            "Next Cloud",
+            style: TextStyle(color: Colors.white),
+            maxLines: 1,
+            minFontSize: MinFontSize(context).minFontSize,
+            stepGranularity: 0.1,
+            group: _autoSizeGroup,
+          ),
+        ),
+        trailing:
+            Icon(Icons.keyboard_arrow_right, color: Colors.white, size: 30.0),
+        onTap: () {
+          promptAuthData(context).then((auth) => _updateBackupSettings(
+              backupSettings,
+              backupSettings.copyWith(nextCloudAuthData: auth)));
+        });
   }
 
   ListTile _buildChangePINTile(
@@ -480,7 +510,9 @@ class SecurityPageState extends State<SecurityPage>
       //(newModel.backupKeyType != oldModel.backupKeyType) ||
       if ((oldBackupSettings.backupKeyType != newBackupSettings.backupKeyType ||
           oldBackupSettings.backupProvider !=
-              newBackupSettings.backupProvider)) {
+              newBackupSettings.backupProvider ||
+          !oldBackupSettings.nextCloudAuthData
+              .equal(newBackupSettings.nextCloudAuthData))) {
         triggerBackup();
       }
     }).catchError((err) {
