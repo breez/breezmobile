@@ -1,5 +1,4 @@
 import 'package:breez/widgets/error_dialog.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 
 WillPopCallback willPopCallback(
@@ -10,11 +9,6 @@ WillPopCallback willPopCallback(
 }) {
   return () async {
     if (canCancel != null && canCancel()) return true;
-    return promptAreYouSure(context, title, Text(message)).then((shouldExit) {
-      if (shouldExit) {
-        SystemNavigator.pop(animated: true);
-      }
-      return false;
-    });
+    return promptAreYouSure(context, title, Text(message));
   };
 }
