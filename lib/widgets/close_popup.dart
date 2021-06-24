@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:breez/widgets/error_dialog.dart';
 import 'package:flutter/widgets.dart';
 
@@ -11,11 +9,6 @@ WillPopCallback willPopCallback(
 }) {
   return () async {
     if (canCancel != null && canCancel()) return true;
-    return promptAreYouSure(context, title, Text(message)).then((shouldExit) {
-      if (shouldExit) {
-        exit(0);
-      }
-      return false;
-    });
+    return promptAreYouSure(context, title, Text(message));
   };
 }
