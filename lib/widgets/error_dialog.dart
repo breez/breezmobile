@@ -86,7 +86,6 @@ Future<bool> promptAreYouSure(BuildContext context, String title, Widget body,
   return showDialog<bool>(
       useRootNavigator: false,
       context: context,
-      barrierDismissible: false, // user must tap button!
       builder: (BuildContext context) {
         return AlertDialog(
           contentPadding: contentPadding,
