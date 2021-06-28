@@ -19,6 +19,8 @@ Future<NextCloudAuthData> promptAuthData(BuildContext context) {
   ));
 }
 
+const String BREEZ_BACKUP_DIR = "DO_NOT_DELETE_Breez_Backup";
+
 class NextCloudAuthPage extends StatefulWidget {
   NextCloudAuthPage(this._backupBloc);
 
@@ -36,7 +38,6 @@ class NextCloudAuthPageState extends State<NextCloudAuthPage> {
   var _urlController = TextEditingController();
   var _userController = TextEditingController();
   var _passwordController = TextEditingController();
-  var _backupDirController = TextEditingController();
 
   @override
   void initState() {
@@ -47,7 +48,6 @@ class NextCloudAuthPageState extends State<NextCloudAuthPage> {
         _urlController.text = nextCloudData.url;
         _userController.text = nextCloudData.user;
         _passwordController.text = nextCloudData.password;
-        _backupDirController.text = nextCloudData.breezDir;
       }
     });
   }
@@ -60,8 +60,12 @@ class NextCloudAuthPageState extends State<NextCloudAuthPage> {
           onPressed: () {
             Navigator.pop(
                 context,
-                NextCloudAuthData(_urlController.text, _userController.text,
-                    _passwordController.text, _backupDirController.text));
+                NextCloudAuthData(
+                  _urlController.text,
+                  _userController.text,
+                  _passwordController.text,
+                  BREEZ_BACKUP_DIR,
+                ));
           },
         ),
         automaticallyImplyLeading: false,
@@ -122,15 +126,6 @@ class NextCloudAuthPageState extends State<NextCloudAuthPage> {
                           maxLines: 1,
                           decoration: InputDecoration(
                               hintText: "Password", labelText: "Password"),
-                          onEditingComplete: () =>
-                              FocusScope.of(context).nextFocus(),
-                        ),
-                        TextField(
-                          controller: _backupDirController,
-                          minLines: 1,
-                          maxLines: 1,
-                          decoration: InputDecoration(
-                              hintText: "breez", labelText: "Backup Directory"),
                           onEditingComplete: () =>
                               FocusScope.of(context).nextFocus(),
                         ),
