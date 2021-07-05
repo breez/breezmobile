@@ -27,7 +27,7 @@ promptLSPFeeAndNavigate(
 }
 
 String _formatFeeMessage(AccountModel acc, LSPInfo lsp) {
-  String minFees = (lsp != null && lsp.channelMinimumFeeMsat > 0) ? "with a minimum of ${lsp.channelMinimumFeeMsat / 1000} sats " : "";
+  String minFees = (lsp != null && lsp.channelMinimumFeeMsat > 0) ? "with a minimum of ${lsp.channelMinimumFeeMsat ~/ 1000} sats " : "";
   if (acc.connected) {
     var liquidity = acc.currency.format(acc.maxInboundLiquidity);
     return "A setup fee of ${lsp.channelFeePermyriad / 100}% ${minFees}will be applied for buying more than $liquidity.";
