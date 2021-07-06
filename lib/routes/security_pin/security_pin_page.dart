@@ -204,8 +204,11 @@ class SecurityPageState extends State<SecurityPage>
                   }).then(
                 (approved) {
                   if (approved)
-                    _updateBackupSettings(backupSettings,
-                        backupSettings.copyWith(keyType: BackupKeyType.NONE));
+                    _updateBackupSettings(
+                            backupSettings,
+                            backupSettings.copyWith(
+                                keyType: BackupKeyType.NONE))
+                        .then((value) => triggerBackup());
                 },
               );
             }
@@ -234,8 +237,22 @@ class SecurityPageState extends State<SecurityPage>
           value: backupSettings.backupProvider,
           isDense: true,
           onChanged: (BackupProvider newValue) {
+            if (newValue.name == BackupSettings.nextcloudBackupProvider.name) {
+              promptAuthData(context).then((auth) {
+                if (auth == null) {
+                  return;
+                }
+                _updateBackupSettings(
+                        backupSettings,
+                        backupSettings.copyWith(
+                            backupProvider: newValue, nextCloudAuthData: auth))
+                    .then((value) => triggerBackup());
+              });
+              return;
+            }
             _updateBackupSettings(backupSettings,
-                backupSettings.copyWith(backupProvider: newValue));
+                    backupSettings.copyWith(backupProvider: newValue))
+                .then((value) => triggerBackup());
           },
           items: BackupSettings.availableBackupProviders().map((provider) {
             return DropdownMenuItem(
@@ -322,9 +339,13 @@ class SecurityPageState extends State<SecurityPage>
         trailing:
             Icon(Icons.keyboard_arrow_right, color: Colors.white, size: 30.0),
         onTap: () {
-          promptAuthData(context).then((auth) => _updateBackupSettings(
-              backupSettings,
-              backupSettings.copyWith(nextCloudAuthData: auth)));
+          promptAuthData(context).then((auth) {
+            if (auth != null) {
+              _updateBackupSettings(backupSettings,
+                      backupSettings.copyWith(nextCloudAuthData: auth))
+                  .then((value) => triggerBackup());
+            }
+          });
         });
   }
 
@@ -482,13 +503,7 @@ class SecurityPageState extends State<SecurityPage>
     _screenLocked = false;
     var action = UpdateSecurityModel(newModel);
     widget.userProfileBloc.userActionsSink.add(action);
-    action.future.then((_) {
-      //(newModel.backupKeyType != oldModel.backupKeyType) ||
-      if ((backupSettings.backupKeyType == BackupKeyType.PIN &&
-          pinCodeChanged)) {
-        triggerBackup();
-      }
-    }).catchError((err) {
+    return action.future.catchError((err) {
       promptError(
           context,
           "Internal Error",
@@ -506,16 +521,7 @@ class SecurityPageState extends State<SecurityPage>
     _screenLocked = false;
     var action = UpdateBackupSettings(newBackupSettings);
     widget.backupBloc.backupActionsSink.add(action);
-    action.future.then((_) {
-      //(newModel.backupKeyType != oldModel.backupKeyType) ||
-      if ((oldBackupSettings.backupKeyType != newBackupSettings.backupKeyType ||
-          oldBackupSettings.backupProvider !=
-              newBackupSettings.backupProvider ||
-          !oldBackupSettings.nextCloudAuthData
-              .equal(newBackupSettings.nextCloudAuthData))) {
-        triggerBackup();
-      }
-    }).catchError((err) {
+    return action.future.catchError((err) {
       promptError(
           context,
           "Internal Error",

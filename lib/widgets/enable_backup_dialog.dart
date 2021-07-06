@@ -147,7 +147,7 @@ class EnableBackupDialogState extends State<EnableBackupDialog> {
                           }
                           if (provider ==
                               BackupSettings.nextcloudBackupProvider) {
-                            promptAuthData(context).then((auth) {
+                            promptAuthData(context, restore: true).then((auth) {
                               if (auth != null) {
                                 var action = UpdateBackupSettings(snapshot.data
                                     .copyWith(nextCloudAuthData: auth));

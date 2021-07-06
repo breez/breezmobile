@@ -117,7 +117,6 @@ class BackupBloc {
         !currentSettings.nextCloudAuthData
             .equal(action.settings.nextCloudAuthData)) {
       await _updateBackupProvider(action.settings);
-      _backupNowController.add(true);
     }
     action.resolve(action.settings);
   }
