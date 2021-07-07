@@ -134,7 +134,7 @@ class RemoteServerAuthPageState extends State<RemoteServerAuthPage> {
                                   },
                                   decoration: InputDecoration(
                                       hintText:
-                                          "https://example.nextcloud.com'",
+                                          "https://example.nextcloud.com",
                                       labelText:
                                           "Server URL (Nextcloud, WebDav)"),
                                   onEditingComplete: () =>
