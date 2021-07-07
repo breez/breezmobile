@@ -287,7 +287,7 @@ class CreateInvoicePageState extends State<CreateInvoicePage> {
       return lsp == null
           ? SizedBox()
           : WarningBox(
-              boxPadding: EdgeInsets.all(16),
+              boxPadding: EdgeInsets.fromLTRB(16, 30, 16, 16),
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: <Widget>[
