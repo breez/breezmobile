@@ -128,7 +128,8 @@ class BackupProviderSelectionDialogState
                         var settings = snapshot.data;
                         if (selectedProvider.name ==
                             BackupSettings.nextcloudBackupProvider.name) {
-                          var auth = await promptAuthData(context);
+                          var auth =
+                              await promptAuthData(context, restore: true);
                           if (auth == null) {
                             return;
                           }
