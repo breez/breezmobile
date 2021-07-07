@@ -51,6 +51,7 @@ class NextCloudAuthPageState extends State<NextCloudAuthPage> {
   var _passwordController = TextEditingController();
   bool failDiscoverURL = false;
   bool failAuthenticate = false;
+  bool _passwordObscured = true;
 
   @override
   void initState() {
@@ -127,7 +128,7 @@ class NextCloudAuthPageState extends State<NextCloudAuthPage> {
                                       return null;
                                     }
                                     if (!value.startsWith("https://")) {
-                                      return "Must start with https";
+                                      return "URL must be https";
                                     }
                                     return "Invalid URL";
                                   },
@@ -135,14 +136,14 @@ class NextCloudAuthPageState extends State<NextCloudAuthPage> {
                                       hintText:
                                           "https://example.nextcloud.com'",
                                       labelText:
-                                          "Server Address (Nextcloud, WebDav)"),
+                                          "Server URL (Nextcloud, WebDav)"),
                                   onEditingComplete: () =>
                                       FocusScope.of(context).nextFocus(),
                                 ),
                                 TextFormField(
                                   validator: (value) {
                                     if (failAuthenticate) {
-                                      return "Wrong username";
+                                      return "Invalid User Name or Password";
                                     }
                                     return null;
                                   },
@@ -158,17 +159,26 @@ class NextCloudAuthPageState extends State<NextCloudAuthPage> {
                                 TextFormField(
                                   validator: (value) {
                                     if (failAuthenticate) {
-                                      return "Wrong password";
+                                      return "Invalid User Name or Password";
                                     }
                                     return null;
                                   },
                                   controller: _passwordController,
                                   minLines: 1,
                                   maxLines: 1,
-                                  obscureText: true,
+                                  obscureText: _passwordObscured,
                                   decoration: InputDecoration(
                                       hintText: "Password",
-                                      labelText: "Password"),
+                                      labelText: "Password",
+                                      suffixIcon: IconButton(
+                                        icon: Icon(Icons.remove_red_eye),
+                                        onPressed: () {
+                                          setState(() {
+                                            _passwordObscured =
+                                                !_passwordObscured;
+                                          });
+                                        },
+                                      )),
                                   onEditingComplete: () =>
                                       FocusScope.of(context).nextFocus(),
                                 ),
