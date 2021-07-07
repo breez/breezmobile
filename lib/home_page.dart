@@ -28,6 +28,7 @@ import 'package:breez/routes/marketplace/marketplace.dart';
 import 'package:breez/routes/podcast/podcast_page.dart' as breezPodcast;
 import 'package:breez/routes/podcast/theme.dart';
 import 'package:breez/theme_data.dart' as theme;
+import 'package:breez/widgets/close_popup.dart';
 import 'package:breez/widgets/error_dialog.dart';
 import 'package:breez/widgets/fade_in_widget.dart';
 import 'package:breez/widgets/flushbar.dart';
@@ -44,7 +45,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:provider/provider.dart';
-import 'package:tutorial_coach_mark/tutorial_coach_mark.dart';
 
 import 'bloc/invoice/invoice_model.dart';
 import 'bloc/user_profile/user_actions.dart';
@@ -94,9 +94,6 @@ class HomeState extends State<Home> with WidgetsBindingObserver {
   Set _hiddenRoutes = Set<String>();
   StreamSubscription<String> _accountNotificationsSubscription;
   AudioBloc audioBloc;
-
-  TutorialCoachMark tutorial;
-  List<TargetFocus> targets = [];
 
   @override
   void initState() {
@@ -182,85 +179,15 @@ class HomeState extends State<Home> with WidgetsBindingObserver {
     super.dispose();
   }
 
-  Future<dynamic> _showTutorial() {
-    return Future.delayed(Duration(milliseconds: 200), () {
-      if (_scaffoldKey.currentState.isDrawerOpen) {
-        _buildTutorial();
-      }
-    });
-  }
-
-  void _buildTutorial() {
-    tutorial = TutorialCoachMark(context,
-        targets: targets,
-        opacityShadow: 0.9,
-        textSkip: "DISMISS",
-        colorShadow: Theme.of(context).primaryColorLight,
-        onClickOverlay: (s) => tutorial.finish(),
-        onClickTarget: (s) {
-          tutorial.finish();
-          widget.userProfileBloc.userActionsSink
-              .add(SetAppMode(AppMode.podcasts));
-          Navigator.pop(context);
-        },
-        onSkip: () => tutorial.finish(),
-        onFinish: () {
-          final userBloc = AppBlocsProvider.of<UserProfileBloc>(context);
-          userBloc.userActionsSink.add(SetSeenPodcastTutorial(true));
-        });
-    _buildTutorialTargets();
-  }
-
-  void _buildTutorialTargets() {
-    targets.add(TargetFocus(
-      identify: "PodcastMenuItem",
-      keyTarget: podcastMenuItemKey,
-      enableOverlayTab: true,
-      shape: ShapeLightFocus.RRect,
-      paddingFocus: 8,
-      contents: [
-        TargetContent(
-            align: ContentAlign.top,
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: <Widget>[
-                Text(
-                  "New!",
-                  style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      color: Colors.white,
-                      fontSize: 20.0),
-                ),
-                Padding(
-                  padding: const EdgeInsets.only(top: 10.0),
-                  child: Text(
-                    "Stream sats to your favorite podcasters while they stream ideas back to you.",
-                    style: TextStyle(color: Colors.white),
-                  ),
-                )
-              ],
-            ))
-      ],
-    ));
-    tutorial.show();
-  }
-
   @override
   Widget build(BuildContext context) {
     AddFundsBloc addFundsBloc = BlocProvider.of<AddFundsBloc>(context);
     LSPBloc lspBloc = AppBlocsProvider.of<LSPBloc>(context);
     return WillPopScope(
-      onWillPop: () {
-        return promptAreYouSure(context, "Exit Breez",
-                Text("Do you really want to quit Breez?"))
-            .then((shouldExit) {
-          if (shouldExit) {
-            exit(0);
-          }
-          return false;
-        });
-      },
+      onWillPop: willPopCallback(
+        context,
+        canCancel: () => _scaffoldKey.currentState?.isDrawerOpen ?? false,
+      ),
       child: StreamBuilder<BreezUserModel>(
           stream: widget.userProfileBloc.userStream,
           builder: (context, userSnapshot) {
@@ -477,10 +404,7 @@ class HomeState extends State<Home> with WidgetsBindingObserver {
                                                       ),
                                                     ],
                                                     leading: _buildMenuIcon(
-                                                        context,
-                                                        user.appMode,
-                                                        user.seenTutorials
-                                                            .podcastsTutorial),
+                                                        context, user.appMode),
                                                     title: IconButton(
                                                       padding: EdgeInsets.zero,
                                                       icon: SvgPicture.asset(
@@ -499,10 +423,6 @@ class HomeState extends State<Home> with WidgetsBindingObserver {
                                                         _scaffoldKey
                                                             .currentState
                                                             .openDrawer();
-                                                        if (!user.seenTutorials
-                                                            .podcastsTutorial) {
-                                                          _showTutorial();
-                                                        }
                                                       },
                                                     ),
                                                     iconTheme: IconThemeData(
@@ -588,8 +508,7 @@ class HomeState extends State<Home> with WidgetsBindingObserver {
     );
   }
 
-  IconButton _buildMenuIcon(
-      BuildContext context, AppMode appMode, bool seenPodcastTutorial) {
+  IconButton _buildMenuIcon(BuildContext context, AppMode appMode) {
     return IconButton(
         icon: Image.asset(
           _getAppModesAssetName(appMode),
@@ -599,7 +518,6 @@ class HomeState extends State<Home> with WidgetsBindingObserver {
         ),
         onPressed: () {
           _scaffoldKey.currentState.openDrawer();
-          if (!seenPodcastTutorial) _showTutorial();
         });
   }
 

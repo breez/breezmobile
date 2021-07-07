@@ -60,7 +60,11 @@ class AmountFormField extends TextFormField {
                         builder: (_) => CurrencyConverterDialog(
                             returnFN != null
                                 ? returnFN
-                                : (value) => controller.text = value,
+                                : (value) => controller.text = accountModel
+                                    .currency
+                                    .format(accountModel.currency.parse(value),
+                                        includeCurrencySymbol: false,
+                                        includeDisplayName: false),
                             validatorFn),
                       ),
                     ),
@@ -70,7 +74,7 @@ class AmountFormField extends TextFormField {
             controller: controller,
             inputFormatters: accountModel.currency != Currency.SAT
                 ? [FilteringTextInputFormatter.allow(RegExp(r'\d+\.?\d*'))]
-                : [FilteringTextInputFormatter.digitsOnly],
+                : [SatAmountFormFieldFormatter()],
             onFieldSubmitted: onFieldSubmitted,
             onSaved: onSaved,
             onChanged: onChanged,
@@ -97,5 +101,53 @@ class AmountFormField extends TextFormField {
         return "Invalid amount";
       }
     };
+  }
+}
+
+class SatAmountFormFieldFormatter extends TextInputFormatter {
+  final RegExp _pattern = RegExp(r'[^\d*]');
+
+  TextEditingValue formatEditUpdate(
+    TextEditingValue oldValue,
+    TextEditingValue newValue,
+  ) {
+    final raw = newValue.text.replaceAll(_pattern, '');
+    if (raw.isEmpty) {
+      return newValue.copyWith(
+        text: '',
+        selection: TextSelection.collapsed(offset: 0),
+      );
+    }
+
+    var value;
+    try {
+      value = Int64.parseInt(raw.length > 18 ? raw.substring(0, 18) : raw);
+    } catch (ignored) {
+      value = Int64(0);
+    }
+
+    final formatted = Currency.SAT.format(
+      value,
+      includeDisplayName: false,
+      includeCurrencySymbol: false,
+    );
+
+    var diff = formatted.length - oldValue.text.length;
+    var newOffset = newValue.selection.start;
+    if (formatted != oldValue.text) {
+      if (diff > 1) {
+        newOffset += 1;
+      }
+      if (diff < -1) {
+        newOffset -= 1;
+      }
+    } else {
+      newOffset = oldValue.selection.start;
+    }
+
+    return newValue.copyWith(
+      text: formatted,
+      selection: TextSelection.collapsed(offset: newOffset),
+    );
   }
 }

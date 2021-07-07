@@ -7,6 +7,7 @@ import 'package:anytime/ui/podcast/now_playing.dart';
 import 'package:anytime/ui/podcast/podcast_details.dart';
 import 'package:anytime/ui/widgets/episode_tile.dart';
 import 'package:anytime/ui/widgets/placeholder_builder.dart';
+import 'package:breez/utils/date.dart';
 import 'package:provider/provider.dart';
 import 'package:anytime/services/settings/mobile_settings_service.dart';
 import 'package:breez/bloc/app_blocs.dart';
@@ -30,6 +31,7 @@ void main() async {
   SystemChrome.setPreferredOrientations(
       [DeviceOrientation.portraitUp, DeviceOrientation.portraitDown]);
   //initializeDateFormatting(Platform.localeName, null);
+  BreezDateUtils.setupLocales();
   var mobileService = await MobileSettingsService.instance();
   mobileService.autoOpenNowPlaying = true;
   mobileService.showFunding = false;

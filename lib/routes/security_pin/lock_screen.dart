@@ -1,5 +1,6 @@
 import 'package:breez/bloc/user_profile/user_profile_bloc.dart';
 import 'package:breez/widgets/back_button.dart' as backBtn;
+import 'package:breez/widgets/close_popup.dart';
 import 'package:breez/widgets/pin_code_widget.dart';
 import 'package:flutter/material.dart';
 
@@ -30,9 +31,10 @@ class _AppLockScreenState extends State<AppLockScreen> {
   @override
   Widget build(BuildContext context) {
     return WillPopScope(
-      onWillPop: () {
-        return Future.value(widget.canCancel);
-      },
+      onWillPop: willPopCallback(
+        context,
+        canCancel: () => widget.canCancel,
+      ),
       child: Scaffold(
         appBar: widget.canCancel == true
             ? AppBar(

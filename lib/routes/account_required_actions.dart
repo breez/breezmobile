@@ -113,21 +113,12 @@ class AccountRequiredActionsIndicatorState
 
   int _inactiveWarningDuration(
       List<LSPInfo> lsps, Map<String, Int64> activity) {
-    print(" --- activity -- ");
-    print(activity);
     int warningDuration = 0;
     int currentTimestamp = DateTime.now().millisecondsSinceEpoch ~/ 1000;
     lsps.forEach((l) {
-      print(activity.containsKey(l.lspID));
-      if (activity.containsKey(l.lspID)) {
-        print(currentTimestamp - activity[l.lspID].toInt());
-      }
-      print("maxduration");
-      print(l.maxInactiveDuration);
       if (activity.containsKey(l.lspID) &&
           ((currentTimestamp - activity[l.lspID].toInt()) >
               4 * (l.maxInactiveDuration ~/ 5))) {
-        print("Need to show inactive warning");
         if ((warningDuration == 0) ||
             (warningDuration >
                 (currentTimestamp - activity[l.lspID].toInt()))) {
@@ -197,19 +188,13 @@ class AccountRequiredActionsIndicatorState
 
                                         if (lspActivitySnapshot.data != null) {
                                           lspStatusSnapshot.data.availableLSPs
-                                              .forEach((element) {
-                                            print(element.lspID);
-                                            print(element.maxInactiveDuration);
-                                            print(element.raw);
-                                          });
+                                              .forEach((element) {});
                                           int inactiveWarningDuration = this
                                               ._inactiveWarningDuration(
                                                   lspStatusSnapshot
                                                       .data.availableLSPs,
                                                   lspActivitySnapshot
                                                       .data.activity);
-                                          print("-- activity - inactive -- ");
-                                          print(inactiveWarningDuration);
                                           if (inactiveWarningDuration > 0) {
                                             warnings
                                                 .add(WarningAction(() async {
