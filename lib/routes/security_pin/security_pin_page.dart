@@ -8,6 +8,7 @@ import 'package:breez/bloc/user_profile/user_actions.dart';
 import 'package:breez/bloc/user_profile/user_profile_bloc.dart';
 import 'package:breez/routes/backup_in_progress_dialog.dart';
 import 'package:breez/routes/podcast/theme.dart';
+import 'package:breez/routes/security_pin/remote_server_auth.dart';
 import 'package:breez/theme_data.dart' as theme;
 import 'package:breez/utils/date.dart';
 import 'package:breez/utils/min_font_size.dart';
@@ -153,7 +154,14 @@ class SecurityPageState extends State<SecurityPage>
     }
     _tiles
       ..add(Divider())
-      ..add(_buildBackupProviderTitle(securityModel, backupSettings))
+      ..add(_buildBackupProviderTitle(securityModel, backupSettings));
+    if (backupSettings.backupProvider.name ==
+        BackupSettings.remoteServerBackupProvider.name) {
+      _tiles
+        ..add(Divider())
+        ..add(_buildRemoteServerAuthDataTile(securityModel, backupSettings));
+    }
+    _tiles
       ..add(Divider())
       ..add(_buildGenerateBackupPhraseTile(securityModel, backupSettings));
     return _tiles;
@@ -196,8 +204,11 @@ class SecurityPageState extends State<SecurityPage>
                   }).then(
                 (approved) {
                   if (approved)
-                    _updateBackupSettings(backupSettings,
-                        backupSettings.copyWith(keyType: BackupKeyType.NONE));
+                    _updateBackupSettings(
+                            backupSettings,
+                            backupSettings.copyWith(
+                                keyType: BackupKeyType.NONE))
+                        .then((value) => triggerBackup());
                 },
               );
             }
@@ -226,8 +237,24 @@ class SecurityPageState extends State<SecurityPage>
           value: backupSettings.backupProvider,
           isDense: true,
           onChanged: (BackupProvider newValue) {
+            if (newValue.name ==
+                BackupSettings.remoteServerBackupProvider.name) {
+              promptAuthData(context).then((auth) {
+                if (auth == null) {
+                  return;
+                }
+                _updateBackupSettings(
+                        backupSettings,
+                        backupSettings.copyWith(
+                            backupProvider: newValue,
+                            remoteServerAuthData: auth))
+                    .then((value) => triggerBackup());
+              });
+              return;
+            }
             _updateBackupSettings(backupSettings,
-                backupSettings.copyWith(backupProvider: newValue));
+                    backupSettings.copyWith(backupProvider: newValue))
+                .then((value) => triggerBackup());
           },
           items: BackupSettings.availableBackupProviders().map((provider) {
             return DropdownMenuItem(
@@ -296,6 +323,32 @@ class SecurityPageState extends State<SecurityPage>
       return "Immediate";
     }
     return printDuration(Duration(seconds: seconds));
+  }
+
+  ListTile _buildRemoteServerAuthDataTile(
+      SecurityModel securityModel, BackupSettings backupSettings) {
+    return ListTile(
+        title: Container(
+          child: AutoSizeText(
+            BackupSettings.remoteServerBackupProvider.displayName,
+            style: TextStyle(color: Colors.white),
+            maxLines: 1,
+            minFontSize: MinFontSize(context).minFontSize,
+            stepGranularity: 0.1,
+            group: _autoSizeGroup,
+          ),
+        ),
+        trailing:
+            Icon(Icons.keyboard_arrow_right, color: Colors.white, size: 30.0),
+        onTap: () {
+          promptAuthData(context).then((auth) {
+            if (auth != null) {
+              _updateBackupSettings(backupSettings,
+                      backupSettings.copyWith(remoteServerAuthData: auth))
+                  .then((value) => triggerBackup());
+            }
+          });
+        });
   }
 
   ListTile _buildChangePINTile(
@@ -452,13 +505,7 @@ class SecurityPageState extends State<SecurityPage>
     _screenLocked = false;
     var action = UpdateSecurityModel(newModel);
     widget.userProfileBloc.userActionsSink.add(action);
-    action.future.then((_) {
-      //(newModel.backupKeyType != oldModel.backupKeyType) ||
-      if ((backupSettings.backupKeyType == BackupKeyType.PIN &&
-          pinCodeChanged)) {
-        triggerBackup();
-      }
-    }).catchError((err) {
+    return action.future.catchError((err) {
       promptError(
           context,
           "Internal Error",
@@ -476,14 +523,7 @@ class SecurityPageState extends State<SecurityPage>
     _screenLocked = false;
     var action = UpdateBackupSettings(newBackupSettings);
     widget.backupBloc.backupActionsSink.add(action);
-    action.future.then((_) {
-      //(newModel.backupKeyType != oldModel.backupKeyType) ||
-      if ((oldBackupSettings.backupKeyType != newBackupSettings.backupKeyType ||
-          oldBackupSettings.backupProvider !=
-              newBackupSettings.backupProvider)) {
-        triggerBackup();
-      }
-    }).catchError((err) {
+    return action.future.catchError((err) {
       promptError(
           context,
           "Internal Error",

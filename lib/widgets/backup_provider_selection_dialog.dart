@@ -2,6 +2,7 @@ import 'package:auto_size_text/auto_size_text.dart';
 import 'package:breez/bloc/backup/backup_actions.dart';
 import 'package:breez/bloc/backup/backup_bloc.dart';
 import 'package:breez/bloc/backup/backup_model.dart';
+import 'package:breez/routes/security_pin/remote_server_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
@@ -110,8 +111,7 @@ class BackupProviderSelectionDialogState
             primary: Theme.of(context).primaryTextTheme.button.color,
           ),
           onPressed: () => Navigator.pop(context, null),
-          child: Text(
-            "CANCEL"),
+          child: Text("CANCEL"),
         ),
         StreamBuilder<BackupSettings>(
             stream: widget.backupBloc.backupSettingsStream,
@@ -122,11 +122,22 @@ class BackupProviderSelectionDialogState
                 ),
                 onPressed: !snapshot.hasData
                     ? null
-                    : () {
+                    : () async {
                         var selectedProvider = BackupSettings
                             .availableBackupProviders()[_selectedProviderIndex];
-                        var setAction = UpdateBackupSettings(snapshot.data
-                            .copyWith(backupProvider: selectedProvider));
+                        var settings = snapshot.data;
+                        if (selectedProvider.name ==
+                            BackupSettings.remoteServerBackupProvider.name) {
+                          var auth =
+                              await promptAuthData(context, restore: true);
+                          if (auth == null) {
+                            return;
+                          }
+                          settings =
+                              settings.copyWith(remoteServerAuthData: auth);
+                        }
+                        var setAction = UpdateBackupSettings(settings.copyWith(
+                            backupProvider: selectedProvider));
                         widget.backupBloc.backupActionsSink.add(setAction);
                         setAction.future.then(
                             (_) => Navigator.pop(context, selectedProvider));
