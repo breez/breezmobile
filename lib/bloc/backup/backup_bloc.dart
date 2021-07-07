@@ -197,7 +197,7 @@ class BackupBloc {
     }
     var encryptionKeyType = encryptionKey != null
         ? keyType == BackupKeyType.PHRASE
-            ? "Mnemonics"
+            ? "Mnemonics12"
             : keyType == BackupKeyType.PIN
                 ? "Pin"
                 : ""

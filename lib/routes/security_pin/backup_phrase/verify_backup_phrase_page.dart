@@ -175,11 +175,11 @@ class VerifyBackupPhrasePageState extends State<VerifyBackupPhrasePage> {
   }
 
   _selectIndexes() {
-    // Select at least one index from each page(0-11,12-23) randomly
-    var firstIndex = Random().nextInt(12);
-    var secondIndex = Random().nextInt(12) + 12;
+    // Select at least one index from each page(0-6,6-11) randomly
+    var firstIndex = Random().nextInt(6);
+    var secondIndex = Random().nextInt(6) + 6;
     // Select last index randomly from any page, ensure that there are no duplicates and each option has an ~equally likely chance of being selected
-    var thirdIndex = Random().nextInt(22);
+    var thirdIndex = Random().nextInt(10);
     if (thirdIndex >= firstIndex) thirdIndex++;
     if (thirdIndex >= secondIndex) thirdIndex++;
     _randomlySelectedIndexes.addAll([firstIndex, secondIndex, thirdIndex]);
