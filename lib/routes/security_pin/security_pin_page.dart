@@ -156,10 +156,10 @@ class SecurityPageState extends State<SecurityPage>
       ..add(Divider())
       ..add(_buildBackupProviderTitle(securityModel, backupSettings));
     if (backupSettings.backupProvider.name ==
-        BackupSettings.nextcloudBackupProvider.name) {
+        BackupSettings.remoteServerBackupProvider.name) {
       _tiles
         ..add(Divider())
-        ..add(_buildNextCloudAuthDataTile(securityModel, backupSettings));
+        ..add(_buildRemoteServerAuthDataTile(securityModel, backupSettings));
     }
     _tiles
       ..add(Divider())
@@ -237,7 +237,8 @@ class SecurityPageState extends State<SecurityPage>
           value: backupSettings.backupProvider,
           isDense: true,
           onChanged: (BackupProvider newValue) {
-            if (newValue.name == BackupSettings.nextcloudBackupProvider.name) {
+            if (newValue.name ==
+                BackupSettings.remoteServerBackupProvider.name) {
               promptAuthData(context).then((auth) {
                 if (auth == null) {
                   return;
@@ -245,7 +246,8 @@ class SecurityPageState extends State<SecurityPage>
                 _updateBackupSettings(
                         backupSettings,
                         backupSettings.copyWith(
-                            backupProvider: newValue, nextCloudAuthData: auth))
+                            backupProvider: newValue,
+                            remoteServerAuthData: auth))
                     .then((value) => triggerBackup());
               });
               return;
@@ -323,12 +325,12 @@ class SecurityPageState extends State<SecurityPage>
     return printDuration(Duration(seconds: seconds));
   }
 
-  ListTile _buildNextCloudAuthDataTile(
+  ListTile _buildRemoteServerAuthDataTile(
       SecurityModel securityModel, BackupSettings backupSettings) {
     return ListTile(
         title: Container(
           child: AutoSizeText(
-            "Next Cloud",
+            BackupSettings.remoteServerBackupProvider.displayName,
             style: TextStyle(color: Colors.white),
             maxLines: 1,
             minFontSize: MinFontSize(context).minFontSize,
@@ -342,7 +344,7 @@ class SecurityPageState extends State<SecurityPage>
           promptAuthData(context).then((auth) {
             if (auth != null) {
               _updateBackupSettings(backupSettings,
-                      backupSettings.copyWith(nextCloudAuthData: auth))
+                      backupSettings.copyWith(remoteServerAuthData: auth))
                   .then((value) => triggerBackup());
             }
           });

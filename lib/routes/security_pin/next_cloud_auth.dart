@@ -16,14 +16,14 @@ import 'package:webdav_client/webdav_client.dart' as webdav;
 import 'package:path/path.dart' as p;
 import '../backup_in_progress_dialog.dart';
 
-Future<NextCloudAuthData> promptAuthData(BuildContext context,
+Future<RemoteServerAuthData> promptAuthData(BuildContext context,
     {restore = false}) {
-  return Navigator.of(context).push<NextCloudAuthData>(FadeInRoute(
+  return Navigator.of(context).push<RemoteServerAuthData>(FadeInRoute(
     builder: (BuildContext context) {
       final backupBloc = AppBlocsProvider.of<BackupBloc>(context);
       return withBreezTheme(
         context,
-        NextCloudAuthPage(backupBloc, restore),
+        RemoteServerAuthPage(backupBloc, restore),
       );
     },
   ));
@@ -31,8 +31,8 @@ Future<NextCloudAuthData> promptAuthData(BuildContext context,
 
 const String BREEZ_BACKUP_DIR = "DO_NOT_DELETE_Breez_Backup";
 
-class NextCloudAuthPage extends StatefulWidget {
-  NextCloudAuthPage(this._backupBloc, this.restore);
+class RemoteServerAuthPage extends StatefulWidget {
+  RemoteServerAuthPage(this._backupBloc, this.restore);
 
   final String _title = "Remote Server";
   final BackupBloc _backupBloc;
@@ -40,11 +40,11 @@ class NextCloudAuthPage extends StatefulWidget {
 
   @override
   State<StatefulWidget> createState() {
-    return NextCloudAuthPageState();
+    return RemoteServerAuthPageState();
   }
 }
 
-class NextCloudAuthPageState extends State<NextCloudAuthPage> {
+class RemoteServerAuthPageState extends State<RemoteServerAuthPage> {
   final _formKey = GlobalKey<FormState>();
   var _urlController = TextEditingController();
   var _userController = TextEditingController();
@@ -57,11 +57,11 @@ class NextCloudAuthPageState extends State<NextCloudAuthPage> {
   void initState() {
     super.initState();
     widget._backupBloc.backupSettingsStream.first.then((value) {
-      var nextCloudData = value.nextCloudAuthData;
-      if (nextCloudData != null) {
-        _urlController.text = nextCloudData.url;
-        _userController.text = nextCloudData.user;
-        _passwordController.text = nextCloudData.password;
+      var data = value.remoteServerAuthData;
+      if (data != null) {
+        _urlController.text = data.url;
+        _userController.text = data.user;
+        _passwordController.text = data.password;
       }
     });
   }
@@ -200,7 +200,7 @@ class NextCloudAuthPageState extends State<NextCloudAuthPage> {
                     failAuthenticate = false;
                     if (_formKey.currentState.validate()) {
                       var newSettings = snapshot.data.copyWith(
-                          nextCloudAuthData: NextCloudAuthData(
+                          remoteServerAuthData: RemoteServerAuthData(
                               _urlController.text,
                               _userController.text,
                               _passwordController.text,
@@ -208,7 +208,7 @@ class NextCloudAuthPageState extends State<NextCloudAuthPage> {
                       var loader = createLoaderRoute(context,
                           message: "Testing connection", opacity: 0.8);
                       Navigator.push(context, loader);
-                      discoverURL(newSettings.nextCloudAuthData)
+                      discoverURL(newSettings.remoteServerAuthData)
                           .then((value) async {
                         nav.removeRoute(loader);
                         if (value.authError == DiscoverResult.SUCCESS) {
@@ -236,7 +236,7 @@ class NextCloudAuthPageState extends State<NextCloudAuthPage> {
         });
   }
 
-  Future testConnection(NextCloudAuthData authData) async {
+  Future testConnection(RemoteServerAuthData authData) async {
     var client = webdav.newClient(
       authData.url,
       user: authData.user,
@@ -246,7 +246,7 @@ class NextCloudAuthPageState extends State<NextCloudAuthPage> {
     await client.ping();
   }
 
-  Future<DiscoveryResult> discoverURL(NextCloudAuthData authData) async {
+  Future<DiscoveryResult> discoverURL(RemoteServerAuthData authData) async {
     var result = await testAuthData(authData);
     if (result == DiscoverResult.SUCCESS ||
         result == DiscoverResult.INVALID_AUTH) {
@@ -266,7 +266,7 @@ class NextCloudAuthPageState extends State<NextCloudAuthPage> {
     return DiscoveryResult(authData, result);
   }
 
-  Future<DiscoverResult> testAuthData(NextCloudAuthData authData) async {
+  Future<DiscoverResult> testAuthData(RemoteServerAuthData authData) async {
     try {
       var client = webdav.newClient(
         authData.url,
@@ -274,7 +274,7 @@ class NextCloudAuthPageState extends State<NextCloudAuthPage> {
         password: authData.password,
         debug: true,
       );
-      await client.ping();
+      await client.readDir("/");
     } on DioError catch (e) {
       if (e.response != null &&
           (e.response.statusCode == 401 || e.response.statusCode == 403)) {
@@ -289,7 +289,7 @@ class NextCloudAuthPageState extends State<NextCloudAuthPage> {
 enum DiscoverResult { SUCCESS, INVALID_URL, INVALID_AUTH }
 
 class DiscoveryResult {
-  final NextCloudAuthData authData;
+  final RemoteServerAuthData authData;
   final DiscoverResult authError;
 
   DiscoveryResult(this.authData, this.authError);

@@ -127,13 +127,14 @@ class BackupProviderSelectionDialogState
                             .availableBackupProviders()[_selectedProviderIndex];
                         var settings = snapshot.data;
                         if (selectedProvider.name ==
-                            BackupSettings.nextcloudBackupProvider.name) {
+                            BackupSettings.remoteServerBackupProvider.name) {
                           var auth =
                               await promptAuthData(context, restore: true);
                           if (auth == null) {
                             return;
                           }
-                          settings = settings.copyWith(nextCloudAuthData: auth);
+                          settings =
+                              settings.copyWith(remoteServerAuthData: auth);
                         }
                         var setAction = UpdateBackupSettings(settings.copyWith(
                             backupProvider: selectedProvider));

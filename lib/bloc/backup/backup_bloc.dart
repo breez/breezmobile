@@ -114,8 +114,8 @@ class BackupBloc {
       await _setBreezLibBackupKey(backupKeyType: action.settings.backupKeyType);
     }
     if (action.settings.backupProvider != currentSettings.backupProvider ||
-        !currentSettings.nextCloudAuthData
-            .equal(action.settings.nextCloudAuthData)) {
+        !currentSettings.remoteServerAuthData
+            .equal(action.settings.remoteServerAuthData)) {
       await _updateBackupProvider(action.settings);
     }
     action.resolve(action.settings);
@@ -124,8 +124,8 @@ class BackupBloc {
   Future _updateBackupProvider(BackupSettings settings) async {
     String authData;
     if (settings.backupProvider.name ==
-        BackupSettings.nextcloudBackupProvider.name) {
-      var map = settings.nextCloudAuthData.toJson();
+        BackupSettings.remoteServerBackupProvider.name) {
+      var map = settings.remoteServerAuthData.toJson();
       authData = json.encode(map);
     }
     await _breezLib.setBackupProvider(settings.backupProvider.name, authData);
@@ -162,13 +162,14 @@ class BackupBloc {
             backupProvider: BackupSettings.googleBackupProvider);
       }
       if (backupSettingsModel.backupProvider?.name ==
-          BackupSettings.nextcloudBackupProvider.name) {
-        String authdata = await _secureStorage.read(key: "nextCloudAuthData");
+          BackupSettings.remoteServerBackupProvider.name) {
+        String authdata =
+            await _secureStorage.read(key: "remoteServerAuthData");
         if (authdata != null) {
-          NextCloudAuthData auth =
-              NextCloudAuthData.fromJson(json.decode(authdata));
+          RemoteServerAuthData auth =
+              RemoteServerAuthData.fromJson(json.decode(authdata));
           backupSettingsModel =
-              backupSettingsModel.copyWith(nextCloudAuthData: auth);
+              backupSettingsModel.copyWith(remoteServerAuthData: auth);
         }
       }
 
@@ -178,10 +179,11 @@ class BackupBloc {
     _backupSettingsController.stream.listen((settings) async {
       _sharedPreferences.setString(
           BACKUP_SETTINGS_PREFERENCES_KEY, json.encode(settings.toJson()));
-      if (settings.nextCloudAuthData != null) {
-        String secureValue = json.encode(settings.nextCloudAuthData.toJson());
+      if (settings.remoteServerAuthData != null) {
+        String secureValue =
+            json.encode(settings.remoteServerAuthData.toJson());
         await _secureStorage.write(
-            key: "nextCloudAuthData", value: secureValue);
+            key: "remoteServerAuthData", value: secureValue);
       }
     });
   }
