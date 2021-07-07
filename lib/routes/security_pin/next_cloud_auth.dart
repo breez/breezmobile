@@ -23,7 +23,7 @@ Future<NextCloudAuthData> promptAuthData(BuildContext context,
       final backupBloc = AppBlocsProvider.of<BackupBloc>(context);
       return withBreezTheme(
         context,
-        NextCloudAuthPage(backupBloc, restore: true),
+        NextCloudAuthPage(backupBloc, restore),
       );
     },
   ));
@@ -32,7 +32,7 @@ Future<NextCloudAuthData> promptAuthData(BuildContext context,
 const String BREEZ_BACKUP_DIR = "DO_NOT_DELETE_Breez_Backup";
 
 class NextCloudAuthPage extends StatefulWidget {
-  NextCloudAuthPage(this._backupBloc, {this.restore = false});
+  NextCloudAuthPage(this._backupBloc, this.restore);
 
   final String _title = "Remote Server";
   final BackupBloc _backupBloc;
