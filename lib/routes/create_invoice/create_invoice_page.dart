@@ -28,6 +28,7 @@ import 'package:breez/widgets/loader.dart';
 import 'package:breez/widgets/single_button_bottom_bar.dart';
 import 'package:breez/widgets/static_loader.dart';
 import 'package:breez/widgets/transparent_page_route.dart';
+import 'package:breez/widgets/warning_box.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:fixnum/fixnum.dart';
@@ -210,12 +211,7 @@ class CreateInvoicePageState extends State<CreateInvoicePage> {
                                 controller: _amountController,
                                 validatorFn: validatePayment,
                                 style: theme.FieldTextStyle.textStyle),
-                          Container(
-                            width: MediaQuery.of(context).size.width,
-                            height: 48,
-                            padding: EdgeInsets.only(top: 16.0),
-                            child: _buildReceivableBTC(acc, lspStatus),
-                          ),
+                          _buildReceivableBTC(acc, lspStatus),
                           StreamBuilder(
                               stream: accountBloc.accountStream,
                               builder: (BuildContext context,
@@ -269,31 +265,52 @@ class CreateInvoicePageState extends State<CreateInvoicePage> {
 
   Widget _buildReceivableBTC(AccountModel acc, LSPStatus lspStatus) {
     if (_withdrawFetchResponse == null) {
-      return GestureDetector(
-        child: AutoSizeText(
-          "Receive up to: ${acc.currency.format(acc.maxAllowedToReceive)}",
-          style: theme.textStyle,
-          maxLines: 1,
-          minFontSize: MinFontSize(context).minFontSize,
+      return Container(
+        width: MediaQuery.of(context).size.width,
+        height: 48,
+        padding: EdgeInsets.only(top: 16.0),
+        child: GestureDetector(
+          child: AutoSizeText(
+            "Receive up to: ${acc.currency.format(acc.maxAllowedToReceive)}",
+            style: theme.textStyle,
+            maxLines: 1,
+            minFontSize: MinFontSize(context).minFontSize,
+          ),
+          onTap: () => _amountController.text = acc.currency.format(
+              acc.maxAllowedToReceive,
+              includeDisplayName: false,
+              userInput: true),
         ),
-        onTap: () => _amountController.text = acc.currency.format(
-            acc.maxAllowedToReceive,
-            includeDisplayName: false,
-            userInput: true),
       );
     } else {
       LSPInfo lsp = lspStatus?.currentLSP;
-      String minFees = (lsp != null && lsp.channelMinimumFeeMsat > 0) ? "with a minimum of ${lsp.channelMinimumFeeMsat ~/ 1000} sats " : "";
-      var liquidity = acc.currency.format(acc.maxInboundLiquidity);
-      return GestureDetector(
-        child: AutoSizeText(
-          (lsp == null)? "" : "A setup fee of ${lsp.channelFeePermyriad / 100}% ${minFees}will be applied for receiving more than $liquidity",
-          style: theme.textStyle,
-          maxLines: 1,
-          minFontSize: MinFontSize(context).minFontSize,
-        ),
-      );
+      return lsp == null
+          ? SizedBox()
+          : WarningBox(
+              boxPadding: EdgeInsets.all(16),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: <Widget>[
+                  Text(
+                    formatFeeMessage(acc, lsp),
+                    style: Theme.of(context).textTheme.headline6,
+                    textAlign: TextAlign.center,
+                  )
+                ],
+              ),
+            );
     }
+  }
+
+  String formatFeeMessage(AccountModel acc, LSPInfo lsp) {
+    String minFees = (lsp != null && lsp.channelMinimumFeeMsat > 0)
+        ? "with a minimum of ${lsp.channelMinimumFeeMsat ~/ 1000} sats "
+        : "";
+    if (acc.connected) {
+      var liquidity = acc.currency.format(acc.maxInboundLiquidity);
+      return "A setup fee of ${lsp.channelFeePermyriad / 100}% ${minFees}will be applied for sending more than $liquidity.";
+    }
+    return "A setup fee of ${lsp.channelFeePermyriad / 100}% ${minFees}will be applied on the received amount.";
   }
 
   Future _scanBarcode(AccountModel account) async {
