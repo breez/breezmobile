@@ -76,7 +76,8 @@ Check our [active bounties](https://github.com/breez/breezmobile/wiki/Bounties).
 - [x] Hide balance
 - [x] In-app podcast player (podcasting 2.0)
 - [x] Backup to WebDav servers (e.g. Nextcloud)
-- [ ] Support LNURL-Pay ([open bounty](https://github.com/breez/breezmobile/wiki/Bounties))
+- [ ] Support LNURL-Pay ([bounty in progress](https://github.com/breez/breezmobile/wiki/Bounties#lnurl-pay-support))
+- [ ] Tor support ([open bounty](https://github.com/breez/breezmobile/wiki/Bounties#tor-support))
 - [ ] Support LNURL-Withdraw balance check
 - [ ] Async payments via Lightning Rod
 - [ ] Neutrino sync optimizations
