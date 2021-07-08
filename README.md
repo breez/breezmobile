@@ -75,6 +75,7 @@ Check our [active bounties](https://github.com/breez/breezmobile/wiki/Bounties).
 - [x] Print POS transactions
 - [x] Hide balance
 - [x] In-app podcast player (podcasting 2.0)
+- [x] Backup to WebDav servers (e.g. Nextcloud)
 - [ ] Support LNURL-Pay ([open bounty](https://github.com/breez/breezmobile/wiki/Bounties))
 - [ ] Support LNURL-Withdraw balance check
 - [ ] Async payments via Lightning Rod
