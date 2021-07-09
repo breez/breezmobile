@@ -85,7 +85,8 @@ Future<Null> showPaymentDetailsDialog(
       ),
     ]),
     contentPadding: EdgeInsets.fromLTRB(8.0, 16.0, 8.0, 16.0),
-    content: Container(
+    content: SingleChildScrollView(
+        child: Container(
       width: MediaQuery.of(context).size.width,
       child: Column(
         mainAxisSize: MainAxisSize.min,
@@ -247,14 +248,15 @@ Future<Null> showPaymentDetailsDialog(
                   ),
                 ),
           // FIXME Show the user's comment
-          // FIXME In general users should be able to label/comment their transactions.
-          if (paymentInfo.lnurlPaySuccessAction != null)
+          // FIXME In general users should be able to label/comment their transactions?
+          if (paymentInfo.type == PaymentType.SENT 
+              && paymentInfo.lnurlPaySuccessAction != null)
             ..._getLNUrlSuccessActionForPayment(
                 context, paymentInfo.lnurlPaySuccessAction),
           ..._getPaymentInfoDetails(paymentInfo),
         ],
       ),
-    ),
+    )),
     shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(
             bottom: Radius.circular(12.0), top: Radius.circular(13.0))),
@@ -286,10 +288,10 @@ List<Widget> _getStreamedPaymentInfoDetails(StreamedPaymentInfo paymentInfo) {
 List<Widget> _getLNUrlSuccessActionForPayment(
     BuildContext context, SuccessAction sa) {
   return <Widget>[
-    if (sa.tag == 'url')
+    if (sa.tag == 'url') ...[
       ShareablePaymentRow(title: "Description", sharedValue: sa.description),
-    if (sa.tag == 'url')
       ShareablePaymentRow(title: "URL", sharedValue: sa.url), // TODO Hyperlink.
+    ],
     if (sa.tag == 'message' || sa.tag == 'aes')
       ShareablePaymentRow(title: 'Message', sharedValue: sa.message),
   ];

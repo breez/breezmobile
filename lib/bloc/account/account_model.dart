@@ -367,8 +367,8 @@ class PaymentsModel {
       [this.firstDate]);
 
   PaymentsModel.initial()
-      : this(<PaymentInfo>[], <PaymentInfo>[],
-            PaymentFilterModel.initial(), DateTime(DateTime.now().year));
+      : this(<PaymentInfo>[], <PaymentInfo>[], PaymentFilterModel.initial(),
+            DateTime(DateTime.now().year));
 
   PaymentsModel copyWith(
       {List<PaymentInfo> nonFilteredItems,
@@ -432,6 +432,7 @@ abstract class PaymentInfo {
   bool get fullPending;
   String get paymentGroup;
   String get paymentGroupName;
+  LNUrlPayInfo lnurlPayInfo;
   SuccessAction lnurlPaySuccessAction;
   PaymentInfo copyWith(AccountModel account);
 }
@@ -498,6 +499,9 @@ class StreamedPaymentInfo implements PaymentInfo {
 
   SuccessAction get lnurlPaySuccessAction => null;
   set lnurlPaySuccessAction(SuccessAction s) => {};
+
+  LNUrlPayInfo get lnurlPayInfo => null;
+  set lnurlPayInfo(LNUrlPayInfo i) => {};
 }
 
 class SinglePaymentInfo implements PaymentInfo {
@@ -613,6 +617,13 @@ class SinglePaymentInfo implements PaymentInfo {
   }
 
   String get title {
+    if (_paymentResponse.invoiceMemo.description == '') {
+      if (_lnurlPayInfo != null) {
+        _paymentResponse.invoiceMemo.description =
+            _lnurlPayInfo.invoiceDescription;
+      }
+    }
+
     if (_paymentResponse.invoiceMemo.description.startsWith("Bitrefill")) {
       return "Bitrefill";
     }
@@ -654,6 +665,10 @@ class SinglePaymentInfo implements PaymentInfo {
   SuccessAction _lnurlPaySuccessAction;
   SuccessAction get lnurlPaySuccessAction => _lnurlPaySuccessAction;
   set lnurlPaySuccessAction(SuccessAction s) => _lnurlPaySuccessAction = s;
+
+  LNUrlPayInfo _lnurlPayInfo;
+  LNUrlPayInfo get lnurlPayInfo => _lnurlPayInfo;
+  set lnurlPayInfo(LNUrlPayInfo i) => _lnurlPayInfo = i;
 
   SinglePaymentInfo(this._paymentResponse, this._account);
 
@@ -705,7 +720,7 @@ class PayRequest {
   String lnurlSuccessActionMessage;
 
   PayRequest(this.paymentRequest, this.amount,
-      {this.lnurlSuccessActionMessage});
+      {this.lnurlSuccessActionMessage = ''});
 }
 
 class CompletedPayment {

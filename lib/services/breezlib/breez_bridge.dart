@@ -159,14 +159,12 @@ class BreezBridge {
   }
 
   Future<SuccessAction> getLNUrlPaySuccessAction(String paymentHash) {
-    logger.log.info("getLNUrlPaySuccessAction");
     return _invokeMethodImmediate(
             'getLNUrlPaySuccessAction', {'paymentHash': paymentHash})
         .then((result) => SuccessAction()..mergeFromBuffer(result ?? []));
   }
 
   Future<LNUrlPayInfoList> getLNUrlPayInfos() {
-    logger.log.info("getLNUrlPayInfos");
     return _invokeMethodImmediate('getLNUrlPayInfos')
         .then((result) => LNUrlPayInfoList()..mergeFromBuffer(result ?? []));
   }

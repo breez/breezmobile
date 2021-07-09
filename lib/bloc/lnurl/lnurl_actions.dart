@@ -34,6 +34,3 @@ class FetchInvoice extends AsyncAction {
 
   FetchInvoice(this.response);
 }
-
-// FIXME Delete this if unneccessary
-class FetchLNUrlPayInfos extends AsyncAction {}

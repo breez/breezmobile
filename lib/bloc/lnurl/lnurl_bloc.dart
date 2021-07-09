@@ -2,7 +2,6 @@ import 'dart:async';
 
 import 'package:breez/services/breezlib/breez_bridge.dart';
 import 'package:breez/services/breezlib/data/rpc.pbserver.dart';
-import 'package:breez/services/breezlib/data/rpc.pb.dart' show LNUrlPayInfo;
 import 'package:breez/services/injector.dart';
 import 'package:breez/utils/retry.dart';
 import 'package:rxdart/rxdart.dart';
@@ -18,8 +17,6 @@ class LNUrlBloc with AsyncActionsHandler {
 
   StreamController _lnUrlStreamController;
 
-  final payInfoController = BehaviorSubject<List<LNUrlPayInfo>>();
-
   LNUrlBloc() {
     ServiceInjector injector = ServiceInjector();
     _breezLib = injector.breezBridge;
@@ -30,12 +27,8 @@ class LNUrlBloc with AsyncActionsHandler {
       OpenChannel: _openChannel,
       Login: _login,
       FetchInvoice: _fetchInvoice,
-      FetchLNUrlPayInfos: _handleLNUrlPayInfos,
     });
     listenActions();
-
-    payInfoController.add(<LNUrlPayInfo>[]);
-    fetchLNUrlPayInfos();
   }
 
   listenLNUrl() {
@@ -117,20 +110,6 @@ class LNUrlBloc with AsyncActionsHandler {
         tryLimit: 3,
         interval: Duration(seconds: 5));
     action.resolve(await openResult);
-  }
-
-  fetchLNUrlPayInfos() {
-    var action = FetchLNUrlPayInfos();
-    actionsSink.add(action);
-  }
-
-  Future _handleLNUrlPayInfos(FetchLNUrlPayInfos action) async {
-    await
-        // TODO TEST
-        _breezLib.getLNUrlPayInfos().then((infos) {
-      payInfoController.add(infos.infoList);
-    });
-    action.resolve(payInfoController.value);
   }
 
   @override

@@ -670,20 +670,26 @@ class HomeState extends State<Home> with WidgetsBindingObserver {
 
   void _listenPaymentResults() {
     widget.accountBloc.completedPaymentsStream.listen((fulfilledPayment) {
+      print(
+          '_listenPaymentResults pricessing: ${fulfilledPayment.paymentRequest}');
+
       if (!fulfilledPayment.cancelled &&
           !fulfilledPayment.ignoreGlobalFeedback) {
         scrollController.animateTo(scrollController.position.minScrollExtent,
             duration: Duration(milliseconds: 10), curve: Curves.ease);
 
-        var message = "Payment was successfully sent!";
-        /* FIXME We can't use this because showFlushBar overflows and throws exceptions.
-        if (fulfilledPayment.paymentRequest?.lnurlSuccessActionMessage != "") {
+        var message = 'Payment was successfully sent!';
+        if (fulfilledPayment.paymentRequest != null) {
           message +=
               '\n${fulfilledPayment.paymentRequest.lnurlSuccessActionMessage}';
-        }
 
-        */
-        showFlushbar(context, message: message);
+          // FIXME I/flutter (17295): payment successful. showflushbar for paymentHash: null
+          print(
+              'payment successful. showflushbar for paymentHash: ${fulfilledPayment.paymentHash}');
+          showFlushbar(context,
+              messageWidget: SingleChildScrollView(child: Text(message)));
+          // showFlushbar(context, message: message);
+        }
       }
     }, onError: (err) async {
       var error = err as PaymentError;

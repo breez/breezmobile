@@ -372,7 +372,6 @@ class LNURLFetchInvoicePageState extends State<LNURLFetchInvoicePage> {
               style: Theme.of(context).dialogTheme.contentTextStyle),
           okFunc: _removeLoader);
     }).then((payinfo) {
-      lnurlBloc.fetchLNUrlPayInfos();
       invoiceBloc.decodeInvoiceSink.add(payinfo.invoice);
       log.info(
           '_getInvoice: Found LNUrlPayInfo. Beginning payment request flow.');

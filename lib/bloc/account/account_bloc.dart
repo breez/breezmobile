@@ -604,14 +604,27 @@ class AccountBloc {
     });
   }
 
-  Future<PaymentsModel> fetchPayments() {
+  Future<PaymentsModel> fetchPayments() async {
     DateTime _firstDate;
     print("refreshing payments...");
+    final _lnurlPayInfos = await _breezLib.getLNUrlPayInfos();
+
     return _breezLib.getPayments().then((payments) {
-      List<PaymentInfo> _paymentsList = payments.paymentsList
-          .map(
-              (payment) => SinglePaymentInfo(payment, _accountController.value))
-          .toList();
+      List<PaymentInfo> _paymentsList = payments.paymentsList.map((payment) {
+        var singlePaymentInfo =
+            SinglePaymentInfo(payment, _accountController.value);
+
+        if (_lnurlPayInfos != null) {
+          final lnurlPayInfo = _lnurlPayInfos.infoList.firstWhere(
+              (it) => it.paymentHash == payment.paymentHash,
+              orElse: () => null);
+          singlePaymentInfo.lnurlPaySuccessAction = lnurlPayInfo?.successAction;
+          singlePaymentInfo.lnurlPayInfo = lnurlPayInfo;
+        }
+
+        return singlePaymentInfo;
+      }).toList();
+
       if (_paymentsList.length > 0) {
         _firstDate = DateTime.fromMillisecondsSinceEpoch(
             _paymentsList.last.creationTimestamp.toInt() * 1000);
@@ -626,9 +639,10 @@ class AccountBloc {
     });
   }
 
-  Future _refreshPayments() {
-    return fetchPayments()
-        .then((paymentModel) => _paymentsController.add(paymentModel))
+  Future _refreshPayments() async {
+    return await fetchPayments()
+        .then((PaymentsModel paymentModel) =>
+            _paymentsController.add(paymentModel))
         .catchError(_paymentsController.addError);
   }
 
@@ -679,6 +693,7 @@ class AccountBloc {
   void _listenAccountChanges() {
     StreamSubscription<NotificationEvent> eventSubscription;
     eventSubscription = _breezLib.notificationStream.listen((event) async {
+      print('_breezLib.notificationStream received: ${event.type}.');
       if (event.type ==
           NotificationEvent_NotificationType.LIGHTNING_SERVICE_DOWN) {
         _accountController
@@ -700,14 +715,15 @@ class AccountBloc {
             .add(_accountController.value.copyWith(serverReady: true));
         _refreshAccountAndPayments();
       }
+
       if (event.type ==
           NotificationEvent_NotificationType.BACKUP_NODE_CONFLICT) {
         eventSubscription.cancel();
         _nodeConflictController.add(null);
       }
+
       if (event.type == NotificationEvent_NotificationType.PAYMENT_SUCCEEDED) {
-        log.info(
-            "NotificationEvent accountBloc: Payment succeeded."); // TODO FINDOUT Why does this not appear in the log?
+        print('Processing NotificationEvent accountBloc: Payment succeeded.');
         var paymentRequest = event.data[0];
         var paymentHash = event.data[1];
         PayRequest pqyreq;
@@ -717,29 +733,28 @@ class AccountBloc {
           pqyreq = PayRequest(paymentRequest, invoice.amount);
         }
 
-        // FIXME We can't use this because showFlushBar overflows and throws exceptions.
         final sa = await _breezLib.getLNUrlPaySuccessAction(paymentHash);
-
-        switch (sa?.tag) {
-          case 'url':
-            {
+        if (sa != null) {
+          switch (sa.tag) {
+            case 'url':
               pqyreq.lnurlSuccessActionMessage = '${sa.description}\n${sa.url}';
-            }
-            break;
-          case 'message':
-          case 'aes':
-            {
+              break;
+            case 'message':
+            case 'aes':
               pqyreq.lnurlSuccessActionMessage = sa.message;
-            }
-            break;
+              break;
+          }
         }
 
+        print(
+            'Processing NotificationEvent_PAYMENT_SUCCEEDED: pqyreq added to _completedPaymentsController: successAction = ${pqyreq.lnurlSuccessActionMessage}.');
         _completedPaymentsController.add(CompletedPayment(pqyreq, paymentHash,
             cancelled: false,
             ignoreGlobalFeedback:
                 _ignoredFeedbackPayments.containsKey(paymentRequest)));
         _ignoredFeedbackPayments.remove(paymentRequest);
       }
+
       if (event.type == NotificationEvent_NotificationType.PAYMENT_FAILED) {
         var paymentRequest = event.data[0];
         var error = event.data[2];
