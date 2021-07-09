@@ -375,7 +375,7 @@ class AccountBloc {
     var sendRequest = _breezLib
         .sendPaymentForRequest(payRequest.paymentRequest,
             amount: payRequest.amount)
-        .then((response) {
+        .then((response) async {
       if (response.paymentError.isNotEmpty) {
         var error = PaymentError(
           payRequest,
@@ -386,13 +386,41 @@ class AccountBloc {
         _completedPaymentsController.addError(error);
         return Future.error(error);
       }
-      _completedPaymentsController.add(CompletedPayment(null, null,
+
+      final paymentHash =
+          await _breezLib.getPaymentRequestHash(payRequest.paymentRequest);
+      if (paymentHash != null) {
+        SuccessAction sa;
+        try {
+          sa = await _breezLib.getLNUrlPaySuccessAction(paymentHash);
+        } catch (e) {
+          log.warning(
+              'Error processing NotificationEvent_PAYMENT_SUCCEEDED: $e');
+        }
+        if (sa != null) {
+          switch (sa.tag) {
+            case 'url':
+              payRequest.lnurlSuccessActionMessage =
+                  '${sa.description}\n${sa.url}';
+              break;
+            case 'message':
+            case 'aes':
+              payRequest.lnurlSuccessActionMessage = sa.message;
+              break;
+          }
+        }
+
+        log.info(
+            '_listenAccountChanges: payRequest added to _completedPaymentsController: successAction = ${payRequest.lnurlSuccessActionMessage}.');
+      }
+
+      _completedPaymentsController.add(CompletedPayment(payRequest, paymentHash,
           ignoreGlobalFeedback: action.ignoreGlobalFeedback == true));
       return response;
     });
 
     _backgroundService.runAsTask(sendRequest, () {
-      log.info("sendpayment background task finished");
+      log.info("sendPayment background task finished");
     });
     action.resolve(await sendRequest);
   }
@@ -639,10 +667,9 @@ class AccountBloc {
     });
   }
 
-  Future _refreshPayments() async {
-    return await fetchPayments()
-        .then((PaymentsModel paymentModel) =>
-            _paymentsController.add(paymentModel))
+  Future _refreshPayments() {
+    return fetchPayments()
+        .then((paymentModel) => _paymentsController.add(paymentModel))
         .catchError(_paymentsController.addError);
   }
 
@@ -723,32 +750,21 @@ class AccountBloc {
       }
 
       if (event.type == NotificationEvent_NotificationType.PAYMENT_SUCCEEDED) {
-        print('Processing NotificationEvent accountBloc: Payment succeeded.');
+        // TODO FINDOUT When do we reach here?
+        // Are we supposed to reach here for all successful payments?
+
         var paymentRequest = event.data[0];
         var paymentHash = event.data[1];
-        PayRequest pqyreq;
+        log.info(
+            '_listenAccountChanges: Payment succeeded with paymentHash = $paymentHash');
+        PayRequest payRequest;
 
         if (paymentRequest.isNotEmpty) {
           var invoice = await _breezLib.decodePaymentRequest(paymentRequest);
-          pqyreq = PayRequest(paymentRequest, invoice.amount);
+          payRequest = PayRequest(paymentRequest, invoice.amount);
         }
 
-        final sa = await _breezLib.getLNUrlPaySuccessAction(paymentHash);
-        if (sa != null) {
-          switch (sa.tag) {
-            case 'url':
-              pqyreq.lnurlSuccessActionMessage = '${sa.description}\n${sa.url}';
-              break;
-            case 'message':
-            case 'aes':
-              pqyreq.lnurlSuccessActionMessage = sa.message;
-              break;
-          }
-        }
-
-        print(
-            'Processing NotificationEvent_PAYMENT_SUCCEEDED: pqyreq added to _completedPaymentsController: successAction = ${pqyreq.lnurlSuccessActionMessage}.');
-        _completedPaymentsController.add(CompletedPayment(pqyreq, paymentHash,
+        _completedPaymentsController.add(CompletedPayment(payRequest, paymentHash,
             cancelled: false,
             ignoreGlobalFeedback:
                 _ignoredFeedbackPayments.containsKey(paymentRequest)));
@@ -762,13 +778,13 @@ class AccountBloc {
         if (event.data.length > 3) {
           traceReport = event.data[3];
         }
-        PayRequest pqyreq;
+        PayRequest payRequest;
         if (paymentRequest.isNotEmpty) {
           var invoice = await _breezLib.decodePaymentRequest(paymentRequest);
-          pqyreq = PayRequest(paymentRequest, invoice.amount);
+          payRequest = PayRequest(paymentRequest, invoice.amount);
         }
         _completedPaymentsController.addError(PaymentError(
-            pqyreq, error, traceReport,
+            payRequest, error, traceReport,
             ignoreGlobalFeedback:
                 _ignoredFeedbackPayments.containsKey(paymentRequest)));
         _ignoredFeedbackPayments.remove(paymentRequest);
