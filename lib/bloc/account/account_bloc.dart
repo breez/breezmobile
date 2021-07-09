@@ -369,6 +369,8 @@ class AccountBloc {
 
   Future _sendPayment(SendPayment action) async {
     var payRequest = action.paymentRequest;
+    log.info('_sendPayment: paymentRequest = ${payRequest.paymentRequest}');
+
     if (action.ignoreGlobalFeedback) {
       _ignoredFeedbackPayments[payRequest.paymentRequest] = true;
     }
@@ -389,13 +391,15 @@ class AccountBloc {
 
       final paymentHash =
           await _breezLib.getPaymentRequestHash(payRequest.paymentRequest);
-      if (paymentHash != null) {
+      log.info(
+          '_sendPayment: getPaymentRequestHash found paymentHash  $paymentHash for paymentRequest ${payRequest.paymentRequest}');
+
+      if (paymentHash != '') {
         SuccessAction sa;
         try {
           sa = await _breezLib.getLNUrlPaySuccessAction(paymentHash);
         } catch (e) {
-          log.warning(
-              'Error processing NotificationEvent_PAYMENT_SUCCEEDED: $e');
+          log.warning('_sendPayment: Error in getLNUrlPaySuccessAction: $e');
         }
         if (sa != null) {
           switch (sa.tag) {
@@ -646,7 +650,6 @@ class AccountBloc {
           final lnurlPayInfo = _lnurlPayInfos.infoList.firstWhere(
               (it) => it.paymentHash == payment.paymentHash,
               orElse: () => null);
-          singlePaymentInfo.lnurlPaySuccessAction = lnurlPayInfo?.successAction;
           singlePaymentInfo.lnurlPayInfo = lnurlPayInfo;
         }
 
@@ -764,7 +767,8 @@ class AccountBloc {
           payRequest = PayRequest(paymentRequest, invoice.amount);
         }
 
-        _completedPaymentsController.add(CompletedPayment(payRequest, paymentHash,
+        _completedPaymentsController.add(CompletedPayment(
+            payRequest, paymentHash,
             cancelled: false,
             ignoreGlobalFeedback:
                 _ignoredFeedbackPayments.containsKey(paymentRequest)));

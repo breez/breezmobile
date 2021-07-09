@@ -671,7 +671,7 @@ class HomeState extends State<Home> with WidgetsBindingObserver {
   void _listenPaymentResults() {
     widget.accountBloc.completedPaymentsStream.listen((fulfilledPayment) {
       print(
-          '_listenPaymentResults pricessing: ${fulfilledPayment.paymentRequest}');
+          '_listenPaymentResults processing: ${fulfilledPayment.paymentHash}');
 
       if (!fulfilledPayment.cancelled &&
           !fulfilledPayment.ignoreGlobalFeedback) {
@@ -683,9 +683,6 @@ class HomeState extends State<Home> with WidgetsBindingObserver {
           message +=
               '\n${fulfilledPayment.paymentRequest.lnurlSuccessActionMessage}';
 
-          // FIXME I/flutter (17295): payment successful. showflushbar for paymentHash: null
-          print(
-              'payment successful. showflushbar for paymentHash: ${fulfilledPayment.paymentHash}');
           showFlushbar(context,
               messageWidget: SingleChildScrollView(child: Text(message)));
           // showFlushbar(context, message: message);

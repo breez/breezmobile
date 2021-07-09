@@ -160,7 +160,7 @@ class BreezBridge {
 
   Future<SuccessAction> getLNUrlPaySuccessAction(String paymentHash) {
     return _invokeMethodImmediate(
-            'getLNUrlPaySuccessAction', {'paymentHash': paymentHash})
+            'getLNUrlPaySuccessAction', {'argument': paymentHash})
         .then((result) => SuccessAction()..mergeFromBuffer(result ?? []));
   }
 

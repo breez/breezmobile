@@ -250,9 +250,9 @@ Future<Null> showPaymentDetailsDialog(
           // FIXME Show the user's comment
           // FIXME In general users should be able to label/comment their transactions?
           if (paymentInfo.type == PaymentType.SENT 
-              && paymentInfo.lnurlPaySuccessAction != null)
+              && paymentInfo.lnurlPayInfo != null && paymentInfo.lnurlPayInfo.successAction != null) 
             ..._getLNUrlSuccessActionForPayment(
-                context, paymentInfo.lnurlPaySuccessAction),
+                context, paymentInfo.lnurlPayInfo.successAction),
           ..._getPaymentInfoDetails(paymentInfo),
         ],
       ),

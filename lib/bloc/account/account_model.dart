@@ -433,7 +433,6 @@ abstract class PaymentInfo {
   String get paymentGroup;
   String get paymentGroupName;
   LNUrlPayInfo lnurlPayInfo;
-  SuccessAction lnurlPaySuccessAction;
   PaymentInfo copyWith(AccountModel account);
 }
 
@@ -496,9 +495,6 @@ class StreamedPaymentInfo implements PaymentInfo {
   String get paymentHash => "";
   String get preimage => "";
   String get destination => "";
-
-  SuccessAction get lnurlPaySuccessAction => null;
-  set lnurlPaySuccessAction(SuccessAction s) => {};
 
   LNUrlPayInfo get lnurlPayInfo => null;
   set lnurlPayInfo(LNUrlPayInfo i) => {};
@@ -661,10 +657,6 @@ class SinglePaymentInfo implements PaymentInfo {
   }
 
   Currency get currency => _account.currency;
-
-  SuccessAction _lnurlPaySuccessAction;
-  SuccessAction get lnurlPaySuccessAction => _lnurlPaySuccessAction;
-  set lnurlPaySuccessAction(SuccessAction s) => _lnurlPaySuccessAction = s;
 
   LNUrlPayInfo _lnurlPayInfo;
   LNUrlPayInfo get lnurlPayInfo => _lnurlPayInfo;
