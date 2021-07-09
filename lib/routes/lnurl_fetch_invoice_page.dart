@@ -298,7 +298,7 @@ class LNURLFetchInvoicePageState extends State<LNURLFetchInvoicePage> {
         .format(response.minAmount, includeDisplayName: false, userInput: true);
   }
 
-  String _getMetadataText(List<LNURLPayResponse1_Metadata> metadata) {
+  String _getMetadataText(List<LNUrlPayMetadata> metadata) {
     /*
 
     `metadata` json array must contain one `text/plain` entry, all other types of entries are optional:

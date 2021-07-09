@@ -4261,14 +4261,14 @@ class LNURLAuth extends $pb.GeneratedMessage {
   void clearJwt() => clearField(5);
 }
 
-class LNURLPayResponse1_Metadata extends $pb.GeneratedMessage {
-  static final $pb.BuilderInfo _i = $pb.BuilderInfo(const $core.bool.fromEnvironment('protobuf.omit_message_names') ? '' : 'LNURLPayResponse1.Metadata', package: const $pb.PackageName(const $core.bool.fromEnvironment('protobuf.omit_message_names') ? '' : 'data'), createEmptyInstance: create)
+class LNUrlPayMetadata extends $pb.GeneratedMessage {
+  static final $pb.BuilderInfo _i = $pb.BuilderInfo(const $core.bool.fromEnvironment('protobuf.omit_message_names') ? '' : 'LNUrlPayMetadata', package: const $pb.PackageName(const $core.bool.fromEnvironment('protobuf.omit_message_names') ? '' : 'data'), createEmptyInstance: create)
     ..pPS(1, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'entry')
     ..hasRequiredFields = false
   ;
 
-  LNURLPayResponse1_Metadata._() : super();
-  factory LNURLPayResponse1_Metadata({
+  LNUrlPayMetadata._() : super();
+  factory LNUrlPayMetadata({
     $core.Iterable<$core.String> entry,
   }) {
     final _result = create();
@@ -4277,26 +4277,26 @@ class LNURLPayResponse1_Metadata extends $pb.GeneratedMessage {
     }
     return _result;
   }
-  factory LNURLPayResponse1_Metadata.fromBuffer($core.List<$core.int> i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromBuffer(i, r);
-  factory LNURLPayResponse1_Metadata.fromJson($core.String i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromJson(i, r);
+  factory LNUrlPayMetadata.fromBuffer($core.List<$core.int> i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromBuffer(i, r);
+  factory LNUrlPayMetadata.fromJson($core.String i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromJson(i, r);
   @$core.Deprecated(
   'Using this can add significant overhead to your binary. '
   'Use [GeneratedMessageGenericExtensions.deepCopy] instead. '
   'Will be removed in next major version')
-  LNURLPayResponse1_Metadata clone() => LNURLPayResponse1_Metadata()..mergeFromMessage(this);
+  LNUrlPayMetadata clone() => LNUrlPayMetadata()..mergeFromMessage(this);
   @$core.Deprecated(
   'Using this can add significant overhead to your binary. '
   'Use [GeneratedMessageGenericExtensions.rebuild] instead. '
   'Will be removed in next major version')
-  LNURLPayResponse1_Metadata copyWith(void Function(LNURLPayResponse1_Metadata) updates) => super.copyWith((message) => updates(message as LNURLPayResponse1_Metadata)); // ignore: deprecated_member_use
+  LNUrlPayMetadata copyWith(void Function(LNUrlPayMetadata) updates) => super.copyWith((message) => updates(message as LNUrlPayMetadata)); // ignore: deprecated_member_use
   $pb.BuilderInfo get info_ => _i;
   @$core.pragma('dart2js:noInline')
-  static LNURLPayResponse1_Metadata create() => LNURLPayResponse1_Metadata._();
-  LNURLPayResponse1_Metadata createEmptyInstance() => create();
-  static $pb.PbList<LNURLPayResponse1_Metadata> createRepeated() => $pb.PbList<LNURLPayResponse1_Metadata>();
+  static LNUrlPayMetadata create() => LNUrlPayMetadata._();
+  LNUrlPayMetadata createEmptyInstance() => create();
+  static $pb.PbList<LNUrlPayMetadata> createRepeated() => $pb.PbList<LNUrlPayMetadata>();
   @$core.pragma('dart2js:noInline')
-  static LNURLPayResponse1_Metadata getDefault() => _defaultInstance ??= $pb.GeneratedMessage.$_defaultFor<LNURLPayResponse1_Metadata>(create);
-  static LNURLPayResponse1_Metadata _defaultInstance;
+  static LNUrlPayMetadata getDefault() => _defaultInstance ??= $pb.GeneratedMessage.$_defaultFor<LNUrlPayMetadata>(create);
+  static LNUrlPayMetadata _defaultInstance;
 
   @$pb.TagNumber(1)
   $core.List<$core.String> get entry => $_getList(0);
@@ -4307,7 +4307,7 @@ class LNURLPayResponse1 extends $pb.GeneratedMessage {
     ..aOS(1, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'callback')
     ..aInt64(2, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'minAmount')
     ..aInt64(3, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'maxAmount')
-    ..pc<LNURLPayResponse1_Metadata>(4, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'metadata', $pb.PbFieldType.PM, subBuilder: LNURLPayResponse1_Metadata.create)
+    ..pc<LNUrlPayMetadata>(4, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'metadata', $pb.PbFieldType.PM, subBuilder: LNUrlPayMetadata.create)
     ..aOS(5, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'tag')
     ..a<$fixnum.Int64>(6, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'amount', $pb.PbFieldType.OU6, defaultOrMaker: $fixnum.Int64.ZERO)
     ..aOS(7, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'fromNodes')
@@ -4321,7 +4321,7 @@ class LNURLPayResponse1 extends $pb.GeneratedMessage {
     $core.String callback,
     $fixnum.Int64 minAmount,
     $fixnum.Int64 maxAmount,
-    $core.Iterable<LNURLPayResponse1_Metadata> metadata,
+    $core.Iterable<LNUrlPayMetadata> metadata,
     $core.String tag,
     $fixnum.Int64 amount,
     $core.String fromNodes,
@@ -4407,7 +4407,7 @@ class LNURLPayResponse1 extends $pb.GeneratedMessage {
   void clearMaxAmount() => clearField(3);
 
   @$pb.TagNumber(4)
-  $core.List<LNURLPayResponse1_Metadata> get metadata => $_getList(3);
+  $core.List<LNUrlPayMetadata> get metadata => $_getList(3);
 
   @$pb.TagNumber(5)
   $core.String get tag => $_getSZ(4);
@@ -4574,37 +4574,47 @@ class SuccessAction extends $pb.GeneratedMessage {
 
 class LNUrlPayInfo extends $pb.GeneratedMessage {
   static final $pb.BuilderInfo _i = $pb.BuilderInfo(const $core.bool.fromEnvironment('protobuf.omit_message_names') ? '' : 'LNUrlPayInfo', package: const $pb.PackageName(const $core.bool.fromEnvironment('protobuf.omit_message_names') ? '' : 'data'), createEmptyInstance: create)
-    ..aOM<SuccessAction>(1, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'successAction', subBuilder: SuccessAction.create)
+    ..aOS(1, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'paymentHash', protoName: 'paymentHash')
     ..aOS(2, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'invoice')
-    ..aOS(3, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'paymentHash', protoName: 'paymentHash')
+    ..aOM<SuccessAction>(3, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'successAction', subBuilder: SuccessAction.create)
     ..aOS(4, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'comment')
     ..aOS(5, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'invoiceDescription')
+    ..pc<LNUrlPayMetadata>(6, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'metadata', $pb.PbFieldType.PM, subBuilder: LNUrlPayMetadata.create)
+    ..aOS(7, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'host')
     ..hasRequiredFields = false
   ;
 
   LNUrlPayInfo._() : super();
   factory LNUrlPayInfo({
-    SuccessAction successAction,
-    $core.String invoice,
     $core.String paymentHash,
+    $core.String invoice,
+    SuccessAction successAction,
     $core.String comment,
     $core.String invoiceDescription,
+    $core.Iterable<LNUrlPayMetadata> metadata,
+    $core.String host,
   }) {
     final _result = create();
-    if (successAction != null) {
-      _result.successAction = successAction;
+    if (paymentHash != null) {
+      _result.paymentHash = paymentHash;
     }
     if (invoice != null) {
       _result.invoice = invoice;
     }
-    if (paymentHash != null) {
-      _result.paymentHash = paymentHash;
+    if (successAction != null) {
+      _result.successAction = successAction;
     }
     if (comment != null) {
       _result.comment = comment;
     }
     if (invoiceDescription != null) {
       _result.invoiceDescription = invoiceDescription;
+    }
+    if (metadata != null) {
+      _result.metadata.addAll(metadata);
+    }
+    if (host != null) {
+      _result.host = host;
     }
     return _result;
   }
@@ -4630,15 +4640,13 @@ class LNUrlPayInfo extends $pb.GeneratedMessage {
   static LNUrlPayInfo _defaultInstance;
 
   @$pb.TagNumber(1)
-  SuccessAction get successAction => $_getN(0);
+  $core.String get paymentHash => $_getSZ(0);
   @$pb.TagNumber(1)
-  set successAction(SuccessAction v) { setField(1, v); }
+  set paymentHash($core.String v) { $_setString(0, v); }
   @$pb.TagNumber(1)
-  $core.bool hasSuccessAction() => $_has(0);
+  $core.bool hasPaymentHash() => $_has(0);
   @$pb.TagNumber(1)
-  void clearSuccessAction() => clearField(1);
-  @$pb.TagNumber(1)
-  SuccessAction ensureSuccessAction() => $_ensure(0);
+  void clearPaymentHash() => clearField(1);
 
   @$pb.TagNumber(2)
   $core.String get invoice => $_getSZ(1);
@@ -4650,13 +4658,15 @@ class LNUrlPayInfo extends $pb.GeneratedMessage {
   void clearInvoice() => clearField(2);
 
   @$pb.TagNumber(3)
-  $core.String get paymentHash => $_getSZ(2);
+  SuccessAction get successAction => $_getN(2);
   @$pb.TagNumber(3)
-  set paymentHash($core.String v) { $_setString(2, v); }
+  set successAction(SuccessAction v) { setField(3, v); }
   @$pb.TagNumber(3)
-  $core.bool hasPaymentHash() => $_has(2);
+  $core.bool hasSuccessAction() => $_has(2);
   @$pb.TagNumber(3)
-  void clearPaymentHash() => clearField(3);
+  void clearSuccessAction() => clearField(3);
+  @$pb.TagNumber(3)
+  SuccessAction ensureSuccessAction() => $_ensure(2);
 
   @$pb.TagNumber(4)
   $core.String get comment => $_getSZ(3);
@@ -4675,6 +4685,18 @@ class LNUrlPayInfo extends $pb.GeneratedMessage {
   $core.bool hasInvoiceDescription() => $_has(4);
   @$pb.TagNumber(5)
   void clearInvoiceDescription() => clearField(5);
+
+  @$pb.TagNumber(6)
+  $core.List<LNUrlPayMetadata> get metadata => $_getList(5);
+
+  @$pb.TagNumber(7)
+  $core.String get host => $_getSZ(6);
+  @$pb.TagNumber(7)
+  set host($core.String v) { $_setString(6, v); }
+  @$pb.TagNumber(7)
+  $core.bool hasHost() => $_has(6);
+  @$pb.TagNumber(7)
+  void clearHost() => clearField(7);
 }
 
 class LNUrlPayInfoList extends $pb.GeneratedMessage {

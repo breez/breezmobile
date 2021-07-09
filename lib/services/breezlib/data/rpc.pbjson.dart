@@ -600,26 +600,25 @@ const LNURLAuth$json = const {
   ],
 };
 
+const LNUrlPayMetadata$json = const {
+  '1': 'LNUrlPayMetadata',
+  '2': const [
+    const {'1': 'entry', '3': 1, '4': 3, '5': 9, '10': 'entry'},
+  ],
+};
+
 const LNURLPayResponse1$json = const {
   '1': 'LNURLPayResponse1',
   '2': const [
     const {'1': 'callback', '3': 1, '4': 1, '5': 9, '10': 'callback'},
     const {'1': 'min_amount', '3': 2, '4': 1, '5': 3, '10': 'minAmount'},
     const {'1': 'max_amount', '3': 3, '4': 1, '5': 3, '10': 'maxAmount'},
-    const {'1': 'metadata', '3': 4, '4': 3, '5': 11, '6': '.data.LNURLPayResponse1.Metadata', '10': 'metadata'},
+    const {'1': 'metadata', '3': 4, '4': 3, '5': 11, '6': '.data.LNUrlPayMetadata', '10': 'metadata'},
     const {'1': 'tag', '3': 5, '4': 1, '5': 9, '10': 'tag'},
     const {'1': 'amount', '3': 6, '4': 1, '5': 4, '10': 'amount'},
     const {'1': 'from_nodes', '3': 7, '4': 1, '5': 9, '10': 'fromNodes'},
     const {'1': 'comment', '3': 8, '4': 1, '5': 9, '10': 'comment'},
     const {'1': 'host', '3': 9, '4': 1, '5': 9, '10': 'host'},
-  ],
-  '3': const [LNURLPayResponse1_Metadata$json],
-};
-
-const LNURLPayResponse1_Metadata$json = const {
-  '1': 'Metadata',
-  '2': const [
-    const {'1': 'entry', '3': 1, '4': 3, '5': 9, '10': 'entry'},
   ],
 };
 
@@ -638,11 +637,13 @@ const SuccessAction$json = const {
 const LNUrlPayInfo$json = const {
   '1': 'LNUrlPayInfo',
   '2': const [
-    const {'1': 'success_action', '3': 1, '4': 1, '5': 11, '6': '.data.SuccessAction', '10': 'successAction'},
+    const {'1': 'paymentHash', '3': 1, '4': 1, '5': 9, '10': 'paymentHash'},
     const {'1': 'invoice', '3': 2, '4': 1, '5': 9, '10': 'invoice'},
-    const {'1': 'paymentHash', '3': 3, '4': 1, '5': 9, '10': 'paymentHash'},
+    const {'1': 'success_action', '3': 3, '4': 1, '5': 11, '6': '.data.SuccessAction', '10': 'successAction'},
     const {'1': 'comment', '3': 4, '4': 1, '5': 9, '10': 'comment'},
     const {'1': 'invoice_description', '3': 5, '4': 1, '5': 9, '10': 'invoiceDescription'},
+    const {'1': 'metadata', '3': 6, '4': 3, '5': 11, '6': '.data.LNUrlPayMetadata', '10': 'metadata'},
+    const {'1': 'host', '3': 7, '4': 1, '5': 9, '10': 'host'},
   ],
 };
 
