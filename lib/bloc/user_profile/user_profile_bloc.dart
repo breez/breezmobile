@@ -85,9 +85,7 @@ class UserProfileBloc {
       VerifyAdminPassword: _verifyAdminPassword,
       UploadProfilePicture: _uploadProfilePicture,
       SetPOSCurrency: _setPOSCurrency,
-      SetBoostAmount: _setBoostAmount,
-      SetSatsPerMinAmount: _setSatsPerMinAmount,
-      SetSeenPodcastTutorial: _setSeenPodcastTutorial,
+      SetPaymentOptions: _setPaymentOptions,
       SetSeenPaymentStripTutorial: _setSeenPaymentStripTutorial,
     };
     print("UserProfileBloc started");
@@ -196,29 +194,14 @@ class UserProfileBloc {
     action.resolve(action.shortName);
   }
 
-  Future _setBoostAmount(SetBoostAmount action) async {
+  Future _setPaymentOptions(SetPaymentOptions action) async {
     _saveChanges(await _preferences,
-        _currentUser.copyWith(preferredBoostValue: action.boostAmount));
-    action.resolve(action.boostAmount);
-  }
-
-  Future _setSatsPerMinAmount(SetSatsPerMinAmount action) async {
-    _saveChanges(await _preferences,
-        _currentUser.copyWith(preferredSatsPerMinValue: action.satsPerMin));
-    action.resolve(action.satsPerMin);
+        _currentUser.copyWith(paymentOptions: action.paymentOptions));
+    action.resolve(action.paymentOptions);
   }
 
   Future _uploadProfilePicture(UploadProfilePicture action) async {
     action.resolve(await _uploadImage(action.bytes));
-  }
-
-  Future _setSeenPodcastTutorial(SetSeenPodcastTutorial action) async {
-    _saveChanges(
-        await _preferences,
-        _currentUser.copyWith(
-            seenTutorials: _currentUser.seenTutorials
-                .copyWith(podcastsTutorial: action.seen)));
-    action.resolve(action.seen);
   }
 
   Future _setSeenPaymentStripTutorial(

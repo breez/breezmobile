@@ -24,35 +24,19 @@ class EnterBackupPhrasePage extends StatefulWidget {
 class EnterBackupPhrasePageState extends State<EnterBackupPhrasePage> {
   final _formKey = GlobalKey<FormState>();
 
-  List<FocusNode> focusNodes = List<FocusNode>(24);
+  List<FocusNode> focusNodes = List<FocusNode>.generate(24, (_) => FocusNode());
   List<TextEditingController> textEditingControllers =
-      List<TextEditingController>(24);
+      List<TextEditingController>.generate(24, (_) => TextEditingController());
   int _currentPage;
-  bool _autoValidate;
+  AutovalidateMode _autoValidateMode;
   bool _hasError;
 
   @override
   void initState() {
-    _createFocusNodes();
-    _createTextEditingControllers();
     _currentPage = 1;
-    _autoValidate = false;
+    _autoValidateMode = AutovalidateMode.disabled;
     _hasError = false;
     super.initState();
-  }
-
-  _createFocusNodes() {
-    for (var i = 0; i < focusNodes.length; i++) {
-      FocusNode focusNode = FocusNode();
-      focusNodes[i] = focusNode;
-    }
-  }
-
-  _createTextEditingControllers() {
-    for (var i = 0; i < textEditingControllers.length; i++) {
-      TextEditingController textEditingController = TextEditingController();
-      textEditingControllers[i] = textEditingController;
-    }
   }
 
   @override
@@ -117,7 +101,7 @@ class EnterBackupPhrasePageState extends State<EnterBackupPhrasePage> {
   }
 
   List<Widget> _buildRestoreFormContent(UserProfileBloc userProfileBloc) {
-    List<Widget> restoreFormContent = List();
+    List<Widget> restoreFormContent = [];
     restoreFormContent..add(_buildForm());
     if (_hasError) {
       restoreFormContent
@@ -139,7 +123,7 @@ class EnterBackupPhrasePageState extends State<EnterBackupPhrasePage> {
   TypeAheadFormField<String> _typeAheadFormField(int itemIndex) {
     return TypeAheadFormField(
       textFieldConfiguration: _textFieldConfiguration(itemIndex),
-      autovalidate: _autoValidate,
+      autovalidateMode: _autoValidateMode,
       validator: _onValidate,
       suggestionsCallback: _getSuggestions,
       autoFlipDirection: true,
@@ -162,8 +146,7 @@ class EnterBackupPhrasePageState extends State<EnterBackupPhrasePage> {
       },
       onSuggestionSelected: (suggestion) {
         textEditingControllers[itemIndex].text = suggestion;
-        FocusScope.of(context).requestFocus(
-            (itemIndex < 23) ? focusNodes[itemIndex + 1] : FocusNode());
+        focusNodes[itemIndex + 1].requestFocus();
       },
     );
   }
@@ -190,8 +173,7 @@ class EnterBackupPhrasePageState extends State<EnterBackupPhrasePage> {
       textInputAction: TextInputAction.next,
       onSubmitted: (text) {
         textEditingControllers[itemIndex].text = text;
-        FocusScope.of(context).requestFocus(
-            (itemIndex < 23) ? focusNodes[itemIndex + 1] : FocusNode());
+        focusNodes[itemIndex + 1].requestFocus();
       },
       focusNode: focusNodes[itemIndex],
       decoration: InputDecoration(
@@ -216,16 +198,15 @@ class EnterBackupPhrasePageState extends State<EnterBackupPhrasePage> {
         setState(() {
           _hasError = false;
           if (_formKey.currentState.validate() && !_hasError) {
-            _autoValidate = false;
+            _autoValidateMode = AutovalidateMode.disabled;
             if (_currentPage + 1 == 5) {
               _validateBackupPhrase(userProfileBloc);
             } else {
-              FocusScope.of(context).requestFocus(FocusNode());
               _formKey.currentState.reset();
               _currentPage++;
             }
           } else {
-            _autoValidate = true;
+            _autoValidateMode = AutovalidateMode.always;
           }
         });
       },

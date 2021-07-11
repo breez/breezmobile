@@ -534,7 +534,7 @@ class _DropdownRoutePage<T> extends StatelessWidget {
 ///  * [DropdownMenuItem], the class used to represent the [items].
 ///  * [DropdownButtonHideUnderline], which prevents its descendant dropdown buttons
 ///    from displaying their underlines.
-///  * [RaisedButton], [FlatButton], ordinary buttons that trigger a single action.
+///  * [ElevatedButton], [TextButton], ordinary buttons that trigger a single action.
 ///  * <https://material.io/design/components/menus.html#dropdown-menu>
 class BreezDropdownButton<T> extends StatefulWidget {
   /// Creates a dropdown button.
@@ -1007,7 +1007,7 @@ class DropdownButtonFormField<T> extends FormField<T> {
     this.decoration = const InputDecoration(),
     FormFieldSetter<T> onSaved,
     FormFieldValidator<T> validator,
-    bool autovalidate = false,
+    AutovalidateMode autovalidateMode = AutovalidateMode.disabled,
     Widget disabledHint,
     int elevation = 8,
     TextStyle style,
@@ -1034,7 +1034,7 @@ class DropdownButtonFormField<T> extends FormField<T> {
           onSaved: onSaved,
           initialValue: value,
           validator: validator,
-          autovalidate: autovalidate,
+          autovalidateMode: autovalidateMode,
           builder: (FormFieldState<T> field) {
             final InputDecoration effectiveDecoration =
                 decoration.applyDefaults(

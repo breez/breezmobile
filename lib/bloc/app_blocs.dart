@@ -61,7 +61,7 @@ class AppBlocs {
     PosCatalogBloc posCatalogBloc =
         _registerBloc(PosCatalogBloc(accountBloc.accountStream), blocsByType);
     FastbitcoinsBloc fastbitcoinsBloc =
-        _registerBloc(FastbitcoinsBloc(production: true), blocsByType);
+        _registerBloc(FastbitcoinsBloc(), blocsByType);
 
     return AppBlocs._(
         userProfileBloc,

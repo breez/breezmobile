@@ -9,13 +9,11 @@ import 'package:breez/bloc/account/account_bloc.dart';
 import 'package:breez/bloc/async_actions_handler.dart';
 import 'package:breez/bloc/podcast_payments/actions.dart';
 import 'package:breez/bloc/podcast_payments/model.dart';
-import 'package:breez/bloc/podcast_payments/payment_options.dart';
 import 'package:breez/bloc/user_profile/breez_user_model.dart';
 import 'package:breez/bloc/user_profile/user_profile_bloc.dart';
 import 'package:breez/logger.dart';
 import 'package:breez/services/breezlib/breez_bridge.dart';
 import 'package:breez/services/injector.dart';
-import 'package:rxdart/rxdart.dart';
 import 'package:fixnum/fixnum.dart';
 
 import 'aggregated_payments.dart';
@@ -29,10 +27,6 @@ class PodcastPaymentsBloc with AsyncActionsHandler {
   final Repository repository;
   final AccountBloc accountBloc;
   final UserProfileBloc userProfile;
-
-  final _paymentOptionsController = BehaviorSubject<PaymentOptions>();
-  Stream<PaymentOptions> get paymentOptionsStream =>
-      _paymentOptionsController.stream;
 
   final _paymentEventsController = StreamController<PaymentEvent>.broadcast();
   Stream<PaymentEvent> get paymentEventsStream =>
@@ -48,7 +42,6 @@ class PodcastPaymentsBloc with AsyncActionsHandler {
       this.audioBloc, this.repository) {
     ServiceInjector injector = ServiceInjector();
     _breezLib = injector.breezBridge;
-    _paymentOptionsController.add(PaymentOptions());
     _startTicker(injector);
     registerAsyncHandlers({
       PayBoost: _payBoost,
@@ -121,7 +114,7 @@ class PodcastPaymentsBloc with AsyncActionsHandler {
         final value = await _getLightningPaymentValue(currentPlayedEpisode);
         if (value != null) {
           _payRecipients(currentPlayedEpisode, value.recipients,
-              user.preferredSatsPerMinValue);
+              user.paymentOptions.preferredSatsPerMinValue);
         }
       }
     });
@@ -296,10 +289,6 @@ class PodcastPaymentsBloc with AsyncActionsHandler {
         .map(((pi) => pi.fee))
         .first
         .timeout(Duration(seconds: 1), onTimeout: () => Int64.ZERO);
-  }
-
-  close() {
-    _paymentOptionsController.close();
   }
 
   Map<Int64, String> _getTlv(

@@ -81,10 +81,14 @@ class PayerSessionData {
   final String error;
   final bool cancelled;
   final bool paymentFulfilled;
+  final double unconfirmedChannelsProgress;
 
   PayerSessionData(
       this.userName, this.imageURL, this.status, this.amount, this.description,
-      {this.error, this.paymentFulfilled = false, this.cancelled = false});
+      {this.error,
+      this.paymentFulfilled = false,
+      this.cancelled = false,
+      this.unconfirmedChannelsProgress});
   PayerSessionData.fromJson(Map<dynamic, dynamic> json)
       : status =
             json['status'] == null ? null : PeerStatus.fromJson(json['status']),
@@ -96,7 +100,8 @@ class PayerSessionData {
         imageURL = json["imageURL"],
         error = json["error"],
         cancelled = json["cancelled"] ?? false,
-        paymentFulfilled = json["paymentFulfilled"] ?? false;
+        paymentFulfilled = json["paymentFulfilled"] ?? false,
+        unconfirmedChannelsProgress = null;
 
   PayerSessionData copyWith(
       {String userName,
@@ -105,7 +110,8 @@ class PayerSessionData {
       int amount,
       String description,
       String error,
-      bool paymentFulfilled}) {
+      bool paymentFulfilled,
+      double unconfirmedChannelsProgress}) {
     return PayerSessionData(
         userName ?? this.userName,
         imageURL ?? this.imageURL,
@@ -114,7 +120,9 @@ class PayerSessionData {
         description ?? this.description,
         error: error ?? this.error,
         paymentFulfilled: paymentFulfilled ?? this.paymentFulfilled,
-        cancelled: cancelled ?? this.cancelled);
+        cancelled: cancelled ?? this.cancelled,
+        unconfirmedChannelsProgress:
+            unconfirmedChannelsProgress ?? this.unconfirmedChannelsProgress);
   }
 }
 

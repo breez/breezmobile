@@ -129,8 +129,11 @@ class NetworkPageState extends State<NetworkPage> {
                         Row(
                           mainAxisAlignment: MainAxisAlignment.end,
                           children: <Widget>[
-                            OutlineButton(
-                              borderSide: BorderSide(color: Colors.white),
+                            OutlinedButton(
+                              style: OutlinedButton.styleFrom(
+                                side: BorderSide(color: Colors.white),
+                                primary: Colors.white,
+                              ),
                               child: Text(
                                 "Reset",
                               ),
@@ -158,8 +161,11 @@ class NetworkPageState extends State<NetworkPage> {
                               },
                             ),
                             SizedBox(width: 12.0),
-                            OutlineButton(
-                              borderSide: BorderSide(color: Colors.white),
+                            OutlinedButton(
+                              style: OutlinedButton.styleFrom(
+                                side: BorderSide(color: Colors.white),
+                                primary: Colors.white,
+                              ),
                               child: Text(
                                 "Save",
                               ),

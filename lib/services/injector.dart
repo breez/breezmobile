@@ -11,6 +11,7 @@ import 'package:breez/services/local_auth_service.dart';
 import 'package:breez/services/nfc.dart';
 import 'package:breez/services/notifications.dart';
 import 'package:breez/services/permissions.dart';
+import 'package:http/http.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'background_task.dart';
@@ -33,6 +34,7 @@ class ServiceInjector {
   CurrencyService _currencyService;
   LocalAuthenticationService _localAuthService;
   DownloadTaskManager _downloadManager = DownloadTaskManager();
+  Client _client;
 
   factory ServiceInjector() {
     return _injector != null ? _injector : _singleton;
@@ -90,5 +92,9 @@ class ServiceInjector {
 
   DownloadTaskManager get downloadManager {
     return _downloadManager ??= DownloadTaskManager();
+  }
+
+  Client get client {
+    return _client ??= Client();
   }
 }

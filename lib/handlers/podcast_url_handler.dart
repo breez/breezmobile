@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:anytime/bloc/podcast/audio_bloc.dart';
 import 'package:anytime/bloc/podcast/podcast_bloc.dart';
 import 'package:anytime/bloc/settings/settings_bloc.dart';
@@ -23,7 +25,7 @@ import 'package:uni_links/uni_links.dart';
 class PodcastURLHandler {
   PodcastURLHandler(UserProfileBloc userProfileBloc, BuildContext context,
       Function(Object error) onError) {
-    Rx.merge([getInitialLink().asStream(), getLinksStream()])
+    Rx.merge([getInitialLink().asStream(), linkStream])
         .where((l) => l != null && (l.contains("breez.link/p")))
         .listen((link) async {
       var loaderRoute = createLoaderRoute(context);
@@ -60,33 +62,36 @@ Future handleDeeplink(
       // Load the details of the Podcast specified in the URL
       podcastBloc.load(Feed(podcast: podcast));
       // Wait for the podcast details to load
-      var blocstate = await podcastBloc.details.first;
-      if (blocstate is BlocErrorState) {
-        throw "Failed to load episode. Please check your connection.";
-      } else if (blocstate is BlocPopulatedState) {
-        // Retrieve episode list and play matching episode
-        var episodeList = await podcastBloc.episodes
-            .firstWhere((episodeList) => episodeList.isNotEmpty);
-        var episode = episodeList.firstWhere(
-            (episode) => episode.guid == episodeID,
-            orElse: () => null);
-        if (episode != null) {
-          final audioBloc = Provider.of<AudioBloc>(context, listen: false);
-          audioBloc.play(episode);
-          final settings =
-              Provider.of<SettingsBloc>(context, listen: false).currentSettings;
-          if (settings.autoOpenNowPlaying) {
-            Navigator.pushAndRemoveUntil(
-                context,
-                MaterialPageRoute<void>(
-                    builder: (context) => NowPlaying(),
-                    fullscreenDialog: false),
-                ModalRoute.withName('/'));
+      await podcastBloc.details
+          .firstWhere((blocState) => blocState is! BlocLoadingState)
+          .then((blocState) async {
+        if (blocState is BlocErrorState) {
+          throw "Failed to load episode. Please check your connection.";
+        } else if (blocState is BlocPopulatedState) {
+          // Retrieve episode list and play matching episode
+          var episodeList = await podcastBloc.episodes
+              .firstWhere((episodeList) => episodeList.isNotEmpty);
+          var episode = episodeList.firstWhere(
+              (episode) => episode.guid == episodeID,
+              orElse: () => null);
+          if (episode != null) {
+            final audioBloc = Provider.of<AudioBloc>(context, listen: false);
+            audioBloc.play(episode);
+            final settings = Provider.of<SettingsBloc>(context, listen: false)
+                .currentSettings;
+            if (settings.autoOpenNowPlaying) {
+              Navigator.pushAndRemoveUntil(
+                  context,
+                  MaterialPageRoute<void>(
+                      builder: (context) => NowPlaying(),
+                      fullscreenDialog: false),
+                  ModalRoute.withName('/'));
+            }
+          } else {
+            await _navigateToPodcast(context, podcastURL);
           }
-        } else {
-          await _navigateToPodcast(context, podcastURL);
         }
-      }
+      });
     } catch (e) {
       throw e.toString();
     }

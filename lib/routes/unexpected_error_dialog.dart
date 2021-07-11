@@ -9,11 +9,11 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:share_extend/share_extend.dart';
 
-void listenNoConnection(BuildContext context, AccountBloc accountBloc) {
+void listenUnexpectedError(BuildContext context, AccountBloc accountBloc) {
   accountBloc.lightningDownStream.listen((allowRetry) {
     promptError(
       context,
-      "No Internet Connection",
+      "Unexpected Error",
       RichText(
         text: TextSpan(
             style: Theme.of(context).dialogTheme.contentTextStyle,
@@ -86,7 +86,9 @@ void listenNoConnection(BuildContext context, AccountBloc accountBloc) {
       //     "You can try:\n• Turning off airplane mode\n• Turning on mobile data or Wi-Fi\n• Checking the signal in your area",
       //     style: Theme.of(context).dialogTheme.contentTextStyle),
       okText: allowRetry ? "TRY AGAIN" : "EXIT",
-      okFunc: allowRetry ? () => accountBloc.userActionsSink.add(RestartDaemon()) : () => exit(0),
+      okFunc: allowRetry
+          ? () => accountBloc.userActionsSink.add(RestartDaemon())
+          : () => exit(0),
       optionText: allowRetry ? "EXIT" : null,
       optionFunc: () => exit(0),
       disableBack: true,

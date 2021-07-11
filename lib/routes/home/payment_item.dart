@@ -27,137 +27,143 @@ class PaymentItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.center,
-      children: [
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 8),
-          child: ClipRRect(
-            borderRadius: BorderRadius.circular(5),
-            child: ListTile(
-              tileColor: theme.customData[theme.themeId].paymentListBgColor,
-              leading: Opacity(
-                // when the transaction list is fully expanded
-                // set opacity the avatar of the item that's
-                // no longer visible to transparent
-                opacity: (_scrollController.offset -
-                            (DASHBOARD_MAX_HEIGHT - DASHBOARD_MIN_HEIGHT) -
-                            ((PAYMENT_LIST_ITEM_HEIGHT + BOTTOM_PADDING) *
-                                    (_itemIndex + 1) -
-                                FILTER_MAX_SIZE +
-                                AVATAR_DIAMETER) >
-                        0)
-                    ? 0.0
-                    : 1.0,
-                child: Container(
-                    height: PAYMENT_LIST_ITEM_HEIGHT,
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      shape: BoxShape.circle,
-                      boxShadow: [
-                        BoxShadow(
-                            color: Colors.black.withOpacity(0.1),
-                            offset: Offset(0.5, 0.5),
-                            blurRadius: 5.0),
-                      ],
-                    ),
-                    child: _buildPaymentItemAvatar()),
-              ),
-              key: _firstItem ? firstPaymentItemKey : null,
-              title: Transform.translate(
-                offset: Offset(-8, 0),
-                child: Opacity(
-                  // set title text to transparent when it leaves viewport
+    return Padding(
+      padding: const EdgeInsets.only(bottom: BOTTOM_PADDING, left: 8, right: 8),
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(5),
+        child: Container(
+          color: theme.customData[theme.themeId].paymentListBgColor,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              ListTile(
+                leading: Opacity(
+                  // when the transaction list is fully expanded
+                  // set opacity the avatar of the item that's
+                  // no longer visible to transparent
                   opacity: (_scrollController.offset -
                               (DASHBOARD_MAX_HEIGHT - DASHBOARD_MIN_HEIGHT) -
                               ((PAYMENT_LIST_ITEM_HEIGHT + BOTTOM_PADDING) *
                                       (_itemIndex + 1) -
                                   FILTER_MAX_SIZE +
-                                  AVATAR_DIAMETER / 2) >
+                                  AVATAR_DIAMETER) >
                           0)
                       ? 0.0
                       : 1.0,
-                  child: Text(
-                    _paymentInfo.title.replaceAll("\n", " "),
-                    style: Theme.of(context).accentTextTheme.subtitle2,
-                    overflow: TextOverflow.ellipsis,
+                  child: Container(
+                      height: PAYMENT_LIST_ITEM_HEIGHT,
+                      decoration: _createdWithin(Duration(seconds: 10))
+                          ? BoxDecoration(
+                              color: Colors.white,
+                              shape: BoxShape.circle,
+                              boxShadow: [
+                                BoxShadow(
+                                    color: Colors.black.withOpacity(0.1),
+                                    offset: Offset(0.5, 0.5),
+                                    blurRadius: 5.0),
+                              ],
+                            )
+                          : null,
+                      child: _buildPaymentItemAvatar()),
+                ),
+                key: _firstItem ? firstPaymentItemKey : null,
+                title: Transform.translate(
+                  offset: Offset(-8, 0),
+                  child: Opacity(
+                    // set title text to transparent when it leaves viewport
+                    opacity: (_scrollController.offset -
+                                (DASHBOARD_MAX_HEIGHT - DASHBOARD_MIN_HEIGHT) -
+                                ((PAYMENT_LIST_ITEM_HEIGHT + BOTTOM_PADDING) *
+                                        (_itemIndex + 1) -
+                                    FILTER_MAX_SIZE +
+                                    AVATAR_DIAMETER / 2) >
+                            0)
+                        ? 0.0
+                        : 1.0,
+                    child: Text(
+                      _paymentInfo.title.replaceAll("\n", " "),
+                      style: Theme.of(context).accentTextTheme.subtitle2,
+                      overflow: TextOverflow.ellipsis,
+                    ),
                   ),
                 ),
-              ),
-              subtitle: Transform.translate(
-                offset: Offset(-8, 0),
-                child: Row(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    mainAxisSize: MainAxisSize.min,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: <Widget>[
-                      Text(
-                        BreezDateUtils.formatMonthDate(
-                            DateTime.fromMillisecondsSinceEpoch(
-                                _paymentInfo.creationTimestamp.toInt() * 1000)),
-                        style: Theme.of(context).accentTextTheme.caption,
-                      ),
-                      _paymentInfo.pending
-                          ? Text(" (Pending)",
-                              style: Theme.of(context)
-                                  .accentTextTheme
-                                  .caption
-                                  .copyWith(
-                                      color: theme.customData[theme.themeId]
-                                          .pendingTextColor))
-                          : SizedBox()
-                    ]),
-              ),
-              trailing: Container(
-                height: 44,
-                child: Column(
-                  mainAxisAlignment:
-                      _paymentInfo.fee == 0 || _paymentInfo.pending
-                          ? MainAxisAlignment.center
-                          : MainAxisAlignment.spaceAround,
-                  crossAxisAlignment: CrossAxisAlignment.end,
-                  children: <Widget>[
-                    Opacity(
-                      // set amount text to transparent when it leaves viewport
-                      opacity: (_scrollController.offset -
-                                  (DASHBOARD_MAX_HEIGHT -
-                                      DASHBOARD_MIN_HEIGHT) -
-                                  ((PAYMENT_LIST_ITEM_HEIGHT + BOTTOM_PADDING) *
-                                          (_itemIndex + 1) -
-                                      FILTER_MAX_SIZE +
-                                      AVATAR_DIAMETER / 2) >
-                              0)
-                          ? 0.0
-                          : 1.0,
-                      child: Text(
-                        (_paymentInfo.type == PaymentType.SENT ||
-                                    _paymentInfo.type ==
-                                        PaymentType.WITHDRAWAL ||
-                                    _paymentInfo.type ==
-                                        PaymentType.CLOSED_CHANNEL
-                                ? "- "
-                                : "+ ") +
-                            _paymentInfo.currency.format(_paymentInfo.amount,
-                                includeDisplayName: false),
-                        style: Theme.of(context).accentTextTheme.headline6,
-                      ),
-                    ),
-                    _paymentInfo.fee == 0 || _paymentInfo.pending
-                        ? SizedBox()
-                        : Text(
-                            "FEE " +
-                                _paymentInfo.currency.format(_paymentInfo.fee,
-                                    includeDisplayName: false),
-                            style: Theme.of(context).accentTextTheme.caption,
-                          ),
-                  ],
+                subtitle: Transform.translate(
+                  offset: Offset(-8, 0),
+                  child: Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      mainAxisSize: MainAxisSize.min,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: <Widget>[
+                        Text(
+                          BreezDateUtils.formatTimelineRelative(
+                              DateTime.fromMillisecondsSinceEpoch(
+                                  _paymentInfo.creationTimestamp.toInt() *
+                                      1000)),
+                          style: Theme.of(context).accentTextTheme.caption,
+                        ),
+                        _paymentInfo.pending
+                            ? Text(" (Pending)",
+                                style: Theme.of(context)
+                                    .accentTextTheme
+                                    .caption
+                                    .copyWith(
+                                        color: theme.customData[theme.themeId]
+                                            .pendingTextColor))
+                            : SizedBox()
+                      ]),
                 ),
+                trailing: Container(
+                  height: 44,
+                  child: Column(
+                    mainAxisAlignment:
+                        _paymentInfo.fee == 0 || _paymentInfo.pending
+                            ? MainAxisAlignment.center
+                            : MainAxisAlignment.spaceAround,
+                    crossAxisAlignment: CrossAxisAlignment.end,
+                    children: <Widget>[
+                      Opacity(
+                        // set amount text to transparent when it leaves viewport
+                        opacity: (_scrollController.offset -
+                                    (DASHBOARD_MAX_HEIGHT -
+                                        DASHBOARD_MIN_HEIGHT) -
+                                    ((PAYMENT_LIST_ITEM_HEIGHT +
+                                                BOTTOM_PADDING) *
+                                            (_itemIndex + 1) -
+                                        FILTER_MAX_SIZE +
+                                        AVATAR_DIAMETER / 2) >
+                                0)
+                            ? 0.0
+                            : 1.0,
+                        child: Text(
+                          (_paymentInfo.type == PaymentType.SENT ||
+                                      _paymentInfo.type ==
+                                          PaymentType.WITHDRAWAL ||
+                                      _paymentInfo.type ==
+                                          PaymentType.CLOSED_CHANNEL
+                                  ? "- "
+                                  : "+ ") +
+                              _paymentInfo.currency.format(_paymentInfo.amount,
+                                  includeDisplayName: false),
+                          style: Theme.of(context).accentTextTheme.headline6,
+                        ),
+                      ),
+                      _paymentInfo.fee == 0 || _paymentInfo.pending
+                          ? SizedBox()
+                          : Text(
+                              "FEE " +
+                                  _paymentInfo.currency.format(_paymentInfo.fee,
+                                      includeDisplayName: false),
+                              style: Theme.of(context).accentTextTheme.caption,
+                            ),
+                    ],
+                  ),
+                ),
+                onTap: () => showPaymentDetailsDialog(context, _paymentInfo),
               ),
-              onTap: () => showPaymentDetailsDialog(context, _paymentInfo),
-            ),
+            ],
           ),
         ),
-      ],
+      ),
     );
   }
 

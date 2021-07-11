@@ -32,7 +32,7 @@ Future<Null> promptError(BuildContext context, String title, Widget body,
             ),
             actions: <Widget>[
               optionText != null
-                  ? FlatButton(
+                  ? TextButton(
                       child: Text(
                         optionText,
                         style: TextStyle(
@@ -50,8 +50,8 @@ Future<Null> promptError(BuildContext context, String title, Widget body,
                         optionFunc();
                       },
                     )
-                  : null,
-              FlatButton(
+                  : Container(),
+              TextButton(
                 child: Text(okText,
                     style: Theme.of(context).primaryTextTheme.button),
                 onPressed: () {
@@ -86,7 +86,6 @@ Future<bool> promptAreYouSure(BuildContext context, String title, Widget body,
   return showDialog<bool>(
       useRootNavigator: false,
       context: context,
-      barrierDismissible: false, // user must tap button!
       builder: (BuildContext context) {
         return AlertDialog(
           contentPadding: contentPadding,
@@ -95,14 +94,14 @@ Future<bool> promptAreYouSure(BuildContext context, String title, Widget body,
             child: body,
           ),
           actions: <Widget>[
-            FlatButton(
+            TextButton(
               child: Text(cancelText,
                   style: Theme.of(context).primaryTextTheme.button),
               onPressed: () {
                 Navigator.of(context).pop(false);
               },
             ),
-            FlatButton(
+            TextButton(
               child: Text(okText,
                   style: Theme.of(context).primaryTextTheme.button),
               onPressed: () {

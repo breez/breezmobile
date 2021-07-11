@@ -84,7 +84,8 @@ class GetRefundPage extends StatelessWidget {
   onRefund(BuildContext context, AccountModel account, RefundableAddress item) {
     String originalTransaction;
     if (item.confirmedTransactionIds.length > 0) {
-      originalTransaction = item.confirmedTransactionIds[0];
+      originalTransaction =
+          item.confirmedTransactionIds[item.confirmedTransactionIds.length - 1];
     }
     Navigator.push(
         context,

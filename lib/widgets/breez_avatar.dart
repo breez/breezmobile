@@ -4,9 +4,9 @@ import 'dart:convert' show UriData;
 import 'package:breez/bloc/user_profile/default_profile_generator.dart'
     as generator;
 import 'package:breez/theme_data.dart' as theme;
+import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:optimized_cached_image/optimized_cached_image.dart';
 
 final _breezAvatarColors = {
   "salmon": Color(0xFFFA8072),
@@ -128,9 +128,13 @@ class _FileImageAvatar extends StatelessWidget {
   Widget build(BuildContext context) {
     return CircleAvatar(
       radius: radius,
-      child: Image(
-        image: FileImage(
-          File(filePath),
+      backgroundColor: Colors.yellow,
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(radius),
+        child: Image(
+          image: FileImage(
+            File(filePath),
+          ),
         ),
       ),
     );
@@ -147,11 +151,9 @@ class _NetworkImageAvatar extends StatelessWidget {
   Widget build(BuildContext context) {
     return CircleAvatar(
       radius: radius,
-      child: ClipOval(
-        child: OptimizedCacheImage(
-          imageUrl: avatarURL,
-          useScaleCacheManager: true,
-        ),
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(radius),
+        child: ExtendedImage.network(avatarURL),
       ),
     );
   }
@@ -184,13 +186,17 @@ class _VendorAvatar extends StatelessWidget {
 
   Widget _fastbitcoinsAvatar() {
     return CircleAvatar(
-        backgroundColor: theme.fastbitcoins.iconBgColor,
-        radius: radius,
+      backgroundColor: theme.fastbitcoins.iconBgColor,
+      radius: radius,
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(radius),
         child: ImageIcon(
           AssetImage(avatarURL),
           color: theme.fastbitcoins.iconFgColor,
           size: 0.6 * radius * 2,
-        ));
+        ),
+      ),
+    );
   }
 
   Widget _vendorAvatar() {

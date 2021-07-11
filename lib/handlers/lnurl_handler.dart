@@ -1,6 +1,7 @@
 import 'package:breez/bloc/lnurl/lnurl_actions.dart';
 import 'package:breez/bloc/lnurl/lnurl_bloc.dart';
 import 'package:breez/bloc/lnurl/lnurl_model.dart';
+import 'package:breez/routes/podcast/theme.dart';
 import 'package:breez/routes/sync_progress_dialog.dart';
 import 'package:breez/widgets/error_dialog.dart';
 import 'package:breez/widgets/loader.dart';
@@ -51,7 +52,8 @@ class LNURLHandler {
       });
 
       Navigator.of(context).push(FadeInRoute(
-        builder: (_) => CreateInvoicePage(lnurlWithdraw: response),
+        builder: (_) =>
+            withBreezTheme(context, CreateInvoicePage(lnurlWithdraw: response)),
       ));
     } else if (response is AuthFetchResponse) {
       Navigator.popUntil(context, (route) {
@@ -114,7 +116,7 @@ class LNURLHandler {
               return AlertDialog(
                 content: SyncProgressDialog(closeOnSync: true),
                 actions: <Widget>[
-                  FlatButton(
+                  TextButton(
                     child: Text("CANCEL",
                         style: Theme.of(context).primaryTextTheme.button),
                     onPressed: () {

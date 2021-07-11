@@ -93,12 +93,12 @@ class _BetaWarningDialogState extends State<BetaWarningDialog> {
             children: _getContent(),
           ),
           actions: [
-            FlatButton(
+            TextButton(
               onPressed: () => exit(0),
               child: Text("EXIT",
                   style: Theme.of(context).primaryTextTheme.button),
             ),
-            FlatButton(
+            TextButton(
               onPressed: (() {
                 if (_isUnderstood) {
                   Navigator.of(context).pop(_isUnderstood);

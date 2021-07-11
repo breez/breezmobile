@@ -56,6 +56,7 @@ public class Breez implements MethodChannel.MethodCallHandler, StreamHandler,
     private EventChannel _eventChannel;
     private ActivityPluginBinding binding;
     private FlutterPluginBinding flutterPluginBinding;
+    private String _backupProvider = "gdrive";
 
     @Override
     public void onAttachedToEngine(@NonNull FlutterPluginBinding flutterPluginBinding) {
@@ -119,7 +120,7 @@ public class Breez implements MethodChannel.MethodCallHandler, StreamHandler,
 
     @Override
     public String backupProviderName() {
-        return "gdrive";
+        return _backupProvider;
     }
 
     @Override
@@ -128,7 +129,7 @@ public class Breez implements MethodChannel.MethodCallHandler, StreamHandler,
     }
 
     @Override
-    public void onMethodCall(MethodCall call, MethodChannel.Result result) {
+    public void onMethodCall(MethodCall call, MethodChannel.Result result) {        
         if (call.method.equals("init")) {
             _executor.execute(() -> {
                 init(call, result);
@@ -157,6 +158,17 @@ public class Breez implements MethodChannel.MethodCallHandler, StreamHandler,
         } else if (call.method.equals("setBackupEncryptionKey")) {
             _executor.execute(() -> {
                 setBackupEncryptionKey(call, result);
+            });
+        } else if (call.method.equals("setBackupProvider")) {
+            _backupProvider = call.argument("provider");
+            String authData = call.argument("authData");
+            _executor.execute(() -> {
+                try {
+                    Bindings.setBackupProvider(_backupProvider, authData);
+                    success(result,true);
+                } catch (Exception e) {
+                    fail(result, "ResultError", e.getMessage(), "Failed to invoke setBackupProvider");
+                }
             });
         } else {
             _executor.execute(new BreezTask(call, result));
@@ -212,6 +224,10 @@ public class Breez implements MethodChannel.MethodCallHandler, StreamHandler,
     }
 
     private void signIn(MethodCall call, MethodChannel.Result result){
+        if (!_backupProvider.equals("gdrive")) {
+            success(result,true);
+            return;
+        }
         try {
             Boolean force = call.argument("force");
             if (force != null && force.booleanValue()) {
@@ -225,6 +241,10 @@ public class Breez implements MethodChannel.MethodCallHandler, StreamHandler,
     }
 
     private void signOut(MethodCall call, MethodChannel.Result result){
+        if (!_backupProvider.equals("gdrive")) {
+            success(result,true);
+            return;
+        }
         try {
             m_authenticator.signOut();
             success(result,true);

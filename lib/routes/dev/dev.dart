@@ -27,7 +27,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_downloader/flutter_downloader.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:share_extend/share_extend.dart';
-//import 'package:shared_preferences/shared_preferences.dart';
 
 import 'default_commands.dart';
 
@@ -45,7 +44,7 @@ class Choice {
 
 final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
-class DevView extends StatefulWidget {
+class DevView extends StatefulWidget { // ignore: must_be_immutable
   BreezBridge _breezBridge;
   Permissions _permissionsService;
 
@@ -278,22 +277,19 @@ class DevViewState extends State<DevView> {
                                                                     .device
                                                                     .setClipboardText(
                                                                         _cliText);
-                                                                _scaffoldKey
-                                                                    .currentState
-                                                                    .showSnackBar(
-                                                                        SnackBar(
+                                                                ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                                                                   content: Text(
                                                                     'Copied to clipboard.',
                                                                     style: theme
                                                                         .snackBarStyle,
                                                                   ),
                                                                   backgroundColor:
-                                                                      theme
-                                                                          .snackBarBackgroundColor,
+                                                                  theme
+                                                                      .snackBarBackgroundColor,
                                                                   duration:
-                                                                      Duration(
-                                                                          seconds:
-                                                                              2),
+                                                                  Duration(
+                                                                      seconds:
+                                                                      2),
                                                                 ));
                                                               },
                                                             ),
@@ -334,7 +330,7 @@ class DevViewState extends State<DevView> {
       AddFundsSettings addFundsSettings,
       UserProfileBloc userBloc,
       BreezUserModel userModel) {
-    List<Choice> choices = List<Choice>();
+    List<Choice> choices = <Choice>[];
     choices.addAll([
       Choice(title: 'Share Logs', icon: Icons.share, function: shareLog),
       /*
@@ -464,7 +460,6 @@ class DevViewState extends State<DevView> {
         icon: Icons.phone_android,
         function: () {
           UserProfileBloc bloc = AppBlocsProvider.of<UserProfileBloc>(context);
-          bloc.userActionsSink.add(SetSeenPodcastTutorial(false));
           bloc.userActionsSink.add(SetSeenPaymentStripTutorial(false));
         }));
     return choices;

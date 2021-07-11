@@ -1,5 +1,4 @@
 import 'dart:convert';
-import 'dart:ffi';
 import 'dart:io';
 
 import 'package:auto_size_text/auto_size_text.dart';
@@ -330,7 +329,9 @@ class ShareablePaymentRow extends StatelessWidget {
   Widget build(BuildContext context) {
     final _expansionTileTheme = Theme.of(context).copyWith(
         unselectedWidgetColor: Theme.of(context).primaryTextTheme.button.color,
-        accentColor: Theme.of(context).primaryTextTheme.button.color,
+        colorScheme: ColorScheme.dark(
+          secondary: Theme.of(context).primaryTextTheme.button.color,
+        ),
         dividerColor: Theme.of(context).backgroundColor);
     return Theme(
       data: _expansionTileTheme,
@@ -506,8 +507,8 @@ class ClosedChannelPaymentDetailsState
   }
 
   Future<int> _getTXConfirmationHeight(String chanPoint) async {
-    String txUrl = "https://blockstream.info/api/tx/${chanPoint.split(":")[0]}";
-    var response = await http.get(txUrl);
+    Uri txUri = Uri.https("blockstream.info", "api/tx/${chanPoint.split(":")[0]}");
+    var response = await http.get(txUri);
     if (response.statusCode == 200) {
       Map<String, dynamic> userData = json.decode(response.body);
       var status = userData["status"];
@@ -584,7 +585,7 @@ class ClosedChannelPaymentDetailsState
                 children: [
                     Padding(
                       padding: EdgeInsets.only(top: 20.0),
-                      child: FlatButton(
+                      child: TextButton(
                         onPressed: () {
                           _onResetChainInfoPressed().then((_) {
                             _promptForRestart();
@@ -678,7 +679,9 @@ class _Destination extends StatelessWidget {
   Widget build(BuildContext context) {
     final _expansionTileTheme = Theme.of(context).copyWith(
         unselectedWidgetColor: Theme.of(context).primaryTextTheme.button.color,
-        accentColor: Theme.of(context).primaryTextTheme.button.color,
+        colorScheme: ColorScheme.dark(
+          secondary: Theme.of(context).primaryTextTheme.button.color,
+        ),
         dividerColor: Theme.of(context).backgroundColor);
     return Theme(
       data: _expansionTileTheme,

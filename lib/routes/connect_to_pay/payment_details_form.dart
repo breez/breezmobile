@@ -8,6 +8,7 @@ import 'package:breez/widgets/keyboard_done_action.dart';
 import 'package:breez/widgets/single_button_bottom_bar.dart';
 import 'package:fixnum/fixnum.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 class PaymentDetailsForm extends StatefulWidget {
   final AccountModel _account;
@@ -78,7 +79,7 @@ class _PaymentDetailsFormState extends State<PaymentDetailsForm> {
                         textInputAction: TextInputAction.done,
                         maxLines: null,
                         maxLength: 90,
-                        maxLengthEnforced: true,
+                        maxLengthEnforcement: MaxLengthEnforcement.enforced,
                         decoration: InputDecoration(
                           labelText: "Note (optional)",
                         ),

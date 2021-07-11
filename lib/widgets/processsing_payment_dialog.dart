@@ -2,9 +2,11 @@ import 'dart:async';
 
 import 'package:breez/bloc/account/account_bloc.dart';
 import 'package:breez/bloc/account/account_model.dart';
+import 'package:breez/bloc/channels_status_poller.dart';
 import 'package:breez/theme_data.dart' as theme;
 import 'package:breez/widgets/loading_animated_text.dart';
 import 'package:breez/widgets/payment_request_dialog.dart';
+import 'package:breez/widgets/sync_loader.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:rxdart/rxdart.dart';
@@ -42,43 +44,71 @@ class ProcessingPaymentDialogState extends State<ProcessingPaymentDialog>
   final GlobalKey _dialogKey = GlobalKey();
   StreamSubscription<PaymentInfo> _pendingPaymentSubscription;
   ModalRoute _currentRoute;
+  double channelsSyncProgress;
+  final Completer synchronizedCompleter = Completer<bool>();
+  UnconfirmedChannelsStatusPoller _channelsStatusPoller;
 
   bool _isInit = false;
 
   @override
   void initState() {
     super.initState();
+    _channelsStatusPoller = UnconfirmedChannelsStatusPoller(
+        widget.accountBloc.userActionsSink, (progress) {
+      setState(() {
+        channelsSyncProgress = progress;
+      });
+      if (progress == 1.0) {
+        _channelsStatusPoller?.dispose();
+        synchronizedCompleter.complete(true);
+      }
+    });
+    _channelsStatusPoller.start();
   }
 
   void didChangeDependencies() {
     if (!_isInit) {
-      _payAncClose();
-      _currentRoute = ModalRoute.of(context);
-      controller = AnimationController(
-          vsync: this, duration: Duration(milliseconds: 500));
-      colorAnimation = ColorTween(
-        begin: Theme.of(context).canvasColor,
-        end: Theme.of(context).backgroundColor,
-      ).animate(controller)
-        ..addListener(() {
-          setState(() {});
-        });
-      borderAnimation = Tween<double>(begin: 0.0, end: 12.0)
-          .animate(CurvedAnimation(parent: controller, curve: Curves.ease));
-      opacityAnimation = Tween<double>(begin: 0.0, end: 1.0)
-          .animate(CurvedAnimation(parent: controller, curve: Curves.ease));
-      controller.value = 1.0;
-      controller.addStatusListener((status) {
-        if (status == AnimationStatus.dismissed) {
-          if (widget.popOnCompletion) {
-            Navigator.of(context).removeRoute(_currentRoute);
-          }
-          widget._onStateChange(PaymentRequestState.PAYMENT_COMPLETED);
+      synchronizedCompleter.future.then((value) {
+        if (value == true) {
+          _payAncClose();
+          _currentRoute = ModalRoute.of(context);
+          controller = AnimationController(
+              vsync: this, duration: Duration(milliseconds: 500));
+          colorAnimation = ColorTween(
+            begin: Theme.of(context).canvasColor,
+            end: Theme.of(context).backgroundColor,
+          ).animate(controller)
+            ..addListener(() {
+              setState(() {});
+            });
+          borderAnimation = Tween<double>(begin: 0.0, end: 12.0)
+              .animate(CurvedAnimation(parent: controller, curve: Curves.ease));
+          opacityAnimation = Tween<double>(begin: 0.0, end: 1.0)
+              .animate(CurvedAnimation(parent: controller, curve: Curves.ease));
+          controller.value = 1.0;
+          controller.addStatusListener((status) {
+            if (status == AnimationStatus.dismissed) {
+              if (widget.popOnCompletion) {
+                Navigator.of(context).removeRoute(_currentRoute);
+              }
+              widget._onStateChange(PaymentRequestState.PAYMENT_COMPLETED);
+            }
+          });
         }
+      }).catchError((err) {
+        _closeDialog();
+        return;
       });
       _isInit = true;
     }
     super.didChangeDependencies();
+  }
+
+  _closeDialog() {
+    if (widget.popOnCompletion) {
+      Navigator.of(context).removeRoute(_currentRoute);
+    }
+    widget._onStateChange(PaymentRequestState.USER_CANCELLED);
   }
 
   _payAncClose() {
@@ -135,6 +165,7 @@ class ProcessingPaymentDialogState extends State<ProcessingPaymentDialog>
 
   @override
   void dispose() {
+    _channelsStatusPoller?.dispose();
     _pendingPaymentSubscription?.cancel();
     controller?.dispose();
     super.dispose();
@@ -142,7 +173,23 @@ class ProcessingPaymentDialogState extends State<ProcessingPaymentDialog>
 
   @override
   Widget build(BuildContext context) {
-    return _animating ? _createAnimatedContent() : _createContentDialog();
+    if (channelsSyncProgress == null || synchronizedCompleter.isCompleted) {
+      return _animating ? _createAnimatedContent() : _createContentDialog();
+    }
+    return AlertDialog(
+      content: SyncProgressLoader(
+          value: channelsSyncProgress ?? 0,
+          title: "Synchronizing to the network"),
+      actions: <Widget>[
+        FlatButton(
+          onPressed: (() {
+            _closeDialog();
+          }),
+          child:
+              Text("CLOSE", style: Theme.of(context).primaryTextTheme.button),
+        )
+      ],
+    );
   }
 
   List<Widget> _buildProcessingPaymentDialog() {
@@ -240,6 +287,24 @@ class ProcessingPaymentDialogState extends State<ProcessingPaymentDialog>
           ),
         ),
       ),
+    );
+  }
+}
+
+class ChanelsSyncLoader extends StatelessWidget {
+  final double progress;
+  final Function onClose;
+
+  const ChanelsSyncLoader({Key key, this.progress, this.onClose})
+      : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return TransparentRouteLoader(
+      message: "Breez is synchronizing your channels",
+      value: progress,
+      opacity: 0.9,
+      onClose: onClose,
     );
   }
 }

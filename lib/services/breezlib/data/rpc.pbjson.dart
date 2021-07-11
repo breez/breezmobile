@@ -1,8 +1,8 @@
 ///
 //  Generated code. Do not modify.
-//  source: messages.proto
+//  source: rpc.proto
 //
-// @dart = 2.12
+// @dart = 2.7
 // ignore_for_file: annotate_overrides,camel_case_types,unnecessary_const,non_constant_identifier_names,library_prefixes,unused_import,unused_shown_name,return_of_invalid_type,unnecessary_this,prefer_final_fields,deprecated_member_use_from_same_package
 
 import 'dart:core' as $core;
@@ -297,6 +297,28 @@ const SyncLSPChannelsResponse$json = const {
 
 /// Descriptor for `SyncLSPChannelsResponse`. Decode as a `google.protobuf.DescriptorProto`.
 final $typed_data.Uint8List syncLSPChannelsResponseDescriptor = $convert.base64Decode('ChdTeW5jTFNQQ2hhbm5lbHNSZXNwb25zZRIgCgtoYXNNaXNtYXRjaBgBIAEoCFILaGFzTWlzbWF0Y2g=');
+@$core.Deprecated('Use unconfirmedChannelsStatusDescriptor instead')
+const UnconfirmedChannelsStatus$json = const {
+  '1': 'UnconfirmedChannelsStatus',
+  '2': const [
+    const {'1': 'statuses', '3': 1, '4': 3, '5': 11, '6': '.data.UnconfirmedChannelStatus', '10': 'statuses'},
+  ],
+};
+
+/// Descriptor for `UnconfirmedChannelsStatus`. Decode as a `google.protobuf.DescriptorProto`.
+final $typed_data.Uint8List unconfirmedChannelsStatusDescriptor = $convert.base64Decode('ChlVbmNvbmZpcm1lZENoYW5uZWxzU3RhdHVzEjoKCHN0YXR1c2VzGAEgAygLMh4uZGF0YS5VbmNvbmZpcm1lZENoYW5uZWxTdGF0dXNSCHN0YXR1c2Vz');
+@$core.Deprecated('Use unconfirmedChannelStatusDescriptor instead')
+const UnconfirmedChannelStatus$json = const {
+  '1': 'UnconfirmedChannelStatus',
+  '2': const [
+    const {'1': 'channelPoint', '3': 1, '4': 1, '5': 9, '10': 'channelPoint'},
+    const {'1': 'heightHint', '3': 2, '4': 1, '5': 3, '10': 'heightHint'},
+    const {'1': 'lspConfirmedHeight', '3': 3, '4': 1, '5': 3, '10': 'lspConfirmedHeight'},
+  ],
+};
+
+/// Descriptor for `UnconfirmedChannelStatus`. Decode as a `google.protobuf.DescriptorProto`.
+final $typed_data.Uint8List unconfirmedChannelStatusDescriptor = $convert.base64Decode('ChhVbmNvbmZpcm1lZENoYW5uZWxTdGF0dXMSIgoMY2hhbm5lbFBvaW50GAEgASgJUgxjaGFubmVsUG9pbnQSHgoKaGVpZ2h0SGludBgCIAEoA1IKaGVpZ2h0SGludBIuChJsc3BDb25maXJtZWRIZWlnaHQYAyABKANSEmxzcENvbmZpcm1lZEhlaWdodA==');
 @$core.Deprecated('Use checkLSPClosedChannelMismatchRequestDescriptor instead')
 const CheckLSPClosedChannelMismatchRequest$json = const {
   '1': 'CheckLSPClosedChannelMismatchRequest',
@@ -632,11 +654,12 @@ const LSPInformation$json = const {
     const {'1': 'channel_fee_permyriad', '3': 12, '4': 1, '5': 3, '10': 'channelFeePermyriad'},
     const {'1': 'lsp_pubkey', '3': 13, '4': 1, '5': 12, '10': 'lspPubkey'},
     const {'1': 'max_inactive_duration', '3': 14, '4': 1, '5': 3, '10': 'maxInactiveDuration'},
+    const {'1': 'channel_minimum_fee_msat', '3': 15, '4': 1, '5': 3, '10': 'channelMinimumFeeMsat'},
   ],
 };
 
 /// Descriptor for `LSPInformation`. Decode as a `google.protobuf.DescriptorProto`.
-final $typed_data.Uint8List lSPInformationDescriptor = $convert.base64Decode('Cg5MU1BJbmZvcm1hdGlvbhIOCgJpZBgBIAEoCVICaWQSEgoEbmFtZRgCIAEoCVIEbmFtZRIdCgp3aWRnZXRfdXJsGAMgASgJUgl3aWRnZXRVcmwSFgoGcHVia2V5GAQgASgJUgZwdWJrZXkSEgoEaG9zdBgFIAEoCVIEaG9zdBIpChBjaGFubmVsX2NhcGFjaXR5GAYgASgDUg9jaGFubmVsQ2FwYWNpdHkSHwoLdGFyZ2V0X2NvbmYYByABKAVSCnRhcmdldENvbmYSIgoNYmFzZV9mZWVfbXNhdBgIIAEoA1ILYmFzZUZlZU1zYXQSGQoIZmVlX3JhdGUYCSABKAFSB2ZlZVJhdGUSJgoPdGltZV9sb2NrX2RlbHRhGAogASgNUg10aW1lTG9ja0RlbHRhEiIKDW1pbl9odGxjX21zYXQYCyABKANSC21pbkh0bGNNc2F0EjIKFWNoYW5uZWxfZmVlX3Blcm15cmlhZBgMIAEoA1ITY2hhbm5lbEZlZVBlcm15cmlhZBIdCgpsc3BfcHVia2V5GA0gASgMUglsc3BQdWJrZXkSMgoVbWF4X2luYWN0aXZlX2R1cmF0aW9uGA4gASgDUhNtYXhJbmFjdGl2ZUR1cmF0aW9u');
+final $typed_data.Uint8List lSPInformationDescriptor = $convert.base64Decode('Cg5MU1BJbmZvcm1hdGlvbhIOCgJpZBgBIAEoCVICaWQSEgoEbmFtZRgCIAEoCVIEbmFtZRIdCgp3aWRnZXRfdXJsGAMgASgJUgl3aWRnZXRVcmwSFgoGcHVia2V5GAQgASgJUgZwdWJrZXkSEgoEaG9zdBgFIAEoCVIEaG9zdBIpChBjaGFubmVsX2NhcGFjaXR5GAYgASgDUg9jaGFubmVsQ2FwYWNpdHkSHwoLdGFyZ2V0X2NvbmYYByABKAVSCnRhcmdldENvbmYSIgoNYmFzZV9mZWVfbXNhdBgIIAEoA1ILYmFzZUZlZU1zYXQSGQoIZmVlX3JhdGUYCSABKAFSB2ZlZVJhdGUSJgoPdGltZV9sb2NrX2RlbHRhGAogASgNUg10aW1lTG9ja0RlbHRhEiIKDW1pbl9odGxjX21zYXQYCyABKANSC21pbkh0bGNNc2F0EjIKFWNoYW5uZWxfZmVlX3Blcm15cmlhZBgMIAEoA1ITY2hhbm5lbEZlZVBlcm15cmlhZBIdCgpsc3BfcHVia2V5GA0gASgMUglsc3BQdWJrZXkSMgoVbWF4X2luYWN0aXZlX2R1cmF0aW9uGA4gASgDUhNtYXhJbmFjdGl2ZUR1cmF0aW9uEjcKGGNoYW5uZWxfbWluaW11bV9mZWVfbXNhdBgPIAEoA1IVY2hhbm5lbE1pbmltdW1GZWVNc2F0');
 @$core.Deprecated('Use lSPListRequestDescriptor instead')
 const LSPListRequest$json = const {
   '1': 'LSPListRequest',
@@ -710,7 +733,6 @@ const LNUrlResponse$json = const {
     const {'1': 'withdraw', '3': 1, '4': 1, '5': 11, '6': '.data.LNUrlWithdraw', '9': 0, '10': 'withdraw'},
     const {'1': 'channel', '3': 2, '4': 1, '5': 11, '6': '.data.LNURLChannel', '9': 0, '10': 'channel'},
     const {'1': 'auth', '3': 3, '4': 1, '5': 11, '6': '.data.LNURLAuth', '9': 0, '10': 'auth'},
-    const {'1': 'payResponse1', '3': 4, '4': 1, '5': 11, '6': '.data.LNURLPayResponse1', '9': 0, '10': 'payResponse1'},
   ],
   '8': const [
     const {'1': 'action'},
@@ -718,7 +740,7 @@ const LNUrlResponse$json = const {
 };
 
 /// Descriptor for `LNUrlResponse`. Decode as a `google.protobuf.DescriptorProto`.
-final $typed_data.Uint8List lNUrlResponseDescriptor = $convert.base64Decode('Cg1MTlVybFJlc3BvbnNlEjEKCHdpdGhkcmF3GAEgASgLMhMuZGF0YS5MTlVybFdpdGhkcmF3SABSCHdpdGhkcmF3Ei4KB2NoYW5uZWwYAiABKAsyEi5kYXRhLkxOVVJMQ2hhbm5lbEgAUgdjaGFubmVsEiUKBGF1dGgYAyABKAsyDy5kYXRhLkxOVVJMQXV0aEgAUgRhdXRoEj0KDHBheVJlc3BvbnNlMRgEIAEoCzIXLmRhdGEuTE5VUkxQYXlSZXNwb25zZTFIAFIMcGF5UmVzcG9uc2UxQggKBmFjdGlvbg==');
+final $typed_data.Uint8List lNUrlResponseDescriptor = $convert.base64Decode('Cg1MTlVybFJlc3BvbnNlEjEKCHdpdGhkcmF3GAEgASgLMhMuZGF0YS5MTlVybFdpdGhkcmF3SABSCHdpdGhkcmF3Ei4KB2NoYW5uZWwYAiABKAsyEi5kYXRhLkxOVVJMQ2hhbm5lbEgAUgdjaGFubmVsEiUKBGF1dGgYAyABKAsyDy5kYXRhLkxOVVJMQXV0aEgAUgRhdXRoQggKBmFjdGlvbg==');
 @$core.Deprecated('Use lNUrlWithdrawDescriptor instead')
 const LNUrlWithdraw$json = const {
   '1': 'LNUrlWithdraw',
@@ -757,75 +779,6 @@ const LNURLAuth$json = const {
 
 /// Descriptor for `LNURLAuth`. Decode as a `google.protobuf.DescriptorProto`.
 final $typed_data.Uint8List lNURLAuthDescriptor = $convert.base64Decode('CglMTlVSTEF1dGgSEAoDdGFnGAEgASgJUgN0YWcSDgoCazEYAiABKAlSAmsxEhoKCGNhbGxiYWNrGAMgASgJUghjYWxsYmFjaxISCgRob3N0GAQgASgJUgRob3N0EhAKA2p3dBgFIAEoCFIDand0');
-@$core.Deprecated('Use lNUrlPayMetadataDescriptor instead')
-const LNUrlPayMetadata$json = const {
-  '1': 'LNUrlPayMetadata',
-  '2': const [
-    const {'1': 'entry', '3': 1, '4': 3, '5': 9, '10': 'entry'},
-  ],
-};
-
-/// Descriptor for `LNUrlPayMetadata`. Decode as a `google.protobuf.DescriptorProto`.
-final $typed_data.Uint8List lNUrlPayMetadataDescriptor = $convert.base64Decode('ChBMTlVybFBheU1ldGFkYXRhEhQKBWVudHJ5GAEgAygJUgVlbnRyeQ==');
-@$core.Deprecated('Use lNURLPayResponse1Descriptor instead')
-const LNURLPayResponse1$json = const {
-  '1': 'LNURLPayResponse1',
-  '2': const [
-    const {'1': 'callback', '3': 1, '4': 1, '5': 9, '10': 'callback'},
-    const {'1': 'min_amount', '3': 2, '4': 1, '5': 3, '10': 'minAmount'},
-    const {'1': 'max_amount', '3': 3, '4': 1, '5': 3, '10': 'maxAmount'},
-    const {'1': 'metadata', '3': 4, '4': 3, '5': 11, '6': '.data.LNUrlPayMetadata', '10': 'metadata'},
-    const {'1': 'tag', '3': 5, '4': 1, '5': 9, '10': 'tag'},
-    const {'1': 'amount', '3': 6, '4': 1, '5': 4, '10': 'amount'},
-    const {'1': 'from_nodes', '3': 7, '4': 1, '5': 9, '10': 'fromNodes'},
-    const {'1': 'comment', '3': 8, '4': 1, '5': 9, '10': 'comment'},
-    const {'1': 'host', '3': 9, '4': 1, '5': 9, '10': 'host'},
-  ],
-};
-
-/// Descriptor for `LNURLPayResponse1`. Decode as a `google.protobuf.DescriptorProto`.
-final $typed_data.Uint8List lNURLPayResponse1Descriptor = $convert.base64Decode('ChFMTlVSTFBheVJlc3BvbnNlMRIaCghjYWxsYmFjaxgBIAEoCVIIY2FsbGJhY2sSHQoKbWluX2Ftb3VudBgCIAEoA1IJbWluQW1vdW50Eh0KCm1heF9hbW91bnQYAyABKANSCW1heEFtb3VudBIyCghtZXRhZGF0YRgEIAMoCzIWLmRhdGEuTE5VcmxQYXlNZXRhZGF0YVIIbWV0YWRhdGESEAoDdGFnGAUgASgJUgN0YWcSFgoGYW1vdW50GAYgASgEUgZhbW91bnQSHQoKZnJvbV9ub2RlcxgHIAEoCVIJZnJvbU5vZGVzEhgKB2NvbW1lbnQYCCABKAlSB2NvbW1lbnQSEgoEaG9zdBgJIAEoCVIEaG9zdA==');
-@$core.Deprecated('Use successActionDescriptor instead')
-const SuccessAction$json = const {
-  '1': 'SuccessAction',
-  '2': const [
-    const {'1': 'tag', '3': 1, '4': 1, '5': 9, '10': 'tag'},
-    const {'1': 'description', '3': 2, '4': 1, '5': 9, '10': 'description'},
-    const {'1': 'url', '3': 3, '4': 1, '5': 9, '10': 'url'},
-    const {'1': 'message', '3': 4, '4': 1, '5': 9, '10': 'message'},
-    const {'1': 'ciphertext', '3': 5, '4': 1, '5': 9, '10': 'ciphertext'},
-    const {'1': 'iv', '3': 6, '4': 1, '5': 9, '10': 'iv'},
-  ],
-};
-
-/// Descriptor for `SuccessAction`. Decode as a `google.protobuf.DescriptorProto`.
-final $typed_data.Uint8List successActionDescriptor = $convert.base64Decode('Cg1TdWNjZXNzQWN0aW9uEhAKA3RhZxgBIAEoCVIDdGFnEiAKC2Rlc2NyaXB0aW9uGAIgASgJUgtkZXNjcmlwdGlvbhIQCgN1cmwYAyABKAlSA3VybBIYCgdtZXNzYWdlGAQgASgJUgdtZXNzYWdlEh4KCmNpcGhlcnRleHQYBSABKAlSCmNpcGhlcnRleHQSDgoCaXYYBiABKAlSAml2');
-@$core.Deprecated('Use lNUrlPayInfoDescriptor instead')
-const LNUrlPayInfo$json = const {
-  '1': 'LNUrlPayInfo',
-  '2': const [
-    const {'1': 'paymentHash', '3': 1, '4': 1, '5': 9, '10': 'paymentHash'},
-    const {'1': 'invoice', '3': 2, '4': 1, '5': 9, '10': 'invoice'},
-    const {'1': 'success_action', '3': 3, '4': 1, '5': 11, '6': '.data.SuccessAction', '10': 'successAction'},
-    const {'1': 'comment', '3': 4, '4': 1, '5': 9, '10': 'comment'},
-    const {'1': 'invoice_description', '3': 5, '4': 1, '5': 9, '10': 'invoiceDescription'},
-    const {'1': 'metadata', '3': 6, '4': 3, '5': 11, '6': '.data.LNUrlPayMetadata', '10': 'metadata'},
-    const {'1': 'host', '3': 7, '4': 1, '5': 9, '10': 'host'},
-  ],
-};
-
-/// Descriptor for `LNUrlPayInfo`. Decode as a `google.protobuf.DescriptorProto`.
-final $typed_data.Uint8List lNUrlPayInfoDescriptor = $convert.base64Decode('CgxMTlVybFBheUluZm8SIAoLcGF5bWVudEhhc2gYASABKAlSC3BheW1lbnRIYXNoEhgKB2ludm9pY2UYAiABKAlSB2ludm9pY2USOgoOc3VjY2Vzc19hY3Rpb24YAyABKAsyEy5kYXRhLlN1Y2Nlc3NBY3Rpb25SDXN1Y2Nlc3NBY3Rpb24SGAoHY29tbWVudBgEIAEoCVIHY29tbWVudBIvChNpbnZvaWNlX2Rlc2NyaXB0aW9uGAUgASgJUhJpbnZvaWNlRGVzY3JpcHRpb24SMgoIbWV0YWRhdGEYBiADKAsyFi5kYXRhLkxOVXJsUGF5TWV0YWRhdGFSCG1ldGFkYXRhEhIKBGhvc3QYByABKAlSBGhvc3Q=');
-@$core.Deprecated('Use lNUrlPayInfoListDescriptor instead')
-const LNUrlPayInfoList$json = const {
-  '1': 'LNUrlPayInfoList',
-  '2': const [
-    const {'1': 'infoList', '3': 1, '4': 3, '5': 11, '6': '.data.LNUrlPayInfo', '10': 'infoList'},
-  ],
-};
-
-/// Descriptor for `LNUrlPayInfoList`. Decode as a `google.protobuf.DescriptorProto`.
-final $typed_data.Uint8List lNUrlPayInfoListDescriptor = $convert.base64Decode('ChBMTlVybFBheUluZm9MaXN0Ei4KCGluZm9MaXN0GAEgAygLMhIuZGF0YS5MTlVybFBheUluZm9SCGluZm9MaXN0');
 @$core.Deprecated('Use reverseSwapRequestDescriptor instead')
 const ReverseSwapRequest$json = const {
   '1': 'ReverseSwapRequest',

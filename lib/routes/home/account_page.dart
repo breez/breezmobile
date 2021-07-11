@@ -1,7 +1,6 @@
 import 'package:breez/bloc/account/account_bloc.dart';
 import 'package:breez/bloc/account/account_model.dart';
 import 'package:breez/bloc/blocs_provider.dart';
-import 'package:breez/bloc/connect_pay/connect_pay_bloc.dart';
 import 'package:breez/bloc/lsp/lsp_bloc.dart';
 import 'package:breez/bloc/lsp/lsp_model.dart';
 import 'package:breez/bloc/user_profile/breez_user_model.dart';
@@ -42,7 +41,6 @@ class AccountPageState extends State<AccountPage>
 
   AccountBloc _accountBloc;
   UserProfileBloc _userProfileBloc;
-  ConnectPayBloc _connectPayBloc;
   bool _isInit = false;
 
   @override
@@ -50,8 +48,6 @@ class AccountPageState extends State<AccountPage>
     if (!_isInit) {
       _accountBloc = AppBlocsProvider.of<AccountBloc>(context);
       _userProfileBloc = AppBlocsProvider.of<UserProfileBloc>(context);
-      _connectPayBloc = AppBlocsProvider.of<ConnectPayBloc>(context);
-
       //a listener that rebuilds our widget tree when payment filter changes
       _accountBloc.paymentFilterStream.listen((event) {
         widget.scrollController.position
@@ -116,7 +112,7 @@ class AccountPageState extends State<AccountPage>
     bool showMessage = account?.syncUIState != SyncUIState.BLOCKING &&
         (account != null && !account.initial);
 
-    List<Widget> slivers = List<Widget>();
+    List<Widget> slivers = <Widget>[];
     slivers.add(SliverPersistentHeader(
         floating: false,
         delegate: WalletDashboardHeaderDelegate(_accountBloc, _userProfileBloc),
@@ -282,7 +278,7 @@ class WalletDashboardHeaderDelegate extends SliverPersistentHeaderDelegate {
                 double heightFactor =
                     (shrinkOffset / (maxExtent - minExtent)).clamp(0.0, 1.0);
 
-                return Stack(overflow: Overflow.visible, children: <Widget>[
+                return Stack(clipBehavior: Clip.none, children: <Widget>[
                   WalletDashboard(
                     userSnapshot.data,
                     snapshot.data,
@@ -321,12 +317,19 @@ class NoLSPWidget extends StatelessWidget {
     List<Widget> buttons = [
       Container(
         height: 24.0,
-        child: OutlineButton(
-            shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(6.0)),
-            borderSide: BorderSide(
-                style: BorderStyle.solid, color: Theme.of(context).buttonColor),
-            child: Text("SELECT...", style: TextStyle(fontSize: 12.3)),
+        child: OutlinedButton(
+            style: OutlinedButton.styleFrom(
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(6.0)),
+              side: BorderSide(
+                  color: Theme.of(context).textTheme.button.color,
+                  style: BorderStyle.solid),
+            ),
+            child: Text("SELECT...",
+                style: TextStyle(
+                  fontSize: 12.3,
+                  color: Theme.of(context).textTheme.button.color,
+                )),
             onPressed: () {
               Navigator.of(context).pushNamed("/select_lsp");
             }),

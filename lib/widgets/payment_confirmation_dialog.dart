@@ -96,17 +96,29 @@ class PaymentConfirmationDialogState extends State<PaymentConfirmationDialog> {
 
   Container _buildActions() {
     List<Widget> children = <Widget>[
-      FlatButton(
+      TextButton(
+        style: ButtonStyle(
+          overlayColor: MaterialStateProperty.resolveWith<Color>(
+                  (Set<MaterialState> states) {
+                if (states.contains(MaterialState.pressed))
+                  return Colors.transparent;
+                return null; // Defer to the widget's default.
+              }),
+        ),
         child: Text("NO", style: Theme.of(context).primaryTextTheme.button),
-        splashColor: Colors.transparent,
-        highlightColor: Colors.transparent,
         onPressed: () =>
             widget._onCancel(),
       ),
-      FlatButton(
+      TextButton(
+        style: ButtonStyle(
+          overlayColor: MaterialStateProperty.resolveWith<Color>(
+                  (Set<MaterialState> states) {
+                if (states.contains(MaterialState.pressed))
+                  return Colors.transparent;
+                return null; // Defer to the widget's default.
+              }),
+        ),
         child: Text("YES", style: Theme.of(context).primaryTextTheme.button),
-        splashColor: Colors.transparent,
-        highlightColor: Colors.transparent,
         onPressed: () {
           widget._onPaymentApproved(SendPayment(
               PayRequest(widget.invoice.rawPayReq, widget._amountToPay)));

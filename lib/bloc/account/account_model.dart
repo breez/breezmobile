@@ -108,7 +108,7 @@ class SwapFundStatus {
 
   List<String> get unConfirmedAddresses {
     var unConfirmedAddresses =
-        _addedFundsReply?.unConfirmedAddresses ?? List<SwapAddressInfo>();
+        _addedFundsReply?.unConfirmedAddresses ?? <SwapAddressInfo>[];
     return unConfirmedAddresses
         .where((a) => a.nonBlocking != true)
         .map((a) => a.address)
@@ -117,13 +117,13 @@ class SwapFundStatus {
 
   List<String> get confirmedAddresses {
     var unConfirmedAddresses =
-        _addedFundsReply?.confirmedAddresses ?? List<SwapAddressInfo>();
+        _addedFundsReply?.confirmedAddresses ?? <SwapAddressInfo>[];
     return unConfirmedAddresses.map((a) => a.address).toList();
   }
 
   List<RefundableAddress> get refundableAddresses {
     var refundableAddresses =
-        _addedFundsReply?.refundableAddresses ?? List<SwapAddressInfo>();
+        _addedFundsReply?.refundableAddresses ?? <SwapAddressInfo>[];
     return refundableAddresses.map((a) => RefundableAddress(a)).toList();
   }
 
@@ -210,8 +210,8 @@ class AccountModel {
             Currency.SAT,
             "USD",
             null,
-            List(),
-            List(),
+            [],
+            [],
             "SAT",
             initial: true);
 
@@ -367,8 +367,8 @@ class PaymentsModel {
       [this.firstDate]);
 
   PaymentsModel.initial()
-      : this(<PaymentInfo>[], <PaymentInfo>[], PaymentFilterModel.initial(),
-            DateTime(DateTime.now().year));
+      : this(<PaymentInfo>[], <PaymentInfo>[],
+            PaymentFilterModel.initial(), DateTime(DateTime.now().year));
 
   PaymentsModel copyWith(
       {List<PaymentInfo> nonFilteredItems,

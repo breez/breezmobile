@@ -113,13 +113,15 @@ class EscherDialogState extends State<EscherDialog> {
               enabledBorder:
                   UnderlineInputBorder(borderSide: theme.greyBorderSide)),
           hintColor: Theme.of(context).dialogTheme.contentTextStyle.color,
-          accentColor: Theme.of(context).textTheme.button.color,
+          colorScheme: ColorScheme.dark(
+            primary: Theme.of(context).textTheme.button.color,
+          ),
           primaryColor: Theme.of(context).textTheme.button.color,
           errorColor: theme.themeId == "BLUE"
               ? Colors.red
               : Theme.of(context).errorColor),
       child: Form(
-        autovalidate: true,
+        autovalidateMode: AutovalidateMode.always,
         key: _formKey,
         child: Padding(
           padding: const EdgeInsets.only(left: 16.0, right: 16.0),

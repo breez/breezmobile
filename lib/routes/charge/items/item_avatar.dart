@@ -1,8 +1,8 @@
 import 'dart:io';
 
+import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:optimized_cached_image/optimized_cached_image.dart';
 
 class ItemAvatar extends StatelessWidget {
   final String avatarURL;
@@ -44,11 +44,9 @@ class _NetworkImageAvatar extends StatelessWidget {
   Widget build(BuildContext context) {
     return CircleAvatar(
       radius: radius,
-      child: ClipOval(
-        child: OptimizedCacheImage(
-          imageUrl: avatarURL,
-          useScaleCacheManager: true,
-        ),
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(radius),
+        child: ExtendedImage.network(avatarURL),
       ),
     );
   }

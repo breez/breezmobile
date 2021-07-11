@@ -2,7 +2,6 @@ import 'dart:async';
 
 import 'package:breez/bloc/account/account_model.dart';
 import 'package:breez/bloc/lsp/lsp_model.dart';
-import 'package:breez/services/breez_server/generated/breez.pb.dart';
 import 'package:breez/services/breezlib/breez_bridge.dart';
 import 'package:breez/services/breezlib/data/rpc.pb.dart';
 import 'package:breez/services/injector.dart';
@@ -173,6 +172,7 @@ class LSPBloc with AsyncActionsHandler {
   void close() async {
     await dispose();
     await _lspsStatusController.close();
+    await _lspPromptController.close();
   }
 
   Future _ensureLSPSFetched() async {

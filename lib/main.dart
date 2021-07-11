@@ -7,6 +7,7 @@ import 'package:anytime/ui/podcast/now_playing.dart';
 import 'package:anytime/ui/podcast/podcast_details.dart';
 import 'package:anytime/ui/widgets/episode_tile.dart';
 import 'package:anytime/ui/widgets/placeholder_builder.dart';
+import 'package:breez/utils/date.dart';
 import 'package:provider/provider.dart';
 import 'package:anytime/services/settings/mobile_settings_service.dart';
 import 'package:breez/bloc/app_blocs.dart';
@@ -21,7 +22,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import 'bloc/account/account_bloc.dart';
 import 'bloc/backup/backup_model.dart';
 import 'bloc/user_profile/user_profile_bloc.dart';
 
@@ -31,10 +31,12 @@ void main() async {
   SystemChrome.setPreferredOrientations(
       [DeviceOrientation.portraitUp, DeviceOrientation.portraitDown]);
   //initializeDateFormatting(Platform.localeName, null);
+  BreezDateUtils.setupLocales();
   var mobileService = await MobileSettingsService.instance();
   mobileService.autoOpenNowPlaying = true;
   mobileService.showFunding = false;
   mobileService.useMaterialDesign = true;
+  mobileService.searchProvider = 'podcastindex';
   final repository = SembastRepository();
   SharedPreferences.getInstance().then((preferences) async {
     await runMigration(preferences);

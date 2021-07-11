@@ -75,7 +75,9 @@ Check our [active bounties](https://github.com/breez/breezmobile/wiki/Bounties).
 - [x] Print POS transactions
 - [x] Hide balance
 - [x] In-app podcast player (podcasting 2.0)
-- [ ] Support LNURL-Pay ([open bounty](https://github.com/breez/breezmobile/wiki/Bounties))
+- [x] Backup to WebDav servers (e.g. Nextcloud)
+- [ ] Support LNURL-Pay ([bounty in progress](https://github.com/breez/breezmobile/wiki/Bounties#lnurl-pay-support))
+- [ ] Tor support ([open bounty](https://github.com/breez/breezmobile/wiki/Bounties#tor-support))
 - [ ] Support LNURL-Withdraw balance check
 - [ ] Async payments via Lightning Rod
 - [ ] Neutrino sync optimizations
@@ -108,26 +110,5 @@ Now you can use the following commands to run in a connected device the client a
  - flutter build apk --target-platform=android-arm64 --flavor=client --debug   --target=lib/main.dart
  - flutter build apk --target-platform=android-arm64 --flavor=pos    --debug   --target=lib/main_pos.dart
 
-### Running on testnet
-Modify the files under the `conf/` directory:
-
-```diff
-# breez.conf
--network=mainnet
-+network=testnet
--peer=btcd-mainnet.lightning.computer
-+peer=<your btcd node address on testnet>
-
-# lnd.conf
--neutrino.connect=btcd-mainnet.lightning.computer
-+neutrino.connect=<your btcd node address on testnet>
-```
-
-After the initial sync, go to the _Developer_ menu, get an address to fund with testnet coins with `newaddress p2wkh`, then fund it, and use `connect 03d5e17a3c213fe490e1b0c389f8cfcfcea08a29717d50a9f453735e0ab2a7c003@3.16.119.191:9735` then `openchannel --private --conf_target 1 03d5e17a3c213fe490e1b0c389f8cfcfcea08a29717d50a9f453735e0ab2a7c003 90000` to open a channel to that public node (adjust the amounts and the node id/address if you wish).
-
-## Architecture 
-<p align='center'>
-  <a href='https://breez.technology'>
-    <img src='https://drive.google.com/uc?id=1s695NXHHlhfvtW1zdlntUzRloxhnBeg0&export=download' height='450' alt='screenshot' />
-  </a>
-</p>
+## [Overview for Developers](https://github.com/breez/breezmobile/wiki/Overview-for-Developers)
+## [Running Breez in simnet](https://github.com/breez/breezmobile/wiki/Running-Breez-in-simnet)

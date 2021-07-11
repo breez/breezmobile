@@ -42,15 +42,17 @@ class SubmitButton extends StatelessWidget {
     return SizedBox(
         height: 48.0,
         width: 168.0,
-        child: RaisedButton(
+        child: ElevatedButton(
+          style: ElevatedButton.styleFrom(
+            primary: Theme.of(context).buttonColor,
+            elevation: 0.0,
+            shape: const StadiumBorder(),
+          ),
           child: AutoSizeText(
             this.text,
             maxLines: 1,
             style: Theme.of(context).textTheme.button,
           ),
-          color: Theme.of(context).buttonColor,
-          elevation: 0.0,
-          shape: const StadiumBorder(),
           onPressed: this.onPressed,
         ));
   }

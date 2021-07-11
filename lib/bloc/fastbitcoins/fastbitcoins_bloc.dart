@@ -7,14 +7,11 @@ import 'package:breez/services/breezlib/breez_bridge.dart';
 import 'package:breez/services/breezlib/data/rpc.pbgrpc.dart';
 import 'package:breez/services/injector.dart';
 import 'package:fixnum/fixnum.dart';
-import 'package:http/http.dart' as http;
 import 'package:http/http.dart';
 
 class FastbitcoinsBloc {
-  static const PRODUCTION_URL =
-      "https://wallet-api.fastbitcoins.com/w-api/v1/breez";
-  static const TESTING_URL =
-      "https://wallet-api-test.aao-tech.com/w-api/v1/breez";
+  static const PRODUCTION_URL = "wallet-api.fastbitcoins.com";
+  static const TESTING_URL = "wallet-api-test.aao-tech.com";
 
   final _validateRequestController =
       StreamController<ValidateRequestModel>.broadcast();
@@ -36,15 +33,16 @@ class FastbitcoinsBloc {
   Stream<RedeemResponseModel> get redeemResponseStream =>
       _redeemResponseController.stream;
 
-  String _baseURL = TESTING_URL;
-
+  final String baseURL;
   BreezBridge _breezLib;
+  Client _client;
 
-  FastbitcoinsBloc({bool production}) {
-    if (production == true) {
-      _baseURL = PRODUCTION_URL;
-    }
-    _breezLib = ServiceInjector().breezBridge;
+  FastbitcoinsBloc({
+    this.baseURL = PRODUCTION_URL,
+  }) {
+    var injector = ServiceInjector();
+    _breezLib = injector.breezBridge;
+    _client = injector.client;
     _listenValidateRequests();
     _listenRedeemRequests();
   }
@@ -52,7 +50,8 @@ class FastbitcoinsBloc {
   void _listenValidateRequests() {
     _validateRequestController.stream.listen((request) async {
       try {
-        var response = await http.post(_baseURL + "/quote",
+        Uri uri = Uri.https(baseURL, "w-api/v1/breez/quote");
+        var response = await _client.post(uri,
             body: jsonEncode(request.toJson()));
         _validateResponse(response);
         ValidateResponseModel res =
@@ -75,7 +74,8 @@ class FastbitcoinsBloc {
             description: "Fastbitcoins.com Voucher");
         request.lightningInvoice = payreq.paymentRequest;
         log.info("fastbicoins request: " + jsonEncode(request.toJson()));
-        var response = await http.post(_baseURL + "/redeem",
+        Uri uri = Uri.https(baseURL, "w-api/v1/breez/redeem");
+        var response = await _client.post(uri,
             body: jsonEncode(request.toJson()));
         _validateResponse(response);
         RedeemResponseModel res =
@@ -92,8 +92,10 @@ class FastbitcoinsBloc {
 
   void _validateResponse<T>(Response response) {
     if (response.statusCode != 200) {
-      log.severe(
-          'fastbitcoins response error: ${response.body.substring(0, 100)}');
+      final body = response.body != null && response.body.length > 100
+          ? response.body.substring(0, 100)
+          : response.body;
+      log.severe('fastbitcoins response error: $body');
       throw "Service Unavailable. Please try again later.";
     }
   }

@@ -13,9 +13,7 @@ import 'address_widget.dart';
 import 'conditional_deposit.dart';
 
 class DepositToBTCAddressPage extends StatefulWidget {
-  final AccountBloc _accountBloc;
-
-  const DepositToBTCAddressPage(this._accountBloc);
+  const DepositToBTCAddressPage();
 
   @override
   State<StatefulWidget> createState() {
@@ -147,11 +145,12 @@ class DepositToBTCAddressPageState extends State<DepositToBTCAddressPage> {
   }
 
   String formatFeeMessage(AccountModel acc, LSPInfo lsp) {
+    String minFees = (lsp != null && lsp.channelMinimumFeeMsat > 0) ? "with a minimum of ${lsp.channelMinimumFeeMsat ~/ 1000} sats " : "";
     if (acc.connected) {
       var liquidity = acc.currency.format(acc.maxInboundLiquidity);
-      return "A setup fee of ${lsp.channelFeePermyriad / 100}% will be applied for sending more than $liquidity.";
+      return "A setup fee of ${lsp.channelFeePermyriad / 100}% ${minFees}will be applied for sending more than $liquidity.";
     }
-    return "A setup fee of ${lsp.channelFeePermyriad / 100}% will be applied on the received amount.";
+    return "A setup fee of ${lsp.channelFeePermyriad / 100}% ${minFees}will be applied on the received amount.";
   }
 
   Widget _buildBottomBar(AddFundResponse response, AccountModel account,

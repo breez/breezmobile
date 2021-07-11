@@ -58,8 +58,9 @@ class _WaitBroadcastDialog extends State<WaitBroadcastDialog> {
   Widget build(BuildContext context) {
     return Theme(
       data: Theme.of(context).copyWith(
-          unselectedWidgetColor: Theme.of(context).canvasColor,
-          accentColor: Theme.of(context).canvasColor),
+        unselectedWidgetColor: Theme.of(context).canvasColor,
+        colorScheme: ColorScheme.dark(secondary: Theme.of(context).canvasColor),
+      ),
       child: AlertDialog(
         title: Text(getTitleText(),
             style: Theme.of(context).dialogTheme.titleTextStyle,
@@ -68,7 +69,7 @@ class _WaitBroadcastDialog extends State<WaitBroadcastDialog> {
         actions: _response == null && _error == null
             ? []
             : <Widget>[
-                FlatButton(
+                TextButton(
                     onPressed: () {
                       Navigator.of(context).pop(_error != null &&
                           _response?.txID?.isNotEmpty == true);
