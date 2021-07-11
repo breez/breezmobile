@@ -432,7 +432,7 @@ abstract class PaymentInfo {
   bool get fullPending;
   String get paymentGroup;
   String get paymentGroupName;
-  LNUrlPayInfo lnurlPayInfo;
+  SuccessAction get lnurlPaySuccessAction;
   PaymentInfo copyWith(AccountModel account);
 }
 
@@ -496,8 +496,7 @@ class StreamedPaymentInfo implements PaymentInfo {
   String get preimage => "";
   String get destination => "";
 
-  LNUrlPayInfo get lnurlPayInfo => null;
-  set lnurlPayInfo(LNUrlPayInfo i) => {};
+  SuccessAction get lnurlPaySuccessAction => null;
 }
 
 class SinglePaymentInfo implements PaymentInfo {
@@ -613,13 +612,6 @@ class SinglePaymentInfo implements PaymentInfo {
   }
 
   String get title {
-    if (_paymentResponse.invoiceMemo.description == '') {
-      if (_lnurlPayInfo != null) {
-        _paymentResponse.invoiceMemo.description =
-            _lnurlPayInfo.invoiceDescription;
-      }
-    }
-
     if (_paymentResponse.invoiceMemo.description.startsWith("Bitrefill")) {
       return "Bitrefill";
     }
@@ -656,11 +648,10 @@ class SinglePaymentInfo implements PaymentInfo {
     return title;
   }
 
-  Currency get currency => _account.currency;
+  SuccessAction get lnurlPaySuccessAction =>
+      _paymentResponse.lnurlSuccessAction;
 
-  LNUrlPayInfo _lnurlPayInfo;
-  LNUrlPayInfo get lnurlPayInfo => _lnurlPayInfo;
-  set lnurlPayInfo(LNUrlPayInfo i) => _lnurlPayInfo = i;
+  Currency get currency => _account.currency;
 
   SinglePaymentInfo(this._paymentResponse, this._account);
 
@@ -709,10 +700,8 @@ class BroadcastRefundResponseModel {
 class PayRequest {
   final String paymentRequest;
   final Int64 amount;
-  String lnurlSuccessActionMessage;
 
-  PayRequest(this.paymentRequest, this.amount,
-      {this.lnurlSuccessActionMessage = ''});
+  PayRequest(this.paymentRequest, this.amount);
 }
 
 class CompletedPayment {
@@ -720,8 +709,9 @@ class CompletedPayment {
   final String paymentHash;
   final bool cancelled;
   final bool ignoreGlobalFeedback;
+  final PaymentInfo paymentItem;
 
-  CompletedPayment(this.paymentRequest, this.paymentHash,
+  CompletedPayment(this.paymentRequest, this.paymentHash, this.paymentItem,
       {this.cancelled = false, this.ignoreGlobalFeedback = false});
 }
 

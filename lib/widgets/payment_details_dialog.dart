@@ -249,10 +249,10 @@ Future<Null> showPaymentDetailsDialog(
                 ),
           // FIXME Show the user's comment
           // FIXME In general users should be able to label/comment their transactions?
-          if (paymentInfo.type == PaymentType.SENT 
-              && paymentInfo.lnurlPayInfo != null && paymentInfo.lnurlPayInfo.successAction != null) 
+          if (paymentInfo.type == PaymentType.SENT &&
+              paymentInfo.lnurlPaySuccessAction != null)
             ..._getLNUrlSuccessActionForPayment(
-                context, paymentInfo.lnurlPayInfo.successAction),
+                context, paymentInfo.lnurlPaySuccessAction),
           ..._getPaymentInfoDetails(paymentInfo),
         ],
       ),
@@ -507,7 +507,8 @@ class ClosedChannelPaymentDetailsState
   }
 
   Future<int> _getTXConfirmationHeight(String chanPoint) async {
-    Uri txUri = Uri.https("blockstream.info", "api/tx/${chanPoint.split(":")[0]}");
+    Uri txUri =
+        Uri.https("blockstream.info", "api/tx/${chanPoint.split(":")[0]}");
     var response = await http.get(txUri);
     if (response.statusCode == 200) {
       Map<String, dynamic> userData = json.decode(response.body);

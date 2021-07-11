@@ -599,6 +599,7 @@ class Payment extends $pb.GeneratedMessage {
     ..aOS(21, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'closedChannelSweepTxID', protoName: 'closedChannelSweepTxID')
     ..aOS(22, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'groupKey', protoName: 'groupKey')
     ..aOS(23, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'groupName', protoName: 'groupName')
+    ..aOM<SuccessAction>(24, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'lnurlSuccessAction', protoName: 'lnurlSuccessAction', subBuilder: SuccessAction.create)
     ..hasRequiredFields = false
   ;
 
@@ -625,6 +626,7 @@ class Payment extends $pb.GeneratedMessage {
     $core.String closedChannelSweepTxID,
     $core.String groupKey,
     $core.String groupName,
+    SuccessAction lnurlSuccessAction,
   }) {
     final _result = create();
     if (type != null) {
@@ -689,6 +691,9 @@ class Payment extends $pb.GeneratedMessage {
     }
     if (groupName != null) {
       _result.groupName = groupName;
+    }
+    if (lnurlSuccessAction != null) {
+      _result.lnurlSuccessAction = lnurlSuccessAction;
     }
     return _result;
   }
@@ -903,6 +908,17 @@ class Payment extends $pb.GeneratedMessage {
   $core.bool hasGroupName() => $_has(20);
   @$pb.TagNumber(23)
   void clearGroupName() => clearField(23);
+
+  @$pb.TagNumber(24)
+  SuccessAction get lnurlSuccessAction => $_getN(21);
+  @$pb.TagNumber(24)
+  set lnurlSuccessAction(SuccessAction v) { setField(24, v); }
+  @$pb.TagNumber(24)
+  $core.bool hasLnurlSuccessAction() => $_has(21);
+  @$pb.TagNumber(24)
+  void clearLnurlSuccessAction() => clearField(24);
+  @$pb.TagNumber(24)
+  SuccessAction ensureLnurlSuccessAction() => $_ensure(21);
 }
 
 class PaymentsList extends $pb.GeneratedMessage {

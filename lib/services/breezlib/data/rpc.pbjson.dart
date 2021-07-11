@@ -116,6 +116,7 @@ const Payment$json = const {
     const {'1': 'closedChannelSweepTxID', '3': 21, '4': 1, '5': 9, '10': 'closedChannelSweepTxID'},
     const {'1': 'groupKey', '3': 22, '4': 1, '5': 9, '10': 'groupKey'},
     const {'1': 'groupName', '3': 23, '4': 1, '5': 9, '10': 'groupName'},
+    const {'1': 'lnurlSuccessAction', '3': 24, '4': 1, '5': 11, '6': '.data.SuccessAction', '10': 'lnurlSuccessAction'},
   ],
   '4': const [Payment_PaymentType$json],
 };

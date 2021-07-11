@@ -158,17 +158,6 @@ class BreezBridge {
         .then((result) => LNUrlPayInfo()..mergeFromBuffer(result ?? []));
   }
 
-  Future<SuccessAction> getLNUrlPaySuccessAction(String paymentHash) {
-    return _invokeMethodImmediate(
-            'getLNUrlPaySuccessAction', {'argument': paymentHash})
-        .then((result) => SuccessAction()..mergeFromBuffer(result ?? []));
-  }
-
-  Future<LNUrlPayInfoList> getLNUrlPayInfos() {
-    return _invokeMethodImmediate('getLNUrlPayInfos')
-        .then((result) => LNUrlPayInfoList()..mergeFromBuffer(result ?? []));
-  }
-
   Future<String> getLogPath() {
     return getApplicationDocumentsDirectory().then((workingDir) {
       return workingDir.path + "/logs/bitcoin/mainnet/lnd.log";
