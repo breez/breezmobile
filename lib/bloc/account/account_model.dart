@@ -432,7 +432,7 @@ abstract class PaymentInfo {
   bool get fullPending;
   String get paymentGroup;
   String get paymentGroupName;
-  LNUrlPayInfo lnurlPayInfo;
+  LNUrlPayInfo get lnurlPayInfo;
   PaymentInfo copyWith(AccountModel account);
 }
 
@@ -497,7 +497,6 @@ class StreamedPaymentInfo implements PaymentInfo {
   String get destination => "";
 
   LNUrlPayInfo get lnurlPayInfo => null;
-  set lnurlPayInfo(LNUrlPayInfo i) => {};
 }
 
 class SinglePaymentInfo implements PaymentInfo {
@@ -596,7 +595,8 @@ class SinglePaymentInfo implements PaymentInfo {
               : _paymentResponse.invoiceMemo?.description;
 
   String get imageURL {
-    if (_paymentResponse.invoiceMemo.description.startsWith("Bitrefill")) {
+    if (_paymentResponse.invoiceMemo.description.startsWith("Bitrefill")
+            || _paymentResponse.lnurlPayInfo?.host == 'api-bitrefill.com') {
       return "src/icon/vendors/bitrefill_logo.png";
     }
     if (_paymentResponse.invoiceMemo.description.startsWith("Fastbitcoins")) {
@@ -610,9 +610,11 @@ class SinglePaymentInfo implements PaymentInfo {
         ? _paymentResponse.invoiceMemo?.payeeImageURL
         : _paymentResponse.invoiceMemo?.payerImageURL);
 
-    // Check _lnurlPayInfo.metadata for the first usable image.
-    if (url == '' && _lnurlPayInfo != null) {
-      for (var datum in _lnurlPayInfo.metadata) {
+    // Check lnurlPayInfo.metadata for the first usable image.
+    // Some services that provide an image lightning.gifts, zebedee.
+    if (url == '' && _paymentResponse.lnurlPayInfo != null) {
+        final lnurlPayInfo = _paymentResponse.lnurlPayInfo; 
+      for (var datum in lnurlPayInfo.metadata) {
         if (datum.entry[0].startsWith('image')) {
           url = 'data:' + datum.entry[0] + ',' + datum.entry[1];
           break;
@@ -624,11 +626,21 @@ class SinglePaymentInfo implements PaymentInfo {
   }
 
   String get title {
-    if (_paymentResponse.invoiceMemo.description.startsWith("Bitrefill")) {
+    if (_paymentResponse.invoiceMemo.description.startsWith("Bitrefill") ||
+            _paymentResponse.lnurlPayInfo?.host == 'api-bitrefill.com') {
       return "Bitrefill";
     }
+
     if (_paymentResponse.invoiceMemo.description.startsWith("LN.pizza")) {
       return "ln.pizza";
+    }
+
+    if (_paymentResponse.lnurlPayInfo?.host == 'api.lightning.gifts') {
+      return 'lightning.gifts';
+    }
+
+    if (_paymentResponse.lnurlPayInfo?.host == 'api.zebedee.io') {
+      return "Zebedee";
     }
 
     if (type == PaymentType.DEPOSIT || type == PaymentType.WITHDRAWAL) {
@@ -644,8 +656,13 @@ class SinglePaymentInfo implements PaymentInfo {
     String result = (type == PaymentType.SENT
         ? _paymentResponse.invoiceMemo?.payeeName
         : _paymentResponse.invoiceMemo?.payerName);
+
     if (result == null || result.isEmpty) {
+        if (_paymentResponse.lnurlPayInfo != null && _paymentResponse.lnurlPayInfo.host != '') {
+        result = _paymentResponse.lnurlPayInfo.host;
+        } else {
       result = _paymentResponse.invoiceMemo.description;
+        }
     }
     return (result == null || result.isEmpty) ? "Unknown" : result;
   }
@@ -662,9 +679,7 @@ class SinglePaymentInfo implements PaymentInfo {
 
   Currency get currency => _account.currency;
 
-  LNUrlPayInfo _lnurlPayInfo;
-  LNUrlPayInfo get lnurlPayInfo => _lnurlPayInfo;
-  set lnurlPayInfo(LNUrlPayInfo i) => _lnurlPayInfo = i;
+  LNUrlPayInfo get lnurlPayInfo => _paymentResponse.lnurlPayInfo;
 
   SinglePaymentInfo(this._paymentResponse, this._account);
 

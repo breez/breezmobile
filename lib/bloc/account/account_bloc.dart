@@ -645,6 +645,7 @@ class AccountBloc {
           _paymentFilterController.value,
           _firstDate ?? DateTime(DateTime.now().year));
     });
+
   }
 
   Future _refreshPayments() {

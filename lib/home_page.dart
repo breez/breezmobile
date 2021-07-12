@@ -679,10 +679,10 @@ class HomeState extends State<Home> with WidgetsBindingObserver {
         scrollController.animateTo(scrollController.position.minScrollExtent,
             duration: Duration(milliseconds: 10), curve: Curves.ease);
 
-        if (fulfilledPayment?.paymentItem?.lnurlPaySuccessAction?.hasTag() ==
+        if (fulfilledPayment?.paymentItem?.lnurlPayInfo?.successAction?.hasTag() ==
             true) {
           showLNURLSuccessAction(
-              context, fulfilledPayment.paymentItem.lnurlPaySuccessAction);
+              context, fulfilledPayment.paymentItem.lnurlPayInfo.successAction);
         } else {
           showFlushbar(context,
               messageWidget: SingleChildScrollView(

@@ -62,7 +62,6 @@ Future<Null> showPaymentDetailsDialog(
           );
         });
   }
-  // FIXME Use SingleChildScrollView because AlertDialog overflows.
   AlertDialog _paymentDetailsDialog = AlertDialog(
     titlePadding: EdgeInsets.zero,
     title: Stack(children: <Widget>[
@@ -250,9 +249,9 @@ Future<Null> showPaymentDetailsDialog(
           // FIXME Show the user's comment
           // FIXME In general users should be able to label/comment their transactions?
           if (paymentInfo.type == PaymentType.SENT 
-              && paymentInfo.lnurlPayInfo != null && paymentInfo.lnurlPayInfo.successAction != null) 
+              && paymentInfo.lnurlPayInfo != null) 
             ..._getLNUrlSuccessActionForPayment(
-                context, paymentInfo.lnurlPayInfo.successAction),
+                context, paymentInfo.lnurlPayInfo?.successAction),
           ..._getPaymentInfoDetails(paymentInfo),
         ],
       ),

@@ -1,5 +1,4 @@
 import 'dart:io';
-import 'dart:convert' show UriData;
 
 import 'package:breez/bloc/user_profile/default_profile_generator.dart'
     as generator;
@@ -170,6 +169,7 @@ class _DataImageAvatar extends StatelessWidget {
       final uri = UriData.parse(this.avatarURL);
       final _bytes = uri.contentAsBytes();
     return CircleAvatar(
+        backgroundColor: theme.sessionAvatarBackgroundColor,
       radius: radius,
       child: ClipOval(
         child: Image.memory(_bytes) ,
