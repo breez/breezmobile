@@ -303,14 +303,15 @@ class CreateInvoicePageState extends State<CreateInvoicePage> {
   }
 
   String formatFeeMessage(AccountModel acc, LSPInfo lsp) {
-    String minFees = (lsp != null && lsp.channelMinimumFeeMsat > 0)
-        ? "with a minimum of ${lsp.channelMinimumFeeMsat ~/ 1000} sats "
+    var minFees = (new Int64(lsp.channelMinimumFeeMsat)) ~/ 1000;
+    String minFeesMessage = (lsp != null && lsp.channelMinimumFeeMsat > 0)
+        ? "with a minimum of ${acc.currency.format(minFees)} "
         : "";
     if (acc.connected) {
       var liquidity = acc.currency.format(acc.maxInboundLiquidity);
-      return "A setup fee of ${lsp.channelFeePermyriad / 100}% ${minFees}will be applied for receiving more than $liquidity.";
+      return "A setup fee of ${lsp.channelFeePermyriad / 100}% ${minFeesMessage}will be applied for receiving more than $liquidity.";
     }
-    return "A setup fee of ${lsp.channelFeePermyriad / 100}% ${minFees}will be applied on the received amount.";
+    return "A setup fee of ${lsp.channelFeePermyriad / 100}% ${minFeesMessage}will be applied on the received amount.";
   }
 
   Future _scanBarcode(AccountModel account) async {
