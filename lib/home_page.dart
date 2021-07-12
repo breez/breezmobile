@@ -55,6 +55,7 @@ import 'handlers/podcast_url_handler.dart';
 import 'handlers/received_invoice_notification.dart';
 import 'handlers/showPinHandler.dart';
 import 'handlers/sync_ui_handler.dart';
+import 'lnurl_success_action_dialog.dart';
 import 'routes/account_required_actions.dart';
 import 'routes/connect_to_pay/connect_to_pay_page.dart';
 import 'routes/home/account_page.dart';
@@ -678,14 +679,14 @@ class HomeState extends State<Home> with WidgetsBindingObserver {
         scrollController.animateTo(scrollController.position.minScrollExtent,
             duration: Duration(milliseconds: 10), curve: Curves.ease);
 
-        var message = 'Payment was successfully sent!';
-        if (fulfilledPayment.paymentRequest != null) {
-          message +=
-              '\n${fulfilledPayment.paymentRequest.lnurlSuccessActionMessage}';
-
+        if (fulfilledPayment?.paymentItem?.lnurlPaySuccessAction?.hasTag() ==
+            true) {
+          showLNURLSuccessAction(
+              context, fulfilledPayment.paymentItem.lnurlPaySuccessAction);
+        } else {
           showFlushbar(context,
-              messageWidget: SingleChildScrollView(child: Text(message)));
-          // showFlushbar(context, message: message);
+              messageWidget: SingleChildScrollView(
+                  child: Text('Payment was successfully sent!')));
         }
       }
     }, onError: (err) async {

@@ -367,8 +367,8 @@ class PaymentsModel {
       [this.firstDate]);
 
   PaymentsModel.initial()
-      : this(<PaymentInfo>[], <PaymentInfo>[],
-            PaymentFilterModel.initial(), DateTime(DateTime.now().year));
+      : this(<PaymentInfo>[], <PaymentInfo>[], PaymentFilterModel.initial(),
+            DateTime(DateTime.now().year));
 
   PaymentsModel copyWith(
       {List<PaymentInfo> nonFilteredItems,
@@ -624,13 +624,6 @@ class SinglePaymentInfo implements PaymentInfo {
   }
 
   String get title {
-    if (_paymentResponse.invoiceMemo.description == '') {
-      if (_lnurlPayInfo != null) {
-        _paymentResponse.invoiceMemo.description =
-            _lnurlPayInfo.invoiceDescription;
-      }
-    }
-
     if (_paymentResponse.invoiceMemo.description.startsWith("Bitrefill")) {
       return "Bitrefill";
     }
@@ -720,10 +713,8 @@ class BroadcastRefundResponseModel {
 class PayRequest {
   final String paymentRequest;
   final Int64 amount;
-  String lnurlSuccessActionMessage;
 
-  PayRequest(this.paymentRequest, this.amount,
-      {this.lnurlSuccessActionMessage = ''});
+  PayRequest(this.paymentRequest, this.amount);
 }
 
 class CompletedPayment {
@@ -731,8 +722,9 @@ class CompletedPayment {
   final String paymentHash;
   final bool cancelled;
   final bool ignoreGlobalFeedback;
+  final PaymentInfo paymentItem;
 
-  CompletedPayment(this.paymentRequest, this.paymentHash,
+  CompletedPayment(this.paymentRequest, this.paymentHash, this.paymentItem,
       {this.cancelled = false, this.ignoreGlobalFeedback = false});
 }
 
