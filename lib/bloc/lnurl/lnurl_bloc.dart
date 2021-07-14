@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:breez/services/breezlib/breez_bridge.dart';
 import 'package:breez/services/breezlib/data/rpc.pbserver.dart';
 import 'package:breez/services/injector.dart';
+import 'package:breez/utils/lnurl.dart';
 import 'package:breez/utils/retry.dart';
 import 'package:rxdart/rxdart.dart';
 
@@ -38,14 +39,16 @@ class LNUrlBloc with AsyncActionsHandler {
   listenLNUrl() {
     if (_lnUrlStreamController == null) {
       _lnUrlStreamController = StreamController.broadcast();
+      final injector = ServiceInjector();
       Rx.merge([
-        ServiceInjector().nfc.receivedLnLinks(),
-        ServiceInjector().lightningLinks.linksNotifications,
+        injector.nfc.receivedLnLinks(),
+        injector.lightningLinks.linksNotifications,
         _lnurlInputController.stream,
+        injector.device.distinctClipboardStream,
       ])
-          .where((l) =>
-              l.toLowerCase().startsWith("lightning:lnurl") ||
-              l.toLowerCase().startsWith("lnurl"))
+          .where((l) => l != null)
+          .map((l) => l.toLowerCase())
+          .where((l) => isLNURL(l))
           .asyncMap((l) {
         _lnUrlStreamController.add(fetchLNUrlState.started);
         return _breezLib.fetchLNUrl(l).catchError((error) {
