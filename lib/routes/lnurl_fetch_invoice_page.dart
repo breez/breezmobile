@@ -262,8 +262,6 @@ class LNURLFetchInvoicePageState extends State<LNURLFetchInvoicePage> {
   void applyPayFetchResponse(PayFetchResponse response, AccountModel account) {
     _payFetchResponse = response;
     _commentController.text = response.comment;
-    _amountController.text = account.currency
-        .format(response.minAmount, includeDisplayName: false, userInput: true);
   }
 
   String _getMetadataText(List<LNUrlPayMetadata> metadata) {
