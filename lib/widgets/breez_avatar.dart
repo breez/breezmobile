@@ -62,6 +62,10 @@ class BreezAvatar extends StatelessWidget {
         return _NetworkImageAvatar(avatarURL, radius);
       }
 
+      if (Uri.tryParse(avatarURL)?.scheme?.startsWith("data") ?? false) {
+        return _DataImageAvatar(avatarURL, radius);
+      }
+
       return _FileImageAvatar(radius, avatarURL);
     }
 
@@ -149,6 +153,26 @@ class _NetworkImageAvatar extends StatelessWidget {
       child: ClipRRect(
         borderRadius: BorderRadius.circular(radius),
         child: ExtendedImage.network(avatarURL),
+      ),
+    );
+  }
+}
+
+class _DataImageAvatar extends StatelessWidget {
+  final double radius;
+  final String avatarURL;
+
+  _DataImageAvatar(this.avatarURL, this.radius);
+
+  @override
+  Widget build(BuildContext context) {
+      final uri = UriData.parse(this.avatarURL);
+      final _bytes = uri.contentAsBytes();
+    return CircleAvatar(
+        backgroundColor: theme.sessionAvatarBackgroundColor,
+      radius: radius,
+      child: ClipOval(
+        child: Image.memory(_bytes) ,
       ),
     );
   }

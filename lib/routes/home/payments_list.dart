@@ -42,7 +42,8 @@ class PaymentsListState extends State<PaymentsList> {
     return SliverFixedExtentList(
       itemExtent: widget._itemHeight + BOTTOM_PADDING,
       delegate: SliverChildBuilderDelegate((BuildContext context, int index) {
-        return PaymentItem(widget._payments[index], index, 0 == index,
+        final payment = widget._payments[index];
+        return PaymentItem(payment, index, 0 == index,
             widget.firstPaymentItemKey, widget.scrollController);
       }, childCount: widget._payments.length),
     );

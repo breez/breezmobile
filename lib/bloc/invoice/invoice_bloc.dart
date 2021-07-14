@@ -172,12 +172,13 @@ class InvoiceBloc with AsyncActionsHandler {
                 PaymentRequestModel(null, paymentRequest, null, Int64(0)));
             return null;
           } catch (e) {
-            log.info("detected not ours invoice, continue to decoding");
+            log.info("detected not our invoice, continue to decoding");
             return paymentRequest;
           }
         })
         .where((paymentRequest) => paymentRequest != null)
         .asyncMap((paymentRequest) {
+          log.info('Decoding invoice.');
           return breezLib.decodePaymentRequest(paymentRequest).then(
               (invoice) async {
             var paymentHash =

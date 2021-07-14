@@ -8,6 +8,7 @@ import 'package:breez/widgets/loader.dart';
 import 'package:breez/widgets/route.dart';
 import 'package:flutter/material.dart';
 
+import '../routes/lnurl_fetch_invoice_page.dart';
 import '../routes/create_invoice/create_invoice_page.dart';
 
 class LNURLHandler {
@@ -87,6 +88,14 @@ class LNURLHandler {
           }).whenComplete(() => Navigator.of(context).removeRoute(loaderRoute));
         }
       });
+    } else if (response is PayFetchResponse) {
+      Navigator.popUntil(context, (route) {
+        return route.settings.name == "/";
+      });
+
+      Navigator.of(context).push(FadeInRoute(
+        builder: (_) => LNURLFetchInvoicePage(response),
+      ));
     } else {
       throw "Unsupported LNURL";
     }
