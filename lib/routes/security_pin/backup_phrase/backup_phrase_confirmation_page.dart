@@ -117,7 +117,7 @@ class BackupPhraseGeneratorConfirmationPageState
             ? SingleButtonBottomBar(
                 text: "NEXT",
                 onPressed: () {
-                  String mnemonics = bip39.generateMnemonic(strength: 256);
+                  String mnemonics = bip39.generateMnemonic(strength: 128);
                   Navigator.pushReplacement(
                     context,
                     FadeInRoute(
