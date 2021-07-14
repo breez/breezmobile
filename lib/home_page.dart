@@ -28,6 +28,7 @@ import 'package:breez/routes/marketplace/marketplace.dart';
 import 'package:breez/routes/podcast/podcast_page.dart' as breezPodcast;
 import 'package:breez/routes/podcast/theme.dart';
 import 'package:breez/theme_data.dart' as theme;
+import 'package:breez/utils/lnurl.dart';
 import 'package:breez/widgets/close_popup.dart';
 import 'package:breez/widgets/error_dialog.dart';
 import 'package:breez/widgets/fade_in_widget.dart';
@@ -90,6 +91,7 @@ class Home extends StatefulWidget {
 }
 
 class HomeState extends State<Home> with WidgetsBindingObserver {
+  final GlobalKey rootKey = GlobalKey();
   final GlobalKey podcastMenuItemKey = GlobalKey();
   String _activeScreen = "breezHome";
   Set _hiddenRoutes = Set<String>();
@@ -109,6 +111,7 @@ class HomeState extends State<Home> with WidgetsBindingObserver {
     _listenWhitelistPermissionsRequest();
     _listenLSPSelectionPrompt();
     _listenPaymentResults();
+    _listenDistinctDecodedClipboard();
     _hiddenRoutes.add("/get_refund");
     widget.accountBloc.accountStream.listen((acc) {
       setState(() {
@@ -185,6 +188,7 @@ class HomeState extends State<Home> with WidgetsBindingObserver {
     AddFundsBloc addFundsBloc = BlocProvider.of<AddFundsBloc>(context);
     LSPBloc lspBloc = AppBlocsProvider.of<LSPBloc>(context);
     return WillPopScope(
+      key: rootKey,
       onWillPop: willPopCallback(
         context,
         canCancel: () => _scaffoldKey.currentState?.isDrawerOpen ?? false,
@@ -733,6 +737,20 @@ class HomeState extends State<Home> with WidgetsBindingObserver {
                   opacity: 0.8,
                   action: sendAction.future));
         }
+      }
+    });
+  }
+
+  void _listenDistinctDecodedClipboard() {
+    widget.invoiceBloc.distinctDecodedClipboardStream.listen((clipboard) async {
+      final context = rootKey.currentContext;
+      if (context == null) return;
+      if (clipboard.type == "lnurl") {
+        await handleLNUrl(
+          widget.lnurlBloc,
+          context,
+          clipboard.data,
+        );
       }
     });
   }

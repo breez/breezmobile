@@ -11,6 +11,7 @@ import 'package:breez/services/lightning_links.dart';
 import 'package:breez/services/nfc.dart';
 import 'package:breez/services/notifications.dart';
 import 'package:breez/utils/bip21.dart';
+import 'package:breez/utils/lnurl.dart';
 import 'package:breez/utils/node_id.dart';
 import 'package:fixnum/fixnum.dart';
 import 'package:rxdart/rxdart.dart';
@@ -91,6 +92,13 @@ class InvoiceBloc with AsyncActionsHandler {
         }
         return null;
       }).where((event) => event != null);
+
+  Stream<DecodedClipboardData> get distinctDecodedClipboardStream =>
+      device.distinctClipboardStream
+          .where((clipboardData) => clipboardData != null)
+          .map((clipboardData) => clipboardData.toLowerCase())
+          .where((clipboardData) => isLNURL(clipboardData))
+          .map((clipboardData) => DecodedClipboardData(clipboardData, "lnurl"));
 
   void _listenInvoiceRequests(BreezBridge breezLib, NFCService nfc) {
     _newInvoiceRequestController.stream.listen((invoiceRequest) {
