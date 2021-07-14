@@ -595,8 +595,8 @@ class SinglePaymentInfo implements PaymentInfo {
               : _paymentResponse.invoiceMemo?.description;
 
   String get imageURL {
-    if (_paymentResponse.invoiceMemo.description.startsWith("Bitrefill")
-            || _paymentResponse.lnurlPayInfo?.host == 'api-bitrefill.com') {
+    if (_paymentResponse.invoiceMemo.description.startsWith("Bitrefill") ||
+        _paymentResponse.lnurlPayInfo?.host == 'api-bitrefill.com') {
       return "src/icon/vendors/bitrefill_logo.png";
     }
     if (_paymentResponse.invoiceMemo.description.startsWith("Fastbitcoins")) {
@@ -610,24 +610,12 @@ class SinglePaymentInfo implements PaymentInfo {
         ? _paymentResponse.invoiceMemo?.payeeImageURL
         : _paymentResponse.invoiceMemo?.payerImageURL);
 
-    // Check lnurlPayInfo.metadata for the first usable image.
-    // Some services that provide an image lightning.gifts, zebedee.
-    if (url == '' && _paymentResponse.lnurlPayInfo != null) {
-        final lnurlPayInfo = _paymentResponse.lnurlPayInfo; 
-      for (var datum in lnurlPayInfo.metadata) {
-        if (datum.entry[0].startsWith('image')) {
-          url = 'data:' + datum.entry[0] + ',' + datum.entry[1];
-          break;
-        }
-      }
-    }
-
     return (url == null || url.isEmpty) ? null : url;
   }
 
   String get title {
-    if (_paymentResponse.invoiceMemo.description.startsWith("Bitrefill") 
-            || _paymentResponse.lnurlPayInfo?.host == 'api-bitrefill.com') {
+    if (_paymentResponse.invoiceMemo.description.startsWith("Bitrefill") ||
+        _paymentResponse.lnurlPayInfo?.host == 'api-bitrefill.com') {
       return "Bitrefill";
     }
 
@@ -635,8 +623,9 @@ class SinglePaymentInfo implements PaymentInfo {
       return "ln.pizza";
     }
 
-    if (_paymentResponse.invoiceMemo.description.startsWith('lightning.gifts') 
-            || _paymentResponse.lnurlPayInfo?.host == 'api.lightning.gifts') {
+    if (_paymentResponse.invoiceMemo.description
+            .startsWith('lightning.gifts') ||
+        _paymentResponse.lnurlPayInfo?.host == 'api.lightning.gifts') {
       return 'lightning.gifts';
     }
 
@@ -659,11 +648,12 @@ class SinglePaymentInfo implements PaymentInfo {
         : _paymentResponse.invoiceMemo?.payerName);
 
     if (result == null || result.isEmpty) {
-        if (_paymentResponse.lnurlPayInfo != null && _paymentResponse.lnurlPayInfo.host != '') {
+      if (_paymentResponse.lnurlPayInfo != null &&
+          _paymentResponse.lnurlPayInfo.host != '') {
         result = _paymentResponse.lnurlPayInfo.host;
-        } else {
-      result = _paymentResponse.invoiceMemo.description;
-        }
+      } else {
+        result = _paymentResponse.invoiceMemo.description;
+      }
     }
     return (result == null || result.isEmpty) ? "Unknown" : result;
   }

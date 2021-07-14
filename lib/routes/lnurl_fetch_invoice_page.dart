@@ -184,11 +184,11 @@ class LNURLFetchInvoicePageState extends State<LNURLFetchInvoicePage> {
                             final max = widget.payFetchResponse.maxAmount;
 
                             if (amt < min) {
-                              return 'Payment required is at least ${acc.currency.format(min)}.';
+                              return 'Must be at least ${acc.currency.format(min)}';
                             }
 
                             if (amt > max) {
-                              return 'Payment exceeds the limit (${acc.currency.format(max)}).';
+                              return 'Exceeds the limit (${acc.currency.format(max)})';
                             }
 
                             return null;
@@ -256,10 +256,6 @@ class LNURLFetchInvoicePageState extends State<LNURLFetchInvoicePage> {
         maxLines: 1,
         minFontSize: MinFontSize(context).minFontSize,
       ),
-      onTap: () => _amountController.text = acc.currency.format(
-          widget.payFetchResponse.minAmount,
-          includeDisplayName: false,
-          userInput: true),
     );
   }
 
