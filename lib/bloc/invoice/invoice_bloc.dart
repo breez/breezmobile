@@ -78,7 +78,10 @@ class InvoiceBloc with AsyncActionsHandler {
         if (normalized.startsWith("lightning:")) {
           normalized = normalized.substring(10);
         }
-        if (normalized.startsWith("ln") && !normalized.startsWith("lnurl")) {
+        if (normalized.startsWith("lnurl")) {
+          return DecodedClipboardData(clipboardData, "lnurl");
+        }
+        if (normalized.startsWith("ln")) {
           try {
             await _breezLib.getRelatedInvoice(clipboardData);
             return null;

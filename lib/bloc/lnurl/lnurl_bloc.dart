@@ -17,6 +17,10 @@ class LNUrlBloc with AsyncActionsHandler {
 
   StreamController _lnUrlStreamController;
 
+  StreamController<String> _lnurlInputController =
+      StreamController<String>.broadcast();
+  Sink<String> get lnurlInputSink => _lnurlInputController.sink;
+
   LNUrlBloc() {
     ServiceInjector injector = ServiceInjector();
     _breezLib = injector.breezBridge;
@@ -37,8 +41,11 @@ class LNUrlBloc with AsyncActionsHandler {
       Rx.merge([
         ServiceInjector().nfc.receivedLnLinks(),
         ServiceInjector().lightningLinks.linksNotifications,
+        _lnurlInputController.stream,
       ])
-          .where((l) => l.toLowerCase().startsWith("lightning:lnurl"))
+          .where((l) =>
+              l.toLowerCase().startsWith("lightning:lnurl") ||
+              l.toLowerCase().startsWith("lnurl"))
           .asyncMap((l) {
         _lnUrlStreamController.add(fetchLNUrlState.started);
         return _breezLib.fetchLNUrl(l).catchError((error) {
@@ -115,6 +122,7 @@ class LNUrlBloc with AsyncActionsHandler {
   @override
   Future dispose() {
     _lnUrlStreamController.close();
+    _lnurlInputController.close();
     return super.dispose();
   }
 }
