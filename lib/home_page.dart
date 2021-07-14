@@ -684,7 +684,7 @@ class HomeState extends State<Home> with WidgetsBindingObserver {
         if (fulfilledPayment?.paymentItem?.lnurlPayInfo?.successAction
                 ?.hasTag() ==
             true) {
-          await Future.delayed(Duration(milliseconds: 600));
+          await Future.delayed(Duration(seconds: 1));
           showLNURLSuccessAction(
               context, fulfilledPayment.paymentItem.lnurlPayInfo.successAction);
         } else {

@@ -91,7 +91,6 @@ class LNURLFetchInvoicePageState extends State<LNURLFetchInvoicePage> {
   }
 
   Widget showFetchInvoiceDialog() {
-    final String _title = "Pay via Invoice";
     AccountBloc accountBloc = AppBlocsProvider.of<AccountBloc>(context);
     InvoiceBloc invoiceBloc = AppBlocsProvider.of<InvoiceBloc>(context);
     LNUrlBloc lnurlBloc = AppBlocsProvider.of<LNUrlBloc>(context);
@@ -126,7 +125,7 @@ class LNURLFetchInvoicePageState extends State<LNURLFetchInvoicePage> {
                       : 0.0),
               child: SingleButtonBottomBar(
                 stickToBottom: true,
-                text: "REQUEST INVOICE",
+                text: "CONTINUE",
                 onPressed: () {
                   if (_formKey.currentState.validate()) {
                     _getInvoice(invoiceBloc, accountBloc, lnurlBloc, account);
@@ -141,7 +140,7 @@ class LNURLFetchInvoicePageState extends State<LNURLFetchInvoicePage> {
         backgroundColor: Theme.of(context).canvasColor,
         leading: backBtn.BackButton(),
         actions: <Widget>[], // FIXME: Should we have anything here?
-        title: Text(_title,
+        title: Text("Pay to ${_payFetchResponse?.host ?? ""}",
             style: Theme.of(context).appBarTheme.textTheme.headline6),
         elevation: 0.0,
       ),
@@ -195,19 +194,15 @@ class LNURLFetchInvoicePageState extends State<LNURLFetchInvoicePage> {
                             return null;
                           },
                           style: theme.FieldTextStyle.textStyle),
-                      Text('${_payFetchResponse.host}',
-                          textAlign: TextAlign.center,
-                          overflow: TextOverflow.ellipsis,
-                          style: theme.FieldTextStyle.labelStyle),
-                      Text('${_getMetadataText(_payFetchResponse.metadata)}',
-                          textAlign: TextAlign.center,
-                          overflow: TextOverflow.ellipsis,
+                      Text(
+                          "Enter an amount between ${acc.currency.format(widget.payFetchResponse.minAmount)} and ${acc.currency.format(widget.payFetchResponse.maxAmount)}",
+                          textAlign: TextAlign.left,
                           style: theme.FieldTextStyle.labelStyle),
                       Container(
                         width: MediaQuery.of(context).size.width,
                         height: 48,
                         padding: EdgeInsets.only(top: 16.0),
-                        child: _buildPayableBTC(acc),
+                        child: _buildDescription(acc),
                       ),
                       StreamBuilder(
                           stream: accountBloc.accountStream,
@@ -253,10 +248,10 @@ class LNURLFetchInvoicePageState extends State<LNURLFetchInvoicePage> {
     );
   }
 
-  Widget _buildPayableBTC(AccountModel acc) {
+  Widget _buildDescription(AccountModel acc) {
     return GestureDetector(
       child: AutoSizeText(
-        "Pay between ${acc.currency.format(widget.payFetchResponse.minAmount)} and ${acc.currency.format(widget.payFetchResponse.maxAmount)}",
+        "${_getMetadataText(_payFetchResponse.metadata)}",
         style: theme.textStyle,
         maxLines: 1,
         minFontSize: MinFontSize(context).minFontSize,
