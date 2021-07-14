@@ -83,7 +83,7 @@ class InitialWalkthroughPageState extends State<InitialWalkthroughPage>
       if (toRestore != null) {
         if (toRestore.encrypted) {
           if (toRestore.encryptionType.contains("Mnemonics")) {
-            restoreUsingPhrase(identical(toRestore.encryptionType, "Mnemonics"), (entrophy) async {
+            restoreUsingPhrase(toRestore.encryptionType != "Mnemonics12", (entrophy) async {
               await _createBackupPhrase(entrophy);
               var updateAction = UpdateBackupSettings(BackupSettings.start()
                   .copyWith(keyType: BackupKeyType.PHRASE));
