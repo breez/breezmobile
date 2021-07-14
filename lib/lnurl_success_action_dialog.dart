@@ -19,50 +19,13 @@ void showLNURLSuccessAction(BuildContext context, SuccessAction sa) {
                     ? SizedBox(
                         height: 0,
                       )
-                    : Container(
-                        height: 36.0,
-                        padding: EdgeInsets.only(top: 8.0),
-                        child: Row(
-                          mainAxisSize: MainAxisSize.max,
-                          children: <Widget>[
-                            Padding(
-                              padding: const EdgeInsets.only(right: 8.0),
-                              child: AutoSizeText(
-                                sa.description,
-                                textAlign: TextAlign.left,
-                                maxLines: 1,
-                                group: _labelGroup,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
+                    : _TextMessage(
+                        description: sa.description, group: _labelGroup),
                 sa.message?.isNotEmpty != true
                     ? SizedBox(
                         height: 0,
                       )
-                    : Container(
-                        height: 36.0,
-                        padding: EdgeInsets.only(top: 8.0),
-                        child: Row(
-                          mainAxisSize: MainAxisSize.max,
-                          children: <Widget>[
-                            Padding(
-                              padding: const EdgeInsets.only(right: 8.0),
-                              child: AutoSizeText(
-                                sa.message,
-                                style: Theme.of(context)
-                                    .primaryTextTheme
-                                    .headline4
-                                    .copyWith(color: Colors.black),
-                                textAlign: TextAlign.left,
-                                maxLines: 1,
-                                group: _labelGroup,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
+                    : _TextMessage(description: sa.message, group: _labelGroup),
                 sa.url?.isNotEmpty != true
                     ? SizedBox(
                         height: 0,
@@ -81,4 +44,33 @@ void showLNURLSuccessAction(BuildContext context, SuccessAction sa) {
                           ),
                         ))
               ])));
+}
+
+class _TextMessage extends StatelessWidget {
+  final String description;
+  final AutoSizeGroup group;
+
+  const _TextMessage({Key key, this.description, this.group}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      height: 36.0,
+      padding: EdgeInsets.only(top: 8.0),
+      child: Row(
+        mainAxisSize: MainAxisSize.max,
+        children: <Widget>[
+          Padding(
+            padding: const EdgeInsets.only(right: 8.0),
+            child: AutoSizeText(
+              description,
+              textAlign: TextAlign.left,
+              maxLines: 1,
+              group: group,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
 }
