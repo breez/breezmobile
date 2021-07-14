@@ -670,17 +670,21 @@ class HomeState extends State<Home> with WidgetsBindingObserver {
   }
 
   void _listenPaymentResults() {
-    widget.accountBloc.completedPaymentsStream.listen((fulfilledPayment) {
+    widget.accountBloc.completedPaymentsStream.listen((fulfilledPayment) async {
       print(
           '_listenPaymentResults processing: ${fulfilledPayment.paymentHash}');
 
       if (!fulfilledPayment.cancelled &&
           !fulfilledPayment.ignoreGlobalFeedback) {
-        scrollController.animateTo(scrollController.position.minScrollExtent,
-            duration: Duration(milliseconds: 10), curve: Curves.ease);
+        await scrollController.animateTo(
+            scrollController.position.minScrollExtent,
+            duration: Duration(milliseconds: 10),
+            curve: Curves.ease);
 
-        if (fulfilledPayment?.paymentItem?.lnurlPayInfo?.successAction?.hasTag() ==
+        if (fulfilledPayment?.paymentItem?.lnurlPayInfo?.successAction
+                ?.hasTag() ==
             true) {
+          await Future.delayed(Duration(milliseconds: 600));
           showLNURLSuccessAction(
               context, fulfilledPayment.paymentItem.lnurlPayInfo.successAction);
         } else {

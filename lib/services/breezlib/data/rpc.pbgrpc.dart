@@ -1,8 +1,8 @@
 ///
 //  Generated code. Do not modify.
-//  source: messages.proto
+//  source: rpc.proto
 //
-// @dart = 2.12
+// @dart = 2.7
 // ignore_for_file: annotate_overrides,camel_case_types,unnecessary_const,non_constant_identifier_names,library_prefixes,unused_import,unused_shown_name,return_of_invalid_type,unnecessary_this,prefer_final_fields
 
 import 'dart:async' as $async;
@@ -61,54 +61,54 @@ class BreezAPIClient extends $grpc.Client {
           ($core.List<$core.int> value) => $0.PaymentsList.fromBuffer(value));
 
   BreezAPIClient($grpc.ClientChannel channel,
-      {$grpc.CallOptions? options,
-      $core.Iterable<$grpc.ClientInterceptor>? interceptors})
+      {$grpc.CallOptions options,
+      $core.Iterable<$grpc.ClientInterceptor> interceptors})
       : super(channel, options: options, interceptors: interceptors);
 
   $grpc.ResponseFuture<$0.LSPList> getLSPList($0.LSPListRequest request,
-      {$grpc.CallOptions? options}) {
+      {$grpc.CallOptions options}) {
     return $createUnaryCall(_$getLSPList, request, options: options);
   }
 
   $grpc.ResponseFuture<$0.ConnectLSPReply> connectToLSP(
       $0.ConnectLSPRequest request,
-      {$grpc.CallOptions? options}) {
+      {$grpc.CallOptions options}) {
     return $createUnaryCall(_$connectToLSP, request, options: options);
   }
 
   $grpc.ResponseFuture<$0.AddFundInitReply> addFundInit(
       $0.AddFundInitRequest request,
-      {$grpc.CallOptions? options}) {
+      {$grpc.CallOptions options}) {
     return $createUnaryCall(_$addFundInit, request, options: options);
   }
 
   $grpc.ResponseFuture<$0.FundStatusReply> getFundStatus(
       $0.FundStatusRequest request,
-      {$grpc.CallOptions? options}) {
+      {$grpc.CallOptions options}) {
     return $createUnaryCall(_$getFundStatus, request, options: options);
   }
 
   $grpc.ResponseFuture<$0.AddInvoiceReply> addInvoice(
       $0.AddInvoiceRequest request,
-      {$grpc.CallOptions? options}) {
+      {$grpc.CallOptions options}) {
     return $createUnaryCall(_$addInvoice, request, options: options);
   }
 
   $grpc.ResponseFuture<$0.PaymentResponse> payInvoice(
       $0.PayInvoiceRequest request,
-      {$grpc.CallOptions? options}) {
+      {$grpc.CallOptions options}) {
     return $createUnaryCall(_$payInvoice, request, options: options);
   }
 
   $grpc.ResponseFuture<$0.RestartDaemonReply> restartDaemon(
       $0.RestartDaemonRequest request,
-      {$grpc.CallOptions? options}) {
+      {$grpc.CallOptions options}) {
     return $createUnaryCall(_$restartDaemon, request, options: options);
   }
 
   $grpc.ResponseFuture<$0.PaymentsList> listPayments(
       $0.ListPaymentsRequest request,
-      {$grpc.CallOptions? options}) {
+      {$grpc.CallOptions options}) {
     return $createUnaryCall(_$listPayments, request, options: options);
   }
 }
