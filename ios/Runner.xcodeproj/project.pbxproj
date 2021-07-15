@@ -627,6 +627,8 @@
 					"$(inherited)",
 					"$(PROJECT_DIR)/Flutter",
 					"$(PROJECT_DIR)",
+					"$(PROJECT_DIR)/bindings.framework/ios-arm64_x86_64-simulator/",
+					"$(PROJECT_DIR)/bindings.framework/ios-arm64",
 				);
 				INFOPLIST_FILE = Runner/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 12.1;
@@ -665,6 +667,8 @@
 					"$(inherited)",
 					"$(PROJECT_DIR)/Flutter",
 					"$(PROJECT_DIR)",
+					"$(PROJECT_DIR)/bindings.framework/ios-arm64_x86_64-simulator/",
+					"$(PROJECT_DIR)/bindings.framework/ios-arm64",
 				);
 				INFOPLIST_FILE = Runner/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 12.1;
