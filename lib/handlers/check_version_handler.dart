@@ -22,7 +22,7 @@ void checkVersionDialog(BuildContext context, UserProfileBloc userProfileBloc) {
           });
         }
       });
-    } else {
+    } else if (err.contains('bad version')) {
       showFlushbar(context, buttonText: "UPDATE", onDismiss: () {
         if (defaultTargetPlatform == TargetPlatform.iOS) {
           launch("https://testflight.apple.com/join/wPju2Du7");
