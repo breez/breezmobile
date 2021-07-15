@@ -66,7 +66,7 @@ jobs:
           brew install ideviceinstaller ios-deploy
           git clone https://github.com/flutter/flutter.git -b stable
           
-          cp -r $GOPATH/src/github.com/breez/breez/build/ios/bindings.xcframework $GITHUB_WORKSPACE/ios/bindings.framework          
+          cp -r $GOPATH/src/github.com/breez/breez/build/ios/bindings.xcframework/ios-arm64/Bindings.framework $GITHUB_WORKSPACE/ios/bindings.framework          
           rm -rf $GITHUB_WORKSPACE/conf
           git clone builderfiles@packages.breez.technology:configuration -b production $GITHUB_WORKSPACE/temp_config          
           cp -r $GITHUB_WORKSPACE/temp_config/conf $GITHUB_WORKSPACE/conf
