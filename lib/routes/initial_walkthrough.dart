@@ -82,8 +82,8 @@ class InitialWalkthroughPageState extends State<InitialWalkthroughPage>
 
       if (toRestore != null) {
         if (toRestore.encrypted) {
-          if (toRestore.encryptionType.contains("Mnemonics")) {
-            restoreUsingPhrase(toRestore.encryptionType != "Mnemonics12", (entrophy) async {
+          if (toRestore.encryptionType == "Mnemonics") {
+            restoreUsingPhrase((entrophy) async {
               await _createBackupPhrase(entrophy);
               var updateAction = UpdateBackupSettings(BackupSettings.start()
                   .copyWith(keyType: BackupKeyType.PHRASE));
@@ -154,12 +154,10 @@ class InitialWalkthroughPageState extends State<InitialWalkthroughPage>
     }
   }
 
-  Future<String> restoreUsingPhrase(
-      bool is24Word, Function(String key) onKeySubmitted) {
+  Future<String> restoreUsingPhrase(Function(String key) onKeySubmitted) {
     return Navigator.of(context).push(FadeInRoute(
       builder: (BuildContext context) {
-        return EnterBackupPhrasePage(
-            is24Word: is24Word, onPhraseSubmitted: onKeySubmitted);
+        return EnterBackupPhrasePage(onPhraseSubmitted: onKeySubmitted);
       },
     ));
   }
