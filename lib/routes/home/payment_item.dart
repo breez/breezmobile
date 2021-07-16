@@ -19,11 +19,18 @@ class PaymentItem extends StatelessWidget {
   final PaymentInfo _paymentInfo;
   final int _itemIndex;
   final bool _firstItem;
+  final bool _hideBalance;
   final GlobalKey firstPaymentItemKey;
   final ScrollController _scrollController;
 
-  PaymentItem(this._paymentInfo, this._itemIndex, this._firstItem,
-      this.firstPaymentItemKey, this._scrollController);
+  PaymentItem(
+    this._paymentInfo,
+    this._itemIndex,
+    this._firstItem,
+    this._hideBalance,
+    this.firstPaymentItemKey,
+    this._scrollController,
+  );
 
   @override
   Widget build(BuildContext context) {
@@ -121,40 +128,8 @@ class PaymentItem extends StatelessWidget {
                             : MainAxisAlignment.spaceAround,
                     crossAxisAlignment: CrossAxisAlignment.end,
                     children: <Widget>[
-                      Opacity(
-                        // set amount text to transparent when it leaves viewport
-                        opacity: (_scrollController.offset -
-                                    (DASHBOARD_MAX_HEIGHT -
-                                        DASHBOARD_MIN_HEIGHT) -
-                                    ((PAYMENT_LIST_ITEM_HEIGHT +
-                                                BOTTOM_PADDING) *
-                                            (_itemIndex + 1) -
-                                        FILTER_MAX_SIZE +
-                                        AVATAR_DIAMETER / 2) >
-                                0)
-                            ? 0.0
-                            : 1.0,
-                        child: Text(
-                          (_paymentInfo.type == PaymentType.SENT ||
-                                      _paymentInfo.type ==
-                                          PaymentType.WITHDRAWAL ||
-                                      _paymentInfo.type ==
-                                          PaymentType.CLOSED_CHANNEL
-                                  ? "- "
-                                  : "+ ") +
-                              _paymentInfo.currency.format(_paymentInfo.amount,
-                                  includeDisplayName: false),
-                          style: Theme.of(context).accentTextTheme.headline6,
-                        ),
-                      ),
-                      _paymentInfo.fee == 0 || _paymentInfo.pending
-                          ? SizedBox()
-                          : Text(
-                              "FEE " +
-                                  _paymentInfo.currency.format(_paymentInfo.fee,
-                                      includeDisplayName: false),
-                              style: Theme.of(context).accentTextTheme.caption,
-                            ),
+                      _paymentAmount(context),
+                      _paymentFee(context),
                     ],
                   ),
                 ),
@@ -164,6 +139,42 @@ class PaymentItem extends StatelessWidget {
           ),
         ),
       ),
+    );
+  }
+
+  Widget _paymentAmount(BuildContext context) {
+    final type = _paymentInfo.type;
+    final negative = type == PaymentType.SENT ||
+        type == PaymentType.WITHDRAWAL ||
+        type == PaymentType.CLOSED_CHANNEL;
+    final amount = _paymentInfo.currency.format(
+      _paymentInfo.amount,
+      includeDisplayName: false,
+    );
+    return Opacity(
+      // set amount text to transparent when it leaves viewport
+      opacity: (_scrollController.offset -
+                  (DASHBOARD_MAX_HEIGHT - DASHBOARD_MIN_HEIGHT) -
+                  ((PAYMENT_LIST_ITEM_HEIGHT + BOTTOM_PADDING) *
+                          (_itemIndex + 1) - FILTER_MAX_SIZE +
+                      AVATAR_DIAMETER / 2) > 0) ? 0.0 : 1.0,
+      child: Text(
+        _hideBalance ? "******" : (negative ? "- " : "+ ") + amount,
+        style: Theme.of(context).accentTextTheme.headline6,
+      ),
+    );
+  }
+
+  Widget _paymentFee(BuildContext context) {
+    final fee = _paymentInfo.fee;
+    if (fee == 0 || _paymentInfo.pending) return SizedBox();
+    final feeFormatted = _paymentInfo.currency.format(
+      fee,
+      includeDisplayName: false,
+    );
+    return Text(
+      _hideBalance ? "******" : "FEE $feeFormatted",
+      style: Theme.of(context).accentTextTheme.caption,
     );
   }
 
