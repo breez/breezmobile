@@ -114,7 +114,8 @@ class PodcastPaymentsBloc with AsyncActionsHandler {
         final value = await _getLightningPaymentValue(currentPlayedEpisode);
         if (value != null) {
           _payRecipients(currentPlayedEpisode, value.recipients,
-              user.paymentOptions.preferredSatsPerMinValue);
+              user.paymentOptions.preferredSatsPerMinValue,
+              onlyAggregate: nextPaidMinutes % 5 != 0);
         }
       }
     });
@@ -148,7 +149,7 @@ class PodcastPaymentsBloc with AsyncActionsHandler {
 
   void _payRecipients(
       Episode episode, List<ValueDestination> recipients, int total,
-      {bool boost = false}) async {
+      {bool boost = false, bool onlyAggregate = false}) async {
     if (breezReceiverNode == null) {
       try {
         breezReceiverNode = await _breezLib.receiverNode();
@@ -196,6 +197,10 @@ class PodcastPaymentsBloc with AsyncActionsHandler {
       if (!boost) {
         payPart =
             (await _aggregatedPayments.addAmount(d.address, amount)).toInt();
+        if (onlyAggregate) {
+          log.info("aggregating amount $payPart for address ${d.address}");
+          return;
+        }
       }
       final customKey = d.customKey?.toString();
       final customValue = d.customValue?.toString();
