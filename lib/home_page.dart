@@ -468,9 +468,14 @@ class HomeState extends State<Home> with WidgetsBindingObserver {
                                                                   "Network",
                                                                   "src/icon/network.png"),
                                                               DrawerItemConfig(
-                                                                  "/security",
+                                                                  "",
                                                                   "Security & Backup",
-                                                                  "src/icon/security.png"),
+                                                                  "src/icon/security.png",
+                                                                  onItemSelected: (_) =>
+                                                                      protectAdminRoute(
+                                                                          context,
+                                                                          user,
+                                                                          "/security")),
                                                               ...advancedFlavorItems,
                                                             ]),
                                                             groupTitle:
