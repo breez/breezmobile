@@ -27,6 +27,7 @@ Widget withPodcastTheme(BreezUserModel user, Widget child) {
     child: child,
     data: user.themeId == "BLUE"
         ? Themes.lightTheme().themeData.copyWith(
+              platform: TargetPlatform.android,
               brightness: Brightness.light,
               primaryColor: Color.fromRGBO(0, 133, 251, 1.0),
               primaryColorBrightness: Brightness.light,
@@ -126,6 +127,7 @@ Widget withPodcastTheme(BreezUserModel user, Widget child) {
               ),
             )
         : Themes.darkTheme().themeData.copyWith(
+              platform: TargetPlatform.android,
               brightness: Brightness.dark,
               primaryColor: Color(0xFF4B89EB),
               primaryColorBrightness: Brightness.dark,
