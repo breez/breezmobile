@@ -48,22 +48,13 @@ class _TextMessage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      height: 36.0,
+    return Padding(
       padding: EdgeInsets.only(top: 8.0),
-      child: Row(
-        mainAxisSize: MainAxisSize.max,
-        children: <Widget>[
-          Padding(
-            padding: const EdgeInsets.only(right: 8.0),
-            child: AutoSizeText(
-              description,
-              textAlign: TextAlign.left,
-              maxLines: 1,
-              group: group,
-            ),
-          ),
-        ],
+      child: Text(
+        description,
+        textAlign: TextAlign.left,
+        overflow: TextOverflow.ellipsis,
+        maxLines: 2,
       ),
     );
   }
