@@ -41,6 +41,7 @@ class PayFetchResponse {
   String get callback => response.callback;
   Int64 get minAmount => response.minAmount;
   Int64 get maxAmount => response.maxAmount;
+  Int64 get commentAllowed => response.commentAllowed;
   Int64 get amount => response.amount;
   List<LNUrlPayMetadata> get metadata => response.metadata;
   String get tag => response.tag;

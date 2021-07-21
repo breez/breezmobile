@@ -162,12 +162,13 @@ class LNURLFetchInvoicePageState extends State<LNURLFetchInvoicePage> {
                     mainAxisSize: MainAxisSize.max,
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: <Widget>[
+                        if(widget.payFetchResponse.commentAllowed > 0)
                       TextFormField(
                         controller: _commentController,
                         keyboardType: TextInputType.multiline,
                         textInputAction: TextInputAction.done,
                         maxLines: null,
-                        maxLength: 90,
+                        maxLength: widget.payFetchResponse.commentAllowed.toInt(),
                         maxLengthEnforced: true,
                         decoration: InputDecoration(
                           labelText: "Comment (optional)",
