@@ -3,9 +3,7 @@ import 'dart:async';
 import 'package:breez/bloc/account/account_model.dart';
 import 'package:breez/bloc/blocs_provider.dart';
 import 'package:breez/bloc/invoice/invoice_bloc.dart';
-import 'package:breez/bloc/lnurl/lnurl_actions.dart';
 import 'package:breez/bloc/lnurl/lnurl_bloc.dart';
-import 'package:breez/handlers/lnurl_handler.dart';
 import 'package:breez/routes/spontaneous_payment/spontaneous_payment_page.dart';
 import 'package:breez/routes/withdraw_funds/reverse_swap_page.dart';
 import 'package:breez/services/injector.dart';
@@ -14,9 +12,7 @@ import 'package:breez/utils/bip21.dart';
 import 'package:breez/utils/btc_address.dart';
 import 'package:breez/utils/lnurl.dart';
 import 'package:breez/utils/node_id.dart';
-import 'package:breez/widgets/error_dialog.dart';
 import 'package:breez/widgets/flushbar.dart';
-import 'package:breez/widgets/loader.dart';
 import 'package:breez/widgets/route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
@@ -50,7 +46,7 @@ class QrActionButton extends StatelessWidget {
 
               // lnurl string
               if (isLNURL(lower)) {
-                await _handleLNUrl(lnurlBloc, context, scannedString);
+                await handleLNUrl(lnurlBloc, context, scannedString);
                 return;
               }
 
@@ -113,35 +109,5 @@ class QrActionButton extends StatelessWidget {
         .validateAddress(scannedString)
         .then((_) => true)
         .catchError((err) => false);
-  }
-
-  Future _handleLNUrl(
-      LNUrlBloc lnurlBloc, BuildContext context, String lnurl) async {
-    Fetch fetchAction = Fetch(lnurl);
-    var cancelCompleter = Completer();
-    var loaderRoute = createLoaderRoute(context, onClose: () {
-      cancelCompleter.complete();
-    });
-    Navigator.of(context).push(loaderRoute);
-
-    lnurlBloc.actionsSink.add(fetchAction);
-    await Future.any([cancelCompleter.future, fetchAction.future]).then(
-      (response) {
-        Navigator.of(context).removeRoute(loaderRoute);
-        if (cancelCompleter.isCompleted) {
-          return;
-        }
-
-        LNURLHandler(context, lnurlBloc)
-            .executeLNURLResponse(context, lnurlBloc, response);
-      },
-    ).catchError((err) {
-      Navigator.of(context).removeRoute(loaderRoute);
-      promptError(
-          context,
-          "Link Error",
-          Text("Failed to process link: " + err.toString(),
-              style: Theme.of(context).dialogTheme.contentTextStyle));
-    });
   }
 }
