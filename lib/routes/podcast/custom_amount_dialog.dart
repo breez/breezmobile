@@ -1,4 +1,3 @@
-import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -41,7 +40,7 @@ class CustomAmountDialogState extends State<CustomAmountDialog> {
 
   Widget _buildPaymentRequestDialog() {
     return AlertDialog(
-      title: AutoSizeText(
+      title: Text(
         "Enter a Custom Amount:",
         style:
             Theme.of(context).dialogTheme.titleTextStyle.copyWith(fontSize: 16),
