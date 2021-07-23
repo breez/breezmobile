@@ -1,3 +1,6 @@
+import 'package:breez/bloc/user_profile/currency.dart';
+import 'package:breez/widgets/sat_amount_form_field_formatter.dart';
+import 'package:fixnum/fixnum.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -26,11 +29,23 @@ class CustomAmountDialogState extends State<CustomAmountDialog> {
     _customAmountController.addListener(() {
       setState(() {});
     });
-    _customAmountController.text =
-        !widget.presetAmountsList.contains(widget.customAmount)
-            ? widget.customAmount?.toString()
-            : null;
+    _customAmountController.text = _initialCustomAmount();
     if (_customAmountController.text.isEmpty) _amountFocusNode.requestFocus();
+  }
+
+  String _initialCustomAmount() {
+    final initial = widget.customAmount;
+    if (initial == null) {
+      return null;
+    }
+    if (widget.presetAmountsList.contains(initial)) {
+      return null;
+    }
+    return Currency.SAT.format(
+      Int64(initial),
+      includeDisplayName: false,
+      includeCurrencySymbol: false,
+    );
   }
 
   @override
@@ -60,12 +75,13 @@ class CustomAmountDialogState extends State<CustomAmountDialog> {
         focusNode: _amountFocusNode,
         controller: _customAmountController,
         keyboardType: TextInputType.number,
-        inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-        validator: (value) {
-          if (value.length == 0) {
+        inputFormatters: [SatAmountFormFieldFormatter()],
+        validator: (raw) {
+          if (raw.length == 0) {
             return "Please enter a custom amount";
           }
-          if (int.parse(value) < widget.presetAmountsList[0]) {
+          int value = _satsValue(raw);
+          if (value < widget.presetAmountsList[0]) {
             return "Please enter at least ${widget.presetAmountsList[0]} sats.";
           }
           return null;
@@ -92,7 +108,7 @@ class CustomAmountDialogState extends State<CustomAmountDialog> {
             if (_formKey.currentState.validate()) {
               Navigator.pop(context);
               widget.setAmount(
-                int.parse(_customAmountController.text),
+                _satsValue(_customAmountController.text),
               );
             }
           },
@@ -102,5 +118,15 @@ class CustomAmountDialogState extends State<CustomAmountDialog> {
       );
     }
     return actions;
+  }
+
+  int _satsValue(String raw) {
+    int value;
+    try {
+      value = Currency.SAT.parse(raw).toInt();
+    } catch (e) {
+      return 0;
+    }
+    return value;
   }
 }
