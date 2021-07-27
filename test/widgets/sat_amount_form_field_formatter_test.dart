@@ -1,4 +1,4 @@
-import 'package:breez/widgets/amount_form_field.dart';
+import 'package:breez/widgets/sat_amount_form_field_formatter.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_test/flutter_test.dart';
 
