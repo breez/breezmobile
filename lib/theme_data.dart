@@ -310,42 +310,38 @@ final VendorTheme bitrefill = VendorTheme(
     iconFgColor: Color.fromRGBO(68, 155, 247, 1.0),
     iconBgColor: Color(0xFFffffff),
     textColor: Color.fromRGBO(47, 47, 47, 1.0));
-final VendorTheme fastbitcoins = VendorTheme(
-    iconBgColor: Color(0xFFff7c10),
-    iconFgColor: Color(0xFF1f2a44),
-    textColor: Color(0xFF1f2a44));
 final VendorTheme lnpizza =
     VendorTheme(iconBgColor: Color(0xFF000000), iconFgColor: Color(0xFFf8e71c));
-final VendorTheme xsats = VendorTheme(
-  iconBgColor: Color(0xFF000000),
-);
-final VendorTheme lightnite = VendorTheme(
-  iconBgColor: Color(0xFF530709),
-);
-final VendorTheme fixedfloat = VendorTheme(
-  iconBgColor: Color(0xFF0B4E7B),
-);
-final VendorTheme spendl = VendorTheme(
-  iconBgColor: Color(0xFFffffff),
-);
-final VendorTheme boltz = VendorTheme(
-  iconBgColor: Color(0xFF001524),
-);
+final VendorTheme fixedfloat = VendorTheme(iconBgColor: Color(0xFF0B4E7B));
 final VendorTheme lnmarkets = VendorTheme(
   iconBgColor: Color(0xFF0a157a),
   textColor: Color(0xFFe2ded5),
 );
+final VendorTheme boltz = VendorTheme(iconBgColor: Color(0xFF001524));
+final VendorTheme lightnite = VendorTheme(iconBgColor: Color(0xFF530709));
+final VendorTheme spendl = VendorTheme(iconBgColor: Color(0xFFffffff));
+final VendorTheme kollider = VendorTheme(
+  iconBgColor: Color.fromRGBO(21, 23, 25, 1),
+  iconFgColor: Color.fromRGBO(217, 227, 234, 1),
+  textColor: Color.fromRGBO(217, 227, 234, 1),
+);
+final VendorTheme fastbitcoins = VendorTheme(
+    iconBgColor: Color(0xFFff7c10),
+    iconFgColor: Color(0xFF1f2a44),
+    textColor: Color(0xFF1f2a44));
+final VendorTheme xsats = VendorTheme(iconBgColor: Color(0xFF000000));
 
 final Map<String, VendorTheme> vendorTheme = {
   "bitrefill": bitrefill,
-  "fastbitcoins": fastbitcoins,
   "ln.pizza": lnpizza,
-  "xsats": xsats,
-  "lightnite": lightnite,
   "fixedfloat": fixedfloat,
-  "spendl": spendl,
-  "boltz": boltz,
   "lnmarkets": lnmarkets,
+  "boltz": boltz,
+  "lightnite": lightnite,
+  "spendl": spendl,
+  "kollider": kollider,
+  "fastbitcoins": fastbitcoins,
+  "xsats": xsats,
 };
 
 final TextStyle drawerItemTextStyle =

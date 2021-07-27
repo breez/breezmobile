@@ -6,7 +6,7 @@ import 'package:breez/theme_data.dart' as theme;
 import 'package:breez/widgets/route.dart';
 import 'package:flutter/material.dart';
 
-import 'lnmarkets_webview.dart';
+import 'lnurl_webview.dart';
 import 'vendor_webview.dart';
 
 class VendorRow extends StatelessWidget {
@@ -40,12 +40,19 @@ class VendorRow extends StatelessWidget {
         onTap: () {
           Navigator.push(context, FadeInRoute(
             builder: (_) {
-              var lnurlBloc = AppBlocsProvider.of<LNUrlBloc>(context);
-              if (_vendor.id == "lnmarkets") {
-                return LNMarketsWebViewPage(
-                    accountBloc: accountBloc,
-                    lnMarketModel: _vendor,
-                    lnurlBloc: lnurlBloc);
+              if (_vendor.id == "lnmarkets" || _vendor.id == "Kollider") {
+                var lnurlBloc = AppBlocsProvider.of<LNUrlBloc>(context);
+                return LNURLWebViewPage(
+                  accountBloc: accountBloc,
+                  vendorModel: _vendor,
+                  lnurlBloc: lnurlBloc,
+                  endpointURI: _vendor.id == "lnmarkets"
+                      ? Uri.https("api.lnmarkets.com", "lnurl/a/c")
+                      : Uri.https(
+                          "api.kollider.xyz", "v1/auth/external/lnurl_auth"),
+                  responseID:
+                      _vendor.id == "lnmarkets" ? "lnurl" : "lnurl_auth",
+                );
               }
               return VendorWebViewPage(
                   accountBloc, _vendor.url, _vendor.displayName);
@@ -99,7 +106,7 @@ class VendorRow extends StatelessWidget {
     } else {
       return <Widget>[
         _vendorLogo,
-        Padding(padding: EdgeInsets.only(left: 4.0)),
+        Padding(padding: EdgeInsets.only(left: 8.0)),
         Text(_vendor.displayName,
             style: theme.vendorTitleStyle.copyWith(color: _vendorTextColor)),
       ];
