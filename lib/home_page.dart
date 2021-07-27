@@ -192,19 +192,20 @@ class HomeState extends State<Home> with WidgetsBindingObserver {
       child: StreamBuilder<BreezUserModel>(
           stream: widget.userProfileBloc.userStream,
           builder: (context, userSnapshot) {
-            var user = userSnapshot.data;
+            final user = userSnapshot.data;
 
             return StreamBuilder<AccountModel>(
                 stream: widget.accountBloc.accountStream,
                 builder: (context, accSnapshot) {
-                  var account = accSnapshot.data;
+                  final account = accSnapshot.data;
                   if (account == null) {
                     return SizedBox();
                   }
+
                   return StreamBuilder<AccountSettings>(
                       stream: widget.accountBloc.accountSettingsStream,
                       builder: (context, settingsSnapshot) {
-                        var settings = settingsSnapshot.data;
+                        final settings = settingsSnapshot.data;
                         if (settings == null) {
                           return SizedBox();
                         }
@@ -212,298 +213,25 @@ class HomeState extends State<Home> with WidgetsBindingObserver {
                         return StreamBuilder<LSPStatus>(
                             stream: lspBloc.lspStatusStream,
                             builder: (context, lspSnapshot) {
+                              final lspStatus = lspSnapshot.data;
+
                               return StreamBuilder<List<AddFundVendorModel>>(
                                   stream: addFundsBloc.availableVendorsStream,
                                   builder: (context, snapshot) {
-                                    List<DrawerItemConfig> addFundsVendors = [];
-                                    if (snapshot.data != null) {
-                                      snapshot.data.forEach((v) {
-                                        if (v.isAllowed) {
-                                          var vendorDrawerConfig =
-                                              DrawerItemConfig(v.route,
-                                                  v.shortName ?? v.name, v.icon,
-                                                  disabled: !v.enabled ||
-                                                      v.requireActiveChannel &&
-                                                          !account.connected,
-                                                  onItemSelected: (item) {
-                                            if (!v.showLSPFee) {
-                                              Navigator.of(context)
-                                                  .pushNamed(v.route);
-                                              return;
-                                            }
-                                            promptLSPFeeAndNavigate(
-                                                context,
-                                                account,
-                                                lspSnapshot.data.currentLSP,
-                                                v.route);
-                                          });
-
-                                          addFundsVendors
-                                              .add(vendorDrawerConfig);
-                                        }
-                                      });
-                                    }
-                                    var refundableAddresses = account
-                                        .swapFundsStatus
-                                        .maturedRefundableAddresses;
-                                    var refundItems = <DrawerItemConfigGroup>[];
-                                    if (refundableAddresses.length > 0) {
-                                      refundItems = [
-                                        DrawerItemConfigGroup([
-                                          DrawerItemConfig("", "Get Refund",
-                                              "src/icon/withdraw_funds.png",
-                                              onItemSelected: (_) =>
-                                                  protectAdminRoute(context,
-                                                      user, "/get_refund"))
-                                        ])
-                                      ];
-                                    }
-
-                                    var flavorItems = <DrawerItemConfigGroup>[];
-                                    flavorItems = user.appMode == AppMode.pos
-                                        ? [
-                                            DrawerItemConfigGroup([
-                                              DrawerItemConfig(
-                                                  "/transactions",
-                                                  "Transactions",
-                                                  "src/icon/transactions.png")
-                                            ])
-                                          ]
-                                        : [];
-
-                                    var balanceItem = DrawerItemConfig(
-                                      "",
-                                      "Balance",
-                                      "src/icon/balance.png",
-                                      isSelected:
-                                          user.appMode == AppMode.balance,
-                                      onItemSelected: (_) {
-                                        protectAdminAction(context, user, () {
-                                          widget.userProfileBloc.userActionsSink
-                                              .add(SetAppMode(AppMode.balance));
-                                          return Future.value(null);
-                                        });
-                                      },
-                                    );
-
-                                    var podcastItem = DrawerItemConfig(
-                                      "",
-                                      "Podcasts",
-                                      "src/icon/podcast.png",
-                                      key: podcastMenuItemKey,
-                                      isSelected:
-                                          user.appMode == AppMode.podcasts,
-                                      onItemSelected: (_) {
-                                        protectAdminAction(context, user, () {
-                                          widget.userProfileBloc.userActionsSink
-                                              .add(
-                                                  SetAppMode(AppMode.podcasts));
-                                          return Future.value(null);
-                                        });
-                                      },
-                                    );
-
-                                    var posItem = DrawerItemConfig(
-                                      "",
-                                      "Point of Sale",
-                                      "src/icon/pos.png",
-                                      isSelected: user.appMode == AppMode.pos,
-                                      onItemSelected: (_) {
-                                        widget.userProfileBloc.userActionsSink
-                                            .add(SetAppMode(AppMode.pos));
-                                      },
-                                    );
-
-                                    var lightningAppsItem = DrawerItemConfig(
-                                        "", "Apps", "src/icon/apps.png",
-                                        isSelected: user.appMode ==
-                                            AppMode.apps, onItemSelected: (_) {
-                                      protectAdminAction(context, user, () {
-                                        widget.userProfileBloc.userActionsSink
-                                            .add(SetAppMode(AppMode.apps));
-                                        return Future.value(null);
-                                      });
-                                    });
-
-                                    var appModeItems =
-                                        <DrawerItemConfigGroup>[];
-                                    appModeItems = [
-                                      DrawerItemConfigGroup([
-                                        balanceItem,
-                                      ]),
-                                      DrawerItemConfigGroup([
-                                        podcastItem,
-                                      ]),
-                                      DrawerItemConfigGroup([
-                                        posItem,
-                                      ]),
-                                      DrawerItemConfigGroup([
-                                        lightningAppsItem,
-                                      ]),
-                                      DrawerItemConfigGroup([])
-                                    ];
-
-                                    var advancedFlavorItems =
-                                        <DrawerItemConfig>[];
-                                    advancedFlavorItems =
-                                        user.appMode == AppMode.pos
-                                            ? [
-                                                DrawerItemConfig(
-                                                    "",
-                                                    "POS Settings",
-                                                    "src/icon/settings.png",
-                                                    onItemSelected: (_) =>
-                                                        protectAdminRoute(
-                                                            context,
-                                                            user,
-                                                            "/settings")),
-                                              ]
-                                            : [
-                                                DrawerItemConfig(
-                                                    "/developers",
-                                                    "Developers",
-                                                    "src/icon/developers.png")
-                                              ];
+                                    final vendor = snapshot.data;
 
                                     return StreamBuilder<
                                             Future<DecodedClipboardData>>(
                                         stream: widget
                                             .invoiceBloc.decodedClipboardStream,
                                         builder: (context, snapshot) {
-                                          return Container(
-                                            height: MediaQuery.of(context)
-                                                .size
-                                                .height,
-                                            width: MediaQuery.of(context)
-                                                .size
-                                                .width,
-                                            child: FadeInWidget(
-                                              child: Scaffold(
-                                                  resizeToAvoidBottomInset:
-                                                      false,
-                                                  key: _scaffoldKey,
-                                                  appBar: AppBar(
-                                                    brightness:
-                                                        theme.themeId == "BLUE"
-                                                            ? Brightness.light
-                                                            : Theme.of(context)
-                                                                .appBarTheme
-                                                                .brightness,
-                                                    centerTitle: false,
-                                                    actions: <Widget>[
-                                                      Padding(
-                                                        padding:
-                                                            const EdgeInsets
-                                                                .all(14.0),
-                                                        child:
-                                                            AccountRequiredActionsIndicator(
-                                                                widget
-                                                                    .backupBloc,
-                                                                widget
-                                                                    .accountBloc,
-                                                                widget.lspBloc),
-                                                      ),
-                                                    ],
-                                                    leading: _buildMenuIcon(
-                                                        context, user.appMode),
-                                                    title: IconButton(
-                                                      padding: EdgeInsets.zero,
-                                                      icon: SvgPicture.asset(
-                                                        "src/images/logo-color.svg",
-                                                        height: 23.5,
-                                                        width: 62.7,
-                                                        color: Theme.of(context)
-                                                            .appBarTheme
-                                                            .actionsIconTheme
-                                                            .color,
-                                                        colorBlendMode:
-                                                            BlendMode.srcATop,
-                                                      ),
-                                                      iconSize: 64,
-                                                      onPressed: () async {
-                                                        _scaffoldKey
-                                                            .currentState
-                                                            .openDrawer();
-                                                      },
-                                                    ),
-                                                    iconTheme: IconThemeData(
-                                                        color: Color.fromARGB(
-                                                            255, 0, 133, 251)),
-                                                    backgroundColor: (user
-                                                                .appMode ==
-                                                            AppMode.pos)
-                                                        ? Theme.of(context)
-                                                            .backgroundColor
-                                                        : theme
-                                                            .customData[
-                                                                theme.themeId]
-                                                            .dashboardBgColor,
-                                                    elevation: 0.0,
-                                                  ),
-                                                  drawerEnableOpenDragGesture:
-                                                      true,
-                                                  drawerDragStartBehavior:
-                                                      DragStartBehavior.down,
-                                                  drawerEdgeDragWidth:
-                                                      MediaQuery.of(context)
-                                                          .size
-                                                          .width,
-                                                  drawer: Theme(
-                                                    data: theme
-                                                        .themeMap[user.themeId],
-                                                    child: NavigationDrawer(
-                                                        true,
-                                                        [
-                                                          ...refundItems,
-                                                          ...appModeItems,
-                                                          ...flavorItems,
-                                                          DrawerItemConfigGroup(
-                                                            _filterItems([
-                                                              DrawerItemConfig(
-                                                                  "/fiat_currency",
-                                                                  "Fiat Currencies",
-                                                                  "src/icon/fiat_currencies.png"),
-                                                              DrawerItemConfig(
-                                                                  "/network",
-                                                                  "Network",
-                                                                  "src/icon/network.png"),
-                                                              DrawerItemConfig(
-                                                                  "",
-                                                                  "Security & Backup",
-                                                                  "src/icon/security.png",
-                                                                  onItemSelected: (_) =>
-                                                                      protectAdminRoute(
-                                                                          context,
-                                                                          user,
-                                                                          "/security")),
-                                                              ...advancedFlavorItems,
-                                                            ]),
-                                                            groupTitle:
-                                                                "Preferences",
-                                                            groupAssetImage: "",
-                                                          ),
-                                                        ],
-                                                        _onNavigationItemSelected),
-                                                  ),
-                                                  bottomNavigationBar: user
-                                                              .appMode ==
-                                                          AppMode.balance
-                                                      ? BottomActionsBar(account,
-                                                          firstPaymentItemKey)
-                                                      : null,
-                                                  floatingActionButton: user
-                                                              .appMode ==
-                                                          AppMode.balance
-                                                      ? QrActionButton(account,
-                                                          firstPaymentItemKey)
-                                                      : null,
-                                                  floatingActionButtonLocation:
-                                                      FloatingActionButtonLocation
-                                                          .centerDocked,
-                                                  body: widget._screenBuilders[
-                                                          _activeScreen] ??
-                                                      _homePage(user)),
-                                            ),
+                                          return _build(
+                                            context,
+                                            user,
+                                            account,
+                                            settings,
+                                            lspStatus,
+                                            vendor,
                                           );
                                         });
                                   });
@@ -512,6 +240,349 @@ class HomeState extends State<Home> with WidgetsBindingObserver {
                 });
           }),
     );
+  }
+
+  Widget _build(
+    BuildContext context,
+    BreezUserModel user,
+    AccountModel account,
+    AccountSettings settings,
+    LSPStatus lspStatus,
+    List<AddFundVendorModel> vendor,
+  ) {
+    final addFundsVendors = _drawerConfigAddFundsVendors(
+      context,
+      account,
+      lspStatus,
+      vendor,
+    );
+    final mediaSize = MediaQuery.of(context).size;
+    return Container(
+      height: mediaSize.height,
+      width: mediaSize.width,
+      child: FadeInWidget(
+        child: Scaffold(
+            resizeToAvoidBottomInset: false,
+            key: _scaffoldKey,
+            appBar: AppBar(
+              brightness: theme.themeId == "BLUE"
+                  ? Brightness.light
+                  : Theme.of(context).appBarTheme.brightness,
+              centerTitle: false,
+              actions: <Widget>[
+                Padding(
+                  padding: const EdgeInsets.all(14.0),
+                  child: AccountRequiredActionsIndicator(
+                    widget.backupBloc,
+                    widget.accountBloc,
+                    widget.lspBloc,
+                  ),
+                ),
+              ],
+              leading: _buildMenuIcon(context, user.appMode),
+              title: IconButton(
+                padding: EdgeInsets.zero,
+                icon: SvgPicture.asset(
+                  "src/images/logo-color.svg",
+                  height: 23.5,
+                  width: 62.7,
+                  color: Theme.of(context).appBarTheme.actionsIconTheme.color,
+                  colorBlendMode: BlendMode.srcATop,
+                ),
+                iconSize: 64,
+                onPressed: () async {
+                  _scaffoldKey.currentState.openDrawer();
+                },
+              ),
+              iconTheme: IconThemeData(
+                color: Color.fromARGB(255, 0, 133, 251),
+              ),
+              backgroundColor: (user.appMode == AppMode.pos)
+                  ? Theme.of(context).backgroundColor
+                  : theme.customData[theme.themeId].dashboardBgColor,
+              elevation: 0.0,
+            ),
+            drawerEnableOpenDragGesture: true,
+            drawerDragStartBehavior: DragStartBehavior.down,
+            drawerEdgeDragWidth: mediaSize.width,
+            drawer: Theme(
+              data: theme.themeMap[user.themeId],
+              child: _navigationDrawer(
+                context,
+                user,
+                account,
+                settings,
+                lspStatus,
+                vendor,
+              ),
+            ),
+            bottomNavigationBar: user.appMode == AppMode.balance
+                ? BottomActionsBar(account, firstPaymentItemKey)
+                : null,
+            floatingActionButton: user.appMode == AppMode.balance
+                ? QrActionButton(account, firstPaymentItemKey)
+                : null,
+            floatingActionButtonLocation:
+                FloatingActionButtonLocation.centerDocked,
+            body: widget._screenBuilders[_activeScreen] ?? _homePage(user)),
+      ),
+    );
+  }
+
+  NavigationDrawer _navigationDrawer(
+    BuildContext context,
+    BreezUserModel user,
+    AccountModel account,
+    AccountSettings settings,
+    LSPStatus lspStatus,
+    List<AddFundVendorModel> vendor,
+  ) {
+    return NavigationDrawer(
+      true,
+      [
+        ..._drawerConfigRefundItems(
+          context,
+          user,
+          account.swapFundsStatus.maturedRefundableAddresses,
+        ),
+        ..._drawerConfigAppModeItems(context, user),
+        ..._drawerConfigFlavorItems(context, user),
+        DrawerItemConfigGroup(
+          _filterItems(_drawerConfigToFilter(context, user)),
+          groupTitle: "Preferences",
+          groupAssetImage: "",
+        ),
+      ],
+      _onNavigationItemSelected,
+    );
+  }
+
+  List<DrawerItemConfig> _drawerConfigToFilter(
+    BuildContext context,
+    BreezUserModel user,
+  ) {
+    return [
+      DrawerItemConfig(
+        "/fiat_currency",
+        "Fiat Currencies",
+        "src/icon/fiat_currencies.png",
+      ),
+      DrawerItemConfig(
+        "/network",
+        "Network",
+        "src/icon/network.png",
+      ),
+      DrawerItemConfig(
+        "",
+        "Security & Backup",
+        "src/icon/security.png",
+        onItemSelected: (_) => protectAdminRoute(context, user, "/security"),
+      ),
+      ..._drawerConfigAdvancedFlavorItems(context, user),
+    ];
+  }
+
+  List<DrawerItemConfig> _drawerConfigAddFundsVendors(
+    BuildContext context,
+    AccountModel account,
+    LSPStatus lspStatus,
+    List<AddFundVendorModel> vendor,
+  ) {
+    if (vendor == null) {
+      return [];
+    }
+    List<DrawerItemConfig> addFundsVendors = [];
+    vendor.where((v) => v.isAllowed).forEach((v) {
+      addFundsVendors.add(
+        DrawerItemConfig(
+          v.route,
+          v.shortName ?? v.name,
+          v.icon,
+          disabled: !v.enabled || v.requireActiveChannel && !account.connected,
+          onItemSelected: (item) {
+            if (!v.showLSPFee) {
+              Navigator.of(context).pushNamed(v.route);
+              return;
+            }
+            promptLSPFeeAndNavigate(
+              context,
+              account,
+              lspStatus.currentLSP,
+              v.route,
+            );
+          },
+        ),
+      );
+    });
+    return addFundsVendors;
+  }
+
+  List<DrawerItemConfigGroup> _drawerConfigRefundItems(
+    BuildContext context,
+    BreezUserModel user,
+    List<RefundableAddress> refundableAddresses,
+  ) {
+    if (refundableAddresses.length == 0) {
+      return [];
+    }
+    return [
+      DrawerItemConfigGroup(
+        [
+          DrawerItemConfig(
+            "",
+            "Get Refund",
+            "src/icon/withdraw_funds.png",
+            onItemSelected: (_) => protectAdminRoute(
+              context,
+              user,
+              "/get_refund",
+            ),
+          )
+        ],
+      ),
+    ];
+  }
+
+  List<DrawerItemConfigGroup> _drawerConfigFlavorItems(
+    BuildContext context,
+    BreezUserModel user,
+  ) {
+    if (user.appMode == AppMode.pos) {
+      return [
+        DrawerItemConfigGroup(
+          [
+            DrawerItemConfig(
+              "/transactions",
+              "Transactions",
+              "src/icon/transactions.png",
+            ),
+          ],
+        ),
+      ];
+    }
+    return [];
+  }
+
+  List<DrawerItemConfigGroup> _drawerConfigAppModeItems(
+    BuildContext context,
+    BreezUserModel user,
+  ) {
+    return [
+      DrawerItemConfigGroup([_drawerItemBalance(context, user)]),
+      DrawerItemConfigGroup([_drawerItemPodcast(context, user)]),
+      DrawerItemConfigGroup([_drawerItemPos(context, user)]),
+      DrawerItemConfigGroup([_drawerItemLightningApps(context, user)]),
+      DrawerItemConfigGroup([]),
+    ];
+  }
+
+  DrawerItemConfig _drawerItemBalance(
+    BuildContext context,
+    BreezUserModel user,
+  ) {
+    return DrawerItemConfig(
+      "",
+      "Balance",
+      "src/icon/balance.png",
+      isSelected: user.appMode == AppMode.balance,
+      onItemSelected: (_) {
+        protectAdminAction(
+          context,
+          user,
+          () {
+            widget.userProfileBloc.userActionsSink
+                .add(SetAppMode(AppMode.balance));
+            return Future.value(null);
+          },
+        );
+      },
+    );
+  }
+
+  DrawerItemConfig _drawerItemPodcast(
+    BuildContext context,
+    BreezUserModel user,
+  ) {
+    return DrawerItemConfig(
+      "",
+      "Podcasts",
+      "src/icon/podcast.png",
+      key: podcastMenuItemKey,
+      isSelected: user.appMode == AppMode.podcasts,
+      onItemSelected: (_) {
+        protectAdminAction(
+          context,
+          user,
+          () {
+            widget.userProfileBloc.userActionsSink
+                .add(SetAppMode(AppMode.podcasts));
+            return Future.value(null);
+          },
+        );
+      },
+    );
+  }
+
+  DrawerItemConfig _drawerItemPos(
+    BuildContext context,
+    BreezUserModel user,
+  ) {
+    return DrawerItemConfig(
+      "",
+      "Point of Sale",
+      "src/icon/pos.png",
+      isSelected: user.appMode == AppMode.pos,
+      onItemSelected: (_) {
+        widget.userProfileBloc.userActionsSink.add(SetAppMode(AppMode.pos));
+      },
+    );
+  }
+
+  DrawerItemConfig _drawerItemLightningApps(
+    BuildContext context,
+    BreezUserModel user,
+  ) {
+    return DrawerItemConfig(
+      "",
+      "Apps",
+      "src/icon/apps.png",
+      isSelected: user.appMode == AppMode.apps,
+      onItemSelected: (_) {
+        protectAdminAction(
+          context,
+          user,
+          () {
+            widget.userProfileBloc.userActionsSink
+                .add(SetAppMode(AppMode.apps));
+            return Future.value(null);
+          },
+        );
+      },
+    );
+  }
+
+  List<DrawerItemConfig> _drawerConfigAdvancedFlavorItems(
+    BuildContext context,
+    BreezUserModel user,
+  ) {
+    if (user.appMode == AppMode.pos) {
+      return [
+        DrawerItemConfig(
+          "",
+          "POS Settings",
+          "src/icon/settings.png",
+          onItemSelected: (_) => protectAdminRoute(context, user, "/settings"),
+        ),
+      ];
+    } else {
+      return [
+        DrawerItemConfig(
+          "/developers",
+          "Developers",
+          "src/icon/developers.png",
+        ),
+      ];
+    }
   }
 
   IconButton _buildMenuIcon(BuildContext context, AppMode appMode) {
