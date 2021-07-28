@@ -4373,6 +4373,7 @@ class LNURLPayResponse1 extends $pb.GeneratedMessage {
     ..aOS(7, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'fromNodes')
     ..aOS(8, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'comment')
     ..aOS(9, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'host')
+    ..aInt64(10, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'commentAllowed', protoName: 'commentAllowed')
     ..hasRequiredFields = false
   ;
 
@@ -4387,6 +4388,7 @@ class LNURLPayResponse1 extends $pb.GeneratedMessage {
     $core.String fromNodes,
     $core.String comment,
     $core.String host,
+    $fixnum.Int64 commentAllowed,
   }) {
     final _result = create();
     if (callback != null) {
@@ -4415,6 +4417,9 @@ class LNURLPayResponse1 extends $pb.GeneratedMessage {
     }
     if (host != null) {
       _result.host = host;
+    }
+    if (commentAllowed != null) {
+      _result.commentAllowed = commentAllowed;
     }
     return _result;
   }
@@ -4513,6 +4518,15 @@ class LNURLPayResponse1 extends $pb.GeneratedMessage {
   $core.bool hasHost() => $_has(8);
   @$pb.TagNumber(9)
   void clearHost() => clearField(9);
+
+  @$pb.TagNumber(10)
+  $fixnum.Int64 get commentAllowed => $_getI64(9);
+  @$pb.TagNumber(10)
+  set commentAllowed($fixnum.Int64 v) { $_setInt64(9, v); }
+  @$pb.TagNumber(10)
+  $core.bool hasCommentAllowed() => $_has(9);
+  @$pb.TagNumber(10)
+  void clearCommentAllowed() => clearField(10);
 }
 
 class SuccessAction extends $pb.GeneratedMessage {
