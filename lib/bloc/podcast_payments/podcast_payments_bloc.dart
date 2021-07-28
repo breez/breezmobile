@@ -213,7 +213,8 @@ class PodcastPaymentsBloc with AsyncActionsHandler {
       log.info(
           "podcast-block: starting recipient payment boost=$boost netPay=$netPay from total: $total with fee: $maxFee split=${d.split} lastFee = $lastFee");
       if (netPay > 0 && amount <= total && maxFee > 0) {
-        log.info("trying to pay $netPay to destination ${d.address}");
+        log.info(
+            "podcast-block trying to pay $netPay to destination ${d.address}");
         if (!boost) {
           await _aggregatedPayments.addAmount(d.address, -payPart.toDouble());
         }
@@ -269,6 +270,9 @@ class PodcastPaymentsBloc with AsyncActionsHandler {
           log.info(
               "podcast-block: failed to pay $netPay to destination ${d.address}, error=$err trying next time...");
         });
+      } else {
+        log.info(
+            "podcast-block: skipping payments to addres ${d.address} due to small amount");
       }
     });
   }
