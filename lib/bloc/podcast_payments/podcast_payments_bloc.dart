@@ -1,11 +1,13 @@
 import 'dart:async';
 import 'dart:convert';
+import 'dart:math';
 import 'package:anytime/bloc/podcast/audio_bloc.dart';
 import 'package:anytime/bloc/settings/settings_bloc.dart';
 import 'package:anytime/entities/episode.dart';
 import 'package:anytime/repository/repository.dart';
 import 'package:anytime/services/audio/audio_player_service.dart';
 import 'package:breez/bloc/account/account_bloc.dart';
+import 'package:breez/bloc/account/account_model.dart';
 import 'package:breez/bloc/async_actions_handler.dart';
 import 'package:breez/bloc/podcast_payments/actions.dart';
 import 'package:breez/bloc/podcast_payments/model.dart';
@@ -19,6 +21,8 @@ import 'package:fixnum/fixnum.dart';
 import 'aggregated_payments.dart';
 
 const maxFeePart = 0.2;
+const NO_ROUTE_ERROR = "FAILURE_REASON_NO_ROUTE";
+const NO_ROUTE_BACKOFF_DELAY = 5;
 
 class PodcastPaymentsBloc with AsyncActionsHandler {
   final _listeningTime = Map<String, double>();
@@ -110,7 +114,8 @@ class PodcastPaymentsBloc with AsyncActionsHandler {
           " time = " +
           _listeningTime[currentPlayedEpisode.contentUrl].floor().toString());
       if (nextPaidMinutes > paidMinutes) {
-        log.info("paying recipients " + nextPaidMinutes.toString());
+        log.info(
+            "podcast-block: paying recipients " + nextPaidMinutes.toString());
         final value = await _getLightningPaymentValue(currentPlayedEpisode);
         if (value != null) {
           _payRecipients(currentPlayedEpisode, value.recipients,
@@ -153,7 +158,7 @@ class PodcastPaymentsBloc with AsyncActionsHandler {
       try {
         breezReceiverNode = await _breezLib.receiverNode();
       } catch (err) {
-        log.severe("failed to fetch receiver node: ", err);
+        log.severe("podcast-block: failed to fetch receiver node: ", err);
       }
     }
     double totalSplits =
@@ -185,7 +190,7 @@ class PodcastPaymentsBloc with AsyncActionsHandler {
     // in case not boost we want to ensure any minutes is not paid more than one time.
     if (!boost && paidPositions[paidPositionKey] == true) {
       log.info(
-          "skipping paying minute $minuteToPay for episode ${episode.title}");
+          "podcast-block: skipping paying minute $minuteToPay for episode ${episode.title}");
       return;
     }
     paidPositions[paidPositionKey] = true;
@@ -199,22 +204,36 @@ class PodcastPaymentsBloc with AsyncActionsHandler {
       }
       final customKey = d.customKey?.toString();
       final customValue = d.customValue?.toString();
-      final lastFee = await _lastFeeForDestination(d.address);
+      final lastSuccessfullPayment = await _lastSuccesfullPayment(d.address);
+      final hops = lastSuccessfullPayment?.routeHops;
+      final lastFee = lastSuccessfullPayment?.fee ?? Int64.ZERO;
       final netPay = payPart - lastFee.toInt();
       final maxFee = Int64((netPay * 1000 * maxFeePart).toInt());
 
       log.info(
-          "starting recipient payment boost=$boost netPay=$netPay from total: $total with fee: $maxFee split=${d.split} lastFee = $lastFee");
+          "podcast-block: starting recipient payment boost=$boost netPay=$netPay from total: $total with fee: $maxFee split=${d.split} lastFee = $lastFee");
       if (netPay > 0 && amount <= total && maxFee > 0) {
         log.info("trying to pay $netPay to destination ${d.address}");
         if (!boost) {
           await _aggregatedPayments.addAmount(d.address, -payPart.toDouble());
         }
+
+        var currentBackoff =
+            _aggregatedPayments.getDestinationBackoff(d.address);
+        if (currentBackoff > 0) {
+          log.info(
+              "podcast-block: skipping payments to addres ${d.address} due to backoff: $currentBackoff");
+          await _aggregatedPayments.setDestinationBackoff(
+              d.address, currentBackoff - 1);
+          return;
+        }
+
         _breezLib
             .sendSpontaneousPayment(d.address, Int64(netPay), d.name,
                 feeLimitMsat: maxFee,
                 groupKey: _getPodcastGroupKey(episode),
                 groupName: episode.title,
+                routeHops: hops,
                 tlv: _getTlv(
                     boost: boost,
                     episode: episode,
@@ -228,10 +247,17 @@ class PodcastPaymentsBloc with AsyncActionsHandler {
                   d.address, payPart.toDouble());
             }
             log.info(
-                "failed to pay $netPay to destination ${d.address}, error=${payResponse.paymentError} trying next time...");
+                "podcast-block: failed to pay $netPay to destination ${d.address}, error=${payResponse.paymentError} trying next time...");
+            if (payResponse.paymentError == NO_ROUTE_ERROR) {
+              log.info(
+                  "podcast-block: detected no route error, setting backoff for destination ${d.address}");
+              await _aggregatedPayments.setDestinationBackoff(
+                  d.address, NO_ROUTE_BACKOFF_DELAY);
+            }
             return;
           }
-          log.info("succesfully paid $netPay to destination ${d.address}");
+          log.info(
+              "podcast-block: succesfully paid $netPay to destination ${d.address}");
           if (!boost) {
             _paymentEventsController
                 .add(PaymentEvent(PaymentEventType.StreamCompleted, payPart));
@@ -241,7 +267,7 @@ class PodcastPaymentsBloc with AsyncActionsHandler {
             await _aggregatedPayments.addAmount(d.address, payPart.toDouble());
           }
           log.info(
-              "failed to pay $netPay to destination ${d.address}, error=$err trying next time...");
+              "podcast-block: failed to pay $netPay to destination ${d.address}, error=$err trying next time...");
         });
       }
     });
@@ -281,14 +307,13 @@ class PodcastPaymentsBloc with AsyncActionsHandler {
     return json.encode(info);
   }
 
-  Future<Int64> _lastFeeForDestination(String address) {
+  Future<PaymentInfo> _lastSuccesfullPayment(String address) {
     return accountBloc.paymentsStream
         .map((ps) => ps.nonFilteredItems
             .firstWhere((i) => i.destination == address, orElse: () => null))
         .where((pi) => pi != null)
-        .map(((pi) => pi.fee))
         .first
-        .timeout(Duration(seconds: 1), onTimeout: () => Int64.ZERO);
+        .timeout(Duration(seconds: 1), onTimeout: () => null);
   }
 
   Map<Int64, String> _getTlv(

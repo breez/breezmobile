@@ -1,6 +1,5 @@
 import 'dart:async';
 import 'dart:convert';
-import 'dart:developer';
 import 'dart:io';
 
 import 'package:breez/bloc/account/account_actions.dart';
@@ -645,7 +644,6 @@ class AccountBloc {
           _paymentFilterController.value,
           _firstDate ?? DateTime(DateTime.now().year));
     });
-
   }
 
   Future _refreshPayments() {

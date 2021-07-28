@@ -433,6 +433,7 @@ abstract class PaymentInfo {
   String get paymentGroup;
   String get paymentGroupName;
   LNUrlPayInfo get lnurlPayInfo;
+  List<String> get routeHops;
   PaymentInfo copyWith(AccountModel account);
 }
 
@@ -490,6 +491,7 @@ class StreamedPaymentInfo implements PaymentInfo {
   bool get fullPending => singlePayments.any((p) => p.fullPending);
   String get paymentGroup => singlePayments[0].paymentGroup;
   String get paymentGroupName => singlePayments[0].paymentGroupName;
+  List<String> get routeHops => singlePayments[0].routeHops;
 
   String get redeemTxID => "";
   String get paymentHash => "";
@@ -561,6 +563,7 @@ class SinglePaymentInfo implements PaymentInfo {
   }
 
   bool get keySend => _paymentResponse.isKeySend;
+  List<String> get routeHops => _paymentResponse.routeHops;
 
   int get pendingExpirationHeight => _paymentResponse.pendingExpirationHeight;
   double get hoursToExpire =>

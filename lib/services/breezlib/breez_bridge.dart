@@ -295,6 +295,7 @@ class BreezBridge {
       {Int64 feeLimitMsat = Int64.ZERO,
       String groupKey = "",
       String groupName = "",
+      List<String> routeHops,
       Map<Int64, String> tlv}) {
     var request = SpontaneousPaymentRequest()
       ..description = description
@@ -302,7 +303,9 @@ class BreezBridge {
       ..amount = amount
       ..feeLimitMsat = feeLimitMsat
       ..groupKey = groupKey
-      ..groupName = groupName;
+      ..groupName = groupName
+      ..skipCheckMaxAmount = true
+      ..hops.addAll(routeHops ?? <String>[]);
 
     if (tlv != null) {
       request.tlv.addAll(tlv);

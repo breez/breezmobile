@@ -1,8 +1,8 @@
 ///
 //  Generated code. Do not modify.
-//  source: messages.proto
+//  source: rpc.proto
 //
-// @dart = 2.12
+// @dart = 2.7
 // ignore_for_file: annotate_overrides,camel_case_types,unnecessary_const,non_constant_identifier_names,library_prefixes,unused_import,unused_shown_name,return_of_invalid_type,unnecessary_this,prefer_final_fields
 
 // ignore_for_file: UNDEFINED_SHOWN_NAME
@@ -25,7 +25,7 @@ class SwapError extends $pb.ProtobufEnum {
   ];
 
   static final $core.Map<$core.int, SwapError> _byValue = $pb.ProtobufEnum.initByValue(values);
-  static SwapError? valueOf($core.int value) => _byValue[value];
+  static SwapError valueOf($core.int value) => _byValue[value];
 
   const SwapError._($core.int v, $core.String n) : super(v, n);
 }
@@ -44,7 +44,7 @@ class Account_AccountStatus extends $pb.ProtobufEnum {
   ];
 
   static final $core.Map<$core.int, Account_AccountStatus> _byValue = $pb.ProtobufEnum.initByValue(values);
-  static Account_AccountStatus? valueOf($core.int value) => _byValue[value];
+  static Account_AccountStatus valueOf($core.int value) => _byValue[value];
 
   const Account_AccountStatus._($core.int v, $core.String n) : super(v, n);
 }
@@ -65,7 +65,7 @@ class Payment_PaymentType extends $pb.ProtobufEnum {
   ];
 
   static final $core.Map<$core.int, Payment_PaymentType> _byValue = $pb.ProtobufEnum.initByValue(values);
-  static Payment_PaymentType? valueOf($core.int value) => _byValue[value];
+  static Payment_PaymentType valueOf($core.int value) => _byValue[value];
 
   const Payment_PaymentType._($core.int v, $core.String n) : super(v, n);
 }
@@ -116,7 +116,7 @@ class NotificationEvent_NotificationType extends $pb.ProtobufEnum {
   ];
 
   static final $core.Map<$core.int, NotificationEvent_NotificationType> _byValue = $pb.ProtobufEnum.initByValue(values);
-  static NotificationEvent_NotificationType? valueOf($core.int value) => _byValue[value];
+  static NotificationEvent_NotificationType valueOf($core.int value) => _byValue[value];
 
   const NotificationEvent_NotificationType._($core.int v, $core.String n) : super(v, n);
 }
