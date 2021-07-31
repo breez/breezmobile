@@ -5842,3 +5842,78 @@ class DownloadBackupResponse extends $pb.GeneratedMessage {
   $core.List<$core.String> get files => $_getList(0);
 }
 
+class TorConfig extends $pb.GeneratedMessage {
+  static final $pb.BuilderInfo _i = $pb.BuilderInfo(const $core.bool.fromEnvironment('protobuf.omit_message_names') ? '' : 'TorConfig', package: const $pb.PackageName(const $core.bool.fromEnvironment('protobuf.omit_message_names') ? '' : 'data'), createEmptyInstance: create)
+    ..aOS(1, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'control')
+    ..aOS(2, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'http')
+    ..aOS(3, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'socks')
+    ..hasRequiredFields = false
+  ;
+
+  TorConfig._() : super();
+  factory TorConfig({
+    $core.String? control,
+    $core.String? http,
+    $core.String? socks,
+  }) {
+    final _result = create();
+    if (control != null) {
+      _result.control = control;
+    }
+    if (http != null) {
+      _result.http = http;
+    }
+    if (socks != null) {
+      _result.socks = socks;
+    }
+    return _result;
+  }
+  factory TorConfig.fromBuffer($core.List<$core.int> i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromBuffer(i, r);
+  factory TorConfig.fromJson($core.String i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromJson(i, r);
+  @$core.Deprecated(
+  'Using this can add significant overhead to your binary. '
+  'Use [GeneratedMessageGenericExtensions.deepCopy] instead. '
+  'Will be removed in next major version')
+  TorConfig clone() => TorConfig()..mergeFromMessage(this);
+  @$core.Deprecated(
+  'Using this can add significant overhead to your binary. '
+  'Use [GeneratedMessageGenericExtensions.rebuild] instead. '
+  'Will be removed in next major version')
+  TorConfig copyWith(void Function(TorConfig) updates) => super.copyWith((message) => updates(message as TorConfig)) as TorConfig; // ignore: deprecated_member_use
+  $pb.BuilderInfo get info_ => _i;
+  @$core.pragma('dart2js:noInline')
+  static TorConfig create() => TorConfig._();
+  TorConfig createEmptyInstance() => create();
+  static $pb.PbList<TorConfig> createRepeated() => $pb.PbList<TorConfig>();
+  @$core.pragma('dart2js:noInline')
+  static TorConfig getDefault() => _defaultInstance ??= $pb.GeneratedMessage.$_defaultFor<TorConfig>(create);
+  static TorConfig? _defaultInstance;
+
+  @$pb.TagNumber(1)
+  $core.String get control => $_getSZ(0);
+  @$pb.TagNumber(1)
+  set control($core.String v) { $_setString(0, v); }
+  @$pb.TagNumber(1)
+  $core.bool hasControl() => $_has(0);
+  @$pb.TagNumber(1)
+  void clearControl() => clearField(1);
+
+  @$pb.TagNumber(2)
+  $core.String get http => $_getSZ(1);
+  @$pb.TagNumber(2)
+  set http($core.String v) { $_setString(1, v); }
+  @$pb.TagNumber(2)
+  $core.bool hasHttp() => $_has(1);
+  @$pb.TagNumber(2)
+  void clearHttp() => clearField(2);
+
+  @$pb.TagNumber(3)
+  $core.String get socks => $_getSZ(2);
+  @$pb.TagNumber(3)
+  set socks($core.String v) { $_setString(2, v); }
+  @$pb.TagNumber(3)
+  $core.bool hasSocks() => $_has(2);
+  @$pb.TagNumber(3)
+  void clearSocks() => clearField(3);
+}
+

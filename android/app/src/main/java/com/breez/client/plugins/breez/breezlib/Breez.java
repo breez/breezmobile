@@ -172,8 +172,11 @@ public class Breez implements MethodChannel.MethodCallHandler, StreamHandler,
     }
 
     private void start(MethodCall call, MethodChannel.Result result){
+
+        byte[] torConfig = call.argument("torConfig");
+        Log.d(TAG, "Breez.java: start called with torConfig: " + torConfig);
         try {
-            Bindings.start();
+            Bindings.start(torConfig); 
             _started = true;
             success(result,true);
         } catch (Exception e) {

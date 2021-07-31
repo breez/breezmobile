@@ -1044,3 +1044,15 @@ const DownloadBackupResponse$json = const {
 
 /// Descriptor for `DownloadBackupResponse`. Decode as a `google.protobuf.DescriptorProto`.
 final $typed_data.Uint8List downloadBackupResponseDescriptor = $convert.base64Decode('ChZEb3dubG9hZEJhY2t1cFJlc3BvbnNlEhQKBWZpbGVzGAEgAygJUgVmaWxlcw==');
+@$core.Deprecated('Use torConfigDescriptor instead')
+const TorConfig$json = const {
+  '1': 'TorConfig',
+  '2': const [
+    const {'1': 'control', '3': 1, '4': 1, '5': 9, '10': 'control'},
+    const {'1': 'http', '3': 2, '4': 1, '5': 9, '10': 'http'},
+    const {'1': 'socks', '3': 3, '4': 1, '5': 9, '10': 'socks'},
+  ],
+};
+
+/// Descriptor for `TorConfig`. Decode as a `google.protobuf.DescriptorProto`.
+final $typed_data.Uint8List torConfigDescriptor = $convert.base64Decode('CglUb3JDb25maWcSGAoHY29udHJvbBgBIAEoCVIHY29udHJvbBISCgRodHRwGAIgASgJUgRodHRwEhQKBXNvY2tzGAMgASgJUgVzb2Nrcw==');

@@ -98,8 +98,8 @@ class BreezBridge {
         .then((result) => Rates()..mergeFromBuffer(result ?? []));
   }
 
-  Future startLightning() {
-    return _startedCompleter.future.then((_) => _start()).then((_) {
+  Future startLightning(TorConfig torConfig) {
+    return _startedCompleter.future.then((_) => _start(torConfig)).then((_) {
       syncGraphIfNeeded();
     });
   }
@@ -108,9 +108,12 @@ class BreezBridge {
     return _methodChannel.invokeMethod("restartDaemon");
   }
 
-  Future _start() async {
-    print(" breez bridge - start...");
-    return _methodChannel.invokeMethod("start").then((_) {
+  Future _start(TorConfig torConfig) async {
+       
+    logger.log.info("breez_bridge.dart: _start");
+
+    return _invokeMethodImmediate(
+        "start", {"torConfig": torConfig?.writeToBuffer()}).then((_) {
       print(" breez bridge - start lightning finished");
     });
   }
@@ -700,39 +703,12 @@ class BreezBridge {
     logger.log.info("copyBreezConfig finished");
   }
 
-  Future _invokeMethodWhenReady(String methodName, [dynamic arguments]) {
-    return _readyCompleter.future.then((completed) {
-      return _methodChannel
-          .invokeMethod(methodName, arguments)
-          .catchError((err) {
-        if (err.runtimeType == PlatformException) {
-          throw (err as PlatformException).message;
-        }
-        throw err;
-      });
-    });
-  }
-
   Future enableAccount(bool enabled) {
     return _invokeMethodWhenReady("enableAccount", {"argument": enabled});
   }
 
   Future<String> backupFiles() {
     return _invokeMethodWhenReady("backupFiles").then((res) => res as String);
-  }
-
-  Future _invokeMethodImmediate(String methodName, [dynamic arguments]) {
-    return _startedCompleter.future.then((completed) {
-      return _methodChannel
-          .invokeMethod(methodName, arguments)
-          .catchError((err) {
-        if (err.runtimeType == PlatformException) {
-          print("Error in calling method " + methodName);
-          throw (err as PlatformException).message;
-        }
-        throw err;
-      });
-    });
   }
 
   Future<List<String>> getWalletDBpFilePath() async {
@@ -748,5 +724,42 @@ class BreezBridge {
     }
     result.add('$lndDir/data/chain/bitcoin/$network/wallet.db');
     return result;
+  }
+
+  Future enableOrDisableTor(bool enabled) {
+    return _invokeMethodWhenReady('enableOrDisableTor', {'argument': enabled});
+  }
+
+  Future<bool> isTorActive() {
+    return _invokeMethodImmediate('isTorActive')
+        .then((result) => result as bool);
+  }
+
+  Future _invokeMethodWhenReady(String methodName, [dynamic arguments]) {
+    return _readyCompleter.future.then((completed) {
+      return _methodChannel
+          .invokeMethod(methodName, arguments)
+          .catchError((err) {
+        if (err.runtimeType == PlatformException) {
+          throw (err as PlatformException).message;
+        }
+        throw err;
+      });
+    });
+  }
+
+  Future _invokeMethodImmediate(String methodName, [dynamic arguments]) {
+    return _startedCompleter.future.then((completed) {
+      return _methodChannel
+          .invokeMethod(methodName, arguments)
+          .catchError((err) {
+        if (err.runtimeType == PlatformException) {
+          print("Error in calling method '$methodName' with arguments: $arguments.");
+          print("Error in calling method '$methodName' with error: $err.");
+          throw (err as PlatformException).message;
+        }
+        throw err;
+      });
+    });
   }
 }

@@ -1,3 +1,8 @@
+/* FIXME(nochiel): While the rpc server is starting, client cannot tell if Tor is active.
+ Therefore, the switch in the ui shows the incorrect state until the database becomes availabe.
+ Should we show a loading icon for the Tor switch?
+*/
+
 import 'dart:async';
 import 'dart:io';
 
@@ -9,10 +14,13 @@ import 'package:breez/widgets/animated_loader_dialog.dart';
 import 'package:breez/widgets/back_button.dart' as backBtn;
 import 'package:breez/widgets/error_dialog.dart';
 import 'package:flutter/material.dart';
+import 'package:auto_size_text/auto_size_text.dart';
+import 'package:breez/utils/min_font_size.dart';
 
 class _NetworkData {
   String peer = '';
   bool isDefault = false;
+  bool torIsActive = false;
 }
 
 class NetworkPage extends StatefulWidget {
@@ -30,6 +38,7 @@ class NetworkPageState extends State<NetworkPage> {
   ScrollController _scrollController = ScrollController();
   final _peerController = TextEditingController();
   _NetworkData _data = _NetworkData();
+  AutoSizeGroup _autoSizeGroup = AutoSizeGroup();
 
   @override
   void initState() {
@@ -47,6 +56,11 @@ class NetworkPageState extends State<NetworkPage> {
 
   void _loadData() async {
     await _loadPeer();
+
+    bool torActive = await _breezLib.isTorActive();
+    setState(() {
+      _data.torIsActive = torActive;
+    });
   }
 
   Future _loadPeer() async {
@@ -82,7 +96,7 @@ class NetworkPageState extends State<NetworkPage> {
       if (shouldExit) {
         exit(0);
       }
-      return true;
+      return false;
     });
   }
 
@@ -203,7 +217,54 @@ class NetworkPageState extends State<NetworkPage> {
                             )
                           ],
                         )
-                      ])
+                      ]),
+                      Divider(),
+                      ListTile(
+                        title: Container(
+                          child: AutoSizeText(
+                            '${this._data.torIsActive ? "Disable" : "Enable"} Tor',
+                            style: TextStyle(color: Colors.white),
+                            maxLines: 1,
+                            minFontSize: MinFontSize(context).minFontSize,
+                            stepGranularity: 0.1,
+                            group: _autoSizeGroup,
+                          ),
+                        ),
+                        trailing: Switch(
+                          value: this._data.torIsActive,
+                          activeColor: Colors.white,
+                          onChanged: (bool value) async {
+                            var error = await showDialog(
+                                useRootNavigator: false,
+                                context: context,
+                                builder: (ctx) => _EnableOrDisableTorDialog(
+                                    testFuture:
+                                        _breezLib.enableOrDisableTor(value),
+                                    enable: value));
+
+                            print('enableOrDisableTor returned with $error');
+                            if (error != null) {
+                              await promptError(
+                                  context,
+                                  null,
+                                  Text(
+                                      'Breez is unable to ${value ? "enable" : "disable"} Tor. Please restart Breez and try again.',
+                                      style: Theme.of(context)
+                                          .dialogTheme
+                                          .contentTextStyle));
+                              return;
+                            } else {
+                              _promptForRestart().then((didRestart) {
+                                if (!didRestart) {
+                                  setState(() {
+                                    this._data.torIsActive = !value;
+                                  });
+                                }
+                              });
+                            }
+                          },
+                        ),
+                      )
                     ]))),
       ),
     );
@@ -244,5 +305,40 @@ class _TestingPeerDialogState extends State<_TestingPeerDialog> {
         onWillPop: () => Future.value(_allowPop),
         child: createAnimatedLoaderDialog(context, "Testing node",
             withOKButton: false));
+  }
+}
+
+class _EnableOrDisableTorDialog extends StatefulWidget {
+  final Future testFuture;
+  final bool enable;
+
+  const _EnableOrDisableTorDialog({Key key, this.testFuture, this.enable})
+      : super(key: key);
+
+  @override
+  State<StatefulWidget> createState() {
+    return _EnableOrDisableTorDialogState();
+  }
+}
+
+class _EnableOrDisableTorDialogState extends State<_EnableOrDisableTorDialog> {
+  bool _allowPop = false;
+  String _text;
+
+  @override
+  void initState() {
+    super.initState();
+    widget.testFuture.then((_) => Navigator.pop(context)).catchError((err) {
+      _allowPop = true;
+      Navigator.pop(context, err);
+    });
+    _text = '${widget.enable ? "Enabling" : "Disabling"} Tor';
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return WillPopScope(
+        onWillPop: () => Future.value(_allowPop),
+        child: createAnimatedLoaderDialog(context, _text, withOKButton: false));
   }
 }

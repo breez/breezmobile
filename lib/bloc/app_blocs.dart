@@ -26,6 +26,7 @@ class AppBlocs {
   final LNUrlBloc lnurlBloc;
   final PosCatalogBloc posCatalogBloc;
   final ReverseSwapBloc reverseSwapBloc;
+
   final Map<Type, Object> _blocsByType;
 
   static T _registerBloc<T>(T bloc, Map<Type, Object> blocs) {
