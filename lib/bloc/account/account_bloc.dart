@@ -621,29 +621,29 @@ class AccountBloc {
   }
 
   Future<PaymentsModel> fetchPayments() async {
-    DateTime _firstDate;
-    print("refreshing payments...");
+    //DateTime _firstDate;
+    log.info("refreshing payments...");
 
-    return _breezLib.getPayments().then((payments) {
-      List<PaymentInfo> _paymentsList = payments.paymentsList.map((payment) {
-        var singlePaymentInfo =
-            SinglePaymentInfo(payment, _accountController.value);
+    // return _breezLib.getPayments().then((payments) {
+    //   List<PaymentInfo> _paymentsList = payments.paymentsList.map((payment) {
+    //     var singlePaymentInfo =
+    //         SinglePaymentInfo(payment, _accountController.value);
 
-        return singlePaymentInfo;
-      }).toList();
+    //     return singlePaymentInfo;
+    //   }).toList();
 
-      if (_paymentsList.length > 0) {
-        _firstDate = DateTime.fromMillisecondsSinceEpoch(
-            _paymentsList.last.creationTimestamp.toInt() * 1000);
-      }
-      print("refresh payments finished " +
-          payments.paymentsList.length.toString());
-      return PaymentsModel(
-          _paymentsList,
-          _filterPayments(_paymentsList),
-          _paymentFilterController.value,
-          _firstDate ?? DateTime(DateTime.now().year));
-    });
+    //   if (_paymentsList.length > 0) {
+    //     _firstDate = DateTime.fromMillisecondsSinceEpoch(
+    //         _paymentsList.last.creationTimestamp.toInt() * 1000);
+    //   }
+    //   print("refresh payments finished " +
+    //       payments.paymentsList.length.toString());
+    //   return PaymentsModel(
+    //       _paymentsList,
+    //       _filterPayments(_paymentsList),
+    //       _paymentFilterController.value,
+    //       _firstDate ?? DateTime(DateTime.now().year));
+    // });
   }
 
   Future _refreshPayments() {
