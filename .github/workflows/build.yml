@@ -1,0 +1,95 @@
+# This is a basic workflow to help you get started with Actions
+
+name: CI
+
+# Controls when the action will run. 
+on:
+  # Triggers the workflow on push or pull request events but only for the master branch
+  push:
+    branches: [ master,anytime_integration_new ]
+  pull_request:
+    branches: [ master,anytime_integration_new ]
+
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+
+# A workflow run is made up of one or more jobs that can run sequentially or in parallel
+jobs:
+  # This workflow contains a single job called "build"
+  build:
+    # The type of runner that the job will run on
+    runs-on: macOS-latest
+
+    # Steps represent a sequence of tasks that will be executed as part of the job
+    steps:
+      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+      - uses: actions/checkout@v2
+     
+      - name: Install SSH key
+        uses: shimataro/ssh-key-action@v2
+        with:
+          key: ${{ secrets.SSH_KEY }}
+          known_hosts: ${{ secrets.KNOWN_HOSTS }}       
+
+      - name: add key
+        env:
+          CER_KEY_PASS: ${{ secrets.CER_KEY_PASS }}
+        run: ./.github/scripts/add-key.sh
+
+      # Runs a set of commands using the runners shell
+      - name: Run a multi-line script
+        run: |
+          brew update          
+          brew install watchman
+          brew install node
+          git clone https://github.com/breez/jitsi-meet.git jitsi-meet
+          cd jitsi-meet
+          npm install
+          ./android/scripts/release-sdk.sh ~/temp/repo
+          cd ..
+          
+          curl -o golang https://dl.google.com/go/go1.15.8.darwin-amd64.tar.gz
+          mkdir go1.15.8
+          tar -C $(pwd)/go1.15.8 -xzf golang
+          export PATH=$(pwd)/go1.15.8/go/bin:$PATH
+          export GOROOT=$(pwd)/go1.15.8/go
+          go version          
+          brew install bazaar
+          git clone https://github.com/breez/breez.git gopath/src/github.com/breez/breez
+          export TMP_GOPATH=$(pwd)/gopath
+          pushd gopath/src/github.com/breez/breez
+          export GOPRIVATE=github.com/btcsuite/btcd
+          export GOPATH=$TMP_GOPATH
+          echo "gopath= $GOPATH"
+          go get golang.org/x/mobile/cmd/gomobile
+          echo "got gomobile"          
+          go get golang.org/x/mobile/cmd/gobind
+          echo "got gobind gopath=$GOPATH"
+          echo $(ls $GOPATH)
+          echo $(ls $GOPATH/bin)
+          $GOPATH/bin/gomobile init
+          mkdir -p build/ios
+          PATH=$PATH:$GOPATH/bin gomobile bind -target=ios/arm64 -tags="ios experimental signrpc walletrpc chainrpc invoicesrpc routerrpc backuprpc peerrpc submarineswaprpc breezbackuprpc" -o build/ios/bindings.framework github.com/breez/breez/bindings
+          popd
+          brew install ideviceinstaller ios-deploy
+          git clone https://github.com/flutter/flutter.git -b stable
+          
+          cp -r $GOPATH/src/github.com/breez/breez/build/ios/bindings.framework $GITHUB_WORKSPACE/ios/bindings.framework          
+          rm -rf $GITHUB_WORKSPACE/conf
+          git clone builderfiles@packages.breez.technology:configuration -b production $GITHUB_WORKSPACE/temp_config          
+          cp -r $GITHUB_WORKSPACE/temp_config/conf $GITHUB_WORKSPACE/conf
+          echo "ls conf ***"
+          ls $GITHUB_WORKSPACE/conf
+          cat $GITHUB_WORKSPACE/conf/breez.conf
+          sftp builderfiles@packages.breez.technology:config/conf/GoogleService-Info.plist $GITHUB_WORKSPACE/ios/Runner/GoogleService-Info.plist
+
+          ./flutter/bin/flutter upgrade
+          ./flutter/bin/flutter clean
+          ./flutter/bin/flutter build ios --no-codesign --no-tree-shake-icons
+    
+      - name: deploy
+        env:
+          GOOGLE_SIGN_IN_URL: ${{ secrets.GOOGLE_SIGN_IN_URL }}
+          APP_USERNAME: ${{ secrets.APP_USERNAME }}
+          APP_PASSWORD: ${{ secrets.APP_PASSWORD }}
+        run: ./.github/scripts/sign.sh
