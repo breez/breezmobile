@@ -36,7 +36,7 @@ jobs:
           CER_KEY_PASS: ${{ secrets.CER_KEY_PASS }}
         run: ./.github/scripts/add-key.sh
 
-      - name: Run a multi-line script
+      - name: Build Jitsi SDK
         run: |
           brew update          
           brew install watchman
@@ -59,10 +59,12 @@ jobs:
           ENABLE_BITCODE=NO \
           SKIP_INSTALL=NO \
           BUILD_LIBRARY_FOR_DISTRIBUTION=YES
-          xcodebuild -create-xcframework \
+
+        xcodebuild -create-xcframework \
           -framework ios/sdk/out/ios-device.xcarchive/Products/Library/Frameworks/JitsiMeetSDK.framework \
           -output ios/sdk/out/JitsiMeetSDK.xcframework
-          cp -a node_modules/react-native-webrtc/apple/WebRTC.xcframework ios/sdk/out
+        
+        cp -a node_modules/react-native-webrtc/apple/WebRTC.xcframework ios/sdk/out
         cp -r ios/sdk/out/WebRTC.xcframework $GITHUB_WORKSPACE/ios/WebRTC.xcframework
         cp -r ios/sdk/out/JitsiMeetSDK.xcframework $GITHUB_WORKSPACE/ios/JitsiMeetSDK.xcframework
 
