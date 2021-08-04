@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:breez/services/breezlib/breez_bridge.dart';
 import 'package:breez/services/breezlib/data/rpc.pbserver.dart';
 import 'package:breez/services/injector.dart';
+import 'package:breez/utils/lnurl.dart';
 import 'package:breez/utils/retry.dart';
 import 'package:rxdart/rxdart.dart';
 
@@ -17,6 +18,10 @@ class LNUrlBloc with AsyncActionsHandler {
 
   StreamController _lnUrlStreamController;
 
+  StreamController<String> _lnurlInputController =
+      StreamController<String>.broadcast();
+  Sink<String> get lnurlInputSink => _lnurlInputController.sink;
+
   LNUrlBloc() {
     ServiceInjector injector = ServiceInjector();
     _breezLib = injector.breezBridge;
@@ -26,6 +31,7 @@ class LNUrlBloc with AsyncActionsHandler {
       Withdraw: _withdraw,
       OpenChannel: _openChannel,
       Login: _login,
+      FetchInvoice: _fetchInvoice,
     });
     listenActions();
   }
@@ -33,11 +39,16 @@ class LNUrlBloc with AsyncActionsHandler {
   listenLNUrl() {
     if (_lnUrlStreamController == null) {
       _lnUrlStreamController = StreamController.broadcast();
+      final injector = ServiceInjector();
       Rx.merge([
-        ServiceInjector().nfc.receivedLnLinks(),
-        ServiceInjector().lightningLinks.linksNotifications,
+        injector.nfc.receivedLnLinks(),
+        injector.lightningLinks.linksNotifications,
+        _lnurlInputController.stream,
+        injector.device.distinctClipboardStream,
       ])
-          .where((l) => l.toLowerCase().startsWith("lightning:lnurl"))
+          .where((l) => l != null)
+          .map((l) => l.toLowerCase())
+          .where((l) => isLNURL(l))
           .asyncMap((l) {
         _lnUrlStreamController.add(fetchLNUrlState.started);
         return _breezLib.fetchLNUrl(l).catchError((error) {
@@ -53,6 +64,8 @@ class LNUrlBloc with AsyncActionsHandler {
             _lnUrlStreamController.add(ChannelFetchResponse(response.channel));
           } else if (response.hasAuth()) {
             _lnUrlStreamController.add(AuthFetchResponse(response.auth));
+          } else if (response.hasPayResponse1()) {
+            _lnUrlStreamController.add(PayFetchResponse(response.payResponse1));
           } else {
             _lnUrlStreamController.addError("Unsupported LNUrl");
           }
@@ -67,6 +80,7 @@ class LNUrlBloc with AsyncActionsHandler {
 
   Future _fetch(Fetch action) async {
     LNUrlResponse res = await _breezLib.fetchLNUrl(action.lnurl);
+
     if (res.hasWithdraw()) {
       action.resolve(WithdrawFetchResponse(res.withdraw));
       return;
@@ -77,6 +91,10 @@ class LNUrlBloc with AsyncActionsHandler {
     }
     if (res.hasAuth()) {
       action.resolve(AuthFetchResponse(res.auth));
+      return;
+    }
+    if (res.hasPayResponse1()) {
+      action.resolve(PayFetchResponse(res.payResponse1));
       return;
     }
     throw "Unsupported LNUrl action";
@@ -91,6 +109,10 @@ class LNUrlBloc with AsyncActionsHandler {
     action.resolve(await _breezLib.loginLNUrl(action.response));
   }
 
+  Future _fetchInvoice(FetchInvoice action) async {
+    action.resolve(await _breezLib.fetchLNUrlPayInvoice(action.response));
+  }
+
   Future _openChannel(OpenChannel action) async {
     var openResult = retry(
         () => _breezLib.connectDirectToLnurl(
@@ -103,6 +125,7 @@ class LNUrlBloc with AsyncActionsHandler {
   @override
   Future dispose() {
     _lnUrlStreamController.close();
+    _lnurlInputController.close();
     return super.dispose();
   }
 }

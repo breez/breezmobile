@@ -2,6 +2,7 @@ import 'package:breez/bloc/account/account_model.dart';
 import 'package:breez/bloc/user_profile/currency.dart';
 import 'package:breez/theme_data.dart' as theme;
 import 'package:breez/widgets/currency_converter_dialog.dart';
+import 'package:breez/widgets/sat_amount_form_field_formatter.dart';
 import 'package:fixnum/fixnum.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -60,7 +61,11 @@ class AmountFormField extends TextFormField {
                         builder: (_) => CurrencyConverterDialog(
                             returnFN != null
                                 ? returnFN
-                                : (value) => controller.text = value,
+                                : (value) => controller.text = accountModel
+                                    .currency
+                                    .format(accountModel.currency.parse(value),
+                                        includeCurrencySymbol: false,
+                                        includeDisplayName: false),
                             validatorFn),
                       ),
                     ),
@@ -70,7 +75,7 @@ class AmountFormField extends TextFormField {
             controller: controller,
             inputFormatters: accountModel.currency != Currency.SAT
                 ? [FilteringTextInputFormatter.allow(RegExp(r'\d+\.?\d*'))]
-                : [FilteringTextInputFormatter.digitsOnly],
+                : [SatAmountFormFieldFormatter()],
             onFieldSubmitted: onFieldSubmitted,
             onSaved: onSaved,
             onChanged: onChanged,

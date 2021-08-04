@@ -118,10 +118,6 @@ PODS:
   - Flutter (1.0.0)
   - flutter_downloader (0.0.1):
     - Flutter
-  - flutter_image_compress (0.0.1):
-    - Flutter
-    - Mantle
-    - SDWebImageWebPCoder
   - flutter_isolate (0.0.1):
     - Flutter
   - flutter_keyboard_visibility (0.0.1):
@@ -180,20 +176,8 @@ PODS:
   - just_audio (0.0.1):
     - Flutter
   - leveldb-library (1.22)
-  - libwebp (1.2.0):
-    - libwebp/demux (= 1.2.0)
-    - libwebp/mux (= 1.2.0)
-    - libwebp/webp (= 1.2.0)
-  - libwebp/demux (1.2.0):
-    - libwebp/webp
-  - libwebp/mux (1.2.0):
-    - libwebp/demux
-  - libwebp/webp (1.2.0)
   - local_auth (0.0.1):
     - Flutter
-  - Mantle (2.1.6):
-    - Mantle/extobjc (= 2.1.6)
-  - Mantle/extobjc (2.1.6)
   - MTBBarcodeScanner (5.0.11)
   - nanopb (1.30906.0):
     - nanopb/decode (= 1.30906.0)
@@ -221,9 +205,6 @@ PODS:
   - SDWebImage (5.9.3):
     - SDWebImage/Core (= 5.9.3)
   - SDWebImage/Core (5.9.3)
-  - SDWebImageWebPCoder (0.6.1):
-    - libwebp (~> 1.0)
-    - SDWebImage/Core (~> 5.7)
   - share_extend (0.0.1):
     - Flutter
   - shared_preferences (0.0.1):
@@ -256,7 +237,6 @@ DEPENDENCIES:
   - firebase_messaging (from `.symlinks/plugins/firebase_messaging/ios`)
   - Flutter (from `Flutter`)
   - flutter_downloader (from `.symlinks/plugins/flutter_downloader/ios`)
-  - flutter_image_compress (from `.symlinks/plugins/flutter_image_compress/ios`)
   - flutter_isolate (from `.symlinks/plugins/flutter_isolate/ios`)
   - flutter_keyboard_visibility (from `.symlinks/plugins/flutter_keyboard_visibility/ios`)
   - flutter_secure_storage (from `.symlinks/plugins/flutter_secure_storage/ios`)
@@ -304,15 +284,12 @@ SPEC REPOS:
     - GTMAppAuth
     - GTMSessionFetcher
     - leveldb-library
-    - libwebp
-    - Mantle
     - MTBBarcodeScanner
     - nanopb
     - PromisesObjC
     - Protobuf
     - Reachability
     - SDWebImage
-    - SDWebImageWebPCoder
     - SwiftyGif
     - TOCropViewController
 
@@ -339,8 +316,6 @@ EXTERNAL SOURCES:
     :path: Flutter
   flutter_downloader:
     :path: ".symlinks/plugins/flutter_downloader/ios"
-  flutter_image_compress:
-    :path: ".symlinks/plugins/flutter_image_compress/ios"
   flutter_isolate:
     :path: ".symlinks/plugins/flutter_isolate/ios"
   flutter_keyboard_visibility:
@@ -412,7 +387,6 @@ SPEC CHECKSUMS:
   FirebaseMessaging: 5eca4ef173de76253352511aafef774caa1cba2a
   Flutter: 434fef37c0980e73bb6479ef766c45957d4b510c
   flutter_downloader: 058b9c41564a90500f67f3e432e3524613a7fd83
-  flutter_image_compress: 082f8daaf6c1b0c9fe798251c750ef0ecd98d7ae
   flutter_isolate: 0edf5081826d071adf21759d1eb10ff5c24503b5
   flutter_keyboard_visibility: 0339d06371254c3eb25eeb90ba8d17dca8f9c069
   flutter_secure_storage: 7953c38a04c3fdbb00571bcd87d8e3b5ceb9daec
@@ -428,9 +402,7 @@ SPEC CHECKSUMS:
   image_picker: 50e7c7ff960e5f58faa4d1f4af84a771c671bc4a
   just_audio: baa7252489dbcf47a4c7cc9ca663e9661c99aafa
   leveldb-library: 55d93ee664b4007aac644a782d11da33fba316f7
-  libwebp: e90b9c01d99205d03b6bb8f2c8c415e5a4ef66f0
   local_auth: 25938960984c3a7f6e3253e3f8d962fdd16852bd
-  Mantle: 4c0ed6ce47c96eccc4dc3bb071deb3def0e2c3be
   MTBBarcodeScanner: f453b33c4b7dfe545d8c6484ed744d55671788cb
   nanopb: 59317e09cf1f1a0af72f12af412d54edf52603fc
   nfc_in_flutter: c656fbfb1ec5b9d021da87b0c87629d62fd5264d
@@ -444,7 +416,6 @@ SPEC CHECKSUMS:
   qr_code_tools: 5b5dd44ccdfa4b81f645c251e421f61003254b81
   Reachability: 33e18b67625424e47b6cde6d202dce689ad7af96
   SDWebImage: a31ee8e90a97303529e03fb0c333eae0eacb88e9
-  SDWebImageWebPCoder: d0dac55073088d24b2ac1b191a71a8f8d0adac21
   share_extend: b6748dc53695587891126a89533b862b92548c7b
   shared_preferences: af6bfa751691cdc24be3045c43ec037377ada40d
   sqflite: 6d358c025f5b867b29ed92fc697fd34924e11904
@@ -453,9 +424,9 @@ SPEC CHECKSUMS:
   uni_links: d97da20c7701486ba192624d99bffaaffcfc298a
   url_launcher: 6fef411d543ceb26efce54b05a0a40bfd74cbbef
   video_player: 9cc823b1d9da7e8427ee591e8438bfbcde500e6e
-  wakelock: b0843b2479edbf6504d8d262c2959446f35373aa
+  wakelock: d0fc7c864128eac40eba1617cb5264d9c940b46f
   webview_flutter: 9f491a9b5a66f2573946a389b2677987b0ff8c0b
 
-PODFILE CHECKSUM: db89302530577e0ab5bfb64490becc338c8c19b0
+PODFILE CHECKSUM: 07181d11e3630f7c6168cb932c2cfcc139c78f27
 
 COCOAPODS: 1.10.1

@@ -1,4 +1,46 @@
+import 'dart:convert';
+
 import 'package:flutter/foundation.dart';
+
+class RemoteServerAuthData {
+  final String url;
+  final String user;
+  final String password;
+  final String breezDir;
+
+  RemoteServerAuthData(this.url, this.user, this.password, this.breezDir);
+
+  RemoteServerAuthData.fromJson(Map<String, dynamic> json)
+      : this(
+          json["url"],
+          json["user"],
+          json["password"],
+          json["breezDir"],
+        );
+
+  Map<String, dynamic> toJson() {
+    return {
+      "url": url,
+      "user": user,
+      "password": password,
+      "breezDir": breezDir
+    };
+  }
+
+  bool equal(RemoteServerAuthData other) {
+    return json.encode(this.toJson()) == json.encode(other.toJson());
+  }
+
+  RemoteServerAuthData copyWith(
+      {String url, String user, String password, String breezDir}) {
+    return RemoteServerAuthData(
+      url ?? this.url,
+      user ?? this.user,
+      password ?? this.password,
+      breezDir ?? this.breezDir,
+    );
+  }
+}
 
 class BackupProvider {
   final String name;
@@ -14,26 +56,35 @@ class BackupSettings {
       BackupProvider("icloud", "Apple iCloud");
   static const BackupProvider googleBackupProvider =
       BackupProvider("gdrive", "Google Drive");
+  static const BackupProvider remoteServerBackupProvider =
+      BackupProvider("remoteserver", "Remote Server");
 
   final bool promptOnError;
   final BackupKeyType backupKeyType;
   final BackupProvider backupProvider;
+  final RemoteServerAuthData remoteServerAuthData;
 
-  BackupSettings(this.promptOnError, this.backupKeyType, this.backupProvider);
+  BackupSettings(this.promptOnError, this.backupKeyType, this.backupProvider,
+      this.remoteServerAuthData);
   BackupSettings.start()
       : this(
             true,
             BackupKeyType.NONE,
             defaultTargetPlatform == TargetPlatform.android
                 ? googleBackupProvider
-                : null);
+                : null,
+            RemoteServerAuthData(null, null, null, null));
 
   BackupSettings copyWith(
       {bool promptOnError,
       BackupKeyType keyType,
-      BackupProvider backupProvider}) {
-    return BackupSettings(promptOnError ?? this.promptOnError,
-        keyType ?? this.backupKeyType, backupProvider ?? this.backupProvider);
+      BackupProvider backupProvider,
+      RemoteServerAuthData remoteServerAuthData}) {
+    return BackupSettings(
+        promptOnError ?? this.promptOnError,
+        keyType ?? this.backupKeyType,
+        backupProvider ?? this.backupProvider,
+        remoteServerAuthData ?? this.remoteServerAuthData);
   }
 
   BackupSettings.fromJson(Map<String, dynamic> json)
@@ -43,18 +94,23 @@ class BackupSettings {
           BackupSettings.availableBackupProviders().firstWhere(
               (p) => p.name == json["backupProvider"],
               orElse: () => null),
+          RemoteServerAuthData.fromJson(json["remoteServerAuthData"] ?? {}),
         );
 
   Map<String, dynamic> toJson() {
     return {
       "promptOnError": promptOnError,
       "backupKeyType": backupKeyType.index,
-      "backupProvider": backupProvider?.name
+      "backupProvider": backupProvider?.name,
+      "remoteServerAuthData": remoteServerAuthData.toJson(),
     };
   }
 
   static List<BackupProvider> availableBackupProviders() {
-    List<BackupProvider> providers = [googleBackupProvider];
+    List<BackupProvider> providers = [
+      googleBackupProvider,
+      remoteServerBackupProvider
+    ];
     if (defaultTargetPlatform == TargetPlatform.iOS) {
       providers.insert(0, icloudBackupProvider);
     }

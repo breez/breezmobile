@@ -8,6 +8,7 @@ import 'package:breez/bloc/account/add_funds_bloc.dart';
 import 'package:breez/bloc/blocs_provider.dart';
 import 'package:breez/bloc/invoice/invoice_bloc.dart';
 import 'package:breez/bloc/invoice/invoice_model.dart';
+import 'package:breez/bloc/lnurl/lnurl_bloc.dart';
 import 'package:breez/bloc/lsp/lsp_bloc.dart';
 import 'package:breez/bloc/lsp/lsp_model.dart';
 import 'package:breez/routes/podcast/theme.dart';
@@ -61,6 +62,7 @@ class BottomActionsBar extends StatelessWidget {
   Future _showSendOptions(BuildContext context) async {
     InvoiceBloc invoiceBloc = AppBlocsProvider.of<InvoiceBloc>(context);
     AccountBloc accBloc = AppBlocsProvider.of<AccountBloc>(context);
+    LNUrlBloc lnurlBloc = AppBlocsProvider.of<LNUrlBloc>(context);
 
     await showModalBottomSheet(
         context: context,
@@ -86,7 +88,9 @@ class BottomActionsBar extends StatelessWidget {
                         DecodedClipboardData clipboardData =
                             await snapshot.data;
                         if (clipboardData != null) {
-                          if (clipboardData.type == "invoice") {
+                          if (clipboardData.type == "lnurl") {
+                            lnurlBloc.lnurlInputSink.add(clipboardData.data);
+                          } else if (clipboardData.type == "invoice") {
                             invoiceBloc.decodeInvoiceSink
                                 .add(clipboardData.data);
                           } else if (clipboardData.type == "nodeID") {

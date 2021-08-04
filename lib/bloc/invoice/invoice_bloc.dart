@@ -78,7 +78,10 @@ class InvoiceBloc with AsyncActionsHandler {
         if (normalized.startsWith("lightning:")) {
           normalized = normalized.substring(10);
         }
-        if (normalized.startsWith("ln") && !normalized.startsWith("lnurl")) {
+        if (normalized.startsWith("lnurl")) {
+          return DecodedClipboardData(clipboardData, "lnurl");
+        }
+        if (normalized.startsWith("ln")) {
           try {
             await _breezLib.getRelatedInvoice(clipboardData);
             return null;
@@ -172,12 +175,13 @@ class InvoiceBloc with AsyncActionsHandler {
                 PaymentRequestModel(null, paymentRequest, null, Int64(0)));
             return null;
           } catch (e) {
-            log.info("detected not ours invoice, continue to decoding");
+            log.info("detected not our invoice, continue to decoding");
             return paymentRequest;
           }
         })
         .where((paymentRequest) => paymentRequest != null)
         .asyncMap((paymentRequest) {
+          log.info('Decoding invoice.');
           return breezLib.decodePaymentRequest(paymentRequest).then(
               (invoice) async {
             var paymentHash =

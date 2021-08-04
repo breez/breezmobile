@@ -86,7 +86,6 @@ class UserProfileBloc {
       UploadProfilePicture: _uploadProfilePicture,
       SetPOSCurrency: _setPOSCurrency,
       SetPaymentOptions: _setPaymentOptions,
-      SetSeenPodcastTutorial: _setSeenPodcastTutorial,
       SetSeenPaymentStripTutorial: _setSeenPaymentStripTutorial,
     };
     print("UserProfileBloc started");
@@ -203,15 +202,6 @@ class UserProfileBloc {
 
   Future _uploadProfilePicture(UploadProfilePicture action) async {
     action.resolve(await _uploadImage(action.bytes));
-  }
-
-  Future _setSeenPodcastTutorial(SetSeenPodcastTutorial action) async {
-    _saveChanges(
-        await _preferences,
-        _currentUser.copyWith(
-            seenTutorials: _currentUser.seenTutorials
-                .copyWith(podcastsTutorial: action.seen)));
-    action.resolve(action.seen);
   }
 
   Future _setSeenPaymentStripTutorial(

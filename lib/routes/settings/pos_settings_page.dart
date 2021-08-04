@@ -242,6 +242,7 @@ class PosSettingsPageState extends State<_PosSettingsPage> {
             okText: "YES")
         .then((acknowledged) async {
       if (acknowledged) {
+        await FilePicker.platform.clearTemporaryFiles();
         FilePickerResult result = await FilePicker.platform.pickFiles();
         if (result == null) {
           return;

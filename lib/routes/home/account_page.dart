@@ -73,17 +73,30 @@ class AccountPageState extends State<AccountPage>
                     builder: (context, snapshot) {
                       PaymentsModel paymentsModel =
                           snapshot.data ?? PaymentsModel.initial();
-                      return Container(
-                        color: theme.customData[theme.themeId].dashboardBgColor,
-                        child: _buildBalanceAndPayments(paymentsModel, account),
-                      );
+                      return StreamBuilder<BreezUserModel>(
+                          stream: _userProfileBloc.userStream,
+                          builder: (context, snapshot) {
+                            final userModel = snapshot.data;
+                            return Container(
+                              color: theme
+                                  .customData[theme.themeId].dashboardBgColor,
+                              child: _buildBalanceAndPayments(
+                                paymentsModel,
+                                account,
+                                userModel,
+                              ),
+                            );
+                          });
                     });
               });
         });
   }
 
   Widget _buildBalanceAndPayments(
-      PaymentsModel paymentsModel, AccountModel account) {
+    PaymentsModel paymentsModel,
+    AccountModel account,
+    BreezUserModel userModel,
+  ) {
     LSPBloc lspBloc = AppBlocsProvider.of<LSPBloc>(context);
 
     double listHeightSpace = MediaQuery.of(context).size.height -
@@ -137,6 +150,7 @@ class AccountPageState extends State<AccountPage>
 
     if (paymentsModel.nonFilteredItems.length > 0) {
       slivers.add(PaymentsList(
+        userModel,
         paymentsModel.paymentsList,
         PAYMENT_LIST_ITEM_HEIGHT,
         widget.firstPaymentItemKey,

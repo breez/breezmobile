@@ -177,5 +177,6 @@ class PosCatalogBloc with AsyncActionsHandler {
 
   Future resetDB() async {
     await (_repository as SqliteRepository).dropDB();
+    _loadItems();
   }
 }

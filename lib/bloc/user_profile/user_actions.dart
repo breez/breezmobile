@@ -90,12 +90,6 @@ class SetPaymentOptions extends AsyncAction {
   SetPaymentOptions(this.paymentOptions);
 }
 
-class SetSeenPodcastTutorial extends AsyncAction {
-  final bool seen;
-
-  SetSeenPodcastTutorial(this.seen);
-}
-
 class SetSeenPaymentStripTutorial extends AsyncAction {
   final bool seen;
 

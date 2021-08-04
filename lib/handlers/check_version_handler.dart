@@ -6,15 +6,23 @@ import 'package:flushbar/flushbar.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:breez/widgets/no_connection_dialog.dart';
 
-class CheckVersionHandler {
-  final BuildContext context;
-  final UserProfileBloc userProfileBloc;
-
-  CheckVersionHandler(this.context, this.userProfileBloc) {
-    CheckVersion action = CheckVersion();
-    userProfileBloc.userActionsSink.add(action);
-    action.future.catchError((err) {
+void checkVersionDialog(BuildContext context, UserProfileBloc userProfileBloc) {
+  CheckVersion action = CheckVersion();
+  userProfileBloc.userActionsSink.add(action);
+  action.future.catchError((err) {
+    if (err.contains('connection error')) {
+      showNoConnectionDialog(context).then((retry) {
+        print("-- showNoConnectionDialog --");
+        print(retry);
+        if (retry == true) {
+          Future.delayed(Duration(seconds: 1), () {
+            checkVersionDialog(context, userProfileBloc);
+          });
+        }
+      });
+    } else if (err.contains('bad version')) {
       showFlushbar(context, buttonText: "UPDATE", onDismiss: () {
         if (defaultTargetPlatform == TargetPlatform.iOS) {
           launch("https://testflight.apple.com/join/wPju2Du7");
@@ -28,6 +36,6 @@ class CheckVersionHandler {
           duration: Duration.zero,
           messageWidget: Text("Please update Breez to the latest version.",
               style: theme.snackBarStyle, textAlign: TextAlign.center));
-    });
-  }
+    }
+  });
 }

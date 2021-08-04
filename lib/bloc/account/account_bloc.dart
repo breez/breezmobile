@@ -357,7 +357,7 @@ class AccountBloc {
         _completedPaymentsController.addError(error);
         return Future.error(error);
       }
-      _completedPaymentsController.add(CompletedPayment(null, null));
+      _completedPaymentsController.add(CompletedPayment(null, null, null));
       return response;
     });
 
@@ -369,13 +369,15 @@ class AccountBloc {
 
   Future _sendPayment(SendPayment action) async {
     var payRequest = action.paymentRequest;
+    log.info('_sendPayment: paymentRequest = ${payRequest.paymentRequest}');
+
     if (action.ignoreGlobalFeedback) {
       _ignoredFeedbackPayments[payRequest.paymentRequest] = true;
     }
     var sendRequest = _breezLib
         .sendPaymentForRequest(payRequest.paymentRequest,
             amount: payRequest.amount)
-        .then((response) {
+        .then((response) async {
       if (response.paymentError.isNotEmpty) {
         var error = PaymentError(
           payRequest,
@@ -386,13 +388,28 @@ class AccountBloc {
         _completedPaymentsController.addError(error);
         return Future.error(error);
       }
-      _completedPaymentsController.add(CompletedPayment(null, null,
+
+      final paymentHash =
+          await _breezLib.getPaymentRequestHash(payRequest.paymentRequest);
+      log.info(
+          '_sendPayment: getPaymentRequestHash found paymentHash  $paymentHash for paymentRequest ${payRequest.paymentRequest}');
+
+      PaymentInfo currentPayment;
+      if (paymentHash != '') {
+        var allPayments = await fetchPayments();
+        currentPayment = allPayments.paymentsList.firstWhere(
+            (element) => element.paymentHash == paymentHash,
+            orElse: () => null);
+      }
+
+      _completedPaymentsController.add(CompletedPayment(
+          payRequest, paymentHash, currentPayment,
           ignoreGlobalFeedback: action.ignoreGlobalFeedback == true));
       return response;
     });
 
     _backgroundService.runAsTask(sendRequest, () {
-      log.info("sendpayment background task finished");
+      log.info("sendPayment background task finished");
     });
     action.resolve(await sendRequest);
   }
@@ -401,7 +418,7 @@ class AccountBloc {
     var paymentHash = await _breezLib
         .getPaymentRequestHash(cancelRequest.paymentRequest.paymentRequest);
     _completedPaymentsController.add(CompletedPayment(
-        cancelRequest.paymentRequest, paymentHash,
+        cancelRequest.paymentRequest, paymentHash, null,
         cancelled: true));
     return Future.value(null);
   }
@@ -604,14 +621,18 @@ class AccountBloc {
     });
   }
 
-  Future<PaymentsModel> fetchPayments() {
+  Future<PaymentsModel> fetchPayments() async {
     DateTime _firstDate;
     print("refreshing payments...");
+
     return _breezLib.getPayments().then((payments) {
-      List<PaymentInfo> _paymentsList = payments.paymentsList
-          .map(
-              (payment) => SinglePaymentInfo(payment, _accountController.value))
-          .toList();
+      List<PaymentInfo> _paymentsList = payments.paymentsList.map((payment) {
+        var singlePaymentInfo =
+            SinglePaymentInfo(payment, _accountController.value);
+
+        return singlePaymentInfo;
+      }).toList();
+
       if (_paymentsList.length > 0) {
         _firstDate = DateTime.fromMillisecondsSinceEpoch(
             _paymentsList.last.creationTimestamp.toInt() * 1000);
@@ -624,6 +645,7 @@ class AccountBloc {
           _paymentFilterController.value,
           _firstDate ?? DateTime(DateTime.now().year));
     });
+
   }
 
   Future _refreshPayments() {
@@ -679,6 +701,7 @@ class AccountBloc {
   void _listenAccountChanges() {
     StreamSubscription<NotificationEvent> eventSubscription;
     eventSubscription = _breezLib.notificationStream.listen((event) async {
+      print('_breezLib.notificationStream received: ${event.type}.');
       if (event.type ==
           NotificationEvent_NotificationType.LIGHTNING_SERVICE_DOWN) {
         _accountController
@@ -700,26 +723,33 @@ class AccountBloc {
             .add(_accountController.value.copyWith(serverReady: true));
         _refreshAccountAndPayments();
       }
+
       if (event.type ==
           NotificationEvent_NotificationType.BACKUP_NODE_CONFLICT) {
         eventSubscription.cancel();
         _nodeConflictController.add(null);
       }
+
       if (event.type == NotificationEvent_NotificationType.PAYMENT_SUCCEEDED) {
         var paymentRequest = event.data[0];
         var paymentHash = event.data[1];
-        PayRequest pqyreq;
+        log.info(
+            '_listenAccountChanges: Payment succeeded with paymentHash = $paymentHash');
+        PayRequest payRequest;
+
         if (paymentRequest.isNotEmpty) {
           var invoice = await _breezLib.decodePaymentRequest(paymentRequest);
-          pqyreq = PayRequest(paymentRequest, invoice.amount);
+          payRequest = PayRequest(paymentRequest, invoice.amount);
         }
 
-        _completedPaymentsController.add(CompletedPayment(pqyreq, paymentHash,
+        _completedPaymentsController.add(CompletedPayment(
+            payRequest, paymentHash, null,
             cancelled: false,
             ignoreGlobalFeedback:
                 _ignoredFeedbackPayments.containsKey(paymentRequest)));
         _ignoredFeedbackPayments.remove(paymentRequest);
       }
+
       if (event.type == NotificationEvent_NotificationType.PAYMENT_FAILED) {
         var paymentRequest = event.data[0];
         var error = event.data[2];
@@ -727,13 +757,13 @@ class AccountBloc {
         if (event.data.length > 3) {
           traceReport = event.data[3];
         }
-        PayRequest pqyreq;
+        PayRequest payRequest;
         if (paymentRequest.isNotEmpty) {
           var invoice = await _breezLib.decodePaymentRequest(paymentRequest);
-          pqyreq = PayRequest(paymentRequest, invoice.amount);
+          payRequest = PayRequest(paymentRequest, invoice.amount);
         }
         _completedPaymentsController.addError(PaymentError(
-            pqyreq, error, traceReport,
+            payRequest, error, traceReport,
             ignoreGlobalFeedback:
                 _ignoredFeedbackPayments.containsKey(paymentRequest)));
         _ignoredFeedbackPayments.remove(paymentRequest);

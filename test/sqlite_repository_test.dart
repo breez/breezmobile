@@ -1,13 +1,18 @@
+import 'dart:typed_data';
+
 import 'package:breez/bloc/pos_catalog/model.dart';
 import 'package:breez/bloc/pos_catalog/sqlite/repository.dart';
 import 'package:flutter/material.dart';
 import 'package:test/test.dart';
 
+import 'mocks.dart';
+
 SqliteRepository repo;
 void main() {
   WidgetsFlutterBinding.ensureInitialized();  
   group('sqlite_repo_test', () {
-    setUp(() async {      
+    setUp(() async {
+      sqfliteFfiInitAsMockMethodCallHandler();
       await SqliteRepository().dropDB();
       repo = SqliteRepository();
     });
@@ -59,12 +64,47 @@ void main() {
     });
 
     test("should test assets", () async {
-      String url = await repo.addAsset([1,2,3]);
+      Uint8List items = Uint8List.fromList([1, 2, 3]);
+      String url = await repo.addAsset(items);
       var assetData = await repo.fetchAssetByURL(url);
       expect(assetData.length, 3);
       await repo.deleteAsset(url);
       assetData = await repo.fetchAssetByURL(url);
       expect(assetData, null);      
-    });   
+    });
+
+    test("replaceDB should replace items", () async {
+      int id = await repo.addItem(
+        Item(name: "item1", currency: "USD", price: 1.0),
+      );
+      expect(id, 1);
+      await repo.replaceDB([
+        Item(name: "itemReplace", currency: "USD", price: 1.0),
+      ]);
+      var items = await repo.fetchItems();
+      expect(items.length, 1);
+      expect(items[0].id, 1);
+      var item1 = await repo.fetchItemByID(1);
+      expect(item1.name, "itemReplace");
+      expect(item1.currency, "USD");
+      expect(item1.price, 1.0);
+      expect(item1.imageURL, null);
+    });
+
+    test("fetchSaleByPaymentHash when paymentHash is unknown should return null", () async {
+      final hash = "a_hash";
+      final sale = await repo.fetchSaleByPaymentHash(hash);
+      expect(sale, isNull);
+    });
+
+    test("fetchSaleByPaymentHash when paymentHash is valid should return sale", () async {
+      final hash = "a_hash";
+      await repo.addSale(Sale(saleLines: [
+        SaleLine(itemName: "SaleLine1", quantity: 1, itemImageURL: "testURL1", pricePerItem: 1.0, currency: "USD", satConversionRate: 1.5),
+        SaleLine(itemName: "SaleLine2", quantity: 1, itemImageURL: "testURL2", pricePerItem: 2.0, currency: "USD", satConversionRate: 2.5),
+      ]), hash);
+      final sale = await repo.fetchSaleByPaymentHash(hash);
+      expect(sale, isNotNull);
+    });
   });
 }

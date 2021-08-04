@@ -84,6 +84,7 @@ fileprivate let calls : Dictionary<String, BindingExecutor> = [
     "connectDirectToLnurl": SingleArgBindingExecutor(f: BindingsConnectDirectToLnurl),
     "fetchLnurl": SingleArgBindingExecutor(f: BindingsFetchLnurl),
     "finishLNURLAuth": SingleArgBindingExecutor(f: BindingsFinishLNURLAuth),
+    "finishLNURLPay": SingleArgBindingExecutor(f: BindingsFinishLNURLPay),
     "syncGraphFromFile": SingleArgBindingExecutor(f: BindingsSyncGraphFromFile),
     "deleteGraph": EmptyArgsBindingExecutor(f: BindingsDeleteGraph),
     "graphURL": EmptyArgsBindingExecutor(f: BindingsGraphURL),
