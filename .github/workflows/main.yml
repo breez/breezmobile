@@ -36,7 +36,7 @@ jobs:
           echo "SSH_KEY=$SSH_KEY" >> keys
           echo "CER_KEY_PASS=$CER_KEY_PASS" >> keys
           echo "KNOWN_HOSTS=$KNOWN_HOSTS" >> keys
-          echo "GOOGLE_SIGN_IN_URL=$GOOGLE_SIGN_IN_URL" >> keys
+          echo "GOOGLE_SIGNIN_URL=$GOOGLE_SIGNIN_URL" >> keys
           echo "APP_USERNAME=$APP_USERNAME" >> keys
           echo "APP_PASSWORD=$APP_PASSWORD" >> keys
           export uploadKeys="put keys"
@@ -47,7 +47,7 @@ jobs:
           SSH_KEY: ${{secrets.SSH_KEY}}
           CER_KEY_PASS: ${{ secrets.CER_KEY_PASS }}
           KNOWN_HOSTS: ${{ secrets.KNOWN_HOSTS }} 
-          GOOGLE_SIGN_IN_URL: ${{ secrets.GOOGLE_SIGN_IN_URL }}
+          GOOGLE_SIGNIN_URL: ${{ secrets.GOOGLE_SIGNIN_URL }}
           APP_USERNAME: ${{ secrets.APP_USERNAME }}
           APP_PASSWORD: ${{ secrets.APP_PASSWORD }}
 
