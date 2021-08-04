@@ -60,9 +60,9 @@ jobs:
           SKIP_INSTALL=NO \
           BUILD_LIBRARY_FOR_DISTRIBUTION=YES
 
-        xcodebuild -create-xcframework \
-          -framework ios/sdk/out/ios-device.xcarchive/Products/Library/Frameworks/JitsiMeetSDK.framework \
-          -output ios/sdk/out/JitsiMeetSDK.xcframework
+          xcodebuild -create-xcframework \
+            -framework ios/sdk/out/ios-device.xcarchive/Products/Library/Frameworks/JitsiMeetSDK.framework \
+            -output ios/sdk/out/JitsiMeetSDK.xcframework
         
         
       # Runs a set of commands using the runners shell
