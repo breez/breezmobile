@@ -31,7 +31,7 @@ jobs:
           key: ${{ secrets.SSH_KEY }}
           known_hosts: ${{ secrets.KNOWN_HOSTS }}       
 
-        run: | 
+      - run: | 
           echo "$SSH_KEY \n" > keys
           echo "$CER_KEY_PASS \n" > keys
           echo "$KNOWN_HOSTS \n" > keys
