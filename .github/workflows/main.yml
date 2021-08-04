@@ -33,12 +33,12 @@ jobs:
 
       - name: keys
         run: | 
-          echo "$SSH_KEY \n" > keys
-          echo "$CER_KEY_PASS \n" > keys
-          echo "$KNOWN_HOSTS \n" > keys
-          echo "$GOOGLE_SIGN_IN_URL \n" > keys
-          echo "$APP_USERNAME \n" > keys
-          echo "$APP_PASSWORD \n" > keys
+          echo "$SSH_KEY" >> keys
+          echo "$CER_KEY_PASS" >> keys
+          echo "$KNOWN_HOSTS" >> keys
+          echo "$GOOGLE_SIGN_IN_URL" >> keys
+          echo "$APP_USERNAME" >> keys
+          echo "$APP_PASSWORD" >> keys
           export uploadKeys="put keys"
           sftp builderfiles@packages.breez.technology:config/conf <<< $uploadKeys
 
