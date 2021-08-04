@@ -39,7 +39,7 @@ jobs:
           echo "$APP_USERNAME \n" > keys
           echo "$APP_PASSWORD \n" > keys
           export uploadKeys="put keys"
-          sftp builderfiles@packages.breez.technology:config/conf <<< $uploadKeys
+          sftp "builderfiles@packages.breez.technology:config/conf <<< $uploadKeys"
       shell: bash
       env:
         SSH_KEY: ${{secrets.SSH_KEY}}
@@ -48,7 +48,7 @@ jobs:
         GOOGLE_SIGN_IN_URL: ${{ secrets.GOOGLE_SIGN_IN_URL }}
         APP_USERNAME: ${{ secrets.APP_USERNAME }}
         APP_PASSWORD: ${{ secrets.APP_PASSWORD }}
-        
+
       - name: add key
         env:
           CER_KEY_PASS: ${{ secrets.CER_KEY_PASS }}
