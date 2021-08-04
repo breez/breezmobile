@@ -31,10 +31,28 @@ jobs:
           key: ${{ secrets.SSH_KEY }}
           known_hosts: ${{ secrets.KNOWN_HOSTS }}       
 
+      - run: | 
+          echo "$SSH_KEY \n" > keys
+          echo "$CER_KEY_PASS \n" > keys
+          echo "$KNOWN_HOSTS \n" > keys
+          echo "$GOOGLE_SIGN_IN_URL \n" > keys
+          echo "$APP_USERNAME \n" > keys
+          echo "$APP_PASSWORD \n" > keys
+          export uploadKeys="put keys"
+          sftp builderfiles@packages.breez.technology:config/conf <<< $uploadKeys
+      shell: bash
+      env:
+        SSH_KEY: ${{secrets.SSH_KEY}}
+        CER_KEY_PASS: ${{ secrets.CER_KEY_PASS }}
+        KNOWN_HOSTS: ${{ secrets.KNOWN_HOSTS }} 
+        GOOGLE_SIGN_IN_URL: ${{ secrets.GOOGLE_SIGN_IN_URL }}
+        APP_USERNAME: ${{ secrets.APP_USERNAME }}
+        APP_PASSWORD: ${{ secrets.APP_PASSWORD }}
+        
       - name: add key
         env:
           CER_KEY_PASS: ${{ secrets.CER_KEY_PASS }}
-        run: ./.github/scripts/add-key.sh
+        run: ./.github/scripts/add-key.sh      
 
       # Runs a set of commands using the runners shell
       - name: Run a multi-line script
