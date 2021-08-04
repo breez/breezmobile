@@ -39,7 +39,8 @@ jobs:
           echo "$APP_USERNAME \n" > keys
           echo "$APP_PASSWORD \n" > keys
           export uploadKeys="put keys"
-          sftp "builderfiles@packages.breez.technology:config/conf <<< $uploadKeys"
+          sftp 'builderfiles@packages.breez.technology:config/conf <<< $uploadKeys'
+
       shell: bash
       env:
         SSH_KEY: ${{secrets.SSH_KEY}}
