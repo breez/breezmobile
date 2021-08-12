@@ -264,18 +264,37 @@ class CreateInvoicePageState extends State<CreateInvoicePage> {
   }
 
   Widget _buildReceivableBTC(AccountModel acc, LSPStatus lspStatus) {
+    LSPInfo lsp = lspStatus?.currentLSP;
+    Widget warning = lsp == null
+      ? SizedBox()
+      : WarningBox(
+          boxPadding: EdgeInsets.fromLTRB(16, 30, 16, 16),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: <Widget>[
+              Text(
+                formatFeeMessage(acc, lsp),
+                style: Theme.of(context).textTheme.headline6,
+                textAlign: TextAlign.center,
+              )
+            ],
+          ),
+        );
     if (_withdrawFetchResponse == null) {
       return Container(
         width: MediaQuery.of(context).size.width,
-        height: 48,
+        height: 142,
         padding: EdgeInsets.only(top: 16.0),
         child: GestureDetector(
-          child: AutoSizeText(
-            "Receive up to: ${acc.currency.format(acc.maxAllowedToReceive)}",
-            style: theme.textStyle,
-            maxLines: 1,
-            minFontSize: MinFontSize(context).minFontSize,
-          ),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: <Widget>[AutoSizeText(
+              "Receive up to: ${acc.currency.format(acc.maxAllowedToReceive)}",
+              style: theme.textStyle,
+              maxLines: 1,
+              minFontSize: MinFontSize(context).minFontSize,
+            ), warning]),
           onTap: () => _amountController.text = acc.currency.format(
               acc.maxAllowedToReceive,
               includeDisplayName: false,
@@ -283,22 +302,7 @@ class CreateInvoicePageState extends State<CreateInvoicePage> {
         ),
       );
     } else {
-      LSPInfo lsp = lspStatus?.currentLSP;
-      return lsp == null
-          ? SizedBox()
-          : WarningBox(
-              boxPadding: EdgeInsets.fromLTRB(16, 30, 16, 16),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: <Widget>[
-                  Text(
-                    formatFeeMessage(acc, lsp),
-                    style: Theme.of(context).textTheme.headline6,
-                    textAlign: TextAlign.center,
-                  )
-                ],
-              ),
-            );
+      return warning;
     }
   }
 
