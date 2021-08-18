@@ -13,7 +13,7 @@ Future<Database> getDB() async {
         """
         CREATE TABLE SatsZone(
           id INTEGER PRIMARY KEY,
-          roomID TEXT, 
+          zoneID TEXT, 
           title TEXT
         )
         """,

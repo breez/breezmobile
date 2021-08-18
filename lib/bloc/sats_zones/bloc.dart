@@ -1,9 +1,9 @@
 import 'dart:async';
 
 import 'package:breez/bloc/async_actions_handler.dart';
-import 'package:breez/bloc/sats_rooms/actions.dart';
-import 'package:breez/bloc/sats_rooms/repository.dart';
-import 'package:breez/bloc/sats_rooms/sqlite/repository.dart';
+import 'package:breez/bloc/sats_zones/actions.dart';
+import 'package:breez/bloc/sats_zones/repository.dart';
+import 'package:breez/bloc/sats_zones/sqlite/repository.dart';
 import 'package:rxdart/subjects.dart';
 
 import 'model.dart';

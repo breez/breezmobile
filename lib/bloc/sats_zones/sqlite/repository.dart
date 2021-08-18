@@ -1,6 +1,6 @@
 import 'dart:io';
 
-import 'package:breez/bloc/sats_rooms/model.dart';
+import 'package:breez/bloc/sats_zones/model.dart';
 import 'package:sqflite/sqflite.dart';
 
 import '../repository.dart';

@@ -1,9 +1,9 @@
 import 'dart:io';
 
 import 'package:breez/bloc/blocs_provider.dart';
-import 'package:breez/bloc/sats_rooms/actions.dart';
-import 'package:breez/bloc/sats_rooms/bloc.dart';
-import 'package:breez/bloc/sats_rooms/model.dart';
+import 'package:breez/bloc/sats_zones/actions.dart';
+import 'package:breez/bloc/sats_zones/bloc.dart';
+import 'package:breez/bloc/sats_zones/model.dart';
 import 'package:breez/bloc/user_profile/user_profile_bloc.dart';
 import 'package:breez/theme_data.dart' as theme;
 import 'package:breez/widgets/flushbar.dart';
@@ -50,11 +50,11 @@ class SatsZoneItem extends StatelessWidget {
                         color: Colors.red,
                       ),
                       onPressed: () {
-                        SatsZoneBloc satsZoneBloc =
-                            AppBlocsProvider.of<SatsZoneBloc>(context);
+                        SatsZonesBloc satsZonesBloc =
+                            AppBlocsProvider.of<SatsZonesBloc>(context);
                         DeleteSatsZone deleteSatsZone =
                             DeleteSatsZone(satsZone.id);
-                        satsZoneBloc.actionsSink.add(deleteSatsZone);
+                        satsZonesBloc.actionsSink.add(deleteSatsZone);
                         deleteSatsZone.future.then((_) {
                           showFlushbar(context,
                               duration: Duration(seconds: 4),
@@ -87,7 +87,7 @@ class SatsZoneItem extends StatelessWidget {
                           size: 22,
                         ),
                         onPressed: () =>
-                            _joinSatsRoom(satsZone.zoneID, userProfileBloc),
+                            _joinSatsZone(satsZone.zoneID, userProfileBloc),
                       ),
                     ),
                   ],
@@ -100,7 +100,7 @@ class SatsZoneItem extends StatelessWidget {
     );
   }
 
-  _joinSatsRoom(String roomID, UserProfileBloc userProfileBloc) async {
+  _joinSatsZone(String zoneID, UserProfileBloc userProfileBloc) async {
     var user = await userProfileBloc.userStream.firstWhere((u) => u != null);
     // Enable or disable any feature flag here
     // If feature flag are not provided, default values will be used
@@ -119,7 +119,7 @@ class SatsZoneItem extends StatelessWidget {
       }
     }
     // Define meetings options here
-    var options = JitsiMeetingOptions(room: roomID)
+    var options = JitsiMeetingOptions(room: zoneID)
       //..serverURL = null
       ..subject = satsZone.title
       ..userDisplayName = user.name
@@ -130,7 +130,7 @@ class SatsZoneItem extends StatelessWidget {
       //..videoMuted = isVideoMuted
       ..featureFlags.addAll(featureFlags)
       ..webOptions = {
-        "roomName": roomID,
+        "roomName": zoneID,
         "width": "100%",
         "height": "100%",
         "enableWelcomePage": false,

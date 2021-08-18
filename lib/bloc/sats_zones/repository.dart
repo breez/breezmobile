@@ -1,4 +1,4 @@
-import 'package:breez/bloc/sats_rooms/model.dart';
+import 'package:breez/bloc/sats_zones/model.dart';
 
 abstract class Repository {
   // Sats Zones

@@ -1,10 +1,10 @@
 import 'package:auto_size_text/auto_size_text.dart';
-import 'package:breez/bloc/sats_rooms/model.dart';
+import 'package:breez/bloc/sats_zones/model.dart';
 import 'package:breez/theme_data.dart' as theme;
 import 'package:breez/utils/min_font_size.dart';
 import 'package:flutter/material.dart';
 
-import 'sats_room_item.dart';
+import 'sats_zone_item.dart';
 
 const BOTTOM_PADDING = 8.0;
 
