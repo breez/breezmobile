@@ -1,10 +1,10 @@
 import 'dart:io';
 
 import 'package:breez/bloc/blocs_provider.dart';
-import 'package:breez/bloc/sats_rooms/bloc.dart';
+import 'package:breez/bloc/sats_zones/bloc.dart';
 import 'package:breez/bloc/user_profile/user_profile_bloc.dart';
-import 'package:breez/routes/sats_rooms/join_sats_room_dialog.dart';
-import 'package:breez/routes/sats_rooms/sats_rooms_list.dart';
+import 'package:breez/routes/sats_zones/join_sats_zone_dialog.dart';
+import 'package:breez/routes/sats_zones/sats_zones_list.dart';
 import 'package:breez/theme_data.dart' as theme;
 import 'package:breez/widgets/flushbar.dart';
 import 'package:breez/widgets/loader.dart';
@@ -13,25 +13,25 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:jitsi_meet/jitsi_meet.dart';
 
-class SatsRooms extends StatefulWidget {
+class SatsZones extends StatefulWidget {
   @override
-  _SatsRoomsState createState() => _SatsRoomsState();
+  _SatsZonesState createState() => _SatsZonesState();
 }
 
-class _SatsRoomsState extends State<SatsRooms> {
+class _SatsZonesState extends State<SatsZones> {
   @override
   Widget build(BuildContext context) {
-    SatsRoomsBloc satsRoomsBloc = AppBlocsProvider.of<SatsRoomsBloc>(context);
+    SatsZonesBloc satsZonesBloc = AppBlocsProvider.of<SatsZonesBloc>(context);
     return Scaffold(
       backgroundColor: theme.customData[theme.themeId].dashboardBgColor,
       body: StreamBuilder(
-          stream: satsRoomsBloc.satsRoomsStream,
+          stream: satsZonesBloc.satsZonesStream,
           builder: (context, snapshot) {
-            var satsRooms = snapshot.data;
-            if (satsRooms == null) {
+            var satsZones = snapshot.data;
+            if (satsZones == null) {
               return Center(child: Loader());
             }
-            return SatsRoomsList(satsRooms);
+            return SatsZonesList(satsZones);
           }),
       bottomNavigationBar: BottomAppBar(
         color: Theme.of(context).bottomAppBarColor,
@@ -45,7 +45,7 @@ class _SatsRoomsState extends State<SatsRooms> {
                     padding: EdgeInsets.zero,
                   ),
                   onPressed: () =>
-                      Navigator.of(context).pushNamed("/create_sats_room"),
+                      Navigator.of(context).pushNamed("/create_sats_zone"),
                   child: Text(
                     "CREATE",
                     textAlign: TextAlign.center,
@@ -66,7 +66,7 @@ class _SatsRoomsState extends State<SatsRooms> {
                   style: TextButton.styleFrom(
                     padding: EdgeInsets.zero,
                   ),
-                  onPressed: () => _enterSatsRoomID(satsRoomsBloc),
+                  onPressed: () => _enterSatsZoneID(satsZonesBloc),
                   child: Text(
                     "JOIN",
                     textAlign: TextAlign.center,
@@ -84,28 +84,28 @@ class _SatsRoomsState extends State<SatsRooms> {
     );
   }
 
-  _enterSatsRoomID(SatsRoomsBloc satsRoomsBloc) async {
+  _enterSatsZoneID(SatsZonesBloc satsZonesBloc) async {
     Clipboard.getData("text/plain").then((clipboardData) {
       if (clipboardData != null) {
         var clipboard = clipboardData.text;
-        if (clipboard.contains("Join Sats Room: ")) {
-          _joinSatsRoom(clipboard.substring(16), satsRoomsBloc);
+        if (clipboard.contains("Join Sats Zone: ")) {
+          _joinSatsZone(clipboard.substring(16), satsZonesBloc);
         } else {
           return showDialog(
               context: context,
-              builder: (BuildContext context) => JoinSatsRoomDialog(
-                  (roomID) => _joinSatsRoom(roomID, satsRoomsBloc)));
+              builder: (BuildContext context) => JoinSatsZoneDialog(
+                  (zoneID) => _joinSatsZone(zoneID, satsZonesBloc)));
         }
       } else {
         return showDialog(
             context: context,
-            builder: (BuildContext context) => JoinSatsRoomDialog(
-                (roomID) => _joinSatsRoom(roomID, satsRoomsBloc)));
+            builder: (BuildContext context) => JoinSatsZoneDialog(
+                (zoneID) => _joinSatsZone(zoneID, satsZonesBloc)));
       }
     });
   }
 
-  _joinSatsRoom(String roomID, SatsRoomsBloc satsRoomsBloc) async {
+  _joinSatsZone(String zoneID, SatsZonesBloc satsZonesBloc) async {
     var userProfileBloc = AppBlocsProvider.of<UserProfileBloc>(context);
     var user = await userProfileBloc.userStream.firstWhere((u) => u != null);
     // Enable or disable any feature flag here
@@ -125,13 +125,13 @@ class _SatsRoomsState extends State<SatsRooms> {
       }
     }
     // Define meetings options here
-    var options = JitsiMeetingOptions(room: roomID)
+    var options = JitsiMeetingOptions(room: zoneID)
       ..userDisplayName = user.name
       ..audioMuted = true
       ..videoMuted = true
       ..featureFlags.addAll(featureFlags)
       ..webOptions = {
-        "roomName": roomID,
+        "roomName": zoneID,
         "width": "100%",
         "height": "100%",
         "enableWelcomePage": false,

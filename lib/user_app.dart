@@ -5,13 +5,13 @@ import 'package:breez/bloc/backup/backup_bloc.dart';
 import 'package:breez/bloc/blocs_provider.dart';
 import 'package:breez/bloc/connect_pay/connect_pay_bloc.dart';
 import 'package:breez/bloc/invoice/invoice_bloc.dart';
-import 'package:breez/bloc/sats_rooms/bloc.dart';
+import 'package:breez/bloc/sats_zones/bloc.dart';
 import 'package:breez/bloc/pos_catalog/bloc.dart';
 import 'package:breez/bloc/user_profile/breez_user_model.dart';
 import 'package:breez/bloc/user_profile/user_actions.dart';
 import 'package:breez/bloc/user_profile/user_profile_bloc.dart';
 import 'package:breez/routes/fiat_currencies/fiat_currency_settings.dart';
-import 'package:breez/routes/sats_rooms/create_sats_room.dart';
+import 'package:breez/routes/sats_zones/create_sats_zone.dart';
 import 'package:breez/routes/podcast/theme.dart';
 import 'package:breez/routes/qr_scan.dart';
 import 'package:breez/widgets/route.dart';
@@ -70,7 +70,7 @@ class UserApp extends StatelessWidget { // ignore: must_be_immutable
     var reverseSwapBloc = AppBlocsProvider.of<ReverseSwapBloc>(context);
     var lnurlBloc = AppBlocsProvider.of<LNUrlBloc>(context);
     var posCatalogBloc = AppBlocsProvider.of<PosCatalogBloc>(context);
-    var satsRoomsBloc = AppBlocsProvider.of<SatsRoomsBloc>(context);
+    var satsZonesBloc = AppBlocsProvider.of<SatsZonesBloc>(context);
 
     return StreamBuilder(
         stream: userProfileBloc.userStream,
@@ -307,10 +307,10 @@ class UserApp extends StatelessWidget { // ignore: must_be_immutable
                                         builder: (_) => QRScan(),
                                         settings: settings,
                                       );
-                                    case '/create_sats_room':
+                                    case '/create_sats_zone':
                                       return FadeInRoute(
                                         builder: (_) =>
-                                            CreateSatsRoom(satsRoomsBloc),
+                                            CreateSatsZone(satsZonesBloc),
                                         settings: settings,
                                       );
                                   }

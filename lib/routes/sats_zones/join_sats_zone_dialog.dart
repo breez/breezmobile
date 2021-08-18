@@ -2,24 +2,24 @@ import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-class JoinSatsRoomDialog extends StatefulWidget {
-  final Function(String roomID) joinSatsRoom;
+class JoinSatsZoneDialog extends StatefulWidget {
+  final Function(String zoneID) joinSatsZone;
 
-  JoinSatsRoomDialog(this.joinSatsRoom);
+  JoinSatsZoneDialog(this.joinSatsZone);
 
   @override
   State<StatefulWidget> createState() {
-    return JoinSatsRoomDialogState();
+    return JoinSatsZoneDialogState();
   }
 }
 
-class JoinSatsRoomDialogState extends State<JoinSatsRoomDialog> {
+class JoinSatsZoneDialogState extends State<JoinSatsZoneDialog> {
   final _formKey = GlobalKey<FormState>();
-  TextEditingController _satsRoomIDController = TextEditingController();
+  TextEditingController _satsZoneIDController = TextEditingController();
 
   @override
   void initState() {
-    _satsRoomIDController.addListener(() {
+    _satsZoneIDController.addListener(() {
       setState(() {});
     });
     super.initState();
@@ -33,23 +33,23 @@ class JoinSatsRoomDialogState extends State<JoinSatsRoomDialog> {
   Widget _buildPaymentRequestDialog() {
     return AlertDialog(
       title: AutoSizeText(
-        "Enter Sats Room ID:",
+        "Enter Sats Zone ID:",
         style:
             Theme.of(context).dialogTheme.titleTextStyle.copyWith(fontSize: 16),
         maxLines: 1,
       ),
-      content: _buildSatsRoomIDWidget(),
+      content: _buildSatsZoneIDWidget(),
       actions: _buildActions(),
     );
   }
 
-  Widget _buildSatsRoomIDWidget() {
+  Widget _buildSatsZoneIDWidget() {
     // TODO: Add join options
     return Form(
       key: _formKey,
       child: TextFormField(
         autovalidateMode: AutovalidateMode.disabled,
-        controller: _satsRoomIDController,
+        controller: _satsZoneIDController,
         style: Theme.of(context)
             .dialogTheme
             .contentTextStyle
@@ -65,13 +65,13 @@ class JoinSatsRoomDialogState extends State<JoinSatsRoomDialog> {
         child: Text("CANCEL", style: Theme.of(context).primaryTextTheme.button),
       ),
     ];
-    if (_satsRoomIDController.text.isNotEmpty) {
+    if (_satsZoneIDController.text.isNotEmpty) {
       actions.add(
         TextButton(
           onPressed: () {
             if (_formKey.currentState.validate()) {
               Navigator.pop(context);
-              widget.joinSatsRoom(_satsRoomIDController.text);
+              widget.joinSatsZone(_satsZoneIDController.text);
             }
           },
           child: Text("JOIN", style: Theme.of(context).primaryTextTheme.button),

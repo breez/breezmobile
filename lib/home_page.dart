@@ -25,6 +25,7 @@ import 'package:breez/routes/charge/pos_invoice.dart';
 import 'package:breez/routes/home/bottom_actions_bar.dart';
 import 'package:breez/routes/home/qr_action_button.dart';
 import 'package:breez/routes/marketplace/marketplace.dart';
+import 'package:breez/routes/sats_zones/sats_zones.dart';
 import 'package:breez/routes/podcast/podcast_page.dart' as breezPodcast;
 import 'package:breez/routes/podcast/theme.dart';
 import 'package:breez/theme_data.dart' as theme;
@@ -90,8 +91,6 @@ class Home extends StatefulWidget {
 }
 
 class HomeState extends State<Home> with WidgetsBindingObserver {
-  final GlobalKey podcastMenuItemKey = GlobalKey();
-  final GlobalKey satsRoomsMenuItemKey = GlobalKey();
   String _activeScreen = "breezHome";
   Set _hiddenRoutes = Set<String>();
   StreamSubscription<String> _accountNotificationsSubscription;
@@ -471,7 +470,7 @@ class HomeState extends State<Home> with WidgetsBindingObserver {
     return [
       DrawerItemConfigGroup([_drawerItemBalance(context, user)]),
       DrawerItemConfigGroup([_drawerItemPodcast(context, user)]),
-      DrawerItemConfigGroup([_drawerItemSatsRoom(context, user)]),
+      DrawerItemConfigGroup([_drawerItemSatsZone(context, user)]),
       DrawerItemConfigGroup([_drawerItemPos(context, user)]),
       DrawerItemConfigGroup([_drawerItemLightningApps(context, user)]),
       DrawerItemConfigGroup([]),
@@ -509,7 +508,6 @@ class HomeState extends State<Home> with WidgetsBindingObserver {
       "",
       "Podcasts",
       "src/icon/podcast.png",
-      key: podcastMenuItemKey,
       isSelected: user.appMode == AppMode.podcasts,
       onItemSelected: (_) {
         protectAdminAction(
@@ -525,20 +523,19 @@ class HomeState extends State<Home> with WidgetsBindingObserver {
     );
   }
 
-  DrawerItemConfig _drawerItemSatsRoom(
+  DrawerItemConfig _drawerItemSatsZone(
     BuildContext context,
     BreezUserModel user,
   ) {
     return DrawerItemConfig(
       "",
-      "Sats Rooms",
-      "src/icon/sats_rooms.png",
-      key: satsRoomsMenuItemKey,
-      isSelected: user.appMode == AppMode.satsRooms,
+      "Sats Zone",
+      "src/icon/sats_zone.png",
+      isSelected: user.appMode == AppMode.satsZones,
       onItemSelected: (_) {
         protectAdminAction(context, user, () {
           widget.userProfileBloc.userActionsSink
-              .add(SetAppMode(AppMode.satsRooms));
+              .add(SetAppMode(AppMode.satsZones));
           return Future.value(null);
         });
       },
@@ -624,6 +621,8 @@ class HomeState extends State<Home> with WidgetsBindingObserver {
     switch (appMode) {
       case (AppMode.podcasts):
         return "src/icon/podcast.png";
+      case (AppMode.satsZones):
+        return "src/icon/sats_zone.png";
       case (AppMode.pos):
         return "src/icon/pos.png";
       case (AppMode.apps):
@@ -652,6 +651,8 @@ class HomeState extends State<Home> with WidgetsBindingObserver {
             ),
           ),
         );
+      case AppMode.satsZones:
+        return SatsZones();
       case AppMode.pos:
         return POSInvoice();
       case AppMode.apps:

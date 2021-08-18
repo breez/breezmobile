@@ -5,7 +5,7 @@ import 'package:breez/bloc/user_profile/security_model.dart';
 import 'business_adress.dart';
 import 'seen_tutorials.dart';
 
-enum AppMode { balance, podcasts, pos, satsRooms, apps }
+enum AppMode { balance, podcasts, pos, satsZones, apps }
 
 class BreezUserModel {
   final String userID;
