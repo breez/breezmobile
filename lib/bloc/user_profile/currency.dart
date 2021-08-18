@@ -106,7 +106,7 @@ class _CurrencyFormatter {
       case Currency.BTC:
         return Int64((double.parse(amount) * 100000000).round());
       case Currency.SAT:
-        return Int64(int.parse(amount));
+        return Int64(int.parse(amount.replaceAll(RegExp('\\s+'), '')));
       default:
         return Int64((double.parse(amount) * 100000000).round());
     }

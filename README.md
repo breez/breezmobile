@@ -75,7 +75,9 @@ Check our [active bounties](https://github.com/breez/breezmobile/wiki/Bounties).
 - [x] Print POS transactions
 - [x] Hide balance
 - [x] In-app podcast player (podcasting 2.0)
-- [ ] Support LNURL-Pay ([open bounty](https://github.com/breez/breezmobile/wiki/Bounties))
+- [x] Backup to WebDav servers (e.g. Nextcloud)
+- [x] Support LNURL-Pay ([bounty redeemed](https://github.com/breez/breezmobile/wiki/Bounties#lnurl-pay-support))
+- [ ] Tor support ([open bounty](https://github.com/breez/breezmobile/wiki/Bounties#tor-support))
 - [ ] Support LNURL-Withdraw balance check
 - [ ] Async payments via Lightning Rod
 - [ ] Neutrino sync optimizations

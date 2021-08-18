@@ -115,9 +115,13 @@ class Breez : NSObject, FlutterPlugin, BindingsAppServicesProtocol, FlutterStrea
     
     func setBackupProvider(call: FlutterMethodCall, result: @escaping FlutterResult){
         if let args = call.arguments as? Dictionary<String,Any> {
-            let providerName : String = args["argument"] as! String;
+            let providerName : String = args["provider"] as! String;
+            var auth = "";
+            if let authData : String = args["authData"] as? String {
+                auth = authData
+            }
             var errorPtr: NSError?;
-            BindingsSetBackupProvider(providerName, &errorPtr)
+            BindingsSetBackupProvider(providerName, auth, &errorPtr)
             if let err = errorPtr {
                 result(FlutterError(code: "AuthError", message: err.localizedDescription, details: ""));
                 return;

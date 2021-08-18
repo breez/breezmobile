@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:breez/bloc/account/account_bloc.dart';
 import 'package:breez/bloc/lnurl/lnurl_actions.dart';
 import 'package:breez/bloc/lnurl/lnurl_bloc.dart';
@@ -8,56 +10,65 @@ import 'package:breez/widgets/error_dialog.dart';
 import 'package:breez/widgets/loader.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
-import 'dart:convert';
 
-class LNMarketsWebViewPage extends StatefulWidget {
+class LNURLWebViewPage extends StatefulWidget {
   final AccountBloc accountBloc;
+  final VendorModel vendorModel;
   final LNUrlBloc lnurlBloc;
-  final VendorModel lnMarketModel;
+  final Uri endpointURI;
+  final String responseID;
 
-  const LNMarketsWebViewPage(
-      {Key key, this.accountBloc, this.lnMarketModel, this.lnurlBloc})
-      : super(key: key);
+  const LNURLWebViewPage({
+    Key key,
+    this.accountBloc,
+    this.vendorModel,
+    this.lnurlBloc,
+    this.endpointURI,
+    this.responseID,
+  }) : super(key: key);
 
   @override
   State<StatefulWidget> createState() {
-    return LNMarketsWebViewPageState();
+    return LNURLWebViewPageState();
   }
 }
 
-class LNMarketsWebViewPageState extends State<LNMarketsWebViewPage> {
+class LNURLWebViewPageState extends State<LNURLWebViewPage> {
   String jwtToken;
 
   @override
   void initState() {
     super.initState();
     _handleLNUrlAuth().catchError(
-        (err) => promptError(context, "Error", Text(err.toString())));
+      (err) => promptError(
+        context,
+        "Error",
+        Text(err.toString()),
+        okFunc: () => Navigator.of(context).pop(),
+      ),
+    );
   }
 
   Future _handleLNUrlAuth() async {
-    Uri uri = Uri.https("api.lnmarkets.com", "lnurl/a/c");
+    Uri uri = widget.endpointURI;
     var response = await http.get(uri);
-    if (response.statusCode != 200) {
-      throw Exception("Failed to call LN Markets API");
+    if (response.statusCode != 200 && response.statusCode != 201) {
+      throw Exception("Failed to call ${widget.vendorModel.displayName} API");
     }
     Map<String, dynamic> decoded = json.decode(response.body);
-    String lnurl = decoded["lnurl"] as String;
-    Fetch fetchAction = Fetch(lnurl);
+    String lnUrl = decoded[widget.responseID] as String;
+    Fetch fetchAction = Fetch(lnUrl);
     widget.lnurlBloc.actionsSink.add(fetchAction);
     var fetchResponse = await fetchAction.future;
     if (fetchResponse.runtimeType != AuthFetchResponse) {
       throw "Invalid URL";
     }
     AuthFetchResponse authResponse = fetchResponse as AuthFetchResponse;
-
     var action = Login(authResponse, jwt: true);
     widget.lnurlBloc.actionsSink.add(action);
     String jwt = await action.future;
     if (this.mounted) {
-      setState(() {
-        jwtToken = jwt;
-      });
+      setState(() => jwtToken = jwt);
     }
   }
 
@@ -68,7 +79,7 @@ class LNMarketsWebViewPageState extends State<LNMarketsWebViewPage> {
     }
     return VendorWebViewPage(
         widget.accountBloc,
-        widget.lnMarketModel.url + "?token=$jwtToken",
-        widget.lnMarketModel.displayName);
+        widget.vendorModel.url + "?token=$jwtToken",
+        widget.vendorModel.displayName);
   }
 }

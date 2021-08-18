@@ -2,6 +2,7 @@ import 'package:breez/bloc/account/account_model.dart';
 import 'package:breez/bloc/lsp/lsp_model.dart';
 import 'package:breez/routes/home/moonpay_route.dart';
 import 'package:flutter/material.dart';
+import 'package:fixnum/fixnum.dart';
 
 import 'error_dialog.dart';
 
@@ -27,9 +28,12 @@ promptLSPFeeAndNavigate(
 }
 
 String _formatFeeMessage(AccountModel acc, LSPInfo lsp) {
+  var minFees = (new Int64(lsp.channelMinimumFeeMsat)) ~/ 1000;
+  String minFeesMessage = (lsp != null && lsp.channelMinimumFeeMsat > 0)
+    ? "with a minimum of ${acc.currency.format(minFees)} sats " : "";
   if (acc.connected) {
     var liquidity = acc.currency.format(acc.maxInboundLiquidity);
-    return "A setup fee of ${lsp.channelFeePermyriad / 100}% will be applied for buying more than $liquidity.";
+    return "A setup fee of ${lsp.channelFeePermyriad / 100}% ${minFeesMessage}will be applied for buying more than $liquidity.";
   }
-  return "A setup fee of ${lsp.channelFeePermyriad / 100}% will be applied on the received amount.";
+  return "A setup fee of ${lsp.channelFeePermyriad / 100}% ${minFeesMessage}will be applied on the received amount.";
 }

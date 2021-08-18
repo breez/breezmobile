@@ -84,7 +84,8 @@ Future<Null> showPaymentDetailsDialog(
       ),
     ]),
     contentPadding: EdgeInsets.fromLTRB(8.0, 16.0, 8.0, 16.0),
-    content: Container(
+    content: SingleChildScrollView(
+        child: Container(
       width: MediaQuery.of(context).size.width,
       child: Column(
         mainAxisSize: MainAxisSize.min,
@@ -245,10 +246,16 @@ Future<Null> showPaymentDetailsDialog(
                     ],
                   ),
                 ),
+          if (paymentInfo.lnurlPayInfo != null && paymentInfo.lnurlPayInfo.comment != '') 
+      ShareablePaymentRow(title: "Comment", sharedValue: paymentInfo.lnurlPayInfo.comment),
+          if (paymentInfo.type == PaymentType.SENT 
+              && paymentInfo.lnurlPayInfo != null) 
+            ..._getLNUrlSuccessActionForPayment(
+                context, paymentInfo.lnurlPayInfo?.successAction),
           ..._getPaymentInfoDetails(paymentInfo),
         ],
       ),
-    ),
+    )),
     shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(
             bottom: Radius.circular(12.0), top: Radius.circular(13.0))),
@@ -275,6 +282,18 @@ List<Widget> _getStreamedPaymentInfoDetails(StreamedPaymentInfo paymentInfo) {
         Int64(0), (previousValue, element) => element.amount + previousValue);
     return _Destination(title, amount, ent.value[0].currency);
   }).toList();
+}
+
+List<Widget> _getLNUrlSuccessActionForPayment(
+    BuildContext context, SuccessAction sa) {
+  return <Widget>[
+    if (sa.tag == 'url') ...[
+      ShareablePaymentRow(title: "Description", sharedValue: sa.description),
+      ShareablePaymentRow(title: "URL", sharedValue: sa.url), // TODO Hyperlink.
+    ],
+    if (sa.tag == 'message' || sa.tag == 'aes')
+      ShareablePaymentRow(title: 'Message', sharedValue: sa.message),
+  ];
 }
 
 List<Widget> _getSinglePaymentInfoDetails(PaymentInfo paymentInfo) {

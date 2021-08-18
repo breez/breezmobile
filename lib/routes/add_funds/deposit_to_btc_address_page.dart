@@ -8,6 +8,7 @@ import 'package:breez/widgets/back_button.dart' as backBtn;
 import 'package:breez/widgets/single_button_bottom_bar.dart';
 import 'package:breez/widgets/warning_box.dart';
 import 'package:flutter/material.dart';
+import 'package:fixnum/fixnum.dart';
 
 import 'address_widget.dart';
 import 'conditional_deposit.dart';
@@ -145,11 +146,13 @@ class DepositToBTCAddressPageState extends State<DepositToBTCAddressPage> {
   }
 
   String formatFeeMessage(AccountModel acc, LSPInfo lsp) {
+    var minFees = (new Int64(lsp.channelMinimumFeeMsat)) ~/ 1000;
+    String minFeesMessage = (lsp != null && lsp.channelMinimumFeeMsat > 0) ? "with a minimum of ${acc.currency.format(minFees)} " : "";
     if (acc.connected) {
       var liquidity = acc.currency.format(acc.maxInboundLiquidity);
-      return "A setup fee of ${lsp.channelFeePermyriad / 100}% will be applied for sending more than $liquidity.";
+      return "A setup fee of ${lsp.channelFeePermyriad / 100}% ${minFeesMessage}will be applied for sending more than $liquidity.";
     }
-    return "A setup fee of ${lsp.channelFeePermyriad / 100}% will be applied on the received amount.";
+    return "A setup fee of ${lsp.channelFeePermyriad / 100}% ${minFeesMessage}will be applied on the received amount.";
   }
 
   Widget _buildBottomBar(AddFundResponse response, AccountModel account,

@@ -8,30 +8,30 @@ import 'sats_room_item.dart';
 
 const BOTTOM_PADDING = 8.0;
 
-class SatsRoomsList extends StatelessWidget {
-  final List<SatsRoom> _satsRooms;
+class SatsZonesList extends StatelessWidget {
+  final List<SatsZone> _satsZones;
 
-  SatsRoomsList(this._satsRooms);
+  SatsZonesList(this._satsZones);
 
   @override
   Widget build(BuildContext context) {
-    if (_satsRooms?.length == 0) {
-      return _showNoSatsRoomsText(context);
+    if (_satsZones?.length == 0) {
+      return _showNoSatsZonesText(context);
     } else {
       return ListView.builder(
-          itemCount: _satsRooms.length + 1,
+          itemCount: _satsZones.length + 1,
           itemBuilder: (context, index) {
             // return the header
             if (index == 0) {
               return _buildHeader(context);
             }
             index -= 1;
-            return SatsRoomItem(_satsRooms[index]);
+            return SatsZoneItem(_satsZones[index]);
           });
     }
   }
 
-  _showNoSatsRoomsText(BuildContext context) {
+  _showNoSatsZonesText(BuildContext context) {
     return Center(
       child: Column(
         mainAxisSize: MainAxisSize.max,
@@ -47,7 +47,7 @@ class SatsRoomsList extends StatelessWidget {
           Padding(
             padding: const EdgeInsets.only(top: 0.0, left: 16.0, right: 16.0),
             child: AutoSizeText(
-              "Create a Sats Room using the 'CREATE' button",
+              "Create a Sats Zone using the 'CREATE' button",
               style: theme.themeId == "BLUE"
                   ? Typography.material2018(platform: TargetPlatform.android)
                       .black
@@ -80,7 +80,7 @@ class SatsRoomsList extends StatelessWidget {
               Padding(
                 padding: EdgeInsets.only(left: 8.0, right: 0.0),
                 child: Text(
-                  "My Sats Rooms",
+                  "My Sats Zone",
                   style: Theme.of(context).accentTextTheme.subtitle2,
                 ),
               ),

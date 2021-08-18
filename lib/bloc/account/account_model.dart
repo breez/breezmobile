@@ -367,8 +367,8 @@ class PaymentsModel {
       [this.firstDate]);
 
   PaymentsModel.initial()
-      : this(<PaymentInfo>[], <PaymentInfo>[],
-            PaymentFilterModel.initial(), DateTime(DateTime.now().year));
+      : this(<PaymentInfo>[], <PaymentInfo>[], PaymentFilterModel.initial(),
+            DateTime(DateTime.now().year));
 
   PaymentsModel copyWith(
       {List<PaymentInfo> nonFilteredItems,
@@ -432,6 +432,7 @@ abstract class PaymentInfo {
   bool get fullPending;
   String get paymentGroup;
   String get paymentGroupName;
+  LNUrlPayInfo get lnurlPayInfo;
   PaymentInfo copyWith(AccountModel account);
 }
 
@@ -494,6 +495,8 @@ class StreamedPaymentInfo implements PaymentInfo {
   String get paymentHash => "";
   String get preimage => "";
   String get destination => "";
+
+  LNUrlPayInfo get lnurlPayInfo => null;
 }
 
 class SinglePaymentInfo implements PaymentInfo {
@@ -592,7 +595,8 @@ class SinglePaymentInfo implements PaymentInfo {
               : _paymentResponse.invoiceMemo?.description;
 
   String get imageURL {
-    if (_paymentResponse.invoiceMemo.description.startsWith("Bitrefill")) {
+    if (_paymentResponse.invoiceMemo.description.startsWith("Bitrefill") ||
+        _paymentResponse.lnurlPayInfo?.host == 'api-bitrefill.com') {
       return "src/icon/vendors/bitrefill_logo.png";
     }
     if (_paymentResponse.invoiceMemo.description.startsWith("Fastbitcoins")) {
@@ -605,15 +609,28 @@ class SinglePaymentInfo implements PaymentInfo {
     String url = (type == PaymentType.SENT
         ? _paymentResponse.invoiceMemo?.payeeImageURL
         : _paymentResponse.invoiceMemo?.payerImageURL);
+
     return (url == null || url.isEmpty) ? null : url;
   }
 
   String get title {
-    if (_paymentResponse.invoiceMemo.description.startsWith("Bitrefill")) {
+    if (_paymentResponse.invoiceMemo.description.startsWith("Bitrefill") ||
+        _paymentResponse.lnurlPayInfo?.host == 'api-bitrefill.com') {
       return "Bitrefill";
     }
+
     if (_paymentResponse.invoiceMemo.description.startsWith("LN.pizza")) {
       return "ln.pizza";
+    }
+
+    if (_paymentResponse.invoiceMemo.description
+            .startsWith('lightning.gifts') ||
+        _paymentResponse.lnurlPayInfo?.host == 'api.lightning.gifts') {
+      return 'lightning.gifts';
+    }
+
+    if (_paymentResponse.lnurlPayInfo?.host == 'api.zebedee.io') {
+      return "Zebedee";
     }
 
     if (type == PaymentType.DEPOSIT || type == PaymentType.WITHDRAWAL) {
@@ -629,8 +646,14 @@ class SinglePaymentInfo implements PaymentInfo {
     String result = (type == PaymentType.SENT
         ? _paymentResponse.invoiceMemo?.payeeName
         : _paymentResponse.invoiceMemo?.payerName);
+
     if (result == null || result.isEmpty) {
-      result = _paymentResponse.invoiceMemo.description;
+      if (_paymentResponse.lnurlPayInfo != null &&
+          _paymentResponse.lnurlPayInfo.host != '') {
+        result = _paymentResponse.lnurlPayInfo.host;
+      } else {
+        result = _paymentResponse.invoiceMemo.description;
+      }
     }
     return (result == null || result.isEmpty) ? "Unknown" : result;
   }
@@ -646,6 +669,8 @@ class SinglePaymentInfo implements PaymentInfo {
   }
 
   Currency get currency => _account.currency;
+
+  LNUrlPayInfo get lnurlPayInfo => _paymentResponse.lnurlPayInfo;
 
   SinglePaymentInfo(this._paymentResponse, this._account);
 
@@ -703,8 +728,9 @@ class CompletedPayment {
   final String paymentHash;
   final bool cancelled;
   final bool ignoreGlobalFeedback;
+  final PaymentInfo paymentItem;
 
-  CompletedPayment(this.paymentRequest, this.paymentHash,
+  CompletedPayment(this.paymentRequest, this.paymentHash, this.paymentItem,
       {this.cancelled = false, this.ignoreGlobalFeedback = false});
 }
 

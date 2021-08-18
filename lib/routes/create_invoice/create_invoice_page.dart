@@ -10,6 +10,8 @@ import 'package:breez/bloc/invoice/invoice_model.dart';
 import 'package:breez/bloc/lnurl/lnurl_actions.dart';
 import 'package:breez/bloc/lnurl/lnurl_bloc.dart';
 import 'package:breez/bloc/lnurl/lnurl_model.dart';
+import 'package:breez/bloc/lsp/lsp_bloc.dart';
+import 'package:breez/bloc/lsp/lsp_model.dart';
 import 'package:breez/logger.dart';
 import 'package:breez/routes/charge/succesful_payment.dart';
 import 'package:breez/routes/podcast/theme.dart';
@@ -26,8 +28,10 @@ import 'package:breez/widgets/loader.dart';
 import 'package:breez/widgets/single_button_bottom_bar.dart';
 import 'package:breez/widgets/static_loader.dart';
 import 'package:breez/widgets/transparent_page_route.dart';
+import 'package:breez/widgets/warning_box.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:fixnum/fixnum.dart';
 
 import 'lnurl_withdraw_dialog.dart';
 import 'qr_code_dialog.dart';
@@ -103,6 +107,7 @@ class CreateInvoicePageState extends State<CreateInvoicePage> {
     AccountBloc accountBloc = AppBlocsProvider.of<AccountBloc>(context);
     InvoiceBloc invoiceBloc = AppBlocsProvider.of<InvoiceBloc>(context);
     LNUrlBloc lnurlBloc = AppBlocsProvider.of<LNUrlBloc>(context);
+    LSPBloc lspBloc = AppBlocsProvider.of<LSPBloc>(context);
 
     return Scaffold(
       key: _scaffoldKey,
@@ -163,106 +168,154 @@ class CreateInvoicePageState extends State<CreateInvoicePage> {
             return StaticLoader();
           }
           AccountModel acc = snapshot.data;
-          return Form(
-            key: _formKey,
-            child: Padding(
-              padding: EdgeInsets.only(
-                  left: 16.0, right: 16.0, bottom: 40.0, top: 24.0),
-              child: Scrollbar(
-                child: SingleChildScrollView(
-                  child: Column(
-                    mainAxisSize: MainAxisSize.max,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: <Widget>[
-                      TextFormField(
-                        controller: _descriptionController,
-                        keyboardType: TextInputType.multiline,
-                        textInputAction: TextInputAction.done,
-                        maxLines: null,
-                        maxLength: 90,
-                        maxLengthEnforcement: MaxLengthEnforcement.enforced,
-                        decoration: InputDecoration(
-                          labelText: "Description (optional)",
-                        ),
-                        style: theme.FieldTextStyle.textStyle,
+          return StreamBuilder<LSPStatus>(
+            stream: lspBloc.lspStatusStream,
+            builder: (context, snapshot) {
+              LSPStatus lspStatus = snapshot.data;
+              String validatePayment(Int64 amount) {
+                if (lspStatus?.currentLSP != null) {
+                  Int64 channelMinimumFee = new Int64(lspStatus.currentLSP.channelMinimumFeeMsat ~/ 1000);
+                  if (amount>acc.maxInboundLiquidity && amount<=channelMinimumFee) {
+                    return "Insufficient amount to cover the setup fees of ${acc.currency.format(channelMinimumFee)}";
+                  }
+                }
+                return acc.validateIncomingPayment(amount);
+              }
+              return Form(
+                key: _formKey,
+                child: Padding(
+                  padding: EdgeInsets.only(
+                      left: 16.0, right: 16.0, bottom: 40.0, top: 24.0),
+                  child: Scrollbar(
+                    child: SingleChildScrollView(
+                      child: Column(
+                        mainAxisSize: MainAxisSize.max,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: <Widget>[
+                          TextFormField(
+                            controller: _descriptionController,
+                            keyboardType: TextInputType.multiline,
+                            textInputAction: TextInputAction.done,
+                            maxLines: null,
+                            maxLength: 90,
+                            maxLengthEnforcement: MaxLengthEnforcement.enforced,
+                            decoration: InputDecoration(
+                              labelText: "Description (optional)",
+                            ),
+                            style: theme.FieldTextStyle.textStyle,
+                          ),
+                          AmountFormField(
+                                context: context,
+                                accountModel: acc,
+                                focusNode: _amountFocusNode,
+                                controller: _amountController,
+                                validatorFn: validatePayment,
+                                style: theme.FieldTextStyle.textStyle),
+                          _buildReceivableBTC(acc, lspStatus),
+                          StreamBuilder(
+                              stream: accountBloc.accountStream,
+                              builder: (BuildContext context,
+                                  AsyncSnapshot<AccountModel> accSnapshot) {
+                                if (!accSnapshot.hasData) {
+                                  return Container();
+                                }
+                                AccountModel acc = accSnapshot.data;
+                                String message;
+                                if (accSnapshot.hasError) {
+                                  message = accSnapshot.error.toString();
+                                } else if (!accSnapshot.hasData) {
+                                  message =
+                                      'Receiving payments will be available as soon as Breez is synchronized.';
+                                } else if (acc.processingConnection) {
+                                  message =
+                                      'You will be able to receive payments after Breez is finished opening a secure channel with our server. This usually takes ~10 minutes to be completed. Please try again in a couple of minutes.';
+                                }
+                                if (message != null) {
+                                  // In case error doesn't have a trailing full stop
+                                  if (!message.endsWith('.')) {
+                                    message += '.';
+                                  }
+                                  return Container(
+                                      padding: EdgeInsets.only(
+                                          top: 50.0, left: 30.0, right: 30.0),
+                                      child: Column(children: <Widget>[
+                                        Text(
+                                          message,
+                                          textAlign: TextAlign.center,
+                                          style: theme.warningStyle.copyWith(
+                                              color: Theme.of(context).errorColor),
+                                        ),
+                                      ]));
+                                } else {
+                                  return SizedBox();
+                                }
+                              })
+                        ],
                       ),
-                      AmountFormField(
-                          context: context,
-                          accountModel: acc,
-                          focusNode: _amountFocusNode,
-                          controller: _amountController,
-                          validatorFn: acc.validateIncomingPayment,
-                          style: theme.FieldTextStyle.textStyle),
-                      Container(
-                        width: MediaQuery.of(context).size.width,
-                        height: 48,
-                        padding: EdgeInsets.only(top: 16.0),
-                        child: _buildReceivableBTC(acc),
-                      ),
-                      StreamBuilder(
-                          stream: accountBloc.accountStream,
-                          builder: (BuildContext context,
-                              AsyncSnapshot<AccountModel> accSnapshot) {
-                            if (!accSnapshot.hasData) {
-                              return Container();
-                            }
-                            AccountModel acc = accSnapshot.data;
-
-                            String message;
-                            if (accSnapshot.hasError) {
-                              message = accSnapshot.error.toString();
-                            } else if (!accSnapshot.hasData) {
-                              message =
-                                  'Receiving payments will be available as soon as Breez is synchronized.';
-                            } else if (acc.processingConnection) {
-                              message =
-                                  'You will be able to receive payments after Breez is finished opening a secure channel with our server. This usually takes ~10 minutes to be completed. Please try again in a couple of minutes.';
-                            }
-
-                            if (message != null) {
-                              // In case error doesn't have a trailing full stop
-                              if (!message.endsWith('.')) {
-                                message += '.';
-                              }
-                              return Container(
-                                  padding: EdgeInsets.only(
-                                      top: 50.0, left: 30.0, right: 30.0),
-                                  child: Column(children: <Widget>[
-                                    Text(
-                                      message,
-                                      textAlign: TextAlign.center,
-                                      style: theme.warningStyle.copyWith(
-                                          color: Theme.of(context).errorColor),
-                                    ),
-                                  ]));
-                            } else {
-                              return SizedBox();
-                            }
-                          })
-                    ],
+                    ),
                   ),
                 ),
-              ),
-            ),
+              );
+            },
           );
         },
       ),
     );
   }
 
-  Widget _buildReceivableBTC(AccountModel acc) {
-    return GestureDetector(
-      child: AutoSizeText(
-        "Receive up to: ${acc.currency.format(acc.maxAllowedToReceive)}",
-        style: theme.textStyle,
-        maxLines: 1,
-        minFontSize: MinFontSize(context).minFontSize,
-      ),
-      onTap: () => _amountController.text = acc.currency.format(
-          acc.maxAllowedToReceive,
-          includeDisplayName: false,
-          userInput: true),
-    );
+  Widget _buildReceivableBTC(AccountModel acc, LSPStatus lspStatus) {
+    LSPInfo lsp = lspStatus?.currentLSP;
+    Widget warning = lsp == null
+      ? SizedBox()
+      : WarningBox(
+          boxPadding: EdgeInsets.fromLTRB(16, 30, 16, 16),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: <Widget>[
+              Text(
+                formatFeeMessage(acc, lsp),
+                style: Theme.of(context).textTheme.headline6,
+                textAlign: TextAlign.center,
+              )
+            ],
+          ),
+        );
+    if (_withdrawFetchResponse == null) {
+      return Container(
+        width: MediaQuery.of(context).size.width,
+        height: 142,
+        padding: EdgeInsets.only(top: 16.0),
+        child: GestureDetector(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: <Widget>[AutoSizeText(
+              "Receive up to: ${acc.currency.format(acc.maxAllowedToReceive)}",
+              style: theme.textStyle,
+              maxLines: 1,
+              minFontSize: MinFontSize(context).minFontSize,
+            ), warning]),
+          onTap: () => _amountController.text = acc.currency.format(
+              acc.maxAllowedToReceive,
+              includeDisplayName: false,
+              userInput: true),
+        ),
+      );
+    } else {
+      return warning;
+    }
+  }
+
+  String formatFeeMessage(AccountModel acc, LSPInfo lsp) {
+    var minFees = (new Int64(lsp.channelMinimumFeeMsat)) ~/ 1000;
+    String minFeesMessage = (lsp != null && lsp.channelMinimumFeeMsat > 0)
+        ? "with a minimum of ${acc.currency.format(minFees)} "
+        : "";
+    if (acc.connected) {
+      var liquidity = acc.currency.format(acc.maxInboundLiquidity);
+      return "A setup fee of ${lsp.channelFeePermyriad / 100}% ${minFeesMessage}will be applied for receiving more than $liquidity.";
+    }
+    return "A setup fee of ${lsp.channelFeePermyriad / 100}% ${minFeesMessage}will be applied on the received amount.";
   }
 
   Future _scanBarcode(AccountModel account) async {

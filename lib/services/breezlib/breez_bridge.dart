@@ -136,8 +136,10 @@ class BreezBridge {
   }
 
   Future<LNUrlResponse> fetchLNUrl(String lnurl) {
-    return _invokeMethodImmediate("fetchLnurl", {"argument": lnurl})
+    var result = _invokeMethodImmediate("fetchLnurl", {"argument": lnurl})
         .then((result) => LNUrlResponse()..mergeFromBuffer(result ?? []));
+    logger.log.info("fetchLNUrl: ${result}");
+    return result;
   }
 
   Future withdrawLNUrl(String bolt11Invoice) {
@@ -148,6 +150,12 @@ class BreezBridge {
     return _invokeMethodWhenReady(
             "finishLNURLAuth", {"argument": response.response.writeToBuffer()})
         .then((value) => value as String);
+  }
+
+  Future<LNUrlPayInfo> fetchLNUrlPayInvoice(PayFetchResponse response) {
+    return _invokeMethodWhenReady(
+            "finishLNURLPay", {"argument": response.response.writeToBuffer()})
+        .then((result) => LNUrlPayInfo()..mergeFromBuffer(result ?? []));
   }
 
   Future<String> getLogPath() {
@@ -643,9 +651,9 @@ class BreezBridge {
     });
   }
 
-  Future setBackupProvider(String backupProvider) {
-    return _invokeMethodImmediate(
-        "setBackupProvider", {"argument": backupProvider});
+  Future setBackupProvider(String backupProvider, String backupAuthData) {
+    return _invokeMethodImmediate("setBackupProvider",
+        {"provider": backupProvider, "authData": backupAuthData});
   }
 
   Future<String> getAvailableBackups() async {

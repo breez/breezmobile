@@ -55,15 +55,17 @@ class GraphDownloader {
     (await preferences).setString("graph_url", downloadURL);
 
     var tasks = await downloadManager.loadTasks();
-    var runningStatuses = [
-      DownloadTaskStatus.running,
-      DownloadTaskStatus.enqueued
-    ];
 
     var expiredTime = DateTime.now().millisecondsSinceEpoch - 24 * 3600 * 1000;
     for (var i = 0; i < tasks.length; ++i) {
       if (tasks[i].url == downloadURL) {
         if (tasks[i].timeCreated < expiredTime) {
+          downloadManager.removeTask(tasks[i].taskId);
+          continue;
+        }
+
+        if (tasks[i].status == DownloadTaskStatus.enqueued) {
+          log.info("removing enqueued download graph task");
           downloadManager.removeTask(tasks[i].taskId);
           continue;
         }
@@ -75,7 +77,7 @@ class GraphDownloader {
           return _downloadCompleter.future;
         }
 
-        if (runningStatuses.indexOf(tasks[i].status) >= 0) {
+        if (tasks[i].status == DownloadTaskStatus.running) {
           log.info(
               "Already has graph download task running, not starting another one");
           return _downloadCompleter.future;

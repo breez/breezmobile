@@ -86,7 +86,6 @@ class UserProfileBloc {
       UploadProfilePicture: _uploadProfilePicture,
       SetPOSCurrency: _setPOSCurrency,
       SetPaymentOptions: _setPaymentOptions,
-      SetSeenPodcastTutorial: _setSeenPodcastTutorial,
       SetSeenPaymentStripTutorial: _setSeenPaymentStripTutorial,
     };
     print("UserProfileBloc started");
@@ -205,15 +204,6 @@ class UserProfileBloc {
     action.resolve(await _uploadImage(action.bytes));
   }
 
-  Future _setSeenPodcastTutorial(SetSeenPodcastTutorial action) async {
-    _saveChanges(
-        await _preferences,
-        _currentUser.copyWith(
-            seenTutorials: _currentUser.seenTutorials
-                .copyWith(podcastsTutorial: action.seen)));
-    action.resolve(action.seen);
-  }
-
   Future _setSeenPaymentStripTutorial(
       SetSeenPaymentStripTutorial action) async {
     _saveChanges(
@@ -246,7 +236,18 @@ class UserProfileBloc {
   }
 
   Future _validatePinCode(ValidatePinCode action) async {
-    var pinCode = await _secureStorage.read(key: 'pinCode');
+    var pinCode;
+    try {
+      pinCode = await _secureStorage.read(key: 'pinCode');
+    } catch (e) {
+      //  This is a temporary workaround for flutter_secure_storage issues
+      //  on apps published in Google Play for Android devices
+      if(e.toString().contains("java.lang.NullPointerException") && Platform.isAndroid){
+        action.resolve(true);
+        return;
+      }
+    }
+
     if (pinCode != action.enteredPin) {
       throw Exception("Incorrect PIN");
     }

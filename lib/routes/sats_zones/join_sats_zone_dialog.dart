@@ -2,18 +2,18 @@ import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-class JoinSatsRoomDialog extends StatefulWidget {
+class JoinSatsZoneDialog extends StatefulWidget {
   final Function(String roomID) joinSatsRoom;
 
-  JoinSatsRoomDialog(this.joinSatsRoom);
+  JoinSatsZoneDialog(this.joinSatsRoom);
 
   @override
   State<StatefulWidget> createState() {
-    return JoinSatsRoomDialogState();
+    return JoinSatsZoneDialogState();
   }
 }
 
-class JoinSatsRoomDialogState extends State<JoinSatsRoomDialog> {
+class JoinSatsZoneDialogState extends State<JoinSatsZoneDialog> {
   final _formKey = GlobalKey<FormState>();
   TextEditingController _satsRoomIDController = TextEditingController();
 
@@ -33,7 +33,7 @@ class JoinSatsRoomDialogState extends State<JoinSatsRoomDialog> {
   Widget _buildPaymentRequestDialog() {
     return AlertDialog(
       title: AutoSizeText(
-        "Enter Sats Room ID:",
+        "Enter Sats Zone ID:",
         style:
             Theme.of(context).dialogTheme.titleTextStyle.copyWith(fontSize: 16),
         maxLines: 1,

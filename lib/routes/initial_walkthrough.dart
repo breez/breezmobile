@@ -18,10 +18,18 @@ import 'package:breez/widgets/route.dart';
 import 'package:crypto/crypto.dart';
 import 'package:flutter/material.dart';
 import 'package:hex/hex.dart';
+import 'package:rxdart/rxdart.dart';
 
 import 'beta_warning_dialog.dart';
 import 'security_pin/backup_phrase/enter_backup_phrase_page.dart';
 import 'security_pin/restore_pin.dart';
+
+class _BackupContext {
+  final BackupSettings settings;
+  final List<SnapshotInfo> snapshots;
+
+  _BackupContext(this.snapshots, this.settings);
+}
 
 class InitialWalkthroughPage extends StatefulWidget {
   final UserProfileBloc _registrationBloc;
@@ -52,8 +60,11 @@ class InitialWalkthroughPageState extends State<InitialWalkthroughPage>
     _instructions =
         "The simplest, fastest & safest way\nto spend your bitcoins";
 
-    _multipleRestoreSubscription =
-        widget._backupBloc.multipleRestoreStream.listen((options) async {
+    Rx.combineLatest2<List<SnapshotInfo>, BackupSettings, _BackupContext>(
+        widget._backupBloc.multipleRestoreStream,
+        widget._backupBloc.backupSettingsStream,
+        (a, b) => _BackupContext(a, b)).listen((backupContext) async {
+      var options = backupContext.snapshots;
       if (options.length == 0) {
         popToWalkthrough(error: "Could not locate backup for this account");
         return;
@@ -85,7 +96,7 @@ class InitialWalkthroughPageState extends State<InitialWalkthroughPage>
           if (toRestore.encryptionType == "Mnemonics") {
             restoreUsingPhrase((entrophy) async {
               await _createBackupPhrase(entrophy);
-              var updateAction = UpdateBackupSettings(BackupSettings.start()
+              var updateAction = UpdateBackupSettings(backupContext.settings
                   .copyWith(keyType: BackupKeyType.PHRASE));
               widget._backupBloc.backupActionsSink.add(updateAction);
               updateAction.future
@@ -96,7 +107,7 @@ class InitialWalkthroughPageState extends State<InitialWalkthroughPage>
 
           restoreUsingPIN((pin) async {
             var updateAction = UpdateBackupSettings(
-                BackupSettings.start().copyWith(keyType: BackupKeyType.NONE));
+                backupContext.settings.copyWith(keyType: BackupKeyType.NONE));
             var key = sha256.convert(utf8.encode(pin));
             widget._backupBloc.backupActionsSink.add(updateAction);
             updateAction.future.then((_) => restore(toRestore, key.bytes));

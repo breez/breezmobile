@@ -1,4 +1,5 @@
 import 'package:breez/bloc/account/account_model.dart';
+import 'package:breez/bloc/user_profile/breez_user_model.dart';
 import 'package:flutter/material.dart';
 
 import 'payment_item.dart';
@@ -6,13 +7,19 @@ import 'payment_item.dart';
 const BOTTOM_PADDING = 8.0;
 
 class PaymentsList extends StatefulWidget {
+  final BreezUserModel _userModel;
   final List<PaymentInfo> _payments;
   final double _itemHeight;
   final GlobalKey firstPaymentItemKey;
   final ScrollController scrollController;
 
-  PaymentsList(this._payments, this._itemHeight, this.firstPaymentItemKey,
-      this.scrollController);
+  PaymentsList(
+    this._userModel,
+    this._payments,
+    this._itemHeight,
+    this.firstPaymentItemKey,
+    this.scrollController,
+  );
 
   @override
   State<StatefulWidget> createState() {
@@ -42,8 +49,15 @@ class PaymentsListState extends State<PaymentsList> {
     return SliverFixedExtentList(
       itemExtent: widget._itemHeight + BOTTOM_PADDING,
       delegate: SliverChildBuilderDelegate((BuildContext context, int index) {
-        return PaymentItem(widget._payments[index], index, 0 == index,
-            widget.firstPaymentItemKey, widget.scrollController);
+        final payment = widget._payments[index];
+        return PaymentItem(
+          payment,
+          index,
+          0 == index,
+          widget._userModel.hideBalance,
+          widget.firstPaymentItemKey,
+          widget.scrollController,
+        );
       }, childCount: widget._payments.length),
     );
   }

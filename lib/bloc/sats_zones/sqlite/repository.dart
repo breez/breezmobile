@@ -15,38 +15,38 @@ class SqliteRepository implements Repository {
   }
 
   /*
-   * Sats Rooms
+   * Sats Zones
    */
   @override
-  Future<int> addSatsRoom(SatsRoom satsRoom) async {
-    return _addDBItem(await getDB(), "SatsRoom", satsRoom);
+  Future<int> addSatsZone(SatsZone satsZone) async {
+    return _addDBItem(await getDB(), "SatsZone", satsZone);
   }
 
   @override
-  Future<void> deleteSatsRoom(int id) async {
-    return _deleteDBItems(await getDB(), "SatsRoom",
+  Future<void> deleteSatsZone(int id) async {
+    return _deleteDBItems(await getDB(), "SatsZone",
         where: "id = ?", whereArgs: [id]);
   }
 
   @override
-  Future<SatsRoom> fetchSatsRoomByID(int id) async {
+  Future<SatsZone> fetchSatsZoneByID(int id) async {
     var items = await _fetchDBItems(
-        await getDB(), "SatsRoom", (e) => SatsRoom.fromMap(e),
+        await getDB(), "SatsZone", (e) => SatsZone.fromMap(e),
         where: "id = ?", whereArgs: [id]);
     return items.length > 0 ? items[0] : null;
   }
 
   @override
-  Future<List<SatsRoom>> fetchSatsRooms({String filter}) async {
-    return _fetchDBItems(await getDB(), "SatsRoom", (e) => SatsRoom.fromMap(e),
+  Future<List<SatsZone>> fetchSatsZones({String filter}) async {
+    return _fetchDBItems(await getDB(), "SatsZone", (e) => SatsZone.fromMap(e),
         where: filter == null ? null : "title LIKE",
         whereArgs: ['%$filter%', '%$filter%']);
   }
 
   @override
-  Future<void> updateSatsRoom(SatsRoom satsRoom) async {
-    return _updateDBItem(await getDB(), "SatsRoom", satsRoom.toMap(),
-        where: "id = ?", whereArgs: [satsRoom.id]);
+  Future<void> updateSatsZone(SatsZone satsZone) async {
+    return _updateDBItem(await getDB(), "SatsZone", satsZone.toMap(),
+        where: "id = ?", whereArgs: [satsZone.id]);
   }
 
   /*

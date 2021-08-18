@@ -468,7 +468,6 @@ class DevViewState extends State<DevView> {
         icon: Icons.phone_android,
         function: () {
           UserProfileBloc bloc = AppBlocsProvider.of<UserProfileBloc>(context);
-          bloc.userActionsSink.add(SetSeenPodcastTutorial(false));
           bloc.userActionsSink.add(SetSeenPaymentStripTutorial(false));
         }));
     return choices;

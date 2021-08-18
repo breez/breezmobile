@@ -9,7 +9,7 @@ import 'package:flutter/material.dart';
 import 'package:uuid/uuid.dart';
 
 class CreateSatsRoom extends StatefulWidget {
-  final SatsRoomsBloc satsRoomsBloc;
+  final SatsZoneBloc satsRoomsBloc;
 
   const CreateSatsRoom(this.satsRoomsBloc);
 
@@ -73,9 +73,9 @@ class _CreateSatsRoomState extends State<CreateSatsRoom> {
           {
             if (_formKey.currentState.validate()) {
               var satsRoomID = Uuid().v1().split('-')[0];
-              AddSatsRoom addSatsRoom = AddSatsRoom(
-                SatsRoom(
-                  roomID: satsRoomID,
+              AddSatsZone addSatsRoom = AddSatsZone(
+                SatsZone(
+                  zoneID: satsRoomID,
                   title: _titleController.text,
                 ),
               );

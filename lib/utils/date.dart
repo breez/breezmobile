@@ -1,6 +1,7 @@
 import 'dart:io' show Platform;
 
 import "package:intl/intl.dart";
+import 'package:timeago/timeago.dart' as timeago;
 
 class BreezDateUtils {
   static final DateFormat _monthDateFormat = DateFormat.Md(Platform.localeName);
@@ -17,10 +18,23 @@ class BreezDateUtils {
       _yearMonthDayHourMinuteFormat.format(d);
   static String formatYearMonthDayHourMinuteSecond(DateTime d) =>
       _yearMonthDayHourMinuteSecondFormat.format(d);
+
+  static String formatTimelineRelative(DateTime d) {
+    if (DateTime.now().subtract(Duration(days: 4)).isBefore(d)) {
+      return timeago.format(d);
+    } else {
+      return formatYearMonthDay(d);
+    }
+  }
+
   static String formatFilterDateRange(DateTime startDate, DateTime endDate) {
     var formatter = (startDate.year == endDate.year)
         ? _monthDateFormat
         : _yearMonthDayFormat;
     return formatter.format(startDate) + "-" + formatter.format(endDate);
+  }
+
+  static void setupLocales() {
+    timeago.setLocaleMessages('en', timeago.EnMessages());
   }
 }

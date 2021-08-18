@@ -13,25 +13,25 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:jitsi_meet/jitsi_meet.dart';
 
-class SatsRooms extends StatefulWidget {
+class SatsZones extends StatefulWidget {
   @override
-  _SatsRoomsState createState() => _SatsRoomsState();
+  _SatsZonesState createState() => _SatsZonesState();
 }
 
-class _SatsRoomsState extends State<SatsRooms> {
+class _SatsZonesState extends State<SatsZones> {
   @override
   Widget build(BuildContext context) {
-    SatsRoomsBloc satsRoomsBloc = AppBlocsProvider.of<SatsRoomsBloc>(context);
+    SatsZoneBloc satsRoomsBloc = AppBlocsProvider.of<SatsZoneBloc>(context);
     return Scaffold(
       backgroundColor: theme.customData[theme.themeId].dashboardBgColor,
       body: StreamBuilder(
-          stream: satsRoomsBloc.satsRoomsStream,
+          stream: satsRoomsBloc.satsZonesStream,
           builder: (context, snapshot) {
             var satsRooms = snapshot.data;
             if (satsRooms == null) {
               return Center(child: Loader());
             }
-            return SatsRoomsList(satsRooms);
+            return SatsZonesList(satsRooms);
           }),
       bottomNavigationBar: BottomAppBar(
         color: Theme.of(context).bottomAppBarColor,
@@ -84,7 +84,7 @@ class _SatsRoomsState extends State<SatsRooms> {
     );
   }
 
-  _enterSatsRoomID(SatsRoomsBloc satsRoomsBloc) async {
+  _enterSatsRoomID(SatsZoneBloc satsRoomsBloc) async {
     Clipboard.getData("text/plain").then((clipboardData) {
       if (clipboardData != null) {
         var clipboard = clipboardData.text;
@@ -93,19 +93,19 @@ class _SatsRoomsState extends State<SatsRooms> {
         } else {
           return showDialog(
               context: context,
-              builder: (BuildContext context) => JoinSatsRoomDialog(
+              builder: (BuildContext context) => JoinSatsZoneDialog(
                   (roomID) => _joinSatsRoom(roomID, satsRoomsBloc)));
         }
       } else {
         return showDialog(
             context: context,
-            builder: (BuildContext context) => JoinSatsRoomDialog(
+            builder: (BuildContext context) => JoinSatsZoneDialog(
                 (roomID) => _joinSatsRoom(roomID, satsRoomsBloc)));
       }
     });
   }
 
-  _joinSatsRoom(String roomID, SatsRoomsBloc satsRoomsBloc) async {
+  _joinSatsRoom(String roomID, SatsZoneBloc satsRoomsBloc) async {
     var userProfileBloc = AppBlocsProvider.of<UserProfileBloc>(context);
     var user = await userProfileBloc.userStream.firstWhere((u) => u != null);
     // Enable or disable any feature flag here

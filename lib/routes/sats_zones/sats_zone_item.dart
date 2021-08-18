@@ -13,10 +13,10 @@ import 'package:flutter/widgets.dart';
 import 'package:jitsi_meet/jitsi_meet.dart';
 import 'package:share_extend/share_extend.dart';
 
-class SatsRoomItem extends StatelessWidget {
-  final SatsRoom satsRoom;
+class SatsZoneItem extends StatelessWidget {
+  final SatsZone satsZone;
 
-  const SatsRoomItem(this.satsRoom);
+  const SatsZoneItem(this.satsZone);
 
   @override
   Widget build(BuildContext context) {
@@ -33,12 +33,12 @@ class SatsRoomItem extends StatelessWidget {
             children: [
               ListTile(
                 title: Text(
-                  satsRoom.title,
+                  satsZone.title,
                   style: Theme.of(context).accentTextTheme.subtitle2,
                   overflow: TextOverflow.ellipsis,
                 ),
                 subtitle: Text(
-                  satsRoom.roomID,
+                  satsZone.zoneID,
                   style: Theme.of(context).accentTextTheme.caption,
                 ),
                 trailing: Row(
@@ -50,15 +50,15 @@ class SatsRoomItem extends StatelessWidget {
                         color: Colors.red,
                       ),
                       onPressed: () {
-                        SatsRoomsBloc satsRoomsBloc =
-                            AppBlocsProvider.of<SatsRoomsBloc>(context);
-                        DeleteSatsRoom deleteSatsRoom =
-                            DeleteSatsRoom(satsRoom.id);
-                        satsRoomsBloc.actionsSink.add(deleteSatsRoom);
-                        deleteSatsRoom.future.then((_) {
+                        SatsZoneBloc satsZoneBloc =
+                            AppBlocsProvider.of<SatsZoneBloc>(context);
+                        DeleteSatsZone deleteSatsZone =
+                            DeleteSatsZone(satsZone.id);
+                        satsZoneBloc.actionsSink.add(deleteSatsZone);
+                        deleteSatsZone.future.then((_) {
                           showFlushbar(context,
                               duration: Duration(seconds: 4),
-                              messageWidget: Text("Deleted " + satsRoom.title,
+                              messageWidget: Text("Deleted " + satsZone.title,
                                   style: theme.snackBarStyle,
                                   textAlign: TextAlign.center));
                         });
@@ -73,7 +73,7 @@ class SatsRoomItem extends StatelessWidget {
                       onPressed: () {
                         final RenderBox box = context.findRenderObject();
                         ShareExtend.share(
-                            "Join Sats Room: " + satsRoom.roomID, "text",
+                            "Join Sats Zone: " + satsZone.zoneID, "text",
                             sharePositionOrigin:
                                 box.localToGlobal(Offset.zero) & box.size);
                       },
@@ -87,7 +87,7 @@ class SatsRoomItem extends StatelessWidget {
                           size: 22,
                         ),
                         onPressed: () =>
-                            _joinSatsRoom(satsRoom.roomID, userProfileBloc),
+                            _joinSatsRoom(satsZone.zoneID, userProfileBloc),
                       ),
                     ),
                   ],
@@ -121,7 +121,7 @@ class SatsRoomItem extends StatelessWidget {
     // Define meetings options here
     var options = JitsiMeetingOptions(room: roomID)
       //..serverURL = null
-      ..subject = satsRoom.title
+      ..subject = satsZone.title
       ..userDisplayName = user.name
       //..userEmail = emailText.text
       //..iosAppBarRGBAColor = iosAppBarRGBAColor.text

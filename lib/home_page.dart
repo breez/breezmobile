@@ -25,10 +25,11 @@ import 'package:breez/routes/charge/pos_invoice.dart';
 import 'package:breez/routes/home/bottom_actions_bar.dart';
 import 'package:breez/routes/home/qr_action_button.dart';
 import 'package:breez/routes/marketplace/marketplace.dart';
-import 'package:breez/routes/sats_rooms/sats_rooms.dart';
+import 'package:breez/routes/sats_zones/sats_zones.dart';
 import 'package:breez/routes/podcast/podcast_page.dart' as breezPodcast;
 import 'package:breez/routes/podcast/theme.dart';
 import 'package:breez/theme_data.dart' as theme;
+import 'package:breez/widgets/close_popup.dart';
 import 'package:breez/widgets/error_dialog.dart';
 import 'package:breez/widgets/fade_in_widget.dart';
 import 'package:breez/widgets/flushbar.dart';
@@ -45,7 +46,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:provider/provider.dart';
-import 'package:tutorial_coach_mark/tutorial_coach_mark.dart';
 
 import 'bloc/invoice/invoice_model.dart';
 import 'bloc/user_profile/user_actions.dart';
@@ -56,10 +56,11 @@ import 'handlers/podcast_url_handler.dart';
 import 'handlers/received_invoice_notification.dart';
 import 'handlers/showPinHandler.dart';
 import 'handlers/sync_ui_handler.dart';
+import 'lnurl_success_action_dialog.dart';
 import 'routes/account_required_actions.dart';
 import 'routes/connect_to_pay/connect_to_pay_page.dart';
 import 'routes/home/account_page.dart';
-import 'routes/no_connection_dialog.dart';
+import 'routes/unexpected_error_dialog.dart';
 
 final GlobalKey firstPaymentItemKey = GlobalKey();
 final ScrollController scrollController = ScrollController();
@@ -90,15 +91,10 @@ class Home extends StatefulWidget {
 }
 
 class HomeState extends State<Home> with WidgetsBindingObserver {
-  final GlobalKey podcastMenuItemKey = GlobalKey();
-  final GlobalKey satsRoomsMenuItemKey = GlobalKey();
   String _activeScreen = "breezHome";
   Set _hiddenRoutes = Set<String>();
   StreamSubscription<String> _accountNotificationsSubscription;
   AudioBloc audioBloc;
-
-  TutorialCoachMark tutorial;
-  List<TargetFocus> targets = [];
 
   @override
   void initState() {
@@ -108,7 +104,7 @@ class HomeState extends State<Home> with WidgetsBindingObserver {
     audioBloc.transitionLifecycleState(LifecyleState.resume);
 
     _registerNotificationHandlers();
-    listenNoConnection(context, widget.accountBloc);
+    listenUnexpectedError(context, widget.accountBloc);
     _listenBackupConflicts();
     _listenWhitelistPermissionsRequest();
     _listenLSPSelectionPrompt();
@@ -184,143 +180,32 @@ class HomeState extends State<Home> with WidgetsBindingObserver {
     super.dispose();
   }
 
-  Future<dynamic> _showTutorial() {
-    return Future.delayed(Duration(milliseconds: 200), () {
-      if (_scaffoldKey.currentState.isDrawerOpen) {
-        _buildTutorial();
-      }
-    });
-  }
-
-  void _buildTutorial() {
-    tutorial = TutorialCoachMark(context,
-        targets: targets,
-        opacityShadow: 0.9,
-        textSkip: "DISMISS",
-        colorShadow: Theme.of(context).primaryColorLight,
-        onClickOverlay: (o) {
-          if (o.keyTarget == podcastMenuItemKey) {
-            tutorial.next();
-          } else if (o.keyTarget == satsRoomsMenuItemKey) {
-            tutorial.finish();
-          }
-        },
-        onClickTarget: (t) {
-          var appMode;
-          if (t.keyTarget == podcastMenuItemKey) {
-            appMode = AppMode.podcasts;
-          } else if (t.keyTarget == satsRoomsMenuItemKey) {
-            appMode = AppMode.satsRooms;
-          }
-          tutorial.finish();
-          widget.userProfileBloc.userActionsSink.add(SetAppMode(appMode));
-          Navigator.pop(context);
-        },
-        onSkip: () => tutorial.finish(),
-        onFinish: () {
-          final userBloc = AppBlocsProvider.of<UserProfileBloc>(context);
-          userBloc.userActionsSink.add(SetSeenPodcastTutorial(true));
-        });
-    _buildTutorialTargets();
-  }
-
-  void _buildTutorialTargets() {
-    targets.add(TargetFocus(
-      identify: "PodcastMenuItem",
-      keyTarget: podcastMenuItemKey,
-      enableOverlayTab: true,
-      shape: ShapeLightFocus.RRect,
-      paddingFocus: 8,
-      contents: [
-        TargetContent(
-            align: ContentAlign.top,
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: <Widget>[
-                Text(
-                  "New!",
-                  style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      color: Colors.white,
-                      fontSize: 20.0),
-                ),
-                Padding(
-                  padding: const EdgeInsets.only(top: 10.0),
-                  child: Text(
-                    "Stream sats to your favorite podcasters while they stream ideas back to you.",
-                    style: TextStyle(color: Colors.white),
-                  ),
-                )
-              ],
-            ))
-      ],
-    ));
-    targets.add(TargetFocus(
-      identify: "SatsRoomsMenuItem",
-      keyTarget: satsRoomsMenuItemKey,
-      enableOverlayTab: true,
-      shape: ShapeLightFocus.RRect,
-      paddingFocus: 8,
-      contents: [
-        TargetContent(
-            align: ContentAlign.top,
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: <Widget>[
-                Text(
-                  "New!",
-                  style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      color: Colors.white,
-                      fontSize: 20.0),
-                ),
-                Padding(
-                  padding: const EdgeInsets.only(top: 10.0),
-                  child: Text(
-                    "Create a Sats Room to interact with your audience where they can streams sats to you.",
-                    style: TextStyle(color: Colors.white),
-                  ),
-                )
-              ],
-            ))
-      ],
-    ));
-    tutorial.show();
-  }
-
   @override
   Widget build(BuildContext context) {
     AddFundsBloc addFundsBloc = BlocProvider.of<AddFundsBloc>(context);
     LSPBloc lspBloc = AppBlocsProvider.of<LSPBloc>(context);
     return WillPopScope(
-      onWillPop: () {
-        return promptAreYouSure(context, "Exit Breez",
-                Text("Do you really want to quit Breez?"))
-            .then((shouldExit) {
-          if (shouldExit) {
-            exit(0);
-          }
-          return false;
-        });
-      },
+      onWillPop: willPopCallback(
+        context,
+        canCancel: () => _scaffoldKey.currentState?.isDrawerOpen ?? false,
+      ),
       child: StreamBuilder<BreezUserModel>(
           stream: widget.userProfileBloc.userStream,
           builder: (context, userSnapshot) {
-            var user = userSnapshot.data;
+            final user = userSnapshot.data;
 
             return StreamBuilder<AccountModel>(
                 stream: widget.accountBloc.accountStream,
                 builder: (context, accSnapshot) {
-                  var account = accSnapshot.data;
+                  final account = accSnapshot.data;
                   if (account == null) {
                     return SizedBox();
                   }
+
                   return StreamBuilder<AccountSettings>(
                       stream: widget.accountBloc.accountSettingsStream,
                       builder: (context, settingsSnapshot) {
-                        var settings = settingsSnapshot.data;
+                        final settings = settingsSnapshot.data;
                         if (settings == null) {
                           return SizedBox();
                         }
@@ -328,6 +213,8 @@ class HomeState extends State<Home> with WidgetsBindingObserver {
                         return StreamBuilder<LSPStatus>(
                             stream: lspBloc.lspStatusStream,
                             builder: (context, lspSnapshot) {
+                              final lspStatus = lspSnapshot.data;
+
                               return StreamBuilder<List<AddFundVendorModel>>(
                                   stream: addFundsBloc.availableVendorsStream,
                                   builder: (context, snapshot) {
@@ -359,289 +246,21 @@ class HomeState extends State<Home> with WidgetsBindingObserver {
                                         }
                                       });
                                     }
-                                    var refundableAddresses = account
-                                        .swapFundsStatus
-                                        .maturedRefundableAddresses;
-                                    var refundItems = <DrawerItemConfigGroup>[];
-                                    if (refundableAddresses.length > 0) {
-                                      refundItems = [
-                                        DrawerItemConfigGroup([
-                                          DrawerItemConfig("", "Get Refund",
-                                              "src/icon/withdraw_funds.png",
-                                              onItemSelected: (_) =>
-                                                  protectAdminRoute(context,
-                                                      user, "/get_refund"))
-                                        ])
-                                      ];
-                                    }
 
-                                    var flavorItems = <DrawerItemConfigGroup>[];
-                                    flavorItems = user.appMode == AppMode.pos
-                                        ? [
-                                            DrawerItemConfigGroup([
-                                              DrawerItemConfig(
-                                                  "/transactions",
-                                                  "Transactions",
-                                                  "src/icon/transactions.png")
-                                            ])
-                                          ]
-                                        : [];
-
-                                    var balanceItem = DrawerItemConfig(
-                                      "",
-                                      "Balance",
-                                      "src/icon/balance.png",
-                                      isSelected:
-                                          user.appMode == AppMode.balance,
-                                      onItemSelected: (_) {
-                                        protectAdminAction(context, user, () {
-                                          widget.userProfileBloc.userActionsSink
-                                              .add(SetAppMode(AppMode.balance));
-                                          return Future.value(null);
-                                        });
-                                      },
-                                    );
-
-                                    var podcastItem = DrawerItemConfig(
-                                      "",
-                                      "Podcasts",
-                                      "src/icon/podcast.png",
-                                      key: podcastMenuItemKey,
-                                      isSelected:
-                                          user.appMode == AppMode.podcasts,
-                                      onItemSelected: (_) {
-                                        protectAdminAction(context, user, () {
-                                          widget.userProfileBloc.userActionsSink
-                                              .add(
-                                                  SetAppMode(AppMode.podcasts));
-                                          return Future.value(null);
-                                        });
-                                      },
-                                    );
-
-                                    var satsRoomsItem = DrawerItemConfig(
-                                      "",
-                                      "Sats Rooms",
-                                      "src/icon/sats_rooms.png",
-                                      key: satsRoomsMenuItemKey,
-                                      isSelected:
-                                          user.appMode == AppMode.satsRooms,
-                                      onItemSelected: (_) {
-                                        protectAdminAction(context, user, () {
-                                          widget.userProfileBloc.userActionsSink
-                                              .add(
-                                                  SetAppMode(AppMode.satsRooms));
-                                          return Future.value(null);
-                                        });
-                                      },
-                                    );
-
-                                    var posItem = DrawerItemConfig(
-                                      "",
-                                      "Point of Sale",
-                                      "src/icon/pos.png",
-                                      isSelected: user.appMode == AppMode.pos,
-                                      onItemSelected: (_) {
-                                        widget.userProfileBloc.userActionsSink
-                                            .add(SetAppMode(AppMode.pos));
-                                      },
-                                    );
-
-                                    var lightningAppsItem = DrawerItemConfig(
-                                        "", "Apps", "src/icon/apps.png",
-                                        isSelected: user.appMode ==
-                                            AppMode.apps, onItemSelected: (_) {
-                                      protectAdminAction(context, user, () {
-                                        widget.userProfileBloc.userActionsSink
-                                            .add(SetAppMode(AppMode.apps));
-                                        return Future.value(null);
-                                      });
-                                    });
-
-                                    var appModeItems =
-                                        <DrawerItemConfigGroup>[];
-                                    appModeItems = [
-                                      DrawerItemConfigGroup([
-                                        balanceItem,
-                                      ]),
-                                      DrawerItemConfigGroup([
-                                        podcastItem,
-                                      ]),
-                                      DrawerItemConfigGroup([
-                                        satsRoomsItem,
-                                      ]),
-                                      DrawerItemConfigGroup([
-                                        posItem,
-                                      ]),
-                                      DrawerItemConfigGroup([
-                                        lightningAppsItem,
-                                      ]),
-                                      DrawerItemConfigGroup([])
-                                    ];
-
-                                    var advancedFlavorItems =
-                                        <DrawerItemConfig>[];
-                                    advancedFlavorItems =
-                                        user.appMode == AppMode.pos
-                                            ? [
-                                                DrawerItemConfig(
-                                                    "",
-                                                    "POS Settings",
-                                                    "src/icon/settings.png",
-                                                    onItemSelected: (_) =>
-                                                        protectAdminRoute(
-                                                            context,
-                                                            user,
-                                                            "/settings")),
-                                              ]
-                                            : [
-                                                DrawerItemConfig(
-                                                    "/developers",
-                                                    "Developers",
-                                                    "src/icon/developers.png")
-                                              ];
+                                    final vendor = snapshot.data;
 
                                     return StreamBuilder<
                                             Future<DecodedClipboardData>>(
                                         stream: widget
                                             .invoiceBloc.decodedClipboardStream,
                                         builder: (context, snapshot) {
-                                          return Container(
-                                            height: MediaQuery.of(context)
-                                                .size
-                                                .height,
-                                            width: MediaQuery.of(context)
-                                                .size
-                                                .width,
-                                            child: FadeInWidget(
-                                              child: Scaffold(
-                                                  resizeToAvoidBottomInset:
-                                                      false,
-                                                  key: _scaffoldKey,
-                                                  appBar: AppBar(
-                                                    brightness:
-                                                        theme.themeId == "BLUE"
-                                                            ? Brightness.light
-                                                            : Theme.of(context)
-                                                                .appBarTheme
-                                                                .brightness,
-                                                    centerTitle: false,
-                                                    actions: <Widget>[
-                                                      Padding(
-                                                        padding:
-                                                            const EdgeInsets
-                                                                .all(14.0),
-                                                        child:
-                                                            AccountRequiredActionsIndicator(
-                                                                widget
-                                                                    .backupBloc,
-                                                                widget
-                                                                    .accountBloc,
-                                                                widget.lspBloc),
-                                                      ),
-                                                    ],
-                                                    leading: _buildMenuIcon(
-                                                        context,
-                                                        user.appMode,
-                                                        user.seenTutorials
-                                                            .podcastsTutorial),
-                                                    title: IconButton(
-                                                      padding: EdgeInsets.zero,
-                                                      icon: SvgPicture.asset(
-                                                        "src/images/logo-color.svg",
-                                                        height: 23.5,
-                                                        width: 62.7,
-                                                        color: Theme.of(context)
-                                                            .appBarTheme
-                                                            .actionsIconTheme
-                                                            .color,
-                                                        colorBlendMode:
-                                                            BlendMode.srcATop,
-                                                      ),
-                                                      iconSize: 64,
-                                                      onPressed: () async {
-                                                        _scaffoldKey
-                                                            .currentState
-                                                            .openDrawer();
-                                                        if (!user.seenTutorials
-                                                            .podcastsTutorial) {
-                                                          _showTutorial();
-                                                        }
-                                                      },
-                                                    ),
-                                                    iconTheme: IconThemeData(
-                                                        color: Color.fromARGB(
-                                                            255, 0, 133, 251)),
-                                                    backgroundColor: (user
-                                                                .appMode ==
-                                                            AppMode.pos)
-                                                        ? Theme.of(context)
-                                                            .backgroundColor
-                                                        : theme
-                                                            .customData[
-                                                                theme.themeId]
-                                                            .dashboardBgColor,
-                                                    elevation: 0.0,
-                                                  ),
-                                                  drawerEnableOpenDragGesture:
-                                                      true,
-                                                  drawerDragStartBehavior:
-                                                      DragStartBehavior.down,
-                                                  drawerEdgeDragWidth:
-                                                      MediaQuery.of(context)
-                                                          .size
-                                                          .width,
-                                                  drawer: Theme(
-                                                    data: theme
-                                                        .themeMap[user.themeId],
-                                                    child: NavigationDrawer(
-                                                        true,
-                                                        [
-                                                          ...refundItems,
-                                                          ...appModeItems,
-                                                          ...flavorItems,
-                                                          DrawerItemConfigGroup(
-                                                            _filterItems([
-                                                              DrawerItemConfig(
-                                                                  "/fiat_currency",
-                                                                  "Fiat Currencies",
-                                                                  "src/icon/fiat_currencies.png"),
-                                                              DrawerItemConfig(
-                                                                  "/network",
-                                                                  "Network",
-                                                                  "src/icon/network.png"),
-                                                              DrawerItemConfig(
-                                                                  "/security",
-                                                                  "Security & Backup",
-                                                                  "src/icon/security.png"),
-                                                              ...advancedFlavorItems,
-                                                            ]),
-                                                            groupTitle:
-                                                                "Preferences",
-                                                            groupAssetImage: "",
-                                                          ),
-                                                        ],
-                                                        _onNavigationItemSelected),
-                                                  ),
-                                                  bottomNavigationBar: user
-                                                              .appMode ==
-                                                          AppMode.balance
-                                                      ? BottomActionsBar(account,
-                                                          firstPaymentItemKey)
-                                                      : null,
-                                                  floatingActionButton: user
-                                                              .appMode ==
-                                                          AppMode.balance
-                                                      ? QrActionButton(account,
-                                                          firstPaymentItemKey)
-                                                      : null,
-                                                  floatingActionButtonLocation:
-                                                      FloatingActionButtonLocation
-                                                          .centerDocked,
-                                                  body: widget._screenBuilders[
-                                                          _activeScreen] ??
-                                                      _homePage(user)),
-                                            ),
+                                          return _build(
+                                            context,
+                                            user,
+                                            account,
+                                            settings,
+                                            lspStatus,
+                                            vendor,
                                           );
                                         });
                                   });
@@ -652,8 +271,371 @@ class HomeState extends State<Home> with WidgetsBindingObserver {
     );
   }
 
-  IconButton _buildMenuIcon(
-      BuildContext context, AppMode appMode, bool seenPodcastTutorial) {
+  Widget _build(
+    BuildContext context,
+    BreezUserModel user,
+    AccountModel account,
+    AccountSettings settings,
+    LSPStatus lspStatus,
+    List<AddFundVendorModel> vendor,
+  ) {
+    final addFundsVendors = _drawerConfigAddFundsVendors(
+      context,
+      account,
+      lspStatus,
+      vendor,
+    );
+    final mediaSize = MediaQuery.of(context).size;
+    return Container(
+      height: mediaSize.height,
+      width: mediaSize.width,
+      child: FadeInWidget(
+        child: Scaffold(
+            resizeToAvoidBottomInset: false,
+            key: _scaffoldKey,
+            appBar: AppBar(
+              brightness: theme.themeId == "BLUE"
+                  ? Brightness.light
+                  : Theme.of(context).appBarTheme.brightness,
+              centerTitle: false,
+              actions: <Widget>[
+                Padding(
+                  padding: const EdgeInsets.all(14.0),
+                  child: AccountRequiredActionsIndicator(
+                    widget.backupBloc,
+                    widget.accountBloc,
+                    widget.lspBloc,
+                  ),
+                ),
+              ],
+              leading: _buildMenuIcon(context, user.appMode),
+              title: IconButton(
+                padding: EdgeInsets.zero,
+                icon: SvgPicture.asset(
+                  "src/images/logo-color.svg",
+                  height: 23.5,
+                  width: 62.7,
+                  color: Theme.of(context).appBarTheme.actionsIconTheme.color,
+                  colorBlendMode: BlendMode.srcATop,
+                ),
+                iconSize: 64,
+                onPressed: () async {
+                  _scaffoldKey.currentState.openDrawer();
+                },
+              ),
+              iconTheme: IconThemeData(
+                color: Color.fromARGB(255, 0, 133, 251),
+              ),
+              backgroundColor: (user.appMode == AppMode.pos)
+                  ? Theme.of(context).backgroundColor
+                  : theme.customData[theme.themeId].dashboardBgColor,
+              elevation: 0.0,
+            ),
+            drawerEnableOpenDragGesture: true,
+            drawerDragStartBehavior: DragStartBehavior.down,
+            drawerEdgeDragWidth: mediaSize.width,
+            drawer: Theme(
+              data: theme.themeMap[user.themeId],
+              child: _navigationDrawer(
+                context,
+                user,
+                account,
+                settings,
+                lspStatus,
+                vendor,
+              ),
+            ),
+            bottomNavigationBar: user.appMode == AppMode.balance
+                ? BottomActionsBar(account, firstPaymentItemKey)
+                : null,
+            floatingActionButton: user.appMode == AppMode.balance
+                ? QrActionButton(account, firstPaymentItemKey)
+                : null,
+            floatingActionButtonLocation:
+                FloatingActionButtonLocation.centerDocked,
+            body: widget._screenBuilders[_activeScreen] ?? _homePage(user)),
+      ),
+    );
+  }
+
+  NavigationDrawer _navigationDrawer(
+    BuildContext context,
+    BreezUserModel user,
+    AccountModel account,
+    AccountSettings settings,
+    LSPStatus lspStatus,
+    List<AddFundVendorModel> vendor,
+  ) {
+    return NavigationDrawer(
+      true,
+      [
+        ..._drawerConfigRefundItems(
+          context,
+          user,
+          account.swapFundsStatus.maturedRefundableAddresses,
+        ),
+        ..._drawerConfigAppModeItems(context, user),
+        ..._drawerConfigFlavorItems(context, user),
+        DrawerItemConfigGroup(
+          _filterItems(_drawerConfigToFilter(context, user)),
+          groupTitle: "Preferences",
+          groupAssetImage: "",
+        ),
+      ],
+      _onNavigationItemSelected,
+    );
+  }
+
+  List<DrawerItemConfig> _drawerConfigToFilter(
+    BuildContext context,
+    BreezUserModel user,
+  ) {
+    return [
+      DrawerItemConfig(
+        "/fiat_currency",
+        "Fiat Currencies",
+        "src/icon/fiat_currencies.png",
+      ),
+      DrawerItemConfig(
+        "/network",
+        "Network",
+        "src/icon/network.png",
+      ),
+      DrawerItemConfig(
+        "",
+        "Security & Backup",
+        "src/icon/security.png",
+        onItemSelected: (_) => protectAdminRoute(context, user, "/security"),
+      ),
+      ..._drawerConfigAdvancedFlavorItems(context, user),
+    ];
+  }
+
+  List<DrawerItemConfig> _drawerConfigAddFundsVendors(
+    BuildContext context,
+    AccountModel account,
+    LSPStatus lspStatus,
+    List<AddFundVendorModel> vendor,
+  ) {
+    if (vendor == null) {
+      return [];
+    }
+    List<DrawerItemConfig> addFundsVendors = [];
+    vendor.where((v) => v.isAllowed).forEach((v) {
+      addFundsVendors.add(
+        DrawerItemConfig(
+          v.route,
+          v.shortName ?? v.name,
+          v.icon,
+          disabled: !v.enabled || v.requireActiveChannel && !account.connected,
+          onItemSelected: (item) {
+            if (!v.showLSPFee) {
+              Navigator.of(context).pushNamed(v.route);
+              return;
+            }
+            promptLSPFeeAndNavigate(
+              context,
+              account,
+              lspStatus.currentLSP,
+              v.route,
+            );
+          },
+        ),
+      );
+    });
+    return addFundsVendors;
+  }
+
+  List<DrawerItemConfigGroup> _drawerConfigRefundItems(
+    BuildContext context,
+    BreezUserModel user,
+    List<RefundableAddress> refundableAddresses,
+  ) {
+    if (refundableAddresses.length == 0) {
+      return [];
+    }
+    return [
+      DrawerItemConfigGroup(
+        [
+          DrawerItemConfig(
+            "",
+            "Get Refund",
+            "src/icon/withdraw_funds.png",
+            onItemSelected: (_) => protectAdminRoute(
+              context,
+              user,
+              "/get_refund",
+            ),
+          )
+        ],
+      ),
+    ];
+  }
+
+  List<DrawerItemConfigGroup> _drawerConfigFlavorItems(
+    BuildContext context,
+    BreezUserModel user,
+  ) {
+    if (user.appMode == AppMode.pos) {
+      return [
+        DrawerItemConfigGroup(
+          [
+            DrawerItemConfig(
+              "/transactions",
+              "Transactions",
+              "src/icon/transactions.png",
+            ),
+          ],
+        ),
+      ];
+    }
+    return [];
+  }
+
+  List<DrawerItemConfigGroup> _drawerConfigAppModeItems(
+    BuildContext context,
+    BreezUserModel user,
+  ) {
+    return [
+      DrawerItemConfigGroup([_drawerItemBalance(context, user)]),
+      DrawerItemConfigGroup([_drawerItemPodcast(context, user)]),
+      DrawerItemConfigGroup([_drawerItemSatsZone(context, user)]),
+      DrawerItemConfigGroup([_drawerItemPos(context, user)]),
+      DrawerItemConfigGroup([_drawerItemLightningApps(context, user)]),
+      DrawerItemConfigGroup([]),
+    ];
+  }
+
+  DrawerItemConfig _drawerItemBalance(
+    BuildContext context,
+    BreezUserModel user,
+  ) {
+    return DrawerItemConfig(
+      "",
+      "Balance",
+      "src/icon/balance.png",
+      isSelected: user.appMode == AppMode.balance,
+      onItemSelected: (_) {
+        protectAdminAction(
+          context,
+          user,
+          () {
+            widget.userProfileBloc.userActionsSink
+                .add(SetAppMode(AppMode.balance));
+            return Future.value(null);
+          },
+        );
+      },
+    );
+  }
+
+  DrawerItemConfig _drawerItemPodcast(
+    BuildContext context,
+    BreezUserModel user,
+  ) {
+    return DrawerItemConfig(
+      "",
+      "Podcasts",
+      "src/icon/podcast.png",
+      isSelected: user.appMode == AppMode.podcasts,
+      onItemSelected: (_) {
+        protectAdminAction(
+          context,
+          user,
+          () {
+            widget.userProfileBloc.userActionsSink
+                .add(SetAppMode(AppMode.podcasts));
+            return Future.value(null);
+          },
+        );
+      },
+    );
+  }
+
+  DrawerItemConfig _drawerItemSatsZone(
+      BuildContext context,
+      BreezUserModel user,
+      ) {
+    return DrawerItemConfig(
+      "",
+      "Sats Zone",
+      "src/icon/sats_zone.png",
+      isSelected:
+      user.appMode == AppMode.satsZones,
+      onItemSelected: (_) {
+        protectAdminAction(context, user, () {
+          widget.userProfileBloc.userActionsSink
+              .add(
+              SetAppMode(AppMode.satsZones));
+          return Future.value(null);
+        });
+      },
+    );
+  }
+
+  DrawerItemConfig _drawerItemPos(
+    BuildContext context,
+    BreezUserModel user,
+  ) {
+    return DrawerItemConfig(
+      "",
+      "Point of Sale",
+      "src/icon/pos.png",
+      isSelected: user.appMode == AppMode.pos,
+      onItemSelected: (_) {
+        widget.userProfileBloc.userActionsSink.add(SetAppMode(AppMode.pos));
+      },
+    );
+  }
+
+  DrawerItemConfig _drawerItemLightningApps(
+    BuildContext context,
+    BreezUserModel user,
+  ) {
+    return DrawerItemConfig(
+      "",
+      "Apps",
+      "src/icon/apps.png",
+      isSelected: user.appMode == AppMode.apps,
+      onItemSelected: (_) {
+        protectAdminAction(
+          context,
+          user,
+          () {
+            widget.userProfileBloc.userActionsSink
+                .add(SetAppMode(AppMode.apps));
+            return Future.value(null);
+          },
+        );
+      },
+    );
+  }
+
+  List<DrawerItemConfig> _drawerConfigAdvancedFlavorItems(
+    BuildContext context,
+    BreezUserModel user,
+  ) {
+    if (user.appMode == AppMode.pos) {
+      return [
+        DrawerItemConfig(
+          "",
+          "POS Settings",
+          "src/icon/settings.png",
+          onItemSelected: (_) => protectAdminRoute(context, user, "/settings"),
+        ),
+      ];
+    } else {
+      return [
+        DrawerItemConfig(
+          "/developers",
+          "Developers",
+          "src/icon/developers.png",
+        ),
+      ];
+    }
+  }
+
+  IconButton _buildMenuIcon(BuildContext context, AppMode appMode) {
     return IconButton(
         icon: Image.asset(
           _getAppModesAssetName(appMode),
@@ -663,7 +645,6 @@ class HomeState extends State<Home> with WidgetsBindingObserver {
         ),
         onPressed: () {
           _scaffoldKey.currentState.openDrawer();
-          if (!seenPodcastTutorial) _showTutorial();
         });
   }
 
@@ -671,8 +652,8 @@ class HomeState extends State<Home> with WidgetsBindingObserver {
     switch (appMode) {
       case (AppMode.podcasts):
         return "src/icon/podcast.png";
-      case (AppMode.satsRooms):
-        return "src/icon/sats_rooms.png";
+      case (AppMode.satsZones):
+        return "src/icon/sats_zone.png";
       case (AppMode.pos):
         return "src/icon/pos.png";
       case (AppMode.apps):
@@ -701,8 +682,8 @@ class HomeState extends State<Home> with WidgetsBindingObserver {
             ),
           ),
         );
-      case AppMode.satsRooms:
-        return SatsRooms();
+      case AppMode.satsZones:
+        return SatsZones();
       case AppMode.pos:
         return POSInvoice();
       case AppMode.apps:
@@ -780,7 +761,7 @@ class HomeState extends State<Home> with WidgetsBindingObserver {
           messageWidget: LoadingAnimatedText("Broadcasting your transaction",
               textStyle: theme.snackBarStyle, textAlign: TextAlign.left));
     });
-    CheckVersionHandler(context, widget.userProfileBloc);
+    checkVersionDialog(context, widget.userProfileBloc);
   }
 
   void _listenBackupConflicts() {
@@ -819,12 +800,28 @@ class HomeState extends State<Home> with WidgetsBindingObserver {
   }
 
   void _listenPaymentResults() {
-    widget.accountBloc.completedPaymentsStream.listen((fulfilledPayment) {
+    widget.accountBloc.completedPaymentsStream.listen((fulfilledPayment) async {
+      print(
+          '_listenPaymentResults processing: ${fulfilledPayment.paymentHash}');
+
       if (!fulfilledPayment.cancelled &&
           !fulfilledPayment.ignoreGlobalFeedback) {
-        scrollController.animateTo(scrollController.position.minScrollExtent,
-            duration: Duration(milliseconds: 10), curve: Curves.ease);
-        showFlushbar(context, message: "Payment was successfully sent!");
+        await scrollController.animateTo(
+            scrollController.position.minScrollExtent,
+            duration: Duration(milliseconds: 10),
+            curve: Curves.ease);
+
+        if (fulfilledPayment?.paymentItem?.lnurlPayInfo?.successAction
+                ?.hasTag() ==
+            true) {
+          await Future.delayed(Duration(seconds: 1));
+          showLNURLSuccessAction(
+              context, fulfilledPayment.paymentItem.lnurlPayInfo.successAction);
+        } else {
+          showFlushbar(context,
+              messageWidget: SingleChildScrollView(
+                  child: Text('Payment was successfully sent!')));
+        }
       }
     }, onError: (err) async {
       var error = err as PaymentError;
