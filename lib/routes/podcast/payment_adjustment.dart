@@ -170,7 +170,7 @@ class PaymentAdjustmentState extends State<PaymentAdjustment> {
                         onPressed: () {
                           AppBlocsProvider.of<UserProfileBloc>(context)
                               .userActionsSink
-                              .add(SetPaymentOptions(user.paymentOptions
+                              .add(SetPodcastPaymentOptions(user.podcastPaymentOptions
                                   .copyWith(
                                       preferredSatsPerMinValue:
                                           tutorialStreamSats)));
@@ -256,7 +256,7 @@ class PaymentAdjustmentState extends State<PaymentAdjustment> {
                           },
                           onChanged: (int boostAmount) {
                             userProfileBloc.userActionsSink.add(
-                                SetPaymentOptions(userModel.paymentOptions
+                                SetPodcastPaymentOptions(userModel.podcastPaymentOptions
                                     .copyWith(
                                         preferredBoostValue: boostAmount)));
                           },
@@ -283,7 +283,7 @@ class PaymentAdjustmentState extends State<PaymentAdjustment> {
                             paymentsBloc.actionsSink
                                 .add(AdjustAmount(satsPerMinute));
                             userProfileBloc.userActionsSink.add(
-                                SetPaymentOptions(userModel.paymentOptions
+                                SetPodcastPaymentOptions(userModel.podcastPaymentOptions
                                     .copyWith(
                                         preferredSatsPerMinValue:
                                             satsPerMinute)));

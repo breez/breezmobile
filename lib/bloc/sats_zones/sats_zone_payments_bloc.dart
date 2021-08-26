@@ -7,8 +7,8 @@ import 'package:anytime/repository/repository.dart';
 import 'package:anytime/services/audio/audio_player_service.dart';
 import 'package:breez/bloc/account/account_bloc.dart';
 import 'package:breez/bloc/async_actions_handler.dart';
-import 'package:breez/bloc/podcast_payments/actions.dart';
-import 'package:breez/bloc/podcast_payments/model.dart';
+import 'package:breez/bloc/sats_zones/actions.dart';
+import 'package:breez/bloc/sats_zones/model.dart';
 import 'package:breez/bloc/user_profile/breez_user_model.dart';
 import 'package:breez/bloc/user_profile/user_profile_bloc.dart';
 import 'package:breez/logger.dart';
@@ -16,11 +16,11 @@ import 'package:breez/services/breezlib/breez_bridge.dart';
 import 'package:breez/services/injector.dart';
 import 'package:fixnum/fixnum.dart';
 
-import 'aggregated_payments.dart';
+import 'package:breez/bloc/podcast_payments/aggregated_payments.dart';
 
 const maxFeePart = 0.2;
-
-class PodcastPaymentsBloc with AsyncActionsHandler {
+/* FIXME: This is a copy of PodcastPaymentsBloc */
+class SatsZonePaymentsBloc with AsyncActionsHandler {
   final _listeningTime = Map<String, double>();
   final AudioBloc audioBloc;
   final SettingsBloc settingsBloc;
@@ -38,7 +38,7 @@ class PodcastPaymentsBloc with AsyncActionsHandler {
   String breezReceiverNode;
   Map<String, bool> paidPositions = Map<String, bool>();
 
-  PodcastPaymentsBloc(this.userProfile, this.accountBloc, this.settingsBloc,
+  SatsZonePaymentsBloc(this.userProfile, this.accountBloc, this.settingsBloc,
       this.audioBloc, this.repository) {
     ServiceInjector injector = ServiceInjector();
     _breezLib = injector.breezBridge;
@@ -93,13 +93,13 @@ class PodcastPaymentsBloc with AsyncActionsHandler {
       }
       // minutes before next payment
       var paidMinutes = Duration(
-              seconds: _listeningTime[currentPlayedEpisode.contentUrl].floor())
+          seconds: _listeningTime[currentPlayedEpisode.contentUrl].floor())
           .inMinutes;
       _listeningTime[currentPlayedEpisode.contentUrl] += playbackSpeed;
 
       // minutes after next payment
       final nextPaidMinutes = Duration(
-              seconds: _listeningTime[currentPlayedEpisode.contentUrl].floor())
+          seconds: _listeningTime[currentPlayedEpisode.contentUrl].floor())
           .inMinutes;
 
       // if minutes increased
@@ -139,7 +139,7 @@ class PodcastPaymentsBloc with AsyncActionsHandler {
   Future<double> _getCurrentPlaybackSpeed() async {
     try {
       var settings =
-          await settingsBloc.settings.first.timeout(Duration(seconds: 1));
+      await settingsBloc.settings.first.timeout(Duration(seconds: 1));
       return settings?.playbackSpeed;
     } catch (e) {
       return 1.0;
@@ -157,7 +157,7 @@ class PodcastPaymentsBloc with AsyncActionsHandler {
       }
     }
     double totalSplits =
-        recipients.map((r) => r.split).reduce((agg, next) => agg + next);
+    recipients.map((r) => r.split).reduce((agg, next) => agg + next);
     final breezShare = totalSplits / 20;
     totalSplits += breezShare;
     final withBreez = List<ValueDestination>.from([
@@ -173,7 +173,7 @@ class PodcastPaymentsBloc with AsyncActionsHandler {
     PositionState position;
     try {
       position =
-          await audioBloc.playPosition.first.timeout(Duration(seconds: 1));
+      await audioBloc.playPosition.first.timeout(Duration(seconds: 1));
     } catch (e) {}
 
     // calculate the minute to pay.
@@ -212,15 +212,15 @@ class PodcastPaymentsBloc with AsyncActionsHandler {
         }
         _breezLib
             .sendSpontaneousPayment(d.address, Int64(netPay), d.name,
-                feeLimitMsat: maxFee,
-                groupKey: _getPodcastGroupKey(episode),
-                groupName: episode.title,
-                tlv: _getTlv(
-                    boost: boost,
-                    episode: episode,
-                    position: position,
-                    customKey: customKey,
-                    customValue: customValue))
+            feeLimitMsat: maxFee,
+            groupKey: _getPodcastGroupKey(episode),
+            groupName: episode.title,
+            tlv: _getTlv(
+                boost: boost,
+                episode: episode,
+                position: position,
+                customKey: customKey,
+                customValue: customValue))
             .then((payResponse) async {
           if (payResponse.paymentError?.isNotEmpty == true) {
             if (!boost) {
@@ -284,7 +284,7 @@ class PodcastPaymentsBloc with AsyncActionsHandler {
   Future<Int64> _lastFeeForDestination(String address) {
     return accountBloc.paymentsStream
         .map((ps) => ps.nonFilteredItems
-            .firstWhere((i) => i.destination == address, orElse: () => null))
+        .firstWhere((i) => i.destination == address, orElse: () => null))
         .where((pi) => pi != null)
         .map(((pi) => pi.fee))
         .first
@@ -293,10 +293,10 @@ class PodcastPaymentsBloc with AsyncActionsHandler {
 
   Map<Int64, String> _getTlv(
       {bool boost = false,
-      String customKey,
-      String customValue,
-      Episode episode,
-      PositionState position}) {
+        String customKey,
+        String customValue,
+        Episode episode,
+        PositionState position}) {
     var tlv = Map<String, dynamic>();
     tlv["podcast"] = _getPodcastTitle(episode);
     tlv["episode"] = episode.title;
@@ -407,11 +407,11 @@ class ValueDestination {
 
   ValueDestination(
       {this.name,
-      this.address,
-      this.type,
-      this.split,
-      this.customKey,
-      this.customValue});
+        this.address,
+        this.type,
+        this.split,
+        this.customKey,
+        this.customValue});
 
   static ValueDestination fromJson(Map<String, dynamic> json) {
     var rawSplit = json['split'];

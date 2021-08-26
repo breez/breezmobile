@@ -85,7 +85,8 @@ class UserProfileBloc {
       VerifyAdminPassword: _verifyAdminPassword,
       UploadProfilePicture: _uploadProfilePicture,
       SetPOSCurrency: _setPOSCurrency,
-      SetPaymentOptions: _setPaymentOptions,
+      SetPodcastPaymentOptions: _setPodcastPaymentOptions,
+      SetSatsZonePaymentOptions: _setSatsZonePaymentOptions,
       SetSeenPaymentStripTutorial: _setSeenPaymentStripTutorial,
     };
     print("UserProfileBloc started");
@@ -194,10 +195,16 @@ class UserProfileBloc {
     action.resolve(action.shortName);
   }
 
-  Future _setPaymentOptions(SetPaymentOptions action) async {
+  Future _setPodcastPaymentOptions(SetPodcastPaymentOptions action) async {
     _saveChanges(await _preferences,
-        _currentUser.copyWith(paymentOptions: action.paymentOptions));
-    action.resolve(action.paymentOptions);
+        _currentUser.copyWith(podcastPaymentOptions: action.podcastPaymentOptions));
+    action.resolve(action.podcastPaymentOptions);
+  }
+
+  Future _setSatsZonePaymentOptions(SetSatsZonePaymentOptions action) async {
+    _saveChanges(await _preferences,
+        _currentUser.copyWith(satsZonePaymentOptions: action.satsZonePaymentOptions));
+    action.resolve(action.satsZonePaymentOptions);
   }
 
   Future _uploadProfilePicture(UploadProfilePicture action) async {

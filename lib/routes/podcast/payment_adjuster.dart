@@ -72,12 +72,12 @@ class _PaymentAdjusterState extends State<PaymentAdjuster> {
                     useRootNavigator: true,
                     context: context,
                     builder: (c) => CustomAmountDialog(
-                      widget.userModel.paymentOptions.customSatsPerMinValue,
-                      widget.userModel.paymentOptions
+                      widget.userModel.podcastPaymentOptions.customSatsPerMinValue,
+                      widget.userModel.podcastPaymentOptions
                           .presetSatsPerMinuteAmountsList,
                       (int satsPerMinute) {
-                        userBloc.userActionsSink.add(SetPaymentOptions(
-                            widget.userModel.paymentOptions.copyWith(
+                        userBloc.userActionsSink.add(SetPodcastPaymentOptions(
+                            widget.userModel.podcastPaymentOptions.copyWith(
                                 preferredSatsPerMinValue: satsPerMinute,
                                 customSatsPerMinValue: satsPerMinute)));
                       },
@@ -159,7 +159,7 @@ class _PaymentAdjusterState extends State<PaymentAdjuster> {
 
   String _formatSatsPerMinAmount() {
     var satsPerMinValue =
-        widget.userModel.paymentOptions.preferredSatsPerMinValue;
+        widget.userModel.podcastPaymentOptions.preferredSatsPerMinValue;
     final count = pow(10, (satsPerMinValue.toString().length - 3));
     var roundedValue = satsPerMinValue / count;
     return satsPerMinValue != roundedValue.round() * count
@@ -170,8 +170,8 @@ class _PaymentAdjusterState extends State<PaymentAdjuster> {
 
   int _getPreviousAmount() {
     var currentAmount =
-        widget.userModel.paymentOptions.preferredSatsPerMinValue;
-    var amountList = widget.userModel.paymentOptions.satsPerMinuteIntervalsList;
+        widget.userModel.podcastPaymentOptions.preferredSatsPerMinValue;
+    var amountList = widget.userModel.podcastPaymentOptions.satsPerMinuteIntervalsList;
     try {
       return amountList[amountList.indexOf(currentAmount) - 1];
     } catch (RangeError) {
@@ -181,8 +181,8 @@ class _PaymentAdjusterState extends State<PaymentAdjuster> {
 
   int _getNextAmount() {
     var currentAmount =
-        widget.userModel.paymentOptions.preferredSatsPerMinValue;
-    var amountList = widget.userModel.paymentOptions.satsPerMinuteIntervalsList;
+        widget.userModel.podcastPaymentOptions.preferredSatsPerMinValue;
+    var amountList = widget.userModel.podcastPaymentOptions.satsPerMinuteIntervalsList;
     try {
       return amountList[amountList.indexOf(currentAmount) + 1];
     } catch (RangeError) {

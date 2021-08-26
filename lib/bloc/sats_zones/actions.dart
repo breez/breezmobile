@@ -31,3 +31,15 @@ class FilterSatsZones extends AsyncAction {
 
   FilterSatsZones(this.filter);
 }
+
+class PayBoost extends AsyncAction {
+  final int sats;
+
+  PayBoost(this.sats);
+}
+
+class AdjustAmount extends AsyncAction {
+  final int sats;
+
+  AdjustAmount(this.sats);
+}

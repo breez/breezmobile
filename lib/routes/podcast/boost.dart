@@ -33,8 +33,8 @@ class _BoostWidgetState extends State<BoostWidget> {
     final userBloc = AppBlocsProvider.of<UserProfileBloc>(context);
     final accountBloc = AppBlocsProvider.of<AccountBloc>(context);
 
-    final selectedIndex = widget.userModel.paymentOptions.boostAmountList
-        .indexOf(widget.userModel.paymentOptions.preferredBoostValue);
+    final selectedIndex = widget.userModel.podcastPaymentOptions.boostAmountList
+        .indexOf(widget.userModel.podcastPaymentOptions.preferredBoostValue);
 
     return StreamBuilder<AccountModel>(
         stream: accountBloc.accountStream,
@@ -84,7 +84,7 @@ class _BoostWidgetState extends State<BoostWidget> {
                   ),
                   onPressed: () {
                     var boostAmount =
-                        widget.userModel.paymentOptions.preferredBoostValue;
+                        widget.userModel.podcastPaymentOptions.preferredBoostValue;
                     if (acc.data.balance.toInt() <= boostAmount) {
                       showFlushbar(context,
                           message:
@@ -92,7 +92,7 @@ class _BoostWidgetState extends State<BoostWidget> {
                       return;
                     }
                     widget.onBoost(
-                      widget.userModel.paymentOptions.boostAmountList
+                      widget.userModel.podcastPaymentOptions.boostAmountList
                           .elementAt(selectedIndex),
                     );
                   },
@@ -142,13 +142,13 @@ class _BoostWidgetState extends State<BoostWidget> {
                               context: context,
                               builder: (c) => CustomAmountDialog(
                                 widget
-                                    .userModel.paymentOptions.customBoostValue,
-                                widget.userModel.paymentOptions
+                                    .userModel.podcastPaymentOptions.customBoostValue,
+                                widget.userModel.podcastPaymentOptions
                                     .presetBoostAmountsList,
                                 (int boostAmount) {
                                   userBloc.userActionsSink.add(
-                                      SetPaymentOptions(widget
-                                          .userModel.paymentOptions
+                                      SetPodcastPaymentOptions(widget
+                                          .userModel.podcastPaymentOptions
                                           .copyWith(
                                               preferredBoostValue: boostAmount,
                                               customBoostValue: boostAmount)));
@@ -235,7 +235,7 @@ class _BoostWidgetState extends State<BoostWidget> {
   }
 
   String _formatBoostAmount() {
-    var boostValue = widget.userModel.paymentOptions.preferredBoostValue;
+    var boostValue = widget.userModel.podcastPaymentOptions.preferredBoostValue;
     final count = pow(10, (boostValue.toString().length - 3));
     var roundedValue = boostValue / count;
     return boostValue != roundedValue.round() * count
@@ -245,8 +245,8 @@ class _BoostWidgetState extends State<BoostWidget> {
   }
 
   int _getPreviousAmount() {
-    var currentAmount = widget.userModel.paymentOptions.preferredBoostValue;
-    var amountList = widget.userModel.paymentOptions.boostAmountList;
+    var currentAmount = widget.userModel.podcastPaymentOptions.preferredBoostValue;
+    var amountList = widget.userModel.podcastPaymentOptions.boostAmountList;
     try {
       return amountList[amountList.indexOf(currentAmount) - 1];
     } catch (RangeError) {
@@ -255,8 +255,8 @@ class _BoostWidgetState extends State<BoostWidget> {
   }
 
   int _getNextAmount() {
-    var currentAmount = widget.userModel.paymentOptions.preferredBoostValue;
-    var amountList = widget.userModel.paymentOptions.boostAmountList;
+    var currentAmount = widget.userModel.podcastPaymentOptions.preferredBoostValue;
+    var amountList = widget.userModel.podcastPaymentOptions.boostAmountList;
     try {
       return amountList[amountList.indexOf(currentAmount) + 1];
     } catch (RangeError) {
