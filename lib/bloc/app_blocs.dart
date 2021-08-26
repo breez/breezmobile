@@ -7,6 +7,7 @@ import 'package:breez/bloc/marketplace/marketplace_bloc.dart';
 import 'package:breez/bloc/pos_catalog/bloc.dart';
 import 'package:breez/bloc/reverse_swap/reverse_swap_bloc.dart';
 import 'package:breez/bloc/sats_zones/bloc.dart';
+import 'package:breez/bloc/sats_zones/sats_zone_payments_bloc.dart';
 import 'package:breez/bloc/user_profile/user_profile_bloc.dart';
 
 import 'invoice/invoice_bloc.dart';
@@ -28,6 +29,7 @@ class AppBlocs {
   final PosCatalogBloc posCatalogBloc;
   final ReverseSwapBloc reverseSwapBloc;
   final SatsZonesBloc satsZonesBloc;
+  final SatsZonePaymentsBloc satsZonePaymentsBloc;
   final Map<Type, Object> _blocsByType;
 
   static T _registerBloc<T>(T bloc, Map<Type, Object> blocs) {
@@ -65,6 +67,7 @@ class AppBlocs {
     FastbitcoinsBloc fastbitcoinsBloc =
         _registerBloc(FastbitcoinsBloc(), blocsByType);
     SatsZonesBloc satsZonesBloc = _registerBloc(SatsZonesBloc(), blocsByType);
+    SatsZonePaymentsBloc satsZonePaymentsBloc = _registerBloc(SatsZonePaymentsBloc(), blocsByType);
 
     return AppBlocs._(
         userProfileBloc,
@@ -79,6 +82,7 @@ class AppBlocs {
         lnurlBloc,
         posCatalogBloc,
         satsZonesBloc,
+        satsZonePaymentsBloc,
         blocsByType);
   }
 
@@ -95,6 +99,7 @@ class AppBlocs {
     this.lnurlBloc,
     this.posCatalogBloc,
     this.satsZonesBloc,
+    this.satsZonePaymentsBloc,
     this._blocsByType,
   );
 }

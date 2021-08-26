@@ -34,8 +34,9 @@ class FilterSatsZones extends AsyncAction {
 
 class PayBoost extends AsyncAction {
   final int sats;
+  final String nodeID;
 
-  PayBoost(this.sats);
+  PayBoost(this.sats, {this.nodeID});
 }
 
 class AdjustAmount extends AsyncAction {

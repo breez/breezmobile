@@ -36,6 +36,7 @@ enum PaymentEventType { BoostStarted, StreamCompleted }
 class PaymentEvent {
   final PaymentEventType type;
   final int sats;
+  final String nodeID;
 
-  PaymentEvent(this.type, this.sats);
+  PaymentEvent(this.type, this.sats, this.nodeID);
 }
