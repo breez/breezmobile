@@ -36,7 +36,6 @@ dependencies:
   image_picker: ^0.7.4
   ini: ^2.1.0
   intl: ^0.17.0
-  jitsi_meet: ^4.0.0
   json_annotation: ^4.0.1
   logging: ^1.0.1
   nfc_in_flutter: ^2.0.5
@@ -68,6 +67,10 @@ dependencies:
     git:
       url: https://github.com/breez/flutter_typeahead.git
       ref: 7405b9e3e3a32f605f5951499d2eddc8e45c1f74
+  jitsi_meet:
+    git:
+      url: https://github.com/breez/jitsi_meet.git
+      path: jitsi_meet
   local_auth:
     git:
       url: https://github.com/breez/local_auth.git

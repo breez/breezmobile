@@ -1,9 +1,12 @@
 import 'dart:io';
 
+import 'package:breez/bloc/account/account_bloc.dart';
 import 'package:breez/bloc/blocs_provider.dart';
+import 'package:breez/bloc/lsp/lsp_bloc.dart';
 import 'package:breez/bloc/sats_zones/actions.dart';
 import 'package:breez/bloc/sats_zones/bloc.dart';
 import 'package:breez/bloc/sats_zones/model.dart';
+import 'package:breez/bloc/sats_zones/sats_zone_payments_bloc.dart';
 import 'package:breez/bloc/user_profile/user_profile_bloc.dart';
 import 'package:breez/theme_data.dart' as theme;
 import 'package:breez/widgets/flushbar.dart';
@@ -12,16 +15,36 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:jitsi_meet/jitsi_meet.dart';
 import 'package:share_extend/share_extend.dart';
+import 'package:provider/provider.dart';
 
-class SatsZoneItem extends StatelessWidget {
+class SatsZoneItem extends StatefulWidget {
   final SatsZone satsZone;
 
   const SatsZoneItem(this.satsZone);
 
   @override
-  Widget build(BuildContext context) {
-    var userProfileBloc = AppBlocsProvider.of<UserProfileBloc>(context);
+  _SatsZoneItemState createState() => _SatsZoneItemState();
+}
 
+class _SatsZoneItemState extends State<SatsZoneItem> {
+
+  @override
+  void initState() {
+    super.initState();
+
+    JitsiMeet.addListener(JitsiMeetingListener(
+        onConferenceWillJoin: _onConferenceWillJoin,
+        onConferenceJoined: _onConferenceJoined,
+        onConferenceTerminated: _onConferenceTerminated,
+        onError: _onError,
+        onBoost: _onBoost,
+        changeSatsPerMinute: _changeSatsPerMinute,
+        setCustomBoostAmount: _setCustomBoostAmount,
+        setCustomSatsPerMinAmount: _setCustomSatsPerMinAmount));
+  }
+
+  @override
+  Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.only(bottom: 8, left: 8, right: 8),
       child: ClipRRect(
@@ -33,12 +56,12 @@ class SatsZoneItem extends StatelessWidget {
             children: [
               ListTile(
                 title: Text(
-                  satsZone.title,
+                  widget.satsZone.title,
                   style: Theme.of(context).accentTextTheme.subtitle2,
                   overflow: TextOverflow.ellipsis,
                 ),
                 subtitle: Text(
-                  satsZone.zoneID,
+                  widget.satsZone.zoneID,
                   style: Theme.of(context).accentTextTheme.caption,
                 ),
                 trailing: Row(
@@ -53,12 +76,12 @@ class SatsZoneItem extends StatelessWidget {
                         SatsZonesBloc satsZonesBloc =
                             AppBlocsProvider.of<SatsZonesBloc>(context);
                         DeleteSatsZone deleteSatsZone =
-                            DeleteSatsZone(satsZone.id);
+                            DeleteSatsZone(widget.satsZone.id);
                         satsZonesBloc.actionsSink.add(deleteSatsZone);
                         deleteSatsZone.future.then((_) {
                           showFlushbar(context,
                               duration: Duration(seconds: 4),
-                              messageWidget: Text("Deleted " + satsZone.title,
+                              messageWidget: Text("Deleted " + widget.satsZone.title,
                                   style: theme.snackBarStyle,
                                   textAlign: TextAlign.center));
                         });
@@ -73,7 +96,7 @@ class SatsZoneItem extends StatelessWidget {
                       onPressed: () {
                         final RenderBox box = context.findRenderObject();
                         ShareExtend.share(
-                            "Join Sats Zone: " + satsZone.zoneID, "text",
+                            "Join Sats Zone: " + widget.satsZone.zoneID, "text",
                             sharePositionOrigin:
                                 box.localToGlobal(Offset.zero) & box.size);
                       },
@@ -87,7 +110,7 @@ class SatsZoneItem extends StatelessWidget {
                           size: 22,
                         ),
                         onPressed: () =>
-                            _joinSatsZone(satsZone.zoneID, userProfileBloc),
+                            _joinSatsZone(widget.satsZone.zoneID, context),
                       ),
                     ),
                   ],
@@ -100,8 +123,12 @@ class SatsZoneItem extends StatelessWidget {
     );
   }
 
-  _joinSatsZone(String zoneID, UserProfileBloc userProfileBloc) async {
+  _joinSatsZone(String zoneID, BuildContext context) async {
+    var userProfileBloc = AppBlocsProvider.of<UserProfileBloc>(context);
+    var accountBloc = AppBlocsProvider.of<AccountBloc>(context);
+
     var user = await userProfileBloc.userStream.firstWhere((u) => u != null);
+
     // Enable or disable any feature flag here
     // If feature flag are not provided, default values will be used
     // Full list of feature flags (and defaults) available in the README
@@ -121,8 +148,9 @@ class SatsZoneItem extends StatelessWidget {
     // Define meetings options here
     var options = JitsiMeetingOptions(room: zoneID)
       //..serverURL = null
-      ..subject = satsZone.title
+      ..subject = widget.satsZone.title
       ..userDisplayName = user.name
+      ..userEmail = "breez:" + await accountBloc.getPersistentNodeID()
       //..userEmail = emailText.text
       //..iosAppBarRGBAColor = iosAppBarRGBAColor.text
       //..audioOnly = isAudioOnly
@@ -151,6 +179,18 @@ class SatsZoneItem extends StatelessWidget {
           onConferenceTerminated: (message) {
             debugPrint("${options.room} terminated with message: $message");
           },
+          onBoost: (message) {
+            debugPrint("Called onBoost with message: $message");
+          },
+          changeSatsPerMinute: (message) {
+            debugPrint("Called changeSatsPerMinute with message: $message");
+          },
+          setCustomBoostAmount: () {
+            debugPrint("Called setCustomBoostAmount");
+          },
+          setCustomSatsPerMinAmount: () {
+            debugPrint("Called setCustomSatsPerMinAmount");
+          },
           genericListeners: [
             JitsiGenericListener(
                 eventName: 'readyToClose',
@@ -159,5 +199,41 @@ class SatsZoneItem extends StatelessWidget {
                 }),
           ]),
     );
+  }
+
+  void _onConferenceWillJoin(message) {
+    debugPrint("_onConferenceWillJoin broadcasted with message: $message");
+  }
+
+  void _onConferenceJoined(message) {
+    debugPrint("_onConferenceJoined broadcasted with message: $message");
+  }
+
+  void _onConferenceTerminated(message) {
+    debugPrint("_onConferenceTerminated broadcasted with message: $message");
+  }
+
+  void _onBoost(message) {
+    final paymentsBloc = Provider.of<SatsZonePaymentsBloc>(context);
+    paymentsBloc.actionsSink.add(PayBoost(message.boostAmount));
+  }
+
+  void _changeSatsPerMinute(message) {
+    final paymentsBloc = Provider.of<SatsZonePaymentsBloc>(context);
+    debugPrint("_changeSatsPerMinute broadcasted with message: $message");
+  }
+
+  void _setCustomBoostAmount() {
+    final paymentsBloc = Provider.of<SatsZonePaymentsBloc>(context);
+    debugPrint("_setCustomBoostAmount broadcasted.");
+  }
+
+  void _setCustomSatsPerMinAmount() {
+    final paymentsBloc = Provider.of<SatsZonePaymentsBloc>(context);
+    debugPrint("_setCustomSatsPerMinAmount broadcasted.");
+  }
+
+  _onError(error) {
+    debugPrint("_onError broadcasted: $error");
   }
 }

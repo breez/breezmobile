@@ -153,6 +153,18 @@ class _SatsZonesState extends State<SatsZones> {
             onConferenceTerminated: (message) {
               debugPrint("${options.room} terminated with message: $message");
             },
+            onBoost: (message) {
+              debugPrint("Called onBoost with message: $message");
+            },
+            changeSatsPerMinute: (message) {
+              debugPrint("Called changeSatsPerMinute with message: $message");
+            },
+            setCustomBoostAmount: () {
+              debugPrint("Called setCustomBoostAmount");
+            },
+            setCustomSatsPerMinAmount: () {
+              debugPrint("Called setCustomSatsPerMinAmount");
+            },
             genericListeners: [
               JitsiGenericListener(
                   eventName: 'readyToClose',
