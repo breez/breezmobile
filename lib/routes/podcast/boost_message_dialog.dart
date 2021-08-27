@@ -35,7 +35,7 @@ class BoostMessageDialogState extends State<BoostMessageDialog> {
   Widget _buildBoostMessageDialog() {
     return AlertDialog(
       title: Text(
-        "Enter a Boost Message:",
+        "Send a Boostagram",
         style:
             Theme.of(context).dialogTheme.titleTextStyle.copyWith(fontSize: 16),
         maxLines: 1,
@@ -53,10 +53,14 @@ class BoostMessageDialogState extends State<BoostMessageDialog> {
         autovalidateMode: AutovalidateMode.disabled,
         focusNode: _messageFocusNode,
         controller: _boostMessageController,
-        keyboardType: TextInputType.text,
+        keyboardType: TextInputType.multiline,
+        textInputAction: TextInputAction.done,
+        maxLines: null,
+        maxLength: 90,
+        maxLengthEnforcement: MaxLengthEnforcement.enforced,
         validator: (raw) {
           if (raw.length == 0) {
-            return "Please enter a custom message";
+            return "Please enter a message";
           }
           return null;
         },
