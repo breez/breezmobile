@@ -101,7 +101,7 @@ class PaymentAdjustmentState extends State<PaymentAdjustment> {
                 Padding(
                   padding: const EdgeInsets.only(top: 10.0),
                   child: Text(
-                    "Send a one-time tip to a show's creators.",
+                    "Send a one-time tip to a show's creators. Long press to add a personalized message.",
                     style: TextStyle(color: Colors.white),
                   ),
                 ),
