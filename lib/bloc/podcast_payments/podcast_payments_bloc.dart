@@ -223,7 +223,8 @@ class PodcastPaymentsBloc with AsyncActionsHandler {
                     position: position,
                     customKey: customKey,
                     customValue: customValue,
-                    boostMessage: boostMessage))
+                    boostMessage: boostMessage,
+                    totalSats: total))
             .then((payResponse) async {
           if (payResponse.paymentError?.isNotEmpty == true) {
             if (!boost) {
@@ -300,7 +301,8 @@ class PodcastPaymentsBloc with AsyncActionsHandler {
       String customValue,
       String boostMessage,
       Episode episode,
-      PositionState position}) {
+      PositionState position,
+      int totalSats}) {
     var tlv = Map<String, dynamic>();
     tlv["podcast"] = _getPodcastTitle(episode);
     tlv["episode"] = episode.title;
@@ -308,6 +310,7 @@ class PodcastPaymentsBloc with AsyncActionsHandler {
     tlv["time"] = _formatDuration(position.position);
     tlv["feedID"] = _getPodcastIndexID(episode);
     tlv["app_name"] = "Breez";
+    tlv["value_msat_total"] = totalSats.toString();
     if (boost && boostMessage.isNotEmpty) tlv["message"] = boostMessage;
     var encoded = json.encode(tlv);
     var records = Map<Int64, String>();
