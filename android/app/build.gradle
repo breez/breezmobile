@@ -81,7 +81,7 @@ dependencies {
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'com.android.support.test:runner:1.0.1'
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.1'
-    compile(name:'breez', ext:'aar')
+    implementation(name:'breez', ext:'aar')
     implementation 'com.theartofdev.edmodo:android-image-cropper:2.5.+'
     implementation 'androidx.exifinterface:exifinterface:1.0.0-beta01'
     implementation 'com.google.android.material:material:1.0.0-beta01'
