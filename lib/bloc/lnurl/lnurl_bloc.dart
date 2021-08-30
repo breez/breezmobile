@@ -48,7 +48,7 @@ class LNUrlBloc with AsyncActionsHandler {
       ])
           .where((l) => l != null)
           .map((l) => l.toLowerCase())
-          .where((l) => isLNURL(l))
+          .where((l) => isLNURL(l) || isLightningAddress(l))
           .asyncMap((l) {
         _lnUrlStreamController.add(fetchLNUrlState.started);
         return _breezLib.fetchLNUrl(l).catchError((error) {
