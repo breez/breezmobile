@@ -44,3 +44,9 @@ class AdjustAmount extends AsyncAction {
 
   AdjustAmount(this.sats);
 }
+
+class PayZoneBoost extends AsyncAction {
+  final int sats;
+
+  PayZoneBoost(this.sats);
+}

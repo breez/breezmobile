@@ -40,3 +40,12 @@ class PaymentEvent {
 
   PaymentEvent(this.type, this.sats, this.nodeID);
 }
+
+enum ZonePaymentEventType { BoostStarted, StreamCompleted }
+
+class ZonePaymentEvent {
+  final ZonePaymentEventType type;
+  final int sats;
+
+  ZonePaymentEvent(this.type, this.sats);
+}
