@@ -31,21 +31,12 @@ class SatsZone implements DBItem {
   }
 }
 
-enum PaymentEventType { BoostStarted, StreamCompleted }
-
-class PaymentEvent {
-  final PaymentEventType type;
-  final int sats;
-  final String nodeID;
-
-  PaymentEvent(this.type, this.sats, this.nodeID);
-}
-
 enum ZonePaymentEventType { BoostStarted, StreamCompleted }
 
 class ZonePaymentEvent {
   final ZonePaymentEventType type;
   final int sats;
+  final String nodeID;
 
-  ZonePaymentEvent(this.type, this.sats);
+  ZonePaymentEvent(this.type, this.sats, this.nodeID);
 }

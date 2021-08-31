@@ -1,7 +1,10 @@
 import 'dart:io';
 
 import 'package:breez/bloc/blocs_provider.dart';
+import 'package:breez/bloc/sats_zones/actions.dart';
 import 'package:breez/bloc/sats_zones/bloc.dart';
+import 'package:breez/bloc/sats_zones/sats_zone_payments_bloc.dart';
+import 'package:breez/bloc/user_profile/user_actions.dart';
 import 'package:breez/bloc/user_profile/user_profile_bloc.dart';
 import 'package:breez/routes/sats_zones/join_sats_zone_dialog.dart';
 import 'package:breez/routes/sats_zones/sats_zones_list.dart';
@@ -19,6 +22,23 @@ class SatsZones extends StatefulWidget {
 }
 
 class _SatsZonesState extends State<SatsZones> {
+  String currentZoneID;
+
+  @override
+  void initState() {
+    super.initState();
+
+    JitsiMeet.addListener(JitsiMeetingListener(
+        onConferenceWillJoin: _onConferenceWillJoin,
+        onConferenceJoined: _onConferenceJoined,
+        onConferenceTerminated: _onConferenceTerminated,
+        onError: _onError,
+        onBoost: _onBoost,
+        changeSatsPerMinute: _changeSatsPerMinute,
+        setCustomBoostAmount: _setCustomBoostValue,
+        setCustomSatsPerMinAmount: _setCustomSatsPerMinAmount));
+  }
+
   @override
   Widget build(BuildContext context) {
     SatsZonesBloc satsZonesBloc = AppBlocsProvider.of<SatsZonesBloc>(context);
@@ -108,6 +128,10 @@ class _SatsZonesState extends State<SatsZones> {
   _joinSatsZone(String zoneID, SatsZonesBloc satsZonesBloc) async {
     var userProfileBloc = AppBlocsProvider.of<UserProfileBloc>(context);
     var user = await userProfileBloc.userStream.firstWhere((u) => u != null);
+
+    setState(() {
+      currentZoneID = zoneID;
+    });
     // Enable or disable any feature flag here
     // If feature flag are not provided, default values will be used
     // Full list of feature flags (and defaults) available in the README
@@ -159,10 +183,10 @@ class _SatsZonesState extends State<SatsZones> {
             changeSatsPerMinute: (message) {
               debugPrint("Called changeSatsPerMinute with message: $message");
             },
-            setCustomBoostAmount: () {
+            setCustomBoostAmount: (message) {
               debugPrint("Called setCustomBoostAmount");
             },
-            setCustomSatsPerMinAmount: () {
+            setCustomSatsPerMinAmount: (message) {
               debugPrint("Called setCustomSatsPerMinAmount");
             },
             genericListeners: [
@@ -176,5 +200,58 @@ class _SatsZonesState extends State<SatsZones> {
     } catch (e) {
       showFlushbar(context, message: e.message.toString());
     }
+  }
+
+  void _onConferenceWillJoin(message) {
+    debugPrint("_onConferenceWillJoin broadcasted with message: $message");
+  }
+
+  void _onConferenceJoined(message) {
+    debugPrint("_onConferenceJoined broadcasted with message: $message");
+  }
+
+  void _onConferenceTerminated(message) {
+    debugPrint("_onConferenceTerminated broadcasted with message: $message");
+  }
+
+  void _onBoost(message) {
+    final paymentsBloc = AppBlocsProvider.of<SatsZonePaymentsBloc>(context);
+    var boostAmount = double.parse(message["boostAmount"]).toInt();
+    var paymentInfo = message["paymentInfo"];
+    paymentsBloc.actionsSink.add(PayBoost(boostAmount, "", currentZoneID, paymentInfo));
+  }
+
+  void _changeSatsPerMinute(message) async {
+    final paymentsBloc = AppBlocsProvider.of<SatsZonePaymentsBloc>(context);
+    final userProfileBloc = AppBlocsProvider.of<UserProfileBloc>(context);
+    var user = await userProfileBloc.userStream.firstWhere((u) => u != null);
+    var satsPerMinute = double.parse(message["satsPerMinute"]).toInt();
+    paymentsBloc.actionsSink.add(AdjustAmount(satsPerMinute));
+    userProfileBloc.userActionsSink.add(SetSatsZonePaymentOptions(user
+        .satsZonePaymentOptions
+        .copyWith(preferredSatsPerMinValue: satsPerMinute)));
+  }
+
+  void _setCustomBoostValue(message) async {
+    final userProfileBloc = AppBlocsProvider.of<UserProfileBloc>(context);
+    var user = await userProfileBloc.userStream.firstWhere((u) => u != null);
+    var customBoostValue = double.parse(message["customBoostValue"]).toInt();
+    userProfileBloc.userActionsSink.add(SetSatsZonePaymentOptions(user
+        .satsZonePaymentOptions
+        .copyWith(customBoostValue: customBoostValue)));
+  }
+
+  void _setCustomSatsPerMinAmount(message) async {
+    final userProfileBloc = AppBlocsProvider.of<UserProfileBloc>(context);
+    var user = await userProfileBloc.userStream.firstWhere((u) => u != null);
+    var customSatsPerMinValue =
+        double.parse(message["customSatsPerMinValue"]).toInt();
+    userProfileBloc.userActionsSink.add(SetSatsZonePaymentOptions(user
+        .satsZonePaymentOptions
+        .copyWith(customSatsPerMinValue: customSatsPerMinValue)));
+  }
+
+  _onError(error) {
+    debugPrint("_onError broadcasted: $error");
   }
 }

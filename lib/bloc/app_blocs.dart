@@ -67,7 +67,8 @@ class AppBlocs {
     FastbitcoinsBloc fastbitcoinsBloc =
         _registerBloc(FastbitcoinsBloc(), blocsByType);
     SatsZonesBloc satsZonesBloc = _registerBloc(SatsZonesBloc(), blocsByType);
-    SatsZonePaymentsBloc satsZonePaymentsBloc = _registerBloc(SatsZonePaymentsBloc(), blocsByType);
+    SatsZonePaymentsBloc satsZonePaymentsBloc = _registerBloc(
+        SatsZonePaymentsBloc(userProfileBloc, accountBloc), blocsByType);
 
     return AppBlocs._(
         userProfileBloc,
