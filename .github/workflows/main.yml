@@ -39,11 +39,11 @@ jobs:
       # Runs a set of commands using the runners shell
       - name: Run a multi-line script
         run: |          
-          curl -o golang https://dl.google.com/go/go1.15.8.darwin-amd64.tar.gz
-          mkdir go1.15.8
-          tar -C $(pwd)/go1.15.8 -xzf golang
-          export PATH=$(pwd)/go1.15.8/go/bin:$PATH
-          export GOROOT=$(pwd)/go1.15.8/go
+          curl -o golang https://dl.google.com/go/go1.17.darwin-amd64.tar.gz
+          mkdir go1.17
+          tar -C $(pwd)/go1.17 -xzf golang
+          export PATH=$(pwd)/go1.17/go/bin:$PATH
+          export GOROOT=$(pwd)/go1.17/go
           go version
           brew update
           brew install bazaar
