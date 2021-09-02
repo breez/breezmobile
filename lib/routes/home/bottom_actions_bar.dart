@@ -80,7 +80,7 @@ class BottomActionsBar extends StatelessWidget {
                           iconAssetPath: "src/icon/paste.png",
                           enabled: account.connected),
                       title: Text(
-                        "Paste Invoice or Node ID",
+                        "Paste Invoice or ID",
                         style: theme.bottomSheetTextStyle,
                       ),
                       onTap: () async {

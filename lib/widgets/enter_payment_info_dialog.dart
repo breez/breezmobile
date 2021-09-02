@@ -71,7 +71,7 @@ class EnterPaymentInfoDialogState extends State<EnterPaymentInfoDialog> {
                 children: <Widget>[
                   TextFormField(
                     decoration: InputDecoration(
-                      labelText: "Invoice or Node ID",
+                      labelText: "Invoice or ID",
                       suffixIcon: IconButton(
                         padding: EdgeInsets.only(top: 21.0),
                         alignment: Alignment.bottomRight,
@@ -94,7 +94,7 @@ class EnterPaymentInfoDialogState extends State<EnterPaymentInfoDialog> {
                     validator: (value) {
                       if (parseNodeId(value) == null &&
                           decodeInvoice(value) == null) {
-                        return "Invalid invoice or node ID";
+                        return "Invalid invoice or ID";
                       }
                       return null;
                     },
