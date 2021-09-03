@@ -1,7 +1,9 @@
 import 'package:breez/bloc/invoice/invoice_bloc.dart';
+import 'package:breez/bloc/lnurl/lnurl_bloc.dart';
 import 'package:breez/routes/spontaneous_payment/spontaneous_payment_page.dart';
 import 'package:breez/theme_data.dart' as theme;
 import 'package:breez/utils/node_id.dart';
+import 'package:breez/utils/lnurl.dart';
 import 'package:breez/widgets/route.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -11,10 +13,11 @@ import 'flushbar.dart';
 class EnterPaymentInfoDialog extends StatefulWidget {
   final BuildContext context;
   final InvoiceBloc invoiceBloc;
+  final LNUrlBloc lnurlBloc;
   final GlobalKey firstPaymentItemKey;
 
   EnterPaymentInfoDialog(
-      this.context, this.invoiceBloc, this.firstPaymentItemKey);
+      this.context, this.invoiceBloc, this.lnurlBloc, this.firstPaymentItemKey);
 
   @override
   State<StatefulWidget> createState() {
@@ -93,7 +96,8 @@ class EnterPaymentInfoDialogState extends State<EnterPaymentInfoDialog> {
                             Theme.of(context).primaryTextTheme.headline4.color),
                     validator: (value) {
                       if (parseNodeId(value) == null &&
-                          decodeInvoice(value) == null) {
+                          decodeInvoice(value) == null &&
+                          !isLightningAddress(value)) {
                         return "Invalid invoice or ID";
                       }
                       return null;
@@ -137,6 +141,9 @@ class EnterPaymentInfoDialogState extends State<EnterPaymentInfoDialog> {
             if (decodeInvoice(_paymentInfoController.text) != null) {
               widget.invoiceBloc.decodeInvoiceSink
                   .add(_paymentInfoController.text);
+            }
+            if (isLightningAddress(_paymentInfoController.text)) {
+              widget.lnurlBloc.lnurlInputSink.add(_paymentInfoController.text);
             }
           }
         }),
