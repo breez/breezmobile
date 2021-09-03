@@ -665,6 +665,13 @@ class SinglePaymentInfo implements PaymentInfo {
     if (this.keySend && description.isNotEmpty) {
       return description;
     }
+
+    if (_paymentResponse.hasLnurlPayInfo()) {
+      if (_paymentResponse.lnurlPayInfo.lightningAddress.isNotEmpty) {
+        return _paymentResponse.lnurlPayInfo.lightningAddress;
+      }
+    }
+
     return title;
   }
 
