@@ -177,6 +177,17 @@ final ThemeData blueTheme = ThemeData(
   textButtonTheme: TextButtonThemeData(),
   outlinedButtonTheme: OutlinedButtonThemeData(),
   elevatedButtonTheme: ElevatedButtonThemeData(),
+  radioTheme: RadioThemeData(
+    fillColor: MaterialStateProperty.resolveWith(
+          (states) {
+        if (states.contains(MaterialState.selected)) {
+          return Color(0xFF0085fb);
+        } else {
+          return Color(0x8a000000);
+        }
+      },
+    ),
+  ),
 );
 
 // Color(0xFF121212) values are tbd
@@ -304,6 +315,11 @@ final ThemeData darkTheme = ThemeData(
   textButtonTheme: TextButtonThemeData(),
   outlinedButtonTheme: OutlinedButtonThemeData(),
   elevatedButtonTheme: ElevatedButtonThemeData(),
+  radioTheme: RadioThemeData(
+    fillColor: MaterialStateProperty.resolveWith((states) {
+      return Colors.white;
+    }),
+  ),
 );
 
 final VendorTheme bitrefill = VendorTheme(
