@@ -1,3 +1,5 @@
+import 'package:email_validator/email_validator.dart';
+
 RegExp _lnurlPrefix = new RegExp(",*?((lnurl)([0-9]{1,}[a-z0-9]+){1})");
 String _lightningProtoclPrefix = "lightning:";
 
@@ -19,21 +21,10 @@ bool isLNURL(String url) {
 }
 
 bool isLightningAddress(String email) {
-    // This is just a normal e-mail address.
-    // Ref. https://github.com/andrerfneves/lightning-address/blob/master/DIY.md
+  // This is just a normal e-mail address.
+  // Ref. https://github.com/andrerfneves/lightning-address/blob/master/DIY.md
 
-    var result = false;
-    if (email.isNotEmpty) {
-        print('isLightningAddress: testing $email');
-
-        // source: https://www.w3resource.com/javascript/form/email-validation.php
-        final emailRegExp = new RegExp(
-                r'^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$', caseSensitive : false);
-        final match = emailRegExp.matchAsPrefix(email);
-        result = (match != null) && ((match.end - match.start) == email.length);
-
-    }
-
-    print('isLightningAddress: $result');
-    return result;
+  var result = EmailValidator.validate(email);
+  print('isLightningAddress: $result');
+  return result;
 }
