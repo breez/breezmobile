@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:breez/logger.dart';
 import 'package:breez/services/breezlib/breez_bridge.dart';
 import 'package:breez/services/breezlib/data/rpc.pbserver.dart';
 import 'package:breez/services/injector.dart';
@@ -37,6 +38,7 @@ class LNUrlBloc with AsyncActionsHandler {
   }
 
   listenLNUrl() {
+    log.info('listenLNUrl');
     if (_lnUrlStreamController == null) {
       _lnUrlStreamController = StreamController.broadcast();
       final injector = ServiceInjector();
@@ -44,7 +46,11 @@ class LNUrlBloc with AsyncActionsHandler {
         injector.nfc.receivedLnLinks(),
         injector.lightningLinks.linksNotifications,
         _lnurlInputController.stream,
-        injector.device.distinctClipboardStream,
+
+        // Process lightning-addresses in the clipboard only when the user manually 
+        // pastes them in and they show up in _lnurlInputController.stream.
+        injector.device.distinctClipboardStream
+            .where((l) => !isLightningAddress(l)),
       ])
           .where((l) => l != null)
           .map((l) => l.toLowerCase())
