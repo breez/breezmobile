@@ -306,10 +306,6 @@ List<Widget> _getSinglePaymentInfoDetails(PaymentInfo paymentInfo) {
         ? Container()
         : ShareablePaymentRow(
             title: "Node ID", sharedValue: paymentInfo.destination),
-    paymentInfo.paymentHash == null || paymentInfo.paymentHash.isEmpty
-        ? Container()
-        : ShareablePaymentRow(
-            title: "Transaction Hash", sharedValue: paymentInfo.paymentHash),
     paymentInfo.redeemTxID == null || paymentInfo.redeemTxID.isEmpty
         ? Container()
         : ShareablePaymentRow(
