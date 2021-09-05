@@ -4374,6 +4374,7 @@ class LNURLPayResponse1 extends $pb.GeneratedMessage {
     ..aOS(8, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'comment')
     ..aOS(9, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'host')
     ..aInt64(10, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'commentAllowed', protoName: 'commentAllowed')
+    ..aOS(11, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'lightningAddress')
     ..hasRequiredFields = false
   ;
 
@@ -4389,6 +4390,7 @@ class LNURLPayResponse1 extends $pb.GeneratedMessage {
     $core.String comment,
     $core.String host,
     $fixnum.Int64 commentAllowed,
+    $core.String lightningAddress,
   }) {
     final _result = create();
     if (callback != null) {
@@ -4420,6 +4422,9 @@ class LNURLPayResponse1 extends $pb.GeneratedMessage {
     }
     if (commentAllowed != null) {
       _result.commentAllowed = commentAllowed;
+    }
+    if (lightningAddress != null) {
+      _result.lightningAddress = lightningAddress;
     }
     return _result;
   }
@@ -4527,6 +4532,15 @@ class LNURLPayResponse1 extends $pb.GeneratedMessage {
   $core.bool hasCommentAllowed() => $_has(9);
   @$pb.TagNumber(10)
   void clearCommentAllowed() => clearField(10);
+
+  @$pb.TagNumber(11)
+  $core.String get lightningAddress => $_getSZ(10);
+  @$pb.TagNumber(11)
+  set lightningAddress($core.String v) { $_setString(10, v); }
+  @$pb.TagNumber(11)
+  $core.bool hasLightningAddress() => $_has(10);
+  @$pb.TagNumber(11)
+  void clearLightningAddress() => clearField(11);
 }
 
 class SuccessAction extends $pb.GeneratedMessage {

@@ -57,11 +57,12 @@ dependencies:
   url_launcher: ^6.0.4
   webview_flutter: ^2.0.8
   webdav_client: ^1.0.0
+  email_validator: ^2.0.1
 
   anytime:
     git:
       url: https://github.com/breez/anytime_podcast_player.git
-      ref: e33944b83b42aa3eb9ccd66ee0247125a28c2de1
+      ref: fa6974f134196d21cdf06303d3c42e64c9857526
   flutter_typeahead:
     git:
       url: https://github.com/breez/flutter_typeahead.git

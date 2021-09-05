@@ -1,6 +1,5 @@
 import 'dart:async';
 import 'dart:convert';
-import 'dart:math';
 import 'package:anytime/bloc/podcast/audio_bloc.dart';
 import 'package:anytime/bloc/settings/settings_bloc.dart';
 import 'package:anytime/entities/episode.dart';
@@ -33,6 +32,7 @@ class PodcastPaymentsBloc with AsyncActionsHandler {
   final UserProfileBloc userProfile;
 
   final _paymentEventsController = StreamController<PaymentEvent>.broadcast();
+
   Stream<PaymentEvent> get paymentEventsStream =>
       _paymentEventsController.stream;
 
@@ -68,7 +68,7 @@ class PodcastPaymentsBloc with AsyncActionsHandler {
       final value = await _getLightningPaymentValue(currentEpisode);
       if (value != null) {
         _payRecipients(currentEpisode, value.recipients, action.sats,
-            boost: true);
+            boost: true, boostMessage: action.boostMessage);
       }
     }
   }
@@ -153,7 +153,7 @@ class PodcastPaymentsBloc with AsyncActionsHandler {
 
   void _payRecipients(
       Episode episode, List<ValueDestination> recipients, int total,
-      {bool boost = false}) async {
+      {bool boost = false, String boostMessage = ""}) async {
     if (breezReceiverNode == null) {
       try {
         breezReceiverNode = await _breezLib.receiverNode();
@@ -240,7 +240,9 @@ class PodcastPaymentsBloc with AsyncActionsHandler {
                     episode: episode,
                     position: position,
                     customKey: customKey,
-                    customValue: customValue))
+                    customValue: customValue,
+                    boostMessage: boostMessage,
+                    msatTotal: total * 1000))
             .then((payResponse) async {
           if (payResponse.paymentError?.isNotEmpty == true) {
             if (!boost) {
@@ -324,8 +326,10 @@ class PodcastPaymentsBloc with AsyncActionsHandler {
       {bool boost = false,
       String customKey,
       String customValue,
+      String boostMessage,
       Episode episode,
-      PositionState position}) {
+      PositionState position,
+      int msatTotal}) {
     var tlv = Map<String, dynamic>();
     tlv["podcast"] = _getPodcastTitle(episode);
     tlv["episode"] = episode.title;
@@ -333,6 +337,8 @@ class PodcastPaymentsBloc with AsyncActionsHandler {
     tlv["time"] = _formatDuration(position.position);
     tlv["feedID"] = _getPodcastIndexID(episode);
     tlv["app_name"] = "Breez";
+    tlv["value_msat_total"] = msatTotal.toString();
+    if (boost && boostMessage.isNotEmpty) tlv["message"] = boostMessage;
     var encoded = json.encode(tlv);
     var records = Map<Int64, String>();
     records[Int64(7629169)] = encoded;
@@ -417,6 +423,7 @@ class ValueModel {
         method: map['method'] as String,
         suggested: map['suggested'] as String);
   }
+
   Map<String, dynamic> toJson() {
     return <String, dynamic>{
       'type': type,

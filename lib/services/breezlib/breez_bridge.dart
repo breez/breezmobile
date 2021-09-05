@@ -138,7 +138,7 @@ class BreezBridge {
   Future<LNUrlResponse> fetchLNUrl(String lnurl) {
     var result = _invokeMethodImmediate("fetchLnurl", {"argument": lnurl})
         .then((result) => LNUrlResponse()..mergeFromBuffer(result ?? []));
-    logger.log.info("fetchLNUrl: ${result}");
+    logger.log.info("fetchLNUrl");
     return result;
   }
 

@@ -155,7 +155,7 @@ class SecurityPageState extends State<SecurityPage>
     _tiles
       ..add(Divider())
       ..add(_buildBackupProviderTitle(securityModel, backupSettings));
-    if (backupSettings.backupProvider.name ==
+    if (backupSettings.backupProvider?.name ==
         BackupSettings.remoteServerBackupProvider.name) {
       _tiles
         ..add(Divider())

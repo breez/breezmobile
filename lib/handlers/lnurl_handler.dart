@@ -94,7 +94,8 @@ class LNURLHandler {
       });
 
       Navigator.of(context).push(FadeInRoute(
-        builder: (_) => LNURLFetchInvoicePage(response),
+        builder: (_) =>
+            withBreezTheme(context, LNURLFetchInvoicePage(response)),
       ));
     } else {
       throw "Unsupported LNURL";

@@ -625,6 +625,7 @@ const LNURLPayResponse1$json = const {
     const {'1': 'comment', '3': 8, '4': 1, '5': 9, '10': 'comment'},
     const {'1': 'host', '3': 9, '4': 1, '5': 9, '10': 'host'},
     const {'1': 'commentAllowed', '3': 10, '4': 1, '5': 3, '10': 'commentAllowed'},
+    const {'1': 'lightning_address', '3': 11, '4': 1, '5': 9, '10': 'lightningAddress'},
   ],
 };
 

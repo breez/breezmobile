@@ -96,18 +96,26 @@ class LNURLFetchInvoicePageState extends State<LNURLFetchInvoicePage> {
     LNUrlBloc lnurlBloc = AppBlocsProvider.of<LNUrlBloc>(context);
 
     /*
-        4. `LN WALLET` displays a payment dialog where user can specify an exact sum to be sent which would be bounded by:
+         4. `LN WALLET` displays a payment dialog where user can specify an exact sum to be sent which would be bounded by:
 
-	```
-	max can send = min(maxSendable, local estimation of how much can be sent from wallet)
+         ```
+         max can send = min(maxSendable, local estimation of how much can be sent from wallet)
 
-	min can send = max(minSendable, local minimal value allowed by wallet)
-	```
-	Additionally, a payment dialog must include:
-	- Domain name extracted from `LNURL` query string.
-	- A way to view the metadata sent of `text/plain` format.
-	- A text input where user can enter a `comment` string (max character count is equal or less than `commentAllowed` value)
-    */
+         min can send = max(minSendable, local minimal value allowed by wallet)
+         ```
+         Additionally, a payment dialog must include:
+         - Domain name extracted from `LNURL` query string.
+         - A way to view the metadata sent of `text/plain` format.
+         - A text input where user can enter a `comment` string (max character count is equal or less than `commentAllowed` value)
+         */
+
+    var payee = "";
+    if (_payFetchResponse != null) {
+      payee = _payFetchResponse.lightningAddress;
+      if (payee.isEmpty) {
+        payee = _payFetchResponse.host;
+      }
+    }
 
     return Scaffold(
       key: _scaffoldKey,
@@ -139,8 +147,7 @@ class LNURLFetchInvoicePageState extends State<LNURLFetchInvoicePage> {
         textTheme: Theme.of(context).appBarTheme.textTheme,
         backgroundColor: Theme.of(context).canvasColor,
         leading: backBtn.BackButton(),
-        actions: <Widget>[], // FIXME: Should we have anything here?
-        title: Text("Pay to ${_payFetchResponse?.host ?? ""}",
+        title: Text('Pay to $payee',
             style: Theme.of(context).appBarTheme.textTheme.headline6),
         elevation: 0.0,
       ),
@@ -263,6 +270,9 @@ class LNURLFetchInvoicePageState extends State<LNURLFetchInvoicePage> {
   void applyPayFetchResponse(PayFetchResponse response, AccountModel account) {
     _payFetchResponse = response;
     _commentController.text = response.comment;
+    if (response.minAmount == response.maxAmount) {
+      _amountController.text = "${response.minAmount}";
+    }
   }
 
   String _getMetadataText(List<LNUrlPayMetadata> metadata) {

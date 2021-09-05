@@ -236,7 +236,18 @@ class UserProfileBloc {
   }
 
   Future _validatePinCode(ValidatePinCode action) async {
-    var pinCode = await _secureStorage.read(key: 'pinCode');
+    var pinCode;
+    try {
+      pinCode = await _secureStorage.read(key: 'pinCode');
+    } catch (e) {
+      //  This is a temporary workaround for flutter_secure_storage issues
+      //  on apps published in Google Play for Android devices
+      if(e.toString().contains("java.lang.NullPointerException") && Platform.isAndroid){
+        action.resolve(true);
+        return;
+      }
+    }
+
     if (pinCode != action.enteredPin) {
       throw Exception("Incorrect PIN");
     }
