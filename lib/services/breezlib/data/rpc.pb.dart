@@ -4329,7 +4329,7 @@ class LNURLPayResponse1 extends $pb.GeneratedMessage {
     ..aOS(7, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'fromNodes')
     ..aOS(8, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'comment')
     ..aOS(9, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'host')
-    ..aInt64(10, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'commentAllowed', protoName: 'commentAllowed')
+    ..aInt64(10, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'commentAllowed')
     ..aOS(11, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'lightningAddress')
     ..hasRequiredFields = false
   ;
@@ -4625,6 +4625,7 @@ class LNUrlPayInfo extends $pb.GeneratedMessage {
     ..aOS(5, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'invoiceDescription')
     ..pc<LNUrlPayMetadata>(6, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'metadata', $pb.PbFieldType.PM, subBuilder: LNUrlPayMetadata.create)
     ..aOS(7, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'host')
+    ..aOS(8, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'lightningAddress')
     ..hasRequiredFields = false
   ;
 
@@ -4637,6 +4638,7 @@ class LNUrlPayInfo extends $pb.GeneratedMessage {
     $core.String? invoiceDescription,
     $core.Iterable<LNUrlPayMetadata>? metadata,
     $core.String? host,
+    $core.String? lightningAddress,
   }) {
     final _result = create();
     if (paymentHash != null) {
@@ -4659,6 +4661,9 @@ class LNUrlPayInfo extends $pb.GeneratedMessage {
     }
     if (host != null) {
       _result.host = host;
+    }
+    if (lightningAddress != null) {
+      _result.lightningAddress = lightningAddress;
     }
     return _result;
   }
@@ -4741,6 +4746,15 @@ class LNUrlPayInfo extends $pb.GeneratedMessage {
   $core.bool hasHost() => $_has(6);
   @$pb.TagNumber(7)
   void clearHost() => clearField(7);
+
+  @$pb.TagNumber(8)
+  $core.String get lightningAddress => $_getSZ(7);
+  @$pb.TagNumber(8)
+  set lightningAddress($core.String v) { $_setString(7, v); }
+  @$pb.TagNumber(8)
+  $core.bool hasLightningAddress() => $_has(7);
+  @$pb.TagNumber(8)
+  void clearLightningAddress() => clearField(8);
 }
 
 class LNUrlPayInfoList extends $pb.GeneratedMessage {
