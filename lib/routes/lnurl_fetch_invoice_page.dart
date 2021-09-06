@@ -202,10 +202,12 @@ class LNURLFetchInvoicePageState extends State<LNURLFetchInvoicePage> {
                             return null;
                           },
                           style: theme.FieldTextStyle.textStyle),
-                      Text(
-                          "Enter an amount between ${acc.currency.format(widget.payFetchResponse.minAmount)} and ${acc.currency.format(widget.payFetchResponse.maxAmount)}",
-                          textAlign: TextAlign.left,
-                          style: theme.FieldTextStyle.labelStyle),
+                      Padding(
+                              padding: EdgeInsets.only(top: 8),
+                              child: Text(
+                                      "Enter an amount between ${acc.currency.format(widget.payFetchResponse.minAmount)} and ${acc.currency.format(widget.payFetchResponse.maxAmount)}",
+                                      textAlign: TextAlign.left,
+                                      style: theme.FieldTextStyle.labelStyle)),
                       Container(
                         width: MediaQuery.of(context).size.width,
                         height: 48,
