@@ -804,12 +804,13 @@ const LNURLPayResponse1$json = const {
     const {'1': 'from_nodes', '3': 7, '4': 1, '5': 9, '10': 'fromNodes'},
     const {'1': 'comment', '3': 8, '4': 1, '5': 9, '10': 'comment'},
     const {'1': 'host', '3': 9, '4': 1, '5': 9, '10': 'host'},
-    const {'1': 'commentAllowed', '3': 10, '4': 1, '5': 3, '10': 'commentAllowed'},
+    const {'1': 'comment_allowed', '3': 10, '4': 1, '5': 3, '10': 'commentAllowed'},
+    const {'1': 'lightning_address', '3': 11, '4': 1, '5': 9, '10': 'lightningAddress'},
   ],
 };
 
 /// Descriptor for `LNURLPayResponse1`. Decode as a `google.protobuf.DescriptorProto`.
-final $typed_data.Uint8List lNURLPayResponse1Descriptor = $convert.base64Decode('ChFMTlVSTFBheVJlc3BvbnNlMRIaCghjYWxsYmFjaxgBIAEoCVIIY2FsbGJhY2sSHQoKbWluX2Ftb3VudBgCIAEoA1IJbWluQW1vdW50Eh0KCm1heF9hbW91bnQYAyABKANSCW1heEFtb3VudBIyCghtZXRhZGF0YRgEIAMoCzIWLmRhdGEuTE5VcmxQYXlNZXRhZGF0YVIIbWV0YWRhdGESEAoDdGFnGAUgASgJUgN0YWcSFgoGYW1vdW50GAYgASgEUgZhbW91bnQSHQoKZnJvbV9ub2RlcxgHIAEoCVIJZnJvbU5vZGVzEhgKB2NvbW1lbnQYCCABKAlSB2NvbW1lbnQSEgoEaG9zdBgJIAEoCVIEaG9zdBImCg5jb21tZW50QWxsb3dlZBgKIAEoA1IOY29tbWVudEFsbG93ZWQ=');
+final $typed_data.Uint8List lNURLPayResponse1Descriptor = $convert.base64Decode('ChFMTlVSTFBheVJlc3BvbnNlMRIaCghjYWxsYmFjaxgBIAEoCVIIY2FsbGJhY2sSHQoKbWluX2Ftb3VudBgCIAEoA1IJbWluQW1vdW50Eh0KCm1heF9hbW91bnQYAyABKANSCW1heEFtb3VudBIyCghtZXRhZGF0YRgEIAMoCzIWLmRhdGEuTE5VcmxQYXlNZXRhZGF0YVIIbWV0YWRhdGESEAoDdGFnGAUgASgJUgN0YWcSFgoGYW1vdW50GAYgASgEUgZhbW91bnQSHQoKZnJvbV9ub2RlcxgHIAEoCVIJZnJvbU5vZGVzEhgKB2NvbW1lbnQYCCABKAlSB2NvbW1lbnQSEgoEaG9zdBgJIAEoCVIEaG9zdBInCg9jb21tZW50X2FsbG93ZWQYCiABKANSDmNvbW1lbnRBbGxvd2VkEisKEWxpZ2h0bmluZ19hZGRyZXNzGAsgASgJUhBsaWdodG5pbmdBZGRyZXNz');
 @$core.Deprecated('Use successActionDescriptor instead')
 const SuccessAction$json = const {
   '1': 'SuccessAction',
@@ -836,11 +837,12 @@ const LNUrlPayInfo$json = const {
     const {'1': 'invoice_description', '3': 5, '4': 1, '5': 9, '10': 'invoiceDescription'},
     const {'1': 'metadata', '3': 6, '4': 3, '5': 11, '6': '.data.LNUrlPayMetadata', '10': 'metadata'},
     const {'1': 'host', '3': 7, '4': 1, '5': 9, '10': 'host'},
+    const {'1': 'lightning_address', '3': 8, '4': 1, '5': 9, '10': 'lightningAddress'},
   ],
 };
 
 /// Descriptor for `LNUrlPayInfo`. Decode as a `google.protobuf.DescriptorProto`.
-final $typed_data.Uint8List lNUrlPayInfoDescriptor = $convert.base64Decode('CgxMTlVybFBheUluZm8SIAoLcGF5bWVudEhhc2gYASABKAlSC3BheW1lbnRIYXNoEhgKB2ludm9pY2UYAiABKAlSB2ludm9pY2USOgoOc3VjY2Vzc19hY3Rpb24YAyABKAsyEy5kYXRhLlN1Y2Nlc3NBY3Rpb25SDXN1Y2Nlc3NBY3Rpb24SGAoHY29tbWVudBgEIAEoCVIHY29tbWVudBIvChNpbnZvaWNlX2Rlc2NyaXB0aW9uGAUgASgJUhJpbnZvaWNlRGVzY3JpcHRpb24SMgoIbWV0YWRhdGEYBiADKAsyFi5kYXRhLkxOVXJsUGF5TWV0YWRhdGFSCG1ldGFkYXRhEhIKBGhvc3QYByABKAlSBGhvc3Q=');
+final $typed_data.Uint8List lNUrlPayInfoDescriptor = $convert.base64Decode('CgxMTlVybFBheUluZm8SIAoLcGF5bWVudEhhc2gYASABKAlSC3BheW1lbnRIYXNoEhgKB2ludm9pY2UYAiABKAlSB2ludm9pY2USOgoOc3VjY2Vzc19hY3Rpb24YAyABKAsyEy5kYXRhLlN1Y2Nlc3NBY3Rpb25SDXN1Y2Nlc3NBY3Rpb24SGAoHY29tbWVudBgEIAEoCVIHY29tbWVudBIvChNpbnZvaWNlX2Rlc2NyaXB0aW9uGAUgASgJUhJpbnZvaWNlRGVzY3JpcHRpb24SMgoIbWV0YWRhdGEYBiADKAsyFi5kYXRhLkxOVXJsUGF5TWV0YWRhdGFSCG1ldGFkYXRhEhIKBGhvc3QYByABKAlSBGhvc3QSKwoRbGlnaHRuaW5nX2FkZHJlc3MYCCABKAlSEGxpZ2h0bmluZ0FkZHJlc3M=');
 @$core.Deprecated('Use lNUrlPayInfoListDescriptor instead')
 const LNUrlPayInfoList$json = const {
   '1': 'LNUrlPayInfoList',
