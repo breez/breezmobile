@@ -235,7 +235,7 @@ class QrActionButton extends StatelessWidget {
                 style: Theme.of(context).primaryTextTheme.button,
               ),
               onPressed: () async {
-                await launch(url);
+                await launch(url, forceSafariVC: false);
                 Navigator.of(context).pop();
               },
             ),
