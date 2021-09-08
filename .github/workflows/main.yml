@@ -64,7 +64,7 @@ jobs:
           PATH=$PATH:$GOPATH/bin gomobile bind -target=ios/arm64 -tags="ios experimental signrpc walletrpc chainrpc invoicesrpc routerrpc backuprpc peerrpc submarineswaprpc breezbackuprpc" -o build/ios/bindings.framework github.com/breez/breez/bindings
           popd
           brew install ideviceinstaller ios-deploy
-          git clone https://github.com/flutter/flutter.git -b stable
+          git clone --branch 2.2.3 https://github.com/flutter/flutter.git
           
           cp -r $GOPATH/src/github.com/breez/breez/build/ios/bindings.framework $GITHUB_WORKSPACE/ios/bindings.framework
           rm -rf $GITHUB_WORKSPACE/conf
@@ -74,8 +74,7 @@ jobs:
           ls $GITHUB_WORKSPACE/conf
           cat $GITHUB_WORKSPACE/conf/breez.conf
           sftp builderfiles@packages.breez.technology:config/conf/GoogleService-Info.plist $GITHUB_WORKSPACE/ios/Runner/GoogleService-Info.plist
-
-          ./flutter/bin/flutter upgrade
+          
           ./flutter/bin/flutter clean
           ./flutter/bin/flutter build ios --no-codesign --no-tree-shake-icons
     
