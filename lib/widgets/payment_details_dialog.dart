@@ -250,8 +250,14 @@ Future<Null> showPaymentDetailsDialog(
       ShareablePaymentRow(title: "Comment", sharedValue: paymentInfo.lnurlPayInfo.comment),
           if (paymentInfo.type == PaymentType.SENT 
               && paymentInfo.lnurlPayInfo != null) 
-            ..._getLNUrlSuccessActionForPayment(
-                context, paymentInfo.lnurlPayInfo?.successAction),
+
+            ...<Widget>[
+                if( paymentInfo.lnurlPayInfo.lightningAddress.isNotEmpty)
+                    ShareablePaymentRow(title: "Lightning Address", sharedValue: paymentInfo.lnurlPayInfo.lightningAddress),
+                ..._getLNUrlSuccessActionForPayment(
+                context, paymentInfo.lnurlPayInfo?.successAction)
+            ],
+
           ..._getPaymentInfoDetails(paymentInfo),
         ],
       ),
