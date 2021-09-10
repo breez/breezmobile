@@ -43,7 +43,8 @@ class PaymentOptions {
         'customSatsPerMinValue': customSatsPerMinValue,
       };
 
-  List get presetBoostAmountsList => [100, 500, 1000, 5000, 10000, 50000];
+  List<int> get presetBoostAmountsList =>
+      [50, 100, 500, 1000, 5000, 10000, 50000];
 
   List get boostAmountList {
     List boostAmountList = presetBoostAmountsList;
@@ -55,7 +56,7 @@ class PaymentOptions {
     ];
   }
 
-  List get presetSatsPerMinuteAmountsList =>
+  List<int> get presetSatsPerMinuteAmountsList =>
       [0, 10, 25, 50, 100, 250, 500, 1000];
 
   List get satsPerMinuteIntervalsList {
