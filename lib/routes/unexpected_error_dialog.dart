@@ -9,7 +9,10 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:share_extend/share_extend.dart';
 
-void listenUnexpectedError(BuildContext context, AccountBloc accountBloc) {
+void listenUnexpectedError(
+    BuildContext context, AccountBloc accountBloc) async {
+  final torEnabled = await ServiceInjector().breezBridge.isTorActive();
+
   accountBloc.lightningDownStream.listen((allowRetry) {
     promptError(
       context,
@@ -28,6 +31,32 @@ void listenUnexpectedError(BuildContext context, AccountBloc accountBloc) {
               TextSpan(
                   text: "• Checking the signal in your area\n",
                   style: Theme.of(context).dialogTheme.contentTextStyle),
+              if (torEnabled) ...<TextSpan>[
+                TextSpan(
+                    text: "• ",
+                    style: Theme.of(context).dialogTheme.contentTextStyle),
+                TextSpan(
+                    text: "Disable ",
+                    style: theme.blueLinkStyle,
+                    recognizer: TapGestureRecognizer()
+                      ..onTap = () async {
+                        _promptForRestart(context).then((ok) async {
+                          if (ok) {
+                            await ServiceInjector()
+                                .breezBridge
+                                .enableOrDisableTor(false);
+                            ResetNetwork resetAction = ResetNetwork();
+                            accountBloc.userActionsSink.add(resetAction);
+                            await resetAction.future;
+                            Navigator.pop(context);
+                            accountBloc.userActionsSink.add(RestartDaemon());
+                          }
+                        });
+                      }),
+                TextSpan(
+                    text: "Tor\n",
+                    style: Theme.of(context).dialogTheme.contentTextStyle)
+              ],
               TextSpan(
                   text: "• ",
                   style: Theme.of(context).dialogTheme.contentTextStyle),

@@ -19,10 +19,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.ServiceConnection;
-import android.os.Handler;
-import android.os.HandlerThread;
 import android.os.IBinder;
-import android.os.Looper;
 import android.util.Log;
 import java.util.concurrent.Executor;
 
@@ -37,10 +34,9 @@ public class Tor implements FlutterPlugin, MethodCallHandler {
 
     private static final String TOR_CHANNEL = "com.breez.client/tor";
     private static final String TAG = "BREEZUI";
-    private Executor uiThreadExecutor;
+    private Executor uiThreadExecutor;  // FIXME(nochiel) We don't need to use this as this all runs in the UI thread.
 
     private static TorService torService;
-    private static boolean torIsBound;      // FIXME(nochiel) Delete this if we don't use it.
 
     private Map<String, String> torConfig;
     private FlutterPluginBinding binding;
@@ -182,14 +178,12 @@ public class Tor implements FlutterPlugin, MethodCallHandler {
             public void onServiceConnected(ComponentName className, IBinder service) {
 
                 torService = ((TorService.LocalBinder) service).getService();
-                torIsBound = true;
                 assert(torService != null);
                 Log.i(TAG, "Tor.java: onServiceConnected.");
 
             }
 
             public void onServiceDisconnected(ComponentName className) {
-                torIsBound = false;
                 torService = null;
                 Log.i(TAG, "Tor.java: onServiceDisconnected.");
             }
