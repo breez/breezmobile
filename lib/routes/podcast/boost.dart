@@ -70,6 +70,20 @@ class _BoostWidgetState extends State<BoostWidget> {
                       },
                     ),
                   ),
+                  onTap: () {
+                    var boostAmount =
+                        widget.userModel.paymentOptions.preferredBoostValue;
+                    if (acc.data.balance.toInt() <= boostAmount) {
+                      showFlushbar(context,
+                          message:
+                              "You don't have enough funds to complete this payment.");
+                      return;
+                    }
+                    widget.onBoost(
+                      widget.userModel.paymentOptions.boostAmountList
+                          .elementAt(selectedIndex),
+                    );
+                  },
                   child: TextButton.icon(
                     style: TextButton.styleFrom(
                       padding: EdgeInsets.symmetric(vertical: 8, horizontal: 8),
@@ -105,20 +119,6 @@ class _BoostWidgetState extends State<BoostWidget> {
                         maxLines: 1,
                       ),
                     ),
-                    onPressed: () {
-                      var boostAmount =
-                          widget.userModel.paymentOptions.preferredBoostValue;
-                      if (acc.data.balance.toInt() <= boostAmount) {
-                        showFlushbar(context,
-                            message:
-                                "You don't have enough funds to complete this payment.");
-                        return;
-                      }
-                      widget.onBoost(
-                        widget.userModel.paymentOptions.boostAmountList
-                            .elementAt(selectedIndex),
-                      );
-                    },
                   ),
                 ),
               ),
