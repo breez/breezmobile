@@ -311,7 +311,7 @@ class PodcastPaymentsBloc with AsyncActionsHandler {
     tlv["feedID"] = _getPodcastIndexID(episode);
     tlv["app_name"] = "Breez";
     tlv["value_msat_total"] = msatTotal.toString();
-    if (boost && boostMessage.isNotEmpty) tlv["message"] = boostMessage;
+    if (boost && boostMessage != null) tlv["message"] = boostMessage;
     var encoded = json.encode(tlv);
     var records = Map<Int64, String>();
     records[Int64(7629169)] = encoded;
