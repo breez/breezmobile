@@ -678,7 +678,7 @@ class HomeState extends State<Home> with WidgetsBindingObserver {
         return route.settings.name != "/connect_to_pay";
       });
       var ctpRoute = FadeInRoute(
-          builder: (_) => ConnectToPayPage(session),
+          builder: (_) => withBreezTheme(context, ConnectToPayPage(session)),
           settings: RouteSettings(name: "/connect_to_pay"));
       Navigator.of(context).push(ctpRoute);
     }, (e) {
