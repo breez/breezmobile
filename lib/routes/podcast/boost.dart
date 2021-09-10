@@ -50,6 +50,7 @@ class _BoostWidgetState extends State<BoostWidget> {
               Container(
                 width: 88,
                 child: GestureDetector(
+                  behavior: HitTestBehavior.translucent,
                   onLongPress: () => showDialog(
                     useRootNavigator: true,
                     context: context,
