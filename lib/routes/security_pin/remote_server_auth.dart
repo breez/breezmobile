@@ -12,9 +12,8 @@ import 'package:breez/widgets/route.dart';
 import 'package:breez/widgets/single_button_bottom_bar.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:validators/validators.dart';
 import 'package:webdav_client/webdav_client.dart' as webdav;
-import 'package:path/path.dart' as p;
-import '../backup_in_progress_dialog.dart';
 
 Future<RemoteServerAuthData> promptAuthData(BuildContext context,
     {restore = false}) {
@@ -116,15 +115,11 @@ class RemoteServerAuthPageState extends State<RemoteServerAuthPage> {
                                   minLines: 1,
                                   maxLines: 1,
                                   validator: (value) {
-                                    var urlPattern =
-                                        r"(https)://([-A-Z0-9.]+)(/[-A-Z0-9+&@#/%=~_|!:,.;]*)?(\?[A-Z0-9+&@#/%=~_|!:‌​,.;]*)?";
-                                    var match = new RegExp(urlPattern,
-                                            caseSensitive: false)
-                                        .firstMatch(value);
-                                    if (!failDiscoverURL &&
-                                        match != null &&
-                                        match.start == 0 &&
-                                        match.end == value.length) {
+                                    var validURL = isURL(value,
+                                        protocols: ['https'],
+                                        requireProtocol: true,
+                                        allowUnderscore: true);
+                                    if (!failDiscoverURL && validURL) {
                                       return null;
                                     }
                                     if (!value.startsWith("https://")) {
@@ -133,8 +128,7 @@ class RemoteServerAuthPageState extends State<RemoteServerAuthPage> {
                                     return "Invalid URL";
                                   },
                                   decoration: InputDecoration(
-                                      hintText:
-                                          "https://example.nextcloud.com",
+                                      hintText: "https://example.nextcloud.com",
                                       labelText:
                                           "Server URL (Nextcloud, WebDav)"),
                                   onEditingComplete: () =>

@@ -58,6 +58,7 @@ dependencies:
   webview_flutter: ^2.0.8
   webdav_client: ^1.0.0
   email_validator: ^2.0.1
+  validators: ^3.0.0
 
   anytime:
     git:
