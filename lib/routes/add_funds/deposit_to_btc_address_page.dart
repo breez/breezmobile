@@ -127,7 +127,7 @@ class DepositToBTCAddressPageState extends State<DepositToBTCAddressPage> {
                     children: <Widget>[
                       Text(
                         "Send more than " +
-                            account.currency.format(response.minAllowedDeposit,
+                            account.currency.format(minAllowedDeposit(response, lspStatus.currentLSP),
                                 includeDisplayName: true) +
                             " and up to " +
                             account.currency.format(response.maxAllowedDeposit,
@@ -145,9 +145,17 @@ class DepositToBTCAddressPageState extends State<DepositToBTCAddressPage> {
     );
   }
 
+  Int64 minAllowedDeposit(AddFundResponse response,  LSPInfo lsp) {
+    var minFees = (lsp != null) ? (new Int64(lsp.channelMinimumFeeMsat)) ~/ 1000 : Int64(0);
+    if (minFees > response.minAllowedDeposit) {
+      return minFees;
+    }
+    return response.minAllowedDeposit;
+  }
+
   String formatFeeMessage(AccountModel acc, LSPInfo lsp) {
-    var minFees = (new Int64(lsp.channelMinimumFeeMsat)) ~/ 1000;
-    String minFeesMessage = (lsp != null && lsp.channelMinimumFeeMsat > 0) ? "with a minimum of ${acc.currency.format(minFees)} " : "";
+    var minFees = (lsp != null) ? (new Int64(lsp.channelMinimumFeeMsat)) ~/ 1000 : Int64(0);
+    String minFeesMessage = (minFees > 0) ? "with a minimum of ${acc.currency.format(minFees)} " : "";
     if (acc.connected) {
       var liquidity = acc.currency.format(acc.maxInboundLiquidity);
       return "A setup fee of ${lsp.channelFeePermyriad / 100}% ${minFeesMessage}will be applied for sending more than $liquidity.";

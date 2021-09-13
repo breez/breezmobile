@@ -101,7 +101,7 @@ class PaymentAdjustmentState extends State<PaymentAdjustment> {
                 Padding(
                   padding: const EdgeInsets.only(top: 10.0),
                   child: Text(
-                    "Send a one-time tip to a show's creators.",
+                    "Send a one-time tip to a show's creators. Long press to add a personalized message.",
                     style: TextStyle(color: Colors.white),
                   ),
                 ),
@@ -251,8 +251,9 @@ class PaymentAdjustmentState extends State<PaymentAdjustment> {
                         child: BoostWidget(
                           key: boostWidgetKey,
                           userModel: userModel,
-                          onBoost: (int boostAmount) {
-                            paymentsBloc.actionsSink.add(PayBoost(boostAmount));
+                          onBoost: (int boostAmount, {String boostMessage}) {
+                            paymentsBloc.actionsSink.add(PayBoost(boostAmount,
+                                boostMessage: boostMessage));
                           },
                           onChanged: (int boostAmount) {
                             userProfileBloc.userActionsSink.add(

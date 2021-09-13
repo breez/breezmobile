@@ -7,6 +7,7 @@ import 'package:breez/bloc/blocs_provider.dart';
 import 'package:breez/bloc/user_profile/breez_user_model.dart';
 import 'package:breez/bloc/user_profile/user_actions.dart';
 import 'package:breez/bloc/user_profile/user_profile_bloc.dart';
+import 'package:breez/routes/podcast/boost_message_dialog.dart';
 import 'package:breez/utils/min_font_size.dart';
 import 'package:breez/widgets/flushbar.dart';
 import 'package:flutter/cupertino.dart';
@@ -17,7 +18,7 @@ import 'custom_amount_dialog.dart';
 
 class BoostWidget extends StatefulWidget {
   final BreezUserModel userModel;
-  final ValueChanged<int> onBoost;
+  final Function(int total, {String boostMessage}) onBoost;
   final ValueChanged<int> onChanged;
 
   BoostWidget({Key key, this.userModel, this.onBoost, this.onChanged})
@@ -48,41 +49,29 @@ class _BoostWidgetState extends State<BoostWidget> {
             children: [
               Container(
                 width: 88,
-                child: TextButton.icon(
-                  style: TextButton.styleFrom(
-                    padding: EdgeInsets.symmetric(vertical: 8, horizontal: 8),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(6.0),
-                      side: BorderSide(
-                          color:
-                              Theme.of(context).brightness == Brightness.light
-                                  ? Color(0xFF0085fb)
-                                  : Colors.white70,
-                          width: 1.6),
+                child: GestureDetector(
+                  behavior: HitTestBehavior.translucent,
+                  onLongPress: () => showDialog(
+                    useRootNavigator: true,
+                    context: context,
+                    builder: (c) => BoostMessageDialog(
+                      (String boostMessage) {
+                        var boostAmount =
+                            widget.userModel.paymentOptions.preferredBoostValue;
+                        if (acc.data.balance.toInt() <= boostAmount) {
+                          showFlushbar(context,
+                              message:
+                                  "You don't have enough funds to complete this payment.");
+                          return;
+                        }
+                        widget.onBoost(
+                            widget.userModel.paymentOptions.boostAmountList
+                                .elementAt(selectedIndex),
+                            boostMessage: boostMessage);
+                      },
                     ),
                   ),
-                  icon: ImageIcon(
-                    AssetImage("src/icon/boost.png"),
-                    size: 20,
-                    color: Theme.of(context).appBarTheme.actionsIconTheme.color,
-                  ),
-                  label: Container(
-                    width: 44,
-                    child: AutoSizeText(
-                      "BOOST!",
-                      style: TextStyle(
-                        fontSize: 14,
-                        height: 1.2,
-                        letterSpacing: 0,
-                        fontWeight: FontWeight.w500,
-                        color: Theme.of(context).buttonColor,
-                      ),
-                      minFontSize: MinFontSize(context).minFontSize,
-                      stepGranularity: 0.1,
-                      maxLines: 1,
-                    ),
-                  ),
-                  onPressed: () {
+                  onTap: () {
                     var boostAmount =
                         widget.userModel.podcastPaymentOptions.preferredBoostValue;
                     if (acc.data.balance.toInt() <= boostAmount) {
@@ -96,6 +85,42 @@ class _BoostWidgetState extends State<BoostWidget> {
                           .elementAt(selectedIndex),
                     );
                   },
+                  child: TextButton.icon(
+                    style: TextButton.styleFrom(
+                      padding: EdgeInsets.symmetric(vertical: 8, horizontal: 8),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(6.0),
+                        side: BorderSide(
+                            color:
+                                Theme.of(context).brightness == Brightness.light
+                                    ? Color(0xFF0085fb)
+                                    : Colors.white70,
+                            width: 1.6),
+                      ),
+                    ),
+                    icon: ImageIcon(
+                      AssetImage("src/icon/boost.png"),
+                      size: 20,
+                      color:
+                          Theme.of(context).appBarTheme.actionsIconTheme.color,
+                    ),
+                    label: Container(
+                      width: 44,
+                      child: AutoSizeText(
+                        "BOOST!",
+                        style: TextStyle(
+                          fontSize: 14,
+                          height: 1.2,
+                          letterSpacing: 0,
+                          fontWeight: FontWeight.w500,
+                          color: Theme.of(context).buttonColor,
+                        ),
+                        minFontSize: MinFontSize(context).minFontSize,
+                        stepGranularity: 0.1,
+                        maxLines: 1,
+                      ),
+                    ),
+                  ),
                 ),
               ),
               Flexible(

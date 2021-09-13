@@ -276,7 +276,7 @@ class UserApp extends StatelessWidget { // ignore: must_be_immutable
                                       );
                                     case '/connect_to_pay':
                                       return FadeInRoute(
-                                        builder: (_) => ConnectToPayPage(null),
+                                        builder: (_) => withBreezTheme(context, ConnectToPayPage(null)),
                                         settings: settings,
                                       );
                                     case '/marketplace':

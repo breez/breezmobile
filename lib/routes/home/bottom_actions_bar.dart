@@ -80,7 +80,7 @@ class BottomActionsBar extends StatelessWidget {
                           iconAssetPath: "src/icon/paste.png",
                           enabled: account.connected),
                       title: Text(
-                        "Paste Invoice or Node ID",
+                        "Paste Invoice or ID",
                         style: theme.bottomSheetTextStyle,
                       ),
                       onTap: () async {
@@ -88,7 +88,8 @@ class BottomActionsBar extends StatelessWidget {
                         DecodedClipboardData clipboardData =
                             await snapshot.data;
                         if (clipboardData != null) {
-                          if (clipboardData.type == "lnurl") {
+                          if (clipboardData.type == "lnurl" ||
+                              clipboardData.type == "lightning-address") {
                             lnurlBloc.lnurlInputSink.add(clipboardData.data);
                           } else if (clipboardData.type == "invoice") {
                             invoiceBloc.decodeInvoiceSink
@@ -104,8 +105,8 @@ class BottomActionsBar extends StatelessWidget {
                               useRootNavigator: false,
                               context: context,
                               barrierDismissible: false,
-                              builder: (_) => EnterPaymentInfoDialog(
-                                  context, invoiceBloc, firstPaymentItemKey));
+                              builder: (_) => EnterPaymentInfoDialog(context,
+                                  invoiceBloc, lnurlBloc, firstPaymentItemKey));
                         }
                       },
                     ),

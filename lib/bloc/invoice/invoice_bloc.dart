@@ -12,6 +12,7 @@ import 'package:breez/services/nfc.dart';
 import 'package:breez/services/notifications.dart';
 import 'package:breez/utils/bip21.dart';
 import 'package:breez/utils/node_id.dart';
+import 'package:breez/utils/lnurl.dart';
 import 'package:fixnum/fixnum.dart';
 import 'package:rxdart/rxdart.dart';
 
@@ -78,9 +79,15 @@ class InvoiceBloc with AsyncActionsHandler {
         if (normalized.startsWith("lightning:")) {
           normalized = normalized.substring(10);
         }
+
         if (normalized.startsWith("lnurl")) {
           return DecodedClipboardData(clipboardData, "lnurl");
         }
+
+        if (isLightningAddress(normalized)) {
+          return DecodedClipboardData(clipboardData, "lightning-address");
+        }
+
         if (normalized.startsWith("ln")) {
           try {
             await _breezLib.getRelatedInvoice(clipboardData);

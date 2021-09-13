@@ -39,11 +39,11 @@ jobs:
       # Runs a set of commands using the runners shell
       - name: Run a multi-line script
         run: |          
-          curl -o golang https://dl.google.com/go/go1.15.8.darwin-amd64.tar.gz
-          mkdir go1.15.8
-          tar -C $(pwd)/go1.15.8 -xzf golang
-          export PATH=$(pwd)/go1.15.8/go/bin:$PATH
-          export GOROOT=$(pwd)/go1.15.8/go
+          curl -o golang https://dl.google.com/go/go1.16.7.darwin-amd64.tar.gz
+          mkdir go1.16.7
+          tar -C $(pwd)/go1.16.7 -xzf golang
+          export PATH=$(pwd)/go1.16.7/go/bin:$PATH
+          export GOROOT=$(pwd)/go1.16.7/go
           go version
           brew update
           brew install bazaar
@@ -64,7 +64,7 @@ jobs:
           PATH=$PATH:$GOPATH/bin gomobile bind -target=ios/arm64 -tags="ios experimental signrpc walletrpc chainrpc invoicesrpc routerrpc backuprpc peerrpc submarineswaprpc breezbackuprpc" -o build/ios/bindings.framework github.com/breez/breez/bindings
           popd
           brew install ideviceinstaller ios-deploy
-          git clone https://github.com/flutter/flutter.git -b stable
+          git clone --branch 2.2.3 https://github.com/flutter/flutter.git
           
           cp -r $GOPATH/src/github.com/breez/breez/build/ios/bindings.framework $GITHUB_WORKSPACE/ios/bindings.framework
           rm -rf $GITHUB_WORKSPACE/conf
@@ -74,8 +74,7 @@ jobs:
           ls $GITHUB_WORKSPACE/conf
           cat $GITHUB_WORKSPACE/conf/breez.conf
           sftp builderfiles@packages.breez.technology:config/conf/GoogleService-Info.plist $GITHUB_WORKSPACE/ios/Runner/GoogleService-Info.plist
-
-          ./flutter/bin/flutter upgrade
+          
           ./flutter/bin/flutter clean
           ./flutter/bin/flutter build ios --no-codesign --no-tree-shake-icons
     

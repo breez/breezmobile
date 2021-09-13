@@ -38,6 +38,7 @@ class PayFetchResponse {
   PayFetchResponse(this.response);
 
   String get host => response.host;
+  String get lightningAddress => response.lightningAddress;
   String get callback => response.callback;
   Int64 get minAmount => response.minAmount;
   Int64 get maxAmount => response.maxAmount;

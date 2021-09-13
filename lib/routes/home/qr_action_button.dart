@@ -20,6 +20,7 @@ import 'package:breez/widgets/loader.dart';
 import 'package:breez/widgets/route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class QrActionButton extends StatelessWidget {
   final AccountModel account;
@@ -92,6 +93,12 @@ class QrActionButton extends StatelessWidget {
                 ));
                 return;
               }
+
+              if (await canLaunch(scannedString)) {
+                _handleWebAddress(context, scannedString);
+                return;
+              }
+
               showFlushbar(context, message: "QR code cannot be processed.");
             }
           },
@@ -143,5 +150,98 @@ class QrActionButton extends StatelessWidget {
           Text("Failed to process link: " + err.toString(),
               style: Theme.of(context).dialogTheme.contentTextStyle));
     });
+  }
+
+  void _handleWebAddress(BuildContext context, String url) {
+    var dialogTheme = Theme.of(context).dialogTheme;
+    var size = MediaQuery.of(context).size;
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          scrollable: true,
+          title: Container(
+            height: 64.0,
+            padding: EdgeInsets.fromLTRB(24.0, 24.0, 24.0, 8.0),
+            child: Text(
+              "Open Link",
+              style: dialogTheme.titleTextStyle,
+              textAlign: TextAlign.center,
+            ),
+          ),
+          content: Container(
+            child: Padding(
+              padding: EdgeInsets.fromLTRB(16.0, 0.0, 16.0, 0.0),
+              child: Container(
+                width: size.width,
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  mainAxisSize: MainAxisSize.min,
+                  children: <Widget>[
+                    Text(
+                      url,
+                      style: dialogTheme.contentTextStyle.copyWith(
+                        fontWeight: FontWeight.bold,
+                      ),
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
+                      textAlign: TextAlign.center,
+                    ),
+                    SizedBox(
+                      width: 0.0,
+                      height: 16.0,
+                    ),
+                    Text(
+                      "Are you sure you want to open this link?",
+                      style: dialogTheme.contentTextStyle,
+                      textAlign: TextAlign.center,
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ),
+          actions: [
+            TextButton(
+              style: ButtonStyle(
+                overlayColor: MaterialStateProperty.resolveWith<Color>(
+                  (Set<MaterialState> states) {
+                    if (states.contains(MaterialState.pressed)) {
+                      return Colors.transparent;
+                    }
+                    return null; // Defer to the widget's default.
+                  },
+                ),
+              ),
+              child: Text(
+                "NO",
+                style: Theme.of(context).primaryTextTheme.button,
+              ),
+              onPressed: () => Navigator.of(context).pop(),
+            ),
+            TextButton(
+              style: ButtonStyle(
+                overlayColor: MaterialStateProperty.resolveWith<Color>(
+                  (Set<MaterialState> states) {
+                    if (states.contains(MaterialState.pressed)) {
+                      return Colors.transparent;
+                    }
+                    return null; // Defer to the widget's default.
+                  },
+                ),
+              ),
+              child: Text(
+                "YES",
+                style: Theme.of(context).primaryTextTheme.button,
+              ),
+              onPressed: () async {
+                await launch(url, forceSafariVC: false);
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
   }
 }
