@@ -18,9 +18,11 @@ public class NativeMethods {
 
 
 fileprivate let calls : Dictionary<String, BindingExecutor> = [
-    "start": EmptyArgsBindingExecutor(f: BindingsStart),
+    "start": SingleArgBindingExecutor(f: BindingsStart),
     "stop": VoidBindingExecutor(f: BindingsStop),
     "restartDaemon": EmptyArgsBindingExecutor(f: BindingsRestartDaemon),
+    "getTorActive": VoidBindingExecutor(f: BindingsGetTorActive),
+    "setTorActive": SingleArgBindingExecutor(f: BindingsSetTorActive),
     
     "lastSyncedHeaderTimestamp": VoidBindingExecutor(f: BindingsLastSyncedHeaderTimestamp),
     "addFundsInit": SingleArgBindingExecutor(f: BindingsAddFundsInit),

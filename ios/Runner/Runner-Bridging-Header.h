@@ -3,3 +3,6 @@
 //
 
 #import "GeneratedPluginRegistrant.h"
+
+// Tor
+#import "Tor/Tor.h"

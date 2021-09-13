@@ -113,7 +113,7 @@ class BreezBridge {
     logger.log.info("breez_bridge.dart: _start");
 
     return _invokeMethodImmediate(
-        "start", {"torConfig": torConfig?.writeToBuffer()}).then((_) {
+        "start", {"argument": torConfig?.writeToBuffer()}).then((_) {
       print(" breez bridge - start lightning finished");
     });
   }
@@ -682,6 +682,7 @@ class BreezBridge {
   }
 
   Future testBackupAuth(String provider, String authData) {
+      logger.log.info('breez_bridge.dart: testBackupAuth');
     return _methodChannel.invokeMethod(
         'testBackupAuth', {'provider': provider, 'authData': authData});
   }
