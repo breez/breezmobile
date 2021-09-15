@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:breez/bloc/blocs_provider.dart';
@@ -23,6 +24,19 @@ class SatsZones extends StatefulWidget {
 
 class _SatsZonesState extends State<SatsZones> {
   String currentZoneID;
+  SatsZonePaymentsBloc paymentsBloc;
+  UserProfileBloc userProfileBloc;
+  bool _isInit = false;
+
+  @override
+  void didChangeDependencies() {
+    if (!_isInit) {
+      paymentsBloc = AppBlocsProvider.of<SatsZonePaymentsBloc>(context);
+      userProfileBloc = AppBlocsProvider.of<UserProfileBloc>(context);
+      _isInit = true;
+    }
+    super.didChangeDependencies();
+  }
 
   @override
   void initState() {
@@ -148,12 +162,27 @@ class _SatsZonesState extends State<SatsZones> {
         featureFlags[FeatureFlagEnum.PIP_ENABLED] = false;
       }
     }
+
+    String paymentOptions = jsonEncode({
+      "presetBoostAmountsList": user.satsZonePaymentOptions.presetBoostAmountsList,
+      "presetSatsPerMinuteAmountsList": user.satsZonePaymentOptions.presetSatsPerMinuteAmountsList,
+      "customBoostValue": user.satsZonePaymentOptions.customBoostValue,
+      "customSatsPerMinAmountValue": user.satsZonePaymentOptions.customSatsPerMinValue,
+      "selectedBoostAmountIndex": user.satsZonePaymentOptions.boostAmountList
+          .indexOf(user.satsZonePaymentOptions.preferredBoostValue),
+      "selectedSatsPerMinuteAmountIndex": user.satsZonePaymentOptions.satsPerMinuteIntervalsList
+          .indexOf(user.satsZonePaymentOptions.preferredSatsPerMinValue),
+    });
+
     // Define meetings options here
     var options = JitsiMeetingOptions(room: zoneID)
       ..userDisplayName = user.name
+      ..userEmail = ""
       ..audioMuted = true
       ..videoMuted = true
       ..featureFlags.addAll(featureFlags)
+      ..paymentOptions = paymentOptions
+      ..isLightTheme = theme.themeId == "BLUE"
       ..webOptions = {
         "roomName": zoneID,
         "width": "100%",
@@ -215,15 +244,12 @@ class _SatsZonesState extends State<SatsZones> {
   }
 
   void _onBoost(message) {
-    final paymentsBloc = AppBlocsProvider.of<SatsZonePaymentsBloc>(context);
     var boostAmount = double.parse(message["boostAmount"]).toInt();
     var paymentInfo = message["paymentInfo"];
     paymentsBloc.actionsSink.add(PayBoost(boostAmount, "", currentZoneID, paymentInfo));
   }
 
   void _changeSatsPerMinute(message) async {
-    final paymentsBloc = AppBlocsProvider.of<SatsZonePaymentsBloc>(context);
-    final userProfileBloc = AppBlocsProvider.of<UserProfileBloc>(context);
     var user = await userProfileBloc.userStream.firstWhere((u) => u != null);
     var satsPerMinute = double.parse(message["satsPerMinute"]).toInt();
     paymentsBloc.actionsSink.add(AdjustAmount(satsPerMinute));
@@ -233,7 +259,6 @@ class _SatsZonesState extends State<SatsZones> {
   }
 
   void _setCustomBoostValue(message) async {
-    final userProfileBloc = AppBlocsProvider.of<UserProfileBloc>(context);
     var user = await userProfileBloc.userStream.firstWhere((u) => u != null);
     var customBoostValue = double.parse(message["customBoostValue"]).toInt();
     userProfileBloc.userActionsSink.add(SetSatsZonePaymentOptions(user
@@ -242,7 +267,6 @@ class _SatsZonesState extends State<SatsZones> {
   }
 
   void _setCustomSatsPerMinAmount(message) async {
-    final userProfileBloc = AppBlocsProvider.of<UserProfileBloc>(context);
     var user = await userProfileBloc.userStream.firstWhere((u) => u != null);
     var customSatsPerMinValue =
         double.parse(message["customSatsPerMinValue"]).toInt();
