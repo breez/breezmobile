@@ -45,15 +45,19 @@ class JoinSatsZoneDialogState extends State<JoinSatsZoneDialog> {
 
   Widget _buildSatsZoneIDWidget() {
     // TODO: Add join options
-    return Form(
-      key: _formKey,
-      child: TextFormField(
-        autovalidateMode: AutovalidateMode.disabled,
-        controller: _satsZoneIDController,
-        style: Theme.of(context)
-            .dialogTheme
-            .contentTextStyle
-            .copyWith(height: 1.0),
+    return Container(
+      height: 200,
+      width: 200,
+      child: Form(
+        key: _formKey,
+        child: TextFormField(
+          autovalidateMode: AutovalidateMode.disabled,
+          controller: _satsZoneIDController,
+          style: Theme.of(context)
+              .dialogTheme
+              .contentTextStyle
+              .copyWith(height: 1.0),
+        ),
       ),
     );
   }
