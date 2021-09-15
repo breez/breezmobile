@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:breez/bloc/account/account_bloc.dart';
@@ -35,11 +36,7 @@ class _SatsZoneItemState extends State<SatsZoneItem> {
         onConferenceWillJoin: _onConferenceWillJoin,
         onConferenceJoined: _onConferenceJoined,
         onConferenceTerminated: _onConferenceTerminated,
-        onError: _onError,
-        onBoost: _onBoost,
-        changeSatsPerMinute: _changeSatsPerMinute,
-        setCustomBoostAmount: _setCustomBoostValue,
-        setCustomSatsPerMinAmount: _setCustomSatsPerMinAmount));
+        onError: _onError));
   }
 
   @override
@@ -146,15 +143,10 @@ class _SatsZoneItemState extends State<SatsZoneItem> {
     }
     // Define meetings options here
     var options = JitsiMeetingOptions(room: zoneID)
-      //..serverURL = null
       ..subject = widget.satsZone.title
       ..userDisplayName = user.name
       ..userEmail = "breez:" + await accountBloc.getPersistentNodeID()
-      //..userEmail = emailText.text
-      //..iosAppBarRGBAColor = iosAppBarRGBAColor.text
-      //..audioOnly = isAudioOnly
-      //..audioMuted = isAudioMuted
-      //..videoMuted = isVideoMuted
+      ..isLightTheme = theme.themeId == "BLUE"
       ..featureFlags.addAll(featureFlags)
       ..webOptions = {
         "roomName": zoneID,
@@ -178,18 +170,6 @@ class _SatsZoneItemState extends State<SatsZoneItem> {
           onConferenceTerminated: (message) {
             debugPrint("${options.room} terminated with message: $message");
           },
-          onBoost: (message) {
-            debugPrint("Called onBoost with message: $message");
-          },
-          changeSatsPerMinute: (message) {
-            debugPrint("Called changeSatsPerMinute with message: $message");
-          },
-          setCustomBoostAmount: (message) {
-            debugPrint("Called setCustomBoostAmount");
-          },
-          setCustomSatsPerMinAmount: (message) {
-            debugPrint("Called setCustomSatsPerMinAmount");
-          },
           genericListeners: [
             JitsiGenericListener(
                 eventName: 'readyToClose',
@@ -210,44 +190,6 @@ class _SatsZoneItemState extends State<SatsZoneItem> {
 
   void _onConferenceTerminated(message) {
     debugPrint("_onConferenceTerminated broadcasted with message: $message");
-  }
-
-  void _onBoost(message) {
-    final paymentsBloc = AppBlocsProvider.of<SatsZonePaymentsBloc>(context);
-    var boostAmount = double.parse(message["boostAmount"]).toInt();
-    var paymentInfo = message["paymentInfo"];
-    paymentsBloc.actionsSink.add(PayBoost(boostAmount, widget.satsZone.title,
-        widget.satsZone.zoneID, paymentInfo));
-  }
-
-  void _changeSatsPerMinute(message) async {
-    final paymentsBloc = AppBlocsProvider.of<SatsZonePaymentsBloc>(context);
-    final userProfileBloc = AppBlocsProvider.of<UserProfileBloc>(context);
-    var user = await userProfileBloc.userStream.firstWhere((u) => u != null);
-    var satsPerMinute = double.parse(message["satsPerMinute"]).toInt();
-    paymentsBloc.actionsSink.add(AdjustAmount(satsPerMinute));
-    userProfileBloc.userActionsSink.add(SetSatsZonePaymentOptions(user
-        .satsZonePaymentOptions
-        .copyWith(preferredSatsPerMinValue: satsPerMinute)));
-  }
-
-  void _setCustomBoostValue(message) async {
-    final userProfileBloc = AppBlocsProvider.of<UserProfileBloc>(context);
-    var user = await userProfileBloc.userStream.firstWhere((u) => u != null);
-    var customBoostValue = double.parse(message["customBoostValue"]).toInt();
-    userProfileBloc.userActionsSink.add(SetSatsZonePaymentOptions(user
-        .satsZonePaymentOptions
-        .copyWith(customBoostValue: customBoostValue)));
-  }
-
-  void _setCustomSatsPerMinAmount(message) async {
-    final userProfileBloc = AppBlocsProvider.of<UserProfileBloc>(context);
-    var user = await userProfileBloc.userStream.firstWhere((u) => u != null);
-    var customSatsPerMinValue =
-        double.parse(message["customSatsPerMinValue"]).toInt();
-    userProfileBloc.userActionsSink.add(SetSatsZonePaymentOptions(user
-        .satsZonePaymentOptions
-        .copyWith(customSatsPerMinValue: customSatsPerMinValue)));
   }
 
   _onError(error) {
