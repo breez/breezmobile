@@ -28,6 +28,9 @@
 		97C146FC1CF9000F007C117D /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 97C146FA1CF9000F007C117D /* Main.storyboard */; };
 		97C146FE1CF9000F007C117D /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 97C146FD1CF9000F007C117D /* Assets.xcassets */; };
 		97C147011CF9000F007C117D /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 97C146FF1CF9000F007C117D /* LaunchScreen.storyboard */; };
+		E8D0024226F233DB00C49E43 /* Feather.ttf in Resources */ = {isa = PBXBuildFile; fileRef = E8D0023F26F233DB00C49E43 /* Feather.ttf */; };
+		E8D0024326F233DB00C49E43 /* IBMPlexSans.otf in Resources */ = {isa = PBXBuildFile; fileRef = E8D0024026F233DB00C49E43 /* IBMPlexSans.otf */; };
+		E8D0024426F233DB00C49E43 /* IBMPlexSans-SemiBold.otf in Resources */ = {isa = PBXBuildFile; fileRef = E8D0024126F233DB00C49E43 /* IBMPlexSans-SemiBold.otf */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -74,6 +77,9 @@
 		97C147001CF9000F007C117D /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		97C147021CF9000F007C117D /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		A78F6923FCA74F242B29B543 /* Pods_Runner.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Runner.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		E8D0023F26F233DB00C49E43 /* Feather.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = Feather.ttf; path = Runner/Fonts/Feather.ttf; sourceTree = "<group>"; };
+		E8D0024026F233DB00C49E43 /* IBMPlexSans.otf */ = {isa = PBXFileReference; lastKnownFileType = file; name = IBMPlexSans.otf; path = Runner/Fonts/IBMPlexSans.otf; sourceTree = "<group>"; };
+		E8D0024126F233DB00C49E43 /* IBMPlexSans-SemiBold.otf */ = {isa = PBXFileReference; lastKnownFileType = file; name = "IBMPlexSans-SemiBold.otf"; path = "Runner/Fonts/IBMPlexSans-SemiBold.otf"; sourceTree = "<group>"; };
 		F8204FE5E13081F50FA299E5 /* Pods-Runner.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Runner.debug.xcconfig"; path = "Target Support Files/Pods-Runner/Pods-Runner.debug.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -145,6 +151,9 @@
 		97C146E51CF9000F007C117D = {
 			isa = PBXGroup;
 			children = (
+				E8D0023F26F233DB00C49E43 /* Feather.ttf */,
+				E8D0024126F233DB00C49E43 /* IBMPlexSans-SemiBold.otf */,
+				E8D0024026F233DB00C49E43 /* IBMPlexSans.otf */,
 				6F09D3D3225DF83D00867443 /* Plugins */,
 				9740EEB11CF90186004384FC /* Flutter */,
 				97C146F01CF9000F007C117D /* Runner */,
@@ -165,6 +174,7 @@
 		97C146F01CF9000F007C117D /* Runner */ = {
 			isa = PBXGroup;
 			children = (
+				E8D0023C26F2326E00C49E43 /* Fonts */,
 				6F068F362301566B009A1818 /* main.swift */,
 				6F8177D92270997B00842148 /* Runner.entitlements */,
 				97C146FA1CF9000F007C117D /* Main.storyboard */,
@@ -198,6 +208,13 @@
 				A78F6923FCA74F242B29B543 /* Pods_Runner.framework */,
 			);
 			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		E8D0023C26F2326E00C49E43 /* Fonts */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = Fonts;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -281,6 +298,9 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				E8D0024226F233DB00C49E43 /* Feather.ttf in Resources */,
+				E8D0024326F233DB00C49E43 /* IBMPlexSans.otf in Resources */,
+				E8D0024426F233DB00C49E43 /* IBMPlexSans-SemiBold.otf in Resources */,
 				97C147011CF9000F007C117D /* LaunchScreen.storyboard in Resources */,
 				6F09D3DE225F2AD300867443 /* GoogleService-Info.plist in Resources */,
 				9740EEB51CF90195004384FC /* Generated.xcconfig in Resources */,
