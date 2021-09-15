@@ -24,7 +24,7 @@ class CustomAmountDialogState extends State<CustomAmountDialog> {
   @override
   void initState() {
     super.initState();
-    _amountController = CustomAmountTextEditingController(widget.customAmount);
+    _amountController = CustomAmountTextEditingController();
     _amountController.addListener(() {
       setState(() {});
     });

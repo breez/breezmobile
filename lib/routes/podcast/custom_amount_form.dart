@@ -31,7 +31,7 @@ class CustomAmountFormField extends TextFormField {
   FormFieldValidator<String> get validator {
     return (value) {
       if (value.isEmpty) {
-        return "Please enter a custom amount";
+        return "Please enter an amount";
       }
       int valueInt = Currency.SAT.parseToInt(value);
       if (valueInt < preset[0]) {
@@ -43,19 +43,18 @@ class CustomAmountFormField extends TextFormField {
 }
 
 class CustomAmountTextEditingController extends TextEditingController {
-  CustomAmountTextEditingController(
+  CustomAmountTextEditingController({
     int customAmount,
-  ) : super() {
+  }) : super() {
     this.text = _initialCustomAmount(customAmount);
   }
 
   String _initialCustomAmount(int customAmount) {
-    final initial = customAmount;
-    if (initial == null) {
+    if (customAmount == null) {
       return null;
     }
     return Currency.SAT.format(
-      Int64(initial),
+      Int64(customAmount),
       includeDisplayName: false,
       includeCurrencySymbol: false,
     );
