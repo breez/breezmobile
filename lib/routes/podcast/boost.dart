@@ -57,7 +57,7 @@ class _BoostWidgetState extends State<BoostWidget> {
                     builder: (c) => BoostMessageDialog(
                       (String boostMessage) {
                         var boostAmount =
-                            widget.userModel.paymentOptions.preferredBoostValue;
+                            widget.userModel.podcastPaymentOptions.preferredBoostValue;
                         if (acc.data.balance.toInt() <= boostAmount) {
                           showFlushbar(context,
                               message:
@@ -65,7 +65,7 @@ class _BoostWidgetState extends State<BoostWidget> {
                           return;
                         }
                         widget.onBoost(
-                            widget.userModel.paymentOptions.boostAmountList
+                            widget.userModel.podcastPaymentOptions.boostAmountList
                                 .elementAt(selectedIndex),
                             boostMessage: boostMessage);
                       },
