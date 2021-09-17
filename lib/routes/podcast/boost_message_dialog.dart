@@ -32,7 +32,9 @@ class BoostMessageDialogState extends State<BoostMessageDialog> {
   @override
   void initState() {
     super.initState();
-    _amountController = CustomAmountTextEditingController(widget.customAmount);
+    _amountController = CustomAmountTextEditingController(
+      customAmount: widget.customAmount,
+    );
     _messageController.addListener(() {
       setState(() {});
     });
@@ -92,7 +94,7 @@ class BoostMessageDialogState extends State<BoostMessageDialog> {
             controller: _amountController,
             preset: widget.preset,
             decoration: InputDecoration(
-              labelText: "Boost Amount",
+              labelText: "Boost Amount (in sats)",
             ),
             style: theme.dialogTheme.contentTextStyle.copyWith(height: 1.0),
           ),

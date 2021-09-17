@@ -251,6 +251,8 @@ class _BoostWidgetState extends State<BoostWidget> {
   int _getPreviousAmount() {
     var currentAmount = widget.userModel.paymentOptions.preferredBoostValue;
     var amountList = widget.userModel.paymentOptions.boostAmountList;
+    // remove first item of the list "50" to not show it on +/- controller
+    amountList = amountList.sublist(1);
     try {
       return amountList[amountList.indexOf(currentAmount) - 1];
     } catch (RangeError) {
