@@ -1,6 +1,5 @@
 import 'dart:convert';
 
-import 'package:breez/bloc/backup/backup_actions.dart';
 import 'package:breez/bloc/backup/backup_bloc.dart';
 import 'package:breez/bloc/backup/backup_model.dart';
 import 'package:breez/bloc/blocs_provider.dart';
@@ -10,6 +9,7 @@ import 'package:breez/widgets/error_dialog.dart';
 import 'package:breez/widgets/loader.dart';
 import 'package:breez/widgets/route.dart';
 import 'package:breez/widgets/single_button_bottom_bar.dart';
+import 'package:breez/logger.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:validators/validators.dart';
@@ -115,6 +115,11 @@ class RemoteServerAuthPageState extends State<RemoteServerAuthPage> {
                                   minLines: 1,
                                   maxLines: 1,
                                   validator: (value) {
+                                    Uri uri = Uri.parse(value);
+                                    if (!uri.hasScheme) {
+                                      return "This URL must be http or https.";
+                                    }
+
                                     var validURL = isURL(value,
                                         protocols: ['https', 'http'],
                                         requireProtocol: true,
@@ -261,21 +266,33 @@ class RemoteServerAuthPageState extends State<RemoteServerAuthPage> {
   }
 
   Future<DiscoverResult> testAuthData(RemoteServerAuthData authData) async {
+    log.info('remote_server_auth.dart: testAuthData');
     try {
-      var client = webdav.newClient(
-        authData.url,
-        user: authData.user,
-        password: authData.password,
-        debug: true,
-      );
-      await client.readDir("/");
-    } on DioError catch (e) {
-      if (e.response != null &&
-          (e.response.statusCode == 401 || e.response.statusCode == 403)) {
-        return DiscoverResult.INVALID_AUTH;
+      await widget._backupBloc
+          .testAuth(BackupSettings.remoteServerBackupProvider, authData);
+
+      /*
+      // findProxy will only work for HTTPS but will not work for onion hidden services or HTTP
+      // because it does not support SOCKS. It it did we could do something like this:
+      if (widget._torBloc.torConfig != null) {
+        final http = widget._torBloc.torConfig.http;
+        (client.c.httpClientAdapter as DefaultHttpClientAdapter)
+            .onHttpClientCreate = (client) {
+          client.findProxy = (uri) {
+            log.info('client.findProxy: $uri');
+            return 'PROXY localhost:${http}';
+          };
+        };
       }
-      return DiscoverResult.INVALID_URL;
+      */
+      
+    } on SignInFailedException catch (e) {
+      log.warning('remote_server_auth.dart: testAuthData: $e');
+      return DiscoverResult.INVALID_AUTH;
+    } on RemoteServerNotFoundException catch (e) {
+        return DiscoverResult.INVALID_URL;
     }
+
     return DiscoverResult.SUCCESS;
   }
 }

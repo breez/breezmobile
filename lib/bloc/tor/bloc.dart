@@ -29,17 +29,17 @@ class TorBloc {
           var url = "wxyz://${response['Control']}".replaceAll('"', '');
           var port = Uri.parse(url).port;
           torConfig.control = "$port";
-          print('torBloc.startTor: torConfig.control: ${torConfig.control}');
+          log.info('torBloc.startTor: torConfig.control: ${torConfig.control}');
 
           url = "socks://${response['SOCKS']}".replaceAll('"', '');
           port = Uri.parse(url).port;
           torConfig.socks = "$port";
-          print('torBloc.startTor: torConfig.socks: ${torConfig.socks}');
+          log.info('torBloc.startTor: torConfig.socks: ${torConfig.socks}');
 
           url = "http://${response['HTTP']}".replaceAll('"', '');
           port = Uri.parse(url).port;
           torConfig.http = "$port";
-          print('torBloc.startTor: torConfig.http: ${torConfig.http}');
+          log.info('torBloc.startTor: torConfig.http: ${torConfig.http}');
 
           log.info(
                   'TorBloc.startTor: tor has started with config : ${torConfig}');

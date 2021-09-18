@@ -1,6 +1,6 @@
 /* FIXME(nochiel): While the rpc server is starting, client cannot tell if Tor is active.
  Therefore, the switch in the ui shows the incorrect state until the database becomes availabe.
- Should we show a loading icon for the Tor switch?
+ Should we grey out the switch if it can't yet load the correct state?
 */
 
 import 'dart:async';

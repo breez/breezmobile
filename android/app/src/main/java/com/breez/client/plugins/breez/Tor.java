@@ -54,8 +54,12 @@ public class Tor implements FlutterPlugin, MethodCallHandler {
 
     @Override
     public void onDetachedFromEngine(@NonNull FlutterPluginBinding binding) {
+        // FIXME(nochiel) What else do we need to do here? to release all resources? 
         this.binding = null;
-        // TODO(nochiel) stop TorService
+        uiThreadExecutor = null;
+        methodChannel = null;
+        connection = null;
+        receiver = null;
     }
 
     @Override

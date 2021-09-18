@@ -162,6 +162,17 @@ public class Breez implements MethodChannel.MethodCallHandler, StreamHandler,
                     fail(result, "ResultError", e.getMessage(), "Failed to invoke setBackupProvider");
                 }
             });
+        } else if (call.method.equals("testBackupAuth")) {
+            _backupProvider = call.argument("provider");
+            String authData = call.argument("authData");
+            _executor.execute(() -> {
+                try {
+                    Bindings.testBackupAuth(_backupProvider, authData);
+                    success(result,true);
+                } catch (Exception e) {
+                    fail(result, "ResultError", e.getMessage(), "Failed to invoke testBackupAuth");
+                }
+            });
         } else {
             _executor.execute(new BreezTask(call, result));
         }

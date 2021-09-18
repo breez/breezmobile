@@ -6,6 +6,7 @@ import 'package:breez/bloc/user_profile/breez_user_model.dart';
 import 'package:breez/services/background_task.dart';
 import 'package:breez/services/breezlib/breez_bridge.dart';
 import 'package:breez/services/breezlib/data/rpc.pb.dart';
+import 'package:breez/logger.dart';
 import 'package:breez/services/injector.dart';
 import 'package:crypto/crypto.dart';
 import 'package:flutter/services.dart';
@@ -19,6 +20,7 @@ import 'backup_actions.dart';
 
 class BackupBloc {
   static const String _signInFailedCode = "AuthError";
+  static const String _notFoundCode = "NotFoundError";
 
   final BehaviorSubject<BackupState> _backupStateController =
       BehaviorSubject<BackupState>();
@@ -354,6 +356,30 @@ class BackupBloc {
     });
   }
 
+  Future testAuth(BackupProvider provider, RemoteServerAuthData authData) {
+    return _breezLib
+        .testBackupAuth(provider.name, json.encode(authData.toJson()))
+        .catchError((error) {
+      log.info('backupBloc.testAuth caught error: $error');
+
+      if (error is PlatformException) {
+        var e = (error as PlatformException);
+        // Handle PlatformException(ResultError, "AuthError", Failed to invoke testBackupAuth, null)
+        switch (e.message) {
+          case _signInFailedCode:
+            throw SignInFailedException(provider);
+            break;
+
+          case _notFoundCode:
+            throw RemoteServerNotFoundException();
+            break;
+        }
+      }
+
+      throw error;
+    });
+  }
+
   close() {
     _backupNowController.close();
     _restoreRequestController.close();
@@ -373,7 +399,7 @@ class SnapshotInfo {
 
   SnapshotInfo(
       this.nodeID, this.modifiedTime, this.encrypted, this.encryptionType) {
-    print(
+    log.info(
         "New Snapshot encrypted = ${this.encrypted} encrytionType = ${this.encryptionType}");
   }
 
@@ -400,5 +426,13 @@ class SignInFailedException implements Exception {
 
   String toString() {
     return "Sign in failed";
+  }
+}
+
+class RemoteServerNotFoundException implements Exception {
+  RemoteServerNotFoundException();
+
+  String toString() {
+    return "The server/url was not found.";
   }
 }
