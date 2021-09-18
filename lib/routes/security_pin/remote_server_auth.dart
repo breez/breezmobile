@@ -116,15 +116,15 @@ class RemoteServerAuthPageState extends State<RemoteServerAuthPage> {
                                   maxLines: 1,
                                   validator: (value) {
                                     var validURL = isURL(value,
-                                        protocols: ['https'],
+                                        protocols: ['https', 'http'],
                                         requireProtocol: true,
                                         allowUnderscore: true);
                                     if (!failDiscoverURL && validURL) {
                                       return null;
                                     }
-                                    if (!value.startsWith("https://")) {
+                                    /*if (!value.startsWith("https://")) {
                                       return "URL must be https";
-                                    }
+                                    }*/
                                     return "Invalid URL";
                                   },
                                   decoration: InputDecoration(
