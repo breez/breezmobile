@@ -57,7 +57,7 @@ class NetworkPageState extends State<NetworkPage> {
   void _loadData() async {
     await _loadPeer();
 
-    bool torActive = await _breezLib.isTorActive();
+    bool torActive = await _breezLib.getTorActive();
     setState(() {
       _data.torIsActive = torActive;
     });
@@ -237,12 +237,12 @@ class NetworkPageState extends State<NetworkPage> {
                             var error = await showDialog(
                                 useRootNavigator: false,
                                 context: context,
-                                builder: (ctx) => _EnableOrDisableTorDialog(
+                                builder: (ctx) => _SetTorActiveDialog(
                                     testFuture:
-                                        _breezLib.enableOrDisableTor(value),
+                                        _breezLib.setTorActive(value),
                                     enable: value));
 
-                            print('enableOrDisableTor returned with $error');
+                            print('setTorActive returned with $error');
                             if (error != null) {
                               await promptError(
                                   context,
@@ -308,20 +308,20 @@ class _TestingPeerDialogState extends State<_TestingPeerDialog> {
   }
 }
 
-class _EnableOrDisableTorDialog extends StatefulWidget {
+class _SetTorActiveDialog extends StatefulWidget {
   final Future testFuture;
   final bool enable;
 
-  const _EnableOrDisableTorDialog({Key key, this.testFuture, this.enable})
+  const _SetTorActiveDialog({Key key, this.testFuture, this.enable})
       : super(key: key);
 
   @override
   State<StatefulWidget> createState() {
-    return _EnableOrDisableTorDialogState();
+    return _SetTorActiveDialogState();
   }
 }
 
-class _EnableOrDisableTorDialogState extends State<_EnableOrDisableTorDialog> {
+class _SetTorActiveDialogState extends State<_SetTorActiveDialog> {
   bool _allowPop = false;
   String _text;
 

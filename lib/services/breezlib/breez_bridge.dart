@@ -726,12 +726,12 @@ class BreezBridge {
     return result;
   }
 
-  Future enableOrDisableTor(bool enabled) {
-    return _invokeMethodWhenReady('enableOrDisableTor', {'argument': enabled});
+  Future setTorActive(bool enabled) {
+    return _invokeMethodWhenReady('setTorActive', {'argument': enabled});
   }
 
-  Future<bool> isTorActive() {
-    return _invokeMethodImmediate('isTorActive')
+  Future<bool> getTorActive() {
+    return _invokeMethodImmediate('getTorActive')
         .then((result) => result as bool);
   }
 

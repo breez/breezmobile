@@ -11,7 +11,7 @@ import 'package:share_extend/share_extend.dart';
 
 void listenUnexpectedError(
     BuildContext context, AccountBloc accountBloc) async {
-  final torEnabled = await ServiceInjector().breezBridge.isTorActive();
+  final torEnabled = await ServiceInjector().breezBridge.getTorActive();
 
   accountBloc.lightningDownStream.listen((allowRetry) {
     promptError(
@@ -44,7 +44,7 @@ void listenUnexpectedError(
                           if (ok) {
                             await ServiceInjector()
                                 .breezBridge
-                                .enableOrDisableTor(false);
+                                .setTorActive(false);
                             ResetNetwork resetAction = ResetNetwork();
                             accountBloc.userActionsSink.add(resetAction);
                             await resetAction.future;

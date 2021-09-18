@@ -543,7 +543,7 @@ class AccountBloc {
 
       // Start tor
       TorConfig torConfig;
-      final useTor = await _breezLib.isTorActive();
+      final useTor = await _breezLib.getTorActive();
       log.info('AccountBloc: useTor : $useTor.');
       if (useTor) {
         torConfig = _torBloc.torConfig;
