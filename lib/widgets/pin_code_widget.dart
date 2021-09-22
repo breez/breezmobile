@@ -108,7 +108,7 @@ class PinCodeWidgetState extends State<PinCodeWidget>
         mainAxisSize: MainAxisSize.max,
         children: <Widget>[
           Flexible(
-            flex: 1,
+            flex: 20,
             child: Container(
               child: Center(
                 child: _buildBreezLogo(context),
@@ -116,7 +116,7 @@ class PinCodeWidgetState extends State<PinCodeWidget>
             ),
           ),
           Flexible(
-            flex: 1,
+            flex: 30,
             child: Container(
               child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
@@ -127,7 +127,7 @@ class PinCodeWidgetState extends State<PinCodeWidget>
                   ]),
             ),
           ),
-          Flexible(flex: 2, child: Container(child: _numPad(context)))
+          Flexible(flex: 50, child: Container(child: _numPad(context)))
         ],
       ),
     );
@@ -191,25 +191,36 @@ class PinCodeWidgetState extends State<PinCodeWidget>
       mainAxisSize: MainAxisSize.max,
       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
       children: <Widget>[
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          mainAxisSize: MainAxisSize.max,
-          children: List<Widget>.generate(
-              3, (i) => _numberButton((i + 1).toString())),
+        Flexible(
+          flex: 1,
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            mainAxisSize: MainAxisSize.max,
+            children: List<Widget>.generate(
+                3, (i) => _numberButton((i + 1).toString())),
+          ),
         ),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          mainAxisSize: MainAxisSize.max,
-          children: List<Widget>.generate(
-              3, (i) => _numberButton((i + 4).toString())),
+        Flexible(
+          flex: 1,
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            mainAxisSize: MainAxisSize.max,
+            children: List<Widget>.generate(
+                3, (i) => _numberButton((i + 4).toString())),
+          ),
         ),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          mainAxisSize: MainAxisSize.max,
-          children: List<Widget>.generate(
-              3, (i) => _numberButton((i + 7).toString())),
+        Flexible(
+          flex: 1,
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            mainAxisSize: MainAxisSize.max,
+            children: List<Widget>.generate(
+                3, (i) => _numberButton((i + 7).toString())),
+          ),
         ),
-        Row(
+        Flexible(
+          flex: 1,
+          child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             mainAxisSize: MainAxisSize.max,
             children: <Widget>[
@@ -228,8 +239,10 @@ class PinCodeWidgetState extends State<PinCodeWidget>
                           return _buildBiometricsButton(snapshot, context);
                         }
                       },
-                    )
-            ])
+                    ),
+            ],
+          ),
+        )
       ],
     );
   }
@@ -246,20 +259,32 @@ class PinCodeWidgetState extends State<PinCodeWidget>
   }
 
   Widget _buildClearButton() {
-    return CircularButton(
-      child: Icon(
-        Icons.delete_forever,
-        color: Colors.white,
+    return InkWell(
+      customBorder: CircleBorder(),
+      child: Container(
+        child: TextButton(
+          style: TextButton.styleFrom(padding: EdgeInsets.all(0)),
+          child: Icon(
+            Icons.delete_forever,
+            color: Colors.white,
+          ),
+        ),
       ),
       onTap: _inputEnabled ? () => _setPinCodeInput("") : null,
     );
   }
 
   Widget _buildEraseButton() {
-    return CircularButton(
-      child: Icon(
-        Icons.backspace,
-        color: Colors.white,
+    return InkWell(
+      customBorder: CircleBorder(),
+      child: Container(
+        child: TextButton(
+          style: TextButton.styleFrom(padding: EdgeInsets.all(0)),
+          child: Icon(
+            Icons.backspace,
+            color: Colors.white,
+          ),
+        ),
       ),
       onTap: _inputEnabled
           ? () => _setPinCodeInput(
@@ -269,9 +294,18 @@ class PinCodeWidgetState extends State<PinCodeWidget>
   }
 
   Widget _numberButton(String number) {
-    return CircularButton(
-      child: Text(number,
-          textAlign: TextAlign.center, style: theme.numPadNumberStyle),
+    return InkWell(
+      customBorder: CircleBorder(),
+      child: Container(
+        child: TextButton(
+          style: TextButton.styleFrom(padding: EdgeInsets.all(0)),
+          child: Text(
+            number,
+            textAlign: TextAlign.center,
+            style: theme.numPadNumberStyle,
+          ),
+        ),
+      ),
       onTap: _inputEnabled ? () => _onNumButtonPressed(number) : null,
     );
   }
