@@ -35,7 +35,6 @@ void main() async {
   var mobileService = await MobileSettingsService.instance();
   mobileService.autoOpenNowPlaying = true;
   mobileService.showFunding = false;
-  mobileService.useMaterialDesign = true;
   mobileService.searchProvider = 'podcastindex';
   final repository = SembastRepository();
   SharedPreferences.getInstance().then((preferences) async {
@@ -62,7 +61,8 @@ void main() async {
                       child: SharePodcastButtonBuilder(
                           builder: sharePodcastButtonBuilder,
                           child: ShareEpisodeButtonBuilder(
-                            builder: shareEpisodeButtonBuilder,child: UserApp())))),
+                              builder: shareEpisodeButtonBuilder,
+                              child: UserApp())))),
             )),
         appBlocs: blocs));
   });
