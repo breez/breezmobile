@@ -1,0 +1,12 @@
+{
+  "backup_dialog_title": "Backup",
+  "backup_dialog_message_remote_server": "Falha ao salvar arquivos de backup no servidor remoto. Por favor, revise suas configurações e tente novamente.",
+  "backup_dialog_message_default": "Se você deseja restaurar seus fundos caso este dispositivo móvel ou aplicativo não esteja mais disponível (por exemplo, dispositivo perdido ou roubado ou desinstalação de aplicativo), você deve fazer o backup de suas informações.",
+  "backup_dialog_do_not_prompt_again": "Não perguntar novamente",
+  "backup_dialog_option_cancel": "DEPOIS",
+  "backup_dialog_option_ok_remote_server": "CONFIGURAÇÕES",
+  "backup_dialog_option_ok_default": "FAZER BACKUP AGORA",
+  "backup_dialog_icloud_error_title": "Entrar no iCloud",
+  "backup_dialog_icloud_error_message": "Entre em sua conta do iCloud. Na tela inicial, abra Ajustes, toque em iCloud e digite seu ID Apple. Ligue o iCloud Drive. Se você não tiver uma conta iCloud, toque em Criar um novo ID Apple.",
+  "app_name": "Breez"
+}
