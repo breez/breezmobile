@@ -60,13 +60,13 @@ jobs:
           echo $(ls $GOPATH)
           echo $(ls $GOPATH/bin)
           $GOPATH/bin/gomobile init
-          mkdir -p build/ios
-          PATH=$PATH:$GOPATH/bin gomobile bind -target=ios/arm64 -tags="ios experimental signrpc walletrpc chainrpc invoicesrpc routerrpc backuprpc peerrpc submarineswaprpc breezbackuprpc" -o build/ios/bindings.framework github.com/breez/breez/bindings
+          mkdir -p build/ios          
+          PATH=$PATH:$GOPATH/bin gomobile bind -target=ios -tags="ios experimental signrpc walletrpc chainrpc invoicesrpc routerrpc backuprpc peerrpc submarineswaprpc breezbackuprpc" -o build/ios/bindings.xcframework -ldflags="-s -w" github.com/breez/breez/bindings
           popd
           brew install ideviceinstaller ios-deploy
           git clone --branch 2.2.3 https://github.com/flutter/flutter.git
           
-          cp -r $GOPATH/src/github.com/breez/breez/build/ios/bindings.framework $GITHUB_WORKSPACE/ios/bindings.framework
+          cp -r $GOPATH/src/github.com/breez/breez/build/ios/bindings.xcframework/ios-arm64/Bindings.framework $GITHUB_WORKSPACE/ios/bindings.framework
           rm -rf $GITHUB_WORKSPACE/conf
           git clone builderfiles@packages.breez.technology:configuration -b production $GITHUB_WORKSPACE/temp_config          
           cp -r $GITHUB_WORKSPACE/temp_config/conf $GITHUB_WORKSPACE/conf
