@@ -100,8 +100,14 @@ class _PlayerTransportControlsState extends State<PlayerTransportControls>
                     maxWidth: 24.0,
                     minWidth: 24.0,
                   ),
-                  icon: SvgPicture.asset(
-                    'assets/icons/sleep.svg',
+                  iconOn: SvgPicture.asset(
+                    'assets/icons/sleep_on.svg',
+                    color: theme.buttonColor,
+                    height: 24.0,
+                    width: 24.0,
+                  ),
+                  iconOff: SvgPicture.asset(
+                    'assets/icons/sleep_off.svg',
                     color: theme.buttonColor,
                     height: 24.0,
                     width: 24.0,
