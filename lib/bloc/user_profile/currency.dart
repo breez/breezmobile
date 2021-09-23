@@ -32,6 +32,19 @@ class Currency extends Object {
 
   Int64 parse(String amountStr) => _CurrencyFormatter().parse(amountStr, this);
 
+  int parseToInt(
+    String amountStr, {
+    int def: 0,
+  }) {
+    int value;
+    try {
+      value = parse(amountStr).toInt() ?? def;
+    } catch (e) {
+      return def;
+    }
+    return value;
+  }
+
   Int64 toSats(double amount) => _CurrencyFormatter().toSats(amount, this);
 
   String get displayName =>

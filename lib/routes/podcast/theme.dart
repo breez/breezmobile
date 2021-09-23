@@ -124,6 +124,7 @@ Widget withPodcastTheme(BreezUserModel user, Widget child) {
                     headline6: currentTheme.appBarTheme.textTheme.headline6
                         .copyWith(color: Color.fromRGBO(0, 133, 251, 1.0))),
               ),
+              radioTheme: currentTheme.radioTheme,
             )
         : Themes.darkTheme().themeData.copyWith(
               brightness: Brightness.dark,
@@ -205,6 +206,7 @@ Widget withPodcastTheme(BreezUserModel user, Widget child) {
               appBarTheme: currentTheme.appBarTheme.copyWith(
                   //backgroundColor: Color(0xFF0c2031),
                   color: currentTheme.backgroundColor),
+              radioTheme: currentTheme.radioTheme,
             ),
   );
 }

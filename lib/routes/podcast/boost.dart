@@ -51,40 +51,29 @@ class _BoostWidgetState extends State<BoostWidget> {
                 width: 88,
                 child: GestureDetector(
                   behavior: HitTestBehavior.translucent,
-                  onLongPress: () => showDialog(
-                    useRootNavigator: true,
+                  onLongPress: () => _boost(
+                    context,
+                    userBloc,
+                    acc.data,
+                    widget.userModel.podcastPaymentOptions.preferredBoostValue,
+                  ),
+                  onTap: () => showDialog(
+                    useRootNavigator: false,
                     context: context,
                     builder: (c) => BoostMessageDialog(
-                      (String boostMessage) {
-                        var boostAmount =
-                            widget.userModel.podcastPaymentOptions.preferredBoostValue;
-                        if (acc.data.balance.toInt() <= boostAmount) {
-                          showFlushbar(context,
-                              message:
-                                  "You don't have enough funds to complete this payment.");
-                          return;
-                        }
-                        widget.onBoost(
-                            widget.userModel.podcastPaymentOptions.boostAmountList
-                                .elementAt(selectedIndex),
-                            boostMessage: boostMessage);
-                      },
+                      widget
+                          .userModel.podcastPaymentOptions.preferredBoostValue,
+                      widget.userModel.podcastPaymentOptions
+                          .presetBoostAmountsList,
+                      (int boostAmount, String boostMessage) => _boost(
+                        context,
+                        userBloc,
+                        acc.data,
+                        boostAmount,
+                        boostMessage,
+                      ),
                     ),
                   ),
-                  onTap: () {
-                    var boostAmount =
-                        widget.userModel.podcastPaymentOptions.preferredBoostValue;
-                    if (acc.data.balance.toInt() <= boostAmount) {
-                      showFlushbar(context,
-                          message:
-                              "You don't have enough funds to complete this payment.");
-                      return;
-                    }
-                    widget.onBoost(
-                      widget.userModel.podcastPaymentOptions.boostAmountList
-                          .elementAt(selectedIndex),
-                    );
-                  },
                   child: TextButton.icon(
                     style: TextButton.styleFrom(
                       padding: EdgeInsets.symmetric(vertical: 8, horizontal: 8),
@@ -163,20 +152,15 @@ class _BoostWidgetState extends State<BoostWidget> {
                           top: 16,
                           child: GestureDetector(
                             onTap: () => showDialog(
-                              useRootNavigator: true,
+                              useRootNavigator: false,
                               context: context,
                               builder: (c) => CustomAmountDialog(
-                                widget
-                                    .userModel.podcastPaymentOptions.customBoostValue,
+                                widget.userModel.podcastPaymentOptions
+                                    .customBoostValue,
                                 widget.userModel.podcastPaymentOptions
                                     .presetBoostAmountsList,
                                 (int boostAmount) {
-                                  userBloc.userActionsSink.add(
-                                      SetPodcastPaymentOptions(widget
-                                          .userModel.podcastPaymentOptions
-                                          .copyWith(
-                                              preferredBoostValue: boostAmount,
-                                              customBoostValue: boostAmount)));
+                                  _setBoostAmount(userBloc, boostAmount);
                                 },
                               ),
                             ),
@@ -270,8 +254,11 @@ class _BoostWidgetState extends State<BoostWidget> {
   }
 
   int _getPreviousAmount() {
-    var currentAmount = widget.userModel.podcastPaymentOptions.preferredBoostValue;
+    var currentAmount =
+        widget.userModel.podcastPaymentOptions.preferredBoostValue;
     var amountList = widget.userModel.podcastPaymentOptions.boostAmountList;
+    // remove first item of the list "50" to not show it on +/- controller
+    amountList = amountList.sublist(1);
     try {
       return amountList[amountList.indexOf(currentAmount) - 1];
     } catch (RangeError) {
@@ -280,12 +267,45 @@ class _BoostWidgetState extends State<BoostWidget> {
   }
 
   int _getNextAmount() {
-    var currentAmount = widget.userModel.podcastPaymentOptions.preferredBoostValue;
+    var currentAmount =
+        widget.userModel.podcastPaymentOptions.preferredBoostValue;
     var amountList = widget.userModel.podcastPaymentOptions.boostAmountList;
     try {
       return amountList[amountList.indexOf(currentAmount) + 1];
     } catch (RangeError) {
       return amountList.last;
+    }
+  }
+
+  void _setBoostAmount(UserProfileBloc userBloc, int boostAmount) {
+    userBloc.userActionsSink.add(
+      SetPodcastPaymentOptions(
+        widget.userModel.podcastPaymentOptions.copyWith(
+          preferredBoostValue: boostAmount,
+          customBoostValue: boostAmount,
+        ),
+      ),
+    );
+  }
+
+  void _boost(
+    BuildContext context,
+    UserProfileBloc userBloc,
+    AccountModel acc,
+    int amount, [
+    String message,
+  ]) {
+    if (acc.balance.toInt() <= amount) {
+      showFlushbar(
+        context,
+        message: "You don't have enough funds to complete this payment.",
+      );
+    } else {
+      _setBoostAmount(userBloc, amount);
+      widget.onBoost(
+        amount,
+        boostMessage: message,
+      );
     }
   }
 }
