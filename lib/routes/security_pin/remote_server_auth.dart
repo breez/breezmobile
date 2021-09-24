@@ -115,11 +115,6 @@ class RemoteServerAuthPageState extends State<RemoteServerAuthPage> {
                                   minLines: 1,
                                   maxLines: 1,
                                   validator: (value) {
-                                    Uri uri = Uri.parse(value);
-                                    if (!uri.hasScheme) {
-                                      return "This URL must be http or https.";
-                                    }
-
                                     var validURL = isURL(value,
                                         protocols: ['https', 'http'],
                                         requireProtocol: true,
@@ -194,40 +189,54 @@ class RemoteServerAuthPageState extends State<RemoteServerAuthPage> {
                   stickToBottom: true,
                   text: widget.restore ? "RESTORE" : "SAVE",
                   onPressed: () async {
-                    var nav = Navigator.of(context);
-                    failDiscoverURL = false;
-                    failAuthenticate = false;
-                    if (_formKey.currentState.validate()) {
-                      var newSettings = snapshot.data.copyWith(
-                          remoteServerAuthData: RemoteServerAuthData(
-                              _urlController.text,
-                              _userController.text,
-                              _passwordController.text,
-                              BREEZ_BACKUP_DIR));
-                      var loader = createLoaderRoute(context,
-                          message: "Testing connection", opacity: 0.8);
-                      Navigator.push(context, loader);
-                      discoverURL(newSettings.remoteServerAuthData)
-                          .then((value) async {
-                        nav.removeRoute(loader);
-                        if (value.authError == DiscoverResult.SUCCESS) {
-                          Navigator.pop(context, value.authData);
-                        }
-                        setState(() {
-                          failDiscoverURL =
-                              value.authError == DiscoverResult.INVALID_URL;
-                          failAuthenticate =
-                              value.authError == DiscoverResult.INVALID_AUTH;
+                    Uri uri = Uri.parse(_urlController.text);
+                    var connectionWarningResponse = true;
+                    if (!uri.host.endsWith('.onion') && uri.scheme == 'http') {
+                      connectionWarningResponse = await promptAreYouSure(
+                          context,
+                          "Connection Warning",
+                          Text(
+                              'Your connection to this remote server may not be a secured connection. Are you sure you want to continue?'));
+                    }
+
+                    if (connectionWarningResponse) {
+                      var nav = Navigator.of(context);
+                      failDiscoverURL = false;
+                      failAuthenticate = false;
+
+                      if (_formKey.currentState.validate()) {
+                        var newSettings = snapshot.data.copyWith(
+                            remoteServerAuthData: RemoteServerAuthData(
+                                _urlController.text,
+                                _userController.text,
+                                _passwordController.text,
+                                BREEZ_BACKUP_DIR));
+                        var loader = createLoaderRoute(context,
+                            message: "Testing connection", opacity: 0.8);
+                        Navigator.push(context, loader);
+                        discoverURL(newSettings.remoteServerAuthData)
+                            .then((value) async {
+                          nav.removeRoute(loader);
+
+                          if (value.authError == DiscoverResult.SUCCESS) {
+                            Navigator.pop(context, value.authData);
+                          }
+                          setState(() {
+                            failDiscoverURL =
+                                value.authError == DiscoverResult.INVALID_URL;
+                            failAuthenticate =
+                                value.authError == DiscoverResult.INVALID_AUTH;
+                          });
+                          _formKey.currentState.validate();
+                        }).catchError((err) {
+                          nav.removeRoute(loader);
+                          promptError(
+                              context,
+                              "Remote Server",
+                              Text(
+                                  "Failed to connect with the remote server, please check your settings."));
                         });
-                        _formKey.currentState.validate();
-                      }).catchError((err) {
-                        nav.removeRoute(loader);
-                        promptError(
-                            context,
-                            "Remote Server",
-                            Text(
-                                "Failed to connect with the remote server, please check your settings."));
-                      });
+                      }
                     }
                   },
                 ),
