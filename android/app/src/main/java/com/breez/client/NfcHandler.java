@@ -1,7 +1,6 @@
 package com.breez.client;
 
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.nfc.NdefMessage;
 import android.nfc.NfcAdapter;
 import android.os.Parcelable;
@@ -17,7 +16,6 @@ import io.flutter.embedding.engine.plugins.activity.ActivityPluginBinding;
 import io.flutter.plugin.common.BinaryMessenger;
 import io.flutter.plugin.common.MethodCall;
 import io.flutter.plugin.common.MethodChannel;
-import io.flutter.plugin.common.PluginRegistry;
 
 public class NfcHandler implements MethodChannel.MethodCallHandler, FlutterPlugin, ActivityAware {
     private static final String NFC_CHANNEL = "com.breez.client/nfc";

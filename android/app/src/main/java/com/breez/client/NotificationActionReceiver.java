@@ -34,4 +34,3 @@ public class NotificationActionReceiver extends BroadcastReceiver {
         context.startActivity(notificationIntent);
     }
 }
-

@@ -1,14 +1,7 @@
 package com.breez.client.plugins.breez.breezlib;
 
-import android.app.Activity;
 import android.content.Context;
-import android.os.AsyncTask;
 import android.util.Log;
-
-import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
-import com.google.android.gms.tasks.Tasks;
-import com.google.api.client.googleapis.extensions.android.gms.auth.GoogleAccountCredential;
-import com.google.api.services.drive.DriveScopes;
 
 import bindings.Logger;
 import io.flutter.embedding.engine.plugins.FlutterPlugin;
@@ -20,7 +13,6 @@ import io.flutter.plugin.common.MethodCall;
 import io.flutter.plugin.common.EventChannel;
 import io.flutter.plugin.common.EventChannel.StreamHandler;
 import io.flutter.plugin.common.MethodChannel;
-import io.flutter.plugin.common.PluginRegistry;
 import bindings.*;
 
 import java.io.File;
@@ -356,4 +348,3 @@ public class Breez implements MethodChannel.MethodCallHandler, StreamHandler,
         }
     }
 }
-

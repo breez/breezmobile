@@ -2,7 +2,6 @@ package com.breez.client.job;
 
 import com.breez.client.plugins.breez.breezlib.ChainSync;
 import androidx.work.Constraints;
-import androidx.work.ExistingWorkPolicy;
 import androidx.work.OneTimeWorkRequest;
 import androidx.work.WorkManager;
 

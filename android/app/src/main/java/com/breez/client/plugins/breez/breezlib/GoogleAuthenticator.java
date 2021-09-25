@@ -1,6 +1,5 @@
 package com.breez.client.plugins.breez.breezlib;
 
-import android.app.Activity;
 import android.content.Intent;
 import androidx.annotation.NonNull;
 import android.util.Log;
