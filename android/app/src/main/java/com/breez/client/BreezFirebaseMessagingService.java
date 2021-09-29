@@ -125,4 +125,3 @@ public class BreezFirebaseMessagingService extends FirebaseMessagingService {
         return false;
     }
 }
-
