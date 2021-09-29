@@ -585,14 +585,25 @@ class SinglePaymentInfo implements PaymentInfo {
   bool get isTransferRequest =>
       _paymentResponse?.invoiceMemo?.transferRequest == true;
 
-  String get description =>
-      _paymentResponse.invoiceMemo.description.startsWith("Bitrefill")
-          ? _paymentResponse.invoiceMemo.description
-              .substring(9, _paymentResponse.invoiceMemo.description.length)
-              .trimLeft()
-          : type == PaymentType.DEPOSIT || type == PaymentType.WITHDRAWAL
-              ? "Bitcoin Transfer"
-              : _paymentResponse.invoiceMemo?.description;
+  String get description {
+    String result;
+    if (type == PaymentType.WITHDRAWAL) {
+      if (pending) {
+        result = 'Preparing to be broadcasted.';
+      } else {
+        result = 'Transaction was broadcasted.';
+      }
+    }
+    result ??= _paymentResponse.invoiceMemo.description.startsWith("Bitrefill")
+        ? _paymentResponse.invoiceMemo.description
+            .substring(9, _paymentResponse.invoiceMemo.description.length)
+            .trimLeft()
+        : type == PaymentType.DEPOSIT
+            ? "Bitcoin Transfer"
+            : _paymentResponse.invoiceMemo?.description;
+
+    return result;
+  }
 
   String get imageURL {
     if (_paymentResponse.invoiceMemo.description.startsWith("Bitrefill") ||

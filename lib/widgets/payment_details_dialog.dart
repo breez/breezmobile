@@ -62,6 +62,7 @@ Future<Null> showPaymentDetailsDialog(
           );
         });
   }
+
   AlertDialog _paymentDetailsDialog = AlertDialog(
     titlePadding: EdgeInsets.zero,
     title: Stack(children: <Widget>[
