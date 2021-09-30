@@ -203,34 +203,35 @@ class BackupBloc {
     action.resolve(await _breezLib.downloadBackup(action.nodeID));
   }
 
-  Future<List<int>> _getBackupKey(BackupKeyType keyType) async {
+  Future<BreezLibBackupKey> _getBackupKey(BackupKeyType keyType) async {
+    BreezLibBackupKey key;
+
     if (keyType == BackupKeyType.PIN) {
       var pinCode = await _secureStorage.read(key: 'pinCode');
-      return utf8.encode(pinCode);
+      key = BreezLibBackupKey()..key = utf8.encode(pinCode);
     }
     if (keyType == BackupKeyType.PHRASE) {
       var phrase = await _secureStorage.read(key: 'backupKey');
-      return HEX.decode(phrase);
+      key = BreezLibBackupKey()..entropyPhrase = phrase;
     }
 
-    return null;
+    return key;
   }
 
   Future _setBreezLibBackupKey({BackupKeyType backupKeyType}) async {
     var keyType =
         backupKeyType ?? _backupSettingsController.value.backupKeyType;
     var encryptionKey = await _getBackupKey(keyType);
-    if (encryptionKey != null && encryptionKey.length != 32) {
-      encryptionKey = sha256.convert(encryptionKey).bytes;
-    }
-    var encryptionKeyType = encryptionKey != null
+
+    var encryptionKeyType = encryptionKey?.key != null
         ? keyType == BackupKeyType.PHRASE
             ? "Mnemonics12"
             : keyType == BackupKeyType.PIN
                 ? "Pin"
                 : ""
         : "";
-    return _breezLib.setBackupEncryptionKey(encryptionKey, encryptionKeyType);
+    return _breezLib.setBackupEncryptionKey(
+        encryptionKey?.key, encryptionKeyType);
   }
 
   _scheduleBackgroundTasks() {
@@ -347,8 +348,13 @@ class BackupBloc {
         return;
       }
 
+      if (request.encryptionKey != null) {
+        assert(request.encryptionKey.key.length > 0 || true);
+      }
+      assert(!request.snapshot.nodeID.isEmpty);
+
       _breezLib
-          .restore(request.snapshot.nodeID, request.encryptionKey)
+          .restore(request.snapshot.nodeID, request.encryptionKey.key)
           .then((_) => _restoreFinishedController.add(true))
           .catchError(_restoreFinishedController.addError);
     });
@@ -388,7 +394,7 @@ class SnapshotInfo {
 
 class RestoreRequest {
   final SnapshotInfo snapshot;
-  final List<int> encryptionKey;
+  final BreezLibBackupKey encryptionKey;
 
   RestoreRequest(this.snapshot, this.encryptionKey);
 }
@@ -401,4 +407,32 @@ class SignInFailedException implements Exception {
   String toString() {
     return "Sign in failed";
   }
+}
+
+class BreezLibBackupKey {
+  final KEYLENGTH = 32;
+
+  String entropyPhrase;
+  List<int> _key;
+  set key(List<int> v) => _key = v;
+
+  List<int> get key {
+    var entropyBytes = _key;
+    if (entropyBytes == null) {
+      assert(entropyPhrase != null);
+      assert(entropyPhrase.isNotEmpty);
+      entropyBytes = HEX.decode(entropyPhrase);
+    }
+
+    if (entropyBytes.length != KEYLENGTH) {
+      // The length of a "Mnemonics" entropy phrase is 32.
+      // The length of a "Mnemonics12" entropy phrase is 16.
+
+      entropyBytes = sha256.convert(entropyBytes).bytes;
+    }
+
+    return entropyBytes;
+  }
+
+  BreezLibBackupKey({this.entropyPhrase});
 }

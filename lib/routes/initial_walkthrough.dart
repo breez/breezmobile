@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:breez/logger.dart';
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:breez/bloc/backup/backup_actions.dart';
 import 'package:breez/bloc/backup/backup_bloc.dart';
@@ -83,8 +84,10 @@ class InitialWalkthroughPageState extends State<InitialWalkthroughPage>
       }
 
       var restore = (SnapshotInfo snapshot, List<int> key) {
+        log.info(
+            'initial_walkthrough.dart.restore: snapshotInfo with timestamp: ${snapshot?.modifiedTime}');
         widget._backupBloc.restoreRequestSink
-            .add(RestoreRequest(snapshot, key));
+            .add(RestoreRequest(snapshot, BreezLibBackupKey()..key = key));
         Navigator.push(
             context,
             createLoaderRoute(context,
@@ -93,14 +96,18 @@ class InitialWalkthroughPageState extends State<InitialWalkthroughPage>
 
       if (toRestore != null) {
         if (toRestore.encrypted) {
-          if (toRestore.encryptionType.contains("Mnemonics")) {
-            restoreUsingPhrase(identical(toRestore.encryptionType, "Mnemonics"), (entrophy) async {
-              await _createBackupPhrase(entrophy);
+          if (toRestore.encryptionType.startsWith("Mnemonics")) {
+            log.info(
+                'initial_walkthrough.dart: found mnemonic of type "${toRestore.encryptionType}"');
+
+            restoreUsingPhrase((toRestore.encryptionType == "Mnemonics"),
+                (entropy) async {
+              await _createBackupPhrase(entropy);
               var updateAction = UpdateBackupSettings(backupContext.settings
                   .copyWith(keyType: BackupKeyType.PHRASE));
               widget._backupBloc.backupActionsSink.add(updateAction);
               updateAction.future
-                  .then((_) => restore(toRestore, HEX.decode(entrophy)));
+                  .then((_) => restore(toRestore, HEX.decode(entropy)));
             });
             return;
           }
