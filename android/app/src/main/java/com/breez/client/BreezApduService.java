@@ -84,7 +84,6 @@ public class BreezApduService extends HostApduService {
 
     public static final byte[] DATA_RESPONSE_OK = {(byte) 0x00};
 
-
     private ByteArrayOutputStream bolt11receiveBuffer;
 
     private static int m_packetSize = 255;

@@ -1,14 +1,12 @@
 package com.breez.client;
 
 import android.content.Context;
-import android.util.Log;
 
 import com.breez.client.plugins.breez.breezlib.Breez;
 
 import java.util.logging.Handler;
 import java.util.logging.Level;
 import java.util.logging.LogRecord;
-
 
 public class BreezLogger {
     private static boolean sInit;
