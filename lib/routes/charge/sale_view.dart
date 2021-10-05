@@ -501,8 +501,8 @@ class CurrencyDisplay extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    double priceInFiat = saleLine.pricePerItem * saleLine.quantity;
-    double priceInSats = currency.satConversionRate * priceInFiat;
+    double priceInFiat = saleLine.totalFiat;
+    double priceInSats = saleLine.totalSats;
     String priceInSaleCurrency = "";
     if (saleCurrency.symbol != currency.symbol) {
       String salePrice = saleCurrency.format(
