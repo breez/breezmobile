@@ -562,11 +562,22 @@ class DevViewState extends State<DevView> {
   void _printCacheUsage() async {
     Directory tempDir = await getTemporaryDirectory();
     var stats = await tempDir.stat();
-    log.info("temp dir size = ${stats.size / 1024}mb");
+    log.info("temp dir size = ${stats.size / 1024}kb");
     var children = tempDir.listSync();
     children.forEach((child) async {
       var childStats = await child.stat();
-      log.info("path: ${child.path}: ${childStats.size / 1024}mb");
+      var idDir = (child is Directory);
+      log.info(
+          '${idDir ? "Directory - " : "File - "} path: ${child.path}: ${childStats.size / 1024}kb');
+      if (child is Directory) {
+        var secondLevelChildren = child.listSync();
+        secondLevelChildren.forEach((secondLevelChild) async {
+          var idChildDir = (secondLevelChild is Directory);
+          var secondLevelChildStats = await secondLevelChild.stat();
+          log.info(
+              "\t${idChildDir ? "Directory - " : "File - "} path: ${secondLevelChild.path}: ${secondLevelChildStats.size / 1024}kb");
+        });
+      }
     });
   }
 
