@@ -1,9 +1,11 @@
 import 'dart:convert';
 
+import 'package:breez/bloc/tor/bloc.dart';
 import 'package:breez/bloc/backup/backup_bloc.dart';
 import 'package:breez/bloc/backup/backup_model.dart';
 import 'package:breez/bloc/blocs_provider.dart';
 import 'package:breez/routes/podcast/theme.dart';
+import 'package:breez/routes/network/network.dart';
 import 'package:breez/widgets/back_button.dart' as backBtn;
 import 'package:breez/widgets/error_dialog.dart';
 import 'package:breez/widgets/loader.dart';
@@ -20,9 +22,10 @@ Future<RemoteServerAuthData> promptAuthData(BuildContext context,
   return Navigator.of(context).push<RemoteServerAuthData>(FadeInRoute(
     builder: (BuildContext context) {
       final backupBloc = AppBlocsProvider.of<BackupBloc>(context);
+      final torBloc = AppBlocsProvider.of<TorBloc>(context);
       return withBreezTheme(
         context,
-        RemoteServerAuthPage(backupBloc, restore),
+        RemoteServerAuthPage(backupBloc, torBloc, restore),
       );
     },
   ));
@@ -31,10 +34,11 @@ Future<RemoteServerAuthData> promptAuthData(BuildContext context,
 const String BREEZ_BACKUP_DIR = "DO_NOT_DELETE_Breez_Backup";
 
 class RemoteServerAuthPage extends StatefulWidget {
-  RemoteServerAuthPage(this._backupBloc, this.restore);
+  RemoteServerAuthPage(this._backupBloc, this._torBloc, this.restore);
 
   final String _title = "Remote Server";
   final BackupBloc _backupBloc;
+  final TorBloc _torBloc;
   final bool restore;
 
   @override
@@ -189,53 +193,83 @@ class RemoteServerAuthPageState extends State<RemoteServerAuthPage> {
                   stickToBottom: true,
                   text: widget.restore ? "RESTORE" : "SAVE",
                   onPressed: () async {
+                    var continueResponse = true;
                     Uri uri = Uri.parse(_urlController.text);
-                    var connectionWarningResponse = true;
-                    if (!uri.host.endsWith('.onion') && uri.scheme == 'http') {
-                      connectionWarningResponse = await promptAreYouSure(
+                    if (uri.host.endsWith('onion') &&
+                        widget._torBloc.torConfig == null) {
+                      continueResponse = await promptError(
                           context,
-                          "Connection Warning",
+                          'Server URL',
                           Text(
-                              'Your connection to this remote server may not be a secured connection. Are you sure you want to continue?'));
+                            'This URL has an onion domain. You probably need to first enable Tor in the Network settings.',
+                            style:
+                                Theme.of(context).dialogTheme.contentTextStyle,
+                          ),
+                          optionText: 'CONTINUE', 
+                          optionFunc: () {
+                              Navigator.of(context).pop();
+                          },
+                          okText: 'SETTINGS',
+                          okFunc: () {
+                        // Navigator.of(context).pop();
+                        Navigator.of(context).push(FadeInRoute(
+                          builder: (_) =>
+                              withBreezTheme(context, NetworkPage()),
+                        ));
+                        // Navigator.of(context).popUntil((route) => route is RemoteServerAuthPage);
+                        return false;
+                      });
                     }
 
-                    if (connectionWarningResponse) {
-                      var nav = Navigator.of(context);
-                      failDiscoverURL = false;
-                      failAuthenticate = false;
+                    if (continueResponse) {
+                      var connectionWarningResponse = true;
+                      if (!uri.host.endsWith('.onion') &&
+                          uri.scheme == 'http') {
+                        connectionWarningResponse = await promptAreYouSure(
+                            context,
+                            "Connection Warning",
+                            Text(
+                                'Your connection to this remote server may not be a secured connection. Are you sure you want to continue?'));
+                      }
 
-                      if (_formKey.currentState.validate()) {
-                        var newSettings = snapshot.data.copyWith(
-                            remoteServerAuthData: RemoteServerAuthData(
-                                _urlController.text,
-                                _userController.text,
-                                _passwordController.text,
-                                BREEZ_BACKUP_DIR));
-                        var loader = createLoaderRoute(context,
-                            message: "Testing connection", opacity: 0.8);
-                        Navigator.push(context, loader);
-                        discoverURL(newSettings.remoteServerAuthData)
-                            .then((value) async {
-                          nav.removeRoute(loader);
+                      if (connectionWarningResponse) {
+                        var nav = Navigator.of(context);
+                        failDiscoverURL = false;
+                        failAuthenticate = false;
 
-                          if (value.authError == DiscoverResult.SUCCESS) {
-                            Navigator.pop(context, value.authData);
-                          }
-                          setState(() {
-                            failDiscoverURL =
-                                value.authError == DiscoverResult.INVALID_URL;
-                            failAuthenticate =
-                                value.authError == DiscoverResult.INVALID_AUTH;
+                        if (_formKey.currentState.validate()) {
+                          var newSettings = snapshot.data.copyWith(
+                              remoteServerAuthData: RemoteServerAuthData(
+                                  _urlController.text,
+                                  _userController.text,
+                                  _passwordController.text,
+                                  BREEZ_BACKUP_DIR));
+                          var loader = createLoaderRoute(context,
+                              message: "Testing connection", opacity: 0.8);
+                          Navigator.push(context, loader);
+                          discoverURL(newSettings.remoteServerAuthData)
+                              .then((value) async {
+                            nav.removeRoute(loader);
+
+                            if (value.authError == DiscoverResult.SUCCESS) {
+                              Navigator.pop(context, value.authData);
+                            }
+                            setState(() {
+                              failDiscoverURL =
+                                  value.authError == DiscoverResult.INVALID_URL;
+                              failAuthenticate = value.authError ==
+                                  DiscoverResult.INVALID_AUTH;
+                            });
+                            _formKey.currentState.validate();
+                          }).catchError((err) {
+                            nav.removeRoute(loader);
+                            promptError(
+                                context,
+                                "Remote Server",
+                                Text(
+                                    "Failed to connect with the remote server, please check your settings."));
                           });
-                          _formKey.currentState.validate();
-                        }).catchError((err) {
-                          nav.removeRoute(loader);
-                          promptError(
-                              context,
-                              "Remote Server",
-                              Text(
-                                  "Failed to connect with the remote server, please check your settings."));
-                        });
+                        }
                       }
                     }
                   },
@@ -294,12 +328,12 @@ class RemoteServerAuthPageState extends State<RemoteServerAuthPage> {
         };
       }
       */
-      
+
     } on SignInFailedException catch (e) {
       log.warning('remote_server_auth.dart: testAuthData: $e');
       return DiscoverResult.INVALID_AUTH;
     } on RemoteServerNotFoundException catch (e) {
-        return DiscoverResult.INVALID_URL;
+      return DiscoverResult.INVALID_URL;
     }
 
     return DiscoverResult.SUCCESS;
