@@ -26,6 +26,10 @@ class AppDelegate : FlutterAppDelegate {
                 }
             }
         });
+        Breez.logger.log("didFinishLaunchingWithOptions", lvl: "INFO")
+        if let options = launchOptions {
+            Breez.logger.log(options.description, lvl: "INFO")
+        }
         return super.application(application, didFinishLaunchingWithOptions: launchOptions);
     }
     
