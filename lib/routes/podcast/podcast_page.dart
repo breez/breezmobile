@@ -65,7 +65,8 @@ class AnytimePodcastApp extends StatefulWidget {
         api: podcastApi,
         repository: repository,
         settingsService: mobileSettingsService,
-        loadMetadata: (url) => podcastIndexClient.loadFeed(url: url));
+        loadMetadata: (url) => podcastIndexClient.loadFeed(url: url),
+        loadEpisodesMetadata: (url) => podcastIndexClient.loadEpisodes(url: url));
     audioPlayerService = MobileAudioPlayerService(
       repository: repository,
       podcastService: podcastService,
