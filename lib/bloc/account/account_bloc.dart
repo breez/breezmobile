@@ -162,7 +162,9 @@ class AccountBloc {
     _paymentsController.add(PaymentsModel.initial());
     _paymentFilterController.add(PaymentFilterModel.initial());
     _accountSettingsController.add(AccountSettings.start());
+  }
 
+  start() {
     log.info("Account bloc started");
     ServiceInjector().sharedPreferences.then((preferences) {
       _handleRegisterDeviceNode();
@@ -645,7 +647,6 @@ class AccountBloc {
           _paymentFilterController.value,
           _firstDate ?? DateTime(DateTime.now().year));
     });
-
   }
 
   Future _refreshPayments() {

@@ -101,6 +101,9 @@ class HomeState extends State<Home> with WidgetsBindingObserver {
     super.initState();
     audioBloc = Provider.of<AudioBloc>(context, listen: false);
     WidgetsBinding.instance.addObserver(this);
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+      AppBlocsProvider.of<AccountBloc>(context).start();
+    });
     audioBloc.transitionLifecycleState(LifecyleState.resume);
 
     _registerNotificationHandlers();
@@ -155,22 +158,6 @@ class HomeState extends State<Home> with WidgetsBindingObserver {
       print("error " + e.toString());
     });
   }
-
-  // @override
-  // void didChangeAppLifecycleState(AppLifecycleState state) async {
-  //   final audioBloc = Provider.of<AudioBloc>(context, listen: false);
-
-  //   switch (state) {
-  //     case AppLifecycleState.resumed:
-  //       audioBloc.transitionLifecycleState(LifecyleState.resume);
-  //       break;
-  //     case AppLifecycleState.paused:
-  //       audioBloc.transitionLifecycleState(LifecyleState.pause);
-  //       break;
-  //     default:
-  //       break;
-  //   }
-  // }
 
   @override
   void dispose() {
