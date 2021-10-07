@@ -1,37 +1,37 @@
 import 'package:auto_size_text/auto_size_text.dart';
-import 'package:breez/bloc/sats_zones/model.dart';
+import 'package:breez/bloc/lounge/model.dart';
 import 'package:breez/theme_data.dart' as theme;
 import 'package:breez/utils/min_font_size.dart';
 import 'package:flutter/material.dart';
 
-import 'sats_zone_item.dart';
+import 'lounge_item.dart';
 
 const BOTTOM_PADDING = 8.0;
 
-class SatsZonesList extends StatelessWidget {
-  final List<SatsZone> _satsZones;
+class LoungesList extends StatelessWidget {
+  final List<Lounge> _lounges;
 
-  SatsZonesList(this._satsZones);
+  LoungesList(this._lounges);
 
   @override
   Widget build(BuildContext context) {
-    if (_satsZones?.length == 0) {
-      return _showNoSatsZonesText(context);
+    if (_lounges?.length == 0) {
+      return _showNoLoungesText(context);
     } else {
       return ListView.builder(
-          itemCount: _satsZones.length + 1,
+          itemCount: _lounges.length + 1,
           itemBuilder: (context, index) {
             // return the header
             if (index == 0) {
               return _buildHeader(context);
             }
             index -= 1;
-            return SatsZoneItem(_satsZones[index]);
+            return LoungeItem(_lounges[index]);
           });
     }
   }
 
-  _showNoSatsZonesText(BuildContext context) {
+  _showNoLoungesText(BuildContext context) {
     return Center(
       child: Column(
         mainAxisSize: MainAxisSize.max,
@@ -47,7 +47,7 @@ class SatsZonesList extends StatelessWidget {
           Padding(
             padding: const EdgeInsets.only(top: 0.0, left: 16.0, right: 16.0),
             child: AutoSizeText(
-              "Create a Sats Zone using the 'CREATE' button",
+              "Host a lounge using the 'HOST' button",
               style: theme.themeId == "BLUE"
                   ? Typography.material2018(platform: TargetPlatform.android)
                       .black
@@ -74,16 +74,46 @@ class SatsZonesList extends StatelessWidget {
         borderRadius: BorderRadius.circular(5),
         child: Container(
           color: theme.customData[theme.themeId].paymentListBgColor,
-          height: 60,
+          height: 64,
           child: Row(
-            children: [
-              Padding(
-                padding: EdgeInsets.only(left: 8.0, right: 0.0),
-                child: Text(
-                  "My Sats Zone",
-                  style: Theme.of(context).accentTextTheme.subtitle2,
+            children: <Widget>[
+              Expanded(
+                child: TextButton(
+                  style: TextButton.styleFrom(
+                    padding: EdgeInsets.zero,
+                  ),
+                  onPressed: () {  },
+                  child: Text(
+                    "Hosted",
+                    textAlign: TextAlign.center,
+                    style: theme.bottomAppBarBtnStyle.copyWith(
+                        fontSize:
+                        13.5 / MediaQuery.of(context).textScaleFactor),
+                    maxLines: 1,
+                  ),
                 ),
               ),
+              VerticalDivider(
+                indent: 16,
+                endIndent: 16,
+                color: Theme.of(context).colorScheme.secondary,
+              ),
+              Expanded(
+                child: TextButton(
+                  style: TextButton.styleFrom(
+                    padding: EdgeInsets.zero,
+                  ),
+                  onPressed: () {  },
+                  child: Text(
+                    "Entered",
+                    textAlign: TextAlign.center,
+                    style: theme.bottomAppBarBtnStyle.copyWith(
+                        fontSize:
+                        13.5 / MediaQuery.of(context).textScaleFactor),
+                    maxLines: 1,
+                  ),
+                ),
+              )
             ],
           ),
         ),

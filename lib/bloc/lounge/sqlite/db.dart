@@ -6,14 +6,14 @@ import 'package:sqflite/sqflite.dart';
 Future<Database> getDB() async {
   return openDatabase(
     // Set the path to the database.
-    join(await databaseFactory.getDatabasesPath(), 'sats-zone.db'),
-    // When the database is first created, create a table to store sats zones.
+    join(await databaseFactory.getDatabasesPath(), 'lounge.db'),
+    // When the database is first created, create a table to store lounges.
     onCreate: (db, version) async {
       await db.execute(
         """
-        CREATE TABLE SatsZone(
+        CREATE TABLE Lounge(
           id INTEGER PRIMARY KEY,
-          zoneID TEXT, 
+          loungeID TEXT, 
           title TEXT
         )
         """,

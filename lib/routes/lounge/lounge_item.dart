@@ -3,11 +3,9 @@ import 'dart:io';
 
 import 'package:breez/bloc/account/account_bloc.dart';
 import 'package:breez/bloc/blocs_provider.dart';
-import 'package:breez/bloc/sats_zones/actions.dart';
-import 'package:breez/bloc/sats_zones/bloc.dart';
-import 'package:breez/bloc/sats_zones/model.dart';
-import 'package:breez/bloc/sats_zones/sats_zone_payments_bloc.dart';
-import 'package:breez/bloc/user_profile/user_actions.dart';
+import 'package:breez/bloc/lounge/actions.dart';
+import 'package:breez/bloc/lounge/bloc.dart';
+import 'package:breez/bloc/lounge/model.dart';
 import 'package:breez/bloc/user_profile/user_profile_bloc.dart';
 import 'package:breez/theme_data.dart' as theme;
 import 'package:breez/widgets/flushbar.dart';
@@ -17,16 +15,16 @@ import 'package:flutter/widgets.dart';
 import 'package:jitsi_meet/jitsi_meet.dart';
 import 'package:share_extend/share_extend.dart';
 
-class SatsZoneItem extends StatefulWidget {
-  final SatsZone satsZone;
+class LoungeItem extends StatefulWidget {
+  final Lounge lounge;
 
-  const SatsZoneItem(this.satsZone);
+  const LoungeItem(this.lounge);
 
   @override
-  _SatsZoneItemState createState() => _SatsZoneItemState();
+  _LoungeItemState createState() => _LoungeItemState();
 }
 
-class _SatsZoneItemState extends State<SatsZoneItem> {
+class _LoungeItemState extends State<LoungeItem> {
 
   @override
   void initState() {
@@ -52,37 +50,31 @@ class _SatsZoneItemState extends State<SatsZoneItem> {
             children: [
               ListTile(
                 title: Text(
-                  widget.satsZone.title,
+                  widget.lounge.title,
                   style: Theme.of(context).accentTextTheme.subtitle2,
                   overflow: TextOverflow.ellipsis,
                 ),
                 subtitle: Text(
-                  widget.satsZone.zoneID,
+                  widget.lounge.loungeID,
                   style: Theme.of(context).accentTextTheme.caption,
                 ),
+                onLongPress: () {
+                  LoungesBloc loungesBloc =
+                  AppBlocsProvider.of<LoungesBloc>(context);
+                  DeleteLounge deleteLounge =
+                  DeleteLounge(widget.lounge.id);
+                  loungesBloc.actionsSink.add(deleteLounge);
+                  deleteLounge.future.then((_) {
+                    showFlushbar(context,
+                        duration: Duration(seconds: 4),
+                        messageWidget: Text("Deleted " + widget.lounge.title,
+                            style: theme.snackBarStyle,
+                            textAlign: TextAlign.center));
+                  });
+                },
                 trailing: Row(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    IconButton(
-                      icon: Icon(
-                        Icons.delete_forever_outlined,
-                        color: Colors.red,
-                      ),
-                      onPressed: () {
-                        SatsZonesBloc satsZonesBloc =
-                            AppBlocsProvider.of<SatsZonesBloc>(context);
-                        DeleteSatsZone deleteSatsZone =
-                            DeleteSatsZone(widget.satsZone.id);
-                        satsZonesBloc.actionsSink.add(deleteSatsZone);
-                        deleteSatsZone.future.then((_) {
-                          showFlushbar(context,
-                              duration: Duration(seconds: 4),
-                              messageWidget: Text("Deleted " + widget.satsZone.title,
-                                  style: theme.snackBarStyle,
-                                  textAlign: TextAlign.center));
-                        });
-                      },
-                    ),
                     IconButton(
                       icon: Icon(
                         Icons.share_outlined,
@@ -92,7 +84,7 @@ class _SatsZoneItemState extends State<SatsZoneItem> {
                       onPressed: () {
                         final RenderBox box = context.findRenderObject();
                         ShareExtend.share(
-                            "Join Sats Zone: " + widget.satsZone.zoneID, "text",
+                            "Join Lounge: " + widget.lounge.loungeID, "text",
                             sharePositionOrigin:
                                 box.localToGlobal(Offset.zero) & box.size);
                       },
@@ -106,7 +98,7 @@ class _SatsZoneItemState extends State<SatsZoneItem> {
                           size: 22,
                         ),
                         onPressed: () =>
-                            _joinSatsZone(widget.satsZone.zoneID, context),
+                            _enterLounge(widget.lounge.loungeID, context),
                       ),
                     ),
                   ],
@@ -119,7 +111,7 @@ class _SatsZoneItemState extends State<SatsZoneItem> {
     );
   }
 
-  _joinSatsZone(String zoneID, BuildContext context) async {
+  _enterLounge(String loungeID, BuildContext context) async {
     var userProfileBloc = AppBlocsProvider.of<UserProfileBloc>(context);
     var accountBloc = AppBlocsProvider.of<AccountBloc>(context);
 
@@ -142,14 +134,14 @@ class _SatsZoneItemState extends State<SatsZoneItem> {
       }
     }
     // Define meetings options here
-    var options = JitsiMeetingOptions(room: zoneID)
-      ..subject = widget.satsZone.title
+    var options = JitsiMeetingOptions(room: loungeID)
+      ..subject = widget.lounge.title
       ..userDisplayName = user.name
       ..userEmail = "breez:" + await accountBloc.getPersistentNodeID()
       ..isLightTheme = theme.themeId == "BLUE"
       ..featureFlags.addAll(featureFlags)
       ..webOptions = {
-        "roomName": zoneID,
+        "roomName": loungeID,
         "width": "100%",
         "height": "100%",
         "enableWelcomePage": false,

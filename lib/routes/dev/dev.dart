@@ -9,7 +9,7 @@ import 'package:breez/bloc/account/add_funds_model.dart';
 import 'package:breez/bloc/backup/backup_bloc.dart';
 import 'package:breez/bloc/backup/backup_model.dart';
 import 'package:breez/bloc/blocs_provider.dart';
-import 'package:breez/bloc/sats_zones/bloc.dart';
+import 'package:breez/bloc/lounge/bloc.dart';
 import 'package:breez/bloc/pos_catalog/bloc.dart';
 import 'package:breez/bloc/user_profile/breez_user_model.dart';
 import 'package:breez/bloc/user_profile/user_actions.dart';
@@ -446,10 +446,10 @@ class DevViewState extends State<DevView> {
           bloc.resetDB();
         }));
     choices.add(Choice(
-        title: 'Reset Sats Zones DB',
+        title: 'Reset Lounges DB',
         icon: Icons.phone_android,
         function: () {
-          SatsZonesBloc bloc = AppBlocsProvider.of<SatsZonesBloc>(context);
+          LoungesBloc bloc = AppBlocsProvider.of<LoungesBloc>(context);
           bloc.resetDB();
         }));
     choices.add(Choice(

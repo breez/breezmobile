@@ -25,7 +25,7 @@ import 'package:breez/routes/charge/pos_invoice.dart';
 import 'package:breez/routes/home/bottom_actions_bar.dart';
 import 'package:breez/routes/home/qr_action_button.dart';
 import 'package:breez/routes/marketplace/marketplace.dart';
-import 'package:breez/routes/sats_zones/sats_zones.dart';
+import 'package:breez/routes/lounge/lounges.dart';
 import 'package:breez/routes/podcast/podcast_page.dart' as breezPodcast;
 import 'package:breez/routes/podcast/theme.dart';
 import 'package:breez/theme_data.dart' as theme;
@@ -470,7 +470,7 @@ class HomeState extends State<Home> with WidgetsBindingObserver {
     return [
       DrawerItemConfigGroup([_drawerItemBalance(context, user)]),
       DrawerItemConfigGroup([_drawerItemPodcast(context, user)]),
-      DrawerItemConfigGroup([_drawerItemSatsZone(context, user)]),
+      DrawerItemConfigGroup([_drawerItemLounge(context, user)]),
       DrawerItemConfigGroup([_drawerItemPos(context, user)]),
       DrawerItemConfigGroup([_drawerItemLightningApps(context, user)]),
       DrawerItemConfigGroup([]),
@@ -523,19 +523,19 @@ class HomeState extends State<Home> with WidgetsBindingObserver {
     );
   }
 
-  DrawerItemConfig _drawerItemSatsZone(
+  DrawerItemConfig _drawerItemLounge(
     BuildContext context,
     BreezUserModel user,
   ) {
     return DrawerItemConfig(
       "",
-      "Sats Zone",
-      "src/icon/sats_zone.png",
-      isSelected: user.appMode == AppMode.satsZones,
+      "Lounge",
+      "src/icon/lounge.png",
+      isSelected: user.appMode == AppMode.lounge,
       onItemSelected: (_) {
         protectAdminAction(context, user, () {
           widget.userProfileBloc.userActionsSink
-              .add(SetAppMode(AppMode.satsZones));
+              .add(SetAppMode(AppMode.lounge));
           return Future.value(null);
         });
       },
@@ -621,8 +621,8 @@ class HomeState extends State<Home> with WidgetsBindingObserver {
     switch (appMode) {
       case (AppMode.podcasts):
         return "src/icon/podcast.png";
-      case (AppMode.satsZones):
-        return "src/icon/sats_zone.png";
+      case (AppMode.lounge):
+        return "src/icon/lounge.png";
       case (AppMode.pos):
         return "src/icon/pos.png";
       case (AppMode.apps):
@@ -651,8 +651,8 @@ class HomeState extends State<Home> with WidgetsBindingObserver {
             ),
           ),
         );
-      case AppMode.satsZones:
-        return SatsZones();
+      case AppMode.lounge:
+        return Lounges();
       case AppMode.pos:
         return POSInvoice();
       case AppMode.apps:

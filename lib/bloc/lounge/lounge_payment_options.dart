@@ -1,26 +1,26 @@
-class SatsZonePaymentOptions {
+class LoungePaymentOptions {
   final int preferredBoostValue;
   final int preferredSatsPerMinValue;
   final int customBoostValue;
   final int customSatsPerMinValue;
 
-  SatsZonePaymentOptions._({
+  LoungePaymentOptions._({
     this.preferredBoostValue = 10000,
     this.preferredSatsPerMinValue = 0,
     this.customBoostValue,
     this.customSatsPerMinValue,
   });
 
-  SatsZonePaymentOptions.initial()
+  LoungePaymentOptions.initial()
       : this._(preferredBoostValue: 10000, preferredSatsPerMinValue: 0);
 
-  SatsZonePaymentOptions copyWith({
+  LoungePaymentOptions copyWith({
     int preferredBoostValue,
     int preferredSatsPerMinValue,
     int customBoostValue,
     int customSatsPerMinValue,
   }) {
-    return SatsZonePaymentOptions._(
+    return LoungePaymentOptions._(
       preferredBoostValue: preferredBoostValue ?? this.preferredBoostValue,
       preferredSatsPerMinValue:
       preferredSatsPerMinValue ?? this.preferredSatsPerMinValue,
@@ -30,7 +30,7 @@ class SatsZonePaymentOptions {
     );
   }
 
-  SatsZonePaymentOptions.fromJson(Map<String, dynamic> json)
+  LoungePaymentOptions.fromJson(Map<String, dynamic> json)
       : preferredBoostValue = json['preferredBoostValue'] ?? 5000,
         preferredSatsPerMinValue = json['preferredSatsPerMinValue'] ?? 0,
         customBoostValue = json['customBoostValue'],

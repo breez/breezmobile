@@ -1,6 +1,6 @@
 import 'dart:io';
 
-import 'package:breez/bloc/sats_zones/model.dart';
+import 'package:breez/bloc/lounge/model.dart';
 import 'package:sqflite/sqflite.dart';
 
 import '../repository.dart';
@@ -15,38 +15,38 @@ class SqliteRepository implements Repository {
   }
 
   /*
-   * Sats Zones
+   * Lounge
    */
   @override
-  Future<int> addSatsZone(SatsZone satsZone) async {
-    return _addDBItem(await getDB(), "SatsZone", satsZone);
+  Future<int> addLounge(Lounge lounge) async {
+    return _addDBItem(await getDB(), "Lounge", lounge);
   }
 
   @override
-  Future<void> deleteSatsZone(int id) async {
-    return _deleteDBItems(await getDB(), "SatsZone",
+  Future<void> deleteLounge(int id) async {
+    return _deleteDBItems(await getDB(), "Lounge",
         where: "id = ?", whereArgs: [id]);
   }
 
   @override
-  Future<SatsZone> fetchSatsZoneByID(int id) async {
+  Future<Lounge> fetchLoungeByID(int id) async {
     var items = await _fetchDBItems(
-        await getDB(), "SatsZone", (e) => SatsZone.fromMap(e),
+        await getDB(), "Lounge", (e) => Lounge.fromMap(e),
         where: "id = ?", whereArgs: [id]);
     return items.length > 0 ? items[0] : null;
   }
 
   @override
-  Future<List<SatsZone>> fetchSatsZones({String filter}) async {
-    return _fetchDBItems(await getDB(), "SatsZone", (e) => SatsZone.fromMap(e),
+  Future<List<Lounge>> fetchLounge({String filter}) async {
+    return _fetchDBItems(await getDB(), "Lounge", (e) => Lounge.fromMap(e),
         where: filter == null ? null : "title LIKE",
         whereArgs: ['%$filter%', '%$filter%']);
   }
 
   @override
-  Future<void> updateSatsZone(SatsZone satsZone) async {
-    return _updateDBItem(await getDB(), "SatsZone", satsZone.toMap(),
-        where: "id = ?", whereArgs: [satsZone.id]);
+  Future<void> updateLounge(Lounge lounge) async {
+    return _updateDBItem(await getDB(), "Lounge", lounge.toMap(),
+        where: "id = ?", whereArgs: [lounge.id]);
   }
 
   /*

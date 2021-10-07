@@ -6,8 +6,8 @@ import 'package:breez/bloc/lnurl/lnurl_bloc.dart';
 import 'package:breez/bloc/marketplace/marketplace_bloc.dart';
 import 'package:breez/bloc/pos_catalog/bloc.dart';
 import 'package:breez/bloc/reverse_swap/reverse_swap_bloc.dart';
-import 'package:breez/bloc/sats_zones/bloc.dart';
-import 'package:breez/bloc/sats_zones/sats_zone_payments_bloc.dart';
+import 'package:breez/bloc/lounge/bloc.dart';
+import 'package:breez/bloc/lounge/lounge_payments_bloc.dart';
 import 'package:breez/bloc/user_profile/user_profile_bloc.dart';
 
 import 'invoice/invoice_bloc.dart';
@@ -28,8 +28,8 @@ class AppBlocs {
   final LNUrlBloc lnurlBloc;
   final PosCatalogBloc posCatalogBloc;
   final ReverseSwapBloc reverseSwapBloc;
-  final SatsZonesBloc satsZonesBloc;
-  final SatsZonePaymentsBloc satsZonePaymentsBloc;
+  final LoungesBloc loungesBloc;
+  final LoungePaymentsBloc loungePaymentsBloc;
   final Map<Type, Object> _blocsByType;
 
   static T _registerBloc<T>(T bloc, Map<Type, Object> blocs) {
@@ -66,9 +66,9 @@ class AppBlocs {
         _registerBloc(PosCatalogBloc(accountBloc.accountStream), blocsByType);
     FastbitcoinsBloc fastbitcoinsBloc =
         _registerBloc(FastbitcoinsBloc(), blocsByType);
-    SatsZonesBloc satsZonesBloc = _registerBloc(SatsZonesBloc(), blocsByType);
-    SatsZonePaymentsBloc satsZonePaymentsBloc = _registerBloc(
-        SatsZonePaymentsBloc(userProfileBloc, accountBloc), blocsByType);
+    LoungesBloc loungesBloc = _registerBloc(LoungesBloc(), blocsByType);
+    LoungePaymentsBloc loungePaymentsBloc = _registerBloc(
+        LoungePaymentsBloc(userProfileBloc, accountBloc), blocsByType);
 
     return AppBlocs._(
         userProfileBloc,
@@ -82,8 +82,8 @@ class AppBlocs {
         reverseSwapBloc,
         lnurlBloc,
         posCatalogBloc,
-        satsZonesBloc,
-        satsZonePaymentsBloc,
+        loungesBloc,
+        loungePaymentsBloc,
         blocsByType);
   }
 
@@ -99,8 +99,8 @@ class AppBlocs {
     this.reverseSwapBloc,
     this.lnurlBloc,
     this.posCatalogBloc,
-    this.satsZonesBloc,
-    this.satsZonePaymentsBloc,
+    this.loungesBloc,
+    this.loungePaymentsBloc,
     this._blocsByType,
   );
 }

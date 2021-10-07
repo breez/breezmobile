@@ -2,24 +2,24 @@ import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-class JoinSatsZoneDialog extends StatefulWidget {
-  final Function(String zoneID) joinSatsZone;
+class EnterLoungeDialog extends StatefulWidget {
+  final Function(String loungeID) enterLounge;
 
-  JoinSatsZoneDialog(this.joinSatsZone);
+  EnterLoungeDialog(this.enterLounge);
 
   @override
   State<StatefulWidget> createState() {
-    return JoinSatsZoneDialogState();
+    return EnterLoungeDialogState();
   }
 }
 
-class JoinSatsZoneDialogState extends State<JoinSatsZoneDialog> {
+class EnterLoungeDialogState extends State<EnterLoungeDialog> {
   final _formKey = GlobalKey<FormState>();
-  TextEditingController _satsZoneIDController = TextEditingController();
+  TextEditingController _loungeIDController = TextEditingController();
 
   @override
   void initState() {
-    _satsZoneIDController.addListener(() {
+    _loungeIDController.addListener(() {
       setState(() {});
     });
     super.initState();
@@ -33,18 +33,18 @@ class JoinSatsZoneDialogState extends State<JoinSatsZoneDialog> {
   Widget _buildPaymentRequestDialog() {
     return AlertDialog(
       title: AutoSizeText(
-        "Enter Sats Zone ID:",
+        "Enter Lounge ID:",
         style:
             Theme.of(context).dialogTheme.titleTextStyle.copyWith(fontSize: 16),
         maxLines: 1,
       ),
-      content: _buildSatsZoneIDWidget(),
+      content: _buildLoungeIDWidget(),
       actions: _buildActions(),
     );
   }
 
-  Widget _buildSatsZoneIDWidget() {
-    // TODO: Add join options
+  Widget _buildLoungeIDWidget() {
+    // TODO: Add lounge options
     return Container(
       height: 200,
       width: 200,
@@ -52,7 +52,7 @@ class JoinSatsZoneDialogState extends State<JoinSatsZoneDialog> {
         key: _formKey,
         child: TextFormField(
           autovalidateMode: AutovalidateMode.disabled,
-          controller: _satsZoneIDController,
+          controller: _loungeIDController,
           style: Theme.of(context)
               .dialogTheme
               .contentTextStyle
@@ -69,16 +69,16 @@ class JoinSatsZoneDialogState extends State<JoinSatsZoneDialog> {
         child: Text("CANCEL", style: Theme.of(context).primaryTextTheme.button),
       ),
     ];
-    if (_satsZoneIDController.text.isNotEmpty) {
+    if (_loungeIDController.text.isNotEmpty) {
       actions.add(
         TextButton(
           onPressed: () {
             if (_formKey.currentState.validate()) {
               Navigator.pop(context);
-              widget.joinSatsZone(_satsZoneIDController.text);
+              widget.enterLounge(_loungeIDController.text);
             }
           },
-          child: Text("JOIN", style: Theme.of(context).primaryTextTheme.button),
+          child: Text("ENTER", style: Theme.of(context).primaryTextTheme.button),
         ),
       );
     }

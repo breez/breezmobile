@@ -2,13 +2,14 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:breez/bloc/blocs_provider.dart';
-import 'package:breez/bloc/sats_zones/actions.dart';
-import 'package:breez/bloc/sats_zones/bloc.dart';
-import 'package:breez/bloc/sats_zones/sats_zone_payments_bloc.dart';
+import 'package:breez/bloc/lounge/bloc.dart';
+import 'package:breez/bloc/lounge/actions.dart';
+import 'package:breez/bloc/lounge/bloc.dart';
+import 'package:breez/bloc/lounge/lounge_payments_bloc.dart';
 import 'package:breez/bloc/user_profile/user_actions.dart';
 import 'package:breez/bloc/user_profile/user_profile_bloc.dart';
-import 'package:breez/routes/sats_zones/join_sats_zone_dialog.dart';
-import 'package:breez/routes/sats_zones/sats_zones_list.dart';
+import 'package:breez/routes/lounge/enter_lounge_dialog.dart';
+import 'package:breez/routes/lounge/lounges_list.dart';
 import 'package:breez/theme_data.dart' as theme;
 import 'package:breez/widgets/flushbar.dart';
 import 'package:breez/widgets/loader.dart';
@@ -17,21 +18,21 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:jitsi_meet/jitsi_meet.dart';
 
-class SatsZones extends StatefulWidget {
+class Lounges extends StatefulWidget {
   @override
-  _SatsZonesState createState() => _SatsZonesState();
+  _LoungesState createState() => _LoungesState();
 }
 
-class _SatsZonesState extends State<SatsZones> {
-  String currentZoneID;
-  SatsZonePaymentsBloc paymentsBloc;
+class _LoungesState extends State<Lounges> {
+  String currentLoungeID;
+  LoungePaymentsBloc paymentsBloc;
   UserProfileBloc userProfileBloc;
   bool _isInit = false;
 
   @override
   void didChangeDependencies() {
     if (!_isInit) {
-      paymentsBloc = AppBlocsProvider.of<SatsZonePaymentsBloc>(context);
+      paymentsBloc = AppBlocsProvider.of<LoungePaymentsBloc>(context);
       userProfileBloc = AppBlocsProvider.of<UserProfileBloc>(context);
       _isInit = true;
     }
@@ -55,17 +56,17 @@ class _SatsZonesState extends State<SatsZones> {
 
   @override
   Widget build(BuildContext context) {
-    SatsZonesBloc satsZonesBloc = AppBlocsProvider.of<SatsZonesBloc>(context);
+    LoungesBloc loungesBloc = AppBlocsProvider.of<LoungesBloc>(context);
     return Scaffold(
       backgroundColor: theme.customData[theme.themeId].dashboardBgColor,
       body: StreamBuilder(
-          stream: satsZonesBloc.satsZonesStream,
+          stream: loungesBloc.loungesStream,
           builder: (context, snapshot) {
-            var satsZones = snapshot.data;
-            if (satsZones == null) {
+            var lounges = snapshot.data;
+            if (lounges == null) {
               return Center(child: Loader());
             }
-            return SatsZonesList(satsZones);
+            return LoungesList(lounges);
           }),
       bottomNavigationBar: BottomAppBar(
         color: Theme.of(context).bottomAppBarColor,
@@ -79,9 +80,9 @@ class _SatsZonesState extends State<SatsZones> {
                     padding: EdgeInsets.zero,
                   ),
                   onPressed: () =>
-                      Navigator.of(context).pushNamed("/create_sats_zone"),
+                      Navigator.of(context).pushNamed("/host_lounge"),
                   child: Text(
-                    "CREATE",
+                    "HOST",
                     textAlign: TextAlign.center,
                     style: theme.bottomAppBarBtnStyle.copyWith(
                         fontSize:
@@ -100,9 +101,9 @@ class _SatsZonesState extends State<SatsZones> {
                   style: TextButton.styleFrom(
                     padding: EdgeInsets.zero,
                   ),
-                  onPressed: () => _enterSatsZoneID(satsZonesBloc),
+                  onPressed: () => _enterLoungeID(loungesBloc),
                   child: Text(
-                    "JOIN",
+                    "ENTER",
                     textAlign: TextAlign.center,
                     style: theme.bottomAppBarBtnStyle.copyWith(
                         fontSize:
@@ -118,33 +119,33 @@ class _SatsZonesState extends State<SatsZones> {
     );
   }
 
-  _enterSatsZoneID(SatsZonesBloc satsZonesBloc) async {
+  _enterLoungeID(LoungesBloc loungesBloc) async {
     Clipboard.getData("text/plain").then((clipboardData) {
       if (clipboardData != null) {
         var clipboard = clipboardData.text;
-        if (clipboard.contains("Join Sats Zone: ")) {
-          _joinSatsZone(clipboard.substring(16), satsZonesBloc);
+        if (clipboard.contains("Enter Lounge: ")) {
+          _enterLounge(clipboard.substring(16), loungesBloc);
         } else {
           return showDialog(
               context: context,
-              builder: (BuildContext context) => JoinSatsZoneDialog(
-                  (zoneID) => _joinSatsZone(zoneID, satsZonesBloc)));
+              builder: (BuildContext context) => EnterLoungeDialog(
+                  (loungeID) => _enterLounge(loungeID, loungesBloc)));
         }
       } else {
         return showDialog(
             context: context,
-            builder: (BuildContext context) => JoinSatsZoneDialog(
-                (zoneID) => _joinSatsZone(zoneID, satsZonesBloc)));
+            builder: (BuildContext context) => EnterLoungeDialog(
+                (loungeID) => _enterLounge(loungeID, loungesBloc)));
       }
     });
   }
 
-  _joinSatsZone(String zoneID, SatsZonesBloc satsZonesBloc) async {
+  _enterLounge(String loungeID, LoungesBloc loungesBloc) async {
     var userProfileBloc = AppBlocsProvider.of<UserProfileBloc>(context);
     var user = await userProfileBloc.userStream.firstWhere((u) => u != null);
 
     setState(() {
-      currentZoneID = zoneID;
+      currentLoungeID = loungeID;
     });
     // Enable or disable any feature flag here
     // If feature flag are not provided, default values will be used
@@ -164,18 +165,18 @@ class _SatsZonesState extends State<SatsZones> {
     }
 
     String paymentOptions = jsonEncode({
-      "presetBoostAmountsList": user.satsZonePaymentOptions.presetBoostAmountsList,
-      "presetSatsPerMinuteAmountsList": user.satsZonePaymentOptions.presetSatsPerMinuteAmountsList,
-      "customBoostValue": user.satsZonePaymentOptions.customBoostValue,
-      "customSatsPerMinAmountValue": user.satsZonePaymentOptions.customSatsPerMinValue,
-      "selectedBoostAmountIndex": user.satsZonePaymentOptions.boostAmountList
-          .indexOf(user.satsZonePaymentOptions.preferredBoostValue),
-      "selectedSatsPerMinuteAmountIndex": user.satsZonePaymentOptions.satsPerMinuteIntervalsList
-          .indexOf(user.satsZonePaymentOptions.preferredSatsPerMinValue),
+      "presetBoostAmountsList": user.loungePaymentOptions.presetBoostAmountsList,
+      "presetSatsPerMinuteAmountsList": user.loungePaymentOptions.presetSatsPerMinuteAmountsList,
+      "customBoostValue": user.loungePaymentOptions.customBoostValue,
+      "customSatsPerMinAmountValue": user.loungePaymentOptions.customSatsPerMinValue,
+      "selectedBoostAmountIndex": user.loungePaymentOptions.boostAmountList
+          .indexOf(user.loungePaymentOptions.preferredBoostValue),
+      "selectedSatsPerMinuteAmountIndex": user.loungePaymentOptions.satsPerMinuteIntervalsList
+          .indexOf(user.loungePaymentOptions.preferredSatsPerMinValue),
     });
 
     // Define meetings options here
-    var options = JitsiMeetingOptions(room: zoneID)
+    var options = JitsiMeetingOptions(room: loungeID)
       ..userDisplayName = user.name
       ..userEmail = ""
       ..audioMuted = true
@@ -184,7 +185,7 @@ class _SatsZonesState extends State<SatsZones> {
       ..paymentOptions = paymentOptions
       ..isLightTheme = theme.themeId == "BLUE"
       ..webOptions = {
-        "roomName": zoneID,
+        "roomName": loungeID,
         "width": "100%",
         "height": "100%",
         "enableWelcomePage": false,
@@ -246,23 +247,23 @@ class _SatsZonesState extends State<SatsZones> {
   void _onBoost(message) {
     var boostAmount = double.parse(message["boostAmount"]).toInt();
     var paymentInfo = message["paymentInfo"];
-    paymentsBloc.actionsSink.add(PayBoost(boostAmount, "", currentZoneID, paymentInfo));
+    paymentsBloc.actionsSink.add(PayBoost(boostAmount, "", currentLoungeID, paymentInfo));
   }
 
   void _changeSatsPerMinute(message) async {
     var user = await userProfileBloc.userStream.firstWhere((u) => u != null);
     var satsPerMinute = double.parse(message["satsPerMinute"]).toInt();
     paymentsBloc.actionsSink.add(AdjustAmount(satsPerMinute));
-    userProfileBloc.userActionsSink.add(SetSatsZonePaymentOptions(user
-        .satsZonePaymentOptions
+    userProfileBloc.userActionsSink.add(SetLoungePaymentOptions(user
+        .loungePaymentOptions
         .copyWith(preferredSatsPerMinValue: satsPerMinute)));
   }
 
   void _setCustomBoostValue(message) async {
     var user = await userProfileBloc.userStream.firstWhere((u) => u != null);
     var customBoostValue = double.parse(message["customBoostValue"]).toInt();
-    userProfileBloc.userActionsSink.add(SetSatsZonePaymentOptions(user
-        .satsZonePaymentOptions
+    userProfileBloc.userActionsSink.add(SetLoungePaymentOptions(user
+        .loungePaymentOptions
         .copyWith(customBoostValue: customBoostValue)));
   }
 
@@ -270,8 +271,8 @@ class _SatsZonesState extends State<SatsZones> {
     var user = await userProfileBloc.userStream.firstWhere((u) => u != null);
     var customSatsPerMinValue =
         double.parse(message["customSatsPerMinValue"]).toInt();
-    userProfileBloc.userActionsSink.add(SetSatsZonePaymentOptions(user
-        .satsZonePaymentOptions
+    userProfileBloc.userActionsSink.add(SetLoungePaymentOptions(user
+        .loungePaymentOptions
         .copyWith(customSatsPerMinValue: customSatsPerMinValue)));
   }
 
