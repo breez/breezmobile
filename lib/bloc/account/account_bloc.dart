@@ -1,6 +1,5 @@
 import 'dart:async';
 import 'dart:convert';
-import 'dart:developer';
 import 'dart:io';
 
 import 'package:breez/bloc/account/account_actions.dart';
@@ -10,8 +9,8 @@ import 'package:breez/bloc/async_action.dart';
 import 'package:breez/bloc/csv_exporter.dart';
 import 'package:breez/bloc/user_profile/breez_user_model.dart';
 import 'package:breez/logger.dart';
-import 'package:breez/services/breez_server/server.dart';
 import 'package:breez/services/background_task.dart';
+import 'package:breez/services/breez_server/server.dart';
 import 'package:breez/services/breezlib/breez_bridge.dart';
 import 'package:breez/services/breezlib/data/rpc.pb.dart';
 import 'package:breez/services/currency_data.dart';
