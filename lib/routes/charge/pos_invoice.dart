@@ -66,7 +66,7 @@ class POSInvoiceState extends State<POSInvoice> with TickerProviderStateMixin {
   Item _itemInTransition;
   Future _fetchRatesActionFuture;
 
-  double get currentAmount => currentPendingItem?.total ?? 0;
+  double get currentAmount => currentPendingItem?.totalFiat ?? 0;
 
   @override
   void didChangeDependencies() {

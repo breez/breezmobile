@@ -119,9 +119,8 @@ class PrintService {
       CurrencyWrapper saleCurrency = CurrencyWrapper.fromShortName(
           saleLine.currency, printParameters.account);
       double priceInFiat = saleLine.pricePerItem;
-      double totalPriceInFiat = saleLine.pricePerItem * saleLine.quantity;
-      double totalPriceInSats =
-          saleCurrency.satConversionRate * totalPriceInFiat;
+      double totalPriceInFiat = saleLine.totalFiat;
+      double totalPriceInSats = saleLine.totalSats;
       pw.TextStyle textStyle = pw.TextStyle(
         fontSize: 12.3,
       );
@@ -143,19 +142,41 @@ class PrintService {
   }
 
   _addTotalLineToTable(Map<String, ByteData> fontMap) {
-    double totalAmount = printParameters.submittedSale.totalChargeSat /
-        printParameters.currentCurrency.satConversionRate;
+    final sale = printParameters.submittedSale;
+    final currency = printParameters.currentCurrency;
+    final totalAmount = sale.totalAmountInSats;
+
+    var totalMsg = currency.format(totalAmount, removeTrailingZeros: true);
+    totalMsg = "$totalMsg ${currency.shortName}";
+    final totalAmountInFiat = sale.totalAmountInFiat;
+    if (totalAmountInFiat.length == 1) {
+      final entry = totalAmountInFiat.entries.first;
+      final currency = entry.key;
+      final total = entry.value;
+      CurrencyWrapper saleCurrency = CurrencyWrapper.fromShortName(
+        currency,
+        printParameters.account,
+      );
+      final fiatTotalMsg = saleCurrency.format(
+        total,
+        removeTrailingZeros: true,
+        includeCurrencySymbol: false,
+      );
+      totalMsg = "$totalMsg (${saleCurrency.symbol} $fiatTotalMsg)";
+    }
+
     return pw.TableRow(
       children: [
         pw.SizedBox(),
         pw.SizedBox(),
         _buildTableItem("Total"),
         _buildTableItem(
-            "${printParameters.currentCurrency.format(totalAmount, removeTrailingZeros: true)} ${printParameters.currentCurrency.shortName}",
-            style: pw.TextStyle(
-              font: pw.Font.ttf(fontMap["ltr"]),
-              fontSize: 14.3,
-            )),
+          totalMsg,
+          style: pw.TextStyle(
+            font: pw.Font.ttf(fontMap["ltr"]),
+            fontSize: 14.3,
+          ),
+        ),
       ],
     );
   }
