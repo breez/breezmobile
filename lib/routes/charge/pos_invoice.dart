@@ -611,32 +611,64 @@ class POSInvoiceState extends State<POSInvoice> with TickerProviderStateMixin {
             child: ListView(
               primary: false,
               shrinkWrap: true,
-              children: <Widget>[
-                catalogItems?.length == 0
-                    ? Padding(
-                        padding: const EdgeInsets.only(
-                            top: 180.0, left: 40.0, right: 40.0),
-                        child: AutoSizeText(
-                          _itemFilterController.text.isNotEmpty
-                              ? "No matching items found."
-                              : "No items to display.\nAdd items to this view using the '+' button.",
-                          textAlign: TextAlign.center,
-                          minFontSize: MinFontSize(context).minFontSize,
-                          stepGranularity: 0.1,
-                        ),
-                      )
-                    : ItemsList(
-                        accountModel,
-                        posCatalogBloc,
-                        catalogItems,
-                        (item, avatarKey) => _addItem(posCatalogBloc,
-                            currentSale, accountModel, item, avatarKey))
-              ],
+              children: catalogItems?.length == 0
+                  ? _emptyCatalog()
+                  : _filledCatalog(
+                      accountModel,
+                      posCatalogBloc,
+                      catalogItems,
+                      currentSale,
+                    ),
             ),
           ),
         ),
       ],
     );
+  }
+
+  List<Widget> _emptyCatalog() {
+    return [
+      Padding(
+        padding: const EdgeInsets.only(
+          top: 180.0,
+          left: 40.0,
+          right: 40.0,
+        ),
+        child: AutoSizeText(
+          _itemFilterController.text.isNotEmpty
+              ? "No matching items found."
+              : "No items to display.\nAdd items to this view using the '+' button.",
+          textAlign: TextAlign.center,
+          minFontSize: MinFontSize(context).minFontSize,
+          stepGranularity: 0.1,
+        ),
+      ),
+    ];
+  }
+
+  List<Widget> _filledCatalog(
+    AccountModel accountModel,
+    PosCatalogBloc posCatalogBloc,
+    List<Item> catalogItems,
+    Sale currentSale,
+  ) {
+    return [
+      ItemsList(
+        accountModel,
+        posCatalogBloc,
+        catalogItems,
+        (item, avatarKey) => _addItem(
+          posCatalogBloc,
+          currentSale,
+          accountModel,
+          item,
+          avatarKey,
+        ),
+      ),
+      Container(
+        height: 80.0,
+      )
+    ];
   }
 
   onInvoiceSubmitted(Sale currentSale, InvoiceBloc invoiceBloc,
