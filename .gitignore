@@ -16,6 +16,7 @@ packages
 /conf/staging
 /android/app/src/pos/google-services.json
 /android/app/src/client/google-services.json
+/android/node_modules
 lib/services/breezlib/rpc.proto
 /android/app/libs/breez.aar
 pubspec.lock
