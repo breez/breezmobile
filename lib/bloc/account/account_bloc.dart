@@ -128,6 +128,7 @@ class AccountBloc {
   CurrencyService _currencyService;
   Completer _onBoardingCompleter = Completer();
   Stream<BreezUserModel> userProfileStream;
+  Completer<bool> startDaemonCompleter = Completer<bool>();
 
   AccountBloc(this.userProfileStream) {
     ServiceInjector injector = ServiceInjector();
@@ -163,6 +164,22 @@ class AccountBloc {
     _paymentFilterController.add(PaymentFilterModel.initial());
     _accountSettingsController.add(AccountSettings.start());
 
+    // we start the daemon in either of these two conditions:
+    // 1. If the launch was not done by a background job
+    // 2. if the launch was done by a background job then we wait for resume.
+    startDaemonCompleter.future.then((value) => _start());
+    _breezLib.launchedByJob().then((job) {
+      log.info("app was launched by job: $job");
+      if (!job) {
+        startDaemonCompleter.complete(true);
+      }
+    });
+    _device.eventStream.where((e) => e == NotificationType.RESUME).listen((e) {
+      startDaemonCompleter.complete(true);
+    });
+  }
+
+  void _start() {
     log.info("Account bloc started");
     ServiceInjector().sharedPreferences.then((preferences) {
       _handleRegisterDeviceNode();
@@ -645,7 +662,6 @@ class AccountBloc {
           _paymentFilterController.value,
           _firstDate ?? DateTime(DateTime.now().year));
     });
-
   }
 
   Future _refreshPayments() {

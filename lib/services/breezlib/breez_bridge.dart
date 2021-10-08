@@ -93,6 +93,11 @@ class BreezBridge {
         .invokeMethod("init", {"workingDir": appDir, "tempDir": tmpDir});
   }
 
+  Future<bool> launchedByJob() async {
+    var values = await _methodChannel.invokeMethod("launchOptions") as Map;
+    return values != null && values["jobLaunched"] == true;
+  }
+
   Future<Rates> rate() {
     return _invokeMethodImmediate("rate")
         .then((result) => Rates()..mergeFromBuffer(result ?? []));

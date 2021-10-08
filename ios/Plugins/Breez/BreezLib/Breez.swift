@@ -24,6 +24,7 @@ class EmptyLogger : NSObject, BindingsLoggerProtocol {
 
 class Breez : NSObject, FlutterPlugin, BindingsAppServicesProtocol, FlutterStreamHandler {
     static var logger : BindingsLoggerProtocol = EmptyLogger();
+    static var launchOptions :  [UIApplication.LaunchOptionsKey : Any]?;
     
     var eventSink : FlutterEventSink?;
     var backupAuthenticators : Dictionary<String, BackupAuthenticatorProtocol> = ["gdrive":GoogleAuthenticator(), "icloud": iCloudAuthenticator()];
@@ -49,6 +50,11 @@ class Breez : NSObject, FlutterPlugin, BindingsAppServicesProtocol, FlutterStrea
     }
     
     func handle(_ call: FlutterMethodCall, result: @escaping FlutterResult) {
+        if (call.method == "launchOptions") {
+            launchOptions(call: call, result: result);
+            return;
+        }
+        
         if (call.method == "init") {
             initBreez(call: call, result: result);
             return;
@@ -84,6 +90,20 @@ class Breez : NSObject, FlutterPlugin, BindingsAppServicesProtocol, FlutterStrea
             print(call.method)
             executor?.execute(call: call, result: result);
         }
+    }
+    
+    func launchOptions(call: FlutterMethodCall, result: @escaping FlutterResult){
+        var res: [String: Any?] = [:]
+        if let options = Breez.launchOptions {
+            if let notificationOption = options[UIApplication.LaunchOptionsKey.remoteNotification] as? String {
+                if notificationOption.contains("_job") {
+                    res["jobLaunched"] = true;
+                } else {
+                    res["jobLaunched"] = false;
+                }
+            }
+        }
+        result(res)
     }
     
     func initBreez(call: FlutterMethodCall, result: @escaping FlutterResult){
