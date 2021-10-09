@@ -95,8 +95,8 @@ class Breez : NSObject, FlutterPlugin, BindingsAppServicesProtocol, FlutterStrea
     func launchOptions(call: FlutterMethodCall, result: @escaping FlutterResult){
         var res: [String: Any?] = [:]
         if let options = Breez.launchOptions {
-            if let notificationOption = options[UIApplication.LaunchOptionsKey.remoteNotification] as? String {
-                if notificationOption.contains("_job") {
+            if let notificationOption = options[UIApplication.LaunchOptionsKey.remoteNotification] as? NSDictionary {
+                if notificationOption.value(forKey: "_job") != nil {
                     res["jobLaunched"] = true;
                 } else {
                     res["jobLaunched"] = false;
