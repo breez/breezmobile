@@ -4,7 +4,6 @@ import 'dart:io';
 import 'package:breez/bloc/blocs_provider.dart';
 import 'package:breez/bloc/lounge/bloc.dart';
 import 'package:breez/bloc/lounge/actions.dart';
-import 'package:breez/bloc/lounge/bloc.dart';
 import 'package:breez/bloc/lounge/lounge_payments_bloc.dart';
 import 'package:breez/bloc/user_profile/user_actions.dart';
 import 'package:breez/bloc/user_profile/user_profile_bloc.dart';

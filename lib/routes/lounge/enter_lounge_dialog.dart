@@ -1,6 +1,7 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:breez/theme_data.dart' as theme;
 
 class EnterLoungeDialog extends StatefulWidget {
   final Function(String loungeID) enterLounge;
@@ -46,11 +47,17 @@ class EnterLoungeDialogState extends State<EnterLoungeDialog> {
   Widget _buildLoungeIDWidget() {
     // TODO: Add lounge options
     return Container(
-      height: 200,
+      height: 48,
       width: 200,
       child: Form(
         key: _formKey,
         child: TextFormField(
+          decoration: InputDecoration(
+            enabledBorder:
+                UnderlineInputBorder(borderSide: theme.greyBorderSide),
+            focusedBorder:
+                UnderlineInputBorder(borderSide: theme.greyBorderSide),
+          ),
           autovalidateMode: AutovalidateMode.disabled,
           controller: _loungeIDController,
           style: Theme.of(context)
@@ -78,7 +85,8 @@ class EnterLoungeDialogState extends State<EnterLoungeDialog> {
               widget.enterLounge(_loungeIDController.text);
             }
           },
-          child: Text("ENTER", style: Theme.of(context).primaryTextTheme.button),
+          child:
+              Text("ENTER", style: Theme.of(context).primaryTextTheme.button),
         ),
       );
     }

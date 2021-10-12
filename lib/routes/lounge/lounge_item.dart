@@ -1,4 +1,3 @@
-import 'dart:convert';
 import 'dart:io';
 
 import 'package:breez/bloc/account/account_bloc.dart';
@@ -25,6 +24,7 @@ class LoungeItem extends StatefulWidget {
 }
 
 class _LoungeItemState extends State<LoungeItem> {
+  final GlobalKey _menuKey = new GlobalKey();
 
   @override
   void initState() {
@@ -41,37 +41,68 @@ class _LoungeItemState extends State<LoungeItem> {
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.only(bottom: 8, left: 8, right: 8),
-      child: ClipRRect(
-        borderRadius: BorderRadius.circular(5),
-        child: Container(
-          color: theme.customData[theme.themeId].paymentListBgColor,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              ListTile(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          PopupMenuButton(
+            key: _menuKey,
+            color: Theme.of(context).highlightColor,
+            offset: Offset(12, 24),
+            shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(5)),
+            itemBuilder: (_) => <PopupMenuItem>[
+              PopupMenuItem(
+                padding: EdgeInsets.only(left: 8, right: 0),
+                child: TextButton.icon(
+                  label: Text(
+                    "Delete Lounge",
+                    style: Theme.of(context).textTheme.subtitle1,
+                  ),
+                  icon: Icon(
+                    Icons.delete_forever_rounded,
+                    color: Colors.white,
+                  ),
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                    LoungesBloc loungesBloc =
+                        AppBlocsProvider.of<LoungesBloc>(context);
+                    DeleteLounge deleteLounge =
+                        DeleteLounge(widget.lounge.id);
+                    loungesBloc.actionsSink.add(deleteLounge);
+                    deleteLounge.future.then((_) {
+                      showFlushbar(context,
+                          duration: Duration(seconds: 4),
+                          messageWidget: Text(
+                              "Deleted " + widget.lounge.title,
+                              style: theme.snackBarStyle,
+                              textAlign: TextAlign.center));
+                    });
+                  },
+                ),
+              ),
+            ],
+            child: Theme(
+              data: ThemeData(
+                highlightColor: theme.customData[theme.themeId].paymentListBgColor,
+                splashColor: theme.customData[theme.themeId].paymentListBgColor,
+              ),
+              child: ListTile(
+                tileColor: theme.customData[theme.themeId].paymentListBgColor,
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(5)),
                 title: Text(
                   widget.lounge.title,
                   style: Theme.of(context).accentTextTheme.subtitle2,
                   overflow: TextOverflow.ellipsis,
                 ),
+                onLongPress: () {
+                  dynamic popUpMenuState = _menuKey.currentState;
+                  popUpMenuState.showButtonMenu();
+                },
                 subtitle: Text(
                   widget.lounge.loungeID,
                   style: Theme.of(context).accentTextTheme.caption,
                 ),
-                onLongPress: () {
-                  LoungesBloc loungesBloc =
-                  AppBlocsProvider.of<LoungesBloc>(context);
-                  DeleteLounge deleteLounge =
-                  DeleteLounge(widget.lounge.id);
-                  loungesBloc.actionsSink.add(deleteLounge);
-                  deleteLounge.future.then((_) {
-                    showFlushbar(context,
-                        duration: Duration(seconds: 4),
-                        messageWidget: Text("Deleted " + widget.lounge.title,
-                            style: theme.snackBarStyle,
-                            textAlign: TextAlign.center));
-                  });
-                },
                 trailing: Row(
                   mainAxisSize: MainAxisSize.min,
                   children: [
@@ -84,9 +115,11 @@ class _LoungeItemState extends State<LoungeItem> {
                       onPressed: () {
                         final RenderBox box = context.findRenderObject();
                         ShareExtend.share(
-                            "Join Lounge: " + widget.lounge.loungeID, "text",
+                            "Join Lounge: " + widget.lounge.loungeID,
+                            "text",
                             sharePositionOrigin:
-                                box.localToGlobal(Offset.zero) & box.size);
+                                box.localToGlobal(Offset.zero) &
+                                    box.size);
                       },
                     ),
                     Tooltip(
@@ -104,9 +137,9 @@ class _LoungeItemState extends State<LoungeItem> {
                   ],
                 ),
               ),
-            ],
+            ),
           ),
-        ),
+        ],
       ),
     );
   }

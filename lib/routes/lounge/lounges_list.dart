@@ -67,53 +67,88 @@ class LoungesList extends StatelessWidget {
     );
   }
 
-  Padding _buildHeader(BuildContext context) {
+  Widget _buildHeader(BuildContext context) {
+    bool _isHostedView = true;
+    var itemWidth = (MediaQuery.of(context).size.width) / 2;
+    // This method is a work-around to center align the buttons
+    // Use Align to stick items to center and set padding to give equal distance
     return Padding(
       padding: const EdgeInsets.all(8),
       child: ClipRRect(
         borderRadius: BorderRadius.circular(5),
         child: Container(
-          color: theme.customData[theme.themeId].paymentListBgColor,
           height: 64,
           child: Row(
+            mainAxisSize: MainAxisSize.max,
             children: <Widget>[
-              Expanded(
-                child: TextButton(
-                  style: TextButton.styleFrom(
-                    padding: EdgeInsets.zero,
-                  ),
-                  onPressed: () {  },
-                  child: Text(
-                    "Hosted",
-                    textAlign: TextAlign.center,
-                    style: theme.bottomAppBarBtnStyle.copyWith(
-                        fontSize:
-                        13.5 / MediaQuery.of(context).textScaleFactor),
-                    maxLines: 1,
-                  ),
+              Flexible(
+                flex: 1,
+                child: Align(
+                  alignment: Alignment.centerRight,
+                  child: GestureDetector(
+                      onTap: () {},
+                      behavior: HitTestBehavior.translucent,
+                      child: Padding(
+                        padding: EdgeInsets.only(right: itemWidth / 4),
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: <Widget>[
+                            Text(
+                              "Hosted",
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .button
+                                  .copyWith(
+                                      color: Theme.of(context)
+                                          .textTheme
+                                          .button
+                                          .color
+                                          .withOpacity(
+                                              _isHostedView ? 1 : 0.5)),
+                            )
+                          ],
+                        ),
+                      )),
                 ),
               ),
-              VerticalDivider(
-                indent: 16,
-                endIndent: 16,
-                color: Theme.of(context).colorScheme.secondary,
-              ),
-              Expanded(
-                child: TextButton(
-                  style: TextButton.styleFrom(
-                    padding: EdgeInsets.zero,
-                  ),
-                  onPressed: () {  },
-                  child: Text(
-                    "Entered",
-                    textAlign: TextAlign.center,
-                    style: theme.bottomAppBarBtnStyle.copyWith(
-                        fontSize:
-                        13.5 / MediaQuery.of(context).textScaleFactor),
-                    maxLines: 1,
-                  ),
+              Container(
+                height: 20,
+                child: VerticalDivider(
+                  color: Theme.of(context).primaryTextTheme.button.color,
                 ),
-              )
+              ),
+              Flexible(
+                flex: 1,
+                child: Align(
+                  alignment: Alignment.centerLeft,
+                  child: GestureDetector(
+                      behavior: HitTestBehavior.translucent,
+                      onTap: () {},
+                      child: Padding(
+                        padding: EdgeInsets.only(left: itemWidth / 4),
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: <Widget>[
+                            Text(
+                              "Entered",
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .button
+                                  .copyWith(
+                                      color: Theme.of(context)
+                                          .textTheme
+                                          .button
+                                          .color
+                                          .withOpacity(
+                                              !_isHostedView ? 1 : 0.5)),
+                            )
+                          ],
+                        ),
+                      )),
+                ),
+              ),
             ],
           ),
         ),
