@@ -115,7 +115,7 @@ class _LoungeItemState extends State<LoungeItem> {
                       onPressed: () {
                         final RenderBox box = context.findRenderObject();
                         ShareExtend.share(
-                            "Join Lounge: " + widget.lounge.loungeID,
+                            "Enter Lounge: " + widget.lounge.loungeID,
                             "text",
                             sharePositionOrigin:
                                 box.localToGlobal(Offset.zero) &
