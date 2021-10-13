@@ -48,14 +48,14 @@ class _LoungeItemState extends State<LoungeItem> {
             key: _menuKey,
             color: Theme.of(context).highlightColor,
             offset: Offset(12, 24),
-            shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(5)),
+            shape:
+                RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
             itemBuilder: (_) => <PopupMenuItem>[
               PopupMenuItem(
                 padding: EdgeInsets.only(left: 8, right: 0),
                 child: TextButton.icon(
                   label: Text(
-                    "Delete Lounge",
+                    "Delete",
                     style: Theme.of(context).textTheme.subtitle1,
                   ),
                   icon: Icon(
@@ -66,14 +66,13 @@ class _LoungeItemState extends State<LoungeItem> {
                     Navigator.of(context).pop();
                     LoungesBloc loungesBloc =
                         AppBlocsProvider.of<LoungesBloc>(context);
-                    DeleteLounge deleteLounge =
-                        DeleteLounge(widget.lounge.id);
+                    DeleteLounge deleteLounge = DeleteLounge(widget.lounge.id);
                     loungesBloc.actionsSink.add(deleteLounge);
-                    deleteLounge.future.then((_) {
+                    deleteLounge.future.then((_) {}, onError: (_) {
                       showFlushbar(context,
                           duration: Duration(seconds: 4),
                           messageWidget: Text(
-                              "Deleted " + widget.lounge.title,
+                              "Error deleting " + widget.lounge.title,
                               style: theme.snackBarStyle,
                               textAlign: TextAlign.center));
                     });
@@ -83,7 +82,8 @@ class _LoungeItemState extends State<LoungeItem> {
             ],
             child: Theme(
               data: ThemeData(
-                highlightColor: theme.customData[theme.themeId].paymentListBgColor,
+                highlightColor:
+                    theme.customData[theme.themeId].paymentListBgColor,
                 splashColor: theme.customData[theme.themeId].paymentListBgColor,
               ),
               child: ListTile(
@@ -115,11 +115,9 @@ class _LoungeItemState extends State<LoungeItem> {
                       onPressed: () {
                         final RenderBox box = context.findRenderObject();
                         ShareExtend.share(
-                            "Enter Lounge: " + widget.lounge.loungeID,
-                            "text",
+                            "Enter Lounge: " + widget.lounge.loungeID, "text",
                             sharePositionOrigin:
-                                box.localToGlobal(Offset.zero) &
-                                    box.size);
+                                box.localToGlobal(Offset.zero) & box.size);
                       },
                     ),
                     Tooltip(

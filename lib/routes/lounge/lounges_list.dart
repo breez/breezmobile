@@ -37,8 +37,8 @@ class LoungesList extends StatelessWidget {
         mainAxisSize: MainAxisSize.max,
         mainAxisAlignment: MainAxisAlignment.center,
         children: <Widget>[
-          Icon(
-            Icons.meeting_room_rounded,
+          ImageIcon(
+            AssetImage("src/icon/lounge.png"),
             size: 75,
             color: theme.themeId == "BLUE"
                 ? Color.fromRGBO(0, 133, 251, 1.0)
@@ -47,7 +47,7 @@ class LoungesList extends StatelessWidget {
           Padding(
             padding: const EdgeInsets.only(top: 0.0, left: 16.0, right: 16.0),
             child: AutoSizeText(
-              "Host a lounge using the 'HOST' button",
+              "Start a new Lounge using the Host button.",
               style: theme.themeId == "BLUE"
                   ? Typography.material2018(platform: TargetPlatform.android)
                       .black
