@@ -167,12 +167,13 @@ class AddFundsBloc extends Bloc {
         },
       );
       var response = await http.get(uri);
-      if (response.statusCode != 200) {
-        log.severe(
-            'moonpay response error: ${response.body.substring(0, 100)}');
+      final body = response.body;
+      if (response.statusCode != 200 || body == null) {
+        String msg = (body?.length ?? 0) > 100 ? body.substring(0, 100) : body;
+        log.severe('moonpay response error: $msg');
         throw "Service Unavailable. Please try again later.";
       }
-      _ipCheckResult = jsonDecode(response.body)['isAllowed'];
+      _ipCheckResult = jsonDecode(body)['isAllowed'];
     }
     return _ipCheckResult;
   }
