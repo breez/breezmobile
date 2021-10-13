@@ -38,6 +38,10 @@ class PosCatalogBloc with AsyncActionsHandler {
   Stream<List<ProductIcon>> get productIconsStream =>
       _productIconsController.stream;
 
+  final BehaviorSubject<String> _selectedCurrency = BehaviorSubject();
+
+  Stream<String> get selectedCurrencyStream => _selectedCurrency.stream;
+
   PosCatalogBloc(Stream<AccountModel> accountStream) {
     _repository = SqliteRepository();
     _loadItems();
@@ -52,12 +56,14 @@ class PosCatalogBloc with AsyncActionsHandler {
       FilterItems: _filterItems,
       ExportItems: _exportItems,
       ImportItems: _importItems,
+      UpdatePosItemAdditionCurrency: _updatePosItemAdditionCurrency,
     });
     listenActions();
     _currentSaleController.add(Sale(saleLines: []));
     _trackCurrentSaleRates(accountStream);
     _trackSalePayments();
     _loadIcons();
+    _loadSelectedCurrency();
   }
 
   Future _loadIcons() async {
@@ -66,6 +72,17 @@ class PosCatalogBloc with AsyncActionsHandler {
     List<dynamic> decoded = json.decode(iconsJson);
     _productIconsController
         .add(decoded.map((e) => ProductIcon.fromJson(e)).toList());
+  }
+
+  void _loadSelectedCurrency() async {
+    final prefs = await ServiceInjector().sharedPreferences;
+    String currency;
+    if (prefs.containsKey("ITEM_ADDITION_CURRENCY")) {
+      currency = prefs.getString("ITEM_ADDITION_CURRENCY");
+    } else {
+      currency = "SAT";
+    }
+    _selectedCurrency.add(currency);
   }
 
   void _trackSalePayments() {
@@ -173,6 +190,14 @@ class PosCatalogBloc with AsyncActionsHandler {
   Future _setCurrentSale(SetCurrentSale action) async {
     _currentSaleController.add(action.currentSale);
     action.resolve(action.currentSale);
+  }
+
+  Future _updatePosItemAdditionCurrency(
+    UpdatePosItemAdditionCurrency action,
+  ) async {
+    final prefs = await ServiceInjector().sharedPreferences;
+    prefs.setString("ITEM_ADDITION_CURRENCY", action.currency);
+    _selectedCurrency.add(action.currency);
   }
 
   Future resetDB() async {

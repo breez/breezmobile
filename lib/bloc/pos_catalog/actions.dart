@@ -60,3 +60,9 @@ class ImportItems extends AsyncAction {
 
   ImportItems(this.importFile);
 }
+
+class UpdatePosItemAdditionCurrency extends AsyncAction {
+  final String currency;
+
+  UpdatePosItemAdditionCurrency(this.currency);
+}
