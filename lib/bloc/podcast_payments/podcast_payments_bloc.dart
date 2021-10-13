@@ -252,44 +252,36 @@ class PodcastPaymentsBloc with AsyncActionsHandler {
   }
 
   Future<Value> _getLightningPaymentValue(Episode episode) async {
-    Map<String, dynamic> valueMetadata;
+    if (episode.value != null) {
+      ValueModel valueModel = ValueModel.fromJson(episode.value.toMap());
+      List<ValueDestination> valueDestinations = episode.value.recipients
+        .map((r) =>
+          ValueDestination.fromJson(r.toMap())
+        ).toList();
 
-    // Check if there is episode specific value metadata.
-    if (episode.episodeMetadata != null && episode.episodeMetadata["value"] is Map<String, dynamic>) {
-      valueMetadata = episode.episodeMetadata["value"];
-    } else {
-      // Fall back to podcast specific metadata otherwise.
-      Map<String, dynamic> podcastMetadata;
-
-      // Try to load metadata from podcast stored in repository.
-      if (episode.pguid != null && episode.pguid.isNotEmpty) {
-        var podcast = await repository.findPodcastByGuid(episode.pguid);
-        if (podcast != null) {
-          podcastMetadata = podcast.metadata;
-        }
-      }
-
-      // Or from podcast metadata cached in episode.
-      if (podcastMetadata == null || podcastMetadata.isEmpty) {
-        podcastMetadata = episode.metadata;
-      }
-
-      if (podcastMetadata != null && podcastMetadata["feed"] != null) {
-        final value = podcastMetadata["feed"]["value"];
-        if (value != null && value is Map<String, dynamic>) {
-          valueMetadata = value;
-        }
-      }
+      return Value._(model: valueModel, recipients: valueDestinations);
     }
 
-    if (valueMetadata != null && valueMetadata is Map<String, dynamic>) {
-      final valueObj = Value.fromJson(valueMetadata);
-      if (valueObj?.model?.type == "lightning" &&
-          valueObj?.model?.method == 'keysend') {
+    Map<String, dynamic> metadata;
+    if (episode.pguid != null && episode.pguid.isNotEmpty) {
+      var podcast = await repository.findPodcastByGuid(episode.pguid);
+      if (podcast != null) {
+        metadata = podcast.metadata;
+      }
+    }
+    if (metadata == null || metadata.isEmpty) {
+      metadata = episode.metadata;
+    }
+    if (metadata != null && metadata["feed"] != null) {
+      final value = metadata["feed"]["value"];
+      if (value != null && value is Map<String, dynamic>) {
+        final valueObj = Value.fromJson(value);
+        if (valueObj?.model?.type == "lightning" &&
+            valueObj?.model?.method == 'keysend') {
           return valueObj;
+        }
       }
     }
-
     return null;
   }
 
