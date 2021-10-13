@@ -41,17 +41,28 @@ android {
 
     signingConfigs {
         release {
-            keyAlias keystoreProperties['keyAlias']
-            keyPassword keystoreProperties['keyPassword']
-            storeFile file(keystoreProperties['storeFile'])
-            storePassword keystoreProperties['storePassword']
+            String filePath = keystoreProperties['storeFile']
+            if (filePath != null) {
+                keyAlias keystoreProperties['keyAlias']
+                keyPassword keystoreProperties['keyPassword']
+                storeFile file(filePath)
+                storePassword keystoreProperties['storePassword']
+            } else {
+                println("No storeFile provided, release builds are not possible")
+            }
         }
     }
 
     buildTypes {
+        debug {
+            applicationIdSuffix '.debug'
+            versionNameSuffix '-DEBUG'
+            resValue "string", "app_name", "Breez Debug"
+        }
         release {
             signingConfig signingConfigs.release
             shrinkResources false
+            resValue "string", "app_name", "Breez"
         }
     }
 
@@ -59,7 +70,6 @@ android {
     productFlavors {
         client {
             dimension "breez"
-            resValue "string", "app_name", "Breez"
         }
     }
 
