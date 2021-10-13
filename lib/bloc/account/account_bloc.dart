@@ -164,11 +164,12 @@ class AccountBloc {
     _paymentFilterController.add(PaymentFilterModel.initial());
     _accountSettingsController.add(AccountSettings.start());
 
+    // we start the daemon in either of these two conditions:
+    // 1. If the launch was not done by a background job
+    // 2. if the launch was done by a background job then we wait for resume.
+    startDaemonCompleter.future.then((value) => _start());
+
     if (defaultTargetPlatform == TargetPlatform.iOS) {
-      // we start the daemon in either of these two conditions:
-      // 1. If the launch was not done by a background job
-      // 2. if the launch was done by a background job then we wait for resume.
-      startDaemonCompleter.future.then((value) => _start());
       _breezLib.launchedByJob().then((job) {
         log.info("app was launched by job: $job");
         if (!job) {
