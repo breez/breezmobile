@@ -255,9 +255,8 @@ class PodcastPaymentsBloc with AsyncActionsHandler {
     if (episode.value != null) {
       ValueModel valueModel = ValueModel.fromJson(episode.value.toMap());
       List<ValueDestination> valueDestinations = episode.value.recipients
-        .map((r) =>
-          ValueDestination.fromJson(r.toMap())
-        ).toList();
+          .map((r) => ValueDestination.fromJson(r.toMap()))
+          .toList();
 
       return Value._(model: valueModel, recipients: valueDestinations);
     }
