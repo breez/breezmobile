@@ -33,11 +33,17 @@ class EnterLoungeDialogState extends State<EnterLoungeDialog> {
 
   Widget _buildPaymentRequestDialog() {
     return AlertDialog(
-      title: AutoSizeText(
-        "Enter Lounge ID:",
-        style:
-            Theme.of(context).dialogTheme.titleTextStyle.copyWith(fontSize: 16),
-        maxLines: 1,
+      title: Container(
+        width: MediaQuery.of(context).size.width,
+        height: 36,
+        child: AutoSizeText(
+          "Enter Lounge ID:",
+          style: Theme.of(context)
+              .dialogTheme
+              .titleTextStyle
+              .copyWith(fontSize: 16),
+          maxLines: 1,
+        ),
       ),
       content: _buildLoungeIDWidget(),
       actions: _buildActions(),
@@ -46,25 +52,19 @@ class EnterLoungeDialogState extends State<EnterLoungeDialog> {
 
   Widget _buildLoungeIDWidget() {
     // TODO: Add lounge options
-    return Container(
-      height: 48,
-      width: 200,
-      child: Form(
-        key: _formKey,
-        child: TextFormField(
-          decoration: InputDecoration(
-            enabledBorder:
-                UnderlineInputBorder(borderSide: theme.greyBorderSide),
-            focusedBorder:
-                UnderlineInputBorder(borderSide: theme.greyBorderSide),
-          ),
-          autovalidateMode: AutovalidateMode.disabled,
-          controller: _loungeIDController,
-          style: Theme.of(context)
-              .dialogTheme
-              .contentTextStyle
-              .copyWith(height: 1.0),
+    return Form(
+      key: _formKey,
+      child: TextFormField(
+        decoration: InputDecoration(
+          enabledBorder: UnderlineInputBorder(borderSide: theme.greyBorderSide),
+          focusedBorder: UnderlineInputBorder(borderSide: theme.greyBorderSide),
         ),
+        autovalidateMode: AutovalidateMode.disabled,
+        controller: _loungeIDController,
+        style: Theme.of(context)
+            .dialogTheme
+            .contentTextStyle
+            .copyWith(height: 1.0),
       ),
     );
   }
