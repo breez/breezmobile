@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:breez/bloc/account/account_bloc.dart';
 import 'package:breez/bloc/blocs_provider.dart';
 import 'package:breez/bloc/lounge/bloc.dart';
 import 'package:breez/bloc/lounge/actions.dart';
@@ -13,10 +14,13 @@ import 'package:breez/routes/lounge/lounges_list.dart';
 import 'package:breez/theme_data.dart' as theme;
 import 'package:breez/widgets/flushbar.dart';
 import 'package:breez/widgets/loader.dart';
+import 'package:breez/widgets/route.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:jitsi_meet/jitsi_meet.dart';
+
+import 'host_lounge.dart';
 
 class Lounges extends StatefulWidget {
   @override
@@ -43,15 +47,15 @@ class _LoungesState extends State<Lounges> {
   void initState() {
     super.initState();
 
-    JitsiMeet.addListener(JitsiMeetingListener(
-        onConferenceWillJoin: _onConferenceWillJoin,
-        onConferenceJoined: _onConferenceJoined,
-        onConferenceTerminated: _onConferenceTerminated,
+    JitsiMeet.addListener(
+      JitsiMeetingListener(
         onError: _onError,
         onBoost: _onBoost,
         changeSatsPerMinute: _changeSatsPerMinute,
         setCustomBoostAmount: _setCustomBoostValue,
-        setCustomSatsPerMinAmount: _setCustomSatsPerMinAmount));
+        setCustomSatsPerMinAmount: _setCustomSatsPerMinAmount,
+      ),
+    );
   }
 
   @override
@@ -79,8 +83,10 @@ class _LoungesState extends State<Lounges> {
                   style: TextButton.styleFrom(
                     padding: EdgeInsets.zero,
                   ),
-                  onPressed: () =>
-                      Navigator.of(context).pushNamed("/host_lounge"),
+                  onPressed: () => Navigator.of(context).push(FadeInRoute(
+                    builder: (_) => HostLounge(
+                        loungesBloc, (lounge) => _hostLounge(lounge, context)),
+                  )),
                   child: Text(
                     "HOST",
                     textAlign: TextAlign.center,
@@ -140,6 +146,67 @@ class _LoungesState extends State<Lounges> {
                 (loungeID) => _enterLounge(loungeID, loungesBloc)));
       }
     });
+  }
+
+  _hostLounge(Lounge lounge, BuildContext context) async {
+    var userProfileBloc = AppBlocsProvider.of<UserProfileBloc>(context);
+    var accountBloc = AppBlocsProvider.of<AccountBloc>(context);
+
+    var user = await userProfileBloc.userStream.firstWhere((u) => u != null);
+
+    // Enable or disable any feature flag here
+    // If feature flag are not provided, default values will be used
+    // Full list of feature flags (and defaults) available in the README
+    Map<FeatureFlagEnum, bool> featureFlags = {
+      FeatureFlagEnum.WELCOME_PAGE_ENABLED: false,
+    };
+    if (!kIsWeb) {
+      // Here is an example, disabling features for each platform
+      if (Platform.isAndroid) {
+        // Disable ConnectionService usage on Android to avoid issues (see README)
+        featureFlags[FeatureFlagEnum.CALL_INTEGRATION_ENABLED] = false;
+      } else if (Platform.isIOS) {
+        // Disable PIP on iOS as it looks weird
+        featureFlags[FeatureFlagEnum.PIP_ENABLED] = false;
+      }
+    }
+    // Define meetings options here
+    var options = JitsiMeetingOptions(room: lounge.loungeID)
+      ..subject = lounge.title
+      ..userDisplayName = user.name
+      ..userEmail = "breez:" + await accountBloc.getPersistentNodeID()
+      ..isLightTheme = theme.themeId == "BLUE"
+      ..featureFlags.addAll(featureFlags)
+      ..webOptions = {
+        "roomName": lounge.loungeID,
+        "width": "100%",
+        "height": "100%",
+        "enableWelcomePage": false,
+        "chromeExtensionBanner": null,
+        "userInfo": {"displayName": user.name}
+      };
+
+    debugPrint("JitsiMeetingOptions: $options");
+    await JitsiMeet.joinMeeting(
+      options,
+      listener: JitsiMeetingListener(
+          onConferenceWillJoin: (message) {
+            debugPrint("${options.room} will join with message: $message");
+          },
+          onConferenceJoined: (message) {
+            debugPrint("${options.room} joined with message: $message");
+          },
+          onConferenceTerminated: (message) {
+            debugPrint("${options.room} terminated with message: $message");
+          },
+          genericListeners: [
+            JitsiGenericListener(
+                eventName: 'readyToClose',
+                callback: (dynamic message) {
+                  debugPrint("readyToClose callback");
+                }),
+          ]),
+    );
   }
 
   _enterLounge(String loungeID, LoungesBloc loungesBloc) async {
@@ -251,18 +318,6 @@ class _LoungesState extends State<Lounges> {
     } catch (e) {
       showFlushbar(context, message: e.message.toString());
     }
-  }
-
-  void _onConferenceWillJoin(message) {
-    debugPrint("_onConferenceWillJoin broadcasted with message: $message");
-  }
-
-  void _onConferenceJoined(message) {
-    debugPrint("_onConferenceJoined broadcasted with message: $message");
-  }
-
-  void _onConferenceTerminated(message) {
-    debugPrint("_onConferenceTerminated broadcasted with message: $message");
   }
 
   void _onBoost(message) {

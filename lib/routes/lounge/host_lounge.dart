@@ -10,8 +10,9 @@ import 'package:uuid/uuid.dart';
 
 class HostLounge extends StatefulWidget {
   final LoungesBloc loungesBloc;
+  final Function(Lounge lounge) onCreate;
 
-  const HostLounge(this.loungesBloc);
+  const HostLounge(this.loungesBloc, this.onCreate);
 
   @override
   _HostLoungeState createState() => _HostLoungeState();
@@ -73,16 +74,16 @@ class _HostLoungeState extends State<HostLounge> {
           {
             if (_formKey.currentState.validate()) {
               var loungeID = Uuid().v1().split('-')[0];
-              AddLounge addLounge = AddLounge(
-                Lounge(
-                    loungeID: loungeID,
-                    title: _titleController.text,
-                    isHosted: true),
-              );
+              Lounge lounge = Lounge(
+                  loungeID: loungeID,
+                  title: _titleController.text,
+                  isHosted: true);
+              AddLounge addLounge = AddLounge(lounge);
 
               widget.loungesBloc.actionsSink.add(addLounge);
               addLounge.future.then((_) {
                 Navigator.pop(context);
+                widget.onCreate(lounge);
               });
             }
           }

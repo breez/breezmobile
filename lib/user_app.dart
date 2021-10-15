@@ -11,7 +11,6 @@ import 'package:breez/bloc/user_profile/breez_user_model.dart';
 import 'package:breez/bloc/user_profile/user_actions.dart';
 import 'package:breez/bloc/user_profile/user_profile_bloc.dart';
 import 'package:breez/routes/fiat_currencies/fiat_currency_settings.dart';
-import 'package:breez/routes/lounge/host_lounge.dart';
 import 'package:breez/routes/podcast/theme.dart';
 import 'package:breez/routes/qr_scan.dart';
 import 'package:breez/widgets/route.dart';
@@ -55,7 +54,8 @@ Widget _withTheme(BreezUserModel user, Widget child) {
   return child;
 }
 
-class UserApp extends StatelessWidget { // ignore: must_be_immutable
+class UserApp extends StatelessWidget {
+  // ignore: must_be_immutable
   GlobalKey<NavigatorState> _navigatorKey = GlobalKey<NavigatorState>();
   GlobalKey<NavigatorState> _homeNavigatorKey = GlobalKey<NavigatorState>();
 
@@ -276,7 +276,8 @@ class UserApp extends StatelessWidget { // ignore: must_be_immutable
                                       );
                                     case '/connect_to_pay':
                                       return FadeInRoute(
-                                        builder: (_) => withBreezTheme(context, ConnectToPayPage(null)),
+                                        builder: (_) => withBreezTheme(
+                                            context, ConnectToPayPage(null)),
                                         settings: settings,
                                       );
                                     case '/marketplace':
@@ -305,12 +306,6 @@ class UserApp extends StatelessWidget { // ignore: must_be_immutable
                                       return MaterialPageRoute<String>(
                                         fullscreenDialog: true,
                                         builder: (_) => QRScan(),
-                                        settings: settings,
-                                      );
-                                    case '/host_lounge':
-                                      return FadeInRoute(
-                                        builder: (_) =>
-                                            HostLounge(loungesBloc),
                                         settings: settings,
                                       );
                                   }
