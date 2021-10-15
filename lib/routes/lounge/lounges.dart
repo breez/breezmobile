@@ -130,22 +130,36 @@ class _LoungesState extends State<Lounges> {
       if (clipboardData != null) {
         var clipboard = clipboardData.text;
         if (clipboard.contains("Enter Lounge: ")) {
-          _enterLounge(clipboard.substring(14), loungesBloc);
+          String loungeID = clipboard.substring(14);
+          _onEnter(loungeID, loungesBloc);
         } else {
           return showDialog(
               useRootNavigator: false,
               context: context,
               builder: (BuildContext context) => EnterLoungeDialog(
-                  (loungeID) => _enterLounge(loungeID, loungesBloc)));
+                  (loungeID) => _onEnter(loungeID, loungesBloc)));
         }
       } else {
         return showDialog(
             useRootNavigator: false,
             context: context,
             builder: (BuildContext context) => EnterLoungeDialog(
-                (loungeID) => _enterLounge(loungeID, loungesBloc)));
+                (loungeID) => _onEnter(loungeID, loungesBloc)));
       }
     });
+  }
+
+  _onEnter(String loungeID, LoungesBloc loungesBloc) async {
+    List<Lounge> lounges =
+        await loungesBloc.loungesStream.firstWhere((l) => l != null);
+    Lounge lounge = lounges.firstWhere(
+        (lounge) => (lounge.loungeID == loungeID && lounge.isHosted),
+        orElse: () => null);
+    if (lounge != null) {
+      _hostLounge(lounge, context);
+    } else {
+      _enterLounge(loungeID, loungesBloc);
+    }
   }
 
   _hostLounge(Lounge lounge, BuildContext context) async {
