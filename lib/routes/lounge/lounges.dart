@@ -5,6 +5,7 @@ import 'package:breez/bloc/blocs_provider.dart';
 import 'package:breez/bloc/lounge/bloc.dart';
 import 'package:breez/bloc/lounge/actions.dart';
 import 'package:breez/bloc/lounge/lounge_payments_bloc.dart';
+import 'package:breez/bloc/lounge/model.dart';
 import 'package:breez/bloc/user_profile/user_actions.dart';
 import 'package:breez/bloc/user_profile/user_profile_bloc.dart';
 import 'package:breez/routes/lounge/enter_lounge_dialog.dart';
@@ -126,12 +127,14 @@ class _LoungesState extends State<Lounges> {
           _enterLounge(clipboard.substring(14), loungesBloc);
         } else {
           return showDialog(
+              useRootNavigator: false,
               context: context,
               builder: (BuildContext context) => EnterLoungeDialog(
                   (loungeID) => _enterLounge(loungeID, loungesBloc)));
         }
       } else {
         return showDialog(
+            useRootNavigator: false,
             context: context,
             builder: (BuildContext context) => EnterLoungeDialog(
                 (loungeID) => _enterLounge(loungeID, loungesBloc)));
@@ -164,13 +167,17 @@ class _LoungesState extends State<Lounges> {
     }
 
     String paymentOptions = jsonEncode({
-      "presetBoostAmountsList": user.loungePaymentOptions.presetBoostAmountsList,
-      "presetSatsPerMinuteAmountsList": user.loungePaymentOptions.presetSatsPerMinuteAmountsList,
+      "presetBoostAmountsList":
+          user.loungePaymentOptions.presetBoostAmountsList,
+      "presetSatsPerMinuteAmountsList":
+          user.loungePaymentOptions.presetSatsPerMinuteAmountsList,
       "customBoostValue": user.loungePaymentOptions.customBoostValue,
-      "customSatsPerMinAmountValue": user.loungePaymentOptions.customSatsPerMinValue,
+      "customSatsPerMinAmountValue":
+          user.loungePaymentOptions.customSatsPerMinValue,
       "selectedBoostAmountIndex": user.loungePaymentOptions.boostAmountList
           .indexOf(user.loungePaymentOptions.preferredBoostValue),
-      "selectedSatsPerMinuteAmountIndex": user.loungePaymentOptions.satsPerMinuteIntervalsList
+      "selectedSatsPerMinuteAmountIndex": user
+          .loungePaymentOptions.satsPerMinuteIntervalsList
           .indexOf(user.loungePaymentOptions.preferredSatsPerMinValue),
     });
 
@@ -225,7 +232,22 @@ class _LoungesState extends State<Lounges> {
                     debugPrint("readyToClose callback");
                   }),
             ]),
-      );
+      ).then((value) async {
+        List<Lounge> lounges =
+            await loungesBloc.loungesStream.firstWhere((l) => l != null);
+        if (lounges.firstWhere(
+                (lounge) =>
+                    lounge.loungeID == loungeID && lounge.isHosted == true,
+                orElse: () => null) ==
+            null) {
+          AddLounge addLounge = AddLounge(
+            Lounge(loungeID: loungeID, title: loungeID, isHosted: false),
+          );
+
+          loungesBloc.actionsSink.add(addLounge);
+          addLounge.future.then((_) {});
+        }
+      });
     } catch (e) {
       showFlushbar(context, message: e.message.toString());
     }
@@ -246,7 +268,8 @@ class _LoungesState extends State<Lounges> {
   void _onBoost(message) {
     var boostAmount = double.parse(message["boostAmount"]).toInt();
     var paymentInfo = message["paymentInfo"];
-    paymentsBloc.actionsSink.add(PayBoost(boostAmount, "", currentLoungeID, paymentInfo));
+    paymentsBloc.actionsSink
+        .add(PayBoost(boostAmount, "", currentLoungeID, paymentInfo));
   }
 
   void _changeSatsPerMinute(message) async {

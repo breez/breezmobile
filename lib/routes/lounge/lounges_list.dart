@@ -8,67 +8,85 @@ import 'lounge_item.dart';
 
 const BOTTOM_PADDING = 8.0;
 
-class LoungesList extends StatelessWidget {
+class LoungesList extends StatefulWidget {
   final List<Lounge> _lounges;
 
   LoungesList(this._lounges);
 
   @override
+  _LoungesListState createState() => _LoungesListState();
+}
+
+class _LoungesListState extends State<LoungesList> {
+  bool _isHostedView = true;
+
+  @override
   Widget build(BuildContext context) {
-    if (_lounges?.length == 0) {
-      return _showNoLoungesText(context);
+    var lounges = widget._lounges
+        .where((lounge) => lounge.isHosted == _isHostedView)
+        .toList();
+    if (lounges?.length == 0) {
+      return Column(
+        mainAxisSize: MainAxisSize.max,
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [_buildHeader(context), _showNoLoungesText(context)],
+      );
     } else {
       return ListView.builder(
-          itemCount: _lounges.length + 1,
+          itemCount: lounges.length + 1,
           itemBuilder: (context, index) {
             // return the header
             if (index == 0) {
               return _buildHeader(context);
             }
             index -= 1;
-            return LoungeItem(_lounges[index]);
+            return LoungeItem(lounges[index]);
           });
     }
   }
 
   _showNoLoungesText(BuildContext context) {
-    return Center(
-      child: Column(
-        mainAxisSize: MainAxisSize.max,
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: <Widget>[
-          ImageIcon(
-            AssetImage("src/icon/lounge.png"),
-            size: 75,
-            color: theme.themeId == "BLUE"
-                ? Color.fromRGBO(0, 133, 251, 1.0)
-                : Color(0xFF4B89EB),
-          ),
-          Padding(
-            padding: const EdgeInsets.only(top: 0.0, left: 16.0, right: 16.0),
-            child: AutoSizeText(
-              "Start a new Lounge using the Host button.",
-              style: theme.themeId == "BLUE"
-                  ? Typography.material2018(platform: TargetPlatform.android)
-                      .black
-                      .headline6
-                      .copyWith(fontWeight: FontWeight.w400, fontSize: 14.3)
-                  : Typography.material2018(platform: TargetPlatform.android)
-                      .white
-                      .headline6
-                      .copyWith(fontWeight: FontWeight.w400, fontSize: 14.3),
-              textAlign: TextAlign.center,
-              minFontSize: MinFontSize(context).minFontSize,
-              stepGranularity: 0.1,
+    return Expanded(
+      child: Center(
+        child: Column(
+          mainAxisSize: MainAxisSize.max,
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: <Widget>[
+            ImageIcon(
+              AssetImage("src/icon/lounge.png"),
+              size: 75,
+              color: theme.themeId == "BLUE"
+                  ? Color.fromRGBO(0, 133, 251, 1.0)
+                  : Color(0xFF4B89EB),
             ),
-          ),
-        ],
+            Padding(
+              padding: const EdgeInsets.only(top: 0.0, left: 16.0, right: 16.0),
+              child: AutoSizeText(
+                _isHostedView
+                    ? "Start a new Lounge using the Host button."
+                    : "Lounges you enter will be displayed here.",
+                style: theme.themeId == "BLUE"
+                    ? Typography.material2018(platform: TargetPlatform.android)
+                        .black
+                        .headline6
+                        .copyWith(fontWeight: FontWeight.w400, fontSize: 14.3)
+                    : Typography.material2018(platform: TargetPlatform.android)
+                        .white
+                        .headline6
+                        .copyWith(fontWeight: FontWeight.w400, fontSize: 14.3),
+                textAlign: TextAlign.center,
+                minFontSize: MinFontSize(context).minFontSize,
+                stepGranularity: 0.1,
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
 
   Widget _buildHeader(BuildContext context) {
-    bool _isHostedView = true;
     var itemWidth = (MediaQuery.of(context).size.width) / 2;
     // This method is a work-around to center align the buttons
     // Use Align to stick items to center and set padding to give equal distance
@@ -86,7 +104,11 @@ class LoungesList extends StatelessWidget {
                 child: Align(
                   alignment: Alignment.centerRight,
                   child: GestureDetector(
-                      onTap: () {},
+                      onTap: () {
+                        setState(() {
+                          _isHostedView = true;
+                        });
+                      },
                       behavior: HitTestBehavior.translucent,
                       child: Padding(
                         padding: EdgeInsets.only(right: itemWidth / 4),
@@ -124,7 +146,11 @@ class LoungesList extends StatelessWidget {
                   alignment: Alignment.centerLeft,
                   child: GestureDetector(
                       behavior: HitTestBehavior.translucent,
-                      onTap: () {},
+                      onTap: () {
+                        setState(() {
+                          _isHostedView = false;
+                        });
+                      },
                       child: Padding(
                         padding: EdgeInsets.only(left: itemWidth / 4),
                         child: Row(

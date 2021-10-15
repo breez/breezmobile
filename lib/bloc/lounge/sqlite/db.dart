@@ -14,7 +14,8 @@ Future<Database> getDB() async {
         CREATE TABLE Lounge(
           id INTEGER PRIMARY KEY,
           loungeID TEXT, 
-          title TEXT
+          title TEXT,
+          isHosted INTEGER
         )
         """,
       );

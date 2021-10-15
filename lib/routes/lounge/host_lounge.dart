@@ -75,9 +75,9 @@ class _HostLoungeState extends State<HostLounge> {
               var loungeID = Uuid().v1().split('-')[0];
               AddLounge addLounge = AddLounge(
                 Lounge(
-                  loungeID: loungeID,
-                  title: _titleController.text,
-                ),
+                    loungeID: loungeID,
+                    title: _titleController.text,
+                    isHosted: true),
               );
 
               widget.loungesBloc.actionsSink.add(addLounge);

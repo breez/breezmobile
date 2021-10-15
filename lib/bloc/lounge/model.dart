@@ -6,27 +6,31 @@ class Lounge implements DBItem {
   final int id;
   final String loungeID;
   final String title;
+  final bool isHosted;
 
-  Lounge({this.id, this.loungeID, this.title});
+  Lounge({this.id, this.loungeID, this.title, this.isHosted});
 
   Lounge copyWith({String title}) {
     return Lounge(
       id: this.id,
       loungeID: this.loungeID,
       title: title ?? this.title,
+      isHosted: this.isHosted,
     );
   }
 
   Lounge.fromMap(Map<String, dynamic> json)
       : id = json["id"],
         loungeID = json["loungeID"],
-        title = json["title"];
+        title = json["title"],
+        isHosted = json["isHosted"] == 1 ? true : false;
 
   Map<String, dynamic> toMap() {
     return {
       'id': id,
       'loungeID': loungeID,
       'title': title,
+      'isHosted': isHosted ? 1 : 0,
     };
   }
 }
