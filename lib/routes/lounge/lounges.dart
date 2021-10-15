@@ -316,11 +316,10 @@ class _LoungesState extends State<Lounges> {
       ).then((value) async {
         List<Lounge> lounges =
             await loungesBloc.loungesStream.firstWhere((l) => l != null);
-        if (lounges.firstWhere(
-                (lounge) =>
-                    lounge.loungeID == loungeID && lounge.isHosted == true,
-                orElse: () => null) ==
-            null) {
+        Lounge lounge = lounges.firstWhere(
+            (lounge) => lounge.loungeID == loungeID,
+            orElse: () => null);
+        if (lounge == null) {
           AddLounge addLounge = AddLounge(
             Lounge(loungeID: loungeID, title: loungeID, isHosted: false),
           );
