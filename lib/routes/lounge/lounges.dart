@@ -123,7 +123,7 @@ class _LoungesState extends State<Lounges> {
       if (clipboardData != null) {
         var clipboard = clipboardData.text;
         if (clipboard.contains("Enter Lounge: ")) {
-          _enterLounge(clipboard.substring(16), loungesBloc);
+          _enterLounge(clipboard.substring(14), loungesBloc);
         } else {
           return showDialog(
               context: context,
