@@ -182,8 +182,8 @@ class InitialWalkthroughPageState extends State<InitialWalkthroughPage>
     ));
   }
 
-  Future _createBackupPhrase(String entrophy) async {
-    var saveBackupKeyAction = SaveBackupKey(entrophy);
+  Future _createBackupPhrase(String entropy) async {
+    var saveBackupKeyAction = SaveBackupKey(entropy);
     widget._backupBloc.backupActionsSink.add(saveBackupKeyAction);
     return saveBackupKeyAction.future.catchError((err) {
       promptError(
