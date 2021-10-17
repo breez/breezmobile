@@ -258,7 +258,11 @@ class PodcastPaymentsBloc with AsyncActionsHandler {
           .map((r) => ValueDestination.fromJson(r.toMap()))
           .toList();
 
-      return Value._(model: valueModel, recipients: valueDestinations);
+      if (valueModel.type == "lightning" && valueModel.method == 'keysend') {
+        return Value._(model: valueModel, recipients: valueDestinations);
+      }
+
+      return null;
     }
 
     Map<String, dynamic> metadata;
