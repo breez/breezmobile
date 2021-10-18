@@ -1,3 +1,4 @@
+import 'package:breez/bloc/user_profile/currency.dart';
 import 'package:breez/routes/charge/currency_wrapper.dart';
 import 'package:breez/utils/date.dart';
 import 'package:breez/widgets/print_parameters.dart';
@@ -8,6 +9,7 @@ import 'package:printing/printing.dart';
 
 class PrintService {
   final PrintParameters printParameters;
+  final _satCurrency = CurrencyWrapper.fromBTC(Currency.SAT);
 
   PrintService(this.printParameters);
 
@@ -143,26 +145,27 @@ class PrintService {
 
   _addTotalLineToTable(Map<String, ByteData> fontMap) {
     final sale = printParameters.submittedSale;
-    final currency = printParameters.currentCurrency;
     final totalAmount = sale.totalAmountInSats;
 
-    var totalMsg = currency.format(totalAmount, removeTrailingZeros: true);
-    totalMsg = "$totalMsg ${currency.shortName}";
+    var totalMsg = _satCurrency.format(totalAmount, removeTrailingZeros: true);
+    totalMsg = "$totalMsg ${_satCurrency.shortName}";
     final totalAmountInFiat = sale.totalAmountInFiat;
     if (totalAmountInFiat.length == 1) {
       final entry = totalAmountInFiat.entries.first;
       final currency = entry.key;
       final total = entry.value;
-      CurrencyWrapper saleCurrency = CurrencyWrapper.fromShortName(
-        currency,
-        printParameters.account,
-      );
-      final fiatTotalMsg = saleCurrency.format(
-        total,
-        removeTrailingZeros: true,
-        includeCurrencySymbol: false,
-      );
-      totalMsg = "$totalMsg (${saleCurrency.symbol} $fiatTotalMsg)";
+      if (currency != _satCurrency.shortName) {
+        CurrencyWrapper saleCurrency = CurrencyWrapper.fromShortName(
+          currency,
+          printParameters.account,
+        );
+        final fiatTotalMsg = saleCurrency.format(
+          total,
+          removeTrailingZeros: true,
+          includeCurrencySymbol: true,
+        );
+        totalMsg = "$totalMsg ($fiatTotalMsg)";
+      }
     }
 
     return pw.TableRow(
@@ -250,15 +253,13 @@ class PrintService {
     return pw.Row(
         mainAxisAlignment: pw.MainAxisAlignment.start,
         crossAxisAlignment: pw.CrossAxisAlignment.center,
-        children: (saleCurrency.symbol !=
-                printParameters.currentCurrency.symbol)
+        children: (saleCurrency.symbol != _satCurrency.symbol)
             ? [
                 _buildPrice(saleCurrency, totalPriceInFiat, fontMap,
                     padding: pw.EdgeInsets.only(left: 8, top: 8, bottom: 8)),
                 _buildPrice(
-                    printParameters.currentCurrency,
-                    totalPriceInSats /
-                        printParameters.currentCurrency.satConversionRate,
+                    _satCurrency,
+                    totalPriceInSats,
                     fontMap,
                     addParenthesis: true,
                     padding: pw.EdgeInsets.all(8)),
