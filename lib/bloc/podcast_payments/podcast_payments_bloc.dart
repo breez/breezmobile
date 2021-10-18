@@ -252,6 +252,19 @@ class PodcastPaymentsBloc with AsyncActionsHandler {
   }
 
   Future<Value> _getLightningPaymentValue(Episode episode) async {
+    if (episode.value != null) {
+      ValueModel valueModel = ValueModel.fromJson(episode.value.toMap());
+      List<ValueDestination> valueDestinations = episode.value.recipients
+          .map((r) => ValueDestination.fromJson(r.toMap()))
+          .toList();
+
+      if (valueModel.type == "lightning" && valueModel.method == 'keysend') {
+        return Value._(model: valueModel, recipients: valueDestinations);
+      }
+
+      return null;
+    }
+
     Map<String, dynamic> metadata;
     if (episode.pguid != null && episode.pguid.isNotEmpty) {
       var podcast = await repository.findPodcastByGuid(episode.pguid);
