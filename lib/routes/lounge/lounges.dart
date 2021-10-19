@@ -3,12 +3,11 @@ import 'dart:io';
 
 import 'package:breez/bloc/account/account_bloc.dart';
 import 'package:breez/bloc/blocs_provider.dart';
-import 'package:breez/bloc/lounge/bloc.dart';
+import 'package:breez/bloc/jitsi_meet/bloc.dart';
 import 'package:breez/bloc/lounge/actions.dart';
+import 'package:breez/bloc/lounge/bloc.dart';
 import 'package:breez/bloc/lounge/lounge_payments_bloc.dart';
 import 'package:breez/bloc/lounge/model.dart';
-import 'package:breez/bloc/user_profile/user_actions.dart';
-import 'package:breez/bloc/user_profile/user_profile_bloc.dart';
 import 'package:breez/routes/lounge/enter_lounge_dialog.dart';
 import 'package:breez/routes/lounge/lounges_list.dart';
 import 'package:breez/theme_data.dart' as theme;
@@ -28,34 +27,16 @@ class Lounges extends StatefulWidget {
 }
 
 class _LoungesState extends State<Lounges> {
-  String currentLoungeID;
   LoungePaymentsBloc paymentsBloc;
-  UserProfileBloc userProfileBloc;
   bool _isInit = false;
 
   @override
   void didChangeDependencies() {
     if (!_isInit) {
       paymentsBloc = AppBlocsProvider.of<LoungePaymentsBloc>(context);
-      userProfileBloc = AppBlocsProvider.of<UserProfileBloc>(context);
       _isInit = true;
     }
     super.didChangeDependencies();
-  }
-
-  @override
-  void initState() {
-    super.initState();
-
-    JitsiMeet.addListener(
-      JitsiMeetingListener(
-        onError: _onError,
-        onBoost: _onBoost,
-        changeSatsPerMinute: _changeSatsPerMinute,
-        setCustomBoostAmount: _setCustomBoostValue,
-        setCustomSatsPerMinAmount: _setCustomSatsPerMinAmount,
-      ),
-    );
   }
 
   @override
@@ -163,10 +144,9 @@ class _LoungesState extends State<Lounges> {
   }
 
   _hostLounge(Lounge lounge, BuildContext context) async {
-    var userProfileBloc = AppBlocsProvider.of<UserProfileBloc>(context);
     var accountBloc = AppBlocsProvider.of<AccountBloc>(context);
 
-    var user = await userProfileBloc.userStream.firstWhere((u) => u != null);
+    var user = await paymentsBloc.userProfile.userStream.firstWhere((u) => u != null);
 
     // Enable or disable any feature flag here
     // If feature flag are not provided, default values will be used
@@ -201,35 +181,14 @@ class _LoungesState extends State<Lounges> {
       };
 
     debugPrint("JitsiMeetingOptions: $options");
-    await JitsiMeet.joinMeeting(
-      options,
-      listener: JitsiMeetingListener(
-          onConferenceWillJoin: (message) {
-            debugPrint("${options.room} will join with message: $message");
-          },
-          onConferenceJoined: (message) {
-            debugPrint("${options.room} joined with message: $message");
-          },
-          onConferenceTerminated: (message) {
-            debugPrint("${options.room} terminated with message: $message");
-          },
-          genericListeners: [
-            JitsiGenericListener(
-                eventName: 'readyToClose',
-                callback: (dynamic message) {
-                  debugPrint("readyToClose callback");
-                }),
-          ]),
-    );
+    await JitsiMeet.joinMeeting(options);
   }
 
   _enterLounge(String loungeID, LoungesBloc loungesBloc) async {
-    var userProfileBloc = AppBlocsProvider.of<UserProfileBloc>(context);
-    var user = await userProfileBloc.userStream.firstWhere((u) => u != null);
+    var user = await paymentsBloc.userProfile.userStream.firstWhere((u) => u != null);
+    var jitsiMeetBloc = AppBlocsProvider.of<JitsiMeetBloc>(context);
+    jitsiMeetBloc.currentLoungeSink.add(loungeID);
 
-    setState(() {
-      currentLoungeID = loungeID;
-    });
     // Enable or disable any feature flag here
     // If feature flag are not provided, default values will be used
     // Full list of feature flags (and defaults) available in the README
@@ -282,38 +241,7 @@ class _LoungesState extends State<Lounges> {
 
     debugPrint("JitsiMeetingOptions: $options");
     try {
-      await JitsiMeet.joinMeeting(
-        options,
-        listener: JitsiMeetingListener(
-            onConferenceWillJoin: (message) {
-              debugPrint("${options.room} will join with message: $message");
-            },
-            onConferenceJoined: (message) {
-              debugPrint("${options.room} joined with message: $message");
-            },
-            onConferenceTerminated: (message) {
-              debugPrint("${options.room} terminated with message: $message");
-            },
-            onBoost: (message) {
-              debugPrint("Called onBoost with message: $message");
-            },
-            changeSatsPerMinute: (message) {
-              debugPrint("Called changeSatsPerMinute with message: $message");
-            },
-            setCustomBoostAmount: (message) {
-              debugPrint("Called setCustomBoostAmount");
-            },
-            setCustomSatsPerMinAmount: (message) {
-              debugPrint("Called setCustomSatsPerMinAmount");
-            },
-            genericListeners: [
-              JitsiGenericListener(
-                  eventName: 'readyToClose',
-                  callback: (dynamic message) {
-                    debugPrint("readyToClose callback");
-                  }),
-            ]),
-      ).then((value) async {
+      await JitsiMeet.joinMeeting(options).then((value) async {
         List<Lounge> lounges =
             await loungesBloc.loungesStream.firstWhere((l) => l != null);
         Lounge lounge = lounges.firstWhere(
@@ -331,42 +259,5 @@ class _LoungesState extends State<Lounges> {
     } catch (e) {
       showFlushbar(context, message: e.message.toString());
     }
-  }
-
-  void _onBoost(message) {
-    var boostAmount = double.parse(message["boostAmount"]).toInt();
-    var paymentInfo = message["paymentInfo"];
-    paymentsBloc.actionsSink
-        .add(PayBoost(boostAmount, "", currentLoungeID, paymentInfo));
-  }
-
-  void _changeSatsPerMinute(message) async {
-    var user = await userProfileBloc.userStream.firstWhere((u) => u != null);
-    var satsPerMinute = double.parse(message["satsPerMinute"]).toInt();
-    paymentsBloc.actionsSink.add(AdjustAmount(satsPerMinute));
-    userProfileBloc.userActionsSink.add(SetLoungePaymentOptions(user
-        .loungePaymentOptions
-        .copyWith(preferredSatsPerMinValue: satsPerMinute)));
-  }
-
-  void _setCustomBoostValue(message) async {
-    var user = await userProfileBloc.userStream.firstWhere((u) => u != null);
-    var customBoostValue = double.parse(message["customBoostValue"]).toInt();
-    userProfileBloc.userActionsSink.add(SetLoungePaymentOptions(user
-        .loungePaymentOptions
-        .copyWith(customBoostValue: customBoostValue)));
-  }
-
-  void _setCustomSatsPerMinAmount(message) async {
-    var user = await userProfileBloc.userStream.firstWhere((u) => u != null);
-    var customSatsPerMinValue =
-        double.parse(message["customSatsPerMinValue"]).toInt();
-    userProfileBloc.userActionsSink.add(SetLoungePaymentOptions(user
-        .loungePaymentOptions
-        .copyWith(customSatsPerMinValue: customSatsPerMinValue)));
-  }
-
-  _onError(error) {
-    debugPrint("_onError broadcasted: $error");
   }
 }

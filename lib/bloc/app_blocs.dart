@@ -11,6 +11,7 @@ import 'package:breez/bloc/lounge/lounge_payments_bloc.dart';
 import 'package:breez/bloc/user_profile/user_profile_bloc.dart';
 
 import 'invoice/invoice_bloc.dart';
+import 'jitsi_meet/bloc.dart';
 import 'lsp/lsp_bloc.dart';
 
 /*
@@ -30,6 +31,7 @@ class AppBlocs {
   final ReverseSwapBloc reverseSwapBloc;
   final LoungesBloc loungesBloc;
   final LoungePaymentsBloc loungePaymentsBloc;
+  final JitsiMeetBloc jitsiMeetBloc;
   final Map<Type, Object> _blocsByType;
 
   static T _registerBloc<T>(T bloc, Map<Type, Object> blocs) {
@@ -69,6 +71,7 @@ class AppBlocs {
     LoungesBloc loungesBloc = _registerBloc(LoungesBloc(), blocsByType);
     LoungePaymentsBloc loungePaymentsBloc = _registerBloc(
         LoungePaymentsBloc(userProfileBloc, accountBloc), blocsByType);
+    JitsiMeetBloc jitsiMeetBloc = _registerBloc(JitsiMeetBloc(loungePaymentsBloc), blocsByType);
 
     return AppBlocs._(
         userProfileBloc,
@@ -84,6 +87,7 @@ class AppBlocs {
         posCatalogBloc,
         loungesBloc,
         loungePaymentsBloc,
+        jitsiMeetBloc,
         blocsByType);
   }
 
@@ -101,6 +105,7 @@ class AppBlocs {
     this.posCatalogBloc,
     this.loungesBloc,
     this.loungePaymentsBloc,
+    this.jitsiMeetBloc,
     this._blocsByType,
   );
 }
