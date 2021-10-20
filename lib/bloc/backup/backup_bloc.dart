@@ -195,7 +195,7 @@ class BackupBloc {
   }
 
   Future _saveBackupKey(SaveBackupKey action) async {
-    await _secureStorage.write(key: 'backupKey', value: action.backupPhrase);
+    await BreezLibBackupKey.save(_secureStorage, action.backupPhrase);
     action.resolve(null);
   }
 
@@ -203,35 +203,16 @@ class BackupBloc {
     action.resolve(await _breezLib.downloadBackup(action.nodeID));
   }
 
-  Future<BreezLibBackupKey> _getBackupKey(BackupKeyType keyType) async {
-    BreezLibBackupKey key;
-
-    if (keyType == BackupKeyType.PIN) {
-      var pinCode = await _secureStorage.read(key: 'pinCode');
-      key = BreezLibBackupKey()..key = utf8.encode(pinCode);
-    }
-    if (keyType == BackupKeyType.PHRASE) {
-      var phrase = await _secureStorage.read(key: 'backupKey');
-      key = BreezLibBackupKey()..entropyPhrase = phrase;
-    }
-
-    return key;
-  }
-
   Future _setBreezLibBackupKey({BackupKeyType backupKeyType}) async {
-    var keyType =
-        backupKeyType ?? _backupSettingsController.value.backupKeyType;
-    var encryptionKey = await _getBackupKey(keyType);
+    backupKeyType ??= _backupSettingsController.value.backupKeyType;
+    var encryptionKey =
+        await BreezLibBackupKey.fromSettings(_secureStorage, backupKeyType);
 
-    var encryptionKeyType = encryptionKey?.key != null
-        ? keyType == BackupKeyType.PHRASE
-            ? "Mnemonics12"
-            : keyType == BackupKeyType.PIN
-                ? "Pin"
-                : ""
-        : "";
+    // We call _breezLib.setBackupEncryptionKey even if encryptionKey?.key == null
+    // because breezLib sets a persistent flag on whether to use encryption if len(encryptionKey?.key) > 0.
+    // Maybe setUseEncryption should be set explicitly for clarity? (@nochiel)
     return _breezLib.setBackupEncryptionKey(
-        encryptionKey?.key, encryptionKeyType);
+        encryptionKey?.key, encryptionKey?.type);
   }
 
   _scheduleBackgroundTasks() {
@@ -410,23 +391,26 @@ class SignInFailedException implements Exception {
 }
 
 class BreezLibBackupKey {
-  final KEYLENGTH = 32;
+  static const KEYLENGTH = 32;
+  static const ENTROPY_LENGTH = 16 * 2; // 2 hex characters == 1 byte.
 
-  String entropyPhrase;
+  BackupKeyType backupKeyType;
+  String entropy;
+
   List<int> _key;
   set key(List<int> v) => _key = v;
 
   List<int> get key {
     var entropyBytes = _key;
     if (entropyBytes == null) {
-      assert(entropyPhrase != null);
-      assert(entropyPhrase.isNotEmpty);
-      entropyBytes = HEX.decode(entropyPhrase);
+      assert(entropy != null);
+      assert(entropy.isNotEmpty);
+      entropyBytes = HEX.decode(entropy);
     }
 
     if (entropyBytes.length != KEYLENGTH) {
-      // The length of a "Mnemonics" entropy phrase is 32.
-      // The length of a "Mnemonics12" entropy phrase is 16.
+      // The length of a "Mnemonics" entropy hex string in bytes is 32.
+      // The length of a "Mnemonics12" entropy hex string in bytes is 16.
 
       entropyBytes = sha256.convert(entropyBytes).bytes;
     }
@@ -434,5 +418,47 @@ class BreezLibBackupKey {
     return entropyBytes;
   }
 
-  BreezLibBackupKey({this.entropyPhrase});
+  String get type {
+    var result = '';
+    if (key != null) {
+      switch (backupKeyType) {
+        case BackupKeyType.PHRASE:
+          assert(entropy.length == ENTROPY_LENGTH ||
+              entropy.length == ENTROPY_LENGTH * 2);
+          result =
+              entropy.length == ENTROPY_LENGTH ? 'Mnemonics12' : 'Mnemonics';
+          break;
+        case BackupKeyType.PIN:
+          result = 'Pin';
+          break;
+      }
+    }
+
+    return result;
+  }
+
+  BreezLibBackupKey({this.entropy, List<int> key}) : _key = key;
+
+  static Future<BreezLibBackupKey> fromSettings(
+      FlutterSecureStorage store, BackupKeyType backupKeyType) async {
+    assert(store != null);
+
+    BreezLibBackupKey result;
+    switch (backupKeyType) {
+      case BackupKeyType.PIN:
+        var pinCode = await store.read(key: 'pinCode');
+        result = BreezLibBackupKey(key: utf8.encode(pinCode));
+        break;
+      case BackupKeyType.PHRASE:
+        result = BreezLibBackupKey(entropy: await store.read(key: 'backupKey'));
+        break;
+    }
+    result?.backupKeyType = backupKeyType;
+
+    return result;
+  }
+
+  static Future save(FlutterSecureStorage store, String key) async {
+    await store.write(key: 'backupKey', value: key);
+  }
 }

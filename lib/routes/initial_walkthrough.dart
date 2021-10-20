@@ -98,7 +98,7 @@ class InitialWalkthroughPageState extends State<InitialWalkthroughPage>
         if (toRestore.encrypted) {
           if (toRestore.encryptionType.startsWith("Mnemonics")) {
             log.info(
-                'initial_walkthrough.dart: found mnemonic of type "${toRestore.encryptionType}"');
+                'initial_walkthrough.dart: restoring backup with mnemonic of type "${toRestore.encryptionType}"');
 
             restoreUsingPhrase((toRestore.encryptionType == "Mnemonics"),
                 (entropy) async {
