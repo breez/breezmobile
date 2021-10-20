@@ -419,7 +419,7 @@ class SecurityPageState extends State<SecurityPage>
       SecurityModel securityModel, BackupSettings backupSettings) {
     return ListTile(
       title: AutoSizeText(
-        securityModel.requiresPin ? "Activate PIN" : "Create PIN",
+        securityModel.requiresPin ? "Deactivate PIN" : "Create PIN",
         style: TextStyle(color: Colors.white),
         maxLines: 1,
         minFontSize: MinFontSize(context).minFontSize,
