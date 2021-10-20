@@ -86,8 +86,10 @@ class InitialWalkthroughPageState extends State<InitialWalkthroughPage>
       var restore = (SnapshotInfo snapshot, List<int> key) {
         log.info(
             'initial_walkthrough.dart.restore: snapshotInfo with timestamp: ${snapshot?.modifiedTime}');
+        log.info(
+            'initial_walkthrough.dart.restore: using key with length: ${key?.length}');
         widget._backupBloc.restoreRequestSink
-            .add(RestoreRequest(snapshot, BreezLibBackupKey()..key = key));
+            .add(RestoreRequest(snapshot, BreezLibBackupKey(key: key)));
         Navigator.push(
             context,
             createLoaderRoute(context,

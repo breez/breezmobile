@@ -329,7 +329,7 @@ class BackupBloc {
         return;
       }
 
-      if (request.encryptionKey != null) {
+      if (request.encryptionKey != null && request.encryptionKey.key != null) {
         assert(request.encryptionKey.key.length > 0 || true);
       }
       assert(!request.snapshot.nodeID.isEmpty);
@@ -403,12 +403,16 @@ class BreezLibBackupKey {
   List<int> get key {
     var entropyBytes = _key;
     if (entropyBytes == null) {
+      /*
       assert(entropy != null);
       assert(entropy.isNotEmpty);
-      entropyBytes = HEX.decode(entropy);
+      */
+      if (entropy != null && entropy.isNotEmpty) {
+        entropyBytes = HEX.decode(entropy);
+      }
     }
 
-    if (entropyBytes.length != KEYLENGTH) {
+    if (entropyBytes != null && entropyBytes.length != KEYLENGTH) {
       // The length of a "Mnemonics" entropy hex string in bytes is 32.
       // The length of a "Mnemonics12" entropy hex string in bytes is 16.
 
