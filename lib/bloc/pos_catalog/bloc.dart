@@ -42,8 +42,10 @@ class PosCatalogBloc with AsyncActionsHandler {
 
   Stream<String> get selectedCurrencyStream => _selectedCurrency.stream;
 
-  PosCatalogBloc(Stream<AccountModel> accountStream) {
-    _repository = SqliteRepository();
+  PosCatalogBloc(
+    Stream<AccountModel> accountStream,
+    this._repository,
+  ) {
     _loadItems();
     registerAsyncHandlers({
       AddItem: _addItem,
