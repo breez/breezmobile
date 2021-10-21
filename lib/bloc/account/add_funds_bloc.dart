@@ -14,7 +14,6 @@ import "package:ini/ini.dart";
 import 'package:rxdart/rxdart.dart';
 
 import '../blocs_provider.dart';
-import 'account_model.dart';
 import 'add_fund_vendor_model.dart';
 import 'add_funds_model.dart';
 import 'moonpay_order.dart';
