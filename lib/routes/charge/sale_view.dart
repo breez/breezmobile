@@ -300,17 +300,13 @@ class _TotalSaleCharge extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    var totalAmount =
-        currentSale.totalChargeSat / saleCurrency.satConversionRate;
-
     return ElevatedButton(
       style: ElevatedButton.styleFrom(
         primary: Theme.of(context).primaryColorLight,
         padding: EdgeInsets.only(top: 14.0, bottom: 14.0),
       ),
       child: Text(
-        "${readOnly ? '' : 'Charge '}${saleCurrency.format(totalAmount)} ${saleCurrency.shortName}"
-            .toUpperCase(),
+        _title(),
         maxLines: 1,
         textAlign: TextAlign.center,
         style: theme.invoiceChargeAmountStyle,
@@ -323,6 +319,39 @@ class _TotalSaleCharge extends StatelessWidget {
         }
       },
     );
+  }
+
+  String _title() {
+    final totalAmountInSats = currentSale.totalAmountInSats;
+    final totalAmountInFiat = currentSale.totalAmountInFiat;
+
+    final satCurrency = CurrencyWrapper.fromBTC(Currency.SAT);
+    final satMessage = satCurrency.format(
+      totalAmountInSats,
+      removeTrailingZeros: true,
+      includeDisplayName: true,
+    );
+
+    String title = readOnly ? '' : 'Charge';
+    title = "$title $satMessage";
+    if (totalAmountInFiat.length == 1) {
+      final currency = totalAmountInFiat.entries.first.key;
+      final total = totalAmountInFiat.entries.first.value;
+      if (currency != satCurrency.shortName) {
+        CurrencyWrapper saleCurrency = CurrencyWrapper.fromShortName(
+          currency,
+          accountModel,
+        );
+        final fiatTotalMsg = saleCurrency.format(
+          total,
+          removeTrailingZeros: true,
+          includeCurrencySymbol: true,
+        );
+        title = "$title ($fiatTotalMsg)";
+      }
+    }
+    title = title.toUpperCase();
+    return title;
   }
 }
 
