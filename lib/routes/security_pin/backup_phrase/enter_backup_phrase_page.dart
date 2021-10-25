@@ -12,9 +12,11 @@ import 'package:flutter_typeahead/flutter_typeahead.dart';
 import 'wordlist.dart';
 
 class EnterBackupPhrasePage extends StatefulWidget {
+  final bool is24Word;
   final Function(String phrase) onPhraseSubmitted;
 
-  const EnterBackupPhrasePage({Key key, @required this.onPhraseSubmitted})
+  const EnterBackupPhrasePage(
+      {Key key, this.is24Word = false, @required this.onPhraseSubmitted})
       : super(key: key);
 
   @override
@@ -24,15 +26,22 @@ class EnterBackupPhrasePage extends StatefulWidget {
 class EnterBackupPhrasePageState extends State<EnterBackupPhrasePage> {
   final _formKey = GlobalKey<FormState>();
 
-  List<FocusNode> focusNodes = List<FocusNode>.generate(24, (_) => FocusNode());
+  List<FocusNode> focusNodes = List<FocusNode>.generate(12, (_) => FocusNode());
   List<TextEditingController> textEditingControllers =
-      List<TextEditingController>.generate(24, (_) => TextEditingController());
+      List<TextEditingController>.generate(12, (_) => TextEditingController());
   int _currentPage;
+  int _lastPage = 2;
   AutovalidateMode _autoValidateMode;
   bool _hasError;
 
   @override
   void initState() {
+    if (widget.is24Word) {
+      focusNodes = List<FocusNode>.generate(24, (_) => FocusNode());
+      textEditingControllers = List<TextEditingController>.generate(
+          24, (_) => TextEditingController());
+      _lastPage = 4;
+    }
     _currentPage = 1;
     _autoValidateMode = AutovalidateMode.disabled;
     _hasError = false;
@@ -64,7 +73,7 @@ class EnterBackupPhrasePageState extends State<EnterBackupPhrasePage> {
             },
           ),
           title: Text(
-            "Enter your backup phrase ($_currentPage/4)",
+            "Enter your backup phrase ($_currentPage/$_lastPage)",
             style: Theme.of(context).appBarTheme.textTheme.headline6,
           ),
           elevation: 0.0),
@@ -193,13 +202,13 @@ class EnterBackupPhrasePageState extends State<EnterBackupPhrasePage> {
 
   _buildBottomBtn(UserProfileBloc userProfileBloc) {
     return SingleButtonBottomBar(
-      text: _currentPage + 1 == 5 ? "RESTORE" : "NEXT",
+      text: _currentPage + 1 == (_lastPage + 1) ? "RESTORE" : "NEXT",
       onPressed: () {
         setState(() {
           _hasError = false;
           if (_formKey.currentState.validate() && !_hasError) {
             _autoValidateMode = AutovalidateMode.disabled;
-            if (_currentPage + 1 == 5) {
+            if (_currentPage + 1 == (_lastPage + 1)) {
               _validateBackupPhrase(userProfileBloc);
             } else {
               _formKey.currentState.reset();
