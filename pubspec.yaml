@@ -18,7 +18,7 @@ dependencies:
   crypto: ^3.0.1
   csv: ^5.0.0
   dio: ^4.0.0
-  drag_and_drop_lists: ^0.3.2
+  drag_and_drop_lists: 0.3.2
   duration: ^3.0.6
   file_picker: ^3.0.1
   firebase_core: 0.4.0+3
