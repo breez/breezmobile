@@ -7,6 +7,7 @@ import 'package:breez/bloc/account/account_permissions_handler.dart';
 import 'package:breez/bloc/account/fiat_conversion.dart';
 import 'package:breez/bloc/async_action.dart';
 import 'package:breez/bloc/csv_exporter.dart';
+import 'package:breez/bloc/pos_catalog/repository.dart';
 import 'package:breez/bloc/user_profile/breez_user_model.dart';
 import 'package:breez/logger.dart';
 import 'package:breez/services/background_task.dart';
@@ -31,6 +32,8 @@ class AccountBloc {
   static const FORCE_BOOTSTRAP_FILE_NAME = "FORCE_BOOTSTRAP";
   static const String ACCOUNT_SETTINGS_PREFERENCES_KEY = "account_settings";
   static const String PERSISTENT_NODE_ID_PREFERENCES_KEY = "PERSISTENT_NODE_ID";
+
+  Repository _posRepository;
 
   Timer _exchangeRateTimer;
   Map<String, CurrencyData> _currencyData;
@@ -130,7 +133,10 @@ class AccountBloc {
   Stream<BreezUserModel> userProfileStream;
   Completer<bool> startDaemonCompleter = Completer<bool>();
 
-  AccountBloc(this.userProfileStream) {
+  AccountBloc(
+    this.userProfileStream,
+    this._posRepository,
+  ) {
     ServiceInjector injector = ServiceInjector();
     _breezServer = injector.breezServer;
     _breezLib = injector.breezBridge;
@@ -344,11 +350,19 @@ class AccountBloc {
   }
 
   Future _exportPaymentsAction(ExportPayments action) async {
-    List currentPaymentList =
-        _filterPayments(_paymentsController.value.paymentsList);
+    List<PaymentInfo> currentPaymentList = _filterPayments(
+      _paymentsController.value.paymentsList,
+    );
+    List<CsvData> data = [];
+    for (var paymentInfo in currentPaymentList) {
+      final sale = await _posRepository.fetchSaleByPaymentHash(
+        paymentInfo.paymentHash,
+      );
+      data.add(CsvData(paymentInfo, sale));
+    }
     action.resolve(
-        await CsvExporter(currentPaymentList, _paymentFilterController.value)
-            .export());
+      await CsvExporter(data, _paymentFilterController.value).export(),
+    );
   }
 
   Future _handleResetChainService(ResetChainService action) async {
