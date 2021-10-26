@@ -644,9 +644,14 @@ class SinglePaymentInfo implements PaymentInfo {
       return "Zebedee";
     }
 
-    if (type == PaymentType.DEPOSIT || type == PaymentType.WITHDRAWAL) {
+    if (type == PaymentType.DEPOSIT) {
       return "Bitcoin Transfer";
     }
+
+    if (type == PaymentType.WITHDRAWAL && _paymentResponse.invoiceMemo.description.isEmpty) {
+      return "Bitcoin Transfer";
+    }
+
     if (type == PaymentType.CLOSED_CHANNEL) {
       return "Closed Channel";
     }
