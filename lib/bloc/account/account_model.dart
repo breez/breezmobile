@@ -589,9 +589,9 @@ class SinglePaymentInfo implements PaymentInfo {
     String result;
     if (type == PaymentType.WITHDRAWAL) {
       if (pending) {
-        result = 'Preparing to be broadcasted.';
+        result = 'Waiting to broadcast transaction';
       } else {
-        result = 'Transaction was broadcasted.';
+        result = 'Transaction was broadcasted';
       }
     }
     result ??= _paymentResponse.invoiceMemo.description.startsWith("Bitrefill")
