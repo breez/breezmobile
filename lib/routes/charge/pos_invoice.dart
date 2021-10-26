@@ -811,7 +811,6 @@ class POSInvoiceState extends State<POSInvoice> with TickerProviderStateMixin {
               PaymentInfo paymentInfo = await _findPayment(payReq.paymentHash);
               PrintParameters printParameters = PrintParameters(
                 currentUser: user,
-                currentCurrency: currentCurrency,
                 account: account,
                 submittedSale: submittedSale,
                 paymentInfo: paymentInfo,

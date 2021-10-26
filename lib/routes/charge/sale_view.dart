@@ -129,7 +129,7 @@ class SaleViewState extends State<SaleView> {
               leading: backBtn.BackButton(),
               title: Text(title),
               actions: widget.readOnly
-                  ? _buildPrintIcon(accModel, saleCurrency)
+                  ? _buildPrintIcon(accModel)
                   : <Widget>[
                       IconButton(
                         icon: Icon(
@@ -242,7 +242,7 @@ class SaleViewState extends State<SaleView> {
         });
   }
 
-  _buildPrintIcon(AccountModel account, CurrencyWrapper saleCurrency) {
+  _buildPrintIcon(AccountModel account) {
     UserProfileBloc userBloc = AppBlocsProvider.of<UserProfileBloc>(context);
     return <Widget>[
       StreamBuilder<BreezUserModel>(
@@ -268,7 +268,6 @@ class SaleViewState extends State<SaleView> {
                 ),
                 onPressed: () => PrintService(PrintParameters(
                         currentUser: user,
-                        currentCurrency: saleCurrency,
                         account: account,
                         submittedSale: widget.readOnlySale,
                         paymentInfo: widget.salePayment))
