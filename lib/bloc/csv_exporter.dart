@@ -68,7 +68,9 @@ class CsvExporter {
     return data
         .map((e) => e.sale?.totalAmountInFiat)
         .map((e) => e?.keys ?? [])
-        .fold(Set<String>(), (p, e) => p.union(e.toSet()));
+        .map((e) => e.toSet())
+        .map((e) => e.difference({"BTC", "SAT"}))
+        .fold(Set<String>(), (p, e) => p.union(e));
   }
 
   Future<String> _saveCsvFile(String csv) async {
