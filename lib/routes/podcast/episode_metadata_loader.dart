@@ -15,12 +15,12 @@ class PodcastIndexMetadataLoader {
     @required Episode episode
   }) {
     if (episode.metadata == null || episode.metadata["feed"] == null) {
-      Future.error("no feed in podcast metadata");
+      return Future.value({});
     }
 
     final feedId = episode.metadata["feed"]["id"];
     if (feedId == null || !(feedId is int)) {
-      Future.error("no feed id in podcast metadata");
+      return Future.value({});
     }
 
     return podcastIndexClient.loadEpisode(feedId: feedId, guid: episode.guid);
