@@ -14,7 +14,6 @@ class PodcastIndexMetadataLoader {
   Future<Map<String, dynamic>> loadEpisodeMetadata({
     @required Episode episode
   }) {
-    // Get the PodcastIndex feed id.
     if (episode.metadata == null || episode.metadata["feed"] == null) {
       Future.error("no feed in podcast metadata");
     }

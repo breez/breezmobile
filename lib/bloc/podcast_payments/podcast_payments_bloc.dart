@@ -279,7 +279,6 @@ class PodcastPaymentsBloc with AsyncActionsHandler {
     }
 
     // Else, we'll take the value block defined for the entire podcast via the PodcastIndex API.
-    // Todo: We could also check if the podcast has a value block defined via the RSS feed before falling back to taking the definition from the PodcastIndex API.
     Map<String, dynamic> metadata;
     if (episode.pguid != null && episode.pguid.isNotEmpty) {
       var podcast = await repository.findPodcastByGuid(episode.pguid);
