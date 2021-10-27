@@ -58,6 +58,10 @@ class BreezAvatar extends StatelessWidget {
         return _VendorAvatar(radius, avatarURL);
       }
 
+      if (avatarURL.startsWith("breez://avatar/possale")) {
+        return _PosSaleAvatar(radius, avatarBgColor);
+      }
+
       if (Uri.tryParse(avatarURL)?.scheme?.startsWith("http") ?? false) {
         return _NetworkImageAvatar(avatarURL, radius);
       }
@@ -225,5 +229,28 @@ class _VendorAvatar extends StatelessWidget {
     } else {
       return _vendorAvatar();
     }
+  }
+}
+
+class _PosSaleAvatar extends StatelessWidget {
+  final double radius;
+  final Color backgroundColor;
+
+  const _PosSaleAvatar(
+    this.radius,
+    this.backgroundColor,
+  );
+
+  @override
+  Widget build(BuildContext context) {
+    return CircleAvatar(
+      backgroundColor: backgroundColor,
+      radius: radius,
+      child: ImageIcon(
+        AssetImage("src/icon/cart.png"),
+        color: theme.BreezColors.blue[500],
+        size: 0.6 * radius * 2,
+      ),
+    );
   }
 }
