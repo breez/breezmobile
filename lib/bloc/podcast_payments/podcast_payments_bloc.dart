@@ -252,6 +252,7 @@ class PodcastPaymentsBloc with AsyncActionsHandler {
   }
 
   Future<Value> _getLightningPaymentValue(Episode episode) async {
+    // If the episode has a value block parsed from the RSS feed, we'll take that.
     if (episode.value != null) {
       ValueModel valueModel = ValueModel.fromJson(episode.value.toMap());
       List<ValueDestination> valueDestinations = episode.value.recipients
@@ -265,6 +266,19 @@ class PodcastPaymentsBloc with AsyncActionsHandler {
       return null;
     }
 
+    // Else, we'll check if the episode has a value block defined via the PodcastIndex API.
+    if (episode.episodeMetadata != null && episode.episodeMetadata["episode"] != null) {
+      final value = episode.episodeMetadata["episode"]["value"];
+      if (value != null && value is Map<String, dynamic>) {
+        final valueObj = Value.fromJson(value);
+        if (valueObj?.model?.type == "lightning" &&
+            valueObj?.model?.method == 'keysend') {
+          return valueObj;
+        }
+      }
+    }
+
+    // Else, we'll take the value block defined for the entire podcast via the PodcastIndex API.
     Map<String, dynamic> metadata;
     if (episode.pguid != null && episode.pguid.isNotEmpty) {
       var podcast = await repository.findPodcastByGuid(episode.pguid);

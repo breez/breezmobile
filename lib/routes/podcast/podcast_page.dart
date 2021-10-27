@@ -24,9 +24,9 @@ import 'package:breez/bloc/podcast_payments/model.dart';
 import 'package:breez/bloc/user_profile/breez_user_model.dart';
 import 'package:breez/bloc/user_profile/user_profile_bloc.dart';
 import 'package:breez/routes/podcast/add_funds_message.dart';
+import 'package:breez/routes/podcast/episode_metadata_loader.dart';
 import 'package:breez/routes/podcast/payment_adjustment.dart';
 import 'package:breez/routes/podcast/podcast_index_api.dart';
-import 'package:breez/routes/podcast/podcast_loader.dart';
 import 'package:breez/routes/podcast/share_episode_button.dart';
 import 'package:breez/routes/podcast/share_podcast_button.dart';
 import 'package:breez/routes/podcast/transport_controls.dart';
@@ -47,7 +47,7 @@ class AnytimePodcastApp extends StatefulWidget {
   static String applicationVersion = '0.1.3';
   static String applicationBuildNumber = '22';
 
-  final podcastIndexClient = PodcastIndexClient();
+  final metadataLoader = PodcastIndexMetadataLoader();
   final Repository repository;
   final PodcastApi podcastApi;
   final Widget child;
@@ -65,13 +65,13 @@ class AnytimePodcastApp extends StatefulWidget {
         api: podcastApi,
         repository: repository,
         settingsService: mobileSettingsService,
-        loadMetadata: (url) => podcastIndexClient.loadFeed(url: url));
+        loadMetadata: (url) => metadataLoader.loadPodcastMetadata(url: url));
     audioPlayerService = MobileAudioPlayerService(
       repository: repository,
       podcastService: podcastService,
       settingsService: mobileSettingsService,
       androidNotificationColor: breezTheme.BreezColors.blue[500],
-    );
+      loadEpisodeMetadata: (episode) => metadataLoader.loadEpisodeMetadata(episode: episode));
     settingsBloc = SettingsBloc(mobileSettingsService);
   }
 
