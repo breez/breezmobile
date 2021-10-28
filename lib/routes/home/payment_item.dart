@@ -1,7 +1,12 @@
 import 'package:breez/bloc/account/account_model.dart';
+import 'package:breez/bloc/blocs_provider.dart';
+import 'package:breez/bloc/pos_catalog/actions.dart';
+import 'package:breez/bloc/pos_catalog/bloc.dart';
+import 'package:breez/routes/charge/sale_view.dart';
 import 'package:breez/theme_data.dart' as theme;
 import 'package:breez/utils/date.dart';
 import 'package:breez/widgets/payment_details_dialog.dart';
+import 'package:breez/widgets/route.dart';
 import 'package:flutter/material.dart';
 
 import 'flip_transition.dart';
@@ -142,7 +147,7 @@ class PaymentItem extends StatelessWidget {
                     ],
                   ),
                 ),
-                onTap: () => showPaymentDetailsDialog(context, _paymentInfo),
+                onTap: () => _showDetail(context),
               ),
             ],
           ),
@@ -209,5 +214,23 @@ class PaymentItem extends StatelessWidget {
             .difference(DateTime.fromMillisecondsSinceEpoch(
                 DateTime.now().millisecondsSinceEpoch)) <
         -duration;
+  }
+
+  void _showDetail(BuildContext context) {
+    final action = FetchSale(paymentHash: _paymentInfo.paymentHash);
+    PosCatalogBloc posBloc = AppBlocsProvider.of<PosCatalogBloc>(context);
+    posBloc.actionsSink.add(action);
+    action.future.then((sale) {
+      if (sale != null) {
+        Navigator.of(context).push(FadeInRoute(
+          builder: (context) => SaleView(
+            readOnlySale: sale,
+            salePayment: _paymentInfo,
+          ),
+        ));
+      } else {
+        showPaymentDetailsDialog(context, _paymentInfo);
+      }
+    });
   }
 }
