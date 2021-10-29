@@ -49,14 +49,15 @@ class FiatConversion {
     bool removeTrailingZeros = false,
     bool allowBelowMin = false,
   }) {
-    int fractionSize = this.currencyData.fractionSize;
+    final currencyData = this.currencyData.localeAware();
+    int fractionSize = currencyData.fractionSize;
     double minimumAmount = 1 / (pow(10, fractionSize));
 
     String formattedAmount = "";
-    String spacing = " " * this.currencyData.spacing;
-    String symbol = (this.currencyData.position == 1)
-        ? spacing + '${this.currencyData.symbol}'
-        : '${this.currencyData.symbol}' + spacing;
+    String spacing = " " * currencyData.spacing;
+    String symbol = (currencyData.position == 1)
+        ? spacing + '${currencyData.symbol}'
+        : '${currencyData.symbol}' + spacing;
     // if conversion result is less than the minimum it doesn't make sense to display
     // it.
     if (!allowBelowMin && fiatAmount < minimumAmount) {
@@ -69,11 +70,11 @@ class FiatConversion {
       formattedAmount = formatter.format(fiatAmount);
     }
     if (addCurrencySymbol) {
-      formattedAmount = (this.currencyData.position == 1)
+      formattedAmount = (currencyData.position == 1)
           ? formattedAmount + symbol
           : symbol + formattedAmount;
     } else if (includeDisplayName) {
-      formattedAmount += this.currencyData.shortName;
+      formattedAmount += currencyData.shortName;
     }
     if (removeTrailingZeros) {
       RegExp removeTrailingZeros = RegExp(r"([.]0*)(?!.*\d)");

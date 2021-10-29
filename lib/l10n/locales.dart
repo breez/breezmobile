@@ -16,7 +16,6 @@ Iterable<LocalizationsDelegate<dynamic>> localizationsDelegates() {
 Iterable<Locale> supportedLocales() {
   return [
     const Locale('en', ''),
-    const Locale('de', ''),
     const Locale('pt', ''),
   ];
 }
