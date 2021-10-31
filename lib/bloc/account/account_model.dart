@@ -5,6 +5,7 @@ import 'dart:math';
 import 'package:breez/bloc/account/fiat_conversion.dart';
 import 'package:breez/bloc/user_profile/currency.dart';
 import 'package:breez/services/breezlib/data/rpc.pb.dart';
+import 'package:breez/utils/date.dart';
 import 'package:fixnum/fixnum.dart';
 
 enum BugReportBehavior { PROMPT, SEND_REPORT, IGNORE }
@@ -410,6 +411,15 @@ class PaymentFilterModel {
 
 enum PaymentType { DEPOSIT, WITHDRAWAL, SENT, RECEIVED, CLOSED_CHANNEL }
 
+enum PaymentVendor {
+  BITREFILL,
+  BREEZ,
+  FAST_BITCOINS,
+  LIGHTNING_GIFTS,
+  LN_PIZZA,
+  ZEBEDEE,
+}
+
 abstract class PaymentInfo {
   PaymentType get type;
   Int64 get amount;
@@ -433,6 +443,7 @@ abstract class PaymentInfo {
   String get paymentGroup;
   String get paymentGroupName;
   LNUrlPayInfo get lnurlPayInfo;
+  PaymentVendor get vendor;
   PaymentInfo copyWith(AccountModel account);
 }
 
@@ -497,6 +508,7 @@ class StreamedPaymentInfo implements PaymentInfo {
   String get destination => "";
 
   LNUrlPayInfo get lnurlPayInfo => null;
+  PaymentVendor get vendor => null;
 }
 
 class SinglePaymentInfo implements PaymentInfo {
@@ -606,42 +618,46 @@ class SinglePaymentInfo implements PaymentInfo {
   }
 
   String get imageURL {
-    if (_paymentResponse.invoiceMemo.description.startsWith("Bitrefill") ||
-        _paymentResponse.lnurlPayInfo?.host == 'api-bitrefill.com') {
-      return "src/icon/vendors/bitrefill_logo.png";
-    }
-    if (_paymentResponse.invoiceMemo.description.startsWith("Fastbitcoins")) {
-      return "src/icon/vendors/fastbitcoins_logo.png";
-    }
-    if (_paymentResponse.invoiceMemo.description.startsWith("LN.pizza")) {
-      return "src/icon/vendors/ln.pizza_logo.png";
+    switch (vendor) {
+      case PaymentVendor.BITREFILL:
+        return "src/icon/vendors/bitrefill_logo.png";
+      case PaymentVendor.BREEZ:
+        return "breez://avatar/possale";
+      case PaymentVendor.FAST_BITCOINS:
+        return "src/icon/vendors/fastbitcoins_logo.png";
+      case PaymentVendor.LIGHTNING_GIFTS:
+        break;
+      case PaymentVendor.LN_PIZZA:
+        return "src/icon/vendors/ln.pizza_logo.png";
+      case PaymentVendor.ZEBEDEE:
+        break;
     }
 
     String url = (type == PaymentType.SENT
         ? _paymentResponse.invoiceMemo?.payeeImageURL
         : _paymentResponse.invoiceMemo?.payerImageURL);
-
     return (url == null || url.isEmpty) ? null : url;
   }
 
   String get title {
-    if (_paymentResponse.invoiceMemo.description.startsWith("Bitrefill") ||
-        _paymentResponse.lnurlPayInfo?.host == 'api-bitrefill.com') {
-      return "Bitrefill";
-    }
-
-    if (_paymentResponse.invoiceMemo.description.startsWith("LN.pizza")) {
-      return "ln.pizza";
-    }
-
-    if (_paymentResponse.invoiceMemo.description
-            .startsWith('lightning.gifts') ||
-        _paymentResponse.lnurlPayInfo?.host == 'api.lightning.gifts') {
-      return 'lightning.gifts';
-    }
-
-    if (_paymentResponse.lnurlPayInfo?.host == 'api.zebedee.io') {
-      return "Zebedee";
+    switch (vendor) {
+      case PaymentVendor.BITREFILL:
+        return "Bitrefill";
+      case PaymentVendor.BREEZ:
+        final date = BreezDateUtils.formatHourMinute(
+            DateTime.fromMillisecondsSinceEpoch(
+                creationTimestamp.toInt() * 1000,
+            ),
+        );
+        return "Sale [$date]";
+      case PaymentVendor.FAST_BITCOINS:
+        break;
+      case PaymentVendor.LIGHTNING_GIFTS:
+        return 'lightning.gifts';
+      case PaymentVendor.LN_PIZZA:
+        return "ln.pizza";
+      case PaymentVendor.ZEBEDEE:
+        return "Zebedee";
     }
 
     if (type == PaymentType.DEPOSIT) {
@@ -694,6 +710,39 @@ class SinglePaymentInfo implements PaymentInfo {
   Currency get currency => _account.currency;
 
   LNUrlPayInfo get lnurlPayInfo => _paymentResponse.lnurlPayInfo;
+
+  PaymentVendor get vendor {
+    final memo = _paymentResponse.invoiceMemo;
+    final info = _paymentResponse.lnurlPayInfo;
+
+    if (memo.description.startsWith("Bitrefill") ||
+        info?.host == 'api-bitrefill.com') {
+      return PaymentVendor.BITREFILL;
+    }
+
+    if (memo.description.startsWith("LN.pizza")) {
+      return PaymentVendor.LN_PIZZA;
+    }
+
+    if (memo.description.startsWith('lightning.gifts') ||
+        info?.host == 'api.lightning.gifts') {
+      return PaymentVendor.LIGHTNING_GIFTS;
+    }
+
+    if (info?.host == 'api.zebedee.io') {
+      return PaymentVendor.ZEBEDEE;
+    }
+
+    if (memo.description.startsWith("Fastbitcoins")) {
+      return PaymentVendor.FAST_BITCOINS;
+    }
+
+    if (type == PaymentType.RECEIVED && memo.payeeName != null) {
+      return PaymentVendor.BREEZ;
+    }
+
+    return null;
+  }
 
   SinglePaymentInfo(this._paymentResponse, this._account);
 
