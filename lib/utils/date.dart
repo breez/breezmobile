@@ -23,7 +23,7 @@ class BreezDateUtils {
 
   static String formatTimelineRelative(DateTime d) {
     if (DateTime.now().subtract(Duration(days: 4)).isBefore(d)) {
-      return timeago.format(d);
+      return timeago.format(d, locale: Platform.localeName);
     } else {
       return formatYearMonthDay(d);
     }
@@ -40,5 +40,8 @@ class BreezDateUtils {
 
   static void setupLocales() {
     timeago.setLocaleMessages('en', timeago.EnMessages());
+    timeago.setLocaleMessages('en_short', timeago.EnShortMessages());
+    timeago.setLocaleMessages('pt_BR', timeago.PtBrMessages());
+    timeago.setLocaleMessages('pt_BR_short', timeago.PtBrShortMessages());
   }
 }
