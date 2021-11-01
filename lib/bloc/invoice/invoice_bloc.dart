@@ -85,7 +85,7 @@ class InvoiceBloc with AsyncActionsHandler {
         }
 
         if (isLightningAddress(normalized)) {
-          return DecodedClipboardData(clipboardData, "lightning-address");
+          return DecodedClipboardData(normalized, "lightning-address");
         }
 
         if (normalized.startsWith("ln")) {
