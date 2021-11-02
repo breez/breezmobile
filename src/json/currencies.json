@@ -1410,12 +1410,11 @@
     "fractionSize": 2,
     "symbol": {
       "grapheme": "zł",
-      "template": "1 $",
+      "position": 1,
       "rtl": false
     },
     "uniqSymbol": {
       "grapheme": "zł",
-      "template": "1 $",
       "rtl": false
     }
   },
