@@ -19,5 +19,6 @@
   "backup_dialog_option_ok_default": "BACKUP NOW",
   "backup_dialog_icloud_error_title": "Sign in to iCloud",
   "backup_dialog_icloud_error_message": "Sign in to your iCloud account. On the Home screen, launch Settings, tap iCloud, and enter your Apple ID. Turn iCloud Drive on. If you don't have an iCloud account, tap Create a new Apple ID.",
+  "tutorial_gotcha": "Gotcha!",
   "app_name": "Breez"
 }
