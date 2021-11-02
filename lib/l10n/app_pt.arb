@@ -19,5 +19,6 @@
   "backup_dialog_option_ok_default": "FAZER BACKUP AGORA",
   "backup_dialog_icloud_error_title": "Entrar no iCloud",
   "backup_dialog_icloud_error_message": "Entre em sua conta do iCloud. Na tela inicial, abra Ajustes, toque em iCloud e digite seu ID Apple. Ligue o iCloud Drive. Se você não tiver uma conta iCloud, toque em Criar um novo ID Apple.",
+  "tutorial_gotcha": "Entendi!",
   "app_name": "Breez"
 }
