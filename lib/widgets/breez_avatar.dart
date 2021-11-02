@@ -243,13 +243,15 @@ class _PosSaleAvatar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final size = 0.6 * radius * 2;
     return CircleAvatar(
       backgroundColor: backgroundColor,
       radius: radius,
-      child: ImageIcon(
-        AssetImage("src/icon/cart.png"),
+      child: SvgPicture.asset(
+        "src/icon/pos_sale_avatar.svg",
         color: theme.BreezColors.blue[500],
-        size: 0.6 * radius * 2,
+        width: size,
+        height: size,
       ),
     );
   }
