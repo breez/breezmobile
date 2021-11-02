@@ -737,11 +737,18 @@ class SinglePaymentInfo implements PaymentInfo {
       return PaymentVendor.FAST_BITCOINS;
     }
 
-    if (type == PaymentType.RECEIVED && memo.payeeName != null) {
+    if (_isSalePayment()) {
       return PaymentVendor.BREEZ;
     }
 
     return null;
+  }
+
+  bool _isSalePayment() {
+    final payeeName = _paymentResponse.invoiceMemo.payeeName;
+    return type == PaymentType.RECEIVED &&
+        payeeName != null &&
+        payeeName.isNotEmpty;
   }
 
   SinglePaymentInfo(this._paymentResponse, this._account);
