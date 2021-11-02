@@ -20,6 +20,7 @@ bool isLNURL(String url) {
   return false;
 }
 
+// FIXME(nochiel) Maybe this should parse 'lightning:' uris and return the address instead of a boolean?
 bool isLightningAddress(String uri) {
   // Ref. https://github.com/andrerfneves/lightning-address/blob/master/DIY.md
 
@@ -31,7 +32,7 @@ bool isLightningAddress(String uri) {
     }
 
   var result = EmailValidator.validate(email);
-  print('isLightningAddress: $email: $result');
+  print('isLightningAddress: $uri: $result');
   return result;
 
 }

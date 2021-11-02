@@ -47,15 +47,19 @@ class LNUrlBloc with AsyncActionsHandler {
         injector.lightningLinks.linksNotifications,
         _lnurlInputController.stream,
 
-        // Process lightning-addresses in the clipboard only when the user manually 
+        // Process plain lightning-addresses in the clipboard only when the user manually
         // pastes them in and they show up in _lnurlInputController.stream.
-        injector.device.distinctClipboardStream
-            .where((l) => !isLightningAddress(l)),
+        // Also process lightning-address URIs.
+        injector.device.distinctClipboardStream.where((l) =>
+            !isLightningAddress(l) || l.toLowerCase().startsWith('lightning:')),
       ])
           .where((l) => l != null)
           .map((l) => l.toLowerCase())
           .where((l) => isLNURL(l) || isLightningAddress(l))
           .asyncMap((l) {
+        if (l.toLowerCase().startsWith('lightning:')) {         // lightning-address URIs could come from arbitrary streams.
+          l = l.substring('lightning:'.length);
+        }
         _lnUrlStreamController.add(fetchLNUrlState.started);
         return _breezLib.fetchLNUrl(l).catchError((error) {
           throw error.toString();
