@@ -20,11 +20,18 @@ bool isLNURL(String url) {
   return false;
 }
 
-bool isLightningAddress(String email) {
-  // This is just a normal e-mail address.
+bool isLightningAddress(String uri) {
   // Ref. https://github.com/andrerfneves/lightning-address/blob/master/DIY.md
 
+    if(uri == null || uri.isEmpty) { return false; }
+
+    var email = uri.toLowerCase();
+    if (email.startsWith("lightning:")) {
+      email = email.substring("lightning:".length);
+    }
+
   var result = EmailValidator.validate(email);
-  print('isLightningAddress: $result');
+  print('isLightningAddress: $email: $result');
   return result;
+
 }
