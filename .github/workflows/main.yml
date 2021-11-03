@@ -47,7 +47,7 @@ jobs:
           go version
           brew update
           brew install bazaar
-          git clone https://github.com/breez/breez.git gopath/src/github.com/breez/breez
+          git clone --branch sync-best-block https://github.com/breez/breez.git gopath/src/github.com/breez/breez
           export TMP_GOPATH=$(pwd)/gopath
           pushd gopath/src/github.com/breez/breez
           export GOPRIVATE=github.com/btcsuite/btcd
