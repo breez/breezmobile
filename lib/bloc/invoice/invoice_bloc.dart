@@ -154,11 +154,12 @@ class InvoiceBloc with AsyncActionsHandler {
           s.toLowerCase().startsWith("lightning:"))
     ])
         .map((s) {
+          if (isLightningAddress(s)) {
+            return null;
+          }
+
           String lower = s.toLowerCase();
           if (lower.startsWith("lightning:")) {
-            if (isLightningAddress(lower)) {
-              return null;
-            }
             return s.substring(10);
           }
 

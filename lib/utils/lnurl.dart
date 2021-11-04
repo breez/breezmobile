@@ -1,12 +1,12 @@
 import 'package:email_validator/email_validator.dart';
 
 RegExp _lnurlPrefix = new RegExp(",*?((lnurl)([0-9]{1,}[a-z0-9]+){1})");
-String _lightningProtoclPrefix = "lightning:";
+String _lightningProtocolPrefix = "lightning:";
 
 bool isLNURL(String url) {
   var lower = url.toLowerCase();
-  if (lower.startsWith(_lightningProtoclPrefix)) {
-    lower = lower.substring(_lightningProtoclPrefix.length);
+  if (lower.startsWith(_lightningProtocolPrefix)) {
+    lower = lower.substring(_lightningProtocolPrefix.length);
   }
   var firstMatch = _lnurlPrefix.firstMatch(lower);
   if (firstMatch != null && firstMatch.start == 0) {
@@ -20,19 +20,38 @@ bool isLNURL(String url) {
   return false;
 }
 
-// FIXME(nochiel) Maybe this should parse 'lightning:' uris and return the address instead of a boolean?
 bool isLightningAddress(String uri) {
+  var result = false;
+  var v = parseLightningAddress(uri);
+  result = v != null && v.isNotEmpty;
+  return result;
+}
+
+bool isLightningAddressURI(String uri) {
+  var result = false;
+
+  if (uri != null) {
+    result = uri.toLowerCase().startsWith(_lightningProtocolPrefix) &&
+        isLightningAddress(uri);
+  }
+  return result;
+}
+
+parseLightningAddress(String uri) {
   // Ref. https://github.com/andrerfneves/lightning-address/blob/master/DIY.md
 
-    if(uri == null || uri.isEmpty) { return false; }
-
-    var email = uri.toLowerCase();
-    if (email.startsWith("lightning:")) {
-      email = email.substring("lightning:".length);
+  String result;
+  if (uri != null && uri.isNotEmpty) {
+    var l = uri.toLowerCase();
+    if (l.startsWith(_lightningProtocolPrefix)) {
+      result = uri.substring(_lightningProtocolPrefix.length);
     }
 
-  var result = EmailValidator.validate(email);
-  print('isLightningAddress: $uri: $result');
+    result ??= uri;
+    if (!EmailValidator.validate(result)) {
+      result = null;
+    }
+    print('parseLightningAddress: $uri: $result');
+  }
   return result;
-
 }

@@ -56,12 +56,10 @@ class QrActionButton extends StatelessWidget {
               }
 
               // lightning address
-              if (isLightningAddress(lower)) {
-                if (lower.startsWith('lightning:')) {
-                  var v = lower.substring('lightning:'.length);
-                  lnurlBloc.lnurlInputSink.add(v);
-                  return;
-                }
+              final v = parseLightningAddress(scannedString);
+              if (v != null) {
+                lnurlBloc.lnurlInputSink.add(v);
+                return;
               }
 
               // bip 121

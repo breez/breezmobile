@@ -139,10 +139,10 @@ class EnterPaymentInfoDialogState extends State<EnterPaymentInfoDialog> {
               return;
             }
 
-            var decoded = decodeInvoice(_paymentInfoController.text);
-            decoded ??= _paymentInfoController.text;
-            if (isLightningAddress(decoded)) {
-              widget.lnurlBloc.lnurlInputSink.add(decoded);
+            final decoded = decodeInvoice(_paymentInfoController.text);
+            final lightningAddress = parseLightningAddress(decoded);
+            if (lightningAddress != null) {
+              widget.lnurlBloc.lnurlInputSink.add(lightningAddress);
               return;
             }
 
@@ -182,10 +182,6 @@ class EnterPaymentInfoDialogState extends State<EnterPaymentInfoDialog> {
     }
     if (normalized.startsWith("lightning:")) {
       normalized = normalized.substring(10);
-
-      if (isLightningAddress(normalized)) {
-        return normalized;
-      }
     }
     if (normalized.startsWith("ln") && !normalized.startsWith("lnurl")) {
       return invoiceString;
