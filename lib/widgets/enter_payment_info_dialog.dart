@@ -139,14 +139,14 @@ class EnterPaymentInfoDialogState extends State<EnterPaymentInfoDialog> {
               return;
             }
 
-            final decoded = decodeInvoice(_paymentInfoController.text);
-            final lightningAddress = parseLightningAddress(decoded);
+            final lightningAddress =
+                parseLightningAddress(_paymentInfoController.text);
             if (lightningAddress != null) {
               widget.lnurlBloc.lnurlInputSink.add(lightningAddress);
               return;
             }
 
-            if (decoded != null) {
+            if (decodeInvoice(_paymentInfoController.text) != null) {
               widget.invoiceBloc.decodeInvoiceSink
                   .add(_paymentInfoController.text);
             }

@@ -39,9 +39,11 @@ bool isLightningAddressURI(String uri) {
 
 parseLightningAddress(String uri) {
   // Ref. https://github.com/andrerfneves/lightning-address/blob/master/DIY.md
+  print('parseLightningAddress: given "$uri"');
 
   String result;
   if (uri != null && uri.isNotEmpty) {
+    uri = uri.trim();
     var l = uri.toLowerCase();
     if (l.startsWith(_lightningProtocolPrefix)) {
       result = uri.substring(_lightningProtocolPrefix.length);
@@ -51,7 +53,7 @@ parseLightningAddress(String uri) {
     if (!EmailValidator.validate(result)) {
       result = null;
     }
-    print('parseLightningAddress: $uri: $result');
+    print('parseLightningAddress: got "$result"');
   }
   return result;
 }
