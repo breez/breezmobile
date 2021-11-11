@@ -335,7 +335,7 @@ class PodcastPaymentsBloc with AsyncActionsHandler {
     tlv["episode"] = episode.title;
     tlv["action"] = boost ? "boost" : "stream";
     tlv["time"] = _formatDuration(position.position);
-    tlv["feedID"] = int.parse(_getPodcastIndexID(episode));
+    tlv["feedID"] = _getPodcastIndexID(episode);
     tlv["app_name"] = "Breez";
     tlv["value_msat_total"] = msatTotal;
     if (boost && boostMessage != null) tlv["message"] = boostMessage;
@@ -359,12 +359,12 @@ class PodcastPaymentsBloc with AsyncActionsHandler {
     return "";
   }
 
-  String _getPodcastIndexID(Episode episode) {
+  int _getPodcastIndexID(Episode episode) {
     final metadata = episode?.metadata;
     if (metadata != null && metadata["feed"] != null) {
-      return metadata["feed"]["id"]?.toString();
+      return metadata["feed"]["id"] ?? 0;
     }
-    return "";
+    return 0;
   }
 
   String _formatDuration(Duration duration) {
