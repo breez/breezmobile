@@ -362,7 +362,10 @@ class PodcastPaymentsBloc with AsyncActionsHandler {
   int _getPodcastIndexID(Episode episode) {
     final metadata = episode?.metadata;
     if (metadata != null && metadata["feed"] != null) {
-      return metadata["feed"]["id"] ?? 0;
+var id = metadata["feed"]["id"]
+if (id is int) {
+  return id
+}
     }
     return 0;
   }
