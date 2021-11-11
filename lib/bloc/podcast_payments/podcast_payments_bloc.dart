@@ -267,7 +267,8 @@ class PodcastPaymentsBloc with AsyncActionsHandler {
     }
 
     // Else, we'll check if the episode has a value block defined via the PodcastIndex API.
-    if (episode.episodeMetadata != null && episode.episodeMetadata["episode"] != null) {
+    if (episode.episodeMetadata != null &&
+        episode.episodeMetadata["episode"] != null) {
       final value = episode.episodeMetadata["episode"]["value"];
       if (value != null && value is Map<String, dynamic>) {
         final valueObj = Value.fromJson(value);
@@ -362,10 +363,10 @@ class PodcastPaymentsBloc with AsyncActionsHandler {
   int _getPodcastIndexID(Episode episode) {
     final metadata = episode?.metadata;
     if (metadata != null && metadata["feed"] != null) {
-var id = metadata["feed"]["id"]
-if (id is int) {
-  return id
-}
+      var id = metadata["feed"]["id"];
+      if (id is int) {
+        return id;
+      }
     }
     return 0;
   }
