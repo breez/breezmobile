@@ -1,5 +1,6 @@
 import 'dart:io' show Platform;
 
+import 'package:breez/utils/locale.dart';
 import "package:intl/intl.dart";
 import 'package:timeago/timeago.dart' as timeago;
 
@@ -23,7 +24,7 @@ class BreezDateUtils {
 
   static String formatTimelineRelative(DateTime d) {
     if (DateTime.now().subtract(Duration(days: 4)).isBefore(d)) {
-      return timeago.format(d, locale: Platform.localeName);
+      return timeago.format(d, locale: getSystemLocale().languageCode);
     } else {
       return formatYearMonthDay(d);
     }
@@ -40,8 +41,7 @@ class BreezDateUtils {
 
   static void setupLocales() {
     timeago.setLocaleMessages('en', timeago.EnMessages());
-    timeago.setLocaleMessages('en_short', timeago.EnShortMessages());
-    timeago.setLocaleMessages('pt_BR', timeago.PtBrMessages());
-    timeago.setLocaleMessages('pt_BR_short', timeago.PtBrShortMessages());
+    timeago.setLocaleMessages('es', timeago.EsMessages());
+    timeago.setLocaleMessages('pt', timeago.PtBrMessages());
   }
 }
