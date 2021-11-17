@@ -5,6 +5,7 @@ import 'package:breez/bloc/account/account_model.dart';
 import 'package:breez/bloc/lsp/lsp_model.dart';
 import 'package:breez/bloc/user_profile/breez_user_model.dart';
 import 'package:breez/bloc/user_profile/currency.dart';
+import 'package:breez/l10n/text_uri.dart';
 import 'package:breez/logger.dart';
 import 'package:breez/services/breezlib/breez_bridge.dart';
 import 'package:breez/services/injector.dart';
@@ -105,14 +106,22 @@ class AddFundsBloc extends Bloc {
       hasPendingOrder = timePending <= staleOrderInterval;
     }
     List<AddFundVendorModel> _vendorList = [];
-    _vendorList.add(AddFundVendorModel("Receive via BTC Address",
-        "src/icon/bitcoin.png", "/deposit_btc_address",
-        enabled: !hasPendingOrder));
     _vendorList.add(AddFundVendorModel(
-        "Buy Bitcoin", "src/icon/credit_card.png", "/buy_bitcoin",
-        isAllowed: _isMoonpayAllowed,
-        enabled: !hasPendingOrder,
-        showLSPFee: true));
+      "Receive via BTC Address",
+      "src/icon/bitcoin.png",
+      "/deposit_btc_address",
+      enabled: !hasPendingOrder,
+      textUri: TextUri.BOTTOM_ACTION_BAR_RECEIVE_BTC_ADDRESS,
+    ));
+    _vendorList.add(AddFundVendorModel(
+      "Buy Bitcoin",
+      "src/icon/credit_card.png",
+      "/buy_bitcoin",
+      isAllowed: _isMoonpayAllowed,
+      enabled: !hasPendingOrder,
+      showLSPFee: true,
+      textUri: TextUri.BOTTOM_ACTION_BAR_BUY_BITCOIN,
+    ));
     _availableVendorsController.add(_vendorList);
   }
 

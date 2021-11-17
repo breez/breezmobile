@@ -20,5 +20,23 @@
   "backup_dialog_icloud_error_title": "Sign in to iCloud",
   "backup_dialog_icloud_error_message": "Sign in to your iCloud account. On the Home screen, launch Settings, tap iCloud, and enter your Apple ID. Turn iCloud Drive on. If you don't have an iCloud account, tap Create a new Apple ID.",
   "tutorial_gotcha": "Gotcha!",
+  "bottom_action_bar_send": "SEND",
+  "bottom_action_bar_receive": "RECEIVE",
+  "bottom_action_bar_paste_invoice": "Paste Invoice or ID",
+  "bottom_action_bar_connect_to_pay": "Connect to Pay",
+  "bottom_action_bar_send_btc_address": "Send to BTC Address",
+  "bottom_action_bar_escher": "Cash-Out via Escher",
+  "bottom_action_bar_receive_invoice": "Receive via Invoice",
+  "bottom_action_bar_receive_btc_address": "Receive via BTC Address",
+  "bottom_action_bar_buy_bitcoin": "Buy Bitcoin",
+  "bottom_action_bar_warning_balance_title": "Breez requires you to keep {balance} in your balance.",
+  "@bottom_action_bar_warning_balance_title": {
+    "placeholders": {
+      "balance": {
+        "type": "String",
+        "example": "1.23456789"
+      }
+    }
+  },
   "app_name": "Breez"
 }
