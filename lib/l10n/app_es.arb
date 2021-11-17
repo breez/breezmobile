@@ -20,5 +20,23 @@
   "backup_dialog_icloud_error_title": "Iniciar sesión en iCloud",
   "backup_dialog_icloud_error_message": "Inicie sesión en su cuenta de iCloud. En la pantalla de inicio, inicie Configuración, toque iCloud e ingrese su ID de Apple. Enciende iCloud Drive. Si no tiene una cuenta de iCloud, toque Crear una nueva ID de Apple.",
   "tutorial_gotcha": "¡Entendido!",
+  "bottom_action_bar_send": "ENVIAR",
+  "bottom_action_bar_receive": "RECIBIR",
+  "bottom_action_bar_paste_invoice": "Pegar factura o ID",
+  "bottom_action_bar_connect_to_pay": "Conéctar para pagar",
+  "bottom_action_bar_send_btc_address": "Enviar a dirección BTC",
+  "bottom_action_bar_escher": "Retirada vía Escher",
+  "bottom_action_bar_receive_invoice": "Recibir vía Factura",
+  "bottom_action_bar_receive_btc_address": "Recibir vía Dirección BTC",
+  "bottom_action_bar_buy_bitcoin": "Comprar Bitcoin",
+  "bottom_action_bar_warning_balance_title": "Breez requiere que mantenga al menos {balance} saldo.",
+  "@bottom_action_bar_warning_balance_title": {
+    "placeholders": {
+      "balance": {
+        "type": "String",
+        "example": "1.23456789"
+      }
+    }
+  },
   "app_name": "Breez"
 }
