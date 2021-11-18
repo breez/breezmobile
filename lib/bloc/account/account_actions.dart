@@ -38,8 +38,10 @@ class SendSpontaneousPayment extends AsyncAction {
   final String nodeID;
   final Int64 amount;
   final String description;
+  final RoutingHints hints;
 
-  SendSpontaneousPayment(this.nodeID, this.amount, this.description);
+  SendSpontaneousPayment(
+      this.nodeID, this.amount, this.description, this.hints);
 }
 
 class CancelPaymentRequest extends AsyncAction {

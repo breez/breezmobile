@@ -349,7 +349,8 @@ class AccountBloc {
   Future _sendSpontaneousPayment(SendSpontaneousPayment action) async {
     var sendRequest = _breezLib
         .sendSpontaneousPayment(
-            action.nodeID, action.amount, action.description)
+            action.nodeID, action.amount, action.description,
+            hints: action.hints)
         .then((response) {
       if (response.paymentError.isNotEmpty) {
         var error =
@@ -645,7 +646,6 @@ class AccountBloc {
           _paymentFilterController.value,
           _firstDate ?? DateTime(DateTime.now().year));
     });
-
   }
 
   Future _refreshPayments() {

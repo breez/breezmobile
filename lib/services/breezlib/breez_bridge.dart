@@ -290,19 +290,30 @@ class BreezBridge {
     return _invokeMethodWhenReady("receiverNode").then((s) => s as String);
   }
 
+  Future<RoutingHints> getLSPRoutingHints() {
+    return _invokeMethodWhenReady("getLSPRoutingHints")
+        .then((r) => r as RoutingHints);
+  }
+
+  Future<List<int>> signMessage(List<int> msg) {
+    return _invokeMethodWhenReady("signMessage").then((r) => r as List<int>);
+  }
+
   Future<PaymentResponse> sendSpontaneousPayment(
       String destNode, Int64 amount, String description,
       {Int64 feeLimitMsat = Int64.ZERO,
       String groupKey = "",
       String groupName = "",
-      Map<Int64, String> tlv}) {
+      Map<Int64, String> tlv,
+      RoutingHints hints}) {
     var request = SpontaneousPaymentRequest()
       ..description = description
       ..destNode = destNode
       ..amount = amount
       ..feeLimitMsat = feeLimitMsat
       ..groupKey = groupKey
-      ..groupName = groupName;
+      ..groupName = groupName
+      ..routeHints.addAll(hints.hints);
 
     if (tlv != null) {
       request.tlv.addAll(tlv);
