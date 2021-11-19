@@ -6,6 +6,7 @@
 	<array>
 		<string>en</string>
 		<string>es</string>
+		<string>fi</string>
 		<string>pt</string>
 	</array>
 	<key>NSAppTransportSecurity</key>
