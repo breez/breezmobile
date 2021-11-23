@@ -296,7 +296,13 @@ class BreezBridge {
   }
 
   Future<List<int>> signMessage(List<int> msg) {
-    return _invokeMethodWhenReady("signMessage").then((r) => r as List<int>);
+    return _invokeMethodWhenReady("signMessage", {"argument": msg})
+        .then((r) => r as List<int>);
+  }
+
+  Future<bool> verifyMessage(List<int> msg) {
+    return _invokeMethodWhenReady("verifyMessage", {"argument": msg})
+        .then((r) => r as bool);
   }
 
   Future<PaymentResponse> sendSpontaneousPayment(
