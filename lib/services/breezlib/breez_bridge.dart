@@ -48,7 +48,7 @@ class BreezBridge {
     });
     _tempDirFuture = getTemporaryDirectory();
     _graphDownloader = GraphDownloader(downloadManager, sharedPreferences);
-    _graphDownloader.init().whenComplete(() => initLightningDir());
+    //_graphDownloader.init().whenComplete(() => initLightningDir());
   }
 
   Future syncGraphIfNeeded() async {
