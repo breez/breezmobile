@@ -21,6 +21,7 @@ import 'package:breez/widgets/route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:validators/validators.dart';
 
 class QrActionButton extends StatelessWidget {
   final AccountModel account;
@@ -101,7 +102,19 @@ class QrActionButton extends StatelessWidget {
                 return;
               }
 
+              // Open on whenever app the system links to
               if (await canLaunch(scannedString)) {
+                _handleWebAddress(context, scannedString);
+                return;
+              }
+
+              // Open on browser
+              final validUrl = isURL(
+                scannedString,
+                requireProtocol: true,
+                allowUnderscore: true,
+              );
+              if (validUrl) {
                 _handleWebAddress(context, scannedString);
                 return;
               }
