@@ -66,3 +66,9 @@ class UpdatePosItemAdditionCurrency extends AsyncAction {
 
   UpdatePosItemAdditionCurrency(this.currency);
 }
+
+class UpdatePosSelectedTab extends AsyncAction {
+  final String tab;
+
+  UpdatePosSelectedTab(this.tab);
+}

@@ -117,6 +117,10 @@ class POSInvoiceState extends State<POSInvoice> with TickerProviderStateMixin {
         }
       });
 
+      posCatalogBloc.selectedPosTabStream.listen((tab) {
+        _changeView(tab == "KEYPAD");
+      });
+
       super.didChangeDependencies();
     }
   }
@@ -468,7 +472,9 @@ class POSInvoiceState extends State<POSInvoice> with TickerProviderStateMixin {
             alignment: Alignment.centerRight,
             child: GestureDetector(
                 behavior: HitTestBehavior.translucent,
-                onTap: () => _changeView(true),
+                onTap: () => AppBlocsProvider.of<PosCatalogBloc>(context)
+                    .actionsSink
+                    .add(UpdatePosSelectedTab("KEYPAD")),
                 child: Padding(
                   padding: EdgeInsets.only(right: itemWidth / 4),
                   child: Row(
@@ -510,7 +516,9 @@ class POSInvoiceState extends State<POSInvoice> with TickerProviderStateMixin {
             alignment: Alignment.centerLeft,
             child: GestureDetector(
                 behavior: HitTestBehavior.translucent,
-                onTap: () => _changeView(false),
+                onTap: () => AppBlocsProvider.of<PosCatalogBloc>(context)
+                    .actionsSink
+                    .add(UpdatePosSelectedTab("ITEMS")),
                 child: Padding(
                   padding: EdgeInsets.only(left: itemWidth / 4),
                   child: Row(

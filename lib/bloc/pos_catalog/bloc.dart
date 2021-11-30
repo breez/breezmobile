@@ -42,6 +42,10 @@ class PosCatalogBloc with AsyncActionsHandler {
 
   Stream<String> get selectedCurrencyStream => _selectedCurrency.stream;
 
+  final BehaviorSubject<String> _selectedPosTab = BehaviorSubject();
+
+  Stream<String> get selectedPosTabStream => _selectedPosTab.stream;
+
   PosCatalogBloc(
     Stream<AccountModel> accountStream,
     this._repository,
@@ -59,6 +63,7 @@ class PosCatalogBloc with AsyncActionsHandler {
       ExportItems: _exportItems,
       ImportItems: _importItems,
       UpdatePosItemAdditionCurrency: _updatePosItemAdditionCurrency,
+      UpdatePosSelectedTab: _updatePosSelectedTab,
     });
     listenActions();
     _currentSaleController.add(Sale(saleLines: []));
@@ -66,6 +71,7 @@ class PosCatalogBloc with AsyncActionsHandler {
     _trackSalePayments();
     _loadIcons();
     _loadSelectedCurrency();
+    _loadSelectedPosTab();
   }
 
   Future _loadIcons() async {
@@ -85,6 +91,17 @@ class PosCatalogBloc with AsyncActionsHandler {
       currency = "SAT";
     }
     _selectedCurrency.add(currency);
+  }
+
+  void _loadSelectedPosTab() async {
+    final prefs = await ServiceInjector().sharedPreferences;
+    String posTab;
+    if (prefs.containsKey("POS_SELECTED_TAB")) {
+      posTab = prefs.getString("POS_SELECTED_TAB");
+    } else {
+      posTab = "KEYPAD";
+    }
+    _selectedPosTab.add(posTab);
   }
 
   void _trackSalePayments() {
@@ -200,6 +217,14 @@ class PosCatalogBloc with AsyncActionsHandler {
     final prefs = await ServiceInjector().sharedPreferences;
     prefs.setString("ITEM_ADDITION_CURRENCY", action.currency);
     _selectedCurrency.add(action.currency);
+  }
+
+  Future _updatePosSelectedTab(
+    UpdatePosSelectedTab action,
+  ) async {
+    final prefs = await ServiceInjector().sharedPreferences;
+    prefs.setString("POS_SELECTED_TAB", action.tab);
+    _selectedPosTab.add(action.tab);
   }
 
   Future resetDB() async {
