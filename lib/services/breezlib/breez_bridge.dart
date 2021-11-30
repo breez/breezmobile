@@ -746,12 +746,14 @@ class BreezBridge {
     String lndDir = (await getApplicationDocumentsDirectory()).path;
     List<String> result = [];
     String network = config.get('Application Options', 'network');
-    String reply = await backupFiles();
-    List files = json.decode(reply);
-    if (files != null) {
-      result.addAll(files.map((e) => e as String));
-    }
+    // String reply = await backupFiles();
+    // List files = json.decode(reply);
+    // if (files != null) {
+    //   result.addAll(files.map((e) => e as String));
+    // }
     result.add('$lndDir/data/chain/bitcoin/$network/wallet.db');
+    result.add('$lndDir/data/graph/$network/channel.db');
+    result.add('$lndDir/breez.db');
     return result;
   }
 }
