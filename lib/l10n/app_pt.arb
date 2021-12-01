@@ -38,10 +38,10 @@
       }
     }
   },
-  "payment_details_dialog_closed_channel_title": "Canal fechado",
-  "payment_details_dialog_closed_channel_title_pending": "Canal em fechamento",
+  "payment_details_dialog_closed_channel_title": "Canal encerrado",
+  "payment_details_dialog_closed_channel_title_pending": "Canal em encerramento",
   "payment_details_dialog_closed_channel_ok": "OK",
-  "payment_details_dialog_closed_channel_local_wallet": "Transferência para uma carteira local devido ao fechamento do canal",
+  "payment_details_dialog_closed_channel_local_wallet": "Transferência para uma carteira local devido ao encerramento do canal",
   "payment_details_dialog_closed_channel_about_hour": "aproximadamente em uma hora",
   "payment_details_dialog_closed_channel_about_hours": "aproximadamente em {hours} horas",
   "@payment_details_dialog_closed_channel_about_hours": {
@@ -52,8 +52,8 @@
       }
     }
   },
-  "payment_details_dialog_closed_channel_transfer_no_estimation": "Esperando os fundos do canal fechado serem transferidos para a sua carteira local",
-  "payment_details_dialog_closed_channel_transfer_estimation": "Esperando os fundos do canal fechado serem transferidos para a sua carteira local no bloco ${lockHeight} (${hoursToUnlock})",
+  "payment_details_dialog_closed_channel_transfer_no_estimation": "Esperando os fundos do canal encerrado serem transferidos para a sua carteira local",
+  "payment_details_dialog_closed_channel_transfer_estimation": "Esperando os fundos do canal encerrado serem transferidos para a sua carteira local no bloco ${lockHeight} (${hoursToUnlock})",
   "@payment_details_dialog_closed_channel_transfer_estimation": {
     "placeholders": {
       "lockHeight": {
@@ -102,7 +102,7 @@
   "payment_details_dialog_action_for_payment_message": "Mensagem",
   "payment_details_dialog_expiration": "Vencimento",
   "payment_details_dialog_date_and_time": "Data & Hora",
-  "payment_details_dialog_amount_title": "Quantia",
+  "payment_details_dialog_amount_title": "Quantidade",
   "payment_details_dialog_amount_negative": "-{amount}",
   "@payment_details_dialog_amount_negative": {
     "placeholders": {
