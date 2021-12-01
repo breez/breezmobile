@@ -92,4 +92,12 @@ class SqliteRepository implements Repository {
     }
     return items.map((row) => fromMapFunc(row)).toList();
   }
+
+  @override
+  Future<Lounge> fetchLoungeByLoungeID(String id) async {
+    var items = await _fetchDBItems(
+        await getDB(), "Lounge", (e) => Lounge.fromMap(e),
+        where: "loungeID = ?", whereArgs: [id]);
+    return items.length > 0 ? items[0] : null;
+  }
 }

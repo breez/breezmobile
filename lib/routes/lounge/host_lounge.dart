@@ -73,12 +73,9 @@ class _HostLoungeState extends State<HostLounge> {
         onPressed: () {
           {
             if (_formKey.currentState.validate()) {
-              var loungeID = Uuid().v1().split('-')[0];
-              Lounge lounge = Lounge(
-                  loungeID: loungeID,
-                  title: _titleController.text,
-                  isHosted: true);
-              AddLounge addLounge = AddLounge(lounge);
+              Lounge lounge =
+                  Lounge(title: _titleController.text, isHosted: true);
+              AddLounge addLounge = AddLounge(_titleController.text);
 
               widget.loungesBloc.actionsSink.add(addLounge);
               addLounge.future.then((_) {

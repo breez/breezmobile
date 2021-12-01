@@ -33,6 +33,13 @@ class Lounge implements DBItem {
       'isHosted': isHosted ? 1 : 0,
     };
   }
+
+  String get payeeNodeID {
+    if (!this.loungeID.startsWith("breez-")) {
+      return null;
+    }
+    return this.loungeID.substring(6);
+  }
 }
 
 enum LoungePaymentEventType { BoostStarted, StreamCompleted }
@@ -43,4 +50,20 @@ class LoungePaymentEvent {
   final String nodeID;
 
   LoungePaymentEvent(this.type, this.sats, this.nodeID);
+}
+
+class Conference {
+  final String id;
+
+  Conference(this.id);
+  factory Conference.fromURL(String url) {
+    var uri = Uri.parse(url);
+    return Conference(uri.pathSegments.last);
+  }
+
+  Map<String, dynamic> toMap() {
+    return {
+      'id': id,
+    };
+  }
 }

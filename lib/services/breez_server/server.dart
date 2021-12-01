@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:convert';
 
 import 'package:breez/logger.dart';
 import 'package:breez/services/breez_server/generated/breez.pb.dart';
@@ -11,6 +12,7 @@ import "package:ini/ini.dart";
 //proto command:
 //protoc --dart_out=grpc:lib/services/breez_server/generated/ -Ilib/services/breez_server/protobuf/ lib/services/breez_server/protobuf/breez.proto
 class BreezServer {
+  static final nodeInfoRoutingHintsKey = "routing_hints";
   static final defaultCallOptions = CallOptions(timeout: Duration(seconds: 10));
 
   ClientChannel _channel;
@@ -83,6 +85,26 @@ class BreezServer {
     var ctpClient = CTPClient(_channel, options: defaultCallOptions);
     return await ctpClient.terminateCTPSession(
         TerminateCTPSessionRequest()..sessionID = sessionID);
+  }
+
+  Future<SetNodeInfoResponse> setNodeInfo(Int64 timestamp, List<int> pubkey,
+      String key, List<int> value, List<int> signature) async {
+    await _ensureValidChannel();
+    var nodeInfoClient = NodeInfoClient(_channel, options: defaultCallOptions);
+    return await nodeInfoClient.setNodeInfo(SetNodeInfoRequest()
+      ..pubkey = pubkey
+      ..timestamp = timestamp
+      ..key = key
+      ..value = value
+      ..signature = signature);
+  }
+
+  Future<GetNodeInfoResponse> getNodeInfo(List<int> pubkey, String key) async {
+    await _ensureValidChannel();
+    var nodeInfoClient = NodeInfoClient(_channel, options: defaultCallOptions);
+    return await nodeInfoClient.getNodeInfo(GetNodeInfoRequest()
+      ..pubkey = pubkey
+      ..key = key);
   }
 
   Future _ensureValidChannel() async {

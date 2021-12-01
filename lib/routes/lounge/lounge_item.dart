@@ -3,7 +3,6 @@ import 'dart:io';
 
 import 'package:breez/bloc/account/account_bloc.dart';
 import 'package:breez/bloc/blocs_provider.dart';
-import 'package:breez/bloc/jitsi_meet/bloc.dart';
 import 'package:breez/bloc/lounge/actions.dart';
 import 'package:breez/bloc/lounge/bloc.dart';
 import 'package:breez/bloc/lounge/lounge_payments_bloc.dart';
@@ -189,8 +188,6 @@ class _LoungeItemState extends State<LoungeItem> {
   _enterLounge(String loungeID, LoungesBloc loungesBloc) async {
     var user =
         await paymentsBloc.userProfile.userStream.firstWhere((u) => u != null);
-    var jitsiMeetBloc = AppBlocsProvider.of<JitsiMeetBloc>(context);
-    jitsiMeetBloc.currentLoungeSink.add(loungeID);
 
     // Enable or disable any feature flag here
     // If feature flag are not provided, default values will be used
@@ -251,9 +248,7 @@ class _LoungeItemState extends State<LoungeItem> {
             (lounge) => lounge.loungeID == loungeID,
             orElse: () => null);
         if (lounge == null) {
-          AddLounge addLounge = AddLounge(
-            Lounge(loungeID: loungeID, title: loungeID, isHosted: false),
-          );
+          AddLounge addLounge = AddLounge(loungeID, loungeID: loungeID);
 
           loungesBloc.actionsSink.add(addLounge);
           addLounge.future.then((_) {});

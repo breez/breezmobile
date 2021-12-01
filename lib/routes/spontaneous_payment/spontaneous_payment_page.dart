@@ -214,7 +214,7 @@ class SpontaneousPaymentPageState extends State<SpontaneousPaymentPage> {
         cancelText: "CANCEL");
     if (ok) {
       var sendAction =
-          SendSpontaneousPayment(widget.nodeID, amount, tipMessage);
+          SendSpontaneousPayment(widget.nodeID, amount, tipMessage, null);
       try {
         showDialog(
             useRootNavigator: false,

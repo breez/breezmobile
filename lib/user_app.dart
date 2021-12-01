@@ -20,7 +20,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 
-import 'bloc/jitsi_meet/bloc.dart';
 import 'bloc/lnurl/lnurl_bloc.dart';
 import 'bloc/lsp/lsp_bloc.dart';
 import 'bloc/reverse_swap/reverse_swap_bloc.dart';
@@ -72,7 +71,6 @@ class UserApp extends StatelessWidget {
     var lnurlBloc = AppBlocsProvider.of<LNUrlBloc>(context);
     var posCatalogBloc = AppBlocsProvider.of<PosCatalogBloc>(context);
     var loungesBloc = AppBlocsProvider.of<LoungesBloc>(context);
-    var jitsiMeetBloc = AppBlocsProvider.of<JitsiMeetBloc>(context);
 
     return StreamBuilder(
         stream: userProfileBloc.userStream,

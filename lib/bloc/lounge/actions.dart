@@ -3,9 +3,10 @@ import 'package:breez/bloc/async_action.dart';
 import 'model.dart';
 
 class AddLounge extends AsyncAction {
-  final Lounge lounge;
+  final String title;
+  final String loungeID;
 
-  AddLounge(this.lounge);
+  AddLounge(this.title, {this.loungeID});
 }
 
 class FetchLounge extends AsyncAction {

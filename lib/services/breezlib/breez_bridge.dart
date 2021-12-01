@@ -291,8 +291,9 @@ class BreezBridge {
   }
 
   Future<RoutingHints> getLSPRoutingHints() {
-    return _invokeMethodWhenReady("getLSPRoutingHints")
-        .then((r) => r as RoutingHints);
+    return _invokeMethodWhenReady("getLSPRoutingHints").then((value) {
+      return RoutingHints()..mergeFromBuffer(value ?? []);
+    });
   }
 
   Future<List<int>> signMessage(List<int> msg) {

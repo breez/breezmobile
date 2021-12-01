@@ -1,9 +1,11 @@
 import 'dart:async';
 
+import 'package:breez/bloc/account/account_bloc.dart';
 import 'package:breez/bloc/async_actions_handler.dart';
 import 'package:breez/bloc/lounge/actions.dart';
 import 'package:breez/bloc/lounge/repository.dart';
 import 'package:breez/bloc/lounge/sqlite/repository.dart';
+import 'package:breez/services/injector.dart';
 import 'package:rxdart/subjects.dart';
 
 import 'model.dart';
@@ -20,8 +22,7 @@ class LoungesBloc with AsyncActionsHandler {
   final StreamController<List<Lounge>> _loungesStreamController =
       BehaviorSubject<List<Lounge>>();
 
-  Stream<List<Lounge>> get loungesStream =>
-      _loungesStreamController.stream;
+  Stream<List<Lounge>> get loungesStream => _loungesStreamController.stream;
 
   LoungesBloc() {
     _repository = SqliteRepository();
@@ -36,13 +37,25 @@ class LoungesBloc with AsyncActionsHandler {
     listenActions();
   }
 
+  Future<String> _getPersistentNodeID() async {
+    var preferences = await ServiceInjector().sharedPreferences;
+    return preferences
+        .getString(AccountBloc.PERSISTENT_NODE_ID_PREFERENCES_KEY);
+  }
+
   Future _loadLounges({String filter}) async {
-    _loungesStreamController
-        .add(await _repository.fetchLounge(filter: filter));
+    _loungesStreamController.add(await _repository.fetchLounge(filter: filter));
   }
 
   Future _addLounge(AddLounge action) async {
-    action.resolve(await _repository.addLounge(action.lounge));
+    var nodeID = await _getPersistentNodeID();
+    if (nodeID == null) {
+      throw new Exception("node is not initialized");
+    }
+    action.resolve(await _repository.addLounge(Lounge(
+        loungeID: action.loungeID ?? "breez-$nodeID",
+        title: action.title,
+        isHosted: action.loungeID == null)));
     _loadLounges();
   }
 
