@@ -19,7 +19,7 @@
   "backup_dialog_option_ok_default": "VARMISTA NYT",
   "backup_dialog_icloud_error_title": "Kirjaudu iCloud-palveluun",
   "backup_dialog_icloud_error_message": "Kirjaudu sisään iCloud-tiliisi seuraavasti. Mene aloitus näkymään, avaa asetukset (Settings), kosketa iCloud ja anna Apple ID -tunnuksesi. Muuta iCloud Drive asetus ON-asentoon. Mikäli sinulla ei ole iCloud-tiliä, valitse näkymässä Luo uusi Apple ID (Create a new Apple ID)",
-  "tutorial_gotcha": "Sainpas!",
+  "tutorial_gotcha": "Kas niin!",
   "bottom_action_bar_send": "LÄHETÄ",
   "bottom_action_bar_receive": "VASTAANOTA",
   "bottom_action_bar_paste_invoice": "Liitä Lightning-lasku tai ID-tunniste",
@@ -35,6 +35,89 @@
       "balance": {
         "type": "String",
         "example": "1.23456789"
+      }
+    }
+  },
+  "payment_details_dialog_closed_channel_title": "Kanava on suljettu ",
+  "payment_details_dialog_closed_channel_title_pending": "Odotetaan suljettua kanavaa",
+  "payment_details_dialog_closed_channel_ok": "OK",
+  "payment_details_dialog_closed_channel_local_wallet": "Koska kanava sulkeutui, tapahtuu siirto paikalliseen lompakkoon.",
+  "payment_details_dialog_closed_channel_about_hour": "noin tunnissa",
+  "payment_details_dialog_closed_channel_about_hours": "~{hours} tunnissa",
+  "@payment_details_dialog_closed_channel_about_hours": {
+    "placeholders": {
+      "hours": {
+        "type": "String",
+        "example": "2"
+      }
+    }
+  },
+  "payment_details_dialog_closed_channel_transfer_no_estimation": "Odotetaan varojen siirtymistä suljetusta kanavasta paikalliseen lompakkoon",
+  "payment_details_dialog_closed_channel_transfer_estimation": "Odotetaan varojen siirtymistä suljetusta kanavasta paikalliseen lompakkoon lohkossa ${lockHeight} (${hoursToUnlock})",
+  "@payment_details_dialog_closed_channel_transfer_estimation": {
+    "placeholders": {
+      "lockHeight": {
+        "type": "String",
+        "example": "12345"
+      },
+      "hoursToUnlock": {
+        "type": "String",
+        "example": "noin tunnin kuluttua"
+      }
+    }
+  },
+  "payment_details_dialog_transaction_id_copied": "Tapahtuman tunniste kopioitiin leikepöydälle.",
+  "payment_details_dialog_restart_text": "Tämän kanavan ketjutietojen uudelleen alustamiseksi, pitää sinun käynnistää Breez-sovellus uudelleen.",
+  "payment_details_dialog_restart_cancel": "PALAA",
+  "payment_details_dialog_restart_exit_breez": "SULJE BREEZ",
+  "payment_details_dialog_transaction_label_default": "Tapahtuman tunniste:",
+  "payment_details_dialog_internal_error": "Sisäinen virhe",
+  "payment_details_dialog_refresh_information": "Päivitä näkymän tiedot",
+  "payment_details_dialog_share_transaction": "Jaa tapahtuman Hash-koodi",
+  "payment_details_dialog_share_lightning_address": "Lightning-osoite",
+  "payment_details_dialog_share_comment": "Kommentti",
+  "payment_details_dialog_copy_action": "Kopioi {title}",
+  "@payment_details_dialog_copy_action": {
+    "placeholders": {
+      "title": {
+        "type": "String",
+        "example": "Maksun Preimage-tieto"
+      }
+    }
+  },
+  "payment_details_dialog_copied": "{title} kopioitiin leikepöydälle.",
+  "@payment_details_dialog_copied": {
+    "placeholders": {
+      "title": {
+        "type": "String",
+        "example": "Maksun Preimage-tieto"
+      }
+    }
+  },
+  "payment_details_dialog_single_info_pre_image": "Maksun Preimage-tieto",
+  "payment_details_dialog_single_info_node_id": "Solmun tunniste",
+  "payment_details_dialog_single_info_on_chain": "On-chain-tapahtuma",
+  "payment_details_dialog_action_for_payment_description": "Kuvaus",
+  "payment_details_dialog_action_for_payment_url": "URL",
+  "payment_details_dialog_action_for_payment_message": "Viesti",
+  "payment_details_dialog_expiration": "Voimassa olo aika",
+  "payment_details_dialog_date_and_time": "Päiväys & aika",
+  "payment_details_dialog_amount_title": "Määrä",
+  "payment_details_dialog_amount_negative": "-{amount}",
+  "@payment_details_dialog_amount_negative": {
+    "placeholders": {
+      "amount": {
+        "type": "String",
+        "example": "1000 satoshia"
+      }
+    }
+  },
+  "payment_details_dialog_amount_positive": "+{amount}",
+  "@payment_details_dialog_amount_positive": {
+    "placeholders": {
+      "amount": {
+        "type": "String",
+        "example": "1000 satoshia"
       }
     }
   },
