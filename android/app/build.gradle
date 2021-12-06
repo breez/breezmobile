@@ -41,10 +41,15 @@ android {
 
     signingConfigs {
         release {
-            keyAlias keystoreProperties['keyAlias']
-            keyPassword keystoreProperties['keyPassword']
-            storeFile file(keystoreProperties['storeFile'])
-            storePassword keystoreProperties['storePassword']
+            String filePath = keystoreProperties['storeFile']
+            if (filePath != null) {
+                keyAlias keystoreProperties['keyAlias']
+                keyPassword keystoreProperties['keyPassword']
+                storeFile file('key.jks')
+                storePassword keystoreProperties['storePassword']
+            } else {
+                println("No storeFile provided, release builds are not possible")
+            }
         }
     }
 
