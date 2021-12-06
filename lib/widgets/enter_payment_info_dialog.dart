@@ -138,12 +138,17 @@ class EnterPaymentInfoDialogState extends State<EnterPaymentInfoDialog> {
               ));
               return;
             }
+
+            final lightningAddress =
+                parseLightningAddress(_paymentInfoController.text);
+            if (lightningAddress != null) {
+              widget.lnurlBloc.lnurlInputSink.add(lightningAddress);
+              return;
+            }
+
             if (decodeInvoice(_paymentInfoController.text) != null) {
               widget.invoiceBloc.decodeInvoiceSink
                   .add(_paymentInfoController.text);
-            }
-            if (isLightningAddress(_paymentInfoController.text)) {
-              widget.lnurlBloc.lnurlInputSink.add(_paymentInfoController.text);
             }
           }
         }),

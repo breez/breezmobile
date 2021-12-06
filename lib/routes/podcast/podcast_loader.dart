@@ -16,6 +16,8 @@ const BYFEED_API_ENDPOINT =
     'https://api.podcastindex.org/api/1.0/podcasts/byfeedurl';
 const EPISODES_BYFEED_API_ENDPOINT =
     'https://api.podcastindex.org/api/1.0/episodes/byfeedurl';
+const EPISODES_BYGUID_API_ENDPOINT =
+    'https://api.podcastindex.org/api/1.0/episodes/byguid';
 
 class PodcastIndexClient {
   static Dio _createClient() {
@@ -87,6 +89,39 @@ class PodcastIndexClient {
     return _createClient().get(EPISODES_BYFEED_API_ENDPOINT, queryParameters: {
       "url": url,
       "max": max,
+    }).then((res) {
+      return res.data as Map<String, dynamic>;
+    }).catchError((e) {
+      if (e is DioError) {
+        switch (e.type) {
+          case DioErrorType.connectTimeout:
+          case DioErrorType.sendTimeout:
+          case DioErrorType.receiveTimeout:
+          case DioErrorType.other:
+            throw PodcastTimeoutException(e.message);
+            break;
+          case DioErrorType.response:
+            throw PodcastFailedException(e.message);
+            break;
+          case DioErrorType.cancel:
+            throw PodcastCancelledException(e.message);
+            break;
+        }
+      }
+      throw e;
+    });
+  }
+
+  Future<Map<String, dynamic>> loadEpisode({
+    @required int feedId,
+    @required String guid,
+    int timeout = 20000,
+    int max = 100,
+    String userAgent,
+  }) {
+    return _createClient().get(EPISODES_BYGUID_API_ENDPOINT, queryParameters: {
+      "feedid": feedId,
+      "guid": guid,
     }).then((res) {
       return res.data as Map<String, dynamic>;
     }).catchError((e) {

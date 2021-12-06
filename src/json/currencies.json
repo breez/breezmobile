@@ -539,16 +539,45 @@
   "EUR": {
     "name": "Euro",
     "fractionSize": 2,
-    "spacing": 0,
+    "spacing": 1,
     "symbol": {
       "grapheme": "€",
-      "template": "$1",
+      "position": 1,
       "rtl": false
     },
     "uniqSymbol": {
       "grapheme": "€",
-      "template": "$1",
       "rtl": false
+    },
+    "localeOverrides": {
+      "de-AT": {
+        "symbol": {
+          "position": 0
+        }
+      },
+      "el-CY": {
+        "spacing": 0,
+        "symbol": {
+          "position": 0
+        }
+      },
+      "en": {
+        "spacing": 0,
+        "symbol": {
+          "position": 0
+        }
+      },
+      "nl": {
+        "symbol": {
+          "position": 0
+        }
+      },
+      "tr": {
+        "spacing": 0,
+        "symbol": {
+          "position": 0
+        }
+      }
     }
   },
   "FJD": {
@@ -1381,12 +1410,11 @@
     "fractionSize": 2,
     "symbol": {
       "grapheme": "zł",
-      "template": "1 $",
+      "position": 1,
       "rtl": false
     },
     "uniqSymbol": {
       "grapheme": "zł",
-      "template": "1 $",
       "rtl": false
     }
   },

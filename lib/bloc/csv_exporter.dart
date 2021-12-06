@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:breez/bloc/account/account_model.dart';
+import 'package:breez/bloc/pos_catalog/model.dart';
 import 'package:breez/logger.dart';
 import 'package:breez/utils/date.dart';
 import 'package:csv/csv.dart';
@@ -9,10 +10,10 @@ import 'package:intl/intl.dart';
 import 'package:path_provider/path_provider.dart';
 
 class CsvExporter {
-  final List<PaymentInfo> paymentList;
+  final List<CsvData> data;
   final PaymentFilterModel filter;
 
-  CsvExporter(this.paymentList, this.filter);
+  CsvExporter(this.data, this.filter);
 
   Future export() async {
     log.info("export payments started");
@@ -24,10 +25,12 @@ class CsvExporter {
 
   List _generateList() {
     log.info("generating payment list started");
-    List<List<dynamic>> paymentList =
-        List.generate(this.paymentList.length, (index) {
-      List paymentItem = [];
-      var paymentInfo = this.paymentList.elementAt(index);
+    final fiatCurrencies = _fiatCurrencies();
+    List<List<String>> paymentList = List.generate(this.data.length, (index) {
+      List<String> paymentItem = [];
+      final data = this.data.elementAt(index);
+      final paymentInfo = data.paymentInfo;
+      final sale = data.sale;
       paymentItem.add(BreezDateUtils.formatYearMonthDayHourMinute(
           DateTime.fromMillisecondsSinceEpoch(
               paymentInfo.creationTimestamp.toInt() * 1000)));
@@ -37,6 +40,14 @@ class CsvExporter {
       paymentItem.add(paymentInfo.amount.toString());
       paymentItem.add(paymentInfo.preimage);
       paymentItem.add(paymentInfo.paymentHash);
+      for (var currency in fiatCurrencies) {
+        final fiat = sale?.totalAmountInFiat;
+        if (fiat != null && fiat.containsKey(currency)) {
+          paymentItem.add(fiat[currency].toString());
+        } else {
+          paymentItem.add("-");
+        }
+      }
       return paymentItem;
     });
     paymentList.insert(0, [
@@ -46,10 +57,20 @@ class CsvExporter {
       "Node ID",
       "Amount",
       "Preimage",
-      "TX Hash"
+      "TX Hash",
+      ...fiatCurrencies,
     ]);
     log.info("generating payment finished");
     return paymentList;
+  }
+
+  Set<String> _fiatCurrencies() {
+    return data
+        .map((e) => e.sale?.totalAmountInFiat)
+        .map((e) => e?.keys ?? [])
+        .map((e) => e.toSet())
+        .map((e) => e.difference({"BTC", "SAT"}))
+        .fold(Set<String>(), (p, e) => p.union(e));
   }
 
   Future<String> _saveCsvFile(String csv) async {
@@ -89,4 +110,14 @@ class CsvExporter {
     log.info("add filter information to path finished");
     return filePath;
   }
+}
+
+class CsvData {
+  final PaymentInfo paymentInfo;
+  final Sale sale;
+
+  const CsvData(
+    this.paymentInfo,
+    this.sale,
+  );
 }

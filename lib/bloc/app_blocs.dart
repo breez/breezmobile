@@ -6,6 +6,7 @@ import 'package:breez/bloc/fastbitcoins/fastbitcoins_bloc.dart';
 import 'package:breez/bloc/lnurl/lnurl_bloc.dart';
 import 'package:breez/bloc/marketplace/marketplace_bloc.dart';
 import 'package:breez/bloc/pos_catalog/bloc.dart';
+import 'package:breez/bloc/pos_catalog/sqlite/repository.dart';
 import 'package:breez/bloc/reverse_swap/reverse_swap_bloc.dart';
 import 'package:breez/bloc/user_profile/user_profile_bloc.dart';
 
@@ -42,10 +43,15 @@ class AppBlocs {
 
   factory AppBlocs() {
     var blocsByType = Map<Type, Object>();
+    final sqliteRepository = SqliteRepository();
     UserProfileBloc userProfileBloc =
         _registerBloc(UserProfileBloc(), blocsByType);
-    AccountBloc accountBloc =
-        _registerBloc(AccountBloc(userProfileBloc.userStream), blocsByType);
+    AccountBloc accountBloc = _registerBloc(
+        AccountBloc(
+          userProfileBloc.userStream,
+          sqliteRepository,
+        ),
+        blocsByType);
     TorBloc torBloc = _registerBloc(accountBloc.torBloc, blocsByType);
     InvoiceBloc invoicesBloc = _registerBloc(InvoiceBloc(), blocsByType);
     ConnectPayBloc connectPayBloc = _registerBloc(
@@ -62,8 +68,12 @@ class AppBlocs {
     ReverseSwapBloc reverseSwapBloc = _registerBloc(
         ReverseSwapBloc(accountBloc.paymentsStream, userProfileBloc.userStream),
         blocsByType);
-    PosCatalogBloc posCatalogBloc =
-        _registerBloc(PosCatalogBloc(accountBloc.accountStream), blocsByType);
+    PosCatalogBloc posCatalogBloc = _registerBloc(
+        PosCatalogBloc(
+          accountBloc.accountStream,
+          sqliteRepository,
+        ),
+        blocsByType);
     FastbitcoinsBloc fastbitcoinsBloc =
         _registerBloc(FastbitcoinsBloc(), blocsByType);
 

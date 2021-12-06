@@ -1,3 +1,4 @@
+import 'package:breez/bloc/user_profile/currency.dart';
 import 'package:breez/routes/charge/currency_wrapper.dart';
 import 'package:breez/utils/date.dart';
 import 'package:breez/widgets/print_parameters.dart';
@@ -8,6 +9,7 @@ import 'package:printing/printing.dart';
 
 class PrintService {
   final PrintParameters printParameters;
+  final _satCurrency = CurrencyWrapper.fromBTC(Currency.SAT);
 
   PrintService(this.printParameters);
 
@@ -119,9 +121,8 @@ class PrintService {
       CurrencyWrapper saleCurrency = CurrencyWrapper.fromShortName(
           saleLine.currency, printParameters.account);
       double priceInFiat = saleLine.pricePerItem;
-      double totalPriceInFiat = saleLine.pricePerItem * saleLine.quantity;
-      double totalPriceInSats =
-          saleCurrency.satConversionRate * totalPriceInFiat;
+      double totalPriceInFiat = saleLine.totalFiat;
+      double totalPriceInSats = saleLine.totalSats;
       pw.TextStyle textStyle = pw.TextStyle(
         fontSize: 12.3,
       );
@@ -143,19 +144,42 @@ class PrintService {
   }
 
   _addTotalLineToTable(Map<String, ByteData> fontMap) {
-    double totalAmount = printParameters.submittedSale.totalChargeSat /
-        printParameters.currentCurrency.satConversionRate;
+    final sale = printParameters.submittedSale;
+    final totalAmount = sale.totalAmountInSats;
+
+    var totalMsg = _satCurrency.format(totalAmount, removeTrailingZeros: true);
+    totalMsg = "$totalMsg ${_satCurrency.shortName}";
+    final totalAmountInFiat = sale.totalAmountInFiat;
+    if (totalAmountInFiat.length == 1) {
+      final entry = totalAmountInFiat.entries.first;
+      final currency = entry.key;
+      final total = entry.value;
+      if (currency != _satCurrency.shortName) {
+        CurrencyWrapper saleCurrency = CurrencyWrapper.fromShortName(
+          currency,
+          printParameters.account,
+        );
+        final fiatTotalMsg = saleCurrency.format(
+          total,
+          removeTrailingZeros: true,
+          includeCurrencySymbol: true,
+        );
+        totalMsg = "$totalMsg ($fiatTotalMsg)";
+      }
+    }
+
     return pw.TableRow(
       children: [
         pw.SizedBox(),
         pw.SizedBox(),
         _buildTableItem("Total"),
         _buildTableItem(
-            "${printParameters.currentCurrency.format(totalAmount, removeTrailingZeros: true)} ${printParameters.currentCurrency.shortName}",
-            style: pw.TextStyle(
-              font: pw.Font.ttf(fontMap["ltr"]),
-              fontSize: 14.3,
-            )),
+          totalMsg,
+          style: pw.TextStyle(
+            font: pw.Font.ttf(fontMap["ltr"]),
+            fontSize: 14.3,
+          ),
+        ),
       ],
     );
   }
@@ -229,15 +253,13 @@ class PrintService {
     return pw.Row(
         mainAxisAlignment: pw.MainAxisAlignment.start,
         crossAxisAlignment: pw.CrossAxisAlignment.center,
-        children: (saleCurrency.symbol !=
-                printParameters.currentCurrency.symbol)
+        children: (saleCurrency.symbol != _satCurrency.symbol)
             ? [
                 _buildPrice(saleCurrency, totalPriceInFiat, fontMap,
                     padding: pw.EdgeInsets.only(left: 8, top: 8, bottom: 8)),
                 _buildPrice(
-                    printParameters.currentCurrency,
-                    totalPriceInSats /
-                        printParameters.currentCurrency.satConversionRate,
+                    _satCurrency,
+                    totalPriceInSats,
                     fontMap,
                     addParenthesis: true,
                     padding: pw.EdgeInsets.all(8)),

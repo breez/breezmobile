@@ -1,5 +1,6 @@
 import 'package:app_settings/app_settings.dart';
 import 'package:breez/bloc/invoice/invoice_bloc.dart';
+import 'package:breez/l10n/locales.dart';
 import 'package:breez/theme_data.dart' as theme;
 import 'package:breez/widgets/back_button.dart' as backBtn;
 import 'package:flutter/material.dart';
@@ -24,6 +25,8 @@ class BarcodeScannerPlaceholderState extends State<BarcodeScannerPlaceholder> {
           backgroundColor: Colors.red,
           primaryColor: Colors.yellow,
           canvasColor: Colors.grey),
+      localizationsDelegates: localizationsDelegates(),
+      supportedLocales: supportedLocales(),
       home: Scaffold(
         appBar: AppBar(
           iconTheme: Theme.of(context).appBarTheme.iconTheme,

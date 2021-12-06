@@ -11,9 +11,12 @@ import Flutter
 import Bindings
 import flutter_downloader
 
-class AppDelegate : FlutterAppDelegate {        
+class AppDelegate : FlutterAppDelegate {
+    var savedOptions :  [UIApplication.LaunchOptionsKey : Any]?;
     
     override func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey : Any]?) -> Bool {
+        savedOptions = launchOptions;
+        Breez.launchOptions = launchOptions;
         GeneratedPluginRegistrant.register(with: self);
         registerBreezPlugins();
         //application.setMinimumBackgroundFetchInterval(3600);
@@ -25,7 +28,7 @@ class AppDelegate : FlutterAppDelegate {
                     FlutterDownloaderPlugin.register(with: downloader);
                 }
             }
-        });
+        });        
         return super.application(application, didFinishLaunchingWithOptions: launchOptions);
     }
     
@@ -58,10 +61,14 @@ class AppDelegate : FlutterAppDelegate {
     override func application(_ application: UIApplication, didReceiveRemoteNotification userInfo: [AnyHashable : Any], fetchCompletionHandler completionHandler: @escaping (UIBackgroundFetchResult) -> Void) {
         let jobName = userInfo["_job"] as? String?;
         if (jobName == "chainSync") {
-            Breez.logger.log("chainSync notification received!", lvl: "INFO")
+            Breez.logger.log("chainSync notification received!", lvl: "INFO")            
             ChainSync.run(app: application, completionHandler: {
                 Notifier.scheduleSyncRequiredNotification();
                 Breez.logger.log("Job completion handler was called!", lvl: "INFO");
+                if let options = self.savedOptions {
+                    Breez.logger.log("launchOptions after job: " + options.description, lvl: "INFO")
+                    print("launchOptions  after job: " + options.description);
+                }
                 completionHandler(UIBackgroundFetchResult.newData);
             });
             return;

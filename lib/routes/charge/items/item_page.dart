@@ -53,8 +53,8 @@ class ItemPageState extends State<ItemPage> {
       _accountBloc = AppBlocsProvider.of<AccountBloc>(context);
       FetchRates fetchRatesAction = FetchRates();
       _accountBloc.userActionsSink.add(fetchRatesAction);
-      if (widget.item != null) {
-        _accountBloc.accountStream.first.then((accountModel) {
+      _accountBloc.accountStream.first.then((accountModel) {
+        if (widget.item != null) {
           setState(() {
             _title = "Edit Item";
             _itemImage = widget.item.imageURL;
@@ -64,8 +64,15 @@ class ItemPageState extends State<ItemPage> {
                 widget.item.currency, accountModel);
             _priceController.text = _formattedPrice(widget.item.price);
           });
-        });
-      }
+        } else {
+          widget._posCatalogBloc.selectedCurrencyStream.listen((currency) {
+            setState(() {
+              _selectedCurrency =
+                  CurrencyWrapper.fromShortName(currency, accountModel);
+            });
+          });
+        }
+      });
 
       fetchRatesAction.future.catchError((err) {
         if (this.mounted) {
@@ -300,6 +307,7 @@ class ItemPageState extends State<ItemPage> {
             _formattedPrice(double.parse(_priceController.text));
       }
     });
+    widget._posCatalogBloc.actionsSink.add(UpdatePosItemAdditionCurrency(value));
   }
 
   String _formattedPrice(double price) {

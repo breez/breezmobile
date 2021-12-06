@@ -46,18 +46,22 @@ class LNUrlBloc with AsyncActionsHandler {
         injector.nfc.receivedLnLinks(),
         injector.lightningLinks.linksNotifications,
         _lnurlInputController.stream,
-
-        // Process lightning-addresses in the clipboard only when the user manually 
-        // pastes them in and they show up in _lnurlInputController.stream.
-        injector.device.distinctClipboardStream
-            .where((l) => !isLightningAddress(l)),
+        injector.device.distinctClipboardStream.where((l) {
+          var result = true;
+          if (isLightningAddress(l)) {
+            result = isLightningAddressURI(l);
+          }
+          return result;
+        })
       ])
           .where((l) => l != null)
           .map((l) => l.toLowerCase())
           .where((l) => isLNURL(l) || isLightningAddress(l))
           .asyncMap((l) {
+        var v = parseLightningAddress(l);
+        v ??= l;
         _lnUrlStreamController.add(fetchLNUrlState.started);
-        return _breezLib.fetchLNUrl(l).catchError((error) {
+        return _breezLib.fetchLNUrl(v).catchError((error) {
           throw error.toString();
         });
       }).map((response) {

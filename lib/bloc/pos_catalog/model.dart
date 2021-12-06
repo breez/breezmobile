@@ -78,7 +78,9 @@ class SaleLine implements DBItem {
   final String currency;
   final double satConversionRate;
 
-  double get total => quantity * pricePerItem;
+  double get totalFiat => quantity * pricePerItem;
+
+  double get totalSats => totalFiat * satConversionRate;
 
   bool get isCustom => itemID == null;
 
@@ -270,6 +272,23 @@ class Sale implements DBItem {
     int total = 0;
     saleLines.forEach((sl) {
       total += sl.quantity;
+    });
+    return total;
+  }
+
+  Map<String, double> get totalAmountInFiat {
+    Map<String, double> totals = {};
+    saleLines.forEach((saleLine) {
+      final previous = totals[saleLine.currency] ?? 0.0;
+      totals[saleLine.currency] = previous + saleLine.totalFiat;
+    });
+    return totals;
+  }
+
+  double get totalAmountInSats {
+    var total = 0.0;
+    saleLines.forEach((saleLine) {
+      total += saleLine.totalSats;
     });
     return total;
   }

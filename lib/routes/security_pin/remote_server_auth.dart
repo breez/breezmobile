@@ -126,9 +126,6 @@ class RemoteServerAuthPageState extends State<RemoteServerAuthPage> {
                                     if (!failDiscoverURL && validURL) {
                                       return null;
                                     }
-                                    /*if (!value.startsWith("https://")) {
-                                      return "URL must be https";
-                                    }*/
                                     return "Invalid URL";
                                   },
                                   decoration: InputDecoration(
@@ -205,20 +202,20 @@ class RemoteServerAuthPageState extends State<RemoteServerAuthPage> {
                             style:
                                 Theme.of(context).dialogTheme.contentTextStyle,
                           ),
-                          optionText: 'CONTINUE', 
+                          optionText: 'CONTINUE',
                           optionFunc: () {
-                              Navigator.of(context).pop();
+                            Navigator.of(context).pop();
                           },
                           okText: 'SETTINGS',
                           okFunc: () {
-                        // Navigator.of(context).pop();
-                        Navigator.of(context).push(FadeInRoute(
-                          builder: (_) =>
-                              withBreezTheme(context, NetworkPage()),
-                        ));
-                        // Navigator.of(context).popUntil((route) => route is RemoteServerAuthPage);
-                        return false;
-                      });
+                            // Navigator.of(context).pop();
+                            Navigator.of(context).push(FadeInRoute(
+                              builder: (_) =>
+                                  withBreezTheme(context, NetworkPage()),
+                            ));
+                            // Navigator.of(context).popUntil((route) => route is RemoteServerAuthPage);
+                            return false;
+                          });
                     }
 
                     if (continueResponse) {
