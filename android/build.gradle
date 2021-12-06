@@ -1,11 +1,11 @@
 buildscript {
-    repositories {
-        google()
+    repositories {        
+        google()        
         mavenCentral()
     }
 
     dependencies {
-        classpath 'com.android.tools.build:gradle:7.0.1'
+        classpath 'com.android.tools.build:gradle:7.0.3'
         classpath 'com.google.gms:google-services:4.3.10'
     }
 }
@@ -13,7 +13,8 @@ buildscript {
 allprojects {
     repositories {
         google()
-        mavenCentral()
+        maven { url "file:/tmp/repo" }
+        mavenCentral()        
         flatDir {
             dirs 'libs'
         }

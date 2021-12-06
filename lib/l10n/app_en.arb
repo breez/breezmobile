@@ -1,0 +1,125 @@
+{
+  "home_drawer_item_title_preferences": "Preferences",
+  "home_drawer_item_title_fiat_currencies": "Fiat Currencies",
+  "home_drawer_item_title_network": "Network",
+  "home_drawer_item_title_security": "Security & Backup",
+  "home_drawer_item_title_transactions": "Transactions",
+  "home_drawer_item_title_balance": "Balance",
+  "home_drawer_item_title_podcasts": "Podcasts",
+  "home_drawer_item_title_pos": "Point of Sale",
+  "home_drawer_item_title_apps": "Apps",
+  "home_drawer_item_title_pos_settings": "POS Settings",
+  "home_drawer_item_title_developers": "Developers",
+  "backup_dialog_title": "Backup",
+  "backup_dialog_message_remote_server": "Failed to save backup files to Remote Server. Please review your settings and try again.",
+  "backup_dialog_message_default": "If you want to be able to restore your funds in case this mobile device or this app are no longer available (e.g. lost or stolen device or app uninstall), you are required to backup your information.",
+  "backup_dialog_do_not_prompt_again": "Don't prompt again",
+  "backup_dialog_option_cancel": "LATER",
+  "backup_dialog_option_ok_remote_server": "SETTINGS",
+  "backup_dialog_option_ok_default": "BACKUP NOW",
+  "backup_dialog_icloud_error_title": "Sign in to iCloud",
+  "backup_dialog_icloud_error_message": "Sign in to your iCloud account. On the Home screen, launch Settings, tap iCloud, and enter your Apple ID. Turn iCloud Drive on. If you don't have an iCloud account, tap Create a new Apple ID.",
+  "tutorial_gotcha": "Gotcha!",
+  "bottom_action_bar_send": "SEND",
+  "bottom_action_bar_receive": "RECEIVE",
+  "bottom_action_bar_paste_invoice": "Paste Invoice or ID",
+  "bottom_action_bar_connect_to_pay": "Connect to Pay",
+  "bottom_action_bar_send_btc_address": "Send to BTC Address",
+  "bottom_action_bar_escher": "Cash-Out via Escher",
+  "bottom_action_bar_receive_invoice": "Receive via Invoice",
+  "bottom_action_bar_receive_btc_address": "Receive via BTC Address",
+  "bottom_action_bar_buy_bitcoin": "Buy Bitcoin",
+  "bottom_action_bar_warning_balance_title": "Breez requires you to keep {balance} in your balance.",
+  "@bottom_action_bar_warning_balance_title": {
+    "placeholders": {
+      "balance": {
+        "type": "String",
+        "example": "1.23456789"
+      }
+    }
+  },
+  "payment_details_dialog_closed_channel_title": "Closed Channel",
+  "payment_details_dialog_closed_channel_title_pending": "Pending Closed Channel",
+  "payment_details_dialog_closed_channel_ok": "OK",
+  "payment_details_dialog_closed_channel_local_wallet": "Transfer to local wallet due to closed channel.",
+  "payment_details_dialog_closed_channel_about_hour": "in about an hour",
+  "payment_details_dialog_closed_channel_about_hours": "~{hours} hours",
+  "@payment_details_dialog_closed_channel_about_hours": {
+    "placeholders": {
+      "hours": {
+        "type": "String",
+        "example": "2"
+      }
+    }
+  },
+  "payment_details_dialog_closed_channel_transfer_no_estimation": "Waiting for closed channel funds to be transferred to your local wallet",
+  "payment_details_dialog_closed_channel_transfer_estimation": "Waiting for closed channel funds to be transferred to your local wallet in block ${lockHeight} (${hoursToUnlock})",
+  "@payment_details_dialog_closed_channel_transfer_estimation": {
+    "placeholders": {
+      "lockHeight": {
+        "type": "String",
+        "example": "12345"
+      },
+      "hoursToUnlock": {
+        "type": "String",
+        "example": "in about an hour"
+      }
+    }
+  },
+  "payment_details_dialog_transaction_id_copied": "Transaction ID was copied to your clipboard.",
+  "payment_details_dialog_restart_text": "Please restart Breez to reset chain information for this channel.",
+  "payment_details_dialog_restart_cancel": "CANCEL",
+  "payment_details_dialog_restart_exit_breez": "EXIT BREEZ",
+  "payment_details_dialog_transaction_label_default": "Transaction ID:",
+  "payment_details_dialog_internal_error": "Internal Error",
+  "payment_details_dialog_refresh_information": "Refresh Information",
+  "payment_details_dialog_share_transaction": "Share Transaction Hash",
+  "payment_details_dialog_share_lightning_address": "Lightning Address",
+  "payment_details_dialog_share_comment": "Comment",
+  "payment_details_dialog_copy_action": "Copy {title}",
+  "@payment_details_dialog_copy_action": {
+    "placeholders": {
+      "title": {
+        "type": "String",
+        "example": "Payment Preimage"
+      }
+    }
+  },
+  "payment_details_dialog_copied": "{title} was copied to your clipboard.",
+  "@payment_details_dialog_copied": {
+    "placeholders": {
+      "title": {
+        "type": "String",
+        "example": "Payment Preimage"
+      }
+    }
+  },
+  "payment_details_dialog_single_info_pre_image": "Payment Preimage",
+  "payment_details_dialog_single_info_node_id": "Node ID",
+  "payment_details_dialog_single_info_on_chain": "On-chain Transaction",
+  "payment_details_dialog_action_for_payment_description": "Description",
+  "payment_details_dialog_action_for_payment_url": "URL",
+  "payment_details_dialog_action_for_payment_message": "Message",
+  "payment_details_dialog_expiration": "Expiration",
+  "payment_details_dialog_date_and_time": "Date & Time",
+  "payment_details_dialog_amount_title": "Amount",
+  "payment_details_dialog_amount_negative": "-{amount}",
+  "@payment_details_dialog_amount_negative": {
+    "placeholders": {
+      "amount": {
+        "type": "String",
+        "example": "1000 sats"
+      }
+    }
+  },
+  "payment_details_dialog_amount_positive": "+{amount}",
+  "@payment_details_dialog_amount_positive": {
+    "placeholders": {
+      "amount": {
+        "type": "String",
+        "example": "1000 sats"
+      }
+    }
+  },
+  "app_name": "Breez"
+}

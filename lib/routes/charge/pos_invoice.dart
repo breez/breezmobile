@@ -66,7 +66,7 @@ class POSInvoiceState extends State<POSInvoice> with TickerProviderStateMixin {
   Item _itemInTransition;
   Future _fetchRatesActionFuture;
 
-  double get currentAmount => currentPendingItem?.total ?? 0;
+  double get currentAmount => currentPendingItem?.totalFiat ?? 0;
 
   @override
   void didChangeDependencies() {
@@ -115,6 +115,10 @@ class POSInvoiceState extends State<POSInvoice> with TickerProviderStateMixin {
             currentPendingItem = null;
           });
         }
+      });
+
+      posCatalogBloc.selectedPosTabStream.listen((tab) {
+        _changeView(tab == "KEYPAD");
       });
 
       super.didChangeDependencies();
@@ -468,7 +472,9 @@ class POSInvoiceState extends State<POSInvoice> with TickerProviderStateMixin {
             alignment: Alignment.centerRight,
             child: GestureDetector(
                 behavior: HitTestBehavior.translucent,
-                onTap: () => _changeView(true),
+                onTap: () => AppBlocsProvider.of<PosCatalogBloc>(context)
+                    .actionsSink
+                    .add(UpdatePosSelectedTab("KEYPAD")),
                 child: Padding(
                   padding: EdgeInsets.only(right: itemWidth / 4),
                   child: Row(
@@ -510,7 +516,9 @@ class POSInvoiceState extends State<POSInvoice> with TickerProviderStateMixin {
             alignment: Alignment.centerLeft,
             child: GestureDetector(
                 behavior: HitTestBehavior.translucent,
-                onTap: () => _changeView(false),
+                onTap: () => AppBlocsProvider.of<PosCatalogBloc>(context)
+                    .actionsSink
+                    .add(UpdatePosSelectedTab("ITEMS")),
                 child: Padding(
                   padding: EdgeInsets.only(left: itemWidth / 4),
                   child: Row(
@@ -611,32 +619,64 @@ class POSInvoiceState extends State<POSInvoice> with TickerProviderStateMixin {
             child: ListView(
               primary: false,
               shrinkWrap: true,
-              children: <Widget>[
-                catalogItems?.length == 0
-                    ? Padding(
-                        padding: const EdgeInsets.only(
-                            top: 180.0, left: 40.0, right: 40.0),
-                        child: AutoSizeText(
-                          _itemFilterController.text.isNotEmpty
-                              ? "No matching items found."
-                              : "No items to display.\nAdd items to this view using the '+' button.",
-                          textAlign: TextAlign.center,
-                          minFontSize: MinFontSize(context).minFontSize,
-                          stepGranularity: 0.1,
-                        ),
-                      )
-                    : ItemsList(
-                        accountModel,
-                        posCatalogBloc,
-                        catalogItems,
-                        (item, avatarKey) => _addItem(posCatalogBloc,
-                            currentSale, accountModel, item, avatarKey))
-              ],
+              children: catalogItems?.length == 0
+                  ? _emptyCatalog()
+                  : _filledCatalog(
+                      accountModel,
+                      posCatalogBloc,
+                      catalogItems,
+                      currentSale,
+                    ),
             ),
           ),
         ),
       ],
     );
+  }
+
+  List<Widget> _emptyCatalog() {
+    return [
+      Padding(
+        padding: const EdgeInsets.only(
+          top: 180.0,
+          left: 40.0,
+          right: 40.0,
+        ),
+        child: AutoSizeText(
+          _itemFilterController.text.isNotEmpty
+              ? "No matching items found."
+              : "No items to display.\nAdd items to this view using the '+' button.",
+          textAlign: TextAlign.center,
+          minFontSize: MinFontSize(context).minFontSize,
+          stepGranularity: 0.1,
+        ),
+      ),
+    ];
+  }
+
+  List<Widget> _filledCatalog(
+    AccountModel accountModel,
+    PosCatalogBloc posCatalogBloc,
+    List<Item> catalogItems,
+    Sale currentSale,
+  ) {
+    return [
+      ItemsList(
+        accountModel,
+        posCatalogBloc,
+        catalogItems,
+        (item, avatarKey) => _addItem(
+          posCatalogBloc,
+          currentSale,
+          accountModel,
+          item,
+          avatarKey,
+        ),
+      ),
+      Container(
+        height: 80.0,
+      )
+    ];
   }
 
   onInvoiceSubmitted(Sale currentSale, InvoiceBloc invoiceBloc,
@@ -779,7 +819,6 @@ class POSInvoiceState extends State<POSInvoice> with TickerProviderStateMixin {
               PaymentInfo paymentInfo = await _findPayment(payReq.paymentHash);
               PrintParameters printParameters = PrintParameters(
                 currentUser: user,
-                currentCurrency: currentCurrency,
                 account: account,
                 submittedSale: submittedSale,
                 paymentInfo: paymentInfo,

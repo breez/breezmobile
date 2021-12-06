@@ -21,9 +21,7 @@ class GenerateBackupPhrasePage extends StatefulWidget {
 
 class GenerateBackupPhrasePageState extends State<GenerateBackupPhrasePage> {
   AutoSizeGroup _autoSizeGroup = AutoSizeGroup();
-  PageController _pageController = PageController();
   List<String> _mnemonicsList;
-  int _currentPage;
 
   @override
   Widget build(BuildContext context) {
@@ -39,23 +37,12 @@ class GenerateBackupPhrasePageState extends State<GenerateBackupPhrasePage> {
               onPressed: () => _onWillPop(context),
             ),
             title: AutoSizeText(
-              "Write these words ($_currentPage/2)",
+              "Write these words",
               style: Theme.of(context).appBarTheme.textTheme.headline6,
               maxLines: 1,
             ),
             elevation: 0.0),
-        body: PageView(
-          controller: _pageController,
-          children: <Widget>[
-            _buildMnemonicSeedList(0),
-            _buildMnemonicSeedList(1)
-          ],
-          onPageChanged: (page) {
-            setState(() {
-              _currentPage = page + 1;
-            });
-          },
-        ),
+        body: _buildMnemonicSeedList(0),
         bottomNavigationBar: _buildNextBtn(),
       ),
     );
@@ -64,8 +51,6 @@ class GenerateBackupPhrasePageState extends State<GenerateBackupPhrasePage> {
   @override
   void initState() {
     _mnemonicsList = widget.mnemonics.split(" ");
-    _currentPage =
-        _pageController.hasClients ? _pageController.page.toInt() + 1 : 1;
     super.initState();
   }
 
@@ -122,44 +107,20 @@ class GenerateBackupPhrasePageState extends State<GenerateBackupPhrasePage> {
     return SingleButtonBottomBar(
       text: "NEXT",
       onPressed: () {
-        if (_currentPage == 2) {
-          Navigator.push(
-            context,
-            FadeInRoute(
-              builder: (_) => withBreezTheme(
-                context,
-                VerifyBackupPhrasePage(widget.mnemonics),
-              ),
+        Navigator.push(
+          context,
+          FadeInRoute(
+            builder: (_) => withBreezTheme(
+              context,
+              VerifyBackupPhrasePage(widget.mnemonics),
             ),
-          );
-        } else {
-          _pageController
-              .nextPage(
-                  duration: Duration(milliseconds: 400),
-                  curve: Curves.easeInOut)
-              .whenComplete(() {
-            setState(() {
-              _currentPage = _pageController.page.toInt() + 1;
-            });
-          });
-        }
+          ),
+        );
       },
     );
   }
 
   _onWillPop(BuildContext context) {
-    if (_currentPage == 1) {
-      Navigator.popUntil(context, ModalRoute.withName("/security"));
-    } else {
-      _pageController
-          .previousPage(
-              duration: const Duration(milliseconds: 400),
-              curve: Curves.easeInOut)
-          .whenComplete(() {
-        setState(() {
-          _currentPage = _pageController.page.toInt() + 1;
-        });
-      });
-    }
+    Navigator.popUntil(context, ModalRoute.withName("/security"));
   }
 }

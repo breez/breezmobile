@@ -55,7 +55,13 @@ class CompactQRImage extends StatelessWidget {
     return QrImage(
       backgroundColor: Colors.white,
       version: _calculateVersion(),
-      data: data,
+      /*
+         Bech32 addresses consisting of uppercase and digits results in more compact QR codes.
+         NB. If we ever generate BIP21 URI's that have query parameters, this will have to be fixed so that
+         we will not change the case of the parameters because BIP21 parameters are case sensitive.
+         Ref. https://bitcoinops.org/en/bech32-sending-support/#creating-more-efficient-qr-codes-with-bech32-addresses
+      */
+      data: data?.toUpperCase(),
       size: this.size,
     );
   }

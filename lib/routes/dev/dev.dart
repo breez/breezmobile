@@ -45,7 +45,8 @@ class Choice {
 
 final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
-class DevView extends StatefulWidget { // ignore: must_be_immutable
+class DevView extends StatefulWidget {
+  // ignore: must_be_immutable
   BreezBridge _breezBridge;
   Permissions _permissionsService;
 
@@ -278,19 +279,22 @@ class DevViewState extends State<DevView> {
                                                                     .device
                                                                     .setClipboardText(
                                                                         _cliText);
-                                                                ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                                                                ScaffoldMessenger.of(
+                                                                        context)
+                                                                    .showSnackBar(
+                                                                        SnackBar(
                                                                   content: Text(
                                                                     'Copied to clipboard.',
                                                                     style: theme
                                                                         .snackBarStyle,
                                                                   ),
                                                                   backgroundColor:
-                                                                  theme
-                                                                      .snackBarBackgroundColor,
+                                                                      theme
+                                                                          .snackBarBackgroundColor,
                                                                   duration:
-                                                                  Duration(
-                                                                      seconds:
-                                                                      2),
+                                                                      Duration(
+                                                                          seconds:
+                                                                              2),
                                                                 ));
                                                               },
                                                             ),
@@ -470,6 +474,10 @@ class DevViewState extends State<DevView> {
           UserProfileBloc bloc = AppBlocsProvider.of<UserProfileBloc>(context);
           bloc.userActionsSink.add(SetSeenPaymentStripTutorial(false));
         }));
+    choices.add(Choice(
+        title: 'Log cache usage',
+        icon: Icons.phone_android,
+        function: _printCacheUsage));
     return choices;
   }
 
@@ -556,6 +564,28 @@ class DevViewState extends State<DevView> {
     widget._breezBridge.deleteGraph().whenComplete(() {
       Navigator.pop(context);
       _promptForRestart();
+    });
+  }
+
+  void _printCacheUsage() async {
+    Directory tempDir = await getTemporaryDirectory();
+    var stats = await tempDir.stat();
+    log.info("temp dir size = ${stats.size / 1024}kb");
+    var children = tempDir.listSync();
+    children.forEach((child) async {
+      var childStats = await child.stat();
+      var idDir = (child is Directory);
+      log.info(
+          '${idDir ? "Directory - " : "File - "} path: ${child.path}: ${childStats.size / 1024}kb');
+      if (child is Directory) {
+        var secondLevelChildren = child.listSync();
+        secondLevelChildren.forEach((secondLevelChild) async {
+          var idChildDir = (secondLevelChild is Directory);
+          var secondLevelChildStats = await secondLevelChild.stat();
+          log.info(
+              "\t${idChildDir ? "Directory - " : "File - "} path: ${secondLevelChild.path}: ${secondLevelChildStats.size / 1024}kb");
+        });
+      }
     });
   }
 

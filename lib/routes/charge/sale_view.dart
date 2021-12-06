@@ -129,7 +129,7 @@ class SaleViewState extends State<SaleView> {
               leading: backBtn.BackButton(),
               title: Text(title),
               actions: widget.readOnly
-                  ? _buildPrintIcon(accModel, saleCurrency)
+                  ? _buildPrintIcon(accModel)
                   : <Widget>[
                       IconButton(
                         icon: Icon(
@@ -242,7 +242,7 @@ class SaleViewState extends State<SaleView> {
         });
   }
 
-  _buildPrintIcon(AccountModel account, CurrencyWrapper saleCurrency) {
+  _buildPrintIcon(AccountModel account) {
     UserProfileBloc userBloc = AppBlocsProvider.of<UserProfileBloc>(context);
     return <Widget>[
       StreamBuilder<BreezUserModel>(
@@ -268,7 +268,6 @@ class SaleViewState extends State<SaleView> {
                 ),
                 onPressed: () => PrintService(PrintParameters(
                         currentUser: user,
-                        currentCurrency: saleCurrency,
                         account: account,
                         submittedSale: widget.readOnlySale,
                         paymentInfo: widget.salePayment))
@@ -300,17 +299,13 @@ class _TotalSaleCharge extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    var totalAmount =
-        currentSale.totalChargeSat / saleCurrency.satConversionRate;
-
     return ElevatedButton(
       style: ElevatedButton.styleFrom(
         primary: Theme.of(context).primaryColorLight,
         padding: EdgeInsets.only(top: 14.0, bottom: 14.0),
       ),
       child: Text(
-        "${readOnly ? '' : 'Charge '}${saleCurrency.format(totalAmount)} ${saleCurrency.shortName}"
-            .toUpperCase(),
+        _title(),
         maxLines: 1,
         textAlign: TextAlign.center,
         style: theme.invoiceChargeAmountStyle,
@@ -323,6 +318,39 @@ class _TotalSaleCharge extends StatelessWidget {
         }
       },
     );
+  }
+
+  String _title() {
+    final totalAmountInSats = currentSale.totalAmountInSats;
+    final totalAmountInFiat = currentSale.totalAmountInFiat;
+
+    final satCurrency = CurrencyWrapper.fromBTC(Currency.SAT);
+    final satMessage = satCurrency.format(
+      totalAmountInSats,
+      removeTrailingZeros: true,
+      includeDisplayName: true,
+    );
+
+    String title = readOnly ? '' : 'Charge';
+    title = "$title $satMessage";
+    if (totalAmountInFiat.length == 1) {
+      final currency = totalAmountInFiat.entries.first.key;
+      final total = totalAmountInFiat.entries.first.value;
+      if (currency != satCurrency.shortName) {
+        CurrencyWrapper saleCurrency = CurrencyWrapper.fromShortName(
+          currency,
+          accountModel,
+        );
+        final fiatTotalMsg = saleCurrency.format(
+          total,
+          removeTrailingZeros: true,
+          includeCurrencySymbol: true,
+        );
+        title = "$title ($fiatTotalMsg)";
+      }
+    }
+    title = title.toUpperCase();
+    return title;
   }
 }
 
@@ -501,8 +529,8 @@ class CurrencyDisplay extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    double priceInFiat = saleLine.pricePerItem * saleLine.quantity;
-    double priceInSats = currency.satConversionRate * priceInFiat;
+    double priceInFiat = saleLine.totalFiat;
+    double priceInSats = saleLine.totalSats;
     String priceInSaleCurrency = "";
     if (saleCurrency.symbol != currency.symbol) {
       String salePrice = saleCurrency.format(

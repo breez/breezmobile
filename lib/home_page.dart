@@ -44,6 +44,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:provider/provider.dart';
 
@@ -184,6 +185,7 @@ class HomeState extends State<Home> with WidgetsBindingObserver {
   Widget build(BuildContext context) {
     AddFundsBloc addFundsBloc = BlocProvider.of<AddFundsBloc>(context);
     LSPBloc lspBloc = AppBlocsProvider.of<LSPBloc>(context);
+    final texts = AppLocalizations.of(context);
     return WillPopScope(
       onWillPop: willPopCallback(
         context,
@@ -232,6 +234,7 @@ class HomeState extends State<Home> with WidgetsBindingObserver {
                                             settings,
                                             lspStatus,
                                             vendor,
+                                            texts,
                                           );
                                         });
                                   });
@@ -249,6 +252,7 @@ class HomeState extends State<Home> with WidgetsBindingObserver {
     AccountSettings settings,
     LSPStatus lspStatus,
     List<AddFundVendorModel> vendor,
+    AppLocalizations texts,
   ) {
     final addFundsVendors = _drawerConfigAddFundsVendors(
       context,
@@ -314,6 +318,7 @@ class HomeState extends State<Home> with WidgetsBindingObserver {
                 settings,
                 lspStatus,
                 vendor,
+                texts,
               ),
             ),
             bottomNavigationBar: user.appMode == AppMode.balance
@@ -336,6 +341,7 @@ class HomeState extends State<Home> with WidgetsBindingObserver {
     AccountSettings settings,
     LSPStatus lspStatus,
     List<AddFundVendorModel> vendor,
+    AppLocalizations texts,
   ) {
     return NavigationDrawer(
       true,
@@ -345,11 +351,11 @@ class HomeState extends State<Home> with WidgetsBindingObserver {
           user,
           account.swapFundsStatus.maturedRefundableAddresses,
         ),
-        ..._drawerConfigAppModeItems(context, user),
-        ..._drawerConfigFlavorItems(context, user),
+        ..._drawerConfigAppModeItems(context, user, texts),
+        ..._drawerConfigFlavorItems(context, user, texts),
         DrawerItemConfigGroup(
-          _filterItems(_drawerConfigToFilter(context, user)),
-          groupTitle: "Preferences",
+          _filterItems(_drawerConfigToFilter(context, user, texts)),
+          groupTitle: texts.home_drawer_item_title_preferences,
           groupAssetImage: "",
         ),
       ],
@@ -360,25 +366,26 @@ class HomeState extends State<Home> with WidgetsBindingObserver {
   List<DrawerItemConfig> _drawerConfigToFilter(
     BuildContext context,
     BreezUserModel user,
+    AppLocalizations texts,
   ) {
     return [
       DrawerItemConfig(
         "/fiat_currency",
-        "Fiat Currencies",
+        texts.home_drawer_item_title_fiat_currencies,
         "src/icon/fiat_currencies.png",
       ),
       DrawerItemConfig(
         "/network",
-        "Network",
+        texts.home_drawer_item_title_network,
         "src/icon/network.png",
       ),
       DrawerItemConfig(
         "",
-        "Security & Backup",
+        texts.home_drawer_item_title_security,
         "src/icon/security.png",
         onItemSelected: (_) => protectAdminRoute(context, user, "/security"),
       ),
-      ..._drawerConfigAdvancedFlavorItems(context, user),
+      ..._drawerConfigAdvancedFlavorItems(context, user, texts),
     ];
   }
 
@@ -446,6 +453,7 @@ class HomeState extends State<Home> with WidgetsBindingObserver {
   List<DrawerItemConfigGroup> _drawerConfigFlavorItems(
     BuildContext context,
     BreezUserModel user,
+    AppLocalizations texts,
   ) {
     if (user.appMode == AppMode.pos) {
       return [
@@ -453,7 +461,7 @@ class HomeState extends State<Home> with WidgetsBindingObserver {
           [
             DrawerItemConfig(
               "/transactions",
-              "Transactions",
+              texts.home_drawer_item_title_transactions,
               "src/icon/transactions.png",
             ),
           ],
@@ -466,13 +474,14 @@ class HomeState extends State<Home> with WidgetsBindingObserver {
   List<DrawerItemConfigGroup> _drawerConfigAppModeItems(
     BuildContext context,
     BreezUserModel user,
+    AppLocalizations texts,
   ) {
     return [
-      DrawerItemConfigGroup([_drawerItemBalance(context, user)]),
-      DrawerItemConfigGroup([_drawerItemPodcast(context, user)]),
-      DrawerItemConfigGroup([_drawerItemLounge(context, user)]),
-      DrawerItemConfigGroup([_drawerItemPos(context, user)]),
-      DrawerItemConfigGroup([_drawerItemLightningApps(context, user)]),
+      DrawerItemConfigGroup([_drawerItemBalance(context, user, texts)]),
+      DrawerItemConfigGroup([_drawerItemPodcast(context, user, texts)]),
+      DrawerItemConfigGroup([_drawerItemLounge(context, user, texts)]),
+      DrawerItemConfigGroup([_drawerItemPos(context, user, texts)]),
+      DrawerItemConfigGroup([_drawerItemLightningApps(context, user, texts)]),
       DrawerItemConfigGroup([]),
     ];
   }
@@ -480,10 +489,11 @@ class HomeState extends State<Home> with WidgetsBindingObserver {
   DrawerItemConfig _drawerItemBalance(
     BuildContext context,
     BreezUserModel user,
+    AppLocalizations texts,
   ) {
     return DrawerItemConfig(
       "",
-      "Balance",
+      texts.home_drawer_item_title_balance,
       "src/icon/balance.png",
       isSelected: user.appMode == AppMode.balance,
       onItemSelected: (_) {
@@ -503,10 +513,11 @@ class HomeState extends State<Home> with WidgetsBindingObserver {
   DrawerItemConfig _drawerItemPodcast(
     BuildContext context,
     BreezUserModel user,
+    AppLocalizations texts,
   ) {
     return DrawerItemConfig(
       "",
-      "Podcasts",
+      texts.home_drawer_item_title_podcasts,
       "src/icon/podcast.png",
       isSelected: user.appMode == AppMode.podcasts,
       onItemSelected: (_) {
@@ -524,9 +535,7 @@ class HomeState extends State<Home> with WidgetsBindingObserver {
   }
 
   DrawerItemConfig _drawerItemLounge(
-    BuildContext context,
-    BreezUserModel user,
-  ) {
+      BuildContext context, BreezUserModel user, AppLocalizations texts) {
     return DrawerItemConfig(
       "",
       "Lounge",
@@ -545,10 +554,11 @@ class HomeState extends State<Home> with WidgetsBindingObserver {
   DrawerItemConfig _drawerItemPos(
     BuildContext context,
     BreezUserModel user,
+    AppLocalizations texts,
   ) {
     return DrawerItemConfig(
       "",
-      "Point of Sale",
+      texts.home_drawer_item_title_pos,
       "src/icon/pos.png",
       isSelected: user.appMode == AppMode.pos,
       onItemSelected: (_) {
@@ -560,10 +570,11 @@ class HomeState extends State<Home> with WidgetsBindingObserver {
   DrawerItemConfig _drawerItemLightningApps(
     BuildContext context,
     BreezUserModel user,
+    AppLocalizations texts,
   ) {
     return DrawerItemConfig(
       "",
-      "Apps",
+      texts.home_drawer_item_title_apps,
       "src/icon/apps.png",
       isSelected: user.appMode == AppMode.apps,
       onItemSelected: (_) {
@@ -583,12 +594,13 @@ class HomeState extends State<Home> with WidgetsBindingObserver {
   List<DrawerItemConfig> _drawerConfigAdvancedFlavorItems(
     BuildContext context,
     BreezUserModel user,
+    AppLocalizations texts,
   ) {
     if (user.appMode == AppMode.pos) {
       return [
         DrawerItemConfig(
           "",
-          "POS Settings",
+          texts.home_drawer_item_title_pos_settings,
           "src/icon/settings.png",
           onItemSelected: (_) => protectAdminRoute(context, user, "/settings"),
         ),
@@ -597,7 +609,7 @@ class HomeState extends State<Home> with WidgetsBindingObserver {
       return [
         DrawerItemConfig(
           "/developers",
-          "Developers",
+          texts.home_drawer_item_title_developers,
           "src/icon/developers.png",
         ),
       ];

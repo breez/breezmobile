@@ -1,6 +1,5 @@
 import 'dart:async';
 import 'dart:convert';
-import 'dart:developer';
 import 'dart:io';
 
 import 'package:breez/bloc/account/account_actions.dart';
@@ -8,10 +7,11 @@ import 'package:breez/bloc/account/account_permissions_handler.dart';
 import 'package:breez/bloc/account/fiat_conversion.dart';
 import 'package:breez/bloc/async_action.dart';
 import 'package:breez/bloc/csv_exporter.dart';
+import 'package:breez/bloc/pos_catalog/repository.dart';
 import 'package:breez/bloc/user_profile/breez_user_model.dart';
 import 'package:breez/logger.dart';
-import 'package:breez/services/breez_server/server.dart';
 import 'package:breez/services/background_task.dart';
+import 'package:breez/services/breez_server/server.dart';
 import 'package:breez/services/breezlib/breez_bridge.dart';
 import 'package:breez/services/breezlib/data/rpc.pb.dart';
 import 'package:breez/services/currency_data.dart';
@@ -22,6 +22,7 @@ import 'package:breez/services/notifications.dart';
 import 'package:breez/utils/retry.dart';
 import 'package:collection/collection.dart';
 import 'package:connectivity/connectivity.dart';
+import 'package:flutter/foundation.dart';
 import 'package:rxdart/rxdart.dart';
 
 import 'account_model.dart';
@@ -31,6 +32,8 @@ class AccountBloc {
   static const FORCE_BOOTSTRAP_FILE_NAME = "FORCE_BOOTSTRAP";
   static const String ACCOUNT_SETTINGS_PREFERENCES_KEY = "account_settings";
   static const String PERSISTENT_NODE_ID_PREFERENCES_KEY = "PERSISTENT_NODE_ID";
+
+  Repository _posRepository;
 
   Timer _exchangeRateTimer;
   Map<String, CurrencyData> _currencyData;
@@ -128,8 +131,12 @@ class AccountBloc {
   CurrencyService _currencyService;
   Completer _onBoardingCompleter = Completer();
   Stream<BreezUserModel> userProfileStream;
+  Completer<bool> startDaemonCompleter = Completer<bool>();
 
-  AccountBloc(this.userProfileStream) {
+  AccountBloc(
+    this.userProfileStream,
+    this._posRepository,
+  ) {
     ServiceInjector injector = ServiceInjector();
     _breezServer = injector.breezServer;
     _breezLib = injector.breezBridge;
@@ -163,6 +170,29 @@ class AccountBloc {
     _paymentFilterController.add(PaymentFilterModel.initial());
     _accountSettingsController.add(AccountSettings.start());
 
+    // we start the daemon in either of these two conditions:
+    // 1. If the launch was not done by a background job
+    // 2. if the launch was done by a background job then we wait for resume.
+    startDaemonCompleter.future.then((value) => _start());
+
+    if (defaultTargetPlatform == TargetPlatform.iOS) {
+      _breezLib.launchedByJob().then((job) {
+        log.info("app was launched by job: $job");
+        if (!job) {
+          startDaemonCompleter.complete(true);
+        }
+      });
+      _device.eventStream
+          .where((e) => e == NotificationType.RESUME)
+          .listen((e) {
+        startDaemonCompleter.complete(true);
+      });
+    } else {
+      startDaemonCompleter.complete(true);
+    }
+  }
+
+  void _start() {
     log.info("Account bloc started");
     ServiceInjector().sharedPreferences.then((preferences) {
       _handleRegisterDeviceNode();
@@ -320,11 +350,19 @@ class AccountBloc {
   }
 
   Future _exportPaymentsAction(ExportPayments action) async {
-    List currentPaymentList =
-        _filterPayments(_paymentsController.value.paymentsList);
+    List<PaymentInfo> currentPaymentList = _filterPayments(
+      _paymentsController.value.paymentsList,
+    );
+    List<CsvData> data = [];
+    for (var paymentInfo in currentPaymentList) {
+      final sale = await _posRepository.fetchSaleByPaymentHash(
+        paymentInfo.paymentHash,
+      );
+      data.add(CsvData(paymentInfo, sale));
+    }
     action.resolve(
-        await CsvExporter(currentPaymentList, _paymentFilterController.value)
-            .export());
+      await CsvExporter(data, _paymentFilterController.value).export(),
+    );
   }
 
   Future _handleResetChainService(ResetChainService action) async {

@@ -252,6 +252,34 @@ class PodcastPaymentsBloc with AsyncActionsHandler {
   }
 
   Future<Value> _getLightningPaymentValue(Episode episode) async {
+    // If the episode has a value block parsed from the RSS feed, we'll take that.
+    if (episode.value != null) {
+      ValueModel valueModel = ValueModel.fromJson(episode.value.toMap());
+      List<ValueDestination> valueDestinations = episode.value.recipients
+          .map((r) => ValueDestination.fromJson(r.toMap()))
+          .toList();
+
+      if (valueModel.type == "lightning" && valueModel.method == 'keysend') {
+        return Value._(model: valueModel, recipients: valueDestinations);
+      }
+
+      return null;
+    }
+
+    // Else, we'll check if the episode has a value block defined via the PodcastIndex API.
+    if (episode.episodeMetadata != null &&
+        episode.episodeMetadata["episode"] != null) {
+      final value = episode.episodeMetadata["episode"]["value"];
+      if (value != null && value is Map<String, dynamic>) {
+        final valueObj = Value.fromJson(value);
+        if (valueObj?.model?.type == "lightning" &&
+            valueObj?.model?.method == 'keysend') {
+          return valueObj;
+        }
+      }
+    }
+
+    // Else, we'll take the value block defined for the entire podcast via the PodcastIndex API.
     Map<String, dynamic> metadata;
     if (episode.pguid != null && episode.pguid.isNotEmpty) {
       var podcast = await repository.findPodcastByGuid(episode.pguid);
@@ -310,7 +338,7 @@ class PodcastPaymentsBloc with AsyncActionsHandler {
     tlv["time"] = _formatDuration(position.position);
     tlv["feedID"] = _getPodcastIndexID(episode);
     tlv["app_name"] = "Breez";
-    tlv["value_msat_total"] = msatTotal.toString();
+    tlv["value_msat_total"] = msatTotal;
     if (boost && boostMessage != null) tlv["message"] = boostMessage;
     var encoded = json.encode(tlv);
     var records = Map<Int64, String>();
@@ -332,12 +360,15 @@ class PodcastPaymentsBloc with AsyncActionsHandler {
     return "";
   }
 
-  String _getPodcastIndexID(Episode episode) {
+  int _getPodcastIndexID(Episode episode) {
     final metadata = episode?.metadata;
     if (metadata != null && metadata["feed"] != null) {
-      return metadata["feed"]["id"]?.toString();
+      var id = metadata["feed"]["id"];
+      if (id is int) {
+        return id;
+      }
     }
-    return "";
+    return 0;
   }
 
   String _formatDuration(Duration duration) {

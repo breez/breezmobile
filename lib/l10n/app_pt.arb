@@ -1,0 +1,125 @@
+{
+  "home_drawer_item_title_preferences": "Preferências",
+  "home_drawer_item_title_fiat_currencies": "Moedas fiduciárias",
+  "home_drawer_item_title_network": "Rede",
+  "home_drawer_item_title_security": "Segurança & Backup",
+  "home_drawer_item_title_transactions": "Transações",
+  "home_drawer_item_title_balance": "Carteira",
+  "home_drawer_item_title_podcasts": "Podcasts",
+  "home_drawer_item_title_pos": "Ponto de Venda (PDV)",
+  "home_drawer_item_title_apps": "Apps",
+  "home_drawer_item_title_pos_settings": "Configurações do PDV",
+  "home_drawer_item_title_developers": "Desenvolvedores",
+  "backup_dialog_title": "Backup",
+  "backup_dialog_message_remote_server": "Falha ao salvar arquivos de backup no servidor remoto. Por favor, revise suas configurações e tente novamente.",
+  "backup_dialog_message_default": "Se você deseja restaurar seus fundos caso este dispositivo móvel ou aplicativo não esteja mais disponível (por exemplo, dispositivo perdido ou roubado ou desinstalação de aplicativo), você deve fazer o backup de suas informações.",
+  "backup_dialog_do_not_prompt_again": "Não perguntar novamente",
+  "backup_dialog_option_cancel": "DEPOIS",
+  "backup_dialog_option_ok_remote_server": "CONFIGURAÇÕES",
+  "backup_dialog_option_ok_default": "FAZER BACKUP AGORA",
+  "backup_dialog_icloud_error_title": "Entrar no iCloud",
+  "backup_dialog_icloud_error_message": "Entre em sua conta do iCloud. Na tela inicial, abra Ajustes, toque em iCloud e digite seu ID Apple. Ligue o iCloud Drive. Se você não tiver uma conta iCloud, toque em Criar um novo ID Apple.",
+  "tutorial_gotcha": "Entendi!",
+  "bottom_action_bar_send": "ENVIAR",
+  "bottom_action_bar_receive": "RECEBER",
+  "bottom_action_bar_paste_invoice": "Colar fatura ou ID",
+  "bottom_action_bar_connect_to_pay": "Conectar para pagar",
+  "bottom_action_bar_send_btc_address": "Enviar para endereço BTC",
+  "bottom_action_bar_escher": "Saque via Escher",
+  "bottom_action_bar_receive_invoice": "Receber via Fatura",
+  "bottom_action_bar_receive_btc_address": "Receber via endereço BTC",
+  "bottom_action_bar_buy_bitcoin": "Comprar Bitcoin",
+  "bottom_action_bar_warning_balance_title": "Breez requer que você mantenha ao menos {balance} de saldo.",
+  "@bottom_action_bar_warning_balance_title": {
+    "placeholders": {
+      "balance": {
+        "type": "String",
+        "example": "1.23456789"
+      }
+    }
+  },
+  "payment_details_dialog_closed_channel_title": "Canal encerrado",
+  "payment_details_dialog_closed_channel_title_pending": "Canal em encerramento",
+  "payment_details_dialog_closed_channel_ok": "OK",
+  "payment_details_dialog_closed_channel_local_wallet": "Transferência para uma carteira local devido ao encerramento do canal",
+  "payment_details_dialog_closed_channel_about_hour": "aproximadamente em uma hora",
+  "payment_details_dialog_closed_channel_about_hours": "aproximadamente em {hours} horas",
+  "@payment_details_dialog_closed_channel_about_hours": {
+    "placeholders": {
+      "hours": {
+        "type": "String",
+        "example": "2"
+      }
+    }
+  },
+  "payment_details_dialog_closed_channel_transfer_no_estimation": "Esperando os fundos do canal encerrado serem transferidos para a sua carteira local",
+  "payment_details_dialog_closed_channel_transfer_estimation": "Esperando os fundos do canal encerrado serem transferidos para a sua carteira local no bloco ${lockHeight} (${hoursToUnlock})",
+  "@payment_details_dialog_closed_channel_transfer_estimation": {
+    "placeholders": {
+      "lockHeight": {
+        "type": "String",
+        "example": "12345"
+      },
+      "hoursToUnlock": {
+        "type": "String",
+        "example": "aproximadamente em uma hora"
+      }
+    }
+  },
+  "payment_details_dialog_transaction_id_copied": "O ID da transação foi copiado para a área de transferência.",
+  "payment_details_dialog_restart_text": "Por favor, reinicie o Breez para limpar as informações para este canal.",
+  "payment_details_dialog_restart_cancel": "CANCELAR",
+  "payment_details_dialog_restart_exit_breez": "SAIR DO BREEZ",
+  "payment_details_dialog_transaction_label_default": "ID da Transação:",
+  "payment_details_dialog_internal_error": "Erro Interno",
+  "payment_details_dialog_refresh_information": "Atualizar Informação",
+  "payment_details_dialog_share_transaction": "Compartilhar o hash da transação",
+  "payment_details_dialog_share_lightning_address": "Endereço Relâmpago",
+  "payment_details_dialog_share_comment": "Comentário",
+  "payment_details_dialog_copy_action": "Copiar {title}",
+  "@payment_details_dialog_copy_action": {
+    "placeholders": {
+      "title": {
+        "type": "String",
+        "example": "Pré-imagem de pagamento"
+      }
+    }
+  },
+  "payment_details_dialog_copied": "{title} foi copiado para a sua área de transferência.",
+  "@payment_details_dialog_copied": {
+    "placeholders": {
+      "title": {
+        "type": "String",
+        "example": "Pré-imagem de pagamento"
+      }
+    }
+  },
+  "payment_details_dialog_single_info_pre_image": "Pré-imagem de pagamento",
+  "payment_details_dialog_single_info_node_id": "ID do Nó",
+  "payment_details_dialog_single_info_on_chain": "Transação On-chain",
+  "payment_details_dialog_action_for_payment_description": "Descrição",
+  "payment_details_dialog_action_for_payment_url": "URL",
+  "payment_details_dialog_action_for_payment_message": "Mensagem",
+  "payment_details_dialog_expiration": "Vencimento",
+  "payment_details_dialog_date_and_time": "Data & Hora",
+  "payment_details_dialog_amount_title": "Quantidade",
+  "payment_details_dialog_amount_negative": "-{amount}",
+  "@payment_details_dialog_amount_negative": {
+    "placeholders": {
+      "amount": {
+        "type": "String",
+        "example": "1000 sats"
+      }
+    }
+  },
+  "payment_details_dialog_amount_positive": "+{amount}",
+  "@payment_details_dialog_amount_positive": {
+    "placeholders": {
+      "amount": {
+        "type": "String",
+        "example": "1000 sats"
+      }
+    }
+  },
+  "app_name": "Breez"
+}
