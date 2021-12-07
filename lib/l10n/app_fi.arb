@@ -121,5 +121,7 @@
       }
     }
   },
+  "pos_invoice_tab_keypad": "Näppäimistö",
+  "pos_invoice_tab_items": "Tuotteet",
   "app_name": "Breez"
 }

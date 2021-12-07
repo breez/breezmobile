@@ -121,5 +121,7 @@
       }
     }
   },
+  "pos_invoice_tab_keypad": "Teclado",
+  "pos_invoice_tab_items": "Itens",
   "app_name": "Breez"
 }
