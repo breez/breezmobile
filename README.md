@@ -100,10 +100,7 @@ Check our [active bounties](https://github.com/breez/breezmobile/wiki/Bounties).
 - Create a firebase iOS app using the [firebase console](https://console.firebase.google.com/)
 - Generate the GoogleServices-info.plist and copy it to ios/Runner directory
 - Run `pod install` from `breezmobile/ios`
-3. Flutter stable channel
-- Install [flutter](https://flutter.dev/docs/get-started/install)
-Run these command:
-- flutter upgrade
+3. Install flutter 2.2.3 
 
 ## Run
 Now you can use the following commands to run in a connected device the client app or the pos or to build the corresponding apks:
