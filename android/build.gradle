@@ -1,3 +1,15 @@
+def mavenProperties = new Properties()
+def mavenPropertiesFile = rootProject.file('maven.properties')
+if (mavenPropertiesFile.exists()) {
+    mavenPropertiesFile.withReader('UTF-8') { reader ->
+        mavenProperties.load(reader)
+    }
+}
+def mavenRepository = mavenProperties.getProperty('maven.repository')
+if (mavenRepository == null) {
+    mavenRepository = 'file:/tmp/repo'
+}
+
 buildscript {
     repositories {        
         google()        
@@ -13,7 +25,7 @@ buildscript {
 allprojects {
     repositories {
         google()
-        maven { url "file:/tmp/repo" }
+        maven { url mavenRepository }
         mavenCentral()        
         flatDir {
             dirs 'libs'
