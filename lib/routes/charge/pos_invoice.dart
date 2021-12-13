@@ -29,9 +29,11 @@ import 'package:breez/widgets/flushbar.dart';
 import 'package:breez/widgets/loader.dart';
 import 'package:breez/widgets/print_parameters.dart';
 import 'package:breez/widgets/transparent_page_route.dart';
+import 'package:breez/widgets/view_switch.dart';
 import 'package:fixnum/fixnum.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import '../sync_progress_dialog.dart';
 import 'items/item_avatar.dart';
@@ -461,92 +463,26 @@ class POSInvoiceState extends State<POSInvoice> with TickerProviderStateMixin {
   }
 
   Widget _buildViewSwitch(BuildContext context) {
-    // This method is a work-around to center align the buttons
-    // Use Align to stick items to center and set padding to give equal distance
-    return Row(
-      mainAxisSize: MainAxisSize.max,
-      children: <Widget>[
-        Flexible(
-          flex: 1,
-          child: Align(
-            alignment: Alignment.centerRight,
-            child: GestureDetector(
-                behavior: HitTestBehavior.translucent,
-                onTap: () => AppBlocsProvider.of<PosCatalogBloc>(context)
-                    .actionsSink
-                    .add(UpdatePosSelectedTab("KEYPAD")),
-                child: Padding(
-                  padding: EdgeInsets.only(right: itemWidth / 4),
-                  child: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: <Widget>[
-                      Padding(
-                        padding: const EdgeInsets.only(right: 8.0),
-                        child: Icon(Icons.dialpad,
-                            color: Theme.of(context)
-                                .primaryTextTheme
-                                .button
-                                .color
-                                .withOpacity(_isKeypadView ? 1 : 0.5)),
-                      ),
-                      Text(
-                        "Keypad",
-                        style: Theme.of(context).textTheme.button.copyWith(
-                            color: Theme.of(context)
-                                .textTheme
-                                .button
-                                .color
-                                .withOpacity(_isKeypadView ? 1 : 0.5)),
-                      )
-                    ],
-                  ),
-                )),
-          ),
+    final themeData = Theme.of(context);
+    final texts = AppLocalizations.of(context);
+    return ViewSwitch(
+      selected: _isKeypadView ? 0 : 1,
+      tint: themeData.primaryTextTheme.button.color,
+      textTint: themeData.textTheme.button.color,
+      items: [
+        ViewSwitchItem(
+          texts.pos_invoice_tab_keypad,
+          () => AppBlocsProvider.of<PosCatalogBloc>(context)
+              .actionsSink
+              .add(UpdatePosSelectedTab("KEYPAD")),
+          iconData: Icons.dialpad,
         ),
-        Container(
-          height: 20,
-          child: VerticalDivider(
-            color: Theme.of(context).primaryTextTheme.button.color,
-          ),
-        ),
-        Flexible(
-          flex: 1,
-          child: Align(
-            alignment: Alignment.centerLeft,
-            child: GestureDetector(
-                behavior: HitTestBehavior.translucent,
-                onTap: () => AppBlocsProvider.of<PosCatalogBloc>(context)
-                    .actionsSink
-                    .add(UpdatePosSelectedTab("ITEMS")),
-                child: Padding(
-                  padding: EdgeInsets.only(left: itemWidth / 4),
-                  child: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: <Widget>[
-                      Padding(
-                        padding: const EdgeInsets.only(right: 8.0),
-                        child: Icon(Icons.playlist_add,
-                            color: Theme.of(context)
-                                .primaryTextTheme
-                                .button
-                                .color
-                                .withOpacity(!_isKeypadView ? 1 : 0.5)),
-                      ),
-                      Text(
-                        "Items",
-                        style: Theme.of(context).textTheme.button.copyWith(
-                            color: Theme.of(context)
-                                .textTheme
-                                .button
-                                .color
-                                .withOpacity(!_isKeypadView ? 1 : 0.5)),
-                      )
-                    ],
-                  ),
-                )),
-          ),
+        ViewSwitchItem(
+          texts.pos_invoice_tab_items,
+          () => AppBlocsProvider.of<PosCatalogBloc>(context)
+              .actionsSink
+              .add(UpdatePosSelectedTab("ITEMS")),
+          iconData: Icons.playlist_add,
         ),
       ],
     );
