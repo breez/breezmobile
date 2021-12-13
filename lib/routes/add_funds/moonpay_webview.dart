@@ -29,12 +29,6 @@ class MoonpayWebViewState extends State<MoonpayWebView> {
   bool _isInit = false;
 
   @override
-  void initState() {
-    super.initState();
-    if (Platform.isAndroid) WebView.platform = SurfaceAndroidWebView();
-  }
-
-  @override
   void didChangeDependencies() {
     if (!_isInit) {
       _addFundsBloc = BlocProvider.of<AddFundsBloc>(context);

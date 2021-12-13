@@ -2,6 +2,8 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import 'dart:io';
+
 import 'package:anytime/api/podcast/podcast_api.dart';
 import 'package:anytime/core/environment.dart';
 import 'package:flutter/foundation.dart';
@@ -10,6 +12,8 @@ import 'package:podcast_search/podcast_search.dart';
 /// An implementation of the PodcastApi. A simple wrapper class that
 /// interacts with the iTunes search API via the podcast_search package.
 class PodcastIndexAPI extends PodcastApi {
+  SecurityContext _defaultSecurityContext;
+  List<int> _certificateAuthorityBytes = [];
   final Search api = Search();
   // static String userAgent =
   //     'Anytime/${AnytimePodcastApp.applicationVersion} (https://github.com/amugofjava/anytime_podcast_player)';
@@ -80,5 +84,13 @@ class PodcastIndexAPI extends PodcastApi {
   @override
   Future<Chapters> loadChapters(String url) {
     return Podcast.loadChaptersByUrl(url: url);
+  }
+
+  @override
+  void addClientAuthorityBytes(List<int> certificateAuthorityBytes) {
+    if (_certificateAuthorityBytes.isNotEmpty && _defaultSecurityContext == null) {
+      SecurityContext.defaultContext.setTrustedCertificatesBytes(_certificateAuthorityBytes);
+      _defaultSecurityContext = SecurityContext.defaultContext;
+    }
   }
 }

@@ -9,63 +9,61 @@ dependencies:
 
   app_settings: ^4.1.1
   archive: ^3.1.6
-  auto_size_text: ^2.1.0 # TODO Version 3 with anytime player update needed
-  badges: ^2.0.1
+  auto_size_text: ^3.0.0
+  badges: ^2.0.2
   bip39: ^1.0.6
   collection: ^1.15.0
   confetti: ^0.6.0
   connectivity: ^3.0.6
   crypto: ^3.0.1
-  csv: ^5.0.0
-  dio: ^4.0.0 # TODO Version 4.0.1 with firebase_core update needed
-  drag_and_drop_lists: 0.3.2+1 # TODO Version 0.3.2+2 with dart upgrade needed
+  csv: ^5.0.1
+  dio: ^4.0.4
+  drag_and_drop_lists: 0.3.2+2
   duration: ^3.0.8
   email_validator: ^2.0.1
-  extended_image: ^4.2.1 # TODO Version 5 with breaking changes
-  file_picker: ^3.0.1 # TODO version 4 with breaking changes or version 3.0.2 with firebase_core update needed
-  firebase_core: 0.4.2 # TODO version 1 with breaking changes
-                       # or version 0.4.5 with uni_links update needed, (uni_links has not update the platform interface yet)
-                       # or version 0.4.3 with dio update needed
-  firebase_database: ^3.1.6 # TODO version 5 with breaking changes or version 4 with firebase_core update needed
-  firebase_dynamic_links: ^0.5.3 # TODO version 1 with breaking changes or version 0.6 with firebase_core update needed
-  firebase_messaging: ^5.1.8 # TODO version 6 with breaking changes
+  extended_image: ^6.0.1
+  file_picker: ^4.2.7
+  firebase_core: ^1.10.5
+  firebase_database: ^9.0.3
+  firebase_dynamic_links: ^4.0.2
+  firebase_messaging: ^11.2.3
   flushbar: ^1.10.4
-  flutter_secure_storage: ^4.2.1
-  flutter_svg: ^0.22.0 # TODO version 0.23 with breaking changes
-  flutter_web_browser: ^0.15.0
+  flutter_secure_storage: ^5.0.2
+  flutter_svg: ^1.0.0
+  flutter_web_browser: ^0.16.0
   grpc: ^3.0.2
   hex: ^0.2.0
-  image: ^3.0.8
+  image: ^3.1.0
   image_cropper: ^1.4.1
-  image_picker: ^0.7.5+4 # TODO version 0.8 with breaking changes
+  image_picker: ^0.8.4+4
   ini: ^2.1.0
   intl: ^0.17.0
-  json_annotation: ^4.0.1 # TODO version 4.2 with json_serializable update needed
+  json_annotation: ^4.4.0
   logging: ^1.0.2
   nfc_in_flutter: ^2.0.5
   package_info: ^2.0.2
-  path_provider: ^2.0.4 # TODO version 2.0.6 with dart upgrade needed
-  printing: ^5.5.0 # TODO version 5.6 with dart upgrade needed
-  protobuf: ^2.0.0
+  path_provider: ^2.0.8
+  printing: ^5.6.0
+  protobuf: ^2.0.1
   qr_code_scanner: ^0.6.1
   qr_code_tools: ^0.0.7
   qr_flutter: ^4.0.0
-  rxdart: ^0.26.0 # TODO version 0.27 with breaking changes
-  shared_preferences: ^2.0.7 # TODO version 2.0.8 with dart upgrade needed
-  simple_animations: ^1.3.12 # TODO version 2 with breaking changes
-  sqflite: ^2.0.0+4
+  rxdart: ^0.27.3
+  shared_preferences: ^2.0.11
+  simple_animations: ^1.3.12
+  sqflite: ^2.0.1
   timeago: ^3.1.0
-  tutorial_coach_mark: ^1.1.1
+  tutorial_coach_mark: ^1.2.0
   uni_links: ^0.5.1
-  url_launcher: ^6.0.10 # TODO version 6.0.11 with dart upgrade needed
+  url_launcher: ^6.0.17
   validators: ^3.0.0
   webdav_client: ^1.1.2
-  webview_flutter: ^2.0.13 # TODO version 2.1 with dart upgrade needed
+  webview_flutter: ^3.0.0
 
   anytime:
     git:
       url: https://github.com/breez/anytime_podcast_player.git
-      ref: b26948955356d717c47eab04fd9a763cf7e9a0b9
+      ref: 0755fdb #TODO: Merge audio_service changes and update overlapping plugins on anytime
   flutter_typeahead:
     git:
       url: https://github.com/breez/flutter_typeahead.git
@@ -79,7 +77,11 @@ dependencies:
       url: https://github.com/breez/ShareExtend.git
 
 dependency_overrides:
-  audio_service: ^0.17.1
+  webview_flutter: ^2.0.4
+  flutter_svg: ^0.22.0
+  extended_image: ^5.1.3
+  file_picker: ^4.2.5
+  rxdart: ^0.27.3
   platform: ^3.0.0
   flutter_downloader:
     git:
@@ -87,14 +89,14 @@ dependency_overrides:
   podcast_search:
     git:
       url: https://github.com/breez/podcast_search.git
-      ref: 5e867e794261da9b35331261c52ba4d380894a80
+      ref: 40a7709
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
-  build_runner: ^2.1.2 # TODO version 2.1.3 with dart upgrade needed
-  json_serializable: ^4.1.3 # TODO version 5 with breaking changes
-  mockito: ^5.0.15 # TODO version 5.0.16 with json_serializable upgrade needed
+  build_runner: ^2.1.5
+  json_serializable: ^6.1.1
+  mockito: ^5.0.16
   sqflite_common_ffi: ^2.1.0
   test: any
 
