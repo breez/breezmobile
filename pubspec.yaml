@@ -65,7 +65,7 @@ dependencies:
   anytime:
     git:
       url: https://github.com/breez/anytime_podcast_player.git
-      ref: b26948955356d717c47eab04fd9a763cf7e9a0b9
+      ref: ecaed90
   flutter_typeahead:
     git:
       url: https://github.com/breez/flutter_typeahead.git
@@ -79,7 +79,10 @@ dependencies:
       url: https://github.com/breez/ShareExtend.git
 
 dependency_overrides:
-  audio_service: ^0.17.1
+  rxdart: ^0.27.3
+  file_picker: ^4.2.5
+  extended_image: ^6.0.1
+  auto_size_text: ^3.0.0
   platform: ^3.0.0
   flutter_downloader:
     git:
@@ -87,7 +90,7 @@ dependency_overrides:
   podcast_search:
     git:
       url: https://github.com/breez/podcast_search.git
-      ref: 5e867e794261da9b35331261c52ba4d380894a80
+      ref: 40a7709
 
 dev_dependencies:
   flutter_test:
