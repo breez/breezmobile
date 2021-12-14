@@ -18,10 +18,9 @@ class FirebaseNotifications implements Notifications {
       _notificationController.stream;
 
   FirebaseNotifications() {
-    _firebaseMessaging = FirebaseMessaging.instance;
-    FirebaseMessaging.onMessage.listen((event) => _onMessage(event.data));
-    FirebaseMessaging.onMessageOpenedApp
-        .listen((event) => _onResume(event.data));
+    _firebaseMessaging = FirebaseMessaging();
+    _firebaseMessaging.configure(
+        onMessage: _onMessage, onResume: _onResume, onLaunch: _onResume);
   }
 
   Future<dynamic> _onMessage(Map<String, dynamic> message) {
@@ -44,7 +43,8 @@ class FirebaseNotifications implements Notifications {
 
   @override
   Future<String> getToken() {
-    _firebaseMessaging.requestPermission(sound: true, badge: true, alert: true);
+    _firebaseMessaging.requestNotificationPermissions(
+        const IosNotificationSettings(sound: true, badge: true, alert: true));
     return _firebaseMessaging.getToken();
   }
 }

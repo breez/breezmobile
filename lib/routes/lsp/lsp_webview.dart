@@ -24,6 +24,12 @@ class LSPWebViewPageState extends State<LSPWebViewPage> {
   WebViewController _webViewController;
 
   @override
+  void initState() {
+    super.initState();
+    if (Platform.isAndroid) WebView.platform = SurfaceAndroidWebView();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(

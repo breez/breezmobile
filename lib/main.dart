@@ -8,7 +8,6 @@ import 'package:anytime/ui/podcast/podcast_details.dart';
 import 'package:anytime/ui/widgets/episode_tile.dart';
 import 'package:anytime/ui/widgets/placeholder_builder.dart';
 import 'package:breez/utils/date.dart';
-import 'package:firebase_core/firebase_core.dart';
 import 'package:provider/provider.dart';
 import 'package:anytime/services/settings/mobile_settings_service.dart';
 import 'package:breez/bloc/app_blocs.dart';
@@ -28,7 +27,6 @@ import 'bloc/user_profile/user_profile_bloc.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp(); // TODO: Add name and options
   BreezLogger();
   SystemChrome.setPreferredOrientations(
       [DeviceOrientation.portraitUp, DeviceOrientation.portraitDown]);

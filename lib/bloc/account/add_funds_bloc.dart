@@ -97,7 +97,7 @@ class AddFundsBloc extends Bloc {
   }
 
   Future _populateAvailableVendors() async {
-    var pendingMoonpayOrder = _completedMoonpayOrderController.valueOrNull;
+    var pendingMoonpayOrder = _completedMoonpayOrderController.value;
     bool hasPendingOrder = false;
     if (pendingMoonpayOrder != null) {
       Duration timePending = DateTime.now().difference(
@@ -228,7 +228,7 @@ class AddFundsBloc extends Bloc {
         var allAddresses = fundsStatus.unConfirmedAddresses.toList()
           ..addAll(fundsStatus.confirmedAddresses);
         if (allAddresses
-            .contains(_completedMoonpayOrderController.valueOrNull?.address)) {
+            .contains(_completedMoonpayOrderController.value?.address)) {
           preferences.remove(PENDING_MOONPAY_ORDER_KEY);
           _completedMoonpayOrderController.add(null);
         }

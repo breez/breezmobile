@@ -35,6 +35,12 @@ class VendorWebViewPageState extends State<VendorWebViewPage> {
   WebViewController _webViewController;
 
   @override
+  void initState() {
+    super.initState();
+    if (Platform.isAndroid) WebView.platform = SurfaceAndroidWebView();
+  }
+
+  @override
   void didChangeDependencies() {
     if (!_isInit) {
       _invoiceBloc = AppBlocsProvider.of<InvoiceBloc>(context);

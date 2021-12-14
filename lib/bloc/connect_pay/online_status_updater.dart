@@ -32,12 +32,12 @@ class OnlineStatusUpdater {
     });
 
     _onRemoteConnectSubscription = FirebaseDatabase.instance
-        .ref()
+        .reference()
         .child(remoteKey)
         .onValue
         .listen((event) {
       var connected =
-          event.snapshot.value != null && event.snapshot.child("online").value;
+          event.snapshot.value != null && event.snapshot.value["online"];
       onRemoteStatusChanged(
           PeerStatus(connected, DateTime.now().millisecondsSinceEpoch));
     });
