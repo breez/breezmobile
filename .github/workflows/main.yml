@@ -64,7 +64,7 @@ jobs:
           PATH=$PATH:$GOPATH/bin gomobile bind -iosversion=12.4 -target=ios -tags="ios experimental signrpc walletrpc chainrpc invoicesrpc routerrpc backuprpc peerrpc submarineswaprpc breezbackuprpc" -o build/ios/bindings.xcframework -ldflags="-s -w" github.com/breez/breez/bindings
           popd
           brew install ideviceinstaller ios-deploy
-          git clone --branch flutter-2.2.3 https://github.com/flutter/flutter.git
+          git clone --branch 2.2.3 https://github.com/flutter/flutter.git
           
           cp -r $GOPATH/src/github.com/breez/breez/build/ios/bindings.xcframework/ios-arm64/Bindings.framework $GITHUB_WORKSPACE/ios/bindings.framework
           rm -rf $GITHUB_WORKSPACE/conf
