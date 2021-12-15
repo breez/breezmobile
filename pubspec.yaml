@@ -87,7 +87,7 @@ dependency_overrides:
   podcast_search:
     git:
       url: https://github.com/breez/podcast_search.git
-      ref: 40a77096fddc58e91eb2f95989ba111c8c0c277f
+      ref: 5e867e794261da9b35331261c52ba4d380894a80
 
 dev_dependencies:
   flutter_test:
