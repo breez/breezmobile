@@ -67,16 +67,21 @@ class ViewSwitch extends StatelessWidget {
             child: GestureDetector(
               behavior: HitTestBehavior.translucent,
               onTap: item.onTap,
-              child: Row(
-                mainAxisSize: MainAxisSize.min,
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: <Widget>[
-                  _icon(themeData, item, index),
-                  Text(
-                    item.text,
-                    style: _textStyle(themeData, index),
-                  )
-                ],
+              child: ConstrainedBox(
+                constraints: BoxConstraints(
+                  minHeight: 48.0,
+                ),
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: <Widget>[
+                    _icon(themeData, item, index),
+                    Text(
+                      item.text,
+                      style: _textStyle(themeData, index),
+                    )
+                  ],
+                ),
               ),
             ),
           ),
