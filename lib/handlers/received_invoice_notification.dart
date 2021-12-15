@@ -30,15 +30,6 @@ class InvoiceNotificationsHandler {
       this.scrollController,
       this.scaffoldController) {
     _listenPaymentRequests();
-    _listenCompletedPayments();
-  }
-
-  _listenCompletedPayments() {
-    _accountBloc.completedPaymentsStream.listen((completedPayment) {
-      _handlingRequest = false;
-    }, onError: (err) {
-      _handlingRequest = false;
-    });
   }
 
   _listenPaymentRequests() {
@@ -69,12 +60,17 @@ class InvoiceNotificationsHandler {
             useRootNavigator: false,
             context: _context,
             barrierDismissible: false,
-            builder: (_) => paymentRequest.PaymentRequestDialog(_context,
-                _accountBloc, payreq, firstPaymentItemKey, scrollController));
+            builder: (_) => paymentRequest.PaymentRequestDialog(
+                    _context,
+                    _accountBloc,
+                    payreq,
+                    firstPaymentItemKey,
+                    scrollController, () {
+                  _handlingRequest = false;
+                }));
       });
     }).onError((error) {
       _setLoading(false);
-      _handlingRequest = false;
       if (error is PaymentRequestError) {
         showFlushbar(_context, message: error.message);
       }
