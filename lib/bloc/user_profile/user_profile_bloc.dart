@@ -15,6 +15,7 @@ import 'package:breez/services/device.dart';
 import 'package:breez/services/injector.dart';
 import 'package:breez/services/local_auth_service.dart';
 import 'package:breez/services/notifications.dart';
+import 'package:breez/utils/locale.dart';
 import 'package:crypto/crypto.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
@@ -154,11 +155,13 @@ class UserProfileBloc {
 
       // First time we create a user, initialize with random data.
       if (profile.isEmpty) {
-        List randomName = generateDefaultProfile();
+        final texts = getSystemAppLocalizations();
+        final defaultProfile = generateDefaultProfile(texts);
         user = user.copyWith(
-            name: randomName[0] + ' ' + randomName[1],
-            color: randomName[0],
-            animal: randomName[1]);
+          name: defaultProfile.buildName(getSystemLocale()),
+          color: defaultProfile.color,
+          animal: defaultProfile.animal,
+        );
         if (Platform.isAndroid) {
           GooglePlayServicesAvailability availability = await GoogleApiAvailability.instance.checkGooglePlayServicesAvailability();
           print("GooglePlayServicesAvailability:" + availability.toString());
@@ -390,12 +393,14 @@ class UserProfileBloc {
 
   void _listenRandomizeRequest(ServiceInjector injector) {
     _randomizeController.stream.listen((request) async {
-      var randomProfile = generateDefaultProfile();
+      final texts = getSystemAppLocalizations();
+      final defaultProfile = generateDefaultProfile(texts);
       _userStreamPreviewController.add(_currentUser.copyWith(
-          name: randomProfile[0] + ' ' + randomProfile[1],
-          color: randomProfile[0],
-          animal: randomProfile[1],
-          image: ''));
+        name: defaultProfile.buildName(getSystemLocale()),
+        color: defaultProfile.color,
+        animal: defaultProfile.animal,
+        image: '',
+      ));
     });
   }
 
