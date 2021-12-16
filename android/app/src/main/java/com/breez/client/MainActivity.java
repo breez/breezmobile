@@ -56,7 +56,7 @@ public class MainActivity extends FlutterFragmentActivity {
     }
 
     void registerBreezPlugins(@NonNull FlutterEngine flutterEngine) {
-        flutterEngine.getPlugins().add(new NfcHandler());
+        //flutterEngine.getPlugins().add(new NfcHandler()); // Not being used on production
         BreezApplication.breezShare = new BreezShare();
         flutterEngine.getPlugins().add(BreezApplication.breezShare);
         flutterEngine.getPlugins().add(new Breez());
