@@ -4,6 +4,7 @@ import 'package:breez/bloc/user_profile/breez_user_model.dart';
 import 'package:breez/bloc/user_profile/user_profile_bloc.dart';
 import 'package:breez/theme_data.dart' as theme;
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 Widget withBreezTheme(BuildContext context, Widget child) {
   UserProfileBloc userProfileBloc =
@@ -108,7 +109,7 @@ Widget withPodcastTheme(BreezUserModel user, Widget child) {
                       ),
               accentTextTheme:
                   Typography.material2018(platform: TargetPlatform.android)
-                      .white
+                      .black
                       .apply(fontFamily: 'IBMPlexSans'),
               primaryIconTheme:
                   IconThemeData(color: Color.fromRGBO(0, 133, 251, 1.0)),
