@@ -79,6 +79,7 @@ dependencies:
       url: https://github.com/breez/ShareExtend.git
 
 dependency_overrides:
+  webview_flutter: ^2.0.4
   flutter_svg: ^0.22.0
   platform: ^3.1.0
   flutter_downloader:
