@@ -123,5 +123,54 @@
   },
   "pos_invoice_tab_keypad": "Teclado",
   "pos_invoice_tab_items": "Elementos",
+  "pos_invoice_charge_label": "COBRAR {amount} {currencyName}",
+  "@pos_invoice_charge_label": {
+    "placeholders": {
+      "amount": {
+        "type": "String",
+        "example": "2.00"
+      },
+      "currencyName": {
+        "type": "String",
+        "example": "USD"
+      }
+    }
+  },
+  "pos_invoice_num_pad_clear": "C",
+  "pos_invoice_num_pad_plus": "+",
+  "pos_invoice_search_hint": "Buscar por nombre o SKU",
+  "pos_invoice_search_empty": "No se encontraron artículos.",
+  "pos_invoice_search_no_items": "No hay artículos para mostrar.\nAgregue artículos aquí usando el botón '+'.",
+  "pos_invoice_error_fiat_exchange_rates": "No fue posible recuperar las cotizaciones de las monedas fiduciarias.",
+  "pos_invoice_error_submit_header": "Informaciónes incompletas",
+  "pos_invoice_error_submit_name_avatar": "Por favor agregue el nombre y el logotipo de su empresa en la pantalla Configuraciónes.",
+  "pos_invoice_error_submit_name_only": "Por favor agregue el nombre de su empresa en la pantalla Configuraciónes.",
+  "pos_invoice_error_submit_avatar_only": "Por favor agregue el logotipo de su empresa en la pantalla Configuraciónes.",
+  "pos_invoice_error_fix_action": "IR A LA CONFIGURACIÓNES",
+  "pos_invoice_error_capacity_header": "Su cuenta no tiene el volumen necesario para recibir este pago.",
+  "pos_invoice_error_capacity_message": "El pago más grande que puede recibir su cuenta es {maxAllowed}. Por favor ingrese un valor menor que este.",
+  "@pos_invoice_error_capacity_message": {
+    "placeholders": {
+      "maxAllowed": {
+        "type": "String",
+        "example": "2.00"
+      }
+    }
+  },
+  "pos_invoice_error_payment_size_header": "Ha excedido el monto del límite de pago.",
+  "pos_invoice_error_payment_size_message": "El monto máximo de pago en la Red Relámpago es {maxAllowed}. Por favor ingrese una cantidad menor o complete el pago en varias transacciones.",
+  "@pos_invoice_error_payment_size_message": {
+    "placeholders": {
+      "maxAllowed": {
+        "type": "String",
+        "example": "2.00"
+      }
+    }
+  },
+  "pos_invoice_close": "CERRAR",
+  "pos_invoice_clear_sale_header": "¿Limpiar el carrito?",
+  "pos_invoice_clear_sale_message": "Esta acción eliminará todos los artículos del carrito.",
+  "pos_invoice_clear_sale_cancel": "CANCELAR",
+  "pos_invoice_clear_sale_confirm": "LIMPIAR",
   "app_name": "Breez"
 }

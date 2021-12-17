@@ -123,5 +123,54 @@
   },
   "pos_invoice_tab_keypad": "Keypad",
   "pos_invoice_tab_items": "Items",
+  "pos_invoice_charge_label": "CHARGE {amount} {currencyName}",
+  "@pos_invoice_charge_label": {
+    "placeholders": {
+      "amount": {
+        "type": "String",
+        "example": "2.00"
+      },
+      "currencyName": {
+        "type": "String",
+        "example": "USD"
+      }
+    }
+  },
+  "pos_invoice_num_pad_clear": "C",
+  "pos_invoice_num_pad_plus": "+",
+  "pos_invoice_search_hint": "Search for name or SKU",
+  "pos_invoice_search_empty": "No matching items found.",
+  "pos_invoice_search_no_items": "No items to display.\nAdd items to this view using the '+' button.",
+  "pos_invoice_error_fiat_exchange_rates": "Failed to retrieve fiat exchange rates.",
+  "pos_invoice_error_submit_header": "Required Information",
+  "pos_invoice_error_submit_name_avatar": "Please enter your business name and select a business logo in the Settings screen.",
+  "pos_invoice_error_submit_name_only": "Please enter your business name in the Settings screen.",
+  "pos_invoice_error_submit_avatar_only": "Please select a business logo in the Settings screen.",
+  "pos_invoice_error_fix_action": "GO TO SETTINGS",
+  "pos_invoice_error_capacity_header": "You don't have the capacity to receive such payment.",
+  "pos_invoice_error_capacity_message": "Maximum payment size you can receive is {maxAllowed}. Please enter a smaller value.",
+  "@pos_invoice_error_capacity_message": {
+    "placeholders": {
+      "maxAllowed": {
+        "type": "String",
+        "example": "2.00"
+      }
+    }
+  },
+  "pos_invoice_error_payment_size_header": "You have exceeded the maximum payment size.",
+  "pos_invoice_error_payment_size_message": "Maximum payment size on the Lightning Network is {maxAllowed}. Please enter a smaller value or complete the payment in multiple transactions.",
+  "@pos_invoice_error_payment_size_message": {
+    "placeholders": {
+      "maxAllowed": {
+        "type": "String",
+        "example": "2.00"
+      }
+    }
+  },
+  "pos_invoice_close": "CLOSE",
+  "pos_invoice_clear_sale_header": "Clear Sale?",
+  "pos_invoice_clear_sale_message": "This will clear the current transaction.",
+  "pos_invoice_clear_sale_cancel": "CANCEL",
+  "pos_invoice_clear_sale_confirm": "CLEAR",
   "app_name": "Breez"
 }
