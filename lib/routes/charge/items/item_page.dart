@@ -61,14 +61,20 @@ class ItemPageState extends State<ItemPage> {
             _nameController.text = widget.item.name;
             _skuController.text = widget.item.sku;
             _selectedCurrency = CurrencyWrapper.fromShortName(
-                widget.item.currency, accountModel);
+                  widget.item.currency,
+                  accountModel,
+                ) ??
+                _selectedCurrency;
             _priceController.text = _formattedPrice(widget.item.price);
           });
         } else {
           widget._posCatalogBloc.selectedCurrencyStream.listen((currency) {
             setState(() {
-              _selectedCurrency =
-                  CurrencyWrapper.fromShortName(currency, accountModel);
+              _selectedCurrency = CurrencyWrapper.fromShortName(
+                    currency,
+                    accountModel,
+                  ) ??
+                  _selectedCurrency;
             });
           });
         }
