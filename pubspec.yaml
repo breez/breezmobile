@@ -100,8 +100,7 @@ dev_dependencies:
   test: any
 
 environment:
-  sdk: ^2.10.5
-  flutter: ^2.2.3
+  sdk: ^2.10.5  
 
 flutter:
   uses-material-design: true
