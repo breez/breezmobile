@@ -108,7 +108,7 @@ Widget withPodcastTheme(BreezUserModel user, Widget child) {
                       ),
               accentTextTheme:
                   Typography.material2018(platform: TargetPlatform.android)
-                      .white
+                      .black
                       .apply(fontFamily: 'IBMPlexSans'),
               primaryIconTheme:
                   IconThemeData(color: Color.fromRGBO(0, 133, 251, 1.0)),
