@@ -18,10 +18,12 @@ import 'package:breez/services/notifications.dart';
 import 'package:crypto/crypto.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:google_api_availability/google_api_availability.dart';
 import 'package:hex/hex.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:uuid/uuid.dart';
 
 class UserProfileBloc {
   static const PROFILE_DATA_FOLDER_PATH = "profile";
@@ -157,8 +159,19 @@ class UserProfileBloc {
             name: randomName[0] + ' ' + randomName[1],
             color: randomName[0],
             animal: randomName[1]);
+        if (Platform.isAndroid) {
+          GooglePlayServicesAvailability availability = await GoogleApiAvailability.instance.checkGooglePlayServicesAvailability();
+          print("GooglePlayServicesAvailability:" + availability.toString());
+          if ((availability == GooglePlayServicesAvailability.serviceMissing) ||
+          (availability == GooglePlayServicesAvailability.serviceDisabled) ||
+          (availability == GooglePlayServicesAvailability.serviceInvalid)){
+            var uuid = Uuid();
+            user = user.copyWith(userID: "random-" + uuid.v4());
+          }
+        }
       }
       user = user.copyWith(locked: user.securityModel.requiresPin);
+      print("USER:" + user.toJson().toString());
       _publishUser(user);
     });
   }
@@ -339,7 +352,8 @@ class UserProfileBloc {
     SharedPreferences preferences = await _preferences;
     try {
       String token = await _notifications.getToken();
-      if (token != user.token || user.userID == null || user.userID.isEmpty) {
+
+      if (token != null && (token != user.token || user.userID == null || user.userID.isEmpty)) {
         //var userID = await _breezServer.registerDevice(token);
         var userID = token;
         userToRegister = userToRegister.copyWith(token: token, userID: userID);

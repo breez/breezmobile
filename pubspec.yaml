@@ -33,6 +33,7 @@ dependencies:
   flutter_secure_storage: ^4.2.1
   flutter_svg: ^0.22.0 # TODO version 0.23 with breaking changes
   flutter_web_browser: ^0.15.0
+  google_api_availability: ^3.0.1
   grpc: ^3.0.2
   hex: ^0.2.0
   image: ^3.0.8
@@ -58,6 +59,7 @@ dependencies:
   tutorial_coach_mark: ^1.1.1
   uni_links: ^0.5.1
   url_launcher: ^6.0.10 # TODO version 6.0.11 with dart upgrade needed
+  uuid: 3.0.5
   validators: ^3.0.0
   webdav_client: ^1.1.2
   webview_flutter: ^2.0.13 # TODO version 2.1 with dart upgrade needed
