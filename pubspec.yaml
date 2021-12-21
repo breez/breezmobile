@@ -14,7 +14,7 @@ dependencies:
   bip39: ^1.0.6
   collection: ^1.15.0
   confetti: ^0.6.0
-  connectivity: ^3.0.6
+  connectivity_plus: ^2.1.0
   crypto: ^3.0.1
   csv: ^5.0.1
   dio: ^4.0.4
