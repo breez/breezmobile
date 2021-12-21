@@ -135,6 +135,8 @@
   "pos_invoice_item_management_dd_currency_title": "Moneda",
   "pos_invoice_item_management_image_title": "Seleccionar una imagen",
   "pos_invoice_item_management_error_btc_rate": "Las tasas de cambio de BTC no se recuperaron.",
+  "pos_invoice_item_management_avatar_title": "Seleccionar una imagen",
+  "pos_invoice_item_management_avatar_search": "Buscar una imagen",
   "pos_invoice_tab_keypad": "Teclado",
   "pos_invoice_tab_items": "Elementos",
   "pos_invoice_charge_label": "COBRAR {amount} {currencyName}",

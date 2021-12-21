@@ -135,6 +135,8 @@
   "pos_invoice_item_management_dd_currency_title": "Currency",
   "pos_invoice_item_management_image_title": "Select Image",
   "pos_invoice_item_management_error_btc_rate": "Failed to retrieve BTC exchange rate.",
+  "pos_invoice_item_management_avatar_title": "Select Image",
+  "pos_invoice_item_management_avatar_search": "Search for an image",
   "pos_invoice_tab_keypad": "Keypad",
   "pos_invoice_tab_items": "Items",
   "pos_invoice_charge_label": "CHARGE {amount} {currencyName}",

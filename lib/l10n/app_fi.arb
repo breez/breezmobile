@@ -135,6 +135,8 @@
   "pos_invoice_item_management_dd_currency_title": "Valuutta",
   "pos_invoice_item_management_image_title": "Valitse kuva",
   "pos_invoice_item_management_error_btc_rate": "Bitcoin-vaihtokurssin noutaminen ei onnistunut (tarkista verkkoyhteys).",
+  "pos_invoice_item_management_avatar_title": "Valitse kuva",
+  "pos_invoice_item_management_avatar_search": "Etsi kuva",
   "pos_invoice_tab_keypad": "Näppäimistö",
   "pos_invoice_tab_items": "Tuotteet",
   "pos_invoice_charge_label": "VELOITA {amount} {currencyName}",

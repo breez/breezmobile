@@ -335,7 +335,7 @@ class ItemPageState extends State<ItemPage> {
             child: AutoSizeText(
               texts.pos_invoice_item_management_image_title,
               textAlign: TextAlign.center,
-              maxLines: 1,
+              maxLines: 2,
               minFontSize: MinFontSize(context).minFontSize,
               stepGranularity: 0.1,
               style: TextStyle(
