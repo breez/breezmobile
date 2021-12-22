@@ -188,5 +188,33 @@
   "pos_invoice_clear_sale_message": "Esta ação removerá todos os items do carrinho.",
   "pos_invoice_clear_sale_cancel": "CANCELAR",
   "pos_invoice_clear_sale_confirm": "LIMPAR",
+  "pos_transactions_title": "Transações",
+  "pos_transactions_placeholder": "As transações concluídas aparecerão aqui.",
+  "pos_transactions_action_export": "Exportar",
+  "pos_transactions_action_export_failed": "Falha na exportação das transações.",
+  "pos_transactions_range_no_transactions": "Não há transações no período selecionado",
+  "pos_transactions_range_dialog_title": "Escolha um período:",
+  "pos_transactions_range_dialog_start": "Início",
+  "pos_transactions_range_dialog_end": "Fim",
+  "pos_transactions_range_dialog_clear": "LIMPAR",
+  "pos_transactions_range_dialog_apply": "APLICAR FILTRO",
+  "pos_transactions_item_positive": "{value}",
+  "@pos_transactions_item_positive": {
+    "placeholders": {
+      "value": {
+        "type": "String",
+        "example": "1.234"
+      }
+    }
+  },
+  "pos_transactions_item_negative": "- {value}",
+  "@pos_transactions_item_negative": {
+    "placeholders": {
+      "value": {
+        "type": "String",
+        "example": "1.234"
+      }
+    }
+  },
   "app_name": "Breez"
 }
