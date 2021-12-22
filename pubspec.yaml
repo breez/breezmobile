@@ -23,12 +23,10 @@ dependencies:
   email_validator: ^2.0.1
   extended_image: ^6.0.1
   file_picker: ^4.2.7
-  firebase_core: 0.4.2 # TODO version 1 with breaking changes
-    # or version 0.4.5 with uni_links update needed, (uni_links has not update the platform interface yet)
-  # or version 0.4.3 with dio update needed
-  firebase_database: ^3.1.6 # TODO version 5 with breaking changes or version 4 with firebase_core update needed
-  firebase_dynamic_links: ^0.5.3 # TODO version 1 with breaking changes or version 0.6 with firebase_core update needed
-  firebase_messaging: ^5.1.8 # TODO version 6 with breaking changes
+  firebase_core: ^1.10.6
+  firebase_database: ^9.0.4
+  firebase_dynamic_links: ^4.0.3
+  firebase_messaging: ^11.2.4
   flushbar: ^1.10.4
   flutter_secure_storage: ^5.0.2
   flutter_svg: ^1.0.0

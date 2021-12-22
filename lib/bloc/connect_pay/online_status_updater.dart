@@ -17,10 +17,10 @@ class OnlineStatusUpdater {
       throw Exception(
           "Status tracking alredy started, must be stopped before start again");
     }
-    _userStatusPath = FirebaseDatabase.instance.reference().child(localKey);
+    _userStatusPath = FirebaseDatabase.instance.ref().child(localKey);
 
     _onLocalConnectSubscription = FirebaseDatabase.instance
-        .reference()
+        .ref()
         .child('.info/connected')
         .onValue
         .listen((event) {
@@ -32,12 +32,11 @@ class OnlineStatusUpdater {
     });
 
     _onRemoteConnectSubscription = FirebaseDatabase.instance
-        .reference()
+        .ref()
         .child(remoteKey)
         .onValue
         .listen((event) {
-      var connected =
-          event.snapshot.value != null && event.snapshot.value["online"];
+      var connected = (event.snapshot.value as Map)["online"] ?? false;
       onRemoteStatusChanged(
           PeerStatus(connected, DateTime.now().millisecondsSinceEpoch));
     });
