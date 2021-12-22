@@ -137,8 +137,7 @@ class PaymentsFilterState extends State<PaymentsFilter> {
             ? showDialog(
                 useRootNavigator: false,
                 context: context,
-                builder: (_) =>
-                    CalendarDialog(context, widget._paymentsModel.firstDate),
+                builder: (_) => CalendarDialog(widget._paymentsModel.firstDate),
               ).then((result) {
                 widget._accountBloc.paymentFilterSink.add(
                     widget._paymentsModel.filter.copyWith(

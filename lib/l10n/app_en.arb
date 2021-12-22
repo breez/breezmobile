@@ -188,5 +188,33 @@
   "pos_invoice_clear_sale_message": "This will clear the current transaction.",
   "pos_invoice_clear_sale_cancel": "CANCEL",
   "pos_invoice_clear_sale_confirm": "CLEAR",
+  "pos_transactions_title": "Transactions",
+  "pos_transactions_placeholder": "Successful transactions are displayed here.",
+  "pos_transactions_action_export": "Export",
+  "pos_transactions_action_export_failed": "Failed to export payments.",
+  "pos_transactions_range_no_transactions": "There are no transactions in this date range",
+  "pos_transactions_range_dialog_title": "Choose a date range:",
+  "pos_transactions_range_dialog_start": "Start",
+  "pos_transactions_range_dialog_end": "End",
+  "pos_transactions_range_dialog_clear": "CLEAR",
+  "pos_transactions_range_dialog_apply": "APPLY FILTER",
+  "pos_transactions_item_positive": "{value}",
+  "@pos_transactions_item_positive": {
+    "placeholders": {
+      "value": {
+        "type": "String",
+        "example": "1.234"
+      }
+    }
+  },
+  "pos_transactions_item_negative": "- {value}",
+  "@pos_transactions_item_negative": {
+    "placeholders": {
+      "value": {
+        "type": "String",
+        "example": "1.234"
+      }
+    }
+  },
   "app_name": "Breez"
 }
