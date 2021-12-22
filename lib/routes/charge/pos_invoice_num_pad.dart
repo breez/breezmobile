@@ -1,3 +1,4 @@
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:breez/bloc/pos_catalog/model.dart';
 import 'package:breez/theme_data.dart' as theme;
 import 'package:flutter/cupertino.dart';
@@ -26,62 +27,70 @@ class PosInvoiceNumPad extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final texts = AppLocalizations.of(context);
-    final themeData = Theme.of(context);
-
-    return GridView.count(
-        crossAxisCount: 3,
-        childAspectRatio: (width / height),
-        padding: EdgeInsets.zero,
-        children: List<int>.generate(9, (i) => i)
-            .map((index) => _numberButton(
-                  context,
-                  (index + 1).toString(),
-                ))
-            .followedBy([
-          Container(
-            decoration: BoxDecoration(
-              border: Border.all(
-                color: themeData.backgroundColor,
-                width: 0.5,
-              ),
-            ),
-            child: GestureDetector(
-              onLongPress: approveClear,
-              child: TextButton(
-                onPressed: clearAmounts,
-                child: Text(
-                  texts.pos_invoice_num_pad_clear,
-                  style: theme.numPadNumberStyle,
-                ),
-              ),
+    return Container(
+      width: width,
+      height: height,
+      child: Column(
+        mainAxisSize: MainAxisSize.max,
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          Expanded(
+            child: Row(
+              mainAxisSize: MainAxisSize.max,
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                _numberButton(context, "1"),
+                _numberButton(context, "2"),
+                _numberButton(context, "3"),
+              ],
             ),
           ),
-          _numberButton(context, "0"),
-          Container(
-            decoration: BoxDecoration(
-              border: Border.all(
-                color: themeData.backgroundColor,
-                width: 0.5,
-              ),
-            ),
-            child: TextButton(
-              onPressed: onAddition,
-              child: Text(
-                texts.pos_invoice_num_pad_plus,
-                style: theme.numPadAdditionStyle,
-              ),
+          Expanded(
+            child: Row(
+              mainAxisSize: MainAxisSize.max,
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                _numberButton(context, "4"),
+                _numberButton(context, "5"),
+                _numberButton(context, "6"),
+              ],
             ),
           ),
-        ]).toList());
+          Expanded(
+            child: Row(
+              mainAxisSize: MainAxisSize.max,
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                _numberButton(context, "7"),
+                _numberButton(context, "8"),
+                _numberButton(context, "9"),
+              ],
+            ),
+          ),
+          Expanded(
+            child: Row(
+              mainAxisSize: MainAxisSize.max,
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                _clearButton(context),
+                _numberButton(context, "0"),
+                _additionButton(context),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
   }
 
-  Container _numberButton(
+  Widget _numberButton(
     BuildContext context,
     String number,
   ) {
     final themeData = Theme.of(context);
     return Container(
+      width: width / 3.0,
+      height: height / 4.0,
       decoration: BoxDecoration(
         border: Border.all(
           color: themeData.backgroundColor,
@@ -89,11 +98,70 @@ class PosInvoiceNumPad extends StatelessWidget {
         ),
       ),
       child: TextButton(
+        style: TextButton.styleFrom(
+          padding: EdgeInsets.zero,
+          alignment: Alignment.center,
+        ),
         onPressed: () => onNumberPressed(number),
         child: Text(
           number,
           textAlign: TextAlign.center,
           style: theme.numPadNumberStyle,
+        ),
+      ),
+    );
+  }
+
+  Widget _clearButton(BuildContext context) {
+    final texts = AppLocalizations.of(context);
+    final themeData = Theme.of(context);
+    return Container(
+      width: width / 3.0,
+      height: height / 4.0,
+      decoration: BoxDecoration(
+        border: Border.all(
+          color: themeData.backgroundColor,
+          width: 0.5,
+        ),
+      ),
+      child: GestureDetector(
+        onLongPress: approveClear,
+        child: TextButton(
+          onPressed: clearAmounts,
+          style: TextButton.styleFrom(
+            padding: EdgeInsets.zero,
+            alignment: Alignment.center,
+          ),
+          child: Text(
+            texts.pos_invoice_num_pad_clear,
+            style: theme.numPadNumberStyle,
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _additionButton(BuildContext context) {
+    final texts = AppLocalizations.of(context);
+    final themeData = Theme.of(context);
+    return Container(
+      width: width / 3.0,
+      height: height / 4.0,
+      decoration: BoxDecoration(
+        border: Border.all(
+          color: themeData.backgroundColor,
+          width: 0.5,
+        ),
+      ),
+      child: TextButton(
+        onPressed: onAddition,
+        style: TextButton.styleFrom(
+          padding: EdgeInsets.zero,
+          alignment: Alignment.center,
+        ),
+        child: AutoSizeText(
+          texts.pos_invoice_num_pad_plus,
+          style: theme.numPadAdditionStyle,
         ),
       ),
     );

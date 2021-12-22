@@ -52,8 +52,6 @@ class POSInvoiceState extends State<POSInvoice> with TickerProviderStateMixin {
 
   TextEditingController _itemFilterController = TextEditingController();
 
-  double itemHeight;
-  double itemWidth;
   bool _useFiat = false;
   CurrencyWrapper currentCurrency;
   bool _isKeypadView = true;
@@ -72,10 +70,6 @@ class POSInvoiceState extends State<POSInvoice> with TickerProviderStateMixin {
   void didChangeDependencies() {
     final texts = AppLocalizations.of(context);
     final posCatalogBloc = AppBlocsProvider.of<PosCatalogBloc>(context);
-    final size = MediaQuery.of(context).size;
-
-    itemHeight = (size.height - kToolbarHeight - 16) / 4;
-    itemWidth = size.width / 2;
 
     if (accountSubscription == null) {
       AccountBloc accountBloc = AppBlocsProvider.of<AccountBloc>(context);
@@ -280,36 +274,13 @@ class POSInvoiceState extends State<POSInvoice> with TickerProviderStateMixin {
               decoration: BoxDecoration(
                 color: Theme.of(context).backgroundColor,
               ),
-              height: MediaQuery.of(context).size.height * 0.29,
+              height: max(184.0, MediaQuery.of(context).size.height * 0.3),
             ),
-            Expanded(
-              child: _isKeypadView
-                  ? PosInvoiceNumPad(
-                      currentSale: currentSale,
-                      width: itemWidth,
-                      height: itemHeight,
-                      approveClear: () => _approveClear(context, currentSale),
-                      clearAmounts: () => _clearAmounts(currentSale),
-                      onAddition: () => setState(() {
-                        currentPendingItem = null;
-                      }),
-                      onNumberPressed: (number) => _onNumButtonPressed(
-                        currentSale,
-                        number,
-                      ),
-                    )
-                  : PosInvoiceItemsView(
-                      currentSale: currentSale,
-                      accountModel: accountModel,
-                      itemFilterController: _itemFilterController,
-                      addItem: (item, avatarKey) => _addItem(
-                        posCatalogBloc,
-                        currentSale,
-                        accountModel,
-                        item,
-                        avatarKey,
-                      ),
-                    ),
+            _tabBody(
+              context,
+              posCatalogBloc,
+              accountModel,
+              currentSale,
             ),
           ],
         ),
@@ -401,6 +372,52 @@ class POSInvoiceState extends State<POSInvoice> with TickerProviderStateMixin {
           iconData: Icons.playlist_add,
         ),
       ],
+    );
+  }
+
+  Widget _tabBody(
+    BuildContext context,
+    PosCatalogBloc posCatalogBloc,
+    AccountModel accountModel,
+    Sale currentSale,
+  ) {
+    return Expanded(
+      child: LayoutBuilder(
+        builder: (context, constraints) {
+          final height = constraints.maxHeight;
+          final width = constraints.maxWidth;
+          return Container(
+            height: constraints.maxHeight,
+            child: _isKeypadView
+                ? PosInvoiceNumPad(
+                    currentSale: currentSale,
+                    approveClear: () => _approveClear(context, currentSale),
+                    clearAmounts: () => _clearAmounts(currentSale),
+                    onAddition: () => setState(() {
+                      currentPendingItem = null;
+                    }),
+                    onNumberPressed: (number) => _onNumButtonPressed(
+                      currentSale,
+                      number,
+                    ),
+                    width: width,
+                    height: height,
+                  )
+                : PosInvoiceItemsView(
+                    currentSale: currentSale,
+                    accountModel: accountModel,
+                    itemFilterController: _itemFilterController,
+                    addItem: (item, avatarKey) => _addItem(
+                      posCatalogBloc,
+                      currentSale,
+                      accountModel,
+                      item,
+                      avatarKey,
+                    ),
+                  ),
+          );
+        },
+      ),
     );
   }
 
