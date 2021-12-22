@@ -11,7 +11,10 @@ class DeepLinksService {
       BehaviorSubject<String>();
   Stream<String> get linksNotifications => _linksNotificationsController.stream;
 
+  FirebaseDynamicLinks _dynamicLinks;
+
   DeepLinksService() {
+    _dynamicLinks = FirebaseDynamicLinks.instance;
     Timer(Duration(seconds: 2), listen);
   }
 
@@ -25,12 +28,9 @@ class DeepLinksService {
 
     var data = await FirebaseDynamicLinks.instance.getInitialLink();
     publishLink(data);
-
-    FirebaseDynamicLinks.instance.onLink(
-        onSuccess: publishLink,
-        onError: (err) async {
-          log.severe("Failed to fetch dynamic link " + err.toString());
-        });
+    _dynamicLinks.onLink.listen(publishLink).onError((error) {
+      log.severe("Failed to fetch dynamic link " + error.toString());
+    });
   }
 
   SessionLinkModel parseSessionInviteLink(String link) {
@@ -38,16 +38,15 @@ class DeepLinksService {
   }
 
   Future<String> generateSessionInviteLink(SessionLinkModel link) async {
-    ShortDynamicLink shortLink = await DynamicLinkParameters(
-            dynamicLinkParametersOptions: DynamicLinkParametersOptions(
-                shortDynamicLinkPathLength:
-                    ShortDynamicLinkPathLength.unguessable),
-            link: Uri.parse('https://breez.technology?${link.toLinkQuery()}'),
-            uriPrefix: "https://breez.page.link",
-            androidParameters:
-                AndroidParameters(packageName: "com.breez.client"),
-            iosParameters: IosParameters(bundleId: "technology.breez.client"))
-        .buildShortLink();
+    final DynamicLinkParameters parameters = DynamicLinkParameters(
+        uriPrefix: "https://breez.page.link",
+        link: Uri.parse('https://breez.technology?${link.toLinkQuery()}'),
+        androidParameters:
+            const AndroidParameters(packageName: "com.breez.client"),
+        iosParameters:
+            const IOSParameters(bundleId: "technology.breez.client"));
+    final ShortDynamicLink shortLink =
+        await _dynamicLinks.buildShortLink(parameters);
 
     return shortLink.shortUrl.toString();
   }
