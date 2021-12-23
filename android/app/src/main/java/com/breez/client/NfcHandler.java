@@ -73,9 +73,9 @@ public class NfcHandler implements MethodChannel.MethodCallHandler, FlutterPlugi
                 String nfcStartedWith = getNfcStartedWith(binding.getActivity().getIntent());
                 result.success(nfcStartedWith);
             } catch (Exception e) {
-              System.out.println(e.getMessage());
+                Log.e(TAG, "Error calling method: checkIfStartedWithNfc", e);
                 e.printStackTrace();
-                result.success("false");
+                result.success("");
             }
         }
     }
