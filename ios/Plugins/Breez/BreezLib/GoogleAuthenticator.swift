@@ -29,7 +29,7 @@ class GoogleAuthenticator : NSObject, BackupAuthenticatorProtocol {
     }
     
     func signOut() {
-        GIDSignIn.sharedInstance()?.signOut();
+        GIDSignIn.sharedInstance.signOut();
     }
     
     func getAccessToken(silentOnly: Bool) throws -> String{        
@@ -57,7 +57,7 @@ class GoogleAuthenticator : NSObject, BackupAuthenticatorProtocol {
     
 }
 
-class SignInOperation : Operation, GIDSignInDelegate {
+class SignInOperation : Operation {
     
     private enum State {
         case ready
@@ -70,10 +70,11 @@ class SignInOperation : Operation, GIDSignInDelegate {
     private var silentSignInFailed = false;
     var accessToken : String?;
     var error : Error?;
+    private var configuration: GIDConfiguration = GIDConfiguration(clientID: "")
     
     init(silentOnly: Bool){
         super.init();
-        self.silentOnly = silentOnly;
+        self.silentOnly = silentOnly;        
     }
 
     override var isAsynchronous: Bool {
@@ -95,13 +96,14 @@ class SignInOperation : Operation, GIDSignInDelegate {
     override func start() {
         if let path = Bundle.main.path(forResource: "GoogleService-Info", ofType: "plist") {
             if let plist = NSMutableDictionary.init(contentsOfFile: path) {
-                GIDSignIn.sharedInstance()?.delegate = self;
-                let viewController = UIApplication.shared.keyWindow!.rootViewController;
-                GIDSignIn.sharedInstance()?.presentingViewController = viewController;
-                GIDSignIn.sharedInstance()?.clientID = plist["CLIENT_ID"] as? String;
-                GIDSignIn.sharedInstance()?.scopes = ["https://www.googleapis.com/auth/drive.appdata"];
+                //GIDSignIn.sharedInstance.delegate = self;
+                let viewController = UIApplication.shared.keyWindow!.rootViewController!;
+                self.configuration = GIDConfiguration(clientID: plist["CLIENT_ID"] as! String)
+                //GIDSignIn.sharedInstance.presentingViewController = viewController;
+//                GIDSignIn.sharedInstance.clientID = plist["CLIENT_ID"] as? String;
+                GIDSignIn.sharedInstance.addScopes(["https://www.googleapis.com/auth/drive.appdata"], presenting: viewController);
                 state = .executing;
-                GIDSignIn.sharedInstance()?.restorePreviousSignIn()
+                GIDSignIn.sharedInstance.restorePreviousSignIn()
                 return;
             }
         }
@@ -121,7 +123,7 @@ class SignInOperation : Operation, GIDSignInDelegate {
         }
         
         silentSignInFailed = true;
-        GIDSignIn.sharedInstance()?.signIn();
+        GIDSignIn.sharedInstance.signIn(with: self.configuration, presenting: UIApplication.shared.keyWindow!.rootViewController!);
     }
     
     func sign(_ signIn: GIDSignIn!, present viewController: UIViewController!) {
