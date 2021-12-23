@@ -19,6 +19,7 @@ import 'package:breez/widgets/payment_details_dialog.dart';
 import 'package:breez/widgets/print_parameters.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_svg/svg.dart';
 
 import 'items/item_avatar.dart';
@@ -30,14 +31,14 @@ class SaleView extends StatefulWidget {
   final PaymentInfo salePayment;
   final Sale readOnlySale;
 
-  const SaleView(
-      {Key key,
-      this.saleCurrency,
-      this.onDeleteSale,
-      this.onCharge,
-      this.salePayment,
-      this.readOnlySale})
-      : super(key: key);
+  const SaleView({
+    Key key,
+    this.saleCurrency,
+    this.onDeleteSale,
+    this.onCharge,
+    this.salePayment,
+    this.readOnlySale,
+  }) : super(key: key);
 
   @override
   State<StatefulWidget> createState() {
@@ -48,10 +49,11 @@ class SaleView extends StatefulWidget {
 }
 
 class SaleViewState extends State<SaleView> {
+  final _scrollController = ScrollController();
+  final _noteController = TextEditingController();
+  final _noteFocus = FocusNode();
+
   StreamSubscription<Sale> _currentSaleSubscription;
-  ScrollController _scrollController = new ScrollController();
-  TextEditingController _noteController = new TextEditingController();
-  FocusNode _noteFocus = new FocusNode();
   Sale saleInProgress;
 
   Sale get currentSale => widget.readOnlySale ?? saleInProgress;
@@ -60,8 +62,7 @@ class SaleViewState extends State<SaleView> {
   void didChangeDependencies() {
     if (_currentSaleSubscription == null) {
       if (!widget.readOnly) {
-        PosCatalogBloc posCatalogBloc =
-            AppBlocsProvider.of<PosCatalogBloc>(context);
+        final posCatalogBloc = AppBlocsProvider.of<PosCatalogBloc>(context);
         _currentSaleSubscription =
             posCatalogBloc.currentSaleStream.listen((sale) {
           setState(() {
@@ -70,7 +71,7 @@ class SaleViewState extends State<SaleView> {
             if (updateNote) {
               _noteController.text = sale.note;
             }
-            var thisRoute = ModalRoute.of(context);
+            final thisRoute = ModalRoute.of(context);
             if (saleInProgress.saleLines.length == 0) {
               if (thisRoute.isCurrent) {
                 Navigator.of(context).pop();
@@ -82,8 +83,9 @@ class SaleViewState extends State<SaleView> {
         });
 
         _noteController.addListener(() {
-          posCatalogBloc.actionsSink.add(SetCurrentSale(
-              saleInProgress.copyWith(note: _noteController.text)));
+          posCatalogBloc.actionsSink.add(SetCurrentSale(saleInProgress.copyWith(
+            note: _noteController.text,
+          )));
         });
       } else {
         _noteController.text = widget.readOnlySale.note;
@@ -103,178 +105,210 @@ class SaleViewState extends State<SaleView> {
 
   @override
   Widget build(BuildContext context) {
-    AccountBloc accountBloc = AppBlocsProvider.of<AccountBloc>(context);
+    final texts = AppLocalizations.of(context);
+    final themeData = Theme.of(context);
+    final accountBloc = AppBlocsProvider.of<AccountBloc>(context);
 
     return StreamBuilder<AccountModel>(
-        stream: accountBloc.accountStream,
-        builder: (context, accSnapshot) {
-          var accModel = accSnapshot.data;
-          if (accModel == null) {
-            return Loader();
-          }
+      stream: accountBloc.accountStream,
+      builder: (context, accSnapshot) {
+        var accModel = accSnapshot.data;
+        if (accModel == null) {
+          return Loader();
+        }
 
-          CurrencyWrapper saleCurrency =
-              widget.saleCurrency ?? CurrencyWrapper.fromBTC(Currency.SAT);
-          String title = "Current Sale";
-          if (widget.salePayment != null) {
-            title = BreezDateUtils.formatYearMonthDayHourMinute(
-                DateTime.fromMillisecondsSinceEpoch(
-                    widget.salePayment.creationTimestamp.toInt() * 1000));
-          }
-          return Scaffold(
-            appBar: AppBar(
-              iconTheme: Theme.of(context).appBarTheme.iconTheme,
-              textTheme: Theme.of(context).appBarTheme.textTheme,
-              backgroundColor: Theme.of(context).canvasColor,
-              leading: backBtn.BackButton(),
-              title: Text(title),
-              actions: widget.readOnly
-                  ? _buildPrintIcon(accModel)
-                  : <Widget>[
-                      IconButton(
-                        icon: Icon(
-                          Icons.delete_forever,
-                          color: Theme.of(context).iconTheme.color,
-                        ),
-                        onPressed: () {
-                          widget.onDeleteSale();
-                        },
-                      )
-                    ],
-              elevation: 0.0,
+        CurrencyWrapper saleCurrency =
+            widget.saleCurrency ?? CurrencyWrapper.fromBTC(Currency.SAT);
+        String title = texts.sale_view_title;
+        if (widget.salePayment != null) {
+          title = BreezDateUtils.formatYearMonthDayHourMinute(
+            DateTime.fromMillisecondsSinceEpoch(
+              widget.salePayment.creationTimestamp.toInt() * 1000,
             ),
-            extendBody: false,
-            backgroundColor: Theme.of(context).backgroundColor,
-            body: GestureDetector(
-              onTap: () {
-                FocusScopeNode currentFocus = FocusScope.of(context);
-
-                if (!currentFocus.hasPrimaryFocus) {
-                  currentFocus.unfocus();
-                }
-              },
-              child: Stack(
-                fit: StackFit.expand,
-                children: [
-                  Column(
-                    mainAxisSize: MainAxisSize.min,
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children: [
-                      !showNote
-                          ? SizedBox()
-                          : Container(
-                              color: Theme.of(context).canvasColor,
-                              child: Padding(
-                                padding: const EdgeInsets.only(
-                                    left: 16.0, right: 16.0, bottom: 8.0),
-                                child: TextField(
-                                  enabled: !widget.readOnly,
-                                  keyboardType: TextInputType.multiline,
-                                  maxLength: 90,
-                                  maxLengthEnforcement: MaxLengthEnforcement.enforced,
-                                  textInputAction: TextInputAction.done,
-                                  onSubmitted: (_) {
-                                    _noteFocus.requestFocus();
-                                  },
-                                  buildCounter: (BuildContext ctx,
-                                          {int currentLength,
-                                          bool isFocused,
-                                          int maxLength}) =>
-                                      SizedBox(),
-                                  controller: _noteController,
-                                  decoration: InputDecoration(
-                                      focusedBorder: UnderlineInputBorder(
-                                        borderSide: BorderSide(
-                                          style: BorderStyle.solid,
-                                          color: Color(0xFFc5cedd),
-                                        ),
-                                      ),
-                                      enabledBorder: UnderlineInputBorder(
-                                        borderSide: BorderSide(
-                                          style: BorderStyle.solid,
-                                          color: Color(0xFFc5cedd),
-                                        ),
-                                      ),
-                                      hintText: 'Add Note',
-                                      hintStyle: TextStyle(fontSize: 14.0)),
-                                ),
-                              )),
-                      Expanded(
-                        child: SaleLinesList(
-                            saleCurrency: saleCurrency,
-                            readOnly: widget.readOnly,
-                            scrollController: _scrollController,
-                            accountModel: accModel,
-                            currentSale: currentSale),
+          );
+        }
+        return Scaffold(
+          appBar: AppBar(
+            iconTheme: themeData.appBarTheme.iconTheme,
+            textTheme: themeData.appBarTheme.textTheme,
+            backgroundColor: themeData.canvasColor,
+            leading: backBtn.BackButton(),
+            title: Text(title),
+            actions: widget.readOnly
+                ? _buildPrintIcon(context, accModel)
+                : [
+                    IconButton(
+                      icon: Icon(
+                        Icons.delete_forever,
+                        color: themeData.iconTheme.color,
                       ),
-                    ],
-                  )
-                ],
-              ),
+                      onPressed: () {
+                        widget.onDeleteSale();
+                      },
+                    ),
+                  ],
+            elevation: 0.0,
+          ),
+          extendBody: false,
+          backgroundColor: themeData.backgroundColor,
+          body: GestureDetector(
+            onTap: () {
+              final currentFocus = FocusScope.of(context);
+
+              if (!currentFocus.hasPrimaryFocus) {
+                currentFocus.unfocus();
+              }
+            },
+            child: Stack(
+              fit: StackFit.expand,
+              children: [
+                Column(
+                  mainAxisSize: MainAxisSize.min,
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: [
+                    _note(context),
+                    Expanded(
+                      child: SaleLinesList(
+                        saleCurrency: saleCurrency,
+                        readOnly: widget.readOnly,
+                        scrollController: _scrollController,
+                        accountModel: accModel,
+                        currentSale: currentSale,
+                      ),
+                    ),
+                  ],
+                )
+              ],
             ),
-            bottomNavigationBar: Container(
-              decoration: BoxDecoration(
-                color: theme.themeId == "BLUE"
-                    ? Theme.of(context).backgroundColor
-                    : Theme.of(context).canvasColor,
-                boxShadow: [
-                  BoxShadow(
-                      color: Colors.black.withOpacity(0.3),
-                      offset: Offset(0.5, 0.5),
-                      blurRadius: 5.0),
-                  BoxShadow(color: Theme.of(context).backgroundColor)
-                ],
-              ),
-              //color: Theme.of(context).canvasColor,
-              child: Padding(
-                padding: const EdgeInsets.all(36),
-                child: Container(
-                    child: _TotalSaleCharge(
+          ),
+          bottomNavigationBar: Container(
+            decoration: BoxDecoration(
+              color: theme.themeId == "BLUE"
+                  ? themeData.backgroundColor
+                  : themeData.canvasColor,
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withOpacity(0.3),
+                  offset: Offset(0.5, 0.5),
+                  blurRadius: 5.0,
+                ),
+                BoxShadow(
+                  color: themeData.backgroundColor,
+                )
+              ],
+            ),
+            //color: Theme.of(context).canvasColor,
+            child: Padding(
+              padding: const EdgeInsets.all(36),
+              child: Container(
+                child: _TotalSaleCharge(
                   salePayment: widget.salePayment,
                   onCharge: widget.onCharge,
                   accountModel: accModel,
                   currentSale: currentSale,
                   saleCurrency: saleCurrency,
-                )),
+                ),
               ),
             ),
-          );
-        });
+          ),
+        );
+      },
+    );
   }
 
-  _buildPrintIcon(AccountModel account) {
-    UserProfileBloc userBloc = AppBlocsProvider.of<UserProfileBloc>(context);
-    return <Widget>[
-      StreamBuilder<BreezUserModel>(
-          stream: userBloc.userStream,
-          builder: (context, snapshot) {
-            var user = snapshot.data;
-            if (user == null) {
-              return Loader();
-            }
-            return Padding(
-              padding: const EdgeInsets.only(right: 18.0),
-              child: IconButton(
-                alignment: Alignment.center,
-                tooltip: "Print",
-                iconSize: 24.0,
-                color: Theme.of(context).iconTheme.color,
-                icon: SvgPicture.asset(
-                  "src/icon/printer.svg",
-                  color: Colors.white,
-                  fit: BoxFit.contain,
-                  width: 24.0,
-                  height: 24.0,
-                ),
-                onPressed: () => PrintService(PrintParameters(
-                        currentUser: user,
-                        account: account,
-                        submittedSale: widget.readOnlySale,
-                        paymentInfo: widget.salePayment))
-                    .printAsPDF(),
+  Widget _note(BuildContext context) {
+    if (!showNote) return SizedBox();
+
+    final texts = AppLocalizations.of(context);
+    final themeData = Theme.of(context);
+
+    return Container(
+      color: themeData.canvasColor,
+      child: Padding(
+        padding: const EdgeInsets.only(left: 16.0, right: 16.0, bottom: 8.0),
+        child: TextField(
+          enabled: !widget.readOnly,
+          keyboardType: TextInputType.multiline,
+          maxLength: 90,
+          maxLengthEnforcement: MaxLengthEnforcement.enforced,
+          textInputAction: TextInputAction.done,
+          onSubmitted: (_) {
+            _noteFocus.requestFocus();
+          },
+          buildCounter: (
+            BuildContext ctx, {
+            int currentLength,
+            bool isFocused,
+            int maxLength,
+          }) {
+            return SizedBox();
+          },
+          controller: _noteController,
+          decoration: InputDecoration(
+            focusedBorder: UnderlineInputBorder(
+              borderSide: BorderSide(
+                style: BorderStyle.solid,
+                color: Color(0xFFc5cedd),
               ),
-            );
-          })
+            ),
+            enabledBorder: UnderlineInputBorder(
+              borderSide: BorderSide(
+                style: BorderStyle.solid,
+                color: Color(0xFFc5cedd),
+              ),
+            ),
+            hintText: texts.sale_view_note_hint,
+            hintStyle: TextStyle(
+              fontSize: 14.0,
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  List<Widget> _buildPrintIcon(
+    BuildContext context,
+    AccountModel account,
+  ) {
+    final texts = AppLocalizations.of(context);
+    final themeData = Theme.of(context);
+    final userBloc = AppBlocsProvider.of<UserProfileBloc>(context);
+
+    return [
+      StreamBuilder<BreezUserModel>(
+        stream: userBloc.userStream,
+        builder: (context, snapshot) {
+          var user = snapshot.data;
+          if (user == null) {
+            return Loader();
+          }
+          return Padding(
+            padding: const EdgeInsets.only(right: 18.0),
+            child: IconButton(
+              alignment: Alignment.center,
+              tooltip: texts.sale_view_print,
+              iconSize: 24.0,
+              color: themeData.iconTheme.color,
+              icon: SvgPicture.asset(
+                "src/icon/printer.svg",
+                color: Colors.white,
+                fit: BoxFit.contain,
+                width: 24.0,
+                height: 24.0,
+              ),
+              onPressed: () => PrintService(
+                PrintParameters(
+                  currentUser: user,
+                  account: account,
+                  submittedSale: widget.readOnlySale,
+                  paymentInfo: widget.salePayment,
+                ),
+              ).printAsPDF(),
+            ),
+          );
+        },
+      )
     ];
   }
 }
@@ -283,29 +317,31 @@ class _TotalSaleCharge extends StatelessWidget {
   final AccountModel accountModel;
   final Sale currentSale;
   final CurrencyWrapper saleCurrency;
-  final Function(AccountModel accModel, Sale sale) onCharge;
+  final Function(AccountModel, Sale) onCharge;
   final PaymentInfo salePayment;
 
-  const _TotalSaleCharge(
-      {Key key,
-      this.accountModel,
-      this.currentSale,
-      this.onCharge,
-      this.salePayment,
-      this.saleCurrency})
-      : super(key: key);
+  const _TotalSaleCharge({
+    Key key,
+    this.accountModel,
+    this.currentSale,
+    this.onCharge,
+    this.salePayment,
+    this.saleCurrency,
+  }) : super(key: key);
 
   bool get readOnly => salePayment != null;
 
   @override
   Widget build(BuildContext context) {
+    final themeData = Theme.of(context);
+
     return ElevatedButton(
       style: ElevatedButton.styleFrom(
-        primary: Theme.of(context).primaryColorLight,
+        primary: themeData.primaryColorLight,
         padding: EdgeInsets.only(top: 14.0, bottom: 14.0),
       ),
       child: Text(
-        _title(),
+        _title(context),
         maxLines: 1,
         textAlign: TextAlign.center,
         style: theme.invoiceChargeAmountStyle,
@@ -320,7 +356,9 @@ class _TotalSaleCharge extends StatelessWidget {
     );
   }
 
-  String _title() {
+  String _title(BuildContext context) {
+    final texts = AppLocalizations.of(context);
+
     final totalAmountInSats = currentSale.totalAmountInSats;
     final totalAmountInFiat = currentSale.totalAmountInFiat;
 
@@ -329,10 +367,8 @@ class _TotalSaleCharge extends StatelessWidget {
       totalAmountInSats,
       removeTrailingZeros: true,
       includeDisplayName: true,
-    );
+    ).toUpperCase();
 
-    String title = readOnly ? '' : 'Charge';
-    title = "$title $satMessage";
     if (totalAmountInFiat.length == 1) {
       final currency = totalAmountInFiat.entries.first.key;
       final total = totalAmountInFiat.entries.first.value;
@@ -341,16 +377,19 @@ class _TotalSaleCharge extends StatelessWidget {
           currency,
           accountModel,
         );
-        final fiatTotalMsg = saleCurrency.format(
+        final fiatValue = saleCurrency.format(
           total,
           removeTrailingZeros: true,
           includeCurrencySymbol: true,
-        );
-        title = "$title ($fiatTotalMsg)";
+        ).toUpperCase();
+        return readOnly
+            ? texts.sale_view_total_title_read_only_fiat(satMessage, fiatValue)
+            : texts.sale_view_total_title_charge_fiat(satMessage, fiatValue);
       }
     }
-    title = title.toUpperCase();
-    return title;
+    return readOnly
+        ? texts.sale_view_total_title_read_only_no_fiat(satMessage)
+        : texts.sale_view_total_title_charge_no_fiat(satMessage);
   }
 }
 
@@ -361,81 +400,89 @@ class SaleLinesList extends StatelessWidget {
   final ScrollController scrollController;
   final bool readOnly;
 
-  const SaleLinesList(
-      {Key key,
-      this.currentSale,
-      this.accountModel,
-      this.scrollController,
-      this.readOnly,
-      this.saleCurrency})
-      : super(key: key);
+  const SaleLinesList({
+    Key key,
+    this.currentSale,
+    this.accountModel,
+    this.scrollController,
+    this.readOnly,
+    this.saleCurrency,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    PosCatalogBloc posCatalogBloc =
-        AppBlocsProvider.of<PosCatalogBloc>(context);
+    final themeData = Theme.of(context);
+    final posCatalogBloc = AppBlocsProvider.of<PosCatalogBloc>(context);
+
     return SingleChildScrollView(
       child: ListView.builder(
-          itemCount: currentSale.saleLines.length,
-          shrinkWrap: true,
-          controller: scrollController,
-          //primary: false,
-          itemBuilder: (BuildContext context, int index) {
-            return ListTileTheme(
-              textColor: theme.themeId == "BLUE"
-                  ? Theme.of(context).canvasColor
-                  : Theme.of(context).textTheme.subtitle1.color,
-              iconColor: theme.themeId == "BLUE"
-                  ? Theme.of(context).canvasColor
-                  : Theme.of(context).textTheme.subtitle1.color,
-              child: Column(children: [
+        itemCount: currentSale.saleLines.length,
+        shrinkWrap: true,
+        controller: scrollController,
+        //primary: false,
+        itemBuilder: (context, index) {
+          return ListTileTheme(
+            textColor: theme.themeId == "BLUE"
+                ? themeData.canvasColor
+                : themeData.textTheme.subtitle1.color,
+            iconColor: theme.themeId == "BLUE"
+                ? themeData.canvasColor
+                : themeData.textTheme.subtitle1.color,
+            child: Column(
+              children: [
                 SaleLineWidget(
-                    saleCurrency: saleCurrency,
-                    onDelete: readOnly
-                        ? null
-                        : () {
-                            var newSale = currentSale.copyWith(
+                  saleCurrency: saleCurrency,
+                  onDelete: readOnly
+                      ? null
+                      : () => posCatalogBloc.actionsSink.add(
+                            SetCurrentSale(
+                              currentSale.copyWith(
                                 saleLines: currentSale.saleLines
-                                  ..removeAt(index));
-                            posCatalogBloc.actionsSink
-                                .add(SetCurrentSale(newSale));
-                          },
-                    onChangeQuantity: readOnly
-                        ? null
-                        : (int delta) {
-                            var saleLines = currentSale.saleLines.toList();
-                            var saleLine = currentSale.saleLines[index];
-                            var newQuantity = saleLine.quantity + delta;
-                            if (saleLine.quantity == 0) {
-                              saleLines.removeAt(index);
-                            } else {
-                              saleLines = saleLines.map((sl) {
-                                if (sl != saleLine) {
-                                  return sl;
-                                }
-                                return sl.copyWith(quantity: newQuantity);
-                              }).toList();
-                            }
-                            var newSale =
-                                currentSale.copyWith(saleLines: saleLines);
-                            posCatalogBloc.actionsSink
-                                .add(SetCurrentSale(newSale));
-                          },
-                    accountModel: accountModel,
-                    saleLine: currentSale.saleLines[index]),
+                                  ..removeAt(index),
+                              ),
+                            ),
+                          ),
+                  onChangeQuantity: readOnly
+                      ? null
+                      : (int delta) {
+                          var saleLines = currentSale.saleLines.toList();
+                          var saleLine = currentSale.saleLines[index];
+                          var newQuantity = saleLine.quantity + delta;
+                          if (saleLine.quantity == 0) {
+                            saleLines.removeAt(index);
+                          } else {
+                            saleLines = saleLines.map((sl) {
+                              if (sl != saleLine) {
+                                return sl;
+                              }
+                              return sl.copyWith(quantity: newQuantity);
+                            }).toList();
+                          }
+                          var newSale = currentSale.copyWith(
+                            saleLines: saleLines,
+                          );
+                          posCatalogBloc.actionsSink.add(
+                            SetCurrentSale(newSale),
+                          );
+                        },
+                  accountModel: accountModel,
+                  saleLine: currentSale.saleLines[index],
+                ),
                 Divider(
                   height: 0.0,
                   color: index == currentSale.saleLines.length - 1
                       ? Colors.white.withOpacity(0.0)
                       : (theme.themeId == "BLUE"
-                              ? Theme.of(context).canvasColor
-                              : Theme.of(context).textTheme.subtitle1.color)
+                              ? themeData.canvasColor
+                              : themeData.textTheme.subtitle1.color)
                           .withOpacity(0.5),
                   indent: 72.0,
-                )
-              ]),
-            );
-          }),
+                ),
+              ],
+            ),
+          );
+        },
+      ),
     );
   }
 }
@@ -447,70 +494,83 @@ class SaleLineWidget extends StatelessWidget {
   final Function(int delta) onChangeQuantity;
   final Function() onDelete;
 
-  const SaleLineWidget(
-      {Key key,
-      this.saleLine,
-      this.accountModel,
-      this.onChangeQuantity,
-      this.onDelete,
-      this.saleCurrency})
-      : super(key: key);
+  const SaleLineWidget({
+    Key key,
+    this.saleLine,
+    this.accountModel,
+    this.onChangeQuantity,
+    this.onDelete,
+    this.saleCurrency,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    var iconColor = theme.themeId == "BLUE"
+    final listTileThemeData = ListTileTheme.of(context);
+    final iconColor = theme.themeId == "BLUE"
         ? Colors.black.withOpacity(0.3)
-        : ListTileTheme.of(context).iconColor.withOpacity(0.5);
+        : listTileThemeData.iconColor.withOpacity(0.5);
+
     return Padding(
       padding: const EdgeInsets.fromLTRB(0, 8, 8, 8),
       child: ListTile(
-          leading:
-              ItemAvatar(saleLine.itemImageURL, itemName: saleLine.itemName),
-          title: Text(
-            saleLine.itemName,
-            //style: TextStyle(fontWeight: FontWeight.bold),
+        leading: ItemAvatar(
+          saleLine.itemImageURL,
+          itemName: saleLine.itemName,
+        ),
+        title: Text(
+          saleLine.itemName,
+        ),
+        subtitle: CurrencyDisplay(
+          currency: CurrencyWrapper.fromShortName(
+            saleLine.currency,
+            accountModel,
           ),
-          subtitle: CurrencyDisplay(
-            currency:
-                CurrencyWrapper.fromShortName(saleLine.currency, accountModel),
-            saleLine: saleLine,
-            saleCurrency: saleCurrency,
-          ),
-          trailing: Row(
-            mainAxisAlignment: MainAxisAlignment.end,
-            mainAxisSize: MainAxisSize.min,
-            children: <Widget>[
-              onChangeQuantity == null
-                  ? SizedBox()
-                  : IconButton(
-                      iconSize: 22.0,
-                      color: iconColor,
-                      icon: Icon(Icons.add),
-                      onPressed: () => onChangeQuantity(1)),
-              Container(
-                width: 40.0,
-                child: Center(
-                  child: Text(saleLine.quantity.toString(),
-                      style: TextStyle(
-                          color: theme.themeId == "BLUE"
-                              ? Colors.black.withOpacity(0.7)
-                              : ListTileTheme.of(context).textColor,
-                          fontSize: 18.0)),
+          saleLine: saleLine,
+          saleCurrency: saleCurrency,
+        ),
+        trailing: Row(
+          mainAxisAlignment: MainAxisAlignment.end,
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            onChangeQuantity == null
+                ? SizedBox()
+                : IconButton(
+                    iconSize: 22.0,
+                    color: iconColor,
+                    icon: Icon(Icons.add),
+                    onPressed: () => onChangeQuantity(1),
+                  ),
+            Container(
+              width: 40.0,
+              child: Center(
+                child: Text(
+                  saleLine.quantity.toString(),
+                  style: TextStyle(
+                    color: theme.themeId == "BLUE"
+                        ? Colors.black.withOpacity(0.7)
+                        : listTileThemeData.textColor,
+                    fontSize: 18.0,
+                  ),
                 ),
               ),
-              onDelete == null
-                  ? SizedBox()
-                  : IconButton(
-                      iconSize: 22.0,
-                      color: iconColor,
-                      icon: Icon(saleLine.quantity == 1
+            ),
+            onDelete == null
+                ? SizedBox()
+                : IconButton(
+                    iconSize: 22.0,
+                    color: iconColor,
+                    icon: Icon(
+                      saleLine.quantity == 1
                           ? Icons.delete_outline
-                          : Icons.remove),
-                      onPressed: () => saleLine.quantity == 1
-                          ? onDelete()
-                          : onChangeQuantity(-1)),
-            ],
-          )),
+                          : Icons.remove,
+                    ),
+                    onPressed: () => saleLine.quantity == 1
+                        ? onDelete()
+                        : onChangeQuantity(-1),
+                  ),
+          ],
+        ),
+      ),
     );
   }
 }
@@ -531,38 +591,48 @@ class CurrencyDisplay extends StatelessWidget {
   Widget build(BuildContext context) {
     double priceInFiat = saleLine.totalFiat;
     double priceInSats = saleLine.totalSats;
-    String priceInSaleCurrency = "";
-    if (saleCurrency.symbol != currency.symbol) {
-      String salePrice = saleCurrency.format(
-          priceInSats / saleCurrency.satConversionRate,
-          includeCurrencySymbol: true,
-          removeTrailingZeros: true);
-      priceInSaleCurrency =
-          saleCurrency.rtl ? "($salePrice) " : " ($salePrice)";
-    }
     TextStyle textStyle = TextStyle(
-        color: ListTileTheme.of(context)
-            .textColor
-            .withOpacity(theme.themeId == "BLUE" ? 0.75 : 0.5));
+      color: ListTileTheme.of(context)
+          .textColor
+          .withOpacity(theme.themeId == "BLUE" ? 0.75 : 0.5),
+    );
     return SingleChildScrollView(
       scrollDirection: Axis.horizontal,
       child: Row(
-          mainAxisAlignment: MainAxisAlignment.start,
-          crossAxisAlignment: CrossAxisAlignment.baseline,
-          textBaseline: TextBaseline.alphabetic,
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            CurrencyText(
-                text:
-                    "${currency.format(priceInFiat, includeCurrencySymbol: true, removeTrailingZeros: true)}",
-                currency: currency,
-                style: textStyle),
-            CurrencyText(
-                text: priceInSaleCurrency,
-                currency: saleCurrency,
-                style: textStyle),
-          ]),
+        mainAxisAlignment: MainAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.baseline,
+        textBaseline: TextBaseline.alphabetic,
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          CurrencyText(
+            text: currency.format(
+              priceInFiat,
+              includeCurrencySymbol: true,
+              removeTrailingZeros: true,
+            ),
+            currency: currency,
+            style: textStyle,
+          ),
+          CurrencyText(
+            text: _priceInSaleCurrency(priceInSats),
+            currency: saleCurrency,
+            style: textStyle,
+          ),
+        ],
+      ),
     );
+  }
+
+  String _priceInSaleCurrency(double priceInSats) {
+    if (saleCurrency.symbol != currency.symbol) {
+      String salePrice = saleCurrency.format(
+        priceInSats / saleCurrency.satConversionRate,
+        includeCurrencySymbol: true,
+        removeTrailingZeros: true,
+      );
+      return saleCurrency.rtl ? "($salePrice) " : " ($salePrice)";
+    }
+    return "";
   }
 }
 
@@ -580,10 +650,12 @@ class CurrencyText extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Text(text,
-        maxLines: 1,
-        textDirection: currency.rtl ? TextDirection.rtl : TextDirection.ltr,
-        textAlign: currency.rtl ? TextAlign.end : TextAlign.start,
-        style: style ?? DefaultTextStyle.of(context).style);
+    return Text(
+      text,
+      maxLines: 1,
+      textDirection: currency.rtl ? TextDirection.rtl : TextDirection.ltr,
+      textAlign: currency.rtl ? TextAlign.end : TextAlign.start,
+      style: style ?? DefaultTextStyle.of(context).style,
+    );
   }
 }
