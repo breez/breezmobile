@@ -11,6 +11,7 @@ abstract class Notifications {
 
 class FirebaseNotifications implements Notifications {
   FirebaseMessaging _firebaseMessaging;
+  NotificationSettings _firebaseNotificationSettings;
 
   final StreamController<Map<dynamic, dynamic>> _notificationController =
       BehaviorSubject<Map<dynamic, dynamic>>();
@@ -18,23 +19,23 @@ class FirebaseNotifications implements Notifications {
       _notificationController.stream;
 
   FirebaseNotifications() {
-    _firebaseMessaging = FirebaseMessaging();
-    _firebaseMessaging.configure(
-        onMessage: _onMessage, onResume: _onResume, onLaunch: _onResume);
+    _firebaseMessaging = FirebaseMessaging.instance;
+    FirebaseMessaging.onMessage.listen(_onMessage);
+    FirebaseMessaging.onMessageOpenedApp.listen(_onResume);
   }
 
-  Future<dynamic> _onMessage(Map<String, dynamic> message) {
-    log.info("_onMessage = " + message.toString());
-    var data = message["data"] ?? message["aps"] ?? message;
+  Future<dynamic> _onMessage(RemoteMessage message) {
+    log.info("_onMessage = " + message.data.toString());
+    var data = message.data["data"] ?? message.data["aps"] ?? message.data;
     if (data != null) {
       _notificationController.add(data);
     }
     return null;
   }
 
-  Future<dynamic> _onResume(Map<String, dynamic> message) {
-    log.info("_onResume = " + message.toString());
-    var data = message["data"] ?? message;
+  Future<dynamic> _onResume(RemoteMessage message) {
+    log.info("_onResume = " + message.data.toString());
+    var data = message.data["data"] ?? message.data;
     if (data != null) {
       _notificationController.add(data);
     }
@@ -42,9 +43,13 @@ class FirebaseNotifications implements Notifications {
   }
 
   @override
-  Future<String> getToken() {
-    _firebaseMessaging.requestNotificationPermissions(
-        const IosNotificationSettings(sound: true, badge: true, alert: true));
-    return _firebaseMessaging.getToken();
+  Future<String> getToken() async {
+    _firebaseNotificationSettings = await _firebaseMessaging.requestPermission(
+        sound: true, badge: true, alert: true);
+    if(_firebaseNotificationSettings.authorizationStatus == AuthorizationStatus.authorized){
+      return _firebaseMessaging.getToken();
+    } else {
+      return null;
+    }
   }
 }

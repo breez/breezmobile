@@ -44,7 +44,7 @@ class PaymentSessionChannel {
     Future sessionCreated = !_payer
         ? Future.value(null)
         : FirebaseDatabase.instance
-            .reference()
+            .ref()
             .child('remote-payments/$_sessionID')
             .update({"lastUpdated": ServerValue.timestamp});
     sessionCreated.then((res) => _watchSessionTermination);
@@ -61,7 +61,7 @@ class PaymentSessionChannel {
     return toSend.then((valueToSend) {
       if (!_terminated) {
         return FirebaseDatabase.instance
-            .reference()
+            .ref()
             .child('remote-payments/$_sessionID/$_myKey')
             .update({"state": valueToSend});
       }
@@ -70,7 +70,7 @@ class PaymentSessionChannel {
 
   Future sendResetMessage() async {
     await FirebaseDatabase.instance
-        .reference()
+        .ref()
         .child('remote-payments/$_sessionID/${_payer ? "payee" : "payer"}')
         .remove();
   }
@@ -85,7 +85,7 @@ class PaymentSessionChannel {
       await _peerTerminatedController.close();
       if (destroyHistory) {
         await FirebaseDatabase.instance
-            .reference()
+            .ref()
             .child('remote-payments/$_sessionID')
             .remove();
       }
@@ -101,7 +101,7 @@ class PaymentSessionChannel {
 
   void _listenIncomingMessages() async {
     var theirData = FirebaseDatabase.instance
-        .reference()
+        .ref()
         .child('remote-payments/$_sessionID/$_theirKey/state');
     _theirDataListener = theirData.onValue.listen((event) async {
       var stateMessage = event.snapshot.value;
@@ -123,7 +123,7 @@ class PaymentSessionChannel {
 
   void _watchSessionTermination() {
     var sessionRoot = FirebaseDatabase.instance
-        .reference()
+        .ref()
         .child('remote-payments/$_sessionID');
     _sessionRootListener = sessionRoot.onValue.listen((event) {
       if (event.snapshot.value == null) {
@@ -135,7 +135,7 @@ class PaymentSessionChannel {
   void _watchPeerReset() {
     var terminationPath = _payer ? '$_sessionID/payer' : '$_sessionID/payee';
     var terminationRef = FirebaseDatabase.instance
-        .reference()
+        .ref()
         .child('remote-payments/$terminationPath');
     _peerResetListener = terminationRef.onValue
         .delay(Duration(milliseconds: 500))
