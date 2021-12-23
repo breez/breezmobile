@@ -18,6 +18,7 @@ class NFCService {
   NFCService() {
     if (Platform.isAndroid) {
       int fnCalls = 0;
+      // Wrap with Future.delayed on debug mode.
       _checkNfcStartedWithTimer =
           Timer.periodic(Duration(milliseconds: 100), (Timer t) {
         if (fnCalls == 5) {

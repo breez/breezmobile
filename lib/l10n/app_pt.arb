@@ -121,5 +121,100 @@
       }
     }
   },
+  "pos_invoice_item_management_title_add": "Adicionar Item",
+  "pos_invoice_item_management_title_edit": "Editar Item",
+  "pos_invoice_item_management_title_save": "SALVAR",
+  "pos_invoice_item_management_field_name_label": "Nome",
+  "pos_invoice_item_management_field_name_hint": "Insira o nome",
+  "pos_invoice_item_management_field_name_error": "O nome é obrigatório",
+  "pos_invoice_item_management_field_price_label": "Preço",
+  "pos_invoice_item_management_field_price_hint": "Insira o preço",
+  "pos_invoice_item_management_field_price_error": "O preço é obrigatório",
+  "pos_invoice_item_management_field_sku_label": "SKU",
+  "pos_invoice_item_management_field_sku_hint": "Insira o SKU",
+  "pos_invoice_item_management_dd_currency_title": "Moeda",
+  "pos_invoice_item_management_image_title": "Selecione uma imagem",
+  "pos_invoice_item_management_error_btc_rate": "Houve uma falha na recuperação das taxas de câmbio do BTC.",
+  "pos_invoice_item_management_avatar_title": "Selecione uma imagem",
+  "pos_invoice_item_management_avatar_search": "Busque por uma imagem",
+  "pos_invoice_tab_keypad": "Teclado",
+  "pos_invoice_tab_items": "Itens",
+  "pos_invoice_charge_label": "COBRAR {amount} {currencyName}",
+  "@pos_invoice_charge_label": {
+    "placeholders": {
+      "amount": {
+        "type": "String",
+        "example": "2.00"
+      },
+      "currencyName": {
+        "type": "String",
+        "example": "USD"
+      }
+    }
+  },
+  "pos_invoice_num_pad_clear": "C",
+  "pos_invoice_num_pad_plus": "+",
+  "pos_invoice_search_hint": "Buscar por nome ou SKU",
+  "pos_invoice_search_empty": "Nenhum item encontrado.",
+  "pos_invoice_search_no_items": "Nenhum item a ser exibido.\nAdicione itens aqui utilizando o botão '+'.",
+  "pos_invoice_error_fiat_exchange_rates": "Não foi possível recuperar as cotações das moedas fiduciárias.",
+  "pos_invoice_error_submit_header": "Informações incompletas",
+  "pos_invoice_error_submit_name_avatar": "Por favor adicione o seu nome comercial e selecione a logomarca da empresa na tela de Configurações.",
+  "pos_invoice_error_submit_name_only": "Por favor adicione o seu nome comercial na tela de Configurações.",
+  "pos_invoice_error_submit_avatar_only": "Por favor adicione a logomarca da empresa na tela de Configurações.",
+  "pos_invoice_error_fix_action": "IR PARA CONFIGURAÇÕES",
+  "pos_invoice_error_capacity_header": "Sua conta não possui o volume necessário para receber este pagamento.",
+  "pos_invoice_error_capacity_message": "O maior pagamento que a sua conta pode receber é de {maxAllowed}. Por favor insira um valor inferior a este.",
+  "@pos_invoice_error_capacity_message": {
+    "placeholders": {
+      "maxAllowed": {
+        "type": "String",
+        "example": "2.00"
+      }
+    }
+  },
+  "pos_invoice_error_payment_size_header": "Você excedeu o valor limite de pagamento.",
+  "pos_invoice_error_payment_size_message": "O valor máximo de pagamento na Rede Relâmpago é de {maxAllowed}. Por favor insira um valor inferior ou complete o pagamento em multiplas transações.",
+  "@pos_invoice_error_payment_size_message": {
+    "placeholders": {
+      "maxAllowed": {
+        "type": "String",
+        "example": "2.00"
+      }
+    }
+  },
+  "pos_invoice_close": "FECHAR",
+  "pos_invoice_clear_sale_header": "Limpar carrinho?",
+  "pos_invoice_clear_sale_message": "Esta ação removerá todos os items do carrinho.",
+  "pos_invoice_clear_sale_cancel": "CANCELAR",
+  "pos_invoice_clear_sale_confirm": "LIMPAR",
+  "pos_transactions_title": "Transações",
+  "pos_transactions_placeholder": "As transações concluídas aparecerão aqui.",
+  "pos_transactions_action_export": "Exportar",
+  "pos_transactions_action_export_failed": "Falha na exportação das transações.",
+  "pos_transactions_range_no_transactions": "Não há transações no período selecionado",
+  "pos_transactions_range_dialog_title": "Escolha um período:",
+  "pos_transactions_range_dialog_start": "Início",
+  "pos_transactions_range_dialog_end": "Fim",
+  "pos_transactions_range_dialog_clear": "LIMPAR",
+  "pos_transactions_range_dialog_apply": "APLICAR FILTRO",
+  "pos_transactions_item_positive": "{value}",
+  "@pos_transactions_item_positive": {
+    "placeholders": {
+      "value": {
+        "type": "String",
+        "example": "1.234"
+      }
+    }
+  },
+  "pos_transactions_item_negative": "- {value}",
+  "@pos_transactions_item_negative": {
+    "placeholders": {
+      "value": {
+        "type": "String",
+        "example": "1.234"
+      }
+    }
+  },
   "app_name": "Breez"
 }

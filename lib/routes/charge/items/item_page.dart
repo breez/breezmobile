@@ -18,6 +18,7 @@ import 'package:breez/widgets/single_button_bottom_bar.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import '../currency_wrapper.dart';
 import 'item_avatar_picker.dart';
@@ -26,7 +27,10 @@ class ItemPage extends StatefulWidget {
   final Item item;
   final PosCatalogBloc _posCatalogBloc;
 
-  ItemPage(this._posCatalogBloc, {this.item});
+  ItemPage(
+    this._posCatalogBloc, {
+    this.item,
+  });
 
   @override
   State<StatefulWidget> createState() {
@@ -36,39 +40,49 @@ class ItemPage extends StatefulWidget {
 
 class ItemPageState extends State<ItemPage> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
-
   final _formKey = GlobalKey<FormState>();
-  TextEditingController _nameController = TextEditingController();
-  TextEditingController _priceController = TextEditingController();
-  TextEditingController _skuController = TextEditingController();
+
+  final _nameController = TextEditingController();
+  final _priceController = TextEditingController();
+  final _skuController = TextEditingController();
+
   AccountBloc _accountBloc;
   bool _isInit = false;
-  String _title = "Add Item";
+  String _title = "";
   String _itemImage;
   CurrencyWrapper _selectedCurrency = CurrencyWrapper.fromBTC(Currency.SAT);
 
   @override
   void didChangeDependencies() {
     if (!_isInit) {
+      final texts = AppLocalizations.of(context);
       _accountBloc = AppBlocsProvider.of<AccountBloc>(context);
+
+      _title = texts.pos_invoice_item_management_title_add;
       FetchRates fetchRatesAction = FetchRates();
       _accountBloc.userActionsSink.add(fetchRatesAction);
       _accountBloc.accountStream.first.then((accountModel) {
         if (widget.item != null) {
           setState(() {
-            _title = "Edit Item";
+            _title = texts.pos_invoice_item_management_title_edit;
             _itemImage = widget.item.imageURL;
             _nameController.text = widget.item.name;
             _skuController.text = widget.item.sku;
             _selectedCurrency = CurrencyWrapper.fromShortName(
-                widget.item.currency, accountModel);
+                  widget.item.currency,
+                  accountModel,
+                ) ??
+                _selectedCurrency;
             _priceController.text = _formattedPrice(widget.item.price);
           });
         } else {
           widget._posCatalogBloc.selectedCurrencyStream.listen((currency) {
             setState(() {
-              _selectedCurrency =
-                  CurrencyWrapper.fromShortName(currency, accountModel);
+              _selectedCurrency = CurrencyWrapper.fromShortName(
+                    currency,
+                    accountModel,
+                  ) ??
+                  _selectedCurrency;
             });
           });
         }
@@ -77,8 +91,10 @@ class ItemPageState extends State<ItemPage> {
       fetchRatesAction.future.catchError((err) {
         if (this.mounted) {
           setState(() {
-            showFlushbar(context,
-                message: "Failed to retrieve BTC exchange rate.");
+            showFlushbar(
+              context,
+              message: texts.pos_invoice_item_management_error_btc_rate,
+            );
           });
         }
       });
@@ -89,7 +105,9 @@ class ItemPageState extends State<ItemPage> {
   }
 
   Widget build(BuildContext context) {
+    final themeData = Theme.of(context);
     return _buildScaffold(
+      context,
       ListView(
         children: <Widget>[
           Padding(
@@ -101,21 +119,7 @@ class ItemPageState extends State<ItemPage> {
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   _buildItemAvatarPicker(context),
-                  TextFormField(
-                    textCapitalization: TextCapitalization.words,
-                    controller: _nameController,
-                    decoration: InputDecoration(
-                        labelText: "Name",
-                        hintText: "Enter a name",
-                        border: UnderlineInputBorder()),
-                    style: theme.FieldTextStyle.textStyle,
-                    validator: (value) {
-                      if (value.trim().length == 0) {
-                        return "Name is required";
-                      }
-                      return null;
-                    },
-                  ),
+                  _nameField(context),
                   Container(
                     padding: const EdgeInsets.only(top: 8.0),
                     child: Row(
@@ -125,25 +129,7 @@ class ItemPageState extends State<ItemPage> {
                       children: <Widget>[
                         Expanded(
                           flex: 1,
-                          child: TextFormField(
-                              keyboardType: TextInputType.numberWithOptions(
-                                  decimal: true),
-                              inputFormatters: [
-                                FilteringTextInputFormatter.allow(
-                                    _selectedCurrency.whitelistedPattern)
-                              ],
-                              controller: _priceController,
-                              decoration: InputDecoration(
-                                  labelText: "Price",
-                                  hintText: "Enter a price",
-                                  border: UnderlineInputBorder()),
-                              style: theme.FieldTextStyle.textStyle,
-                              validator: (value) {
-                                if (value.length == 0) {
-                                  return "Price is required";
-                                }
-                                return null;
-                              }),
+                          child: _priceField(context),
                         ),
                         SizedBox(
                           width: 8.0,
@@ -151,76 +137,28 @@ class ItemPageState extends State<ItemPage> {
                         Container(
                           width: 80,
                           child: Theme(
-                              data: Theme.of(context).copyWith(
-                                  canvasColor: Theme.of(context).canvasColor),
-                              child: StreamBuilder<AccountModel>(
-                                  stream: _accountBloc.accountStream,
-                                  builder: (settingCtx, snapshot) {
-                                    AccountModel account = snapshot.data;
-                                    if (!snapshot.hasData) {
-                                      return Container();
-                                    }
+                            data: themeData.copyWith(
+                              canvasColor: themeData.canvasColor,
+                            ),
+                            child: StreamBuilder<AccountModel>(
+                              stream: _accountBloc.accountStream,
+                              builder: (settingCtx, snapshot) {
+                                AccountModel account = snapshot.data;
+                                if (!snapshot.hasData) {
+                                  return Container();
+                                }
 
-                                    return DropdownButtonHideUnderline(
-                                      child: DropdownButtonFormField(
-                                        iconEnabledColor: Colors.white,
-                                        isDense: true,
-                                        decoration: InputDecoration(
-                                          labelText: 'Currency',
-                                          contentPadding: EdgeInsets.symmetric(
-                                              vertical: 10.6 *
-                                                  MediaQuery.of(this.context)
-                                                      .textScaleFactor),
-                                        ),
-                                        value: _selectedCurrency.shortName,
-                                        onChanged: (value) =>
-                                            _changeCurrency(account, value),
-                                        items: Currency.currencies.map(
-                                            (Currency value) {
-                                          return DropdownMenuItem<String>(
-                                            value: value.tickerSymbol,
-                                            child: Text(
-                                              value.tickerSymbol,
-                                              style: theme
-                                                  .FieldTextStyle.textStyle
-                                                  .copyWith(
-                                                      color: Theme.of(context)
-                                                          .colorScheme.secondary),
-                                            ),
-                                          );
-                                        }).toList()
-                                          ..addAll(account.fiatConversionList
-                                              .map((FiatConversion fiat) {
-                                            return new DropdownMenuItem<String>(
-                                              value:
-                                                  fiat.currencyData.shortName,
-                                              child: new Text(
-                                                fiat.currencyData.shortName,
-                                                style: theme
-                                                    .FieldTextStyle.textStyle
-                                                    .copyWith(
-                                                        color: Theme.of(context)
-                                                            .colorScheme.secondary),
-                                              ),
-                                            );
-                                          }).toList()),
-                                      ),
-                                    );
-                                  })),
+                                return _dropDown(context, account);
+                              },
+                            ),
+                          ),
                         ),
                       ],
                     ),
                   ),
                   Container(
                     padding: const EdgeInsets.only(top: 8.0),
-                    child: TextFormField(
-                      controller: _skuController,
-                      decoration: InputDecoration(
-                          labelText: "SKU",
-                          hintText: "Enter a SKU",
-                          border: UnderlineInputBorder()),
-                      style: theme.FieldTextStyle.textStyle,
-                    ),
+                    child: _skuField(context),
                   ),
                 ],
               ),
@@ -231,42 +169,161 @@ class ItemPageState extends State<ItemPage> {
     );
   }
 
-  _buildItemAvatarPicker(BuildContext context) {
-    return GestureDetector(
-        onTap: () {
-          var avatarPickerRoute = FadeInRoute(
-              builder: (_) => ItemAvatarPicker(
-                    _itemImage,
-                    (value) => _onImageSelected(value),
-                    itemName: _nameController.text,
-                  ));
-          Navigator.of(context).push(avatarPickerRoute);
-        },
-        child: ((_itemImage == null || _itemImage == "") &&
-                (_nameController.text == null ||
-                    _nameController.text.trim() == ""))
-            ? _buildSelectImageButton(context)
-            : ItemAvatar(
-                _itemImage,
-                itemName: _nameController.text,
-                radius: 48,
-                useDecoration: true,
-              ));
+  Widget _nameField(BuildContext context) {
+    final texts = AppLocalizations.of(context);
+    return TextFormField(
+      textCapitalization: TextCapitalization.words,
+      controller: _nameController,
+      decoration: InputDecoration(
+        labelText: texts.pos_invoice_item_management_field_name_label,
+        hintText: texts.pos_invoice_item_management_field_name_hint,
+        border: UnderlineInputBorder(),
+      ),
+      style: theme.FieldTextStyle.textStyle,
+      validator: (value) {
+        if (value.trim().length == 0) {
+          return texts.pos_invoice_item_management_field_name_error;
+        }
+        return null;
+      },
+    );
   }
 
-  Container _buildSelectImageButton(BuildContext context) {
+  Widget _priceField(BuildContext context) {
+    final texts = AppLocalizations.of(context);
+    return TextFormField(
+      keyboardType: TextInputType.numberWithOptions(
+        decimal: true,
+      ),
+      inputFormatters: [
+        FilteringTextInputFormatter.allow(
+          _selectedCurrency.whitelistedPattern,
+        ),
+      ],
+      controller: _priceController,
+      decoration: InputDecoration(
+        labelText: texts.pos_invoice_item_management_field_price_label,
+        hintText: texts.pos_invoice_item_management_field_price_hint,
+        border: UnderlineInputBorder(),
+      ),
+      style: theme.FieldTextStyle.textStyle,
+      validator: (value) {
+        if (value.length == 0) {
+          return texts.pos_invoice_item_management_field_price_error;
+        }
+        return null;
+      },
+    );
+  }
+
+  Widget _skuField(BuildContext context) {
+    final texts = AppLocalizations.of(context);
+    return TextFormField(
+      controller: _skuController,
+      decoration: InputDecoration(
+        labelText: texts.pos_invoice_item_management_field_sku_label,
+        hintText: texts.pos_invoice_item_management_field_sku_hint,
+        border: UnderlineInputBorder(),
+      ),
+      style: theme.FieldTextStyle.textStyle,
+    );
+  }
+
+  Widget _dropDown(
+    BuildContext context,
+    AccountModel account,
+  ) {
+    final texts = AppLocalizations.of(context);
+    final themeData = Theme.of(context);
+    final queryData = MediaQuery.of(this.context);
+
+    return DropdownButtonHideUnderline(
+      child: DropdownButtonFormField(
+        iconEnabledColor: Colors.white,
+        isDense: true,
+        decoration: InputDecoration(
+          labelText: texts.pos_invoice_item_management_dd_currency_title,
+          contentPadding: EdgeInsets.symmetric(
+            vertical: 10.6 * queryData.textScaleFactor,
+          ),
+        ),
+        value: _selectedCurrency.shortName,
+        onChanged: (value) => _changeCurrency(account, value),
+        items: Currency.currencies.map((Currency value) {
+          return DropdownMenuItem<String>(
+            value: value.tickerSymbol,
+            child: Text(
+              value.tickerSymbol,
+              style: theme.FieldTextStyle.textStyle.copyWith(
+                color: themeData.colorScheme.secondary,
+              ),
+            ),
+          );
+        }).toList()
+          ..addAll(account.fiatConversionList.map((FiatConversion fiat) {
+            return new DropdownMenuItem<String>(
+              value: fiat.currencyData.shortName,
+              child: new Text(
+                fiat.currencyData.shortName,
+                style: theme.FieldTextStyle.textStyle.copyWith(
+                  color: themeData.colorScheme.secondary,
+                ),
+              ),
+            );
+          }).toList()),
+      ),
+    );
+  }
+
+  Widget _buildItemAvatarPicker(BuildContext context) {
+    final name = _nameController.text?.trim();
+    final missingImage = _itemImage == null || _itemImage == "";
+    final missingName = name == null || name == "";
+
+    return GestureDetector(
+      onTap: () => Navigator.of(context).push(
+        FadeInRoute(
+          builder: (_) => ItemAvatarPicker(
+            _itemImage,
+            (value) => _onImageSelected(value),
+            itemName: name,
+          ),
+        ),
+      ),
+      child: (missingImage && missingName)
+          ? _buildSelectImageButton(context)
+          : ItemAvatar(
+              _itemImage,
+              itemName: name,
+              radius: 48,
+              useDecoration: true,
+            ),
+    );
+  }
+
+  Widget _buildSelectImageButton(BuildContext context) {
+    final texts = AppLocalizations.of(context);
+    final themeData = Theme.of(context);
+
     return Container(
       width: 96,
       height: 96,
       decoration: BoxDecoration(
-          shape: BoxShape.circle,
-          border: Border.all(
-              color: Colors.white, width: 1.0, style: BorderStyle.solid),
-          image: DecorationImage(
-              colorFilter: ColorFilter.mode(
-                  Theme.of(context).primaryColorLight, BlendMode.srcATop),
-              image: AssetImage("src/images/avatarbg.png"),
-              fit: BoxFit.cover)),
+        shape: BoxShape.circle,
+        border: Border.all(
+          color: Colors.white,
+          width: 1.0,
+          style: BorderStyle.solid,
+        ),
+        image: DecorationImage(
+          colorFilter: ColorFilter.mode(
+            themeData.primaryColorLight,
+            BlendMode.srcATop,
+          ),
+          image: AssetImage("src/images/avatarbg.png"),
+          fit: BoxFit.cover,
+        ),
+      ),
       child: Column(
         mainAxisSize: MainAxisSize.max,
         mainAxisAlignment: MainAxisAlignment.center,
@@ -276,16 +333,17 @@ class ItemPageState extends State<ItemPage> {
           Padding(
             padding: const EdgeInsets.only(left: 8, right: 8),
             child: AutoSizeText(
-              "Select Image",
+              texts.pos_invoice_item_management_image_title,
               textAlign: TextAlign.center,
-              maxLines: 1,
+              maxLines: 2,
               minFontSize: MinFontSize(context).minFontSize,
               stepGranularity: 0.1,
               style: TextStyle(
-                  fontSize: 12.3,
-                  color: Color.fromRGBO(255, 255, 255, 0.88),
-                  letterSpacing: 0.0,
-                  fontFamily: "IBMPlexSans"),
+                fontSize: 12.3,
+                color: Color.fromRGBO(255, 255, 255, 0.88),
+                letterSpacing: 0.0,
+                fontFamily: "IBMPlexSans",
+              ),
             ),
           ),
         ],
@@ -293,82 +351,93 @@ class ItemPageState extends State<ItemPage> {
     );
   }
 
-  _onImageSelected(String selectedImage) {
+  void _onImageSelected(String selectedImage) {
     setState(() {
       _itemImage = selectedImage;
     });
   }
 
-  _changeCurrency(AccountModel accountModel, value) {
+  void _changeCurrency(AccountModel accountModel, value) {
     setState(() {
       _selectedCurrency = CurrencyWrapper.fromShortName(value, accountModel);
       if (_priceController.text.isNotEmpty) {
-        _priceController.text =
-            _formattedPrice(double.parse(_priceController.text));
+        _priceController.text = _formattedPrice(
+          double.parse(_priceController.text),
+        );
       }
     });
-    widget._posCatalogBloc.actionsSink.add(UpdatePosItemAdditionCurrency(value));
+    widget._posCatalogBloc.actionsSink.add(
+      UpdatePosItemAdditionCurrency(value),
+    );
   }
 
   String _formattedPrice(double price) {
-    return _selectedCurrency.format(price,
-        userInput: true, removeTrailingZeros: true);
+    return _selectedCurrency.format(
+      price,
+      userInput: true,
+      removeTrailingZeros: true,
+    );
   }
 
-  Widget _buildScaffold(Widget body, [List<Widget> actions]) {
+  Widget _buildScaffold(
+    BuildContext context,
+    Widget body, [
+    List<Widget> actions,
+  ]) {
+    final texts = AppLocalizations.of(context);
+    final themeData = Theme.of(context);
+
     return Scaffold(
       key: _scaffoldKey,
       appBar: AppBar(
-        iconTheme: Theme.of(context).appBarTheme.iconTheme,
-        textTheme: Theme.of(context).appBarTheme.textTheme,
-        backgroundColor: Theme.of(context).canvasColor,
+        iconTheme: themeData.appBarTheme.iconTheme,
+        textTheme: themeData.appBarTheme.textTheme,
+        backgroundColor: themeData.canvasColor,
         leading: backBtn.BackButton(),
         title: Text(
           _title,
-          style: Theme.of(context).appBarTheme.textTheme.headline6,
+          style: themeData.appBarTheme.textTheme.headline6,
         ),
         actions: actions == null ? <Widget>[] : actions,
         elevation: 0.0,
       ),
       body: body,
       bottomNavigationBar: SingleButtonBottomBar(
-        text: widget.item != null ? "SAVE" : _title.toUpperCase(),
+        text: widget.item != null
+            ? texts.pos_invoice_item_management_title_save
+            : _title.toUpperCase(),
         onPressed: () {
-          {
-            if (_formKey.currentState.validate()) {
-              if (widget.item != null) {
-                UpdateItem updateItem = UpdateItem(widget.item.copyWith(
-                    imageURL: _itemImage != null && _itemImage.isNotEmpty
-                        ? _itemImage
-                        : null,
-                    name: _nameController.text.trimRight(),
-                    currency: _selectedCurrency.shortName,
-                    price: double.parse(_priceController.text),
-                    sku: _skuController.text.isNotEmpty
-                        ? _skuController.text
-                        : null));
-                widget._posCatalogBloc.actionsSink.add(updateItem);
-                updateItem.future.then((_) {
-                  Navigator.pop(context);
-                });
-              } else {
-                AddItem addItem = AddItem(
-                  Item(
-                      imageURL: _itemImage != null && _itemImage.isNotEmpty
-                          ? _itemImage
-                          : null,
-                      name: _nameController.text.trimRight(),
-                      currency: _selectedCurrency.shortName,
-                      price: double.parse(_priceController.text),
-                      sku: _skuController.text.isNotEmpty
-                          ? _skuController.text
-                          : null),
-                );
-                widget._posCatalogBloc.actionsSink.add(addItem);
-                addItem.future.then((_) {
-                  Navigator.pop(context);
-                });
-              }
+          if (_formKey.currentState.validate()) {
+            if (widget.item != null) {
+              UpdateItem updateItem = UpdateItem(
+                widget.item.copyWith(
+                  imageURL: _itemImage != null && _itemImage.isNotEmpty
+                      ? _itemImage
+                      : null,
+                  name: _nameController.text.trimRight(),
+                  currency: _selectedCurrency.shortName,
+                  price: double.parse(_priceController.text),
+                  sku: _skuController.text,
+                ),
+              );
+              widget._posCatalogBloc.actionsSink.add(updateItem);
+              updateItem.future.then((_) {
+                Navigator.pop(context);
+              });
+            } else {
+              AddItem addItem = AddItem(
+                Item(
+                  imageURL: _itemImage,
+                  name: _nameController.text.trimRight(),
+                  currency: _selectedCurrency.shortName,
+                  price: double.parse(_priceController.text),
+                  sku: _skuController.text,
+                ),
+              );
+              widget._posCatalogBloc.actionsSink.add(addItem);
+              addItem.future.then((_) {
+                Navigator.pop(context);
+              });
             }
           }
         },

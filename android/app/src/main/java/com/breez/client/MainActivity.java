@@ -3,7 +3,9 @@ package com.breez.client;
 import com.breez.client.plugins.breez.breezlib.Breez;
 import com.breez.client.plugins.breez.*;
 import com.ryanheise.audioservice.AudioService;
+import com.ryanheise.audioservice.AudioServicePlugin;
 
+import android.content.Context;
 import android.content.Intent;
 import io.flutter.embedding.android.FlutterFragmentActivity;
 import io.flutter.embedding.android.SplashScreen;
@@ -13,6 +15,7 @@ import android.view.WindowManager.LayoutParams;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 public class MainActivity extends FlutterFragmentActivity {
     private static final String TAG = "Breez";
@@ -23,7 +26,12 @@ public class MainActivity extends FlutterFragmentActivity {
         BreezApplication.isRunning = true;
 
         registerBreezPlugins(flutterEngine);
-        GeneratedPluginRegistrant.registerWith(flutterEngine);
+    }
+
+    @Override
+    @Nullable
+    public FlutterEngine provideFlutterEngine(@NonNull Context context) {
+        return AudioServicePlugin.getFlutterEngine(context);
     }
 
     @Override

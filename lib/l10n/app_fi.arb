@@ -121,5 +121,72 @@
       }
     }
   },
+  "pos_invoice_item_management_title_add": "Lisää tuote",
+  "pos_invoice_item_management_title_edit": "Muokkaa tuotetta",
+  "pos_invoice_item_management_title_save": "TALLENNA",
+  "pos_invoice_item_management_field_name_label": "Tuotenimi",
+  "pos_invoice_item_management_field_name_hint": "Syötä tuotenimi",
+  "pos_invoice_item_management_field_name_error": "Tuotenimi on pakollinen",
+  "pos_invoice_item_management_field_price_label": "Hinta",
+  "pos_invoice_item_management_field_price_hint": "Syötä tuotteen hinta",
+  "pos_invoice_item_management_field_price_error": "Tuotteen hinta on pakollinen",
+  "pos_invoice_item_management_field_sku_label": "Tuotetunnus",
+  "pos_invoice_item_management_field_sku_hint": "Syötä tuotetunnus",
+  "pos_invoice_item_management_dd_currency_title": "Valuutta",
+  "pos_invoice_item_management_image_title": "Valitse kuva",
+  "pos_invoice_item_management_error_btc_rate": "Bitcoin-vaihtokurssin noutaminen ei onnistunut (tarkista verkkoyhteys).",
+  "pos_invoice_item_management_avatar_title": "Valitse kuva",
+  "pos_invoice_item_management_avatar_search": "Etsi kuva",
+  "pos_invoice_tab_keypad": "Näppäimistö",
+  "pos_invoice_tab_items": "Tuotteet",
+  "pos_invoice_charge_label": "VELOITA {amount} {currencyName}",
+  "@pos_invoice_charge_label": {
+    "placeholders": {
+      "amount": {
+        "type": "String",
+        "example": "2.00"
+      },
+      "currencyName": {
+        "type": "String",
+        "example": "USD"
+      }
+    }
+  },
+  "pos_invoice_num_pad_clear": "C",
+  "pos_invoice_num_pad_plus": "+",
+  "pos_invoice_search_hint": "Etsi tuotenimellä tai -tunnuksella",
+  "pos_invoice_search_empty": "Etsimiäsi tuotteita ei löytynyt.",
+  "pos_invoice_search_no_items": "Tuotelista on tyhjä..\nLisää tuotteita näkymään painamalla '+'-merkkiä.",
+  "pos_invoice_error_fiat_exchange_rates": "Valuuttojen vaihtokurssien hakeminen epäonnistui.",
+  "pos_invoice_error_submit_header": "Pakollinen tieto",
+  "pos_invoice_error_submit_name_avatar": "Syötä organisaation nimi ja valitse logo-tiedosto Asetukset-näkymästä.",
+  "pos_invoice_error_submit_name_only": "Syötä organisaation nimi Asetukset-näkymässä.",
+  "pos_invoice_error_submit_avatar_only": "Valitse logo-tiedosto Asetukset-näkymässä.",
+  "pos_invoice_error_fix_action": "SIIRRY ASETUKSIIN",
+  "pos_invoice_error_capacity_header": "Maksun vastaaottaminen ei onnistu, koska kapasiteetti ei riitä.",
+  "pos_invoice_error_capacity_message": "Vastaanotettavan maksun enimmäismäärä on {maxAllowed}. Syötä pienempi määrä.",
+  "@pos_invoice_error_capacity_message": {
+    "placeholders": {
+      "maxAllowed": {
+        "type": "String",
+        "example": "2.00"
+      }
+    }
+  },
+  "pos_invoice_error_payment_size_header": "Olet ylittänyt maksun enimmäismäärän.",
+  "pos_invoice_error_payment_size_message": "Lightning Network -verkon maksun enimmäismäärä on {maxAllowed}. Syötä pienempi määrä tai suorita maksu jakamalla se useampaan maksutapahtumaan.",
+  "@pos_invoice_error_payment_size_message": {
+    "placeholders": {
+      "maxAllowed": {
+        "type": "String",
+        "example": "2.00"
+      }
+    }
+  },
+  "pos_invoice_close": "SULJE",
+  "pos_invoice_clear_sale_header": "Tyhjennä myynti?",
+  "pos_invoice_clear_sale_message": "Tämä tyhjentää nykyisen myynti tapahtuman tiedot.",
+  "pos_invoice_clear_sale_cancel": "PALAA",
+  "pos_invoice_clear_sale_confirm": "TYHJENNÄ",
   "app_name": "Breez"
 }
