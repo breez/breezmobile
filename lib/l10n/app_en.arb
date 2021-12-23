@@ -267,6 +267,53 @@
       }
     }
   },
+  "sale_view_title": "Current Sale",
+  "sale_view_note_hint": "Add Note",
+  "sale_view_print": "Print",
+  "sale_view_total_title_read_only_no_fiat": "{value}",
+  "@sale_view_total_title_read_only_no_fiat": {
+    "placeholders": {
+      "value": {
+        "type": "String",
+        "example": "1.234"
+      }
+    }
+  },
+  "sale_view_total_title_charge_no_fiat": "CHARGE {value}",
+  "@sale_view_total_title_charge_no_fiat": {
+    "placeholders": {
+      "value": {
+        "type": "String",
+        "example": "1.234"
+      }
+    }
+  },
+  "sale_view_total_title_read_only_fiat": "{value} ({fiatValue})",
+  "@sale_view_total_title_read_only_fiat": {
+    "placeholders": {
+      "value": {
+        "type": "String",
+        "example": "1.234"
+      },
+      "fiatValue": {
+        "type": "String",
+        "example": "1.23"
+      }
+    }
+  },
+  "sale_view_total_title_charge_fiat": "CHARGE {value} ({fiatValue})",
+  "@sale_view_total_title_charge_fiat": {
+    "placeholders": {
+      "value": {
+        "type": "String",
+        "example": "1.234"
+      },
+      "fiatValue": {
+        "type": "String",
+        "example": "1.23"
+      }
+    }
+  },
   "locale": "en",
   "app_name": "Breez"
 }
