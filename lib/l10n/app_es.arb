@@ -320,6 +320,8 @@
       }
     }
   },
+  "fiat_currencies_title": "Monedas Fíat",
+  "fiat_currencies_save_fail": "Error al guardar los cambios.",
   "locale": "es",
   "app_name": "Breez"
 }

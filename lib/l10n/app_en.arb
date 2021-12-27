@@ -320,6 +320,8 @@
       }
     }
   },
+  "fiat_currencies_title": "Fiat Currencies",
+  "fiat_currencies_save_fail": "Failed to save changes.",
   "locale": "en",
   "app_name": "Breez"
 }
