@@ -4,6 +4,7 @@ import 'package:breez/bloc/account/account_bloc.dart';
 import 'package:breez/bloc/account/account_model.dart';
 import 'package:breez/bloc/user_profile/user_actions.dart';
 import 'package:breez/bloc/user_profile/user_profile_bloc.dart';
+import 'package:breez/services/currency_data.dart';
 import 'package:breez/theme_data.dart' as theme;
 import 'package:breez/widgets/back_button.dart' as backBtn;
 import 'package:breez/widgets/flushbar.dart';
@@ -139,6 +140,7 @@ class FiatCurrencySettingsState extends State<FiatCurrencySettings> {
     AccountModel account,
     int index,
   ) {
+    final texts = AppLocalizations.of(context);
     final themeData = Theme.of(context);
 
     final fiatConversion = account.fiatConversionList[index];
@@ -175,7 +177,7 @@ class FiatCurrencySettingsState extends State<FiatCurrencySettings> {
         });
       },
       subtitle: Text(
-        currencyData.name,
+        _subtitle(texts, currencyData),
         style: theme.fiatConversionDescriptionStyle,
       ),
       title: RichText(
@@ -191,6 +193,11 @@ class FiatCurrencySettingsState extends State<FiatCurrencySettings> {
         ),
       ),
     );
+  }
+
+  String _subtitle(AppLocalizations texts, CurrencyData currencyData) {
+    final localizedName = currencyData.localizedName[texts.locale];
+    return localizedName ?? currencyData.name;
   }
 
   void _onReorder(
