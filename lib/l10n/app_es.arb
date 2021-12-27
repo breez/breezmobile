@@ -38,6 +38,12 @@
       }
     }
   },
+  "payments_filter_action_export": "Exportar",
+  "payments_filter_action_export_failed": "No se pudieron exportar las transacciones.",
+  "payments_filter_option_all": "Todas las transacciones",
+  "payments_filter_option_sent": "Enviados",
+  "payments_filter_option_received": "Recibidos",
+  "payments_filter_message_loading_transactions": "Por favor espere mientras se cargan las transacciones.",
   "payment_details_dialog_closed_channel_title": "Canal cerrado",
   "payment_details_dialog_closed_channel_title_pending": "Canal en cerramiento",
   "payment_details_dialog_closed_channel_ok": "OK",

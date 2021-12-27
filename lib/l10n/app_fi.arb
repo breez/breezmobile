@@ -38,6 +38,12 @@
       }
     }
   },
+  "payments_filter_action_export": "Export",
+  "payments_filter_action_export_failed": "Failed to export payments.",
+  "payments_filter_option_all": "All Activities",
+  "payments_filter_option_sent": "Sent",
+  "payments_filter_option_received": "Received",
+  "payments_filter_message_loading_transactions": "Please wait while Breez is loading transactions.",
   "payment_details_dialog_closed_channel_title": "Kanava on suljettu ",
   "payment_details_dialog_closed_channel_title_pending": "Odotetaan suljettua kanavaa",
   "payment_details_dialog_closed_channel_ok": "OK",
