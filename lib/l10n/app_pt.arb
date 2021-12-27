@@ -320,6 +320,8 @@
       }
     }
   },
+  "fiat_currencies_title": "Moedas fiduciárias",
+  "fiat_currencies_save_fail": "Falha ao salvar as alterações",
   "locale": "pt",
   "app_name": "Breez"
 }

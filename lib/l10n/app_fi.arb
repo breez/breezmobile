@@ -320,6 +320,8 @@
       }
     }
   },
+  "fiat_currencies_title": "Valuutat",
+  "fiat_currencies_save_fail": "Failed to save changes.",
   "locale": "fi",
   "app_name": "Breez"
 }
