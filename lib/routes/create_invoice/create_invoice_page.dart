@@ -283,7 +283,7 @@ class CreateInvoicePageState extends State<CreateInvoicePage> {
     if (_withdrawFetchResponse == null) {
       return Container(
         width: MediaQuery.of(context).size.width,
-        height: 142,
+        height: 164,
         padding: EdgeInsets.only(top: 16.0),
         child: GestureDetector(
           child: Column(
