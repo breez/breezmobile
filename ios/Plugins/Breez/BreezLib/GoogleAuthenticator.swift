@@ -99,44 +99,27 @@ class SignInOperation : Operation {
                 //GIDSignIn.sharedInstance.delegate = self;
                 let viewController = UIApplication.shared.keyWindow!.rootViewController!;
                 self.configuration = GIDConfiguration(clientID: plist["CLIENT_ID"] as! String)
-                //GIDSignIn.sharedInstance.presentingViewController = viewController;
-//                GIDSignIn.sharedInstance.clientID = plist["CLIENT_ID"] as? String;
                 GIDSignIn.sharedInstance.addScopes(["https://www.googleapis.com/auth/drive.appdata"], presenting: viewController);
                 state = .executing;
-                GIDSignIn.sharedInstance.restorePreviousSignIn()
+                GIDSignIn.sharedInstance.restorePreviousSignIn { user, error in
+                    
+                    if let error = error {
+                        if !self.silentOnly {
+                            GIDSignIn.sharedInstance.signIn(with: self.configuration, presenting: UIApplication.shared.keyWindow!.rootViewController!) { user, error in
+                                self.onFinish(withToken: user?.authentication.accessToken, error: error)
+                            };
+                            return
+                        }
+                    }
+                    
+                    self.onFinish(withToken: user?.authentication.accessToken, error: error)                    
+                    
+                  }
                 return;
             }
         }
         
         self.onFinish(withToken: nil, error: NSError(domain: "AuthError", code: 0, userInfo: nil));
-    }
-    
-    func sign(_ signIn: GIDSignIn!, didSignInFor user: GIDGoogleUser!, withError error: Error!) {
-        
-        if (error == nil || self.silentOnly || self.silentSignInFailed) {
-            var accessToken : String? = nil;
-            if (error == nil) {
-                accessToken = user.authentication.accessToken;
-            }
-            self.onFinish(withToken: accessToken, error: error);
-            return;
-        }
-        
-        silentSignInFailed = true;
-        GIDSignIn.sharedInstance.signIn(with: self.configuration, presenting: UIApplication.shared.keyWindow!.rootViewController!);
-    }
-    
-    func sign(_ signIn: GIDSignIn!, present viewController: UIViewController!) {
-        let rootController = UIApplication.shared.keyWindow!.rootViewController;
-        rootController?.present(viewController, animated: true, completion: nil);
-    }
-    
-    func sign(_ signIn: GIDSignIn!, dismiss viewController: UIViewController!) {
-        viewController.dismiss(animated: true, completion: nil);
-    }
-    
-    func sign(_ signIn: GIDSignIn!, didDisconnectWith user: GIDGoogleUser!, withError error: Error!) {
-
     }
     
     func onFinish(withToken : String?, error: Error?){
