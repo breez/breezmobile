@@ -38,6 +38,12 @@
       }
     }
   },
+  "payments_filter_action_export": "Exportar",
+  "payments_filter_action_export_failed": "Falha ao exportar as transações.",
+  "payments_filter_option_all": "Todas as transações",
+  "payments_filter_option_sent": "Enviadas",
+  "payments_filter_option_received": "Recebidas",
+  "payments_filter_message_loading_transactions": "Por favor aguarde enquanto as transações são carregadas.",
   "payment_details_dialog_closed_channel_title": "Canal encerrado",
   "payment_details_dialog_closed_channel_title_pending": "Canal em encerramento",
   "payment_details_dialog_closed_channel_ok": "OK",
@@ -188,6 +194,57 @@
   "pos_invoice_clear_sale_message": "Esta ação removerá todos os items do carrinho.",
   "pos_invoice_clear_sale_cancel": "CANCELAR",
   "pos_invoice_clear_sale_confirm": "LIMPAR",
+  "app_animal_bat": "Morcego",
+  "app_animal_bear": "Urso",
+  "app_animal_boar": "Javali",
+  "app_animal_cat": "Gato",
+  "app_animal_chick": "Frango",
+  "app_animal_cow": "Vaca",
+  "app_animal_deer": "Cervo",
+  "app_animal_dog": "Cão",
+  "app_animal_eagle": "Águia",
+  "app_animal_elephant": "Elefante",
+  "app_animal_fox": "Raposa",
+  "app_animal_frog": "Sapo",
+  "app_animal_hippo": "Hipopótamo",
+  "app_animal_hummingbird": "Beija-flor",
+  "app_animal_koala": "Coala",
+  "app_animal_lion": "Leão",
+  "app_animal_monkey": "Macaco",
+  "app_animal_mouse": "Camundongo",
+  "app_animal_owl": "Coruja",
+  "app_animal_ox": "Boi",
+  "app_animal_panda": "Panda",
+  "app_animal_pig": "Porco",
+  "app_animal_rabbit": "Coelho",
+  "app_animal_seagull": "Gaivota",
+  "app_animal_sheep": "Ovelha",
+  "app_animal_snake": "Cobra",
+  "app_color_salmon": "Salmão",
+  "app_color_blue": "Azul",
+  "app_color_turquoise": "Turquesa",
+  "app_color_orchid": "Orquídea",
+  "app_color_purple": "Roxo",
+  "app_color_tomato": "Rubro",
+  "app_color_cyan": "Ciano",
+  "app_color_crimson": "Carmesim",
+  "app_color_orange": "Laranja",
+  "app_color_lime": "Lima",
+  "app_color_pink": "Rosa",
+  "app_color_green": "Verde",
+  "app_color_red": "Vermelho",
+  "app_color_yellow": "Amarelo",
+  "app_color_azure": "Celeste",
+  "app_color_silver": "Prata",
+  "app_color_magenta": "Magenta",
+  "app_color_olive": "Oliva",
+  "app_color_violet": "Violeta",
+  "app_color_rose": "Rosê",
+  "app_color_wine": "Vinho",
+  "app_color_mint": "Menta",
+  "app_color_indigo": "Índigo",
+  "app_color_jade": "Jade",
+  "app_color_coral": "Coral",
   "pos_transactions_title": "Transações",
   "pos_transactions_placeholder": "As transações concluídas aparecerão aqui.",
   "pos_transactions_action_export": "Exportar",
@@ -216,5 +273,55 @@
       }
     }
   },
+  "sale_view_title": "Venda",
+  "sale_view_note_hint": "Adicionar Nota",
+  "sale_view_print": "Imprimir",
+  "sale_view_total_title_read_only_no_fiat": "{value}",
+  "@sale_view_total_title_read_only_no_fiat": {
+    "placeholders": {
+      "value": {
+        "type": "String",
+        "example": "1.234"
+      }
+    }
+  },
+  "sale_view_total_title_charge_no_fiat": "COBRAR {value}",
+  "@sale_view_total_title_charge_no_fiat": {
+    "placeholders": {
+      "value": {
+        "type": "String",
+        "example": "1.234"
+      }
+    }
+  },
+  "sale_view_total_title_read_only_fiat": "{value} ({fiatValue})",
+  "@sale_view_total_title_read_only_fiat": {
+    "placeholders": {
+      "value": {
+        "type": "String",
+        "example": "1.234"
+      },
+      "fiatValue": {
+        "type": "String",
+        "example": "1.23"
+      }
+    }
+  },
+  "sale_view_total_title_charge_fiat": "COBRAR {value} ({fiatValue})",
+  "@sale_view_total_title_charge_fiat": {
+    "placeholders": {
+      "value": {
+        "type": "String",
+        "example": "1.234"
+      },
+      "fiatValue": {
+        "type": "String",
+        "example": "1.23"
+      }
+    }
+  },
+  "fiat_currencies_title": "Moedas fiduciárias",
+  "fiat_currencies_save_fail": "Falha ao salvar as alterações",
+  "locale": "pt",
   "app_name": "Breez"
 }

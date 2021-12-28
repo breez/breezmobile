@@ -1,39 +1,12 @@
 import 'dart:io';
 
-import 'package:breez/bloc/user_profile/default_profile_generator.dart'
-    as generator;
+import 'package:breez/bloc/user_profile/profile_animal.dart';
+import 'package:breez/bloc/user_profile/profile_color.dart';
 import 'package:breez/theme_data.dart' as theme;
 import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_svg/svg.dart';
-
-final _breezAvatarColors = {
-  "salmon": Color(0xFFFA8072),
-  "blue": Color(0xFF4169E1),
-  "turquoise": Color(0xFF00CED1),
-  "orchid": Color(0xFF9932CC),
-  "purple": Color(0xFF800080),
-  "tomato": Color(0xFFFF6347),
-  "cyan": Color(0xFF008B8B),
-  "crimson": Color(0xFFDC143C),
-  "orange": Color(0xFFFFA500),
-  "lime": Color(0xFF32CD32),
-  "pink": Color(0xFFFF69B4),
-  "green": Color(0xFF00A644),
-  "red": Color(0xFFFF2727),
-  "yellow": Color(0xFFEECA0C),
-  "azure": Color(0xFF00C4FF),
-  "silver": Color(0xFF53687F),
-  "magenta": Color(0xFFFF00FF),
-  "olive": Color(0xFF808000),
-  "violet": Color(0xFF7F01FF),
-  "rose": Color(0xFF7F01FF),
-  "wine": Color(0xFF950347),
-  "mint": Color(0xFF7ADEB8),
-  "indigo": Color(0xFF4B0082),
-  "jade": Color(0xFF00B27A),
-  "coral": Color(0xFFFF7F50),
-};
 
 class BreezAvatar extends StatelessWidget {
   final String avatarURL;
@@ -108,14 +81,14 @@ class _GeneratedAvatar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final texts = AppLocalizations.of(context);
     return CircleAvatar(
       radius: radius,
       backgroundColor: theme.sessionAvatarBackgroundColor,
       child: Icon(
-        IconData(0xe900 + generator.animals.indexOf(animal),
-            fontFamily: 'animals'),
+        profileAnimalFromName(animal, texts).iconData,
         size: radius * 2 * 0.75,
-        color: _breezAvatarColors[color.toLowerCase()],
+        color: profileColorFromName(color, texts).color,
       ),
     );
   }

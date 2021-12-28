@@ -38,6 +38,12 @@
       }
     }
   },
+  "payments_filter_action_export": "Export",
+  "payments_filter_action_export_failed": "Failed to export payments.",
+  "payments_filter_option_all": "All Activities",
+  "payments_filter_option_sent": "Sent",
+  "payments_filter_option_received": "Received",
+  "payments_filter_message_loading_transactions": "Please wait while Breez is loading transactions.",
   "payment_details_dialog_closed_channel_title": "Closed Channel",
   "payment_details_dialog_closed_channel_title_pending": "Pending Closed Channel",
   "payment_details_dialog_closed_channel_ok": "OK",
@@ -188,6 +194,57 @@
   "pos_invoice_clear_sale_message": "This will clear the current transaction.",
   "pos_invoice_clear_sale_cancel": "CANCEL",
   "pos_invoice_clear_sale_confirm": "CLEAR",
+  "app_animal_bat": "Bat",
+  "app_animal_bear": "Bear",
+  "app_animal_boar": "Boar",
+  "app_animal_cat": "Cat",
+  "app_animal_chick": "Chick",
+  "app_animal_cow": "Cow",
+  "app_animal_deer": "Deer",
+  "app_animal_dog": "Dog",
+  "app_animal_eagle": "Eagle",
+  "app_animal_elephant": "Elephant",
+  "app_animal_fox": "Fox",
+  "app_animal_frog": "Frog",
+  "app_animal_hippo": "Hippo",
+  "app_animal_hummingbird": "Hummingbird",
+  "app_animal_koala": "Koala",
+  "app_animal_lion": "Lion",
+  "app_animal_monkey": "Monkey",
+  "app_animal_mouse": "Mouse",
+  "app_animal_owl": "Owl",
+  "app_animal_ox": "Ox",
+  "app_animal_panda": "Panda",
+  "app_animal_pig": "Pig",
+  "app_animal_rabbit": "Rabbit",
+  "app_animal_seagull": "Seagull",
+  "app_animal_sheep": "Sheep",
+  "app_animal_snake": "Snake",
+  "app_color_salmon": "Salmon",
+  "app_color_blue": "Blue",
+  "app_color_turquoise": "Turquoise",
+  "app_color_orchid": "Orchid",
+  "app_color_purple": "Purple",
+  "app_color_tomato": "Tomato",
+  "app_color_cyan": "Cyan",
+  "app_color_crimson": "Crimson",
+  "app_color_orange": "Orange",
+  "app_color_lime": "Lime",
+  "app_color_pink": "Pink",
+  "app_color_green": "Green",
+  "app_color_red": "Red",
+  "app_color_yellow": "Yellow",
+  "app_color_azure": "Azure",
+  "app_color_silver": "Silver",
+  "app_color_magenta": "Magenta",
+  "app_color_olive": "Olive",
+  "app_color_violet": "Violet",
+  "app_color_rose": "Rose",
+  "app_color_wine": "Wine",
+  "app_color_mint": "Mint",
+  "app_color_indigo": "Indigo",
+  "app_color_jade": "Jade",
+  "app_color_coral": "Coral",
   "pos_transactions_title": "Transactions",
   "pos_transactions_placeholder": "Successful transactions are displayed here.",
   "pos_transactions_action_export": "Export",
@@ -216,5 +273,55 @@
       }
     }
   },
+  "sale_view_title": "Current Sale",
+  "sale_view_note_hint": "Add Note",
+  "sale_view_print": "Print",
+  "sale_view_total_title_read_only_no_fiat": "{value}",
+  "@sale_view_total_title_read_only_no_fiat": {
+    "placeholders": {
+      "value": {
+        "type": "String",
+        "example": "1.234"
+      }
+    }
+  },
+  "sale_view_total_title_charge_no_fiat": "CHARGE {value}",
+  "@sale_view_total_title_charge_no_fiat": {
+    "placeholders": {
+      "value": {
+        "type": "String",
+        "example": "1.234"
+      }
+    }
+  },
+  "sale_view_total_title_read_only_fiat": "{value} ({fiatValue})",
+  "@sale_view_total_title_read_only_fiat": {
+    "placeholders": {
+      "value": {
+        "type": "String",
+        "example": "1.234"
+      },
+      "fiatValue": {
+        "type": "String",
+        "example": "1.23"
+      }
+    }
+  },
+  "sale_view_total_title_charge_fiat": "CHARGE {value} ({fiatValue})",
+  "@sale_view_total_title_charge_fiat": {
+    "placeholders": {
+      "value": {
+        "type": "String",
+        "example": "1.234"
+      },
+      "fiatValue": {
+        "type": "String",
+        "example": "1.23"
+      }
+    }
+  },
+  "fiat_currencies_title": "Fiat Currencies",
+  "fiat_currencies_save_fail": "Failed to save changes.",
+  "locale": "en",
   "app_name": "Breez"
 }

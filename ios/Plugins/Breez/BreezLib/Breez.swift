@@ -46,7 +46,7 @@ class Breez : NSObject, FlutterPlugin, BindingsAppServicesProtocol, FlutterStrea
     }
     
     func application(_ application: UIApplication, open url: URL, options: [UIApplication.OpenURLOptionsKey : Any] = [:]) -> Bool {
-        return GIDSignIn.sharedInstance().handle(url as URL?)
+        return GIDSignIn.sharedInstance.handle(url)
     }
     
     func handle(_ call: FlutterMethodCall, result: @escaping FlutterResult) {

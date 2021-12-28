@@ -38,6 +38,12 @@
       }
     }
   },
+  "payments_filter_action_export": "Export",
+  "payments_filter_action_export_failed": "Failed to export payments.",
+  "payments_filter_option_all": "All Activities",
+  "payments_filter_option_sent": "Sent",
+  "payments_filter_option_received": "Received",
+  "payments_filter_message_loading_transactions": "Please wait while Breez is loading transactions.",
   "payment_details_dialog_closed_channel_title": "Kanava on suljettu ",
   "payment_details_dialog_closed_channel_title_pending": "Odotetaan suljettua kanavaa",
   "payment_details_dialog_closed_channel_ok": "OK",
@@ -188,5 +194,134 @@
   "pos_invoice_clear_sale_message": "Tämä tyhjentää nykyisen myynti tapahtuman tiedot.",
   "pos_invoice_clear_sale_cancel": "PALAA",
   "pos_invoice_clear_sale_confirm": "TYHJENNÄ",
+  "app_animal_bat": "Lepakko",
+  "app_animal_bear": "Karhu",
+  "app_animal_boar": "Karju",
+  "app_animal_cat": "Kissa",
+  "app_animal_chick": "Kana",
+  "app_animal_cow": "Lehmä",
+  "app_animal_deer": "Peura",
+  "app_animal_dog": "Koira",
+  "app_animal_eagle": "Kotka",
+  "app_animal_elephant": "Elefantti",
+  "app_animal_fox": "Kettu",
+  "app_animal_frog": "Sammakko",
+  "app_animal_hippo": "Virtahepo",
+  "app_animal_hummingbird": "Kolibri",
+  "app_animal_koala": "Koala",
+  "app_animal_lion": "Leijona",
+  "app_animal_monkey": "Apina",
+  "app_animal_mouse": "Hiiri",
+  "app_animal_owl": "Pöllö",
+  "app_animal_ox": "Härkä",
+  "app_animal_panda": "Panda",
+  "app_animal_pig": "Sika",
+  "app_animal_rabbit": "Kani",
+  "app_animal_seagull": "Lokki",
+  "app_animal_sheep": "Lammas",
+  "app_animal_snake": "Käärme",
+  "app_color_salmon": "Lohi",
+  "app_color_blue": "Sininen",
+  "app_color_turquoise": "Turkoosi",
+  "app_color_orchid": "Orkideanvioletti",
+  "app_color_purple": "Purppuranpunainen",
+  "app_color_tomato": "Tomaatinpunainen",
+  "app_color_cyan": "Syaani",
+  "app_color_crimson": "Karmiininpunainen",
+  "app_color_orange": "Orange",
+  "app_color_lime": "Limenvihreä",
+  "app_color_pink": "Pinkki",
+  "app_color_green": "Vihreä",
+  "app_color_red": "Punainen",
+  "app_color_yellow": "Keltainen",
+  "app_color_azure": "Taivaansininen",
+  "app_color_silver": "Hopea",
+  "app_color_magenta": "Magenta",
+  "app_color_olive": "Oliivinvihreä",
+  "app_color_violet": "Violetti",
+  "app_color_rose": "Ruusunpunainen",
+  "app_color_wine": "Viininpunainen",
+  "app_color_mint": "Mintunvihreä",
+  "app_color_indigo": "Indigon-keltainen",
+  "app_color_jade": "Jadenvihreä",
+  "app_color_coral": "Korallinpunainen",
+  "pos_transactions_title": "Transactions",
+  "pos_transactions_placeholder": "Successful transactions are displayed here.",
+  "pos_transactions_action_export": "Export",
+  "pos_transactions_action_export_failed": "Failed to export payments.",
+  "pos_transactions_range_no_transactions": "There are no transactions in this date range",
+  "pos_transactions_range_dialog_title": "Choose a date range:",
+  "pos_transactions_range_dialog_start": "Start",
+  "pos_transactions_range_dialog_end": "End",
+  "pos_transactions_range_dialog_clear": "CLEAR",
+  "pos_transactions_range_dialog_apply": "APPLY FILTER",
+  "pos_transactions_item_positive": "{value}",
+  "@pos_transactions_item_positive": {
+    "placeholders": {
+      "value": {
+        "type": "String",
+        "example": "1.234"
+      }
+    }
+  },
+  "pos_transactions_item_negative": "- {value}",
+  "@pos_transactions_item_negative": {
+    "placeholders": {
+      "value": {
+        "type": "String",
+        "example": "1.234"
+      }
+    }
+  },
+  "sale_view_title": "Current Sale",
+  "sale_view_note_hint": "Add Note",
+  "sale_view_print": "Print",
+  "sale_view_total_title_read_only_no_fiat": "{value}",
+  "@sale_view_total_title_read_only_no_fiat": {
+    "placeholders": {
+      "value": {
+        "type": "String",
+        "example": "1.234"
+      }
+    }
+  },
+  "sale_view_total_title_charge_no_fiat": "CHARGE {value}",
+  "@sale_view_total_title_charge_no_fiat": {
+    "placeholders": {
+      "value": {
+        "type": "String",
+        "example": "1.234"
+      }
+    }
+  },
+  "sale_view_total_title_read_only_fiat": "{value} ({fiatValue})",
+  "@sale_view_total_title_read_only_fiat": {
+    "placeholders": {
+      "value": {
+        "type": "String",
+        "example": "1.234"
+      },
+      "fiatValue": {
+        "type": "String",
+        "example": "1.23"
+      }
+    }
+  },
+  "sale_view_total_title_charge_fiat": "CHARGE {value} ({fiatValue})",
+  "@sale_view_total_title_charge_fiat": {
+    "placeholders": {
+      "value": {
+        "type": "String",
+        "example": "1.234"
+      },
+      "fiatValue": {
+        "type": "String",
+        "example": "1.23"
+      }
+    }
+  },
+  "fiat_currencies_title": "Valuutat",
+  "fiat_currencies_save_fail": "Failed to save changes.",
+  "locale": "fi",
   "app_name": "Breez"
 }
