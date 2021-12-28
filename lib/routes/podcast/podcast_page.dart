@@ -30,7 +30,6 @@ import 'package:breez/routes/podcast/podcast_index_api.dart';
 import 'package:breez/routes/podcast/share_episode_button.dart';
 import 'package:breez/routes/podcast/share_podcast_button.dart';
 import 'package:breez/routes/podcast/transport_controls.dart';
-import 'package:breez/theme_data.dart' as breezTheme;
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -67,10 +66,11 @@ class AnytimePodcastApp extends StatefulWidget {
         settingsService: mobileSettingsService,
         loadMetadata: (url) => metadataLoader.loadPodcastMetadata(url: url));
     audioPlayerService = DefaultAudioPlayerService(
-      repository: repository,
-      podcastService: podcastService,
-      settingsService: mobileSettingsService,
-      loadEpisodeMetadata: (episode) => metadataLoader.loadEpisodeMetadata(episode: episode));
+        repository: repository,
+        podcastService: podcastService,
+        settingsService: mobileSettingsService,
+        loadEpisodeMetadata: (episode) =>
+            metadataLoader.loadEpisodeMetadata(episode: episode));
     settingsBloc = SettingsBloc(mobileSettingsService);
   }
 
@@ -130,10 +130,10 @@ class _AnytimePodcastAppState extends State<AnytimePodcastApp> {
         Provider<NewPodcastsBloc>(
           create: (_) => NewPodcastsBloc(
               podcastService: MobilePodcastService(
-                api: widget.podcastApi,
-                repository: widget.repository,
-                settingsService: widget.mobileSettingsService,
-              )),
+            api: widget.podcastApi,
+            repository: widget.repository,
+            settingsService: widget.mobileSettingsService,
+          )),
           dispose: (_, value) => value.dispose(),
         ),
         Provider<EpisodeBloc>(
@@ -150,7 +150,8 @@ class _AnytimePodcastAppState extends State<AnytimePodcastApp> {
           create: (_) => PodcastBloc(
               podcastService: widget.podcastService,
               audioPlayerService: widget.audioPlayerService,
-              downloadService: widget.downloadService),
+              downloadService: widget.downloadService,
+              settingsService: widget.mobileSettingsService),
           dispose: (_, value) => value.dispose(),
         ),
         Provider<PagerBloc>(
