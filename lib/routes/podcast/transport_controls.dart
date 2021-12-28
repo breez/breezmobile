@@ -102,13 +102,13 @@ class _PlayerTransportControlsState extends State<PlayerTransportControls>
                   ),
                   iconOn: SvgPicture.asset(
                     'assets/icons/sleep_on.svg',
-                    color: theme.buttonColor,
+                    color: theme.buttonTheme.colorScheme.onPrimary,
                     height: 24.0,
                     width: 24.0,
                   ),
                   iconOff: SvgPicture.asset(
                     'assets/icons/sleep_off.svg',
-                    color: theme.buttonColor,
+                    color: theme.buttonTheme.colorScheme.onPrimary,
                     height: 24.0,
                     width: 24.0,
                   ),
@@ -125,7 +125,7 @@ class _PlayerTransportControlsState extends State<PlayerTransportControls>
               icon: ImageIcon(
                 AssetImage('src/icon/replay_30.png'),
                 size: 48.0,
-                color: theme.buttonColor,
+                color: theme.buttonTheme.colorScheme.onPrimary
               ),
             ),
             Expanded(flex: 1, child: Container()),
@@ -144,11 +144,11 @@ class _PlayerTransportControlsState extends State<PlayerTransportControls>
               icon: ImageIcon(
                 AssetImage('src/icon/forward_30.png'),
                 size: 48.0,
-                color: theme.buttonColor,
+                color: theme.buttonTheme.colorScheme.onPrimary,
               ),
             ),
             Expanded(flex: 1, child: Container()),
-            SpeedSelector(
+            SpeedSelectorWidget(
               onChanged: (double value) {
                 print('Speed callback of $value');
                 audioBloc.playbackSpeed(value);
