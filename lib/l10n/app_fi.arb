@@ -38,6 +38,12 @@
       }
     }
   },
+  "payments_filter_action_export": "Vie tapahtumat tiedostoon",
+  "payments_filter_action_export_failed": "Tapahtumien vienti epäonnistui",
+  "payments_filter_option_all": "Kaikki tapahtumat",
+  "payments_filter_option_sent": "Saapuneet",
+  "payments_filter_option_received": "Lähetykset",
+  "payments_filter_message_loading_transactions": "Odota kunnes tapahtumat on ladattu.",
   "payment_details_dialog_closed_channel_title": "Kanava on suljettu ",
   "payment_details_dialog_closed_channel_title_pending": "Odotetaan suljettua kanavaa",
   "payment_details_dialog_closed_channel_ok": "OK",
