@@ -53,7 +53,6 @@ class ShareEpisodeButtonState extends State<ShareEpisodeButton> {
           children: <Widget>[
             Icon(
               Icons.share_rounded,
-              color: Theme.of(context).buttonColor,
               size: 22,
             ),
             Padding(
@@ -63,7 +62,6 @@ class ShareEpisodeButtonState extends State<ShareEpisodeButton> {
               "Share",
               textAlign: TextAlign.center,
               style: TextStyle(
-                color: Theme.of(context).buttonColor,
                 fontWeight: FontWeight.normal,
               ),
             ),

@@ -25,7 +25,7 @@ class SharePodcastButtonState extends State<SharePodcastButton> {
         child: IconButton(
             icon: Icon(
               Icons.share_rounded,
-              color: Theme.of(context).buttonColor,
+              color: Theme.of(context).buttonTheme.colorScheme.onPrimary,
               size: 22,
             ),
             onPressed: () async {
