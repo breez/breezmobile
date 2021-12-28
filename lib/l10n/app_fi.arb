@@ -320,6 +320,8 @@
       }
     }
   },
+  "fiat_currencies_title": "Valuutat",
+  "fiat_currencies_save_fail": "Muutosten tallennus epäonnistui.",
   "locale": "fi",
   "app_name": "Breez"
 }
