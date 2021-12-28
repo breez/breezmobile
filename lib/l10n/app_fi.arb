@@ -191,7 +191,7 @@
   },
   "pos_invoice_close": "SULJE",
   "pos_invoice_clear_sale_header": "Tyhjennä myynti?",
-  "pos_invoice_clear_sale_message": "Tämä tyhjentää nykyisen myynti tapahtuman tiedot.",
+  "pos_invoice_clear_sale_message": "Tämä tyhjentää nykyisen myyntitapahtuman tiedot.",
   "pos_invoice_clear_sale_cancel": "PALAA",
   "pos_invoice_clear_sale_confirm": "TYHJENNÄ",
   "app_animal_bat": "Lepakko",
