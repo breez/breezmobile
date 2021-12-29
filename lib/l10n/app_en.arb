@@ -127,6 +127,14 @@
       }
     }
   },
+  "payment_info_dialog_title": "Payee Information",
+  "payment_info_dialog_hint": "Invoice or ID",
+  "payment_info_dialog_hint_expanded": "Enter an invoice, a node ID or a Lightning address.",
+  "payment_info_dialog_barcode": "Scan Barcode",
+  "payment_info_dialog_error": "Invalid invoice, ID or Address",
+  "payment_info_dialog_error_qrcode": "QR code wasn't detected.",
+  "payment_info_dialog_action_cancel": "CANCEL",
+  "payment_info_dialog_action_approve": "APPROVE",
   "pos_invoice_item_management_title_add": "Add Item",
   "pos_invoice_item_management_title_edit": "Edit Item",
   "pos_invoice_item_management_title_save": "SAVE",
