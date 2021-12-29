@@ -127,6 +127,14 @@
       }
     }
   },
+  "payment_info_dialog_title": "Información del beneficiario",
+  "payment_info_dialog_hint": "Factura o ID",
+  "payment_info_dialog_hint_expanded": "Ingrese una factura, ID de nodo o dirección Lightning.",
+  "payment_info_dialog_barcode": "Escanear código de barras",
+  "payment_info_dialog_error": "La factura, la identificación o la dirección no son válidas.",
+  "payment_info_dialog_error_qrcode": "No se detectó el código QR.",
+  "payment_info_dialog_action_cancel": "CANCELAR",
+  "payment_info_dialog_action_approve": "APROBAR",
   "pos_invoice_item_management_title_add": "Añadir artículo",
   "pos_invoice_item_management_title_edit": "Editar artículo",
   "pos_invoice_item_management_title_save": "AHORRAR",

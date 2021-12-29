@@ -127,6 +127,14 @@
       }
     }
   },
+  "payment_info_dialog_title": "Informação do beneficiário",
+  "payment_info_dialog_hint": "Fatura ou ID",
+  "payment_info_dialog_hint_expanded": "Insira uma fatura, ID de nó ou endereço Relâmpago.",
+  "payment_info_dialog_barcode": "Ler código de barras",
+  "payment_info_dialog_error": "A Fatura, o ID ou o endereço é inválido",
+  "payment_info_dialog_error_qrcode": "O código QR não foi detectado.",
+  "payment_info_dialog_action_cancel": "CANCELAR",
+  "payment_info_dialog_action_approve": "APROVAR",
   "pos_invoice_item_management_title_add": "Adicionar Item",
   "pos_invoice_item_management_title_edit": "Editar Item",
   "pos_invoice_item_management_title_save": "SALVAR",
