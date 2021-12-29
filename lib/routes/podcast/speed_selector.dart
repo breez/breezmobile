@@ -136,7 +136,7 @@ class _SpeedSliderState extends State<SpeedSlider> {
         Padding(
           padding: const EdgeInsets.only(top: 16.0),
           child: Text(
-            '${speed.toString()}x',
+            '${(speed % 1 == 0) ? speed.toStringAsFixed(0).toString() : speed}x',
             style: Theme.of(context).primaryTextTheme.headline5,
           ),
         ),

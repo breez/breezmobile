@@ -81,11 +81,6 @@ Widget withPodcastTheme(BreezUserModel user, Widget child) {
                   .black
                   .apply(fontFamily: 'IBMPlexSans')
                   .copyWith(
-                    headline6: Typography.material2018(
-                            platform: TargetPlatform.android)
-                        .black
-                        .headline6
-                        .copyWith(fontWeight: FontWeight.w400, fontSize: 14.3),
                     button: currentTheme.primaryTextTheme.button,
                   ),
               textTheme:
