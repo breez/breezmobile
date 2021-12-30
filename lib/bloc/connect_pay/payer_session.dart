@@ -15,6 +15,7 @@ import 'package:breez/services/breezlib/data/rpc.pb.dart';
 import 'package:breez/services/deep_links.dart';
 import 'package:breez/services/device.dart';
 import 'package:breez/services/injector.dart';
+import 'package:breez/utils/locale.dart';
 import 'package:fixnum/fixnum.dart';
 import 'package:rxdart/rxdart.dart';
 
@@ -197,8 +198,13 @@ class PayerRemoteSession extends RemoteSession with OnlineStatusUpdater {
     });
 
     _sentInvitesController.stream.listen((inviteLink) async {
+      final texts = getSystemAppLocalizations();
       var shared = await _device.shareText(
-          '${_currentUser.name} wants to pay you via Breez...\nFollow this link to receive payment: ${Uri.encodeFull(_currentSessionInvite)}');
+        texts.connect_to_pay_share_text(
+          _currentUser.name,
+          Uri.encodeFull(_currentSessionInvite),
+        ),
+      );
 
       if (shared == true) {
         _paymentSessionController

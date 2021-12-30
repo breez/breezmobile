@@ -8,9 +8,9 @@ import 'package:breez/widgets/loader.dart';
 import 'package:breez/widgets/loading_animated_text.dart';
 import 'package:breez/widgets/warning_box.dart';
 import 'package:fixnum/fixnum.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import '../sync_progress_dialog.dart';
 import 'peers_connection.dart';
@@ -21,73 +21,124 @@ class PayeeSessionWidget extends StatelessWidget {
   final AccountModel _account;
   final LSPStatus _lspStatus;
 
-  PayeeSessionWidget(this._currentSession, this._account, this._lspStatus);
+  PayeeSessionWidget(
+    this._currentSession,
+    this._account,
+    this._lspStatus,
+  );
 
   @override
   Widget build(BuildContext context) {
     return StreamBuilder<PaymentSessionState>(
-        stream: _currentSession.paymentSessionStateStream,
-        builder: (context, snapshot) {
-          if (!snapshot.hasData) {
-            return Center(child: Loader());
-          }
-          PaymentSessionState sessionState = snapshot.data;
-          var payerAmount = snapshot?.data?.payerData?.amount;
+      stream: _currentSession.paymentSessionStateStream,
+      builder: (context, snapshot) {
+        if (!snapshot.hasData) return Center(child: Loader());
 
-          return Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            mainAxisAlignment: MainAxisAlignment.start,
-            mainAxisSize: MainAxisSize.max,
-            children: <Widget>[
-              SessionInstructions(
-                  _PayeeInstructions(sessionState, _account),
-                  actions: _getActions(sessionState),
-                  onAction: (action) => _onAction(context, action),
-                  disabledActions: _getDisabledActions(sessionState)),
-              Padding(
-                padding: const EdgeInsets.only(
-                    left: 25.0, right: 25.0, bottom: 21.0, top: 25.0),
-                child: PeersConnection(sessionState),
+        final sessionState = snapshot.data;
+        final payerAmount = snapshot?.data?.payerData?.amount;
+
+        return Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          mainAxisAlignment: MainAxisAlignment.start,
+          mainAxisSize: MainAxisSize.max,
+          children: [
+            SessionInstructions(
+              _PayeeInstructions(
+                sessionState,
+                _account,
               ),
-              payerAmount == null || _account.maxInboundLiquidity >= payerAmount
-                  ? SizedBox()
-                  : WarningBox(
-                      contentPadding: EdgeInsets.all(8),
-                      child: Text(
-                          _formatFeeMessage(_account, _lspStatus,
-                              snapshot.data.payerData.amount),
-                          style: Theme.of(context).textTheme.headline6,
-                          textAlign: TextAlign.center),
-                    )
-            ],
-          );
-        });
+              actions: _getActions(context, sessionState),
+              onAction: (action) => _onAction(context, action),
+              disabledActions: _getDisabledActions(context, sessionState),
+            ),
+            Padding(
+              padding: const EdgeInsets.fromLTRB(25.0, 25.0, 25.0, 21.0),
+              child: PeersConnection(sessionState),
+            ),
+            payerAmount == null || _account.maxInboundLiquidity >= payerAmount
+                ? SizedBox()
+                : WarningBox(
+                    contentPadding: EdgeInsets.all(8),
+                    child: Text(
+                      _formatFeeMessage(
+                        context,
+                        _account,
+                        _lspStatus,
+                        snapshot.data.payerData.amount,
+                      ),
+                      style: Theme.of(context).textTheme.headline6,
+                      textAlign: TextAlign.center,
+                    ),
+                  ),
+          ],
+        );
+      },
+    );
   }
 
-  _onAction(BuildContext context, String action) {
-    if (action == "Reject") {
+  void _onAction(BuildContext context, String action) {
+    final texts = AppLocalizations.of(context);
+    if (action == texts.connect_to_pay_payee_action_reject) {
       _currentSession.rejectPaymentSink.add(null);
     } else {
       _currentSession.approvePaymentSink.add(null);
     }
   }
 
-  _getActions(PaymentSessionState sessionState) {
+  List<String> _getActions(
+    BuildContext context,
+    PaymentSessionState sessionState,
+  ) {
+    final texts = AppLocalizations.of(context);
     if (_account.synced) {
-      if (sessionState.payerData.amount != null &&
-          sessionState.payeeData.paymentRequest == null) {
-        return ["Reject", "Approve"];
+      final payerData = sessionState.payerData;
+      final payeeData = sessionState.payeeData;
+      if (payerData.amount != null && payeeData.paymentRequest == null) {
+        return [
+          texts.connect_to_pay_payee_action_reject,
+          texts.connect_to_pay_payee_action_approve,
+        ];
       }
     }
     return null;
   }
 
-  List<String> _getDisabledActions(PaymentSessionState sessionState) {
-    if (sessionState.payerData.amount != null &&
-        _account.maxAllowedToReceive < sessionState.payerData.amount) {
-      return ["Approve"];
+  List<String> _getDisabledActions(
+    BuildContext context,
+    PaymentSessionState sessionState,
+  ) {
+    final texts = AppLocalizations.of(context);
+    final amount = sessionState.payerData.amount;
+    if (amount != null && _account.maxAllowedToReceive < amount) {
+      return [
+        texts.connect_to_pay_payee_action_approve,
+      ];
     }
     return [];
+  }
+
+  String _formatFeeMessage(
+    BuildContext context,
+    AccountModel acc,
+    LSPStatus lspStatus,
+    int amount,
+  ) {
+    final texts = AppLocalizations.of(context);
+    final lsp = lspStatus.currentLSP;
+    num feeSats = 0;
+    if (amount > acc.maxInboundLiquidity.toInt()) {
+      feeSats = (amount * lsp.channelFeePermyriad / 10000);
+      if (feeSats < lsp.channelMinimumFeeMsat / 1000) {
+        feeSats = lsp.channelMinimumFeeMsat / 1000;
+      }
+    }
+    var intSats = feeSats.toInt();
+    if (intSats == 0) {
+      return "";
+    }
+    var feeFiat = acc.fiatCurrency.format(Int64(intSats));
+    var formattedSats = Currency.SAT.format(Int64(intSats));
+    return texts.connect_to_pay_payee_setup_fee(formattedSats, feeFiat);
   }
 }
 
@@ -95,93 +146,100 @@ class _PayeeInstructions extends StatelessWidget {
   final PaymentSessionState _sessionState;
   final AccountModel _account;
 
-  _PayeeInstructions(this._sessionState, this._account);
+  _PayeeInstructions(
+    this._sessionState,
+    this._account,
+  );
 
   @override
   Widget build(BuildContext context) {
+    final texts = AppLocalizations.of(context);
+    final themeData = Theme.of(context);
+    final defaultTextStyle = DefaultTextStyle.of(context);
+
+    final payerData = _sessionState.payerData;
+    final payeeData = _sessionState.payeeData;
+    final currency = _account.currency;
+
     String message = "";
     if (_sessionState.paymentFulfilled) {
-      message = "You've successfully got " +
-          _account.currency.format(Int64(_sessionState.settledAmount));
-    } else if (_sessionState.payerData.amount == null) {
+      final settledAmount = currency.format(Int64(_sessionState.settledAmount));
+      message = texts.connect_to_pay_payee_success_received(settledAmount);
+    } else if (payerData.amount == null) {
+      final name = payerData.userName;
       return LoadingAnimatedText(
-          'Waiting for ${_sessionState.payerData.userName ?? "payer"} to enter an amount',
-          textStyle: theme.sessionNotificationStyle);
+        name != null
+            ? texts.connect_to_pay_payee_waiting_with_name(name)
+            : texts.connect_to_pay_payee_waiting_no_name,
+        textStyle: theme.sessionNotificationStyle,
+      );
     } else if (!_account.synced) {
-      return LoadingAnimatedText("", textElements: <TextSpan>[
-        TextSpan(
-            text: "Please wait while Breez is ",
-            style: DefaultTextStyle.of(context).style),
-        TextSpan(
-            text: "synchronizing",
+      return LoadingAnimatedText(
+        "",
+        textElements: [
+          TextSpan(
+            text: texts.connect_to_pay_payee_waiting_sync,
             recognizer: TapGestureRecognizer()
               ..onTap = () {
                 showDialog(
-                    useRootNavigator: false,
-                    context: context,
-                    builder: (context) => AlertDialog(
-                          content: SyncProgressDialog(),
-                          actions: <Widget>[
-                            TextButton(
-                              onPressed: (() {
-                                Navigator.pop(context);
-                              }),
-                              child: Text("CLOSE",
-                                  style: Theme.of(context)
-                                      .primaryTextTheme
-                                      .button),
-                            )
-                          ],
-                        ));
+                  useRootNavigator: false,
+                  context: context,
+                  builder: (context) => AlertDialog(
+                    content: SyncProgressDialog(),
+                    actions: [
+                      TextButton(
+                        onPressed: () => Navigator.pop(context),
+                        child: Text(
+                          texts.connect_to_pay_payee_waiting_sync_action_close,
+                          style: themeData.primaryTextTheme.button,
+                        ),
+                      ),
+                    ],
+                  ),
+                );
               },
-            style: DefaultTextStyle.of(context)
-                .style
-                .copyWith(decoration: TextDecoration.underline)),
-      ]);
-    } else if (_sessionState.payerData.amount != null &&
-        _sessionState.payeeData.paymentRequest == null) {
-      message =
-          '${_sessionState.payerData.userName} wants to pay you ${_account.currency.format(Int64(_sessionState.payerData.amount))}';
+            style: defaultTextStyle.style,
+          ),
+        ],
+      );
+    } else if (payerData.amount != null && payeeData.paymentRequest == null) {
+      final name = payerData.userName;
+      final amount = currency.format(Int64(payerData.amount));
       if (_account.fiatCurrency != null) {
-        message = "$message"
-            " (${_account.fiatCurrency.format(Int64(_sessionState.payerData.amount))}).";
+        message = texts.connect_to_pay_payee_message_with_fiat(
+          name,
+          amount,
+          _account.fiatCurrency.format(Int64(payerData.amount)),
+        );
+      } else {
+        message = texts.connect_to_pay_payee_message_no_fiat(name, amount);
       }
-      if (_account.maxAllowedToReceive <
-          Int64(_sessionState.payerData.amount)) {
+      if (_account.maxAllowedToReceive < Int64(payerData.amount)) {
         return Column(
           mainAxisSize: MainAxisSize.min,
-          children: <Widget>[
+          children: [
             Text(message, style: theme.sessionNotificationStyle),
             Text(
-                'This payment exceeds your limit (${_account.currency.format(_account.maxAllowedToReceive)}).',
-                style: theme.sessionNotificationStyle
-                    .copyWith(color: theme.errorColor),
-                textAlign: TextAlign.center)
+              texts.connect_to_pay_payee_error_limit_exceeds(
+                currency.format(_account.maxAllowedToReceive),
+              ),
+              style: theme.sessionNotificationStyle.copyWith(
+                color: theme.errorColor,
+              ),
+              textAlign: TextAlign.center,
+            ),
           ],
         );
       }
-    } else if (_sessionState.payeeData.paymentRequest != null) {
+    } else if (payeeData.paymentRequest != null) {
       return LoadingAnimatedText(
-          'Processing ${_sessionState.payerData.userName} payment',
-          textStyle: theme.sessionNotificationStyle);
+        texts.connect_to_pay_payee_process(payerData.userName),
+        textStyle: theme.sessionNotificationStyle,
+      );
     }
-    return Text(message, style: theme.sessionNotificationStyle);
+    return Text(
+      message,
+      style: theme.sessionNotificationStyle,
+    );
   }
-}
-
-_formatFeeMessage(AccountModel acc, LSPStatus lspStatus, int amount) {
-  num feeSats = 0;
-  if (amount > acc.maxInboundLiquidity.toInt()) {
-    feeSats = (amount * lspStatus.currentLSP.channelFeePermyriad / 10000);
-    if (feeSats < lspStatus.currentLSP.channelMinimumFeeMsat/1000) {
-      feeSats = lspStatus.currentLSP.channelMinimumFeeMsat/1000;
-    }
-  }
-  var intSats = feeSats.toInt();
-  if (intSats == 0) {
-    return "";
-  }
-  var feeFiat = acc.fiatCurrency.format(Int64(intSats));
-  var formattedSats = Currency.SAT.format(Int64(intSats));
-  return 'A setup fee of $formattedSats ($feeFiat) is applied to this payment.';
 }

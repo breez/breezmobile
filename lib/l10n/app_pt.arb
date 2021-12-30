@@ -330,6 +330,201 @@
   },
   "fiat_currencies_title": "Moedas fiduciárias",
   "fiat_currencies_save_fail": "Falha ao salvar as alterações",
+  "connect_to_pay_title_payer": "Conecte para Pagar",
+  "connect_to_pay_title_payee": "Receber Pagamento",
+  "connect_to_pay_canceled_payer": "O pagador cancelou a sessão de pagamento",
+  "connect_to_pay_canceled_payee": "O beneficiário cancelou a sessão de pagamento",
+  "connect_to_pay_canceled_remote_user": "O(A) {name} cancelou a sessão de pagamento",
+  "@connect_to_pay_canceled_remote_user": {
+    "placeholders": {
+      "name": {
+        "type": "String",
+        "example": "Alice"
+      }
+    }
+  },
+  "connect_to_pay_success_payer": "Você acabou de pagar o(a) {name} um valor de {amount}!",
+  "@connect_to_pay_success_payer": {
+    "placeholders": {
+      "name": {
+        "type": "String",
+        "example": "Alice"
+      },
+      "amount": {
+        "type": "String",
+        "example": "1.23"
+      }
+    }
+  },
+  "connect_to_pay_success_payee": "O(A) {name} acabou de pagar você um valor de {amount}!",
+  "@connect_to_pay_success_payee": {
+    "placeholders": {
+      "name": {
+        "type": "String",
+        "example": "Alice"
+      },
+      "amount": {
+        "type": "String",
+        "example": "1.23"
+      }
+    }
+  },
+  "connect_to_pay_exit_warning": "Você tem certeza que deseja cancelar esta sessão de pagamento?",
+  "connect_to_pay_failed_to_connect": "Falha ao conectar na sessão: {error}",
+  "@connect_to_pay_failed_to_connect": {
+    "placeholders": {
+      "error": {
+        "type": "String",
+        "example": "An error message"
+      }
+    }
+  },
+  "connect_to_pay_payee_success_received": "Você recebeu {amount} com sucesso",
+  "@connect_to_pay_payee_success_received": {
+    "placeholders": {
+      "amount": {
+        "type": "String",
+        "example": "1.23"
+      }
+    }
+  },
+  "connect_to_pay_payee_waiting_no_name": "Aguardando o pagador inserir o valor",
+  "connect_to_pay_payee_waiting_with_name": "Aguardando o(a) {name} inserir o valor",
+  "@connect_to_pay_payee_waiting_with_name": {
+    "placeholders": {
+      "name": {
+        "type": "String",
+        "example": "Alice"
+      }
+    }
+  },
+  "connect_to_pay_payee_waiting_sync": "Por favor aguarde a sincronização",
+  "connect_to_pay_payee_waiting_sync_action_close": "FECHAR",
+  "connect_to_pay_payee_message_no_fiat": "O(A) {name} deseja te pagar um valor de {amount}",
+  "@connect_to_pay_payee_message_no_fiat": {
+    "placeholders": {
+      "name": {
+        "type": "String",
+        "example": "Alice"
+      },
+      "amount": {
+        "type": "String",
+        "example": "1.23"
+      }
+    }
+  },
+  "connect_to_pay_payee_message_with_fiat": "O(A) {name} deseja te pagar um valor de {amount} ({fiat})",
+  "@connect_to_pay_payee_message_with_fiat": {
+    "placeholders": {
+      "name": {
+        "type": "String",
+        "example": "Alice"
+      },
+      "amount": {
+        "type": "String",
+        "example": "1.23"
+      },
+      "fiat": {
+        "type": "String",
+        "example": "1.23"
+      }
+    }
+  },
+  "connect_to_pay_payee_error_limit_exceeds": "Este pagamento excede o seu limite de {amount}",
+  "@connect_to_pay_payee_error_limit_exceeds": {
+    "placeholders": {
+      "amount": {
+        "type": "String",
+        "example": "1.23"
+      }
+    }
+  },
+  "connect_to_pay_payee_process": "Processando o pagamento do(a) {name}",
+  "@connect_to_pay_payee_process": {
+    "placeholders": {
+      "name": {
+        "type": "String",
+        "example": "Alice"
+      }
+    }
+  },
+  "connect_to_pay_payee_setup_fee": "Uma taxa de configuração de {sats} ({fiat}) será aplicada a este pagamento.",
+  "@connect_to_pay_payee_setup_fee": {
+    "placeholders": {
+      "sats": {
+        "type": "String",
+        "example": "1.23"
+      },
+      "fiat": {
+        "type": "String",
+        "example": "1.23"
+      }
+    }
+  },
+  "connect_to_pay_payee_action_reject": "Rejeitar",
+  "connect_to_pay_payee_action_approve": "Aprovar",
+  "connect_to_pay_payer_success": "Você pagou {amount} com sucesso.",
+  "@connect_to_pay_payer_success": {
+    "placeholders": {
+      "amount": {
+        "type": "String",
+        "example": "1.23"
+      }
+    }
+  },
+  "connect_to_pay_payer_enter_amount": "O(A) {name} entrou na seção.\nPor favor, insira um valor e toque em Pagar para continuar.",
+  "@connect_to_pay_payer_enter_amount": {
+    "placeholders": {
+      "name": {
+        "type": "String",
+        "example": "Alice"
+      }
+    }
+  },
+  "connect_to_pay_payer_share_link": "Toque no botão de compartilhar para enviar o link para o beneficiário. Após isto aguarde enquanto a pessoa abre o link e entra na sessão.",
+  "connect_to_pay_payer_waiting_join_no_name": "Aguarde a pessoa entrar na seção",
+  "connect_to_pay_payer_waiting_join_with_name": "Aguarde enquanto o(a) {name} entra na seção",
+  "@connect_to_pay_payer_waiting_join_with_name": {
+    "placeholders": {
+      "name": {
+        "type": "String",
+        "example": "Alice"
+      }
+    }
+  },
+  "connect_to_pay_payer_waiting_approve_no_name": "Aguardando a pessoa aprovar seu pagamento",
+  "connect_to_pay_payer_waiting_approve_with_name": "Aguardando o(a) {name} aprovar o seu pagamento",
+  "@connect_to_pay_payer_waiting_approve_with_name": {
+    "placeholders": {
+      "name": {
+        "type": "String",
+        "example": "Alice"
+      }
+    }
+  },
+  "connect_to_pay_payer_sending": "Enviando o pagamento…",
+  "connect_to_pay_payer_wait_sync": "Por favor aguarde a sincronização",
+  "connect_to_pay_payer_synchronizing": "Sincronizando com a rede",
+  "connect_to_pay_payer_action_close": "FECHAR",
+  "connect_to_pay_payment_detail_note": "Nota (opcional)",
+  "connect_to_pay_payment_available": "Disponível:",
+  "connect_to_pay_payment_action_close": "Fechar",
+  "connect_to_pay_payment_action_pay": "Pagar",
+  "connect_to_pay_peer_unknown": "Desconhecido",
+  "connect_to_pay_share_text": "O(a) {name} deseja te pagar via Breez…\nAbra o link para receber o pagamento: {address}",
+  "@connect_to_pay_share_text": {
+    "placeholders": {
+      "name": {
+        "type": "String",
+        "example": "Alice"
+      },
+      "address": {
+        "type": "String",
+        "example": "http://an.url.com/link"
+      }
+    }
+  },
+  "connect_to_pay_payment_reject": "Pagamento recusado",
   "locale": "pt",
   "app_name": "Breez"
 }
