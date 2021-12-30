@@ -13,6 +13,7 @@ import 'package:breez/services/breezlib/breez_bridge.dart';
 import 'package:breez/services/breezlib/data/rpc.pb.dart';
 import 'package:breez/services/deep_links.dart';
 import 'package:breez/services/injector.dart';
+import 'package:breez/utils/locale.dart';
 import 'package:fixnum/fixnum.dart';
 import 'package:rxdart/rxdart.dart';
 
@@ -112,7 +113,8 @@ class PayeeRemoteSession extends RemoteSession with OnlineStatusUpdater {
     }).catchError(_onInvoiceError);
 
     _rejectPaymentController.stream.listen((_) {
-      pushStateUpdate({"error": "Payment rejected"}).then((res) {
+      final error = getSystemAppLocalizations().connect_to_pay_payment_reject;
+      pushStateUpdate({"error": error}).then((res) {
         terminate();
       });
     });
