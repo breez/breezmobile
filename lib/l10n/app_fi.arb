@@ -565,6 +565,16 @@
   "security_and_backup_new_pin": "Enter your new PIN",
   "security_and_backup_new_pin_second_time": "Re-enter your new PIN",
   "security_and_backup_new_pin_do_not_match": "PIN does not match",
+  "network_title": "Network",
+  "network_restart_message": "Please restart Breez to switch to the new Bitcoin Node configuration.",
+  "network_restart_action_cancel": "CANCEL",
+  "network_restart_action_confirm": "EXIT BREEZ",
+  "network_restart_action_reset": "Reset",
+  "network_restart_action_save": "Save",
+  "network_bitcoin_node": "Bitcoin Node (BIP 157)",
+  "network_default_node_error": "Breez is unable to use the default node.",
+  "network_custom_node_error": "Breez is unable to connect to the specified node. Please make sure this node supports BIP 157.",
+  "network_testing_node": "Testing node",
   "locale": "fi",
   "app_name": "Breez"
 }
