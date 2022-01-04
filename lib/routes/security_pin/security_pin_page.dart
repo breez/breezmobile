@@ -6,6 +6,7 @@ import 'package:breez/bloc/user_profile/breez_user_model.dart';
 import 'package:breez/bloc/user_profile/security_model.dart';
 import 'package:breez/bloc/user_profile/user_actions.dart';
 import 'package:breez/bloc/user_profile/user_profile_bloc.dart';
+import 'package:breez/l10n/finnish_implements_duration_locale.dart';
 import 'package:breez/routes/backup_in_progress_dialog.dart';
 import 'package:breez/routes/podcast/theme.dart';
 import 'package:breez/routes/security_pin/remote_server_auth.dart';
@@ -17,7 +18,9 @@ import 'package:breez/widgets/error_dialog.dart';
 import 'package:breez/widgets/flushbar.dart';
 import 'package:breez/widgets/route.dart';
 import 'package:duration/duration.dart';
+import 'package:duration/locale.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import 'backup_phrase/backup_phrase_confirmation_page.dart';
 import 'backup_phrase/backup_phrase_warning_dialog.dart';
@@ -28,8 +31,11 @@ class SecurityPage extends StatefulWidget {
   final UserProfileBloc userProfileBloc;
   final BackupBloc backupBloc;
 
-  SecurityPage(this.userProfileBloc, this.backupBloc, {Key key})
-      : super(key: key);
+  const SecurityPage(
+    this.userProfileBloc,
+    this.backupBloc, {
+    Key key,
+  }) : super(key: key);
 
   @override
   SecurityPageState createState() {
@@ -39,7 +45,7 @@ class SecurityPage extends StatefulWidget {
 
 class SecurityPageState extends State<SecurityPage>
     with WidgetsBindingObserver {
-  AutoSizeGroup _autoSizeGroup = AutoSizeGroup();
+  final _autoSizeGroup = AutoSizeGroup();
   bool _screenLocked = true;
   int _renderIndex = 0;
   String _enrolledBiometrics;
@@ -68,111 +74,169 @@ class SecurityPageState extends State<SecurityPage>
 
   @override
   Widget build(BuildContext context) {
-    String _title = "Security & Backup";
+    final texts = AppLocalizations.of(context);
+    final themeData = Theme.of(context);
+
     return StreamBuilder<BackupState>(
       stream: widget.backupBloc.backupStateStream,
       builder: (ctx, backupStateSnapshot) => StreamBuilder<BackupSettings>(
         stream: widget.backupBloc.backupSettingsStream,
         builder: (context, backupSnapshot) => StreamBuilder<BreezUserModel>(
-            stream: widget.userProfileBloc.userStream,
-            builder: (context, snapshot) {
-              if (!snapshot.hasData) {
-                return Container();
-              } else {
-                var backupState = backupStateSnapshot.data;
-                if (snapshot.data.securityModel.requiresPin &&
-                    this._screenLocked) {
-                  return AppLockScreen(
-                    (pinEntered) {
-                      var validateAction = ValidatePinCode(pinEntered);
-                      widget.userProfileBloc.userActionsSink
-                          .add(validateAction);
-                      return validateAction.future.then((_) {
-                        setState(() {
-                          this._screenLocked = false;
-                        });
-                      });
-                    },
-                    canCancel: true,
-                  );
-                }
-                return Scaffold(
-                  appBar: AppBar(
-                      iconTheme: Theme.of(context).appBarTheme.iconTheme,
-                      textTheme: Theme.of(context).appBarTheme.textTheme,
-                      backgroundColor: Theme.of(context).canvasColor,
-                      automaticallyImplyLeading: false,
-                      leading: backBtn.BackButton(),
-                      title: Text(
-                        _title,
-                        style:
-                            Theme.of(context).appBarTheme.textTheme.headline6,
-                      ),
-                      elevation: 0.0),
-                  body: ListView(
-                    children: _buildSecurityPINTiles(
-                        snapshot.data.securityModel, backupSnapshot.data),
-                  ),
-                  bottomNavigationBar: Padding(
-                    padding: const EdgeInsets.only(
-                        bottom: 20.0, left: 20.0, top: 20.0),
-                    child: backupStateSnapshot.data != null &&
-                            backupStateSnapshot.data.lastBackupTime != null
-                        ? Text(
-                            "Last backup: ${BreezDateUtils.formatYearMonthDayHourMinute(backupState.lastBackupTime)}" +
-                                (backupState.lastBackupAccountName
-                                            ?.isNotEmpty ==
-                                        true
-                                    ? "\nAccount: ${backupState.lastBackupAccountName}"
-                                    : ""),
-                            textAlign: TextAlign.left)
-                        : SizedBox(),
-                  ),
-                );
-              }
-            }),
+          stream: widget.userProfileBloc.userStream,
+          builder: (context, snapshot) {
+            if (!snapshot.hasData) {
+              return Container();
+            }
+
+            final backupState = backupStateSnapshot.data;
+            final userModel = snapshot.data;
+
+            if (userModel.securityModel.requiresPin && this._screenLocked) {
+              return AppLockScreen(
+                (pinEntered) {
+                  final validateAction = ValidatePinCode(pinEntered);
+                  widget.userProfileBloc.userActionsSink.add(validateAction);
+                  return validateAction.future.then((_) {
+                    setState(() {
+                      this._screenLocked = false;
+                    });
+                  });
+                },
+                canCancel: true,
+              );
+            }
+
+            return Scaffold(
+              appBar: AppBar(
+                iconTheme: themeData.appBarTheme.iconTheme,
+                textTheme: themeData.appBarTheme.textTheme,
+                backgroundColor: themeData.canvasColor,
+                automaticallyImplyLeading: false,
+                leading: backBtn.BackButton(),
+                title: Text(
+                  texts.security_and_backup_title,
+                  style: themeData.appBarTheme.textTheme.headline6,
+                ),
+                elevation: 0.0,
+              ),
+              body: ListView(
+                children: _buildSecurityPINTiles(
+                  context,
+                  userModel.securityModel,
+                  backupSnapshot.data,
+                ),
+              ),
+              bottomNavigationBar: Padding(
+                padding: const EdgeInsets.only(
+                  bottom: 20.0,
+                  left: 20.0,
+                  top: 20.0,
+                ),
+                child: _lastBackup(context, backupState),
+              ),
+            );
+          },
+        ),
       ),
     );
   }
 
+  Widget _lastBackup(BuildContext context, BackupState backupState) {
+    if (backupState == null) return SizedBox();
+    final lastBackupTime = backupState.lastBackupTime;
+    if (lastBackupTime == null) return SizedBox();
+
+    final texts = AppLocalizations.of(context);
+    final accountName = backupState.lastBackupAccountName;
+    final lastBackup = BreezDateUtils.formatYearMonthDayHourMinute(
+      lastBackupTime,
+    );
+
+    return Text(
+      accountName == null || accountName.isEmpty
+          ? texts.security_and_backup_last_backup_no_account(lastBackup)
+          : texts.security_and_backup_last_backup_with_account(
+              lastBackup,
+              accountName,
+            ),
+      textAlign: TextAlign.left,
+    );
+  }
+
   List<Widget> _buildSecurityPINTiles(
-      SecurityModel securityModel, BackupSettings backupSettings) {
-    List<Widget> _tiles = <Widget>[
-      _buildDisablePINTile(securityModel, backupSettings)
+    BuildContext context,
+    SecurityModel securityModel,
+    BackupSettings backupSettings,
+  ) {
+    List<Widget> _tiles = [
+      _buildDisablePINTile(
+        context,
+        securityModel,
+        backupSettings,
+      ),
     ];
     if (securityModel.requiresPin) {
       _tiles
         ..add(Divider())
-        ..add(_buildPINIntervalTile(securityModel, backupSettings))
+        ..add(_buildPINIntervalTile(
+          context,
+          securityModel,
+          backupSettings,
+        ))
         ..add(Divider())
-        ..add(_buildChangePINTile(securityModel, backupSettings));
+        ..add(_buildChangePINTile(
+          context,
+          securityModel,
+          backupSettings,
+        ));
       if (_enrolledBiometrics.isNotEmpty) {
         _tiles
           ..add(Divider())
-          ..add(_buildEnableBiometricAuthTile(securityModel, backupSettings));
+          ..add(_buildEnableBiometricAuthTile(
+            context,
+            securityModel,
+            backupSettings,
+          ));
       }
     }
     _tiles
       ..add(Divider())
-      ..add(_buildBackupProviderTitle(securityModel, backupSettings));
+      ..add(_buildBackupProviderTitle(
+        context,
+        securityModel,
+        backupSettings,
+      ));
     if (backupSettings.backupProvider?.name ==
         BackupSettings.remoteServerBackupProvider.name) {
       _tiles
         ..add(Divider())
-        ..add(_buildRemoteServerAuthDataTile(securityModel, backupSettings));
+        ..add(_buildRemoteServerAuthDataTile(
+          context,
+          securityModel,
+          backupSettings,
+        ));
     }
     _tiles
       ..add(Divider())
-      ..add(_buildGenerateBackupPhraseTile(securityModel, backupSettings));
+      ..add(_buildGenerateBackupPhraseTile(
+        context,
+        securityModel,
+        backupSettings,
+      ));
     return _tiles;
   }
 
   ListTile _buildGenerateBackupPhraseTile(
-      SecurityModel securityModel, BackupSettings backupSettings) {
+    BuildContext context,
+    SecurityModel securityModel,
+    BackupSettings backupSettings,
+  ) {
+    final texts = AppLocalizations.of(context);
+
     return ListTile(
       title: Container(
         child: AutoSizeText(
-          "Encrypt Cloud Backup",
+          texts.security_and_backup_encrypt,
           style: TextStyle(color: Colors.white),
           maxLines: 1,
           minFontSize: MinFontSize(context).minFontSize,
@@ -197,18 +261,21 @@ class SecurityPageState extends State<SecurityPage>
               );
             } else {
               showDialog(
-                  context: context,
-                  barrierDismissible: false,
-                  builder: (BuildContext context) {
-                    return BackupPhraseWarningDialog();
-                  }).then(
+                context: context,
+                barrierDismissible: false,
+                builder: (BuildContext context) {
+                  return BackupPhraseWarningDialog();
+                },
+              ).then(
                 (approved) {
                   if (approved)
                     _updateBackupSettings(
-                            backupSettings,
-                            backupSettings.copyWith(
-                                keyType: BackupKeyType.NONE))
-                        .then((value) => triggerBackup());
+                      context,
+                      backupSettings,
+                      backupSettings.copyWith(
+                        keyType: BackupKeyType.NONE,
+                      ),
+                    ).then((value) => triggerBackup());
                 },
               );
             }
@@ -219,11 +286,16 @@ class SecurityPageState extends State<SecurityPage>
   }
 
   ListTile _buildBackupProviderTitle(
-      SecurityModel securityModel, BackupSettings backupSettings) {
+    BuildContext context,
+    SecurityModel securityModel,
+    BackupSettings backupSettings,
+  ) {
+    final texts = AppLocalizations.of(context);
+
     return ListTile(
       title: Container(
         child: AutoSizeText(
-          "Store Backup Data in",
+          texts.security_and_backup_store_location,
           style: TextStyle(color: Colors.white),
           maxLines: 1,
           minFontSize: MinFontSize(context).minFontSize,
@@ -244,17 +316,23 @@ class SecurityPageState extends State<SecurityPage>
                   return;
                 }
                 _updateBackupSettings(
-                        backupSettings,
-                        backupSettings.copyWith(
-                            backupProvider: newValue,
-                            remoteServerAuthData: auth))
-                    .then((value) => triggerBackup());
+                  context,
+                  backupSettings,
+                  backupSettings.copyWith(
+                    backupProvider: newValue,
+                    remoteServerAuthData: auth,
+                  ),
+                ).then((value) => triggerBackup());
               });
               return;
             }
-            _updateBackupSettings(backupSettings,
-                    backupSettings.copyWith(backupProvider: newValue))
-                .then((value) => triggerBackup());
+            _updateBackupSettings(
+              context,
+              backupSettings,
+              backupSettings.copyWith(
+                backupProvider: newValue,
+              ),
+            ).then((value) => triggerBackup());
           },
           items: BackupSettings.availableBackupProviders().map((provider) {
             return DropdownMenuItem(
@@ -276,11 +354,16 @@ class SecurityPageState extends State<SecurityPage>
   }
 
   ListTile _buildPINIntervalTile(
-      SecurityModel securityModel, BackupSettings backupSettings) {
+    BuildContext context,
+    SecurityModel securityModel,
+    BackupSettings backupSettings,
+  ) {
+    final texts = AppLocalizations.of(context);
+
     return ListTile(
       title: Container(
         child: AutoSizeText(
-          "Lock Automatically",
+          texts.security_and_backup_lock_automatically,
           style: TextStyle(color: Colors.white),
           maxLines: 1,
           minFontSize: MinFontSize(context).minFontSize,
@@ -295,16 +378,20 @@ class SecurityPageState extends State<SecurityPage>
           isDense: true,
           onChanged: (int newValue) {
             _updateSecurityModel(
-                securityModel,
-                securityModel.copyWith(automaticallyLockInterval: newValue),
-                backupSettings);
+              context,
+              securityModel,
+              securityModel.copyWith(
+                automaticallyLockInterval: newValue,
+              ),
+              backupSettings,
+            );
           },
           items: SecurityModel.lockIntervals.map((int seconds) {
             return DropdownMenuItem(
               value: seconds,
               child: Container(
                 child: AutoSizeText(
-                  _formatSeconds(seconds),
+                  _formatSeconds(texts, seconds),
                   style: theme.FieldTextStyle.textStyle,
                   maxLines: 1,
                   minFontSize: MinFontSize(context).minFontSize,
@@ -318,45 +405,32 @@ class SecurityPageState extends State<SecurityPage>
     );
   }
 
-  String _formatSeconds(int seconds) {
+  String _formatSeconds(AppLocalizations texts, int seconds) {
     if (seconds == 0) {
-      return "Immediate";
+      return texts.security_and_backup_lock_automatically_option_immediate;
     }
-    return printDuration(Duration(seconds: seconds));
+    final enLocale = EnglishDurationLocale();
+    final locales = {
+      "en": enLocale,
+      "es": SpanishDurationLanguage(),
+      "pt": PortugueseBRDurationLanguage(),
+      "fi": FinnishDurationLocale(),
+    };
+    return printDuration(
+      Duration(seconds: seconds),
+      locale: locales[texts.locale] ?? enLocale,
+    );
   }
 
   ListTile _buildRemoteServerAuthDataTile(
-      SecurityModel securityModel, BackupSettings backupSettings) {
-    return ListTile(
-        title: Container(
-          child: AutoSizeText(
-            BackupSettings.remoteServerBackupProvider.displayName,
-            style: TextStyle(color: Colors.white),
-            maxLines: 1,
-            minFontSize: MinFontSize(context).minFontSize,
-            stepGranularity: 0.1,
-            group: _autoSizeGroup,
-          ),
-        ),
-        trailing:
-            Icon(Icons.keyboard_arrow_right, color: Colors.white, size: 30.0),
-        onTap: () {
-          promptAuthData(context).then((auth) {
-            if (auth != null) {
-              _updateBackupSettings(backupSettings,
-                      backupSettings.copyWith(remoteServerAuthData: auth))
-                  .then((value) => triggerBackup());
-            }
-          });
-        });
-  }
-
-  ListTile _buildChangePINTile(
-      SecurityModel securityModel, BackupSettings backupSettings) {
+    BuildContext context,
+    SecurityModel securityModel,
+    BackupSettings backupSettings,
+  ) {
     return ListTile(
       title: Container(
         child: AutoSizeText(
-          "Change PIN",
+          BackupSettings.remoteServerBackupProvider.displayName,
           style: TextStyle(color: Colors.white),
           maxLines: 1,
           minFontSize: MinFontSize(context).minFontSize,
@@ -364,17 +438,68 @@ class SecurityPageState extends State<SecurityPage>
           group: _autoSizeGroup,
         ),
       ),
-      trailing:
-          Icon(Icons.keyboard_arrow_right, color: Colors.white, size: 30.0),
-      onTap: () => _onChangePinSelected(securityModel, backupSettings),
+      trailing: Icon(
+        Icons.keyboard_arrow_right,
+        color: Colors.white,
+        size: 30.0,
+      ),
+      onTap: () {
+        promptAuthData(context).then((auth) {
+          if (auth != null) {
+            _updateBackupSettings(
+              context,
+              backupSettings,
+              backupSettings.copyWith(
+                remoteServerAuthData: auth,
+              ),
+            ).then((value) => triggerBackup());
+          }
+        });
+      },
+    );
+  }
+
+  ListTile _buildChangePINTile(
+    BuildContext context,
+    SecurityModel securityModel,
+    BackupSettings backupSettings,
+  ) {
+    final texts = AppLocalizations.of(context);
+
+    return ListTile(
+      title: Container(
+        child: AutoSizeText(
+          texts.security_and_backup_change_pin,
+          style: TextStyle(color: Colors.white),
+          maxLines: 1,
+          minFontSize: MinFontSize(context).minFontSize,
+          stepGranularity: 0.1,
+          group: _autoSizeGroup,
+        ),
+      ),
+      trailing: Icon(
+        Icons.keyboard_arrow_right,
+        color: Colors.white,
+        size: 30.0,
+      ),
+      onTap: () => _onChangePinSelected(
+        context,
+        securityModel,
+        backupSettings,
+      ),
     );
   }
 
   ListTile _buildEnableBiometricAuthTile(
-      SecurityModel securityModel, BackupSettings backupSettings) {
+    BuildContext context,
+    SecurityModel securityModel,
+    BackupSettings backupSettings,
+  ) {
+    final texts = AppLocalizations.of(context);
+
     return ListTile(
       title: AutoSizeText(
-        "Enable $_enrolledBiometrics",
+        texts.security_and_backup_enable_biometric(_enrolledBiometrics),
         style: TextStyle(color: Colors.white),
         maxLines: 1,
         minFontSize: MinFontSize(context).minFontSize,
@@ -388,12 +513,18 @@ class SecurityPageState extends State<SecurityPage>
         onChanged: (value) {
           if (this.mounted) {
             if (value) {
-              _validateBiometrics(securityModel, backupSettings);
+              _validateBiometrics(
+                context,
+                securityModel,
+                backupSettings,
+              );
             } else {
               _updateSecurityModel(
-                  securityModel,
-                  securityModel.copyWith(isFingerprintEnabled: false),
-                  backupSettings);
+                context,
+                securityModel,
+                securityModel.copyWith(isFingerprintEnabled: false),
+                backupSettings,
+              );
             }
           }
         },
@@ -402,24 +533,42 @@ class SecurityPageState extends State<SecurityPage>
   }
 
   Future _validateBiometrics(
-      SecurityModel securityModel, BackupSettings backupSettings) async {
-    var validateBiometricsAction = ValidateBiometrics(
-        localizedReason: "Authenticate to enable this setting");
+    BuildContext context,
+    SecurityModel securityModel,
+    BackupSettings backupSettings,
+  ) async {
+    final texts = AppLocalizations.of(context);
+
+    final validateBiometricsAction = ValidateBiometrics(
+      localizedReason: texts.security_and_backup_validate_biometrics_reason,
+    );
     widget.userProfileBloc.userActionsSink.add(validateBiometricsAction);
-    validateBiometricsAction.future.then((isValid) async {
-      _updateSecurityModel(
+    validateBiometricsAction.future.then(
+      (isValid) async {
+        _updateSecurityModel(
+          context,
           securityModel,
           securityModel.copyWith(isFingerprintEnabled: isValid),
-          backupSettings);
-      setState(() => _renderIndex++);
-    }, onError: (error) => showFlushbar(context, message: error));
+          backupSettings,
+        );
+        setState(() => _renderIndex++);
+      },
+      onError: (error) => showFlushbar(context, message: error),
+    );
   }
 
   ListTile _buildDisablePINTile(
-      SecurityModel securityModel, BackupSettings backupSettings) {
+    BuildContext context,
+    SecurityModel securityModel,
+    BackupSettings backupSettings,
+  ) {
+    final texts = AppLocalizations.of(context);
+
     return ListTile(
       title: AutoSizeText(
-        securityModel.requiresPin ? "Deactivate PIN" : "Create PIN",
+        securityModel.requiresPin
+            ? texts.security_and_backup_pin_option_deactivate
+            : texts.security_and_backup_pin_option_create,
         style: TextStyle(color: Colors.white),
         maxLines: 1,
         minFontSize: MinFontSize(context).minFontSize,
@@ -432,19 +581,33 @@ class SecurityPageState extends State<SecurityPage>
               activeColor: Colors.white,
               onChanged: (bool value) {
                 if (this.mounted) {
-                  _resetSecurityModel();
+                  _resetSecurityModel(context);
                 }
               },
             )
-          : Icon(Icons.keyboard_arrow_right, color: Colors.white, size: 30.0),
+          : Icon(
+              Icons.keyboard_arrow_right,
+              color: Colors.white,
+              size: 30.0,
+            ),
       onTap: securityModel.requiresPin
           ? null
-          : () => _onChangePinSelected(securityModel, backupSettings),
+          : () => _onChangePinSelected(
+                context,
+                securityModel,
+                backupSettings,
+              ),
     );
   }
 
   void _onChangePinSelected(
-      SecurityModel securityModel, BackupSettings backupSettings) {
+    BuildContext context,
+    SecurityModel securityModel,
+    BackupSettings backupSettings,
+  ) {
+    final texts = AppLocalizations.of(context);
+    final themeData = Theme.of(context);
+
     Navigator.of(context).push(
       FadeInRoute(
         builder: (BuildContext context) {
@@ -459,18 +622,23 @@ class SecurityPageState extends State<SecurityPage>
         var updatePinAction = UpdatePinCode(newPIN);
         widget.userProfileBloc.userActionsSink.add(updatePinAction);
         updatePinAction.future
-            .then((_) => _updateSecurityModel(securityModel,
-                securityModel.copyWith(requiresPin: true), backupSettings,
-                pinCodeChanged: true))
-            .catchError((err) {
-          promptError(
-              context,
-              "Internal Error",
-              Text(
-                err.toString(),
-                style: Theme.of(context).dialogTheme.contentTextStyle,
-              ));
-        });
+            .then((_) => _updateSecurityModel(
+                  context,
+                  securityModel,
+                  securityModel.copyWith(requiresPin: true),
+                  backupSettings,
+                  pinCodeChanged: true,
+                ))
+            .catchError(
+              (err) => promptError(
+                context,
+                texts.security_and_backup_internal_error,
+                Text(
+                  err.toString(),
+                  style: themeData.dialogTheme.contentTextStyle,
+                ),
+              ),
+            );
       }
     });
   }
@@ -485,52 +653,69 @@ class SecurityPageState extends State<SecurityPage>
     });
   }
 
-  Future _resetSecurityModel() async {
+  Future _resetSecurityModel(BuildContext context) async {
+    final texts = AppLocalizations.of(context);
+    final themeData = Theme.of(context);
+
     var action = ResetSecurityModel();
     widget.userProfileBloc.userActionsSink.add(action);
     action.future.catchError((err) {
       promptError(
-          context,
-          "Internal Error",
-          Text(
-            err.toString(),
-            style: Theme.of(context).dialogTheme.contentTextStyle,
-          ));
+        context,
+        texts.security_and_backup_internal_error,
+        Text(
+          err.toString(),
+          style: themeData.dialogTheme.contentTextStyle,
+        ),
+      );
     });
   }
 
-  Future _updateSecurityModel(SecurityModel oldModel, SecurityModel newModel,
-      BackupSettings backupSettings,
-      {bool pinCodeChanged = false}) async {
+  Future _updateSecurityModel(
+    BuildContext context,
+    SecurityModel oldModel,
+    SecurityModel newModel,
+    BackupSettings backupSettings, {
+    bool pinCodeChanged = false,
+  }) async {
+    final texts = AppLocalizations.of(context);
+    final themeData = Theme.of(context);
+
     _screenLocked = false;
     var action = UpdateSecurityModel(newModel);
     widget.userProfileBloc.userActionsSink.add(action);
     return action.future.catchError((err) {
       promptError(
-          context,
-          "Internal Error",
-          Text(
-            err.toString(),
-            style: Theme.of(context).dialogTheme.contentTextStyle,
-          ));
+        context,
+        texts.security_and_backup_internal_error,
+        Text(
+          err.toString(),
+          style: themeData.dialogTheme.contentTextStyle,
+        ),
+      );
     });
   }
 
   Future _updateBackupSettings(
+    BuildContext context,
     BackupSettings oldBackupSettings,
     BackupSettings newBackupSettings,
   ) async {
+    final texts = AppLocalizations.of(context);
+    final themeData = Theme.of(context);
+
     _screenLocked = false;
     var action = UpdateBackupSettings(newBackupSettings);
     widget.backupBloc.backupActionsSink.add(action);
     return action.future.catchError((err) {
       promptError(
-          context,
-          "Internal Error",
-          Text(
-            err.toString(),
-            style: Theme.of(context).dialogTheme.contentTextStyle,
-          ));
+        context,
+        texts.security_and_backup_internal_error,
+        Text(
+          err.toString(),
+          style: themeData.dialogTheme.contentTextStyle,
+        ),
+      );
     });
   }
 
@@ -541,11 +726,14 @@ class SecurityPageState extends State<SecurityPage>
         .then((s) {
       if (mounted) {
         showDialog(
-            useRootNavigator: false,
-            barrierDismissible: false,
-            context: context,
-            builder: (ctx) => buildBackupInProgressDialog(
-                ctx, widget.backupBloc.backupStateStream));
+          useRootNavigator: false,
+          barrierDismissible: false,
+          context: context,
+          builder: (ctx) => buildBackupInProgressDialog(
+            ctx,
+            widget.backupBloc.backupStateStream,
+          ),
+        );
       }
     });
   }
