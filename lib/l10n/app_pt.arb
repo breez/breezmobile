@@ -553,15 +553,11 @@
   "security_and_backup_lock_automatically": "Bloquear automaticamente",
   "security_and_backup_lock_automatically_option_immediate": "Imediatamente",
   "security_and_backup_change_pin": "Alterar o PIN",
-  "security_and_backup_enable_biometric": "Habilitar o(a) {biometricName}",
-  "@security_and_backup_enable_biometric": {
-    "placeholders": {
-      "biometricName": {
-        "type": "String",
-        "example": "Fingerprint"
-      }
-    }
-  },
+  "security_and_backup_enable_biometric_option_face": "Habilitar o Reconhecimento Facial",
+  "security_and_backup_enable_biometric_option_face_id": "Habilitar o Face ID",
+  "security_and_backup_enable_biometric_option_fingerprint": "Habilitar a Impressão Digital",
+  "security_and_backup_enable_biometric_option_touch_id": "Habilitar o Touch ID",
+  "security_and_backup_enable_biometric_option_none": "",
   "security_and_backup_validate_biometrics_reason": "Autentique-se para habilitar esta configuração",
   "security_and_backup_pin_option_create": "Criar um PIN",
   "security_and_backup_pin_option_deactivate": "Desativar o PIN",

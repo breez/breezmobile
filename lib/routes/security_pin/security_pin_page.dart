@@ -10,6 +10,7 @@ import 'package:breez/l10n/finnish_implements_duration_locale.dart';
 import 'package:breez/routes/backup_in_progress_dialog.dart';
 import 'package:breez/routes/podcast/theme.dart';
 import 'package:breez/routes/security_pin/remote_server_auth.dart';
+import 'package:breez/services/local_auth_service.dart';
 import 'package:breez/theme_data.dart' as theme;
 import 'package:breez/utils/date.dart';
 import 'package:breez/utils/min_font_size.dart';
@@ -48,13 +49,13 @@ class SecurityPageState extends State<SecurityPage>
   final _autoSizeGroup = AutoSizeGroup();
   bool _screenLocked = true;
   int _renderIndex = 0;
-  String _enrolledBiometrics;
+  LocalAuthenticationOption _localAuthenticationOption;
 
   @override
   void initState() {
     super.initState();
     WidgetsBinding.instance.addObserver(this);
-    _enrolledBiometrics = "";
+    _localAuthenticationOption = LocalAuthenticationOption.NONE;
     _getEnrolledBiometrics();
   }
 
@@ -189,7 +190,7 @@ class SecurityPageState extends State<SecurityPage>
           securityModel,
           backupSettings,
         ));
-      if (_enrolledBiometrics.isNotEmpty) {
+      if (_localAuthenticationOption != LocalAuthenticationOption.NONE) {
         _tiles
           ..add(Divider())
           ..add(_buildEnableBiometricAuthTile(
@@ -499,7 +500,7 @@ class SecurityPageState extends State<SecurityPage>
 
     return ListTile(
       title: AutoSizeText(
-        texts.security_and_backup_enable_biometric(_enrolledBiometrics),
+        _localAuthenticationOptionLabel(texts),
         style: TextStyle(color: Colors.white),
         maxLines: 1,
         minFontSize: MinFontSize(context).minFontSize,
@@ -648,7 +649,7 @@ class SecurityPageState extends State<SecurityPage>
     widget.userProfileBloc.userActionsSink.add(getEnrolledBiometricsAction);
     return getEnrolledBiometricsAction.future.then((enrolledBiometrics) {
       setState(() {
-        _enrolledBiometrics = enrolledBiometrics;
+        _localAuthenticationOption = enrolledBiometrics;
       });
     });
   }
@@ -736,5 +737,21 @@ class SecurityPageState extends State<SecurityPage>
         );
       }
     });
+  }
+
+  String _localAuthenticationOptionLabel(AppLocalizations texts) {
+    switch (_localAuthenticationOption) {
+      case LocalAuthenticationOption.FACE:
+        return texts.security_and_backup_enable_biometric_option_face;
+      case LocalAuthenticationOption.FACE_ID:
+        return texts.security_and_backup_enable_biometric_option_face_id;
+      case LocalAuthenticationOption.FINGERPRINT:
+        return texts.security_and_backup_enable_biometric_option_fingerprint;
+      case LocalAuthenticationOption.TOUCH_ID:
+        return texts.security_and_backup_enable_biometric_option_touch_id;
+      case LocalAuthenticationOption.NONE:
+      default:
+        return texts.security_and_backup_enable_biometric_option_none;
+    }
   }
 }
