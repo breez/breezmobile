@@ -565,6 +565,8 @@
   "security_and_backup_new_pin": "Enter your new PIN",
   "security_and_backup_new_pin_second_time": "Re-enter your new PIN",
   "security_and_backup_new_pin_do_not_match": "PIN does not match",
+  "backup_in_progress": "Backup is in progress",
+  "backup_in_progress_action_confirm": "OK",
   "network_title": "Network",
   "network_restart_message": "Please restart Breez to switch to the new Bitcoin Node configuration.",
   "network_restart_action_cancel": "CANCEL",
