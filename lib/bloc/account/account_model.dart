@@ -3,6 +3,7 @@ import 'dart:ffi';
 import 'dart:math';
 
 import 'package:breez/bloc/account/fiat_conversion.dart';
+import 'package:breez/bloc/pos_catalog/model.dart';
 import 'package:breez/bloc/user_profile/currency.dart';
 import 'package:breez/services/breezlib/data/rpc.pb.dart';
 import 'package:breez/utils/date.dart';
@@ -413,7 +414,7 @@ enum PaymentType { DEPOSIT, WITHDRAWAL, SENT, RECEIVED, CLOSED_CHANNEL }
 
 enum PaymentVendor {
   BITREFILL,
-  BREEZ,
+  BREEZ_SALE,
   FAST_BITCOINS,
   LIGHTNING_GIFTS,
   LN_PIZZA,
@@ -444,6 +445,7 @@ abstract class PaymentInfo {
   String get paymentGroupName;
   LNUrlPayInfo get lnurlPayInfo;
   PaymentVendor get vendor;
+  bool get hasSale;
   PaymentInfo copyWith(AccountModel account);
 }
 
@@ -509,11 +511,13 @@ class StreamedPaymentInfo implements PaymentInfo {
 
   LNUrlPayInfo get lnurlPayInfo => null;
   PaymentVendor get vendor => null;
+  bool get hasSale => false;
 }
 
 class SinglePaymentInfo implements PaymentInfo {
   final Payment _paymentResponse;
   final AccountModel _account;
+  final bool _hasSale;
 
   Map _typeMap = {
     Payment_PaymentType.DEPOSIT: PaymentType.DEPOSIT,
@@ -621,7 +625,7 @@ class SinglePaymentInfo implements PaymentInfo {
     switch (vendor) {
       case PaymentVendor.BITREFILL:
         return "src/icon/vendors/bitrefill_logo.png";
-      case PaymentVendor.BREEZ:
+      case PaymentVendor.BREEZ_SALE:
         return "breez://avatar/possale";
       case PaymentVendor.FAST_BITCOINS:
         return "src/icon/vendors/fastbitcoins_logo.png";
@@ -643,7 +647,7 @@ class SinglePaymentInfo implements PaymentInfo {
     switch (vendor) {
       case PaymentVendor.BITREFILL:
         return "Bitrefill";
-      case PaymentVendor.BREEZ:
+      case PaymentVendor.BREEZ_SALE:
         final date = BreezDateUtils.formatHourMinute(
             DateTime.fromMillisecondsSinceEpoch(
                 creationTimestamp.toInt() * 1000,
@@ -737,24 +741,23 @@ class SinglePaymentInfo implements PaymentInfo {
       return PaymentVendor.FAST_BITCOINS;
     }
 
-    if (_isSalePayment()) {
-      return PaymentVendor.BREEZ;
+    if (hasSale) {
+      return PaymentVendor.BREEZ_SALE;
     }
 
     return null;
   }
 
-  bool _isSalePayment() {
-    final payeeName = _paymentResponse.invoiceMemo.payeeName;
-    return type == PaymentType.RECEIVED &&
-        payeeName != null &&
-        payeeName.isNotEmpty;
-  }
+  bool get hasSale => _hasSale;
 
-  SinglePaymentInfo(this._paymentResponse, this._account);
+  SinglePaymentInfo(
+    this._paymentResponse,
+    this._account,
+    this._hasSale,
+  );
 
   SinglePaymentInfo copyWith(AccountModel account) {
-    return SinglePaymentInfo(this._paymentResponse, account);
+    return SinglePaymentInfo(this._paymentResponse, account, this._hasSale);
   }
 }
 

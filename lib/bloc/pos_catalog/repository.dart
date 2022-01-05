@@ -18,4 +18,5 @@ abstract class Repository {
   Future<int> addSale(Sale sale, String paymentHash);
   Future<Sale> fetchSaleByID(int id);
   Future<Sale> fetchSaleByPaymentHash(String paymentHash);
+  Future<Set<String>> fetchSalesPaymentHashes();
 }
