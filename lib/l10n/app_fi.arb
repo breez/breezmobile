@@ -10,6 +10,100 @@
   "home_drawer_item_title_apps": "Sovellukset",
   "home_drawer_item_title_pos_settings": "Myyntipisteasetukset",
   "home_drawer_item_title_developers": "Sovelluskehittäjille",
+  "invoice_btc_address_title": "Receive via BTC Address",
+  "invoice_btc_address_network_error": "Failed to retrieve an address from Breez server\nPlease check your internet connection.",
+  "invoice_btc_address_action_retry": "RETRY",
+  "invoice_btc_address_action_close": "CLOSE",
+  "invoice_btc_address_warning_with_min_fee_account_connected": "Send more than {minSats} and up to {maxSats} to this address. A setup fee of {setUpFee}% with a minimum of {minFee} will be applied for sending more than {liquidity}.",
+  "@invoice_btc_address_warning_with_min_fee_account_connected": {
+    "placeholders": {
+      "minSats": {
+        "type": "String",
+        "example": "2 000 sats"
+      },
+      "maxSats": {
+        "type": "String",
+        "example": "4 000 000 sats"
+      },
+      "setUpFee": {
+        "type": "String",
+        "example": "0.4"
+      },
+      "minFee": {
+        "type": "String",
+        "example": "1 000 sats"
+      },
+      "liquidity": {
+        "type": "String",
+        "example": "99 000 sats"
+      }
+    }
+  },
+  "invoice_btc_address_warning_without_min_fee_account_connected": "Send more than {minSats} and up to {maxSats} to this address. A setup fee of {setUpFee}% will be applied for sending more than {liquidity}.",
+  "@invoice_btc_address_warning_without_min_fee_account_connected": {
+    "placeholders": {
+      "minSats": {
+        "type": "String",
+        "example": "2 000 sats"
+      },
+      "maxSats": {
+        "type": "String",
+        "example": "4 000 000 sats"
+      },
+      "setUpFee": {
+        "type": "String",
+        "example": "0.4"
+      },
+      "liquidity": {
+        "type": "String",
+        "example": "99 000 sats"
+      }
+    }
+  },
+  "invoice_btc_address_warning_with_min_fee_account_not_connected": "Send more than {minSats} and up to {maxSats} to this address. A setup fee of {setUpFee}% with a minimum of {minFee} will be applied on the received amount.",
+  "@invoice_btc_address_warning_with_min_fee_account_not_connected": {
+    "placeholders": {
+      "minSats": {
+        "type": "String",
+        "example": "2 000 sats"
+      },
+      "maxSats": {
+        "type": "String",
+        "example": "4 000 000 sats"
+      },
+      "setUpFee": {
+        "type": "String",
+        "example": "0.4"
+      },
+      "minFee": {
+        "type": "String",
+        "example": "1 000 sats"
+      }
+    }
+  },
+  "invoice_btc_address_warning_without_min_fee_account_not_connected": "Send more than {minSats} and up to {maxSats} to this address. A setup fee of {setUpFee}% will be applied on the received amount.",
+  "@invoice_btc_address_warning_without_min_fee_account_not_connected": {
+    "placeholders": {
+      "minSats": {
+        "type": "String",
+        "example": "2 000 sats"
+      },
+      "maxSats": {
+        "type": "String",
+        "example": "4 000 000 sats"
+      },
+      "setUpFee": {
+        "type": "String",
+        "example": "0.4"
+      }
+    }
+  },
+  "invoice_btc_address_deposit_address": "Deposit Address",
+  "invoice_btc_address_deposit_address_copied": "Deposit address was copied to your clipboard.",
+  "invoice_btc_address_on_chain_begin": "Breez is using Submarine Swaps to execute on-chain transactions. Click ",
+  "invoice_btc_address_on_chain_here": "here",
+  "invoice_btc_address_on_chain_end": " to view the script associated with this address.",
+  "invoice_btc_address_on_chain_action_ok": "OK",
   "backup_dialog_title": "Varmistus",
   "backup_dialog_message_remote_server": "Varmistuksen tallennus etäpalvelimelle epäonnistui. Tarkista asetukset ja yritä uudelleen.",
   "backup_dialog_message_default": "Sinun tulee varmuuskopioida tiedot, jotta varojesi palautus onnistuu tämän laitteen katoamisen, varkauden tai rikkoontumisen sekä mahdollisen sovelluksen poiston ja uudelleen asennuksen yhteydessä.",

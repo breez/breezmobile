@@ -7,8 +7,9 @@ import 'package:breez/bloc/lsp/lsp_model.dart';
 import 'package:breez/widgets/back_button.dart' as backBtn;
 import 'package:breez/widgets/single_button_bottom_bar.dart';
 import 'package:breez/widgets/warning_box.dart';
-import 'package:flutter/material.dart';
 import 'package:fixnum/fixnum.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import 'address_widget.dart';
 import 'conditional_deposit.dart';
@@ -23,7 +24,6 @@ class DepositToBTCAddressPage extends StatefulWidget {
 }
 
 class DepositToBTCAddressPageState extends State<DepositToBTCAddressPage> {
-  final String _title = "Receive via BTC Address";
   AddFundsBloc _addFundsBloc;
 
   @override
@@ -38,60 +38,71 @@ class DepositToBTCAddressPageState extends State<DepositToBTCAddressPage> {
 
   @override
   Widget build(BuildContext context) {
-    AccountBloc accountBloc = AppBlocsProvider.of<AccountBloc>(context);
-    var lspBloc = AppBlocsProvider.of<LSPBloc>(context);
+    final texts = AppLocalizations.of(context);
+    final themeData = Theme.of(context);
+
+    final accountBloc = AppBlocsProvider.of<AccountBloc>(context);
+    final lspBloc = AppBlocsProvider.of<LSPBloc>(context);
+
     return ConditionalDeposit(
-        title: _title,
-        enabledChild: StreamBuilder<LSPStatus>(
-            stream: lspBloc.lspStatusStream,
-            builder:
-                (BuildContext context, AsyncSnapshot<LSPStatus> lspSnapshot) {
+      title: texts.invoice_btc_address_title,
+      enabledChild: StreamBuilder<LSPStatus>(
+        stream: lspBloc.lspStatusStream,
+        builder: (context, lspSnapshot) {
+          return StreamBuilder(
+            stream: accountBloc.accountStream,
+            builder: (context, accSnapshot) {
               return StreamBuilder(
-                  stream: accountBloc.accountStream,
-                  builder: (BuildContext context,
-                      AsyncSnapshot<AccountModel> accSnapshot) {
-                    return StreamBuilder(
-                        stream: _addFundsBloc.addFundResponseStream,
-                        builder: (BuildContext context,
-                            AsyncSnapshot<AddFundResponse> snapshot) {
-                          return Material(
-                            child: Scaffold(
-                                appBar: AppBar(
-                                  iconTheme:
-                                      Theme.of(context).appBarTheme.iconTheme,
-                                  textTheme:
-                                      Theme.of(context).appBarTheme.textTheme,
-                                  backgroundColor:
-                                      Theme.of(context).canvasColor,
-                                  leading: backBtn.BackButton(),
-                                  title: Text(
-                                    _title,
-                                    style: Theme.of(context)
-                                        .appBarTheme
-                                        .textTheme
-                                        .headline6,
-                                  ),
-                                  elevation: 0.0,
-                                ),
-                                body: getBody(
-                                    context,
-                                    accSnapshot.data,
-                                    snapshot.data,
-                                    lspSnapshot.data,
-                                    snapshot.hasError
-                                        ? "Failed to retrieve an address from Breez server\nPlease check your internet connection."
-                                        : null),
-                                bottomNavigationBar: _buildBottomBar(
-                                    snapshot.data, accSnapshot.data,
-                                    hasError: snapshot.hasError)),
-                          );
-                        });
-                  });
-            }));
+                stream: _addFundsBloc.addFundResponseStream,
+                builder: (context, snapshot) {
+                  return Material(
+                    child: Scaffold(
+                      appBar: AppBar(
+                        iconTheme: themeData.appBarTheme.iconTheme,
+                        textTheme: themeData.appBarTheme.textTheme,
+                        backgroundColor: themeData.canvasColor,
+                        leading: backBtn.BackButton(),
+                        title: Text(
+                          texts.invoice_btc_address_title,
+                          style: themeData.appBarTheme.textTheme.headline6,
+                        ),
+                        elevation: 0.0,
+                      ),
+                      body: getBody(
+                        context,
+                        accSnapshot.data,
+                        snapshot.data,
+                        lspSnapshot.data,
+                        snapshot.hasError
+                            ? texts.invoice_btc_address_network_error
+                            : null,
+                      ),
+                      bottomNavigationBar: _buildBottomBar(
+                        context,
+                        snapshot.data,
+                        accSnapshot.data,
+                        hasError: snapshot.hasError,
+                      ),
+                    ),
+                  );
+                },
+              );
+            },
+          );
+        },
+      ),
+    );
   }
 
-  Widget getBody(BuildContext context, AccountModel account,
-      AddFundResponse response, LSPStatus lspStatus, String error) {
+  Widget getBody(
+    BuildContext context,
+    AccountModel account,
+    AddFundResponse response,
+    LSPStatus lspStatus,
+    String error,
+  ) {
+    final texts = AppLocalizations.of(context);
+
     String errorMessage;
     if (error != null) {
       errorMessage = error;
@@ -105,7 +116,7 @@ class DepositToBTCAddressPageState extends State<DepositToBTCAddressPage> {
       return Column(
         mainAxisSize: MainAxisSize.max,
         crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: <Widget>[
+        children: [
           Padding(
             padding: EdgeInsets.only(top: 50.0, left: 30.0, right: 30.0),
             child: Text(errorMessage, textAlign: TextAlign.center),
@@ -114,26 +125,29 @@ class DepositToBTCAddressPageState extends State<DepositToBTCAddressPage> {
       );
     }
 
+    final lspInfo = lspStatus?.currentLSP;
+    final minAllowedDeposit = response?.minAllowedDeposit;
+    final maxAllowedDeposit = response?.maxAllowedDeposit;
+
     return SingleChildScrollView(
       child: Column(
         mainAxisSize: MainAxisSize.min,
-        children: <Widget>[
+        children: [
           AddressWidget(response?.address, response?.backupJson),
-          response == null || lspStatus.currentLSP == null
+          response == null || lspInfo == null
               ? SizedBox()
               : WarningBox(
                   child: Column(
                     mainAxisSize: MainAxisSize.min,
-                    children: <Widget>[
+                    children: [
                       Text(
-                        "Send more than " +
-                            account.currency.format(minAllowedDeposit(response, lspStatus.currentLSP),
-                                includeDisplayName: true) +
-                            " and up to " +
-                            account.currency.format(response.maxAllowedDeposit,
-                                includeDisplayName: true) +
-                            " to this address. " +
-                            formatFeeMessage(account, lspStatus.currentLSP),
+                        _sendMessage(
+                          texts,
+                          account,
+                          lspInfo,
+                          minAllowedDeposit,
+                          maxAllowedDeposit,
+                        ),
                         style: Theme.of(context).textTheme.headline6,
                         textAlign: TextAlign.center,
                       ),
@@ -145,36 +159,102 @@ class DepositToBTCAddressPageState extends State<DepositToBTCAddressPage> {
     );
   }
 
-  Int64 minAllowedDeposit(AddFundResponse response,  LSPInfo lsp) {
-    var minFees = (lsp != null) ? (new Int64(lsp.channelMinimumFeeMsat)) ~/ 1000 : Int64(0);
-    if (minFees > response.minAllowedDeposit) {
-      return minFees;
+  String _sendMessage(
+    AppLocalizations texts,
+    AccountModel accountModel,
+    LSPInfo lspInfo,
+    Int64 minAllowedDeposit,
+    Int64 maxAllowedDeposit,
+  ) {
+    final connected = accountModel.connected;
+    final minFees = (lspInfo != null)
+        ? Int64(lspInfo.channelMinimumFeeMsat) ~/ 1000
+        : Int64(0);
+    final showMinFeeMessage = minFees > 0;
+    final minFeeFormatted = accountModel.currency.format(minFees);
+    final minSats = accountModel.currency.format(
+      _minAllowedDeposit(
+        lspInfo,
+        minAllowedDeposit,
+      ),
+      includeDisplayName: true,
+    );
+    final maxSats = accountModel.currency.format(
+      maxAllowedDeposit,
+      includeDisplayName: true,
+    );
+    final setUpFee = (lspInfo.channelFeePermyriad / 100).toString();
+    final liquidity = accountModel.currency.format(
+      connected ? accountModel.maxInboundLiquidity : Int64(0),
+    );
+
+    if (connected && showMinFeeMessage) {
+      return texts.invoice_btc_address_warning_with_min_fee_account_connected(
+        minSats,
+        maxSats,
+        setUpFee,
+        minFeeFormatted,
+        liquidity,
+      );
+    } else if (connected && !showMinFeeMessage) {
+      return texts
+          .invoice_btc_address_warning_without_min_fee_account_connected(
+        minSats,
+        maxSats,
+        setUpFee,
+        liquidity,
+      );
+    } else if (!connected && showMinFeeMessage) {
+      return texts
+          .invoice_btc_address_warning_with_min_fee_account_not_connected(
+        minSats,
+        maxSats,
+        setUpFee,
+        minFeeFormatted,
+      );
+    } else {
+      return texts
+          .invoice_btc_address_warning_without_min_fee_account_not_connected(
+        minSats,
+        maxSats,
+        setUpFee,
+      );
     }
-    return response.minAllowedDeposit;
   }
 
-  String formatFeeMessage(AccountModel acc, LSPInfo lsp) {
-    var minFees = (lsp != null) ? (new Int64(lsp.channelMinimumFeeMsat)) ~/ 1000 : Int64(0);
-    String minFeesMessage = (minFees > 0) ? "with a minimum of ${acc.currency.format(minFees)} " : "";
-    if (acc.connected) {
-      var liquidity = acc.currency.format(acc.maxInboundLiquidity);
-      return "A setup fee of ${lsp.channelFeePermyriad / 100}% ${minFeesMessage}will be applied for sending more than $liquidity.";
-    }
-    return "A setup fee of ${lsp.channelFeePermyriad / 100}% ${minFeesMessage}will be applied on the received amount.";
+  Int64 _minAllowedDeposit(
+    LSPInfo lspInfo,
+    Int64 minAllowedDeposit,
+  ) {
+    final minFees = (lspInfo != null)
+        ? Int64(lspInfo.channelMinimumFeeMsat) ~/ 1000
+        : Int64(0);
+    if (minAllowedDeposit == null) return minFees;
+    if (minFees > minAllowedDeposit) return minFees;
+    return minAllowedDeposit;
   }
 
-  Widget _buildBottomBar(AddFundResponse response, AccountModel account,
-      {hasError = false}) {
+  Widget _buildBottomBar(
+    BuildContext context,
+    AddFundResponse response,
+    AccountModel account, {
+    hasError = false,
+  }) {
+    final texts = AppLocalizations.of(context);
+
     if (hasError || response?.errorMessage?.isNotEmpty == true) {
       return SingleButtonBottomBar(
-          text: hasError ? "RETRY" : "CLOSE",
-          onPressed: () {
-            if (hasError) {
-              _addFundsBloc.addFundRequestSink.add(true);
-            } else {
-              Navigator.of(context).pop();
-            }
-          });
+        text: hasError
+            ? texts.invoice_btc_address_action_retry
+            : texts.invoice_btc_address_action_close,
+        onPressed: () {
+          if (hasError) {
+            _addFundsBloc.addFundRequestSink.add(true);
+          } else {
+            Navigator.of(context).pop();
+          }
+        },
+      );
     }
 
     return SizedBox();

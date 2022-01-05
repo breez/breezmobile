@@ -10,6 +10,100 @@
   "home_drawer_item_title_apps": "Apps",
   "home_drawer_item_title_pos_settings": "Configurações do PDV",
   "home_drawer_item_title_developers": "Desenvolvedores",
+  "invoice_btc_address_title": "Receber via endereço BTC",
+  "invoice_btc_address_network_error": "Houve uma falha ao recuperar o endereço do servidor da Breez\nPor favor, verifique sua conexão com a internet e tente novamente.",
+  "invoice_btc_address_action_retry": "TENTAR NOVAMENTE",
+  "invoice_btc_address_action_close": "FECHAR",
+  "invoice_btc_address_warning_with_min_fee_account_connected": "Envie mais de {minSats} e no máximo {maxSats} para este endereço. Uma taxa de configuração de {setUpFee}% com um mínimo de {minFee} será aplicado caso o envio seja maior do que {liquidity}.",
+  "@invoice_btc_address_warning_with_min_fee_account_connected": {
+    "placeholders": {
+      "minSats": {
+        "type": "String",
+        "example": "2 000 sats"
+      },
+      "maxSats": {
+        "type": "String",
+        "example": "4 000 000 sats"
+      },
+      "setUpFee": {
+        "type": "String",
+        "example": "0.4"
+      },
+      "minFee": {
+        "type": "String",
+        "example": "1 000 sats"
+      },
+      "liquidity": {
+        "type": "String",
+        "example": "99 000 sats"
+      }
+    }
+  },
+  "invoice_btc_address_warning_without_min_fee_account_connected": "Envie mais de {minSats} e no máximo {maxSats} para este endereço. Uma taxa de configuração de {setUpFee}% será aplicado caso o envio seja maior do que {liquidity}.",
+  "@invoice_btc_address_warning_without_min_fee_account_connected": {
+    "placeholders": {
+      "minSats": {
+        "type": "String",
+        "example": "2 000 sats"
+      },
+      "maxSats": {
+        "type": "String",
+        "example": "4 000 000 sats"
+      },
+      "setUpFee": {
+        "type": "String",
+        "example": "0.4"
+      },
+      "liquidity": {
+        "type": "String",
+        "example": "99 000 sats"
+      }
+    }
+  },
+  "invoice_btc_address_warning_with_min_fee_account_not_connected": "Envie mais de {minSats} e no máximo {maxSats} para este endereço. Uma taxa de configuração de {setUpFee}% com um mínimo de {minFee} será aplicado no montante recebido.",
+  "@invoice_btc_address_warning_with_min_fee_account_not_connected": {
+    "placeholders": {
+      "minSats": {
+        "type": "String",
+        "example": "2 000 sats"
+      },
+      "maxSats": {
+        "type": "String",
+        "example": "4 000 000 sats"
+      },
+      "setUpFee": {
+        "type": "String",
+        "example": "0.4"
+      },
+      "minFee": {
+        "type": "String",
+        "example": "1 000 sats"
+      }
+    }
+  },
+  "invoice_btc_address_warning_without_min_fee_account_not_connected": "Envie mais de {minSats} e no máximo {maxSats} para este endereço. Uma taxa de configuração de {setUpFee}% será aplicado no montante recebido.",
+  "@invoice_btc_address_warning_without_min_fee_account_not_connected": {
+    "placeholders": {
+      "minSats": {
+        "type": "String",
+        "example": "2 000 sats"
+      },
+      "maxSats": {
+        "type": "String",
+        "example": "4 000 000 sats"
+      },
+      "setUpFee": {
+        "type": "String",
+        "example": "0.4"
+      }
+    }
+  },
+  "invoice_btc_address_deposit_address": "Endereço de Depósito",
+  "invoice_btc_address_deposit_address_copied": "O endereço de depósito foi copiado para a área de transferência..",
+  "invoice_btc_address_on_chain_begin": "Breez está usando Submarine Swaps para executar transações on-chain. Toque ",
+  "invoice_btc_address_on_chain_here": "aqui",
+  "invoice_btc_address_on_chain_end": " para ver o script associado a este endereço.",
+  "invoice_btc_address_on_chain_action_ok": "OK",
   "backup_dialog_title": "Backup",
   "backup_dialog_message_remote_server": "Falha ao salvar arquivos de backup no servidor remoto. Por favor, revise suas configurações e tente novamente.",
   "backup_dialog_message_default": "Se você deseja restaurar seus fundos caso este dispositivo móvel ou aplicativo não esteja mais disponível (por exemplo, dispositivo perdido ou roubado ou desinstalação de aplicativo), você deve fazer o backup de suas informações.",
