@@ -11,19 +11,22 @@ class LocalAuthenticationService {
 
   final _auth = LocalAuthentication();
 
-  Future<String> get enrolledBiometrics async =>
-      await _getAvailableBiometrics();
+  Future<LocalAuthenticationOption> get localAuthenticationOption async =>
+      await _getLocalAuthenticationOption();
 
-  Future<String> _getAvailableBiometrics() async {
-    List<BiometricType> availableBiometrics =
-        await _auth.getAvailableBiometrics();
-    String enrolledBiometrics = "";
+  Future<LocalAuthenticationOption> _getLocalAuthenticationOption() async {
+    final availableBiometrics = await _auth.getAvailableBiometrics();
     if (availableBiometrics.contains(BiometricType.face)) {
-      enrolledBiometrics = (Platform.isIOS) ? "Face ID" : "Face";
-    } else if (availableBiometrics.contains(BiometricType.fingerprint)) {
-      enrolledBiometrics = (Platform.isIOS) ? "Touch ID" : "Fingerprint";
+      return Platform.isIOS
+          ? LocalAuthenticationOption.FACE_ID
+          : LocalAuthenticationOption.FACE;
     }
-    return enrolledBiometrics;
+    if (availableBiometrics.contains(BiometricType.fingerprint)) {
+      return Platform.isIOS
+          ? LocalAuthenticationOption.TOUCH_ID
+          : LocalAuthenticationOption.FINGERPRINT;
+    }
+    return LocalAuthenticationOption.NONE;
   }
 
   Future<bool> authenticate({String localizedReason}) async {
@@ -46,4 +49,12 @@ class LocalAuthenticationService {
   Future stopAuthentication() async {
     await _auth.stopAuthentication();
   }
+}
+
+enum LocalAuthenticationOption {
+  FACE,
+  FACE_ID,
+  FINGERPRINT,
+  TOUCH_ID,
+  NONE,
 }

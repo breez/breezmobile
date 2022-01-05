@@ -341,7 +341,7 @@ class UserProfileBloc {
   }
 
   Future _getEnrolledBiometrics(GetEnrolledBiometrics action) async {
-    action.resolve(await _localAuthService.enrolledBiometrics);
+    action.resolve(await _localAuthService.localAuthenticationOption);
   }
 
   void _listenRegistrationRequests(ServiceInjector injector) {
