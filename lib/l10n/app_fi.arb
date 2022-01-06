@@ -879,6 +879,7 @@
   "swap_in_progress_transaction_id_copied": "Transaction ID was copied to your clipboard.",
   "swap_in_progress_message_waiting_confirmation": "Breez is waiting for your transaction to be confirmed.",
   "swap_in_progress_message_processing_previous_request": "Breez is currently processing your previous request. You'll be notified once processing is completed to send your funds to the address you've specified.",
+  "market_place_no_vendors": "There are no available vendors at the moment.",
   "locale": "fi",
   "app_name": "Breez"
 }
