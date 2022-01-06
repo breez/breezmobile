@@ -10,7 +10,9 @@ import 'package:breez/widgets/back_button.dart' as backBtn;
 import 'package:breez/widgets/error_dialog.dart';
 import 'package:breez/widgets/loader.dart';
 import 'package:breez/widgets/payment_details_dialog.dart';
+import 'package:fixnum/fixnum.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:rxdart/subjects.dart';
 
 import '../sync_progress_dialog.dart';
@@ -23,9 +25,12 @@ class ReverseSwapPage extends StatefulWidget {
   final String requestAmount;
   final bool isMax;
 
-  const ReverseSwapPage(
-      {Key key, this.userAddress, this.requestAmount, this.isMax})
-      : super(key: key);
+  const ReverseSwapPage({
+    Key key,
+    this.userAddress,
+    this.requestAmount,
+    this.isMax,
+  }) : super(key: key);
 
   @override
   State<StatefulWidget> createState() {
@@ -34,11 +39,11 @@ class ReverseSwapPage extends StatefulWidget {
 }
 
 class ReverseSwapPageState extends State<ReverseSwapPage> {
+  final _reverseSwapsStream = BehaviorSubject<ReverseSwapRequest>();
+  final _pageController = PageController();
+  final _policyCompleter = Completer();
+
   ReverseSwapBloc _reverseSwapBloc;
-  StreamController<ReverseSwapRequest> _reverseSwapsStream =
-      BehaviorSubject<ReverseSwapRequest>();
-  PageController _pageController = PageController();
-  Completer _policyCompleter = Completer();
   Object _loadingError;
 
   @override
@@ -78,163 +83,194 @@ class ReverseSwapPageState extends State<ReverseSwapPage> {
 
   @override
   Widget build(BuildContext context) {
-    var reverseSwapBloc = AppBlocsProvider.of<ReverseSwapBloc>(context);
-    var accountBloc = AppBlocsProvider.of<AccountBloc>(context);
-    return StreamBuilder<AccountModel>(
-        stream: accountBloc.accountStream,
-        builder: (context, accSnapshot) {
-          var unconfirmedChannels = accSnapshot.data?.unconfirmedChannels;
-          bool hasUnconfirmed =
-              unconfirmedChannels != null && unconfirmedChannels.length > 0;
-          return Scaffold(
-              appBar: !_policyCompleter.isCompleted ||
-                      _loadingError != null ||
-                      hasUnconfirmed
-                  ? AppBar(
-                      iconTheme: Theme.of(context).appBarTheme.iconTheme,
-                      textTheme: Theme.of(context).appBarTheme.textTheme,
-                      backgroundColor: Theme.of(context).canvasColor,
-                      leading: backBtn.BackButton(onPressed: () {
-                        Navigator.of(context).pop();
-                      }),
-                      title: Text("Send to BTC Address",
-                          style: Theme.of(context)
-                              .appBarTheme
-                              .textTheme
-                              .headline6),
-                      elevation: 0.0)
-                  : null,
-              body: FutureBuilder<Object>(
-                  future: _policyCompleter.future,
-                  builder: (context, snapshot) {
-                    if (hasUnconfirmed) {
-                      return UnconfirmedChannels(
-                          accountModel: accSnapshot.data,
-                          unconfirmedChannels: unconfirmedChannels);
-                    }
-                    if (snapshot.error != null) {
-                      return Center(
-                          child: Text(snapshot.error.toString(),
-                              textAlign: TextAlign.center));
-                    }
-                    if (snapshot.data == null) {
-                      return Center(
-                          child: Loader(
-                              color: Theme.of(context)
-                                  .primaryColor
-                                  .withOpacity(0.5)));
-                    }
-                    ReverseSwapPolicy policy =
-                        snapshot.data as ReverseSwapPolicy;
-                    return StreamBuilder<InProgressReverseSwaps>(
-                        stream: reverseSwapBloc.swapInProgressStream,
-                        builder: (context, snapshot) {
-                          var swapInProgress = snapshot.data;
-                          if (swapInProgress == null ||
-                              !swapInProgress.isEmpty) {
-                            return SwapInProgress(
-                                swapInProgress: swapInProgress);
-                          }
-                          return StreamBuilder<ReverseSwapRequest>(
-                              stream: _reverseSwapsStream.stream,
-                              builder: (context, swapSnapshot) {
-                                String initialAddress, initialAmount;
-                                bool initialIsMax;
-                                var currentSwap = swapSnapshot.data;
-                                if (widget.userAddress != null) {
-                                  initialAddress = widget.userAddress;
-                                }
-                                if (widget.requestAmount != null) {
-                                  initialAmount = widget.requestAmount;
-                                }
-                                if (widget.isMax != null) {
-                                  initialIsMax = widget.isMax;
-                                }
-                                if (currentSwap != null) {
-                                  initialAddress = currentSwap.claimAddress;
-                                  initialAmount = accSnapshot.data.currency
-                                      .format(currentSwap.amount,
-                                          userInput: true,
-                                          includeDisplayName: false);
-                                  initialIsMax = currentSwap.isMax;
-                                }
+    final themeData = Theme.of(context);
+    final texts = AppLocalizations.of(context);
 
-                                return PageView(
-                                  controller: _pageController,
-                                  physics: NeverScrollableScrollPhysics(),
-                                  children: <Widget>[
-                                    WithdrawFundsPage(
-                                        title: "Send to BTC Address",
-                                        policy: WithdrawFundsPolicy(
-                                          policy.minValue,
-                                          policy.maxValue,
-                                          accSnapshot.data.balance,
-                                          policy.maxAmount,
-                                        ),
-                                        initialAddress: initialAddress,
-                                        initialAmount: initialAmount,
-                                        initialIsMax: initialIsMax,
-                                        onNext: (amount, address, isMax) {
-                                          var action = GetReverseSwapPolicy();
-                                          reverseSwapBloc.actionsSink
-                                              .add(action);
-                                          return action.future.then((p) {
-                                            var swap = ReverseSwapRequest(
-                                                address,
-                                                amount,
-                                                isMax,
-                                                policy.maxAmount,
-                                                p);
-                                            _reverseSwapsStream.add(swap);
-                                            _pageController.nextPage(
-                                                duration:
-                                                    Duration(milliseconds: 250),
-                                                curve: Curves.easeInOut);
-                                          });
-                                        }),
-                                    currentSwap == null
-                                        ? SizedBox()
-                                        : ReverseSwapConfirmation(
-                                            swap: swapSnapshot.data,
-                                            bloc: reverseSwapBloc,
-                                            onFeeConfirmed: (address,
-                                                toSend,
-                                                boltzFees,
-                                                claimFees,
-                                                received,
-                                                feesHash) {
-                                              var action = NewReverseSwap(
-                                                  toSend,
-                                                  address,
-                                                  feesHash,
-                                                  claimFees,
-                                                  received);
-                                              reverseSwapBloc.actionsSink
-                                                  .add(action);
-                                              return action.future
-                                                  .then((value) {
-                                                Navigator.of(context).pop();
-                                              }).catchError((err) async {
-                                                await promptError(context, null,
-                                                    Text(err.toString()));
-                                              });
-                                            },
-                                            onPrevious: () {
-                                              _pageController
-                                                  .previousPage(
-                                                      duration: Duration(
-                                                          milliseconds: 250),
-                                                      curve: Curves.easeInOut)
-                                                  .then((_) {
-                                                _reverseSwapsStream.add(null);
-                                              });
-                                            }),
-                                  ],
-                                );
-                              });
-                        });
-                  }));
-        });
+    final reverseSwapBloc = AppBlocsProvider.of<ReverseSwapBloc>(context);
+    final accountBloc = AppBlocsProvider.of<AccountBloc>(context);
+
+    return StreamBuilder<AccountModel>(
+      stream: accountBloc.accountStream,
+      builder: (context, accSnapshot) {
+        final accountModel = accSnapshot.data;
+        final unconfirmedChannels = accountModel?.unconfirmedChannels;
+        final hasUnconfirmed = (unconfirmedChannels?.length ?? 0) > 0;
+
+        return Scaffold(
+          appBar: !_policyCompleter.isCompleted ||
+                  _loadingError != null ||
+                  hasUnconfirmed
+              ? AppBar(
+                  iconTheme: themeData.appBarTheme.iconTheme,
+                  textTheme: themeData.appBarTheme.textTheme,
+                  backgroundColor: themeData.canvasColor,
+                  leading: backBtn.BackButton(
+                    onPressed: () => Navigator.of(context).pop(),
+                  ),
+                  title: Text(
+                    texts.reverse_swap_title,
+                    style: themeData.appBarTheme.textTheme.headline6,
+                  ),
+                  elevation: 0.0,
+                )
+              : null,
+          body: FutureBuilder<Object>(
+            future: _policyCompleter.future,
+            builder: (context, snapshot) {
+              if (hasUnconfirmed) {
+                return UnconfirmedChannels(
+                  accountModel: accountModel,
+                  unconfirmedChannels: unconfirmedChannels,
+                );
+              }
+              if (snapshot.error != null) {
+                return Center(
+                  child: Text(
+                    snapshot.error.toString(),
+                    textAlign: TextAlign.center,
+                  ),
+                );
+              }
+              if (snapshot.data == null) {
+                return Center(
+                  child: Loader(
+                    color: themeData.primaryColor.withOpacity(0.5),
+                  ),
+                );
+              }
+              final policy = snapshot.data as ReverseSwapPolicy;
+
+              return StreamBuilder<InProgressReverseSwaps>(
+                stream: reverseSwapBloc.swapInProgressStream,
+                builder: (context, snapshot) {
+                  final swapInProgress = snapshot.data;
+                  if (swapInProgress == null || !swapInProgress.isEmpty) {
+                    return SwapInProgress(swapInProgress: swapInProgress);
+                  }
+
+                  return StreamBuilder<ReverseSwapRequest>(
+                    stream: _reverseSwapsStream.stream,
+                    builder: (context, swapSnapshot) {
+                      String initialAddress, initialAmount;
+                      bool initialIsMax;
+                      final currentSwap = swapSnapshot.data;
+                      if (widget.userAddress != null) {
+                        initialAddress = widget.userAddress;
+                      }
+                      if (widget.requestAmount != null) {
+                        initialAmount = widget.requestAmount;
+                      }
+                      if (widget.isMax != null) {
+                        initialIsMax = widget.isMax;
+                      }
+                      if (currentSwap != null) {
+                        initialAddress = currentSwap.claimAddress;
+                        initialAmount = accountModel.currency.format(
+                          currentSwap.amount,
+                          userInput: true,
+                          includeDisplayName: false,
+                        );
+                        initialIsMax = currentSwap.isMax;
+                      }
+
+                      return _pageView(
+                        context,
+                        reverseSwapBloc,
+                        policy,
+                        accountModel,
+                        initialAddress,
+                        initialAmount,
+                        initialIsMax,
+                        currentSwap,
+                      );
+                    },
+                  );
+                },
+              );
+            },
+          ),
+        );
+      },
+    );
+  }
+
+  Widget _pageView(
+    BuildContext context,
+    ReverseSwapBloc reverseSwapBloc,
+    ReverseSwapPolicy policy,
+    AccountModel accountModel,
+    String initialAddress,
+    String initialAmount,
+    bool initialIsMax,
+    ReverseSwapRequest currentSwap,
+  ) {
+    final texts = AppLocalizations.of(context);
+
+    return PageView(
+      controller: _pageController,
+      physics: NeverScrollableScrollPhysics(),
+      children: [
+        WithdrawFundsPage(
+          title: texts.reverse_swap_title,
+          policy: WithdrawFundsPolicy(
+            policy.minValue,
+            policy.maxValue,
+            accountModel.balance,
+            policy.maxAmount,
+          ),
+          initialAddress: initialAddress,
+          initialAmount: initialAmount,
+          initialIsMax: initialIsMax,
+          onNext: (amount, address, isMax) {
+            var action = GetReverseSwapPolicy();
+            reverseSwapBloc.actionsSink.add(action);
+            return action.future.then((pol) {
+              _reverseSwapsStream.add(ReverseSwapRequest(
+                address,
+                amount,
+                isMax,
+                policy.maxAmount,
+                pol,
+              ));
+              _pageController.nextPage(
+                duration: Duration(milliseconds: 250),
+                curve: Curves.easeInOut,
+              );
+            });
+          },
+        ),
+        currentSwap == null
+            ? SizedBox()
+            : ReverseSwapConfirmation(
+                swap: currentSwap,
+                bloc: reverseSwapBloc,
+                onFeeConfirmed: _onFeeConfirmed,
+                onPrevious: () => _pageController
+                    .previousPage(
+                      duration: Duration(milliseconds: 250),
+                      curve: Curves.easeInOut,
+                    )
+                    .then((_) => _reverseSwapsStream.add(null)),
+              ),
+      ],
+    );
+  }
+
+  Future<dynamic> _onFeeConfirmed(
+    String address,
+    Int64 toSend,
+    Int64 boltzFees,
+    Int64 claimFees,
+    Int64 received,
+    String feesHash,
+  ) {
+    final swap = NewReverseSwap(toSend, address, feesHash, claimFees, received);
+    _reverseSwapBloc.actionsSink.add(swap);
+    return swap.future.then((value) {
+      Navigator.of(context).pop();
+    }).catchError((err) async {
+      await promptError(context, null, Text(err.toString()));
+    });
   }
 }
 
@@ -242,18 +278,23 @@ class UnconfirmedChannels extends StatelessWidget {
   final AccountModel accountModel;
   final List<String> unconfirmedChannels;
 
-  const UnconfirmedChannels(
-      {Key key, this.accountModel, this.unconfirmedChannels})
-      : super(key: key);
+  const UnconfirmedChannels({
+    Key key,
+    this.accountModel,
+    this.unconfirmedChannels,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    var rows = unconfirmedChannels.map((chanPoint) {
-      var tx = chanPoint.split(":")[0];
+    final texts = AppLocalizations.of(context);
+
+    final rows = unconfirmedChannels.map((chainPoint) {
+      final tx = chainPoint.split(":")[0];
       return TxWidget(
-          txLabel: "Funding Transaction:",
-          txID: tx,
-          txURL: "https://blockstream.info/tx/$tx");
+        txLabel: texts.reverse_swap_funding_transaction,
+        txID: tx,
+        txURL: "https://blockstream.info/tx/$tx",
+      );
     }).toList();
     return Padding(
       padding: const EdgeInsets.only(top: 48, left: 16, right: 16),
@@ -271,8 +312,10 @@ class UnconfirmedChannels extends StatelessWidget {
               children: [
                 Expanded(
                   child: SyncProgressDialog(
-                      progressColor: Colors.white, closeOnSync: false),
-                )
+                    progressColor: Colors.white,
+                    closeOnSync: false,
+                  ),
+                ),
               ],
             ),
           ],
@@ -286,9 +329,10 @@ class UnconfirmedChannels extends StatelessWidget {
               children: [
                 Expanded(
                   child: Text(
-                      "You will be able to send your funds to a BTC address once all channels are confirmed.",
-                      textAlign: TextAlign.center),
-                )
+                    texts.reverse_swap_waiting_channels,
+                    textAlign: TextAlign.center,
+                  ),
+                ),
               ],
             ),
             ...rows
