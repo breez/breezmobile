@@ -797,6 +797,88 @@
       }
     }
   },
+  "reverse_swap_title": "Send to BTC Address",
+  "reverse_swap_funding_transaction": "Funding Transaction:",
+  "reverse_swap_waiting_channels": "You will be able to send your funds to a BTC address once all channels are confirmed.",
+  "reverse_swap_confirmation_speed": "Choose Processing Speed",
+  "reverse_swap_confirmation_action_confirm": "CONFIRM",
+  "reverse_swap_confirmation_you_send": "You send:",
+  "reverse_swap_confirmation_you_receive": "You receive:",
+  "reverse_swap_confirmation_received_no_fiat": "{received}",
+  "@reverse_swap_confirmation_received_no_fiat": {
+    "placeholders": {
+      "received": {
+        "type": "String",
+        "example": "12 345"
+      }
+    }
+  },
+  "reverse_swap_confirmation_received_with_fiat": "{received} ({fiat})",
+  "@reverse_swap_confirmation_received_with_fiat": {
+    "placeholders": {
+      "received": {
+        "type": "String",
+        "example": "12 345"
+      },
+      "fiat": {
+        "type": "String",
+        "example": "56$"
+      }
+    }
+  },
+  "reverse_swap_confirmation_transaction_fee": "Transaction fee:",
+  "reverse_swap_confirmation_transaction_fee_value": "-{fee}",
+  "@reverse_swap_confirmation_transaction_fee_value": {
+    "placeholders": {
+      "fee": {
+        "type": "String",
+        "example": "12 345"
+      }
+    }
+  },
+  "reverse_swap_confirmation_boltz_fee": "Boltz service fee:",
+  "reverse_swap_confirmation_boltz_fee_value": "-{boltzFee}",
+  "@reverse_swap_confirmation_boltz_fee_value": {
+    "placeholders": {
+      "boltzFee": {
+        "type": "String",
+        "example": "12 345"
+      }
+    }
+  },
+  "reverse_swap_confirmation_error_fetch_fee": "Failed to retrieve fees. Please try again later.",
+  "reverse_swap_confirmation_error_funds_fee": "You don't have enough funds for this payment network fee.",
+  "sync_progress_server_ready": "Synchronizing to the network",
+  "sync_progress_waiting_network": "Waiting for network",
+  "withdraw_funds_error_min_value": "Must be at least {minValue}",
+  "@withdraw_funds_error_min_value": {
+    "placeholders": {
+      "minValue": {
+        "type": "String",
+        "example": "12 345"
+      }
+    }
+  },
+  "withdraw_funds_error_max_value": "Must be less than {maxValue}",
+  "@withdraw_funds_error_max_value": {
+    "placeholders": {
+      "minValue": {
+        "type": "String",
+        "example": "12 345"
+      }
+    }
+  },
+  "withdraw_funds_use_all_funds": "Use All Funds",
+  "withdraw_funds_btc_address": "BTC Address",
+  "withdraw_funds_scan_barcode": "Scan Barcode",
+  "withdraw_funds_error_invalid_address": "Please enter a valid BTC Address",
+  "withdraw_funds_balance": "Balance:",
+  "withdraw_funds_error_qr_code_not_detected": "QR code wasn't detected.",
+  "withdraw_funds_action_next": "NEXT",
+  "swap_in_progress_title": "Send to BTC Address",
+  "swap_in_progress_transaction_id_copied": "Transaction ID was copied to your clipboard.",
+  "swap_in_progress_message_waiting_confirmation": "Breez is waiting for your transaction to be confirmed.",
+  "swap_in_progress_message_processing_previous_request": "Breez is currently processing your previous request. You'll be notified once processing is completed to send your funds to the address you've specified.",
   "locale": "fi",
   "app_name": "Breez"
 }
