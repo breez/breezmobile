@@ -104,6 +104,96 @@
   "invoice_btc_address_on_chain_here": "aquí",
   "invoice_btc_address_on_chain_end": "  para ver el script asociado con esta dirección.",
   "invoice_btc_address_on_chain_action_ok": "OK",
+  "invoice_title": "Recibir vía Factura",
+  "invoice_action_create": "CREAR",
+  "invoice_action_redeem": "RESCATAR",
+  "invoice_action_scan_barcode": "Escanear código de barras",
+  "invoice_payment_success": "El pago se recibió con éxito!",
+  "invoice_qr_code_not_detected": "No se detectó el código QR.",
+  "invoice_receive_fail": "Error al recibir",
+  "invoice_receive_fail_message": "Causa: {reason}",
+  "@invoice_receive_fail_message": {
+    "placeholders": {
+      "reason": {
+        "type": "String",
+        "example": "An error message"
+      }
+    }
+  },
+  "invoice_error_url": "URL invalida",
+  "invoice_insufficient_amount_fee": "La cantidad es insuficiente para cubrir la tarifa de instalación de {fee}",
+  "@invoice_insufficient_amount_fee": {
+    "placeholders": {
+      "fee": {
+        "type": "String",
+        "example": "20 sats"
+      }
+    }
+  },
+  "invoice_description_label": "Descripción (opcional)",
+  "invoice_availability_message_synchronizing": "La recepción de pagos estará disponible una vez que la Breez esté sincronizada.",
+  "invoice_availability_message_opening_channel": "Usted podrá recibir pagos después de que la Breez haya terminado de abrir un canal seguro con nuestro servidor. Por lo general, esto toma alrededor de 10 minutos para completarse. Por favor, vuelve a intentarlo en unos minutos.",
+  "invoice_receive_label": "Recibe hasta: {maxSats}",
+  "@invoice_receive_label": {
+    "placeholders": {
+      "maxSats": {
+        "type": "String",
+        "example": "2 000 sats"
+      }
+    }
+  },
+  "invoice_ln_address_warning_with_min_fee_account_connected": "Una tarifa de instalación de {setUpFee}% con un valor mínimo de {minFee} se aplicará para recibir montos superiores a {liquidity}.",
+  "@invoice_ln_address_warning_with_min_fee_account_connected": {
+    "placeholders": {
+      "setUpFee": {
+        "type": "String",
+        "example": "0.4"
+      },
+      "minFee": {
+        "type": "String",
+        "example": "1 000 sats"
+      },
+      "liquidity": {
+        "type": "String",
+        "example": "99 000 sats"
+      }
+    }
+  },
+  "invoice_ln_address_warning_without_min_fee_account_connected": "Una tarifa de instalación de {setUpFee}% se aplicará para recibir montos superiores a {liquidity}.",
+  "@invoice_ln_address_warning_without_min_fee_account_connected": {
+    "placeholders": {
+      "setUpFee": {
+        "type": "String",
+        "example": "0.4"
+      },
+      "liquidity": {
+        "type": "String",
+        "example": "99 000 sats"
+      }
+    }
+  },
+  "invoice_ln_address_warning_with_min_fee_account_not_connected": "Una tarifa de instalación de {setUpFee}% con un valor mínimo de {minFee} se aplicará a la cantidad recibida.",
+  "@invoice_ln_address_warning_with_min_fee_account_not_connected": {
+    "placeholders": {
+      "setUpFee": {
+        "type": "String",
+        "example": "0.4"
+      },
+      "minFee": {
+        "type": "String",
+        "example": "1 000 sats"
+      }
+    }
+  },
+  "invoice_ln_address_warning_without_min_fee_account_not_connected": "Una tarifa de instalación de {setUpFee}% se aplicará a la cantidad recibida.",
+  "@invoice_ln_address_warning_without_min_fee_account_not_connected": {
+    "placeholders": {
+      "setUpFee": {
+        "type": "String",
+        "example": "0.4"
+      }
+    }
+  },
   "backup_dialog_title": "Respaldar",
   "backup_dialog_message_remote_server": "No se pudieron guardar los archivos de respaldo en el servidor. Por favor, revise su configuración y vuelva a intentarlo.",
   "backup_dialog_message_default": "Si desea poder restaurar sus fondos en caso de que este dispositivo móvil o esta aplicación ya no estén disponibles (por ejemplo, dispositivo perdido o robado o desinstalación de la aplicación), debe hacer una copia de seguridad de su información.",
