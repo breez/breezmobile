@@ -21,7 +21,7 @@ import 'package:breez/widgets/loader.dart';
 import 'package:breez/widgets/single_button_bottom_bar.dart';
 import 'package:breez/widgets/static_loader.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class LNURLFetchInvoicePage extends StatefulWidget {
   final PayFetchResponse payFetchResponse;
@@ -91,6 +91,7 @@ class LNURLFetchInvoicePageState extends State<LNURLFetchInvoicePage> {
   }
 
   Widget showFetchInvoiceDialog() {
+    final texts = AppLocalizations.of(context);
     AccountBloc accountBloc = AppBlocsProvider.of<AccountBloc>(context);
     InvoiceBloc invoiceBloc = AppBlocsProvider.of<InvoiceBloc>(context);
     LNUrlBloc lnurlBloc = AppBlocsProvider.of<LNUrlBloc>(context);
@@ -185,6 +186,7 @@ class LNURLFetchInvoicePageState extends State<LNURLFetchInvoicePage> {
                       AmountFormField(
                           context: context,
                           accountModel: acc,
+                          texts: texts,
                           focusNode: _amountFocusNode,
                           controller: _amountController,
                           validatorFn: (amt) {

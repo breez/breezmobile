@@ -233,6 +233,7 @@ class CreateInvoicePageState extends State<CreateInvoicePage> {
                           ),
                           AmountFormField(
                             context: context,
+                            texts: texts,
                             accountModel: acc,
                             focusNode: _amountFocusNode,
                             controller: _amountController,

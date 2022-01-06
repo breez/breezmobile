@@ -75,6 +75,7 @@ class _PaymentDetailsFormState extends State<PaymentDetailsForm> {
                     children: [
                       AmountFormField(
                         context: context,
+                        texts: texts,
                         accountModel: widget._account,
                         focusNode: _amountFocusNode,
                         controller: _amountController,

@@ -13,6 +13,7 @@ import 'package:breez/widgets/loader.dart';
 import 'package:fixnum/fixnum.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import 'flushbar.dart';
 
@@ -20,7 +21,10 @@ class CurrencyConverterDialog extends StatefulWidget {
   final Function(String string) _onConvert;
   final String Function(Int64 amount) validatorFn;
 
-  CurrencyConverterDialog(this._onConvert, this.validatorFn);
+  const CurrencyConverterDialog(
+    this._onConvert,
+    this.validatorFn,
+  );
 
   @override
   CurrencyConverterDialogState createState() {
@@ -50,8 +54,10 @@ class CurrencyConverterDialogState extends State<CurrencyConverterDialog>
   void initState() {
     super.initState();
     _fiatAmountController.addListener(() => setState(() {}));
-    _controller =
-        AnimationController(vsync: this, duration: Duration(milliseconds: 400));
+    _controller = AnimationController(
+      vsync: this,
+      duration: Duration(milliseconds: 400),
+    );
     // Loop back to start and stop
     _controller.addStatusListener((status) {
       if (status == AnimationStatus.completed) {
@@ -65,6 +71,9 @@ class CurrencyConverterDialogState extends State<CurrencyConverterDialog>
   @override
   void didChangeDependencies() {
     if (!_isInit) {
+      final themeData = Theme.of(context);
+      final texts = AppLocalizations.of(context);
+
       _accountBloc = AppBlocsProvider.of<AccountBloc>(context);
       _userProfileBloc = AppBlocsProvider.of<UserProfileBloc>(context);
       FetchRates fetchRatesAction = FetchRates();
@@ -74,16 +83,18 @@ class CurrencyConverterDialogState extends State<CurrencyConverterDialog>
         if (this.mounted) {
           setState(() {
             Navigator.pop(context);
-            showFlushbar(context,
-                message: "Failed to retrieve BTC exchange rate.");
+            showFlushbar(
+              context,
+              message: texts.currency_converter_dialog_error_exchange_rate,
+            );
           });
         }
       });
 
       _colorAnimation = ColorTween(
         // change to white according to theme
-        begin: Theme.of(context).primaryTextTheme.headline4.color,
-        end: Theme.of(context).primaryTextTheme.button.color,
+        begin: themeData.primaryTextTheme.headline4.color,
+        end: themeData.primaryTextTheme.button.color,
       ).animate(_controller)
         ..addListener(() {
           setState(() {});
@@ -102,208 +113,244 @@ class CurrencyConverterDialogState extends State<CurrencyConverterDialog>
 
   @override
   Widget build(BuildContext context) {
+    final themeData = Theme.of(context);
+
     return StreamBuilder<AccountModel>(
-        stream: _accountBloc.accountStream,
-        builder: (context, snapshot) {
-          AccountModel account = snapshot.data;
-          if (!snapshot.hasData) {
-            return Container();
-          }
+      stream: _accountBloc.accountStream,
+      builder: (context, snapshot) {
+        AccountModel account = snapshot.data;
+        if (!snapshot.hasData) {
+          return Container();
+        }
 
-          if (account.preferredFiatConversionList.isEmpty ||
-              account.fiatCurrency == null) {
-            return Loader();
-          }
+        if (account.preferredFiatConversionList.isEmpty ||
+            account.fiatCurrency == null) {
+          return Loader();
+        }
 
-          double exchangeRate = account.preferredFiatConversionList
-              .firstWhere(
-                  (fiatConversion) =>
-                      fiatConversion.currencyData.symbol ==
-                      account.fiatCurrency.currencyData.symbol,
-                  orElse: () => null)
-              .exchangeRate;
-          _updateExchangeLabel(exchangeRate);
+        double exchangeRate = account.preferredFiatConversionList
+            .firstWhere(
+              (fiatConversion) =>
+                  fiatConversion.currencyData.symbol ==
+                  account.fiatCurrency.currencyData.symbol,
+              orElse: () => null,
+            )
+            .exchangeRate;
+        _updateExchangeLabel(exchangeRate);
 
-          return AlertDialog(
-            title: Theme(
-              data: Theme.of(context).copyWith(
-                brightness: Brightness.light,
-                canvasColor: theme.BreezColors.white[500],
-              ),
-              child: Container(
-                width: MediaQuery.of(context).size.width,
-                height: 50.0,
-                child: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: <Widget>[
-                    Expanded(
-                      child: Padding(
-                        child: AutoSizeText(
-                          "Enter amount in",
-                          style: Theme.of(context).dialogTheme.titleTextStyle,
-                          maxLines: 1,
-                          minFontSize: MinFontSize(context).minFontSize,
-                          stepGranularity: 0.1,
-                          group: _autoSizeGroup,
-                        ),
-                        padding: const EdgeInsets.only(right: 0.0, bottom: 2.0),
-                      ),
-                    ),
-                    Theme(
-                      data: Theme.of(context).copyWith(
-                        canvasColor: Theme.of(context).backgroundColor,
-                      ),
-                      child: DropdownButtonHideUnderline(
-                        child: ButtonTheme(
-                          alignedDropdown: true,
-                          child: BreezDropdownButton(
-                            onChanged: (value) =>
-                                _selectFiatCurrency(account, value),
-                            value: account.fiatCurrency.currencyData.shortName,
-                            iconEnabledColor: Theme.of(context)
-                                .dialogTheme
-                                .titleTextStyle
-                                .color,
-                            style: Theme.of(context).dialogTheme.titleTextStyle,
-                            items: account.preferredFiatConversionList
-                                .map((FiatConversion value) {
-                              return DropdownMenuItem<String>(
-                                value: value.currencyData.shortName,
-                                child: Material(
-                                  child: Container(
-                                    width: 36,
-                                    child: AutoSizeText(
-                                      value.currencyData.shortName,
-                                      textAlign: TextAlign.left,
-                                      style: Theme.of(context)
-                                          .dialogTheme
-                                          .titleTextStyle,
-                                      maxLines: 1,
-                                      minFontSize:
-                                          MinFontSize(context).minFontSize,
-                                      stepGranularity: 0.1,
-                                      group: _autoSizeGroup,
-                                    ),
-                                  ),
-                                ),
-                              );
-                            }).toList(),
-                          ),
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
+        return AlertDialog(
+          title: Theme(
+            data: themeData.copyWith(
+              brightness: Brightness.light,
+              canvasColor: theme.BreezColors.white[500],
             ),
-            titlePadding: EdgeInsets.fromLTRB(24.0, 16.0, 16.0, 8.0),
-            contentPadding: EdgeInsets.fromLTRB(24.0, 0.0, 24.0, 16.0),
-            content: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: <Widget>[
-                Form(
-                  key: _formKey,
-                  child: TextFormField(
-                    decoration: InputDecoration(
-                        enabledBorder: UnderlineInputBorder(
-                            borderSide: theme.greyBorderSide),
-                        focusedBorder: UnderlineInputBorder(
-                            borderSide: theme.greyBorderSide),
-                        errorBorder: UnderlineInputBorder(
-                            borderSide: BorderSide(
-                                color: theme.themeId == "BLUE"
-                                    ? Colors.red
-                                    : Theme.of(context).errorColor)),
-                        focusedErrorBorder: UnderlineInputBorder(
-                            borderSide: BorderSide(
-                                color: theme.themeId == "BLUE"
-                                    ? Colors.red
-                                    : Theme.of(context).errorColor)),
-                        errorMaxLines: 2,
-                        errorStyle: Theme.of(context)
-                            .primaryTextTheme
-                            .caption
-                            .copyWith(
-                                color: theme.themeId == "BLUE"
-                                    ? Colors.red
-                                    : Theme.of(context).errorColor),
-                        prefix: Text(
-                          account.fiatCurrency.currencyData.symbol,
-                          style: Theme.of(context).dialogTheme.contentTextStyle,
-                        )),
-                    // Do not allow '.' when fractionSize is 0 and only allow fiat currencies fractionSize number of digits after decimal point
-                    inputFormatters: [
-                      FilteringTextInputFormatter.allow(account
-                                  .fiatCurrency.currencyData.fractionSize ==
-                              0
-                          ? RegExp(r'\d+')
-                          : RegExp(
-                              "^\\d+\\.?\\d{0,${account.fiatCurrency.currencyData.fractionSize ?? 2}}"))
-                    ],
-                    keyboardType:
-                        TextInputType.numberWithOptions(decimal: true),
-                    focusNode: _fiatAmountFocusNode,
-                    autofocus: true,
-                    onEditingComplete: () => _fiatAmountFocusNode.unfocus(),
-                    controller: _fiatAmountController,
-                    validator: (_) {
-                      if (widget.validatorFn != null) {
-                        return widget.validatorFn(_convertedSatoshies(account));
-                      }
-                      return null;
-                    },
-                    style: Theme.of(context).dialogTheme.contentTextStyle,
-                  ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.only(top: 24.0),
-                  child: Column(
-                    children: <Widget>[
-                      Text(
-                          "${_fiatAmountController.text.isNotEmpty ? account.currency.format(_convertedSatoshies(account), includeDisplayName: false) : 0} ${account.currency.tickerSymbol}",
-                          style: Theme.of(context)
-                              .textTheme
-                              .headline5
-                              .copyWith(fontSize: 16.0)),
-                      _buildExchangeRateLabel(account.fiatCurrency)
-                    ],
-                  ),
-                ),
-              ],
-            ),
-            actions: _buildActions(account),
-          );
-        });
+            child: _dialogBody(context, account),
+          ),
+          titlePadding: EdgeInsets.fromLTRB(24.0, 16.0, 16.0, 8.0),
+          contentPadding: EdgeInsets.fromLTRB(24.0, 0.0, 24.0, 16.0),
+          content: _dialogContent(context, account),
+          actions: _buildActions(context, account),
+        );
+      },
+    );
   }
 
-  List<Widget> _buildActions(AccountModel account) {
+  Widget _dialogBody(BuildContext context, AccountModel account) {
+    final themeData = Theme.of(context);
+    final texts = AppLocalizations.of(context);
+
+    final items = account.preferredFiatConversionList.map((value) {
+      return DropdownMenuItem<String>(
+        value: value.currencyData.shortName,
+        child: Material(
+          child: Container(
+            width: 36,
+            child: AutoSizeText(
+              value.currencyData.shortName,
+              textAlign: TextAlign.left,
+              style: themeData.dialogTheme.titleTextStyle,
+              maxLines: 1,
+              minFontSize: MinFontSize(context).minFontSize,
+              stepGranularity: 0.1,
+              group: _autoSizeGroup,
+            ),
+          ),
+        ),
+      );
+    });
+
+    return Container(
+      width: MediaQuery.of(context).size.width,
+      height: 50.0,
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Expanded(
+            child: Padding(
+              child: AutoSizeText(
+                texts.currency_converter_dialog_title,
+                style: themeData.dialogTheme.titleTextStyle,
+                maxLines: 1,
+                minFontSize: MinFontSize(context).minFontSize,
+                stepGranularity: 0.1,
+                group: _autoSizeGroup,
+              ),
+              padding: const EdgeInsets.only(right: 0.0, bottom: 2.0),
+            ),
+          ),
+          Theme(
+            data: themeData.copyWith(
+              canvasColor: themeData.backgroundColor,
+            ),
+            child: DropdownButtonHideUnderline(
+              child: ButtonTheme(
+                alignedDropdown: true,
+                child: BreezDropdownButton(
+                  onChanged: (value) => _selectFiatCurrency(account, value),
+                  value: account.fiatCurrency.currencyData.shortName,
+                  iconEnabledColor: themeData.dialogTheme.titleTextStyle.color,
+                  style: themeData.dialogTheme.titleTextStyle,
+                  items: items.toList(),
+                ),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _dialogContent(BuildContext context, AccountModel account) {
+    final themeData = Theme.of(context);
+
+    final fractionSize = account.fiatCurrency.currencyData.fractionSize;
+    final isBlue = theme.themeId == "BLUE";
+
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Form(
+          key: _formKey,
+          child: TextFormField(
+            decoration: InputDecoration(
+              enabledBorder: UnderlineInputBorder(
+                borderSide: theme.greyBorderSide,
+              ),
+              focusedBorder: UnderlineInputBorder(
+                borderSide: theme.greyBorderSide,
+              ),
+              errorBorder: UnderlineInputBorder(
+                borderSide: BorderSide(
+                  color: isBlue ? Colors.red : themeData.errorColor,
+                ),
+              ),
+              focusedErrorBorder: UnderlineInputBorder(
+                borderSide: BorderSide(
+                  color: isBlue ? Colors.red : themeData.errorColor,
+                ),
+              ),
+              errorMaxLines: 2,
+              errorStyle: themeData.primaryTextTheme.caption.copyWith(
+                color: isBlue ? Colors.red : themeData.errorColor,
+              ),
+              prefix: Text(
+                account.fiatCurrency.currencyData.symbol,
+                style: themeData.dialogTheme.contentTextStyle,
+              ),
+            ),
+            // Do not allow '.' when fractionSize is 0 and only allow fiat currencies fractionSize number of digits after decimal point
+            inputFormatters: [
+              FilteringTextInputFormatter.allow(
+                fractionSize == 0
+                    ? RegExp(r'\d+')
+                    : RegExp("^\\d+\\.?\\d{0,${fractionSize ?? 2}}"),
+              ),
+            ],
+            keyboardType: TextInputType.numberWithOptions(decimal: true),
+            focusNode: _fiatAmountFocusNode,
+            autofocus: true,
+            onEditingComplete: () => _fiatAmountFocusNode.unfocus(),
+            controller: _fiatAmountController,
+            validator: (_) {
+              if (widget.validatorFn != null) {
+                return widget.validatorFn(_convertedSatoshies(account));
+              }
+              return null;
+            },
+            style: themeData.dialogTheme.contentTextStyle,
+          ),
+        ),
+        Padding(
+          padding: const EdgeInsets.only(top: 24.0),
+          child: Column(
+            children: [
+              Text(
+                _contentMessage(context, account),
+                style: themeData.textTheme.headline5.copyWith(
+                  fontSize: 16.0,
+                ),
+              ),
+              _buildExchangeRateLabel(context, account.fiatCurrency),
+            ],
+          ),
+        ),
+      ],
+    );
+  }
+
+  List<Widget> _buildActions(BuildContext context, AccountModel account) {
+    final themeData = Theme.of(context);
+    final texts = AppLocalizations.of(context);
+
     List<Widget> actions = [
       TextButton(
-          onPressed: () => Navigator.pop(context),
-          child:
-              Text("CANCEL", style: Theme.of(context).primaryTextTheme.button))
+        onPressed: () => Navigator.pop(context),
+        child: Text(
+          texts.currency_converter_dialog_action_cancel,
+          style: themeData.primaryTextTheme.button,
+        ),
+      ),
     ];
 
     // Show done button only when the converted amount is bigger than 0
     if (_fiatAmountController.text.isNotEmpty &&
         _convertedSatoshies(account) > 0) {
-      actions.add(TextButton(
+      actions.add(
+        TextButton(
           onPressed: () {
             if (_formKey.currentState.validate()) {
-              widget._onConvert(account.currency.format(
+              widget._onConvert(
+                account.currency.format(
                   _convertedSatoshies(account),
                   includeDisplayName: false,
-                  userInput: true));
+                  userInput: true,
+                ),
+              );
               Navigator.pop(context);
             }
           },
-          child:
-              Text("DONE", style: Theme.of(context).primaryTextTheme.button)));
+          child: Text(
+            texts.currency_converter_dialog_action_done,
+            style: themeData.primaryTextTheme.button,
+          ),
+        ),
+      );
     }
     return actions;
   }
 
-  _updateExchangeLabel(double exchangeRate) {
+  String _contentMessage(BuildContext context, AccountModel account) {
+    final amount = _fiatAmountController.text.isNotEmpty
+        ? account.currency.format(
+            _convertedSatoshies(account),
+            includeDisplayName: false,
+          )
+        : 0;
+    final symbol = account.currency.tickerSymbol;
+    return "$amount $symbol";
+  }
+
+  void _updateExchangeLabel(double exchangeRate) {
     if (_exchangeRate != exchangeRate) {
       // Blink exchange rate label when exchange rate changes (also switches between fiat currencies)
       if (_exchangeRate != null && !_controller.isAnimating) {
@@ -313,39 +360,52 @@ class CurrencyConverterDialogState extends State<CurrencyConverterDialog>
     }
   }
 
-  _convertedSatoshies(AccountModel account) {
+  Int64 _convertedSatoshies(AccountModel account) {
     return _fiatAmountController.text.isNotEmpty
-        ? account.fiatCurrency
-            .fiatToSat(double.parse(_fiatAmountController.text ?? 0))
-        : 0;
+        ? account.fiatCurrency.fiatToSat(
+            double.parse(_fiatAmountController.text ?? 0),
+          )
+        : Int64(0);
   }
 
-  Widget _buildExchangeRateLabel(FiatConversion fiatConversion) {
+  Widget _buildExchangeRateLabel(
+    BuildContext context,
+    FiatConversion fiatConversion,
+  ) {
+    final themeData = Theme.of(context);
+    final texts = AppLocalizations.of(context);
+
     // Empty string widget is returned so that the dialogs height is not changed when the exchange rate is shown
-    var currency = CurrencyWrapper.fromFiat(fiatConversion);
-    var formattedExchangeRate =
-        currency.format(_exchangeRate, removeTrailingZeros: true);
+    final currency = CurrencyWrapper.fromFiat(fiatConversion);
     return _exchangeRate == null
-        ? Text("", style: Theme.of(context).primaryTextTheme.subtitle2)
+        ? Text(
+            "",
+            style: themeData.primaryTextTheme.subtitle2,
+          )
         : Text(
-            "1 BTC = $formattedExchangeRate ${fiatConversion.currencyData.shortName}",
-            style: Theme.of(context)
-                .primaryTextTheme
-                .subtitle2
-                .copyWith(color: _colorAnimation.value));
+            texts.currency_converter_dialog_rate(
+              currency.format(
+                _exchangeRate,
+                removeTrailingZeros: true,
+              ),
+              fiatConversion.currencyData.shortName,
+            ),
+            style: themeData.primaryTextTheme.subtitle2.copyWith(
+              color: _colorAnimation.value,
+            ),
+          );
   }
 
-  _selectFiatCurrency(AccountModel accountModel, shortName) {
+  void _selectFiatCurrency(AccountModel accountModel, shortName) {
     setState(() {
-      int _oldFractionSize =
-          accountModel.fiatCurrency.currencyData.fractionSize;
+      int oldFractionSize = accountModel.fiatCurrency.currencyData.fractionSize;
       _userProfileBloc.fiatConversionSink.add(shortName);
+      int newFractionSize = accountModel.fiatCurrency.currencyData.fractionSize;
       // Remove decimal points to match the selected fiat currencies fractionSize
-      if (_oldFractionSize >
-          accountModel.fiatCurrency.currencyData.fractionSize) {
-        _fiatAmountController.text = double.parse(_fiatAmountController.text)
-            .toStringAsFixed(
-                accountModel.fiatCurrency.currencyData.fractionSize);
+      if (oldFractionSize > newFractionSize) {
+        _fiatAmountController.text = double.parse(
+          _fiatAmountController.text,
+        ).toStringAsFixed(newFractionSize);
       }
       _updateExchangeLabel(_exchangeRate);
     });
