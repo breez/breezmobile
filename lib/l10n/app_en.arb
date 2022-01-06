@@ -761,6 +761,42 @@
   "network_default_node_error": "Breez is unable to use the default node.",
   "network_custom_node_error": "Breez is unable to connect to the specified node. Please make sure this node supports BIP 157.",
   "network_testing_node": "Testing node",
+  "amount_form_denomination": "Amount in {denomination}",
+  "@amount_form_denomination": {
+    "placeholders": {
+      "denomination": {
+        "type": "String",
+        "example": "sats"
+      }
+    }
+  },
+  "amount_form_insert_hint": "Please enter the amount in {denomination}",
+  "@amount_form_insert_hint": {
+    "placeholders": {
+      "denomination": {
+        "type": "String",
+        "example": "sats"
+      }
+    }
+  },
+  "amount_form_error_invalid_amount": "Invalid amount",
+  "currency_converter_dialog_error_exchange_rate": "Failed to retrieve BTC exchange rate.",
+  "currency_converter_dialog_title": "Enter amount in",
+  "currency_converter_dialog_action_cancel": "CANCEL",
+  "currency_converter_dialog_action_done": "DONE",
+  "currency_converter_dialog_rate": "1 BTC = {rate} {currencyName}",
+  "@currency_converter_dialog_rate": {
+    "placeholders": {
+      "rate": {
+        "type": "String",
+        "example": "42 902.93"
+      },
+      "currencyName": {
+        "type": "String",
+        "example": "USD"
+      }
+    }
+  },
   "locale": "en",
   "app_name": "Breez"
 }

@@ -19,6 +19,7 @@ import 'package:breez/widgets/static_loader.dart';
 import 'package:breez/widgets/warning_box.dart';
 import 'package:fixnum/fixnum.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class WithdrawFundsPage extends StatefulWidget {
   final Future Function(Int64 amount, String destAddress, bool isMax) onNext;
@@ -74,6 +75,7 @@ class WithdrawFundsPageState extends State<WithdrawFundsPage> {
 
   @override
   Widget build(BuildContext context) {
+    final texts = AppLocalizations.of(context);
     ReverseSwapBloc reverseSwapBloc =
         AppBlocsProvider.of<ReverseSwapBloc>(context);
     AccountBloc accountBloc = AppBlocsProvider.of<AccountBloc>(context);
@@ -109,6 +111,7 @@ class WithdrawFundsPageState extends State<WithdrawFundsPage> {
               var amountFormField = AmountFormField(
                   readOnly: fetching || _isMax,
                   context: context,
+                  texts: texts,
                   accountModel: acc,
                   focusNode: _amountFocusNode,
                   controller: _amountController,

@@ -761,6 +761,42 @@
   "network_default_node_error": "No se pudo usar el nodo estandar.",
   "network_custom_node_error": "No se puede conectar al nodo especificado. Asegúrese de que este nodo sea compatible con el BIP 157.",
   "network_testing_node": "Probando el nodo",
+  "amount_form_denomination": "Monto en {denomination}",
+  "@amount_form_denomination": {
+    "placeholders": {
+      "denomination": {
+        "type": "String",
+        "example": "sats"
+      }
+    }
+  },
+  "amount_form_insert_hint": "Por favor, ingrese el monto en {denomination}",
+  "@amount_form_insert_hint": {
+    "placeholders": {
+      "denomination": {
+        "type": "String",
+        "example": "sats"
+      }
+    }
+  },
+  "amount_form_error_invalid_amount": "Monto inválido",
+  "currency_converter_dialog_error_exchange_rate": "Error al recuperar las cotizaciones de BTC.",
+  "currency_converter_dialog_title": "Ingrese el monto en",
+  "currency_converter_dialog_action_cancel": "CANCELAR",
+  "currency_converter_dialog_action_done": "HECHO",
+  "currency_converter_dialog_rate": "1 BTC = {rate} {currencyName}",
+  "@currency_converter_dialog_rate": {
+    "placeholders": {
+      "rate": {
+        "type": "String",
+        "example": "42 902.93"
+      },
+      "currencyName": {
+        "type": "String",
+        "example": "USD"
+      }
+    }
+  },
   "locale": "es",
   "app_name": "Breez"
 }
