@@ -879,6 +879,7 @@
   "swap_in_progress_transaction_id_copied": "O ID da transação foi copiado para a sua área de transferência.",
   "swap_in_progress_message_waiting_confirmation": "Breez está esperando que sua transação seja confirmada.",
   "swap_in_progress_message_processing_previous_request": "Breez está processando sua solicitação anterior. Você será notificado quando o processamento for concluído.",
+  "market_place_no_vendors": "No momento não há vendedores disponíveis.",
   "locale": "pt",
   "app_name": "Breez"
 }
