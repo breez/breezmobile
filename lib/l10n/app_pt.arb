@@ -104,6 +104,96 @@
   "invoice_btc_address_on_chain_here": "aqui",
   "invoice_btc_address_on_chain_end": " para ver o script associado a este endereço.",
   "invoice_btc_address_on_chain_action_ok": "OK",
+  "invoice_title": "Receber via Fatura",
+  "invoice_action_create": "CRIAR",
+  "invoice_action_redeem": "RESGATAR",
+  "invoice_action_scan_barcode": "Ler código de barras",
+  "invoice_payment_success": "O pagamento foi recebido com sucesso!",
+  "invoice_qr_code_not_detected": "O código QR não foi detectado.",
+  "invoice_receive_fail": "O recebimento falhou",
+  "invoice_receive_fail_message": "Causa: {reason}",
+  "@invoice_receive_fail_message": {
+    "placeholders": {
+      "reason": {
+        "type": "String",
+        "example": "An error message"
+      }
+    }
+  },
+  "invoice_error_url": "URL Inválida",
+  "invoice_insufficient_amount_fee": "A quantia é insuficiente para cobrir a taxa de configuração de {fee}",
+  "@invoice_insufficient_amount_fee": {
+    "placeholders": {
+      "fee": {
+        "type": "String",
+        "example": "20 sats"
+      }
+    }
+  },
+  "invoice_description_label": "Descrição (opcional)",
+  "invoice_availability_message_synchronizing": "O recebimento de pagamentos estará disponível assim que a Breez for sincronizada.",
+  "invoice_availability_message_opening_channel": "Você poderá receber pagamentos depois que a Breez terminar de abrir um canal seguro com nosso servidor. Isso geralmente leva cerca de 10 minutos para ser concluído. Tente novamente em alguns minutos.",
+  "invoice_receive_label": "Receba até: {maxSats}",
+  "@invoice_receive_label": {
+    "placeholders": {
+      "maxSats": {
+        "type": "String",
+        "example": "2 000 sats"
+      }
+    }
+  },
+  "invoice_ln_address_warning_with_min_fee_account_connected": "Uma taxa de configuração de {setUpFee}% com um valor mínimo de {minFee} será aplicada para receber valores maiores do que {liquidity}.",
+  "@invoice_ln_address_warning_with_min_fee_account_connected": {
+    "placeholders": {
+      "setUpFee": {
+        "type": "String",
+        "example": "0.4"
+      },
+      "minFee": {
+        "type": "String",
+        "example": "1 000 sats"
+      },
+      "liquidity": {
+        "type": "String",
+        "example": "99 000 sats"
+      }
+    }
+  },
+  "invoice_ln_address_warning_without_min_fee_account_connected": "Uma taxa de configuração de {setUpFee}% será aplicada para receber valores maiores do que {liquidity}.",
+  "@invoice_ln_address_warning_without_min_fee_account_connected": {
+    "placeholders": {
+      "setUpFee": {
+        "type": "String",
+        "example": "0.4"
+      },
+      "liquidity": {
+        "type": "String",
+        "example": "99 000 sats"
+      }
+    }
+  },
+  "invoice_ln_address_warning_with_min_fee_account_not_connected": "Uma taxa de configuração de {setUpFee}% com um valor mínimo de {minFee} será aplicada no valor recebido.",
+  "@invoice_ln_address_warning_with_min_fee_account_not_connected": {
+    "placeholders": {
+      "setUpFee": {
+        "type": "String",
+        "example": "0.4"
+      },
+      "minFee": {
+        "type": "String",
+        "example": "1 000 sats"
+      }
+    }
+  },
+  "invoice_ln_address_warning_without_min_fee_account_not_connected": "Uma taxa de configuração de {setUpFee}% será aplicada no valor recebido.",
+  "@invoice_ln_address_warning_without_min_fee_account_not_connected": {
+    "placeholders": {
+      "setUpFee": {
+        "type": "String",
+        "example": "0.4"
+      }
+    }
+  },
   "backup_dialog_title": "Backup",
   "backup_dialog_message_remote_server": "Falha ao salvar arquivos de backup no servidor remoto. Por favor, revise suas configurações e tente novamente.",
   "backup_dialog_message_default": "Se você deseja restaurar seus fundos caso este dispositivo móvel ou aplicativo não esteja mais disponível (por exemplo, dispositivo perdido ou roubado ou desinstalação de aplicativo), você deve fazer o backup de suas informações.",

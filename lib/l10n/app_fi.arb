@@ -104,6 +104,96 @@
   "invoice_btc_address_on_chain_here": "here",
   "invoice_btc_address_on_chain_end": " to view the script associated with this address.",
   "invoice_btc_address_on_chain_action_ok": "OK",
+  "invoice_title": "Receive via Invoice",
+  "invoice_action_create": "CREATE",
+  "invoice_action_redeem": "REDEEM",
+  "invoice_action_scan_barcode": "Scan Barcode",
+  "invoice_payment_success": "Payment was successfully received!",
+  "invoice_qr_code_not_detected": "QR code wasn't detected.",
+  "invoice_receive_fail": "Receive Failed",
+  "invoice_receive_fail_message": "Reason: {reason}",
+  "@invoice_receive_fail_message": {
+    "placeholders": {
+      "reason": {
+        "type": "String",
+        "example": "An error message"
+      }
+    }
+  },
+  "invoice_error_url": "Invalid URL",
+  "invoice_insufficient_amount_fee": "Insufficient amount to cover the setup fees of {fee}",
+  "@invoice_insufficient_amount_fee": {
+    "placeholders": {
+      "fee": {
+        "type": "String",
+        "example": "20 sats"
+      }
+    }
+  },
+  "invoice_description_label": "Description (optional)",
+  "invoice_availability_message_synchronizing": "Receiving payments will be available as soon as Breez is synchronized.",
+  "invoice_availability_message_opening_channel": "You will be able to receive payments after Breez is finished opening a secure channel with our server. This usually takes ~10 minutes to be completed. Please try again in a couple of minutes.",
+  "invoice_receive_label": "Receive up to: {maxSats}",
+  "@invoice_receive_label": {
+    "placeholders": {
+      "maxSats": {
+        "type": "String",
+        "example": "2 000 sats"
+      }
+    }
+  },
+  "invoice_ln_address_warning_with_min_fee_account_connected": "A setup fee of {setUpFee}% with a minimum of {minFee} will be applied for receiving more than {liquidity}.",
+  "@invoice_ln_address_warning_with_min_fee_account_connected": {
+    "placeholders": {
+      "setUpFee": {
+        "type": "String",
+        "example": "0.4"
+      },
+      "minFee": {
+        "type": "String",
+        "example": "1 000 sats"
+      },
+      "liquidity": {
+        "type": "String",
+        "example": "99 000 sats"
+      }
+    }
+  },
+  "invoice_ln_address_warning_without_min_fee_account_connected": "A setup fee of {setUpFee}% will be applied for receiving more than {liquidity}.",
+  "@invoice_ln_address_warning_without_min_fee_account_connected": {
+    "placeholders": {
+      "setUpFee": {
+        "type": "String",
+        "example": "0.4"
+      },
+      "liquidity": {
+        "type": "String",
+        "example": "99 000 sats"
+      }
+    }
+  },
+  "invoice_ln_address_warning_with_min_fee_account_not_connected": "A setup fee of {setUpFee}% with a minimum of {minFee} will be applied on the received amount.",
+  "@invoice_ln_address_warning_with_min_fee_account_not_connected": {
+    "placeholders": {
+      "setUpFee": {
+        "type": "String",
+        "example": "0.4"
+      },
+      "minFee": {
+        "type": "String",
+        "example": "1 000 sats"
+      }
+    }
+  },
+  "invoice_ln_address_warning_without_min_fee_account_not_connected": "A setup fee of {setUpFee}% will be applied on the received amount.",
+  "@invoice_ln_address_warning_without_min_fee_account_not_connected": {
+    "placeholders": {
+      "setUpFee": {
+        "type": "String",
+        "example": "0.4"
+      }
+    }
+  },
   "backup_dialog_title": "Varmistus",
   "backup_dialog_message_remote_server": "Varmistuksen tallennus etäpalvelimelle epäonnistui. Tarkista asetukset ja yritä uudelleen.",
   "backup_dialog_message_default": "Sinun tulee varmuuskopioida tiedot, jotta varojesi palautus onnistuu tämän laitteen katoamisen, varkauden tai rikkoontumisen sekä mahdollisen sovelluksen poiston ja uudelleen asennuksen yhteydessä.",
