@@ -1,4 +1,5 @@
 import 'dart:async';
+
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:breez/bloc/account/account_bloc.dart';
 import 'package:breez/bloc/account/account_model.dart';
@@ -19,6 +20,7 @@ import 'package:breez/widgets/static_loader.dart';
 import 'package:breez/widgets/warning_box.dart';
 import 'package:fixnum/fixnum.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class WithdrawFundsPage extends StatefulWidget {
   final Future Function(Int64 amount, String destAddress, bool isMax) onNext;
@@ -29,14 +31,15 @@ class WithdrawFundsPage extends StatefulWidget {
   final String title;
   final String optionalMessage;
 
-  const WithdrawFundsPage(
-      {this.onNext,
-      this.initialAddress,
-      this.initialAmount,
-      this.initialIsMax,
-      this.policy,
-      this.title,
-      this.optionalMessage});
+  const WithdrawFundsPage({
+    this.onNext,
+    this.initialAddress,
+    this.initialAmount,
+    this.initialIsMax,
+    this.policy,
+    this.title,
+    this.optionalMessage,
+  });
 
   @override
   State<StatefulWidget> createState() {
@@ -46,14 +49,14 @@ class WithdrawFundsPage extends StatefulWidget {
 
 class WithdrawFundsPageState extends State<WithdrawFundsPage> {
   final _formKey = GlobalKey<FormState>();
-  String _scannerErrorMessage = "";
   final TextEditingController _addressController = TextEditingController();
   final TextEditingController _amountController = TextEditingController();
-  bool _isMax = false;
+  final FocusNode _amountFocusNode = FocusNode();
 
+  String _scannerErrorMessage = "";
+  bool _isMax = false;
   BreezBridge _breezLib;
   String _addressValidated;
-  final FocusNode _amountFocusNode = FocusNode();
   int selectedFeeIndex = 1;
   bool fetching = false;
 
@@ -74,185 +77,205 @@ class WithdrawFundsPageState extends State<WithdrawFundsPage> {
 
   @override
   Widget build(BuildContext context) {
-    ReverseSwapBloc reverseSwapBloc =
-        AppBlocsProvider.of<ReverseSwapBloc>(context);
-    AccountBloc accountBloc = AppBlocsProvider.of<AccountBloc>(context);
+    final texts = AppLocalizations.of(context);
+    final themeData = Theme.of(context);
+
+    final reverseSwapBloc = AppBlocsProvider.of<ReverseSwapBloc>(context);
+    final accountBloc = AppBlocsProvider.of<AccountBloc>(context);
+
     return Scaffold(
-        appBar: AppBar(
-            iconTheme: Theme.of(context).appBarTheme.iconTheme,
-            textTheme: Theme.of(context).appBarTheme.textTheme,
-            backgroundColor: Theme.of(context).canvasColor,
-            leading: backBtn.BackButton(onPressed: () {
-              Navigator.of(context).pop();
-            }),
-            title: Text(widget.title,
-                style: Theme.of(context).appBarTheme.textTheme.headline6),
-            elevation: 0.0),
-        body: StreamBuilder<AccountModel>(
-          stream: accountBloc.accountStream,
-          builder: (context, snapshot) {
-            if (!snapshot.hasData) {
-              return StaticLoader();
-            }
-            AccountModel acc = snapshot.data;
-            Widget optionalMessage = widget.optionalMessage == null
-                ? SizedBox()
-                : WarningBox(
-                    boxPadding: EdgeInsets.only(bottom: 24),
-                    contentPadding:
-                        EdgeInsets.symmetric(vertical: 12, horizontal: 8),
-                    child: Text(widget.optionalMessage,
-                        style: Theme.of(context).textTheme.headline6),
-                  );
-            List<Widget> amountWidget = [];
-            if (widget.policy.minValue != widget.policy.maxValue) {
-              var amountFormField = AmountFormField(
-                  readOnly: fetching || _isMax,
-                  context: context,
-                  accountModel: acc,
-                  focusNode: _amountFocusNode,
-                  controller: _amountController,
-                  validatorFn: (amount) {
-                    String err = acc.validateOutgoingPayment(amount);
-                    if (err == null) {
-                      if (amount < widget.policy.minValue) {
-                        err =
-                            "Must be at least ${acc.currency.format(widget.policy.minValue)}";
-                      }
-                      if (amount > widget.policy.maxValue) {
-                        err =
-                            "Must be less than ${acc.currency.format(widget.policy.maxValue + 1)}";
-                      }
-                    }
-                    return err;
-                  },
-                  style: theme.FieldTextStyle.textStyle);
-              amountWidget.add(amountFormField);
-              amountWidget.add(ListTile(
-                contentPadding: EdgeInsets.zero,
-                title: Container(
-                  child: AutoSizeText(
-                    "Use All Funds",
-                    style: TextStyle(color: Colors.white),
-                    maxLines: 1,
-                    minFontSize: MinFontSize(context).minFontSize,
-                    stepGranularity: 0.1,
+      appBar: AppBar(
+        iconTheme: themeData.appBarTheme.iconTheme,
+        textTheme: themeData.appBarTheme.textTheme,
+        backgroundColor: themeData.canvasColor,
+        leading: backBtn.BackButton(
+          onPressed: () => Navigator.of(context).pop(),
+        ),
+        title: Text(
+          widget.title,
+          style: themeData.appBarTheme.textTheme.headline6,
+        ),
+        elevation: 0.0,
+      ),
+      body: StreamBuilder<AccountModel>(
+        stream: accountBloc.accountStream,
+        builder: (context, snapshot) {
+          if (!snapshot.hasData) return StaticLoader();
+
+          final acc = snapshot.data;
+          Widget optionalMessage = widget.optionalMessage == null
+              ? SizedBox()
+              : WarningBox(
+                  boxPadding: EdgeInsets.only(bottom: 24),
+                  contentPadding: EdgeInsets.symmetric(
+                    vertical: 12,
+                    horizontal: 8,
                   ),
-                ),
-                trailing: Switch(
-                  value: _isMax,
-                  activeColor: Colors.white,
-                  onChanged: (bool value) async {
-                    setState(() {
-                      _isMax = value;
-                      if (_isMax) {
-                        _amountController.text = acc.currency.format(
-                            widget.policy.available,
-                            includeDisplayName: false,
-                            userInput: true);
-                      } else {
-                        _amountController.text = "";
-                      }
-                    });
-                  },
-                ),
-              ));
-            }
-            return SingleChildScrollView(
-              child: Form(
-                key: _formKey,
-                child: Padding(
-                  padding: EdgeInsets.only(
-                      left: 16.0, right: 16.0, bottom: 40.0, top: 24.0),
-                  child: Column(
-                    mainAxisSize: MainAxisSize.max,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: <Widget>[
-                      optionalMessage,
-                      TextFormField(
-                        readOnly: fetching,
-                        controller: _addressController,
-                        decoration: InputDecoration(
-                          labelText: "BTC Address",
-                          suffixIcon: IconButton(
-                            padding: EdgeInsets.only(top: 21.0),
-                            alignment: Alignment.bottomRight,
-                            icon: Image(
-                              image: AssetImage("src/icon/qr_scan.png"),
-                              color: theme.BreezColors.white[500],
-                              fit: BoxFit.contain,
-                              width: 24.0,
-                              height: 24.0,
-                            ),
-                            tooltip: 'Scan Barcode',
-                            onPressed: () => _scanBarcode(acc),
-                          ),
-                        ),
-                        style: theme.FieldTextStyle.textStyle,
-                        validator: (value) {
-                          if (_addressValidated == null) {
-                            return "Please enter a valid BTC Address";
-                          }
-                          return null;
-                        },
-                      ),
-                      _scannerErrorMessage.length > 0
-                          ? Text(
-                              _scannerErrorMessage,
-                              style: theme.validatorStyle,
-                            )
-                          : SizedBox(),
-                      ...amountWidget,
-                      Container(
-                        padding: EdgeInsets.only(top: 36.0),
-                        child: _buildAvailableBTC(acc),
-                      ),
-                      SizedBox(height: 40.0),
-                      !fetching
-                          ? SizedBox()
-                          : Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              mainAxisSize: MainAxisSize.max,
-                              children: <Widget>[
-                                  Container(
-                                    child: Loader(
-                                        strokeWidth: 2.0,
-                                        color: Theme.of(context)
-                                            .colorScheme
-                                            .onSurface
-                                            .withOpacity(0.5)),
-                                  )
-                                ])
-                    ],
+                  child: Text(
+                    widget.optionalMessage,
+                    style: themeData.textTheme.headline6,
                   ),
+                );
+          List<Widget> amountWidget = [];
+          if (widget.policy.minValue != widget.policy.maxValue) {
+            amountWidget.add(AmountFormField(
+              readOnly: fetching || _isMax,
+              context: context,
+              texts: texts,
+              accountModel: acc,
+              focusNode: _amountFocusNode,
+              controller: _amountController,
+              validatorFn: (amount) {
+                String err = acc.validateOutgoingPayment(amount);
+                if (err == null) {
+                  if (amount < widget.policy.minValue) {
+                    err = texts.withdraw_funds_error_min_value(
+                      acc.currency.format(widget.policy.minValue),
+                    );
+                  }
+                  if (amount > widget.policy.maxValue) {
+                    err = texts.withdraw_funds_error_max_value(
+                      acc.currency.format(widget.policy.maxValue + 1),
+                    );
+                  }
+                }
+                return err;
+              },
+              style: theme.FieldTextStyle.textStyle,
+            ));
+            amountWidget.add(ListTile(
+              contentPadding: EdgeInsets.zero,
+              title: Container(
+                child: AutoSizeText(
+                  texts.withdraw_funds_use_all_funds,
+                  style: TextStyle(color: Colors.white),
+                  maxLines: 1,
+                  minFontSize: MinFontSize(context).minFontSize,
+                  stepGranularity: 0.1,
                 ),
               ),
-            );
-          },
-        ),
-        bottomNavigationBar: _NextButton(
-            accountBloc: accountBloc,
-            fetching: fetching,
-            onPressed: (acc) {
-              _onNext(acc, reverseSwapBloc, _isMax);
-            }));
+              trailing: Switch(
+                value: _isMax,
+                activeColor: Colors.white,
+                onChanged: (bool value) async {
+                  setState(() {
+                    _isMax = value;
+                    if (_isMax) {
+                      _amountController.text = acc.currency.format(
+                        widget.policy.available,
+                        includeDisplayName: false,
+                        userInput: true,
+                      );
+                    } else {
+                      _amountController.text = "";
+                    }
+                  });
+                },
+              ),
+            ));
+          }
+          return SingleChildScrollView(
+            child: Form(
+              key: _formKey,
+              child: Padding(
+                padding: EdgeInsets.fromLTRB(16.0, 24.0, 16.0, 40.0),
+                child: Column(
+                  mainAxisSize: MainAxisSize.max,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    optionalMessage,
+                    TextFormField(
+                      readOnly: fetching,
+                      controller: _addressController,
+                      decoration: InputDecoration(
+                        labelText: texts.withdraw_funds_btc_address,
+                        suffixIcon: IconButton(
+                          padding: EdgeInsets.only(top: 21.0),
+                          alignment: Alignment.bottomRight,
+                          icon: Image(
+                            image: AssetImage("src/icon/qr_scan.png"),
+                            color: theme.BreezColors.white[500],
+                            fit: BoxFit.contain,
+                            width: 24.0,
+                            height: 24.0,
+                          ),
+                          tooltip: texts.withdraw_funds_scan_barcode,
+                          onPressed: () => _scanBarcode(context, acc),
+                        ),
+                      ),
+                      style: theme.FieldTextStyle.textStyle,
+                      validator: (value) {
+                        if (_addressValidated == null) {
+                          return texts.withdraw_funds_error_invalid_address;
+                        }
+                        return null;
+                      },
+                    ),
+                    _scannerErrorMessage.length > 0
+                        ? Text(
+                            _scannerErrorMessage,
+                            style: theme.validatorStyle,
+                          )
+                        : SizedBox(),
+                    ...amountWidget,
+                    Container(
+                      padding: EdgeInsets.only(top: 36.0),
+                      child: _buildAvailableBTC(texts, acc),
+                    ),
+                    SizedBox(height: 40.0),
+                    !fetching
+                        ? SizedBox()
+                        : Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            mainAxisSize: MainAxisSize.max,
+                            children: [
+                              Container(
+                                child: Loader(
+                                  strokeWidth: 2.0,
+                                  color: themeData.colorScheme.onSurface
+                                      .withOpacity(0.5),
+                                ),
+                              ),
+                            ],
+                          ),
+                  ],
+                ),
+              ),
+            ),
+          );
+        },
+      ),
+      bottomNavigationBar: _NextButton(
+        accountBloc: accountBloc,
+        fetching: fetching,
+        onPressed: (acc) => _onNext(acc, reverseSwapBloc, _isMax),
+      ),
+    );
   }
 
-  Widget _buildAvailableBTC(AccountModel acc) {
+  Widget _buildAvailableBTC(AppLocalizations texts, AccountModel acc) {
     return Row(
-      children: <Widget>[
-        Text("Balance:", style: theme.textStyle),
+      children: [
+        Text(
+          texts.withdraw_funds_balance,
+          style: theme.textStyle,
+        ),
         Padding(
           padding: EdgeInsets.only(left: 3.0),
-          child: Text(acc.currency.format(widget.policy.balance),
-              style: theme.textStyle),
+          child: Text(
+            acc.currency.format(widget.policy.balance),
+            style: theme.textStyle,
+          ),
         )
       ],
     );
   }
 
   void _onNext(
-      AccountModel acc, ReverseSwapBloc reverseSwapBloc, bool _isNext) {
+    AccountModel acc,
+    ReverseSwapBloc reverseSwapBloc,
+    bool _isNext,
+  ) {
     if (fetching) {
       return;
     }
@@ -263,15 +286,21 @@ class WithdrawFundsPageState extends State<WithdrawFundsPage> {
           fetching = true;
         });
         FocusScope.of(context).requestFocus(FocusNode());
-        return widget.onNext(acc.currency.parse(_amountController.text),
-            _addressValidated, _isMax);
+        return widget.onNext(
+          acc.currency.parse(_amountController.text),
+          _addressValidated,
+          _isMax,
+        );
       }
     }).catchError((error) {
       promptError(
-          context,
-          null,
-          Text(error.toString(),
-              style: Theme.of(context).dialogTheme.contentTextStyle));
+        context,
+        null,
+        Text(
+          error.toString(),
+          style: Theme.of(context).dialogTheme.contentTextStyle,
+        ),
+      );
     }).whenComplete(() {
       setState(() {
         fetching = false;
@@ -279,20 +308,26 @@ class WithdrawFundsPageState extends State<WithdrawFundsPage> {
     });
   }
 
-  Future _scanBarcode(AccountModel account) async {
+  Future _scanBarcode(BuildContext context, AccountModel account) async {
+    final texts = AppLocalizations.of(context);
     FocusScope.of(context).requestFocus(FocusNode());
     String barcode = await Navigator.pushNamed<String>(context, "/qr_scan");
     if (barcode.isEmpty) {
-      showFlushbar(context, message: "QR code wasn't detected.");
+      showFlushbar(
+        context,
+        message: texts.withdraw_funds_error_qr_code_not_detected,
+      );
       return;
     }
     BTCAddressInfo btcInvoice = parseBTCAddress(barcode);
     String amount;
     if (btcInvoice.satAmount != null) {
-      amount = account.currency.format(btcInvoice.satAmount,
-          userInput: true,
-          includeDisplayName: false,
-          removeTrailingZeros: true);
+      amount = account.currency.format(
+        btcInvoice.satAmount,
+        userInput: true,
+        includeDisplayName: false,
+        removeTrailingZeros: true,
+      );
     }
     setState(() {
       _addressController.text = btcInvoice.address;
@@ -319,8 +354,12 @@ class WithdrawFundsPolicy {
   final Int64 balance;
   final Int64 available;
 
-  WithdrawFundsPolicy(
-      this.minValue, this.maxValue, this.balance, this.available);
+  const WithdrawFundsPolicy(
+    this.minValue,
+    this.maxValue,
+    this.balance,
+    this.available,
+  );
 }
 
 class _NextButton extends StatelessWidget {
@@ -328,34 +367,39 @@ class _NextButton extends StatelessWidget {
   final bool fetching;
   final Function(AccountModel acc) onPressed;
 
-  const _NextButton({Key key, this.accountBloc, this.fetching, this.onPressed})
-      : super(key: key);
+  const _NextButton({
+    Key key,
+    this.accountBloc,
+    this.fetching,
+    this.onPressed,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+    final texts = AppLocalizations.of(context);
     return StreamBuilder<AccountModel>(
-        stream: accountBloc.accountStream,
-        builder: (context, snapshot) {
-          AccountModel acc = snapshot.data;
-          return Padding(
-              padding: EdgeInsets.only(bottom: 36.0, top: 8.0),
-              child: fetching
-                  ? null
-                  : Column(
-                      mainAxisSize: MainAxisSize.min,
-                      children: <Widget>[
-                        SizedBox(
-                            height: 48.0,
-                            width: 168.0,
-                            child: SubmitButton(
-                                "NEXT",
-                                acc == null
-                                    ? null
-                                    : () {
-                                        onPressed(acc);
-                                      }))
-                      ],
-                    ));
-        });
+      stream: accountBloc.accountStream,
+      builder: (context, snapshot) {
+        final acc = snapshot.data;
+        return Padding(
+          padding: EdgeInsets.only(bottom: 36.0, top: 8.0),
+          child: fetching
+              ? null
+              : Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    SizedBox(
+                      height: 48.0,
+                      width: 168.0,
+                      child: SubmitButton(
+                        texts.withdraw_funds_action_next,
+                        acc == null ? null : () => onPressed(acc),
+                      ),
+                    )
+                  ],
+                ),
+        );
+      },
+    );
   }
 }

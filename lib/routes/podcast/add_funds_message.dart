@@ -58,7 +58,8 @@ class AddFundsMessageState extends State<AddFundsMessage> {
                   minFontSize: MinFontSize(context).minFontSize,
                   stepGranularity: 0.1,
                   maxLines: 1,
-                  style: Theme.of(context).accentTextTheme.bodyText2.copyWith(
+                  style: Theme.of(context).textTheme.bodyText2.copyWith(
+                      color: Colors.white,
                       letterSpacing: 1,
                       height: 1.24,
                       fontWeight: FontWeight.w600),

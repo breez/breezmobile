@@ -1,46 +1,57 @@
 import 'package:breez/widgets/back_button.dart' as backBtn;
 import 'package:breez/widgets/pin_code_widget.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 const PIN_CODE_LENGTH = 6;
 
 class ChangePinCode extends StatefulWidget {
-  ChangePinCode({Key key}) : super(key: key);
+  const ChangePinCode({
+    Key key,
+  }) : super(key: key);
 
   @override
   _ChangePinCodeState createState() => _ChangePinCodeState();
 }
 
 class _ChangePinCodeState extends State<ChangePinCode> {
-  String _label = "Enter your new PIN";
-
+  String _label;
   String _tmpPinCode = "";
 
   @override
   Widget build(BuildContext context) {
+    final themeData = Theme.of(context);
+    final texts = AppLocalizations.of(context);
+
+    if (_label == null) {
+      _label = texts.security_and_backup_new_pin;
+    }
+
     return Scaffold(
-        appBar: AppBar(
-          iconTheme: Theme.of(context).appBarTheme.iconTheme,
-          textTheme: Theme.of(context).appBarTheme.textTheme,
-          backgroundColor: Theme.of(context).canvasColor,
-          leading: backBtn.BackButton(
-            onPressed: () {
-              Navigator.pop(context, null);
-            },
-          ),
-          elevation: 0.0,
+      appBar: AppBar(
+        iconTheme: themeData.appBarTheme.iconTheme,
+        textTheme: themeData.appBarTheme.textTheme,
+        backgroundColor: themeData.canvasColor,
+        leading: backBtn.BackButton(
+          onPressed: () => Navigator.pop(context, null),
         ),
-        body: PinCodeWidget(
-          _label,
-          (enteredPinCode) => _onPinEntered(enteredPinCode),
-        ));
+        elevation: 0.0,
+      ),
+      body: PinCodeWidget(
+        _label,
+        (enteredPinCode) => _onPinEntered(texts, enteredPinCode),
+      ),
+    );
   }
 
-  _onPinEntered(String enteredPinCode) async {
+  Future _onPinEntered(
+    AppLocalizations texts,
+    String enteredPinCode,
+  ) async {
     if (_tmpPinCode.isEmpty) {
       setState(() {
         _tmpPinCode = enteredPinCode;
-        _label = "Re-enter your new PIN";
+        _label = texts.security_and_backup_new_pin_second_time;
       });
     } else {
       if (enteredPinCode == _tmpPinCode) {
@@ -48,9 +59,9 @@ class _ChangePinCodeState extends State<ChangePinCode> {
       } else {
         setState(() {
           _tmpPinCode = "";
-          _label = "Enter your new PIN";
+          _label = texts.security_and_backup_new_pin;
         });
-        throw Exception("PIN does not match");
+        throw Exception(texts.security_and_backup_new_pin_do_not_match);
       }
     }
   }

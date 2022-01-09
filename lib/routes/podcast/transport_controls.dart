@@ -44,7 +44,7 @@ class _PlayerTransportControlsState extends State<PlayerTransportControls>
     /// frames we want to animate. Doing it this way prevents the play/pause
     /// button from animating when the form is first loaded.
     _audioStateSubscription = audioBloc.playingState.listen((event) {
-      if (event == AudioState.playing) {
+      if (event == AudioState.playing || event == AudioState.buffering) {
         if (init) {
           _playPauseController.value = 1;
           init = false;
@@ -102,13 +102,13 @@ class _PlayerTransportControlsState extends State<PlayerTransportControls>
                   ),
                   iconOn: SvgPicture.asset(
                     'assets/icons/sleep_on.svg',
-                    color: theme.buttonColor,
+                    color: theme.buttonTheme.colorScheme.onPrimary,
                     height: 24.0,
                     width: 24.0,
                   ),
                   iconOff: SvgPicture.asset(
                     'assets/icons/sleep_off.svg',
-                    color: theme.buttonColor,
+                    color: theme.buttonTheme.colorScheme.onPrimary,
                     height: 24.0,
                     width: 24.0,
                   ),
@@ -118,14 +118,14 @@ class _PlayerTransportControlsState extends State<PlayerTransportControls>
             Expanded(flex: 1, child: Container()),
             IconButton(
               onPressed: () {
-                _rewind(audioBloc);
+                return snapshot.data == AudioState.buffering ? null : _rewind(audioBloc);
               },
               tooltip: L.of(context).rewind_button_label,
               padding: const EdgeInsets.all(0.0),
               icon: ImageIcon(
                 AssetImage('src/icon/replay_30.png'),
                 size: 48.0,
-                color: theme.buttonColor,
+                color: theme.buttonTheme.colorScheme.onPrimary
               ),
             ),
             Expanded(flex: 1, child: Container()),
@@ -138,17 +138,17 @@ class _PlayerTransportControlsState extends State<PlayerTransportControls>
             Expanded(flex: 1, child: Container()),
             IconButton(
               onPressed: () {
-                _fastforward(audioBloc);
+                return snapshot.data == AudioState.buffering ? null : _fastforward(audioBloc);
               },
               padding: const EdgeInsets.all(0.0),
               icon: ImageIcon(
                 AssetImage('src/icon/forward_30.png'),
                 size: 48.0,
-                color: theme.buttonColor,
+                color: theme.buttonTheme.colorScheme.onPrimary,
               ),
             ),
             Expanded(flex: 1, child: Container()),
-            SpeedSelector(
+            SpeedSelectorWidget(
               onChanged: (double value) {
                 print('Speed callback of $value');
                 audioBloc.playbackSpeed(value);
@@ -196,10 +196,10 @@ class _PlayButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final playing = audioState == AudioState.playing;
-    final bufferring = audioState == null || audioState == AudioState.buffering;
+    final buffering = audioState == null || audioState == AudioState.buffering;
 
-    // in case we are bufferring show progress indicator.
-    if (bufferring) {
+    // in case we are buffering show progress indicator.
+    if (buffering) {
       return Tooltip(
           message: playing
               ? L.of(context).pause_button_label

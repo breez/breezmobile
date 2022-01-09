@@ -3,9 +3,9 @@ import 'package:breez/bloc/account/account_model.dart';
 import 'package:breez/bloc/user_profile/currency.dart';
 import 'package:breez/theme_data.dart' as theme;
 import 'package:breez/widgets/amount_form_field.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import 'keyboard_done_action.dart';
 
@@ -107,6 +107,7 @@ class EscherDialogState extends State<EscherDialog> {
   }
 
   Widget _buildAmountWidget(AccountModel account) {
+    final texts = AppLocalizations.of(context);
     return Theme(
       data: Theme.of(context).copyWith(
           inputDecorationTheme: InputDecorationTheme(
@@ -129,6 +130,7 @@ class EscherDialogState extends State<EscherDialog> {
             height: 80.0,
             child: AmountFormField(
               context: context,
+              texts: texts,
               accountModel: account,
               iconColor: Theme.of(context).primaryIconTheme.color,
               focusNode: _amountFocusNode,

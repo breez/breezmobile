@@ -22,12 +22,10 @@ class CollapsibleListItem extends StatelessWidget {
       textColor: this.userStyle.color,
       iconColor: this.userStyle.color,
       child: Theme(
-        data: ThemeData(
-          dividerColor: Colors.transparent,
-          unselectedWidgetColor: this.userStyle.color,
-          colorScheme: ColorScheme.dark(secondary: this.userStyle.color),
-        ),
+        data: ThemeData(dividerColor: Colors.transparent),
         child: ExpansionTile(
+            iconColor: this.userStyle.color,
+            collapsedIconColor: this.userStyle.color,
             title: AutoSizeText(
               title,
               style:

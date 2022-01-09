@@ -102,7 +102,7 @@ class _BoostWidgetState extends State<BoostWidget> {
                           height: 1.2,
                           letterSpacing: 0,
                           fontWeight: FontWeight.w500,
-                          color: Theme.of(context).buttonColor,
+                          color: Theme.of(context).buttonTheme.colorScheme.onPrimary,
                         ),
                         minFontSize: MinFontSize(context).minFontSize,
                         stepGranularity: 0.1,

@@ -33,14 +33,14 @@ Widget withPodcastTheme(BreezUserModel user, Widget child) {
               primaryColorLight: Color.fromRGBO(0, 117, 255, 1.0),
               primaryColorDark: Color.fromRGBO(19, 85, 191, 1.0),
               colorScheme: ColorScheme.light(
-                  primary: Color.fromRGBO(0, 117, 255, 1.0),
-                  secondary: Color.fromRGBO(0, 133, 251, 1.0)),
+                primary: Color.fromRGBO(0, 117, 255, 1.0),
+                secondary: Color.fromRGBO(0, 133, 251, 1.0),
+                onSecondary: Colors.black,
+              ),
               sliderTheme: SliderThemeData(
                 valueIndicatorColor: Color.fromRGBO(0, 117, 255, 1.0),
                 valueIndicatorTextStyle: TextStyle(color: Colors.white),
               ),
-              accentColor: Color.fromRGBO(0, 117, 255, 1.0),
-              accentColorBrightness: Brightness.light,
               canvasColor: Color.fromRGBO(5, 93, 235, 1.0),
               scaffoldBackgroundColor: Color(0xffffffff),
               bottomAppBarColor: Color(0xFF0085fb),
@@ -52,7 +52,6 @@ Widget withPodcastTheme(BreezUserModel user, Widget child) {
               selectedRowColor: Color.fromRGBO(0, 133, 251, 1.0),
               unselectedWidgetColor: Color(0x8a000000),
               disabledColor: Colors.blueGrey,
-              buttonColor: Color.fromRGBO(0, 133, 251, 1.0),
               toggleableActiveColor: Color.fromRGBO(0, 133, 251, 1.0),
               secondaryHeaderColor: Color(0xfffff3e0),
               textSelectionTheme: TextSelectionThemeData(
@@ -72,19 +71,16 @@ Widget withPodcastTheme(BreezUserModel user, Widget child) {
                         .buttonTheme
                         .colorScheme
                         .copyWith(
-                            primary:
-                                currentTheme.primaryTextTheme.button.color),
+                            primary: currentTheme.primaryTextTheme.button.color,
+                            onPrimary: Color.fromRGBO(0, 133, 251, 1.0),
+                            onSecondary: Color.fromRGBO(178, 241, 255, 1.0),
+                            onSurface: Colors.blueGrey),
                   ),
               primaryTextTheme: Typography.material2018(
                       platform: TargetPlatform.android)
                   .black
                   .apply(fontFamily: 'IBMPlexSans')
                   .copyWith(
-                    headline6: Typography.material2018(
-                            platform: TargetPlatform.android)
-                        .black
-                        .headline6
-                        .copyWith(fontWeight: FontWeight.w400, fontSize: 14.3),
                     button: currentTheme.primaryTextTheme.button,
                   ),
               textTheme:
@@ -106,10 +102,6 @@ Widget withPodcastTheme(BreezUserModel user, Widget child) {
                             .copyWith(
                                 fontWeight: FontWeight.w400, fontSize: 14.3),
                       ),
-              accentTextTheme:
-                  Typography.material2018(platform: TargetPlatform.android)
-                      .black
-                      .apply(fontFamily: 'IBMPlexSans'),
               primaryIconTheme:
                   IconThemeData(color: Color.fromRGBO(0, 133, 251, 1.0)),
               iconTheme: IconThemeData(color: Colors.white, size: 32.0),
@@ -120,9 +112,6 @@ Widget withPodcastTheme(BreezUserModel user, Widget child) {
                 color: currentTheme.backgroundColor,
                 //backgroundColor: Color.fromRGBO(5, 93, 235, 1.0),
                 foregroundColor: Color.fromRGBO(5, 93, 235, 1.0),
-                textTheme: currentTheme.appBarTheme.textTheme.copyWith(
-                    headline6: currentTheme.appBarTheme.textTheme.headline6
-                        .copyWith(color: Color.fromRGBO(0, 133, 251, 1.0))),
               ),
               radioTheme: currentTheme.radioTheme,
             )
@@ -135,13 +124,12 @@ Widget withPodcastTheme(BreezUserModel user, Widget child) {
               colorScheme: ColorScheme.dark(
                 primary: Colors.white,
                 secondary: Colors.white,
+                onSecondary: Colors.white,
               ),
               sliderTheme: SliderThemeData(
                 valueIndicatorColor: Color(0xFF81acf1),
                 valueIndicatorTextStyle: TextStyle(color: Colors.white),
               ),
-              accentColor: Color(0xffffffff),
-              accentColorBrightness: Brightness.dark,
               canvasColor: Color(0xFF0c2031),
               scaffoldBackgroundColor: Color(0xFF0c2031),
               bottomAppBarColor: Color(0xff4D88EC),
@@ -153,7 +141,6 @@ Widget withPodcastTheme(BreezUserModel user, Widget child) {
               selectedRowColor: Color(0xFF4B89EB),
               unselectedWidgetColor: Color(0x8a000000),
               disabledColor: Color(0x77ffffff),
-              buttonColor: Colors.white,
               toggleableActiveColor: Color(0xFF4B89EB),
               secondaryHeaderColor: Color(0xfffff3e0),
               textSelectionTheme: TextSelectionThemeData(
@@ -173,8 +160,10 @@ Widget withPodcastTheme(BreezUserModel user, Widget child) {
                         .buttonTheme
                         .colorScheme
                         .copyWith(
-                            primary:
-                                currentTheme.primaryTextTheme.button.color),
+                            primary: currentTheme.primaryTextTheme.button.color,
+                            onPrimary: Colors.white,
+                            onSecondary: Color(0xFF4B89EB),
+                            onSurface: Color(0x77ffffff)),
                   ),
               primaryTextTheme:
                   Typography.material2018(platform: TargetPlatform.android)
@@ -194,10 +183,6 @@ Widget withPodcastTheme(BreezUserModel user, Widget child) {
                         .headline6
                         .copyWith(fontWeight: FontWeight.w400, fontSize: 14.3),
                   ),
-              accentTextTheme:
-                  Typography.material2018(platform: TargetPlatform.android)
-                      .white
-                      .apply(fontFamily: 'IBMPlexSans'),
               primaryIconTheme: IconThemeData(color: Colors.white),
               iconTheme: IconThemeData(color: Colors.white, size: 32.0),
               dividerTheme: Themes.darkTheme().themeData.dividerTheme.copyWith(

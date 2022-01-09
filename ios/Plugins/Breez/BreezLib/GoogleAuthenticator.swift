@@ -96,26 +96,28 @@ class SignInOperation : Operation {
     override func start() {
         if let path = Bundle.main.path(forResource: "GoogleService-Info", ofType: "plist") {
             if let plist = NSMutableDictionary.init(contentsOfFile: path) {
-                //GIDSignIn.sharedInstance.delegate = self;
-                let viewController = UIApplication.shared.keyWindow!.rootViewController!;
-                self.configuration = GIDConfiguration(clientID: plist["CLIENT_ID"] as! String)
-                GIDSignIn.sharedInstance.addScopes(["https://www.googleapis.com/auth/drive.appdata"], presenting: viewController);
-                state = .executing;
-                GIDSignIn.sharedInstance.restorePreviousSignIn { user, error in
-                    
-                    if let error = error {
-                        if !self.silentOnly {
-                            GIDSignIn.sharedInstance.signIn(with: self.configuration, presenting: UIApplication.shared.keyWindow!.rootViewController!) { user, error in
-                                self.onFinish(withToken: user?.authentication.accessToken, error: error)
-                            };
-                            return
-                        }
+                if let window = UIApplication.shared.keyWindow {
+                    if let rootViewController = window.rootViewController {
+                        self.configuration = GIDConfiguration(clientID: plist["CLIENT_ID"] as! String)
+                        GIDSignIn.sharedInstance.addScopes(["https://www.googleapis.com/auth/drive.appdata"], presenting: rootViewController);
+                        state = .executing;
+                        GIDSignIn.sharedInstance.restorePreviousSignIn { user, error in
+                            
+                            if let error = error {
+                                if !self.silentOnly {
+                                    GIDSignIn.sharedInstance.signIn(with: self.configuration, presenting: UIApplication.shared.keyWindow!.rootViewController!) { user, error in
+                                        self.onFinish(withToken: user?.authentication.accessToken, error: error)
+                                    };
+                                    return
+                                }
+                            }
+                            
+                            self.onFinish(withToken: user?.authentication.accessToken, error: error)
+                            
+                          }
+                        return;
                     }
-                    
-                    self.onFinish(withToken: user?.authentication.accessToken, error: error)                    
-                    
-                  }
-                return;
+                }
             }
         }
         
