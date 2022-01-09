@@ -162,15 +162,15 @@ class UserProfileBloc {
           color: defaultProfile.color,
           animal: defaultProfile.animal,
         );
-        if (Platform.isAndroid) {
-          GooglePlayServicesAvailability availability = await GoogleApiAvailability.instance.checkGooglePlayServicesAvailability();
-          print("GooglePlayServicesAvailability:" + availability.toString());
-          if ((availability == GooglePlayServicesAvailability.serviceMissing) ||
+      }
+      if (!user.registered && Platform.isAndroid) {
+        GooglePlayServicesAvailability availability = await GoogleApiAvailability.instance.checkGooglePlayServicesAvailability();
+        print("GooglePlayServicesAvailability:" + availability.toString());
+        if ((availability == GooglePlayServicesAvailability.serviceMissing) ||
           (availability == GooglePlayServicesAvailability.serviceDisabled) ||
-          (availability == GooglePlayServicesAvailability.serviceInvalid)){
-            var uuid = Uuid();
-            user = user.copyWith(userID: "random-" + uuid.v4());
-          }
+          (availability == GooglePlayServicesAvailability.serviceInvalid)) {
+          var uuid = Uuid();
+          user = user.copyWith(userID: "random-" + uuid.v4());
         }
       }
       user = user.copyWith(locked: user.securityModel.requiresPin);
