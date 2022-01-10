@@ -880,6 +880,87 @@
   "swap_in_progress_message_waiting_confirmation": "Breez está esperando que sua transação seja confirmada.",
   "swap_in_progress_message_processing_previous_request": "Breez está processando sua solicitação anterior. Você será notificado quando o processamento for concluído.",
   "market_place_no_vendors": "No momento não há vendedores disponíveis.",
+  "account_required_actions_backup": "Backup",
+  "funds_over_limit_dialog_on_chain_transaction": "Transações on-chain",
+  "funds_over_limit_dialog_action_ok": "OK",
+  "funds_over_limit_dialog_transfer_fail_no_reason_know": "Não foi possível transferir os fundos para a sua carteira\n",
+  "funds_over_limit_dialog_transfer_fail_with_reason": "Não foi possível transferir os fundos para a sua carteira devido ao seguinte erro: {reason}\n",
+  "@funds_over_limit_dialog_transfer_fail_with_reason": {
+    "placeholders": {
+      "reason": {
+        "type": "String",
+        "example": "A reason of an error"
+      }
+    }
+  },
+  "funds_over_limit_dialog_redeem_hour": "Você poderá resgatar seus fundos após o bloco {lockHeight} (aproximadamente em 1 hora).",
+  "@funds_over_limit_dialog_redeem_hour": {
+    "placeholders": {
+      "lockHeight": {
+        "type": "String",
+        "example": "140659"
+      }
+    }
+  },
+  "funds_over_limit_dialog_redeem_hours": "Você poderá resgatar seus fundos após o bloco {lockHeight} (aproximadamente em {hoursToUnlock} horas).",
+  "@funds_over_limit_dialog_redeem_hours": {
+    "placeholders": {
+      "lockHeight": {
+        "type": "String",
+        "example": "140659"
+      },
+      "hoursToUnlock": {
+        "type": "String",
+        "example": "7"
+      }
+    }
+  },
+  "funds_over_limit_dialog_refund_begin": "Você pode ",
+  "funds_over_limit_dialog_refund_link": "obter um reembolso",
+  "funds_over_limit_dialog_refund_end": " agora.",
+  "get_refund_title": "Obter Reembolso",
+  "get_refund_amount": "Quantia: {amount}",
+  "@get_refund_amount": {
+    "placeholders": {
+      "amount": {
+        "type": "String",
+        "example": "12 345"
+      }
+    }
+  },
+  "get_refund_action_broadcasted": "TRANSMITIDA",
+  "get_refund_action_continue": "CONTINUAR",
+  "get_refund_transaction": "Transação de Reembolso",
+  "get_refund_failed": "falhou",
+  "send_on_chain_broadcast": "TRANSMITIDA",
+  "send_on_chain_btc_address": "Endereço BTC",
+  "send_on_chain_scan_barcode": "Ler código de barras",
+  "send_on_chain_invalid_btc_address": "Por favor insira um endereço BTC válido",
+  "send_on_chain_sat_per_byte_fee_rate": "Taxa de Sat por Byte",
+  "send_on_chain_invalid_fee_rate": "Por favor insira um taxa por byte válida",
+  "send_on_chain_original_transaction": "Transação Original",
+  "send_on_chain_amount": "Quantia:",
+  "send_on_chain_qr_code_not_detected": "O código QR não foi detectado.",
+  "remote_server_title": "Servidor Remoto",
+  "remote_server_server_url_hint": "https://example.nextcloud.com",
+  "remote_server_server_url_label": "URL do Servidor (Nextcloud, WebDav)",
+  "remote_server_server_username_hint": "Usuário",
+  "remote_server_server_username_label": "Usuário",
+  "remote_server_server_password_hint": "Senha",
+  "remote_server_server_password_label": "Senha",
+  "remote_server_action_restore": "RESTAURAR",
+  "remote_server_action_save": "SALVAR",
+  "remote_server_warning_connection_title": "Aviso de conexão",
+  "remote_server_warning_connection_message": "Sua conexão com este servidor remoto pode não ser uma conexão segura. Você tem certeza que quer continuar?",
+  "remote_server_testing_connection": "Testando conexão",
+  "remote_server_error_invalid_username_or_password": "Usuário ou Senha inválido",
+  "remote_server_error_invalid_url": "URL inválida",
+  "remote_server_error_remote_server_title": "Servidor Remoto",
+  "remote_server_error_remote_server_message": "Falha ao conectar com o servidor remoto, verifique suas configurações.",
+  "error_dialog_default_action_ok": "OK",
+  "error_dialog_default_action_yes": "SIM",
+  "error_dialog_default_action_no": "NÃO",
+  "error_dialog_default_action_close": "FECHAR",
   "locale": "pt",
   "app_name": "Breez"
 }
