@@ -15,6 +15,7 @@ import 'package:breez/widgets/rotator.dart';
 import 'package:breez/widgets/route.dart';
 import 'package:fixnum/fixnum.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:rxdart/rxdart.dart';
 
@@ -30,7 +31,10 @@ class AccountRequiredActionsIndicator extends StatefulWidget {
   final LSPBloc lspBloc;
 
   AccountRequiredActionsIndicator(
-      this._backupBloc, this._accountBloc, this.lspBloc);
+    this._backupBloc,
+    this._accountBloc,
+    this.lspBloc,
+  );
 
   @override
   AccountRequiredActionsIndicatorState createState() {
@@ -102,9 +106,11 @@ class AccountRequiredActionsIndicatorState
           showDialog(context: context, builder: dialogBuilder);
         },
         iconWidget: Rotator(
-            child: Image(
-                image: AssetImage("src/icon/sync.png"),
-                color: Theme.of(context).appBarTheme.actionsIconTheme.color)),
+          child: Image(
+            image: AssetImage("src/icon/sync.png"),
+            color: Theme.of(context).appBarTheme.actionsIconTheme.color,
+          ),
+        ),
       );
     }
 
@@ -112,7 +118,9 @@ class AccountRequiredActionsIndicatorState
   }
 
   int _inactiveWarningDuration(
-      List<LSPInfo> lsps, Map<String, Int64> activity) {
+    List<LSPInfo> lsps,
+    Map<String, Int64> activity,
+  ) {
     int warningDuration = 0;
     int currentTimestamp = DateTime.now().millisecondsSinceEpoch ~/ 1000;
     lsps.forEach((l) {
@@ -133,169 +141,184 @@ class AccountRequiredActionsIndicatorState
   Widget build(BuildContext context) {
     return StreamBuilder<LSPStatus>(
       stream: widget.lspBloc.lspStatusStream,
-      builder: (ctx, lspStatusSnapshot) => StreamBuilder<AccountSettings>(
+      builder: (ctx, lspStatusSnapshot) {
+        final lspStatus = lspStatusSnapshot.data;
+
+        return StreamBuilder<AccountSettings>(
           stream: widget._accountBloc.accountSettingsStream,
           builder: (context, settingsSnapshot) {
+            final accountSettings = settingsSnapshot.data;
+
             return StreamBuilder<AccountModel>(
-                stream: widget._accountBloc.accountStream,
-                builder: (context, accountSnapshot) {
-                  return StreamBuilder<List<PaymentInfo>>(
-                    stream: widget._accountBloc.pendingChannelsStream,
-                    builder: (ctx, pendingChannelsSnapshot) {
-                      return StreamBuilder<LSPActivity>(
-                          stream: widget._accountBloc.lspActivityStream,
-                          builder: (context, lspActivitySnapshot) {
-                            return StreamBuilder<BackupSettings>(
-                              stream: widget._backupBloc.backupSettingsStream,
-                              builder: (context, backupSettingsSnapshot) =>
-                                  StreamBuilder<BackupState>(
-                                      stream:
-                                          widget._backupBloc.backupStateStream,
-                                      builder: (context, backupSnapshot) {
-                                        List<Widget> warnings = <Widget>[];
-                                        Int64 walletBalance = accountSnapshot
-                                                ?.data?.walletBalance ??
-                                            Int64(0);
-                                        if (walletBalance > 0 &&
-                                            !settingsSnapshot
-                                                .data.ignoreWalletBalance) {
-                                          warnings.add(WarningAction(() =>
-                                              Navigator.of(context)
-                                                  .pushNamed("/send_coins")));
-                                        }
+              stream: widget._accountBloc.accountStream,
+              builder: (context, accountSnapshot) {
+                final accountModel = accountSnapshot.data;
 
-                                        if (backupSnapshot.hasError) {
-                                          bool signInNeeded = false;
-                                          if (backupSnapshot
-                                                  .error.runtimeType ==
-                                              BackupFailedException) {
-                                            signInNeeded = (backupSnapshot.error
-                                                    as BackupFailedException)
-                                                .authenticationError;
-                                          }
-                                          warnings.add(WarningAction(() async {
-                                            showDialog(
-                                                useRootNavigator: false,
-                                                barrierDismissible: false,
-                                                context: context,
-                                                builder: (_) =>
-                                                    EnableBackupDialog(context,
-                                                        widget._backupBloc,
-                                                        signInNeeded:
-                                                            signInNeeded));
-                                          }));
-                                        }
+                return StreamBuilder<List<PaymentInfo>>(
+                  stream: widget._accountBloc.pendingChannelsStream,
+                  builder: (ctx, pendingChannelsSnapshot) {
+                    final pendingChannels = pendingChannelsSnapshot.data;
 
-                                        if (lspActivitySnapshot.data != null) {
-                                          lspStatusSnapshot.data.availableLSPs
-                                              .forEach((element) {});
-                                          int inactiveWarningDuration = this
-                                              ._inactiveWarningDuration(
-                                                  lspStatusSnapshot
-                                                      .data.availableLSPs,
-                                                  lspActivitySnapshot
-                                                      .data.activity);
-                                          if (inactiveWarningDuration > 0) {
-                                            warnings
-                                                .add(WarningAction(() async {
-                                              showDialog(
-                                                  useRootNavigator: false,
-                                                  barrierDismissible: false,
-                                                  context: context,
-                                                  builder: (_) =>
-                                                      CloseWarningDialog(
-                                                          inactiveWarningDuration));
-                                            }));
-                                          }
-                                        }
+                    return StreamBuilder<LSPActivity>(
+                      stream: widget._accountBloc.lspActivityStream,
+                      builder: (context, lspActivitySnapshot) {
+                        final lspActivity = lspActivitySnapshot.data;
 
-                                        var loaderIcon = _buildLoader(
-                                            backupSnapshot.data,
-                                            accountSnapshot.data);
-                                        if (loaderIcon != null) {
-                                          warnings.add(loaderIcon);
-                                        }
+                        return StreamBuilder<BackupSettings>(
+                          stream: widget._backupBloc.backupSettingsStream,
+                          builder: (context, backupSettingsSnapshot) {
+                            final backupSettings = backupSettingsSnapshot.data;
 
-                                        var swapStatus = accountSnapshot
-                                            ?.data?.swapFundsStatus;
+                            return StreamBuilder<BackupState>(
+                              stream: widget._backupBloc.backupStateStream,
+                              builder: (context, backupSnapshot) {
+                                final backup = backupSnapshot.data;
+                                final hasError = backupSnapshot.hasError;
+                                final backupError = backupSnapshot.error;
 
-                                        // only warn on refundable addresses that weren't refunded in the past.
-                                        var shouldWarnRefund =
-                                            swapStatus != null &&
-                                                swapStatus
-                                                        .waitingRefundAddresses
-                                                        .length >
-                                                    0;
-                                        if (shouldWarnRefund) {
-                                          warnings.add(WarningAction(() =>
-                                              showDialog(
-                                                  useRootNavigator: false,
-                                                  barrierDismissible: false,
-                                                  context: context,
-                                                  builder: (_) =>
-                                                      SwapRefundDialog(
-                                                          accountBloc: widget
-                                                              ._accountBloc))));
-                                        }
-
-                                        if (accountSnapshot
-                                                ?.data?.syncUIState ==
-                                            SyncUIState.COLLAPSED) {
-                                          warnings.add(WarningAction(
-                                            () => widget
-                                                ._accountBloc.userActionsSink
-                                                .add(ChangeSyncUIState(
-                                                    SyncUIState.BLOCKING)),
-                                            iconWidget: Rotator(
-                                                child: Image(
-                                                    image: AssetImage(
-                                                        "src/icon/sync.png"),
-                                                    color: Theme.of(context)
-                                                        .appBarTheme
-                                                        .actionsIconTheme
-                                                        .color)),
-                                          ));
-                                        }
-
-                                        var lspStat = lspStatusSnapshot?.data;
-                                        if (lspStat?.selectionRequired ==
-                                            true) {
-                                          warnings.add(WarningAction(() {
-                                            if (lspStat?.lastConnectionError !=
-                                                null) {
-                                              showProviderErrorDialog(context,
-                                                  lspStat?.lastConnectionError,
-                                                  () {
-                                                Navigator.of(context).push(
-                                                    FadeInRoute(
-                                                        builder: (_) =>
-                                                            SelectLSPPage(
-                                                                lstBloc: widget
-                                                                    .lspBloc)));
-                                              });
-                                            } else {
-                                              Navigator.of(context)
-                                                  .pushNamed("/select_lsp");
-                                            }
-                                          }));
-                                        }
-
-                                        if (warnings.length == 0) {
-                                          return SizedBox();
-                                        }
-
-                                        return Row(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.end,
-                                            mainAxisSize: MainAxisSize.min,
-                                            children: warnings);
-                                      }),
+                                return _build(
+                                  context,
+                                  lspStatus,
+                                  accountSettings,
+                                  accountModel,
+                                  pendingChannels,
+                                  lspActivity,
+                                  backupSettings,
+                                  backup,
+                                  hasError,
+                                  backupError,
+                                );
+                              },
                             );
-                          });
-                    },
-                  );
-                });
-          }),
+                          },
+                        );
+                      },
+                    );
+                  },
+                );
+              },
+            );
+          },
+        );
+      },
+    );
+  }
+
+  Widget _build(
+    BuildContext context,
+    LSPStatus lspStatus,
+    AccountSettings accountSettings,
+    AccountModel accountModel,
+    List<PaymentInfo> pendingChannels,
+    LSPActivity lspActivity,
+    BackupSettings backupSettings,
+    BackupState backup,
+    bool hasError,
+    Object backupError,
+  ) {
+    final themeData = Theme.of(context);
+    final navigatorState = Navigator.of(context);
+
+    List<Widget> warnings = [];
+    Int64 walletBalance = accountModel?.walletBalance ?? Int64(0);
+
+    if (walletBalance > 0 && !accountSettings.ignoreWalletBalance) {
+      warnings.add(
+        WarningAction(() => navigatorState.pushNamed("/send_coins")),
+      );
+    }
+
+    if (hasError) {
+      bool signInNeeded = false;
+      if (backupError.runtimeType == BackupFailedException) {
+        signInNeeded =
+            (backupError as BackupFailedException).authenticationError;
+      }
+      warnings.add(WarningAction(() async {
+        showDialog(
+          useRootNavigator: false,
+          barrierDismissible: false,
+          context: context,
+          builder: (_) => EnableBackupDialog(
+            context,
+            widget._backupBloc,
+            signInNeeded: signInNeeded,
+          ),
+        );
+      }));
+    }
+
+    final availableLSPs = lspStatus.availableLSPs;
+    if (lspActivity != null) {
+      availableLSPs.forEach((element) {});
+      int inactiveWarningDuration = this._inactiveWarningDuration(
+        availableLSPs,
+        lspActivity.activity,
+      );
+      if (inactiveWarningDuration > 0) {
+        warnings.add(WarningAction(() async {
+          showDialog(
+              useRootNavigator: false,
+              barrierDismissible: false,
+              context: context,
+              builder: (_) => CloseWarningDialog(inactiveWarningDuration));
+        }));
+      }
+    }
+
+    final loaderIcon = _buildLoader(backup, accountModel);
+    if (loaderIcon != null) {
+      warnings.add(loaderIcon);
+    }
+
+    final swapStatus = accountModel.swapFundsStatus;
+    // only warn on refundable addresses that weren't refunded in the past.
+    if (swapStatus != null && swapStatus.waitingRefundAddresses.length > 0) {
+      warnings.add(WarningAction(() => showDialog(
+            useRootNavigator: false,
+            barrierDismissible: false,
+            context: context,
+            builder: (_) => SwapRefundDialog(
+              accountBloc: widget._accountBloc,
+            ),
+          )));
+    }
+
+    if (accountModel?.syncUIState == SyncUIState.COLLAPSED) {
+      warnings.add(WarningAction(
+        () => widget._accountBloc.userActionsSink.add(
+          ChangeSyncUIState(SyncUIState.BLOCKING),
+        ),
+        iconWidget: Rotator(
+            child: Image(
+          image: AssetImage("src/icon/sync.png"),
+          color: themeData.appBarTheme.actionsIconTheme.color,
+        )),
+      ));
+    }
+
+    if (lspStatus?.selectionRequired == true) {
+      warnings.add(WarningAction(() {
+        if (lspStatus?.lastConnectionError != null) {
+          showProviderErrorDialog(context, lspStatus?.lastConnectionError, () {
+            navigatorState.push(FadeInRoute(
+              builder: (_) => SelectLSPPage(lstBloc: widget.lspBloc),
+            ));
+          });
+        } else {
+          navigatorState.pushNamed("/select_lsp");
+        }
+      }));
+    }
+
+    if (warnings.length == 0) {
+      return SizedBox();
+    }
+
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.end,
+      mainAxisSize: MainAxisSize.min,
+      children: warnings,
     );
   }
 }
@@ -304,7 +327,10 @@ class WarningAction extends StatefulWidget {
   final void Function() onTap;
   final Widget iconWidget;
 
-  WarningAction(this.onTap, {this.iconWidget});
+  WarningAction(
+    this.onTap, {
+    this.iconWidget,
+  });
 
   @override
   State<StatefulWidget> createState() {
@@ -320,10 +346,15 @@ class WarningActionState extends State<WarningAction>
   @override
   void initState() {
     super.initState();
-    _animationController =
-        AnimationController(vsync: this, duration: Duration(seconds: 1));
-    _animation = Tween<double>(begin: 0.0, end: 1.0).animate(
-        _animationController); //use Tween animation here, to animate between the values of 1.0 & 2.5.
+    _animationController = AnimationController(
+      vsync: this,
+      duration: Duration(seconds: 1),
+    );
+    //use Tween animation here, to animate between the values of 1.0 & 2.5.
+    _animation = Tween<double>(
+      begin: 0.0,
+      end: 1.0,
+    ).animate(_animationController);
     _animation.addListener(() {
       //here, a listener that rebuilds our widget tree when animation.value changes
       setState(() {});
@@ -339,6 +370,9 @@ class WarningActionState extends State<WarningAction>
 
   @override
   Widget build(BuildContext context) {
+    final themeData = Theme.of(context);
+    final texts = AppLocalizations.of(context);
+
     return IconButton(
       iconSize: 45.0,
       padding: EdgeInsets.zero,
@@ -347,10 +381,10 @@ class WarningActionState extends State<WarningAction>
         child: widget.iconWidget ??
             SvgPicture.asset(
               "src/icon/warning.svg",
-              color: Theme.of(context).appBarTheme.actionsIconTheme.color,
+              color: themeData.appBarTheme.actionsIconTheme.color,
             ),
       ),
-      tooltip: 'Backup',
+      tooltip: texts.account_required_actions_backup,
       onPressed: this.widget.onTap,
     );
   }

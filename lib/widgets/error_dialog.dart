@@ -1,82 +1,100 @@
 import 'dart:async';
 
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
-Future<Null> promptError(BuildContext context, String title, Widget body,
-    {String okText = "OK",
-    String optionText,
-    Function optionFunc,
-    Function okFunc,
-    bool disableBack = false}) {
+Future<Null> promptError(
+  BuildContext context,
+  String title,
+  Widget body, {
+  String okText,
+  String optionText,
+  Function optionFunc,
+  Function okFunc,
+  bool disableBack = false,
+}) {
+  final texts = AppLocalizations.of(context);
+  final themeData = Theme.of(context);
+
   bool canPop = !disableBack;
   Future<bool> Function() canPopCallback = () => Future.value(canPop);
 
   return showDialog<Null>(
-      useRootNavigator: false,
-      context: context,
-      barrierDismissible: false, // user must tap button!
-      builder: (BuildContext context) {
-        return WillPopScope(
-          onWillPop: canPopCallback,
-          child: AlertDialog(
-            contentPadding: EdgeInsets.fromLTRB(16.0, 16.0, 16.0, 0.0),
-            title: title == null
-                ? null
-                : Text(
-                    title,
-                    style: Theme.of(context).dialogTheme.titleTextStyle,
-                  ),
-            content: SingleChildScrollView(
-              child: body,
-            ),
-            actions: <Widget>[
-              optionText != null
-                  ? TextButton(
-                      child: Text(
-                        optionText,
-                        style: TextStyle(
-                            fontWeight: FontWeight.w500,
-                            fontFamily: 'IBMPlexSans',
-                            fontSize: 16.4,
-                            letterSpacing: 0.0,
-                            color: Theme.of(context)
-                                .dialogTheme
-                                .titleTextStyle
-                                .color),
+    useRootNavigator: false,
+    context: context,
+    barrierDismissible: false, // user must tap button!
+    builder: (BuildContext context) {
+      return WillPopScope(
+        onWillPop: canPopCallback,
+        child: AlertDialog(
+          contentPadding: EdgeInsets.fromLTRB(16.0, 16.0, 16.0, 0.0),
+          title: title == null
+              ? null
+              : Text(
+                  title,
+                  style: themeData.dialogTheme.titleTextStyle,
+                ),
+          content: SingleChildScrollView(
+            child: body,
+          ),
+          actions: [
+            optionText != null
+                ? TextButton(
+                    child: Text(
+                      optionText,
+                      style: TextStyle(
+                        fontWeight: FontWeight.w500,
+                        fontFamily: 'IBMPlexSans',
+                        fontSize: 16.4,
+                        letterSpacing: 0.0,
+                        color: themeData.dialogTheme.titleTextStyle.color,
                       ),
-                      onPressed: () {
-                        canPop = true;
-                        optionFunc();
-                      },
-                    )
-                  : Container(),
-              TextButton(
-                child: Text(okText,
-                    style: Theme.of(context).primaryTextTheme.button),
-                onPressed: () {
-                  canPop = true;
-                  Navigator.of(context).pop();
-                  if (okFunc != null) {
-                    okFunc();
-                  }
-                },
+                    ),
+                    onPressed: () {
+                      canPop = true;
+                      optionFunc();
+                    },
+                  )
+                : Container(),
+            TextButton(
+              child: Text(
+                okText ?? texts.error_dialog_default_action_ok,
+                style: themeData.primaryTextTheme.button,
               ),
-            ],
-          ),
-        );
-      });
+              onPressed: () {
+                canPop = true;
+                Navigator.of(context).pop();
+                if (okFunc != null) {
+                  okFunc();
+                }
+              },
+            ),
+          ],
+        ),
+      );
+    },
+  );
 }
 
-Future<bool> promptAreYouSure(BuildContext context, String title, Widget body,
-    {contentPadding = const EdgeInsets.only(top: 32.0, left: 32.0, right: 32.0),
-    bool wideTitle = false,
-    String okText = "YES",
-    String cancelText = "NO",
-    TextStyle textStyle = const TextStyle(color: Colors.white)}) {
+Future<bool> promptAreYouSure(
+  BuildContext context,
+  String title,
+  Widget body, {
+  contentPadding = const EdgeInsets.only(top: 32.0, left: 32.0, right: 32.0),
+  bool wideTitle = false,
+  String okText,
+  String cancelText,
+  TextStyle textStyle = const TextStyle(color: Colors.white),
+}) {
+  final texts = AppLocalizations.of(context);
+  final themeData = Theme.of(context);
+
   Widget titleWidget = title == null
       ? null
-      : Text(title, style: Theme.of(context).dialogTheme.titleTextStyle);
+      : Text(
+          title,
+          style: themeData.dialogTheme.titleTextStyle,
+        );
   if (titleWidget != null && wideTitle) {
     titleWidget = Container(
       child: titleWidget,
@@ -84,43 +102,56 @@ Future<bool> promptAreYouSure(BuildContext context, String title, Widget body,
     );
   }
   return showDialog<bool>(
-      useRootNavigator: false,
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          contentPadding: contentPadding,
-          title: titleWidget,
-          content: SingleChildScrollView(
-            child: body,
+    useRootNavigator: false,
+    context: context,
+    builder: (BuildContext context) {
+      return AlertDialog(
+        contentPadding: contentPadding,
+        title: titleWidget,
+        content: SingleChildScrollView(
+          child: body,
+        ),
+        actions: [
+          TextButton(
+            child: Text(
+              cancelText ?? texts.error_dialog_default_action_no,
+              style: themeData.primaryTextTheme.button,
+            ),
+            onPressed: () {
+              Navigator.of(context).pop(false);
+            },
           ),
-          actions: <Widget>[
-            TextButton(
-              child: Text(cancelText,
-                  style: Theme.of(context).primaryTextTheme.button),
-              onPressed: () {
-                Navigator.of(context).pop(false);
-              },
+          TextButton(
+            child: Text(
+              okText ?? texts.error_dialog_default_action_yes,
+              style: themeData.primaryTextTheme.button,
             ),
-            TextButton(
-              child: Text(okText,
-                  style: Theme.of(context).primaryTextTheme.button),
-              onPressed: () {
-                Navigator.of(context).pop(true);
-              },
-            ),
-          ],
-        );
-      });
+            onPressed: () => Navigator.of(context).pop(true),
+          ),
+        ],
+      );
+    },
+  );
 }
 
-Future<bool> promptMessage(BuildContext context, String title, Widget body,
-    {contentPadding = const EdgeInsets.only(top: 32.0, left: 32.0, right: 32.0),
-    bool wideTitle = false,
-    String closeText = "CLOSE",
-    TextStyle textStyle = const TextStyle(color: Colors.white)}) {
+Future<bool> promptMessage(
+  BuildContext context,
+  String title,
+  Widget body, {
+  contentPadding = const EdgeInsets.only(top: 32.0, left: 32.0, right: 32.0),
+  bool wideTitle = false,
+  String closeText,
+  TextStyle textStyle = const TextStyle(color: Colors.white),
+}) {
+  final texts = AppLocalizations.of(context);
+  final themeData = Theme.of(context);
+
   Widget titleWidget = title == null
       ? null
-      : Text(title, style: Theme.of(context).dialogTheme.titleTextStyle);
+      : Text(
+          title,
+          style: themeData.dialogTheme.titleTextStyle,
+        );
   if (titleWidget != null && wideTitle) {
     titleWidget = Container(
       child: titleWidget,
@@ -128,24 +159,25 @@ Future<bool> promptMessage(BuildContext context, String title, Widget body,
     );
   }
   return showDialog<bool>(
-      useRootNavigator: false,
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          contentPadding: contentPadding,
-          title: titleWidget,
-          content: SingleChildScrollView(
-            child: body,
-          ),
-          actions: <Widget>[
-            TextButton(
-              child: Text(closeText,
-                  style: Theme.of(context).primaryTextTheme.button),
-              onPressed: () {
-                Navigator.of(context).pop(false);
-              },
+    useRootNavigator: false,
+    context: context,
+    builder: (BuildContext context) {
+      return AlertDialog(
+        contentPadding: contentPadding,
+        title: titleWidget,
+        content: SingleChildScrollView(
+          child: body,
+        ),
+        actions: [
+          TextButton(
+            child: Text(
+              closeText ?? texts.error_dialog_default_action_close,
+              style: themeData.primaryTextTheme.button,
             ),
-          ],
-        );
-      });
+            onPressed: () => Navigator.of(context).pop(false),
+          ),
+        ],
+      );
+    },
+  );
 }

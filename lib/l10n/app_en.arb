@@ -880,6 +880,87 @@
   "swap_in_progress_message_waiting_confirmation": "Breez is waiting for your transaction to be confirmed.",
   "swap_in_progress_message_processing_previous_request": "Breez is currently processing your previous request. You'll be notified once processing is completed to send your funds to the address you've specified.",
   "market_place_no_vendors": "There are no available vendors at the moment.",
+  "account_required_actions_backup": "Backup",
+  "funds_over_limit_dialog_on_chain_transaction": "On-chain Transaction",
+  "funds_over_limit_dialog_action_ok": "OK",
+  "funds_over_limit_dialog_transfer_fail_no_reason_know": "Breez was not able to transfer the funds to your balance\n",
+  "funds_over_limit_dialog_transfer_fail_with_reason": "Breez was not able to transfer the funds to your balance since {reason}\n",
+  "@funds_over_limit_dialog_transfer_fail_with_reason": {
+    "placeholders": {
+      "reason": {
+        "type": "String",
+        "example": "A reason of an error"
+      }
+    }
+  },
+  "funds_over_limit_dialog_redeem_hour": "You will be able to redeem your funds after block {lockHeight} (in about an hour).",
+  "@funds_over_limit_dialog_redeem_hour": {
+    "placeholders": {
+      "lockHeight": {
+        "type": "String",
+        "example": "140659"
+      }
+    }
+  },
+  "funds_over_limit_dialog_redeem_hours": "You will be able to redeem your funds after block {lockHeight} (~{hoursToUnlock} hours).",
+  "@funds_over_limit_dialog_redeem_hours": {
+    "placeholders": {
+      "lockHeight": {
+        "type": "String",
+        "example": "140659"
+      },
+      "hoursToUnlock": {
+        "type": "String",
+        "example": "7"
+      }
+    }
+  },
+  "funds_over_limit_dialog_refund_begin": "You can ",
+  "funds_over_limit_dialog_refund_link": "get a refund",
+  "funds_over_limit_dialog_refund_end": " now.",
+  "get_refund_title": "Get Refund",
+  "get_refund_amount": "Amount: {amount}",
+  "@get_refund_amount": {
+    "placeholders": {
+      "amount": {
+        "type": "String",
+        "example": "12 345"
+      }
+    }
+  },
+  "get_refund_action_broadcasted": "BROADCASTED",
+  "get_refund_action_continue": "CONTINUE",
+  "get_refund_transaction": "Refund Transaction",
+  "get_refund_failed": "failed",
+  "send_on_chain_broadcast": "BROADCAST",
+  "send_on_chain_btc_address": "BTC Address",
+  "send_on_chain_scan_barcode": "Scan Barcode",
+  "send_on_chain_invalid_btc_address": "Please enter a valid BTC Address",
+  "send_on_chain_sat_per_byte_fee_rate": "Sat Per Byte Fee Rate",
+  "send_on_chain_invalid_fee_rate": "Please enter a valid fee rate",
+  "send_on_chain_original_transaction": "Original Transaction",
+  "send_on_chain_amount": "Amount:",
+  "send_on_chain_qr_code_not_detected": "QR code wasn't detected.",
+  "remote_server_title": "Remote Server",
+  "remote_server_server_url_hint": "https://example.nextcloud.com",
+  "remote_server_server_url_label": "Server URL (Nextcloud, WebDav)",
+  "remote_server_server_username_hint": "Username",
+  "remote_server_server_username_label": "User Name",
+  "remote_server_server_password_hint": "Password",
+  "remote_server_server_password_label": "Password",
+  "remote_server_action_restore": "RESTORE",
+  "remote_server_action_save": "SAVE",
+  "remote_server_warning_connection_title": "Connection Warning",
+  "remote_server_warning_connection_message": "Your connection to this remote server may not be a secured connection. Are you sure you want to continue?",
+  "remote_server_testing_connection": "Testing connection",
+  "remote_server_error_invalid_username_or_password": "Invalid User Name or Password",
+  "remote_server_error_invalid_url": "Invalid URL",
+  "remote_server_error_remote_server_title": "Remote Server",
+  "remote_server_error_remote_server_message": "Failed to connect with the remote server, please check your settings.",
+  "error_dialog_default_action_ok": "OK",
+  "error_dialog_default_action_yes": "YES",
+  "error_dialog_default_action_no": "NO",
+  "error_dialog_default_action_close": "CLOSE",
   "locale": "en",
   "app_name": "Breez"
 }

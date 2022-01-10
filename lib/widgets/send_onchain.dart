@@ -1,7 +1,6 @@
 import 'dart:async';
 
 import 'package:breez/bloc/account/account_model.dart';
-import 'package:breez/services/breezlib/breez_bridge.dart';
 import 'package:breez/services/injector.dart';
 import 'package:breez/theme_data.dart' as theme;
 import 'package:breez/widgets/collapsible_list_item.dart';
@@ -9,6 +8,7 @@ import 'package:breez/widgets/keyboard_done_action.dart';
 import 'package:fixnum/fixnum.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import 'flushbar.dart';
 
@@ -20,8 +20,14 @@ class SendOnchain extends StatefulWidget {
   final String prefixMessage;
   final String originalTransaction;
 
-  SendOnchain(this._account, this._amount, this._title, this._onBroadcast,
-      {this.prefixMessage, this.originalTransaction});
+  SendOnchain(
+    this._account,
+    this._amount,
+    this._title,
+    this._onBroadcast, {
+    this.prefixMessage,
+    this.originalTransaction,
+  });
 
   @override
   State<StatefulWidget> createState() {
@@ -31,20 +37,20 @@ class SendOnchain extends StatefulWidget {
 
 class SendOnchainState extends State<SendOnchain> {
   final _formKey = GlobalKey<FormState>();
-  String _scannerErrorMessage = "";
-  final TextEditingController _addressController = TextEditingController();
-  final TextEditingController _feeController = TextEditingController();
+  final _addressController = TextEditingController();
+  final _feeController = TextEditingController();
+  final _breezLib = ServiceInjector().breezBridge;
+  final _feeFocusNode = FocusNode();
 
-  BreezBridge _breezLib = ServiceInjector().breezBridge;
+  String _scannerErrorMessage = "";
   String _addressValidated;
-  final FocusNode _feeFocusNode = FocusNode();
   KeyboardDoneAction _doneAction;
   bool feeUpdated = false;
 
   @override
   void initState() {
     super.initState();
-    _doneAction = KeyboardDoneAction(<FocusNode>[_feeFocusNode]);
+    _doneAction = KeyboardDoneAction([_feeFocusNode]);
   }
 
   @override
@@ -60,10 +66,11 @@ class SendOnchainState extends State<SendOnchain> {
   }
 
   void _updateFee() {
+    final account = widget._account;
     if (!feeUpdated &&
         _feeController.text.isEmpty &&
-        widget._account.onChainFeeRate != null) {
-      _feeController.text = widget._account.onChainFeeRate.toString();
+        account.onChainFeeRate != null) {
+      _feeController.text = account.onChainFeeRate.toString();
       feeUpdated = true;
     }
   }
@@ -76,71 +83,80 @@ class SendOnchainState extends State<SendOnchain> {
 
   @override
   Widget build(BuildContext context) {
+    final texts = AppLocalizations.of(context);
+    final themeData = Theme.of(context);
+    final dialogTheme = themeData.dialogTheme;
+
     return Theme(
-      data: Theme.of(context).copyWith(
-          inputDecorationTheme: InputDecorationTheme(
-              enabledBorder:
-                  UnderlineInputBorder(borderSide: theme.greyBorderSide)),
-          hintColor: Theme.of(context).dialogTheme.contentTextStyle.color,
-          colorScheme: ColorScheme.dark(
-            primary: Theme.of(context).textTheme.button.color,
+      data: themeData.copyWith(
+        inputDecorationTheme: InputDecorationTheme(
+          enabledBorder: UnderlineInputBorder(
+            borderSide: theme.greyBorderSide,
           ),
-          primaryColor: Theme.of(context).textTheme.button.color,
-          unselectedWidgetColor: Theme.of(context).canvasColor,
-          errorColor: theme.themeId == "BLUE"
-              ? Colors.red
-              : Theme.of(context).errorColor),
+        ),
+        hintColor: dialogTheme.contentTextStyle.color,
+        colorScheme: ColorScheme.dark(
+          primary: themeData.textTheme.button.color,
+        ),
+        primaryColor: themeData.textTheme.button.color,
+        unselectedWidgetColor: themeData.canvasColor,
+        errorColor: theme.themeId == "BLUE" ? Colors.red : themeData.errorColor,
+      ),
       child: Scaffold(
-        backgroundColor: Theme.of(context).backgroundColor,
+        backgroundColor: themeData.backgroundColor,
         appBar: AppBar(
-            brightness: theme.themeId == "BLUE"
-                ? Brightness.light
-                : Theme.of(context).appBarTheme.brightness,
-            iconTheme: Theme.of(context).appBarTheme.iconTheme,
-            textTheme: Theme.of(context).appBarTheme.textTheme,
-            automaticallyImplyLeading: false,
-            backgroundColor: Theme.of(context).backgroundColor,
-            actions: <Widget>[
-              IconButton(
-                  onPressed: () => Navigator.pop(context),
-                  icon: Icon(Icons.close,
-                      color:
-                          Theme.of(context).appBarTheme.actionsIconTheme.color))
-            ],
-            title: Text(widget._title,
-                style: Theme.of(context).dialogTheme.titleTextStyle,
-                textAlign: TextAlign.left),
-            elevation: 0.0),
+          brightness: theme.themeId == "BLUE"
+              ? Brightness.light
+              : themeData.appBarTheme.brightness,
+          iconTheme: themeData.appBarTheme.iconTheme,
+          textTheme: themeData.appBarTheme.textTheme,
+          automaticallyImplyLeading: false,
+          backgroundColor: themeData.backgroundColor,
+          actions: [
+            IconButton(
+              onPressed: () => Navigator.pop(context),
+              icon: Icon(
+                Icons.close,
+                color: themeData.appBarTheme.actionsIconTheme.color,
+              ),
+            ),
+          ],
+          title: Text(
+            widget._title,
+            style: dialogTheme.titleTextStyle,
+            textAlign: TextAlign.left,
+          ),
+          elevation: 0.0,
+        ),
         bottomNavigationBar: BottomAppBar(
           elevation: 0,
-          color: Theme.of(context).backgroundColor,
+          color: themeData.backgroundColor,
           child: Padding(
             padding: const EdgeInsets.only(right: 12.0),
             child: Row(
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: <Widget>[
-                  TextButton(
-                    onPressed: () {
-                      _asyncValidate().then((validated) {
-                        if (validated) {
-                          _formKey.currentState.save();
-                          widget
-                              ._onBroadcast(_addressValidated, _getFee())
-                              .then((msg) {
-                            Navigator.of(context).pop();
-                            if (msg != null) {
-                              showFlushbar(context, message: msg);
-                            }
-                          });
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                TextButton(
+                  onPressed: () => _asyncValidate().then((validated) {
+                    if (validated) {
+                      _formKey.currentState.save();
+                      widget
+                          ._onBroadcast(_addressValidated, _getFee())
+                          .then((msg) {
+                        Navigator.of(context).pop();
+                        if (msg != null) {
+                          showFlushbar(context, message: msg);
                         }
                       });
-                    },
-                    child: Text(
-                      "BROADCAST",
-                      style: Theme.of(context).primaryTextTheme.button,
-                    ),
-                  )
-                ]),
+                    }
+                  }),
+                  child: Text(
+                    texts.send_on_chain_broadcast,
+                    style: themeData.primaryTextTheme.button,
+                  ),
+                ),
+              ],
+            ),
           ),
         ),
         body: LayoutBuilder(builder: (context, constraints) {
@@ -148,47 +164,43 @@ class SendOnchainState extends State<SendOnchain> {
             child: Form(
               key: _formKey,
               child: Padding(
-                padding: EdgeInsets.only(
-                    left: 16.0, right: 16.0, bottom: 0.0, top: 12.0),
+                padding: EdgeInsets.fromLTRB(16.0, 12.0, 16.0, 0.0),
                 child: Column(
                   mainAxisSize: MainAxisSize.max,
                   crossAxisAlignment: CrossAxisAlignment.start,
-                  children: <Widget>[
+                  children: [
                     widget.prefixMessage != null
-                        ? Text(widget.prefixMessage,
+                        ? Text(
+                            widget.prefixMessage,
                             style: TextStyle(
-                                color: Theme.of(context)
-                                    .dialogTheme
-                                    .contentTextStyle
-                                    .color,
-                                fontSize: 16.0,
-                                height: 1.2))
+                              color: dialogTheme.contentTextStyle.color,
+                              fontSize: 16.0,
+                              height: 1.2,
+                            ),
+                          )
                         : SizedBox(),
                     TextFormField(
                       controller: _addressController,
                       decoration: InputDecoration(
-                        labelText: "BTC Address",
+                        labelText: texts.send_on_chain_btc_address,
                         suffixIcon: IconButton(
                           padding: EdgeInsets.only(top: 21.0),
                           alignment: Alignment.bottomRight,
                           icon: Image(
                             image: AssetImage("src/icon/qr_scan.png"),
-                            color: Theme.of(context)
-                                .dialogTheme
-                                .contentTextStyle
-                                .color,
+                            color: dialogTheme.contentTextStyle.color,
                             fit: BoxFit.contain,
                             width: 24.0,
                             height: 24.0,
                           ),
-                          tooltip: 'Scan Barcode',
+                          tooltip: texts.send_on_chain_scan_barcode,
                           onPressed: _scanBarcode,
                         ),
                       ),
-                      style: Theme.of(context).dialogTheme.contentTextStyle,
+                      style: dialogTheme.contentTextStyle,
                       validator: (value) {
                         if (_addressValidated == null) {
-                          return "Please enter a valid BTC Address";
+                          return texts.send_on_chain_invalid_btc_address;
                         }
                         return null;
                       },
@@ -200,33 +212,32 @@ class SendOnchainState extends State<SendOnchain> {
                           )
                         : SizedBox(),
                     TextFormField(
-                        focusNode: _feeFocusNode,
-                        controller: _feeController,
-                        inputFormatters: [
-                          FilteringTextInputFormatter.digitsOnly
-                        ],
-                        keyboardType: TextInputType.number,
-                        decoration:
-                            InputDecoration(labelText: "Sat Per Byte Fee Rate"),
-                        style: Theme.of(context).dialogTheme.contentTextStyle,
-                        validator: (value) {
-                          if (_feeController.text.isEmpty) {
-                            return "Please enter a valid fee rate";
-                          }
-                          return null;
-                        }),
+                      focusNode: _feeFocusNode,
+                      controller: _feeController,
+                      inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+                      keyboardType: TextInputType.number,
+                      decoration: InputDecoration(
+                        labelText: texts.send_on_chain_sat_per_byte_fee_rate,
+                      ),
+                      style: dialogTheme.contentTextStyle,
+                      validator: (value) {
+                        if (_feeController.text.isEmpty) {
+                          return texts.send_on_chain_invalid_fee_rate;
+                        }
+                        return null;
+                      },
+                    ),
                     Container(
                       padding: EdgeInsets.only(top: 12.0),
-                      child: _buildAvailableBTC(widget._account),
+                      child: _buildAvailableBTC(context, widget._account),
                     ),
                     widget.originalTransaction != null
                         ? CollapsibleListItem(
-                            title: "Original Transaction",
+                            title: texts.send_on_chain_original_transaction,
                             sharedValue: widget.originalTransaction,
-                            userStyle: Theme.of(context)
-                                .dialogTheme
-                                .contentTextStyle
-                                .copyWith(fontWeight: FontWeight.normal),
+                            userStyle: dialogTheme.contentTextStyle.copyWith(
+                              fontWeight: FontWeight.normal,
+                            ),
                           )
                         : SizedBox()
                   ],
@@ -239,15 +250,23 @@ class SendOnchainState extends State<SendOnchain> {
     );
   }
 
-  Widget _buildAvailableBTC(AccountModel acc) {
+  Widget _buildAvailableBTC(BuildContext context, AccountModel acc) {
+    final themeData = Theme.of(context);
+    final texts = AppLocalizations.of(context);
+
     return Row(
-      children: <Widget>[
-        Text("Amount:", style: Theme.of(context).dialogTheme.contentTextStyle),
+      children: [
+        Text(
+          texts.send_on_chain_amount,
+          style: themeData.dialogTheme.contentTextStyle,
+        ),
         Padding(
           padding: EdgeInsets.only(left: 3.0),
-          child: Text(acc.currency.format(widget._amount),
-              style: Theme.of(context).dialogTheme.contentTextStyle),
-        )
+          child: Text(
+            acc.currency.format(widget._amount),
+            style: themeData.dialogTheme.contentTextStyle,
+          ),
+        ),
       ],
     );
   }
@@ -259,13 +278,17 @@ class SendOnchainState extends State<SendOnchain> {
   }
 
   Future _scanBarcode() async {
+    final texts = AppLocalizations.of(context);
     FocusScope.of(context).requestFocus(FocusNode());
     String barcode = await Navigator.pushNamed<String>(context, "/qr_scan");
     if (barcode == null) {
       return;
     }
     if (barcode.isEmpty) {
-      showFlushbar(context, message: "QR code wasn't detected.");
+      showFlushbar(
+        context,
+        message: texts.send_on_chain_qr_code_not_detected,
+      );
       return;
     }
     setState(() {

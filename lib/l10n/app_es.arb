@@ -321,7 +321,7 @@
   "payment_info_dialog_action_approve": "APROBAR",
   "pos_invoice_item_management_title_add": "Añadir artículo",
   "pos_invoice_item_management_title_edit": "Editar artículo",
-  "pos_invoice_item_management_title_save": "AHORRAR",
+  "pos_invoice_item_management_title_save": "GUARDAR",
   "pos_invoice_item_management_field_name_label": "Nombre",
   "pos_invoice_item_management_field_name_hint": "Ingrese el nombre",
   "pos_invoice_item_management_field_name_error": "El nombre es obligatorio",
@@ -880,6 +880,87 @@
   "swap_in_progress_message_waiting_confirmation": "Breez está esperando que se confirme su transacción.",
   "swap_in_progress_message_processing_previous_request": "Breez está procesando su solicitud anterior. Se le notificará cuando se complete el procesamiento.",
   "market_place_no_vendors": "Actualmente no hay vendedores disponibles.",
+  "account_required_actions_backup": "Copia de seguridad",
+  "funds_over_limit_dialog_on_chain_transaction": "Transacciones on-chain",
+  "funds_over_limit_dialog_action_ok": "OK",
+  "funds_over_limit_dialog_transfer_fail_no_reason_know": "No fue posible transferir los fondos a su billetera\n",
+  "funds_over_limit_dialog_transfer_fail_with_reason": "No fue posible transferir los fondos a su billetera debido al siguiente error: {reason}\n",
+  "@funds_over_limit_dialog_transfer_fail_with_reason": {
+    "placeholders": {
+      "reason": {
+        "type": "String",
+        "example": "A reason of an error"
+      }
+    }
+  },
+  "funds_over_limit_dialog_redeem_hour": "Podrá retirar sus fondos después del bloque {lockHeight} (en aproximadamente 1 hora).",
+  "@funds_over_limit_dialog_redeem_hour": {
+    "placeholders": {
+      "lockHeight": {
+        "type": "String",
+        "example": "140659"
+      }
+    }
+  },
+  "funds_over_limit_dialog_redeem_hours": "Podrá retirar sus fondos después del bloque {lockHeight} (en aproximadamente {hoursToUnlock} horas).",
+  "@funds_over_limit_dialog_redeem_hours": {
+    "placeholders": {
+      "lockHeight": {
+        "type": "String",
+        "example": "140659"
+      },
+      "hoursToUnlock": {
+        "type": "String",
+        "example": "7"
+      }
+    }
+  },
+  "funds_over_limit_dialog_refund_begin": "Usted puedes ",
+  "funds_over_limit_dialog_refund_link": "obtener un reembolso",
+  "funds_over_limit_dialog_refund_end": " ahora.",
+  "get_refund_title": "Obtener reembolso",
+  "get_refund_amount": "Monto: {amount}",
+  "@get_refund_amount": {
+    "placeholders": {
+      "amount": {
+        "type": "String",
+        "example": "12 345"
+      }
+    }
+  },
+  "get_refund_action_broadcasted": "TRANSMITIDO",
+  "get_refund_action_continue": "SEGUIR",
+  "get_refund_transaction": "Transacción de Reembolso",
+  "get_refund_failed": "falló",
+  "send_on_chain_broadcast": "TRANSMITIDO",
+  "send_on_chain_btc_address": "Dirección BTC",
+  "send_on_chain_scan_barcode": "Escanear código de barras",
+  "send_on_chain_invalid_btc_address": "Por favor ingrese una dirección BTC válida",
+  "send_on_chain_sat_per_byte_fee_rate": "Tarifa de Sat por Byte",
+  "send_on_chain_invalid_fee_rate": "Por favor insira una tarifa por byte válida",
+  "send_on_chain_original_transaction": "Transacción Original",
+  "send_on_chain_amount": "Monto:",
+  "send_on_chain_qr_code_not_detected": "No se detectó el código QR.",
+  "remote_server_title": "Servidor Remoto",
+  "remote_server_server_url_hint": "https://example.nextcloud.com",
+  "remote_server_server_url_label": "URL del Servidor (Nextcloud, WebDav)",
+  "remote_server_server_username_hint": "Usuario",
+  "remote_server_server_username_label": "Usuario",
+  "remote_server_server_password_hint": "Contraseña",
+  "remote_server_server_password_label": "Contraseña",
+  "remote_server_action_restore": "RESTAURAR",
+  "remote_server_action_save": "GUARDAR",
+  "remote_server_warning_connection_title": "Aviso de conexión",
+  "remote_server_warning_connection_message": "Es posible que su conexión a este servidor remoto no sea una conexión segura. Estás seguro de que quieres continuar?",
+  "remote_server_testing_connection": "Probando la Conexion",
+  "remote_server_error_invalid_username_or_password": "Usuario o Contraseña invalido",
+  "remote_server_error_invalid_url": "URL inválida",
+  "remote_server_error_remote_server_title": "Servidor Remoto",
+  "remote_server_error_remote_server_message": "No se pudo conectar al servidor remoto, verifique su configuración.",
+  "error_dialog_default_action_ok": "OK",
+  "error_dialog_default_action_yes": "SÍ",
+  "error_dialog_default_action_no": "NO",
+  "error_dialog_default_action_close": "CERRAR",
   "locale": "es",
   "app_name": "Breez"
 }
