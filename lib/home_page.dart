@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:anytime/bloc/podcast/audio_bloc.dart';
+import 'package:anytime/l10n/L.dart';
 import 'package:anytime/ui/anytime_podcast_app.dart';
 import 'package:anytime/ui/podcast/now_playing.dart';
 import 'package:audio_service/audio_service.dart';
@@ -41,7 +42,9 @@ import 'package:breez/widgets/route.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
 import 'bloc/invoice/invoice_model.dart';
@@ -609,18 +612,37 @@ class HomeState extends State<Home> with WidgetsBindingObserver {
   Widget _homePage(BuildContext context, BreezUserModel user) {
     final texts = AppLocalizations.of(context);
     final themeData = Theme.of(context);
+    final List<String> anytimeLocales = ['en', 'de', 'pt'];
 
     switch (user.appMode) {
       case AppMode.podcasts:
         return Container(
           color: themeData.bottomAppBarColor,
           child: SafeArea(
-            child: AnytimeHomePage(
-              topBarVisible: false,
-              inlineSearch: true,
-              noSubscriptionsMessage: texts.home_podcast_no_subscriptions,
-              title: texts.home_podcast_title,
-            ),
+            child: !anytimeLocales.contains(Intl.getCurrentLocale())
+                ? Localizations.override(
+                    context: context,
+                    delegates: [
+                      const LocalisationsDelegate(),
+                      GlobalMaterialLocalizations.delegate,
+                      GlobalWidgetsLocalizations.delegate,
+                      GlobalCupertinoLocalizations.delegate,
+                    ],
+                    locale: const Locale('en', ''),
+                    child: AnytimeHomePage(
+                      topBarVisible: false,
+                      inlineSearch: true,
+                      noSubscriptionsMessage:
+                          texts.home_podcast_no_subscriptions,
+                      title: texts.home_podcast_title,
+                    ),
+                  )
+                : AnytimeHomePage(
+                    topBarVisible: false,
+                    inlineSearch: true,
+                    noSubscriptionsMessage: texts.home_podcast_no_subscriptions,
+                    title: texts.home_podcast_title,
+                  ),
           ),
         );
       case AppMode.pos:
