@@ -974,6 +974,8 @@
   "error_dialog_default_action_yes": "YES",
   "error_dialog_default_action_no": "NO",
   "error_dialog_default_action_close": "CLOSE",
+  "ln_url_success_action_title": "Purchase Information",
+  "ln_url_success_action_link_copied": "link was copied to your clipboard.",
   "locale": "en",
   "app_name": "Breez"
 }
