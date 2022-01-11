@@ -976,6 +976,9 @@
   "error_dialog_default_action_close": "FECHAR",
   "ln_url_success_action_title": "Informações da Compra",
   "ln_url_success_action_link_copied": "O link foi copiado para sua área de transferência.",
+  "avatar_picker_action_set_photo": "Definir Foto",
+  "avatar_picker_action_change_photo": "Alterar a Foto",
+  "avatar_picker_error_select_image": "Houve uma falha ao selecionar a imagem",
   "locale": "pt",
   "app_name": "Breez"
 }
