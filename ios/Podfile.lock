@@ -49,33 +49,33 @@ PODS:
   - file_picker (0.0.1):
     - DKImagePickerController/PhotoGallery
     - Flutter
-  - Firebase/CoreOnly (8.9.0):
-    - FirebaseCore (= 8.9.0)
-  - Firebase/Database (8.9.0):
+  - Firebase/CoreOnly (8.10.0):
+    - FirebaseCore (= 8.10.0)
+  - Firebase/Database (8.10.0):
     - Firebase/CoreOnly
-    - FirebaseDatabase (~> 8.9.0)
-  - Firebase/DynamicLinks (8.9.0):
+    - FirebaseDatabase (~> 8.10.0)
+  - Firebase/DynamicLinks (8.10.0):
     - Firebase/CoreOnly
-    - FirebaseDynamicLinks (~> 8.9.0)
-  - Firebase/Messaging (8.9.0):
+    - FirebaseDynamicLinks (~> 8.10.0)
+  - Firebase/Messaging (8.10.0):
     - Firebase/CoreOnly
-    - FirebaseMessaging (~> 8.9.0)
-  - firebase_core (1.10.6):
-    - Firebase/CoreOnly (= 8.9.0)
+    - FirebaseMessaging (~> 8.10.0)
+  - firebase_core (1.11.0):
+    - Firebase/CoreOnly (= 8.10.0)
     - Flutter
   - firebase_database (9.0.4):
-    - Firebase/Database (= 8.9.0)
+    - Firebase/Database (= 8.10.0)
     - firebase_core
     - Flutter
   - firebase_dynamic_links (4.0.3):
-    - Firebase/DynamicLinks (= 8.9.0)
+    - Firebase/DynamicLinks (= 8.10.0)
     - firebase_core
     - Flutter
   - firebase_messaging (11.2.4):
-    - Firebase/Messaging (= 8.9.0)
+    - Firebase/Messaging (= 8.10.0)
     - firebase_core
     - Flutter
-  - FirebaseCore (8.9.0):
+  - FirebaseCore (8.10.0):
     - FirebaseCoreDiagnostics (~> 8.0)
     - GoogleUtilities/Environment (~> 7.6)
     - GoogleUtilities/Logger (~> 7.6)
@@ -84,17 +84,17 @@ PODS:
     - GoogleUtilities/Environment (~> 7.6)
     - GoogleUtilities/Logger (~> 7.6)
     - nanopb (~> 2.30908.0)
-  - FirebaseDatabase (8.9.0):
+  - FirebaseDatabase (8.10.0):
     - FirebaseCore (~> 8.0)
     - leveldb-library (~> 1.22)
-  - FirebaseDynamicLinks (8.9.0):
+  - FirebaseDynamicLinks (8.10.0):
     - FirebaseCore (~> 8.0)
   - FirebaseInstallations (8.10.0):
     - FirebaseCore (~> 8.0)
     - GoogleUtilities/Environment (~> 7.6)
     - GoogleUtilities/UserDefaults (~> 7.6)
     - PromisesObjC (< 3.0, >= 1.2)
-  - FirebaseMessaging (8.9.0):
+  - FirebaseMessaging (8.10.0):
     - FirebaseCore (~> 8.0)
     - FirebaseInstallations (~> 8.0)
     - GoogleDataTransport (~> 9.1)
@@ -123,22 +123,22 @@ PODS:
     - AppAuth (~> 1.4)
     - GTMAppAuth (~> 1.0)
     - GTMSessionFetcher/Core (~> 1.1)
-  - GoogleUtilities/AppDelegateSwizzler (7.6.0):
+  - GoogleUtilities/AppDelegateSwizzler (7.7.0):
     - GoogleUtilities/Environment
     - GoogleUtilities/Logger
     - GoogleUtilities/Network
-  - GoogleUtilities/Environment (7.6.0):
+  - GoogleUtilities/Environment (7.7.0):
     - PromisesObjC (< 3.0, >= 1.2)
-  - GoogleUtilities/Logger (7.6.0):
+  - GoogleUtilities/Logger (7.7.0):
     - GoogleUtilities/Environment
-  - GoogleUtilities/Network (7.6.0):
+  - GoogleUtilities/Network (7.7.0):
     - GoogleUtilities/Logger
     - "GoogleUtilities/NSData+zlib"
     - GoogleUtilities/Reachability
-  - "GoogleUtilities/NSData+zlib (7.6.0)"
-  - GoogleUtilities/Reachability (7.6.0):
+  - "GoogleUtilities/NSData+zlib (7.7.0)"
+  - GoogleUtilities/Reachability (7.7.0):
     - GoogleUtilities/Logger
-  - GoogleUtilities/UserDefaults (7.6.0):
+  - GoogleUtilities/UserDefaults (7.7.0):
     - GoogleUtilities/Logger
   - GTMAppAuth (1.2.2):
     - AppAuth/Core (~> 1.4)
@@ -177,9 +177,9 @@ PODS:
   - qr_code_tools (0.0.7):
     - Flutter
   - ReachabilitySwift (5.0.0)
-  - SDWebImage (5.12.1):
-    - SDWebImage/Core (= 5.12.1)
-  - SDWebImage/Core (5.12.1)
+  - SDWebImage (5.12.2):
+    - SDWebImage/Core (= 5.12.2)
+  - SDWebImage/Core (5.12.2)
   - share_extend (0.0.1):
     - Flutter
   - share_plus (0.0.1):
@@ -349,17 +349,17 @@ SPEC CHECKSUMS:
   DKImagePickerController: b5eb7f7a388e4643264105d648d01f727110fc3d
   DKPhotoGallery: fdfad5125a9fdda9cc57df834d49df790dbb4179
   file_picker: 3e6c3790de664ccf9b882732d9db5eaf6b8d4eb1
-  Firebase: 13d8d96499e2635428d5bf0ec675df21f95d9a95
-  firebase_core: c263d7daf1dc92fcd9895e6abdc04872b0ee07ff
-  firebase_database: 7538bfd20724e08e710f43b6fd2059b88b30b5c9
-  firebase_dynamic_links: 32d0fe83b4c6252e6e62f8355e8d60672b1ddccf
-  firebase_messaging: dff5cd08781ee1de988565a83c977e435405cd7e
-  FirebaseCore: 599ee609343eaf4941bd188f85e3aa077ffe325b
+  Firebase: 44213362f1dcc52555b935dc925ed35ac55f1b20
+  firebase_core: 2ca2d6cc8a11693e701b37126afae4800be5dbac
+  firebase_database: 23e614ce1e351ccf4dbad1e7e036dfaa0dad485b
+  firebase_dynamic_links: 5bc7c47e5c33a59a5fdfd3fe3b84f20f2ecdb906
+  firebase_messaging: a3634385b421cc33f5d44f3d336bf783d3e46b64
+  FirebaseCore: 04186597c095da37d90ff9fd3e53bc61a1ff2440
   FirebaseCoreDiagnostics: 56fb7216d87e0e6ec2feddefa9d8a392fe8b2c18
-  FirebaseDatabase: 2236b804cf0cac165b4620669bedf7ee643a2bcc
-  FirebaseDynamicLinks: 50980cbe21d2bbe8374afcdccd94dc2db20dffca
+  FirebaseDatabase: 5f3e83b0a0d8759378fbd5d05661244d14dfbbb0
+  FirebaseDynamicLinks: bb6ac718f763ec43560f0e2bb6b655a798b277af
   FirebaseInstallations: 830327b45345ffc859eaa9c17bcd5ae893fd5425
-  FirebaseMessaging: 82c4a48638f53f7b184f3cc9f6cd2cbe533ab316
+  FirebaseMessaging: b0aeba17332ee1ee610662b4d1e02a86db82f08f
   Flutter: 50d75fe2f02b26cc09d224853bb45737f8b3214a
   flutter_downloader: 058b9c41564a90500f67f3e432e3524613a7fd83
   flutter_keyboard_visibility: 0339d06371254c3eb25eeb90ba8d17dca8f9c069
@@ -368,7 +368,7 @@ SPEC CHECKSUMS:
   FMDB: 2ce00b547f966261cd18927a3ddb07cb6f3db82a
   GoogleDataTransport: 629c20a4d363167143f30ea78320d5a7eb8bd940
   GoogleSignIn: c90b5bec45e780f54c6a8e1e3c182a86e3dda69d
-  GoogleUtilities: 684ee790a24f73ebb2d1d966e9711c203f2a4237
+  GoogleUtilities: e0913149f6b0625b553d70dae12b49fc62914fd1
   GTMAppAuth: ad5c2b70b9a8689e1a04033c9369c4915bfcbe89
   GTMSessionFetcher: 43748f93435c2aa068b1cbe39655aaf600652e91
   image_cropper: f1668dd8d2cad2d357955caad15a40547856edcb
@@ -387,7 +387,7 @@ SPEC CHECKSUMS:
   qr_code_scanner: bb67d64904c3b9658ada8c402e8b4d406d5d796e
   qr_code_tools: 5b5dd44ccdfa4b81f645c251e421f61003254b81
   ReachabilitySwift: 985039c6f7b23a1da463388634119492ff86c825
-  SDWebImage: 4dc3e42d9ec0c1028b960a33ac6b637bb432207b
+  SDWebImage: 240e5c12b592fb1268c1d03b8c90d90e8c2ffe82
   share_extend: b6748dc53695587891126a89533b862b92548c7b
   share_plus: 056a1e8ac890df3e33cb503afffaf1e9b4fbae68
   shared_preferences_ios: aef470a42dc4675a1cdd50e3158b42e3d1232b32
