@@ -976,6 +976,9 @@
   "error_dialog_default_action_close": "CERRAR",
   "ln_url_success_action_title": "Información de Compra",
   "ln_url_success_action_link_copied": "El enlace ha sido copiado a su portapapeles.",
+  "avatar_picker_action_set_photo": "Establecer foto",
+  "avatar_picker_action_change_photo": "Hubo un error al seleccionar la imagen",
+  "avatar_picker_error_select_image": "No se pudo seleccionar la imagen.",
   "locale": "es",
   "app_name": "Breez"
 }

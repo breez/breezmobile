@@ -976,6 +976,9 @@
   "error_dialog_default_action_close": "CLOSE",
   "ln_url_success_action_title": "Purchase Information",
   "ln_url_success_action_link_copied": "link was copied to your clipboard.",
+  "avatar_picker_action_set_photo": "Set Photo",
+  "avatar_picker_action_change_photo": "Change Photo",
+  "avatar_picker_error_select_image": "Failed to Select Image",
   "locale": "en",
   "app_name": "Breez"
 }
