@@ -974,6 +974,8 @@
   "error_dialog_default_action_yes": "SIM",
   "error_dialog_default_action_no": "NÃO",
   "error_dialog_default_action_close": "FECHAR",
+  "ln_url_success_action_title": "Informações da Compra",
+  "ln_url_success_action_link_copied": "O link foi copiado para sua área de transferência.",
   "locale": "pt",
   "app_name": "Breez"
 }
