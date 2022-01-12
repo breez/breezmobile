@@ -1052,6 +1052,12 @@
   "restore_dialog_action_cancel": "CANCELAR",
   "restore_dialog_action_ok": "OK",
   "restore_dialog_download_backup_error": "Erro no Download",
+  "beta_warning_title": "Aviso de Beta",
+  "beta_warning_message": "Como a Breez ainda está na versão beta, há uma chance de seu dinheiro ser perdido. Use este aplicativo apenas se estiver disposto a correr esse risco.",
+  "beta_warning_understand": "Compreendo",
+  "beta_warning_understand_confirmation": "Por favor, confirme que você entendeu antes de continuar.",
+  "beta_warning_action_exit": "SAIR",
+  "beta_warning_action_continue": "PROSSEGUIR",
   "locale": "pt",
   "app_name": "Breez"
 }
