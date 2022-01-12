@@ -216,6 +216,11 @@
   "backup_dialog_option_ok_default": "VARMISTA NYT",
   "backup_dialog_icloud_error_title": "Kirjaudu iCloud-palveluun",
   "backup_dialog_icloud_error_message": "Kirjaudu sisään iCloud-tiliisi seuraavasti. Mene aloitus näkymään, avaa asetukset (Settings), kosketa iCloud ja anna Apple ID -tunnuksesi. Muuta iCloud Drive asetus ON-asentoon. Mikäli sinulla ei ole iCloud-tiliä, valitse näkymässä Luo uusi Apple ID (Create a new Apple ID)",
+  "backup_provider_dialog_title": "Backup Data Storage",
+  "backup_provider_dialog_message_restore": "Restore backup data from:",
+  "backup_provider_dialog_message_store": "Store backup data in:",
+  "backup_provider_dialog_action_cancel": "CANCEL",
+  "backup_provider_dialog_action_ok": "OK",
   "tutorial_gotcha": "Kas niin!",
   "bottom_action_bar_send": "LÄHETÄ",
   "bottom_action_bar_receive": "VASTAANOTA",
@@ -979,6 +984,74 @@
   "avatar_picker_action_set_photo": "Set Photo",
   "avatar_picker_action_change_photo": "Change Photo",
   "avatar_picker_error_select_image": "Failed to Select Image",
+  "initial_walk_through_welcome_message": "The simplest, fastest & safest way\nto spend your bitcoins",
+  "initial_walk_through_lets_breeze": "LET'S BREEZ!",
+  "initial_walk_through_restore_from_backup": "Restore from backup",
+  "initial_walk_through_restoring": "Restoring data…",
+  "initial_walk_through_sign_in_icloud_title": "Sign in to iCloud",
+  "initial_walk_through_sign_in_icloud_message": "Sign in to your iCloud account. On the Home screen, launch Settings, tap iCloud, and enter your Apple ID. Turn iCloud Drive on. If you don't have an iCloud account, tap Create a new Apple ID.",
+  "initial_walk_through_error_backup_location": "Could not locate backup for this account",
+  "initial_walk_through_error_internal": "Internal Error",
+  "restore_pin_title": "Enter backup PIN",
+  "enter_backup_phrase": "Enter your backup phrase {number}/{total}",
+  "@enter_backup_phrase": {
+    "placeholders": {
+      "number": {
+        "type": "String",
+        "example": "12"
+      },
+      "total": {
+        "type": "String",
+        "example": "24"
+      }
+    }
+  },
+  "enter_backup_phrase_error": "Failed to restore from backup. Please make sure backup phrase was correctly entered and try again.",
+  "enter_backup_phrase_missing_word": "Missing word",
+  "enter_backup_phrase_invalid_word": "Invalid word",
+  "enter_backup_phrase_action_restore": "RESTORE",
+  "enter_backup_phrase_action_next": "NEXT",
+  "restore_dialog_title": "Restore",
+  "restore_dialog_multiple_accounts": "You have multiple Breez backups on {name}, please choose which one to restore:",
+  "@restore_dialog_multiple_accounts": {
+    "placeholders": {
+      "name": {
+        "type": "String",
+        "example": "A name"
+      }
+    }
+  },
+  "restore_dialog_modified_not_encrypted": "{date}",
+  "@restore_dialog_modified_not_encrypted": {
+    "placeholders": {
+      "date": {
+        "type": "String",
+        "example": "03/01/2022 14:57"
+      }
+    }
+  },
+  "restore_dialog_modified_encrypted": "{date} - (Requires key)",
+  "@restore_dialog_modified_encrypted": {
+    "placeholders": {
+      "date": {
+        "type": "String",
+        "example": "03/01/2022 14:57"
+      }
+    }
+  },
+  "restore_dialog_download_backup": "Download Backup",
+  "restore_dialog_download_backup_for_node": "Do you want to download the backup data for node: {nodeId}?",
+  "@restore_dialog_download_backup_for_node": {
+    "placeholders": {
+      "nodeId": {
+        "type": "String",
+        "example": "A node id"
+      }
+    }
+  },
+  "restore_dialog_action_cancel": "CANCEL",
+  "restore_dialog_action_ok": "OK",
+  "restore_dialog_download_backup_error": "Download Error",
   "locale": "fi",
   "app_name": "Breez"
 }

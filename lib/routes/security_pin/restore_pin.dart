@@ -1,31 +1,28 @@
 import 'package:breez/widgets/back_button.dart' as backBtn;
 import 'package:breez/widgets/pin_code_widget.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
-const PIN_CODE_LENGTH = 6;
-
-class RestorePinCode extends StatefulWidget {
+class RestorePinCode extends StatelessWidget {
   final Function(String phrase) onPinCodeSubmitted;
 
-  RestorePinCode({Key key, @required this.onPinCodeSubmitted})
-      : super(key: key);
-
-  @override
-  _RestorePinCodeState createState() => _RestorePinCodeState();
-}
-
-class _RestorePinCodeState extends State<RestorePinCode> {
-  String _label = "Enter backup PIN";
+  const RestorePinCode({
+    Key key,
+    @required this.onPinCodeSubmitted,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+    final texts = AppLocalizations.of(context);
+    final themeData = Theme.of(context);
+
     return WillPopScope(
       onWillPop: () => Future.value(false),
       child: Scaffold(
         appBar: AppBar(
-          iconTheme: Theme.of(context).appBarTheme.iconTheme,
-          textTheme: Theme.of(context).appBarTheme.textTheme,
-          backgroundColor: Theme.of(context).canvasColor,
+          iconTheme: themeData.appBarTheme.iconTheme,
+          textTheme: themeData.appBarTheme.textTheme,
+          backgroundColor: themeData.canvasColor,
           leading: backBtn.BackButton(
             onPressed: () {
               Navigator.pop(context, null);
@@ -34,7 +31,7 @@ class _RestorePinCodeState extends State<RestorePinCode> {
           elevation: 0.0,
         ),
         body: PinCodeWidget(
-          _label,
+          texts.restore_pin_title,
           (enteredPinCode) => _onPinEntered(enteredPinCode),
         ),
       ),
@@ -42,7 +39,7 @@ class _RestorePinCodeState extends State<RestorePinCode> {
   }
 
   Future _onPinEntered(String enteredPinCode) {
-    widget.onPinCodeSubmitted(enteredPinCode);
+    onPinCodeSubmitted(enteredPinCode);
     return Future.value(null);
   }
 }
