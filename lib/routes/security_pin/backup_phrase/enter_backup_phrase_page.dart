@@ -7,6 +7,7 @@ import 'package:breez/theme_data.dart' as theme;
 import 'package:breez/widgets/back_button.dart' as backBtn;
 import 'package:breez/widgets/single_button_bottom_bar.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_typeahead/flutter_typeahead.dart';
 
 import 'wordlist.dart';
@@ -15,9 +16,11 @@ class EnterBackupPhrasePage extends StatefulWidget {
   final bool is24Word;
   final Function(String phrase) onPhraseSubmitted;
 
-  const EnterBackupPhrasePage(
-      {Key key, this.is24Word = false, @required this.onPhraseSubmitted})
-      : super(key: key);
+  const EnterBackupPhrasePage({
+    Key key,
+    this.is24Word = false,
+    @required this.onPhraseSubmitted,
+  }) : super(key: key);
 
   @override
   EnterBackupPhrasePageState createState() => EnterBackupPhrasePageState();
@@ -39,7 +42,9 @@ class EnterBackupPhrasePageState extends State<EnterBackupPhrasePage> {
     if (widget.is24Word) {
       focusNodes = List<FocusNode>.generate(24, (_) => FocusNode());
       textEditingControllers = List<TextEditingController>.generate(
-          24, (_) => TextEditingController());
+        24,
+        (_) => TextEditingController(),
+      );
       _lastPage = 4;
     }
     _currentPage = 1;
@@ -50,58 +55,61 @@ class EnterBackupPhrasePageState extends State<EnterBackupPhrasePage> {
 
   @override
   Widget build(BuildContext context) {
-    UserProfileBloc userProfileBloc =
-        AppBlocsProvider.of<UserProfileBloc>(context);
+    final themeData = Theme.of(context);
+    final texts = AppLocalizations.of(context);
+    final query = MediaQuery.of(context);
+    final userProfileBloc = AppBlocsProvider.of<UserProfileBloc>(context);
 
     return Scaffold(
       appBar: AppBar(
-          iconTheme: Theme.of(context).appBarTheme.iconTheme,
-          textTheme: Theme.of(context).appBarTheme.textTheme,
-          backgroundColor: Theme.of(context).canvasColor,
-          automaticallyImplyLeading: false,
-          leading: backBtn.BackButton(
-            onPressed: () {
-              if (_currentPage == 1) {
-                Navigator.pop(context);
-              } else if (_currentPage > 1) {
-                _formKey.currentState.reset();
-                FocusScope.of(context).requestFocus(FocusNode());
-                setState(() {
-                  _currentPage--;
-                });
-              }
-            },
+        iconTheme: themeData.appBarTheme.iconTheme,
+        textTheme: themeData.appBarTheme.textTheme,
+        backgroundColor: themeData.canvasColor,
+        automaticallyImplyLeading: false,
+        leading: backBtn.BackButton(
+          onPressed: () {
+            if (_currentPage == 1) {
+              Navigator.pop(context);
+            } else if (_currentPage > 1) {
+              _formKey.currentState.reset();
+              FocusScope.of(context).requestFocus(FocusNode());
+              setState(() {
+                _currentPage--;
+              });
+            }
+          },
+        ),
+        title: Text(
+          texts.enter_backup_phrase(
+            _currentPage.toString(),
+            _lastPage.toString(),
           ),
-          title: Text(
-            "Enter your backup phrase ($_currentPage/$_lastPage)",
-            style: Theme.of(context).appBarTheme.textTheme.headline6,
-          ),
-          elevation: 0.0),
+          style: themeData.appBarTheme.textTheme.headline6,
+        ),
+        elevation: 0.0,
+      ),
       body: SingleChildScrollView(
         child: Container(
-          height: MediaQuery.of(context).size.height -
-              kToolbarHeight -
-              MediaQuery.of(context).padding.top,
+          height: query.size.height - kToolbarHeight - query.padding.top,
           child: Column(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: _buildRestoreFormContent(userProfileBloc),
+            children: _buildRestoreFormContent(context, userProfileBloc),
           ),
         ),
       ),
     );
   }
 
-  _buildForm() {
+  Form _buildForm() {
     return Form(
       key: _formKey,
       child: Padding(
-        padding:
-            EdgeInsets.only(left: 16.0, right: 16.0, bottom: 8.0, top: 24.0),
+        padding: EdgeInsets.fromLTRB(16.0, 24.0, 16.0, 8.0),
         child: Column(
           mainAxisSize: MainAxisSize.max,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: List.generate(6, (index) {
-            var itemIndex = index + (6 * (_currentPage - 1));
+            final itemIndex = index + (6 * (_currentPage - 1));
             return _typeAheadFormField(itemIndex);
           }),
         ),
@@ -109,48 +117,69 @@ class EnterBackupPhrasePageState extends State<EnterBackupPhrasePage> {
     );
   }
 
-  List<Widget> _buildRestoreFormContent(UserProfileBloc userProfileBloc) {
+  List<Widget> _buildRestoreFormContent(
+    BuildContext context,
+    UserProfileBloc userProfileBloc,
+  ) {
+    final texts = AppLocalizations.of(context);
     List<Widget> restoreFormContent = [];
     restoreFormContent..add(_buildForm());
     if (_hasError) {
       restoreFormContent
         ..add(_buildErrorMessage(
-            "Failed to restore from backup. Please make sure backup phrase was correctly entered and try again."));
+          context,
+          texts.enter_backup_phrase_error,
+        ));
     }
-    restoreFormContent..add(_buildBottomBtn(userProfileBloc));
+    restoreFormContent..add(_buildBottomBtn(context, userProfileBloc));
     return restoreFormContent;
   }
 
-  _buildErrorMessage(String errorMessage) {
+  Widget _buildErrorMessage(BuildContext context, String errorMessage) {
+    final themeData = Theme.of(context);
     return Padding(
-        padding: EdgeInsets.only(left: 16, right: 16),
-        child: Text(errorMessage,
-            style:
-                Theme.of(context).textTheme.headline4.copyWith(fontSize: 12)));
+      padding: EdgeInsets.only(left: 16, right: 16),
+      child: Text(
+        errorMessage,
+        style: themeData.textTheme.headline4.copyWith(
+          fontSize: 12,
+        ),
+      ),
+    );
   }
 
   TypeAheadFormField<String> _typeAheadFormField(int itemIndex) {
     return TypeAheadFormField(
       textFieldConfiguration: _textFieldConfiguration(itemIndex),
       autovalidateMode: _autoValidateMode,
-      validator: _onValidate,
+      validator: (text) => _onValidate(context, text),
       suggestionsCallback: _getSuggestions,
       autoFlipDirection: true,
       suggestionsBoxDecoration: SuggestionsBoxDecoration(
         color: Colors.white,
-        constraints:
-            BoxConstraints(minWidth: 180, maxWidth: 180, maxHeight: 180),
+        constraints: BoxConstraints(
+          minWidth: 180,
+          maxWidth: 180,
+          maxHeight: 180,
+        ),
       ),
       itemBuilder: (context, suggestion) {
         return Container(
           decoration: BoxDecoration(
-              border: Border(
-                  bottom: BorderSide(
-                      width: 0.5, color: theme.BreezColors.blue[500]))),
+            border: Border(
+              bottom: BorderSide(
+                width: 0.5,
+                color: theme.BreezColors.blue[500],
+              ),
+            ),
+          ),
           child: ListTile(
-              title: Text(suggestion,
-                  overflow: TextOverflow.ellipsis,
-                  style: theme.autoCompleteStyle)),
+            title: Text(
+              suggestion,
+              overflow: TextOverflow.ellipsis,
+              style: theme.autoCompleteStyle,
+            ),
+          ),
         );
       },
       onSuggestionSelected: (suggestion) {
@@ -166,12 +195,13 @@ class EnterBackupPhrasePageState extends State<EnterBackupPhrasePage> {
     return suggestionList.length > 0 ? suggestionList : null;
   }
 
-  String _onValidate(text) {
+  String _onValidate(BuildContext context, String text) {
+    final texts = AppLocalizations.of(context);
     if (text.length == 0) {
-      return "Missing word";
+      return texts.enter_backup_phrase_missing_word;
     }
     if (!WORDLIST.contains(text.toLowerCase().trim())) {
-      return "Invalid word";
+      return texts.enter_backup_phrase_invalid_word;
     }
     return null;
   }
@@ -200,9 +230,15 @@ class EnterBackupPhrasePageState extends State<EnterBackupPhrasePage> {
     }
   }
 
-  _buildBottomBtn(UserProfileBloc userProfileBloc) {
+  Widget _buildBottomBtn(
+    BuildContext context,
+    UserProfileBloc userProfileBloc,
+  ) {
+    final texts = AppLocalizations.of(context);
     return SingleButtonBottomBar(
-      text: _currentPage + 1 == (_lastPage + 1) ? "RESTORE" : "NEXT",
+      text: _currentPage + 1 == (_lastPage + 1)
+          ? texts.enter_backup_phrase_action_restore
+          : texts.enter_backup_phrase_action_next,
       onPressed: () {
         setState(() {
           _hasError = false;
@@ -223,7 +259,7 @@ class EnterBackupPhrasePageState extends State<EnterBackupPhrasePage> {
   }
 
   Future _validateBackupPhrase(UserProfileBloc userProfileBloc) async {
-    var mnemonic = textEditingControllers
+    final mnemonic = textEditingControllers
         .map((controller) => controller.text.toLowerCase().trim())
         .toList()
         .join(" ");

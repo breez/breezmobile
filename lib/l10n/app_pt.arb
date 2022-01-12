@@ -216,6 +216,11 @@
   "backup_dialog_option_ok_default": "FAZER BACKUP AGORA",
   "backup_dialog_icloud_error_title": "Entrar no iCloud",
   "backup_dialog_icloud_error_message": "Entre em sua conta do iCloud. Na tela inicial, abra Ajustes, toque em iCloud e digite seu ID Apple. Ligue o iCloud Drive. Se você não tiver uma conta iCloud, toque em Criar um novo ID Apple.",
+  "backup_provider_dialog_title": "Armazenamento dos dados de backup",
+  "backup_provider_dialog_message_restore": "Restaurar dados de backup do:",
+  "backup_provider_dialog_message_store": "Armazenar dados de backup no:",
+  "backup_provider_dialog_action_cancel": "CANCELAR",
+  "backup_provider_dialog_action_ok": "OK",
   "tutorial_gotcha": "Entendi!",
   "bottom_action_bar_send": "ENVIAR",
   "bottom_action_bar_receive": "RECEBER",
@@ -979,6 +984,74 @@
   "avatar_picker_action_set_photo": "Definir Foto",
   "avatar_picker_action_change_photo": "Alterar a Foto",
   "avatar_picker_error_select_image": "Houve uma falha ao selecionar a imagem",
+  "initial_walk_through_welcome_message": "O jeito mais rápido, seguro e fácil\nde usar os seus bitcoins",
+  "initial_walk_through_lets_breeze": "VAMOS BREEZ!",
+  "initial_walk_through_restore_from_backup": "Restaurar do backup",
+  "initial_walk_through_restoring": "Restaurando dados…",
+  "initial_walk_through_sign_in_icloud_title": "Entrar no iCloud",
+  "initial_walk_through_sign_in_icloud_message": "Entre em sua conta do iCloud. Na tela inicial, abra Ajustes, toque em iCloud e digite seu ID Apple. Ligue o iCloud Drive. Se você não tiver uma conta iCloud, toque em Criar um novo ID Apple.",
+  "initial_walk_through_error_backup_location": "Não foi possível localizar nenhum backup para esta conta",
+  "initial_walk_through_error_internal": "Erro Interno",
+  "restore_pin_title": "Insira o PIN do backup",
+  "enter_backup_phrase": "Insira a frase de backup {number}/{total}",
+  "@enter_backup_phrase": {
+    "placeholders": {
+      "number": {
+        "type": "String",
+        "example": "12"
+      },
+      "total": {
+        "type": "String",
+        "example": "24"
+      }
+    }
+  },
+  "enter_backup_phrase_error": "Falha ao restaurar o backup. Verifique se a frase de backup foi inserida corretamente e tente novamente.",
+  "enter_backup_phrase_missing_word": "Faltam palavras",
+  "enter_backup_phrase_invalid_word": "Palavras inválidas",
+  "enter_backup_phrase_action_restore": "RESTAURAR",
+  "enter_backup_phrase_action_next": "PRÓXIMO",
+  "restore_dialog_title": "Restaurar",
+  "restore_dialog_multiple_accounts": "Você possui multiplo backups da Breez na conta {name}, por favor, escolha qual você deseja restaurar:",
+  "@restore_dialog_multiple_accounts": {
+    "placeholders": {
+      "name": {
+        "type": "String",
+        "example": "A name"
+      }
+    }
+  },
+  "restore_dialog_modified_not_encrypted": "{date}",
+  "@restore_dialog_modified_not_encrypted": {
+    "placeholders": {
+      "date": {
+        "type": "String",
+        "example": "03/01/2022 14:57"
+      }
+    }
+  },
+  "restore_dialog_modified_encrypted": "{date} - (Requer a chave)",
+  "@restore_dialog_modified_encrypted": {
+    "placeholders": {
+      "date": {
+        "type": "String",
+        "example": "03/01/2022 14:57"
+      }
+    }
+  },
+  "restore_dialog_download_backup": "Baixar o Backup",
+  "restore_dialog_download_backup_for_node": "Deseja baixar os dados de backup para o nó: {nodeId}?",
+  "@restore_dialog_download_backup_for_node": {
+    "placeholders": {
+      "nodeId": {
+        "type": "String",
+        "example": "A node id"
+      }
+    }
+  },
+  "restore_dialog_action_cancel": "CANCELAR",
+  "restore_dialog_action_ok": "OK",
+  "restore_dialog_download_backup_error": "Erro no Download",
   "locale": "pt",
   "app_name": "Breez"
 }
