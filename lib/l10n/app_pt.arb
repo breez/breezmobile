@@ -952,7 +952,7 @@
   "get_refund_action_continue": "CONTINUAR",
   "get_refund_transaction": "Transação de Reembolso",
   "get_refund_failed": "falhou",
-  "send_on_chain_broadcast": "TRANSMITIDA",
+  "send_on_chain_broadcast": "TRANSMITIR",
   "send_on_chain_btc_address": "Endereço BTC",
   "send_on_chain_scan_barcode": "Ler código de barras",
   "send_on_chain_invalid_btc_address": "Por favor insira um endereço BTC válido",
