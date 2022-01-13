@@ -14,7 +14,7 @@ class FiMessages implements LookupMessages {
   @override
   String suffixFromNow() => 'kuluttua';
   @override
-  String lessThanOneMinute(int seconds) => 'hetki/-en';
+  String lessThanOneMinute(int seconds) => 'hetki';
   @override
   String aboutAMinute(int minutes) => 'noin minuutti';
   @override
