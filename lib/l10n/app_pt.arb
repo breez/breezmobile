@@ -124,7 +124,7 @@
   "invoice_payment_success": "O pagamento foi recebido com sucesso!",
   "invoice_qr_code_not_detected": "O código QR não foi detectado.",
   "invoice_receive_fail": "O recebimento falhou",
-  "invoice_receive_fail_message": "Causa: {reason}",
+  "invoice_receive_fail_message": "Motivo: {reason}",
   "@invoice_receive_fail_message": {
     "placeholders": {
       "reason": {
