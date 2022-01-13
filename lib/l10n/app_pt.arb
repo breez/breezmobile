@@ -27,7 +27,7 @@
   "invoice_btc_address_network_error": "Houve uma falha ao recuperar o endereço do servidor da Breez\nPor favor, verifique sua conexão com a internet e tente novamente.",
   "invoice_btc_address_action_retry": "TENTAR NOVAMENTE",
   "invoice_btc_address_action_close": "FECHAR",
-  "invoice_btc_address_warning_with_min_fee_account_connected": "Envie mais de {minSats} e no máximo {maxSats} para este endereço. Uma taxa de configuração de {setUpFee}% com um mínimo de {minFee} será aplicado caso o envio seja maior do que {liquidity}.",
+  "invoice_btc_address_warning_with_min_fee_account_connected": "Envie mais de {minSats} e no máximo {maxSats} para este endereço. Uma taxa de configuração de {setUpFee}% com um mínimo de {minFee} será aplicada caso o envio seja maior do que {liquidity}.",
   "@invoice_btc_address_warning_with_min_fee_account_connected": {
     "placeholders": {
       "minSats": {
@@ -52,7 +52,7 @@
       }
     }
   },
-  "invoice_btc_address_warning_without_min_fee_account_connected": "Envie mais de {minSats} e no máximo {maxSats} para este endereço. Uma taxa de configuração de {setUpFee}% será aplicado caso o envio seja maior do que {liquidity}.",
+  "invoice_btc_address_warning_without_min_fee_account_connected": "Envie mais de {minSats} e no máximo {maxSats} para este endereço. Uma taxa de configuração de {setUpFee}% será aplicada caso o envio seja maior do que {liquidity}.",
   "@invoice_btc_address_warning_without_min_fee_account_connected": {
     "placeholders": {
       "minSats": {
@@ -73,7 +73,7 @@
       }
     }
   },
-  "invoice_btc_address_warning_with_min_fee_account_not_connected": "Envie mais de {minSats} e no máximo {maxSats} para este endereço. Uma taxa de configuração de {setUpFee}% com um mínimo de {minFee} será aplicado no montante recebido.",
+  "invoice_btc_address_warning_with_min_fee_account_not_connected": "Envie mais de {minSats} e no máximo {maxSats} para este endereço. Uma taxa de configuração de {setUpFee}% com um mínimo de {minFee} será aplicada no montante recebido.",
   "@invoice_btc_address_warning_with_min_fee_account_not_connected": {
     "placeholders": {
       "minSats": {
@@ -94,7 +94,7 @@
       }
     }
   },
-  "invoice_btc_address_warning_without_min_fee_account_not_connected": "Envie mais de {minSats} e no máximo {maxSats} para este endereço. Uma taxa de configuração de {setUpFee}% será aplicado no montante recebido.",
+  "invoice_btc_address_warning_without_min_fee_account_not_connected": "Envie mais de {minSats} e no máximo {maxSats} para este endereço. Uma taxa de configuração de {setUpFee}% será aplicada no montante recebido.",
   "@invoice_btc_address_warning_without_min_fee_account_not_connected": {
     "placeholders": {
       "minSats": {
@@ -124,7 +124,7 @@
   "invoice_payment_success": "O pagamento foi recebido com sucesso!",
   "invoice_qr_code_not_detected": "O código QR não foi detectado.",
   "invoice_receive_fail": "O recebimento falhou",
-  "invoice_receive_fail_message": "Causa: {reason}",
+  "invoice_receive_fail_message": "Motivo: {reason}",
   "@invoice_receive_fail_message": {
     "placeholders": {
       "reason": {
@@ -231,7 +231,7 @@
   "bottom_action_bar_receive_invoice": "Receber via Fatura",
   "bottom_action_bar_receive_btc_address": "Receber via endereço BTC",
   "bottom_action_bar_buy_bitcoin": "Comprar Bitcoin",
-  "bottom_action_bar_warning_balance_title": "Breez requer que você mantenha ao menos {balance} de saldo.",
+  "bottom_action_bar_warning_balance_title": "Breez requer que você mantenha ao menos {balance} no saldo.",
   "@bottom_action_bar_warning_balance_title": {
     "placeholders": {
       "balance": {
