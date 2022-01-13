@@ -7,45 +7,45 @@ class FinnishDurationLocale implements DurationLocale {
   @override
   String year(int amount, [bool abbreviated = true]) {
     if (abbreviated) {
-      return 'y';
+      return 'v';
     } else {
-      return 'year' + (amount.abs() != 1 ? 's' : '');
+      return 'vuosi' + (amount.abs() != 1 ? 'a' : '');
     }
   }
 
   @override
   String month(int amount, [bool abbreviated = true]) {
     if (abbreviated) {
-      return 'mon';
+      return 'kk';
     } else {
-      return 'month' + (amount.abs() != 1 ? 's' : '');
+      return 'kuukausi' + (amount.abs() != 1 ? 'a' : '');
     }
   }
 
   @override
   String week(int amount, [bool abbreviated = true]) {
     if (abbreviated) {
-      return 'w';
+      return 'vko';
     } else {
-      return 'week' + (amount.abs() != 1 ? 's' : '');
+      return 'viikko' + (amount.abs() != 1 ? 'a' : '');
     }
   }
 
   @override
   String day(int amount, [bool abbreviated = true]) {
     if (abbreviated) {
-      return 'd';
+      return 'pvä';
     } else {
-      return 'day' + (amount.abs() != 1 ? 's' : '');
+      return 'päivä' + (amount.abs() != 1 ? 'ä' : '');
     }
   }
 
   @override
   String hour(int amount, [bool abbreviated = true]) {
     if (abbreviated) {
-      return 'h';
+      return 't';
     } else {
-      return 'hour' + (amount.abs() != 1 ? 's' : '');
+      return 'tunti' + (amount.abs() != 1 ? 'a' : '');
     }
   }
 
@@ -54,7 +54,7 @@ class FinnishDurationLocale implements DurationLocale {
     if (abbreviated) {
       return 'min';
     } else {
-      return 'minute' + (amount.abs() != 1 ? 's' : '');
+      return 'minuutti' + (amount.abs() != 1 ? 'a' : '');
     }
   }
 
@@ -63,7 +63,7 @@ class FinnishDurationLocale implements DurationLocale {
     if (abbreviated) {
       return 's';
     } else {
-      return 'second' + (amount.abs() != 1 ? 's' : '');
+      return 'sekunti' + (amount.abs() != 1 ? 'a' : '');
     }
   }
 
@@ -72,7 +72,7 @@ class FinnishDurationLocale implements DurationLocale {
     if (abbreviated) {
       return 'ms';
     } else {
-      return 'millisecond' + (amount.abs() != 1 ? 's' : '');
+      return 'millisekunti' + (amount.abs() != 1 ? 'a' : '');
     }
   }
 
@@ -81,7 +81,7 @@ class FinnishDurationLocale implements DurationLocale {
     if (abbreviated) {
       return 'us';
     } else {
-      return 'microsecond' + (amount.abs() != 1 ? 's' : '');
+      return 'mikrosekunti' + (amount.abs() != 1 ? 'a' : '');
     }
   }
 }
