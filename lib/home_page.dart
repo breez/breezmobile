@@ -619,30 +619,12 @@ class HomeState extends State<Home> with WidgetsBindingObserver {
         return Container(
           color: themeData.bottomAppBarColor,
           child: SafeArea(
-            child: !anytimeLocales.contains(Intl.getCurrentLocale())
-                ? Localizations.override(
-                    context: context,
-                    delegates: [
-                      const LocalisationsDelegate(),
-                      GlobalMaterialLocalizations.delegate,
-                      GlobalWidgetsLocalizations.delegate,
-                      GlobalCupertinoLocalizations.delegate,
-                    ],
-                    locale: const Locale('en', ''),
-                    child: AnytimeHomePage(
-                      topBarVisible: false,
-                      inlineSearch: true,
-                      noSubscriptionsMessage:
-                          texts.home_podcast_no_subscriptions,
-                      title: texts.home_podcast_title,
-                    ),
-                  )
-                : AnytimeHomePage(
-                    topBarVisible: false,
-                    inlineSearch: true,
-                    noSubscriptionsMessage: texts.home_podcast_no_subscriptions,
-                    title: texts.home_podcast_title,
-                  ),
+            child: AnytimeHomePage(
+              topBarVisible: false,
+              inlineSearch: true,
+              noSubscriptionsMessage: texts.home_podcast_no_subscriptions,
+              title: texts.home_podcast_title,
+            ),
           ),
         );
       case AppMode.pos:
