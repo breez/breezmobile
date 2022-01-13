@@ -231,7 +231,7 @@
   "bottom_action_bar_receive_invoice": "Receber via Fatura",
   "bottom_action_bar_receive_btc_address": "Receber via endereço BTC",
   "bottom_action_bar_buy_bitcoin": "Comprar Bitcoin",
-  "bottom_action_bar_warning_balance_title": "A Breez exige um saldo mínimo de {balance}.",
+  "bottom_action_bar_warning_balance_title": "A Breez exige manter um saldo mínimo de {balance}.",
   "@bottom_action_bar_warning_balance_title": {
     "placeholders": {
       "balance": {
