@@ -1,16 +1,13 @@
-import 'dart:convert';
-
 import 'package:breez/bloc/account/account_bloc.dart';
-import 'package:breez/bloc/lnurl/lnurl_actions.dart';
 import 'package:breez/bloc/lnurl/lnurl_bloc.dart';
-import 'package:breez/bloc/lnurl/lnurl_model.dart';
 import 'package:breez/bloc/marketplace/vendor_model.dart';
 import 'package:breez/routes/marketplace/vendor_webview.dart';
 import 'package:breez/widgets/error_dialog.dart';
 import 'package:breez/widgets/loader.dart';
 import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+
+import 'lnurl_auth.dart';
 
 class LNURLWebViewPage extends StatefulWidget {
   final AccountBloc accountBloc;
@@ -41,8 +38,12 @@ class LNURLWebViewPageState extends State<LNURLWebViewPage> {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      _handleLNUrlAuth().catchError(
-            (err) => promptError(
+      handleLNUrlAuth(widget.vendorModel, widget.lnurlBloc, widget.responseID).then((jwt) {
+        if (this.mounted) {
+          setState(() => jwtToken = jwt);
+        }
+      }).catchError(
+        (err) => promptError(
           context,
           AppLocalizations.of(context).lnurl_webview_error_title,
           Text(err.toString()),
@@ -50,34 +51,6 @@ class LNURLWebViewPageState extends State<LNURLWebViewPage> {
         ),
       );
     });
-  }
-
-  Future _handleLNUrlAuth() async {
-    final texts = AppLocalizations.of(context);
-    Uri uri = widget.endpointURI;
-    var response = widget.vendorModel.id == "lnmarkets"
-        ? await http.post(uri)
-        : await http.get(uri);
-    if (response.statusCode != 200 && response.statusCode != 201) {
-      throw Exception(
-        texts.lnurl_webview_error_message(widget.vendorModel.displayName),
-      );
-    }
-    Map<String, dynamic> decoded = json.decode(response.body);
-    String lnUrl = decoded[widget.responseID] as String;
-    Fetch fetchAction = Fetch(lnUrl);
-    widget.lnurlBloc.actionsSink.add(fetchAction);
-    var fetchResponse = await fetchAction.future;
-    if (fetchResponse.runtimeType != AuthFetchResponse) {
-      throw texts.lnurl_webview_error_invalid_url;
-    }
-    AuthFetchResponse authResponse = fetchResponse as AuthFetchResponse;
-    var action = Login(authResponse, jwt: true);
-    widget.lnurlBloc.actionsSink.add(action);
-    String jwt = await action.future;
-    if (this.mounted) {
-      setState(() => jwtToken = jwt);
-    }
   }
 
   @override
