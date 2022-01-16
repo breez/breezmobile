@@ -206,9 +206,10 @@ class PodcastPaymentsBloc with AsyncActionsHandler {
     double totalSplits = recipients.map((r) => r.split).reduce((agg, next) => agg + next);
     final breezShare = totalSplits / 20;
     totalSplits += breezShare;
-    final withBreez = List<ValueDestination>.from(
-        [ValueDestination(address: breezReceiverNode, name: "Breez", type: "keysend", split: breezShare)])
-      ..addAll(recipients);
+    // AppStore: Remove Breez share fom podcast payments
+    //final withBreez = List<ValueDestination>.from(
+    //    [ValueDestination(address: breezReceiverNode, name: "Breez", type: "keysend", split: breezShare)])
+    //  ..addAll(recipients);
 
     // get current podcast listening position
     PositionState position;
@@ -230,7 +231,7 @@ class PodcastPaymentsBloc with AsyncActionsHandler {
       return;
     }
     paidPositions[paidPositionKey] = true;
-    final podcastPaymentFutures = withBreez.map((d) async {
+    final podcastPaymentFutures = recipients.map((d) async {
       final amount = (d.split * total / totalSplits);
       var payPart = amount.toInt();
       if (!boost) {
