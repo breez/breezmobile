@@ -2,9 +2,13 @@ import 'package:breez/bloc/account/account_bloc.dart';
 import 'package:breez/bloc/blocs_provider.dart';
 import 'package:breez/bloc/lnurl/lnurl_bloc.dart';
 import 'package:breez/bloc/marketplace/vendor_model.dart';
+import 'package:breez/routes/marketplace/lnurl_auth.dart';
 import 'package:breez/theme_data.dart' as theme;
+import 'package:breez/widgets/error_dialog.dart';
 import 'package:breez/widgets/route.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import 'lnurl_webview.dart';
 import 'vendor_webview.dart';
@@ -17,6 +21,7 @@ class VendorRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    var lnurlBloc = AppBlocsProvider.of<LNUrlBloc>(context);
     Color _vendorFgColor =
         theme.vendorTheme[_vendor.id.toLowerCase()]?.iconFgColor ??
             Colors.transparent;
@@ -37,7 +42,31 @@ class VendorRow extends StatelessWidget {
         : Container();
 
     final _vendorCard = GestureDetector(
-        onTap: () {
+        onTap: () async {
+         
+         // iOS only
+          if (defaultTargetPlatform == TargetPlatform.iOS) {
+            try {
+              var url = _vendor.url;
+              if (_vendor.id == "lnmarkets" || _vendor.id == "Kollider") {
+                var responseID = 
+                        _vendor.id == "lnmarkets" ? "lnurl" : "lnurl_auth";
+                var jwtToken = await handleLNUrlAuth(_vendor, lnurlBloc, responseID);
+                url = url + "?token=$jwtToken";
+              }
+              launch(_vendor.url);
+            } 
+            catch(err) {
+              promptError(
+                context,
+                "Error",
+                Text(err.toString())                
+              );
+            }
+            return;
+          }
+
+          // non iOS
           Navigator.push(context, FadeInRoute(
             builder: (_) {
               if (_vendor.id == "lnmarkets" || _vendor.id == "Kollider") {
