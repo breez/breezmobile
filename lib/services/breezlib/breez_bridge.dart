@@ -706,12 +706,16 @@ class BreezBridge {
   }
 
   Future _invokeMethodWhenReady(String methodName, [dynamic arguments]) {
-    logger.log.info("before invoking method $methodName");
+    if (methodName != "log") {
+      logger.log.info("before invoking method $methodName");
+    }
     return _readyCompleter.future.then((completed) {
       return _methodChannel
           .invokeMethod(methodName, arguments)
           .catchError((err) {
-        logger.log.severe("failed to invoke method $methodName $err");
+        if (methodName != "log") {
+          logger.log.severe("failed to invoke method $methodName $err");
+        }
         if (err.runtimeType == PlatformException) {          
           throw (err as PlatformException).message;
         }
@@ -729,16 +733,24 @@ class BreezBridge {
   }
 
   Future _invokeMethodImmediate(String methodName, [dynamic arguments]) {
-    logger.log.info("before invoking method immediate $methodName");
+    if (methodName != "log") {
+      logger.log.info("before invoking method immediate $methodName");
+    }
     return _startedCompleter.future.then((completed) {
-      logger.log.info("startCompleted completd: before invoking method immediate $methodName");
+      if (methodName != "log") {
+        logger.log.info("startCompleted completd: before invoking method immediate $methodName");
+      }
       return _methodChannel
           .invokeMethod(methodName, arguments)
           .catchError((err) {
-            logger.log.severe("error invoking method immediate $methodName : $err");
+            if (methodName != "log") {
+              logger.log.severe("error invoking method immediate $methodName : $err");
+            }
         if (err.runtimeType == PlatformException) {
-          print("Error in calling method " + methodName);
-          throw (err as PlatformException).message;
+          if (methodName != "log") {
+            logger.log.severe("Error in calling method " + methodName);
+          }
+          throw (err as PlatformException).message + " method: $methodName";
         }        
           throw err;
         });
