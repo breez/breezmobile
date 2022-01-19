@@ -1,6 +1,8 @@
 import 'package:email_validator/email_validator.dart';
 
 RegExp _lnurlPrefix = new RegExp(",*?((lnurl)([0-9]{1,}[a-z0-9]+){1})");
+/// https://github.com/fiatjaf/lnurl-rfc/blob/luds/17.md
+RegExp _lnurlRfc17Prefix = RegExp("(lnurl)(c|w|p)");
 String _lightningProtocolPrefix = "lightning:";
 
 bool isLNURL(String url) {
@@ -12,10 +14,16 @@ bool isLNURL(String url) {
   if (firstMatch != null && firstMatch.start == 0) {
     return true;
   }
+  firstMatch = _lnurlRfc17Prefix.firstMatch(lower);
+  if (firstMatch != null && firstMatch.start == 0) {
+    return true;
+  }
   try {
     Uri uri = Uri.parse(lower);
     String lightning = uri.queryParameters["lightning"];
-    return lightning != null && _lnurlPrefix.firstMatch(lightning) != null;
+    return lightning != null &&
+        (_lnurlPrefix.firstMatch(lightning) != null ||
+            _lnurlRfc17Prefix.firstMatch(lightning) != null);
   } on FormatException {} // do nothing.
   return false;
 }
