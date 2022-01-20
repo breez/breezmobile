@@ -47,7 +47,7 @@ class BreezBridge {
       _eventsController.add(NotificationEvent()..mergeFromBuffer(event));
     });
     _tempDirFuture = getTemporaryDirectory();
-    _graphDownloader = GraphDownloader(downloadManager, sharedPreferences);
+    _graphDownloader = GraphDownloader(downloadManager, sharedPreferences);    
     _graphDownloader.init().whenComplete(() => initLightningDir());
   }
 
@@ -69,6 +69,10 @@ class BreezBridge {
         _graphDownloader.deleteDownloads();
       });
     }
+  }
+
+  Future deleteDownloads() async {
+    _graphDownloader.deleteDownloads();
   }
 
   initLightningDir() {
@@ -706,11 +710,17 @@ class BreezBridge {
   }
 
   Future _invokeMethodWhenReady(String methodName, [dynamic arguments]) {
+    if (methodName != "log") {
+      logger.log.info("before invoking method $methodName");
+    }
     return _readyCompleter.future.then((completed) {
       return _methodChannel
           .invokeMethod(methodName, arguments)
           .catchError((err) {
-        if (err.runtimeType == PlatformException) {
+        if (methodName != "log") {
+          logger.log.severe("failed to invoke method $methodName $err");
+        }
+        if (err.runtimeType == PlatformException) {          
           throw (err as PlatformException).message;
         }
         throw err;
@@ -727,16 +737,27 @@ class BreezBridge {
   }
 
   Future _invokeMethodImmediate(String methodName, [dynamic arguments]) {
+    if (methodName != "log") {
+      logger.log.info("before invoking method immediate $methodName");
+    }
     return _startedCompleter.future.then((completed) {
+      if (methodName != "log") {
+        logger.log.info("startCompleted completd: before invoking method immediate $methodName");
+      }
       return _methodChannel
           .invokeMethod(methodName, arguments)
           .catchError((err) {
+            if (methodName != "log") {
+              logger.log.severe("error invoking method immediate $methodName : $err");
+            }
         if (err.runtimeType == PlatformException) {
-          print("Error in calling method " + methodName);
-          throw (err as PlatformException).message;
-        }
-        throw err;
-      });
+          if (methodName != "log") {
+            logger.log.severe("Error in calling method " + methodName);
+          }
+          throw (err as PlatformException).message + " method: $methodName";
+        }        
+          throw err;
+        });
     });
   }
 
