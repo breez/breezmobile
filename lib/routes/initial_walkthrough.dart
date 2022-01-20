@@ -260,7 +260,7 @@ class InitialWalkthroughPageState extends State<InitialWalkthroughPage>
 
   @override
   void dispose() {
-    _multipleRestoreSubscription.cancel();
+    _multipleRestoreSubscription?.cancel();
     _restoreFinishedSubscription.cancel();
     _controller.dispose();
     super.dispose();
