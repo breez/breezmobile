@@ -47,7 +47,7 @@ class BreezBridge {
       _eventsController.add(NotificationEvent()..mergeFromBuffer(event));
     });
     _tempDirFuture = getTemporaryDirectory();
-    _graphDownloader = GraphDownloader(downloadManager, sharedPreferences);
+    _graphDownloader = GraphDownloader(downloadManager, sharedPreferences);    
     _graphDownloader.init().whenComplete(() => initLightningDir());
   }
 
@@ -69,6 +69,10 @@ class BreezBridge {
         _graphDownloader.deleteDownloads();
       });
     }
+  }
+
+  Future deleteDownloads() async {
+    _graphDownloader.deleteDownloads();
   }
 
   initLightningDir() {
