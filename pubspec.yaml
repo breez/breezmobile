@@ -83,7 +83,6 @@ dependencies:
 
 dependency_overrides:
   printing: ^5.6.5
-  webview_flutter: ^2.8.0
   flutter_svg: ^0.23.0+1
   flutter_downloader:
     git:
