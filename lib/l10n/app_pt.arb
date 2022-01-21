@@ -1072,6 +1072,11 @@
   "payment_failed_report_dialog_do_not_ask_again": "Não me pergunte novamente",
   "payment_failed_report_dialog_action_no": "NÃO",
   "payment_failed_report_dialog_action_yes": "SIM",
+  "payment_confirmation_dialog_title": "Confirmação de Pagamento",
+  "payment_confirmation_dialog_confirmation": "Você tem certeza de que deseja pagar",
+  "payment_confirmation_dialog_confirmation_end": " ?",
+  "payment_confirmation_dialog_action_no": "NÃO",
+  "payment_confirmation_dialog_action_yes": "SIM",
   "locale": "pt",
   "app_name": "Breez"
 }
