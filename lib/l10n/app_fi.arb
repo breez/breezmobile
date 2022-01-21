@@ -1077,6 +1077,15 @@
   "payment_confirmation_dialog_confirmation_end": " ?",
   "payment_confirmation_dialog_action_no": "NO",
   "payment_confirmation_dialog_action_yes": "YES",
+  "no_connection_dialog_title": "No Internet Connection",
+  "no_connection_dialog_tip_begin": "You can try:\n",
+  "no_connection_dialog_tip_airplane": "• Turning off airplane mode\n",
+  "no_connection_dialog_tip_wifi": "• Turning on mobile data or Wi-Fi\n",
+  "no_connection_dialog_tip_signal": "• Checking the signal in your area\n",
+  "no_connection_dialog_log_view_action": "View ",
+  "no_connection_dialog_log_view_message": "your logs \n",
+  "no_connection_dialog_action_cancel": "CANCEL",
+  "no_connection_dialog_action_try_again": "TRY AGAIN",
   "locale": "fi",
   "app_name": "Breez"
 }
