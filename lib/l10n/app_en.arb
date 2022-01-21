@@ -11,6 +11,8 @@
   "home_drawer_item_title_pos_settings": "POS Settings",
   "home_drawer_item_title_developers": "Developers",
   "home_drawer_item_title_get_refund": "Get Refund",
+  "home_drawer_error_internal": "Internal Error",
+  "home_drawer_error_no_name": "No Name",
   "home_podcast_title": "Anytime Podcast Player",
   "home_podcast_no_subscriptions": "Use the Discover view to find and subscribe to your first podcast",
   "home_error_connect_to_pay": "Connect to Pay",

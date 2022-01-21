@@ -11,6 +11,8 @@
   "home_drawer_item_title_pos_settings": "Configuración de PDV",
   "home_drawer_item_title_developers": "Desarrolladores",
   "home_drawer_item_title_get_refund": "Obtener reembolso",
+  "home_drawer_error_internal": "Error interno",
+  "home_drawer_error_no_name": "Sin Nombre",
   "home_podcast_title": "Anytime Podcast Player",
   "home_podcast_no_subscriptions": "Use la pestaña Explorar para encontrar sus podcasts",
   "home_error_connect_to_pay": "Conectar para pagar",
