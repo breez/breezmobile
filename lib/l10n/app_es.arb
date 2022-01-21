@@ -1088,6 +1088,61 @@
   "no_connection_dialog_log_view_message": "sus logs \n",
   "no_connection_dialog_action_cancel": "CANCELAR",
   "no_connection_dialog_action_try_again": "INTENTAR NUEVAMENTE",
+  "lsp_fee_warning_title": "Tarifa de Instalación",
+  "lsp_fee_warning_action_cancel": "CANCELAR",
+  "lsp_fee_warning_action_ok": "OK",
+  "lsp_fee_warning_with_min_fee_account_connected": "Una tarifa de instalación de {setUpFee}% con un valor mínimo de {minFee} se aplicará al comprar más de {liquidity}.",
+  "@lsp_fee_warning_with_min_fee_account_connected": {
+    "placeholders": {
+      "setUpFee": {
+        "type": "String",
+        "example": "0.4"
+      },
+      "minFee": {
+        "type": "String",
+        "example": "1 000 sats"
+      },
+      "liquidity": {
+        "type": "String",
+        "example": "99 000 sats"
+      }
+    }
+  },
+  "lsp_fee_warning_without_min_fee_account_connected": "Una tarifa de instalación de {setUpFee}% se aplicará al comprar más de {liquidity}.",
+  "@lsp_fee_warning_without_min_fee_account_connected": {
+    "placeholders": {
+      "setUpFee": {
+        "type": "String",
+        "example": "0.4"
+      },
+      "liquidity": {
+        "type": "String",
+        "example": "99 000 sats"
+      }
+    }
+  },
+  "lsp_fee_warning_with_min_fee_account_not_connected": "Una tarifa de instalación de {setUpFee}% con un valor mínimo de {minFee} se aplicará a la cantidad recibida.",
+  "@lsp_fee_warning_with_min_fee_account_not_connected": {
+    "placeholders": {
+      "setUpFee": {
+        "type": "String",
+        "example": "0.4"
+      },
+      "minFee": {
+        "type": "String",
+        "example": "1 000 sats"
+      }
+    }
+  },
+  "lsp_fee_warning_without_min_fee_account_not_connected": "Una tarifa de instalación de {setUpFee}% se aplicará a la cantidad recibida.",
+  "@lsp_fee_warning_without_min_fee_account_not_connected": {
+    "placeholders": {
+      "setUpFee": {
+        "type": "String",
+        "example": "0.4"
+      }
+    }
+  },
   "locale": "es",
   "app_name": "Breez"
 }

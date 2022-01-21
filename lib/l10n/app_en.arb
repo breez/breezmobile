@@ -1088,6 +1088,61 @@
   "no_connection_dialog_log_view_message": "your logs \n",
   "no_connection_dialog_action_cancel": "CANCEL",
   "no_connection_dialog_action_try_again": "TRY AGAIN",
+  "lsp_fee_warning_title": "Setup Fee",
+  "lsp_fee_warning_action_cancel": "CANCEL",
+  "lsp_fee_warning_action_ok": "OK",
+  "lsp_fee_warning_with_min_fee_account_connected": "A setup fee of {setUpFee}% with a minimum of {minFee} will be applied for buying more than {liquidity}.",
+  "@lsp_fee_warning_with_min_fee_account_connected": {
+    "placeholders": {
+      "setUpFee": {
+        "type": "String",
+        "example": "0.4"
+      },
+      "minFee": {
+        "type": "String",
+        "example": "1 000 sats"
+      },
+      "liquidity": {
+        "type": "String",
+        "example": "99 000 sats"
+      }
+    }
+  },
+  "lsp_fee_warning_without_min_fee_account_connected": "A setup fee of {setUpFee}% will be applied for buying more than {liquidity}.",
+  "@lsp_fee_warning_without_min_fee_account_connected": {
+    "placeholders": {
+      "setUpFee": {
+        "type": "String",
+        "example": "0.4"
+      },
+      "liquidity": {
+        "type": "String",
+        "example": "99 000 sats"
+      }
+    }
+  },
+  "lsp_fee_warning_with_min_fee_account_not_connected": "A setup fee of {setUpFee}% with a minimum of {minFee} will be applied on the received amount.",
+  "@lsp_fee_warning_with_min_fee_account_not_connected": {
+    "placeholders": {
+      "setUpFee": {
+        "type": "String",
+        "example": "0.4"
+      },
+      "minFee": {
+        "type": "String",
+        "example": "1 000 sats"
+      }
+    }
+  },
+  "lsp_fee_warning_without_min_fee_account_not_connected": "A setup fee of {setUpFee}% will be applied on the received amount.",
+  "@lsp_fee_warning_without_min_fee_account_not_connected": {
+    "placeholders": {
+      "setUpFee": {
+        "type": "String",
+        "example": "0.4"
+      }
+    }
+  },
   "locale": "en",
   "app_name": "Breez"
 }
