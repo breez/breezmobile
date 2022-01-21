@@ -7,8 +7,8 @@ import 'package:breez/theme_data.dart' as theme;
 import 'package:breez/widgets/loading_animated_text.dart';
 import 'package:breez/widgets/payment_request_dialog.dart';
 import 'package:breez/widgets/sync_loader.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:rxdart/rxdart.dart';
 
 const PAYMENT_LIST_ITEM_HEIGHT = 72.0;
@@ -22,9 +22,15 @@ class ProcessingPaymentDialog extends StatefulWidget {
   final Future Function() paymentFunc;
   final double minHeight;
 
-  ProcessingPaymentDialog(this.context, this.paymentFunc, this.accountBloc,
-      this.firstPaymentItemKey, this._onStateChange, this.minHeight,
-      {this.popOnCompletion = false});
+  const ProcessingPaymentDialog(
+    this.context,
+    this.paymentFunc,
+    this.accountBloc,
+    this.firstPaymentItemKey,
+    this._onStateChange,
+    this.minHeight, {
+    this.popOnCompletion = false,
+  });
 
   @override
   ProcessingPaymentDialogState createState() {
@@ -73,7 +79,9 @@ class ProcessingPaymentDialogState extends State<ProcessingPaymentDialog>
           _payAncClose();
           _currentRoute = ModalRoute.of(context);
           controller = AnimationController(
-              vsync: this, duration: Duration(milliseconds: 500));
+            vsync: this,
+            duration: Duration(milliseconds: 500),
+          );
           colorAnimation = ColorTween(
             begin: Theme.of(context).canvasColor,
             end: Theme.of(context).backgroundColor,
@@ -122,9 +130,7 @@ class ProcessingPaymentDialogState extends State<ProcessingPaymentDialog>
     _pendingPaymentSubscription = widget.accountBloc.pendingPaymentStream
         .where((p) => p.fullPending)
         .debounceTime(Duration(seconds: 10))
-        .listen((p) {
-      _animateClose();
-    });
+        .listen((p) => _animateClose());
   }
 
   void _animateClose() {
@@ -138,29 +144,29 @@ class ProcessingPaymentDialogState extends State<ProcessingPaymentDialog>
   }
 
   void _initializeTransitionAnimation() {
-    var kSystemStatusBarHeight = MediaQuery.of(context).padding.top;
-    var kSafeArea = MediaQuery.of(context).size.height - kSystemStatusBarHeight;
-    // We subtract dialog size from safe area and divide by half because the dialog is at the center of the screen(distances to top and bottom are equal).
+    final queryData = MediaQuery.of(context);
+    final statusBarHeight = queryData.padding.top;
+    final safeArea = queryData.size.height - statusBarHeight;
+    // We subtract dialog size from safe area and divide by half because the dialog
+    // is at the center of the screen (distances to top and bottom are equal).
     RenderBox box = _dialogKey.currentContext.findRenderObject();
     startHeight = box.size.height;
-    double _dialogYMargin = (kSafeArea - box.size.height) / 2;
+    double yMargin = (safeArea - box.size.height) / 2;
 
-    RelativeRect endPosition =
-        RelativeRect.fromLTRB(40.0, _dialogYMargin, 40.0, _dialogYMargin);
+    final endPosition = RelativeRect.fromLTRB(40.0, yMargin, 40.0, yMargin);
     RelativeRect startPosition = endPosition;
-    if (widget.firstPaymentItemKey.currentContext != null) {
-      RenderBox _paymentTableBox =
-          widget.firstPaymentItemKey.currentContext.findRenderObject();
-      var _paymentItemStartPosition =
-          _paymentTableBox.localToGlobal(Offset.zero).dy -
-              kSystemStatusBarHeight;
-      var _paymentItemEndPosition =
-          (kSafeArea - _paymentItemStartPosition) - PAYMENT_LIST_ITEM_HEIGHT;
-      startPosition = RelativeRect.fromLTRB(
-          0.0, _paymentItemStartPosition, 0.0, _paymentItemEndPosition);
+    final paymentCtx = widget.firstPaymentItemKey.currentContext;
+    if (paymentCtx != null) {
+      RenderBox _paymentTableBox = paymentCtx.findRenderObject();
+      final dy = _paymentTableBox.localToGlobal(Offset.zero).dy;
+      final start = dy - statusBarHeight;
+      final end = safeArea - start - PAYMENT_LIST_ITEM_HEIGHT;
+      startPosition = RelativeRect.fromLTRB(0.0, start, 0.0, end);
     }
-    var tween = RelativeRectTween(begin: startPosition, end: endPosition);
-    transitionAnimation = tween.animate(controller);
+    transitionAnimation = RelativeRectTween(
+      begin: startPosition,
+      end: endPosition,
+    ).animate(controller);
   }
 
   @override
@@ -174,113 +180,139 @@ class ProcessingPaymentDialogState extends State<ProcessingPaymentDialog>
   @override
   Widget build(BuildContext context) {
     if (channelsSyncProgress == null || synchronizedCompleter.isCompleted) {
-      return _animating ? _createAnimatedContent() : _createContentDialog();
+      return _animating
+          ? _createAnimatedContent(context)
+          : _createContentDialog(context);
     }
+
+    final texts = AppLocalizations.of(context);
+    final themeData = Theme.of(context);
+
     return AlertDialog(
       content: SyncProgressLoader(
-          value: channelsSyncProgress ?? 0,
-          title: "Synchronizing to the network"),
-      actions: <Widget>[
+        value: channelsSyncProgress ?? 0,
+        title: texts.processing_payment_dialog_synchronizing,
+      ),
+      actions: [
         FlatButton(
-          onPressed: (() {
-            _closeDialog();
-          }),
-          child:
-              Text("CLOSE", style: Theme.of(context).primaryTextTheme.button),
-        )
+          onPressed: _closeDialog,
+          child: Text(
+            texts.processing_payment_dialog_action_close,
+            style: themeData.primaryTextTheme.button,
+          ),
+        ),
       ],
     );
   }
 
-  List<Widget> _buildProcessingPaymentDialog() {
-    List<Widget> _processingPaymentDialog = <Widget>[];
-    _processingPaymentDialog.add(_buildTitle());
-    _processingPaymentDialog.add(_buildContent());
-    _processingPaymentDialog.add(Padding(
-      padding: const EdgeInsets.only(bottom: 24.0),
-      child: Image.asset(
-        theme.customData[theme.themeId].loaderAssetPath,
-        height: 64.0,
-        colorBlendMode: theme.customData[theme.themeId].loaderColorBlendMode ??
-            BlendMode.srcIn,
-        color: theme.themeId == "BLUE"
-            ? colorAnimation?.value ?? Colors.transparent
-            : null,
-        gaplessPlayback: true,
-      ),
-    ));
-    return _processingPaymentDialog;
+  List<Widget> _buildProcessingPaymentDialog(BuildContext context) {
+    final themeData = theme.customData[theme.themeId];
+    return [
+      _buildTitle(context),
+      _buildContent(context),
+      Padding(
+        padding: const EdgeInsets.only(bottom: 24.0),
+        child: Image.asset(
+          themeData.loaderAssetPath,
+          height: 64.0,
+          colorBlendMode: themeData.loaderColorBlendMode ?? BlendMode.srcIn,
+          color: theme.themeId == "BLUE"
+              ? colorAnimation?.value ?? Colors.transparent
+              : null,
+          gaplessPlayback: true,
+        ),
+      )
+    ];
   }
 
-  Widget _createContentDialog() {
+  Widget _createContentDialog(BuildContext context) {
     return Dialog(
       child: Container(
-        constraints: BoxConstraints(minHeight: widget.minHeight),
+        constraints: BoxConstraints(
+          minHeight: widget.minHeight,
+        ),
         child: Column(
-            key: _dialogKey,
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            mainAxisSize: MainAxisSize.min,
-            children: _buildProcessingPaymentDialog()),
+          key: _dialogKey,
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          mainAxisSize: MainAxisSize.min,
+          children: _buildProcessingPaymentDialog(context),
+        ),
       ),
     );
   }
 
-  Widget _createAnimatedContent() {
+  Widget _createAnimatedContent(BuildContext context) {
+    final themeData = Theme.of(context);
+    final queryData = MediaQuery.of(context);
+
     return Opacity(
       opacity: opacityAnimation.value,
       child: Material(
         color: Colors.transparent,
-        child: Stack(children: <Widget>[
-          PositionedTransition(
-            rect: transitionAnimation,
-            child: Container(
-              height: startHeight,
-              width: MediaQuery.of(context).size.width,
-              child: Column(
+        child: Stack(
+          children: [
+            PositionedTransition(
+              rect: transitionAnimation,
+              child: Container(
+                height: startHeight,
+                width: queryData.size.width,
+                child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   mainAxisSize: MainAxisSize.min,
-                  children: _buildProcessingPaymentDialog()),
-              decoration: ShapeDecoration(
-                color: theme.themeId == "BLUE"
-                    ? colorAnimation.value
-                    : (controller.value >= 0.25
-                        ? Theme.of(context).backgroundColor
-                        : colorAnimation.value),
-                shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(borderAnimation.value)),
+                  children: _buildProcessingPaymentDialog(context),
+                ),
+                decoration: ShapeDecoration(
+                  color: theme.themeId == "BLUE"
+                      ? colorAnimation.value
+                      : controller.value >= 0.25
+                          ? themeData.backgroundColor
+                          : colorAnimation.value,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(
+                      borderAnimation.value,
+                    ),
+                  ),
+                ),
               ),
             ),
-          ),
-        ]),
+          ],
+        ),
       ),
     );
   }
 
-  Container _buildTitle() {
+  Container _buildTitle(BuildContext context) {
+    final texts = AppLocalizations.of(context);
+    final themeData = Theme.of(context);
+
     return Container(
       height: 64.0,
       padding: EdgeInsets.fromLTRB(24.0, 24.0, 24.0, 8.0),
       child: Text(
-        "Processing Payment",
-        style: Theme.of(context).dialogTheme.titleTextStyle,
+        texts.processing_payment_dialog_processing_payment,
+        style: themeData.dialogTheme.titleTextStyle,
         textAlign: TextAlign.center,
       ),
     );
   }
 
-  Widget _buildContent() {
+  Widget _buildContent(BuildContext context) {
+    final texts = AppLocalizations.of(context);
+    final themeData = Theme.of(context);
+    final queryData = MediaQuery.of(context);
+
     return Container(
       child: Padding(
         padding: EdgeInsets.fromLTRB(16.0, 0.0, 16.0, 0.0),
         child: Container(
-          width: MediaQuery.of(context).size.width,
+          width: queryData.size.width,
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             mainAxisSize: MainAxisSize.min,
-            children: <Widget>[
+            children: [
               LoadingAnimatedText(
-                'Please wait while your payment is being processed',
-                textStyle: Theme.of(context).dialogTheme.contentTextStyle,
+                texts.processing_payment_dialog_wait,
+                textStyle: themeData.dialogTheme.contentTextStyle,
                 textAlign: TextAlign.center,
               ),
             ],
@@ -291,17 +323,22 @@ class ProcessingPaymentDialogState extends State<ProcessingPaymentDialog>
   }
 }
 
-class ChanelsSyncLoader extends StatelessWidget {
+class ChannelsSyncLoader extends StatelessWidget {
   final double progress;
   final Function onClose;
 
-  const ChanelsSyncLoader({Key key, this.progress, this.onClose})
-      : super(key: key);
+  const ChannelsSyncLoader({
+    Key key,
+    this.progress,
+    this.onClose,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+    final texts = AppLocalizations.of(context);
+
     return TransparentRouteLoader(
-      message: "Breez is synchronizing your channels",
+      message: texts.processing_payment_dialog_synchronizing_channels,
       value: progress,
       opacity: 0.9,
       onClose: onClose,

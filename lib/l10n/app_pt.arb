@@ -1058,6 +1058,11 @@
   "beta_warning_understand_confirmation": "Por favor, confirme que você entendeu antes de continuar.",
   "beta_warning_action_exit": "SAIR",
   "beta_warning_action_continue": "PROSSEGUIR",
+  "processing_payment_dialog_synchronizing": "Sincronizando com a rede",
+  "processing_payment_dialog_synchronizing_channels": "Sincronizando os seus canais",
+  "processing_payment_dialog_action_close": "FECHAR",
+  "processing_payment_dialog_processing_payment": "Processando o pagamento",
+  "processing_payment_dialog_wait": "Por favor, aguarde enquanto o seu pagamento é processado",
   "locale": "pt",
   "app_name": "Breez"
 }

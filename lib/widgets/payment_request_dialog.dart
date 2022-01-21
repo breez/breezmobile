@@ -7,7 +7,7 @@ import 'package:breez/bloc/invoice/invoice_model.dart';
 import 'package:breez/routes/podcast/theme.dart';
 import 'package:breez/widgets/payment_confirmation_dialog.dart';
 import 'package:breez/widgets/payment_request_info_dialog.dart';
-import 'package:breez/widgets/processsing_payment_dialog.dart';
+import 'package:breez/widgets/processing_payment_dialog.dart';
 import 'package:fixnum/fixnum.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
