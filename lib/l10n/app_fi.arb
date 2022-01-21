@@ -1067,6 +1067,11 @@
   "payment_request_dialog_requesting": "is requesting you to pay:",
   "payment_request_dialog_action_cancel": "CANCEL",
   "payment_request_dialog_action_approve": "APPROVE",
+  "payment_failed_report_dialog_title": "Failed Payment",
+  "payment_failed_report_dialog_message": "Sending failed payment details to Breez could help increase successful transactions rate.\nDo you want to send this failed payment details to Breez?",
+  "payment_failed_report_dialog_do_not_ask_again": "Don't ask me again",
+  "payment_failed_report_dialog_action_no": "NO",
+  "payment_failed_report_dialog_action_yes": "YES",
   "locale": "fi",
   "app_name": "Breez"
 }

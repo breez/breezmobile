@@ -1067,6 +1067,11 @@
   "payment_request_dialog_requesting": "Usted está solicitando un pago de:",
   "payment_request_dialog_action_cancel": "CANCELAR",
   "payment_request_dialog_action_approve": "APROBAR",
+  "payment_failed_report_dialog_title": "El pago há fallado",
+  "payment_failed_report_dialog_message": "Enviar detalles de fallas de pago a Breez puede ayudar a aumentar la tasa de transacciones exitosas.\n¿Desea enviar estos detalles de fallas de pago a Breez?",
+  "payment_failed_report_dialog_do_not_ask_again": "No vuelvas a preguntarme",
+  "payment_failed_report_dialog_action_no": "NO",
+  "payment_failed_report_dialog_action_yes": "SÍ",
   "locale": "es",
   "app_name": "Breez"
 }
