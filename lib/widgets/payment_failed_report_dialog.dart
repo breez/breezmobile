@@ -2,14 +2,17 @@ import 'dart:async';
 
 import 'package:breez/bloc/account/account_bloc.dart';
 import 'package:breez/bloc/account/account_model.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class PaymentFailedReportDialog extends StatefulWidget {
   final BuildContext context;
   final AccountBloc _accountBloc;
 
-  PaymentFailedReportDialog(this.context, this._accountBloc);
+  const PaymentFailedReportDialog(
+    this.context,
+    this._accountBloc,
+  );
 
   @override
   PaymentFailedReportDialogState createState() {
@@ -39,87 +42,90 @@ class PaymentFailedReportDialogState extends State<PaymentFailedReportDialog> {
 
   @override
   Widget build(BuildContext context) {
-    return buildFailureDialog();
-  }
+    final themeData = Theme.of(context);
+    final texts = AppLocalizations.of(context);
 
-  Widget buildFailureDialog() {
     return Theme(
-        data: Theme.of(context).copyWith(
-          unselectedWidgetColor: Theme.of(context).canvasColor,
+      data: themeData.copyWith(
+        unselectedWidgetColor: themeData.canvasColor,
+      ),
+      child: AlertDialog(
+        titlePadding: EdgeInsets.fromLTRB(24.0, 22.0, 0.0, 16.0),
+        title: Text(
+          texts.payment_failed_report_dialog_title,
+          style: themeData.dialogTheme.titleTextStyle,
         ),
-        child: AlertDialog(
-          titlePadding: EdgeInsets.fromLTRB(24.0, 22.0, 0.0, 16.0),
-          title: Text(
-            "Failed Payment",
-            style: Theme.of(context).dialogTheme.titleTextStyle,
-          ),
-          contentPadding: EdgeInsets.fromLTRB(8.0, 8.0, 8.0, 24.0),
-          content: _settings == null
-              ? Container()
-              : Column(
-                  mainAxisSize: MainAxisSize.min,
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: <Widget>[
-                    Padding(
-                      padding: const EdgeInsets.only(left: 15.0, right: 12.0),
-                      child: Text(
-                        "Sending failed payment details to Breez could help increase successful transactions rate.\nDo you want to send this failed payment details to Breez?",
-                        style: Theme.of(context)
-                            .primaryTextTheme
-                            .headline3
-                            .copyWith(fontSize: 16),
-                      ),
+        contentPadding: EdgeInsets.fromLTRB(8.0, 8.0, 8.0, 24.0),
+        content: _settings == null
+            ? Container()
+            : Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.only(left: 15.0, right: 12.0),
+                    child: Text(
+                      texts.payment_failed_report_dialog_message,
+                      style: themeData.primaryTextTheme.headline3
+                          .copyWith(fontSize: 16),
                     ),
-                    Padding(
-                      padding: const EdgeInsets.only(top: 16.0),
-                      child: Row(
-                        children: <Widget>[
-                          Theme(
-                            data: Theme.of(context).copyWith(
-                                unselectedWidgetColor:
-                                    Theme.of(context).textTheme.button.color),
-                            child: Checkbox(
-                                activeColor: Theme.of(context).canvasColor,
-                                value: _doneAsk ??
-                                    _settings.failedPaymentBehavior !=
-                                        BugReportBehavior.PROMPT,
-                                onChanged: (v) {
-                                  setState(() {
-                                    _doneAsk = v;
-                                  });
-                                }),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.only(top: 16.0),
+                    child: Row(
+                      children: [
+                        Theme(
+                          data: themeData.copyWith(
+                            unselectedWidgetColor:
+                                themeData.textTheme.button.color,
                           ),
-                          Text(
-                            "Don't ask me again",
-                            style: Theme.of(context)
-                                .primaryTextTheme
-                                .headline3
-                                .copyWith(fontSize: 16),
-                          )
-                        ],
-                      ),
+                          child: Checkbox(
+                            activeColor: themeData.canvasColor,
+                            value: _doneAsk ??
+                                _settings.failedPaymentBehavior !=
+                                    BugReportBehavior.PROMPT,
+                            onChanged: (v) {
+                              setState(() {
+                                _doneAsk = v;
+                              });
+                            },
+                          ),
+                        ),
+                        Text(
+                          texts.payment_failed_report_dialog_do_not_ask_again,
+                          style: themeData.primaryTextTheme.headline3.copyWith(
+                            fontSize: 16,
+                          ),
+                        ),
+                      ],
                     ),
-                  ],
-                ),
-          actions: [
-            SimpleDialogOption(
-              onPressed: () {
-                onSubmit(false);
-                Navigator.pop(widget.context, false);
-              },
-              child:
-                  Text("NO", style: Theme.of(context).primaryTextTheme.button),
+                  ),
+                ],
+              ),
+        actions: [
+          SimpleDialogOption(
+            onPressed: () {
+              onSubmit(false);
+              Navigator.pop(widget.context, false);
+            },
+            child: Text(
+              texts.payment_failed_report_dialog_action_no,
+              style: themeData.primaryTextTheme.button,
             ),
-            SimpleDialogOption(
-              onPressed: (() async {
-                onSubmit(true);
-                Navigator.pop(widget.context, true);
-              }),
-              child:
-                  Text("YES", style: Theme.of(context).primaryTextTheme.button),
+          ),
+          SimpleDialogOption(
+            onPressed: (() async {
+              onSubmit(true);
+              Navigator.pop(widget.context, true);
+            }),
+            child: Text(
+              texts.payment_failed_report_dialog_action_yes,
+              style: themeData.primaryTextTheme.button,
             ),
-          ],
-        ));
+          ),
+        ],
+      ),
+    );
   }
 
   void onSubmit(bool yesNo) {
