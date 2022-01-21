@@ -1063,6 +1063,10 @@
   "processing_payment_dialog_action_close": "CERRAR",
   "processing_payment_dialog_processing_payment": "Procesando el pago",
   "processing_payment_dialog_wait": "Por favor, espere mientras se procesa su pago.",
+  "payment_request_dialog_requested": "Solicitud para que usted pague:",
+  "payment_request_dialog_requesting": "Usted está solicitando un pago de:",
+  "payment_request_dialog_action_cancel": "CANCELAR",
+  "payment_request_dialog_action_approve": "APROBAR",
   "locale": "es",
   "app_name": "Breez"
 }
