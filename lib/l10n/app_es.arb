@@ -1072,6 +1072,11 @@
   "payment_failed_report_dialog_do_not_ask_again": "No vuelvas a preguntarme",
   "payment_failed_report_dialog_action_no": "NO",
   "payment_failed_report_dialog_action_yes": "SÍ",
+  "payment_confirmation_dialog_title": "Confirmación de pago",
+  "payment_confirmation_dialog_confirmation": "¿Estás seguro de que quieres pagar",
+  "payment_confirmation_dialog_confirmation_end": " ?",
+  "payment_confirmation_dialog_action_no": "NO",
+  "payment_confirmation_dialog_action_yes": "SÍ",
   "locale": "es",
   "app_name": "Breez"
 }
