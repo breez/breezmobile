@@ -1077,6 +1077,15 @@
   "payment_confirmation_dialog_confirmation_end": " ?",
   "payment_confirmation_dialog_action_no": "NO",
   "payment_confirmation_dialog_action_yes": "SÍ",
+  "no_connection_dialog_title": "Sin conexión a Internet",
+  "no_connection_dialog_tip_begin": "Usted puede intentar:\n",
+  "no_connection_dialog_tip_airplane": "• Desactiva el modo avión\n",
+  "no_connection_dialog_tip_wifi": "• Activar datos móviles o Wi-Fi\n",
+  "no_connection_dialog_tip_signal": "• Verifica si hay señal en tu área\n",
+  "no_connection_dialog_log_view_action": "Ver ",
+  "no_connection_dialog_log_view_message": "sus logs \n",
+  "no_connection_dialog_action_cancel": "CANCELAR",
+  "no_connection_dialog_action_try_again": "INTENTAR NUEVAMENTE",
   "locale": "es",
   "app_name": "Breez"
 }
