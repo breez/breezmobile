@@ -1081,17 +1081,17 @@
   "payment_confirmation_dialog_action_yes": "KYLLÄ",
   "no_connection_dialog_title": "Yhteys Internet:iin puuttuu",
   "no_connection_dialog_tip_begin": "Voit yrittää korjata tilannetta:\n",
-  "no_connection_dialog_tip_airplane": "• Kääntää Lentotila pois päältä\n",
-  "no_connection_dialog_tip_wifi": "• Kääntää päälle mobiilidata tai Wi-Fi\n",
+  "no_connection_dialog_tip_airplane": "• Kääntämällä Lentotilan pois päältä\n",
+  "no_connection_dialog_tip_wifi": "• Kääntämällä päälle mobiilidatan tai Wi-Fi:n\n",
   "no_connection_dialog_tip_signal": "• Tarkistamalla mobiilisignaalin voimakkuuden\n",
   "no_connection_dialog_log_view_action": "Näytä ",
   "no_connection_dialog_log_view_message": "historiasi \n",
   "no_connection_dialog_action_cancel": "PERUUTA",
   "no_connection_dialog_action_try_again": "YRITÄ UUDELLEEN",
-  "lsp_fee_warning_title": "Setup Fee",
-  "lsp_fee_warning_action_cancel": "CANCEL",
+  "lsp_fee_warning_title": "Avauskulu",
+  "lsp_fee_warning_action_cancel": "Peruuta",
   "lsp_fee_warning_action_ok": "OK",
-  "lsp_fee_warning_with_min_fee_account_connected": "A setup fee of {setUpFee}% with a minimum of {minFee} will be applied for buying more than {liquidity}.",
+  "lsp_fee_warning_with_min_fee_account_connected": "Ostaessasi enemmän kuin {liquidity} velotetaan avauskulu {setUpFee}% joka on vähintään {minFee}.",
   "@lsp_fee_warning_with_min_fee_account_connected": {
     "placeholders": {
       "setUpFee": {
@@ -1108,7 +1108,7 @@
       }
     }
   },
-  "lsp_fee_warning_without_min_fee_account_connected": "A setup fee of {setUpFee}% will be applied for buying more than {liquidity}.",
+  "lsp_fee_warning_without_min_fee_account_connected": "Ostaessasi enemmän kuin {liquidity} velotetaan avauskulu {setUpFee}%.",
   "@lsp_fee_warning_without_min_fee_account_connected": {
     "placeholders": {
       "setUpFee": {
@@ -1121,7 +1121,7 @@
       }
     }
   },
-  "lsp_fee_warning_with_min_fee_account_not_connected": "A setup fee of {setUpFee}% with a minimum of {minFee} will be applied on the received amount.",
+  "lsp_fee_warning_with_min_fee_account_not_connected": "Vastaanotettavasta summasta vähennetään avauskulu {setUpFee}% joka on vähintään {minFee}.",
   "@lsp_fee_warning_with_min_fee_account_not_connected": {
     "placeholders": {
       "setUpFee": {
@@ -1134,7 +1134,7 @@
       }
     }
   },
-  "lsp_fee_warning_without_min_fee_account_not_connected": "A setup fee of {setUpFee}% will be applied on the received amount.",
+  "lsp_fee_warning_without_min_fee_account_not_connected": "Vastaanotettavasta summasta vähennetään avauskulu {setUpFee}%.",
   "@lsp_fee_warning_without_min_fee_account_not_connected": {
     "placeholders": {
       "setUpFee": {
