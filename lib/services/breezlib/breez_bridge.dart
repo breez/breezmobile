@@ -8,6 +8,7 @@ import 'package:breez/services/download_manager.dart';
 import 'package:dio/dio.dart';
 import 'package:fixnum/fixnum.dart';
 import 'package:flutter/services.dart';
+import 'package:hex/hex.dart';
 import 'package:ini/ini.dart';
 import 'package:md5_file_checksum/md5_file_checksum.dart';
 import 'package:path_provider/path_provider.dart';
@@ -81,7 +82,9 @@ class BreezBridge {
           _graphDownloader.downloadGraph(downloadURL).then((file) async {
         final fileChecksum =
         await Md5FileChecksum.getFileChecksum(filePath: file.path);
-        if (fileChecksum != checksum) {
+        var rawBytes = base64.decode(fileChecksum);
+        var hexChecksum = HEX.encode(rawBytes);
+        if (hexChecksum != checksum) {
           logger.log.info("graph synchronization wrong checksum $fileChecksum != $checksum, skipping file");
           return DateTime.now();
         }        
