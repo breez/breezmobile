@@ -1,14 +1,16 @@
 import 'dart:async';
 import 'dart:convert';
-import 'dart:ffi';
 import 'dart:io';
 import 'package:breez/bloc/lnurl/lnurl_model.dart';
 import 'package:breez/logger.dart' as logger;
 import 'package:breez/services/breezlib/data/rpc.pb.dart';
 import 'package:breez/services/download_manager.dart';
+import 'package:dio/dio.dart';
 import 'package:fixnum/fixnum.dart';
 import 'package:flutter/services.dart';
+import 'package:hex/hex.dart';
 import 'package:ini/ini.dart';
+import 'package:md5_file_checksum/md5_file_checksum.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -51,14 +53,44 @@ class BreezBridge {
     _graphDownloader.init().whenComplete(() => initLightningDir());
   }
 
+  Future fetchGraphChecksum(String downloadURL) async {
+    var graphUri = Uri.parse(downloadURL);
+    var pathComponents = graphUri.path.split("/");
+    var graphDBName = pathComponents.last;
+    pathComponents.removeLast();
+    pathComponents.add("MD5SUMS");
+    var checksumURL = graphUri.replace(path: pathComponents.join("/")).toString();
+    logger.log.info("graph checksum url: ${checksumURL}");
+    var response = await Dio().get(checksumURL);
+    var content = response.data.toString();
+    var currentVersionLine = LineSplitter.split(content).firstWhere((line) {
+      return line.contains(graphDBName);
+    }, orElse: () => "");
+    if (currentVersionLine.isEmpty) {
+      throw new Exception("checksum not found");
+    }
+    return currentVersionLine.split(" ")[0].trim();
+  }
+
   Future syncGraphIfNeeded() async {
     await _readyCompleter.future;
     await Future.delayed(Duration(seconds: 10));
     var downloadURL = await graphURL();
+    logger.log.info("graph download url: ${downloadURL}");
     if (downloadURL.isNotEmpty) {
-      logger.log.info("downloading graph");
+      logger.log.info("fetching graph checksum");
+      var checksum = await fetchGraphChecksum(downloadURL);
+      logger.log.info("graph checksum = $checksum, downloading graph");
       _inProgressGraphSync =
           _graphDownloader.downloadGraph(downloadURL).then((file) async {
+        final fileChecksum =
+        await Md5FileChecksum.getFileChecksum(filePath: file.path);
+        var rawBytes = base64.decode(fileChecksum);
+        var hexChecksum = HEX.encode(rawBytes);
+        if (hexChecksum != checksum) {
+          logger.log.info("graph synchronization wrong checksum $fileChecksum != $checksum, skipping file");
+          return DateTime.now();
+        }
         logger.log.info("graph synchronization started");
         await syncGraphFromFile(file.path);
         logger.log.info("graph synchronized succesfully");

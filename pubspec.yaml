@@ -80,6 +80,7 @@ dependencies:
   share_extend:
     git:
       url: https://github.com/breez/ShareExtend.git
+  md5_file_checksum: ^1.0.3
 
 dependency_overrides:
   printing: ^5.6.5
