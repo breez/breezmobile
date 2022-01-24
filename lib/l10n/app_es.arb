@@ -1150,6 +1150,8 @@
   "lost_card_dialog_flush_title": "",
   "lost_card_dialog_flush_message": "Su tarjeta ha sido desactivada.\nPuede solicitar una nueva tarjeta ahora",
   "lost_card_dialog_flush_action_order": "PEDIR",
+  "link_launcher_title": "ID de transacción:",
+  "link_launcher_link_name": "",
   "locale": "es",
   "app_name": "Breez"
 }
