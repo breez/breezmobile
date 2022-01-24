@@ -1187,6 +1187,9 @@
       }
     }
   },
+  "escher_cash_out_amount": "Insira o montante:",
+  "escher_action_cancel": "CANCELAR",
+  "escher_action_approve": "APROVAR",
   "locale": "pt",
   "app_name": "Breez"
 }
