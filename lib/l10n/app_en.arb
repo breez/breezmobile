@@ -1152,6 +1152,7 @@
   "lost_card_dialog_flush_action_order": "ORDER",
   "link_launcher_title": "Transaction ID:",
   "link_launcher_link_name": "",
+  "keyboard_done_action": "Done",
   "locale": "en",
   "app_name": "Breez"
 }
