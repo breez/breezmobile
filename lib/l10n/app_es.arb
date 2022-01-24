@@ -1155,6 +1155,38 @@
   "keyboard_done_action": "Listo",
   "flushbar_default_message": "",
   "flushbar_default_action": "OK",
+  "fee_chooser_option_economy": "Económico",
+  "fee_chooser_option_regular": "Normal",
+  "fee_chooser_option_priority": "Prioridad",
+  "fee_chooser_estimated_delivery_more_than_day": "Estimado: más de un día",
+  "fee_chooser_estimated_delivery_hour": "Estimado: 1 hora",
+  "fee_chooser_estimated_delivery_hours": "Estimado: {hours} horas",
+  "@fee_chooser_estimated_delivery_hours": {
+    "placeholders": {
+      "hours": {
+        "type": "String",
+        "example": "6"
+      }
+    }
+  },
+  "fee_chooser_estimated_delivery_hour_range": "Estimado: {hours}-24 horas",
+  "@fee_chooser_estimated_delivery_hour_range": {
+    "placeholders": {
+      "hours": {
+        "type": "String",
+        "example": "6"
+      }
+    }
+  },
+  "fee_chooser_estimated_delivery_minutes": "Estimado: ~{minutes} minutos",
+  "@fee_chooser_estimated_delivery_minutes": {
+    "placeholders": {
+      "minutes": {
+        "type": "String",
+        "example": "10"
+      }
+    }
+  },
   "locale": "es",
   "app_name": "Breez"
 }
