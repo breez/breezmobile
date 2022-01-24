@@ -1143,6 +1143,13 @@
       }
     }
   },
+  "lost_card_dialog_title": "Lost or Stolen Card",
+  "lost_card_dialog_message": "If your card has been lost or stolen, you should deactivate it now to prevent it from being used by others. Deactivate means you won't be able to use any of your existing cards until you re-activate them.",
+  "lost_card_dialog_action_cancel": "CANCEL",
+  "lost_card_dialog_action_deactivate": "DEACTIVATE",
+  "lost_card_dialog_flush_title": "",
+  "lost_card_dialog_flush_message": "Your card has been deactivated.\nYou may order a new card now.",
+  "lost_card_dialog_flush_action_order": "ORDER",
   "locale": "en",
   "app_name": "Breez"
 }
