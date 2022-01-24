@@ -646,9 +646,7 @@ class HomeState extends State<Home> with WidgetsBindingObserver {
         showDialog(
           useRootNavigator: false,
           context: context,
-          builder: (_) => lostCard.LostCardDialog(
-            context: context,
-          ),
+          builder: (_) => lostCard.LostCardDialog(),
         );
       } else {
         Navigator.of(context).pushNamed(itemName).then((message) {
