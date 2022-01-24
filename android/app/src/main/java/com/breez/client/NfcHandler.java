@@ -107,6 +107,11 @@ public class NfcHandler implements MethodChannel.MethodCallHandler, FlutterPlugi
                     Log.d(TAG, "Discovered Lightning Link...");
                     return lnLink;
                 }
+                if (lnLink.startsWith("lnurlc:") || lnLink.startsWith("lnurlw:") ||
+                    lnLink.startsWith("lnurlp:") || lnLink.startsWith("keyauth:")) {
+                    Log.d(TAG, "Discovered LUD-17 Link...");
+                    return lnLink;
+                }
             } catch (UnsupportedEncodingException exc) {
                 Log.e(TAG, "Error", exc);
                 return "";
