@@ -1261,6 +1261,8 @@
   "breez_avatar_dialog_action_cancel": "CANCEL",
   "breez_avatar_dialog_action_save": "SAVE",
   "breez_avatar_dialog_error_upload": "Failed to upload profile picture",
+  "barcode_scanner_camera_message": "For QR scan, please grant Breez access to your camera.",
+  "barcode_scanner_app_settings": "App Settings",
   "locale": "en",
   "app_name": "Breez"
 }
