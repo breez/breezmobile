@@ -1190,6 +1190,25 @@
   "escher_cash_out_amount": "Anna nostettava määrä:",
   "escher_action_cancel": "Peruuta",
   "escher_action_approve": "HYVÄKSY",
+  "collapsible_list_default_value": "",
+  "collapsible_list_action_copy": "Kopioi {title}",
+  "@collapsible_list_action_copy": {
+    "placeholders": {
+      "title": {
+        "type": "String",
+        "example": "A title"
+      }
+    }
+  },
+  "collapsible_list_copied": "{title} kopioitiin leikepöydälle.",
+  "@collapsible_list_copied": {
+    "placeholders": {
+      "title": {
+        "type": "String",
+        "example": "A title"
+      }
+    }
+  },
   "locale": "fi",
   "app_name": "Breez"
 }
