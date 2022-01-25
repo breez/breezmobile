@@ -114,7 +114,7 @@
     }
   },
   "invoice_btc_address_deposit_address": "Endereço de Depósito",
-  "invoice_btc_address_deposit_address_copied": "O endereço de depósito foi copiado para a área de transferência..",
+  "invoice_btc_address_deposit_address_copied": "O endereço de depósito foi copiado para a área de transferência.",
   "invoice_btc_address_on_chain_begin": "Breez está usando Submarine Swaps para executar transações on-chain. Toque ",
   "invoice_btc_address_on_chain_here": "aqui",
   "invoice_btc_address_on_chain_end": " para ver o script associado a este endereço.",
@@ -1190,6 +1190,25 @@
   "escher_cash_out_amount": "Insira o montante:",
   "escher_action_cancel": "CANCELAR",
   "escher_action_approve": "APROVAR",
+  "collapsible_list_default_value": "",
+  "collapsible_list_action_copy": "Copiar {title}",
+  "@collapsible_list_action_copy": {
+    "placeholders": {
+      "title": {
+        "type": "String",
+        "example": "A title"
+      }
+    }
+  },
+  "collapsible_list_copied": "{title} foi copiado para a área de transferência.",
+  "@collapsible_list_copied": {
+    "placeholders": {
+      "title": {
+        "type": "String",
+        "example": "A title"
+      }
+    }
+  },
   "locale": "pt",
   "app_name": "Breez"
 }

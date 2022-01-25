@@ -1190,6 +1190,25 @@
   "escher_cash_out_amount": "Enter cash-out amount:",
   "escher_action_cancel": "CANCEL",
   "escher_action_approve": "APPROVE",
+  "collapsible_list_default_value": "",
+  "collapsible_list_action_copy": "Copy {title}",
+  "@collapsible_list_action_copy": {
+    "placeholders": {
+      "title": {
+        "type": "String",
+        "example": "A title"
+      }
+    }
+  },
+  "collapsible_list_copied": "{title} was copied to your clipboard.",
+  "@collapsible_list_copied": {
+    "placeholders": {
+      "title": {
+        "type": "String",
+        "example": "A title"
+      }
+    }
+  },
   "locale": "en",
   "app_name": "Breez"
 }
