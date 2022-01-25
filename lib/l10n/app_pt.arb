@@ -1211,6 +1211,50 @@
   },
   "close_popup_title": "Sair da Breez",
   "close_popup_message": "Você realmente deseja fechar a Breez?",
+  "breez_date_picker_day_and_date": "{day} {date}",
+  "@breez_date_picker_day_and_date": {
+    "placeholders": {
+      "day": {
+        "type": "String",
+        "example": "12"
+      },
+      "date": {
+        "type": "String",
+        "example": "12/12/2121"
+      }
+    }
+  },
+  "breez_date_picker_previous_month_tooltip": "{message} {date}",
+  "@breez_date_picker_previous_month_tooltip": {
+    "placeholders": {
+      "message": {
+        "type": "String",
+        "example": "Previous month"
+      },
+      "date": {
+        "type": "String",
+        "example": "12 2121"
+      }
+    }
+  },
+  "breez_date_picker_next_month_tooltip": "{message} {date}",
+  "@breez_date_picker_next_month_tooltip": {
+    "placeholders": {
+      "message": {
+        "type": "String",
+        "example": "Next month"
+      },
+      "date": {
+        "type": "String",
+        "example": "12 2121"
+      }
+    }
+  },
+  "breez_date_picker_error_initial_date_after": "A data inicial deve ser igual ou posterior à primeira data",
+  "breez_date_picker_error_initial_date_before": "A data inicial deve ser igual ou anterior à última data",
+  "breez_date_picker_error_initial_date_predicate": "A data inicial fornecida deve satisfazer o predicado de dia selecionável fornecido",
+  "breez_date_picker_error_initial_date_null": "A data inicial não pode ser nula",
+  "breez_date_picker_error_last_date_after": "A última data deve ser igual ou posterior à primeira data",
   "locale": "pt",
   "app_name": "Breez"
 }
