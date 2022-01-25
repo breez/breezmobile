@@ -1209,6 +1209,8 @@
       }
     }
   },
+  "close_popup_title": "Dejar Breez",
+  "close_popup_message": "¿Realmente desea cerrar Breez?",
   "locale": "es",
   "app_name": "Breez"
 }
