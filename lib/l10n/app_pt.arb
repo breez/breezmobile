@@ -1261,6 +1261,8 @@
   "breez_avatar_dialog_action_cancel": "CANCELAR",
   "breez_avatar_dialog_action_save": "SALVAR",
   "breez_avatar_dialog_error_upload": "Falha ao enviar a foto do perfil",
+  "barcode_scanner_camera_message": "Para o escaneamento do QR code, conceda a permissão da câmera.",
+  "barcode_scanner_app_settings": "Configurações do aplicativo",
   "locale": "pt",
   "app_name": "Breez"
 }
