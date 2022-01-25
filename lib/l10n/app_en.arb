@@ -1272,6 +1272,55 @@
   "utils_print_pdf_header_total": "Total",
   "utils_print_pdf_header_description": "Description:",
   "utils_print_pdf_header_payment_preimage": "Payment Preimage:",
+  "handler_check_version_action_update": "UPDATE",
+  "handler_check_version_message": "Please update Breez to the latest version.",
+  "handler_lnurl_error_link": "Link Error",
+  "handler_lnurl_error_process": "Failed to process link: {message}",
+  "@handler_lnurl_error_process": {
+    "placeholders": {
+      "message": {
+        "type": "String",
+        "example": "An error message"
+      }
+    }
+  },
+  "handler_lnurl_error_gift": "This gift has been redeemed!",
+  "handler_lnurl_login_anonymously": "Do you want to anonymously login to ",
+  "handler_lnurl_login_error_title": "Login Error",
+  "handler_lnurl_login_error_message": "Failed to log in.\n{message}",
+  "@handler_lnurl_login_error_message": {
+    "placeholders": {
+      "message": {
+        "type": "String",
+        "example": "An error message"
+      }
+    }
+  },
+  "handler_lnurl_login_error_unsupported": "Unsupported LNURL",
+  "handler_lnurl_open_channel_title": "Open Channel",
+  "handler_lnurl_open_channel_message": "Are you sure you want to open a channel with {host}?",
+  "@handler_lnurl_open_channel_message": {
+    "placeholders": {
+      "host": {
+        "type": "String",
+        "example": "A host"
+      }
+    }
+  },
+  "handler_lnurl_open_channel_action_cancel": "CANCEL",
+  "handler_lnurl_open_channel_error_title": "Open Channel Error",
+  "handler_lnurl_open_channel_error_message": "Failed to open channel.\n{message}",
+  "@handler_lnurl_open_channel_error_message": {
+    "placeholders": {
+      "message": {
+        "type": "String",
+        "example": "An error message"
+      }
+    }
+  },
+  "handler_podcast_error_load_episode": "Failed to load episode. Please check your connection.",
+  "handler_podcast_error_load_episode_fallback": "Failed to load podcast.",
+  "handler_sync_ui_message": "Breez is synchronizing to the Bitcoin network",
   "locale": "en",
   "app_name": "Breez"
 }

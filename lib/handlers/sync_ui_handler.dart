@@ -3,32 +3,37 @@ import 'package:breez/bloc/account/account_bloc.dart';
 import 'package:breez/bloc/account/account_model.dart';
 import 'package:breez/widgets/sync_loader.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class SyncUIHandler {
   final AccountBloc _accountBloc;
   final BuildContext _context;
   ModalRoute _syncUIRoute;
 
-  SyncUIHandler(this._accountBloc, this._context) {
+  SyncUIHandler(
+    this._accountBloc,
+    this._context,
+  ) {
     _accountBloc.accountStream.listen((acc) {
       showSyncUI(acc);
     });
   }
 
   void showSyncUI(AccountModel acc) {
+    final navigator = Navigator.of(_context);
     if (acc.syncUIState == SyncUIState.BLOCKING) {
       if (_syncUIRoute == null) {
-        _syncUIRoute = _createSyncRoute(_accountBloc);
-        Navigator.of(_context).push(_syncUIRoute);
+        _syncUIRoute = _createSyncRoute(_context, _accountBloc);
+        navigator.push(_syncUIRoute);
       }
     } else {
       if (_syncUIRoute != null) {
         // If we are not on top of the stack let's pop to get the animation
         if (_syncUIRoute.isCurrent) {
-          Navigator.of(this._context).pop();
+          navigator.pop();
         } else {
           // If we are hidden, just remove the route.
-          Navigator.of(this._context).removeRoute(_syncUIRoute);
+          navigator.removeRoute(_syncUIRoute);
         }
         _syncUIRoute = null;
       }
@@ -36,7 +41,8 @@ class SyncUIHandler {
   }
 }
 
-ModalRoute _createSyncRoute(AccountBloc accBloc) {
+ModalRoute _createSyncRoute(BuildContext context, AccountBloc accBloc) {
+  final texts = AppLocalizations.of(context);
   return SyncUIRoute((context) {
     return StreamBuilder<AccountModel>(
       stream: accBloc.accountStream,
@@ -44,11 +50,12 @@ ModalRoute _createSyncRoute(AccountBloc accBloc) {
         var account = snapshot.data;
         double progress = account?.syncProgress ?? 0;
         return TransparentRouteLoader(
-          message: "Breez is synchronizing to the Bitcoin network",
+          message: texts.handler_sync_ui_message,
           value: progress,
           opacity: 0.9,
-          onClose: () => accBloc.userActionsSink
-              .add(ChangeSyncUIState(SyncUIState.COLLAPSED)),
+          onClose: () => accBloc.userActionsSink.add(
+            ChangeSyncUIState(SyncUIState.COLLAPSED),
+          ),
         );
       },
     );
