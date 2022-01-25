@@ -1255,6 +1255,12 @@
   "breez_date_picker_error_initial_date_predicate": "Provided initial date must satisfy provided selectable day predicate",
   "breez_date_picker_error_initial_date_null": "Initial date picker mode must not be null",
   "breez_date_picker_error_last_date_after": "Last date must be on or after first date",
+  "breez_avatar_dialog_random": "RANDOM",
+  "breez_avatar_dialog_gallery": "GALLERY",
+  "breez_avatar_dialog_your_name": "Enter your name",
+  "breez_avatar_dialog_action_cancel": "CANCEL",
+  "breez_avatar_dialog_action_save": "SAVE",
+  "breez_avatar_dialog_error_upload": "Failed to upload profile picture",
   "locale": "fi",
   "app_name": "Breez"
 }
