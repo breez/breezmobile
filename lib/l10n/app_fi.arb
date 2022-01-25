@@ -1263,6 +1263,15 @@
   "breez_avatar_dialog_error_upload": "Failed to upload profile picture",
   "barcode_scanner_camera_message": "For QR scan, please grant Breez access to your camera.",
   "barcode_scanner_app_settings": "App Settings",
+  "utils_retry_failed": "Retry failed",
+  "utils_print_pdf_transaction_time": "Transaction Time",
+  "utils_print_pdf_header_item": "Item",
+  "utils_print_pdf_header_price": "Price",
+  "utils_print_pdf_header_quantity": "Quantity",
+  "utils_print_pdf_header_amount": "Amount",
+  "utils_print_pdf_header_total": "Total",
+  "utils_print_pdf_header_description": "Description:",
+  "utils_print_pdf_header_payment_preimage": "Payment Preimage:",
   "locale": "fi",
   "app_name": "Breez"
 }

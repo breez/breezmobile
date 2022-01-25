@@ -1,7 +1,12 @@
 import "dart:async";
 
-Future<dynamic> retry(Future<dynamic> f(),
-    {int tryLimit = 6, Duration interval}) async {
+import 'package:breez/utils/locale.dart';
+
+Future<dynamic> retry(
+  Future<dynamic> f(), {
+  int tryLimit = 6,
+  Duration interval,
+}) async {
   if (interval == null) interval = Duration(seconds: 10);
 
   for (int t = 0; t < tryLimit; t++) {
@@ -17,5 +22,5 @@ Future<dynamic> retry(Future<dynamic> f(),
   }
 
   // To prevent static warning
-  throw Exception("Retry failed");
+  throw Exception(getSystemAppLocalizations().utils_retry_failed);
 }
