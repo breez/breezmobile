@@ -1272,6 +1272,55 @@
   "utils_print_pdf_header_total": "Total",
   "utils_print_pdf_header_description": "Descripción:",
   "utils_print_pdf_header_payment_preimage": "Pre-imagen de pago:",
+  "handler_check_version_action_update": "ACTUALIZAR",
+  "handler_check_version_message": "Actualice Breez a la última versión.",
+  "handler_lnurl_error_link": "Error de enlace",
+  "handler_lnurl_error_process": "No se pudo procesar el enlace: {message}",
+  "@handler_lnurl_error_process": {
+    "placeholders": {
+      "message": {
+        "type": "String",
+        "example": "An error message"
+      }
+    }
+  },
+  "handler_lnurl_error_gift": "¡Este regalo ya ha sido canjeado!",
+  "handler_lnurl_login_anonymously": "¿Quieres iniciar sesión de forma anónima para ",
+  "handler_lnurl_login_error_title": "Error de inicio de sesión",
+  "handler_lnurl_login_error_message": "Error al iniciar sesión.\n{message}",
+  "@handler_lnurl_login_error_message": {
+    "placeholders": {
+      "message": {
+        "type": "String",
+        "example": "An error message"
+      }
+    }
+  },
+  "handler_lnurl_login_error_unsupported": "LNURL no soportado",
+  "handler_lnurl_open_channel_title": "Abrir canal",
+  "handler_lnurl_open_channel_message": "¿Seguro que quieres abrir un canal con {host}?",
+  "@handler_lnurl_open_channel_message": {
+    "placeholders": {
+      "host": {
+        "type": "String",
+        "example": "A host"
+      }
+    }
+  },
+  "handler_lnurl_open_channel_action_cancel": "CANCELAR",
+  "handler_lnurl_open_channel_error_title": "Error al abrir canal",
+  "handler_lnurl_open_channel_error_message": "No se pudo abrir el canal.\n{message}",
+  "@handler_lnurl_open_channel_error_message": {
+    "placeholders": {
+      "message": {
+        "type": "String",
+        "example": "An error message"
+      }
+    }
+  },
+  "handler_podcast_error_load_episode": "No se pudo cargar el episodio. Por favor, compruebe su conexión.",
+  "handler_podcast_error_load_episode_fallback": "No se pudo cargar el podcast.",
+  "handler_sync_ui_message": "Breez se está sincronizando con la red Bitcoin",
   "locale": "es",
   "app_name": "Breez"
 }
