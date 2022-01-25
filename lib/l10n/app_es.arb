@@ -1263,6 +1263,15 @@
   "breez_avatar_dialog_error_upload": "No se pudo cargar la foto de perfil",
   "barcode_scanner_camera_message": "Para escanear el código QR, conceda permiso a la cámara.",
   "barcode_scanner_app_settings": "Ajustes de aplicacion",
+  "utils_retry_failed": "Error al intentarlo de nuevo",
+  "utils_print_pdf_transaction_time": "Hora de la transacción",
+  "utils_print_pdf_header_item": "Articulo",
+  "utils_print_pdf_header_price": "Precio",
+  "utils_print_pdf_header_quantity": "Cantidad",
+  "utils_print_pdf_header_amount": "Monto",
+  "utils_print_pdf_header_total": "Total",
+  "utils_print_pdf_header_description": "Descripción:",
+  "utils_print_pdf_header_payment_preimage": "Pre-imagen de pago:",
   "locale": "es",
   "app_name": "Breez"
 }

@@ -630,7 +630,7 @@ class POSInvoiceState extends State<POSInvoice> with TickerProviderStateMixin {
                 submittedSale: submittedSale,
                 paymentInfo: paymentInfo,
               );
-              return PrintService(printParameters).printAsPDF();
+              return PrintService(printParameters).printAsPDF(context);
             },
           );
         }));

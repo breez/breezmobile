@@ -1263,6 +1263,15 @@
   "breez_avatar_dialog_error_upload": "Falha ao enviar a foto do perfil",
   "barcode_scanner_camera_message": "Para o escaneamento do QR code, conceda a permissão da câmera.",
   "barcode_scanner_app_settings": "Configurações do aplicativo",
+  "utils_retry_failed": "Falha ao tentar novamente",
+  "utils_print_pdf_transaction_time": "Hora da transação",
+  "utils_print_pdf_header_item": "Item",
+  "utils_print_pdf_header_price": "Preço",
+  "utils_print_pdf_header_quantity": "Quantidade",
+  "utils_print_pdf_header_amount": "Quantia",
+  "utils_print_pdf_header_total": "Total",
+  "utils_print_pdf_header_description": "Descrição:",
+  "utils_print_pdf_header_payment_preimage": "Pré-imagem de pagamento:",
   "locale": "pt",
   "app_name": "Breez"
 }
