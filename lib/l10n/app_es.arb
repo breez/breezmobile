@@ -1255,6 +1255,12 @@
   "breez_date_picker_error_initial_date_predicate": "La fecha de inicio dada debe satisfacer el predicado de día seleccionable dado",
   "breez_date_picker_error_initial_date_null": "La fecha de inicio no puede ser nula",
   "breez_date_picker_error_last_date_after": "La última fecha debe ser igual o posterior a la primera fecha",
+  "breez_avatar_dialog_random": "ALEATORIO",
+  "breez_avatar_dialog_gallery": "GALERÍA",
+  "breez_avatar_dialog_your_name": "Escribe tu nombre",
+  "breez_avatar_dialog_action_cancel": "CANCELAR",
+  "breez_avatar_dialog_action_save": "AHORRAR",
+  "breez_avatar_dialog_error_upload": "No se pudo cargar la foto de perfil",
   "locale": "es",
   "app_name": "Breez"
 }
