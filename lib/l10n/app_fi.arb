@@ -1143,24 +1143,24 @@
       }
     }
   },
-  "lost_card_dialog_title": "Lost or Stolen Card",
-  "lost_card_dialog_message": "If your card has been lost or stolen, you should deactivate it now to prevent it from being used by others. Deactivate means you won't be able to use any of your existing cards until you re-activate them.",
-  "lost_card_dialog_action_cancel": "CANCEL",
-  "lost_card_dialog_action_deactivate": "DEACTIVATE",
+  "lost_card_dialog_title": "Kortti kadonnut tai varastettu",
+  "lost_card_dialog_message": "Jos maksukorttisi on kadonnut tai varastettu, kannattaa se mitätöidä, jotta muut eivät voi käyttää sitä. Mitätöinti tarkoittaa että et voi käyttää olemassa olevaa korttiasi, ennen kuin peruutat mitätöinnin tai saat uuden kortin.",
+  "lost_card_dialog_action_cancel": "Peruuta",
+  "lost_card_dialog_action_deactivate": "POISTA KÄYTÖSTÄ",
   "lost_card_dialog_flush_title": "",
-  "lost_card_dialog_flush_message": "Your card has been deactivated.\nYou may order a new card now.",
-  "lost_card_dialog_flush_action_order": "ORDER",
-  "link_launcher_title": "Transaction ID:",
+  "lost_card_dialog_flush_message": "Korttisi on mitätöity.\nNyt voit tilata uuden kortin.",
+  "lost_card_dialog_flush_action_order": "TILAA",
+  "link_launcher_title": "Tapahtumatunnus ID:",
   "link_launcher_link_name": "",
-  "keyboard_done_action": "Done",
+  "keyboard_done_action": "Valmis",
   "flushbar_default_message": "",
   "flushbar_default_action": "OK",
-  "fee_chooser_option_economy": "Economy",
-  "fee_chooser_option_regular": "Regular",
-  "fee_chooser_option_priority": "Priority",
-  "fee_chooser_estimated_delivery_more_than_day": "Estimated Delivery: more than a day",
-  "fee_chooser_estimated_delivery_hour": "Estimated Delivery: 1 hour",
-  "fee_chooser_estimated_delivery_hours": "Estimated Delivery: {hours} hour",
+  "fee_chooser_option_economy": "Taloudellinen",
+  "fee_chooser_option_regular": "Normaali",
+  "fee_chooser_option_priority": "Kiirellinen",
+  "fee_chooser_estimated_delivery_more_than_day": "Arvioitu tapahtuman toteutumisaika: yli vuorokausi",
+  "fee_chooser_estimated_delivery_hour": "Arvioitu tapahtuman toteutumisaika: tunti",
+  "fee_chooser_estimated_delivery_hours": "Arvioitu tapahtuman toteutumisaika: {hours} tuntia",
   "@fee_chooser_estimated_delivery_hours": {
     "placeholders": {
       "hours": {
@@ -1169,7 +1169,7 @@
       }
     }
   },
-  "fee_chooser_estimated_delivery_hour_range": "Estimated Delivery: {hours}-24 hours",
+  "fee_chooser_estimated_delivery_hour_range": "Arvioitu tapahtuman toteutumisaika: {hours}-24 tuntia",
   "@fee_chooser_estimated_delivery_hour_range": {
     "placeholders": {
       "hours": {
@@ -1178,7 +1178,7 @@
       }
     }
   },
-  "fee_chooser_estimated_delivery_minutes": "Estimated Delivery: ~{minutes} minutes",
+  "fee_chooser_estimated_delivery_minutes": "Arvioitu tapahtuman toteutumisaika: ~{minutes} minuuttia",
   "@fee_chooser_estimated_delivery_minutes": {
     "placeholders": {
       "minutes": {
@@ -1187,9 +1187,9 @@
       }
     }
   },
-  "escher_cash_out_amount": "Enter cash-out amount:",
-  "escher_action_cancel": "CANCEL",
-  "escher_action_approve": "APPROVE",
+  "escher_cash_out_amount": "Anna nostettava määrä:",
+  "escher_action_cancel": "Peruuta",
+  "escher_action_approve": "HYVÄKSY",
   "locale": "fi",
   "app_name": "Breez"
 }
