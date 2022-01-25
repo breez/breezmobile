@@ -1143,7 +1143,6 @@
       }
     }
   },
-<<<<<<< HEAD
   "lost_card_dialog_title": "Kortti kadonnut tai varastettu",
   "lost_card_dialog_message": "Jos maksukorttisi on kadonnut tai varastettu, kannattaa se mitätöidä, jotta muut eivät voi käyttää sitä. Mitätöinti tarkoittaa että et voi käyttää olemassa olevaa korttiasi, ennen kuin peruutat mitätöinnin tai saat uuden kortin.",
   "lost_card_dialog_action_cancel": "Peruuta",
@@ -1264,8 +1263,6 @@
   "breez_avatar_dialog_error_upload": "Profiilikuvan lataus epäonnistui",
   "barcode_scanner_camera_message": "Anna Breezelle oikeus kameran käyttöön jotta voit lukea QR-koodeja.",
   "barcode_scanner_app_settings": "Sovelluksen asetukset",
-=======
->>>>>>> parent of 99c312ff (Merge branch 'breez:master' into master)
   "locale": "fi",
   "app_name": "Breez"
 }
