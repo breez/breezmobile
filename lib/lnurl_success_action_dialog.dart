@@ -4,17 +4,16 @@ import 'package:breez/services/injector.dart';
 import 'package:breez/widgets/error_dialog.dart';
 import 'package:breez/widgets/flushbar.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:breez/l10n/locales.dart';
 import 'package:share_extend/share_extend.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 void showLNURLSuccessAction(BuildContext context, SuccessAction sa) {
-  final texts = AppLocalizations.of(context);
   final AutoSizeGroup _labelGroup = AutoSizeGroup();
 
   promptMessage(
     context,
-    texts.ln_url_success_action_title,
+    context.l10n.ln_url_success_action_title,
     Container(
       width: MediaQuery.of(context).size.width,
       child: Column(
@@ -85,15 +84,12 @@ class _URLRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final texts = AppLocalizations.of(context);
-    final themeData = Theme.of(context);
-
-    final _expansionTileTheme = themeData.copyWith(
-      unselectedWidgetColor: themeData.primaryTextTheme.button.color,
+    final _expansionTileTheme = Theme.of(context).copyWith(
+      unselectedWidgetColor: Theme.of(context).primaryTextTheme.button.color,
       colorScheme: ColorScheme.dark(
-        secondary: themeData.primaryTextTheme.button.color,
+        secondary: Theme.of(context).primaryTextTheme.button.color,
       ),
-      dividerColor: themeData.backgroundColor,
+      dividerColor: Theme.of(context).backgroundColor,
     );
     return Theme(
       data: _expansionTileTheme,
@@ -131,7 +127,7 @@ class _URLRow extends StatelessWidget {
                     alignment: Alignment.centerRight,
                     padding: EdgeInsets.zero,
                     iconSize: 16.0,
-                    color: themeData.primaryTextTheme.button.color,
+                    color: Theme.of(context).primaryTextTheme.button.color,
                     icon: Icon(
                       IconData(0xe90b, fontFamily: 'icomoon'),
                     ),
@@ -139,7 +135,7 @@ class _URLRow extends StatelessWidget {
                       ServiceInjector().device.setClipboardText(sharedValue);
                       showFlushbar(
                         context,
-                        message: texts.ln_url_success_action_link_copied,
+                        message: context.l10n.ln_url_success_action_link_copied,
                         duration: Duration(seconds: 4),
                       );
                     },
@@ -147,7 +143,7 @@ class _URLRow extends StatelessWidget {
                   IconButton(
                     padding: EdgeInsets.zero,
                     iconSize: 16.0,
-                    color: themeData.primaryTextTheme.button.color,
+                    color: Theme.of(context).primaryTextTheme.button.color,
                     icon: Icon(Icons.share),
                     onPressed: () {
                       ShareExtend.share(sharedValue, "text");

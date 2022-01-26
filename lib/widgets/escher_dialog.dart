@@ -4,7 +4,7 @@ import 'package:breez/bloc/user_profile/currency.dart';
 import 'package:breez/theme_data.dart' as theme;
 import 'package:breez/widgets/amount_form_field.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:breez/l10n/locales.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import 'keyboard_done_action.dart';
@@ -99,14 +99,11 @@ class EscherDialogState extends State<EscherDialog> {
   }
 
   Widget _buildRequestPayTextWidget(BuildContext context) {
-    final themeData = Theme.of(context);
-    final texts = AppLocalizations.of(context);
-
     return Padding(
       padding: EdgeInsets.only(top: 36, bottom: 8),
       child: Text(
-        texts.escher_cash_out_amount,
-        style: themeData.primaryTextTheme.headline3.copyWith(
+        context.l10n.escher_cash_out_amount,
+        style: Theme.of(context).primaryTextTheme.headline3.copyWith(
           fontSize: 16,
         ),
         textAlign: TextAlign.center,
@@ -115,22 +112,19 @@ class EscherDialogState extends State<EscherDialog> {
   }
 
   Widget _buildAmountWidget(BuildContext context, AccountModel account) {
-    final texts = AppLocalizations.of(context);
-    final themeData = Theme.of(context);
-
     return Theme(
-      data: themeData.copyWith(
+      data: Theme.of(context).copyWith(
         inputDecorationTheme: InputDecorationTheme(
           enabledBorder: UnderlineInputBorder(
             borderSide: theme.greyBorderSide,
           ),
         ),
-        hintColor: themeData.dialogTheme.contentTextStyle.color,
+        hintColor: Theme.of(context).dialogTheme.contentTextStyle.color,
         colorScheme: ColorScheme.dark(
-          primary: themeData.textTheme.button.color,
+          primary: Theme.of(context).textTheme.button.color,
         ),
-        primaryColor: themeData.textTheme.button.color,
-        errorColor: theme.themeId == "BLUE" ? Colors.red : themeData.errorColor,
+        primaryColor: Theme.of(context).textTheme.button.color,
+        errorColor: theme.themeId == "BLUE" ? Colors.red : Theme.of(context).errorColor,
       ),
       child: Form(
         autovalidateMode: AutovalidateMode.always,
@@ -141,13 +135,12 @@ class EscherDialogState extends State<EscherDialog> {
             height: 80.0,
             child: AmountFormField(
               context: context,
-              texts: texts,
               accountModel: account,
-              iconColor: themeData.primaryIconTheme.color,
+              iconColor: Theme.of(context).primaryIconTheme.color,
               focusNode: _amountFocusNode,
               controller: _invoiceAmountController,
               validatorFn: account.validateOutgoingPayment,
-              style: themeData.dialogTheme.contentTextStyle.copyWith(
+              style: Theme.of(context).dialogTheme.contentTextStyle.copyWith(
                 height: 1.0,
               ),
             ),
@@ -158,15 +151,12 @@ class EscherDialogState extends State<EscherDialog> {
   }
 
   Widget _buildActions(BuildContext context, AccountModel account) {
-    final texts = AppLocalizations.of(context);
-    final themeData = Theme.of(context);
-
     List<Widget> actions = [
       SimpleDialogOption(
         onPressed: () => Navigator.pop(context),
         child: Text(
-          texts.escher_action_cancel,
-          style: themeData.primaryTextTheme.button,
+          context.l10n.escher_action_cancel,
+          style: Theme.of(context).primaryTextTheme.button,
         ),
       ),
     ];
@@ -191,8 +181,8 @@ class EscherDialogState extends State<EscherDialog> {
               );
             },
             child: Text(
-              texts.escher_action_approve,
-              style: themeData.primaryTextTheme.button,
+              context.l10n.escher_action_approve,
+              style: Theme.of(context).primaryTextTheme.button,
             ),
           ),
         );
@@ -200,7 +190,7 @@ class EscherDialogState extends State<EscherDialog> {
     }
 
     return Theme(
-      data: themeData.copyWith(
+      data: Theme.of(context).copyWith(
         splashColor: Colors.transparent,
         highlightColor: Colors.transparent,
       ),

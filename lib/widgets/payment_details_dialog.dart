@@ -9,6 +9,7 @@ import 'package:breez/bloc/blocs_provider.dart';
 import 'package:breez/bloc/lsp/lsp_bloc.dart';
 import 'package:breez/bloc/lsp/lsp_model.dart';
 import 'package:breez/bloc/user_profile/currency.dart';
+import 'package:breez/l10n/locales.dart';
 import 'package:breez/routes/home/payment_item_avatar.dart';
 import 'package:breez/services/breezlib/data/rpc.pb.dart';
 import 'package:breez/services/injector.dart';
@@ -17,9 +18,7 @@ import 'package:breez/utils/date.dart';
 import 'package:breez/widgets/loader.dart';
 import 'package:collection/collection.dart';
 import 'package:fixnum/fixnum.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:http/http.dart' as http;
 import 'package:share_extend/share_extend.dart';
 
@@ -34,10 +33,6 @@ Future<Null> showPaymentDetailsDialog(
   BuildContext context,
   PaymentInfo paymentInfo,
 ) {
-  final themeData = Theme.of(context);
-  var mediaQuery = MediaQuery.of(context);
-  final texts = AppLocalizations.of(context);
-
   if (paymentInfo.type == PaymentType.CLOSED_CHANNEL) {
     final lspBloc = AppBlocsProvider.of<LSPBloc>(context);
     final accountBloc = AppBlocsProvider.of<AccountBloc>(context);
@@ -49,9 +44,9 @@ Future<Null> showPaymentDetailsDialog(
           titlePadding: EdgeInsets.fromLTRB(24.0, 22.0, 0.0, 16.0),
           title: Text(
             paymentInfo.pending
-                ? texts.payment_details_dialog_closed_channel_title_pending
-                : texts.payment_details_dialog_closed_channel_title,
-            style: themeData.dialogTheme.titleTextStyle,
+                ? context.l10n.payment_details_dialog_closed_channel_title_pending
+                : context.l10n.payment_details_dialog_closed_channel_title,
+            style: Theme.of(context).dialogTheme.titleTextStyle,
           ),
           contentPadding: EdgeInsets.fromLTRB(24.0, 8.0, 24.0, 24.0),
           content: StreamBuilder<LSPStatus>(
@@ -68,8 +63,8 @@ Future<Null> showPaymentDetailsDialog(
             SimpleDialogOption(
               onPressed: () => Navigator.pop(ctx),
               child: Text(
-                texts.payment_details_dialog_closed_channel_ok,
-                style: themeData.primaryTextTheme.button,
+                context.l10n.payment_details_dialog_closed_channel_ok,
+                style: Theme.of(context).primaryTextTheme.button,
               ),
             ),
           ],
@@ -90,11 +85,11 @@ Future<Null> showPaymentDetailsDialog(
               ),
             ),
             color: theme.themeId == "BLUE"
-                ? themeData.primaryColorDark
-                : themeData.canvasColor,
+                ? Theme.of(context).primaryColorDark
+                : Theme.of(context).canvasColor,
           ),
           height: 64.0,
-          width: mediaQuery.size.width,
+          width: MediaQuery.of(context).size.width,
         ),
         Padding(
           padding: EdgeInsets.only(top: 32.0),
@@ -110,7 +105,7 @@ Future<Null> showPaymentDetailsDialog(
     contentPadding: EdgeInsets.fromLTRB(8.0, 16.0, 8.0, 16.0),
     content: SingleChildScrollView(
       child: Container(
-        width: mediaQuery.size.width,
+        width: MediaQuery.of(context).size.width,
         child: Column(
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -128,7 +123,7 @@ Future<Null> showPaymentDetailsDialog(
                     ),
                     child: AutoSizeText(
                       paymentInfo.dialogTitle.replaceAll("\n", " "),
-                      style: themeData.primaryTextTheme.headline5,
+                      style: Theme.of(context).primaryTextTheme.headline5,
                       textAlign: TextAlign.center,
                       overflow: TextOverflow.ellipsis,
                       maxLines: 1,
@@ -147,7 +142,7 @@ Future<Null> showPaymentDetailsDialog(
                         child: SingleChildScrollView(
                           child: AutoSizeText(
                             paymentInfo.description,
-                            style: themeData.primaryTextTheme.headline4,
+                            style: Theme.of(context).primaryTextTheme.headline4,
                             textAlign: paymentInfo.description.length > 40 &&
                                     !paymentInfo.description.contains("\n")
                                 ? TextAlign.start
@@ -168,8 +163,8 @@ Future<Null> showPaymentDetailsDialog(
                         Padding(
                           padding: const EdgeInsets.only(right: 8.0),
                           child: AutoSizeText(
-                            texts.payment_details_dialog_amount_title,
-                            style: themeData.primaryTextTheme.headline4,
+                            context.l10n.payment_details_dialog_amount_title,
+                            style: Theme.of(context).primaryTextTheme.headline4,
                             textAlign: TextAlign.left,
                             maxLines: 1,
                             group: _labelGroup,
@@ -181,8 +176,7 @@ Future<Null> showPaymentDetailsDialog(
                             reverse: true,
                             child: _amountText(
                               paymentInfo,
-                              texts,
-                              themeData,
+                              context,
                             ),
                           ),
                         ),
@@ -200,8 +194,8 @@ Future<Null> showPaymentDetailsDialog(
                         Padding(
                           padding: const EdgeInsets.only(right: 8.0),
                           child: AutoSizeText(
-                            texts.payment_details_dialog_date_and_time,
-                            style: themeData.primaryTextTheme.headline4,
+                            context.l10n.payment_details_dialog_date_and_time,
+                            style: Theme.of(context).primaryTextTheme.headline4,
                             textAlign: TextAlign.left,
                             maxLines: 1,
                             group: _labelGroup,
@@ -218,7 +212,7 @@ Future<Null> showPaymentDetailsDialog(
                                   paymentInfo.creationTimestamp.toInt() * 1000,
                                 ),
                               ),
-                              style: themeData.primaryTextTheme.headline3,
+                              style: Theme.of(context).primaryTextTheme.headline3,
                               textAlign: TextAlign.right,
                               maxLines: 1,
                               group: _valueGroup,
@@ -240,8 +234,8 @@ Future<Null> showPaymentDetailsDialog(
                         Padding(
                           padding: const EdgeInsets.only(right: 8.0),
                           child: AutoSizeText(
-                            texts.payment_details_dialog_expiration,
-                            style: themeData.primaryTextTheme.headline4,
+                            context.l10n.payment_details_dialog_expiration,
+                            style: Theme.of(context).primaryTextTheme.headline4,
                             textAlign: TextAlign.left,
                             maxLines: 1,
                             group: _labelGroup,
@@ -260,7 +254,7 @@ Future<Null> showPaymentDetailsDialog(
                                       1000,
                                 ),
                               ),
-                              style: themeData.primaryTextTheme.headline3,
+                              style: Theme.of(context).primaryTextTheme.headline3,
                               textAlign: TextAlign.right,
                               maxLines: 1,
                               group: _valueGroup,
@@ -273,25 +267,24 @@ Future<Null> showPaymentDetailsDialog(
             if (paymentInfo.lnurlPayInfo != null &&
                 paymentInfo.lnurlPayInfo.comment != '')
               ShareablePaymentRow(
-                title: texts.payment_details_dialog_share_comment,
+                title: context.l10n.payment_details_dialog_share_comment,
                 sharedValue: paymentInfo.lnurlPayInfo.comment,
               ),
             if (paymentInfo.type == PaymentType.SENT &&
                 paymentInfo.lnurlPayInfo != null) ...<Widget>[
               if (paymentInfo.lnurlPayInfo.lightningAddress.isNotEmpty)
                 ShareablePaymentRow(
-                  title: texts.payment_details_dialog_share_lightning_address,
+                  title: context.l10n.payment_details_dialog_share_lightning_address,
                   sharedValue: paymentInfo.lnurlPayInfo.lightningAddress,
                 ),
               ..._getLNUrlSuccessActionForPayment(
                 context,
                 paymentInfo.lnurlPayInfo?.successAction,
-                texts,
               )
             ],
             ..._getPaymentInfoDetails(
+              context,
               paymentInfo,
-              texts,
             ),
           ],
         ),
@@ -313,17 +306,16 @@ Future<Null> showPaymentDetailsDialog(
 
 Widget _amountText(
   PaymentInfo paymentInfo,
-  AppLocalizations texts,
-  ThemeData themeData,
+  BuildContext context,
 ) {
   final amount = paymentInfo.currency.format(paymentInfo.amount);
   final text = (paymentInfo.type == PaymentType.SENT ||
           paymentInfo.type == PaymentType.WITHDRAWAL)
-      ? texts.payment_details_dialog_amount_negative(amount)
-      : texts.payment_details_dialog_amount_positive(amount);
+      ? context.l10n.payment_details_dialog_amount_negative(amount)
+      : context.l10n.payment_details_dialog_amount_positive(amount);
   return AutoSizeText(
     text,
-    style: themeData.primaryTextTheme.headline3,
+    style: Theme.of(context).primaryTextTheme.headline3,
     textAlign: TextAlign.right,
     maxLines: 1,
     group: _valueGroup,
@@ -331,13 +323,13 @@ Widget _amountText(
 }
 
 List<Widget> _getPaymentInfoDetails(
+    BuildContext context,
   PaymentInfo paymentInfo,
-  AppLocalizations texts,
 ) {
   if (paymentInfo is StreamedPaymentInfo) {
     return _getStreamedPaymentInfoDetails(paymentInfo);
   }
-  return _getSinglePaymentInfoDetails(paymentInfo, texts);
+  return _getSinglePaymentInfoDetails(context, paymentInfo);
 }
 
 List<Widget> _getStreamedPaymentInfoDetails(StreamedPaymentInfo paymentInfo) {
@@ -361,48 +353,47 @@ List<Widget> _getStreamedPaymentInfoDetails(StreamedPaymentInfo paymentInfo) {
 List<Widget> _getLNUrlSuccessActionForPayment(
   BuildContext context,
   SuccessAction sa,
-  AppLocalizations texts,
 ) {
   return <Widget>[
     if (sa.tag == 'url') ...[
       ShareablePaymentRow(
-        title: texts.payment_details_dialog_action_for_payment_description,
+        title: context.l10n.payment_details_dialog_action_for_payment_description,
         sharedValue: sa.description,
       ),
       ShareablePaymentRow(
-        title: texts.payment_details_dialog_action_for_payment_url,
+        title: context.l10n.payment_details_dialog_action_for_payment_url,
         sharedValue: sa.url, // TODO Hyperlink.
       ),
     ],
     if (sa.tag == 'message' || sa.tag == 'aes')
       ShareablePaymentRow(
-        title: texts.payment_details_dialog_action_for_payment_message,
+        title: context.l10n.payment_details_dialog_action_for_payment_message,
         sharedValue: sa.message,
       ),
   ];
 }
 
 List<Widget> _getSinglePaymentInfoDetails(
+    BuildContext context,
   PaymentInfo paymentInfo,
-  AppLocalizations texts,
 ) {
   return List<Widget>.from({
     paymentInfo.preimage == null || paymentInfo.preimage.isEmpty
         ? Container()
         : ShareablePaymentRow(
-            title: texts.payment_details_dialog_single_info_pre_image,
+            title: context.l10n.payment_details_dialog_single_info_pre_image,
             sharedValue: paymentInfo.preimage,
           ),
     paymentInfo.destination == null || paymentInfo.destination.isEmpty
         ? Container()
         : ShareablePaymentRow(
-            title: texts.payment_details_dialog_single_info_node_id,
+            title: context.l10n.payment_details_dialog_single_info_node_id,
             sharedValue: paymentInfo.destination,
           ),
     paymentInfo.redeemTxID == null || paymentInfo.redeemTxID.isEmpty
         ? Container()
         : ShareablePaymentRow(
-            title: texts.payment_details_dialog_single_info_on_chain,
+            title: context.l10n.payment_details_dialog_single_info_on_chain,
             sharedValue: paymentInfo.redeemTxID,
           ),
   });
@@ -420,18 +411,16 @@ class ShareablePaymentRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final themeData = Theme.of(context);
-    final texts = AppLocalizations.of(context);
     final _expansionTileTheme =
-        themeData.copyWith(dividerColor: themeData.backgroundColor);
+        Theme.of(context).copyWith(dividerColor: Theme.of(context).backgroundColor);
     return Theme(
       data: _expansionTileTheme,
       child: ExpansionTile(
-        iconColor: themeData.primaryTextTheme.button.color,
-        collapsedIconColor: themeData.primaryTextTheme.button.color,
+        iconColor: Theme.of(context).primaryTextTheme.button.color,
+        collapsedIconColor: Theme.of(context).primaryTextTheme.button.color,
         title: AutoSizeText(
           title,
-          style: themeData.primaryTextTheme.headline4,
+          style: Theme.of(context).primaryTextTheme.headline4,
           maxLines: 1,
           group: _labelGroup,
         ),
@@ -448,7 +437,7 @@ class ShareablePaymentRow extends StatelessWidget {
                     textAlign: TextAlign.left,
                     overflow: TextOverflow.clip,
                     maxLines: 4,
-                    style: themeData.primaryTextTheme.headline3
+                    style: Theme.of(context).primaryTextTheme.headline3
                         .copyWith(fontSize: 10),
                   ),
                 ),
@@ -464,11 +453,11 @@ class ShareablePaymentRow extends StatelessWidget {
                       IconButton(
                         alignment: Alignment.centerRight,
                         padding: EdgeInsets.only(right: 8.0),
-                        tooltip: texts.payment_details_dialog_copy_action(
+                        tooltip: context.l10n.payment_details_dialog_copy_action(
                           title,
                         ),
                         iconSize: 16.0,
-                        color: themeData.primaryTextTheme.button.color,
+                        color: Theme.of(context).primaryTextTheme.button.color,
                         icon: Icon(
                           IconData(0xe90b, fontFamily: 'icomoon'),
                         ),
@@ -479,7 +468,7 @@ class ShareablePaymentRow extends StatelessWidget {
                           Navigator.pop(context);
                           showFlushbar(
                             context,
-                            message: texts.payment_details_dialog_copied(
+                            message: context.l10n.payment_details_dialog_copied(
                               title,
                             ),
                             duration: Duration(seconds: 4),
@@ -488,9 +477,9 @@ class ShareablePaymentRow extends StatelessWidget {
                       ),
                       IconButton(
                         padding: EdgeInsets.only(right: 8.0),
-                        tooltip: texts.payment_details_dialog_share_transaction,
+                        tooltip: context.l10n.payment_details_dialog_share_transaction,
                         iconSize: 16.0,
-                        color: themeData.primaryTextTheme.button.color,
+                        color: Theme.of(context).primaryTextTheme.button.color,
                         icon: Icon(Icons.share),
                         onPressed: () {
                           ShareExtend.share(sharedValue, "text");
@@ -624,16 +613,14 @@ class ClosedChannelPaymentDetailsState
 
   @override
   Widget build(BuildContext context) {
-    final themeData = Theme.of(context);
-    final texts = AppLocalizations.of(context);
     if (!widget.closedChannel.pending) {
       return Column(
         mainAxisSize: MainAxisSize.min,
         children: <Widget>[
           RichText(
             text: TextSpan(
-              style: themeData.dialogTheme.contentTextStyle,
-              text: texts.payment_details_dialog_closed_channel_local_wallet,
+              style: Theme.of(context).dialogTheme.contentTextStyle,
+              text: context.l10n.payment_details_dialog_closed_channel_local_wallet,
             ),
           ),
           TxWidget(
@@ -649,22 +636,22 @@ class ClosedChannelPaymentDetailsState
 
     int roundedHoursToUnlock = hoursToUnlock.round();
     String hoursToUnlockStr = roundedHoursToUnlock > 1
-        ? texts.payment_details_dialog_closed_channel_about_hours(
+        ? context.l10n.payment_details_dialog_closed_channel_about_hours(
             roundedHoursToUnlock.toString(),
           )
-        : texts.payment_details_dialog_closed_channel_about_hour;
+        : context.l10n.payment_details_dialog_closed_channel_about_hour;
     String estimation = lockHeight > 0 && hoursToUnlock > 0
-        ? texts.payment_details_dialog_closed_channel_transfer_estimation(
+        ? context.l10n.payment_details_dialog_closed_channel_transfer_estimation(
             lockHeight.toString(), // TODO use int when update flutter to 2.5
             hoursToUnlockStr,
           )
-        : texts.payment_details_dialog_closed_channel_transfer_no_estimation;
+        : context.l10n.payment_details_dialog_closed_channel_transfer_no_estimation;
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: <Widget>[
         RichText(
           text: TextSpan(
-            style: themeData.dialogTheme.contentTextStyle,
+            style: Theme.of(context).dialogTheme.contentTextStyle,
             text: estimation,
           ),
         ),
@@ -702,17 +689,17 @@ class ClosedChannelPaymentDetailsState
                         }).catchError((err) {
                           promptError(
                             context,
-                            texts.payment_details_dialog_internal_error,
+                            context.l10n.payment_details_dialog_internal_error,
                             Text(
                               err.toString(),
-                              style: themeData.dialogTheme.contentTextStyle,
+                              style: Theme.of(context).dialogTheme.contentTextStyle,
                             ),
                           );
                         });
                       },
                       child: Text(
-                        texts.payment_details_dialog_refresh_information,
-                        style: themeData.primaryTextTheme.button,
+                        context.l10n.payment_details_dialog_refresh_information,
+                        style: Theme.of(context).primaryTextTheme.button,
                       ),
                     ),
                   ),
@@ -724,17 +711,15 @@ class ClosedChannelPaymentDetailsState
   }
 
   Future<bool> _promptForRestart() {
-    final themeData = Theme.of(context);
-    final texts = AppLocalizations.of(context);
     return promptAreYouSure(
       context,
       null,
       Text(
-        texts.payment_details_dialog_restart_text,
-        style: themeData.dialogTheme.contentTextStyle,
+        context.l10n.payment_details_dialog_restart_text,
+        style: Theme.of(context).dialogTheme.contentTextStyle,
       ),
-      cancelText: texts.payment_details_dialog_restart_cancel,
-      okText: texts.payment_details_dialog_restart_exit_breez,
+      cancelText: context.l10n.payment_details_dialog_restart_cancel,
+      okText: context.l10n.payment_details_dialog_restart_exit_breez,
     ).then((shouldExit) {
       if (shouldExit) {
         exit(0);
@@ -761,7 +746,6 @@ class TxWidget extends StatelessWidget {
     if (this.txURL == null) {
       return SizedBox();
     }
-    final texts = AppLocalizations.of(context);
     var textStyle = DefaultTextStyle.of(context).style;
     textStyle = textStyle.copyWith(
       fontSize: textStyle.fontSize * 0.8,
@@ -774,7 +758,7 @@ class TxWidget extends StatelessWidget {
           padding: EdgeInsets.only(top: 20.0),
           child: LinkLauncher(
             linkTitle: txLabel ??
-                texts.payment_details_dialog_transaction_label_default,
+                context.l10n.payment_details_dialog_transaction_label_default,
             textStyle: textStyle,
             linkName: this.txID,
             linkAddress: this.txURL,
@@ -782,7 +766,7 @@ class TxWidget extends StatelessWidget {
               ServiceInjector().device.setClipboardText(this.txID);
               showFlushbar(
                 context,
-                message: texts.payment_details_dialog_transaction_id_copied,
+                message: context.l10n.payment_details_dialog_transaction_id_copied,
                 duration: Duration(seconds: 3),
               );
             },
@@ -806,17 +790,16 @@ class _Destination extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final themeData = Theme.of(context);
     return Theme(
-      data: themeData.copyWith(
-        dividerColor: themeData.backgroundColor,
+      data: Theme.of(context).copyWith(
+        dividerColor: Theme.of(context).backgroundColor,
       ),
       child: ExpansionTile(
-        iconColor: themeData.primaryTextTheme.button.color,
-        collapsedIconColor: themeData.primaryTextTheme.button.color,
+        iconColor: Theme.of(context).primaryTextTheme.button.color,
+        collapsedIconColor: Theme.of(context).primaryTextTheme.button.color,
         title: AutoSizeText(
           title,
-          style: themeData.primaryTextTheme.headline4,
+          style: Theme.of(context).primaryTextTheme.headline4,
           textAlign: TextAlign.left,
           maxLines: 1,
           group: _labelGroup,
@@ -831,7 +814,7 @@ class _Destination extends StatelessWidget {
                   padding: EdgeInsets.only(left: 16.0, right: 16.0),
                   child: AutoSizeText(
                     currency.format(amount),
-                    style: themeData.primaryTextTheme.headline3,
+                    style: Theme.of(context).primaryTextTheme.headline3,
                     textAlign: TextAlign.right,
                     maxLines: 1,
                     group: _valueGroup,

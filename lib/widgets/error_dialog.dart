@@ -1,7 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:breez/l10n/locales.dart';
 
 Future<Null> promptError(
   BuildContext context,
@@ -13,9 +13,6 @@ Future<Null> promptError(
   Function okFunc,
   bool disableBack = false,
 }) {
-  final texts = AppLocalizations.of(context);
-  final themeData = Theme.of(context);
-
   bool canPop = !disableBack;
   Future<bool> Function() canPopCallback = () => Future.value(canPop);
 
@@ -32,7 +29,7 @@ Future<Null> promptError(
               ? null
               : Text(
                   title,
-                  style: themeData.dialogTheme.titleTextStyle,
+                  style: Theme.of(context).dialogTheme.titleTextStyle,
                 ),
           content: SingleChildScrollView(
             child: body,
@@ -47,7 +44,7 @@ Future<Null> promptError(
                         fontFamily: 'IBMPlexSans',
                         fontSize: 16.4,
                         letterSpacing: 0.0,
-                        color: themeData.dialogTheme.titleTextStyle.color,
+                        color: Theme.of(context).dialogTheme.titleTextStyle.color,
                       ),
                     ),
                     onPressed: () {
@@ -58,8 +55,8 @@ Future<Null> promptError(
                 : Container(),
             TextButton(
               child: Text(
-                okText ?? texts.error_dialog_default_action_ok,
-                style: themeData.primaryTextTheme.button,
+                okText ?? context.l10n.error_dialog_default_action_ok,
+                style: Theme.of(context).primaryTextTheme.button,
               ),
               onPressed: () {
                 canPop = true;
@@ -86,14 +83,11 @@ Future<bool> promptAreYouSure(
   String cancelText,
   TextStyle textStyle = const TextStyle(color: Colors.white),
 }) {
-  final texts = AppLocalizations.of(context);
-  final themeData = Theme.of(context);
-
   Widget titleWidget = title == null
       ? null
       : Text(
           title,
-          style: themeData.dialogTheme.titleTextStyle,
+          style: Theme.of(context).dialogTheme.titleTextStyle,
         );
   if (titleWidget != null && wideTitle) {
     titleWidget = Container(
@@ -114,8 +108,8 @@ Future<bool> promptAreYouSure(
         actions: [
           TextButton(
             child: Text(
-              cancelText ?? texts.error_dialog_default_action_no,
-              style: themeData.primaryTextTheme.button,
+              cancelText ?? context.l10n.error_dialog_default_action_no,
+              style: Theme.of(context).primaryTextTheme.button,
             ),
             onPressed: () {
               Navigator.of(context).pop(false);
@@ -123,8 +117,8 @@ Future<bool> promptAreYouSure(
           ),
           TextButton(
             child: Text(
-              okText ?? texts.error_dialog_default_action_yes,
-              style: themeData.primaryTextTheme.button,
+              okText ?? context.l10n.error_dialog_default_action_yes,
+              style: Theme.of(context).primaryTextTheme.button,
             ),
             onPressed: () => Navigator.of(context).pop(true),
           ),
@@ -143,14 +137,11 @@ Future<bool> promptMessage(
   String closeText,
   TextStyle textStyle = const TextStyle(color: Colors.white),
 }) {
-  final texts = AppLocalizations.of(context);
-  final themeData = Theme.of(context);
-
   Widget titleWidget = title == null
       ? null
       : Text(
           title,
-          style: themeData.dialogTheme.titleTextStyle,
+          style: Theme.of(context).dialogTheme.titleTextStyle,
         );
   if (titleWidget != null && wideTitle) {
     titleWidget = Container(
@@ -171,8 +162,8 @@ Future<bool> promptMessage(
         actions: [
           TextButton(
             child: Text(
-              closeText ?? texts.error_dialog_default_action_close,
-              style: themeData.primaryTextTheme.button,
+              closeText ?? context.l10n.error_dialog_default_action_close,
+              style: Theme.of(context).primaryTextTheme.button,
             ),
             onPressed: () => Navigator.of(context).pop(false),
           ),

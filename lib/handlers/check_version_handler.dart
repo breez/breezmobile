@@ -6,15 +6,13 @@ import 'package:breez/widgets/no_connection_dialog.dart';
 import 'package:flushbar/flushbar.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:breez/l10n/locales.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 void checkVersionDialog(
   BuildContext context,
   UserProfileBloc userProfileBloc,
 ) {
-  final texts = AppLocalizations.of(context);
-
   CheckVersion action = CheckVersion();
   userProfileBloc.userActionsSink.add(action);
   action.future.catchError((err) {
@@ -31,7 +29,7 @@ void checkVersionDialog(
     } else if (err.contains('bad version')) {
       showFlushbar(
         context,
-        buttonText: texts.handler_check_version_action_update,
+        buttonText: context.l10n.handler_check_version_action_update,
         onDismiss: () {
           if (defaultTargetPlatform == TargetPlatform.iOS) {
             launch("https://testflight.apple.com/join/wPju2Du7");
@@ -44,7 +42,7 @@ void checkVersionDialog(
         position: FlushbarPosition.TOP,
         duration: Duration.zero,
         messageWidget: Text(
-          texts.handler_check_version_message,
+          context.l10n.handler_check_version_message,
           style: theme.snackBarStyle,
           textAlign: TextAlign.center,
         ),

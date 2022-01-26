@@ -20,7 +20,7 @@ import 'package:breez/widgets/static_loader.dart';
 import 'package:breez/widgets/warning_box.dart';
 import 'package:fixnum/fixnum.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:breez/l10n/locales.dart';
 
 class WithdrawFundsPage extends StatefulWidget {
   final Future Function(Int64 amount, String destAddress, bool isMax) onNext;
@@ -77,23 +77,20 @@ class WithdrawFundsPageState extends State<WithdrawFundsPage> {
 
   @override
   Widget build(BuildContext context) {
-    final texts = AppLocalizations.of(context);
-    final themeData = Theme.of(context);
-
     final reverseSwapBloc = AppBlocsProvider.of<ReverseSwapBloc>(context);
     final accountBloc = AppBlocsProvider.of<AccountBloc>(context);
 
     return Scaffold(
       appBar: AppBar(
-        iconTheme: themeData.appBarTheme.iconTheme,
-        textTheme: themeData.appBarTheme.textTheme,
-        backgroundColor: themeData.canvasColor,
+        iconTheme: Theme.of(context).appBarTheme.iconTheme,
+        textTheme: Theme.of(context).appBarTheme.textTheme,
+        backgroundColor: Theme.of(context).canvasColor,
         leading: backBtn.BackButton(
           onPressed: () => Navigator.of(context).pop(),
         ),
         title: Text(
           widget.title,
-          style: themeData.appBarTheme.textTheme.headline6,
+          style: Theme.of(context).appBarTheme.textTheme.headline6,
         ),
         elevation: 0.0,
       ),
@@ -113,7 +110,7 @@ class WithdrawFundsPageState extends State<WithdrawFundsPage> {
                   ),
                   child: Text(
                     widget.optionalMessage,
-                    style: themeData.textTheme.headline6,
+                    style: Theme.of(context).textTheme.headline6,
                   ),
                 );
           List<Widget> amountWidget = [];
@@ -121,7 +118,6 @@ class WithdrawFundsPageState extends State<WithdrawFundsPage> {
             amountWidget.add(AmountFormField(
               readOnly: fetching || _isMax,
               context: context,
-              texts: texts,
               accountModel: acc,
               focusNode: _amountFocusNode,
               controller: _amountController,
@@ -129,12 +125,12 @@ class WithdrawFundsPageState extends State<WithdrawFundsPage> {
                 String err = acc.validateOutgoingPayment(amount);
                 if (err == null) {
                   if (amount < widget.policy.minValue) {
-                    err = texts.withdraw_funds_error_min_value(
+                    err = context.l10n.withdraw_funds_error_min_value(
                       acc.currency.format(widget.policy.minValue),
                     );
                   }
                   if (amount > widget.policy.maxValue) {
-                    err = texts.withdraw_funds_error_max_value(
+                    err = context.l10n.withdraw_funds_error_max_value(
                       acc.currency.format(widget.policy.maxValue + 1),
                     );
                   }
@@ -147,7 +143,7 @@ class WithdrawFundsPageState extends State<WithdrawFundsPage> {
               contentPadding: EdgeInsets.zero,
               title: Container(
                 child: AutoSizeText(
-                  texts.withdraw_funds_use_all_funds,
+                  context.l10n.withdraw_funds_use_all_funds,
                   style: TextStyle(color: Colors.white),
                   maxLines: 1,
                   minFontSize: MinFontSize(context).minFontSize,
@@ -188,7 +184,7 @@ class WithdrawFundsPageState extends State<WithdrawFundsPage> {
                       readOnly: fetching,
                       controller: _addressController,
                       decoration: InputDecoration(
-                        labelText: texts.withdraw_funds_btc_address,
+                        labelText: context.l10n.withdraw_funds_btc_address,
                         suffixIcon: IconButton(
                           padding: EdgeInsets.only(top: 21.0),
                           alignment: Alignment.bottomRight,
@@ -199,14 +195,14 @@ class WithdrawFundsPageState extends State<WithdrawFundsPage> {
                             width: 24.0,
                             height: 24.0,
                           ),
-                          tooltip: texts.withdraw_funds_scan_barcode,
+                          tooltip: context.l10n.withdraw_funds_scan_barcode,
                           onPressed: () => _scanBarcode(context, acc),
                         ),
                       ),
                       style: theme.FieldTextStyle.textStyle,
                       validator: (value) {
                         if (_addressValidated == null) {
-                          return texts.withdraw_funds_error_invalid_address;
+                          return context.l10n.withdraw_funds_error_invalid_address;
                         }
                         return null;
                       },
@@ -220,7 +216,7 @@ class WithdrawFundsPageState extends State<WithdrawFundsPage> {
                     ...amountWidget,
                     Container(
                       padding: EdgeInsets.only(top: 36.0),
-                      child: _buildAvailableBTC(texts, acc),
+                      child: _buildAvailableBTC(acc),
                     ),
                     SizedBox(height: 40.0),
                     !fetching
@@ -232,7 +228,7 @@ class WithdrawFundsPageState extends State<WithdrawFundsPage> {
                               Container(
                                 child: Loader(
                                   strokeWidth: 2.0,
-                                  color: themeData.colorScheme.onSurface
+                                  color: Theme.of(context).colorScheme.onSurface
                                       .withOpacity(0.5),
                                 ),
                               ),
@@ -253,11 +249,11 @@ class WithdrawFundsPageState extends State<WithdrawFundsPage> {
     );
   }
 
-  Widget _buildAvailableBTC(AppLocalizations texts, AccountModel acc) {
+  Widget _buildAvailableBTC(AccountModel acc) {
     return Row(
       children: [
         Text(
-          texts.withdraw_funds_balance,
+          context.l10n.withdraw_funds_balance,
           style: theme.textStyle,
         ),
         Padding(
@@ -309,13 +305,12 @@ class WithdrawFundsPageState extends State<WithdrawFundsPage> {
   }
 
   Future _scanBarcode(BuildContext context, AccountModel account) async {
-    final texts = AppLocalizations.of(context);
     FocusScope.of(context).requestFocus(FocusNode());
     String barcode = await Navigator.pushNamed<String>(context, "/qr_scan");
     if (barcode.isEmpty) {
       showFlushbar(
         context,
-        message: texts.withdraw_funds_error_qr_code_not_detected,
+        message: context.l10n.withdraw_funds_error_qr_code_not_detected,
       );
       return;
     }
@@ -376,7 +371,6 @@ class _NextButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final texts = AppLocalizations.of(context);
     return StreamBuilder<AccountModel>(
       stream: accountBloc.accountStream,
       builder: (context, snapshot) {
@@ -392,7 +386,7 @@ class _NextButton extends StatelessWidget {
                       height: 48.0,
                       width: 168.0,
                       child: SubmitButton(
-                        texts.withdraw_funds_action_next,
+                        context.l10n.withdraw_funds_action_next,
                         acc == null ? null : () => onPressed(acc),
                       ),
                     )

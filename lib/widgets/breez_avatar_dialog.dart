@@ -9,7 +9,7 @@ import 'package:breez/theme_data.dart' as theme;
 import 'package:breez/utils/min_font_size.dart';
 import 'package:breez/widgets/breez_avatar.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:breez/l10n/locales.dart';
 import 'package:image/image.dart' as DartImage;
 import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
@@ -49,10 +49,6 @@ Widget breezAvatarDialog(BuildContext context, UserProfileBloc userBloc) {
     },
     child: StatefulBuilder(
       builder: (context, setState) {
-        final themeData = Theme.of(context);
-        final queryData = MediaQuery.of(context);
-        final texts = AppLocalizations.of(context);
-        final navigator = Navigator.of(context);
         final minFontSize = MinFontSize(context);
 
         return AlertDialog(
@@ -68,12 +64,12 @@ Widget breezAvatarDialog(BuildContext context, UserProfileBloc userBloc) {
                     ),
                   ),
                   color: theme.themeId == "BLUE"
-                      ? themeData.primaryColorDark
-                      : themeData.canvasColor,
+                      ? Theme.of(context).primaryColorDark
+                      : Theme.of(context).canvasColor,
                 ),
               ),
               Container(
-                width: queryData.size.width,
+                width: MediaQuery.of(context).size.width,
                 height: 100.0,
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -88,7 +84,7 @@ Widget breezAvatarDialog(BuildContext context, UserProfileBloc userBloc) {
                           ),
                         ),
                         child: AutoSizeText(
-                          texts.breez_avatar_dialog_random,
+                          context.l10n.breez_avatar_dialog_random,
                           style: theme.whiteButtonStyle,
                           maxLines: 1,
                           minFontSize: minFontSize.minFontSize,
@@ -119,11 +115,11 @@ Widget breezAvatarDialog(BuildContext context, UserProfileBloc userBloc) {
                                         child: CircularProgressIndicator(
                                           valueColor:
                                               AlwaysStoppedAnimation<Color>(
-                                            themeData
+                                            Theme.of(context)
                                                 .primaryTextTheme.button.color,
                                           ),
                                           backgroundColor:
-                                              themeData.backgroundColor,
+                                              Theme.of(context).backgroundColor,
                                         ),
                                       ),
                                       padding: EdgeInsets.only(top: 26.0),
@@ -153,7 +149,7 @@ Widget breezAvatarDialog(BuildContext context, UserProfileBloc userBloc) {
                           ),
                         ),
                         child: AutoSizeText(
-                          texts.breez_avatar_dialog_gallery,
+                          context.l10n.breez_avatar_dialog_gallery,
                           style: theme.whiteButtonStyle,
                           maxLines: 1,
                           minFontSize: minFontSize.minFontSize,
@@ -179,15 +175,15 @@ Widget breezAvatarDialog(BuildContext context, UserProfileBloc userBloc) {
               children: [
                 Theme(
                   data: ThemeData(
-                    primaryColor: themeData.primaryTextTheme.bodyText2.color,
-                    hintColor: themeData.primaryTextTheme.bodyText2.color,
+                    primaryColor: Theme.of(context).primaryTextTheme.bodyText2.color,
+                    hintColor: Theme.of(context).primaryTextTheme.bodyText2.color,
                   ),
                   child: TextField(
                     enabled: !_isUploading,
-                    style: themeData.primaryTextTheme.bodyText2,
+                    style: Theme.of(context).primaryTextTheme.bodyText2,
                     controller: _nameInputController,
                     decoration: InputDecoration(
-                      hintText: texts.breez_avatar_dialog_your_name,
+                      hintText: context.l10n.breez_avatar_dialog_your_name,
                     ),
                     onSubmitted: (text) {},
                   ),
@@ -198,15 +194,15 @@ Widget breezAvatarDialog(BuildContext context, UserProfileBloc userBloc) {
           actions: [
             TextButton(
               child: Text(
-                texts.breez_avatar_dialog_action_cancel,
-                style: themeData.primaryTextTheme.button,
+                context.l10n.breez_avatar_dialog_action_cancel,
+                style: Theme.of(context).primaryTextTheme.button,
               ),
-              onPressed: _isUploading ? null : () => navigator.pop(),
+              onPressed: _isUploading ? null : () => Navigator.of(context).pop(),
             ),
             TextButton(
               child: Text(
-                texts.breez_avatar_dialog_action_save,
-                style: themeData.primaryTextTheme.button,
+                context.l10n.breez_avatar_dialog_action_save,
+                style: Theme.of(context).primaryTextTheme.button,
               ),
               onPressed: _isUploading
                   ? null
@@ -226,7 +222,7 @@ Widget breezAvatarDialog(BuildContext context, UserProfileBloc userBloc) {
                         userBloc.userSink.add(_currentSettings.copyWith(
                           name: userName,
                         ));
-                        navigator.pop();
+                        Navigator.of(context).pop();
                       } catch (e) {
                         setState(() {
                           _isUploading = false;
@@ -234,7 +230,7 @@ Widget breezAvatarDialog(BuildContext context, UserProfileBloc userBloc) {
                         });
                         showFlushbar(
                           context,
-                          message: texts.breez_avatar_dialog_error_upload,
+                          message: context.l10n.breez_avatar_dialog_error_upload,
                         );
                       }
                     },

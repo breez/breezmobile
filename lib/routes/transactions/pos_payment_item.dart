@@ -9,7 +9,7 @@ import 'package:breez/utils/date.dart';
 import 'package:breez/widgets/payment_details_dialog.dart';
 import 'package:breez/widgets/route.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:breez/l10n/locales.dart';
 
 class PosPaymentItem extends StatelessWidget {
   final PaymentInfo _paymentInfo;
@@ -60,7 +60,6 @@ class PosPaymentItem extends StatelessWidget {
   }
 
   Widget _valueText(BuildContext context) {
-    final texts = AppLocalizations.of(context);
     final isSent = _paymentInfo.type == PaymentType.SENT;
     final isWithdrawal = _paymentInfo.type == PaymentType.WITHDRAWAL;
     final value = _paymentInfo.currency.format(
@@ -70,8 +69,8 @@ class PosPaymentItem extends StatelessWidget {
 
     return Text(
       isSent || isWithdrawal
-          ? texts.pos_transactions_item_negative(value)
-          : texts.pos_transactions_item_positive(value),
+          ? context.l10n.pos_transactions_item_negative(value)
+          : context.l10n.pos_transactions_item_positive(value),
       style: isSent
           ? theme.posWithdrawalTransactionAmountStyle
           : theme.transactionAmountStyle,

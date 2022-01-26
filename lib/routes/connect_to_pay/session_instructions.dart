@@ -18,7 +18,6 @@ class SessionInstructions extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final themeData = Theme.of(context);
     final hasActions = _actions != null && _actions.length > 0;
 
     return Stack(
@@ -26,7 +25,7 @@ class SessionInstructions extends StatelessWidget {
       children: [
         Container(
           height: 100.0,
-          color: themeData.primaryColorDark,
+          color: Theme.of(context).primaryColorDark,
           padding: EdgeInsets.only(
             left: 16.0,
             top: 0.0,

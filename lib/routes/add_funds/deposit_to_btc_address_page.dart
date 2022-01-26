@@ -9,7 +9,7 @@ import 'package:breez/widgets/single_button_bottom_bar.dart';
 import 'package:breez/widgets/warning_box.dart';
 import 'package:fixnum/fixnum.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:breez/l10n/locales.dart';
 
 import 'address_widget.dart';
 import 'conditional_deposit.dart';
@@ -38,14 +38,11 @@ class DepositToBTCAddressPageState extends State<DepositToBTCAddressPage> {
 
   @override
   Widget build(BuildContext context) {
-    final texts = AppLocalizations.of(context);
-    final themeData = Theme.of(context);
-
     final accountBloc = AppBlocsProvider.of<AccountBloc>(context);
     final lspBloc = AppBlocsProvider.of<LSPBloc>(context);
 
     return ConditionalDeposit(
-      title: texts.invoice_btc_address_title,
+      title: context.l10n.invoice_btc_address_title,
       enabledChild: StreamBuilder<LSPStatus>(
         stream: lspBloc.lspStatusStream,
         builder: (context, lspSnapshot) {
@@ -58,13 +55,13 @@ class DepositToBTCAddressPageState extends State<DepositToBTCAddressPage> {
                   return Material(
                     child: Scaffold(
                       appBar: AppBar(
-                        iconTheme: themeData.appBarTheme.iconTheme,
-                        textTheme: themeData.appBarTheme.textTheme,
-                        backgroundColor: themeData.canvasColor,
+                        iconTheme: Theme.of(context).appBarTheme.iconTheme,
+                        textTheme: Theme.of(context).appBarTheme.textTheme,
+                        backgroundColor: Theme.of(context).canvasColor,
                         leading: backBtn.BackButton(),
                         title: Text(
-                          texts.invoice_btc_address_title,
-                          style: themeData.appBarTheme.textTheme.headline6,
+                          context.l10n.invoice_btc_address_title,
+                          style: Theme.of(context).appBarTheme.textTheme.headline6,
                         ),
                         elevation: 0.0,
                       ),
@@ -74,7 +71,7 @@ class DepositToBTCAddressPageState extends State<DepositToBTCAddressPage> {
                         snapshot.data,
                         lspSnapshot.data,
                         snapshot.hasError
-                            ? texts.invoice_btc_address_network_error
+                            ? context.l10n.invoice_btc_address_network_error
                             : null,
                       ),
                       bottomNavigationBar: _buildBottomBar(
@@ -101,8 +98,6 @@ class DepositToBTCAddressPageState extends State<DepositToBTCAddressPage> {
     LSPStatus lspStatus,
     String error,
   ) {
-    final texts = AppLocalizations.of(context);
-
     String errorMessage;
     if (error != null) {
       errorMessage = error;
@@ -142,7 +137,7 @@ class DepositToBTCAddressPageState extends State<DepositToBTCAddressPage> {
                     children: [
                       Text(
                         _sendMessage(
-                          texts,
+                          context,
                           account,
                           lspInfo,
                           minAllowedDeposit,
@@ -160,7 +155,7 @@ class DepositToBTCAddressPageState extends State<DepositToBTCAddressPage> {
   }
 
   String _sendMessage(
-    AppLocalizations texts,
+    BuildContext context,
     AccountModel accountModel,
     LSPInfo lspInfo,
     Int64 minAllowedDeposit,
@@ -189,7 +184,7 @@ class DepositToBTCAddressPageState extends State<DepositToBTCAddressPage> {
     );
 
     if (connected && showMinFeeMessage) {
-      return texts.invoice_btc_address_warning_with_min_fee_account_connected(
+      return context.l10n.invoice_btc_address_warning_with_min_fee_account_connected(
         minSats,
         maxSats,
         setUpFee,
@@ -197,7 +192,7 @@ class DepositToBTCAddressPageState extends State<DepositToBTCAddressPage> {
         liquidity,
       );
     } else if (connected && !showMinFeeMessage) {
-      return texts
+      return context.l10n
           .invoice_btc_address_warning_without_min_fee_account_connected(
         minSats,
         maxSats,
@@ -205,7 +200,7 @@ class DepositToBTCAddressPageState extends State<DepositToBTCAddressPage> {
         liquidity,
       );
     } else if (!connected && showMinFeeMessage) {
-      return texts
+      return context.l10n
           .invoice_btc_address_warning_with_min_fee_account_not_connected(
         minSats,
         maxSats,
@@ -213,7 +208,7 @@ class DepositToBTCAddressPageState extends State<DepositToBTCAddressPage> {
         minFeeFormatted,
       );
     } else {
-      return texts
+      return context.l10n
           .invoice_btc_address_warning_without_min_fee_account_not_connected(
         minSats,
         maxSats,
@@ -240,13 +235,11 @@ class DepositToBTCAddressPageState extends State<DepositToBTCAddressPage> {
     AccountModel account, {
     hasError = false,
   }) {
-    final texts = AppLocalizations.of(context);
-
     if (hasError || response?.errorMessage?.isNotEmpty == true) {
       return SingleButtonBottomBar(
         text: hasError
-            ? texts.invoice_btc_address_action_retry
-            : texts.invoice_btc_address_action_close,
+            ? context.l10n.invoice_btc_address_action_retry
+            : context.l10n.invoice_btc_address_action_close,
         onPressed: () {
           if (hasError) {
             _addFundsBloc.addFundRequestSink.add(true);

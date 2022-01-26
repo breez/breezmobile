@@ -4,7 +4,7 @@ import 'dart:io';
 import 'package:breez/logger.dart';
 import 'package:breez/widgets/error_dialog.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:breez/l10n/locales.dart';
 import 'package:image/image.dart' as DartImage;
 import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
@@ -42,8 +42,6 @@ class AvatarPicker extends StatelessWidget {
   }
 
   Widget _getPickerWidget(BuildContext context) {
-    final texts = AppLocalizations.of(context);
-
     return Container(
       child: Column(
         mainAxisSize: MainAxisSize.max,
@@ -58,8 +56,8 @@ class AvatarPicker extends StatelessWidget {
           ),
           Text(
             imagePath == null
-                ? texts.avatar_picker_action_set_photo
-                : texts.avatar_picker_action_change_photo,
+                ? context.l10n.avatar_picker_action_set_photo
+                : context.l10n.avatar_picker_action_change_photo,
             style: TextStyle(
               fontSize: 10.0,
               color: Color.fromRGBO(255, 255, 255, 0.88),
@@ -115,14 +113,13 @@ class AvatarPicker extends StatelessWidget {
 
   void _readFile(BuildContext context, File file) {
     if (file == null) return;
-    final texts = AppLocalizations.of(context);
     file
         .readAsBytes()
         .then(_scaleAndFormatPNG)
         .then(onImageSelected)
         .catchError((e) => promptError(
               context,
-              texts.avatar_picker_error_select_image,
+              context.l10n.avatar_picker_error_select_image,
               Text(e.toString()),
             ));
   }

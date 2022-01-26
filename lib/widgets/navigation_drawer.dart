@@ -11,7 +11,7 @@ import 'package:breez/widgets/breez_avatar_dialog.dart';
 import 'package:breez/widgets/breez_drawer_header.dart';
 import 'package:breez/widgets/error_dialog.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:breez/l10n/locales.dart';
 
 class DrawerItemConfig {
   final GlobalKey key;
@@ -63,7 +63,6 @@ class NavigationDrawer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final themeData = Theme.of(context);
     final userProfileBloc = AppBlocsProvider.of<UserProfileBloc>(context);
 
     List<Widget> children = [
@@ -80,7 +79,7 @@ class NavigationDrawer extends StatelessWidget {
     });
 
     return Theme(
-      data: themeData.copyWith(
+      data: Theme.of(context).copyWith(
         canvasColor: theme.customData[theme.themeId].navigationDrawerBgColor,
       ),
       child: Drawer(
@@ -250,18 +249,15 @@ Future _changeTheme(
   UserProfileBloc userProfileBloc,
   BuildContext context,
 ) async {
-  final themeData = Theme.of(context);
-  final texts = AppLocalizations.of(context);
-
   var action = ChangeTheme(themeId);
   userProfileBloc.userActionsSink.add(action);
   action.future.then((_) {}).catchError((err) {
     promptError(
       context,
-      texts.home_drawer_error_internal,
+      context.l10n.home_drawer_error_internal,
       Text(
         err.toString(),
-        style: themeData.dialogTheme.contentTextStyle,
+        style: Theme.of(context).dialogTheme.contentTextStyle,
       ),
     );
   });
@@ -291,12 +287,10 @@ Padding _buildUsername(
   BuildContext context,
   AsyncSnapshot<BreezUserModel> snapshot,
 ) {
-  final texts = AppLocalizations.of(context);
-
   return Padding(
     padding: EdgeInsets.only(top: 8.0),
     child: AutoSizeText(
-      snapshot.data.name ?? texts.home_drawer_error_no_name,
+      snapshot.data.name ?? context.l10n.home_drawer_error_no_name,
       style: theme.navigationDrawerHandleStyle,
     ),
   );
@@ -308,12 +302,11 @@ Widget _actionTile(
   Function onItemSelected, {
   bool subTile,
 }) {
-  final themeData = Theme.of(context);
   TextStyle itemStyle = theme.drawerItemTextStyle;
 
   Color color;
   if (action.disabled) {
-    color = themeData.disabledColor;
+    color = Theme.of(context).disabledColor;
     itemStyle = itemStyle.copyWith(color: color);
   }
   return Padding(
@@ -326,7 +319,7 @@ Widget _actionTile(
           ? null
           : BoxDecoration(
               color: action.isSelected
-                  ? themeData.primaryColorLight
+                  ? Theme.of(context).primaryColorLight
                   : Colors.transparent,
               borderRadius: BorderRadius.horizontal(
                 right: Radius.circular(32),
@@ -386,9 +379,8 @@ class _ExpansionTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final themeData = Theme.of(context);
-    final _expansionTileTheme = themeData.copyWith(
-      dividerColor: themeData.canvasColor,
+    final _expansionTileTheme = Theme.of(context).copyWith(
+      dividerColor: Theme.of(context).canvasColor,
     );
     return Theme(
       data: _expansionTileTheme,

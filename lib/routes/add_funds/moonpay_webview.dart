@@ -3,11 +3,11 @@ import 'dart:convert' as JSON;
 import 'package:breez/bloc/account/add_funds_bloc.dart';
 import 'package:breez/bloc/account/moonpay_order.dart';
 import 'package:breez/bloc/blocs_provider.dart';
+import 'package:breez/l10n/locales.dart';
 import 'package:breez/theme_data.dart' as theme;
 import 'package:breez/widgets/loader.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart' show SystemChannels, rootBundle;
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
 import 'conditional_deposit.dart';
@@ -47,17 +47,13 @@ class MoonpayWebViewState extends State<MoonpayWebView> {
 
   @override
   Widget build(BuildContext context) {
-    final texts = AppLocalizations.of(context);
     return ConditionalDeposit(
-      title: texts.add_funds_moonpay_title,
+      title: context.l10n.add_funds_moonpay_title,
       enabledChild: _buildWebView(context),
     );
   }
 
   Widget _buildWebView(BuildContext context) {
-    final texts = AppLocalizations.of(context);
-    final themeData = Theme.of(context);
-
     return Material(
       child: Scaffold(
         appBar: AppBar(
@@ -65,18 +61,18 @@ class MoonpayWebViewState extends State<MoonpayWebView> {
             IconButton(
               icon: Icon(
                 Icons.close,
-                color: themeData.iconTheme.color,
+                color: Theme.of(context).iconTheme.color,
               ),
               onPressed: () => Navigator.pop(context),
             )
           ],
           automaticallyImplyLeading: false,
-          iconTheme: themeData.appBarTheme.iconTheme,
-          textTheme: themeData.appBarTheme.textTheme,
-          backgroundColor: themeData.canvasColor,
+          iconTheme: Theme.of(context).appBarTheme.iconTheme,
+          textTheme: Theme.of(context).appBarTheme.textTheme,
+          backgroundColor: Theme.of(context).canvasColor,
           title: Text(
-            texts.add_funds_moonpay_title,
-            style: themeData.appBarTheme.textTheme.headline6,
+            context.l10n.add_funds_moonpay_title,
+            style: Theme.of(context).appBarTheme.textTheme.headline6,
           ),
           elevation: 0.0,
         ),
@@ -136,7 +132,6 @@ class MoonpayWebViewState extends State<MoonpayWebView> {
   }
 
   Widget _buildLoadingScreen(BuildContext context) {
-    final texts = AppLocalizations.of(context);
     return _error != null
         ? Column(
             mainAxisSize: MainAxisSize.max,
@@ -149,7 +144,7 @@ class MoonpayWebViewState extends State<MoonpayWebView> {
                   right: 30.0,
                 ),
                 child: Text(
-                  texts.add_funds_moonpay_error_address,
+                  context.l10n.add_funds_moonpay_error_address,
                   textAlign: TextAlign.center,
                 ),
               ),

@@ -8,7 +8,7 @@ import 'package:breez/widgets/loading_animated_text.dart';
 import 'package:breez/widgets/payment_request_dialog.dart';
 import 'package:breez/widgets/sync_loader.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:breez/l10n/locales.dart';
 import 'package:rxdart/rxdart.dart';
 
 const PAYMENT_LIST_ITEM_HEIGHT = 72.0;
@@ -144,9 +144,8 @@ class ProcessingPaymentDialogState extends State<ProcessingPaymentDialog>
   }
 
   void _initializeTransitionAnimation() {
-    final queryData = MediaQuery.of(context);
-    final statusBarHeight = queryData.padding.top;
-    final safeArea = queryData.size.height - statusBarHeight;
+    final statusBarHeight = MediaQuery.of(context).padding.top;
+    final safeArea = MediaQuery.of(context).size.height - statusBarHeight;
     // We subtract dialog size from safe area and divide by half because the dialog
     // is at the center of the screen (distances to top and bottom are equal).
     RenderBox box = _dialogKey.currentContext.findRenderObject();
@@ -185,20 +184,17 @@ class ProcessingPaymentDialogState extends State<ProcessingPaymentDialog>
           : _createContentDialog(context);
     }
 
-    final texts = AppLocalizations.of(context);
-    final themeData = Theme.of(context);
-
     return AlertDialog(
       content: SyncProgressLoader(
         value: channelsSyncProgress ?? 0,
-        title: texts.processing_payment_dialog_synchronizing,
+        title: context.l10n.processing_payment_dialog_synchronizing,
       ),
       actions: [
         FlatButton(
           onPressed: _closeDialog,
           child: Text(
-            texts.processing_payment_dialog_action_close,
-            style: themeData.primaryTextTheme.button,
+            context.l10n.processing_payment_dialog_action_close,
+            style: Theme.of(context).primaryTextTheme.button,
           ),
         ),
       ],
@@ -242,9 +238,6 @@ class ProcessingPaymentDialogState extends State<ProcessingPaymentDialog>
   }
 
   Widget _createAnimatedContent(BuildContext context) {
-    final themeData = Theme.of(context);
-    final queryData = MediaQuery.of(context);
-
     return Opacity(
       opacity: opacityAnimation.value,
       child: Material(
@@ -255,7 +248,7 @@ class ProcessingPaymentDialogState extends State<ProcessingPaymentDialog>
               rect: transitionAnimation,
               child: Container(
                 height: startHeight,
-                width: queryData.size.width,
+                width: MediaQuery.of(context).size.width,
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   mainAxisSize: MainAxisSize.min,
@@ -265,7 +258,7 @@ class ProcessingPaymentDialogState extends State<ProcessingPaymentDialog>
                   color: theme.themeId == "BLUE"
                       ? colorAnimation.value
                       : controller.value >= 0.25
-                          ? themeData.backgroundColor
+                          ? Theme.of(context).backgroundColor
                           : colorAnimation.value,
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(
@@ -282,37 +275,30 @@ class ProcessingPaymentDialogState extends State<ProcessingPaymentDialog>
   }
 
   Container _buildTitle(BuildContext context) {
-    final texts = AppLocalizations.of(context);
-    final themeData = Theme.of(context);
-
     return Container(
       height: 64.0,
       padding: EdgeInsets.fromLTRB(24.0, 24.0, 24.0, 8.0),
       child: Text(
-        texts.processing_payment_dialog_processing_payment,
-        style: themeData.dialogTheme.titleTextStyle,
+        context.l10n.processing_payment_dialog_processing_payment,
+        style: Theme.of(context).dialogTheme.titleTextStyle,
         textAlign: TextAlign.center,
       ),
     );
   }
 
   Widget _buildContent(BuildContext context) {
-    final texts = AppLocalizations.of(context);
-    final themeData = Theme.of(context);
-    final queryData = MediaQuery.of(context);
-
     return Container(
       child: Padding(
         padding: EdgeInsets.fromLTRB(16.0, 0.0, 16.0, 0.0),
         child: Container(
-          width: queryData.size.width,
+          width: MediaQuery.of(context).size.width,
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             mainAxisSize: MainAxisSize.min,
             children: [
               LoadingAnimatedText(
-                texts.processing_payment_dialog_wait,
-                textStyle: themeData.dialogTheme.contentTextStyle,
+                context.l10n.processing_payment_dialog_wait,
+                textStyle: Theme.of(context).dialogTheme.contentTextStyle,
                 textAlign: TextAlign.center,
               ),
             ],
@@ -335,10 +321,8 @@ class ChannelsSyncLoader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final texts = AppLocalizations.of(context);
-
     return TransparentRouteLoader(
-      message: texts.processing_payment_dialog_synchronizing_channels,
+      message: context.l10n.processing_payment_dialog_synchronizing_channels,
       value: progress,
       opacity: 0.9,
       onClose: onClose,

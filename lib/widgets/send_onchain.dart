@@ -8,7 +8,7 @@ import 'package:breez/widgets/keyboard_done_action.dart';
 import 'package:fixnum/fixnum.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:breez/l10n/locales.dart';
 
 import 'flushbar.dart';
 
@@ -83,54 +83,50 @@ class SendOnchainState extends State<SendOnchain> {
 
   @override
   Widget build(BuildContext context) {
-    final texts = AppLocalizations.of(context);
-    final themeData = Theme.of(context);
-    final dialogTheme = themeData.dialogTheme;
-
     return Theme(
-      data: themeData.copyWith(
+      data: Theme.of(context).copyWith(
         inputDecorationTheme: InputDecorationTheme(
           enabledBorder: UnderlineInputBorder(
             borderSide: theme.greyBorderSide,
           ),
         ),
-        hintColor: dialogTheme.contentTextStyle.color,
+        hintColor: Theme.of(context).dialogTheme.contentTextStyle.color,
         colorScheme: ColorScheme.dark(
-          primary: themeData.textTheme.button.color,
+          primary: Theme.of(context).textTheme.button.color,
         ),
-        primaryColor: themeData.textTheme.button.color,
-        unselectedWidgetColor: themeData.canvasColor,
-        errorColor: theme.themeId == "BLUE" ? Colors.red : themeData.errorColor,
+        primaryColor: Theme.of(context).textTheme.button.color,
+        unselectedWidgetColor: Theme.of(context).canvasColor,
+        errorColor: theme.themeId == "BLUE" ? Colors.red : Theme.of(context).errorColor,
       ),
       child: Scaffold(
-        backgroundColor: themeData.backgroundColor,
+        backgroundColor: Theme.of(context).backgroundColor,
         appBar: AppBar(
           brightness: theme.themeId == "BLUE"
               ? Brightness.light
-              : themeData.appBarTheme.brightness,
-          iconTheme: themeData.appBarTheme.iconTheme,
-          textTheme: themeData.appBarTheme.textTheme,
+              : Theme.of(context).appBarTheme.brightness,
+          iconTheme: Theme.of(context).appBarTheme.iconTheme,
+          textTheme: Theme.of(context).appBarTheme.textTheme,
           automaticallyImplyLeading: false,
-          backgroundColor: themeData.backgroundColor,
+          backgroundColor: Theme.of(context).backgroundColor,
           actions: [
             IconButton(
               onPressed: () => Navigator.pop(context),
               icon: Icon(
                 Icons.close,
-                color: themeData.appBarTheme.actionsIconTheme.color,
+                color: Theme.of(context).appBarTheme.actionsIconTheme.color,
               ),
             ),
           ],
           title: Text(
             widget._title,
-            style: dialogTheme.titleTextStyle,
+            style: Theme.of(context).dialogTheme.titleTextStyle,
             textAlign: TextAlign.left,
           ),
           elevation: 0.0,
         ),
         bottomNavigationBar: BottomAppBar(
           elevation: 0,
-          color: themeData.backgroundColor,
+          color: Theme.of(context).backgroundColor,
           child: Padding(
             padding: const EdgeInsets.only(right: 12.0),
             child: Row(
@@ -151,8 +147,8 @@ class SendOnchainState extends State<SendOnchain> {
                     }
                   }),
                   child: Text(
-                    texts.send_on_chain_broadcast,
-                    style: themeData.primaryTextTheme.button,
+                    context.l10n.send_on_chain_broadcast,
+                    style: Theme.of(context).primaryTextTheme.button,
                   ),
                 ),
               ],
@@ -173,7 +169,7 @@ class SendOnchainState extends State<SendOnchain> {
                         ? Text(
                             widget.prefixMessage,
                             style: TextStyle(
-                              color: dialogTheme.contentTextStyle.color,
+                              color: Theme.of(context).dialogTheme.contentTextStyle.color,
                               fontSize: 16.0,
                               height: 1.2,
                             ),
@@ -182,25 +178,25 @@ class SendOnchainState extends State<SendOnchain> {
                     TextFormField(
                       controller: _addressController,
                       decoration: InputDecoration(
-                        labelText: texts.send_on_chain_btc_address,
+                        labelText: context.l10n.send_on_chain_btc_address,
                         suffixIcon: IconButton(
                           padding: EdgeInsets.only(top: 21.0),
                           alignment: Alignment.bottomRight,
                           icon: Image(
                             image: AssetImage("src/icon/qr_scan.png"),
-                            color: dialogTheme.contentTextStyle.color,
+                            color: Theme.of(context).dialogTheme.contentTextStyle.color,
                             fit: BoxFit.contain,
                             width: 24.0,
                             height: 24.0,
                           ),
-                          tooltip: texts.send_on_chain_scan_barcode,
+                          tooltip: context.l10n.send_on_chain_scan_barcode,
                           onPressed: _scanBarcode,
                         ),
                       ),
-                      style: dialogTheme.contentTextStyle,
+                      style: Theme.of(context).dialogTheme.contentTextStyle,
                       validator: (value) {
                         if (_addressValidated == null) {
-                          return texts.send_on_chain_invalid_btc_address;
+                          return context.l10n.send_on_chain_invalid_btc_address;
                         }
                         return null;
                       },
@@ -217,12 +213,12 @@ class SendOnchainState extends State<SendOnchain> {
                       inputFormatters: [FilteringTextInputFormatter.digitsOnly],
                       keyboardType: TextInputType.number,
                       decoration: InputDecoration(
-                        labelText: texts.send_on_chain_sat_per_byte_fee_rate,
+                        labelText: context.l10n.send_on_chain_sat_per_byte_fee_rate,
                       ),
-                      style: dialogTheme.contentTextStyle,
+                      style: Theme.of(context).dialogTheme.contentTextStyle,
                       validator: (value) {
                         if (_feeController.text.isEmpty) {
-                          return texts.send_on_chain_invalid_fee_rate;
+                          return context.l10n.send_on_chain_invalid_fee_rate;
                         }
                         return null;
                       },
@@ -233,9 +229,9 @@ class SendOnchainState extends State<SendOnchain> {
                     ),
                     widget.originalTransaction != null
                         ? CollapsibleListItem(
-                            title: texts.send_on_chain_original_transaction,
+                            title: context.l10n.send_on_chain_original_transaction,
                             sharedValue: widget.originalTransaction,
-                            userStyle: dialogTheme.contentTextStyle.copyWith(
+                            userStyle: Theme.of(context).dialogTheme.contentTextStyle.copyWith(
                               fontWeight: FontWeight.normal,
                             ),
                           )
@@ -251,20 +247,17 @@ class SendOnchainState extends State<SendOnchain> {
   }
 
   Widget _buildAvailableBTC(BuildContext context, AccountModel acc) {
-    final themeData = Theme.of(context);
-    final texts = AppLocalizations.of(context);
-
     return Row(
       children: [
         Text(
-          texts.send_on_chain_amount,
-          style: themeData.dialogTheme.contentTextStyle,
+          context.l10n.send_on_chain_amount,
+          style: Theme.of(context).dialogTheme.contentTextStyle,
         ),
         Padding(
           padding: EdgeInsets.only(left: 3.0),
           child: Text(
             acc.currency.format(widget._amount),
-            style: themeData.dialogTheme.contentTextStyle,
+            style: Theme.of(context).dialogTheme.contentTextStyle,
           ),
         ),
       ],
@@ -278,7 +271,6 @@ class SendOnchainState extends State<SendOnchain> {
   }
 
   Future _scanBarcode() async {
-    final texts = AppLocalizations.of(context);
     FocusScope.of(context).requestFocus(FocusNode());
     String barcode = await Navigator.pushNamed<String>(context, "/qr_scan");
     if (barcode == null) {
@@ -287,7 +279,7 @@ class SendOnchainState extends State<SendOnchain> {
     if (barcode.isEmpty) {
       showFlushbar(
         context,
-        message: texts.send_on_chain_qr_code_not_detected,
+        message: context.l10n.send_on_chain_qr_code_not_detected,
       );
       return;
     }

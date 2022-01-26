@@ -1,6 +1,5 @@
 import 'dart:math';
 
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 /// Given 2 items, lets say "Big and long text" and "Small text", it will place items as follow:
@@ -25,18 +24,15 @@ class ViewSwitch extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final themeData = Theme.of(context);
-    final size = MediaQuery.of(context).size;
-
     var maxTextWidth = 0.0;
     var index = 0;
     for (var item in items) {
-      final itemTextWidth = _textSize(themeData, index, item.text).width;
+      final itemTextWidth = _textSize(context, index, item.text).width;
       maxTextWidth = max(maxTextWidth, itemTextWidth);
       index++;
     }
 
-    var emptyWidth = size.width;
+    var emptyWidth = MediaQuery.of(context).size.width;
     for (var item in items) {
       emptyWidth -= maxTextWidth;
       if (item.iconData != null) {
@@ -75,10 +71,10 @@ class ViewSwitch extends StatelessWidget {
                   mainAxisSize: MainAxisSize.min,
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: <Widget>[
-                    _icon(themeData, item, index),
+                    _icon(item, index),
                     Text(
                       item.text,
-                      style: _textStyle(themeData, index),
+                      style: _textStyle(context, index),
                     )
                   ],
                 ),
@@ -100,7 +96,7 @@ class ViewSwitch extends StatelessWidget {
     );
   }
 
-  Widget _icon(ThemeData themeData, ViewSwitchItem item, int index) {
+  Widget _icon(ViewSwitchItem item, int index) {
     if (item.iconData == null) return Container();
     return Padding(
       padding: const EdgeInsets.only(right: 8.0),
@@ -117,17 +113,17 @@ class ViewSwitch extends StatelessWidget {
     return Alignment.center;
   }
 
-  Size _textSize(ThemeData themeData, int index, String text) {
+  Size _textSize(BuildContext context, int index, String text) {
     final textPainter = TextPainter(
-      text: TextSpan(text: text, style: _textStyle(themeData, index)),
+      text: TextSpan(text: text, style: _textStyle(context, index)),
       maxLines: 1,
       textDirection: TextDirection.ltr,
     )..layout(minWidth: 0, maxWidth: double.infinity);
     return textPainter.size;
   }
 
-  TextStyle _textStyle(ThemeData themeData, index) {
-    return themeData.textTheme.button.copyWith(
+  TextStyle _textStyle(BuildContext context, index) {
+    return Theme.of(context).textTheme.button.copyWith(
       color: textTint.withOpacity(selected == index ? 1 : 0.5),
     );
   }

@@ -1,4 +1,5 @@
 import 'package:breez/bloc/user_profile/currency.dart';
+import 'package:breez/l10n/locales.dart';
 import 'package:breez/routes/charge/currency_wrapper.dart';
 import 'package:breez/utils/date.dart';
 import 'package:breez/widgets/print_parameters.dart';
@@ -18,7 +19,7 @@ class PrintService {
   );
 
   printAsPDF(BuildContext context) async {
-    final texts = AppLocalizations.of(context);
+    final texts = context.l10n;
 
     try {
       final doc = pw.Document();

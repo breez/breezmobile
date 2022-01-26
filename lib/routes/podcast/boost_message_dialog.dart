@@ -1,6 +1,5 @@
 import 'package:breez/bloc/user_profile/currency.dart';
 import 'package:breez/routes/podcast/custom_amount_form.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -45,16 +44,15 @@ class BoostMessageDialogState extends State<BoostMessageDialog> {
 
   @override
   Widget build(BuildContext context) {
-    return _buildBoostMessageDialog();
+    return _buildBoostMessageDialog(context);
   }
 
-  Widget _buildBoostMessageDialog() {
-    var theme = Theme.of(context);
+  Widget _buildBoostMessageDialog(BuildContext context) {
     return AlertDialog(
       scrollable: true,
       title: Text(
         "Send a Boostagram",
-        style: theme.dialogTheme.titleTextStyle.copyWith(fontSize: 16),
+        style: Theme.of(context).dialogTheme.titleTextStyle.copyWith(fontSize: 16),
         maxLines: 1,
       ),
       content: _buildMessageWidget(),
@@ -63,7 +61,6 @@ class BoostMessageDialogState extends State<BoostMessageDialog> {
   }
 
   Widget _buildMessageWidget() {
-    final theme = Theme.of(context);
     return Column(
       mainAxisSize: MainAxisSize.min,
       mainAxisAlignment: MainAxisAlignment.center,
@@ -80,7 +77,7 @@ class BoostMessageDialogState extends State<BoostMessageDialog> {
             maxLines: null,
             maxLength: 90,
             maxLengthEnforcement: MaxLengthEnforcement.enforced,
-            style: theme.dialogTheme.contentTextStyle.copyWith(height: 1.0),
+            style: Theme.of(context).dialogTheme.contentTextStyle.copyWith(height: 1.0),
             decoration: InputDecoration(
               labelText: "Boostagram (optional)",
             ),
@@ -96,7 +93,7 @@ class BoostMessageDialogState extends State<BoostMessageDialog> {
             decoration: InputDecoration(
               labelText: "Boost Amount (in sats)",
             ),
-            style: theme.dialogTheme.contentTextStyle.copyWith(height: 1.0),
+            style: Theme.of(context).dialogTheme.contentTextStyle.copyWith(height: 1.0),
           ),
         )
       ],
@@ -104,11 +101,10 @@ class BoostMessageDialogState extends State<BoostMessageDialog> {
   }
 
   List<Widget> _buildActions() {
-    final theme = Theme.of(context);
     List<Widget> actions = [
       TextButton(
         onPressed: () => Navigator.pop(context),
-        child: Text("CANCEL", style: theme.primaryTextTheme.button),
+        child: Text("CANCEL", style: Theme.of(context).primaryTextTheme.button),
       ),
     ];
     if (_amountKey.currentState?.validate() ??
@@ -126,7 +122,7 @@ class BoostMessageDialogState extends State<BoostMessageDialog> {
           },
           child: Text(
             "BOOST!",
-            style: theme.primaryTextTheme.button,
+            style: Theme.of(context).primaryTextTheme.button,
           ),
         ),
       );

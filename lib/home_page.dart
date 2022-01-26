@@ -2,7 +2,6 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:anytime/bloc/podcast/audio_bloc.dart';
-import 'package:anytime/l10n/L.dart';
 import 'package:anytime/ui/anytime_podcast_app.dart';
 import 'package:anytime/ui/podcast/now_playing.dart';
 import 'package:audio_service/audio_service.dart';
@@ -41,10 +40,8 @@ import 'package:breez/widgets/payment_failed_report_dialog.dart';
 import 'package:breez/widgets/route.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:breez/l10n/locales.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
 import 'bloc/invoice/invoice_model.dart';
@@ -188,7 +185,6 @@ class HomeState extends State<Home> with WidgetsBindingObserver {
     _initListens(context);
     final addFundsBloc = BlocProvider.of<AddFundsBloc>(context);
     final lspBloc = AppBlocsProvider.of<LSPBloc>(context);
-    final texts = AppLocalizations.of(context);
 
     return WillPopScope(
       onWillPop: willPopCallback(
@@ -236,7 +232,6 @@ class HomeState extends State<Home> with WidgetsBindingObserver {
                                 settings,
                                 lspStatus,
                                 vendor,
-                                texts,
                               );
                             },
                           );
@@ -260,14 +255,10 @@ class HomeState extends State<Home> with WidgetsBindingObserver {
     AccountSettings settings,
     LSPStatus lspStatus,
     List<AddFundVendorModel> vendor,
-    AppLocalizations texts,
   ) {
-    final themeData = Theme.of(context);
-    final mediaSize = MediaQuery.of(context).size;
-
     return Container(
-      height: mediaSize.height,
-      width: mediaSize.width,
+      height: MediaQuery.of(context).size.height,
+      width: MediaQuery.of(context).size.width,
       child: FadeInWidget(
         child: Scaffold(
           resizeToAvoidBottomInset: false,
@@ -275,7 +266,7 @@ class HomeState extends State<Home> with WidgetsBindingObserver {
           appBar: AppBar(
             brightness: theme.themeId == "BLUE"
                 ? Brightness.light
-                : themeData.appBarTheme.brightness,
+                : Theme.of(context).appBarTheme.brightness,
             centerTitle: false,
             actions: [
               Padding(
@@ -294,7 +285,7 @@ class HomeState extends State<Home> with WidgetsBindingObserver {
                 "src/images/logo-color.svg",
                 height: 23.5,
                 width: 62.7,
-                color: themeData.appBarTheme.actionsIconTheme.color,
+                color: Theme.of(context).appBarTheme.actionsIconTheme.color,
                 colorBlendMode: BlendMode.srcATop,
               ),
               iconSize: 64,
@@ -306,13 +297,13 @@ class HomeState extends State<Home> with WidgetsBindingObserver {
               color: Color.fromARGB(255, 0, 133, 251),
             ),
             backgroundColor: (user.appMode == AppMode.pos)
-                ? themeData.backgroundColor
+                ? Theme.of(context).backgroundColor
                 : theme.customData[theme.themeId].dashboardBgColor,
             elevation: 0.0,
           ),
           drawerEnableOpenDragGesture: true,
           drawerDragStartBehavior: DragStartBehavior.down,
-          drawerEdgeDragWidth: mediaSize.width,
+          drawerEdgeDragWidth: MediaQuery.of(context).size.width,
           drawer: Theme(
             data: theme.themeMap[user.themeId],
             child: _navigationDrawer(
@@ -322,7 +313,6 @@ class HomeState extends State<Home> with WidgetsBindingObserver {
               settings,
               lspStatus,
               vendor,
-              texts,
             ),
           ),
           bottomNavigationBar: user.appMode == AppMode.balance
@@ -350,7 +340,6 @@ class HomeState extends State<Home> with WidgetsBindingObserver {
     AccountSettings settings,
     LSPStatus lspStatus,
     List<AddFundVendorModel> vendor,
-    AppLocalizations texts,
   ) {
     return NavigationDrawer(
       true,
@@ -360,11 +349,11 @@ class HomeState extends State<Home> with WidgetsBindingObserver {
           user,
           account.swapFundsStatus.maturedRefundableAddresses,
         ),
-        ..._drawerConfigAppModeItems(context, user, texts),
-        ..._drawerConfigFlavorItems(context, user, texts),
+        ..._drawerConfigAppModeItems(context, user),
+        ..._drawerConfigFlavorItems(context, user),
         DrawerItemConfigGroup(
-          _filterItems(_drawerConfigToFilter(context, user, texts)),
-          groupTitle: texts.home_drawer_item_title_preferences,
+          _filterItems(_drawerConfigToFilter(context, user)),
+          groupTitle: context.l10n.home_drawer_item_title_preferences,
           groupAssetImage: "",
         ),
       ],
@@ -375,26 +364,25 @@ class HomeState extends State<Home> with WidgetsBindingObserver {
   List<DrawerItemConfig> _drawerConfigToFilter(
     BuildContext context,
     BreezUserModel user,
-    AppLocalizations texts,
   ) {
     return [
       DrawerItemConfig(
         "/fiat_currency",
-        texts.home_drawer_item_title_fiat_currencies,
+        context.l10n.home_drawer_item_title_fiat_currencies,
         "src/icon/fiat_currencies.png",
       ),
       DrawerItemConfig(
         "/network",
-        texts.home_drawer_item_title_network,
+        context.l10n.home_drawer_item_title_network,
         "src/icon/network.png",
       ),
       DrawerItemConfig(
         "",
-        texts.home_drawer_item_title_security,
+        context.l10n.home_drawer_item_title_security,
         "src/icon/security.png",
         onItemSelected: (_) => protectAdminRoute(context, user, "/security"),
       ),
-      ..._drawerConfigAdvancedFlavorItems(context, user, texts),
+      ..._drawerConfigAdvancedFlavorItems(context, user),
     ];
   }
 
@@ -406,13 +394,12 @@ class HomeState extends State<Home> with WidgetsBindingObserver {
     if (refundableAddresses.length == 0) {
       return [];
     }
-    final texts = AppLocalizations.of(context);
     return [
       DrawerItemConfigGroup(
         [
           DrawerItemConfig(
             "",
-            texts.home_drawer_item_title_get_refund,
+            context.l10n.home_drawer_item_title_get_refund,
             "src/icon/withdraw_funds.png",
             onItemSelected: (_) => protectAdminRoute(
               context,
@@ -428,7 +415,6 @@ class HomeState extends State<Home> with WidgetsBindingObserver {
   List<DrawerItemConfigGroup> _drawerConfigFlavorItems(
     BuildContext context,
     BreezUserModel user,
-    AppLocalizations texts,
   ) {
     if (user.appMode == AppMode.pos) {
       return [
@@ -436,7 +422,7 @@ class HomeState extends State<Home> with WidgetsBindingObserver {
           [
             DrawerItemConfig(
               "/transactions",
-              texts.home_drawer_item_title_transactions,
+              context.l10n.home_drawer_item_title_transactions,
               "src/icon/transactions.png",
             ),
           ],
@@ -449,13 +435,12 @@ class HomeState extends State<Home> with WidgetsBindingObserver {
   List<DrawerItemConfigGroup> _drawerConfigAppModeItems(
     BuildContext context,
     BreezUserModel user,
-    AppLocalizations texts,
   ) {
     return [
-      DrawerItemConfigGroup([_drawerItemBalance(context, user, texts)]),
-      DrawerItemConfigGroup([_drawerItemPodcast(context, user, texts)]),
-      DrawerItemConfigGroup([_drawerItemPos(context, user, texts)]),
-      DrawerItemConfigGroup([_drawerItemLightningApps(context, user, texts)]),
+      DrawerItemConfigGroup([_drawerItemBalance(context, user)]),
+      DrawerItemConfigGroup([_drawerItemPodcast(context, user)]),
+      DrawerItemConfigGroup([_drawerItemPos(context, user)]),
+      DrawerItemConfigGroup([_drawerItemLightningApps(context, user)]),
       DrawerItemConfigGroup([]),
     ];
   }
@@ -463,11 +448,10 @@ class HomeState extends State<Home> with WidgetsBindingObserver {
   DrawerItemConfig _drawerItemBalance(
     BuildContext context,
     BreezUserModel user,
-    AppLocalizations texts,
   ) {
     return DrawerItemConfig(
       "",
-      texts.home_drawer_item_title_balance,
+      context.l10n.home_drawer_item_title_balance,
       "src/icon/balance.png",
       isSelected: user.appMode == AppMode.balance,
       onItemSelected: (_) {
@@ -488,11 +472,10 @@ class HomeState extends State<Home> with WidgetsBindingObserver {
   DrawerItemConfig _drawerItemPodcast(
     BuildContext context,
     BreezUserModel user,
-    AppLocalizations texts,
   ) {
     return DrawerItemConfig(
       "",
-      texts.home_drawer_item_title_podcasts,
+      context.l10n.home_drawer_item_title_podcasts,
       "src/icon/podcast.png",
       key: podcastMenuItemKey,
       isSelected: user.appMode == AppMode.podcasts,
@@ -514,11 +497,10 @@ class HomeState extends State<Home> with WidgetsBindingObserver {
   DrawerItemConfig _drawerItemPos(
     BuildContext context,
     BreezUserModel user,
-    AppLocalizations texts,
   ) {
     return DrawerItemConfig(
       "",
-      texts.home_drawer_item_title_pos,
+      context.l10n.home_drawer_item_title_pos,
       "src/icon/pos.png",
       isSelected: user.appMode == AppMode.pos,
       onItemSelected: (_) {
@@ -532,11 +514,10 @@ class HomeState extends State<Home> with WidgetsBindingObserver {
   DrawerItemConfig _drawerItemLightningApps(
     BuildContext context,
     BreezUserModel user,
-    AppLocalizations texts,
   ) {
     return DrawerItemConfig(
       "",
-      texts.home_drawer_item_title_apps,
+      context.l10n.home_drawer_item_title_apps,
       "src/icon/apps.png",
       isSelected: user.appMode == AppMode.apps,
       onItemSelected: (_) {
@@ -556,13 +537,12 @@ class HomeState extends State<Home> with WidgetsBindingObserver {
   List<DrawerItemConfig> _drawerConfigAdvancedFlavorItems(
     BuildContext context,
     BreezUserModel user,
-    AppLocalizations texts,
   ) {
     if (user.appMode == AppMode.pos) {
       return [
         DrawerItemConfig(
           "",
-          texts.home_drawer_item_title_pos_settings,
+          context.l10n.home_drawer_item_title_pos_settings,
           "src/icon/settings.png",
           onItemSelected: (_) => protectAdminRoute(context, user, "/settings"),
         ),
@@ -571,7 +551,7 @@ class HomeState extends State<Home> with WidgetsBindingObserver {
       return [
         DrawerItemConfig(
           "/developers",
-          texts.home_drawer_item_title_developers,
+          context.l10n.home_drawer_item_title_developers,
           "src/icon/developers.png",
         ),
       ];
@@ -579,14 +559,12 @@ class HomeState extends State<Home> with WidgetsBindingObserver {
   }
 
   IconButton _buildMenuIcon(BuildContext context, AppMode appMode) {
-    final themeData = Theme.of(context);
-
     return IconButton(
       icon: Image.asset(
         _getAppModesAssetName(appMode),
         height: 24.0,
         width: 24.0,
-        color: themeData.appBarTheme.actionsIconTheme.color,
+        color: Theme.of(context).appBarTheme.actionsIconTheme.color,
       ),
       onPressed: () {
         _scaffoldKey.currentState.openDrawer();
@@ -610,20 +588,16 @@ class HomeState extends State<Home> with WidgetsBindingObserver {
   }
 
   Widget _homePage(BuildContext context, BreezUserModel user) {
-    final texts = AppLocalizations.of(context);
-    final themeData = Theme.of(context);
-    final List<String> anytimeLocales = ['en', 'de', 'pt'];
-
     switch (user.appMode) {
       case AppMode.podcasts:
         return Container(
-          color: themeData.bottomAppBarColor,
+          color: Theme.of(context).bottomAppBarColor,
           child: SafeArea(
             child: AnytimeHomePage(
               topBarVisible: false,
               inlineSearch: true,
-              noSubscriptionsMessage: texts.home_podcast_no_subscriptions,
-              title: texts.home_podcast_title,
+              noSubscriptionsMessage: context.l10n.home_podcast_no_subscriptions,
+              title: context.l10n.home_podcast_title,
             ),
           ),
         );
@@ -659,9 +633,6 @@ class HomeState extends State<Home> with WidgetsBindingObserver {
   }
 
   void _registerNotificationHandlers(BuildContext context) {
-    final themeData = Theme.of(context);
-    final texts = AppLocalizations.of(context);
-
     InvoiceNotificationsHandler(
       context,
       widget.userProfileBloc,
@@ -689,10 +660,10 @@ class HomeState extends State<Home> with WidgetsBindingObserver {
       (e) {
         promptError(
           context,
-          texts.home_error_connect_to_pay,
+          context.l10n.home_error_connect_to_pay,
           Text(
             e.toString(),
-            style: themeData.dialogTheme.contentTextStyle,
+            style: Theme.of(context).dialogTheme.contentTextStyle,
           ),
         );
       },
@@ -700,10 +671,10 @@ class HomeState extends State<Home> with WidgetsBindingObserver {
     PodcastURLHandler(widget.userProfileBloc, this.context, (e) {
       promptError(
         context,
-        texts.home_error_podcast_link,
+        context.l10n.home_error_podcast_link,
         Text(
           e.toString(),
-          style: themeData.dialogTheme.contentTextStyle,
+          style: Theme.of(context).dialogTheme.contentTextStyle,
         ),
       );
     });
@@ -725,7 +696,7 @@ class HomeState extends State<Home> with WidgetsBindingObserver {
       showFlushbar(
         context,
         messageWidget: LoadingAnimatedText(
-          texts.home_broadcast_transaction,
+          context.l10n.home_broadcast_transaction,
           textStyle: theme.snackBarStyle,
           textAlign: TextAlign.left,
         ),
@@ -735,21 +706,18 @@ class HomeState extends State<Home> with WidgetsBindingObserver {
   }
 
   void _listenBackupConflicts(BuildContext context) {
-    final texts = AppLocalizations.of(context);
-    final themeData = Theme.of(context);
-
     widget.accountBloc.nodeConflictStream.listen((_) async {
       Navigator.popUntil(context, (route) {
         return route.settings.name == "/";
       });
       await promptError(
         context,
-        texts.home_config_error_title,
+        context.l10n.home_config_error_title,
         Text(
-          texts.home_config_error_message,
-          style: themeData.dialogTheme.contentTextStyle,
+          context.l10n.home_config_error_message,
+          style: Theme.of(context).dialogTheme.contentTextStyle,
         ),
-        okText: texts.home_config_error_action_exit,
+        okText: context.l10n.home_config_error_action_exit,
         okFunc: () => exit(0),
         disableBack: true,
       );
@@ -762,16 +730,13 @@ class HomeState extends State<Home> with WidgetsBindingObserver {
   }
 
   void _listenWhitelistPermissionsRequest(BuildContext context) {
-    final texts = AppLocalizations.of(context);
-    final themeData = Theme.of(context);
-
     widget.accountBloc.optimizationWhitelistExplainStream.listen((_) async {
       await promptError(
         context,
-        texts.home_background_synchronization_title,
+        context.l10n.home_background_synchronization_title,
         Text(
-          texts.home_background_synchronization_message,
-          style: themeData.dialogTheme.contentTextStyle,
+          context.l10n.home_background_synchronization_message,
+          style: Theme.of(context).dialogTheme.contentTextStyle,
         ),
         okFunc: () => widget.accountBloc.optimizationWhitelistRequestSink.add(
           null,
@@ -781,8 +746,6 @@ class HomeState extends State<Home> with WidgetsBindingObserver {
   }
 
   void _listenPaymentResults(BuildContext context) {
-    final texts = AppLocalizations.of(context);
-
     widget.accountBloc.completedPaymentsStream.listen((fulfilledPayment) async {
       final paymentHash = fulfilledPayment.paymentHash;
       print('_listenPaymentResults processing: $paymentHash');
@@ -803,7 +766,7 @@ class HomeState extends State<Home> with WidgetsBindingObserver {
           showFlushbar(
             context,
             messageWidget: SingleChildScrollView(
-              child: Text(texts.home_payment_sent),
+              child: Text(context.l10n.home_payment_sent),
             ),
           );
         }
@@ -842,7 +805,7 @@ class HomeState extends State<Home> with WidgetsBindingObserver {
             context,
             createLoaderRoute(
               context,
-              message: texts.home_report_sending,
+              message: context.l10n.home_report_sending,
               opacity: 0.8,
               action: sendAction.future,
             ),

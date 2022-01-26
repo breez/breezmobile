@@ -8,7 +8,7 @@ import 'package:breez/widgets/flushbar.dart';
 import 'package:breez/widgets/loader.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:breez/l10n/locales.dart';
 import 'package:share_extend/share_extend.dart';
 
 class PaymentFilterSliver extends StatefulWidget {
@@ -132,17 +132,15 @@ class PaymentsFilterState extends State<PaymentsFilter> {
 
   @override
   Widget build(BuildContext context) {
-    final texts = AppLocalizations.of(context);
-
     if (_filter == null) {
       _filterMap = {
-        texts.payments_filter_option_all: PaymentType.values,
-        texts.payments_filter_option_sent: [
+        context.l10n.payments_filter_option_all: PaymentType.values,
+        context.l10n.payments_filter_option_sent: [
           PaymentType.SENT,
           PaymentType.WITHDRAWAL,
           PaymentType.CLOSED_CHANNEL,
         ],
-        texts.payments_filter_option_received: [
+        context.l10n.payments_filter_option_received: [
           PaymentType.RECEIVED,
           PaymentType.DEPOSIT,
         ],
@@ -161,15 +159,12 @@ class PaymentsFilterState extends State<PaymentsFilter> {
   }
 
   Padding _buildCalendarButton(BuildContext context) {
-    final texts = AppLocalizations.of(context);
-    final themeData = Theme.of(context);
-
     return Padding(
       padding: EdgeInsets.only(left: 0.0, right: 0.0),
       child: IconButton(
         icon: ImageIcon(
           AssetImage("src/icon/calendar.png"),
-          color: themeData.accentTextTheme.subtitle2.color,
+          color: Theme.of(context).accentTextTheme.subtitle2.color,
           size: 24.0,
         ),
         onPressed: () => widget._paymentsModel.firstDate != null
@@ -188,7 +183,7 @@ class PaymentsFilterState extends State<PaymentsFilter> {
             : ScaffoldMessenger.of(context).showSnackBar(
                 SnackBar(
                   content: Text(
-                    texts.payments_filter_message_loading_transactions,
+                    context.l10n.payments_filter_message_loading_transactions,
                   ),
                 ),
               ),
@@ -197,31 +192,28 @@ class PaymentsFilterState extends State<PaymentsFilter> {
   }
 
   Theme _buildFilterDropdown(BuildContext context) {
-    final texts = AppLocalizations.of(context);
-    final themeData = Theme.of(context);
-
     return Theme(
-      data: themeData.copyWith(
+      data: Theme.of(context).copyWith(
         canvasColor: theme.customData[theme.themeId].paymentListBgColor,
       ),
       child: DropdownButtonHideUnderline(
         child: ButtonTheme(
           alignedDropdown: true,
           child: DropdownButton(
-            iconEnabledColor: themeData.accentTextTheme.subtitle2.color,
+            iconEnabledColor: Theme.of(context).accentTextTheme.subtitle2.color,
             value: _filter,
-            style: themeData.accentTextTheme.subtitle2,
+            style: Theme.of(context).accentTextTheme.subtitle2,
             items: [
-              texts.payments_filter_option_all,
-              texts.payments_filter_option_sent,
-              texts.payments_filter_option_received,
+              context.l10n.payments_filter_option_all,
+              context.l10n.payments_filter_option_sent,
+              context.l10n.payments_filter_option_received,
             ].map((String value) {
               return DropdownMenuItem<String>(
                 value: value,
                 child: Material(
                   child: Text(
                     value,
-                    style: themeData.accentTextTheme.subtitle2,
+                    style: Theme.of(context).accentTextTheme.subtitle2,
                   ),
                 ),
               );
@@ -255,22 +247,18 @@ class PaymentsFilterState extends State<PaymentsFilter> {
         return entry.key;
       }
     }
-    final texts = AppLocalizations.of(context);
-    return texts.payments_filter_option_all;
+    return context.l10n.payments_filter_option_all;
   }
 
   Padding _buildExportButton(BuildContext context) {
-    final themeData = Theme.of(context);
-    final texts = AppLocalizations.of(context);
-
     if (widget._paymentsModel.paymentsList.isNotEmpty) {
       return Padding(
         padding: const EdgeInsets.only(right: 0.0),
         child: PopupMenuButton(
-          color: themeData.backgroundColor,
+          color: Theme.of(context).backgroundColor,
           icon: Icon(
             Icons.more_vert,
-            color: themeData.accentTextTheme.subtitle2.color,
+            color: Theme.of(context).accentTextTheme.subtitle2.color,
           ),
           padding: EdgeInsets.zero,
           offset: Offset(12, 24),
@@ -280,8 +268,8 @@ class PaymentsFilterState extends State<PaymentsFilter> {
               height: 36,
               value: Choice(() => _exportPayments(context)),
               child: Text(
-                texts.payments_filter_action_export,
-                style: themeData.textTheme.button,
+                context.l10n.payments_filter_action_export,
+                style: Theme.of(context).textTheme.button,
               ),
             ),
           ],
@@ -294,8 +282,8 @@ class PaymentsFilterState extends State<PaymentsFilter> {
         icon: Icon(
           Icons.more_vert,
           color: theme.themeId == "BLUE"
-              ? themeData.accentTextTheme.subtitle2.color.withOpacity(0.25)
-              : themeData.disabledColor,
+              ? Theme.of(context).accentTextTheme.subtitle2.color.withOpacity(0.25)
+              : Theme.of(context).disabledColor,
           size: 24.0,
         ),
         onPressed: null,
@@ -308,7 +296,6 @@ class PaymentsFilterState extends State<PaymentsFilter> {
   }
 
   Future _exportPayments(BuildContext context) async {
-    final texts = AppLocalizations.of(context);
     var action = ExportPayments();
     widget._accountBloc.userActionsSink.add(action);
     Navigator.of(context).push(createLoaderRoute(context));
@@ -319,7 +306,7 @@ class PaymentsFilterState extends State<PaymentsFilter> {
       Navigator.of(context).pop();
       showFlushbar(
         context,
-        message: texts.payments_filter_action_export_failed,
+        message: context.l10n.payments_filter_action_export_failed,
       );
     });
   }

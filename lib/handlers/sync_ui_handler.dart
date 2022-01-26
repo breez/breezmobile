@@ -3,7 +3,7 @@ import 'package:breez/bloc/account/account_bloc.dart';
 import 'package:breez/bloc/account/account_model.dart';
 import 'package:breez/widgets/sync_loader.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:breez/l10n/locales.dart';
 
 class SyncUIHandler {
   final AccountBloc _accountBloc;
@@ -42,7 +42,6 @@ class SyncUIHandler {
 }
 
 ModalRoute _createSyncRoute(BuildContext context, AccountBloc accBloc) {
-  final texts = AppLocalizations.of(context);
   return SyncUIRoute((context) {
     return StreamBuilder<AccountModel>(
       stream: accBloc.accountStream,
@@ -50,7 +49,7 @@ ModalRoute _createSyncRoute(BuildContext context, AccountBloc accBloc) {
         var account = snapshot.data;
         double progress = account?.syncProgress ?? 0;
         return TransparentRouteLoader(
-          message: texts.handler_sync_ui_message,
+          message: context.l10n.handler_sync_ui_message,
           value: progress,
           opacity: 0.9,
           onClose: () => accBloc.userActionsSink.add(

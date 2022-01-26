@@ -1,6 +1,5 @@
 import 'package:breez/services/deep_links.dart';
 import 'package:breez/services/injector.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:share_extend/share_extend.dart';
 

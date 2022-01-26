@@ -1,6 +1,5 @@
 import 'package:breez/bloc/user_profile/currency.dart';
 import 'package:breez/routes/podcast/custom_amount_form.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class CustomAmountDialog extends StatefulWidget {
@@ -35,23 +34,22 @@ class CustomAmountDialogState extends State<CustomAmountDialog> {
 
   @override
   Widget build(BuildContext context) {
-    return _buildPaymentRequestDialog();
+    return _buildPaymentRequestDialog(context);
   }
 
-  Widget _buildPaymentRequestDialog() {
-    final theme = Theme.of(context);
+  Widget _buildPaymentRequestDialog(BuildContext context) {
     return AlertDialog(
       title: Text(
         "Enter a Custom Amount:",
-        style: theme.dialogTheme.titleTextStyle.copyWith(fontSize: 16),
+        style: Theme.of(context).dialogTheme.titleTextStyle.copyWith(fontSize: 16),
         maxLines: 1,
       ),
-      content: _buildAmountWidget(theme),
+      content: _buildAmountWidget(context),
       actions: _buildActions(),
     );
   }
 
-  Widget _buildAmountWidget(ThemeData theme) {
+  Widget _buildAmountWidget(BuildContext context) {
     return Form(
       key: _formKey,
       autovalidateMode: AutovalidateMode.disabled,
@@ -59,7 +57,7 @@ class CustomAmountDialogState extends State<CustomAmountDialog> {
         focusNode: _amountFocusNode,
         controller: _amountController,
         preset: widget.presetAmountsList,
-        style: theme.dialogTheme.contentTextStyle.copyWith(height: 1.0),
+        style: Theme.of(context).dialogTheme.contentTextStyle.copyWith(height: 1.0),
       ),
     );
   }

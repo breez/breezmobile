@@ -91,15 +91,14 @@ class UserApp extends StatelessWidget {
             navigatorKey: _navigatorKey,
             title: getSystemAppLocalizations().app_name,
             theme: theme.themeMap[user.themeId],
-            localizationsDelegates: localizationsDelegates(),
-            supportedLocales: supportedLocales(),
+            localizationsDelegates: context.localizationsDelegates(),
+            supportedLocales: context.supportedLocales(),
             builder: (BuildContext context, Widget child) {
-              final MediaQueryData data = MediaQuery.of(context);
               return MediaQuery(
-                data: data.copyWith(
-                  textScaleFactor: (data.textScaleFactor >= 1.3)
+                data: MediaQuery.of(context).copyWith(
+                  textScaleFactor: (MediaQuery.of(context).textScaleFactor >= 1.3)
                       ? 1.3
-                      : data.textScaleFactor,
+                      : MediaQuery.of(context).textScaleFactor,
                 ),
                 child: _withTheme(user, child),
               );

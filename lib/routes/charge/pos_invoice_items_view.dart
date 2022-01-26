@@ -3,12 +3,11 @@ import 'package:breez/bloc/account/account_model.dart';
 import 'package:breez/bloc/blocs_provider.dart';
 import 'package:breez/bloc/pos_catalog/bloc.dart';
 import 'package:breez/bloc/pos_catalog/model.dart';
+import 'package:breez/l10n/locales.dart';
 import 'package:breez/routes/charge/items/items_list.dart';
 import 'package:breez/utils/min_font_size.dart';
 import 'package:breez/widgets/loader.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class PosInvoiceItemsView extends StatelessWidget {
   final Sale currentSale;
@@ -26,7 +25,6 @@ class PosInvoiceItemsView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final themeData = Theme.of(context);
     final posCatalogBloc = AppBlocsProvider.of<PosCatalogBloc>(context);
 
     return StreamBuilder(
@@ -44,8 +42,8 @@ class PosInvoiceItemsView extends StatelessWidget {
             child: Icon(
               Icons.add,
             ),
-            backgroundColor: themeData.buttonColor,
-            foregroundColor: themeData.textTheme.button.color,
+            backgroundColor: Theme.of(context).buttonColor,
+            foregroundColor: Theme.of(context).textTheme.button.color,
             onPressed: () => Navigator.of(context).pushNamed("/add_item"),
           ),
         );
@@ -57,8 +55,6 @@ class PosInvoiceItemsView extends StatelessWidget {
     BuildContext context,
     List<Item> catalogItems,
   ) {
-    final texts = AppLocalizations.of(context);
-
     return Column(
       mainAxisAlignment: MainAxisAlignment.start,
       children: <Widget>[
@@ -68,7 +64,7 @@ class PosInvoiceItemsView extends StatelessWidget {
             controller: itemFilterController,
             enabled: catalogItems != null,
             decoration: InputDecoration(
-              hintText: texts.pos_invoice_search_hint,
+              hintText: context.l10n.pos_invoice_search_hint,
               contentPadding: const EdgeInsets.only(top: 16, left: 16),
               suffixIcon: IconButton(
                 icon: Icon(
@@ -106,7 +102,6 @@ class PosInvoiceItemsView extends StatelessWidget {
   }
 
   List<Widget> _emptyCatalog(BuildContext context) {
-    final texts = AppLocalizations.of(context);
     return [
       Padding(
         padding: const EdgeInsets.only(
@@ -116,8 +111,8 @@ class PosInvoiceItemsView extends StatelessWidget {
         ),
         child: AutoSizeText(
           itemFilterController.text.isNotEmpty
-              ? texts.pos_invoice_search_empty
-              : texts.pos_invoice_search_no_items,
+              ? context.l10n.pos_invoice_search_empty
+              : context.l10n.pos_invoice_search_no_items,
           textAlign: TextAlign.center,
           minFontSize: MinFontSize(context).minFontSize,
           stepGranularity: 0.1,

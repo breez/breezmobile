@@ -15,7 +15,7 @@ import 'package:breez/widgets/rotator.dart';
 import 'package:breez/widgets/route.dart';
 import 'package:fixnum/fixnum.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:breez/l10n/locales.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:rxdart/rxdart.dart';
 
@@ -216,15 +216,12 @@ class AccountRequiredActionsIndicatorState
     bool hasError,
     Object backupError,
   ) {
-    final themeData = Theme.of(context);
-    final navigatorState = Navigator.of(context);
-
     List<Widget> warnings = [];
     Int64 walletBalance = accountModel?.walletBalance ?? Int64(0);
 
     if (walletBalance > 0 && !accountSettings.ignoreWalletBalance) {
       warnings.add(
-        WarningAction(() => navigatorState.pushNamed("/send_coins")),
+        WarningAction(() => Navigator.of(context).pushNamed("/send_coins")),
       );
     }
 
@@ -292,7 +289,7 @@ class AccountRequiredActionsIndicatorState
         iconWidget: Rotator(
             child: Image(
           image: AssetImage("src/icon/sync.png"),
-          color: themeData.appBarTheme.actionsIconTheme.color,
+          color: Theme.of(context).appBarTheme.actionsIconTheme.color,
         )),
       ));
     }
@@ -301,12 +298,12 @@ class AccountRequiredActionsIndicatorState
       warnings.add(WarningAction(() {
         if (lspStatus?.lastConnectionError != null) {
           showProviderErrorDialog(context, lspStatus?.lastConnectionError, () {
-            navigatorState.push(FadeInRoute(
+            Navigator.of(context).push(FadeInRoute(
               builder: (_) => SelectLSPPage(lstBloc: widget.lspBloc),
             ));
           });
         } else {
-          navigatorState.pushNamed("/select_lsp");
+          Navigator.of(context).pushNamed("/select_lsp");
         }
       }));
     }
@@ -370,9 +367,6 @@ class WarningActionState extends State<WarningAction>
 
   @override
   Widget build(BuildContext context) {
-    final themeData = Theme.of(context);
-    final texts = AppLocalizations.of(context);
-
     return IconButton(
       iconSize: 45.0,
       padding: EdgeInsets.zero,
@@ -381,10 +375,10 @@ class WarningActionState extends State<WarningAction>
         child: widget.iconWidget ??
             SvgPicture.asset(
               "src/icon/warning.svg",
-              color: themeData.appBarTheme.actionsIconTheme.color,
+              color: Theme.of(context).appBarTheme.actionsIconTheme.color,
             ),
       ),
-      tooltip: texts.account_required_actions_backup,
+      tooltip: context.l10n.account_required_actions_backup,
       onPressed: this.widget.onTap,
     );
   }

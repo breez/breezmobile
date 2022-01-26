@@ -10,12 +10,10 @@ import 'package:breez/bloc/user_profile/user_profile_bloc.dart';
 import 'package:breez/routes/podcast/boost_message_dialog.dart';
 import 'package:breez/utils/min_font_size.dart';
 import 'package:breez/widgets/flushbar.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
 import 'custom_amount_dialog.dart';
-
 class BoostWidget extends StatefulWidget {
   final BreezUserModel userModel;
   final Function(int total, {String boostMessage}) onBoost;

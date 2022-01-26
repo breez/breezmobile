@@ -5,7 +5,7 @@ import 'package:breez/bloc/account/account_model.dart';
 import 'package:breez/bloc/invoice/invoice_model.dart';
 import 'package:fixnum/fixnum.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:breez/l10n/locales.dart';
 
 class PaymentConfirmationDialog extends StatelessWidget {
   final AccountBloc accountBloc;
@@ -50,37 +50,30 @@ class PaymentConfirmationDialog extends StatelessWidget {
   }
 
   Container _buildTitle(BuildContext context) {
-    final themeData = Theme.of(context);
-    final texts = AppLocalizations.of(context);
-
     return Container(
       height: 64.0,
       padding: EdgeInsets.fromLTRB(24.0, 24.0, 24.0, 8.0),
       child: Text(
-        texts.payment_confirmation_dialog_title,
-        style: themeData.dialogTheme.titleTextStyle,
+        context.l10n.payment_confirmation_dialog_title,
+        style: Theme.of(context).dialogTheme.titleTextStyle,
         textAlign: TextAlign.center,
       ),
     );
   }
 
   Widget _buildContent(BuildContext context) {
-    final themeData = Theme.of(context);
-    final queryData = MediaQuery.of(context);
-    final texts = AppLocalizations.of(context);
-
     return Container(
       child: Padding(
         padding: EdgeInsets.fromLTRB(16.0, 0.0, 16.0, 0.0),
         child: Container(
-          width: queryData.size.width,
+          width: MediaQuery.of(context).size.width,
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             mainAxisSize: MainAxisSize.min,
             children: [
               Text(
-                texts.payment_confirmation_dialog_confirmation,
-                style: themeData.dialogTheme.contentTextStyle,
+                context.l10n.payment_confirmation_dialog_confirmation,
+                style: Theme.of(context).dialogTheme.contentTextStyle,
                 textAlign: TextAlign.center,
               ),
               AutoSizeText.rich(
@@ -88,19 +81,19 @@ class PaymentConfirmationDialog extends StatelessWidget {
                   children: [
                     TextSpan(
                       text: _amountToPayStr,
-                      style: themeData.dialogTheme.contentTextStyle.copyWith(
+                      style: Theme.of(context).dialogTheme.contentTextStyle.copyWith(
                         fontSize: 20.0,
                         fontWeight: FontWeight.bold,
                       ),
                     ),
                     TextSpan(
-                      text: texts.payment_confirmation_dialog_confirmation_end,
+                      text: context.l10n.payment_confirmation_dialog_confirmation_end,
                     )
                   ],
                 ),
                 maxLines: 2,
                 textAlign: TextAlign.center,
-                style: themeData.dialogTheme.contentTextStyle,
+                style: Theme.of(context).dialogTheme.contentTextStyle,
               ),
             ],
           ),
@@ -110,9 +103,6 @@ class PaymentConfirmationDialog extends StatelessWidget {
   }
 
   Container _buildActions(BuildContext context) {
-    final themeData = Theme.of(context);
-    final texts = AppLocalizations.of(context);
-
     List<Widget> children = [
       TextButton(
         style: ButtonStyle(
@@ -123,8 +113,8 @@ class PaymentConfirmationDialog extends StatelessWidget {
           }),
         ),
         child: Text(
-          texts.payment_confirmation_dialog_action_no,
-          style: themeData.primaryTextTheme.button,
+          context.l10n.payment_confirmation_dialog_action_no,
+          style: Theme.of(context).primaryTextTheme.button,
         ),
         onPressed: () => _onCancel(),
       ),
@@ -137,8 +127,8 @@ class PaymentConfirmationDialog extends StatelessWidget {
           }),
         ),
         child: Text(
-          texts.payment_confirmation_dialog_action_yes,
-          style: themeData.primaryTextTheme.button,
+          context.l10n.payment_confirmation_dialog_action_yes,
+          style: Theme.of(context).primaryTextTheme.button,
         ),
         onPressed: () {
           _onPaymentApproved(SendPayment(PayRequest(

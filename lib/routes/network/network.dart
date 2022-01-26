@@ -9,7 +9,7 @@ import 'package:breez/widgets/animated_loader_dialog.dart';
 import 'package:breez/widgets/back_button.dart' as backBtn;
 import 'package:breez/widgets/error_dialog.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:breez/l10n/locales.dart';
 
 class _NetworkData {
   String peer = '';
@@ -73,18 +73,15 @@ class NetworkPageState extends State<NetworkPage> {
   }
 
   Future<bool> _promptForRestart(BuildContext context) {
-    final texts = AppLocalizations.of(context);
-    final themeData = Theme.of(context);
-
     return promptAreYouSure(
       context,
       null,
       Text(
-        texts.network_restart_message,
-        style: themeData.dialogTheme.contentTextStyle,
+        context.l10n.network_restart_message,
+        style: Theme.of(context).dialogTheme.contentTextStyle,
       ),
-      cancelText: texts.network_restart_action_cancel,
-      okText: texts.network_restart_action_confirm,
+      cancelText: context.l10n.network_restart_action_cancel,
+      okText: context.l10n.network_restart_action_confirm,
     ).then((shouldExit) {
       if (shouldExit) {
         exit(0);
@@ -95,22 +92,18 @@ class NetworkPageState extends State<NetworkPage> {
 
   @override
   Widget build(BuildContext context) {
-    final texts = AppLocalizations.of(context);
-    final themeData = Theme.of(context);
-    final dialogTheme = themeData.dialogTheme;
-
     return ButtonTheme(
       height: 28.0,
       child: Scaffold(
         appBar: AppBar(
-          iconTheme: themeData.appBarTheme.iconTheme,
-          textTheme: themeData.appBarTheme.textTheme,
-          backgroundColor: themeData.canvasColor,
+          iconTheme: Theme.of(context).appBarTheme.iconTheme,
+          textTheme: Theme.of(context).appBarTheme.textTheme,
+          backgroundColor: Theme.of(context).canvasColor,
           automaticallyImplyLeading: false,
           leading: backBtn.BackButton(),
           title: Text(
-            texts.network_title,
-            style: themeData.appBarTheme.textTheme.headline6,
+            context.l10n.network_title,
+            style: Theme.of(context).appBarTheme.textTheme.headline6,
           ),
           elevation: 0.0,
         ),
@@ -128,7 +121,7 @@ class NetworkPageState extends State<NetworkPage> {
                       padding: EdgeInsets.only(top: 8.0),
                       child: TextFormField(
                         decoration: InputDecoration(
-                          labelText: texts.network_bitcoin_node,
+                          labelText: context.l10n.network_bitcoin_node,
                         ),
                         style: theme.FieldTextStyle.textStyle,
                         onSaved: (String value) {
@@ -148,7 +141,7 @@ class NetworkPageState extends State<NetworkPage> {
                             primary: Colors.white,
                           ),
                           child: Text(
-                            texts.network_restart_action_reset,
+                            context.l10n.network_restart_action_reset,
                           ),
                           onPressed: () async {
                             var error = await showDialog(
@@ -164,8 +157,8 @@ class NetworkPageState extends State<NetworkPage> {
                                 context,
                                 null,
                                 Text(
-                                  texts.network_default_node_error,
-                                  style: dialogTheme.contentTextStyle,
+                                  context.l10n.network_default_node_error,
+                                  style: Theme.of(context).dialogTheme.contentTextStyle,
                                 ),
                               );
                               return;
@@ -182,7 +175,7 @@ class NetworkPageState extends State<NetworkPage> {
                             primary: Colors.white,
                           ),
                           child: Text(
-                            texts.network_restart_action_save,
+                            context.l10n.network_restart_action_save,
                           ),
                           onPressed: () async {
                             if (_formKey.currentState.validate()) {
@@ -203,8 +196,8 @@ class NetworkPageState extends State<NetworkPage> {
                                     context,
                                     null,
                                     Text(
-                                      texts.network_custom_node_error,
-                                      style: dialogTheme.contentTextStyle,
+                                      context.l10n.network_custom_node_error,
+                                      style: Theme.of(context).dialogTheme.contentTextStyle,
                                     ),
                                   );
                                   return;
@@ -266,12 +259,11 @@ class _TestingPeerDialogState extends State<_TestingPeerDialog> {
 
   @override
   Widget build(BuildContext context) {
-    final texts = AppLocalizations.of(context);
     return WillPopScope(
       onWillPop: () => Future.value(_allowPop),
       child: createAnimatedLoaderDialog(
         context,
-        texts.network_testing_node,
+        context.l10n.network_testing_node,
         withOKButton: false,
       ),
     );

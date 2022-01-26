@@ -3,9 +3,8 @@ import 'dart:async';
 import 'package:breez/theme_data.dart' as theme;
 import 'package:breez/utils/date.dart';
 import 'package:breez/widgets/breez_date_picker.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:breez/l10n/locales.dart';
 
 class CalendarDialog extends StatefulWidget {
   final DateTime firstDate;
@@ -32,13 +31,10 @@ class _CalendarDialogState extends State<CalendarDialog> {
 
   @override
   Widget build(BuildContext context) {
-    final texts = AppLocalizations.of(context);
-    final themeData = Theme.of(context);
-
     return AlertDialog(
       title: Text(
-        texts.pos_transactions_range_dialog_title,
-        style: themeData.dialogTheme.titleTextStyle,
+        context.l10n.pos_transactions_range_dialog_title,
+        style: Theme.of(context).dialogTheme.titleTextStyle,
       ),
       content: Row(
         mainAxisSize: MainAxisSize.max,
@@ -46,14 +42,14 @@ class _CalendarDialogState extends State<CalendarDialog> {
         children: [
           Flexible(
             child: _selectDateButton(
-              texts.pos_transactions_range_dialog_start,
+              context.l10n.pos_transactions_range_dialog_start,
               _startDateController,
               true,
             ),
           ),
           Flexible(
             child: _selectDateButton(
-              texts.pos_transactions_range_dialog_end,
+              context.l10n.pos_transactions_range_dialog_end,
               _endDateController,
               false,
             ),
@@ -63,18 +59,18 @@ class _CalendarDialogState extends State<CalendarDialog> {
       actions: [
         TextButton(
           child: Text(
-            texts.pos_transactions_range_dialog_clear,
+            context.l10n.pos_transactions_range_dialog_clear,
             style: theme.cancelButtonStyle.copyWith(
               color:
-                  theme.themeId == "BLUE" ? Colors.red : themeData.errorColor,
+                  theme.themeId == "BLUE" ? Colors.red : Theme.of(context).errorColor,
             ),
           ),
           onPressed: _clearFilter,
         ),
         TextButton(
           child: Text(
-            texts.pos_transactions_range_dialog_apply,
-            style: themeData.primaryTextTheme.button,
+            context.l10n.pos_transactions_range_dialog_apply,
+            style: Theme.of(context).primaryTextTheme.button,
           ),
           onPressed: () => _applyFilter(context),
         ),
@@ -84,14 +80,13 @@ class _CalendarDialogState extends State<CalendarDialog> {
 
   void _applyFilter(BuildContext context) {
     // Check if filter is unchanged
-    final navigator = Navigator.of(context);
     if (_startDate != widget.firstDate || _endDate.day != DateTime.now().day) {
-      navigator.pop([
+      Navigator.of(context).pop([
         DateTime(_startDate.year, _startDate.month, _startDate.day, 0, 0, 0),
         DateTime(_endDate.year, _endDate.month, _endDate.day, 23, 59, 59, 999),
       ]);
     } else {
-      navigator.pop([null, null]);
+      Navigator.of(context).pop([null, null]);
     }
   }
 
@@ -100,23 +95,21 @@ class _CalendarDialogState extends State<CalendarDialog> {
     TextEditingController textEditingController,
     bool isStartBtn,
   ) {
-    final themeData = Theme.of(context);
-
     return GestureDetector(
       child: Theme(
         data: theme.themeId == "BLUE"
-            ? themeData
-            : themeData.copyWith(
-                disabledColor: themeData.backgroundColor,
+            ? Theme.of(context)
+            : Theme.of(context).copyWith(
+                disabledColor: Theme.of(context).backgroundColor,
               ),
         child: TextField(
           decoration: InputDecoration(
             labelText: label,
-            labelStyle: themeData.dialogTheme.contentTextStyle,
+            labelStyle: Theme.of(context).dialogTheme.contentTextStyle,
           ),
           controller: textEditingController,
           enabled: false,
-          style: themeData.dialogTheme.contentTextStyle,
+          style: Theme.of(context).dialogTheme.contentTextStyle,
         ),
       ),
       onTap: () {

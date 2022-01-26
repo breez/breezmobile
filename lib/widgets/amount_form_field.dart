@@ -6,18 +6,17 @@ import 'package:breez/widgets/sat_amount_form_field_formatter.dart';
 import 'package:fixnum/fixnum.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:breez/l10n/locales.dart';
 
 class AmountFormField extends TextFormField {
   final AccountModel accountModel;
   final String Function(Int64 amount) validatorFn;
-  final AppLocalizations texts;
+  final BuildContext context;
 
   AmountFormField({
     this.accountModel,
     this.validatorFn,
-    this.texts,
-    BuildContext context,
+    this.context,
     Color iconColor,
     Function(String amount) returnFN,
     TextEditingController controller,
@@ -40,7 +39,7 @@ class AmountFormField extends TextFormField {
             decimal: accountModel.currency != Currency.SAT,
           ),
           decoration: InputDecoration(
-            labelText: texts.amount_form_denomination(
+            labelText: context.l10n.amount_form_denomination(
               accountModel.currency.displayName,
             ),
             suffixIcon: (readOnly ?? false)
@@ -89,14 +88,14 @@ class AmountFormField extends TextFormField {
   FormFieldValidator<String> get validator {
     return (value) {
       if (value.isEmpty) {
-        return texts.amount_form_insert_hint(
+        return context.l10n.amount_form_insert_hint(
           accountModel.currency.displayName,
         );
       }
       try {
         Int64 intAmount = accountModel.currency.parse(value);
         if (intAmount <= 0) {
-          return texts.amount_form_error_invalid_amount;
+          return context.l10n.amount_form_error_invalid_amount;
         }
         String msg;
         if (validatorFn != null) {
@@ -104,7 +103,7 @@ class AmountFormField extends TextFormField {
         }
         return msg;
       } catch (err) {
-        return texts.amount_form_error_invalid_amount;
+        return context.l10n.amount_form_error_invalid_amount;
       }
     };
   }

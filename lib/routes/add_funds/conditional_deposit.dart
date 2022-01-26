@@ -6,7 +6,7 @@ import 'package:breez/widgets/back_button.dart' as backBtn;
 import 'package:breez/widgets/flushbar.dart';
 import 'package:breez/widgets/link_launcher.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:breez/l10n/locales.dart';
 
 class ConditionalDeposit extends StatelessWidget {
   final Widget enabledChild;
@@ -20,8 +20,6 @@ class ConditionalDeposit extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final themeData = Theme.of(context);
-    final texts = AppLocalizations.of(context);
     final accountBloc = AppBlocsProvider.of<AccountBloc>(context);
 
     return StreamBuilder<AccountModel>(
@@ -38,9 +36,9 @@ class ConditionalDeposit extends StatelessWidget {
 
         if (unconfirmedTxID?.isNotEmpty == true) {
           if (waitingDepositConfirmation || account.processingConnection) {
-            errorMessage = texts.add_funds_error_deposit;
+            errorMessage = context.l10n.add_funds_error_deposit;
           } else {
-            errorMessage = texts.add_funds_error_withdraw;
+            errorMessage = context.l10n.add_funds_error_withdraw;
           }
         }
 
@@ -50,13 +48,13 @@ class ConditionalDeposit extends StatelessWidget {
 
         return Scaffold(
           appBar: AppBar(
-            iconTheme: themeData.appBarTheme.iconTheme,
-            textTheme: themeData.appBarTheme.textTheme,
-            backgroundColor: themeData.canvasColor,
+            iconTheme: Theme.of(context).appBarTheme.iconTheme,
+            textTheme: Theme.of(context).appBarTheme.textTheme,
+            backgroundColor: Theme.of(context).canvasColor,
             leading: backBtn.BackButton(),
             title: Text(
               title,
-              style: themeData.appBarTheme.textTheme.headline6,
+              style: Theme.of(context).appBarTheme.textTheme.headline6,
             ),
             elevation: 0.0,
           ),
@@ -98,7 +96,6 @@ class ConditionalDeposit extends StatelessWidget {
   }
 
   Widget _linkLauncher(BuildContext context, String unconfirmedTxID) {
-    final texts = AppLocalizations.of(context);
     return LinkLauncher(
       linkName: unconfirmedTxID,
       linkAddress: "https://blockstream.info/tx/$unconfirmedTxID",
@@ -106,7 +103,7 @@ class ConditionalDeposit extends StatelessWidget {
         ServiceInjector().device.setClipboardText(unconfirmedTxID);
         showFlushbar(
           context,
-          message: texts.add_funds_transaction_id_copied,
+          message: context.l10n.add_funds_transaction_id_copied,
           duration: Duration(seconds: 3),
         );
       },

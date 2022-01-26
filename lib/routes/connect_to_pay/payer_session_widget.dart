@@ -10,7 +10,7 @@ import 'package:breez/widgets/sync_loader.dart';
 import 'package:fixnum/fixnum.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:breez/l10n/locales.dart';
 import 'package:rxdart/subjects.dart';
 
 import 'payment_details_form.dart';
@@ -97,27 +97,25 @@ class _PayerInstructions extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final texts = AppLocalizations.of(context);
-
     final payeeData = sessionState.payeeData;
     final payerData = sessionState.payerData;
 
     var message = "";
     if (sessionState.paymentFulfilled) {
-      message = texts.connect_to_pay_payer_success(
+      message = context.l10n.connect_to_pay_payer_success(
         _account.currency.format(Int64(payerData.amount)),
       );
     } else if (payerData.amount == null) {
       if (payeeData.status.online) {
-        message = texts.connect_to_pay_payer_enter_amount(payeeData.userName);
+        message = context.l10n.connect_to_pay_payer_enter_amount(payeeData.userName);
       } else if (!sessionState.invitationSent && payeeData.userName == null) {
-        message = texts.connect_to_pay_payer_share_link;
+        message = context.l10n.connect_to_pay_payer_share_link;
       } else {
         final name = payeeData.userName;
         return LoadingAnimatedText(
           name != null
-              ? texts.connect_to_pay_payer_waiting_join_with_name(name)
-              : texts.connect_to_pay_payer_waiting_join_no_name,
+              ? context.l10n.connect_to_pay_payer_waiting_join_with_name(name)
+              : context.l10n.connect_to_pay_payer_waiting_join_no_name,
           textStyle: theme.sessionNotificationStyle,
         );
       }
@@ -125,8 +123,8 @@ class _PayerInstructions extends StatelessWidget {
       final name = payeeData.userName;
       return LoadingAnimatedText(
         name != null
-            ? texts.connect_to_pay_payer_waiting_approve_with_name(name)
-            : texts.connect_to_pay_payer_waiting_approve_no_name,
+            ? context.l10n.connect_to_pay_payer_waiting_approve_with_name(name)
+            : context.l10n.connect_to_pay_payer_waiting_approve_no_name,
         textStyle: theme.sessionNotificationStyle,
       );
     } else {
@@ -137,7 +135,7 @@ class _PayerInstructions extends StatelessWidget {
           onClose: () => Navigator.of(context).pop(),
         );
       }
-      message = texts.connect_to_pay_payer_sending;
+      message = context.l10n.connect_to_pay_payer_sending;
     }
 
     return Text(
@@ -186,15 +184,13 @@ class WaitingChannelsSyncUIState extends State<WaitingChannelsSyncUI> {
 
   @override
   Widget build(BuildContext context) {
-    final texts = AppLocalizations.of(context);
-    final themeData = Theme.of(context);
     final defaultTextStyle = DefaultTextStyle.of(context);
 
     return LoadingAnimatedText(
       "",
       textElements: [
         TextSpan(
-          text: texts.connect_to_pay_payer_wait_sync,
+          text: context.l10n.connect_to_pay_payer_wait_sync,
           recognizer: TapGestureRecognizer()
             ..onTap = () {
               showDialog(
@@ -206,7 +202,7 @@ class WaitingChannelsSyncUIState extends State<WaitingChannelsSyncUI> {
                     builder: (context, snapshot) {
                       return SyncProgressLoader(
                         value: snapshot.data ?? 0,
-                        title: texts.connect_to_pay_payer_synchronizing,
+                        title: context.l10n.connect_to_pay_payer_synchronizing,
                       );
                     },
                   ),
@@ -214,8 +210,8 @@ class WaitingChannelsSyncUIState extends State<WaitingChannelsSyncUI> {
                     FlatButton(
                       onPressed: () => Navigator.pop(context),
                       child: Text(
-                        texts.connect_to_pay_payer_action_close,
-                        style: themeData.primaryTextTheme.button,
+                        context.l10n.connect_to_pay_payer_action_close,
+                        style: Theme.of(context).primaryTextTheme.button,
                       ),
                     ),
                   ],

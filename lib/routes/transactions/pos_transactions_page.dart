@@ -10,7 +10,7 @@ import 'package:breez/widgets/calendar_dialog.dart';
 import 'package:breez/widgets/flushbar.dart';
 import 'package:breez/widgets/loader.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:breez/l10n/locales.dart';
 import 'package:share_extend/share_extend.dart';
 
 import 'pos_payments_list.dart';
@@ -42,8 +42,6 @@ class PosTransactionsPageState extends State<PosTransactionsPage> {
 
   @override
   Widget build(BuildContext context) {
-    final texts = AppLocalizations.of(context);
-
     return StreamBuilder<AccountModel>(
       stream: _accountBloc.accountStream,
       builder: (context, snapshot) {
@@ -64,7 +62,7 @@ class PosTransactionsPageState extends State<PosTransactionsPage> {
               return _buildScaffold(
                 context,
                 Center(
-                  child: Text(texts.pos_transactions_placeholder),
+                  child: Text(context.l10n.pos_transactions_placeholder),
                 ),
               );
             }
@@ -88,19 +86,16 @@ class PosTransactionsPageState extends State<PosTransactionsPage> {
     Widget body, [
     List<Widget> actions,
   ]) {
-    final texts = AppLocalizations.of(context);
-    final themeData = Theme.of(context);
-
     return Scaffold(
       key: _scaffoldKey,
       appBar: AppBar(
-        iconTheme: themeData.appBarTheme.iconTheme,
-        textTheme: themeData.appBarTheme.textTheme,
-        backgroundColor: themeData.canvasColor,
+        iconTheme: Theme.of(context).appBarTheme.iconTheme,
+        textTheme: Theme.of(context).appBarTheme.textTheme,
+        backgroundColor: Theme.of(context).canvasColor,
         leading: backBtn.BackButton(),
         title: Text(
-          texts.pos_transactions_title,
-          style: themeData.appBarTheme.textTheme.headline6,
+          context.l10n.pos_transactions_title,
+          style: Theme.of(context).appBarTheme.textTheme.headline6,
         ),
         actions: actions == null ? [] : actions,
         elevation: 0.0,
@@ -135,17 +130,14 @@ class PosTransactionsPageState extends State<PosTransactionsPage> {
     BuildContext context,
     PaymentsModel paymentsModel,
   ) {
-    final themeData = Theme.of(context);
-    final texts = AppLocalizations.of(context);
-
     if (paymentsModel.paymentsList.isNotEmpty) {
       return Padding(
         padding: const EdgeInsets.only(right: 16.0),
         child: PopupMenuButton(
-          color: themeData.backgroundColor,
+          color: Theme.of(context).backgroundColor,
           icon: Icon(
             Icons.more_vert,
-            color: themeData.iconTheme.color,
+            color: Theme.of(context).iconTheme.color,
           ),
           padding: EdgeInsets.zero,
           offset: Offset(0, 48),
@@ -155,8 +147,8 @@ class PosTransactionsPageState extends State<PosTransactionsPage> {
               height: 36,
               value: Choice(() => _exportTransactions(context)),
               child: Text(
-                texts.pos_transactions_action_export,
-                style: themeData.textTheme.button,
+                context.l10n.pos_transactions_action_export,
+                style: Theme.of(context).textTheme.button,
               ),
             ),
           ],
@@ -169,7 +161,7 @@ class PosTransactionsPageState extends State<PosTransactionsPage> {
         onPressed: () {},
         icon: Icon(
           Icons.more_vert,
-          color: themeData.disabledColor,
+          color: Theme.of(context).disabledColor,
           size: 24.0,
         ),
       ),
@@ -181,7 +173,6 @@ class PosTransactionsPageState extends State<PosTransactionsPage> {
   }
 
   Future _exportTransactions(BuildContext context) async {
-    final texts = AppLocalizations.of(context);
     var action = ExportPayments();
     _accountBloc.userActionsSink.add(action);
     Navigator.of(context).push(createLoaderRoute(context));
@@ -192,7 +183,7 @@ class PosTransactionsPageState extends State<PosTransactionsPage> {
       Navigator.of(context).pop();
       showFlushbar(
         context,
-        message: texts.pos_transactions_action_export_failed,
+        message: context.l10n.pos_transactions_action_export_failed,
       );
     });
   }
@@ -201,8 +192,6 @@ class PosTransactionsPageState extends State<PosTransactionsPage> {
     BuildContext context,
     PaymentsModel paymentsModel,
   ) {
-    final texts = AppLocalizations.of(context);
-    final themeData = Theme.of(context);
     final filter = paymentsModel.filter;
     final payments = paymentsModel.paymentsList;
     final hasDateRange = filter.startDate != null && filter.endDate != null;
@@ -218,7 +207,7 @@ class PosTransactionsPageState extends State<PosTransactionsPage> {
                   Expanded(
                     child: Center(
                       child: Text(
-                        texts.pos_transactions_range_no_transactions,
+                        context.l10n.pos_transactions_range_no_transactions,
                       ),
                     ),
                   ),
@@ -233,7 +222,7 @@ class PosTransactionsPageState extends State<PosTransactionsPage> {
                           elevation: 0.0,
                           expandedHeight: 32.0,
                           automaticallyImplyLeading: false,
-                          backgroundColor: themeData.canvasColor,
+                          backgroundColor: Theme.of(context).canvasColor,
                           flexibleSpace: _buildDateFilterChip(filter),
                         )
                       : SliverPadding(

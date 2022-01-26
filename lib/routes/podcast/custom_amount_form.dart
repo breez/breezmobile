@@ -2,7 +2,6 @@ import 'package:breez/bloc/user_profile/currency.dart';
 import 'package:breez/widgets/sat_amount_form_field_formatter.dart';
 import 'package:fixnum/fixnum.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 
 class CustomAmountFormField extends TextFormField {
   final List<int> preset;

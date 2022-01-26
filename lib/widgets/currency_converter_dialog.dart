@@ -13,7 +13,7 @@ import 'package:breez/widgets/loader.dart';
 import 'package:fixnum/fixnum.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:breez/l10n/locales.dart';
 
 import 'flushbar.dart';
 
@@ -71,9 +71,6 @@ class CurrencyConverterDialogState extends State<CurrencyConverterDialog>
   @override
   void didChangeDependencies() {
     if (!_isInit) {
-      final themeData = Theme.of(context);
-      final texts = AppLocalizations.of(context);
-
       _accountBloc = AppBlocsProvider.of<AccountBloc>(context);
       _userProfileBloc = AppBlocsProvider.of<UserProfileBloc>(context);
       FetchRates fetchRatesAction = FetchRates();
@@ -85,7 +82,7 @@ class CurrencyConverterDialogState extends State<CurrencyConverterDialog>
             Navigator.pop(context);
             showFlushbar(
               context,
-              message: texts.currency_converter_dialog_error_exchange_rate,
+              message: context.l10n.currency_converter_dialog_error_exchange_rate,
             );
           });
         }
@@ -93,8 +90,8 @@ class CurrencyConverterDialogState extends State<CurrencyConverterDialog>
 
       _colorAnimation = ColorTween(
         // change to white according to theme
-        begin: themeData.primaryTextTheme.headline4.color,
-        end: themeData.primaryTextTheme.button.color,
+        begin: Theme.of(context).primaryTextTheme.headline4.color,
+        end: Theme.of(context).primaryTextTheme.button.color,
       ).animate(_controller)
         ..addListener(() {
           setState(() {});
@@ -113,8 +110,6 @@ class CurrencyConverterDialogState extends State<CurrencyConverterDialog>
 
   @override
   Widget build(BuildContext context) {
-    final themeData = Theme.of(context);
-
     return StreamBuilder<AccountModel>(
       stream: _accountBloc.accountStream,
       builder: (context, snapshot) {
@@ -140,7 +135,7 @@ class CurrencyConverterDialogState extends State<CurrencyConverterDialog>
 
         return AlertDialog(
           title: Theme(
-            data: themeData.copyWith(
+            data: Theme.of(context).copyWith(
               brightness: Brightness.light,
               canvasColor: theme.BreezColors.white[500],
             ),
@@ -156,9 +151,6 @@ class CurrencyConverterDialogState extends State<CurrencyConverterDialog>
   }
 
   Widget _dialogBody(BuildContext context, AccountModel account) {
-    final themeData = Theme.of(context);
-    final texts = AppLocalizations.of(context);
-
     final items = account.preferredFiatConversionList.map((value) {
       return DropdownMenuItem<String>(
         value: value.currencyData.shortName,
@@ -168,7 +160,7 @@ class CurrencyConverterDialogState extends State<CurrencyConverterDialog>
             child: AutoSizeText(
               value.currencyData.shortName,
               textAlign: TextAlign.left,
-              style: themeData.dialogTheme.titleTextStyle,
+              style: Theme.of(context).dialogTheme.titleTextStyle,
               maxLines: 1,
               minFontSize: MinFontSize(context).minFontSize,
               stepGranularity: 0.1,
@@ -188,8 +180,8 @@ class CurrencyConverterDialogState extends State<CurrencyConverterDialog>
           Expanded(
             child: Padding(
               child: AutoSizeText(
-                texts.currency_converter_dialog_title,
-                style: themeData.dialogTheme.titleTextStyle,
+                context.l10n.currency_converter_dialog_title,
+                style: Theme.of(context).dialogTheme.titleTextStyle,
                 maxLines: 1,
                 minFontSize: MinFontSize(context).minFontSize,
                 stepGranularity: 0.1,
@@ -199,8 +191,8 @@ class CurrencyConverterDialogState extends State<CurrencyConverterDialog>
             ),
           ),
           Theme(
-            data: themeData.copyWith(
-              canvasColor: themeData.backgroundColor,
+            data: Theme.of(context).copyWith(
+              canvasColor: Theme.of(context).backgroundColor,
             ),
             child: DropdownButtonHideUnderline(
               child: ButtonTheme(
@@ -208,8 +200,8 @@ class CurrencyConverterDialogState extends State<CurrencyConverterDialog>
                 child: BreezDropdownButton(
                   onChanged: (value) => _selectFiatCurrency(account, value),
                   value: account.fiatCurrency.currencyData.shortName,
-                  iconEnabledColor: themeData.dialogTheme.titleTextStyle.color,
-                  style: themeData.dialogTheme.titleTextStyle,
+                  iconEnabledColor: Theme.of(context).dialogTheme.titleTextStyle.color,
+                  style: Theme.of(context).dialogTheme.titleTextStyle,
                   items: items.toList(),
                 ),
               ),
@@ -221,8 +213,6 @@ class CurrencyConverterDialogState extends State<CurrencyConverterDialog>
   }
 
   Widget _dialogContent(BuildContext context, AccountModel account) {
-    final themeData = Theme.of(context);
-
     final fractionSize = account.fiatCurrency.currencyData.fractionSize;
     final isBlue = theme.themeId == "BLUE";
 
@@ -241,21 +231,21 @@ class CurrencyConverterDialogState extends State<CurrencyConverterDialog>
               ),
               errorBorder: UnderlineInputBorder(
                 borderSide: BorderSide(
-                  color: isBlue ? Colors.red : themeData.errorColor,
+                  color: isBlue ? Colors.red : Theme.of(context).errorColor,
                 ),
               ),
               focusedErrorBorder: UnderlineInputBorder(
                 borderSide: BorderSide(
-                  color: isBlue ? Colors.red : themeData.errorColor,
+                  color: isBlue ? Colors.red : Theme.of(context).errorColor,
                 ),
               ),
               errorMaxLines: 2,
-              errorStyle: themeData.primaryTextTheme.caption.copyWith(
-                color: isBlue ? Colors.red : themeData.errorColor,
+              errorStyle: Theme.of(context).primaryTextTheme.caption.copyWith(
+                color: isBlue ? Colors.red : Theme.of(context).errorColor,
               ),
               prefix: Text(
                 account.fiatCurrency.currencyData.symbol,
-                style: themeData.dialogTheme.contentTextStyle,
+                style: Theme.of(context).dialogTheme.contentTextStyle,
               ),
             ),
             // Do not allow '.' when fractionSize is 0 and only allow fiat currencies fractionSize number of digits after decimal point
@@ -277,7 +267,7 @@ class CurrencyConverterDialogState extends State<CurrencyConverterDialog>
               }
               return null;
             },
-            style: themeData.dialogTheme.contentTextStyle,
+            style: Theme.of(context).dialogTheme.contentTextStyle,
           ),
         ),
         Padding(
@@ -286,7 +276,7 @@ class CurrencyConverterDialogState extends State<CurrencyConverterDialog>
             children: [
               Text(
                 _contentMessage(context, account),
-                style: themeData.textTheme.headline5.copyWith(
+                style: Theme.of(context).textTheme.headline5.copyWith(
                   fontSize: 16.0,
                 ),
               ),
@@ -299,15 +289,12 @@ class CurrencyConverterDialogState extends State<CurrencyConverterDialog>
   }
 
   List<Widget> _buildActions(BuildContext context, AccountModel account) {
-    final themeData = Theme.of(context);
-    final texts = AppLocalizations.of(context);
-
     List<Widget> actions = [
       TextButton(
         onPressed: () => Navigator.pop(context),
         child: Text(
-          texts.currency_converter_dialog_action_cancel,
-          style: themeData.primaryTextTheme.button,
+          context.l10n.currency_converter_dialog_action_cancel,
+          style: Theme.of(context).primaryTextTheme.button,
         ),
       ),
     ];
@@ -330,8 +317,8 @@ class CurrencyConverterDialogState extends State<CurrencyConverterDialog>
             }
           },
           child: Text(
-            texts.currency_converter_dialog_action_done,
-            style: themeData.primaryTextTheme.button,
+            context.l10n.currency_converter_dialog_action_done,
+            style: Theme.of(context).primaryTextTheme.button,
           ),
         ),
       );
@@ -372,25 +359,22 @@ class CurrencyConverterDialogState extends State<CurrencyConverterDialog>
     BuildContext context,
     FiatConversion fiatConversion,
   ) {
-    final themeData = Theme.of(context);
-    final texts = AppLocalizations.of(context);
-
     // Empty string widget is returned so that the dialogs height is not changed when the exchange rate is shown
     final currency = CurrencyWrapper.fromFiat(fiatConversion);
     return _exchangeRate == null
         ? Text(
             "",
-            style: themeData.primaryTextTheme.subtitle2,
+            style: Theme.of(context).primaryTextTheme.subtitle2,
           )
         : Text(
-            texts.currency_converter_dialog_rate(
+            context.l10n.currency_converter_dialog_rate(
               currency.format(
                 _exchangeRate,
                 removeTrailingZeros: true,
               ),
               fiatConversion.currencyData.shortName,
             ),
-            style: themeData.primaryTextTheme.subtitle2.copyWith(
+            style: Theme.of(context).primaryTextTheme.subtitle2.copyWith(
               color: _colorAnimation.value,
             ),
           );

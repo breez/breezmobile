@@ -11,7 +11,6 @@ import 'package:breez/widgets/circular_progress.dart';
 import 'package:breez/widgets/compact_qr_image.dart';
 import 'package:breez/widgets/flushbar.dart';
 import 'package:breez/widgets/warning_box.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:share_extend/share_extend.dart';
 

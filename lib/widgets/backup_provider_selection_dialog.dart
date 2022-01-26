@@ -4,7 +4,7 @@ import 'package:breez/bloc/backup/backup_bloc.dart';
 import 'package:breez/bloc/backup/backup_model.dart';
 import 'package:breez/routes/security_pin/remote_server_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:breez/l10n/locales.dart';
 
 class BackupProviderSelectionDialog extends StatefulWidget {
   final BackupBloc backupBloc;
@@ -28,17 +28,14 @@ class BackupProviderSelectionDialogState
 
   @override
   Widget build(BuildContext context) {
-    final themeData = Theme.of(context);
-    final texts = AppLocalizations.of(context);
-
     return AlertDialog(
       titlePadding: EdgeInsets.fromLTRB(24.0, 22.0, 24.0, 16.0),
       title: Container(
         width: MediaQuery.of(context).size.width,
         height: 30,
         child: AutoSizeText(
-          texts.backup_provider_dialog_title,
-          style: themeData.dialogTheme.titleTextStyle,
+          context.l10n.backup_provider_dialog_title,
+          style: Theme.of(context).dialogTheme.titleTextStyle,
           maxLines: 1,
         ),
       ),
@@ -49,9 +46,9 @@ class BackupProviderSelectionDialogState
         children: [
           Text(
             widget.restore
-                ? texts.backup_provider_dialog_message_restore
-                : texts.backup_provider_dialog_message_store,
-            style: themeData.primaryTextTheme.headline3.copyWith(
+                ? context.l10n.backup_provider_dialog_message_restore
+                : context.l10n.backup_provider_dialog_message_store,
+            style: Theme.of(context).primaryTextTheme.headline3.copyWith(
               fontSize: 16,
             ),
           ),
@@ -76,15 +73,15 @@ class BackupProviderSelectionDialogState
                       trailing: _selectedProviderIndex == index
                           ? Icon(
                               Icons.check,
-                              color: themeData.primaryTextTheme.button.color,
+                              color: Theme.of(context).primaryTextTheme.button.color,
                             )
                           : Icon(
                               Icons.check,
-                              color: themeData.backgroundColor,
+                              color: Theme.of(context).backgroundColor,
                             ),
                       title: Text(
                         providers[index].displayName,
-                        style: themeData.dialogTheme.titleTextStyle.copyWith(
+                        style: Theme.of(context).dialogTheme.titleTextStyle.copyWith(
                           fontSize: 14.3,
                           height: 1.2,
                         ), // Color needs to change
@@ -105,20 +102,20 @@ class BackupProviderSelectionDialogState
       actions: [
         TextButton(
           style: TextButton.styleFrom(
-            primary: themeData.primaryTextTheme.button.color,
+            primary: Theme.of(context).primaryTextTheme.button.color,
           ),
           onPressed: () => Navigator.pop(context, null),
-          child: Text(texts.backup_provider_dialog_action_cancel),
+          child: Text(context.l10n.backup_provider_dialog_action_cancel),
         ),
         StreamBuilder<BackupSettings>(
           stream: widget.backupBloc.backupSettingsStream,
           builder: (context, snapshot) {
             return TextButton(
               style: TextButton.styleFrom(
-                primary: themeData.primaryTextTheme.button.color,
+                primary: Theme.of(context).primaryTextTheme.button.color,
               ),
               onPressed: () => _selectProvider(snapshot.data),
-              child: Text(texts.backup_provider_dialog_action_ok),
+              child: Text(context.l10n.backup_provider_dialog_action_ok),
             );
           },
         )

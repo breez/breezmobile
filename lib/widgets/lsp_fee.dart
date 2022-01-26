@@ -3,7 +3,7 @@ import 'package:breez/bloc/lsp/lsp_model.dart';
 import 'package:breez/routes/home/moonpay_route.dart';
 import 'package:fixnum/fixnum.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:breez/l10n/locales.dart';
 
 import 'error_dialog.dart';
 
@@ -13,25 +13,21 @@ promptLSPFeeAndNavigate(
   LSPInfo lsp,
   String route,
 ) {
-  final themeData = Theme.of(context);
-  final navigator = Navigator.of(context);
-  final texts = AppLocalizations.of(context);
-
   promptAreYouSure(
     context,
-    texts.lsp_fee_warning_title,
+    context.l10n.lsp_fee_warning_title,
     Text(
       _formatFeeMessage(context, account, lsp),
-      style: themeData.dialogTheme.contentTextStyle,
+      style: Theme.of(context).dialogTheme.contentTextStyle,
     ),
-    cancelText: texts.lsp_fee_warning_action_cancel,
-    okText: texts.lsp_fee_warning_action_ok,
+    cancelText: context.l10n.lsp_fee_warning_action_cancel,
+    okText: context.l10n.lsp_fee_warning_action_ok,
   ).then((ok) {
     if (ok) {
       if (route == "/buy_bitcoin") {
         showMonpayWebview(context);
       } else {
-        navigator.pushNamed(route);
+        Navigator.of(context).pushNamed(route);
       }
     }
   });
@@ -43,8 +39,6 @@ String _formatFeeMessage(
   LSPInfo lsp,
 ) {
   if (lsp == null) return "";
-  final texts = AppLocalizations.of(context);
-
   final showMinFeeMessage = lsp.channelMinimumFeeMsat > 0;
   final connected = acc.connected;
 
@@ -55,23 +49,23 @@ String _formatFeeMessage(
   final liquidity = acc.currency.format(acc.maxInboundLiquidity);
 
   if (connected && showMinFeeMessage) {
-    return texts.invoice_ln_address_warning_with_min_fee_account_connected(
+    return context.l10n.invoice_ln_address_warning_with_min_fee_account_connected(
       setUpFee,
       minFeeFormatted,
       liquidity,
     );
   } else if (connected && !showMinFeeMessage) {
-    return texts.invoice_ln_address_warning_without_min_fee_account_connected(
+    return context.l10n.invoice_ln_address_warning_without_min_fee_account_connected(
       setUpFee,
       liquidity,
     );
   } else if (!connected && showMinFeeMessage) {
-    return texts.invoice_ln_address_warning_with_min_fee_account_not_connected(
+    return context.l10n.invoice_ln_address_warning_with_min_fee_account_not_connected(
       setUpFee,
       minFeeFormatted,
     );
   } else {
-    return texts
+    return context.l10n
         .invoice_ln_address_warning_without_min_fee_account_not_connected(
       setUpFee,
     );

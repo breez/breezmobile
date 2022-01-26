@@ -6,7 +6,7 @@ import 'package:breez/utils/lnurl.dart';
 import 'package:breez/utils/node_id.dart';
 import 'package:breez/widgets/route.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:breez/l10n/locales.dart';
 
 import 'flushbar.dart';
 
@@ -46,14 +46,11 @@ class EnterPaymentInfoDialogState extends State<EnterPaymentInfoDialog> {
 
   @override
   Widget build(BuildContext context) {
-    final themeData = Theme.of(context);
-    final texts = AppLocalizations.of(context);
-
     return AlertDialog(
       titlePadding: EdgeInsets.fromLTRB(24.0, 22.0, 0.0, 16.0),
       title: Text(
-        texts.payment_info_dialog_title,
-        style: themeData.dialogTheme.titleTextStyle,
+        context.l10n.payment_info_dialog_title,
+        style: Theme.of(context).dialogTheme.titleTextStyle,
       ),
       contentPadding: EdgeInsets.fromLTRB(24.0, 8.0, 24.0, 24.0),
       content: _buildPaymentInfoForm(context),
@@ -62,22 +59,19 @@ class EnterPaymentInfoDialogState extends State<EnterPaymentInfoDialog> {
   }
 
   Theme _buildPaymentInfoForm(BuildContext context) {
-    final themeData = Theme.of(context);
-    final texts = AppLocalizations.of(context);
-
     return Theme(
-      data: themeData.copyWith(
+      data: Theme.of(context).copyWith(
         inputDecorationTheme: InputDecorationTheme(
           enabledBorder: UnderlineInputBorder(
             borderSide: theme.greyBorderSide,
           ),
         ),
-        hintColor: themeData.dialogTheme.contentTextStyle.color,
+        hintColor: Theme.of(context).dialogTheme.contentTextStyle.color,
         colorScheme: ColorScheme.dark(
-          primary: themeData.textTheme.button.color,
+          primary: Theme.of(context).textTheme.button.color,
         ),
-        primaryColor: themeData.textTheme.button.color,
-        errorColor: theme.themeId == "BLUE" ? Colors.red : themeData.errorColor,
+        primaryColor: Theme.of(context).textTheme.button.color,
+        errorColor: theme.themeId == "BLUE" ? Colors.red : Theme.of(context).errorColor,
       ),
       child: Container(
         width: MediaQuery.of(context).size.width,
@@ -89,31 +83,31 @@ class EnterPaymentInfoDialogState extends State<EnterPaymentInfoDialog> {
             children: [
               TextFormField(
                 decoration: InputDecoration(
-                  labelText: texts.payment_info_dialog_hint,
+                  labelText: context.l10n.payment_info_dialog_hint,
                   suffixIcon: IconButton(
                     padding: EdgeInsets.only(top: 21.0),
                     alignment: Alignment.bottomRight,
                     icon: Image(
                       image: AssetImage("src/icon/qr_scan.png"),
-                      color: themeData.primaryIconTheme.color,
+                      color: Theme.of(context).primaryIconTheme.color,
                       fit: BoxFit.contain,
                       width: 24.0,
                       height: 24.0,
                     ),
-                    tooltip: texts.payment_info_dialog_barcode,
+                    tooltip: context.l10n.payment_info_dialog_barcode,
                     onPressed: () => _scanBarcode(context),
                   ),
                 ),
                 focusNode: _paymentInfoFocusNode,
                 controller: _paymentInfoController,
                 style: TextStyle(
-                  color: themeData.primaryTextTheme.headline4.color,
+                  color: Theme.of(context).primaryTextTheme.headline4.color,
                 ),
                 validator: (value) {
                   if (parseNodeId(value) == null &&
                       _decodeInvoice(value) == null &&
                       !isLightningAddress(value)) {
-                    return texts.payment_info_dialog_error;
+                    return context.l10n.payment_info_dialog_error;
                   }
                   return null;
                 },
@@ -130,7 +124,7 @@ class EnterPaymentInfoDialogState extends State<EnterPaymentInfoDialog> {
               Padding(
                 padding: EdgeInsets.only(top: 8),
                 child: Text(
-                  texts.payment_info_dialog_hint_expanded,
+                  context.l10n.payment_info_dialog_hint_expanded,
                   style: theme.FieldTextStyle.labelStyle.copyWith(
                     fontSize: 13.0,
                     color: theme.themeId == "BLUE"
@@ -147,15 +141,12 @@ class EnterPaymentInfoDialogState extends State<EnterPaymentInfoDialog> {
   }
 
   List<Widget> _buildActions(BuildContext context) {
-    final themeData = Theme.of(context);
-    final texts = AppLocalizations.of(context);
-
     List<Widget> actions = [
       SimpleDialogOption(
         onPressed: () => Navigator.pop(context),
         child: Text(
-          texts.payment_info_dialog_action_cancel,
-          style: themeData.primaryTextTheme.button,
+          context.l10n.payment_info_dialog_action_cancel,
+          style: Theme.of(context).primaryTextTheme.button,
         ),
       )
     ];
@@ -191,8 +182,8 @@ class EnterPaymentInfoDialogState extends State<EnterPaymentInfoDialog> {
           }
         }),
         child: Text(
-          texts.payment_info_dialog_action_approve,
-          style: themeData.primaryTextTheme.button,
+          context.l10n.payment_info_dialog_action_approve,
+          style: Theme.of(context).primaryTextTheme.button,
         ),
       ));
     }
@@ -200,8 +191,6 @@ class EnterPaymentInfoDialogState extends State<EnterPaymentInfoDialog> {
   }
 
   Future _scanBarcode(BuildContext context) async {
-    final texts = AppLocalizations.of(context);
-
     FocusScope.of(context).requestFocus(FocusNode());
     String barcode = await Navigator.pushNamed<String>(context, "/qr_scan");
     if (barcode == null) {
@@ -210,7 +199,7 @@ class EnterPaymentInfoDialogState extends State<EnterPaymentInfoDialog> {
     if (barcode.isEmpty) {
       showFlushbar(
         context,
-        message: texts.payment_info_dialog_error_qrcode,
+        message: context.l10n.payment_info_dialog_error_qrcode,
       );
       return;
     }

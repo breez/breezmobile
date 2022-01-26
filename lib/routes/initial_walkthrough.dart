@@ -18,7 +18,7 @@ import 'package:breez/widgets/restore_dialog.dart';
 import 'package:breez/widgets/route.dart';
 import 'package:crypto/crypto.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:breez/l10n/locales.dart';
 import 'package:hex/hex.dart';
 import 'package:rxdart/rxdart.dart';
 
@@ -110,11 +110,10 @@ class InitialWalkthroughPageState extends State<InitialWalkthroughPage>
   }
 
   Future<void> _listenBackupContext(_BackupContext backupContext) async {
-    final texts = AppLocalizations.of(context);
     final options = backupContext.snapshots;
     if (options.length == 0) {
       popToWalkthrough(
-        error: texts.initial_walk_through_error_backup_location,
+        error: context.l10n.initial_walk_through_error_backup_location,
       );
       return;
     }
@@ -176,7 +175,6 @@ class InitialWalkthroughPageState extends State<InitialWalkthroughPage>
     log.info('$logKey: snapshotInfo with timestamp: ${snapshot?.modifiedTime}');
     log.info('$logKey: using key with length: ${key?.length}');
 
-    final texts = AppLocalizations.of(context);
     widget._backupBloc.restoreRequestSink.add(RestoreRequest(
       snapshot,
       BreezLibBackupKey(key: key),
@@ -185,22 +183,20 @@ class InitialWalkthroughPageState extends State<InitialWalkthroughPage>
       context,
       createLoaderRoute(
         context,
-        message: texts.initial_walk_through_restoring,
+        message: context.l10n.initial_walk_through_restoring,
         opacity: 0.8,
       ),
     );
   }
 
   Future _handleSignInException(SignInFailedException e) async {
-    final texts = AppLocalizations.of(context);
-    final themeData = Theme.of(context);
     if (e.provider == BackupSettings.icloudBackupProvider) {
       await promptError(
         context,
-        texts.initial_walk_through_sign_in_icloud_title,
+        context.l10n.initial_walk_through_sign_in_icloud_title,
         Text(
-          texts.initial_walk_through_sign_in_icloud_message,
-          style: themeData.dialogTheme.contentTextStyle,
+          context.l10n.initial_walk_through_sign_in_icloud_message,
+          style: Theme.of(context).dialogTheme.contentTextStyle,
         ),
       );
     }
@@ -221,17 +217,15 @@ class InitialWalkthroughPageState extends State<InitialWalkthroughPage>
   }
 
   Future _createBackupPhrase(String entropy) async {
-    final texts = AppLocalizations.of(context);
-    final themeData = Theme.of(context);
     final saveBackupKeyAction = SaveBackupKey(entropy);
     widget._backupBloc.backupActionsSink.add(saveBackupKeyAction);
     return saveBackupKeyAction.future.catchError((err) {
       promptError(
         context,
-        texts.initial_walk_through_error_internal,
+        context.l10n.initial_walk_through_error_internal,
         Text(
           err.toString(),
-          style: themeData.dialogTheme.contentTextStyle,
+          style: Theme.of(context).dialogTheme.contentTextStyle,
         ),
       );
     });
@@ -281,9 +275,6 @@ class InitialWalkthroughPageState extends State<InitialWalkthroughPage>
 
   @override
   Widget build(BuildContext context) {
-    final texts = AppLocalizations.of(context);
-    final themeData = Theme.of(context);
-
     return Scaffold(
       key: _scaffoldKey,
       body: WillPopScope(
@@ -322,7 +313,7 @@ class InitialWalkthroughPageState extends State<InitialWalkthroughPage>
                     child: Padding(
                       padding: EdgeInsets.only(left: 24, right: 24),
                       child: AutoSizeText(
-                        texts.initial_walk_through_welcome_message,
+                        context.l10n.initial_walk_through_welcome_message,
                         textAlign: TextAlign.center,
                         style: theme.welcomeTextStyle,
                       ),
@@ -338,13 +329,13 @@ class InitialWalkthroughPageState extends State<InitialWalkthroughPage>
                     child: ElevatedButton(
                       style: ElevatedButton.styleFrom(
                         padding: EdgeInsets.fromLTRB(16, 4, 16, 4),
-                        primary: themeData.buttonColor,
+                        primary: Theme.of(context).buttonColor,
                         elevation: 0.0,
                         shape: const StadiumBorder(),
                       ),
                       child: Text(
-                        texts.initial_walk_through_lets_breeze,
-                        style: themeData.textTheme.button,
+                        context.l10n.initial_walk_through_lets_breeze,
+                        style: Theme.of(context).textTheme.button,
                       ),
                       onPressed: () => _letsBreez(context),
                     ),
@@ -356,7 +347,7 @@ class InitialWalkthroughPageState extends State<InitialWalkthroughPage>
                       child: GestureDetector(
                         onTap: () => _restoreFromBackup(context),
                         child: Text(
-                          texts.initial_walk_through_restore_from_backup,
+                          context.l10n.initial_walk_through_restore_from_backup,
                           style: theme.restoreLinkStyle,
                         ),
                       ),
@@ -376,9 +367,6 @@ class InitialWalkthroughPageState extends State<InitialWalkthroughPage>
   }
 
   void _letsBreez(BuildContext context) {
-    final texts = AppLocalizations.of(context);
-    final themeData = Theme.of(context);
-
     showDialog(
       useRootNavigator: false,
       context: context,
@@ -395,10 +383,10 @@ class InitialWalkthroughPageState extends State<InitialWalkthroughPage>
         }).catchError((err) {
           promptError(
             context,
-            texts.initial_walk_through_error_internal,
+            context.l10n.initial_walk_through_error_internal,
             Text(
               err.toString(),
-              style: themeData.dialogTheme.contentTextStyle,
+              style: Theme.of(context).dialogTheme.contentTextStyle,
             ),
           );
         });

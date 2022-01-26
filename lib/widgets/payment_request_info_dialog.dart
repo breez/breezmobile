@@ -8,7 +8,7 @@ import 'package:breez/widgets/amount_form_field.dart';
 import 'package:breez/widgets/breez_avatar.dart';
 import 'package:fixnum/fixnum.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:breez/l10n/locales.dart';
 
 import 'keyboard_done_action.dart';
 
@@ -145,38 +145,33 @@ class PaymentRequestInfoDialogState extends State<PaymentRequestInfoDialog> {
   }
 
   Widget _buildRequestPayTextWidget(BuildContext context) {
-    final themeData = Theme.of(context);
-    final texts = AppLocalizations.of(context);
     final payeeName = widget.invoice.payeeName;
 
     return Text(
       payeeName == null || payeeName.isEmpty
-          ? texts.payment_request_dialog_requested
-          : texts.payment_request_dialog_requesting,
-      style: themeData.primaryTextTheme.headline3.copyWith(fontSize: 16),
+          ? context.l10n.payment_request_dialog_requested
+          : context.l10n.payment_request_dialog_requesting,
+      style: Theme.of(context).primaryTextTheme.headline3.copyWith(fontSize: 16),
       textAlign: TextAlign.center,
     );
   }
 
   Widget _buildAmountWidget(BuildContext context, AccountModel account) {
-    final themeData = Theme.of(context);
-    final texts = AppLocalizations.of(context);
-
     if (widget.invoice.amount == 0) {
       return Theme(
-        data: themeData.copyWith(
+        data: Theme.of(context).copyWith(
           inputDecorationTheme: InputDecorationTheme(
             enabledBorder: UnderlineInputBorder(
               borderSide: theme.greyBorderSide,
             ),
           ),
-          hintColor: themeData.dialogTheme.contentTextStyle.color,
+          hintColor: Theme.of(context).dialogTheme.contentTextStyle.color,
           colorScheme: ColorScheme.dark(
-            primary: themeData.textTheme.button.color,
+            primary: Theme.of(context).textTheme.button.color,
           ),
-          primaryColor: themeData.textTheme.button.color,
+          primaryColor: Theme.of(context).textTheme.button.color,
           errorColor:
-              theme.themeId == "BLUE" ? Colors.red : themeData.errorColor,
+              theme.themeId == "BLUE" ? Colors.red : Theme.of(context).errorColor,
         ),
         child: Form(
           autovalidateMode: AutovalidateMode.always,
@@ -187,13 +182,12 @@ class PaymentRequestInfoDialogState extends State<PaymentRequestInfoDialog> {
               height: 80.0,
               child: AmountFormField(
                 context: context,
-                texts: texts,
                 accountModel: account,
-                iconColor: themeData.primaryIconTheme.color,
+                iconColor: Theme.of(context).primaryIconTheme.color,
                 focusNode: _amountFocusNode,
                 controller: _invoiceAmountController,
                 validatorFn: account.validateOutgoingPayment,
-                style: themeData.dialogTheme.contentTextStyle
+                style: Theme.of(context).dialogTheme.contentTextStyle
                     .copyWith(height: 1.0),
               ),
             ),
@@ -211,7 +205,7 @@ class PaymentRequestInfoDialogState extends State<PaymentRequestInfoDialog> {
           _showFiatCurrency && account.fiatCurrency != null
               ? account.fiatCurrency.format(widget.invoice.amount)
               : account.currency.format(widget.invoice.amount),
-          style: themeData.primaryTextTheme.headline5,
+          style: Theme.of(context).primaryTextTheme.headline5,
           textAlign: TextAlign.center,
         ),
       ),
@@ -230,7 +224,6 @@ class PaymentRequestInfoDialogState extends State<PaymentRequestInfoDialog> {
   }
 
   Widget _buildDescriptionWidget(BuildContext context) {
-    final themeData = Theme.of(context);
     final description = widget.invoice.description;
 
     return description == null || description.isEmpty
@@ -246,7 +239,7 @@ class PaymentRequestInfoDialogState extends State<PaymentRequestInfoDialog> {
                 child: SingleChildScrollView(
                   child: AutoSizeText(
                     description,
-                    style: themeData.primaryTextTheme.headline3
+                    style: Theme.of(context).primaryTextTheme.headline3
                         .copyWith(fontSize: 16),
                     textAlign:
                         description.length > 40 && !description.contains("\n")
@@ -267,32 +260,27 @@ class PaymentRequestInfoDialogState extends State<PaymentRequestInfoDialog> {
       return null;
     }
 
-    final themeData = Theme.of(context);
-
     return Padding(
       padding: const EdgeInsets.only(top: 8.0, left: 8.0, right: 8.0),
       child: AutoSizeText(
         validationError,
         maxLines: 3,
         textAlign: TextAlign.center,
-        style: themeData.primaryTextTheme.headline3.copyWith(
+        style: Theme.of(context).primaryTextTheme.headline3.copyWith(
           fontSize: 16,
-          color: theme.themeId == "BLUE" ? Colors.red : themeData.errorColor,
+          color: theme.themeId == "BLUE" ? Colors.red : Theme.of(context).errorColor,
         ),
       ),
     );
   }
 
   Widget _buildActions(BuildContext context, AccountModel account) {
-    final themeData = Theme.of(context);
-    final texts = AppLocalizations.of(context);
-
     List<Widget> actions = [
       SimpleDialogOption(
         onPressed: () => widget._onCancel(),
         child: Text(
-          texts.payment_request_dialog_action_cancel,
-          style: themeData.primaryTextTheme.button,
+          context.l10n.payment_request_dialog_action_cancel,
+          style: Theme.of(context).primaryTextTheme.button,
         ),
       )
     ];
@@ -319,13 +307,13 @@ class PaymentRequestInfoDialogState extends State<PaymentRequestInfoDialog> {
           }
         }),
         child: Text(
-          texts.payment_request_dialog_action_approve,
-          style: themeData.primaryTextTheme.button,
+          context.l10n.payment_request_dialog_action_approve,
+          style: Theme.of(context).primaryTextTheme.button,
         ),
       ));
     }
     return Theme(
-      data: themeData.copyWith(
+      data: Theme.of(context).copyWith(
         splashColor: Colors.transparent,
         highlightColor: Colors.transparent,
       ),

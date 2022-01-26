@@ -9,7 +9,7 @@ import 'package:breez/widgets/route.dart';
 import 'package:breez/widgets/single_button_bottom_bar.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:breez/l10n/locales.dart';
 import 'package:validators/validators.dart';
 import 'package:webdav_client/webdav_client.dart' as webdav;
 
@@ -70,10 +70,6 @@ class RemoteServerAuthPageState extends State<RemoteServerAuthPage> {
 
   @override
   Widget build(BuildContext context) {
-    final texts = AppLocalizations.of(context);
-    final themeData = Theme.of(context);
-    final nav = Navigator.of(context);
-
     return StreamBuilder<BackupSettings>(
       stream: widget._backupBloc.backupSettingsStream,
       builder: (context, snapshot) {
@@ -81,16 +77,16 @@ class RemoteServerAuthPageState extends State<RemoteServerAuthPage> {
           appBar: AppBar(
             leading: backBtn.BackButton(
               onPressed: () {
-                nav.pop(null);
+                Navigator.of(context).pop(null);
               },
             ),
             automaticallyImplyLeading: false,
-            iconTheme: themeData.appBarTheme.iconTheme,
-            textTheme: themeData.appBarTheme.textTheme,
-            backgroundColor: themeData.canvasColor,
+            iconTheme: Theme.of(context).appBarTheme.iconTheme,
+            textTheme: Theme.of(context).appBarTheme.textTheme,
+            backgroundColor: Theme.of(context).canvasColor,
             title: Text(
-              texts.remote_server_title,
-              style: themeData.appBarTheme.textTheme.headline6,
+              context.l10n.remote_server_title,
+              style: Theme.of(context).appBarTheme.textTheme.headline6,
             ),
             elevation: 0.0,
           ),
@@ -133,17 +129,17 @@ class RemoteServerAuthPageState extends State<RemoteServerAuthPage> {
             child: SingleButtonBottomBar(
               stickToBottom: true,
               text: widget.restore
-                  ? texts.remote_server_action_restore
-                  : texts.remote_server_action_save,
+                  ? context.l10n.connect_to_pay_share_text
+                  : context.l10n.remote_server_action_save,
               onPressed: () async {
                 Uri uri = Uri.parse(_urlController.text);
                 var connectionWarningResponse = true;
                 if (uri.scheme != 'https') {
                   connectionWarningResponse = await promptAreYouSure(
                     context,
-                    texts.remote_server_warning_connection_title,
+                    context.l10n.remote_server_warning_connection_title,
                     Text(
-                      texts.remote_server_warning_connection_message,
+                      context.l10n.remote_server_warning_connection_message,
                     ),
                   );
                 }
@@ -162,13 +158,13 @@ class RemoteServerAuthPageState extends State<RemoteServerAuthPage> {
                     );
                     final loader = createLoaderRoute(
                       context,
-                      message: texts.remote_server_testing_connection,
+                      message: context.l10n.remote_server_testing_connection,
                       opacity: 0.8,
                     );
                     Navigator.push(context, loader);
                     discoverURL(newSettings.remoteServerAuthData)
                         .then((value) async {
-                      nav.removeRoute(loader);
+                      Navigator.of(context).removeRoute(loader);
                       final error = value.authError;
                       if (error == DiscoverResult.SUCCESS) {
                         Navigator.pop(context, value.authData);
@@ -179,12 +175,12 @@ class RemoteServerAuthPageState extends State<RemoteServerAuthPage> {
                       });
                       _formKey.currentState.validate();
                     }).catchError((err) {
-                      nav.removeRoute(loader);
+                      Navigator.of(context).removeRoute(loader);
                       promptError(
                         context,
-                        texts.remote_server_error_remote_server_title,
+                        context.l10n.remote_server_error_remote_server_title,
                         Text(
-                          texts.remote_server_error_remote_server_message,
+                          context.l10n.remote_server_error_remote_server_message,
                         ),
                       );
                     });
@@ -199,7 +195,6 @@ class RemoteServerAuthPageState extends State<RemoteServerAuthPage> {
   }
 
   Widget _formFieldUrl(BuildContext context) {
-    final texts = AppLocalizations.of(context);
     return TextFormField(
       controller: _urlController,
       minLines: 1,
@@ -214,22 +209,21 @@ class RemoteServerAuthPageState extends State<RemoteServerAuthPage> {
         if (!failDiscoverURL && validURL) {
           return null;
         }
-        return texts.remote_server_error_invalid_url;
+        return context.l10n.remote_server_error_invalid_url;
       },
       decoration: InputDecoration(
-        hintText: texts.remote_server_server_url_hint,
-        labelText: texts.remote_server_server_url_label,
+        hintText: context.l10n.remote_server_server_url_hint,
+        labelText: context.l10n.remote_server_server_url_label,
       ),
       onEditingComplete: () => FocusScope.of(context).nextFocus(),
     );
   }
 
   Widget _formFieldUserName(BuildContext context) {
-    final texts = AppLocalizations.of(context);
     return TextFormField(
       validator: (value) {
         if (failAuthenticate) {
-          return texts.remote_server_error_invalid_username_or_password;
+          return context.l10n.remote_server_error_invalid_username_or_password;
         }
         return null;
       },
@@ -237,19 +231,18 @@ class RemoteServerAuthPageState extends State<RemoteServerAuthPage> {
       minLines: 1,
       maxLines: 1,
       decoration: InputDecoration(
-        hintText: texts.remote_server_server_username_hint,
-        labelText: texts.remote_server_server_username_label,
+        hintText: context.l10n.remote_server_server_username_hint,
+        labelText: context.l10n.remote_server_server_username_label,
       ),
       onEditingComplete: () => FocusScope.of(context).nextFocus(),
     );
   }
 
   Widget _formFieldPassword(BuildContext context) {
-    final texts = AppLocalizations.of(context);
     return TextFormField(
       validator: (value) {
         if (failAuthenticate) {
-          return texts.remote_server_error_invalid_username_or_password;
+          return context.l10n.remote_server_error_invalid_username_or_password;
         }
         return null;
       },
@@ -258,8 +251,8 @@ class RemoteServerAuthPageState extends State<RemoteServerAuthPage> {
       maxLines: 1,
       obscureText: _passwordObscured,
       decoration: InputDecoration(
-        hintText: texts.remote_server_server_password_hint,
-        labelText: texts.remote_server_server_password_label,
+        hintText: context.l10n.remote_server_server_password_hint,
+        labelText: context.l10n.remote_server_server_password_label,
         suffixIcon: IconButton(
           icon: Icon(Icons.remove_red_eye),
           onPressed: () {

@@ -9,7 +9,7 @@ import 'package:breez/theme_data.dart' as theme;
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:breez/l10n/locales.dart';
 
 /// Initial display mode of the date picker dialog.
 ///
@@ -69,11 +69,10 @@ class _DatePickerHeader extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final localizations = MaterialLocalizations.of(context);
-    final themeData = Theme.of(context);
-    final headerTextTheme = themeData.primaryTextTheme;
+    final headerTextTheme = Theme.of(context).primaryTextTheme;
     Color dayColor;
     Color yearColor;
-    switch (themeData.primaryColorBrightness) {
+    switch (Theme.of(context).primaryColorBrightness) {
       case Brightness.dark:
         dayColor = mode == DatePickerMode.day ? Colors.black87 : Colors.black54;
         yearColor =
@@ -94,12 +93,12 @@ class _DatePickerHeader extends StatelessWidget {
     );
 
     Color backgroundColor;
-    switch (themeData.brightness) {
+    switch (Theme.of(context).brightness) {
       case Brightness.light:
-        backgroundColor = themeData.primaryColor;
+        backgroundColor = Theme.of(context).primaryColor;
         break;
       case Brightness.dark:
-        backgroundColor = themeData.primaryTextTheme.button.color;
+        backgroundColor = Theme.of(context).primaryTextTheme.button.color;
         break;
     }
 
@@ -196,15 +195,13 @@ class _DateHeaderButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-
     return Material(
       type: MaterialType.button,
       color: color,
       child: InkWell(
         borderRadius: kMaterialEdges[MaterialType.button],
-        highlightColor: theme.highlightColor,
-        splashColor: theme.splashColor,
+        highlightColor: Theme.of(context).highlightColor,
+        splashColor: Theme.of(context).splashColor,
         onTap: onTap,
         child: Container(
           padding: const EdgeInsets.symmetric(horizontal: 8.0),
@@ -413,9 +410,7 @@ class DayPicker extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final texts = AppLocalizations.of(context);
     final localizations = MaterialLocalizations.of(context);
-    final themeData = Theme.of(context);
 
     final int year = displayedMonth.year;
     final int month = displayedMonth.month;
@@ -424,7 +419,7 @@ class DayPicker extends StatelessWidget {
     final List<Widget> labels = [];
 
     labels.addAll(_getDayHeaders(
-      TextStyle(color: themeData.primaryTextTheme.button.color),
+      TextStyle(color: Theme.of(context).primaryTextTheme.button.color),
       localizations,
     ));
     for (int i = 0; true; i += 1) {
@@ -453,7 +448,7 @@ class DayPicker extends StatelessWidget {
           // The selected day gets a circle background highlight, and a contrasting text color.
           itemStyle = TextStyle(color: Colors.white);
           decoration = BoxDecoration(
-            color: themeData.primaryTextTheme.button.color,
+            color: Theme.of(context).primaryTextTheme.button.color,
             shape: BoxShape.circle,
           );
         } else if (disabled) {
@@ -478,7 +473,7 @@ class DayPicker extends StatelessWidget {
               // day of month before the rest of the date, as they are looking
               // for the day of month. To do that we prepend day of month to the
               // formatted full date.
-              label: texts.breez_date_picker_day_and_date(
+              label: context.l10n.breez_date_picker_day_and_date(
                 localizations.formatDecimal(day),
                 localizations.formatFullDate(dayToBuild),
               ),
@@ -518,7 +513,7 @@ class DayPicker extends StatelessWidget {
                 child: Text(
                   localizations.formatMonthYear(displayedMonth),
                   style: TextStyle(
-                    color: themeData.primaryTextTheme.button.color,
+                    color: Theme.of(context).primaryTextTheme.button.color,
                   ),
                 ),
               ),
@@ -733,9 +728,6 @@ class _MonthPickerState extends State<MonthPicker> {
 
   @override
   Widget build(BuildContext context) {
-    final themeData = Theme.of(context);
-    final texts = AppLocalizations.of(context);
-
     return SizedBox(
       width: _kMonthPickerPortraitWidth,
       height: _kMaxDayPickerHeight,
@@ -758,11 +750,11 @@ class _MonthPickerState extends State<MonthPicker> {
             child: Semantics(
               sortKey: _MonthPickerSortKey.previousMonth,
               child: IconButton(
-                color: themeData.primaryTextTheme.button.color,
+                color: Theme.of(context).primaryTextTheme.button.color,
                 icon: const Icon(Icons.chevron_left),
                 tooltip: _isDisplayingFirstMonth
                     ? null
-                    : texts.breez_date_picker_previous_month_tooltip(
+                    : context.l10n.breez_date_picker_previous_month_tooltip(
                         localizations.previousMonthTooltip,
                         localizations.formatMonthYear(_previousMonthDate),
                       ),
@@ -777,11 +769,11 @@ class _MonthPickerState extends State<MonthPicker> {
             child: Semantics(
               sortKey: _MonthPickerSortKey.nextMonth,
               child: IconButton(
-                color: themeData.primaryTextTheme.button.color,
+                color: Theme.of(context).primaryTextTheme.button.color,
                 icon: const Icon(Icons.chevron_right),
                 tooltip: _isDisplayingLastMonth
                     ? null
-                    : texts.breez_date_picker_next_month_tooltip(
+                    : context.l10n.breez_date_picker_next_month_tooltip(
                         localizations.nextMonthTooltip,
                         localizations.formatMonthYear(_nextMonthDate),
                       ),
@@ -1039,8 +1031,6 @@ class _DatePickerDialogState extends State<_DatePickerDialog> {
 
   @override
   Widget build(BuildContext context) {
-    final themeData = Theme.of(context);
-
     final Widget picker = Flexible(
       child: SizedBox(
         height: _kMaxDayPickerHeight,
@@ -1048,20 +1038,20 @@ class _DatePickerDialogState extends State<_DatePickerDialog> {
       ),
     );
     final Widget actions = ButtonBarTheme(
-      data: themeData.buttonBarTheme,
+      data: Theme.of(context).buttonBarTheme,
       child: ButtonBar(
         children: [
           TextButton(
             child: Text(
               localizations.cancelButtonLabel,
-              style: themeData.primaryTextTheme.button,
+              style: Theme.of(context).primaryTextTheme.button,
             ),
             onPressed: _handleCancel,
           ),
           TextButton(
             child: Text(
               localizations.okButtonLabel,
-              style: themeData.primaryTextTheme.button,
+              style: Theme.of(context).primaryTextTheme.button,
             ),
             onPressed: _handleOk,
           ),
@@ -1112,7 +1102,7 @@ class _DatePickerDialogState extends State<_DatePickerDialog> {
                     Flexible(
                       child: Container(
                         width: _kMonthPickerLandscapeWidth,
-                        color: themeData.dialogBackgroundColor,
+                        color: Theme.of(context).dialogBackgroundColor,
                         child: Column(
                           mainAxisSize: MainAxisSize.min,
                           crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -1179,27 +1169,25 @@ Future<DateTime> showBreezDatePicker({
   Locale locale,
   TextDirection textDirection,
 }) async {
-  final texts = AppLocalizations.of(context);
-
   assert(
     !initialDate.isBefore(firstDate),
-    texts.breez_date_picker_error_initial_date_after,
+    context.l10n.breez_date_picker_error_initial_date_after,
   );
   assert(
     !initialDate.isAfter(lastDate),
-    texts.breez_date_picker_error_initial_date_before,
+    context.l10n.breez_date_picker_error_initial_date_before,
   );
   assert(
     !firstDate.isAfter(lastDate),
-    texts.breez_date_picker_error_last_date_after,
+    context.l10n.breez_date_picker_error_last_date_after,
   );
   assert(
     selectableDayPredicate == null || selectableDayPredicate(initialDate),
-    texts.breez_date_picker_error_initial_date_predicate,
+    context.l10n.breez_date_picker_error_initial_date_predicate,
   );
   assert(
     initialDatePickerMode != null,
-    texts.breez_date_picker_error_initial_date_null,
+    context.l10n.breez_date_picker_error_initial_date_null,
   );
 
   Widget child = _DatePickerDialog(

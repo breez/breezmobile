@@ -13,7 +13,7 @@ import 'package:breez/widgets/flushbar.dart';
 import 'package:breez/widgets/loader.dart';
 import 'package:fixnum/fixnum.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:breez/l10n/locales.dart';
 
 import 'payee_session_widget.dart';
 import 'payer_session_widget.dart';
@@ -51,7 +51,6 @@ class ConnectToPayPageState extends State<ConnectToPayPage> {
   @override
   void didChangeDependencies() {
     if (!_isInit) {
-      final texts = AppLocalizations.of(context);
       final ctpBloc = AppBlocsProvider.of<ConnectPayBloc>(context);
 
       try {
@@ -61,8 +60,8 @@ class ConnectToPayPageState extends State<ConnectToPayPage> {
         }
         _payer = _currentSession.runtimeType == PayerRemoteSession;
         _title = _payer
-            ? texts.connect_to_pay_title_payer
-            : texts.connect_to_pay_title_payee;
+            ? context.l10n.connect_to_pay_title_payer
+            : context.l10n.connect_to_pay_title_payee;
         registerErrorsListener();
         registerEndOfSessionListener(context);
         _isInit = true;
@@ -88,7 +87,6 @@ class ConnectToPayPageState extends State<ConnectToPayPage> {
   }
 
   void registerEndOfSessionListener(BuildContext context) async {
-    final texts = AppLocalizations.of(context);
     _endOfSessionSubscription =
         _currentSession.paymentSessionStateStream.listen(
       (session) {
@@ -101,10 +99,10 @@ class ConnectToPayPageState extends State<ConnectToPayPage> {
         if (session.remotePartyCancelled) {
           _popWithMessage(
             _remoteUserName != null
-                ? texts.connect_to_pay_canceled_remote_user(_remoteUserName)
+                ? context.l10n.connect_to_pay_canceled_remote_user(_remoteUserName)
                 : _payer
-                    ? texts.connect_to_pay_canceled_payee
-                    : texts.connect_to_pay_canceled_payer,
+                    ? context.l10n.connect_to_pay_canceled_payee
+                    : context.l10n.connect_to_pay_canceled_payer,
           );
           return;
         }
@@ -114,11 +112,11 @@ class ConnectToPayPageState extends State<ConnectToPayPage> {
               .format(Int64(session.settledAmount));
           _popWithMessage(
             _payer
-                ? texts.connect_to_pay_success_payer(
+                ? context.l10n.connect_to_pay_success_payer(
                     _remoteUserName,
                     formattedAmount,
                   )
-                : texts.connect_to_pay_success_payee(
+                : context.l10n.connect_to_pay_success_payee(
                     _remoteUserName,
                     formattedAmount,
                   ),
@@ -163,17 +161,14 @@ class ConnectToPayPageState extends State<ConnectToPayPage> {
   }
 
   void _onTerminateSession(BuildContext context) async {
-    final texts = AppLocalizations.of(context);
-    final themeData = Theme.of(context);
-
     bool cancel = await promptAreYouSure(
       _key.currentContext,
       null,
       Text(
-        texts.connect_to_pay_exit_warning,
-        style: themeData.dialogTheme.contentTextStyle,
+        context.l10n.connect_to_pay_exit_warning,
+        style: Theme.of(context).dialogTheme.contentTextStyle,
       ),
-      textStyle: themeData.dialogTheme.contentTextStyle,
+      textStyle: Theme.of(context).dialogTheme.contentTextStyle,
     );
     if (cancel) {
       _popWithMessage(null);
@@ -189,8 +184,6 @@ class ConnectToPayPageState extends State<ConnectToPayPage> {
 
   @override
   Widget build(BuildContext context) {
-    final themeData = Theme.of(context);
-
     return Scaffold(
       key: _key,
       appBar: AppBar(
@@ -200,20 +193,20 @@ class ConnectToPayPageState extends State<ConnectToPayPage> {
                   onPressed: () => _onTerminateSession(context),
                   icon: Icon(
                     Icons.close,
-                    color: themeData.iconTheme.color,
+                    color: Theme.of(context).iconTheme.color,
                   ),
                 ),
               ]
             : null,
-        iconTheme: themeData.appBarTheme.iconTheme,
-        textTheme: themeData.appBarTheme.textTheme,
-        backgroundColor: themeData.canvasColor,
+        iconTheme: Theme.of(context).appBarTheme.iconTheme,
+        textTheme: Theme.of(context).appBarTheme.textTheme,
+        backgroundColor: Theme.of(context).canvasColor,
         leading: backBtn.BackButton(
           onPressed: _onBackPressed,
         ),
         title: Text(
           _title,
-          style: themeData.appBarTheme.textTheme.headline6,
+          style: Theme.of(context).appBarTheme.textTheme.headline6,
         ),
         elevation: 0.0,
       ),
@@ -281,14 +274,12 @@ class SessionErrorWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final texts = AppLocalizations.of(context);
-
     return Padding(
       padding: const EdgeInsets.all(16.0),
       child: Center(
         heightFactor: 0.0,
         child: Text(
-          texts.connect_to_pay_failed_to_connect(_error.toString()),
+          context.l10n.connect_to_pay_failed_to_connect(_error.toString()),
           textAlign: TextAlign.center,
         ),
       ),

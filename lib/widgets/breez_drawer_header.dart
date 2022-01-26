@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 
 const double _kBreezDrawerHeaderHeight = 160.0 + 1.0; // bottom edge
 
@@ -25,7 +24,6 @@ class BreezDrawerHeader extends DrawerHeader {
   Widget build(BuildContext context) {
     assert(debugCheckHasMaterial(context));
     assert(debugCheckHasMediaQuery(context));
-    final ThemeData theme = Theme.of(context);
     final double statusBarHeight = MediaQuery.of(context).padding.top;
     return Container(
       height: statusBarHeight + _kBreezDrawerHeaderHeight,
@@ -38,7 +36,7 @@ class BreezDrawerHeader extends DrawerHeader {
         child: child == null
             ? null
             : DefaultTextStyle(
-                style: theme.textTheme.headline4,
+                style: Theme.of(context).textTheme.headline4,
                 child: MediaQuery.removePadding(
                   context: context,
                   removeTop: true,

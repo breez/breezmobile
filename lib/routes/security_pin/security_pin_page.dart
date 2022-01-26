@@ -21,7 +21,7 @@ import 'package:breez/widgets/route.dart';
 import 'package:duration/duration.dart';
 import 'package:duration/locale.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:breez/l10n/locales.dart';
 
 import 'backup_phrase/backup_phrase_confirmation_page.dart';
 import 'backup_phrase/backup_phrase_warning_dialog.dart';
@@ -75,9 +75,6 @@ class SecurityPageState extends State<SecurityPage>
 
   @override
   Widget build(BuildContext context) {
-    final texts = AppLocalizations.of(context);
-    final themeData = Theme.of(context);
-
     return StreamBuilder<BackupState>(
       stream: widget.backupBloc.backupStateStream,
       builder: (ctx, backupStateSnapshot) => StreamBuilder<BackupSettings>(
@@ -109,14 +106,14 @@ class SecurityPageState extends State<SecurityPage>
 
             return Scaffold(
               appBar: AppBar(
-                iconTheme: themeData.appBarTheme.iconTheme,
-                textTheme: themeData.appBarTheme.textTheme,
-                backgroundColor: themeData.canvasColor,
+                iconTheme: Theme.of(context).appBarTheme.iconTheme,
+                textTheme: Theme.of(context).appBarTheme.textTheme,
+                backgroundColor: Theme.of(context).canvasColor,
                 automaticallyImplyLeading: false,
                 leading: backBtn.BackButton(),
                 title: Text(
-                  texts.security_and_backup_title,
-                  style: themeData.appBarTheme.textTheme.headline6,
+                  context.l10n.security_and_backup_title,
+                  style: Theme.of(context).appBarTheme.textTheme.headline6,
                 ),
                 elevation: 0.0,
               ),
@@ -147,7 +144,6 @@ class SecurityPageState extends State<SecurityPage>
     final lastBackupTime = backupState.lastBackupTime;
     if (lastBackupTime == null) return SizedBox();
 
-    final texts = AppLocalizations.of(context);
     final accountName = backupState.lastBackupAccountName;
     final lastBackup = BreezDateUtils.formatYearMonthDayHourMinute(
       lastBackupTime,
@@ -155,8 +151,8 @@ class SecurityPageState extends State<SecurityPage>
 
     return Text(
       accountName == null || accountName.isEmpty
-          ? texts.security_and_backup_last_backup_no_account(lastBackup)
-          : texts.security_and_backup_last_backup_with_account(
+          ? context.l10n.security_and_backup_last_backup_no_account(lastBackup)
+          : context.l10n.security_and_backup_last_backup_with_account(
               lastBackup,
               accountName,
             ),
@@ -232,12 +228,10 @@ class SecurityPageState extends State<SecurityPage>
     SecurityModel securityModel,
     BackupSettings backupSettings,
   ) {
-    final texts = AppLocalizations.of(context);
-
     return ListTile(
       title: Container(
         child: AutoSizeText(
-          texts.security_and_backup_encrypt,
+          context.l10n.security_and_backup_encrypt,
           style: TextStyle(color: Colors.white),
           maxLines: 1,
           minFontSize: MinFontSize(context).minFontSize,
@@ -291,12 +285,10 @@ class SecurityPageState extends State<SecurityPage>
     SecurityModel securityModel,
     BackupSettings backupSettings,
   ) {
-    final texts = AppLocalizations.of(context);
-
     return ListTile(
       title: Container(
         child: AutoSizeText(
-          texts.security_and_backup_store_location,
+          context.l10n.security_and_backup_store_location,
           style: TextStyle(color: Colors.white),
           maxLines: 1,
           minFontSize: MinFontSize(context).minFontSize,
@@ -359,12 +351,10 @@ class SecurityPageState extends State<SecurityPage>
     SecurityModel securityModel,
     BackupSettings backupSettings,
   ) {
-    final texts = AppLocalizations.of(context);
-
     return ListTile(
       title: Container(
         child: AutoSizeText(
-          texts.security_and_backup_lock_automatically,
+          context.l10n.security_and_backup_lock_automatically,
           style: TextStyle(color: Colors.white),
           maxLines: 1,
           minFontSize: MinFontSize(context).minFontSize,
@@ -392,7 +382,7 @@ class SecurityPageState extends State<SecurityPage>
               value: seconds,
               child: Container(
                 child: AutoSizeText(
-                  _formatSeconds(texts, seconds),
+                  _formatSeconds(seconds),
                   style: theme.FieldTextStyle.textStyle,
                   maxLines: 1,
                   minFontSize: MinFontSize(context).minFontSize,
@@ -406,9 +396,9 @@ class SecurityPageState extends State<SecurityPage>
     );
   }
 
-  String _formatSeconds(AppLocalizations texts, int seconds) {
+  String _formatSeconds(int seconds) {
     if (seconds == 0) {
-      return texts.security_and_backup_lock_automatically_option_immediate;
+      return context.l10n.security_and_backup_lock_automatically_option_immediate;
     }
     final enLocale = EnglishDurationLocale();
     final locales = {
@@ -419,7 +409,7 @@ class SecurityPageState extends State<SecurityPage>
     };
     return printDuration(
       Duration(seconds: seconds),
-      locale: locales[texts.locale] ?? enLocale,
+      locale: locales[context.l10n.locale] ?? enLocale,
     );
   }
 
@@ -465,12 +455,10 @@ class SecurityPageState extends State<SecurityPage>
     SecurityModel securityModel,
     BackupSettings backupSettings,
   ) {
-    final texts = AppLocalizations.of(context);
-
     return ListTile(
       title: Container(
         child: AutoSizeText(
-          texts.security_and_backup_change_pin,
+          context.l10n.security_and_backup_change_pin,
           style: TextStyle(color: Colors.white),
           maxLines: 1,
           minFontSize: MinFontSize(context).minFontSize,
@@ -496,11 +484,9 @@ class SecurityPageState extends State<SecurityPage>
     SecurityModel securityModel,
     BackupSettings backupSettings,
   ) {
-    final texts = AppLocalizations.of(context);
-
     return ListTile(
       title: AutoSizeText(
-        _localAuthenticationOptionLabel(texts),
+        _localAuthenticationOptionLabel(),
         style: TextStyle(color: Colors.white),
         maxLines: 1,
         minFontSize: MinFontSize(context).minFontSize,
@@ -538,10 +524,8 @@ class SecurityPageState extends State<SecurityPage>
     SecurityModel securityModel,
     BackupSettings backupSettings,
   ) async {
-    final texts = AppLocalizations.of(context);
-
     final validateBiometricsAction = ValidateBiometrics(
-      localizedReason: texts.security_and_backup_validate_biometrics_reason,
+      localizedReason: context.l10n.security_and_backup_validate_biometrics_reason,
     );
     widget.userProfileBloc.userActionsSink.add(validateBiometricsAction);
     validateBiometricsAction.future.then(
@@ -563,13 +547,11 @@ class SecurityPageState extends State<SecurityPage>
     SecurityModel securityModel,
     BackupSettings backupSettings,
   ) {
-    final texts = AppLocalizations.of(context);
-
     return ListTile(
       title: AutoSizeText(
         securityModel.requiresPin
-            ? texts.security_and_backup_pin_option_deactivate
-            : texts.security_and_backup_pin_option_create,
+            ? context.l10n.security_and_backup_pin_option_deactivate
+            : context.l10n.security_and_backup_pin_option_create,
         style: TextStyle(color: Colors.white),
         maxLines: 1,
         minFontSize: MinFontSize(context).minFontSize,
@@ -606,9 +588,6 @@ class SecurityPageState extends State<SecurityPage>
     SecurityModel securityModel,
     BackupSettings backupSettings,
   ) {
-    final texts = AppLocalizations.of(context);
-    final themeData = Theme.of(context);
-
     Navigator.of(context).push(
       FadeInRoute(
         builder: (BuildContext context) {
@@ -633,10 +612,10 @@ class SecurityPageState extends State<SecurityPage>
             .catchError(
               (err) => promptError(
                 context,
-                texts.security_and_backup_internal_error,
+                context.l10n.security_and_backup_internal_error,
                 Text(
                   err.toString(),
-                  style: themeData.dialogTheme.contentTextStyle,
+                  style: Theme.of(context).dialogTheme.contentTextStyle,
                 ),
               ),
             );
@@ -655,18 +634,15 @@ class SecurityPageState extends State<SecurityPage>
   }
 
   Future _resetSecurityModel(BuildContext context) async {
-    final texts = AppLocalizations.of(context);
-    final themeData = Theme.of(context);
-
     var action = ResetSecurityModel();
     widget.userProfileBloc.userActionsSink.add(action);
     action.future.catchError((err) {
       promptError(
         context,
-        texts.security_and_backup_internal_error,
+        context.l10n.security_and_backup_internal_error,
         Text(
           err.toString(),
-          style: themeData.dialogTheme.contentTextStyle,
+          style: Theme.of(context).dialogTheme.contentTextStyle,
         ),
       );
     });
@@ -679,19 +655,16 @@ class SecurityPageState extends State<SecurityPage>
     BackupSettings backupSettings, {
     bool pinCodeChanged = false,
   }) async {
-    final texts = AppLocalizations.of(context);
-    final themeData = Theme.of(context);
-
     _screenLocked = false;
     var action = UpdateSecurityModel(newModel);
     widget.userProfileBloc.userActionsSink.add(action);
     return action.future.catchError((err) {
       promptError(
         context,
-        texts.security_and_backup_internal_error,
+        context.l10n.security_and_backup_internal_error,
         Text(
           err.toString(),
-          style: themeData.dialogTheme.contentTextStyle,
+          style: Theme.of(context).dialogTheme.contentTextStyle,
         ),
       );
     });
@@ -702,19 +675,16 @@ class SecurityPageState extends State<SecurityPage>
     BackupSettings oldBackupSettings,
     BackupSettings newBackupSettings,
   ) async {
-    final texts = AppLocalizations.of(context);
-    final themeData = Theme.of(context);
-
     _screenLocked = false;
     var action = UpdateBackupSettings(newBackupSettings);
     widget.backupBloc.backupActionsSink.add(action);
     return action.future.catchError((err) {
       promptError(
         context,
-        texts.security_and_backup_internal_error,
+        context.l10n.security_and_backup_internal_error,
         Text(
           err.toString(),
-          style: themeData.dialogTheme.contentTextStyle,
+          style: Theme.of(context).dialogTheme.contentTextStyle,
         ),
       );
     });
@@ -739,19 +709,19 @@ class SecurityPageState extends State<SecurityPage>
     });
   }
 
-  String _localAuthenticationOptionLabel(AppLocalizations texts) {
+  String _localAuthenticationOptionLabel() {
     switch (_localAuthenticationOption) {
       case LocalAuthenticationOption.FACE:
-        return texts.security_and_backup_enable_biometric_option_face;
+        return context.l10n.security_and_backup_enable_biometric_option_face;
       case LocalAuthenticationOption.FACE_ID:
-        return texts.security_and_backup_enable_biometric_option_face_id;
+        return context.l10n.security_and_backup_enable_biometric_option_face_id;
       case LocalAuthenticationOption.FINGERPRINT:
-        return texts.security_and_backup_enable_biometric_option_fingerprint;
+        return context.l10n.security_and_backup_enable_biometric_option_fingerprint;
       case LocalAuthenticationOption.TOUCH_ID:
-        return texts.security_and_backup_enable_biometric_option_touch_id;
+        return context.l10n.security_and_backup_enable_biometric_option_touch_id;
       case LocalAuthenticationOption.NONE:
       default:
-        return texts.security_and_backup_enable_biometric_option_none;
+        return context.l10n.security_and_backup_enable_biometric_option_none;
     }
   }
 }

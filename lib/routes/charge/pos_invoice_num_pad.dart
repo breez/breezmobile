@@ -1,9 +1,8 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:breez/bloc/pos_catalog/model.dart';
+import 'package:breez/l10n/locales.dart';
 import 'package:breez/theme_data.dart' as theme;
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class PosInvoiceNumPad extends StatelessWidget {
   final Sale currentSale;
@@ -87,13 +86,12 @@ class PosInvoiceNumPad extends StatelessWidget {
     BuildContext context,
     String number,
   ) {
-    final themeData = Theme.of(context);
     return Container(
       width: width / 3.0,
       height: height / 4.0,
       decoration: BoxDecoration(
         border: Border.all(
-          color: themeData.backgroundColor,
+          color: Theme.of(context).backgroundColor,
           width: 0.5,
         ),
       ),
@@ -113,14 +111,12 @@ class PosInvoiceNumPad extends StatelessWidget {
   }
 
   Widget _clearButton(BuildContext context) {
-    final texts = AppLocalizations.of(context);
-    final themeData = Theme.of(context);
     return Container(
       width: width / 3.0,
       height: height / 4.0,
       decoration: BoxDecoration(
         border: Border.all(
-          color: themeData.backgroundColor,
+          color: Theme.of(context).backgroundColor,
           width: 0.5,
         ),
       ),
@@ -133,7 +129,7 @@ class PosInvoiceNumPad extends StatelessWidget {
             alignment: Alignment.center,
           ),
           child: Text(
-            texts.pos_invoice_num_pad_clear,
+            context.l10n.pos_invoice_num_pad_clear,
             style: theme.numPadNumberStyle,
           ),
         ),
@@ -142,14 +138,12 @@ class PosInvoiceNumPad extends StatelessWidget {
   }
 
   Widget _additionButton(BuildContext context) {
-    final texts = AppLocalizations.of(context);
-    final themeData = Theme.of(context);
     return Container(
       width: width / 3.0,
       height: height / 4.0,
       decoration: BoxDecoration(
         border: Border.all(
-          color: themeData.backgroundColor,
+          color: Theme.of(context).backgroundColor,
           width: 0.5,
         ),
       ),
@@ -160,7 +154,7 @@ class PosInvoiceNumPad extends StatelessWidget {
           alignment: Alignment.center,
         ),
         child: AutoSizeText(
-          texts.pos_invoice_num_pad_plus,
+          context.l10n.pos_invoice_num_pad_plus,
           style: theme.numPadAdditionStyle,
         ),
       ),

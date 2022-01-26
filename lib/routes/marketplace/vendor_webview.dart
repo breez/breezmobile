@@ -1,5 +1,4 @@
 import 'dart:convert' as JSON;
-import 'dart:io';
 
 import 'package:breez/bloc/account/account_bloc.dart';
 import 'package:breez/bloc/blocs_provider.dart';

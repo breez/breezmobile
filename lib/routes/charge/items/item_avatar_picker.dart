@@ -6,7 +6,7 @@ import 'package:breez/bloc/pos_catalog/model.dart';
 import 'package:breez/theme_data.dart';
 import 'package:breez/widgets/back_button.dart' as backBtn;
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:breez/l10n/locales.dart';
 import 'package:flutter_svg/svg.dart';
 
 import '../../../utils/min_font_size.dart';
@@ -45,18 +45,15 @@ class ItemAvatarPickerState extends State<ItemAvatarPicker> {
 
   @override
   Widget build(BuildContext context) {
-    final themeData = Theme.of(context);
-    final texts = AppLocalizations.of(context);
-
     return Scaffold(
       appBar: AppBar(
-        iconTheme: themeData.appBarTheme.iconTheme,
-        textTheme: themeData.appBarTheme.textTheme,
-        backgroundColor: themeData.canvasColor,
+        iconTheme: Theme.of(context).appBarTheme.iconTheme,
+        textTheme: Theme.of(context).appBarTheme.textTheme,
+        backgroundColor: Theme.of(context).canvasColor,
         leading: backBtn.BackButton(),
         title: Text(
-          texts.pos_invoice_item_management_avatar_title,
-          style: themeData.appBarTheme.textTheme.headline6,
+          context.l10n.pos_invoice_item_management_avatar_title,
+          style: Theme.of(context).appBarTheme.textTheme.headline6,
         ),
         elevation: 0.0,
       ),
@@ -79,14 +76,12 @@ class ItemAvatarPickerState extends State<ItemAvatarPicker> {
   }
 
   Widget _buildItemAvatar(BuildContext context) {
-    final themeData = Theme.of(context);
-    final texts = AppLocalizations.of(context);
 
     return Badge(
       showBadge: _selectedImage != "",
       position: BadgePosition.topEnd(top: 5, end: -10),
       animationType: BadgeAnimationType.fade,
-      badgeColor: themeData.primaryTextTheme.subtitle2.color,
+      badgeColor: Theme.of(context).primaryTextTheme.subtitle2.color,
       badgeContent: _buildResetIconBadge(context),
       child: _selectedImage == "" && widget.itemName == ""
           ? Container(
@@ -101,7 +96,7 @@ class ItemAvatarPickerState extends State<ItemAvatarPicker> {
                 ),
                 image: DecorationImage(
                   colorFilter: ColorFilter.mode(
-                    themeData.primaryColorLight,
+                    Theme.of(context).primaryColorLight,
                     BlendMode.srcATop,
                   ),
                   image: AssetImage("src/images/avatarbg.png"),
@@ -117,7 +112,7 @@ class ItemAvatarPickerState extends State<ItemAvatarPicker> {
                   Padding(
                     padding: const EdgeInsets.only(left: 8, right: 8),
                     child: AutoSizeText(
-                      texts.pos_invoice_item_management_avatar_title,
+                      context.l10n.pos_invoice_item_management_avatar_title,
                       textAlign: TextAlign.center,
                       maxLines: 2,
                       minFontSize: MinFontSize(context).minFontSize,
@@ -143,16 +138,14 @@ class ItemAvatarPickerState extends State<ItemAvatarPicker> {
   }
 
   Widget _buildResetIconBadge(BuildContext context) {
-    final themeData = Theme.of(context);
-
     return GestureDetector(
       child: Container(
         height: 24,
         width: 24,
         child: Icon(
           Icons.delete_outline,
-          size: themeData.iconTheme.deleteBadgeIconTheme.size,
-          color: themeData.iconTheme.deleteBadgeIconTheme.color,
+          size: Theme.of(context).iconTheme.deleteBadgeIconTheme.size,
+          color: Theme.of(context).iconTheme.deleteBadgeIconTheme.color,
         ),
       ),
       onTap: () {
@@ -165,8 +158,6 @@ class ItemAvatarPickerState extends State<ItemAvatarPicker> {
   }
 
   Widget _buildSearchBar(BuildContext context) {
-    final texts = AppLocalizations.of(context);
-
     return Row(
       children: <Widget>[
         Expanded(
@@ -175,7 +166,7 @@ class ItemAvatarPickerState extends State<ItemAvatarPicker> {
             controller: _imageFilterController,
             enabled: _iconList != null,
             decoration: InputDecoration(
-              hintText: texts.pos_invoice_item_management_avatar_search,
+              hintText: context.l10n.pos_invoice_item_management_avatar_search,
               contentPadding: const EdgeInsets.only(top: 16, left: 16),
               suffixIcon: IconButton(
                 icon: Icon(

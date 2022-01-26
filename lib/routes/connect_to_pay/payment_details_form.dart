@@ -9,7 +9,7 @@ import 'package:breez/widgets/single_button_bottom_bar.dart';
 import 'package:fixnum/fixnum.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:breez/l10n/locales.dart';
 
 class PaymentDetailsForm extends StatefulWidget {
   final AccountModel _account;
@@ -54,8 +54,6 @@ class _PaymentDetailsFormState extends State<PaymentDetailsForm> {
     const double bottomBarHeight = 96.0;
     const double formMinHeight = 250.0;
 
-    final texts = AppLocalizations.of(context);
-
     return LayoutBuilder(builder: (context, constraints) {
       _maxHeight = max(_maxHeight, constraints.maxHeight);
       return SingleChildScrollView(
@@ -75,7 +73,6 @@ class _PaymentDetailsFormState extends State<PaymentDetailsForm> {
                     children: [
                       AmountFormField(
                         context: context,
-                        texts: texts,
                         accountModel: widget._account,
                         focusNode: _amountFocusNode,
                         controller: _amountController,
@@ -89,7 +86,7 @@ class _PaymentDetailsFormState extends State<PaymentDetailsForm> {
                         maxLength: 90,
                         maxLengthEnforcement: MaxLengthEnforcement.enforced,
                         decoration: InputDecoration(
-                          labelText: texts.connect_to_pay_payment_detail_note,
+                          labelText: context.l10n.connect_to_pay_payment_detail_note,
                         ),
                         style: theme.FieldTextStyle.textStyle,
                       ),
@@ -98,7 +95,7 @@ class _PaymentDetailsFormState extends State<PaymentDetailsForm> {
                         child: Row(
                           children: [
                             Text(
-                              texts.connect_to_pay_payment_available,
+                              context.l10n.connect_to_pay_payment_available,
                               style: theme.textStyle,
                             ),
                             Padding(
@@ -122,8 +119,8 @@ class _PaymentDetailsFormState extends State<PaymentDetailsForm> {
               padding: const EdgeInsets.only(top: 8, bottom: 36.0),
               child: SubmitButton(
                 widget._sessionState.paymentFulfilled
-                    ? texts.connect_to_pay_payment_action_close
-                    : texts.connect_to_pay_payment_action_pay,
+                    ? context.l10n.connect_to_pay_payment_action_close
+                    : context.l10n.connect_to_pay_payment_action_pay,
                 () {
                   if (widget._sessionState.paymentFulfilled) {
                     Navigator.pop(context);

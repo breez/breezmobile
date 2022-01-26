@@ -19,7 +19,7 @@ import 'package:breez/widgets/payment_details_dialog.dart';
 import 'package:breez/widgets/print_parameters.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:breez/l10n/locales.dart';
 import 'package:flutter_svg/svg.dart';
 
 import 'items/item_avatar.dart';
@@ -105,8 +105,6 @@ class SaleViewState extends State<SaleView> {
 
   @override
   Widget build(BuildContext context) {
-    final texts = AppLocalizations.of(context);
-    final themeData = Theme.of(context);
     final accountBloc = AppBlocsProvider.of<AccountBloc>(context);
 
     return StreamBuilder<AccountModel>(
@@ -119,7 +117,7 @@ class SaleViewState extends State<SaleView> {
 
         CurrencyWrapper saleCurrency =
             widget.saleCurrency ?? CurrencyWrapper.fromBTC(Currency.SAT);
-        String title = texts.sale_view_title;
+        String title = context.l10n.sale_view_title;
         if (widget.salePayment != null) {
           title = BreezDateUtils.formatYearMonthDayHourMinute(
             DateTime.fromMillisecondsSinceEpoch(
@@ -129,9 +127,9 @@ class SaleViewState extends State<SaleView> {
         }
         return Scaffold(
           appBar: AppBar(
-            iconTheme: themeData.appBarTheme.iconTheme,
-            textTheme: themeData.appBarTheme.textTheme,
-            backgroundColor: themeData.canvasColor,
+            iconTheme: Theme.of(context).appBarTheme.iconTheme,
+            textTheme: Theme.of(context).appBarTheme.textTheme,
+            backgroundColor: Theme.of(context).canvasColor,
             leading: backBtn.BackButton(),
             title: Text(title),
             actions: widget.readOnly
@@ -140,7 +138,7 @@ class SaleViewState extends State<SaleView> {
                     IconButton(
                       icon: Icon(
                         Icons.delete_forever,
-                        color: themeData.iconTheme.color,
+                        color: Theme.of(context).iconTheme.color,
                       ),
                       onPressed: () {
                         widget.onDeleteSale();
@@ -150,7 +148,7 @@ class SaleViewState extends State<SaleView> {
             elevation: 0.0,
           ),
           extendBody: false,
-          backgroundColor: themeData.backgroundColor,
+          backgroundColor: Theme.of(context).backgroundColor,
           body: GestureDetector(
             onTap: () {
               final currentFocus = FocusScope.of(context);
@@ -184,8 +182,8 @@ class SaleViewState extends State<SaleView> {
           bottomNavigationBar: Container(
             decoration: BoxDecoration(
               color: theme.themeId == "BLUE"
-                  ? themeData.backgroundColor
-                  : themeData.canvasColor,
+                  ? Theme.of(context).backgroundColor
+                  : Theme.of(context).canvasColor,
               boxShadow: [
                 BoxShadow(
                   color: Colors.black.withOpacity(0.3),
@@ -193,7 +191,7 @@ class SaleViewState extends State<SaleView> {
                   blurRadius: 5.0,
                 ),
                 BoxShadow(
-                  color: themeData.backgroundColor,
+                  color: Theme.of(context).backgroundColor,
                 )
               ],
             ),
@@ -219,11 +217,8 @@ class SaleViewState extends State<SaleView> {
   Widget _note(BuildContext context) {
     if (!showNote) return SizedBox();
 
-    final texts = AppLocalizations.of(context);
-    final themeData = Theme.of(context);
-
     return Container(
-      color: themeData.canvasColor,
+      color: Theme.of(context).canvasColor,
       child: Padding(
         padding: const EdgeInsets.only(left: 16.0, right: 16.0, bottom: 8.0),
         child: TextField(
@@ -257,7 +252,7 @@ class SaleViewState extends State<SaleView> {
                 color: Color(0xFFc5cedd),
               ),
             ),
-            hintText: texts.sale_view_note_hint,
+            hintText: context.l10n.sale_view_note_hint,
             hintStyle: TextStyle(
               fontSize: 14.0,
             ),
@@ -271,8 +266,6 @@ class SaleViewState extends State<SaleView> {
     BuildContext context,
     AccountModel account,
   ) {
-    final texts = AppLocalizations.of(context);
-    final themeData = Theme.of(context);
     final userBloc = AppBlocsProvider.of<UserProfileBloc>(context);
 
     return [
@@ -287,9 +280,9 @@ class SaleViewState extends State<SaleView> {
             padding: const EdgeInsets.only(right: 18.0),
             child: IconButton(
               alignment: Alignment.center,
-              tooltip: texts.sale_view_print,
+              tooltip: context.l10n.sale_view_print,
               iconSize: 24.0,
-              color: themeData.iconTheme.color,
+              color: Theme.of(context).iconTheme.color,
               icon: SvgPicture.asset(
                 "src/icon/printer.svg",
                 color: Colors.white,
@@ -333,11 +326,9 @@ class _TotalSaleCharge extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final themeData = Theme.of(context);
-
     return ElevatedButton(
       style: ElevatedButton.styleFrom(
-        primary: themeData.primaryColorLight,
+        primary: Theme.of(context).primaryColorLight,
         padding: EdgeInsets.only(top: 14.0, bottom: 14.0),
       ),
       child: Text(
@@ -357,8 +348,6 @@ class _TotalSaleCharge extends StatelessWidget {
   }
 
   String _title(BuildContext context) {
-    final texts = AppLocalizations.of(context);
-
     final totalAmountInSats = currentSale.totalAmountInSats;
     final totalAmountInFiat = currentSale.totalAmountInFiat;
 
@@ -383,13 +372,13 @@ class _TotalSaleCharge extends StatelessWidget {
           includeCurrencySymbol: true,
         ).toUpperCase();
         return readOnly
-            ? texts.sale_view_total_title_read_only_fiat(satMessage, fiatValue)
-            : texts.sale_view_total_title_charge_fiat(satMessage, fiatValue);
+            ? context.l10n.sale_view_total_title_read_only_fiat(satMessage, fiatValue)
+            : context.l10n.sale_view_total_title_charge_fiat(satMessage, fiatValue);
       }
     }
     return readOnly
-        ? texts.sale_view_total_title_read_only_no_fiat(satMessage)
-        : texts.sale_view_total_title_charge_no_fiat(satMessage);
+        ? context.l10n.sale_view_total_title_read_only_no_fiat(satMessage)
+        : context.l10n.sale_view_total_title_charge_no_fiat(satMessage);
   }
 }
 
@@ -411,7 +400,6 @@ class SaleLinesList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final themeData = Theme.of(context);
     final posCatalogBloc = AppBlocsProvider.of<PosCatalogBloc>(context);
 
     return SingleChildScrollView(
@@ -423,11 +411,11 @@ class SaleLinesList extends StatelessWidget {
         itemBuilder: (context, index) {
           return ListTileTheme(
             textColor: theme.themeId == "BLUE"
-                ? themeData.canvasColor
-                : themeData.textTheme.subtitle1.color,
+                ? Theme.of(context).canvasColor
+                : Theme.of(context).textTheme.subtitle1.color,
             iconColor: theme.themeId == "BLUE"
-                ? themeData.canvasColor
-                : themeData.textTheme.subtitle1.color,
+                ? Theme.of(context).canvasColor
+                : Theme.of(context).textTheme.subtitle1.color,
             child: Column(
               children: [
                 SaleLineWidget(
@@ -473,8 +461,8 @@ class SaleLinesList extends StatelessWidget {
                   color: index == currentSale.saleLines.length - 1
                       ? Colors.white.withOpacity(0.0)
                       : (theme.themeId == "BLUE"
-                              ? themeData.canvasColor
-                              : themeData.textTheme.subtitle1.color)
+                              ? Theme.of(context).canvasColor
+                              : Theme.of(context).textTheme.subtitle1.color)
                           .withOpacity(0.5),
                   indent: 72.0,
                 ),

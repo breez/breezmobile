@@ -7,7 +7,6 @@ import 'dart:math' as math;
 import 'dart:ui' show window;
 
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 
 const Duration _kDropdownMenuDuration = Duration(milliseconds: 300);
 const double _kMenuItemHeight = kMinInteractiveDimension;
@@ -664,7 +663,7 @@ class BreezDropdownButton<T> extends StatefulWidget {
   /// menu that appears when you tap the button.
   ///
   /// Defaults to the [TextTheme.subtitle1] value of the current
-  /// [ThemeData.textTheme] of the current [Theme].
+  /// [context.theme.textTheme] of the current [Theme].
   final TextStyle style;
 
   /// The widget to use for drawing the drop-down button's underline.
@@ -681,7 +680,7 @@ class BreezDropdownButton<T> extends StatefulWidget {
   /// i.e. if [onChanged] is null.
   ///
   /// Defaults to [Colors.grey.shade400] when the theme's
-  /// [ThemeData.brightness] is [Brightness.light] and to
+  /// [context.theme.brightness] is [Brightness.light] and to
   /// [Colors.white10] when it is [Brightness.dark]
   final Color iconDisabledColor;
 
@@ -689,7 +688,7 @@ class BreezDropdownButton<T> extends StatefulWidget {
   /// i.e. if [onChanged] is defined.
   ///
   /// Defaults to [Colors.grey.shade700] when the theme's
-  /// [ThemeData.brightness] is [Brightness.light] and to
+  /// [context.theme.brightness] is [Brightness.light] and to
   /// [Colors.white70] when it is [Brightness.dark]
   final Color iconEnabledColor;
 

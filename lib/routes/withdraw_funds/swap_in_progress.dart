@@ -5,7 +5,7 @@ import 'package:breez/widgets/flushbar.dart';
 import 'package:breez/widgets/link_launcher.dart';
 import 'package:breez/widgets/loader.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:breez/l10n/locales.dart';
 
 class SwapInProgress extends StatelessWidget {
   final InProgressReverseSwaps swapInProgress;
@@ -17,20 +17,17 @@ class SwapInProgress extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final texts = AppLocalizations.of(context);
-    final themeData = Theme.of(context);
-
     return Scaffold(
       appBar: AppBar(
-        iconTheme: themeData.appBarTheme.iconTheme,
-        textTheme: themeData.appBarTheme.textTheme,
-        backgroundColor: themeData.canvasColor,
+        iconTheme: Theme.of(context).appBarTheme.iconTheme,
+        textTheme: Theme.of(context).appBarTheme.textTheme,
+        backgroundColor: Theme.of(context).canvasColor,
         leading: backBtn.BackButton(onPressed: () {
           Navigator.of(context).pop();
         }),
         title: Text(
-          texts.swap_in_progress_title,
-          style: themeData.appBarTheme.textTheme.headline6,
+          context.l10n.swap_in_progress_title,
+          style: Theme.of(context).appBarTheme.textTheme.headline6,
         ),
         elevation: 0.0,
       ),
@@ -41,7 +38,6 @@ class SwapInProgress extends StatelessWidget {
   Widget _body(BuildContext context) {
     if (swapInProgress == null) return Center(child: Loader());
 
-    final texts = AppLocalizations.of(context);
     final txId = swapInProgress.claimTxId;
 
     return Column(
@@ -52,8 +48,8 @@ class SwapInProgress extends StatelessWidget {
           padding: EdgeInsets.only(top: 50.0, left: 30.0, right: 30.0),
           child: Text(
             txId.isEmpty
-                ? texts.swap_in_progress_message_processing_previous_request
-                : texts.swap_in_progress_message_waiting_confirmation,
+                ? context.l10n.swap_in_progress_message_processing_previous_request
+                : context.l10n.swap_in_progress_message_waiting_confirmation,
             textAlign: TextAlign.center,
           ),
         ),
@@ -70,7 +66,7 @@ class SwapInProgress extends StatelessWidget {
                         ServiceInjector().device.setClipboardText(txId);
                         showFlushbar(
                           context,
-                          message: texts.swap_in_progress_transaction_id_copied,
+                          message: context.l10n.swap_in_progress_transaction_id_copied,
                           duration: Duration(seconds: 3),
                         );
                       },

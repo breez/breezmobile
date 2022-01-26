@@ -12,7 +12,7 @@ import 'package:breez/widgets/loader.dart';
 import 'package:breez/widgets/payment_details_dialog.dart';
 import 'package:fixnum/fixnum.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:breez/l10n/locales.dart';
 import 'package:rxdart/subjects.dart';
 
 import '../sync_progress_dialog.dart';
@@ -83,9 +83,6 @@ class ReverseSwapPageState extends State<ReverseSwapPage> {
 
   @override
   Widget build(BuildContext context) {
-    final themeData = Theme.of(context);
-    final texts = AppLocalizations.of(context);
-
     final reverseSwapBloc = AppBlocsProvider.of<ReverseSwapBloc>(context);
     final accountBloc = AppBlocsProvider.of<AccountBloc>(context);
 
@@ -101,15 +98,15 @@ class ReverseSwapPageState extends State<ReverseSwapPage> {
                   _loadingError != null ||
                   hasUnconfirmed
               ? AppBar(
-                  iconTheme: themeData.appBarTheme.iconTheme,
-                  textTheme: themeData.appBarTheme.textTheme,
-                  backgroundColor: themeData.canvasColor,
+                  iconTheme: Theme.of(context).appBarTheme.iconTheme,
+                  textTheme: Theme.of(context).appBarTheme.textTheme,
+                  backgroundColor: Theme.of(context).canvasColor,
                   leading: backBtn.BackButton(
                     onPressed: () => Navigator.of(context).pop(),
                   ),
                   title: Text(
-                    texts.reverse_swap_title,
-                    style: themeData.appBarTheme.textTheme.headline6,
+                    context.l10n.reverse_swap_title,
+                    style: Theme.of(context).appBarTheme.textTheme.headline6,
                   ),
                   elevation: 0.0,
                 )
@@ -134,7 +131,7 @@ class ReverseSwapPageState extends State<ReverseSwapPage> {
               if (snapshot.data == null) {
                 return Center(
                   child: Loader(
-                    color: themeData.primaryColor.withOpacity(0.5),
+                    color: Theme.of(context).primaryColor.withOpacity(0.5),
                   ),
                 );
               }
@@ -204,14 +201,12 @@ class ReverseSwapPageState extends State<ReverseSwapPage> {
     bool initialIsMax,
     ReverseSwapRequest currentSwap,
   ) {
-    final texts = AppLocalizations.of(context);
-
     return PageView(
       controller: _pageController,
       physics: NeverScrollableScrollPhysics(),
       children: [
         WithdrawFundsPage(
-          title: texts.reverse_swap_title,
+          title: context.l10n.reverse_swap_title,
           policy: WithdrawFundsPolicy(
             policy.minValue,
             policy.maxValue,
@@ -286,12 +281,10 @@ class UnconfirmedChannels extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final texts = AppLocalizations.of(context);
-
     final rows = unconfirmedChannels.map((chainPoint) {
       final tx = chainPoint.split(":")[0];
       return TxWidget(
-        txLabel: texts.reverse_swap_funding_transaction,
+        txLabel: context.l10n.reverse_swap_funding_transaction,
         txID: tx,
         txURL: "https://blockstream.info/tx/$tx",
       );
@@ -329,7 +322,7 @@ class UnconfirmedChannels extends StatelessWidget {
               children: [
                 Expanded(
                   child: Text(
-                    texts.reverse_swap_waiting_channels,
+                    context.l10n.reverse_swap_waiting_channels,
                     textAlign: TextAlign.center,
                   ),
                 ),

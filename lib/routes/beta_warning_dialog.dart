@@ -1,7 +1,7 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:breez/l10n/locales.dart';
 
 class BetaWarningDialog extends StatefulWidget {
   @override
@@ -19,18 +19,15 @@ class _BetaWarningDialogState extends State<BetaWarningDialog> {
 
   @override
   Widget build(BuildContext context) {
-    final texts = AppLocalizations.of(context);
-    final themeData = Theme.of(context);
-
     return Theme(
-      data: themeData.copyWith(
-        unselectedWidgetColor: themeData.canvasColor,
+      data: Theme.of(context).copyWith(
+        unselectedWidgetColor: Theme.of(context).canvasColor,
       ),
       child: AlertDialog(
         titlePadding: EdgeInsets.fromLTRB(24.0, 22.0, 0.0, 16.0),
         title: Text(
-          texts.beta_warning_title,
-          style: themeData.dialogTheme.titleTextStyle,
+          context.l10n.beta_warning_title,
+          style: Theme.of(context).dialogTheme.titleTextStyle,
         ),
         contentPadding: EdgeInsets.fromLTRB(8.0, 8.0, 8.0, 24.0),
         content: Column(
@@ -42,8 +39,8 @@ class _BetaWarningDialogState extends State<BetaWarningDialog> {
           TextButton(
             onPressed: () => exit(0),
             child: Text(
-              texts.beta_warning_action_exit,
-              style: themeData.primaryTextTheme.button,
+              context.l10n.beta_warning_action_exit,
+              style: Theme.of(context).primaryTextTheme.button,
             ),
           ),
           TextButton(
@@ -57,8 +54,8 @@ class _BetaWarningDialogState extends State<BetaWarningDialog> {
               }
             }),
             child: Text(
-              texts.beta_warning_action_continue,
-              style: themeData.primaryTextTheme.button,
+              context.l10n.beta_warning_action_continue,
+              style: Theme.of(context).primaryTextTheme.button,
             ),
           ),
         ],
@@ -67,15 +64,12 @@ class _BetaWarningDialogState extends State<BetaWarningDialog> {
   }
 
   List<Widget> _getContent(BuildContext context) {
-    final texts = AppLocalizations.of(context);
-    final themeData = Theme.of(context);
-
     return [
       Padding(
         padding: const EdgeInsets.only(left: 15.0, right: 12.0),
         child: Text(
-          texts.beta_warning_message,
-          style: themeData.primaryTextTheme.headline3.copyWith(
+          context.l10n.beta_warning_message,
+          style: Theme.of(context).primaryTextTheme.headline3.copyWith(
             fontSize: 16,
           ),
         ),
@@ -85,11 +79,11 @@ class _BetaWarningDialogState extends State<BetaWarningDialog> {
         child: Row(
           children: [
             Theme(
-              data: themeData.copyWith(
-                unselectedWidgetColor: themeData.textTheme.button.color,
+              data: Theme.of(context).copyWith(
+                unselectedWidgetColor: Theme.of(context).textTheme.button.color,
               ),
               child: Checkbox(
-                activeColor: themeData.canvasColor,
+                activeColor: Theme.of(context).canvasColor,
                 value: _isUnderstood,
                 onChanged: (value) {
                   setState(() {
@@ -99,8 +93,8 @@ class _BetaWarningDialogState extends State<BetaWarningDialog> {
               ),
             ),
             Text(
-              texts.beta_warning_understand,
-              style: themeData.primaryTextTheme.headline3.copyWith(
+              context.l10n.beta_warning_understand,
+              style: Theme.of(context).primaryTextTheme.headline3.copyWith(
                 fontSize: 16,
               ),
             ),
@@ -112,8 +106,8 @@ class _BetaWarningDialogState extends State<BetaWarningDialog> {
         child: Padding(
           padding: const EdgeInsets.fromLTRB(16.0, 0.0, 16.0, 0.0),
           child: Text(
-            texts.beta_warning_understand_confirmation,
-            style: themeData.primaryTextTheme.headline3
+            context.l10n.beta_warning_understand_confirmation,
+            style: Theme.of(context).primaryTextTheme.headline3
                 .copyWith(
                   fontSize: 16,
                 )

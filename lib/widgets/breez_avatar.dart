@@ -1,11 +1,9 @@
-import 'dart:io';
-
 import 'package:breez/bloc/user_profile/profile_animal.dart';
 import 'package:breez/bloc/user_profile/profile_color.dart';
 import 'package:breez/theme_data.dart' as theme;
 import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:breez/l10n/locales.dart';
 import 'package:flutter_svg/svg.dart';
 
 class BreezAvatar extends StatelessWidget {
@@ -81,14 +79,13 @@ class _GeneratedAvatar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final texts = AppLocalizations.of(context);
     return CircleAvatar(
       radius: radius,
       backgroundColor: theme.sessionAvatarBackgroundColor,
       child: Icon(
-        profileAnimalFromName(animal, texts).iconData,
+        profileAnimalFromName(animal, context.l10n).iconData,
         size: radius * 2 * 0.75,
-        color: profileColorFromName(color, texts).color,
+        color: profileColorFromName(color, context.l10n).color,
       ),
     );
   }

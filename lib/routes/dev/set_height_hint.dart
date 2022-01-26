@@ -5,8 +5,8 @@ import 'package:breez/theme_data.dart' as theme;
 import 'package:breez/widgets/back_button.dart' as backBtn;
 import 'package:breez/widgets/error_dialog.dart';
 import 'package:breez/widgets/single_button_bottom_bar.dart';
-import 'package:flutter/material.dart';
 import 'package:fixnum/fixnum.dart';
+import 'package:flutter/material.dart';
 
 class SetHeightHintPage extends StatefulWidget {
   @override

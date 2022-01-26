@@ -15,7 +15,7 @@ import 'package:breez/routes/podcast/payment_adjuster.dart';
 import 'package:breez/routes/podcast/theme.dart';
 import 'package:breez/widgets/loader.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:breez/l10n/locales.dart';
 import 'package:provider/provider.dart';
 import 'package:tutorial_coach_mark/tutorial_coach_mark.dart';
 
@@ -78,8 +78,6 @@ class PaymentAdjustmentState extends State<PaymentAdjustment> {
   }
 
   void _buildTutorialTargets(BreezUserModel user) {
-    final texts = AppLocalizations.of(context);
-    final theme = Theme.of(context);
     targets.add(TargetFocus(
       identify: "BoostWidget",
       keyTarget: boostWidgetKey,
@@ -164,11 +162,11 @@ class PaymentAdjustmentState extends State<PaymentAdjustment> {
                           primary: Colors.white,
                         ),
                         child: Text(
-                          texts.tutorial_gotcha,
-                          style: theme
+                          context.l10n.tutorial_gotcha,
+                          style: Theme.of(context)
                               .primaryTextTheme
                               .button
-                              .copyWith(color: theme.primaryColor),
+                              .copyWith(color: Theme.of(context).primaryColor),
                         ),
                         onPressed: () {
                           AppBlocsProvider.of<UserProfileBloc>(context)

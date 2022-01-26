@@ -1,7 +1,6 @@
 import 'dart:async';
 import 'dart:io';
 
-import 'package:breez/services/breezlib/data/rpc.pb.dart';
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:breez/bloc/account/account_bloc.dart';
 import 'package:breez/bloc/account/account_model.dart';
@@ -11,6 +10,7 @@ import 'package:breez/bloc/lnurl/lnurl_actions.dart';
 import 'package:breez/bloc/lnurl/lnurl_bloc.dart';
 import 'package:breez/bloc/lnurl/lnurl_model.dart';
 import 'package:breez/logger.dart';
+import 'package:breez/services/breezlib/data/rpc.pb.dart';
 import 'package:breez/theme_data.dart' as theme;
 import 'package:breez/utils/min_font_size.dart';
 import 'package:breez/widgets/amount_form_field.dart';
@@ -21,7 +21,6 @@ import 'package:breez/widgets/loader.dart';
 import 'package:breez/widgets/single_button_bottom_bar.dart';
 import 'package:breez/widgets/static_loader.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class LNURLFetchInvoicePage extends StatefulWidget {
   final PayFetchResponse payFetchResponse;
@@ -91,7 +90,6 @@ class LNURLFetchInvoicePageState extends State<LNURLFetchInvoicePage> {
   }
 
   Widget showFetchInvoiceDialog() {
-    final texts = AppLocalizations.of(context);
     AccountBloc accountBloc = AppBlocsProvider.of<AccountBloc>(context);
     InvoiceBloc invoiceBloc = AppBlocsProvider.of<InvoiceBloc>(context);
     LNUrlBloc lnurlBloc = AppBlocsProvider.of<LNUrlBloc>(context);
@@ -186,7 +184,6 @@ class LNURLFetchInvoicePageState extends State<LNURLFetchInvoicePage> {
                       AmountFormField(
                           context: context,
                           accountModel: acc,
-                          texts: texts,
                           focusNode: _amountFocusNode,
                           controller: _amountController,
                           validatorFn: (amt) {
@@ -333,10 +330,9 @@ class LNURLFetchInvoicePageState extends State<LNURLFetchInvoicePage> {
 
     */
 
-    var navigator = Navigator.of(context);
-    _currentRoute = ModalRoute.of(navigator.context);
+    _currentRoute = ModalRoute.of(Navigator.of(context).context);
     _loaderRoute = createLoaderRoute(context);
-    navigator.push(_loaderRoute);
+    Navigator.of(context).push(_loaderRoute);
 
     _payFetchResponse.amount =
         account.currency.parse(_amountController.text) * 1000;

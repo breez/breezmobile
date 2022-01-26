@@ -173,8 +173,6 @@ class QrActionButton extends StatelessWidget {
   }
 
   void _handleWebAddress(BuildContext context, String url) {
-    var dialogTheme = Theme.of(context).dialogTheme;
-    var size = MediaQuery.of(context).size;
     showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -185,7 +183,7 @@ class QrActionButton extends StatelessWidget {
             padding: EdgeInsets.fromLTRB(24.0, 24.0, 24.0, 8.0),
             child: Text(
               "Open Link",
-              style: dialogTheme.titleTextStyle,
+              style: Theme.of(context).dialogTheme.titleTextStyle,
               textAlign: TextAlign.center,
             ),
           ),
@@ -193,14 +191,14 @@ class QrActionButton extends StatelessWidget {
             child: Padding(
               padding: EdgeInsets.fromLTRB(16.0, 0.0, 16.0, 0.0),
               child: Container(
-                width: size.width,
+                width: MediaQuery.of(context).size.width,
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   mainAxisSize: MainAxisSize.min,
                   children: <Widget>[
                     Text(
                       url,
-                      style: dialogTheme.contentTextStyle.copyWith(
+                      style: Theme.of(context).dialogTheme.contentTextStyle.copyWith(
                         fontWeight: FontWeight.bold,
                       ),
                       maxLines: 2,
@@ -213,7 +211,7 @@ class QrActionButton extends StatelessWidget {
                     ),
                     Text(
                       "Are you sure you want to open this link?",
-                      style: dialogTheme.contentTextStyle,
+                      style: Theme.of(context).dialogTheme.contentTextStyle,
                       textAlign: TextAlign.center,
                     ),
                   ],

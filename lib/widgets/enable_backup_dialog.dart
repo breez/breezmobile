@@ -2,11 +2,10 @@ import 'package:auto_size_text/auto_size_text.dart';
 import 'package:breez/bloc/backup/backup_actions.dart';
 import 'package:breez/bloc/backup/backup_bloc.dart';
 import 'package:breez/bloc/backup/backup_model.dart';
+import 'package:breez/l10n/locales.dart';
 import 'package:breez/routes/security_pin/remote_server_auth.dart';
 import 'package:breez/utils/min_font_size.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import 'backup_provider_selection_dialog.dart';
 import 'error_dialog.dart';
@@ -33,7 +32,6 @@ class EnableBackupDialogState extends State<EnableBackupDialog> {
   }
 
   Widget createEnableBackupDialog(BuildContext context) {
-    final texts = AppLocalizations.of(context);
     return Theme(
         data: Theme.of(context).copyWith(
           unselectedWidgetColor: Theme.of(context).canvasColor,
@@ -41,7 +39,7 @@ class EnableBackupDialogState extends State<EnableBackupDialog> {
         child: AlertDialog(
           titlePadding: EdgeInsets.fromLTRB(24.0, 22.0, 0.0, 16.0),
           title: Text(
-            texts.backup_dialog_title,
+            context.l10n.backup_dialog_title,
             style: Theme.of(context).dialogTheme.titleTextStyle,
           ),
           contentPadding: EdgeInsets.fromLTRB(8.0, 8.0, 8.0, 24.0),
@@ -63,8 +61,8 @@ class EnableBackupDialogState extends State<EnableBackupDialog> {
                         padding: const EdgeInsets.only(left: 15.0, right: 12.0),
                         child: AutoSizeText(
                           isRemoteServer
-                              ? texts.backup_dialog_message_remote_server
-                              : texts.backup_dialog_message_default,
+                              ? context.l10n.backup_dialog_message_remote_server
+                              : context.l10n.backup_dialog_message_default,
                           style: Theme.of(context)
                               .primaryTextTheme
                               .headline3
@@ -100,7 +98,7 @@ class EnableBackupDialogState extends State<EnableBackupDialog> {
                                   ),
                                   Expanded(
                                       child: AutoSizeText(
-                                    texts.backup_dialog_do_not_prompt_again,
+                                    context.l10n.backup_dialog_do_not_prompt_again,
                                     style: Theme.of(context)
                                         .primaryTextTheme
                                         .headline3
@@ -122,7 +120,7 @@ class EnableBackupDialogState extends State<EnableBackupDialog> {
             TextButton(
               onPressed: () => Navigator.pop(widget.context),
               child: Text(
-                texts.backup_dialog_option_cancel,
+                context.l10n.backup_dialog_option_cancel,
                 style: Theme.of(context).primaryTextTheme.button,
                 maxLines: 1,
               ),
@@ -152,9 +150,9 @@ class EnableBackupDialogState extends State<EnableBackupDialog> {
                             provider == BackupSettings.icloudBackupProvider) {
                           await promptError(
                               context,
-                              texts.backup_dialog_icloud_error_title,
+                              context.l10n.backup_dialog_icloud_error_title,
                               Text(
-                                  texts.backup_dialog_icloud_error_message,
+                                  context.l10n.backup_dialog_icloud_error_message,
                                   style: Theme.of(context)
                                       .dialogTheme
                                       .contentTextStyle));
@@ -178,8 +176,8 @@ class EnableBackupDialogState extends State<EnableBackupDialog> {
                     }),
                     child: Text(
                       isRemoteServer
-                          ? texts.backup_dialog_option_ok_remote_server
-                          : texts.backup_dialog_option_ok_default,
+                          ? context.l10n.backup_dialog_option_ok_remote_server
+                          : context.l10n.backup_dialog_option_ok_default,
                       style: Theme.of(context).primaryTextTheme.button,
                       maxLines: 1,
                     ),

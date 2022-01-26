@@ -2,7 +2,7 @@ import 'package:breez/bloc/fastbitcoins/fastbitcoins_model.dart';
 import 'package:breez/bloc/user_profile/breez_user_model.dart';
 import 'package:fixnum/fixnum.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:breez/l10n/locales.dart';
 
 class FastBitcoinsConfirmWidget extends StatelessWidget {
   final ValidateRequestModel request;
@@ -18,43 +18,40 @@ class FastBitcoinsConfirmWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final queryData = MediaQuery.of(context);
-    final texts = AppLocalizations.of(context);
-
     return Container(
-      width: queryData.size.width,
+      width: MediaQuery.of(context).size.width,
       child: Column(
         children: [
           ConfirmationItem(
-            title: texts.add_funds_item_voucher_title,
-            details: texts.add_funds_item_voucher_message(
+            title: context.l10n.add_funds_item_voucher_title,
+            details: context.l10n.add_funds_item_voucher_message(
               response.value.toStringAsFixed(2),
               request.currency,
             ),
           ),
           ConfirmationItem(
-            title: texts.add_funds_item_exchange_rate_title,
-            details: texts.add_funds_item_exchange_rate_message(
+            title: context.l10n.add_funds_item_exchange_rate_title,
+            details: context.l10n.add_funds_item_exchange_rate_message(
               response.exchangeRate.toStringAsFixed(2),
               request.currency,
             ),
           ),
           ConfirmationItem(
-            title: texts.add_funds_item_commission_rate_title,
-            details: texts.add_funds_item_commission_rate_message(
+            title: context.l10n.add_funds_item_commission_rate_title,
+            details: context.l10n.add_funds_item_commission_rate_message(
               (response.commissionTotal / response.value * 100)
                   .toStringAsFixed(2),
             ),
           ),
           ConfirmationItem(
-            title: texts.add_funds_item_commission_total_title,
-            details: texts.add_funds_item_commission_total_message(
+            title: context.l10n.add_funds_item_commission_total_title,
+            details: context.l10n.add_funds_item_commission_total_message(
               response.commissionTotal.toStringAsFixed(2),
               request.currency,
             ),
           ),
           ConfirmationItem(
-            title: texts.add_funds_item_bitcoins_received_title,
+            title: context.l10n.add_funds_item_bitcoins_received_title,
             details: user.currency.format(Int64(response.satoshiAmount)),
           ),
         ],
@@ -75,19 +72,17 @@ class ConfirmationItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final themeData = Theme.of(context);
-
     return Container(
       height: 48.0,
       child: ListTile(
         title: Text(
           title,
-          style: themeData.primaryTextTheme.headline4,
+          style: Theme.of(context).primaryTextTheme.headline4,
           textAlign: TextAlign.left,
         ),
         trailing: Text(
           details,
-          style: themeData.primaryTextTheme.headline3,
+          style: Theme.of(context).primaryTextTheme.headline3,
           textAlign: TextAlign.left,
         ),
       ),

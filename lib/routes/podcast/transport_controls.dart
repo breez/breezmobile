@@ -72,7 +72,6 @@ class _PlayerTransportControlsState extends State<PlayerTransportControls>
   @override
   Widget build(BuildContext context) {
     final audioBloc = Provider.of<AudioBloc>(context, listen: false);
-    final theme = Theme.of(context);
 
     return StreamBuilder<AudioState>(
       stream: audioBloc.playingState,
@@ -102,13 +101,13 @@ class _PlayerTransportControlsState extends State<PlayerTransportControls>
                   ),
                   iconOn: SvgPicture.asset(
                     'assets/icons/sleep_on.svg',
-                    color: theme.buttonTheme.colorScheme.onPrimary,
+                    color: Theme.of(context).buttonTheme.colorScheme.onPrimary,
                     height: 24.0,
                     width: 24.0,
                   ),
                   iconOff: SvgPicture.asset(
                     'assets/icons/sleep_off.svg',
-                    color: theme.buttonTheme.colorScheme.onPrimary,
+                    color: Theme.of(context).buttonTheme.colorScheme.onPrimary,
                     height: 24.0,
                     width: 24.0,
                   ),
@@ -125,7 +124,7 @@ class _PlayerTransportControlsState extends State<PlayerTransportControls>
               icon: ImageIcon(
                 AssetImage('src/icon/replay_30.png'),
                 size: 48.0,
-                color: theme.buttonTheme.colorScheme.onPrimary
+                color: Theme.of(context).buttonTheme.colorScheme.onPrimary
               ),
             ),
             Expanded(flex: 1, child: Container()),
@@ -144,7 +143,7 @@ class _PlayerTransportControlsState extends State<PlayerTransportControls>
               icon: ImageIcon(
                 AssetImage('src/icon/forward_30.png'),
                 size: 48.0,
-                color: theme.buttonTheme.colorScheme.onPrimary,
+                color: Theme.of(context).buttonTheme.colorScheme.onPrimary,
               ),
             ),
             Expanded(flex: 1, child: Container()),

@@ -4,7 +4,6 @@ import 'package:breez/bloc/lsp/lsp_model.dart';
 import 'package:breez/widgets/loader.dart';
 import 'package:breez/widgets/route.dart';
 import 'package:breez/widgets/single_button_bottom_bar.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 import 'lsp_webview.dart';

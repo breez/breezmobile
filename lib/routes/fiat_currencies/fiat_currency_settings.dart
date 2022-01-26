@@ -12,7 +12,7 @@ import 'package:breez/widgets/loader.dart';
 import 'package:drag_and_drop_lists/drag_and_drop_lists.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:breez/l10n/locales.dart';
 
 const double ITEM_HEIGHT = 72.0;
 
@@ -36,9 +36,6 @@ class FiatCurrencySettingsState extends State<FiatCurrencySettings> {
 
   @override
   Widget build(BuildContext context) {
-    final themeData = Theme.of(context);
-    final texts = AppLocalizations.of(context);
-
     return StreamBuilder<AccountModel>(
       stream: widget.accountBloc.accountStream.distinct((acc1, acc2) {
         return listEquals(acc1.preferredCurrencies, acc2.preferredCurrencies);
@@ -54,13 +51,13 @@ class FiatCurrencySettingsState extends State<FiatCurrencySettings> {
 
         return Scaffold(
           appBar: AppBar(
-            iconTheme: themeData.appBarTheme.iconTheme,
-            textTheme: themeData.appBarTheme.textTheme,
-            backgroundColor: themeData.canvasColor,
+            iconTheme: Theme.of(context).appBarTheme.iconTheme,
+            textTheme: Theme.of(context).appBarTheme.textTheme,
+            backgroundColor: Theme.of(context).canvasColor,
             leading: backBtn.BackButton(),
             title: Text(
-              texts.fiat_currencies_title,
-              style: themeData.appBarTheme.textTheme.headline6,
+              context.l10n.fiat_currencies_title,
+              style: Theme.of(context).appBarTheme.textTheme.headline6,
             ),
             elevation: 0.0,
           ),
@@ -140,9 +137,6 @@ class FiatCurrencySettingsState extends State<FiatCurrencySettings> {
     AccountModel account,
     int index,
   ) {
-    final texts = AppLocalizations.of(context);
-    final themeData = Theme.of(context);
-
     final fiatConversion = account.fiatConversionList[index];
     final currencyData = fiatConversion.currencyData;
     final prefCurrencies = account.preferredCurrencies;
@@ -151,7 +145,7 @@ class FiatCurrencySettingsState extends State<FiatCurrencySettings> {
       key: Key("tile-index-$index"),
       controlAffinity: ListTileControlAffinity.leading,
       activeColor: Colors.white,
-      checkColor: themeData.canvasColor,
+      checkColor: Theme.of(context).canvasColor,
       value: prefCurrencies.contains(currencyData.shortName),
       onChanged: (bool checked) {
         setState(() {
@@ -177,7 +171,7 @@ class FiatCurrencySettingsState extends State<FiatCurrencySettings> {
         });
       },
       subtitle: Text(
-        _subtitle(texts, currencyData),
+        _subtitle(currencyData),
         style: theme.fiatConversionDescriptionStyle,
       ),
       title: RichText(
@@ -195,8 +189,8 @@ class FiatCurrencySettingsState extends State<FiatCurrencySettings> {
     );
   }
 
-  String _subtitle(AppLocalizations texts, CurrencyData currencyData) {
-    final localizedName = currencyData.localizedName[texts.locale];
+  String _subtitle(CurrencyData currencyData) {
+    final localizedName = currencyData.localizedName[context.l10n.locale];
     return localizedName ?? currencyData.name;
   }
 
@@ -220,13 +214,12 @@ class FiatCurrencySettingsState extends State<FiatCurrencySettings> {
     AccountModel account,
     List<String> preferredFiatCurrencies,
   ) {
-    final texts = AppLocalizations.of(context);
     var action = UpdatePreferredCurrencies(preferredFiatCurrencies);
     widget.userProfileBloc.userActionsSink.add(action);
     action.future.then((_) {
       _changeFiatCurrency(account, preferredFiatCurrencies);
     }).catchError((err) {
-      showFlushbar(context, message: texts.fiat_currencies_save_fail);
+      showFlushbar(context, message: context.l10n.fiat_currencies_save_fail);
     });
   }
 }

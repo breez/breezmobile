@@ -8,6 +8,7 @@ import 'package:breez/bloc/pos_catalog/actions.dart';
 import 'package:breez/bloc/pos_catalog/bloc.dart';
 import 'package:breez/bloc/pos_catalog/model.dart';
 import 'package:breez/bloc/user_profile/currency.dart';
+import 'package:breez/l10n/locales.dart';
 import 'package:breez/routes/charge/items/item_avatar.dart';
 import 'package:breez/theme_data.dart' as theme;
 import 'package:breez/utils/min_font_size.dart';
@@ -15,10 +16,8 @@ import 'package:breez/widgets/back_button.dart' as backBtn;
 import 'package:breez/widgets/flushbar.dart';
 import 'package:breez/widgets/route.dart';
 import 'package:breez/widgets/single_button_bottom_bar.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import '../currency_wrapper.dart';
 import 'item_avatar_picker.dart';
@@ -55,16 +54,15 @@ class ItemPageState extends State<ItemPage> {
   @override
   void didChangeDependencies() {
     if (!_isInit) {
-      final texts = AppLocalizations.of(context);
       _accountBloc = AppBlocsProvider.of<AccountBloc>(context);
 
-      _title = texts.pos_invoice_item_management_title_add;
+      _title = context.l10n.pos_invoice_item_management_title_add;
       FetchRates fetchRatesAction = FetchRates();
       _accountBloc.userActionsSink.add(fetchRatesAction);
       _accountBloc.accountStream.first.then((accountModel) {
         if (widget.item != null) {
           setState(() {
-            _title = texts.pos_invoice_item_management_title_edit;
+            _title = context.l10n.pos_invoice_item_management_title_edit;
             _itemImage = widget.item.imageURL;
             _nameController.text = widget.item.name;
             _skuController.text = widget.item.sku;
@@ -93,7 +91,7 @@ class ItemPageState extends State<ItemPage> {
           setState(() {
             showFlushbar(
               context,
-              message: texts.pos_invoice_item_management_error_btc_rate,
+              message: context.l10n.pos_invoice_item_management_error_btc_rate,
             );
           });
         }
@@ -105,7 +103,6 @@ class ItemPageState extends State<ItemPage> {
   }
 
   Widget build(BuildContext context) {
-    final themeData = Theme.of(context);
     return _buildScaffold(
       context,
       ListView(
@@ -137,8 +134,8 @@ class ItemPageState extends State<ItemPage> {
                         Container(
                           width: 80,
                           child: Theme(
-                            data: themeData.copyWith(
-                              canvasColor: themeData.canvasColor,
+                            data: Theme.of(context).copyWith(
+                              canvasColor: Theme.of(context).canvasColor,
                             ),
                             child: StreamBuilder<AccountModel>(
                               stream: _accountBloc.accountStream,
@@ -170,19 +167,18 @@ class ItemPageState extends State<ItemPage> {
   }
 
   Widget _nameField(BuildContext context) {
-    final texts = AppLocalizations.of(context);
     return TextFormField(
       textCapitalization: TextCapitalization.words,
       controller: _nameController,
       decoration: InputDecoration(
-        labelText: texts.pos_invoice_item_management_field_name_label,
-        hintText: texts.pos_invoice_item_management_field_name_hint,
+        labelText: context.l10n.pos_invoice_item_management_field_name_label,
+        hintText: context.l10n.pos_invoice_item_management_field_name_hint,
         border: UnderlineInputBorder(),
       ),
       style: theme.FieldTextStyle.textStyle,
       validator: (value) {
         if (value.trim().length == 0) {
-          return texts.pos_invoice_item_management_field_name_error;
+          return context.l10n.pos_invoice_item_management_field_name_error;
         }
         return null;
       },
@@ -190,7 +186,6 @@ class ItemPageState extends State<ItemPage> {
   }
 
   Widget _priceField(BuildContext context) {
-    final texts = AppLocalizations.of(context);
     return TextFormField(
       keyboardType: TextInputType.numberWithOptions(
         decimal: true,
@@ -202,14 +197,14 @@ class ItemPageState extends State<ItemPage> {
       ],
       controller: _priceController,
       decoration: InputDecoration(
-        labelText: texts.pos_invoice_item_management_field_price_label,
-        hintText: texts.pos_invoice_item_management_field_price_hint,
+        labelText: context.l10n.pos_invoice_item_management_field_price_label,
+        hintText: context.l10n.pos_invoice_item_management_field_price_hint,
         border: UnderlineInputBorder(),
       ),
       style: theme.FieldTextStyle.textStyle,
       validator: (value) {
         if (value.length == 0) {
-          return texts.pos_invoice_item_management_field_price_error;
+          return context.l10n.pos_invoice_item_management_field_price_error;
         }
         return null;
       },
@@ -217,12 +212,11 @@ class ItemPageState extends State<ItemPage> {
   }
 
   Widget _skuField(BuildContext context) {
-    final texts = AppLocalizations.of(context);
     return TextFormField(
       controller: _skuController,
       decoration: InputDecoration(
-        labelText: texts.pos_invoice_item_management_field_sku_label,
-        hintText: texts.pos_invoice_item_management_field_sku_hint,
+        labelText: context.l10n.pos_invoice_item_management_field_sku_label,
+        hintText: context.l10n.pos_invoice_item_management_field_sku_hint,
         border: UnderlineInputBorder(),
       ),
       style: theme.FieldTextStyle.textStyle,
@@ -233,18 +227,14 @@ class ItemPageState extends State<ItemPage> {
     BuildContext context,
     AccountModel account,
   ) {
-    final texts = AppLocalizations.of(context);
-    final themeData = Theme.of(context);
-    final queryData = MediaQuery.of(this.context);
-
     return DropdownButtonHideUnderline(
       child: DropdownButtonFormField(
         iconEnabledColor: Colors.white,
         isDense: true,
         decoration: InputDecoration(
-          labelText: texts.pos_invoice_item_management_dd_currency_title,
+          labelText: context.l10n.pos_invoice_item_management_dd_currency_title,
           contentPadding: EdgeInsets.symmetric(
-            vertical: 10.6 * queryData.textScaleFactor,
+            vertical: 10.6 * MediaQuery.of(context).textScaleFactor,
           ),
         ),
         value: _selectedCurrency.shortName,
@@ -255,7 +245,7 @@ class ItemPageState extends State<ItemPage> {
             child: Text(
               value.tickerSymbol,
               style: theme.FieldTextStyle.textStyle.copyWith(
-                color: themeData.colorScheme.secondary,
+                color: Theme.of(context).colorScheme.secondary,
               ),
             ),
           );
@@ -266,7 +256,7 @@ class ItemPageState extends State<ItemPage> {
               child: new Text(
                 fiat.currencyData.shortName,
                 style: theme.FieldTextStyle.textStyle.copyWith(
-                  color: themeData.colorScheme.secondary,
+                  color: Theme.of(context).colorScheme.secondary,
                 ),
               ),
             );
@@ -302,9 +292,6 @@ class ItemPageState extends State<ItemPage> {
   }
 
   Widget _buildSelectImageButton(BuildContext context) {
-    final texts = AppLocalizations.of(context);
-    final themeData = Theme.of(context);
-
     return Container(
       width: 96,
       height: 96,
@@ -317,7 +304,7 @@ class ItemPageState extends State<ItemPage> {
         ),
         image: DecorationImage(
           colorFilter: ColorFilter.mode(
-            themeData.primaryColorLight,
+            Theme.of(context).primaryColorLight,
             BlendMode.srcATop,
           ),
           image: AssetImage("src/images/avatarbg.png"),
@@ -333,7 +320,7 @@ class ItemPageState extends State<ItemPage> {
           Padding(
             padding: const EdgeInsets.only(left: 8, right: 8),
             child: AutoSizeText(
-              texts.pos_invoice_item_management_image_title,
+              context.l10n.pos_invoice_item_management_image_title,
               textAlign: TextAlign.center,
               maxLines: 2,
               minFontSize: MinFontSize(context).minFontSize,
@@ -384,19 +371,16 @@ class ItemPageState extends State<ItemPage> {
     Widget body, [
     List<Widget> actions,
   ]) {
-    final texts = AppLocalizations.of(context);
-    final themeData = Theme.of(context);
-
     return Scaffold(
       key: _scaffoldKey,
       appBar: AppBar(
-        iconTheme: themeData.appBarTheme.iconTheme,
-        textTheme: themeData.appBarTheme.textTheme,
-        backgroundColor: themeData.canvasColor,
+        iconTheme: Theme.of(context).appBarTheme.iconTheme,
+        textTheme: Theme.of(context).appBarTheme.textTheme,
+        backgroundColor: Theme.of(context).canvasColor,
         leading: backBtn.BackButton(),
         title: Text(
           _title,
-          style: themeData.appBarTheme.textTheme.headline6,
+          style: Theme.of(context).appBarTheme.textTheme.headline6,
         ),
         actions: actions == null ? <Widget>[] : actions,
         elevation: 0.0,
@@ -404,7 +388,7 @@ class ItemPageState extends State<ItemPage> {
       body: body,
       bottomNavigationBar: SingleButtonBottomBar(
         text: widget.item != null
-            ? texts.pos_invoice_item_management_title_save
+            ? context.l10n.pos_invoice_item_management_title_save
             : _title.toUpperCase(),
         onPressed: () {
           if (_formKey.currentState.validate()) {

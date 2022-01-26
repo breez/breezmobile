@@ -8,7 +8,7 @@ import 'package:breez/services/breezlib/data/rpc.pbgrpc.dart';
 import 'package:breez/theme_data.dart' as theme;
 import 'package:breez/utils/date.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:breez/l10n/locales.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:share_extend/share_extend.dart';
 
@@ -41,14 +41,11 @@ class RestoreDialogState extends State<RestoreDialog> {
   }
 
   Widget createRestoreDialog() {
-    final texts = AppLocalizations.of(context);
-    final themeData = Theme.of(context);
-
     return AlertDialog(
       titlePadding: EdgeInsets.fromLTRB(24.0, 22.0, 0.0, 16.0),
       title: Text(
-        texts.restore_dialog_title,
-        style: themeData.dialogTheme.titleTextStyle,
+        context.l10n.restore_dialog_title,
+        style: Theme.of(context).dialogTheme.titleTextStyle,
       ),
       contentPadding: EdgeInsets.fromLTRB(24.0, 8.0, 24.0, 24.0),
       content: Column(
@@ -63,10 +60,10 @@ class RestoreDialogState extends State<RestoreDialog> {
               }
 
               return Text(
-                texts.restore_dialog_multiple_accounts(
+                context.l10n.restore_dialog_multiple_accounts(
                   snapshot.data.backupProvider.displayName,
                 ),
-                style: themeData.primaryTextTheme.headline3.copyWith(
+                style: Theme.of(context).primaryTextTheme.headline3.copyWith(
                   fontSize: 16,
                 ),
               );
@@ -101,8 +98,8 @@ class RestoreDialogState extends State<RestoreDialog> {
         TextButton(
           onPressed: () => Navigator.pop(widget.context, null),
           child: Text(
-            texts.restore_dialog_action_cancel,
-            style: themeData.primaryTextTheme.button,
+            context.l10n.restore_dialog_action_cancel,
+            style: Theme.of(context).primaryTextTheme.button,
           ),
         ),
         TextButton(
@@ -112,16 +109,13 @@ class RestoreDialogState extends State<RestoreDialog> {
           onPressed: _selectedSnapshot == null
               ? null
               : () => Navigator.pop(widget.context, _selectedSnapshot),
-          child: Text(texts.restore_dialog_action_ok),
+          child: Text(context.l10n.restore_dialog_action_ok),
         ),
       ],
     );
   }
 
   Widget _itemBuilder(BuildContext context, int index) {
-    final texts = AppLocalizations.of(context);
-    final themeData = Theme.of(context);
-
     final item = widget.snapshots[index];
     final nodeID = _selectedSnapshot?.nodeID;
     final date = BreezDateUtils.formatYearMonthDayHourMinute(
@@ -138,22 +132,22 @@ class RestoreDialogState extends State<RestoreDialog> {
           : Icon(Icons.check),
       title: Text(
         item.encrypted
-            ? texts.restore_dialog_modified_encrypted(date)
-            : texts.restore_dialog_modified_not_encrypted(date),
-        style: themeData.primaryTextTheme.caption
+            ? context.l10n.restore_dialog_modified_encrypted(date)
+            : context.l10n.restore_dialog_modified_not_encrypted(date),
+        style: Theme.of(context).primaryTextTheme.caption
             .copyWith(fontSize: 9)
             .apply(fontSizeDelta: 1.3),
       ),
       subtitle: Text(
         item.nodeID,
-        style: themeData.primaryTextTheme.caption.copyWith(fontSize: 9),
+        style: Theme.of(context).primaryTextTheme.caption.copyWith(fontSize: 9),
       ),
       onLongPress: () {
         var nodeID = item.nodeID;
         promptAreYouSure(
           context,
-          texts.restore_dialog_download_backup,
-          Text(texts.restore_dialog_download_backup_for_node(nodeID)),
+          context.l10n.restore_dialog_download_backup,
+          Text(context.l10n.restore_dialog_download_backup_for_node(nodeID)),
         ).then((yes) {
           if (yes) {
             var downloadAction = DownloadSnapshot(item.nodeID);
@@ -167,7 +161,7 @@ class RestoreDialogState extends State<RestoreDialog> {
               Navigator.removeRoute(context, loaderRoute);
               promptError(
                 context,
-                texts.restore_dialog_download_backup_error,
+                context.l10n.restore_dialog_download_backup_error,
                 Text(err.toString()),
               );
             });

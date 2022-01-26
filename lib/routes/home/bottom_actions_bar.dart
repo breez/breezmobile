@@ -21,7 +21,7 @@ import 'package:breez/widgets/lsp_fee.dart';
 import 'package:breez/widgets/route.dart';
 import 'package:breez/widgets/warning_box.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:breez/l10n/locales.dart';
 
 class BottomActionsBar extends StatelessWidget {
   final AccountModel account;
@@ -31,7 +31,6 @@ class BottomActionsBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final texts = AppLocalizations.of(context);
     AutoSizeGroup actionsGroup = AutoSizeGroup();
 
     return BottomAppBar(
@@ -45,7 +44,7 @@ class BottomActionsBar extends StatelessWidget {
             _Action(
               onPress: () => _showSendOptions(context),
               group: actionsGroup,
-              text: texts.bottom_action_bar_send,
+              text: context.l10n.bottom_action_bar_send,
               iconAssetPath: "src/icon/send-action.png",
             ),
             Container(
@@ -54,7 +53,7 @@ class BottomActionsBar extends StatelessWidget {
             _Action(
               onPress: () => showReceiveOptions(context, account),
               group: actionsGroup,
-              text: texts.bottom_action_bar_receive,
+              text: context.l10n.bottom_action_bar_receive,
               iconAssetPath: "src/icon/receive-action.png",
             ),
           ],
@@ -64,7 +63,6 @@ class BottomActionsBar extends StatelessWidget {
   }
 
   Future _showSendOptions(BuildContext context) async {
-    final texts = AppLocalizations.of(context);
     InvoiceBloc invoiceBloc = AppBlocsProvider.of<InvoiceBloc>(context);
     AccountBloc accBloc = AppBlocsProvider.of<AccountBloc>(context);
     LNUrlBloc lnurlBloc = AppBlocsProvider.of<LNUrlBloc>(context);
@@ -85,7 +83,7 @@ class BottomActionsBar extends StatelessWidget {
                           iconAssetPath: "src/icon/paste.png",
                           enabled: account.connected),
                       title: Text(
-                        texts.bottom_action_bar_paste_invoice,
+                        context.l10n.bottom_action_bar_paste_invoice,
                         style: theme.bottomSheetTextStyle,
                       ),
                       onTap: () async {
@@ -126,7 +124,7 @@ class BottomActionsBar extends StatelessWidget {
                             iconAssetPath: "src/icon/connect_to_pay.png",
                             enabled: account.connected),
                         title: Text(
-                          texts.bottom_action_bar_connect_to_pay,
+                          context.l10n.bottom_action_bar_connect_to_pay,
                           style: theme.bottomSheetTextStyle,
                         ),
                         onTap: () {
@@ -144,7 +142,7 @@ class BottomActionsBar extends StatelessWidget {
                             iconAssetPath: "src/icon/bitcoin.png",
                             enabled: account.connected),
                         title: Text(
-                          texts.bottom_action_bar_send_btc_address,
+                          context.l10n.bottom_action_bar_send_btc_address,
                           style: theme.bottomSheetTextStyle,
                         ),
                         onTap: () {
@@ -172,7 +170,7 @@ class BottomActionsBar extends StatelessWidget {
                                         iconAssetPath: "src/icon/escher.png",
                                         enabled: account.connected),
                                     title: Text(
-                                      texts.bottom_action_bar_escher,
+                                      context.l10n.bottom_action_bar_escher,
                                       style: theme.bottomSheetTextStyle,
                                     ),
                                     onTap: () {
@@ -254,7 +252,6 @@ class _ActionImage extends StatelessWidget {
 }
 
 Future showReceiveOptions(BuildContext parentContext, AccountModel account) {
-  final texts = AppLocalizations.of(parentContext);
   AddFundsBloc addFundsBloc = BlocProvider.of<AddFundsBloc>(parentContext);
   LSPBloc lspBloc = AppBlocsProvider.of<LSPBloc>(parentContext);
 
@@ -291,7 +288,7 @@ Future showReceiveOptions(BuildContext parentContext, AccountModel account) {
                                   account.connected || !v.requireActiveChannel),
                           title: Text(
                             textFromUri(
-                              texts,
+                              parentContext,
                               v.textUri,
                               def: v.shortName ?? v.name,
                             ),
@@ -325,7 +322,7 @@ Future showReceiveOptions(BuildContext parentContext, AccountModel account) {
                           enabled: true,
                         ),
                         title: Text(
-                          texts.bottom_action_bar_receive_invoice,
+                          context.l10n.bottom_action_bar_receive_invoice,
                           style: theme.bottomSheetTextStyle,
                         ),
                         onTap: () {
@@ -339,7 +336,7 @@ Future showReceiveOptions(BuildContext parentContext, AccountModel account) {
                             boxPadding: EdgeInsets.all(16),
                             contentPadding: EdgeInsets.all(8),
                             child: AutoSizeText(
-                              texts.bottom_action_bar_warning_balance_title(
+                              context.l10n.bottom_action_bar_warning_balance_title(
                                 account.currency.format(
                                   account.warningMaxChanReserveAmount,
                                   removeTrailingZeros: true,

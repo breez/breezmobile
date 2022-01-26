@@ -35,8 +35,7 @@ class PosInvoiceCartBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final themeData = Theme.of(context);
-    final badgeColor = themeData.floatingActionButtonTheme.backgroundColor;
+    final badgeColor = Theme.of(context).floatingActionButtonTheme.backgroundColor;
 
     return Padding(
       padding: EdgeInsets.only(left: 0.0, right: 16.0),
@@ -76,7 +75,7 @@ class PosInvoiceCartBar extends StatelessWidget {
                       child: Image.asset(
                         "src/icon/cart.png",
                         width: 24.0,
-                        color: themeData.primaryTextTheme.button.color,
+                        color: Theme.of(context).primaryTextTheme.button.color,
                       ),
                     ),
                   ),
@@ -95,7 +94,7 @@ class PosInvoiceCartBar extends StatelessWidget {
                     isKeypadView ? currentCurrency.format(currentAmount) : "",
                     maxLines: 1,
                     style: theme.invoiceAmountStyle.copyWith(
-                      color: themeData.textTheme.headline5.color,
+                      color: Theme.of(context).textTheme.headline5.color,
                     ),
                     textAlign: TextAlign.right,
                   ),
@@ -104,8 +103,8 @@ class PosInvoiceCartBar extends StatelessWidget {
             ),
           ),
           Theme(
-            data: themeData.copyWith(
-              canvasColor: themeData.backgroundColor,
+            data: Theme.of(context).copyWith(
+              canvasColor: Theme.of(context).backgroundColor,
             ),
             child: _dropDown(context),
           ),
@@ -115,8 +114,6 @@ class PosInvoiceCartBar extends StatelessWidget {
   }
 
   Widget _dropDown(BuildContext context) {
-    final textTheme = Theme.of(context).textTheme;
-
     List<CurrencyWrapper> currencies = [];
     currencies.addAll(
       Currency.currencies.map((c) => CurrencyWrapper.fromBTC(c)),
@@ -133,7 +130,7 @@ class PosInvoiceCartBar extends StatelessWidget {
             value.shortName.toUpperCase(),
             textAlign: TextAlign.right,
             style: theme.invoiceAmountStyle.copyWith(
-              color: textTheme.headline5.color,
+              color: Theme.of(context).textTheme.headline5.color,
             ),
           ),
         ),
@@ -145,10 +142,10 @@ class PosInvoiceCartBar extends StatelessWidget {
         alignedDropdown: true,
         child: BreezDropdownButton(
           onChanged: changeCurrency,
-          iconEnabledColor: textTheme.headline5.color,
+          iconEnabledColor: Theme.of(context).textTheme.headline5.color,
           value: currentCurrency.shortName,
           style: theme.invoiceAmountStyle.copyWith(
-            color: textTheme.headline5.color,
+            color: Theme.of(context).textTheme.headline5.color,
           ),
           items: dropDownItems.toList(),
         ),

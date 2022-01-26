@@ -3,7 +3,7 @@ import 'package:breez/bloc/account/account_model.dart';
 import 'package:breez/bloc/blocs_provider.dart';
 import 'package:breez/widgets/circular_progress.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:breez/l10n/locales.dart';
 
 class SyncProgressDialog extends StatefulWidget {
   final bool closeOnSync;
@@ -42,8 +42,6 @@ class SyncProgressDialogState extends State<SyncProgressDialog> {
 
   @override
   Widget build(BuildContext context) {
-    final texts = AppLocalizations.of(context);
-    final themeData = Theme.of(context);
     final accountBloc = AppBlocsProvider.of<AccountBloc>(context);
 
     return StreamBuilder<AccountModel>(
@@ -56,12 +54,12 @@ class SyncProgressDialogState extends State<SyncProgressDialog> {
           width: MediaQuery.of(context).size.width,
           height: 150.0,
           child: CircularProgress(
-            color: widget.progressColor ?? themeData.textTheme.button.color,
+            color: widget.progressColor ?? Theme.of(context).textTheme.button.color,
             size: 100.0,
             value: acc.serverReady ? acc.syncProgress : null,
             title: acc.serverReady
-                ? texts.sync_progress_server_ready
-                : texts.sync_progress_waiting_network,
+                ? context.l10n.sync_progress_server_ready
+                : context.l10n.sync_progress_waiting_network,
           ),
         );
       },

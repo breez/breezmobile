@@ -2,7 +2,7 @@ import 'package:auto_size_text/auto_size_text.dart';
 import 'package:breez/bloc/connect_pay/connect_pay_model.dart';
 import 'package:breez/widgets/layouts.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:breez/l10n/locales.dart';
 
 import 'connected_peer.dart';
 import 'connection_status.dart';
@@ -36,7 +36,6 @@ class PeersConnection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final texts = AppLocalizations.of(context);
     final payerData = _sessionState.payerData;
     final payeeData = _sessionState.payeeData;
 
@@ -112,7 +111,7 @@ class PeersConnection extends StatelessWidget {
                 child: AlignMiddle(
                   width: peerContainerSize,
                   child: _UserNameWidget(
-                    payerData.userName ?? texts.connect_to_pay_peer_unknown,
+                    payerData.userName ?? context.l10n.connect_to_pay_peer_unknown,
                   ),
                 ),
               ),
@@ -132,7 +131,6 @@ class PeersConnection extends StatelessWidget {
   }
 
   Widget buildPayeeWidget(BuildContext context) {
-    final texts = AppLocalizations.of(context);
     final userName = _sessionState.payeeData.userName;
 
     if (userName != null) {
@@ -142,7 +140,7 @@ class PeersConnection extends StatelessWidget {
     if (!_sessionState.invitationSent) {
       return SizedBox();
     }
-    return _UserNameWidget(texts.connect_to_pay_peer_unknown);
+    return _UserNameWidget(context.l10n.connect_to_pay_peer_unknown);
   }
 }
 

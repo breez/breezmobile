@@ -7,7 +7,7 @@ import 'package:breez/theme_data.dart' as theme;
 import 'package:breez/widgets/back_button.dart' as backBtn;
 import 'package:breez/widgets/single_button_bottom_bar.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:breez/l10n/locales.dart';
 import 'package:flutter_typeahead/flutter_typeahead.dart';
 
 import 'wordlist.dart';
@@ -55,16 +55,13 @@ class EnterBackupPhrasePageState extends State<EnterBackupPhrasePage> {
 
   @override
   Widget build(BuildContext context) {
-    final themeData = Theme.of(context);
-    final texts = AppLocalizations.of(context);
-    final query = MediaQuery.of(context);
     final userProfileBloc = AppBlocsProvider.of<UserProfileBloc>(context);
 
     return Scaffold(
       appBar: AppBar(
-        iconTheme: themeData.appBarTheme.iconTheme,
-        textTheme: themeData.appBarTheme.textTheme,
-        backgroundColor: themeData.canvasColor,
+        iconTheme: Theme.of(context).appBarTheme.iconTheme,
+        textTheme: Theme.of(context).appBarTheme.textTheme,
+        backgroundColor: Theme.of(context).canvasColor,
         automaticallyImplyLeading: false,
         leading: backBtn.BackButton(
           onPressed: () {
@@ -80,17 +77,17 @@ class EnterBackupPhrasePageState extends State<EnterBackupPhrasePage> {
           },
         ),
         title: Text(
-          texts.enter_backup_phrase(
+          context.l10n.enter_backup_phrase(
             _currentPage.toString(),
             _lastPage.toString(),
           ),
-          style: themeData.appBarTheme.textTheme.headline6,
+          style: Theme.of(context).appBarTheme.textTheme.headline6,
         ),
         elevation: 0.0,
       ),
       body: SingleChildScrollView(
         child: Container(
-          height: query.size.height - kToolbarHeight - query.padding.top,
+          height: MediaQuery.of(context).size.height - kToolbarHeight - MediaQuery.of(context).padding.top,
           child: Column(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: _buildRestoreFormContent(context, userProfileBloc),
@@ -121,14 +118,13 @@ class EnterBackupPhrasePageState extends State<EnterBackupPhrasePage> {
     BuildContext context,
     UserProfileBloc userProfileBloc,
   ) {
-    final texts = AppLocalizations.of(context);
     List<Widget> restoreFormContent = [];
     restoreFormContent..add(_buildForm());
     if (_hasError) {
       restoreFormContent
         ..add(_buildErrorMessage(
           context,
-          texts.enter_backup_phrase_error,
+          context.l10n.enter_backup_phrase_error,
         ));
     }
     restoreFormContent..add(_buildBottomBtn(context, userProfileBloc));
@@ -136,12 +132,11 @@ class EnterBackupPhrasePageState extends State<EnterBackupPhrasePage> {
   }
 
   Widget _buildErrorMessage(BuildContext context, String errorMessage) {
-    final themeData = Theme.of(context);
     return Padding(
       padding: EdgeInsets.only(left: 16, right: 16),
       child: Text(
         errorMessage,
-        style: themeData.textTheme.headline4.copyWith(
+        style: Theme.of(context).textTheme.headline4.copyWith(
           fontSize: 12,
         ),
       ),
@@ -196,12 +191,11 @@ class EnterBackupPhrasePageState extends State<EnterBackupPhrasePage> {
   }
 
   String _onValidate(BuildContext context, String text) {
-    final texts = AppLocalizations.of(context);
     if (text.length == 0) {
-      return texts.enter_backup_phrase_missing_word;
+      return context.l10n.enter_backup_phrase_missing_word;
     }
     if (!WORDLIST.contains(text.toLowerCase().trim())) {
-      return texts.enter_backup_phrase_invalid_word;
+      return context.l10n.enter_backup_phrase_invalid_word;
     }
     return null;
   }
@@ -234,11 +228,10 @@ class EnterBackupPhrasePageState extends State<EnterBackupPhrasePage> {
     BuildContext context,
     UserProfileBloc userProfileBloc,
   ) {
-    final texts = AppLocalizations.of(context);
     return SingleButtonBottomBar(
       text: _currentPage + 1 == (_lastPage + 1)
-          ? texts.enter_backup_phrase_action_restore
-          : texts.enter_backup_phrase_action_next,
+          ? context.l10n.enter_backup_phrase_action_restore
+          : context.l10n.enter_backup_phrase_action_next,
       onPressed: () {
         setState(() {
           _hasError = false;

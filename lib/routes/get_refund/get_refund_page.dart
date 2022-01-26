@@ -8,27 +8,24 @@ import 'package:breez/widgets/send_onchain.dart';
 import 'package:breez/widgets/single_button_bottom_bar.dart';
 import 'package:fixnum/fixnum.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:breez/l10n/locales.dart';
 
 import 'wait_broadcast_dialog.dart';
 
 class GetRefundPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    final themeData = Theme.of(context);
-    final texts = AppLocalizations.of(context);
-
     final accountBloc = AppBlocsProvider.of<AccountBloc>(context);
 
     return Scaffold(
       appBar: AppBar(
-        iconTheme: themeData.appBarTheme.iconTheme,
-        textTheme: themeData.appBarTheme.textTheme,
-        backgroundColor: themeData.canvasColor,
+        iconTheme: Theme.of(context).appBarTheme.iconTheme,
+        textTheme: Theme.of(context).appBarTheme.textTheme,
+        backgroundColor: Theme.of(context).canvasColor,
         leading: backBtn.BackButton(),
         title: Text(
-          texts.get_refund_title,
-          style: themeData.appBarTheme.textTheme.headline6,
+          context.l10n.get_refund_title,
+          style: Theme.of(context).appBarTheme.textTheme.headline6,
         ),
         elevation: 0.0,
       ),
@@ -51,8 +48,6 @@ class GetRefundPage extends StatelessWidget {
   }
 
   List<Widget> _children(BuildContext context, AccountModel account) {
-    final texts = AppLocalizations.of(context);
-
     return account.swapFundsStatus.maturedRefundableAddresses.map((item) {
       return Padding(
         padding: const EdgeInsets.all(12.0),
@@ -63,7 +58,7 @@ class GetRefundPage extends StatelessWidget {
               children: [
                 Expanded(
                   child: Text(
-                    texts.get_refund_amount(
+                    context.l10n.get_refund_amount(
                       account.currency.format(item.confirmedAmount),
                     ),
                     textAlign: TextAlign.left,
@@ -82,8 +77,8 @@ class GetRefundPage extends StatelessWidget {
                     width: 145.0,
                     child: SubmitButton(
                       item.lastRefundTxID.isNotEmpty
-                          ? texts.get_refund_action_broadcasted
-                          : texts.get_refund_action_continue,
+                          ? context.l10n.get_refund_action_broadcasted
+                          : context.l10n.get_refund_action_continue,
                       item.lastRefundTxID.isNotEmpty && !allowRebroadcastRefunds
                           ? null
                           : () => onRefund(context, account, item),
@@ -107,8 +102,6 @@ class GetRefundPage extends StatelessWidget {
     AccountModel account,
     RefundableAddress item,
   ) {
-    final texts = AppLocalizations.of(context);
-
     final ids = item.confirmedTransactionIds;
     String originalTransaction;
     if (ids.length > 0) {
@@ -122,7 +115,7 @@ class GetRefundPage extends StatelessWidget {
         builder: (_) => SendOnchain(
           account,
           item.confirmedAmount,
-          texts.get_refund_transaction,
+          context.l10n.get_refund_transaction,
           (destAddress, feeRate) {
             return broadcastAndWait(
               context,
@@ -146,7 +139,6 @@ class GetRefundPage extends StatelessWidget {
     String toAddress,
     Int64 feeRate,
   ) {
-    final texts = AppLocalizations.of(context);
     final accountBloc = AppBlocsProvider.of<AccountBloc>(context);
     return showDialog<bool>(
       useRootNavigator: false,
@@ -159,7 +151,7 @@ class GetRefundPage extends StatelessWidget {
         feeRate,
       ),
     ).then((ok) {
-      return ok ? null : Future.error(texts.get_refund_failed);
+      return ok ? null : Future.error(context.l10n.get_refund_failed);
     });
   }
 }

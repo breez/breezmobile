@@ -4,7 +4,7 @@ import 'package:breez/widgets/compact_qr_image.dart';
 import 'package:breez/widgets/flushbar.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:breez/l10n/locales.dart';
 import 'package:share_extend/share_extend.dart';
 
 class AddressWidget extends StatelessWidget {
@@ -18,9 +18,6 @@ class AddressWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final texts = AppLocalizations.of(context);
-    final themeData = Theme.of(context);
-
     return Column(
       mainAxisAlignment: MainAxisAlignment.start,
       children: [
@@ -30,7 +27,7 @@ class AddressWidget extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text(
-                texts.invoice_btc_address_deposit_address,
+                context.l10n.invoice_btc_address_deposit_address,
                 style: theme.FieldTextStyle.labelStyle,
               ),
               Container(
@@ -64,12 +61,12 @@ class AddressWidget extends StatelessWidget {
                         showFlushbar(
                           context,
                           message:
-                              texts.invoice_btc_address_deposit_address_copied,
+                              context.l10n.invoice_btc_address_deposit_address_copied,
                         );
                       },
                       child: Text(
                         address,
-                        style: themeData.primaryTextTheme.subtitle2,
+                        style: Theme.of(context).primaryTextTheme.subtitle2,
                       ),
                     ),
                   ),
@@ -93,9 +90,6 @@ class AddressWidget extends StatelessWidget {
   }
 
   List<Widget> _buildShareAndCopyIcons(BuildContext context) {
-    final texts = AppLocalizations.of(context);
-    final themeData = Theme.of(context);
-
     List<Widget> _icons = [];
     if (address == null) {
       _icons.add(SizedBox(
@@ -105,7 +99,7 @@ class AddressWidget extends StatelessWidget {
     }
     Widget _shareIcon = IconButton(
       icon: Icon(IconData(0xe917, fontFamily: 'icomoon')),
-      color: themeData.buttonColor,
+      color: Theme.of(context).buttonColor,
       onPressed: () {
         final RenderBox box = context.findRenderObject();
         ShareExtend.share(
@@ -117,12 +111,12 @@ class AddressWidget extends StatelessWidget {
     );
     Widget _copyIcon = IconButton(
       icon: Icon(IconData(0xe90b, fontFamily: 'icomoon')),
-      color: themeData.buttonColor,
+      color: Theme.of(context).buttonColor,
       onPressed: () {
         ServiceInjector().device.setClipboardText(address);
         showFlushbar(
           context,
-          message: texts.invoice_btc_address_deposit_address_copied,
+          message: context.l10n.invoice_btc_address_deposit_address_copied,
         );
       },
     );
@@ -132,18 +126,15 @@ class AddressWidget extends StatelessWidget {
   }
 
   void _showAlertDialog(BuildContext context) {
-    final texts = AppLocalizations.of(context);
-    final themeData = Theme.of(context);
-
     AlertDialog dialog = AlertDialog(
       contentPadding: EdgeInsets.fromLTRB(20.0, 20.0, 20.0, 4.0),
       content: RichText(
         text: TextSpan(
-          style: themeData.dialogTheme.contentTextStyle,
-          text: texts.invoice_btc_address_on_chain_begin,
+          style: Theme.of(context).dialogTheme.contentTextStyle,
+          text: context.l10n.invoice_btc_address_on_chain_begin,
           children: [
             TextSpan(
-              text: texts.invoice_btc_address_on_chain_here,
+              text: context.l10n.invoice_btc_address_on_chain_here,
               style: TextStyle(color: Colors.blue),
               recognizer: TapGestureRecognizer()
                 ..onTap = () {
@@ -157,7 +148,7 @@ class AddressWidget extends StatelessWidget {
                 },
             ),
             TextSpan(
-              text: texts.invoice_btc_address_on_chain_end,
+              text: context.l10n.invoice_btc_address_on_chain_end,
             ),
           ],
         ),
@@ -168,8 +159,8 @@ class AddressWidget extends StatelessWidget {
             Navigator.pop(context);
           },
           child: Text(
-            texts.invoice_btc_address_on_chain_action_ok,
-            style: themeData.primaryTextTheme.button,
+            context.l10n.invoice_btc_address_on_chain_action_ok,
+            style: Theme.of(context).primaryTextTheme.button,
           ),
         ),
       ],

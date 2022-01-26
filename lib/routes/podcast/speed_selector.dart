@@ -36,7 +36,6 @@ class _SpeedSelectorWidgetState extends State<SpeedSelectorWidget> {
   @override
   Widget build(BuildContext context) {
     var settingsBloc = Provider.of<SettingsBloc>(context);
-    var theme = Theme.of(context);
 
     return StreamBuilder<AppSettings>(
         stream: settingsBloc.settings,

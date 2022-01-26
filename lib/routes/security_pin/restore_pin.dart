@@ -1,7 +1,7 @@
 import 'package:breez/widgets/back_button.dart' as backBtn;
 import 'package:breez/widgets/pin_code_widget.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:breez/l10n/locales.dart';
 
 class RestorePinCode extends StatelessWidget {
   final Function(String phrase) onPinCodeSubmitted;
@@ -13,16 +13,13 @@ class RestorePinCode extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final texts = AppLocalizations.of(context);
-    final themeData = Theme.of(context);
-
     return WillPopScope(
       onWillPop: () => Future.value(false),
       child: Scaffold(
         appBar: AppBar(
-          iconTheme: themeData.appBarTheme.iconTheme,
-          textTheme: themeData.appBarTheme.textTheme,
-          backgroundColor: themeData.canvasColor,
+          iconTheme: Theme.of(context).appBarTheme.iconTheme,
+          textTheme: Theme.of(context).appBarTheme.textTheme,
+          backgroundColor: Theme.of(context).canvasColor,
           leading: backBtn.BackButton(
             onPressed: () {
               Navigator.pop(context, null);
@@ -31,7 +28,7 @@ class RestorePinCode extends StatelessWidget {
           elevation: 0.0,
         ),
         body: PinCodeWidget(
-          texts.restore_pin_title,
+          context.l10n.restore_pin_title,
           (enteredPinCode) => _onPinEntered(enteredPinCode),
         ),
       ),

@@ -16,6 +16,7 @@ import 'package:breez/bloc/user_profile/breez_user_model.dart';
 import 'package:breez/bloc/user_profile/currency.dart';
 import 'package:breez/bloc/user_profile/user_actions.dart';
 import 'package:breez/bloc/user_profile/user_profile_bloc.dart';
+import 'package:breez/l10n/locales.dart';
 import 'package:breez/routes/charge/currency_wrapper.dart';
 import 'package:breez/routes/charge/pos_invoice_cart_bar.dart';
 import 'package:breez/routes/charge/pos_invoice_items_view.dart';
@@ -30,9 +31,7 @@ import 'package:breez/widgets/print_parameters.dart';
 import 'package:breez/widgets/transparent_page_route.dart';
 import 'package:breez/widgets/view_switch.dart';
 import 'package:fixnum/fixnum.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import '../sync_progress_dialog.dart';
 import 'items/item_avatar.dart';
@@ -68,7 +67,6 @@ class POSInvoiceState extends State<POSInvoice> with TickerProviderStateMixin {
 
   @override
   void didChangeDependencies() {
-    final texts = AppLocalizations.of(context);
     final posCatalogBloc = AppBlocsProvider.of<PosCatalogBloc>(context);
 
     if (accountSubscription == null) {
@@ -87,7 +85,7 @@ class POSInvoiceState extends State<POSInvoice> with TickerProviderStateMixin {
           setState(() {
             showFlushbar(
               context,
-              message: texts.pos_invoice_error_fiat_exchange_rates,
+              message: context.l10n.pos_invoice_error_fiat_exchange_rates,
             );
           });
         }
@@ -312,8 +310,6 @@ class POSInvoiceState extends State<POSInvoice> with TickerProviderStateMixin {
     Sale currentSale,
     double totalAmount,
   ) {
-    final themeData = Theme.of(context);
-    final texts = AppLocalizations.of(context);
     final amount = currentCurrency.format(totalAmount).toUpperCase();
     final currencyName = currentCurrency.shortName.toUpperCase();
 
@@ -327,11 +323,11 @@ class POSInvoiceState extends State<POSInvoice> with TickerProviderStateMixin {
           ignoring: false,
           child: ElevatedButton(
             style: ElevatedButton.styleFrom(
-              primary: themeData.primaryColorLight,
+              primary: Theme.of(context).primaryColorLight,
               padding: EdgeInsets.only(top: 14.0, bottom: 14.0),
             ),
             child: Text(
-              texts.pos_invoice_charge_label(amount, currencyName),
+              context.l10n.pos_invoice_charge_label(amount, currencyName),
               maxLines: 1,
               textAlign: TextAlign.center,
               style: theme.invoiceChargeAmountStyle,
@@ -350,22 +346,20 @@ class POSInvoiceState extends State<POSInvoice> with TickerProviderStateMixin {
   }
 
   Widget _buildViewSwitch(BuildContext context) {
-    final themeData = Theme.of(context);
-    final texts = AppLocalizations.of(context);
     return ViewSwitch(
       selected: _isKeypadView ? 0 : 1,
-      tint: themeData.primaryTextTheme.button.color,
-      textTint: themeData.textTheme.button.color,
+      tint: Theme.of(context).primaryTextTheme.button.color,
+      textTint: Theme.of(context).textTheme.button.color,
       items: [
         ViewSwitchItem(
-          texts.pos_invoice_tab_keypad,
+          context.l10n.pos_invoice_tab_keypad,
           () => AppBlocsProvider.of<PosCatalogBloc>(context)
               .actionsSink
               .add(UpdatePosSelectedTab("KEYPAD")),
           iconData: Icons.dialpad,
         ),
         ViewSwitchItem(
-          texts.pos_invoice_tab_items,
+          context.l10n.pos_invoice_tab_items,
           () => AppBlocsProvider.of<PosCatalogBloc>(context)
               .actionsSink
               .add(UpdatePosSelectedTab("ITEMS")),
@@ -434,18 +428,15 @@ class POSInvoiceState extends State<POSInvoice> with TickerProviderStateMixin {
     BreezUserModel user,
     AccountModel account,
   ) {
-    final texts = AppLocalizations.of(context);
-    final themeData = Theme.of(context);
-
     final errorName = user.name == null;
     final errorAvatar = user.avatarURL == null;
     String errorMessage;
     if (errorName || errorAvatar) {
-      errorMessage = texts.pos_invoice_error_submit_name_avatar;
+      errorMessage = context.l10n.pos_invoice_error_submit_name_avatar;
     } else if (errorName) {
-      errorMessage = texts.pos_invoice_error_submit_name_only;
+      errorMessage = context.l10n.pos_invoice_error_submit_name_only;
     } else if (errorAvatar) {
-      errorMessage = texts.pos_invoice_error_submit_avatar_only;
+      errorMessage = context.l10n.pos_invoice_error_submit_avatar_only;
     } else {
       errorMessage = null;
     }
@@ -458,26 +449,25 @@ class POSInvoiceState extends State<POSInvoice> with TickerProviderStateMixin {
         builder: (BuildContext context) {
           return AlertDialog(
             title: Text(
-              texts.pos_invoice_error_submit_header,
-              style: themeData.dialogTheme.titleTextStyle,
+              context.l10n.pos_invoice_error_submit_header,
+              style: Theme.of(context).dialogTheme.titleTextStyle,
             ),
             contentPadding: EdgeInsets.fromLTRB(24.0, 8.0, 24.0, 8.0),
             content: SingleChildScrollView(
               child: Text(
                 errorMessage,
-                style: themeData.dialogTheme.contentTextStyle,
+                style: Theme.of(context).dialogTheme.contentTextStyle,
               ),
             ),
             actions: <Widget>[
               TextButton(
                 child: Text(
-                  texts.pos_invoice_error_fix_action,
-                  style: themeData.primaryTextTheme.button,
+                  context.l10n.pos_invoice_error_fix_action,
+                  style: Theme.of(context).primaryTextTheme.button,
                 ),
                 onPressed: () {
-                  final navigator = Navigator.of(context);
-                  navigator.pop();
-                  navigator.pushNamed("/settings");
+                  Navigator.of(context).pop();
+                  Navigator.of(context).pushNamed("/settings");
                 },
               ),
             ],
@@ -499,15 +489,15 @@ class POSInvoiceState extends State<POSInvoice> with TickerProviderStateMixin {
       if (satAmount > maxAllowed.toDouble()) {
         promptError(
           context,
-          texts.pos_invoice_error_capacity_header,
+          context.l10n.pos_invoice_error_capacity_header,
           Text(
-            texts.pos_invoice_error_capacity_message(
+            context.l10n.pos_invoice_error_capacity_message(
               account.currency.format(
                 maxAllowed,
                 includeDisplayName: true,
               ),
             ),
-            style: themeData.dialogTheme.contentTextStyle,
+            style: Theme.of(context).dialogTheme.contentTextStyle,
           ),
         );
         return;
@@ -517,15 +507,15 @@ class POSInvoiceState extends State<POSInvoice> with TickerProviderStateMixin {
       if (satAmount > maxPaymentAmount.toDouble()) {
         promptError(
           context,
-          texts.pos_invoice_error_payment_size_header,
+          context.l10n.pos_invoice_error_payment_size_header,
           Text(
-            texts.pos_invoice_error_payment_size_message(
+            context.l10n.pos_invoice_error_payment_size_message(
               account.currency.format(
                 maxPaymentAmount,
                 includeDisplayName: true,
               ),
             ),
-            style: themeData.dialogTheme.contentTextStyle,
+            style: Theme.of(context).dialogTheme.contentTextStyle,
           ),
         );
         return;
@@ -583,7 +573,6 @@ class POSInvoiceState extends State<POSInvoice> with TickerProviderStateMixin {
   }
 
   Future<bool> waitForSync(BuildContext context) {
-    final texts = AppLocalizations.of(context);
     return showDialog(
       useRootNavigator: false,
       context: context,
@@ -595,7 +584,7 @@ class POSInvoiceState extends State<POSInvoice> with TickerProviderStateMixin {
               Navigator.pop(context, false);
             }),
             child: Text(
-              texts.pos_invoice_close,
+              context.l10n.pos_invoice_close,
               style: Theme.of(context).primaryTextTheme.button,
             ),
           ),
@@ -821,27 +810,24 @@ class POSInvoiceState extends State<POSInvoice> with TickerProviderStateMixin {
   }
 
   void _approveClear(BuildContext context, Sale currentSale) {
-    final texts = AppLocalizations.of(context);
-    final themeData = Theme.of(context);
-
     if (currentSale.totalChargeSat > 0 || currentAmount > 0) {
       AlertDialog dialog = AlertDialog(
         title: Text(
-          texts.pos_invoice_clear_sale_header,
+          context.l10n.pos_invoice_clear_sale_header,
           textAlign: TextAlign.center,
-          style: themeData.dialogTheme.titleTextStyle,
+          style: Theme.of(context).dialogTheme.titleTextStyle,
         ),
         content: Text(
-          texts.pos_invoice_clear_sale_message,
-          style: themeData.dialogTheme.contentTextStyle,
+          context.l10n.pos_invoice_clear_sale_message,
+          style: Theme.of(context).dialogTheme.contentTextStyle,
         ),
         contentPadding: EdgeInsets.fromLTRB(24.0, 24.0, 24.0, 12.0),
         actions: <Widget>[
           TextButton(
             onPressed: () => Navigator.pop(context),
             child: Text(
-              texts.pos_invoice_clear_sale_cancel,
-              style: themeData.primaryTextTheme.button,
+              context.l10n.pos_invoice_clear_sale_cancel,
+              style: Theme.of(context).primaryTextTheme.button,
             ),
           ),
           TextButton(
@@ -850,8 +836,8 @@ class POSInvoiceState extends State<POSInvoice> with TickerProviderStateMixin {
               _clearSale();
             },
             child: Text(
-              texts.pos_invoice_clear_sale_confirm,
-              style: themeData.primaryTextTheme.button,
+              context.l10n.pos_invoice_clear_sale_confirm,
+              style: Theme.of(context).primaryTextTheme.button,
             ),
           ),
         ],

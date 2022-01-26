@@ -17,7 +17,6 @@ import 'package:breez/widgets/single_button_bottom_bar.dart';
 import 'package:breez/widgets/static_loader.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class SpontaneousPaymentPage extends StatefulWidget {
   final String nodeID;
@@ -65,7 +64,6 @@ class SpontaneousPaymentPageState extends State<SpontaneousPaymentPage> {
 
   @override
   Widget build(BuildContext context) {
-    final texts = AppLocalizations.of(context);
     final String _title = "Send Payment";
     AccountBloc accountBloc = AppBlocsProvider.of<AccountBloc>(context);
 
@@ -128,7 +126,6 @@ class SpontaneousPaymentPageState extends State<SpontaneousPaymentPage> {
                   ),
                   AmountFormField(
                       context: context,
-                      texts: texts,
                       accountModel: acc,
                       focusNode: _amountFocusNode,
                       controller: _amountController,

@@ -12,6 +12,7 @@ import 'package:breez/bloc/lnurl/lnurl_bloc.dart';
 import 'package:breez/bloc/lnurl/lnurl_model.dart';
 import 'package:breez/bloc/lsp/lsp_bloc.dart';
 import 'package:breez/bloc/lsp/lsp_model.dart';
+import 'package:breez/l10n/locales.dart';
 import 'package:breez/logger.dart';
 import 'package:breez/routes/charge/succesful_payment.dart';
 import 'package:breez/routes/podcast/theme.dart';
@@ -31,7 +32,6 @@ import 'package:breez/widgets/warning_box.dart';
 import 'package:fixnum/fixnum.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import 'lnurl_withdraw_dialog.dart';
 import 'qr_code_dialog.dart';
@@ -64,13 +64,12 @@ class CreateInvoicePageState extends State<CreateInvoicePage> {
 
   @override
   void didChangeDependencies() {
-    final texts = AppLocalizations.of(context);
     final invoiceBloc = AppBlocsProvider.of<InvoiceBloc>(context);
     final accBloc = AppBlocsProvider.of<AccountBloc>(context);
 
     if (!_isInit) {
       _paidInvoicesSubscription = invoiceBloc.paidInvoicesStream.listen((paid) {
-        Navigator.pop(context, texts.invoice_payment_success);
+        Navigator.pop(context, context.l10n.invoice_payment_success);
       });
       if (widget.lnurlWithdraw != null) {
         accBloc.accountStream.first.then((account) {
@@ -106,9 +105,6 @@ class CreateInvoicePageState extends State<CreateInvoicePage> {
 
   @override
   Widget build(BuildContext context) {
-    final texts = AppLocalizations.of(context);
-    final themeData = Theme.of(context);
-
     final accountBloc = AppBlocsProvider.of<AccountBloc>(context);
     final invoiceBloc = AppBlocsProvider.of<InvoiceBloc>(context);
     final lnurlBloc = AppBlocsProvider.of<LNUrlBloc>(context);
@@ -130,8 +126,8 @@ class CreateInvoicePageState extends State<CreateInvoicePage> {
             child: SingleButtonBottomBar(
               stickToBottom: true,
               text: _withdrawFetchResponse == null
-                  ? texts.invoice_action_create
-                  : texts.invoice_action_redeem,
+                  ? context.l10n.invoice_action_create
+                  : context.l10n.invoice_action_redeem,
               onPressed: () {
                 if (_formKey.currentState.validate()) {
                   _createInvoice(
@@ -148,9 +144,9 @@ class CreateInvoicePageState extends State<CreateInvoicePage> {
         },
       ),
       appBar: AppBar(
-        iconTheme: themeData.appBarTheme.iconTheme,
-        textTheme: themeData.appBarTheme.textTheme,
-        backgroundColor: themeData.canvasColor,
+        iconTheme: Theme.of(context).appBarTheme.iconTheme,
+        textTheme: Theme.of(context).appBarTheme.textTheme,
+        backgroundColor: Theme.of(context).canvasColor,
         leading: backBtn.BackButton(),
         actions: [
           StreamBuilder<Object>(
@@ -166,7 +162,7 @@ class CreateInvoicePageState extends State<CreateInvoicePage> {
                   width: 24.0,
                   height: 24.0,
                 ),
-                tooltip: texts.invoice_action_scan_barcode,
+                tooltip: context.l10n.invoice_action_scan_barcode,
                 onPressed: () => account != null
                     ? _scanBarcode(
                         context,
@@ -178,8 +174,8 @@ class CreateInvoicePageState extends State<CreateInvoicePage> {
           )
         ],
         title: Text(
-          texts.invoice_title,
-          style: themeData.appBarTheme.textTheme.headline6,
+          context.l10n.invoice_title,
+          style: Theme.of(context).appBarTheme.textTheme.headline6,
         ),
         elevation: 0.0,
       ),
@@ -201,7 +197,7 @@ class CreateInvoicePageState extends State<CreateInvoicePage> {
                   );
                   if (amount > acc.maxInboundLiquidity &&
                       amount <= channelMinimumFee) {
-                    return texts.invoice_insufficient_amount_fee(
+                    return context.l10n.invoice_insufficient_amount_fee(
                       acc.currency.format(channelMinimumFee),
                     );
                   }
@@ -227,13 +223,12 @@ class CreateInvoicePageState extends State<CreateInvoicePage> {
                             maxLength: 90,
                             maxLengthEnforcement: MaxLengthEnforcement.enforced,
                             decoration: InputDecoration(
-                              labelText: texts.invoice_description_label,
+                              labelText: context.l10n.invoice_description_label,
                             ),
                             style: theme.FieldTextStyle.textStyle,
                           ),
                           AmountFormField(
                             context: context,
-                            texts: texts,
                             accountModel: acc,
                             focusNode: _amountFocusNode,
                             controller: _amountController,
@@ -247,10 +242,8 @@ class CreateInvoicePageState extends State<CreateInvoicePage> {
                               if (!accSnapshot.hasData) {
                                 return Container();
                               }
-                              String message = _availabilityMessage(
-                                texts,
-                                accSnapshot,
-                              );
+                              String message =
+                                  _availabilityMessage(accSnapshot);
                               if (message != null) {
                                 // In case error doesn't have a trailing full stop
                                 if (!message.endsWith('.')) {
@@ -268,7 +261,7 @@ class CreateInvoicePageState extends State<CreateInvoicePage> {
                                         message,
                                         textAlign: TextAlign.center,
                                         style: theme.warningStyle.copyWith(
-                                          color: themeData.errorColor,
+                                          color: Theme.of(context).errorColor,
                                         ),
                                       ),
                                     ],
@@ -293,18 +286,17 @@ class CreateInvoicePageState extends State<CreateInvoicePage> {
   }
 
   String _availabilityMessage(
-    AppLocalizations texts,
     AsyncSnapshot<AccountModel> accSnapshot,
   ) {
     if (accSnapshot.hasError) {
       return accSnapshot.error.toString();
     }
     if (!accSnapshot.hasData) {
-      return texts.invoice_availability_message_synchronizing;
+      return context.l10n.invoice_availability_message_synchronizing;
     }
     final acc = accSnapshot.data;
     if (acc.processingConnection) {
-      return texts.invoice_availability_message_opening_channel;
+      return context.l10n.invoice_availability_message_opening_channel;
     }
     return null;
   }
@@ -314,9 +306,6 @@ class CreateInvoicePageState extends State<CreateInvoicePage> {
     AccountModel acc,
     LSPStatus lspStatus,
   ) {
-    final themeData = Theme.of(context);
-    final texts = AppLocalizations.of(context);
-
     LSPInfo lsp = lspStatus?.currentLSP;
     Widget warning = lsp == null
         ? SizedBox()
@@ -326,8 +315,8 @@ class CreateInvoicePageState extends State<CreateInvoicePage> {
               mainAxisSize: MainAxisSize.min,
               children: [
                 Text(
-                  formatFeeMessage(texts, acc, lsp),
-                  style: themeData.textTheme.headline6,
+                  formatFeeMessage(acc, lsp),
+                  style: Theme.of(context).textTheme.headline6,
                   textAlign: TextAlign.center,
                 ),
               ],
@@ -344,7 +333,7 @@ class CreateInvoicePageState extends State<CreateInvoicePage> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               AutoSizeText(
-                texts.invoice_receive_label(
+                context.l10n.invoice_receive_label(
                   acc.currency.format(acc.maxAllowedToReceive),
                 ),
                 style: theme.textStyle,
@@ -367,7 +356,6 @@ class CreateInvoicePageState extends State<CreateInvoicePage> {
   }
 
   String formatFeeMessage(
-    AppLocalizations texts,
     AccountModel accountModel,
     LSPInfo lspInfo,
   ) {
@@ -383,24 +371,26 @@ class CreateInvoicePageState extends State<CreateInvoicePage> {
     );
 
     if (connected && showMinFeeMessage) {
-      return texts.invoice_ln_address_warning_with_min_fee_account_connected(
+      return context.l10n
+          .invoice_ln_address_warning_with_min_fee_account_connected(
         setUpFee,
         minFeeFormatted,
         liquidity,
       );
     } else if (connected && !showMinFeeMessage) {
-      return texts.invoice_ln_address_warning_without_min_fee_account_connected(
+      return context.l10n
+          .invoice_ln_address_warning_without_min_fee_account_connected(
         setUpFee,
         liquidity,
       );
     } else if (!connected && showMinFeeMessage) {
-      return texts
+      return context.l10n
           .invoice_ln_address_warning_with_min_fee_account_not_connected(
         setUpFee,
         minFeeFormatted,
       );
     } else {
-      return texts
+      return context.l10n
           .invoice_ln_address_warning_without_min_fee_account_not_connected(
         setUpFee,
       );
@@ -408,10 +398,6 @@ class CreateInvoicePageState extends State<CreateInvoicePage> {
   }
 
   Future _scanBarcode(BuildContext context, AccountModel account) async {
-    final texts = AppLocalizations.of(context);
-    final navigator = Navigator.of(context);
-    final themeData = Theme.of(context);
-
     TransparentPageRoute loaderRoute;
     try {
       FocusScope.of(context).requestFocus(FocusNode());
@@ -420,23 +406,24 @@ class CreateInvoicePageState extends State<CreateInvoicePage> {
         return;
       }
       if (barcode.isEmpty) {
-        showFlushbar(context, message: texts.invoice_qr_code_not_detected);
+        showFlushbar(context,
+            message: context.l10n.invoice_qr_code_not_detected);
         return;
       }
       loaderRoute = createLoaderRoute(context);
-      navigator.push(loaderRoute);
+      Navigator.of(context).push(loaderRoute);
       await _handleLNUrlWithdraw(context, account, barcode);
-      navigator.removeRoute(loaderRoute);
+      Navigator.of(context).removeRoute(loaderRoute);
     } catch (e) {
       if (loaderRoute != null) {
-        navigator.removeRoute(loaderRoute);
+        Navigator.of(context).removeRoute(loaderRoute);
       }
       promptError(
         context,
-        texts.invoice_receive_fail,
+        context.l10n.invoice_receive_fail,
         Text(
-          texts.invoice_receive_fail_message(e.toString()),
-          style: themeData.dialogTheme.contentTextStyle,
+          context.l10n.invoice_receive_fail_message(e.toString()),
+          style: Theme.of(context).dialogTheme.contentTextStyle,
         ),
       );
     }
@@ -447,13 +434,12 @@ class CreateInvoicePageState extends State<CreateInvoicePage> {
     AccountModel account,
     String lnurl,
   ) async {
-    final texts = AppLocalizations.of(context);
     final lnurlBloc = AppBlocsProvider.of<LNUrlBloc>(context);
     Fetch fetchAction = Fetch(lnurl);
     lnurlBloc.actionsSink.add(fetchAction);
     var response = await fetchAction.future;
     if (response.runtimeType != WithdrawFetchResponse) {
-      throw texts.invoice_error_url;
+      throw context.l10n.invoice_error_url;
     }
     final withdrawResponse = response as WithdrawFetchResponse;
     setState(() {
@@ -489,15 +475,14 @@ class CreateInvoicePageState extends State<CreateInvoicePage> {
         account.currency.parse(_amountController.text),
       ),
     );
-    final navigator = Navigator.of(context);
-    navigator.pop();
-    var currentRoute = ModalRoute.of(navigator.context);
+    Navigator.of(context).pop();
+    var currentRoute = ModalRoute.of(Navigator.of(context).context);
     Widget dialog = _withdrawFetchResponse != null
         ? LNURlWithdrawDialog(invoiceBloc, accountBloc, lnurlBloc, (result) {
-            onPaymentFinished(result, currentRoute, navigator);
+            onPaymentFinished(result, currentRoute, Navigator.of(context));
           })
         : QrCodeDialog(context, invoiceBloc, accountBloc, (result) {
-            onPaymentFinished(result, currentRoute, navigator);
+            onPaymentFinished(result, currentRoute, Navigator.of(context));
           });
     return _bgService.runAsTask(
         showDialog(

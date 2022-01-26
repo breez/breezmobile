@@ -13,7 +13,7 @@ import 'package:breez/widgets/loader.dart';
 import 'package:breez/widgets/single_button_bottom_bar.dart';
 import 'package:fixnum/fixnum.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:breez/l10n/locales.dart';
 
 class ReverseSwapConfirmation extends StatefulWidget {
   final ReverseSwapRequest swap;
@@ -123,9 +123,6 @@ class ReverseSwapConfirmationState extends State<ReverseSwapConfirmation> {
 
   @override
   Widget build(BuildContext context) {
-    final themeData = Theme.of(context);
-    final texts = AppLocalizations.of(context);
-
     final accountBloc = AppBlocsProvider.of<AccountBloc>(context);
 
     final rsAmounts = feeOptions[selectedFeeIndex] != null
@@ -134,15 +131,15 @@ class ReverseSwapConfirmationState extends State<ReverseSwapConfirmation> {
 
     return Scaffold(
       appBar: AppBar(
-        iconTheme: themeData.appBarTheme.iconTheme,
-        textTheme: themeData.appBarTheme.textTheme,
-        backgroundColor: themeData.canvasColor,
+        iconTheme: Theme.of(context).appBarTheme.iconTheme,
+        textTheme: Theme.of(context).appBarTheme.textTheme,
+        backgroundColor: Theme.of(context).canvasColor,
         leading: backBtn.BackButton(onPressed: () {
           widget.onPrevious();
         }),
         title: Text(
-          texts.reverse_swap_confirmation_speed,
-          style: themeData.appBarTheme.textTheme.headline6,
+          context.l10n.reverse_swap_confirmation_speed,
+          style: Theme.of(context).appBarTheme.textTheme.headline6,
         ),
         elevation: 0.0,
       ),
@@ -156,7 +153,7 @@ class ReverseSwapConfirmationState extends State<ReverseSwapConfirmation> {
               if (snap.error != null) {
                 //render error
                 return _ErrorMessage(
-                  message: texts.reverse_swap_confirmation_error_fetch_fee,
+                  message: context.l10n.reverse_swap_confirmation_error_fetch_fee,
                 );
               }
               if (snap.connectionState != ConnectionState.done || acc == null) {
@@ -165,7 +162,7 @@ class ReverseSwapConfirmationState extends State<ReverseSwapConfirmation> {
 
               if (feeOptions.where((f) => f != null).length == 0) {
                 return _ErrorMessage(
-                  message: texts.reverse_swap_confirmation_error_funds_fee,
+                  message: context.l10n.reverse_swap_confirmation_error_funds_fee,
                 );
               }
 
@@ -208,7 +205,7 @@ class ReverseSwapConfirmationState extends State<ReverseSwapConfirmation> {
       bottomNavigationBar: !_showConfirm
           ? null
           : SingleButtonBottomBar(
-              text: texts.reverse_swap_confirmation_action_confirm,
+              text: context.l10n.reverse_swap_confirmation_action_confirm,
               onPressed: () {
                 Navigator.of(context).push(createLoaderRoute(context));
                 widget
@@ -229,7 +226,7 @@ class ReverseSwapConfirmationState extends State<ReverseSwapConfirmation> {
                       null,
                       Text(
                         error.toString(),
-                        style: themeData.dialogTheme.contentTextStyle,
+                        style: Theme.of(context).dialogTheme.contentTextStyle,
                       ),
                     );
                   },
@@ -246,15 +243,13 @@ class ReverseSwapConfirmationState extends State<ReverseSwapConfirmation> {
     boltzFees,
     received,
   ) {
-    final texts = AppLocalizations.of(context);
-    final themeData = Theme.of(context);
     final minFont = MinFontSize(context);
 
     return Container(
       decoration: BoxDecoration(
         borderRadius: BorderRadius.all(Radius.circular(5.0)),
         border: Border.all(
-          color: themeData.colorScheme.onSurface.withOpacity(0.4),
+          color: Theme.of(context).colorScheme.onSurface.withOpacity(0.4),
         ),
       ),
       child: ListView(
@@ -263,7 +258,7 @@ class ReverseSwapConfirmationState extends State<ReverseSwapConfirmation> {
           ListTile(
             title: Container(
               child: AutoSizeText(
-                texts.reverse_swap_confirmation_you_send,
+                context.l10n.reverse_swap_confirmation_you_send,
                 style: TextStyle(color: Colors.white),
                 maxLines: 1,
                 minFontSize: minFont.minFontSize,
@@ -273,7 +268,7 @@ class ReverseSwapConfirmationState extends State<ReverseSwapConfirmation> {
             trailing: Container(
               child: AutoSizeText(
                 acc.currency.format(toSend),
-                style: TextStyle(color: themeData.errorColor),
+                style: TextStyle(color: Theme.of(context).errorColor),
                 maxLines: 1,
                 minFontSize: minFont.minFontSize,
                 stepGranularity: 0.1,
@@ -283,7 +278,7 @@ class ReverseSwapConfirmationState extends State<ReverseSwapConfirmation> {
           ListTile(
             title: Container(
               child: AutoSizeText(
-                texts.reverse_swap_confirmation_boltz_fee,
+                context.l10n.reverse_swap_confirmation_boltz_fee,
                 style: TextStyle(
                   color: Colors.white.withOpacity(0.4),
                 ),
@@ -294,11 +289,11 @@ class ReverseSwapConfirmationState extends State<ReverseSwapConfirmation> {
             ),
             trailing: Container(
               child: AutoSizeText(
-                texts.reverse_swap_confirmation_boltz_fee_value(
+                context.l10n.reverse_swap_confirmation_boltz_fee_value(
                   acc.currency.format(boltzFees),
                 ),
                 style: TextStyle(
-                  color: themeData.errorColor.withOpacity(0.4),
+                  color: Theme.of(context).errorColor.withOpacity(0.4),
                 ),
                 maxLines: 1,
                 minFontSize: minFont.minFontSize,
@@ -309,7 +304,7 @@ class ReverseSwapConfirmationState extends State<ReverseSwapConfirmation> {
           ListTile(
             title: Container(
               child: AutoSizeText(
-                texts.reverse_swap_confirmation_transaction_fee,
+                context.l10n.reverse_swap_confirmation_transaction_fee,
                 style: TextStyle(color: Colors.white.withOpacity(0.4)),
                 maxLines: 1,
                 minFontSize: minFont.minFontSize,
@@ -318,11 +313,11 @@ class ReverseSwapConfirmationState extends State<ReverseSwapConfirmation> {
             ),
             trailing: Container(
               child: AutoSizeText(
-                texts.reverse_swap_confirmation_transaction_fee_value(
+                context.l10n.reverse_swap_confirmation_transaction_fee_value(
                   acc.currency.format(Int64(feeOptions[selectedFeeIndex].sats)),
                 ),
                 style: TextStyle(
-                  color: themeData.errorColor.withOpacity(0.4),
+                  color: Theme.of(context).errorColor.withOpacity(0.4),
                 ),
                 maxLines: 1,
                 minFontSize: minFont.minFontSize,
@@ -333,7 +328,7 @@ class ReverseSwapConfirmationState extends State<ReverseSwapConfirmation> {
           ListTile(
             title: Container(
               child: AutoSizeText(
-                texts.reverse_swap_confirmation_you_receive,
+                context.l10n.reverse_swap_confirmation_you_receive,
                 style: TextStyle(
                   color: Colors.white,
                 ),
@@ -345,15 +340,15 @@ class ReverseSwapConfirmationState extends State<ReverseSwapConfirmation> {
             trailing: Container(
               child: AutoSizeText(
                 acc.fiatCurrency == null
-                    ? texts.reverse_swap_confirmation_received_no_fiat(
+                    ? context.l10n.reverse_swap_confirmation_received_no_fiat(
                         acc.currency.format(received),
                       )
-                    : texts.reverse_swap_confirmation_received_with_fiat(
+                    : context.l10n.reverse_swap_confirmation_received_with_fiat(
                         acc.currency.format(received),
                         acc.fiatCurrency.format(received),
                       ),
                 style: TextStyle(
-                  color: themeData.errorColor,
+                  color: Theme.of(context).errorColor,
                 ),
                 maxLines: 1,
                 minFontSize: minFont.minFontSize,
