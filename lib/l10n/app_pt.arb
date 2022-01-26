@@ -1321,6 +1321,64 @@
   "handler_podcast_error_load_episode": "Falha ao carregar o episódio. Por favor, verifique sua conexão.",
   "handler_podcast_error_load_episode_fallback": "Falha ao carregar o podcast.",
   "handler_sync_ui_message": "Breez está sincronizando com a rede do Bitcoin",
+  "add_funds_error_deposit": "A Breez está processando seu depósito anterior. Você poderá adicionar mais fundos assim que esta operação for concluída.",
+  "add_funds_error_withdraw": "A Breez está processando sua retirada anterior. Você poderá adicionar mais fundos assim que esta operação for concluída.",
+  "add_funds_transaction_id_copied": "O ID da transação foi copiado para sua área de transferência.",
+  "add_funds_item_voucher_title": "Valor do voucher",
+  "add_funds_item_voucher_message": "{value} {currency}",
+  "@add_funds_item_voucher_message": {
+    "placeholders": {
+      "value": {
+        "type": "String",
+        "example": "123"
+      },
+      "currency": {
+        "type": "String",
+        "example": "btc"
+      }
+    }
+  },
+  "add_funds_item_exchange_rate_title": "Taxa de câmbio",
+  "add_funds_item_exchange_rate_message": "{rate} {currency}",
+  "@add_funds_item_exchange_rate_message": {
+    "placeholders": {
+      "rate": {
+        "type": "String",
+        "example": "123"
+      },
+      "currency": {
+        "type": "String",
+        "example": "btc"
+      }
+    }
+  },
+  "add_funds_item_commission_rate_title": "Taxa de comissão",
+  "add_funds_item_commission_rate_message": "{rate}%",
+  "@add_funds_item_commission_rate_message": {
+    "placeholders": {
+      "rate": {
+        "type": "String",
+        "example": "123"
+      }
+    }
+  },
+  "add_funds_item_commission_total_title": "Comissão total",
+  "add_funds_item_commission_total_message": "{commission} {currency}",
+  "@add_funds_item_commission_total_message": {
+    "placeholders": {
+      "commission": {
+        "type": "String",
+        "example": "123"
+      },
+      "currency": {
+        "type": "String",
+        "example": "btc"
+      }
+    }
+  },
+  "add_funds_item_bitcoins_received_title": "Bitcoins recebidos",
+  "add_funds_moonpay_title": "MoonPay",
+  "add_funds_moonpay_error_address": "Falha ao recuperar um endereço do servidor da Breez\nPor favor, verifique sua conexão à internet.",
   "locale": "pt",
   "app_name": "Breez"
 }
