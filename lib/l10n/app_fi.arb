@@ -1321,10 +1321,10 @@
   "handler_podcast_error_load_episode": "Jakson lataaminen epäonnistui. Tarkista yhteydet..",
   "handler_podcast_error_load_episode_fallback": "Podcast:in lataaminen epäonnistui.",
   "handler_sync_ui_message": "Breez synkronoituu Bitcoin-verkkoon",
-  "add_funds_error_deposit": "Breez is processing your previous deposit. You will be able to add more funds once this operation is completed.",
-  "add_funds_error_withdraw": "Breez is processing your previous withdrawal. You will be able to add more funds once this operation is completed.",
-  "add_funds_transaction_id_copied": "Transaction ID was copied to your clipboard.",
-  "add_funds_item_voucher_title": "Voucher value",
+  "add_funds_error_deposit": "Breez käsittelee edellistä talletustasi. Vasta talletuksen valmistuttua voit lisätä varoja.",
+  "add_funds_error_withdraw": "Breez käsittelee edellistä nostoasi. Vasta noston valmistuttua voit lisätä varoja.",
+  "add_funds_transaction_id_copied": "Tapahtuman tunnus kopioitiin leikepöydälle.",
+  "add_funds_item_voucher_title": "Lahjakortin arvo value",
   "add_funds_item_voucher_message": "{value} {currency}",
   "@add_funds_item_voucher_message": {
     "placeholders": {
@@ -1338,7 +1338,7 @@
       }
     }
   },
-  "add_funds_item_exchange_rate_title": "Exchange rate",
+  "add_funds_item_exchange_rate_title": "Vaihtokurssi",
   "add_funds_item_exchange_rate_message": "{rate} {currency}",
   "@add_funds_item_exchange_rate_message": {
     "placeholders": {
@@ -1352,7 +1352,7 @@
       }
     }
   },
-  "add_funds_item_commission_rate_title": "Commission rate",
+  "add_funds_item_commission_rate_title": "Vaihtokomission määrä",
   "add_funds_item_commission_rate_message": "{rate}%",
   "@add_funds_item_commission_rate_message": {
     "placeholders": {
@@ -1362,7 +1362,7 @@
       }
     }
   },
-  "add_funds_item_commission_total_title": "Commission total",
+  "add_funds_item_commission_total_title": "Vaihtokomissio yhteensä",
   "add_funds_item_commission_total_message": "{commission} {currency}",
   "@add_funds_item_commission_total_message": {
     "placeholders": {
@@ -1376,9 +1376,9 @@
       }
     }
   },
-  "add_funds_item_bitcoins_received_title": "Bitcoins received",
+  "add_funds_item_bitcoins_received_title": "Vastaanotetut bitcoinit",
   "add_funds_moonpay_title": "MoonPay",
-  "add_funds_moonpay_error_address": "Failed to retrieve an address from Breez server\nPlease check your internet connection.",
+  "add_funds_moonpay_error_address": "Osoitteen hakeminen Breez-palvelimelta epäonnistui\nTarkista verkkoyhteytesi.",
   "locale": "fi",
   "app_name": "Breez"
 }
