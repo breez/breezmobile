@@ -11,18 +11,18 @@
   "home_drawer_item_title_pos_settings": "Myyntipisteasetukset",
   "home_drawer_item_title_developers": "Sovelluskehittäjille",
   "home_drawer_item_title_get_refund": "Varojen lunastus",
-  "home_drawer_error_internal": "Internal Error",
-  "home_drawer_error_no_name": "No Name",
+  "home_drawer_error_internal": "Sisäinen virhe",
+  "home_drawer_error_no_name": "Nimetön",
   "home_podcast_title": "Anytime Podcast Player",
   "home_podcast_no_subscriptions": "Etsi ja tilaa ensimmäinen podcast Discover -näkymästä",
-  "home_error_connect_to_pay": "Connect to Pay",
+  "home_error_connect_to_pay": "Yhdistä maksajaan",
   "home_error_podcast_link": "Podcast-linkki",
   "home_broadcast_transaction": "Tapahtumaa lähetetään",
   "home_config_error_title": "Konfiguraatiovirhe",
   "home_config_error_message": "Breez havaihtsi että toisessa laitteessa on käytössä sama konfiguraation, todennäköisesti varmistuksen palautuksesta johtuen. Breez voi toimia samalla konfigurattiolla ainoastaan yhdessä laitteessa kerrallaan. Asenna Breez uudelleen mikäli haluat sen käyttöön tässä laitteessa.",
   "home_config_error_action_exit": "Sulje Breez",
-  "home_background_synchronization_title": "Taustalla synkronointi",
-  "home_background_synchronization_message": "Välittömästi tapahtuvien maksujen toteuttamiseen Breez käyttää taustalla synkronointia. Sovellus vaatii sinulta luvan toimia myös silloin kuna sovellus ei ole avattuna. Myönnä oikeus seuraavassa näkymässä.",
+  "home_background_synchronization_title": "Taustasynkronointi",
+  "home_background_synchronization_message": "Välittömästi tapahtuvien maksujen toteuttamiseksi Breez synkronoi tietoja taustalla. Sovellus vaatii sinulta luvan toimia myös silloin kuna sovellus ei ole avattuna. Myönnä oikeus seuraavassa näkymässä.",
   "home_payment_sent": "Maksun lähetys onnistui.",
   "home_report_sending": "Raporttia lähetetään.",
   "invoice_btc_address_title": "Vastaanota bitcoin-osoitteella",
@@ -34,11 +34,11 @@
     "placeholders": {
       "minSats": {
         "type": "String",
-        "example": "2 000 sats"
+        "example": "2 000 satoshia"
       },
       "maxSats": {
         "type": "String",
-        "example": "4 000 000 sats"
+        "example": "4 000 000 satoshia"
       },
       "setUpFee": {
         "type": "String",
@@ -46,11 +46,11 @@
       },
       "minFee": {
         "type": "String",
-        "example": "1 000 sats"
+        "example": "1 000 satoshia"
       },
       "liquidity": {
         "type": "String",
-        "example": "99 000 sats"
+        "example": "99 000 satoshia"
       }
     }
   },
@@ -59,11 +59,11 @@
     "placeholders": {
       "minSats": {
         "type": "String",
-        "example": "2 000 sats"
+        "example": "2 000 satoshia"
       },
       "maxSats": {
         "type": "String",
-        "example": "4 000 000 sats"
+        "example": "4 000 000 satoshia"
       },
       "setUpFee": {
         "type": "String",
@@ -71,7 +71,7 @@
       },
       "liquidity": {
         "type": "String",
-        "example": "99 000 sats"
+        "example": "99 000 satoshia"
       }
     }
   },
@@ -80,11 +80,11 @@
     "placeholders": {
       "minSats": {
         "type": "String",
-        "example": "2 000 sats"
+        "example": "2 000 satoshia"
       },
       "maxSats": {
         "type": "String",
-        "example": "4 000 000 sats"
+        "example": "4 000 000 satoshia"
       },
       "setUpFee": {
         "type": "String",
@@ -92,7 +92,7 @@
       },
       "minFee": {
         "type": "String",
-        "example": "1 000 sats"
+        "example": "1 000 satoshia"
       }
     }
   },
@@ -101,11 +101,11 @@
     "placeholders": {
       "minSats": {
         "type": "String",
-        "example": "2 000 sats"
+        "example": "2 000 satoshia"
       },
       "maxSats": {
         "type": "String",
-        "example": "4 000 000 sats"
+        "example": "4 000 000 satoshia"
       },
       "setUpFee": {
         "type": "String",
@@ -141,7 +141,7 @@
     "placeholders": {
       "fee": {
         "type": "String",
-        "example": "20 sats"
+        "example": "20 satoshia"
       }
     }
   },
@@ -153,7 +153,7 @@
     "placeholders": {
       "maxSats": {
         "type": "String",
-        "example": "2 000 sats"
+        "example": "2 000 satoshia"
       }
     }
   },
@@ -166,11 +166,11 @@
       },
       "minFee": {
         "type": "String",
-        "example": "1 000 sats"
+        "example": "1 000 satoshia"
       },
       "liquidity": {
         "type": "String",
-        "example": "99 000 sats"
+        "example": "99 000 satoshia"
       }
     }
   },
@@ -183,7 +183,7 @@
       },
       "liquidity": {
         "type": "String",
-        "example": "99 000 sats"
+        "example": "99 000 satoshia"
       }
     }
   },
@@ -196,7 +196,7 @@
       },
       "minFee": {
         "type": "String",
-        "example": "1 000 sats"
+        "example": "1 000 satoshia"
       }
     }
   },
@@ -211,7 +211,7 @@
   },
   "backup_dialog_title": "Varmistus",
   "backup_dialog_message_remote_server": "Varmistus palvelimelle epäonnistui. Tarkista asetukset ja yritä uudelleen.",
-  "backup_dialog_message_default": "Sinun tulee varmuuskopioida tiedot, jotta varojesi palautus onnistuu tämän laitteen katoamisen, varkauden tai rikkoontumisen sekä mahdollisen sovelluksen poiston ja uudelleen asennuksen yhteydessä.",
+  "backup_dialog_message_default": "Sinun tulee varmistaa Breez-tiedot, jotta varojesi palautus onnistuu tämän laitteen katoamisen, varkauden tai rikkoontumisen sekä mahdollisen sovelluksen poiston ja uudelleen asennuksen yhteydessä.",
   "backup_dialog_do_not_prompt_again": "Älä näytä tätä huomautusta uudelleen",
   "backup_dialog_option_cancel": "MYÖHEMMIN",
   "backup_dialog_option_ok_remote_server": "ASETUKSET",
@@ -221,7 +221,7 @@
   "backup_provider_dialog_title": "Varmistustiedon sijainti",
   "backup_provider_dialog_message_restore": "Palauta varmistus sijainnista:",
   "backup_provider_dialog_message_store": "Tallenna varmistustiedot sijainnista:",
-  "backup_provider_dialog_action_cancel": "PERUUTA",
+  "backup_provider_dialog_action_cancel": "Peruuta",
   "backup_provider_dialog_action_ok": "OK",
   "tutorial_gotcha": "Kas niin!",
   "bottom_action_bar_send": "LÄHETÄ",
@@ -318,7 +318,7 @@
     "placeholders": {
       "amount": {
         "type": "String",
-        "example": "1000 sattia"
+        "example": "1000 satoshia"
       }
     }
   },
@@ -327,17 +327,17 @@
     "placeholders": {
       "amount": {
         "type": "String",
-        "example": "1000 sattia"
+        "example": "1000 satoshia"
       }
     }
   },
-  "payment_info_dialog_title": "Maksajan tiedot",
+  "payment_info_dialog_title": "Maksun tiedot",
   "payment_info_dialog_hint": "Lasku tai tunniste",
   "payment_info_dialog_hint_expanded": "Syötä LN-lasku, somun tunniste tai Lightning-osoite.",
   "payment_info_dialog_barcode": "Lue viivakoodi",
   "payment_info_dialog_error": "LN-lasku, somun tunniste tai Lightning-osoite oli virheellinen.",
   "payment_info_dialog_error_qrcode": "QR-koodia ei tunnistettu.",
-  "payment_info_dialog_action_cancel": "PERUUTA",
+  "payment_info_dialog_action_cancel": "Peruuta",
   "payment_info_dialog_action_approve": "HYVÄKSY",
   "pos_invoice_item_management_title_add": "Lisää tuote",
   "pos_invoice_item_management_title_edit": "Muokkaa tuotetta",
@@ -579,7 +579,7 @@
     "placeholders": {
       "error": {
         "type": "String",
-        "example": "An error message"
+        "example": "Virheilmoitus"
       }
     }
   },
@@ -773,7 +773,7 @@
   "backup_in_progress_action_confirm": "OK",
   "network_title": "Verkko",
   "network_restart_message": "Bitcoin-solmun vaihto tulee voimaan, kun sovellus käynnistetään uudelleen.",
-  "network_restart_action_cancel": "PERUUTA",
+  "network_restart_action_cancel": "Peruuta",
   "network_restart_action_confirm": "SULJE SOVELLUS",
   "network_restart_action_reset": "Nollaa",
   "network_restart_action_save": "Talleta",
@@ -786,7 +786,7 @@
     "placeholders": {
       "denomination": {
         "type": "String",
-        "example": "sats"
+        "example": "satoshia"
       }
     }
   },
@@ -795,14 +795,14 @@
     "placeholders": {
       "denomination": {
         "type": "String",
-        "example": "sats"
+        "example": "satoshia"
       }
     }
   },
   "amount_form_error_invalid_amount": "Virheellinen määrä",
   "currency_converter_dialog_error_exchange_rate": "Bitcoin-kurssitietojen haku epäonnistui.",
   "currency_converter_dialog_title": "Syötä määrä valuutassa",
-  "currency_converter_dialog_action_cancel": "PERUUTA",
+  "currency_converter_dialog_action_cancel": "Peruuta",
   "currency_converter_dialog_action_done": "OK",
   "currency_converter_dialog_rate": "1 BTC = {rate} {currencyName}",
   "@currency_converter_dialog_rate": {
@@ -842,7 +842,7 @@
       },
       "fiat": {
         "type": "String",
-        "example": "56$"
+        "example": "56 €"
       }
     }
   },
@@ -909,7 +909,7 @@
     "placeholders": {
       "reason": {
         "type": "String",
-        "example": "A reason of an error"
+        "example": "Virheen aiheuttaja"
       }
     }
   },
@@ -1019,7 +1019,7 @@
     "placeholders": {
       "name": {
         "type": "String",
-        "example": "A name"
+        "example": "Nimi"
       }
     }
   },
@@ -1047,11 +1047,11 @@
     "placeholders": {
       "nodeId": {
         "type": "String",
-        "example": "A node id"
+        "example": "Solmu tunniste"
       }
     }
   },
-  "restore_dialog_action_cancel": "PERUUTA",
+  "restore_dialog_action_cancel": "Peruuta",
   "restore_dialog_action_ok": "OK",
   "restore_dialog_download_backup_error": "Latausvirhe",
   "beta_warning_title": "Beta -varoitus",
@@ -1086,7 +1086,7 @@
   "no_connection_dialog_tip_signal": "• Tarkistamalla mobiilisignaalin voimakkuuden\n",
   "no_connection_dialog_log_view_action": "Näytä ",
   "no_connection_dialog_log_view_message": "historiasi \n",
-  "no_connection_dialog_action_cancel": "PERUUTA",
+  "no_connection_dialog_action_cancel": "Peruuta",
   "no_connection_dialog_action_try_again": "YRITÄ UUDELLEEN",
   "lsp_fee_warning_title": "Avauskulu",
   "lsp_fee_warning_action_cancel": "Peruuta",
@@ -1100,11 +1100,11 @@
       },
       "minFee": {
         "type": "String",
-        "example": "1 000 sats"
+        "example": "1 000 satoshia"
       },
       "liquidity": {
         "type": "String",
-        "example": "99 000 sats"
+        "example": "99 000 satoshia"
       }
     }
   },
@@ -1117,7 +1117,7 @@
       },
       "liquidity": {
         "type": "String",
-        "example": "99 000 sats"
+        "example": "99 000 satoshia"
       }
     }
   },
@@ -1130,7 +1130,7 @@
       },
       "minFee": {
         "type": "String",
-        "example": "1 000 sats"
+        "example": "1 000 satoshia"
       }
     }
   },
@@ -1196,7 +1196,7 @@
     "placeholders": {
       "title": {
         "type": "String",
-        "example": "A title"
+        "example": "Otsikko"
       }
     }
   },
@@ -1205,12 +1205,12 @@
     "placeholders": {
       "title": {
         "type": "String",
-        "example": "A title"
+        "example": "Otsikko"
       }
     }
   },
-  "close_popup_title": "Exit Breez",
-  "close_popup_message": "Do you really want to quit Breez?",
+  "close_popup_title": "Sulje Breez",
+  "close_popup_message": "Haluatko varmasti sulkea Breez-sovelluksen?",
   "breez_date_picker_day_and_date": "{day} {date}",
   "@breez_date_picker_day_and_date": {
     "placeholders": {
@@ -1229,7 +1229,7 @@
     "placeholders": {
       "message": {
         "type": "String",
-        "example": "Previous month"
+        "example": "Edellinen kuukausi"
       },
       "date": {
         "type": "String",
@@ -1242,7 +1242,7 @@
     "placeholders": {
       "message": {
         "type": "String",
-        "example": "Next month"
+        "example": "Seuraava kuukausi"
       },
       "date": {
         "type": "String",
@@ -1250,77 +1250,77 @@
       }
     }
   },
-  "breez_date_picker_error_initial_date_after": "Initial date must be on or after first date",
-  "breez_date_picker_error_initial_date_before": "Initial date must be on or before last date",
-  "breez_date_picker_error_initial_date_predicate": "Provided initial date must satisfy provided selectable day predicate",
-  "breez_date_picker_error_initial_date_null": "Initial date picker mode must not be null",
-  "breez_date_picker_error_last_date_after": "Last date must be on or after first date",
-  "breez_avatar_dialog_random": "RANDOM",
-  "breez_avatar_dialog_gallery": "GALLERY",
-  "breez_avatar_dialog_your_name": "Enter your name",
-  "breez_avatar_dialog_action_cancel": "CANCEL",
-  "breez_avatar_dialog_action_save": "SAVE",
-  "breez_avatar_dialog_error_upload": "Failed to upload profile picture",
-  "barcode_scanner_camera_message": "For QR scan, please grant Breez access to your camera.",
-  "barcode_scanner_app_settings": "App Settings",
-  "utils_retry_failed": "Retry failed",
-  "utils_print_pdf_transaction_time": "Transaction Time",
-  "utils_print_pdf_header_item": "Item",
-  "utils_print_pdf_header_price": "Price",
-  "utils_print_pdf_header_quantity": "Quantity",
-  "utils_print_pdf_header_amount": "Amount",
-  "utils_print_pdf_header_total": "Total",
-  "utils_print_pdf_header_description": "Description:",
-  "utils_print_pdf_header_payment_preimage": "Payment Preimage:",
-  "handler_check_version_action_update": "UPDATE",
-  "handler_check_version_message": "Please update Breez to the latest version.",
-  "handler_lnurl_error_link": "Link Error",
-  "handler_lnurl_error_process": "Failed to process link: {message}",
+  "breez_date_picker_error_initial_date_after": "Alkuperäinen päivämäärän pitää olla ensimmäinen tai sen jälkeinen päivä",
+  "breez_date_picker_error_initial_date_before": "Alkuperäinen päivämäärän pitää olla viimeinen tai sitä edeltävä päivä",
+  "breez_date_picker_error_initial_date_predicate": "Valitun alkuperäisen päivän pitää täyttää valittavissa olevan päivän ehdot",
+  "breez_date_picker_error_initial_date_null": "Alkuperäisen päivämäärän valinnan tila ei voi olla tyhjä",
+  "breez_date_picker_error_last_date_after": "Viimeinen päivämäärä pitää olla ensimmäinen päivä tai sitä myöhempi",
+  "breez_avatar_dialog_random": "SATUNNAINEN",
+  "breez_avatar_dialog_gallery": "GALLERIA",
+  "breez_avatar_dialog_your_name": "Anna nimesi",
+  "breez_avatar_dialog_action_cancel": "Peruuta",
+  "breez_avatar_dialog_action_save": "TALLENNA",
+  "breez_avatar_dialog_error_upload": "Profiilikuvan lataus epäonnistui",
+  "barcode_scanner_camera_message": "Anna Breezelle oikeus kameran käyttöön jotta voit lukea QR-koodeja.",
+  "barcode_scanner_app_settings": "Sovelluksen asetukset",
+  "utils_retry_failed": "Uudelleen yritys epäonnistui",
+  "utils_print_pdf_transaction_time": "Myyntitapahtuman aika",
+  "utils_print_pdf_header_item": "Tuote",
+  "utils_print_pdf_header_price": "Hinta",
+  "utils_print_pdf_header_quantity": "Määrä",
+  "utils_print_pdf_header_amount": "Summa",
+  "utils_print_pdf_header_total": "Yhteensä",
+  "utils_print_pdf_header_description": "Kuvaus:",
+  "utils_print_pdf_header_payment_preimage": "Maksun Preimage:",
+  "handler_check_version_action_update": "Päivitä",
+  "handler_check_version_message": "Päivitä Breez viimeisimpään versioon.",
+  "handler_lnurl_error_link": "Linkki virhe",
+  "handler_lnurl_error_process": "Linkin käsittely epäonnistui: {message}",
   "@handler_lnurl_error_process": {
     "placeholders": {
       "message": {
         "type": "String",
-        "example": "An error message"
+        "example": "Virheilmoitus"
       }
     }
   },
-  "handler_lnurl_error_gift": "This gift has been redeemed!",
-  "handler_lnurl_login_anonymously": "Do you want to anonymously login to ",
-  "handler_lnurl_login_error_title": "Login Error",
-  "handler_lnurl_login_error_message": "Failed to log in.\n{message}",
+  "handler_lnurl_error_gift": "Tämä lahja on jo lunastettu.",
+  "handler_lnurl_login_anonymously": "Haluatko kirjautua tuntemattomana palveluun ",
+  "handler_lnurl_login_error_title": "Kirjautumisvirhe",
+  "handler_lnurl_login_error_message": "Kirjautuminen epäonnistui.\n{message}",
   "@handler_lnurl_login_error_message": {
     "placeholders": {
       "message": {
         "type": "String",
-        "example": "An error message"
+        "example": "Virheilmoitus"
       }
     }
   },
-  "handler_lnurl_login_error_unsupported": "Unsupported LNURL",
-  "handler_lnurl_open_channel_title": "Open Channel",
-  "handler_lnurl_open_channel_message": "Are you sure you want to open a channel with {host}?",
+  "handler_lnurl_login_error_unsupported": "Saatu LNURL ei ole tuettu",
+  "handler_lnurl_open_channel_title": "Avaa kanava",
+  "handler_lnurl_open_channel_message": "Haluatko varmasti avata kanavan vastapuoleen {host}?",
   "@handler_lnurl_open_channel_message": {
     "placeholders": {
       "host": {
         "type": "String",
-        "example": "A host"
+        "example": "vastapuoli"
       }
     }
   },
-  "handler_lnurl_open_channel_action_cancel": "CANCEL",
-  "handler_lnurl_open_channel_error_title": "Open Channel Error",
-  "handler_lnurl_open_channel_error_message": "Failed to open channel.\n{message}",
+  "handler_lnurl_open_channel_action_cancel": "Peruuta",
+  "handler_lnurl_open_channel_error_title": "Virhe kanavan avauksessa",
+  "handler_lnurl_open_channel_error_message": "Kanavan avaus epäonnistui.\n{message}",
   "@handler_lnurl_open_channel_error_message": {
     "placeholders": {
       "message": {
         "type": "String",
-        "example": "An error message"
+        "example": "Virheilmoitus"
       }
     }
   },
-  "handler_podcast_error_load_episode": "Failed to load episode. Please check your connection.",
-  "handler_podcast_error_load_episode_fallback": "Failed to load podcast.",
-  "handler_sync_ui_message": "Breez is synchronizing to the Bitcoin network",
+  "handler_podcast_error_load_episode": "Jakson lataaminen epäonnistui. Tarkista yhteydet..",
+  "handler_podcast_error_load_episode_fallback": "Podcast:in lataaminen epäonnistui.",
+  "handler_sync_ui_message": "Breez synkronoituu Bitcoin-verkkoon",
   "locale": "fi",
   "app_name": "Breez"
 }
