@@ -839,19 +839,4 @@ class BreezBridge {
       });
     });
   }
-
-  Future<List<String>> getWalletDBpFilePath() async {
-    String lines = await rootBundle.loadString('conf/breez.conf');
-    var config = Config.fromString(lines);
-    String lndDir = (await getApplicationDocumentsDirectory()).path;
-    List<String> result = [];
-    String network = config.get('Application Options', 'network');
-    String reply = await backupFiles();
-    List files = json.decode(reply);
-    if (files != null) {
-      result.addAll(files.map((e) => e as String));
-    }
-    result.add('$lndDir/breez.db');
-    return result;
-  }
 }

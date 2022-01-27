@@ -267,7 +267,7 @@ class NetworkPageState extends State<NetworkPage> {
                                           .contentTextStyle));
                               return;
                             } else {
-                              _promptForRestart().then((didRestart) {
+                              _promptForRestart(context).then((didRestart) {
                                 if (!didRestart) {
                                   setState(() {
                                     this._data.torIsActive = !value;
