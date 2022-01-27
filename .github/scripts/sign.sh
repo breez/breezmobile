@@ -10,7 +10,7 @@ xcodebuild -quiet -workspace Runner.xcworkspace -scheme Runner -sdk iphoneos -co
 echo "after build"
 zip -r "symbols_$buildNumber.zip" ./build/Runner.xcarchive/dSYMs/Runner.app.dSYM
 export uploadCommand="put symbols_$buildNumber.zip"
-sftp builderfiles@packages.breez.technology:config/conf <<< $uploadCommand
+#sftp builderfiles@packages.breez.technology:config/conf <<< $uploadCommand
 xcodebuild -quiet -exportArchive -archivePath $PWD/build/Runner.xcarchive -exportOptionsPlist ../.github/scripts/export-options.plist -exportPath $PWD/build/Runner.app
 
 ls -lrt $PWD/build/Runner.app
@@ -19,5 +19,5 @@ echo "after archive"
 altool="$(dirname "$(xcode-select -p)")/Developer/usr/bin/altool"
 ipa="$PWD/build/Runner.app/breez.ipa"
 export uploadCommand="put $ipa"
-sftp builderfiles@packages.breez.technology:config/conf <<< $uploadCommand
+#sftp builderfiles@packages.breez.technology:config/conf <<< $uploadCommand
 "$altool" --upload-app --type ios --file "$ipa" --username $APP_USERNAME --password $APP_PASSWORD

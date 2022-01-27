@@ -16,6 +16,7 @@ import 'package:breez/widgets/error_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:breez/utils/min_font_size.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class _NetworkData {
   String peer = '';
@@ -24,7 +25,9 @@ class _NetworkData {
 }
 
 class NetworkPage extends StatefulWidget {
-  NetworkPage({Key key}) : super(key: key);
+  const NetworkPage({
+    Key key,
+  }) : super(key: key);
 
   @override
   NetworkPageState createState() {
@@ -83,16 +86,20 @@ class NetworkPageState extends State<NetworkPage> {
     });
   }
 
-  Future<bool> _promptForRestart() {
+  Future<bool> _promptForRestart(BuildContext context) {
+    final texts = AppLocalizations.of(context);
+    final themeData = Theme.of(context);
+
     return promptAreYouSure(
-            context,
-            null,
-            Text(
-                "Please restart Breez to switch to the new Bitcoin Node configuration.",
-                style: Theme.of(context).dialogTheme.contentTextStyle),
-            cancelText: "CANCEL",
-            okText: "EXIT BREEZ")
-        .then((shouldExit) {
+      context,
+      null,
+      Text(
+        texts.network_restart_message,
+        style: themeData.dialogTheme.contentTextStyle,
+      ),
+      cancelText: texts.network_restart_action_cancel,
+      okText: texts.network_restart_action_confirm,
+    ).then((shouldExit) {
       if (shouldExit) {
         exit(0);
       }
@@ -102,21 +109,25 @@ class NetworkPageState extends State<NetworkPage> {
 
   @override
   Widget build(BuildContext context) {
-    String _title = "Network";
+    final texts = AppLocalizations.of(context);
+    final themeData = Theme.of(context);
+    final dialogTheme = themeData.dialogTheme;
+
     return ButtonTheme(
       height: 28.0,
       child: Scaffold(
         appBar: AppBar(
-            iconTheme: Theme.of(context).appBarTheme.iconTheme,
-            textTheme: Theme.of(context).appBarTheme.textTheme,
-            backgroundColor: Theme.of(context).canvasColor,
-            automaticallyImplyLeading: false,
-            leading: backBtn.BackButton(),
-            title: Text(
-              _title,
-              style: Theme.of(context).appBarTheme.textTheme.headline6,
-            ),
-            elevation: 0.0),
+          iconTheme: themeData.appBarTheme.iconTheme,
+          textTheme: themeData.appBarTheme.textTheme,
+          backgroundColor: themeData.canvasColor,
+          automaticallyImplyLeading: false,
+          leading: backBtn.BackButton(),
+          title: Text(
+            texts.network_title,
+            style: themeData.appBarTheme.textTheme.headline6,
+          ),
+          elevation: 0.0,
+        ),
         body: Padding(
             padding: EdgeInsets.only(top: 16.0, left: 16.0, right: 16.0),
             child: Form(
@@ -124,13 +135,14 @@ class NetworkPageState extends State<NetworkPage> {
                 child: ListView(
                     scrollDirection: Axis.vertical,
                     controller: _scrollController,
-                    children: <Widget>[
-                      Column(children: <Widget>[
+                    children: [
+                      Column(children: [
                         Container(
                           padding: EdgeInsets.only(top: 8.0),
                           child: TextFormField(
                             decoration: InputDecoration(
-                                labelText: "Bitcoin Node (BIP 157)"),
+                              labelText: texts.network_bitcoin_node,
+                            ),
                             style: theme.FieldTextStyle.textStyle,
                             onSaved: (String value) {
                               this._data.peer = value;
@@ -142,79 +154,81 @@ class NetworkPageState extends State<NetworkPage> {
                         SizedBox(height: 12.0),
                         Row(
                           mainAxisAlignment: MainAxisAlignment.end,
-                          children: <Widget>[
+                          children: [
                             OutlinedButton(
                               style: OutlinedButton.styleFrom(
                                 side: BorderSide(color: Colors.white),
                                 primary: Colors.white,
                               ),
                               child: Text(
-                                "Reset",
+                                texts.network_restart_action_reset,
                               ),
                               onPressed: () async {
                                 var error = await showDialog(
-                                    useRootNavigator: false,
-                                    context: context,
-                                    builder: (ctx) => _TestingPeerDialog(
-                                        testFuture: _breezLib.testPeer("")));
+                                  useRootNavigator: false,
+                                  context: context,
+                                  builder: (ctx) => _TestingPeerDialog(
+                                    testFuture: _breezLib.testPeer(""),
+                                  ),
+                                );
 
                                 if (error != null) {
                                   await promptError(
-                                      context,
-                                      null,
-                                      Text(
-                                          "Breez is unable to use the default node.",
-                                          style: Theme.of(context)
-                                              .dialogTheme
-                                              .contentTextStyle));
+                                    context,
+                                    null,
+                                    Text(
+                                      texts.network_default_node_error,
+                                      style: dialogTheme.contentTextStyle,
+                                    ),
+                                  );
                                   return;
                                 } else {
                                   await _reset();
                                 }
-                                _promptForRestart();
+                                _promptForRestart(context);
                               },
                             ),
                             SizedBox(width: 12.0),
                             OutlinedButton(
-                              style: OutlinedButton.styleFrom(
-                                side: BorderSide(color: Colors.white),
-                                primary: Colors.white,
-                              ),
-                              child: Text(
-                                "Save",
-                              ),
-                              onPressed: () async {
-                                if (_formKey.currentState.validate()) {
-                                  _formKey.currentState.save();
-                                  if (this._data.peer.isNotEmpty) {
-                                    var error = await showDialog(
+                                style: OutlinedButton.styleFrom(
+                                  side: BorderSide(color: Colors.white),
+                                  primary: Colors.white,
+                                ),
+                                child: Text(
+                                  texts.network_restart_action_save,
+                                ),
+                                onPressed: () async {
+                                  if (_formKey.currentState.validate()) {
+                                    _formKey.currentState.save();
+                                    if (this._data.peer.isNotEmpty) {
+                                      var error = await showDialog(
                                         useRootNavigator: false,
                                         context: context,
                                         builder: (ctx) => _TestingPeerDialog(
-                                            testFuture: _breezLib
-                                                .testPeer(this._data.peer)));
+                                          testFuture: _breezLib.testPeer(
+                                            this._data.peer,
+                                          ),
+                                        ),
+                                      );
 
-                                    if (error != null) {
-                                      await promptError(
+                                      if (error != null) {
+                                        await promptError(
                                           context,
                                           null,
                                           Text(
-                                              "Breez is unable to connect to the specified node. Please make sure this node supports BIP 157.",
-                                              style: Theme.of(context)
-                                                  .dialogTheme
-                                                  .contentTextStyle));
-                                      return;
-                                    } else {
-                                      await _breezLib
-                                          .setPeers([this._data.peer]);
+                                            texts.network_custom_node_error,
+                                            style: dialogTheme.contentTextStyle,
+                                          ),
+                                        );
+                                        return;
+                                      } else {
+                                        await _breezLib.setPeers([
+                                          this._data.peer,
+                                        ]);
+                                      }
                                     }
-                                  } else {
-                                    await _reset();
                                   }
-                                  await _promptForRestart();
-                                }
-                              },
-                            )
+                                })
                           ],
                         )
                       ]),
@@ -238,8 +252,7 @@ class NetworkPageState extends State<NetworkPage> {
                                 useRootNavigator: false,
                                 context: context,
                                 builder: (ctx) => _SetTorActiveDialog(
-                                    testFuture:
-                                        _breezLib.setTorActive(value),
+                                    testFuture: _breezLib.setTorActive(value),
                                     enable: value));
 
                             print('setTorActive returned with $error');
@@ -279,7 +292,10 @@ class NetworkPageState extends State<NetworkPage> {
 class _TestingPeerDialog extends StatefulWidget {
   final Future testFuture;
 
-  const _TestingPeerDialog({Key key, this.testFuture}) : super(key: key);
+  const _TestingPeerDialog({
+    Key key,
+    this.testFuture,
+  }) : super(key: key);
 
   @override
   State<StatefulWidget> createState() {
@@ -301,10 +317,15 @@ class _TestingPeerDialogState extends State<_TestingPeerDialog> {
 
   @override
   Widget build(BuildContext context) {
+    final texts = AppLocalizations.of(context);
     return WillPopScope(
-        onWillPop: () => Future.value(_allowPop),
-        child: createAnimatedLoaderDialog(context, "Testing node",
-            withOKButton: false));
+      onWillPop: () => Future.value(_allowPop),
+      child: createAnimatedLoaderDialog(
+        context,
+        texts.network_testing_node,
+        withOKButton: false,
+      ),
+    );
   }
 }
 

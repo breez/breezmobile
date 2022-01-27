@@ -5,66 +5,81 @@ import 'package:breez/widgets/flushbar.dart';
 import 'package:breez/widgets/link_launcher.dart';
 import 'package:breez/widgets/loader.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class SwapInProgress extends StatelessWidget {
   final InProgressReverseSwaps swapInProgress;
 
-  const SwapInProgress({Key key, this.swapInProgress}) : super(key: key);
+  const SwapInProgress({
+    Key key,
+    this.swapInProgress,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    Widget body = Center(child: Loader());
-    if (swapInProgress != null) {
-      String message = "Breez is waiting for your transaction to be confirmed.";
-      if (swapInProgress.claimTxId.isEmpty) {
-        message =
-            "Breez is currently processing your previous request. You'll be notified once processing is completed to send your funds to the address you've specified.";
-      }
-      body = Column(
-        mainAxisSize: MainAxisSize.max,
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: <Widget>[
-          Padding(
-            padding: EdgeInsets.only(top: 50.0, left: 30.0, right: 30.0),
-            child: Text(message, textAlign: TextAlign.center),
+    final texts = AppLocalizations.of(context);
+    final themeData = Theme.of(context);
+
+    return Scaffold(
+      appBar: AppBar(
+        iconTheme: themeData.appBarTheme.iconTheme,
+        textTheme: themeData.appBarTheme.textTheme,
+        backgroundColor: themeData.canvasColor,
+        leading: backBtn.BackButton(onPressed: () {
+          Navigator.of(context).pop();
+        }),
+        title: Text(
+          texts.swap_in_progress_title,
+          style: themeData.appBarTheme.textTheme.headline6,
+        ),
+        elevation: 0.0,
+      ),
+      body: _body(context),
+    );
+  }
+
+  Widget _body(BuildContext context) {
+    if (swapInProgress == null) return Center(child: Loader());
+
+    final texts = AppLocalizations.of(context);
+    final txId = swapInProgress.claimTxId;
+
+    return Column(
+      mainAxisSize: MainAxisSize.max,
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        Padding(
+          padding: EdgeInsets.only(top: 50.0, left: 30.0, right: 30.0),
+          child: Text(
+            txId.isEmpty
+                ? texts.swap_in_progress_message_processing_previous_request
+                : texts.swap_in_progress_message_waiting_confirmation,
+            textAlign: TextAlign.center,
           ),
-          swapInProgress.claimTxId.isNotEmpty
-              ? Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+        ),
+        txId.isNotEmpty
+            ? Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
                   Padding(
-                    padding:
-                        EdgeInsets.only(top: 30.0, left: 30.0, right: 30.0),
+                    padding: EdgeInsets.fromLTRB(30.0, 30.0, 30.0, 0.0),
                     child: LinkLauncher(
-                      linkName: swapInProgress.claimTxId,
-                      linkAddress:
-                          "https://blockstream.info/tx/${swapInProgress.claimTxId}",
+                      linkName: txId,
+                      linkAddress: "https://blockstream.info/tx/$txId",
                       onCopy: () {
-                        ServiceInjector()
-                            .device
-                            .setClipboardText(swapInProgress.claimTxId);
-                        showFlushbar(context,
-                            message:
-                                "Transaction ID was copied to your clipboard.",
-                            duration: Duration(seconds: 3));
+                        ServiceInjector().device.setClipboardText(txId);
+                        showFlushbar(
+                          context,
+                          message: texts.swap_in_progress_transaction_id_copied,
+                          duration: Duration(seconds: 3),
+                        );
                       },
                     ),
                   ),
-                ])
-              : SizedBox()
-        ],
-      );
-    }
-    return Scaffold(
-      appBar: AppBar(
-          iconTheme: Theme.of(context).appBarTheme.iconTheme,
-          textTheme: Theme.of(context).appBarTheme.textTheme,
-          backgroundColor: Theme.of(context).canvasColor,
-          leading: backBtn.BackButton(onPressed: () {
-            Navigator.of(context).pop();
-          }),
-          title: Text("Send to BTC Address",
-              style: Theme.of(context).appBarTheme.textTheme.headline6),
-          elevation: 0.0),
-      body: body,
+                ],
+              )
+            : SizedBox(),
+      ],
     );
   }
 }

@@ -10,6 +10,7 @@ import 'package:breez/widgets/calendar_dialog.dart';
 import 'package:breez/widgets/flushbar.dart';
 import 'package:breez/widgets/loader.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:share_extend/share_extend.dart';
 
 import 'pos_payments_list.dart';
@@ -24,9 +25,8 @@ class PosTransactionsPage extends StatefulWidget {
 }
 
 class PosTransactionsPageState extends State<PosTransactionsPage> {
-  final String _title = "Transactions";
-  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
-  final ScrollController _scrollController = ScrollController();
+  final _scaffoldKey = GlobalKey<ScaffoldState>();
+  final _scrollController = ScrollController();
 
   AccountBloc _accountBloc;
   bool _isInit = false;
@@ -42,53 +42,67 @@ class PosTransactionsPageState extends State<PosTransactionsPage> {
 
   @override
   Widget build(BuildContext context) {
+    final texts = AppLocalizations.of(context);
+
     return StreamBuilder<AccountModel>(
-        stream: _accountBloc.accountStream,
-        builder: (context, snapshot) {
-          AccountModel account = snapshot.data;
-          return StreamBuilder<PaymentsModel>(
-              stream: _accountBloc.paymentsStream,
-              builder: (context, snapshot) {
-                PaymentsModel paymentsModel;
-                if (snapshot.hasData) {
-                  paymentsModel = snapshot.data;
-                }
+      stream: _accountBloc.accountStream,
+      builder: (context, snapshot) {
+        final account = snapshot.data;
 
-                if (account == null || paymentsModel == null) {
-                  return Container();
-                }
+        return StreamBuilder<PaymentsModel>(
+          stream: _accountBloc.paymentsStream,
+          builder: (context, snapshot) {
+            if (!snapshot.hasData) return Container();
+            final paymentsModel = snapshot.data;
 
-                if ((account != null && !account.initial) &&
-                    (paymentsModel != null &&
-                        paymentsModel.paymentsList.length == 0 &&
-                        paymentsModel.filter == PaymentFilterModel.initial())) {
-                  return _buildScaffold(Center(
-                      child:
-                          Text("Successful transactions are displayed here.")));
-                }
+            if (account == null || paymentsModel == null) return Container();
 
-                // account and payments are ready, build their widgets
-                return _buildScaffold(_buildTransactions(paymentsModel), [
-                  _calendarButton(paymentsModel),
-                  _exportButton(paymentsModel, context)
-                ]);
-              });
-        });
+            if ((account != null && !account.initial) &&
+                (paymentsModel != null &&
+                    paymentsModel.paymentsList.length == 0 &&
+                    paymentsModel.filter == PaymentFilterModel.initial())) {
+              return _buildScaffold(
+                context,
+                Center(
+                  child: Text(texts.pos_transactions_placeholder),
+                ),
+              );
+            }
+
+            return _buildScaffold(
+              context,
+              _buildTransactions(context, paymentsModel),
+              [
+                _calendarButton(paymentsModel),
+                _exportButton(context, paymentsModel),
+              ],
+            );
+          },
+        );
+      },
+    );
   }
 
-  Widget _buildScaffold(Widget body, [List<Widget> actions]) {
+  Widget _buildScaffold(
+    BuildContext context,
+    Widget body, [
+    List<Widget> actions,
+  ]) {
+    final texts = AppLocalizations.of(context);
+    final themeData = Theme.of(context);
+
     return Scaffold(
       key: _scaffoldKey,
       appBar: AppBar(
-        iconTheme: Theme.of(context).appBarTheme.iconTheme,
-        textTheme: Theme.of(context).appBarTheme.textTheme,
-        backgroundColor: Theme.of(context).canvasColor,
+        iconTheme: themeData.appBarTheme.iconTheme,
+        textTheme: themeData.appBarTheme.textTheme,
+        backgroundColor: themeData.canvasColor,
         leading: backBtn.BackButton(),
         title: Text(
-          _title,
-          style: Theme.of(context).appBarTheme.textTheme.headline6,
+          texts.pos_transactions_title,
+          style: themeData.appBarTheme.textTheme.headline6,
         ),
-        actions: actions == null ? <Widget>[] : actions,
+        actions: actions == null ? [] : actions,
         elevation: 0.0,
       ),
       body: body,
@@ -97,26 +111,41 @@ class PosTransactionsPageState extends State<PosTransactionsPage> {
 
   Widget _calendarButton(PaymentsModel paymentsModel) {
     return IconButton(
-        icon: ImageIcon(AssetImage("src/icon/calendar.png"),
-            color: Colors.white, size: 24.0),
-        onPressed: () => showDialog(
-            useRootNavigator: false,
-            context: context,
-            builder: (_) =>
-                CalendarDialog(context, paymentsModel.firstDate)).then(
-            ((result) => _accountBloc.paymentFilterSink.add(paymentsModel.filter
-                .copyWith(startDate: result[0], endDate: result[1])))));
+      icon: ImageIcon(
+        AssetImage("src/icon/calendar.png"),
+        color: Colors.white,
+        size: 24.0,
+      ),
+      onPressed: () => showDialog(
+        useRootNavigator: false,
+        context: context,
+        builder: (_) => CalendarDialog(paymentsModel.firstDate),
+      ).then(
+        (result) => _accountBloc.paymentFilterSink.add(
+          paymentsModel.filter.copyWith(
+            startDate: result[0],
+            endDate: result[1],
+          ),
+        ),
+      ),
+    );
   }
 
-  Padding _exportButton(PaymentsModel paymentsModel, BuildContext context) {
+  Widget _exportButton(
+    BuildContext context,
+    PaymentsModel paymentsModel,
+  ) {
+    final themeData = Theme.of(context);
+    final texts = AppLocalizations.of(context);
+
     if (paymentsModel.paymentsList.isNotEmpty) {
       return Padding(
         padding: const EdgeInsets.only(right: 16.0),
         child: PopupMenuButton(
-          color: Theme.of(context).backgroundColor,
+          color: themeData.backgroundColor,
           icon: Icon(
             Icons.more_vert,
-            color: Theme.of(context).iconTheme.color,
+            color: themeData.iconTheme.color,
           ),
           padding: EdgeInsets.zero,
           offset: Offset(0, 48),
@@ -125,7 +154,10 @@ class PosTransactionsPageState extends State<PosTransactionsPage> {
             PopupMenuItem(
               height: 36,
               value: Choice(() => _exportTransactions(context)),
-              child: Text('Export', style: Theme.of(context).textTheme.button),
+              child: Text(
+                texts.pos_transactions_action_export,
+                style: themeData.textTheme.button,
+              ),
             ),
           ],
         ),
@@ -133,10 +165,11 @@ class PosTransactionsPageState extends State<PosTransactionsPage> {
     }
     return Padding(
       padding: const EdgeInsets.only(right: 16.0),
-      child: IconButton( // ignore: missing_required_param
+      child: IconButton(
+        onPressed: () {},
         icon: Icon(
           Icons.more_vert,
-          color: Theme.of(context).disabledColor,
+          color: themeData.disabledColor,
           size: 24.0,
         ),
       ),
@@ -148,6 +181,7 @@ class PosTransactionsPageState extends State<PosTransactionsPage> {
   }
 
   Future _exportTransactions(BuildContext context) async {
+    final texts = AppLocalizations.of(context);
     var action = ExportPayments();
     _accountBloc.userActionsSink.add(action);
     Navigator.of(context).push(createLoaderRoute(context));
@@ -156,51 +190,66 @@ class PosTransactionsPageState extends State<PosTransactionsPage> {
       ShareExtend.share(filePath, "file");
     }).catchError((err) {
       Navigator.of(context).pop();
-      showFlushbar(context, message: "Failed to export payments.");
+      showFlushbar(
+        context,
+        message: texts.pos_transactions_action_export_failed,
+      );
     });
   }
 
-  Widget _buildTransactions(PaymentsModel paymentsModel) {
+  Widget _buildTransactions(
+    BuildContext context,
+    PaymentsModel paymentsModel,
+  ) {
+    final texts = AppLocalizations.of(context);
+    final themeData = Theme.of(context);
+    final filter = paymentsModel.filter;
+    final payments = paymentsModel.paymentsList;
+    final hasDateRange = filter.startDate != null && filter.endDate != null;
+
     return Stack(
       fit: StackFit.expand,
       children: [
-        ((paymentsModel.filter.startDate != null &&
-                    paymentsModel.filter.endDate != null) &&
-                paymentsModel.paymentsList.length == 0)
+        (hasDateRange && payments.length == 0)
             ? Column(
                 mainAxisAlignment: MainAxisAlignment.start,
-                children: <Widget>[
-                    _buildDateFilterChip(paymentsModel.filter),
-                    Expanded(
-                        child: Center(
-                      child:
-                          Text("There are no transactions in this date range"),
-                    )),
-                  ])
+                children: [
+                  _buildDateFilterChip(filter),
+                  Expanded(
+                    child: Center(
+                      child: Text(
+                        texts.pos_transactions_range_no_transactions,
+                      ),
+                    ),
+                  ),
+                ],
+              )
             : CustomScrollView(
                 controller: _scrollController,
-                slivers: <Widget>[
-                  (paymentsModel.filter.startDate != null &&
-                          paymentsModel.filter.endDate != null)
+                slivers: [
+                  hasDateRange
                       ? SliverAppBar(
                           pinned: true,
                           elevation: 0.0,
                           expandedHeight: 32.0,
                           automaticallyImplyLeading: false,
-                          backgroundColor: Theme.of(context).canvasColor,
-                          flexibleSpace:
-                              _buildDateFilterChip(paymentsModel.filter),
+                          backgroundColor: themeData.canvasColor,
+                          flexibleSpace: _buildDateFilterChip(filter),
                         )
-                      : SliverPadding(padding: EdgeInsets.zero),
+                      : SliverPadding(
+                          padding: EdgeInsets.zero,
+                        ),
                   PosPaymentsList(
-                      paymentsModel.paymentsList, PAYMENT_LIST_ITEM_HEIGHT),
+                    payments,
+                    PAYMENT_LIST_ITEM_HEIGHT,
+                  ),
                 ],
               ),
       ],
     );
   }
 
-  _buildDateFilterChip(PaymentFilterModel filter) {
+  Widget _buildDateFilterChip(PaymentFilterModel filter) {
     return (filter.startDate != null && filter.endDate != null)
         ? _filterChip(filter)
         : Container();
@@ -209,14 +258,23 @@ class PosTransactionsPageState extends State<PosTransactionsPage> {
   Widget _filterChip(PaymentFilterModel filter) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.start,
-      children: <Widget>[
+      children: [
         Padding(
           padding: EdgeInsets.only(left: 16.0),
           child: Chip(
-            label: Text(BreezDateUtils.formatFilterDateRange(
-                filter.startDate, filter.endDate)),
-            onDeleted: () => _accountBloc.paymentFilterSink
-                .add(PaymentFilterModel(filter.paymentType, null, null)),
+            label: Text(
+              BreezDateUtils.formatFilterDateRange(
+                filter.startDate,
+                filter.endDate,
+              ),
+            ),
+            onDeleted: () => _accountBloc.paymentFilterSink.add(
+              PaymentFilterModel(
+                filter.paymentType,
+                null,
+                null,
+              ),
+            ),
           ),
         )
       ],

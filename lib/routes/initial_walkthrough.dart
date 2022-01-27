@@ -2,13 +2,13 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
-import 'package:breez/logger.dart';
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:breez/bloc/backup/backup_actions.dart';
 import 'package:breez/bloc/backup/backup_bloc.dart';
 import 'package:breez/bloc/backup/backup_model.dart';
 import 'package:breez/bloc/user_profile/user_actions.dart';
 import 'package:breez/bloc/user_profile/user_profile_bloc.dart';
+import 'package:breez/logger.dart';
 import 'package:breez/theme_data.dart' as theme;
 import 'package:breez/widgets/backup_provider_selection_dialog.dart';
 import 'package:breez/widgets/error_dialog.dart';
@@ -18,6 +18,7 @@ import 'package:breez/widgets/restore_dialog.dart';
 import 'package:breez/widgets/route.dart';
 import 'package:crypto/crypto.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:hex/hex.dart';
 import 'package:rxdart/rxdart.dart';
 
@@ -29,14 +30,20 @@ class _BackupContext {
   final BackupSettings settings;
   final List<SnapshotInfo> snapshots;
 
-  _BackupContext(this.snapshots, this.settings);
+  _BackupContext(
+    this.snapshots,
+    this.settings,
+  );
 }
 
 class InitialWalkthroughPage extends StatefulWidget {
   final UserProfileBloc _registrationBloc;
   final BackupBloc _backupBloc;
 
-  InitialWalkthroughPage(this._registrationBloc, this._backupBloc);
+  InitialWalkthroughPage(
+    this._registrationBloc,
+    this._backupBloc,
+  );
 
   @override
   State createState() => InitialWalkthroughPageState();
@@ -44,7 +51,6 @@ class InitialWalkthroughPage extends StatefulWidget {
 
 class InitialWalkthroughPageState extends State<InitialWalkthroughPage>
     with TickerProviderStateMixin {
-  String _instructions;
   AnimationController _controller;
   Animation<int> _animation;
 
@@ -58,79 +64,16 @@ class InitialWalkthroughPageState extends State<InitialWalkthroughPage>
   void initState() {
     super.initState();
 
-    _instructions =
-        "The simplest, fastest & safest way\nto spend your bitcoins";
-
     Rx.combineLatest2<List<SnapshotInfo>, BackupSettings, _BackupContext>(
-        widget._backupBloc.multipleRestoreStream,
-        widget._backupBloc.backupSettingsStream,
-        (a, b) => _BackupContext(a, b)).listen((backupContext) async {
-      var options = backupContext.snapshots;
-      if (options.length == 0) {
-        popToWalkthrough(error: "Could not locate backup for this account");
-        return;
-      }
-
-      SnapshotInfo toRestore;
-      if (options.length == 1) {
-        toRestore = options.first;
-      } else {
-        popToWalkthrough();
-        toRestore = await showDialog<SnapshotInfo>(
-            useRootNavigator: false,
-            context: context,
-            builder: (_) =>
-                RestoreDialog(context, widget._backupBloc, options));
-      }
-
-      var restore = (SnapshotInfo snapshot, List<int> key) {
-        log.info(
-            'initial_walkthrough.dart.restore: snapshotInfo with timestamp: ${snapshot?.modifiedTime}');
-        log.info(
-            'initial_walkthrough.dart.restore: using key with length: ${key?.length}');
-        widget._backupBloc.restoreRequestSink
-            .add(RestoreRequest(snapshot, BreezLibBackupKey(key: key)));
-        Navigator.push(
-            context,
-            createLoaderRoute(context,
-                message: "Restoring data...", opacity: 0.8));
-      };
-
-      if (toRestore != null) {
-        if (toRestore.encrypted) {
-          if (toRestore.encryptionType.startsWith("Mnemonics")) {
-            log.info(
-                'initial_walkthrough.dart: restoring backup with mnemonic of type "${toRestore.encryptionType}"');
-
-            restoreUsingPhrase((toRestore.encryptionType == "Mnemonics"),
-                (entropy) async {
-              await _createBackupPhrase(entropy);
-              var updateAction = UpdateBackupSettings(backupContext.settings
-                  .copyWith(keyType: BackupKeyType.PHRASE));
-              widget._backupBloc.backupActionsSink.add(updateAction);
-              updateAction.future
-                  .then((_) => restore(toRestore, HEX.decode(entropy)));
-            });
-            return;
-          }
-
-          restoreUsingPIN((pin) async {
-            var updateAction = UpdateBackupSettings(
-                backupContext.settings.copyWith(keyType: BackupKeyType.NONE));
-            var key = sha256.convert(utf8.encode(pin));
-            widget._backupBloc.backupActionsSink.add(updateAction);
-            updateAction.future.then((_) => restore(toRestore, key.bytes));
-          });
-          return;
-        }
-
-        restore(toRestore, null);
-      }
-    }, onError: (error) {
+      widget._backupBloc.multipleRestoreStream,
+      widget._backupBloc.backupSettingsStream,
+      (a, b) => _BackupContext(a, b),
+    ).listen(_listenBackupContext, onError: (error) {
       popToWalkthrough(
-          error: error.runtimeType != SignInFailedException
-              ? error.toString()
-              : null);
+        error: error.runtimeType != SignInFailedException
+            ? error.toString()
+            : null,
+      );
       if (error.runtimeType == SignInFailedException) {
         _handleSignInException(error as SignInFailedException);
       }
@@ -145,16 +88,20 @@ class InitialWalkthroughPageState extends State<InitialWalkthroughPage>
     }, onError: (error) {
       Navigator.of(context).pop();
       if (error.runtimeType != SignInFailedException) {
-        showFlushbar(context,
-            duration: Duration(seconds: 3), message: error.toString());
+        showFlushbar(
+          context,
+          duration: Duration(seconds: 3),
+          message: error.toString(),
+        );
       } else {
         _handleSignInException(error as SignInFailedException);
       }
     });
 
     _controller = AnimationController(
-        vsync: this, duration: const Duration(milliseconds: 2720))
-      ..forward(from: 0.0);
+      vsync: this,
+      duration: const Duration(milliseconds: 2720),
+    )..forward(from: 0.0);
     _animation = IntTween(begin: 0, end: 67).animate(_controller);
     if (_controller.isCompleted) {
       _controller.stop();
@@ -162,39 +109,131 @@ class InitialWalkthroughPageState extends State<InitialWalkthroughPage>
     }
   }
 
+  Future<void> _listenBackupContext(_BackupContext backupContext) async {
+    final texts = AppLocalizations.of(context);
+    final options = backupContext.snapshots;
+    if (options.length == 0) {
+      popToWalkthrough(
+        error: texts.initial_walk_through_error_backup_location,
+      );
+      return;
+    }
+
+    SnapshotInfo toRestore;
+    if (options.length == 1) {
+      toRestore = options.first;
+    } else {
+      popToWalkthrough();
+      toRestore = await showDialog<SnapshotInfo>(
+        useRootNavigator: false,
+        context: context,
+        builder: (_) => RestoreDialog(context, widget._backupBloc, options),
+      );
+    }
+
+    if (toRestore != null) {
+      if (toRestore.encrypted) {
+        if (toRestore.encryptionType.startsWith("Mnemonics")) {
+          log.info(
+              'initial_walkthrough.dart: restoring backup with mnemonic of type "${toRestore.encryptionType}"');
+
+          restoreUsingPhrase(
+            toRestore.encryptionType == "Mnemonics",
+            (entropy) async {
+              await _createBackupPhrase(entropy);
+              final updateAction = UpdateBackupSettings(
+                backupContext.settings.copyWith(
+                  keyType: BackupKeyType.PHRASE,
+                ),
+              );
+              widget._backupBloc.backupActionsSink.add(updateAction);
+              updateAction.future.then((_) => _restore(
+                    toRestore,
+                    HEX.decode(entropy),
+                  ));
+            },
+          );
+          return;
+        }
+
+        restoreUsingPIN((pin) async {
+          final updateAction = UpdateBackupSettings(
+            backupContext.settings.copyWith(keyType: BackupKeyType.NONE),
+          );
+          final key = sha256.convert(utf8.encode(pin));
+          widget._backupBloc.backupActionsSink.add(updateAction);
+          updateAction.future.then((_) => _restore(toRestore, key.bytes));
+        });
+        return;
+      }
+
+      _restore(toRestore, null);
+    }
+  }
+
+  void _restore(SnapshotInfo snapshot, List<int> key) {
+    final logKey = "initial_walkthrough.dart.restore";
+    log.info('$logKey: snapshotInfo with timestamp: ${snapshot?.modifiedTime}');
+    log.info('$logKey: using key with length: ${key?.length}');
+
+    final texts = AppLocalizations.of(context);
+    widget._backupBloc.restoreRequestSink.add(RestoreRequest(
+      snapshot,
+      BreezLibBackupKey(key: key),
+    ));
+    Navigator.push(
+      context,
+      createLoaderRoute(
+        context,
+        message: texts.initial_walk_through_restoring,
+        opacity: 0.8,
+      ),
+    );
+  }
+
   Future _handleSignInException(SignInFailedException e) async {
+    final texts = AppLocalizations.of(context);
+    final themeData = Theme.of(context);
     if (e.provider == BackupSettings.icloudBackupProvider) {
       await promptError(
-          context,
-          "Sign in to iCloud",
-          Text(
-            "Sign in to your iCloud account. On the Home screen, launch Settings, tap iCloud, and enter your Apple ID. Turn iCloud Drive on. If you don't have an iCloud account, tap Create a new Apple ID.",
-            style: Theme.of(context).dialogTheme.contentTextStyle,
-          ));
+        context,
+        texts.initial_walk_through_sign_in_icloud_title,
+        Text(
+          texts.initial_walk_through_sign_in_icloud_message,
+          style: themeData.dialogTheme.contentTextStyle,
+        ),
+      );
     }
   }
 
   Future<String> restoreUsingPhrase(
-      bool is24Word, Function(String key) onKeySubmitted) {
+    bool is24Word,
+    Function(String key) onKeySubmitted,
+  ) {
     return Navigator.of(context).push(FadeInRoute(
       builder: (BuildContext context) {
         return EnterBackupPhrasePage(
-            is24Word: is24Word, onPhraseSubmitted: onKeySubmitted);
+          is24Word: is24Word,
+          onPhraseSubmitted: onKeySubmitted,
+        );
       },
     ));
   }
 
   Future _createBackupPhrase(String entropy) async {
-    var saveBackupKeyAction = SaveBackupKey(entropy);
+    final texts = AppLocalizations.of(context);
+    final themeData = Theme.of(context);
+    final saveBackupKeyAction = SaveBackupKey(entropy);
     widget._backupBloc.backupActionsSink.add(saveBackupKeyAction);
     return saveBackupKeyAction.future.catchError((err) {
       promptError(
-          context,
-          "Internal Error",
-          Text(
-            err.toString(),
-            style: Theme.of(context).dialogTheme.contentTextStyle,
-          ));
+        context,
+        texts.initial_walk_through_error_internal,
+        Text(
+          err.toString(),
+          style: themeData.dialogTheme.contentTextStyle,
+        ),
+      );
     });
   }
 
@@ -212,14 +251,16 @@ class InitialWalkthroughPageState extends State<InitialWalkthroughPage>
     });
     if (error != null) {
       SnackBar snackBar = SnackBar(
-          duration: Duration(seconds: 3), content: Text(error.toString()));
+        duration: Duration(seconds: 3),
+        content: Text(error.toString()),
+      );
       ScaffoldMessenger.of(context).showSnackBar(snackBar);
     }
   }
 
   @override
   void dispose() {
-    _multipleRestoreSubscription.cancel();
+    _multipleRestoreSubscription?.cancel();
     _restoreFinishedSubscription.cancel();
     _controller.dispose();
     super.dispose();
@@ -240,16 +281,23 @@ class InitialWalkthroughPageState extends State<InitialWalkthroughPage>
 
   @override
   Widget build(BuildContext context) {
+    final texts = AppLocalizations.of(context);
+    final themeData = Theme.of(context);
+
     return Scaffold(
       key: _scaffoldKey,
       body: WillPopScope(
         onWillPop: _onWillPop,
         child: Padding(
-            padding: EdgeInsets.only(top: 24.0),
-            child: Stack(children: <Widget>[
+          padding: EdgeInsets.only(top: 24.0),
+          child: Stack(
+            children: [
               Column(
-                children: <Widget>[
-                  Expanded(flex: 200, child: Container()),
+                children: [
+                  Expanded(
+                    flex: 200,
+                    child: Container(),
+                  ),
                   Expanded(
                     flex: 171,
                     child: AnimatedBuilder(
@@ -265,102 +313,118 @@ class InitialWalkthroughPageState extends State<InitialWalkthroughPage>
                       },
                     ),
                   ),
-                  Expanded(flex: 200, child: Container()),
+                  Expanded(
+                    flex: 200,
+                    child: Container(),
+                  ),
                   Expanded(
                     flex: 48,
                     child: Padding(
                       padding: EdgeInsets.only(left: 24, right: 24),
                       child: AutoSizeText(
-                        _instructions,
+                        texts.initial_walk_through_welcome_message,
                         textAlign: TextAlign.center,
                         style: theme.welcomeTextStyle,
                       ),
                     ),
                   ),
-                  Expanded(flex: 60, child: Container()),
+                  Expanded(
+                    flex: 60,
+                    child: Container(),
+                  ),
                   Container(
                     height: 48.0,
                     width: 168.0,
                     child: ElevatedButton(
                       style: ElevatedButton.styleFrom(
                         padding: EdgeInsets.fromLTRB(16, 4, 16, 4),
-                        primary: Theme.of(context).buttonColor,
+                        primary: themeData.buttonColor,
                         elevation: 0.0,
                         shape: const StadiumBorder(),
                       ),
-                      child: Text("LET'S BREEZ!",
-                          style: Theme.of(context).textTheme.button),
-                      onPressed: () {
-                        showDialog(
-                            useRootNavigator: false,
-                            context: context,
-                            barrierDismissible: false,
-                            builder: (BuildContext context) {
-                              return BetaWarningDialog();
-                            }).then((approved) {
-                          if (approved) {
-                            ResetSecurityModel resetSecurityModelAction =
-                                ResetSecurityModel();
-                            widget._registrationBloc.userActionsSink
-                                .add(resetSecurityModelAction);
-                            resetSecurityModelAction.future.then((_) {
-                              _proceedToRegister();
-                            }).catchError((err) {
-                              promptError(
-                                  context,
-                                  "Internal Error",
-                                  Text(
-                                    err.toString(),
-                                    style: Theme.of(context)
-                                        .dialogTheme
-                                        .contentTextStyle,
-                                  ));
-                            });
-                          }
-                        });
-                      },
+                      child: Text(
+                        texts.initial_walk_through_lets_breeze,
+                        style: themeData.textTheme.button,
+                      ),
+                      onPressed: () => _letsBreez(context),
                     ),
                   ),
                   Expanded(
                     flex: 40,
                     child: Padding(
-                        padding: EdgeInsets.only(top: 10.0),
-                        child: GestureDetector(
-                            onTap: () {
-                              widget._backupBloc.backupSettingsStream.first
-                                  .then((settings) async {
-                                var backupProvider = settings.backupProvider;
-                                if (backupProvider == null ||
-                                    BackupSettings.availableBackupProviders()
-                                            .length >
-                                        1) {
-                                  backupProvider = await showDialog(
-                                      useRootNavigator: false,
-                                      context: context,
-                                      builder: (_) =>
-                                          BackupProviderSelectionDialog(
-                                              backupBloc: widget._backupBloc,
-                                              restore: true));
-                                }
-                                if (backupProvider != null) {
-                                  // Restore then start lightninglib
-                                  Navigator.push(
-                                      context, createLoaderRoute(context));
-                                  widget._backupBloc.restoreRequestSink
-                                      .add(null);
-                                }
-                              });
-                            },
-                            child: Text(
-                              "Restore from backup",
-                              style: theme.restoreLinkStyle,
-                            ))),
+                      padding: EdgeInsets.only(top: 10.0),
+                      child: GestureDetector(
+                        onTap: () => _restoreFromBackup(context),
+                        child: Text(
+                          texts.initial_walk_through_restore_from_backup,
+                          style: theme.restoreLinkStyle,
+                        ),
+                      ),
+                    ),
                   ),
-                  Expanded(flex: 120, child: Container()),
+                  Expanded(
+                    flex: 120,
+                    child: Container(),
+                  ),
                 ],
-              )
-            ])),
+              ),
+            ],
+          ),
+        ),
       ),
     );
+  }
+
+  void _letsBreez(BuildContext context) {
+    final texts = AppLocalizations.of(context);
+    final themeData = Theme.of(context);
+
+    showDialog(
+      useRootNavigator: false,
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext context) {
+        return BetaWarningDialog();
+      },
+    ).then((approved) {
+      if (approved) {
+        final resetSecurity = ResetSecurityModel();
+        widget._registrationBloc.userActionsSink.add(resetSecurity);
+        resetSecurity.future.then((_) {
+          _proceedToRegister();
+        }).catchError((err) {
+          promptError(
+            context,
+            texts.initial_walk_through_error_internal,
+            Text(
+              err.toString(),
+              style: themeData.dialogTheme.contentTextStyle,
+            ),
+          );
+        });
+      }
+    });
+  }
+
+  void _restoreFromBackup(BuildContext context) {
+    widget._backupBloc.backupSettingsStream.first.then((settings) async {
+      final providers = BackupSettings.availableBackupProviders();
+      var backupProvider = settings.backupProvider;
+      if (backupProvider == null || providers.length > 1) {
+        backupProvider = await showDialog(
+          useRootNavigator: false,
+          context: context,
+          builder: (_) => BackupProviderSelectionDialog(
+            backupBloc: widget._backupBloc,
+            restore: true,
+          ),
+        );
+      }
+      if (backupProvider != null) {
+        // Restore then start lightninglib
+        Navigator.push(context, createLoaderRoute(context));
+        widget._backupBloc.restoreRequestSink.add(null);
+      }
+    });
   }
 }

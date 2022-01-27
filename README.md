@@ -12,7 +12,8 @@
 </p>
 
 [Breez](https://breez.technology) is a Lightning Network [mobile client](https://github.com/breez/breezmobile) and a [hub](https://github.com/breez/server). It provides a platform for simple, instantaneous bitcoin payments. <br>
-Breez is currently in a public beta, available on [Android](https://play.google.com/apps/testing/com.breez.client) and on [iOS](https://testflight.apple.com/join/wPju2Du7).
+Breez is currently in a public beta, available on [Android](https://play.google.com/apps/testing/com.breez.client) and on [iOS](https://testflight.apple.com/join/wPju2Du7). <br>
+To learn more about, please read [Introducing Breez](https://github.com/breez/breezmobile/wiki/Introducing-Breez). <br>
 
 Check our [active bounties](https://github.com/breez/breezmobile/wiki/Bounties).
 
@@ -100,10 +101,7 @@ Check our [active bounties](https://github.com/breez/breezmobile/wiki/Bounties).
 - Create a firebase iOS app using the [firebase console](https://console.firebase.google.com/)
 - Generate the GoogleServices-info.plist and copy it to ios/Runner directory
 - Run `pod install` from `breezmobile/ios`
-3. Flutter stable channel
-- Install [flutter](https://flutter.dev/docs/get-started/install)
-Run these command:
-- flutter upgrade
+3. Install flutter 2.2.3 
 
 ## Run
 Now you can use the following commands to run in a connected device the client app or the pos or to build the corresponding apks:

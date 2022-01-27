@@ -73,9 +73,9 @@ public class NfcHandler implements MethodChannel.MethodCallHandler, FlutterPlugi
                 String nfcStartedWith = getNfcStartedWith(binding.getActivity().getIntent());
                 result.success(nfcStartedWith);
             } catch (Exception e) {
-              System.out.println(e.getMessage());
+                Log.e(TAG, "Error calling method: checkIfStartedWithNfc", e);
                 e.printStackTrace();
-                result.success("false");
+                result.success("");
             }
         }
     }
@@ -105,6 +105,11 @@ public class NfcHandler implements MethodChannel.MethodCallHandler, FlutterPlugi
                 String lnLink = new String(payload, languageCodeLength + 1, payload.length - languageCodeLength - 1, textEncoding);
                 if (lnLink != null && lnLink.startsWith("lightning:")) {
                     Log.d(TAG, "Discovered Lightning Link...");
+                    return lnLink;
+                }
+                if (lnLink.startsWith("lnurlc:") || lnLink.startsWith("lnurlw:") ||
+                    lnLink.startsWith("lnurlp:") || lnLink.startsWith("keyauth:")) {
+                    Log.d(TAG, "Discovered LUD-17 Link...");
                     return lnLink;
                 }
             } catch (UnsupportedEncodingException exc) {

@@ -41,6 +41,10 @@
 			<key>CFBundleURLSchemes</key>
 			<array>
 				<string>lightning</string>
+				<string>lnurlc</string>
+				<string>lnurlw</string>
+				<string>lnurlp</string>
+				<string>keyauth</string>
 			</array>
 		</dict>
 		<dict>

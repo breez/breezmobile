@@ -1,5 +1,4 @@
 import 'dart:convert' as JSON;
-import 'dart:io';
 
 import 'package:breez/bloc/account/add_funds_bloc.dart';
 import 'package:breez/bloc/account/moonpay_order.dart';
@@ -8,12 +7,13 @@ import 'package:breez/theme_data.dart' as theme;
 import 'package:breez/widgets/loader.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart' show SystemChannels, rootBundle;
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
 import 'conditional_deposit.dart';
 
 class MoonpayWebView extends StatefulWidget {
-  MoonpayWebView();
+  const MoonpayWebView();
 
   @override
   State<StatefulWidget> createState() {
@@ -27,12 +27,6 @@ class MoonpayWebViewState extends State<MoonpayWebView> {
   MoonpayOrder _order;
   String _error;
   bool _isInit = false;
-
-  @override
-  void initState() {
-    super.initState();
-    if (Platform.isAndroid) WebView.platform = SurfaceAndroidWebView();
-  }
 
   @override
   void didChangeDependencies() {
@@ -53,32 +47,41 @@ class MoonpayWebViewState extends State<MoonpayWebView> {
 
   @override
   Widget build(BuildContext context) {
+    final texts = AppLocalizations.of(context);
     return ConditionalDeposit(
-        title: "MoonPay", enabledChild: _buildWebView(context));
+      title: texts.add_funds_moonpay_title,
+      enabledChild: _buildWebView(context),
+    );
   }
 
   Widget _buildWebView(BuildContext context) {
+    final texts = AppLocalizations.of(context);
+    final themeData = Theme.of(context);
+
     return Material(
       child: Scaffold(
         appBar: AppBar(
-          actions: <Widget>[
+          actions: [
             IconButton(
-                icon:
-                    Icon(Icons.close, color: Theme.of(context).iconTheme.color),
-                onPressed: () => Navigator.pop(context))
+              icon: Icon(
+                Icons.close,
+                color: themeData.iconTheme.color,
+              ),
+              onPressed: () => Navigator.pop(context),
+            )
           ],
           automaticallyImplyLeading: false,
-          iconTheme: Theme.of(context).appBarTheme.iconTheme,
-          textTheme: Theme.of(context).appBarTheme.textTheme,
-          backgroundColor: Theme.of(context).canvasColor,
+          iconTheme: themeData.appBarTheme.iconTheme,
+          textTheme: themeData.appBarTheme.textTheme,
+          backgroundColor: themeData.canvasColor,
           title: Text(
-            "MoonPay",
-            style: Theme.of(context).appBarTheme.textTheme.headline6,
+            texts.add_funds_moonpay_title,
+            style: themeData.appBarTheme.textTheme.headline6,
           ),
           elevation: 0.0,
         ),
         body: (_order == null || _error != null)
-            ? _buildLoadingScreen()
+            ? _buildLoadingScreen(context)
             : Listener(
                 onPointerDown: (_) {
                   // hide keyboard on click
@@ -96,15 +99,17 @@ class MoonpayWebViewState extends State<MoonpayWebView> {
                     _breezJavascriptChannel(context),
                   ].toSet(),
                   navigationDelegate: (NavigationRequest request) =>
-                  request.url.startsWith('lightning:')
-                      ? NavigationDecision.prevent
-                      : NavigationDecision.navigate,
+                      request.url.startsWith('lightning:')
+                          ? NavigationDecision.prevent
+                          : NavigationDecision.navigate,
                   onPageFinished: (String url) async {
                     // redirect post messages to javascript channel
                     _webViewController.evaluateJavascript(
-                        "window.onmessage = (message) => window.BreezWebView.postMessage(message.data);");
+                      "window.onmessage = (message) => window.BreezWebView.postMessage(message.data);",
+                    );
                     _webViewController.evaluateJavascript(
-                        await rootBundle.loadString('src/scripts/moonpay.js'));
+                      await rootBundle.loadString('src/scripts/moonpay.js'),
+                    );
                   },
                 ),
               ),
@@ -119,31 +124,41 @@ class MoonpayWebViewState extends State<MoonpayWebView> {
         if (message != null) {
           var postMessage = JSON.jsonDecode(message.message);
           if (postMessage['status'] == "completed") {
-            _addFundsBloc.completedMoonpayOrderSink.add(_order.copyWith(
-                orderTimestamp: DateTime.now().millisecondsSinceEpoch));
+            _addFundsBloc.completedMoonpayOrderSink.add(
+              _order.copyWith(
+                orderTimestamp: DateTime.now().millisecondsSinceEpoch,
+              ),
+            );
           }
         }
       },
     );
   }
 
-  Widget _buildLoadingScreen() {
+  Widget _buildLoadingScreen(BuildContext context) {
+    final texts = AppLocalizations.of(context);
     return _error != null
         ? Column(
             mainAxisSize: MainAxisSize.max,
             crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: <Widget>[
+            children: [
               Padding(
-                padding: EdgeInsets.only(top: 50.0, left: 30.0, right: 30.0),
+                padding: EdgeInsets.only(
+                  top: 50.0,
+                  left: 30.0,
+                  right: 30.0,
+                ),
                 child: Text(
-                  "Failed to retrieve an address from Breez server\nPlease check your internet connection.",
+                  texts.add_funds_moonpay_error_address,
                   textAlign: TextAlign.center,
                 ),
               ),
             ],
           )
         : Center(
-            child: Loader(color: theme.BreezColors.white[400]),
+            child: Loader(
+              color: theme.BreezColors.white[400],
+            ),
           );
   }
 }

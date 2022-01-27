@@ -7,7 +7,7 @@ import 'package:breez/bloc/invoice/invoice_model.dart';
 import 'package:breez/routes/podcast/theme.dart';
 import 'package:breez/widgets/payment_confirmation_dialog.dart';
 import 'package:breez/widgets/payment_request_info_dialog.dart';
-import 'package:breez/widgets/processsing_payment_dialog.dart';
+import 'package:breez/widgets/processing_payment_dialog.dart';
 import 'package:fixnum/fixnum.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -26,9 +26,10 @@ class PaymentRequestDialog extends StatefulWidget {
   final PaymentRequestModel invoice;
   final GlobalKey firstPaymentItemKey;
   final ScrollController scrollController;
+  final Function() onComplete;
 
   PaymentRequestDialog(this.context, this.accountBloc, this.invoice,
-      this.firstPaymentItemKey, this.scrollController);
+      this.firstPaymentItemKey, this.scrollController, this.onComplete);
 
   @override
   State<StatefulWidget> createState() {
@@ -78,15 +79,11 @@ class PaymentRequestDialogState extends State<PaymentRequestDialog> {
   Widget showPaymentRequestDialog() {
     const double minHeight = 220;
     if (_state == PaymentRequestState.PROCESSING_PAYMENT) {
-      return ProcessingPaymentDialog(
-          widget.context,
-          (){
-            widget.accountBloc.userActionsSink.add(this._sendPayment);
-            return this._sendPayment.future;
-          },
-          widget.accountBloc,
-          widget.firstPaymentItemKey,
-          _onStateChange, minHeight);
+      return ProcessingPaymentDialog(widget.context, () {
+        widget.accountBloc.userActionsSink.add(this._sendPayment);
+        return this._sendPayment.future;
+      }, widget.accountBloc, widget.firstPaymentItemKey, _onStateChange,
+          minHeight);
     } else if (_state == PaymentRequestState.WAITING_FOR_CONFIRMATION) {
       return PaymentConfirmationDialog(
           widget.accountBloc,
@@ -95,12 +92,11 @@ class PaymentRequestDialogState extends State<PaymentRequestDialog> {
           _amountToPayStr,
           () => _onStateChange(PaymentRequestState.USER_CANCELLED),
           (sendPayment) {
-            setState(() {
-              _sendPayment = sendPayment;
-               _onStateChange(PaymentRequestState.PROCESSING_PAYMENT);
-            });
-          },
-          minHeight);
+        setState(() {
+          _sendPayment = sendPayment;
+          _onStateChange(PaymentRequestState.PROCESSING_PAYMENT);
+        });
+      }, minHeight);
     } else {
       return PaymentRequestInfoDialog(
           widget.context,
@@ -109,22 +105,23 @@ class PaymentRequestDialogState extends State<PaymentRequestDialog> {
           () => _onStateChange(PaymentRequestState.USER_CANCELLED),
           () => _onStateChange(PaymentRequestState.WAITING_FOR_CONFIRMATION),
           (sendPayment) {
-            _sendPayment = sendPayment;
-            _onStateChange(PaymentRequestState.PROCESSING_PAYMENT);
-          },
-          (map) => _setAmountToPay(map), minHeight);
+        _sendPayment = sendPayment;
+        _onStateChange(PaymentRequestState.PROCESSING_PAYMENT);
+      }, (map) => _setAmountToPay(map), minHeight);
     }
   }
 
   void _onStateChange(PaymentRequestState state) {
     if (state == PaymentRequestState.PAYMENT_COMPLETED) {
       Navigator.of(context).removeRoute(_currentRoute);
+      widget.onComplete();
       return;
     }
     if (state == PaymentRequestState.USER_CANCELLED) {
       Navigator.of(context).removeRoute(_currentRoute);
       widget.accountBloc.userActionsSink.add(CancelPaymentRequest(
           PayRequest(widget.invoice.rawPayReq, _amountToPay)));
+      widget.onComplete();
       return;
     }
     setState(() {

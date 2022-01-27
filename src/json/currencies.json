@@ -67,12 +67,20 @@
   },
   "AOA": {
     "name": "Kwanza",
+    "localized_name": {
+      "en": "Angolan Kwanza",
+      "es": "Kwanza Angoleño"
+    },
     "fractionSize": 2,
     "symbol": null,
     "uniqSymbol": null
   },
   "ARS": {
-    "name": "Argentine Peso",
+    "name": "Peso Argentino",
+    "localized_name": {
+      "en": "Argentine Peso",
+      "pt": "Peso Argentino"
+    },
     "fractionSize": 2,
     "symbol": {
       "grapheme": "$",
@@ -83,6 +91,10 @@
   },
   "AUD": {
     "name": "Australian Dollar",
+    "localized_name": {
+      "es": "Dólar Australiano",
+      "pt": "Dólar Australiano"
+    },
     "fractionSize": 2,
     "symbol": {
       "grapheme": "$",
@@ -213,6 +225,10 @@
   },
   "BOB": {
     "name": "Boliviano",
+    "localized_name": {
+      "en": "Boliviano",
+      "pt": "Boliviano"
+    },
     "fractionSize": 2,
     "symbol": {
       "grapheme": "Bs.",
@@ -232,7 +248,11 @@
     "uniqSymbol": null
   },
   "BRL": {
-    "name": "Brazilian Real",
+    "name": "Real",
+    "localized_name": {
+      "en": "Brazilian Real",
+      "es": "Real Brasileño"
+    },
     "fractionSize": 2,
     "symbol": {
       "grapheme": "R$",
@@ -319,6 +339,10 @@
   },
   "CAD": {
     "name": "Canadian Dollar",
+    "localized_name": {
+      "es": "Dólar Canadiense",
+      "pt": "Dólar Canadense"
+    },
     "fractionSize": 2,
     "symbol": {
       "grapheme": "$",
@@ -362,7 +386,11 @@
     "uniqSymbol": null
   },
   "CLP": {
-    "name": "Chilean Peso",
+    "name": "Peso Chileno",
+    "localized_name": {
+      "en": "Chilean Peso",
+      "pt": "Peso Chileno"
+    },
     "fractionSize": 0,
     "symbol": {
       "grapheme": "$",
@@ -387,6 +415,10 @@
   },
   "COP": {
     "name": "Colombian Peso",
+    "localized_name": {
+      "en": "Peso Colombiano",
+      "pt": "Peso Colombiano"
+    },
     "fractionSize": 0,
     "symbol": {
       "grapheme": "$",
@@ -422,7 +454,11 @@
     "uniqSymbol": null
   },
   "CUP": {
-    "name": "Cuban Peso",
+    "name": "Peso Cubano",
+    "localized_name": {
+      "en": "Cuban Peso",
+      "pt": "Peso Cubano"
+    },
     "fractionSize": 2,
     "symbol": {
       "grapheme": "$MN",
@@ -473,7 +509,11 @@
     "uniqSymbol": null
   },
   "DOP": {
-    "name": "Dominican Peso",
+    "name": "Peso Dominicano",
+    "localized_name": {
+      "en": "Dominican Peso",
+      "pt": "Peso Dominicano"
+    },
     "fractionSize": 2,
     "symbol": {
       "grapheme": "RD$",
@@ -538,6 +578,7 @@
   },
   "EUR": {
     "name": "Euro",
+    "localized_name": {},
     "fractionSize": 2,
     "spacing": 1,
     "symbol": {
@@ -606,6 +647,10 @@
   },
   "GBP": {
     "name": "Pound Sterling",
+    "localized_name": {
+      "es": "Libra Esterlina",
+      "pt": "Libra Esterlina"
+    },
     "fractionSize": 2,
     "spacing": 0,
     "symbol": {
@@ -693,6 +738,10 @@
   },
   "GYD": {
     "name": "Guyana Dollar",
+    "localized_name": {
+      "es": "Dólar Guyanés",
+      "pt": "Dólar Guianês"
+    },
     "fractionSize": 2,
     "symbol": {
       "grapheme": "$",
@@ -707,6 +756,10 @@
   },
   "HKD": {
     "name": "Hong Kong Dollar",
+    "localized_name": {
+      "es": "Dólar de Hong Kong",
+      "pt": "Dólar de Hong Kong"
+    },
     "fractionSize": 2,
     "symbol": {
       "grapheme": "HK$",
@@ -869,6 +922,10 @@
   },
   "JMD": {
     "name": "Jamaican Dollar",
+    "localized_name": {
+      "es": "Dólar Jamaiquino",
+      "pt": "Dólar Jamaicano"
+    },
     "fractionSize": 2,
     "symbol": {
       "grapheme": "J$",
@@ -892,7 +949,12 @@
     "uniqSymbol": null
   },
   "JPY": {
-    "name": "Yen",
+    "name": "円",
+    "localized_name": {
+      "en": "Yen",
+      "es": "Yen",
+      "pt": "Iene"
+    },
     "fractionSize": 0,
     "symbol": {
       "grapheme": "¥",
@@ -964,7 +1026,12 @@
     "uniqSymbol": null
   },
   "KRW": {
-    "name": "Won",
+    "name": "원",
+    "localized_name": {
+      "en": "Won",
+      "es": "Won",
+      "pt": "Won"
+    },
     "fractionSize": 0,
     "symbol": {
       "grapheme": "₩",
@@ -1214,7 +1281,11 @@
     "uniqSymbol": null
   },
   "MXN": {
-    "name": "Mexican Peso",
+    "name": "Peso Mexicano",
+    "localized_name": {
+      "en": "Mexican Peso",
+      "pt": "Peso Mexicano"
+    },
     "fractionSize": 2,
     "symbol": {
       "grapheme": "$",
@@ -1244,7 +1315,11 @@
     }
   },
   "MZN": {
-    "name": "Mozambique Metical",
+    "name": "Metical",
+    "localized_name": {
+      "en": "Mozambique Metical",
+      "es": "Metical Mozambiqueño"
+    },
     "fractionSize": 2,
     "symbol": {
       "grapheme": "MT",
@@ -1321,6 +1396,10 @@
   },
   "NZD": {
     "name": "New Zealand Dollar",
+    "localized_name": {
+      "es": "Dólar Neozelandés",
+      "pt": "Dólar Neozelandês"
+    },
     "fractionSize": 2,
     "symbol": {
       "grapheme": "$",
@@ -1382,7 +1461,12 @@
     "uniqSymbol": null
   },
   "PHP": {
-    "name": "Philippine Peso",
+    "name": "Piso",
+    "localized_name": {
+      "en": "Philippine Peso",
+      "es": "Peso Filipino",
+      "pt": "Peso Filipino"
+    },
     "fractionSize": 2,
     "symbol": {
       "grapheme": "₱",
@@ -1419,7 +1503,11 @@
     }
   },
   "PYG": {
-    "name": "Guarani",
+    "name": "Guaraní",
+    "localized_name": {
+      "en": "Guarani",
+      "pt": "Guarani"
+    },
     "fractionSize": 0,
     "symbol": {
       "grapheme": "Gs",
@@ -1807,6 +1895,10 @@
   },
   "USD": {
     "name": "US Dollar",
+    "localized_name": {
+      "es": "Dólar Americano",
+      "pt": "Dólar Americano"
+    },
     "fractionSize": 2,
     "spacing": 0,
     "symbol": {
@@ -1834,6 +1926,10 @@
   },
   "UYU": {
     "name": "Peso Uruguayo",
+    "localized_name": {
+      "en": "Uruguayan Peso",
+      "pt": "Peso Uruguaio"
+    },
     "fractionSize": 0,
     "symbol": {
       "grapheme": "$U",
@@ -1861,7 +1957,11 @@
     }
   },
   "VEF": {
-    "name": "Bolivar",
+    "name": "Bolívar",
+    "localized_name": {
+      "en": "Venezuelan Bolivar",
+      "pt": "Bolívar Venezuelano"
+    },
     "fractionSize": 2,
     "symbol": {
       "grapheme": "Bs",

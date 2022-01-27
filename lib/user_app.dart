@@ -12,9 +12,9 @@ import 'package:breez/l10n/locales.dart';
 import 'package:breez/routes/fiat_currencies/fiat_currency_settings.dart';
 import 'package:breez/routes/podcast/theme.dart';
 import 'package:breez/routes/qr_scan.dart';
+import 'package:breez/utils/locale.dart';
 import 'package:breez/widgets/route.dart';
 import 'package:breez/widgets/static_loader.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -52,7 +52,8 @@ Widget _withTheme(BreezUserModel user, Widget child) {
   return child;
 }
 
-class UserApp extends StatelessWidget { // ignore: must_be_immutable
+// ignore: must_be_immutable
+class UserApp extends StatelessWidget {
   GlobalKey<NavigatorState> _navigatorKey = GlobalKey<NavigatorState>();
   GlobalKey<NavigatorState> _homeNavigatorKey = GlobalKey<NavigatorState>();
 
@@ -69,244 +70,263 @@ class UserApp extends StatelessWidget { // ignore: must_be_immutable
     var posCatalogBloc = AppBlocsProvider.of<PosCatalogBloc>(context);
 
     return StreamBuilder(
-        stream: userProfileBloc.userStream,
-        builder: (context, snapshot) {
-          if (!snapshot.hasData) {
-            return StaticLoader();
-          }
+      stream: userProfileBloc.userStream,
+      builder: (context, snapshot) {
+        if (!snapshot.hasData) {
+          return StaticLoader();
+        }
 
-          BreezUserModel user = snapshot.data;
-          theme.themeId = user.themeId;
-          SystemChrome.setSystemUIOverlayStyle(
-              SystemUiOverlayStyle(statusBarColor: Colors.transparent));
-          return BlocProvider(
-              creator: () => AddFundsBloc(userProfileBloc.userStream,
-                  accountBloc.accountStream, lspBloc.lspStatusStream),
-              builder: (ctx) => MaterialApp(
-                    navigatorKey: _navigatorKey,
-                    title: 'Breez',
-                    theme: theme.themeMap[user.themeId],
-                    localizationsDelegates: localizationsDelegates(),
-                    supportedLocales: supportedLocales(),
-                    builder: (BuildContext context, Widget child) {
-                      final MediaQueryData data = MediaQuery.of(context);
-                      return MediaQuery(
-                          data: data.copyWith(
-                            textScaleFactor: (data.textScaleFactor >= 1.3)
-                                ? 1.3
-                                : data.textScaleFactor,
-                          ),
-                          child: _withTheme(user, child));
-                    },
-                    initialRoute: user.registrationRequested
-                        ? (user.locked ? '/lockscreen' : "/")
-                        : '/splash',
-                    // ignore: missing_return
-                    onGenerateRoute: (RouteSettings settings) {
-                      switch (settings.name) {
-                        case '/intro':
-                          return FadeInRoute(
-                            builder: (_) => InitialWalkthroughPage(
-                                userProfileBloc, backupBloc),
-                            settings: settings,
-                          );
-                        case '/splash':
-                          return FadeInRoute(
-                            builder: (_) => SplashPage(user),
-                            settings: settings,
-                          );
-                        case '/lockscreen':
-                          return NoTransitionRoute(
-                              builder: (ctx) => withBreezTheme(
-                                  ctx,
-                                  AppLockScreen(
-                                    (pinEntered) {
-                                      var validateAction =
-                                          ValidatePinCode(pinEntered);
+        BreezUserModel user = snapshot.data;
+        theme.themeId = user.themeId;
+        SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
+          statusBarColor: Colors.transparent,
+        ));
+        return BlocProvider(
+          creator: () => AddFundsBloc(
+            userProfileBloc.userStream,
+            accountBloc.accountStream,
+            lspBloc.lspStatusStream,
+          ),
+          builder: (ctx) => MaterialApp(
+            navigatorKey: _navigatorKey,
+            title: getSystemAppLocalizations().app_name,
+            theme: theme.themeMap[user.themeId],
+            localizationsDelegates: localizationsDelegates(),
+            supportedLocales: supportedLocales(),
+            builder: (BuildContext context, Widget child) {
+              final MediaQueryData data = MediaQuery.of(context);
+              return MediaQuery(
+                data: data.copyWith(
+                  textScaleFactor: (data.textScaleFactor >= 1.3)
+                      ? 1.3
+                      : data.textScaleFactor,
+                ),
+                child: _withTheme(user, child),
+              );
+            },
+            initialRoute: user.registrationRequested
+                ? (user.locked ? '/lockscreen' : "/")
+                : '/splash',
+            // ignore: missing_return
+            onGenerateRoute: (RouteSettings settings) {
+              switch (settings.name) {
+                case '/intro':
+                  return FadeInRoute(
+                    builder: (_) => InitialWalkthroughPage(
+                      userProfileBloc,
+                      backupBloc,
+                    ),
+                    settings: settings,
+                  );
+                case '/splash':
+                  return FadeInRoute(
+                    builder: (_) => SplashPage(user),
+                    settings: settings,
+                  );
+                case '/lockscreen':
+                  return NoTransitionRoute(
+                    builder: (ctx) => withBreezTheme(
+                      ctx,
+                      AppLockScreen(
+                        (pinEntered) {
+                          var validateAction = ValidatePinCode(pinEntered);
+                          userProfileBloc.userActionsSink.add(validateAction);
+                          return validateAction.future.then((_) {
+                            Navigator.pop(ctx);
+                            userProfileBloc.userActionsSink
+                                .add(SetLockState(false));
+                          });
+                        },
+                        onFingerprintEntered:
+                            user.securityModel.isFingerprintEnabled
+                                ? (isValid) async {
+                                    if (isValid) {
+                                      await Future.delayed(
+                                        Duration(milliseconds: 200),
+                                      );
+                                      Navigator.pop(ctx);
                                       userProfileBloc.userActionsSink
-                                          .add(validateAction);
-                                      return validateAction.future.then((_) {
-                                        Navigator.pop(ctx);
-                                        userProfileBloc.userActionsSink
-                                            .add(SetLockState(false));
-                                      });
-                                    },
-                                    onFingerprintEntered: user
-                                            .securityModel.isFingerprintEnabled
-                                        ? (isValid) async {
-                                            if (isValid) {
-                                              await Future.delayed(
-                                                  Duration(milliseconds: 200));
-                                              Navigator.pop(ctx);
-                                              userProfileBloc.userActionsSink
-                                                  .add(SetLockState(false));
-                                            }
-                                          }
-                                        : null,
-                                    userProfileBloc: userProfileBloc,
-                                  )),
-                              settings: settings);
-                        case '/':
-                          return FadeInRoute(
-                            builder: (_) => WillPopScope(
-                              onWillPop: () async {
-                                return !await _homeNavigatorKey.currentState
-                                    .maybePop();
-                              },
-                              child: Navigator(
-                                key: _homeNavigatorKey,
-                                observers: [routeObserver],
-                                initialRoute: "/",
-                                // ignore: missing_return
-                                onGenerateRoute: (RouteSettings settings) {
-                                  switch (settings.name) {
-                                    case '/':
-                                      return FadeInRoute(
-                                        builder: (_) => Home(
-                                            accountBloc,
-                                            invoiceBloc,
-                                            userProfileBloc,
-                                            connectPayBloc,
-                                            backupBloc,
-                                            lspBloc,
-                                            reverseSwapBloc,
-                                            lnurlBloc),
-                                        settings: settings,
-                                      );
-                                    case '/order_card':
-                                      return FadeInRoute(
-                                        builder: (_) =>
-                                            OrderCardPage(showSkip: false),
-                                        settings: settings,
-                                      );
-                                    case '/order_card?skip=true':
-                                      return FadeInRoute(
-                                        builder: (_) =>
-                                            OrderCardPage(showSkip: true),
-                                        settings: settings,
-                                      );
-                                    case '/deposit_btc_address':
-                                      return FadeInRoute(
-                                        builder: (_) => withBreezTheme(
-                                          context,
-                                          DepositToBTCAddressPage(),
-                                        ),
-                                        settings: settings,
-                                      );
-                                    case '/buy_bitcoin':
-                                      return FadeInRoute(
-                                        builder: (_) => MoonpayWebView(),
-                                        settings: settings,
-                                      );
-                                    case '/withdraw_funds':
-                                      return FadeInRoute(
-                                        builder: (_) => ReverseSwapPage(),
-                                        settings: settings,
-                                      );
-                                    case '/send_coins':
-                                      return MaterialPageRoute(
-                                        fullscreenDialog: true,
-                                        builder: (_) => UnexpectedFunds(),
-                                        settings: settings,
-                                      );
-                                    case '/select_lsp':
-                                      return MaterialPageRoute(
-                                        fullscreenDialog: true,
-                                        builder: (_) =>
-                                            SelectLSPPage(lstBloc: lspBloc),
-                                        settings: settings,
-                                      );
-                                    case '/get_refund':
-                                      return FadeInRoute(
-                                        builder: (_) => GetRefundPage(),
-                                        settings: settings,
-                                      );
-                                    case '/create_invoice':
-                                      return FadeInRoute(
-                                        builder: (_) => withBreezTheme(
-                                          context,
-                                          CreateInvoicePage(),
-                                        ),
-                                        settings: settings,
-                                      );
-                                    case '/fiat_currency':
-                                      return FadeInRoute(
-                                        builder: (_) => withBreezTheme(
-                                          context,
-                                          FiatCurrencySettings(
-                                              accountBloc, userProfileBloc),
-                                        ),
-                                        settings: settings,
-                                      );
-                                    case '/network':
-                                      return FadeInRoute(
-                                        builder: (_) => withBreezTheme(
-                                          context,
-                                          NetworkPage(),
-                                        ),
-                                        settings: settings,
-                                      );
-                                    case '/security':
-                                      return FadeInRoute(
-                                        builder: (_) => withBreezTheme(
-                                          context,
-                                          SecurityPage(
-                                              userProfileBloc, backupBloc),
-                                        ),
-                                        settings: settings,
-                                      );
-                                    case '/developers':
-                                      return FadeInRoute(
-                                        builder: (_) => withBreezTheme(
-                                          context,
-                                          DevView(),
-                                        ),
-                                        settings: settings,
-                                      );
-                                    case '/connect_to_pay':
-                                      return FadeInRoute(
-                                        builder: (_) => withBreezTheme(context, ConnectToPayPage(null)),
-                                        settings: settings,
-                                      );
-                                    case '/marketplace':
-                                      return FadeInRoute(
-                                        builder: (_) => MarketplacePage(),
-                                        settings: settings,
-                                      );
-                                    // POS routes
-                                    case '/add_item':
-                                      return FadeInRoute(
-                                        builder: (_) =>
-                                            ItemPage(posCatalogBloc),
-                                        settings: settings,
-                                      );
-                                    case '/transactions':
-                                      return FadeInRoute(
-                                        builder: (_) => PosTransactionsPage(),
-                                        settings: settings,
-                                      );
-                                    case '/settings':
-                                      return FadeInRoute(
-                                        builder: (_) => PosSettingsPage(),
-                                        settings: settings,
-                                      );
-                                    case '/qr_scan':
-                                      return MaterialPageRoute<String>(
-                                        fullscreenDialog: true,
-                                        builder: (_) => QRScan(),
-                                        settings: settings,
-                                      );
+                                          .add(SetLockState(false));
+                                    }
                                   }
-                                  assert(false);
-                                },
-                              ),
-                            ),
-                            settings: settings,
-                          );
-                      }
-                      assert(false);
-                    },
-                  ));
-        });
+                                : null,
+                        userProfileBloc: userProfileBloc,
+                      ),
+                    ),
+                    settings: settings,
+                  );
+                case '/':
+                  return FadeInRoute(
+                    builder: (_) => WillPopScope(
+                      onWillPop: () async {
+                        return !await _homeNavigatorKey.currentState.maybePop();
+                      },
+                      child: Navigator(
+                        key: _homeNavigatorKey,
+                        observers: [routeObserver],
+                        initialRoute: "/",
+                        // ignore: missing_return
+                        onGenerateRoute: (RouteSettings settings) {
+                          switch (settings.name) {
+                            case '/':
+                              return FadeInRoute(
+                                builder: (_) => Home(
+                                  accountBloc,
+                                  invoiceBloc,
+                                  userProfileBloc,
+                                  connectPayBloc,
+                                  backupBloc,
+                                  lspBloc,
+                                  reverseSwapBloc,
+                                  lnurlBloc,
+                                ),
+                                settings: settings,
+                              );
+                            case '/order_card':
+                              return FadeInRoute(
+                                builder: (_) => OrderCardPage(
+                                  showSkip: false,
+                                ),
+                                settings: settings,
+                              );
+                            case '/order_card?skip=true':
+                              return FadeInRoute(
+                                builder: (_) => OrderCardPage(
+                                  showSkip: true,
+                                ),
+                                settings: settings,
+                              );
+                            case '/deposit_btc_address':
+                              return FadeInRoute(
+                                builder: (_) => withBreezTheme(
+                                  context,
+                                  DepositToBTCAddressPage(),
+                                ),
+                                settings: settings,
+                              );
+                            case '/buy_bitcoin':
+                              return FadeInRoute(
+                                builder: (_) => MoonpayWebView(),
+                                settings: settings,
+                              );
+                            case '/withdraw_funds':
+                              return FadeInRoute(
+                                builder: (_) => ReverseSwapPage(),
+                                settings: settings,
+                              );
+                            case '/send_coins':
+                              return MaterialPageRoute(
+                                fullscreenDialog: true,
+                                builder: (_) => UnexpectedFunds(),
+                                settings: settings,
+                              );
+                            case '/select_lsp':
+                              return MaterialPageRoute(
+                                fullscreenDialog: true,
+                                builder: (_) => SelectLSPPage(
+                                  lstBloc: lspBloc,
+                                ),
+                                settings: settings,
+                              );
+                            case '/get_refund':
+                              return FadeInRoute(
+                                builder: (_) => GetRefundPage(),
+                                settings: settings,
+                              );
+                            case '/create_invoice':
+                              return FadeInRoute(
+                                builder: (_) => withBreezTheme(
+                                  context,
+                                  CreateInvoicePage(),
+                                ),
+                                settings: settings,
+                              );
+                            case '/fiat_currency':
+                              return FadeInRoute(
+                                builder: (_) => withBreezTheme(
+                                  context,
+                                  FiatCurrencySettings(
+                                    accountBloc,
+                                    userProfileBloc,
+                                  ),
+                                ),
+                                settings: settings,
+                              );
+                            case '/network':
+                              return FadeInRoute(
+                                builder: (_) => withBreezTheme(
+                                  context,
+                                  NetworkPage(),
+                                ),
+                                settings: settings,
+                              );
+                            case '/security':
+                              return FadeInRoute(
+                                builder: (_) => withBreezTheme(
+                                  context,
+                                  SecurityPage(
+                                    userProfileBloc,
+                                    backupBloc,
+                                  ),
+                                ),
+                                settings: settings,
+                              );
+                            case '/developers':
+                              return FadeInRoute(
+                                builder: (_) => withBreezTheme(
+                                  context,
+                                  DevView(),
+                                ),
+                                settings: settings,
+                              );
+                            case '/connect_to_pay':
+                              return FadeInRoute(
+                                builder: (_) => withBreezTheme(
+                                  context,
+                                  ConnectToPayPage(null),
+                                ),
+                                settings: settings,
+                              );
+                            case '/marketplace':
+                              return FadeInRoute(
+                                builder: (_) => MarketplacePage(),
+                                settings: settings,
+                              );
+                            // POS routes
+                            case '/add_item':
+                              return FadeInRoute(
+                                builder: (_) => ItemPage(posCatalogBloc),
+                                settings: settings,
+                              );
+                            case '/transactions':
+                              return FadeInRoute(
+                                builder: (_) => PosTransactionsPage(),
+                                settings: settings,
+                              );
+                            case '/settings':
+                              return FadeInRoute(
+                                builder: (_) => PosSettingsPage(),
+                                settings: settings,
+                              );
+                            case '/qr_scan':
+                              return MaterialPageRoute<String>(
+                                fullscreenDialog: true,
+                                builder: (_) => QRScan(),
+                                settings: settings,
+                              );
+                          }
+                          assert(false);
+                        },
+                      ),
+                    ),
+                    settings: settings,
+                  );
+              }
+              assert(false);
+            },
+          ),
+        );
+      },
+    );
   }
 }

@@ -187,4 +187,15 @@ class SqliteRepository implements Repository {
     }
     return items.map((row) => fromMapFunc(row)).toList();
   }
+
+  @override
+  Future<Set<String>> fetchSalesPaymentHashes() async {
+    return Set.from(
+      await _fetchDBItems(
+        await getDB(),
+        "sale_payments",
+        (e) => e["payment_hash"],
+      ),
+    );
+  }
 }

@@ -5,6 +5,7 @@ import 'dart:io';
 
 import 'package:breez/services/breezlib/breez_bridge.dart';
 import 'package:breez/services/injector.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:logging/logging.dart';
 import 'package:share_extend/share_extend.dart';
 
@@ -32,5 +33,11 @@ class BreezLogger {
     Logger.root.onRecord.listen((LogRecord rec) {
       breezBridge.log(rec.message, rec.level.name);
     });
+    // Log flutter errors
+    FlutterError.onError = (FlutterErrorDetails details) {
+      FlutterError.presentError(details);
+      if (details != null && details.context != null)
+        breezBridge.log(details.exceptionAsString() + '\n' + details.stack.toString(), details.context.name ?? "FlutterError");
+    };
   }
 }

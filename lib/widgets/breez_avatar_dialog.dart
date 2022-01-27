@@ -9,6 +9,7 @@ import 'package:breez/theme_data.dart' as theme;
 import 'package:breez/utils/min_font_size.dart';
 import 'package:breez/widgets/breez_avatar.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:image/image.dart' as DartImage;
 import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
@@ -48,154 +49,165 @@ Widget breezAvatarDialog(BuildContext context, UserProfileBloc userBloc) {
     },
     child: StatefulBuilder(
       builder: (context, setState) {
+        final themeData = Theme.of(context);
+        final queryData = MediaQuery.of(context);
+        final texts = AppLocalizations.of(context);
+        final navigator = Navigator.of(context);
+        final minFontSize = MinFontSize(context);
+
         return AlertDialog(
           titlePadding: EdgeInsets.all(0.0),
-          title: Stack(children: <Widget>[
-            Container(
-              height: 70.0,
-              decoration: ShapeDecoration(
-                shape: RoundedRectangleBorder(
-                    borderRadius:
-                        BorderRadius.vertical(top: Radius.circular(12.0))),
-                color: theme.themeId == "BLUE"
-                    ? Theme.of(context).primaryColorDark
-                    : Theme.of(context).canvasColor,
-              ),
-            ),
-            Container(
-              width: MediaQuery.of(context).size.width,
-              height: 100.0,
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: <Widget>[
-                  Expanded(
-                    child: TextButton(
-                      style: TextButton.styleFrom(
-                        padding: EdgeInsets.only(
-                          bottom: 20.0,
-                          top: 26.0,
-                        ),
-                      ),
-                      child: AutoSizeText(
-                        'RANDOM',
-                        style: theme.whiteButtonStyle,
-                        maxLines: 1,
-                        minFontSize: MinFontSize(context).minFontSize,
-                        stepGranularity: 0.1,
-                        group: _autoSizeGroup,
-                      ),
-                      onPressed: () {
-                        userBloc.randomizeSink.add(null);
-                        _pickedImage = null;
-                        FocusScope.of(context).requestFocus(FocusNode());
-                      },
+          title: Stack(
+            children: [
+              Container(
+                height: 70.0,
+                decoration: ShapeDecoration(
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.vertical(
+                      top: Radius.circular(12.0),
                     ),
                   ),
-                  StreamBuilder<BreezUserModel>(
-                    stream: userBloc.userPreviewStream,
-                    builder: (context, snapshot) {
-                      if (!snapshot.hasData) {
-                        return Container();
-                      } else {
-                        return Stack(
-                          children: [
-                            _isUploading
-                                ? Padding(
-                                    child: AspectRatio(
-                                      aspectRatio: 1,
-                                      child: CircularProgressIndicator(
-                                        valueColor:
-                                            AlwaysStoppedAnimation<Color>(
-                                                Theme.of(context)
-                                                    .primaryTextTheme
-                                                    .button
-                                                    .color),
-                                        backgroundColor:
-                                            Theme.of(context).backgroundColor,
+                  color: theme.themeId == "BLUE"
+                      ? themeData.primaryColorDark
+                      : themeData.canvasColor,
+                ),
+              ),
+              Container(
+                width: queryData.size.width,
+                height: 100.0,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Expanded(
+                      child: TextButton(
+                        style: TextButton.styleFrom(
+                          padding: EdgeInsets.only(
+                            bottom: 20.0,
+                            top: 26.0,
+                          ),
+                        ),
+                        child: AutoSizeText(
+                          texts.breez_avatar_dialog_random,
+                          style: theme.whiteButtonStyle,
+                          maxLines: 1,
+                          minFontSize: minFontSize.minFontSize,
+                          stepGranularity: 0.1,
+                          group: _autoSizeGroup,
+                        ),
+                        onPressed: () {
+                          userBloc.randomizeSink.add(null);
+                          _pickedImage = null;
+                          FocusScope.of(context).requestFocus(FocusNode());
+                        },
+                      ),
+                    ),
+                    StreamBuilder<BreezUserModel>(
+                      stream: userBloc.userPreviewStream,
+                      builder: (context, snapshot) {
+                        final userModel = snapshot.data;
+
+                        if (!snapshot.hasData) {
+                          return Container();
+                        } else {
+                          return Stack(
+                            children: [
+                              _isUploading
+                                  ? Padding(
+                                      child: AspectRatio(
+                                        aspectRatio: 1,
+                                        child: CircularProgressIndicator(
+                                          valueColor:
+                                              AlwaysStoppedAnimation<Color>(
+                                            themeData
+                                                .primaryTextTheme.button.color,
+                                          ),
+                                          backgroundColor:
+                                              themeData.backgroundColor,
+                                        ),
                                       ),
-                                    ),
-                                    padding: EdgeInsets.only(top: 26.0),
-                                  )
-                                : SizedBox(),
-                            Padding(
-                              child: AspectRatio(
+                                      padding: EdgeInsets.only(top: 26.0),
+                                    )
+                                  : SizedBox(),
+                              Padding(
+                                child: AspectRatio(
                                   aspectRatio: 1,
                                   child: BreezAvatar(
-                                    _pickedImage?.path ??
-                                        snapshot.data.avatarURL,
+                                    _pickedImage?.path ?? userModel.avatarURL,
                                     radius: 36.0,
-                                  )),
-                              padding: EdgeInsets.only(top: 26.0),
-                            )
-                          ],
-                        );
-                      }
-                    },
-                  ),
-                  Expanded(
-                    child: TextButton(
-                      style: TextButton.styleFrom(
-                        padding: EdgeInsets.only(
-                          bottom: 20.0,
-                          top: 26.0,
+                                  ),
+                                ),
+                                padding: EdgeInsets.only(top: 26.0),
+                              ),
+                            ],
+                          );
+                        }
+                      },
+                    ),
+                    Expanded(
+                      child: TextButton(
+                        style: TextButton.styleFrom(
+                          padding: EdgeInsets.only(
+                            bottom: 20.0,
+                            top: 26.0,
+                          ),
                         ),
-                      ),
-                      child: AutoSizeText(
-                        'GALLERY',
-                        style: theme.whiteButtonStyle,
-                        maxLines: 1,
-                        minFontSize: MinFontSize(context).minFontSize,
-                        stepGranularity: 0.1,
-                        group: _autoSizeGroup,
-                      ),
-                      onPressed: () async {
-                        await _pickImage().then(
-                          (file) {
+                        child: AutoSizeText(
+                          texts.breez_avatar_dialog_gallery,
+                          style: theme.whiteButtonStyle,
+                          maxLines: 1,
+                          minFontSize: minFontSize.minFontSize,
+                          stepGranularity: 0.1,
+                          group: _autoSizeGroup,
+                        ),
+                        onPressed: () async {
+                          await _pickImage().then((file) {
                             setState(() {
                               _pickedImage = file;
                             });
-                          },
-                        );
-                      },
+                          });
+                        },
+                      ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
-            ),
-          ]),
+            ],
+          ),
           content: SingleChildScrollView(
             child: ListBody(
-              children: <Widget>[
+              children: [
                 Theme(
                   data: ThemeData(
-                      primaryColor:
-                          Theme.of(context).primaryTextTheme.bodyText2.color,
-                      hintColor:
-                          Theme.of(context).primaryTextTheme.bodyText2.color),
+                    primaryColor: themeData.primaryTextTheme.bodyText2.color,
+                    hintColor: themeData.primaryTextTheme.bodyText2.color,
+                  ),
                   child: TextField(
-                      enabled: !_isUploading,
-                      style: Theme.of(context).primaryTextTheme.bodyText2,
-                      controller: _nameInputController,
-                      decoration: InputDecoration(hintText: 'Enter your name'),
-                      onSubmitted: (text) {}),
+                    enabled: !_isUploading,
+                    style: themeData.primaryTextTheme.bodyText2,
+                    controller: _nameInputController,
+                    decoration: InputDecoration(
+                      hintText: texts.breez_avatar_dialog_your_name,
+                    ),
+                    onSubmitted: (text) {},
+                  ),
                 )
               ],
             ),
           ),
-          actions: <Widget>[
+          actions: [
             TextButton(
-              child: Text('CANCEL',
-                  style: Theme.of(context).primaryTextTheme.button),
-              onPressed: _isUploading
-                  ? null
-                  : () {
-                      Navigator.of(context).pop();
-                    },
+              child: Text(
+                texts.breez_avatar_dialog_action_cancel,
+                style: themeData.primaryTextTheme.button,
+              ),
+              onPressed: _isUploading ? null : () => navigator.pop(),
             ),
             TextButton(
-              child: Text('SAVE',
-                  style: Theme.of(context).primaryTextTheme.button),
+              child: Text(
+                texts.breez_avatar_dialog_action_save,
+                style: themeData.primaryTextTheme.button,
+              ),
               onPressed: _isUploading
                   ? null
                   : () async {
@@ -211,9 +223,10 @@ Widget breezAvatarDialog(BuildContext context, UserProfileBloc userBloc) {
                             });
                           });
                         }
-                        userBloc.userSink
-                            .add(_currentSettings.copyWith(name: userName));
-                        Navigator.of(context).pop();
+                        userBloc.userSink.add(_currentSettings.copyWith(
+                          name: userName,
+                        ));
+                        navigator.pop();
                       } catch (e) {
                         setState(() {
                           _isUploading = false;
@@ -221,15 +234,18 @@ Widget breezAvatarDialog(BuildContext context, UserProfileBloc userBloc) {
                         });
                         showFlushbar(
                           context,
-                          message: "Failed to upload profile picture",
+                          message: texts.breez_avatar_dialog_error_upload,
                         );
                       }
                     },
             ),
           ],
           shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.vertical(
-                  bottom: Radius.circular(12.0), top: Radius.circular(13.0))),
+            borderRadius: BorderRadius.vertical(
+              bottom: Radius.circular(12.0),
+              top: Radius.circular(13.0),
+            ),
+          ),
         );
       },
     ),

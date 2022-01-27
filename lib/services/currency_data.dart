@@ -19,6 +19,7 @@ Map<String, CurrencyDataOverride> currencyDataOverrideFromJson(
 
 class CurrencyData {
   String name;
+  Map<String, String> localizedName;
   String shortName;
   int fractionSize;
   String symbol;
@@ -29,6 +30,7 @@ class CurrencyData {
 
   CurrencyData({
     this.name,
+    this.localizedName,
     this.shortName,
     this.fractionSize,
     this.symbol,
@@ -52,6 +54,9 @@ class CurrencyData {
   factory CurrencyData.fromJson(String shortName, Map<String, dynamic> json) {
     final currencyData = CurrencyData(
       name: json["name"],
+      localizedName: json["localized_name"]?.map<String, String>(
+        (lang, name) => MapEntry<String, String>(lang, name),
+      ) ?? {},
       shortName: shortName,
       fractionSize: json["fractionSize"] ?? 0,
       symbol: json["symbol"] != null ? json["symbol"]["grapheme"] : shortName,

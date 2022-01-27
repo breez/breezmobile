@@ -3,8 +3,8 @@ import 'package:breez/bloc/account/account_model.dart';
 import 'package:breez/bloc/user_profile/currency.dart';
 import 'package:breez/theme_data.dart' as theme;
 import 'package:breez/widgets/amount_form_field.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import 'keyboard_done_action.dart';
@@ -13,7 +13,10 @@ class EscherDialog extends StatefulWidget {
   final BuildContext context;
   final AccountBloc accountBloc;
 
-  EscherDialog(this.context, this.accountBloc);
+  const EscherDialog(
+    this.context,
+    this.accountBloc,
+  );
 
   @override
   State<StatefulWidget> createState() {
@@ -24,8 +27,9 @@ class EscherDialog extends StatefulWidget {
 class EscherDialogState extends State<EscherDialog> {
   final _dialogKey = GlobalKey();
   final _formKey = GlobalKey<FormState>();
-  TextEditingController _invoiceAmountController = TextEditingController();
-  final FocusNode _amountFocusNode = FocusNode();
+  final _invoiceAmountController = TextEditingController();
+  final _amountFocusNode = FocusNode();
+
   KeyboardDoneAction _doneAction;
 
   @override
@@ -34,7 +38,7 @@ class EscherDialogState extends State<EscherDialog> {
     _invoiceAmountController.addListener(() {
       setState(() {});
     });
-    _doneAction = KeyboardDoneAction(<FocusNode>[_amountFocusNode]);
+    _doneAction = KeyboardDoneAction([_amountFocusNode]);
   }
 
   @override
@@ -45,20 +49,19 @@ class EscherDialogState extends State<EscherDialog> {
 
   @override
   Widget build(BuildContext context) {
-    return _buildPaymentRequestDialog();
-  }
+    List<Widget> _paymentRequestDialog = [];
 
-  Widget _buildPaymentRequestDialog() {
-    List<Widget> _paymentRequestDialog = <Widget>[];
     _addIfNotNull(_paymentRequestDialog, _buildPaymentRequestContent());
     return Dialog(
       child: Container(
-          key: _dialogKey,
-          width: MediaQuery.of(context).size.width,
-          child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              mainAxisSize: MainAxisSize.min,
-              children: _paymentRequestDialog)),
+        key: _dialogKey,
+        width: MediaQuery.of(context).size.width,
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          mainAxisSize: MainAxisSize.min,
+          children: _paymentRequestDialog,
+        ),
+      ),
     );
   }
 
@@ -70,10 +73,11 @@ class EscherDialogState extends State<EscherDialog> {
         if (account == null) {
           return Container(width: 0.0, height: 0.0);
         }
+
         List<Widget> children = [];
-        _addIfNotNull(children, _buildRequestPayTextWidget());
-        _addIfNotNull(children, _buildAmountWidget(account));
-        _addIfNotNull(children, _buildActions(account));
+        _addIfNotNull(children, _buildRequestPayTextWidget(context));
+        _addIfNotNull(children, _buildAmountWidget(context, account));
+        _addIfNotNull(children, _buildActions(context, account));
 
         return Container(
           padding: EdgeInsets.fromLTRB(8.0, 0.0, 8.0, 16.0),
@@ -94,32 +98,40 @@ class EscherDialogState extends State<EscherDialog> {
     }
   }
 
-  Widget _buildRequestPayTextWidget() {
+  Widget _buildRequestPayTextWidget(BuildContext context) {
+    final themeData = Theme.of(context);
+    final texts = AppLocalizations.of(context);
+
     return Padding(
       padding: EdgeInsets.only(top: 36, bottom: 8),
       child: Text(
-        "Enter cash-out amount:",
-        style:
-            Theme.of(context).primaryTextTheme.headline3.copyWith(fontSize: 16),
+        texts.escher_cash_out_amount,
+        style: themeData.primaryTextTheme.headline3.copyWith(
+          fontSize: 16,
+        ),
         textAlign: TextAlign.center,
       ),
     );
   }
 
-  Widget _buildAmountWidget(AccountModel account) {
+  Widget _buildAmountWidget(BuildContext context, AccountModel account) {
+    final texts = AppLocalizations.of(context);
+    final themeData = Theme.of(context);
+
     return Theme(
-      data: Theme.of(context).copyWith(
-          inputDecorationTheme: InputDecorationTheme(
-              enabledBorder:
-                  UnderlineInputBorder(borderSide: theme.greyBorderSide)),
-          hintColor: Theme.of(context).dialogTheme.contentTextStyle.color,
-          colorScheme: ColorScheme.dark(
-            primary: Theme.of(context).textTheme.button.color,
+      data: themeData.copyWith(
+        inputDecorationTheme: InputDecorationTheme(
+          enabledBorder: UnderlineInputBorder(
+            borderSide: theme.greyBorderSide,
           ),
-          primaryColor: Theme.of(context).textTheme.button.color,
-          errorColor: theme.themeId == "BLUE"
-              ? Colors.red
-              : Theme.of(context).errorColor),
+        ),
+        hintColor: themeData.dialogTheme.contentTextStyle.color,
+        colorScheme: ColorScheme.dark(
+          primary: themeData.textTheme.button.color,
+        ),
+        primaryColor: themeData.textTheme.button.color,
+        errorColor: theme.themeId == "BLUE" ? Colors.red : themeData.errorColor,
+      ),
       child: Form(
         autovalidateMode: AutovalidateMode.always,
         key: _formKey,
@@ -129,15 +141,15 @@ class EscherDialogState extends State<EscherDialog> {
             height: 80.0,
             child: AmountFormField(
               context: context,
+              texts: texts,
               accountModel: account,
-              iconColor: Theme.of(context).primaryIconTheme.color,
+              iconColor: themeData.primaryIconTheme.color,
               focusNode: _amountFocusNode,
               controller: _invoiceAmountController,
               validatorFn: account.validateOutgoingPayment,
-              style: Theme.of(context)
-                  .dialogTheme
-                  .contentTextStyle
-                  .copyWith(height: 1.0),
+              style: themeData.dialogTheme.contentTextStyle.copyWith(
+                height: 1.0,
+              ),
             ),
           ),
         ),
@@ -145,31 +157,53 @@ class EscherDialogState extends State<EscherDialog> {
     );
   }
 
-  Widget _buildActions(AccountModel account) {
+  Widget _buildActions(BuildContext context, AccountModel account) {
+    final texts = AppLocalizations.of(context);
+    final themeData = Theme.of(context);
+
     List<Widget> actions = [
       SimpleDialogOption(
         onPressed: () => Navigator.pop(context),
-        child: Text("CANCEL", style: Theme.of(context).primaryTextTheme.button),
+        child: Text(
+          texts.escher_action_cancel,
+          style: themeData.primaryTextTheme.button,
+        ),
       ),
     ];
-    if (_invoiceAmountController.text.isNotEmpty) {
-      var parsedAmount = account.currency.parse(_invoiceAmountController.text);
+
+    final invoice = _invoiceAmountController.text ?? "";
+    if (invoice.isNotEmpty) {
+      var parsedAmount = account.currency.parse(invoice);
       if (account.validateOutgoingPayment(parsedAmount) == null) {
-        actions.add(SimpleDialogOption(
-          onPressed: () {
-            Navigator.pop(context);
-            var satValue = Currency.SAT.format(parsedAmount,
-                includeDisplayName: false, userInput: true);
-            launch("https://hub.escher.app/cashout/breez?amount=$satValue", forceSafariVC: false, enableJavaScript: true);
-          },
-          child:
-              Text("APPROVE", style: Theme.of(context).primaryTextTheme.button),
-        ));
+        actions.add(
+          SimpleDialogOption(
+            onPressed: () {
+              Navigator.pop(context);
+              final satValue = Currency.SAT.format(
+                parsedAmount,
+                includeDisplayName: false,
+                userInput: true,
+              );
+              launch(
+                "https://hub.escher.app/cashout/breez?amount=$satValue",
+                forceSafariVC: false,
+                enableJavaScript: true,
+              );
+            },
+            child: Text(
+              texts.escher_action_approve,
+              style: themeData.primaryTextTheme.button,
+            ),
+          ),
+        );
       }
     }
+
     return Theme(
-      data: Theme.of(context).copyWith(
-          splashColor: Colors.transparent, highlightColor: Colors.transparent),
+      data: themeData.copyWith(
+        splashColor: Colors.transparent,
+        highlightColor: Colors.transparent,
+      ),
       child: Padding(
         padding: const EdgeInsets.only(top: 24.0),
         child: Row(

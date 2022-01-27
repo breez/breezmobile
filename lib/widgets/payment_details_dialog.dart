@@ -422,16 +422,13 @@ class ShareablePaymentRow extends StatelessWidget {
   Widget build(BuildContext context) {
     final themeData = Theme.of(context);
     final texts = AppLocalizations.of(context);
-    final _expansionTileTheme = themeData.copyWith(
-      unselectedWidgetColor: themeData.primaryTextTheme.button.color,
-      colorScheme: ColorScheme.dark(
-        secondary: themeData.primaryTextTheme.button.color,
-      ),
-      dividerColor: themeData.backgroundColor,
-    );
+    final _expansionTileTheme =
+        themeData.copyWith(dividerColor: themeData.backgroundColor);
     return Theme(
       data: _expansionTileTheme,
       child: ExpansionTile(
+        iconColor: themeData.primaryTextTheme.button.color,
+        collapsedIconColor: themeData.primaryTextTheme.button.color,
         title: AutoSizeText(
           title,
           style: themeData.primaryTextTheme.headline4,
@@ -812,13 +809,11 @@ class _Destination extends StatelessWidget {
     final themeData = Theme.of(context);
     return Theme(
       data: themeData.copyWith(
-        unselectedWidgetColor: themeData.primaryTextTheme.button.color,
-        colorScheme: ColorScheme.dark(
-          secondary: themeData.primaryTextTheme.button.color,
-        ),
         dividerColor: themeData.backgroundColor,
       ),
       child: ExpansionTile(
+        iconColor: themeData.primaryTextTheme.button.color,
+        collapsedIconColor: themeData.primaryTextTheme.button.color,
         title: AutoSizeText(
           title,
           style: themeData.primaryTextTheme.headline4,

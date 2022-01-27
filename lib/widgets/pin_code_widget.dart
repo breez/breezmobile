@@ -3,6 +3,7 @@ import 'dart:math';
 import 'package:breez/bloc/user_profile/breez_user_model.dart';
 import 'package:breez/bloc/user_profile/user_actions.dart';
 import 'package:breez/bloc/user_profile/user_profile_bloc.dart';
+import 'package:breez/services/local_auth_service.dart';
 import 'package:breez/theme_data.dart' as theme;
 import 'package:breez/widgets/circular_button.dart';
 import 'package:breez/widgets/flushbar.dart';
@@ -30,7 +31,7 @@ class PinCodeWidgetState extends State<PinCodeWidget>
     with WidgetsBindingObserver {
   String _enteredPinCode;
   String _errorMessage;
-  String _enrolledBiometrics;
+  LocalAuthenticationOption _enrolledBiometrics;
   bool biometricsValidated = false;
 
   bool _inputEnabled = true;
@@ -41,7 +42,7 @@ class PinCodeWidgetState extends State<PinCodeWidget>
     WidgetsBinding.instance.addObserver(this);
     _enteredPinCode = "";
     _errorMessage = "";
-    _enrolledBiometrics = "";
+    _enrolledBiometrics = LocalAuthenticationOption.NONE;
     if (widget.onFingerprintEntered != null) {
       _promptBiometrics();
     }
@@ -72,7 +73,7 @@ class PinCodeWidgetState extends State<PinCodeWidget>
 
   Future _promptBiometrics() async {
     _enrolledBiometrics = await _getEnrolledBiometrics();
-    if (_enrolledBiometrics != "") {
+    if (_enrolledBiometrics != LocalAuthenticationOption.NONE) {
       await Future.delayed(Duration(milliseconds: 240));
       _validateBiometrics();
     }
@@ -233,7 +234,9 @@ class PinCodeWidgetState extends State<PinCodeWidget>
                   : StreamBuilder<BreezUserModel>(
                       stream: widget.userProfileBloc.userStream,
                       builder: (context, snapshot) {
-                        if (!snapshot.hasData || _enrolledBiometrics == "") {
+                        if (!snapshot.hasData ||
+                            _enrolledBiometrics ==
+                                LocalAuthenticationOption.NONE) {
                           return _buildEraseButton();
                         } else {
                           return _buildBiometricsButton(snapshot, context);
@@ -251,7 +254,10 @@ class PinCodeWidgetState extends State<PinCodeWidget>
       AsyncSnapshot<BreezUserModel> snapshot, BuildContext context) {
     return CircularButton(
       child: Icon(
-        _enrolledBiometrics.contains("Face") ? Icons.face : Icons.fingerprint,
+        _enrolledBiometrics == LocalAuthenticationOption.FACE ||
+                _enrolledBiometrics == LocalAuthenticationOption.FACE_ID
+            ? Icons.face
+            : Icons.fingerprint,
         color: Theme.of(context).errorColor,
       ),
       onTap: _inputEnabled ? () => _validateBiometrics(force: true) : null,

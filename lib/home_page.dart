@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:anytime/bloc/podcast/audio_bloc.dart';
+import 'package:anytime/l10n/L.dart';
 import 'package:anytime/ui/anytime_podcast_app.dart';
 import 'package:anytime/ui/podcast/now_playing.dart';
 import 'package:audio_service/audio_service.dart';
@@ -35,16 +36,15 @@ import 'package:breez/widgets/flushbar.dart';
 import 'package:breez/widgets/loader.dart';
 import 'package:breez/widgets/loading_animated_text.dart';
 import 'package:breez/widgets/lost_card_dialog.dart' as lostCard;
-import 'package:breez/widgets/lsp_fee.dart';
 import 'package:breez/widgets/navigation_drawer.dart';
 import 'package:breez/widgets/payment_failed_report_dialog.dart';
 import 'package:breez/widgets/route.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
 import 'bloc/invoice/invoice_model.dart';
@@ -76,11 +76,20 @@ class Home extends StatefulWidget {
   final ReverseSwapBloc reverseSwapBloc;
   final LNUrlBloc lnurlBloc;
 
-  Home(this.accountBloc, this.invoiceBloc, this.userProfileBloc, this.ctpBloc,
-      this.backupBloc, this.lspBloc, this.reverseSwapBloc, this.lnurlBloc);
+  Home(
+    this.accountBloc,
+    this.invoiceBloc,
+    this.userProfileBloc,
+    this.ctpBloc,
+    this.backupBloc,
+    this.lspBloc,
+    this.reverseSwapBloc,
+    this.lnurlBloc,
+  );
 
-  final List<DrawerItemConfig> _screens = List<DrawerItemConfig>.unmodifiable(
-      [DrawerItemConfig("breezHome", "Breez", "")]);
+  final List<DrawerItemConfig> _screens = List<DrawerItemConfig>.unmodifiable([
+    DrawerItemConfig("breezHome", "Breez", ""),
+  ]);
 
   final Map<String, Widget> _screenBuilders = {};
 
@@ -96,6 +105,7 @@ class HomeState extends State<Home> with WidgetsBindingObserver {
   Set _hiddenRoutes = Set<String>();
   StreamSubscription<String> _accountNotificationsSubscription;
   AudioBloc audioBloc;
+  bool _listensInit = false;
 
   @override
   void initState() {
@@ -104,12 +114,6 @@ class HomeState extends State<Home> with WidgetsBindingObserver {
     WidgetsBinding.instance.addObserver(this);
     audioBloc.transitionLifecycleState(LifecyleState.resume);
 
-    _registerNotificationHandlers();
-    listenUnexpectedError(context, widget.accountBloc);
-    _listenBackupConflicts();
-    _listenWhitelistPermissionsRequest();
-    _listenLSPSelectionPrompt();
-    _listenPaymentResults();
     _hiddenRoutes.add("/get_refund");
     widget.accountBloc.accountStream.listen((acc) {
       setState(() {
@@ -140,14 +144,16 @@ class HomeState extends State<Home> with WidgetsBindingObserver {
         .listen((event) async {
       final userBloc = AppBlocsProvider.of<UserProfileBloc>(context);
       final userModel = await userBloc.userStream.first;
-      final nowPlaying =
-          await audioBloc.nowPlaying.first.timeout(Duration(seconds: 1));
+      final nowPlaying = await audioBloc.nowPlaying.first.timeout(
+        Duration(seconds: 1),
+      );
       if (nowPlaying != null &&
           !breezPodcast.NowPlayingTransport.nowPlayingVisible) {
         Navigator.of(context).push(
           MaterialPageRoute<void>(
-              builder: (context) => withPodcastTheme(userModel, NowPlaying()),
-              fullscreenDialog: false),
+            builder: (context) => withPodcastTheme(userModel, NowPlaying()),
+            fullscreenDialog: false,
+          ),
         );
       }
     }, onDone: () {
@@ -157,21 +163,17 @@ class HomeState extends State<Home> with WidgetsBindingObserver {
     });
   }
 
-  // @override
-  // void didChangeAppLifecycleState(AppLifecycleState state) async {
-  //   final audioBloc = Provider.of<AudioBloc>(context, listen: false);
+  void _initListens(BuildContext context) {
+    if (_listensInit) return;
+    _listensInit = true;
 
-  //   switch (state) {
-  //     case AppLifecycleState.resumed:
-  //       audioBloc.transitionLifecycleState(LifecyleState.resume);
-  //       break;
-  //     case AppLifecycleState.paused:
-  //       audioBloc.transitionLifecycleState(LifecyleState.pause);
-  //       break;
-  //     default:
-  //       break;
-  //   }
-  // }
+    _registerNotificationHandlers(context);
+    listenUnexpectedError(context, widget.accountBloc);
+    _listenBackupConflicts(context);
+    _listenWhitelistPermissionsRequest(context);
+    _listenLSPSelectionPrompt(context);
+    _listenPaymentResults(context);
+  }
 
   @override
   void dispose() {
@@ -183,65 +185,71 @@ class HomeState extends State<Home> with WidgetsBindingObserver {
 
   @override
   Widget build(BuildContext context) {
-    AddFundsBloc addFundsBloc = BlocProvider.of<AddFundsBloc>(context);
-    LSPBloc lspBloc = AppBlocsProvider.of<LSPBloc>(context);
+    _initListens(context);
+    final addFundsBloc = BlocProvider.of<AddFundsBloc>(context);
+    final lspBloc = AppBlocsProvider.of<LSPBloc>(context);
     final texts = AppLocalizations.of(context);
+
     return WillPopScope(
       onWillPop: willPopCallback(
         context,
         canCancel: () => _scaffoldKey.currentState?.isDrawerOpen ?? false,
       ),
       child: StreamBuilder<BreezUserModel>(
-          stream: widget.userProfileBloc.userStream,
-          builder: (context, userSnapshot) {
-            final user = userSnapshot.data;
+        stream: widget.userProfileBloc.userStream,
+        builder: (context, userSnapshot) {
+          final user = userSnapshot.data;
 
-            return StreamBuilder<AccountModel>(
-                stream: widget.accountBloc.accountStream,
-                builder: (context, accSnapshot) {
-                  final account = accSnapshot.data;
-                  if (account == null) {
+          return StreamBuilder<AccountModel>(
+            stream: widget.accountBloc.accountStream,
+            builder: (context, accSnapshot) {
+              final account = accSnapshot.data;
+              if (account == null) {
+                return SizedBox();
+              }
+
+              return StreamBuilder<AccountSettings>(
+                stream: widget.accountBloc.accountSettingsStream,
+                builder: (context, settingsSnapshot) {
+                  final settings = settingsSnapshot.data;
+                  if (settings == null) {
                     return SizedBox();
                   }
 
-                  return StreamBuilder<AccountSettings>(
-                      stream: widget.accountBloc.accountSettingsStream,
-                      builder: (context, settingsSnapshot) {
-                        final settings = settingsSnapshot.data;
-                        if (settings == null) {
-                          return SizedBox();
-                        }
+                  return StreamBuilder<LSPStatus>(
+                    stream: lspBloc.lspStatusStream,
+                    builder: (context, lspSnapshot) {
+                      final lspStatus = lspSnapshot.data;
 
-                        return StreamBuilder<LSPStatus>(
-                            stream: lspBloc.lspStatusStream,
-                            builder: (context, lspSnapshot) {
-                              final lspStatus = lspSnapshot.data;
+                      return StreamBuilder<List<AddFundVendorModel>>(
+                        stream: addFundsBloc.availableVendorsStream,
+                        builder: (context, snapshot) {
+                          final vendor = snapshot.data;
 
-                              return StreamBuilder<List<AddFundVendorModel>>(
-                                  stream: addFundsBloc.availableVendorsStream,
-                                  builder: (context, snapshot) {
-                                    final vendor = snapshot.data;
-
-                                    return StreamBuilder<
-                                            Future<DecodedClipboardData>>(
-                                        stream: widget
-                                            .invoiceBloc.decodedClipboardStream,
-                                        builder: (context, snapshot) {
-                                          return _build(
-                                            context,
-                                            user,
-                                            account,
-                                            settings,
-                                            lspStatus,
-                                            vendor,
-                                            texts,
-                                          );
-                                        });
-                                  });
-                            });
-                      });
-                });
-          }),
+                          return StreamBuilder<Future<DecodedClipboardData>>(
+                            stream: widget.invoiceBloc.decodedClipboardStream,
+                            builder: (context, snapshot) {
+                              return _build(
+                                context,
+                                user,
+                                account,
+                                settings,
+                                lspStatus,
+                                vendor,
+                                texts,
+                              );
+                            },
+                          );
+                        },
+                      );
+                    },
+                  );
+                },
+              );
+            },
+          );
+        },
+      ),
     );
   }
 
@@ -254,82 +262,83 @@ class HomeState extends State<Home> with WidgetsBindingObserver {
     List<AddFundVendorModel> vendor,
     AppLocalizations texts,
   ) {
-    final addFundsVendors = _drawerConfigAddFundsVendors(
-      context,
-      account,
-      lspStatus,
-      vendor,
-    );
+    final themeData = Theme.of(context);
     final mediaSize = MediaQuery.of(context).size;
+
     return Container(
       height: mediaSize.height,
       width: mediaSize.width,
       child: FadeInWidget(
         child: Scaffold(
-            resizeToAvoidBottomInset: false,
-            key: _scaffoldKey,
-            appBar: AppBar(
-              brightness: theme.themeId == "BLUE"
-                  ? Brightness.light
-                  : Theme.of(context).appBarTheme.brightness,
-              centerTitle: false,
-              actions: <Widget>[
-                Padding(
-                  padding: const EdgeInsets.all(14.0),
-                  child: AccountRequiredActionsIndicator(
-                    widget.backupBloc,
-                    widget.accountBloc,
-                    widget.lspBloc,
-                  ),
+          resizeToAvoidBottomInset: false,
+          key: _scaffoldKey,
+          appBar: AppBar(
+            brightness: theme.themeId == "BLUE"
+                ? Brightness.light
+                : themeData.appBarTheme.brightness,
+            centerTitle: false,
+            actions: [
+              Padding(
+                padding: const EdgeInsets.all(14.0),
+                child: AccountRequiredActionsIndicator(
+                  widget.backupBloc,
+                  widget.accountBloc,
+                  widget.lspBloc,
                 ),
-              ],
-              leading: _buildMenuIcon(context, user.appMode),
-              title: IconButton(
-                padding: EdgeInsets.zero,
-                icon: SvgPicture.asset(
-                  "src/images/logo-color.svg",
-                  height: 23.5,
-                  width: 62.7,
-                  color: Theme.of(context).appBarTheme.actionsIconTheme.color,
-                  colorBlendMode: BlendMode.srcATop,
-                ),
-                iconSize: 64,
-                onPressed: () async {
-                  _scaffoldKey.currentState.openDrawer();
-                },
               ),
-              iconTheme: IconThemeData(
-                color: Color.fromARGB(255, 0, 133, 251),
+            ],
+            leading: _buildMenuIcon(context, user.appMode),
+            title: IconButton(
+              padding: EdgeInsets.zero,
+              icon: SvgPicture.asset(
+                "src/images/logo-color.svg",
+                height: 23.5,
+                width: 62.7,
+                color: themeData.appBarTheme.actionsIconTheme.color,
+                colorBlendMode: BlendMode.srcATop,
               ),
-              backgroundColor: (user.appMode == AppMode.pos)
-                  ? Theme.of(context).backgroundColor
-                  : theme.customData[theme.themeId].dashboardBgColor,
-              elevation: 0.0,
+              iconSize: 64,
+              onPressed: () async {
+                _scaffoldKey.currentState.openDrawer();
+              },
             ),
-            drawerEnableOpenDragGesture: true,
-            drawerDragStartBehavior: DragStartBehavior.down,
-            drawerEdgeDragWidth: mediaSize.width,
-            drawer: Theme(
-              data: theme.themeMap[user.themeId],
-              child: _navigationDrawer(
+            iconTheme: IconThemeData(
+              color: Color.fromARGB(255, 0, 133, 251),
+            ),
+            backgroundColor: (user.appMode == AppMode.pos)
+                ? themeData.backgroundColor
+                : theme.customData[theme.themeId].dashboardBgColor,
+            elevation: 0.0,
+          ),
+          drawerEnableOpenDragGesture: true,
+          drawerDragStartBehavior: DragStartBehavior.down,
+          drawerEdgeDragWidth: mediaSize.width,
+          drawer: Theme(
+            data: theme.themeMap[user.themeId],
+            child: _navigationDrawer(
+              context,
+              user,
+              account,
+              settings,
+              lspStatus,
+              vendor,
+              texts,
+            ),
+          ),
+          bottomNavigationBar: user.appMode == AppMode.balance
+              ? BottomActionsBar(account, firstPaymentItemKey)
+              : null,
+          floatingActionButton: user.appMode == AppMode.balance
+              ? QrActionButton(account, firstPaymentItemKey)
+              : null,
+          floatingActionButtonLocation:
+              FloatingActionButtonLocation.centerDocked,
+          body: widget._screenBuilders[_activeScreen] ??
+              _homePage(
                 context,
                 user,
-                account,
-                settings,
-                lspStatus,
-                vendor,
-                texts,
               ),
-            ),
-            bottomNavigationBar: user.appMode == AppMode.balance
-                ? BottomActionsBar(account, firstPaymentItemKey)
-                : null,
-            floatingActionButton: user.appMode == AppMode.balance
-                ? QrActionButton(account, firstPaymentItemKey)
-                : null,
-            floatingActionButtonLocation:
-                FloatingActionButtonLocation.centerDocked,
-            body: widget._screenBuilders[_activeScreen] ?? _homePage(user)),
+        ),
       ),
     );
   }
@@ -389,41 +398,6 @@ class HomeState extends State<Home> with WidgetsBindingObserver {
     ];
   }
 
-  List<DrawerItemConfig> _drawerConfigAddFundsVendors(
-    BuildContext context,
-    AccountModel account,
-    LSPStatus lspStatus,
-    List<AddFundVendorModel> vendor,
-  ) {
-    if (vendor == null) {
-      return [];
-    }
-    List<DrawerItemConfig> addFundsVendors = [];
-    vendor.where((v) => v.isAllowed).forEach((v) {
-      addFundsVendors.add(
-        DrawerItemConfig(
-          v.route,
-          v.shortName ?? v.name,
-          v.icon,
-          disabled: !v.enabled || v.requireActiveChannel && !account.connected,
-          onItemSelected: (item) {
-            if (!v.showLSPFee) {
-              Navigator.of(context).pushNamed(v.route);
-              return;
-            }
-            promptLSPFeeAndNavigate(
-              context,
-              account,
-              lspStatus.currentLSP,
-              v.route,
-            );
-          },
-        ),
-      );
-    });
-    return addFundsVendors;
-  }
-
   List<DrawerItemConfigGroup> _drawerConfigRefundItems(
     BuildContext context,
     BreezUserModel user,
@@ -432,12 +406,13 @@ class HomeState extends State<Home> with WidgetsBindingObserver {
     if (refundableAddresses.length == 0) {
       return [];
     }
+    final texts = AppLocalizations.of(context);
     return [
       DrawerItemConfigGroup(
         [
           DrawerItemConfig(
             "",
-            "Get Refund",
+            texts.home_drawer_item_title_get_refund,
             "src/icon/withdraw_funds.png",
             onItemSelected: (_) => protectAdminRoute(
               context,
@@ -500,8 +475,9 @@ class HomeState extends State<Home> with WidgetsBindingObserver {
           context,
           user,
           () {
-            widget.userProfileBloc.userActionsSink
-                .add(SetAppMode(AppMode.balance));
+            widget.userProfileBloc.userActionsSink.add(
+              SetAppMode(AppMode.balance),
+            );
             return Future.value(null);
           },
         );
@@ -525,8 +501,9 @@ class HomeState extends State<Home> with WidgetsBindingObserver {
           context,
           user,
           () {
-            widget.userProfileBloc.userActionsSink
-                .add(SetAppMode(AppMode.podcasts));
+            widget.userProfileBloc.userActionsSink.add(
+              SetAppMode(AppMode.podcasts),
+            );
             return Future.value(null);
           },
         );
@@ -545,7 +522,9 @@ class HomeState extends State<Home> with WidgetsBindingObserver {
       "src/icon/pos.png",
       isSelected: user.appMode == AppMode.pos,
       onItemSelected: (_) {
-        widget.userProfileBloc.userActionsSink.add(SetAppMode(AppMode.pos));
+        widget.userProfileBloc.userActionsSink.add(
+          SetAppMode(AppMode.pos),
+        );
       },
     );
   }
@@ -600,16 +579,19 @@ class HomeState extends State<Home> with WidgetsBindingObserver {
   }
 
   IconButton _buildMenuIcon(BuildContext context, AppMode appMode) {
+    final themeData = Theme.of(context);
+
     return IconButton(
-        icon: Image.asset(
-          _getAppModesAssetName(appMode),
-          height: 24.0,
-          width: 24.0,
-          color: Theme.of(context).appBarTheme.actionsIconTheme.color,
-        ),
-        onPressed: () {
-          _scaffoldKey.currentState.openDrawer();
-        });
+      icon: Image.asset(
+        _getAppModesAssetName(appMode),
+        height: 24.0,
+        width: 24.0,
+        color: themeData.appBarTheme.actionsIconTheme.color,
+      ),
+      onPressed: () {
+        _scaffoldKey.currentState.openDrawer();
+      },
+    );
   }
 
   String _getAppModesAssetName(AppMode appMode) {
@@ -627,20 +609,21 @@ class HomeState extends State<Home> with WidgetsBindingObserver {
     }
   }
 
-//  noSubscriptionsMessage:
-//               "Use the Discover view to find and subscribe to your first podcast",
-  _homePage(BreezUserModel user) {
+  Widget _homePage(BuildContext context, BreezUserModel user) {
+    final texts = AppLocalizations.of(context);
+    final themeData = Theme.of(context);
+    final List<String> anytimeLocales = ['en', 'de', 'pt'];
+
     switch (user.appMode) {
       case AppMode.podcasts:
         return Container(
-          color: Theme.of(context).bottomAppBarColor,
+          color: themeData.bottomAppBarColor,
           child: SafeArea(
             child: AnytimeHomePage(
               topBarVisible: false,
               inlineSearch: true,
-              noSubscriptionsMessage:
-                  "Use the Discover view to find and subscribe to your first podcast",
-              title: 'Anytime Podcast Player',
+              noSubscriptionsMessage: texts.home_podcast_no_subscriptions,
+              title: texts.home_podcast_title,
             ),
           ),
         );
@@ -661,11 +644,10 @@ class HomeState extends State<Home> with WidgetsBindingObserver {
     } else {
       if (itemName == "/lost_card") {
         showDialog(
-            useRootNavigator: false,
-            context: context,
-            builder: (_) => lostCard.LostCardDialog(
-                  context: context,
-                ));
+          useRootNavigator: false,
+          context: context,
+          builder: (_) => lostCard.LostCardDialog(),
+        );
       } else {
         Navigator.of(context).pushNamed(itemName).then((message) {
           if (message != null && message.runtimeType == String) {
@@ -676,111 +658,154 @@ class HomeState extends State<Home> with WidgetsBindingObserver {
     }
   }
 
-  void _registerNotificationHandlers() {
+  void _registerNotificationHandlers(BuildContext context) {
+    final themeData = Theme.of(context);
+    final texts = AppLocalizations.of(context);
+
     InvoiceNotificationsHandler(
-        context,
-        widget.userProfileBloc,
-        widget.accountBloc,
-        widget.invoiceBloc.receivedInvoicesStream,
-        firstPaymentItemKey,
-        scrollController,
-        _scaffoldKey);
+      context,
+      widget.userProfileBloc,
+      widget.accountBloc,
+      widget.invoiceBloc.receivedInvoicesStream,
+      firstPaymentItemKey,
+      scrollController,
+      _scaffoldKey,
+    );
     LNURLHandler(context, widget.lnurlBloc);
-    CTPJoinSessionHandler(widget.userProfileBloc, widget.ctpBloc, this.context,
-        (session) {
-      Navigator.popUntil(context, (route) {
-        return route.settings.name != "/connect_to_pay";
-      });
-      var ctpRoute = FadeInRoute(
+    CTPJoinSessionHandler(
+      widget.userProfileBloc,
+      widget.ctpBloc,
+      this.context,
+      (session) {
+        Navigator.popUntil(context, (route) {
+          return route.settings.name != "/connect_to_pay";
+        });
+        var ctpRoute = FadeInRoute(
           builder: (_) => withBreezTheme(context, ConnectToPayPage(session)),
-          settings: RouteSettings(name: "/connect_to_pay"));
-      Navigator.of(context).push(ctpRoute);
-    }, (e) {
-      promptError(
+          settings: RouteSettings(name: "/connect_to_pay"),
+        );
+        Navigator.of(context).push(ctpRoute);
+      },
+      (e) {
+        promptError(
           context,
-          "Connect to Pay",
-          Text(e.toString(),
-              style: Theme.of(context).dialogTheme.contentTextStyle));
-    });
+          texts.home_error_connect_to_pay,
+          Text(
+            e.toString(),
+            style: themeData.dialogTheme.contentTextStyle,
+          ),
+        );
+      },
+    );
     PodcastURLHandler(widget.userProfileBloc, this.context, (e) {
       promptError(
-          context,
-          "Podcast Link",
-          Text(e.toString(),
-              style: Theme.of(context).dialogTheme.contentTextStyle));
+        context,
+        texts.home_error_podcast_link,
+        Text(
+          e.toString(),
+          style: themeData.dialogTheme.contentTextStyle,
+        ),
+      );
     });
     SyncUIHandler(widget.accountBloc, context);
     ShowPinHandler(widget.userProfileBloc, context);
 
-    _accountNotificationsSubscription = widget
-        .accountBloc.accountNotificationsStream
-        .listen((data) => showFlushbar(context, message: data),
-            onError: (e) => showFlushbar(context, message: e.toString()));
+    _accountNotificationsSubscription =
+        widget.accountBloc.accountNotificationsStream.listen(
+      (data) => showFlushbar(
+        context,
+        message: data,
+      ),
+      onError: (e) => showFlushbar(
+        context,
+        message: e.toString(),
+      ),
+    );
     widget.reverseSwapBloc.broadcastTxStream.listen((_) {
-      showFlushbar(context,
-          messageWidget: LoadingAnimatedText("Broadcasting your transaction",
-              textStyle: theme.snackBarStyle, textAlign: TextAlign.left));
+      showFlushbar(
+        context,
+        messageWidget: LoadingAnimatedText(
+          texts.home_broadcast_transaction,
+          textStyle: theme.snackBarStyle,
+          textAlign: TextAlign.left,
+        ),
+      );
     });
     checkVersionDialog(context, widget.userProfileBloc);
   }
 
-  void _listenBackupConflicts() {
+  void _listenBackupConflicts(BuildContext context) {
+    final texts = AppLocalizations.of(context);
+    final themeData = Theme.of(context);
+
     widget.accountBloc.nodeConflictStream.listen((_) async {
       Navigator.popUntil(context, (route) {
         return route.settings.name == "/";
       });
       await promptError(
-          context,
-          "Configuration Error",
-          Text(
-              "Breez detected another device is running with the same configuration (probably due to restore). Breez cannot run the same configuration on more than one device. Please reinstall Breez if you wish to continue using Breez on this device.",
-              style: Theme.of(context).dialogTheme.contentTextStyle),
-          okText: "Exit Breez",
-          okFunc: () => exit(0),
-          disableBack: true);
+        context,
+        texts.home_config_error_title,
+        Text(
+          texts.home_config_error_message,
+          style: themeData.dialogTheme.contentTextStyle,
+        ),
+        okText: texts.home_config_error_action_exit,
+        okFunc: () => exit(0),
+        disableBack: true,
+      );
     });
   }
 
-  void _listenLSPSelectionPrompt() async {
+  void _listenLSPSelectionPrompt(BuildContext context) async {
     widget.lspBloc.lspPromptStream.first
         .then((_) => Navigator.of(context).pushNamed("/select_lsp"));
   }
 
-  void _listenWhitelistPermissionsRequest() {
+  void _listenWhitelistPermissionsRequest(BuildContext context) {
+    final texts = AppLocalizations.of(context);
+    final themeData = Theme.of(context);
+
     widget.accountBloc.optimizationWhitelistExplainStream.listen((_) async {
       await promptError(
-          context,
-          "Background Synchronization",
-          Text(
-              "In order to support instantaneous payments, Breez needs your permission in order to synchronize the information while the app is not active. Please approve the app in the next dialog.",
-              style: Theme.of(context).dialogTheme.contentTextStyle),
-          okFunc: () =>
-              widget.accountBloc.optimizationWhitelistRequestSink.add(null));
+        context,
+        texts.home_background_synchronization_title,
+        Text(
+          texts.home_background_synchronization_message,
+          style: themeData.dialogTheme.contentTextStyle,
+        ),
+        okFunc: () => widget.accountBloc.optimizationWhitelistRequestSink.add(
+          null,
+        ),
+      );
     });
   }
 
-  void _listenPaymentResults() {
+  void _listenPaymentResults(BuildContext context) {
+    final texts = AppLocalizations.of(context);
+
     widget.accountBloc.completedPaymentsStream.listen((fulfilledPayment) async {
-      print(
-          '_listenPaymentResults processing: ${fulfilledPayment.paymentHash}');
+      final paymentHash = fulfilledPayment.paymentHash;
+      print('_listenPaymentResults processing: $paymentHash');
 
       if (!fulfilledPayment.cancelled &&
           !fulfilledPayment.ignoreGlobalFeedback) {
         await scrollController.animateTo(
-            scrollController.position.minScrollExtent,
-            duration: Duration(milliseconds: 10),
-            curve: Curves.ease);
+          scrollController.position.minScrollExtent,
+          duration: Duration(milliseconds: 10),
+          curve: Curves.ease,
+        );
 
-        if (fulfilledPayment?.paymentItem?.lnurlPayInfo?.successAction
-                ?.hasTag() ==
-            true) {
+        var action = fulfilledPayment?.paymentItem?.lnurlPayInfo?.successAction;
+        if (action?.hasTag() == true) {
           await Future.delayed(Duration(seconds: 1));
-          showLNURLSuccessAction(
-              context, fulfilledPayment.paymentItem.lnurlPayInfo.successAction);
+          showLNURLSuccessAction(context, action);
         } else {
-          showFlushbar(context,
-              messageWidget: SingleChildScrollView(
-                  child: Text('Payment was successfully sent!')));
+          showFlushbar(
+            context,
+            messageWidget: SingleChildScrollView(
+              child: Text(texts.home_payment_sent),
+            ),
+          );
         }
       }
     }, onError: (err) async {
@@ -788,35 +813,40 @@ class HomeState extends State<Home> with WidgetsBindingObserver {
       if (error.ignoreGlobalFeedback) {
         return;
       }
-      var accountSettings =
-          await widget.accountBloc.accountSettingsStream.first;
-      bool prompt =
-          accountSettings.failedPaymentBehavior == BugReportBehavior.PROMPT;
-      bool send = accountSettings.failedPaymentBehavior ==
-          BugReportBehavior.SEND_REPORT;
+      final settings = await widget.accountBloc.accountSettingsStream.first;
+      final behavior = settings.failedPaymentBehavior;
+      bool prompt = behavior == BugReportBehavior.PROMPT;
+      bool send = behavior == BugReportBehavior.SEND_REPORT;
 
-      var accountModel = await widget.accountBloc.accountStream.first;
-      var errorString = error.toDisplayMessage(accountModel.currency);
+      final accountModel = await widget.accountBloc.accountStream.first;
+      final errorString = error.toDisplayMessage(accountModel.currency);
       showFlushbar(context, message: "$errorString");
+
       if (!error.validationError) {
         if (prompt) {
           send = await showDialog(
-              useRootNavigator: false,
-              context: context,
-              barrierDismissible: false,
-              builder: (_) =>
-                  PaymentFailedReportDialog(context, widget.accountBloc));
+            useRootNavigator: false,
+            context: context,
+            barrierDismissible: false,
+            builder: (_) => PaymentFailedReportDialog(
+              context,
+              widget.accountBloc,
+            ),
+          );
         }
 
         if (send) {
           var sendAction = SendPaymentFailureReport(error.traceReport);
           widget.accountBloc.userActionsSink.add(sendAction);
           await Navigator.push(
+            context,
+            createLoaderRoute(
               context,
-              createLoaderRoute(context,
-                  message: "Sending Report...",
-                  opacity: 0.8,
-                  action: sendAction.future));
+              message: texts.home_report_sending,
+              opacity: 0.8,
+              action: sendAction.future,
+            ),
+          );
         }
       }
     });

@@ -4,6 +4,7 @@ import 'package:breez/bloc/marketplace/marketplace_bloc.dart';
 import 'package:breez/bloc/marketplace/vendor_model.dart';
 import 'package:breez/theme_data.dart' as theme;
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import 'vendor_row.dart';
 
@@ -15,53 +16,61 @@ class MarketplacePage extends StatefulWidget {
 }
 
 class MarketplacePageState extends State<MarketplacePage> {
-  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
-  AccountBloc _accountBloc;
-  MarketplaceBloc _marketplaceBloc;
-  bool _isInit = false;
-
-  @override
-  void didChangeDependencies() {
-    if (!_isInit) {
-      _accountBloc = AppBlocsProvider.of<AccountBloc>(context);
-      _marketplaceBloc = AppBlocsProvider.of<MarketplaceBloc>(context);
-      _isInit = true;
-    }
-    super.didChangeDependencies();
-  }
+  final _scaffoldKey = new GlobalKey<ScaffoldState>();
 
   @override
   Widget build(BuildContext context) {
-    return StreamBuilder(
-        stream: _marketplaceBloc.vendorsStream,
-        builder: (context, snapshot) {
-          List<VendorModel> vendorsModel = snapshot.data;
+    final marketplaceBloc = AppBlocsProvider.of<MarketplaceBloc>(context);
 
-          if (vendorsModel == null) {
-            return _buildScaffold(Center(
-                child: Text("There are no available vendors at the moment.")));
-          }
-
-          return _buildScaffold(_buildVendors(vendorsModel));
-        });
-  }
-
-  Widget _buildScaffold(Widget body) {
     return Scaffold(
       key: _scaffoldKey,
       backgroundColor: theme.themeId == "BLUE"
           ? Theme.of(context).backgroundColor
           : Theme.of(context).canvasColor,
-      body: body,
+      body: StreamBuilder(
+        stream: marketplaceBloc.vendorsStream,
+        builder: (context, snapshot) {
+          List<VendorModel> vendorsModel = snapshot.data;
+
+          if (vendorsModel == null || vendorsModel.isEmpty) {
+            return _buildNoVendorsMessage(context);
+          }
+
+          return _buildVendors(vendorsModel);
+        },
+      ),
+    );
+  }
+
+  Center _buildNoVendorsMessage(BuildContext context) {
+    return Center(
+      child: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Text(
+          AppLocalizations.of(context).market_place_no_vendors,
+          textAlign: TextAlign.center,
+          style: Theme.of(context).textTheme.headline4.copyWith(
+                color: theme.themeId == "BLUE"
+                    ? Theme.of(context).canvasColor
+                    : Colors.white,
+              ),
+        ),
+      ),
     );
   }
 
   Widget _buildVendors(List<VendorModel> vendorModel) {
-    return ListView.builder(
-      itemBuilder: (context, index) =>
-          VendorRow(_accountBloc, vendorModel[index]),
-      itemCount: vendorModel.length,
-      itemExtent: 200.0,
+    final accountBloc = AppBlocsProvider.of<AccountBloc>(context);
+
+    return Container(
+      height: MediaQuery.of(context).size.height -
+          kToolbarHeight -
+          MediaQuery.of(context).padding.top,
+      child: ListView.builder(
+        itemBuilder: (context, i) => VendorRow(accountBloc, vendorModel[i]),
+        itemCount: vendorModel.length,
+        itemExtent: 200.0,
+      ),
     );
   }
 }

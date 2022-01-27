@@ -9,7 +9,7 @@ import 'package:anytime/bloc/settings/settings_bloc.dart';
 import 'package:anytime/bloc/ui/pager_bloc.dart';
 import 'package:anytime/repository/repository.dart';
 import 'package:anytime/services/audio/audio_player_service.dart';
-import 'package:anytime/services/audio/mobile_audio_player_service.dart';
+import 'package:anytime/services/audio/default_audio_player_service.dart';
 import 'package:anytime/services/download/download_service.dart';
 import 'package:anytime/services/download/mobile_download_service.dart';
 import 'package:anytime/services/podcast/mobile_podcast_service.dart';
@@ -30,7 +30,6 @@ import 'package:breez/routes/podcast/podcast_index_api.dart';
 import 'package:breez/routes/podcast/share_episode_button.dart';
 import 'package:breez/routes/podcast/share_podcast_button.dart';
 import 'package:breez/routes/podcast/transport_controls.dart';
-import 'package:breez/theme_data.dart' as breezTheme;
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -66,12 +65,12 @@ class AnytimePodcastApp extends StatefulWidget {
         repository: repository,
         settingsService: mobileSettingsService,
         loadMetadata: (url) => metadataLoader.loadPodcastMetadata(url: url));
-    audioPlayerService = MobileAudioPlayerService(
-      repository: repository,
-      podcastService: podcastService,
-      settingsService: mobileSettingsService,
-      androidNotificationColor: breezTheme.BreezColors.blue[500],
-      loadEpisodeMetadata: (episode) => metadataLoader.loadEpisodeMetadata(episode: episode));
+    audioPlayerService = DefaultAudioPlayerService(
+        repository: repository,
+        podcastService: podcastService,
+        settingsService: mobileSettingsService,
+        loadEpisodeMetadata: (episode) =>
+            metadataLoader.loadEpisodeMetadata(episode: episode));
     settingsBloc = SettingsBloc(mobileSettingsService);
   }
 
@@ -131,10 +130,10 @@ class _AnytimePodcastAppState extends State<AnytimePodcastApp> {
         Provider<NewPodcastsBloc>(
           create: (_) => NewPodcastsBloc(
               podcastService: MobilePodcastService(
-                api: widget.podcastApi,
-                repository: widget.repository,
-                settingsService: widget.mobileSettingsService,
-              )),
+            api: widget.podcastApi,
+            repository: widget.repository,
+            settingsService: widget.mobileSettingsService,
+          )),
           dispose: (_, value) => value.dispose(),
         ),
         Provider<EpisodeBloc>(
@@ -151,7 +150,8 @@ class _AnytimePodcastAppState extends State<AnytimePodcastApp> {
           create: (_) => PodcastBloc(
               podcastService: widget.podcastService,
               audioPlayerService: widget.audioPlayerService,
-              downloadService: widget.downloadService),
+              downloadService: widget.downloadService,
+              settingsService: widget.mobileSettingsService),
           dispose: (_, value) => value.dispose(),
         ),
         Provider<PagerBloc>(

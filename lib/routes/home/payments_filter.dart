@@ -8,6 +8,7 @@ import 'package:breez/widgets/flushbar.dart';
 import 'package:breez/widgets/loader.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:share_extend/share_extend.dart';
 
 class PaymentFilterSliver extends StatefulWidget {
@@ -17,8 +18,13 @@ class PaymentFilterSliver extends StatefulWidget {
   final AccountBloc _accountBloc;
   final PaymentsModel _paymentsModel;
 
-  PaymentFilterSliver(this._controller, this._minSize, this._maxSize,
-      this._accountBloc, this._paymentsModel);
+  PaymentFilterSliver(
+    this._controller,
+    this._minSize,
+    this._maxSize,
+    this._accountBloc,
+    this._paymentsModel,
+  );
 
   @override
   State<StatefulWidget> createState() {
@@ -49,47 +55,52 @@ class PaymentFilterSliverState extends State<PaymentFilterSliver> {
 
   @override
   Widget build(BuildContext context) {
-    double scrollOffset = widget._controller.position.pixels;
-    _hasNoTypeFilter =
-        (widget._paymentsModel.filter.paymentType.contains(PaymentType.SENT) &&
-            widget._paymentsModel.filter.paymentType
-                .contains(PaymentType.DEPOSIT) &&
-            widget._paymentsModel.filter.paymentType
-                .contains(PaymentType.WITHDRAWAL) &&
-            widget._paymentsModel.filter.paymentType
-                .contains(PaymentType.RECEIVED));
-    _hasNoDateFilter = (widget._paymentsModel.filter.startDate == null ||
-        widget._paymentsModel.filter.endDate == null);
+    final scrollOffset = widget._controller.position.pixels;
+    final filter = widget._paymentsModel.filter;
+    final paymentType = filter.paymentType;
+
+    _hasNoTypeFilter = (paymentType.contains(PaymentType.SENT) &&
+        paymentType.contains(PaymentType.DEPOSIT) &&
+        paymentType.contains(PaymentType.WITHDRAWAL) &&
+        paymentType.contains(PaymentType.RECEIVED));
+    _hasNoDateFilter = (filter.startDate == null || filter.endDate == null);
     _hasNoFilter = _hasNoTypeFilter && _hasNoDateFilter;
+
     return SliverPersistentHeader(
       pinned: true,
       delegate: FixedSliverDelegate(
-          !_hasNoFilter
-              ? widget._maxSize
-              : (scrollOffset).clamp(widget._minSize, widget._maxSize),
-          builder: (context, shrinkedHeight, overlapContent) {
-        return AnimatedOpacity(
-          duration: Duration(milliseconds: 100),
-          opacity: !_hasNoFilter
-              ? 1.0
-              : (scrollOffset - widget._maxSize / 2).clamp(0.0, 1.0),
-          child: Container(
-            color: theme.customData[theme.themeId].dashboardBgColor,
-            child: Padding(
-              padding: const EdgeInsets.only(left: 8, right: 8, bottom: 8),
-              child: ClipRRect(
-                borderRadius: BorderRadius.circular(5),
-                child: Container(
-                    color: theme
-                        .customData[theme.themeId].paymentListBgColor,
+        !_hasNoFilter
+            ? widget._maxSize
+            : scrollOffset.clamp(
+                widget._minSize,
+                widget._maxSize,
+              ),
+        builder: (context, shrinkedHeight, overlapContent) {
+          return AnimatedOpacity(
+            duration: Duration(milliseconds: 100),
+            opacity: !_hasNoFilter
+                ? 1.0
+                : (scrollOffset - widget._maxSize / 2).clamp(0.0, 1.0),
+            child: Container(
+              color: theme.customData[theme.themeId].dashboardBgColor,
+              child: Padding(
+                padding: const EdgeInsets.only(left: 8, right: 8, bottom: 8),
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(5),
+                  child: Container(
+                    color: theme.customData[theme.themeId].paymentListBgColor,
                     height: widget._maxSize,
                     child: PaymentsFilter(
-                        widget._accountBloc, widget._paymentsModel)),
+                      widget._accountBloc,
+                      widget._paymentsModel,
+                    ),
+                  ),
+                ),
               ),
             ),
-          ),
-        );
-      }),
+          );
+        },
+      ),
     );
   }
 }
@@ -98,7 +109,10 @@ class PaymentsFilter extends StatefulWidget {
   final AccountBloc _accountBloc;
   final PaymentsModel _paymentsModel;
 
-  PaymentsFilter(this._accountBloc, this._paymentsModel);
+  PaymentsFilter(
+    this._accountBloc,
+    this._paymentsModel,
+  );
 
   @override
   State<StatefulWidget> createState() {
@@ -108,15 +122,37 @@ class PaymentsFilter extends StatefulWidget {
 
 class PaymentsFilterState extends State<PaymentsFilter> {
   String _filter;
+  Map<String, List<PaymentType>> _filterMap;
 
   @override
-  void initState() {
-    super.initState();
-    _filter = _getFilterTypeString(widget._paymentsModel.filter.paymentType);
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    _filter = null;
   }
 
   @override
   Widget build(BuildContext context) {
+    final texts = AppLocalizations.of(context);
+
+    if (_filter == null) {
+      _filterMap = {
+        texts.payments_filter_option_all: PaymentType.values,
+        texts.payments_filter_option_sent: [
+          PaymentType.SENT,
+          PaymentType.WITHDRAWAL,
+          PaymentType.CLOSED_CHANNEL,
+        ],
+        texts.payments_filter_option_received: [
+          PaymentType.RECEIVED,
+          PaymentType.DEPOSIT,
+        ],
+      };
+      _filter = _getFilterTypeString(
+        context,
+        widget._paymentsModel.filter.paymentType,
+      );
+    }
+
     return Row(children: [
       _buildExportButton(context),
       _buildCalendarButton(context),
@@ -125,107 +161,116 @@ class PaymentsFilterState extends State<PaymentsFilter> {
   }
 
   Padding _buildCalendarButton(BuildContext context) {
+    final texts = AppLocalizations.of(context);
+    final themeData = Theme.of(context);
+
     return Padding(
       padding: EdgeInsets.only(left: 0.0, right: 0.0),
       child: IconButton(
         icon: ImageIcon(
           AssetImage("src/icon/calendar.png"),
-          color: Theme.of(context).accentTextTheme.subtitle2.color,
+          color: themeData.accentTextTheme.subtitle2.color,
           size: 24.0,
         ),
         onPressed: () => widget._paymentsModel.firstDate != null
             ? showDialog(
                 useRootNavigator: false,
                 context: context,
-                builder: (_) =>
-                    CalendarDialog(context, widget._paymentsModel.firstDate),
+                builder: (_) => CalendarDialog(widget._paymentsModel.firstDate),
               ).then((result) {
                 widget._accountBloc.paymentFilterSink.add(
-                    widget._paymentsModel.filter.copyWith(
-                        filter: _getFilterType(_filter),
-                        startDate: result[0],
-                        endDate: result[1]));
+                  widget._paymentsModel.filter.copyWith(
+                      filter: _getFilterType(_filter),
+                      startDate: result[0],
+                      endDate: result[1]),
+                );
               })
-            : ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                content:
-                    Text("Please wait while Breez is loading transactions."))),
+            : ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  content: Text(
+                    texts.payments_filter_message_loading_transactions,
+                  ),
+                ),
+              ),
       ),
     );
   }
 
   Theme _buildFilterDropdown(BuildContext context) {
+    final texts = AppLocalizations.of(context);
+    final themeData = Theme.of(context);
+
     return Theme(
-      data: Theme.of(context).copyWith(
-          canvasColor: theme.customData[theme.themeId].paymentListBgColor),
+      data: themeData.copyWith(
+        canvasColor: theme.customData[theme.themeId].paymentListBgColor,
+      ),
       child: DropdownButtonHideUnderline(
         child: ButtonTheme(
           alignedDropdown: true,
           child: DropdownButton(
-              iconEnabledColor:
-                  Theme.of(context).accentTextTheme.subtitle2.color,
-              value: _filter,
-              style: Theme.of(context).accentTextTheme.subtitle2,
-              items: <String>['All Activities', 'Sent', 'Received']
-                  .map((String value) {
-                return DropdownMenuItem<String>(
-                  value: value,
-                  child: Material(
-                    child: Text(
-                      value,
-                      style: Theme.of(context).accentTextTheme.subtitle2,
-                    ),
+            iconEnabledColor: themeData.accentTextTheme.subtitle2.color,
+            value: _filter,
+            style: themeData.accentTextTheme.subtitle2,
+            items: [
+              texts.payments_filter_option_all,
+              texts.payments_filter_option_sent,
+              texts.payments_filter_option_received,
+            ].map((String value) {
+              return DropdownMenuItem<String>(
+                value: value,
+                child: Material(
+                  child: Text(
+                    value,
+                    style: themeData.accentTextTheme.subtitle2,
                   ),
-                );
-              }).toList(),
-              onChanged: (value) {
-                setState(() {
-                  _filter = value;
-                });
-                widget._accountBloc.paymentFilterSink.add(widget
-                    ._paymentsModel.filter
-                    .copyWith(filter: _getFilterType(_filter)));
-              }),
+                ),
+              );
+            }).toList(),
+            onChanged: (value) {
+              setState(() {
+                _filter = value;
+              });
+              widget._accountBloc.paymentFilterSink.add(
+                widget._paymentsModel.filter.copyWith(
+                  filter: _getFilterType(_filter),
+                ),
+              );
+            },
+          ),
         ),
       ),
     );
   }
 
-  _getFilterType(String _filter) {
-    if (_filter == "Sent") {
-      return [
-        PaymentType.SENT,
-        PaymentType.WITHDRAWAL,
-        PaymentType.CLOSED_CHANNEL
-      ];
-    } else if (_filter == "Received") {
-      return [PaymentType.RECEIVED, PaymentType.DEPOSIT];
-    }
-    return PaymentType.values;
+  List<PaymentType> _getFilterType(String _filter) {
+    return _filterMap[_filter] ?? PaymentType.values;
   }
 
-  String _getFilterTypeString(List<PaymentType> filterList) {
-    if (listEquals(filterList, [
-      PaymentType.SENT,
-      PaymentType.WITHDRAWAL,
-      PaymentType.CLOSED_CHANNEL
-    ])) {
-      return "Sent";
-    } else if (listEquals(
-        filterList, [PaymentType.RECEIVED, PaymentType.DEPOSIT])) {
-      return "Received";
+  String _getFilterTypeString(
+    BuildContext context,
+    List<PaymentType> filterList,
+  ) {
+    for (var entry in _filterMap.entries) {
+      if (listEquals(filterList, entry.value)) {
+        return entry.key;
+      }
     }
-    return "All Activities";
+    final texts = AppLocalizations.of(context);
+    return texts.payments_filter_option_all;
   }
 
   Padding _buildExportButton(BuildContext context) {
+    final themeData = Theme.of(context);
+    final texts = AppLocalizations.of(context);
+
     if (widget._paymentsModel.paymentsList.isNotEmpty) {
       return Padding(
         padding: const EdgeInsets.only(right: 0.0),
         child: PopupMenuButton(
-          color: Theme.of(context).backgroundColor,
+          color: themeData.backgroundColor,
           icon: Icon(
             Icons.more_vert,
-            color: Theme.of(context).accentTextTheme.subtitle2.color,
+            color: themeData.accentTextTheme.subtitle2.color,
           ),
           padding: EdgeInsets.zero,
           offset: Offset(12, 24),
@@ -234,7 +279,10 @@ class PaymentsFilterState extends State<PaymentsFilter> {
             PopupMenuItem(
               height: 36,
               value: Choice(() => _exportPayments(context)),
-              child: Text('Export', style: Theme.of(context).textTheme.button),
+              child: Text(
+                texts.payments_filter_action_export,
+                style: themeData.textTheme.button,
+              ),
             ),
           ],
         ),
@@ -242,18 +290,15 @@ class PaymentsFilterState extends State<PaymentsFilter> {
     }
     return Padding(
       padding: const EdgeInsets.only(right: 0),
-      child: IconButton( // ignore: missing_required_param
+      child: IconButton(
         icon: Icon(
           Icons.more_vert,
           color: theme.themeId == "BLUE"
-              ? Theme.of(context)
-                  .accentTextTheme
-                  .subtitle2
-                  .color
-                  .withOpacity(0.25)
-              : Theme.of(context).disabledColor,
+              ? themeData.accentTextTheme.subtitle2.color.withOpacity(0.25)
+              : themeData.disabledColor,
           size: 24.0,
         ),
+        onPressed: null,
       ),
     );
   }
@@ -263,6 +308,7 @@ class PaymentsFilterState extends State<PaymentsFilter> {
   }
 
   Future _exportPayments(BuildContext context) async {
+    final texts = AppLocalizations.of(context);
     var action = ExportPayments();
     widget._accountBloc.userActionsSink.add(action);
     Navigator.of(context).push(createLoaderRoute(context));
@@ -271,7 +317,10 @@ class PaymentsFilterState extends State<PaymentsFilter> {
       ShareExtend.share(filePath, "file");
     }).catchError((err) {
       Navigator.of(context).pop();
-      showFlushbar(context, message: "Failed to export payments.");
+      showFlushbar(
+        context,
+        message: texts.payments_filter_action_export_failed,
+      );
     });
   }
 }

@@ -7,8 +7,11 @@ class DelayRender extends StatefulWidget {
   final Widget child;
   final Widget initialChild;
 
-  DelayRender(
-      {this.duration, this.child, this.initialChild = const SizedBox()});
+  DelayRender({
+    this.duration,
+    this.child,
+    this.initialChild = const SizedBox(),
+  });
 
   @override
   State<StatefulWidget> createState() {
@@ -24,10 +27,11 @@ class DelayedRenderState extends State<DelayRender> {
   void initState() {
     super.initState();
     _timer = Timer(
-        widget.duration,
-        () => setState(() {
-              _childVisible = true;
-            }));
+      widget.duration,
+      () => setState(() {
+        _childVisible = true;
+      }),
+    );
   }
 
   @override

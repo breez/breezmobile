@@ -13,6 +13,7 @@ import 'package:breez/widgets/loader.dart';
 import 'package:breez/widgets/single_button_bottom_bar.dart';
 import 'package:fixnum/fixnum.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class ReverseSwapConfirmation extends StatefulWidget {
   final ReverseSwapRequest swap;
@@ -21,9 +22,13 @@ class ReverseSwapConfirmation extends StatefulWidget {
   final Future Function(String address, Int64 toSend, Int64 boltzFees,
       Int64 claimFees, Int64 received, String feesHash) onFeeConfirmed;
 
-  const ReverseSwapConfirmation(
-      {Key key, this.swap, this.onPrevious, this.onFeeConfirmed, this.bloc})
-      : super(key: key);
+  const ReverseSwapConfirmation({
+    Key key,
+    this.swap,
+    this.onPrevious,
+    this.onFeeConfirmed,
+    this.bloc,
+  }) : super(key: key);
 
   @override
   State<StatefulWidget> createState() {
@@ -44,9 +49,8 @@ class ReverseSwapConfirmationState extends State<ReverseSwapConfirmation> {
     var action = GetClaimFeeEstimates(widget.swap.claimAddress);
     widget.bloc.actionsSink.add(action);
     _claimFeeFuture = action.future.then((r) {
-      ReverseSwapClaimFeeEstimates feeEstimates =
-          r as ReverseSwapClaimFeeEstimates;
-      List<int> targetConfirmations = feeEstimates.fees.keys.toList()..sort();
+      final feeEstimates = r as ReverseSwapClaimFeeEstimates;
+      final targetConfirmations = feeEstimates.fees.keys.toList()..sort();
       var trimmedTargetConfirmations = targetConfirmations.reversed.toList();
       if (trimmedTargetConfirmations.length > 3) {
         var middle = (targetConfirmations.length / 2).floor();
@@ -58,34 +62,45 @@ class ReverseSwapConfirmationState extends State<ReverseSwapConfirmation> {
       }
 
       if (widget.swap.isMax) {
-        amounts = new Map.fromIterable(trimmedTargetConfirmations,
-            key: (e) => e,
-            value: (e) {
-              var toSend = widget.swap.amount;
-              var boltzFees = Int64(
-                      (toSend.toDouble() * widget.swap.policy.percentage / 100)
-                          .ceil()) +
-                  widget.swap.policy.lockup;
-              var received = toSend - boltzFees - feeEstimates.fees[e];
-              return ReverseSwapAmounts(
-                  toSend, boltzFees, feeEstimates.fees[e], received);
-            });
+        amounts = new Map.fromIterable(
+          trimmedTargetConfirmations,
+          key: (e) => e,
+          value: (e) {
+            final toSend = widget.swap.amount;
+            final boltzFees = Int64(
+                    (toSend.toDouble() * widget.swap.policy.percentage / 100)
+                        .ceil()) +
+                widget.swap.policy.lockup;
+            final received = toSend - boltzFees - feeEstimates.fees[e];
+            return ReverseSwapAmounts(
+              toSend,
+              boltzFees,
+              feeEstimates.fees[e],
+              received,
+            );
+          },
+        );
       } else {
-        amounts = new Map.fromIterable(trimmedTargetConfirmations,
-            key: (e) => e,
-            value: (e) {
-              var received = widget.swap.amount;
-              //(bt + cl)*pe/(1-pe) + lo/(1-pe)
-              var p = widget.swap.policy.percentage / 100;
-              var boltzFees = Int64(
-                  ((received + feeEstimates.fees[e]).toDouble() * p / (1 - p) +
-                          widget.swap.policy.lockup.toDouble() / (1 - p))
-                      .ceil());
-              var toSend = received + boltzFees + feeEstimates.fees[e];
+        amounts = new Map.fromIterable(
+          trimmedTargetConfirmations,
+          key: (e) => e,
+          value: (e) {
+            final received = widget.swap.amount;
+            final p = widget.swap.policy.percentage / 100;
+            final boltzFees = Int64(
+                ((received + feeEstimates.fees[e]).toDouble() * p / (1 - p) +
+                        widget.swap.policy.lockup.toDouble() / (1 - p))
+                    .ceil());
+            final toSend = received + boltzFees + feeEstimates.fees[e];
 
-              return ReverseSwapAmounts(
-                  toSend, boltzFees, feeEstimates.fees[e], received);
-            });
+            return ReverseSwapAmounts(
+              toSend,
+              boltzFees,
+              feeEstimates.fees[e],
+              received,
+            );
+          },
+        );
       }
       feeOptions = trimmedTargetConfirmations
           .map((e) => FeeOption(feeEstimates.fees[e].toInt(), e))
@@ -108,195 +123,246 @@ class ReverseSwapConfirmationState extends State<ReverseSwapConfirmation> {
 
   @override
   Widget build(BuildContext context) {
-    var rsAmounts = feeOptions[selectedFeeIndex] != null
+    final themeData = Theme.of(context);
+    final texts = AppLocalizations.of(context);
+
+    final accountBloc = AppBlocsProvider.of<AccountBloc>(context);
+
+    final rsAmounts = feeOptions[selectedFeeIndex] != null
         ? amounts[feeOptions[selectedFeeIndex].confirmationTarget]
         : null;
 
     return Scaffold(
       appBar: AppBar(
-          iconTheme: Theme.of(context).appBarTheme.iconTheme,
-          textTheme: Theme.of(context).appBarTheme.textTheme,
-          backgroundColor: Theme.of(context).canvasColor,
-          leading: backBtn.BackButton(onPressed: () {
-            widget.onPrevious();
-          }),
-          title: Text("Choose Processing Speed",
-              style: Theme.of(context).appBarTheme.textTheme.headline6),
-          elevation: 0.0),
+        iconTheme: themeData.appBarTheme.iconTheme,
+        textTheme: themeData.appBarTheme.textTheme,
+        backgroundColor: themeData.canvasColor,
+        leading: backBtn.BackButton(onPressed: () {
+          widget.onPrevious();
+        }),
+        title: Text(
+          texts.reverse_swap_confirmation_speed,
+          style: themeData.appBarTheme.textTheme.headline6,
+        ),
+        elevation: 0.0,
+      ),
       body: StreamBuilder<AccountModel>(
-          stream: AppBlocsProvider.of<AccountBloc>(context).accountStream,
-          builder: (context, snapshot) {
-            AccountModel acc = snapshot.data;
-            return FutureBuilder(
-                future: _claimFeeFuture,
-                builder: (context, futureSnapshot) {
-                  if (futureSnapshot.error != null) {
-                    //render error
-                    return _ErrorMessage(
-                        message:
-                            "Failed to retrieve fees. Please try again later.");
-                  }
-                  if (futureSnapshot.connectionState != ConnectionState.done ||
-                      acc == null) {
-                    //render loader
-                    return SizedBox();
-                  }
+        stream: accountBloc.accountStream,
+        builder: (context, snapshot) {
+          AccountModel acc = snapshot.data;
+          return FutureBuilder(
+            future: _claimFeeFuture,
+            builder: (context, snap) {
+              if (snap.error != null) {
+                //render error
+                return _ErrorMessage(
+                  message: texts.reverse_swap_confirmation_error_fetch_fee,
+                );
+              }
+              if (snap.connectionState != ConnectionState.done || acc == null) {
+                return SizedBox();
+              }
 
-                  if (feeOptions.where((f) => f != null).length == 0) {
-                    return _ErrorMessage(
-                        message:
-                            "You don't have enough funds for this payment network fee.");
-                  }
+              if (feeOptions.where((f) => f != null).length == 0) {
+                return _ErrorMessage(
+                  message: texts.reverse_swap_confirmation_error_funds_fee,
+                );
+              }
 
-                  return Container(
-                    height: 500.0,
-                    padding: EdgeInsets.only(
-                        left: 16.0, right: 16.0, bottom: 40.0, top: 24.0),
-                    width: MediaQuery.of(context).size.width,
-                    child: Column(
-                      //mainAxisSize: MainAxisSize.max,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: <Widget>[
-                        Container(
-                          child: FeeChooser(
-                            economyFee: feeOptions[0],
-                            regularFee: feeOptions[1],
-                            priorityFee: feeOptions[2],
-                            selectedIndex: this.selectedFeeIndex,
-                            onSelect: (index) {
-                              this.setState(() {
-                                this.selectedFeeIndex = index;
-                              });
-                            },
-                          ),
-                        ),
-                        SizedBox(height: 36.0),
-                        buildSummary(acc, rsAmounts.toSend, rsAmounts.boltzFees,
-                            rsAmounts.received),
-                      ],
+              return Container(
+                height: 500.0,
+                padding: EdgeInsets.fromLTRB(16.0, 24.0, 16.0, 40.0),
+                width: MediaQuery.of(context).size.width,
+                child: Column(
+                  //mainAxisSize: MainAxisSize.max,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Container(
+                      child: FeeChooser(
+                        economyFee: feeOptions[0],
+                        regularFee: feeOptions[1],
+                        priorityFee: feeOptions[2],
+                        selectedIndex: this.selectedFeeIndex,
+                        onSelect: (index) {
+                          this.setState(() {
+                            this.selectedFeeIndex = index;
+                          });
+                        },
+                      ),
                     ),
-                  );
-                });
-          }),
+                    SizedBox(height: 36.0),
+                    buildSummary(
+                      context,
+                      acc,
+                      rsAmounts.toSend,
+                      rsAmounts.boltzFees,
+                      rsAmounts.received,
+                    ),
+                  ],
+                ),
+              );
+            },
+          );
+        },
+      ),
       bottomNavigationBar: !_showConfirm
           ? null
           : SingleButtonBottomBar(
-              text: "CONFIRM",
+              text: texts.reverse_swap_confirmation_action_confirm,
               onPressed: () {
                 Navigator.of(context).push(createLoaderRoute(context));
                 widget
                     .onFeeConfirmed(
-                        widget.swap.claimAddress,
-                        rsAmounts.toSend,
-                        rsAmounts.boltzFees,
-                        rsAmounts.claimFees,
-                        rsAmounts.received,
-                        widget.swap.policy.feesHash)
-                    .then((_) {
-                  Navigator.of(context).pop();
-                }).catchError((error) {
-                  Navigator.of(context).pop();
-                  promptError(
+                      widget.swap.claimAddress,
+                      rsAmounts.toSend,
+                      rsAmounts.boltzFees,
+                      rsAmounts.claimFees,
+                      rsAmounts.received,
+                      widget.swap.policy.feesHash,
+                    )
+                    .then((_) => Navigator.of(context).pop())
+                    .catchError(
+                  (error) {
+                    Navigator.of(context).pop();
+                    promptError(
                       context,
                       null,
-                      Text(error.toString(),
-                          style:
-                              Theme.of(context).dialogTheme.contentTextStyle));
-                });
+                      Text(
+                        error.toString(),
+                        style: themeData.dialogTheme.contentTextStyle,
+                      ),
+                    );
+                  },
+                );
               },
             ),
     );
   }
 
-  Widget buildSummary(AccountModel acc, Int64 toSend, boltzFees, received) {
+  Widget buildSummary(
+    BuildContext context,
+    AccountModel acc,
+    Int64 toSend,
+    boltzFees,
+    received,
+  ) {
+    final texts = AppLocalizations.of(context);
+    final themeData = Theme.of(context);
+    final minFont = MinFontSize(context);
+
     return Container(
       decoration: BoxDecoration(
-          borderRadius: BorderRadius.all(Radius.circular(5.0)),
-          border: Border.all(
-              color: Theme.of(context).colorScheme.onSurface.withOpacity(0.4))),
-      child: ListView(shrinkWrap: true, children: <Widget>[
-        ListTile(
+        borderRadius: BorderRadius.all(Radius.circular(5.0)),
+        border: Border.all(
+          color: themeData.colorScheme.onSurface.withOpacity(0.4),
+        ),
+      ),
+      child: ListView(
+        shrinkWrap: true,
+        children: [
+          ListTile(
             title: Container(
               child: AutoSizeText(
-                "You send:",
+                texts.reverse_swap_confirmation_you_send,
                 style: TextStyle(color: Colors.white),
                 maxLines: 1,
-                minFontSize: MinFontSize(context).minFontSize,
+                minFontSize: minFont.minFontSize,
                 stepGranularity: 0.1,
               ),
             ),
             trailing: Container(
               child: AutoSizeText(
                 acc.currency.format(toSend),
-                style: TextStyle(color: Theme.of(context).errorColor),
+                style: TextStyle(color: themeData.errorColor),
                 maxLines: 1,
-                minFontSize: MinFontSize(context).minFontSize,
+                minFontSize: minFont.minFontSize,
                 stepGranularity: 0.1,
               ),
-            )),
-        ListTile(
+            ),
+          ),
+          ListTile(
             title: Container(
               child: AutoSizeText(
-                "Boltz service fee:",
+                texts.reverse_swap_confirmation_boltz_fee,
+                style: TextStyle(
+                  color: Colors.white.withOpacity(0.4),
+                ),
+                maxLines: 1,
+                minFontSize: minFont.minFontSize,
+                stepGranularity: 0.1,
+              ),
+            ),
+            trailing: Container(
+              child: AutoSizeText(
+                texts.reverse_swap_confirmation_boltz_fee_value(
+                  acc.currency.format(boltzFees),
+                ),
+                style: TextStyle(
+                  color: themeData.errorColor.withOpacity(0.4),
+                ),
+                maxLines: 1,
+                minFontSize: minFont.minFontSize,
+                stepGranularity: 0.1,
+              ),
+            ),
+          ),
+          ListTile(
+            title: Container(
+              child: AutoSizeText(
+                texts.reverse_swap_confirmation_transaction_fee,
                 style: TextStyle(color: Colors.white.withOpacity(0.4)),
                 maxLines: 1,
-                minFontSize: MinFontSize(context).minFontSize,
+                minFontSize: minFont.minFontSize,
                 stepGranularity: 0.1,
               ),
             ),
             trailing: Container(
               child: AutoSizeText(
-                "-" + acc.currency.format(boltzFees),
+                texts.reverse_swap_confirmation_transaction_fee_value(
+                  acc.currency.format(Int64(feeOptions[selectedFeeIndex].sats)),
+                ),
                 style: TextStyle(
-                    color: Theme.of(context).errorColor.withOpacity(0.4)),
+                  color: themeData.errorColor.withOpacity(0.4),
+                ),
                 maxLines: 1,
-                minFontSize: MinFontSize(context).minFontSize,
+                minFontSize: minFont.minFontSize,
                 stepGranularity: 0.1,
               ),
-            )),
-        ListTile(
+            ),
+          ),
+          ListTile(
             title: Container(
               child: AutoSizeText(
-                "Transaction fee:",
-                style: TextStyle(color: Colors.white.withOpacity(0.4)),
-                maxLines: 1,
-                minFontSize: MinFontSize(context).minFontSize,
-                stepGranularity: 0.1,
-              ),
-            ),
-            trailing: Container(
-              child: AutoSizeText(
-                "-${acc.currency.format(Int64(feeOptions[selectedFeeIndex].sats))}",
+                texts.reverse_swap_confirmation_you_receive,
                 style: TextStyle(
-                    color: Theme.of(context).errorColor.withOpacity(0.4)),
+                  color: Colors.white,
+                ),
                 maxLines: 1,
-                minFontSize: MinFontSize(context).minFontSize,
-                stepGranularity: 0.1,
-              ),
-            )),
-        ListTile(
-            title: Container(
-              child: AutoSizeText(
-                "You receive:",
-                style: TextStyle(color: Colors.white),
-                maxLines: 1,
-                minFontSize: MinFontSize(context).minFontSize,
+                minFontSize: minFont.minFontSize,
                 stepGranularity: 0.1,
               ),
             ),
             trailing: Container(
               child: AutoSizeText(
-                acc.currency.format(received) +
-                    (acc.fiatCurrency == null
-                        ? ""
-                        : " (${acc.fiatCurrency.format(received)})"),
-                style: TextStyle(color: Theme.of(context).errorColor),
+                acc.fiatCurrency == null
+                    ? texts.reverse_swap_confirmation_received_no_fiat(
+                        acc.currency.format(received),
+                      )
+                    : texts.reverse_swap_confirmation_received_with_fiat(
+                        acc.currency.format(received),
+                        acc.fiatCurrency.format(received),
+                      ),
+                style: TextStyle(
+                  color: themeData.errorColor,
+                ),
                 maxLines: 1,
-                minFontSize: MinFontSize(context).minFontSize,
+                minFontSize: minFont.minFontSize,
                 stepGranularity: 0.1,
               ),
-            )),
-      ]),
+            ),
+          ),
+        ],
+      ),
     );
   }
 }
@@ -304,24 +370,28 @@ class ReverseSwapConfirmationState extends State<ReverseSwapConfirmation> {
 class _ErrorMessage extends StatelessWidget {
   final String message;
 
-  const _ErrorMessage({Key key, this.message}) : super(key: key);
+  const _ErrorMessage({
+    Key key,
+    this.message,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Padding(
-        padding: EdgeInsets.only(top: 40.0, left: 40.0, right: 40.0),
-        child: Row(
-          mainAxisSize: MainAxisSize.max,
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            Expanded(
-              child: Text(
-                message,
-                textAlign: TextAlign.center,
-              ),
-            )
-          ],
-        ));
+      padding: EdgeInsets.only(top: 40.0, left: 40.0, right: 40.0),
+      child: Row(
+        mainAxisSize: MainAxisSize.max,
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Expanded(
+            child: Text(
+              message,
+              textAlign: TextAlign.center,
+            ),
+          ),
+        ],
+      ),
+    );
   }
 }
 
@@ -331,6 +401,10 @@ class ReverseSwapAmounts {
   final Int64 claimFees;
   final Int64 received;
 
-  ReverseSwapAmounts(
-      this.toSend, this.boltzFees, this.claimFees, this.received);
+  const ReverseSwapAmounts(
+    this.toSend,
+    this.boltzFees,
+    this.claimFees,
+    this.received,
+  );
 }

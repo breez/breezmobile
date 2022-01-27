@@ -1,14 +1,16 @@
 import 'dart:async';
 import 'dart:convert';
-import 'dart:ffi';
 import 'dart:io';
 import 'package:breez/bloc/lnurl/lnurl_model.dart';
 import 'package:breez/logger.dart' as logger;
 import 'package:breez/services/breezlib/data/rpc.pb.dart';
 import 'package:breez/services/download_manager.dart';
+import 'package:dio/dio.dart';
 import 'package:fixnum/fixnum.dart';
 import 'package:flutter/services.dart';
+import 'package:hex/hex.dart';
 import 'package:ini/ini.dart';
+import 'package:md5_file_checksum/md5_file_checksum.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -51,14 +53,46 @@ class BreezBridge {
     _graphDownloader.init().whenComplete(() => initLightningDir());
   }
 
+  Future fetchGraphChecksum(String downloadURL) async {
+    var graphUri = Uri.parse(downloadURL);
+    var pathComponents = graphUri.path.split("/");
+    var graphDBName = pathComponents.last;
+    pathComponents.removeLast();
+    pathComponents.add("MD5SUMS");
+    var checksumURL =
+        graphUri.replace(path: pathComponents.join("/")).toString();
+    logger.log.info("graph checksum url: ${checksumURL}");
+    var response = await Dio().get(checksumURL);
+    var content = response.data.toString();
+    var currentVersionLine = LineSplitter.split(content).firstWhere((line) {
+      return line.contains(graphDBName);
+    }, orElse: () => "");
+    if (currentVersionLine.isEmpty) {
+      throw new Exception("checksum not found");
+    }
+    return currentVersionLine.split(" ")[0].trim();
+  }
+
   Future syncGraphIfNeeded() async {
     await _readyCompleter.future;
     await Future.delayed(Duration(seconds: 10));
     var downloadURL = await graphURL();
+    logger.log.info("graph download url: ${downloadURL}");
     if (downloadURL.isNotEmpty) {
-      logger.log.info("downloading graph");
+      logger.log.info("fetching graph checksum");
+      var checksum = await fetchGraphChecksum(downloadURL);
+      logger.log.info("graph checksum = $checksum, downloading graph");
       _inProgressGraphSync =
           _graphDownloader.downloadGraph(downloadURL).then((file) async {
+        final fileChecksum =
+            await Md5FileChecksum.getFileChecksum(filePath: file.path);
+        var rawBytes = base64.decode(fileChecksum);
+        var hexChecksum = HEX.encode(rawBytes);
+        if (hexChecksum != checksum) {
+          logger.log.info(
+              "graph synchronization wrong checksum $fileChecksum != $checksum, skipping file");
+          return DateTime.now();
+        }
         logger.log.info("graph synchronization started");
         await syncGraphFromFile(file.path);
         logger.log.info("graph synchronized succesfully");
@@ -69,6 +103,10 @@ class BreezBridge {
         _graphDownloader.deleteDownloads();
       });
     }
+  }
+
+  Future deleteDownloads() async {
+    _graphDownloader.deleteDownloads();
   }
 
   initLightningDir() {
@@ -114,7 +152,6 @@ class BreezBridge {
   }
 
   Future _start(TorConfig torConfig) async {
-       
     logger.log.info("breez_bridge.dart: _start");
 
     return _invokeMethodImmediate(
@@ -687,7 +724,7 @@ class BreezBridge {
   }
 
   Future testBackupAuth(String provider, String authData) {
-      logger.log.info('breez_bridge.dart: testBackupAuth');
+    logger.log.info('breez_bridge.dart: testBackupAuth');
     return _methodChannel.invokeMethod(
         'testBackupAuth', {'provider': provider, 'authData': authData});
   }
@@ -747,14 +784,23 @@ class BreezBridge {
   }
 
   Future _invokeMethodWhenReady(String methodName, [dynamic arguments]) {
+    if (methodName != "log") {
+      logger.log.info("before invoking method $methodName");
+    }
     return _readyCompleter.future.then((completed) {
       return _methodChannel
           .invokeMethod(methodName, arguments)
           .catchError((err) {
+        if (methodName != "log") {
+          logger.log.severe("failed to invoke method $methodName $err");
+        }
+
         if (err.runtimeType == PlatformException) {
-          print(
+          logger.log.severe(
               "Error in calling method '$methodName' with arguments: $arguments.");
-          print("Error in calling method '$methodName' with error: $err.");
+          logger.log.severe(
+              "Error in calling method '$methodName' with error: $err.");
+
           throw (err as PlatformException).message;
         }
         throw err;
@@ -763,18 +809,49 @@ class BreezBridge {
   }
 
   Future _invokeMethodImmediate(String methodName, [dynamic arguments]) {
+    if (methodName != "log") {
+      logger.log.info("before invoking method immediate $methodName");
+    }
     return _startedCompleter.future.then((completed) {
+      if (methodName != "log") {
+        logger.log.info(
+            "startCompleted completd: before invoking method immediate $methodName");
+      }
       return _methodChannel
           .invokeMethod(methodName, arguments)
           .catchError((err) {
+        if (methodName != "log") {
+          logger.log
+              .severe("error invoking method immediate $methodName : $err");
+        }
         if (err.runtimeType == PlatformException) {
-          print(
+          if (methodName != "log") {
+            logger.log.severe("Error in calling method " + methodName);
+          }
+
+          logger.log.severe(
               "Error in calling method '$methodName' with arguments: $arguments.");
-          print("Error in calling method '$methodName' with error: $err.");
-          throw (err as PlatformException).message;
+          logger.log.severe(
+              "Error in calling method '$methodName' with error: $err.");
+          throw (err as PlatformException).message + " method: $methodName";
         }
         throw err;
       });
     });
+  }
+
+  Future<List<String>> getWalletDBpFilePath() async {
+    String lines = await rootBundle.loadString('conf/breez.conf');
+    var config = Config.fromString(lines);
+    String lndDir = (await getApplicationDocumentsDirectory()).path;
+    List<String> result = [];
+    String network = config.get('Application Options', 'network');
+    String reply = await backupFiles();
+    List files = json.decode(reply);
+    if (files != null) {
+      result.addAll(files.map((e) => e as String));
+    }
+    result.add('$lndDir/breez.db');
+    return result;
   }
 }

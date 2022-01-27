@@ -23,7 +23,7 @@ import 'package:breez/services/injector.dart';
 import 'package:breez/services/notifications.dart';
 import 'package:breez/utils/retry.dart';
 import 'package:collection/collection.dart';
-import 'package:connectivity/connectivity.dart';
+import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/foundation.dart';
 import 'package:rxdart/rxdart.dart';
 
@@ -198,7 +198,7 @@ class AccountBloc {
   void _start() {
     log.info("Account bloc started");
     ServiceInjector().sharedPreferences.then((preferences) {
-      _handleRegisterDeviceNode();
+      _handleRegisterDeviceNode();      
       _refreshAccountAndPayments();
       //listen streams
       _listenAccountActions();
@@ -680,34 +680,44 @@ class AccountBloc {
 
   Future<PaymentsModel> fetchPayments() async {
     DateTime _firstDate;
-    print("refreshing payments...");
+    log.info("refreshing payments...");
 
+    final hashedSales = await _posRepository.fetchSalesPaymentHashes();
+
+    log.info("refreshing payments after fetching sales hashes...");
     return _breezLib.getPayments().then((payments) {
-      List<PaymentInfo> _paymentsList = payments.paymentsList.map((payment) {
-        var singlePaymentInfo =
-            SinglePaymentInfo(payment, _accountController.value);
-
-        return singlePaymentInfo;
-      }).toList();
+      List<PaymentInfo> _paymentsList = payments.paymentsList
+          .map((payment) => SinglePaymentInfo(
+                payment,
+                _accountController.value,
+                hashedSales.contains(payment.paymentHash),
+              ))
+          .toList();
 
       if (_paymentsList.length > 0) {
         _firstDate = DateTime.fromMillisecondsSinceEpoch(
-            _paymentsList.last.creationTimestamp.toInt() * 1000);
+          _paymentsList.last.creationTimestamp.toInt() * 1000,
+        );
       }
-      print("refresh payments finished " +
+      log.info("refresh payments finished " +
           payments.paymentsList.length.toString());
       return PaymentsModel(
-          _paymentsList,
-          _filterPayments(_paymentsList),
-          _paymentFilterController.value,
-          _firstDate ?? DateTime(DateTime.now().year));
+        _paymentsList,
+        _filterPayments(_paymentsList),
+        _paymentFilterController.value,
+        _firstDate ?? DateTime(DateTime.now().year),
+      );
     });
   }
 
   Future _refreshPayments() {
+    log.info("before _refreshPayments");
     return fetchPayments()
         .then((paymentModel) => _paymentsController.add(paymentModel))
-        .catchError(_paymentsController.addError);
+        .catchError((Object err, [StackTrace stack]){
+          log.severe("failed to fetch payments $err");
+          _paymentsController.addError(err, stack);
+        });
   }
 
   List<PaymentInfo> _groupPayments(List<PaymentInfo> paymentsList) {
@@ -772,11 +782,13 @@ class AccountBloc {
         _lightningDownController.add(true);
       }
       if (event.type == NotificationEvent_NotificationType.ACCOUNT_CHANGED) {
+        log.info("ACCOUNT_CHANGED event triggers _refreshAccountAndPayments");
         _refreshAccountAndPayments();
       }
       if (event.type == NotificationEvent_NotificationType.READY) {
         _accountController
             .add(_accountController.value.copyWith(serverReady: true));
+        log.info("READY event triggers _refreshAccountAndPayments");
         _refreshAccountAndPayments();
       }
 
@@ -829,8 +841,9 @@ class AccountBloc {
 
   Future _fetchAccount() {
     return _breezLib.getAccount().then((acc) {
+      log.info("_fetchAccount id: ${acc.id}");
       if (acc.id.isNotEmpty) {
-        print("ACCOUNT CHANGED BALANCE=" +
+        log.info("ACCOUNT CHANGED BALANCE=" +
             acc.balance.toString() +
             " STATUS = " +
             acc.status.toString());
@@ -841,17 +854,23 @@ class AccountBloc {
             preferredCurrencies: _currentUser?.preferredCurrencies,
             initial: false);
       } else {
+        log.info("_fetchAccount: setting initial account");
         return _accountController.value.copyWith(initial: false);
       }
     });
   }
 
   _refreshAccountAndPayments() async {
-    print("Account bloc refreshing account...");
+    log.info("Account bloc refreshing payments...");
     await _refreshPayments();
+
+    log.info("Account bloc refreshing account...");
     await _fetchAccount()
         .then((acc) => _accountController.add(acc))
-        .catchError(_accountController.addError);
+        .catchError((Object err, [StackTrace stack]){
+          log.severe("failed to fetch account $err");
+          _accountController.addError(err, stack);
+        });
     _refreshLSPActivity();
     if (_accountController.value.onChainFeeRate == null) {
       _breezLib.getDefaultOnChainFeeRate().then((rate) {

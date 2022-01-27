@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class FeeChooser extends StatelessWidget {
   final FeeOption economyFee;
@@ -7,34 +8,59 @@ class FeeChooser extends StatelessWidget {
   final int selectedIndex;
   final Function(int selected) onSelect;
 
-  const FeeChooser(
-      {Key key,
-      this.economyFee,
-      this.regularFee,
-      this.priorityFee,
-      this.selectedIndex,
-      this.onSelect})
-      : super(key: key);
+  const FeeChooser({
+    Key key,
+    this.economyFee,
+    this.regularFee,
+    this.priorityFee,
+    this.selectedIndex,
+    this.onSelect,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+    final texts = AppLocalizations.of(context);
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
-      children: <Widget>[
-        Row(mainAxisSize: MainAxisSize.max, children: <Widget>[
-          Expanded(
-              child: buildFeeOption(context, 0, economyFee == null, "Economy")),
-          Expanded(
-              child: buildFeeOption(context, 1, regularFee == null, "Regular")),
-          Expanded(
-              child:
-                  buildFeeOption(context, 2, priorityFee == null, "Priority"))
-        ]),
-        SizedBox(height: 12.0),
+      children: [
+        Row(
+          mainAxisSize: MainAxisSize.max,
+          children: [
+            Expanded(
+              child: buildFeeOption(
+                context,
+                0,
+                economyFee == null,
+                texts.fee_chooser_option_economy,
+              ),
+            ),
+            Expanded(
+              child: buildFeeOption(
+                context,
+                1,
+                regularFee == null,
+                texts.fee_chooser_option_regular,
+              ),
+            ),
+            Expanded(
+              child: buildFeeOption(
+                context,
+                2,
+                priorityFee == null,
+                texts.fee_chooser_option_priority,
+              ),
+            )
+          ],
+        ),
+        SizedBox(
+          height: 12.0,
+        ),
         Row(
           mainAxisAlignment: MainAxisAlignment.start,
-          children: <Widget>[
-            ProcessingSpeed(targetConfirmation: _getSelectedTargetConf())
+          children: [
+            ProcessingSpeed(
+              targetConfirmation: _getSelectedTargetConf(),
+            )
           ],
         ),
       ],
@@ -42,18 +68,27 @@ class FeeChooser extends StatelessWidget {
   }
 
   Widget buildFeeOption(
-      BuildContext context, int index, bool disabled, String text) {
-    var borderColor = Theme.of(context).colorScheme.onSurface.withOpacity(0.4);
+    BuildContext context,
+    int index,
+    bool disabled,
+    String text,
+  ) {
+    final themeData = Theme.of(context);
+    final borderColor = themeData.colorScheme.onSurface.withOpacity(0.4);
     Border border;
     var borderRadius;
     if (index == 0) {
       border = Border.all(color: borderColor);
       borderRadius = BorderRadius.only(
-          topLeft: Radius.circular(5.0), bottomLeft: Radius.circular(5.0));
+        topLeft: Radius.circular(5.0),
+        bottomLeft: Radius.circular(5.0),
+      );
     } else if (index == 2) {
       border = Border.all(color: borderColor);
       borderRadius = BorderRadius.only(
-          topRight: Radius.circular(5.0), bottomRight: Radius.circular(5.0));
+        topRight: Radius.circular(5.0),
+        bottomRight: Radius.circular(5.0),
+      );
     } else {
       border = Border(
         bottom: BorderSide(color: borderColor),
@@ -64,24 +99,25 @@ class FeeChooser extends StatelessWidget {
     bool isSelected = this.selectedIndex == index;
     return DecoratedBox(
       decoration: BoxDecoration(
-          borderRadius: borderRadius,
-          color: isSelected
-              ? Theme.of(context).colorScheme.onSurface
-              : Theme.of(context).canvasColor,
-          border: border),
+        borderRadius: borderRadius,
+        color: isSelected
+            ? themeData.colorScheme.onSurface
+            : themeData.canvasColor,
+        border: border,
+      ),
       child: TextButton(
-          onPressed: disabled
-              ? null
-              : () {
-                  onSelect(index);
-                },
-          child: Text(text,
-              style: Theme.of(context).textTheme.button.copyWith(
-                  color: disabled
-                      ? Theme.of(context).colorScheme.onSurface.withOpacity(0.4)
-                      : isSelected
-                          ? Theme.of(context).canvasColor
-                          : Theme.of(context).colorScheme.onSurface))),
+        onPressed: disabled ? null : () => onSelect(index),
+        child: Text(
+          text,
+          style: themeData.textTheme.button.copyWith(
+            color: disabled
+                ? themeData.colorScheme.onSurface.withOpacity(0.4)
+                : isSelected
+                    ? themeData.canvasColor
+                    : themeData.colorScheme.onSurface,
+          ),
+        ),
+      ),
     );
   }
 
@@ -105,29 +141,49 @@ class FeeChooser extends StatelessWidget {
 class ProcessingSpeed extends StatelessWidget {
   final int targetConfirmation;
 
-  const ProcessingSpeed({Key key, this.targetConfirmation}) : super(key: key);
+  const ProcessingSpeed({
+    Key key,
+    this.targetConfirmation,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    String estimatedDelivery = "${targetConfirmation * 10} minutes";
-    var hours = targetConfirmation / 6;
-    if (hours >= 12.0) {
-      estimatedDelivery = "more than a day";
-    } else if (hours >= 4) {
-      estimatedDelivery = "${hours.ceil()}-24 hours";
-    } else if (hours >= 1.0) {
-      estimatedDelivery = "${hours.ceil()} hour";
-    }
+    final themeData = Theme.of(context);
+
     return Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: <Widget>[
-          Text(
-            "Estimated Delivery: ~$estimatedDelivery",
-            style: Theme.of(context).textTheme.button.copyWith(
-                color:
-                    Theme.of(context).colorScheme.onSurface.withOpacity(0.4)),
-          )
-        ]);
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          _estimatedDelivery(context),
+          style: themeData.textTheme.button.copyWith(
+            color: themeData.colorScheme.onSurface.withOpacity(0.4),
+          ),
+        ),
+      ],
+    );
+  }
+
+  String _estimatedDelivery(BuildContext context) {
+    final texts = AppLocalizations.of(context);
+    final hours = targetConfirmation / 6;
+
+    if (hours >= 12.0) {
+      return texts.fee_chooser_estimated_delivery_more_than_day;
+    } else if (hours >= 4) {
+      return texts.fee_chooser_estimated_delivery_hour_range(
+        hours.ceil().toString(),
+      );
+    } else if (hours >= 2.0) {
+      return texts.fee_chooser_estimated_delivery_hours(
+        hours.ceil().toString(),
+      );
+    } else if (hours >= 1.0) {
+      return texts.fee_chooser_estimated_delivery_hour;
+    } else {
+      return texts.fee_chooser_estimated_delivery_minutes(
+        (targetConfirmation * 10).toString(),
+      );
+    }
   }
 }
 
@@ -135,5 +191,8 @@ class FeeOption {
   final int sats;
   final int confirmationTarget;
 
-  FeeOption(this.sats, this.confirmationTarget);
+  const FeeOption(
+    this.sats,
+    this.confirmationTarget,
+  );
 }

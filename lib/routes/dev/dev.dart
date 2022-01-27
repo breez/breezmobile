@@ -149,8 +149,6 @@ class DevViewState extends State<DevView> {
                                 appBar: AppBar(
                                   iconTheme:
                                       Theme.of(context).appBarTheme.iconTheme,
-                                  textTheme:
-                                      Theme.of(context).appBarTheme.textTheme,
                                   backgroundColor:
                                       Theme.of(context).canvasColor,
                                   leading: backBtn.BackButton(),
@@ -470,6 +468,7 @@ class DevViewState extends State<DevView> {
         title: 'Log cache usage',
         icon: Icons.phone_android,
         function: _printCacheUsage));
+        
     return choices;
   }
 
@@ -550,7 +549,8 @@ class DevViewState extends State<DevView> {
   }
 
   void _refreshGraph() async {
-    FlutterDownloader.cancelAll();
+    await FlutterDownloader.cancelAll();
+    await widget._breezBridge.deleteDownloads();
     Navigator.push(context,
         createLoaderRoute(context, message: "Deleting graph...", opacity: 0.8));
     widget._breezBridge.deleteGraph().whenComplete(() {

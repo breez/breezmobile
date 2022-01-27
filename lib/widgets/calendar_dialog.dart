@@ -5,20 +5,20 @@ import 'package:breez/utils/date.dart';
 import 'package:breez/widgets/breez_date_picker.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class CalendarDialog extends StatefulWidget {
-  final BuildContext context;
   final DateTime firstDate;
 
-  CalendarDialog(this.context, this.firstDate);
+  const CalendarDialog(this.firstDate);
 
   @override
   _CalendarDialogState createState() => _CalendarDialogState();
 }
 
 class _CalendarDialogState extends State<CalendarDialog> {
-  TextEditingController _startDateController = TextEditingController();
-  TextEditingController _endDateController = TextEditingController();
+  final _startDateController = TextEditingController();
+  final _endDateController = TextEditingController();
   DateTime _endDate = DateTime.now();
   DateTime _startDate;
 
@@ -26,82 +26,97 @@ class _CalendarDialogState extends State<CalendarDialog> {
   void initState() {
     super.initState();
     _startDate = widget.firstDate;
-    _startDateController.text = BreezDateUtils.formatYearMonthDay(widget.firstDate);
+    _startDateController.text = BreezDateUtils.formatYearMonthDay(_startDate);
     _endDateController.text = BreezDateUtils.formatYearMonthDay(_endDate);
   }
 
   @override
   Widget build(BuildContext context) {
-    return pickDate();
-  }
+    final texts = AppLocalizations.of(context);
+    final themeData = Theme.of(context);
 
-  Widget pickDate() {
     return AlertDialog(
       title: Text(
-        "Choose a date range:",
-        style: Theme.of(context).dialogTheme.titleTextStyle,
+        texts.pos_transactions_range_dialog_title,
+        style: themeData.dialogTheme.titleTextStyle,
       ),
       content: Row(
         mainAxisSize: MainAxisSize.max,
         mainAxisAlignment: MainAxisAlignment.center,
-        children: <Widget>[
+        children: [
           Flexible(
-              //flex: 0,
-              child: _selectDateButton("Start", _startDateController, true)),
+            child: _selectDateButton(
+              texts.pos_transactions_range_dialog_start,
+              _startDateController,
+              true,
+            ),
+          ),
           Flexible(
-              //flex: 0,
-              child: _selectDateButton("End", _endDateController, false)),
+            child: _selectDateButton(
+              texts.pos_transactions_range_dialog_end,
+              _endDateController,
+              false,
+            ),
+          ),
         ],
       ),
-      actions: <Widget>[
+      actions: [
         TextButton(
-          child: Text("CLEAR",
-              style: theme.cancelButtonStyle.copyWith(
-                  color: theme.themeId == "BLUE"
-                      ? Colors.red
-                      : Theme.of(context).errorColor)),
+          child: Text(
+            texts.pos_transactions_range_dialog_clear,
+            style: theme.cancelButtonStyle.copyWith(
+              color:
+                  theme.themeId == "BLUE" ? Colors.red : themeData.errorColor,
+            ),
+          ),
           onPressed: _clearFilter,
         ),
         TextButton(
-          child: Text("APPLY FILTER",
-              style: Theme.of(context).primaryTextTheme.button),
-          onPressed: () {
-            _applyFilter();
-          },
+          child: Text(
+            texts.pos_transactions_range_dialog_apply,
+            style: themeData.primaryTextTheme.button,
+          ),
+          onPressed: () => _applyFilter(context),
         ),
       ],
     );
   }
 
-  void _applyFilter() {
+  void _applyFilter(BuildContext context) {
     // Check if filter is unchanged
+    final navigator = Navigator.of(context);
     if (_startDate != widget.firstDate || _endDate.day != DateTime.now().day) {
-      DateTime startDate =
-          DateTime(_startDate.year, _startDate.month, _startDate.day, 0, 0, 0);
-      DateTime endDate = DateTime(
-          _endDate.year, _endDate.month, _endDate.day, 23, 59, 59, 999);
-      Navigator.of(context).pop([startDate, endDate]);
+      navigator.pop([
+        DateTime(_startDate.year, _startDate.month, _startDate.day, 0, 0, 0),
+        DateTime(_endDate.year, _endDate.month, _endDate.day, 23, 59, 59, 999),
+      ]);
     } else {
-      Navigator.of(context).pop([null, null]);
+      navigator.pop([null, null]);
     }
   }
 
-  Widget _selectDateButton(String label,
-      TextEditingController textEditingController, bool isStartBtn) {
+  Widget _selectDateButton(
+    String label,
+    TextEditingController textEditingController,
+    bool isStartBtn,
+  ) {
+    final themeData = Theme.of(context);
+
     return GestureDetector(
       child: Theme(
         data: theme.themeId == "BLUE"
-            ? Theme.of(context)
-            : Theme.of(context)
-                .copyWith(disabledColor: Theme.of(context).backgroundColor),
+            ? themeData
+            : themeData.copyWith(
+                disabledColor: themeData.backgroundColor,
+              ),
         child: TextField(
           decoration: InputDecoration(
             labelText: label,
-            labelStyle: Theme.of(context).dialogTheme.contentTextStyle,
+            labelStyle: themeData.dialogTheme.contentTextStyle,
           ),
           controller: textEditingController,
           enabled: false,
-          style: Theme.of(context).dialogTheme.contentTextStyle,
+          style: themeData.dialogTheme.contentTextStyle,
         ),
       ),
       onTap: () {
