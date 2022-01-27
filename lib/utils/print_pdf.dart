@@ -33,6 +33,7 @@ class PrintService {
           pageFormat: PdfPageFormat.a4,
           build: (pw.Context context) {
             return pw.Column(
+              mainAxisSize: pw.MainAxisSize.min,
               crossAxisAlignment: pw.CrossAxisAlignment.start,
               children: [
                 _buildTitle(texts),
@@ -357,6 +358,7 @@ class PrintService {
     final preimage = printParameters.paymentInfo?.preimage;
     return preimage != null && preimage.isNotEmpty
         ? pw.Column(
+            mainAxisSize: pw.MainAxisSize.min,
             mainAxisAlignment: pw.MainAxisAlignment.start,
             crossAxisAlignment: pw.CrossAxisAlignment.start,
             children: [
