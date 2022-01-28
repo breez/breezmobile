@@ -50,7 +50,7 @@ dependencies:
   qr_flutter: ^4.0.0
   rxdart: ^0.27.3
   shared_preferences: ^2.0.11
-  simple_animations: ^1.3.12 # TODO version 2 with breaking changes
+  simple_animations: ^4.0.1
   sqflite: ^2.0.1
   timeago: ^3.1.0
   tutorial_coach_mark: ^1.2.1
