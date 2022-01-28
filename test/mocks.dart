@@ -112,19 +112,23 @@ class InjectorMock extends Mock implements ServiceInjector {
 }
 
 void sqfliteFfiInitAsMockMethodCallHandler() {
-  const channel = MethodChannel('com.tekartik.sqflite');
-  channel.setMockMethodCallHandler((MethodCall methodCall) async {
-    try {
-      return await FfiMethodCall(
-        methodCall.method,
-        methodCall.arguments,
-      ).handleInIsolate();
-    } on SqfliteFfiException catch (e) {
-      throw PlatformException(
-        code: e.code,
-        message: e.message,
-        details: e.details,
-      );
-    }
-  });
+  TestWidgetsFlutterBinding.ensureInitialized();
+  final binding = TestDefaultBinaryMessengerBinding.instance;
+  binding.defaultBinaryMessenger.setMockMethodCallHandler(
+    MethodChannel('com.tekartik.sqflite'),
+    (methodCall) async {
+      try {
+        return await FfiMethodCall(
+          methodCall.method,
+          methodCall.arguments,
+        ).handleInIsolate();
+      } on SqfliteFfiException catch (e) {
+        throw PlatformException(
+          code: e.code,
+          message: e.message,
+          details: e.details,
+        );
+      }
+    },
+  );
 }
