@@ -1,7 +1,10 @@
 import 'package:breez/theme_data.dart' as theme;
+import 'package:breez/utils/build_context.dart';
 import 'package:breez/widgets/practicles_animations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+
+import '../../theme_data.dart';
 
 class SuccessfulPaymentRoute extends StatefulWidget {
   final Function() onPrint;
@@ -30,28 +33,24 @@ class SuccessfulPaymentRouteState extends State<SuccessfulPaymentRoute>
             context: context,
             barrierDismissible: true,
             builder: (BuildContext context) {
+              Color iconColor = context.appBarTheme.actionsIconTheme.color;
+
               return GestureDetector(
                 behavior: HitTestBehavior.translucent,
                 onTap: () {
-                  Navigator.of(context).pop();
+                  context.pop();
                 },
                 child: AlertDialog(
                   title: (widget.onPrint != null)
                       ? Align(
                           alignment: Alignment.centerRight,
                           child: IconButton(
-                            tooltip: "Print",
+                      tooltip: "Print",
                             iconSize: 24.0,
-                            color: Theme.of(context)
-                                .appBarTheme
-                                .actionsIconTheme
-                                .color,
+                            color: iconColor,
                             icon: SvgPicture.asset(
                               "src/icon/printer.svg",
-                              color: Theme.of(context)
-                                  .appBarTheme
-                                  .actionsIconTheme
-                                  .color,
+                              color: iconColor,
                               fit: BoxFit.contain,
                               width: 24.0,
                               height: 24.0,
@@ -68,7 +67,7 @@ class SuccessfulPaymentRouteState extends State<SuccessfulPaymentRoute>
                   content: _buildSuccessfulPaymentMessage(),
                 ),
               );
-            }).whenComplete(() => Navigator.of(context).pop());
+            }).whenComplete(() => context.pop());
       });
     }
   }
@@ -84,6 +83,8 @@ class SuccessfulPaymentRouteState extends State<SuccessfulPaymentRoute>
   }
 
   _buildSuccessfulPaymentMessage() {
+    ThemeData themeData = context.theme;
+
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       crossAxisAlignment: CrossAxisAlignment.center,
@@ -92,16 +93,15 @@ class SuccessfulPaymentRouteState extends State<SuccessfulPaymentRoute>
         Text(
           'Payment received!',
           textAlign: TextAlign.center,
-          style: Theme.of(context)
-              .primaryTextTheme
-              .headline4
-              .copyWith(fontSize: 16),
+          style: themeData.primaryTextTheme.headline4.copyWith(fontSize: 16),
         ),
         Padding(
           padding: const EdgeInsets.only(top: 20, bottom: 40),
           child: Container(
             decoration: new BoxDecoration(
-              color: Theme.of(context).buttonColor,
+              color: (themeId == "BLUE")
+                  ? Colors.white
+                  : themeData.primaryColorLight,
               shape: BoxShape.circle,
             ),
             child: Image(

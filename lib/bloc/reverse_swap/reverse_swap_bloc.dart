@@ -20,11 +20,13 @@ class ReverseSwapBloc with AsyncActionsHandler {
 
   final StreamController<InProgressReverseSwaps> _swapsInProgressController =
       BehaviorSubject<InProgressReverseSwaps>();
+
   Stream<InProgressReverseSwaps> get swapInProgressStream =>
       _swapsInProgressController.stream;
 
   final StreamController<void> _broadcastTxStreamController =
       StreamController<void>.broadcast();
+
   Stream<void> get broadcastTxStream => _broadcastTxStreamController.stream;
 
   final Stream<PaymentsModel> _paymentsStream;

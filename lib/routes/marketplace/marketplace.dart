@@ -3,8 +3,8 @@ import 'package:breez/bloc/blocs_provider.dart';
 import 'package:breez/bloc/marketplace/marketplace_bloc.dart';
 import 'package:breez/bloc/marketplace/vendor_model.dart';
 import 'package:breez/theme_data.dart' as theme;
+import 'package:breez/utils/build_context.dart';
 import 'package:flutter/material.dart';
-import 'package:breez/l10n/locales.dart';
 
 import 'vendor_row.dart';
 
@@ -25,8 +25,8 @@ class MarketplacePageState extends State<MarketplacePage> {
     return Scaffold(
       key: _scaffoldKey,
       backgroundColor: theme.themeId == "BLUE"
-          ? Theme.of(context).backgroundColor
-          : Theme.of(context).canvasColor,
+          ? context.backgroundColor
+          : context.canvasColor,
       body: StreamBuilder(
         stream: marketplaceBloc.vendorsStream,
         builder: (context, snapshot) {
@@ -49,11 +49,9 @@ class MarketplacePageState extends State<MarketplacePage> {
         child: Text(
           context.l10n.market_place_no_vendors,
           textAlign: TextAlign.center,
-          style: Theme.of(context).textTheme.headline4.copyWith(
-                color: theme.themeId == "BLUE"
-                    ? Theme.of(context).canvasColor
-                    : Colors.white,
-              ),
+          style: context.textTheme.headline4.copyWith(
+            color: theme.themeId == "BLUE" ? context.canvasColor : Colors.white,
+          ),
         ),
       ),
     );
@@ -63,9 +61,9 @@ class MarketplacePageState extends State<MarketplacePage> {
     final accountBloc = AppBlocsProvider.of<AccountBloc>(context);
 
     return Container(
-      height: MediaQuery.of(context).size.height -
+      height: context.mediaQuerySize.height -
           kToolbarHeight -
-          MediaQuery.of(context).padding.top,
+          context.mediaQueryPadding.top,
       child: ListView.builder(
         itemBuilder: (context, i) => VendorRow(accountBloc, vendorModel[i]),
         itemCount: vendorModel.length,

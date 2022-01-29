@@ -4,11 +4,11 @@ import 'package:breez/bloc/account/account_bloc.dart';
 import 'package:breez/bloc/account/account_model.dart';
 import 'package:breez/bloc/channels_status_poller.dart';
 import 'package:breez/theme_data.dart' as theme;
+import 'package:breez/utils/build_context.dart';
 import 'package:breez/widgets/loading_animated_text.dart';
 import 'package:breez/widgets/payment_request_dialog.dart';
 import 'package:breez/widgets/sync_loader.dart';
 import 'package:flutter/material.dart';
-import 'package:breez/l10n/locales.dart';
 import 'package:rxdart/rxdart.dart';
 
 const PAYMENT_LIST_ITEM_HEIGHT = 72.0;
@@ -83,8 +83,8 @@ class ProcessingPaymentDialogState extends State<ProcessingPaymentDialog>
             duration: Duration(milliseconds: 500),
           );
           colorAnimation = ColorTween(
-            begin: Theme.of(context).canvasColor,
-            end: Theme.of(context).backgroundColor,
+            begin: context.canvasColor,
+            end: context.backgroundColor,
           ).animate(controller)
             ..addListener(() {
               setState(() {});
@@ -97,7 +97,7 @@ class ProcessingPaymentDialogState extends State<ProcessingPaymentDialog>
           controller.addStatusListener((status) {
             if (status == AnimationStatus.dismissed) {
               if (widget.popOnCompletion) {
-                Navigator.of(context).removeRoute(_currentRoute);
+                context.navigator.removeRoute(_currentRoute);
               }
               widget._onStateChange(PaymentRequestState.PAYMENT_COMPLETED);
             }
@@ -114,7 +114,7 @@ class ProcessingPaymentDialogState extends State<ProcessingPaymentDialog>
 
   _closeDialog() {
     if (widget.popOnCompletion) {
-      Navigator.of(context).removeRoute(_currentRoute);
+      context.navigator.removeRoute(_currentRoute);
     }
     widget._onStateChange(PaymentRequestState.USER_CANCELLED);
   }
@@ -122,7 +122,7 @@ class ProcessingPaymentDialogState extends State<ProcessingPaymentDialog>
   _payAncClose() {
     widget.paymentFunc().then((value) => _animateClose()).catchError((err) {
       if (widget.popOnCompletion) {
-        Navigator.of(context).removeRoute(_currentRoute);
+        context.navigator.removeRoute(_currentRoute);
       }
       widget._onStateChange(PaymentRequestState.PAYMENT_COMPLETED);
     });
@@ -144,8 +144,8 @@ class ProcessingPaymentDialogState extends State<ProcessingPaymentDialog>
   }
 
   void _initializeTransitionAnimation() {
-    final statusBarHeight = MediaQuery.of(context).padding.top;
-    final safeArea = MediaQuery.of(context).size.height - statusBarHeight;
+    final statusBarHeight = context.mediaQueryPadding.top;
+    final safeArea = context.mediaQuerySize.height - statusBarHeight;
     // We subtract dialog size from safe area and divide by half because the dialog
     // is at the center of the screen (distances to top and bottom are equal).
     RenderBox box = _dialogKey.currentContext.findRenderObject();
@@ -178,6 +178,8 @@ class ProcessingPaymentDialogState extends State<ProcessingPaymentDialog>
 
   @override
   Widget build(BuildContext context) {
+    var l10n = context.l10n;
+
     if (channelsSyncProgress == null || synchronizedCompleter.isCompleted) {
       return _animating
           ? _createAnimatedContent(context)
@@ -187,14 +189,14 @@ class ProcessingPaymentDialogState extends State<ProcessingPaymentDialog>
     return AlertDialog(
       content: SyncProgressLoader(
         value: channelsSyncProgress ?? 0,
-        title: context.l10n.processing_payment_dialog_synchronizing,
+        title: l10n.processing_payment_dialog_synchronizing,
       ),
       actions: [
-        FlatButton(
+        TextButton(
           onPressed: _closeDialog,
           child: Text(
-            context.l10n.processing_payment_dialog_action_close,
-            style: Theme.of(context).primaryTextTheme.button,
+            l10n.processing_payment_dialog_action_close,
+            style: context.primaryTextTheme.button,
           ),
         ),
       ],
@@ -248,7 +250,7 @@ class ProcessingPaymentDialogState extends State<ProcessingPaymentDialog>
               rect: transitionAnimation,
               child: Container(
                 height: startHeight,
-                width: MediaQuery.of(context).size.width,
+                width: context.mediaQuerySize.width,
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   mainAxisSize: MainAxisSize.min,
@@ -258,7 +260,7 @@ class ProcessingPaymentDialogState extends State<ProcessingPaymentDialog>
                   color: theme.themeId == "BLUE"
                       ? colorAnimation.value
                       : controller.value >= 0.25
-                          ? Theme.of(context).backgroundColor
+                          ? context.backgroundColor
                           : colorAnimation.value,
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(
@@ -280,7 +282,7 @@ class ProcessingPaymentDialogState extends State<ProcessingPaymentDialog>
       padding: EdgeInsets.fromLTRB(24.0, 24.0, 24.0, 8.0),
       child: Text(
         context.l10n.processing_payment_dialog_processing_payment,
-        style: Theme.of(context).dialogTheme.titleTextStyle,
+        style: context.dialogTheme.titleTextStyle,
         textAlign: TextAlign.center,
       ),
     );
@@ -291,14 +293,14 @@ class ProcessingPaymentDialogState extends State<ProcessingPaymentDialog>
       child: Padding(
         padding: EdgeInsets.fromLTRB(16.0, 0.0, 16.0, 0.0),
         child: Container(
-          width: MediaQuery.of(context).size.width,
+          width: context.mediaQuerySize.width,
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             mainAxisSize: MainAxisSize.min,
             children: [
               LoadingAnimatedText(
                 context.l10n.processing_payment_dialog_wait,
-                textStyle: Theme.of(context).dialogTheme.contentTextStyle,
+                textStyle: context.dialogTheme.contentTextStyle,
                 textAlign: TextAlign.center,
               ),
             ],

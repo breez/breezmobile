@@ -4,12 +4,12 @@ import 'package:breez/bloc/account/add_funds_bloc.dart';
 import 'package:breez/bloc/blocs_provider.dart';
 import 'package:breez/bloc/lsp/lsp_bloc.dart';
 import 'package:breez/bloc/lsp/lsp_model.dart';
+import 'package:breez/utils/build_context.dart';
 import 'package:breez/widgets/back_button.dart' as backBtn;
 import 'package:breez/widgets/single_button_bottom_bar.dart';
 import 'package:breez/widgets/warning_box.dart';
 import 'package:fixnum/fixnum.dart';
 import 'package:flutter/material.dart';
-import 'package:breez/l10n/locales.dart';
 
 import 'address_widget.dart';
 import 'conditional_deposit.dart';
@@ -38,11 +38,15 @@ class DepositToBTCAddressPageState extends State<DepositToBTCAddressPage> {
 
   @override
   Widget build(BuildContext context) {
+    var l10n = context.l10n;
+    ThemeData theme = context.theme;
+    AppBarTheme appBarTheme = theme.appBarTheme;
+
     final accountBloc = AppBlocsProvider.of<AccountBloc>(context);
     final lspBloc = AppBlocsProvider.of<LSPBloc>(context);
 
     return ConditionalDeposit(
-      title: context.l10n.invoice_btc_address_title,
+      title: l10n.invoice_btc_address_title,
       enabledChild: StreamBuilder<LSPStatus>(
         stream: lspBloc.lspStatusStream,
         builder: (context, lspSnapshot) {
@@ -55,14 +59,12 @@ class DepositToBTCAddressPageState extends State<DepositToBTCAddressPage> {
                   return Material(
                     child: Scaffold(
                       appBar: AppBar(
-                        iconTheme: Theme.of(context).appBarTheme.iconTheme,
-                        textTheme: Theme.of(context).appBarTheme.textTheme,
-                        backgroundColor: Theme.of(context).canvasColor,
+                        iconTheme: appBarTheme.iconTheme,
+                        toolbarTextStyle: appBarTheme.toolbarTextStyle,
+                        titleTextStyle: appBarTheme.titleTextStyle,
+                        backgroundColor: theme.canvasColor,
                         leading: backBtn.BackButton(),
-                        title: Text(
-                          context.l10n.invoice_btc_address_title,
-                          style: Theme.of(context).appBarTheme.textTheme.headline6,
-                        ),
+                        title: Text(l10n.invoice_btc_address_title),
                         elevation: 0.0,
                       ),
                       body: getBody(
@@ -71,7 +73,7 @@ class DepositToBTCAddressPageState extends State<DepositToBTCAddressPage> {
                         snapshot.data,
                         lspSnapshot.data,
                         snapshot.hasError
-                            ? context.l10n.invoice_btc_address_network_error
+                            ? l10n.invoice_btc_address_network_error
                             : null,
                       ),
                       bottomNavigationBar: _buildBottomBar(
@@ -143,7 +145,7 @@ class DepositToBTCAddressPageState extends State<DepositToBTCAddressPage> {
                           minAllowedDeposit,
                           maxAllowedDeposit,
                         ),
-                        style: Theme.of(context).textTheme.headline6,
+                        style: context.textTheme.headline6,
                         textAlign: TextAlign.center,
                       ),
                     ],
@@ -184,7 +186,8 @@ class DepositToBTCAddressPageState extends State<DepositToBTCAddressPage> {
     );
 
     if (connected && showMinFeeMessage) {
-      return context.l10n.invoice_btc_address_warning_with_min_fee_account_connected(
+      return context.l10n
+          .invoice_btc_address_warning_with_min_fee_account_connected(
         minSats,
         maxSats,
         setUpFee,
@@ -244,7 +247,7 @@ class DepositToBTCAddressPageState extends State<DepositToBTCAddressPage> {
           if (hasError) {
             _addFundsBloc.addFundRequestSink.add(true);
           } else {
-            Navigator.of(context).pop();
+            context.pop();
           }
         },
       );

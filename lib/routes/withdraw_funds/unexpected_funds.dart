@@ -4,6 +4,7 @@ import 'package:breez/bloc/account/account_actions.dart';
 import 'package:breez/bloc/account/account_bloc.dart';
 import 'package:breez/bloc/account/account_model.dart';
 import 'package:breez/bloc/blocs_provider.dart';
+import 'package:breez/utils/build_context.dart';
 import 'package:breez/widgets/loader.dart';
 import 'package:flutter/material.dart';
 
@@ -44,9 +45,8 @@ class UnexpectedFundsState extends State<UnexpectedFunds> {
             builder: (context, accSnapshot) {
               if (accSnapshot.data == null) {
                 return Center(
-                    child: Loader(
-                        color:
-                            Theme.of(context).primaryColor.withOpacity(0.5)));
+                    child:
+                        Loader(color: context.primaryColor.withOpacity(0.5)));
               }
               return PageView(
                 controller: _pageController,
@@ -83,8 +83,7 @@ class UnexpectedFundsState extends State<UnexpectedFunds> {
                           onConfirm: (txDetails) {
                             var action = PublishTransaction(txDetails.txBytes);
                             accountBloc.userActionsSink.add(action);
-                            return action.future
-                                .then((value) => Navigator.of(context).pop());
+                            return action.future.then((value) => context.pop());
                           },
                           onPrevious: () {
                             _pageController.previousPage(

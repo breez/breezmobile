@@ -4,7 +4,7 @@ import 'package:breez/bloc/user_profile/breez_user_model.dart';
 import 'package:breez/bloc/user_profile/user_profile_bloc.dart';
 import 'package:breez/routes/spontaneous_payment/spontaneous_payment_page.dart';
 import 'package:breez/theme_data.dart' as theme;
-import 'package:breez/utils/min_font_size.dart';
+import 'package:breez/utils/build_context.dart';
 import 'package:breez/utils/node_id.dart';
 import 'package:breez/widgets/flushbar.dart';
 import 'package:breez/widgets/route.dart';
@@ -60,8 +60,7 @@ class InvoiceBottomSheetState extends State<InvoiceBottomSheet>
                     }, snapshot.data.themeId, isFirst: true),
                     _buildInvoiceMenuItem("PAY", "src/icon/qr_scan.png",
                         () async {
-                      String decodedQr = await Navigator.pushNamed<String>(
-                          context, "/qr_scan");
+                          String decodedQr = await context.pushNamed("/qr_scan");
                       if (decodedQr == null) {
                         return;
                       }
@@ -74,7 +73,7 @@ class InvoiceBottomSheetState extends State<InvoiceBottomSheet>
                       if (nodeID == null) {
                         widget.invoiceBloc.decodeInvoiceSink.add(decodedQr);
                       } else {
-                        Navigator.of(context).push(FadeInRoute(
+                            context.push(FadeInRoute(
                           builder: (_) => SpontaneousPaymentPage(
                               nodeID, widget.firstPaymentItemKey),
                         ));
@@ -83,8 +82,7 @@ class InvoiceBottomSheetState extends State<InvoiceBottomSheet>
                     _buildInvoiceMenuItem(
                         "RECEIVE",
                         "src/icon/paste.png",
-                        () =>
-                            Navigator.of(context).pushNamed('/create_invoice'),
+                        () => context.pushNamed('/create_invoice'),
                         snapshot.data.themeId),
                   ]));
         });
@@ -93,6 +91,9 @@ class InvoiceBottomSheetState extends State<InvoiceBottomSheet>
   Widget _buildInvoiceMenuItem(
       String title, String iconPath, Function function, String themeId,
       {bool isFirst = false}) {
+    ThemeData themeData = context.theme;
+    Color primaryColorLight = themeData.primaryColorLight;
+
     return AnimatedContainer(
       width: widget.isSmallView ? 56.0 : 126.0,
       height: isFirst ? 50.0 : 56.0,
@@ -101,65 +102,65 @@ class InvoiceBottomSheetState extends State<InvoiceBottomSheet>
         style: ElevatedButton.styleFrom(
           primary: (themeId == "BLUE")
               ? isFirst
-              ? Colors.white
-              : Theme.of(context).primaryColorLight
+                  ? Colors.white
+                  : primaryColorLight
               : isFirst
-              ? Theme.of(context).buttonColor
-              : Theme.of(context).backgroundColor,
+                  ? primaryColorLight
+                  : themeData.backgroundColor,
           padding: EdgeInsets.fromLTRB(16.0, 12.0, 16.0, 12.0),
           shape: isFirst
               ? RoundedRectangleBorder(
-              borderRadius:
-              BorderRadius.only(topLeft: Radius.circular(20.0)))
+                  borderRadius:
+                      BorderRadius.only(topLeft: Radius.circular(20.0)))
               : Border(
-              top: BorderSide(
-                  color: Theme.of(context).dividerColor.withOpacity(0.12),
-                  width: 1,
-                  style: BorderStyle.solid)),
+                  top: BorderSide(
+                      color: themeData.dividerColor.withOpacity(0.12),
+                      width: 1,
+                      style: BorderStyle.solid)),
         ),
         onPressed: function,
         child: Row(
             mainAxisSize: MainAxisSize.max,
             children: widget.isSmallView
                 ? <Widget>[
-                    ImageIcon(
-                      AssetImage(iconPath),
-                      color: (themeId == "BLUE")
-                          ? isFirst
-                              ? Theme.of(context).primaryColorLight
+              ImageIcon(
+                AssetImage(iconPath),
+                color: (themeId == "BLUE")
+                    ? isFirst
+                              ? primaryColorLight
                               : Colors.white
                           : Colors.white,
-                      size: 24.0,
-                    )
-                  ]
+                size: 24.0,
+              )
+            ]
                 : <Widget>[
-                    ImageIcon(
-                      AssetImage(iconPath),
-                      color: (themeId == "BLUE")
-                          ? isFirst
-                              ? Theme.of(context).primaryColorLight
+              ImageIcon(
+                AssetImage(iconPath),
+                color: (themeId == "BLUE")
+                    ? isFirst
+                              ? primaryColorLight
                               : Colors.white
                           : Colors.white,
-                      size: 24.0,
-                    ),
-                    Padding(padding: EdgeInsets.only(left: 8.0)),
-                    Expanded(
-                      child: AutoSizeText(
-                        title.toUpperCase(),
+                size: 24.0,
+              ),
+              Padding(padding: EdgeInsets.only(left: 8.0)),
+              Expanded(
+                child: AutoSizeText(
+                  title.toUpperCase(),
                         style: theme.bottomSheetMenuItemStyle.copyWith(
                           color: (themeId == "BLUE")
                               ? isFirst
-                                  ? Theme.of(context).primaryColorLight
+                                  ? primaryColorLight
                                   : Colors.white
                               : Colors.white,
                         ),
                         maxLines: 1,
-                        minFontSize: MinFontSize(context).minFontSize,
+                        minFontSize: context.minFontSize,
                         stepGranularity: 0.1,
                         group: _autoSizeGroup,
                       ),
-                    )
-                  ]),
+              )
+            ]),
       ),
     );
   }

@@ -1,7 +1,7 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:breez/bloc/pos_catalog/model.dart';
-import 'package:breez/l10n/locales.dart';
 import 'package:breez/theme_data.dart' as theme;
+import 'package:breez/utils/build_context.dart';
 import 'package:flutter/material.dart';
 
 class PosInvoiceNumPad extends StatelessWidget {
@@ -91,7 +91,7 @@ class PosInvoiceNumPad extends StatelessWidget {
       height: height / 4.0,
       decoration: BoxDecoration(
         border: Border.all(
-          color: Theme.of(context).backgroundColor,
+          color: context.backgroundColor,
           width: 0.5,
         ),
       ),
@@ -116,7 +116,7 @@ class PosInvoiceNumPad extends StatelessWidget {
       height: height / 4.0,
       decoration: BoxDecoration(
         border: Border.all(
-          color: Theme.of(context).backgroundColor,
+          color: context.backgroundColor,
           width: 0.5,
         ),
       ),
@@ -143,7 +143,7 @@ class PosInvoiceNumPad extends StatelessWidget {
       height: height / 4.0,
       decoration: BoxDecoration(
         border: Border.all(
-          color: Theme.of(context).backgroundColor,
+          color: context.backgroundColor,
           width: 0.5,
         ),
       ),

@@ -1,6 +1,6 @@
 import 'package:breez/bloc/user_profile/currency.dart';
-import 'package:breez/l10n/locales.dart';
 import 'package:breez/routes/charge/currency_wrapper.dart';
+import 'package:breez/utils/build_context.dart';
 import 'package:breez/utils/date.dart';
 import 'package:breez/widgets/print_parameters.dart';
 import 'package:flutter/cupertino.dart';

@@ -12,7 +12,7 @@ import 'package:breez/bloc/lnurl/lnurl_model.dart';
 import 'package:breez/logger.dart';
 import 'package:breez/services/breezlib/data/rpc.pb.dart';
 import 'package:breez/theme_data.dart' as theme;
-import 'package:breez/utils/min_font_size.dart';
+import 'package:breez/utils/build_context.dart';
 import 'package:breez/widgets/amount_form_field.dart';
 import 'package:breez/widgets/back_button.dart' as backBtn;
 import 'package:breez/widgets/error_dialog.dart';
@@ -21,6 +21,7 @@ import 'package:breez/widgets/loader.dart';
 import 'package:breez/widgets/single_button_bottom_bar.dart';
 import 'package:breez/widgets/static_loader.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 class LNURLFetchInvoicePage extends StatefulWidget {
   final PayFetchResponse payFetchResponse;
@@ -63,7 +64,7 @@ class LNURLFetchInvoicePageState extends State<LNURLFetchInvoicePage> {
         }
 
         Future.delayed(Duration(milliseconds: 200),
-            () => FocusScope.of(context).requestFocus(_amountFocusNode));
+            () => context.focusScope.requestFocus(_amountFocusNode));
       }
 
       _isInit = true;
@@ -90,6 +91,9 @@ class LNURLFetchInvoicePageState extends State<LNURLFetchInvoicePage> {
   }
 
   Widget showFetchInvoiceDialog() {
+    ThemeData themeData = context.theme;
+    AppBarTheme appBarTheme = themeData.appBarTheme;
+
     AccountBloc accountBloc = AppBlocsProvider.of<AccountBloc>(context);
     InvoiceBloc invoiceBloc = AppBlocsProvider.of<InvoiceBloc>(context);
     LNUrlBloc lnurlBloc = AppBlocsProvider.of<LNUrlBloc>(context);
@@ -142,12 +146,12 @@ class LNURLFetchInvoicePageState extends State<LNURLFetchInvoicePage> {
             );
           }),
       appBar: AppBar(
-        iconTheme: Theme.of(context).appBarTheme.iconTheme,
-        textTheme: Theme.of(context).appBarTheme.textTheme,
-        backgroundColor: Theme.of(context).canvasColor,
+        iconTheme: appBarTheme.iconTheme,
+        toolbarTextStyle: appBarTheme.toolbarTextStyle,
+        titleTextStyle: appBarTheme.titleTextStyle,
+        backgroundColor: themeData.canvasColor,
         leading: backBtn.BackButton(),
-        title: Text('Pay to $payee',
-            style: Theme.of(context).appBarTheme.textTheme.headline6),
+        title: Text('Pay to $payee'),
         elevation: 0.0,
       ),
       body: StreamBuilder<AccountModel>(
@@ -168,19 +172,20 @@ class LNURLFetchInvoicePageState extends State<LNURLFetchInvoicePage> {
                     mainAxisSize: MainAxisSize.max,
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: <Widget>[
-                        if(widget.payFetchResponse.commentAllowed > 0)
-                      TextFormField(
-                        controller: _commentController,
-                        keyboardType: TextInputType.multiline,
-                        textInputAction: TextInputAction.done,
-                        maxLines: null,
-                        maxLength: widget.payFetchResponse.commentAllowed.toInt(),
-                        maxLengthEnforced: true,
-                        decoration: InputDecoration(
-                          labelText: "Comment (optional)",
+                      if (widget.payFetchResponse.commentAllowed > 0)
+                        TextFormField(
+                          controller: _commentController,
+                          keyboardType: TextInputType.multiline,
+                          textInputAction: TextInputAction.done,
+                          maxLines: null,
+                          maxLength:
+                              widget.payFetchResponse.commentAllowed.toInt(),
+                          maxLengthEnforcement: MaxLengthEnforcement.enforced,
+                          decoration: InputDecoration(
+                            labelText: "Comment (optional)",
+                          ),
+                          style: theme.FieldTextStyle.textStyle,
                         ),
-                        style: theme.FieldTextStyle.textStyle,
-                      ),
                       AmountFormField(
                           context: context,
                           accountModel: acc,
@@ -202,13 +207,13 @@ class LNURLFetchInvoicePageState extends State<LNURLFetchInvoicePage> {
                           },
                           style: theme.FieldTextStyle.textStyle),
                       Padding(
-                              padding: EdgeInsets.only(top: 8),
-                              child: Text(
-                                      "Enter an amount between ${acc.currency.format(widget.payFetchResponse.minAmount)} and ${acc.currency.format(widget.payFetchResponse.maxAmount)}",
-                                      textAlign: TextAlign.left,
-                                      style: theme.FieldTextStyle.labelStyle)),
+                          padding: EdgeInsets.only(top: 8),
+                          child: Text(
+                              "Enter an amount between ${acc.currency.format(widget.payFetchResponse.minAmount)} and ${acc.currency.format(widget.payFetchResponse.maxAmount)}",
+                              textAlign: TextAlign.left,
+                              style: theme.FieldTextStyle.labelStyle)),
                       Container(
-                        width: MediaQuery.of(context).size.width,
+                        width: context.mediaQuerySize.width,
                         height: 48,
                         padding: EdgeInsets.only(top: 16.0),
                         child: _buildDescription(acc),
@@ -238,8 +243,8 @@ class LNURLFetchInvoicePageState extends State<LNURLFetchInvoicePage> {
                                     Text(
                                       message,
                                       textAlign: TextAlign.center,
-                                      style: theme.warningStyle.copyWith(
-                                          color: Theme.of(context).errorColor),
+                                      style: theme.warningStyle
+                                          .copyWith(color: context.errorColor),
                                     ),
                                   ]));
                             } else {
@@ -263,7 +268,7 @@ class LNURLFetchInvoicePageState extends State<LNURLFetchInvoicePage> {
         "${_getMetadataText(_payFetchResponse.metadata)}",
         style: theme.textStyle,
         maxLines: 1,
-        minFontSize: MinFontSize(context).minFontSize,
+        minFontSize: context.minFontSize,
       ),
     );
   }
@@ -332,7 +337,7 @@ class LNURLFetchInvoicePageState extends State<LNURLFetchInvoicePage> {
 
     _currentRoute = ModalRoute.of(Navigator.of(context).context);
     _loaderRoute = createLoaderRoute(context);
-    Navigator.of(context).push(_loaderRoute);
+    context.push(_loaderRoute);
 
     _payFetchResponse.amount =
         account.currency.parse(_amountController.text) * 1000;
@@ -345,7 +350,7 @@ class LNURLFetchInvoicePageState extends State<LNURLFetchInvoicePage> {
           "LNURL-Pay Error",
           Text(
               "An error occurred while attempting to retreive an invoice from ${_payFetchResponse.host}!\nReason: ${e.toString()}",
-              style: Theme.of(context).dialogTheme.contentTextStyle),
+              style: context.dialogTheme.contentTextStyle),
           okFunc: _removeLoader);
     }).then((payinfo) {
       invoiceBloc.decodeInvoiceSink.add(payinfo.invoice);
@@ -360,7 +365,7 @@ class LNURLFetchInvoicePageState extends State<LNURLFetchInvoicePage> {
 
       if (!_currentRoute.isCurrent) return;
 
-      Navigator.of(context).pop();
+      context.pop();
     });
 
     lnurlBloc.actionsSink.add(action);
@@ -369,7 +374,7 @@ class LNURLFetchInvoicePageState extends State<LNURLFetchInvoicePage> {
   void _removeLoader() {
     if (mounted) {
       if (_loaderRoute != null && _loaderRoute.isCurrent) {
-        Navigator.of(context).removeRoute(_loaderRoute);
+        context.navigator.removeRoute(_loaderRoute);
       }
     }
   }

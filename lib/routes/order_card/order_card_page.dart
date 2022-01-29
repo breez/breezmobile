@@ -4,6 +4,7 @@ import 'dart:convert';
 import 'package:breez/services/breez_server/server.dart';
 import 'package:breez/services/injector.dart';
 import 'package:breez/theme_data.dart' as theme;
+import 'package:breez/utils/build_context.dart';
 import 'package:breez/widgets/back_button.dart' as backBtn;
 import 'package:breez/widgets/single_button_bottom_bar.dart';
 import 'package:flutter/material.dart';
@@ -168,7 +169,9 @@ class OrderCardPageState extends State<OrderCardPage> {
   void _onChangeZip() {
     setState(() {
       _autoValidateZip =
-          (_zipController.text.length > 0 && !_zipFocusNode.hasFocus) ? AutovalidateMode.always : AutovalidateMode.disabled;
+          (_zipController.text.length > 0 && !_zipFocusNode.hasFocus)
+              ? AutovalidateMode.always
+              : AutovalidateMode.disabled;
     });
   }
 
@@ -280,7 +283,7 @@ class OrderCardPageState extends State<OrderCardPage> {
 
     return Container(
         height: list.length * 35.0,
-        width: MediaQuery.of(context).size.width,
+        width: context.mediaQuerySize.width,
         child: ListView(children: list));
   }
 
@@ -304,7 +307,7 @@ class OrderCardPageState extends State<OrderCardPage> {
 
     return Container(
         height: list.length * 35.0,
-        width: MediaQuery.of(context).size.width,
+        width: context.mediaQuerySize.width,
         child: ListView(children: list));
   }
 
@@ -317,7 +320,7 @@ class OrderCardPageState extends State<OrderCardPage> {
                 alignment: Alignment.center,
                 child: Text("SKIP", style: theme.skipStyle)),
             onTap: () {
-              Navigator.of(context).pushNamed('/');
+              context.pushNamed('/');
             })
       ];
     } else {
@@ -329,11 +332,11 @@ class OrderCardPageState extends State<OrderCardPage> {
     AlertDialog dialog = AlertDialog(
       content: Text(
           "Name and address are required for sending you a Breez card. Any information provided will be deleted from our systems after card has been sent. You may skip this step and continue using Breez without a card.",
-          style: Theme.of(context).dialogTheme.contentTextStyle),
+          style: context.dialogTheme.contentTextStyle),
       actions: <Widget>[
         TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: Text("OK", style: Theme.of(context).primaryTextTheme.button))
+            onPressed: () => context.pop(),
+            child: Text("OK", style: context.primaryTextTheme.button))
       ],
     );
     showDialog(
@@ -350,19 +353,20 @@ class OrderCardPageState extends State<OrderCardPage> {
 
   @override
   Widget build(BuildContext context) {
+    ThemeData themeData = context.theme;
+    AppBarTheme appBarTheme = themeData.appBarTheme;
+
     bool _showSkip = widget.showSkip == null ? false : widget.showSkip;
     String _title = _showSkip ? "Order a Breez Card" : "Order Card";
     return Scaffold(
       appBar: AppBar(
-          iconTheme: Theme.of(context).appBarTheme.iconTheme,
-          textTheme: Theme.of(context).appBarTheme.textTheme,
-          backgroundColor: Theme.of(context).canvasColor,
+          iconTheme: appBarTheme.iconTheme,
+          backgroundColor: themeData.canvasColor,
+          toolbarTextStyle: appBarTheme.toolbarTextStyle,
+          titleTextStyle: appBarTheme.titleTextStyle,
           automaticallyImplyLeading: false,
           leading: _showLeadingButton(_showSkip),
-          title: Text(
-            _title,
-            style: Theme.of(context).appBarTheme.textTheme.headline6,
-          ),
+          title: Text(_title),
           elevation: 0.0,
           actions: _showSkipButton(_showSkip)),
       body: Padding(
@@ -396,7 +400,7 @@ class OrderCardPageState extends State<OrderCardPage> {
                         padding: EdgeInsets.only(top: 8.0),
                         child: TextFormField(
                           decoration:
-                              InputDecoration(labelText: "E-mail Address"),
+                          InputDecoration(labelText: "E-mail Address"),
                           style: theme.FieldTextStyle.textStyle,
                           textCapitalization: TextCapitalization.none,
                           onSaved: (String value) {
@@ -443,10 +447,10 @@ class OrderCardPageState extends State<OrderCardPage> {
                                       child: TextFormField(
                                         focusNode: _cityFocusNode,
                                         decoration:
-                                            InputDecoration(labelText: "City"),
+                                        InputDecoration(labelText: "City"),
                                         style: theme.FieldTextStyle.textStyle,
                                         textCapitalization:
-                                            TextCapitalization.words,
+                                        TextCapitalization.words,
                                         onSaved: (String value) {
                                           this._data.city = value;
                                         },
@@ -468,10 +472,10 @@ class OrderCardPageState extends State<OrderCardPage> {
                                         controller: _stateController,
                                         focusNode: _stateFocusNode,
                                         decoration:
-                                            InputDecoration(labelText: "State"),
+                                        InputDecoration(labelText: "State"),
                                         style: theme.FieldTextStyle.textStyle,
                                         textCapitalization:
-                                            TextCapitalization.words,
+                                        TextCapitalization.words,
                                         onSaved: (String value) {
                                           this._data.state = value;
                                         },
@@ -481,8 +485,8 @@ class OrderCardPageState extends State<OrderCardPage> {
                                                   _userCountryShort)) {
                                             return "Enter your state";
                                           } else if (_specialCountriesShort
-                                                  .contains(
-                                                      _userCountryShort) &&
+                                              .contains(
+                                              _userCountryShort) &&
                                               _checkStates(value)) {
                                             return "Invalid state";
                                           }
@@ -500,13 +504,14 @@ class OrderCardPageState extends State<OrderCardPage> {
                                   padding: EdgeInsets.only(top: 19.0),
                                   child: Row(
                                     crossAxisAlignment:
-                                        CrossAxisAlignment.start,
+                                    CrossAxisAlignment.start,
                                     children: [
                                       Expanded(
                                         flex: 200,
                                         child: Container(
                                           child: TextFormField(
-                                            autovalidateMode: _autoValidateCountry,
+                                            autovalidateMode:
+                                                _autoValidateCountry,
                                             controller: _countryController,
                                             focusNode: _countryFocusNode,
                                             decoration: InputDecoration(
@@ -541,7 +546,7 @@ class OrderCardPageState extends State<OrderCardPage> {
                                             decoration: InputDecoration(
                                                 labelText: "Zip"),
                                             style:
-                                                theme.FieldTextStyle.textStyle,
+                                            theme.FieldTextStyle.textStyle,
                                             keyboardType: TextInputType.number,
                                             onSaved: (String value) {
                                               this._data.zip = value;
@@ -574,38 +579,38 @@ class OrderCardPageState extends State<OrderCardPage> {
                               ]),
                               _showCountriesList
                                   ? Container(
-                                      padding: EdgeInsets.only(top: 77.5),
-                                      child: Row(
-                                        children: <Widget>[
-                                          Expanded(
-                                              flex: 200,
-                                              child: Container(
-                                                  decoration: theme
-                                                      .autoCompleteBoxDecoration,
-                                                  child:
-                                                      _getFutureWidgetCountries())),
-                                          Expanded(
-                                              flex: 128, child: Container())
-                                        ],
-                                      ))
+                                  padding: EdgeInsets.only(top: 77.5),
+                                  child: Row(
+                                    children: <Widget>[
+                                      Expanded(
+                                          flex: 200,
+                                          child: Container(
+                                              decoration: theme
+                                                  .autoCompleteBoxDecoration,
+                                              child:
+                                              _getFutureWidgetCountries())),
+                                      Expanded(
+                                          flex: 128, child: Container())
+                                    ],
+                                  ))
                                   : Container()
                             ]),
                           ],
                         ),
                         _showStatesList
                             ? Container(
-                                padding: EdgeInsets.only(top: 77.5),
-                                child: Row(
-                                  children: <Widget>[
-                                    Expanded(flex: 208, child: Container()),
-                                    Expanded(
-                                        flex: 120,
-                                        child: Container(
-                                            decoration:
-                                                theme.autoCompleteBoxDecoration,
-                                            child: _getFutureWidgetStates()))
-                                  ],
-                                ))
+                            padding: EdgeInsets.only(top: 77.5),
+                            child: Row(
+                              children: <Widget>[
+                                Expanded(flex: 208, child: Container()),
+                                Expanded(
+                                    flex: 120,
+                                    child: Container(
+                                        decoration:
+                                        theme.autoCompleteBoxDecoration,
+                                        child: _getFutureWidgetStates()))
+                              ],
+                            ))
                             : Container(),
                       ]),
                     ],
@@ -619,14 +624,13 @@ class OrderCardPageState extends State<OrderCardPage> {
             _formKey.currentState.save();
             _breezServer
                 .orderCard(_data.fullName, _data.email, _data.address,
-                    _data.city, _data.state, _data.zip, _data.country)
+                _data.city, _data.state, _data.zip, _data.country)
                 .then((reply) {
-              Navigator.pop(context,
+              context.pop(
                   "Breez card will be sent shortly to the address you have specified.");
             }).catchError((error) {
               print(error.toString());
-              ScaffoldMessenger.of(context)
-                  .showSnackBar(SnackBar(content: Text(error.toString())));
+              context.showSnackBar(SnackBar(content: Text(error.toString())));
             });
           } else {}
         },

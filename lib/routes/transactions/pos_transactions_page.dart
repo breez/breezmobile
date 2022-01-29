@@ -4,13 +4,13 @@ import 'package:breez/bloc/account/account_actions.dart';
 import 'package:breez/bloc/account/account_bloc.dart';
 import 'package:breez/bloc/account/account_model.dart';
 import 'package:breez/bloc/blocs_provider.dart';
+import 'package:breez/utils/build_context.dart';
 import 'package:breez/utils/date.dart';
 import 'package:breez/widgets/back_button.dart' as backBtn;
 import 'package:breez/widgets/calendar_dialog.dart';
 import 'package:breez/widgets/flushbar.dart';
 import 'package:breez/widgets/loader.dart';
 import 'package:flutter/material.dart';
-import 'package:breez/l10n/locales.dart';
 import 'package:share_extend/share_extend.dart';
 
 import 'pos_payments_list.dart';
@@ -86,17 +86,17 @@ class PosTransactionsPageState extends State<PosTransactionsPage> {
     Widget body, [
     List<Widget> actions,
   ]) {
+    ThemeData theme = context.theme;
+    AppBarTheme appBarTheme = theme.appBarTheme;
     return Scaffold(
       key: _scaffoldKey,
       appBar: AppBar(
-        iconTheme: Theme.of(context).appBarTheme.iconTheme,
-        textTheme: Theme.of(context).appBarTheme.textTheme,
-        backgroundColor: Theme.of(context).canvasColor,
+        iconTheme: appBarTheme.iconTheme,
+        toolbarTextStyle: appBarTheme.toolbarTextStyle,
+        titleTextStyle: appBarTheme.titleTextStyle,
+        backgroundColor: theme.canvasColor,
         leading: backBtn.BackButton(),
-        title: Text(
-          context.l10n.pos_transactions_title,
-          style: Theme.of(context).appBarTheme.textTheme.headline6,
-        ),
+        title: Text(context.l10n.pos_transactions_title),
         actions: actions == null ? [] : actions,
         elevation: 0.0,
       ),
@@ -130,15 +130,15 @@ class PosTransactionsPageState extends State<PosTransactionsPage> {
     BuildContext context,
     PaymentsModel paymentsModel,
   ) {
+    ThemeData themeData = context.theme;
+    Color iconColor = themeData.iconTheme.color;
+
     if (paymentsModel.paymentsList.isNotEmpty) {
       return Padding(
         padding: const EdgeInsets.only(right: 16.0),
         child: PopupMenuButton(
-          color: Theme.of(context).backgroundColor,
-          icon: Icon(
-            Icons.more_vert,
-            color: Theme.of(context).iconTheme.color,
-          ),
+          color: themeData.backgroundColor,
+          icon: Icon(Icons.more_vert, color: iconColor),
           padding: EdgeInsets.zero,
           offset: Offset(0, 48),
           onSelected: _select,
@@ -148,7 +148,7 @@ class PosTransactionsPageState extends State<PosTransactionsPage> {
               value: Choice(() => _exportTransactions(context)),
               child: Text(
                 context.l10n.pos_transactions_action_export,
-                style: Theme.of(context).textTheme.button,
+                style: themeData.textTheme.button,
               ),
             ),
           ],
@@ -161,7 +161,7 @@ class PosTransactionsPageState extends State<PosTransactionsPage> {
         onPressed: () {},
         icon: Icon(
           Icons.more_vert,
-          color: Theme.of(context).disabledColor,
+          color: themeData.disabledColor,
           size: 24.0,
         ),
       ),
@@ -175,12 +175,12 @@ class PosTransactionsPageState extends State<PosTransactionsPage> {
   Future _exportTransactions(BuildContext context) async {
     var action = ExportPayments();
     _accountBloc.userActionsSink.add(action);
-    Navigator.of(context).push(createLoaderRoute(context));
+    context.push(createLoaderRoute(context));
     action.future.then((filePath) {
-      Navigator.of(context).pop();
+      context.pop();
       ShareExtend.share(filePath, "file");
     }).catchError((err) {
-      Navigator.of(context).pop();
+      context.pop();
       showFlushbar(
         context,
         message: context.l10n.pos_transactions_action_export_failed,
@@ -218,11 +218,11 @@ class PosTransactionsPageState extends State<PosTransactionsPage> {
                 slivers: [
                   hasDateRange
                       ? SliverAppBar(
-                          pinned: true,
+                    pinned: true,
                           elevation: 0.0,
                           expandedHeight: 32.0,
                           automaticallyImplyLeading: false,
-                          backgroundColor: Theme.of(context).canvasColor,
+                          backgroundColor: context.canvasColor,
                           flexibleSpace: _buildDateFilterChip(filter),
                         )
                       : SliverPadding(

@@ -1,3 +1,4 @@
+import 'package:breez/utils/build_context.dart';
 import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
@@ -92,10 +93,15 @@ class _IconAvatar extends StatelessWidget {
           ? BoxDecoration(
               shape: BoxShape.circle,
               border: Border.all(
-                  color: Colors.white, width: 1.0, style: BorderStyle.solid),
+                color: Colors.white,
+                width: 1.0,
+                style: BorderStyle.solid,
+              ),
               image: DecorationImage(
                   colorFilter: ColorFilter.mode(
-                      Theme.of(context).primaryColorLight, BlendMode.srcATop),
+                    context.primaryColorLight,
+                    BlendMode.srcATop,
+                  ),
                   image: AssetImage("src/images/avatarbg.png"),
                   fit: BoxFit.cover))
           : null,
@@ -105,7 +111,7 @@ class _IconAvatar extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.center,
         children: <Widget>[
           SvgPicture.asset("src/pos-icons/$iconName.svg",
-              color: IconTheme.of(context).color,
+              color: context.iconTheme.color,
               width: useDecoration ? radius : radius * 1.5)
         ],
       ),
@@ -155,21 +161,25 @@ class _UnknownAvatar extends StatelessWidget {
                   color: Colors.white, width: 1.0, style: BorderStyle.solid),
               image: DecorationImage(
                   colorFilter: ColorFilter.mode(
-                      Theme.of(context).primaryColorLight, BlendMode.srcATop),
+                    context.primaryColorLight,
+                    BlendMode.srcATop,
+                  ),
                   image: AssetImage("src/images/avatarbg.png"),
-                  fit: BoxFit.cover))
+                  fit: BoxFit.cover),
+            )
           : null,
       child: (itemName != null && itemName.isNotEmpty)
           ? Center(
               child: Text(
-              _getFirstTwoLetters(),
-              style: TextStyle(
-                  fontSize: useDecoration ? 48 : radius,
-                  color: IconTheme.of(context).color.withOpacity(0.88),
-                  decoration: TextDecoration.underline,
-                  letterSpacing: 0.0,
-                  fontFamily: "IBMPlexSans"),
-            ))
+                _getFirstTwoLetters(),
+                style: TextStyle(
+                    fontSize: useDecoration ? 48 : radius,
+                    color: context.iconTheme.color.withOpacity(0.88),
+                    decoration: TextDecoration.underline,
+                    letterSpacing: 0.0,
+                    fontFamily: "IBMPlexSans"),
+              ),
+            )
           : Container(),
     );
   }

@@ -28,6 +28,7 @@ import 'package:breez/routes/marketplace/marketplace.dart';
 import 'package:breez/routes/podcast/podcast_page.dart' as breezPodcast;
 import 'package:breez/routes/podcast/theme.dart';
 import 'package:breez/theme_data.dart' as theme;
+import 'package:breez/utils/build_context.dart';
 import 'package:breez/widgets/close_popup.dart';
 import 'package:breez/widgets/error_dialog.dart';
 import 'package:breez/widgets/fade_in_widget.dart';
@@ -40,7 +41,7 @@ import 'package:breez/widgets/payment_failed_report_dialog.dart';
 import 'package:breez/widgets/route.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'package:breez/l10n/locales.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:provider/provider.dart';
 
@@ -136,9 +137,8 @@ class HomeState extends State<Home> with WidgetsBindingObserver {
       });
     });
 
-    AudioService.notificationClickEventStream
-        .where((event) => event == true)
-        .listen((event) async {
+    AudioService.notificationClicked.where((event) => event == true).listen(
+        (event) async {
       final userBloc = AppBlocsProvider.of<UserProfileBloc>(context);
       final userModel = await userBloc.userStream.first;
       final nowPlaying = await audioBloc.nowPlaying.first.timeout(
@@ -146,7 +146,7 @@ class HomeState extends State<Home> with WidgetsBindingObserver {
       );
       if (nowPlaying != null &&
           !breezPodcast.NowPlayingTransport.nowPlayingVisible) {
-        Navigator.of(context).push(
+        context.push(
           MaterialPageRoute<void>(
             builder: (context) => withPodcastTheme(userModel, NowPlaying()),
             fullscreenDialog: false,
@@ -256,17 +256,19 @@ class HomeState extends State<Home> with WidgetsBindingObserver {
     LSPStatus lspStatus,
     List<AddFundVendorModel> vendor,
   ) {
+    Size mediaQuerySize = context.mediaQuerySize;
+    ThemeData themeData = context.theme;
     return Container(
-      height: MediaQuery.of(context).size.height,
-      width: MediaQuery.of(context).size.width,
+      height: mediaQuerySize.height,
+      width: mediaQuerySize.width,
       child: FadeInWidget(
         child: Scaffold(
           resizeToAvoidBottomInset: false,
           key: _scaffoldKey,
           appBar: AppBar(
-            brightness: theme.themeId == "BLUE"
-                ? Brightness.light
-                : Theme.of(context).appBarTheme.brightness,
+            systemOverlayStyle: theme.themeId == "BLUE"
+                ? SystemUiOverlayStyle.light
+                : themeData.appBarTheme.systemOverlayStyle,
             centerTitle: false,
             actions: [
               Padding(
@@ -285,7 +287,7 @@ class HomeState extends State<Home> with WidgetsBindingObserver {
                 "src/images/logo-color.svg",
                 height: 23.5,
                 width: 62.7,
-                color: Theme.of(context).appBarTheme.actionsIconTheme.color,
+                color: themeData.appBarTheme.actionsIconTheme.color,
                 colorBlendMode: BlendMode.srcATop,
               ),
               iconSize: 64,
@@ -297,13 +299,13 @@ class HomeState extends State<Home> with WidgetsBindingObserver {
               color: Color.fromARGB(255, 0, 133, 251),
             ),
             backgroundColor: (user.appMode == AppMode.pos)
-                ? Theme.of(context).backgroundColor
+                ? themeData.backgroundColor
                 : theme.customData[theme.themeId].dashboardBgColor,
             elevation: 0.0,
           ),
           drawerEnableOpenDragGesture: true,
           drawerDragStartBehavior: DragStartBehavior.down,
-          drawerEdgeDragWidth: MediaQuery.of(context).size.width,
+          drawerEdgeDragWidth: mediaQuerySize.width,
           drawer: Theme(
             data: theme.themeMap[user.themeId],
             child: _navigationDrawer(
@@ -322,7 +324,7 @@ class HomeState extends State<Home> with WidgetsBindingObserver {
               ? QrActionButton(account, firstPaymentItemKey)
               : null,
           floatingActionButtonLocation:
-              FloatingActionButtonLocation.centerDocked,
+          FloatingActionButtonLocation.centerDocked,
           body: widget._screenBuilders[_activeScreen] ??
               _homePage(
                 context,
@@ -365,20 +367,21 @@ class HomeState extends State<Home> with WidgetsBindingObserver {
     BuildContext context,
     BreezUserModel user,
   ) {
+    var l10n = context.l10n;
     return [
       DrawerItemConfig(
         "/fiat_currency",
-        context.l10n.home_drawer_item_title_fiat_currencies,
+        l10n.home_drawer_item_title_fiat_currencies,
         "src/icon/fiat_currencies.png",
       ),
       DrawerItemConfig(
         "/network",
-        context.l10n.home_drawer_item_title_network,
+        l10n.home_drawer_item_title_network,
         "src/icon/network.png",
       ),
       DrawerItemConfig(
         "",
-        context.l10n.home_drawer_item_title_security,
+        l10n.home_drawer_item_title_security,
         "src/icon/security.png",
         onItemSelected: (_) => protectAdminRoute(context, user, "/security"),
       ),
@@ -538,11 +541,12 @@ class HomeState extends State<Home> with WidgetsBindingObserver {
     BuildContext context,
     BreezUserModel user,
   ) {
+    var l10n = context.l10n;
     if (user.appMode == AppMode.pos) {
       return [
         DrawerItemConfig(
           "",
-          context.l10n.home_drawer_item_title_pos_settings,
+          l10n.home_drawer_item_title_pos_settings,
           "src/icon/settings.png",
           onItemSelected: (_) => protectAdminRoute(context, user, "/settings"),
         ),
@@ -551,7 +555,7 @@ class HomeState extends State<Home> with WidgetsBindingObserver {
       return [
         DrawerItemConfig(
           "/developers",
-          context.l10n.home_drawer_item_title_developers,
+          l10n.home_drawer_item_title_developers,
           "src/icon/developers.png",
         ),
       ];
@@ -564,7 +568,7 @@ class HomeState extends State<Home> with WidgetsBindingObserver {
         _getAppModesAssetName(appMode),
         height: 24.0,
         width: 24.0,
-        color: Theme.of(context).appBarTheme.actionsIconTheme.color,
+        color: context.appBarTheme.actionsIconTheme.color,
       ),
       onPressed: () {
         _scaffoldKey.currentState.openDrawer();
@@ -588,16 +592,18 @@ class HomeState extends State<Home> with WidgetsBindingObserver {
   }
 
   Widget _homePage(BuildContext context, BreezUserModel user) {
+    var l10n = context.l10n;
+    ThemeData theme = context.theme;
     switch (user.appMode) {
       case AppMode.podcasts:
         return Container(
-          color: Theme.of(context).bottomAppBarColor,
+          color: theme.bottomAppBarColor,
           child: SafeArea(
             child: AnytimeHomePage(
               topBarVisible: false,
               inlineSearch: true,
-              noSubscriptionsMessage: context.l10n.home_podcast_no_subscriptions,
-              title: context.l10n.home_podcast_title,
+              noSubscriptionsMessage: l10n.home_podcast_no_subscriptions,
+              title: l10n.home_podcast_title,
             ),
           ),
         );
@@ -623,7 +629,7 @@ class HomeState extends State<Home> with WidgetsBindingObserver {
           builder: (_) => lostCard.LostCardDialog(),
         );
       } else {
-        Navigator.of(context).pushNamed(itemName).then((message) {
+        context.pushNamed(itemName).then((message) {
           if (message != null && message.runtimeType == String) {
             showFlushbar(context, message: message);
           }
@@ -633,6 +639,9 @@ class HomeState extends State<Home> with WidgetsBindingObserver {
   }
 
   void _registerNotificationHandlers(BuildContext context) {
+    var l10n = context.l10n;
+    DialogTheme dialogTheme = context.dialogTheme;
+
     InvoiceNotificationsHandler(
       context,
       widget.userProfileBloc,
@@ -647,23 +656,23 @@ class HomeState extends State<Home> with WidgetsBindingObserver {
       widget.userProfileBloc,
       widget.ctpBloc,
       this.context,
-      (session) {
-        Navigator.popUntil(context, (route) {
+          (session) {
+        context.popUntil((route) {
           return route.settings.name != "/connect_to_pay";
         });
         var ctpRoute = FadeInRoute(
           builder: (_) => withBreezTheme(context, ConnectToPayPage(session)),
           settings: RouteSettings(name: "/connect_to_pay"),
         );
-        Navigator.of(context).push(ctpRoute);
+        context.push(ctpRoute);
       },
-      (e) {
+          (e) {
         promptError(
           context,
-          context.l10n.home_error_connect_to_pay,
+          l10n.home_error_connect_to_pay,
           Text(
             e.toString(),
-            style: Theme.of(context).dialogTheme.contentTextStyle,
+            style: dialogTheme.contentTextStyle,
           ),
         );
       },
@@ -671,10 +680,10 @@ class HomeState extends State<Home> with WidgetsBindingObserver {
     PodcastURLHandler(widget.userProfileBloc, this.context, (e) {
       promptError(
         context,
-        context.l10n.home_error_podcast_link,
+        l10n.home_error_podcast_link,
         Text(
           e.toString(),
-          style: Theme.of(context).dialogTheme.contentTextStyle,
+          style: dialogTheme.contentTextStyle,
         ),
       );
     });
@@ -683,20 +692,20 @@ class HomeState extends State<Home> with WidgetsBindingObserver {
 
     _accountNotificationsSubscription =
         widget.accountBloc.accountNotificationsStream.listen(
-      (data) => showFlushbar(
-        context,
-        message: data,
-      ),
-      onError: (e) => showFlushbar(
-        context,
-        message: e.toString(),
-      ),
-    );
+              (data) => showFlushbar(
+            context,
+            message: data,
+          ),
+          onError: (e) => showFlushbar(
+            context,
+            message: e.toString(),
+          ),
+        );
     widget.reverseSwapBloc.broadcastTxStream.listen((_) {
       showFlushbar(
         context,
         messageWidget: LoadingAnimatedText(
-          context.l10n.home_broadcast_transaction,
+          l10n.home_broadcast_transaction,
           textStyle: theme.snackBarStyle,
           textAlign: TextAlign.left,
         ),
@@ -706,18 +715,19 @@ class HomeState extends State<Home> with WidgetsBindingObserver {
   }
 
   void _listenBackupConflicts(BuildContext context) {
+    var l10n = context.l10n;
     widget.accountBloc.nodeConflictStream.listen((_) async {
-      Navigator.popUntil(context, (route) {
+      context.popUntil((route) {
         return route.settings.name == "/";
       });
       await promptError(
         context,
-        context.l10n.home_config_error_title,
+        l10n.home_config_error_title,
         Text(
-          context.l10n.home_config_error_message,
-          style: Theme.of(context).dialogTheme.contentTextStyle,
+          l10n.home_config_error_message,
+          style: context.theme.dialogTheme.contentTextStyle,
         ),
-        okText: context.l10n.home_config_error_action_exit,
+        okText: l10n.home_config_error_action_exit,
         okFunc: () => exit(0),
         disableBack: true,
       );
@@ -726,17 +736,18 @@ class HomeState extends State<Home> with WidgetsBindingObserver {
 
   void _listenLSPSelectionPrompt(BuildContext context) async {
     widget.lspBloc.lspPromptStream.first
-        .then((_) => Navigator.of(context).pushNamed("/select_lsp"));
+        .then((_) => context.pushNamed("/select_lsp"));
   }
 
   void _listenWhitelistPermissionsRequest(BuildContext context) {
+    var l10n = context.l10n;
     widget.accountBloc.optimizationWhitelistExplainStream.listen((_) async {
       await promptError(
         context,
-        context.l10n.home_background_synchronization_title,
+        l10n.home_background_synchronization_title,
         Text(
-          context.l10n.home_background_synchronization_message,
-          style: Theme.of(context).dialogTheme.contentTextStyle,
+          l10n.home_background_synchronization_message,
+          style: context.theme.dialogTheme.contentTextStyle,
         ),
         okFunc: () => widget.accountBloc.optimizationWhitelistRequestSink.add(
           null,
@@ -746,6 +757,8 @@ class HomeState extends State<Home> with WidgetsBindingObserver {
   }
 
   void _listenPaymentResults(BuildContext context) {
+    var l10n = context.l10n;
+
     widget.accountBloc.completedPaymentsStream.listen((fulfilledPayment) async {
       final paymentHash = fulfilledPayment.paymentHash;
       print('_listenPaymentResults processing: $paymentHash');
@@ -766,7 +779,7 @@ class HomeState extends State<Home> with WidgetsBindingObserver {
           showFlushbar(
             context,
             messageWidget: SingleChildScrollView(
-              child: Text(context.l10n.home_payment_sent),
+              child: Text(l10n.home_payment_sent),
             ),
           );
         }
@@ -805,7 +818,7 @@ class HomeState extends State<Home> with WidgetsBindingObserver {
             context,
             createLoaderRoute(
               context,
-              message: context.l10n.home_report_sending,
+              message: l10n.home_report_sending,
               opacity: 0.8,
               action: sendAction.future,
             ),

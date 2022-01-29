@@ -1,7 +1,7 @@
 import 'dart:io';
 
+import 'package:breez/utils/build_context.dart';
 import 'package:flutter/material.dart';
-import 'package:breez/l10n/locales.dart';
 
 class BetaWarningDialog extends StatefulWidget {
   @override
@@ -19,15 +19,20 @@ class _BetaWarningDialogState extends State<BetaWarningDialog> {
 
   @override
   Widget build(BuildContext context) {
+    var l10n = context.l10n;
+    ThemeData theme = context.theme;
+    DialogTheme dialogTheme = theme.dialogTheme;
+    TextTheme primaryTextTheme = theme.primaryTextTheme;
+
     return Theme(
-      data: Theme.of(context).copyWith(
-        unselectedWidgetColor: Theme.of(context).canvasColor,
+      data: theme.copyWith(
+        unselectedWidgetColor: theme.canvasColor,
       ),
       child: AlertDialog(
         titlePadding: EdgeInsets.fromLTRB(24.0, 22.0, 0.0, 16.0),
         title: Text(
-          context.l10n.beta_warning_title,
-          style: Theme.of(context).dialogTheme.titleTextStyle,
+          l10n.beta_warning_title,
+          style: dialogTheme.titleTextStyle,
         ),
         contentPadding: EdgeInsets.fromLTRB(8.0, 8.0, 8.0, 24.0),
         content: Column(
@@ -39,14 +44,14 @@ class _BetaWarningDialogState extends State<BetaWarningDialog> {
           TextButton(
             onPressed: () => exit(0),
             child: Text(
-              context.l10n.beta_warning_action_exit,
-              style: Theme.of(context).primaryTextTheme.button,
+              l10n.beta_warning_action_exit,
+              style: primaryTextTheme.button,
             ),
           ),
           TextButton(
             onPressed: (() {
               if (_isUnderstood) {
-                Navigator.of(context).pop(_isUnderstood);
+                context.pop(_isUnderstood);
               } else {
                 setState(() {
                   _showReminderText = !_isUnderstood;
@@ -54,8 +59,8 @@ class _BetaWarningDialogState extends State<BetaWarningDialog> {
               }
             }),
             child: Text(
-              context.l10n.beta_warning_action_continue,
-              style: Theme.of(context).primaryTextTheme.button,
+              l10n.beta_warning_action_continue,
+              style: primaryTextTheme.button,
             ),
           ),
         ],
@@ -64,26 +69,26 @@ class _BetaWarningDialogState extends State<BetaWarningDialog> {
   }
 
   List<Widget> _getContent(BuildContext context) {
+    var l10n = context.l10n;
+    ThemeData theme = context.theme;
+    Color unselectedWidgetColor = theme.textTheme.button.color;
+    TextStyle headline3 =
+        theme.primaryTextTheme.headline3.copyWith(fontSize: 16);
+
     return [
       Padding(
         padding: const EdgeInsets.only(left: 15.0, right: 12.0),
-        child: Text(
-          context.l10n.beta_warning_message,
-          style: Theme.of(context).primaryTextTheme.headline3.copyWith(
-            fontSize: 16,
-          ),
-        ),
+        child: Text(l10n.beta_warning_message, style: headline3),
       ),
       Padding(
         padding: const EdgeInsets.only(top: 16.0, bottom: 0.0),
         child: Row(
           children: [
             Theme(
-              data: Theme.of(context).copyWith(
-                unselectedWidgetColor: Theme.of(context).textTheme.button.color,
-              ),
+              data:
+                  theme.copyWith(unselectedWidgetColor: unselectedWidgetColor),
               child: Checkbox(
-                activeColor: Theme.of(context).canvasColor,
+                activeColor: theme.canvasColor,
                 value: _isUnderstood,
                 onChanged: (value) {
                   setState(() {
@@ -92,12 +97,7 @@ class _BetaWarningDialogState extends State<BetaWarningDialog> {
                 },
               ),
             ),
-            Text(
-              context.l10n.beta_warning_understand,
-              style: Theme.of(context).primaryTextTheme.headline3.copyWith(
-                fontSize: 16,
-              ),
-            ),
+            Text(l10n.beta_warning_understand, style: headline3),
           ],
         ),
       ),
@@ -106,15 +106,8 @@ class _BetaWarningDialogState extends State<BetaWarningDialog> {
         child: Padding(
           padding: const EdgeInsets.fromLTRB(16.0, 0.0, 16.0, 0.0),
           child: Text(
-            context.l10n.beta_warning_understand_confirmation,
-            style: Theme.of(context).primaryTextTheme.headline3
-                .copyWith(
-                  fontSize: 16,
-                )
-                .copyWith(
-                  fontSize: 12.0,
-                  color: Colors.red,
-                ),
+            l10n.beta_warning_understand_confirmation,
+            style: headline3.copyWith(fontSize: 12.0, color: Colors.red),
           ),
         ),
       ),

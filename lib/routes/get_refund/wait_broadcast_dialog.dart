@@ -4,6 +4,7 @@ import 'package:breez/bloc/account/account_bloc.dart';
 import 'package:breez/bloc/account/account_model.dart';
 import 'package:breez/services/injector.dart';
 import 'package:breez/theme_data.dart' as theme;
+import 'package:breez/utils/build_context.dart';
 import 'package:fixnum/fixnum.dart';
 import 'package:flutter/material.dart';
 import 'package:share_extend/share_extend.dart';
@@ -56,26 +57,28 @@ class _WaitBroadcastDialog extends State<WaitBroadcastDialog> {
 
   @override
   Widget build(BuildContext context) {
+    ThemeData theme = context.theme;
+    DialogTheme dialogTheme = theme.dialogTheme;
+    TextTheme primaryTextTheme = theme.primaryTextTheme;
+
     return Theme(
-      data: Theme.of(context).copyWith(
-        unselectedWidgetColor: Theme.of(context).canvasColor,
-        colorScheme: ColorScheme.dark(secondary: Theme.of(context).canvasColor),
+      data: theme.copyWith(
+        unselectedWidgetColor: theme.canvasColor,
+        colorScheme: ColorScheme.dark(secondary: theme.canvasColor),
       ),
       child: AlertDialog(
         title: Text(getTitleText(),
-            style: Theme.of(context).dialogTheme.titleTextStyle,
-            textAlign: TextAlign.center),
+            style: dialogTheme.titleTextStyle, textAlign: TextAlign.center),
         content: getContent(),
         actions: _response == null && _error == null
             ? []
             : <Widget>[
                 TextButton(
                     onPressed: () {
-                      Navigator.of(context).pop(_error != null &&
+                      context.pop(_error != null &&
                           _response?.txID?.isNotEmpty == true);
                     },
-                    child: Text("CLOSE",
-                        style: Theme.of(context).primaryTextTheme.button)),
+                    child: Text("CLOSE", style: primaryTextTheme.button)),
               ],
       ),
     );
@@ -91,7 +94,7 @@ class _WaitBroadcastDialog extends State<WaitBroadcastDialog> {
   getContent() {
     if (_error != null) {
       return Text("Error in broadcasting transaction: " + _error.toString(),
-          style: Theme.of(context).dialogTheme.contentTextStyle,
+          style: context.dialogTheme.contentTextStyle,
           textAlign: TextAlign.center);
     }
     if (_response == null) {
@@ -107,7 +110,7 @@ class _WaitBroadcastDialog extends State<WaitBroadcastDialog> {
       children: <Widget>[
         Text(
           "Please wait while Breez is sending the funds to the specified address.",
-          style: Theme.of(context).dialogTheme.contentTextStyle,
+          style: context.dialogTheme.contentTextStyle,
           textAlign: TextAlign.center,
         ),
         Padding(
@@ -121,6 +124,10 @@ class _WaitBroadcastDialog extends State<WaitBroadcastDialog> {
   }
 
   Widget getResultContent() {
+    ThemeData theme = context.theme;
+    DialogTheme dialogTheme = theme.dialogTheme;
+    TextTheme primaryTextTheme = theme.primaryTextTheme;
+
     return Column(
         mainAxisAlignment: MainAxisAlignment.center,
         mainAxisSize: MainAxisSize.min,
@@ -131,7 +138,7 @@ class _WaitBroadcastDialog extends State<WaitBroadcastDialog> {
               Expanded(
                 child: Text(
                   "Funds were successfully sent to the specified address.",
-                  style: Theme.of(context).dialogTheme.contentTextStyle,
+                  style: dialogTheme.contentTextStyle,
                   textAlign: TextAlign.center,
                 ),
               )
@@ -144,8 +151,8 @@ class _WaitBroadcastDialog extends State<WaitBroadcastDialog> {
             children: <Widget>[
               Expanded(
                 flex: 1,
-                child: Text("Transaction ID:",
-                    style: Theme.of(context).primaryTextTheme.headline4),
+                child:
+                    Text("Transaction ID:", style: primaryTextTheme.headline4),
               ),
               Expanded(
                   child: Container(
@@ -158,7 +165,7 @@ class _WaitBroadcastDialog extends State<WaitBroadcastDialog> {
                       padding: EdgeInsets.only(top: 4.0, right: 0.0, left: 0.0),
                       tooltip: "Copy Transaction Hash",
                       iconSize: 16.0,
-                      color: Theme.of(context).primaryTextTheme.button.color,
+                      color: primaryTextTheme.button.color,
                       icon: Icon(
                         IconData(0xe90b, fontFamily: 'icomoon'),
                       ),
@@ -173,7 +180,7 @@ class _WaitBroadcastDialog extends State<WaitBroadcastDialog> {
                       padding: EdgeInsets.only(top: 4.0, right: 0.0, left: 0.0),
                       tooltip: "Share Transaction Hash",
                       iconSize: 16.0,
-                      color: Theme.of(context).primaryTextTheme.button.color,
+                      color: primaryTextTheme.button.color,
                       icon: Icon(Icons.share),
                       onPressed: () {
                         ShareExtend.share(_response.txID, "text");
@@ -195,10 +202,7 @@ class _WaitBroadcastDialog extends State<WaitBroadcastDialog> {
                       textAlign: TextAlign.left,
                       overflow: TextOverflow.clip,
                       maxLines: 4,
-                      style: Theme.of(context)
-                          .primaryTextTheme
-                          .headline3
-                          .copyWith(fontSize: 10)),
+                      style: primaryTextTheme.headline3.copyWith(fontSize: 10)),
                 ),
               ),
             ],

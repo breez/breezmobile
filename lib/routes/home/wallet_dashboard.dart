@@ -5,7 +5,10 @@ import 'package:breez/bloc/account/fiat_conversion.dart';
 import 'package:breez/bloc/user_profile/breez_user_model.dart';
 import 'package:breez/bloc/user_profile/currency.dart';
 import 'package:breez/theme_data.dart' as theme;
+import 'package:breez/utils/build_context.dart';
 import 'package:flutter/material.dart';
+
+import '../../theme_data.dart';
 
 class WalletDashboard extends StatefulWidget {
   final AccountModel _accountModel;
@@ -37,17 +40,21 @@ class WalletDashboardState extends State<WalletDashboard> {
 
   @override
   Widget build(BuildContext context) {
-    double startHeaderSize =
-        Theme.of(context).accentTextTheme.headline4.fontSize;
-    double endHeaderFontSize =
-        Theme.of(context).accentTextTheme.headline4.fontSize - 8.0;
+    ThemeData themeData = context.theme;
+    TextTheme textTheme = themeData.textTheme;
+
+    double startHeaderSize = textTheme.headline4.fontSize;
+    double endHeaderFontSize = textTheme.headline4.fontSize - 8.0;
+
+    Color secondaryColor =
+        (themeId == "BLUE") ? Color.fromRGBO(0, 133, 251, 1.0) : Colors.white;
 
     return GestureDetector(
       child: Stack(
         alignment: AlignmentDirectional.topCenter,
         children: <Widget>[
           Container(
-              width: MediaQuery.of(context).size.width,
+              width: context.mediaQuerySize.width,
               height: widget._height,
               decoration: BoxDecoration(
                 color: theme.customData[theme.themeId].dashboardBgColor,
@@ -87,37 +94,30 @@ class WalletDashboardState extends State<WalletDashboard> {
                       },
                       child: widget._userModel.hideBalance
                           ? Text("******",
-                              style: Theme.of(context)
-                                  .accentTextTheme
-                                  .headline4
-                                  .copyWith(
-                                      fontSize: startHeaderSize -
-                                          (startHeaderSize -
-                                                  endHeaderFontSize) *
-                                              widget._offsetFactor))
+                              style: textTheme.headline4.copyWith(
+                                  color: secondaryColor,
+                                  fontSize: startHeaderSize -
+                                      (startHeaderSize - endHeaderFontSize) *
+                                          widget._offsetFactor))
                           : (widget._offsetFactor > 0.8 &&
                                   _showFiatCurrency &&
                                   widget._accountModel.fiatCurrency != null)
                               ? Text(
                                   "${widget._accountModel.formattedFiatBalance}",
-                                  style: Theme.of(context)
-                                      .accentTextTheme
-                                      .headline4
-                                      .copyWith(
+                                  style: textTheme.headline4.copyWith(
+                                      color: secondaryColor,
+                                      fontSize: startHeaderSize -
+                                          (startHeaderSize -
+                                                  endHeaderFontSize) *
+                                              widget._offsetFactor))
+                              : RichText(
+                                  text: TextSpan(
+                                      style: textTheme.headline4.copyWith(
+                                          color: secondaryColor,
                                           fontSize: startHeaderSize -
                                               (startHeaderSize -
                                                       endHeaderFontSize) *
-                                                  widget._offsetFactor))
-                              : RichText(
-                                  text: TextSpan(
-                                      style: Theme.of(context)
-                                          .accentTextTheme
-                                          .headline4
-                                          .copyWith(
-                                              fontSize: startHeaderSize -
-                                                  (startHeaderSize -
-                                                          endHeaderFontSize) *
-                                                      widget._offsetFactor),
+                                                  widget._offsetFactor),
                                       text: widget._accountModel.currency
                                           .format(widget._accountModel.balance,
                                               removeTrailingZeros: true,
@@ -127,15 +127,12 @@ class WalletDashboardState extends State<WalletDashboard> {
                                           text: " " +
                                               widget._accountModel.currency
                                                   .displayName,
-                                          style: Theme.of(context)
-                                              .accentTextTheme
-                                              .headline4
-                                              .copyWith(
-                                                  fontSize: startHeaderSize *
-                                                          0.6 -
-                                                      (startHeaderSize * 0.6 -
-                                                              endHeaderFontSize) *
-                                                          widget._offsetFactor),
+                                          style: textTheme.headline4.copyWith(
+                                              color: secondaryColor,
+                                              fontSize: startHeaderSize * 0.6 -
+                                                  (startHeaderSize * 0.6 -
+                                                          endHeaderFontSize) *
+                                                      widget._offsetFactor),
                                         ),
                                       ]),
                                 ))
@@ -171,16 +168,9 @@ class WalletDashboardState extends State<WalletDashboard> {
                       },
                       child: Text(
                           "${widget._accountModel.formattedFiatBalance}",
-                          style: Theme.of(context)
-                              .accentTextTheme
-                              .subtitle1
-                              .copyWith(
-                                  color: Theme.of(context)
-                                      .accentTextTheme
-                                      .subtitle1
-                                      .color
-                                      .withOpacity(pow(
-                                          1.00 - widget._offsetFactor, 2)))),
+                          style: textTheme.subtitle1.copyWith(
+                              color: secondaryColor.withOpacity(
+                                  pow(1.00 - widget._offsetFactor, 2)))),
                     )
                   : SizedBox(),
             ),

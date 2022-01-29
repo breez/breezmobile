@@ -1,4 +1,5 @@
 import 'package:breez/theme_data.dart' as theme;
+import 'package:breez/utils/build_context.dart';
 import 'package:breez/widgets/transparent_page_route.dart';
 import 'package:flutter/material.dart';
 
@@ -53,6 +54,7 @@ class FullScreenLoader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    Size mediaQuerySize = context.mediaQuerySize;
     return Material(
       type: MaterialType.transparency,
       child: Stack(
@@ -64,8 +66,8 @@ class FullScreenLoader extends StatelessWidget {
             right: 0.0,
             child: Container(
                 color: bgColor.withOpacity(this.opacity),
-                height: MediaQuery.of(context).size.height,
-                width: MediaQuery.of(context).size.width,
+                height: mediaQuerySize.height,
+                width: mediaQuerySize.width,
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   crossAxisAlignment: CrossAxisAlignment.center,
@@ -85,17 +87,17 @@ class FullScreenLoader extends StatelessWidget {
           ),
           this.onClose != null
               ? Padding(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 16, vertical: 30),
-                  child: Align(
-                    alignment: Alignment.topRight,
+            padding:
+            const EdgeInsets.symmetric(horizontal: 16, vertical: 30),
+            child: Align(
+              alignment: Alignment.topRight,
                     child: IconButton(
                         color: Colors.white,
                         onPressed: () => this.onClose(),
                         icon: Icon(Icons.close,
-                            color: Theme.of(context).iconTheme.color)),
+                            color: context.theme.iconTheme.color)),
                   ),
-                )
+          )
               : SizedBox(),
         ],
       ),
@@ -126,7 +128,7 @@ class TransparentRouteLoaderState extends State<TransparentRouteLoader> {
     if (widget.action != null) {
       widget.action.whenComplete(() {
         if (this.mounted) {
-          Navigator.pop(context);
+          context.pop();
         }
       });
     }

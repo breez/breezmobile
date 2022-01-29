@@ -1,10 +1,10 @@
 import 'dart:async';
 
 import 'package:breez/theme_data.dart' as theme;
+import 'package:breez/utils/build_context.dart';
 import 'package:breez/utils/date.dart';
 import 'package:breez/widgets/breez_date_picker.dart';
 import 'package:flutter/material.dart';
-import 'package:breez/l10n/locales.dart';
 
 class CalendarDialog extends StatefulWidget {
   final DateTime firstDate;
@@ -31,10 +31,15 @@ class _CalendarDialogState extends State<CalendarDialog> {
 
   @override
   Widget build(BuildContext context) {
+    var l10n = context.l10n;
+    ThemeData themeData = context.theme;
+    DialogTheme dialogTheme = themeData.dialogTheme;
+    TextStyle btnTextStyle = themeData.primaryTextTheme.button;
+
     return AlertDialog(
       title: Text(
-        context.l10n.pos_transactions_range_dialog_title,
-        style: Theme.of(context).dialogTheme.titleTextStyle,
+        l10n.pos_transactions_range_dialog_title,
+        style: dialogTheme.titleTextStyle,
       ),
       content: Row(
         mainAxisSize: MainAxisSize.max,
@@ -42,14 +47,14 @@ class _CalendarDialogState extends State<CalendarDialog> {
         children: [
           Flexible(
             child: _selectDateButton(
-              context.l10n.pos_transactions_range_dialog_start,
+              l10n.pos_transactions_range_dialog_start,
               _startDateController,
               true,
             ),
           ),
           Flexible(
             child: _selectDateButton(
-              context.l10n.pos_transactions_range_dialog_end,
+              l10n.pos_transactions_range_dialog_end,
               _endDateController,
               false,
             ),
@@ -59,18 +64,18 @@ class _CalendarDialogState extends State<CalendarDialog> {
       actions: [
         TextButton(
           child: Text(
-            context.l10n.pos_transactions_range_dialog_clear,
+            l10n.pos_transactions_range_dialog_clear,
             style: theme.cancelButtonStyle.copyWith(
               color:
-                  theme.themeId == "BLUE" ? Colors.red : Theme.of(context).errorColor,
+                  theme.themeId == "BLUE" ? Colors.red : themeData.errorColor,
             ),
           ),
           onPressed: _clearFilter,
         ),
         TextButton(
           child: Text(
-            context.l10n.pos_transactions_range_dialog_apply,
-            style: Theme.of(context).primaryTextTheme.button,
+            l10n.pos_transactions_range_dialog_apply,
+            style: btnTextStyle,
           ),
           onPressed: () => _applyFilter(context),
         ),
@@ -81,12 +86,12 @@ class _CalendarDialogState extends State<CalendarDialog> {
   void _applyFilter(BuildContext context) {
     // Check if filter is unchanged
     if (_startDate != widget.firstDate || _endDate.day != DateTime.now().day) {
-      Navigator.of(context).pop([
+      context.pop([
         DateTime(_startDate.year, _startDate.month, _startDate.day, 0, 0, 0),
         DateTime(_endDate.year, _endDate.month, _endDate.day, 23, 59, 59, 999),
       ]);
     } else {
-      Navigator.of(context).pop([null, null]);
+      context.pop([null, null]);
     }
   }
 
@@ -95,21 +100,24 @@ class _CalendarDialogState extends State<CalendarDialog> {
     TextEditingController textEditingController,
     bool isStartBtn,
   ) {
+    ThemeData themeData = context.theme;
+    TextStyle dialogContentTextStyle = themeData.dialogTheme.contentTextStyle;
+
     return GestureDetector(
       child: Theme(
         data: theme.themeId == "BLUE"
-            ? Theme.of(context)
-            : Theme.of(context).copyWith(
-                disabledColor: Theme.of(context).backgroundColor,
+            ? themeData
+            : themeData.copyWith(
+                disabledColor: themeData.backgroundColor,
               ),
         child: TextField(
           decoration: InputDecoration(
             labelText: label,
-            labelStyle: Theme.of(context).dialogTheme.contentTextStyle,
+            labelStyle: dialogContentTextStyle,
           ),
           controller: textEditingController,
           enabled: false,
-          style: Theme.of(context).dialogTheme.contentTextStyle,
+          style: dialogContentTextStyle,
         ),
       ),
       onTap: () {
@@ -135,7 +143,8 @@ class _CalendarDialogState extends State<CalendarDialog> {
       if (difference.inDays < 0) {
         setState(() {
           isStartBtn ? _startDate = selectedDate : _endDate = selectedDate;
-          _startDateController.text = BreezDateUtils.formatYearMonthDay(_startDate);
+          _startDateController.text =
+              BreezDateUtils.formatYearMonthDay(_startDate);
           _endDateController.text = BreezDateUtils.formatYearMonthDay(_endDate);
         });
       } else {
@@ -145,7 +154,8 @@ class _CalendarDialogState extends State<CalendarDialog> {
           } else {
             _endDate = selectedDate;
           }
-          _startDateController.text = BreezDateUtils.formatYearMonthDay(_startDate);
+          _startDateController.text =
+              BreezDateUtils.formatYearMonthDay(_startDate);
           _endDateController.text = BreezDateUtils.formatYearMonthDay(_endDate);
         });
       }

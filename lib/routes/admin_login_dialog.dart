@@ -3,6 +3,7 @@ import 'package:breez/bloc/user_profile/breez_user_model.dart';
 import 'package:breez/bloc/user_profile/user_actions.dart';
 import 'package:breez/bloc/user_profile/user_profile_bloc.dart';
 import 'package:breez/theme_data.dart' as theme;
+import 'package:breez/utils/build_context.dart';
 import 'package:flutter/material.dart';
 
 Future protectAdminAction(
@@ -30,7 +31,7 @@ Future protectAdminRoute(
       return Future.error("Failed to authenticate as manager");
     }
   }
-  Navigator.of(context).pushNamed(route);
+  context.pushNamed(route);
 }
 
 class _AdminLoginDialog extends StatefulWidget {
@@ -55,25 +56,29 @@ class _AdminLoginDialogState extends State<_AdminLoginDialog> {
 
   @override
   Widget build(BuildContext context) {
+    ThemeData themeData = context.theme;
+    DialogTheme dialogTheme = themeData.dialogTheme;
+    TextTheme textTheme = themeData.textTheme;
+    TextStyle textStyle = themeData.primaryTextTheme.button;
+
     UserProfileBloc userProfileBloc =
         AppBlocsProvider.of<UserProfileBloc>(context);
     return AlertDialog(
       title: Text("Manager Password"),
       content: Theme(
-        data: Theme.of(context).copyWith(
+        data: themeData.copyWith(
             inputDecorationTheme: InputDecorationTheme(
                 enabledBorder:
                     UnderlineInputBorder(borderSide: theme.greyBorderSide)),
-            hintColor: Theme.of(context).dialogTheme.contentTextStyle.color,
+            hintColor: dialogTheme.contentTextStyle.color,
             colorScheme: ColorScheme.dark(
-              primary: Theme.of(context).textTheme.button.color,
+              primary: textTheme.button.color,
             ),
-            primaryColor: Theme.of(context).textTheme.button.color,
-            errorColor: theme.themeId == "BLUE"
-                ? Colors.red
-                : Theme.of(context).errorColor),
+            primaryColor: textTheme.button.color,
+            errorColor:
+                theme.themeId == "BLUE" ? Colors.red : themeData.errorColor),
         child: Container(
-          width: MediaQuery.of(context).size.width,
+          width: context.mediaQuerySize.width,
           height: 100.0,
           child: ListView(
             shrinkWrap: true,
@@ -82,8 +87,7 @@ class _AdminLoginDialogState extends State<_AdminLoginDialog> {
                 key: _formKey,
                 child: TextFormField(
                   style: TextStyle(
-                      color:
-                          Theme.of(context).primaryTextTheme.headline4.color),
+                      color: themeData.primaryTextTheme.headline4.color),
                   focusNode: _passwordFocus,
                   obscureText: _passwordObscured,
                   textInputAction: TextInputAction.next,
@@ -123,14 +127,13 @@ class _AdminLoginDialogState extends State<_AdminLoginDialog> {
       ),
       actions: <Widget>[
         TextButton(
-          child:
-              Text("CANCEL", style: Theme.of(context).primaryTextTheme.button),
+          child: Text("CANCEL", style: textStyle),
           onPressed: () {
-            Navigator.of(context).pop(false);
+            context.pop(false);
           },
         ),
         TextButton(
-          child: Text("OK", style: Theme.of(context).primaryTextTheme.button),
+          child: Text("OK", style: textStyle),
           onPressed: () async {
             if (_formKey.currentState.validate()) {
               try {
@@ -140,7 +143,7 @@ class _AdminLoginDialogState extends State<_AdminLoginDialog> {
                 if (!verified) {
                   throw "Incorrect Password";
                 }
-                Navigator.of(context).pop(true);
+                context.pop(true);
               } catch (err) {
                 setState(() {
                   _lastError = err.toString();

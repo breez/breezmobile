@@ -4,13 +4,13 @@ import 'package:breez/bloc/account/account_model.dart';
 import 'package:breez/bloc/connect_pay/connect_pay_model.dart';
 import 'package:breez/bloc/connect_pay/payer_session.dart';
 import 'package:breez/theme_data.dart' as theme;
+import 'package:breez/utils/build_context.dart';
 import 'package:breez/widgets/delay_render.dart';
 import 'package:breez/widgets/loading_animated_text.dart';
 import 'package:breez/widgets/sync_loader.dart';
 import 'package:fixnum/fixnum.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'package:breez/l10n/locales.dart';
 import 'package:rxdart/subjects.dart';
 
 import 'payment_details_form.dart';
@@ -107,7 +107,8 @@ class _PayerInstructions extends StatelessWidget {
       );
     } else if (payerData.amount == null) {
       if (payeeData.status.online) {
-        message = context.l10n.connect_to_pay_payer_enter_amount(payeeData.userName);
+        message =
+            context.l10n.connect_to_pay_payer_enter_amount(payeeData.userName);
       } else if (!sessionState.invitationSent && payeeData.userName == null) {
         message = context.l10n.connect_to_pay_payer_share_link;
       } else {
@@ -132,7 +133,7 @@ class _PayerInstructions extends StatelessWidget {
       if (progress != null && progress < 1.0) {
         return WaitingChannelsSyncUI(
           progress: progress,
-          onClose: () => Navigator.of(context).pop(),
+          onClose: () => context.pop(),
         );
       }
       message = context.l10n.connect_to_pay_payer_sending;
@@ -177,20 +178,21 @@ class WaitingChannelsSyncUIState extends State<WaitingChannelsSyncUI> {
   void dispose() {
     progress?.close();
     if (dialogRoute?.isActive == true) {
-      Navigator.of(context).removeRoute(dialogRoute);
+      context.navigator.removeRoute(dialogRoute);
     }
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
+    var l10n = context.l10n;
     final defaultTextStyle = DefaultTextStyle.of(context);
 
     return LoadingAnimatedText(
       "",
       textElements: [
         TextSpan(
-          text: context.l10n.connect_to_pay_payer_wait_sync,
+          text: l10n.connect_to_pay_payer_wait_sync,
           recognizer: TapGestureRecognizer()
             ..onTap = () {
               showDialog(
@@ -202,20 +204,20 @@ class WaitingChannelsSyncUIState extends State<WaitingChannelsSyncUI> {
                     builder: (context, snapshot) {
                       return SyncProgressLoader(
                         value: snapshot.data ?? 0,
-                        title: context.l10n.connect_to_pay_payer_synchronizing,
+                        title: l10n.connect_to_pay_payer_synchronizing,
                       );
-                    },
-                  ),
-                  actions: [
-                    FlatButton(
-                      onPressed: () => Navigator.pop(context),
+                        },
+                      ),
+                      actions: [
+                    TextButton(
+                      onPressed: () => context.pop(),
                       child: Text(
-                        context.l10n.connect_to_pay_payer_action_close,
-                        style: Theme.of(context).primaryTextTheme.button,
+                        l10n.connect_to_pay_payer_action_close,
+                        style: context.primaryTextTheme.button,
                       ),
                     ),
                   ],
-                ),
+                    ),
               );
             },
           style: defaultTextStyle.style,

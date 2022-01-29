@@ -4,33 +4,34 @@ import 'package:breez/bloc/account/account_actions.dart';
 import 'package:breez/bloc/account/account_bloc.dart';
 import 'package:breez/services/injector.dart';
 import 'package:breez/theme_data.dart' as theme;
+import 'package:breez/utils/build_context.dart';
 import 'package:breez/widgets/error_dialog.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:share_extend/share_extend.dart';
 
 void listenUnexpectedError(BuildContext context, AccountBloc accountBloc) {
+  TextStyle contentTextStyle = context.dialogTheme.contentTextStyle;
+
   accountBloc.lightningDownStream.listen((allowRetry) {
     promptError(
       context,
       "Unexpected Error",
       RichText(
         text: TextSpan(
-            style: Theme.of(context).dialogTheme.contentTextStyle,
+            style: contentTextStyle,
             text: "You can try:\n",
             children: <TextSpan>[
               TextSpan(
                   text: "• Turning off airplane mode\n",
-                  style: Theme.of(context).dialogTheme.contentTextStyle),
+                  style: contentTextStyle),
               TextSpan(
                   text: "• Turning on mobile data or Wi-Fi\n",
-                  style: Theme.of(context).dialogTheme.contentTextStyle),
+                  style: contentTextStyle),
               TextSpan(
                   text: "• Checking the signal in your area\n",
-                  style: Theme.of(context).dialogTheme.contentTextStyle),
-              TextSpan(
-                  text: "• ",
-                  style: Theme.of(context).dialogTheme.contentTextStyle),
+                  style: contentTextStyle),
+              TextSpan(text: "• ", style: contentTextStyle),
               TextSpan(
                   text: "Recover ",
                   style: theme.blueLinkStyle,
@@ -45,12 +46,8 @@ void listenUnexpectedError(BuildContext context, AccountBloc accountBloc) {
                         }
                       });
                     }),
-              TextSpan(
-                  text: "chain information\n",
-                  style: Theme.of(context).dialogTheme.contentTextStyle),
-              TextSpan(
-                  text: "• ",
-                  style: Theme.of(context).dialogTheme.contentTextStyle),
+              TextSpan(text: "chain information\n", style: contentTextStyle),
+              TextSpan(text: "• ", style: contentTextStyle),
               TextSpan(
                   text: "Reset ",
                   style: theme.blueLinkStyle,
@@ -59,15 +56,11 @@ void listenUnexpectedError(BuildContext context, AccountBloc accountBloc) {
                       ResetNetwork resetAction = ResetNetwork();
                       accountBloc.userActionsSink.add(resetAction);
                       await resetAction.future;
-                      Navigator.pop(context);
+                      context.pop();
                       accountBloc.userActionsSink.add(RestartDaemon());
                     }),
-              TextSpan(
-                  text: "your Bitcoin node\n",
-                  style: Theme.of(context).dialogTheme.contentTextStyle),
-              TextSpan(
-                  text: "• ",
-                  style: Theme.of(context).dialogTheme.contentTextStyle),
+              TextSpan(text: "your Bitcoin node\n", style: contentTextStyle),
+              TextSpan(text: "• ", style: contentTextStyle),
               TextSpan(
                   text: "View ",
                   style: theme.blueLinkStyle,
@@ -77,14 +70,12 @@ void listenUnexpectedError(BuildContext context, AccountBloc accountBloc) {
                           await ServiceInjector().breezBridge.getLogPath();
                       ShareExtend.share(logPath, "file");
                     }),
-              TextSpan(
-                  text: "your logs \n",
-                  style: Theme.of(context).dialogTheme.contentTextStyle),
+              TextSpan(text: "your logs \n", style: contentTextStyle),
             ]),
       ),
       // Text(
       //     "You can try:\n• Turning off airplane mode\n• Turning on mobile data or Wi-Fi\n• Checking the signal in your area",
-      //     style: Theme.of(context).dialogTheme.contentTextStyle),
+      //     style: contentTextStyle),
       okText: allowRetry ? "TRY AGAIN" : "EXIT",
       okFunc: allowRetry
           ? () => accountBloc.userActionsSink.add(RestartDaemon())
@@ -101,7 +92,7 @@ Future _promptForRestart(BuildContext context) {
       context,
       null,
       Text("Restoring chain information might take several minutes.",
-          style: Theme.of(context).dialogTheme.contentTextStyle),
+          style: context.dialogTheme.contentTextStyle),
       cancelText: "CANCEL",
       okText: "EXIT BREEZ");
 }

@@ -1,24 +1,29 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:breez/theme_data.dart' as theme;
+import 'package:breez/utils/build_context.dart';
 import 'package:flushbar/flushbar.dart';
 import 'package:flutter/material.dart';
-import 'package:breez/l10n/locales.dart';
 
 class LostCardDialog extends StatelessWidget {
   const LostCardDialog();
 
   @override
   Widget build(BuildContext context) {
+    var l10n = context.l10n;
+    ThemeData themeData = context.theme;
+    DialogTheme dialogTheme = themeData.dialogTheme;
+    TextStyle btnTextStyle = themeData.primaryTextTheme.button;
+
     Flushbar _lostCardFlush;
     _lostCardFlush = Flushbar(
       titleText: Text(
-        context.l10n.lost_card_dialog_flush_title,
+        l10n.lost_card_dialog_flush_title,
         style: TextStyle(
           height: 0.0,
         ),
       ),
       messageText: Text(
-        context.l10n.lost_card_dialog_flush_message,
+        l10n.lost_card_dialog_flush_message,
         style: theme.snackBarStyle,
         textAlign: TextAlign.left,
       ),
@@ -30,7 +35,7 @@ class LostCardDialog extends StatelessWidget {
           Navigator.pushReplacementNamed(context, "/order_card");
         },
         child: Text(
-          context.l10n.lost_card_dialog_flush_action_order,
+          l10n.lost_card_dialog_flush_action_order,
           style: theme.validatorStyle,
         ),
       ),
@@ -38,35 +43,35 @@ class LostCardDialog extends StatelessWidget {
 
     return AlertDialog(
       title: Text(
-        context.l10n.lost_card_dialog_title,
-        style: Theme.of(context).dialogTheme.titleTextStyle,
+        l10n.lost_card_dialog_title,
+        style: dialogTheme.titleTextStyle,
         maxLines: 2,
       ),
       titlePadding: EdgeInsets.fromLTRB(24.0, 22.0, 24.0, 8.0),
       content: Container(
-        width: MediaQuery.of(context).size.width,
+        width: context.mediaQuerySize.width,
         child: AutoSizeText(
-          context.l10n.lost_card_dialog_message,
-          style: Theme.of(context).dialogTheme.contentTextStyle,
+          l10n.lost_card_dialog_message,
+          style: dialogTheme.contentTextStyle,
         ),
       ),
       contentPadding: EdgeInsets.fromLTRB(24.0, 0.0, 24.0, 8.0),
       actions: [
         TextButton(
-          onPressed: () => Navigator.pop(context),
+          onPressed: () => context.pop(),
           child: Text(
-            context.l10n.lost_card_dialog_action_cancel,
-            style: Theme.of(context).primaryTextTheme.button,
+            l10n.lost_card_dialog_action_cancel,
+            style: btnTextStyle,
           ),
         ),
         TextButton(
           onPressed: () {
-            Navigator.pop(context);
+            context.pop();
             _lostCardFlush.show(context);
           },
           child: Text(
-            context.l10n.lost_card_dialog_action_deactivate,
-            style: Theme.of(context).primaryTextTheme.button,
+            l10n.lost_card_dialog_action_deactivate,
+            style: btnTextStyle,
           ),
         ),
       ],

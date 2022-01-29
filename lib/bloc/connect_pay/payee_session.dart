@@ -25,20 +25,25 @@ A concrete implementation of RemoteSession from the payee side.
 class PayeeRemoteSession extends RemoteSession with OnlineStatusUpdater {
   final StreamController<void> _terminationStreamController =
       StreamController<void>();
+
   Stream<void> get terminationStream => _terminationStreamController.stream;
 
   final _approvePaymentController = StreamController<BreezUserModel>();
+
   Sink<BreezUserModel> get approvePaymentSink => _approvePaymentController.sink;
 
   final _rejectPaymentController = StreamController<void>();
+
   Sink<void> get rejectPaymentSink => _rejectPaymentController.sink;
 
   final _paymentSessionController = BehaviorSubject<PaymentSessionState>();
+
   Stream<PaymentSessionState> get paymentSessionStateStream =>
       _paymentSessionController.stream;
 
   final _sessionErrorsController =
       StreamController<PaymentSessionError>.broadcast();
+
   Stream<PaymentSessionError> get sessionErrors =>
       _sessionErrorsController.stream;
 
@@ -51,6 +56,7 @@ class PayeeRemoteSession extends RemoteSession with OnlineStatusUpdater {
   BreezUserModel _currentUser;
   var sessionState = Map<String, dynamic>();
   SessionLinkModel sessionLink;
+
   String get sessionID => sessionLink?.sessionID;
   Completer _sessionCompleter = Completer();
 

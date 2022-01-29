@@ -5,6 +5,7 @@ import 'package:breez/bloc/account/account_bloc.dart';
 import 'package:breez/bloc/account/account_model.dart';
 import 'package:breez/bloc/invoice/invoice_model.dart';
 import 'package:breez/routes/podcast/theme.dart';
+import 'package:breez/utils/build_context.dart';
 import 'package:breez/widgets/payment_confirmation_dialog.dart';
 import 'package:breez/widgets/payment_request_info_dialog.dart';
 import 'package:breez/widgets/processing_payment_dialog.dart';
@@ -113,12 +114,12 @@ class PaymentRequestDialogState extends State<PaymentRequestDialog> {
 
   void _onStateChange(PaymentRequestState state) {
     if (state == PaymentRequestState.PAYMENT_COMPLETED) {
-      Navigator.of(context).removeRoute(_currentRoute);
+      context.navigator.removeRoute(_currentRoute);
       widget.onComplete();
       return;
     }
     if (state == PaymentRequestState.USER_CANCELLED) {
-      Navigator.of(context).removeRoute(_currentRoute);
+      context.navigator.removeRoute(_currentRoute);
       widget.accountBloc.userActionsSink.add(CancelPaymentRequest(
           PayRequest(widget.invoice.rawPayReq, _amountToPay)));
       widget.onComplete();

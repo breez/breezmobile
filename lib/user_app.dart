@@ -8,10 +8,10 @@ import 'package:breez/bloc/pos_catalog/bloc.dart';
 import 'package:breez/bloc/user_profile/breez_user_model.dart';
 import 'package:breez/bloc/user_profile/user_actions.dart';
 import 'package:breez/bloc/user_profile/user_profile_bloc.dart';
-import 'package:breez/l10n/locales.dart';
 import 'package:breez/routes/fiat_currencies/fiat_currency_settings.dart';
 import 'package:breez/routes/podcast/theme.dart';
 import 'package:breez/routes/qr_scan.dart';
+import 'package:breez/utils/build_context.dart';
 import 'package:breez/utils/locale.dart';
 import 'package:breez/widgets/route.dart';
 import 'package:breez/widgets/static_loader.dart';
@@ -94,11 +94,12 @@ class UserApp extends StatelessWidget {
             localizationsDelegates: context.localizationsDelegates(),
             supportedLocales: context.supportedLocales(),
             builder: (BuildContext context, Widget child) {
+              MediaQueryData mediaQuery = context.mediaQuery;
+              double textScaleFactor = mediaQuery.textScaleFactor;
               return MediaQuery(
-                data: MediaQuery.of(context).copyWith(
-                  textScaleFactor: (MediaQuery.of(context).textScaleFactor >= 1.3)
-                      ? 1.3
-                      : MediaQuery.of(context).textScaleFactor,
+                data: mediaQuery.copyWith(
+                  textScaleFactor:
+                      (textScaleFactor >= 1.3) ? 1.3 : textScaleFactor,
                 ),
                 child: _withTheme(user, child),
               );
@@ -131,7 +132,7 @@ class UserApp extends StatelessWidget {
                           var validateAction = ValidatePinCode(pinEntered);
                           userProfileBloc.userActionsSink.add(validateAction);
                           return validateAction.future.then((_) {
-                            Navigator.pop(ctx);
+                            ctx.pop();
                             userProfileBloc.userActionsSink
                                 .add(SetLockState(false));
                           });
@@ -143,7 +144,7 @@ class UserApp extends StatelessWidget {
                                       await Future.delayed(
                                         Duration(milliseconds: 200),
                                       );
-                                      Navigator.pop(ctx);
+                                      ctx.pop();
                                       userProfileBloc.userActionsSink
                                           .add(SetLockState(false));
                                     }

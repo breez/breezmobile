@@ -6,6 +6,7 @@ import 'package:breez/bloc/lnurl/lnurl_bloc.dart';
 import 'package:breez/bloc/lnurl/lnurl_model.dart';
 import 'package:breez/bloc/marketplace/vendor_model.dart';
 import 'package:breez/routes/marketplace/vendor_webview.dart';
+import 'package:breez/utils/build_context.dart';
 import 'package:breez/widgets/error_dialog.dart';
 import 'package:breez/widgets/loader.dart';
 import 'package:flutter/material.dart';
@@ -44,7 +45,7 @@ class LNURLWebViewPageState extends State<LNURLWebViewPage> {
         context,
         "Error",
         Text(err.toString()),
-        okFunc: () => Navigator.of(context).pop(),
+        okFunc: () => context.pop(),
       ),
     );
   }

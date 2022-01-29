@@ -18,6 +18,7 @@ import 'model.dart';
 class PosCatalogBloc with AsyncActionsHandler {
   // ignore: non_constant_identifier_names
   static final InvalidFile = Exception('INVALID_FILE');
+
   // ignore: non_constant_identifier_names
   static final InvalidData = Exception('INVALID_DATA');
 

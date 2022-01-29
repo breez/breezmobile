@@ -6,7 +6,7 @@ import 'package:breez/bloc/account/account_bloc.dart';
 import 'package:breez/bloc/account/account_model.dart';
 import 'package:breez/bloc/blocs_provider.dart';
 import 'package:breez/theme_data.dart' as theme;
-import 'package:breez/utils/min_font_size.dart';
+import 'package:breez/utils/build_context.dart';
 import 'package:breez/widgets/amount_form_field.dart';
 import 'package:breez/widgets/back_button.dart' as backBtn;
 import 'package:breez/widgets/collapsible_list_item.dart';
@@ -44,7 +44,7 @@ class SpontaneousPaymentPageState extends State<SpontaneousPaymentPage> {
   void initState() {
     _doneAction = KeyboardDoneAction(<FocusNode>[_amountFocusNode]);
     Future.delayed(Duration(milliseconds: 200),
-        () => FocusScope.of(context).requestFocus(_amountFocusNode));
+        () => context.focusScope.requestFocus(_amountFocusNode));
     super.initState();
   }
 
@@ -64,6 +64,9 @@ class SpontaneousPaymentPageState extends State<SpontaneousPaymentPage> {
 
   @override
   Widget build(BuildContext context) {
+    ThemeData themeData = context.theme;
+    AppBarTheme appBarTheme = themeData.appBarTheme;
+
     final String _title = "Send Payment";
     AccountBloc accountBloc = AppBlocsProvider.of<AccountBloc>(context);
 
@@ -89,12 +92,12 @@ class SpontaneousPaymentPageState extends State<SpontaneousPaymentPage> {
             );
           }),
       appBar: AppBar(
-        iconTheme: Theme.of(context).appBarTheme.iconTheme,
-        textTheme: Theme.of(context).appBarTheme.textTheme,
-        backgroundColor: Theme.of(context).canvasColor,
+        iconTheme: appBarTheme.iconTheme,
+        backgroundColor: themeData.canvasColor,
+        toolbarTextStyle: appBarTheme.toolbarTextStyle,
+        titleTextStyle: appBarTheme.titleTextStyle,
         leading: backBtn.BackButton(),
-        title: Text(_title,
-            style: Theme.of(context).appBarTheme.textTheme.headline6),
+        title: Text(_title),
         elevation: 0.0,
       ),
       body: StreamBuilder<AccountModel>(
@@ -132,7 +135,7 @@ class SpontaneousPaymentPageState extends State<SpontaneousPaymentPage> {
                       validatorFn: acc.validateOutgoingPayment,
                       style: theme.FieldTextStyle.textStyle),
                   Container(
-                    width: MediaQuery.of(context).size.width,
+                    width: context.mediaQuerySize.width,
                     height: 48,
                     padding: EdgeInsets.only(top: 16.0),
                     child: _buildPayableBTC(acc),
@@ -151,7 +154,7 @@ class SpontaneousPaymentPageState extends State<SpontaneousPaymentPage> {
                           message = accSnapshot.error.toString();
                         } else if (acc.processingConnection) {
                           message =
-                              'You will be able to receive payments after Breez is finished opening a secure channel with our server. This usually takes ~10 minutes to be completed. Please try again in a couple of minutes.';
+                          'You will be able to receive payments after Breez is finished opening a secure channel with our server. This usually takes ~10 minutes to be completed. Please try again in a couple of minutes.';
                         }
 
                         if (message != null) {
@@ -162,8 +165,8 @@ class SpontaneousPaymentPageState extends State<SpontaneousPaymentPage> {
                                 Text(
                                   message,
                                   textAlign: TextAlign.center,
-                                  style: theme.warningStyle.copyWith(
-                                      color: Theme.of(context).errorColor),
+                                  style: theme.warningStyle
+                                      .copyWith(color: context.errorColor),
                                 ),
                               ]));
                         } else {
@@ -185,7 +188,7 @@ class SpontaneousPaymentPageState extends State<SpontaneousPaymentPage> {
         "Pay up to: ${acc.currency.format(acc.maxAllowedToPay)}",
         style: theme.textStyle,
         maxLines: 1,
-        minFontSize: MinFontSize(context).minFontSize,
+        minFontSize: context.minFontSize,
       ),
       onTap: () => _amountController.text = acc.currency.format(
           acc.maxAllowedToPay,
@@ -236,7 +239,7 @@ class SpontaneousPaymentPageState extends State<SpontaneousPaymentPage> {
                   220,
                   popOnCompletion: true,
                 ));
-        Navigator.of(context).removeRoute(_currentRoute);
+        context.navigator.removeRoute(_currentRoute);
         await sendAction.future;
       } catch (err) {
         if (err.runtimeType != PaymentError) {
@@ -245,7 +248,7 @@ class SpontaneousPaymentPageState extends State<SpontaneousPaymentPage> {
               "Payment Error",
               Text(
                 err.toString(),
-                style: Theme.of(context).dialogTheme.contentTextStyle,
+                style: context.dialogTheme.contentTextStyle,
               ));
         }
       }

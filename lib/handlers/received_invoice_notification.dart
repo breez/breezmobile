@@ -4,6 +4,7 @@ import 'package:breez/bloc/account/account_bloc.dart';
 import 'package:breez/bloc/invoice/invoice_model.dart';
 import 'package:breez/bloc/user_profile/user_profile_bloc.dart';
 import 'package:breez/routes/admin_login_dialog.dart';
+import 'package:breez/utils/build_context.dart';
 import 'package:breez/widgets/flushbar.dart';
 import 'package:breez/widgets/loader.dart';
 import 'package:breez/widgets/payment_request_dialog.dart' as paymentRequest;
@@ -52,7 +53,7 @@ class InvoiceNotificationsHandler {
 
       // Close the drawer before showing payment request dialog
       if (scaffoldController.currentState.isDrawerOpen) {
-        Navigator.pop(_context);
+        _context.pop();
       }
 
       protectAdminAction(_context, user, () {

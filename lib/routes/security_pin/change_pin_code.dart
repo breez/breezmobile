@@ -1,7 +1,7 @@
+import 'package:breez/utils/build_context.dart';
 import 'package:breez/widgets/back_button.dart' as backBtn;
 import 'package:breez/widgets/pin_code_widget.dart';
 import 'package:flutter/material.dart';
-import 'package:breez/l10n/locales.dart';
 
 const PIN_CODE_LENGTH = 6;
 
@@ -23,41 +23,43 @@ class _ChangePinCodeState extends State<ChangePinCode> {
     if (_label == null) {
       _label = context.l10n.security_and_backup_new_pin;
     }
+    ThemeData theme = context.theme;
+    AppBarTheme appBarTheme = theme.appBarTheme;
 
     return Scaffold(
       appBar: AppBar(
-        iconTheme: Theme.of(context).appBarTheme.iconTheme,
-        textTheme: Theme.of(context).appBarTheme.textTheme,
-        backgroundColor: Theme.of(context).canvasColor,
+        iconTheme: appBarTheme.iconTheme,
+        toolbarTextStyle: appBarTheme.toolbarTextStyle,
+        titleTextStyle: appBarTheme.titleTextStyle,
+        backgroundColor: context.canvasColor,
         leading: backBtn.BackButton(
-          onPressed: () => Navigator.pop(context, null),
+          onPressed: () => context.pop(null),
         ),
         elevation: 0.0,
       ),
       body: PinCodeWidget(
         _label,
-        (enteredPinCode) => _onPinEntered(enteredPinCode),
+            (enteredPinCode) => _onPinEntered(enteredPinCode),
       ),
     );
   }
 
-  Future _onPinEntered(
-    String enteredPinCode,
-  ) async {
+  Future _onPinEntered(String enteredPinCode,) async {
+    var l10n = context.l10n;
     if (_tmpPinCode.isEmpty) {
       setState(() {
         _tmpPinCode = enteredPinCode;
-        _label = context.l10n.security_and_backup_new_pin_second_time;
+        _label = l10n.security_and_backup_new_pin_second_time;
       });
     } else {
       if (enteredPinCode == _tmpPinCode) {
-        Navigator.pop(context, enteredPinCode);
+        context.pop(enteredPinCode);
       } else {
         setState(() {
           _tmpPinCode = "";
-          _label = context.l10n.security_and_backup_new_pin;
+          _label = l10n.security_and_backup_new_pin;
         });
-        throw Exception(context.l10n.security_and_backup_new_pin_do_not_match);
+        throw Exception(l10n.security_and_backup_new_pin_do_not_match);
       }
     }
   }

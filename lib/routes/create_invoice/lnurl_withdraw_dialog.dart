@@ -7,6 +7,7 @@ import 'package:breez/bloc/invoice/invoice_model.dart';
 import 'package:breez/bloc/lnurl/lnurl_actions.dart';
 import 'package:breez/bloc/lnurl/lnurl_bloc.dart';
 import 'package:breez/theme_data.dart' as theme;
+import 'package:breez/utils/build_context.dart';
 import 'package:breez/widgets/loading_animated_text.dart';
 import 'package:flutter/material.dart';
 
@@ -94,12 +95,14 @@ class LNUrlWithdrawDialogState extends State<LNURlWithdrawDialog>
 
   @override
   Widget build(BuildContext context) {
+    ThemeData themeData = context.theme;
+    DialogTheme dialogTheme = themeData.dialogTheme;
+
     return FadeTransition(
       opacity: _opacityAnimation,
       child: AlertDialog(
         title: Text("Receive Funds",
-            style: Theme.of(context).dialogTheme.titleTextStyle,
-            textAlign: TextAlign.center),
+            style: dialogTheme.titleTextStyle, textAlign: TextAlign.center),
         content: StreamBuilder<AccountModel>(
             stream: widget.accountBloc.accountStream,
             builder: (context, snapshot) {
@@ -108,16 +111,16 @@ class LNUrlWithdrawDialogState extends State<LNURlWithdrawDialog>
                 mainAxisSize: MainAxisSize.min,
                 children: <Widget>[
                   _error != null
-                      ? Text("Failed to receive funds: $_error",
-                          style: Theme.of(context).dialogTheme.contentTextStyle,
-                          textAlign: TextAlign.center)
+                      ? Text(
+                          "Failed to receive funds: $_error",
+                          style: dialogTheme.contentTextStyle,
+                          textAlign: TextAlign.center,
+                        )
                       : snapshot.hasData && snapshot.data.syncedToChain != true
                           ? SizedBox()
                           : LoadingAnimatedText(
                               'Please wait while your payment is being processed',
-                              textStyle: Theme.of(context)
-                                  .dialogTheme
-                                  .contentTextStyle,
+                              textStyle: dialogTheme.contentTextStyle,
                               textAlign: TextAlign.center,
                             ),
                   _error != null
@@ -137,8 +140,8 @@ class LNUrlWithdrawDialogState extends State<LNURlWithdrawDialog>
                     onPressed: (() {
                       onFinish(false);
                     }),
-                    child: Text("CLOSE",
-                        style: Theme.of(context).primaryTextTheme.button),
+                    child:
+                        Text("CLOSE", style: themeData.primaryTextTheme.button),
                   )
                 ],
               );

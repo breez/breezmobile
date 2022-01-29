@@ -6,10 +6,9 @@ import 'package:breez/bloc/user_profile/breez_user_model.dart';
 import 'package:breez/bloc/user_profile/user_actions.dart';
 import 'package:breez/bloc/user_profile/user_profile_bloc.dart';
 import 'package:breez/theme_data.dart' as theme;
-import 'package:breez/utils/min_font_size.dart';
+import 'package:breez/utils/build_context.dart';
 import 'package:breez/widgets/breez_avatar.dart';
 import 'package:flutter/material.dart';
-import 'package:breez/l10n/locales.dart';
 import 'package:image/image.dart' as DartImage;
 import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
@@ -33,7 +32,7 @@ Widget breezAvatarDialog(BuildContext context, UserProfileBloc userBloc) {
 
   Future<File> _pickImage() async {
     final _picker = ImagePicker();
-    PickedFile pickedFile = await _picker.getImage(source: ImageSource.gallery);
+    XFile pickedFile = await _picker.pickImage(source: ImageSource.gallery);
     final File file = File(pickedFile.path);
     final File croppedFile = await ImageCropper.cropImage(
       sourcePath: file.path,
@@ -49,7 +48,11 @@ Widget breezAvatarDialog(BuildContext context, UserProfileBloc userBloc) {
     },
     child: StatefulBuilder(
       builder: (context, setState) {
-        final minFontSize = MinFontSize(context);
+        var l10n = context.l10n;
+        ThemeData themeData = context.theme;
+        TextStyle textStyle = themeData.primaryTextTheme.bodyText2;
+        TextStyle btnTextStyle = themeData.primaryTextTheme.button;
+        final minFontSize = context.minFontSize;
 
         return AlertDialog(
           titlePadding: EdgeInsets.all(0.0),
@@ -64,12 +67,12 @@ Widget breezAvatarDialog(BuildContext context, UserProfileBloc userBloc) {
                     ),
                   ),
                   color: theme.themeId == "BLUE"
-                      ? Theme.of(context).primaryColorDark
-                      : Theme.of(context).canvasColor,
+                      ? themeData.primaryColorDark
+                      : themeData.canvasColor,
                 ),
               ),
               Container(
-                width: MediaQuery.of(context).size.width,
+                width: context.mediaQuerySize.width,
                 height: 100.0,
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -84,17 +87,17 @@ Widget breezAvatarDialog(BuildContext context, UserProfileBloc userBloc) {
                           ),
                         ),
                         child: AutoSizeText(
-                          context.l10n.breez_avatar_dialog_random,
+                          l10n.breez_avatar_dialog_random,
                           style: theme.whiteButtonStyle,
                           maxLines: 1,
-                          minFontSize: minFontSize.minFontSize,
+                          minFontSize: minFontSize,
                           stepGranularity: 0.1,
                           group: _autoSizeGroup,
                         ),
                         onPressed: () {
                           userBloc.randomizeSink.add(null);
                           _pickedImage = null;
-                          FocusScope.of(context).requestFocus(FocusNode());
+                          context.focusScope.requestFocus(FocusNode());
                         },
                       ),
                     ),
@@ -115,11 +118,11 @@ Widget breezAvatarDialog(BuildContext context, UserProfileBloc userBloc) {
                                         child: CircularProgressIndicator(
                                           valueColor:
                                               AlwaysStoppedAnimation<Color>(
-                                            Theme.of(context)
+                                            themeData
                                                 .primaryTextTheme.button.color,
                                           ),
                                           backgroundColor:
-                                              Theme.of(context).backgroundColor,
+                                              themeData.backgroundColor,
                                         ),
                                       ),
                                       padding: EdgeInsets.only(top: 26.0),
@@ -149,10 +152,10 @@ Widget breezAvatarDialog(BuildContext context, UserProfileBloc userBloc) {
                           ),
                         ),
                         child: AutoSizeText(
-                          context.l10n.breez_avatar_dialog_gallery,
+                          l10n.breez_avatar_dialog_gallery,
                           style: theme.whiteButtonStyle,
                           maxLines: 1,
-                          minFontSize: minFontSize.minFontSize,
+                          minFontSize: minFontSize,
                           stepGranularity: 0.1,
                           group: _autoSizeGroup,
                         ),
@@ -175,15 +178,15 @@ Widget breezAvatarDialog(BuildContext context, UserProfileBloc userBloc) {
               children: [
                 Theme(
                   data: ThemeData(
-                    primaryColor: Theme.of(context).primaryTextTheme.bodyText2.color,
-                    hintColor: Theme.of(context).primaryTextTheme.bodyText2.color,
+                    primaryColor: textStyle.color,
+                    hintColor: textStyle.color,
                   ),
                   child: TextField(
                     enabled: !_isUploading,
-                    style: Theme.of(context).primaryTextTheme.bodyText2,
+                    style: textStyle,
                     controller: _nameInputController,
                     decoration: InputDecoration(
-                      hintText: context.l10n.breez_avatar_dialog_your_name,
+                      hintText: l10n.breez_avatar_dialog_your_name,
                     ),
                     onSubmitted: (text) {},
                   ),
@@ -194,15 +197,15 @@ Widget breezAvatarDialog(BuildContext context, UserProfileBloc userBloc) {
           actions: [
             TextButton(
               child: Text(
-                context.l10n.breez_avatar_dialog_action_cancel,
-                style: Theme.of(context).primaryTextTheme.button,
+                l10n.breez_avatar_dialog_action_cancel,
+                style: btnTextStyle,
               ),
-              onPressed: _isUploading ? null : () => Navigator.of(context).pop(),
+              onPressed: _isUploading ? null : () => context.pop(),
             ),
             TextButton(
               child: Text(
-                context.l10n.breez_avatar_dialog_action_save,
-                style: Theme.of(context).primaryTextTheme.button,
+                l10n.breez_avatar_dialog_action_save,
+                style: btnTextStyle,
               ),
               onPressed: _isUploading
                   ? null
@@ -222,7 +225,7 @@ Widget breezAvatarDialog(BuildContext context, UserProfileBloc userBloc) {
                         userBloc.userSink.add(_currentSettings.copyWith(
                           name: userName,
                         ));
-                        Navigator.of(context).pop();
+                        context.pop();
                       } catch (e) {
                         setState(() {
                           _isUploading = false;
@@ -230,7 +233,7 @@ Widget breezAvatarDialog(BuildContext context, UserProfileBloc userBloc) {
                         });
                         showFlushbar(
                           context,
-                          message: context.l10n.breez_avatar_dialog_error_upload,
+                          message: l10n.breez_avatar_dialog_error_upload,
                         );
                       }
                     },

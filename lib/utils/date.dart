@@ -17,9 +17,12 @@ class BreezDateUtils {
       DateFormat.jm(Platform.localeName);
 
   static String formatMonthDate(DateTime d) => _monthDateFormat.format(d);
+
   static String formatYearMonthDay(DateTime d) => _yearMonthDayFormat.format(d);
+
   static String formatYearMonthDayHourMinute(DateTime d) =>
       _yearMonthDayHourMinuteFormat.format(d);
+
   static String formatYearMonthDayHourMinuteSecond(DateTime d) =>
       _yearMonthDayHourMinuteSecondFormat.format(d);
 

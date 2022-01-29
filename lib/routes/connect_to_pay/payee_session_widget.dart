@@ -4,13 +4,13 @@ import 'package:breez/bloc/connect_pay/payee_session.dart';
 import 'package:breez/bloc/lsp/lsp_model.dart';
 import 'package:breez/bloc/user_profile/currency.dart';
 import 'package:breez/theme_data.dart' as theme;
+import 'package:breez/utils/build_context.dart';
 import 'package:breez/widgets/loader.dart';
 import 'package:breez/widgets/loading_animated_text.dart';
 import 'package:breez/widgets/warning_box.dart';
 import 'package:fixnum/fixnum.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'package:breez/l10n/locales.dart';
 
 import '../sync_progress_dialog.dart';
 import 'peers_connection.dart';
@@ -66,7 +66,7 @@ class PayeeSessionWidget extends StatelessWidget {
                         _lspStatus,
                         snapshot.data.payerData.amount,
                       ),
-                      style: Theme.of(context).textTheme.headline6,
+                      style: context.textTheme.headline6,
                       textAlign: TextAlign.center,
                     ),
                   ),
@@ -88,13 +88,14 @@ class PayeeSessionWidget extends StatelessWidget {
     BuildContext context,
     PaymentSessionState sessionState,
   ) {
+    var l10n = context.l10n;
     if (_account.synced) {
       final payerData = sessionState.payerData;
       final payeeData = sessionState.payeeData;
       if (payerData.amount != null && payeeData.paymentRequest == null) {
         return [
-          context.l10n.connect_to_pay_payee_action_reject,
-          context.l10n.connect_to_pay_payee_action_approve,
+          l10n.connect_to_pay_payee_action_reject,
+          l10n.connect_to_pay_payee_action_approve,
         ];
       }
     }
@@ -149,6 +150,8 @@ class _PayeeInstructions extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    var l10n = context.l10n;
+
     final defaultTextStyle = DefaultTextStyle.of(context);
 
     final payerData = _sessionState.payerData;
@@ -158,13 +161,13 @@ class _PayeeInstructions extends StatelessWidget {
     String message = "";
     if (_sessionState.paymentFulfilled) {
       final settledAmount = currency.format(Int64(_sessionState.settledAmount));
-      message = context.l10n.connect_to_pay_payee_success_received(settledAmount);
+      message = l10n.connect_to_pay_payee_success_received(settledAmount);
     } else if (payerData.amount == null) {
       final name = payerData.userName;
       return LoadingAnimatedText(
         name != null
-            ? context.l10n.connect_to_pay_payee_waiting_with_name(name)
-            : context.l10n.connect_to_pay_payee_waiting_no_name,
+            ? l10n.connect_to_pay_payee_waiting_with_name(name)
+            : l10n.connect_to_pay_payee_waiting_no_name,
         textStyle: theme.sessionNotificationStyle,
       );
     } else if (!_account.synced) {
@@ -172,7 +175,7 @@ class _PayeeInstructions extends StatelessWidget {
         "",
         textElements: [
           TextSpan(
-            text: context.l10n.connect_to_pay_payee_waiting_sync,
+            text: l10n.connect_to_pay_payee_waiting_sync,
             recognizer: TapGestureRecognizer()
               ..onTap = () {
                 showDialog(
@@ -182,14 +185,14 @@ class _PayeeInstructions extends StatelessWidget {
                     content: SyncProgressDialog(),
                     actions: [
                       TextButton(
-                        onPressed: () => Navigator.pop(context),
+                        onPressed: () => context.pop(),
                         child: Text(
-                          context.l10n.connect_to_pay_payee_waiting_sync_action_close,
-                          style: Theme.of(context).primaryTextTheme.button,
+                          l10n.connect_to_pay_payee_waiting_sync_action_close,
+                          style: context.primaryTextTheme.button,
                         ),
                       ),
-                    ],
-                  ),
+                        ],
+                      ),
                 );
               },
             style: defaultTextStyle.style,
@@ -200,13 +203,13 @@ class _PayeeInstructions extends StatelessWidget {
       final name = payerData.userName;
       final amount = currency.format(Int64(payerData.amount));
       if (_account.fiatCurrency != null) {
-        message = context.l10n.connect_to_pay_payee_message_with_fiat(
+        message = l10n.connect_to_pay_payee_message_with_fiat(
           name,
           amount,
           _account.fiatCurrency.format(Int64(payerData.amount)),
         );
       } else {
-        message = context.l10n.connect_to_pay_payee_message_no_fiat(name, amount);
+        message = l10n.connect_to_pay_payee_message_no_fiat(name, amount);
       }
       if (_account.maxAllowedToReceive < Int64(payerData.amount)) {
         return Column(
@@ -214,7 +217,7 @@ class _PayeeInstructions extends StatelessWidget {
           children: [
             Text(message, style: theme.sessionNotificationStyle),
             Text(
-              context.l10n.connect_to_pay_payee_error_limit_exceeds(
+              l10n.connect_to_pay_payee_error_limit_exceeds(
                 currency.format(_account.maxAllowedToReceive),
               ),
               style: theme.sessionNotificationStyle.copyWith(
@@ -227,7 +230,7 @@ class _PayeeInstructions extends StatelessWidget {
       }
     } else if (payeeData.paymentRequest != null) {
       return LoadingAnimatedText(
-        context.l10n.connect_to_pay_payee_process(payerData.userName),
+        l10n.connect_to_pay_payee_process(payerData.userName),
         textStyle: theme.sessionNotificationStyle,
       );
     }

@@ -14,6 +14,7 @@ class ValidateRequestModel {
 
   factory ValidateRequestModel.fromJson(Map<String, dynamic> json) =>
       _$ValidateRequestModelFromJson(json);
+
   Map<String, dynamic> toJson() => _$ValidateRequestModelToJson(this);
 }
 
@@ -52,8 +53,10 @@ class ValidateResponseModel {
       this.commissionTotal,
       this.bitcoinAmount,
       this.satoshiAmount);
+
   factory ValidateResponseModel.fromJson(Map<String, dynamic> json) =>
       _$ValidateResponseModelFromJson(json);
+
   Map<String, dynamic> toJson() => _$ValidateResponseModelToJson(this);
 }
 
@@ -79,6 +82,7 @@ class RedeemRequestModel {
 
   factory RedeemRequestModel.fromJson(Map<String, dynamic> json) =>
       _$RedeemRequestModelFromJson(json);
+
   Map<String, dynamic> toJson() => _$RedeemRequestModelToJson(this);
 }
 
@@ -93,5 +97,6 @@ class RedeemResponseModel {
 
   factory RedeemResponseModel.fromJson(Map<String, dynamic> json) =>
       _$RedeemResponseModelFromJson(json);
+
   Map<String, dynamic> toJson() => _$RedeemResponseModelToJson(this);
 }

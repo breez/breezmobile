@@ -55,8 +55,9 @@ class CurrencyData {
     final currencyData = CurrencyData(
       name: json["name"],
       localizedName: json["localized_name"]?.map<String, String>(
-        (lang, name) => MapEntry<String, String>(lang, name),
-      ) ?? {},
+            (lang, name) => MapEntry<String, String>(lang, name),
+          ) ??
+          {},
       shortName: shortName,
       fractionSize: json["fractionSize"] ?? 0,
       symbol: json["symbol"] != null ? json["symbol"]["grapheme"] : shortName,

@@ -13,9 +13,9 @@ import 'package:breez/bloc/user_profile/user_profile_bloc.dart';
 import 'package:breez/routes/podcast/boost.dart';
 import 'package:breez/routes/podcast/payment_adjuster.dart';
 import 'package:breez/routes/podcast/theme.dart';
+import 'package:breez/utils/build_context.dart';
 import 'package:breez/widgets/loader.dart';
 import 'package:flutter/material.dart';
-import 'package:breez/l10n/locales.dart';
 import 'package:provider/provider.dart';
 import 'package:tutorial_coach_mark/tutorial_coach_mark.dart';
 
@@ -68,7 +68,7 @@ class PaymentAdjustmentState extends State<PaymentAdjustment> {
             tutorial.next();
           }
         },
-        colorShadow: Theme.of(context).primaryColor,
+        colorShadow: context.primaryColor,
         hideSkip: true,
         onFinish: () {
           final userBloc = AppBlocsProvider.of<UserProfileBloc>(context);
@@ -163,10 +163,8 @@ class PaymentAdjustmentState extends State<PaymentAdjustment> {
                         ),
                         child: Text(
                           context.l10n.tutorial_gotcha,
-                          style: Theme.of(context)
-                              .primaryTextTheme
-                              .button
-                              .copyWith(color: Theme.of(context).primaryColor),
+                          style: context.primaryTextTheme.button
+                              .copyWith(color: context.primaryColor),
                         ),
                         onPressed: () {
                           AppBlocsProvider.of<UserProfileBloc>(context)
@@ -236,10 +234,12 @@ class PaymentAdjustmentState extends State<PaymentAdjustment> {
           if (!snapshot.hasData) {
             return Center(child: Loader());
           }
+          ThemeData theme = context.theme;
+
           var userModel = snapshot.data;
           return Container(
             height: 64,
-            color: Theme.of(context).backgroundColor,
+            color: theme.backgroundColor,
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: <Widget>[
@@ -247,7 +247,7 @@ class PaymentAdjustmentState extends State<PaymentAdjustment> {
                   flex: 5,
                   child: Padding(
                     padding: const EdgeInsets.only(left: 16, right: 0),
-                    child: WithConfettyPaymentEffect(
+                    child: WithConfettiPaymentEffect(
                         type: PaymentEventType.BoostStarted,
                         child: BoostWidget(
                           key: boostWidgetKey,
@@ -270,7 +270,7 @@ class PaymentAdjustmentState extends State<PaymentAdjustment> {
                   width: 1,
                   child: VerticalDivider(
                     thickness: 1,
-                    color: Theme.of(context).dividerColor,
+                    color: theme.dividerColor,
                   ),
                 ),
                 Flexible(

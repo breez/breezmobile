@@ -2,12 +2,18 @@ import 'dart:async';
 
 import 'package:breez/services/injector.dart';
 import 'package:breez/theme_data.dart' as theme;
+import 'package:breez/utils/build_context.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'package:breez/l10n/locales.dart';
 import 'package:share_extend/share_extend.dart';
 
 Future<bool> showNoConnectionDialog(BuildContext context) {
+  var l10n = context.l10n;
+  ThemeData themeData = context.theme;
+  DialogTheme dialogTheme = themeData.dialogTheme;
+  TextStyle dialogContentTextStyle = dialogTheme.contentTextStyle;
+  TextStyle btnTextStyle = themeData.primaryTextTheme.button;
+
   return showDialog<bool>(
     useRootNavigator: false,
     context: context,
@@ -16,33 +22,33 @@ Future<bool> showNoConnectionDialog(BuildContext context) {
       return AlertDialog(
         contentPadding: EdgeInsets.fromLTRB(16.0, 16.0, 16.0, 0.0),
         title: Text(
-          context.l10n.no_connection_dialog_title,
-          style: Theme.of(context).dialogTheme.titleTextStyle,
+          l10n.no_connection_dialog_title,
+          style: dialogTheme.titleTextStyle,
         ),
         content: SingleChildScrollView(
           child: RichText(
             text: TextSpan(
-              style: Theme.of(context).dialogTheme.contentTextStyle,
-              text: context.l10n.no_connection_dialog_tip_begin,
+              style: dialogContentTextStyle,
+              text: l10n.no_connection_dialog_tip_begin,
               children: [
                 TextSpan(
-                  text: context.l10n.no_connection_dialog_tip_airplane,
-                  style: Theme.of(context).dialogTheme.contentTextStyle,
+                  text: l10n.no_connection_dialog_tip_airplane,
+                  style: dialogContentTextStyle,
                 ),
                 TextSpan(
-                  text: context.l10n.no_connection_dialog_tip_wifi,
-                  style: Theme.of(context).dialogTheme.contentTextStyle,
+                  text: l10n.no_connection_dialog_tip_wifi,
+                  style: dialogContentTextStyle,
                 ),
                 TextSpan(
-                  text: context.l10n.no_connection_dialog_tip_signal,
-                  style: Theme.of(context).dialogTheme.contentTextStyle,
+                  text: l10n.no_connection_dialog_tip_signal,
+                  style: dialogContentTextStyle,
                 ),
                 TextSpan(
                   text: "• ",
-                  style: Theme.of(context).dialogTheme.contentTextStyle,
+                  style: dialogContentTextStyle,
                 ),
                 TextSpan(
-                  text: context.l10n.no_connection_dialog_log_view_action,
+                  text: l10n.no_connection_dialog_log_view_action,
                   style: theme.blueLinkStyle,
                   recognizer: TapGestureRecognizer()
                     ..onTap = () async {
@@ -53,8 +59,8 @@ Future<bool> showNoConnectionDialog(BuildContext context) {
                     },
                 ),
                 TextSpan(
-                  text: context.l10n.no_connection_dialog_log_view_message,
-                  style: Theme.of(context).dialogTheme.contentTextStyle,
+                  text: l10n.no_connection_dialog_log_view_message,
+                  style: dialogContentTextStyle,
                 ),
               ],
             ),
@@ -63,17 +69,17 @@ Future<bool> showNoConnectionDialog(BuildContext context) {
         actions: [
           TextButton(
             child: Text(
-              context.l10n.no_connection_dialog_action_cancel,
-              style: Theme.of(context).primaryTextTheme.button,
+              l10n.no_connection_dialog_action_cancel,
+              style: btnTextStyle,
             ),
-            onPressed: () => Navigator.of(context).pop(false),
+            onPressed: () => context.pop(false),
           ),
           TextButton(
             child: Text(
-              context.l10n.no_connection_dialog_action_try_again,
-              style: Theme.of(context).primaryTextTheme.button,
+              l10n.no_connection_dialog_action_try_again,
+              style: btnTextStyle,
             ),
-            onPressed: () => Navigator.of(context).pop(true),
+            onPressed: () => context.pop(true),
           ),
         ],
       );

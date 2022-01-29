@@ -1,4 +1,5 @@
 import 'package:breez/theme_data.dart' as theme;
+import 'package:breez/utils/build_context.dart';
 import 'package:flutter/material.dart';
 
 class WarningBox extends StatelessWidget {
@@ -24,7 +25,7 @@ class WarningBox extends StatelessWidget {
       child: Container(
           padding: contentPadding ??
               EdgeInsets.symmetric(horizontal: 12.3, vertical: 16.2),
-          width: MediaQuery.of(context).size.width,
+          width: context.mediaQuerySize.width,
           decoration: BoxDecoration(
               color: backgroundColor ?? theme.warningBoxColor,
               borderRadius: BorderRadius.all(Radius.circular(6)),

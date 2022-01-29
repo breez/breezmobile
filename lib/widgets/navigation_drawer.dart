@@ -6,12 +6,12 @@ import 'package:breez/bloc/user_profile/breez_user_model.dart';
 import 'package:breez/bloc/user_profile/user_actions.dart';
 import 'package:breez/bloc/user_profile/user_profile_bloc.dart';
 import 'package:breez/theme_data.dart' as theme;
+import 'package:breez/utils/build_context.dart';
 import 'package:breez/widgets/breez_avatar.dart';
 import 'package:breez/widgets/breez_avatar_dialog.dart';
 import 'package:breez/widgets/breez_drawer_header.dart';
 import 'package:breez/widgets/error_dialog.dart';
 import 'package:flutter/material.dart';
-import 'package:breez/l10n/locales.dart';
 
 class DrawerItemConfig {
   final GlobalKey key;
@@ -79,7 +79,7 @@ class NavigationDrawer extends StatelessWidget {
     });
 
     return Theme(
-      data: Theme.of(context).copyWith(
+      data: context.theme.copyWith(
         canvasColor: theme.customData[theme.themeId].navigationDrawerBgColor,
       ),
       child: Drawer(
@@ -257,7 +257,7 @@ Future _changeTheme(
       context.l10n.home_drawer_error_internal,
       Text(
         err.toString(),
-        style: Theme.of(context).dialogTheme.contentTextStyle,
+        style: context.dialogTheme.contentTextStyle,
       ),
     );
   });
@@ -305,8 +305,9 @@ Widget _actionTile(
   TextStyle itemStyle = theme.drawerItemTextStyle;
 
   Color color;
+  ThemeData themeData = context.theme;
   if (action.disabled) {
-    color = Theme.of(context).disabledColor;
+    color = themeData.disabledColor;
     itemStyle = itemStyle.copyWith(color: color);
   }
   return Padding(
@@ -319,7 +320,7 @@ Widget _actionTile(
           ? null
           : BoxDecoration(
               color: action.isSelected
-                  ? Theme.of(context).primaryColorLight
+                  ? themeData.primaryColorLight
                   : Colors.transparent,
               borderRadius: BorderRadius.horizontal(
                 right: Radius.circular(32),
@@ -355,7 +356,7 @@ Widget _actionTile(
         onTap: action.disabled
             ? null
             : () {
-                Navigator.pop(context);
+          context.pop();
                 onItemSelected(action.name);
               },
       ),
@@ -379,8 +380,9 @@ class _ExpansionTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final _expansionTileTheme = Theme.of(context).copyWith(
-      dividerColor: Theme.of(context).canvasColor,
+    ThemeData themeData = context.theme;
+    final _expansionTileTheme = themeData.copyWith(
+      dividerColor: themeData.canvasColor,
     );
     return Theme(
       data: _expansionTileTheme,

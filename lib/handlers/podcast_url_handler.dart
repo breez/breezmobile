@@ -13,10 +13,10 @@ import 'package:breez/bloc/user_profile/user_actions.dart';
 import 'package:breez/bloc/user_profile/user_profile_bloc.dart';
 import 'package:breez/routes/admin_login_dialog.dart';
 import 'package:breez/services/injector.dart';
+import 'package:breez/utils/build_context.dart';
 import 'package:breez/widgets/flushbar.dart';
 import 'package:breez/widgets/loader.dart';
 import 'package:flutter/material.dart';
-import 'package:breez/l10n/locales.dart';
 import 'package:provider/provider.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:uni_links/uni_links.dart';
@@ -32,7 +32,7 @@ class PodcastURLHandler {
         .listen((link) async {
       var loaderRoute = createLoaderRoute(context);
       try {
-        Navigator.of(context).push(loaderRoute);
+        context.push(loaderRoute);
         await protectAdminAction(
           context,
           await userProfileBloc.userStream.firstWhere((u) => u != null),
@@ -51,11 +51,11 @@ class PodcastURLHandler {
           },
         );
       } catch (e) {
-        Navigator.popUntil(context, (route) => route.settings.name == "/");
+        context.popUntil((route) => route.settings.name == "/");
         showFlushbar(context, message: e.toString());
       } finally {
         if (loaderRoute.isActive) {
-          Navigator.of(context).removeRoute(loaderRoute);
+          context.navigator.removeRoute(loaderRoute);
         }
       }
     });

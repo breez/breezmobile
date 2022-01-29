@@ -1,5 +1,6 @@
 import 'package:breez/services/deep_links.dart';
 import 'package:breez/services/injector.dart';
+import 'package:breez/utils/build_context.dart';
 import 'package:flutter/material.dart';
 import 'package:share_extend/share_extend.dart';
 
@@ -7,7 +8,8 @@ class SharePodcastButton extends StatefulWidget {
   final String podcastTitle;
   final String podcastURL;
 
-  const SharePodcastButton({Key key, this.podcastTitle, this.podcastURL}) : super(key: key);
+  const SharePodcastButton({Key key, this.podcastTitle, this.podcastURL})
+      : super(key: key);
 
   @override
   State<StatefulWidget> createState() {
@@ -24,14 +26,15 @@ class SharePodcastButtonState extends State<SharePodcastButton> {
         child: IconButton(
             icon: Icon(
               Icons.share_rounded,
-              color: Theme.of(context).buttonTheme.colorScheme.onPrimary,
+              color: context.theme.buttonTheme.colorScheme.onPrimary,
               size: 22,
             ),
             onPressed: () async {
               DeepLinksService _deepLinks = ServiceInjector().deepLinks;
               var podcastShareLink = await _deepLinks.generatePodcastShareLink(
                   PodcastShareLinkModel(widget.podcastURL));
-              ShareExtend.share(widget.podcastTitle + '\n' + podcastShareLink, "text");
+              ShareExtend.share(
+                  widget.podcastTitle + '\n' + podcastShareLink, "text");
             }),
       ),
     );

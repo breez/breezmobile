@@ -1,8 +1,8 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:breez/bloc/connect_pay/connect_pay_model.dart';
+import 'package:breez/utils/build_context.dart';
 import 'package:breez/widgets/layouts.dart';
 import 'package:flutter/material.dart';
-import 'package:breez/l10n/locales.dart';
 
 import 'connected_peer.dart';
 import 'connection_status.dart';
@@ -111,7 +111,8 @@ class PeersConnection extends StatelessWidget {
                 child: AlignMiddle(
                   width: peerContainerSize,
                   child: _UserNameWidget(
-                    payerData.userName ?? context.l10n.connect_to_pay_peer_unknown,
+                    payerData.userName ??
+                        context.l10n.connect_to_pay_peer_unknown,
                   ),
                 ),
               ),

@@ -1,3 +1,5 @@
+// ignore_for_file: non_constant_identifier_names
+
 import 'dart:math';
 
 import 'package:auto_size_text/auto_size_text.dart';
@@ -5,7 +7,7 @@ import 'package:breez/bloc/blocs_provider.dart';
 import 'package:breez/bloc/user_profile/breez_user_model.dart';
 import 'package:breez/bloc/user_profile/user_actions.dart';
 import 'package:breez/bloc/user_profile/user_profile_bloc.dart';
-import 'package:breez/utils/min_font_size.dart';
+import 'package:breez/utils/build_context.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
@@ -24,6 +26,9 @@ class PaymentAdjuster extends StatefulWidget {
 class _PaymentAdjusterState extends State<PaymentAdjuster> {
   @override
   Widget build(BuildContext context) {
+    Color iconColor = context.appBarTheme.actionsIconTheme.color;
+    Color splashColor = context.splashColor;
+
     final userBloc = AppBlocsProvider.of<UserProfileBloc>(context);
 
     return Row(
@@ -48,15 +53,12 @@ class _PaymentAdjusterState extends State<PaymentAdjuster> {
                         onTap: () {
                           widget.onChanged(_getPreviousAmount());
                         },
-                        splashColor: Theme.of(context).splashColor,
+                        splashColor: splashColor,
                         highlightColor: Colors.transparent,
                         child: Icon(
                           Icons.remove_circle_outline,
                           size: 20,
-                          color: Theme.of(context)
-                              .appBarTheme
-                              .actionsIconTheme
-                              .color,
+                          color: iconColor,
                         ),
                       ),
                     ),
@@ -75,7 +77,7 @@ class _PaymentAdjusterState extends State<PaymentAdjuster> {
                       widget.userModel.paymentOptions.customSatsPerMinValue,
                       widget.userModel.paymentOptions
                           .presetSatsPerMinuteAmountsList,
-                      (int satsPerMinute) {
+                          (int satsPerMinute) {
                         userBloc.userActionsSink.add(SetPaymentOptions(
                             widget.userModel.paymentOptions.copyWith(
                                 preferredSatsPerMinValue: satsPerMinute,
@@ -101,9 +103,8 @@ class _PaymentAdjusterState extends State<PaymentAdjuster> {
                               fontWeight: FontWeight.w600,
                               height: 1.2,
                             ),
-                            minFontSize: ((9) /
-                                    MediaQuery.of(this.context).textScaleFactor)
-                                .floorToDouble(),
+                            minFontSize:
+                                ((9) / context.textScaleFactor).floorToDouble(),
                             stepGranularity: 0.1,
                             maxLines: 1,
                           ),
@@ -112,7 +113,7 @@ class _PaymentAdjusterState extends State<PaymentAdjuster> {
                           "sats/min",
                           textAlign: TextAlign.center,
                           style: TextStyle(fontSize: 10, letterSpacing: 1),
-                          minFontSize: MinFontSize(context).minFontSize,
+                          minFontSize: context.minFontSize,
                           stepGranularity: 0.1,
                           maxLines: 1,
                         )
@@ -135,15 +136,12 @@ class _PaymentAdjusterState extends State<PaymentAdjuster> {
                         onTap: () {
                           widget.onChanged(_getNextAmount());
                         },
-                        splashColor: Theme.of(context).splashColor,
+                        splashColor: splashColor,
                         highlightColor: Colors.transparent,
                         child: Icon(
                           Icons.add_circle_outline,
                           size: 20,
-                          color: Theme.of(context)
-                              .appBarTheme
-                              .actionsIconTheme
-                              .color,
+                          color: iconColor,
                         ),
                       ),
                     ),
@@ -164,7 +162,7 @@ class _PaymentAdjusterState extends State<PaymentAdjuster> {
     var roundedValue = satsPerMinValue / count;
     return satsPerMinValue != roundedValue.round() * count
         ? NumberFormat.compactCurrency(decimalDigits: 3, symbol: '~')
-            .format(roundedValue.round() * count)
+        .format(roundedValue.round() * count)
         : NumberFormat.compact().format(satsPerMinValue);
   }
 

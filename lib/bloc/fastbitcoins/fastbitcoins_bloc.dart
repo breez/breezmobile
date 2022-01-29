@@ -15,21 +15,25 @@ class FastbitcoinsBloc {
 
   final _validateRequestController =
       StreamController<ValidateRequestModel>.broadcast();
+
   Sink<ValidateRequestModel> get validateRequestSink =>
       _validateRequestController.sink;
 
   final _validateResponseController =
       StreamController<ValidateResponseModel>.broadcast();
+
   Stream<ValidateResponseModel> get validateResponseStream =>
       _validateResponseController.stream;
 
   final _redeemRequestController =
       StreamController<RedeemRequestModel>.broadcast();
+
   Sink<RedeemRequestModel> get redeemRequestSink =>
       _redeemRequestController.sink;
 
   final _redeemResponseController =
       StreamController<RedeemResponseModel>.broadcast();
+
   Stream<RedeemResponseModel> get redeemResponseStream =>
       _redeemResponseController.stream;
 
@@ -51,8 +55,8 @@ class FastbitcoinsBloc {
     _validateRequestController.stream.listen((request) async {
       try {
         Uri uri = Uri.https(baseURL, "w-api/v1/breez/quote");
-        var response = await _client.post(uri,
-            body: jsonEncode(request.toJson()));
+        var response =
+            await _client.post(uri, body: jsonEncode(request.toJson()));
         _validateResponse(response);
         ValidateResponseModel res =
             ValidateResponseModel.fromJson(jsonDecode(response.body));
@@ -75,8 +79,8 @@ class FastbitcoinsBloc {
         request.lightningInvoice = payreq.paymentRequest;
         log.info("fastbicoins request: " + jsonEncode(request.toJson()));
         Uri uri = Uri.https(baseURL, "w-api/v1/breez/redeem");
-        var response = await _client.post(uri,
-            body: jsonEncode(request.toJson()));
+        var response =
+            await _client.post(uri, body: jsonEncode(request.toJson()));
         _validateResponse(response);
         RedeemResponseModel res =
             RedeemResponseModel.fromJson(jsonDecode(response.body));

@@ -2,7 +2,7 @@ import 'package:auto_size_text/auto_size_text.dart';
 import 'package:bip39/bip39.dart' as bip39;
 import 'package:breez/routes/podcast/theme.dart';
 import 'package:breez/theme_data.dart' as theme;
-import 'package:breez/utils/min_font_size.dart';
+import 'package:breez/utils/build_context.dart';
 import 'package:breez/widgets/back_button.dart' as backBtn;
 import 'package:breez/widgets/route.dart';
 import 'package:breez/widgets/single_button_bottom_bar.dart';
@@ -24,16 +24,19 @@ class BackupPhraseGeneratorConfirmationPageState
 
   @override
   Widget build(BuildContext context) {
+    ThemeData themeData = context.theme;
+    AppBarTheme appBarTheme = themeData.appBarTheme;
+
     return Scaffold(
         appBar: AppBar(
-            iconTheme: Theme.of(context).appBarTheme.iconTheme,
-            textTheme: Theme.of(context).appBarTheme.textTheme,
-            backgroundColor: Theme.of(context).canvasColor,
+            iconTheme: appBarTheme.iconTheme,
+            backgroundColor: themeData.canvasColor,
+            toolbarTextStyle: appBarTheme.toolbarTextStyle,
+            titleTextStyle: appBarTheme.titleTextStyle,
             automaticallyImplyLeading: false,
             leading: backBtn.BackButton(),
             title: AutoSizeText(
               "Generate Backup Phrase",
-              style: Theme.of(context).appBarTheme.textTheme.headline6,
               maxLines: 1,
             ),
             elevation: 0.0),
@@ -73,7 +76,7 @@ class BackupPhraseGeneratorConfirmationPageState
           _instructions,
           style: theme.backupPhraseInformationTextStyle,
           textAlign: TextAlign.center,
-          minFontSize: MinFontSize(context).minFontSize,
+          minFontSize: context.minFontSize,
           stepGranularity: 0.1,
         ),
       ),
@@ -81,6 +84,7 @@ class BackupPhraseGeneratorConfirmationPageState
   }
 
   _buildCheckbox() {
+    ThemeData themeData = context.theme;
     return Expanded(
       flex: 1,
       child: Row(
@@ -88,11 +92,10 @@ class BackupPhraseGeneratorConfirmationPageState
         crossAxisAlignment: CrossAxisAlignment.center,
         children: <Widget>[
           Theme(
-            data:
-                Theme.of(context).copyWith(unselectedWidgetColor: Colors.white),
+            data: themeData.copyWith(unselectedWidgetColor: Colors.white),
             child: Checkbox(
                 activeColor: Colors.white,
-                checkColor: Theme.of(context).canvasColor,
+                checkColor: themeData.canvasColor,
                 value: _isUnderstood,
                 onChanged: (value) {
                   setState(() {

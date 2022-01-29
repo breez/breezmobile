@@ -2,13 +2,13 @@ import 'package:breez/bloc/account/account_bloc.dart';
 import 'package:breez/bloc/account/account_model.dart';
 import 'package:breez/bloc/blocs_provider.dart';
 import 'package:breez/routes/dev/dev.dart';
+import 'package:breez/utils/build_context.dart';
 import 'package:breez/widgets/back_button.dart' as backBtn;
 import 'package:breez/widgets/loader.dart';
 import 'package:breez/widgets/send_onchain.dart';
 import 'package:breez/widgets/single_button_bottom_bar.dart';
 import 'package:fixnum/fixnum.dart';
 import 'package:flutter/material.dart';
-import 'package:breez/l10n/locales.dart';
 
 import 'wait_broadcast_dialog.dart';
 
@@ -16,17 +16,17 @@ class GetRefundPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final accountBloc = AppBlocsProvider.of<AccountBloc>(context);
+    ThemeData theme = context.theme;
+    AppBarTheme appBarTheme = theme.appBarTheme;
 
     return Scaffold(
       appBar: AppBar(
-        iconTheme: Theme.of(context).appBarTheme.iconTheme,
-        textTheme: Theme.of(context).appBarTheme.textTheme,
-        backgroundColor: Theme.of(context).canvasColor,
+        iconTheme: appBarTheme.iconTheme,
+        toolbarTextStyle: appBarTheme.toolbarTextStyle,
+        titleTextStyle: appBarTheme.titleTextStyle,
+        backgroundColor: theme.canvasColor,
         leading: backBtn.BackButton(),
-        title: Text(
-          context.l10n.get_refund_title,
-          style: Theme.of(context).appBarTheme.textTheme.headline6,
-        ),
+        title: Text(context.l10n.get_refund_title),
         elevation: 0.0,
       ),
       body: StreamBuilder<AccountModel>(
@@ -48,6 +48,7 @@ class GetRefundPage extends StatelessWidget {
   }
 
   List<Widget> _children(BuildContext context, AccountModel account) {
+    var l10n = context.l10n;
     return account.swapFundsStatus.maturedRefundableAddresses.map((item) {
       return Padding(
         padding: const EdgeInsets.all(12.0),
@@ -58,7 +59,7 @@ class GetRefundPage extends StatelessWidget {
               children: [
                 Expanded(
                   child: Text(
-                    context.l10n.get_refund_amount(
+                    l10n.get_refund_amount(
                       account.currency.format(item.confirmedAmount),
                     ),
                     textAlign: TextAlign.left,
@@ -77,8 +78,8 @@ class GetRefundPage extends StatelessWidget {
                     width: 145.0,
                     child: SubmitButton(
                       item.lastRefundTxID.isNotEmpty
-                          ? context.l10n.get_refund_action_broadcasted
-                          : context.l10n.get_refund_action_continue,
+                          ? l10n.get_refund_action_broadcasted
+                          : l10n.get_refund_action_continue,
                       item.lastRefundTxID.isNotEmpty && !allowRebroadcastRefunds
                           ? null
                           : () => onRefund(context, account, item),
@@ -123,7 +124,7 @@ class GetRefundPage extends StatelessWidget {
               destAddress,
               feeRate,
             ).then((str) {
-              Navigator.of(context).pop();
+              context.pop();
               return str;
             });
           },

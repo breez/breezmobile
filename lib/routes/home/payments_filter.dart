@@ -2,14 +2,16 @@ import 'package:breez/bloc/account/account_actions.dart';
 import 'package:breez/bloc/account/account_bloc.dart';
 import 'package:breez/bloc/account/account_model.dart';
 import 'package:breez/theme_data.dart' as theme;
+import 'package:breez/utils/build_context.dart';
 import 'package:breez/widgets/calendar_dialog.dart';
 import 'package:breez/widgets/fixed_sliver_delegate.dart';
 import 'package:breez/widgets/flushbar.dart';
 import 'package:breez/widgets/loader.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:breez/l10n/locales.dart';
 import 'package:share_extend/share_extend.dart';
+
+import '../../theme_data.dart';
 
 class PaymentFilterSliver extends StatefulWidget {
   final ScrollController _controller;
@@ -159,17 +161,19 @@ class PaymentsFilterState extends State<PaymentsFilter> {
   }
 
   Padding _buildCalendarButton(BuildContext context) {
+    Color secondaryColor = (themeId == "BLUE") ? Colors.black : Colors.white;
+
     return Padding(
       padding: EdgeInsets.only(left: 0.0, right: 0.0),
       child: IconButton(
         icon: ImageIcon(
           AssetImage("src/icon/calendar.png"),
-          color: Theme.of(context).accentTextTheme.subtitle2.color,
+          color: secondaryColor,
           size: 24.0,
         ),
         onPressed: () => widget._paymentsModel.firstDate != null
             ? showDialog(
-                useRootNavigator: false,
+          useRootNavigator: false,
                 context: context,
                 builder: (_) => CalendarDialog(widget._paymentsModel.firstDate),
               ).then((result) {
@@ -180,7 +184,7 @@ class PaymentsFilterState extends State<PaymentsFilter> {
                       endDate: result[1]),
                 );
               })
-            : ScaffoldMessenger.of(context).showSnackBar(
+            : context.showSnackBar(
                 SnackBar(
                   content: Text(
                     context.l10n.payments_filter_message_loading_transactions,
@@ -192,28 +196,33 @@ class PaymentsFilterState extends State<PaymentsFilter> {
   }
 
   Theme _buildFilterDropdown(BuildContext context) {
+    var l10n = context.l10n;
+    ThemeData themeData = context.theme;
+    TextTheme textTheme = themeData.textTheme;
+    Color secondaryColor = (themeId == "BLUE") ? Colors.black : Colors.white;
+
     return Theme(
-      data: Theme.of(context).copyWith(
+      data: themeData.copyWith(
         canvasColor: theme.customData[theme.themeId].paymentListBgColor,
       ),
       child: DropdownButtonHideUnderline(
         child: ButtonTheme(
           alignedDropdown: true,
           child: DropdownButton(
-            iconEnabledColor: Theme.of(context).accentTextTheme.subtitle2.color,
+            iconEnabledColor: secondaryColor,
             value: _filter,
-            style: Theme.of(context).accentTextTheme.subtitle2,
+            style: textTheme.subtitle2.copyWith(color: secondaryColor),
             items: [
-              context.l10n.payments_filter_option_all,
-              context.l10n.payments_filter_option_sent,
-              context.l10n.payments_filter_option_received,
+              l10n.payments_filter_option_all,
+              l10n.payments_filter_option_sent,
+              l10n.payments_filter_option_received,
             ].map((String value) {
               return DropdownMenuItem<String>(
                 value: value,
                 child: Material(
                   child: Text(
                     value,
-                    style: Theme.of(context).accentTextTheme.subtitle2,
+                    style: textTheme.subtitle2.copyWith(color: secondaryColor),
                   ),
                 ),
               );
@@ -251,14 +260,18 @@ class PaymentsFilterState extends State<PaymentsFilter> {
   }
 
   Padding _buildExportButton(BuildContext context) {
+    ThemeData themeData = context.theme;
+    TextTheme textTheme = themeData.textTheme;
+    Color secondaryColor = (themeId == "BLUE") ? Colors.black : Colors.white;
+
     if (widget._paymentsModel.paymentsList.isNotEmpty) {
       return Padding(
         padding: const EdgeInsets.only(right: 0.0),
         child: PopupMenuButton(
-          color: Theme.of(context).backgroundColor,
+          color: themeData.backgroundColor,
           icon: Icon(
             Icons.more_vert,
-            color: Theme.of(context).accentTextTheme.subtitle2.color,
+            color: secondaryColor,
           ),
           padding: EdgeInsets.zero,
           offset: Offset(12, 24),
@@ -269,7 +282,7 @@ class PaymentsFilterState extends State<PaymentsFilter> {
               value: Choice(() => _exportPayments(context)),
               child: Text(
                 context.l10n.payments_filter_action_export,
-                style: Theme.of(context).textTheme.button,
+                style: textTheme.button,
               ),
             ),
           ],
@@ -282,8 +295,8 @@ class PaymentsFilterState extends State<PaymentsFilter> {
         icon: Icon(
           Icons.more_vert,
           color: theme.themeId == "BLUE"
-              ? Theme.of(context).accentTextTheme.subtitle2.color.withOpacity(0.25)
-              : Theme.of(context).disabledColor,
+              ? secondaryColor.withOpacity(0.25)
+              : themeData.disabledColor,
           size: 24.0,
         ),
         onPressed: null,
@@ -298,12 +311,12 @@ class PaymentsFilterState extends State<PaymentsFilter> {
   Future _exportPayments(BuildContext context) async {
     var action = ExportPayments();
     widget._accountBloc.userActionsSink.add(action);
-    Navigator.of(context).push(createLoaderRoute(context));
+    context.push(createLoaderRoute(context));
     action.future.then((filePath) {
-      Navigator.of(context).pop();
+      context.pop();
       ShareExtend.share(filePath, "file");
     }).catchError((err) {
-      Navigator.of(context).pop();
+      context.pop();
       showFlushbar(
         context,
         message: context.l10n.payments_filter_action_export_failed,

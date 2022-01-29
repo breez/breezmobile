@@ -1,5 +1,6 @@
 import 'dart:math';
 
+import 'package:breez/utils/build_context.dart';
 import 'package:flutter/material.dart';
 
 /// Given 2 items, lets say "Big and long text" and "Small text", it will place items as follow:
@@ -32,7 +33,7 @@ class ViewSwitch extends StatelessWidget {
       index++;
     }
 
-    var emptyWidth = MediaQuery.of(context).size.width;
+    var emptyWidth = context.mediaQuerySize.width;
     for (var item in items) {
       emptyWidth -= maxTextWidth;
       if (item.iconData != null) {
@@ -123,7 +124,7 @@ class ViewSwitch extends StatelessWidget {
   }
 
   TextStyle _textStyle(BuildContext context, index) {
-    return Theme.of(context).textTheme.button.copyWith(
+    return context.textTheme.button.copyWith(
       color: textTint.withOpacity(selected == index ? 1 : 0.5),
     );
   }

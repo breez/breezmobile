@@ -5,11 +5,11 @@ import 'package:breez/bloc/pos_catalog/bloc.dart';
 import 'package:breez/bloc/pos_catalog/model.dart';
 import 'package:breez/routes/charge/sale_view.dart';
 import 'package:breez/theme_data.dart' as theme;
+import 'package:breez/utils/build_context.dart';
 import 'package:breez/utils/date.dart';
 import 'package:breez/widgets/payment_details_dialog.dart';
 import 'package:breez/widgets/route.dart';
 import 'package:flutter/material.dart';
-import 'package:breez/l10n/locales.dart';
 
 class PosPaymentItem extends StatelessWidget {
   final PaymentInfo _paymentInfo;
@@ -83,7 +83,7 @@ class PosPaymentItem extends StatelessWidget {
     posBloc.actionsSink.add(action);
     action.future.then((sale) {
       if (sale != null) {
-        Navigator.of(context).push(FadeInRoute(
+        context.push(FadeInRoute(
           builder: (context) => SaleView(
             readOnlySale: sale as Sale,
             salePayment: _paymentInfo,

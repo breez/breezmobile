@@ -1,11 +1,13 @@
 import 'package:breez/services/injector.dart';
 import 'package:breez/theme_data.dart' as theme;
+import 'package:breez/utils/build_context.dart';
 import 'package:breez/widgets/compact_qr_image.dart';
 import 'package:breez/widgets/flushbar.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'package:breez/l10n/locales.dart';
 import 'package:share_extend/share_extend.dart';
+
+import '../../theme_data.dart';
 
 class AddressWidget extends StatelessWidget {
   final String address;
@@ -18,6 +20,8 @@ class AddressWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    var l10n = context.l10n;
+
     return Column(
       mainAxisAlignment: MainAxisAlignment.start,
       children: [
@@ -27,7 +31,7 @@ class AddressWidget extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text(
-                context.l10n.invoice_btc_address_deposit_address,
+                l10n.invoice_btc_address_deposit_address,
                 style: theme.FieldTextStyle.labelStyle,
               ),
               Container(
@@ -41,37 +45,37 @@ class AddressWidget extends StatelessWidget {
         address == null
             ? _buildQRPlaceholder()
             : Column(
-                children: [
-                  GestureDetector(
-                    child: Container(
-                      margin: const EdgeInsets.only(top: 32.0, bottom: 16.0),
-                      padding: const EdgeInsets.all(8.6),
-                      child: CompactQRImage(
-                        data: "bitcoin:" + address,
-                        size: 180.0,
-                      ),
-                    ),
-                    onLongPress: () => _showAlertDialog(context),
-                  ),
-                  Container(
-                    padding: EdgeInsets.only(top: 16.0),
-                    child: GestureDetector(
-                      onTap: () {
-                        ServiceInjector().device.setClipboardText(address);
-                        showFlushbar(
-                          context,
-                          message:
-                              context.l10n.invoice_btc_address_deposit_address_copied,
-                        );
-                      },
-                      child: Text(
-                        address,
-                        style: Theme.of(context).primaryTextTheme.subtitle2,
-                      ),
-                    ),
-                  ),
-                ],
+          children: [
+            GestureDetector(
+              child: Container(
+                margin: const EdgeInsets.only(top: 32.0, bottom: 16.0),
+                padding: const EdgeInsets.all(8.6),
+                child: CompactQRImage(
+                  data: "bitcoin:" + address,
+                  size: 180.0,
+                ),
               ),
+              onLongPress: () => _showAlertDialog(context),
+            ),
+            Container(
+              padding: EdgeInsets.only(top: 16.0),
+              child: GestureDetector(
+                onTap: () {
+                  ServiceInjector().device.setClipboardText(address);
+                  showFlushbar(
+                    context,
+                          message:
+                              l10n.invoice_btc_address_deposit_address_copied,
+                        );
+                },
+                child: Text(
+                  address,
+                        style: context.primaryTextTheme.subtitle2,
+                      ),
+              ),
+            ),
+          ],
+        ),
       ],
     );
   }
@@ -90,6 +94,7 @@ class AddressWidget extends StatelessWidget {
   }
 
   List<Widget> _buildShareAndCopyIcons(BuildContext context) {
+    Color primaryColorLight = context.primaryColorLight;
     List<Widget> _icons = [];
     if (address == null) {
       _icons.add(SizedBox(
@@ -99,7 +104,7 @@ class AddressWidget extends StatelessWidget {
     }
     Widget _shareIcon = IconButton(
       icon: Icon(IconData(0xe917, fontFamily: 'icomoon')),
-      color: Theme.of(context).buttonColor,
+      color: (themeId == "BLUE") ? Colors.white : primaryColorLight,
       onPressed: () {
         final RenderBox box = context.findRenderObject();
         ShareExtend.share(
@@ -111,7 +116,7 @@ class AddressWidget extends StatelessWidget {
     );
     Widget _copyIcon = IconButton(
       icon: Icon(IconData(0xe90b, fontFamily: 'icomoon')),
-      color: Theme.of(context).buttonColor,
+      color: (themeId == "BLUE") ? Colors.white : primaryColorLight,
       onPressed: () {
         ServiceInjector().device.setClipboardText(address);
         showFlushbar(
@@ -126,15 +131,20 @@ class AddressWidget extends StatelessWidget {
   }
 
   void _showAlertDialog(BuildContext context) {
+    var l10n = context.l10n;
+    ThemeData theme = context.theme;
+    DialogTheme dialogTheme = theme.dialogTheme;
+    TextTheme primaryTextTheme = theme.primaryTextTheme;
+
     AlertDialog dialog = AlertDialog(
       contentPadding: EdgeInsets.fromLTRB(20.0, 20.0, 20.0, 4.0),
       content: RichText(
         text: TextSpan(
-          style: Theme.of(context).dialogTheme.contentTextStyle,
-          text: context.l10n.invoice_btc_address_on_chain_begin,
+          style: dialogTheme.contentTextStyle,
+          text: l10n.invoice_btc_address_on_chain_begin,
           children: [
             TextSpan(
-              text: context.l10n.invoice_btc_address_on_chain_here,
+              text: l10n.invoice_btc_address_on_chain_here,
               style: TextStyle(color: Colors.blue),
               recognizer: TapGestureRecognizer()
                 ..onTap = () {
@@ -148,7 +158,7 @@ class AddressWidget extends StatelessWidget {
                 },
             ),
             TextSpan(
-              text: context.l10n.invoice_btc_address_on_chain_end,
+              text: l10n.invoice_btc_address_on_chain_end,
             ),
           ],
         ),
@@ -156,11 +166,11 @@ class AddressWidget extends StatelessWidget {
       actions: [
         TextButton(
           onPressed: () {
-            Navigator.pop(context);
+            context.pop();
           },
           child: Text(
-            context.l10n.invoice_btc_address_on_chain_action_ok,
-            style: Theme.of(context).primaryTextTheme.button,
+            l10n.invoice_btc_address_on_chain_action_ok,
+            style: primaryTextTheme.button,
           ),
         ),
       ],

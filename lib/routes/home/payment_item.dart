@@ -4,11 +4,13 @@ import 'package:breez/bloc/pos_catalog/actions.dart';
 import 'package:breez/bloc/pos_catalog/bloc.dart';
 import 'package:breez/routes/charge/sale_view.dart';
 import 'package:breez/theme_data.dart' as theme;
+import 'package:breez/utils/build_context.dart';
 import 'package:breez/utils/date.dart';
 import 'package:breez/widgets/payment_details_dialog.dart';
 import 'package:breez/widgets/route.dart';
 import 'package:flutter/material.dart';
 
+import '../../theme_data.dart';
 import 'flip_transition.dart';
 import 'payment_item_avatar.dart';
 import 'success_avatar.dart';
@@ -39,6 +41,12 @@ class PaymentItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    ThemeData themeData = context.theme;
+    TextTheme textTheme = themeData.textTheme;
+    Color secondaryColor = (themeId == "BLUE") ? Colors.black : Colors.white;
+    Color captionColor =
+        (themeId == "BLUE") ? Color(0xb3303234) : Colors.white70;
+
     return Padding(
       padding: const EdgeInsets.only(bottom: BOTTOM_PADDING, left: 8, right: 8),
       child: ClipRRect(
@@ -54,27 +62,27 @@ class PaymentItem extends StatelessWidget {
                   // set opacity the avatar of the item that's
                   // no longer visible to transparent
                   opacity: (_scrollController.offset -
-                              (DASHBOARD_MAX_HEIGHT - DASHBOARD_MIN_HEIGHT) -
-                              ((PAYMENT_LIST_ITEM_HEIGHT + BOTTOM_PADDING) *
-                                      (_itemIndex + 1) -
-                                  FILTER_MAX_SIZE +
-                                  AVATAR_DIAMETER) >
-                          0)
+                      (DASHBOARD_MAX_HEIGHT - DASHBOARD_MIN_HEIGHT) -
+                      ((PAYMENT_LIST_ITEM_HEIGHT + BOTTOM_PADDING) *
+                          (_itemIndex + 1) -
+                          FILTER_MAX_SIZE +
+                          AVATAR_DIAMETER) >
+                      0)
                       ? 0.0
                       : 1.0,
                   child: Container(
                       height: PAYMENT_LIST_ITEM_HEIGHT,
                       decoration: _createdWithin(Duration(seconds: 10))
                           ? BoxDecoration(
-                              color: Colors.white,
-                              shape: BoxShape.circle,
-                              boxShadow: [
-                                BoxShadow(
-                                    color: Colors.black.withOpacity(0.1),
-                                    offset: Offset(0.5, 0.5),
-                                    blurRadius: 5.0),
-                              ],
-                            )
+                        color: Colors.white,
+                        shape: BoxShape.circle,
+                        boxShadow: [
+                          BoxShadow(
+                              color: Colors.black.withOpacity(0.1),
+                              offset: Offset(0.5, 0.5),
+                              blurRadius: 5.0),
+                        ],
+                      )
                           : null,
                       child: _buildPaymentItemAvatar()),
                 ),
@@ -84,12 +92,12 @@ class PaymentItem extends StatelessWidget {
                   child: Opacity(
                     // set title text to transparent when it leaves viewport
                     opacity: (_scrollController.offset -
-                                (DASHBOARD_MAX_HEIGHT - DASHBOARD_MIN_HEIGHT) -
-                                ((PAYMENT_LIST_ITEM_HEIGHT + BOTTOM_PADDING) *
-                                        (_itemIndex + 1) -
-                                    FILTER_MAX_SIZE +
-                                    AVATAR_DIAMETER / 2) >
-                            0)
+                        (DASHBOARD_MAX_HEIGHT - DASHBOARD_MIN_HEIGHT) -
+                        ((PAYMENT_LIST_ITEM_HEIGHT + BOTTOM_PADDING) *
+                            (_itemIndex + 1) -
+                            FILTER_MAX_SIZE +
+                            AVATAR_DIAMETER / 2) >
+                        0)
                         ? 0.0
                         : 1.0,
                     child: Text(
@@ -103,7 +111,8 @@ class PaymentItem extends StatelessWidget {
                         }
                       }()}'
                           .replaceAll("\n", " "),
-                      style: Theme.of(context).accentTextTheme.subtitle2,
+                      style:
+                          textTheme.subtitle2.copyWith(color: secondaryColor),
                       overflow: TextOverflow.ellipsis,
                     ),
                   ),
@@ -120,16 +129,14 @@ class PaymentItem extends StatelessWidget {
                               DateTime.fromMillisecondsSinceEpoch(
                                   _paymentInfo.creationTimestamp.toInt() *
                                       1000)),
-                          style: Theme.of(context).accentTextTheme.caption,
+                          style:
+                              textTheme.caption.copyWith(color: captionColor),
                         ),
                         _paymentInfo.pending
                             ? Text(" (Pending)",
-                                style: Theme.of(context)
-                                    .accentTextTheme
-                                    .caption
-                                    .copyWith(
-                                        color: theme.customData[theme.themeId]
-                                            .pendingTextColor))
+                                style: textTheme.caption.copyWith(
+                                    color: theme.customData[theme.themeId]
+                                        .pendingTextColor))
                             : SizedBox()
                       ]),
                 ),
@@ -137,9 +144,9 @@ class PaymentItem extends StatelessWidget {
                   height: 44,
                   child: Column(
                     mainAxisAlignment:
-                        _paymentInfo.fee == 0 || _paymentInfo.pending
-                            ? MainAxisAlignment.center
-                            : MainAxisAlignment.spaceAround,
+                    _paymentInfo.fee == 0 || _paymentInfo.pending
+                        ? MainAxisAlignment.center
+                        : MainAxisAlignment.spaceAround,
                     crossAxisAlignment: CrossAxisAlignment.end,
                     children: <Widget>[
                       _paymentAmount(context),
@@ -165,30 +172,44 @@ class PaymentItem extends StatelessWidget {
       _paymentInfo.amount,
       includeDisplayName: false,
     );
+    ThemeData theme = context.theme;
+    TextTheme textTheme = theme.textTheme;
+    Color secondaryColor = (themeId == "BLUE") ? Colors.black : Colors.white;
+
     return Opacity(
       // set amount text to transparent when it leaves viewport
       opacity: (_scrollController.offset -
                   (DASHBOARD_MAX_HEIGHT - DASHBOARD_MIN_HEIGHT) -
                   ((PAYMENT_LIST_ITEM_HEIGHT + BOTTOM_PADDING) *
-                          (_itemIndex + 1) - FILTER_MAX_SIZE +
-                      AVATAR_DIAMETER / 2) > 0) ? 0.0 : 1.0,
+                          (_itemIndex + 1) -
+                      FILTER_MAX_SIZE +
+                      AVATAR_DIAMETER / 2) >
+              0)
+          ? 0.0
+          : 1.0,
       child: Text(
         _hideBalance ? "******" : (negative ? "- " : "+ ") + amount,
-        style: Theme.of(context).accentTextTheme.headline6,
+        style: textTheme.headline6.copyWith(color: secondaryColor),
       ),
     );
   }
 
   Widget _paymentFee(BuildContext context) {
+    ThemeData themeData = context.theme;
+    TextTheme textTheme = themeData.textTheme;
+    Color captionColor =
+        (themeId == "BLUE") ? Color(0xb3303234) : Colors.white70;
+
     final fee = _paymentInfo.fee;
     if (fee == 0 || _paymentInfo.pending) return SizedBox();
     final feeFormatted = _paymentInfo.currency.format(
       fee,
       includeDisplayName: false,
     );
+
     return Text(
       _hideBalance ? "******" : "FEE $feeFormatted",
-      style: Theme.of(context).accentTextTheme.caption,
+      style: textTheme.caption.copyWith(color: captionColor),
     );
   }
 
@@ -222,7 +243,7 @@ class PaymentItem extends StatelessWidget {
     posBloc.actionsSink.add(action);
     action.future.then((sale) {
       if (sale != null) {
-        Navigator.of(context).push(FadeInRoute(
+        context.push(FadeInRoute(
           builder: (context) => SaleView(
             readOnlySale: sale,
             salePayment: _paymentInfo,

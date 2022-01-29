@@ -76,13 +76,13 @@ Widget withPodcastTheme(BreezUserModel user, Widget child) {
                             onSecondary: Color.fromRGBO(178, 241, 255, 1.0),
                             onSurface: Colors.blueGrey),
                   ),
-              primaryTextTheme: Typography.material2018(
-                      platform: TargetPlatform.android)
-                  .black
-                  .apply(fontFamily: 'IBMPlexSans')
-                  .copyWith(
-                    button: currentTheme.primaryTextTheme.button,
-                  ),
+              primaryTextTheme:
+                  Typography.material2018(platform: TargetPlatform.android)
+                      .black
+                      .apply(fontFamily: 'IBMPlexSans')
+                      .copyWith(
+                        button: currentTheme.primaryTextTheme.button,
+                      ),
               textTheme:
                   Typography.material2018(platform: TargetPlatform.android)
                       .black

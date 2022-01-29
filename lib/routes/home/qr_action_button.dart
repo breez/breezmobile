@@ -12,6 +12,7 @@ import 'package:breez/services/injector.dart';
 import 'package:breez/theme_data.dart' as theme;
 import 'package:breez/utils/bip21.dart';
 import 'package:breez/utils/btc_address.dart';
+import 'package:breez/utils/build_context.dart';
 import 'package:breez/utils/lnurl.dart';
 import 'package:breez/utils/node_id.dart';
 import 'package:breez/widgets/error_dialog.dart';
@@ -41,8 +42,7 @@ class QrActionButton extends StatelessWidget {
         height: 64,
         child: FloatingActionButton(
           onPressed: () async {
-            String scannedString =
-                await Navigator.pushNamed<String>(context, "/qr_scan");
+            String scannedString = await context.pushNamed("/qr_scan");
             if (scannedString != null) {
               if (scannedString.isEmpty) {
                 showFlushbar(context, message: "QR code wasn't detected.");
@@ -86,7 +86,7 @@ class QrActionButton extends StatelessWidget {
                       includeDisplayName: false,
                       removeTrailingZeros: true);
                 }
-                Navigator.of(context).push(FadeInRoute(
+                context.push(FadeInRoute(
                   builder: (_) => ReverseSwapPage(
                       userAddress: btcInvoice.address,
                       requestAmount: requestAmount),
@@ -95,7 +95,7 @@ class QrActionButton extends StatelessWidget {
               }
               var nodeID = parseNodeId(scannedString);
               if (nodeID != null) {
-                Navigator.of(context).push(FadeInRoute(
+                context.push(FadeInRoute(
                   builder: (_) =>
                       SpontaneousPaymentPage(nodeID, firstPaymentItemKey),
                 ));
@@ -149,12 +149,12 @@ class QrActionButton extends StatelessWidget {
     var loaderRoute = createLoaderRoute(context, onClose: () {
       cancelCompleter.complete();
     });
-    Navigator.of(context).push(loaderRoute);
+    context.push(loaderRoute);
 
     lnurlBloc.actionsSink.add(fetchAction);
     await Future.any([cancelCompleter.future, fetchAction.future]).then(
       (response) {
-        Navigator.of(context).removeRoute(loaderRoute);
+        context.navigator.removeRoute(loaderRoute);
         if (cancelCompleter.isCompleted) {
           return;
         }
@@ -163,12 +163,12 @@ class QrActionButton extends StatelessWidget {
             .executeLNURLResponse(context, lnurlBloc, response);
       },
     ).catchError((err) {
-      Navigator.of(context).removeRoute(loaderRoute);
+      context.navigator.removeRoute(loaderRoute);
       promptError(
           context,
           "Link Error",
           Text("Failed to process link: " + err.toString(),
-              style: Theme.of(context).dialogTheme.contentTextStyle));
+              style: context.dialogTheme.contentTextStyle));
     });
   }
 
@@ -176,6 +176,10 @@ class QrActionButton extends StatelessWidget {
     showDialog(
       context: context,
       builder: (BuildContext context) {
+        ThemeData theme = context.theme;
+        TextTheme primaryTextTheme = theme.primaryTextTheme;
+        DialogTheme dialogTheme = theme.dialogTheme;
+
         return AlertDialog(
           scrollable: true,
           title: Container(
@@ -183,7 +187,7 @@ class QrActionButton extends StatelessWidget {
             padding: EdgeInsets.fromLTRB(24.0, 24.0, 24.0, 8.0),
             child: Text(
               "Open Link",
-              style: Theme.of(context).dialogTheme.titleTextStyle,
+              style: dialogTheme.titleTextStyle,
               textAlign: TextAlign.center,
             ),
           ),
@@ -191,14 +195,14 @@ class QrActionButton extends StatelessWidget {
             child: Padding(
               padding: EdgeInsets.fromLTRB(16.0, 0.0, 16.0, 0.0),
               child: Container(
-                width: MediaQuery.of(context).size.width,
+                width: context.mediaQuerySize.width,
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   mainAxisSize: MainAxisSize.min,
                   children: <Widget>[
                     Text(
                       url,
-                      style: Theme.of(context).dialogTheme.contentTextStyle.copyWith(
+                      style: dialogTheme.contentTextStyle.copyWith(
                         fontWeight: FontWeight.bold,
                       ),
                       maxLines: 2,
@@ -211,7 +215,7 @@ class QrActionButton extends StatelessWidget {
                     ),
                     Text(
                       "Are you sure you want to open this link?",
-                      style: Theme.of(context).dialogTheme.contentTextStyle,
+                      style: dialogTheme.contentTextStyle,
                       textAlign: TextAlign.center,
                     ),
                   ],
@@ -231,11 +235,8 @@ class QrActionButton extends StatelessWidget {
                   },
                 ),
               ),
-              child: Text(
-                "NO",
-                style: Theme.of(context).primaryTextTheme.button,
-              ),
-              onPressed: () => Navigator.of(context).pop(),
+              child: Text("NO", style: primaryTextTheme.button),
+              onPressed: () => context.pop(),
             ),
             TextButton(
               style: ButtonStyle(
@@ -248,13 +249,10 @@ class QrActionButton extends StatelessWidget {
                   },
                 ),
               ),
-              child: Text(
-                "YES",
-                style: Theme.of(context).primaryTextTheme.button,
-              ),
+              child: Text("YES", style: primaryTextTheme.button),
               onPressed: () async {
                 await launch(url, forceSafariVC: false);
-                Navigator.of(context).pop();
+                context.pop();
               },
             ),
           ],

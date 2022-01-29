@@ -6,13 +6,13 @@ import 'package:breez/bloc/user_profile/user_actions.dart';
 import 'package:breez/bloc/user_profile/user_profile_bloc.dart';
 import 'package:breez/services/currency_data.dart';
 import 'package:breez/theme_data.dart' as theme;
+import 'package:breez/utils/build_context.dart';
 import 'package:breez/widgets/back_button.dart' as backBtn;
 import 'package:breez/widgets/flushbar.dart';
 import 'package:breez/widgets/loader.dart';
 import 'package:drag_and_drop_lists/drag_and_drop_lists.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:breez/l10n/locales.dart';
 
 const double ITEM_HEIGHT = 72.0;
 
@@ -48,17 +48,17 @@ class FiatCurrencySettingsState extends State<FiatCurrencySettings> {
             account.fiatCurrency == null) {
           return Loader();
         }
+        ThemeData themeData = context.theme;
+        AppBarTheme appBarTheme = themeData.appBarTheme;
 
         return Scaffold(
           appBar: AppBar(
-            iconTheme: Theme.of(context).appBarTheme.iconTheme,
-            textTheme: Theme.of(context).appBarTheme.textTheme,
-            backgroundColor: Theme.of(context).canvasColor,
+            iconTheme: appBarTheme.iconTheme,
+            toolbarTextStyle: appBarTheme.toolbarTextStyle,
+            titleTextStyle: appBarTheme.titleTextStyle,
+            backgroundColor: themeData.canvasColor,
             leading: backBtn.BackButton(),
-            title: Text(
-              context.l10n.fiat_currencies_title,
-              style: Theme.of(context).appBarTheme.textTheme.headline6,
-            ),
+            title: Text(context.l10n.fiat_currencies_title),
             elevation: 0.0,
           ),
           body: DragAndDropLists(
@@ -145,7 +145,7 @@ class FiatCurrencySettingsState extends State<FiatCurrencySettings> {
       key: Key("tile-index-$index"),
       controlAffinity: ListTileControlAffinity.leading,
       activeColor: Colors.white,
-      checkColor: Theme.of(context).canvasColor,
+      checkColor: context.canvasColor,
       value: prefCurrencies.contains(currencyData.shortName),
       onChanged: (bool checked) {
         setState(() {

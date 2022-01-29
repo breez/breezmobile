@@ -3,13 +3,13 @@ import 'dart:math';
 import 'package:breez/bloc/account/account_model.dart';
 import 'package:breez/bloc/connect_pay/connect_pay_model.dart';
 import 'package:breez/theme_data.dart' as theme;
+import 'package:breez/utils/build_context.dart';
 import 'package:breez/widgets/amount_form_field.dart';
 import 'package:breez/widgets/keyboard_done_action.dart';
 import 'package:breez/widgets/single_button_bottom_bar.dart';
 import 'package:fixnum/fixnum.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:breez/l10n/locales.dart';
 
 class PaymentDetailsForm extends StatefulWidget {
   final AccountModel _account;
@@ -86,7 +86,8 @@ class _PaymentDetailsFormState extends State<PaymentDetailsForm> {
                         maxLength: 90,
                         maxLengthEnforcement: MaxLengthEnforcement.enforced,
                         decoration: InputDecoration(
-                          labelText: context.l10n.connect_to_pay_payment_detail_note,
+                          labelText:
+                              context.l10n.connect_to_pay_payment_detail_note,
                         ),
                         style: theme.FieldTextStyle.textStyle,
                       ),
@@ -123,7 +124,7 @@ class _PaymentDetailsFormState extends State<PaymentDetailsForm> {
                     : context.l10n.connect_to_pay_payment_action_pay,
                 () {
                   if (widget._sessionState.paymentFulfilled) {
-                    Navigator.pop(context);
+                    context.pop();
                   } else {
                     if (_formKey.currentState.validate()) {
                       widget._onSubmitPaymentDetails(

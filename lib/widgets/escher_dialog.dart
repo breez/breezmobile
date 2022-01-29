@@ -2,9 +2,9 @@ import 'package:breez/bloc/account/account_bloc.dart';
 import 'package:breez/bloc/account/account_model.dart';
 import 'package:breez/bloc/user_profile/currency.dart';
 import 'package:breez/theme_data.dart' as theme;
+import 'package:breez/utils/build_context.dart';
 import 'package:breez/widgets/amount_form_field.dart';
 import 'package:flutter/material.dart';
-import 'package:breez/l10n/locales.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import 'keyboard_done_action.dart';
@@ -55,7 +55,7 @@ class EscherDialogState extends State<EscherDialog> {
     return Dialog(
       child: Container(
         key: _dialogKey,
-        width: MediaQuery.of(context).size.width,
+        width: context.mediaQuerySize.width,
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           mainAxisSize: MainAxisSize.min,
@@ -81,7 +81,7 @@ class EscherDialogState extends State<EscherDialog> {
 
         return Container(
           padding: EdgeInsets.fromLTRB(8.0, 0.0, 8.0, 16.0),
-          width: MediaQuery.of(context).size.width,
+          width: context.mediaQuerySize.width,
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             mainAxisSize: MainAxisSize.min,
@@ -103,7 +103,7 @@ class EscherDialogState extends State<EscherDialog> {
       padding: EdgeInsets.only(top: 36, bottom: 8),
       child: Text(
         context.l10n.escher_cash_out_amount,
-        style: Theme.of(context).primaryTextTheme.headline3.copyWith(
+        style: context.primaryTextTheme.headline3.copyWith(
           fontSize: 16,
         ),
         textAlign: TextAlign.center,
@@ -112,19 +112,21 @@ class EscherDialogState extends State<EscherDialog> {
   }
 
   Widget _buildAmountWidget(BuildContext context, AccountModel account) {
+    ThemeData themeData = context.theme;
+    TextStyle dialogContentTextStyle = themeData.dialogTheme.contentTextStyle;
+    Color hintColor = dialogContentTextStyle.color;
+    Color primaryColor = themeData.textTheme.button.color;
+    Color iconColor = themeData.primaryIconTheme.color;
+
     return Theme(
-      data: Theme.of(context).copyWith(
+      data: themeData.copyWith(
         inputDecorationTheme: InputDecorationTheme(
-          enabledBorder: UnderlineInputBorder(
-            borderSide: theme.greyBorderSide,
-          ),
+          enabledBorder: UnderlineInputBorder(borderSide: theme.greyBorderSide),
         ),
-        hintColor: Theme.of(context).dialogTheme.contentTextStyle.color,
-        colorScheme: ColorScheme.dark(
-          primary: Theme.of(context).textTheme.button.color,
-        ),
-        primaryColor: Theme.of(context).textTheme.button.color,
-        errorColor: theme.themeId == "BLUE" ? Colors.red : Theme.of(context).errorColor,
+        hintColor: hintColor,
+        colorScheme: ColorScheme.dark(primary: primaryColor),
+        primaryColor: primaryColor,
+        errorColor: theme.themeId == "BLUE" ? Colors.red : themeData.errorColor,
       ),
       child: Form(
         autovalidateMode: AutovalidateMode.always,
@@ -136,13 +138,11 @@ class EscherDialogState extends State<EscherDialog> {
             child: AmountFormField(
               context: context,
               accountModel: account,
-              iconColor: Theme.of(context).primaryIconTheme.color,
+              iconColor: iconColor,
               focusNode: _amountFocusNode,
               controller: _invoiceAmountController,
               validatorFn: account.validateOutgoingPayment,
-              style: Theme.of(context).dialogTheme.contentTextStyle.copyWith(
-                height: 1.0,
-              ),
+              style: dialogContentTextStyle.copyWith(height: 1.0),
             ),
           ),
         ),
@@ -151,12 +151,16 @@ class EscherDialogState extends State<EscherDialog> {
   }
 
   Widget _buildActions(BuildContext context, AccountModel account) {
+    var l10n = context.l10n;
+    ThemeData themeData = context.theme;
+    TextStyle btnTextStyle = themeData.primaryTextTheme.button;
+
     List<Widget> actions = [
       SimpleDialogOption(
-        onPressed: () => Navigator.pop(context),
+        onPressed: () => context.pop(),
         child: Text(
-          context.l10n.escher_action_cancel,
-          style: Theme.of(context).primaryTextTheme.button,
+          l10n.escher_action_cancel,
+          style: btnTextStyle,
         ),
       ),
     ];
@@ -168,7 +172,7 @@ class EscherDialogState extends State<EscherDialog> {
         actions.add(
           SimpleDialogOption(
             onPressed: () {
-              Navigator.pop(context);
+              context.pop();
               final satValue = Currency.SAT.format(
                 parsedAmount,
                 includeDisplayName: false,
@@ -181,8 +185,8 @@ class EscherDialogState extends State<EscherDialog> {
               );
             },
             child: Text(
-              context.l10n.escher_action_approve,
-              style: Theme.of(context).primaryTextTheme.button,
+              l10n.escher_action_approve,
+              style: btnTextStyle,
             ),
           ),
         );
@@ -190,7 +194,7 @@ class EscherDialogState extends State<EscherDialog> {
     }
 
     return Theme(
-      data: Theme.of(context).copyWith(
+      data: themeData.copyWith(
         splashColor: Colors.transparent,
         highlightColor: Colors.transparent,
       ),

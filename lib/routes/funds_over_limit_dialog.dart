@@ -3,10 +3,11 @@ import 'package:breez/bloc/account/account_actions.dart';
 import 'package:breez/bloc/account/account_bloc.dart';
 import 'package:breez/bloc/account/account_model.dart';
 import 'package:breez/theme_data.dart' as theme;
+import 'package:breez/utils/build_context.dart';
 import 'package:breez/widgets/loader.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'package:breez/l10n/locales.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class SwapRefundDialog extends StatefulWidget {
   final AccountBloc accountBloc;
@@ -35,11 +36,14 @@ class SwapRefundDialogState extends State<SwapRefundDialog> {
 
   @override
   Widget build(BuildContext context) {
+    var l10n = context.l10n;
+    DialogTheme dialogTheme = context.dialogTheme;
+
     return AlertDialog(
       titlePadding: EdgeInsets.fromLTRB(24.0, 22.0, 24.0, 16.0),
       title: AutoSizeText(
-        context.l10n.funds_over_limit_dialog_on_chain_transaction,
-        style: Theme.of(context).dialogTheme.titleTextStyle,
+        l10n.funds_over_limit_dialog_on_chain_transaction,
+        style: dialogTheme.titleTextStyle,
         maxLines: 1,
       ),
       contentPadding: EdgeInsets.fromLTRB(24.0, 8.0, 24.0, 24.0),
@@ -59,17 +63,18 @@ class SwapRefundDialogState extends State<SwapRefundDialog> {
                 return Loader();
               }
 
-              return _build(context, swapStatus);
+              return _build(
+                  context, swapStatus, l10n, dialogTheme.contentTextStyle);
             },
           );
         },
       ),
       actions: [
         SimpleDialogOption(
-          onPressed: () => Navigator.pop(context),
+          onPressed: () => context.pop(),
           child: Text(
-            context.l10n.funds_over_limit_dialog_action_ok,
-            style: Theme.of(context).primaryTextTheme.button,
+            l10n.funds_over_limit_dialog_action_ok,
+            style: context.primaryTextTheme.button,
           ),
         )
       ],
@@ -79,6 +84,8 @@ class SwapRefundDialogState extends State<SwapRefundDialog> {
   Widget _build(
     BuildContext context,
     SwapFundStatus swapStatus,
+    AppLocalizations l10n,
+    TextStyle contentTextStyle,
   ) {
     RefundableAddress swapAddress = swapStatus.waitingRefundAddresses[0];
     int lockHeight = swapAddress.lockHeight;
@@ -86,11 +93,11 @@ class SwapRefundDialogState extends State<SwapRefundDialog> {
 
     String reason;
     if (swapAddress.refundableError != null) {
-      reason = context.l10n.funds_over_limit_dialog_transfer_fail_with_reason(
+      reason = l10n.funds_over_limit_dialog_transfer_fail_with_reason(
         swapAddress.refundableError,
       );
     } else {
-      reason = context.l10n.funds_over_limit_dialog_transfer_fail_no_reason_know;
+      reason = l10n.funds_over_limit_dialog_transfer_fail_no_reason_know;
     }
 
     int roundedHoursToUnlock = hoursToUnlock.round();
@@ -99,35 +106,35 @@ class SwapRefundDialogState extends State<SwapRefundDialog> {
       redeemText.add(
         TextSpan(
           text: roundedHoursToUnlock > 1
-              ? context.l10n.funds_over_limit_dialog_redeem_hours(
+              ? l10n.funds_over_limit_dialog_redeem_hours(
                   lockHeight.toString(),
                   hoursToUnlock.toString(),
                 )
-              : context.l10n.funds_over_limit_dialog_redeem_hour(
+              : l10n.funds_over_limit_dialog_redeem_hour(
                   lockHeight.toString(),
                 ),
-          style: Theme.of(context).dialogTheme.contentTextStyle,
+          style: contentTextStyle,
         ),
       );
     } else {
       redeemText.addAll(
         [
           TextSpan(
-            text: context.l10n.funds_over_limit_dialog_refund_begin,
-            style: Theme.of(context).dialogTheme.contentTextStyle,
+            text: l10n.funds_over_limit_dialog_refund_begin,
+            style: contentTextStyle,
           ),
           TextSpan(
-            text: context.l10n.funds_over_limit_dialog_refund_link,
+            text: l10n.funds_over_limit_dialog_refund_link,
             recognizer: TapGestureRecognizer()
               ..onTap = () async {
-                Navigator.pop(context);
-                Navigator.pushNamed(context, "/get_refund");
+                context.pop();
+                context.pushNamed("/get_refund");
               },
             style: theme.blueLinkStyle,
           ),
           TextSpan(
-            text: context.l10n.funds_over_limit_dialog_refund_end,
-            style: Theme.of(context).dialogTheme.contentTextStyle,
+            text: l10n.funds_over_limit_dialog_refund_end,
+            style: contentTextStyle,
           ),
         ],
       );
@@ -135,7 +142,7 @@ class SwapRefundDialogState extends State<SwapRefundDialog> {
 
     return RichText(
       text: TextSpan(
-        style: Theme.of(context).dialogTheme.contentTextStyle,
+        style: contentTextStyle,
         text: reason,
         children: redeemText,
       ),

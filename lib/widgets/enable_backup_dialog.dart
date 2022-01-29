@@ -2,9 +2,8 @@ import 'package:auto_size_text/auto_size_text.dart';
 import 'package:breez/bloc/backup/backup_actions.dart';
 import 'package:breez/bloc/backup/backup_bloc.dart';
 import 'package:breez/bloc/backup/backup_model.dart';
-import 'package:breez/l10n/locales.dart';
 import 'package:breez/routes/security_pin/remote_server_auth.dart';
-import 'package:breez/utils/min_font_size.dart';
+import 'package:breez/utils/build_context.dart';
 import 'package:flutter/material.dart';
 
 import 'backup_provider_selection_dialog.dart';
@@ -26,21 +25,28 @@ class EnableBackupDialog extends StatefulWidget {
 
 class EnableBackupDialogState extends State<EnableBackupDialog> {
   AutoSizeGroup _autoSizeGroup = AutoSizeGroup();
+
   @override
   Widget build(BuildContext context) {
     return createEnableBackupDialog(context);
   }
 
   Widget createEnableBackupDialog(BuildContext context) {
+    var l10n = context.l10n;
+    ThemeData themeData = context.theme;
+    DialogTheme dialogTheme = themeData.dialogTheme;
+    TextTheme primaryTextTheme = themeData.primaryTextTheme;
+    TextStyle btnTextStyle = primaryTextTheme.button;
+    TextStyle headline3 = primaryTextTheme.headline3.copyWith(fontSize: 16);
+    double minFontSize = context.minFontSize;
+
     return Theme(
-        data: Theme.of(context).copyWith(
-          unselectedWidgetColor: Theme.of(context).canvasColor,
-        ),
+        data: themeData.copyWith(unselectedWidgetColor: themeData.canvasColor),
         child: AlertDialog(
           titlePadding: EdgeInsets.fromLTRB(24.0, 22.0, 0.0, 16.0),
           title: Text(
-            context.l10n.backup_dialog_title,
-            style: Theme.of(context).dialogTheme.titleTextStyle,
+            l10n.backup_dialog_title,
+            style: dialogTheme.titleTextStyle,
           ),
           contentPadding: EdgeInsets.fromLTRB(8.0, 8.0, 8.0, 24.0),
           content: StreamBuilder<BackupSettings>(
@@ -52,7 +58,7 @@ class EnableBackupDialogState extends State<EnableBackupDialog> {
                 bool isRemoteServer = snapshot.data.backupProvider ==
                     BackupSettings.remoteServerBackupProvider;
                 return Container(
-                  width: MediaQuery.of(context).size.width,
+                  width: context.mediaQuerySize.width,
                   child: Column(
                     mainAxisSize: MainAxisSize.min,
                     crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -61,13 +67,10 @@ class EnableBackupDialogState extends State<EnableBackupDialog> {
                         padding: const EdgeInsets.only(left: 15.0, right: 12.0),
                         child: AutoSizeText(
                           isRemoteServer
-                              ? context.l10n.backup_dialog_message_remote_server
-                              : context.l10n.backup_dialog_message_default,
-                          style: Theme.of(context)
-                              .primaryTextTheme
-                              .headline3
-                              .copyWith(fontSize: 16),
-                          minFontSize: MinFontSize(context).minFontSize,
+                              ? l10n.backup_dialog_message_remote_server
+                              : l10n.backup_dialog_message_default,
+                          style: headline3,
+                          minFontSize: minFontSize,
                           stepGranularity: 0.1,
                           group: _autoSizeGroup,
                         ),
@@ -75,19 +78,16 @@ class EnableBackupDialogState extends State<EnableBackupDialog> {
                       isRemoteServer
                           ? SizedBox()
                           : Padding(
-                              padding: const EdgeInsets.only(top: 16.0),
-                              child: Row(
-                                children: <Widget>[
-                                  Theme(
-                                    data: Theme.of(context).copyWith(
-                                        unselectedWidgetColor: Theme.of(context)
-                                            .textTheme
-                                            .button
-                                            .color),
+                        padding: const EdgeInsets.only(top: 16.0),
+                        child: Row(
+                          children: <Widget>[
+                            Theme(
+                                    data: themeData.copyWith(
+                                        unselectedWidgetColor:
+                                            themeData.textTheme.button.color),
                                     child: Checkbox(
                                         activeColor: Colors.white,
-                                        checkColor:
-                                            Theme.of(context).canvasColor,
+                                        checkColor: context.canvasColor,
                                         value: !snapshot.data.promptOnError,
                                         onChanged: (v) {
                                           var currentSettings = snapshot.data;
@@ -96,32 +96,28 @@ class EnableBackupDialogState extends State<EnableBackupDialog> {
                                                   promptOnError: !v));
                                         }),
                                   ),
-                                  Expanded(
-                                      child: AutoSizeText(
-                                    context.l10n.backup_dialog_do_not_prompt_again,
-                                    style: Theme.of(context)
-                                        .primaryTextTheme
-                                        .headline3
-                                        .copyWith(fontSize: 16),
+                            Expanded(
+                                child: AutoSizeText(
+                                    l10n.backup_dialog_do_not_prompt_again,
+                                    style: headline3,
                                     maxLines: 1,
-                                    minFontSize:
-                                        MinFontSize(context).minFontSize,
+                                    minFontSize: minFontSize,
                                     stepGranularity: 0.1,
                                     group: _autoSizeGroup,
                                   ))
-                                ],
-                              ),
-                            ),
+                          ],
+                        ),
+                      ),
                     ],
                   ),
                 );
               }),
           actions: [
             TextButton(
-              onPressed: () => Navigator.pop(widget.context),
+              onPressed: () => widget.context.pop(),
               child: Text(
-                context.l10n.backup_dialog_option_cancel,
-                style: Theme.of(context).primaryTextTheme.button,
+                l10n.backup_dialog_option_cancel,
+                style: btnTextStyle,
                 maxLines: 1,
               ),
             ),
@@ -135,7 +131,7 @@ class EnableBackupDialogState extends State<EnableBackupDialog> {
                       BackupSettings.remoteServerBackupProvider;
                   return TextButton(
                     onPressed: (() async {
-                      Navigator.pop(widget.context);
+                      widget.context.pop();
                       var provider = snapshot.data.backupProvider;
                       if (provider == null) {
                         provider = await showDialog(
@@ -150,12 +146,9 @@ class EnableBackupDialogState extends State<EnableBackupDialog> {
                             provider == BackupSettings.icloudBackupProvider) {
                           await promptError(
                               context,
-                              context.l10n.backup_dialog_icloud_error_title,
-                              Text(
-                                  context.l10n.backup_dialog_icloud_error_message,
-                                  style: Theme.of(context)
-                                      .dialogTheme
-                                      .contentTextStyle));
+                              l10n.backup_dialog_icloud_error_title,
+                              Text(l10n.backup_dialog_icloud_error_message,
+                                  style: dialogTheme.contentTextStyle));
                           return;
                         }
                         if (provider ==
@@ -176,9 +169,9 @@ class EnableBackupDialogState extends State<EnableBackupDialog> {
                     }),
                     child: Text(
                       isRemoteServer
-                          ? context.l10n.backup_dialog_option_ok_remote_server
-                          : context.l10n.backup_dialog_option_ok_default,
-                      style: Theme.of(context).primaryTextTheme.button,
+                          ? l10n.backup_dialog_option_ok_remote_server
+                          : l10n.backup_dialog_option_ok_default,
+                      style: btnTextStyle,
                       maxLines: 1,
                     ),
                   );

@@ -13,12 +13,15 @@ class AccountPermissionsHandler {
 
   final _optimizationWhitelistRequestController =
       StreamController<void>.broadcast();
+
   Stream<void> get optimizationWhitelistRequestStream =>
       _optimizationWhitelistRequestController.stream;
+
   Sink<void> get optimizationWhitelistRequestSink =>
       _optimizationWhitelistRequestController.sink;
 
   final _optimizationWhitelistExplainController = BehaviorSubject<bool>();
+
   Stream<bool> get optimizationWhitelistExplainStream =>
       _optimizationWhitelistExplainController.stream;
 

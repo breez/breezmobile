@@ -7,6 +7,7 @@ import 'package:breez/bloc/invoice/invoice_model.dart';
 import 'package:breez/bloc/user_profile/currency.dart';
 import 'package:breez/services/injector.dart';
 import 'package:breez/theme_data.dart' as theme;
+import 'package:breez/utils/build_context.dart';
 import 'package:breez/widgets/circular_progress.dart';
 import 'package:breez/widgets/compact_qr_image.dart';
 import 'package:breez/widgets/flushbar.dart';
@@ -99,6 +100,10 @@ class QrCodeDialogState extends State<QrCodeDialog>
   }
 
   Widget _buildQrCodeDialog() {
+    ThemeData theme = context.theme;
+    DialogTheme dialogTheme = theme.dialogTheme;
+    TextTheme primaryTextTheme = theme.primaryTextTheme;
+
     return StreamBuilder<PaymentRequestModel>(
         stream: widget._invoiceBloc.readyInvoicesStream,
         builder: (context, snapshot) {
@@ -110,7 +115,7 @@ class QrCodeDialogState extends State<QrCodeDialog>
                 children: [
                   Text(
                     "Invoice",
-                    style: Theme.of(context).dialogTheme.titleTextStyle,
+                    style: dialogTheme.titleTextStyle,
                   ),
                   StreamBuilder<AccountModel>(
                       stream: widget._accountBloc.accountStream,
@@ -134,10 +139,7 @@ class QrCodeDialogState extends State<QrCodeDialog>
                                       left: 14.0),
                                   icon: Icon(
                                       IconData(0xe917, fontFamily: 'icomoon')),
-                                  color: Theme.of(context)
-                                      .primaryTextTheme
-                                      .button
-                                      .color,
+                                  color: primaryTextTheme.button.color,
                                   onPressed: () {
                                     ShareExtend.share(
                                         "lightning:" + snapshot.data.rawPayReq,
@@ -154,10 +156,7 @@ class QrCodeDialogState extends State<QrCodeDialog>
                                       left: 2.0),
                                   icon: Icon(
                                       IconData(0xe90b, fontFamily: 'icomoon')),
-                                  color: Theme.of(context)
-                                      .primaryTextTheme
-                                      .button
-                                      .color,
+                                  color: primaryTextTheme.button.color,
                                   onPressed: () {
                                     ServiceInjector().device.setClipboardText(
                                         snapshot.data.rawPayReq);
@@ -176,7 +175,7 @@ class QrCodeDialogState extends State<QrCodeDialog>
               ),
               titlePadding: EdgeInsets.fromLTRB(20.0, 22.0, 0.0, 8.0),
               contentPadding:
-                  EdgeInsets.only(left: 0.0, right: 0.0, bottom: 20.0),
+              EdgeInsets.only(left: 0.0, right: 0.0, bottom: 20.0),
               children: <Widget>[
                 StreamBuilder<AccountModel>(
                   stream: widget._accountBloc.accountStream,
@@ -188,12 +187,11 @@ class QrCodeDialogState extends State<QrCodeDialog>
                     double syncProgress = accSnapshot.data?.syncProgress;
                     return AnimatedCrossFade(
                       firstChild: Container(
-                          width: MediaQuery.of(context).size.width,
+                          width: context.mediaQuerySize.width,
                           height: 310.0,
                           child: synced == false
                               ? CircularProgress(
-                                  color:
-                                      Theme.of(context).textTheme.button.color,
+                                  color: context.textTheme.button.color,
                                   size: 100.0,
                                   value: syncProgress,
                                   title: "Synchronizing to the network")
@@ -201,46 +199,42 @@ class QrCodeDialogState extends State<QrCodeDialog>
                                   alignment: Alignment(0, -0.33),
                                   child: Container(
                                     height: 80.0,
-                                    width: 80.0,
-                                    child: CircularProgressIndicator(
-                                      valueColor: AlwaysStoppedAnimation<Color>(
-                                          Theme.of(context)
-                                              .primaryTextTheme
-                                              .button
-                                              .color),
-                                      backgroundColor:
-                                          Theme.of(context).backgroundColor,
+                                width: 80.0,
+                                child: CircularProgressIndicator(
+                                  valueColor: AlwaysStoppedAnimation<Color>(
+                                          primaryTextTheme.button.color),
+                                      backgroundColor: theme.backgroundColor,
                                     ),
-                                  ))),
+                              ))),
                       secondChild: snapshot.data?.rawPayReq == null
                           ? SizedBox()
                           : Column(
-                              children: [
-                                Padding(
-                                  padding:
-                                      EdgeInsets.only(left: 20.0, right: 20.0),
-                                  child: AspectRatio(
-                                    aspectRatio: 1,
-                                    child: Container(
-                                      width: 230.0,
-                                      height: 230.0,
-                                      child: CompactQRImage(
-                                        data: snapshot.data?.rawPayReq,
-                                      ),
-                                    ),
-                                  ),
+                        children: [
+                          Padding(
+                            padding:
+                            EdgeInsets.only(left: 20.0, right: 20.0),
+                            child: AspectRatio(
+                              aspectRatio: 1,
+                              child: Container(
+                                width: 230.0,
+                                height: 230.0,
+                                child: CompactQRImage(
+                                  data: snapshot.data?.rawPayReq,
                                 ),
-                                Padding(padding: EdgeInsets.only(top: 16.0)),
-                                Container(
-                                    width: MediaQuery.of(context).size.width,
-                                    child: _buildExpiryAndFeeMessage(snapshot)),
-                                Padding(padding: EdgeInsets.only(top: 16.0)),
-                              ],
+                              ),
                             ),
+                          ),
+                          Padding(padding: EdgeInsets.only(top: 16.0)),
+                          Container(
+                              width: context.mediaQuerySize.width,
+                                    child: _buildExpiryAndFeeMessage(snapshot)),
+                          Padding(padding: EdgeInsets.only(top: 16.0)),
+                        ],
+                      ),
                       duration: Duration(seconds: 1),
                       crossFadeState: (!snapshot.hasData ||
-                              snapshot.data?.rawPayReq == null ||
-                              !synced)
+                          snapshot.data?.rawPayReq == null ||
+                          !synced)
                           ? CrossFadeState.showFirst
                           : CrossFadeState.showSecond,
                     );
@@ -283,8 +277,8 @@ class QrCodeDialogState extends State<QrCodeDialog>
               _message,
               textAlign: TextAlign.center,
               style: (_hasError)
-                  ? Theme.of(context).dialogTheme.contentTextStyle
-                  : Theme.of(context).primaryTextTheme.caption,
+                  ? context.dialogTheme.contentTextStyle
+                  : context.primaryTextTheme.caption,
             ),
           );
         });
@@ -295,7 +289,7 @@ class QrCodeDialogState extends State<QrCodeDialog>
       onPressed: (() {
         onFinish(false);
       }),
-      child: Text("CLOSE", style: Theme.of(context).primaryTextTheme.button),
+      child: Text("CLOSE", style: context.primaryTextTheme.button),
     );
   }
 

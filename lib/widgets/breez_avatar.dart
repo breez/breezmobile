@@ -1,9 +1,9 @@
 import 'package:breez/bloc/user_profile/profile_animal.dart';
 import 'package:breez/bloc/user_profile/profile_color.dart';
 import 'package:breez/theme_data.dart' as theme;
+import 'package:breez/utils/build_context.dart';
 import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
-import 'package:breez/l10n/locales.dart';
 import 'package:flutter_svg/svg.dart';
 
 class BreezAvatar extends StatelessWidget {
@@ -140,13 +140,13 @@ class _DataImageAvatar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-      final uri = UriData.parse(this.avatarURL);
-      final _bytes = uri.contentAsBytes();
+    final uri = UriData.parse(this.avatarURL);
+    final _bytes = uri.contentAsBytes();
     return CircleAvatar(
-        backgroundColor: theme.sessionAvatarBackgroundColor,
+      backgroundColor: theme.sessionAvatarBackgroundColor,
       radius: radius,
       child: ClipOval(
-        child: Image.memory(_bytes) ,
+        child: Image.memory(_bytes),
       ),
     );
   }

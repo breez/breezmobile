@@ -2,6 +2,7 @@ import 'package:auto_size_text/auto_size_text.dart';
 import 'package:breez/bloc/account/account_actions.dart';
 import 'package:breez/bloc/account/account_bloc.dart';
 import 'package:breez/bloc/account/account_model.dart';
+import 'package:breez/utils/build_context.dart';
 import 'package:breez/widgets/loader.dart';
 import 'package:breez/widgets/payment_details_dialog.dart';
 import 'package:flutter/material.dart';
@@ -36,7 +37,7 @@ class PendingClosedChannelDialogState
       titlePadding: EdgeInsets.fromLTRB(24.0, 22.0, 24.0, 16.0),
       title: AutoSizeText(
         "Pending Closed Channel",
-        style: Theme.of(context).dialogTheme.titleTextStyle,
+        style: context.dialogTheme.titleTextStyle,
         maxLines: 1,
       ),
       contentPadding: EdgeInsets.fromLTRB(24.0, 8.0, 24.0, 24.0),
@@ -63,8 +64,8 @@ class PendingClosedChannelDialogState
           }),
       actions: [
         SimpleDialogOption(
-          onPressed: () => Navigator.pop(context),
-          child: Text("OK", style: Theme.of(context).primaryTextTheme.button),
+          onPressed: () => context.pop(),
+          child: Text("OK", style: context.primaryTextTheme.button),
         )
       ],
     );

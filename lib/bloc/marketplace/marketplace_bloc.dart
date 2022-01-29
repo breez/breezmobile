@@ -7,6 +7,7 @@ import 'package:rxdart/rxdart.dart';
 
 class MarketplaceBloc {
   final _vendorController = BehaviorSubject<List<VendorModel>>();
+
   Stream<List<VendorModel>> get vendorsStream => _vendorController.stream;
 
   MarketplaceBloc() {
@@ -20,7 +21,8 @@ class MarketplaceBloc {
     List<VendorModel> _vendorList = [];
     _vendorData.forEach((vendorOptions) {
       String _url = config.get(vendorOptions, 'url');
-      String _displayName = config.get(vendorOptions, 'displayName') ?? vendorOptions;
+      String _displayName =
+          config.get(vendorOptions, 'displayName') ?? vendorOptions;
       String _logo = config.get(vendorOptions, 'logo');
       bool _onlyShowLogo = config.get(vendorOptions, 'onlyShowLogo') == "true";
       VendorModel _vendorModel = VendorModel(_url, vendorOptions, _displayName,

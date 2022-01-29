@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:breez/bloc/user_profile/breez_user_model.dart';
+import 'package:breez/utils/build_context.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -51,7 +52,7 @@ class SplashPageState extends State<SplashPage> {
           'src/images/splash-animation.gif',
           fit: BoxFit.contain,
           gaplessPlayback: true,
-          width: MediaQuery.of(context).size.width / 3,
+          width: context.mediaQuerySize.width / 3,
         ),
       ),
     ]));

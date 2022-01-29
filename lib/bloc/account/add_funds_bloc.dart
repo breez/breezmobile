@@ -41,12 +41,15 @@ class AddFundsBloc extends Bloc {
 
   final _moonpayNextOrderController =
       StreamController<MoonpayOrder>.broadcast();
+
   Stream<MoonpayOrder> get moonpayNextOrderStream =>
       _moonpayNextOrderController.stream;
 
   final _completedMoonpayOrderController = BehaviorSubject<MoonpayOrder>();
+
   Stream<MoonpayOrder> get completedMoonpayOrderStream =>
       _completedMoonpayOrderController.stream;
+
   Sink<MoonpayOrder> get completedMoonpayOrderSink =>
       _completedMoonpayOrderController.sink;
 
@@ -57,8 +60,10 @@ class AddFundsBloc extends Bloc {
       _availableVendorsController.stream;
 
   final _addFundsSettingsController = BehaviorSubject<AddFundsSettings>();
+
   Stream<AddFundsSettings> get addFundsSettingsStream =>
       _addFundsSettingsController.stream;
+
   Sink<AddFundsSettings> get addFundsSettingsSink =>
       _addFundsSettingsController.sink;
 

@@ -3,7 +3,7 @@ import 'package:breez/bloc/account/account_actions.dart';
 import 'package:breez/bloc/account/account_bloc.dart';
 import 'package:breez/bloc/account/account_model.dart';
 import 'package:breez/bloc/blocs_provider.dart';
-import 'package:breez/utils/min_font_size.dart';
+import 'package:breez/utils/build_context.dart';
 import 'package:breez/widgets/back_button.dart' as backBtn;
 import 'package:breez/widgets/error_dialog.dart';
 import 'package:breez/widgets/fee_chooser.dart';
@@ -85,16 +85,20 @@ class SweepAllCoinsConfirmationState extends State<SweepAllCoinsConfirmation> {
 
   @override
   Widget build(BuildContext context) {
+    ThemeData theme = context.theme;
+    AppBarTheme appBarTheme = theme.appBarTheme;
+    DialogTheme dialogTheme = theme.dialogTheme;
+
     return Scaffold(
       appBar: AppBar(
-          iconTheme: Theme.of(context).appBarTheme.iconTheme,
-          textTheme: Theme.of(context).appBarTheme.textTheme,
-          backgroundColor: Theme.of(context).canvasColor,
+          iconTheme: appBarTheme.iconTheme,
+          backgroundColor: theme.canvasColor,
+          toolbarTextStyle: appBarTheme.toolbarTextStyle,
+          titleTextStyle: appBarTheme.titleTextStyle,
           leading: backBtn.BackButton(onPressed: () {
             widget.onPrevious();
           }),
-          title: Text("Choose Processing Speed",
-              style: Theme.of(context).appBarTheme.textTheme.headline6),
+          title: Text("Choose Processing Speed"),
           elevation: 0.0),
       body: StreamBuilder<AccountModel>(
           stream: AppBlocsProvider.of<AccountBloc>(context).accountStream,
@@ -107,7 +111,7 @@ class SweepAllCoinsConfirmationState extends State<SweepAllCoinsConfirmation> {
                     //render error
                     return _ErrorMessage(
                         message:
-                            "Failed to retrieve fees. Please try again later.");
+                        "Failed to retrieve fees. Please try again later.");
                   }
                   if (futureSnapshot.connectionState != ConnectionState.done ||
                       acc == null) {
@@ -118,14 +122,14 @@ class SweepAllCoinsConfirmationState extends State<SweepAllCoinsConfirmation> {
                   if (feeOptions.where((f) => f != null).length == 0) {
                     return _ErrorMessage(
                         message:
-                            "The amount is too small to broadcast. Please try again later.");
+                        "The amount is too small to broadcast. Please try again later.");
                   }
 
                   return Container(
                     height: 500.0,
                     padding: EdgeInsets.only(
                         left: 16.0, right: 16.0, bottom: 40.0, top: 24.0),
-                    width: MediaQuery.of(context).size.width,
+                    width: context.mediaQuerySize.width,
                     child: Column(
                       //mainAxisSize: MainAxisSize.max,
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -153,32 +157,35 @@ class SweepAllCoinsConfirmationState extends State<SweepAllCoinsConfirmation> {
       bottomNavigationBar: !_showConfirm
           ? null
           : SingleButtonBottomBar(
-              text: "CONFIRM",
-              onPressed: () {
-                Navigator.of(context).push(createLoaderRoute(context));
+        text: "CONFIRM",
+        onPressed: () {
+          context.push(createLoaderRoute(context));
                 widget.onConfirm(transactions[selectedFeeIndex]).then((_) {
-                  Navigator.of(context).pop();
+                  context.pop();
                 }).catchError((error) {
-                  Navigator.of(context).pop();
+                  context.pop();
                   promptError(
                       context,
                       null,
                       Text(error.toString(),
-                          style:
-                              Theme.of(context).dialogTheme.contentTextStyle));
+                          style: dialogTheme.contentTextStyle));
                 });
               },
-            ),
+      ),
     );
   }
 
   Widget buildSummary(AccountModel acc) {
+    ThemeData theme = context.theme;
+    Color errorColor = theme.errorColor;
+    double minFontSize = context.minFontSize;
+
     var receive = _sweepAmount - feeOptions[selectedFeeIndex].sats;
     return Container(
       decoration: BoxDecoration(
           borderRadius: BorderRadius.all(Radius.circular(5.0)),
-          border: Border.all(
-              color: Theme.of(context).colorScheme.onSurface.withOpacity(0.4))),
+          border:
+              Border.all(color: theme.colorScheme.onSurface.withOpacity(0.4))),
       child: ListView(shrinkWrap: true, children: <Widget>[
         ListTile(
             title: Container(
@@ -186,16 +193,16 @@ class SweepAllCoinsConfirmationState extends State<SweepAllCoinsConfirmation> {
                 "You send:",
                 style: TextStyle(color: Colors.white),
                 maxLines: 1,
-                minFontSize: MinFontSize(context).minFontSize,
+                minFontSize: minFontSize,
                 stepGranularity: 0.1,
               ),
             ),
             trailing: Container(
               child: AutoSizeText(
                 acc.currency.format(_sweepAmount),
-                style: TextStyle(color: Theme.of(context).errorColor),
+                style: TextStyle(color: errorColor),
                 maxLines: 1,
-                minFontSize: MinFontSize(context).minFontSize,
+                minFontSize: minFontSize,
                 stepGranularity: 0.1,
               ),
             )),
@@ -205,17 +212,16 @@ class SweepAllCoinsConfirmationState extends State<SweepAllCoinsConfirmation> {
                 "Transaction fee:",
                 style: TextStyle(color: Colors.white.withOpacity(0.4)),
                 maxLines: 1,
-                minFontSize: MinFontSize(context).minFontSize,
+                minFontSize: minFontSize,
                 stepGranularity: 0.1,
               ),
             ),
             trailing: Container(
               child: AutoSizeText(
                 "-${acc.currency.format(Int64(feeOptions[selectedFeeIndex].sats))}",
-                style: TextStyle(
-                    color: Theme.of(context).errorColor.withOpacity(0.4)),
+                style: TextStyle(color: errorColor.withOpacity(0.4)),
                 maxLines: 1,
-                minFontSize: MinFontSize(context).minFontSize,
+                minFontSize: minFontSize,
                 stepGranularity: 0.1,
               ),
             )),
@@ -225,7 +231,7 @@ class SweepAllCoinsConfirmationState extends State<SweepAllCoinsConfirmation> {
                 "You receive:",
                 style: TextStyle(color: Colors.white),
                 maxLines: 1,
-                minFontSize: MinFontSize(context).minFontSize,
+                minFontSize: minFontSize,
                 stepGranularity: 0.1,
               ),
             ),
@@ -236,9 +242,9 @@ class SweepAllCoinsConfirmationState extends State<SweepAllCoinsConfirmation> {
                     (acc.fiatCurrency == null
                         ? ""
                         : " (${acc.fiatCurrency.format(receive)})"),
-                style: TextStyle(color: Theme.of(context).errorColor),
+                style: TextStyle(color: errorColor),
                 maxLines: 1,
-                minFontSize: MinFontSize(context).minFontSize,
+                minFontSize: minFontSize,
                 stepGranularity: 0.1,
               ),
             ))

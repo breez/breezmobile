@@ -1,26 +1,30 @@
 import 'dart:async';
+import 'dart:math';
 
 import 'package:breez/bloc/podcast_payments/model.dart';
 import 'package:breez/bloc/podcast_payments/podcast_payments_bloc.dart';
 import 'package:confetti/confetti.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'dart:math';
 
-class Confetty extends StatelessWidget {
+class Confetti extends StatelessWidget {
   final ConfettiController controller;
-  const Confetty({Key key, @required this.controller}) : super(key: key);
+
+  const Confetti({Key key, @required this.controller}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return ConfettiWidget(
-      maxBlastForce: 50, // set a lower max blast force
-      minBlastForce: 5, // set a lower min blast force
+      maxBlastForce: 50,
+      // set a lower max blast force
+      minBlastForce: 5,
+      // set a lower min blast force
       emissionFrequency: 0.01,
       numberOfParticles: 100,
       confettiController: controller,
       blastDirection: pi * 1.75,
-      shouldLoop: false, // start again as soon as the animation is finished
+      shouldLoop: false,
+      // start again as soon as the animation is finished
       colors: const [
         Colors.green,
         Colors.blue,
@@ -32,20 +36,20 @@ class Confetty extends StatelessWidget {
   }
 }
 
-class WithConfettyPaymentEffect extends StatefulWidget {
+class WithConfettiPaymentEffect extends StatefulWidget {
   final Widget child;
   final PaymentEventType type;
 
-  const WithConfettyPaymentEffect({Key key, this.child, this.type})
+  const WithConfettiPaymentEffect({Key key, this.child, this.type})
       : super(key: key);
 
   @override
   State<StatefulWidget> createState() {
-    return WithConfettyPaymentEffectState();
+    return WithConfettiPaymentEffectState();
   }
 }
 
-class WithConfettyPaymentEffectState extends State<WithConfettyPaymentEffect> {
+class WithConfettiPaymentEffectState extends State<WithConfettiPaymentEffect> {
   ConfettiController controller =
       ConfettiController(duration: Duration(seconds: 1));
   StreamSubscription<PaymentEvent> subscription;
@@ -78,7 +82,7 @@ class WithConfettyPaymentEffectState extends State<WithConfettyPaymentEffect> {
             children: [
               Align(
                   alignment: Alignment.center,
-                  child: Confetty(controller: controller)),
+                  child: Confetti(controller: controller)),
               widget.child,
             ],
           );

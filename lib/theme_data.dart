@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 String themeId = "BLUE";
 
@@ -62,16 +63,14 @@ final ThemeData blueTheme = ThemeData(
   backgroundColor: Colors.white,
   bottomAppBarTheme: BottomAppBarTheme(elevation: 0),
   appBarTheme: AppBarTheme(
-    textTheme: TextTheme(
-      headline6:
-          TextStyle(color: Colors.white, fontSize: 18.0, letterSpacing: 0.22),
-    ),
-    iconTheme: IconThemeData(
-      color: Colors.white,
-    ),
-    color: Colors.transparent,
+    backgroundColor: BreezColors.blue[500],
+    toolbarTextStyle:
+        TextStyle(color: Colors.white, fontSize: 18.0, letterSpacing: 0.22),
+    titleTextStyle:
+        TextStyle(color: Colors.white, fontSize: 18.0, letterSpacing: 0.22),
+    iconTheme: IconThemeData(color: Colors.white),
     actionsIconTheme: IconThemeData(color: Color.fromRGBO(0, 120, 253, 1.0)),
-    brightness: Brightness.dark,
+    systemOverlayStyle: SystemUiOverlayStyle.light,
   ),
   dialogTheme: DialogTheme(
       titleTextStyle: TextStyle(
@@ -84,7 +83,6 @@ final ThemeData blueTheme = ThemeData(
   dialogBackgroundColor: Colors.transparent,
   errorColor: Color(0xffffe685),
   dividerColor: Color(0x33ffffff),
-  buttonColor: Colors.white,
   cardColor: BreezColors.blue[500],
   highlightColor: BreezColors.blue[200],
   textTheme: TextTheme(
@@ -142,38 +140,6 @@ final ThemeData blueTheme = ThemeData(
   primaryIconTheme: IconThemeData(color: BreezColors.grey[500]),
   bottomAppBarColor: Color(0xFF0085fb),
   fontFamily: 'IBMPlexSans',
-  accentTextTheme: TextTheme(
-    bodyText2: TextStyle(color: BreezColors.grey[600]),
-    headline4: TextStyle(
-        color: Color.fromRGBO(0, 133, 251, 1.0),
-        fontSize: 30.0,
-        fontWeight: FontWeight.w600,
-        height: 1.52),
-    subtitle1: TextStyle(
-        color: Color.fromRGBO(0, 133, 251, 1.0),
-        fontSize: 15,
-        fontWeight: FontWeight.w500,
-        height: 1.24,
-        letterSpacing: 0.2),
-    headline6: TextStyle(
-        color: Colors.black,
-        fontSize: 13.5,
-        fontWeight: FontWeight.w500,
-        height: 1.2,
-        letterSpacing: 0.5),
-    subtitle2: TextStyle(
-        color: Colors.black,
-        fontSize: 13.5,
-        fontWeight: FontWeight.w500,
-        height: 1.2,
-        letterSpacing: 0.25),
-    caption: TextStyle(
-        color: Color(0xb3303234),
-        fontSize: 10.5,
-        fontWeight: FontWeight.w400,
-        height: 1.16,
-        letterSpacing: 0.39),
-  ),
   textButtonTheme: TextButtonThemeData(),
   outlinedButtonTheme: OutlinedButtonThemeData(),
   elevatedButtonTheme: ElevatedButtonThemeData(),
@@ -204,16 +170,19 @@ final ThemeData darkTheme = ThemeData(
   backgroundColor: Color(0xFF152a3d),
   bottomAppBarTheme: BottomAppBarTheme(elevation: 0),
   appBarTheme: AppBarTheme(
-    textTheme: TextTheme(
-      headline6:
-          TextStyle(color: Colors.white, fontSize: 18.0, letterSpacing: 0.22),
-    ),
     iconTheme: IconThemeData(
       color: Colors.white,
     ),
-    color: Colors.white,
     actionsIconTheme: IconThemeData(color: Colors.white),
-    brightness: Brightness.dark,
+    systemOverlayStyle: SystemUiOverlayStyle.light,
+    toolbarTextStyle: TextTheme(
+      headline6:
+          TextStyle(color: Colors.white, fontSize: 18.0, letterSpacing: 0.22),
+    ).bodyText2,
+    titleTextStyle: TextTheme(
+      headline6:
+          TextStyle(color: Colors.white, fontSize: 18.0, letterSpacing: 0.22),
+    ).headline6,
   ),
   dialogTheme: DialogTheme(
       titleTextStyle:
@@ -226,7 +195,6 @@ final ThemeData darkTheme = ThemeData(
   dialogBackgroundColor: Colors.transparent,
   errorColor: Color(0xFFeddc97),
   dividerColor: Color(0x337aa5eb),
-  buttonColor: Color(0xFF4B89EB),
   cardColor: Color(0xFF121212),
   highlightColor: Color(0xFF81acf1),
   textTheme: TextTheme(
@@ -281,37 +249,6 @@ final ThemeData darkTheme = ThemeData(
   primaryIconTheme: IconThemeData(color: Color(0xFF7aa5eb)),
   bottomAppBarColor: Color(0xff4D88EC),
   fontFamily: 'IBMPlexSans',
-  accentTextTheme: TextTheme(
-      bodyText2: TextStyle(color: Colors.white),
-      headline4: TextStyle(
-          color: Colors.white,
-          fontSize: 30.0,
-          fontWeight: FontWeight.w600,
-          height: 1.56),
-      subtitle1: TextStyle(
-          color: Colors.white,
-          fontSize: 15,
-          fontWeight: FontWeight.w500,
-          height: 1.24,
-          letterSpacing: 0.2),
-      headline6: TextStyle(
-          color: Colors.white,
-          fontSize: 13.5,
-          fontWeight: FontWeight.w500,
-          height: 1.28,
-          letterSpacing: 0.5),
-      subtitle2: TextStyle(
-          color: Colors.white,
-          fontSize: 12.25,
-          fontWeight: FontWeight.w400,
-          height: 1.2,
-          letterSpacing: 0.25),
-      caption: TextStyle(
-          color: Colors.white.withOpacity(0.7),
-          fontSize: 10.5,
-          fontWeight: FontWeight.w400,
-          height: 1.16,
-          letterSpacing: 0.39)),
   textButtonTheme: TextButtonThemeData(),
   outlinedButtonTheme: OutlinedButtonThemeData(),
   elevatedButtonTheme: ElevatedButtonThemeData(),

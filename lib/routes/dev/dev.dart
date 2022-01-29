@@ -19,6 +19,7 @@ import 'package:breez/services/breezlib/breez_bridge.dart';
 import 'package:breez/services/injector.dart';
 import 'package:breez/services/permissions.dart';
 import 'package:breez/theme_data.dart' as theme;
+import 'package:breez/utils/build_context.dart';
 import 'package:breez/widgets/back_button.dart' as backBtn;
 import 'package:breez/widgets/error_dialog.dart';
 import 'package:breez/widgets/loader.dart';
@@ -44,8 +45,8 @@ class Choice {
 
 final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
+// ignore: must_be_immutable
 class DevView extends StatefulWidget {
-  // ignore: must_be_immutable
   BreezBridge _breezBridge;
   Permissions _permissionsService;
 
@@ -81,7 +82,7 @@ class DevViewState extends State<DevView> {
   }
 
   void _sendCommand(String command) {
-    FocusScope.of(context).requestFocus(FocusNode());
+    context.focusScope.requestFocus(FocusNode());
     _lastCommand = command;
     widget._breezBridge.sendCommand(command).then((reply) {
       setState(() {
@@ -107,12 +108,12 @@ class DevViewState extends State<DevView> {
   Widget _renderBody() {
     if (_showDefaultCommands) {
       return Theme(
-          data: Theme.of(context).copyWith(
+          data: context.theme.copyWith(
             dividerColor: Colors.transparent,
           ),
           child: ListView(children: defaultCliCommandsText((command) {
             _cliInputController.text = command + " ";
-            FocusScope.of(_scaffoldKey.currentState.context)
+            _scaffoldKey.currentState.context.focusScope
                 .requestFocus(_cliEntryFocusNode);
           })));
     }
@@ -138,6 +139,9 @@ class DevViewState extends State<DevView> {
             return StreamBuilder(
                 stream: accBloc.accountSettingsStream,
                 builder: (context, settingsSnapshot) {
+                  ThemeData themeData = context.theme;
+                  AppBarTheme appBarTheme = themeData.appBarTheme;
+
                   return StreamBuilder(
                       stream: addFundsBloc.addFundsSettingsStream,
                       builder: (context, addFundsSettingsSnapshot) {
@@ -147,20 +151,17 @@ class DevViewState extends State<DevView> {
                               return Scaffold(
                                 key: _scaffoldKey,
                                 appBar: AppBar(
-                                  iconTheme:
-                                      Theme.of(context).appBarTheme.iconTheme,
-                                  backgroundColor:
-                                      Theme.of(context).canvasColor,
+                                  iconTheme: appBarTheme.iconTheme,
+                                  backgroundColor: themeData.canvasColor,
                                   leading: backBtn.BackButton(),
                                   elevation: 0.0,
                                   actions: <Widget>[
                                     PopupMenuButton<Choice>(
                                       onSelected: widget._select,
-                                      color: Theme.of(context).backgroundColor,
+                                      color: themeData.backgroundColor,
                                       icon: Icon(
                                         Icons.more_vert,
-                                        color:
-                                            Theme.of(context).iconTheme.color,
+                                        color: themeData.iconTheme.color,
                                       ),
                                       itemBuilder: (BuildContext context) {
                                         return getChoices(
@@ -169,15 +170,14 @@ class DevViewState extends State<DevView> {
                                                 account,
                                                 addFundsBloc,
                                                 addFundsSettingsSnapshot.data,
-                                                userBloc,
-                                                userSnapshot.data)
+                                            userBloc,
+                                            userSnapshot.data)
                                             .map((Choice choice) {
                                           return PopupMenuItem<Choice>(
                                             value: choice,
                                             child: Text(choice.title,
-                                                style: Theme.of(context)
-                                                    .textTheme
-                                                    .button),
+                                                style:
+                                                    themeData.textTheme.button),
                                           );
                                         }).toList();
                                       },
@@ -185,33 +185,30 @@ class DevViewState extends State<DevView> {
                                   ],
                                   title: Text(
                                     "Developers",
-                                    style: Theme.of(context)
-                                        .appBarTheme
-                                        .textTheme
-                                        .headline6,
+                                    style: appBarTheme.titleTextStyle,
                                   ),
                                 ),
                                 body: Column(
                                     crossAxisAlignment:
-                                        CrossAxisAlignment.start,
+                                    CrossAxisAlignment.start,
                                     mainAxisSize: MainAxisSize.max,
                                     children: <Widget>[
                                       Padding(
                                         padding:
-                                            const EdgeInsets.only(left: 10.0),
+                                        const EdgeInsets.only(left: 10.0),
                                         child: Row(
                                           children: <Widget>[
                                             Flexible(
                                                 child: TextField(
-                                              focusNode: _cliEntryFocusNode,
-                                              controller: _cliInputController,
-                                              decoration: InputDecoration(
-                                                  hintText:
+                                                  focusNode: _cliEntryFocusNode,
+                                                  controller: _cliInputController,
+                                                  decoration: InputDecoration(
+                                                      hintText:
                                                       'Enter a command or use the links below'),
-                                              onSubmitted: (command) {
-                                                _sendCommand(command);
-                                              },
-                                            )),
+                                                  onSubmitted: (command) {
+                                                    _sendCommand(command);
+                                                  },
+                                                )),
                                             IconButton(
                                               icon: Icon(Icons.play_arrow),
                                               tooltip: 'Run',
@@ -250,66 +247,65 @@ class DevViewState extends State<DevView> {
                                                   border: _showDefaultCommands
                                                       ? null
                                                       : Border.all(
-                                                          width: 1.0,
-                                                          color: Color(
-                                                              0x80FFFFFF))),
+                                                      width: 1.0,
+                                                      color: Color(
+                                                          0x80FFFFFF))),
                                               child: Column(
                                                 mainAxisSize: MainAxisSize.max,
                                                 crossAxisAlignment:
-                                                    CrossAxisAlignment.start,
+                                                CrossAxisAlignment.start,
                                                 children: <Widget>[
                                                   _showDefaultCommands
                                                       ? Container()
                                                       : Row(
-                                                          mainAxisAlignment:
-                                                              MainAxisAlignment
-                                                                  .end,
-                                                          children: <Widget>[
-                                                            IconButton(
-                                                              icon: Icon(Icons
-                                                                  .content_copy),
-                                                              tooltip:
-                                                                  'Copy to Clipboard',
-                                                              iconSize: 19.0,
-                                                              onPressed: () {
-                                                                ServiceInjector()
-                                                                    .device
-                                                                    .setClipboardText(
-                                                                        _cliText);
-                                                                ScaffoldMessenger.of(
-                                                                        context)
+                                                    mainAxisAlignment:
+                                                    MainAxisAlignment
+                                                        .end,
+                                                    children: <Widget>[
+                                                      IconButton(
+                                                        icon: Icon(Icons
+                                                            .content_copy),
+                                                        tooltip:
+                                                        'Copy to Clipboard',
+                                                        iconSize: 19.0,
+                                                        onPressed: () {
+                                                          ServiceInjector()
+                                                              .device
+                                                              .setClipboardText(
+                                                              _cliText);
+                                                          context
                                                                     .showSnackBar(
-                                                                        SnackBar(
-                                                                  content: Text(
-                                                                    'Copied to clipboard.',
-                                                                    style: theme
-                                                                        .snackBarStyle,
-                                                                  ),
-                                                                  backgroundColor:
-                                                                      theme
-                                                                          .snackBarBackgroundColor,
-                                                                  duration:
-                                                                      Duration(
-                                                                          seconds:
-                                                                              2),
-                                                                ));
-                                                              },
-                                                            ),
-                                                            IconButton(
-                                                              icon: Icon(
-                                                                  Icons.share),
-                                                              iconSize: 19.0,
-                                                              tooltip: 'Share',
-                                                              onPressed: () {
-                                                                _shareFile(
-                                                                    _lastCommand
-                                                                        .split(
-                                                                            " ")[0],
-                                                                    _cliText);
-                                                              },
-                                                            )
-                                                          ],
-                                                        ),
+                                                              SnackBar(
+                                                                content: Text(
+                                                                  'Copied to clipboard.',
+                                                                  style: theme
+                                                                      .snackBarStyle,
+                                                                ),
+                                                                backgroundColor:
+                                                                theme
+                                                                    .snackBarBackgroundColor,
+                                                                duration:
+                                                                Duration(
+                                                                    seconds:
+                                                                    2),
+                                                              ));
+                                                        },
+                                                      ),
+                                                      IconButton(
+                                                        icon: Icon(
+                                                            Icons.share),
+                                                        iconSize: 19.0,
+                                                        tooltip: 'Share',
+                                                        onPressed: () {
+                                                          _shareFile(
+                                                              _lastCommand
+                                                                  .split(
+                                                                  " ")[0],
+                                                              _cliText);
+                                                        },
+                                                      )
+                                                    ],
+                                                  ),
                                                   Expanded(child: _renderBody())
                                                 ],
                                               ),
@@ -450,7 +446,7 @@ class DevViewState extends State<DevView> {
         title: "Set Height Hint",
         icon: Icons.phone_android,
         function: () async {
-          final success = await Navigator.of(context).push(FadeInRoute(
+          final success = await context.push(FadeInRoute(
             builder: (_) => SetHeightHintPage(),
           ));
           if (success == true) {
@@ -468,7 +464,6 @@ class DevViewState extends State<DevView> {
         title: 'Log cache usage',
         icon: Icons.phone_android,
         function: _printCacheUsage));
-        
     return choices;
   }
 
@@ -543,7 +538,7 @@ class DevViewState extends State<DevView> {
       }
     }).whenComplete(() {
       if (!userCancelled) {
-        Navigator.pop(context);
+        context.pop();
       }
     });
   }
@@ -554,7 +549,7 @@ class DevViewState extends State<DevView> {
     Navigator.push(context,
         createLoaderRoute(context, message: "Deleting graph...", opacity: 0.8));
     widget._breezBridge.deleteGraph().whenComplete(() {
-      Navigator.pop(context);
+      context.pop();
       _promptForRestart();
     });
   }
@@ -583,10 +578,10 @@ class DevViewState extends State<DevView> {
 
   Future _promptForRestart() {
     return promptAreYouSure(
-            context,
+        context,
             null,
             Text("Please restart to resynchronize Breez.",
-                style: Theme.of(context).dialogTheme.contentTextStyle),
+                style: context.dialogTheme.contentTextStyle),
             cancelText: "CANCEL",
             okText: "EXIT BREEZ")
         .then((shouldExit) {

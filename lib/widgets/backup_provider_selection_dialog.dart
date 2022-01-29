@@ -3,8 +3,8 @@ import 'package:breez/bloc/backup/backup_actions.dart';
 import 'package:breez/bloc/backup/backup_bloc.dart';
 import 'package:breez/bloc/backup/backup_model.dart';
 import 'package:breez/routes/security_pin/remote_server_auth.dart';
+import 'package:breez/utils/build_context.dart';
 import 'package:flutter/material.dart';
-import 'package:breez/l10n/locales.dart';
 
 class BackupProviderSelectionDialog extends StatefulWidget {
   final BackupBloc backupBloc;
@@ -28,14 +28,19 @@ class BackupProviderSelectionDialogState
 
   @override
   Widget build(BuildContext context) {
+    var l10n = context.l10n;
+    ThemeData themeData = context.theme;
+    DialogTheme dialogTheme = themeData.dialogTheme;
+    TextTheme primaryTextTheme = themeData.primaryTextTheme;
+
     return AlertDialog(
       titlePadding: EdgeInsets.fromLTRB(24.0, 22.0, 24.0, 16.0),
       title: Container(
-        width: MediaQuery.of(context).size.width,
+        width: context.mediaQuerySize.width,
         height: 30,
         child: AutoSizeText(
-          context.l10n.backup_provider_dialog_title,
-          style: Theme.of(context).dialogTheme.titleTextStyle,
+          l10n.backup_provider_dialog_title,
+          style: dialogTheme.titleTextStyle,
           maxLines: 1,
         ),
       ),
@@ -46,11 +51,9 @@ class BackupProviderSelectionDialogState
         children: [
           Text(
             widget.restore
-                ? context.l10n.backup_provider_dialog_message_restore
-                : context.l10n.backup_provider_dialog_message_store,
-            style: Theme.of(context).primaryTextTheme.headline3.copyWith(
-              fontSize: 16,
-            ),
+                ? l10n.backup_provider_dialog_message_restore
+                : l10n.backup_provider_dialog_message_store,
+            style: primaryTextTheme.headline3.copyWith(fontSize: 16),
           ),
           StreamBuilder<BackupSettings>(
             stream: widget.backupBloc.backupSettingsStream,
@@ -72,16 +75,16 @@ class BackupProviderSelectionDialogState
                       selected: _selectedProviderIndex == index,
                       trailing: _selectedProviderIndex == index
                           ? Icon(
-                              Icons.check,
-                              color: Theme.of(context).primaryTextTheme.button.color,
+                        Icons.check,
+                              color: primaryTextTheme.button.color,
                             )
                           : Icon(
-                              Icons.check,
-                              color: Theme.of(context).backgroundColor,
+                        Icons.check,
+                              color: themeData.backgroundColor,
                             ),
                       title: Text(
                         providers[index].displayName,
-                        style: Theme.of(context).dialogTheme.titleTextStyle.copyWith(
+                        style: dialogTheme.titleTextStyle.copyWith(
                           fontSize: 14.3,
                           height: 1.2,
                         ), // Color needs to change
@@ -102,20 +105,20 @@ class BackupProviderSelectionDialogState
       actions: [
         TextButton(
           style: TextButton.styleFrom(
-            primary: Theme.of(context).primaryTextTheme.button.color,
+            primary: primaryTextTheme.button.color,
           ),
-          onPressed: () => Navigator.pop(context, null),
-          child: Text(context.l10n.backup_provider_dialog_action_cancel),
+          onPressed: () => context.pop(null),
+          child: Text(l10n.backup_provider_dialog_action_cancel),
         ),
         StreamBuilder<BackupSettings>(
           stream: widget.backupBloc.backupSettingsStream,
           builder: (context, snapshot) {
             return TextButton(
               style: TextButton.styleFrom(
-                primary: Theme.of(context).primaryTextTheme.button.color,
+                primary: primaryTextTheme.button.color,
               ),
               onPressed: () => _selectProvider(snapshot.data),
-              child: Text(context.l10n.backup_provider_dialog_action_ok),
+              child: Text(l10n.backup_provider_dialog_action_ok),
             );
           },
         )
@@ -150,6 +153,6 @@ class BackupProviderSelectionDialogState
       backupProvider: selectedProvider,
     ));
     widget.backupBloc.backupActionsSink.add(setAction);
-    setAction.future.then((_) => Navigator.pop(context, selectedProvider));
+    setAction.future.then((_) => context.pop(selectedProvider));
   }
 }

@@ -14,15 +14,18 @@ class PaymentSessionChannel {
 
   final StreamController<Map<dynamic, dynamic>> _incomingMessagesController =
       StreamController<Map<dynamic, dynamic>>.broadcast();
+
   Stream<Map<dynamic, dynamic>> get incomingMessagesStream =>
       _incomingMessagesController.stream;
 
   final StreamController<void> _peerTerminatedController =
       StreamController<void>();
+
   Stream<void> get peerTerminatedStream => _peerTerminatedController.stream;
 
   final StreamController<void> peerResetStreamController =
       StreamController<void>();
+
   Stream<void> get peerResetStream => peerResetStreamController.stream;
 
   final String _sessionID;
@@ -122,9 +125,8 @@ class PaymentSessionChannel {
   }
 
   void _watchSessionTermination() {
-    var sessionRoot = FirebaseDatabase.instance
-        .ref()
-        .child('remote-payments/$_sessionID');
+    var sessionRoot =
+        FirebaseDatabase.instance.ref().child('remote-payments/$_sessionID');
     _sessionRootListener = sessionRoot.onValue.listen((event) {
       if (event.snapshot.value == null) {
         _peerTerminatedController.add(null);

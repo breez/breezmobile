@@ -1,5 +1,6 @@
 import 'dart:convert' as JSON;
 
+import 'package:breez/utils/build_context.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:webview_flutter/webview_flutter.dart';
@@ -24,24 +25,25 @@ class LSPWebViewPageState extends State<LSPWebViewPage> {
 
   @override
   Widget build(BuildContext context) {
+    ThemeData theme = context.theme;
+    AppBarTheme appBarTheme = theme.appBarTheme;
+
     return Scaffold(
       appBar: AppBar(
         actions: <Widget>[
           IconButton(
               icon: Icon(
                 Icons.close,
-                color: Theme.of(context).iconTheme.color,
+                color: context.iconTheme.color,
               ),
-              onPressed: () => Navigator.pop(context))
+              onPressed: () => context.pop())
         ],
         automaticallyImplyLeading: false,
-        iconTheme: Theme.of(context).appBarTheme.iconTheme,
-        textTheme: Theme.of(context).appBarTheme.textTheme,
-        backgroundColor: Theme.of(context).canvasColor,
-        title: Text(
-          widget._title,
-          style: Theme.of(context).appBarTheme.textTheme.headline6,
-        ),
+        iconTheme: appBarTheme.iconTheme,
+        backgroundColor: theme.canvasColor,
+        toolbarTextStyle: appBarTheme.toolbarTextStyle,
+        titleTextStyle: appBarTheme.titleTextStyle,
+        title: Text(widget._title),
         elevation: 0.0,
       ),
       body: WebView(
@@ -56,14 +58,14 @@ class LSPWebViewPageState extends State<LSPWebViewPage> {
           _breezJavascriptChannel(context),
         ].toSet(),
         navigationDelegate: (NavigationRequest request) =>
-        request.url.startsWith('lightning:')
-            ? NavigationDecision.prevent
-            : NavigationDecision.navigate,
+            request.url.startsWith('lightning:')
+                ? NavigationDecision.prevent
+                : NavigationDecision.navigate,
         onPageFinished: (String url) async {
           // redirect post messages to javascript channel
-          _webViewController.evaluateJavascript(
+          _webViewController.runJavascript(
               "window.onmessage = (message) => window.BreezWebView.postMessage(message.data);");
-          _webViewController.evaluateJavascript(await rootBundle
+          _webViewController.runJavascript(await rootBundle
               .loadString('src/scripts/lightningLinkInterceptor.js'));
         },
       ),
@@ -79,7 +81,7 @@ class LSPWebViewPageState extends State<LSPWebViewPage> {
           String lightningLink = decodedMsg["lightningLink"];
           if (lightningLink != null &&
               lightningLink.toLowerCase().startsWith("lightning:lnurl")) {
-            Navigator.pop(context, lightningLink.substring(10));
+            context.pop(lightningLink.substring(10));
           }
         }
       },

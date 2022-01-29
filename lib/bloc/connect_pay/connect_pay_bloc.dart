@@ -29,6 +29,7 @@ class ConnectPayBloc {
   RemoteSession _currentSession;
   final StreamController _sessionInvitesController =
       BehaviorSubject<SessionLinkModel>();
+
   Stream<SessionLinkModel> get sessionInvites =>
       _sessionInvitesController.stream;
 
@@ -168,10 +169,15 @@ abstract class RemoteSession {
   RemoteSession(this._currentUser);
 
   String get sessionID;
+
   BreezUserModel get currentUser => _currentUser;
+
   Stream<PaymentSessionState> get paymentSessionStateStream;
+
   Stream<PaymentSessionError> get sessionErrors;
+
   Future start(SessionLinkModel sessionLink);
+
   Future terminate({bool permanent = false});
 }
 

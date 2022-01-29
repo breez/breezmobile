@@ -6,13 +6,13 @@ import 'package:breez/bloc/blocs_provider.dart';
 import 'package:breez/bloc/reverse_swap/reverse_swap_actions.dart';
 import 'package:breez/bloc/reverse_swap/reverse_swap_bloc.dart';
 import 'package:breez/bloc/reverse_swap/reverse_swap_model.dart';
+import 'package:breez/utils/build_context.dart';
 import 'package:breez/widgets/back_button.dart' as backBtn;
 import 'package:breez/widgets/error_dialog.dart';
 import 'package:breez/widgets/loader.dart';
 import 'package:breez/widgets/payment_details_dialog.dart';
 import 'package:fixnum/fixnum.dart';
 import 'package:flutter/material.dart';
-import 'package:breez/l10n/locales.dart';
 import 'package:rxdart/subjects.dart';
 
 import '../sync_progress_dialog.dart';
@@ -85,6 +85,8 @@ class ReverseSwapPageState extends State<ReverseSwapPage> {
   Widget build(BuildContext context) {
     final reverseSwapBloc = AppBlocsProvider.of<ReverseSwapBloc>(context);
     final accountBloc = AppBlocsProvider.of<AccountBloc>(context);
+    ThemeData theme = context.theme;
+    AppBarTheme appBarTheme = theme.appBarTheme;
 
     return StreamBuilder<AccountModel>(
       stream: accountBloc.accountStream,
@@ -98,16 +100,14 @@ class ReverseSwapPageState extends State<ReverseSwapPage> {
                   _loadingError != null ||
                   hasUnconfirmed
               ? AppBar(
-                  iconTheme: Theme.of(context).appBarTheme.iconTheme,
-                  textTheme: Theme.of(context).appBarTheme.textTheme,
-                  backgroundColor: Theme.of(context).canvasColor,
+                  iconTheme: appBarTheme.iconTheme,
+                  toolbarTextStyle: appBarTheme.toolbarTextStyle,
+                  titleTextStyle: appBarTheme.titleTextStyle,
+                  backgroundColor: context.canvasColor,
                   leading: backBtn.BackButton(
-                    onPressed: () => Navigator.of(context).pop(),
+                    onPressed: () => context.pop(),
                   ),
-                  title: Text(
-                    context.l10n.reverse_swap_title,
-                    style: Theme.of(context).appBarTheme.textTheme.headline6,
-                  ),
+                  title: Text(context.l10n.reverse_swap_title),
                   elevation: 0.0,
                 )
               : null,
@@ -131,7 +131,7 @@ class ReverseSwapPageState extends State<ReverseSwapPage> {
               if (snapshot.data == null) {
                 return Center(
                   child: Loader(
-                    color: Theme.of(context).primaryColor.withOpacity(0.5),
+                    color: context.primaryColor.withOpacity(0.5),
                   ),
                 );
               }
@@ -262,7 +262,7 @@ class ReverseSwapPageState extends State<ReverseSwapPage> {
     final swap = NewReverseSwap(toSend, address, feesHash, claimFees, received);
     _reverseSwapBloc.actionsSink.add(swap);
     return swap.future.then((value) {
-      Navigator.of(context).pop();
+      context.pop();
     }).catchError((err) async {
       await promptError(context, null, Text(err.toString()));
     });

@@ -1,7 +1,7 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:breez/services/injector.dart';
+import 'package:breez/utils/build_context.dart';
 import 'package:flutter/material.dart';
-import 'package:breez/l10n/locales.dart';
 import 'package:share_extend/share_extend.dart';
 
 import 'flushbar.dart';
@@ -22,6 +22,9 @@ class CollapsibleListItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    var l10n = context.l10n;
+    TextTheme textTheme = context.textTheme;
+
     return ListTileTheme(
       contentPadding: EdgeInsets.zero,
       textColor: userStyle.color,
@@ -33,7 +36,7 @@ class CollapsibleListItem extends StatelessWidget {
           collapsedIconColor: userStyle.color,
           title: AutoSizeText(
             title,
-            style: Theme.of(context).textTheme.headline4.merge(userStyle),
+            style: textTheme.headline4.merge(userStyle),
             maxLines: 1,
             group: labelGroup,
           ),
@@ -46,11 +49,11 @@ class CollapsibleListItem extends StatelessWidget {
                   child: Padding(
                     padding: EdgeInsets.only(left: 16.0, right: 0.0),
                     child: Text(
-                      sharedValue ?? context.l10n.collapsible_list_default_value,
+                      sharedValue ?? l10n.collapsible_list_default_value,
                       textAlign: TextAlign.left,
                       overflow: TextOverflow.clip,
                       maxLines: 4,
-                      style: Theme.of(context).textTheme.headline3
+                      style: textTheme.headline3
                           .copyWith(fontSize: 10)
                           .merge(userStyle),
                     ),
@@ -67,9 +70,9 @@ class CollapsibleListItem extends StatelessWidget {
                         IconButton(
                           alignment: Alignment.centerRight,
                           padding: EdgeInsets.only(right: 8.0),
-                          tooltip: context.l10n.collapsible_list_action_copy(title),
+                          tooltip: l10n.collapsible_list_action_copy(title),
                           iconSize: 16.0,
-                          color: userStyle.color ?? Theme.of(context).textTheme.button.color,
+                          color: userStyle.color ?? textTheme.button.color,
                           icon: Icon(
                             IconData(0xe90b, fontFamily: 'icomoon'),
                           ),
@@ -77,10 +80,10 @@ class CollapsibleListItem extends StatelessWidget {
                             ServiceInjector()
                                 .device
                                 .setClipboardText(sharedValue);
-                            Navigator.pop(context);
+                            context.pop();
                             showFlushbar(
                               context,
-                              message: context.l10n.collapsible_list_copied(title),
+                              message: l10n.collapsible_list_copied(title),
                               duration: Duration(seconds: 4),
                             );
                           },
@@ -88,7 +91,7 @@ class CollapsibleListItem extends StatelessWidget {
                         IconButton(
                           padding: EdgeInsets.only(right: 8.0),
                           iconSize: 16.0,
-                          color: userStyle.color ?? Theme.of(context).textTheme.button.color,
+                          color: userStyle.color ?? textTheme.button.color,
                           icon: Icon(Icons.share),
                           onPressed: () {
                             ShareExtend.share(sharedValue, "text");

@@ -15,6 +15,7 @@ class PodcastIndexAPI extends PodcastApi {
   SecurityContext _defaultSecurityContext;
   List<int> _certificateAuthorityBytes = [];
   final Search api = Search();
+
   // static String userAgent =
   //     'Anytime/${AnytimePodcastApp.applicationVersion} (https://github.com/amugofjava/anytime_podcast_player)';
 

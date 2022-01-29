@@ -1,3 +1,4 @@
+import 'package:breez/utils/build_context.dart';
 import 'package:breez/widgets/circular_progress.dart';
 import 'package:breez/widgets/transparent_page_route.dart';
 import 'package:flutter/material.dart';
@@ -46,6 +47,9 @@ class TransparentRouteLoaderState extends State<TransparentRouteLoader> {
 
   @override
   Widget build(BuildContext context) {
+    ThemeData theme = context.theme;
+    Size mediaQuerySize = context.mediaQuerySize;
+
     return Material(
       type: MaterialType.transparency,
       child: Stack(
@@ -56,13 +60,12 @@ class TransparentRouteLoaderState extends State<TransparentRouteLoader> {
             left: 0.0,
             right: 0.0,
             child: Container(
-                color:
-                    Theme.of(context).canvasColor.withOpacity(widget.opacity),
-                height: MediaQuery.of(context).size.height,
-                width: MediaQuery.of(context).size.width,
+                color: theme.canvasColor.withOpacity(widget.opacity),
+                height: mediaQuerySize.height,
+                width: mediaQuerySize.width,
                 child: CircularProgress(
                     size: 160.0,
-                    color: Theme.of(context).colorScheme.secondary,
+                    color: theme.colorScheme.secondary,
                     value: widget.value,
                     title: widget.message)),
           ),
@@ -94,10 +97,10 @@ class SyncProgressLoader extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      width: MediaQuery.of(context).size.width,
+      width: context.mediaQuerySize.width,
       height: 150.0,
       child: CircularProgress(
-          color: progressColor ?? Theme.of(context).textTheme.button.color,
+          color: progressColor ?? context.textTheme.button.color,
           size: 100.0,
           value: value,
           title: title),

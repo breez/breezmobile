@@ -1,7 +1,7 @@
 import 'package:breez/theme_data.dart' as theme;
+import 'package:breez/utils/build_context.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:breez/l10n/locales.dart';
 
 const double _kBarSize = 45.0;
 
@@ -32,22 +32,23 @@ class KeyboardDoneAction {
   void _showOverlay() {
     OverlayState os = Overlay.of(focusNodes[0].context);
     _overlayEntry = OverlayEntry(builder: (context) {
+      MediaQueryData mediaQuery = context.mediaQuery;
       // Update and build footer, if any
       return Positioned(
-        bottom: MediaQuery.of(context).viewInsets.bottom,
+        bottom: mediaQuery.viewInsets.bottom,
         left: 0,
         right: 0,
         child: Material(
           color: Colors.grey[200],
           child: Container(
             height: _kBarSize,
-            width: MediaQuery.of(context).size.width,
+            width: mediaQuery.size.width,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.end,
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 InkWell(
-                  onTap: () => FocusScope.of(context).requestFocus(FocusNode()),
+                  onTap: () => context.focusScope.requestFocus(FocusNode()),
                   child: Padding(
                     padding: EdgeInsets.all(8.0),
                     child: Text(

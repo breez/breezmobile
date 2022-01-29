@@ -15,7 +15,9 @@ class CircularButton extends StatelessWidget {
     return InkWell(
         customBorder: CircleBorder(),
         child: Container(
-          child: TextButton( // ignore: missing_required_param
+          // ignore: missing_required_param
+          child: TextButton(
+              // ignore: missing_required_param
               style: TextButton.styleFrom(padding: EdgeInsets.all(24)),
               child: child),
         ),

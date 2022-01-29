@@ -30,6 +30,7 @@ import 'package:breez/routes/podcast/podcast_index_api.dart';
 import 'package:breez/routes/podcast/share_episode_button.dart';
 import 'package:breez/routes/podcast/share_podcast_button.dart';
 import 'package:breez/routes/podcast/transport_controls.dart';
+import 'package:breez/utils/build_context.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -224,7 +225,7 @@ class NowPlayingTransportState extends State<NowPlayingTransport> {
                 widgets.add(AddFundsMessage(accountModel: snapshot.data));
                 widgets.add(Divider(height: 0.0, thickness: 1));
               }
-              widgets.add(WithConfettyPaymentEffect(
+              widgets.add(WithConfettiPaymentEffect(
                   type: PaymentEventType.StreamCompleted,
                   child: PlayerPositionControls()));
               widgets.add(PlayerTransportControls());
@@ -232,7 +233,7 @@ class NowPlayingTransportState extends State<NowPlayingTransport> {
                   Padding(padding: const EdgeInsets.symmetric(vertical: 8.0)));
               widgets.add(Divider(height: 0.0, thickness: 1));
               widgets.add(Container(
-                  color: Theme.of(context).backgroundColor,
+                  color: context.backgroundColor,
                   child: SafeArea(child: PaymentAdjustment())));
               return Column(mainAxisSize: MainAxisSize.min, children: widgets);
             },
@@ -249,7 +250,7 @@ WidgetBuilder playerBuilder(int duration) {
 
 WidgetBuilder placeholderBuilder() {
   final WidgetBuilder builder = (BuildContext context) => Container(
-        color: Theme.of(context).primaryColor,
+        color: context.primaryColor,
         constraints: BoxConstraints.expand(),
       );
   return builder;
@@ -257,7 +258,7 @@ WidgetBuilder placeholderBuilder() {
 
 WidgetBuilder errorPlaceholderBuilder() {
   final WidgetBuilder builder = (BuildContext context) => Placeholder(
-        color: Theme.of(context).errorColor,
+        color: context.errorColor,
         strokeWidth: 1,
       );
   return builder;

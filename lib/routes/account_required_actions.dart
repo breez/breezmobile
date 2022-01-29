@@ -9,13 +9,13 @@ import 'package:breez/bloc/lsp/lsp_bloc.dart';
 import 'package:breez/bloc/lsp/lsp_model.dart';
 import 'package:breez/routes/close_warning_dialog.dart';
 import 'package:breez/services/breezlib/data/rpc.pb.dart';
+import 'package:breez/utils/build_context.dart';
 import 'package:breez/widgets/enable_backup_dialog.dart';
 import 'package:breez/widgets/flushbar.dart';
 import 'package:breez/widgets/rotator.dart';
 import 'package:breez/widgets/route.dart';
 import 'package:fixnum/fixnum.dart';
 import 'package:flutter/material.dart';
-import 'package:breez/l10n/locales.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:rxdart/rxdart.dart';
 
@@ -108,7 +108,7 @@ class AccountRequiredActionsIndicatorState
         iconWidget: Rotator(
           child: Image(
             image: AssetImage("src/icon/sync.png"),
-            color: Theme.of(context).appBarTheme.actionsIconTheme.color,
+            color: context.appBarTheme.actionsIconTheme.color,
           ),
         ),
       );
@@ -221,7 +221,7 @@ class AccountRequiredActionsIndicatorState
 
     if (walletBalance > 0 && !accountSettings.ignoreWalletBalance) {
       warnings.add(
-        WarningAction(() => Navigator.of(context).pushNamed("/send_coins")),
+        WarningAction(() => context.pushNamed("/send_coins")),
       );
     }
 
@@ -288,8 +288,8 @@ class AccountRequiredActionsIndicatorState
         ),
         iconWidget: Rotator(
             child: Image(
-          image: AssetImage("src/icon/sync.png"),
-          color: Theme.of(context).appBarTheme.actionsIconTheme.color,
+              image: AssetImage("src/icon/sync.png"),
+          color: context.appBarTheme.actionsIconTheme.color,
         )),
       ));
     }
@@ -298,12 +298,12 @@ class AccountRequiredActionsIndicatorState
       warnings.add(WarningAction(() {
         if (lspStatus?.lastConnectionError != null) {
           showProviderErrorDialog(context, lspStatus?.lastConnectionError, () {
-            Navigator.of(context).push(FadeInRoute(
+            context.push(FadeInRoute(
               builder: (_) => SelectLSPPage(lstBloc: widget.lspBloc),
             ));
           });
         } else {
-          Navigator.of(context).pushNamed("/select_lsp");
+          context.pushNamed("/select_lsp");
         }
       }));
     }
@@ -375,7 +375,7 @@ class WarningActionState extends State<WarningAction>
         child: widget.iconWidget ??
             SvgPicture.asset(
               "src/icon/warning.svg",
-              color: Theme.of(context).appBarTheme.actionsIconTheme.color,
+              color: context.appBarTheme.actionsIconTheme.color,
             ),
       ),
       tooltip: context.l10n.account_required_actions_backup,

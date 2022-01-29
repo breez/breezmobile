@@ -1,5 +1,5 @@
+import 'package:breez/utils/build_context.dart';
 import 'package:flutter/material.dart';
-import 'package:breez/l10n/locales.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class LinkLauncher extends StatelessWidget {

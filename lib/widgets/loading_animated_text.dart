@@ -1,6 +1,9 @@
 import 'dart:async';
 
+import 'package:breez/utils/build_context.dart';
 import 'package:flutter/material.dart';
+
+import '../theme_data.dart';
 
 class LoadingAnimatedText extends StatefulWidget {
   final String _loadingMessage;
@@ -39,10 +42,16 @@ class LoadingAnimatedTextState extends State<LoadingAnimatedText> {
 
   @override
   Widget build(BuildContext context) {
+    ThemeData theme = context.theme;
+    TextTheme textTheme = theme.textTheme;
+    Color secondaryColor =
+        (themeId == "BLUE") ? BreezColors.grey[600] : Colors.white;
+
     var textElements = widget.textElements.toList();
     return RichText(
         text: TextSpan(
-            style: widget.textStyle ?? Theme.of(context).accentTextTheme.bodyText2,
+            style: widget.textStyle ??
+                textTheme.bodyText2.copyWith(color: secondaryColor),
             text: widget._loadingMessage,
             children: textElements
               ..addAll(<TextSpan>[
@@ -52,10 +61,11 @@ class LoadingAnimatedTextState extends State<LoadingAnimatedText> {
                     style: TextStyle(color: Colors.transparent))
               ])),
         textAlign:
-            widget.textAlign == null ? TextAlign.center : widget.textAlign);
+        widget.textAlign == null ? TextAlign.center : widget.textAlign);
   }
 
   String get loadingDots => '${List.filled(_timerIteration % 4, ".").join("")}';
+
   String get paddingDots =>
       '${List.filled(3 - _timerIteration % 4, ".").join("")}';
 }

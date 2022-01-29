@@ -1,6 +1,7 @@
 import 'package:email_validator/email_validator.dart';
 
 RegExp _lnurlPrefix = new RegExp(",*?((lnurl)([0-9]{1,}[a-z0-9]+){1})");
+
 /// https://github.com/fiatjaf/lnurl-rfc/blob/luds/17.md
 RegExp _lnurlRfc17Prefix = RegExp("(lnurl)(c|w|p)");
 String _lightningProtocolPrefix = "lightning:";

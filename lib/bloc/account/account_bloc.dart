@@ -40,56 +40,71 @@ class AccountBloc {
 
   final _userActionsController = StreamController<AsyncAction>.broadcast();
   AccountSynchronizer _accountSynchronizer;
+
   Sink<AsyncAction> get userActionsSink => _userActionsController.sink;
   Map<Type, Function> _actionHandlers = Map();
 
   final _reconnectStreamController = StreamController<void>.broadcast();
+
   Sink<void> get _reconnectSink => _reconnectStreamController.sink;
 
   final _broadcastRefundRequestController =
       StreamController<BroadcastRefundRequestModel>.broadcast();
+
   Sink<BroadcastRefundRequestModel> get broadcastRefundRequestSink =>
       _broadcastRefundRequestController.sink;
 
   final _broadcastRefundResponseController =
       StreamController<BroadcastRefundResponseModel>.broadcast();
+
   Stream<BroadcastRefundResponseModel> get broadcastRefundResponseStream =>
       _broadcastRefundResponseController.stream;
 
   final _accountController = BehaviorSubject<AccountModel>();
+
   Stream<AccountModel> get accountStream => _accountController.stream;
 
   final _accountEnableController = StreamController<bool>.broadcast();
+
   Sink<bool> get accountEnableSink => _accountEnableController.sink;
 
   final _accountSettingsController = BehaviorSubject<AccountSettings>();
+
   Stream<AccountSettings> get accountSettingsStream =>
       _accountSettingsController.stream;
+
   Sink<AccountSettings> get accountSettingsSink =>
       _accountSettingsController.sink;
 
   final _routingNodeConnectionController = BehaviorSubject<bool>();
+
   Stream<bool> get routingNodeConnectionStream =>
       _routingNodeConnectionController.stream;
 
   final _paymentsController = BehaviorSubject<PaymentsModel>();
+
   Stream<PaymentsModel> get paymentsStream => _paymentsController.stream;
 
   final _paymentFilterController = BehaviorSubject<PaymentFilterModel>();
+
   Stream<PaymentFilterModel> get paymentFilterStream =>
       _paymentFilterController.stream;
+
   Sink<PaymentFilterModel> get paymentFilterSink =>
       _paymentFilterController.sink;
 
   final _lspActivityController = BehaviorSubject<LSPActivity>();
+
   Stream<LSPActivity> get lspActivityStream => _lspActivityController.stream;
 
   final _accountNotificationsController = StreamController<String>.broadcast();
+
   Stream<String> get accountNotificationsStream =>
       _accountNotificationsController.stream;
 
   final _completedPaymentsController =
       StreamController<CompletedPayment>.broadcast();
+
   Stream<CompletedPayment> get completedPaymentsStream =>
       _completedPaymentsController.stream;
 
@@ -108,15 +123,19 @@ class AccountBloc {
   }
 
   final _lightningDownController = StreamController<bool>.broadcast();
+
   Stream<bool> get lightningDownStream => _lightningDownController.stream;
 
   final BehaviorSubject<void> _nodeConflictController = BehaviorSubject<void>();
+
   Stream<void> get nodeConflictStream => _nodeConflictController.stream;
 
   final AccountPermissionsHandler _permissionsHandler =
       AccountPermissionsHandler();
+
   Stream<bool> get optimizationWhitelistExplainStream =>
       _permissionsHandler.optimizationWhitelistExplainStream;
+
   Sink get optimizationWhitelistRequestSink =>
       _permissionsHandler.optimizationWhitelistRequestSink;
 
@@ -195,7 +214,7 @@ class AccountBloc {
   void _start() {
     log.info("Account bloc started");
     ServiceInjector().sharedPreferences.then((preferences) {
-      _handleRegisterDeviceNode();      
+      _handleRegisterDeviceNode();
       _refreshAccountAndPayments();
       //listen streams
       _listenAccountActions();
@@ -695,10 +714,10 @@ class AccountBloc {
     log.info("before _refreshPayments");
     return fetchPayments()
         .then((paymentModel) => _paymentsController.add(paymentModel))
-        .catchError((Object err, [StackTrace stack]){
-          log.severe("failed to fetch payments $err");
-          _paymentsController.addError(err, stack);
-        });
+        .catchError((Object err, [StackTrace stack]) {
+      log.severe("failed to fetch payments $err");
+      _paymentsController.addError(err, stack);
+    });
   }
 
   List<PaymentInfo> _groupPayments(List<PaymentInfo> paymentsList) {
@@ -848,10 +867,10 @@ class AccountBloc {
     log.info("Account bloc refreshing account...");
     await _fetchAccount()
         .then((acc) => _accountController.add(acc))
-        .catchError((Object err, [StackTrace stack]){
-          log.severe("failed to fetch account $err");
-          _accountController.addError(err, stack);
-        });
+        .catchError((Object err, [StackTrace stack]) {
+      log.severe("failed to fetch account $err");
+      _accountController.addError(err, stack);
+    });
     _refreshLSPActivity();
     if (_accountController.value.onChainFeeRate == null) {
       _breezLib.getDefaultOnChainFeeRate().then((rate) {

@@ -1,3 +1,4 @@
+import 'package:breez/utils/build_context.dart';
 import 'package:flutter/material.dart';
 
 class BackButton extends StatelessWidget {
@@ -11,8 +12,8 @@ class BackButton extends StatelessWidget {
     return IconButton(
         icon: Icon(iconData ?? IconData(0xe906, fontFamily: 'icomoon')),
         onPressed: this.onPressed ??
-            () {
-              Navigator.pop(context);
+                () {
+              context.pop();
             });
   }
 }

@@ -7,6 +7,7 @@ import 'package:breez/bloc/backup/backup_model.dart';
 import 'package:breez/bloc/blocs_provider.dart';
 import 'package:breez/routes/backup_in_progress_dialog.dart';
 import 'package:breez/theme_data.dart' as theme;
+import 'package:breez/utils/build_context.dart';
 import 'package:breez/widgets/back_button.dart' as backBtn;
 import 'package:breez/widgets/error_dialog.dart';
 import 'package:breez/widgets/single_button_bottom_bar.dart';
@@ -29,24 +30,25 @@ class VerifyBackupPhrasePageState extends State<VerifyBackupPhrasePage> {
 
   @override
   Widget build(BuildContext context) {
+    ThemeData themeData = context.theme;
+    AppBarTheme appBarTheme = themeData.appBarTheme;
+    MediaQueryData mediaQuery = context.mediaQuery;
+
     BackupBloc backupBloc = AppBlocsProvider.of<BackupBloc>(context);
     return Scaffold(
       appBar: AppBar(
-          iconTheme: Theme.of(context).appBarTheme.iconTheme,
-          textTheme: Theme.of(context).appBarTheme.textTheme,
-          backgroundColor: Theme.of(context).canvasColor,
+          iconTheme: appBarTheme.iconTheme,
+          backgroundColor: themeData.canvasColor,
+          toolbarTextStyle: appBarTheme.toolbarTextStyle,
+          titleTextStyle: appBarTheme.titleTextStyle,
           automaticallyImplyLeading: false,
           leading: backBtn.BackButton(),
-          title: Text(
-            "Let's verify",
-            style: Theme.of(context).appBarTheme.textTheme.headline6,
-          ),
+          title: Text("Let's verify"),
           elevation: 0.0),
       body: SingleChildScrollView(
         child: Container(
-          height: MediaQuery.of(context).size.height -
-              kToolbarHeight -
-              MediaQuery.of(context).padding.top,
+          height:
+              mediaQuery.size.height - kToolbarHeight - mediaQuery.padding.top,
           child: Column(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: <Widget>[
@@ -140,8 +142,8 @@ class VerifyBackupPhrasePageState extends State<VerifyBackupPhrasePage> {
               return null;
             },
             onEditingComplete: () => (index == 2)
-                ? FocusScope.of(context).unfocus()
-                : FocusScope.of(context).nextFocus(),
+                ? context.focusScope.unfocus()
+                : context.focusScope.nextFocus(),
           ),
         );
       },
@@ -150,7 +152,7 @@ class VerifyBackupPhrasePageState extends State<VerifyBackupPhrasePage> {
       selectedWordList
         ..add(Text(
           "Failed to verify words. Please write down the words and try again.",
-          style: Theme.of(context).textTheme.headline4.copyWith(fontSize: 12),
+          style: context.textTheme.headline4.copyWith(fontSize: 12),
         ));
     return selectedWordList;
   }
@@ -169,7 +171,7 @@ class VerifyBackupPhrasePageState extends State<VerifyBackupPhrasePage> {
           "Internal Error",
           Text(
             err.toString(),
-            style: Theme.of(context).dialogTheme.contentTextStyle,
+            style: context.dialogTheme.contentTextStyle,
           ));
     });
   }
@@ -190,7 +192,7 @@ class VerifyBackupPhrasePageState extends State<VerifyBackupPhrasePage> {
       BackupSettings backupSettings, BackupBloc backupBloc) async {
     var action = UpdateBackupSettings(backupSettings);
     backupBloc.backupActionsSink.add(action);
-    Navigator.popUntil(context, ModalRoute.withName("/security"));
+    context.popUntil(ModalRoute.withName("/security"));
     action.future.then((_) {
       backupBloc.backupNowSink.add(true);
       backupBloc.backupStateStream.firstWhere((s) => s.inProgress).then((s) {
@@ -209,7 +211,7 @@ class VerifyBackupPhrasePageState extends State<VerifyBackupPhrasePage> {
           "Internal Error",
           Text(
             err.toString(),
-            style: Theme.of(context).dialogTheme.contentTextStyle,
+            style: context.dialogTheme.contentTextStyle,
           ));
     });
   }

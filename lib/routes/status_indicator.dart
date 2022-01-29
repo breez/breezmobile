@@ -1,4 +1,5 @@
 import 'package:breez/bloc/account/account_model.dart';
+import 'package:breez/utils/build_context.dart';
 import 'package:flutter/material.dart';
 
 class StatusIndicator extends StatelessWidget {
@@ -17,14 +18,13 @@ class StatusIndicator extends StatelessWidget {
     return SizedBox(
       child: createStatusIndicator(),
       height: 2.0,
-      width: MediaQuery.of(context).size.width,
+      width: context.mediaQuerySize.width,
     );
   }
 
   Widget createStatusIndicator() {
     return LinearProgressIndicator(
-        valueColor:
-            AlwaysStoppedAnimation<Color>(Theme.of(context).backgroundColor),
-        backgroundColor: Theme.of(context).highlightColor);
+        valueColor: AlwaysStoppedAnimation<Color>(context.backgroundColor),
+        backgroundColor: context.highlightColor);
   }
 }

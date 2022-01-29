@@ -6,9 +6,9 @@ class SatAmountFormFieldFormatter extends TextInputFormatter {
   final RegExp _pattern = RegExp(r'[^\d*]');
 
   TextEditingValue formatEditUpdate(
-      TextEditingValue oldValue,
-      TextEditingValue newValue,
-      ) {
+    TextEditingValue oldValue,
+    TextEditingValue newValue,
+  ) {
     final raw = newValue.text.replaceAll(_pattern, '');
     if (raw.isEmpty) {
       return newValue.copyWith(

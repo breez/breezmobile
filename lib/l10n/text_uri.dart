@@ -1,4 +1,4 @@
-import 'package:breez/l10n/locales.dart';
+import 'package:breez/utils/build_context.dart';
 import 'package:flutter/cupertino.dart';
 
 // Some times you have to construct a model that needs a text but you are out

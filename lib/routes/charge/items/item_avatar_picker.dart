@@ -4,12 +4,11 @@ import 'package:breez/bloc/blocs_provider.dart';
 import 'package:breez/bloc/pos_catalog/bloc.dart';
 import 'package:breez/bloc/pos_catalog/model.dart';
 import 'package:breez/theme_data.dart';
+import 'package:breez/utils/build_context.dart';
 import 'package:breez/widgets/back_button.dart' as backBtn;
 import 'package:flutter/material.dart';
-import 'package:breez/l10n/locales.dart';
 import 'package:flutter_svg/svg.dart';
 
-import '../../../utils/min_font_size.dart';
 import 'item_avatar.dart';
 
 class ItemAvatarPicker extends StatefulWidget {
@@ -45,16 +44,15 @@ class ItemAvatarPickerState extends State<ItemAvatarPicker> {
 
   @override
   Widget build(BuildContext context) {
+    AppBarTheme appBarTheme = context.appBarTheme;
     return Scaffold(
       appBar: AppBar(
-        iconTheme: Theme.of(context).appBarTheme.iconTheme,
-        textTheme: Theme.of(context).appBarTheme.textTheme,
-        backgroundColor: Theme.of(context).canvasColor,
+        iconTheme: appBarTheme.iconTheme,
+        toolbarTextStyle: appBarTheme.toolbarTextStyle,
+        titleTextStyle: appBarTheme.titleTextStyle,
+        backgroundColor: context.canvasColor,
         leading: backBtn.BackButton(),
-        title: Text(
-          context.l10n.pos_invoice_item_management_avatar_title,
-          style: Theme.of(context).appBarTheme.textTheme.headline6,
-        ),
+        title: Text(context.l10n.pos_invoice_item_management_avatar_title),
         elevation: 0.0,
       ),
       body: Padding(
@@ -76,12 +74,11 @@ class ItemAvatarPickerState extends State<ItemAvatarPicker> {
   }
 
   Widget _buildItemAvatar(BuildContext context) {
-
     return Badge(
       showBadge: _selectedImage != "",
       position: BadgePosition.topEnd(top: 5, end: -10),
       animationType: BadgeAnimationType.fade,
-      badgeColor: Theme.of(context).primaryTextTheme.subtitle2.color,
+      badgeColor: context.primaryTextTheme.subtitle2.color,
       badgeContent: _buildResetIconBadge(context),
       child: _selectedImage == "" && widget.itemName == ""
           ? Container(
@@ -96,7 +93,7 @@ class ItemAvatarPickerState extends State<ItemAvatarPicker> {
                 ),
                 image: DecorationImage(
                   colorFilter: ColorFilter.mode(
-                    Theme.of(context).primaryColorLight,
+                    context.primaryColorLight,
                     BlendMode.srcATop,
                   ),
                   image: AssetImage("src/images/avatarbg.png"),
@@ -115,7 +112,7 @@ class ItemAvatarPickerState extends State<ItemAvatarPicker> {
                       context.l10n.pos_invoice_item_management_avatar_title,
                       textAlign: TextAlign.center,
                       maxLines: 2,
-                      minFontSize: MinFontSize(context).minFontSize,
+                      minFontSize: context.minFontSize,
                       stepGranularity: 0.1,
                       style: TextStyle(
                         fontSize: 12.3,
@@ -138,14 +135,15 @@ class ItemAvatarPickerState extends State<ItemAvatarPicker> {
   }
 
   Widget _buildResetIconBadge(BuildContext context) {
+    IconThemeData iconTheme = context.iconTheme;
     return GestureDetector(
       child: Container(
         height: 24,
         width: 24,
         child: Icon(
           Icons.delete_outline,
-          size: Theme.of(context).iconTheme.deleteBadgeIconTheme.size,
-          color: Theme.of(context).iconTheme.deleteBadgeIconTheme.color,
+          size: iconTheme.deleteBadgeIconTheme.size,
+          color: iconTheme.deleteBadgeIconTheme.color,
         ),
       ),
       onTap: () {
@@ -178,8 +176,8 @@ class ItemAvatarPickerState extends State<ItemAvatarPicker> {
                 onPressed: _imageFilterController.text.isEmpty
                     ? null
                     : () {
-                        _imageFilterController.text = "";
-                        FocusScope.of(context).requestFocus(FocusNode());
+                  _imageFilterController.text = "";
+                        context.hideKeyboard();
                       },
                 padding: EdgeInsets.only(right: 24, top: 4),
               ),

@@ -14,6 +14,7 @@ class LSPStatus {
   LSPStatus._(this.availableLSPs, this.lastConnectionError, this.selectedLSP);
 
   LSPStatus.initial() : this._([], null, null);
+
   LSPStatus copyWith(
       {List<LSPInfo> availableLSPs,
       String lastConnectionError,
@@ -38,17 +39,31 @@ class LSPInfo {
   LSPInfo(this._lspInformation, this.lspID);
 
   String get name => _lspInformation.name;
+
   String get widgetURL => _lspInformation.widgetUrl;
+
   String get pubKey => _lspInformation.pubkey;
+
   String get host => _lspInformation.host;
+
   bool get frozen => _lspInformation.isFrozen;
+
   int get minHtlcMsat => _lspInformation.minHtlcMsat.toInt();
+
   int get targetConf => _lspInformation.targetConf;
+
   int get timeLockDelta => _lspInformation.timeLockDelta;
+
   int get baseFeeMsat => _lspInformation.baseFeeMsat.toInt();
+
   int get channelCapacity => _lspInformation.channelCapacity.toInt();
+
   int get channelFeePermyriad => _lspInformation.channelFeePermyriad.toInt();
+
   int get maxInactiveDuration => _lspInformation.maxInactiveDuration.toInt();
-  int get channelMinimumFeeMsat => _lspInformation.channelMinimumFeeMsat.toInt();
+
+  int get channelMinimumFeeMsat =>
+      _lspInformation.channelMinimumFeeMsat.toInt();
+
   LSPInformation get raw => _lspInformation;
 }

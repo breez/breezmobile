@@ -1,5 +1,6 @@
 import 'package:breez/bloc/user_profile/currency.dart';
 import 'package:breez/routes/podcast/custom_amount_form.dart';
+import 'package:breez/utils/build_context.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -52,7 +53,7 @@ class BoostMessageDialogState extends State<BoostMessageDialog> {
       scrollable: true,
       title: Text(
         "Send a Boostagram",
-        style: Theme.of(context).dialogTheme.titleTextStyle.copyWith(fontSize: 16),
+        style: context.dialogTheme.titleTextStyle.copyWith(fontSize: 16),
         maxLines: 1,
       ),
       content: _buildMessageWidget(),
@@ -61,6 +62,8 @@ class BoostMessageDialogState extends State<BoostMessageDialog> {
   }
 
   Widget _buildMessageWidget() {
+    DialogTheme dialogTheme = context.dialogTheme;
+
     return Column(
       mainAxisSize: MainAxisSize.min,
       mainAxisAlignment: MainAxisAlignment.center,
@@ -77,7 +80,7 @@ class BoostMessageDialogState extends State<BoostMessageDialog> {
             maxLines: null,
             maxLength: 90,
             maxLengthEnforcement: MaxLengthEnforcement.enforced,
-            style: Theme.of(context).dialogTheme.contentTextStyle.copyWith(height: 1.0),
+            style: dialogTheme.contentTextStyle.copyWith(height: 1.0),
             decoration: InputDecoration(
               labelText: "Boostagram (optional)",
             ),
@@ -93,7 +96,7 @@ class BoostMessageDialogState extends State<BoostMessageDialog> {
             decoration: InputDecoration(
               labelText: "Boost Amount (in sats)",
             ),
-            style: Theme.of(context).dialogTheme.contentTextStyle.copyWith(height: 1.0),
+            style: dialogTheme.contentTextStyle.copyWith(height: 1.0),
           ),
         )
       ],
@@ -101,10 +104,12 @@ class BoostMessageDialogState extends State<BoostMessageDialog> {
   }
 
   List<Widget> _buildActions() {
+    TextTheme primaryTextTheme = context.primaryTextTheme;
+
     List<Widget> actions = [
       TextButton(
-        onPressed: () => Navigator.pop(context),
-        child: Text("CANCEL", style: Theme.of(context).primaryTextTheme.button),
+        onPressed: () => context.pop(),
+        child: Text("CANCEL", style: primaryTextTheme.button),
       ),
     ];
     if (_amountKey.currentState?.validate() ??
@@ -113,7 +118,7 @@ class BoostMessageDialogState extends State<BoostMessageDialog> {
         TextButton(
           onPressed: () {
             if (_amountKey.currentState?.validate() ?? false) {
-              Navigator.pop(context);
+              context.pop();
               widget.setBoost(
                 Currency.SAT.parseToInt(_amountController.text),
                 _messageController.text,
@@ -122,7 +127,7 @@ class BoostMessageDialogState extends State<BoostMessageDialog> {
           },
           child: Text(
             "BOOST!",
-            style: Theme.of(context).primaryTextTheme.button,
+            style: primaryTextTheme.button,
           ),
         ),
       );

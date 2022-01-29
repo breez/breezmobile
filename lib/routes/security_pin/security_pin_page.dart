@@ -12,8 +12,8 @@ import 'package:breez/routes/podcast/theme.dart';
 import 'package:breez/routes/security_pin/remote_server_auth.dart';
 import 'package:breez/services/local_auth_service.dart';
 import 'package:breez/theme_data.dart' as theme;
+import 'package:breez/utils/build_context.dart';
 import 'package:breez/utils/date.dart';
-import 'package:breez/utils/min_font_size.dart';
 import 'package:breez/widgets/back_button.dart' as backBtn;
 import 'package:breez/widgets/error_dialog.dart';
 import 'package:breez/widgets/flushbar.dart';
@@ -21,7 +21,6 @@ import 'package:breez/widgets/route.dart';
 import 'package:duration/duration.dart';
 import 'package:duration/locale.dart';
 import 'package:flutter/material.dart';
-import 'package:breez/l10n/locales.dart';
 
 import 'backup_phrase/backup_phrase_confirmation_page.dart';
 import 'backup_phrase/backup_phrase_warning_dialog.dart';
@@ -103,18 +102,17 @@ class SecurityPageState extends State<SecurityPage>
                 canCancel: true,
               );
             }
-
+            ThemeData themeData = context.theme;
+            AppBarTheme appBarTheme = themeData.appBarTheme;
             return Scaffold(
               appBar: AppBar(
-                iconTheme: Theme.of(context).appBarTheme.iconTheme,
-                textTheme: Theme.of(context).appBarTheme.textTheme,
-                backgroundColor: Theme.of(context).canvasColor,
+                iconTheme: appBarTheme.iconTheme,
+                toolbarTextStyle: appBarTheme.toolbarTextStyle,
+                titleTextStyle: appBarTheme.titleTextStyle,
+                backgroundColor: themeData.canvasColor,
                 automaticallyImplyLeading: false,
                 leading: backBtn.BackButton(),
-                title: Text(
-                  context.l10n.security_and_backup_title,
-                  style: Theme.of(context).appBarTheme.textTheme.headline6,
-                ),
+                title: Text(context.l10n.security_and_backup_title),
                 elevation: 0.0,
               ),
               body: ListView(
@@ -234,7 +232,7 @@ class SecurityPageState extends State<SecurityPage>
           context.l10n.security_and_backup_encrypt,
           style: TextStyle(color: Colors.white),
           maxLines: 1,
-          minFontSize: MinFontSize(context).minFontSize,
+          minFontSize: context.minFontSize,
           stepGranularity: 0.1,
           group: _autoSizeGroup,
         ),
@@ -285,13 +283,15 @@ class SecurityPageState extends State<SecurityPage>
     SecurityModel securityModel,
     BackupSettings backupSettings,
   ) {
+    double minFontSize = context.minFontSize;
+
     return ListTile(
       title: Container(
         child: AutoSizeText(
           context.l10n.security_and_backup_store_location,
           style: TextStyle(color: Colors.white),
           maxLines: 1,
-          minFontSize: MinFontSize(context).minFontSize,
+          minFontSize: minFontSize,
           stepGranularity: 0.1,
           group: _autoSizeGroup,
         ),
@@ -335,7 +335,7 @@ class SecurityPageState extends State<SecurityPage>
                   provider.displayName,
                   style: theme.FieldTextStyle.textStyle,
                   maxLines: 1,
-                  minFontSize: MinFontSize(context).minFontSize,
+                  minFontSize: minFontSize,
                   stepGranularity: 0.1,
                 ),
               ),
@@ -351,13 +351,15 @@ class SecurityPageState extends State<SecurityPage>
     SecurityModel securityModel,
     BackupSettings backupSettings,
   ) {
+    double minFontSize = context.minFontSize;
+
     return ListTile(
       title: Container(
         child: AutoSizeText(
           context.l10n.security_and_backup_lock_automatically,
           style: TextStyle(color: Colors.white),
           maxLines: 1,
-          minFontSize: MinFontSize(context).minFontSize,
+          minFontSize: minFontSize,
           stepGranularity: 0.1,
           group: _autoSizeGroup,
         ),
@@ -385,7 +387,7 @@ class SecurityPageState extends State<SecurityPage>
                   _formatSeconds(seconds),
                   style: theme.FieldTextStyle.textStyle,
                   maxLines: 1,
-                  minFontSize: MinFontSize(context).minFontSize,
+                  minFontSize: minFontSize,
                   stepGranularity: 0.1,
                 ),
               ),
@@ -397,8 +399,10 @@ class SecurityPageState extends State<SecurityPage>
   }
 
   String _formatSeconds(int seconds) {
+    var l10n = context.l10n;
+
     if (seconds == 0) {
-      return context.l10n.security_and_backup_lock_automatically_option_immediate;
+      return l10n.security_and_backup_lock_automatically_option_immediate;
     }
     final enLocale = EnglishDurationLocale();
     final locales = {
@@ -409,7 +413,7 @@ class SecurityPageState extends State<SecurityPage>
     };
     return printDuration(
       Duration(seconds: seconds),
-      locale: locales[context.l10n.locale] ?? enLocale,
+      locale: locales[l10n.locale] ?? enLocale,
     );
   }
 
@@ -424,7 +428,7 @@ class SecurityPageState extends State<SecurityPage>
           BackupSettings.remoteServerBackupProvider.displayName,
           style: TextStyle(color: Colors.white),
           maxLines: 1,
-          minFontSize: MinFontSize(context).minFontSize,
+          minFontSize: context.minFontSize,
           stepGranularity: 0.1,
           group: _autoSizeGroup,
         ),
@@ -461,7 +465,7 @@ class SecurityPageState extends State<SecurityPage>
           context.l10n.security_and_backup_change_pin,
           style: TextStyle(color: Colors.white),
           maxLines: 1,
-          minFontSize: MinFontSize(context).minFontSize,
+          minFontSize: context.minFontSize,
           stepGranularity: 0.1,
           group: _autoSizeGroup,
         ),
@@ -489,7 +493,7 @@ class SecurityPageState extends State<SecurityPage>
         _localAuthenticationOptionLabel(),
         style: TextStyle(color: Colors.white),
         maxLines: 1,
-        minFontSize: MinFontSize(context).minFontSize,
+        minFontSize: context.minFontSize,
         stepGranularity: 0.1,
         group: securityModel.requiresPin ? _autoSizeGroup : null,
       ),
@@ -525,7 +529,8 @@ class SecurityPageState extends State<SecurityPage>
     BackupSettings backupSettings,
   ) async {
     final validateBiometricsAction = ValidateBiometrics(
-      localizedReason: context.l10n.security_and_backup_validate_biometrics_reason,
+      localizedReason:
+          context.l10n.security_and_backup_validate_biometrics_reason,
     );
     widget.userProfileBloc.userActionsSink.add(validateBiometricsAction);
     validateBiometricsAction.future.then(
@@ -547,39 +552,40 @@ class SecurityPageState extends State<SecurityPage>
     SecurityModel securityModel,
     BackupSettings backupSettings,
   ) {
+    var l10n = context.l10n;
     return ListTile(
       title: AutoSizeText(
         securityModel.requiresPin
-            ? context.l10n.security_and_backup_pin_option_deactivate
-            : context.l10n.security_and_backup_pin_option_create,
+            ? l10n.security_and_backup_pin_option_deactivate
+            : l10n.security_and_backup_pin_option_create,
         style: TextStyle(color: Colors.white),
         maxLines: 1,
-        minFontSize: MinFontSize(context).minFontSize,
+        minFontSize: context.minFontSize,
         stepGranularity: 0.1,
         group: securityModel.requiresPin ? _autoSizeGroup : null,
       ),
       trailing: securityModel.requiresPin
           ? Switch(
-              value: securityModel.requiresPin,
-              activeColor: Colors.white,
-              onChanged: (bool value) {
-                if (this.mounted) {
-                  _resetSecurityModel(context);
-                }
-              },
-            )
+        value: securityModel.requiresPin,
+        activeColor: Colors.white,
+        onChanged: (bool value) {
+          if (this.mounted) {
+            _resetSecurityModel(context);
+          }
+        },
+      )
           : Icon(
-              Icons.keyboard_arrow_right,
-              color: Colors.white,
-              size: 30.0,
-            ),
+        Icons.keyboard_arrow_right,
+        color: Colors.white,
+        size: 30.0,
+      ),
       onTap: securityModel.requiresPin
           ? null
           : () => _onChangePinSelected(
-                context,
-                securityModel,
-                backupSettings,
-              ),
+        context,
+        securityModel,
+        backupSettings,
+      ),
     );
   }
 
@@ -588,7 +594,7 @@ class SecurityPageState extends State<SecurityPage>
     SecurityModel securityModel,
     BackupSettings backupSettings,
   ) {
-    Navigator.of(context).push(
+    context.push(
       FadeInRoute(
         builder: (BuildContext context) {
           return withBreezTheme(
@@ -615,7 +621,7 @@ class SecurityPageState extends State<SecurityPage>
                 context.l10n.security_and_backup_internal_error,
                 Text(
                   err.toString(),
-                  style: Theme.of(context).dialogTheme.contentTextStyle,
+                  style: context.dialogTheme.contentTextStyle,
                 ),
               ),
             );
@@ -642,7 +648,7 @@ class SecurityPageState extends State<SecurityPage>
         context.l10n.security_and_backup_internal_error,
         Text(
           err.toString(),
-          style: Theme.of(context).dialogTheme.contentTextStyle,
+          style: context.dialogTheme.contentTextStyle,
         ),
       );
     });
@@ -664,7 +670,7 @@ class SecurityPageState extends State<SecurityPage>
         context.l10n.security_and_backup_internal_error,
         Text(
           err.toString(),
-          style: Theme.of(context).dialogTheme.contentTextStyle,
+          style: context.dialogTheme.contentTextStyle,
         ),
       );
     });
@@ -684,7 +690,7 @@ class SecurityPageState extends State<SecurityPage>
         context.l10n.security_and_backup_internal_error,
         Text(
           err.toString(),
-          style: Theme.of(context).dialogTheme.contentTextStyle,
+          style: context.dialogTheme.contentTextStyle,
         ),
       );
     });
@@ -710,18 +716,19 @@ class SecurityPageState extends State<SecurityPage>
   }
 
   String _localAuthenticationOptionLabel() {
+    var l10n = context.l10n;
     switch (_localAuthenticationOption) {
       case LocalAuthenticationOption.FACE:
-        return context.l10n.security_and_backup_enable_biometric_option_face;
+        return l10n.security_and_backup_enable_biometric_option_face;
       case LocalAuthenticationOption.FACE_ID:
-        return context.l10n.security_and_backup_enable_biometric_option_face_id;
+        return l10n.security_and_backup_enable_biometric_option_face_id;
       case LocalAuthenticationOption.FINGERPRINT:
-        return context.l10n.security_and_backup_enable_biometric_option_fingerprint;
+        return l10n.security_and_backup_enable_biometric_option_fingerprint;
       case LocalAuthenticationOption.TOUCH_ID:
-        return context.l10n.security_and_backup_enable_biometric_option_touch_id;
+        return l10n.security_and_backup_enable_biometric_option_touch_id;
       case LocalAuthenticationOption.NONE:
       default:
-        return context.l10n.security_and_backup_enable_biometric_option_none;
+        return l10n.security_and_backup_enable_biometric_option_none;
     }
   }
 }

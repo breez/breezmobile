@@ -37,7 +37,9 @@ class BreezLogger {
     FlutterError.onError = (FlutterErrorDetails details) {
       FlutterError.presentError(details);
       if (details != null && details.context != null)
-        breezBridge.log(details.exceptionAsString() + '\n' + details.stack.toString(), details.context.name ?? "FlutterError");
+        breezBridge.log(
+            details.exceptionAsString() + '\n' + details.stack.toString(),
+            details.context.name ?? "FlutterError");
     };
   }
 }

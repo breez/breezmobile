@@ -8,10 +8,9 @@ import 'package:breez/bloc/pos_catalog/actions.dart';
 import 'package:breez/bloc/pos_catalog/bloc.dart';
 import 'package:breez/bloc/pos_catalog/model.dart';
 import 'package:breez/bloc/user_profile/currency.dart';
-import 'package:breez/l10n/locales.dart';
 import 'package:breez/routes/charge/items/item_avatar.dart';
 import 'package:breez/theme_data.dart' as theme;
-import 'package:breez/utils/min_font_size.dart';
+import 'package:breez/utils/build_context.dart';
 import 'package:breez/widgets/back_button.dart' as backBtn;
 import 'package:breez/widgets/flushbar.dart';
 import 'package:breez/widgets/route.dart';
@@ -103,6 +102,8 @@ class ItemPageState extends State<ItemPage> {
   }
 
   Widget build(BuildContext context) {
+    ThemeData themeData = context.theme;
+
     return _buildScaffold(
       context,
       ListView(
@@ -134,8 +135,8 @@ class ItemPageState extends State<ItemPage> {
                         Container(
                           width: 80,
                           child: Theme(
-                            data: Theme.of(context).copyWith(
-                              canvasColor: Theme.of(context).canvasColor,
+                            data: themeData.copyWith(
+                              canvasColor: themeData.canvasColor,
                             ),
                             child: StreamBuilder<AccountModel>(
                               stream: _accountBloc.accountStream,
@@ -167,18 +168,19 @@ class ItemPageState extends State<ItemPage> {
   }
 
   Widget _nameField(BuildContext context) {
+    var l10n = context.l10n;
     return TextFormField(
       textCapitalization: TextCapitalization.words,
       controller: _nameController,
       decoration: InputDecoration(
-        labelText: context.l10n.pos_invoice_item_management_field_name_label,
-        hintText: context.l10n.pos_invoice_item_management_field_name_hint,
+        labelText: l10n.pos_invoice_item_management_field_name_label,
+        hintText: l10n.pos_invoice_item_management_field_name_hint,
         border: UnderlineInputBorder(),
       ),
       style: theme.FieldTextStyle.textStyle,
       validator: (value) {
         if (value.trim().length == 0) {
-          return context.l10n.pos_invoice_item_management_field_name_error;
+          return l10n.pos_invoice_item_management_field_name_error;
         }
         return null;
       },
@@ -186,6 +188,7 @@ class ItemPageState extends State<ItemPage> {
   }
 
   Widget _priceField(BuildContext context) {
+    var l10n = context.l10n;
     return TextFormField(
       keyboardType: TextInputType.numberWithOptions(
         decimal: true,
@@ -197,14 +200,14 @@ class ItemPageState extends State<ItemPage> {
       ],
       controller: _priceController,
       decoration: InputDecoration(
-        labelText: context.l10n.pos_invoice_item_management_field_price_label,
-        hintText: context.l10n.pos_invoice_item_management_field_price_hint,
+        labelText: l10n.pos_invoice_item_management_field_price_label,
+        hintText: l10n.pos_invoice_item_management_field_price_hint,
         border: UnderlineInputBorder(),
       ),
       style: theme.FieldTextStyle.textStyle,
       validator: (value) {
         if (value.length == 0) {
-          return context.l10n.pos_invoice_item_management_field_price_error;
+          return l10n.pos_invoice_item_management_field_price_error;
         }
         return null;
       },
@@ -212,11 +215,12 @@ class ItemPageState extends State<ItemPage> {
   }
 
   Widget _skuField(BuildContext context) {
+    var l10n = context.l10n;
     return TextFormField(
       controller: _skuController,
       decoration: InputDecoration(
-        labelText: context.l10n.pos_invoice_item_management_field_sku_label,
-        hintText: context.l10n.pos_invoice_item_management_field_sku_hint,
+        labelText: l10n.pos_invoice_item_management_field_sku_label,
+        hintText: l10n.pos_invoice_item_management_field_sku_hint,
         border: UnderlineInputBorder(),
       ),
       style: theme.FieldTextStyle.textStyle,
@@ -227,6 +231,7 @@ class ItemPageState extends State<ItemPage> {
     BuildContext context,
     AccountModel account,
   ) {
+    ThemeData themeData = context.theme;
     return DropdownButtonHideUnderline(
       child: DropdownButtonFormField(
         iconEnabledColor: Colors.white,
@@ -234,7 +239,7 @@ class ItemPageState extends State<ItemPage> {
         decoration: InputDecoration(
           labelText: context.l10n.pos_invoice_item_management_dd_currency_title,
           contentPadding: EdgeInsets.symmetric(
-            vertical: 10.6 * MediaQuery.of(context).textScaleFactor,
+            vertical: 10.6 * context.textScaleFactor,
           ),
         ),
         value: _selectedCurrency.shortName,
@@ -245,7 +250,7 @@ class ItemPageState extends State<ItemPage> {
             child: Text(
               value.tickerSymbol,
               style: theme.FieldTextStyle.textStyle.copyWith(
-                color: Theme.of(context).colorScheme.secondary,
+                color: themeData.colorScheme.secondary,
               ),
             ),
           );
@@ -256,7 +261,7 @@ class ItemPageState extends State<ItemPage> {
               child: new Text(
                 fiat.currencyData.shortName,
                 style: theme.FieldTextStyle.textStyle.copyWith(
-                  color: Theme.of(context).colorScheme.secondary,
+                  color: themeData.colorScheme.secondary,
                 ),
               ),
             );
@@ -271,7 +276,7 @@ class ItemPageState extends State<ItemPage> {
     final missingName = name == null || name == "";
 
     return GestureDetector(
-      onTap: () => Navigator.of(context).push(
+      onTap: () => context.push(
         FadeInRoute(
           builder: (_) => ItemAvatarPicker(
             _itemImage,
@@ -304,7 +309,7 @@ class ItemPageState extends State<ItemPage> {
         ),
         image: DecorationImage(
           colorFilter: ColorFilter.mode(
-            Theme.of(context).primaryColorLight,
+            context.primaryColorLight,
             BlendMode.srcATop,
           ),
           image: AssetImage("src/images/avatarbg.png"),
@@ -323,7 +328,7 @@ class ItemPageState extends State<ItemPage> {
               context.l10n.pos_invoice_item_management_image_title,
               textAlign: TextAlign.center,
               maxLines: 2,
-              minFontSize: MinFontSize(context).minFontSize,
+              minFontSize: context.minFontSize,
               stepGranularity: 0.1,
               style: TextStyle(
                 fontSize: 12.3,
@@ -371,17 +376,17 @@ class ItemPageState extends State<ItemPage> {
     Widget body, [
     List<Widget> actions,
   ]) {
+    ThemeData themeData = context.theme;
+    AppBarTheme appBarTheme = themeData.appBarTheme;
     return Scaffold(
       key: _scaffoldKey,
       appBar: AppBar(
-        iconTheme: Theme.of(context).appBarTheme.iconTheme,
-        textTheme: Theme.of(context).appBarTheme.textTheme,
-        backgroundColor: Theme.of(context).canvasColor,
+        iconTheme: appBarTheme.iconTheme,
+        toolbarTextStyle: appBarTheme.toolbarTextStyle,
+        titleTextStyle: appBarTheme.titleTextStyle,
+        backgroundColor: themeData.canvasColor,
         leading: backBtn.BackButton(),
-        title: Text(
-          _title,
-          style: Theme.of(context).appBarTheme.textTheme.headline6,
-        ),
+        title: Text(_title),
         actions: actions == null ? <Widget>[] : actions,
         elevation: 0.0,
       ),
@@ -406,7 +411,7 @@ class ItemPageState extends State<ItemPage> {
               );
               widget._posCatalogBloc.actionsSink.add(updateItem);
               updateItem.future.then((_) {
-                Navigator.pop(context);
+                context.pop();
               });
             } else {
               AddItem addItem = AddItem(
@@ -420,7 +425,7 @@ class ItemPageState extends State<ItemPage> {
               );
               widget._posCatalogBloc.actionsSink.add(addItem);
               addItem.future.then((_) {
-                Navigator.pop(context);
+                context.pop();
               });
             }
           }

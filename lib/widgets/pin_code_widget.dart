@@ -1,3 +1,5 @@
+// ignore_for_file: missing_required_param
+
 import 'dart:math';
 
 import 'package:breez/bloc/user_profile/breez_user_model.dart';
@@ -5,6 +7,7 @@ import 'package:breez/bloc/user_profile/user_actions.dart';
 import 'package:breez/bloc/user_profile/user_profile_bloc.dart';
 import 'package:breez/services/local_auth_service.dart';
 import 'package:breez/theme_data.dart' as theme;
+import 'package:breez/utils/build_context.dart';
 import 'package:breez/widgets/circular_button.dart';
 import 'package:breez/widgets/flushbar.dart';
 import 'package:flutter/material.dart';
@@ -89,7 +92,7 @@ class PinCodeWidgetState extends State<PinCodeWidget>
     if (this.mounted && (!biometricsValidated || force)) {
       biometricsValidated = true;
       var validateBiometricsAction =
-          ValidateBiometrics(localizedReason: widget.localizedReason);
+      ValidateBiometrics(localizedReason: widget.localizedReason);
       widget.userProfileBloc.userActionsSink.add(validateBiometricsAction);
       validateBiometricsAction.future.then((isValid) async {
         setState(() => _enteredPinCode = (isValid) ? "123456" : "");
@@ -137,7 +140,7 @@ class PinCodeWidgetState extends State<PinCodeWidget>
   Image _buildBreezLogo(BuildContext context) {
     return Image.asset(
       "src/images/logo-color.png",
-      width: (MediaQuery.of(context).size.width) / 3,
+      width: (context.mediaQuerySize.width) / 3,
       color: Colors.white,
     );
   }
@@ -167,7 +170,7 @@ class PinCodeWidgetState extends State<PinCodeWidget>
         height: _enteredPinCode.length == PIN_CODE_LENGTH ? 28 : 24,
         decoration: BoxDecoration(
             color:
-                i < _enteredPinCode.length ? Colors.white : Colors.transparent,
+            i < _enteredPinCode.length ? Colors.white : Colors.transparent,
             shape: BoxShape.circle,
             border: Border.all(color: Colors.white, width: 2.0)),
       ));
@@ -176,15 +179,10 @@ class PinCodeWidgetState extends State<PinCodeWidget>
   }
 
   Text _buildErrorMessage() {
+    TextStyle headline4 = context.textTheme.headline4.copyWith(fontSize: 12);
     return _errorMessage.isNotEmpty
-        ? Text(
-            _errorMessage,
-            style: Theme.of(context).textTheme.headline4.copyWith(fontSize: 12),
-          )
-        : Text(
-            "",
-            style: Theme.of(context).textTheme.headline4.copyWith(fontSize: 12),
-          );
+        ? Text(_errorMessage, style: headline4)
+        : Text("", style: headline4);
   }
 
   Widget _numPad(BuildContext context) {
@@ -228,21 +226,21 @@ class PinCodeWidgetState extends State<PinCodeWidget>
               _buildClearButton(),
               _numberButton("0"),
               widget.onFingerprintEntered == null ||
-                      ((widget.onFingerprintEntered != null) &&
-                          _enteredPinCode.length > 0)
+                  ((widget.onFingerprintEntered != null) &&
+                      _enteredPinCode.length > 0)
                   ? _buildEraseButton()
                   : StreamBuilder<BreezUserModel>(
-                      stream: widget.userProfileBloc.userStream,
-                      builder: (context, snapshot) {
-                        if (!snapshot.hasData ||
-                            _enrolledBiometrics ==
-                                LocalAuthenticationOption.NONE) {
-                          return _buildEraseButton();
-                        } else {
-                          return _buildBiometricsButton(snapshot, context);
-                        }
-                      },
-                    ),
+                stream: widget.userProfileBloc.userStream,
+                builder: (context, snapshot) {
+                  if (!snapshot.hasData ||
+                      _enrolledBiometrics ==
+                          LocalAuthenticationOption.NONE) {
+                    return _buildEraseButton();
+                  } else {
+                    return _buildBiometricsButton(snapshot, context);
+                  }
+                },
+              ),
             ],
           ),
         )
@@ -250,15 +248,14 @@ class PinCodeWidgetState extends State<PinCodeWidget>
     );
   }
 
-  Widget _buildBiometricsButton(
-      AsyncSnapshot<BreezUserModel> snapshot, BuildContext context) {
+  Widget _buildBiometricsButton(AsyncSnapshot<BreezUserModel> snapshot, BuildContext context) {
     return CircularButton(
       child: Icon(
         _enrolledBiometrics == LocalAuthenticationOption.FACE ||
                 _enrolledBiometrics == LocalAuthenticationOption.FACE_ID
             ? Icons.face
             : Icons.fingerprint,
-        color: Theme.of(context).errorColor,
+        color: context.errorColor,
       ),
       onTap: _inputEnabled ? () => _validateBiometrics(force: true) : null,
     );
@@ -294,7 +291,7 @@ class PinCodeWidgetState extends State<PinCodeWidget>
       ),
       onTap: _inputEnabled
           ? () => _setPinCodeInput(
-              _enteredPinCode.substring(0, max(_enteredPinCode.length, 1) - 1))
+          _enteredPinCode.substring(0, max(_enteredPinCode.length, 1) - 1))
           : null,
     );
   }

@@ -9,7 +9,7 @@ import 'package:breez/bloc/user_profile/breez_user_model.dart';
 import 'package:breez/bloc/user_profile/user_actions.dart';
 import 'package:breez/bloc/user_profile/user_profile_bloc.dart';
 import 'package:breez/routes/settings/set_admin_password.dart';
-import 'package:breez/utils/min_font_size.dart';
+import 'package:breez/utils/build_context.dart';
 import 'package:breez/widgets/back_button.dart' as backBtn;
 import 'package:breez/widgets/error_dialog.dart';
 import 'package:breez/widgets/flushbar.dart';
@@ -70,6 +70,8 @@ class PosSettingsPageState extends State<_PosSettingsPage> {
 
   @override
   Widget build(BuildContext context) {
+    ThemeData theme = context.theme;
+    AppBarTheme appBarTheme = theme.appBarTheme;
     PosCatalogBloc posCatalogBloc =
         AppBlocsProvider.of<PosCatalogBloc>(context);
     UserProfileBloc userProfileBloc =
@@ -79,13 +81,11 @@ class PosSettingsPageState extends State<_PosSettingsPage> {
       appBar: AppBar(
         leading: backBtn.BackButton(),
         automaticallyImplyLeading: false,
-        iconTheme: Theme.of(context).appBarTheme.iconTheme,
-        textTheme: Theme.of(context).appBarTheme.textTheme,
-        backgroundColor: Theme.of(context).canvasColor,
-        title: Text(
-          widget._title,
-          style: Theme.of(context).appBarTheme.textTheme.headline6,
-        ),
+        iconTheme: appBarTheme.iconTheme,
+        toolbarTextStyle: appBarTheme.toolbarTextStyle,
+        titleTextStyle: appBarTheme.titleTextStyle,
+        backgroundColor: theme.canvasColor,
+        title: Text(widget._title),
         elevation: 0.0,
       ),
       body: SingleChildScrollView(
@@ -100,7 +100,7 @@ class PosSettingsPageState extends State<_PosSettingsPage> {
               return GestureDetector(
                 behavior: HitTestBehavior.opaque,
                 onTap: () {
-                  FocusScope.of(context).requestFocus(FocusNode());
+                  context.focusScope.requestFocus(FocusNode());
                 },
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.start,
@@ -108,7 +108,7 @@ class PosSettingsPageState extends State<_PosSettingsPage> {
                   children: <Widget>[
                     Container(
                       padding:
-                          EdgeInsets.only(top: 32.0, bottom: 19.0, left: 16.0),
+                      EdgeInsets.only(top: 32.0, bottom: 19.0, left: 16.0),
                       child: Text(
                         "Payment Cancellation Timeout (in seconds)",
                         style: TextStyle(
@@ -130,12 +130,12 @@ class PosSettingsPageState extends State<_PosSettingsPage> {
                                   value: widget
                                       .currentProfile.cancellationTimeoutValue,
                                   label:
-                                      '${widget.currentProfile.cancellationTimeoutValue.toStringAsFixed(0)}',
+                                  '${widget.currentProfile.cancellationTimeoutValue.toStringAsFixed(0)}',
                                   min: 30.0,
                                   max: 180.0,
                                   divisions: 5,
                                   onChanged: (double value) {
-                                    FocusScope.of(context)
+                                    context.focusScope
                                         .requestFocus(FocusNode());
                                     _cancellationTimeoutValueController.text =
                                         value.toString();
@@ -149,7 +149,7 @@ class PosSettingsPageState extends State<_PosSettingsPage> {
                             padding: EdgeInsets.only(left: 8.0, right: 16.0),
                             child: Text(
                               num.parse(
-                                      _cancellationTimeoutValueController.text)
+                                  _cancellationTimeoutValueController.text)
                                   .toStringAsFixed(0),
                               style: TextStyle(
                                   color: Colors.white,
@@ -178,19 +178,22 @@ class PosSettingsPageState extends State<_PosSettingsPage> {
       _buildEnablePasswordTile(userProfileBloc, user)
     ];
     if (user.hasAdminPassword) {
-      widgets..add(Divider())..add(_buildSetPasswordTile());
+      widgets
+        ..add(Divider())
+        ..add(_buildSetPasswordTile());
     }
     return widgets;
   }
 
   Widget _buildExportItemsTile(PosCatalogBloc posCatalogBloc) {
+    TextTheme textTheme = context.textTheme;
     return ListTile(
       title: Container(
         child: AutoSizeText(
           "Items List",
           style: TextStyle(color: Colors.white),
           maxLines: 1,
-          minFontSize: MinFontSize(context).minFontSize,
+          minFontSize: context.minFontSize,
           stepGranularity: 0.1,
           group: _autoSizeGroup,
         ),
@@ -198,10 +201,10 @@ class PosSettingsPageState extends State<_PosSettingsPage> {
       trailing: Padding(
         padding: const EdgeInsets.only(right: 0.0),
         child: PopupMenuButton(
-          color: Theme.of(context).backgroundColor,
+          color: context.backgroundColor,
           icon: Icon(
             Icons.more_horiz,
-            color: Theme.of(context).iconTheme.color,
+            color: context.iconTheme.color,
           ),
           padding: EdgeInsets.zero,
           offset: Offset(12, 36),
@@ -210,14 +213,12 @@ class PosSettingsPageState extends State<_PosSettingsPage> {
             PopupMenuItem(
               height: 36,
               value: Choice(() => _importItems(context, posCatalogBloc)),
-              child: Text('Import from CSV',
-                  style: Theme.of(context).textTheme.button),
+              child: Text('Import from CSV', style: textTheme.button),
             ),
             PopupMenuItem(
               height: 36,
               value: Choice(() => _exportItems(context, posCatalogBloc)),
-              child: Text('Export to CSV',
-                  style: Theme.of(context).textTheme.button),
+              child: Text('Export to CSV', style: textTheme.button),
             ),
           ],
         ),
@@ -232,11 +233,11 @@ class PosSettingsPageState extends State<_PosSettingsPage> {
   Future _importItems(
       BuildContext context, PosCatalogBloc posCatalogBloc) async {
     return promptAreYouSure(
-            context,
+        context,
             "Import Items",
             Text(
                 "Importing this list will override the existing one. Are you sure you want to continue?",
-                style: Theme.of(context).dialogTheme.contentTextStyle),
+                style: context.dialogTheme.contentTextStyle),
             contentPadding: EdgeInsets.fromLTRB(24.0, 16.0, 24.0, 8.0),
             cancelText: "NO",
             okText: "YES")
@@ -253,13 +254,13 @@ class PosSettingsPageState extends State<_PosSettingsPage> {
           var action = ImportItems(importFile);
           posCatalogBloc.actionsSink.add(action);
           var loaderRoute = createLoaderRoute(context);
-          Navigator.of(context).push(loaderRoute);
+          context.push(loaderRoute);
           action.future.then((_) {
-            Navigator.of(context).removeRoute(loaderRoute);
-            Navigator.of(context).pop();
+            context.navigator.removeRoute(loaderRoute);
+            context.pop();
             showFlushbar(context, message: "Items were successfully imported.");
           }).catchError((err) {
-            Navigator.of(context).removeRoute(loaderRoute);
+            context.navigator.removeRoute(loaderRoute);
             var errorMessage = "Failed to import POS items.";
             if (err == PosCatalogBloc.InvalidFile) {
               errorMessage = "Selected file isn't a valid CSV file.";
@@ -279,12 +280,12 @@ class PosSettingsPageState extends State<_PosSettingsPage> {
       BuildContext context, PosCatalogBloc posCatalogBloc) async {
     var action = ExportItems();
     posCatalogBloc.actionsSink.add(action);
-    Navigator.of(context).push(createLoaderRoute(context));
+    context.push(createLoaderRoute(context));
     action.future.then((filePath) {
-      Navigator.of(context).pop();
+      context.pop();
       ShareExtend.share(filePath, "file");
     }).catchError((err) {
-      Navigator.of(context).pop();
+      context.pop();
       var errorMessage = err.toString() == "EMPTY_LIST"
           ? "There are no items to export."
           : "Failed to export POS items.";
@@ -299,7 +300,7 @@ class PosSettingsPageState extends State<_PosSettingsPage> {
           "Change Manager Password",
           style: TextStyle(color: Colors.white),
           maxLines: 1,
-          minFontSize: MinFontSize(context).minFontSize,
+          minFontSize: context.minFontSize,
           stepGranularity: 0.1,
           group: _autoSizeGroup,
         ),
@@ -319,7 +320,7 @@ class PosSettingsPageState extends State<_PosSettingsPage> {
             : "Create Manager Password",
         style: TextStyle(color: Colors.white),
         maxLines: 1,
-        minFontSize: MinFontSize(context).minFontSize,
+        minFontSize: context.minFontSize,
         stepGranularity: 0.1,
         group: user.hasAdminPassword ? _autoSizeGroup : null,
       ),
@@ -365,7 +366,7 @@ class PosSettingsPageState extends State<_PosSettingsPage> {
               "If Manager Password is activated, sending funds from Breez will require you to enter a password.\nAre you sure you want to activate Manager Password?"));
     }
     if (confirmed) {
-      Navigator.of(context).push(FadeInRoute(
+      context.push(FadeInRoute(
         builder: (_) =>
             SetAdminPasswordPage(submitAction: isNew ? "CREATE" : "CHANGE"),
       ));
@@ -395,7 +396,7 @@ class PosSettingsPageState extends State<_PosSettingsPage> {
                 widget.currentProfile.copyWith(
                     businessAddress: widget.currentProfile.businessAddress
                         .copyWith(addressLine1: _addressLine1Controller.text))),
-            onEditingComplete: () => FocusScope.of(context).nextFocus(),
+            onEditingComplete: () => context.focusScope.nextFocus(),
           ),
           TextField(
             controller: _addressLine2Controller,
@@ -406,7 +407,7 @@ class PosSettingsPageState extends State<_PosSettingsPage> {
                 widget.currentProfile.copyWith(
                     businessAddress: widget.currentProfile.businessAddress
                         .copyWith(addressLine2: _addressLine2Controller.text))),
-            onEditingComplete: () => FocusScope.of(context).unfocus(),
+            onEditingComplete: () => context.focusScope.unfocus(),
           ),
         ],
       ),

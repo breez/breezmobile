@@ -58,6 +58,7 @@ class PaymentSessionState {
             false,
             false,
             0);
+
   PaymentSessionState.payeeStart(
       String sessionSecret, String userName, String imageURL)
       : this(
@@ -89,6 +90,7 @@ class PayerSessionData {
       this.paymentFulfilled = false,
       this.cancelled = false,
       this.unconfirmedChannelsProgress});
+
   PayerSessionData.fromJson(Map<dynamic, dynamic> json)
       : status =
             json['status'] == null ? null : PeerStatus.fromJson(json['status']),
@@ -133,6 +135,7 @@ class PayeeSessionData {
   final String paymentRequest;
   final String error;
   final bool cancelled;
+
   bool get invitationAccepted => status.lastChanged != 0;
 
   PayeeSessionData(this.userName, this.imageURL, this.status,
@@ -169,6 +172,7 @@ class PeerStatus {
   final int lastChanged;
 
   PeerStatus(this.online, this.lastChanged);
+
   PeerStatus.start()
       : online = false,
         lastChanged = 0;
@@ -193,5 +197,6 @@ class PaymentSessionError {
 
   PaymentSessionError.unknown(this.description)
       : type = PaymentSessionErrorType.UNKNOWN;
+
   PaymentSessionError(this.type, this.description);
 }

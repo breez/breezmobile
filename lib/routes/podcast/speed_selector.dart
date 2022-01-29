@@ -6,6 +6,7 @@ import 'package:anytime/bloc/podcast/audio_bloc.dart';
 import 'package:anytime/bloc/settings/settings_bloc.dart';
 import 'package:anytime/entities/app_settings.dart';
 import 'package:anytime/l10n/L.dart';
+import 'package:breez/utils/build_context.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -35,6 +36,8 @@ class _SpeedSelectorWidgetState extends State<SpeedSelectorWidget> {
 
   @override
   Widget build(BuildContext context) {
+    ThemeData theme = context.theme;
+
     var settingsBloc = Provider.of<SettingsBloc>(context);
 
     return StreamBuilder<AppSettings>(
@@ -50,7 +53,7 @@ class _SpeedSelectorWidgetState extends State<SpeedSelectorWidget> {
                 onTap: () {
                   showModalBottomSheet<void>(
                       context: context,
-                      backgroundColor: Theme.of(context).backgroundColor,
+                      backgroundColor: theme.backgroundColor,
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.only(
                           topLeft: Radius.circular(10.0),
@@ -66,8 +69,7 @@ class _SpeedSelectorWidgetState extends State<SpeedSelectorWidget> {
                     '${(snapshot.data.playbackSpeed % 1 == 0) ? snapshot.data.playbackSpeed.toStringAsFixed(0).toString() : snapshot.data.playbackSpeed}x',
                     style: TextStyle(
                       fontSize: 14.0,
-                      color:
-                          Theme.of(context).buttonTheme.colorScheme.onPrimary,
+                      color: theme.buttonTheme.colorScheme.onPrimary,
                     ),
                   ),
                 ),
@@ -105,6 +107,11 @@ class _SpeedSliderState extends State<SpeedSlider> {
 
   @override
   Widget build(BuildContext context) {
+    L l10n = L.of(context);
+    ThemeData theme = context.theme;
+    Color primaryColor = theme.buttonTheme.colorScheme.onPrimary;
+    TextTheme primaryTextTheme = theme.primaryTextTheme;
+
     final audioBloc = Provider.of<AudioBloc>(context, listen: false);
     final settingsBloc = Provider.of<SettingsBloc>(context, listen: false);
 
@@ -119,7 +126,7 @@ class _SpeedSliderState extends State<SpeedSlider> {
             width: 24,
             height: 4,
             decoration: BoxDecoration(
-              color: Theme.of(context).buttonTheme.colorScheme.onPrimary,
+              color: primaryColor,
               borderRadius: BorderRadius.all(Radius.circular(4.0)),
             ),
           ),
@@ -127,8 +134,8 @@ class _SpeedSliderState extends State<SpeedSlider> {
         Padding(
           padding: const EdgeInsets.only(top: 8.0, bottom: 8.0),
           child: Text(
-            L.of(context).audio_settings_playback_speed_label,
-            style: Theme.of(context).primaryTextTheme.headline6,
+            l10n.audio_settings_playback_speed_label,
+            style: primaryTextTheme.headline6,
           ),
         ),
         Divider(),
@@ -136,7 +143,7 @@ class _SpeedSliderState extends State<SpeedSlider> {
           padding: const EdgeInsets.only(top: 16.0),
           child: Text(
             '${(speed % 1 == 0) ? speed.toStringAsFixed(0).toString() : speed}x',
-            style: Theme.of(context).primaryTextTheme.headline5,
+            style: primaryTextTheme.headline5,
           ),
         ),
         Row(
@@ -147,7 +154,7 @@ class _SpeedSliderState extends State<SpeedSlider> {
               child: IconButton(
                 iconSize: 28.0,
                 icon: Icon(Icons.remove_circle_outline),
-                color: Theme.of(context).buttonTheme.colorScheme.onPrimary,
+                color: primaryColor,
                 onPressed: (speed <= 0.5)
                     ? null
                     : () {
@@ -166,7 +173,7 @@ class _SpeedSliderState extends State<SpeedSlider> {
                 min: 0.5,
                 max: 2.0,
                 divisions: 6,
-                activeColor: Theme.of(context).buttonTheme.colorScheme.onPrimary,
+                activeColor: primaryColor,
                 onChanged: (value) {
                   setState(() {
                     speed = value;
@@ -185,7 +192,7 @@ class _SpeedSliderState extends State<SpeedSlider> {
               child: IconButton(
                 iconSize: 28.0,
                 icon: Icon(Icons.add_circle_outline),
-                color: Theme.of(context).buttonTheme.colorScheme.onPrimary,
+                color: primaryColor,
                 onPressed: (speed >= 2.0)
                     ? null
                     : () {
@@ -203,11 +210,11 @@ class _SpeedSliderState extends State<SpeedSlider> {
           height: 8.0,
         ),
         Divider(),
-        if (Theme.of(context).platform == TargetPlatform.android) ...[
+        if (theme.platform == TargetPlatform.android) ...[
           /// Disable the trim silence option for now until the positioning bug
           /// in just_audio is resolved.
           // ListTile(
-          //   title: Text(L.of(context).audio_effect_trim_silence_label),
+          //   title: Text(l10n.audio_effect_trim_silence_label),
           //   trailing: Switch.adaptive(
           //     value: trimSilence,
           //     onChanged: (value) {
@@ -220,7 +227,7 @@ class _SpeedSliderState extends State<SpeedSlider> {
           //   ),
           // ),
           ListTile(
-            title: Text(L.of(context).audio_effect_volume_boost_label),
+            title: Text(l10n.audio_effect_volume_boost_label),
             trailing: Switch.adaptive(
               value: volumeBoost,
               onChanged: (boost) {

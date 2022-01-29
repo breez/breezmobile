@@ -21,6 +21,7 @@ class LNUrlBloc with AsyncActionsHandler {
 
   StreamController<String> _lnurlInputController =
       StreamController<String>.broadcast();
+
   Sink<String> get lnurlInputSink => _lnurlInputController.sink;
 
   LNUrlBloc() {

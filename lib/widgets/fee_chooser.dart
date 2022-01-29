@@ -1,5 +1,5 @@
+import 'package:breez/utils/build_context.dart';
 import 'package:flutter/material.dart';
-import 'package:breez/l10n/locales.dart';
 
 class FeeChooser extends StatelessWidget {
   final FeeOption economyFee;
@@ -66,13 +66,15 @@ class FeeChooser extends StatelessWidget {
     );
   }
 
-  Widget buildFeeOption(
-    BuildContext context,
-    int index,
-    bool disabled,
-    String text,
-  ) {
-    final borderColor = Theme.of(context).colorScheme.onSurface.withOpacity(0.4);
+  Widget buildFeeOption(BuildContext context,
+      int index,
+      bool disabled,
+      String text,) {
+    ThemeData theme = context.theme;
+    Color canvasColor = theme.canvasColor;
+    Color onSurfaceColor = theme.colorScheme.onSurface;
+    final borderColor = onSurfaceColor.withOpacity(0.4);
+
     Border border;
     var borderRadius;
     if (index == 0) {
@@ -95,24 +97,19 @@ class FeeChooser extends StatelessWidget {
     }
 
     bool isSelected = this.selectedIndex == index;
+    Color feeOptionColor = isSelected ? onSurfaceColor : canvasColor;
     return DecoratedBox(
       decoration: BoxDecoration(
         borderRadius: borderRadius,
-        color: isSelected
-            ? Theme.of(context).colorScheme.onSurface
-            : Theme.of(context).canvasColor,
+        color: feeOptionColor,
         border: border,
       ),
       child: TextButton(
         onPressed: disabled ? null : () => onSelect(index),
         child: Text(
           text,
-          style: Theme.of(context).textTheme.button.copyWith(
-            color: disabled
-                ? Theme.of(context).colorScheme.onSurface.withOpacity(0.4)
-                : isSelected
-                    ? Theme.of(context).canvasColor
-                    : Theme.of(context).colorScheme.onSurface,
+          style: theme.textTheme.button.copyWith(
+            color: disabled ? borderColor : feeOptionColor,
           ),
         ),
       ),
@@ -146,36 +143,41 @@ class ProcessingSpeed extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    ThemeData theme = context.theme;
+    Color onSurfaceColor = theme.colorScheme.onSurface.withOpacity(0.4);
+    TextStyle textStyle = theme.textTheme.button.copyWith(
+      color: onSurfaceColor,
+    );
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
           _estimatedDelivery(context),
-          style: Theme.of(context).textTheme.button.copyWith(
-            color: Theme.of(context).colorScheme.onSurface.withOpacity(0.4),
-          ),
+          style: textStyle,
         ),
       ],
     );
   }
 
   String _estimatedDelivery(BuildContext context) {
+    var l10n = context.l10n;
     final hours = targetConfirmation / 6;
 
     if (hours >= 12.0) {
-      return context.l10n.fee_chooser_estimated_delivery_more_than_day;
+      return l10n.fee_chooser_estimated_delivery_more_than_day;
     } else if (hours >= 4) {
-      return context.l10n.fee_chooser_estimated_delivery_hour_range(
+      return l10n.fee_chooser_estimated_delivery_hour_range(
         hours.ceil().toString(),
       );
     } else if (hours >= 2.0) {
-      return context.l10n.fee_chooser_estimated_delivery_hours(
+      return l10n.fee_chooser_estimated_delivery_hours(
         hours.ceil().toString(),
       );
     } else if (hours >= 1.0) {
-      return context.l10n.fee_chooser_estimated_delivery_hour;
+      return l10n.fee_chooser_estimated_delivery_hour;
     } else {
-      return context.l10n.fee_chooser_estimated_delivery_minutes(
+      return l10n.fee_chooser_estimated_delivery_minutes(
         (targetConfirmation * 10).toString(),
       );
     }
@@ -186,8 +188,6 @@ class FeeOption {
   final int sats;
   final int confirmationTarget;
 
-  const FeeOption(
-    this.sats,
-    this.confirmationTarget,
-  );
+  const FeeOption(this.sats,
+      this.confirmationTarget,);
 }

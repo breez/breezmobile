@@ -40,27 +40,35 @@ class UserProfileBloc {
 
   Map<Type, Function> _actionHandlers = Map();
   final _userActionsController = StreamController<AsyncAction>.broadcast();
+
   Sink<AsyncAction> get userActionsSink => _userActionsController.sink;
   final _registrationController = StreamController<void>();
+
   Sink<void> get registerSink => _registrationController.sink;
 
   final _userStreamController = BehaviorSubject<BreezUserModel>();
+
   Stream<BreezUserModel> get userStream => _userStreamController.stream;
 
   final _userStreamPreviewController = BehaviorSubject<BreezUserModel>();
+
   Stream<BreezUserModel> get userPreviewStream =>
       _userStreamPreviewController.stream;
 
   final _currencyController = BehaviorSubject<Currency>();
+
   Sink<Currency> get currencySink => _currencyController.sink;
 
   final _fiatConversionController = BehaviorSubject<String>();
+
   Sink<String> get fiatConversionSink => _fiatConversionController.sink;
 
   final _userController = BehaviorSubject<BreezUserModel>();
+
   Sink<BreezUserModel> get userSink => _userController.sink;
 
   final _randomizeController = BehaviorSubject<void>();
+
   Sink<void> get randomizeSink => _randomizeController.sink;
 
   UserProfileBloc() {
@@ -164,11 +172,13 @@ class UserProfileBloc {
         );
       }
       if (!user.registered && Platform.isAndroid) {
-        GooglePlayServicesAvailability availability = await GoogleApiAvailability.instance.checkGooglePlayServicesAvailability();
+        GooglePlayServicesAvailability availability =
+            await GoogleApiAvailability.instance
+                .checkGooglePlayServicesAvailability();
         print("GooglePlayServicesAvailability:" + availability.toString());
         if ((availability == GooglePlayServicesAvailability.serviceMissing) ||
-          (availability == GooglePlayServicesAvailability.serviceDisabled) ||
-          (availability == GooglePlayServicesAvailability.serviceInvalid)) {
+            (availability == GooglePlayServicesAvailability.serviceDisabled) ||
+            (availability == GooglePlayServicesAvailability.serviceInvalid)) {
           var uuid = Uuid();
           user = user.copyWith(userID: "random-" + uuid.v4());
         }
@@ -258,7 +268,8 @@ class UserProfileBloc {
     } catch (e) {
       //  This is a temporary workaround for flutter_secure_storage issues
       //  on apps published in Google Play for Android devices
-      if(e.toString().contains("java.lang.NullPointerException") && Platform.isAndroid){
+      if (e.toString().contains("java.lang.NullPointerException") &&
+          Platform.isAndroid) {
         action.resolve(true);
         return;
       }
@@ -356,7 +367,8 @@ class UserProfileBloc {
     try {
       String token = await _notifications.getToken();
 
-      if (token != null && (token != user.token || user.userID == null || user.userID.isEmpty)) {
+      if (token != null &&
+          (token != user.token || user.userID == null || user.userID.isEmpty)) {
         //var userID = await _breezServer.registerDevice(token);
         var userID = token;
         userToRegister = userToRegister.copyWith(token: token, userID: userID);

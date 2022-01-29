@@ -22,17 +22,25 @@ class PaymentRequestModel {
       this._invoice, this._rawPayReq, this._paymentHash, this._lspFee);
 
   String get description => _invoice.description;
+
   String get payeeImageURL => _invoice.payeeImageURL;
+
   String get payeeName => _invoice.payeeName;
+
   Int64 get amount => _invoice.amount;
+
   String get rawPayReq => _rawPayReq;
+
   bool get loaded => _invoice != null ? true : false;
+
   String get paymentHash => _paymentHash;
+
   Int64 get lspFee => _lspFee;
 }
 
 class PaymentRequestError implements Exception {
   final String message;
+
   PaymentRequestError(this.message);
 }
 

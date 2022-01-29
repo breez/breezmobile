@@ -2,11 +2,11 @@ import 'package:breez/bloc/invoice/invoice_bloc.dart';
 import 'package:breez/bloc/lnurl/lnurl_bloc.dart';
 import 'package:breez/routes/spontaneous_payment/spontaneous_payment_page.dart';
 import 'package:breez/theme_data.dart' as theme;
+import 'package:breez/utils/build_context.dart';
 import 'package:breez/utils/lnurl.dart';
 import 'package:breez/utils/node_id.dart';
 import 'package:breez/widgets/route.dart';
 import 'package:flutter/material.dart';
-import 'package:breez/l10n/locales.dart';
 
 import 'flushbar.dart';
 
@@ -50,7 +50,7 @@ class EnterPaymentInfoDialogState extends State<EnterPaymentInfoDialog> {
       titlePadding: EdgeInsets.fromLTRB(24.0, 22.0, 0.0, 16.0),
       title: Text(
         context.l10n.payment_info_dialog_title,
-        style: Theme.of(context).dialogTheme.titleTextStyle,
+        style: context.dialogTheme.titleTextStyle,
       ),
       contentPadding: EdgeInsets.fromLTRB(24.0, 8.0, 24.0, 24.0),
       content: _buildPaymentInfoForm(context),
@@ -59,22 +59,28 @@ class EnterPaymentInfoDialogState extends State<EnterPaymentInfoDialog> {
   }
 
   Theme _buildPaymentInfoForm(BuildContext context) {
+    var l10n = context.l10n;
+    ThemeData themeData = context.theme;
+    DialogTheme dialogTheme = themeData.dialogTheme;
+    TextTheme textTheme = themeData.textTheme;
+    TextTheme primaryTextTheme = themeData.primaryTextTheme;
+
     return Theme(
-      data: Theme.of(context).copyWith(
+      data: themeData.copyWith(
         inputDecorationTheme: InputDecorationTheme(
           enabledBorder: UnderlineInputBorder(
             borderSide: theme.greyBorderSide,
           ),
         ),
-        hintColor: Theme.of(context).dialogTheme.contentTextStyle.color,
+        hintColor: dialogTheme.contentTextStyle.color,
         colorScheme: ColorScheme.dark(
-          primary: Theme.of(context).textTheme.button.color,
+          primary: textTheme.button.color,
         ),
-        primaryColor: Theme.of(context).textTheme.button.color,
-        errorColor: theme.themeId == "BLUE" ? Colors.red : Theme.of(context).errorColor,
+        primaryColor: textTheme.button.color,
+        errorColor: theme.themeId == "BLUE" ? Colors.red : themeData.errorColor,
       ),
       child: Container(
-        width: MediaQuery.of(context).size.width,
+        width: context.mediaQuerySize.width,
         child: Form(
           key: _formKey,
           child: Column(
@@ -83,48 +89,48 @@ class EnterPaymentInfoDialogState extends State<EnterPaymentInfoDialog> {
             children: [
               TextFormField(
                 decoration: InputDecoration(
-                  labelText: context.l10n.payment_info_dialog_hint,
+                  labelText: l10n.payment_info_dialog_hint,
                   suffixIcon: IconButton(
                     padding: EdgeInsets.only(top: 21.0),
                     alignment: Alignment.bottomRight,
                     icon: Image(
                       image: AssetImage("src/icon/qr_scan.png"),
-                      color: Theme.of(context).primaryIconTheme.color,
+                      color: themeData.primaryIconTheme.color,
                       fit: BoxFit.contain,
                       width: 24.0,
                       height: 24.0,
                     ),
-                    tooltip: context.l10n.payment_info_dialog_barcode,
+                    tooltip: l10n.payment_info_dialog_barcode,
                     onPressed: () => _scanBarcode(context),
                   ),
                 ),
                 focusNode: _paymentInfoFocusNode,
                 controller: _paymentInfoController,
                 style: TextStyle(
-                  color: Theme.of(context).primaryTextTheme.headline4.color,
+                  color: primaryTextTheme.headline4.color,
                 ),
                 validator: (value) {
                   if (parseNodeId(value) == null &&
                       _decodeInvoice(value) == null &&
                       !isLightningAddress(value)) {
-                    return context.l10n.payment_info_dialog_error;
+                    return l10n.payment_info_dialog_error;
                   }
                   return null;
                 },
               ),
               _scannerErrorMessage.length > 0
                   ? Padding(
-                      padding: const EdgeInsets.only(top: 8.0),
-                      child: Text(
-                        _scannerErrorMessage,
-                        style: theme.validatorStyle,
-                      ),
-                    )
+                padding: const EdgeInsets.only(top: 8.0),
+                child: Text(
+                  _scannerErrorMessage,
+                  style: theme.validatorStyle,
+                ),
+              )
                   : SizedBox(),
               Padding(
                 padding: EdgeInsets.only(top: 8),
                 child: Text(
-                  context.l10n.payment_info_dialog_hint_expanded,
+                  l10n.payment_info_dialog_hint_expanded,
                   style: theme.FieldTextStyle.labelStyle.copyWith(
                     fontSize: 13.0,
                     color: theme.themeId == "BLUE"
@@ -141,12 +147,14 @@ class EnterPaymentInfoDialogState extends State<EnterPaymentInfoDialog> {
   }
 
   List<Widget> _buildActions(BuildContext context) {
+    var l10n = context.l10n;
+
     List<Widget> actions = [
       SimpleDialogOption(
-        onPressed: () => Navigator.pop(context),
+        onPressed: () => context.pop(),
         child: Text(
-          context.l10n.payment_info_dialog_action_cancel,
-          style: Theme.of(context).primaryTextTheme.button,
+          l10n.payment_info_dialog_action_cancel,
+          style: context.primaryTextTheme.button,
         ),
       )
     ];
@@ -155,10 +163,10 @@ class EnterPaymentInfoDialogState extends State<EnterPaymentInfoDialog> {
       actions.add(SimpleDialogOption(
         onPressed: (() async {
           if (_formKey.currentState.validate()) {
-            Navigator.of(context).pop();
+            context.pop();
             var nodeID = parseNodeId(_paymentInfoController.text);
             if (nodeID != null) {
-              Navigator.of(context).push(FadeInRoute(
+              context.push(FadeInRoute(
                 builder: (_) => SpontaneousPaymentPage(
                   nodeID,
                   widget.firstPaymentItemKey,
@@ -182,8 +190,8 @@ class EnterPaymentInfoDialogState extends State<EnterPaymentInfoDialog> {
           }
         }),
         child: Text(
-          context.l10n.payment_info_dialog_action_approve,
-          style: Theme.of(context).primaryTextTheme.button,
+          l10n.payment_info_dialog_action_approve,
+          style: context.primaryTextTheme.button,
         ),
       ));
     }
@@ -191,8 +199,8 @@ class EnterPaymentInfoDialogState extends State<EnterPaymentInfoDialog> {
   }
 
   Future _scanBarcode(BuildContext context) async {
-    FocusScope.of(context).requestFocus(FocusNode());
-    String barcode = await Navigator.pushNamed<String>(context, "/qr_scan");
+    context.focusScope.requestFocus(FocusNode());
+    String barcode = await context.pushNamed("/qr_scan");
     if (barcode == null) {
       return;
     }

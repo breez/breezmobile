@@ -1,5 +1,8 @@
 import 'package:auto_size_text/auto_size_text.dart';
+import 'package:breez/utils/build_context.dart';
 import 'package:flutter/material.dart';
+
+import '../theme_data.dart';
 
 class SingleButtonBottomBar extends StatelessWidget {
   final VoidCallback onPressed;
@@ -17,7 +20,7 @@ class SingleButtonBottomBar extends StatelessWidget {
     return Padding(
       padding: EdgeInsets.only(
         bottom: this.stickToBottom
-            ? MediaQuery.of(context).viewInsets.bottom + 40.0
+            ? context.mediaQueryViewInsets.bottom + 40.0
             : 40.0,
       ),
       child: Column(
@@ -48,19 +51,23 @@ class SubmitButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    ThemeData theme = context.theme;
+    TextTheme textTheme = theme.textTheme;
+
     return SizedBox(
       height: 48.0,
       width: 168.0,
       child: ElevatedButton(
         style: ElevatedButton.styleFrom(
-          primary: Theme.of(context).buttonColor,
+          primary:
+              (themeId == "BLUE") ? Colors.white : context.primaryColorLight,
           elevation: 0.0,
           shape: const StadiumBorder(),
         ),
         child: AutoSizeText(
           this.text,
           maxLines: 1,
-          style: Theme.of(context).textTheme.button,
+          style: textTheme.button,
         ),
         onPressed: this.onPressed,
       ),

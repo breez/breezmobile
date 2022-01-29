@@ -1,9 +1,9 @@
 import 'dart:async';
 
 import 'package:breez/bloc/backup/backup_model.dart';
+import 'package:breez/utils/build_context.dart';
 import 'package:breez/widgets/animated_loader_dialog.dart';
 import 'package:flutter/material.dart';
-import 'package:breez/l10n/locales.dart';
 
 Widget buildBackupInProgressDialog(
   BuildContext context,
@@ -46,7 +46,7 @@ class _BackupInProgressDialogState extends State<_BackupInProgressDialog> {
   }
 
   _pop() {
-    Navigator.of(context).pop();
+    context.pop();
   }
 
   @override

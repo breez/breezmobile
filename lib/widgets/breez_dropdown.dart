@@ -6,6 +6,7 @@ import 'dart:async';
 import 'dart:math' as math;
 import 'dart:ui' show window;
 
+import 'package:breez/utils/build_context.dart';
 import 'package:flutter/material.dart';
 
 const Duration _kDropdownMenuDuration = Duration(milliseconds: 300);
@@ -80,8 +81,7 @@ class _DropdownScrollBehavior extends ScrollBehavior {
   const _DropdownScrollBehavior();
 
   @override
-  TargetPlatform getPlatform(BuildContext context) =>
-      Theme.of(context).platform;
+  TargetPlatform getPlatform(BuildContext context) => context.theme.platform;
 
   @override
   Widget buildViewportChrome(
@@ -164,8 +164,7 @@ class _DropdownMenuState<T> extends State<_DropdownMenu<T>> {
             padding: widget.padding,
             child: route.items[itemIndex],
           ),
-          onTap: () => Navigator.pop(
-            context,
+          onTap: () => context.pop(
             _DropdownRouteResult<T>(route.items[itemIndex].value),
           ),
         ),
@@ -176,7 +175,7 @@ class _DropdownMenuState<T> extends State<_DropdownMenu<T>> {
       opacity: _fadeOpacity,
       child: CustomPaint(
         painter: _DropdownMenuPainter(
-          color: Theme.of(context).canvasColor,
+          color: context.canvasColor,
           elevation: route.elevation,
           selectedIndex: route.selectedIndex,
           resize: _resize,
@@ -774,11 +773,10 @@ class _BreezDropdownButtonState<T> extends State<BreezDropdownButton<T>>
     }
   }
 
-  TextStyle get _textStyle =>
-      widget.style ?? Theme.of(context).textTheme.subtitle1;
+  TextStyle get _textStyle => widget.style ?? context.textTheme.subtitle1;
 
   void _handleTap() {
-    FocusScope.of(context).requestFocus(FocusNode());
+    context.focusScope.requestFocus(FocusNode());
     Future.delayed(Duration(milliseconds: 400), () {
       final RenderBox itemBox = context.findRenderObject();
       final Rect itemRect = itemBox.localToGlobal(Offset.zero) & itemBox.size;
@@ -795,13 +793,14 @@ class _BreezDropdownButtonState<T> extends State<BreezDropdownButton<T>>
         padding: _kMenuItemPadding.resolve(textDirection),
         selectedIndex: _selectedIndex ?? 0,
         elevation: widget.elevation,
-        theme: Theme.of(context),
+        theme: context.theme,
         style: _textStyle,
         barrierLabel:
             MaterialLocalizations.of(context).modalBarrierDismissLabel,
       );
 
-      Navigator.push(context, _dropdownRoute)
+      context
+          .push(_dropdownRoute)
           .then<void>((_DropdownRouteResult<T> newValue) {
         _dropdownRoute = null;
         if (!mounted || newValue == null) return;
@@ -816,16 +815,17 @@ class _BreezDropdownButtonState<T> extends State<BreezDropdownButton<T>>
   // would be clipped.
   double get _denseButtonHeight {
     final double fontSize =
-        _textStyle.fontSize ?? Theme.of(context).textTheme.subtitle1.fontSize;
+        _textStyle.fontSize ?? context.textTheme.subtitle1.fontSize;
     return math.max(fontSize, math.max(widget.iconSize, _kDenseButtonHeight));
   }
 
   Color get _iconColor {
+    Brightness brightness = context.theme.brightness;
     // These colors are not defined in the Material Design spec.
     if (_enabled) {
       if (widget.iconEnabledColor != null) return widget.iconEnabledColor;
 
-      switch (Theme.of(context).brightness) {
+      switch (brightness) {
         case Brightness.light:
           return Colors.grey.shade700;
         case Brightness.dark:
@@ -834,7 +834,7 @@ class _BreezDropdownButtonState<T> extends State<BreezDropdownButton<T>>
     } else {
       if (widget.iconDisabledColor != null) return widget.iconDisabledColor;
 
-      switch (Theme.of(context).brightness) {
+      switch (brightness) {
         case Brightness.light:
           return Colors.grey.shade400;
         case Brightness.dark:
@@ -852,7 +852,7 @@ class _BreezDropdownButtonState<T> extends State<BreezDropdownButton<T>>
       widget.onChanged != null;
 
   Orientation _getOrientation(BuildContext context) {
-    Orientation result = MediaQuery.of(context)?.orientation;
+    Orientation result = context.mediaQuery?.orientation;
     if (result == null) {
       // If there's no MediaQuery, then use the window aspect to determine
       // orientation.
@@ -901,7 +901,7 @@ class _BreezDropdownButtonState<T> extends State<BreezDropdownButton<T>>
           : DropdownMenuItem<Widget>(child: widget.disabledHint ?? widget.hint);
       hintIndex = items.length;
       items.add(DefaultTextStyle(
-        style: _textStyle.copyWith(color: Theme.of(context).hintColor),
+        style: _textStyle.copyWith(color: context.theme.hintColor),
         child: IgnorePointer(
           child: emplacedHint,
           ignoringSemantics: false,
@@ -1037,7 +1037,7 @@ class DropdownButtonFormField<T> extends FormField<T> {
           builder: (FormFieldState<T> field) {
             final InputDecoration effectiveDecoration =
                 decoration.applyDefaults(
-              Theme.of(field.context).inputDecorationTheme,
+                  field.context.theme.inputDecorationTheme,
             );
             return InputDecorator(
               decoration:

@@ -18,9 +18,11 @@ class LSPBloc with AsyncActionsHandler {
       "SELECTED_LSP_PREFERENCES_KEY";
 
   final _lspPromptController = StreamController<bool>.broadcast();
+
   Stream<bool> get lspPromptStream => _lspPromptController.stream;
 
   final _lspsStatusController = BehaviorSubject<LSPStatus>();
+
   Stream<LSPStatus> get lspStatusStream => _lspsStatusController.stream;
 
   final _reconnectStreamController = StreamController<void>.broadcast();

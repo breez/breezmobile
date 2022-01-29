@@ -66,6 +66,7 @@ class BackupSettings {
 
   BackupSettings(this.promptOnError, this.backupKeyType, this.backupProvider,
       this.remoteServerAuthData);
+
   BackupSettings.start()
       : this(
             true,

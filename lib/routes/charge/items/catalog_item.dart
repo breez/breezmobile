@@ -4,6 +4,7 @@ import 'package:breez/bloc/pos_catalog/bloc.dart';
 import 'package:breez/bloc/pos_catalog/model.dart';
 import 'package:breez/routes/charge/currency_wrapper.dart';
 import 'package:breez/theme_data.dart';
+import 'package:breez/utils/build_context.dart';
 import 'package:breez/widgets/flushbar.dart';
 import 'package:breez/widgets/route.dart';
 import 'package:flutter/material.dart';
@@ -25,27 +26,30 @@ class CatalogItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    ThemeData theme = context.theme;
+    TextTheme textTheme = theme.textTheme;
+
     return Stack(alignment: Alignment.bottomCenter, children: <Widget>[
       Padding(
         padding: const EdgeInsets.fromLTRB(0, 8, 8, 8),
         child: PopupMenuButton(
           key: _menuKey,
-          color: Theme.of(context).highlightColor,
+          color: context.highlightColor,
           offset: Offset(12, 24),
           itemBuilder: (_) => <PopupMenuItem>[
             PopupMenuItem(
               child: TextButton.icon(
                 label: Text(
                   "Edit Item",
-                  style: Theme.of(context).textTheme.subtitle1,
+                  style: textTheme.subtitle1,
                 ),
                 icon: Icon(
                   Icons.edit_rounded,
                   color: Colors.white,
                 ),
                 onPressed: () {
-                  Navigator.of(context).pop();
-                  Navigator.of(context).push(FadeInRoute(
+                  context.pop();
+                  context.push(FadeInRoute(
                       builder: (_) =>
                           ItemPage(posCatalogBloc, item: _itemInfo)));
                 },
@@ -55,14 +59,14 @@ class CatalogItem extends StatelessWidget {
               child: TextButton.icon(
                 label: Text(
                   "Delete Item",
-                  style: Theme.of(context).textTheme.subtitle1,
+                  style: textTheme.subtitle1,
                 ),
                 icon: Icon(
                   Icons.delete_forever_rounded,
                   color: Colors.white,
                 ),
                 onPressed: () {
-                  Navigator.of(context).pop();
+                  context.pop();
                   DeleteItem deleteItem = DeleteItem(_itemInfo.id);
                   posCatalogBloc.actionsSink.add(deleteItem);
                   deleteItem.future.catchError((err) => showFlushbar(context,
@@ -76,7 +80,7 @@ class CatalogItem extends StatelessWidget {
                 itemName: _itemInfo.name, key: _avatarKey),
             title: Text(
               _itemInfo.name,
-              style: Theme.of(context).textTheme.itemTitleStyle,
+              style: textTheme.itemTitleStyle,
               overflow: TextOverflow.ellipsis,
             ),
             trailing: Column(
@@ -89,7 +93,7 @@ class CatalogItem extends StatelessWidget {
                     children: <Widget>[
                       RichText(
                         text: TextSpan(
-                          style: Theme.of(context).textTheme.itemPriceStyle,
+                          style: textTheme.itemPriceStyle,
                           children: <InlineSpan>[
                             TextSpan(
                               text: _getSymbol(),

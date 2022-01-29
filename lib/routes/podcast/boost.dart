@@ -1,3 +1,5 @@
+// ignore_for_file: non_constant_identifier_names
+
 import 'dart:math';
 
 import 'package:auto_size_text/auto_size_text.dart';
@@ -8,12 +10,13 @@ import 'package:breez/bloc/user_profile/breez_user_model.dart';
 import 'package:breez/bloc/user_profile/user_actions.dart';
 import 'package:breez/bloc/user_profile/user_profile_bloc.dart';
 import 'package:breez/routes/podcast/boost_message_dialog.dart';
-import 'package:breez/utils/min_font_size.dart';
+import 'package:breez/utils/build_context.dart';
 import 'package:breez/widgets/flushbar.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
 import 'custom_amount_dialog.dart';
+
 class BoostWidget extends StatefulWidget {
   final BreezUserModel userModel;
   final Function(int total, {String boostMessage}) onBoost;
@@ -29,6 +32,8 @@ class BoostWidget extends StatefulWidget {
 class _BoostWidgetState extends State<BoostWidget> {
   @override
   Widget build(BuildContext context) {
+    double minFontSize = context.minFontSize;
+
     final userBloc = AppBlocsProvider.of<UserProfileBloc>(context);
     final accountBloc = AppBlocsProvider.of<AccountBloc>(context);
 
@@ -38,6 +43,10 @@ class _BoostWidgetState extends State<BoostWidget> {
           if (acc.data == null) {
             return SizedBox();
           }
+          ThemeData theme = context.theme;
+          Color iconColor = theme.appBarTheme.actionsIconTheme.color;
+          Color splashColor = theme.splashColor;
+
           return Row(
             mainAxisSize: MainAxisSize.max,
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -67,24 +76,23 @@ class _BoostWidgetState extends State<BoostWidget> {
                     acc.data,
                     widget.userModel.paymentOptions.preferredBoostValue,
                   ),
+                  // ignore: missing_required_param
                   child: TextButton.icon(
                     style: TextButton.styleFrom(
                       padding: EdgeInsets.symmetric(vertical: 8, horizontal: 8),
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(6.0),
                         side: BorderSide(
-                            color:
-                                Theme.of(context).brightness == Brightness.light
-                                    ? Color(0xFF0085fb)
-                                    : Colors.white70,
+                            color: theme.brightness == Brightness.light
+                                ? Color(0xFF0085fb)
+                                : Colors.white70,
                             width: 1.6),
                       ),
                     ),
                     icon: ImageIcon(
                       AssetImage("src/icon/boost.png"),
                       size: 20,
-                      color:
-                          Theme.of(context).appBarTheme.actionsIconTheme.color,
+                      color: iconColor,
                     ),
                     label: Container(
                       width: 44,
@@ -95,9 +103,9 @@ class _BoostWidgetState extends State<BoostWidget> {
                           height: 1.2,
                           letterSpacing: 0,
                           fontWeight: FontWeight.w500,
-                          color: Theme.of(context).buttonTheme.colorScheme.onPrimary,
+                          color: theme.buttonTheme.colorScheme.onPrimary,
                         ),
-                        minFontSize: MinFontSize(context).minFontSize,
+                        minFontSize: minFontSize,
                         stepGranularity: 0.1,
                         maxLines: 1,
                       ),
@@ -126,15 +134,12 @@ class _BoostWidgetState extends State<BoostWidget> {
                                 onTap: () {
                                   widget.onChanged(_getPreviousAmount());
                                 },
-                                splashColor: Theme.of(context).splashColor,
+                                splashColor: splashColor,
                                 highlightColor: Colors.transparent,
                                 child: Icon(
                                   Icons.remove_circle_outline,
                                   size: 20,
-                                  color: Theme.of(context)
-                                      .appBarTheme
-                                      .actionsIconTheme
-                                      .color,
+                                  color: iconColor,
                                 ),
                               ),
                             ),
@@ -175,10 +180,9 @@ class _BoostWidgetState extends State<BoostWidget> {
                                         fontWeight: FontWeight.w600,
                                         height: 1.2,
                                       ),
-                                      minFontSize: ((9) /
-                                              MediaQuery.of(this.context)
-                                                  .textScaleFactor)
-                                          .floorToDouble(),
+                                      minFontSize:
+                                          ((9) / context.textScaleFactor)
+                                              .floorToDouble(),
                                       stepGranularity: 0.1,
                                       maxLines: 1,
                                     ),
@@ -188,8 +192,7 @@ class _BoostWidgetState extends State<BoostWidget> {
                                     textAlign: TextAlign.center,
                                     style: TextStyle(
                                         fontSize: 10, letterSpacing: 1),
-                                    minFontSize:
-                                        MinFontSize(context).minFontSize,
+                                    minFontSize: minFontSize,
                                     stepGranularity: 0.1,
                                   )
                                 ],
@@ -211,15 +214,12 @@ class _BoostWidgetState extends State<BoostWidget> {
                                   onTap: () {
                                     widget.onChanged(_getNextAmount());
                                   },
-                                  splashColor: Theme.of(context).splashColor,
+                                  splashColor: splashColor,
                                   highlightColor: Colors.transparent,
                                   child: Icon(
                                     Icons.add_circle_outline,
                                     size: 20,
-                                    color: Theme.of(context)
-                                        .appBarTheme
-                                        .actionsIconTheme
-                                        .color,
+                                    color: iconColor,
                                   ),
                                 ),
                               ),

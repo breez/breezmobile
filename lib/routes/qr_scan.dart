@@ -1,5 +1,7 @@
 import 'dart:async';
 import 'dart:io';
+
+import 'package:breez/utils/build_context.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
@@ -59,16 +61,16 @@ class QRScanState extends State<QRScan> {
               ),
               onPressed: () async {
                 final _picker = ImagePicker();
-                PickedFile pickedFile =
-                    await _picker.getImage(source: ImageSource.gallery).catchError((err) {
-                });
+                XFile pickedFile = await _picker
+                    .pickImage(source: ImageSource.gallery)
+                    .catchError((err) {});
                 final File file = File(pickedFile.path);
                 try {
                   if (file == null) {
                     return;
                   }
                   String data = await QrCodeToolsPlugin.decodeFrom(file.path);
-                  Navigator.of(context).pop(data);
+                  context.pop(data);
                 } catch (e) {}
               },
             ))),
@@ -88,7 +90,7 @@ class QRScanState extends State<QRScan> {
                             padding: EdgeInsets.only(right: 35, left: 35),
                           ),
                           onPressed: () {
-                            Navigator.of(context).pop();
+                            context.pop();
                           },
                           child: Text(
                             "CANCEL",
@@ -117,7 +119,7 @@ class QRScanState extends State<QRScan> {
     sub = controller.scannedDataStream.listen((scanData) async {
       if (scanData.code?.isNotEmpty == true) {
         await sub.cancel();
-        Navigator.of(context).pop(scanData.code);
+        context.pop(scanData.code);
       }
     });
   }

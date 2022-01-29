@@ -5,5 +5,6 @@ class VendorModel {
   final String logo;
   final bool onlyShowLogo;
 
-  VendorModel(this.url, this.id, this.displayName, {this.logo, this.onlyShowLogo});
+  VendorModel(this.url, this.id, this.displayName,
+      {this.logo, this.onlyShowLogo});
 }

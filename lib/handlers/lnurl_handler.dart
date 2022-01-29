@@ -3,11 +3,11 @@ import 'package:breez/bloc/lnurl/lnurl_bloc.dart';
 import 'package:breez/bloc/lnurl/lnurl_model.dart';
 import 'package:breez/routes/podcast/theme.dart';
 import 'package:breez/routes/sync_progress_dialog.dart';
+import 'package:breez/utils/build_context.dart';
 import 'package:breez/widgets/error_dialog.dart';
 import 'package:breez/widgets/loader.dart';
 import 'package:breez/widgets/route.dart';
 import 'package:flutter/material.dart';
-import 'package:breez/l10n/locales.dart';
 
 import '../routes/create_invoice/create_invoice_page.dart';
 import '../routes/lnurl_fetch_invoice_page.dart';
@@ -25,13 +25,15 @@ class LNURLHandler {
         return executeLNURLResponse(_context, lnurlBloc, response);
       }
     }).onError((err) async {
+      var l10n = _context.l10n;
+
       final errorMessage = _getErrorMessage(err.toString());
       promptError(
         this._context,
-        _context.l10n.handler_lnurl_error_link,
+        l10n.handler_lnurl_error_link,
         Text(
-          _context.l10n.handler_lnurl_error_process(errorMessage),
-          style: Theme.of(_context).dialogTheme.contentTextStyle,
+          l10n.handler_lnurl_error_process(errorMessage),
+          style: _context.dialogTheme.contentTextStyle,
         ),
       );
     });
@@ -51,21 +53,24 @@ class LNURLHandler {
     LNUrlBloc lnurlBloc,
     dynamic response,
   ) {
+    var l10n = _context.l10n;
+    TextStyle dialogContentTextStyle = _context.dialogTheme.contentTextStyle;
+
     if (response.runtimeType == ChannelFetchResponse) {
       _openLNURLChannel(context, lnurlBloc, response);
     } else if (response.runtimeType == WithdrawFetchResponse) {
-      Navigator.popUntil(context, (route) {
+      context.popUntil((route) {
         return route.settings.name == "/";
       });
 
-      Navigator.of(context).push(FadeInRoute(
+      context.push(FadeInRoute(
         builder: (_) => withBreezTheme(
           context,
           CreateInvoicePage(lnurlWithdraw: response),
         ),
       ));
     } else if (response is AuthFetchResponse) {
-      Navigator.popUntil(context, (route) {
+      context.popUntil((route) {
         return route.settings.name == "/";
       });
       promptAreYouSure(
@@ -73,18 +78,18 @@ class LNURLHandler {
         null,
         RichText(
           text: TextSpan(
-            style: Theme.of(context).dialogTheme.contentTextStyle,
-            text: _context.l10n.handler_lnurl_login_anonymously,
+            style: dialogContentTextStyle,
+            text: l10n.handler_lnurl_login_anonymously,
             children: [
               TextSpan(
                 text: "${response.host}",
-                style: Theme.of(context).dialogTheme.contentTextStyle.copyWith(
+                style: dialogContentTextStyle.copyWith(
                   fontWeight: FontWeight.bold,
                 ),
               ),
               TextSpan(
                 text: "?",
-                style: Theme.of(context).dialogTheme.contentTextStyle,
+                style: dialogContentTextStyle,
               ),
             ],
           ),
@@ -92,33 +97,33 @@ class LNURLHandler {
       ).then((value) {
         if (value == true) {
           var loaderRoute = createLoaderRoute(context);
-          Navigator.of(context).push(loaderRoute);
+          context.push(loaderRoute);
           var action = Login(response);
           lnurlBloc.actionsSink.add(action);
           action.future.catchError((err) {
             promptError(
               context,
-              _context.l10n.handler_lnurl_login_error_title,
+              l10n.handler_lnurl_login_error_title,
               Text(
-                _context.l10n.handler_lnurl_login_error_message(err.toString()),
+                l10n.handler_lnurl_login_error_message(err.toString()),
               ),
             );
-          }).whenComplete(() => Navigator.of(context).removeRoute(loaderRoute));
+          }).whenComplete(() => context.navigator.removeRoute(loaderRoute));
         }
       });
     } else if (response is PayFetchResponse) {
-      Navigator.popUntil(context, (route) {
+      context.popUntil((route) {
         return route.settings.name == "/";
       });
 
-      Navigator.of(context).push(FadeInRoute(
+      context.push(FadeInRoute(
         builder: (_) => withBreezTheme(
           context,
           LNURLFetchInvoicePage(response),
         ),
       ));
     } else {
-      throw _context.l10n.handler_lnurl_login_error_unsupported;
+      throw l10n.handler_lnurl_login_error_unsupported;
     }
   }
 
@@ -127,10 +132,12 @@ class LNURLHandler {
     LNUrlBloc lnurlBloc,
     ChannelFetchResponse response,
   ) {
+    var l10n = _context.l10n;
+
     promptAreYouSure(
       context,
-      _context.l10n.handler_lnurl_open_channel_title,
-      Text(_context.l10n.handler_lnurl_open_channel_message(
+      l10n.handler_lnurl_open_channel_title,
+      Text(l10n.handler_lnurl_open_channel_message(
         Uri.parse(response.callback).host,
       )),
     ).then((value) async {
@@ -145,10 +152,10 @@ class LNURLHandler {
               actions: [
                 TextButton(
                   child: Text(
-                    _context.l10n.handler_lnurl_open_channel_action_cancel,
-                    style: Theme.of(context).primaryTextTheme.button,
+                    l10n.handler_lnurl_open_channel_action_cancel,
+                    style: context.primaryTextTheme.button,
                   ),
-                  onPressed: () => Navigator.of(context).pop(false),
+                  onPressed: () => context.pop(false),
                 ),
               ],
             );
@@ -156,7 +163,7 @@ class LNURLHandler {
         );
         if (synced == true) {
           var loaderRoute = createLoaderRoute(context);
-          Navigator.of(context).push(loaderRoute);
+          context.push(loaderRoute);
           var action = OpenChannel(
             response.uri,
             response.callback,
@@ -166,28 +173,29 @@ class LNURLHandler {
           action.future.catchError((err) {
             promptError(
               context,
-              _context.l10n.handler_lnurl_open_channel_error_title,
+              l10n.handler_lnurl_open_channel_error_title,
               Text(
-                _context.l10n.handler_lnurl_open_channel_error_message(
+                l10n.handler_lnurl_open_channel_error_message(
                   err.toString(),
                 ),
               ),
             );
-          }).whenComplete(() => Navigator.of(context).removeRoute(loaderRoute));
+          }).whenComplete(() => context.navigator.removeRoute(loaderRoute));
         }
       }
     });
   }
 
   _setLoading(bool visible) {
+    NavigatorState navigator = _context.navigator;
     if (visible && _loaderRoute == null) {
       _loaderRoute = createLoaderRoute(_context);
-      Navigator.of(_context).push(_loaderRoute);
+      navigator.push(_loaderRoute);
       return;
     }
 
     if (!visible && _loaderRoute != null) {
-      Navigator.removeRoute(_context, _loaderRoute);
+      navigator.removeRoute(_loaderRoute);
       _loaderRoute = null;
     }
   }

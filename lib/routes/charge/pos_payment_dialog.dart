@@ -10,6 +10,7 @@ import 'package:breez/bloc/user_profile/currency.dart';
 import 'package:breez/routes/charge/currency_wrapper.dart';
 import 'package:breez/services/countdown.dart';
 import 'package:breez/services/injector.dart';
+import 'package:breez/utils/build_context.dart';
 import 'package:breez/widgets/compact_qr_image.dart';
 import 'package:breez/widgets/flushbar.dart';
 import 'package:breez/widgets/loader.dart';
@@ -59,8 +60,8 @@ class _PosPaymentDialogState extends State<PosPaymentDialog> {
                 .padLeft(2, '0');
       });
     }, onDone: () {
-      if (Navigator.of(context).canPop()) {
-        Navigator.of(context).pop(PosPaymentResult());
+      if (context.canPop()) {
+        context.pop(PosPaymentResult());
       }
     });
 
@@ -68,7 +69,7 @@ class _PosPaymentDialogState extends State<PosPaymentDialog> {
         widget._invoiceBloc.paidInvoicesStream.listen((paidRequest) {
       setState(() {
         if (paidRequest.paymentHash == widget.paymentRequest.paymentHash) {
-          Navigator.of(context).pop(PosPaymentResult(paid: true));
+          context.pop(PosPaymentResult(paid: true));
         }
       });
     });
@@ -102,12 +103,16 @@ class _PosPaymentDialogState extends State<PosPaymentDialog> {
   }
 
   Widget _buildDialogTitle(AccountModel account, BuildContext context) {
+    ThemeData theme = context.theme;
+    DialogTheme dialogTheme = theme.dialogTheme;
+    Color buttonColor = theme.primaryTextTheme.button.color;
+
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
         Text(
           "Scan to Pay",
-          style: Theme.of(context).dialogTheme.titleTextStyle,
+          style: dialogTheme.titleTextStyle,
         ),
         Row(
           children: <Widget>[
@@ -117,7 +122,7 @@ class _PosPaymentDialogState extends State<PosPaymentDialog> {
               padding: EdgeInsets.only(
                   top: 8.0, bottom: 8.0, right: 2.0, left: 14.0),
               icon: Icon(IconData(0xe917, fontFamily: 'icomoon')),
-              color: Theme.of(context).primaryTextTheme.button.color,
+              color: buttonColor,
               onPressed: () {
                 ShareExtend.share(
                     "lightning:" + widget.paymentRequest.rawPayReq, "text");
@@ -129,7 +134,7 @@ class _PosPaymentDialogState extends State<PosPaymentDialog> {
               padding: EdgeInsets.only(
                   top: 8.0, bottom: 8.0, right: 14.0, left: 2.0),
               icon: Icon(IconData(0xe90b, fontFamily: 'icomoon')),
-              color: Theme.of(context).primaryTextTheme.button.color,
+              color: buttonColor,
               onPressed: () {
                 ServiceInjector()
                     .device
@@ -146,6 +151,7 @@ class _PosPaymentDialogState extends State<PosPaymentDialog> {
   }
 
   Widget _buildWaitingPayment(AccountModel account, BuildContext context) {
+    TextStyle headline4 = context.primaryTextTheme.headline4;
     var saleCurrency = CurrencyWrapper.fromShortName(
         widget._user.posCurrencyShortName, account);
     var userCurrency = (saleCurrency.isFiat)
@@ -158,7 +164,7 @@ class _PosPaymentDialogState extends State<PosPaymentDialog> {
           includeCurrencySymbol: true,
           removeTrailingZeros: true);
       priceInSaleCurrency =
-      saleCurrency.rtl ? "($salePrice) " : " ($salePrice)";
+          saleCurrency.rtl ? "($salePrice) " : " ($salePrice)";
     }
     return SingleChildScrollView(
       child: ListBody(
@@ -169,7 +175,7 @@ class _PosPaymentDialogState extends State<PosPaymentDialog> {
                     includeCurrencySymbol: true) +
                 priceInSaleCurrency,
             textAlign: TextAlign.center,
-            style: Theme.of(context).primaryTextTheme.headline4,
+            style: headline4,
           ),
           Padding(
             padding: const EdgeInsets.symmetric(vertical: 8.0),
@@ -189,16 +195,16 @@ class _PosPaymentDialogState extends State<PosPaymentDialog> {
               : Padding(
                   padding: const EdgeInsets.only(bottom: 8.0),
                   child: Text(
-                      "A setup fee of ${Currency.SAT.format(widget.paymentRequest.lspFee)} (${account.fiatCurrency.format(widget.paymentRequest.lspFee)}) is applied to this invoice.",
-                      textAlign: TextAlign.center,
-                      style: Theme.of(context).primaryTextTheme.headline4),
+                    "A setup fee of ${Currency.SAT.format(widget.paymentRequest.lspFee)} (${account.fiatCurrency.format(widget.paymentRequest.lspFee)}) is applied to this invoice.",
+                    textAlign: TextAlign.center,
+                    style: headline4,
+                  ),
                 ),
-          Text(_countdownString,
-              textAlign: TextAlign.center,
-              style: Theme.of(context)
-                  .primaryTextTheme
-                  .headline4
-                  .copyWith(fontSize: 16)),
+          Text(
+            _countdownString,
+            textAlign: TextAlign.center,
+            style: headline4.copyWith(fontSize: 16),
+          ),
           Padding(
             padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
             child: _actionsWidget(),
@@ -223,10 +229,10 @@ class _PosPaymentDialogState extends State<PosPaymentDialog> {
       child: Text(
         'CLEAR SALE',
         textAlign: TextAlign.center,
-        style: Theme.of(context).primaryTextTheme.button,
+        style: context.primaryTextTheme.button,
       ),
       onPressed: () {
-        Navigator.of(context).pop(PosPaymentResult(clearSale: true));
+        context.pop(PosPaymentResult(clearSale: true));
       },
     );
   }
@@ -239,10 +245,10 @@ class _PosPaymentDialogState extends State<PosPaymentDialog> {
       child: Text(
         'CANCEL',
         textAlign: TextAlign.center,
-        style: Theme.of(context).primaryTextTheme.button,
+        style: context.primaryTextTheme.button,
       ),
       onPressed: () {
-        Navigator.of(context).pop(PosPaymentResult());
+        context.pop(PosPaymentResult());
       },
     );
   }

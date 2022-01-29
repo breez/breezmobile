@@ -1,7 +1,7 @@
 import 'package:breez/theme_data.dart' as theme;
+import 'package:breez/utils/build_context.dart';
 import 'package:flushbar/flushbar.dart';
 import 'package:flutter/material.dart';
-import 'package:breez/l10n/locales.dart';
 
 Flushbar showFlushbar(
   BuildContext context, {
@@ -13,6 +13,8 @@ Flushbar showFlushbar(
   bool Function() onDismiss,
   Duration duration = const Duration(seconds: 8),
 }) {
+  var l10n = context.l10n;
+
   Flushbar flush;
   flush = Flushbar(
     flushbarPosition: position,
@@ -25,7 +27,7 @@ Flushbar showFlushbar(
     duration: duration == Duration.zero ? null : duration,
     messageText: messageWidget ??
         Text(
-          message ?? context.l10n.flushbar_default_message,
+          message ?? l10n.flushbar_default_message,
           style: theme.snackBarStyle,
           textAlign: TextAlign.left,
         ),
@@ -38,9 +40,9 @@ Flushbar showFlushbar(
         }
       },
       child: Text(
-        buttonText ?? context.l10n.flushbar_default_action,
+        buttonText ?? l10n.flushbar_default_action,
         style: theme.snackBarStyle.copyWith(
-          color: Theme.of(context).errorColor,
+          color: context.errorColor,
         ),
       ),
     ),
@@ -50,7 +52,7 @@ Flushbar showFlushbar(
 }
 
 void popFlushbars(BuildContext context) {
-  Navigator.popUntil(context, (route) {
+  context.popUntil((route) {
     return route.settings.name != FLUSHBAR_ROUTE_NAME;
   });
 }

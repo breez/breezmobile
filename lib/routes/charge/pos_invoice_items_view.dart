@@ -3,11 +3,12 @@ import 'package:breez/bloc/account/account_model.dart';
 import 'package:breez/bloc/blocs_provider.dart';
 import 'package:breez/bloc/pos_catalog/bloc.dart';
 import 'package:breez/bloc/pos_catalog/model.dart';
-import 'package:breez/l10n/locales.dart';
 import 'package:breez/routes/charge/items/items_list.dart';
-import 'package:breez/utils/min_font_size.dart';
+import 'package:breez/utils/build_context.dart';
 import 'package:breez/widgets/loader.dart';
 import 'package:flutter/material.dart';
+
+import '../../theme_data.dart';
 
 class PosInvoiceItemsView extends StatelessWidget {
   final Sale currentSale;
@@ -42,9 +43,10 @@ class PosInvoiceItemsView extends StatelessWidget {
             child: Icon(
               Icons.add,
             ),
-            backgroundColor: Theme.of(context).buttonColor,
-            foregroundColor: Theme.of(context).textTheme.button.color,
-            onPressed: () => Navigator.of(context).pushNamed("/add_item"),
+            backgroundColor:
+                (themeId == "BLUE") ? Colors.white : context.primaryColorLight,
+            foregroundColor: context.textTheme.button.color,
+            onPressed: () => context.pushNamed("/add_item"),
           ),
         );
       },
@@ -77,7 +79,7 @@ class PosInvoiceItemsView extends StatelessWidget {
                     ? null
                     : () {
                         itemFilterController.text = "";
-                        FocusScope.of(context).requestFocus(FocusNode());
+                        context.hideKeyboard();
                       },
                 padding: EdgeInsets.only(right: 24, top: 4),
               ),
@@ -102,6 +104,7 @@ class PosInvoiceItemsView extends StatelessWidget {
   }
 
   List<Widget> _emptyCatalog(BuildContext context) {
+    var l10n = context.l10n;
     return [
       Padding(
         padding: const EdgeInsets.only(
@@ -111,10 +114,10 @@ class PosInvoiceItemsView extends StatelessWidget {
         ),
         child: AutoSizeText(
           itemFilterController.text.isNotEmpty
-              ? context.l10n.pos_invoice_search_empty
-              : context.l10n.pos_invoice_search_no_items,
+              ? l10n.pos_invoice_search_empty
+              : l10n.pos_invoice_search_no_items,
           textAlign: TextAlign.center,
-          minFontSize: MinFontSize(context).minFontSize,
+          minFontSize: context.minFontSize,
           stepGranularity: 0.1,
         ),
       ),

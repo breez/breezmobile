@@ -1,10 +1,10 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:breez/services/breezlib/data/rpc.pbgrpc.dart';
 import 'package:breez/services/injector.dart';
+import 'package:breez/utils/build_context.dart';
 import 'package:breez/widgets/error_dialog.dart';
 import 'package:breez/widgets/flushbar.dart';
 import 'package:flutter/material.dart';
-import 'package:breez/l10n/locales.dart';
 import 'package:share_extend/share_extend.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -15,7 +15,7 @@ void showLNURLSuccessAction(BuildContext context, SuccessAction sa) {
     context,
     context.l10n.ln_url_success_action_title,
     Container(
-      width: MediaQuery.of(context).size.width,
+      width: context.mediaQuerySize.width,
       child: Column(
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -84,12 +84,13 @@ class _URLRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final _expansionTileTheme = Theme.of(context).copyWith(
-      unselectedWidgetColor: Theme.of(context).primaryTextTheme.button.color,
-      colorScheme: ColorScheme.dark(
-        secondary: Theme.of(context).primaryTextTheme.button.color,
-      ),
-      dividerColor: Theme.of(context).backgroundColor,
+    ThemeData themeData = context.theme;
+    Color iconColor = themeData.primaryTextTheme.button.color;
+
+    final _expansionTileTheme = themeData.copyWith(
+      unselectedWidgetColor: iconColor,
+      colorScheme: ColorScheme.dark(secondary: iconColor),
+      dividerColor: themeData.backgroundColor,
     );
     return Theme(
       data: _expansionTileTheme,
@@ -127,7 +128,7 @@ class _URLRow extends StatelessWidget {
                     alignment: Alignment.centerRight,
                     padding: EdgeInsets.zero,
                     iconSize: 16.0,
-                    color: Theme.of(context).primaryTextTheme.button.color,
+                    color: iconColor,
                     icon: Icon(
                       IconData(0xe90b, fontFamily: 'icomoon'),
                     ),
@@ -143,7 +144,7 @@ class _URLRow extends StatelessWidget {
                   IconButton(
                     padding: EdgeInsets.zero,
                     iconSize: 16.0,
-                    color: Theme.of(context).primaryTextTheme.button.color,
+                    color: iconColor,
                     icon: Icon(Icons.share),
                     onPressed: () {
                       ShareExtend.share(sharedValue, "text");

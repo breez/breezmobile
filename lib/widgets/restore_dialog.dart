@@ -6,9 +6,9 @@ import 'package:breez/bloc/backup/backup_bloc.dart';
 import 'package:breez/bloc/backup/backup_model.dart';
 import 'package:breez/services/breezlib/data/rpc.pbgrpc.dart';
 import 'package:breez/theme_data.dart' as theme;
+import 'package:breez/utils/build_context.dart';
 import 'package:breez/utils/date.dart';
 import 'package:flutter/material.dart';
-import 'package:breez/l10n/locales.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:share_extend/share_extend.dart';
 
@@ -41,11 +41,16 @@ class RestoreDialogState extends State<RestoreDialog> {
   }
 
   Widget createRestoreDialog() {
+    var l10n = context.l10n;
+    ThemeData themeData = context.theme;
+    DialogTheme dialogTheme = themeData.dialogTheme;
+    TextTheme primaryTextTheme = themeData.primaryTextTheme;
+
     return AlertDialog(
       titlePadding: EdgeInsets.fromLTRB(24.0, 22.0, 0.0, 16.0),
       title: Text(
-        context.l10n.restore_dialog_title,
-        style: Theme.of(context).dialogTheme.titleTextStyle,
+        l10n.restore_dialog_title,
+        style: dialogTheme.titleTextStyle,
       ),
       contentPadding: EdgeInsets.fromLTRB(24.0, 8.0, 24.0, 24.0),
       content: Column(
@@ -60,10 +65,10 @@ class RestoreDialogState extends State<RestoreDialog> {
               }
 
               return Text(
-                context.l10n.restore_dialog_multiple_accounts(
+                l10n.restore_dialog_multiple_accounts(
                   snapshot.data.backupProvider.displayName,
                 ),
-                style: Theme.of(context).primaryTextTheme.headline3.copyWith(
+                style: primaryTextTheme.headline3.copyWith(
                   fontSize: 16,
                 ),
               );
@@ -86,9 +91,9 @@ class RestoreDialogState extends State<RestoreDialog> {
             builder: (context, snapshot) {
               return snapshot.hasError
                   ? Text(
-                      snapshot.error.toString(),
-                      style: theme.errorStyle,
-                    )
+                snapshot.error.toString(),
+                style: theme.errorStyle,
+              )
                   : Container();
             },
           ),
@@ -96,10 +101,10 @@ class RestoreDialogState extends State<RestoreDialog> {
       ),
       actions: [
         TextButton(
-          onPressed: () => Navigator.pop(widget.context, null),
+          onPressed: () => widget.context.pop(null),
           child: Text(
-            context.l10n.restore_dialog_action_cancel,
-            style: Theme.of(context).primaryTextTheme.button,
+            l10n.restore_dialog_action_cancel,
+            style: primaryTextTheme.button,
           ),
         ),
         TextButton(
@@ -108,14 +113,18 @@ class RestoreDialogState extends State<RestoreDialog> {
           ),
           onPressed: _selectedSnapshot == null
               ? null
-              : () => Navigator.pop(widget.context, _selectedSnapshot),
-          child: Text(context.l10n.restore_dialog_action_ok),
+              : () => widget.context.pop(_selectedSnapshot),
+          child: Text(l10n.restore_dialog_action_ok),
         ),
       ],
     );
   }
 
   Widget _itemBuilder(BuildContext context, int index) {
+    var l10n = context.l10n;
+    ThemeData themeData = context.theme;
+    TextTheme primaryTextTheme = themeData.primaryTextTheme;
+
     final item = widget.snapshots[index];
     final nodeID = _selectedSnapshot?.nodeID;
     final date = BreezDateUtils.formatYearMonthDayHourMinute(
@@ -126,34 +135,34 @@ class RestoreDialogState extends State<RestoreDialog> {
       selected: nodeID == item.nodeID,
       trailing: nodeID == item.nodeID
           ? Icon(
-              Icons.check,
-              color: theme.BreezColors.blue[500],
-            )
+        Icons.check,
+        color: theme.BreezColors.blue[500],
+      )
           : Icon(Icons.check),
       title: Text(
         item.encrypted
-            ? context.l10n.restore_dialog_modified_encrypted(date)
-            : context.l10n.restore_dialog_modified_not_encrypted(date),
-        style: Theme.of(context).primaryTextTheme.caption
+            ? l10n.restore_dialog_modified_encrypted(date)
+            : l10n.restore_dialog_modified_not_encrypted(date),
+        style: primaryTextTheme.caption
             .copyWith(fontSize: 9)
             .apply(fontSizeDelta: 1.3),
       ),
       subtitle: Text(
         item.nodeID,
-        style: Theme.of(context).primaryTextTheme.caption.copyWith(fontSize: 9),
+        style: primaryTextTheme.caption.copyWith(fontSize: 9),
       ),
       onLongPress: () {
         var nodeID = item.nodeID;
         promptAreYouSure(
           context,
-          context.l10n.restore_dialog_download_backup,
-          Text(context.l10n.restore_dialog_download_backup_for_node(nodeID)),
+          l10n.restore_dialog_download_backup,
+          Text(l10n.restore_dialog_download_backup_for_node(nodeID)),
         ).then((yes) {
           if (yes) {
             var downloadAction = DownloadSnapshot(item.nodeID);
             widget.backupBloc.backupActionsSink.add(downloadAction);
             var loaderRoute = createLoaderRoute(context);
-            Navigator.of(context).push(loaderRoute);
+            context.push(loaderRoute);
             downloadAction.future.then((value) {
               Navigator.removeRoute(context, loaderRoute);
               _shareBackup((value as DownloadBackupResponse).files);
@@ -161,7 +170,7 @@ class RestoreDialogState extends State<RestoreDialog> {
               Navigator.removeRoute(context, loaderRoute);
               promptError(
                 context,
-                context.l10n.restore_dialog_download_backup_error,
+                l10n.restore_dialog_download_backup_error,
                 Text(err.toString()),
               );
             });

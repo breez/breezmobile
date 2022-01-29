@@ -1,6 +1,7 @@
 import 'package:breez/bloc/lsp/lsp_actions.dart';
 import 'package:breez/bloc/lsp/lsp_bloc.dart';
 import 'package:breez/bloc/lsp/lsp_model.dart';
+import 'package:breez/utils/build_context.dart';
 import 'package:breez/widgets/loader.dart';
 import 'package:breez/widgets/route.dart';
 import 'package:breez/widgets/single_button_bottom_bar.dart';
@@ -51,23 +52,27 @@ class SelectLSPPageState extends State<SelectLSPPage> {
 
   @override
   Widget build(BuildContext context) {
+    ThemeData theme = context.theme;
+    AppBarTheme appBarTheme = theme.appBarTheme;
+    TextTheme textTheme = theme.textTheme;
+
     return Scaffold(
       appBar: AppBar(
-        iconTheme: Theme.of(context).appBarTheme.iconTheme,
-        textTheme: Theme.of(context).appBarTheme.textTheme,
-        backgroundColor: Theme.of(context).canvasColor,
+        iconTheme: appBarTheme.iconTheme,
+        backgroundColor: theme.canvasColor,
+        toolbarTextStyle: appBarTheme.toolbarTextStyle,
+        titleTextStyle: appBarTheme.titleTextStyle,
         automaticallyImplyLeading: false,
         elevation: 0.0,
         title: Text(
           "Select a Lightning Provider",
-          style: Theme.of(context).appBarTheme.textTheme.headline6,
+          style: textTheme.headline6,
         ),
         actions: <Widget>[
           IconButton(
-              onPressed: () => Navigator.pop(context),
+              onPressed: () => context.pop(),
               // Color needs to be changed
-              icon: Icon(Icons.close,
-                  color: Theme.of(context).appBarTheme.iconTheme.color))
+              icon: Icon(Icons.close, color: appBarTheme.iconTheme.color))
         ],
       ),
       body: StreamBuilder<LSPStatus>(
@@ -102,10 +107,10 @@ class SelectLSPPageState extends State<SelectLSPPage> {
                 children: <Widget>[
                   Flexible(
                       child: Text(
-                    "Please select one of the following providers in order to activate Breez and connect to the Lightning network.",
-                    style: TextStyle(color: Colors.white),
-                    textAlign: TextAlign.left,
-                  )),
+                        "Please select one of the following providers in order to activate Breez and connect to the Lightning network.",
+                        style: TextStyle(color: Colors.white),
+                        textAlign: TextAlign.left,
+                      )),
                   Flexible(
                     flex: 1,
                     child: Padding(
@@ -116,7 +121,7 @@ class SelectLSPPageState extends State<SelectLSPPage> {
                         itemBuilder: (BuildContext context, int index) {
                           return ListTile(
                             contentPadding:
-                                EdgeInsets.symmetric(horizontal: 0.0),
+                            EdgeInsets.symmetric(horizontal: 0.0),
                             selected: _selectedLSP?.lspID == lsps[index].lspID,
                             trailing: _selectedLSP?.lspID == lsps[index].lspID
                                 ? Icon(Icons.check)
@@ -160,10 +165,9 @@ class SelectLSPPageState extends State<SelectLSPPage> {
           onPressed: () async {
             ConnectLSP connectAction;
             if (_selectedLSP.widgetURL?.isNotEmpty == true) {
-              String lnurl = await Navigator.of(context).push<String>(
-                  FadeInRoute(
-                      builder: (_) => LSPWebViewPage(
-                          _selectedLSP.widgetURL, _selectedLSP.name)));
+              String lnurl = await context.push<String>(FadeInRoute(
+                  builder: (_) => LSPWebViewPage(
+                      _selectedLSP.widgetURL, _selectedLSP.name)));
               if (lnurl != null) {
                 connectAction = ConnectLSP(_selectedLSP.lspID, lnurl);
               }
@@ -173,7 +177,7 @@ class SelectLSPPageState extends State<SelectLSPPage> {
 
             if (connectAction != null) {
               widget.lstBloc.actionsSink.add(connectAction);
-              Navigator.of(context).pop();
+              context.pop();
             }
           });
     }

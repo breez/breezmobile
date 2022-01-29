@@ -22,39 +22,50 @@ class BackupBloc {
 
   final BehaviorSubject<BackupState> _backupStateController =
       BehaviorSubject<BackupState>();
+
   Stream<BackupState> get backupStateStream => _backupStateController.stream;
 
   final StreamController<bool> _promptBackupController =
       StreamController<bool>.broadcast();
+
   Stream<bool> get promptBackupStream => _promptBackupController.stream;
 
   final StreamController<bool> _backupPromptVisibleController =
       BehaviorSubject<bool>.seeded(false);
+
   Stream<bool> get backupPromptVisibleStream =>
       _backupPromptVisibleController.stream;
+
   Sink<bool> get backupPromptVisibleSink => _backupPromptVisibleController.sink;
 
   final BehaviorSubject<BackupSettings> _backupSettingsController =
       BehaviorSubject<BackupSettings>.seeded(BackupSettings.start());
+
   Stream<BackupSettings> get backupSettingsStream =>
       _backupSettingsController.stream;
+
   Sink<BackupSettings> get backupSettingsSink => _backupSettingsController.sink;
 
   final _backupNowController = StreamController<bool>();
+
   Sink<bool> get backupNowSink => _backupNowController.sink;
 
   final _restoreRequestController = StreamController<RestoreRequest>();
+
   Sink<RestoreRequest> get restoreRequestSink => _restoreRequestController.sink;
 
   final _multipleRestoreController =
       StreamController<List<SnapshotInfo>>.broadcast();
+
   Stream<List<SnapshotInfo>> get multipleRestoreStream =>
       _multipleRestoreController.stream;
 
   final _restoreFinishedController = StreamController<bool>.broadcast();
+
   Stream<bool> get restoreFinishedStream => _restoreFinishedController.stream;
 
   final _backupActionsController = StreamController<AsyncAction>.broadcast();
+
   Sink<AsyncAction> get backupActionsSink => _backupActionsController.sink;
 
   BreezBridge _breezLib;
@@ -332,7 +343,7 @@ class BackupBloc {
       if (request.encryptionKey != null && request.encryptionKey.key != null) {
         assert(request.encryptionKey.key.length > 0 || true);
       }
-      assert(!request.snapshot.nodeID.isEmpty);
+      assert(request.snapshot.nodeID.isNotEmpty);
 
       _breezLib
           .restore(request.snapshot.nodeID, request.encryptionKey.key)
@@ -398,6 +409,7 @@ class BreezLibBackupKey {
   String entropy;
 
   List<int> _key;
+
   set key(List<int> v) => _key = v;
 
   List<int> get key {
@@ -425,6 +437,7 @@ class BreezLibBackupKey {
   String get type {
     var result = '';
     if (key != null) {
+      // ignore: missing_enum_constant_in_switch
       switch (backupKeyType) {
         case BackupKeyType.PHRASE:
           assert(entropy.length == ENTROPY_LENGTH ||
@@ -448,6 +461,7 @@ class BreezLibBackupKey {
     assert(store != null);
 
     BreezLibBackupKey result;
+    // ignore: missing_enum_constant_in_switch
     switch (backupKeyType) {
       case BackupKeyType.PIN:
         var pinCode = await store.read(key: 'pinCode');

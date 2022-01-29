@@ -7,6 +7,7 @@ import 'package:breez/bloc/user_profile/breez_user_model.dart';
 import 'package:breez/bloc/user_profile/currency.dart';
 import 'package:breez/bloc/user_profile/user_profile_bloc.dart';
 import 'package:breez/theme_data.dart' as theme;
+import 'package:breez/utils/build_context.dart';
 import 'package:breez/utils/date.dart';
 import 'package:breez/widgets/fixed_sliver_delegate.dart';
 import 'package:flutter/material.dart';
@@ -99,7 +100,7 @@ class AccountPageState extends State<AccountPage>
   ) {
     LSPBloc lspBloc = AppBlocsProvider.of<LSPBloc>(context);
 
-    double listHeightSpace = MediaQuery.of(context).size.height -
+    double listHeightSpace = context.mediaQuerySize.height -
         DASHBOARD_MIN_HEIGHT -
         kToolbarHeight -
         FILTER_MAX_SIZE -
@@ -217,7 +218,7 @@ class AccountPageState extends State<AccountPage>
             Padding(
               padding: EdgeInsets.only(top: 8, left: 16.0, bottom: 8),
               child: Chip(
-                backgroundColor: Theme.of(context).bottomAppBarColor,
+                backgroundColor: context.theme.bottomAppBarColor,
                 label: Text(BreezDateUtils.formatFilterDateRange(
                     filter.startDate, filter.endDate)),
                 onDeleted: () => _accountBloc.paymentFilterSink
@@ -244,23 +245,16 @@ class BubblePainter extends CustomPainter {
           : Color(0xff4D88EC).withOpacity(0.1)
       ..style = PaintingStyle.fill;
     double bubbleRadius = 12;
-    double height = (MediaQuery.of(context).size.height - kToolbarHeight);
-    canvas.drawCircle(
-        Offset(MediaQuery.of(context).size.width / 2, height * 0.36),
-        bubbleRadius,
-        bubblePaint);
-    canvas.drawCircle(
-        Offset(MediaQuery.of(context).size.width * 0.39, height * 0.59),
-        bubbleRadius * 1.5,
-        bubblePaint);
-    canvas.drawCircle(
-        Offset(MediaQuery.of(context).size.width * 0.65, height * 0.71),
-        bubbleRadius * 1.25,
-        bubblePaint);
-    canvas.drawCircle(
-        Offset(MediaQuery.of(context).size.width / 2, height * 0.80),
-        bubbleRadius * 0.75,
-        bubblePaint);
+    Size mediaQuerySize = context.mediaQuerySize;
+    double height = (mediaQuerySize.height - kToolbarHeight);
+    canvas.drawCircle(Offset(mediaQuerySize.width / 2, height * 0.36),
+        bubbleRadius, bubblePaint);
+    canvas.drawCircle(Offset(mediaQuerySize.width * 0.39, height * 0.59),
+        bubbleRadius * 1.5, bubblePaint);
+    canvas.drawCircle(Offset(mediaQuerySize.width * 0.65, height * 0.71),
+        bubbleRadius * 1.25, bubblePaint);
+    canvas.drawCircle(Offset(mediaQuerySize.width / 2, height * 0.80),
+        bubbleRadius * 0.75, bubblePaint);
   }
 
   @override
@@ -323,6 +317,7 @@ class NoLSPWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    TextTheme textTheme = context.textTheme;
     List<Widget> buttons = [
       Container(
         height: 24.0,
@@ -331,16 +326,15 @@ class NoLSPWidget extends StatelessWidget {
               shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(6.0)),
               side: BorderSide(
-                  color: Theme.of(context).textTheme.button.color,
-                  style: BorderStyle.solid),
+                  color: textTheme.button.color, style: BorderStyle.solid),
             ),
             child: Text("SELECT...",
                 style: TextStyle(
                   fontSize: 12.3,
-                  color: Theme.of(context).textTheme.button.color,
+                  color: textTheme.button.color,
                 )),
             onPressed: () {
-              Navigator.of(context).pushNamed("/select_lsp");
+              context.pushNamed("/select_lsp");
             }),
       )
     ];

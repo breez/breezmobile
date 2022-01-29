@@ -1,4 +1,5 @@
 import 'package:breez/bloc/user_profile/user_profile_bloc.dart';
+import 'package:breez/utils/build_context.dart';
 import 'package:breez/widgets/back_button.dart' as backBtn;
 import 'package:breez/widgets/close_popup.dart';
 import 'package:breez/widgets/pin_code_widget.dart';
@@ -30,6 +31,9 @@ class _AppLockScreenState extends State<AppLockScreen> {
 
   @override
   Widget build(BuildContext context) {
+    ThemeData theme = context.theme;
+    AppBarTheme appBarTheme = theme.appBarTheme;
+
     return WillPopScope(
       onWillPop: willPopCallback(
         context,
@@ -39,12 +43,13 @@ class _AppLockScreenState extends State<AppLockScreen> {
       child: Scaffold(
         appBar: widget.canCancel == true
             ? AppBar(
-                iconTheme: Theme.of(context).appBarTheme.iconTheme,
-                textTheme: Theme.of(context).appBarTheme.textTheme,
-                backgroundColor: Theme.of(context).canvasColor,
+                iconTheme: appBarTheme.iconTheme,
+                backgroundColor: theme.canvasColor,
+                toolbarTextStyle: appBarTheme.toolbarTextStyle,
+                titleTextStyle: appBarTheme.titleTextStyle,
                 leading: backBtn.BackButton(
                   onPressed: () {
-                    Navigator.pop(context, false);
+                    context.pop(false);
                   },
                 ),
                 elevation: 0.0,

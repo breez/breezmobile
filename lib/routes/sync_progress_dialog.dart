@@ -1,9 +1,9 @@
 import 'package:breez/bloc/account/account_bloc.dart';
 import 'package:breez/bloc/account/account_model.dart';
 import 'package:breez/bloc/blocs_provider.dart';
+import 'package:breez/utils/build_context.dart';
 import 'package:breez/widgets/circular_progress.dart';
 import 'package:flutter/material.dart';
-import 'package:breez/l10n/locales.dart';
 
 class SyncProgressDialog extends StatefulWidget {
   final bool closeOnSync;
@@ -34,7 +34,7 @@ class SyncProgressDialogState extends State<SyncProgressDialog> {
               orElse: () => null)
           .then((a) {
         if (this.mounted) {
-          Navigator.of(context).pop(true);
+          context.pop(true);
         }
       });
     }
@@ -42,6 +42,8 @@ class SyncProgressDialogState extends State<SyncProgressDialog> {
 
   @override
   Widget build(BuildContext context) {
+    var l10n = context.l10n;
+
     final accountBloc = AppBlocsProvider.of<AccountBloc>(context);
 
     return StreamBuilder<AccountModel>(
@@ -51,15 +53,15 @@ class SyncProgressDialogState extends State<SyncProgressDialog> {
         if (acc == null) return SizedBox();
 
         return Container(
-          width: MediaQuery.of(context).size.width,
+          width: context.mediaQuerySize.width,
           height: 150.0,
           child: CircularProgress(
-            color: widget.progressColor ?? Theme.of(context).textTheme.button.color,
+            color: widget.progressColor ?? context.textTheme.button.color,
             size: 100.0,
             value: acc.serverReady ? acc.syncProgress : null,
             title: acc.serverReady
-                ? context.l10n.sync_progress_server_ready
-                : context.l10n.sync_progress_waiting_network,
+                ? l10n.sync_progress_server_ready
+                : l10n.sync_progress_waiting_network,
           ),
         );
       },

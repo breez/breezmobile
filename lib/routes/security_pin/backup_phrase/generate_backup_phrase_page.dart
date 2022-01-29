@@ -1,7 +1,7 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:breez/routes/podcast/theme.dart';
 import 'package:breez/theme_data.dart' as theme;
-import 'package:breez/utils/min_font_size.dart';
+import 'package:breez/utils/build_context.dart';
 import 'package:breez/widgets/back_button.dart' as backBtn;
 import 'package:breez/widgets/route.dart';
 import 'package:breez/widgets/single_button_bottom_bar.dart';
@@ -25,20 +25,23 @@ class GenerateBackupPhrasePageState extends State<GenerateBackupPhrasePage> {
 
   @override
   Widget build(BuildContext context) {
+    ThemeData themeData = context.theme;
+    AppBarTheme appBarTheme = themeData.appBarTheme;
+
     return WillPopScope(
       onWillPop: () => _onWillPop(context),
       child: Scaffold(
         appBar: AppBar(
-            iconTheme: Theme.of(context).appBarTheme.iconTheme,
-            textTheme: Theme.of(context).appBarTheme.textTheme,
-            backgroundColor: Theme.of(context).canvasColor,
+            iconTheme: appBarTheme.iconTheme,
+            backgroundColor: themeData.canvasColor,
+            toolbarTextStyle: appBarTheme.toolbarTextStyle,
+            titleTextStyle: appBarTheme.titleTextStyle,
             automaticallyImplyLeading: false,
             leading: backBtn.BackButton(
               onPressed: () => _onWillPop(context),
             ),
             title: AutoSizeText(
               "Write these words",
-              style: Theme.of(context).appBarTheme.textTheme.headline6,
               maxLines: 1,
             ),
             elevation: 0.0),
@@ -70,7 +73,7 @@ class GenerateBackupPhrasePageState extends State<GenerateBackupPhrasePage> {
             style: theme.mnemonicsTextStyle,
             textAlign: TextAlign.center,
             maxLines: 1,
-            minFontSize: MinFontSize(context).minFontSize,
+            minFontSize: context.minFontSize,
             stepGranularity: 0.1,
             group: _autoSizeGroup,
           ),
@@ -121,6 +124,6 @@ class GenerateBackupPhrasePageState extends State<GenerateBackupPhrasePage> {
   }
 
   _onWillPop(BuildContext context) {
-    Navigator.popUntil(context, ModalRoute.withName("/security"));
+    context.popUntil(ModalRoute.withName("/security"));
   }
 }

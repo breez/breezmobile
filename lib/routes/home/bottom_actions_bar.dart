@@ -15,13 +15,14 @@ import 'package:breez/l10n/text_uri.dart';
 import 'package:breez/routes/podcast/theme.dart';
 import 'package:breez/routes/spontaneous_payment/spontaneous_payment_page.dart';
 import 'package:breez/theme_data.dart' as theme;
+import 'package:breez/utils/build_context.dart';
 import 'package:breez/widgets/enter_payment_info_dialog.dart';
 import 'package:breez/widgets/escher_dialog.dart';
 import 'package:breez/widgets/lsp_fee.dart';
 import 'package:breez/widgets/route.dart';
 import 'package:breez/widgets/warning_box.dart';
 import 'package:flutter/material.dart';
-import 'package:breez/l10n/locales.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class BottomActionsBar extends StatelessWidget {
   final AccountModel account;
@@ -31,29 +32,30 @@ class BottomActionsBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    var l10n = context.l10n;
     AutoSizeGroup actionsGroup = AutoSizeGroup();
 
     return BottomAppBar(
       child: Container(
         height: 60,
-        color: Theme.of(context).bottomAppBarColor,
+        color: context.theme.bottomAppBarColor,
         child: Row(
           mainAxisSize: MainAxisSize.max,
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: <Widget>[
             _Action(
-              onPress: () => _showSendOptions(context),
+              onPress: () => _showSendOptions(context, l10n),
               group: actionsGroup,
-              text: context.l10n.bottom_action_bar_send,
+              text: l10n.bottom_action_bar_send,
               iconAssetPath: "src/icon/send-action.png",
             ),
             Container(
               width: 64,
             ),
             _Action(
-              onPress: () => showReceiveOptions(context, account),
+              onPress: () => showReceiveOptions(context, account, l10n),
               group: actionsGroup,
-              text: context.l10n.bottom_action_bar_receive,
+              text: l10n.bottom_action_bar_receive,
               iconAssetPath: "src/icon/receive-action.png",
             ),
           ],
@@ -62,7 +64,7 @@ class BottomActionsBar extends StatelessWidget {
     );
   }
 
-  Future _showSendOptions(BuildContext context) async {
+  Future _showSendOptions(BuildContext context, AppLocalizations l10n) async {
     InvoiceBloc invoiceBloc = AppBlocsProvider.of<InvoiceBloc>(context);
     AccountBloc accBloc = AppBlocsProvider.of<AccountBloc>(context);
     LNUrlBloc lnurlBloc = AppBlocsProvider.of<LNUrlBloc>(context);
@@ -83,11 +85,11 @@ class BottomActionsBar extends StatelessWidget {
                           iconAssetPath: "src/icon/paste.png",
                           enabled: account.connected),
                       title: Text(
-                        context.l10n.bottom_action_bar_paste_invoice,
+                        l10n.bottom_action_bar_paste_invoice,
                         style: theme.bottomSheetTextStyle,
                       ),
                       onTap: () async {
-                        Navigator.of(context).pop();
+                        context.pop();
                         DecodedClipboardData clipboardData =
                             await snapshot.data;
                         if (clipboardData != null) {
@@ -98,7 +100,7 @@ class BottomActionsBar extends StatelessWidget {
                             invoiceBloc.decodeInvoiceSink
                                 .add(clipboardData.data);
                           } else if (clipboardData.type == "nodeID") {
-                            Navigator.of(context).push(FadeInRoute(
+                            context.push(FadeInRoute(
                               builder: (_) => SpontaneousPaymentPage(
                                   clipboardData.data, firstPaymentItemKey),
                             ));
@@ -124,12 +126,12 @@ class BottomActionsBar extends StatelessWidget {
                             iconAssetPath: "src/icon/connect_to_pay.png",
                             enabled: account.connected),
                         title: Text(
-                          context.l10n.bottom_action_bar_connect_to_pay,
+                          l10n.bottom_action_bar_connect_to_pay,
                           style: theme.bottomSheetTextStyle,
                         ),
                         onTap: () {
-                          Navigator.of(context).pop();
-                          Navigator.of(context).pushNamed("/connect_to_pay");
+                          context.pop();
+                          context.pushNamed("/connect_to_pay");
                         }),
                     Divider(
                       height: 0.0,
@@ -142,12 +144,12 @@ class BottomActionsBar extends StatelessWidget {
                             iconAssetPath: "src/icon/bitcoin.png",
                             enabled: account.connected),
                         title: Text(
-                          context.l10n.bottom_action_bar_send_btc_address,
+                          l10n.bottom_action_bar_send_btc_address,
                           style: theme.bottomSheetTextStyle,
                         ),
                         onTap: () {
-                          Navigator.of(context).pop();
-                          Navigator.of(context).pushNamed("/withdraw_funds");
+                          context.pop();
+                          context.pushNamed("/withdraw_funds");
                         }),
                     StreamBuilder(
                         stream: accBloc.accountSettingsStream,
@@ -170,11 +172,11 @@ class BottomActionsBar extends StatelessWidget {
                                         iconAssetPath: "src/icon/escher.png",
                                         enabled: account.connected),
                                     title: Text(
-                                      context.l10n.bottom_action_bar_escher,
+                                      l10n.bottom_action_bar_escher,
                                       style: theme.bottomSheetTextStyle,
                                     ),
                                     onTap: () {
-                                      Navigator.pop(context);
+                                      context.pop();
                                       return showDialog(
                                           useRootNavigator: false,
                                           context: context,
@@ -243,7 +245,7 @@ class _ActionImage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Image(
       image: AssetImage(iconAssetPath),
-      color: enabled ? Colors.white : Theme.of(context).disabledColor,
+      color: enabled ? Colors.white : context.theme.disabledColor,
       fit: BoxFit.contain,
       width: 24.0,
       height: 24.0,
@@ -251,7 +253,8 @@ class _ActionImage extends StatelessWidget {
   }
 }
 
-Future showReceiveOptions(BuildContext parentContext, AccountModel account) {
+Future showReceiveOptions(
+    BuildContext parentContext, AccountModel account, AppLocalizations l10n) {
   AddFundsBloc addFundsBloc = BlocProvider.of<AddFundsBloc>(parentContext);
   LSPBloc lspBloc = AppBlocsProvider.of<LSPBloc>(parentContext);
 
@@ -269,6 +272,7 @@ Future showReceiveOptions(BuildContext parentContext, AccountModel account) {
                 if (snapshot.data == null) {
                   return SizedBox();
                 }
+                TextTheme textTheme = context.textTheme;
 
                 List<Widget> children =
                     snapshot.data.where((v) => v.isAllowed).map((v) {
@@ -276,7 +280,7 @@ Future showReceiveOptions(BuildContext parentContext, AccountModel account) {
                     children: [
                       Divider(
                         height: 0.0,
-                        color: Theme.of(context).dividerColor.withOpacity(0.2),
+                        color: context.theme.dividerColor.withOpacity(0.2),
                         indent: 72.0,
                       ),
                       ListTile(
@@ -295,7 +299,7 @@ Future showReceiveOptions(BuildContext parentContext, AccountModel account) {
                             style: theme.bottomSheetTextStyle,
                           ),
                           onTap: () {
-                            Navigator.of(context).pop();
+                            context.pop();
                             if (v.showLSPFee) {
                               promptLSPFeeAndNavigate(
                                 parentContext,
@@ -304,7 +308,7 @@ Future showReceiveOptions(BuildContext parentContext, AccountModel account) {
                                 v.route,
                               );
                             } else {
-                              Navigator.of(context).pushNamed(v.route);
+                              context.pushNamed(v.route);
                             }
                           }),
                     ],
@@ -322,12 +326,12 @@ Future showReceiveOptions(BuildContext parentContext, AccountModel account) {
                           enabled: true,
                         ),
                         title: Text(
-                          context.l10n.bottom_action_bar_receive_invoice,
+                          l10n.bottom_action_bar_receive_invoice,
                           style: theme.bottomSheetTextStyle,
                         ),
                         onTap: () {
-                          Navigator.of(context).pop();
-                          Navigator.of(context).pushNamed("/create_invoice");
+                          context.pop();
+                          context.pushNamed("/create_invoice");
                         }),
                     ...children,
                     account.warningMaxChanReserveAmount == 0
@@ -336,18 +340,15 @@ Future showReceiveOptions(BuildContext parentContext, AccountModel account) {
                             boxPadding: EdgeInsets.all(16),
                             contentPadding: EdgeInsets.all(8),
                             child: AutoSizeText(
-                              context.l10n.bottom_action_bar_warning_balance_title(
+                              l10n.bottom_action_bar_warning_balance_title(
                                 account.currency.format(
                                   account.warningMaxChanReserveAmount,
                                   removeTrailingZeros: true,
                                 ),
                               ),
                               maxLines: 1,
-                              maxFontSize: Theme.of(context)
-                                  .textTheme
-                                  .subtitle1
-                                  .fontSize,
-                              style: Theme.of(context).textTheme.headline6,
+                              maxFontSize: textTheme.subtitle1.fontSize,
+                              style: textTheme.headline6,
                               textAlign: TextAlign.center,
                             ),
                           ),

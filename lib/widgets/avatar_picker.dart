@@ -2,9 +2,9 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:breez/logger.dart';
+import 'package:breez/utils/build_context.dart';
 import 'package:breez/widgets/error_dialog.dart';
 import 'package:flutter/material.dart';
-import 'package:breez/l10n/locales.dart';
 import 'package:image/image.dart' as DartImage;
 import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
@@ -31,7 +31,7 @@ class AvatarPicker extends StatelessWidget {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
-        FocusScope.of(context).requestFocus(FocusNode());
+        context.focusScope.requestFocus(FocusNode());
         _pickImage(context);
       },
       child: Padding(
@@ -96,8 +96,8 @@ class AvatarPicker extends StatelessWidget {
 
   Future _pickImage(BuildContext context) async {
     final _picker = ImagePicker();
-    PickedFile pickedFile =
-        await _picker.getImage(source: ImageSource.gallery).catchError((err) {
+    XFile pickedFile =
+        await _picker.pickImage(source: ImageSource.gallery).catchError((err) {
       log.severe(err.toString());
     });
     final File file = File(pickedFile.path);

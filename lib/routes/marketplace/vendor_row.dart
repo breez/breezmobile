@@ -3,6 +3,7 @@ import 'package:breez/bloc/blocs_provider.dart';
 import 'package:breez/bloc/lnurl/lnurl_bloc.dart';
 import 'package:breez/bloc/marketplace/vendor_model.dart';
 import 'package:breez/theme_data.dart' as theme;
+import 'package:breez/utils/build_context.dart';
 import 'package:breez/widgets/route.dart';
 import 'package:flutter/material.dart';
 
@@ -38,7 +39,7 @@ class VendorRow extends StatelessWidget {
 
     final _vendorCard = GestureDetector(
         onTap: () {
-          Navigator.push(context, FadeInRoute(
+          context.push(FadeInRoute(
             builder: (_) {
               if (_vendor.id == "lnmarkets" || _vendor.id == "Kollider") {
                 var lnurlBloc = AppBlocsProvider.of<LNUrlBloc>(context);
@@ -85,7 +86,7 @@ class VendorRow extends StatelessWidget {
               ],
               border: Border.all(
                   color: _vendorBgColor == Colors.white
-                      ? Theme.of(context).highlightColor
+                      ? context.highlightColor
                       : Colors.transparent,
                   style: BorderStyle.solid,
                   width: 1.0),

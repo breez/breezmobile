@@ -4,10 +4,10 @@ import 'package:bip39/bip39.dart' as bip39;
 import 'package:breez/bloc/blocs_provider.dart';
 import 'package:breez/bloc/user_profile/user_profile_bloc.dart';
 import 'package:breez/theme_data.dart' as theme;
+import 'package:breez/utils/build_context.dart';
 import 'package:breez/widgets/back_button.dart' as backBtn;
 import 'package:breez/widgets/single_button_bottom_bar.dart';
 import 'package:flutter/material.dart';
-import 'package:breez/l10n/locales.dart';
 import 'package:flutter_typeahead/flutter_typeahead.dart';
 
 import 'wordlist.dart';
@@ -55,21 +55,26 @@ class EnterBackupPhrasePageState extends State<EnterBackupPhrasePage> {
 
   @override
   Widget build(BuildContext context) {
+    ThemeData themeData = context.theme;
+    AppBarTheme appBarTheme = themeData.appBarTheme;
+    MediaQueryData mediaQuery = context.mediaQuery;
+
     final userProfileBloc = AppBlocsProvider.of<UserProfileBloc>(context);
 
     return Scaffold(
       appBar: AppBar(
-        iconTheme: Theme.of(context).appBarTheme.iconTheme,
-        textTheme: Theme.of(context).appBarTheme.textTheme,
-        backgroundColor: Theme.of(context).canvasColor,
+        iconTheme: appBarTheme.iconTheme,
+        toolbarTextStyle: appBarTheme.toolbarTextStyle,
+        titleTextStyle: appBarTheme.titleTextStyle,
+        backgroundColor: themeData.canvasColor,
         automaticallyImplyLeading: false,
         leading: backBtn.BackButton(
           onPressed: () {
             if (_currentPage == 1) {
-              Navigator.pop(context);
+              context.pop();
             } else if (_currentPage > 1) {
               _formKey.currentState.reset();
-              FocusScope.of(context).requestFocus(FocusNode());
+              context.focusScope.requestFocus(FocusNode());
               setState(() {
                 _currentPage--;
               });
@@ -81,13 +86,13 @@ class EnterBackupPhrasePageState extends State<EnterBackupPhrasePage> {
             _currentPage.toString(),
             _lastPage.toString(),
           ),
-          style: Theme.of(context).appBarTheme.textTheme.headline6,
         ),
         elevation: 0.0,
       ),
       body: SingleChildScrollView(
         child: Container(
-          height: MediaQuery.of(context).size.height - kToolbarHeight - MediaQuery.of(context).padding.top,
+          height:
+              mediaQuery.size.height - kToolbarHeight - mediaQuery.padding.top,
           child: Column(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: _buildRestoreFormContent(context, userProfileBloc),
@@ -136,9 +141,7 @@ class EnterBackupPhrasePageState extends State<EnterBackupPhrasePage> {
       padding: EdgeInsets.only(left: 16, right: 16),
       child: Text(
         errorMessage,
-        style: Theme.of(context).textTheme.headline4.copyWith(
-          fontSize: 12,
-        ),
+        style: context.textTheme.headline4.copyWith(fontSize: 12),
       ),
     );
   }
@@ -191,11 +194,12 @@ class EnterBackupPhrasePageState extends State<EnterBackupPhrasePage> {
   }
 
   String _onValidate(BuildContext context, String text) {
+    var l10n = context.l10n;
     if (text.length == 0) {
-      return context.l10n.enter_backup_phrase_missing_word;
+      return l10n.enter_backup_phrase_missing_word;
     }
     if (!WORDLIST.contains(text.toLowerCase().trim())) {
-      return context.l10n.enter_backup_phrase_invalid_word;
+      return l10n.enter_backup_phrase_invalid_word;
     }
     return null;
   }
@@ -228,10 +232,11 @@ class EnterBackupPhrasePageState extends State<EnterBackupPhrasePage> {
     BuildContext context,
     UserProfileBloc userProfileBloc,
   ) {
+    var l10n = context.l10n;
     return SingleButtonBottomBar(
       text: _currentPage + 1 == (_lastPage + 1)
-          ? context.l10n.enter_backup_phrase_action_restore
-          : context.l10n.enter_backup_phrase_action_next,
+          ? l10n.enter_backup_phrase_action_restore
+          : l10n.enter_backup_phrase_action_next,
       onPressed: () {
         setState(() {
           _hasError = false;

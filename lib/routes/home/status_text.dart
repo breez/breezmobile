@@ -1,10 +1,12 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:breez/bloc/account/account_model.dart';
-import 'package:breez/utils/min_font_size.dart';
+import 'package:breez/utils/build_context.dart';
 import 'package:breez/widgets/loading_animated_text.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
+
+import '../../theme_data.dart';
 
 class StatusText extends StatefulWidget {
   final AccountModel account;
@@ -21,6 +23,11 @@ class StatusText extends StatefulWidget {
 class _StatusTextState extends State<StatusText> {
   @override
   Widget build(BuildContext context) {
+    ThemeData themeData = context.theme;
+    TextTheme textTheme = themeData.textTheme;
+    Color secondaryColor =
+        (themeId == "BLUE") ? BreezColors.grey[600] : Colors.white;
+
     if (widget.message != null) {
       return LoadingAnimatedText(widget.message);
     }
@@ -31,19 +38,18 @@ class _StatusTextState extends State<StatusText> {
           textElements: <TextSpan>[
             TextSpan(
                 text: "Breez is ",
-                style: Theme.of(context).accentTextTheme.bodyText2),
+                style: textTheme.bodyText2.copyWith(color: secondaryColor)),
             _LinkTextSpan(
                 text: "opening a secure channel",
                 url: widget.account.channelFundingTxUrl,
-                style: Theme.of(context)
-                    .accentTextTheme
-                    .bodyText2
-                    .copyWith(decoration: TextDecoration.underline)),
+                style: textTheme.bodyText2.copyWith(
+                    color: secondaryColor,
+                    decoration: TextDecoration.underline)),
             // style: theme.blueLinkStyle),
             TextSpan(
               text:
                   " with our server. This might take a while, but don't worry, we'll notify you when the app is ready to send and receive payments.",
-              style: Theme.of(context).accentTextTheme.bodyText2,
+              style: textTheme.bodyText2.copyWith(color: secondaryColor),
             )
           ]);
     }
@@ -51,9 +57,9 @@ class _StatusTextState extends State<StatusText> {
     if (widget.account == null || widget.account.statusMessage == null) {
       return AutoSizeText(
         "Breez is ready to receive funds.",
-        style: Theme.of(context).accentTextTheme.bodyText2,
+        style: textTheme.bodyText2.copyWith(color: secondaryColor),
         textAlign: TextAlign.center,
-        minFontSize: MinFontSize(context).minFontSize,
+        minFontSize: context.minFontSize,
         stepGranularity: 0.1,
       );
     }
@@ -63,7 +69,7 @@ class _StatusTextState extends State<StatusText> {
     return loading
         ? LoadingAnimatedText(widget.account.statusMessage)
         : Text(widget.account.statusMessage,
-            style: Theme.of(context).accentTextTheme.bodyText2,
+            style: textTheme.bodyText2.copyWith(color: secondaryColor),
             textAlign: TextAlign.center);
   }
 }

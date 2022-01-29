@@ -11,6 +11,7 @@ import 'package:breez/bloc/user_profile/currency.dart';
 import 'package:breez/bloc/user_profile/user_profile_bloc.dart';
 import 'package:breez/routes/charge/currency_wrapper.dart';
 import 'package:breez/theme_data.dart' as theme;
+import 'package:breez/utils/build_context.dart';
 import 'package:breez/utils/date.dart';
 import 'package:breez/utils/print_pdf.dart';
 import 'package:breez/widgets/back_button.dart' as backBtn;
@@ -19,7 +20,6 @@ import 'package:breez/widgets/payment_details_dialog.dart';
 import 'package:breez/widgets/print_parameters.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:breez/l10n/locales.dart';
 import 'package:flutter_svg/svg.dart';
 
 import 'items/item_avatar.dart';
@@ -74,9 +74,9 @@ class SaleViewState extends State<SaleView> {
             final thisRoute = ModalRoute.of(context);
             if (saleInProgress.saleLines.length == 0) {
               if (thisRoute.isCurrent) {
-                Navigator.of(context).pop();
+                context.pop();
               } else {
-                Navigator.of(context).removeRoute(thisRoute);
+                context.navigator.removeRoute(thisRoute);
               }
             }
           });
@@ -125,11 +125,14 @@ class SaleViewState extends State<SaleView> {
             ),
           );
         }
+        ThemeData themeData = context.theme;
+        AppBarTheme appBarTheme = themeData.appBarTheme;
         return Scaffold(
           appBar: AppBar(
-            iconTheme: Theme.of(context).appBarTheme.iconTheme,
-            textTheme: Theme.of(context).appBarTheme.textTheme,
-            backgroundColor: Theme.of(context).canvasColor,
+            iconTheme: appBarTheme.iconTheme,
+            toolbarTextStyle: appBarTheme.toolbarTextStyle,
+            titleTextStyle: appBarTheme.titleTextStyle,
+            backgroundColor: themeData.canvasColor,
             leading: backBtn.BackButton(),
             title: Text(title),
             actions: widget.readOnly
@@ -138,7 +141,7 @@ class SaleViewState extends State<SaleView> {
                     IconButton(
                       icon: Icon(
                         Icons.delete_forever,
-                        color: Theme.of(context).iconTheme.color,
+                        color: themeData.iconTheme.color,
                       ),
                       onPressed: () {
                         widget.onDeleteSale();
@@ -148,10 +151,10 @@ class SaleViewState extends State<SaleView> {
             elevation: 0.0,
           ),
           extendBody: false,
-          backgroundColor: Theme.of(context).backgroundColor,
+          backgroundColor: themeData.backgroundColor,
           body: GestureDetector(
             onTap: () {
-              final currentFocus = FocusScope.of(context);
+              final currentFocus = context.focusScope;
 
               if (!currentFocus.hasPrimaryFocus) {
                 currentFocus.unfocus();
@@ -182,8 +185,8 @@ class SaleViewState extends State<SaleView> {
           bottomNavigationBar: Container(
             decoration: BoxDecoration(
               color: theme.themeId == "BLUE"
-                  ? Theme.of(context).backgroundColor
-                  : Theme.of(context).canvasColor,
+                  ? themeData.backgroundColor
+                  : themeData.canvasColor,
               boxShadow: [
                 BoxShadow(
                   color: Colors.black.withOpacity(0.3),
@@ -191,11 +194,11 @@ class SaleViewState extends State<SaleView> {
                   blurRadius: 5.0,
                 ),
                 BoxShadow(
-                  color: Theme.of(context).backgroundColor,
+                  color: themeData.backgroundColor,
                 )
               ],
             ),
-            //color: Theme.of(context).canvasColor,
+            //color: context.canvasColor,
             child: Padding(
               padding: const EdgeInsets.all(36),
               child: Container(
@@ -218,7 +221,7 @@ class SaleViewState extends State<SaleView> {
     if (!showNote) return SizedBox();
 
     return Container(
-      color: Theme.of(context).canvasColor,
+      color: context.canvasColor,
       child: Padding(
         padding: const EdgeInsets.only(left: 16.0, right: 16.0, bottom: 8.0),
         child: TextField(
@@ -282,7 +285,7 @@ class SaleViewState extends State<SaleView> {
               alignment: Alignment.center,
               tooltip: context.l10n.sale_view_print,
               iconSize: 24.0,
-              color: Theme.of(context).iconTheme.color,
+              color: context.iconTheme.color,
               icon: SvgPicture.asset(
                 "src/icon/printer.svg",
                 color: Colors.white,
@@ -328,7 +331,7 @@ class _TotalSaleCharge extends StatelessWidget {
   Widget build(BuildContext context) {
     return ElevatedButton(
       style: ElevatedButton.styleFrom(
-        primary: Theme.of(context).primaryColorLight,
+        primary: context.primaryColorLight,
         padding: EdgeInsets.only(top: 14.0, bottom: 14.0),
       ),
       child: Text(
@@ -348,15 +351,19 @@ class _TotalSaleCharge extends StatelessWidget {
   }
 
   String _title(BuildContext context) {
+    var l10n = context.l10n;
+
     final totalAmountInSats = currentSale.totalAmountInSats;
     final totalAmountInFiat = currentSale.totalAmountInFiat;
 
     final satCurrency = CurrencyWrapper.fromBTC(Currency.SAT);
-    final satMessage = satCurrency.format(
-      totalAmountInSats,
-      removeTrailingZeros: true,
-      includeDisplayName: true,
-    ).toUpperCase();
+    final satMessage = satCurrency
+        .format(
+          totalAmountInSats,
+          removeTrailingZeros: true,
+          includeDisplayName: true,
+        )
+        .toUpperCase();
 
     if (totalAmountInFiat.length == 1) {
       final currency = totalAmountInFiat.entries.first.key;
@@ -366,19 +373,21 @@ class _TotalSaleCharge extends StatelessWidget {
           currency,
           accountModel,
         );
-        final fiatValue = saleCurrency.format(
-          total,
-          removeTrailingZeros: true,
-          includeCurrencySymbol: true,
-        ).toUpperCase();
+        final fiatValue = saleCurrency
+            .format(
+              total,
+              removeTrailingZeros: true,
+              includeCurrencySymbol: true,
+            )
+            .toUpperCase();
         return readOnly
-            ? context.l10n.sale_view_total_title_read_only_fiat(satMessage, fiatValue)
-            : context.l10n.sale_view_total_title_charge_fiat(satMessage, fiatValue);
+            ? l10n.sale_view_total_title_read_only_fiat(satMessage, fiatValue)
+            : l10n.sale_view_total_title_charge_fiat(satMessage, fiatValue);
       }
     }
     return readOnly
-        ? context.l10n.sale_view_total_title_read_only_no_fiat(satMessage)
-        : context.l10n.sale_view_total_title_charge_no_fiat(satMessage);
+        ? l10n.sale_view_total_title_read_only_no_fiat(satMessage)
+        : l10n.sale_view_total_title_charge_no_fiat(satMessage);
   }
 }
 
@@ -400,6 +409,9 @@ class SaleLinesList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    Color textColor = theme.themeId == "BLUE"
+        ? context.canvasColor
+        : context.textTheme.subtitle1.color;
     final posCatalogBloc = AppBlocsProvider.of<PosCatalogBloc>(context);
 
     return SingleChildScrollView(
@@ -410,12 +422,8 @@ class SaleLinesList extends StatelessWidget {
         //primary: false,
         itemBuilder: (context, index) {
           return ListTileTheme(
-            textColor: theme.themeId == "BLUE"
-                ? Theme.of(context).canvasColor
-                : Theme.of(context).textTheme.subtitle1.color,
-            iconColor: theme.themeId == "BLUE"
-                ? Theme.of(context).canvasColor
-                : Theme.of(context).textTheme.subtitle1.color,
+            textColor: textColor,
+            iconColor: textColor,
             child: Column(
               children: [
                 SaleLineWidget(
@@ -427,32 +435,32 @@ class SaleLinesList extends StatelessWidget {
                               currentSale.copyWith(
                                 saleLines: currentSale.saleLines
                                   ..removeAt(index),
-                              ),
-                            ),
                           ),
+                        ),
+                      ),
                   onChangeQuantity: readOnly
                       ? null
                       : (int delta) {
-                          var saleLines = currentSale.saleLines.toList();
-                          var saleLine = currentSale.saleLines[index];
-                          var newQuantity = saleLine.quantity + delta;
-                          if (saleLine.quantity == 0) {
-                            saleLines.removeAt(index);
-                          } else {
-                            saleLines = saleLines.map((sl) {
-                              if (sl != saleLine) {
-                                return sl;
-                              }
-                              return sl.copyWith(quantity: newQuantity);
-                            }).toList();
-                          }
-                          var newSale = currentSale.copyWith(
-                            saleLines: saleLines,
-                          );
-                          posCatalogBloc.actionsSink.add(
-                            SetCurrentSale(newSale),
-                          );
-                        },
+                    var saleLines = currentSale.saleLines.toList();
+                    var saleLine = currentSale.saleLines[index];
+                    var newQuantity = saleLine.quantity + delta;
+                    if (saleLine.quantity == 0) {
+                      saleLines.removeAt(index);
+                    } else {
+                      saleLines = saleLines.map((sl) {
+                        if (sl != saleLine) {
+                          return sl;
+                        }
+                        return sl.copyWith(quantity: newQuantity);
+                      }).toList();
+                    }
+                    var newSale = currentSale.copyWith(
+                      saleLines: saleLines,
+                    );
+                    posCatalogBloc.actionsSink.add(
+                      SetCurrentSale(newSale),
+                    );
+                  },
                   accountModel: accountModel,
                   saleLine: currentSale.saleLines[index],
                 ),
@@ -460,10 +468,7 @@ class SaleLinesList extends StatelessWidget {
                   height: 0.0,
                   color: index == currentSale.saleLines.length - 1
                       ? Colors.white.withOpacity(0.0)
-                      : (theme.themeId == "BLUE"
-                              ? Theme.of(context).canvasColor
-                              : Theme.of(context).textTheme.subtitle1.color)
-                          .withOpacity(0.5),
+                      : textColor.withOpacity(0.5),
                   indent: 72.0,
                 ),
               ],
@@ -493,10 +498,10 @@ class SaleLineWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final listTileThemeData = ListTileTheme.of(context);
+    final listTileTheme = context.listTileTheme;
     final iconColor = theme.themeId == "BLUE"
         ? Colors.black.withOpacity(0.3)
-        : listTileThemeData.iconColor.withOpacity(0.5);
+        : listTileTheme.iconColor.withOpacity(0.5);
 
     return Padding(
       padding: const EdgeInsets.fromLTRB(0, 8, 8, 8),
@@ -536,7 +541,7 @@ class SaleLineWidget extends StatelessWidget {
                   style: TextStyle(
                     color: theme.themeId == "BLUE"
                         ? Colors.black.withOpacity(0.7)
-                        : listTileThemeData.textColor,
+                        : listTileTheme.textColor,
                     fontSize: 18.0,
                   ),
                 ),
@@ -580,8 +585,7 @@ class CurrencyDisplay extends StatelessWidget {
     double priceInFiat = saleLine.totalFiat;
     double priceInSats = saleLine.totalSats;
     TextStyle textStyle = TextStyle(
-      color: ListTileTheme.of(context)
-          .textColor
+      color: context.listTileTheme.textColor
           .withOpacity(theme.themeId == "BLUE" ? 0.75 : 0.5),
     );
     return SingleChildScrollView(

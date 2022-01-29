@@ -1,3 +1,4 @@
+import 'package:breez/utils/build_context.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -18,6 +19,9 @@ class _CloseWarningDialogState extends State<CloseWarningDialog> {
   }
 
   _getContent() {
+    TextStyle headline3 =
+        context.primaryTextTheme.headline3.copyWith(fontSize: 16);
+
     List<Widget> children = <Widget>[
       Padding(
         padding: const EdgeInsets.only(left: 15.0, right: 12.0),
@@ -28,23 +32,16 @@ class _CloseWarningDialogState extends State<CloseWarningDialog> {
                 (widget.inactiveDuration ~/ 86400).toString() +
                 """ days, so your LSP might have to close your channels.
 Should this happen, Breez will generate an on-chain address and sweep your funds into it. You will retain complete control of your money, less the mining fee incurred by the sweep transaction, and you can come back any time. To learn more about why this happens, read our post on """,
-            style: Theme.of(context)
-                .primaryTextTheme
-                .headline3
-                .copyWith(fontSize: 16),
+            style: headline3,
           ),
           _LinkTextSpan(
               text: "inbound liquidity",
               url:
                   "https://medium.com/breez-technology/lightning-economics-how-i-learned-to-stop-worrying-and-love-inbound-liquidity-511d05aa8b8b",
-              style: Theme.of(context).primaryTextTheme.headline3.copyWith(
-                  fontSize: 16, decoration: TextDecoration.underline)),
+              style: headline3.copyWith(decoration: TextDecoration.underline)),
           TextSpan(
             text: ".",
-            style: Theme.of(context)
-                .primaryTextTheme
-                .headline3
-                .copyWith(fontSize: 16),
+            style: headline3,
           ),
         ])),
       ),
@@ -55,15 +52,17 @@ Should this happen, Breez will generate an on-chain address and sweep your funds
 
   @override
   Widget build(BuildContext context) {
+    ThemeData themeData = context.theme;
+    TextStyle titleTextStyle = themeData.dialogTheme.titleTextStyle;
+    TextStyle btnTextStyle = themeData.primaryTextTheme.button;
+
     return Theme(
-        data: Theme.of(context).copyWith(
-          unselectedWidgetColor: Theme.of(context).canvasColor,
-        ),
+        data: themeData.copyWith(unselectedWidgetColor: themeData.canvasColor),
         child: AlertDialog(
           titlePadding: EdgeInsets.fromLTRB(24.0, 22.0, 0.0, 16.0),
           title: Text(
             "Inactive Channels",
-            style: Theme.of(context).dialogTheme.titleTextStyle,
+            style: titleTextStyle,
           ),
           contentPadding: EdgeInsets.fromLTRB(8.0, 8.0, 8.0, 24.0),
           content: Column(
@@ -74,10 +73,9 @@ Should this happen, Breez will generate an on-chain address and sweep your funds
           actions: [
             TextButton(
               onPressed: (() {
-                Navigator.of(context).pop();
+                context.pop();
               }),
-              child:
-                  Text("OK", style: Theme.of(context).primaryTextTheme.button),
+              child: Text("OK", style: btnTextStyle),
             ),
           ],
         ));
@@ -87,10 +85,10 @@ Should this happen, Breez will generate an on-chain address and sweep your funds
 class _LinkTextSpan extends TextSpan {
   _LinkTextSpan({TextStyle style, String url, String text})
       : super(
-            style: style,
-            text: text ?? url,
-            recognizer: TapGestureRecognizer()
-              ..onTap = () {
-                launch(url, forceSafariVC: false);
-              });
+      style: style,
+      text: text ?? url,
+      recognizer: TapGestureRecognizer()
+        ..onTap = () {
+          launch(url, forceSafariVC: false);
+        });
 }

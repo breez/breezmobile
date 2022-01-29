@@ -2,11 +2,11 @@ import 'package:breez/bloc/account/account_bloc.dart';
 import 'package:breez/bloc/account/account_model.dart';
 import 'package:breez/bloc/blocs_provider.dart';
 import 'package:breez/services/injector.dart';
+import 'package:breez/utils/build_context.dart';
 import 'package:breez/widgets/back_button.dart' as backBtn;
 import 'package:breez/widgets/flushbar.dart';
 import 'package:breez/widgets/link_launcher.dart';
 import 'package:flutter/material.dart';
-import 'package:breez/l10n/locales.dart';
 
 class ConditionalDeposit extends StatelessWidget {
   final Widget enabledChild;
@@ -45,17 +45,17 @@ class ConditionalDeposit extends StatelessWidget {
         if (errorMessage == null) {
           return enabledChild;
         }
+        ThemeData theme = context.theme;
+        AppBarTheme appBarTheme = theme.appBarTheme;
 
         return Scaffold(
           appBar: AppBar(
-            iconTheme: Theme.of(context).appBarTheme.iconTheme,
-            textTheme: Theme.of(context).appBarTheme.textTheme,
-            backgroundColor: Theme.of(context).canvasColor,
+            iconTheme: appBarTheme.iconTheme,
+            backgroundColor: theme.canvasColor,
+            toolbarTextStyle: appBarTheme.toolbarTextStyle,
+            titleTextStyle: appBarTheme.titleTextStyle,
             leading: backBtn.BackButton(),
-            title: Text(
-              title,
-              style: Theme.of(context).appBarTheme.textTheme.headline6,
-            ),
+            title: Text(title),
             elevation: 0.0,
           ),
           body: Column(

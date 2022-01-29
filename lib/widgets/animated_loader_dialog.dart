@@ -1,6 +1,6 @@
 import 'package:breez/theme_data.dart' as theme;
+import 'package:breez/utils/build_context.dart';
 import 'package:flutter/material.dart';
-import 'package:breez/l10n/locales.dart';
 
 import 'loading_animated_text.dart';
 
@@ -9,6 +9,10 @@ AlertDialog createAnimatedLoaderDialog(
   String text, {
   bool withOKButton = true,
 }) {
+  ThemeData themeData = context.theme;
+  DialogTheme dialogTheme = themeData.dialogTheme;
+  TextTheme primaryTextTheme = themeData.primaryTextTheme;
+
   return AlertDialog(
     contentPadding: EdgeInsets.only(left: 24.0, right: 24.0, top: 24.0),
     content: Column(
@@ -17,7 +21,7 @@ AlertDialog createAnimatedLoaderDialog(
       children: [
         LoadingAnimatedText(
           text,
-          textStyle: Theme.of(context).dialogTheme.contentTextStyle,
+          textStyle: dialogTheme.contentTextStyle,
           textAlign: TextAlign.center,
         ),
         Image.asset(
@@ -32,14 +36,14 @@ AlertDialog createAnimatedLoaderDialog(
           mainAxisSize: MainAxisSize.max,
           children: withOKButton
               ? [
-                  TextButton(
-                    child: Text(
+            TextButton(
+              child: Text(
                       context.l10n.backup_in_progress_action_confirm,
-                      style: Theme.of(context).primaryTextTheme.button,
+                      style: primaryTextTheme.button,
                     ),
-                    onPressed: () => Navigator.pop(context, false),
+                    onPressed: () => context.pop(false),
                   ),
-                ]
+          ]
               : [],
         ),
       ],

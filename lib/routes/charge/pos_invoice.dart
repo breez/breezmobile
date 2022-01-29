@@ -16,13 +16,13 @@ import 'package:breez/bloc/user_profile/breez_user_model.dart';
 import 'package:breez/bloc/user_profile/currency.dart';
 import 'package:breez/bloc/user_profile/user_actions.dart';
 import 'package:breez/bloc/user_profile/user_profile_bloc.dart';
-import 'package:breez/l10n/locales.dart';
 import 'package:breez/routes/charge/currency_wrapper.dart';
 import 'package:breez/routes/charge/pos_invoice_cart_bar.dart';
 import 'package:breez/routes/charge/pos_invoice_items_view.dart';
 import 'package:breez/routes/charge/pos_invoice_num_pad.dart';
 import 'package:breez/routes/charge/succesful_payment.dart';
 import 'package:breez/theme_data.dart' as theme;
+import 'package:breez/utils/build_context.dart';
 import 'package:breez/utils/print_pdf.dart';
 import 'package:breez/widgets/error_dialog.dart';
 import 'package:breez/widgets/flushbar.dart';
@@ -142,10 +142,7 @@ class POSInvoiceState extends State<POSInvoice> with TickerProviderStateMixin {
         builder: (context, saleSnapshot) {
           var currentSale = saleSnapshot.data;
           return GestureDetector(
-            onTap: () {
-              // call this method here to hide soft keyboard
-              FocusScope.of(context).requestFocus(FocusNode());
-            },
+            onTap: () => context.hideKeyboard(),
             child: Builder(
               builder: (BuildContext context) {
                 return StreamBuilder<BreezUserModel>(
@@ -270,9 +267,9 @@ class POSInvoiceState extends State<POSInvoice> with TickerProviderStateMixin {
                 ],
               ),
               decoration: BoxDecoration(
-                color: Theme.of(context).backgroundColor,
+                color: context.backgroundColor,
               ),
-              height: max(184.0, MediaQuery.of(context).size.height * 0.3),
+              height: max(184.0, context.mediaQuerySize.height * 0.3),
             ),
             _tabBody(
               context,
@@ -323,7 +320,7 @@ class POSInvoiceState extends State<POSInvoice> with TickerProviderStateMixin {
           ignoring: false,
           child: ElevatedButton(
             style: ElevatedButton.styleFrom(
-              primary: Theme.of(context).primaryColorLight,
+              primary: context.primaryColorLight,
               padding: EdgeInsets.only(top: 14.0, bottom: 14.0),
             ),
             child: Text(
@@ -346,20 +343,25 @@ class POSInvoiceState extends State<POSInvoice> with TickerProviderStateMixin {
   }
 
   Widget _buildViewSwitch(BuildContext context) {
+    var l10n = context.l10n;
+    ThemeData themeData = context.theme;
+    Color textColor = themeData.textTheme.button.color;
+    Color tintColor = themeData.primaryTextTheme.button.color;
+
     return ViewSwitch(
       selected: _isKeypadView ? 0 : 1,
-      tint: Theme.of(context).primaryTextTheme.button.color,
-      textTint: Theme.of(context).textTheme.button.color,
+      tint: tintColor,
+      textTint: textColor,
       items: [
         ViewSwitchItem(
-          context.l10n.pos_invoice_tab_keypad,
+          l10n.pos_invoice_tab_keypad,
           () => AppBlocsProvider.of<PosCatalogBloc>(context)
               .actionsSink
               .add(UpdatePosSelectedTab("KEYPAD")),
           iconData: Icons.dialpad,
         ),
         ViewSwitchItem(
-          context.l10n.pos_invoice_tab_items,
+          l10n.pos_invoice_tab_items,
           () => AppBlocsProvider.of<PosCatalogBloc>(context)
               .actionsSink
               .add(UpdatePosSelectedTab("ITEMS")),
@@ -428,15 +430,20 @@ class POSInvoiceState extends State<POSInvoice> with TickerProviderStateMixin {
     BreezUserModel user,
     AccountModel account,
   ) {
+    var l10n = context.l10n;
+    ThemeData themeData = context.theme;
+    TextTheme primaryTextTheme = themeData.primaryTextTheme;
+    DialogTheme dialogTheme = themeData.dialogTheme;
+
     final errorName = user.name == null;
     final errorAvatar = user.avatarURL == null;
     String errorMessage;
     if (errorName || errorAvatar) {
-      errorMessage = context.l10n.pos_invoice_error_submit_name_avatar;
+      errorMessage = l10n.pos_invoice_error_submit_name_avatar;
     } else if (errorName) {
-      errorMessage = context.l10n.pos_invoice_error_submit_name_only;
+      errorMessage = l10n.pos_invoice_error_submit_name_only;
     } else if (errorAvatar) {
-      errorMessage = context.l10n.pos_invoice_error_submit_avatar_only;
+      errorMessage = l10n.pos_invoice_error_submit_avatar_only;
     } else {
       errorMessage = null;
     }
@@ -449,25 +456,25 @@ class POSInvoiceState extends State<POSInvoice> with TickerProviderStateMixin {
         builder: (BuildContext context) {
           return AlertDialog(
             title: Text(
-              context.l10n.pos_invoice_error_submit_header,
-              style: Theme.of(context).dialogTheme.titleTextStyle,
+              l10n.pos_invoice_error_submit_header,
+              style: dialogTheme.titleTextStyle,
             ),
             contentPadding: EdgeInsets.fromLTRB(24.0, 8.0, 24.0, 8.0),
             content: SingleChildScrollView(
               child: Text(
                 errorMessage,
-                style: Theme.of(context).dialogTheme.contentTextStyle,
+                style: dialogTheme.contentTextStyle,
               ),
             ),
             actions: <Widget>[
               TextButton(
                 child: Text(
-                  context.l10n.pos_invoice_error_fix_action,
-                  style: Theme.of(context).primaryTextTheme.button,
+                  l10n.pos_invoice_error_fix_action,
+                  style: primaryTextTheme.button,
                 ),
                 onPressed: () {
-                  Navigator.of(context).pop();
-                  Navigator.of(context).pushNamed("/settings");
+                  context.pop();
+                  context.pushNamed("/settings");
                 },
               ),
             ],
@@ -489,15 +496,15 @@ class POSInvoiceState extends State<POSInvoice> with TickerProviderStateMixin {
       if (satAmount > maxAllowed.toDouble()) {
         promptError(
           context,
-          context.l10n.pos_invoice_error_capacity_header,
+          l10n.pos_invoice_error_capacity_header,
           Text(
-            context.l10n.pos_invoice_error_capacity_message(
+            l10n.pos_invoice_error_capacity_message(
               account.currency.format(
                 maxAllowed,
                 includeDisplayName: true,
               ),
             ),
-            style: Theme.of(context).dialogTheme.contentTextStyle,
+            style: dialogTheme.contentTextStyle,
           ),
         );
         return;
@@ -507,15 +514,15 @@ class POSInvoiceState extends State<POSInvoice> with TickerProviderStateMixin {
       if (satAmount > maxPaymentAmount.toDouble()) {
         promptError(
           context,
-          context.l10n.pos_invoice_error_payment_size_header,
+          l10n.pos_invoice_error_payment_size_header,
           Text(
-            context.l10n.pos_invoice_error_payment_size_message(
+            l10n.pos_invoice_error_payment_size_message(
               account.currency.format(
                 maxPaymentAmount,
                 includeDisplayName: true,
               ),
             ),
-            style: Theme.of(context).dialogTheme.contentTextStyle,
+            style: dialogTheme.contentTextStyle,
           ),
         );
         return;
@@ -581,11 +588,11 @@ class POSInvoiceState extends State<POSInvoice> with TickerProviderStateMixin {
         actions: <Widget>[
           TextButton(
             onPressed: (() {
-              Navigator.pop(context, false);
+              context.pop(false);
             }),
             child: Text(
               context.l10n.pos_invoice_close,
-              style: Theme.of(context).primaryTextTheme.button,
+              style: context.primaryTextTheme.button,
             ),
           ),
         ],
@@ -609,7 +616,7 @@ class POSInvoiceState extends State<POSInvoice> with TickerProviderStateMixin {
           return PosPaymentDialog(invoiceBloc, user, payReq, satAmount);
         }).then((res) {
       if (res?.paid == true) {
-        Navigator.of(context).push(TransparentPageRoute((context) {
+        context.push(TransparentPageRoute((context) {
           return SuccessfulPaymentRoute(
             onPrint: () async {
               PaymentInfo paymentInfo = await _findPayment(payReq.paymentHash);
@@ -810,34 +817,39 @@ class POSInvoiceState extends State<POSInvoice> with TickerProviderStateMixin {
   }
 
   void _approveClear(BuildContext context, Sale currentSale) {
+    var l10n = context.l10n;
+    ThemeData themeData = context.theme;
+    DialogTheme dialogTheme = themeData.dialogTheme;
+    TextStyle btnTextStyle = themeData.primaryTextTheme.button;
+
     if (currentSale.totalChargeSat > 0 || currentAmount > 0) {
       AlertDialog dialog = AlertDialog(
         title: Text(
-          context.l10n.pos_invoice_clear_sale_header,
+          l10n.pos_invoice_clear_sale_header,
           textAlign: TextAlign.center,
-          style: Theme.of(context).dialogTheme.titleTextStyle,
+          style: dialogTheme.titleTextStyle,
         ),
         content: Text(
-          context.l10n.pos_invoice_clear_sale_message,
-          style: Theme.of(context).dialogTheme.contentTextStyle,
+          l10n.pos_invoice_clear_sale_message,
+          style: dialogTheme.contentTextStyle,
         ),
         contentPadding: EdgeInsets.fromLTRB(24.0, 24.0, 24.0, 12.0),
         actions: <Widget>[
           TextButton(
-            onPressed: () => Navigator.pop(context),
+            onPressed: () => context.pop(),
             child: Text(
-              context.l10n.pos_invoice_clear_sale_cancel,
-              style: Theme.of(context).primaryTextTheme.button,
+              l10n.pos_invoice_clear_sale_cancel,
+              style: btnTextStyle,
             ),
           ),
           TextButton(
             onPressed: () {
-              Navigator.pop(context);
+              context.pop();
               _clearSale();
             },
             child: Text(
-              context.l10n.pos_invoice_clear_sale_confirm,
-              style: Theme.of(context).primaryTextTheme.button,
+              l10n.pos_invoice_clear_sale_confirm,
+              style: btnTextStyle,
             ),
           ),
         ],

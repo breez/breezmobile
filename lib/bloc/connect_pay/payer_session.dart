@@ -31,20 +31,25 @@ class PayerRemoteSession extends RemoteSession with OnlineStatusUpdater {
 
   final StreamController<void> _terminationStreamController =
       StreamController<void>();
+
   Stream<void> get terminationStream => _terminationStreamController.stream;
 
   final _sentInvitesController = StreamController<String>();
+
   Sink<String> get sentInvitesSink => _sentInvitesController.sink;
 
   final _paymentDetailsController = StreamController<PaymentDetails>();
+
   Sink<PaymentDetails> get paymentDetailsSink => _paymentDetailsController.sink;
 
   final _paymentSessionController = BehaviorSubject<PaymentSessionState>();
+
   Stream<PaymentSessionState> get paymentSessionStateStream =>
       _paymentSessionController.stream;
 
   final _sessionErrorsController =
       StreamController<PaymentSessionError>.broadcast();
+
   Stream<PaymentSessionError> get sessionErrors =>
       _sessionErrorsController.stream;
 

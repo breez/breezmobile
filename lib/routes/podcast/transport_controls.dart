@@ -8,6 +8,7 @@ import 'package:anytime/bloc/podcast/audio_bloc.dart';
 import 'package:anytime/l10n/L.dart';
 import 'package:anytime/services/audio/audio_player_service.dart';
 import 'package:anytime/ui/widgets/sleep_selector.dart';
+import 'package:breez/utils/build_context.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -77,6 +78,7 @@ class _PlayerTransportControlsState extends State<PlayerTransportControls>
       stream: audioBloc.playingState,
       builder: (context, snapshot) {
         final audioState = snapshot.data;
+        Color primaryColor = context.theme.buttonTheme.colorScheme.onPrimary;
 
         return Row(
           crossAxisAlignment: CrossAxisAlignment.center,
@@ -101,13 +103,13 @@ class _PlayerTransportControlsState extends State<PlayerTransportControls>
                   ),
                   iconOn: SvgPicture.asset(
                     'assets/icons/sleep_on.svg',
-                    color: Theme.of(context).buttonTheme.colorScheme.onPrimary,
+                    color: primaryColor,
                     height: 24.0,
                     width: 24.0,
                   ),
                   iconOff: SvgPicture.asset(
                     'assets/icons/sleep_off.svg',
-                    color: Theme.of(context).buttonTheme.colorScheme.onPrimary,
+                    color: primaryColor,
                     height: 24.0,
                     width: 24.0,
                   ),
@@ -117,15 +119,14 @@ class _PlayerTransportControlsState extends State<PlayerTransportControls>
             Expanded(flex: 1, child: Container()),
             IconButton(
               onPressed: () {
-                return snapshot.data == AudioState.buffering ? null : _rewind(audioBloc);
+                return snapshot.data == AudioState.buffering
+                    ? null
+                    : _rewind(audioBloc);
               },
               tooltip: L.of(context).rewind_button_label,
               padding: const EdgeInsets.all(0.0),
-              icon: ImageIcon(
-                AssetImage('src/icon/replay_30.png'),
-                size: 48.0,
-                color: Theme.of(context).buttonTheme.colorScheme.onPrimary
-              ),
+              icon: ImageIcon(AssetImage('src/icon/replay_30.png'),
+                  size: 48.0, color: primaryColor),
             ),
             Expanded(flex: 1, child: Container()),
             _PlayButton(
@@ -137,13 +138,15 @@ class _PlayerTransportControlsState extends State<PlayerTransportControls>
             Expanded(flex: 1, child: Container()),
             IconButton(
               onPressed: () {
-                return snapshot.data == AudioState.buffering ? null : _fastforward(audioBloc);
+                return snapshot.data == AudioState.buffering
+                    ? null
+                    : _fastforward(audioBloc);
               },
               padding: const EdgeInsets.all(0.0),
               icon: ImageIcon(
                 AssetImage('src/icon/forward_30.png'),
                 size: 48.0,
-                color: Theme.of(context).buttonTheme.colorScheme.onPrimary,
+                color: primaryColor,
               ),
             ),
             Expanded(flex: 1, child: Container()),
@@ -194,15 +197,14 @@ class _PlayButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    var l10n = L.of(context);
     final playing = audioState == AudioState.playing;
     final buffering = audioState == null || audioState == AudioState.buffering;
 
     // in case we are buffering show progress indicator.
     if (buffering) {
       return Tooltip(
-          message: playing
-              ? L.of(context).pause_button_label
-              : L.of(context).play_button_label,
+          message: playing ? l10n.pause_button_label : l10n.play_button_label,
           child: TextButton(
             style: TextButton.styleFrom(
               shape: CircleBorder(),
@@ -210,22 +212,19 @@ class _PlayButton extends StatelessWidget {
             onPressed: null,
             child: SpinKitRing(
               lineWidth: 2.0,
-              color: Theme.of(context).colorScheme.secondary,
+              color: context.theme.colorScheme.secondary,
               size: 60,
             ),
           ));
     }
 
     return Tooltip(
-      message: playing
-          ? L.of(context).pause_button_label
-          : L.of(context).play_button_label,
+      message: playing ? l10n.pause_button_label : l10n.play_button_label,
       child: TextButton(
         style: TextButton.styleFrom(
           shape: CircleBorder(
-              side: BorderSide(
-                  color: Theme.of(context).highlightColor, width: 0.0)),
-          backgroundColor: Theme.of(context).primaryColor,
+              side: BorderSide(color: context.highlightColor, width: 0.0)),
+          backgroundColor: context.primaryColor,
           padding: const EdgeInsets.all(8.0),
         ),
         onPressed: () {

@@ -3,6 +3,7 @@ import 'dart:convert' as JSON;
 import 'package:breez/bloc/account/account_bloc.dart';
 import 'package:breez/bloc/blocs_provider.dart';
 import 'package:breez/bloc/invoice/invoice_bloc.dart';
+import 'package:breez/utils/build_context.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:webview_flutter/webview_flutter.dart';
@@ -52,6 +53,9 @@ class VendorWebViewPageState extends State<VendorWebViewPage> {
 
   @override
   Widget build(BuildContext context) {
+    ThemeData theme = context.theme;
+    AppBarTheme appBarTheme = theme.appBarTheme;
+
     return Scaffold(
       resizeToAvoidBottomInset: false,
       appBar: AppBar(
@@ -59,18 +63,16 @@ class VendorWebViewPageState extends State<VendorWebViewPage> {
           IconButton(
               icon: Icon(
                 Icons.close,
-                color: Theme.of(context).iconTheme.color,
+                color: context.iconTheme.color,
               ),
-              onPressed: () => Navigator.pop(context))
+              onPressed: () => context.pop())
         ],
         automaticallyImplyLeading: false,
-        iconTheme: Theme.of(context).appBarTheme.iconTheme,
-        textTheme: Theme.of(context).appBarTheme.textTheme,
-        backgroundColor: Theme.of(context).canvasColor,
-        title: Text(
-          widget._title,
-          style: Theme.of(context).appBarTheme.textTheme.headline6,
-        ),
+        iconTheme: appBarTheme.iconTheme,
+        backgroundColor: theme.canvasColor,
+        toolbarTextStyle: appBarTheme.toolbarTextStyle,
+        titleTextStyle: appBarTheme.titleTextStyle,
+        title: Text(widget._title),
         elevation: 0.0,
       ),
       body: Listener(
@@ -89,18 +91,18 @@ class VendorWebViewPageState extends State<VendorWebViewPage> {
               _breezJavascriptChannel(context),
             ].toSet(),
             navigationDelegate: (NavigationRequest request) =>
-                request.url.startsWith('lightning:')
-                    ? NavigationDecision.prevent
-                    : NavigationDecision.navigate,
+            request.url.startsWith('lightning:')
+                ? NavigationDecision.prevent
+                : NavigationDecision.navigate,
             onPageFinished: (String url) async {
               // intercept ln link clicks
-              _webViewController.evaluateJavascript(await rootBundle
+              _webViewController.runJavascript(await rootBundle
                   .loadString('src/scripts/lightningLinkInterceptor.js'));
               // redirect post messages to javascript channel
-              _webViewController.evaluateJavascript(
+              _webViewController.runJavascript(
                   "window.onmessage = (message) => window.BreezWebView.postMessage(message.data);");
               _webViewController
-                  .evaluateJavascript(await _weblnHandlers.initWeblnScript);
+                  .runJavascript(await _weblnHandlers.initWeblnScript);
               print('Page finished loading: $url');
             },
             initialUrl: widget._url),
@@ -126,7 +128,7 @@ class VendorWebViewPageState extends State<VendorWebViewPage> {
           } else {
             _weblnHandlers.handleMessage(postMessage).then((resScript) {
               if (resScript != null) {
-                _webViewController.evaluateJavascript(resScript);
+                _webViewController.runJavascript(resScript);
               }
             });
           }

@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:breez/bloc/account/account_model.dart';
+import 'package:breez/utils/build_context.dart';
 import 'package:breez/widgets/animated_loader_dialog.dart';
 import 'package:flutter/material.dart';
 
@@ -41,7 +42,7 @@ class _TransferFundsInProgressDialogState
   }
 
   _pop() {
-    Navigator.of(context).pop();
+    context.pop();
   }
 
   @override

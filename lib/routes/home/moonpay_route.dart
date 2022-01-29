@@ -1,7 +1,6 @@
 import 'package:breez/bloc/account/add_funds_bloc.dart';
 import 'package:breez/bloc/blocs_provider.dart';
 import 'package:breez/widgets/loader.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter_web_browser/flutter_web_browser.dart';
 
 void showMonpayWebview(context) {
@@ -10,7 +9,7 @@ void showMonpayWebview(context) {
   addFundsBloc.addFundRequestSink.add(true);
   var loaderRoute = createLoaderRoute(context,
       message: "Loading...", opacity: 0.8, onClose: () => cancelled = true);
-  Navigator.push(context, loaderRoute);
+  context.push(loaderRoute);
   addFundsBloc.moonpayNextOrderStream.first
       .timeout(Duration(seconds: 15))
       .then((order) {
@@ -20,7 +19,7 @@ void showMonpayWebview(context) {
     FlutterWebBrowser.openWebPage(
       url: order.url,
       customTabsOptions: CustomTabsOptions(
-        addDefaultShareMenuItem: true,
+        shareState: CustomTabsShareState.on,
         showTitle: true,
         urlBarHidingEnabled: true,
       ),
@@ -30,5 +29,5 @@ void showMonpayWebview(context) {
         modalPresentationCapturesStatusBarAppearance: true,
       ),
     );
-  }).whenComplete(() => {Navigator.of(context).removeRoute(loaderRoute)});
+  }).whenComplete(() => {context.navigator.removeRoute(loaderRoute)});
 }

@@ -2,6 +2,7 @@ import 'package:breez/bloc/blocs_provider.dart';
 import 'package:breez/bloc/user_profile/user_actions.dart';
 import 'package:breez/bloc/user_profile/user_profile_bloc.dart';
 import 'package:breez/theme_data.dart' as theme;
+import 'package:breez/utils/build_context.dart';
 import 'package:breez/widgets/back_button.dart' as backBtn;
 import 'package:breez/widgets/single_button_bottom_bar.dart';
 import 'package:flutter/material.dart';
@@ -35,19 +36,20 @@ class _SetAdminPasswordState extends State<SetAdminPasswordPage> {
 
   @override
   Widget build(BuildContext context) {
+    ThemeData themeData = context.theme;
+    AppBarTheme appBarTheme = themeData.appBarTheme;
+
     UserProfileBloc userProfileBloc =
         AppBlocsProvider.of<UserProfileBloc>(context);
     return Scaffold(
         appBar: AppBar(
-            iconTheme: Theme.of(context).appBarTheme.iconTheme,
-            textTheme: Theme.of(context).appBarTheme.textTheme,
-            backgroundColor: Theme.of(context).canvasColor,
+            iconTheme: appBarTheme.iconTheme,
+            backgroundColor: themeData.canvasColor,
+            toolbarTextStyle: appBarTheme.toolbarTextStyle,
+            titleTextStyle: appBarTheme.titleTextStyle,
             automaticallyImplyLeading: false,
             leading: backBtn.BackButton(),
-            title: Text(
-              "Manager Password",
-              style: Theme.of(context).appBarTheme.textTheme.headline6,
-            ),
+            title: Text("Manager Password"),
             elevation: 0.0),
         body: Padding(
           padding: EdgeInsets.only(top: 16.0, left: 16.0, right: 16.0),
@@ -98,7 +100,7 @@ class _SetAdminPasswordState extends State<SetAdminPasswordPage> {
                           onPressed: () {
                             setState(() {
                               _repeatPasswordObscured =
-                                  !_repeatPasswordObscured;
+                              !_repeatPasswordObscured;
                             });
                           },
                         )),
@@ -126,7 +128,7 @@ class _SetAdminPasswordState extends State<SetAdminPasswordPage> {
                     SetAdminPassword(_passwordController.text);
                 userProfileBloc.userActionsSink.add(action);
                 await action.future;
-                Navigator.of(context).pop();
+                context.pop();
               }
             }));
   }

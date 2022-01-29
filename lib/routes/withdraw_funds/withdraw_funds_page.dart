@@ -9,7 +9,7 @@ import 'package:breez/services/breezlib/breez_bridge.dart';
 import 'package:breez/services/injector.dart';
 import 'package:breez/theme_data.dart' as theme;
 import 'package:breez/utils/btc_address.dart';
-import 'package:breez/utils/min_font_size.dart';
+import 'package:breez/utils/build_context.dart';
 import 'package:breez/widgets/amount_form_field.dart';
 import 'package:breez/widgets/back_button.dart' as backBtn;
 import 'package:breez/widgets/error_dialog.dart';
@@ -20,7 +20,6 @@ import 'package:breez/widgets/static_loader.dart';
 import 'package:breez/widgets/warning_box.dart';
 import 'package:fixnum/fixnum.dart';
 import 'package:flutter/material.dart';
-import 'package:breez/l10n/locales.dart';
 
 class WithdrawFundsPage extends StatefulWidget {
   final Future Function(Int64 amount, String destAddress, bool isMax) onNext;
@@ -77,21 +76,24 @@ class WithdrawFundsPageState extends State<WithdrawFundsPage> {
 
   @override
   Widget build(BuildContext context) {
+    var l10n = context.l10n;
+    ThemeData themeData = context.theme;
+    AppBarTheme appBarTheme = themeData.appBarTheme;
+    TextTheme textTheme = themeData.textTheme;
+
     final reverseSwapBloc = AppBlocsProvider.of<ReverseSwapBloc>(context);
     final accountBloc = AppBlocsProvider.of<AccountBloc>(context);
 
     return Scaffold(
       appBar: AppBar(
-        iconTheme: Theme.of(context).appBarTheme.iconTheme,
-        textTheme: Theme.of(context).appBarTheme.textTheme,
-        backgroundColor: Theme.of(context).canvasColor,
+        iconTheme: appBarTheme.iconTheme,
+        backgroundColor: themeData.canvasColor,
+        toolbarTextStyle: appBarTheme.toolbarTextStyle,
+        titleTextStyle: appBarTheme.titleTextStyle,
         leading: backBtn.BackButton(
-          onPressed: () => Navigator.of(context).pop(),
+          onPressed: () => context.pop(),
         ),
-        title: Text(
-          widget.title,
-          style: Theme.of(context).appBarTheme.textTheme.headline6,
-        ),
+        title: Text(widget.title),
         elevation: 0.0,
       ),
       body: StreamBuilder<AccountModel>(
@@ -103,16 +105,16 @@ class WithdrawFundsPageState extends State<WithdrawFundsPage> {
           Widget optionalMessage = widget.optionalMessage == null
               ? SizedBox()
               : WarningBox(
-                  boxPadding: EdgeInsets.only(bottom: 24),
-                  contentPadding: EdgeInsets.symmetric(
-                    vertical: 12,
-                    horizontal: 8,
+            boxPadding: EdgeInsets.only(bottom: 24),
+            contentPadding: EdgeInsets.symmetric(
+              vertical: 12,
+              horizontal: 8,
+            ),
+            child: Text(
+              widget.optionalMessage,
+                    style: textTheme.headline6,
                   ),
-                  child: Text(
-                    widget.optionalMessage,
-                    style: Theme.of(context).textTheme.headline6,
-                  ),
-                );
+          );
           List<Widget> amountWidget = [];
           if (widget.policy.minValue != widget.policy.maxValue) {
             amountWidget.add(AmountFormField(
@@ -125,12 +127,12 @@ class WithdrawFundsPageState extends State<WithdrawFundsPage> {
                 String err = acc.validateOutgoingPayment(amount);
                 if (err == null) {
                   if (amount < widget.policy.minValue) {
-                    err = context.l10n.withdraw_funds_error_min_value(
+                    err = l10n.withdraw_funds_error_min_value(
                       acc.currency.format(widget.policy.minValue),
                     );
                   }
                   if (amount > widget.policy.maxValue) {
-                    err = context.l10n.withdraw_funds_error_max_value(
+                    err = l10n.withdraw_funds_error_max_value(
                       acc.currency.format(widget.policy.maxValue + 1),
                     );
                   }
@@ -143,10 +145,10 @@ class WithdrawFundsPageState extends State<WithdrawFundsPage> {
               contentPadding: EdgeInsets.zero,
               title: Container(
                 child: AutoSizeText(
-                  context.l10n.withdraw_funds_use_all_funds,
+                  l10n.withdraw_funds_use_all_funds,
                   style: TextStyle(color: Colors.white),
                   maxLines: 1,
-                  minFontSize: MinFontSize(context).minFontSize,
+                  minFontSize: context.minFontSize,
                   stepGranularity: 0.1,
                 ),
               ),
@@ -184,7 +186,7 @@ class WithdrawFundsPageState extends State<WithdrawFundsPage> {
                       readOnly: fetching,
                       controller: _addressController,
                       decoration: InputDecoration(
-                        labelText: context.l10n.withdraw_funds_btc_address,
+                        labelText: l10n.withdraw_funds_btc_address,
                         suffixIcon: IconButton(
                           padding: EdgeInsets.only(top: 21.0),
                           alignment: Alignment.bottomRight,
@@ -195,23 +197,23 @@ class WithdrawFundsPageState extends State<WithdrawFundsPage> {
                             width: 24.0,
                             height: 24.0,
                           ),
-                          tooltip: context.l10n.withdraw_funds_scan_barcode,
+                          tooltip: l10n.withdraw_funds_scan_barcode,
                           onPressed: () => _scanBarcode(context, acc),
                         ),
                       ),
                       style: theme.FieldTextStyle.textStyle,
                       validator: (value) {
                         if (_addressValidated == null) {
-                          return context.l10n.withdraw_funds_error_invalid_address;
+                          return l10n.withdraw_funds_error_invalid_address;
                         }
                         return null;
                       },
                     ),
                     _scannerErrorMessage.length > 0
                         ? Text(
-                            _scannerErrorMessage,
-                            style: theme.validatorStyle,
-                          )
+                      _scannerErrorMessage,
+                      style: theme.validatorStyle,
+                    )
                         : SizedBox(),
                     ...amountWidget,
                     Container(
@@ -222,18 +224,18 @@ class WithdrawFundsPageState extends State<WithdrawFundsPage> {
                     !fetching
                         ? SizedBox()
                         : Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            mainAxisSize: MainAxisSize.max,
-                            children: [
-                              Container(
-                                child: Loader(
-                                  strokeWidth: 2.0,
-                                  color: Theme.of(context).colorScheme.onSurface
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      mainAxisSize: MainAxisSize.max,
+                      children: [
+                        Container(
+                          child: Loader(
+                            strokeWidth: 2.0,
+                            color: themeData.colorScheme.onSurface
                                       .withOpacity(0.5),
-                                ),
-                              ),
-                            ],
                           ),
+                        ),
+                      ],
+                    ),
                   ],
                 ),
               ),
@@ -281,7 +283,7 @@ class WithdrawFundsPageState extends State<WithdrawFundsPage> {
         setState(() {
           fetching = true;
         });
-        FocusScope.of(context).requestFocus(FocusNode());
+        context.focusScope.requestFocus(FocusNode());
         return widget.onNext(
           acc.currency.parse(_amountController.text),
           _addressValidated,
@@ -294,7 +296,7 @@ class WithdrawFundsPageState extends State<WithdrawFundsPage> {
         null,
         Text(
           error.toString(),
-          style: Theme.of(context).dialogTheme.contentTextStyle,
+          style: context.dialogTheme.contentTextStyle,
         ),
       );
     }).whenComplete(() {
@@ -305,8 +307,8 @@ class WithdrawFundsPageState extends State<WithdrawFundsPage> {
   }
 
   Future _scanBarcode(BuildContext context, AccountModel account) async {
-    FocusScope.of(context).requestFocus(FocusNode());
-    String barcode = await Navigator.pushNamed<String>(context, "/qr_scan");
+    context.focusScope.requestFocus(FocusNode());
+    String barcode = await context.pushNamed("/qr_scan");
     if (barcode.isEmpty) {
       showFlushbar(
         context,

@@ -5,15 +5,12 @@ import 'package:meta/meta.dart';
 class PodcastIndexMetadataLoader {
   final podcastIndexClient = PodcastIndexClient();
 
-  Future<Map<String, dynamic>> loadPodcastMetadata({
-    @required String url
-  }) {
+  Future<Map<String, dynamic>> loadPodcastMetadata({@required String url}) {
     return podcastIndexClient.loadFeed(url: url);
   }
 
-  Future<Map<String, dynamic>> loadEpisodeMetadata({
-    @required Episode episode
-  }) {
+  Future<Map<String, dynamic>> loadEpisodeMetadata(
+      {@required Episode episode}) {
     if (episode.metadata == null || episode.metadata["feed"] == null) {
       return Future.value({});
     }

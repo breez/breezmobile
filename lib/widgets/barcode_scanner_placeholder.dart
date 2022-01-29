@@ -1,7 +1,7 @@
 import 'package:app_settings/app_settings.dart';
 import 'package:breez/bloc/invoice/invoice_bloc.dart';
-import 'package:breez/l10n/locales.dart';
 import 'package:breez/theme_data.dart' as theme;
+import 'package:breez/utils/build_context.dart';
 import 'package:breez/widgets/back_button.dart' as backBtn;
 import 'package:flutter/material.dart';
 
@@ -16,8 +16,13 @@ class BarcodeScannerPlaceholder extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    var l10n = context.l10n;
+    ThemeData themeData = context.theme;
+    AppBarTheme appBarTheme = themeData.appBarTheme;
+    DialogTheme dialogTheme = themeData.dialogTheme;
+
     return MaterialApp(
-      theme: Theme.of(context).copyWith(
+      theme: themeData.copyWith(
         backgroundColor: Colors.red,
         primaryColor: Colors.yellow,
         canvasColor: Colors.grey,
@@ -26,11 +31,12 @@ class BarcodeScannerPlaceholder extends StatelessWidget {
       supportedLocales: context.supportedLocales(),
       home: Scaffold(
         appBar: AppBar(
-          iconTheme: Theme.of(context).appBarTheme.iconTheme,
-          textTheme: Theme.of(context).appBarTheme.textTheme,
-          backgroundColor: Theme.of(context).canvasColor,
+          iconTheme: appBarTheme.iconTheme,
+          toolbarTextStyle: appBarTheme.toolbarTextStyle,
+          titleTextStyle: appBarTheme.titleTextStyle,
+          backgroundColor: themeData.canvasColor,
           leading: backBtn.BackButton(
-            onPressed: () => Navigator.of(context).pop(),
+            onPressed: () => context.pop(),
           ),
           elevation: 0.0,
         ),
@@ -42,10 +48,9 @@ class BarcodeScannerPlaceholder extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Text(
-                  context.l10n.barcode_scanner_camera_message,
-                  style: Theme.of(context).dialogTheme.contentTextStyle.copyWith(
-                    color: Colors.white,
-                  ),
+                  l10n.barcode_scanner_camera_message,
+                  style: dialogTheme.contentTextStyle
+                      .copyWith(color: Colors.white),
                   textAlign: TextAlign.center,
                 ),
                 Padding(
@@ -69,14 +74,14 @@ class BarcodeScannerPlaceholder extends StatelessWidget {
                         padding: EdgeInsets.only(left: 8.0),
                       ),
                       Text(
-                        context.l10n.barcode_scanner_app_settings,
+                        l10n.barcode_scanner_app_settings,
                         style: theme.buttonStyle,
                       )
                     ],
                   ),
                   onPressed: () async {
                     AppSettings.openAppSettings();
-                    Navigator.pop(context);
+                    context.pop();
                   },
                 ),
               ],

@@ -3,8 +3,8 @@ import 'dart:convert' as JSON;
 import 'package:breez/bloc/account/add_funds_bloc.dart';
 import 'package:breez/bloc/account/moonpay_order.dart';
 import 'package:breez/bloc/blocs_provider.dart';
-import 'package:breez/l10n/locales.dart';
 import 'package:breez/theme_data.dart' as theme;
+import 'package:breez/utils/build_context.dart';
 import 'package:breez/widgets/loader.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart' show SystemChannels, rootBundle;
@@ -54,6 +54,9 @@ class MoonpayWebViewState extends State<MoonpayWebView> {
   }
 
   Widget _buildWebView(BuildContext context) {
+    ThemeData themeData = context.theme;
+    AppBarTheme appBarTheme = themeData.appBarTheme;
+
     return Material(
       child: Scaffold(
         appBar: AppBar(
@@ -61,54 +64,52 @@ class MoonpayWebViewState extends State<MoonpayWebView> {
             IconButton(
               icon: Icon(
                 Icons.close,
-                color: Theme.of(context).iconTheme.color,
+                color: context.iconTheme.color,
               ),
-              onPressed: () => Navigator.pop(context),
+              onPressed: () => context.pop(),
             )
           ],
           automaticallyImplyLeading: false,
-          iconTheme: Theme.of(context).appBarTheme.iconTheme,
-          textTheme: Theme.of(context).appBarTheme.textTheme,
-          backgroundColor: Theme.of(context).canvasColor,
-          title: Text(
-            context.l10n.add_funds_moonpay_title,
-            style: Theme.of(context).appBarTheme.textTheme.headline6,
-          ),
+          iconTheme: appBarTheme.iconTheme,
+          backgroundColor: themeData.canvasColor,
+          toolbarTextStyle: appBarTheme.toolbarTextStyle,
+          titleTextStyle: appBarTheme.titleTextStyle,
+          title: Text(context.l10n.add_funds_moonpay_title),
           elevation: 0.0,
         ),
         body: (_order == null || _error != null)
             ? _buildLoadingScreen(context)
             : Listener(
-                onPointerDown: (_) {
-                  // hide keyboard on click
-                  SystemChannels.textInput.invokeMethod('TextInput.hide');
-                },
-                child: WebView(
-                  initialUrl: _order.url,
-                  onWebViewCreated: (WebViewController webViewController) {
-                    setState(() {
-                      _webViewController = webViewController;
-                    });
-                  },
-                  javascriptMode: JavascriptMode.unrestricted,
-                  javascriptChannels: <JavascriptChannel>[
-                    _breezJavascriptChannel(context),
-                  ].toSet(),
-                  navigationDelegate: (NavigationRequest request) =>
-                      request.url.startsWith('lightning:')
-                          ? NavigationDecision.prevent
-                          : NavigationDecision.navigate,
-                  onPageFinished: (String url) async {
-                    // redirect post messages to javascript channel
-                    _webViewController.evaluateJavascript(
+          onPointerDown: (_) {
+            // hide keyboard on click
+            SystemChannels.textInput.invokeMethod('TextInput.hide');
+          },
+          child: WebView(
+            initialUrl: _order.url,
+            onWebViewCreated: (WebViewController webViewController) {
+              setState(() {
+                _webViewController = webViewController;
+              });
+            },
+            javascriptMode: JavascriptMode.unrestricted,
+            javascriptChannels: <JavascriptChannel>[
+              _breezJavascriptChannel(context),
+            ].toSet(),
+            navigationDelegate: (NavigationRequest request) =>
+            request.url.startsWith('lightning:')
+                ? NavigationDecision.prevent
+                : NavigationDecision.navigate,
+            onPageFinished: (String url) async {
+              // redirect post messages to javascript channel
+              _webViewController.runJavascript(
                       "window.onmessage = (message) => window.BreezWebView.postMessage(message.data);",
                     );
-                    _webViewController.evaluateJavascript(
+              _webViewController.runJavascript(
                       await rootBundle.loadString('src/scripts/moonpay.js'),
                     );
-                  },
-                ),
-              ),
+            },
+          ),
+        ),
       ),
     );
   }

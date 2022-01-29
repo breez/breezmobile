@@ -4,11 +4,11 @@ import 'package:breez/bloc/account/account_bloc.dart';
 import 'package:breez/bloc/account/account_model.dart';
 import 'package:breez/bloc/invoice/invoice_model.dart';
 import 'package:breez/theme_data.dart' as theme;
+import 'package:breez/utils/build_context.dart';
 import 'package:breez/widgets/amount_form_field.dart';
 import 'package:breez/widgets/breez_avatar.dart';
 import 'package:fixnum/fixnum.dart';
 import 'package:flutter/material.dart';
-import 'package:breez/l10n/locales.dart';
 
 import 'keyboard_done_action.dart';
 
@@ -73,7 +73,7 @@ class PaymentRequestInfoDialogState extends State<PaymentRequestInfoDialog> {
       child: Container(
         constraints: BoxConstraints(minHeight: widget.minHeight),
         key: _dialogKey,
-        width: MediaQuery.of(context).size.width,
+        width: context.mediaQuerySize.width,
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           mainAxisSize: MainAxisSize.min,
@@ -114,7 +114,7 @@ class PaymentRequestInfoDialogState extends State<PaymentRequestInfoDialog> {
 
         return Container(
           padding: EdgeInsets.fromLTRB(8.0, 0.0, 8.0, 16.0),
-          width: MediaQuery.of(context).size.width,
+          width: context.mediaQuerySize.width,
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             mainAxisSize: MainAxisSize.min,
@@ -135,43 +135,43 @@ class PaymentRequestInfoDialogState extends State<PaymentRequestInfoDialog> {
     return widget.invoice.payeeName == null
         ? null
         : Text(
-            "${widget.invoice.payeeName}",
-            style: Theme.of(context)
-                .primaryTextTheme
-                .headline4
-                .copyWith(fontSize: 16),
+      "${widget.invoice.payeeName}",
+            style: context.primaryTextTheme.headline4.copyWith(fontSize: 16),
             textAlign: TextAlign.center,
           );
   }
 
   Widget _buildRequestPayTextWidget(BuildContext context) {
+    var l10n = context.l10n;
+
     final payeeName = widget.invoice.payeeName;
 
     return Text(
       payeeName == null || payeeName.isEmpty
-          ? context.l10n.payment_request_dialog_requested
-          : context.l10n.payment_request_dialog_requesting,
-      style: Theme.of(context).primaryTextTheme.headline3.copyWith(fontSize: 16),
+          ? l10n.payment_request_dialog_requested
+          : l10n.payment_request_dialog_requesting,
+      style: context.primaryTextTheme.headline3.copyWith(fontSize: 16),
       textAlign: TextAlign.center,
     );
   }
 
   Widget _buildAmountWidget(BuildContext context, AccountModel account) {
+    ThemeData themeData = context.theme;
+    DialogTheme dialogTheme = themeData.dialogTheme;
+    Color primaryColor = themeData.textTheme.button.color;
+
     if (widget.invoice.amount == 0) {
       return Theme(
-        data: Theme.of(context).copyWith(
+        data: themeData.copyWith(
           inputDecorationTheme: InputDecorationTheme(
             enabledBorder: UnderlineInputBorder(
               borderSide: theme.greyBorderSide,
             ),
           ),
-          hintColor: Theme.of(context).dialogTheme.contentTextStyle.color,
-          colorScheme: ColorScheme.dark(
-            primary: Theme.of(context).textTheme.button.color,
-          ),
-          primaryColor: Theme.of(context).textTheme.button.color,
-          errorColor:
-              theme.themeId == "BLUE" ? Colors.red : Theme.of(context).errorColor,
+          hintColor: dialogTheme.contentTextStyle.color,
+          colorScheme: ColorScheme.dark(primary: primaryColor),
+          primaryColor: primaryColor,
+          errorColor: theme.themeId == "BLUE" ? Colors.red : context.errorColor,
         ),
         child: Form(
           autovalidateMode: AutovalidateMode.always,
@@ -183,12 +183,11 @@ class PaymentRequestInfoDialogState extends State<PaymentRequestInfoDialog> {
               child: AmountFormField(
                 context: context,
                 accountModel: account,
-                iconColor: Theme.of(context).primaryIconTheme.color,
+                iconColor: themeData.primaryIconTheme.color,
                 focusNode: _amountFocusNode,
                 controller: _invoiceAmountController,
                 validatorFn: account.validateOutgoingPayment,
-                style: Theme.of(context).dialogTheme.contentTextStyle
-                    .copyWith(height: 1.0),
+                style: dialogTheme.contentTextStyle.copyWith(height: 1.0),
               ),
             ),
           ),
@@ -205,7 +204,7 @@ class PaymentRequestInfoDialogState extends State<PaymentRequestInfoDialog> {
           _showFiatCurrency && account.fiatCurrency != null
               ? account.fiatCurrency.format(widget.invoice.amount)
               : account.currency.format(widget.invoice.amount),
-          style: Theme.of(context).primaryTextTheme.headline5,
+          style: themeData.primaryTextTheme.headline5,
           textAlign: TextAlign.center,
         ),
       ),
@@ -239,7 +238,7 @@ class PaymentRequestInfoDialogState extends State<PaymentRequestInfoDialog> {
                 child: SingleChildScrollView(
                   child: AutoSizeText(
                     description,
-                    style: Theme.of(context).primaryTextTheme.headline3
+                    style: context.primaryTextTheme.headline3
                         .copyWith(fontSize: 16),
                     textAlign:
                         description.length > 40 && !description.contains("\n")
@@ -266,21 +265,24 @@ class PaymentRequestInfoDialogState extends State<PaymentRequestInfoDialog> {
         validationError,
         maxLines: 3,
         textAlign: TextAlign.center,
-        style: Theme.of(context).primaryTextTheme.headline3.copyWith(
+        style: context.primaryTextTheme.headline3.copyWith(
           fontSize: 16,
-          color: theme.themeId == "BLUE" ? Colors.red : Theme.of(context).errorColor,
+          color: theme.themeId == "BLUE" ? Colors.red : context.errorColor,
         ),
       ),
     );
   }
 
   Widget _buildActions(BuildContext context, AccountModel account) {
+    var l10n = context.l10n;
+    TextStyle textStyle = context.primaryTextTheme.button;
+
     List<Widget> actions = [
       SimpleDialogOption(
         onPressed: () => widget._onCancel(),
         child: Text(
-          context.l10n.payment_request_dialog_action_cancel,
-          style: Theme.of(context).primaryTextTheme.button,
+          l10n.payment_request_dialog_action_cancel,
+          style: textStyle,
         ),
       )
     ];
@@ -307,13 +309,13 @@ class PaymentRequestInfoDialogState extends State<PaymentRequestInfoDialog> {
           }
         }),
         child: Text(
-          context.l10n.payment_request_dialog_action_approve,
-          style: Theme.of(context).primaryTextTheme.button,
+          l10n.payment_request_dialog_action_approve,
+          style: textStyle,
         ),
       ));
     }
     return Theme(
-      data: Theme.of(context).copyWith(
+      data: context.theme.copyWith(
         splashColor: Colors.transparent,
         highlightColor: Colors.transparent,
       ),

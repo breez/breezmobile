@@ -1,4 +1,5 @@
 import 'package:breez/theme_data.dart' as theme;
+import 'package:breez/utils/build_context.dart';
 import 'package:flutter/material.dart';
 
 class SessionInstructions extends StatelessWidget {
@@ -25,7 +26,7 @@ class SessionInstructions extends StatelessWidget {
       children: [
         Container(
           height: 100.0,
-          color: Theme.of(context).primaryColorDark,
+          color: context.theme.primaryColorDark,
           padding: EdgeInsets.only(
             left: 16.0,
             top: 0.0,

@@ -10,6 +10,7 @@ import 'package:breez/bloc/user_profile/user_actions.dart';
 import 'package:breez/bloc/user_profile/user_profile_bloc.dart';
 import 'package:breez/logger.dart';
 import 'package:breez/theme_data.dart' as theme;
+import 'package:breez/utils/build_context.dart';
 import 'package:breez/widgets/backup_provider_selection_dialog.dart';
 import 'package:breez/widgets/error_dialog.dart';
 import 'package:breez/widgets/flushbar.dart';
@@ -18,10 +19,10 @@ import 'package:breez/widgets/restore_dialog.dart';
 import 'package:breez/widgets/route.dart';
 import 'package:crypto/crypto.dart';
 import 'package:flutter/material.dart';
-import 'package:breez/l10n/locales.dart';
 import 'package:hex/hex.dart';
 import 'package:rxdart/rxdart.dart';
 
+import '../theme_data.dart';
 import 'beta_warning_dialog.dart';
 import 'security_pin/backup_phrase/enter_backup_phrase_page.dart';
 import 'security_pin/restore_pin.dart';
@@ -86,7 +87,7 @@ class InitialWalkthroughPageState extends State<InitialWalkthroughPage>
         _proceedToRegister();
       }
     }, onError: (error) {
-      Navigator.of(context).pop();
+          context.pop();
       if (error.runtimeType != SignInFailedException) {
         showFlushbar(
           context,
@@ -190,13 +191,15 @@ class InitialWalkthroughPageState extends State<InitialWalkthroughPage>
   }
 
   Future _handleSignInException(SignInFailedException e) async {
+    var l10n = context.l10n;
+
     if (e.provider == BackupSettings.icloudBackupProvider) {
       await promptError(
         context,
-        context.l10n.initial_walk_through_sign_in_icloud_title,
+        l10n.initial_walk_through_sign_in_icloud_title,
         Text(
-          context.l10n.initial_walk_through_sign_in_icloud_message,
-          style: Theme.of(context).dialogTheme.contentTextStyle,
+          l10n.initial_walk_through_sign_in_icloud_message,
+          style: context.dialogTheme.contentTextStyle,
         ),
       );
     }
@@ -206,7 +209,7 @@ class InitialWalkthroughPageState extends State<InitialWalkthroughPage>
     bool is24Word,
     Function(String key) onKeySubmitted,
   ) {
-    return Navigator.of(context).push(FadeInRoute(
+    return context.push(FadeInRoute(
       builder: (BuildContext context) {
         return EnterBackupPhrasePage(
           is24Word: is24Word,
@@ -225,14 +228,14 @@ class InitialWalkthroughPageState extends State<InitialWalkthroughPage>
         context.l10n.initial_walk_through_error_internal,
         Text(
           err.toString(),
-          style: Theme.of(context).dialogTheme.contentTextStyle,
+          style: context.dialogTheme.contentTextStyle,
         ),
       );
     });
   }
 
   Future<String> restoreUsingPIN(Function(String key) onKeySubmitted) {
-    return Navigator.of(context).push(FadeInRoute(
+    return context.push(FadeInRoute(
       builder: (BuildContext context) {
         return RestorePinCode(onPinCodeSubmitted: onKeySubmitted);
       },
@@ -240,7 +243,7 @@ class InitialWalkthroughPageState extends State<InitialWalkthroughPage>
   }
 
   void popToWalkthrough({String error}) {
-    Navigator.popUntil(context, (route) {
+    context.popUntil((route) {
       return route.settings.name == "/intro";
     });
     if (error != null) {
@@ -248,7 +251,7 @@ class InitialWalkthroughPageState extends State<InitialWalkthroughPage>
         duration: Duration(seconds: 3),
         content: Text(error.toString()),
       );
-      ScaffoldMessenger.of(context).showSnackBar(snackBar);
+      context.showSnackBar(snackBar);
     }
   }
 
@@ -263,7 +266,7 @@ class InitialWalkthroughPageState extends State<InitialWalkthroughPage>
   void _proceedToRegister() {
     widget._registrationBloc.registerSink.add(null);
     _registered = true;
-    Navigator.of(context).pop();
+    context.pop();
   }
 
   Future<bool> _onWillPop() async {
@@ -275,6 +278,8 @@ class InitialWalkthroughPageState extends State<InitialWalkthroughPage>
 
   @override
   Widget build(BuildContext context) {
+    var l10n = context.l10n;
+
     return Scaffold(
       key: _scaffoldKey,
       body: WillPopScope(
@@ -295,7 +300,7 @@ class InitialWalkthroughPageState extends State<InitialWalkthroughPage>
                       animation: _animation,
                       builder: (BuildContext context, Widget child) {
                         String frame =
-                            _animation.value.toString().padLeft(2, '0');
+                        _animation.value.toString().padLeft(2, '0');
                         return Image.asset(
                           'src/animations/welcome/frame_${frame}_delay-0.04s.png',
                           gaplessPlayback: true,
@@ -313,7 +318,7 @@ class InitialWalkthroughPageState extends State<InitialWalkthroughPage>
                     child: Padding(
                       padding: EdgeInsets.only(left: 24, right: 24),
                       child: AutoSizeText(
-                        context.l10n.initial_walk_through_welcome_message,
+                        l10n.initial_walk_through_welcome_message,
                         textAlign: TextAlign.center,
                         style: theme.welcomeTextStyle,
                       ),
@@ -329,13 +334,15 @@ class InitialWalkthroughPageState extends State<InitialWalkthroughPage>
                     child: ElevatedButton(
                       style: ElevatedButton.styleFrom(
                         padding: EdgeInsets.fromLTRB(16, 4, 16, 4),
-                        primary: Theme.of(context).buttonColor,
+                        primary: (themeId == "BLUE")
+                            ? Colors.white
+                            : context.primaryColorLight,
                         elevation: 0.0,
                         shape: const StadiumBorder(),
                       ),
                       child: Text(
-                        context.l10n.initial_walk_through_lets_breeze,
-                        style: Theme.of(context).textTheme.button,
+                        l10n.initial_walk_through_lets_breeze,
+                        style: context.textTheme.button,
                       ),
                       onPressed: () => _letsBreez(context),
                     ),
@@ -347,7 +354,7 @@ class InitialWalkthroughPageState extends State<InitialWalkthroughPage>
                       child: GestureDetector(
                         onTap: () => _restoreFromBackup(context),
                         child: Text(
-                          context.l10n.initial_walk_through_restore_from_backup,
+                          l10n.initial_walk_through_restore_from_backup,
                           style: theme.restoreLinkStyle,
                         ),
                       ),
@@ -386,7 +393,7 @@ class InitialWalkthroughPageState extends State<InitialWalkthroughPage>
             context.l10n.initial_walk_through_error_internal,
             Text(
               err.toString(),
-              style: Theme.of(context).dialogTheme.contentTextStyle,
+              style: context.dialogTheme.contentTextStyle,
             ),
           );
         });
@@ -410,7 +417,7 @@ class InitialWalkthroughPageState extends State<InitialWalkthroughPage>
       }
       if (backupProvider != null) {
         // Restore then start lightninglib
-        Navigator.push(context, createLoaderRoute(context));
+        context.push(createLoaderRoute(context));
         widget._backupBloc.restoreRequestSink.add(null);
       }
     });

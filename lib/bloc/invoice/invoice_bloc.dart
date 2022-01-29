@@ -11,8 +11,8 @@ import 'package:breez/services/lightning_links.dart';
 import 'package:breez/services/nfc.dart';
 import 'package:breez/services/notifications.dart';
 import 'package:breez/utils/bip21.dart';
-import 'package:breez/utils/node_id.dart';
 import 'package:breez/utils/lnurl.dart';
+import 'package:breez/utils/node_id.dart';
 import 'package:fixnum/fixnum.dart';
 import 'package:rxdart/rxdart.dart';
 
@@ -20,28 +20,35 @@ import '../async_actions_handler.dart';
 
 class InvoiceBloc with AsyncActionsHandler {
   final _newInvoiceRequestController = StreamController<InvoiceRequestModel>();
+
   Sink<InvoiceRequestModel> get newInvoiceRequestSink =>
       _newInvoiceRequestController.sink;
 
   final _newLightningLinkController = StreamController<String>();
+
   Sink<String> get newLightningLinkSink => _newLightningLinkController.sink;
 
   final _readyInvoicesController = BehaviorSubject<PaymentRequestModel>();
+
   Stream<PaymentRequestModel> get readyInvoicesStream =>
       _readyInvoicesController.stream;
 
   final _sentInvoicesController = StreamController<String>.broadcast();
+
   Stream<String> get sentInvoicesStream => _sentInvoicesController.stream;
 
   final _decodeInvoiceController = StreamController<String>();
+
   Sink<String> get decodeInvoiceSink => _decodeInvoiceController.sink;
 
   final _receivedInvoicesController = BehaviorSubject<PaymentRequestModel>();
+
   Stream<PaymentRequestModel> get receivedInvoicesStream =>
       _receivedInvoicesController.stream;
 
   final _paidInvoicesController =
       StreamController<PaymentRequestModel>.broadcast();
+
   Stream<PaymentRequestModel> get paidInvoicesStream =>
       _paidInvoicesController.stream;
 

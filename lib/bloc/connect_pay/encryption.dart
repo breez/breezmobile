@@ -2,6 +2,7 @@ import 'package:breez/services/breezlib/breez_bridge.dart';
 
 abstract class MessageInterceptor {
   Future<String> transformOutgoingMessage(String message);
+
   Future<String> transformIncomingMessage(String message);
 }
 

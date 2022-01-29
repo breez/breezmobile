@@ -9,11 +9,11 @@ import 'package:breez/bloc/blocs_provider.dart';
 import 'package:breez/bloc/lsp/lsp_bloc.dart';
 import 'package:breez/bloc/lsp/lsp_model.dart';
 import 'package:breez/bloc/user_profile/currency.dart';
-import 'package:breez/l10n/locales.dart';
 import 'package:breez/routes/home/payment_item_avatar.dart';
 import 'package:breez/services/breezlib/data/rpc.pb.dart';
 import 'package:breez/services/injector.dart';
 import 'package:breez/theme_data.dart' as theme;
+import 'package:breez/utils/build_context.dart';
 import 'package:breez/utils/date.dart';
 import 'package:breez/widgets/loader.dart';
 import 'package:collection/collection.dart';
@@ -33,6 +33,13 @@ Future<Null> showPaymentDetailsDialog(
   BuildContext context,
   PaymentInfo paymentInfo,
 ) {
+  var l10n = context.l10n;
+  ThemeData themeData = context.theme;
+  DialogTheme dialogTheme = themeData.dialogTheme;
+  TextTheme primaryTextTheme = themeData.primaryTextTheme;
+  TextStyle btnTextStyle = themeData.primaryTextTheme.button;
+  double mediaWidth = context.mediaQuerySize.width;
+
   if (paymentInfo.type == PaymentType.CLOSED_CHANNEL) {
     final lspBloc = AppBlocsProvider.of<LSPBloc>(context);
     final accountBloc = AppBlocsProvider.of<AccountBloc>(context);
@@ -44,9 +51,9 @@ Future<Null> showPaymentDetailsDialog(
           titlePadding: EdgeInsets.fromLTRB(24.0, 22.0, 0.0, 16.0),
           title: Text(
             paymentInfo.pending
-                ? context.l10n.payment_details_dialog_closed_channel_title_pending
-                : context.l10n.payment_details_dialog_closed_channel_title,
-            style: Theme.of(context).dialogTheme.titleTextStyle,
+                ? l10n.payment_details_dialog_closed_channel_title_pending
+                : l10n.payment_details_dialog_closed_channel_title,
+            style: dialogTheme.titleTextStyle,
           ),
           contentPadding: EdgeInsets.fromLTRB(24.0, 8.0, 24.0, 24.0),
           content: StreamBuilder<LSPStatus>(
@@ -61,10 +68,10 @@ Future<Null> showPaymentDetailsDialog(
           ),
           actions: [
             SimpleDialogOption(
-              onPressed: () => Navigator.pop(ctx),
+              onPressed: () => ctx.pop(),
               child: Text(
-                context.l10n.payment_details_dialog_closed_channel_ok,
-                style: Theme.of(context).primaryTextTheme.button,
+                l10n.payment_details_dialog_closed_channel_ok,
+                style: btnTextStyle,
               ),
             ),
           ],
@@ -85,11 +92,11 @@ Future<Null> showPaymentDetailsDialog(
               ),
             ),
             color: theme.themeId == "BLUE"
-                ? Theme.of(context).primaryColorDark
-                : Theme.of(context).canvasColor,
+                ? themeData.primaryColorDark
+                : themeData.canvasColor,
           ),
           height: 64.0,
-          width: MediaQuery.of(context).size.width,
+          width: mediaWidth,
         ),
         Padding(
           padding: EdgeInsets.only(top: 32.0),
@@ -105,7 +112,7 @@ Future<Null> showPaymentDetailsDialog(
     contentPadding: EdgeInsets.fromLTRB(8.0, 16.0, 8.0, 16.0),
     content: SingleChildScrollView(
       child: Container(
-        width: MediaQuery.of(context).size.width,
+        width: mediaWidth,
         child: Column(
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -117,164 +124,164 @@ Future<Null> showPaymentDetailsDialog(
                       left: 16.0,
                       right: 16.0,
                       bottom: (paymentInfo.description == null ||
-                              paymentInfo.description.isEmpty)
-                          ? 16
-                          : 8,
-                    ),
-                    child: AutoSizeText(
-                      paymentInfo.dialogTitle.replaceAll("\n", " "),
-                      style: Theme.of(context).primaryTextTheme.headline5,
+                    paymentInfo.description.isEmpty)
+                    ? 16
+                    : 8,
+              ),
+              child: AutoSizeText(
+                paymentInfo.dialogTitle.replaceAll("\n", " "),
+                      style: primaryTextTheme.headline5,
                       textAlign: TextAlign.center,
                       overflow: TextOverflow.ellipsis,
                       maxLines: 1,
                     ),
-                  ),
+            ),
             paymentInfo.description == null || paymentInfo.description.isEmpty
                 ? Container()
                 : Padding(
-                    padding: EdgeInsets.only(left: 16.0, right: 16.0),
-                    child: Container(
-                      constraints: BoxConstraints(
-                        maxHeight: 54,
-                        minWidth: double.infinity,
-                      ),
-                      child: Scrollbar(
-                        child: SingleChildScrollView(
-                          child: AutoSizeText(
-                            paymentInfo.description,
-                            style: Theme.of(context).primaryTextTheme.headline4,
+              padding: EdgeInsets.only(left: 16.0, right: 16.0),
+              child: Container(
+                constraints: BoxConstraints(
+                  maxHeight: 54,
+                  minWidth: double.infinity,
+                ),
+                child: Scrollbar(
+                  child: SingleChildScrollView(
+                    child: AutoSizeText(
+                      paymentInfo.description,
+                            style: primaryTextTheme.headline4,
                             textAlign: paymentInfo.description.length > 40 &&
                                     !paymentInfo.description.contains("\n")
                                 ? TextAlign.start
                                 : TextAlign.center,
                           ),
-                        ),
-                      ),
-                    ),
                   ),
+                ),
+              ),
+            ),
             paymentInfo.amount == null
                 ? Container()
                 : Container(
-                    height: 36.0,
-                    padding: EdgeInsets.only(left: 16.0, right: 16.0),
-                    child: Row(
-                      mainAxisSize: MainAxisSize.max,
-                      children: <Widget>[
-                        Padding(
-                          padding: const EdgeInsets.only(right: 8.0),
-                          child: AutoSizeText(
-                            context.l10n.payment_details_dialog_amount_title,
-                            style: Theme.of(context).primaryTextTheme.headline4,
+              height: 36.0,
+              padding: EdgeInsets.only(left: 16.0, right: 16.0),
+              child: Row(
+                mainAxisSize: MainAxisSize.max,
+                children: <Widget>[
+                  Padding(
+                    padding: const EdgeInsets.only(right: 8.0),
+                    child: AutoSizeText(
+                            l10n.payment_details_dialog_amount_title,
+                            style: primaryTextTheme.headline4,
                             textAlign: TextAlign.left,
                             maxLines: 1,
                             group: _labelGroup,
                           ),
-                        ),
-                        Expanded(
-                          child: SingleChildScrollView(
-                            scrollDirection: Axis.horizontal,
-                            reverse: true,
-                            child: _amountText(
-                              paymentInfo,
-                              context,
-                            ),
-                          ),
-                        ),
-                      ],
+                  ),
+                  Expanded(
+                    child: SingleChildScrollView(
+                      scrollDirection: Axis.horizontal,
+                      reverse: true,
+                      child: _amountText(
+                        paymentInfo,
+                        context,
+                      ),
                     ),
                   ),
+                ],
+              ),
+            ),
             paymentInfo.creationTimestamp == null
                 ? Container()
                 : Container(
-                    height: 36.0,
-                    padding: EdgeInsets.only(left: 16.0, right: 16.0, top: 8.0),
-                    child: Row(
-                      mainAxisSize: MainAxisSize.max,
-                      children: <Widget>[
-                        Padding(
-                          padding: const EdgeInsets.only(right: 8.0),
-                          child: AutoSizeText(
-                            context.l10n.payment_details_dialog_date_and_time,
-                            style: Theme.of(context).primaryTextTheme.headline4,
+              height: 36.0,
+              padding: EdgeInsets.only(left: 16.0, right: 16.0, top: 8.0),
+              child: Row(
+                mainAxisSize: MainAxisSize.max,
+                children: <Widget>[
+                  Padding(
+                    padding: const EdgeInsets.only(right: 8.0),
+                    child: AutoSizeText(
+                            l10n.payment_details_dialog_date_and_time,
+                            style: primaryTextTheme.headline4,
                             textAlign: TextAlign.left,
                             maxLines: 1,
                             group: _labelGroup,
                           ),
-                        ),
-                        Expanded(
-                          child: SingleChildScrollView(
-                            scrollDirection: Axis.horizontal,
-                            reverse: true,
-                            padding: EdgeInsets.only(left: 8.0),
-                            child: AutoSizeText(
-                              BreezDateUtils.formatYearMonthDayHourMinute(
+                  ),
+                  Expanded(
+                    child: SingleChildScrollView(
+                      scrollDirection: Axis.horizontal,
+                      reverse: true,
+                      padding: EdgeInsets.only(left: 8.0),
+                      child: AutoSizeText(
+                        BreezDateUtils.formatYearMonthDayHourMinute(
                                 DateTime.fromMillisecondsSinceEpoch(
                                   paymentInfo.creationTimestamp.toInt() * 1000,
                                 ),
                               ),
-                              style: Theme.of(context).primaryTextTheme.headline3,
+                              style: primaryTextTheme.headline3,
                               textAlign: TextAlign.right,
                               maxLines: 1,
                               group: _valueGroup,
                             ),
-                          ),
-                        ),
-                      ],
                     ),
                   ),
+                ],
+              ),
+            ),
             !paymentInfo.pending ||
-                    paymentInfo.type == PaymentType.CLOSED_CHANNEL
+                paymentInfo.type == PaymentType.CLOSED_CHANNEL
                 ? Container()
                 : Container(
-                    height: 36.0,
-                    padding: EdgeInsets.only(left: 16.0, right: 16.0, top: 8.0),
-                    child: Row(
-                      mainAxisSize: MainAxisSize.max,
-                      children: <Widget>[
-                        Padding(
-                          padding: const EdgeInsets.only(right: 8.0),
-                          child: AutoSizeText(
-                            context.l10n.payment_details_dialog_expiration,
-                            style: Theme.of(context).primaryTextTheme.headline4,
+              height: 36.0,
+              padding: EdgeInsets.only(left: 16.0, right: 16.0, top: 8.0),
+              child: Row(
+                mainAxisSize: MainAxisSize.max,
+                children: <Widget>[
+                  Padding(
+                    padding: const EdgeInsets.only(right: 8.0),
+                    child: AutoSizeText(
+                            l10n.payment_details_dialog_expiration,
+                            style: primaryTextTheme.headline4,
                             textAlign: TextAlign.left,
                             maxLines: 1,
                             group: _labelGroup,
                           ),
-                        ),
-                        Expanded(
-                          child: SingleChildScrollView(
-                            scrollDirection: Axis.horizontal,
-                            reverse: true,
-                            padding: EdgeInsets.only(left: 8.0),
-                            child: AutoSizeText(
-                              BreezDateUtils.formatYearMonthDayHourMinute(
+                  ),
+                  Expanded(
+                    child: SingleChildScrollView(
+                      scrollDirection: Axis.horizontal,
+                      reverse: true,
+                      padding: EdgeInsets.only(left: 8.0),
+                      child: AutoSizeText(
+                        BreezDateUtils.formatYearMonthDayHourMinute(
                                 DateTime.fromMillisecondsSinceEpoch(
                                   paymentInfo.pendingExpirationTimestamp
                                           .toInt() *
                                       1000,
                                 ),
                               ),
-                              style: Theme.of(context).primaryTextTheme.headline3,
+                              style: primaryTextTheme.headline3,
                               textAlign: TextAlign.right,
                               maxLines: 1,
                               group: _valueGroup,
                             ),
-                          ),
-                        ),
-                      ],
                     ),
                   ),
+                ],
+              ),
+            ),
             if (paymentInfo.lnurlPayInfo != null &&
                 paymentInfo.lnurlPayInfo.comment != '')
               ShareablePaymentRow(
-                title: context.l10n.payment_details_dialog_share_comment,
+                title: l10n.payment_details_dialog_share_comment,
                 sharedValue: paymentInfo.lnurlPayInfo.comment,
               ),
             if (paymentInfo.type == PaymentType.SENT &&
                 paymentInfo.lnurlPayInfo != null) ...<Widget>[
               if (paymentInfo.lnurlPayInfo.lightningAddress.isNotEmpty)
                 ShareablePaymentRow(
-                  title: context.l10n.payment_details_dialog_share_lightning_address,
+                  title: l10n.payment_details_dialog_share_lightning_address,
                   sharedValue: paymentInfo.lnurlPayInfo.lightningAddress,
                 ),
               ..._getLNUrlSuccessActionForPayment(
@@ -315,7 +322,7 @@ Widget _amountText(
       : context.l10n.payment_details_dialog_amount_positive(amount);
   return AutoSizeText(
     text,
-    style: Theme.of(context).primaryTextTheme.headline3,
+    style: context.primaryTextTheme.headline3,
     textAlign: TextAlign.right,
     maxLines: 1,
     group: _valueGroup,
@@ -323,7 +330,7 @@ Widget _amountText(
 }
 
 List<Widget> _getPaymentInfoDetails(
-    BuildContext context,
+  BuildContext context,
   PaymentInfo paymentInfo,
 ) {
   if (paymentInfo is StreamedPaymentInfo) {
@@ -357,7 +364,8 @@ List<Widget> _getLNUrlSuccessActionForPayment(
   return <Widget>[
     if (sa.tag == 'url') ...[
       ShareablePaymentRow(
-        title: context.l10n.payment_details_dialog_action_for_payment_description,
+        title:
+            context.l10n.payment_details_dialog_action_for_payment_description,
         sharedValue: sa.description,
       ),
       ShareablePaymentRow(
@@ -374,7 +382,7 @@ List<Widget> _getLNUrlSuccessActionForPayment(
 }
 
 List<Widget> _getSinglePaymentInfoDetails(
-    BuildContext context,
+  BuildContext context,
   PaymentInfo paymentInfo,
 ) {
   return List<Widget>.from({
@@ -411,16 +419,21 @@ class ShareablePaymentRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    var l10n = context.l10n;
+    ThemeData themeData = context.theme;
+    TextTheme primaryTextTheme = themeData.primaryTextTheme;
+    Color iconColor = primaryTextTheme.button.color;
+
     final _expansionTileTheme =
-        Theme.of(context).copyWith(dividerColor: Theme.of(context).backgroundColor);
+        themeData.copyWith(dividerColor: themeData.backgroundColor);
     return Theme(
       data: _expansionTileTheme,
       child: ExpansionTile(
-        iconColor: Theme.of(context).primaryTextTheme.button.color,
-        collapsedIconColor: Theme.of(context).primaryTextTheme.button.color,
+        iconColor: iconColor,
+        collapsedIconColor: iconColor,
         title: AutoSizeText(
           title,
-          style: Theme.of(context).primaryTextTheme.headline4,
+          style: primaryTextTheme.headline4,
           maxLines: 1,
           group: _labelGroup,
         ),
@@ -437,8 +450,7 @@ class ShareablePaymentRow extends StatelessWidget {
                     textAlign: TextAlign.left,
                     overflow: TextOverflow.clip,
                     maxLines: 4,
-                    style: Theme.of(context).primaryTextTheme.headline3
-                        .copyWith(fontSize: 10),
+                    style: primaryTextTheme.headline3.copyWith(fontSize: 10),
                   ),
                 ),
               ),
@@ -453,11 +465,11 @@ class ShareablePaymentRow extends StatelessWidget {
                       IconButton(
                         alignment: Alignment.centerRight,
                         padding: EdgeInsets.only(right: 8.0),
-                        tooltip: context.l10n.payment_details_dialog_copy_action(
+                        tooltip: l10n.payment_details_dialog_copy_action(
                           title,
                         ),
                         iconSize: 16.0,
-                        color: Theme.of(context).primaryTextTheme.button.color,
+                        color: iconColor,
                         icon: Icon(
                           IconData(0xe90b, fontFamily: 'icomoon'),
                         ),
@@ -465,10 +477,10 @@ class ShareablePaymentRow extends StatelessWidget {
                           ServiceInjector()
                               .device
                               .setClipboardText(sharedValue);
-                          Navigator.pop(context);
+                          context.pop();
                           showFlushbar(
                             context,
-                            message: context.l10n.payment_details_dialog_copied(
+                            message: l10n.payment_details_dialog_copied(
                               title,
                             ),
                             duration: Duration(seconds: 4),
@@ -477,9 +489,9 @@ class ShareablePaymentRow extends StatelessWidget {
                       ),
                       IconButton(
                         padding: EdgeInsets.only(right: 8.0),
-                        tooltip: context.l10n.payment_details_dialog_share_transaction,
+                        tooltip: l10n.payment_details_dialog_share_transaction,
                         iconSize: 16.0,
-                        color: Theme.of(context).primaryTextTheme.button.color,
+                        color: iconColor,
                         icon: Icon(Icons.share),
                         onPressed: () {
                           ShareExtend.share(sharedValue, "text");
@@ -613,14 +625,17 @@ class ClosedChannelPaymentDetailsState
 
   @override
   Widget build(BuildContext context) {
+    var l10n = context.l10n;
+    TextStyle dialogContentTextStyle = context.dialogTheme.contentTextStyle;
+
     if (!widget.closedChannel.pending) {
       return Column(
         mainAxisSize: MainAxisSize.min,
         children: <Widget>[
           RichText(
             text: TextSpan(
-              style: Theme.of(context).dialogTheme.contentTextStyle,
-              text: context.l10n.payment_details_dialog_closed_channel_local_wallet,
+              style: dialogContentTextStyle,
+              text: l10n.payment_details_dialog_closed_channel_local_wallet,
             ),
           ),
           TxWidget(
@@ -636,22 +651,22 @@ class ClosedChannelPaymentDetailsState
 
     int roundedHoursToUnlock = hoursToUnlock.round();
     String hoursToUnlockStr = roundedHoursToUnlock > 1
-        ? context.l10n.payment_details_dialog_closed_channel_about_hours(
+        ? l10n.payment_details_dialog_closed_channel_about_hours(
             roundedHoursToUnlock.toString(),
           )
-        : context.l10n.payment_details_dialog_closed_channel_about_hour;
+        : l10n.payment_details_dialog_closed_channel_about_hour;
     String estimation = lockHeight > 0 && hoursToUnlock > 0
-        ? context.l10n.payment_details_dialog_closed_channel_transfer_estimation(
+        ? l10n.payment_details_dialog_closed_channel_transfer_estimation(
             lockHeight.toString(), // TODO use int when update flutter to 2.5
             hoursToUnlockStr,
           )
-        : context.l10n.payment_details_dialog_closed_channel_transfer_no_estimation;
+        : l10n.payment_details_dialog_closed_channel_transfer_no_estimation;
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: <Widget>[
         RichText(
           text: TextSpan(
-            style: Theme.of(context).dialogTheme.contentTextStyle,
+            style: dialogContentTextStyle,
             text: estimation,
           ),
         ),
@@ -665,61 +680,63 @@ class ClosedChannelPaymentDetailsState
         ),
         mismatchedLoading
             ? Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.only(top: 20.0),
-                    child: Loader(),
-                  )
-                ],
-              )
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Padding(
+              padding: const EdgeInsets.only(top: 20.0),
+              child: Loader(),
+            )
+          ],
+        )
             : SizedBox(),
         showRefreshChainButton
             ? Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Padding(
-                    padding: EdgeInsets.only(top: 20.0),
-                    child: TextButton(
-                      onPressed: () {
-                        _onResetChainInfoPressed().then((_) {
-                          _promptForRestart();
-                        }).catchError((err) {
-                          promptError(
-                            context,
-                            context.l10n.payment_details_dialog_internal_error,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Padding(
+              padding: EdgeInsets.only(top: 20.0),
+              child: TextButton(
+                onPressed: () {
+                  _onResetChainInfoPressed().then((_) {
+                    _promptForRestart();
+                  }).catchError((err) {
+                    promptError(
+                      context,
+                            l10n.payment_details_dialog_internal_error,
                             Text(
                               err.toString(),
-                              style: Theme.of(context).dialogTheme.contentTextStyle,
+                              style: dialogContentTextStyle,
                             ),
                           );
-                        });
-                      },
-                      child: Text(
-                        context.l10n.payment_details_dialog_refresh_information,
-                        style: Theme.of(context).primaryTextTheme.button,
+                  });
+                },
+                child: Text(
+                        l10n.payment_details_dialog_refresh_information,
+                        style: context.primaryTextTheme.button,
                       ),
-                    ),
-                  ),
-                ],
-              )
+              ),
+            ),
+          ],
+        )
             : SizedBox(),
       ],
     );
   }
 
   Future<bool> _promptForRestart() {
+    var l10n = context.l10n;
+
     return promptAreYouSure(
       context,
       null,
       Text(
-        context.l10n.payment_details_dialog_restart_text,
-        style: Theme.of(context).dialogTheme.contentTextStyle,
+        l10n.payment_details_dialog_restart_text,
+        style: context.dialogTheme.contentTextStyle,
       ),
-      cancelText: context.l10n.payment_details_dialog_restart_cancel,
-      okText: context.l10n.payment_details_dialog_restart_exit_breez,
+      cancelText: l10n.payment_details_dialog_restart_cancel,
+      okText: l10n.payment_details_dialog_restart_exit_breez,
     ).then((shouldExit) {
       if (shouldExit) {
         exit(0);
@@ -766,7 +783,8 @@ class TxWidget extends StatelessWidget {
               ServiceInjector().device.setClipboardText(this.txID);
               showFlushbar(
                 context,
-                message: context.l10n.payment_details_dialog_transaction_id_copied,
+                message:
+                    context.l10n.payment_details_dialog_transaction_id_copied,
                 duration: Duration(seconds: 3),
               );
             },
@@ -790,16 +808,18 @@ class _Destination extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    ThemeData themeData = context.theme;
+    TextTheme primaryTextTheme = themeData.primaryTextTheme;
+    Color iconColor = primaryTextTheme.button.color;
+
     return Theme(
-      data: Theme.of(context).copyWith(
-        dividerColor: Theme.of(context).backgroundColor,
-      ),
+      data: themeData.copyWith(dividerColor: themeData.backgroundColor),
       child: ExpansionTile(
-        iconColor: Theme.of(context).primaryTextTheme.button.color,
-        collapsedIconColor: Theme.of(context).primaryTextTheme.button.color,
+        iconColor: iconColor,
+        collapsedIconColor: iconColor,
         title: AutoSizeText(
           title,
-          style: Theme.of(context).primaryTextTheme.headline4,
+          style: primaryTextTheme.headline4,
           textAlign: TextAlign.left,
           maxLines: 1,
           group: _labelGroup,
@@ -814,7 +834,7 @@ class _Destination extends StatelessWidget {
                   padding: EdgeInsets.only(left: 16.0, right: 16.0),
                   child: AutoSizeText(
                     currency.format(amount),
-                    style: Theme.of(context).primaryTextTheme.headline3,
+                    style: primaryTextTheme.headline3,
                     textAlign: TextAlign.right,
                     maxLines: 1,
                     group: _valueGroup,

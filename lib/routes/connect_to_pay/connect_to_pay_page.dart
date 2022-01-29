@@ -7,13 +7,13 @@ import 'package:breez/bloc/connect_pay/connect_pay_model.dart';
 import 'package:breez/bloc/connect_pay/payer_session.dart';
 import 'package:breez/bloc/lsp/lsp_bloc.dart';
 import 'package:breez/bloc/lsp/lsp_model.dart';
+import 'package:breez/utils/build_context.dart';
 import 'package:breez/widgets/back_button.dart' as backBtn;
 import 'package:breez/widgets/error_dialog.dart';
 import 'package:breez/widgets/flushbar.dart';
 import 'package:breez/widgets/loader.dart';
 import 'package:fixnum/fixnum.dart';
 import 'package:flutter/material.dart';
-import 'package:breez/l10n/locales.dart';
 
 import 'payee_session_widget.dart';
 import 'payer_session_widget.dart';
@@ -50,6 +50,8 @@ class ConnectToPayPageState extends State<ConnectToPayPage> {
 
   @override
   void didChangeDependencies() {
+    var l10n = context.l10n;
+
     if (!_isInit) {
       final ctpBloc = AppBlocsProvider.of<ConnectPayBloc>(context);
 
@@ -60,8 +62,8 @@ class ConnectToPayPageState extends State<ConnectToPayPage> {
         }
         _payer = _currentSession.runtimeType == PayerRemoteSession;
         _title = _payer
-            ? context.l10n.connect_to_pay_title_payer
-            : context.l10n.connect_to_pay_title_payee;
+            ? l10n.connect_to_pay_title_payer
+            : l10n.connect_to_pay_title_payee;
         registerErrorsListener();
         registerEndOfSessionListener(context);
         _isInit = true;
@@ -87,6 +89,8 @@ class ConnectToPayPageState extends State<ConnectToPayPage> {
   }
 
   void registerEndOfSessionListener(BuildContext context) async {
+    var l10n = context.l10n;
+
     _endOfSessionSubscription =
         _currentSession.paymentSessionStateStream.listen(
       (session) {
@@ -97,43 +101,43 @@ class ConnectToPayPageState extends State<ConnectToPayPage> {
         }
 
         if (session.remotePartyCancelled) {
-          _popWithMessage(
-            _remoteUserName != null
-                ? context.l10n.connect_to_pay_canceled_remote_user(_remoteUserName)
+              _popWithMessage(
+                _remoteUserName != null
+                ? l10n.connect_to_pay_canceled_remote_user(_remoteUserName)
                 : _payer
-                    ? context.l10n.connect_to_pay_canceled_payee
-                    : context.l10n.connect_to_pay_canceled_payer,
+                    ? l10n.connect_to_pay_canceled_payee
+                    : l10n.connect_to_pay_canceled_payer,
           );
-          return;
-        }
+              return;
+            }
 
-        if (session.paymentFulfilled) {
-          final formattedAmount = _currentSession.currentUser.currency
-              .format(Int64(session.settledAmount));
-          _popWithMessage(
-            _payer
-                ? context.l10n.connect_to_pay_success_payer(
+            if (session.paymentFulfilled) {
+              final formattedAmount = _currentSession.currentUser.currency
+                  .format(Int64(session.settledAmount));
+              _popWithMessage(
+                _payer
+                ? l10n.connect_to_pay_success_payer(
                     _remoteUserName,
                     formattedAmount,
                   )
-                : context.l10n.connect_to_pay_success_payee(
+                : l10n.connect_to_pay_success_payee(
                     _remoteUserName,
                     formattedAmount,
                   ),
-            destroySession: _payer,
-          );
-        }
-      },
-      onDone: () => _popWithMessage(
-        null,
-        destroySession: false,
-      ),
-    );
+                destroySession: _payer,
+              );
+            }
+          },
+          onDone: () => _popWithMessage(
+            null,
+            destroySession: false,
+          ),
+        );
   }
 
   void _popWithMessage(message, {destroySession = true}) {
     _destroySessionOnTerminate = destroySession;
-    Navigator.pop(_key.currentContext);
+    _key.currentContext.pop();
     if (message != null) {
       showFlushbar(
         _key.currentContext,
@@ -161,14 +165,15 @@ class ConnectToPayPageState extends State<ConnectToPayPage> {
   }
 
   void _onTerminateSession(BuildContext context) async {
+    DialogTheme dialogTheme = context.dialogTheme;
     bool cancel = await promptAreYouSure(
       _key.currentContext,
       null,
       Text(
         context.l10n.connect_to_pay_exit_warning,
-        style: Theme.of(context).dialogTheme.contentTextStyle,
+        style: dialogTheme.contentTextStyle,
       ),
-      textStyle: Theme.of(context).dialogTheme.contentTextStyle,
+      textStyle: dialogTheme.contentTextStyle,
     );
     if (cancel) {
       _popWithMessage(null);
@@ -184,6 +189,8 @@ class ConnectToPayPageState extends State<ConnectToPayPage> {
 
   @override
   Widget build(BuildContext context) {
+    ThemeData theme = context.theme;
+    AppBarTheme appBarTheme = theme.appBarTheme;
     return Scaffold(
       key: _key,
       appBar: AppBar(
@@ -193,21 +200,19 @@ class ConnectToPayPageState extends State<ConnectToPayPage> {
                   onPressed: () => _onTerminateSession(context),
                   icon: Icon(
                     Icons.close,
-                    color: Theme.of(context).iconTheme.color,
+                    color: context.iconTheme.color,
                   ),
                 ),
               ]
             : null,
-        iconTheme: Theme.of(context).appBarTheme.iconTheme,
-        textTheme: Theme.of(context).appBarTheme.textTheme,
-        backgroundColor: Theme.of(context).canvasColor,
+        iconTheme: appBarTheme.iconTheme,
+        toolbarTextStyle: appBarTheme.toolbarTextStyle,
+        titleTextStyle: appBarTheme.titleTextStyle,
+        backgroundColor: theme.canvasColor,
         leading: backBtn.BackButton(
           onPressed: _onBackPressed,
         ),
-        title: Text(
-          _title,
-          style: Theme.of(context).appBarTheme.textTheme.headline6,
-        ),
+        title: Text(_title),
         elevation: 0.0,
       ),
       body: buildBody(),

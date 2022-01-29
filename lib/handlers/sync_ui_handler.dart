@@ -1,9 +1,9 @@
 import 'package:breez/bloc/account/account_actions.dart';
 import 'package:breez/bloc/account/account_bloc.dart';
 import 'package:breez/bloc/account/account_model.dart';
+import 'package:breez/utils/build_context.dart';
 import 'package:breez/widgets/sync_loader.dart';
 import 'package:flutter/material.dart';
-import 'package:breez/l10n/locales.dart';
 
 class SyncUIHandler {
   final AccountBloc _accountBloc;
@@ -20,7 +20,7 @@ class SyncUIHandler {
   }
 
   void showSyncUI(AccountModel acc) {
-    final navigator = Navigator.of(_context);
+    NavigatorState navigator = _context.navigator;
     if (acc.syncUIState == SyncUIState.BLOCKING) {
       if (_syncUIRoute == null) {
         _syncUIRoute = _createSyncRoute(_context, _accountBloc);
