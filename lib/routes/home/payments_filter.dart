@@ -134,15 +134,17 @@ class PaymentsFilterState extends State<PaymentsFilter> {
 
   @override
   Widget build(BuildContext context) {
+    var l10n = context.l10n;
+
     if (_filter == null) {
       _filterMap = {
-        context.l10n.payments_filter_option_all: PaymentType.values,
-        context.l10n.payments_filter_option_sent: [
+        l10n.payments_filter_option_all: PaymentType.values,
+        l10n.payments_filter_option_sent: [
           PaymentType.SENT,
           PaymentType.WITHDRAWAL,
           PaymentType.CLOSED_CHANNEL,
         ],
-        context.l10n.payments_filter_option_received: [
+        l10n.payments_filter_option_received: [
           PaymentType.RECEIVED,
           PaymentType.DEPOSIT,
         ],

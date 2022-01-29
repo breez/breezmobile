@@ -11,12 +11,14 @@ WillPopCallback willPopCallback(
   String message,
   Function canCancel,
 }) {
+  var l10n = context.l10n;
+
   return () async {
     if (canCancel != null && canCancel()) return true;
     return promptAreYouSure(
       context,
-      title ?? context.l10n.close_popup_title,
-      Text(message ?? context.l10n.close_popup_message),
+      title ?? l10n.close_popup_title,
+      Text(message ?? l10n.close_popup_message),
     ).then((ok) {
       if (ok && immediateExit) {
         exit(0);

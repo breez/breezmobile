@@ -60,6 +60,8 @@ class PosPaymentItem extends StatelessWidget {
   }
 
   Widget _valueText(BuildContext context) {
+    var l10n = context.l10n;
+
     final isSent = _paymentInfo.type == PaymentType.SENT;
     final isWithdrawal = _paymentInfo.type == PaymentType.WITHDRAWAL;
     final value = _paymentInfo.currency.format(
@@ -69,8 +71,8 @@ class PosPaymentItem extends StatelessWidget {
 
     return Text(
       isSent || isWithdrawal
-          ? context.l10n.pos_transactions_item_negative(value)
-          : context.l10n.pos_transactions_item_positive(value),
+          ? l10n.pos_transactions_item_negative(value)
+          : l10n.pos_transactions_item_positive(value),
       style: isSent
           ? theme.posWithdrawalTransactionAmountStyle
           : theme.transactionAmountStyle,

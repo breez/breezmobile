@@ -14,12 +14,14 @@ String textFromUri(
   TextUri uri, {
   String def: "",
 }) {
+  var l10n = context.l10n;
+
   if (uri == null) return def;
   switch (uri) {
     case TextUri.BOTTOM_ACTION_BAR_BUY_BITCOIN:
-      return context.l10n.bottom_action_bar_buy_bitcoin;
+      return l10n.bottom_action_bar_buy_bitcoin;
     case TextUri.BOTTOM_ACTION_BAR_RECEIVE_BTC_ADDRESS:
-      return context.l10n.bottom_action_bar_receive_btc_address;
+      return l10n.bottom_action_bar_receive_btc_address;
   }
   return def;
 }

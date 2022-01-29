@@ -281,10 +281,12 @@ class UnconfirmedChannels extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    var l10n = context.l10n;
+
     final rows = unconfirmedChannels.map((chainPoint) {
       final tx = chainPoint.split(":")[0];
       return TxWidget(
-        txLabel: context.l10n.reverse_swap_funding_transaction,
+        txLabel: l10n.reverse_swap_funding_transaction,
         txID: tx,
         txURL: "https://blockstream.info/tx/$tx",
       );
@@ -322,7 +324,7 @@ class UnconfirmedChannels extends StatelessWidget {
               children: [
                 Expanded(
                   child: Text(
-                    context.l10n.reverse_swap_waiting_channels,
+                    l10n.reverse_swap_waiting_channels,
                     textAlign: TextAlign.center,
                   ),
                 ),

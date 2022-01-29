@@ -138,6 +138,8 @@ class SecurityPageState extends State<SecurityPage>
   }
 
   Widget _lastBackup(BuildContext context, BackupState backupState) {
+    var l10n = context.l10n;
+
     if (backupState == null) return SizedBox();
     final lastBackupTime = backupState.lastBackupTime;
     if (lastBackupTime == null) return SizedBox();
@@ -149,8 +151,8 @@ class SecurityPageState extends State<SecurityPage>
 
     return Text(
       accountName == null || accountName.isEmpty
-          ? context.l10n.security_and_backup_last_backup_no_account(lastBackup)
-          : context.l10n.security_and_backup_last_backup_with_account(
+          ? l10n.security_and_backup_last_backup_no_account(lastBackup)
+          : l10n.security_and_backup_last_backup_with_account(
               lastBackup,
               accountName,
             ),
@@ -553,6 +555,7 @@ class SecurityPageState extends State<SecurityPage>
     BackupSettings backupSettings,
   ) {
     var l10n = context.l10n;
+
     return ListTile(
       title: AutoSizeText(
         securityModel.requiresPin

@@ -97,26 +97,27 @@ class _PayerInstructions extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    var l10n = context.l10n;
+
     final payeeData = sessionState.payeeData;
     final payerData = sessionState.payerData;
 
     var message = "";
     if (sessionState.paymentFulfilled) {
-      message = context.l10n.connect_to_pay_payer_success(
+      message = l10n.connect_to_pay_payer_success(
         _account.currency.format(Int64(payerData.amount)),
       );
     } else if (payerData.amount == null) {
       if (payeeData.status.online) {
-        message =
-            context.l10n.connect_to_pay_payer_enter_amount(payeeData.userName);
+        message = l10n.connect_to_pay_payer_enter_amount(payeeData.userName);
       } else if (!sessionState.invitationSent && payeeData.userName == null) {
-        message = context.l10n.connect_to_pay_payer_share_link;
+        message = l10n.connect_to_pay_payer_share_link;
       } else {
         final name = payeeData.userName;
         return LoadingAnimatedText(
           name != null
-              ? context.l10n.connect_to_pay_payer_waiting_join_with_name(name)
-              : context.l10n.connect_to_pay_payer_waiting_join_no_name,
+              ? l10n.connect_to_pay_payer_waiting_join_with_name(name)
+              : l10n.connect_to_pay_payer_waiting_join_no_name,
           textStyle: theme.sessionNotificationStyle,
         );
       }
@@ -124,8 +125,8 @@ class _PayerInstructions extends StatelessWidget {
       final name = payeeData.userName;
       return LoadingAnimatedText(
         name != null
-            ? context.l10n.connect_to_pay_payer_waiting_approve_with_name(name)
-            : context.l10n.connect_to_pay_payer_waiting_approve_no_name,
+            ? l10n.connect_to_pay_payer_waiting_approve_with_name(name)
+            : l10n.connect_to_pay_payer_waiting_approve_no_name,
         textStyle: theme.sessionNotificationStyle,
       );
     } else {
@@ -136,7 +137,7 @@ class _PayerInstructions extends StatelessWidget {
           onClose: () => context.pop(),
         );
       }
-      message = context.l10n.connect_to_pay_payer_sending;
+      message = l10n.connect_to_pay_payer_sending;
     }
 
     return Text(

@@ -86,16 +86,18 @@ class AmountFormField extends TextFormField {
 
   @override
   FormFieldValidator<String> get validator {
+    var l10n = context.l10n;
+
     return (value) {
       if (value.isEmpty) {
-        return context.l10n.amount_form_insert_hint(
+        return l10n.amount_form_insert_hint(
           accountModel.currency.displayName,
         );
       }
       try {
         Int64 intAmount = accountModel.currency.parse(value);
         if (intAmount <= 0) {
-          return context.l10n.amount_form_error_invalid_amount;
+          return l10n.amount_form_error_invalid_amount;
         }
         String msg;
         if (validatorFn != null) {
@@ -103,7 +105,7 @@ class AmountFormField extends TextFormField {
         }
         return msg;
       } catch (err) {
-        return context.l10n.amount_form_error_invalid_amount;
+        return l10n.amount_form_error_invalid_amount;
       }
     };
   }

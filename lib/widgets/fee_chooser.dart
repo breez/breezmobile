@@ -19,6 +19,8 @@ class FeeChooser extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    var l10n = context.l10n;
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
@@ -30,7 +32,7 @@ class FeeChooser extends StatelessWidget {
                 context,
                 0,
                 economyFee == null,
-                context.l10n.fee_chooser_option_economy,
+                l10n.fee_chooser_option_economy,
               ),
             ),
             Expanded(
@@ -38,7 +40,7 @@ class FeeChooser extends StatelessWidget {
                 context,
                 1,
                 regularFee == null,
-                context.l10n.fee_chooser_option_regular,
+                l10n.fee_chooser_option_regular,
               ),
             ),
             Expanded(
@@ -46,7 +48,7 @@ class FeeChooser extends StatelessWidget {
                 context,
                 2,
                 priorityFee == null,
-                context.l10n.fee_chooser_option_priority,
+                l10n.fee_chooser_option_priority,
               ),
             )
           ],

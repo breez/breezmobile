@@ -42,6 +42,8 @@ class AvatarPicker extends StatelessWidget {
   }
 
   Widget _getPickerWidget(BuildContext context) {
+    var l10n = context.l10n;
+
     return Container(
       child: Column(
         mainAxisSize: MainAxisSize.max,
@@ -56,8 +58,8 @@ class AvatarPicker extends StatelessWidget {
           ),
           Text(
             imagePath == null
-                ? context.l10n.avatar_picker_action_set_photo
-                : context.l10n.avatar_picker_action_change_photo,
+                ? l10n.avatar_picker_action_set_photo
+                : l10n.avatar_picker_action_change_photo,
             style: TextStyle(
               fontSize: 10.0,
               color: Color.fromRGBO(255, 255, 255, 0.88),

@@ -238,11 +238,13 @@ class DepositToBTCAddressPageState extends State<DepositToBTCAddressPage> {
     AccountModel account, {
     hasError = false,
   }) {
+    var l10n = context.l10n;
+
     if (hasError || response?.errorMessage?.isNotEmpty == true) {
       return SingleButtonBottomBar(
         text: hasError
-            ? context.l10n.invoice_btc_address_action_retry
-            : context.l10n.invoice_btc_address_action_close,
+            ? l10n.invoice_btc_address_action_retry
+            : l10n.invoice_btc_address_action_close,
         onPressed: () {
           if (hasError) {
             _addFundsBloc.addFundRequestSink.add(true);

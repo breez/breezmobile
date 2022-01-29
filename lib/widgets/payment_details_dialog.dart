@@ -315,11 +315,13 @@ Widget _amountText(
   PaymentInfo paymentInfo,
   BuildContext context,
 ) {
+  var l10n = context.l10n;
+
   final amount = paymentInfo.currency.format(paymentInfo.amount);
   final text = (paymentInfo.type == PaymentType.SENT ||
           paymentInfo.type == PaymentType.WITHDRAWAL)
-      ? context.l10n.payment_details_dialog_amount_negative(amount)
-      : context.l10n.payment_details_dialog_amount_positive(amount);
+      ? l10n.payment_details_dialog_amount_negative(amount)
+      : l10n.payment_details_dialog_amount_positive(amount);
   return AutoSizeText(
     text,
     style: context.primaryTextTheme.headline3,
@@ -361,21 +363,22 @@ List<Widget> _getLNUrlSuccessActionForPayment(
   BuildContext context,
   SuccessAction sa,
 ) {
+  var l10n = context.l10n;
+
   return <Widget>[
     if (sa.tag == 'url') ...[
       ShareablePaymentRow(
-        title:
-            context.l10n.payment_details_dialog_action_for_payment_description,
+        title: l10n.payment_details_dialog_action_for_payment_description,
         sharedValue: sa.description,
       ),
       ShareablePaymentRow(
-        title: context.l10n.payment_details_dialog_action_for_payment_url,
+        title: l10n.payment_details_dialog_action_for_payment_url,
         sharedValue: sa.url, // TODO Hyperlink.
       ),
     ],
     if (sa.tag == 'message' || sa.tag == 'aes')
       ShareablePaymentRow(
-        title: context.l10n.payment_details_dialog_action_for_payment_message,
+        title: l10n.payment_details_dialog_action_for_payment_message,
         sharedValue: sa.message,
       ),
   ];
@@ -385,23 +388,25 @@ List<Widget> _getSinglePaymentInfoDetails(
   BuildContext context,
   PaymentInfo paymentInfo,
 ) {
+  var l10n = context.l10n;
+
   return List<Widget>.from({
     paymentInfo.preimage == null || paymentInfo.preimage.isEmpty
         ? Container()
         : ShareablePaymentRow(
-            title: context.l10n.payment_details_dialog_single_info_pre_image,
+            title: l10n.payment_details_dialog_single_info_pre_image,
             sharedValue: paymentInfo.preimage,
           ),
     paymentInfo.destination == null || paymentInfo.destination.isEmpty
         ? Container()
         : ShareablePaymentRow(
-            title: context.l10n.payment_details_dialog_single_info_node_id,
+      title: l10n.payment_details_dialog_single_info_node_id,
             sharedValue: paymentInfo.destination,
           ),
     paymentInfo.redeemTxID == null || paymentInfo.redeemTxID.isEmpty
         ? Container()
         : ShareablePaymentRow(
-            title: context.l10n.payment_details_dialog_single_info_on_chain,
+      title: l10n.payment_details_dialog_single_info_on_chain,
             sharedValue: paymentInfo.redeemTxID,
           ),
   });
@@ -760,6 +765,8 @@ class TxWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    var l10n = context.l10n;
+
     if (this.txURL == null) {
       return SizedBox();
     }
@@ -775,7 +782,7 @@ class TxWidget extends StatelessWidget {
           padding: EdgeInsets.only(top: 20.0),
           child: LinkLauncher(
             linkTitle: txLabel ??
-                context.l10n.payment_details_dialog_transaction_label_default,
+                l10n.payment_details_dialog_transaction_label_default,
             textStyle: textStyle,
             linkName: this.txID,
             linkAddress: this.txURL,
@@ -783,8 +790,7 @@ class TxWidget extends StatelessWidget {
               ServiceInjector().device.setClipboardText(this.txID);
               showFlushbar(
                 context,
-                message:
-                    context.l10n.payment_details_dialog_transaction_id_copied,
+                message: l10n.payment_details_dialog_transaction_id_copied,
                 duration: Duration(seconds: 3),
               );
             },

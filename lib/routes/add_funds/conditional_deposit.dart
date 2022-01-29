@@ -20,6 +20,8 @@ class ConditionalDeposit extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    var l10n = context.l10n;
+
     final accountBloc = AppBlocsProvider.of<AccountBloc>(context);
 
     return StreamBuilder<AccountModel>(
@@ -36,9 +38,9 @@ class ConditionalDeposit extends StatelessWidget {
 
         if (unconfirmedTxID?.isNotEmpty == true) {
           if (waitingDepositConfirmation || account.processingConnection) {
-            errorMessage = context.l10n.add_funds_error_deposit;
+            errorMessage = l10n.add_funds_error_deposit;
           } else {
-            errorMessage = context.l10n.add_funds_error_withdraw;
+            errorMessage = l10n.add_funds_error_withdraw;
           }
         }
 
@@ -75,18 +77,18 @@ class ConditionalDeposit extends StatelessWidget {
               ),
               waitingDepositConfirmation
                   ? Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Padding(
-                          padding: EdgeInsets.only(
-                            top: 30.0,
-                            left: 30.0,
-                            right: 30.0,
-                          ),
-                          child: _linkLauncher(context, unconfirmedTxID),
-                        ),
-                      ],
-                    )
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Padding(
+                    padding: EdgeInsets.only(
+                      top: 30.0,
+                      left: 30.0,
+                      right: 30.0,
+                    ),
+                    child: _linkLauncher(context, unconfirmedTxID),
+                  ),
+                ],
+              )
                   : SizedBox(),
             ],
           ),

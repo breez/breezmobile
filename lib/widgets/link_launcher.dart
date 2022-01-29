@@ -22,6 +22,8 @@ class LinkLauncher extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    var l10n = context.l10n;
+
     final style = this.textStyle ?? DefaultTextStyle.of(context).style;
 
     return Column(
@@ -34,7 +36,7 @@ class LinkLauncher extends StatelessWidget {
             Expanded(
               flex: 1,
               child: Text(
-                linkTitle ?? context.l10n.link_launcher_title,
+                linkTitle ?? l10n.link_launcher_title,
                 textAlign: TextAlign.start,
                 style: textStyle,
               ),
@@ -71,7 +73,7 @@ class LinkLauncher extends StatelessWidget {
                 child: GestureDetector(
                   onTap: onCopy,
                   child: Text(
-                    linkName ?? context.l10n.link_launcher_link_name,
+                    linkName ?? l10n.link_launcher_link_name,
                     style: style,
                     textAlign: TextAlign.left,
                     overflow: TextOverflow.clip,

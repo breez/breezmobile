@@ -129,8 +129,8 @@ class CreateInvoicePageState extends State<CreateInvoicePage> {
             child: SingleButtonBottomBar(
               stickToBottom: true,
               text: _withdrawFetchResponse == null
-                  ? context.l10n.invoice_action_create
-                  : context.l10n.invoice_action_redeem,
+                  ? l10n.invoice_action_create
+                  : l10n.invoice_action_redeem,
               onPressed: () {
                 if (_formKey.currentState.validate()) {
                   _createInvoice(
@@ -366,6 +366,8 @@ class CreateInvoicePageState extends State<CreateInvoicePage> {
     AccountModel accountModel,
     LSPInfo lspInfo,
   ) {
+    var l10n = context.l10n;
+
     final connected = accountModel.connected;
     final minFee = (lspInfo != null)
         ? Int64(lspInfo.channelMinimumFeeMsat) ~/ 1000
@@ -378,26 +380,23 @@ class CreateInvoicePageState extends State<CreateInvoicePage> {
     );
 
     if (connected && showMinFeeMessage) {
-      return context.l10n
-          .invoice_ln_address_warning_with_min_fee_account_connected(
+      return l10n.invoice_ln_address_warning_with_min_fee_account_connected(
         setUpFee,
         minFeeFormatted,
         liquidity,
       );
     } else if (connected && !showMinFeeMessage) {
-      return context.l10n
-          .invoice_ln_address_warning_without_min_fee_account_connected(
+      return l10n.invoice_ln_address_warning_without_min_fee_account_connected(
         setUpFee,
         liquidity,
       );
     } else if (!connected && showMinFeeMessage) {
-      return context.l10n
-          .invoice_ln_address_warning_with_min_fee_account_not_connected(
+      return l10n.invoice_ln_address_warning_with_min_fee_account_not_connected(
         setUpFee,
         minFeeFormatted,
       );
     } else {
-      return context.l10n
+      return l10n
           .invoice_ln_address_warning_without_min_fee_account_not_connected(
         setUpFee,
       );

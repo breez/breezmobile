@@ -13,6 +13,8 @@ void checkVersionDialog(
   BuildContext context,
   UserProfileBloc userProfileBloc,
 ) {
+  var l10n = context.l10n;
+
   CheckVersion action = CheckVersion();
   userProfileBloc.userActionsSink.add(action);
   action.future.catchError((err) {
@@ -29,7 +31,7 @@ void checkVersionDialog(
     } else if (err.contains('bad version')) {
       showFlushbar(
         context,
-        buttonText: context.l10n.handler_check_version_action_update,
+        buttonText: l10n.handler_check_version_action_update,
         onDismiss: () {
           if (defaultTargetPlatform == TargetPlatform.iOS) {
             launch("https://testflight.apple.com/join/wPju2Du7");
@@ -42,7 +44,7 @@ void checkVersionDialog(
         position: FlushbarPosition.TOP,
         duration: Duration.zero,
         messageWidget: Text(
-          context.l10n.handler_check_version_message,
+          l10n.handler_check_version_message,
           style: theme.snackBarStyle,
           textAlign: TextAlign.center,
         ),

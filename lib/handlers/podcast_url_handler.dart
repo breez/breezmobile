@@ -67,6 +67,8 @@ Future handleDeeplink(
   String podcastURL,
   String episodeID,
 ) async {
+  var l10n = context.l10n;
+
   if (episodeID != null) {
     try {
       var podcastBloc = Provider.of<PodcastBloc>(context, listen: false);
@@ -78,13 +80,13 @@ Future handleDeeplink(
           .firstWhere((blocState) => blocState is! BlocLoadingState)
           .then((blocState) async {
         if (blocState is BlocErrorState) {
-          throw context.l10n.handler_podcast_error_load_episode;
+          throw l10n.handler_podcast_error_load_episode;
         } else if (blocState is BlocPopulatedState) {
           // Retrieve episode list and play matching episode
           var episodeList = await podcastBloc.episodes
               .firstWhere((episodeList) => episodeList.isNotEmpty);
           var episode = episodeList.firstWhere(
-            (episode) => episode.guid == episodeID,
+                (episode) => episode.guid == episodeID,
             orElse: () => null,
           );
           if (episode != null) {
@@ -120,7 +122,7 @@ Future handleDeeplink(
     try {
       await _navigateToPodcast(context, podcastURL);
     } catch (e) {
-      throw Exception(context.l10n.handler_podcast_error_load_episode_fallback);
+      throw Exception(l10n.handler_podcast_error_load_episode_fallback);
     }
   }
 }

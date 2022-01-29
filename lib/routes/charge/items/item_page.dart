@@ -52,16 +52,18 @@ class ItemPageState extends State<ItemPage> {
 
   @override
   void didChangeDependencies() {
+    var l10n = context.l10n;
+
     if (!_isInit) {
       _accountBloc = AppBlocsProvider.of<AccountBloc>(context);
 
-      _title = context.l10n.pos_invoice_item_management_title_add;
+      _title = l10n.pos_invoice_item_management_title_add;
       FetchRates fetchRatesAction = FetchRates();
       _accountBloc.userActionsSink.add(fetchRatesAction);
       _accountBloc.accountStream.first.then((accountModel) {
         if (widget.item != null) {
           setState(() {
-            _title = context.l10n.pos_invoice_item_management_title_edit;
+            _title = l10n.pos_invoice_item_management_title_edit;
             _itemImage = widget.item.imageURL;
             _nameController.text = widget.item.name;
             _skuController.text = widget.item.sku;
@@ -76,9 +78,9 @@ class ItemPageState extends State<ItemPage> {
           widget._posCatalogBloc.selectedCurrencyStream.listen((currency) {
             setState(() {
               _selectedCurrency = CurrencyWrapper.fromShortName(
-                    currency,
-                    accountModel,
-                  ) ??
+                currency,
+                accountModel,
+              ) ??
                   _selectedCurrency;
             });
           });
@@ -90,7 +92,7 @@ class ItemPageState extends State<ItemPage> {
           setState(() {
             showFlushbar(
               context,
-              message: context.l10n.pos_invoice_item_management_error_btc_rate,
+              message: l10n.pos_invoice_item_management_error_btc_rate,
             );
           });
         }
