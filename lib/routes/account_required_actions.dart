@@ -245,7 +245,7 @@ class AccountRequiredActionsIndicatorState
       }));
     }
 
-    final availableLSPs = lspStatus.availableLSPs;
+    final availableLSPs = lspStatus?.availableLSPs ?? [];
     if (lspActivity != null) {
       availableLSPs.forEach((element) {});
       int inactiveWarningDuration = this._inactiveWarningDuration(

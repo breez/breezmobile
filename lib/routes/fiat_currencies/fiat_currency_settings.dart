@@ -200,7 +200,9 @@ class FiatCurrencySettingsState extends State<FiatCurrencySettings> {
     int oldIndex,
     int newIndex,
   ) {
-    final preferredFiatCurrencies = List.from(account.preferredCurrencies);
+    final preferredFiatCurrencies = List<String>.from(
+      account.preferredCurrencies,
+    );
     if (newIndex >= preferredFiatCurrencies.length) {
       newIndex = preferredFiatCurrencies.length - 1;
     }
