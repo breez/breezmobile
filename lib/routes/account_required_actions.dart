@@ -7,6 +7,8 @@ import 'package:breez/bloc/backup/backup_bloc.dart';
 import 'package:breez/bloc/backup/backup_model.dart';
 import 'package:breez/bloc/lsp/lsp_bloc.dart';
 import 'package:breez/bloc/lsp/lsp_model.dart';
+import 'package:breez/bloc/network/bloc.dart';
+import 'package:breez/bloc/network/model.dart';
 import 'package:breez/routes/close_warning_dialog.dart';
 import 'package:breez/services/breezlib/data/rpc.pb.dart';
 import 'package:breez/widgets/enable_backup_dialog.dart';
@@ -29,11 +31,13 @@ class AccountRequiredActionsIndicator extends StatefulWidget {
   final BackupBloc _backupBloc;
   final AccountBloc _accountBloc;
   final LSPBloc lspBloc;
+  final NetworkBloc networkBloc;
 
-  AccountRequiredActionsIndicator(
+  const AccountRequiredActionsIndicator(
     this._backupBloc,
     this._accountBloc,
     this.lspBloc,
+    this.networkBloc,
   );
 
   @override
@@ -176,17 +180,26 @@ class AccountRequiredActionsIndicatorState
                                 final hasError = backupSnapshot.hasError;
                                 final backupError = backupSnapshot.error;
 
-                                return _build(
-                                  context,
-                                  lspStatus,
-                                  accountSettings,
-                                  accountModel,
-                                  pendingChannels,
-                                  lspActivity,
-                                  backupSettings,
-                                  backup,
-                                  hasError,
-                                  backupError,
+                                return StreamBuilder<NodeStatus>(
+                                  stream: widget.networkBloc.nodeStatus(),
+                                  initialData: NodeStatus.TESTING,
+                                  builder: (context, snapshot) {
+                                    final nodeStatus = snapshot.data;
+
+                                    return _build(
+                                      context,
+                                      lspStatus,
+                                      accountSettings,
+                                      accountModel,
+                                      pendingChannels,
+                                      lspActivity,
+                                      backupSettings,
+                                      backup,
+                                      hasError,
+                                      backupError,
+                                      nodeStatus,
+                                    );
+                                  },
                                 );
                               },
                             );
@@ -215,9 +228,11 @@ class AccountRequiredActionsIndicatorState
     BackupState backup,
     bool hasError,
     Object backupError,
+    NodeStatus nodeStatus,
   ) {
     final themeData = Theme.of(context);
     final navigatorState = Navigator.of(context);
+    final texts = AppLocalizations.of(context);
 
     List<Widget> warnings = [];
     Int64 walletBalance = accountModel?.walletBalance ?? Int64(0);
@@ -308,6 +323,40 @@ class AccountRequiredActionsIndicatorState
         } else {
           navigatorState.pushNamed("/select_lsp");
         }
+      }));
+    }
+
+    if (nodeStatus == NodeStatus.NOT_CONNECTED) {
+      warnings.add(WarningAction(() {
+        showDialog(
+          context: context,
+          builder: (context) => AlertDialog(
+            content: Text(
+              texts.connection_problem_message,
+            ),
+            actions: [
+              TextButton(
+                child: Text(
+                  texts.connection_problem_action_wait,
+                  style: themeData.primaryTextTheme.button,
+                ),
+                onPressed: () {
+                  Navigator.pop(context);
+                },
+              ),
+              TextButton(
+                child: Text(
+                  texts.connection_problem_action_retry,
+                  style: themeData.primaryTextTheme.button,
+                ),
+                onPressed: () {
+                  setState(() {});
+                  Navigator.pop(context);
+                },
+              ),
+            ],
+          ),
+        );
       }));
     }
 

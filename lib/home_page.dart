@@ -18,6 +18,7 @@ import 'package:breez/bloc/invoice/invoice_bloc.dart';
 import 'package:breez/bloc/lnurl/lnurl_bloc.dart';
 import 'package:breez/bloc/lsp/lsp_bloc.dart';
 import 'package:breez/bloc/lsp/lsp_model.dart';
+import 'package:breez/bloc/network/bloc.dart';
 import 'package:breez/bloc/reverse_swap/reverse_swap_bloc.dart';
 import 'package:breez/bloc/user_profile/breez_user_model.dart';
 import 'package:breez/bloc/user_profile/user_profile_bloc.dart';
@@ -75,6 +76,7 @@ class Home extends StatefulWidget {
   final LSPBloc lspBloc;
   final ReverseSwapBloc reverseSwapBloc;
   final LNUrlBloc lnurlBloc;
+  final NetworkBloc networkBloc;
 
   Home(
     this.accountBloc,
@@ -85,6 +87,7 @@ class Home extends StatefulWidget {
     this.lspBloc,
     this.reverseSwapBloc,
     this.lnurlBloc,
+    this.networkBloc,
   );
 
   final List<DrawerItemConfig> _screens = List<DrawerItemConfig>.unmodifiable([
@@ -284,6 +287,7 @@ class HomeState extends State<Home> with WidgetsBindingObserver {
                   widget.backupBloc,
                   widget.accountBloc,
                   widget.lspBloc,
+                  widget.networkBloc,
                 ),
               ),
             ],

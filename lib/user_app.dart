@@ -4,6 +4,7 @@ import 'package:breez/bloc/backup/backup_bloc.dart';
 import 'package:breez/bloc/blocs_provider.dart';
 import 'package:breez/bloc/connect_pay/connect_pay_bloc.dart';
 import 'package:breez/bloc/invoice/invoice_bloc.dart';
+import 'package:breez/bloc/network/bloc.dart';
 import 'package:breez/bloc/pos_catalog/bloc.dart';
 import 'package:breez/bloc/user_profile/breez_user_model.dart';
 import 'package:breez/bloc/user_profile/user_actions.dart';
@@ -12,6 +13,7 @@ import 'package:breez/l10n/locales.dart';
 import 'package:breez/routes/fiat_currencies/fiat_currency_settings.dart';
 import 'package:breez/routes/podcast/theme.dart';
 import 'package:breez/routes/qr_scan.dart';
+import 'package:breez/services/injector.dart';
 import 'package:breez/utils/locale.dart';
 import 'package:breez/widgets/route.dart';
 import 'package:breez/widgets/static_loader.dart';
@@ -179,6 +181,7 @@ class UserApp extends StatelessWidget {
                                   lspBloc,
                                   reverseSwapBloc,
                                   lnurlBloc,
+                                  NetworkBloc(ServiceInjector().breezBridge),
                                 ),
                                 settings: settings,
                               );
