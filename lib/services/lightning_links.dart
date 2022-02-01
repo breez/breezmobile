@@ -13,8 +13,7 @@ class LightningLinksService {
 
   LightningLinksService() {
     Rx.merge([getInitialLink().asStream(), linkStream])
-        .where((l) =>
-            l != null && (l.startsWith("lightning:") || l.startsWith("breez:")))
+        .where(_canHandle)
         .listen((l) {
       log.info("Got lightning link: $l");
       if (l.startsWith("breez:")) {
@@ -22,6 +21,16 @@ class LightningLinksService {
       }
       _linksNotificationsController.add(l);
     });
+  }
+
+  bool _canHandle(String link) {
+    if (link == null) return false;
+    return link.startsWith("breez:") ||
+        link.startsWith("lightning:") ||
+        link.startsWith("lnurlc:") ||
+        link.startsWith("lnurlp:") ||
+        link.startsWith("lnurlw:") ||
+        link.startsWith("keyauth:");
   }
 
   close() {

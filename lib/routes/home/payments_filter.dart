@@ -125,6 +125,12 @@ class PaymentsFilterState extends State<PaymentsFilter> {
   Map<String, List<PaymentType>> _filterMap;
 
   @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    _filter = null;
+  }
+
+  @override
   Widget build(BuildContext context) {
     final texts = AppLocalizations.of(context);
 

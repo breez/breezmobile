@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class LinkLauncher extends StatelessWidget {
@@ -9,68 +10,69 @@ class LinkLauncher extends StatelessWidget {
   final String linkAddress;
   final Function onCopy;
 
-  const LinkLauncher(
-      {Key key,
-      this.linkName,
-      this.linkAddress,
-      this.onCopy,
-      this.textStyle,
-      this.linkTitle = "Transaction ID:",
-      this.iconSize = 16.0})
-      : super(key: key);
+  const LinkLauncher({
+    Key key,
+    this.linkName,
+    this.linkAddress,
+    this.onCopy,
+    this.textStyle,
+    this.linkTitle,
+    this.iconSize = 16.0,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    TextStyle style = DefaultTextStyle.of(context).style;
-    if (this.textStyle != null) {
-      style = this.textStyle;
-    }
+    final texts = AppLocalizations.of(context);
+    final style = this.textStyle ?? DefaultTextStyle.of(context).style;
+
     return Column(
       mainAxisAlignment: MainAxisAlignment.start,
       mainAxisSize: MainAxisSize.min,
-      children: <Widget>[
+      children: [
         Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: <Widget>[
-              Expanded(
-                  flex: 1,
-                  child: Text(linkTitle,
-                      textAlign: TextAlign.start, style: textStyle)),
-              Expanded(
-                child: Padding(
-                    padding: EdgeInsets.zero,
-                    child: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      mainAxisAlignment: MainAxisAlignment.end,
-                      children: <Widget>[
-                        IconButton(
-                          padding: EdgeInsets.zero,
-                          alignment: Alignment.centerRight,
-                          iconSize: this.iconSize,
-                          color: style.color,
-                          icon: Icon(Icons.launch),
-                          onPressed: () {
-                            launch(linkAddress);
-                          },
-                        ),
-                      ],
-                    )),
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Expanded(
+              flex: 1,
+              child: Text(
+                linkTitle ?? texts.link_launcher_title,
+                textAlign: TextAlign.start,
+                style: textStyle,
               ),
-            ]),
+            ),
+            Expanded(
+              child: Padding(
+                padding: EdgeInsets.zero,
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    IconButton(
+                      padding: EdgeInsets.zero,
+                      alignment: Alignment.centerRight,
+                      iconSize: this.iconSize,
+                      color: style.color,
+                      icon: Icon(Icons.launch),
+                      onPressed: () => launch(linkAddress),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ],
+        ),
         Row(
           mainAxisSize: MainAxisSize.max,
           crossAxisAlignment: CrossAxisAlignment.center,
-          children: <Widget>[
+          children: [
             Expanded(
               flex: 1,
               child: Padding(
                 padding: const EdgeInsets.only(right: 0.0),
                 child: GestureDetector(
-                  onTap: () {
-                    this.onCopy();
-                  },
+                  onTap: onCopy,
                   child: Text(
-                    '$linkName',
+                    linkName ?? texts.link_launcher_link_name,
                     style: style,
                     textAlign: TextAlign.left,
                     overflow: TextOverflow.clip,
@@ -80,7 +82,7 @@ class LinkLauncher extends StatelessWidget {
               ),
             ),
           ],
-        )
+        ),
       ],
     );
   }

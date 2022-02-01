@@ -11,6 +11,8 @@
   "home_drawer_item_title_pos_settings": "POS Settings",
   "home_drawer_item_title_developers": "Developers",
   "home_drawer_item_title_get_refund": "Get Refund",
+  "home_drawer_error_internal": "Internal Error",
+  "home_drawer_error_no_name": "No Name",
   "home_podcast_title": "Anytime Podcast Player",
   "home_podcast_no_subscriptions": "Use the Discover view to find and subscribe to your first podcast",
   "home_error_connect_to_pay": "Connect to Pay",
@@ -1058,6 +1060,325 @@
   "beta_warning_understand_confirmation": "Please confirm that you understand before you continue.",
   "beta_warning_action_exit": "EXIT",
   "beta_warning_action_continue": "CONTINUE",
+  "processing_payment_dialog_synchronizing": "Synchronizing to the network",
+  "processing_payment_dialog_synchronizing_channels": "Breez is synchronizing your channels",
+  "processing_payment_dialog_action_close": "CLOSE",
+  "processing_payment_dialog_processing_payment": "Processing Payment",
+  "processing_payment_dialog_wait": "Please wait while your payment is being processed",
+  "payment_request_dialog_requested": "You are requested to pay:",
+  "payment_request_dialog_requesting": "is requesting you to pay:",
+  "payment_request_dialog_action_cancel": "CANCEL",
+  "payment_request_dialog_action_approve": "APPROVE",
+  "payment_failed_report_dialog_title": "Failed Payment",
+  "payment_failed_report_dialog_message": "Sending failed payment details to Breez could help increase successful transactions rate.\nDo you want to send this failed payment details to Breez?",
+  "payment_failed_report_dialog_do_not_ask_again": "Don't ask me again",
+  "payment_failed_report_dialog_action_no": "NO",
+  "payment_failed_report_dialog_action_yes": "YES",
+  "payment_confirmation_dialog_title": "Payment Confirmation",
+  "payment_confirmation_dialog_confirmation": "Are you sure you want to pay",
+  "payment_confirmation_dialog_confirmation_end": " ?",
+  "payment_confirmation_dialog_action_no": "NO",
+  "payment_confirmation_dialog_action_yes": "YES",
+  "no_connection_dialog_title": "No Internet Connection",
+  "no_connection_dialog_tip_begin": "You can try:\n",
+  "no_connection_dialog_tip_airplane": "• Turning off airplane mode\n",
+  "no_connection_dialog_tip_wifi": "• Turning on mobile data or Wi-Fi\n",
+  "no_connection_dialog_tip_signal": "• Checking the signal in your area\n",
+  "no_connection_dialog_log_view_action": "View ",
+  "no_connection_dialog_log_view_message": "your logs \n",
+  "no_connection_dialog_action_cancel": "CANCEL",
+  "no_connection_dialog_action_try_again": "TRY AGAIN",
+  "lsp_fee_warning_title": "Setup Fee",
+  "lsp_fee_warning_action_cancel": "CANCEL",
+  "lsp_fee_warning_action_ok": "OK",
+  "lsp_fee_warning_with_min_fee_account_connected": "A setup fee of {setUpFee}% with a minimum of {minFee} will be applied for buying more than {liquidity}.",
+  "@lsp_fee_warning_with_min_fee_account_connected": {
+    "placeholders": {
+      "setUpFee": {
+        "type": "String",
+        "example": "0.4"
+      },
+      "minFee": {
+        "type": "String",
+        "example": "1 000 sats"
+      },
+      "liquidity": {
+        "type": "String",
+        "example": "99 000 sats"
+      }
+    }
+  },
+  "lsp_fee_warning_without_min_fee_account_connected": "A setup fee of {setUpFee}% will be applied for buying more than {liquidity}.",
+  "@lsp_fee_warning_without_min_fee_account_connected": {
+    "placeholders": {
+      "setUpFee": {
+        "type": "String",
+        "example": "0.4"
+      },
+      "liquidity": {
+        "type": "String",
+        "example": "99 000 sats"
+      }
+    }
+  },
+  "lsp_fee_warning_with_min_fee_account_not_connected": "A setup fee of {setUpFee}% with a minimum of {minFee} will be applied on the received amount.",
+  "@lsp_fee_warning_with_min_fee_account_not_connected": {
+    "placeholders": {
+      "setUpFee": {
+        "type": "String",
+        "example": "0.4"
+      },
+      "minFee": {
+        "type": "String",
+        "example": "1 000 sats"
+      }
+    }
+  },
+  "lsp_fee_warning_without_min_fee_account_not_connected": "A setup fee of {setUpFee}% will be applied on the received amount.",
+  "@lsp_fee_warning_without_min_fee_account_not_connected": {
+    "placeholders": {
+      "setUpFee": {
+        "type": "String",
+        "example": "0.4"
+      }
+    }
+  },
+  "lost_card_dialog_title": "Lost or Stolen Card",
+  "lost_card_dialog_message": "If your card has been lost or stolen, you should deactivate it now to prevent it from being used by others. Deactivate means you won't be able to use any of your existing cards until you re-activate them.",
+  "lost_card_dialog_action_cancel": "CANCEL",
+  "lost_card_dialog_action_deactivate": "DEACTIVATE",
+  "lost_card_dialog_flush_title": "",
+  "lost_card_dialog_flush_message": "Your card has been deactivated.\nYou may order a new card now.",
+  "lost_card_dialog_flush_action_order": "ORDER",
+  "link_launcher_title": "Transaction ID:",
+  "link_launcher_link_name": "",
+  "keyboard_done_action": "Done",
+  "flushbar_default_message": "",
+  "flushbar_default_action": "OK",
+  "fee_chooser_option_economy": "Economy",
+  "fee_chooser_option_regular": "Regular",
+  "fee_chooser_option_priority": "Priority",
+  "fee_chooser_estimated_delivery_more_than_day": "Estimated Delivery: more than a day",
+  "fee_chooser_estimated_delivery_hour": "Estimated Delivery: 1 hour",
+  "fee_chooser_estimated_delivery_hours": "Estimated Delivery: {hours} hours",
+  "@fee_chooser_estimated_delivery_hours": {
+    "placeholders": {
+      "hours": {
+        "type": "String",
+        "example": "6"
+      }
+    }
+  },
+  "fee_chooser_estimated_delivery_hour_range": "Estimated Delivery: {hours}-24 hours",
+  "@fee_chooser_estimated_delivery_hour_range": {
+    "placeholders": {
+      "hours": {
+        "type": "String",
+        "example": "6"
+      }
+    }
+  },
+  "fee_chooser_estimated_delivery_minutes": "Estimated Delivery: ~{minutes} minutes",
+  "@fee_chooser_estimated_delivery_minutes": {
+    "placeholders": {
+      "minutes": {
+        "type": "String",
+        "example": "10"
+      }
+    }
+  },
+  "escher_cash_out_amount": "Enter cash-out amount:",
+  "escher_action_cancel": "CANCEL",
+  "escher_action_approve": "APPROVE",
+  "collapsible_list_default_value": "",
+  "collapsible_list_action_copy": "Copy {title}",
+  "@collapsible_list_action_copy": {
+    "placeholders": {
+      "title": {
+        "type": "String",
+        "example": "A title"
+      }
+    }
+  },
+  "collapsible_list_copied": "{title} was copied to your clipboard.",
+  "@collapsible_list_copied": {
+    "placeholders": {
+      "title": {
+        "type": "String",
+        "example": "A title"
+      }
+    }
+  },
+  "close_popup_title": "Exit Breez",
+  "close_popup_message": "Do you really want to quit Breez?",
+  "breez_date_picker_day_and_date": "{day} {date}",
+  "@breez_date_picker_day_and_date": {
+    "placeholders": {
+      "day": {
+        "type": "String",
+        "example": "12"
+      },
+      "date": {
+        "type": "String",
+        "example": "12/12/2121"
+      }
+    }
+  },
+  "breez_date_picker_previous_month_tooltip": "{message} {date}",
+  "@breez_date_picker_previous_month_tooltip": {
+    "placeholders": {
+      "message": {
+        "type": "String",
+        "example": "Previous month"
+      },
+      "date": {
+        "type": "String",
+        "example": "12 2121"
+      }
+    }
+  },
+  "breez_date_picker_next_month_tooltip": "{message} {date}",
+  "@breez_date_picker_next_month_tooltip": {
+    "placeholders": {
+      "message": {
+        "type": "String",
+        "example": "Next month"
+      },
+      "date": {
+        "type": "String",
+        "example": "12 2121"
+      }
+    }
+  },
+  "breez_date_picker_error_initial_date_after": "Initial date must be on or after first date",
+  "breez_date_picker_error_initial_date_before": "Initial date must be on or before last date",
+  "breez_date_picker_error_initial_date_predicate": "Provided initial date must satisfy provided selectable day predicate",
+  "breez_date_picker_error_initial_date_null": "Initial date picker mode must not be null",
+  "breez_date_picker_error_last_date_after": "Last date must be on or after first date",
+  "breez_avatar_dialog_random": "RANDOM",
+  "breez_avatar_dialog_gallery": "GALLERY",
+  "breez_avatar_dialog_your_name": "Enter your name",
+  "breez_avatar_dialog_action_cancel": "CANCEL",
+  "breez_avatar_dialog_action_save": "SAVE",
+  "breez_avatar_dialog_error_upload": "Failed to upload profile picture",
+  "barcode_scanner_camera_message": "For QR scan, please grant Breez access to your camera.",
+  "barcode_scanner_app_settings": "App Settings",
+  "utils_retry_failed": "Retry failed",
+  "utils_print_pdf_transaction_time": "Transaction Time",
+  "utils_print_pdf_header_item": "Item",
+  "utils_print_pdf_header_price": "Price",
+  "utils_print_pdf_header_quantity": "Quantity",
+  "utils_print_pdf_header_amount": "Amount",
+  "utils_print_pdf_header_total": "Total",
+  "utils_print_pdf_header_description": "Description:",
+  "utils_print_pdf_header_payment_preimage": "Payment Preimage:",
+  "handler_check_version_action_update": "UPDATE",
+  "handler_check_version_message": "Please update Breez to the latest version.",
+  "handler_lnurl_error_link": "Link Error",
+  "handler_lnurl_error_process": "Failed to process link: {message}",
+  "@handler_lnurl_error_process": {
+    "placeholders": {
+      "message": {
+        "type": "String",
+        "example": "An error message"
+      }
+    }
+  },
+  "handler_lnurl_error_gift": "This gift has been redeemed!",
+  "handler_lnurl_login_anonymously": "Do you want to anonymously login to ",
+  "handler_lnurl_login_error_title": "Login Error",
+  "handler_lnurl_login_error_message": "Failed to log in.\n{message}",
+  "@handler_lnurl_login_error_message": {
+    "placeholders": {
+      "message": {
+        "type": "String",
+        "example": "An error message"
+      }
+    }
+  },
+  "handler_lnurl_login_error_unsupported": "Unsupported LNURL",
+  "handler_lnurl_open_channel_title": "Open Channel",
+  "handler_lnurl_open_channel_message": "Are you sure you want to open a channel with {host}?",
+  "@handler_lnurl_open_channel_message": {
+    "placeholders": {
+      "host": {
+        "type": "String",
+        "example": "A host"
+      }
+    }
+  },
+  "handler_lnurl_open_channel_action_cancel": "CANCEL",
+  "handler_lnurl_open_channel_error_title": "Open Channel Error",
+  "handler_lnurl_open_channel_error_message": "Failed to open channel.\n{message}",
+  "@handler_lnurl_open_channel_error_message": {
+    "placeholders": {
+      "message": {
+        "type": "String",
+        "example": "An error message"
+      }
+    }
+  },
+  "handler_podcast_error_load_episode": "Failed to load episode. Please check your connection.",
+  "handler_podcast_error_load_episode_fallback": "Failed to load podcast.",
+  "handler_sync_ui_message": "Breez is synchronizing to the Bitcoin network",
+  "add_funds_error_deposit": "Breez is processing your previous deposit. You will be able to add more funds once this operation is completed.",
+  "add_funds_error_withdraw": "Breez is processing your previous withdrawal. You will be able to add more funds once this operation is completed.",
+  "add_funds_transaction_id_copied": "Transaction ID was copied to your clipboard.",
+  "add_funds_item_voucher_title": "Voucher value",
+  "add_funds_item_voucher_message": "{value} {currency}",
+  "@add_funds_item_voucher_message": {
+    "placeholders": {
+      "value": {
+        "type": "String",
+        "example": "123"
+      },
+      "currency": {
+        "type": "String",
+        "example": "btc"
+      }
+    }
+  },
+  "add_funds_item_exchange_rate_title": "Exchange rate",
+  "add_funds_item_exchange_rate_message": "{rate} {currency}",
+  "@add_funds_item_exchange_rate_message": {
+    "placeholders": {
+      "rate": {
+        "type": "String",
+        "example": "123"
+      },
+      "currency": {
+        "type": "String",
+        "example": "btc"
+      }
+    }
+  },
+  "add_funds_item_commission_rate_title": "Commission rate",
+  "add_funds_item_commission_rate_message": "{rate}%",
+  "@add_funds_item_commission_rate_message": {
+    "placeholders": {
+      "rate": {
+        "type": "String",
+        "example": "123"
+      }
+    }
+  },
+  "add_funds_item_commission_total_title": "Commission total",
+  "add_funds_item_commission_total_message": "{commission} {currency}",
+  "@add_funds_item_commission_total_message": {
+    "placeholders": {
+      "commission": {
+        "type": "String",
+        "example": "123"
+      },
+      "currency": {
+        "type": "String",
+        "example": "btc"
+      }
+    }
+  },
+  "add_funds_item_bitcoins_received_title": "Bitcoins received",
+  "add_funds_moonpay_title": "MoonPay",
+  "add_funds_moonpay_error_address": "Failed to retrieve an address from Breez server\nPlease check your internet connection.",
   "locale": "en",
   "app_name": "Breez"
 }

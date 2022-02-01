@@ -304,7 +304,7 @@ class SaleViewState extends State<SaleView> {
                   submittedSale: widget.readOnlySale,
                   paymentInfo: widget.salePayment,
                 ),
-              ).printAsPDF(),
+              ).printAsPDF(context),
             ),
           );
         },

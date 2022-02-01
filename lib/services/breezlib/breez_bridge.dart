@@ -1,14 +1,16 @@
 import 'dart:async';
 import 'dart:convert';
-import 'dart:ffi';
 import 'dart:io';
 import 'package:breez/bloc/lnurl/lnurl_model.dart';
 import 'package:breez/logger.dart' as logger;
 import 'package:breez/services/breezlib/data/rpc.pb.dart';
 import 'package:breez/services/download_manager.dart';
+import 'package:dio/dio.dart';
 import 'package:fixnum/fixnum.dart';
 import 'package:flutter/services.dart';
+import 'package:hex/hex.dart';
 import 'package:ini/ini.dart';
+import 'package:md5_file_checksum/md5_file_checksum.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -47,18 +49,48 @@ class BreezBridge {
       _eventsController.add(NotificationEvent()..mergeFromBuffer(event));
     });
     _tempDirFuture = getTemporaryDirectory();
-    _graphDownloader = GraphDownloader(downloadManager, sharedPreferences);
+    _graphDownloader = GraphDownloader(downloadManager, sharedPreferences);    
     _graphDownloader.init().whenComplete(() => initLightningDir());
+  }
+
+  Future fetchGraphChecksum(String downloadURL) async {
+    var graphUri = Uri.parse(downloadURL);
+    var pathComponents = graphUri.path.split("/");
+    var graphDBName = pathComponents.last;
+    pathComponents.removeLast();
+    pathComponents.add("MD5SUMS");
+    var checksumURL = graphUri.replace(path: pathComponents.join("/")).toString();
+    logger.log.info("graph checksum url: ${checksumURL}");
+    var response = await Dio().get(checksumURL);
+    var content = response.data.toString();
+    var currentVersionLine = LineSplitter.split(content).firstWhere((line) {
+      return line.contains(graphDBName);
+    }, orElse: () => "");
+    if (currentVersionLine.isEmpty) {
+      throw new Exception("checksum not found");
+    }
+    return currentVersionLine.split(" ")[0].trim();
   }
 
   Future syncGraphIfNeeded() async {
     await _readyCompleter.future;
     await Future.delayed(Duration(seconds: 10));
     var downloadURL = await graphURL();
+    logger.log.info("graph download url: ${downloadURL}");
     if (downloadURL.isNotEmpty) {
-      logger.log.info("downloading graph");
+      logger.log.info("fetching graph checksum");
+      var checksum = await fetchGraphChecksum(downloadURL);
+      logger.log.info("graph checksum = $checksum, downloading graph");
       _inProgressGraphSync =
           _graphDownloader.downloadGraph(downloadURL).then((file) async {
+        final fileChecksum =
+        await Md5FileChecksum.getFileChecksum(filePath: file.path);
+        var rawBytes = base64.decode(fileChecksum);
+        var hexChecksum = HEX.encode(rawBytes);
+        if (hexChecksum != checksum) {
+          logger.log.info("graph synchronization wrong checksum $fileChecksum != $checksum, skipping file");
+          return DateTime.now();
+        }
         logger.log.info("graph synchronization started");
         await syncGraphFromFile(file.path);
         logger.log.info("graph synchronized succesfully");
@@ -69,6 +101,10 @@ class BreezBridge {
         _graphDownloader.deleteDownloads();
       });
     }
+  }
+
+  Future deleteDownloads() async {
+    _graphDownloader.deleteDownloads();
   }
 
   initLightningDir() {
@@ -706,11 +742,17 @@ class BreezBridge {
   }
 
   Future _invokeMethodWhenReady(String methodName, [dynamic arguments]) {
+    if (methodName != "log") {
+      logger.log.info("before invoking method $methodName");
+    }
     return _readyCompleter.future.then((completed) {
       return _methodChannel
           .invokeMethod(methodName, arguments)
           .catchError((err) {
-        if (err.runtimeType == PlatformException) {
+        if (methodName != "log") {
+          logger.log.severe("failed to invoke method $methodName $err");
+        }
+        if (err.runtimeType == PlatformException) {          
           throw (err as PlatformException).message;
         }
         throw err;
@@ -727,16 +769,27 @@ class BreezBridge {
   }
 
   Future _invokeMethodImmediate(String methodName, [dynamic arguments]) {
+    if (methodName != "log") {
+      logger.log.info("before invoking method immediate $methodName");
+    }
     return _startedCompleter.future.then((completed) {
+      if (methodName != "log") {
+        logger.log.info("startCompleted completd: before invoking method immediate $methodName");
+      }
       return _methodChannel
           .invokeMethod(methodName, arguments)
           .catchError((err) {
+            if (methodName != "log") {
+              logger.log.severe("error invoking method immediate $methodName : $err");
+            }
         if (err.runtimeType == PlatformException) {
-          print("Error in calling method " + methodName);
-          throw (err as PlatformException).message;
-        }
-        throw err;
-      });
+          if (methodName != "log") {
+            logger.log.severe("Error in calling method " + methodName);
+          }
+          throw (err as PlatformException).message + " method: $methodName";
+        }        
+          throw err;
+        });
     });
   }
 
