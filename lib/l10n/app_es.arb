@@ -1279,6 +1279,8 @@
   "utils_print_pdf_header_payment_preimage": "Pre-imagen de pago:",
   "handler_check_version_action_update": "ACTUALIZAR",
   "handler_check_version_message": "Actualice Breez a la última versión.",
+  "handler_channel_connection_message": "La Breez está offline",
+  "handler_channel_connection_close": "CERRAR",
   "handler_lnurl_error_link": "Error de enlace",
   "handler_lnurl_error_process": "No se pudo procesar el enlace: {message}",
   "@handler_lnurl_error_process": {
