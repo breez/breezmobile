@@ -1279,6 +1279,8 @@
   "utils_print_pdf_header_payment_preimage": "Maksun Preimage:",
   "handler_check_version_action_update": "Saatavilla on päivitys!",
   "handler_check_version_message": "Päivitä Breez viimeisimpään versioon.",
+  "handler_channel_connection_message": "Breez on offline-tilassa",
+  "handler_channel_connection_close": "SULJE",
   "handler_lnurl_error_link": "Linkkin käsittely epäonnistui",
   "handler_lnurl_error_process": "Virhe: {message}",
   "@handler_lnurl_error_process": {

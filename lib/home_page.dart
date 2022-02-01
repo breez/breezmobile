@@ -21,6 +21,7 @@ import 'package:breez/bloc/lsp/lsp_model.dart';
 import 'package:breez/bloc/reverse_swap/reverse_swap_bloc.dart';
 import 'package:breez/bloc/user_profile/breez_user_model.dart';
 import 'package:breez/bloc/user_profile/user_profile_bloc.dart';
+import 'package:breez/handlers/check_channel_connection_handler.dart';
 import 'package:breez/routes/admin_login_dialog.dart';
 import 'package:breez/routes/charge/pos_invoice.dart';
 import 'package:breez/routes/home/bottom_actions_bar.dart';
@@ -731,6 +732,7 @@ class HomeState extends State<Home> with WidgetsBindingObserver {
       );
     });
     checkVersionDialog(context, widget.userProfileBloc);
+    CheckChannelConnection().startListen(context, widget.accountBloc);
   }
 
   void _listenBackupConflicts(BuildContext context) {
