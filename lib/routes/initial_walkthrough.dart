@@ -23,7 +23,6 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:hex/hex.dart';
 import 'package:rxdart/rxdart.dart';
 
-import 'beta_warning_dialog.dart';
 import 'security_pin/backup_phrase/enter_backup_phrase_page.dart';
 import 'security_pin/restore_pin.dart';
 
@@ -390,30 +389,19 @@ class InitialWalkthroughPageState extends State<InitialWalkthroughPage>
     final texts = AppLocalizations.of(context);
     final themeData = Theme.of(context);
 
-    showDialog(
-      useRootNavigator: false,
-      context: context,
-      barrierDismissible: false,
-      builder: (BuildContext context) {
-        return BetaWarningDialog();
-      },
-    ).then((approved) {
-      if (approved) {
-        final resetSecurity = ResetSecurityModel();
-        widget._registrationBloc.userActionsSink.add(resetSecurity);
-        resetSecurity.future.then((_) {
-          _proceedToRegister();
-        }).catchError((err) {
-          promptError(
-            context,
-            texts.initial_walk_through_error_internal,
-            Text(
-              err.toString(),
-              style: themeData.dialogTheme.contentTextStyle,
-            ),
-          );
-        });
-      }
+   final resetSecurity = ResetSecurityModel();
+    widget._registrationBloc.userActionsSink.add(resetSecurity);
+    resetSecurity.future.then((_) {
+      _proceedToRegister();
+    }).catchError((err) {
+      promptError(
+        context,
+        texts.initial_walk_through_error_internal,
+        Text(
+          err.toString(),
+          style: themeData.dialogTheme.contentTextStyle,
+        ),
+      );
     });
   }
 
