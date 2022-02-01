@@ -197,31 +197,23 @@ class _InitialWalkthroughPageState extends State<InitialWalkthroughPage>
   /* Let's Breez */
 
   void _letsBreez() async {
-    _log.info("Registering new node");
-    await showDialog(
-      useRootNavigator: false,
-      context: context,
-      barrierDismissible: false,
-      builder: (BuildContext context) => BetaWarningDialog(),
-    ).then((approved) async {
-      if (approved) {
-        try {
-          EasyLoading.show(indicator: const LoaderIndicator());
+    log.info("Registering new node");
+    // APP STORE: Do not display beta warning dialog
+    try {
+      EasyLoading.show(indicator: const LoaderIndicator());
 
-          await _signOut().timeout(
-            const Duration(seconds: 8),
-            onTimeout: () => _log.info("sign out timed out"),
-          );
-          await _resetBackupSettings();
-          await _resetSecurityModel();
-          _register();
-        } catch (error) {
-          EasyLoading.dismiss();
+      await _signOut().timeout(
+        const Duration(seconds: 8),
+        onTimeout: () => log.info("sign out timed out"),
+      );
+      await _resetBackupSettings();
+      await _resetSecurityModel();
+      _register();
+    } catch (error) {
+      EasyLoading.dismiss();
 
-          _handleError(error);
-        }
-      }
-    });
+      _handleError(error);
+    }
   }
 
   Future _resetBackupSettings() {
