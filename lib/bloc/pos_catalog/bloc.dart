@@ -46,10 +46,15 @@ class PosCatalogBloc with AsyncActionsHandler {
 
   Stream<String> get selectedPosTabStream => _selectedPosTab.stream;
 
+  final BehaviorSubject<PosCatalogItemSort> _posItemSort = BehaviorSubject();
+
+  Stream<PosCatalogItemSort> get posItemSort => _posItemSort.stream;
+
   PosCatalogBloc(
     Stream<AccountModel> accountStream,
     this._repository,
   ) {
+    _loadPosCatalogItemSort();
     _loadItems();
     registerAsyncHandlers({
       AddItem: _addItem,
@@ -64,6 +69,7 @@ class PosCatalogBloc with AsyncActionsHandler {
       ImportItems: _importItems,
       UpdatePosItemAdditionCurrency: _updatePosItemAdditionCurrency,
       UpdatePosSelectedTab: _updatePosSelectedTab,
+      UpdatePosCatalogItemSort: _updatePosCatalogItemSort,
     });
     listenActions();
     _currentSaleController.add(Sale(saleLines: []));
@@ -104,6 +110,17 @@ class PosCatalogBloc with AsyncActionsHandler {
     _selectedPosTab.add(posTab);
   }
 
+  void _loadPosCatalogItemSort() async {
+    final prefs = await ServiceInjector().sharedPreferences;
+    PosCatalogItemSort sort;
+    if (prefs.containsKey("POS_CATALOG_ITEM_SORT")) {
+      sort = PosCatalogItemSort.values[prefs.getInt("POS_CATALOG_ITEM_SORT")];
+    } else {
+      sort = PosCatalogItemSort.NONE;
+    }
+    _posItemSort.add(sort);
+  }
+
   void _trackSalePayments() {
     var breezBridge = ServiceInjector().breezBridge;
 
@@ -142,7 +159,30 @@ class PosCatalogBloc with AsyncActionsHandler {
   }
 
   Future _loadItems({String filter}) async {
-    _itemsStreamController.add(await _repository.fetchItems(filter: filter));
+    final items = await _repository.fetchItems(filter: filter);
+    final sort = _posItemSort.valueOrNull ?? PosCatalogItemSort.NONE;
+    _itemsStreamController.add(_sort(items, sort));
+  }
+
+  List<Item> _sort(List<Item> catalogItems, PosCatalogItemSort sort) {
+    switch (sort) {
+      case PosCatalogItemSort.NONE:
+        // Uses the sort read from disk
+        break;
+      case PosCatalogItemSort.ALPHABETICALLY_A_Z:
+        catalogItems.sort((lhs, rhs) => lhs.name.compareTo(rhs.name));
+        break;
+      case PosCatalogItemSort.ALPHABETICALLY_Z_A:
+        catalogItems.sort((lhs, rhs) => rhs.name.compareTo(lhs.name));
+        break;
+      case PosCatalogItemSort.PRICE_SMALL_TO_BIG:
+        catalogItems.sort((lhs, rhs) => lhs.price.compareTo(rhs.price));
+        break;
+      case PosCatalogItemSort.PRICE_BIG_TO_SMALL:
+        catalogItems.sort((lhs, rhs) => rhs.price.compareTo(lhs.price));
+        break;
+    }
+    return catalogItems;
   }
 
   _filterItems(FilterItems action) async {
@@ -225,6 +265,15 @@ class PosCatalogBloc with AsyncActionsHandler {
     final prefs = await ServiceInjector().sharedPreferences;
     prefs.setString("POS_SELECTED_TAB", action.tab);
     _selectedPosTab.add(action.tab);
+  }
+
+  Future _updatePosCatalogItemSort(
+    UpdatePosCatalogItemSort action,
+  ) async {
+    final prefs = await ServiceInjector().sharedPreferences;
+    prefs.setInt("POS_CATALOG_ITEM_SORT", action.sort.index);
+    _posItemSort.add(action.sort);
+    _loadItems();
   }
 
   Future resetDB() async {
