@@ -72,11 +72,7 @@ dependencies:
   local_auth:
     git:
       url: https://github.com/breez/local_auth.git
-      ref: 89649dd86f61f60cf0037d7c3dd418a00fd87692
-  nfc_in_flutter:
-    git:
-      url: https://github.com/breez/nfc_in_flutter.git
-      ref: 97f610be82bfe42d5ce86c348d931d61949fa517
+      ref: 89649dd86f61f60cf0037d7c3dd418a00fd87692 
   share_extend:
     git:
       url: https://github.com/breez/ShareExtend.git

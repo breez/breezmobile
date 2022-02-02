@@ -2,7 +2,6 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:flutter/services.dart';
-import 'package:nfc_in_flutter/nfc_in_flutter.dart';
 
 class NFCService {
   static const _platform = MethodChannel('com.breez.client/nfc');
@@ -42,12 +41,12 @@ class NFCService {
   }
 
   _listenLnLinks() {
-    _lnLinkListener = NFC.readNDEF().listen(
-      (message) {
-        String lnLink = message.payload;
-        if (lnLink.startsWith("lightning:")) _lnLinkController.add(lnLink);
-      },
-    );
+    // _lnLinkListener = NFC.readNDEF().listen(
+    //   (message) {
+    //     String lnLink = message.payload;
+    //     if (lnLink.startsWith("lightning:")) _lnLinkController.add(lnLink);
+    //   },
+    // );
   }
 
   close() {
