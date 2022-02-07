@@ -55,24 +55,13 @@ class RemoteServerAuthPageState extends State<RemoteServerAuthPage> {
   bool failAuthenticate = false;
   bool _passwordObscured = true;
 
-  String appendPath(String uri, List<String> pathSegments) {
-    var uriObject = Uri.parse(uri);
-    uriObject = uriObject.replace(pathSegments: uriObject.pathSegments.toList()..addAll(pathSegments));
-    return uriObject.toString();
-  }
-
   @override
   void initState() {
     super.initState();
     widget._backupBloc.backupSettingsStream.first.then((value) {
       var data = value.remoteServerAuthData;
       if (data != null) {
-        var backupDirPathSegments = data.breezDir.split("/");
         _urlController.text = data.url;
-        if (backupDirPathSegments.length > 1) {
-          backupDirPathSegments.removeLast();
-          _urlController.text  = appendPath(data.url, backupDirPathSegments);
-        }
         _userController.text = data.user;
         _passwordController.text = data.password;
       }
@@ -97,12 +86,13 @@ class RemoteServerAuthPageState extends State<RemoteServerAuthPage> {
             ),
             automaticallyImplyLeading: false,
             iconTheme: themeData.appBarTheme.iconTheme,
+            textTheme: themeData.appBarTheme.textTheme,
             backgroundColor: themeData.canvasColor,
             title: Text(
               texts.remote_server_title,
               style: themeData.appBarTheme.textTheme.headline6,
             ),
-            elevation: 0.0, toolbarTextStyle: themeData.appBarTheme.textTheme.bodyText2, titleTextStyle: themeData.appBarTheme.textTheme.headline6,
+            elevation: 0.0,
           ),
           body: SingleChildScrollView(
             reverse: true,
@@ -164,7 +154,7 @@ class RemoteServerAuthPageState extends State<RemoteServerAuthPage> {
                   if (_formKey.currentState.validate()) {
                     final newSettings = snapshot.data.copyWith(
                       remoteServerAuthData: RemoteServerAuthData(
-                        uri.toString(),
+                        _urlController.text,
                         _userController.text,
                         _passwordController.text,
                         BREEZ_BACKUP_DIR,
@@ -293,37 +283,7 @@ class RemoteServerAuthPageState extends State<RemoteServerAuthPage> {
     await client.ping();
   }
 
-  // We try to discover the webdav url using a backward search where on every 
-  // step we take the last path segment from the url and append it as a prefix
-  // to the folder path.
   Future<DiscoveryResult> discoverURL(RemoteServerAuthData authData) async {
-    RemoteServerAuthData testedAuthData = authData;    
-    while(true) {
-      var testedUrl = Uri.parse(testedAuthData.url);
-      var result = await discoverURLInternal(testedAuthData);
-      if (result.authError == DiscoverResult.SUCCESS ||
-        result.authError == DiscoverResult.INVALID_AUTH) {
-          return result;
-      }
-            
-      List<String> pathSegments = testedUrl.pathSegments.toList();
-
-      // if we reached url origin then we fail.
-      if (pathSegments.length == 0) {
-        return DiscoveryResult(testedAuthData, DiscoverResult.INVALID_URL);
-      }
-      String lastSegment = pathSegments.removeLast();
-      
-      // we couldn't use webdav with the current root, try differenet origin
-      // and move the last path segment as the directory prefix
-      testedAuthData = testedAuthData.copyWith(
-        url: testedUrl.replace(pathSegments: pathSegments).toString(), 
-        breezDir: lastSegment + "/" + testedAuthData.breezDir);
-    }    
-  }
-
-  Future<DiscoveryResult> discoverURLInternal(RemoteServerAuthData authData) async {   
-
     var result = await testAuthData(authData);
     if (result == DiscoverResult.SUCCESS ||
         result == DiscoverResult.INVALID_AUTH) {

@@ -47,7 +47,7 @@ class VendorRow extends StatelessWidget {
                   vendorModel: _vendor,
                   lnurlBloc: lnurlBloc,
                   endpointURI: _vendor.id == "lnmarkets"
-                      ? Uri.https("api.lnmarkets.com", "v1/lnurl/auth")
+                      ? Uri.https("api.lnmarkets.com", "lnurl/a/c")
                       : Uri.https(
                           "api.kollider.xyz", "v1/auth/external/lnurl_auth"),
                   responseID:

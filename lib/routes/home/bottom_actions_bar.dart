@@ -345,6 +345,7 @@ Future showReceiveOptions(BuildContext parentContext, AccountModel account) {
                                   removeTrailingZeros: true,
                                 ),
                               ),
+                              maxLines: 1,
                               maxFontSize: Theme.of(context)
                                   .textTheme
                                   .subtitle1
