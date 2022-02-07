@@ -315,3 +315,11 @@ class ProductIcon {
     });
   }
 }
+
+enum PosCatalogItemSort {
+  NONE,
+  ALPHABETICALLY_A_Z,
+  ALPHABETICALLY_Z_A,
+  PRICE_SMALL_TO_BIG,
+  PRICE_BIG_TO_SMALL,
+}
