@@ -1382,6 +1382,13 @@
   "add_funds_item_bitcoins_received_title": "Bitcoin-lähetys on vastaanotettu",
   "add_funds_moonpay_title": "MoonPay",
   "add_funds_moonpay_error_address": "Osoitteen hakeminen Breez-palvelimelta epäonnistui. Tarkista verkkoyhteytesi.",
+  "csv_exporter_date_and_time": "Date & Time",
+  "csv_exporter_title": "Title",
+  "csv_exporter_description": "Description",
+  "csv_exporter_node_id": "Node ID",
+  "csv_exporter_amount": "Amount",
+  "csv_exporter_preimage": "Preimage",
+  "csv_exporter_tx_hash": "TX Hash",
   "locale": "fi",
   "app_name": "Breez"
 }
