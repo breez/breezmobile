@@ -43,6 +43,17 @@ class PaymentItem extends StatelessWidget {
   Widget build(BuildContext context) {
     ThemeData themeData = context.theme;
     TextTheme textTheme = themeData.textTheme;
+    TextStyle titleTextStyle = TextStyle(
+        fontSize: 13.5,
+        fontWeight: FontWeight.w500,
+        height: 1.2,
+        letterSpacing: 0.25);
+    TextStyle captionTextStyle = TextStyle(
+        fontSize: 10.5,
+        fontWeight: FontWeight.w400,
+        height: 1.16,
+        letterSpacing: 0.39);
+
     Color secondaryColor = (themeId == "BLUE") ? Colors.black : Colors.white;
     Color captionColor =
         (themeId == "BLUE") ? Color(0xb3303234) : Colors.white70;
@@ -111,8 +122,7 @@ class PaymentItem extends StatelessWidget {
                         }
                       }()}'
                           .replaceAll("\n", " "),
-                      style:
-                          textTheme.subtitle2.copyWith(color: secondaryColor),
+                      style: titleTextStyle.copyWith(color: secondaryColor),
                       overflow: TextOverflow.ellipsis,
                     ),
                   ),
@@ -129,12 +139,11 @@ class PaymentItem extends StatelessWidget {
                               DateTime.fromMillisecondsSinceEpoch(
                                   _paymentInfo.creationTimestamp.toInt() *
                                       1000)),
-                          style:
-                              textTheme.caption.copyWith(color: captionColor),
+                          style: captionTextStyle.copyWith(color: captionColor),
                         ),
                         _paymentInfo.pending
                             ? Text(" (Pending)",
-                                style: textTheme.caption.copyWith(
+                            style: captionTextStyle.copyWith(
                                     color: theme.customData[theme.themeId]
                                         .pendingTextColor))
                             : SizedBox()
@@ -172,8 +181,11 @@ class PaymentItem extends StatelessWidget {
       _paymentInfo.amount,
       includeDisplayName: false,
     );
-    ThemeData theme = context.theme;
-    TextTheme textTheme = theme.textTheme;
+    TextStyle paymentAmountTextStyle = TextStyle(
+        fontSize: 13.5,
+        fontWeight: FontWeight.w500,
+        height: 1.2,
+        letterSpacing: 0.5);
     Color secondaryColor = (themeId == "BLUE") ? Colors.black : Colors.white;
 
     return Opacity(
@@ -189,14 +201,17 @@ class PaymentItem extends StatelessWidget {
           : 1.0,
       child: Text(
         _hideBalance ? "******" : (negative ? "- " : "+ ") + amount,
-        style: textTheme.headline6.copyWith(color: secondaryColor),
+        style: paymentAmountTextStyle.copyWith(color: secondaryColor),
       ),
     );
   }
 
   Widget _paymentFee(BuildContext context) {
-    ThemeData themeData = context.theme;
-    TextTheme textTheme = themeData.textTheme;
+    TextStyle captionTextStyle = TextStyle(
+        fontSize: 10.5,
+        fontWeight: FontWeight.w400,
+        height: 1.16,
+        letterSpacing: 0.39);
     Color captionColor =
         (themeId == "BLUE") ? Color(0xb3303234) : Colors.white70;
 
@@ -209,7 +224,7 @@ class PaymentItem extends StatelessWidget {
 
     return Text(
       _hideBalance ? "******" : "FEE $feeFormatted",
-      style: textTheme.caption.copyWith(color: captionColor),
+      style: captionTextStyle.copyWith(color: captionColor),
     );
   }
 
