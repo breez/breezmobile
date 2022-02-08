@@ -43,8 +43,15 @@ class WalletDashboardState extends State<WalletDashboard> {
     ThemeData themeData = context.theme;
     TextTheme textTheme = themeData.textTheme;
 
-    double startHeaderSize = textTheme.headline4.fontSize;
-    double endHeaderFontSize = textTheme.headline4.fontSize - 8.0;
+    TextStyle balanceTextStyle = textTheme.headline4
+        .copyWith(fontSize: 30.0, fontWeight: FontWeight.w600, height: 1.52);
+    TextStyle fiatTextStyle = textTheme.subtitle1.copyWith(
+        fontSize: 15,
+        fontWeight: FontWeight.w500,
+        height: 1.24,
+        letterSpacing: 0.2);
+    double startHeaderSize = balanceTextStyle.fontSize;
+    double endHeaderFontSize = balanceTextStyle.fontSize - 8.0;
 
     Color secondaryColor =
         (themeId == "BLUE") ? Color.fromRGBO(0, 133, 251, 1.0) : Colors.white;
@@ -94,7 +101,7 @@ class WalletDashboardState extends State<WalletDashboard> {
                       },
                       child: widget._userModel.hideBalance
                           ? Text("******",
-                              style: textTheme.headline4.copyWith(
+                          style: balanceTextStyle.copyWith(
                                   color: secondaryColor,
                                   fontSize: startHeaderSize -
                                       (startHeaderSize - endHeaderFontSize) *
@@ -104,7 +111,7 @@ class WalletDashboardState extends State<WalletDashboard> {
                                   widget._accountModel.fiatCurrency != null)
                               ? Text(
                                   "${widget._accountModel.formattedFiatBalance}",
-                                  style: textTheme.headline4.copyWith(
+                          style: balanceTextStyle.copyWith(
                                       color: secondaryColor,
                                       fontSize: startHeaderSize -
                                           (startHeaderSize -
@@ -112,7 +119,7 @@ class WalletDashboardState extends State<WalletDashboard> {
                                               widget._offsetFactor))
                               : RichText(
                                   text: TextSpan(
-                                      style: textTheme.headline4.copyWith(
+                                      style: balanceTextStyle.copyWith(
                                           color: secondaryColor,
                                           fontSize: startHeaderSize -
                                               (startHeaderSize -
@@ -127,7 +134,7 @@ class WalletDashboardState extends State<WalletDashboard> {
                                           text: " " +
                                               widget._accountModel.currency
                                                   .displayName,
-                                          style: textTheme.headline4.copyWith(
+                                          style: balanceTextStyle.copyWith(
                                               color: secondaryColor,
                                               fontSize: startHeaderSize * 0.6 -
                                                   (startHeaderSize * 0.6 -
@@ -168,7 +175,7 @@ class WalletDashboardState extends State<WalletDashboard> {
                       },
                       child: Text(
                           "${widget._accountModel.formattedFiatBalance}",
-                          style: textTheme.subtitle1.copyWith(
+                          style: fiatTextStyle.copyWith(
                               color: secondaryColor.withOpacity(
                                   pow(1.00 - widget._offsetFactor, 2)))),
                     )

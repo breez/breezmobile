@@ -135,7 +135,7 @@ class ItemAvatarPickerState extends State<ItemAvatarPicker> {
   }
 
   Widget _buildResetIconBadge(BuildContext context) {
-    IconThemeData iconTheme = context.iconTheme;
+    IconThemeData iconTheme = context.theme.iconTheme;
     return GestureDetector(
       child: Container(
         height: 24,

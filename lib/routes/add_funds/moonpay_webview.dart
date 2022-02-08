@@ -64,7 +64,7 @@ class MoonpayWebViewState extends State<MoonpayWebView> {
             IconButton(
               icon: Icon(
                 Icons.close,
-                color: context.iconTheme.color,
+                color: themeData.iconTheme.color,
               ),
               onPressed: () => context.pop(),
             )

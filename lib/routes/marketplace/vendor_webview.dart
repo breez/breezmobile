@@ -64,7 +64,7 @@ class VendorWebViewPageState extends State<VendorWebViewPage> {
           IconButton(
               icon: Icon(
                 Icons.close,
-                color: context.iconTheme.color,
+                color: theme.iconTheme.color,
               ),
               onPressed: () => context.pop())
         ],

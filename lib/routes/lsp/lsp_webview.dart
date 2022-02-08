@@ -26,6 +26,7 @@ class LSPWebViewPageState extends State<LSPWebViewPage> {
   @override
   Widget build(BuildContext context) {
     ThemeData theme = context.theme;
+    IconThemeData iconTheme = theme.iconTheme;
     AppBarTheme appBarTheme = theme.appBarTheme;
 
     return Scaffold(
@@ -34,7 +35,7 @@ class LSPWebViewPageState extends State<LSPWebViewPage> {
           IconButton(
               icon: Icon(
                 Icons.close,
-                color: context.iconTheme.color,
+                color: iconTheme.color,
               ),
               onPressed: () => context.pop())
         ],

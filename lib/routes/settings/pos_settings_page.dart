@@ -204,7 +204,7 @@ class PosSettingsPageState extends State<_PosSettingsPage> {
           color: context.backgroundColor,
           icon: Icon(
             Icons.more_horiz,
-            color: context.iconTheme.color,
+            color: context.theme.iconTheme.color,
           ),
           padding: EdgeInsets.zero,
           offset: Offset(12, 36),

@@ -200,7 +200,7 @@ class ConnectToPayPageState extends State<ConnectToPayPage> {
                   onPressed: () => _onTerminateSession(context),
                   icon: Icon(
                     Icons.close,
-                    color: context.iconTheme.color,
+                    color: theme.iconTheme.color,
                   ),
                 ),
               ]

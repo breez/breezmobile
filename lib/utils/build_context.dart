@@ -68,7 +68,7 @@ extension ThemeExt on BuildContext {
 
   DialogTheme get dialogTheme => Theme.of(this).dialogTheme;
 
-  IconThemeData get iconTheme => Theme.of(this).iconTheme;
+  IconThemeData get iconTheme => IconTheme.of(this);
 
   ListTileThemeData get listTileTheme => ListTileTheme.of(this);
 

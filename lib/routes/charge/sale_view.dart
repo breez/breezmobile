@@ -285,7 +285,7 @@ class SaleViewState extends State<SaleView> {
               alignment: Alignment.center,
               tooltip: context.l10n.sale_view_print,
               iconSize: 24.0,
-              color: context.iconTheme.color,
+              color: context.theme.iconTheme.color,
               icon: SvgPicture.asset(
                 "src/icon/printer.svg",
                 color: Colors.white,

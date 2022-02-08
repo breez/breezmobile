@@ -70,7 +70,7 @@ final ThemeData blueTheme = ThemeData(
         TextStyle(color: Colors.white, fontSize: 18.0, letterSpacing: 0.22),
     iconTheme: IconThemeData(color: Colors.white),
     actionsIconTheme: IconThemeData(color: Color.fromRGBO(0, 120, 253, 1.0)),
-    systemOverlayStyle: SystemUiOverlayStyle.light,
+    systemOverlayStyle: SystemUiOverlayStyle.dark,
   ),
   dialogTheme: DialogTheme(
       titleTextStyle: TextStyle(
