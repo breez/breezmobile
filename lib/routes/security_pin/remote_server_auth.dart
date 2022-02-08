@@ -143,7 +143,7 @@ class RemoteServerAuthPageState extends State<RemoteServerAuthPage> {
             child: SingleButtonBottomBar(
               stickToBottom: true,
               text: widget.restore
-                  ? l10n.connect_to_pay_share_text
+                  ? l10n.remote_server_action_restore
                   : l10n.remote_server_action_save,
               onPressed: () async {
                 Uri uri = Uri.parse(_urlController.text);
