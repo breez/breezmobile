@@ -4,6 +4,7 @@ import 'dart:io';
 import 'package:breez/bloc/pos_catalog/bloc.dart';
 import 'package:breez/bloc/pos_catalog/model.dart';
 import 'package:breez/logger.dart';
+import 'package:breez/utils/locale.dart';
 import 'package:csv/csv.dart';
 import 'package:flutter/foundation.dart';
 import 'package:path_provider/path_provider.dart';
@@ -22,6 +23,7 @@ class PosCsvUtils {
   }
 
   List _generateList() {
+    final texts = getSystemAppLocalizations();
     log.info("generating payment list started");
     List<List<dynamic>> paymentList =
         List.generate(this.itemList.length, (index) {
@@ -36,12 +38,12 @@ class PosCsvUtils {
       return paymentItem;
     });
     paymentList.insert(0, [
-      "ID",
-      "Name",
-      "SKU",
-      "Image URL",
-      "Currency",
-      "Price",
+      texts.pos_settings_id,
+      texts.pos_settings_name,
+      texts.pos_settings_sku,
+      texts.pos_settings_image_url,
+      texts.pos_settings_currency,
+      texts.pos_settings_price,
     ]);
     log.info("generating pos items finished");
     return paymentList;
@@ -71,6 +73,7 @@ class PosCsvUtils {
   }
 
   Future<List> _getCsvList(File csvFile) async {
+    final texts = getSystemAppLocalizations();
     try {
       List csvList = await csvFile
           .openRead()
@@ -80,12 +83,12 @@ class PosCsvUtils {
       log.info("header control started");
       List<String> headerRow = List<String>.from(csvList.elementAt(0));
       var defaultHeaders = [
-        "ID",
-        "Name",
-        "SKU",
-        "Image URL",
-        "Currency",
-        "Price",
+        texts.pos_settings_id,
+        texts.pos_settings_name,
+        texts.pos_settings_sku,
+        texts.pos_settings_image_url,
+        texts.pos_settings_currency,
+        texts.pos_settings_price,
       ];
       if (!listEquals(headerRow, defaultHeaders)) {
         throw PosCatalogBloc.InvalidFile;
