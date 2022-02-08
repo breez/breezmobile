@@ -39,7 +39,7 @@ jobs:
       # Runs a set of commands using the runners shell
       - name: Run a multi-line script
         run: |          
-          curl -o golang https://dl.google.com/go/go1.16.7.darwin-amd64.tar.gz
+          curl -o golang https://dl.google.com/go/go1.17.6.darwin-amd64.tar.gz
           mkdir go1.16.7
           tar -C $(pwd)/go1.16.7 -xzf golang
           export PATH=$(pwd)/go1.16.7/go/bin:$PATH
@@ -64,7 +64,7 @@ jobs:
           PATH=$PATH:$GOPATH/bin gomobile bind -iosversion=12.4 -target=ios -tags="ios experimental signrpc walletrpc chainrpc invoicesrpc routerrpc backuprpc peerrpc submarineswaprpc breezbackuprpc" -o build/ios/bindings.xcframework -ldflags="-s -w" github.com/breez/breez/bindings
           popd
           brew install ideviceinstaller ios-deploy
-          git clone --branch stable https://github.com/flutter/flutter.git
+          git clone --branch beta https://github.com/flutter/flutter.git
           
           cp -r $GOPATH/src/github.com/breez/breez/build/ios/bindings.xcframework/ios-arm64/Bindings.framework $GITHUB_WORKSPACE/ios/bindings.framework
           rm -rf $GITHUB_WORKSPACE/conf

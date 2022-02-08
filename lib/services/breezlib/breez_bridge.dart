@@ -667,7 +667,7 @@ class BreezBridge {
     if (address == null) {
       return Future.error("empty address");
     }
-    if (addr.startsWith("bitcoin:")) {
+    if (addr.toLowerCase().startsWith("bitcoin:")) {
       addr = addr.substring(8);
     }
     return _invokeMethodWhenReady("validateAddress", {"argument": addr})

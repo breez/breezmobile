@@ -10,14 +10,11 @@ import 'package:breez/services/breezlib/breez_bridge.dart';
 import 'package:breez/services/breezlib/data/rpc.pb.dart';
 import 'package:breez/services/injector.dart';
 import 'package:breez/services/notifications.dart';
+import 'package:breez/utils/locale.dart';
 import 'package:fixnum/fixnum.dart';
 import 'package:rxdart/rxdart.dart';
 
 class ReverseSwapBloc with AsyncActionsHandler {
-  static const NTFN_TITLE = "Action Required";
-  static const NTFN_BODY =
-      "Please open Breez to complete your requested transaction.";
-
   final StreamController<InProgressReverseSwaps> _swapsInProgressController =
       BehaviorSubject<InProgressReverseSwaps>();
 
@@ -107,7 +104,10 @@ class ReverseSwapBloc with AsyncActionsHandler {
 
   Future _newReverseSwap(NewReverseSwap action) async {
     var hash = await _breezLib.newReverseSwap(
-        action.address, action.amount, action.feesHash);
+      action.address,
+      action.amount,
+      action.feesHash,
+    );
     log.info('reverseSwap hash:');
     log.info(hash);
 
@@ -116,7 +116,9 @@ class ReverseSwapBloc with AsyncActionsHandler {
     log.info(reverseSwap);
 
     await _breezLib.setReverseSwapClaimFee(
-        hash, reverseSwap.onchainAmount - action.received);
+      hash,
+      reverseSwap.onchainAmount - action.received,
+    );
 
     var resultCompleter = Completer();
     var onComplete = ({String error}) {
@@ -132,18 +134,23 @@ class ReverseSwapBloc with AsyncActionsHandler {
 
     Future.any([
       _breezLib.payReverseSwap(
-          hash, _currentUser.token ?? "", NTFN_TITLE, NTFN_BODY),
+        hash,
+        _currentUser.token ?? "",
+        _notificationTitle(),
+        _notificationBody(),
+      ),
       _paymentsStream
           .where((payments) => payments.nonFilteredItems
               .any((element) => element.paymentHash == hash))
           .first
     ]).then((_) => onComplete()).catchError((err) {
       onComplete(
-          error: new PaymentError(
-                  new PayRequest(reverseSwap.invoice, reverseSwap.lnAmount),
-                  err.toString(),
-                  null)
-              .toDisplayMessage(_currentUser.currency));
+        error: PaymentError(
+          PayRequest(reverseSwap.invoice, reverseSwap.lnAmount),
+          err.toString(),
+          null,
+        ).toDisplayMessage(_currentUser.currency),
+      );
     });
 
     action.resolve(await resultCompleter.future);
@@ -153,9 +160,16 @@ class ReverseSwapBloc with AsyncActionsHandler {
   void _listenPushNotification() {
     _notificationsService.notifications
         .where((message) =>
-            message["title"] == NTFN_TITLE && message["body"] == NTFN_BODY)
+            message["title"] == _notificationTitle() &&
+            message["body"] == _notificationBody())
         .listen((message) {
       _broadcastTxStreamController.add(null);
     });
   }
+
+  String _notificationTitle() =>
+      getSystemAppLocalizations().reverse_swap_notification_title;
+
+  String _notificationBody() =>
+      getSystemAppLocalizations().reverse_swap_notification_body;
 }

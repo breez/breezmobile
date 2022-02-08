@@ -4,6 +4,7 @@ import 'package:breez/bloc/account/account_model.dart';
 import 'package:breez/bloc/pos_catalog/model.dart';
 import 'package:breez/logger.dart';
 import 'package:breez/utils/date.dart';
+import 'package:breez/utils/locale.dart';
 import 'package:csv/csv.dart';
 import 'package:flutter/foundation.dart';
 import 'package:intl/intl.dart';
@@ -25,6 +26,7 @@ class CsvExporter {
 
   List _generateList() {
     log.info("generating payment list started");
+    final texts = getSystemAppLocalizations();
     final fiatCurrencies = _fiatCurrencies();
     List<List<String>> paymentList = List.generate(this.data.length, (index) {
       List<String> paymentItem = [];
@@ -51,13 +53,13 @@ class CsvExporter {
       return paymentItem;
     });
     paymentList.insert(0, [
-      "Date & Time",
-      "Title",
-      "Description",
-      "Node ID",
-      "Amount",
-      "Preimage",
-      "TX Hash",
+      texts.csv_exporter_date_and_time,
+      texts.csv_exporter_title,
+      texts.csv_exporter_description,
+      texts.csv_exporter_node_id,
+      texts.csv_exporter_amount,
+      texts.csv_exporter_preimage,
+      texts.csv_exporter_tx_hash,
       ...fiatCurrencies,
     ]);
     log.info("generating payment finished");
