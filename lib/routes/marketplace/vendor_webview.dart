@@ -1,11 +1,11 @@
 import 'dart:convert' as JSON;
-import 'dart:io';
 
 import 'package:breez/bloc/account/account_bloc.dart';
 import 'package:breez/bloc/blocs_provider.dart';
 import 'package:breez/bloc/invoice/invoice_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:url_launcher/url_launcher.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
 import 'webln_handlers.dart';
@@ -90,9 +90,7 @@ class VendorWebViewPageState extends State<VendorWebViewPage> {
               _breezJavascriptChannel(context),
             ].toSet(),
             navigationDelegate: (NavigationRequest request) =>
-                request.url.startsWith('lightning:')
-                    ? NavigationDecision.prevent
-                    : NavigationDecision.navigate,
+                _handleNavigationRequest(request),
             onPageFinished: (String url) async {
               // intercept ln link clicks
               _webViewController.evaluateJavascript(await rootBundle
@@ -107,6 +105,16 @@ class VendorWebViewPageState extends State<VendorWebViewPage> {
             initialUrl: widget._url),
       ),
     );
+  }
+
+  _handleNavigationRequest(NavigationRequest request) {
+    if (request.url.startsWith('lightning:')) {
+      return NavigationDecision.prevent;
+    } else if (request.url.startsWith('tg:')) {
+      launch(request.url);
+      return NavigationDecision.prevent;
+    }
+    return NavigationDecision.navigate;
   }
 
   JavascriptChannel _breezJavascriptChannel(BuildContext context) {
