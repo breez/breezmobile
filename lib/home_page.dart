@@ -41,6 +41,7 @@ import 'package:breez/widgets/payment_failed_report_dialog.dart';
 import 'package:breez/widgets/route.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:provider/provider.dart';
 
@@ -265,7 +266,9 @@ class HomeState extends State<Home> with WidgetsBindingObserver {
           resizeToAvoidBottomInset: false,
           key: _scaffoldKey,
           appBar: AppBar(
-            systemOverlayStyle: themeData.appBarTheme.systemOverlayStyle,
+            systemOverlayStyle: theme.themeId == "BLUE"
+                ? SystemUiOverlayStyle.dark
+                : themeData.appBarTheme.systemOverlayStyle,
             centerTitle: false,
             actions: [
               Padding(
