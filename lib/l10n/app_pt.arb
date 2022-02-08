@@ -1392,7 +1392,7 @@
   "csv_exporter_preimage": "Pré-imagem",
   "csv_exporter_tx_hash": "TX Hash",
   "pos_settings_title": "Configurações do PDV",
-  "pos_settings_cancellation_timeout": "Tempo máximo (em segundos) para receber um pagamento",
+  "pos_settings_cancellation_timeout": "Tempo máximo para receber um pagamento (em segundos)",
   "pos_settings_items_list": "Lista de itens",
   "pos_settings_import_csv": "Importar do CSV",
   "pos_settings_export_csv": "Exportar para o CSV",
