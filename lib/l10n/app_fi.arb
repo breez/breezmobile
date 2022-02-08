@@ -25,11 +25,11 @@
   "home_background_synchronization_message": "Välittömästi tapahtuvien maksujen toteuttamiseksi Breez synkronoi tietoja taustalla. Sovellus vaatii sinulta luvan toimia myös silloin kun sovellus ei ole avattuna. Myönnä oikeus seuraavassa näkymässä.",
   "home_payment_sent": "Maksun lähetys onnistui.",
   "home_report_sending": "Raporttia lähetetään.",
-  "invoice_btc_address_title": "Vastaanota bitcoin-osoitteella",
+  "invoice_btc_address_title": "Talleta bitcoin-osoitteella",
   "invoice_btc_address_network_error": "Bitcoin-osoitteen haku palvelimelta epäonnistui.\nTarkista Internet-yhteyden toiminta.",
   "invoice_btc_address_action_retry": "YRITÄ UUDELLEEN",
   "invoice_btc_address_action_close": "SULJE",
-  "invoice_btc_address_warning_with_min_fee_account_connected": "Osoite vastaanottaa vähintään {minSats} ja enintään {maxSats} maksuja. Yli {liquidity} vastaanotosta veloitetaan {setUpFee}% avauskulu ja kuitenkin vähintään {minFee}.",
+  "invoice_btc_address_warning_with_min_fee_account_connected": "Osoitteeseen voi tallettaa vähintään {minSats} ja enintään {maxSats} maksuja. Yli {liquidity} talletuksista veloitetaan {setUpFee}% avauskulu ja kuitenkin vähintään {minFee}.",
   "@invoice_btc_address_warning_with_min_fee_account_connected": {
     "placeholders": {
       "minSats": {
@@ -54,7 +54,7 @@
       }
     }
   },
-  "invoice_btc_address_warning_without_min_fee_account_connected": "Osoite vastaanottaa vähintään {minSats} ja enintään {maxSats} maksuja. Yli {liquidity} vastaanotosta veloitetaan {setUpFee}% avauskulu.",
+  "invoice_btc_address_warning_without_min_fee_account_connected": "Osoitteeseen voi tallettaa vähintään {minSats} ja enintään {maxSats} maksuja. Yli {liquidity} talletuksesta veloitetaan {setUpFee}% avauskulu.",
   "@invoice_btc_address_warning_without_min_fee_account_connected": {
     "placeholders": {
       "minSats": {
@@ -75,7 +75,7 @@
       }
     }
   },
-  "invoice_btc_address_warning_with_min_fee_account_not_connected": "Osoite vastaanottaa vähintään {minSats} ja enintään {maxSats} maksuja. Vastaanotosta veloitetaan {setUpFee}% avauskulu ja vähintään {minFee}.",
+  "invoice_btc_address_warning_with_min_fee_account_not_connected": "Osoitteeseen voi tallettaa vähintään {minSats} ja enintään {maxSats} maksuja. Talletuksesta veloitetaan {setUpFee}% avauskulu ja vähintään {minFee}.",
   "@invoice_btc_address_warning_with_min_fee_account_not_connected": {
     "placeholders": {
       "minSats": {
@@ -96,7 +96,7 @@
       }
     }
   },
-  "invoice_btc_address_warning_without_min_fee_account_not_connected": "Osoite vastaanottaa vähintään {minSats} ja enintään {maxSats} maksuja. Lähetyksestä veloitetaan {setUpFee}% avauskulu.",
+  "invoice_btc_address_warning_without_min_fee_account_not_connected": "Osoitteeseen voi tallettaa vähintään {minSats} ja enintään {maxSats} maksuja. Talletuksesta veloitetaan {setUpFee}% avauskulu.",
   "@invoice_btc_address_warning_without_min_fee_account_not_connected": {
     "placeholders": {
       "minSats": {
@@ -125,7 +125,7 @@
   "invoice_action_scan_barcode": "Lue QR-koodi",
   "invoice_payment_success": "Maksu on saapunut.",
   "invoice_qr_code_not_detected": "QR-koodia ei tunnistettu.",
-  "invoice_receive_fail": "Vastaanotto epäonnistui.",
+  "invoice_receive_fail": "Talletus epäonnistui.",
   "invoice_receive_fail_message": "Virhe: {reason}",
   "@invoice_receive_fail_message": {
     "placeholders": {
@@ -146,7 +146,7 @@
     }
   },
   "invoice_description_label": "Kuvaus (vapaaehtoinen)",
-  "invoice_availability_message_synchronizing": "Maksujen vastaaanotto odottaa synkronointia.",
+  "invoice_availability_message_synchronizing": "Maksujen vastaanotto odottaa synkronointia.",
   "invoice_availability_message_opening_channel": "Maksujen vastaanottamiseksi vaadittavan kanavan avaaminen on kesken. Avaus on valmis yleensä noin 10 minuutin kuluessa. Yritä muutaman minuutin kuluttua uudelleen.",
   "invoice_receive_label": "Vastaanota enintään: {maxSats}",
   "@invoice_receive_label": {
@@ -228,10 +228,10 @@
   "bottom_action_bar_receive": "VASTAANOTA",
   "bottom_action_bar_paste_invoice": "Syötä tai liitä LN-maksu",
   "bottom_action_bar_connect_to_pay": "Yhdistä maksajaan",
-  "bottom_action_bar_send_btc_address": "Lähetä Bitcoin-osoitteeseen",
+  "bottom_action_bar_send_btc_address": "Nosto Bitcoin-osoitteeseen",
   "bottom_action_bar_escher": "Cash-Out via Escher",
   "bottom_action_bar_receive_invoice": "Luo Lightning-lasku",
-  "bottom_action_bar_receive_btc_address": "Vastanota Bitcoin-osoitteella",
+  "bottom_action_bar_receive_btc_address": "Talletus Bitcoin-osoitteeseen",
   "bottom_action_bar_buy_bitcoin": "Osta Bitcoineja",
   "bottom_action_bar_warning_balance_title": "Breez vaatii, että saldosi on vähintään {balance}.",
   "@bottom_action_bar_warning_balance_title": {
@@ -335,7 +335,7 @@
   "payment_info_dialog_hint": "Lasku tai tunniste",
   "payment_info_dialog_hint_expanded": "Syötä LN-lasku, solmu tai Lightning-osoite.",
   "payment_info_dialog_barcode": "Lue viivakoodi",
-  "payment_info_dialog_error": "LN-lasku, somun tunniste tai Lightning-osoite oli virheellinen.",
+  "payment_info_dialog_error": "LN-lasku, solmu tai Lightning-osoite oli virheellinen.",
   "payment_info_dialog_error_qrcode": "QR-koodia ei tunnistettu.",
   "payment_info_dialog_action_cancel": "Peruuta",
   "payment_info_dialog_action_approve": "HYVÄKSY",
@@ -820,9 +820,9 @@
       }
     }
   },
-  "reverse_swap_title": "Lähetä Bitcoin-osoitteeseen",
+  "reverse_swap_title": "Nosta Bitcoin-osoitteeseen",
   "reverse_swap_funding_transaction": "Varojen siirto:",
-  "reverse_swap_waiting_channels": "Bitcoin-osoitteeseen lähetys on mahdollista vasta kaikkien kanavien avausvahvistuksien jälkeen.",
+  "reverse_swap_waiting_channels": "Nosto Bitcoin-osoitteeseen on mahdollista vasta kaikkien kanavien avausvahvistuksien jälkeen.",
   "reverse_swap_confirmation_speed": "Valitse käsittelyn prioriteetti",
   "reverse_swap_confirmation_action_confirm": "LÄHETÄ",
   "reverse_swap_confirmation_you_send": "Sinä lähetät:",
@@ -871,9 +871,11 @@
   },
   "reverse_swap_confirmation_error_fetch_fee": "Kulujen määritys epäonnistyi. Yritä myöhemmin uudelleen.",
   "reverse_swap_confirmation_error_funds_fee": "Varasi eivät riitä tapahtumakulujen maksamiseen.",
+  "reverse_swap_notification_title": "Toimenpiteitä tarvitaan",
+  "reverse_swap_notification_body": "Avaa Breez käynnistämäsi tapahtuman päättämiseksi.",
   "sync_progress_server_ready": "Synkronoidaan verkkoon",
   "sync_progress_waiting_network": "Odotetaan verkkoyhteyttä",
-  "withdraw_funds_error_min_value": "Lähetettävä minimimäärä on {minValue}",
+  "withdraw_funds_error_min_value": "Nostettava minimimäärä on {minValue}",
   "@withdraw_funds_error_min_value": {
     "placeholders": {
       "minValue": {
@@ -882,7 +884,7 @@
       }
     }
   },
-  "withdraw_funds_error_max_value": "Lähetettävä enimmäismäärä on {maxValue}",
+  "withdraw_funds_error_max_value": "Nostettava enimmäismäärä on {maxValue}",
   "@withdraw_funds_error_max_value": {
     "placeholders": {
       "minValue": {
@@ -892,7 +894,7 @@
     }
   },
   "withdraw_funds_use_all_funds": "Käytä kaikki varat",
-  "withdraw_funds_btc_address": "Vastaanottajan Bitcoin-osoite",
+  "withdraw_funds_btc_address": "Nosto Bitcoin-osoitteeseen",
   "withdraw_funds_scan_barcode": "Lue viivakoodi",
   "withdraw_funds_error_invalid_address": "Bitcoin-osoitetta ei tunnistettu",
   "withdraw_funds_balance": "Saldo:",
@@ -1161,7 +1163,7 @@
   "fee_chooser_option_economy": "Rauhallinen",
   "fee_chooser_option_regular": "Normaali",
   "fee_chooser_option_priority": "Nopea",
-  "fee_chooser_estimated_delivery_more_than_day": "Arvioitu tapahtuman toteutumisaika: yli vuorokausi",
+  "fee_chooser_estimated_delivery_more_than_day": "Arvioitu käsittelyaika: yli vuorokausi",
   "fee_chooser_estimated_delivery_hour": "Arvioitu käsittelyaika: 1 tunti",
   "fee_chooser_estimated_delivery_hours": "Arvioitu käsittelyaika: {hours} tuntia",
   "@fee_chooser_estimated_delivery_hours": {
@@ -1290,7 +1292,7 @@
   "handler_lnurl_error_gift": "Tämä lahja on jo lunastettu.",
   "handler_lnurl_login_anonymously": "Haluatko kirjautua palveluun anonyyminä ",
   "handler_lnurl_login_error_title": "Kirjautuminen epäonnistui",
-  "handler_lnurl_login_error_message": "Virhe {message}",
+  "handler_lnurl_login_error_message": "Virhe\n{message}",
   "@handler_lnurl_login_error_message": {
     "placeholders": {
       "message": {
@@ -1324,8 +1326,8 @@
   "handler_podcast_error_load_episode": "Lähetyksen lataaminen epäonnistui. Tarkista yhteydet.",
   "handler_podcast_error_load_episode_fallback": "Podcast:in lataaminen epäonnistui.",
   "handler_sync_ui_message": "Odota kunnes Bitcoin-verkkoon synkronointi on valmis ",
-  "add_funds_error_deposit": "Breez käsittelee edellistä vastaanottoa. Vasta käsittelyn jälkeen voit luoda uuden vastaanotto-osoitteen.",
-  "add_funds_error_withdraw": "Breez käsittelee edellistä nostoasi. Vasta käsittelyn jälkeen voit tehdä uuden varojen lähetyksen.",
+  "add_funds_error_deposit": "Breez käsittelee edellistä talletusta. Vasta sen valmistuttua voit tehdä uuden talletuksen.",
+  "add_funds_error_withdraw": "Breez käsittelee edellistä nostoa. Vasta sen valmistuttua voit tehdä uuden noston.",
   "add_funds_transaction_id_copied": "Tapahtumatunnus kopioitiin leikepöydälle.",
   "add_funds_item_voucher_title": "Lahjakortin arvo (value)",
   "add_funds_item_voucher_message": "{value} {currency}",
@@ -1381,14 +1383,14 @@
   },
   "add_funds_item_bitcoins_received_title": "Bitcoin-lähetys on vastaanotettu",
   "add_funds_moonpay_title": "MoonPay",
-  "add_funds_moonpay_error_address": "Osoitteen hakeminen Breez-palvelimelta epäonnistui. Tarkista verkkoyhteytesi.",
-  "csv_exporter_date_and_time": "Date & Time",
-  "csv_exporter_title": "Title",
-  "csv_exporter_description": "Description",
-  "csv_exporter_node_id": "Node ID",
-  "csv_exporter_amount": "Amount",
+  "add_funds_moonpay_error_address": "Osoitteen hakeminen Breez-palvelimelta epäonnistui.\nTarkista verkkoyhteytesi.",
+  "csv_exporter_date_and_time": "Päivä ja aika",
+  "csv_exporter_title": "Otsikko",
+  "csv_exporter_description": "Kuvaus",
+  "csv_exporter_node_id": "Solmun ID",
+  "csv_exporter_amount": "Määrä",
   "csv_exporter_preimage": "Preimage",
-  "csv_exporter_tx_hash": "TX Hash",
+  "csv_exporter_tx_hash": "Tapahtumatunnus",
   "locale": "fi",
   "app_name": "Breez"
 }
