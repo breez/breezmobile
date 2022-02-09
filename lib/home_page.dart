@@ -28,6 +28,7 @@ import 'package:breez/routes/home/qr_action_button.dart';
 import 'package:breez/routes/marketplace/marketplace.dart';
 import 'package:breez/routes/podcast/podcast_page.dart' as breezPodcast;
 import 'package:breez/routes/podcast/theme.dart';
+import 'package:breez/services/injector.dart';
 import 'package:breez/theme_data.dart' as theme;
 import 'package:breez/widgets/close_popup.dart';
 import 'package:breez/widgets/error_dialog.dart';
@@ -42,9 +43,7 @@ import 'package:breez/widgets/route.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
 import 'bloc/invoice/invoice_model.dart';
@@ -163,10 +162,10 @@ class HomeState extends State<Home> with WidgetsBindingObserver {
     });
   }
 
-  void _initListens(BuildContext context) {
+  void _initListens(BuildContext context) {    
     if (_listensInit) return;
     _listensInit = true;
-
+    ServiceInjector().breezBridge.initBreezLib();
     _registerNotificationHandlers(context);
     listenUnexpectedError(context, widget.accountBloc);
     _listenBackupConflicts(context);
@@ -275,7 +274,7 @@ class HomeState extends State<Home> with WidgetsBindingObserver {
           appBar: AppBar(
             brightness: theme.themeId == "BLUE"
                 ? Brightness.light
-                : themeData.appBarTheme.brightness,
+                : themeData.appBarTheme.systemOverlayStyle,
             centerTitle: false,
             actions: [
               Padding(
