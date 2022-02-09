@@ -137,6 +137,11 @@ class AccountBloc {
     this.userProfileStream,
     this._posRepository,
   ) {
+    init();
+  }
+
+  init() {
+    print("account bloc init");
     ServiceInjector injector = ServiceInjector();
     _breezServer = injector.breezServer;
     _breezLib = injector.breezBridge;

@@ -35,7 +35,9 @@ class BreezBridge {
   GraphDownloader _graphDownloader;
   Future<DateTime> _inProgressGraphSync;
 
-  BreezBridge(this.downloadManager, this.sharedPreferences) {
+  BreezBridge(this.downloadManager, this.sharedPreferences);
+  
+  initBreezLib() {
     _eventChannel.receiveBroadcastStream().listen((event) async {
       var notification = NotificationEvent()..mergeFromBuffer(event);
       if (notification.type == NotificationEvent_NotificationType.READY) {
@@ -60,7 +62,7 @@ class BreezBridge {
     pathComponents.removeLast();
     pathComponents.add("MD5SUMS");
     var checksumURL = graphUri.replace(path: pathComponents.join("/")).toString();
-    logger.log.info("graph checksum url: ${checksumURL}");
+    logger.log.info("graph checksum url: $checksumURL");
     var response = await Dio().get(checksumURL);
     var content = response.data.toString();
     var currentVersionLine = LineSplitter.split(content).firstWhere((line) {
@@ -76,7 +78,7 @@ class BreezBridge {
     await _readyCompleter.future;
     await Future.delayed(Duration(seconds: 10));
     var downloadURL = await graphURL();
-    logger.log.info("graph download url: ${downloadURL}");
+    logger.log.info("graph download url: $downloadURL");
     if (downloadURL.isNotEmpty) {
       logger.log.info("fetching graph checksum");
       var checksum = await fetchGraphChecksum(downloadURL);
