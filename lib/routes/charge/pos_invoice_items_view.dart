@@ -104,10 +104,10 @@ class PosInvoiceItemsView extends StatelessWidget {
   ) {
     final items = [
       PosCatalogItemSort.NONE,
-      sort == PosCatalogItemSort.ALPHABETICALLY_A_Z
+      sort == PosCatalogItemSort.ALPHABETICALLY_Z_A
           ? PosCatalogItemSort.ALPHABETICALLY_Z_A
           : PosCatalogItemSort.ALPHABETICALLY_A_Z,
-      sort == PosCatalogItemSort.PRICE_SMALL_TO_BIG
+      sort == PosCatalogItemSort.PRICE_BIG_TO_SMALL
           ? PosCatalogItemSort.PRICE_BIG_TO_SMALL
           : PosCatalogItemSort.PRICE_SMALL_TO_BIG,
     ];
@@ -126,7 +126,23 @@ class PosInvoiceItemsView extends StatelessWidget {
           items: items.map((e) => _dropdownItem(context, e, sort)).toList(),
         );
         if (newOption != null) {
-          posCatalogBloc.actionsSink.add(UpdatePosCatalogItemSort(newOption));
+          var upstream = newOption;
+          if (sort == PosCatalogItemSort.ALPHABETICALLY_Z_A ||
+              sort == PosCatalogItemSort.ALPHABETICALLY_A_Z) {
+            if (newOption == PosCatalogItemSort.ALPHABETICALLY_Z_A) {
+              upstream = PosCatalogItemSort.ALPHABETICALLY_A_Z;
+            } else if (newOption == PosCatalogItemSort.ALPHABETICALLY_A_Z) {
+              upstream = PosCatalogItemSort.ALPHABETICALLY_Z_A;
+            }
+          } else if (sort == PosCatalogItemSort.PRICE_BIG_TO_SMALL ||
+              sort == PosCatalogItemSort.PRICE_SMALL_TO_BIG) {
+            if (newOption == PosCatalogItemSort.PRICE_BIG_TO_SMALL) {
+              upstream = PosCatalogItemSort.PRICE_SMALL_TO_BIG;
+            } else if (newOption == PosCatalogItemSort.PRICE_SMALL_TO_BIG) {
+              upstream = PosCatalogItemSort.PRICE_BIG_TO_SMALL;
+            }
+          }
+          posCatalogBloc.actionsSink.add(UpdatePosCatalogItemSort(upstream));
         }
       },
       child: _dropdownHandler(context, sort),
