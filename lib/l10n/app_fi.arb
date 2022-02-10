@@ -1413,7 +1413,7 @@
   "pos_settings_manager_password_error_title": "Päällikön salasana",
   "pos_settings_manager_password_error_message": "Päällikön salasana voidaan määrittää vasta varmuuskopioinnin olleessa aktiivinen. Saat varmuuskopioinnin aktivoitua valitsemalla päävalikosta Vastaanota ja Vastaanota bitcoin-soitteella.",
   "pos_settings_manager_password_title": "Päällikön salasana",
-  "pos_settings_manager_password_message": "Jos päällikön salasana on otettu käyttöön, niin varojen nostaminen sovelluksesta vaatii salasanan.\nOletko varma että haluat ottaa  päällikön salasanan käyttöön?",
+  "pos_settings_manager_password_message": "Jos päällikön salasana on otettu käyttöön, niin varojen nostaminen sovelluksesta vaatii salasanan.\nOletko varma että haluat ottaa päällikön salasanan käyttöön?",
   "pos_settings_manager_password_action_create": "LUO",
   "pos_settings_manager_password_action_change": "MUUTA",
   "pos_settings_business_address": "Toimipaikan osoite",
