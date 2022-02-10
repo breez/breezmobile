@@ -872,7 +872,7 @@
   "reverse_swap_confirmation_error_fetch_fee": "Kulujen määritys epäonnistyi. Yritä myöhemmin uudelleen.",
   "reverse_swap_confirmation_error_funds_fee": "Varasi eivät riitä tapahtumakulujen maksamiseen.",
   "reverse_swap_notification_title": "Toimenpiteitä tarvitaan",
-  "reverse_swap_notification_body": "Käynnissä olevan tapahtuman päättämiseksi avaa Breez-sovellus.",
+  "reverse_swap_notification_body": "Avaa Breez käynnistämäsi tapahtuman päättämiseksi.",
   "sync_progress_server_ready": "Synkronoidaan verkkoon",
   "sync_progress_waiting_network": "Odotetaan verkkoyhteyttä",
   "withdraw_funds_error_min_value": "Nostettava minimimäärä on {minValue}",
