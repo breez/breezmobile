@@ -1089,6 +1089,7 @@
   "no_connection_dialog_tip_airplane": "• Desligar o modo avião\n",
   "no_connection_dialog_tip_wifi": "• Ligar os dados móveis ou o Wi-Fi\n",
   "no_connection_dialog_tip_signal": "• Conferir se há sinal na sua área\n",
+  "no_connection_dialog_tip_retry": "• Wait for a while and select TENTAR NOVAMENTE\n",
   "no_connection_dialog_log_view_action": "Ver ",
   "no_connection_dialog_log_view_message": "seus logs \n",
   "no_connection_dialog_action_cancel": "CANCELAR",

@@ -1089,6 +1089,7 @@
   "no_connection_dialog_tip_airplane": "• Turning off airplane mode\n",
   "no_connection_dialog_tip_wifi": "• Turning on mobile data or Wi-Fi\n",
   "no_connection_dialog_tip_signal": "• Checking the signal in your area\n",
+  "no_connection_dialog_tip_retry": "• Wait for a while and select TRY AGAIN\n",
   "no_connection_dialog_log_view_action": "View ",
   "no_connection_dialog_log_view_message": "your logs \n",
   "no_connection_dialog_action_cancel": "CANCEL",

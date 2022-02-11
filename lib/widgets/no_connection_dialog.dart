@@ -43,6 +43,10 @@ Future<bool> showNoConnectionDialog(BuildContext context) {
                   style: dialogTheme.contentTextStyle,
                 ),
                 TextSpan(
+                  text: texts.no_connection_dialog_tip_retry,
+                  style: dialogTheme.contentTextStyle,
+                ),
+                TextSpan(
                   text: "• ",
                   style: dialogTheme.contentTextStyle,
                 ),

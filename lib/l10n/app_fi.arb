@@ -1089,6 +1089,7 @@
   "no_connection_dialog_tip_airplane": "• Kytke pois lentotila\n",
   "no_connection_dialog_tip_wifi": "• Kytke päälle mobiilidata tai Wi-Fi\n",
   "no_connection_dialog_tip_signal": "• Tarkista signaalin voimakkuus\n",
+  "no_connection_dialog_tip_retry": "• Odota hetkinen ja valitse YRITÄ UUDELLEEN\n",
   "no_connection_dialog_log_view_action": "Lataa tai jaa ",
   "no_connection_dialog_log_view_message": "loki-tiedosto \n",
   "no_connection_dialog_action_cancel": "Peruuta",
