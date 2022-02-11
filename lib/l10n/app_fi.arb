@@ -113,9 +113,9 @@
       }
     }
   },
-  "invoice_btc_address_deposit_address": "Vastaanotto-osoite",
-  "invoice_btc_address_deposit_address_copied": "Vastaanotto-osoite kopioitiin leikepöydälle.",
-  "invoice_btc_address_on_chain_begin": "Bitcoin-siirrot käyttävät Submarine Swaps -toimintoa. Klikkaa ",
+  "invoice_btc_address_deposit_address": "Talletus-osoite",
+  "invoice_btc_address_deposit_address_copied": "Talletus-osoite kopioitiin leikepöydälle.",
+  "invoice_btc_address_on_chain_begin": "Bitcoin-talletukset käyttävät Submarine Swaps -toimintoa. Klikkaa ",
   "invoice_btc_address_on_chain_here": "tästä",
   "invoice_btc_address_on_chain_end": " nähdäksesi osoitteeseen liittyvän komentojonon (scriptin).",
   "invoice_btc_address_on_chain_action_ok": "OK",
@@ -147,7 +147,7 @@
   },
   "invoice_description_label": "Kuvaus (vapaaehtoinen)",
   "invoice_availability_message_synchronizing": "Maksujen vastaanotto odottaa synkronointia.",
-  "invoice_availability_message_opening_channel": "Maksujen vastaanottamiseksi vaadittavan kanavan avaaminen on kesken. Avaus on valmis yleensä noin 10 minuutin kuluessa. Yritä muutaman minuutin kuluttua uudelleen.",
+  "invoice_availability_message_opening_channel": "Maksujen vastaanottamiseksi vaadittavan kanavan avaaminen on kesken. Avaus valmistuu yleensä noin 10 minuutin kuluessa. Yritä muutaman minuutin kuluttua uudelleen.",
   "invoice_receive_label": "Vastaanota enintään: {maxSats}",
   "@invoice_receive_label": {
     "placeholders": {
@@ -276,7 +276,7 @@
       }
     }
   },
-  "payment_details_dialog_transaction_id_copied": "Tapahtuman tunniste kopioitiin leikepöydälle.",
+  "payment_details_dialog_transaction_id_copied": "Tapahtumatunniste kopioitiin leikepöydälle.",
   "payment_details_dialog_restart_text": "Tämä näkymä päivittyy, kun sovellus suljetaan ja avataan uudelleen.",
   "payment_details_dialog_restart_cancel": "Peruuta",
   "payment_details_dialog_restart_exit_breez": "SULJE SOVELLUS",
@@ -334,7 +334,7 @@
   "payment_info_dialog_title": "Maksun tiedot",
   "payment_info_dialog_hint": "Lasku tai tunniste",
   "payment_info_dialog_hint_expanded": "Syötä LN-lasku, solmu tai Lightning-osoite.",
-  "payment_info_dialog_barcode": "Lue viivakoodi",
+  "payment_info_dialog_barcode": "Lue QR-koodi",
   "payment_info_dialog_error": "LN-lasku, solmu tai Lightning-osoite oli virheellinen.",
   "payment_info_dialog_error_qrcode": "QR-koodia ei tunnistettu.",
   "payment_info_dialog_action_cancel": "Peruuta",
@@ -820,7 +820,7 @@
       }
     }
   },
-  "reverse_swap_title": "Nosta Bitcoin-osoitteeseen",
+  "reverse_swap_title": "Nosto Bitcoin-osoitteeseen",
   "reverse_swap_funding_transaction": "Varojen siirto:",
   "reverse_swap_waiting_channels": "Nosto Bitcoin-osoitteeseen on mahdollista vasta kaikkien kanavien avausvahvistuksien jälkeen.",
   "reverse_swap_confirmation_speed": "Valitse käsittelyn prioriteetti",
@@ -1411,7 +1411,7 @@
   "pos_settings_activate_manager_password": "Ota päällikön salasana käyttöön",
   "pos_settings_change_manager_password": "Vaihda päällikön salasana",
   "pos_settings_manager_password_error_title": "Päällikön salasana",
-  "pos_settings_manager_password_error_message": "Päällikön salasana voidaan määrittää vasta varmuuskopioinnin olleessa aktiivinen. Saat varmuuskopioinnin aktivoitua valitsemalla päävalikosta Vastaanota ja Vastaanota bitcoin-soitteella.",
+  "pos_settings_manager_password_error_message": "Päällikön salasana voidaan määrittää vasta varmuuskopioinnin olleessa aktiivinen. Saat varmuuskopioinnin aktivoitua valitsemalla aloitusnäkymästä Vastaanota ja Vastaanota bitcoin-soitteella.",
   "pos_settings_manager_password_title": "Päällikön salasana",
   "pos_settings_manager_password_message": "Jos päällikön salasana on otettu käyttöön, niin varojen nostaminen sovelluksesta vaatii salasanan.\nOletko varma että haluat ottaa päällikön salasanan käyttöön?",
   "pos_settings_manager_password_action_create": "LUO",
