@@ -1431,6 +1431,38 @@
   "pos_password_admin_error_password_match": "Las contraseñas no coinciden",
   "pos_password_admin_new_password": "Introduzca una nueva contraseña",
   "pos_password_admin_confirm_password": "Confirme la contraseña",
+  "pos_dialog_clock": "{minutes}:{seconds}",
+  "@pos_dialog_clock": {
+    "placeholders": {
+      "minutes": {
+        "type": "String",
+        "example": "1"
+      },
+      "seconds": {
+        "type": "String",
+        "example": "30"
+      }
+    }
+  },
+  "pos_dialog_title": "Escanea el código QR para pagar",
+  "pos_dialog_share": "Compartir datos de factura",
+  "pos_dialog_invoice_copy": "Copiar datos de factura",
+  "pos_dialog_invoice_copied": "Los datos de la factura se han copiado en el portapapeles.",
+  "pos_dialog_clear_sale": "LIMPIAR",
+  "pos_dialog_cancel": "CANCELAR",
+  "pos_dialog_setup_fee": "Se aplicará una tarifa de instalación de {fee} ({fiat}) a esta factura.",
+  "@pos_dialog_setup_fee": {
+    "placeholders": {
+      "fee": {
+        "type": "String",
+        "example": "1000 sats"
+      },
+      "fiat": {
+        "type": "String",
+        "example": "$ 30"
+      }
+    }
+  },
   "locale": "es",
   "app_name": "Breez"
 }

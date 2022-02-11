@@ -1431,6 +1431,38 @@
   "pos_password_admin_error_password_match": "Salasanat eivät täsmää",
   "pos_password_admin_new_password": "Syötä uusi salasana",
   "pos_password_admin_confirm_password": "Vahvista salasana",
+  "pos_dialog_clock": "{minutes}:{seconds}",
+  "@pos_dialog_clock": {
+    "placeholders": {
+      "minutes": {
+        "type": "String",
+        "example": "1"
+      },
+      "seconds": {
+        "type": "String",
+        "example": "30"
+      }
+    }
+  },
+  "pos_dialog_title": "Scan to Pay",
+  "pos_dialog_share": "Share invoice data",
+  "pos_dialog_invoice_copy": "Copy invoice data",
+  "pos_dialog_invoice_copied": "Invoice data was copied to your clipboard.",
+  "pos_dialog_clear_sale": "CLEAR SALE",
+  "pos_dialog_cancel": "CANCEL",
+  "pos_dialog_setup_fee": "A setup fee of {fee} ({fiat}) is applied to this invoice.",
+  "@pos_dialog_setup_fee": {
+    "placeholders": {
+      "fee": {
+        "type": "String",
+        "example": "1000 sats"
+      },
+      "fiat": {
+        "type": "String",
+        "example": "$ 30"
+      }
+    }
+  },
   "locale": "fi",
   "app_name": "Breez"
 }
