@@ -1431,6 +1431,38 @@
   "pos_password_admin_error_password_match": "Salasanat eivät täsmää",
   "pos_password_admin_new_password": "Syötä uusi salasana",
   "pos_password_admin_confirm_password": "Vahvista salasana",
+  "pos_dialog_clock": "{minutes}:{seconds}",
+  "@pos_dialog_clock": {
+    "placeholders": {
+      "minutes": {
+        "type": "String",
+        "example": "1"
+      },
+      "seconds": {
+        "type": "String",
+        "example": "30"
+      }
+    }
+  },
+  "pos_dialog_title": "Skannaa laskun tiedot",
+  "pos_dialog_share": "Jaa lasku",
+  "pos_dialog_invoice_copy": "Kopioi lasku",
+  "pos_dialog_invoice_copied": "Laskun tiedot kopioitiin leikepöydälle.",
+  "pos_dialog_clear_sale": "Mitätöi Lasku",
+  "pos_dialog_cancel": "PALAA",
+  "pos_dialog_setup_fee": "Tämän laskun suorituksesta veloitetaan saapuvan kanavan perustamiskulu {fee} eli ({fiat}).",
+  "@pos_dialog_setup_fee": {
+    "placeholders": {
+      "fee": {
+        "type": "String",
+        "example": "1000 satoshia"
+      },
+      "fiat": {
+        "type": "String",
+        "example": "30 €"
+      }
+    }
+  },
   "locale": "fi",
   "app_name": "Breez"
 }
