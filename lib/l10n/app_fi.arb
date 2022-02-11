@@ -1444,22 +1444,22 @@
       }
     }
   },
-  "pos_dialog_title": "Scan to Pay",
-  "pos_dialog_share": "Share invoice data",
-  "pos_dialog_invoice_copy": "Copy invoice data",
-  "pos_dialog_invoice_copied": "Invoice data was copied to your clipboard.",
-  "pos_dialog_clear_sale": "CLEAR SALE",
-  "pos_dialog_cancel": "CANCEL",
-  "pos_dialog_setup_fee": "A setup fee of {fee} ({fiat}) is applied to this invoice.",
+  "pos_dialog_title": "Skannaa laskun tiedot",
+  "pos_dialog_share": "Jaa lasku",
+  "pos_dialog_invoice_copy": "Kopioi lasku",
+  "pos_dialog_invoice_copied": "Laskun tiedot kopioitiin leikepöydälle.",
+  "pos_dialog_clear_sale": "Mitätöi Lasku",
+  "pos_dialog_cancel": "PALAA",
+  "pos_dialog_setup_fee": "Tämän laskun suorituksesta veloitetaan saapuvan kanavan perustamiskulu {fee} eli ({fiat}).",
   "@pos_dialog_setup_fee": {
     "placeholders": {
       "fee": {
         "type": "String",
-        "example": "1000 sats"
+        "example": "1000 satoshia"
       },
       "fiat": {
         "type": "String",
-        "example": "$ 30"
+        "example": "30 €"
       }
     }
   },
