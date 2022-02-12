@@ -291,7 +291,7 @@
     "placeholders": {
       "title": {
         "type": "String",
-        "example": "Pré-imagem de pagamento"
+        "example": "Comprovante de pagamento"
       }
     }
   },
@@ -300,11 +300,11 @@
     "placeholders": {
       "title": {
         "type": "String",
-        "example": "Pré-imagem de pagamento"
+        "example": "Comprovante de pagamento"
       }
     }
   },
-  "payment_details_dialog_single_info_pre_image": "Pré-imagem de pagamento",
+  "payment_details_dialog_single_info_pre_image": "Comprovante de pagamento",
   "payment_details_dialog_single_info_node_id": "ID do nó",
   "payment_details_dialog_single_info_on_chain": "Transação On-chain",
   "payment_details_dialog_action_for_payment_description": "Descrição",
@@ -1276,7 +1276,7 @@
   "utils_print_pdf_header_amount": "Quantia",
   "utils_print_pdf_header_total": "Total",
   "utils_print_pdf_header_description": "Descrição:",
-  "utils_print_pdf_header_payment_preimage": "Pré-imagem de pagamento:",
+  "utils_print_pdf_header_payment_preimage": "Comprovante de pagamento:",
   "handler_check_version_action_update": "ATUALIZAR",
   "handler_check_version_message": "Por favor, atualize a Breez para a versão mais recente.",
   "handler_lnurl_error_link": "Erro no Link",
@@ -1389,7 +1389,7 @@
   "csv_exporter_description": "Descrição",
   "csv_exporter_node_id": "ID do nó",
   "csv_exporter_amount": "Quantia",
-  "csv_exporter_preimage": "Pré-imagem",
+  "csv_exporter_preimage": "Comprovante",
   "csv_exporter_tx_hash": "TX Hash",
   "pos_settings_title": "Configurações do PDV",
   "pos_settings_cancellation_timeout": "Tempo máximo para receber um pagamento (em segundos)",
@@ -1422,7 +1422,7 @@
   "pos_settings_id": "ID",
   "pos_settings_name": "Nome",
   "pos_settings_sku": "SKU",
-  "pos_settings_image_url": "URL da Imagem",
+  "pos_settings_image_url": "URL da imagem",
   "pos_settings_currency": "Moeda",
   "pos_settings_price": "Preço",
   "pos_password_admin_title": "Senha do gerenciador",
