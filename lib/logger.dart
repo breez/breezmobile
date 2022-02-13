@@ -36,10 +36,16 @@ class BreezLogger {
     });
     // Log flutter errors
     FlutterError.onError = (FlutterErrorDetails details) {
+      if (details == null) {
+        print("Ignore log, details is null");
+        return;
+      }
       FlutterError.presentError(details);
-      if (details != null && details.context != null)
-        breezBridge.log(details.exceptionAsString() + '\n' + details.stack.toString(), details.context.name ?? "FlutterError");
-        print(details.exceptionAsString() + '\n' + details.stack.toString() + " --" + details.context.name);
+      final stack = details.stack?.toString() ?? "NoStack";
+      final name = details.context?.name ?? "FlutterError";
+      final exception = details.exceptionAsString();
+      breezBridge.log(exception + '\n' + stack, name);
+      print(exception + '\n' + stack + " --" + name);
     };
   }
 }
