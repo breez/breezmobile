@@ -120,7 +120,7 @@
   "invoice_btc_address_on_chain_end": " para ver o script associado a este endereço.",
   "invoice_btc_address_on_chain_action_ok": "OK",
   "invoice_title": "Receber via fatura",
-  "invoice_action_create": "CRIAR",
+  "invoice_action_create": "COBRAR",
   "invoice_action_redeem": "RESGATAR",
   "invoice_action_scan_barcode": "Ler código de barras",
   "invoice_payment_success": "O pagamento foi recebido com sucesso!",
@@ -291,7 +291,7 @@
     "placeholders": {
       "title": {
         "type": "String",
-        "example": "Pré-imagem de pagamento"
+        "example": "Comprovante de pagamento"
       }
     }
   },
@@ -300,11 +300,11 @@
     "placeholders": {
       "title": {
         "type": "String",
-        "example": "Pré-imagem de pagamento"
+        "example": "Comprovante de pagamento"
       }
     }
   },
-  "payment_details_dialog_single_info_pre_image": "Pré-imagem de pagamento",
+  "payment_details_dialog_single_info_pre_image": "Comprovante de pagamento",
   "payment_details_dialog_single_info_node_id": "ID do nó",
   "payment_details_dialog_single_info_on_chain": "Transação On-chain",
   "payment_details_dialog_action_for_payment_description": "Descrição",
@@ -760,9 +760,9 @@
   "security_and_backup_lock_automatically": "Bloquear automaticamente",
   "security_and_backup_lock_automatically_option_immediate": "Imediatamente",
   "security_and_backup_change_pin": "Alterar o PIN",
-  "security_and_backup_enable_biometric_option_face": "Habilitar o Reconhecimento Facial",
+  "security_and_backup_enable_biometric_option_face": "Habilitar o reconhecimento facial",
   "security_and_backup_enable_biometric_option_face_id": "Habilitar o Face ID",
-  "security_and_backup_enable_biometric_option_fingerprint": "Habilitar a Impressão Digital",
+  "security_and_backup_enable_biometric_option_fingerprint": "Habilitar a impressão digital",
   "security_and_backup_enable_biometric_option_touch_id": "Habilitar o Touch ID",
   "security_and_backup_enable_biometric_option_none": "",
   "security_and_backup_validate_biometrics_reason": "Autentique-se para habilitar esta configuração",
@@ -1276,7 +1276,7 @@
   "utils_print_pdf_header_amount": "Quantia",
   "utils_print_pdf_header_total": "Total",
   "utils_print_pdf_header_description": "Descrição:",
-  "utils_print_pdf_header_payment_preimage": "Pré-imagem de pagamento:",
+  "utils_print_pdf_header_payment_preimage": "Comprovante de pagamento:",
   "handler_check_version_action_update": "ATUALIZAR",
   "handler_check_version_message": "Por favor, atualize a Breez para a versão mais recente.",
   "handler_lnurl_error_link": "Erro no Link",
@@ -1389,7 +1389,7 @@
   "csv_exporter_description": "Descrição",
   "csv_exporter_node_id": "ID do nó",
   "csv_exporter_amount": "Quantia",
-  "csv_exporter_preimage": "Pré-imagem",
+  "csv_exporter_preimage": "Comprovante",
   "csv_exporter_tx_hash": "TX Hash",
   "pos_settings_title": "Configurações do PDV",
   "pos_settings_cancellation_timeout": "Tempo máximo para receber um pagamento (em segundos)",
@@ -1422,7 +1422,7 @@
   "pos_settings_id": "ID",
   "pos_settings_name": "Nome",
   "pos_settings_sku": "SKU",
-  "pos_settings_image_url": "URL da Imagem",
+  "pos_settings_image_url": "URL da imagem",
   "pos_settings_currency": "Moeda",
   "pos_settings_price": "Preço",
   "pos_password_admin_title": "Senha do gerenciador",
