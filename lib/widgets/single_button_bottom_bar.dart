@@ -23,9 +23,11 @@ class SingleButtonBottomBar extends StatelessWidget {
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          SizedBox(
-            height: 48.0,
-            width: 168.0,
+          ConstrainedBox(
+            constraints: BoxConstraints(
+              minHeight: 48.0,
+              minWidth: 168.0,
+            ),
             child: SubmitButton(
               this.text,
               this.onPressed,
@@ -48,9 +50,11 @@ class SubmitButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
-      height: 48.0,
-      width: 168.0,
+    return ConstrainedBox(
+      constraints: BoxConstraints(
+        minHeight: 48.0,
+        minWidth: 168.0,
+      ),
       child: ElevatedButton(
         style: ElevatedButton.styleFrom(
           primary: Theme.of(context).buttonColor,
