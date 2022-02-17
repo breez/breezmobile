@@ -33,9 +33,9 @@ enum ProfileColor {
   CORAL,
 }
 
-ProfileColor profileColorFromName(String name, AppLocalizations texts) {
+ProfileColor profileColorFromName(String name, AppLocalizations l10n) {
   final key = name.toLowerCase();
-  final localizedNames = _colorsFromName[texts.locale];
+  final localizedNames = _colorsFromName[l10n.locale];
 
   if (localizedNames.containsKey(key)) {
     return localizedNames[key];
@@ -52,58 +52,58 @@ ProfileColor profileColorFromName(String name, AppLocalizations texts) {
 }
 
 extension ProfileColorExtension on ProfileColor {
-  String name(AppLocalizations texts) {
+  String name(AppLocalizations l10n) {
     switch (this) {
       case ProfileColor.SALMON:
-        return texts.app_color_salmon;
+        return l10n.app_color_salmon;
       case ProfileColor.BLUE:
-        return texts.app_color_blue;
+        return l10n.app_color_blue;
       case ProfileColor.TURQUOISE:
-        return texts.app_color_turquoise;
+        return l10n.app_color_turquoise;
       case ProfileColor.ORCHID:
-        return texts.app_color_orchid;
+        return l10n.app_color_orchid;
       case ProfileColor.PURPLE:
-        return texts.app_color_purple;
+        return l10n.app_color_purple;
       case ProfileColor.TOMATO:
-        return texts.app_color_tomato;
+        return l10n.app_color_tomato;
       case ProfileColor.CYAN:
-        return texts.app_color_cyan;
+        return l10n.app_color_cyan;
       case ProfileColor.CRIMSON:
-        return texts.app_color_crimson;
+        return l10n.app_color_crimson;
       case ProfileColor.ORANGE:
-        return texts.app_color_orange;
+        return l10n.app_color_orange;
       case ProfileColor.LIME:
-        return texts.app_color_lime;
+        return l10n.app_color_lime;
       case ProfileColor.PINK:
-        return texts.app_color_pink;
+        return l10n.app_color_pink;
       case ProfileColor.GREEN:
-        return texts.app_color_green;
+        return l10n.app_color_green;
       case ProfileColor.RED:
-        return texts.app_color_red;
+        return l10n.app_color_red;
       case ProfileColor.YELLOW:
-        return texts.app_color_yellow;
+        return l10n.app_color_yellow;
       case ProfileColor.AZURE:
-        return texts.app_color_azure;
+        return l10n.app_color_azure;
       case ProfileColor.SILVER:
-        return texts.app_color_silver;
+        return l10n.app_color_silver;
       case ProfileColor.MAGENTA:
-        return texts.app_color_magenta;
+        return l10n.app_color_magenta;
       case ProfileColor.OLIVE:
-        return texts.app_color_olive;
+        return l10n.app_color_olive;
       case ProfileColor.VIOLET:
-        return texts.app_color_violet;
+        return l10n.app_color_violet;
       case ProfileColor.ROSE:
-        return texts.app_color_rose;
+        return l10n.app_color_rose;
       case ProfileColor.WINE:
-        return texts.app_color_wine;
+        return l10n.app_color_wine;
       case ProfileColor.MINT:
-        return texts.app_color_mint;
+        return l10n.app_color_mint;
       case ProfileColor.INDIGO:
-        return texts.app_color_indigo;
+        return l10n.app_color_indigo;
       case ProfileColor.JADE:
-        return texts.app_color_jade;
+        return l10n.app_color_jade;
       case ProfileColor.CORAL:
-        return texts.app_color_coral;
+        return l10n.app_color_coral;
       default:
         return "";
     }

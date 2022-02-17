@@ -23,7 +23,7 @@ class PosCsvUtils {
   }
 
   List _generateList() {
-    final texts = getSystemAppLocalizations();
+    final l10n = getSystemAppLocalizations();
     log.info("generating payment list started");
     List<List<dynamic>> paymentList =
         List.generate(this.itemList.length, (index) {
@@ -38,12 +38,12 @@ class PosCsvUtils {
       return paymentItem;
     });
     paymentList.insert(0, [
-      texts.pos_settings_id,
-      texts.pos_settings_name,
-      texts.pos_settings_sku,
-      texts.pos_settings_image_url,
-      texts.pos_settings_currency,
-      texts.pos_settings_price,
+      l10n.pos_settings_id,
+      l10n.pos_settings_name,
+      l10n.pos_settings_sku,
+      l10n.pos_settings_image_url,
+      l10n.pos_settings_currency,
+      l10n.pos_settings_price,
     ]);
     log.info("generating pos items finished");
     return paymentList;
@@ -73,7 +73,7 @@ class PosCsvUtils {
   }
 
   Future<List> _getCsvList(File csvFile) async {
-    final texts = getSystemAppLocalizations();
+    final l10n = getSystemAppLocalizations();
     try {
       List csvList = await csvFile
           .openRead()
@@ -83,12 +83,12 @@ class PosCsvUtils {
       log.info("header control started");
       List<String> headerRow = List<String>.from(csvList.elementAt(0));
       var defaultHeaders = [
-        texts.pos_settings_id,
-        texts.pos_settings_name,
-        texts.pos_settings_sku,
-        texts.pos_settings_image_url,
-        texts.pos_settings_currency,
-        texts.pos_settings_price,
+        l10n.pos_settings_id,
+        l10n.pos_settings_name,
+        l10n.pos_settings_sku,
+        l10n.pos_settings_image_url,
+        l10n.pos_settings_currency,
+        l10n.pos_settings_price,
       ];
       if (!listEquals(headerRow, defaultHeaders)) {
         throw PosCatalogBloc.InvalidFile;

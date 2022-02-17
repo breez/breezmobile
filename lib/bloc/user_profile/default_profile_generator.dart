@@ -28,7 +28,7 @@ class DefaultProfile {
   }
 }
 
-DefaultProfile generateDefaultProfile(AppLocalizations texts) {
+DefaultProfile generateDefaultProfile(AppLocalizations l10n) {
   final random = Random();
 
   final colors = ProfileColor.values;
@@ -38,7 +38,7 @@ DefaultProfile generateDefaultProfile(AppLocalizations texts) {
   final randomAnimal = animals.elementAt(random.nextInt(animals.length));
 
   return DefaultProfile(
-    randomColor.name(texts),
-    randomAnimal.name(texts),
+    randomColor.name(l10n),
+    randomAnimal.name(l10n),
   );
 }

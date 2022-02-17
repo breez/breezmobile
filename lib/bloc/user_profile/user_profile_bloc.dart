@@ -163,8 +163,8 @@ class UserProfileBloc {
 
       // First time we create a user, initialize with random data.
       if (profile.isEmpty) {
-        final texts = getSystemAppLocalizations();
-        final defaultProfile = generateDefaultProfile(texts);
+        final l10n = getSystemAppLocalizations();
+        final defaultProfile = generateDefaultProfile(l10n);
         user = user.copyWith(
           name: defaultProfile.buildName(getSystemLocale()),
           color: defaultProfile.color,
@@ -405,8 +405,8 @@ class UserProfileBloc {
 
   void _listenRandomizeRequest(ServiceInjector injector) {
     _randomizeController.stream.listen((request) async {
-      final texts = getSystemAppLocalizations();
-      final defaultProfile = generateDefaultProfile(texts);
+      final l10n = getSystemAppLocalizations();
+      final defaultProfile = generateDefaultProfile(l10n);
       _userStreamPreviewController.add(_currentUser.copyWith(
         name: defaultProfile.buildName(getSystemLocale()),
         color: defaultProfile.color,

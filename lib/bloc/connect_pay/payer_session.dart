@@ -203,9 +203,9 @@ class PayerRemoteSession extends RemoteSession with OnlineStatusUpdater {
     });
 
     _sentInvitesController.stream.listen((inviteLink) async {
-      final texts = getSystemAppLocalizations();
+      final l10n = getSystemAppLocalizations();
       var shared = await _device.shareText(
-        texts.connect_to_pay_share_text(
+        l10n.connect_to_pay_share_text(
           _currentUser.name,
           Uri.encodeFull(_currentSessionInvite),
         ),

@@ -34,9 +34,9 @@ enum ProfileAnimal {
   SNAKE,
 }
 
-ProfileAnimal profileAnimalFromName(String name, AppLocalizations texts) {
+ProfileAnimal profileAnimalFromName(String name, AppLocalizations l10n) {
   final key = name.toLowerCase();
-  final localizedNames = _animalsFromName[texts.locale];
+  final localizedNames = _animalsFromName[l10n.locale];
 
   if (localizedNames.containsKey(key)) {
     return localizedNames[key];
@@ -53,60 +53,60 @@ ProfileAnimal profileAnimalFromName(String name, AppLocalizations texts) {
 }
 
 extension ProfileAnimalExtension on ProfileAnimal {
-  String name(AppLocalizations texts) {
+  String name(AppLocalizations l10n) {
     switch (this) {
       case ProfileAnimal.BAT:
-        return texts.app_animal_bat;
+        return l10n.app_animal_bat;
       case ProfileAnimal.BEAR:
-        return texts.app_animal_bear;
+        return l10n.app_animal_bear;
       case ProfileAnimal.BOAR:
-        return texts.app_animal_boar;
+        return l10n.app_animal_boar;
       case ProfileAnimal.CAT:
-        return texts.app_animal_cat;
+        return l10n.app_animal_cat;
       case ProfileAnimal.CHICK:
-        return texts.app_animal_chick;
+        return l10n.app_animal_chick;
       case ProfileAnimal.COW:
-        return texts.app_animal_cow;
+        return l10n.app_animal_cow;
       case ProfileAnimal.DEER:
-        return texts.app_animal_deer;
+        return l10n.app_animal_deer;
       case ProfileAnimal.DOG:
-        return texts.app_animal_dog;
+        return l10n.app_animal_dog;
       case ProfileAnimal.EAGLE:
-        return texts.app_animal_eagle;
+        return l10n.app_animal_eagle;
       case ProfileAnimal.ELEPHANT:
-        return texts.app_animal_elephant;
+        return l10n.app_animal_elephant;
       case ProfileAnimal.FOX:
-        return texts.app_animal_fox;
+        return l10n.app_animal_fox;
       case ProfileAnimal.FROG:
-        return texts.app_animal_frog;
+        return l10n.app_animal_frog;
       case ProfileAnimal.HIPPO:
-        return texts.app_animal_hippo;
+        return l10n.app_animal_hippo;
       case ProfileAnimal.HUMMINGBIRD:
-        return texts.app_animal_hummingbird;
+        return l10n.app_animal_hummingbird;
       case ProfileAnimal.KOALA:
-        return texts.app_animal_koala;
+        return l10n.app_animal_koala;
       case ProfileAnimal.LION:
-        return texts.app_animal_lion;
+        return l10n.app_animal_lion;
       case ProfileAnimal.MONKEY:
-        return texts.app_animal_monkey;
+        return l10n.app_animal_monkey;
       case ProfileAnimal.MOUSE:
-        return texts.app_animal_mouse;
+        return l10n.app_animal_mouse;
       case ProfileAnimal.OWL:
-        return texts.app_animal_owl;
+        return l10n.app_animal_owl;
       case ProfileAnimal.OX:
-        return texts.app_animal_ox;
+        return l10n.app_animal_ox;
       case ProfileAnimal.PANDA:
-        return texts.app_animal_panda;
+        return l10n.app_animal_panda;
       case ProfileAnimal.PIG:
-        return texts.app_animal_pig;
+        return l10n.app_animal_pig;
       case ProfileAnimal.RABBIT:
-        return texts.app_animal_rabbit;
+        return l10n.app_animal_rabbit;
       case ProfileAnimal.SEAGULL:
-        return texts.app_animal_seagull;
+        return l10n.app_animal_seagull;
       case ProfileAnimal.SHEEP:
-        return texts.app_animal_sheep;
+        return l10n.app_animal_sheep;
       case ProfileAnimal.SNAKE:
-        return texts.app_animal_snake;
+        return l10n.app_animal_snake;
       default:
         return "";
     }

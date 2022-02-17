@@ -26,7 +26,7 @@ class CsvExporter {
 
   List _generateList() {
     log.info("generating payment list started");
-    final texts = getSystemAppLocalizations();
+    final l10n = getSystemAppLocalizations();
     final fiatCurrencies = _fiatCurrencies();
     List<List<String>> paymentList = List.generate(this.data.length, (index) {
       List<String> paymentItem = [];
@@ -53,13 +53,13 @@ class CsvExporter {
       return paymentItem;
     });
     paymentList.insert(0, [
-      texts.csv_exporter_date_and_time,
-      texts.csv_exporter_title,
-      texts.csv_exporter_description,
-      texts.csv_exporter_node_id,
-      texts.csv_exporter_amount,
-      texts.csv_exporter_preimage,
-      texts.csv_exporter_tx_hash,
+      l10n.csv_exporter_date_and_time,
+      l10n.csv_exporter_title,
+      l10n.csv_exporter_description,
+      l10n.csv_exporter_node_id,
+      l10n.csv_exporter_amount,
+      l10n.csv_exporter_preimage,
+      l10n.csv_exporter_tx_hash,
       ...fiatCurrencies,
     ]);
     log.info("generating payment finished");

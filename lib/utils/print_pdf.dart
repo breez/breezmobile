@@ -19,7 +19,7 @@ class PrintService {
   );
 
   printAsPDF(BuildContext context) async {
-    final texts = context.l10n;
+    final l10n = context.l10n;
 
     try {
       final doc = pw.Document();
@@ -37,15 +37,15 @@ class PrintService {
               mainAxisSize: pw.MainAxisSize.min,
               crossAxisAlignment: pw.CrossAxisAlignment.start,
               children: [
-                _buildTitle(texts),
+                _buildTitle(l10n),
                 pw.SizedBox(height: 8),
                 _buildAddress(),
                 pw.SizedBox(height: 40),
-                _buildTable(texts, fontMap),
+                _buildTable(l10n, fontMap),
                 pw.SizedBox(height: 8),
-                _buildDescription(texts),
+                _buildDescription(l10n),
                 pw.SizedBox(height: 40),
-                _buildPaymentInfo(texts),
+                _buildPaymentInfo(l10n),
               ],
             );
             // Center
@@ -59,7 +59,7 @@ class PrintService {
     }
   }
 
-  _buildTitle(AppLocalizations texts) {
+  _buildTitle(AppLocalizations l10n) {
     final creationTimestamp = printParameters.paymentInfo?.creationTimestamp;
 
     return pw.Row(
@@ -75,7 +75,7 @@ class PrintService {
             ? pw.Column(
                 children: [
                   pw.Text(
-                    texts.utils_print_pdf_transaction_time,
+                    l10n.utils_print_pdf_transaction_time,
                     style: pw.TextStyle(
                       fontWeight: pw.FontWeight.bold,
                       letterSpacing: 0.5,
@@ -109,34 +109,34 @@ class PrintService {
   }
 
   pw.Table _buildTable(
-    AppLocalizations texts,
+    AppLocalizations l10n,
     Map<String, ByteData> fontMap,
   ) {
     return pw.Table(
-      children: _buildTableContent(texts, fontMap),
+      children: _buildTableContent(l10n, fontMap),
       border: pw.TableBorder.all(width: 1),
       defaultColumnWidth: pw.IntrinsicColumnWidth(),
     );
   }
 
   _buildTableContent(
-    AppLocalizations texts,
+    AppLocalizations l10n,
     Map<String, ByteData> fontMap,
   ) {
     List<pw.TableRow> saleLines = [];
-    saleLines.add(_addTableHeader(texts));
+    saleLines.add(_addTableHeader(l10n));
     saleLines = _addSales(saleLines, fontMap);
-    saleLines.add(_addTotalLineToTable(texts, fontMap));
+    saleLines.add(_addTotalLineToTable(l10n, fontMap));
     return saleLines;
   }
 
-  _addTableHeader(AppLocalizations texts) {
+  _addTableHeader(AppLocalizations l10n) {
     return pw.TableRow(
       children: [
-        _buildTableItem(texts.utils_print_pdf_header_item),
-        _buildTableItem(texts.utils_print_pdf_header_price),
-        _buildTableItem(texts.utils_print_pdf_header_quantity),
-        _buildTableItem(texts.utils_print_pdf_header_amount),
+        _buildTableItem(l10n.utils_print_pdf_header_item),
+        _buildTableItem(l10n.utils_print_pdf_header_price),
+        _buildTableItem(l10n.utils_print_pdf_header_quantity),
+        _buildTableItem(l10n.utils_print_pdf_header_amount),
       ],
     );
   }
@@ -179,7 +179,7 @@ class PrintService {
   }
 
   _addTotalLineToTable(
-    AppLocalizations texts,
+    AppLocalizations l10n,
     Map<String, ByteData> fontMap,
   ) {
     final sale = printParameters.submittedSale;
@@ -210,7 +210,7 @@ class PrintService {
       children: [
         pw.SizedBox(),
         pw.SizedBox(),
-        _buildTableItem(texts.utils_print_pdf_header_total),
+        _buildTableItem(l10n.utils_print_pdf_header_total),
         _buildTableItem(
           totalMsg,
           style: pw.TextStyle(
@@ -334,7 +334,7 @@ class PrintService {
     );
   }
 
-  pw.Widget _buildDescription(AppLocalizations texts) {
+  pw.Widget _buildDescription(AppLocalizations l10n) {
     return printParameters.submittedSale.note != null
         ? pw.Column(
             mainAxisSize: pw.MainAxisSize.min,
@@ -342,7 +342,7 @@ class PrintService {
             crossAxisAlignment: pw.CrossAxisAlignment.start,
             children: [
               pw.Text(
-                texts.utils_print_pdf_header_description,
+                l10n.utils_print_pdf_header_description,
                 style: pw.TextStyle(
                   fontWeight: pw.FontWeight.bold,
                   letterSpacing: 0.5,
@@ -355,7 +355,7 @@ class PrintService {
         : pw.SizedBox();
   }
 
-  pw.Widget _buildPaymentInfo(AppLocalizations texts) {
+  pw.Widget _buildPaymentInfo(AppLocalizations l10n) {
     final preimage = printParameters.paymentInfo?.preimage;
     return preimage != null && preimage.isNotEmpty
         ? pw.Column(
@@ -364,7 +364,7 @@ class PrintService {
             crossAxisAlignment: pw.CrossAxisAlignment.start,
             children: [
               pw.Text(
-                texts.utils_print_pdf_header_payment_preimage,
+                l10n.utils_print_pdf_header_payment_preimage,
                 style: pw.TextStyle(
                   fontWeight: pw.FontWeight.bold,
                   letterSpacing: 0.5,

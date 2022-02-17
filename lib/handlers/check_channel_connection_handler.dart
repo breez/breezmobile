@@ -5,10 +5,10 @@ import 'package:breez/logger.dart';
 import 'package:breez/services/device.dart';
 import 'package:breez/services/injector.dart';
 import 'package:breez/theme_data.dart' as theme;
+import 'package:breez/utils/build_context.dart';
 import 'package:breez/widgets/flushbar.dart';
 import 'package:flushbar/flushbar.dart';
 import 'package:flutter/widgets.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class CheckChannelConnection {
   static final _instance = CheckChannelConnection._internal();
@@ -76,10 +76,11 @@ class CheckChannelConnection {
       return;
     }
 
-    final texts = AppLocalizations.of(context);
+    var l10n = context.l10n;
+
     _flushbar = showFlushbar(
       context,
-      buttonText: texts.handler_channel_connection_close,
+      buttonText: l10n.handler_channel_connection_close,
       onDismiss: () {
         _flushbar = null;
         return true;
@@ -87,7 +88,7 @@ class CheckChannelConnection {
       position: FlushbarPosition.TOP,
       duration: Duration.zero,
       messageWidget: Text(
-        texts.handler_channel_connection_message,
+        l10n.handler_channel_connection_message,
         style: theme.snackBarStyle,
         textAlign: TextAlign.start,
       ),
