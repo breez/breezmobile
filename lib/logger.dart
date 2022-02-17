@@ -32,14 +32,20 @@ class BreezLogger {
     Logger.root.level = Level.ALL;
     Logger.root.onRecord.listen((LogRecord rec) {
       breezBridge.log(rec.message, rec.level.name);
+      print(rec.message);
     });
     // Log flutter errors
     FlutterError.onError = (FlutterErrorDetails details) {
+      if (details == null) {
+        print("Ignore log, details is null");
+        return;
+      }
       FlutterError.presentError(details);
-      if (details != null && details.context != null)
-        breezBridge.log(
-            details.exceptionAsString() + '\n' + details.stack.toString(),
-            details.context.name ?? "FlutterError");
+      final stack = details.stack?.toString() ?? "NoStack";
+      final name = details.context?.name ?? "FlutterError";
+      final exception = details.exceptionAsString();
+      breezBridge.log(exception + '\n' + stack, name);
+      print(exception + '\n' + stack + " --" + name);
     };
   }
 }

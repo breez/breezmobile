@@ -10,8 +10,10 @@ import 'package:flutter/material.dart';
 class SetAdminPasswordPage extends StatefulWidget {
   final String submitAction;
 
-  const SetAdminPasswordPage({Key key, @required this.submitAction})
-      : super(key: key);
+  const SetAdminPasswordPage({
+    Key key,
+    @required this.submitAction,
+  }) : super(key: key);
 
   @override
   State<StatefulWidget> createState() {
@@ -20,13 +22,14 @@ class SetAdminPasswordPage extends StatefulWidget {
 }
 
 class _SetAdminPasswordState extends State<SetAdminPasswordPage> {
-  TextEditingController _passwordController = new TextEditingController();
+  final _passwordController = TextEditingController();
+  final _repeatPasswordController = TextEditingController();
+  final _formKey = GlobalKey<FormState>();
+  final _passwordFocus = FocusNode();
+  final _repeatPasswordFocus = FocusNode();
+
   bool _passwordObscured = true;
   bool _repeatPasswordObscured = true;
-  TextEditingController _repeatPasswordController = new TextEditingController();
-  final _formKey = GlobalKey<FormState>();
-  final FocusNode _passwordFocus = FocusNode();
-  final FocusNode _repeatPasswordFocus = FocusNode();
 
   @override
   void initState() {
@@ -36,100 +39,104 @@ class _SetAdminPasswordState extends State<SetAdminPasswordPage> {
 
   @override
   Widget build(BuildContext context) {
+    var l10n = context.l10n;
+
     ThemeData themeData = context.theme;
     AppBarTheme appBarTheme = themeData.appBarTheme;
 
     UserProfileBloc userProfileBloc =
         AppBlocsProvider.of<UserProfileBloc>(context);
     return Scaffold(
-        appBar: AppBar(
-            iconTheme: appBarTheme.iconTheme,
-            backgroundColor: themeData.canvasColor,
-            toolbarTextStyle: appBarTheme.toolbarTextStyle,
-            titleTextStyle: appBarTheme.titleTextStyle,
-            automaticallyImplyLeading: false,
-            leading: backBtn.BackButton(),
-            title: Text("Manager Password"),
-            elevation: 0.0),
-        body: Padding(
-          padding: EdgeInsets.only(top: 16.0, left: 16.0, right: 16.0),
-          child: Form(
-              key: _formKey,
-              child: ListView(
-                children: <Widget>[
-                  TextFormField(
-                    focusNode: _passwordFocus,
-                    obscureText: _passwordObscured,
-                    textInputAction: TextInputAction.next,
-                    onFieldSubmitted: (_) {
-                      _repeatPasswordFocus.requestFocus();
+      appBar: AppBar(
+          iconTheme: appBarTheme.iconTheme,
+          backgroundColor: themeData.canvasColor,
+          toolbarTextStyle: appBarTheme.toolbarTextStyle,
+          titleTextStyle: appBarTheme.titleTextStyle,
+          automaticallyImplyLeading: false,
+          leading: backBtn.BackButton(),
+          title: Text(l10n.pos_password_admin_title),
+          elevation: 0.0),
+      body: Padding(
+        padding: EdgeInsets.only(top: 16.0, left: 16.0, right: 16.0),
+        child: Form(
+          key: _formKey,
+          child: ListView(
+            children: <Widget>[
+              TextFormField(
+                focusNode: _passwordFocus,
+                obscureText: _passwordObscured,
+                textInputAction: TextInputAction.next,
+                onFieldSubmitted: (_) {
+                  _repeatPasswordFocus.requestFocus();
+                },
+                validator: (value) {
+                  if (value.length == 0) {
+                    return l10n.pos_password_admin_error_password_empty;
+                  }
+                  if (value.length < 8) {
+                    return l10n.pos_password_admin_error_password_short;
+                  }
+                  return null;
+                },
+                controller: _passwordController,
+                decoration: InputDecoration(
+                  labelText: l10n.pos_password_admin_new_password,
+                  suffixIcon: IconButton(
+                    icon: Icon(Icons.remove_red_eye),
+                    onPressed: () {
+                      setState(() {
+                        _passwordObscured = !_passwordObscured;
+                      });
                     },
-                    validator: (value) {
-                      if (value.length == 0) {
-                        return "Password is required";
-                      }
-
-                      if (value.length < 8) {
-                        return "At least 8 characters are required";
-                      }
-                      return null;
-                    },
-                    controller: _passwordController,
-                    decoration: InputDecoration(
-                        labelText: "Enter a new password",
-                        suffixIcon: IconButton(
-                          icon: Icon(Icons.remove_red_eye),
-                          onPressed: () {
-                            setState(() {
-                              _passwordObscured = !_passwordObscured;
-                            });
-                          },
-                        )),
-                    style: theme.FieldTextStyle.textStyle,
-                    textCapitalization: TextCapitalization.words,
                   ),
-                  SizedBox(height: 12.0),
-                  TextFormField(
-                    obscureText: _repeatPasswordObscured,
-                    focusNode: _repeatPasswordFocus,
-                    textInputAction: TextInputAction.done,
-                    decoration: InputDecoration(
-                        labelText: "Confirm password",
-                        suffixIcon: IconButton(
-                          icon: Icon(Icons.remove_red_eye),
-                          onPressed: () {
-                            setState(() {
-                              _repeatPasswordObscured =
-                              !_repeatPasswordObscured;
-                            });
-                          },
-                        )),
-                    controller: _repeatPasswordController,
-                    style: theme.FieldTextStyle.textStyle,
-                    textCapitalization: TextCapitalization.words,
-                    onFieldSubmitted: (_) {
-                      _formKey.currentState.validate();
+                ),
+                style: theme.FieldTextStyle.textStyle,
+                textCapitalization: TextCapitalization.words,
+              ),
+              SizedBox(height: 12.0),
+              TextFormField(
+                obscureText: _repeatPasswordObscured,
+                focusNode: _repeatPasswordFocus,
+                textInputAction: TextInputAction.done,
+                decoration: InputDecoration(
+                  labelText: l10n.pos_password_admin_confirm_password,
+                  suffixIcon: IconButton(
+                    icon: Icon(Icons.remove_red_eye),
+                    onPressed: () {
+                      setState(() {
+                        _repeatPasswordObscured = !_repeatPasswordObscured;
+                      });
                     },
-                    validator: (value) {
-                      if (value != _passwordController.text) {
-                        return "Passwords don't match";
-                      }
-                      return null;
-                    },
-                  )
-                ],
-              )),
+                  ),
+                ),
+                controller: _repeatPasswordController,
+                style: theme.FieldTextStyle.textStyle,
+                textCapitalization: TextCapitalization.words,
+                onFieldSubmitted: (_) {
+                  _formKey.currentState.validate();
+                },
+                validator: (value) {
+                  if (value != _passwordController.text) {
+                    return l10n.pos_password_admin_error_password_match;
+                  }
+                  return null;
+                },
+              )
+            ],
+          ),
         ),
-        bottomNavigationBar: SingleButtonBottomBar(
-            text: widget.submitAction,
-            onPressed: () async {
-              if (_formKey.currentState.validate()) {
-                SetAdminPassword action =
-                    SetAdminPassword(_passwordController.text);
-                userProfileBloc.userActionsSink.add(action);
-                await action.future;
-                context.pop();
-              }
-            }));
+      ),
+      bottomNavigationBar: SingleButtonBottomBar(
+        text: widget.submitAction,
+        onPressed: () async {
+          if (_formKey.currentState.validate()) {
+            final action = SetAdminPassword(_passwordController.text);
+            userProfileBloc.userActionsSink.add(action);
+            await action.future;
+            context.pop();
+          }
+        },
+      ),
+    );
   }
 }

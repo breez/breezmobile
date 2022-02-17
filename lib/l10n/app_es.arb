@@ -1279,6 +1279,8 @@
   "utils_print_pdf_header_payment_preimage": "Pre-imagen de pago:",
   "handler_check_version_action_update": "ACTUALIZAR",
   "handler_check_version_message": "Actualice Breez a la última versión.",
+  "handler_channel_connection_message": "La Breez está offline",
+  "handler_channel_connection_close": "CERRAR",
   "handler_lnurl_error_link": "Error de enlace",
   "handler_lnurl_error_process": "No se pudo procesar el enlace: {message}",
   "@handler_lnurl_error_process": {
@@ -1391,6 +1393,78 @@
   "csv_exporter_amount": "Monto",
   "csv_exporter_preimage": "Preimagen",
   "csv_exporter_tx_hash": "TX Hash",
+  "pos_settings_title": "Configuración de PDV",
+  "pos_settings_cancellation_timeout": "Tiempo de espera para cancelación de pago (en segundos)",
+  "pos_settings_items_list": "Lista de artículos",
+  "pos_settings_import_csv": "Importar desde CSV",
+  "pos_settings_export_csv": "Exportar a CSV",
+  "pos_settings_import_dialog_title": "Artículos de importación",
+  "pos_settings_import_dialog_message": "Importar esta lista reemplazará la lista existente. Estás seguro de que quieres continuar?",
+  "pos_settings_import_action_yes": "SÍ",
+  "pos_settings_import_action_no": "NO",
+  "pos_settings_import_select_message": "Seleccione un archivo CSV.",
+  "pos_settings_import_success_message": "Los artículos se importaron correctamente.",
+  "pos_settings_import_error_generic": "Error al importar artículos a POS.",
+  "pos_settings_import_error_invalid_file": "El archivo seleccionado no es un archivo CSV válido.",
+  "pos_settings_import_error_invalid_data": "El archivo seleccionado contiene datos inválidos.",
+  "pos_settings_export_error_generic": "Error al exportar artículos de PDV.",
+  "pos_settings_export_error_no_items": "No hay elementos para exportar.",
+  "pos_settings_create_manager_password": "Crear contraseña del gerente",
+  "pos_settings_activate_manager_password": "Habilitar contraseña del gerente",
+  "pos_settings_change_manager_password": "Cambiar contraseña del gerente",
+  "pos_settings_manager_password_error_title": "Contraseña del gerente",
+  "pos_settings_manager_password_error_message": "La contraseña del gerente solo se puede configurar si tiene una copia de seguridad activa. Para activar un proceso de copia de seguridad, vaya a Recibir > Recibir mediante Dirección BTC.",
+  "pos_settings_manager_password_title": "Contraseña del gerente",
+  "pos_settings_manager_password_message": "Si la contraseña del gerente está habilitada, el envío de fondos desde Breez requerirá que ingrese esta contraseña.\n¿Está seguro de que desea habilitar la contraseña del gerente?",
+  "pos_settings_manager_password_action_create": "CREAR",
+  "pos_settings_manager_password_action_change": "ALTERAR",
+  "pos_settings_business_address": "Dirección de Negocios",
+  "pos_settings_address_line_1": "Dirección 1",
+  "pos_settings_address_line_2": "Dirección 2",
+  "pos_settings_id": "ID",
+  "pos_settings_name": "Nombre",
+  "pos_settings_sku": "SKU",
+  "pos_settings_image_url": "URL de la imagen",
+  "pos_settings_currency": "Moneda",
+  "pos_settings_price": "Precio",
+  "pos_password_admin_title": "Contraseña del gerente",
+  "pos_password_admin_error_password_empty": "Se requiere contraseña",
+  "pos_password_admin_error_password_short": "Se requieren al menos 8 caracteres",
+  "pos_password_admin_error_password_match": "Las contraseñas no coinciden",
+  "pos_password_admin_new_password": "Introduzca una nueva contraseña",
+  "pos_password_admin_confirm_password": "Confirme la contraseña",
+  "pos_dialog_clock": "{minutes}:{seconds}",
+  "@pos_dialog_clock": {
+    "placeholders": {
+      "minutes": {
+        "type": "String",
+        "example": "1"
+      },
+      "seconds": {
+        "type": "String",
+        "example": "30"
+      }
+    }
+  },
+  "pos_dialog_title": "Escanea el código QR para pagar",
+  "pos_dialog_share": "Compartir datos de factura",
+  "pos_dialog_invoice_copy": "Copiar datos de factura",
+  "pos_dialog_invoice_copied": "Los datos de la factura se han copiado en el portapapeles.",
+  "pos_dialog_clear_sale": "LIMPIAR",
+  "pos_dialog_cancel": "CANCELAR",
+  "pos_dialog_setup_fee": "Se aplicará una tarifa de instalación de {fee} ({fiat}) a esta factura.",
+  "@pos_dialog_setup_fee": {
+    "placeholders": {
+      "fee": {
+        "type": "String",
+        "example": "1000 sats"
+      },
+      "fiat": {
+        "type": "String",
+        "example": "$ 30"
+      }
+    }
+  },
   "locale": "es",
   "app_name": "Breez"
 }

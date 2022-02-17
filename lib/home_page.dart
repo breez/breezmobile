@@ -20,6 +20,7 @@ import 'package:breez/bloc/lsp/lsp_model.dart';
 import 'package:breez/bloc/reverse_swap/reverse_swap_bloc.dart';
 import 'package:breez/bloc/user_profile/breez_user_model.dart';
 import 'package:breez/bloc/user_profile/user_profile_bloc.dart';
+import 'package:breez/handlers/check_channel_connection_handler.dart';
 import 'package:breez/routes/admin_login_dialog.dart';
 import 'package:breez/routes/charge/pos_invoice.dart';
 import 'package:breez/routes/home/bottom_actions_bar.dart';
@@ -27,6 +28,7 @@ import 'package:breez/routes/home/qr_action_button.dart';
 import 'package:breez/routes/marketplace/marketplace.dart';
 import 'package:breez/routes/podcast/podcast_page.dart' as breezPodcast;
 import 'package:breez/routes/podcast/theme.dart';
+import 'package:breez/services/injector.dart';
 import 'package:breez/theme_data.dart' as theme;
 import 'package:breez/utils/build_context.dart';
 import 'package:breez/widgets/close_popup.dart';
@@ -163,7 +165,7 @@ class HomeState extends State<Home> with WidgetsBindingObserver {
   void _initListens(BuildContext context) {
     if (_listensInit) return;
     _listensInit = true;
-
+    ServiceInjector().breezBridge.initBreezLib();
     _registerNotificationHandlers(context);
     listenUnexpectedError(context, widget.accountBloc);
     _listenBackupConflicts(context);
@@ -712,6 +714,7 @@ class HomeState extends State<Home> with WidgetsBindingObserver {
       );
     });
     checkVersionDialog(context, widget.userProfileBloc);
+    CheckChannelConnection().startListen(context, widget.accountBloc);
   }
 
   void _listenBackupConflicts(BuildContext context) {
