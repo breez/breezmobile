@@ -286,7 +286,7 @@ class PosInvoiceItemsView extends StatelessWidget {
                 ? null
                 : () {
                     itemFilterController.text = "";
-                    FocusScope.of(context).requestFocus(FocusNode());
+                    context.focusScope.requestFocus(FocusNode());
                   },
             padding: EdgeInsets.only(right: 24, top: 4),
           ),

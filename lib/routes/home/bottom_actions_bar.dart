@@ -225,8 +225,7 @@ class _Action extends StatelessWidget {
         child: Text(
           text,
           textAlign: TextAlign.center,
-          style: theme.bottomAppBarBtnStyle.copyWith(
-              fontSize: 13.5 / MediaQuery.of(context).textScaleFactor),
+          style: theme.bottomAppBarBtnStyle.copyWith(fontSize: 13.5 / context.textScaleFactor),
           maxLines: 1,
         ),
       ),

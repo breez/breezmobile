@@ -484,13 +484,13 @@ class CreateInvoicePageState extends State<CreateInvoicePage> {
       ),
     );
     context.pop();
-    var currentRoute = ModalRoute.of(Navigator.of(context).context);
+    var currentRoute = ModalRoute.of(context.navigator.context);
     Widget dialog = _withdrawFetchResponse != null
         ? LNURlWithdrawDialog(invoiceBloc, accountBloc, lnurlBloc, (result) {
-            onPaymentFinished(result, currentRoute, Navigator.of(context));
+            onPaymentFinished(result, currentRoute, context.navigator);
           })
         : QrCodeDialog(context, invoiceBloc, accountBloc, (result) {
-            onPaymentFinished(result, currentRoute, Navigator.of(context));
+            onPaymentFinished(result, currentRoute, context.navigator);
           });
     return _bgService.runAsTask(
         showDialog(
