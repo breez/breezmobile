@@ -15,7 +15,6 @@ import 'package:breez/widgets/compact_qr_image.dart';
 import 'package:breez/widgets/flushbar.dart';
 import 'package:breez/widgets/loader.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:share_extend/share_extend.dart';
 
 class PosPaymentResult {
@@ -103,20 +102,19 @@ class _PosPaymentDialogState extends State<PosPaymentDialog> {
 
         return AlertDialog(
           titlePadding: const EdgeInsets.fromLTRB(20.0, 22.0, 0.0, 8.0),
-          title: _buildDialogTitle(context, account),
+          title: _buildDialogTitle(account),
           contentPadding: const EdgeInsets.fromLTRB(20.0, 0.0, 20.0, 20.0),
-          content: _buildWaitingPayment(context, account),
+          content: _buildWaitingPayment(account),
         );
       },
     );
   }
 
-  Widget _buildDialogTitle(AccountModel account, BuildContext context) {
+  Widget _buildDialogTitle(AccountModel account) {
     var l10n = context.l10n;
     ThemeData theme = context.theme;
     DialogTheme dialogTheme = theme.dialogTheme;
     Color buttonColor = theme.primaryTextTheme.button.color;
-
 
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -134,13 +132,12 @@ class _PosPaymentDialogState extends State<PosPaymentDialog> {
               highlightColor: Colors.transparent,
               padding: const EdgeInsets.fromLTRB(14.0, 8.0, 2.0, 8.0),
               icon: Icon(IconData(0xe917, fontFamily: 'icomoon')),
-              tooltip: l10n.pos_dialog_share,
               color: buttonColor,
+              tooltip: l10n.pos_dialog_share,
               onPressed: () {
                 ShareExtend.share(
                     "lightning:" + widget.paymentRequest.rawPayReq, "text");
               },
-              tooltip: l10n.pos_dialog_share,
             ),
             IconButton(
               splashColor: Colors.transparent,
@@ -166,7 +163,7 @@ class _PosPaymentDialogState extends State<PosPaymentDialog> {
     );
   }
 
-  Widget _buildWaitingPayment(AccountModel account, BuildContext context) {
+  Widget _buildWaitingPayment(AccountModel account) {
     var l10n = context.l10n;
     TextStyle headline4 = context.primaryTextTheme.headline4;
 

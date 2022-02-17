@@ -41,8 +41,6 @@ class PaymentItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    ThemeData themeData = context.theme;
-    TextTheme textTheme = themeData.textTheme;
     TextStyle titleTextStyle = TextStyle(
         fontSize: 13.5,
         fontWeight: FontWeight.w500,
@@ -53,7 +51,6 @@ class PaymentItem extends StatelessWidget {
         fontWeight: FontWeight.w400,
         height: 1.16,
         letterSpacing: 0.39);
-
     Color secondaryColor = (themeId == "BLUE") ? Colors.black : Colors.white;
     Color captionColor =
         (themeId == "BLUE") ? Color(0xb3303234) : Colors.white70;
