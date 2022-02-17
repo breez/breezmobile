@@ -25,31 +25,43 @@ class CheckChannelConnection {
     BuildContext context,
     AccountBloc accountBloc,
   ) {
+    startSubscription(accountBloc, context);
     ServiceInjector().device.eventStream.distinct().listen((event) {
       switch (event) {
         case NotificationType.RESUME:
-          _subscription = accountBloc.accountStream
-              .map((acc) => acc.readyForPayments)
-              .distinct()
-              .listen((ready) {
-            if (ready) {
-              _readyForPayments();
-              _notReadyTimer?.cancel();
-            } else {
-              _notReadyTimer = Timer(Duration(seconds: 30), () {
-                _notReadyForPayments(context);
-              });
-            }
-          });
+          cancelSubscription();
+          startSubscription(accountBloc, context);
           break;
         case NotificationType.PAUSE:
-          _flushbar?.dismiss();
-          _flushbar = null;
-          _subscription?.cancel();
-          _notReadyTimer?.cancel();
+          cancelSubscription();
           break;
       }
     });
+  }
+
+  void startSubscription(AccountBloc accountBloc, BuildContext context) {
+    _subscription = accountBloc.accountStream
+        .map((acc) => acc.readyForPayments)
+        .distinct()
+        .listen((ready) {
+      if (ready) {
+        _readyForPayments();
+        _notReadyTimer?.cancel();
+      } else {
+        _notReadyTimer = Timer(Duration(seconds: 30), () {
+          _notReadyForPayments(context);
+        });
+      }
+    });
+  }
+
+  void cancelSubscription() {
+    _flushbar?.dismiss();
+    _flushbar = null;
+    _subscription?.cancel();
+    _subscription = null;
+    _notReadyTimer?.cancel();
+    _notReadyTimer = null;
   }
 
   void _readyForPayments() {
