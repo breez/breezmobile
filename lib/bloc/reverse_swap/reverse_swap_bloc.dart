@@ -2,6 +2,8 @@ import 'dart:async';
 
 import 'package:breez/bloc/account/account_model.dart';
 import 'package:breez/bloc/async_actions_handler.dart';
+import 'package:breez/bloc/payment_options/payment_options_actions.dart';
+import 'package:breez/bloc/payment_options/payment_options_bloc.dart';
 import 'package:breez/bloc/reverse_swap/reverse_swap_actions.dart';
 import 'package:breez/bloc/reverse_swap/reverse_swap_model.dart';
 import 'package:breez/bloc/user_profile/breez_user_model.dart';
@@ -32,8 +34,13 @@ class ReverseSwapBloc with AsyncActionsHandler {
   BreezUserModel _currentUser;
   int refreshInProgressIndex = 0;
   Notifications _notificationsService;
+  PaymentOptionsBloc _paymentOptionsBloc;
 
-  ReverseSwapBloc(this._paymentsStream, this._userStream) {
+  ReverseSwapBloc(
+    this._paymentsStream,
+    this._userStream,
+    this._paymentOptionsBloc,
+  ) {
     ServiceInjector injector = ServiceInjector();
     _breezLib = injector.breezBridge;
     _notificationsService = injector.notifications;
@@ -132,12 +139,14 @@ class ReverseSwapBloc with AsyncActionsHandler {
       }
     };
 
+    final fee = await _calculateFee(action.amount.toInt());
     Future.any([
       _breezLib.payReverseSwap(
         hash,
         _currentUser.token ?? "",
         _notificationTitle(),
         _notificationBody(),
+        fee,
       ),
       _paymentsStream
           .where((payments) => payments.nonFilteredItems
@@ -172,4 +181,10 @@ class ReverseSwapBloc with AsyncActionsHandler {
 
   String _notificationBody() =>
       getSystemAppLocalizations().reverse_swap_notification_body;
+
+  Future<int> _calculateFee(int amount) async {
+    final calculateFee = CalculateFee(amount);
+    _paymentOptionsBloc.actionsSink.add(calculateFee);
+    return await calculateFee.future;
+  }
 }

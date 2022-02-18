@@ -1,6 +1,6 @@
 ///
 //  Generated code. Do not modify.
-//  source: messages.proto
+//  source: rpc.proto
 //
 // @dart = 2.12
 // ignore_for_file: annotate_overrides,camel_case_types,unnecessary_const,non_constant_identifier_names,library_prefixes,unused_import,unused_shown_name,return_of_invalid_type,unnecessary_this,prefer_final_fields
@@ -1088,6 +1088,7 @@ class PayInvoiceRequest extends $pb.GeneratedMessage {
   static final $pb.BuilderInfo _i = $pb.BuilderInfo(const $core.bool.fromEnvironment('protobuf.omit_message_names') ? '' : 'PayInvoiceRequest', package: const $pb.PackageName(const $core.bool.fromEnvironment('protobuf.omit_message_names') ? '' : 'data'), createEmptyInstance: create)
     ..aInt64(1, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'amount')
     ..aOS(2, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'paymentRequest', protoName: 'paymentRequest')
+    ..aInt64(3, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'fee')
     ..hasRequiredFields = false
   ;
 
@@ -1095,6 +1096,7 @@ class PayInvoiceRequest extends $pb.GeneratedMessage {
   factory PayInvoiceRequest({
     $fixnum.Int64? amount,
     $core.String? paymentRequest,
+    $fixnum.Int64? fee,
   }) {
     final _result = create();
     if (amount != null) {
@@ -1102,6 +1104,9 @@ class PayInvoiceRequest extends $pb.GeneratedMessage {
     }
     if (paymentRequest != null) {
       _result.paymentRequest = paymentRequest;
+    }
+    if (fee != null) {
+      _result.fee = fee;
     }
     return _result;
   }
@@ -1143,6 +1148,15 @@ class PayInvoiceRequest extends $pb.GeneratedMessage {
   $core.bool hasPaymentRequest() => $_has(1);
   @$pb.TagNumber(2)
   void clearPaymentRequest() => clearField(2);
+
+  @$pb.TagNumber(3)
+  $fixnum.Int64 get fee => $_getI64(2);
+  @$pb.TagNumber(3)
+  set fee($fixnum.Int64 v) { $_setInt64(2, v); }
+  @$pb.TagNumber(3)
+  $core.bool hasFee() => $_has(2);
+  @$pb.TagNumber(3)
+  void clearFee() => clearField(3);
 }
 
 class SpontaneousPaymentRequest extends $pb.GeneratedMessage {
@@ -5258,6 +5272,7 @@ class ReverseSwapPaymentRequest extends $pb.GeneratedMessage {
   static final $pb.BuilderInfo _i = $pb.BuilderInfo(const $core.bool.fromEnvironment('protobuf.omit_message_names') ? '' : 'ReverseSwapPaymentRequest', package: const $pb.PackageName(const $core.bool.fromEnvironment('protobuf.omit_message_names') ? '' : 'data'), createEmptyInstance: create)
     ..aOS(1, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'hash')
     ..aOM<PushNotificationDetails>(2, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'pushNotificationDetails', subBuilder: PushNotificationDetails.create)
+    ..aInt64(3, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'fee')
     ..hasRequiredFields = false
   ;
 
@@ -5265,6 +5280,7 @@ class ReverseSwapPaymentRequest extends $pb.GeneratedMessage {
   factory ReverseSwapPaymentRequest({
     $core.String? hash,
     PushNotificationDetails? pushNotificationDetails,
+    $fixnum.Int64? fee,
   }) {
     final _result = create();
     if (hash != null) {
@@ -5272,6 +5288,9 @@ class ReverseSwapPaymentRequest extends $pb.GeneratedMessage {
     }
     if (pushNotificationDetails != null) {
       _result.pushNotificationDetails = pushNotificationDetails;
+    }
+    if (fee != null) {
+      _result.fee = fee;
     }
     return _result;
   }
@@ -5315,6 +5334,15 @@ class ReverseSwapPaymentRequest extends $pb.GeneratedMessage {
   void clearPushNotificationDetails() => clearField(2);
   @$pb.TagNumber(2)
   PushNotificationDetails ensurePushNotificationDetails() => $_ensure(1);
+
+  @$pb.TagNumber(3)
+  $fixnum.Int64 get fee => $_getI64(2);
+  @$pb.TagNumber(3)
+  set fee($fixnum.Int64 v) { $_setInt64(2, v); }
+  @$pb.TagNumber(3)
+  $core.bool hasFee() => $_has(2);
+  @$pb.TagNumber(3)
+  void clearFee() => clearField(3);
 }
 
 class PushNotificationDetails extends $pb.GeneratedMessage {
