@@ -4,6 +4,7 @@ import 'package:breez/bloc/connect_pay/connect_pay_bloc.dart';
 import 'package:breez/bloc/fastbitcoins/fastbitcoins_bloc.dart';
 import 'package:breez/bloc/lnurl/lnurl_bloc.dart';
 import 'package:breez/bloc/marketplace/marketplace_bloc.dart';
+import 'package:breez/bloc/payment_options/payment_options_bloc.dart';
 import 'package:breez/bloc/pos_catalog/bloc.dart';
 import 'package:breez/bloc/pos_catalog/sqlite/repository.dart';
 import 'package:breez/bloc/reverse_swap/reverse_swap_bloc.dart';
@@ -26,6 +27,7 @@ class AppBlocs {
   final LSPBloc lspBloc;
   final LNUrlBloc lnurlBloc;
   final PosCatalogBloc posCatalogBloc;
+  final PaymentOptionsBloc paymentOptionsBloc;
   final ReverseSwapBloc reverseSwapBloc;
   final Map<Type, Object> _blocsByType;
 
@@ -43,10 +45,15 @@ class AppBlocs {
     final sqliteRepository = SqliteRepository();
     UserProfileBloc userProfileBloc =
         _registerBloc(UserProfileBloc(), blocsByType);
+    PaymentOptionsBloc paymentOptionsBloc = _registerBloc(
+      PaymentOptionsBloc(),
+      blocsByType,
+    );
     AccountBloc accountBloc = _registerBloc(
         AccountBloc(
           userProfileBloc.userStream,
           sqliteRepository,
+          paymentOptionsBloc,
         ),
         blocsByType);
     InvoiceBloc invoicesBloc = _registerBloc(InvoiceBloc(), blocsByType);
@@ -62,7 +69,11 @@ class AppBlocs {
         _registerBloc(LSPBloc(accountBloc.accountStream), blocsByType);
     LNUrlBloc lnurlBloc = _registerBloc(LNUrlBloc(), blocsByType);
     ReverseSwapBloc reverseSwapBloc = _registerBloc(
-        ReverseSwapBloc(accountBloc.paymentsStream, userProfileBloc.userStream),
+        ReverseSwapBloc(
+          accountBloc.paymentsStream,
+          userProfileBloc.userStream,
+          paymentOptionsBloc,
+        ),
         blocsByType);
     PosCatalogBloc posCatalogBloc = _registerBloc(
         PosCatalogBloc(
@@ -85,6 +96,7 @@ class AppBlocs {
         reverseSwapBloc,
         lnurlBloc,
         posCatalogBloc,
+        paymentOptionsBloc,
         blocsByType);
   }
 
@@ -100,6 +112,7 @@ class AppBlocs {
     this.reverseSwapBloc,
     this.lnurlBloc,
     this.posCatalogBloc,
+    this.paymentOptionsBloc,
     this._blocsByType,
   );
 }

@@ -394,6 +394,16 @@ class HomeState extends State<Home> with WidgetsBindingObserver {
         "src/icon/security.png",
         onItemSelected: (_) => protectAdminRoute(context, user, "/security"),
       ),
+      DrawerItemConfig(
+        "",
+        texts.home_drawer_item_title_payment_options,
+        "src/icon/payment_options.png",
+        onItemSelected: (_) => protectAdminRoute(
+          context,
+          user,
+          "/payment_options",
+        ),
+      ),
       ..._drawerConfigAdvancedFlavorItems(context, user, texts),
     ];
   }
