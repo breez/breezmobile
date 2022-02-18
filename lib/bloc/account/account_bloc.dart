@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
+import 'dart:ffi';
 import 'dart:io';
 
 import 'package:breez/bloc/account/account_actions.dart';
@@ -7,6 +8,8 @@ import 'package:breez/bloc/account/account_permissions_handler.dart';
 import 'package:breez/bloc/account/fiat_conversion.dart';
 import 'package:breez/bloc/async_action.dart';
 import 'package:breez/bloc/csv_exporter.dart';
+import 'package:breez/bloc/payment_options/payment_options_actions.dart';
+import 'package:breez/bloc/payment_options/payment_options_bloc.dart';
 import 'package:breez/bloc/pos_catalog/repository.dart';
 import 'package:breez/bloc/user_profile/breez_user_model.dart';
 import 'package:breez/logger.dart';
@@ -22,6 +25,7 @@ import 'package:breez/services/notifications.dart';
 import 'package:breez/utils/retry.dart';
 import 'package:collection/collection.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
+import 'package:fixnum/fixnum.dart';
 import 'package:flutter/foundation.dart';
 import 'package:rxdart/rxdart.dart';
 
@@ -132,10 +136,12 @@ class AccountBloc {
   Completer _onBoardingCompleter = Completer();
   Stream<BreezUserModel> userProfileStream;
   Completer<bool> startDaemonCompleter = Completer<bool>();
+  PaymentOptionsBloc _paymentOptionsBloc;
 
   AccountBloc(
     this.userProfileStream,
     this._posRepository,
+    this._paymentOptionsBloc,
   ) {
     init();
   }
@@ -417,9 +423,13 @@ class AccountBloc {
     if (action.ignoreGlobalFeedback) {
       _ignoredFeedbackPayments[payRequest.paymentRequest] = true;
     }
+    final fee = await _calculateFee(payRequest.amount.toInt());
     var sendRequest = _breezLib
-        .sendPaymentForRequest(payRequest.paymentRequest,
-            amount: payRequest.amount)
+        .sendPaymentForRequest(
+            payRequest.paymentRequest,
+            amount: payRequest.amount,
+            fee: Int64(fee),
+        )
         .then((response) async {
       if (response.paymentError.isNotEmpty) {
         var error = PaymentError(
@@ -922,6 +932,12 @@ class AccountBloc {
       fiatShortName: _currentUser?.fiatCurrency,
       preferredCurrencies: _currentUser?.preferredCurrencies,
     ));
+  }
+
+  Future<int> _calculateFee(int amount) async {
+    final calculateFee = CalculateFee(amount);
+    _paymentOptionsBloc.actionsSink.add(calculateFee);
+    return await calculateFee.future;
   }
 
   close() {

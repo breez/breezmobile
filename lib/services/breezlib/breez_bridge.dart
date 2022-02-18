@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
+import 'dart:ffi';
 import 'dart:io';
 import 'package:breez/bloc/lnurl/lnurl_model.dart';
 import 'package:breez/logger.dart' as logger;
@@ -288,14 +289,20 @@ class BreezBridge {
   }
 
   Future payReverseSwap(
-      String hash, String token, String ntfnTitle, String ntfnBody) {
+    String hash,
+    String token,
+    String ntfnTitle,
+    String ntfnBody,
+    int fee,
+  ) {
     var ntfnDetails = PushNotificationDetails()
       ..title = ntfnTitle
       ..body = ntfnBody
       ..deviceId = token;
     var request = ReverseSwapPaymentRequest()
       ..pushNotificationDetails = ntfnDetails
-      ..hash = hash;
+      ..hash = hash
+      ..fee = Int64(fee);
     return _invokeMethodWhenReady(
         "payReverseSwap", {"argument": request.writeToBuffer()});
   }
@@ -363,13 +370,16 @@ class BreezBridge {
   }
 
   Future<PaymentResponse> sendPaymentForRequest(
-      String blankInvoicePaymentRequest,
-      {Int64 amount}) {
+    String blankInvoicePaymentRequest, {
+    Int64 amount,
+    Int64 fee,
+  }) {
     PayInvoiceRequest invoice = PayInvoiceRequest();
     if (amount == null) {
       amount = Int64(0);
     }
     invoice.amount = amount;
+    invoice.fee = fee ?? Int64(0);
     invoice.paymentRequest = blankInvoicePaymentRequest;
 
     var payFunc = () => _invokeMethodWhenReady(
