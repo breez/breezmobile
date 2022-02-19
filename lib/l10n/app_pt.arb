@@ -113,7 +113,7 @@
       }
     }
   },
-  "invoice_btc_address_deposit_address": "Endereço de Depósito",
+  "invoice_btc_address_deposit_address": "Endereço de depósito",
   "invoice_btc_address_deposit_address_copied": "O endereço de depósito foi copiado para a área de transferência.",
   "invoice_btc_address_on_chain_begin": "Breez está usando Submarine Swaps para executar transações on-chain. Toque ",
   "invoice_btc_address_on_chain_here": "aqui",
