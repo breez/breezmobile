@@ -233,7 +233,7 @@
   "bottom_action_bar_receive_invoice": "Receber via fatura",
   "bottom_action_bar_receive_btc_address": "Receber via endereço BTC",
   "bottom_action_bar_buy_bitcoin": "Comprar bitcoin",
-  "bottom_action_bar_warning_balance_title": "Breez requer que você mantenha ao menos {balance} no saldo.",
+  "bottom_action_bar_warning_balance_title": "A Breez requer que você mantenha ao menos {balance} no saldo.",
   "@bottom_action_bar_warning_balance_title": {
     "placeholders": {
       "balance": {
@@ -262,8 +262,8 @@
       }
     }
   },
-  "payment_details_dialog_closed_channel_transfer_no_estimation": "Esperando os fundos do canal encerrado serem transferidos para a sua carteira local",
-  "payment_details_dialog_closed_channel_transfer_estimation": "Esperando os fundos do canal encerrado serem transferidos para a sua carteira local no bloco ${lockHeight} (${hoursToUnlock})",
+  "payment_details_dialog_closed_channel_transfer_no_estimation": "Aguardando os fundos do canal encerrado serem transferidos para a sua carteira local",
+  "payment_details_dialog_closed_channel_transfer_estimation": "Aguardando os fundos do canal encerrado serem transferidos para a sua carteira local no bloco ${lockHeight} (${hoursToUnlock})",
   "@payment_details_dialog_closed_channel_transfer_estimation": {
     "placeholders": {
       "lockHeight": {
@@ -281,10 +281,10 @@
   "payment_details_dialog_restart_cancel": "CANCELAR",
   "payment_details_dialog_restart_exit_breez": "SAIR DA BREEZ",
   "payment_details_dialog_transaction_label_default": "ID da transação:",
-  "payment_details_dialog_internal_error": "Erro Interno",
+  "payment_details_dialog_internal_error": "Erro interno",
   "payment_details_dialog_refresh_information": "Atualizar informação",
   "payment_details_dialog_share_transaction": "Compartilhar o hash da transação",
-  "payment_details_dialog_share_lightning_address": "Endereço Relâmpago",
+  "payment_details_dialog_share_lightning_address": "Enviado para",
   "payment_details_dialog_share_comment": "Comentário",
   "payment_details_dialog_copy_action": "Copiar {title}",
   "@payment_details_dialog_copy_action": {
@@ -335,7 +335,7 @@
   "payment_info_dialog_hint": "Fatura ou ID",
   "payment_info_dialog_hint_expanded": "Insira uma fatura, ID de nó ou endereço Relâmpago.",
   "payment_info_dialog_barcode": "Ler código de barras",
-  "payment_info_dialog_error": "A Fatura, o ID ou o endereço é inválido",
+  "payment_info_dialog_error": "A fatura, o ID ou o endereço é inválido",
   "payment_info_dialog_error_qrcode": "O código QR não foi detectado.",
   "payment_info_dialog_action_cancel": "CANCELAR",
   "payment_info_dialog_action_approve": "APROVAR",
@@ -377,9 +377,9 @@
   "pos_invoice_search_no_items": "Nenhum item a ser exibido.\nAdicione itens aqui utilizando o botão '+'.",
   "pos_invoice_error_fiat_exchange_rates": "Não foi possível recuperar as cotações das moedas fiduciárias.",
   "pos_invoice_error_submit_header": "Informações incompletas",
-  "pos_invoice_error_submit_name_avatar": "Por favor adicione o seu nome comercial e selecione a logomarca da empresa na tela de Configurações.",
-  "pos_invoice_error_submit_name_only": "Por favor adicione o seu nome comercial na tela de Configurações.",
-  "pos_invoice_error_submit_avatar_only": "Por favor adicione a logomarca da empresa na tela de Configurações.",
+  "pos_invoice_error_submit_name_avatar": "Por favor adicione o seu nome comercial e selecione a logomarca da empresa na tela de configurações.",
+  "pos_invoice_error_submit_name_only": "Por favor adicione o seu nome comercial na tela de configurações.",
+  "pos_invoice_error_submit_avatar_only": "Por favor adicione a logomarca da empresa na tela de configurações.",
   "pos_invoice_error_fix_action": "IR PARA CONFIGURAÇÕES",
   "pos_invoice_error_capacity_header": "Sua conta não possui o volume necessário para receber este pagamento.",
   "pos_invoice_error_capacity_message": "O maior pagamento que a sua conta pode receber é de {maxAllowed}. Por favor insira um valor inferior a este.",
@@ -392,7 +392,7 @@
     }
   },
   "pos_invoice_error_payment_size_header": "Você excedeu o valor limite de pagamento.",
-  "pos_invoice_error_payment_size_message": "O valor máximo de pagamento na Rede Relâmpago é de {maxAllowed}. Por favor insira um valor inferior ou complete o pagamento em multiplas transações.",
+  "pos_invoice_error_payment_size_message": "O valor máximo de pagamento na rede Relâmpago é de {maxAllowed}. Por favor insira um valor inferior ou complete o pagamento em multiplas transações.",
   "@pos_invoice_error_payment_size_message": {
     "placeholders": {
       "maxAllowed": {
@@ -1266,7 +1266,7 @@
   "breez_avatar_dialog_action_cancel": "CANCELAR",
   "breez_avatar_dialog_action_save": "SALVAR",
   "breez_avatar_dialog_error_upload": "Falha ao enviar a foto do perfil",
-  "barcode_scanner_camera_message": "Para o escaneamento do QR code, conceda a permissão da câmera.",
+  "barcode_scanner_camera_message": "Para o escaneamento do código QR, conceda a permissão da câmera.",
   "barcode_scanner_app_settings": "Configurações do aplicativo",
   "utils_retry_failed": "Falha ao tentar novamente",
   "utils_print_pdf_transaction_time": "Hora da transação",
@@ -1281,7 +1281,7 @@
   "handler_check_version_message": "Por favor, atualize a Breez para a versão mais recente.",
   "handler_channel_connection_message": "A Breez está offline",
   "handler_channel_connection_close": "FECHAR",
-  "handler_lnurl_error_link": "Erro no Link",
+  "handler_lnurl_error_link": "Erro no link",
   "handler_lnurl_error_process": "Houve uma falha ao processar o link: {message}",
   "@handler_lnurl_error_process": {
     "placeholders": {
