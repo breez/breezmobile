@@ -381,7 +381,7 @@
   "pos_invoice_error_submit_name_only": "Por favor adicione o seu nome comercial na tela de configurações.",
   "pos_invoice_error_submit_avatar_only": "Por favor adicione a logomarca da empresa na tela de configurações.",
   "pos_invoice_error_fix_action": "IR PARA CONFIGURAÇÕES",
-  "pos_invoice_error_capacity_header": "Sua conta não possui o volume necessário para receber este pagamento.",
+  "pos_invoice_error_capacity_header": "Sua conta não possui a capacidade necessária para receber este pagamento.",
   "pos_invoice_error_capacity_message": "O maior pagamento que a sua conta pode receber é de {maxAllowed}. Por favor insira um valor inferior a este.",
   "@pos_invoice_error_capacity_message": {
     "placeholders": {
