@@ -11,10 +11,11 @@
   "home_drawer_item_title_pos_settings": "Myyntipisteasetukset",
   "home_drawer_item_title_developers": "Sovelluskehittäjille",
   "home_drawer_item_title_get_refund": "Varojen lunastus",
+  "home_drawer_item_title_payment_options": "Salamamaksun kulut",
   "home_drawer_error_internal": "Sisäinen virhe",
   "home_drawer_error_no_name": "Nimetön",
   "home_podcast_title": "Anytime Podcast Player",
-  "home_podcast_no_subscriptions": "Etsi ja tilaa ensimmäinen podcast Discover -näkymästä",
+  "home_podcast_no_subscriptions": "Etsi ja tilaa ensimmäinen podcast Discover -näkymästä.",
   "home_error_connect_to_pay": "Yhdistä maksajaan",
   "home_error_podcast_link": "Podcast-linkki",
   "home_broadcast_transaction": "Tapahtumaa lähetetään",
@@ -772,9 +773,9 @@
   "security_and_backup_new_pin": "Syötä uusi PIN-koodi",
   "security_and_backup_new_pin_second_time": "Syötä uusi PIN-koodi uudelleen",
   "security_and_backup_new_pin_do_not_match": "Annetut koodit eivät täsmää",
-  "backup_in_progress": "Varmuuskopioi ",
+  "backup_in_progress": "Varmuuskopioi",
   "backup_in_progress_action_confirm": "PIILOTA",
-  "network_title": "Verkot",
+  "network_title": "Verkko",
   "network_restart_message": "Uuden Bitcoin-solmun käyttöönotto vaatii sovelluksen uudelleenkäynnistyksen.",
   "network_restart_action_cancel": "Peruuta",
   "network_restart_action_confirm": "SULJE SOVELLUS",
@@ -783,7 +784,7 @@
   "network_bitcoin_node": "Käytettävän Bitcoin-solmun (BIP 157) verkko-osoite",
   "network_default_node_error": "Sovellus ei saa yhteyttä oletus-solmuun.",
   "network_custom_node_error": "Sovellus ei saa yhteyttä määritettyyn solmuun. Varmista että siinä on BIP 157 -tuki.",
-  "network_testing_node": "Testataan yhteyttä määritetyyn uuteen solmuun ",
+  "network_testing_node": "Testataan yhteyttä määritetyyn uuteen solmuun",
   "amount_form_denomination": "Määrä valuutassa {denomination}",
   "@amount_form_denomination": {
     "placeholders": {
@@ -994,7 +995,7 @@
   "initial_walk_through_welcome_message": "Yksinkertaisin, nopein ja turvallisin\ntapa käytää bitcoineja",
   "initial_walk_through_lets_breeze": "Aloita BREEZ!",
   "initial_walk_through_restore_from_backup": "Palauta varmuuskopio",
-  "initial_walk_through_restoring": "Palautetaan tietoja...",
+  "initial_walk_through_restoring": "Palautetaan tietoja…",
   "initial_walk_through_sign_in_icloud_title": "iCloud Kirjautuminen",
   "initial_walk_through_sign_in_icloud_message": "Kirjaudu iCloud-tilillesi. Mene aloitusnäkymään, avaa Asetukset, valitse iCloud ja syötä Apple-tunnuksesi. Kytke iCloud Drive -päälle. Mikäli sinulla ei ole iCloud-tiliä, napauta Luo uusi Apple-tunnus.",
   "initial_walk_through_error_backup_location": "Tällä käyttäjätilillä ei löytynyt varmuuskopioita",
@@ -1418,14 +1419,14 @@
   "pos_settings_manager_password_message": "Jos päällikön salasana on otettu käyttöön, niin varojen nostaminen sovelluksesta vaatii salasanan.\nOletko varma että haluat ottaa päällikön salasanan käyttöön?",
   "pos_settings_manager_password_action_create": "LUO",
   "pos_settings_manager_password_action_change": "MUUTA",
-  "pos_settings_business_address": "Toimipaikan osoite",
-  "pos_settings_address_line_1": "Osoite rivi 1",
-  "pos_settings_address_line_2": "Osoite rive 2",
+  "pos_settings_business_address": "Toimipaikan tiedot",
+  "pos_settings_address_line_1": "Rivi 1",
+  "pos_settings_address_line_2": "Rivi 2",
   "pos_settings_id": "ID",
-  "pos_settings_name": "Name",
+  "pos_settings_name": "Nimi",
   "pos_settings_sku": "Tuotetunnus",
   "pos_settings_image_url": "Kuvan URL",
-  "pos_settings_currency": "Currency",
+  "pos_settings_currency": "Valuutta",
   "pos_settings_price": "Hinta",
   "pos_password_admin_title": "Päällikön salasana",
   "pos_password_admin_error_password_empty": "Salasana on välttämätön",
@@ -1446,12 +1447,12 @@
       }
     }
   },
-  "pos_dialog_title": "Skannaa laskun tiedot",
+  "pos_dialog_title": "LASKUN SKANNAUS:",
   "pos_dialog_share": "Jaa lasku",
   "pos_dialog_invoice_copy": "Kopioi lasku",
-  "pos_dialog_invoice_copied": "Laskun tiedot kopioitiin leikepöydälle.",
-  "pos_dialog_clear_sale": "Mitätöi Lasku",
-  "pos_dialog_cancel": "PALAA",
+  "pos_dialog_invoice_copied": "Lasku kopioitiin leikepöydälle.",
+  "pos_dialog_clear_sale": "Peru lasku",
+  "pos_dialog_cancel": "Korjaa",
   "pos_dialog_setup_fee": "Tämän laskun suorituksesta veloitetaan saapuvan kanavan perustamiskulu {fee} eli ({fiat}).",
   "@pos_dialog_setup_fee": {
     "placeholders": {
@@ -1465,6 +1466,8 @@
       }
     }
   },
+  "successful_payment_print": "Tulosta",
+  "successful_payment_received": "Maksu saapui!",
   "locale": "fi",
   "app_name": "Breez"
 }
