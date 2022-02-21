@@ -1446,12 +1446,12 @@
       }
     }
   },
-  "pos_dialog_title": "Skannaa laskun tiedot",
+  "pos_dialog_title": "LASKUN SKANNAUS:",
   "pos_dialog_share": "Jaa lasku",
   "pos_dialog_invoice_copy": "Kopioi lasku",
-  "pos_dialog_invoice_copied": "Laskun tiedot kopioitiin leikepöydälle.",
-  "pos_dialog_clear_sale": "Mitätöi Lasku",
-  "pos_dialog_cancel": "PALAA",
+  "pos_dialog_invoice_copied": "Lasku kopioitiin leikepöydälle.",
+  "pos_dialog_clear_sale": "Peru lasku",
+  "pos_dialog_cancel": "Korjaa",
   "pos_dialog_setup_fee": "Tämän laskun suorituksesta veloitetaan saapuvan kanavan perustamiskulu {fee} eli ({fiat}).",
   "@pos_dialog_setup_fee": {
     "placeholders": {
