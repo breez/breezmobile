@@ -255,8 +255,11 @@ class PaymentAdjustmentState extends State<PaymentAdjustment> {
                           key: boostWidgetKey,
                           userModel: userModel,
                           onBoost: (int boostAmount, {String boostMessage}) {
-                            paymentsBloc.actionsSink.add(PayBoost(boostAmount,
-                                boostMessage: boostMessage));
+                            paymentsBloc.actionsSink.add(PayBoost(
+                              boostAmount,
+                              boostMessage: boostMessage,
+                              senderName: userModel.name,
+                            ));
                           },
                           onChanged: (int boostAmount) {
                             userProfileBloc.userActionsSink.add(
