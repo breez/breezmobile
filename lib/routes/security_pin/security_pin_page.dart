@@ -6,7 +6,6 @@ import 'package:breez/bloc/user_profile/breez_user_model.dart';
 import 'package:breez/bloc/user_profile/security_model.dart';
 import 'package:breez/bloc/user_profile/user_actions.dart';
 import 'package:breez/bloc/user_profile/user_profile_bloc.dart';
-import 'package:breez/l10n/finnish_implements_duration_locale.dart';
 import 'package:breez/routes/backup_in_progress_dialog.dart';
 import 'package:breez/routes/podcast/theme.dart';
 import 'package:breez/routes/security_pin/remote_server_auth.dart';
