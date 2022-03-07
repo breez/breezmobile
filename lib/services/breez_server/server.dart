@@ -15,6 +15,15 @@ class BreezServer {
 
   ClientChannel _channel;
 
+  Future<String> signUrl(String baseUrl, String queryString) async {
+    var signerClient = SignerClient(_channel);
+    var response = await signerClient.signUrl(SignUrlRequest()
+      ..baseUrl = baseUrl
+      ..queryString = queryString);
+    log.info('signUrl response: $response');
+    return response.fullUrl;
+  }
+
   Future<String> registerDevice(String id, String nodeid) async {
     await _ensureValidChannel();
     var invoicerClient = InvoicerClient(_channel, options: defaultCallOptions);

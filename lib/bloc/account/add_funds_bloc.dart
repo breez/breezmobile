@@ -8,6 +8,7 @@ import 'package:breez/bloc/user_profile/currency.dart';
 import 'package:breez/l10n/text_uri.dart';
 import 'package:breez/logger.dart';
 import 'package:breez/services/breezlib/breez_bridge.dart';
+import 'package:breez/services/breez_server/server.dart';
 import 'package:breez/services/injector.dart';
 import 'package:flutter/services.dart';
 import 'package:http/http.dart' as http;
@@ -81,7 +82,7 @@ class AddFundsBloc extends Bloc {
         breezLib.addFundsInit(user.userID, lspStatus.selectedLSP).then((reply) {
           AddFundResponse response = AddFundResponse(reply);
           if (addFundsInfo.isMoonpay) {
-            _attachMoonpayUrl(response);
+            _attachMoonpayUrl(response, injector.breezServer);
           }
           _addFundResponseController.add(response);
         }).catchError((err) {
@@ -125,16 +126,31 @@ class AddFundsBloc extends Bloc {
     _availableVendorsController.add(_vendorList);
   }
 
-  Future _attachMoonpayUrl(AddFundResponse response) async {
+  Future _attachMoonpayUrl(
+      AddFundResponse response, BreezServer breezServer) async {
     if (response.errorMessage == null || response.errorMessage.isEmpty) {
-      String moonpayUrl = await _createMoonpayUrl();
+      Config config = await _readConfig();
+      String baseUrl = config.get("MoonPay Parameters", 'baseUrl');
+      String apiKey = config.get("MoonPay Parameters", 'apiKey');
+      String currencyCode = config.get("MoonPay Parameters", 'currencyCode');
+      String colorCode = config.get("MoonPay Parameters", 'colorCode');
+      String redirectURL = config.get("MoonPay Parameters", 'redirectURL');
       String walletAddress = response.address;
       String maxQuoteCurrencyAmount = Currency.BTC.format(
           response.maxAllowedDeposit,
           includeDisplayName: false,
           removeTrailingZeros: true);
-      moonpayUrl +=
-          "&walletAddress=$walletAddress&maxQuoteCurrencyAmount=$maxQuoteCurrencyAmount";
+      String queryString = "?" +
+          [
+            "apiKey=$apiKey",
+            "currencyCode=$currencyCode",
+            "colorCode=$colorCode",
+            "redirectURL=${Uri.encodeComponent(redirectURL)}",
+            "enabledPaymentMethods=credit_debit_card,sepa_bank_transfer,gbp_bank_transfer",
+            "walletAddress=$walletAddress",
+            "maxQuoteCurrencyAmount=$maxQuoteCurrencyAmount"
+          ].join("&");
+      String moonpayUrl = await breezServer.signUrl(baseUrl, queryString);
       _moonpayNextOrderController
           .add(MoonpayOrder(walletAddress, moonpayUrl, null));
     }
@@ -184,16 +200,6 @@ class AddFundsBloc extends Bloc {
       _ipCheckResult = jsonDecode(body)['isAllowed'];
     }
     return _ipCheckResult;
-  }
-
-  Future<String> _createMoonpayUrl() async {
-    Config config = await _readConfig();
-    String baseUrl = config.get("MoonPay Parameters", 'baseUrl');
-    String apiKey = config.get("MoonPay Parameters", 'apiKey');
-    String currencyCode = config.get("MoonPay Parameters", 'currencyCode');
-    String colorCode = config.get("MoonPay Parameters", 'colorCode');
-    String redirectURL = config.get("MoonPay Parameters", 'redirectURL');
-    return "$baseUrl?apiKey=$apiKey&currencyCode=$currencyCode&colorCode=$colorCode&redirectURL=${Uri.encodeComponent(redirectURL)}&enabledPaymentMethods=credit_debit_card,sepa_bank_transfer,gbp_bank_transfer";
   }
 
   Future<Config> _readConfig() async {
