@@ -20,7 +20,7 @@ import 'package:breez/routes/charge/currency_wrapper.dart';
 import 'package:breez/routes/charge/pos_invoice_cart_bar.dart';
 import 'package:breez/routes/charge/pos_invoice_items_view.dart';
 import 'package:breez/routes/charge/pos_invoice_num_pad.dart';
-import 'package:breez/routes/charge/succesful_payment.dart';
+import 'package:breez/routes/charge/successful_payment.dart';
 import 'package:breez/theme_data.dart' as theme;
 import 'package:breez/utils/print_pdf.dart';
 import 'package:breez/widgets/error_dialog.dart';
