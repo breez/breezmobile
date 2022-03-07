@@ -1,6 +1,7 @@
 import 'package:breez/bloc/account/account_bloc.dart';
 import 'package:breez/bloc/account/account_model.dart';
 import 'package:breez/bloc/account/add_funds_bloc.dart';
+import 'package:breez/bloc/account/add_funds_model.dart';
 import 'package:breez/bloc/blocs_provider.dart';
 import 'package:breez/bloc/lsp/lsp_bloc.dart';
 import 'package:breez/bloc/lsp/lsp_model.dart';
@@ -31,8 +32,8 @@ class DepositToBTCAddressPageState extends State<DepositToBTCAddressPage> {
     super.didChangeDependencies();
     if (_addFundsBloc == null) {
       _addFundsBloc = BlocProvider.of<AddFundsBloc>(context);
-      _addFundsBloc.addFundRequestSink.add(false);
-      _addFundsBloc.addFundRequestSink.add(true);
+      _addFundsBloc.addFundRequestSink.add(AddFundsInfo(false, false));
+      _addFundsBloc.addFundRequestSink.add(AddFundsInfo(true, false));
     }
   }
 
@@ -249,7 +250,7 @@ class DepositToBTCAddressPageState extends State<DepositToBTCAddressPage> {
             : texts.invoice_btc_address_action_close,
         onPressed: () {
           if (hasError) {
-            _addFundsBloc.addFundRequestSink.add(true);
+            _addFundsBloc.addFundRequestSink.add(AddFundsInfo(true, false));
           } else {
             Navigator.of(context).pop();
           }

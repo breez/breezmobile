@@ -29,9 +29,9 @@ class AddFundsBloc extends Bloc {
 
   final Stream<AccountModel> accountStream;
   final Stream<LSPStatus> lspStatusStream;
-  final _addFundRequestController = StreamController<bool>.broadcast();
+  final _addFundRequestController = StreamController<AddFundsInfo>.broadcast();
 
-  Sink<bool> get addFundRequestSink => _addFundRequestController.sink;
+  Sink<AddFundsInfo> get addFundRequestSink => _addFundRequestController.sink;
 
   final _addFundResponseController =
       StreamController<AddFundResponse>.broadcast();
@@ -67,9 +67,9 @@ class AddFundsBloc extends Bloc {
     ServiceInjector injector = ServiceInjector();
     BreezBridge breezLib = injector.breezBridge;
     int requestNumber = 0;
-    _addFundRequestController.stream.listen((newAddress) {
+    _addFundRequestController.stream.listen((addFundsInfo) {
       var currentRequest = ++requestNumber;
-      if (!newAddress) {
+      if (!addFundsInfo.newAddress) {
         _addFundResponseController.add(null);
         return;
       }
@@ -79,11 +79,11 @@ class AddFundsBloc extends Bloc {
           throw new Exception("lsp was not selected");
         }
         breezLib.addFundsInit(user.userID, lspStatus.selectedLSP).then((reply) {
-          if (currentRequest == currentRequest) {
-            AddFundResponse response = AddFundResponse(reply);
+          AddFundResponse response = AddFundResponse(reply);
+          if (addFundsInfo.isMoonpay) {
             _attachMoonpayUrl(response);
-            _addFundResponseController.add(response);
           }
+          _addFundResponseController.add(response);
         }).catchError((err) {
           _addFundResponseController.addError(err);
           _moonpayNextOrderController.addError(err);

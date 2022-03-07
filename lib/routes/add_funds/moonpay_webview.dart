@@ -1,6 +1,7 @@
 import 'dart:convert' as JSON;
 
 import 'package:breez/bloc/account/add_funds_bloc.dart';
+import 'package:breez/bloc/account/add_funds_model.dart';
 import 'package:breez/bloc/account/moonpay_order.dart';
 import 'package:breez/bloc/blocs_provider.dart';
 import 'package:breez/theme_data.dart' as theme;
@@ -32,13 +33,13 @@ class MoonpayWebViewState extends State<MoonpayWebView> {
   void didChangeDependencies() {
     if (!_isInit) {
       _addFundsBloc = BlocProvider.of<AddFundsBloc>(context);
-      _addFundsBloc.addFundRequestSink.add(false);
+      _addFundsBloc.addFundRequestSink.add(AddFundsInfo(false, false));
 
       _addFundsBloc.moonpayNextOrderStream.first
           .then((order) => setState(() => _order = order))
           .catchError((err) => setState(() => _error = err.toString()));
 
-      _addFundsBloc.addFundRequestSink.add(true);
+      _addFundsBloc.addFundRequestSink.add(AddFundsInfo(true, false));
 
       _isInit = true;
     }
