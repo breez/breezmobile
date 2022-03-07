@@ -1,7 +1,9 @@
 import 'dart:async';
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:breez/bloc/backup/backup_model.dart';
+import 'package:breez/bloc/pos_catalog/actions.dart';
 import 'package:breez/bloc/user_profile/breez_user_model.dart';
 import 'package:breez/services/background_task.dart';
 import 'package:breez/services/breezlib/breez_bridge.dart';
@@ -11,8 +13,10 @@ import 'package:crypto/crypto.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:hex/hex.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:sqflite/sqflite.dart';
 
 import '../async_action.dart';
 import 'backup_actions.dart';
@@ -55,6 +59,7 @@ class BackupBloc {
   Stream<bool> get restoreFinishedStream => _restoreFinishedController.stream;
 
   final _backupActionsController = StreamController<AsyncAction>.broadcast();
+
   Sink<AsyncAction> get backupActionsSink => _backupActionsController.sink;
 
   BreezBridge _breezLib;
@@ -64,12 +69,14 @@ class BackupBloc {
   bool _enableBackupPrompt = false;
   Map<Type, Function> _actionHandlers = Map();
   final FlutterSecureStorage _secureStorage = FlutterSecureStorage();
+  Sink<AsyncAction> _posCatalogActions;
 
   static const String BACKUP_SETTINGS_PREFERENCES_KEY = "backup_settings";
   static const String LAST_BACKUP_TIME_PREFERENCE_KEY = "backup_last_time";
   static const String LAST_BACKUP_STATE_PREFERENCE_KEY = "backup_last_state";
 
-  BackupBloc(Stream<BreezUserModel> userStream) {
+  BackupBloc(
+      Stream<BreezUserModel> userStream, Sink<AsyncAction> posCatalogActions) {
     ServiceInjector injector = ServiceInjector();
     _breezLib = injector.breezBridge;
     _tasksService = injector.backgroundTaskService;
@@ -96,6 +103,7 @@ class BackupBloc {
       _listenPinCodeChange(userStream);
       _listenActions();
     });
+    _posCatalogActions = posCatalogActions;
   }
 
   void _listenActions() {
@@ -250,7 +258,61 @@ class BackupBloc {
       await _breezLib.signOut();
     }
     await _breezLib.signIn(_backupServiceNeedLogin);
+    await _backupAppData();
     _breezLib.requestBackup();
+  }
+
+  _backupAppData() async {
+    try {
+      // Create backup directory
+      var appDir = await getApplicationDocumentsDirectory();
+      var backupAppDataDirPath =
+          appDir.path + Platform.pathSeparator + 'app_data_backup';
+      var backupAppDataDir = Directory(backupAppDataDirPath);
+      backupAppDataDir.createSync(recursive: true);
+      bool isFolderCreated = await backupAppDataDir.exists();
+      if (!isFolderCreated) {
+        throw Exception("Failed to create backup folder.");
+      }
+
+      // Export pos items and copy the csv file to backup directory
+      var exportPosItems = ExportItems();
+      _posCatalogActions.add(exportPosItems);
+      exportPosItems.future.then((exportFilePath) {
+        File(exportFilePath)
+            .copy(backupAppDataDirPath +
+                Platform.pathSeparator +
+                'product-catalog.csv')
+            .catchError((err) {
+          throw Exception("Failed to copy pos items csv.");
+        });
+      }).catchError((err) {
+        throw Exception("Failed to export pos items.");
+      });
+
+      // Save BreezUserModel json to backup directory
+      String jsonStr =
+          _sharedPreferences.getString("BreezUserModel.userID") ?? "{}";
+      await File(backupAppDataDirPath +
+              Platform.pathSeparator +
+              'breezUserModel.txt')
+          .writeAsString(jsonStr)
+          .catchError((err) {
+        throw Exception("Failed to save user preferences.");
+      });
+
+      // Copy Podcasts library to backup directory
+      final anytimeDbPath = appDir.path + Platform.pathSeparator + 'anytime.db';
+      if (await databaseExists(anytimeDbPath)) {
+        File(anytimeDbPath)
+            .copy(backupAppDataDirPath + Platform.pathSeparator + 'anytime.db')
+            .catchError((err) {
+          throw Exception("Failed to copy podcast library.");
+        });
+      }
+    } on Exception catch (exception) {
+      throw exception;
+    }
   }
 
   _listenBackupPaths() {
