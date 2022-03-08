@@ -274,7 +274,7 @@ class BackupBloc {
       // Export pos items and copy the csv file to backup directory
       var exportPosItems = ExportItems();
       _posCatalogActions.add(exportPosItems);
-      exportPosItems.future.then((exportFilePath) {
+      await exportPosItems.future.then((exportFilePath) {
         File(exportFilePath)
             .copy(backupAppDataDirPath +
                 Platform.pathSeparator +
