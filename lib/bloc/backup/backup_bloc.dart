@@ -270,10 +270,6 @@ class BackupBloc {
           appDir.path + Platform.pathSeparator + 'app_data_backup';
       var backupAppDataDir = Directory(backupAppDataDirPath);
       backupAppDataDir.createSync(recursive: true);
-      bool isFolderCreated = await backupAppDataDir.exists();
-      if (!isFolderCreated) {
-        throw Exception("Failed to create backup folder.");
-      }
 
       // Export pos items and copy the csv file to backup directory
       var exportPosItems = ExportItems();
