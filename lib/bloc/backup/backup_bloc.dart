@@ -13,6 +13,7 @@ import 'package:crypto/crypto.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:hex/hex.dart';
+import 'package:path/path.dart' as path;
 import 'package:path_provider/path_provider.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -278,7 +279,7 @@ class BackupBloc {
         File(exportFilePath)
             .copy(backupAppDataDirPath +
                 Platform.pathSeparator +
-                'product-catalog.csv')
+                path.basename(exportFilePath))
             .catchError((err) {
           throw Exception("Failed to copy pos items csv.");
         });
