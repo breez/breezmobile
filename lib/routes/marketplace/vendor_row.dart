@@ -64,19 +64,6 @@ class VendorRow extends StatelessWidget {
           constraints: BoxConstraints.expand(),
           decoration: BoxDecoration(
               color: _vendorBgColor,
-              gradient: (_vendor.id == "lnmarkets")
-                  ? LinearGradient(
-                      colors: [
-                        Color.fromRGBO(0, 113, 189, 1),
-                        Color.fromRGBO(4, 81, 161, 1),
-                        Color.fromRGBO(6, 56, 145, 1),
-                        Color.fromRGBO(9, 31, 130, 1)
-                      ],
-                      stops: [0.0, 0.3, 0.6, 0.8],
-                      begin: Alignment(-1, 1),
-                      end: Alignment(1, -1),
-                    )
-                  : null,
               boxShadow: [
                 BoxShadow(
                   color: theme.BreezColors.grey[600],
