@@ -20,8 +20,8 @@ class BreezServer {
     var response = await signerClient.signUrl(SignUrlRequest()
       ..baseUrl = baseUrl
       ..queryString = queryString);
-    log.info('signUrl baseUrl: ' + baseUrl + '; queryString: ' + queryString);
-    log.info('signUrl response.fullUrl: ' + response.fullUrl);
+    log.info('signUrl baseUrl: $baseUrl; queryString: $queryString');
+    log.info('signUrl response: $response');
     return response.fullUrl;
   }
 
