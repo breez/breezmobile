@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 abstract class DBItem {
   Map<String, dynamic> toMap();
 }
@@ -168,32 +170,54 @@ class Sale implements DBItem {
   final List<SaleLine> saleLines;
   final String note;
   final bool priceLocked;
+  final DateTime date;
 
-  Sale copyWith(
-      {int id, List<SaleLine> saleLines, bool priceLocked, String note}) {
+  Sale copyWith({
+    int id,
+    List<SaleLine> saleLines,
+    bool priceLocked,
+    String note,
+    DateTime date,
+  }) {
     return Sale(
-        id: id != null && id < 0 ? null : this.id,
-        note: note ?? this.note,
-        saleLines: (saleLines ?? this.saleLines).toList(),
-        priceLocked: priceLocked ?? this.priceLocked);
+      id: id != null && id < 0 ? null : this.id,
+      note: note ?? this.note,
+      saleLines: (saleLines ?? this.saleLines).toList(),
+      priceLocked: priceLocked ?? this.priceLocked,
+      date: date ?? this.date,
+    );
   }
 
   Sale copyNew() {
     return copyWith(
-        id: -1, saleLines: this.saleLines.map((sl) => sl.copyNew()).toList());
+      id: -1,
+      saleLines: this.saleLines.map((sl) => sl.copyNew()).toList(),
+      date: DateTime.now(),
+    );
   }
 
-  Sale({this.id, this.saleLines, this.note, this.priceLocked = false});
+  Sale({
+    this.id,
+    this.saleLines,
+    this.note,
+    this.priceLocked = false,
+    this.date,
+  });
 
   Sale.fromMap(Map<String, dynamic> json)
       : id = json["id"],
         saleLines = [],
         note = json["note"],
-        priceLocked = false;
+        priceLocked = false,
+        date = DateTime.fromMillisecondsSinceEpoch(json["date"]);
 
   @override
   Map<String, dynamic> toMap() {
-    return {'id': id, 'note': note};
+    return {
+      "id": id,
+      "note": note,
+      "date": date.millisecondsSinceEpoch,
+    };
   }
 
   Sale addItem(Item item, double satConversionRate, {int quantity = 1}) {
@@ -322,4 +346,183 @@ enum PosCatalogItemSort {
   ALPHABETICALLY_Z_A,
   PRICE_SMALL_TO_BIG,
   PRICE_BIG_TO_SMALL,
+}
+
+const _kPosReportTimeRangeDaily = 1;
+const _kPosReportTimeRangeWeekly = 2;
+const _kPosReportTimeRangeMonthly = 3;
+const _kPosReportTimeRangeCustom = 4;
+
+abstract class PosReportTimeRange {
+  final DateTime startDate;
+  final DateTime endDate;
+
+  const PosReportTimeRange._(
+    this.startDate,
+    this.endDate,
+  );
+
+  int _type();
+
+  factory PosReportTimeRange.daily() = PosReportTimeRangeDaily;
+
+  factory PosReportTimeRange.weekly() = PosReportTimeRangeWeekly;
+
+  factory PosReportTimeRange.monthly() = PosReportTimeRangeMonthly;
+
+  factory PosReportTimeRange.custom(
+    DateTime startDate,
+    DateTime endDate,
+  ) = PosReportTimeRangeCustom;
+
+  static PosReportTimeRange fromJson(String json) {
+    final Map<String, dynamic> jsonMap = jsonDecode(json) ?? {};
+    final type = jsonMap["type"] ?? 0;
+
+    switch (type) {
+      case _kPosReportTimeRangeDaily:
+        return PosReportTimeRangeDaily();
+      case _kPosReportTimeRangeWeekly:
+        return PosReportTimeRangeWeekly();
+      case _kPosReportTimeRangeMonthly:
+        return PosReportTimeRangeMonthly();
+      case _kPosReportTimeRangeCustom:
+        final startDate = DateTime.fromMillisecondsSinceEpoch(
+              jsonMap["startDate"],
+            ) ??
+            DateTime.now();
+        final endDate = DateTime.fromMillisecondsSinceEpoch(
+              jsonMap["endDate"],
+            ) ??
+            DateTime.now();
+        return PosReportTimeRangeCustom(startDate, endDate);
+      default:
+        return PosReportTimeRangeDaily();
+    }
+  }
+
+  String toJson() {
+    return json.encode({
+      "type": _type(),
+      "startDate": startDate.millisecondsSinceEpoch,
+      "endDate": endDate.millisecondsSinceEpoch,
+    });
+  }
+}
+
+class PosReportTimeRangeDaily extends PosReportTimeRange {
+  PosReportTimeRangeDaily()
+      : super._(
+          DateTime(
+            DateTime.now().year,
+            DateTime.now().month,
+            DateTime.now().day,
+            0,
+            0,
+            0,
+          ),
+          DateTime(
+            DateTime.now().year,
+            DateTime.now().month,
+            DateTime.now().day,
+            23,
+            59,
+            59,
+            999,
+          ),
+        );
+
+  @override
+  int _type() => _kPosReportTimeRangeDaily;
+}
+
+class PosReportTimeRangeWeekly extends PosReportTimeRange {
+  PosReportTimeRangeWeekly()
+      : super._(
+          DateTime(
+            DateTime.now().year,
+            DateTime.now().month,
+            DateTime.now().subtract(Duration(days: DateTime.now().weekday)).day,
+            0,
+            0,
+            0,
+          ),
+          DateTime.now(),
+        );
+
+  @override
+  int _type() => _kPosReportTimeRangeWeekly;
+}
+
+class PosReportTimeRangeMonthly extends PosReportTimeRange {
+  PosReportTimeRangeMonthly()
+      : super._(
+          DateTime(
+            DateTime.now().year,
+            DateTime.now().month,
+            1,
+            0,
+            0,
+            0,
+          ),
+          DateTime.now(),
+        );
+
+  @override
+  int _type() => _kPosReportTimeRangeMonthly;
+}
+
+class PosReportTimeRangeCustom extends PosReportTimeRange {
+  const PosReportTimeRangeCustom(
+    DateTime startDate,
+    DateTime endDate,
+  ) : super._(
+          startDate,
+          endDate,
+        );
+
+  @override
+  int _type() => _kPosReportTimeRangeCustom;
+}
+
+class PosReportResult {
+  const PosReportResult._();
+
+  factory PosReportResult.empty() = PosReportResultEmpty;
+
+  factory PosReportResult.load() = PosReportResultLoad;
+
+  factory PosReportResult.data(
+    int totalSales,
+    int totalSalesInSatoshi,
+    Map<String, double> totalSalesInFiat,
+  ) = PosReportResultData;
+}
+
+class PosReportResultEmpty extends PosReportResult {
+  const PosReportResultEmpty() : super._();
+}
+
+class PosReportResultLoad extends PosReportResult {
+  const PosReportResultLoad() : super._();
+}
+
+class PosReportResultData extends PosReportResult {
+  final int totalSales;
+  final int totalSalesInSatoshi;
+  final Map<String, double> totalSalesInFiat;
+
+  const PosReportResultData(
+    this.totalSales,
+    this.totalSalesInSatoshi,
+    this.totalSalesInFiat,
+  ) : super._();
+
+  bool isSingleFiat() => totalSalesInFiat.length == 1;
+
+  /// verify if [isSingleFiat] is true before calling this method
+  String get currency => totalSalesInFiat.entries.first.key;
+
+  /// verify if [isSingleFiat] is true before calling this method
+  double get amount => totalSalesInFiat.entries.first.value;
 }

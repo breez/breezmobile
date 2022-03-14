@@ -9,8 +9,10 @@ import 'package:breez/widgets/back_button.dart' as backBtn;
 import 'package:breez/widgets/calendar_dialog.dart';
 import 'package:breez/widgets/flushbar.dart';
 import 'package:breez/widgets/loader.dart';
+import 'package:breez/widgets/pos_report_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:share_extend/share_extend.dart';
 
 import 'pos_payments_list.dart';
@@ -73,6 +75,7 @@ class PosTransactionsPageState extends State<PosTransactionsPage> {
               context,
               _buildTransactions(context, paymentsModel),
               [
+                _reportButton(context),
                 _calendarButton(paymentsModel),
                 _exportButton(context, paymentsModel),
               ],
@@ -109,12 +112,33 @@ class PosTransactionsPageState extends State<PosTransactionsPage> {
     );
   }
 
-  Widget _calendarButton(PaymentsModel paymentsModel) {
+  Widget _reportButton(
+    BuildContext context,
+  ) {
+    final themeData = Theme.of(context);
     return IconButton(
-      icon: ImageIcon(
-        AssetImage("src/icon/calendar.png"),
-        color: Colors.white,
-        size: 24.0,
+      icon: SvgPicture.asset(
+        "src/icon/pos_report.svg",
+        color: themeData.iconTheme.color,
+        width: 24.0,
+        height: 24.0,
+      ),
+      onPressed: () => showDialog(
+        useRootNavigator: false,
+        context: context,
+        builder: (_) => PosReportDialog(),
+      ),
+    );
+  }
+
+  Widget _calendarButton(PaymentsModel paymentsModel) {
+    final themeData = Theme.of(context);
+    return IconButton(
+      icon: SvgPicture.asset(
+        "src/icon/calendar.svg",
+        color: themeData.iconTheme.color,
+        width: 24.0,
+        height: 24.0,
       ),
       onPressed: () => showDialog(
         useRootNavigator: false,
