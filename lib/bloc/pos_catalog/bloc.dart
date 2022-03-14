@@ -11,6 +11,7 @@ import 'package:breez/bloc/user_profile/currency.dart';
 import 'package:breez/services/breezlib/data/rpc.pb.dart';
 import 'package:breez/services/injector.dart';
 import 'package:flutter/services.dart';
+import 'package:rxdart/rxdart.dart';
 import 'package:rxdart/subjects.dart';
 
 import 'model.dart';
@@ -50,6 +51,14 @@ class PosCatalogBloc with AsyncActionsHandler {
 
   Stream<PosCatalogItemSort> get posItemSort => _posItemSort.stream;
 
+  final BehaviorSubject<PosReportTimeRange> _posReportRange = BehaviorSubject();
+
+  Stream<PosReportTimeRange> get posReportRange => _posReportRange.stream;
+
+  final BehaviorSubject<PosReportResult> _posReportResult = BehaviorSubject();
+
+  Stream<PosReportResult> get posReportResult => _posReportResult.stream;
+
   PosCatalogBloc(
     Stream<AccountModel> accountStream,
     this._repository,
@@ -70,14 +79,21 @@ class PosCatalogBloc with AsyncActionsHandler {
       UpdatePosItemAdditionCurrency: _updatePosItemAdditionCurrency,
       UpdatePosSelectedTab: _updatePosSelectedTab,
       UpdatePosCatalogItemSort: _updatePosCatalogItemSort,
+      UpdatePosReportTimeRange: _updatePosReportTimeRange,
+      FetchPosReport: _fetchPosReport,
     });
     listenActions();
-    _currentSaleController.add(Sale(saleLines: []));
+    _currentSaleController.add(Sale(
+      saleLines: [],
+      date: DateTime.now(),
+    ));
     _trackCurrentSaleRates(accountStream);
     _trackSalePayments();
     _loadIcons();
     _loadSelectedCurrency();
     _loadSelectedPosTab();
+    _loadSelectedReportTimeRange();
+    _loadSelectedReportResult();
   }
 
   Future _loadIcons() async {
@@ -131,7 +147,10 @@ class PosCatalogBloc with AsyncActionsHandler {
       var paymentHash = await breezBridge.getPaymentRequestHash(event.data[0]);
       var paidSale = await _repository.fetchSaleByPaymentHash(paymentHash);
       if (paidSale != null && paidSale.id == _currentSaleController.value.id) {
-        _currentSaleController.add(Sale(saleLines: []));
+        _currentSaleController.add(Sale(
+          saleLines: [],
+          date: DateTime.now(),
+        ));
       }
     });
   }
@@ -276,8 +295,46 @@ class PosCatalogBloc with AsyncActionsHandler {
     _loadItems();
   }
 
+  void _loadSelectedReportTimeRange() async {
+    final prefs = await ServiceInjector().sharedPreferences;
+    PosReportTimeRange timeRange;
+    if (prefs.containsKey(_kPosReportTimeRangeKey)) {
+      timeRange = PosReportTimeRange.fromJson(
+        prefs.getString(_kPosReportTimeRangeKey),
+      );
+    } else {
+      timeRange = PosReportTimeRange.daily();
+    }
+    _posReportRange.add(timeRange);
+  }
+
+  Future _updatePosReportTimeRange(
+    UpdatePosReportTimeRange action,
+  ) async {
+    final prefs = await ServiceInjector().sharedPreferences;
+    prefs.setString(_kPosReportTimeRangeKey, action.range.toJson());
+    _posReportRange.add(action.range);
+  }
+
+  void _loadSelectedReportResult() async {
+    _posReportResult.add(PosReportResult.empty());
+  }
+
+  Future _fetchPosReport(
+    FetchPosReport action,
+  ) async {
+    _posReportResult.add(PosReportResult.load());
+    final report = await _repository.fetchSalesReport(
+      action.range.startDate,
+      action.range.endDate,
+    );
+    _posReportResult.add(report);
+  }
+
   Future resetDB() async {
     await (_repository as SqliteRepository).dropDB();
     _loadItems();
   }
 }
+
+const _kPosReportTimeRangeKey = "POS_REPORT_TIME_RANGE_JSON";

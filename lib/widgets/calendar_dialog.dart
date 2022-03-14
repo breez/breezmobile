@@ -9,8 +9,12 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class CalendarDialog extends StatefulWidget {
   final DateTime firstDate;
+  final DateTime initialRangeDate;
 
-  const CalendarDialog(this.firstDate);
+  const CalendarDialog(
+    this.firstDate, {
+    this.initialRangeDate,
+  });
 
   @override
   _CalendarDialogState createState() => _CalendarDialogState();
@@ -132,7 +136,7 @@ class _CalendarDialogState extends State<CalendarDialog> {
     DateTime selectedDate = await showBreezDatePicker(
       context: context,
       initialDate: isStartBtn ? _startDate : _endDate,
-      firstDate: widget.firstDate,
+      firstDate: widget.initialRangeDate ?? widget.firstDate,
       lastDate: DateTime.now(),
     );
     if (selectedDate != null) {

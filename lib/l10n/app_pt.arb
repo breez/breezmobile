@@ -1478,6 +1478,19 @@
       }
     }
   },
+  "pos_report_dialog_title_daily": "Resumo Diário",
+  "pos_report_dialog_title_weekly": "Resumo Semanal",
+  "pos_report_dialog_title_monthly": "Resumo Mensal",
+  "pos_report_dialog_title_custom": "Resumo Personalizado",
+  "pos_report_dialog_action_close": "FECHAR",
+  "pos_report_dialog_dropdown_item_daily": "Hoje",
+  "pos_report_dialog_dropdown_item_weekly": "Essa semana",
+  "pos_report_dialog_dropdown_item_monthly": "Este mês",
+  "pos_report_dialog_dropdown_item_custom": "Período personalizada",
+  "pos_report_dialog_content_sales_label": "Número de vendas:",
+  "pos_report_dialog_content_amount_label": "Valor total:",
+  "pos_report_dialog_content_start_date_label": "Data inícial:",
+  "pos_report_dialog_content_end_date_label": "Data final:",
   "locale": "pt",
   "app_name": "Breez"
 }
