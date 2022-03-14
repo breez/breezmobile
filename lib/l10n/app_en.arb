@@ -1465,6 +1465,8 @@
       }
     }
   },
+  "successful_payment_print": "Print",
+  "successful_payment_received": "Payment received!",
   "locale": "en",
   "app_name": "Breez"
 }

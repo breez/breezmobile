@@ -35,7 +35,7 @@ Widget breezAvatarDialog(BuildContext context, UserProfileBloc userBloc) {
     final _picker = ImagePicker();
     PickedFile pickedFile = await _picker.getImage(source: ImageSource.gallery);
     final File file = File(pickedFile.path);
-    final File croppedFile = await ImageCropper.cropImage(
+    final File croppedFile = await ImageCropper().cropImage(
       sourcePath: file.path,
       cropStyle: CropStyle.circle,
       aspectRatioPresets: [CropAspectRatioPreset.square],

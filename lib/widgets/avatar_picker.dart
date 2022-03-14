@@ -103,7 +103,7 @@ class AvatarPicker extends StatelessWidget {
       log.severe(err.toString());
     });
     final File file = File(pickedFile.path);
-    return ImageCropper.cropImage(
+    return ImageCropper().cropImage(
       sourcePath: file.path,
       cropStyle: CropStyle.circle,
       aspectRatio: CropAspectRatio(

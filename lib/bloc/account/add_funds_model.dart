@@ -15,3 +15,9 @@ class AddFundsSettings {
 
   Map<String, dynamic> toJson() => {"moonpayIpCheck": moonpayIpCheck};
 }
+
+class AddFundsInfo {
+  final bool newAddress;
+  final bool isMoonpay;
+  AddFundsInfo(this.newAddress, this.isMoonpay);
+}
