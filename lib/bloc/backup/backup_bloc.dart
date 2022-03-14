@@ -3,7 +3,6 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:breez/bloc/backup/backup_model.dart';
-import 'package:breez/bloc/pos_catalog/actions.dart';
 import 'package:breez/bloc/user_profile/breez_user_model.dart';
 import 'package:breez/services/background_task.dart';
 import 'package:breez/services/breezlib/breez_bridge.dart';
@@ -13,7 +12,6 @@ import 'package:crypto/crypto.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:hex/hex.dart';
-import 'package:path/path.dart' as path;
 import 'package:path_provider/path_provider.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -272,20 +270,18 @@ class BackupBloc {
       var backupAppDataDir = Directory(backupAppDataDirPath);
       backupAppDataDir.createSync(recursive: true);
 
-      // Export pos items and copy the csv file to backup directory
-      var exportPosItems = ExportItems();
-      _posCatalogActions.add(exportPosItems);
-      await exportPosItems.future.then((exportFilePath) {
-        File(exportFilePath)
+      // Copy POS items to backup directory
+      final posDbPath =
+          appDir.path + Platform.pathSeparator + 'product-catalog.db';
+      if (await databaseExists(posDbPath)) {
+        File(posDbPath)
             .copy(backupAppDataDirPath +
                 Platform.pathSeparator +
-                path.basename(exportFilePath))
+                'product-catalog.db')
             .catchError((err) {
-          throw Exception("Failed to copy pos items csv.");
+          throw Exception("Failed to copy pos items.");
         });
-      }).catchError((err) {
-        throw Exception("Failed to export pos items.");
-      });
+      }
 
       // Save BreezUserModel json to backup directory
       String jsonStr =
