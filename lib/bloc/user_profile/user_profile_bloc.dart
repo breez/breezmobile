@@ -41,8 +41,8 @@ class UserProfileBloc {
   Map<Type, Function> _actionHandlers = Map();
   final _userActionsController = StreamController<AsyncAction>.broadcast();
   Sink<AsyncAction> get userActionsSink => _userActionsController.sink;
-  final _registrationController = StreamController<void>();
-  Sink<void> get registerSink => _registrationController.sink;
+  final _registrationController = StreamController<BreezUserModel>();
+  Sink<BreezUserModel> get registerSink => _registrationController.sink;
 
   final _userStreamController = BehaviorSubject<BreezUserModel>();
   Stream<BreezUserModel> get userStream => _userStreamController.stream;
@@ -346,7 +346,7 @@ class UserProfileBloc {
 
   void _listenRegistrationRequests(ServiceInjector injector) {
     _registrationController.stream.listen((request) async {
-      _refreshRegistration(_userStreamController.value);
+      _refreshRegistration(request ?? _userStreamController.value);
     });
   }
 

@@ -417,18 +417,6 @@ class BackupBloc {
       final backupAnytimeDbPath =
           backupAppDataDirPath + Platform.pathSeparator + 'anytime.db';
       final anytimeDbPath = appDir.path + Platform.pathSeparator + 'anytime.db';
-
-      // Restore user preferences
-      final backupUserPrefsPath = backupAppDataDirPath +
-          Platform.pathSeparator +
-          'breezUserModel.txt';
-      final backupUserPrefs = await File(backupUserPrefsPath).readAsString();
-      Map<String, dynamic> userData = json.decode(backupUserPrefs ?? "{}");
-      BreezUserModel user = BreezUserModel.fromJson(userData);
-      user = user.copyWith(hasAdminPassword: false);
-      await _sharedPreferences.setString(USER_DETAILS_PREFERENCES_KEY, json.encode(user)).catchError((err) {
-        throw Exception("Failed to restore user preferences.");
-      });
       if (await File(backupAnytimeDbPath).exists()) {
         await File(backupAnytimeDbPath).copy(anytimeDbPath).catchError((err) {
           throw Exception("Failed to restore podcast library.");
