@@ -272,7 +272,7 @@ class BackupBloc {
 
       // Copy POS items to backup directory
       final posDbPath =
-          appDir.path + Platform.pathSeparator + 'product-catalog.db';
+          await databaseFactory.getDatabasesPath() + 'product-catalog.db';
       if (await databaseExists(posDbPath)) {
         File(posDbPath)
             .copy(backupAppDataDirPath +
