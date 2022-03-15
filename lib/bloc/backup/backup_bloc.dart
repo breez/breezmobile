@@ -22,6 +22,7 @@ import 'backup_actions.dart';
 
 class BackupBloc {
   static const String _signInFailedCode = "AuthError";
+  static const String USER_DETAILS_PREFERENCES_KEY = "BreezUserModel.userID";
 
   final BehaviorSubject<BackupState> _backupStateController =
       BehaviorSubject<BackupState>();
@@ -283,17 +284,6 @@ class BackupBloc {
         });
       }
 
-      // Save BreezUserModel json to backup directory
-      String jsonStr =
-          _sharedPreferences.getString("BreezUserModel.userID") ?? "{}";
-      await File(backupAppDataDirPath +
-              Platform.pathSeparator +
-              'breezUserModel.txt')
-          .writeAsString(jsonStr)
-          .catchError((err) {
-        throw Exception("Failed to save user preferences.");
-      });
-
       // Copy Podcasts library to backup directory
       final anytimeDbPath = appDir.path + Platform.pathSeparator + 'anytime.db';
       if (await databaseExists(anytimeDbPath)) {
@@ -303,6 +293,17 @@ class BackupBloc {
           throw Exception("Failed to copy podcast library.");
         });
       }
+
+      // Save BreezUserModel json to backup directory
+      String jsonStr =
+          _sharedPreferences.getString(USER_DETAILS_PREFERENCES_KEY) ?? "{}";
+      await File(backupAppDataDirPath +
+              Platform.pathSeparator +
+              'breezUserModel.txt')
+          .writeAsString(jsonStr)
+          .catchError((err) {
+        throw Exception("Failed to save user preferences.");
+      });
     } on Exception catch (exception) {
       throw exception;
     }
@@ -391,9 +392,49 @@ class BackupBloc {
 
       _breezLib
           .restore(request.snapshot.nodeID, request.encryptionKey.key)
+          .then((_) => _restoreAppData())
           .then((_) => _restoreFinishedController.add(true))
           .catchError(_restoreFinishedController.addError);
     });
+  }
+
+  _restoreAppData() async {
+    try {
+      var appDir = await getApplicationDocumentsDirectory();
+      var backupAppDataDirPath =
+          appDir.path + Platform.pathSeparator + 'app_data_backup';
+
+      // Restore POS items
+      final backupPosDbPath =
+          backupAppDataDirPath + Platform.pathSeparator + 'product-catalog.db';
+      final posDbPath =
+          await databaseFactory.getDatabasesPath() + 'product-catalog.db';
+      File(backupPosDbPath).copy(posDbPath).catchError((err) {
+        throw Exception("Failed to restore pos items.");
+      });
+
+      // Restore Podcasts library
+      final backupAnytimeDbPath =
+          backupAppDataDirPath + Platform.pathSeparator + 'anytime.db';
+      final anytimeDbPath = appDir.path + Platform.pathSeparator + 'anytime.db';
+      File(backupAnytimeDbPath).copy(anytimeDbPath).catchError((err) {
+        throw Exception("Failed to restore podcast library.");
+      });
+
+      // Restore user preferences
+      final backupUserPrefsPath = backupAppDataDirPath +
+          Platform.pathSeparator +
+          'breezUserModel.txt';
+      final backupUserPrefs = await File(backupUserPrefsPath).readAsString();
+      Map<String, dynamic> userData = json.decode(backupUserPrefs ?? "{}");
+      BreezUserModel user = BreezUserModel.fromJson(userData);
+      user = user.copyWith(hasAdminPassword: false);
+      await _sharedPreferences.setString(USER_DETAILS_PREFERENCES_KEY, json.encode(user)).catchError((err) {
+        throw Exception("Failed to restore user preferences.");
+      });
+    } on Exception catch (exception) {
+      throw exception;
+    }
   }
 
   close() {
