@@ -273,7 +273,7 @@ class BackupBloc {
 
       // Copy POS items to backup directory
       final posDbPath =
-          await databaseFactory.getDatabasesPath() + 'product-catalog.db';
+          await databaseFactory.getDatabasesPath() + Platform.pathSeparator + 'product-catalog.db';
       if (await databaseExists(posDbPath)) {
         File(posDbPath)
             .copy(backupAppDataDirPath +
@@ -408,7 +408,7 @@ class BackupBloc {
       final backupPosDbPath =
           backupAppDataDirPath + Platform.pathSeparator + 'product-catalog.db';
       final posDbPath =
-          await databaseFactory.getDatabasesPath() + 'product-catalog.db';
+          await databaseFactory.getDatabasesPath() + Platform.pathSeparator + 'product-catalog.db';
       File(backupPosDbPath).copy(posDbPath).catchError((err) {
         throw Exception("Failed to restore pos items.");
       });
