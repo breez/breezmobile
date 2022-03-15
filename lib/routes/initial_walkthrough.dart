@@ -24,6 +24,7 @@ import 'package:hex/hex.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:rxdart/rxdart.dart';
 
+import '../bloc/user_profile/security_model.dart';
 import 'beta_warning_dialog.dart';
 import 'security_pin/backup_phrase/enter_backup_phrase_page.dart';
 import 'security_pin/restore_pin.dart';
@@ -121,7 +122,10 @@ class InitialWalkthroughPageState extends State<InitialWalkthroughPage>
       final backupUserPrefs = await File(backupUserPrefsPath).readAsString();
       Map<String, dynamic> userData = json.decode(backupUserPrefs);
       BreezUserModel user = BreezUserModel.fromJson(userData);
-      return user.copyWith(hasAdminPassword: false);
+      return user.copyWith(
+          hasAdminPassword: false,
+          securityModel: SecurityModel.initial(),
+          locked: false);
     }
     return null;
   }
