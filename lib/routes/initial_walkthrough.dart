@@ -109,6 +109,7 @@ class InitialWalkthroughPageState extends State<InitialWalkthroughPage>
     }
   }
 
+  Future<BreezUserModel> _getRestoredUserPrefs() async {
   Future<void> _listenBackupContext(_BackupContext backupContext) async {
     final texts = AppLocalizations.of(context);
     final options = backupContext.snapshots;

@@ -54,6 +54,8 @@ class AppBlocs {
         ConnectPayBloc(userProfileBloc.userStream, accountBloc.accountStream,
             accountBloc.userActionsSink),
         blocsByType);
+    BackupBloc backupBloc =
+        _registerBloc(BackupBloc(userProfileBloc.userStream), blocsByType);
     MarketplaceBloc marketplaceBloc =
         _registerBloc(MarketplaceBloc(), blocsByType);
     LSPBloc lspBloc =
@@ -67,9 +69,6 @@ class AppBlocs {
           accountBloc.accountStream,
           sqliteRepository,
         ),
-        blocsByType);
-    BackupBloc backupBloc = _registerBloc(
-        BackupBloc(userProfileBloc.userStream, posCatalogBloc.actionsSink),
         blocsByType);
     FastbitcoinsBloc fastbitcoinsBloc =
         _registerBloc(FastbitcoinsBloc(), blocsByType);

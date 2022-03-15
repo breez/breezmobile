@@ -59,7 +59,6 @@ class BackupBloc {
   Stream<bool> get restoreFinishedStream => _restoreFinishedController.stream;
 
   final _backupActionsController = StreamController<AsyncAction>.broadcast();
-
   Sink<AsyncAction> get backupActionsSink => _backupActionsController.sink;
 
   BreezBridge _breezLib;
@@ -69,14 +68,12 @@ class BackupBloc {
   bool _enableBackupPrompt = false;
   Map<Type, Function> _actionHandlers = Map();
   final FlutterSecureStorage _secureStorage = FlutterSecureStorage();
-  Sink<AsyncAction> _posCatalogActions;
 
   static const String BACKUP_SETTINGS_PREFERENCES_KEY = "backup_settings";
   static const String LAST_BACKUP_TIME_PREFERENCE_KEY = "backup_last_time";
   static const String LAST_BACKUP_STATE_PREFERENCE_KEY = "backup_last_state";
 
-  BackupBloc(
-      Stream<BreezUserModel> userStream, Sink<AsyncAction> posCatalogActions) {
+  BackupBloc(Stream<BreezUserModel> userStream) {
     ServiceInjector injector = ServiceInjector();
     _breezLib = injector.breezBridge;
     _tasksService = injector.backgroundTaskService;
@@ -103,7 +100,6 @@ class BackupBloc {
       _listenPinCodeChange(userStream);
       _listenActions();
     });
-    _posCatalogActions = posCatalogActions;
   }
 
   void _listenActions() {
@@ -295,12 +291,13 @@ class BackupBloc {
       }
 
       // Save BreezUserModel json to backup directory
-      String jsonStr =
-          _sharedPreferences.getString(USER_DETAILS_PREFERENCES_KEY) ?? "{}";
+      var preferences = await ServiceInjector().sharedPreferences;
+      var userPreferences =
+          preferences.getString(USER_DETAILS_PREFERENCES_KEY) ?? "{}";
       await File(backupAppDataDirPath +
               Platform.pathSeparator +
               'breezUserModel.txt')
-          .writeAsString(jsonStr)
+          .writeAsString(userPreferences)
           .catchError((err) {
         throw Exception("Failed to save user preferences.");
       });
@@ -407,19 +404,19 @@ class BackupBloc {
       // Restore POS items
       final backupPosDbPath =
           backupAppDataDirPath + Platform.pathSeparator + 'product-catalog.db';
-      final posDbPath =
-          await databaseFactory.getDatabasesPath() + Platform.pathSeparator + 'product-catalog.db';
-      File(backupPosDbPath).copy(posDbPath).catchError((err) {
-        throw Exception("Failed to restore pos items.");
-      });
+      final posDbPath = await databaseFactory.getDatabasesPath() +
+          Platform.pathSeparator +
+          'product-catalog.db';
+      if (await File(backupPosDbPath).exists()) {
+        await File(backupPosDbPath).copy(posDbPath).catchError((err) {
+          throw Exception("Failed to restore pos items.");
+        });
+      }
 
       // Restore Podcasts library
       final backupAnytimeDbPath =
           backupAppDataDirPath + Platform.pathSeparator + 'anytime.db';
       final anytimeDbPath = appDir.path + Platform.pathSeparator + 'anytime.db';
-      File(backupAnytimeDbPath).copy(anytimeDbPath).catchError((err) {
-        throw Exception("Failed to restore podcast library.");
-      });
 
       // Restore user preferences
       final backupUserPrefsPath = backupAppDataDirPath +
@@ -432,6 +429,11 @@ class BackupBloc {
       await _sharedPreferences.setString(USER_DETAILS_PREFERENCES_KEY, json.encode(user)).catchError((err) {
         throw Exception("Failed to restore user preferences.");
       });
+      if (await File(backupAnytimeDbPath).exists()) {
+        await File(backupAnytimeDbPath).copy(anytimeDbPath).catchError((err) {
+          throw Exception("Failed to restore podcast library.");
+        });
+      }
     } on Exception catch (exception) {
       throw exception;
     }
