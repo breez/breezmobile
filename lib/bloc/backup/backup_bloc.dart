@@ -71,12 +71,15 @@ class BackupBloc {
   bool _enableBackupPrompt = false;
   Map<Type, Function> _actionHandlers = Map();
   final FlutterSecureStorage _secureStorage = FlutterSecureStorage();
+  String _appDirPath;
+  String _backupAppDataDirPath;
 
   static const String BACKUP_SETTINGS_PREFERENCES_KEY = "backup_settings";
   static const String LAST_BACKUP_TIME_PREFERENCE_KEY = "backup_last_time";
   static const String LAST_BACKUP_STATE_PREFERENCE_KEY = "backup_last_state";
 
   BackupBloc(Stream<BreezUserModel> userStream) {
+    _initializeAppDataPaths();
     ServiceInjector injector = ServiceInjector();
     _breezLib = injector.breezBridge;
     _tasksService = injector.backgroundTaskService;
@@ -104,6 +107,13 @@ class BackupBloc {
       _listenPinCodeChange(userStream);
       _listenActions();
     });
+  }
+
+  void _initializeAppDataPaths() async {
+    var appDir = await getApplicationDocumentsDirectory();
+    _appDirPath = appDir.path;
+    _backupAppDataDirPath =
+        _appDirPath + Platform.pathSeparator + 'app_data_backup';
   }
 
   void _listenActions() {
@@ -199,7 +209,7 @@ class BackupBloc {
   void _listenPinCodeChange(Stream<BreezUserModel> userStream) {
     userStream.listen((user) {
       _setBreezLibBackupKey();
-      _backupAppData();
+      _saveUserPreferences();
     });
   }
 
@@ -275,49 +285,55 @@ class BackupBloc {
   _saveAppData() async {
     try {
       // Create backup directory
-      var appDir = await getApplicationDocumentsDirectory();
-      var backupAppDataDirPath =
-          appDir.path + Platform.pathSeparator + 'app_data_backup';
-      var backupAppDataDir = Directory(backupAppDataDirPath);
-      backupAppDataDir.createSync(recursive: true);
-
-      // Copy POS items to backup directory
-      final posDbPath =
-          await databaseFactory.getDatabasesPath() + Platform.pathSeparator + 'product-catalog.db';
-      if (await databaseExists(posDbPath)) {
-        File(posDbPath)
-            .copy(backupAppDataDirPath +
-                Platform.pathSeparator +
-                'product-catalog.db')
-            .catchError((err) {
-          throw Exception("Failed to copy pos items.");
-        });
-      }
-
-      // Copy Podcasts library to backup directory
-      final anytimeDbPath = appDir.path + Platform.pathSeparator + 'anytime.db';
-      if (await databaseExists(anytimeDbPath)) {
-        File(anytimeDbPath)
-            .copy(backupAppDataDirPath + Platform.pathSeparator + 'anytime.db')
-            .catchError((err) {
-          throw Exception("Failed to copy podcast library.");
-        });
-      }
-
-      // Save BreezUserModel json to backup directory
-      var preferences = await ServiceInjector().sharedPreferences;
-      var userPreferences =
-          preferences.getString(USER_DETAILS_PREFERENCES_KEY) ?? "{}";
-      await File(backupAppDataDirPath +
-              Platform.pathSeparator +
-              'breezUserModel.txt')
-          .writeAsString(userPreferences)
-          .catchError((err) {
-        throw Exception("Failed to save user preferences.");
-      });
+      Directory(_backupAppDataDirPath).createSync(recursive: true);
+      await _savePosDB();
+      await _savePodcastsDB();
+      await _saveUserPreferences();
     } on Exception catch (exception) {
       throw exception;
     }
+  }
+
+  Future<void> _savePosDB() async {
+    // Copy POS items to backup directory
+    final posDbPath = await databaseFactory.getDatabasesPath() +
+        Platform.pathSeparator +
+        'product-catalog.db';
+    if (await databaseExists(posDbPath)) {
+      File(posDbPath)
+          .copy(_backupAppDataDirPath +
+              Platform.pathSeparator +
+              'product-catalog.db')
+          .catchError((err) {
+        throw Exception("Failed to copy pos items.");
+      });
+    }
+  }
+
+  Future<void> _savePodcastsDB() async {
+    // Copy Podcasts library to backup directory
+    final anytimeDbPath = _appDirPath + Platform.pathSeparator + 'anytime.db';
+    if (await databaseExists(anytimeDbPath)) {
+      File(anytimeDbPath)
+          .copy(_backupAppDataDirPath + Platform.pathSeparator + 'anytime.db')
+          .catchError((err) {
+        throw Exception("Failed to copy podcast library.");
+      });
+    }
+  }
+
+  Future<void> _saveUserPreferences() async {
+    // Save BreezUserModel json to backup directory
+    var preferences = await ServiceInjector().sharedPreferences;
+    var userPreferences =
+        preferences.getString(USER_DETAILS_PREFERENCES_KEY) ?? "{}";
+    await File(_backupAppDataDirPath +
+            Platform.pathSeparator +
+            'breezUserModel.txt')
+        .writeAsString(userPreferences)
+        .catchError((err) {
+      throw Exception("Failed to save user preferences.");
+    });
   }
 
   _listenBackupPaths() {
@@ -411,33 +427,34 @@ class BackupBloc {
 
   _restoreAppData() async {
     try {
-      var appDir = await getApplicationDocumentsDirectory();
-      var backupAppDataDirPath =
-          appDir.path + Platform.pathSeparator + 'app_data_backup';
-
-      // Restore POS items
-      final backupPosDbPath =
-          backupAppDataDirPath + Platform.pathSeparator + 'product-catalog.db';
-      final posDbPath = await databaseFactory.getDatabasesPath() +
-          Platform.pathSeparator +
-          'product-catalog.db';
-      if (await File(backupPosDbPath).exists()) {
-        await File(backupPosDbPath).copy(posDbPath).catchError((err) {
-          throw Exception("Failed to restore pos items.");
-        });
-      }
-
-      // Restore Podcasts library
-      final backupAnytimeDbPath =
-          backupAppDataDirPath + Platform.pathSeparator + 'anytime.db';
-      final anytimeDbPath = appDir.path + Platform.pathSeparator + 'anytime.db';
-      if (await File(backupAnytimeDbPath).exists()) {
-        await File(backupAnytimeDbPath).copy(anytimeDbPath).catchError((err) {
-          throw Exception("Failed to restore podcast library.");
-        });
-      }
+      await _restorePosDB();
+      await _restorePodcastsDB();
     } on Exception catch (exception) {
       throw exception;
+    }
+  }
+
+  Future<void> _restorePosDB() async {
+    final backupPosDbPath =
+        _backupAppDataDirPath + Platform.pathSeparator + 'product-catalog.db';
+    final posDbPath = await databaseFactory.getDatabasesPath() +
+        Platform.pathSeparator +
+        'product-catalog.db';
+    if (await File(backupPosDbPath).exists()) {
+      await File(backupPosDbPath).copy(posDbPath).catchError((err) {
+        throw Exception("Failed to restore pos items.");
+      });
+    }
+  }
+
+  Future<void> _restorePodcastsDB() async {
+    final backupAnytimeDbPath =
+        _backupAppDataDirPath + Platform.pathSeparator + 'anytime.db';
+    final anytimeDbPath = _appDirPath + Platform.pathSeparator + 'anytime.db';
+    if (await File(backupAnytimeDbPath).exists()) {
+      await File(backupAnytimeDbPath).copy(anytimeDbPath).catchError((err) {
+        throw Exception("Failed to restore podcast library.");
+      });
     }
   }
 

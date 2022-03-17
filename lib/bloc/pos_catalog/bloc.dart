@@ -166,7 +166,7 @@ class PosCatalogBloc with AsyncActionsHandler {
     final items = await _repository.fetchItems(filter: filter);
     final sort = _posItemSort.valueOrNull ?? PosCatalogItemSort.NONE;
     _itemsStreamController.add(_sort(items, sort));
-    _backupAppDataSink.add(backupDB);
+    if (backupDB) _backupAppDataSink.add(backupDB);
   }
 
   List<Item> _sort(List<Item> catalogItems, PosCatalogItemSort sort) {
