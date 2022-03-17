@@ -67,6 +67,7 @@ class AppBlocs {
     PosCatalogBloc posCatalogBloc = _registerBloc(
         PosCatalogBloc(
           accountBloc.accountStream,
+          backupBloc.backupAppDataSink,
           sqliteRepository,
         ),
         blocsByType);

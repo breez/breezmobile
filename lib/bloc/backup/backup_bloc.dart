@@ -47,6 +47,9 @@ class BackupBloc {
   final _backupNowController = StreamController<bool>();
   Sink<bool> get backupNowSink => _backupNowController.sink;
 
+  final _backupAppDataController = StreamController<bool>();
+  Sink<bool> get backupAppDataSink => _backupAppDataController.sink;
+
   final _restoreRequestController = StreamController<RestoreRequest>();
   Sink<RestoreRequest> get restoreRequestSink => _restoreRequestController.sink;
 
@@ -89,6 +92,7 @@ class BackupBloc {
       await _initializePersistentData();
       _listenBackupPaths();
       _listenBackupNowRequests();
+      _listenAppDataBackupRequests();
       _listenRestoreRequests();
       _scheduleBackgroundTasks();
 
@@ -195,6 +199,7 @@ class BackupBloc {
   void _listenPinCodeChange(Stream<BreezUserModel> userStream) {
     userStream.listen((user) {
       _setBreezLibBackupKey();
+      _backupAppData();
     });
   }
 
@@ -254,11 +259,20 @@ class BackupBloc {
       await _breezLib.signOut();
     }
     await _breezLib.signIn(_backupServiceNeedLogin);
-    await _backupAppData();
+    await _saveAppData();
     _breezLib.requestBackup();
   }
 
-  _backupAppData() async {
+  void _listenAppDataBackupRequests() {
+    _backupAppDataController.stream.listen((_) => _backupAppData());
+  }
+
+  Future _backupAppData() async {
+    await _saveAppData();
+    _breezLib.requestAppDataBackup();
+  }
+
+  _saveAppData() async {
     try {
       // Create backup directory
       var appDir = await getApplicationDocumentsDirectory();
@@ -429,6 +443,7 @@ class BackupBloc {
 
   close() {
     _backupNowController.close();
+    _backupAppDataController.close();
     _restoreRequestController.close();
     _multipleRestoreController.close();
     _restoreFinishedController.close();

@@ -50,10 +50,14 @@ class PosCatalogBloc with AsyncActionsHandler {
 
   Stream<PosCatalogItemSort> get posItemSort => _posItemSort.stream;
 
+  Sink<bool> _backupAppDataSink;
+
   PosCatalogBloc(
     Stream<AccountModel> accountStream,
+    Sink<bool> backupAppDataSink,
     this._repository,
   ) {
+    _backupAppDataSink = backupAppDataSink;
     _loadPosCatalogItemSort();
     _loadItems();
     registerAsyncHandlers({
@@ -162,6 +166,7 @@ class PosCatalogBloc with AsyncActionsHandler {
     final items = await _repository.fetchItems(filter: filter);
     final sort = _posItemSort.valueOrNull ?? PosCatalogItemSort.NONE;
     _itemsStreamController.add(_sort(items, sort));
+    _backupAppDataSink.add(true);
   }
 
   List<Item> _sort(List<Item> catalogItems, PosCatalogItemSort sort) {
