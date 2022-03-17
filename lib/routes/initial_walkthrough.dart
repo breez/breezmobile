@@ -123,9 +123,11 @@ class InitialWalkthroughPageState extends State<InitialWalkthroughPage>
       Map<String, dynamic> userData = json.decode(backupUserPrefs);
       BreezUserModel user = BreezUserModel.fromJson(userData);
       return user.copyWith(
-          hasAdminPassword: false,
-          securityModel: SecurityModel.initial(),
-          locked: false);
+        appMode: AppMode.balance,
+        hasAdminPassword: false,
+        securityModel: SecurityModel.initial(),
+        locked: false,
+      );
     }
     return null;
   }
