@@ -1467,6 +1467,17 @@
   },
   "successful_payment_print": "Print",
   "successful_payment_received": "Payment received!",
+  "catalog_item_action_edit": "Edit Item",
+  "catalog_item_action_delete": "Delete Item",
+  "catalog_item_error_delete": "Failed to delete {name}",
+  "@catalog_item_error_delete": {
+    "placeholders": {
+      "name": {
+        "type": "String",
+        "example": "A name"
+      }
+    }
+  },
   "locale": "fi",
   "app_name": "Breez"
 }
