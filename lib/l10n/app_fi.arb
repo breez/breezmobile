@@ -1467,14 +1467,14 @@
   },
   "successful_payment_print": "Print",
   "successful_payment_received": "Payment received!",
-  "catalog_item_action_edit": "Edit Item",
-  "catalog_item_action_delete": "Delete Item",
-  "catalog_item_error_delete": "Failed to delete {name}",
+  "catalog_item_action_edit": "Muokkaa tuotetta",
+  "catalog_item_action_delete": "Poista tuote",
+  "catalog_item_error_delete": "Tuotteen {name} poisto epäonnistui",
   "@catalog_item_error_delete": {
     "placeholders": {
       "name": {
         "type": "String",
-        "example": "A name"
+        "example": "tuotenimi"
       }
     }
   },
