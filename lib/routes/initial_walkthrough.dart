@@ -6,7 +6,6 @@ import 'package:auto_size_text/auto_size_text.dart';
 import 'package:breez/bloc/backup/backup_actions.dart';
 import 'package:breez/bloc/backup/backup_bloc.dart';
 import 'package:breez/bloc/backup/backup_model.dart';
-import 'package:breez/bloc/user_profile/breez_user_model.dart';
 import 'package:breez/bloc/user_profile/user_actions.dart';
 import 'package:breez/bloc/user_profile/user_profile_bloc.dart';
 import 'package:breez/logger.dart';
@@ -21,10 +20,8 @@ import 'package:crypto/crypto.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:hex/hex.dart';
-import 'package:path_provider/path_provider.dart';
 import 'package:rxdart/rxdart.dart';
 
-import '../bloc/user_profile/security_model.dart';
 import 'beta_warning_dialog.dart';
 import 'security_pin/backup_phrase/enter_backup_phrase_page.dart';
 import 'security_pin/restore_pin.dart';
@@ -83,10 +80,10 @@ class InitialWalkthroughPageState extends State<InitialWalkthroughPage>
     });
 
     _restoreFinishedSubscription =
-        widget._backupBloc.restoreFinishedStream.listen((restored) async {
+        widget._backupBloc.restoreFinishedStream.listen((restored) {
       if (restored) {
         popToWalkthrough();
-        _proceedToRegister(userModel: await _getRestoredUserPrefs());
+        _proceedToRegister();
       }
     }, onError: (error) {
       Navigator.of(context).pop();
@@ -110,26 +107,6 @@ class InitialWalkthroughPageState extends State<InitialWalkthroughPage>
       _controller.stop();
       _controller.dispose();
     }
-  }
-
-  Future<BreezUserModel> _getRestoredUserPrefs() async {
-    var appDir = await getApplicationDocumentsDirectory();
-    var backupAppDataDirPath =
-        appDir.path + Platform.pathSeparator + 'app_data_backup';
-    final backupUserPrefsPath =
-        backupAppDataDirPath + Platform.pathSeparator + 'breezUserModel.txt';
-    if(await File(backupUserPrefsPath).exists()) {
-      final backupUserPrefs = await File(backupUserPrefsPath).readAsString();
-      Map<String, dynamic> userData = json.decode(backupUserPrefs);
-      BreezUserModel user = BreezUserModel.fromJson(userData);
-      return user.copyWith(
-        appMode: AppMode.balance,
-        hasAdminPassword: false,
-        securityModel: SecurityModel.initial(),
-        locked: false,
-      );
-    }
-    return null;
   }
 
   Future<void> _listenBackupContext(_BackupContext backupContext) async {
@@ -289,8 +266,8 @@ class InitialWalkthroughPageState extends State<InitialWalkthroughPage>
     super.dispose();
   }
 
-  void _proceedToRegister({BreezUserModel userModel}) {
-    widget._registrationBloc.registerSink.add(userModel);
+  void _proceedToRegister() {
+    widget._registrationBloc.registerSink.add(null);
     _registered = true;
     Navigator.of(context).pop();
   }

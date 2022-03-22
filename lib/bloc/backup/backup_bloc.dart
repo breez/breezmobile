@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:breez/bloc/backup/backup_model.dart';
+import 'package:breez/bloc/user_profile/backup_user_preferences.dart';
 import 'package:breez/bloc/user_profile/breez_user_model.dart';
 import 'package:breez/services/background_task.dart';
 import 'package:breez/services/breezlib/breez_bridge.dart';
@@ -105,6 +106,7 @@ class BackupBloc {
         await _updateBackupProvider(_backupSettingsController.value);
       }
       _listenPinCodeChange(userStream);
+      _listenUserPreferenceChanges(userStream);
       _listenActions();
     });
   }
@@ -209,7 +211,72 @@ class BackupBloc {
   void _listenPinCodeChange(Stream<BreezUserModel> userStream) {
     userStream.listen((user) {
       _setBreezLibBackupKey();
-      _saveUserPreferences();
+    });
+  }
+
+  void _listenUserPreferenceChanges(Stream<BreezUserModel> userStream) {
+    userStream.listen((user) async {
+      await _compareUserPreferences(user);
+    });
+  }
+
+  Future<void> _compareUserPreferences(BreezUserModel user) async {
+    var appDir = await getApplicationDocumentsDirectory();
+    var backupAppDataDirPath =
+        appDir.path + Platform.pathSeparator + 'app_data_backup';
+    final backupUserPrefsPath =
+        backupAppDataDirPath + Platform.pathSeparator + 'userPreferences.txt';
+    // Check if userPreferences file exists
+    if (await File(backupUserPrefsPath).exists()) {
+      // Compare updated user preferences against stored user preferences
+      BackupUserPreferences userPreferences =
+          BackupUserPreferences.fromJson(user.toJson());
+      BackupUserPreferences storedUserPreferences =
+          await _getSavedUserPreferences(backupUserPrefsPath);
+      // Update and trigger backup if user preferences has changed
+      if (userPreferences.toJson().toString() !=
+          storedUserPreferences.toJson().toString()) {
+        await _updateUserPreferences(user)
+            .then((_) => backupAppDataSink.add(true));
+      }
+    } else {
+      await _saveUserPreferences();
+    }
+  }
+
+  Future<BackupUserPreferences> _getSavedUserPreferences(
+      String backupUserPrefsPath) async {
+    final backupUserPrefs = await File(backupUserPrefsPath).readAsString();
+    return BackupUserPreferences.fromJson(json.decode(backupUserPrefs));
+  }
+
+  Future<void> _updateUserPreferences(BreezUserModel userModel) async {
+    final backupUserPrefsPath =
+        _backupAppDataDirPath + Platform.pathSeparator + 'userPreferences.txt';
+    var backupUserPreferences =
+        BackupUserPreferences.fromJson(userModel.toJson());
+    await File(backupUserPrefsPath)
+        .writeAsString(jsonEncode(backupUserPreferences.toJson()))
+        .catchError((err) {
+      throw Exception("Failed to save user preferences.");
+    });
+  }
+
+  // Save BreezUserModel json to backup directory
+  Future<void> _saveUserPreferences() async {
+    final backupUserPrefsPath =
+        _backupAppDataDirPath + Platform.pathSeparator + 'userPreferences.txt';
+    var preferences = await ServiceInjector().sharedPreferences;
+    var userPreferences =
+        preferences.getString(USER_DETAILS_PREFERENCES_KEY) ?? "{}";
+    BreezUserModel userModel =
+        BreezUserModel.fromJson(json.decode(userPreferences));
+    var backupUserPreferences =
+        BackupUserPreferences.fromJson(userModel.toJson());
+    await File(backupUserPrefsPath)
+        .writeAsString(json.encode(backupUserPreferences.toJson()))
+        .catchError((err) {
+      throw Exception("Failed to save user preferences.");
     });
   }
 
@@ -288,7 +355,6 @@ class BackupBloc {
       Directory(_backupAppDataDirPath).createSync(recursive: true);
       await _savePosDB();
       await _savePodcastsDB();
-      await _saveUserPreferences();
     } on Exception catch (exception) {
       throw exception;
     }
@@ -320,20 +386,6 @@ class BackupBloc {
         throw Exception("Failed to copy podcast library.");
       });
     }
-  }
-
-  Future<void> _saveUserPreferences() async {
-    // Save BreezUserModel json to backup directory
-    var preferences = await ServiceInjector().sharedPreferences;
-    var userPreferences =
-        preferences.getString(USER_DETAILS_PREFERENCES_KEY) ?? "{}";
-    await File(_backupAppDataDirPath +
-            Platform.pathSeparator +
-            'breezUserModel.txt')
-        .writeAsString(userPreferences)
-        .catchError((err) {
-      throw Exception("Failed to save user preferences.");
-    });
   }
 
   _listenBackupPaths() {
