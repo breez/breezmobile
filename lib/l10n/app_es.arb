@@ -1467,6 +1467,17 @@
   },
   "successful_payment_print": "Imprimir",
   "successful_payment_received": "¡Pago recibido!",
+  "catalog_item_action_edit": "Editar artículo",
+  "catalog_item_action_delete": "Borrar artículo",
+  "catalog_item_error_delete": "No se pudo borrar el artículo {name}",
+  "@catalog_item_error_delete": {
+    "placeholders": {
+      "name": {
+        "type": "String",
+        "example": "A name"
+      }
+    }
+  },
   "locale": "es",
   "app_name": "Breez"
 }

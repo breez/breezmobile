@@ -146,7 +146,7 @@ class AddFundsBloc extends Bloc {
             "currencyCode=$currencyCode",
             "colorCode=$colorCode",
             "redirectURL=${Uri.encodeComponent(redirectURL)}",
-            "enabledPaymentMethods=credit_debit_card,sepa_bank_transfer,gbp_bank_transfer",
+            "enabledPaymentMethods=credit_debit_card%2Csepa_bank_transfer%2Cgbp_bank_transfer",
             "walletAddress=$walletAddress",
             "maxQuoteCurrencyAmount=$maxQuoteCurrencyAmount"
           ].join("&");
