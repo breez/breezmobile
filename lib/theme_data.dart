@@ -329,10 +329,7 @@ final VendorTheme bitrefill = VendorTheme(
 final VendorTheme lnpizza =
     VendorTheme(iconBgColor: Color(0xFF000000), iconFgColor: Color(0xFFf8e71c));
 final VendorTheme fixedfloat = VendorTheme(iconBgColor: Color(0xFF0B4E7B));
-final VendorTheme lnmarkets = VendorTheme(
-  iconBgColor: Color(0xFF0a157a),
-  textColor: Color(0xFFe2ded5),
-);
+final VendorTheme lnmarkets = VendorTheme(iconBgColor: Color(0xFF384697));
 final VendorTheme boltz = VendorTheme(iconBgColor: Color(0xFF001524));
 final VendorTheme lightnite = VendorTheme(iconBgColor: Color(0xFF530709));
 final VendorTheme spendl = VendorTheme(iconBgColor: Color(0xFFffffff));

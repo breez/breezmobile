@@ -10,6 +10,7 @@ import 'package:breez/bloc/user_profile/user_actions.dart';
 import 'package:breez/bloc/user_profile/user_profile_bloc.dart';
 import 'package:breez/l10n/locales.dart';
 import 'package:breez/routes/fiat_currencies/fiat_currency_settings.dart';
+import 'package:breez/routes/payment_options/payment_options_page.dart';
 import 'package:breez/routes/podcast/theme.dart';
 import 'package:breez/routes/qr_scan.dart';
 import 'package:breez/utils/locale.dart';
@@ -217,7 +218,10 @@ class UserApp extends StatelessWidget {
                             case '/send_coins':
                               return MaterialPageRoute(
                                 fullscreenDialog: true,
-                                builder: (_) => UnexpectedFunds(),
+                                builder: (_) => withBreezTheme(
+                                  context,
+                                  UnexpectedFunds(),
+                                ),
                                 settings: settings,
                               );
                             case '/select_lsp':
@@ -268,6 +272,14 @@ class UserApp extends StatelessWidget {
                                     userProfileBloc,
                                     backupBloc,
                                   ),
+                                ),
+                                settings: settings,
+                              );
+                            case '/payment_options':
+                              return FadeInRoute(
+                                builder: (_) => withBreezTheme(
+                                  context,
+                                  PaymentOptionsPage(),
                                 ),
                                 settings: settings,
                               );
