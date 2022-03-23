@@ -10,6 +10,7 @@ import 'package:breez/bloc/backup/backup_bloc.dart';
 import 'package:breez/bloc/backup/backup_model.dart';
 import 'package:breez/bloc/blocs_provider.dart';
 import 'package:breez/bloc/pos_catalog/bloc.dart';
+import 'package:breez/bloc/pos_catalog/sqlite/db.dart';
 import 'package:breez/bloc/user_profile/breez_user_model.dart';
 import 'package:breez/bloc/user_profile/user_actions.dart';
 import 'package:breez/bloc/user_profile/user_profile_bloc.dart';
@@ -23,6 +24,7 @@ import 'package:breez/widgets/back_button.dart' as backBtn;
 import 'package:breez/widgets/error_dialog.dart';
 import 'package:breez/widgets/loader.dart';
 import 'package:breez/widgets/route.dart';
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_downloader/flutter_downloader.dart';
 import 'package:path_provider/path_provider.dart';
@@ -438,6 +440,36 @@ class DevViewState extends State<DevView> {
           encoder.close();
           ShareExtend.share(zipFile, "file");
         }));
+
+    choices.add(Choice(
+      title: "Export Product Catalog DB",
+      icon: Icons.file_upload,
+      function: () async {
+        final databasePath = await getDatabasePath();
+        ShareExtend.share(databasePath, "file");
+      },
+    ));
+
+    choices.add(Choice(
+      title: "Import Product Catalog DB",
+      icon: Icons.file_download,
+      function: () async {
+        final fileResult = await FilePicker.platform.pickFiles(
+          dialogTitle: "Select Product Catalog DB",
+        );
+        if (fileResult != null && fileResult.files.length > 0) {
+          final file = fileResult.files.first;
+          if (file.path.endsWith(".db")) {
+            final databasePath = await getDatabasePath();
+            await File(file.path).copy(databasePath);
+          } else {
+            log.warning("Invalid file type for product catalog DB");
+          }
+        } else {
+          log.info("No file selected for product catalog DB");
+        }
+      },
+    ));
 
     choices.add(Choice(
         title: 'Reset POS DB',
