@@ -80,7 +80,7 @@ class BackupBloc {
   static const String LAST_BACKUP_STATE_PREFERENCE_KEY = "backup_last_state";
 
   BackupBloc(Stream<BreezUserModel> userStream) {
-    _initializeAppDataPaths();
+    _initAppDataPathAndDir();
     ServiceInjector injector = ServiceInjector();
     _breezLib = injector.breezBridge;
     _tasksService = injector.backgroundTaskService;
@@ -111,11 +111,12 @@ class BackupBloc {
     });
   }
 
-  void _initializeAppDataPaths() async {
+  void _initAppDataPathAndDir() async {
     var appDir = await getApplicationDocumentsDirectory();
     _appDirPath = appDir.path;
     _backupAppDataDirPath =
         _appDirPath + Platform.pathSeparator + 'app_data_backup';
+    Directory(_backupAppDataDirPath).createSync(recursive: true);
   }
 
   void _listenActions() {
@@ -351,8 +352,6 @@ class BackupBloc {
 
   _saveAppData() async {
     try {
-      // Create backup directory
-      Directory(_backupAppDataDirPath).createSync(recursive: true);
       await _savePosDB();
       await _savePodcastsDB();
     } on Exception catch (exception) {
