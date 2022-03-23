@@ -4,9 +4,16 @@ import 'package:breez/bloc/pos_catalog/sqlite/migrations.dart';
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
 
+Future<String> getDatabasePath() async {
+  return join(
+    await databaseFactory.getDatabasesPath(),
+    "product-catalog.db",
+  );
+}
+
 Future<Database> getDB() async {
   return openDatabase(
-    join(await databaseFactory.getDatabasesPath(), 'product-catalog.db'),
+    await getDatabasePath(),
     onCreate: (db, version) async {
       await db.execute(
         """
