@@ -1503,6 +1503,36 @@
       }
     }
   },
+  "qr_code_dialog_synchronizing": "Synchronizing to the network",
+  "qr_code_dialog_invoice": "Invoice",
+  "qr_code_dialog_action_close": "CLOSE",
+  "qr_code_dialog_share": "Share invoice data",
+  "qr_code_dialog_copy": "Copy invoice data",
+  "qr_code_dialog_copied": "Invoice data was copied to your clipboard.",
+  "qr_code_dialog_warning_message_error": "Failed to create invoice",
+  "qr_code_dialog_warning_message": "Keep Breez open until the payment is completed.",
+  "qr_code_dialog_warning_message_with_lsp": "A setup fee of {setupFee} ({fiatFee}) is applied to this invoice. Keep Breez open until the payment is completed.",
+  "@qr_code_dialog_warning_message_with_lsp": {
+    "placeholders": {
+      "setupFee": {
+        "type": "String",
+        "example": "123 sats"
+      },
+      "fiatFee": {
+        "type": "String",
+        "example": "1$"
+      }
+    }
+  },
+  "qr_code_dialog_error": "Failed to create an invoice {error}. Please try again later.",
+  "@qr_code_dialog_error": {
+    "placeholders": {
+      "error": {
+        "type": "String",
+        "example": "An error"
+      }
+    }
+  },
   "locale": "en",
   "app_name": "Breez"
 }

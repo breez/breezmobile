@@ -1503,6 +1503,36 @@
       }
     }
   },
+  "qr_code_dialog_synchronizing": "Sincronizando con la red",
+  "qr_code_dialog_invoice": "Factura",
+  "qr_code_dialog_action_close": "CERRAR",
+  "qr_code_dialog_share": "Compartir datos de factura",
+  "qr_code_dialog_copy": "Copiar datos de factura",
+  "qr_code_dialog_copied": "Los datos de la factura se han copiado en su portapapeles.",
+  "qr_code_dialog_warning_message_error": "No se pudo crear la factura",
+  "qr_code_dialog_warning_message": "Mantenga la aplicación abierta hasta que se complete el pago.",
+  "qr_code_dialog_warning_message_with_lsp": "Una tarifa de instalación de  {setupFee} ({fiatFee}) se aplicará a esta factura. Mantenga la aplicación abierta hasta que se complete el pago.",
+  "@qr_code_dialog_warning_message_with_lsp": {
+    "placeholders": {
+      "setupFee": {
+        "type": "String",
+        "example": "123 sats"
+      },
+      "fiatFee": {
+        "type": "String",
+        "example": "1$"
+      }
+    }
+  },
+  "qr_code_dialog_error": "No se pudo crear la factura {error}. Por favor, inténtelo de nuevo más tarde.",
+  "@qr_code_dialog_error": {
+    "placeholders": {
+      "error": {
+        "type": "String",
+        "example": "An error"
+      }
+    }
+  },
   "locale": "es",
   "app_name": "Breez"
 }
