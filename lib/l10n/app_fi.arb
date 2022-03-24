@@ -1491,6 +1491,18 @@
   "pos_report_dialog_content_amount_label": "Total amount:",
   "pos_report_dialog_content_start_date_label": "Start date:",
   "pos_report_dialog_content_end_date_label": "End date:",
+  "lnurl_withdraw_dialog_title": "Receive Funds",
+  "lnurl_withdraw_dialog_wait": "Please wait while your payment is being processed",
+  "lnurl_withdraw_dialog_action_close": "CLOSE",
+  "lnurl_withdraw_dialog_error": "Failed to receive funds: {error}",
+  "@lnurl_withdraw_dialog_error": {
+    "placeholders": {
+      "error": {
+        "type": "String",
+        "example": "An error"
+      }
+    }
+  },
   "locale": "fi",
   "app_name": "Breez"
 }
