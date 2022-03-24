@@ -1,4 +1,5 @@
 import 'package:breez/bloc/account/add_funds_bloc.dart';
+import 'package:breez/bloc/account/add_funds_model.dart';
 import 'package:breez/bloc/blocs_provider.dart';
 import 'package:breez/widgets/loader.dart';
 import 'package:flutter/material.dart';
@@ -7,7 +8,7 @@ import 'package:flutter_web_browser/flutter_web_browser.dart';
 void showMonpayWebview(context) {
   AddFundsBloc addFundsBloc = BlocProvider.of<AddFundsBloc>(context);
   bool cancelled = false;
-  addFundsBloc.addFundRequestSink.add(true);
+  addFundsBloc.addFundRequestSink.add(AddFundsInfo(true, true));
   var loaderRoute = createLoaderRoute(context,
       message: "Loading...", opacity: 0.8, onClose: () => cancelled = true);
   Navigator.push(context, loaderRoute);

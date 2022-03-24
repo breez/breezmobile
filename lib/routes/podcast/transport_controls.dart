@@ -84,7 +84,6 @@ class _PlayerTransportControlsState extends State<PlayerTransportControls>
           mainAxisAlignment: MainAxisAlignment.center,
           mainAxisSize: MainAxisSize.max,
           children: <Widget>[
-            SizedBox(width: 16.0, height: 0.0),
             Expanded(flex: 1, child: Container()),
             // Add SleepSelector inside a 37 width sized
             // box to proper alignment with SpeedSelector
@@ -122,9 +121,10 @@ class _PlayerTransportControlsState extends State<PlayerTransportControls>
               },
               tooltip: L.of(context).rewind_button_label,
               padding: const EdgeInsets.all(0.0),
-              icon: ImageIcon(
-                AssetImage('src/icon/replay_30.png'),
-                size: 48.0,
+              icon: SvgPicture.asset(
+                "src/icon/ic_backward.svg",
+                width: 48.0,
+                height: 48.0,
                 color: theme.buttonTheme.colorScheme.onPrimary
               ),
             ),
@@ -141,9 +141,10 @@ class _PlayerTransportControlsState extends State<PlayerTransportControls>
                 return snapshot.data == AudioState.buffering ? null : _fastforward(audioBloc);
               },
               padding: const EdgeInsets.all(0.0),
-              icon: ImageIcon(
-                AssetImage('src/icon/forward_30.png'),
-                size: 48.0,
+              icon: SvgPicture.asset(
+                "src/icon/ic_forward.svg",
+                width: 48.0,
+                height: 48.0,
                 color: theme.buttonTheme.colorScheme.onPrimary,
               ),
             ),
@@ -155,7 +156,7 @@ class _PlayerTransportControlsState extends State<PlayerTransportControls>
               },
             ),
             Expanded(flex: 1, child: Container()),
-            SizedBox(width: 16.0, height: 0.0),
+            SizedBox(width: 22.0, height: 0.0),
           ],
         );
       },

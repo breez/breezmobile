@@ -9,6 +9,7 @@ import 'package:breez/widgets/loader.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:share_extend/share_extend.dart';
 
 class PaymentFilterSliver extends StatefulWidget {
@@ -167,10 +168,11 @@ class PaymentsFilterState extends State<PaymentsFilter> {
     return Padding(
       padding: EdgeInsets.only(left: 0.0, right: 0.0),
       child: IconButton(
-        icon: ImageIcon(
-          AssetImage("src/icon/calendar.png"),
+        icon: SvgPicture.asset(
+          "src/icon/calendar.svg",
           color: themeData.accentTextTheme.subtitle2.color,
-          size: 24.0,
+          width: 24.0,
+          height: 24.0,
         ),
         onPressed: () => widget._paymentsModel.firstDate != null
             ? showDialog(

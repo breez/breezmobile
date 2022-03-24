@@ -51,11 +51,17 @@ void main() {
     });
 
     test("should test sale", () async {
-      int saleID = await repo.addSale(Sale(saleLines: [
-        SaleLine(itemName: "SaleLine1", quantity: 1, itemImageURL: "testURL1", pricePerItem: 1.0, currency: "USD", satConversionRate: 1.5 ),
-        SaleLine(itemName: "SaleLine2", quantity: 1, itemImageURL: "testURL2", pricePerItem: 2.0, currency: "USD", satConversionRate: 2.5 )
-      ]), "hash");
-    
+      int saleID = await repo.addSale(
+        Sale(
+          date: DateTime.now(),
+          saleLines: [
+            SaleLine(itemName: "SaleLine1", quantity: 1, itemImageURL: "testURL1", pricePerItem: 1.0, currency: "USD", satConversionRate: 1.5 ),
+            SaleLine(itemName: "SaleLine2", quantity: 1, itemImageURL: "testURL2", pricePerItem: 2.0, currency: "USD", satConversionRate: 2.5 ),
+          ],
+        ),
+        "hash",
+      );
+
       expect(saleID, 1);
       var fetchedSale = await repo.fetchSaleByID(saleID);
       expect(fetchedSale.saleLines.length, 2);
@@ -98,10 +104,15 @@ void main() {
 
     test("fetchSaleByPaymentHash when paymentHash is valid should return sale", () async {
       final hash = "a_hash";
-      await repo.addSale(Sale(saleLines: [
-        SaleLine(itemName: "SaleLine1", quantity: 1, itemImageURL: "testURL1", pricePerItem: 1.0, currency: "USD", satConversionRate: 1.5),
-        SaleLine(itemName: "SaleLine2", quantity: 1, itemImageURL: "testURL2", pricePerItem: 2.0, currency: "USD", satConversionRate: 2.5),
-      ]), hash);
+      await repo.addSale(
+        Sale(
+          saleLines: [
+            SaleLine(itemName: "SaleLine1", quantity: 1, itemImageURL: "testURL1", pricePerItem: 1.0, currency: "USD", satConversionRate: 1.5),
+            SaleLine(itemName: "SaleLine2", quantity: 1, itemImageURL: "testURL2", pricePerItem: 2.0, currency: "USD", satConversionRate: 2.5),
+          ],
+        ),
+        hash,
+      );
       final sale = await repo.fetchSaleByPaymentHash(hash);
       expect(sale, isNotNull);
     });

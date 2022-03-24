@@ -1,17 +1,23 @@
 import 'dart:async';
 
+import 'package:breez/bloc/pos_catalog/sqlite/migrations.dart';
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
 
+Future<String> getDatabasePath() async {
+  return join(
+    await databaseFactory.getDatabasesPath(),
+    "product-catalog.db",
+  );
+}
+
 Future<Database> getDB() async {
   return openDatabase(
-    // Set the path to the database.
-    join(await databaseFactory.getDatabasesPath(), 'product-catalog.db'),
-    // When the database is first created, create a table to store dogs.
+    await getDatabasePath(),
     onCreate: (db, version) async {
       await db.execute(
         """
-        CREATE TABLE asset(          
+        CREATE TABLE asset(
           url TEXT PRIMARY KEY,
           data BLOB 
         )
@@ -26,7 +32,7 @@ Future<Database> getDB() async {
           sku TEXT,
           imageURL TEXT,
           price REAL, 
-          currency TEXT        
+          currency TEXT
         )
         """,
       );
@@ -35,7 +41,8 @@ Future<Database> getDB() async {
         """
         CREATE TABLE sale(
           id INTEGER PRIMARY KEY,
-          note TEXT      
+          note TEXT,
+          date INTEGER
         )
         """,
       );
@@ -60,7 +67,7 @@ Future<Database> getDB() async {
           item_sku TEXT,
           item_image_url TEXT,
           quantity INTEGER, 
-          price_per_item REAL,          
+          price_per_item REAL,
           currency TEXT,
           sat_conversion_rate REAL,
           FOREIGN KEY(sale_id) REFERENCES sale(id)
@@ -68,6 +75,15 @@ Future<Database> getDB() async {
         """,
       );
     },
-    version: 1,
+    onUpgrade: (db, oldVersion, newVersion) async {
+      for (var version = oldVersion; version < newVersion; version++) {
+        switch (version) {
+          case 1:
+            await fromVersion1ToVersion2(db);
+            break;
+        }
+      }
+    },
+    version: 2,
   );
 }

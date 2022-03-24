@@ -1467,6 +1467,30 @@
   },
   "successful_payment_print": "Imprimir",
   "successful_payment_received": "¡Pago recibido!",
+  "catalog_item_action_edit": "Editar artículo",
+  "catalog_item_action_delete": "Borrar artículo",
+  "catalog_item_error_delete": "No se pudo borrar el artículo {name}",
+  "@catalog_item_error_delete": {
+    "placeholders": {
+      "name": {
+        "type": "String",
+        "example": "A name"
+      }
+    }
+  },
+  "pos_report_dialog_title_daily": "Resumen Diario",
+  "pos_report_dialog_title_weekly": "Resumen Semanal",
+  "pos_report_dialog_title_monthly": "Resumen Mensual",
+  "pos_report_dialog_title_custom": "Resumen Personalizado",
+  "pos_report_dialog_action_close": "CERRAR",
+  "pos_report_dialog_dropdown_item_daily": "Hoy",
+  "pos_report_dialog_dropdown_item_weekly": "Esa semana",
+  "pos_report_dialog_dropdown_item_monthly": "Este mes",
+  "pos_report_dialog_dropdown_item_custom": "Periodo personalizado",
+  "pos_report_dialog_content_sales_label": "Número de ventas:",
+  "pos_report_dialog_content_amount_label": "Valor total:",
+  "pos_report_dialog_content_start_date_label": "Fecha inicial:",
+  "pos_report_dialog_content_end_date_label": "Fecha final:",
   "locale": "es",
   "app_name": "Breez"
 }
