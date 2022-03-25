@@ -1533,7 +1533,7 @@
       }
     }
   },
-  "waiting_broadcast_dialog_dialog_title": "Transação para Reembolso",
+  "waiting_broadcast_dialog_dialog_title": "Transação de Reembolso",
   "waiting_broadcast_dialog_dialog_title_error": "Erro no Reembolso",
   "waiting_broadcast_dialog_action_close": "FECHAR",
   "waiting_broadcast_dialog_action_copy": "Copiar o hash da transação",
