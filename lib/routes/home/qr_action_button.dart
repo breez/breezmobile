@@ -19,6 +19,7 @@ import 'package:breez/widgets/flushbar.dart';
 import 'package:breez/widgets/loader.dart';
 import 'package:breez/widgets/route.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:validators/validators.dart';
@@ -27,12 +28,16 @@ class QrActionButton extends StatelessWidget {
   final AccountModel account;
   final GlobalKey firstPaymentItemKey;
 
-  QrActionButton(this.account, this.firstPaymentItemKey);
+  const QrActionButton(
+    this.account,
+    this.firstPaymentItemKey,
+  );
 
   @override
   Widget build(BuildContext context) {
-    InvoiceBloc invoiceBloc = AppBlocsProvider.of<InvoiceBloc>(context);
-    LNUrlBloc lnurlBloc = AppBlocsProvider.of<LNUrlBloc>(context);
+    final texts = AppLocalizations.of(context);
+    final invoiceBloc = AppBlocsProvider.of<InvoiceBloc>(context);
+    final lnurlBloc = AppBlocsProvider.of<LNUrlBloc>(context);
 
     return Padding(
       padding: const EdgeInsets.only(top: 32.0),
@@ -41,11 +46,16 @@ class QrActionButton extends StatelessWidget {
         height: 64,
         child: FloatingActionButton(
           onPressed: () async {
-            String scannedString =
-                await Navigator.pushNamed<String>(context, "/qr_scan");
+            final scannedString = await Navigator.pushNamed<String>(
+              context,
+              "/qr_scan",
+            );
             if (scannedString != null) {
               if (scannedString.isEmpty) {
-                showFlushbar(context, message: "QR code wasn't detected.");
+                showFlushbar(
+                  context,
+                  message: texts.qr_action_button_error_code_not_detected,
+                );
                 return;
               }
               String lower = scannedString.toLowerCase();
@@ -81,23 +91,28 @@ class QrActionButton extends StatelessWidget {
               if (await _isBTCAddress(btcInvoice.address)) {
                 String requestAmount;
                 if (btcInvoice.satAmount != null) {
-                  requestAmount = account.currency.format(btcInvoice.satAmount,
-                      userInput: true,
-                      includeDisplayName: false,
-                      removeTrailingZeros: true);
+                  requestAmount = account.currency.format(
+                    btcInvoice.satAmount,
+                    userInput: true,
+                    includeDisplayName: false,
+                    removeTrailingZeros: true,
+                  );
                 }
                 Navigator.of(context).push(FadeInRoute(
                   builder: (_) => ReverseSwapPage(
-                      userAddress: btcInvoice.address,
-                      requestAmount: requestAmount),
+                    userAddress: btcInvoice.address,
+                    requestAmount: requestAmount,
+                  ),
                 ));
                 return;
               }
               var nodeID = parseNodeId(scannedString);
               if (nodeID != null) {
                 Navigator.of(context).push(FadeInRoute(
-                  builder: (_) =>
-                      SpontaneousPaymentPage(nodeID, firstPaymentItemKey),
+                  builder: (_) => SpontaneousPaymentPage(
+                    nodeID,
+                    firstPaymentItemKey,
+                  ),
                 ));
                 return;
               }
@@ -119,7 +134,10 @@ class QrActionButton extends StatelessWidget {
                 return;
               }
 
-              showFlushbar(context, message: "QR code cannot be processed.");
+              showFlushbar(
+                context,
+                message: texts.qr_action_button_error_code_not_processed,
+              );
             }
           },
           child: SvgPicture.asset(
@@ -143,38 +161,52 @@ class QrActionButton extends StatelessWidget {
   }
 
   Future _handleLNUrl(
-      LNUrlBloc lnurlBloc, BuildContext context, String lnurl) async {
-    Fetch fetchAction = Fetch(lnurl);
-    var cancelCompleter = Completer();
-    var loaderRoute = createLoaderRoute(context, onClose: () {
+    LNUrlBloc lnurlBloc,
+    BuildContext context,
+    String lnurl,
+  ) async {
+    final texts = AppLocalizations.of(context);
+    final fetchAction = Fetch(lnurl);
+    final cancelCompleter = Completer();
+    final loaderRoute = createLoaderRoute(context, onClose: () {
       cancelCompleter.complete();
     });
     Navigator.of(context).push(loaderRoute);
 
     lnurlBloc.actionsSink.add(fetchAction);
-    await Future.any([cancelCompleter.future, fetchAction.future]).then(
-      (response) {
-        Navigator.of(context).removeRoute(loaderRoute);
-        if (cancelCompleter.isCompleted) {
-          return;
-        }
+    await Future.any([
+      cancelCompleter.future,
+      fetchAction.future,
+    ]).then((response) {
+      Navigator.of(context).removeRoute(loaderRoute);
+      if (cancelCompleter.isCompleted) {
+        return;
+      }
 
-        LNURLHandler(context, lnurlBloc)
-            .executeLNURLResponse(context, lnurlBloc, response);
-      },
-    ).catchError((err) {
+      LNURLHandler(context, lnurlBloc).executeLNURLResponse(
+        context,
+        lnurlBloc,
+        response,
+      );
+    }).catchError((err) {
       Navigator.of(context).removeRoute(loaderRoute);
       promptError(
-          context,
-          "Link Error",
-          Text("Failed to process link: " + err.toString(),
-              style: Theme.of(context).dialogTheme.contentTextStyle));
+        context,
+        texts.qr_action_button_error_link_title,
+        Text(
+          texts.qr_action_button_error_link_message(err.toString()),
+          style: Theme.of(context).dialogTheme.contentTextStyle,
+        ),
+      );
     });
   }
 
   void _handleWebAddress(BuildContext context, String url) {
-    var dialogTheme = Theme.of(context).dialogTheme;
-    var size = MediaQuery.of(context).size;
+    final texts = AppLocalizations.of(context);
+    final themeData = Theme.of(context);
+    final dialogTheme = themeData.dialogTheme;
+    final size = MediaQuery.of(context).size;
+
     showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -184,7 +216,7 @@ class QrActionButton extends StatelessWidget {
             height: 64.0,
             padding: EdgeInsets.fromLTRB(24.0, 24.0, 24.0, 8.0),
             child: Text(
-              "Open Link",
+              texts.qr_action_button_open_link,
               style: dialogTheme.titleTextStyle,
               textAlign: TextAlign.center,
             ),
@@ -197,7 +229,7 @@ class QrActionButton extends StatelessWidget {
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   mainAxisSize: MainAxisSize.min,
-                  children: <Widget>[
+                  children: [
                     Text(
                       url,
                       style: dialogTheme.contentTextStyle.copyWith(
@@ -212,7 +244,7 @@ class QrActionButton extends StatelessWidget {
                       height: 16.0,
                     ),
                     Text(
-                      "Are you sure you want to open this link?",
+                      texts.qr_action_button_open_link_confirmation,
                       style: dialogTheme.contentTextStyle,
                       textAlign: TextAlign.center,
                     ),
@@ -224,35 +256,31 @@ class QrActionButton extends StatelessWidget {
           actions: [
             TextButton(
               style: ButtonStyle(
-                overlayColor: MaterialStateProperty.resolveWith<Color>(
-                  (Set<MaterialState> states) {
-                    if (states.contains(MaterialState.pressed)) {
-                      return Colors.transparent;
-                    }
-                    return null; // Defer to the widget's default.
-                  },
-                ),
+                overlayColor: MaterialStateProperty.resolveWith<Color>((set) {
+                  if (set.contains(MaterialState.pressed)) {
+                    return Colors.transparent;
+                  }
+                  return null;
+                }),
               ),
               child: Text(
-                "NO",
-                style: Theme.of(context).primaryTextTheme.button,
+                texts.qr_action_button_open_link_confirmation_no,
+                style: themeData.primaryTextTheme.button,
               ),
               onPressed: () => Navigator.of(context).pop(),
             ),
             TextButton(
               style: ButtonStyle(
-                overlayColor: MaterialStateProperty.resolveWith<Color>(
-                  (Set<MaterialState> states) {
-                    if (states.contains(MaterialState.pressed)) {
-                      return Colors.transparent;
-                    }
-                    return null; // Defer to the widget's default.
-                  },
-                ),
+                overlayColor: MaterialStateProperty.resolveWith<Color>((set) {
+                  if (set.contains(MaterialState.pressed)) {
+                    return Colors.transparent;
+                  }
+                  return null;
+                }),
               ),
               child: Text(
-                "YES",
-                style: Theme.of(context).primaryTextTheme.button,
+                texts.qr_action_button_open_link_confirmation_yes,
+                style: themeData.primaryTextTheme.button,
               ),
               onPressed: () async {
                 await launch(url, forceSafariVC: false);

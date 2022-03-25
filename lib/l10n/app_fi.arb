@@ -1555,6 +1555,22 @@
   "status_text_loading_middle": "opening a secure channel",
   "status_text_loading_end": " with our server. This might take a while, but don't worry, we'll notify you when the app is ready to send and receive payments.",
   "status_text_ready": "Breez is ready to receive funds.",
+  "qr_action_button_open_link": "Open Link",
+  "qr_action_button_open_link_confirmation": "Are you sure you want to open this link?",
+  "qr_action_button_open_link_confirmation_no": "NO",
+  "qr_action_button_open_link_confirmation_yes": "YES",
+  "qr_action_button_error_code_not_detected": "QR code wasn't detected.",
+  "qr_action_button_error_code_not_processed": "QR code cannot be processed.",
+  "qr_action_button_error_link_title": "Link Error",
+  "qr_action_button_error_link_message": "Failed to process link: {error}",
+  "@qr_action_button_error_link_message": {
+    "placeholders": {
+      "error": {
+        "type": "String",
+        "example": "An error"
+      }
+    }
+  },
   "locale": "fi",
   "app_name": "Breez"
 }

@@ -1555,6 +1555,22 @@
   "status_text_loading_middle": "abriendo un canal seguro",
   "status_text_loading_end": " con nuestros servidores. Esto puede demorar un tiempo, pero no se preocupe, le notificaremos cuando la aplicación esté lista para enviar y recibir pagos.",
   "status_text_ready": "Breez está listo para recibir fondos.",
+  "qr_action_button_open_link": "Abrir enlace",
+  "qr_action_button_open_link_confirmation": "¿Quieres abrir este enlace?",
+  "qr_action_button_open_link_confirmation_no": "NO",
+  "qr_action_button_open_link_confirmation_yes": "SÍ",
+  "qr_action_button_error_code_not_detected": "No se detectó el código QR.",
+  "qr_action_button_error_code_not_processed": "El código QR no se puede procesar.",
+  "qr_action_button_error_link_title": "Enlace inválido",
+  "qr_action_button_error_link_message": "No se pudo procesar el enlace: {error}",
+  "@qr_action_button_error_link_message": {
+    "placeholders": {
+      "error": {
+        "type": "String",
+        "example": "An error"
+      }
+    }
+  },
   "locale": "es",
   "app_name": "Breez"
 }
