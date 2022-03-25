@@ -115,7 +115,7 @@
   },
   "invoice_btc_address_deposit_address": "Endereço de depósito",
   "invoice_btc_address_deposit_address_copied": "O endereço de depósito foi copiado para a área de transferência.",
-  "invoice_btc_address_on_chain_begin": "Breez está usando a função Submarine Swaps para executar transações pela rede Bitcoin. Toque ",
+  "invoice_btc_address_on_chain_begin": "A Breez está usando a função Submarine Swaps para executar transações pela rede Bitcoin. Toque ",
   "invoice_btc_address_on_chain_here": "aqui",
   "invoice_btc_address_on_chain_end": " para ver o script associado a este endereço.",
   "invoice_btc_address_on_chain_action_ok": "OK",
@@ -1533,7 +1533,7 @@
       }
     }
   },
-  "waiting_broadcast_dialog_dialog_title": "Transação para Reembolso",
+  "waiting_broadcast_dialog_dialog_title": "Transação de Reembolso",
   "waiting_broadcast_dialog_dialog_title_error": "Erro no Reembolso",
   "waiting_broadcast_dialog_action_close": "FECHAR",
   "waiting_broadcast_dialog_action_copy": "Copiar o hash da transação",
@@ -1551,16 +1551,16 @@
     }
   },
   "wallet_dashboard_balance_hide": "******",
-  "status_text_loading_begin": "Breez esta ",
+  "status_text_loading_begin": "A Breez está ",
   "status_text_loading_middle": "abrindo um canal seguro",
-  "status_text_loading_end": " com nossos servidores. Isso pode demorar um pouco, mas não se preocupe, nós o notificaremos quando o aplicativo estiver pronto para enviar e receber pagamentos.",
-  "status_text_ready": "Breez esta pronto para receber fundos.",
+  "status_text_loading_end": " com nossos servidores. Isso pode demorar um pouco, mas não se preocupe, você será notificado quando o aplicativo estiver pronto para enviar e receber pagamentos.",
+  "status_text_ready": "A Breez está pronta para receber fundos.",
   "qr_action_button_open_link": "Abrir Link",
   "qr_action_button_open_link_confirmation": "Você deseja abrir este link?",
   "qr_action_button_open_link_confirmation_no": "NÃO",
   "qr_action_button_open_link_confirmation_yes": "SIM",
   "qr_action_button_error_code_not_detected": "O código QR não foi detectado.",
-  "qr_action_button_error_code_not_processed": "O código QR não pode ser processado.",
+  "qr_action_button_error_code_not_processed": "O código QR não pôde ser processado.",
   "qr_action_button_error_link_title": "Link inválido",
   "qr_action_button_error_link_message": "Falha ao processar o link: {error}",
   "@qr_action_button_error_link_message": {
