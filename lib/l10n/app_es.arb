@@ -1550,6 +1550,7 @@
       }
     }
   },
+  "wallet_dashboard_balance_hide": "******",
   "locale": "es",
   "app_name": "Breez"
 }
