@@ -1551,6 +1551,10 @@
     }
   },
   "wallet_dashboard_balance_hide": "******",
+  "status_text_loading_begin": "Breez is ",
+  "status_text_loading_middle": "opening a secure channel",
+  "status_text_loading_end": " with our server. This might take a while, but don't worry, we'll notify you when the app is ready to send and receive payments.",
+  "status_text_ready": "Breez is ready to receive funds.",
   "locale": "fi",
   "app_name": "Breez"
 }
