@@ -104,6 +104,21 @@ class SqliteRepository implements Repository {
   }
 
   @override
+  Future<void> salePaymentCompleted(String paymentHash) async {
+    return _updateDBItem(
+      await getDB(),
+      "sale_payments",
+      {
+        "paid_date": DateTime.now().millisecondsSinceEpoch,
+      },
+      where: "payment_hash = ?",
+      whereArgs: [
+        paymentHash,
+      ],
+    );
+  }
+
+  @override
   Future<Sale> fetchSaleByID(int id) async {
     var items = await _fetchDBItems(
         await getDB(), "sale", (e) => Sale.fromMap(e),
@@ -136,10 +151,17 @@ class SqliteRepository implements Repository {
   }
 
   Future<int> _addSalePayment(
-      DatabaseExecutor executor, int saleID, String paymentHash) async {
+    DatabaseExecutor executor,
+    int saleID,
+    String paymentHash,
+  ) async {
     return await executor.insert(
       "sale_payments",
-      {"sale_id": saleID, "payment_hash": paymentHash},
+      {
+        "sale_id": saleID,
+        "payment_hash": paymentHash,
+        "paid_date": null,
+      },
       conflictAlgorithm: ConflictAlgorithm.replace,
     );
   }
@@ -207,12 +229,13 @@ class SqliteRepository implements Repository {
       SELECT
         sum((quantity * price_per_item)) as fiat_value,
         sum((quantity * price_per_item * sat_conversion_rate)) as sat_value,
-        count(distinct(sale_id)) as total_sales,
+        count(distinct(sale_line.sale_id)) as total_sales,
       Count(distinct(currency)) as num_currencies,
       group_concat(distinct(currency)) as currencies
       FROM sale_line
       LEFT JOIN sale ON sale_line.sale_id = sale.id
-      WHERE (sale.date >= ? and sale.date <= ?)
+      LEFT JOIN sale_payments ON sale_line.sale_id = sale_payments.id
+      WHERE (sale_payments.paid_date >= ? and sale_payments.paid_date <= ?)
       """,
       [
         start.millisecondsSinceEpoch,

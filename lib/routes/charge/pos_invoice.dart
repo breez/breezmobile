@@ -818,7 +818,6 @@ class POSInvoiceState extends State<POSInvoice> with TickerProviderStateMixin {
       currentPendingItem = null;
       posCatalogBloc.actionsSink.add(SetCurrentSale(Sale(
         saleLines: [],
-        date: DateTime.now(),
       )));
     });
   }

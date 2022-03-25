@@ -41,8 +41,7 @@ Future<Database> getDB() async {
         """
         CREATE TABLE sale(
           id INTEGER PRIMARY KEY,
-          note TEXT,
-          date INTEGER
+          note TEXT
         )
         """,
       );
@@ -52,7 +51,8 @@ Future<Database> getDB() async {
         CREATE TABLE sale_payments(
           id INTEGER PRIMARY KEY,
           sale_id INTEGER,
-          payment_hash TEXT
+          payment_hash TEXT,
+          paid_date INTEGER
         )
         """,
       );
