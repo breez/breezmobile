@@ -170,7 +170,6 @@ class Sale implements DBItem {
   final List<SaleLine> saleLines;
   final String note;
   final bool priceLocked;
-  final DateTime date;
 
   Sale copyWith({
     int id,
@@ -184,7 +183,6 @@ class Sale implements DBItem {
       note: note ?? this.note,
       saleLines: (saleLines ?? this.saleLines).toList(),
       priceLocked: priceLocked ?? this.priceLocked,
-      date: date ?? this.date,
     );
   }
 
@@ -201,22 +199,19 @@ class Sale implements DBItem {
     this.saleLines,
     this.note,
     this.priceLocked = false,
-    this.date,
   });
 
   Sale.fromMap(Map<String, dynamic> json)
       : id = json["id"],
         saleLines = [],
         note = json["note"],
-        priceLocked = false,
-        date = DateTime.fromMillisecondsSinceEpoch(json["date"]);
+        priceLocked = false;
 
   @override
   Map<String, dynamic> toMap() {
     return {
       "id": id,
       "note": note,
-      "date": date.millisecondsSinceEpoch,
     };
   }
 

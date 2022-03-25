@@ -53,7 +53,6 @@ void main() {
     test("should test sale", () async {
       int saleID = await repo.addSale(
         Sale(
-          date: DateTime.now(),
           saleLines: [
             SaleLine(itemName: "SaleLine1", quantity: 1, itemImageURL: "testURL1", pricePerItem: 1.0, currency: "USD", satConversionRate: 1.5 ),
             SaleLine(itemName: "SaleLine2", quantity: 1, itemImageURL: "testURL2", pricePerItem: 2.0, currency: "USD", satConversionRate: 2.5 ),
