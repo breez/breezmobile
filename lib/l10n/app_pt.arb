@@ -1533,6 +1533,23 @@
       }
     }
   },
+  "waiting_broadcast_dialog_dialog_title": "Transação para Reembolso",
+  "waiting_broadcast_dialog_dialog_title_error": "Erro no Reembolso",
+  "waiting_broadcast_dialog_action_close": "FECHAR",
+  "waiting_broadcast_dialog_action_copy": "Copiar o hash da transação",
+  "waiting_broadcast_dialog_action_share": "Compartilhar o hash da transação",
+  "waiting_broadcast_dialog_transaction_id": "ID da transação:",
+  "waiting_broadcast_dialog_content_success": "Os fundos foram enviados com sucesso para o endereço especificado.",
+  "waiting_broadcast_dialog_content_warning": "Aguarde enquanto os fundos são enviandos para o endereço especificado.",
+  "waiting_broadcast_dialog_content_error": "Erro ao transmitir a transação: {error}",
+  "@waiting_broadcast_dialog_content_error": {
+    "placeholders": {
+      "error": {
+        "type": "String",
+        "example": "An error"
+      }
+    }
+  },
   "locale": "pt",
   "app_name": "Breez"
 }
