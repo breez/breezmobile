@@ -27,7 +27,7 @@ import 'items/item_avatar.dart';
 class SaleView extends StatefulWidget {
   final CurrencyWrapper saleCurrency;
   final Function() onDeleteSale;
-  final Function(AccountModel, Sale) onCharge;
+  final VoidCallback onCharge;
   final PaymentInfo salePayment;
   final Sale readOnlySale;
 
@@ -320,7 +320,7 @@ class _TotalSaleCharge extends StatelessWidget {
   final AccountModel accountModel;
   final Sale currentSale;
   final CurrencyWrapper saleCurrency;
-  final Function(AccountModel, Sale) onCharge;
+  final VoidCallback onCharge;
   final PaymentInfo salePayment;
 
   const _TotalSaleCharge({
@@ -353,7 +353,7 @@ class _TotalSaleCharge extends StatelessWidget {
         if (readOnly) {
           showPaymentDetailsDialog(context, salePayment);
         } else {
-          onCharge(accountModel, currentSale);
+          onCharge();
         }
       },
     );
