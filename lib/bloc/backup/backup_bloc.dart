@@ -48,7 +48,8 @@ class BackupBloc {
   final _backupNowController = StreamController<bool>();
   Sink<bool> get backupNowSink => _backupNowController.sink;
 
-  final _backupAppDataController = StreamController<bool>();
+  final _backupAppDataController = StreamController<bool>.broadcast();
+
   Sink<bool> get backupAppDataSink => _backupAppDataController.sink;
 
   final _restoreRequestController = StreamController<RestoreRequest>();
@@ -79,7 +80,8 @@ class BackupBloc {
   static const String LAST_BACKUP_TIME_PREFERENCE_KEY = "backup_last_time";
   static const String LAST_BACKUP_STATE_PREFERENCE_KEY = "backup_last_state";
 
-  BackupBloc(Stream<BreezUserModel> userStream) {
+  BackupBloc(
+      Stream<BreezUserModel> userStream, Stream<bool> backupAnytimeDBStream) {
     _initAppDataPathAndDir();
     ServiceInjector injector = ServiceInjector();
     _breezLib = injector.breezBridge;
@@ -96,7 +98,7 @@ class BackupBloc {
       await _initializePersistentData();
       _listenBackupPaths();
       _listenBackupNowRequests();
-      _listenAppDataBackupRequests();
+      _listenAppDataBackupRequests(backupAnytimeDBStream);
       _listenRestoreRequests();
       _scheduleBackgroundTasks();
 
@@ -341,8 +343,9 @@ class BackupBloc {
     _breezLib.requestBackup();
   }
 
-  void _listenAppDataBackupRequests() {
-    _backupAppDataController.stream.listen((_) => _backupAppData());
+  void _listenAppDataBackupRequests(Stream backupAnytimeDBStream) {
+    Rx.merge([backupAnytimeDBStream, _backupAppDataController.stream])
+        .listen((_) => _backupAppData());
   }
 
   Future _backupAppData() async {
