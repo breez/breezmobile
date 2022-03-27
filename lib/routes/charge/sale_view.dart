@@ -133,7 +133,10 @@ class SaleViewState extends State<SaleView> {
             textTheme: themeData.appBarTheme.textTheme,
             backgroundColor: themeData.canvasColor,
             leading: backBtn.BackButton(),
-            title: Text(title),
+            title: Text(
+              title,
+              style: themeData.appBarTheme.textTheme.headline6,
+            ),
             actions: widget.readOnly
                 ? _buildPrintIcon(context, accModel)
                 : [
