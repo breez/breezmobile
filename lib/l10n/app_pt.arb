@@ -910,6 +910,8 @@
   "swap_in_progress_message_processing_previous_request": "A Breez está processando sua solicitação anterior. Você será notificado quando o processamento for concluído.",
   "market_place_no_vendors": "No momento não há vendedores disponíveis.",
   "account_required_actions_backup": "Backup",
+  "account_page_activation_provider": "Para efetuar a ativação selecione um provedor:",
+  "account_page_activation_provider_action_select": "SELECIONAR…",
   "funds_over_limit_dialog_on_chain_transaction": "Transações pela rede Bitcoin",
   "funds_over_limit_dialog_action_ok": "OK",
   "funds_over_limit_dialog_transfer_fail_no_reason_know": "Não foi possível transferir os fundos para a sua carteira\n",
