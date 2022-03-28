@@ -1327,7 +1327,7 @@
   },
   "handler_podcast_error_load_episode": "Lähetyksen lataaminen epäonnistui. Tarkista yhteydet.",
   "handler_podcast_error_load_episode_fallback": "Podcast:in lataaminen epäonnistui.",
-  "handler_sync_ui_message": "Odota kunnes Bitcoin-verkkoon synkronointi on valmis ",
+  "handler_sync_ui_message": "Odota kunnes Bitcoin-verkkoon synkronointi on valmis",
   "add_funds_error_deposit": "Edellisen talletuksen käsittely on kesken. Vasta sen valmistuttua voit tehdä uuden talletuksen.",
   "add_funds_error_withdraw": "Edellisen noston käsittely on kesken. Vasta sen valmistuttua voit tehdä uuden noston.",
   "add_funds_transaction_id_copied": "Tapahtumatunnus kopioitiin leikepöydälle.",
@@ -1503,33 +1503,33 @@
       }
     }
   },
-  "qr_code_dialog_synchronizing": "Synchronizing to the network",
-  "qr_code_dialog_invoice": "Invoice",
-  "qr_code_dialog_action_close": "CLOSE",
-  "qr_code_dialog_share": "Share invoice data",
-  "qr_code_dialog_copy": "Copy invoice data",
-  "qr_code_dialog_copied": "Invoice data was copied to your clipboard.",
-  "qr_code_dialog_warning_message_error": "Failed to create invoice",
-  "qr_code_dialog_warning_message": "Keep Breez open until the payment is completed.",
-  "qr_code_dialog_warning_message_with_lsp": "A setup fee of {setupFee} ({fiatFee}) is applied to this invoice. Keep Breez open until the payment is completed.",
+  "qr_code_dialog_synchronizing": "Sovellus synkronoi tietoja",
+  "qr_code_dialog_invoice": "Lasku",
+  "qr_code_dialog_action_close": "SULJE",
+  "qr_code_dialog_share": "Jaa laskun tiedot",
+  "qr_code_dialog_copy": "Kopioi laskun tiedot",
+  "qr_code_dialog_copied": "Laskun tiedot kopioitiin leikepöydälle.",
+  "qr_code_dialog_warning_message_error": "Laskun luonti epäonnistui",
+  "qr_code_dialog_warning_message": "Älä sulje sovellusta ennenkuin tapahtuma on valmis.",
+  "qr_code_dialog_warning_message_with_lsp": "Tämän laskun suorituksesta veloitetaan saapuvan kanavan perustamiskulu {setupFee} eli ({fiatFee}). Älä sulje sovellusta ennenkuin tapahtuma valmistuu.",
   "@qr_code_dialog_warning_message_with_lsp": {
     "placeholders": {
       "setupFee": {
         "type": "String",
-        "example": "123 sats"
+        "example": "123 satoshia"
       },
       "fiatFee": {
         "type": "String",
-        "example": "1$"
+        "example": "€1"
       }
     }
   },
-  "qr_code_dialog_error": "Failed to create an invoice {error}. Please try again later.",
+  "qr_code_dialog_error": "Laskun luonnissa tapahtui virhe {error}. Yritä uudelleen.",
   "@qr_code_dialog_error": {
     "placeholders": {
       "error": {
         "type": "String",
-        "example": "An error"
+        "example": "virhe"
       }
     }
   },
