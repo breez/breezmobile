@@ -1533,20 +1533,20 @@
       }
     }
   },
-  "waiting_broadcast_dialog_dialog_title": "Refund Transaction",
-  "waiting_broadcast_dialog_dialog_title_error": "Refund Error",
-  "waiting_broadcast_dialog_action_close": "CLOSE",
-  "waiting_broadcast_dialog_action_copy": "Copy Transaction Hash",
-  "waiting_broadcast_dialog_action_share": "Share Transaction Hash",
-  "waiting_broadcast_dialog_transaction_id": "Transaction ID:",
-  "waiting_broadcast_dialog_content_success": "Funds were successfully sent to the specified address.",
-  "waiting_broadcast_dialog_content_warning": "Please wait while Breez is sending the funds to the specified address.",
-  "waiting_broadcast_dialog_content_error": "Error in broadcasting transaction: {error}",
+  "waiting_broadcast_dialog_dialog_title": "Hyvitystapahtuma",
+  "waiting_broadcast_dialog_dialog_title_error": "Hyvityksessä tapahtui virhe",
+  "waiting_broadcast_dialog_action_close": "SULJE",
+  "waiting_broadcast_dialog_action_copy": "Kopioi tapahtuman tiiviste",
+  "waiting_broadcast_dialog_action_share": "Jaa tapahtuman tiiviste",
+  "waiting_broadcast_dialog_transaction_id": "Tapahtumatunnus:",
+  "waiting_broadcast_dialog_content_success": "Varat lähetettiin onnistuneesti pyydettyyn osoitteeseen.",
+  "waiting_broadcast_dialog_content_warning": "Odota hetkinen. Sovellus lähettää varoja kohdeosoitteeseen.",
+  "waiting_broadcast_dialog_content_error": "Tapahtuman lähettäminen päättyi virheeseen: {error}",
   "@waiting_broadcast_dialog_content_error": {
     "placeholders": {
       "error": {
         "type": "String",
-        "example": "An error"
+        "example": "virhe"
       }
     }
   },
