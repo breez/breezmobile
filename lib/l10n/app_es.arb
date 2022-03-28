@@ -1386,6 +1386,7 @@
   "add_funds_item_bitcoins_received_title": "Bitcoins recibidos",
   "add_funds_moonpay_title": "MoonPay",
   "add_funds_moonpay_error_address": "Error al recuperar la dirección del servidor Breez\nPor favor revise su conexion a internet.",
+  "add_funds_moonpay_loading": "Cargando…",
   "csv_exporter_date_and_time": "Fecha",
   "csv_exporter_title": "Título",
   "csv_exporter_description": "Descripción",
