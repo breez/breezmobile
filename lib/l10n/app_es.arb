@@ -209,6 +209,10 @@
       }
     }
   },
+  "invoice_bottom_sheet_action_invoice": "FACTURA",
+  "invoice_bottom_sheet_action_pay": "PAGAR",
+  "invoice_bottom_sheet_action_receive": "RECIBIR",
+  "invoice_bottom_sheet_error_qrcode": "No se detectó el código QR.",
   "backup_dialog_title": "Respaldar",
   "backup_dialog_message_remote_server": "No se pudieron guardar los archivos de respaldo en el servidor. Por favor, revise su configuración y vuelva a intentarlo.",
   "backup_dialog_message_default": "Si desea poder restaurar sus fondos en caso de que este dispositivo móvil o esta aplicación ya no estén disponibles (por ejemplo, dispositivo perdido o robado o desinstalación de la aplicación), debe hacer una copia de seguridad de su información.",

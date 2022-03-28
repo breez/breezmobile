@@ -209,6 +209,10 @@
       }
     }
   },
+  "invoice_bottom_sheet_action_invoice": "FATURA",
+  "invoice_bottom_sheet_action_pay": "PAGAR",
+  "invoice_bottom_sheet_action_receive": "RECEBER",
+  "invoice_bottom_sheet_error_qrcode": "O código QR não foi detectado.",
   "backup_dialog_title": "Backup",
   "backup_dialog_message_remote_server": "Falha ao salvar arquivos de backup no servidor remoto. Por favor, revise suas configurações e tente novamente.",
   "backup_dialog_message_default": "Se você deseja restaurar seus fundos caso este dispositivo móvel ou aplicativo não esteja mais disponível (por exemplo, dispositivo perdido ou roubado ou desinstalação de aplicativo), você deve fazer o backup de suas informações.",
