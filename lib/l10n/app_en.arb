@@ -910,6 +910,8 @@
   "swap_in_progress_message_processing_previous_request": "Breez is currently processing your previous request. You'll be notified once processing is completed to send your funds to the address you've specified.",
   "market_place_no_vendors": "There are no available vendors at the moment.",
   "account_required_actions_backup": "Backup",
+  "account_page_activation_provider": "In order to activate Breez, please select a provider:",
+  "account_page_activation_provider_action_select": "SELECT…",
   "funds_over_limit_dialog_on_chain_transaction": "On-chain Transaction",
   "funds_over_limit_dialog_action_ok": "OK",
   "funds_over_limit_dialog_transfer_fail_no_reason_know": "Breez was not able to transfer the funds to your balance\n",
