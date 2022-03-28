@@ -247,7 +247,7 @@ class POSInvoiceState extends State<POSInvoice> with TickerProviderStateMixin {
                   ),
                   PosInvoiceCartBar(
                     badgeKey: badgeKey,
-                    currentSale: currentSale,
+                    totalNumOfItems: currentSale.totalNumOfItems,
                     accountModel: accountModel,
                     currentCurrency: currentCurrency,
                     isKeypadView: _isKeypadView,

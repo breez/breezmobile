@@ -1327,7 +1327,7 @@
   },
   "handler_podcast_error_load_episode": "Lähetyksen lataaminen epäonnistui. Tarkista yhteydet.",
   "handler_podcast_error_load_episode_fallback": "Podcast:in lataaminen epäonnistui.",
-  "handler_sync_ui_message": "Odota kunnes Bitcoin-verkkoon synkronointi on valmis ",
+  "handler_sync_ui_message": "Odota kunnes Bitcoin-verkkoon synkronointi on valmis",
   "add_funds_error_deposit": "Edellisen talletuksen käsittely on kesken. Vasta sen valmistuttua voit tehdä uuden talletuksen.",
   "add_funds_error_withdraw": "Edellisen noston käsittely on kesken. Vasta sen valmistuttua voit tehdä uuden noston.",
   "add_funds_transaction_id_copied": "Tapahtumatunnus kopioitiin leikepöydälle.",
@@ -1503,58 +1503,58 @@
       }
     }
   },
-  "qr_code_dialog_synchronizing": "Synchronizing to the network",
-  "qr_code_dialog_invoice": "Invoice",
-  "qr_code_dialog_action_close": "CLOSE",
-  "qr_code_dialog_share": "Share invoice data",
-  "qr_code_dialog_copy": "Copy invoice data",
-  "qr_code_dialog_copied": "Invoice data was copied to your clipboard.",
-  "qr_code_dialog_warning_message_error": "Failed to create invoice",
-  "qr_code_dialog_warning_message": "Keep Breez open until the payment is completed.",
-  "qr_code_dialog_warning_message_with_lsp": "A setup fee of {setupFee} ({fiatFee}) is applied to this invoice. Keep Breez open until the payment is completed.",
+  "qr_code_dialog_synchronizing": "Sovellus synkronoi tietoja",
+  "qr_code_dialog_invoice": "Lasku",
+  "qr_code_dialog_action_close": "SULJE",
+  "qr_code_dialog_share": "Jaa laskun tiedot",
+  "qr_code_dialog_copy": "Kopioi laskun tiedot",
+  "qr_code_dialog_copied": "Laskun tiedot kopioitiin leikepöydälle.",
+  "qr_code_dialog_warning_message_error": "Laskun luonti epäonnistui",
+  "qr_code_dialog_warning_message": "Älä sulje sovellusta ennenkuin tapahtuma on valmis.",
+  "qr_code_dialog_warning_message_with_lsp": "Tämän laskun suorituksesta veloitetaan saapuvan kanavan perustamiskulu {setupFee} eli ({fiatFee}). Älä sulje sovellusta ennenkuin tapahtuma valmistuu.",
   "@qr_code_dialog_warning_message_with_lsp": {
     "placeholders": {
       "setupFee": {
         "type": "String",
-        "example": "123 sats"
+        "example": "123 satoshia"
       },
       "fiatFee": {
         "type": "String",
-        "example": "1$"
+        "example": "€1"
       }
     }
   },
-  "qr_code_dialog_error": "Failed to create an invoice {error}. Please try again later.",
+  "qr_code_dialog_error": "Laskun luonnissa tapahtui virhe {error}. Yritä uudelleen.",
   "@qr_code_dialog_error": {
     "placeholders": {
       "error": {
         "type": "String",
-        "example": "An error"
+        "example": "virhe"
       }
     }
   },
-  "waiting_broadcast_dialog_dialog_title": "Refund Transaction",
-  "waiting_broadcast_dialog_dialog_title_error": "Refund Error",
-  "waiting_broadcast_dialog_action_close": "CLOSE",
-  "waiting_broadcast_dialog_action_copy": "Copy Transaction Hash",
-  "waiting_broadcast_dialog_action_share": "Share Transaction Hash",
-  "waiting_broadcast_dialog_transaction_id": "Transaction ID:",
-  "waiting_broadcast_dialog_content_success": "Funds were successfully sent to the specified address.",
-  "waiting_broadcast_dialog_content_warning": "Please wait while Breez is sending the funds to the specified address.",
-  "waiting_broadcast_dialog_content_error": "Error in broadcasting transaction: {error}",
+  "waiting_broadcast_dialog_dialog_title": "Hyvitystapahtuma",
+  "waiting_broadcast_dialog_dialog_title_error": "Hyvityksessä tapahtui virhe",
+  "waiting_broadcast_dialog_action_close": "SULJE",
+  "waiting_broadcast_dialog_action_copy": "Kopioi tapahtuman tiiviste",
+  "waiting_broadcast_dialog_action_share": "Jaa tapahtuman tiiviste",
+  "waiting_broadcast_dialog_transaction_id": "Tapahtumatunnus:",
+  "waiting_broadcast_dialog_content_success": "Varat lähetettiin onnistuneesti pyydettyyn osoitteeseen.",
+  "waiting_broadcast_dialog_content_warning": "Odota hetkinen. Sovellus lähettää varoja kohdeosoitteeseen.",
+  "waiting_broadcast_dialog_content_error": "Tapahtuman lähettäminen päättyi virheeseen: {error}",
   "@waiting_broadcast_dialog_content_error": {
     "placeholders": {
       "error": {
         "type": "String",
-        "example": "An error"
+        "example": "virhe"
       }
     }
   },
   "wallet_dashboard_balance_hide": "******",
-  "status_text_loading_begin": "Breez is ",
-  "status_text_loading_middle": "opening a secure channel",
-  "status_text_loading_end": " with our server. This might take a while, but don't worry, we'll notify you when the app is ready to send and receive payments.",
-  "status_text_ready": "Breez is ready to receive funds.",
+  "status_text_loading_begin": "Sovellus on ",
+  "status_text_loading_middle": "avaamassa turvallista kanavaa",
+  "status_text_loading_end": " palvelimeemme. Tämä saattaa kestää jonkin aikaa. Sovellus antaa ilmoituksen kun maksujen vastaanotto ja lähetys ovat jälleen mahdollisia.",
+  "status_text_ready": "Breez on valmis lähettämään maksuja.",
   "qr_action_button_open_link": "Avaa linkki",
   "qr_action_button_open_link_confirmation": "Haluatko varmasti avata tämän linkin`?",
   "qr_action_button_open_link_confirmation_no": "En",
