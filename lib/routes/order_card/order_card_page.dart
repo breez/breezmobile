@@ -9,6 +9,7 @@ import 'package:breez/widgets/single_button_bottom_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:http/http.dart' as http;
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class _CustomerData {
   String fullName = '';
@@ -23,7 +24,10 @@ class _CustomerData {
 class OrderCardPage extends StatefulWidget {
   final bool showSkip;
 
-  OrderCardPage({Key key, this.showSkip}) : super(key: key);
+  const OrderCardPage({
+    Key key,
+    this.showSkip,
+  }) : super(key: key);
 
   @override
   OrderCardPageState createState() {
@@ -33,7 +37,7 @@ class OrderCardPage extends StatefulWidget {
 
 class OrderCardPageState extends State<OrderCardPage> {
   final _formKey = GlobalKey<FormState>();
-  ScrollController _scrollController = ScrollController();
+  final _scrollController = ScrollController();
   final _stateController = TextEditingController();
   final _countryController = TextEditingController();
   final _zipController = TextEditingController();
@@ -168,7 +172,9 @@ class OrderCardPageState extends State<OrderCardPage> {
   void _onChangeZip() {
     setState(() {
       _autoValidateZip =
-          (_zipController.text.length > 0 && !_zipFocusNode.hasFocus) ? AutovalidateMode.always : AutovalidateMode.disabled;
+          (_zipController.text.length > 0 && !_zipFocusNode.hasFocus)
+              ? AutovalidateMode.always
+              : AutovalidateMode.disabled;
     });
   }
 
@@ -213,9 +219,9 @@ class OrderCardPageState extends State<OrderCardPage> {
   }
 
   Future _loadCountries() async {
-    String jsonCountries =
-        await rootBundle.loadString('src/json/countries.json');
-    _countriesJSON = json.decode(jsonCountries);
+    _countriesJSON = json.decode(
+      await rootBundle.loadString('src/json/countries.json'),
+    );
     _countryController.text = _countriesJSON[_userCountryShort];
   }
 
@@ -244,10 +250,11 @@ class OrderCardPageState extends State<OrderCardPage> {
   }
 
   bool _checkCountry(String value) {
-    return _countriesJSON.values.firstWhere(
-            (val) => val.toLowerCase() == _countryController.text.toLowerCase(),
-            orElse: () => null) !=
-        null;
+    final firstCountry = _countriesJSON.values.firstWhere(
+      (val) => val.toLowerCase() == _countryController.text.toLowerCase(),
+      orElse: () => null,
+    );
+    return firstCountry != null;
   }
 
   bool _validateEmail(String value) {
@@ -266,12 +273,15 @@ class OrderCardPageState extends State<OrderCardPage> {
     for (int i = 0; i < number; i++) {
       list.add(InkWell(
         child: Container(
-            padding: EdgeInsets.only(left: 10.0),
-            alignment: Alignment.centerLeft,
-            height: 35.0,
-            child: Text(_statesShow[i],
-                overflow: TextOverflow.ellipsis,
-                style: theme.autoCompleteStyle)),
+          padding: EdgeInsets.only(left: 10.0),
+          alignment: Alignment.centerLeft,
+          height: 35.0,
+          child: Text(
+            _statesShow[i],
+            overflow: TextOverflow.ellipsis,
+            style: theme.autoCompleteStyle,
+          ),
+        ),
         onTap: () {
           _stateController.text = _statesShow[i];
         },
@@ -279,9 +289,12 @@ class OrderCardPageState extends State<OrderCardPage> {
     }
 
     return Container(
-        height: list.length * 35.0,
-        width: MediaQuery.of(context).size.width,
-        child: ListView(children: list));
+      height: list.length * 35.0,
+      width: MediaQuery.of(context).size.width,
+      child: ListView(
+        children: list,
+      ),
+    );
   }
 
   Widget _getFutureWidgetCountries() {
@@ -290,12 +303,15 @@ class OrderCardPageState extends State<OrderCardPage> {
     for (int i = 0; i < number; i++) {
       list.add(InkWell(
         child: Container(
-            padding: EdgeInsets.only(left: 10.0),
-            alignment: Alignment.centerLeft,
-            height: 35.0,
-            child: Text(_countriesShow[i],
-                overflow: TextOverflow.ellipsis,
-                style: theme.autoCompleteStyle)),
+          padding: EdgeInsets.only(left: 10.0),
+          alignment: Alignment.centerLeft,
+          height: 35.0,
+          child: Text(
+            _countriesShow[i],
+            overflow: TextOverflow.ellipsis,
+            style: theme.autoCompleteStyle,
+          ),
+        ),
         onTap: () {
           _countryController.text = _countriesShow[i];
         },
@@ -303,44 +319,62 @@ class OrderCardPageState extends State<OrderCardPage> {
     }
 
     return Container(
-        height: list.length * 35.0,
-        width: MediaQuery.of(context).size.width,
-        child: ListView(children: list));
+      height: list.length * 35.0,
+      width: MediaQuery.of(context).size.width,
+      child: ListView(
+        children: list,
+      ),
+    );
   }
 
-  List<Widget> _showSkipButton(showSkip) {
+  List<Widget> _showSkipButton(BuildContext context, bool showSkip) {
+    final texts = AppLocalizations.of(context);
+
     if (showSkip) {
-      return <Widget>[
+      return [
         InkWell(
-            child: Container(
-                margin: EdgeInsets.only(right: 16.5),
-                alignment: Alignment.center,
-                child: Text("SKIP", style: theme.skipStyle)),
-            onTap: () {
-              Navigator.of(context).pushNamed('/');
-            })
+          child: Container(
+            margin: const EdgeInsets.only(right: 16.5),
+            alignment: Alignment.center,
+            child: Text(
+              texts.order_card_action_skip,
+              style: theme.skipStyle,
+            ),
+          ),
+          onTap: () => Navigator.of(context).pushNamed('/'),
+        ),
       ];
     } else {
-      return <Widget>[];
+      return [];
     }
   }
 
-  void _showAlertDialog() {
-    AlertDialog dialog = AlertDialog(
-      content: Text(
-          "Name and address are required for sending you a Breez card. Any information provided will be deleted from our systems after card has been sent. You may skip this step and continue using Breez without a card.",
-          style: Theme.of(context).dialogTheme.contentTextStyle),
-      actions: <Widget>[
-        TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: Text("OK", style: Theme.of(context).primaryTextTheme.button))
-      ],
-    );
+  void _showAlertDialog(BuildContext context) {
+    final themeData = Theme.of(context);
+    final texts = AppLocalizations.of(context);
+
     showDialog(
-        useRootNavigator: false, context: context, builder: (_) => dialog);
+      useRootNavigator: false,
+      context: context,
+      builder: (_) => AlertDialog(
+        content: Text(
+          texts.order_card_action_error_name_address_missing,
+          style: themeData.dialogTheme.contentTextStyle,
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: Text(
+              texts.order_card_action_ok,
+              style: themeData.primaryTextTheme.button,
+            ),
+          ),
+        ],
+      ),
+    );
   }
 
-  Widget _showLeadingButton(showSkip) {
+  Widget _showLeadingButton(bool showSkip) {
     if (!showSkip) {
       return backBtn.BackButton();
     } else {
@@ -350,287 +384,363 @@ class OrderCardPageState extends State<OrderCardPage> {
 
   @override
   Widget build(BuildContext context) {
-    bool _showSkip = widget.showSkip == null ? false : widget.showSkip;
-    String _title = _showSkip ? "Order a Breez Card" : "Order Card";
+    final themeData = Theme.of(context);
+    final texts = AppLocalizations.of(context);
+
+    bool _showSkip = widget.showSkip ?? false;
     return Scaffold(
       appBar: AppBar(
-          iconTheme: Theme.of(context).appBarTheme.iconTheme,
-          textTheme: Theme.of(context).appBarTheme.textTheme,
-          backgroundColor: Theme.of(context).canvasColor,
-          automaticallyImplyLeading: false,
-          leading: _showLeadingButton(_showSkip),
-          title: Text(
-            _title,
-            style: Theme.of(context).appBarTheme.textTheme.headline6,
-          ),
-          elevation: 0.0,
-          actions: _showSkipButton(_showSkip)),
+        iconTheme: themeData.appBarTheme.iconTheme,
+        textTheme: themeData.appBarTheme.textTheme,
+        backgroundColor: themeData.canvasColor,
+        automaticallyImplyLeading: false,
+        leading: _showLeadingButton(_showSkip),
+        title: Text(
+          _showSkip
+              ? texts.order_card_action_order_breez_card
+              : texts.order_card_action_order_card,
+          style: themeData.appBarTheme.textTheme.headline6,
+        ),
+        elevation: 0.0,
+        actions: _showSkipButton(context, _showSkip),
+      ),
       body: Padding(
-          padding: EdgeInsets.only(top: 16.0, left: 16.0, right: 16.0),
-          child: Form(
-              key: _formKey,
-              child: ListView(
-                scrollDirection: Axis.vertical,
-                controller: _scrollController,
-                children: <Widget>[
-                  Column(
-                    children: <Widget>[
-                      Container(
-                        padding: EdgeInsets.only(top: 8.0),
-                        child: TextFormField(
-                          decoration: InputDecoration(labelText: "Full Name"),
-                          style: theme.FieldTextStyle.textStyle,
-                          textCapitalization: TextCapitalization.words,
-                          onSaved: (String value) {
-                            this._data.fullName = value;
-                          },
-                          validator: (value) {
-                            if (value.isEmpty) {
-                              return "Please enter your full name";
-                            }
-                            return null;
-                          },
-                        ),
-                      ),
-                      Container(
-                        padding: EdgeInsets.only(top: 8.0),
-                        child: TextFormField(
-                          decoration:
-                              InputDecoration(labelText: "E-mail Address"),
-                          style: theme.FieldTextStyle.textStyle,
-                          textCapitalization: TextCapitalization.none,
-                          onSaved: (String value) {
-                            this._data.email = value;
-                          },
-                          validator: (value) {
-                            if (value.isEmpty) {
-                              return "Please enter your e-mail address";
-                            } else if (!_validateEmail(value)) {
-                              return "Invalid e-mail";
-                            }
-                            return null;
-                          },
-                        ),
-                      ),
-                      Container(
-                        padding: EdgeInsets.only(top: 19.0),
-                        child: TextFormField(
-                          decoration: InputDecoration(labelText: "Address"),
-                          style: theme.FieldTextStyle.textStyle,
-                          textCapitalization: TextCapitalization.words,
-                          onSaved: (String value) {
-                            this._data.address = value;
-                          },
-                          validator: (value) {
-                            if (value.isEmpty) {
-                              return "Please enter your address";
-                            }
-                            return null;
-                          },
-                        ),
-                      ),
-                      Stack(children: <Widget>[
-                        Column(
-                          children: <Widget>[
-                            Container(
-                              padding: EdgeInsets.only(top: 19.0),
-                              child: Row(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: <Widget>[
-                                  Expanded(
-                                    flex: 200,
-                                    child: Container(
-                                      child: TextFormField(
-                                        focusNode: _cityFocusNode,
-                                        decoration:
-                                            InputDecoration(labelText: "City"),
-                                        style: theme.FieldTextStyle.textStyle,
-                                        textCapitalization:
-                                            TextCapitalization.words,
-                                        onSaved: (String value) {
-                                          this._data.city = value;
-                                        },
-                                        validator: (value) {
-                                          if (value.isEmpty) {
-                                            return "Please enter your city";
-                                          }
-                                          return null;
-                                        },
-                                      ),
+        padding: const EdgeInsets.only(top: 16.0, left: 16.0, right: 16.0),
+        child: Form(
+          key: _formKey,
+          child: ListView(
+            scrollDirection: Axis.vertical,
+            controller: _scrollController,
+            children: [
+              Column(
+                children: [
+                  _fullName(context),
+                  _email(context),
+                  _address(context),
+                  Stack(
+                    children: [
+                      Column(
+                        children: [
+                          Container(
+                            padding: const EdgeInsets.only(top: 19.0),
+                            child: Row(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                _city(context),
+                                _state(context),
+                              ],
+                            ),
+                          ),
+                          Stack(
+                            children: [
+                              Column(
+                                children: [
+                                  Container(
+                                    padding: const EdgeInsets.only(top: 19.0),
+                                    child: Row(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        _country(context),
+                                        _zipCode(context),
+                                      ],
                                     ),
                                   ),
-                                  Expanded(
-                                    flex: 128,
-                                    child: Container(
-                                      margin: EdgeInsets.only(left: 8.0),
-                                      child: TextFormField(
-                                        autovalidateMode: _autoValidateState,
-                                        controller: _stateController,
-                                        focusNode: _stateFocusNode,
-                                        decoration:
-                                            InputDecoration(labelText: "State"),
-                                        style: theme.FieldTextStyle.textStyle,
-                                        textCapitalization:
-                                            TextCapitalization.words,
-                                        onSaved: (String value) {
-                                          this._data.state = value;
-                                        },
-                                        validator: (value) {
-                                          if (value.isEmpty &&
-                                              _specialCountriesShort.contains(
-                                                  _userCountryShort)) {
-                                            return "Enter your state";
-                                          } else if (_specialCountriesShort
-                                                  .contains(
-                                                      _userCountryShort) &&
-                                              _checkStates(value)) {
-                                            return "Invalid state";
-                                          }
-                                          return null;
-                                        },
-                                      ),
-                                    ),
-                                  ),
+                                  _disclaimer(context),
                                 ],
                               ),
-                            ),
-                            Stack(children: <Widget>[
-                              Column(children: <Widget>[
-                                Container(
-                                  padding: EdgeInsets.only(top: 19.0),
-                                  child: Row(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      Expanded(
-                                        flex: 200,
-                                        child: Container(
-                                          child: TextFormField(
-                                            autovalidateMode: _autoValidateCountry,
-                                            controller: _countryController,
-                                            focusNode: _countryFocusNode,
-                                            decoration: InputDecoration(
-                                                labelText: "Country"),
-                                            style:
-                                                theme.FieldTextStyle.textStyle,
-                                            textCapitalization:
-                                                TextCapitalization.words,
-                                            onSaved: (String value) {
-                                              this._data.country = value;
-                                            },
-                                            validator: (value) {
-                                              if (value.isEmpty) {
-                                                return "Please enter your country";
-                                              } else if (!_checkCountry(
-                                                  value)) {
-                                                return "Invalid country";
-                                              }
-                                              return null;
-                                            },
-                                          ),
-                                        ),
-                                      ),
-                                      Expanded(
-                                        flex: 128,
-                                        child: Container(
-                                          margin: EdgeInsets.only(left: 8.0),
-                                          child: TextFormField(
-                                            autovalidateMode: _autoValidateZip,
-                                            controller: _zipController,
-                                            focusNode: _zipFocusNode,
-                                            decoration: InputDecoration(
-                                                labelText: "Zip"),
-                                            style:
-                                                theme.FieldTextStyle.textStyle,
-                                            keyboardType: TextInputType.number,
-                                            onSaved: (String value) {
-                                              this._data.zip = value;
-                                            },
-                                            validator: (value) {
-                                              if (value.isNotEmpty &&
-                                                  !_validateZip(value)) {
-                                                return "Invalid zip code";
-                                              }
-                                              return null;
-                                            },
-                                          ),
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                                Padding(
-                                  padding: EdgeInsets.only(top: 40.0),
-                                  child: InkWell(
-                                      child: Text(
-                                        "Why do I need to provide\nthis information?",
-                                        textAlign: TextAlign.center,
-                                        style: theme.linkStyle,
-                                      ),
-                                      onTap: () {
-                                        _showAlertDialog();
-                                      }),
-                                ),
-                              ]),
-                              _showCountriesList
-                                  ? Container(
-                                      padding: EdgeInsets.only(top: 77.5),
-                                      child: Row(
-                                        children: <Widget>[
-                                          Expanded(
-                                              flex: 200,
-                                              child: Container(
-                                                  decoration: theme
-                                                      .autoCompleteBoxDecoration,
-                                                  child:
-                                                      _getFutureWidgetCountries())),
-                                          Expanded(
-                                              flex: 128, child: Container())
-                                        ],
-                                      ))
-                                  : Container()
-                            ]),
-                          ],
-                        ),
-                        _showStatesList
-                            ? Container(
-                                padding: EdgeInsets.only(top: 77.5),
-                                child: Row(
-                                  children: <Widget>[
-                                    Expanded(flex: 208, child: Container()),
-                                    Expanded(
-                                        flex: 120,
-                                        child: Container(
-                                            decoration:
-                                                theme.autoCompleteBoxDecoration,
-                                            child: _getFutureWidgetStates()))
-                                  ],
-                                ))
-                            : Container(),
-                      ]),
+                              _countriesList(),
+                            ],
+                          ),
+                        ],
+                      ),
+                      _statesList(),
                     ],
                   ),
                 ],
-              ))),
+              ),
+            ],
+          ),
+        ),
+      ),
       bottomNavigationBar: SingleButtonBottomBar(
-        text: "ORDER",
+        text: texts.order_card_action_order,
         onPressed: () {
           if (_formKey.currentState.validate()) {
             _formKey.currentState.save();
             _breezServer
-                .orderCard(_data.fullName, _data.email, _data.address,
-                    _data.city, _data.state, _data.zip, _data.country)
-                .then((reply) {
-              Navigator.pop(context,
-                  "Breez card will be sent shortly to the address you have specified.");
-            }).catchError((error) {
-              print(error.toString());
-              ScaffoldMessenger.of(context)
-                  .showSnackBar(SnackBar(content: Text(error.toString())));
-            });
-          } else {}
+                .orderCard(
+                  _data.fullName,
+                  _data.email,
+                  _data.address,
+                  _data.city,
+                  _data.state,
+                  _data.zip,
+                  _data.country,
+                )
+                .then(
+                  (reply) => Navigator.pop(context, texts.order_card_success),
+                )
+                .catchError(
+                  (error) => ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: Text(error.toString()),
+                    ),
+                  ),
+                );
+          }
         },
       ),
     );
+  }
+
+  Widget _fullName(BuildContext context) {
+    final texts = AppLocalizations.of(context);
+    return Container(
+      padding: const EdgeInsets.only(top: 8.0),
+      child: TextFormField(
+        decoration: InputDecoration(
+          labelText: texts.order_card_full_name_label,
+        ),
+        style: theme.FieldTextStyle.textStyle,
+        textCapitalization: TextCapitalization.words,
+        onSaved: (String value) {
+          this._data.fullName = value;
+        },
+        validator: (value) {
+          if (value.isEmpty) {
+            return texts.order_card_full_name_error;
+          }
+          return null;
+        },
+      ),
+    );
+  }
+
+  Widget _email(BuildContext context) {
+    final texts = AppLocalizations.of(context);
+    return Container(
+      padding: const EdgeInsets.only(top: 8.0),
+      child: TextFormField(
+        decoration: InputDecoration(
+          labelText: texts.order_card_email_label,
+        ),
+        style: theme.FieldTextStyle.textStyle,
+        textCapitalization: TextCapitalization.none,
+        onSaved: (String value) {
+          this._data.email = value;
+        },
+        validator: (value) {
+          if (value.isEmpty) {
+            return texts.order_card_country_email_empty;
+          } else if (!_validateEmail(value)) {
+            return texts.order_card_country_email_invalid;
+          }
+          return null;
+        },
+      ),
+    );
+  }
+
+  Widget _address(BuildContext context) {
+    final texts = AppLocalizations.of(context);
+    return Container(
+      padding: const EdgeInsets.only(top: 19.0),
+      child: TextFormField(
+        decoration: InputDecoration(
+          labelText: texts.order_card_address_label,
+        ),
+        style: theme.FieldTextStyle.textStyle,
+        textCapitalization: TextCapitalization.words,
+        onSaved: (String value) {
+          this._data.address = value;
+        },
+        validator: (value) {
+          if (value.isEmpty) {
+            return texts.order_card_address_error;
+          }
+          return null;
+        },
+      ),
+    );
+  }
+
+  Widget _city(BuildContext context) {
+    final texts = AppLocalizations.of(context);
+    return Expanded(
+      flex: 200,
+      child: Container(
+        child: TextFormField(
+          focusNode: _cityFocusNode,
+          decoration: InputDecoration(
+            labelText: texts.order_card_city_label,
+          ),
+          style: theme.FieldTextStyle.textStyle,
+          textCapitalization: TextCapitalization.words,
+          onSaved: (String value) {
+            this._data.city = value;
+          },
+          validator: (value) {
+            if (value.isEmpty) {
+              return texts.order_card_city_error;
+            }
+            return null;
+          },
+        ),
+      ),
+    );
+  }
+
+  Widget _state(BuildContext context) {
+    final texts = AppLocalizations.of(context);
+    return Expanded(
+      flex: 128,
+      child: Container(
+        margin: const EdgeInsets.only(left: 8.0),
+        child: TextFormField(
+          autovalidateMode: _autoValidateState,
+          controller: _stateController,
+          focusNode: _stateFocusNode,
+          decoration: InputDecoration(
+            labelText: texts.order_card_state_label,
+          ),
+          style: theme.FieldTextStyle.textStyle,
+          textCapitalization: TextCapitalization.words,
+          onSaved: (String value) {
+            this._data.state = value;
+          },
+          validator: (value) {
+            if (value.isEmpty &&
+                _specialCountriesShort.contains(_userCountryShort)) {
+              return texts.order_card_country_state_empty;
+            } else if (_specialCountriesShort.contains(_userCountryShort) &&
+                _checkStates(value)) {
+              return texts.order_card_country_state_invalid;
+            }
+            return null;
+          },
+        ),
+      ),
+    );
+  }
+
+  Widget _country(BuildContext context) {
+    final texts = AppLocalizations.of(context);
+    return Expanded(
+      flex: 200,
+      child: Container(
+        child: TextFormField(
+          autovalidateMode: _autoValidateCountry,
+          controller: _countryController,
+          focusNode: _countryFocusNode,
+          decoration: InputDecoration(
+            labelText: texts.order_card_country_label,
+          ),
+          style: theme.FieldTextStyle.textStyle,
+          textCapitalization: TextCapitalization.words,
+          onSaved: (String value) {
+            this._data.country = value;
+          },
+          validator: (value) {
+            if (value.isEmpty) {
+              return texts.order_card_country_error_empty;
+            } else if (!_checkCountry(value)) {
+              return texts.order_card_country_error_invalid;
+            }
+            return null;
+          },
+        ),
+      ),
+    );
+  }
+
+  Widget _zipCode(BuildContext context) {
+    final texts = AppLocalizations.of(context);
+    return Expanded(
+      flex: 128,
+      child: Container(
+        margin: const EdgeInsets.only(left: 8.0),
+        child: TextFormField(
+          autovalidateMode: _autoValidateZip,
+          controller: _zipController,
+          focusNode: _zipFocusNode,
+          decoration: InputDecoration(
+            labelText: texts.order_card_zip_code_label,
+          ),
+          style: theme.FieldTextStyle.textStyle,
+          keyboardType: TextInputType.number,
+          onSaved: (String value) {
+            this._data.zip = value;
+          },
+          validator: (value) {
+            if (value.isNotEmpty && !_validateZip(value)) {
+              return texts.order_card_zip_code_error;
+            }
+            return null;
+          },
+        ),
+      ),
+    );
+  }
+
+  Widget _disclaimer(BuildContext context) {
+    final texts = AppLocalizations.of(context);
+    return Padding(
+      padding: EdgeInsets.only(top: 40.0),
+      child: InkWell(
+        child: Text(
+          texts.order_card_info_disclaimer,
+          textAlign: TextAlign.center,
+          style: theme.linkStyle,
+        ),
+        onTap: () => _showAlertDialog(context),
+      ),
+    );
+  }
+
+  Widget _countriesList() {
+    return _showCountriesList
+        ? Container(
+            padding: const EdgeInsets.only(top: 77.5),
+            child: Row(
+              children: [
+                Expanded(
+                  flex: 200,
+                  child: Container(
+                    decoration: theme.autoCompleteBoxDecoration,
+                    child: _getFutureWidgetCountries(),
+                  ),
+                ),
+                Expanded(
+                  flex: 128,
+                  child: Container(),
+                )
+              ],
+            ),
+          )
+        : Container();
+  }
+
+  Widget _statesList() {
+    return _showStatesList
+        ? Container(
+            padding: const EdgeInsets.only(top: 77.5),
+            child: Row(
+              children: [
+                Expanded(
+                  flex: 208,
+                  child: Container(),
+                ),
+                Expanded(
+                  flex: 120,
+                  child: Container(
+                    decoration: theme.autoCompleteBoxDecoration,
+                    child: _getFutureWidgetStates(),
+                  ),
+                )
+              ],
+            ),
+          )
+        : Container();
   }
 }
