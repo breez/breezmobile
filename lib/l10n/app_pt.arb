@@ -1551,6 +1551,35 @@
     }
   },
   "wallet_dashboard_balance_hide": "******",
+  "wallet_dashboard_payment_item_balance_hide": "******",
+  "wallet_dashboard_payment_item_balance_positive": "+ {value}",
+  "@wallet_dashboard_payment_item_balance_positive": {
+    "placeholders": {
+      "value": {
+        "type": "String",
+        "example": "123"
+      }
+    }
+  },
+  "wallet_dashboard_payment_item_balance_negative": "- {value}",
+  "@wallet_dashboard_payment_item_balance_negative": {
+    "placeholders": {
+      "value": {
+        "type": "String",
+        "example": "123"
+      }
+    }
+  },
+  "wallet_dashboard_payment_item_balance_fee": "TAXA {feeFormatted}",
+  "@wallet_dashboard_payment_item_balance_fee": {
+    "placeholders": {
+      "feeFormatted": {
+        "type": "String",
+        "example": "1"
+      }
+    }
+  },
+  "wallet_dashboard_payment_item_balance_pending_suffix": " (Pendente)",
   "status_text_loading_begin": "A Breez está ",
   "status_text_loading_middle": "abrindo um canal seguro",
   "status_text_loading_end": " com nossos servidores. Isso pode demorar um pouco, mas não se preocupe, você será notificado quando o aplicativo estiver pronto para enviar e receber pagamentos.",
