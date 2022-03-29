@@ -1637,6 +1637,20 @@
       }
     }
   },
+  "lnurl_webview_error_title": "Error",
+  "lnurl_webview_error_invalid_url": "URL invalida",
+  "lnurl_webview_error_message": "No se pudo solicitar la API {apiName}",
+  "@lnurl_webview_error_message": {
+    "placeholders": {
+      "apiName": {
+        "type": "String",
+        "example": "A vendor name"
+      }
+    }
+  },
+  "make_invoice_request_title": "Este sitio quiere pagarte:",
+  "make_invoice_request_action_cancel": "CANCELAR",
+  "make_invoice_request_action_approve": "APROBAR",
   "locale": "es",
   "app_name": "Breez"
 }
