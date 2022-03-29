@@ -1,14 +1,18 @@
 import 'package:breez/bloc/user_profile/currency.dart';
 import 'package:breez/routes/podcast/custom_amount_form.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class CustomAmountDialog extends StatefulWidget {
   final int customAmount;
   final List<int> presetAmountsList;
   final Function(int customAmount) setAmount;
 
-  CustomAmountDialog(this.customAmount, this.presetAmountsList, this.setAmount);
+  const CustomAmountDialog(
+    this.customAmount,
+    this.presetAmountsList,
+    this.setAmount,
+  );
 
   @override
   State<StatefulWidget> createState() {
@@ -18,8 +22,8 @@ class CustomAmountDialog extends StatefulWidget {
 
 class CustomAmountDialogState extends State<CustomAmountDialog> {
   final _formKey = GlobalKey<FormState>();
+  final _amountFocusNode = FocusNode();
   CustomAmountTextEditingController _amountController;
-  final FocusNode _amountFocusNode = FocusNode();
 
   @override
   void initState() {
@@ -35,19 +39,18 @@ class CustomAmountDialogState extends State<CustomAmountDialog> {
 
   @override
   Widget build(BuildContext context) {
-    return _buildPaymentRequestDialog();
-  }
-
-  Widget _buildPaymentRequestDialog() {
     final theme = Theme.of(context);
+    final texts = AppLocalizations.of(context);
     return AlertDialog(
       title: Text(
-        "Enter a Custom Amount:",
-        style: theme.dialogTheme.titleTextStyle.copyWith(fontSize: 16),
+        texts.podcast_boost_custom_amount,
+        style: theme.dialogTheme.titleTextStyle.copyWith(
+          fontSize: 16,
+        ),
         maxLines: 1,
       ),
       content: _buildAmountWidget(theme),
-      actions: _buildActions(),
+      actions: _buildActions(context),
     );
   }
 
@@ -59,16 +62,24 @@ class CustomAmountDialogState extends State<CustomAmountDialog> {
         focusNode: _amountFocusNode,
         controller: _amountController,
         preset: widget.presetAmountsList,
-        style: theme.dialogTheme.contentTextStyle.copyWith(height: 1.0),
+        style: theme.dialogTheme.contentTextStyle.copyWith(
+          height: 1.0,
+        ),
       ),
     );
   }
 
-  List<Widget> _buildActions() {
+  List<Widget> _buildActions(BuildContext context) {
+    final texts = AppLocalizations.of(context);
+    final themeData = Theme.of(context);
+
     List<Widget> actions = [
       TextButton(
         onPressed: () => Navigator.pop(context),
-        child: Text("CANCEL", style: Theme.of(context).primaryTextTheme.button),
+        child: Text(
+          texts.podcast_boost_action_cancel,
+          style: themeData.primaryTextTheme.button,
+        ),
       ),
     ];
     if (_amountController.text.isNotEmpty) {
@@ -82,8 +93,10 @@ class CustomAmountDialogState extends State<CustomAmountDialog> {
               );
             }
           },
-          child:
-              Text("APPROVE", style: Theme.of(context).primaryTextTheme.button),
+          child: Text(
+            texts.podcast_boost_action_approve,
+            style: themeData.primaryTextTheme.button,
+          ),
         ),
       );
     }
