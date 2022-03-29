@@ -1767,6 +1767,36 @@
   },
   "backup_phrase_generation_verification_failed": "Falha ao verificar as palavras. Por favor, anote as palavras e tente novamente.",
   "backup_phrase_generation_generic_error": "Erro Interno",
+  "spontaneous_payment_title": "Enviar Pagamento",
+  "spontaneous_payment_action_pay": "PAGAR",
+  "spontaneous_payment_action_cancel": "CANCELAR",
+  "spontaneous_payment_tip_message": "Mensagem (opcional)",
+  "spontaneous_payment_generic_message": "Você poderá receber pagamentos depois que a Breez terminar de abrir um canal seguro com os nosso servidores. Isso geralmente leva cerca de 10 minutos para ser concluído. Por favor, tente novamente em alguns minutos.",
+  "spontaneous_payment_max_amount": "Pague até: {amount}",
+  "@spontaneous_payment_max_amount": {
+    "placeholders": {
+      "amount": {
+        "type": "String",
+        "example": "123"
+      }
+    }
+  },
+  "spontaneous_payment_node_id": "ID do nó",
+  "spontaneous_payment_send_payment_title": "Enviar Pagamento",
+  "spontaneous_payment_send_payment_message": "Você tem certeza que deseja enviar {amount} para este nó?\n\n{nodeID}",
+  "@spontaneous_payment_send_payment_message": {
+    "placeholders": {
+      "amount": {
+        "type": "String",
+        "example": "123"
+      },
+      "nodeID": {
+        "type": "String",
+        "example": "456"
+      }
+    }
+  },
+  "spontaneous_payment_error_title": "Erro no pagamento",
   "locale": "pt",
   "app_name": "Breez"
 }
