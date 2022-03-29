@@ -655,7 +655,7 @@ class ClosedChannelPaymentDetailsState
         : texts.payment_details_dialog_closed_channel_about_hour;
     String estimation = lockHeight > 0 && hoursToUnlock > 0
         ? texts.payment_details_dialog_closed_channel_transfer_estimation(
-            lockHeight.toString(), // TODO use int when update flutter to 2.5
+            lockHeight,
             hoursToUnlockStr,
           )
         : texts.payment_details_dialog_closed_channel_transfer_no_estimation;

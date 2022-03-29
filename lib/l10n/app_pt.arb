@@ -271,7 +271,7 @@
   "@payment_details_dialog_closed_channel_transfer_estimation": {
     "placeholders": {
       "lockHeight": {
-        "type": "String",
+        "type": "int",
         "example": "12345"
       },
       "hoursToUnlock": {
@@ -1651,6 +1651,73 @@
   "make_invoice_request_title": "Este site deseja lhe pagar:",
   "make_invoice_request_action_cancel": "CANCELAR",
   "make_invoice_request_action_approve": "APROVAR",
+  "podcast_add_funds_title": "Adicione satoshis à sua carteira para enviar pagamentos para este podcast.",
+  "podcast_add_funds_action_add": "ADICIONAR",
+  "podcast_boost_not_enough_founds": "Você não tem satoshis suficientes para concluir este pagamento.",
+  "podcast_boost_sats": "sats",
+  "podcast_boost_sats_min": "sats/min",
+  "podcast_boost_action_boost": "BOOST!",
+  "podcast_boost_action_cancel": "CANCELAR",
+  "podcast_boost_action_approve": "APROVAR",
+  "podcast_boost_symbol_circa": "~",
+  "podcast_boost_send_title": "Envie um Boostagram",
+  "podcast_boost_send_optional": "Boostagram (opcional)",
+  "podcast_boost_send_amount": "Valor do Boost (em sats)",
+  "podcast_boost_custom_amount": "Insira um valor:",
+  "podcast_boost_custom_amount_error_empty": "Por favor, insira um valor",
+  "podcast_boost_custom_amount_error_too_few": "Por favor, insira ao menos {amount} sats.",
+  "@podcast_boost_custom_amount_error_too_few": {
+    "placeholders": {
+      "amount": {
+        "type": "int",
+        "example": "50"
+      }
+    }
+  },
+  "podcast_boost_adjustment_boost": "Boost",
+  "podcast_boost_adjustment_boost_message": "Envie uma gorjeta única para os criadores deste programa. Pressione e segure para adicionar uma mensagem personalizada.",
+  "podcast_boost_adjustment_stream_sats": "Enviar satoshis",
+  "podcast_boost_adjustment_stream_sats_message": "Envie satoshis para os criadores enquanto vocˆ´ouve o programa deles. O número indica a quantidade de satoshis a ser enviados por minuto. Para ouvir gratuitamente, defina esse valor como 0.",
+  "podcast_boost_action_share": "Compartilhar",
+  "podcast_boost_share_texts": "{podcast}\n{episode}\n{link}",
+  "@podcast_boost_share_texts": {
+    "placeholders": {
+      "podcast": {
+        "type": "String",
+        "example": "A podcast"
+      },
+      "episode": {
+        "type": "String",
+        "example": "An episode"
+      },
+      "link": {
+        "type": "String",
+        "example": "http://link.com"
+      }
+    }
+  },
+  "podcast_boost_share_texts_short": "{podcast}\n{link}",
+  "@podcast_boost_share_texts_short": {
+    "placeholders": {
+      "podcast": {
+        "type": "String",
+        "example": "A podcast"
+      },
+      "link": {
+        "type": "String",
+        "example": "http://link.com"
+      }
+    }
+  },
+  "podcast_speed_selector_speed": "{speed}x",
+  "@podcast_speed_selector_speed": {
+    "placeholders": {
+      "speed": {
+        "type": "String",
+        "example": "1.5"
+      }
+    }
+  },
   "locale": "pt",
   "app_name": "Breez"
 }

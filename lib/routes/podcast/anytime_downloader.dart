@@ -12,6 +12,7 @@ class AnytimeDownloadManager implements DownloadManager {
         .map((e) => DownloadProgress(e.id, e.percentage, e.status))
         .pipe(statusController);
   }
+
   @override
   void dispose() {
     statusController.close();

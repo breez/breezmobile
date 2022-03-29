@@ -271,7 +271,7 @@
   "@payment_details_dialog_closed_channel_transfer_estimation": {
     "placeholders": {
       "lockHeight": {
-        "type": "String",
+        "type": "int",
         "example": "12345"
       },
       "hoursToUnlock": {
@@ -1651,6 +1651,73 @@
   "make_invoice_request_title": "Tämä sivusto haluaa maksaa sinulle:",
   "make_invoice_request_action_cancel": "Peruuta",
   "make_invoice_request_action_approve": "HYVÄKSY",
+  "podcast_add_funds_title": "Add funds to your balance to send payments to this podcast.",
+  "podcast_add_funds_action_add": "ADD FUNDS",
+  "podcast_boost_not_enough_founds": "You don't have enough funds to complete this payment.",
+  "podcast_boost_sats": "sats",
+  "podcast_boost_sats_min": "sats/min",
+  "podcast_boost_action_boost": "BOOST!",
+  "podcast_boost_action_cancel": "CANCEL",
+  "podcast_boost_action_approve": "APPROVE",
+  "podcast_boost_symbol_circa": "~",
+  "podcast_boost_send_title": "Send a Boostagram",
+  "podcast_boost_send_optional": "Boostagram (optional)",
+  "podcast_boost_send_amount": "Boost Amount (in sats)",
+  "podcast_boost_custom_amount": "Enter a Custom Amount:",
+  "podcast_boost_custom_amount_error_empty": "Please enter an amount",
+  "podcast_boost_custom_amount_error_too_few": "Please enter at least {amount} sats.",
+  "@podcast_boost_custom_amount_error_too_few": {
+    "placeholders": {
+      "amount": {
+        "type": "int",
+        "example": "50"
+      }
+    }
+  },
+  "podcast_boost_adjustment_boost": "Boost",
+  "podcast_boost_adjustment_boost_message": "Send a one-time tip to a show's creators. Long press to add a personalized message.",
+  "podcast_boost_adjustment_stream_sats": "Stream sats",
+  "podcast_boost_adjustment_stream_sats_message": "Stream sats to the creators while listening to their show. The number indicates the amount of sats sent per minute. To listen for free, set this value to 0.",
+  "podcast_boost_action_share": "Share",
+  "podcast_boost_share_texts": "{podcast}\n{episode}\n{link}",
+  "@podcast_boost_share_texts": {
+    "placeholders": {
+      "podcast": {
+        "type": "String",
+        "example": "A podcast"
+      },
+      "episode": {
+        "type": "String",
+        "example": "An episode"
+      },
+      "link": {
+        "type": "String",
+        "example": "http://link.com"
+      }
+    }
+  },
+  "podcast_boost_share_texts_short": "{podcast}\n{link}",
+  "@podcast_boost_share_texts_short": {
+    "placeholders": {
+      "podcast": {
+        "type": "String",
+        "example": "A podcast"
+      },
+      "link": {
+        "type": "String",
+        "example": "http://link.com"
+      }
+    }
+  },
+  "podcast_speed_selector_speed": "{speed}x",
+  "@podcast_speed_selector_speed": {
+    "placeholders": {
+      "speed": {
+        "type": "String",
+        "example": "1.5"
+      }
+    }
+  },
   "locale": "fi",
   "app_name": "Breez"
 }
