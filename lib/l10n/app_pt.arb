@@ -1797,6 +1797,44 @@
     }
   },
   "spontaneous_payment_error_title": "Erro no pagamento",
+  "sweep_all_coins_speed": "Escolha a velocidade da transação",
+  "sweep_all_coins_action_confirm": "CONFIRMAR",
+  "sweep_all_coins_label_send": "Será enviado:",
+  "sweep_all_coins_label_receive": "Será recebido:",
+  "sweep_all_coins_label_transaction_fee": "Taxa da transação:",
+  "sweep_all_coins_fee": "-{fee}",
+  "@sweep_all_coins_fee": {
+    "placeholders": {
+      "fee": {
+        "type": "String",
+        "example": "123"
+      }
+    }
+  },
+  "sweep_all_coins_amount_no_fiat": "{amount}",
+  "@sweep_all_coins_amount_no_fiat": {
+    "placeholders": {
+      "amount": {
+        "type": "String",
+        "example": "123"
+      }
+    }
+  },
+  "sweep_all_coins_amount_with_fiat": "{amount} ({fiat})",
+  "@sweep_all_coins_amount_with_fiat": {
+    "placeholders": {
+      "amount": {
+        "type": "String",
+        "example": "123"
+      },
+      "fiat": {
+        "type": "String",
+        "example": "123"
+      }
+    }
+  },
+  "sweep_all_coins_error_retrieve_fees": "Falha ao recuperar taxas. Por favor, tente novamente mais tarde.",
+  "sweep_all_coins_error_amount_small": "O valor é muito baixo para ser transmitido. Por favor, tente novamente mais tarde.",
   "locale": "pt",
   "app_name": "Breez"
 }
