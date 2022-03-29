@@ -1,56 +1,56 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
-class BackupPhraseWarningDialog extends StatefulWidget {
+class BackupPhraseWarningDialog extends StatelessWidget {
   @override
-  _BackupPhraseWarningDialogState createState() =>
-      _BackupPhraseWarningDialogState();
-}
-
-class _BackupPhraseWarningDialogState extends State<BackupPhraseWarningDialog> {
-  @override
-  void initState() {
-    super.initState();
+  Widget build(BuildContext context) {
+    final themeData = Theme.of(context);
+    final texts = AppLocalizations.of(context);
+    return Theme(
+      data: themeData.copyWith(
+        unselectedWidgetColor: themeData.canvasColor,
+      ),
+      child: AlertDialog(
+        contentPadding: const EdgeInsets.fromLTRB(8.0, 24.0, 8.0, 16.0),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: _getContent(context),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(false),
+            child: Text(
+              texts.backup_phrase_warning_action_no,
+              style: themeData.primaryTextTheme.button,
+            ),
+          ),
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(true),
+            child: Text(
+              texts.backup_phrase_warning_action_yes,
+              style: themeData.primaryTextTheme.button,
+            ),
+          ),
+        ],
+      ),
+    );
   }
 
-  _getContent() {
-    List<Widget> children = <Widget>[
+  List<Widget> _getContent(BuildContext context) {
+    final texts = AppLocalizations.of(context);
+    final themeData = Theme.of(context);
+    return [
       Padding(
-        padding: const EdgeInsets.only(left: 15.0, right: 12.0),
+        padding: const EdgeInsets.only(
+          left: 15.0,
+          right: 12.0,
+        ),
         child: Text(
-          "Your existing backup phrase will no longer be valid and a new one will be generated next time you decide to use a backup phrase. Are you sure you don't want to use a backup phrase?",
-          style: Theme.of(context).dialogTheme.contentTextStyle,
+          texts.backup_phrase_warning_disclaimer,
+          style: themeData.dialogTheme.contentTextStyle,
         ),
       ),
     ];
-
-    return children;
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Theme(
-        data: Theme.of(context).copyWith(
-          unselectedWidgetColor: Theme.of(context).canvasColor,
-        ),
-        child: AlertDialog(
-          contentPadding: EdgeInsets.fromLTRB(8.0, 24.0, 8.0, 16.0),
-          content: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: _getContent(),
-          ),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.of(context).pop(false),
-              child:
-                  Text("NO", style: Theme.of(context).primaryTextTheme.button),
-            ),
-            TextButton(
-              onPressed: () => Navigator.of(context).pop(true),
-              child:
-                  Text("YES", style: Theme.of(context).primaryTextTheme.button),
-            ),
-          ],
-        ));
   }
 }
