@@ -209,10 +209,10 @@
       }
     }
   },
-  "invoice_bottom_sheet_action_invoice": "INVOICE",
-  "invoice_bottom_sheet_action_pay": "PAY",
-  "invoice_bottom_sheet_action_receive": "RECEIVE",
-  "invoice_bottom_sheet_error_qrcode": "QR code wasn't detected.",
+  "invoice_bottom_sheet_action_invoice": "LASKU",
+  "invoice_bottom_sheet_action_pay": "MAKSA",
+  "invoice_bottom_sheet_action_receive": "VASTAANOTA",
+  "invoice_bottom_sheet_error_qrcode": "QR-koodia ei tunnistettu.",
   "backup_dialog_title": "Varmuuskopio",
   "backup_dialog_message_remote_server": "Varmuuskopiointi palvelimelle epäonnistui. Tarkista asetukset ja yritä uudelleen.",
   "backup_dialog_message_default": "Sinun tulee varmuuskopioida Breez-tiedot, jotta varojesi palautus onnistuisi tämän laitteen katoamisen, varkauden tai rikkoontumisen sekä mahdollisen sovelluksen poiston ja uudelleen asennuksen yhteydessä.",
@@ -720,7 +720,7 @@
   "connect_to_pay_payment_detail_note": "Maksutietoja (vapaaehtoinen)",
   "connect_to_pay_payment_available": "Käytettävissä:",
   "connect_to_pay_payment_action_close": "Sulje",
-  "connect_to_pay_payment_action_pay": "Maksa",
+  "connect_to_pay_payment_action_pay": "MAKSA",
   "connect_to_pay_peer_unknown": "Tuntematon",
   "connect_to_pay_share_text": "{name} haluaa maksaa sinulle Breez-sovelluksella. Vastaanota maksu avaamalla seuraava linkki: {address}",
   "@connect_to_pay_share_text": {
