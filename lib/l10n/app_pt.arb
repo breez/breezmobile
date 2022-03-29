@@ -335,7 +335,7 @@
       }
     }
   },
-  "payment_info_dialog_title": "Informação do beneficiário",
+  "payment_info_dialog_title": "Dados para pagamento",
   "payment_info_dialog_hint": "Fatura ou ID",
   "payment_info_dialog_hint_expanded": "Insira uma fatura, ID de servidor ou endereço Relâmpago.",
   "payment_info_dialog_barcode": "Ler código de barras",
@@ -539,10 +539,10 @@
       }
     }
   },
-  "fiat_currencies_title": "Moedas fiduciárias",
+  "fiat_currencies_title": "Moedas Fiduciárias",
   "fiat_currencies_save_fail": "Falha ao salvar as alterações",
-  "connect_to_pay_title_payer": "Conecte para pagar",
-  "connect_to_pay_title_payee": "Receber pagamento",
+  "connect_to_pay_title_payer": "Conecte para Pagar",
+  "connect_to_pay_title_payee": "Receber Pagamento",
   "connect_to_pay_canceled_payer": "O pagador cancelou a sessão de pagamento",
   "connect_to_pay_canceled_payee": "O beneficiário cancelou a sessão de pagamento",
   "connect_to_pay_canceled_remote_user": "O(A) {name} cancelou a sessão de pagamento",
