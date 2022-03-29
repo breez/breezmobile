@@ -1651,21 +1651,21 @@
   "make_invoice_request_title": "Tämä sivusto haluaa maksaa sinulle:",
   "make_invoice_request_action_cancel": "Peruuta",
   "make_invoice_request_action_approve": "HYVÄKSY",
-  "podcast_add_funds_title": "Add funds to your balance to send payments to this podcast.",
-  "podcast_add_funds_action_add": "ADD FUNDS",
-  "podcast_boost_not_enough_founds": "You don't have enough funds to complete this payment.",
-  "podcast_boost_sats": "sats",
+  "podcast_add_funds_title": "Jotta voit lähettää maksuja tälle podcast:ille, tulee sinun ensin lisatä varoja saldollesi.",
+  "podcast_add_funds_action_add": "LISÄÄ VAROJA",
+  "podcast_boost_not_enough_founds": "Sinulla ei ole tarpeeksi varoja maksun suorittamiseksi.",
+  "podcast_boost_sats": "satoshia",
   "podcast_boost_sats_min": "sats/min",
   "podcast_boost_action_boost": "BOOST!",
-  "podcast_boost_action_cancel": "CANCEL",
-  "podcast_boost_action_approve": "APPROVE",
+  "podcast_boost_action_cancel": "Peruuta",
+  "podcast_boost_action_approve": "HYVÄKSY",
   "podcast_boost_symbol_circa": "~",
-  "podcast_boost_send_title": "Send a Boostagram",
-  "podcast_boost_send_optional": "Boostagram (optional)",
-  "podcast_boost_send_amount": "Boost Amount (in sats)",
-  "podcast_boost_custom_amount": "Enter a Custom Amount:",
-  "podcast_boost_custom_amount_error_empty": "Please enter an amount",
-  "podcast_boost_custom_amount_error_too_few": "Please enter at least {amount} sats.",
+  "podcast_boost_send_title": "Lähetä Boostagram:iin",
+  "podcast_boost_send_optional": "Boostagram (valinnainen)",
+  "podcast_boost_send_amount": "Boost määrä  satosheina)",
+  "podcast_boost_custom_amount": "Syötä vapaavalintainen määrä:",
+  "podcast_boost_custom_amount_error_empty": "Syötä määrä",
+  "podcast_boost_custom_amount_error_too_few": "Syötä määräksi vähintään {amount} satoshia.",
   "@podcast_boost_custom_amount_error_too_few": {
     "placeholders": {
       "amount": {
@@ -1675,20 +1675,20 @@
     }
   },
   "podcast_boost_adjustment_boost": "Boost",
-  "podcast_boost_adjustment_boost_message": "Send a one-time tip to a show's creators. Long press to add a personalized message.",
-  "podcast_boost_adjustment_stream_sats": "Stream sats",
-  "podcast_boost_adjustment_stream_sats_message": "Stream sats to the creators while listening to their show. The number indicates the amount of sats sent per minute. To listen for free, set this value to 0.",
-  "podcast_boost_action_share": "Share",
+  "podcast_boost_adjustment_boost_message": "Lähetä ohjelman tekijöille kertaluontoinen lahjoitus. Paina pitkään lisätäksesi mukaan henkilökohtaisen viestin.",
+  "podcast_boost_adjustment_stream_sats": "Streamaa satosheja",
+  "podcast_boost_adjustment_stream_sats_message": "Streamaa satosheja ohjelman tekijöille samalla kun seuraat ohjelmaa. Syötä satosheja jotka lähetetään jokaisesta seuraamastasi minuutista. Jos haluat seurata ohjelmaa ilmaiseksi syötä tähän nolla.",
+  "podcast_boost_action_share": "Jaa",
   "podcast_boost_share_texts": "{podcast}\n{episode}\n{link}",
   "@podcast_boost_share_texts": {
     "placeholders": {
       "podcast": {
         "type": "String",
-        "example": "A podcast"
+        "example": "Podcasti"
       },
       "episode": {
         "type": "String",
-        "example": "An episode"
+        "example": "Jakso"
       },
       "link": {
         "type": "String",
@@ -1701,7 +1701,7 @@
     "placeholders": {
       "podcast": {
         "type": "String",
-        "example": "A podcast"
+        "example": "Podcast"
       },
       "link": {
         "type": "String",
