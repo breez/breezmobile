@@ -10,6 +10,7 @@ import 'package:breez/widgets/error_dialog.dart';
 import 'package:breez/widgets/loader.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class LNURLWebViewPage extends StatefulWidget {
   final AccountBloc accountBloc;
@@ -42,7 +43,7 @@ class LNURLWebViewPageState extends State<LNURLWebViewPage> {
     _handleLNUrlAuth().catchError(
       (err) => promptError(
         context,
-        "Error",
+        AppLocalizations.of(context).lnurl_webview_error_title,
         Text(err.toString()),
         okFunc: () => Navigator.of(context).pop(),
       ),
@@ -50,12 +51,15 @@ class LNURLWebViewPageState extends State<LNURLWebViewPage> {
   }
 
   Future _handleLNUrlAuth() async {
+    final texts = AppLocalizations.of(context);
     Uri uri = widget.endpointURI;
     var response = widget.vendorModel.id == "lnmarkets"
         ? await http.post(uri)
         : await http.get(uri);
     if (response.statusCode != 200 && response.statusCode != 201) {
-      throw Exception("Failed to call ${widget.vendorModel.displayName} API");
+      throw Exception(
+        texts.lnurl_webview_error_message(widget.vendorModel.displayName),
+      );
     }
     Map<String, dynamic> decoded = json.decode(response.body);
     String lnUrl = decoded[widget.responseID] as String;
@@ -63,7 +67,7 @@ class LNURLWebViewPageState extends State<LNURLWebViewPage> {
     widget.lnurlBloc.actionsSink.add(fetchAction);
     var fetchResponse = await fetchAction.future;
     if (fetchResponse.runtimeType != AuthFetchResponse) {
-      throw "Invalid URL";
+      throw texts.lnurl_webview_error_invalid_url;
     }
     AuthFetchResponse authResponse = fetchResponse as AuthFetchResponse;
     var action = Login(authResponse, jwt: true);
@@ -80,8 +84,9 @@ class LNURLWebViewPageState extends State<LNURLWebViewPage> {
       return Material(child: Loader());
     }
     return VendorWebViewPage(
-        widget.accountBloc,
-        widget.vendorModel.url + "?token=$jwtToken",
-        widget.vendorModel.displayName);
+      widget.accountBloc,
+      widget.vendorModel.url + "?token=$jwtToken",
+      widget.vendorModel.displayName,
+    );
   }
 }

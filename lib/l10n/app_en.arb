@@ -1637,6 +1637,20 @@
       }
     }
   },
+  "lnurl_webview_error_title": "Error",
+  "lnurl_webview_error_invalid_url": "Invalid URL",
+  "lnurl_webview_error_message": "Failed to call {apiName} API",
+  "@lnurl_webview_error_message": {
+    "placeholders": {
+      "apiName": {
+        "type": "String",
+        "example": "A vendor name"
+      }
+    }
+  },
+  "make_invoice_request_title": "This site wants to pay you:",
+  "make_invoice_request_action_cancel": "CANCEL",
+  "make_invoice_request_action_approve": "APPROVE",
   "locale": "en",
   "app_name": "Breez"
 }
