@@ -1718,6 +1718,55 @@
       }
     }
   },
+  "lock_screen_enter_pin": "Introduce tu PIN",
+  "backup_phrase_generate": "Generar la frase de respaldo",
+  "backup_phrase_instructions": "Usted verá una lista de palabras. Escriba las palabras y guárdelas en un lugar seguro. Sin estas palabras, no podrá restaurar sus fondos desde la copia de seguridad y sus fondos se perderán y Breez no podrá ayudarlo.",
+  "backup_phrase_action_confirm": "ENTIENDO",
+  "backup_phrase_action_next": "PRÓXIMO",
+  "backup_phrase_warning_disclaimer": "Su frase de respaldo existente no será válida y se generará una nueva frase la próxima vez que decida usar una frase de respaldo. ¿Estás seguro de que no quieres usar una frase de respaldo?",
+  "backup_phrase_warning_action_yes": "SÍ",
+  "backup_phrase_warning_action_no": "NO",
+  "backup_phrase_warning_action_next": "PRÓXIMO",
+  "backup_phrase_warning_action_backup": "COPIA DE SEGURIDAD",
+  "backup_phrase_generation_write_words": "Escribe estas palabras",
+  "backup_phrase_generation_index": "{index}.",
+  "@backup_phrase_generation_index": {
+    "placeholders": {
+      "index": {
+        "type": "int",
+        "example": "1"
+      }
+    }
+  },
+  "backup_phrase_generation_verify": "Vamos a revisar",
+  "backup_phrase_generation_type_words": "Por favor ingrese las palabras número {numberA}, {numberB} y {numberC} de la frase de respaldo generada.",
+  "@backup_phrase_generation_type_words": {
+    "placeholders": {
+      "numberA": {
+        "type": "int",
+        "example": "1"
+      },
+      "numberB": {
+        "type": "int",
+        "example": "2"
+      },
+      "numberC": {
+        "type": "int",
+        "example": "3"
+      }
+    }
+  },
+  "backup_phrase_generation_type_step": "{number}",
+  "@backup_phrase_generation_type_step": {
+    "placeholders": {
+      "number": {
+        "type": "int",
+        "example": "1"
+      }
+    }
+  },
+  "backup_phrase_generation_verification_failed": "No se pudieron verificar las palabras. Por favor, escriba las palabras y vuelva a intentarlo.",
+  "backup_phrase_generation_generic_error": "Error Interno",
   "locale": "es",
   "app_name": "Breez"
 }
