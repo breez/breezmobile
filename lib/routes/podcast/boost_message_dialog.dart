@@ -1,15 +1,15 @@
 import 'package:breez/bloc/user_profile/currency.dart';
 import 'package:breez/routes/podcast/custom_amount_form.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class BoostMessageDialog extends StatefulWidget {
   final int customAmount;
   final List<int> preset;
   final Function(int customAmount, String boostMessage) setBoost;
 
-  BoostMessageDialog(
+  const BoostMessageDialog(
     this.customAmount,
     this.preset,
     this.setBoost,
@@ -24,10 +24,10 @@ class BoostMessageDialog extends StatefulWidget {
 class BoostMessageDialogState extends State<BoostMessageDialog> {
   final _messageKey = GlobalKey<FormState>();
   final _amountKey = GlobalKey<FormState>();
-  final TextEditingController _messageController = TextEditingController();
+  final _messageController = TextEditingController();
+  final _messageFocusNode = FocusNode();
+  final _amountFocusNode = FocusNode();
   CustomAmountTextEditingController _amountController;
-  final FocusNode _messageFocusNode = FocusNode();
-  final FocusNode _amountFocusNode = FocusNode();
 
   @override
   void initState() {
@@ -45,25 +45,25 @@ class BoostMessageDialogState extends State<BoostMessageDialog> {
 
   @override
   Widget build(BuildContext context) {
-    return _buildBoostMessageDialog();
-  }
-
-  Widget _buildBoostMessageDialog() {
-    var theme = Theme.of(context);
+    final theme = Theme.of(context);
+    final texts = AppLocalizations.of(context);
     return AlertDialog(
       scrollable: true,
       title: Text(
-        "Send a Boostagram",
-        style: theme.dialogTheme.titleTextStyle.copyWith(fontSize: 16),
+        texts.podcast_boost_send_title,
+        style: theme.dialogTheme.titleTextStyle.copyWith(
+          fontSize: 16,
+        ),
         maxLines: 1,
       ),
-      content: _buildMessageWidget(),
-      actions: _buildActions(),
+      content: _buildMessageWidget(context),
+      actions: _buildActions(context),
     );
   }
 
-  Widget _buildMessageWidget() {
+  Widget _buildMessageWidget(BuildContext context) {
     final theme = Theme.of(context);
+    final texts = AppLocalizations.of(context);
     return Column(
       mainAxisSize: MainAxisSize.min,
       mainAxisAlignment: MainAxisAlignment.center,
@@ -80,9 +80,11 @@ class BoostMessageDialogState extends State<BoostMessageDialog> {
             maxLines: null,
             maxLength: 128,
             maxLengthEnforcement: MaxLengthEnforcement.enforced,
-            style: theme.dialogTheme.contentTextStyle.copyWith(height: 1.0),
+            style: theme.dialogTheme.contentTextStyle.copyWith(
+              height: 1.0,
+            ),
             decoration: InputDecoration(
-              labelText: "Boostagram (optional)",
+              labelText: texts.podcast_boost_send_optional,
             ),
           ),
         ),
@@ -94,21 +96,27 @@ class BoostMessageDialogState extends State<BoostMessageDialog> {
             controller: _amountController,
             preset: widget.preset,
             decoration: InputDecoration(
-              labelText: "Boost Amount (in sats)",
+              labelText: texts.podcast_boost_send_amount,
             ),
-            style: theme.dialogTheme.contentTextStyle.copyWith(height: 1.0),
+            style: theme.dialogTheme.contentTextStyle.copyWith(
+              height: 1.0,
+            ),
           ),
-        )
+        ),
       ],
     );
   }
 
-  List<Widget> _buildActions() {
+  List<Widget> _buildActions(BuildContext context) {
+    final texts = AppLocalizations.of(context);
     final theme = Theme.of(context);
     List<Widget> actions = [
       TextButton(
         onPressed: () => Navigator.pop(context),
-        child: Text("CANCEL", style: theme.primaryTextTheme.button),
+        child: Text(
+          texts.podcast_boost_action_cancel,
+          style: theme.primaryTextTheme.button,
+        ),
       ),
     ];
     if (_amountKey.currentState?.validate() ??
@@ -125,7 +133,7 @@ class BoostMessageDialogState extends State<BoostMessageDialog> {
             }
           },
           child: Text(
-            "BOOST!",
+            texts.podcast_boost_action_boost,
             style: theme.primaryTextTheme.button,
           ),
         ),

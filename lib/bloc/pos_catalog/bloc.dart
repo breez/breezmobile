@@ -85,7 +85,6 @@ class PosCatalogBloc with AsyncActionsHandler {
     listenActions();
     _currentSaleController.add(Sale(
       saleLines: [],
-      date: DateTime.now(),
     ));
     _trackCurrentSaleRates(accountStream);
     _trackSalePayments();
@@ -145,11 +144,11 @@ class PosCatalogBloc with AsyncActionsHandler {
             event.type == NotificationEvent_NotificationType.INVOICE_PAID)
         .listen((event) async {
       var paymentHash = await breezBridge.getPaymentRequestHash(event.data[0]);
+      await _repository.salePaymentCompleted(paymentHash);
       var paidSale = await _repository.fetchSaleByPaymentHash(paymentHash);
       if (paidSale != null && paidSale.id == _currentSaleController.value.id) {
         _currentSaleController.add(Sale(
           saleLines: [],
-          date: DateTime.now(),
         ));
       }
     });

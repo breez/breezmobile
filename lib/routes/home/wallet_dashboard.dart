@@ -6,6 +6,7 @@ import 'package:breez/bloc/user_profile/breez_user_model.dart';
 import 'package:breez/bloc/user_profile/currency.dart';
 import 'package:breez/theme_data.dart' as theme;
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class WalletDashboard extends StatefulWidget {
   final AccountModel _accountModel;
@@ -16,14 +17,15 @@ class WalletDashboard extends StatefulWidget {
   final Function(String fiatConversion) _onFiatCurrencyChange;
   final Function(bool hideBalance) _onPrivacyChange;
 
-  WalletDashboard(
-      this._userModel,
-      this._accountModel,
-      this._height,
-      this._offsetFactor,
-      this._onCurrencyChange,
-      this._onFiatCurrencyChange,
-      this._onPrivacyChange);
+  const WalletDashboard(
+    this._userModel,
+    this._accountModel,
+    this._height,
+    this._offsetFactor,
+    this._onCurrencyChange,
+    this._onFiatCurrencyChange,
+    this._onPrivacyChange,
+  );
 
   @override
   State<StatefulWidget> createState() {
@@ -37,109 +39,68 @@ class WalletDashboardState extends State<WalletDashboard> {
 
   @override
   Widget build(BuildContext context) {
-    double startHeaderSize =
-        Theme.of(context).accentTextTheme.headline4.fontSize;
-    double endHeaderFontSize =
-        Theme.of(context).accentTextTheme.headline4.fontSize - 8.0;
+    final themeData = Theme.of(context);
+    final headline4 = themeData.accentTextTheme.headline4;
+
+    double startHeaderSize = headline4.fontSize;
+    double endHeaderFontSize = headline4.fontSize - 8.0;
 
     return GestureDetector(
       child: Stack(
         alignment: AlignmentDirectional.topCenter,
-        children: <Widget>[
+        children: [
           Container(
-              width: MediaQuery.of(context).size.width,
-              height: widget._height,
-              decoration: BoxDecoration(
-                color: theme.customData[theme.themeId].dashboardBgColor,
-              )),
+            width: MediaQuery.of(context).size.width,
+            height: widget._height,
+            decoration: BoxDecoration(
+              color: theme.customData[theme.themeId].dashboardBgColor,
+            ),
+          ),
           Positioned(
             top: 60 - BALANCE_OFFSET_TRANSITION * widget._offsetFactor,
             child: Center(
-              child: widget._accountModel != null &&
-                      !widget._accountModel.initial
-                  ? TextButton(
-                      style: ButtonStyle(
-                        overlayColor: MaterialStateProperty.resolveWith<Color>(
-                            (Set<MaterialState> states) {
-                          if (states.contains(MaterialState.focused))
-                            return theme
-                                .customData[theme.themeId].paymentListBgColor;
-                          if (states.contains(MaterialState.hovered))
-                            return theme
-                                .customData[theme.themeId].paymentListBgColor;
-                          return null; // Defer to the widget's default.
-                        }),
-                      ),
-                      onPressed: () {
-                        if (widget._userModel.hideBalance) {
-                          widget._onPrivacyChange(false);
-                          return;
-                        }
-                        var nextCurrencyIndex = (Currency.currencies
-                                    .indexOf(widget._accountModel.currency) +
-                                1) %
-                            Currency.currencies.length;
-                        if (nextCurrencyIndex == 1) {
-                          widget._onPrivacyChange(true);
-                        }
-                        widget._onCurrencyChange(
-                            Currency.currencies[nextCurrencyIndex]);
-                      },
-                      child: widget._userModel.hideBalance
-                          ? Text("******",
-                              style: Theme.of(context)
-                                  .accentTextTheme
-                                  .headline4
-                                  .copyWith(
-                                      fontSize: startHeaderSize -
-                                          (startHeaderSize -
-                                                  endHeaderFontSize) *
-                                              widget._offsetFactor))
-                          : (widget._offsetFactor > 0.8 &&
-                                  _showFiatCurrency &&
-                                  widget._accountModel.fiatCurrency != null)
-                              ? Text(
-                                  "${widget._accountModel.formattedFiatBalance}",
-                                  style: Theme.of(context)
-                                      .accentTextTheme
-                                      .headline4
-                                      .copyWith(
-                                          fontSize: startHeaderSize -
-                                              (startHeaderSize -
-                                                      endHeaderFontSize) *
-                                                  widget._offsetFactor))
-                              : RichText(
-                                  text: TextSpan(
-                                      style: Theme.of(context)
-                                          .accentTextTheme
-                                          .headline4
-                                          .copyWith(
-                                              fontSize: startHeaderSize -
-                                                  (startHeaderSize -
-                                                          endHeaderFontSize) *
-                                                      widget._offsetFactor),
-                                      text: widget._accountModel.currency
-                                          .format(widget._accountModel.balance,
-                                              removeTrailingZeros: true,
-                                              includeDisplayName: false),
-                                      children: <TextSpan>[
-                                        TextSpan(
-                                          text: " " +
-                                              widget._accountModel.currency
-                                                  .displayName,
-                                          style: Theme.of(context)
-                                              .accentTextTheme
-                                              .headline4
-                                              .copyWith(
-                                                  fontSize: startHeaderSize *
-                                                          0.6 -
-                                                      (startHeaderSize * 0.6 -
-                                                              endHeaderFontSize) *
-                                                          widget._offsetFactor),
-                                        ),
-                                      ]),
-                                ))
-                  : SizedBox(),
+              child:
+                  widget._accountModel != null && !widget._accountModel.initial
+                      ? TextButton(
+                          style: _balanceStyle(),
+                          onPressed: () {
+                            if (widget._userModel.hideBalance) {
+                              widget._onPrivacyChange(false);
+                              return;
+                            }
+                            final list = Currency.currencies;
+                            final index = list.indexOf(
+                              widget._accountModel.currency,
+                            );
+                            final nextCurrencyIndex = (index + 1) % list.length;
+                            if (nextCurrencyIndex == 1) {
+                              widget._onPrivacyChange(true);
+                            }
+                            widget._onCurrencyChange(
+                              list[nextCurrencyIndex],
+                            );
+                          },
+                          child: widget._userModel.hideBalance
+                              ? _balanceHide(
+                                  context,
+                                  startHeaderSize,
+                                  endHeaderFontSize,
+                                )
+                              : (widget._offsetFactor > 0.8 &&
+                                      _showFiatCurrency &&
+                                      widget._accountModel.fiatCurrency != null)
+                                  ? _balanceText(
+                                      context,
+                                      startHeaderSize,
+                                      endHeaderFontSize,
+                                    )
+                                  : _balanceRichText(
+                                      context,
+                                      startHeaderSize,
+                                      endHeaderFontSize,
+                                    ),
+                        )
+                      : SizedBox(),
             ),
           ),
           Positioned(
@@ -150,38 +111,7 @@ class WalletDashboardState extends State<WalletDashboard> {
                       widget._accountModel.fiatConversionList.isNotEmpty &&
                       isAboveMinAmount(widget._accountModel?.fiatCurrency) &&
                       !widget._userModel.hideBalance
-                  ? TextButton(
-                      style: ButtonStyle(
-                        overlayColor: MaterialStateProperty.resolveWith<Color>(
-                            (Set<MaterialState> states) {
-                          if (states.contains(MaterialState.focused))
-                            return theme
-                                .customData[theme.themeId].paymentListBgColor;
-                          if (states.contains(MaterialState.hovered))
-                            return theme
-                                .customData[theme.themeId].paymentListBgColor;
-                          return null; // Defer to the widget's default.
-                        }),
-                      ),
-                      onPressed: () {
-                        var newFiatConversion = nextValidFiatConversion();
-                        if (newFiatConversion != null)
-                          widget._onFiatCurrencyChange(
-                              newFiatConversion.currencyData.shortName);
-                      },
-                      child: Text(
-                          "${widget._accountModel.formattedFiatBalance}",
-                          style: Theme.of(context)
-                              .accentTextTheme
-                              .subtitle1
-                              .copyWith(
-                                  color: Theme.of(context)
-                                      .accentTextTheme
-                                      .subtitle1
-                                      .color
-                                      .withOpacity(pow(
-                                          1.00 - widget._offsetFactor, 2)))),
-                    )
+                  ? _fiatButton(context)
                   : SizedBox(),
             ),
           ),
@@ -201,17 +131,132 @@ class WalletDashboardState extends State<WalletDashboard> {
     );
   }
 
+  ButtonStyle _balanceStyle() {
+    return ButtonStyle(
+      overlayColor: MaterialStateProperty.resolveWith<Color>((states) {
+        final customData = theme.customData[theme.themeId];
+        if (states.contains(MaterialState.focused)) {
+          return customData.paymentListBgColor;
+        }
+        if (states.contains(MaterialState.hovered)) {
+          return customData.paymentListBgColor;
+        }
+        return null;
+      }),
+    );
+  }
+
+  Widget _balanceText(
+    BuildContext context,
+    double startHeaderSize,
+    double endHeaderFontSize,
+  ) {
+    final themeData = Theme.of(context);
+
+    return Text(
+      "${widget._accountModel.formattedFiatBalance}",
+      style: themeData.accentTextTheme.headline4.copyWith(
+        fontSize: startHeaderSize -
+            (startHeaderSize - endHeaderFontSize) * widget._offsetFactor,
+      ),
+    );
+  }
+
+  Widget _balanceRichText(
+    BuildContext context,
+    double startHeaderSize,
+    double endHeaderFontSize,
+  ) {
+    final themeData = Theme.of(context);
+    final headline4 = themeData.accentTextTheme.headline4;
+
+    return RichText(
+      text: TextSpan(
+        style: headline4.copyWith(
+          fontSize: startHeaderSize -
+              (startHeaderSize - endHeaderFontSize) * widget._offsetFactor,
+        ),
+        text: widget._accountModel.currency.format(
+          widget._accountModel.balance,
+          removeTrailingZeros: true,
+          includeDisplayName: false,
+        ),
+        children: [
+          TextSpan(
+            text: widget._accountModel.currency.displayName,
+            style: headline4.copyWith(
+              fontSize: startHeaderSize * 0.6 -
+                  (startHeaderSize * 0.6 - endHeaderFontSize) *
+                      widget._offsetFactor,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _balanceHide(
+    BuildContext context,
+    double startHeaderSize,
+    double endHeaderFontSize,
+  ) {
+    final themeData = Theme.of(context);
+    final texts = AppLocalizations.of(context);
+
+    return Text(
+      texts.wallet_dashboard_balance_hide,
+      style: themeData.accentTextTheme.headline4.copyWith(
+        fontSize: startHeaderSize -
+            (startHeaderSize - endHeaderFontSize) * widget._offsetFactor,
+      ),
+    );
+  }
+
+  Widget _fiatButton(BuildContext context) {
+    final themeData = Theme.of(context);
+    final subtitle1 = themeData.accentTextTheme.subtitle1;
+
+    return TextButton(
+      style: ButtonStyle(
+        overlayColor: MaterialStateProperty.resolveWith<Color>((states) {
+          final customData = theme.customData[theme.themeId];
+          if (states.contains(MaterialState.focused)) {
+            return customData.paymentListBgColor;
+          }
+          if (states.contains(MaterialState.hovered)) {
+            return customData.paymentListBgColor;
+          }
+          return null;
+        }),
+      ),
+      onPressed: () {
+        final newFiatConversion = nextValidFiatConversion();
+        if (newFiatConversion != null) {
+          widget._onFiatCurrencyChange(
+            newFiatConversion.currencyData.shortName,
+          );
+        }
+      },
+      child: Text(
+        "${widget._accountModel.formattedFiatBalance}",
+        style: subtitle1.copyWith(
+          color: subtitle1.color.withOpacity(
+            pow(1.00 - widget._offsetFactor, 2),
+          ),
+        ),
+      ),
+    );
+  }
+
   FiatConversion nextValidFiatConversion() {
-    var currentIndex = widget._accountModel.preferredFiatConversionList
-        .indexOf(widget._accountModel.fiatCurrency);
-    for (var i = 1;
-        i < widget._accountModel.preferredFiatConversionList.length;
-        i++) {
-      var nextIndex = (i + currentIndex) %
-          widget._accountModel.preferredFiatConversionList.length;
-      if (isAboveMinAmount(
-          widget._accountModel.preferredFiatConversionList[nextIndex])) {
-        return widget._accountModel.preferredFiatConversionList[nextIndex];
+    final fiatConversions = widget._accountModel.preferredFiatConversionList;
+    final currentIndex = fiatConversions.indexOf(
+      widget._accountModel.fiatCurrency,
+    );
+    for (var i = 1; i < fiatConversions.length; i++) {
+      var nextIndex = (i + currentIndex) % fiatConversions.length;
+      if (isAboveMinAmount(fiatConversions[nextIndex])) {
+        return fiatConversions[nextIndex];
       }
     }
     return null;

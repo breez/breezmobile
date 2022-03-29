@@ -4,7 +4,7 @@ import 'package:sqflite/sqflite.dart';
 Future<void> fromVersion1ToVersion2(Database db) async {
   await db.execute(
     """
-    ALTER TABLE sale ADD COLUMN date INTEGER
+    ALTER TABLE sale_payments ADD COLUMN paid_date INTEGER
     """,
   );
 
@@ -13,20 +13,11 @@ Future<void> fromVersion1ToVersion2(Database db) async {
 
   for (final payment in payments.paymentsList) {
     final date = payment.creationTimestamp.toInt() * 1000;
-
-    final salePayment = await db.query(
-      "sale_payments",
-      where: "payment_hash = ?",
-      whereArgs: [payment.paymentHash],
+    final hash = payment.paymentHash;
+    await db.execute(
+      """
+      UPDATE sale_payments SET paid_date = $date WHERE payment_hash = "$hash"
+      """,
     );
-
-    if (salePayment.length > 0) {
-      final saleId = salePayment.first["sale_id"];
-      await db.execute(
-        """
-        UPDATE sale SET date = $date WHERE id = $saleId  
-        """,
-      );
-    }
   }
 }

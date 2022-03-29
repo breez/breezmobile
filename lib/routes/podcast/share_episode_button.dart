@@ -1,56 +1,55 @@
 import 'package:breez/services/deep_links.dart';
 import 'package:breez/services/injector.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:share_extend/share_extend.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
-class ShareEpisodeButton extends StatefulWidget {
+class ShareEpisodeButton extends StatelessWidget {
   final String podcastTitle;
   final String podcastURL;
   final String episodeTitle;
   final String episodeID;
 
-  const ShareEpisodeButton(
-      {Key key,
-      this.podcastTitle,
-      this.podcastURL,
-      this.episodeTitle,
-      this.episodeID})
-      : super(key: key);
+  const ShareEpisodeButton({
+    Key key,
+    this.podcastTitle,
+    this.podcastURL,
+    this.episodeTitle,
+    this.episodeID,
+  }) : super(key: key);
 
-  @override
-  State<StatefulWidget> createState() {
-    return ShareEpisodeButtonState();
-  }
-}
-
-class ShareEpisodeButtonState extends State<ShareEpisodeButton> {
   @override
   Widget build(BuildContext context) {
+    final texts = AppLocalizations.of(context);
     return Expanded(
       child: TextButton(
         style: TextButton.styleFrom(
           padding: EdgeInsets.zero,
-          shape:
-              RoundedRectangleBorder(borderRadius: BorderRadius.circular(0.0)),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(0.0),
+          ),
         ),
         onPressed: () async {
           DeepLinksService _deepLinks = ServiceInjector().deepLinks;
           var podcastShareLink = await _deepLinks.generatePodcastShareLink(
-              PodcastShareLinkModel(widget.podcastURL,
-                  episodeID: widget.episodeID));
+            PodcastShareLinkModel(
+              podcastURL,
+              episodeID: episodeID,
+            ),
+          );
           ShareExtend.share(
-              widget.podcastTitle +
-                  '\n' +
-                  widget.episodeTitle +
-                  '\n' +
-                  podcastShareLink,
-              "text");
+            texts.podcast_boost_share_texts(
+              podcastTitle,
+              episodeTitle,
+              podcastShareLink,
+            ),
+            "text",
+          );
         },
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.center,
-          children: <Widget>[
+          children: [
             Icon(
               Icons.share_rounded,
               size: 22,
@@ -59,7 +58,7 @@ class ShareEpisodeButtonState extends State<ShareEpisodeButton> {
               padding: const EdgeInsets.symmetric(vertical: 2.0),
             ),
             Text(
-              "Share",
+              texts.podcast_boost_action_share,
               textAlign: TextAlign.center,
               style: TextStyle(
                 fontWeight: FontWeight.normal,

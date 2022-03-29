@@ -7,6 +7,7 @@ import 'package:anytime/bloc/settings/settings_bloc.dart';
 import 'package:anytime/entities/app_settings.dart';
 import 'package:anytime/l10n/L.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
 
 /// This widget allows the user to change the playback speed and toggle audio
@@ -15,7 +16,9 @@ import 'package:provider/provider.dart';
 class SpeedSelectorWidget extends StatefulWidget {
   final ValueChanged<double> onChanged;
 
-  SpeedSelectorWidget({this.onChanged});
+  const SpeedSelectorWidget({
+    this.onChanged,
+  });
 
   @override
   _SpeedSelectorWidgetState createState() => _SpeedSelectorWidgetState();
@@ -35,54 +38,64 @@ class _SpeedSelectorWidgetState extends State<SpeedSelectorWidget> {
 
   @override
   Widget build(BuildContext context) {
-    var settingsBloc = Provider.of<SettingsBloc>(context);
-    var theme = Theme.of(context);
+    final themeData = Theme.of(context);
+    final texts = AppLocalizations.of(context);
+    final settingsBloc = Provider.of<SettingsBloc>(context);
 
     return StreamBuilder<AppSettings>(
-        stream: settingsBloc.settings,
-        initialData: AppSettings.sensibleDefaults(),
-        builder: (context, snapshot) {
-          return Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              InkWell(
-                onTap: () {
-                  showModalBottomSheet<void>(
-                      context: context,
-                      backgroundColor: Theme.of(context).backgroundColor,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.only(
-                          topLeft: Radius.circular(10.0),
-                          topRight: Radius.circular(10.0),
-                        ),
-                      ),
-                      builder: (context) {
-                        return SpeedSlider(onChanged: widget.onChanged);
-                      });
-                },
-                child: Center(
-                  child: Text(
-                    '${(snapshot.data.playbackSpeed % 1 == 0) ? snapshot.data.playbackSpeed.toStringAsFixed(0).toString() : snapshot.data.playbackSpeed}x',
-                    style: TextStyle(
-                      fontSize: 14.0,
-                      color:
-                          Theme.of(context).buttonTheme.colorScheme.onPrimary,
+      stream: settingsBloc.settings,
+      initialData: AppSettings.sensibleDefaults(),
+      builder: (context, snapshot) {
+        final speed = snapshot.data.playbackSpeed;
+        return Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            InkWell(
+              onTap: () {
+                showModalBottomSheet<void>(
+                  context: context,
+                  backgroundColor: themeData.backgroundColor,
+                  shape: const RoundedRectangleBorder(
+                    borderRadius: const BorderRadius.only(
+                      topLeft: const Radius.circular(10.0),
+                      topRight: const Radius.circular(10.0),
                     ),
+                  ),
+                  builder: (context) => SpeedSlider(
+                    onChanged: widget.onChanged,
+                  ),
+                );
+              },
+              child: Center(
+                child: Text(
+                  texts.podcast_speed_selector_speed(
+                    speed % 1 == 0
+                        ? speed.toStringAsFixed(0).toString()
+                        : speed.toString(),
+                  ),
+                  style: TextStyle(
+                    fontSize: 14.0,
+                    color: themeData.buttonTheme.colorScheme.onPrimary,
                   ),
                 ),
               ),
-            ],
-          );
-        });
+            ),
+          ],
+        );
+      },
+    );
   }
 }
 
 class SpeedSlider extends StatefulWidget {
   final ValueChanged<double> onChanged;
 
-  const SpeedSlider({Key key, this.onChanged}) : super(key: key);
+  const SpeedSlider({
+    Key key,
+    this.onChanged,
+  }) : super(key: key);
 
   @override
   _SpeedSliderState createState() => _SpeedSliderState();
@@ -106,6 +119,8 @@ class _SpeedSliderState extends State<SpeedSlider> {
 
   @override
   Widget build(BuildContext context) {
+    final themeData = Theme.of(context);
+    final texts = AppLocalizations.of(context);
     final audioBloc = Provider.of<AudioBloc>(context, listen: false);
     final settingsBloc = Provider.of<SettingsBloc>(context, listen: false);
 
@@ -113,31 +128,40 @@ class _SpeedSliderState extends State<SpeedSlider> {
       mainAxisSize: MainAxisSize.min,
       mainAxisAlignment: MainAxisAlignment.start,
       crossAxisAlignment: CrossAxisAlignment.center,
-      children: <Widget>[
+      children: [
         Padding(
           padding: const EdgeInsets.all(8.0),
           child: Container(
             width: 24,
             height: 4,
             decoration: BoxDecoration(
-              color: Theme.of(context).buttonTheme.colorScheme.onPrimary,
-              borderRadius: BorderRadius.all(Radius.circular(4.0)),
+              color: themeData.buttonTheme.colorScheme.onPrimary,
+              borderRadius: const BorderRadius.all(
+                const Radius.circular(4.0),
+              ),
             ),
           ),
         ),
         Padding(
-          padding: const EdgeInsets.only(top: 8.0, bottom: 8.0),
+          padding: const EdgeInsets.only(
+            top: 8.0,
+            bottom: 8.0,
+          ),
           child: Text(
             L.of(context).audio_settings_playback_speed_label,
-            style: Theme.of(context).primaryTextTheme.headline6,
+            style: themeData.primaryTextTheme.headline6,
           ),
         ),
         Divider(),
         Padding(
           padding: const EdgeInsets.only(top: 16.0),
           child: Text(
-            '${(speed % 1 == 0) ? speed.toStringAsFixed(0).toString() : speed}x',
-            style: Theme.of(context).primaryTextTheme.headline5,
+            texts.podcast_speed_selector_speed(
+              speed % 1 == 0
+                  ? speed.toStringAsFixed(0).toString()
+                  : speed.toString(),
+            ),
+            style: themeData.primaryTextTheme.headline5,
           ),
         ),
         Row(
@@ -148,7 +172,7 @@ class _SpeedSliderState extends State<SpeedSlider> {
               child: IconButton(
                 iconSize: 28.0,
                 icon: Icon(Icons.remove_circle_outline),
-                color: Theme.of(context).buttonTheme.colorScheme.onPrimary,
+                color: themeData.buttonTheme.colorScheme.onPrimary,
                 onPressed: (speed <= 0.5)
                     ? null
                     : () {
@@ -167,7 +191,7 @@ class _SpeedSliderState extends State<SpeedSlider> {
                 min: 0.5,
                 max: 2.0,
                 divisions: 6,
-                activeColor: Theme.of(context).buttonTheme.colorScheme.onPrimary,
+                activeColor: themeData.buttonTheme.colorScheme.onPrimary,
                 onChanged: (value) {
                   setState(() {
                     speed = value;
@@ -186,7 +210,7 @@ class _SpeedSliderState extends State<SpeedSlider> {
               child: IconButton(
                 iconSize: 28.0,
                 icon: Icon(Icons.add_circle_outline),
-                color: Theme.of(context).buttonTheme.colorScheme.onPrimary,
+                color: themeData.buttonTheme.colorScheme.onPrimary,
                 onPressed: (speed >= 2.0)
                     ? null
                     : () {
@@ -204,7 +228,7 @@ class _SpeedSliderState extends State<SpeedSlider> {
           height: 8.0,
         ),
         Divider(),
-        if (Theme.of(context).platform == TargetPlatform.android) ...[
+        if (themeData.platform == TargetPlatform.android) ...[
           /// Disable the trim silence option for now until the positioning bug
           /// in just_audio is resolved.
           // ListTile(

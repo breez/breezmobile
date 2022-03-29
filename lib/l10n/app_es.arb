@@ -209,6 +209,10 @@
       }
     }
   },
+  "invoice_bottom_sheet_action_invoice": "FACTURA",
+  "invoice_bottom_sheet_action_pay": "PAGAR",
+  "invoice_bottom_sheet_action_receive": "RECIBIR",
+  "invoice_bottom_sheet_error_qrcode": "No se detectó el código QR.",
   "backup_dialog_title": "Respaldar",
   "backup_dialog_message_remote_server": "No se pudieron guardar los archivos de respaldo en el servidor. Por favor, revise su configuración y vuelva a intentarlo.",
   "backup_dialog_message_default": "Si desea poder restaurar sus fondos en caso de que este dispositivo móvil o esta aplicación ya no estén disponibles (por ejemplo, dispositivo perdido o robado o desinstalación de la aplicación), debe hacer una copia de seguridad de su información.",
@@ -267,7 +271,7 @@
   "@payment_details_dialog_closed_channel_transfer_estimation": {
     "placeholders": {
       "lockHeight": {
-        "type": "String",
+        "type": "int",
         "example": "12345"
       },
       "hoursToUnlock": {
@@ -906,6 +910,13 @@
   "swap_in_progress_message_processing_previous_request": "Breez está procesando su solicitud anterior. Se le notificará cuando se complete el procesamiento.",
   "market_place_no_vendors": "Actualmente no hay vendedores disponibles.",
   "account_required_actions_backup": "Copia de seguridad",
+  "account_page_activation_provider": "Para activar la Breez, seleccione un proveedor:",
+  "account_page_activation_provider_action_select": "SELECCIONE…",
+  "account_page_activation_provider_label": "Seleccione un proveedor de Lightning Network",
+  "account_page_activation_provider_hint": "Seleccione uno de los siguientes proveedores para activar Breez y conectarse a Lightning Network.",
+  "account_page_activation_error": "Se produjo un error al obtener proveedores de Network Lightning. Comprueba tu conexión a Internet e inténtalo de nuevo.",
+  "account_page_activation_action_retry": "INTENTAR NUEVAMENTE",
+  "account_page_activation_action_select": "SELECCIONE",
   "funds_over_limit_dialog_on_chain_transaction": "Transacciones on-chain",
   "funds_over_limit_dialog_action_ok": "OK",
   "funds_over_limit_dialog_transfer_fail_no_reason_know": "No fue posible transferir los fondos a su billetera\n",
@@ -1155,6 +1166,31 @@
   "lost_card_dialog_flush_title": "",
   "lost_card_dialog_flush_message": "Su tarjeta ha sido desactivada.\nPuede solicitar una nueva tarjeta ahora",
   "lost_card_dialog_flush_action_order": "PEDIR",
+  "order_card_action_skip": "PASAR",
+  "order_card_action_ok": "OK",
+  "order_card_action_order": "PEDIR",
+  "order_card_action_error_name_address_missing": "Se requiere el nombre y la dirección para enviar una tarjeta Breez. Cualquier información proporcionada se eliminará de nuestros sistemas después de que se envíe la tarjeta. Puede omitir este paso y continuar usando Breez sin una tarjeta.",
+  "order_card_action_order_breez_card": "Solicitar una tarjeta Breez",
+  "order_card_action_order_card": "Solicitar una tarjeta",
+  "order_card_success": "La tarjeta Breez se enviará a la dirección informada en breve.",
+  "order_card_info_disclaimer": "¿Por qué necesito\nproporcionar estas informacións?",
+  "order_card_zip_code_label": "Código postal",
+  "order_card_zip_code_error": "Código postal no és válido",
+  "order_card_country_label": "País",
+  "order_card_country_error_empty": "Por favor, ingrese su país",
+  "order_card_country_error_invalid": "País inválido",
+  "order_card_state_label": "Estado",
+  "order_card_country_state_empty": "Por favor ingrese su estado",
+  "order_card_country_state_invalid": "Estado Inválido",
+  "order_card_city_label": "Ciudad",
+  "order_card_city_error": "Por favor ingrese su ciudad",
+  "order_card_address_label": "Dirección",
+  "order_card_address_error": "Por favor ingrese su dirección",
+  "order_card_email_label": "Dirección de correo electrónico",
+  "order_card_country_email_empty": "Por favor ingrese su correo electrónico",
+  "order_card_country_email_invalid": "Correo electrónico inválido",
+  "order_card_full_name_label": "Nombre completo",
+  "order_card_full_name_error": "Por favor ingrese su nombre completo",
   "link_launcher_title": "ID de transacción:",
   "link_launcher_link_name": "",
   "keyboard_done_action": "Listo",
@@ -1386,6 +1422,7 @@
   "add_funds_item_bitcoins_received_title": "Bitcoins recibidos",
   "add_funds_moonpay_title": "MoonPay",
   "add_funds_moonpay_error_address": "Error al recuperar la dirección del servidor Breez\nPor favor revise su conexion a internet.",
+  "add_funds_moonpay_loading": "Cargando…",
   "csv_exporter_date_and_time": "Fecha",
   "csv_exporter_title": "Título",
   "csv_exporter_description": "Descripción",
@@ -1491,6 +1528,196 @@
   "pos_report_dialog_content_amount_label": "Valor total:",
   "pos_report_dialog_content_start_date_label": "Fecha inicial:",
   "pos_report_dialog_content_end_date_label": "Fecha final:",
+  "lnurl_withdraw_dialog_title": "Recibir fondos",
+  "lnurl_withdraw_dialog_wait": "Por favor espere mientras se procesa su pago",
+  "lnurl_withdraw_dialog_action_close": "CERRAR",
+  "lnurl_withdraw_dialog_error": "Error al recibir fondos: {error}",
+  "@lnurl_withdraw_dialog_error": {
+    "placeholders": {
+      "error": {
+        "type": "String",
+        "example": "An error"
+      }
+    }
+  },
+  "qr_code_dialog_synchronizing": "Sincronizando con la red",
+  "qr_code_dialog_invoice": "Factura",
+  "qr_code_dialog_action_close": "CERRAR",
+  "qr_code_dialog_share": "Compartir datos de factura",
+  "qr_code_dialog_copy": "Copiar datos de factura",
+  "qr_code_dialog_copied": "Los datos de la factura se han copiado en su portapapeles.",
+  "qr_code_dialog_warning_message_error": "No se pudo crear la factura",
+  "qr_code_dialog_warning_message": "Mantenga la aplicación abierta hasta que se complete el pago.",
+  "qr_code_dialog_warning_message_with_lsp": "Una tarifa de instalación de  {setupFee} ({fiatFee}) se aplicará a esta factura. Mantenga la aplicación abierta hasta que se complete el pago.",
+  "@qr_code_dialog_warning_message_with_lsp": {
+    "placeholders": {
+      "setupFee": {
+        "type": "String",
+        "example": "123 sats"
+      },
+      "fiatFee": {
+        "type": "String",
+        "example": "1$"
+      }
+    }
+  },
+  "qr_code_dialog_error": "No se pudo crear la factura {error}. Por favor, inténtelo de nuevo más tarde.",
+  "@qr_code_dialog_error": {
+    "placeholders": {
+      "error": {
+        "type": "String",
+        "example": "An error"
+      }
+    }
+  },
+  "waiting_broadcast_dialog_dialog_title": "Transacción para reembolso",
+  "waiting_broadcast_dialog_dialog_title_error": "Error en el reembolso",
+  "waiting_broadcast_dialog_action_close": "CERRAR",
+  "waiting_broadcast_dialog_action_copy": "Copiar el hash de transacción",
+  "waiting_broadcast_dialog_action_share": "Compartir el hash de la transacción",
+  "waiting_broadcast_dialog_transaction_id": "ID de la transacción:",
+  "waiting_broadcast_dialog_content_success": "Los fondos se han enviado con éxito a la dirección especificada.",
+  "waiting_broadcast_dialog_content_warning": "Espere mientras los fondos se envían a la dirección especificada.",
+  "waiting_broadcast_dialog_content_error": "Error al transmitir la transacción: {error}",
+  "@waiting_broadcast_dialog_content_error": {
+    "placeholders": {
+      "error": {
+        "type": "String",
+        "example": "An error"
+      }
+    }
+  },
+  "wallet_dashboard_balance_hide": "******",
+  "wallet_dashboard_payment_item_balance_hide": "******",
+  "wallet_dashboard_payment_item_balance_positive": "+ {value}",
+  "@wallet_dashboard_payment_item_balance_positive": {
+    "placeholders": {
+      "value": {
+        "type": "String",
+        "example": "123"
+      }
+    }
+  },
+  "wallet_dashboard_payment_item_balance_negative": "- {value}",
+  "@wallet_dashboard_payment_item_balance_negative": {
+    "placeholders": {
+      "value": {
+        "type": "String",
+        "example": "123"
+      }
+    }
+  },
+  "wallet_dashboard_payment_item_balance_fee": "TARIFA {feeFormatted}",
+  "@wallet_dashboard_payment_item_balance_fee": {
+    "placeholders": {
+      "feeFormatted": {
+        "type": "String",
+        "example": "1"
+      }
+    }
+  },
+  "wallet_dashboard_payment_item_balance_pending_suffix": " (Pendiente)",
+  "status_text_loading_begin": "Breez está ",
+  "status_text_loading_middle": "abriendo un canal seguro",
+  "status_text_loading_end": " con nuestros servidores. Esto puede demorar un tiempo, pero no se preocupe, le notificaremos cuando la aplicación esté lista para enviar y recibir pagos.",
+  "status_text_ready": "Breez está listo para recibir fondos.",
+  "qr_action_button_open_link": "Abrir enlace",
+  "qr_action_button_open_link_confirmation": "¿Quieres abrir este enlace?",
+  "qr_action_button_open_link_confirmation_no": "NO",
+  "qr_action_button_open_link_confirmation_yes": "SÍ",
+  "qr_action_button_error_code_not_detected": "No se detectó el código QR.",
+  "qr_action_button_error_code_not_processed": "El código QR no se puede procesar.",
+  "qr_action_button_error_link_title": "Enlace inválido",
+  "qr_action_button_error_link_message": "No se pudo procesar el enlace: {error}",
+  "@qr_action_button_error_link_message": {
+    "placeholders": {
+      "error": {
+        "type": "String",
+        "example": "An error"
+      }
+    }
+  },
+  "lnurl_webview_error_title": "Error",
+  "lnurl_webview_error_invalid_url": "URL invalida",
+  "lnurl_webview_error_message": "No se pudo solicitar la API {apiName}",
+  "@lnurl_webview_error_message": {
+    "placeholders": {
+      "apiName": {
+        "type": "String",
+        "example": "A vendor name"
+      }
+    }
+  },
+  "make_invoice_request_title": "Este sitio quiere pagarte:",
+  "make_invoice_request_action_cancel": "CANCELAR",
+  "make_invoice_request_action_approve": "APROBAR",
+  "podcast_add_funds_title": "Agregue satoshis a su billetera para enviar pagos para este podcast.",
+  "podcast_add_funds_action_add": "AGREGAR",
+  "podcast_boost_not_enough_founds": "No tienes suficientes satoshis para completar este pago.",
+  "podcast_boost_sats": "sats",
+  "podcast_boost_sats_min": "sats/min",
+  "podcast_boost_action_boost": "BOOST!",
+  "podcast_boost_action_cancel": "CANCELAR",
+  "podcast_boost_action_approve": "APROBAR",
+  "podcast_boost_symbol_circa": "~",
+  "podcast_boost_send_title": "Enviar un Boostagram",
+  "podcast_boost_send_optional": "Boostagram (opcional)",
+  "podcast_boost_send_amount": "Valor do Boost (en sats)",
+  "podcast_boost_custom_amount": "Ingresa um valor:",
+  "podcast_boost_custom_amount_error_empty": "Por favor, ingresa um valor",
+  "podcast_boost_custom_amount_error_too_few": "Por favor, ingresa al menos {amount} sats.",
+  "@podcast_boost_custom_amount_error_too_few": {
+    "placeholders": {
+      "amount": {
+        "type": "int",
+        "example": "50"
+      }
+    }
+  },
+  "podcast_boost_adjustment_boost": "Boost",
+  "podcast_boost_adjustment_boost_message": "Envíe una propina única a los creadores de este programa. Mantenga presionado para agregar un mensaje personalizado.",
+  "podcast_boost_adjustment_stream_sats": "Enviar satoshis",
+  "podcast_boost_adjustment_stream_sats_message": "Envía satoshis a los creadores mientras escuchas su programa. El número indica la cantidad de satoshis a enviar por minuto. Para escuchar de forma gratuita, establezca este valor en 0.",
+  "podcast_boost_action_share": "Compartir",
+  "podcast_boost_share_texts": "{podcast}\n{episode}\n{link}",
+  "@podcast_boost_share_texts": {
+    "placeholders": {
+      "podcast": {
+        "type": "String",
+        "example": "A podcast"
+      },
+      "episode": {
+        "type": "String",
+        "example": "An episode"
+      },
+      "link": {
+        "type": "String",
+        "example": "http://link.com"
+      }
+    }
+  },
+  "podcast_boost_share_texts_short": "{podcast}\n{link}",
+  "@podcast_boost_share_texts_short": {
+    "placeholders": {
+      "podcast": {
+        "type": "String",
+        "example": "A podcast"
+      },
+      "link": {
+        "type": "String",
+        "example": "http://link.com"
+      }
+    }
+  },
+  "podcast_speed_selector_speed": "{speed}x",
+  "@podcast_speed_selector_speed": {
+    "placeholders": {
+      "speed": {
+        "type": "String",
+        "example": "1.5"
+      }
+    }
+  },
   "locale": "es",
   "app_name": "Breez"
 }

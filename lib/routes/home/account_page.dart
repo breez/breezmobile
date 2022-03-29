@@ -10,6 +10,7 @@ import 'package:breez/theme_data.dart' as theme;
 import 'package:breez/utils/date.dart';
 import 'package:breez/widgets/fixed_sliver_delegate.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import 'payments_filter.dart';
 import 'payments_list.dart';
@@ -26,7 +27,10 @@ class AccountPage extends StatefulWidget {
   final GlobalKey firstPaymentItemKey;
   final ScrollController scrollController;
 
-  AccountPage(this.firstPaymentItemKey, this.scrollController);
+  const AccountPage(
+    this.firstPaymentItemKey,
+    this.scrollController,
+  );
 
   @override
   State<StatefulWidget> createState() {
@@ -36,8 +40,7 @@ class AccountPage extends StatefulWidget {
 
 class AccountPageState extends State<AccountPage>
     with SingleTickerProviderStateMixin {
-  final List<String> currencyList =
-      Currency.currencies.map((c) => c.tickerSymbol).toList();
+  final currencyList = Currency.currencies.map((c) => c.tickerSymbol).toList();
 
   AccountBloc _accountBloc;
   UserProfileBloc _userProfileBloc;
@@ -62,88 +65,99 @@ class AccountPageState extends State<AccountPage>
   @override
   Widget build(BuildContext context) {
     return StreamBuilder<AccountSettings>(
-        stream: _accountBloc.accountSettingsStream,
-        builder: (settingCtx, settingSnapshot) {
-          return StreamBuilder<AccountModel>(
-              stream: _accountBloc.accountStream,
+      stream: _accountBloc.accountSettingsStream,
+      builder: (settingCtx, settingSnapshot) {
+        return StreamBuilder<AccountModel>(
+          stream: _accountBloc.accountStream,
+          builder: (context, snapshot) {
+            AccountModel account = snapshot.data;
+            return StreamBuilder<PaymentsModel>(
+              stream: _accountBloc.paymentsStream,
               builder: (context, snapshot) {
-                AccountModel account = snapshot.data;
-                return StreamBuilder<PaymentsModel>(
-                    stream: _accountBloc.paymentsStream,
-                    builder: (context, snapshot) {
-                      PaymentsModel paymentsModel =
-                          snapshot.data ?? PaymentsModel.initial();
-                      return StreamBuilder<BreezUserModel>(
-                          stream: _userProfileBloc.userStream,
-                          builder: (context, snapshot) {
-                            final userModel = snapshot.data;
-                            return Container(
-                              color: theme
-                                  .customData[theme.themeId].dashboardBgColor,
-                              child: _buildBalanceAndPayments(
-                                paymentsModel,
-                                account,
-                                userModel,
-                              ),
-                            );
-                          });
-                    });
-              });
-        });
+                final paymentsModel = snapshot.data ?? PaymentsModel.initial();
+                return StreamBuilder<BreezUserModel>(
+                  stream: _userProfileBloc.userStream,
+                  builder: (context, snapshot) {
+                    final userModel = snapshot.data;
+                    return Container(
+                      color: theme.customData[theme.themeId].dashboardBgColor,
+                      child: _buildBalanceAndPayments(
+                        context,
+                        paymentsModel,
+                        account,
+                        userModel,
+                      ),
+                    );
+                  },
+                );
+              },
+            );
+          },
+        );
+      },
+    );
   }
 
   Widget _buildBalanceAndPayments(
+    BuildContext context,
     PaymentsModel paymentsModel,
     AccountModel account,
     BreezUserModel userModel,
   ) {
-    LSPBloc lspBloc = AppBlocsProvider.of<LSPBloc>(context);
+    final lspBloc = AppBlocsProvider.of<LSPBloc>(context);
+    final queryData = MediaQuery.of(context);
 
-    double listHeightSpace = MediaQuery.of(context).size.height -
+    final listHeightSpace = queryData.size.height -
         DASHBOARD_MIN_HEIGHT -
         kToolbarHeight -
         FILTER_MAX_SIZE -
         25.0;
-    double dateFilterSpace = paymentsModel?.filter?.startDate != null &&
-            paymentsModel?.filter?.endDate != null
-        ? 0.65
-        : 0.0;
-    double bottomPlaceholderSpace = paymentsModel.paymentsList == null ||
-            paymentsModel.paymentsList.length == 0
+    final startDate = paymentsModel?.filter?.startDate;
+    final endDate = paymentsModel?.filter?.endDate;
+    final dateFilterSpace = startDate != null && endDate != null ? 0.65 : 0.0;
+    final payments = paymentsModel.paymentsList;
+    final bottomPlaceholderSpace = payments == null || payments.length == 0
         ? 0.0
         : (listHeightSpace -
                 (PAYMENT_LIST_ITEM_HEIGHT + 8) *
-                    (paymentsModel.paymentsList.length + 1 + dateFilterSpace))
+                    (payments.length + 1 + dateFilterSpace))
             .clamp(0.0, listHeightSpace);
 
     String message;
     bool showMessage = account?.syncUIState != SyncUIState.BLOCKING &&
         (account != null && !account.initial);
 
-    List<Widget> slivers = <Widget>[];
+    List<Widget> slivers = [];
     slivers.add(SliverPersistentHeader(
-        floating: false,
-        delegate: WalletDashboardHeaderDelegate(_accountBloc, _userProfileBloc),
-        pinned: true));
+      floating: false,
+      delegate: WalletDashboardHeaderDelegate(_accountBloc, _userProfileBloc),
+      pinned: true,
+    ));
     if (paymentsModel.nonFilteredItems.length > 0) {
-      slivers.add(PaymentFilterSliver(widget.scrollController, FILTER_MIN_SIZE,
-          FILTER_MAX_SIZE, _accountBloc, paymentsModel));
+      slivers.add(PaymentFilterSliver(
+        widget.scrollController,
+        FILTER_MIN_SIZE,
+        FILTER_MAX_SIZE,
+        _accountBloc,
+        paymentsModel,
+      ));
     }
-    if (paymentsModel?.filter?.startDate != null &&
-        paymentsModel?.filter?.endDate != null) {
+    if (startDate != null && endDate != null) {
       slivers.add(SliverPadding(
         padding: const EdgeInsets.only(left: 8, right: 8),
         sliver: SliverPersistentHeader(
           pinned: true,
-          delegate: FixedSliverDelegate(FILTER_MAX_SIZE / 1.2,
-              builder: (context, shrinkedHeight, overlapContent) {
-            return Container(
-              padding: EdgeInsets.only(bottom: 8),
-              height: FILTER_MAX_SIZE / 1.2,
-              color: theme.customData[theme.themeId].dashboardBgColor,
-              child: _buildDateFilterChip(paymentsModel.filter),
-            );
-          }),
+          delegate: FixedSliverDelegate(
+            FILTER_MAX_SIZE / 1.2,
+            builder: (context, shrinkedHeight, overlapContent) {
+              return Container(
+                padding: EdgeInsets.only(bottom: 8),
+                height: FILTER_MAX_SIZE / 1.2,
+                color: theme.customData[theme.themeId].dashboardBgColor,
+                child: _buildDateFilterChip(context, paymentsModel.filter),
+              );
+            },
+          ),
         ),
       ));
     }
@@ -151,20 +165,24 @@ class AccountPageState extends State<AccountPage>
     if (paymentsModel.nonFilteredItems.length > 0) {
       slivers.add(PaymentsList(
         userModel,
-        paymentsModel.paymentsList,
+        payments,
         PAYMENT_LIST_ITEM_HEIGHT,
         widget.firstPaymentItemKey,
         widget.scrollController,
       ));
       slivers.add(SliverPersistentHeader(
-          pinned: true,
-          delegate:
-              FixedSliverDelegate(bottomPlaceholderSpace, child: Container())));
+        pinned: true,
+        delegate: FixedSliverDelegate(
+          bottomPlaceholderSpace,
+          child: Container(),
+        ),
+      ));
     } else if (showMessage) {
       slivers.add(SliverPersistentHeader(
-        delegate: FixedSliverDelegate(250.0,
-            builder: (context, shrinkedHeight, overlapContent) {
-          return StreamBuilder<LSPStatus>(
+        delegate: FixedSliverDelegate(
+          250.0,
+          builder: (context, shrinkedHeight, overlapContent) {
+            return StreamBuilder<LSPStatus>(
               stream: lspBloc.lspStatusStream,
               builder: (context, snapshot) {
                 if (snapshot.hasData && snapshot.data.selectionRequired) {
@@ -177,13 +195,14 @@ class AccountPageState extends State<AccountPage>
                 }
                 return Container(
                   child: Padding(
-                    padding: const EdgeInsets.only(
-                        top: 120.0, left: 40.0, right: 40.0),
+                    padding: const EdgeInsets.fromLTRB(40.0, 120.0, 40.0, 0.0),
                     child: StatusText(account, message: message),
                   ),
                 );
-              });
-        }),
+              },
+            );
+          },
+        ),
       ));
     }
 
@@ -194,18 +213,27 @@ class AccountPageState extends State<AccountPage>
         paymentsModel.nonFilteredItems.length == 0
             ? CustomPaint(painter: BubblePainter(context))
             : SizedBox(),
-        CustomScrollView(controller: widget.scrollController, slivers: slivers),
+        CustomScrollView(
+          controller: widget.scrollController,
+          slivers: slivers,
+        ),
       ],
     );
   }
 
-  _buildDateFilterChip(PaymentFilterModel filter) {
+  Widget _buildDateFilterChip(
+    BuildContext context,
+    PaymentFilterModel filter,
+  ) {
     return (filter.startDate != null && filter.endDate != null)
-        ? _filterChip(filter)
+        ? _filterChip(context, filter)
         : Container();
   }
 
-  Widget _filterChip(PaymentFilterModel filter) {
+  Widget _filterChip(
+    BuildContext context,
+    PaymentFilterModel filter,
+  ) {
     return ClipRRect(
       borderRadius: BorderRadius.circular(5),
       child: Container(
@@ -213,13 +241,15 @@ class AccountPageState extends State<AccountPage>
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.center,
           mainAxisAlignment: MainAxisAlignment.start,
-          children: <Widget>[
+          children: [
             Padding(
               padding: EdgeInsets.only(top: 8, left: 16.0, bottom: 8),
               child: Chip(
                 backgroundColor: Theme.of(context).bottomAppBarColor,
                 label: Text(BreezDateUtils.formatFilterDateRange(
-                    filter.startDate, filter.endDate)),
+                  filter.startDate,
+                  filter.endDate,
+                )),
                 onDeleted: () => _accountBloc.paymentFilterSink
                     .add(PaymentFilterModel(filter.paymentType, null, null)),
               ),
@@ -232,35 +262,42 @@ class AccountPageState extends State<AccountPage>
 }
 
 class BubblePainter extends CustomPainter {
-  BuildContext context;
+  final BuildContext context;
 
-  BubblePainter(this.context);
+  const BubblePainter(
+    this.context,
+  );
 
   @override
   void paint(Canvas canvas, Size size) {
-    var bubblePaint = Paint()
+    final size = MediaQuery.of(context).size;
+    final bubblePaint = Paint()
       ..color = theme.themeId == "BLUE"
           ? Color(0xFF0085fb).withOpacity(0.1)
           : Color(0xff4D88EC).withOpacity(0.1)
       ..style = PaintingStyle.fill;
-    double bubbleRadius = 12;
-    double height = (MediaQuery.of(context).size.height - kToolbarHeight);
+    final bubbleRadius = 12.0;
+    final height = size.height - kToolbarHeight;
     canvas.drawCircle(
-        Offset(MediaQuery.of(context).size.width / 2, height * 0.36),
-        bubbleRadius,
-        bubblePaint);
+      Offset(size.width / 2, height * 0.36),
+      bubbleRadius,
+      bubblePaint,
+    );
     canvas.drawCircle(
-        Offset(MediaQuery.of(context).size.width * 0.39, height * 0.59),
-        bubbleRadius * 1.5,
-        bubblePaint);
+      Offset(size.width * 0.39, height * 0.59),
+      bubbleRadius * 1.5,
+      bubblePaint,
+    );
     canvas.drawCircle(
-        Offset(MediaQuery.of(context).size.width * 0.65, height * 0.71),
-        bubbleRadius * 1.25,
-        bubblePaint);
+      Offset(size.width * 0.65, height * 0.71),
+      bubbleRadius * 1.25,
+      bubblePaint,
+    );
     canvas.drawCircle(
-        Offset(MediaQuery.of(context).size.width / 2, height * 0.80),
-        bubbleRadius * 0.75,
-        bubblePaint);
+      Offset(size.width / 2, height * 0.80),
+      bubbleRadius * 0.75,
+      bubblePaint,
+    );
   }
 
   @override
@@ -271,37 +308,43 @@ class WalletDashboardHeaderDelegate extends SliverPersistentHeaderDelegate {
   final AccountBloc accountBloc;
   final UserProfileBloc _userProfileBloc;
 
-  WalletDashboardHeaderDelegate(this.accountBloc, this._userProfileBloc);
+  const WalletDashboardHeaderDelegate(
+    this.accountBloc,
+    this._userProfileBloc,
+  );
 
   @override
   Widget build(
-      BuildContext context, double shrinkOffset, bool overlapsContent) {
+    BuildContext context,
+    double shrinkOffset,
+    bool overlapsContent,
+  ) {
     return StreamBuilder<BreezUserModel>(
-        stream: _userProfileBloc.userStream,
-        builder: (settingCtx, userSnapshot) {
-          return StreamBuilder<AccountModel>(
-              stream: accountBloc.accountStream,
-              builder: (context, snapshot) {
-                double height =
-                    (maxExtent - shrinkOffset).clamp(minExtent, maxExtent);
-                double heightFactor =
-                    (shrinkOffset / (maxExtent - minExtent)).clamp(0.0, 1.0);
-
-                return Stack(clipBehavior: Clip.none, children: <Widget>[
-                  WalletDashboard(
-                    userSnapshot.data,
-                    snapshot.data,
-                    height,
-                    heightFactor,
-                    _userProfileBloc.currencySink.add,
-                    _userProfileBloc.fiatConversionSink.add,
-                    (hideBalance) => _userProfileBloc.userSink.add(
-                      userSnapshot.data.copyWith(hideBalance: hideBalance),
-                    ),
-                  )
-                ]);
-              });
-        });
+      stream: _userProfileBloc.userStream,
+      builder: (settingCtx, userSnapshot) {
+        return StreamBuilder<AccountModel>(
+          stream: accountBloc.accountStream,
+          builder: (context, snapshot) {
+            return Stack(
+              clipBehavior: Clip.none,
+              children: [
+                WalletDashboard(
+                  userSnapshot.data,
+                  snapshot.data,
+                  (maxExtent - shrinkOffset).clamp(minExtent, maxExtent),
+                  (shrinkOffset / (maxExtent - minExtent)).clamp(0.0, 1.0),
+                  _userProfileBloc.currencySink.add,
+                  _userProfileBloc.fiatConversionSink.add,
+                  (hideBalance) => _userProfileBloc.userSink.add(
+                    userSnapshot.data.copyWith(hideBalance: hideBalance),
+                  ),
+                ),
+              ],
+            );
+          },
+        );
+      },
+    );
   }
 
   @override
@@ -311,56 +354,65 @@ class WalletDashboardHeaderDelegate extends SliverPersistentHeaderDelegate {
   double get minExtent => DASHBOARD_MIN_HEIGHT;
 
   @override
-  bool shouldRebuild(SliverPersistentHeaderDelegate oldDelegate) {
-    return true;
-  }
+  bool shouldRebuild(SliverPersistentHeaderDelegate oldDelegate) => true;
 }
 
 class NoLSPWidget extends StatelessWidget {
   final String error;
 
-  const NoLSPWidget({Key key, this.error}) : super(key: key);
+  const NoLSPWidget({
+    Key key,
+    this.error,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    List<Widget> buttons = [
-      Container(
-        height: 24.0,
-        child: OutlinedButton(
-            style: OutlinedButton.styleFrom(
-              shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(6.0)),
-              side: BorderSide(
-                  color: Theme.of(context).textTheme.button.color,
-                  style: BorderStyle.solid),
-            ),
-            child: Text("SELECT...",
-                style: TextStyle(
-                  fontSize: 12.3,
-                  color: Theme.of(context).textTheme.button.color,
-                )),
-            onPressed: () {
-              Navigator.of(context).pushNamed("/select_lsp");
-            }),
-      )
-    ];
+    final themeData = Theme.of(context);
+    final texts = AppLocalizations.of(context);
 
     return Column(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        mainAxisAlignment: MainAxisAlignment.start,
-        children: <Widget>[
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            mainAxisSize: MainAxisSize.max,
-            children: <Widget>[
-              Text("In order to activate Breez, please select a provider:")
-            ],
-          ),
-          SizedBox(height: 24),
-          Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              mainAxisSize: MainAxisSize.max,
-              children: buttons)
-        ]);
+      crossAxisAlignment: CrossAxisAlignment.center,
+      mainAxisAlignment: MainAxisAlignment.start,
+      children: [
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          mainAxisSize: MainAxisSize.max,
+          children: [
+            Text(
+              texts.account_page_activation_provider,
+            )
+          ],
+        ),
+        SizedBox(height: 24),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          mainAxisSize: MainAxisSize.max,
+          children: [
+            Container(
+              height: 24.0,
+              child: OutlinedButton(
+                style: OutlinedButton.styleFrom(
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(6.0),
+                  ),
+                  side: BorderSide(
+                    color: themeData.textTheme.button.color,
+                    style: BorderStyle.solid,
+                  ),
+                ),
+                child: Text(
+                  texts.account_page_activation_provider_action_select,
+                  style: TextStyle(
+                    fontSize: 12.3,
+                    color: themeData.textTheme.button.color,
+                  ),
+                ),
+                onPressed: () => Navigator.of(context).pushNamed("/select_lsp"),
+              ),
+            ),
+          ],
+        ),
+      ],
+    );
   }
 }
