@@ -4,6 +4,9 @@ import 'package:breez/bloc/account/account_actions.dart';
 import 'package:breez/bloc/account/account_bloc.dart';
 import 'package:breez/bloc/account/account_model.dart';
 import 'package:breez/bloc/blocs_provider.dart';
+import 'package:breez/bloc/pos_catalog/actions.dart';
+import 'package:breez/bloc/pos_catalog/bloc.dart';
+import 'package:breez/bloc/pos_catalog/model.dart';
 import 'package:breez/utils/date.dart';
 import 'package:breez/widgets/back_button.dart' as backBtn;
 import 'package:breez/widgets/calendar_dialog.dart';
@@ -45,6 +48,7 @@ class PosTransactionsPageState extends State<PosTransactionsPage> {
   @override
   Widget build(BuildContext context) {
     final texts = AppLocalizations.of(context);
+    final posCatalogBloc = AppBlocsProvider.of<PosCatalogBloc>(context);
 
     return StreamBuilder<AccountModel>(
       stream: _accountBloc.accountStream,
@@ -73,7 +77,7 @@ class PosTransactionsPageState extends State<PosTransactionsPage> {
 
             return _buildScaffold(
               context,
-              _buildTransactions(context, paymentsModel),
+              _buildTransactions(context, paymentsModel, account),
               [
                 _reportButton(context),
                 _calendarButton(paymentsModel),
@@ -224,6 +228,7 @@ class PosTransactionsPageState extends State<PosTransactionsPage> {
   Widget _buildTransactions(
     BuildContext context,
     PaymentsModel paymentsModel,
+    AccountModel accountModel,
   ) {
     final texts = AppLocalizations.of(context);
     final themeData = Theme.of(context);
@@ -265,6 +270,7 @@ class PosTransactionsPageState extends State<PosTransactionsPage> {
                         ),
                   PosPaymentsList(
                     payments,
+                    accountModel,
                     PAYMENT_LIST_ITEM_HEIGHT,
                   ),
                 ],

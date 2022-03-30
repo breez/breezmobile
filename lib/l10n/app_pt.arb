@@ -492,6 +492,15 @@
       }
     }
   },
+  "pos_transactions_item_fiat": "{fiat}",
+  "@pos_transactions_item_fiat": {
+    "placeholders": {
+      "fiat": {
+        "type": "String",
+        "example": "1.234"
+      }
+    }
+  },
   "sale_view_title": "Venda",
   "sale_view_note_hint": "Adicionar nota",
   "sale_view_print": "Imprimir",

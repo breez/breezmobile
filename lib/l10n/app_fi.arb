@@ -492,6 +492,15 @@
       }
     }
   },
+  "pos_transactions_item_fiat": "{fiat}",
+  "@pos_transactions_item_fiat": {
+    "placeholders": {
+      "fiat": {
+        "type": "String",
+        "example": "1.234"
+      }
+    }
+  },
   "sale_view_title": "Myyntitapahtuma",
   "sale_view_note_hint": "Lisää muistiinpano",
   "sale_view_print": "Tulosta",
