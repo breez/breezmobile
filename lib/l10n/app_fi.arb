@@ -1718,17 +1718,17 @@
       }
     }
   },
-  "lock_screen_enter_pin": "Enter your PIN",
-  "backup_phrase_generate": "Generate Backup Phrase",
-  "backup_phrase_instructions": "You will be shown a list of words. Write down the words and store them in a safe place. Without these words, you won't be able to restore from backup and your funds will be lost. Breez won’t be able to help.",
-  "backup_phrase_action_confirm": "I UNDERSTAND",
-  "backup_phrase_action_next": "NEXT",
-  "backup_phrase_warning_disclaimer": "Your existing backup phrase will no longer be valid and a new one will be generated next time you decide to use a backup phrase. Are you sure you don't want to use a backup phrase?",
-  "backup_phrase_warning_action_yes": "YES",
-  "backup_phrase_warning_action_no": "NO",
-  "backup_phrase_warning_action_next": "NEXT",
-  "backup_phrase_warning_action_backup": "BACKUP",
-  "backup_phrase_generation_write_words": "Write these words",
+  "lock_screen_enter_pin": "Syötä PIN-koodisi",
+  "backup_phrase_generate": "Luo varmuuskopion salauslause",
+  "backup_phrase_instructions": "Sinulle näytetään lista sanoja. Kirjoita sanat numerojärjestyksessä ylös ja talleta ne turvalliseen paikkaan. Mikäli joudut palauttamaan varmuuskopion, eikä sinulla ole sanoja tallessa, ei palautus onnistu ja menetät kaikki varasi. Tällöin Breez eikä kukaan muukaan  voi auttaa sinua palautuksessa.",
+  "backup_phrase_action_confirm": "YMMÄRRÄN",
+  "backup_phrase_action_next": "SEURAAVA",
+  "backup_phrase_warning_disclaimer": "Nykyinen varmistuksen salauslause mitätöidään. Uusi lause muodostetaan seuraavalla kerralla, kun otat varmistuksen salauksen käyttöön. Oletko varma että haluat poistaa varmistuksen salauslauseen käytöstä?",
+  "backup_phrase_warning_action_yes": "KYLLÄ",
+  "backup_phrase_warning_action_no": "En",
+  "backup_phrase_warning_action_next": "SEURAAVA",
+  "backup_phrase_warning_action_backup": "VARMUUSKOPIOI",
+  "backup_phrase_generation_write_words": "Kirjoita nämä sanat talteen",
   "backup_phrase_generation_index": "{index}.",
   "@backup_phrase_generation_index": {
     "placeholders": {
@@ -1738,8 +1738,8 @@
       }
     }
   },
-  "backup_phrase_generation_verify": "Let's verify",
-  "backup_phrase_generation_type_words": "Please type words number {numberA}, {numberB} and {numberC} of the generated backup phrase.",
+  "backup_phrase_generation_verify": "Varmistetaanpa",
+  "backup_phrase_generation_type_words": "Kirjoita luodusta salauslauseesta seuraavat sanat {numberA}, {numberB} ja {numberC}.",
   "@backup_phrase_generation_type_words": {
     "placeholders": {
       "numberA": {
@@ -1765,14 +1765,14 @@
       }
     }
   },
-  "backup_phrase_generation_verification_failed": "Failed to verify words. Please write down the words and try again.",
-  "backup_phrase_generation_generic_error": "Internal Error",
-  "spontaneous_payment_title": "Send Payment",
-  "spontaneous_payment_action_pay": "PAY",
-  "spontaneous_payment_action_cancel": "CANCEL",
-  "spontaneous_payment_tip_message": "Tip Message (optional)",
-  "spontaneous_payment_generic_message": "You will be able to receive payments after Breez is finished opening a secure channel with our server. This usually takes ~10 minutes to be completed. Please try again in a couple of minutes.",
-  "spontaneous_payment_max_amount": "Pay up to: {amount}",
+  "backup_phrase_generation_verification_failed": "Salauslauseen sanojen varmistus epäonnistui. Tarkista kirjoittamasi sanat ja yritä uudelleen.",
+  "backup_phrase_generation_generic_error": "Sisäinen virhe",
+  "spontaneous_payment_title": "Lähetä maksu",
+  "spontaneous_payment_action_pay": "MAKSA",
+  "spontaneous_payment_action_cancel": "Peruuta",
+  "spontaneous_payment_tip_message": "Maksun viesti (vapaaehtoinen)",
+  "spontaneous_payment_generic_message": "Voit vastaanottaa maksuja vasta kun, Breez saa avattua turvallisen kanavan palvelimeen. Avaus kestää tyypillisesti noin ~10 minuuttia. Odota muutama minuutti ja yritä sitten uudelleen.",
+  "spontaneous_payment_max_amount": "Maksa enintään: {amount}",
   "@spontaneous_payment_max_amount": {
     "placeholders": {
       "amount": {
@@ -1781,9 +1781,9 @@
       }
     }
   },
-  "spontaneous_payment_node_id": "Node ID",
-  "spontaneous_payment_send_payment_title": "Send Payment",
-  "spontaneous_payment_send_payment_message": "Are you sure you want to {amount} to this node?\n\n{nodeID}",
+  "spontaneous_payment_node_id": "Solmun tunniste",
+  "spontaneous_payment_send_payment_title": "Lähetä maksu",
+  "spontaneous_payment_send_payment_message": "Oletko varma että haluat lähettää {amount} seuraavalle solmulle?\n\n{nodeID}",
   "@spontaneous_payment_send_payment_message": {
     "placeholders": {
       "amount": {
@@ -1796,12 +1796,12 @@
       }
     }
   },
-  "spontaneous_payment_error_title": "Payment Error",
-  "sweep_all_coins_speed": "Choose Processing Speed",
-  "sweep_all_coins_action_confirm": "CONFIRM",
-  "sweep_all_coins_label_send": "You send:",
-  "sweep_all_coins_label_receive": "You receive:",
-  "sweep_all_coins_label_transaction_fee": "Transaction fee:",
+  "spontaneous_payment_error_title": "Maksussa tapahtui virhe",
+  "sweep_all_coins_speed": "Määritä vahvistuksen nopeus",
+  "sweep_all_coins_action_confirm": "VAHVISTA",
+  "sweep_all_coins_label_send": "Sinä lähetät:",
+  "sweep_all_coins_label_receive": "Sinä vastaanotat:",
+  "sweep_all_coins_label_transaction_fee": "Tapahtumakulu:",
   "sweep_all_coins_fee": "-{fee}",
   "@sweep_all_coins_fee": {
     "placeholders": {
@@ -1833,28 +1833,28 @@
       }
     }
   },
-  "sweep_all_coins_error_retrieve_fees": "Failed to retrieve fees. Please try again later.",
-  "sweep_all_coins_error_amount_small": "The amount is too small to broadcast. Please try again later.",
-  "unexpected_funds_title": "Unexpected Funds",
-  "unexpected_funds_message": "Breez found unexpected funds in its underlying wallet (probably due to a closed channel). It is highly recommended you send these fund to a BTC address as soon as possible.",
-  "unexpected_error_restoring_chain_message": "Restoring chain information might take several minutes.",
-  "unexpected_error_action_cancel": "CANCEL",
-  "unexpected_error_action_exit": "EXIT BREEZ",
-  "unexpected_error_action_exit_for_retry": "EXIT",
-  "unexpected_error_action_try_again": "TRY AGAIN",
-  "unexpected_error_action_just_exit": "EXIT",
-  "unexpected_error_logs": "your logs \n",
-  "unexpected_error_view": "View ",
+  "sweep_all_coins_error_retrieve_fees": "Tapahtumakulujen nouto epäonnistui. Yritä myöhemmin uudelleen.",
+  "sweep_all_coins_error_amount_small": "Summa on liian pieni lähetettäväksi. Yritä myöhemmin uudelleen.",
+  "unexpected_funds_title": "Odottamattomia varoja",
+  "unexpected_funds_message": "Sovellus löysi varoja sovelluksen sisäisestä lompakosta. Varat ovat todennäköisesti peräisin suljetusta salamaverkon kanavasta. On vahvasti suositeltavaa että lähetät varat pikimmiten BTC-osoitteeseen.",
+  "unexpected_error_restoring_chain_message": "Lonkoketjutietojen palautus saattaa kestää useita minuutteja.",
+  "unexpected_error_action_cancel": "Peruuta",
+  "unexpected_error_action_exit": "Sulje Breez",
+  "unexpected_error_action_exit_for_retry": "SULJE",
+  "unexpected_error_action_try_again": "YRITÄ UUDELLEEN",
+  "unexpected_error_action_just_exit": "SULJE",
+  "unexpected_error_logs": "loki-tiedot \n",
+  "unexpected_error_view": "Näytä ",
   "unexpected_error_bullet": "• ",
-  "unexpected_error_bitcoin_node": "your Bitcoin node\n",
-  "unexpected_error_reset": "Reset ",
-  "unexpected_error_chain_information": "chain information\n",
-  "unexpected_error_recover": "Recover ",
-  "unexpected_error_signal": "• Checking the signal in your area\n",
-  "unexpected_error_wifi": "• Turning on mobile data or Wi-Fi\n",
-  "unexpected_error_airplane": "• Turning off airplane mode\n",
-  "unexpected_error_suggestions": "You can try:\n",
-  "unexpected_error_title": "Unexpected Error",
+  "unexpected_error_bitcoin_node": "sinun Bitcoin solmu\n",
+  "unexpected_error_reset": "Nollaa ",
+  "unexpected_error_chain_information": "lohkoketjun tiedot\n",
+  "unexpected_error_recover": "Palaudu ",
+  "unexpected_error_signal": "• Tarkistetaan verkkosignaalia sijaintisi perusteella \n",
+  "unexpected_error_wifi": "• Mobiili dataa tai Wi-Fi:ä kytketään päälle\n",
+  "unexpected_error_airplane": "• Kytketään lentotilaa pois päältä\n",
+  "unexpected_error_suggestions": "Voit yrittää:\n",
+  "unexpected_error_title": "Odottamaton virhe",
   "locale": "fi",
   "app_name": "Breez"
 }
