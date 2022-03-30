@@ -1718,17 +1718,17 @@
       }
     }
   },
-  "lock_screen_enter_pin": "Enter your PIN",
-  "backup_phrase_generate": "Generate Backup Phrase",
-  "backup_phrase_instructions": "You will be shown a list of words. Write down the words and store them in a safe place. Without these words, you won't be able to restore from backup and your funds will be lost. Breez won’t be able to help.",
-  "backup_phrase_action_confirm": "I UNDERSTAND",
-  "backup_phrase_action_next": "NEXT",
-  "backup_phrase_warning_disclaimer": "Your existing backup phrase will no longer be valid and a new one will be generated next time you decide to use a backup phrase. Are you sure you don't want to use a backup phrase?",
-  "backup_phrase_warning_action_yes": "YES",
-  "backup_phrase_warning_action_no": "NO",
-  "backup_phrase_warning_action_next": "NEXT",
-  "backup_phrase_warning_action_backup": "BACKUP",
-  "backup_phrase_generation_write_words": "Write these words",
+  "lock_screen_enter_pin": "Syötä PIN-koodisi",
+  "backup_phrase_generate": "Luo varmuuskopion salauslause",
+  "backup_phrase_instructions": "Sinulle näytetään lista sanoja. Kirjoita sanat numerojärjestyksessä ylös ja talleta ne turvalliseen paikkaan. Mikäli joudut palauttamaan varmuuskopion, eikä sinulla ole sanoja tallessa, ei palautus onnistu ja menetät kaikki varasi. Tällöin Breez eikä kukaan muukaan  voi auttaa sinua palautuksessa.",
+  "backup_phrase_action_confirm": "YMMÄRRÄN",
+  "backup_phrase_action_next": "SEURAAVA",
+  "backup_phrase_warning_disclaimer": "Nykyinen varmistuksen salauslause mitätöidään. Uusi lause muodostetaan seuraavalla kerralla, kun otat varmistuksen salauksen käyttöön. Oletko varma että haluat poistaa varmistuksen salauslauseen käytöstä?",
+  "backup_phrase_warning_action_yes": "KYLLÄ",
+  "backup_phrase_warning_action_no": "En",
+  "backup_phrase_warning_action_next": "SEURAAVA",
+  "backup_phrase_warning_action_backup": "VARMUUSKOPIOI",
+  "backup_phrase_generation_write_words": "Kirjoita nämä sanat talteen",
   "backup_phrase_generation_index": "{index}.",
   "@backup_phrase_generation_index": {
     "placeholders": {
@@ -1738,8 +1738,8 @@
       }
     }
   },
-  "backup_phrase_generation_verify": "Let's verify",
-  "backup_phrase_generation_type_words": "Please type words number {numberA}, {numberB} and {numberC} of the generated backup phrase.",
+  "backup_phrase_generation_verify": "Varmistetaanpa",
+  "backup_phrase_generation_type_words": "Kirjoita luodusta salauslauseesta seuraavat sanat {numberA}, {numberB} ja {numberC}.",
   "@backup_phrase_generation_type_words": {
     "placeholders": {
       "numberA": {
@@ -1765,8 +1765,8 @@
       }
     }
   },
-  "backup_phrase_generation_verification_failed": "Failed to verify words. Please write down the words and try again.",
-  "backup_phrase_generation_generic_error": "Internal Error",
+  "backup_phrase_generation_verification_failed": "Salauslauseen sanojen varmistus epäonnistui. Tarkista kirjoittamasi sanat ja yritä uudelleen.",
+  "backup_phrase_generation_generic_error": "Sisäinen virhe",
   "spontaneous_payment_title": "Lähetä maksu",
   "spontaneous_payment_action_pay": "MAKSA",
   "spontaneous_payment_action_cancel": "Peruuta",
