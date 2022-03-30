@@ -1767,12 +1767,12 @@
   },
   "backup_phrase_generation_verification_failed": "Failed to verify words. Please write down the words and try again.",
   "backup_phrase_generation_generic_error": "Internal Error",
-  "spontaneous_payment_title": "Send Payment",
-  "spontaneous_payment_action_pay": "PAY",
-  "spontaneous_payment_action_cancel": "CANCEL",
-  "spontaneous_payment_tip_message": "Tip Message (optional)",
-  "spontaneous_payment_generic_message": "You will be able to receive payments after Breez is finished opening a secure channel with our server. This usually takes ~10 minutes to be completed. Please try again in a couple of minutes.",
-  "spontaneous_payment_max_amount": "Pay up to: {amount}",
+  "spontaneous_payment_title": "Lähetä maksu",
+  "spontaneous_payment_action_pay": "MAKSA",
+  "spontaneous_payment_action_cancel": "Peruuta",
+  "spontaneous_payment_tip_message": "Maksun viesti (vapaaehtoinen)",
+  "spontaneous_payment_generic_message": "Voit vastaanottaa maksuja vasta kun, Breez saa avattua turvallisen kanavan palvelimeen. Avaus kestää tyypillisesti noin ~10 minuuttia. Odota muutama minuutti ja yritä sitten uudelleen.",
+  "spontaneous_payment_max_amount": "Maksa enintään: {amount}",
   "@spontaneous_payment_max_amount": {
     "placeholders": {
       "amount": {
@@ -1781,9 +1781,9 @@
       }
     }
   },
-  "spontaneous_payment_node_id": "Node ID",
-  "spontaneous_payment_send_payment_title": "Send Payment",
-  "spontaneous_payment_send_payment_message": "Are you sure you want to {amount} to this node?\n\n{nodeID}",
+  "spontaneous_payment_node_id": "Solmun tunniste",
+  "spontaneous_payment_send_payment_title": "Lähetä maksu",
+  "spontaneous_payment_send_payment_message": "Oletko varma että haluat lähettää {amount} seuraavalle solmulle?\n\n{nodeID}",
   "@spontaneous_payment_send_payment_message": {
     "placeholders": {
       "amount": {
@@ -1796,12 +1796,12 @@
       }
     }
   },
-  "spontaneous_payment_error_title": "Payment Error",
-  "sweep_all_coins_speed": "Choose Processing Speed",
-  "sweep_all_coins_action_confirm": "CONFIRM",
-  "sweep_all_coins_label_send": "You send:",
-  "sweep_all_coins_label_receive": "You receive:",
-  "sweep_all_coins_label_transaction_fee": "Transaction fee:",
+  "spontaneous_payment_error_title": "Maksussa tapahtui virhe",
+  "sweep_all_coins_speed": "Määritä vahvistuksen nopeus",
+  "sweep_all_coins_action_confirm": "VAHVISTA",
+  "sweep_all_coins_label_send": "Sinä lähetät:",
+  "sweep_all_coins_label_receive": "Sinä vastaanotat:",
+  "sweep_all_coins_label_transaction_fee": "Tapahtumakulu:",
   "sweep_all_coins_fee": "-{fee}",
   "@sweep_all_coins_fee": {
     "placeholders": {
@@ -1833,8 +1833,8 @@
       }
     }
   },
-  "sweep_all_coins_error_retrieve_fees": "Failed to retrieve fees. Please try again later.",
-  "sweep_all_coins_error_amount_small": "The amount is too small to broadcast. Please try again later.",
+  "sweep_all_coins_error_retrieve_fees": "Tapahtumakulujen nouto epäonnistui. Yritä myöhemmin uudelleen.",
+  "sweep_all_coins_error_amount_small": "Summa on liian pieni lähetettäväksi. Yritä myöhemmin uudellen.",
   "unexpected_funds_title": "Unexpected Funds",
   "unexpected_funds_message": "Breez found unexpected funds in its underlying wallet (probably due to a closed channel). It is highly recommended you send these fund to a BTC address as soon as possible.",
   "unexpected_error_restoring_chain_message": "Restoring chain information might take several minutes.",
