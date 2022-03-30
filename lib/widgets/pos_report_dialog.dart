@@ -171,6 +171,7 @@ class PosReportDialog extends StatelessWidget {
               context: context,
               builder: (_) => CalendarDialog(
                 newOption.startDate,
+                endDate: newOption.endDate,
                 initialRangeDate: DateTime(2018),
               ),
             ).then((result) {

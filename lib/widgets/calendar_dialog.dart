@@ -9,10 +9,12 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class CalendarDialog extends StatefulWidget {
   final DateTime firstDate;
+  final DateTime endDate;
   final DateTime initialRangeDate;
 
   const CalendarDialog(
     this.firstDate, {
+    this.endDate,
     this.initialRangeDate,
   });
 
@@ -23,15 +25,15 @@ class CalendarDialog extends StatefulWidget {
 class _CalendarDialogState extends State<CalendarDialog> {
   final _startDateController = TextEditingController();
   final _endDateController = TextEditingController();
-  DateTime _endDate = DateTime.now();
   DateTime _startDate;
+  DateTime _endDate;
 
   @override
   void initState() {
     super.initState();
     _startDate = widget.firstDate;
-    _startDateController.text = BreezDateUtils.formatYearMonthDay(_startDate);
-    _endDateController.text = BreezDateUtils.formatYearMonthDay(_endDate);
+    _endDate = widget.endDate ?? DateTime.now();
+    _applyControllers();
   }
 
   @override
@@ -87,16 +89,10 @@ class _CalendarDialogState extends State<CalendarDialog> {
   }
 
   void _applyFilter(BuildContext context) {
-    // Check if filter is unchanged
-    final navigator = Navigator.of(context);
-    if (_startDate != widget.firstDate || _endDate.day != DateTime.now().day) {
-      navigator.pop([
-        DateTime(_startDate.year, _startDate.month, _startDate.day, 0, 0, 0),
-        DateTime(_endDate.year, _endDate.month, _endDate.day, 23, 59, 59, 999),
-      ]);
-    } else {
-      navigator.pop([null, null]);
-    }
+    Navigator.of(context).pop([
+      DateTime(_startDate.year, _startDate.month, _startDate.day, 0, 0, 0),
+      DateTime(_endDate.year, _endDate.month, _endDate.day, 23, 59, 59, 999),
+    ]);
   }
 
   Widget _selectDateButton(
@@ -137,7 +133,7 @@ class _CalendarDialogState extends State<CalendarDialog> {
       context: context,
       initialDate: isStartBtn ? _startDate : _endDate,
       firstDate: widget.initialRangeDate ?? widget.firstDate,
-      lastDate: DateTime.now(),
+      lastDate: _endDate.isAfter(DateTime.now()) ? _endDate : DateTime.now(),
     );
     if (selectedDate != null) {
       Duration difference = isStartBtn
@@ -146,8 +142,7 @@ class _CalendarDialogState extends State<CalendarDialog> {
       if (difference.inDays < 0) {
         setState(() {
           isStartBtn ? _startDate = selectedDate : _endDate = selectedDate;
-          _startDateController.text = BreezDateUtils.formatYearMonthDay(_startDate);
-          _endDateController.text = BreezDateUtils.formatYearMonthDay(_endDate);
+          _applyControllers();
         });
       } else {
         setState(() {
@@ -156,11 +151,22 @@ class _CalendarDialogState extends State<CalendarDialog> {
           } else {
             _endDate = selectedDate;
           }
-          _startDateController.text = BreezDateUtils.formatYearMonthDay(_startDate);
-          _endDateController.text = BreezDateUtils.formatYearMonthDay(_endDate);
+          _applyControllers();
         });
       }
     }
+  }
+
+  void _applyControllers() {
+    if (_startDate != null &&
+        _endDate != null &&
+        _endDate.isBefore(_startDate)) {
+      final temp = _endDate;
+      _endDate = _startDate;
+      _startDate = temp;
+    }
+    _startDateController.text = BreezDateUtils.formatYearMonthDay(_startDate);
+    _endDateController.text = BreezDateUtils.formatYearMonthDay(_endDate);
   }
 
   _clearFilter() {
