@@ -517,7 +517,7 @@ class StreamedPaymentInfo implements PaymentInfo {
 class SinglePaymentInfo implements PaymentInfo {
   final Payment _paymentResponse;
   final AccountModel _account;
-  final bool _hasSale;
+  final SaleSummary saleSummary;
 
   Map _typeMap = {
     Payment_PaymentType.DEPOSIT: PaymentType.DEPOSIT,
@@ -748,16 +748,16 @@ class SinglePaymentInfo implements PaymentInfo {
     return null;
   }
 
-  bool get hasSale => _hasSale;
+  bool get hasSale => saleSummary != null;
 
   SinglePaymentInfo(
     this._paymentResponse,
     this._account,
-    this._hasSale,
+    this.saleSummary,
   );
 
   SinglePaymentInfo copyWith(AccountModel account) {
-    return SinglePaymentInfo(this._paymentResponse, account, this._hasSale);
+    return SinglePaymentInfo(this._paymentResponse, account, this.saleSummary);
   }
 }
 

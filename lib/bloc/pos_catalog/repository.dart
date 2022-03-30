@@ -19,6 +19,6 @@ abstract class Repository {
   Future<void> salePaymentCompleted(String paymentHash);
   Future<Sale> fetchSaleByID(int id);
   Future<Sale> fetchSaleByPaymentHash(String paymentHash);
-  Future<Set<String>> fetchSalesPaymentHashes();
+  Future<Map<String, SaleSummary>> fetchSaleSummaryByPaymentHashes();
   Future<PosReportResult> fetchSalesReport(DateTime start, DateTime end);
 }

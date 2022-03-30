@@ -211,14 +211,27 @@ class SqliteRepository implements Repository {
   }
 
   @override
-  Future<Set<String>> fetchSalesPaymentHashes() async {
-    return Set.from(
-      await _fetchDBItems(
-        await getDB(),
-        "sale_payments",
-        (e) => e["payment_hash"],
-      ),
+  Future<Map<String, SaleSummary>> fetchSaleSummaryByPaymentHashes() async {
+    Map<String, SaleSummary> hashedSales = {};
+    final db = await getDB();
+    final lines = await db.rawQuery(
+      """
+      SELECT
+        sale_payments.payment_hash as payment_hash,
+        sum(quantity * price_per_item) as fiat_value,
+        sum(quantity * price_per_item * sat_conversion_rate) as sat_value,
+        group_concat(distinct(currency)) as currencies
+      FROM sale_line
+      LEFT JOIN sale ON sale_line.sale_id = sale.id
+      LEFT JOIN sale_payments ON sale_line.sale_id = sale_payments.id
+      WHERE sale_payments.paid_date NOT NULL
+      GROUP BY sale.id, payment_hash;
+      """,
     );
+    lines.map((e) => SaleSummary.fromMap(e)).forEach((e) {
+      hashedSales[e.paymentHash] = e;
+    });
+    return hashedSales;
   }
 
   @override

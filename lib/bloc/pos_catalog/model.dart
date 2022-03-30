@@ -317,6 +317,30 @@ class Sale implements DBItem {
   }
 }
 
+class SaleSummary {
+  final String paymentHash;
+  final double fiatValue;
+  final int satValue;
+  final List<String> currencies;
+
+  const SaleSummary(
+    this.paymentHash,
+    this.fiatValue,
+    this.satValue,
+    this.currencies,
+  );
+
+  SaleSummary.fromMap(Map<String, dynamic> json)
+      : paymentHash = json["payment_hash"],
+        fiatValue = json["fiat_value"],
+        satValue = json["sat_value"].toInt(),
+        currencies = json["currencies"].toString().split(",").toList();
+
+  bool isSingleCurrency() {
+    return currencies.length == 1;
+  }
+}
+
 class ProductIcon {
   final List<String> tags;
   final List<String> aliases;
