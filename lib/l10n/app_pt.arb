@@ -897,7 +897,7 @@
       }
     }
   },
-  "withdraw_funds_use_all_funds": "Use todos os fundos",
+  "withdraw_funds_use_all_funds": "Usar todo o saldo",
   "withdraw_funds_btc_address": "Endereço BTC",
   "withdraw_funds_scan_barcode": "Ler o código de barras",
   "withdraw_funds_error_invalid_address": "Por favor insira um endereço BTC válido",
@@ -1781,9 +1781,9 @@
       }
     }
   },
-  "spontaneous_payment_node_id": "ID do nó",
+  "spontaneous_payment_node_id": "ID do servidor",
   "spontaneous_payment_send_payment_title": "Enviar Pagamento",
-  "spontaneous_payment_send_payment_message": "Você tem certeza que deseja enviar {amount} para este nó?\n\n{nodeID}",
+  "spontaneous_payment_send_payment_message": "Você tem certeza que deseja enviar {amount} para este servidor?\n\n{nodeID}",
   "@spontaneous_payment_send_payment_message": {
     "placeholders": {
       "amount": {
@@ -1835,18 +1835,18 @@
   },
   "sweep_all_coins_error_retrieve_fees": "Falha ao recuperar taxas. Por favor, tente novamente mais tarde.",
   "sweep_all_coins_error_amount_small": "O valor é muito baixo para ser transmitido. Por favor, tente novamente mais tarde.",
-  "unexpected_funds_title": "Fundos Inesperados",
-  "unexpected_funds_message": "Encontrou-se fundos inesperados em sua carteira (provavelmente devido a um canal fechado). É altamente recomendável que você envie esses fundos para um endereço BTC o mais rápido possível.",
+  "unexpected_funds_title": "Outros Fundos",
+  "unexpected_funds_message": "Foram encontrados outros fundos em sua carteira (provavelmente devido a um canal fechado). É altamente recomendável que você envie esses fundos para um endereço BTC o mais rápido possível.",
   "unexpected_error_restoring_chain_message": "A restauração das informações pode levar vários minutos.",
   "unexpected_error_action_cancel": "CANCELAR",
-  "unexpected_error_action_exit": "SAIR DA BRAZ",
+  "unexpected_error_action_exit": "SAIR DA BREEZ",
   "unexpected_error_action_exit_for_retry": "SAIR",
   "unexpected_error_action_try_again": "TENTAR NOVAMENTE",
   "unexpected_error_action_just_exit": "SAIR",
   "unexpected_error_logs": "Seus registros \n",
   "unexpected_error_view": "Ver ",
   "unexpected_error_bullet": "• ",
-  "unexpected_error_bitcoin_node": "Seu nó de Bitcoin\n",
+  "unexpected_error_bitcoin_node": "Seu servidor de Bitcoin\n",
   "unexpected_error_reset": "Resetar ",
   "unexpected_error_chain_information": "Informação da rede\n",
   "unexpected_error_recover": "Recuperar ",
@@ -1854,7 +1854,7 @@
   "unexpected_error_wifi": "• Ativar os dados móveis ou o Wi-Fi\n",
   "unexpected_error_airplane": "• Desativar o modo avião\n",
   "unexpected_error_suggestions": "Você pode tentar:\n",
-  "unexpected_error_title": "Erro inesperado",
+  "unexpected_error_title": "Erro",
   "locale": "pt",
   "app_name": "Breez"
 }
