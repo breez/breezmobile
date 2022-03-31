@@ -59,12 +59,13 @@ class PosSettingsPageState extends State<_PosSettingsPage> {
   final _addressLine1Controller = TextEditingController();
   final _addressLine2Controller = TextEditingController();
   final _autoSizeGroup = AutoSizeGroup();
+  double _timeoutValue;
 
   @override
   void initState() {
     super.initState();
-    _cancellationTimeoutValueController.text =
-        widget.currentProfile.cancellationTimeoutValue.toString();
+    _timeoutValue = widget.currentProfile.cancellationTimeoutValue;
+    _cancellationTimeoutValueController.text = _timeoutValue.toStringAsFixed(0);
     _addressLine1Controller.text =
         widget.currentProfile.businessAddress?.addressLine1;
     _addressLine2Controller.text =
@@ -140,8 +141,7 @@ class PosSettingsPageState extends State<_PosSettingsPage> {
                       Padding(
                         padding: EdgeInsets.only(left: 8.0, right: 16.0),
                         child: Text(
-                          num.parse(_cancellationTimeoutValueController.text)
-                              .toStringAsFixed(0),
+                          _cancellationTimeoutValueController.text,
                           style: TextStyle(
                             color: Colors.white,
                             fontSize: 12.4,
@@ -166,16 +166,20 @@ class PosSettingsPageState extends State<_PosSettingsPage> {
   }
 
   Widget _cancellationSlider(BuildContext context) {
-    final timeoutValue = widget.currentProfile.cancellationTimeoutValue;
     return Slider(
-      value: timeoutValue,
-      label: timeoutValue.toStringAsFixed(0),
+      value: _timeoutValue,
+      label: _timeoutValue.toStringAsFixed(0),
       min: 30.0,
       max: 180.0,
       divisions: 5,
       onChanged: (double value) {
         FocusScope.of(context).requestFocus(FocusNode());
-        _cancellationTimeoutValueController.text = value.toString();
+        setState(() {
+          _timeoutValue = value;
+          _cancellationTimeoutValueController.text = value.toStringAsFixed(0);
+        });
+      },
+      onChangeEnd: (double value) {
         widget._userProfileBloc.userSink.add(
           widget.currentProfile.copyWith(cancellationTimeoutValue: value),
         );
