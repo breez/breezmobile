@@ -472,14 +472,16 @@ class PosSettingsPageState extends State<_PosSettingsPage> {
             decoration: InputDecoration(
               hintText: texts.pos_settings_address_line_1,
             ),
-            onChanged: (_) => widget._userProfileBloc.userSink.add(
-              currentProfile.copyWith(
-                businessAddress: currentProfile.businessAddress.copyWith(
-                  addressLine1: _addressLine1Controller.text,
+            onEditingComplete: () {
+              widget._userProfileBloc.userSink.add(
+                currentProfile.copyWith(
+                  businessAddress: currentProfile.businessAddress.copyWith(
+                    addressLine1: _addressLine1Controller.text,
+                  ),
                 ),
-              ),
-            ),
-            onEditingComplete: () => FocusScope.of(context).nextFocus(),
+              );
+              FocusScope.of(context).nextFocus();
+            },
           ),
           TextField(
             controller: _addressLine2Controller,
@@ -488,14 +490,16 @@ class PosSettingsPageState extends State<_PosSettingsPage> {
             decoration: InputDecoration(
               hintText: texts.pos_settings_address_line_2,
             ),
-            onChanged: (_) => widget._userProfileBloc.userSink.add(
-              currentProfile.copyWith(
-                businessAddress: currentProfile.businessAddress.copyWith(
-                  addressLine2: _addressLine2Controller.text,
+            onEditingComplete: () {
+              widget._userProfileBloc.userSink.add(
+                currentProfile.copyWith(
+                  businessAddress: currentProfile.businessAddress.copyWith(
+                    addressLine2: _addressLine2Controller.text,
+                  ),
                 ),
-              ),
-            ),
-            onEditingComplete: () => FocusScope.of(context).unfocus(),
+              );
+              FocusScope.of(context).nextFocus();
+            },
           ),
         ],
       ),
