@@ -897,7 +897,7 @@
       }
     }
   },
-  "withdraw_funds_use_all_funds": "Use todos os fundos",
+  "withdraw_funds_use_all_funds": "Usar todo o saldo",
   "withdraw_funds_btc_address": "Endereço BTC",
   "withdraw_funds_scan_barcode": "Ler o código de barras",
   "withdraw_funds_error_invalid_address": "Por favor insira um endereço BTC válido",
