@@ -1430,6 +1430,15 @@
   "csv_exporter_amount": "Määrä",
   "csv_exporter_preimage": "Preimage",
   "csv_exporter_tx_hash": "Tapahtumatunnus",
+  "pos_custom_item_name": "Item {index}",
+  "@pos_custom_item_name": {
+    "placeholders": {
+      "index": {
+        "type": "int",
+        "example": "1"
+      }
+    }
+  },
   "pos_settings_title": "Myyntipisteen asetukset",
   "pos_settings_cancellation_timeout": "Vastaanotettavan maksun aikakatkaisu (sekuntia)",
   "pos_settings_items_list": "Tuotelistaus",

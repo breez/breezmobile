@@ -1430,6 +1430,15 @@
   "csv_exporter_amount": "Amount",
   "csv_exporter_preimage": "Preimage",
   "csv_exporter_tx_hash": "TX Hash",
+  "pos_custom_item_name": "Item {index}",
+  "@pos_custom_item_name": {
+    "placeholders": {
+      "index": {
+        "type": "int",
+        "example": "1"
+      }
+    }
+  },
   "pos_settings_title": "POS Settings",
   "pos_settings_cancellation_timeout": "Payment Cancellation Timeout (in seconds)",
   "pos_settings_items_list": "Items List",

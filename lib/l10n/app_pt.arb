@@ -1430,6 +1430,15 @@
   "csv_exporter_amount": "Quantia",
   "csv_exporter_preimage": "Comprovante",
   "csv_exporter_tx_hash": "TX Hash",
+  "pos_custom_item_name": "Item {index}",
+  "@pos_custom_item_name": {
+    "placeholders": {
+      "index": {
+        "type": "int",
+        "example": "1"
+      }
+    }
+  },
   "pos_settings_title": "Configurações do PDV",
   "pos_settings_cancellation_timeout": "Tempo máximo para receber um pagamento (em segundos)",
   "pos_settings_items_list": "Lista de itens",
