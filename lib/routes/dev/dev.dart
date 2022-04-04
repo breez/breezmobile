@@ -486,6 +486,12 @@ class DevViewState extends State<DevView> {
           }
         }));
     choices.add(Choice(
+        title: "Restore channels",
+        icon: Icons.phone_android,
+        function: () async {
+          _restoreChannelsBackup();
+        }));
+    choices.add(Choice(
         title: 'Show Tutorials',
         icon: Icons.phone_android,
         function: () {
@@ -541,6 +547,11 @@ class DevViewState extends State<DevView> {
     bloc.addFundsSettingsSink.add(addFundsSettings.copyWith(
         moonpayIpCheck: !addFundsSettings.moonpayIpCheck));
   }  
+
+  void _restoreChannelsBackup() async {    
+    var filePath = await widget._breezBridge.getChanBackupPath();
+    _sendCommand("restorechanbackup --multi_file $filePath");
+  }
 
   void _describeGraph() async {
     Directory tempDir = await getTemporaryDirectory();

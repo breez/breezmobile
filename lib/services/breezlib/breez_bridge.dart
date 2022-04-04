@@ -824,4 +824,12 @@ class BreezBridge {
     result.add('$lndDir/data/chain/bitcoin/$network/channel.backup');
     return result;
   }
+
+  Future<String> getChanBackupPath() async {
+    String lines = await rootBundle.loadString('conf/breez.conf');
+    var config = Config.fromString(lines);
+    String lndDir = (await getApplicationDocumentsDirectory()).path;    
+    String network = config.get('Application Options', 'network');    
+    return '$lndDir/data/chain/bitcoin/$network/channel.backup';    
+  }
 }
