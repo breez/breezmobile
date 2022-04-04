@@ -1,5 +1,7 @@
 import 'dart:convert';
 
+import 'package:breez/utils/locale.dart';
+
 abstract class DBItem {
   Map<String, dynamic> toMap();
 }
@@ -264,7 +266,9 @@ class Sale implements DBItem {
         this.saleLines.where((element) => element.itemID == null).length;
     var newSaleLines = this.saleLines.toList()
       ..add(SaleLine(
-          itemName: "Item ${customItemsCount + 1}",
+          itemName: getSystemAppLocalizations().pos_custom_item_name(
+            customItemsCount + 1,
+          ),
           saleID: this.id,
           pricePerItem: price,
           quantity: 1,
