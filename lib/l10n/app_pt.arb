@@ -824,7 +824,7 @@
       }
     }
   },
-  "reverse_swap_title": "Enviar para endereço BTC",
+  "reverse_swap_title": "Enviar para Endereço BTC",
   "reverse_swap_funding_transaction": "Transação de fundos:",
   "reverse_swap_waiting_channels": "Você poderá enviar seus fundos para um endereço BTC assim que todos os canais forem confirmados.",
   "reverse_swap_confirmation_speed": "Escolha a velocidade de processamento",
@@ -904,7 +904,7 @@
   "withdraw_funds_balance": "Saldo:",
   "withdraw_funds_error_qr_code_not_detected": "O código QR não foi detectado.",
   "withdraw_funds_action_next": "AVANÇAR",
-  "swap_in_progress_title": "Enviar para endereço BTC",
+  "swap_in_progress_title": "Enviar para Endereço BTC",
   "swap_in_progress_transaction_id_copied": "O ID da transação foi copiado para a sua área de transferência.",
   "swap_in_progress_message_waiting_confirmation": "A Breez está aguardando sua transação ser confirmada.",
   "swap_in_progress_message_processing_previous_request": "A Breez está processando sua solicitação anterior. Você será notificado quando o processamento for concluído.",
