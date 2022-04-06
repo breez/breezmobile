@@ -1864,6 +1864,15 @@
   "unexpected_error_airplane": "• Desactiva el modo avión\n",
   "unexpected_error_suggestions": "Usted puede intentar:\n",
   "unexpected_error_title": "Error inesperado",
+  "transferring_funds_title": "Transferencia de fondos",
+  "select_provider_error_dialog_title": "Error de conexión",
+  "select_provider_error_dialog_select_provider_begin": "Seleccione ",
+  "select_provider_error_dialog_select_provider_end": "un proveedor",
+  "select_provider_error_dialog_message": "Para activar Breez, por favor",
+  "select_provider_error_dialog_message_error": "Hubo un error al conectar con el proveedor seleccionado. Para activar Breez, por favor",
+  "qr_scan_action_cancel": "CANCELAR",
+  "pending_closed_channel_title": "Canal siendo cerrado",
+  "pending_closed_channel_action_ok": "OK",
   "locale": "es",
   "app_name": "Breez"
 }
