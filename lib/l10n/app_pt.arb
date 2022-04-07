@@ -1910,7 +1910,7 @@
   "sweep_all_coins_error_retrieve_fees": "Falha ao recuperar taxas. Por favor, tente novamente mais tarde.",
   "sweep_all_coins_error_amount_small": "O valor é muito baixo para ser transmitido. Por favor, tente novamente mais tarde.",
   "unexpected_funds_title": "Outros Fundos",
-  "unexpected_funds_message": "Foram encontrados outros fundos em sua carteira (provavelmente devido a um canal fechado). É altamente recomendável que você envie esses fundos para um endereço BTC o mais rápido possível.",
+  "unexpected_funds_message": "Foram encontrados outros fundos em sua carteira (provavelmente devido a um canal encerrado). É altamente recomendável que você envie esses fundos para um endereço BTC o mais rápido possível.",
   "unexpected_error_restoring_chain_message": "A restauração das informações pode levar vários minutos.",
   "unexpected_error_action_cancel": "CANCELAR",
   "unexpected_error_action_exit": "SAIR DA BREEZ",
