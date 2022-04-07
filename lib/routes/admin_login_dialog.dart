@@ -4,14 +4,19 @@ import 'package:breez/bloc/user_profile/user_actions.dart';
 import 'package:breez/bloc/user_profile/user_profile_bloc.dart';
 import 'package:breez/theme_data.dart' as theme;
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 Future protectAdminAction(
-    BuildContext context, BreezUserModel user, Future onNext()) async {
+  BuildContext context,
+  BreezUserModel user,
+  Future onNext(),
+) async {
   if (user.appMode == AppMode.pos && user.hasAdminPassword) {
     bool loggedIn = await showDialog(
-        useRootNavigator: false,
-        context: context,
-        builder: (c) => _AdminLoginDialog());
+      useRootNavigator: false,
+      context: context,
+      builder: (c) => _AdminLoginDialog(),
+    );
     if (!loggedIn) {
       return;
     }
@@ -20,14 +25,19 @@ Future protectAdminAction(
 }
 
 Future protectAdminRoute(
-    BuildContext context, BreezUserModel user, String route) async {
+  BuildContext context,
+  BreezUserModel user,
+  String route,
+) async {
   if (user.appMode == AppMode.pos && user.hasAdminPassword) {
+    final texts = AppLocalizations.of(context);
     bool loggedIn = await showDialog(
-        useRootNavigator: false,
-        context: context,
-        builder: (c) => _AdminLoginDialog());
+      useRootNavigator: false,
+      context: context,
+      builder: (c) => _AdminLoginDialog(),
+    );
     if (!loggedIn) {
-      return Future.error("Failed to authenticate as manager");
+      return Future.error(texts.admin_login_dialog_error_authenticate);
     }
   }
   Navigator.of(context).pushNamed(route);
@@ -41,8 +51,8 @@ class _AdminLoginDialog extends StatefulWidget {
 }
 
 class _AdminLoginDialogState extends State<_AdminLoginDialog> {
-  final TextEditingController _passwordController = TextEditingController();
-  final FocusNode _passwordFocus = FocusNode();
+  final _passwordController = TextEditingController();
+  final _passwordFocus = FocusNode();
   final _formKey = GlobalKey<FormState>();
   bool _passwordObscured = true;
   String _lastError;
@@ -55,23 +65,29 @@ class _AdminLoginDialogState extends State<_AdminLoginDialog> {
 
   @override
   Widget build(BuildContext context) {
-    UserProfileBloc userProfileBloc =
-        AppBlocsProvider.of<UserProfileBloc>(context);
+    final themeData = Theme.of(context);
+    final texts = AppLocalizations.of(context);
+    final userProfileBloc = AppBlocsProvider.of<UserProfileBloc>(context);
+
     return AlertDialog(
-      title: Text("Manager Password"),
+      title: Text(
+        texts.admin_login_dialog_manager_password,
+      ),
       content: Theme(
-        data: Theme.of(context).copyWith(
-            inputDecorationTheme: InputDecorationTheme(
-                enabledBorder:
-                    UnderlineInputBorder(borderSide: theme.greyBorderSide)),
-            hintColor: Theme.of(context).dialogTheme.contentTextStyle.color,
-            colorScheme: ColorScheme.dark(
-              primary: Theme.of(context).textTheme.button.color,
+        data: themeData.copyWith(
+          inputDecorationTheme: InputDecorationTheme(
+            enabledBorder: UnderlineInputBorder(
+              borderSide: theme.greyBorderSide,
             ),
-            primaryColor: Theme.of(context).textTheme.button.color,
-            errorColor: theme.themeId == "BLUE"
-                ? Colors.red
-                : Theme.of(context).errorColor),
+          ),
+          hintColor: themeData.dialogTheme.contentTextStyle.color,
+          colorScheme: ColorScheme.dark(
+            primary: themeData.textTheme.button.color,
+          ),
+          primaryColor: themeData.textTheme.button.color,
+          errorColor:
+              theme.themeId == "BLUE" ? Colors.red : themeData.errorColor,
+        ),
         child: Container(
           width: MediaQuery.of(context).size.width,
           height: 100.0,
@@ -82,14 +98,12 @@ class _AdminLoginDialogState extends State<_AdminLoginDialog> {
                 key: _formKey,
                 child: TextFormField(
                   style: TextStyle(
-                      color:
-                          Theme.of(context).primaryTextTheme.headline4.color),
+                    color: themeData.primaryTextTheme.headline4.color,
+                  ),
                   focusNode: _passwordFocus,
                   obscureText: _passwordObscured,
                   textInputAction: TextInputAction.next,
-                  onFieldSubmitted: (_) {
-                    _passwordFocus.requestFocus();
-                  },
+                  onFieldSubmitted: (_) => _passwordFocus.requestFocus(),
                   onChanged: (_) {
                     if (_lastError != null) {
                       setState(() {
@@ -99,21 +113,20 @@ class _AdminLoginDialogState extends State<_AdminLoginDialog> {
                   },
                   validator: (value) {
                     if (value.length == 0) {
-                      return "Password is required";
+                      return texts.admin_login_dialog_error_password_required;
                     }
                     return _lastError;
                   },
                   controller: _passwordController,
                   decoration: InputDecoration(
-                      labelText: "Enter your password",
-                      suffixIcon: IconButton(
-                        icon: Icon(Icons.remove_red_eye),
-                        onPressed: () {
-                          setState(() {
-                            _passwordObscured = !_passwordObscured;
-                          });
-                        },
-                      )),
+                    labelText: texts.admin_login_dialog_password_label,
+                    suffixIcon: IconButton(
+                      icon: Icon(Icons.remove_red_eye),
+                      onPressed: () => setState(() {
+                        _passwordObscured = !_passwordObscured;
+                      }),
+                    ),
+                  ),
                   textCapitalization: TextCapitalization.words,
                 ),
               ),
@@ -121,16 +134,19 @@ class _AdminLoginDialogState extends State<_AdminLoginDialog> {
           ),
         ),
       ),
-      actions: <Widget>[
+      actions: [
         TextButton(
-          child:
-              Text("CANCEL", style: Theme.of(context).primaryTextTheme.button),
-          onPressed: () {
-            Navigator.of(context).pop(false);
-          },
+          child: Text(
+            texts.admin_login_dialog_action_cancel,
+            style: themeData.primaryTextTheme.button,
+          ),
+          onPressed: () => Navigator.of(context).pop(false),
         ),
         TextButton(
-          child: Text("OK", style: Theme.of(context).primaryTextTheme.button),
+          child: Text(
+            texts.admin_login_dialog_action_ok,
+            style: themeData.primaryTextTheme.button,
+          ),
           onPressed: () async {
             if (_formKey.currentState.validate()) {
               try {
@@ -138,7 +154,7 @@ class _AdminLoginDialogState extends State<_AdminLoginDialog> {
                 userProfileBloc.userActionsSink.add(action);
                 bool verified = await action.future;
                 if (!verified) {
-                  throw "Incorrect Password";
+                  throw texts.admin_login_dialog_error_password_incorrect;
                 }
                 Navigator.of(context).pop(true);
               } catch (err) {
