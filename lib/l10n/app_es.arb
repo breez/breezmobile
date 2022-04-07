@@ -1938,6 +1938,20 @@
   "qr_scan_action_cancel": "CANCELAR",
   "pending_closed_channel_title": "Canal siendo cerrado",
   "pending_closed_channel_action_ok": "OK",
+  "close_warning_dialog_title": "Canales inactivos",
+  "close_warning_dialog_action_ok": "OK",
+  "close_warning_dialog_message_begin": "usted no ha realizado ningún pago con Breez durante {duration} días, por lo que es posible que su LSP deba cerrar sus canales. Si esto sucede, Breez generará una dirección en la red Bitcoin y le transferirá sus fondos. Usted mantendrá el control total de sus bitcoins, con la excepción de la tarifa de minería cobrada por la transacción, y puede regresar en cualquier momento. Para obtener más información sobre por qué sucede esto, lea nuestra publicación sobre la ",
+  "@close_warning_dialog_message_begin": {
+    "placeholders": {
+      "duration": {
+        "type": "int",
+        "example": "12"
+      }
+    }
+  },
+  "close_warning_dialog_message_middle": "liquidez entrante",
+  "close_warning_dialog_message_end": ".",
+  "close_warning_dialog_url": "https://medium.com/breez-technology/lightning-economics-how-i-learned-to-stop-worrying-and-love-inbound-liquidity-511d05aa8b8b",
   "locale": "es",
   "app_name": "Breez"
 }

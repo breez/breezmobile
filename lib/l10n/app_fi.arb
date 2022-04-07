@@ -1938,6 +1938,20 @@
   "qr_scan_action_cancel": "Peruuta",
   "pending_closed_channel_title": "Odotetaan suljettua Kanavaa",
   "pending_closed_channel_action_ok": "OK",
+  "close_warning_dialog_title": "Inactive Channels",
+  "close_warning_dialog_action_ok": "OK",
+  "close_warning_dialog_message_begin": "You haven't made any payments with Breez for {duration} days, so your LSP might have to close your channels. Should this happen, Breez will generate an on-chain address and sweep your funds into it. You will retain complete control of your money, less the mining fee incurred by the sweep transaction, and you can come back any time. To learn more about why this happens, read our post on ",
+  "@close_warning_dialog_message_begin": {
+    "placeholders": {
+      "duration": {
+        "type": "int",
+        "example": "12"
+      }
+    }
+  },
+  "close_warning_dialog_message_middle": "inbound liquidity",
+  "close_warning_dialog_message_end": ".",
+  "close_warning_dialog_url": "https://medium.com/breez-technology/lightning-economics-how-i-learned-to-stop-worrying-and-love-inbound-liquidity-511d05aa8b8b",
   "locale": "fi",
   "app_name": "Breez"
 }
