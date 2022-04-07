@@ -745,6 +745,9 @@
     }
   },
   "connect_to_pay_payment_reject": "Pagamento recusado",
+  "connect_to_pay_error_wrong_amount": "Quantia incorreta na requisição de pagamento",
+  "connect_to_pay_error_status_tracking_already_started": "Acompanhamento já iniciado, é necessário pará-lo antes de iniciar novamente",
+  "connect_to_pay_error_link_expired": "Este link expirou e não pode mais ser usado para pagamentos.",
   "security_and_backup_title": "Segurança & Backup",
   "security_and_backup_last_backup_no_account": "Último backup: {lastBackup}",
   "@security_and_backup_last_backup_no_account": {
@@ -787,6 +790,10 @@
   "security_and_backup_new_pin_do_not_match": "Os PINs não correspondem.",
   "backup_in_progress": "Backup em andamento",
   "backup_in_progress_action_confirm": "OK",
+  "backup_model_name_apple_icloud": "Apple iCloud",
+  "backup_model_name_google_drive": "Google Drive",
+  "backup_model_name_remote_server": "Servidor Remoto",
+  "backup_model_error_failed": "O backup falhou",
   "network_title": "Rede",
   "network_restart_message": "Por favor, reinicie a Breez para aplicar a nova configuração de servidor de Bitcoin.",
   "network_restart_action_cancel": "CANCELAR",
@@ -1168,6 +1175,8 @@
       }
     }
   },
+  "lsp_error_provider_do_not_exists": "O LSP não existe",
+  "lsp_error_not_selected": "O LSP não foi selecionado",
   "lost_card_dialog_title": "Cartão perdido ou roubado",
   "lost_card_dialog_message": "Se o seu cartão foi perdido ou roubado, você deve desativá-lo agora para evitar que ele seja usado por outras pessoas. Ao desativar você não poderá usar nenhum dos seus cartões existentes até que você os reative.",
   "lost_card_dialog_action_cancel": "CANCELAR",
@@ -1432,6 +1441,7 @@
   "add_funds_moonpay_title": "MoonPay",
   "add_funds_moonpay_error_address": "Falha ao recuperar um endereço do servidor da Breez\nPor favor, verifique sua conexão à internet.",
   "add_funds_moonpay_loading": "Carregando…",
+  "add_funds_moonpay_error_service_unavailable": "Serviço Indisponível. Por favor, tente novamente.",
   "csv_exporter_date_and_time": "Data & Hora",
   "csv_exporter_title": "Título",
   "csv_exporter_description": "Descrição",
@@ -1722,6 +1732,7 @@
       }
     }
   },
+  "lnurl_error_unsupported": "LNUrl não suportada",
   "make_invoice_request_title": "Este site deseja lhe pagar:",
   "make_invoice_request_action_cancel": "CANCELAR",
   "make_invoice_request_action_approve": "APROVAR",
@@ -1959,6 +1970,8 @@
   "admin_login_dialog_error_authenticate": "Falha na autenticação como Administrador",
   "admin_login_dialog_error_password_required": "A senha é obrigatória",
   "admin_login_dialog_error_password_incorrect": "Senha incorreta",
+  "fast_bitcoin_dot_com_voucher": "Vale Fastbitcoins.com",
+  "fast_bitcoin_dot_com_error_service_unavailable": "Serviço Indisponível. Por favor, tente novamente mais tarde.",
   "locale": "pt",
   "app_name": "Breez"
 }

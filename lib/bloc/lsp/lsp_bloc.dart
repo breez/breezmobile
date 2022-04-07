@@ -5,6 +5,7 @@ import 'package:breez/bloc/lsp/lsp_model.dart';
 import 'package:breez/services/breezlib/breez_bridge.dart';
 import 'package:breez/services/breezlib/data/rpc.pb.dart';
 import 'package:breez/services/injector.dart';
+import 'package:breez/utils/locale.dart';
 import 'package:breez/utils/retry.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -66,7 +67,8 @@ class LSPBloc with AsyncActionsHandler {
             .where((element) => element.lspID == action.lspID)
             .length ==
         0) {
-      throw Exception("LSP does not exist");
+      final texts = getSystemAppLocalizations();
+      throw Exception(texts.lsp_error_provider_do_not_exists);
     }
     String selectedLSP = action.lspID;
     _lspsStatusController.add(_lspsStatusController.value
