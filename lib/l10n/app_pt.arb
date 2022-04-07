@@ -1952,6 +1952,13 @@
   "close_warning_dialog_message_middle": "liquidez de entrada",
   "close_warning_dialog_message_end": ".",
   "close_warning_dialog_url": "https://medium.com/breez-technology/lightning-economics-how-i-learned-to-stop-worrying-and-love-inbound-liquidity-511d05aa8b8b",
+  "admin_login_dialog_manager_password": "Senha do Administrador",
+  "admin_login_dialog_password_label": "Insira a sua Senha",
+  "admin_login_dialog_action_cancel": "CANCELAR",
+  "admin_login_dialog_action_ok": "OK",
+  "admin_login_dialog_error_authenticate": "Falha na autenticação como Administrador",
+  "admin_login_dialog_error_password_required": "A senha é obrigatória",
+  "admin_login_dialog_error_password_incorrect": "Senha incorreta",
   "locale": "pt",
   "app_name": "Breez"
 }
