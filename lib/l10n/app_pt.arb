@@ -1861,7 +1861,7 @@
       }
     }
   },
-  "spontaneous_payment_error_title": "Erro no pagamento",
+  "spontaneous_payment_error_title": "Erro no Pagamento",
   "sweep_all_coins_speed": "Escolha a velocidade da transação",
   "sweep_all_coins_action_confirm": "CONFIRMAR",
   "sweep_all_coins_label_send": "Será enviado:",
@@ -1920,14 +1920,14 @@
   "unexpected_error_airplane": "• Desativar o modo avião\n",
   "unexpected_error_suggestions": "Você pode tentar:\n",
   "unexpected_error_title": "Erro",
-  "transferring_funds_title": "Transferência de fundos",
+  "transferring_funds_title": "Transferência de Fundos",
   "select_provider_error_dialog_title": "Erro de conexão",
   "select_provider_error_dialog_select_provider_begin": "Selecione ",
   "select_provider_error_dialog_select_provider_end": "um provedor.",
   "select_provider_error_dialog_message": "Para ativar a Breez, por favor",
   "select_provider_error_dialog_message_error": "Ocorreu um erro ao conectar-se ao provedor selecionado. Para ativar a Breez, por favor",
   "qr_scan_action_cancel": "CANCELAR",
-  "pending_closed_channel_title": "Canal em fechamento",
+  "pending_closed_channel_title": "Canal em encerramento",
   "pending_closed_channel_action_ok": "OK",
   "locale": "pt",
   "app_name": "Breez"
