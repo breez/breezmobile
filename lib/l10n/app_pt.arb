@@ -1861,7 +1861,7 @@
       }
     }
   },
-  "spontaneous_payment_error_title": "Erro no Pagamento",
+  "spontaneous_payment_error_title": "Erro no pagamento",
   "sweep_all_coins_speed": "Escolha a velocidade da transação",
   "sweep_all_coins_action_confirm": "CONFIRMAR",
   "sweep_all_coins_label_send": "Será enviado:",
