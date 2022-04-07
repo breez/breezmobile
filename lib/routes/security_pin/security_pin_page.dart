@@ -207,7 +207,7 @@ class SecurityPageState extends State<SecurityPage>
         backupSettings,
       ));
     if (backupSettings.backupProvider?.name ==
-        BackupSettings.remoteServerBackupProvider.name) {
+        BackupSettings.remoteServerBackupProvider().name) {
       _tiles
         ..add(Divider())
         ..add(_buildRemoteServerAuthDataTile(
@@ -310,7 +310,7 @@ class SecurityPageState extends State<SecurityPage>
           isDense: true,
           onChanged: (BackupProvider newValue) {
             if (newValue.name ==
-                BackupSettings.remoteServerBackupProvider.name) {
+                BackupSettings.remoteServerBackupProvider().name) {
               promptAuthData(context).then((auth) {
                 if (auth == null) {
                   return;
@@ -430,7 +430,7 @@ class SecurityPageState extends State<SecurityPage>
     return ListTile(
       title: Container(
         child: AutoSizeText(
-          BackupSettings.remoteServerBackupProvider.displayName,
+          BackupSettings.remoteServerBackupProvider().displayName,
           style: TextStyle(color: Colors.white),
           maxLines: 1,
           minFontSize: MinFontSize(context).minFontSize,

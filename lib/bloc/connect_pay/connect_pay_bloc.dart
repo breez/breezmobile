@@ -14,6 +14,7 @@ import 'package:breez/services/breezlib/breez_bridge.dart';
 import 'package:breez/services/breezlib/data/rpc.pb.dart';
 import 'package:breez/services/deep_links.dart';
 import 'package:breez/services/injector.dart';
+import 'package:breez/utils/locale.dart';
 import 'package:fixnum/fixnum.dart';
 import 'package:grpc/grpc.dart';
 import 'package:rxdart/rxdart.dart';
@@ -176,6 +177,5 @@ abstract class RemoteSession {
 }
 
 class SessionExpiredException implements Exception {
-  String toString() =>
-      "This link had expired and is no longer valid for payment.";
+  String toString() => getSystemAppLocalizations().connect_to_pay_error_link_expired;
 }
