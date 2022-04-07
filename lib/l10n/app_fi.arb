@@ -745,9 +745,9 @@
     }
   },
   "connect_to_pay_payment_reject": "Maksu hylätty",
-  "connect_to_pay_error_wrong_amount": "Wrong amount in payment request",
-  "connect_to_pay_error_status_tracking_already_started": "Status tracking already started, must be stopped before start again",
-  "connect_to_pay_error_link_expired": "This link had expired and is no longer valid for payment.",
+  "connect_to_pay_error_wrong_amount": "Maksun pyynnössä oleva summa on väärä",
+  "connect_to_pay_error_status_tracking_already_started": "Tilanteen seuranta on jo käynnistetty, se pitää pysäyttää ennen uudelleen aloitusta",
+  "connect_to_pay_error_link_expired": "Tämä linkki on vanhentunut, eikä se ole kelvollinen maksun suorittamiseksi.",
   "security_and_backup_title": "Turvallisuus & varmuuskopiointi",
   "security_and_backup_last_backup_no_account": "Varmuuskopioitu viimeksi {lastBackup}",
   "@security_and_backup_last_backup_no_account": {
@@ -792,8 +792,8 @@
   "backup_in_progress_action_confirm": "PIILOTA",
   "backup_model_name_apple_icloud": "Apple iCloud",
   "backup_model_name_google_drive": "Google Drive",
-  "backup_model_name_remote_server": "Remote Server",
-  "backup_model_error_failed": "Backup Failed",
+  "backup_model_name_remote_server": "Etä palvelimen jako",
+  "backup_model_error_failed": "Varmuuskopiointi epäonnistui",
   "network_title": "Verkko",
   "network_restart_message": "Uuden Bitcoin-solmun käyttöönotto vaatii sovelluksen uudelleenkäynnistyksen.",
   "network_restart_action_cancel": "Peruuta",
@@ -1175,8 +1175,8 @@
       }
     }
   },
-  "lsp_error_provider_do_not_exists": "LSP does not exist",
-  "lsp_error_not_selected": "lsp was not selected",
+  "lsp_error_provider_do_not_exists": "LSP toimittaja ei ole olemassa",
+  "lsp_error_not_selected": "LSP ei ollut valittuna",
   "lost_card_dialog_title": "Kortti kadonnut tai varastettu",
   "lost_card_dialog_message": "Jos maksukorttisi on kadonnut tai varastettu, kannattaa se mitätöidä, jotta muut eivät voi käyttää sitä. Mitätöinti tarkoittaa että, et voi käyttää olemassa olevaa korttiasi, ennen kuin peruutat mitätöinnin tai saat uuden kortin.",
   "lost_card_dialog_action_cancel": "Peruuta",
@@ -1441,7 +1441,7 @@
   "add_funds_moonpay_title": "MoonPay",
   "add_funds_moonpay_error_address": "Osoitteen hakeminen Breez-palvelimelta epäonnistui.\nTarkista verkkoyhteytesi.",
   "add_funds_moonpay_loading": "Ladataan…",
-  "add_funds_moonpay_error_service_unavailable": "Service Unavailable. Please try again later.",
+  "add_funds_moonpay_error_service_unavailable": "Palvelu ei ole käytettävissä. Yritä myöhemmin uudelleen.",
   "csv_exporter_date_and_time": "Päivä ja aika",
   "csv_exporter_title": "Otsikko",
   "csv_exporter_description": "Kuvaus",
@@ -1732,7 +1732,7 @@
       }
     }
   },
-  "lnurl_error_unsupported": "Unsupported LNUrl",
+  "lnurl_error_unsupported": "LNUrl muoto ei ole tuettu",
   "make_invoice_request_title": "Tämä sivusto haluaa maksaa sinulle:",
   "make_invoice_request_action_cancel": "Peruuta",
   "make_invoice_request_action_approve": "HYVÄKSY",
@@ -1970,8 +1970,8 @@
   "admin_login_dialog_error_authenticate": "Failed to authenticate as manager",
   "admin_login_dialog_error_password_required": "Password is required",
   "admin_login_dialog_error_password_incorrect": "Incorrect Password",
-  "fast_bitcoin_dot_com_voucher": "Fastbitcoins.com Voucher",
-  "fast_bitcoin_dot_com_error_service_unavailable": "Service Unavailable. Please try again later.",
+  "fast_bitcoin_dot_com_voucher": "Fastbitcoins.com Voucher-lipuke",
+  "fast_bitcoin_dot_com_error_service_unavailable": "Palvelu ei ole käytettävissä. Yritä myöhemmin uudelleen.",
   "payment_error_insufficient_balance": "Insufficient balance",
   "payment_error_insufficient_balance_amount": "Insufficient balance: you can send up to {amount} to this destination",
   "@payment_error_insufficient_balance_amount": {
