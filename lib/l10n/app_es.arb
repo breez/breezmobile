@@ -1972,6 +1972,86 @@
   "admin_login_dialog_error_password_incorrect": "Contraseña incorrecta",
   "fast_bitcoin_dot_com_voucher": "Vale Fastbitcoins.com",
   "fast_bitcoin_dot_com_error_service_unavailable": "Servicio no disponible. Por favor, inténtelo de nuevo más tarde.",
+  "payment_error_insufficient_balance": "Fondos insuficientes",
+  "payment_error_insufficient_balance_amount": "Fondos insuficiente: puede enviar hasta {amount} a este destino",
+  "@payment_error_insufficient_balance_amount": {
+    "placeholders": {
+      "amount": {
+        "type": "String",
+        "example": "$ 1.23"
+      }
+    }
+  },
+  "payment_error_incorrect_payment_details": "Dados de pago incorrectos",
+  "payment_error_unexpected_error": "Error inesperado",
+  "payment_error_no_route": "No hay ruta",
+  "payment_error_payment_timeout_exceeded": "Se excedió el tiempo de espera del pago",
+  "payment_error_none": "",
+  "swap_error_funds_exceed_limit": "la transacción ejecutada estaba por encima del límite especificado.",
+  "swap_error_invoice_amount_mismatch": "el monto solicitado no coincide con la transacción original.",
+  "swap_error_swap_expired": "la transacción ha expirado.",
+  "swap_error_tx_too_small": "el tamaño de la transacción era demasiado pequeña para procesar.",
+  "status_message_unconfirmed_tx_id": "Breez está esperando la confirmación de la transferencia de Bitcoin. Esto puede tomar un tiempo",
+  "status_transferring_on_chain_deposit": "transferir fondos",
+  "status_failed_to_add_funds": "No se pudieron agregar fondos: {error}",
+  "@status_failed_to_add_funds": {
+    "placeholders": {
+      "error": {
+        "type": "String",
+        "example": "An error"
+      }
+    }
+  },
+  "on_chain_payment_error_not_enough_funds": "Fondos insuficientes.",
+  "valid_payment_error_exceeds_the_limit": "El pago supera el límite de {amount}",
+  "@valid_payment_error_exceeds_the_limit": {
+    "placeholders": {
+      "amount": {
+        "type": "String",
+        "example": "$ 123"
+      }
+    }
+  },
+  "valid_payment_error_keep_balance": "Debe mantener al menos {amount} en su saldo.",
+  "@valid_payment_error_keep_balance": {
+    "placeholders": {
+      "amount": {
+        "type": "String",
+        "example": "$ 123"
+      }
+    }
+  },
+  "valid_payment_error_insufficient_balance": "Fondos insuficientes",
+  "description_waiting_broadcast": "Esperando la transmisión de la transacción",
+  "description_broadcast_done": "La transacción ha sido transmitida.",
+  "description_type_deposit": "Transferencia de Bitcoin",
+  "payment_info_title_bitrefill": "Bitrefill",
+  "payment_info_title_breez_sale": "Venta [{date}]",
+  "@payment_info_title_breez_sale": {
+    "placeholders": {
+      "date": {
+        "type": "String",
+        "example": "1/2/22"
+      }
+    }
+  },
+  "payment_info_title_lightning_gifts": "lightning.gifts",
+  "payment_info_title_ln_pizza": "ln.pizza",
+  "payment_info_title_zebedee": "Zebedee",
+  "payment_info_title_bitcoin_transfer": "Transferencia de Bitcoin",
+  "payment_info_title_closed_channel": "Canal cerrado",
+  "payment_info_title_send_to_node": "Enviar al nodo",
+  "payment_info_title_unknown": "Desconocido",
+  "payment_info_title_pending_closed_channel": "Canal siendo cerrado.",
+  "payment_error_to_send": "Hubo un error al enviar el pago: {error}",
+  "@payment_error_to_send": {
+    "placeholders": {
+      "error": {
+        "type": "String",
+        "example": "An error"
+      }
+    }
+  },
   "locale": "es",
   "app_name": "Breez"
 }
