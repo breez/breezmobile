@@ -1666,45 +1666,45 @@
       }
     }
   },
-  "lnurl_fetch_invoice_action_continue": "CONTINUE",
-  "lnurl_fetch_invoice_pay_to_payee": "Pay to {payee}",
+  "lnurl_fetch_invoice_action_continue": "JATKA",
+  "lnurl_fetch_invoice_pay_to_payee": "Maksun vastaanottaja {payee}",
   "@lnurl_fetch_invoice_pay_to_payee": {
     "placeholders": {
       "payee": {
         "type": "String",
-        "example": "A payee"
+        "example": "vastaanottaja"
       }
     }
   },
-  "lnurl_fetch_invoice_comment": "Comment (optional)",
-  "lnurl_fetch_invoice_error_min": "Must be at least {min}",
+  "lnurl_fetch_invoice_comment": "Kuvaus (valinnainen)",
+    "lnurl_fetch_invoice_error_min": "Maksu vähintään {min}",
   "@lnurl_fetch_invoice_error_min": {
     "placeholders": {
       "min": {
         "type": "String",
-        "example": "$ 1.23"
+        "example": "1.23 €"
       }
     }
   },
-  "lnurl_fetch_invoice_error_max": "Exceeds the limit {max}",
+  "lnurl_fetch_invoice_error_max": "Ylittää enimmäismäärän {max}",
   "@lnurl_fetch_invoice_error_max": {
     "placeholders": {
       "max": {
         "type": "String",
-        "example": "$ 1.23"
+        "example": "1.23 €"
       }
     }
   },
-  "lnurl_fetch_invoice_limit": "Enter an amount between {min} and {max}",
+  "lnurl_fetch_invoice_limit": "Anna määrä joka on vähintään {min} ja enintään {max}",
   "@lnurl_fetch_invoice_limit": {
     "placeholders": {
       "min": {
         "type": "String",
-        "example": "$ 1.23"
+        "example": "1.23 €"
       },
       "max": {
         "type": "String",
-        "example": "$ 1.23"
+        "example": "1.23 €"
       }
     }
   },
