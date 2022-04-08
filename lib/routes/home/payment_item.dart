@@ -52,36 +52,30 @@ class PaymentItem extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               ListTile(
-                leading: Opacity(
-                  opacity: _opacity(),
-                  child: Container(
-                    height: PAYMENT_LIST_ITEM_HEIGHT,
-                    decoration: _createdWithin(Duration(seconds: 10))
-                        ? BoxDecoration(
-                            color: Colors.white,
-                            shape: BoxShape.circle,
-                            boxShadow: [
-                              BoxShadow(
-                                color: Colors.black.withOpacity(0.1),
-                                offset: Offset(0.5, 0.5),
-                                blurRadius: 5.0,
-                              ),
-                            ],
-                          )
-                        : null,
-                    child: _buildPaymentItemAvatar(),
-                  ),
+                leading: Container(
+                  height: PAYMENT_LIST_ITEM_HEIGHT,
+                  decoration: _createdWithin(Duration(seconds: 10))
+                      ? BoxDecoration(
+                          color: Colors.white,
+                          shape: BoxShape.circle,
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.black.withOpacity(0.1),
+                              offset: Offset(0.5, 0.5),
+                              blurRadius: 5.0,
+                            ),
+                          ],
+                        )
+                      : null,
+                  child: _buildPaymentItemAvatar(),
                 ),
                 key: _firstItem ? firstPaymentItemKey : null,
                 title: Transform.translate(
                   offset: Offset(-8, 0),
-                  child: Opacity(
-                    opacity: _opacity(),
-                    child: Text(
-                      _title(context),
-                      style: themeData.accentTextTheme.subtitle2,
-                      overflow: TextOverflow.ellipsis,
-                    ),
+                  child: Text(
+                    _title(context),
+                    style: themeData.accentTextTheme.subtitle2,
+                    overflow: TextOverflow.ellipsis,
                   ),
                 ),
                 subtitle: Transform.translate(
@@ -162,16 +156,13 @@ class PaymentItem extends StatelessWidget {
       includeDisplayName: false,
     );
 
-    return Opacity(
-      opacity: _opacity(),
-      child: Text(
-        _hideBalance
-            ? texts.wallet_dashboard_payment_item_balance_hide
-            : negative
-                ? texts.wallet_dashboard_payment_item_balance_negative(amount)
-                : texts.wallet_dashboard_payment_item_balance_positive(amount),
-        style: themeData.accentTextTheme.headline6,
-      ),
+    return Text(
+      _hideBalance
+          ? texts.wallet_dashboard_payment_item_balance_hide
+          : negative
+              ? texts.wallet_dashboard_payment_item_balance_negative(amount)
+              : texts.wallet_dashboard_payment_item_balance_positive(amount),
+      style: themeData.accentTextTheme.headline6,
     );
   }
 
@@ -237,17 +228,5 @@ class PaymentItem extends StatelessWidget {
         showPaymentDetailsDialog(context, _paymentInfo);
       }
     });
-  }
-
-  /// returns transparent when it leaves viewport
-  double _opacity() {
-    final offset = _scrollController.offset;
-    final height = DASHBOARD_MAX_HEIGHT - DASHBOARD_MIN_HEIGHT;
-    final item = PAYMENT_LIST_ITEM_HEIGHT + BOTTOM_PADDING;
-    final index = _itemIndex + 1;
-    final avatarRadius = AVATAR_DIAMETER / 2;
-    final relative = item * index - FILTER_MAX_SIZE + avatarRadius;
-    final position = offset - height - relative;
-    return position > 0 ? 0.0 : 1.0;
   }
 }
