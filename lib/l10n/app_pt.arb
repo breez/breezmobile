@@ -2039,10 +2039,10 @@
   "payment_info_title_ln_pizza": "ln.pizza",
   "payment_info_title_zebedee": "Zebedee",
   "payment_info_title_bitcoin_transfer": "Transferência de Bitcoin",
-  "payment_info_title_closed_channel": "Canal Fechado",
-  "payment_info_title_send_to_node": "Enviar ao Nó",
+  "payment_info_title_closed_channel": "Canal Encerrado",
+  "payment_info_title_send_to_node": "Enviar ao Servidor",
   "payment_info_title_unknown": "Desconhecido",
-  "payment_info_title_pending_closed_channel": "Canal em fechamento",
+  "payment_info_title_pending_closed_channel": "Canal em encerramento",
   "payment_error_to_send": "Houve uma falha ao enviar o pagamento: {error}",
   "@payment_error_to_send": {
     "placeholders": {
