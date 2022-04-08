@@ -1949,9 +1949,9 @@
   "qr_scan_action_cancel": "Peruuta",
   "pending_closed_channel_title": "Odotetaan suljettua Kanavaa",
   "pending_closed_channel_action_ok": "OK",
-  "close_warning_dialog_title": "Inactive Channels",
+  "close_warning_dialog_title": "Käyttämättömiä kanavia",
   "close_warning_dialog_action_ok": "OK",
-  "close_warning_dialog_message_begin": "You haven't made any payments with Breez for {duration} days, so your LSP might have to close your channels. Should this happen, Breez will generate an on-chain address and sweep your funds into it. You will retain complete control of your money, less the mining fee incurred by the sweep transaction, and you can come back any time. To learn more about why this happens, read our post on ",
+  "close_warning_dialog_message_begin": "Et ole käyttänyt sovellusta maksujen suorittamiseen viimeisten {duration} päivän aikana. Niinpä maksujen välityspalvelu (Liguitu Service Provide = LSP) on saattanut sulkea salamaverkon kanavasi. Mikäli näin on käynyt, sovellus luo lohkoketju osoitteen ja siirtaa varasi sinne. Kaikki varasi säilyvät omistuksessasi pois lukien tapahtuma- ja ns mining-kulut. Voi palata takaisin lunastamaan varasi milloin vain. Tarkempia tietoja tapahtuneen taustoista lue seuraava artikkeli (englanniksi) ",
   "@close_warning_dialog_message_begin": {
     "placeholders": {
       "duration": {
@@ -1960,95 +1960,95 @@
       }
     }
   },
-  "close_warning_dialog_message_middle": "inbound liquidity",
+  "close_warning_dialog_message_middle": "vastaanotettavien varojen määrä",
   "close_warning_dialog_message_end": ".",
   "close_warning_dialog_url": "https://medium.com/breez-technology/lightning-economics-how-i-learned-to-stop-worrying-and-love-inbound-liquidity-511d05aa8b8b",
-  "admin_login_dialog_manager_password": "Manager Password",
-  "admin_login_dialog_password_label": "Enter your password",
-  "admin_login_dialog_action_cancel": "CANCEL",
+  "admin_login_dialog_manager_password": "Päällikön salasana",
+  "admin_login_dialog_password_label": "Anna salasanasi",
+  "admin_login_dialog_action_cancel": "Peruuta",
   "admin_login_dialog_action_ok": "OK",
-  "admin_login_dialog_error_authenticate": "Failed to authenticate as manager",
-  "admin_login_dialog_error_password_required": "Password is required",
-  "admin_login_dialog_error_password_incorrect": "Incorrect Password",
+  "admin_login_dialog_error_authenticate": "Päälliköksi tunnistautuminen epäonnistui",
+  "admin_login_dialog_error_password_required": "Salasana on välttämätön",
+  "admin_login_dialog_error_password_incorrect": "Virheellinen salasana",
   "fast_bitcoin_dot_com_voucher": "Fastbitcoins.com Voucher-lipuke",
   "fast_bitcoin_dot_com_error_service_unavailable": "Palvelu ei ole käytettävissä. Yritä myöhemmin uudelleen.",
-  "payment_error_insufficient_balance": "Insufficient balance",
-  "payment_error_insufficient_balance_amount": "Insufficient balance: you can send up to {amount} to this destination",
+  "payment_error_insufficient_balance": "Riittämätön saldo",
+  "payment_error_insufficient_balance_amount": "Riittämätön saldo: voit lähettää tähän kohteeseen enintään {amount}",
   "@payment_error_insufficient_balance_amount": {
     "placeholders": {
       "amount": {
         "type": "String",
-        "example": "$ 1.23"
+        "example": "1.23 €"
       }
     }
   },
-  "payment_error_incorrect_payment_details": "Incorrect payment details",
-  "payment_error_unexpected_error": "Unexpected error",
-  "payment_error_no_route": "No route",
-  "payment_error_payment_timeout_exceeded": "Payment timeout exceeded",
+  "payment_error_incorrect_payment_details": "Maksun tiedot ovat virheelliset",
+  "payment_error_unexpected_error": "Odottamaton virhe",
+  "payment_error_no_route": "Maksulle ei löydetty reittiä",
+  "payment_error_payment_timeout_exceeded": "Maksun aikakatkaisu ylitetty",
   "payment_error_none": "",
-  "swap_error_funds_exceed_limit": "the executed transaction was above the specified limit.",
-  "swap_error_invoice_amount_mismatch": "the requested amount doesn't match the original transaction.",
-  "swap_error_swap_expired": " the transaction had expired.",
-  "swap_error_tx_too_small": "the transaction size was too small to process.",
-  "status_message_unconfirmed_tx_id": "Breez is waiting for Bitcoin transfer to be confirmed. This might take a while",
-  "status_transferring_on_chain_deposit": "Transferring funds",
-  "status_failed_to_add_funds": "Failed to add funds: {error}",
+  "swap_error_funds_exceed_limit": "käsitelty tapahtuma meni yli määritellyn rajan.",
+  "swap_error_invoice_amount_mismatch": "pyydetty määrä ei täsmää alkuperäiseen tapahtumaan.",
+  "swap_error_swap_expired": " tapahtuman käsittelyaika ylitettiin.",
+  "swap_error_tx_too_small": "tapahtuman summa oli liian käsiteltäväksi.",
+  "status_message_unconfirmed_tx_id": "Sovelus odottaa Bitcoin siirron varmistusta. Siihen saattaa mennä hetkinen...",
+  "status_transferring_on_chain_deposit": "Varoja siirretään",
+  "status_failed_to_add_funds": "Varojen lisääminen epäonnistui: {error}",
   "@status_failed_to_add_funds": {
     "placeholders": {
       "error": {
         "type": "String",
-        "example": "An error"
+        "example": "virhe"
       }
     }
   },
-  "on_chain_payment_error_not_enough_funds": "Not enough funds.",
-  "valid_payment_error_exceeds_the_limit": "Payment exceeds the limit {amount}",
+  "on_chain_payment_error_not_enough_funds": "Varat eivät riita.",
+  "valid_payment_error_exceeds_the_limit": "Maksu ylittään rajan {amount}",
   "@valid_payment_error_exceeds_the_limit": {
     "placeholders": {
       "amount": {
         "type": "String",
-        "example": "$ 123"
+        "example": "123 €"
       }
     }
   },
-  "valid_payment_error_keep_balance": "Breez requires you to keep {amount} in your balance.",
+  "valid_payment_error_keep_balance": "Breez edellyttää sinua pitämään {amount} saldollasi.",
   "@valid_payment_error_keep_balance": {
     "placeholders": {
       "amount": {
         "type": "String",
-        "example": "$ 123"
+        "example": "123 €"
       }
     }
   },
-  "valid_payment_error_insufficient_balance": "Insufficient local balance",
-  "description_waiting_broadcast": "Waiting to broadcast transaction",
-  "description_broadcast_done": "Transaction was broadcasted",
-  "description_type_deposit": "Bitcoin Transfer",
+  "valid_payment_error_insufficient_balance": "Paikallinen saldo ei riitä",
+  "description_waiting_broadcast": "Odotetaan tapahtuman lähettämistä",
+  "description_broadcast_done": "Tapahtuma lähetettiin",
+  "description_type_deposit": "Bitcoin siirtp",
   "payment_info_title_bitrefill": "Bitrefill",
-  "payment_info_title_breez_sale": "Sale [{date}]",
+  "payment_info_title_breez_sale": "Päiväys [{date}]",
   "@payment_info_title_breez_sale": {
     "placeholders": {
       "date": {
         "type": "String",
-        "example": "1/2/22"
+        "example": "31.12.22"
       }
     }
   },
   "payment_info_title_lightning_gifts": "lightning.gifts",
   "payment_info_title_ln_pizza": "ln.pizza",
   "payment_info_title_zebedee": "Zebedee",
-  "payment_info_title_bitcoin_transfer": "Bitcoin Transfer",
-  "payment_info_title_closed_channel": "Closed Channel",
-  "payment_info_title_send_to_node": "Send to Node",
-  "payment_info_title_unknown": "Unknown",
-  "payment_info_title_pending_closed_channel": "Pending Closed Channel",
-  "payment_error_to_send": "Failed to send payment: {error}",
+  "payment_info_title_bitcoin_transfer": "Bitcoin siirto",
+  "payment_info_title_closed_channel": "Suljettu kanava",
+  "payment_info_title_send_to_node": "Lähetä solmulle",
+  "payment_info_title_unknown": "Tintematon",
+  "payment_info_title_pending_closed_channel": "Odotetaan suljettua kanavaa",
+  "payment_error_to_send": "Maksu lähetys epäonnistui: {error}",
   "@payment_error_to_send": {
     "placeholders": {
       "error": {
         "type": "String",
-        "example": "An error"
+        "example": "virhe"
       }
     }
   },
