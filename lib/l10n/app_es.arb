@@ -1480,7 +1480,7 @@
   "pos_settings_manager_password_error_title": "Contraseña de administrador",
   "pos_settings_manager_password_error_message": "La contraseña de administrador solo se puede configurar si tiene una copia de seguridad activa. Para activar un proceso de copia de seguridad, vaya a Recibir > Recibir mediante Dirección BTC.",
   "pos_settings_manager_password_title": "Contraseña de administrador",
-  "pos_settings_manager_password_message": "Si la contraseña de administrador está habilitada, el envío de fondos desde Breez requerirá que ingrese esta contraseña.\n¿Está seguro de que desea habilitar la contraseña del gerente?",
+  "pos_settings_manager_password_message": "Si la contraseña de administrador está habilitada, el envío de fondos desde Breez requerirá que ingrese esta contraseña.\n¿Está seguro de que desea habilitar la contraseña de administrador?",
   "pos_settings_manager_password_action_create": "CREAR",
   "pos_settings_manager_password_action_change": "ALTERAR",
   "pos_settings_business_address": "Dirección de Negocios",
