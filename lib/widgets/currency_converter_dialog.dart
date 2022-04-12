@@ -9,6 +9,7 @@ import 'package:breez/routes/charge/currency_wrapper.dart';
 import 'package:breez/theme_data.dart' as theme;
 import 'package:breez/utils/min_font_size.dart';
 import 'package:breez/widgets/breez_dropdown.dart';
+import 'package:breez/widgets/currency_amount_field_formatter.dart';
 import 'package:breez/widgets/loader.dart';
 import 'package:fixnum/fixnum.dart';
 import 'package:flutter/material.dart';
@@ -78,6 +79,10 @@ class CurrencyConverterDialogState extends State<CurrencyConverterDialog>
       _userProfileBloc = AppBlocsProvider.of<UserProfileBloc>(context);
       FetchRates fetchRatesAction = FetchRates();
       _accountBloc.userActionsSink.add(fetchRatesAction);
+
+      _accountBloc.accountStream.first.then((account) {
+        _fiatAmountController.text = account.fiatCurrency.currencyData.symbol;
+      });
 
       fetchRatesAction.future.catchError((err) {
         if (this.mounted) {
@@ -206,7 +211,7 @@ class CurrencyConverterDialogState extends State<CurrencyConverterDialog>
               child: ButtonTheme(
                 alignedDropdown: true,
                 child: BreezDropdownButton(
-                  onChanged: (value) => _selectFiatCurrency(account, value),
+                  onChanged: (value) => _selectFiatCurrency(value),
                   value: account.fiatCurrency.currencyData.shortName,
                   iconEnabledColor: themeData.dialogTheme.titleTextStyle.color,
                   style: themeData.dialogTheme.titleTextStyle,
@@ -223,7 +228,6 @@ class CurrencyConverterDialogState extends State<CurrencyConverterDialog>
   Widget _dialogContent(BuildContext context, AccountModel account) {
     final themeData = Theme.of(context);
 
-    final fractionSize = account.fiatCurrency.currencyData.fractionSize;
     final isBlue = theme.themeId == "BLUE";
 
     return Column(
@@ -253,18 +257,10 @@ class CurrencyConverterDialogState extends State<CurrencyConverterDialog>
               errorStyle: themeData.primaryTextTheme.caption.copyWith(
                 color: isBlue ? Colors.red : themeData.errorColor,
               ),
-              prefix: Text(
-                account.fiatCurrency.currencyData.symbol,
-                style: themeData.dialogTheme.contentTextStyle,
-              ),
             ),
             // Do not allow '.' when fractionSize is 0 and only allow fiat currencies fractionSize number of digits after decimal point
             inputFormatters: [
-              FilteringTextInputFormatter.allow(
-                fractionSize == 0
-                    ? RegExp(r'\d+')
-                    : RegExp("^\\d+\\.?\\d{0,${fractionSize ?? 2}}"),
-              ),
+              CurrencyAmountFieldFormatter(account.fiatCurrency),
             ],
             keyboardType: TextInputType.numberWithOptions(decimal: true),
             focusNode: _fiatAmountFocusNode,
@@ -361,9 +357,10 @@ class CurrencyConverterDialogState extends State<CurrencyConverterDialog>
   }
 
   Int64 _convertedSatoshies(AccountModel account) {
-    return _fiatAmountController.text.isNotEmpty
+    final texts = _fiatAmountController.text.replaceAll(RegExp("[^0-9.]"), "");
+    return texts.isNotEmpty
         ? account.fiatCurrency.fiatToSat(
-            double.parse(_fiatAmountController.text ?? 0),
+            double.parse(texts ?? 0),
           )
         : Int64(0);
   }
@@ -396,18 +393,24 @@ class CurrencyConverterDialogState extends State<CurrencyConverterDialog>
           );
   }
 
-  void _selectFiatCurrency(AccountModel accountModel, shortName) {
-    setState(() {
-      int oldFractionSize = accountModel.fiatCurrency.currencyData.fractionSize;
-      _userProfileBloc.fiatConversionSink.add(shortName);
-      int newFractionSize = accountModel.fiatCurrency.currencyData.fractionSize;
-      // Remove decimal points to match the selected fiat currencies fractionSize
-      if (oldFractionSize > newFractionSize) {
-        _fiatAmountController.text = double.parse(
-          _fiatAmountController.text,
-        ).toStringAsFixed(newFractionSize);
+  void _selectFiatCurrency(String shortName) {
+    _accountBloc.accountStream.skip(1).first.then((accountModel) {
+      final currencyData = accountModel.fiatCurrency.currencyData;
+      final symbol = currencyData.symbol;
+      final rightSide = currencyData.rightSideSymbol;
+      final raw = _fiatAmountController.text.replaceAll(RegExp("[^0-9.]"), "");
+      var formatted = rightSide ? "$raw $symbol" : "$symbol $raw";
+      if (raw.contains(".")) {
+        final split = raw.split(".");
+        final size = currencyData.fractionSize;
+        if (split.last.length > size) {
+          formatted = "${split.first}.${split.last.substring(0, size)}";
+          formatted = rightSide ? "$formatted $symbol" : "$symbol $formatted";
+        }
       }
+      _fiatAmountController.text = formatted;
       _updateExchangeLabel(_exchangeRate);
     });
+    _userProfileBloc.fiatConversionSink.add(shortName);
   }
 }
