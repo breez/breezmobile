@@ -260,7 +260,7 @@ class ItemPageState extends State<ItemPage> {
             ),
           );
         }).toList()
-          ..addAll(account.fiatConversionList.map((FiatConversion fiat) {
+          ..addAll(account.preferredFiatConversionList.map((fiat) {
             return new DropdownMenuItem<String>(
               value: fiat.currencyData.shortName,
               child: new Text(
