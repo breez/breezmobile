@@ -6,7 +6,6 @@ import 'package:breez/bloc/user_profile/breez_user_model.dart';
 import 'package:breez/bloc/user_profile/security_model.dart';
 import 'package:breez/bloc/user_profile/user_actions.dart';
 import 'package:breez/bloc/user_profile/user_profile_bloc.dart';
-import 'package:breez/l10n/finnish_implements_duration_locale.dart';
 import 'package:breez/routes/backup_in_progress_dialog.dart';
 import 'package:breez/routes/podcast/theme.dart';
 import 'package:breez/routes/security_pin/remote_server_auth.dart';
@@ -208,7 +207,7 @@ class SecurityPageState extends State<SecurityPage>
         backupSettings,
       ));
     if (backupSettings.backupProvider?.name ==
-        BackupSettings.remoteServerBackupProvider.name) {
+        BackupSettings.remoteServerBackupProvider().name) {
       _tiles
         ..add(Divider())
         ..add(_buildRemoteServerAuthDataTile(
@@ -311,7 +310,7 @@ class SecurityPageState extends State<SecurityPage>
           isDense: true,
           onChanged: (BackupProvider newValue) {
             if (newValue.name ==
-                BackupSettings.remoteServerBackupProvider.name) {
+                BackupSettings.remoteServerBackupProvider().name) {
               promptAuthData(context).then((auth) {
                 if (auth == null) {
                   return;
@@ -431,7 +430,7 @@ class SecurityPageState extends State<SecurityPage>
     return ListTile(
       title: Container(
         child: AutoSizeText(
-          BackupSettings.remoteServerBackupProvider.displayName,
+          BackupSettings.remoteServerBackupProvider().displayName,
           style: TextStyle(color: Colors.white),
           maxLines: 1,
           minFontSize: MinFontSize(context).minFontSize,

@@ -15,18 +15,18 @@ class PodcastIndexAPI extends PodcastApi {
   SecurityContext _defaultSecurityContext;
   List<int> _certificateAuthorityBytes = [];
   final Search api = Search();
-  // static String userAgent =
-  //     'Anytime/${AnytimePodcastApp.applicationVersion} (https://github.com/amugofjava/anytime_podcast_player)';
 
   @override
-  Future<SearchResult> search(String term,
-      {String country,
-      String attribute,
-      int limit,
-      String language,
-      String searchProvider,
-      int version = 0,
-      bool explicit = false}) async {
+  Future<SearchResult> search(
+    String term, {
+    String country,
+    String attribute,
+    int limit,
+    String language,
+    String searchProvider,
+    int version = 0,
+    bool explicit = false,
+  }) async {
     return compute(_search, term);
   }
 
@@ -47,34 +47,45 @@ class PodcastIndexAPI extends PodcastApi {
 
   static Future<SearchResult> _search(String term) {
     return Search(userAgent: Environment.userAgent())
-        .search(term,
-            queryParams: {"val": "lightning"},
-            searchProvider: PodcastIndexProvider(
-                key: 'XXWQEGULBJABVHZUM8NF',
-                secret: 'KZ2uy4upvq4t3e\$m\$3r2TeFS2fEpFTAaF92xcNdX'))
+        .search(
+          term,
+          queryParams: {"val": "lightning"},
+          searchProvider: PodcastIndexProvider(
+            key: 'XXWQEGULBJABVHZUM8NF',
+            secret: 'KZ2uy4upvq4t3e\$m\$3r2TeFS2fEpFTAaF92xcNdX',
+          ),
+        )
         .timeout(Duration(seconds: 10));
   }
 
   static Future<SearchResult> _charts(int size) {
-    return Search(userAgent: Environment.userAgent()).charts(
-        searchProvider: PodcastIndexProvider(
-            key: 'NBVJ9GPWMLPXJMFFD3KV',
-            secret: 'be7kR2CWeCFk4nkKCKV4XAX35y2eXrDeCPvs#v4F'),
-        queryParams: {
-          'val': 'lightning',
-          'aponly': 'true'
-        }).timeout(Duration(seconds: 10));
+    return Search(
+      userAgent: Environment.userAgent(),
+    ).charts(
+      searchProvider: PodcastIndexProvider(
+        key: 'NBVJ9GPWMLPXJMFFD3KV',
+        secret: 'be7kR2CWeCFk4nkKCKV4XAX35y2eXrDeCPvs#v4F',
+      ),
+      queryParams: {
+        'val': 'lightning',
+        'aponly': 'true',
+      },
+    ).timeout(Duration(seconds: 10));
   }
 
   static Future<SearchResult> _mostRecent() {
-    return Search(userAgent: Environment.userAgent()).mostRecent(
-        searchProvider: PodcastIndexProvider(
-            key: 'NBVJ9GPWMLPXJMFFD3KV',
-            secret: 'be7kR2CWeCFk4nkKCKV4XAX35y2eXrDeCPvs#v4F'),
-        queryParams: {
-          'val': 'lightning',
-          'aponly': 'true'
-        }).timeout(Duration(seconds: 10));
+    return Search(
+      userAgent: Environment.userAgent(),
+    ).mostRecent(
+      searchProvider: PodcastIndexProvider(
+        key: 'NBVJ9GPWMLPXJMFFD3KV',
+        secret: 'be7kR2CWeCFk4nkKCKV4XAX35y2eXrDeCPvs#v4F',
+      ),
+      queryParams: {
+        'val': 'lightning',
+        'aponly': 'true',
+      },
+    ).timeout(Duration(seconds: 10));
   }
 
   static Future<Podcast> _loadFeed(String url) {

@@ -3,17 +3,23 @@ import 'dart:async';
 import 'package:breez/bloc/account/account_model.dart';
 import 'package:breez/widgets/animated_loader_dialog.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 Widget buildTransferFundsInProgressDialog(
-    BuildContext context, Stream<AccountModel> accountStream) {
+  BuildContext context,
+  Stream<AccountModel> accountStream,
+) {
   return _TransferFundsInProgressDialog(accountStream: accountStream);
 }
 
 class _TransferFundsInProgressDialog extends StatefulWidget {
   final Stream<AccountModel> accountStream;
 
-  const _TransferFundsInProgressDialog({Key key, this.accountStream})
-      : super(key: key);
+  const _TransferFundsInProgressDialog({
+    Key key,
+    this.accountStream,
+  }) : super(key: key);
+
   @override
   State<StatefulWidget> createState() {
     return _TransferFundsInProgressDialogState();
@@ -46,6 +52,10 @@ class _TransferFundsInProgressDialogState
 
   @override
   Widget build(BuildContext context) {
-    return createAnimatedLoaderDialog(context, "Transferring funds");
+    final texts = AppLocalizations.of(context);
+    return createAnimatedLoaderDialog(
+      context,
+      texts.transferring_funds_title,
+    );
   }
 }

@@ -3,6 +3,7 @@ import 'package:breez/bloc/blocs_provider.dart';
 import 'package:breez/bloc/pos_catalog/actions.dart';
 import 'package:breez/bloc/pos_catalog/bloc.dart';
 import 'package:breez/bloc/pos_catalog/model.dart';
+import 'package:breez/routes/charge/currency_wrapper.dart';
 import 'package:breez/routes/charge/sale_view.dart';
 import 'package:breez/theme_data.dart' as theme;
 import 'package:breez/utils/date.dart';
@@ -13,10 +14,14 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class PosPaymentItem extends StatelessWidget {
   final PaymentInfo _paymentInfo;
+  final AccountModel _account;
+  final SaleSummary _saleSummary;
   final bool _lastItem;
 
-  PosPaymentItem(
+  const PosPaymentItem(
     this._paymentInfo,
+    this._account,
+    this._saleSummary,
     this._lastItem,
   );
 
@@ -42,7 +47,14 @@ class PosPaymentItem extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.start,
               mainAxisSize: MainAxisSize.min,
               children: [
-                _valueText(context),
+                Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.end,
+                  children: [
+                    _valueText(context),
+                    _fiatText(context),
+                  ],
+                ),
               ],
             ),
             onTap: () => showSaleView(context),
@@ -75,6 +87,29 @@ class PosPaymentItem extends StatelessWidget {
       style: isSent
           ? theme.posWithdrawalTransactionAmountStyle
           : theme.transactionAmountStyle,
+    );
+  }
+
+  Widget _fiatText(BuildContext context) {
+    if (_saleSummary == null) return Container();
+    final fiat = _saleSummary.currencies;
+    if (fiat == null || fiat.length != 1) return Container();
+
+    final texts = AppLocalizations.of(context);
+    return Padding(
+      padding: const EdgeInsets.only(top: 4.0),
+      child: Text(
+        texts.pos_transactions_item_fiat(
+          CurrencyWrapper.fromShortName(fiat.first, _account).format(
+            _saleSummary.fiatValue,
+            includeDisplayName: false,
+            includeCurrencySymbol: true,
+          ),
+        ),
+        style: theme.posWithdrawalTransactionAmountStyle.copyWith(
+          fontSize: 12.0,
+        ),
+      ),
     );
   }
 

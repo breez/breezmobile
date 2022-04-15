@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:breez/bloc/connect_pay/connect_pay_model.dart';
+import 'package:breez/utils/locale.dart';
 import 'package:firebase_database/firebase_database.dart';
 
 class OnlineStatusUpdater {
@@ -14,8 +15,8 @@ class OnlineStatusUpdater {
       String remoteKey,
       Function(PeerStatus) onRemoteStatusChanged) {
     if (_onLocalConnectSubscription != null) {
-      throw Exception(
-          "Status tracking alredy started, must be stopped before start again");
+      final texts = getSystemAppLocalizations();
+      throw Exception(texts.connect_to_pay_error_status_tracking_already_started);
     }
     _userStatusPath = FirebaseDatabase.instance.ref().child(localKey);
 

@@ -13,7 +13,7 @@ import 'package:breez/bloc/lnurl/lnurl_model.dart';
 import 'package:breez/bloc/lsp/lsp_bloc.dart';
 import 'package:breez/bloc/lsp/lsp_model.dart';
 import 'package:breez/logger.dart';
-import 'package:breez/routes/charge/succesful_payment.dart';
+import 'package:breez/routes/charge/successful_payment.dart';
 import 'package:breez/routes/podcast/theme.dart';
 import 'package:breez/services/injector.dart';
 import 'package:breez/theme_data.dart' as theme;

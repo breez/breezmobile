@@ -7,6 +7,7 @@ import 'package:breez/widgets/loader.dart';
 import 'package:flutter/material.dart';
 
 import 'lnurl_auth.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class LNURLWebViewPage extends StatefulWidget {
   final AccountBloc accountBloc;
@@ -45,7 +46,7 @@ class LNURLWebViewPageState extends State<LNURLWebViewPage> {
     .catchError(
       (err) => promptError(
         context,
-        "Error",
+        AppLocalizations.of(context).lnurl_webview_error_title,
         Text(err.toString()),
         okFunc: () => Navigator.of(context).pop(),
       ),
@@ -58,8 +59,9 @@ class LNURLWebViewPageState extends State<LNURLWebViewPage> {
       return Material(child: Loader());
     }
     return VendorWebViewPage(
-        widget.accountBloc,
-        widget.vendorModel.url + "?token=$jwtToken",
-        widget.vendorModel.displayName);
+      widget.accountBloc,
+      widget.vendorModel.url + "?token=$jwtToken",
+      widget.vendorModel.displayName,
+    );
   }
 }

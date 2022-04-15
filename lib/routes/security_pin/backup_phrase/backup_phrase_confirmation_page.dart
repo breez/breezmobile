@@ -7,7 +7,7 @@ import 'package:breez/widgets/back_button.dart' as backBtn;
 import 'package:breez/widgets/route.dart';
 import 'package:breez/widgets/single_button_bottom_bar.dart';
 import 'package:flutter/material.dart';
-
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'generate_backup_phrase_page.dart';
 
 class BackupPhraseGeneratorConfirmationPage extends StatefulWidget {
@@ -19,38 +19,40 @@ class BackupPhraseGeneratorConfirmationPage extends StatefulWidget {
 class BackupPhraseGeneratorConfirmationPageState
     extends State<BackupPhraseGeneratorConfirmationPage> {
   bool _isUnderstood = false;
-  String _instructions =
-      "You will be shown a list of words. Write down the words and store them in a safe place. Without these words, you won't be able to restore from backup and your funds will be lost. Breez won’t be able to help.";
 
   @override
   Widget build(BuildContext context) {
+    final themeData = Theme.of(context);
+    final texts = AppLocalizations.of(context);
     return Scaffold(
-        appBar: AppBar(
-            iconTheme: Theme.of(context).appBarTheme.iconTheme,
-            textTheme: Theme.of(context).appBarTheme.textTheme,
-            backgroundColor: Theme.of(context).canvasColor,
-            automaticallyImplyLeading: false,
-            leading: backBtn.BackButton(),
-            title: AutoSizeText(
-              "Generate Backup Phrase",
-              style: Theme.of(context).appBarTheme.textTheme.headline6,
-              maxLines: 1,
-            ),
-            elevation: 0.0),
-        body: Column(
-          children: <Widget>[
-            _buildBackupPhraseImage(),
-            _buildInstructions(),
-            _buildCheckbox(),
-            SizedBox(
-              height: _isUnderstood ? 0 : 48,
-            )
-          ],
+      appBar: AppBar(
+        iconTheme: themeData.appBarTheme.iconTheme,
+        textTheme: themeData.appBarTheme.textTheme,
+        backgroundColor: themeData.canvasColor,
+        automaticallyImplyLeading: false,
+        leading: backBtn.BackButton(),
+        title: AutoSizeText(
+          texts.backup_phrase_generate,
+          style: themeData.appBarTheme.textTheme.headline6,
+          maxLines: 1,
         ),
-        bottomNavigationBar: _buildNextBtn(_isUnderstood));
+        elevation: 0.0,
+      ),
+      body: Column(
+        children: [
+          _buildBackupPhraseImage(),
+          _buildInstructions(context),
+          _buildCheckbox(context),
+          SizedBox(
+            height: _isUnderstood ? 0 : 48,
+          )
+        ],
+      ),
+      bottomNavigationBar: _buildNextBtn(context, _isUnderstood),
+    );
   }
 
-  _buildBackupPhraseImage() {
+  Widget _buildBackupPhraseImage() {
     return Expanded(
       flex: 2,
       child: Image(
@@ -61,7 +63,8 @@ class BackupPhraseGeneratorConfirmationPageState
     );
   }
 
-  _buildInstructions() {
+  Widget _buildInstructions(BuildContext context) {
+    final texts = AppLocalizations.of(context);
     return Padding(
       padding: EdgeInsets.only(
         left: 48,
@@ -70,7 +73,7 @@ class BackupPhraseGeneratorConfirmationPageState
       child: Container(
         height: 96,
         child: AutoSizeText(
-          _instructions,
+          texts.backup_phrase_instructions,
           style: theme.backupPhraseInformationTextStyle,
           textAlign: TextAlign.center,
           minFontSize: MinFontSize(context).minFontSize,
@@ -80,57 +83,65 @@ class BackupPhraseGeneratorConfirmationPageState
     );
   }
 
-  _buildCheckbox() {
+  Widget _buildCheckbox(BuildContext context) {
+    final themeData = Theme.of(context);
+    final texts = AppLocalizations.of(context);
     return Expanded(
       flex: 1,
       child: Row(
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.center,
-        children: <Widget>[
+        children: [
           Theme(
-            data:
-                Theme.of(context).copyWith(unselectedWidgetColor: Colors.white),
+            data: themeData.copyWith(
+              unselectedWidgetColor: Colors.white,
+            ),
             child: Checkbox(
-                activeColor: Colors.white,
-                checkColor: Theme.of(context).canvasColor,
-                value: _isUnderstood,
-                onChanged: (value) {
-                  setState(() {
-                    _isUnderstood = value;
-                  });
-                }),
+              activeColor: Colors.white,
+              checkColor: themeData.canvasColor,
+              value: _isUnderstood,
+              onChanged: (value) => setState(() {
+                _isUnderstood = value;
+              }),
+            ),
           ),
           Text(
-            "I UNDERSTAND",
+            texts.backup_phrase_action_confirm,
             style: theme.backupPhraseConfirmationTextStyle,
-          )
+          ),
         ],
       ),
     );
   }
 
-  _buildNextBtn(bool isUnderstood) {
+  Widget _buildNextBtn(BuildContext context, bool isUnderstood) {
+    final texts = AppLocalizations.of(context);
     return Padding(
       padding: EdgeInsets.only(top: 24),
-      child: Column(mainAxisSize: MainAxisSize.min, children: <Widget>[
-        isUnderstood
-            ? SingleButtonBottomBar(
-                text: "NEXT",
-                onPressed: () {
-                  String mnemonics = bip39.generateMnemonic(strength: 128);
-                  Navigator.pushReplacement(
-                    context,
-                    FadeInRoute(
-                      builder: (BuildContext context) => withBreezTheme(
-                        context,
-                        GenerateBackupPhrasePage(mnemonics),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          isUnderstood
+              ? SingleButtonBottomBar(
+                  text: texts.backup_phrase_action_next,
+                  onPressed: () {
+                    String mnemonics = bip39.generateMnemonic(
+                      strength: 128,
+                    );
+                    Navigator.pushReplacement(
+                      context,
+                      FadeInRoute(
+                        builder: (context) => withBreezTheme(
+                          context,
+                          GenerateBackupPhrasePage(mnemonics),
+                        ),
                       ),
-                    ),
-                  );
-                },
-              )
-            : Container()
-      ]),
+                    );
+                  },
+                )
+              : Container(),
+        ],
+      ),
     );
   }
 }

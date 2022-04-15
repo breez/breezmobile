@@ -5,6 +5,7 @@ import 'package:breez/services/breezlib/breez_bridge.dart';
 import 'package:breez/services/breezlib/data/rpc.pbserver.dart';
 import 'package:breez/services/injector.dart';
 import 'package:breez/utils/lnurl.dart';
+import 'package:breez/utils/locale.dart';
 import 'package:breez/utils/retry.dart';
 import 'package:rxdart/rxdart.dart';
 
@@ -77,7 +78,8 @@ class LNUrlBloc with AsyncActionsHandler {
           } else if (response.hasPayResponse1()) {
             _lnUrlStreamController.add(PayFetchResponse(response.payResponse1));
           } else {
-            _lnUrlStreamController.addError("Unsupported LNUrl");
+            final texts = getSystemAppLocalizations();
+            _lnUrlStreamController.addError(texts.lnurl_error_unsupported);
           }
         }
       }).handleError((error) {

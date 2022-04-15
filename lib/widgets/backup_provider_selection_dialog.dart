@@ -133,7 +133,7 @@ class BackupProviderSelectionDialogState
     if (backupSettings == null) return;
 
     final providers = BackupSettings.availableBackupProviders();
-    final provider = BackupSettings.remoteServerBackupProvider;
+    final provider = BackupSettings.remoteServerBackupProvider();
     final selectedProvider = providers[_selectedProviderIndex];
 
     var settings = backupSettings;

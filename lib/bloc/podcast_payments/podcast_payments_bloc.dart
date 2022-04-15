@@ -65,8 +65,14 @@ class PodcastPaymentsBloc with AsyncActionsHandler {
     if (currentEpisode != null) {
       final value = await _getLightningPaymentValue(currentEpisode);
       if (value != null) {
-        _payRecipients(currentEpisode, value.recipients, action.sats,
-            boost: true, boostMessage: action.boostMessage);
+        _payRecipients(
+          currentEpisode,
+          value.recipients,
+          action.sats,
+          boost: true,
+          boostMessage: action.boostMessage,
+          senderName: action.senderName,
+        );
       }
     }
   }
@@ -149,8 +155,13 @@ class PodcastPaymentsBloc with AsyncActionsHandler {
   }
 
   void _payRecipients(
-      Episode episode, List<ValueDestination> recipients, int total,
-      {bool boost = false, String boostMessage = ""}) async {
+    Episode episode,
+    List<ValueDestination> recipients,
+    int total, {
+    bool boost = false,
+    String boostMessage = "",
+    String senderName = "",
+  }) async {
     if (breezReceiverNode == null) {
       try {
         breezReceiverNode = await _breezLib.receiverNode();
@@ -224,7 +235,9 @@ class PodcastPaymentsBloc with AsyncActionsHandler {
                     customKey: customKey,
                     customValue: customValue,
                     boostMessage: boostMessage,
-                    msatTotal: total * 1000))
+                    msatTotal: total * 1000,
+                    senderName: senderName,
+                ))
             .then((payResponse) async {
           if (payResponse.paymentError?.isNotEmpty == true) {
             if (!boost) {
@@ -323,14 +336,16 @@ class PodcastPaymentsBloc with AsyncActionsHandler {
         .timeout(Duration(seconds: 1), onTimeout: () => Int64.ZERO);
   }
 
-  Map<Int64, String> _getTlv(
-      {bool boost = false,
-      String customKey,
-      String customValue,
-      String boostMessage,
-      Episode episode,
-      PositionState position,
-      int msatTotal}) {
+  Map<Int64, String> _getTlv({
+    bool boost = false,
+    String customKey,
+    String customValue,
+    String boostMessage,
+    Episode episode,
+    PositionState position,
+    int msatTotal,
+    String senderName,
+  }) {
     var tlv = Map<String, dynamic>();
     tlv["podcast"] = _getPodcastTitle(episode);
     tlv["episode"] = episode.title;
@@ -339,6 +354,7 @@ class PodcastPaymentsBloc with AsyncActionsHandler {
     tlv["feedID"] = _getPodcastIndexID(episode);
     tlv["app_name"] = "Breez";
     tlv["value_msat_total"] = msatTotal;
+    tlv["sender_name"] = senderName;
     if (boost && boostMessage != null) tlv["message"] = boostMessage;
     var encoded = json.encode(tlv);
     var records = Map<Int64, String>();

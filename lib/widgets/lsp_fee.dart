@@ -29,7 +29,7 @@ promptLSPFeeAndNavigate(
   ).then((ok) {
     if (ok) {
       if (route == "/buy_bitcoin") {
-        showMonpayWebview(context);
+        showMoonpayWebview(context);
       } else {
         navigator.pushNamed(route);
       }

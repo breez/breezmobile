@@ -11,11 +11,14 @@ import 'package:breez/widgets/back_button.dart' as backBtn;
 import 'package:breez/widgets/error_dialog.dart';
 import 'package:breez/widgets/single_button_bottom_bar.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class VerifyBackupPhrasePage extends StatefulWidget {
   final String _mnemonics;
 
-  VerifyBackupPhrasePage(this._mnemonics);
+  const VerifyBackupPhrasePage(
+    this._mnemonics,
+  );
 
   @override
   VerifyBackupPhrasePageState createState() => VerifyBackupPhrasePageState();
@@ -29,36 +32,42 @@ class VerifyBackupPhrasePageState extends State<VerifyBackupPhrasePage> {
 
   @override
   Widget build(BuildContext context) {
-    BackupBloc backupBloc = AppBlocsProvider.of<BackupBloc>(context);
+    final themeData = Theme.of(context);
+    final query = MediaQuery.of(context);
+    final texts = AppLocalizations.of(context);
+    final backupBloc = AppBlocsProvider.of<BackupBloc>(context);
     return Scaffold(
       appBar: AppBar(
-          iconTheme: Theme.of(context).appBarTheme.iconTheme,
-          textTheme: Theme.of(context).appBarTheme.textTheme,
-          backgroundColor: Theme.of(context).canvasColor,
-          automaticallyImplyLeading: false,
-          leading: backBtn.BackButton(),
-          title: Text(
-            "Let's verify",
-            style: Theme.of(context).appBarTheme.textTheme.headline6,
-          ),
-          elevation: 0.0),
+        iconTheme: themeData.appBarTheme.iconTheme,
+        textTheme: themeData.appBarTheme.textTheme,
+        backgroundColor: themeData.canvasColor,
+        automaticallyImplyLeading: false,
+        leading: backBtn.BackButton(),
+        title: Text(
+          texts.backup_phrase_generation_verify,
+          style: themeData.appBarTheme.textTheme.headline6,
+        ),
+        elevation: 0.0,
+      ),
       body: SingleChildScrollView(
         child: Container(
-          height: MediaQuery.of(context).size.height -
-              kToolbarHeight -
-              MediaQuery.of(context).padding.top,
+          height: query.size.height - kToolbarHeight - query.padding.top,
           child: Column(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: <Widget>[
-              _buildForm(),
-              _buildInstructions(),
+            children: [
+              _buildForm(context),
+              _buildInstructions(context),
               StreamBuilder<BackupSettings>(
                 stream: backupBloc.backupSettingsStream,
                 builder: (context, snapshot) {
                   if (!snapshot.hasData) {
-                    return Container(padding: EdgeInsets.only(bottom: 88));
+                    return Container(
+                      padding: const EdgeInsets.only(
+                        bottom: 88,
+                      ),
+                    );
                   }
-                  return _buildBackupBtn(snapshot.data, backupBloc);
+                  return _buildBackupBtn(context, snapshot.data, backupBloc);
                 },
               )
             ],
@@ -76,49 +85,64 @@ class VerifyBackupPhrasePageState extends State<VerifyBackupPhrasePage> {
     super.initState();
   }
 
-  _buildBackupBtn(BackupSettings backupSettings, BackupBloc backupBloc) {
+  Widget _buildBackupBtn(
+    BuildContext context,
+    BackupSettings backupSettings,
+    BackupBloc backupBloc,
+  ) {
+    final texts = AppLocalizations.of(context);
     return SingleButtonBottomBar(
-      text: "BACKUP",
+      text: texts.backup_phrase_warning_action_backup,
       onPressed: () {
-        // reset state
         setState(() {
           _hasError = false;
         });
         if (_formKey.currentState.validate() && !_hasError) {
-          _createBackupPhrase(backupSettings, backupBloc);
+          _createBackupPhrase(context, backupSettings, backupBloc);
         }
       },
     );
   }
 
-  _buildForm() {
+  Widget _buildForm(BuildContext context) {
     return Form(
       key: _formKey,
       onChanged: () => _formKey.currentState.save(),
       child: Padding(
-        padding:
-            EdgeInsets.only(left: 16.0, right: 16.0, bottom: 40.0, top: 24.0),
+        padding: const EdgeInsets.fromLTRB(16.0, 24.0, 16.0, 40.0),
         child: Column(
-            mainAxisSize: MainAxisSize.max,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: _buildVerificationFormContent()),
+          mainAxisSize: MainAxisSize.max,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: _buildVerificationFormContent(context),
+        ),
       ),
     );
   }
 
-  Padding _buildInstructions() {
+  Padding _buildInstructions(BuildContext context) {
+    final texts = AppLocalizations.of(context);
     return Padding(
-      padding: EdgeInsets.only(left: 72, right: 72),
+      padding: const EdgeInsets.only(
+        left: 72,
+        right: 72,
+      ),
       child: Text(
-        "Please type words number ${_randomlySelectedIndexes[0] + 1}, ${_randomlySelectedIndexes[1] + 1} and ${_randomlySelectedIndexes[2] + 1} of the generated backup phrase.",
-        style: theme.backupPhraseInformationTextStyle
-            .copyWith(color: theme.BreezColors.white[300]),
+        texts.backup_phrase_generation_type_words(
+          _randomlySelectedIndexes[0] + 1,
+          _randomlySelectedIndexes[1] + 1,
+          _randomlySelectedIndexes[2] + 1,
+        ),
+        style: theme.backupPhraseInformationTextStyle.copyWith(
+          color: theme.BreezColors.white[300],
+        ),
         textAlign: TextAlign.center,
       ),
     );
   }
 
-  List<Widget> _buildVerificationFormContent() {
+  List<Widget> _buildVerificationFormContent(BuildContext context) {
+    final themeData = Theme.of(context);
+    final texts = AppLocalizations.of(context);
     List<Widget> selectedWordList = List.generate(
       _randomlySelectedIndexes.length,
       (index) {
@@ -126,7 +150,9 @@ class VerifyBackupPhrasePageState extends State<VerifyBackupPhrasePage> {
           padding: const EdgeInsets.only(bottom: 16),
           child: TextFormField(
             decoration: InputDecoration(
-              labelText: "${_randomlySelectedIndexes[index] + 1}",
+              labelText: texts.backup_phrase_generation_type_step(
+                _randomlySelectedIndexes[index] + 1,
+              ),
             ),
             style: theme.FieldTextStyle.textStyle,
             validator: (text) {
@@ -146,31 +172,46 @@ class VerifyBackupPhrasePageState extends State<VerifyBackupPhrasePage> {
         );
       },
     );
-    if (_hasError)
+    if (_hasError) {
       selectedWordList
         ..add(Text(
-          "Failed to verify words. Please write down the words and try again.",
-          style: Theme.of(context).textTheme.headline4.copyWith(fontSize: 12),
+          texts.backup_phrase_generation_verification_failed,
+          style: themeData.textTheme.headline4.copyWith(
+            fontSize: 12,
+          ),
         ));
+    }
     return selectedWordList;
   }
 
   Future _createBackupPhrase(
-      BackupSettings backupSettings, BackupBloc backupBloc) async {
-    var saveBackupKey =
-        SaveBackupKey(bip39.mnemonicToEntropy(widget._mnemonics));
+    BuildContext context,
+    BackupSettings backupSettings,
+    BackupBloc backupBloc,
+  ) async {
+    final themeData = Theme.of(context);
+    final texts = AppLocalizations.of(context);
+    final saveBackupKey = SaveBackupKey(
+      bip39.mnemonicToEntropy(widget._mnemonics),
+    );
     backupBloc.backupActionsSink.add(saveBackupKey);
     saveBackupKey.future.then((_) {
       _updateBackupSettings(
-          backupSettings.copyWith(keyType: BackupKeyType.PHRASE), backupBloc);
+        context,
+        backupSettings.copyWith(
+          keyType: BackupKeyType.PHRASE,
+        ),
+        backupBloc,
+      );
     }).catchError((err) {
       promptError(
-          context,
-          "Internal Error",
-          Text(
-            err.toString(),
-            style: Theme.of(context).dialogTheme.contentTextStyle,
-          ));
+        context,
+        texts.backup_phrase_generation_generic_error,
+        Text(
+          err.toString(),
+          style: themeData.dialogTheme.contentTextStyle,
+        ),
+      );
     });
   }
 
@@ -187,7 +228,12 @@ class VerifyBackupPhrasePageState extends State<VerifyBackupPhrasePage> {
   }
 
   Future _updateBackupSettings(
-      BackupSettings backupSettings, BackupBloc backupBloc) async {
+    BuildContext context,
+    BackupSettings backupSettings,
+    BackupBloc backupBloc,
+  ) async {
+    final themeData = Theme.of(context);
+    final texts = AppLocalizations.of(context);
     var action = UpdateBackupSettings(backupSettings);
     backupBloc.backupActionsSink.add(action);
     Navigator.popUntil(context, ModalRoute.withName("/security"));
@@ -196,21 +242,25 @@ class VerifyBackupPhrasePageState extends State<VerifyBackupPhrasePage> {
       backupBloc.backupStateStream.firstWhere((s) => s.inProgress).then((s) {
         if (mounted) {
           showDialog(
-              useRootNavigator: false,
-              barrierDismissible: false,
-              context: context,
-              builder: (ctx) => buildBackupInProgressDialog(
-                  ctx, backupBloc.backupStateStream));
+            useRootNavigator: false,
+            barrierDismissible: false,
+            context: context,
+            builder: (ctx) => buildBackupInProgressDialog(
+              ctx,
+              backupBloc.backupStateStream,
+            ),
+          );
         }
       });
     }).catchError((err) {
       promptError(
-          context,
-          "Internal Error",
-          Text(
-            err.toString(),
-            style: Theme.of(context).dialogTheme.contentTextStyle,
-          ));
+        context,
+        texts.backup_phrase_generation_generic_error,
+        Text(
+          err.toString(),
+          style: themeData.dialogTheme.contentTextStyle,
+        ),
+      );
     });
   }
 }

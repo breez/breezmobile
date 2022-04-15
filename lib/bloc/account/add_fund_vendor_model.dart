@@ -1,5 +1,3 @@
-import 'package:breez/l10n/text_uri.dart';
-
 class AddFundVendorModel {
   final String name;
   final String shortName;
@@ -9,7 +7,6 @@ class AddFundVendorModel {
   final bool enabled;
   final bool requireActiveChannel;
   final bool showLSPFee;
-  final TextUri textUri;
 
   AddFundVendorModel(
     this.name,
@@ -20,7 +17,6 @@ class AddFundVendorModel {
     this.requireActiveChannel = false,
     this.shortName,
     this.showLSPFee = false,
-    this.textUri,
   });
 
   AddFundVendorModel copyWith({
@@ -32,7 +28,6 @@ class AddFundVendorModel {
       this.route,
       isAllowed: isAllowed ?? this.isAllowed,
       enabled: this.enabled,
-      textUri: this.textUri,
     );
   }
 }

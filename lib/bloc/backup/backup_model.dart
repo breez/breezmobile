@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:breez/utils/locale.dart';
 import 'package:flutter/foundation.dart';
 
 class RemoteServerAuthData {
@@ -8,7 +9,12 @@ class RemoteServerAuthData {
   final String password;
   final String breezDir;
 
-  RemoteServerAuthData(this.url, this.user, this.password, this.breezDir);
+  const RemoteServerAuthData(
+    this.url,
+    this.user,
+    this.password,
+    this.breezDir,
+  );
 
   RemoteServerAuthData.fromJson(Map<String, dynamic> json)
       : this(
@@ -31,8 +37,12 @@ class RemoteServerAuthData {
     return json.encode(this.toJson()) == json.encode(other.toJson());
   }
 
-  RemoteServerAuthData copyWith(
-      {String url, String user, String password, String breezDir}) {
+  RemoteServerAuthData copyWith({
+    String url,
+    String user,
+    String password,
+    String breezDir,
+  }) {
     return RemoteServerAuthData(
       url ?? this.url,
       user ?? this.user,
@@ -46,45 +56,75 @@ class BackupProvider {
   final String name;
   final String displayName;
 
-  const BackupProvider(this.name, this.displayName);
+  const BackupProvider(
+    this.name,
+    this.displayName,
+  );
+
+  @override
+  bool operator ==(Object other) {
+    return other is BackupProvider && this.name == other.name;
+  }
+
+  @override
+  int get hashCode => name.hashCode;
 }
 
-enum BackupKeyType { NONE, PIN, PHRASE }
+enum BackupKeyType {
+  NONE,
+  PIN,
+  PHRASE,
+}
 
 class BackupSettings {
-  static const BackupProvider icloudBackupProvider =
-      BackupProvider("icloud", "Apple iCloud");
-  static const BackupProvider googleBackupProvider =
-      BackupProvider("gdrive", "Google Drive");
-  static const BackupProvider remoteServerBackupProvider =
-      BackupProvider("remoteserver", "Remote Server");
+  static BackupProvider icloudBackupProvider() => BackupProvider(
+        "icloud",
+        getSystemAppLocalizations().backup_model_name_apple_icloud,
+      );
+
+  static BackupProvider googleBackupProvider() => BackupProvider(
+        "gdrive",
+        getSystemAppLocalizations().backup_model_name_google_drive,
+      );
+
+  static BackupProvider remoteServerBackupProvider() => BackupProvider(
+        "remoteserver",
+        getSystemAppLocalizations().backup_model_name_remote_server,
+      );
 
   final bool promptOnError;
   final BackupKeyType backupKeyType;
   final BackupProvider backupProvider;
   final RemoteServerAuthData remoteServerAuthData;
 
-  BackupSettings(this.promptOnError, this.backupKeyType, this.backupProvider,
-      this.remoteServerAuthData);
-  BackupSettings.start()
-      : this(
-            true,
-            BackupKeyType.NONE,
-            defaultTargetPlatform == TargetPlatform.android
-                ? googleBackupProvider
-                : null,
-            RemoteServerAuthData(null, null, null, null));
+  BackupSettings(
+    this.promptOnError,
+    this.backupKeyType,
+    this.backupProvider,
+    this.remoteServerAuthData,
+  );
 
-  BackupSettings copyWith(
-      {bool promptOnError,
-      BackupKeyType keyType,
-      BackupProvider backupProvider,
-      RemoteServerAuthData remoteServerAuthData}) {
+  static BackupSettings start() => BackupSettings(
+        true,
+        BackupKeyType.NONE,
+        defaultTargetPlatform == TargetPlatform.android
+            ? googleBackupProvider()
+            : null,
+        RemoteServerAuthData(null, null, null, null),
+      );
+
+  BackupSettings copyWith({
+    bool promptOnError,
+    BackupKeyType keyType,
+    BackupProvider backupProvider,
+    RemoteServerAuthData remoteServerAuthData,
+  }) {
     return BackupSettings(
-        promptOnError ?? this.promptOnError,
-        keyType ?? this.backupKeyType,
-        backupProvider ?? this.backupProvider,
-        remoteServerAuthData ?? this.remoteServerAuthData);
+      promptOnError ?? this.promptOnError,
+      keyType ?? this.backupKeyType,
+      backupProvider ?? this.backupProvider,
+      remoteServerAuthData ?? this.remoteServerAuthData,
+    );
   }
 
   BackupSettings.fromJson(Map<String, dynamic> json)
@@ -108,11 +148,11 @@ class BackupSettings {
 
   static List<BackupProvider> availableBackupProviders() {
     List<BackupProvider> providers = [
-      googleBackupProvider,
-      remoteServerBackupProvider
+      googleBackupProvider(),
+      remoteServerBackupProvider()
     ];
     if (defaultTargetPlatform == TargetPlatform.iOS) {
-      providers.insert(0, icloudBackupProvider);
+      providers.insert(0, icloudBackupProvider());
     }
     return providers;
   }
@@ -123,7 +163,11 @@ class BackupState {
   final bool inProgress;
   final String lastBackupAccountName;
 
-  BackupState(this.lastBackupTime, this.inProgress, this.lastBackupAccountName);
+  const BackupState(
+    this.lastBackupTime,
+    this.inProgress,
+    this.lastBackupAccountName,
+  );
 
   BackupState.fromJson(Map<String, dynamic> json)
       : this(
@@ -146,9 +190,12 @@ class BackupFailedException implements Exception {
   final BackupProvider provider;
   final bool authenticationError;
 
-  BackupFailedException(this.provider, this.authenticationError);
+  const BackupFailedException(
+    this.provider,
+    this.authenticationError,
+  );
 
   String toString() {
-    return "Backup Failed";
+    return getSystemAppLocalizations().backup_model_error_failed;
   }
 }

@@ -6,6 +6,7 @@ import 'package:breez/logger.dart';
 import 'package:breez/services/breezlib/breez_bridge.dart';
 import 'package:breez/services/breezlib/data/rpc.pbgrpc.dart';
 import 'package:breez/services/injector.dart';
+import 'package:breez/utils/locale.dart';
 import 'package:fixnum/fixnum.dart';
 import 'package:http/http.dart';
 
@@ -68,10 +69,12 @@ class FastbitcoinsBloc {
 
   void _listenRedeemRequests() {
     _redeemRequestController.stream.listen((request) async {
+      final texts = getSystemAppLocalizations();
       try {
         AddInvoiceReply payreq = await _breezLib.addInvoice(
-            Int64(request.validateResponse.satoshiAmount),
-            description: "Fastbitcoins.com Voucher");
+          Int64(request.validateResponse.satoshiAmount),
+          description: texts.fast_bitcoin_dot_com_voucher,
+        );
         request.lightningInvoice = payreq.paymentRequest;
         log.info("fastbicoins request: " + jsonEncode(request.toJson()));
         Uri uri = Uri.https(baseURL, "w-api/v1/breez/redeem");
@@ -96,7 +99,8 @@ class FastbitcoinsBloc {
           ? response.body.substring(0, 100)
           : response.body;
       log.severe('fastbitcoins response error: $body');
-      throw "Service Unavailable. Please try again later.";
+      final texts = getSystemAppLocalizations();
+      throw texts.fast_bitcoin_dot_com_error_service_unavailable;
     }
   }
 
