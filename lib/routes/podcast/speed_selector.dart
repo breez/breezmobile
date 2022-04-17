@@ -105,6 +105,7 @@ class _SpeedSliderState extends State<SpeedSlider> {
   var speed = 1.0;
   var trimSilence = false;
   var volumeBoost = false;
+  var customSpeed = false;
 
   @override
   void initState() {
@@ -228,19 +229,56 @@ class _SpeedSliderState extends State<SpeedSlider> {
           height: 8.0,
         ),
         Divider(),
-        // ListTile(
-        //   title: Text("Custom Speed"),
-        //   trailing: Switch.adaptive(
-        //     value: volumeBoost,
-        //     onChanged: (boost) {
-        //       setState(() {
-        //         volumeBoost = boost;
-        //         audioBloc.volumeBoost(boost);
-        //         settingsBloc.volumeBoost(boost);
-        //       });
-        //     },
-        //   ),
-        // ),
+        ListTile(
+          title: Text("Custom Speed"),
+          trailing: Switch.adaptive(
+            value: customSpeed,
+            onChanged: (custom) {
+              setState(() {
+                customSpeed = custom;
+                if (customSpeed == true) {
+                  showDialog(
+                      context: context,
+                      builder: (BuildContext context) {
+                        return AlertDialog(
+                          shape: RoundedRectangleBorder(
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(20.0))),
+                          backgroundColor: Colors.green,
+                          content: TextFormField(
+                            decoration: const InputDecoration(
+                              icon: Icon(Icons.person),
+                              hintText: 'Custom Speed',
+                              labelText: 'Playback Speed',
+                            ),
+                            onSaved: (String value) {
+                              setState(() {
+                                speed = double.parse(value);
+                                audioBloc.playbackSpeed(speed);
+                                settingsBloc.setPlaybackSpeed(speed);
+                              });
+                            },
+                            validator: (String value) {
+                              if (value == null)
+                                return "Please enter a value";
+                              else if (int.parse(value) < 0.5 ||
+                                  int.parse(value) > 2)
+                                return "Please enter a value between 0.5 and 2";
+                              else
+                                return null;
+                            },
+                          ),
+                        );
+                      });
+                }
+              });
+            },
+          ),
+        ),
+        SizedBox(
+          height: 8.0,
+        ),
+        Divider(),
         if (themeData.platform == TargetPlatform.android) ...[
           /// Disable the trim silence option for now until the positioning bug
           /// in just_audio is resolved.
