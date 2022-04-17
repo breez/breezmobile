@@ -132,7 +132,7 @@ class _SpeedSliderState extends State<SpeedSlider> {
         Padding(
           padding: const EdgeInsets.all(8.0),
           child: Container(
-            width: 24,
+            width: MediaQuery.of(context).size.width * 24/360,
             height: 4,
             decoration: BoxDecoration(
               color: themeData.buttonTheme.colorScheme.onPrimary,
