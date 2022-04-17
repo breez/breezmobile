@@ -115,7 +115,7 @@ class BoostWidget extends StatelessWidget {
               flex: 1,
               child: Center(
                 child: Container(
-                  width: 92,
+                  width: MediaQuery.of(context).size.width*92/360,
                   child: Stack(
                     fit: StackFit.loose,
                     children: [
@@ -137,7 +137,7 @@ class BoostWidget extends StatelessWidget {
     final themeData = Theme.of(context);
     return GestureDetector(
       child: Container(
-        width: 32,
+        width: MediaQuery.of(context).size.width*32/360,
         height: 64,
         child: Material(
           color: Colors.transparent,
@@ -175,13 +175,13 @@ class BoostWidget extends StatelessWidget {
           ),
         ),
         child: SizedBox(
-          width: 42,
+          width: MediaQuery.of(context).size.width*42/360,
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               Container(
-                width: 38,
+                width: MediaQuery.of(context).size.width*38/360,
                 height: 20,
                 child: AutoSizeText(
                   _formatBoostAmount(context),
@@ -220,7 +220,7 @@ class BoostWidget extends StatelessWidget {
       left: 60,
       child: GestureDetector(
         child: Container(
-          width: 32,
+          width: MediaQuery.of(context).size.width*32/360,
           height: 64,
           child: Material(
             color: Colors.transparent,
