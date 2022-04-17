@@ -26,7 +26,9 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 class LNURLFetchInvoicePage extends StatefulWidget {
   final PayFetchResponse payFetchResponse;
 
-  const LNURLFetchInvoicePage(this.payFetchResponse);
+  const LNURLFetchInvoicePage(
+    this.payFetchResponse,
+  );
 
   @override
   LNURLFetchInvoicePageState createState() {
@@ -38,20 +40,19 @@ class LNURLFetchInvoicePageState extends State<LNURLFetchInvoicePage> {
   PayFetchResponse _payFetchResponse;
 
   final _formKey = GlobalKey<FormState>();
-  var _scaffoldKey = GlobalKey<ScaffoldState>();
-
-  final TextEditingController _commentController = TextEditingController();
-  final TextEditingController _amountController = TextEditingController();
+  final _scaffoldKey = GlobalKey<ScaffoldState>();
+  final _commentController = TextEditingController();
+  final _amountController = TextEditingController();
+  final _amountFocusNode = FocusNode();
 
   bool _isInit = false;
-  final FocusNode _amountFocusNode = FocusNode();
   KeyboardDoneAction _doneAction;
   ModalRoute _loaderRoute;
   ModalRoute _currentRoute;
 
   @override
   void didChangeDependencies() {
-    AccountBloc accountBloc = AppBlocsProvider.of<AccountBloc>(context);
+    final accountBloc = AppBlocsProvider.of<AccountBloc>(context);
 
     if (mounted) {
       if (!_isInit) {
@@ -63,8 +64,10 @@ class LNURLFetchInvoicePageState extends State<LNURLFetchInvoicePage> {
           });
         }
 
-        Future.delayed(Duration(milliseconds: 200),
-            () => FocusScope.of(context).requestFocus(_amountFocusNode));
+        Future.delayed(
+          Duration(milliseconds: 200),
+          () => FocusScope.of(context).requestFocus(_amountFocusNode),
+        );
       }
 
       _isInit = true;
@@ -87,14 +90,11 @@ class LNURLFetchInvoicePageState extends State<LNURLFetchInvoicePage> {
 
   @override
   Widget build(BuildContext context) {
-    return showFetchInvoiceDialog();
-  }
-
-  Widget showFetchInvoiceDialog() {
+    final themeData = Theme.of(context);
     final texts = AppLocalizations.of(context);
-    AccountBloc accountBloc = AppBlocsProvider.of<AccountBloc>(context);
-    InvoiceBloc invoiceBloc = AppBlocsProvider.of<InvoiceBloc>(context);
-    LNUrlBloc lnurlBloc = AppBlocsProvider.of<LNUrlBloc>(context);
+    final accountBloc = AppBlocsProvider.of<AccountBloc>(context);
+    final invoiceBloc = AppBlocsProvider.of<InvoiceBloc>(context);
+    final lnurlBloc = AppBlocsProvider.of<LNUrlBloc>(context);
 
     /*
          4. `LN WALLET` displays a payment dialog where user can specify an exact sum to be sent which would be bounded by:
@@ -118,6 +118,8 @@ class LNURLFetchInvoicePageState extends State<LNURLFetchInvoicePage> {
       }
     }
 
+    final response = widget.payFetchResponse;
+
     return Scaffold(
       key: _scaffoldKey,
       bottomNavigationBar: StreamBuilder<AccountModel>(
@@ -134,22 +136,30 @@ class LNURLFetchInvoicePageState extends State<LNURLFetchInvoicePage> {
                       : 0.0),
               child: SingleButtonBottomBar(
                 stickToBottom: true,
-                text: "CONTINUE",
+                text: texts.lnurl_fetch_invoice_action_continue,
                 onPressed: () {
                   if (_formKey.currentState.validate()) {
-                    _getInvoice(invoiceBloc, accountBloc, lnurlBloc, account);
+                    _getInvoice(
+                      context,
+                      invoiceBloc,
+                      accountBloc,
+                      lnurlBloc,
+                      account,
+                    );
                   }
                 },
               ),
             );
           }),
       appBar: AppBar(
-        iconTheme: Theme.of(context).appBarTheme.iconTheme,
-        textTheme: Theme.of(context).appBarTheme.textTheme,
-        backgroundColor: Theme.of(context).canvasColor,
+        iconTheme: themeData.appBarTheme.iconTheme,
+        textTheme: themeData.appBarTheme.textTheme,
+        backgroundColor: themeData.canvasColor,
         leading: backBtn.BackButton(),
-        title: Text('Pay to $payee',
-            style: Theme.of(context).appBarTheme.textTheme.headline6),
+        title: Text(
+          texts.lnurl_fetch_invoice_pay_to_payee(payee),
+          style: themeData.appBarTheme.textTheme.headline6,
+        ),
         elevation: 0.0,
       ),
       body: StreamBuilder<AccountModel>(
@@ -162,93 +172,110 @@ class LNURLFetchInvoicePageState extends State<LNURLFetchInvoicePage> {
           return Form(
             key: _formKey,
             child: Padding(
-              padding: EdgeInsets.only(
-                  left: 16.0, right: 16.0, bottom: 40.0, top: 24.0),
+              padding: const EdgeInsets.fromLTRB(16.0, 24.0, 16.0, 40.0),
               child: Scrollbar(
                 child: SingleChildScrollView(
                   child: Column(
                     mainAxisSize: MainAxisSize.max,
                     crossAxisAlignment: CrossAxisAlignment.start,
-                    children: <Widget>[
-                        if(widget.payFetchResponse.commentAllowed > 0)
-                      TextFormField(
-                        controller: _commentController,
-                        keyboardType: TextInputType.multiline,
-                        textInputAction: TextInputAction.done,
-                        maxLines: null,
-                        maxLength: widget.payFetchResponse.commentAllowed.toInt(),
-                        maxLengthEnforced: true,
-                        decoration: InputDecoration(
-                          labelText: "Comment (optional)",
-                        ),
+                    children: [
+                      response.commentAllowed > 0
+                          ? TextFormField(
+                              controller: _commentController,
+                              keyboardType: TextInputType.multiline,
+                              textInputAction: TextInputAction.done,
+                              maxLines: null,
+                              maxLength: response.commentAllowed.toInt(),
+                              maxLengthEnforced: true,
+                              decoration: InputDecoration(
+                                labelText: texts.lnurl_fetch_invoice_comment,
+                              ),
+                              style: theme.FieldTextStyle.textStyle,
+                            )
+                          : Container(),
+                      AmountFormField(
+                        context: context,
+                        accountModel: acc,
+                        texts: texts,
+                        focusNode: _amountFocusNode,
+                        controller: _amountController,
+                        validatorFn: (amt) {
+                          final min = response.minAmount;
+                          final max = response.maxAmount;
+
+                          if (amt < min) {
+                            return texts.lnurl_fetch_invoice_error_min(
+                              acc.currency.format(min),
+                            );
+                          }
+
+                          if (amt > max) {
+                            return texts.lnurl_fetch_invoice_error_max(
+                              acc.currency.format(max),
+                            );
+                          }
+
+                          return null;
+                        },
                         style: theme.FieldTextStyle.textStyle,
                       ),
-                      AmountFormField(
-                          context: context,
-                          accountModel: acc,
-                          texts: texts,
-                          focusNode: _amountFocusNode,
-                          controller: _amountController,
-                          validatorFn: (amt) {
-                            final min = widget.payFetchResponse.minAmount;
-                            final max = widget.payFetchResponse.maxAmount;
-
-                            if (amt < min) {
-                              return 'Must be at least ${acc.currency.format(min)}';
-                            }
-
-                            if (amt > max) {
-                              return 'Exceeds the limit (${acc.currency.format(max)})';
-                            }
-
-                            return null;
-                          },
-                          style: theme.FieldTextStyle.textStyle),
                       Padding(
-                              padding: EdgeInsets.only(top: 8),
-                              child: Text(
-                                      "Enter an amount between ${acc.currency.format(widget.payFetchResponse.minAmount)} and ${acc.currency.format(widget.payFetchResponse.maxAmount)}",
-                                      textAlign: TextAlign.left,
-                                      style: theme.FieldTextStyle.labelStyle)),
+                        padding: const EdgeInsets.only(top: 8),
+                        child: Text(
+                          texts.lnurl_fetch_invoice_limit(
+                            acc.currency.format(response.minAmount),
+                            acc.currency.format(response.maxAmount),
+                          ),
+                          textAlign: TextAlign.left,
+                          style: theme.FieldTextStyle.labelStyle,
+                        ),
+                      ),
                       Container(
                         width: MediaQuery.of(context).size.width,
                         height: 48,
-                        padding: EdgeInsets.only(top: 16.0),
-                        child: _buildDescription(acc),
+                        padding: const EdgeInsets.only(top: 16.0),
+                        child: _buildDescription(context, acc),
                       ),
                       StreamBuilder(
-                          stream: accountBloc.accountStream,
-                          builder: (BuildContext context,
-                              AsyncSnapshot<AccountModel> accSnapshot) {
-                            if (!accSnapshot.hasData) {
-                              return Container();
-                            }
+                        stream: accountBloc.accountStream,
+                        builder: (context, accSnapshot) {
+                          if (!accSnapshot.hasData) {
+                            return Container();
+                          }
 
-                            String message;
-                            if (accSnapshot.hasError) {
-                              message = accSnapshot.error.toString();
-                            }
+                          String message;
+                          if (accSnapshot.hasError) {
+                            message = accSnapshot.error.toString();
+                          }
 
-                            if (message != null) {
-                              // In case error doesn't have a trailing full stop
-                              if (!message.endsWith('.')) {
-                                message += '.';
-                              }
-                              return Container(
-                                  padding: EdgeInsets.only(
-                                      top: 50.0, left: 30.0, right: 30.0),
-                                  child: Column(children: <Widget>[
-                                    Text(
-                                      message,
-                                      textAlign: TextAlign.center,
-                                      style: theme.warningStyle.copyWith(
-                                          color: Theme.of(context).errorColor),
+                          if (message != null) {
+                            // In case error doesn't have a trailing full stop
+                            if (!message.endsWith('.')) {
+                              message += '.';
+                            }
+                            return Container(
+                              padding: const EdgeInsets.only(
+                                top: 50.0,
+                                left: 30.0,
+                                right: 30.0,
+                              ),
+                              child: Column(
+                                children: [
+                                  Text(
+                                    message,
+                                    textAlign: TextAlign.center,
+                                    style: theme.warningStyle.copyWith(
+                                      color: themeData.errorColor,
                                     ),
-                                  ]));
-                            } else {
-                              return SizedBox();
-                            }
-                          })
+                                  ),
+                                ],
+                              ),
+                            );
+                          } else {
+                            return SizedBox();
+                          }
+                        },
+                      )
                     ],
                   ),
                 ),
@@ -260,7 +287,10 @@ class LNURLFetchInvoicePageState extends State<LNURLFetchInvoicePage> {
     );
   }
 
-  Widget _buildDescription(AccountModel acc) {
+  Widget _buildDescription(
+    BuildContext context,
+    AccountModel acc,
+  ) {
     return GestureDetector(
       child: AutoSizeText(
         "${_getMetadataText(_payFetchResponse.metadata)}",
@@ -271,7 +301,10 @@ class LNURLFetchInvoicePageState extends State<LNURLFetchInvoicePage> {
     );
   }
 
-  void applyPayFetchResponse(PayFetchResponse response, AccountModel account) {
+  void applyPayFetchResponse(
+    PayFetchResponse response,
+    AccountModel account,
+  ) {
     _payFetchResponse = response;
     _commentController.text = response.comment;
     if (response.minAmount == response.maxAmount) {
@@ -321,8 +354,13 @@ class LNURLFetchInvoicePageState extends State<LNURLFetchInvoicePage> {
     return result;
   }
 
-  void _getInvoice(InvoiceBloc invoiceBloc, AccountBloc accountBloc,
-      LNUrlBloc lnurlBloc, AccountModel account) async {
+  void _getInvoice(
+    BuildContext context,
+    InvoiceBloc invoiceBloc,
+    AccountBloc accountBloc,
+    LNUrlBloc lnurlBloc,
+    AccountModel account,
+  ) async {
     log.info('_getInvoice.');
     /*
          5. LN WALLET makes a GET request using callback with the following query parameters:
@@ -333,6 +371,7 @@ class LNURLFetchInvoicePageState extends State<LNURLFetchInvoicePage> {
 
     */
 
+    final texts = AppLocalizations.of(context);
     var navigator = Navigator.of(context);
     _currentRoute = ModalRoute.of(navigator.context);
     _loaderRoute = createLoaderRoute(context);
@@ -345,12 +384,17 @@ class LNURLFetchInvoicePageState extends State<LNURLFetchInvoicePage> {
     var action = FetchInvoice(_payFetchResponse);
     action.future.catchError((e) {
       promptError(
-          context,
-          "LNURL-Pay Error",
-          Text(
-              "An error occurred while attempting to retreive an invoice from ${_payFetchResponse.host}!\nReason: ${e.toString()}",
-              style: Theme.of(context).dialogTheme.contentTextStyle),
-          okFunc: _removeLoader);
+        context,
+        texts.lnurl_fetch_invoice_error_title,
+        Text(
+          texts.lnurl_fetch_invoice_error_message(
+            _payFetchResponse.host,
+            e.toString(),
+          ),
+          style: Theme.of(context).dialogTheme.contentTextStyle,
+        ),
+        okFunc: _removeLoader,
+      );
     }).then((payinfo) {
       invoiceBloc.decodeInvoiceSink.add(payinfo.invoice);
       log.info(

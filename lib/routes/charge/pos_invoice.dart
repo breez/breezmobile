@@ -247,7 +247,7 @@ class POSInvoiceState extends State<POSInvoice> with TickerProviderStateMixin {
                   ),
                   PosInvoiceCartBar(
                     badgeKey: badgeKey,
-                    currentSale: currentSale,
+                    totalNumOfItems: currentSale.totalNumOfItems,
                     accountModel: accountModel,
                     currentCurrency: currentCurrency,
                     isKeypadView: _isKeypadView,
@@ -816,7 +816,9 @@ class POSInvoiceState extends State<POSInvoice> with TickerProviderStateMixin {
     final posCatalogBloc = AppBlocsProvider.of<PosCatalogBloc>(context);
     setState(() {
       currentPendingItem = null;
-      posCatalogBloc.actionsSink.add(SetCurrentSale(Sale(saleLines: [])));
+      posCatalogBloc.actionsSink.add(SetCurrentSale(Sale(
+        saleLines: [],
+      )));
     });
   }
 

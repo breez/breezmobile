@@ -255,7 +255,8 @@ class PayerRemoteSession extends RemoteSession with OnlineStatusUpdater {
   void _sendPayment(String paymentRequest, PaymentSessionState nextState) {
     _breezLib.decodePaymentRequest(paymentRequest).then((invoice) {
       if (invoice.amount.toInt() != _currentSession.payerData.amount) {
-        throw Exception("Wrong amount in payment request");
+        final texts = getSystemAppLocalizations();
+        throw Exception(texts.connect_to_pay_error_wrong_amount);
       }
       _paymentSessionController.add(nextState);
       _backgroundService.runAsTask(_sessionCompleter.future, () {

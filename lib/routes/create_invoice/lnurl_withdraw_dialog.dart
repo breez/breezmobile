@@ -9,6 +9,7 @@ import 'package:breez/bloc/lnurl/lnurl_bloc.dart';
 import 'package:breez/theme_data.dart' as theme;
 import 'package:breez/widgets/loading_animated_text.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import '../sync_progress_dialog.dart';
 
@@ -19,7 +20,11 @@ class LNURlWithdrawDialog extends StatefulWidget {
   final Function(dynamic result) _onFinish;
 
   const LNURlWithdrawDialog(
-      this.invoiceBloc, this.accountBloc, this.lnurlBloc, this._onFinish);
+    this.invoiceBloc,
+    this.accountBloc,
+    this.lnurlBloc,
+    this._onFinish,
+  );
 
   @override
   State<StatefulWidget> createState() {
@@ -36,10 +41,17 @@ class LNUrlWithdrawDialogState extends State<LNURlWithdrawDialog>
   @override
   void initState() {
     super.initState();
-    var controller = AnimationController(
-        vsync: this, duration: Duration(milliseconds: 1000));
-    _opacityAnimation = Tween<double>(begin: 0.0, end: 1.0)
-        .animate(CurvedAnimation(parent: controller, curve: Curves.ease));
+    final controller = AnimationController(
+      vsync: this,
+      duration: Duration(milliseconds: 1000),
+    );
+    _opacityAnimation = Tween<double>(
+      begin: 0.0,
+      end: 1.0,
+    ).animate(CurvedAnimation(
+      parent: controller,
+      curve: Curves.ease,
+    ));
     controller.value = 1.0;
     controller.addStatusListener((status) {
       if (status == AnimationStatus.dismissed && this.mounted) {
@@ -69,12 +81,13 @@ class LNUrlWithdrawDialogState extends State<LNURlWithdrawDialog>
   }
 
   void _listenPaidInvoice(
-      PaymentRequestModel payReqModel, AnimationController controller) async {
-    var payreq =
-        await widget.invoiceBloc.paidInvoicesStream.firstWhere((payreq) {
-      bool ok = payreq.paymentHash == payReqModel.paymentHash;
-      return ok;
-    }, orElse: () => null);
+    PaymentRequestModel payReqModel,
+    AnimationController controller,
+  ) async {
+    var payreq = await widget.invoiceBloc.paidInvoicesStream.firstWhere(
+      (payreq) => payreq.paymentHash == payReqModel.paymentHash,
+      orElse: () => null,
+    );
     if (payreq != null) {
       Timer(Duration(milliseconds: 1000), () {
         if (this.mounted) {
@@ -94,55 +107,62 @@ class LNUrlWithdrawDialogState extends State<LNURlWithdrawDialog>
 
   @override
   Widget build(BuildContext context) {
+    final themeData = Theme.of(context);
+    final texts = AppLocalizations.of(context);
+
     return FadeTransition(
       opacity: _opacityAnimation,
       child: AlertDialog(
-        title: Text("Receive Funds",
-            style: Theme.of(context).dialogTheme.titleTextStyle,
-            textAlign: TextAlign.center),
+        title: Text(
+          texts.lnurl_withdraw_dialog_title,
+          style: themeData.dialogTheme.titleTextStyle,
+          textAlign: TextAlign.center,
+        ),
         content: StreamBuilder<AccountModel>(
-            stream: widget.accountBloc.accountStream,
-            builder: (context, snapshot) {
-              return Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                mainAxisSize: MainAxisSize.min,
-                children: <Widget>[
-                  _error != null
-                      ? Text("Failed to receive funds: $_error",
-                          style: Theme.of(context).dialogTheme.contentTextStyle,
-                          textAlign: TextAlign.center)
-                      : snapshot.hasData && snapshot.data.syncedToChain != true
-                          ? SizedBox()
-                          : LoadingAnimatedText(
-                              'Please wait while your payment is being processed',
-                              textStyle: Theme.of(context)
-                                  .dialogTheme
-                                  .contentTextStyle,
-                              textAlign: TextAlign.center,
+          stream: widget.accountBloc.accountStream,
+          builder: (context, snapshot) {
+            return Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                _error != null
+                    ? Text(
+                        texts.lnurl_withdraw_dialog_error(_error),
+                        style: themeData.dialogTheme.contentTextStyle,
+                        textAlign: TextAlign.center,
+                      )
+                    : snapshot.hasData && snapshot.data.syncedToChain != true
+                        ? SizedBox()
+                        : LoadingAnimatedText(
+                            texts.lnurl_withdraw_dialog_wait,
+                            textStyle: themeData.dialogTheme.contentTextStyle,
+                            textAlign: TextAlign.center,
+                          ),
+                _error != null
+                    ? SizedBox(height: 16.0)
+                    : snapshot.hasData && snapshot.data.syncedToChain != true
+                        ? Padding(
+                            padding: const EdgeInsets.only(bottom: 12.0),
+                            child: SyncProgressDialog(closeOnSync: false),
+                          )
+                        : Padding(
+                            padding: EdgeInsets.only(top: 8.0),
+                            child: Image.asset(
+                              theme.customData[theme.themeId].loaderAssetPath,
+                              gaplessPlayback: true,
                             ),
-                  _error != null
-                      ? SizedBox(height: 16.0)
-                      : snapshot.hasData && snapshot.data.syncedToChain != true
-                          ? Padding(
-                              padding: const EdgeInsets.only(bottom: 12.0),
-                              child: SyncProgressDialog(closeOnSync: false),
-                            )
-                          : Padding(
-                              padding: EdgeInsets.only(top: 8.0),
-                              child: Image.asset(
-                                theme.customData[theme.themeId].loaderAssetPath,
-                                gaplessPlayback: true,
-                              )),
-                  TextButton(
-                    onPressed: (() {
-                      onFinish(false);
-                    }),
-                    child: Text("CLOSE",
-                        style: Theme.of(context).primaryTextTheme.button),
-                  )
-                ],
-              );
-            }),
+                          ),
+                TextButton(
+                  onPressed: () => onFinish(false),
+                  child: Text(
+                    texts.lnurl_withdraw_dialog_action_close,
+                    style: themeData.primaryTextTheme.button,
+                  ),
+                )
+              ],
+            );
+          },
+        ),
       ),
     );
   }

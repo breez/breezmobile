@@ -11,7 +11,6 @@ import 'package:breez/bloc/invoice/invoice_model.dart';
 import 'package:breez/bloc/lnurl/lnurl_bloc.dart';
 import 'package:breez/bloc/lsp/lsp_bloc.dart';
 import 'package:breez/bloc/lsp/lsp_model.dart';
-import 'package:breez/l10n/text_uri.dart';
 import 'package:breez/routes/podcast/theme.dart';
 import 'package:breez/routes/spontaneous_payment/spontaneous_payment_page.dart';
 import 'package:breez/theme_data.dart' as theme;
@@ -290,11 +289,7 @@ Future showReceiveOptions(BuildContext parentContext, AccountModel account) {
                               enabled:
                                   account.connected || !v.requireActiveChannel),
                           title: Text(
-                            textFromUri(
-                              texts,
-                              v.textUri,
-                              def: v.shortName ?? v.name,
-                            ),
+                            v.shortName ?? v.name,
                             style: theme.bottomSheetTextStyle,
                           ),
                           onTap: () {

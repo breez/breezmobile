@@ -6,13 +6,13 @@ class PodcastIndexMetadataLoader {
   final podcastIndexClient = PodcastIndexClient();
 
   Future<Map<String, dynamic>> loadPodcastMetadata({
-    @required String url
+    @required String url,
   }) {
     return podcastIndexClient.loadFeed(url: url);
   }
 
   Future<Map<String, dynamic>> loadEpisodeMetadata({
-    @required Episode episode
+    @required Episode episode,
   }) {
     if (episode.metadata == null || episode.metadata["feed"] == null) {
       return Future.value({});
@@ -23,6 +23,9 @@ class PodcastIndexMetadataLoader {
       return Future.value({});
     }
 
-    return podcastIndexClient.loadEpisode(feedId: feedId, guid: episode.guid);
+    return podcastIndexClient.loadEpisode(
+      feedId: feedId,
+      guid: episode.guid,
+    );
   }
 }

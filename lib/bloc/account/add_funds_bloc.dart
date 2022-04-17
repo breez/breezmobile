@@ -5,11 +5,11 @@ import 'package:breez/bloc/account/account_model.dart';
 import 'package:breez/bloc/lsp/lsp_model.dart';
 import 'package:breez/bloc/user_profile/breez_user_model.dart';
 import 'package:breez/bloc/user_profile/currency.dart';
-import 'package:breez/l10n/text_uri.dart';
 import 'package:breez/logger.dart';
 import 'package:breez/services/breezlib/breez_bridge.dart';
 import 'package:breez/services/breez_server/server.dart';
 import 'package:breez/services/injector.dart';
+import 'package:breez/utils/locale.dart';
 import 'package:flutter/services.dart';
 import 'package:http/http.dart' as http;
 import "package:ini/ini.dart";
@@ -77,7 +77,7 @@ class AddFundsBloc extends Bloc {
       userStream.firstWhere((u) => u.userID != null).then((user) async {
         var lspStatus = await this.lspStatusStream.first;
         if (lspStatus.selectedLSP == null) {
-          throw new Exception("lsp was not selected");
+          throw new Exception(getSystemAppLocalizations().lsp_error_not_selected);
         }
         breezLib.addFundsInit(user.userID, lspStatus.selectedLSP).then((reply) {
           AddFundResponse response = AddFundResponse(reply);
@@ -98,6 +98,7 @@ class AddFundsBloc extends Bloc {
   }
 
   Future _populateAvailableVendors() async {
+    final texts = getSystemAppLocalizations();
     var pendingMoonpayOrder = _completedMoonpayOrderController.valueOrNull;
     bool hasPendingOrder = false;
     if (pendingMoonpayOrder != null) {
@@ -108,20 +109,18 @@ class AddFundsBloc extends Bloc {
     }
     List<AddFundVendorModel> _vendorList = [];
     _vendorList.add(AddFundVendorModel(
-      "Receive via BTC Address",
+      texts.bottom_action_bar_receive_btc_address,
       "src/icon/bitcoin.png",
       "/deposit_btc_address",
       enabled: !hasPendingOrder,
-      textUri: TextUri.BOTTOM_ACTION_BAR_RECEIVE_BTC_ADDRESS,
     ));
     _vendorList.add(AddFundVendorModel(
-      "Buy Bitcoin",
+      texts.bottom_action_bar_buy_bitcoin,
       "src/icon/credit_card.png",
       "/buy_bitcoin",
       isAllowed: _isMoonpayAllowed,
       enabled: !hasPendingOrder,
       showLSPFee: true,
-      textUri: TextUri.BOTTOM_ACTION_BAR_BUY_BITCOIN,
     ));
     _availableVendorsController.add(_vendorList);
   }
@@ -195,7 +194,7 @@ class AddFundsBloc extends Bloc {
       if (response.statusCode != 200 || body == null) {
         String msg = (body?.length ?? 0) > 100 ? body.substring(0, 100) : body;
         log.severe('moonpay response error: $msg');
-        throw "Service Unavailable. Please try again later.";
+        throw getSystemAppLocalizations().add_funds_moonpay_error_service_unavailable;
       }
       _ipCheckResult = jsonDecode(body)['isAllowed'];
     }

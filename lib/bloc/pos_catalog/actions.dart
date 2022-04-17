@@ -78,3 +78,15 @@ class UpdatePosCatalogItemSort extends AsyncAction {
 
   UpdatePosCatalogItemSort(this.sort);
 }
+
+class UpdatePosReportTimeRange extends AsyncAction {
+  final PosReportTimeRange range;
+
+  UpdatePosReportTimeRange(this.range);
+}
+
+class FetchPosReport extends AsyncAction {
+  final PosReportTimeRange range;
+
+  FetchPosReport(this.range);
+}

@@ -3,38 +3,38 @@ import 'package:breez/bloc/account/account_model.dart';
 import 'package:breez/routes/home/bottom_actions_bar.dart';
 import 'package:breez/utils/min_font_size.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
-class AddFundsMessage extends StatefulWidget {
+class AddFundsMessage extends StatelessWidget {
   final AccountModel accountModel;
 
-  const AddFundsMessage({Key key, this.accountModel}) : super(key: key);
+  const AddFundsMessage({
+    Key key,
+    this.accountModel,
+  }) : super(key: key);
 
-  @override
-  State<StatefulWidget> createState() {
-    return AddFundsMessageState();
-  }
-}
-
-class AddFundsMessageState extends State<AddFundsMessage> {
   @override
   Widget build(BuildContext context) {
+    final texts = AppLocalizations.of(context);
+    final themeData = Theme.of(context);
+    final minFontSize = MinFontSize(context).minFontSize;
+
     return Container(
       height: 64,
-      color: Theme.of(context).backgroundColor,
+      color: themeData.backgroundColor,
       child: Padding(
-        padding: const EdgeInsets.only(
-            top: 12.0, bottom: 12.0, left: 24.0, right: 20.0),
+        padding: const EdgeInsets.fromLTRB(24.0, 12.0, 20.0, 12.0),
         child: Row(
           children: [
             Expanded(
               child: AutoSizeText(
-                "Add funds to your balance to send payments to this podcast.",
-                style: Theme.of(context)
-                    .textTheme
-                    .bodyText2
-                    .copyWith(letterSpacing: 0.25, height: 1.24),
+                texts.podcast_add_funds_title,
+                style: themeData.textTheme.bodyText2.copyWith(
+                  letterSpacing: 0.25,
+                  height: 1.24,
+                ),
                 textAlign: TextAlign.start,
-                minFontSize: MinFontSize(context).minFontSize,
+                minFontSize: minFontSize,
                 stepGranularity: 0.1,
                 maxLines: 2,
               ),
@@ -47,22 +47,24 @@ class AddFundsMessageState extends State<AddFundsMessage> {
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(6.0),
                   ),
-                  padding: EdgeInsets.symmetric(vertical: 12, horizontal: 12),
-                  primary: Theme.of(context).primaryColor,
+                  padding: const EdgeInsets.symmetric(
+                    vertical: 12,
+                    horizontal: 12,
+                  ),
+                  primary: themeData.primaryColor,
                 ),
-                onPressed: () {
-                  showReceiveOptions(context, widget.accountModel);
-                },
+                onPressed: () => showReceiveOptions(context, accountModel),
                 child: AutoSizeText(
-                  "ADD FUNDS",
-                  minFontSize: MinFontSize(context).minFontSize,
+                  texts.podcast_add_funds_action_add,
+                  minFontSize: minFontSize,
                   stepGranularity: 0.1,
                   maxLines: 1,
-                  style: Theme.of(context).textTheme.bodyText2.copyWith(
-                      color: Colors.white,
-                      letterSpacing: 1,
-                      height: 1.24,
-                      fontWeight: FontWeight.w600),
+                  style: themeData.textTheme.bodyText2.copyWith(
+                    color: Colors.white,
+                    letterSpacing: 1,
+                    height: 1.24,
+                    fontWeight: FontWeight.w600,
+                  ),
                 ),
               ),
             ),

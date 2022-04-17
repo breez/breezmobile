@@ -23,7 +23,7 @@ dependencies:
   email_validator: ^2.0.1
   extended_image: ^6.0.1
   file_picker: ^4.3.3
-  firebase_core: ^1.12.0
+  firebase_core: ^1.14.0
   firebase_database: ^9.0.6
   firebase_dynamic_links: ^4.0.5
   firebase_messaging: ^11.2.6
@@ -43,11 +43,17 @@ dependencies:
   logging: ^1.0.2
   package_info_plus: ^1.3.0
   path_provider: ^2.0.8
-  printing: ^5.6.6
+  printing: ^5.7.5
   protobuf: ^2.0.1
   qr_code_scanner: ^0.6.1
   qr_code_tools: ^0.0.7
-  qr_flutter: ^4.0.0
+  # qr_flutter has already fixed the build issue with the qr package but did not publish an updated
+  # version, they will publish as 4.0.1 for now they recommend to use the master but instead of that
+  # we are using an specific commit to avoid unexpected behaviour in future builds.
+  qr_flutter:
+    git:
+      url: https://github.com/theyakka/qr.flutter.git
+      ref: 1fc6e38c198a76a6fd60b7bd3b4c190cd6c9330b
   rxdart: ^0.27.3
   shared_preferences: ^2.0.12
   simple_animations: ^4.0.1
@@ -83,8 +89,6 @@ dependencies:
   md5_file_checksum: ^1.0.3
 
 dependency_overrides:
-  printing: ^5.6.5
-  flutter_svg: ^0.23.0+1
   flutter_downloader:
     git:
       url: https://github.com/breez/flutter_downloader.git

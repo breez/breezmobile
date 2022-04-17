@@ -6,7 +6,7 @@ import 'package:breez/bloc/account/account_model.dart';
 import 'package:breez/bloc/blocs_provider.dart';
 import 'package:breez/widgets/loader.dart';
 import 'package:flutter/material.dart';
-
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'sweep_all_coins_confirmation.dart';
 import 'withdraw_funds_page.dart';
 
@@ -37,62 +37,68 @@ class UnexpectedFundsState extends State<UnexpectedFunds> {
 
   @override
   Widget build(BuildContext context) {
-    var accountBloc = AppBlocsProvider.of<AccountBloc>(context);
+    final themeData = Theme.of(context);
+    final texts = AppLocalizations.of(context);
+    final accountBloc = AppBlocsProvider.of<AccountBloc>(context);
     return Scaffold(
-        body: StreamBuilder<AccountModel>(
-            stream: accountBloc.accountStream,
-            builder: (context, accSnapshot) {
-              if (accSnapshot.data == null) {
-                return Center(
-                    child: Loader(
-                        color:
-                            Theme.of(context).primaryColor.withOpacity(0.5)));
-              }
-              return PageView(
-                controller: _pageController,
-                physics: NeverScrollableScrollPhysics(),
-                children: <Widget>[
-                  WithdrawFundsPage(
-                      title: "Unexpected Funds",
-                      optionalMessage:
-                          "Breez found unexpected funds in its underlying wallet (probably due to a closed channel). It is highly recommended you send these fund to a BTC address as soon as possible.",
-                      policy: WithdrawFundsPolicy(
-                          accSnapshot.data.walletBalance,
-                          accSnapshot.data.walletBalance,
-                          accSnapshot.data.walletBalance,
-                          accSnapshot.data.walletBalance),
-                      initialAddress: _destAddress,
-                      initialAmount: accSnapshot.data.currency.format(
-                          accSnapshot.data.walletBalance,
-                          userInput: true,
-                          includeDisplayName: false),
-                      onNext: (amount, address, _) {
-                        setState(() {
-                          this._destAddress = address;
-                          _pageController.nextPage(
-                              duration: Duration(milliseconds: 250),
-                              curve: Curves.easeInOut);
-                        });
-                        return Future.value(null);
-                      }),
-                  _destAddress == null
-                      ? SizedBox()
-                      : SweepAllCoinsConfirmation(
-                          accountBloc: accountBloc,
-                          address: _destAddress,
-                          onConfirm: (txDetails) {
-                            var action = PublishTransaction(txDetails.txBytes);
-                            accountBloc.userActionsSink.add(action);
-                            return action.future
-                                .then((value) => Navigator.of(context).pop());
-                          },
-                          onPrevious: () {
-                            _pageController.previousPage(
-                                duration: Duration(milliseconds: 250),
-                                curve: Curves.easeInOut);
-                          }),
-                ],
-              );
-            }));
+      body: StreamBuilder<AccountModel>(
+        stream: accountBloc.accountStream,
+        builder: (context, accSnapshot) {
+          if (accSnapshot.data == null) {
+            return Center(
+              child: Loader(
+                color: themeData.primaryColor.withOpacity(0.5),
+              ),
+            );
+          }
+          final balance = accSnapshot.data.walletBalance;
+          return PageView(
+            controller: _pageController,
+            physics: NeverScrollableScrollPhysics(),
+            children: [
+              WithdrawFundsPage(
+                title: texts.unexpected_funds_title,
+                optionalMessage: texts.unexpected_funds_message,
+                policy: WithdrawFundsPolicy(balance, balance, balance, balance),
+                initialAddress: _destAddress,
+                initialAmount: accSnapshot.data.currency.format(
+                  balance,
+                  userInput: true,
+                  includeDisplayName: false,
+                ),
+                onNext: (amount, address, _) {
+                  setState(() {
+                    this._destAddress = address;
+                    _pageController.nextPage(
+                      duration: Duration(milliseconds: 250),
+                      curve: Curves.easeInOut,
+                    );
+                  });
+                  return Future.value(null);
+                },
+              ),
+              _destAddress == null
+                  ? SizedBox()
+                  : SweepAllCoinsConfirmation(
+                      accountBloc: accountBloc,
+                      address: _destAddress,
+                      onConfirm: (txDetails) {
+                        var action = PublishTransaction(txDetails.txBytes);
+                        accountBloc.userActionsSink.add(action);
+                        return action.future
+                            .then((value) => Navigator.of(context).pop());
+                      },
+                      onPrevious: () {
+                        _pageController.previousPage(
+                          duration: Duration(milliseconds: 250),
+                          curve: Curves.easeInOut,
+                        );
+                      },
+                    ),
+            ],
+          );
+        },
+      ),
+    );
   }
 }

@@ -5,76 +5,83 @@ import 'package:breez/widgets/loading_animated_text.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
-class StatusText extends StatefulWidget {
+class StatusText extends StatelessWidget {
   final AccountModel account;
   final String message;
 
-  StatusText(this.account, {this.message});
+  const StatusText(
+    this.account, {
+    this.message,
+  });
 
-  @override
-  State<StatefulWidget> createState() {
-    return _StatusTextState();
-  }
-}
-
-class _StatusTextState extends State<StatusText> {
   @override
   Widget build(BuildContext context) {
-    if (widget.message != null) {
-      return LoadingAnimatedText(widget.message);
+    final themeData = Theme.of(context);
+    final texts = AppLocalizations.of(context);
+
+    if (message != null) {
+      return LoadingAnimatedText(message);
     }
 
-    if (widget.account.processingConnection) {
-      return LoadingAnimatedText("",
-          textAlign: TextAlign.center,
-          textElements: <TextSpan>[
-            TextSpan(
-                text: "Breez is ",
-                style: Theme.of(context).accentTextTheme.bodyText2),
-            _LinkTextSpan(
-                text: "opening a secure channel",
-                url: widget.account.channelFundingTxUrl,
-                style: Theme.of(context)
-                    .accentTextTheme
-                    .bodyText2
-                    .copyWith(decoration: TextDecoration.underline)),
-            // style: theme.blueLinkStyle),
-            TextSpan(
-              text:
-                  " with our server. This might take a while, but don't worry, we'll notify you when the app is ready to send and receive payments.",
-              style: Theme.of(context).accentTextTheme.bodyText2,
-            )
-          ]);
+    if (account.processingConnection) {
+      return LoadingAnimatedText(
+        "",
+        textAlign: TextAlign.center,
+        textElements: [
+          TextSpan(
+            text: texts.status_text_loading_begin,
+            style: themeData.accentTextTheme.bodyText2,
+          ),
+          _LinkTextSpan(
+            text: texts.status_text_loading_middle,
+            url: account.channelFundingTxUrl,
+            style: themeData.accentTextTheme.bodyText2.copyWith(
+              decoration: TextDecoration.underline,
+            ),
+          ),
+          TextSpan(
+            text: texts.status_text_loading_end,
+            style: themeData.accentTextTheme.bodyText2,
+          ),
+        ],
+      );
     }
 
-    if (widget.account == null || widget.account.statusMessage == null) {
+    if (account == null || account.statusMessage == null) {
       return AutoSizeText(
-        "Breez is ready to receive funds.",
-        style: Theme.of(context).accentTextTheme.bodyText2,
+        texts.status_text_ready,
+        style: themeData.accentTextTheme.bodyText2,
         textAlign: TextAlign.center,
         minFontSize: MinFontSize(context).minFontSize,
         stepGranularity: 0.1,
       );
     }
 
-    var swapError = widget.account.swapFundsStatus?.error;
+    var swapError = account.swapFundsStatus?.error;
     bool loading = swapError == null || swapError.isEmpty;
     return loading
-        ? LoadingAnimatedText(widget.account.statusMessage)
-        : Text(widget.account.statusMessage,
-            style: Theme.of(context).accentTextTheme.bodyText2,
-            textAlign: TextAlign.center);
+        ? LoadingAnimatedText(account.statusMessage)
+        : Text(
+            account.statusMessage,
+            style: themeData.accentTextTheme.bodyText2,
+            textAlign: TextAlign.center,
+          );
   }
 }
 
 class _LinkTextSpan extends TextSpan {
-  _LinkTextSpan({TextStyle style, String url, String text})
-      : super(
-            style: style,
-            text: text ?? url,
-            recognizer: TapGestureRecognizer()
-              ..onTap = () {
-                launch(url, forceSafariVC: false);
-              });
+  _LinkTextSpan({
+    TextStyle style,
+    String url,
+    String text,
+  }) : super(
+          style: style,
+          text: text ?? url,
+          recognizer: TapGestureRecognizer()
+            ..onTap = () {
+              launch(url, forceSafariVC: false);
+            },
+        );
 }

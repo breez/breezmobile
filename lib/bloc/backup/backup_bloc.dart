@@ -147,7 +147,7 @@ class BackupBloc {
   Future _updateBackupProvider(BackupSettings settings) async {
     String authData;
     if (settings.backupProvider.name ==
-        BackupSettings.remoteServerBackupProvider.name) {
+        BackupSettings.remoteServerBackupProvider().name) {
       var map = settings.remoteServerAuthData.toJson();
       authData = json.encode(map);
     }
@@ -182,10 +182,11 @@ class BackupBloc {
       if (backupSettingsModel.backupProvider == null &&
           backupState?.lastBackupTime != null) {
         backupSettingsModel = backupSettingsModel.copyWith(
-            backupProvider: BackupSettings.googleBackupProvider);
+          backupProvider: BackupSettings.googleBackupProvider(),
+        );
       }
       if (backupSettingsModel.backupProvider?.name ==
-          BackupSettings.remoteServerBackupProvider.name) {
+          BackupSettings.remoteServerBackupProvider().name) {
         String authdata =
             await _secureStorage.read(key: "remoteServerAuthData");
         if (authdata != null) {

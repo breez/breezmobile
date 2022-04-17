@@ -6,6 +6,7 @@ import 'package:flutter_svg/svg.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:qr_code_scanner/qr_code_scanner.dart';
 import 'package:qr_code_tools/qr_code_tools.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class QRScan extends StatefulWidget {
   @override
@@ -15,20 +16,23 @@ class QRScan extends StatefulWidget {
 }
 
 class QRScanState extends State<QRScan> {
-  final GlobalKey qrKey = GlobalKey(debugLabel: 'QR');
+  final qrKey = GlobalKey(debugLabel: 'QR');
   QRViewController controller;
 
   @override
   Widget build(BuildContext context) {
+    final texts = AppLocalizations.of(context);
+
     return Material(
-      child: Stack(children: [
-        Positioned(
+      child: Stack(
+        children: [
+          Positioned(
             left: 0,
             right: 0,
             bottom: 0.0,
             top: 0.0,
             child: Column(
-              children: <Widget>[
+              children: [
                 Expanded(
                   flex: 5,
                   child: QRView(
@@ -44,35 +48,38 @@ class QRScanState extends State<QRScan> {
                   ),
                 )
               ],
-            )),
-        Positioned(
+            ),
+          ),
+          Positioned(
             right: 10,
             top: 5,
             child: Container(
-                child: IconButton(
-              padding: EdgeInsets.fromLTRB(0, 32, 24, 0),
-              icon: SvgPicture.asset(
-                "src/icon/image.svg",
-                color: Colors.white,
-                width: 32,
-                height: 32,
+              child: IconButton(
+                padding: const EdgeInsets.fromLTRB(0, 32, 24, 0),
+                icon: SvgPicture.asset(
+                  "src/icon/image.svg",
+                  color: Colors.white,
+                  width: 32,
+                  height: 32,
+                ),
+                onPressed: () async {
+                  final _picker = ImagePicker();
+                  PickedFile pickedFile = await _picker
+                      .getImage(source: ImageSource.gallery)
+                      .catchError((err) {});
+                  final File file = File(pickedFile.path);
+                  try {
+                    if (file == null) {
+                      return;
+                    }
+                    String data = await QrCodeToolsPlugin.decodeFrom(file.path);
+                    Navigator.of(context).pop(data);
+                  } catch (e) {}
+                },
               ),
-              onPressed: () async {
-                final _picker = ImagePicker();
-                PickedFile pickedFile =
-                    await _picker.getImage(source: ImageSource.gallery).catchError((err) {
-                });
-                final File file = File(pickedFile.path);
-                try {
-                  if (file == null) {
-                    return;
-                  }
-                  String data = await QrCodeToolsPlugin.decodeFrom(file.path);
-                  Navigator.of(context).pop(data);
-                } catch (e) {}
-              },
-            ))),
-        Positioned(
+            ),
+          ),
+          Positioned(
             bottom: 30.0,
             right: 0,
             left: 0,
@@ -80,25 +87,31 @@ class QRScanState extends State<QRScan> {
                 ? Center(
                     child: Container(
                       decoration: BoxDecoration(
-                          borderRadius: BorderRadius.all(Radius.circular(12.0)),
-                          border:
-                              Border.all(color: Colors.white.withOpacity(0.8))),
+                        borderRadius: BorderRadius.all(
+                          const Radius.circular(12.0),
+                        ),
+                        border: Border.all(
+                          color: Colors.white.withOpacity(0.8),
+                        ),
+                      ),
                       child: TextButton(
-                          style: TextButton.styleFrom(
-                            padding: EdgeInsets.only(right: 35, left: 35),
+                        style: TextButton.styleFrom(
+                          padding: const EdgeInsets.only(right: 35, left: 35),
+                        ),
+                        onPressed: () => Navigator.of(context).pop(),
+                        child: Text(
+                          texts.qr_scan_action_cancel,
+                          style: TextStyle(
+                            color: Colors.white,
                           ),
-                          onPressed: () {
-                            Navigator.of(context).pop();
-                          },
-                          child: Text(
-                            "CANCEL",
-                            style: TextStyle(color: Colors.white),
-                          )),
+                        ),
+                      ),
                     ),
                   )
-                : SizedBox())
-      ]),
-      //),
+                : SizedBox(),
+          )
+        ],
+      ),
     );
   }
 

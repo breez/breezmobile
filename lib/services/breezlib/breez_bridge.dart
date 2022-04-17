@@ -812,6 +812,7 @@ class BreezBridge {
       result.addAll(files.map((e) => e as String));
     }
     result.add('$lndDir/breez.db');
+    result.add('$lndDir/data/chain/bitcoin/$network/channel.backup');
     return result;
   }
 }

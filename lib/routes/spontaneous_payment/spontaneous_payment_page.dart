@@ -23,7 +23,10 @@ class SpontaneousPaymentPage extends StatefulWidget {
   final String nodeID;
   final GlobalKey firstPaymentItemKey;
 
-  const SpontaneousPaymentPage(this.nodeID, this.firstPaymentItemKey);
+  const SpontaneousPaymentPage(
+    this.nodeID,
+    this.firstPaymentItemKey,
+  );
 
   @override
   State<StatefulWidget> createState() {
@@ -33,9 +36,8 @@ class SpontaneousPaymentPage extends StatefulWidget {
 
 class SpontaneousPaymentPageState extends State<SpontaneousPaymentPage> {
   final _formKey = GlobalKey<FormState>();
-
-  final TextEditingController _descriptionController = TextEditingController();
-  final TextEditingController _amountController = TextEditingController();
+  final _descriptionController = TextEditingController();
+  final _amountController = TextEditingController();
 
   final FocusNode _amountFocusNode = FocusNode();
   KeyboardDoneAction _doneAction;
@@ -44,8 +46,10 @@ class SpontaneousPaymentPageState extends State<SpontaneousPaymentPage> {
   @override
   void initState() {
     _doneAction = KeyboardDoneAction(<FocusNode>[_amountFocusNode]);
-    Future.delayed(Duration(milliseconds: 200),
-        () => FocusScope.of(context).requestFocus(_amountFocusNode));
+    Future.delayed(
+      Duration(milliseconds: 200),
+      () => FocusScope.of(context).requestFocus(_amountFocusNode),
+    );
     super.initState();
   }
 
@@ -65,38 +69,41 @@ class SpontaneousPaymentPageState extends State<SpontaneousPaymentPage> {
 
   @override
   Widget build(BuildContext context) {
+    final themeData = Theme.of(context);
     final texts = AppLocalizations.of(context);
-    final String _title = "Send Payment";
-    AccountBloc accountBloc = AppBlocsProvider.of<AccountBloc>(context);
+    final accountBloc = AppBlocsProvider.of<AccountBloc>(context);
 
     return Scaffold(
       bottomNavigationBar: StreamBuilder<AccountModel>(
-          stream: accountBloc.accountStream,
-          builder: (context, snapshot) {
-            if (!snapshot.hasData) {
-              return StaticLoader();
-            }
-            var account = snapshot.data;
-            return Padding(
-              padding: const EdgeInsets.only(top: 24.0),
-              child: SingleButtonBottomBar(
-                stickToBottom: true,
-                text: "PAY",
-                onPressed: () {
-                  if (_formKey.currentState.validate()) {
-                    _sendPayment(accountBloc, account);
-                  }
-                },
-              ),
-            );
-          }),
+        stream: accountBloc.accountStream,
+        builder: (context, snapshot) {
+          if (!snapshot.hasData) {
+            return StaticLoader();
+          }
+          var account = snapshot.data;
+          return Padding(
+            padding: const EdgeInsets.only(top: 24.0),
+            child: SingleButtonBottomBar(
+              stickToBottom: true,
+              text: texts.spontaneous_payment_action_pay,
+              onPressed: () {
+                if (_formKey.currentState.validate()) {
+                  _sendPayment(context, accountBloc, account);
+                }
+              },
+            ),
+          );
+        },
+      ),
       appBar: AppBar(
-        iconTheme: Theme.of(context).appBarTheme.iconTheme,
-        textTheme: Theme.of(context).appBarTheme.textTheme,
-        backgroundColor: Theme.of(context).canvasColor,
+        iconTheme: themeData.appBarTheme.iconTheme,
+        textTheme: themeData.appBarTheme.textTheme,
+        backgroundColor: themeData.canvasColor,
         leading: backBtn.BackButton(),
-        title: Text(_title,
-            style: Theme.of(context).appBarTheme.textTheme.headline6),
+        title: Text(
+          texts.spontaneous_payment_title,
+          style: themeData.appBarTheme.textTheme.headline6,
+        ),
         elevation: 0.0,
       ),
       body: StreamBuilder<AccountModel>(
@@ -109,11 +116,10 @@ class SpontaneousPaymentPageState extends State<SpontaneousPaymentPage> {
           return Form(
             key: _formKey,
             child: Padding(
-              padding: EdgeInsets.only(
-                  left: 16.0, right: 16.0, bottom: 40.0, top: 24.0),
+              padding: const EdgeInsets.fromLTRB(16.0, 24.0, 16.0, 40.0),
               child: ListView(
-                children: <Widget>[
-                  _buildNodeIdDescription(),
+                children: [
+                  _buildNodeIdDescription(context),
                   TextFormField(
                     controller: _descriptionController,
                     keyboardType: TextInputType.multiline,
@@ -122,57 +128,64 @@ class SpontaneousPaymentPageState extends State<SpontaneousPaymentPage> {
                     maxLength: 90,
                     maxLengthEnforcement: MaxLengthEnforcement.enforced,
                     decoration: InputDecoration(
-                      labelText: "Tip Message (optional)",
+                      labelText: texts.spontaneous_payment_tip_message,
                     ),
                     style: theme.FieldTextStyle.textStyle,
                   ),
                   AmountFormField(
-                      context: context,
-                      texts: texts,
-                      accountModel: acc,
-                      focusNode: _amountFocusNode,
-                      controller: _amountController,
-                      validatorFn: acc.validateOutgoingPayment,
-                      style: theme.FieldTextStyle.textStyle),
+                    context: context,
+                    texts: texts,
+                    accountModel: acc,
+                    focusNode: _amountFocusNode,
+                    controller: _amountController,
+                    validatorFn: acc.validateOutgoingPayment,
+                    style: theme.FieldTextStyle.textStyle,
+                  ),
                   Container(
                     width: MediaQuery.of(context).size.width,
                     height: 48,
                     padding: EdgeInsets.only(top: 16.0),
-                    child: _buildPayableBTC(acc),
+                    child: _buildPayableBTC(context, acc),
                   ),
                   StreamBuilder(
-                      stream: accountBloc.accountStream,
-                      builder: (BuildContext context,
-                          AsyncSnapshot<AccountModel> accSnapshot) {
-                        if (!accSnapshot.hasData) {
-                          return Container();
-                        }
-                        AccountModel acc = accSnapshot.data;
+                    stream: accountBloc.accountStream,
+                    builder: (context, accSnapshot) {
+                      if (!accSnapshot.hasData) {
+                        return Container();
+                      }
+                      AccountModel acc = accSnapshot.data;
 
-                        String message;
-                        if (accSnapshot.hasError) {
-                          message = accSnapshot.error.toString();
-                        } else if (acc.processingConnection) {
-                          message =
-                              'You will be able to receive payments after Breez is finished opening a secure channel with our server. This usually takes ~10 minutes to be completed. Please try again in a couple of minutes.';
-                        }
+                      String message;
+                      if (accSnapshot.hasError) {
+                        message = accSnapshot.error.toString();
+                      } else if (acc.processingConnection) {
+                        message = texts.spontaneous_payment_generic_message;
+                      }
 
-                        if (message != null) {
-                          return Container(
-                              padding: EdgeInsets.only(
-                                  top: 50.0, left: 30.0, right: 30.0),
-                              child: Column(children: <Widget>[
-                                Text(
-                                  message,
-                                  textAlign: TextAlign.center,
-                                  style: theme.warningStyle.copyWith(
-                                      color: Theme.of(context).errorColor),
+                      if (message != null) {
+                        return Container(
+                          padding: const EdgeInsets.only(
+                            top: 50.0,
+                            left: 30.0,
+                            right: 30.0,
+                          ),
+                          child: Column(
+                            children: [
+                              Text(
+                                message,
+                                textAlign: TextAlign.center,
+                                style: theme.warningStyle.copyWith(
+                                  color: themeData.errorColor,
                                 ),
-                              ]));
-                        } else {
-                          return SizedBox();
-                        }
-                      })
+                              ),
+                            ],
+                          ),
+                        );
+                      } else {
+                        return SizedBox();
+                      }
+                    },
+                  )
                 ],
               ),
             ),
@@ -182,74 +195,102 @@ class SpontaneousPaymentPageState extends State<SpontaneousPaymentPage> {
     );
   }
 
-  Widget _buildPayableBTC(AccountModel acc) {
+  Widget _buildPayableBTC(BuildContext context, AccountModel acc) {
+    final texts = AppLocalizations.of(context);
     return GestureDetector(
       child: AutoSizeText(
-        "Pay up to: ${acc.currency.format(acc.maxAllowedToPay)}",
+        texts.spontaneous_payment_max_amount(
+          acc.currency.format(acc.maxAllowedToPay),
+        ),
         style: theme.textStyle,
         maxLines: 1,
         minFontSize: MinFontSize(context).minFontSize,
       ),
       onTap: () => _amountController.text = acc.currency.format(
-          acc.maxAllowedToPay,
-          includeDisplayName: false,
-          userInput: true),
+        acc.maxAllowedToPay,
+        includeDisplayName: false,
+        userInput: true,
+      ),
     );
   }
 
-  Widget _buildNodeIdDescription() {
+  Widget _buildNodeIdDescription(BuildContext context) {
+    final texts = AppLocalizations.of(context);
     return CollapsibleListItem(
-        title: "Node ID",
-        sharedValue: widget.nodeID,
-        userStyle: TextStyle(color: Colors.white));
+      title: texts.spontaneous_payment_node_id,
+      sharedValue: widget.nodeID,
+      userStyle: TextStyle(
+        color: Colors.white,
+      ),
+    );
   }
 
-  Future _sendPayment(AccountBloc accBloc, AccountModel account) async {
+  Future _sendPayment(
+    BuildContext context,
+    AccountBloc accBloc,
+    AccountModel account,
+  ) async {
+    final texts = AppLocalizations.of(context);
+    final themeData = Theme.of(context);
+
     String tipMessage = _descriptionController.text;
     var amount = account.currency.parse(_amountController.text);
     _amountFocusNode.unfocus();
     var ok = await promptAreYouSure(
-        context,
-        "Send Payment",
-        Text(
-            "Are you sure you want to ${account.currency.format(amount)} to this node?\n\n${this.widget.nodeID}"),
-        okText: "PAY",
-        cancelText: "CANCEL");
+      context,
+      texts.spontaneous_payment_send_payment_title,
+      Text(
+        texts.spontaneous_payment_send_payment_message(
+          account.currency.format(amount),
+          this.widget.nodeID,
+        ),
+      ),
+      okText: texts.spontaneous_payment_action_pay,
+      cancelText: texts.spontaneous_payment_action_cancel,
+    );
     if (ok) {
-      var sendAction =
-          SendSpontaneousPayment(widget.nodeID, amount, tipMessage);
+      var sendAction = SendSpontaneousPayment(
+        widget.nodeID,
+        amount,
+        tipMessage,
+      );
       try {
         showDialog(
-            useRootNavigator: false,
-            context: context,
-            barrierDismissible: false,
-            builder: (_) => ProcessingPaymentDialog(
-                  context,
-                  () {
-                    var sendPayment = Future.delayed(Duration(seconds: 1), () {
-                      accBloc.userActionsSink.add(sendAction);
-                      return sendAction.future;
-                    });
+          useRootNavigator: false,
+          context: context,
+          barrierDismissible: false,
+          builder: (_) => ProcessingPaymentDialog(
+            context,
+            () {
+              var sendPayment = Future.delayed(
+                Duration(seconds: 1),
+                () {
+                  accBloc.userActionsSink.add(sendAction);
+                  return sendAction.future;
+                },
+              );
 
-                    return sendPayment;
-                  },
-                  accBloc,
-                  widget.firstPaymentItemKey,
-                  (_) {},
-                  220,
-                  popOnCompletion: true,
-                ));
+              return sendPayment;
+            },
+            accBloc,
+            widget.firstPaymentItemKey,
+            (_) {},
+            220,
+            popOnCompletion: true,
+          ),
+        );
         Navigator.of(context).removeRoute(_currentRoute);
         await sendAction.future;
       } catch (err) {
         if (err.runtimeType != PaymentError) {
           promptError(
-              context,
-              "Payment Error",
-              Text(
-                err.toString(),
-                style: Theme.of(context).dialogTheme.contentTextStyle,
-              ));
+            context,
+            texts.spontaneous_payment_error_title,
+            Text(
+              err.toString(),
+              style: themeData.dialogTheme.contentTextStyle,
+            ),
+          );
         }
       }
     }

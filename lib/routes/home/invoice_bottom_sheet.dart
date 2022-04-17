@@ -9,6 +9,7 @@ import 'package:breez/utils/node_id.dart';
 import 'package:breez/widgets/flushbar.dart';
 import 'package:breez/widgets/route.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class InvoiceBottomSheet extends StatefulWidget {
   final InvoiceBloc invoiceBloc;
@@ -16,8 +17,12 @@ class InvoiceBottomSheet extends StatefulWidget {
   final UserProfileBloc userProfileBloc;
   final GlobalKey firstPaymentItemKey;
 
-  InvoiceBottomSheet(this.invoiceBloc, this.isSmallView, this.userProfileBloc,
-      this.firstPaymentItemKey);
+  const InvoiceBottomSheet(
+    this.invoiceBloc,
+    this.isSmallView,
+    this.userProfileBloc,
+    this.firstPaymentItemKey,
+  );
 
   @override
   State createState() => InvoiceBottomSheetState();
@@ -36,130 +41,158 @@ class InvoiceBottomSheetState extends State<InvoiceBottomSheet>
 
   @override
   Widget build(BuildContext context) {
+    final texts = AppLocalizations.of(context);
+    final navigator = Navigator.of(context);
+
     return StreamBuilder<BreezUserModel>(
-        stream: widget.userProfileBloc.userStream,
-        builder: (context, snapshot) {
-          if (!snapshot.hasData) {
-            return Container();
-          }
-          return AnimatedContainer(
-              transform: isExpanded
-                  ? Matrix4.translationValues(0, 0, 0)
-                  : Matrix4.translationValues(0, 112.0, 0),
-              duration: Duration(milliseconds: 150),
-              child: Column(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  crossAxisAlignment: CrossAxisAlignment.end,
-                  mainAxisSize: MainAxisSize.max,
-                  children: <Widget>[
-                    _buildInvoiceMenuItem("INVOICE", "src/icon/invoice.png",
-                        () {
-                      setState(() {
-                        isExpanded = !isExpanded;
-                      });
-                    }, snapshot.data.themeId, isFirst: true),
-                    _buildInvoiceMenuItem("PAY", "src/icon/qr_scan.png",
-                        () async {
-                      String decodedQr = await Navigator.pushNamed<String>(
-                          context, "/qr_scan");
-                      if (decodedQr == null) {
-                        return;
-                      }
-                      if (decodedQr.isEmpty) {
-                        showFlushbar(context,
-                            message: "QR code wasn't detected.");
-                        return;
-                      }
-                      var nodeID = parseNodeId(decodedQr);
-                      if (nodeID == null) {
-                        widget.invoiceBloc.decodeInvoiceSink.add(decodedQr);
-                      } else {
-                        Navigator.of(context).push(FadeInRoute(
-                          builder: (_) => SpontaneousPaymentPage(
-                              nodeID, widget.firstPaymentItemKey),
-                        ));
-                      }
-                    }, snapshot.data.themeId),
-                    _buildInvoiceMenuItem(
-                        "RECEIVE",
-                        "src/icon/paste.png",
-                        () =>
-                            Navigator.of(context).pushNamed('/create_invoice'),
-                        snapshot.data.themeId),
-                  ]));
-        });
+      stream: widget.userProfileBloc.userStream,
+      builder: (context, snapshot) {
+        if (!snapshot.hasData) return Container();
+
+        return AnimatedContainer(
+          transform: isExpanded
+              ? Matrix4.translationValues(0, 0, 0)
+              : Matrix4.translationValues(0, 112.0, 0),
+          duration: Duration(milliseconds: 150),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.end,
+            crossAxisAlignment: CrossAxisAlignment.end,
+            mainAxisSize: MainAxisSize.max,
+            children: [
+              _buildInvoiceMenuItem(
+                context,
+                texts.invoice_bottom_sheet_action_invoice,
+                "src/icon/invoice.png",
+                () => setState(() {
+                  isExpanded = !isExpanded;
+                }),
+                snapshot.data.themeId,
+                isFirst: true,
+              ),
+              _buildInvoiceMenuItem(
+                context,
+                texts.invoice_bottom_sheet_action_pay,
+                "src/icon/qr_scan.png",
+                () async {
+                  final decodedQr = await Navigator.pushNamed<String>(
+                    context,
+                    "/qr_scan",
+                  );
+                  if (decodedQr == null) return;
+
+                  if (decodedQr.isEmpty) {
+                    showFlushbar(
+                      context,
+                      message: texts.invoice_bottom_sheet_error_qrcode,
+                    );
+                    return;
+                  }
+
+                  final nodeID = parseNodeId(decodedQr);
+                  if (nodeID == null) {
+                    widget.invoiceBloc.decodeInvoiceSink.add(decodedQr);
+                  } else {
+                    navigator.push(FadeInRoute(
+                      builder: (_) => SpontaneousPaymentPage(
+                        nodeID,
+                        widget.firstPaymentItemKey,
+                      ),
+                    ));
+                  }
+                },
+                snapshot.data.themeId,
+              ),
+              _buildInvoiceMenuItem(
+                context,
+                texts.invoice_bottom_sheet_action_receive,
+                "src/icon/paste.png",
+                () => navigator.pushNamed('/create_invoice'),
+                snapshot.data.themeId,
+              ),
+            ],
+          ),
+        );
+      },
+    );
   }
 
   Widget _buildInvoiceMenuItem(
-      String title, String iconPath, Function function, String themeId,
-      {bool isFirst = false}) {
+    BuildContext context,
+    String title,
+    String iconPath,
+    Function function,
+    String themeId, {
+    bool isFirst = false,
+  }) {
+    final themeData = Theme.of(context);
+    final blueTheme = themeId == "BLUE";
+
     return AnimatedContainer(
       width: widget.isSmallView ? 56.0 : 126.0,
       height: isFirst ? 50.0 : 56.0,
       duration: Duration(milliseconds: 150),
       child: ElevatedButton(
         style: ElevatedButton.styleFrom(
-          primary: (themeId == "BLUE")
+          primary: blueTheme
               ? isFirst
-              ? Colors.white
-              : Theme.of(context).primaryColorLight
+                  ? Colors.white
+                  : themeData.primaryColorLight
               : isFirst
-              ? Theme.of(context).buttonColor
-              : Theme.of(context).backgroundColor,
-          padding: EdgeInsets.fromLTRB(16.0, 12.0, 16.0, 12.0),
+                  ? themeData.buttonColor
+                  : themeData.backgroundColor,
+          padding: const EdgeInsets.fromLTRB(16.0, 12.0, 16.0, 12.0),
           shape: isFirst
               ? RoundedRectangleBorder(
-              borderRadius:
-              BorderRadius.only(topLeft: Radius.circular(20.0)))
+                  borderRadius: const BorderRadius.only(
+                    topLeft: const Radius.circular(20.0),
+                  ),
+                )
               : Border(
-              top: BorderSide(
-                  color: Theme.of(context).dividerColor.withOpacity(0.12),
-                  width: 1,
-                  style: BorderStyle.solid)),
+                  top: BorderSide(
+                    color: themeData.dividerColor.withOpacity(0.12),
+                    width: 1,
+                    style: BorderStyle.solid,
+                  ),
+                ),
         ),
         onPressed: function,
         child: Row(
-            mainAxisSize: MainAxisSize.max,
-            children: widget.isSmallView
-                ? <Widget>[
-                    ImageIcon(
-                      AssetImage(iconPath),
-                      color: (themeId == "BLUE")
-                          ? isFirst
-                              ? Theme.of(context).primaryColorLight
-                              : Colors.white
-                          : Colors.white,
-                      size: 24.0,
-                    )
-                  ]
-                : <Widget>[
-                    ImageIcon(
-                      AssetImage(iconPath),
-                      color: (themeId == "BLUE")
-                          ? isFirst
-                              ? Theme.of(context).primaryColorLight
-                              : Colors.white
-                          : Colors.white,
-                      size: 24.0,
-                    ),
-                    Padding(padding: EdgeInsets.only(left: 8.0)),
-                    Expanded(
-                      child: AutoSizeText(
-                        title.toUpperCase(),
-                        style: theme.bottomSheetMenuItemStyle.copyWith(
-                          color: (themeId == "BLUE")
-                              ? isFirst
-                                  ? Theme.of(context).primaryColorLight
-                                  : Colors.white
-                              : Colors.white,
-                        ),
-                        maxLines: 1,
-                        minFontSize: MinFontSize(context).minFontSize,
-                        stepGranularity: 0.1,
-                        group: _autoSizeGroup,
+          mainAxisSize: MainAxisSize.max,
+          children: widget.isSmallView
+              ? [
+                  ImageIcon(
+                    AssetImage(iconPath),
+                    color: blueTheme && isFirst
+                        ? themeData.primaryColorLight
+                        : Colors.white,
+                    size: 24.0,
+                  )
+                ]
+              : [
+                  ImageIcon(
+                    AssetImage(iconPath),
+                    color: blueTheme && isFirst
+                        ? themeData.primaryColorLight
+                        : Colors.white,
+                    size: 24.0,
+                  ),
+                  Padding(padding: const EdgeInsets.only(left: 8.0)),
+                  Expanded(
+                    child: AutoSizeText(
+                      title.toUpperCase(),
+                      style: theme.bottomSheetMenuItemStyle.copyWith(
+                        color: blueTheme && isFirst
+                            ? themeData.primaryColorLight
+                            : Colors.white,
                       ),
-                    )
-                  ]),
+                      maxLines: 1,
+                      minFontSize: MinFontSize(context).minFontSize,
+                      stepGranularity: 0.1,
+                      group: _autoSizeGroup,
+                    ),
+                  ),
+                ],
+        ),
       ),
     );
   }
