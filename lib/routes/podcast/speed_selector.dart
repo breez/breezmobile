@@ -132,7 +132,7 @@ class _SpeedSliderState extends State<SpeedSlider> {
         Padding(
           padding: const EdgeInsets.all(8.0),
           child: Container(
-            width: MediaQuery.of(context).size.width * 24/360,
+            width: 24,
             height: 4,
             decoration: BoxDecoration(
               color: themeData.buttonTheme.colorScheme.onPrimary,
@@ -177,7 +177,7 @@ class _SpeedSliderState extends State<SpeedSlider> {
                     ? null
                     : () {
                         setState(() {
-                          speed -= 0.25;
+                          speed -= 0.05;
                           audioBloc.playbackSpeed(speed);
                           settingsBloc.setPlaybackSpeed(speed);
                         });
@@ -190,7 +190,7 @@ class _SpeedSliderState extends State<SpeedSlider> {
                 value: speed,
                 min: 0.5,
                 max: 2.0,
-                divisions: 6,
+                divisions: 30,
                 activeColor: themeData.buttonTheme.colorScheme.onPrimary,
                 onChanged: (value) {
                   setState(() {
@@ -215,7 +215,7 @@ class _SpeedSliderState extends State<SpeedSlider> {
                     ? null
                     : () {
                         setState(() {
-                          speed += 0.25;
+                          speed += 0.05;
                           audioBloc.playbackSpeed(speed);
                           settingsBloc.setPlaybackSpeed(speed);
                         });
@@ -228,6 +228,19 @@ class _SpeedSliderState extends State<SpeedSlider> {
           height: 8.0,
         ),
         Divider(),
+        // ListTile(
+        //   title: Text("Custom Speed"),
+        //   trailing: Switch.adaptive(
+        //     value: volumeBoost,
+        //     onChanged: (boost) {
+        //       setState(() {
+        //         volumeBoost = boost;
+        //         audioBloc.volumeBoost(boost);
+        //         settingsBloc.volumeBoost(boost);
+        //       });
+        //     },
+        //   ),
+        // ),
         if (themeData.platform == TargetPlatform.android) ...[
           /// Disable the trim silence option for now until the positioning bug
           /// in just_audio is resolved.

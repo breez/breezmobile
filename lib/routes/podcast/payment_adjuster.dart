@@ -30,7 +30,7 @@ class PaymentAdjuster extends StatelessWidget {
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
         Container(
-          width: MediaQuery.of(context).size.width * 120/360,
+          width: 120,
           child: Stack(
             children: [
               _minusButton(context),
@@ -49,8 +49,8 @@ class PaymentAdjuster extends StatelessWidget {
       left: 8,
       child: GestureDetector(
         child: Container(
-          width: MediaQuery.of(context).size.width * 32/360,
-          height: MediaQuery.of(context).size.height * 64/720,
+          width: 32,
+          height: 64,
           child: Material(
             color: Colors.transparent,
             borderRadius: BorderRadius.circular(32),
@@ -100,8 +100,8 @@ class PaymentAdjuster extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               Container(
-                width: MediaQuery.of(context).size.width * 42/360,
-                height: MediaQuery.of(context).size.height * 20/720,
+                width: 42,
+                height: 20,
                 child: AutoSizeText(
                   _formatSatsPerMinAmount(context),
                   textAlign: TextAlign.center,
@@ -140,7 +140,7 @@ class PaymentAdjuster extends StatelessWidget {
       right: 8,
       child: GestureDetector(
         child: Container(
-          width: MediaQuery.of(context).size.width * 32/360,
+          width: 32,
           height: 64,
           child: Material(
             color: Colors.transparent,

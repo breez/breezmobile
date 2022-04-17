@@ -20,7 +20,7 @@ class AddFundsMessage extends StatelessWidget {
     final minFontSize = MinFontSize(context).minFontSize;
 
     return Container(
-      height: MediaQuery.of(context).size.height * 64/720,
+      height: 64,
       color: themeData.backgroundColor,
       child: Padding(
         padding: const EdgeInsets.fromLTRB(24.0, 12.0, 20.0, 12.0),
@@ -39,9 +39,9 @@ class AddFundsMessage extends StatelessWidget {
                 maxLines: 2,
               ),
             ),
-            SizedBox(width: MediaQuery.of(context).size.width * 120/360),
+            SizedBox(width: 16),
             Container(
-              width: MediaQuery.of(context).size.width * 100/360,
+              width: 100,
               child: ElevatedButton(
                 style: ElevatedButton.styleFrom(
                   shape: RoundedRectangleBorder(

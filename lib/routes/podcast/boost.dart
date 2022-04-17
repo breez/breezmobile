@@ -92,7 +92,7 @@ class BoostWidget extends StatelessWidget {
                     color: themeData.appBarTheme.actionsIconTheme.color,
                   ),
                   label: Container(
-                    width: MediaQuery.of(context).size.width * 44/360,
+                    width: 44,
                     child: AutoSizeText(
                       texts.podcast_boost_action_boost,
                       style: TextStyle(
@@ -115,7 +115,7 @@ class BoostWidget extends StatelessWidget {
               flex: 1,
               child: Center(
                 child: Container(
-                  width: MediaQuery.of(context).size.width * 92/360,
+                  width: 92,
                   child: Stack(
                     fit: StackFit.loose,
                     children: [
@@ -137,8 +137,8 @@ class BoostWidget extends StatelessWidget {
     final themeData = Theme.of(context);
     return GestureDetector(
       child: Container(
-        width: MediaQuery.of(context).size.width * 32/360,
-        height: MediaQuery.of(context).size.height * 64/720,
+        width: 32,
+        height: 64,
         child: Material(
           color: Colors.transparent,
           borderRadius: BorderRadius.circular(32),
@@ -181,8 +181,8 @@ class BoostWidget extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               Container(
-                width: MediaQuery.of(context).size.width * 38/360,
-                height: MediaQuery.of(context).size.height * 20/720,
+                width: 38,
+                height: 20,
                 child: AutoSizeText(
                   _formatBoostAmount(context),
                   textAlign: TextAlign.center,

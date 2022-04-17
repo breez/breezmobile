@@ -88,7 +88,7 @@ class _PlayerTransportControlsState extends State<PlayerTransportControls>
             // Add SleepSelector inside a 37 width sized
             // box to proper alignment with SpeedSelector
             SizedBox(
-              width: MediaQuery.of(context).size.width * 37/360,
+              width: 37.0,
               height: 24.0,
               child: Center(
                 child: SleepSelector(
@@ -103,13 +103,13 @@ class _PlayerTransportControlsState extends State<PlayerTransportControls>
                     'assets/icons/sleep_on.svg',
                     color: theme.buttonTheme.colorScheme.onPrimary,
                     height: 24.0,
-                    width: MediaQuery.of(context).size.width * 24/360,
+                    width: 24.0,
                   ),
                   iconOff: SvgPicture.asset(
                     'assets/icons/sleep_off.svg',
                     color: theme.buttonTheme.colorScheme.onPrimary,
                     height: 24.0,
-                    width: MediaQuery.of(context).size.width * 24/360,
+                    width: 24.0,
                   ),
                 ),
               ),
@@ -123,7 +123,7 @@ class _PlayerTransportControlsState extends State<PlayerTransportControls>
               padding: const EdgeInsets.all(0.0),
               icon: SvgPicture.asset(
                 "src/icon/ic_backward.svg",
-                width: MediaQuery.of(context).size.width * 48/360,
+                width: 48.0,
                 height: 48.0,
                 color: theme.buttonTheme.colorScheme.onPrimary
               ),
@@ -143,7 +143,7 @@ class _PlayerTransportControlsState extends State<PlayerTransportControls>
               padding: const EdgeInsets.all(0.0),
               icon: SvgPicture.asset(
                 "src/icon/ic_forward.svg",
-                width: MediaQuery.of(context).size.width * 48/360,
+                width: 48.0,
                 height: 48.0,
                 color: theme.buttonTheme.colorScheme.onPrimary,
               ),
@@ -156,7 +156,7 @@ class _PlayerTransportControlsState extends State<PlayerTransportControls>
               },
             ),
             Expanded(flex: 1, child: Container()),
-            SizedBox(width: MediaQuery.of(context).size.width * 22/360, height: 0.0),
+            SizedBox(width: 22.0, height: 0.0),
           ],
         );
       },
