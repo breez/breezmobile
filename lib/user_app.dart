@@ -115,6 +115,7 @@ class UserApp extends StatelessWidget {
                     builder: (_) => InitialWalkthroughPage(
                       userProfileBloc,
                       backupBloc,
+                      posCatalogBloc
                     ),
                     settings: settings,
                   );

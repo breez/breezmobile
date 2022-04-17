@@ -58,8 +58,12 @@ class PosCatalogBloc with AsyncActionsHandler {
   final BehaviorSubject<PosReportResult> _posReportResult = BehaviorSubject();
 
   Stream<PosReportResult> get posReportResult => _posReportResult.stream;
-  
+
   Sink<bool> _backupAppDataSink;
+
+  final BehaviorSubject<bool> _reloadPosItems = BehaviorSubject();
+
+  Sink<bool> get reloadPosItemsSink => _reloadPosItems.sink;
 
   PosCatalogBloc(
     Stream<AccountModel> accountStream,
@@ -68,6 +72,7 @@ class PosCatalogBloc with AsyncActionsHandler {
   ) {
     _backupAppDataSink = backupAppDataSink;
     _loadPosCatalogItemSort();
+    _listenReloadItemsRequests();
     _loadItems();
     registerAsyncHandlers({
       AddItem: _addItem,
@@ -97,6 +102,10 @@ class PosCatalogBloc with AsyncActionsHandler {
     _loadSelectedPosTab();
     _loadSelectedReportTimeRange();
     _loadSelectedReportResult();
+  }
+
+  void _listenReloadItemsRequests() {
+    _reloadPosItems.stream.listen((_) => _loadItems());
   }
 
   Future _loadIcons() async {
