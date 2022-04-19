@@ -140,6 +140,11 @@ class AccountBloc {
     this.userProfileStream,
     this._posRepository,
   ) {
+    init();
+  }
+
+  init() {
+    print("account bloc init");
     ServiceInjector injector = ServiceInjector();
     _breezServer = injector.breezServer;
     _breezLib = injector.breezBridge;
@@ -682,7 +687,7 @@ class AccountBloc {
     DateTime _firstDate;
     log.info("refreshing payments...");
 
-    final hashedSales = await _posRepository.fetchSalesPaymentHashes();
+    final hashedSales = await _posRepository.fetchSaleSummaryByPaymentHashes();
 
     log.info("refreshing payments after fetching sales hashes...");
     return _breezLib.getPayments().then((payments) {
@@ -690,7 +695,7 @@ class AccountBloc {
           .map((payment) => SinglePaymentInfo(
                 payment,
                 _accountController.value,
-                hashedSales.contains(payment.paymentHash),
+                hashedSales[payment.paymentHash],
               ))
           .toList();
 

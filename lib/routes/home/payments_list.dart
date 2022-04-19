@@ -6,14 +6,14 @@ import 'payment_item.dart';
 
 const BOTTOM_PADDING = 8.0;
 
-class PaymentsList extends StatefulWidget {
+class PaymentsList extends StatelessWidget {
   final BreezUserModel _userModel;
   final List<PaymentInfo> _payments;
   final double _itemHeight;
   final GlobalKey firstPaymentItemKey;
   final ScrollController scrollController;
 
-  PaymentsList(
+  const PaymentsList(
     this._userModel,
     this._payments,
     this._itemHeight,
@@ -22,43 +22,23 @@ class PaymentsList extends StatefulWidget {
   );
 
   @override
-  State<StatefulWidget> createState() {
-    return PaymentsListState();
-  }
-}
-
-class PaymentsListState extends State<PaymentsList> {
-  @override
-  void initState() {
-    super.initState();
-    widget.scrollController.addListener(onScroll);
-  }
-
-  @override
-  void dispose() {
-    widget.scrollController.removeListener(onScroll);
-    super.dispose();
-  }
-
-  void onScroll() {
-    setState(() {});
-  }
-
-  @override
   Widget build(BuildContext context) {
     return SliverFixedExtentList(
-      itemExtent: widget._itemHeight + BOTTOM_PADDING,
-      delegate: SliverChildBuilderDelegate((BuildContext context, int index) {
-        final payment = widget._payments[index];
-        return PaymentItem(
-          payment,
-          index,
-          0 == index,
-          widget._userModel.hideBalance,
-          widget.firstPaymentItemKey,
-          widget.scrollController,
-        );
-      }, childCount: widget._payments.length),
+      itemExtent: _itemHeight + BOTTOM_PADDING,
+      delegate: SliverChildBuilderDelegate(
+        (BuildContext context, int index) {
+          final payment = _payments[index];
+          return PaymentItem(
+            payment,
+            index,
+            0 == index,
+            _userModel.hideBalance,
+            firstPaymentItemKey,
+            scrollController,
+          );
+        },
+        childCount: _payments.length,
+      ),
     );
   }
 }

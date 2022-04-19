@@ -1,8 +1,8 @@
 import 'package:breez/bloc/user_profile/currency.dart';
+import 'package:breez/utils/locale.dart';
 import 'package:breez/widgets/sat_amount_form_field_formatter.dart';
 import 'package:fixnum/fixnum.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 
 class CustomAmountFormField extends TextFormField {
   final List<int> preset;
@@ -29,13 +29,14 @@ class CustomAmountFormField extends TextFormField {
 
   @override
   FormFieldValidator<String> get validator {
+    final texts = getSystemAppLocalizations();
     return (value) {
       if (value.isEmpty) {
-        return "Please enter an amount";
+        return texts.podcast_boost_custom_amount_error_empty;
       }
       int valueInt = Currency.SAT.parseToInt(value);
       if (valueInt < preset[0]) {
-        return "Please enter at least ${preset[0]} sats.";
+        return texts.podcast_boost_custom_amount_error_too_few(preset[0]);
       }
       return null;
     };

@@ -15,7 +15,7 @@ apply plugin: 'com.android.application'
 apply from: "$flutterRoot/packages/flutter_tools/gradle/flutter.gradle"
 
 android {
-    compileSdkVersion 31
+    compileSdkVersion 32
 
     def keystoreProperties = new Properties()
     def keystorePropertiesFile = rootProject.file('key.properties')
@@ -23,7 +23,7 @@ android {
         keystoreProperties.load(new FileInputStream(keystorePropertiesFile))
     }
 
-    lintOptions {
+    lint {
         disable 'InvalidPackage'
         checkReleaseBuilds false
     }
@@ -31,7 +31,7 @@ android {
     defaultConfig {
         applicationId "com.breez.client"
         minSdkVersion 24
-        targetSdkVersion 31
+        targetSdkVersion 32
         multiDexEnabled true
         versionCode 1
         versionName "0.12-beta"
@@ -88,13 +88,13 @@ configurations {
 dependencies {
     implementation(name: 'breez', ext: 'aar')
 
-    implementation('com.google.api-client:google-api-client-android:1.32.2') {
+    implementation('com.google.api-client:google-api-client-android:1.33.1') {
         exclude group: 'org.apache.httpcomponents'
     }
-    implementation('com.google.apis:google-api-services-drive:v3-rev136-1.25.0') {
+    implementation('com.google.apis:google-api-services-drive:v3-rev197-1.25.0') {
         exclude group: 'org.apache.httpcomponents'
     }
-    implementation('commons-io:commons-io:2.6') {
+    implementation('commons-io:commons-io:2.11.0') {
         exclude group: 'com.google.guava', module: 'listenablefuture'
     }
 
@@ -109,7 +109,7 @@ dependencies {
     implementation 'com.google.android.material:material:1.5.0'
     implementation 'com.theartofdev.edmodo:android-image-cropper:2.8.0'
 
-    implementation platform('com.google.firebase:firebase-bom:29.0.3')
+    implementation platform('com.google.firebase:firebase-bom:29.0.4')
     implementation 'com.google.firebase:firebase-messaging'
 
     implementation 'info.guardianproject:tor-android:0.4.5.9'

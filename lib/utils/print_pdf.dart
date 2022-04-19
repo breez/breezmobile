@@ -33,9 +33,12 @@ class PrintService {
           pageFormat: PdfPageFormat.a4,
           build: (pw.Context context) {
             return pw.Column(
+              mainAxisSize: pw.MainAxisSize.min,
               crossAxisAlignment: pw.CrossAxisAlignment.start,
               children: [
-                _buildTitle(texts),
+                _buildTitle(),
+                pw.SizedBox(height: 8),
+                _buildTransactionTime(texts),
                 pw.SizedBox(height: 8),
                 _buildAddress(),
                 pw.SizedBox(height: 40),
@@ -57,18 +60,21 @@ class PrintService {
     }
   }
 
-  _buildTitle(AppLocalizations texts) {
+  _buildTitle() {
+    return pw.Text(
+      printParameters.currentUser.name,
+      style: pw.TextStyle(fontSize: 24, letterSpacing: 0.25),
+    );
+  }
+
+  _buildTransactionTime(AppLocalizations texts) {
     final creationTimestamp = printParameters.paymentInfo?.creationTimestamp;
 
     return pw.Row(
       mainAxisSize: pw.MainAxisSize.max,
       crossAxisAlignment: pw.CrossAxisAlignment.start,
-      mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
+      mainAxisAlignment: pw.MainAxisAlignment.end,
       children: [
-        pw.Text(
-          printParameters.currentUser.name,
-          style: pw.TextStyle(fontSize: 24, letterSpacing: 0.25),
-        ),
         creationTimestamp != null
             ? pw.Column(
                 children: [
@@ -357,6 +363,7 @@ class PrintService {
     final preimage = printParameters.paymentInfo?.preimage;
     return preimage != null && preimage.isNotEmpty
         ? pw.Column(
+            mainAxisSize: pw.MainAxisSize.min,
             mainAxisAlignment: pw.MainAxisAlignment.start,
             crossAxisAlignment: pw.CrossAxisAlignment.start,
             children: [

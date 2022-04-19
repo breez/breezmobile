@@ -18,31 +18,34 @@ import 'package:breez/widgets/route.dart';
 import 'package:breez/widgets/static_loader.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:path/path.dart' as path;
 import 'package:share_extend/share_extend.dart';
 
 class PosSettingsPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    var _userProfileBloc = AppBlocsProvider.of<UserProfileBloc>(context);
+    final _userProfileBloc = AppBlocsProvider.of<UserProfileBloc>(context);
     return StreamBuilder<BreezUserModel>(
-        stream: _userProfileBloc.userStream,
-        builder: (context, snapshot) {
-          if (snapshot.hasData) {
-            return _PosSettingsPage(_userProfileBloc, snapshot.data);
-          }
-
-          return StaticLoader();
-        });
+      stream: _userProfileBloc.userStream,
+      builder: (context, snapshot) {
+        if (snapshot.hasData) {
+          return _PosSettingsPage(_userProfileBloc, snapshot.data);
+        }
+        return StaticLoader();
+      },
+    );
   }
 }
 
 class _PosSettingsPage extends StatefulWidget {
-  _PosSettingsPage(this._userProfileBloc, this.currentProfile);
-
-  final String _title = "POS Settings";
   final UserProfileBloc _userProfileBloc;
   final BreezUserModel currentProfile;
+
+  const _PosSettingsPage(
+    this._userProfileBloc,
+    this.currentProfile,
+  );
 
   @override
   State<StatefulWidget> createState() {
@@ -51,11 +54,11 @@ class _PosSettingsPage extends StatefulWidget {
 }
 
 class PosSettingsPageState extends State<_PosSettingsPage> {
-  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
-  var _cancellationTimeoutValueController = TextEditingController();
-  var _addressLine1Controller = TextEditingController();
-  var _addressLine2Controller = TextEditingController();
-  AutoSizeGroup _autoSizeGroup = AutoSizeGroup();
+  final _scaffoldKey = GlobalKey<ScaffoldState>();
+  final _cancellationTimeoutValueController = TextEditingController();
+  final _addressLine1Controller = TextEditingController();
+  final _addressLine2Controller = TextEditingController();
+  final _autoSizeGroup = AutoSizeGroup();
 
   @override
   void initState() {
@@ -70,124 +73,143 @@ class PosSettingsPageState extends State<_PosSettingsPage> {
 
   @override
   Widget build(BuildContext context) {
-    PosCatalogBloc posCatalogBloc =
-        AppBlocsProvider.of<PosCatalogBloc>(context);
-    UserProfileBloc userProfileBloc =
-        AppBlocsProvider.of<UserProfileBloc>(context);
+    final posCatalogBloc = AppBlocsProvider.of<PosCatalogBloc>(context);
+    final userProfileBloc = AppBlocsProvider.of<UserProfileBloc>(context);
+    final texts = AppLocalizations.of(context);
+    final themeData = Theme.of(context);
+
     return Scaffold(
       key: _scaffoldKey,
       appBar: AppBar(
         leading: backBtn.BackButton(),
         automaticallyImplyLeading: false,
-        iconTheme: Theme.of(context).appBarTheme.iconTheme,
-        textTheme: Theme.of(context).appBarTheme.textTheme,
-        backgroundColor: Theme.of(context).canvasColor,
+        iconTheme: themeData.appBarTheme.iconTheme,
+        textTheme: themeData.appBarTheme.textTheme,
+        backgroundColor: themeData.canvasColor,
         title: Text(
-          widget._title,
-          style: Theme.of(context).appBarTheme.textTheme.headline6,
+          texts.pos_settings_title,
+          style: themeData.appBarTheme.textTheme.headline6,
         ),
         elevation: 0.0,
       ),
       body: SingleChildScrollView(
         reverse: true,
         child: StreamBuilder<BreezUserModel>(
-            stream: userProfileBloc.userStream,
-            builder: (context, snapshot) {
-              var user = snapshot.data;
-              if (user == null) {
-                return Loader();
-              }
-              return GestureDetector(
-                behavior: HitTestBehavior.opaque,
-                onTap: () {
-                  FocusScope.of(context).requestFocus(FocusNode());
-                },
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: <Widget>[
-                    Container(
-                      padding:
-                          EdgeInsets.only(top: 32.0, bottom: 19.0, left: 16.0),
-                      child: Text(
-                        "Payment Cancellation Timeout (in seconds)",
-                        style: TextStyle(
-                            fontSize: 12.4,
-                            letterSpacing: 0.11,
-                            height: 1.24,
-                            color: Color.fromRGBO(255, 255, 255, 0.87)),
+          stream: userProfileBloc.userStream,
+          builder: (context, snapshot) {
+            var user = snapshot.data;
+            if (user == null) {
+              return Loader();
+            }
+            return GestureDetector(
+              behavior: HitTestBehavior.opaque,
+              onTap: () {
+                FocusScope.of(context).requestFocus(FocusNode());
+              },
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Container(
+                    padding: const EdgeInsets.only(
+                      top: 32.0,
+                      bottom: 19.0,
+                      left: 16.0,
+                    ),
+                    child: Text(
+                      texts.pos_settings_cancellation_timeout,
+                      style: TextStyle(
+                        fontSize: 12.4,
+                        letterSpacing: 0.11,
+                        height: 1.24,
+                        color: Color.fromRGBO(255, 255, 255, 0.87),
                       ),
                     ),
-                    Row(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: <Widget>[
-                          Container(
-                            width: 304.0,
-                            child: Padding(
-                              padding: EdgeInsets.zero,
-                              child: Slider(
-                                  value: widget
-                                      .currentProfile.cancellationTimeoutValue,
-                                  label:
-                                      '${widget.currentProfile.cancellationTimeoutValue.toStringAsFixed(0)}',
-                                  min: 30.0,
-                                  max: 180.0,
-                                  divisions: 5,
-                                  onChanged: (double value) {
-                                    FocusScope.of(context)
-                                        .requestFocus(FocusNode());
-                                    _cancellationTimeoutValueController.text =
-                                        value.toString();
-                                    widget._userProfileBloc.userSink.add(
-                                        widget.currentProfile.copyWith(
-                                            cancellationTimeoutValue: value));
-                                  }),
-                            ),
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      Container(
+                        width: 304.0,
+                        child: Padding(
+                          padding: EdgeInsets.zero,
+                          child: _cancellationSlider(context),
+                        ),
+                      ),
+                      Padding(
+                        padding: EdgeInsets.only(left: 8.0, right: 16.0),
+                        child: Text(
+                          num.parse(_cancellationTimeoutValueController.text)
+                              .toStringAsFixed(0),
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 12.4,
+                            letterSpacing: 0.11,
                           ),
-                          Padding(
-                            padding: EdgeInsets.only(left: 8.0, right: 16.0),
-                            child: Text(
-                              num.parse(
-                                      _cancellationTimeoutValueController.text)
-                                  .toStringAsFixed(0),
-                              style: TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 12.4,
-                                  letterSpacing: 0.11),
-                            ),
-                          ),
-                        ]),
-                    ..._buildAdminPasswordTiles(userProfileBloc, user),
-                    Divider(),
-                    _buildExportItemsTile(posCatalogBloc),
-                    Divider(),
-                    _buildAddressField(userProfileBloc, user)
-                  ],
-                ),
-              );
-            }),
+                        ),
+                      ),
+                    ],
+                  ),
+                  ..._buildAdminPasswordTiles(context, userProfileBloc, user),
+                  Divider(),
+                  _buildExportItemsTile(context, posCatalogBloc),
+                  Divider(),
+                  _buildAddressField(context, userProfileBloc, user),
+                ],
+              ),
+            );
+          },
+        ),
       ),
     );
   }
 
+  Widget _cancellationSlider(BuildContext context) {
+    final timeoutValue = widget.currentProfile.cancellationTimeoutValue;
+    return Slider(
+      value: timeoutValue,
+      label: timeoutValue.toStringAsFixed(0),
+      min: 30.0,
+      max: 180.0,
+      divisions: 5,
+      onChanged: (double value) {
+        FocusScope.of(context).requestFocus(FocusNode());
+        _cancellationTimeoutValueController.text = value.toString();
+        widget._userProfileBloc.userSink.add(
+          widget.currentProfile.copyWith(cancellationTimeoutValue: value),
+        );
+      },
+    );
+  }
+
   List<Widget> _buildAdminPasswordTiles(
-      UserProfileBloc userProfileBloc, BreezUserModel user) {
-    var widgets = <Widget>[
+    BuildContext context,
+    UserProfileBloc userProfileBloc,
+    BreezUserModel user,
+  ) {
+    var widgets = [
       Divider(),
-      _buildEnablePasswordTile(userProfileBloc, user)
+      _buildEnablePasswordTile(context, userProfileBloc, user),
     ];
     if (user.hasAdminPassword) {
-      widgets..add(Divider())..add(_buildSetPasswordTile());
+      widgets
+        ..add(Divider())
+        ..add(_buildSetPasswordTile(context));
     }
     return widgets;
   }
 
-  Widget _buildExportItemsTile(PosCatalogBloc posCatalogBloc) {
+  Widget _buildExportItemsTile(
+    BuildContext context,
+    PosCatalogBloc posCatalogBloc,
+  ) {
+    final texts = AppLocalizations.of(context);
+    final themeData = Theme.of(context);
     return ListTile(
       title: Container(
         child: AutoSizeText(
-          "Items List",
+          texts.pos_settings_items_list,
           style: TextStyle(color: Colors.white),
           maxLines: 1,
           minFontSize: MinFontSize(context).minFontSize,
@@ -198,10 +220,10 @@ class PosSettingsPageState extends State<_PosSettingsPage> {
       trailing: Padding(
         padding: const EdgeInsets.only(right: 0.0),
         child: PopupMenuButton(
-          color: Theme.of(context).backgroundColor,
+          color: themeData.backgroundColor,
           icon: Icon(
             Icons.more_horiz,
-            color: Theme.of(context).iconTheme.color,
+            color: themeData.iconTheme.color,
           ),
           padding: EdgeInsets.zero,
           offset: Offset(12, 36),
@@ -210,14 +232,18 @@ class PosSettingsPageState extends State<_PosSettingsPage> {
             PopupMenuItem(
               height: 36,
               value: Choice(() => _importItems(context, posCatalogBloc)),
-              child: Text('Import from CSV',
-                  style: Theme.of(context).textTheme.button),
+              child: Text(
+                texts.pos_settings_import_csv,
+                style: themeData.textTheme.button,
+              ),
             ),
             PopupMenuItem(
               height: 36,
               value: Choice(() => _exportItems(context, posCatalogBloc)),
-              child: Text('Export to CSV',
-                  style: Theme.of(context).textTheme.button),
+              child: Text(
+                texts.pos_settings_export_csv,
+                style: themeData.textTheme.button,
+              ),
             ),
           ],
         ),
@@ -230,17 +256,24 @@ class PosSettingsPageState extends State<_PosSettingsPage> {
   }
 
   Future _importItems(
-      BuildContext context, PosCatalogBloc posCatalogBloc) async {
+    BuildContext context,
+    PosCatalogBloc posCatalogBloc,
+  ) async {
+    final texts = AppLocalizations.of(context);
+    final themeData = Theme.of(context);
+    final navigator = Navigator.of(context);
+
     return promptAreYouSure(
-            context,
-            "Import Items",
-            Text(
-                "Importing this list will override the existing one. Are you sure you want to continue?",
-                style: Theme.of(context).dialogTheme.contentTextStyle),
-            contentPadding: EdgeInsets.fromLTRB(24.0, 16.0, 24.0, 8.0),
-            cancelText: "NO",
-            okText: "YES")
-        .then((acknowledged) async {
+      context,
+      texts.pos_settings_import_dialog_title,
+      Text(
+        texts.pos_settings_import_dialog_message,
+        style: themeData.dialogTheme.contentTextStyle,
+      ),
+      contentPadding: const EdgeInsets.fromLTRB(24.0, 16.0, 24.0, 8.0),
+      cancelText: texts.pos_settings_import_action_no,
+      okText: texts.pos_settings_import_action_yes,
+    ).then((acknowledged) async {
       if (acknowledged) {
         await FilePicker.platform.clearTemporaryFiles();
         FilePickerResult result = await FilePicker.platform.pickFiles();
@@ -253,50 +286,64 @@ class PosSettingsPageState extends State<_PosSettingsPage> {
           var action = ImportItems(importFile);
           posCatalogBloc.actionsSink.add(action);
           var loaderRoute = createLoaderRoute(context);
-          Navigator.of(context).push(loaderRoute);
+          navigator.push(loaderRoute);
           action.future.then((_) {
-            Navigator.of(context).removeRoute(loaderRoute);
-            Navigator.of(context).pop();
-            showFlushbar(context, message: "Items were successfully imported.");
+            navigator.removeRoute(loaderRoute);
+            navigator.pop();
+            showFlushbar(
+              context,
+              message: texts.pos_settings_import_success_message,
+            );
           }).catchError((err) {
-            Navigator.of(context).removeRoute(loaderRoute);
-            var errorMessage = "Failed to import POS items.";
+            navigator.removeRoute(loaderRoute);
+            String errorMessage;
             if (err == PosCatalogBloc.InvalidFile) {
-              errorMessage = "Selected file isn't a valid CSV file.";
+              errorMessage = texts.pos_settings_import_error_invalid_file;
             } else if (err == PosCatalogBloc.InvalidData) {
-              errorMessage = "Selected file contains invalid data.";
+              errorMessage = texts.pos_settings_import_error_invalid_data;
+            } else {
+              errorMessage = texts.pos_settings_import_error_generic;
             }
             showFlushbar(context, message: errorMessage);
           });
         } else {
-          showFlushbar(context, message: "Please select a .csv file.");
+          showFlushbar(
+            context,
+            message: texts.pos_settings_import_select_message,
+          );
         }
       }
     });
   }
 
   Future _exportItems(
-      BuildContext context, PosCatalogBloc posCatalogBloc) async {
+    BuildContext context,
+    PosCatalogBloc posCatalogBloc,
+  ) async {
+    final texts = AppLocalizations.of(context);
+    final navigator = Navigator.of(context);
+
     var action = ExportItems();
     posCatalogBloc.actionsSink.add(action);
-    Navigator.of(context).push(createLoaderRoute(context));
+    navigator.push(createLoaderRoute(context));
     action.future.then((filePath) {
-      Navigator.of(context).pop();
+      navigator.pop();
       ShareExtend.share(filePath, "file");
     }).catchError((err) {
-      Navigator.of(context).pop();
-      var errorMessage = err.toString() == "EMPTY_LIST"
-          ? "There are no items to export."
-          : "Failed to export POS items.";
+      navigator.pop();
+      final errorMessage = err.toString() == "EMPTY_LIST"
+          ? texts.pos_settings_export_error_no_items
+          : texts.pos_settings_export_error_generic;
       showFlushbar(context, message: errorMessage);
     });
   }
 
-  ListTile _buildSetPasswordTile() {
+  ListTile _buildSetPasswordTile(BuildContext context) {
+    final texts = AppLocalizations.of(context);
     return ListTile(
       title: Container(
         child: AutoSizeText(
-          "Change Manager Password",
+          texts.pos_settings_change_manager_password,
           style: TextStyle(color: Colors.white),
           maxLines: 1,
           minFontSize: MinFontSize(context).minFontSize,
@@ -304,19 +351,26 @@ class PosSettingsPageState extends State<_PosSettingsPage> {
           group: _autoSizeGroup,
         ),
       ),
-      trailing:
-          Icon(Icons.keyboard_arrow_right, color: Colors.white, size: 30.0),
-      onTap: () => _onChangeAdminPasswordSelected(),
+      trailing: Icon(
+        Icons.keyboard_arrow_right,
+        color: Colors.white,
+        size: 30.0,
+      ),
+      onTap: () => _onChangeAdminPasswordSelected(context),
     );
   }
 
   ListTile _buildEnablePasswordTile(
-      UserProfileBloc userProfileBloc, BreezUserModel user) {
+    BuildContext context,
+    UserProfileBloc userProfileBloc,
+    BreezUserModel user,
+  ) {
+    final texts = AppLocalizations.of(context);
     return ListTile(
       title: AutoSizeText(
         user.hasAdminPassword
-            ? "Activate Manager Password"
-            : "Create Manager Password",
+            ? texts.pos_settings_activate_manager_password
+            : texts.pos_settings_create_manager_password,
         style: TextStyle(color: Colors.white),
         maxLines: 1,
         minFontSize: MinFontSize(context).minFontSize,
@@ -335,39 +389,57 @@ class PosSettingsPageState extends State<_PosSettingsPage> {
             )
           : Padding(
               padding: const EdgeInsets.only(right: 8.0),
-              child: Icon(Icons.keyboard_arrow_right,
-                  color: Colors.white, size: 30.0),
+              child: Icon(
+                Icons.keyboard_arrow_right,
+                color: Colors.white,
+                size: 30.0,
+              ),
             ),
       onTap: user.hasAdminPassword
           ? null
-          : () => _onChangeAdminPasswordSelected(isNew: !user.hasAdminPassword),
+          : () => _onChangeAdminPasswordSelected(
+                context,
+                isNew: !user.hasAdminPassword,
+              ),
     );
   }
 
-  _onChangeAdminPasswordSelected({bool isNew = false}) async {
-    BackupBloc backupBloc = AppBlocsProvider.of<BackupBloc>(context);
-    var backupState = await backupBloc.backupStateStream.first;
+  _onChangeAdminPasswordSelected(
+    BuildContext context, {
+    bool isNew = false,
+  }) async {
+    final texts = AppLocalizations.of(context);
+    final backupBloc = AppBlocsProvider.of<BackupBloc>(context);
+    final backupState = await backupBloc.backupStateStream.first;
+
     if (backupState.lastBackupTime == null) {
       await promptError(
-          context,
-          "Manager Password",
-          Text(
-              "Manager Password can be configured only if you have an active backup. To trigger a backup process, go to Receive > Receive via BTC Address."));
+        context,
+        texts.pos_settings_manager_password_error_title,
+        Text(
+          texts.pos_settings_manager_password_error_message,
+        ),
+      );
       return;
     }
 
     bool confirmed = true;
     if (isNew) {
       confirmed = await promptAreYouSure(
-          context,
-          "Manager Password",
-          Text(
-              "If Manager Password is activated, sending funds from Breez will require you to enter a password.\nAre you sure you want to activate Manager Password?"));
+        context,
+        texts.pos_settings_manager_password_title,
+        Text(
+          texts.pos_settings_manager_password_message,
+        ),
+      );
     }
     if (confirmed) {
       Navigator.of(context).push(FadeInRoute(
-        builder: (_) =>
-            SetAdminPasswordPage(submitAction: isNew ? "CREATE" : "CHANGE"),
+        builder: (_) => SetAdminPasswordPage(
+          submitAction: isNew
+              ? texts.pos_settings_manager_password_action_create
+              : texts.pos_settings_manager_password_action_change,
+        ),
       ));
     }
   }
@@ -377,35 +449,52 @@ class PosSettingsPageState extends State<_PosSettingsPage> {
     userProfileBloc.userActionsSink.add(action);
   }
 
-  _buildAddressField(UserProfileBloc userProfileBloc, BreezUserModel user) {
+  _buildAddressField(
+    BuildContext context,
+    UserProfileBloc userProfileBloc,
+    BreezUserModel user,
+  ) {
+    final texts = AppLocalizations.of(context);
+    final currentProfile = widget.currentProfile;
+
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 16.0),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            "Business Address",
+            texts.pos_settings_business_address,
           ),
           TextField(
             controller: _addressLine1Controller,
             minLines: 1,
             maxLines: 1,
-            decoration: InputDecoration(hintText: "Address Line 1"),
+            decoration: InputDecoration(
+              hintText: texts.pos_settings_address_line_1,
+            ),
             onChanged: (_) => widget._userProfileBloc.userSink.add(
-                widget.currentProfile.copyWith(
-                    businessAddress: widget.currentProfile.businessAddress
-                        .copyWith(addressLine1: _addressLine1Controller.text))),
+              currentProfile.copyWith(
+                businessAddress: currentProfile.businessAddress.copyWith(
+                  addressLine1: _addressLine1Controller.text,
+                ),
+              ),
+            ),
             onEditingComplete: () => FocusScope.of(context).nextFocus(),
           ),
           TextField(
             controller: _addressLine2Controller,
             minLines: 1,
             maxLines: 1,
-            decoration: InputDecoration(hintText: "Address Line 2"),
+            decoration: InputDecoration(
+              hintText: texts.pos_settings_address_line_2,
+            ),
             onChanged: (_) => widget._userProfileBloc.userSink.add(
-                widget.currentProfile.copyWith(
-                    businessAddress: widget.currentProfile.businessAddress
-                        .copyWith(addressLine2: _addressLine2Controller.text))),
+              currentProfile.copyWith(
+                businessAddress: currentProfile.businessAddress.copyWith(
+                  addressLine2: _addressLine2Controller.text,
+                ),
+              ),
+            ),
             onEditingComplete: () => FocusScope.of(context).unfocus(),
           ),
         ],
@@ -415,7 +504,9 @@ class PosSettingsPageState extends State<_PosSettingsPage> {
 }
 
 class Choice {
-  const Choice(this.function);
-
   final Function function;
+
+  const Choice(
+    this.function,
+  );
 }

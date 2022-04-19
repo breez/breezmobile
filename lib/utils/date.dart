@@ -1,6 +1,5 @@
 import 'dart:io' show Platform;
 
-import 'package:breez/l10n/fi_messages.dart';
 import 'package:breez/utils/locale.dart';
 import "package:intl/intl.dart";
 import 'package:timeago/timeago.dart' as timeago;
@@ -43,7 +42,7 @@ class BreezDateUtils {
   static void setupLocales() {
     timeago.setLocaleMessages('en', timeago.EnMessages());
     timeago.setLocaleMessages('es', timeago.EsMessages());
-    timeago.setLocaleMessages('fi', FiMessages());
+    timeago.setLocaleMessages('fi', timeago.FiMessages());
     timeago.setLocaleMessages('pt', timeago.PtBrMessages());
   }
 }

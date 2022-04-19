@@ -5,10 +5,11 @@ import 'package:breez/bloc/account/account_model.dart';
 import 'package:breez/bloc/lsp/lsp_model.dart';
 import 'package:breez/bloc/user_profile/breez_user_model.dart';
 import 'package:breez/bloc/user_profile/currency.dart';
-import 'package:breez/l10n/text_uri.dart';
 import 'package:breez/logger.dart';
 import 'package:breez/services/breezlib/breez_bridge.dart';
+import 'package:breez/services/breez_server/server.dart';
 import 'package:breez/services/injector.dart';
+import 'package:breez/utils/locale.dart';
 import 'package:flutter/services.dart';
 import 'package:http/http.dart' as http;
 import "package:ini/ini.dart";
@@ -29,9 +30,9 @@ class AddFundsBloc extends Bloc {
 
   final Stream<AccountModel> accountStream;
   final Stream<LSPStatus> lspStatusStream;
-  final _addFundRequestController = StreamController<bool>.broadcast();
+  final _addFundRequestController = StreamController<AddFundsInfo>.broadcast();
 
-  Sink<bool> get addFundRequestSink => _addFundRequestController.sink;
+  Sink<AddFundsInfo> get addFundRequestSink => _addFundRequestController.sink;
 
   final _addFundResponseController =
       StreamController<AddFundResponse>.broadcast();
@@ -67,23 +68,23 @@ class AddFundsBloc extends Bloc {
     ServiceInjector injector = ServiceInjector();
     BreezBridge breezLib = injector.breezBridge;
     int requestNumber = 0;
-    _addFundRequestController.stream.listen((newAddress) {
+    _addFundRequestController.stream.listen((addFundsInfo) {
       var currentRequest = ++requestNumber;
-      if (!newAddress) {
+      if (!addFundsInfo.newAddress) {
         _addFundResponseController.add(null);
         return;
       }
       userStream.firstWhere((u) => u.userID != null).then((user) async {
         var lspStatus = await this.lspStatusStream.first;
         if (lspStatus.selectedLSP == null) {
-          throw new Exception("lsp was not selected");
+          throw new Exception(getSystemAppLocalizations().lsp_error_not_selected);
         }
         breezLib.addFundsInit(user.userID, lspStatus.selectedLSP).then((reply) {
-          if (currentRequest == currentRequest) {
-            AddFundResponse response = AddFundResponse(reply);
-            _attachMoonpayUrl(response);
-            _addFundResponseController.add(response);
+          AddFundResponse response = AddFundResponse(reply);
+          if (addFundsInfo.isMoonpay) {
+            _attachMoonpayUrl(response, injector.breezServer);
           }
+          _addFundResponseController.add(response);
         }).catchError((err) {
           _addFundResponseController.addError(err);
           _moonpayNextOrderController.addError(err);
@@ -97,6 +98,7 @@ class AddFundsBloc extends Bloc {
   }
 
   Future _populateAvailableVendors() async {
+    final texts = getSystemAppLocalizations();
     var pendingMoonpayOrder = _completedMoonpayOrderController.valueOrNull;
     bool hasPendingOrder = false;
     if (pendingMoonpayOrder != null) {
@@ -107,34 +109,47 @@ class AddFundsBloc extends Bloc {
     }
     List<AddFundVendorModel> _vendorList = [];
     _vendorList.add(AddFundVendorModel(
-      "Receive via BTC Address",
+      texts.bottom_action_bar_receive_btc_address,
       "src/icon/bitcoin.png",
       "/deposit_btc_address",
       enabled: !hasPendingOrder,
-      textUri: TextUri.BOTTOM_ACTION_BAR_RECEIVE_BTC_ADDRESS,
     ));
     _vendorList.add(AddFundVendorModel(
-      "Buy Bitcoin",
+      texts.bottom_action_bar_buy_bitcoin,
       "src/icon/credit_card.png",
       "/buy_bitcoin",
       isAllowed: _isMoonpayAllowed,
       enabled: !hasPendingOrder,
       showLSPFee: true,
-      textUri: TextUri.BOTTOM_ACTION_BAR_BUY_BITCOIN,
     ));
     _availableVendorsController.add(_vendorList);
   }
 
-  Future _attachMoonpayUrl(AddFundResponse response) async {
+  Future _attachMoonpayUrl(
+      AddFundResponse response, BreezServer breezServer) async {
     if (response.errorMessage == null || response.errorMessage.isEmpty) {
-      String moonpayUrl = await _createMoonpayUrl();
+      Config config = await _readConfig();
+      String baseUrl = config.get("MoonPay Parameters", 'baseUrl');
+      String apiKey = config.get("MoonPay Parameters", 'apiKey');
+      String currencyCode = config.get("MoonPay Parameters", 'currencyCode');
+      String colorCode = config.get("MoonPay Parameters", 'colorCode');
+      String redirectURL = config.get("MoonPay Parameters", 'redirectURL');
       String walletAddress = response.address;
       String maxQuoteCurrencyAmount = Currency.BTC.format(
           response.maxAllowedDeposit,
           includeDisplayName: false,
           removeTrailingZeros: true);
-      moonpayUrl +=
-          "&walletAddress=$walletAddress&maxQuoteCurrencyAmount=$maxQuoteCurrencyAmount";
+      String queryString = "?" +
+          [
+            "apiKey=$apiKey",
+            "currencyCode=$currencyCode",
+            "colorCode=$colorCode",
+            "redirectURL=${Uri.encodeComponent(redirectURL)}",
+            "enabledPaymentMethods=credit_debit_card%2Csepa_bank_transfer%2Cgbp_bank_transfer",
+            "walletAddress=$walletAddress",
+            "maxQuoteCurrencyAmount=$maxQuoteCurrencyAmount"
+          ].join("&");
+      String moonpayUrl = await breezServer.signUrl(baseUrl, queryString);
       _moonpayNextOrderController
           .add(MoonpayOrder(walletAddress, moonpayUrl, null));
     }
@@ -179,21 +194,11 @@ class AddFundsBloc extends Bloc {
       if (response.statusCode != 200 || body == null) {
         String msg = (body?.length ?? 0) > 100 ? body.substring(0, 100) : body;
         log.severe('moonpay response error: $msg');
-        throw "Service Unavailable. Please try again later.";
+        throw getSystemAppLocalizations().add_funds_moonpay_error_service_unavailable;
       }
       _ipCheckResult = jsonDecode(body)['isAllowed'];
     }
     return _ipCheckResult;
-  }
-
-  Future<String> _createMoonpayUrl() async {
-    Config config = await _readConfig();
-    String baseUrl = config.get("MoonPay Parameters", 'baseUrl');
-    String apiKey = config.get("MoonPay Parameters", 'apiKey');
-    String currencyCode = config.get("MoonPay Parameters", 'currencyCode');
-    String colorCode = config.get("MoonPay Parameters", 'colorCode');
-    String redirectURL = config.get("MoonPay Parameters", 'redirectURL');
-    return "$baseUrl?apiKey=$apiKey&currencyCode=$currencyCode&colorCode=$colorCode&redirectURL=${Uri.encodeComponent(redirectURL)}&enabledPaymentMethods=credit_debit_card,sepa_bank_transfer,gbp_bank_transfer";
   }
 
   Future<Config> _readConfig() async {

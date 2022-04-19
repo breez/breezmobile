@@ -1,6 +1,5 @@
 import 'package:badges/badges.dart';
 import 'package:breez/bloc/account/account_model.dart';
-import 'package:breez/bloc/pos_catalog/model.dart';
 import 'package:breez/bloc/user_profile/currency.dart';
 import 'package:breez/routes/charge/currency_wrapper.dart';
 import 'package:breez/routes/charge/sale_view.dart';
@@ -9,9 +8,9 @@ import 'package:breez/widgets/breez_dropdown.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-class PosInvoiceCartBar extends StatelessWidget {
+class PosInvoiceCartBar extends StatefulWidget {
   final GlobalKey badgeKey;
-  final Sale currentSale;
+  final int totalNumOfItems;
   final AccountModel accountModel;
   final CurrencyWrapper currentCurrency;
   final bool isKeypadView;
@@ -23,7 +22,7 @@ class PosInvoiceCartBar extends StatelessWidget {
   const PosInvoiceCartBar({
     Key key,
     this.badgeKey,
-    this.currentSale,
+    this.totalNumOfItems,
     this.accountModel,
     this.currentCurrency,
     this.isKeypadView,
@@ -33,6 +32,11 @@ class PosInvoiceCartBar extends StatelessWidget {
     this.changeCurrency,
   }) : super(key: key);
 
+  @override
+  State<PosInvoiceCartBar> createState() => _PosInvoiceCartBarState();
+}
+
+class _PosInvoiceCartBarState extends State<PosInvoiceCartBar> {
   @override
   Widget build(BuildContext context) {
     final themeData = Theme.of(context);
@@ -51,9 +55,9 @@ class PosInvoiceCartBar extends StatelessWidget {
                   CupertinoPageRoute(
                     fullscreenDialog: true,
                     builder: (_) => SaleView(
-                      onCharge: (acc, sale) => onInvoiceSubmit(),
-                      onDeleteSale: approveClear,
-                      saleCurrency: currentCurrency,
+                      onCharge: () => widget.onInvoiceSubmit(),
+                      onDeleteSale: widget.approveClear,
+                      saleCurrency: widget.currentCurrency,
                     ),
                   ),
                 ),
@@ -61,12 +65,12 @@ class PosInvoiceCartBar extends StatelessWidget {
                   alignment: Alignment.centerLeft,
                   width: 80.0,
                   child: Badge(
-                    key: badgeKey,
+                    key: widget.badgeKey,
                     position: BadgePosition.topEnd(top: 5, end: -10),
                     animationType: BadgeAnimationType.scale,
                     badgeColor: badgeColor,
                     badgeContent: Text(
-                      currentSale.totalNumOfItems.toString(),
+                      "${widget.totalNumOfItems}",
                       style: TextStyle(
                         color: Colors.white,
                       ),
@@ -92,7 +96,9 @@ class PosInvoiceCartBar extends StatelessWidget {
                 child: Padding(
                   padding: EdgeInsets.only(left: 8.0),
                   child: Text(
-                    isKeypadView ? currentCurrency.format(currentAmount) : "",
+                    widget.isKeypadView
+                        ? widget.currentCurrency.format(widget.currentAmount)
+                        : "",
                     maxLines: 1,
                     style: theme.invoiceAmountStyle.copyWith(
                       color: themeData.textTheme.headline5.color,
@@ -122,7 +128,7 @@ class PosInvoiceCartBar extends StatelessWidget {
       Currency.currencies.map((c) => CurrencyWrapper.fromBTC(c)),
     );
     currencies.addAll(
-      accountModel.preferredFiatConversionList
+      widget.accountModel.preferredFiatConversionList
           .map((f) => CurrencyWrapper.fromFiat(f)),
     );
     final dropDownItems = currencies.map(
@@ -144,9 +150,9 @@ class PosInvoiceCartBar extends StatelessWidget {
       child: ButtonTheme(
         alignedDropdown: true,
         child: BreezDropdownButton(
-          onChanged: changeCurrency,
+          onChanged: widget.changeCurrency,
           iconEnabledColor: textTheme.headline5.color,
-          value: currentCurrency.shortName,
+          value: widget.currentCurrency.shortName,
           style: theme.invoiceAmountStyle.copyWith(
             color: textTheme.headline5.color,
           ),

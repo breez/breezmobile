@@ -72,3 +72,21 @@ class UpdatePosSelectedTab extends AsyncAction {
 
   UpdatePosSelectedTab(this.tab);
 }
+
+class UpdatePosCatalogItemSort extends AsyncAction {
+  final PosCatalogItemSort sort;
+
+  UpdatePosCatalogItemSort(this.sort);
+}
+
+class UpdatePosReportTimeRange extends AsyncAction {
+  final PosReportTimeRange range;
+
+  UpdatePosReportTimeRange(this.range);
+}
+
+class FetchPosReport extends AsyncAction {
+  final PosReportTimeRange range;
+
+  FetchPosReport(this.range);
+}

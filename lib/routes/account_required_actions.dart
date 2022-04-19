@@ -248,7 +248,7 @@ class AccountRequiredActionsIndicatorState
       }));
     }
 
-    final availableLSPs = lspStatus.availableLSPs;
+    final availableLSPs = lspStatus?.availableLSPs ?? [];
     if (lspActivity != null) {
       availableLSPs.forEach((element) {});
       int inactiveWarningDuration = this._inactiveWarningDuration(
@@ -271,7 +271,7 @@ class AccountRequiredActionsIndicatorState
       warnings.add(loaderIcon);
     }
 
-    final swapStatus = accountModel.swapFundsStatus;
+    final swapStatus = accountModel?.swapFundsStatus;
     // only warn on refundable addresses that weren't refunded in the past.
     if (swapStatus != null && swapStatus.waitingRefundAddresses.length > 0) {
       warnings.add(WarningAction(() => showDialog(

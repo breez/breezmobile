@@ -217,7 +217,10 @@ class UserApp extends StatelessWidget {
                             case '/send_coins':
                               return MaterialPageRoute(
                                 fullscreenDialog: true,
-                                builder: (_) => UnexpectedFunds(),
+                                builder: (_) => withBreezTheme(
+                                  context,
+                                  UnexpectedFunds(),
+                                ),
                                 settings: settings,
                               );
                             case '/select_lsp':

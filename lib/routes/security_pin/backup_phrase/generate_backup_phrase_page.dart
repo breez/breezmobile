@@ -6,13 +6,15 @@ import 'package:breez/widgets/back_button.dart' as backBtn;
 import 'package:breez/widgets/route.dart';
 import 'package:breez/widgets/single_button_bottom_bar.dart';
 import 'package:flutter/material.dart';
-
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'verify_backup_phrase_page.dart';
 
 class GenerateBackupPhrasePage extends StatefulWidget {
   final String mnemonics;
 
-  GenerateBackupPhrasePage(this.mnemonics);
+  const GenerateBackupPhrasePage(
+    this.mnemonics,
+  );
 
   @override
   GenerateBackupPhrasePageState createState() =>
@@ -20,33 +22,8 @@ class GenerateBackupPhrasePage extends StatefulWidget {
 }
 
 class GenerateBackupPhrasePageState extends State<GenerateBackupPhrasePage> {
-  AutoSizeGroup _autoSizeGroup = AutoSizeGroup();
+  final _autoSizeGroup = AutoSizeGroup();
   List<String> _mnemonicsList;
-
-  @override
-  Widget build(BuildContext context) {
-    return WillPopScope(
-      onWillPop: () => _onWillPop(context),
-      child: Scaffold(
-        appBar: AppBar(
-            iconTheme: Theme.of(context).appBarTheme.iconTheme,
-            textTheme: Theme.of(context).appBarTheme.textTheme,
-            backgroundColor: Theme.of(context).canvasColor,
-            automaticallyImplyLeading: false,
-            leading: backBtn.BackButton(
-              onPressed: () => _onWillPop(context),
-            ),
-            title: AutoSizeText(
-              "Write these words",
-              style: Theme.of(context).appBarTheme.textTheme.headline6,
-              maxLines: 1,
-            ),
-            elevation: 0.0),
-        body: _buildMnemonicSeedList(0),
-        bottomNavigationBar: _buildNextBtn(),
-      ),
-    );
-  }
 
   @override
   void initState() {
@@ -54,58 +31,109 @@ class GenerateBackupPhrasePageState extends State<GenerateBackupPhrasePage> {
     super.initState();
   }
 
-  _buildMnemonicItem(int index, String mnemonic) {
+  @override
+  Widget build(BuildContext context) {
+    final themeData = Theme.of(context);
+    final texts = AppLocalizations.of(context);
+    return WillPopScope(
+      onWillPop: () => _onWillPop(context),
+      child: Scaffold(
+        appBar: AppBar(
+          iconTheme: themeData.appBarTheme.iconTheme,
+          textTheme: themeData.appBarTheme.textTheme,
+          backgroundColor: themeData.canvasColor,
+          automaticallyImplyLeading: false,
+          leading: backBtn.BackButton(
+            onPressed: () => _onWillPop(context),
+          ),
+          title: AutoSizeText(
+            texts.backup_phrase_generation_write_words,
+            style: themeData.appBarTheme.textTheme.headline6,
+            maxLines: 1,
+          ),
+          elevation: 0.0,
+        ),
+        body: _buildMnemonicSeedList(context, 0),
+        bottomNavigationBar: _buildNextBtn(context),
+      ),
+    );
+  }
+
+  Widget _buildMnemonicItem(
+    BuildContext context,
+    int index,
+    String mnemonic,
+  ) {
+    final texts = AppLocalizations.of(context);
     return Container(
       height: 48,
       width: 150,
       padding: EdgeInsets.all(8),
       decoration: BoxDecoration(
-          border: Border.all(color: Colors.white30),
-          borderRadius: BorderRadius.all(Radius.circular(4))),
-      child: Row(children: [
-        Text('${index + 1}.', style: theme.mnemonicsTextStyle),
-        Expanded(
-          child: AutoSizeText(
-            mnemonic,
-            style: theme.mnemonicsTextStyle,
-            textAlign: TextAlign.center,
-            maxLines: 1,
-            minFontSize: MinFontSize(context).minFontSize,
-            stepGranularity: 0.1,
-            group: _autoSizeGroup,
-          ),
+        border: Border.all(color: Colors.white30),
+        borderRadius: const BorderRadius.all(
+          const Radius.circular(4),
         ),
-      ]),
+      ),
+      child: Row(
+        children: [
+          Text(
+            texts.backup_phrase_generation_index(index + 1),
+            style: theme.mnemonicsTextStyle,
+          ),
+          Expanded(
+            child: AutoSizeText(
+              mnemonic,
+              style: theme.mnemonicsTextStyle,
+              textAlign: TextAlign.center,
+              maxLines: 1,
+              minFontSize: MinFontSize(context).minFontSize,
+              stepGranularity: 0.1,
+              group: _autoSizeGroup,
+            ),
+          ),
+        ],
+      ),
     );
   }
 
-  Row _buildMnemonicSeedList(int page) {
+  Row _buildMnemonicSeedList(BuildContext context, int page) {
     return Row(
-        mainAxisSize: MainAxisSize.max,
-        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-        children: <Widget>[
-          Column(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            mainAxisSize: MainAxisSize.max,
-            children: List<Widget>.generate(
-                6,
-                (index) => _buildMnemonicItem(2 * index + (12 * (page)),
-                    _mnemonicsList[2 * index + (12 * (page))])),
+      mainAxisSize: MainAxisSize.max,
+      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+      children: [
+        Column(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          mainAxisSize: MainAxisSize.max,
+          children: List<Widget>.generate(
+            6,
+            (index) => _buildMnemonicItem(
+              context,
+              2 * index + (12 * (page)),
+              _mnemonicsList[2 * index + (12 * (page))],
+            ),
           ),
-          Column(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            mainAxisSize: MainAxisSize.max,
-            children: List<Widget>.generate(
-                6,
-                (index) => _buildMnemonicItem(1 + 2 * index + 12 * (page),
-                    _mnemonicsList[1 + 2 * index + 12 * (page)])),
+        ),
+        Column(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          mainAxisSize: MainAxisSize.max,
+          children: List<Widget>.generate(
+            6,
+            (index) => _buildMnemonicItem(
+              context,
+              1 + 2 * index + 12 * (page),
+              _mnemonicsList[1 + 2 * index + 12 * (page)],
+            ),
           ),
-        ]);
+        ),
+      ],
+    );
   }
 
-  _buildNextBtn() {
+  Widget _buildNextBtn(BuildContext context) {
+    final texts = AppLocalizations.of(context);
     return SingleButtonBottomBar(
-      text: "NEXT",
+      text: texts.backup_phrase_warning_action_next,
       onPressed: () {
         Navigator.push(
           context,

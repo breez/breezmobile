@@ -22,7 +22,9 @@ import 'package:tutorial_coach_mark/tutorial_coach_mark.dart';
 import 'confetti.dart';
 
 class PaymentAdjustment extends StatefulWidget {
-  const PaymentAdjustment({Key key}) : super(key: key);
+  const PaymentAdjustment({
+    Key key,
+  }) : super(key: key);
 
   @override
   State<StatefulWidget> createState() {
@@ -31,9 +33,9 @@ class PaymentAdjustment extends StatefulWidget {
 }
 
 class PaymentAdjustmentState extends State<PaymentAdjustment> {
-  final GlobalKey boostWidgetKey = GlobalKey();
-  final GlobalKey paymentAdjusterKey = GlobalKey();
-  AutoSizeGroup tutorialOptionGroup = AutoSizeGroup();
+  final boostWidgetKey = GlobalKey();
+  final paymentAdjusterKey = GlobalKey();
+  final tutorialOptionGroup = AutoSizeGroup();
 
   TutorialCoachMark tutorial;
   List<TargetFocus> targets = [];
@@ -47,7 +49,7 @@ class PaymentAdjustmentState extends State<PaymentAdjustment> {
         final userBloc = AppBlocsProvider.of<UserProfileBloc>(context);
         final user = await userBloc.userStream.first;
         if (!user.seenTutorials.paymentStripTutorial) {
-          _buildTutorial(user);
+          _buildTutorial(context, user);
           tutorial.show();
           setState(() {});
         }
@@ -55,29 +57,31 @@ class PaymentAdjustmentState extends State<PaymentAdjustment> {
     });
   }
 
-  void _buildTutorial(BreezUserModel user) {
-    tutorial = TutorialCoachMark(context,
-        targets: targets,
-        onClickOverlay: (t) {
-          if (t.keyTarget == boostWidgetKey) {
-            tutorial.next();
-          }
-        },
-        onClickTarget: (t) {
-          if (t.keyTarget != paymentAdjusterKey) {
-            tutorial.next();
-          }
-        },
-        colorShadow: Theme.of(context).primaryColor,
-        hideSkip: true,
-        onFinish: () {
-          final userBloc = AppBlocsProvider.of<UserProfileBloc>(context);
-          userBloc.userActionsSink.add(SetSeenPaymentStripTutorial(true));
-        });
-    _buildTutorialTargets(user);
+  void _buildTutorial(BuildContext context, BreezUserModel user) {
+    tutorial = TutorialCoachMark(
+      context,
+      targets: targets,
+      onClickOverlay: (t) {
+        if (t.keyTarget == boostWidgetKey) {
+          tutorial.next();
+        }
+      },
+      onClickTarget: (t) {
+        if (t.keyTarget != paymentAdjusterKey) {
+          tutorial.next();
+        }
+      },
+      colorShadow: Theme.of(context).primaryColor,
+      hideSkip: true,
+      onFinish: () {
+        final userBloc = AppBlocsProvider.of<UserProfileBloc>(context);
+        userBloc.userActionsSink.add(SetSeenPaymentStripTutorial(true));
+      },
+    );
+    _buildTutorialTargets(context, user);
   }
 
-  void _buildTutorialTargets(BreezUserModel user) {
+  void _buildTutorialTargets(BuildContext context, BreezUserModel user) {
     final texts = AppLocalizations.of(context);
     final theme = Theme.of(context);
     targets.add(TargetFocus(
@@ -89,27 +93,31 @@ class PaymentAdjustmentState extends State<PaymentAdjustment> {
       enableOverlayTab: true,
       contents: [
         TargetContent(
-            align: ContentAlign.top,
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: <Widget>[
-                Text(
-                  "Boost",
-                  style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      color: Colors.white,
-                      fontSize: 20.0),
+          align: ContentAlign.top,
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                texts.podcast_boost_adjustment_boost,
+                style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                  color: Colors.white,
+                  fontSize: 20.0,
                 ),
-                Padding(
-                  padding: const EdgeInsets.only(top: 10.0),
-                  child: Text(
-                    "Send a one-time tip to a show's creators. Long press to add a personalized message.",
-                    style: TextStyle(color: Colors.white),
+              ),
+              Padding(
+                padding: const EdgeInsets.only(top: 10.0),
+                child: Text(
+                  texts.podcast_boost_adjustment_boost_message,
+                  style: TextStyle(
+                    color: Colors.white,
                   ),
                 ),
-              ],
-            ))
+              ),
+            ],
+          ),
+        ),
       ],
     ));
     targets.add(TargetFocus(
@@ -121,68 +129,71 @@ class PaymentAdjustmentState extends State<PaymentAdjustment> {
       enableTargetTab: false,
       contents: [
         TargetContent(
-            align: ContentAlign.top,
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: <Widget>[
-                Text(
-                  "Stream sats",
-                  style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      color: Colors.white,
-                      fontSize: 20.0),
+          align: ContentAlign.top,
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                texts.podcast_boost_adjustment_stream_sats,
+                style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                  color: Colors.white,
+                  fontSize: 20.0,
                 ),
-                Padding(
-                  padding: const EdgeInsets.only(top: 10.0),
-                  child: Text(
-                    "Stream sats to the creators while listening to their show. The number indicates the amount of sats sent per minute. To listen for free, set this value to 0.",
-                    style: TextStyle(color: Colors.white),
+              ),
+              Padding(
+                padding: const EdgeInsets.only(top: 10.0),
+                child: Text(
+                  texts.podcast_boost_adjustment_stream_sats_message,
+                  style: TextStyle(
+                    color: Colors.white,
                   ),
                 ),
-                StatefulBuilder(builder: (context, changeState) {
-                  return Padding(
-                    padding: const EdgeInsets.only(top: 10.0),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        _tutorialOption(0, changeState),
-                        _tutorialOption(10, changeState),
-                        _tutorialOption(25, changeState),
-                        _tutorialOption(50, changeState),
-                        _tutorialOption(100, changeState),
-                      ],
-                    ),
-                  );
-                }),
-                Padding(
+              ),
+              StatefulBuilder(builder: (context, changeState) {
+                return Padding(
                   padding: const EdgeInsets.only(top: 10.0),
-                  child: withBreezTheme(
-                      context,
-                      ElevatedButton(
-                        style: ElevatedButton.styleFrom(
-                          primary: Colors.white,
-                        ),
-                        child: Text(
-                          texts.tutorial_gotcha,
-                          style: theme
-                              .primaryTextTheme
-                              .button
-                              .copyWith(color: theme.primaryColor),
-                        ),
-                        onPressed: () {
-                          AppBlocsProvider.of<UserProfileBloc>(context)
-                              .userActionsSink
-                              .add(SetPaymentOptions(user.paymentOptions
-                                  .copyWith(
-                                      preferredSatsPerMinValue:
-                                          tutorialStreamSats)));
-                          tutorial.finish();
-                        },
-                      )),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      _tutorialOption(0, changeState),
+                      _tutorialOption(10, changeState),
+                      _tutorialOption(25, changeState),
+                      _tutorialOption(50, changeState),
+                      _tutorialOption(100, changeState),
+                    ],
+                  ),
+                );
+              }),
+              Padding(
+                padding: const EdgeInsets.only(top: 10.0),
+                child: withBreezTheme(
+                  context,
+                  ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      primary: Colors.white,
+                    ),
+                    child: Text(
+                      texts.tutorial_gotcha,
+                      style: theme.primaryTextTheme.button.copyWith(
+                        color: theme.primaryColor,
+                      ),
+                    ),
+                    onPressed: () {
+                      AppBlocsProvider.of<UserProfileBloc>(context)
+                          .userActionsSink
+                          .add(SetPaymentOptions(user.paymentOptions.copyWith(
+                            preferredSatsPerMinValue: tutorialStreamSats,
+                          )));
+                      tutorial.finish();
+                    },
+                  ),
                 ),
-              ],
-            ))
+              ),
+            ],
+          ),
+        ),
       ],
     ));
   }
@@ -192,38 +203,48 @@ class PaymentAdjustmentState extends State<PaymentAdjustment> {
       flex: 1,
       fit: FlexFit.tight,
       child: Padding(
-        padding: const EdgeInsets.only(right: 6.0, left: 6.0),
+        padding: const EdgeInsets.only(
+          right: 6.0,
+          left: 6.0,
+        ),
         child: OutlinedButton(
-            style: OutlinedButton.styleFrom(
-              padding: EdgeInsets.zero,
-              side: tutorialStreamSats == sats
-                  ? BorderSide(
-                      width: 2.0,
-                      color: Colors.white,
-                    )
-                  : BorderSide(color: Colors.grey, width: 1.0),
-            ),
-            onPressed: () {
-              changeState(() {
-                tutorialStreamSats = sats;
-              });
-            },
-            child: Container(
-              child: Center(
-                child: AutoSizeText(sats.toString(),
-                    minFontSize: 0.1,
-                    stepGranularity: 0.1,
-                    maxLines: 1,
-                    group: tutorialOptionGroup,
-                    style: TextStyle(color: Colors.white)),
+          style: OutlinedButton.styleFrom(
+            padding: EdgeInsets.zero,
+            side: tutorialStreamSats == sats
+                ? BorderSide(
+                    width: 2.0,
+                    color: Colors.white,
+                  )
+                : BorderSide(
+                    color: Colors.grey,
+                    width: 1.0,
+                  ),
+          ),
+          onPressed: () => changeState(() {
+            tutorialStreamSats = sats;
+          }),
+          child: Container(
+            child: Center(
+              child: AutoSizeText(
+                sats.toString(),
+                minFontSize: 0.1,
+                stepGranularity: 0.1,
+                maxLines: 1,
+                group: tutorialOptionGroup,
+                style: TextStyle(
+                  color: Colors.white,
+                ),
               ),
-            )),
+            ),
+          ),
+        ),
       ),
     );
   }
 
   @override
   Widget build(BuildContext context) {
+    final themeData = Theme.of(context);
     final paymentsBloc = Provider.of<PodcastPaymentsBloc>(context);
     final userProfileBloc = AppBlocsProvider.of<UserProfileBloc>(context);
 
@@ -241,64 +262,85 @@ class PaymentAdjustmentState extends State<PaymentAdjustment> {
           var userModel = snapshot.data;
           return Container(
             height: 64,
-            color: Theme.of(context).backgroundColor,
+            color: themeData.backgroundColor,
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: <Widget>[
-                Flexible(
-                  flex: 5,
-                  child: Padding(
-                    padding: const EdgeInsets.only(left: 16, right: 0),
-                    child: WithConfettyPaymentEffect(
-                        type: PaymentEventType.BoostStarted,
-                        child: BoostWidget(
-                          key: boostWidgetKey,
-                          userModel: userModel,
-                          onBoost: (int boostAmount, {String boostMessage}) {
-                            paymentsBloc.actionsSink.add(PayBoost(boostAmount,
-                                boostMessage: boostMessage));
-                          },
-                          onChanged: (int boostAmount) {
-                            userProfileBloc.userActionsSink.add(
-                                SetPaymentOptions(userModel.paymentOptions
-                                    .copyWith(
-                                        preferredBoostValue: boostAmount)));
-                          },
-                        )),
-                  ),
-                ),
+              children: [
+                _booster(paymentsBloc, userProfileBloc, userModel),
                 Container(
                   height: 64,
                   width: 1,
                   child: VerticalDivider(
                     thickness: 1,
-                    color: Theme.of(context).dividerColor,
+                    color: themeData.dividerColor,
                   ),
                 ),
-                Flexible(
-                  flex: 3,
-                  child: Padding(
-                    padding: EdgeInsets.only(left: 0, right: 0),
-                    child: Center(
-                      child: PaymentAdjuster(
-                          key: paymentAdjusterKey,
-                          userModel: userModel,
-                          onChanged: (int satsPerMinute) {
-                            paymentsBloc.actionsSink
-                                .add(AdjustAmount(satsPerMinute));
-                            userProfileBloc.userActionsSink.add(
-                                SetPaymentOptions(userModel.paymentOptions
-                                    .copyWith(
-                                        preferredSatsPerMinValue:
-                                            satsPerMinute)));
-                          }),
-                    ),
-                  ),
-                ),
+                _adjuster(paymentsBloc, userProfileBloc, userModel),
               ],
             ),
           );
         },
+      ),
+    );
+  }
+
+  Widget _booster(
+    PodcastPaymentsBloc paymentsBloc,
+    UserProfileBloc userProfileBloc,
+    BreezUserModel userModel,
+  ) {
+    return Flexible(
+      flex: 5,
+      child: Padding(
+        padding: const EdgeInsets.only(left: 16, right: 0),
+        child: WithConfettyPaymentEffect(
+          type: PaymentEventType.BoostStarted,
+          child: BoostWidget(
+            key: boostWidgetKey,
+            userModel: userModel,
+            onBoost: (int boostAmount, {String boostMessage}) {
+              paymentsBloc.actionsSink.add(PayBoost(
+                boostAmount,
+                boostMessage: boostMessage,
+                senderName: userModel.name,
+              ));
+            },
+            onChanged: (int boostAmount) {
+              userProfileBloc.userActionsSink.add(SetPaymentOptions(
+                userModel.paymentOptions.copyWith(
+                  preferredBoostValue: boostAmount,
+                ),
+              ));
+            },
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _adjuster(
+    PodcastPaymentsBloc paymentsBloc,
+    UserProfileBloc userProfileBloc,
+    BreezUserModel userModel,
+  ) {
+    return Flexible(
+      flex: 3,
+      child: Padding(
+        padding: EdgeInsets.only(left: 0, right: 0),
+        child: Center(
+          child: PaymentAdjuster(
+            key: paymentAdjusterKey,
+            userModel: userModel,
+            onChanged: (int satsPerMinute) {
+              paymentsBloc.actionsSink.add(AdjustAmount(satsPerMinute));
+              userProfileBloc.userActionsSink.add(SetPaymentOptions(
+                userModel.paymentOptions.copyWith(
+                  preferredSatsPerMinValue: satsPerMinute,
+                ),
+              ));
+            },
+          ),
+        ),
       ),
     );
   }
