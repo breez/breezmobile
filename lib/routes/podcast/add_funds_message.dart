@@ -41,7 +41,7 @@ class AddFundsMessage extends StatelessWidget {
             ),
             SizedBox(width: 16),
             Container(
-              width: MediaQuery.of(context).size.width*100/360,
+              width: 100,
               child: ElevatedButton(
                 style: ElevatedButton.styleFrom(
                   shape: RoundedRectangleBorder(

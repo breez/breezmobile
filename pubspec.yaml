@@ -7,7 +7,7 @@ dependencies:
   flutter_localizations:
     sdk: flutter
 
-  app_settings: ^4.1.5
+  app_settings: ^4.1.1
   archive: ^3.1.9
   auto_size_text: ^3.0.0
   badges: ^2.0.2
@@ -17,12 +17,12 @@ dependencies:
   connectivity_plus: ^2.2.0
   crypto: ^3.0.1
   csv: ^5.0.1
-  dio: ^4.0.6
+  dio: ^4.0.4
   drag_and_drop_lists: ^0.3.2+2
   duration: ^3.0.11
   email_validator: ^2.0.1
-  extended_image: ^6.0.2+1
-  file_picker: ^4.5.1
+  extended_image: ^6.0.1
+  file_picker: ^4.3.3
   firebase_core: ^1.14.0
   firebase_database: ^9.0.6
   firebase_dynamic_links: ^4.0.5
@@ -35,13 +35,13 @@ dependencies:
   grpc: ^3.0.2
   hex: ^0.2.0
   image: ^3.1.1
-  image_cropper: ^1.5.1
-  image_picker: ^0.8.5
+  image_cropper: ^1.4.1
+  image_picker: ^0.8.4+5
   ini: ^2.1.0
   intl: ^0.17.0
   json_annotation: ^4.4.0
   logging: ^1.0.2
-  package_info_plus: ^1.4.2
+  package_info_plus: ^1.3.0
   path_provider: ^2.0.8
   printing: ^5.7.5
   protobuf: ^2.0.1
@@ -65,7 +65,7 @@ dependencies:
   uuid: ^3.0.5
   validators: ^3.0.0
   webdav_client: ^1.1.2
-  webview_flutter: ^3.0.2
+  webview_flutter: ^3.0.0
 
   anytime:
     git:
@@ -101,7 +101,7 @@ dependency_overrides:
 dev_dependencies:
   flutter_test:
     sdk: flutter
-  build_runner: ^2.1.10
+  build_runner: ^2.1.7
   json_serializable: ^6.1.4
   mockito: ^5.0.17
   sqflite_common_ffi: ^2.1.0+2
