@@ -189,8 +189,8 @@ class _SpeedSliderState extends State<SpeedSlider> {
               child: Slider(
                 value: speed,
                 min: 0.5,
-                max: 2.0,
-                divisions: 6,
+                max: 3.0,
+                divisions: 10,
                 activeColor: themeData.buttonTheme.colorScheme.onPrimary,
                 onChanged: (value) {
                   setState(() {
@@ -211,7 +211,7 @@ class _SpeedSliderState extends State<SpeedSlider> {
                 iconSize: 28.0,
                 icon: Icon(Icons.add_circle_outline),
                 color: themeData.buttonTheme.colorScheme.onPrimary,
-                onPressed: (speed >= 2.0)
+                onPressed: (speed >= 3.0)
                     ? null
                     : () {
                         setState(() {
