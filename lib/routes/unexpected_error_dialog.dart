@@ -10,7 +10,7 @@ import 'package:flutter/material.dart';
 import 'package:share_extend/share_extend.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
-void listenUnexpectedError(BuildContext context, AccountBloc accountBloc) {
+void listenUnexpectedError(BuildContext context, AccountBloc accountBloc) async {
   final texts = AppLocalizations.of(context);
   final themeData = Theme.of(context);
   final torEnabled = await ServiceInjector().breezBridge.getTorActive();
@@ -40,7 +40,7 @@ void listenUnexpectedError(BuildContext context, AccountBloc accountBloc) {
                   text: texts.unexpected_error_bullet,
                   style: Theme.of(context).dialogTheme.contentTextStyle),
               TextSpan(
-                  text: '${texts.newtork_tor_action_deactivate} ',
+                  text: '${texts.unexpected_error_deactivate_tor} ',
                   style: theme.blueLinkStyle,
                   recognizer: TapGestureRecognizer()
                     ..onTap = () async {

@@ -63,7 +63,8 @@ class RemoteServerAuthPageState extends State<RemoteServerAuthPage> {
 
   String appendPath(String uri, List<String> pathSegments) {
     var uriObject = Uri.parse(uri);
-    uriObject = uriObject.replace(pathSegments: uriObject.pathSegments.toList()..addAll(pathSegments));
+    uriObject = uriObject.replace(
+        pathSegments: uriObject.pathSegments.toList()..addAll(pathSegments));
     return uriObject.toString();
   }
 
@@ -77,7 +78,7 @@ class RemoteServerAuthPageState extends State<RemoteServerAuthPage> {
         _urlController.text = data.url;
         if (backupDirPathSegments.length > 1) {
           backupDirPathSegments.removeLast();
-          _urlController.text  = appendPath(data.url, backupDirPathSegments);
+          _urlController.text = appendPath(data.url, backupDirPathSegments);
         }
         _userController.text = data.user;
         _passwordController.text = data.password;
@@ -92,90 +93,57 @@ class RemoteServerAuthPageState extends State<RemoteServerAuthPage> {
     final nav = Navigator.of(context);
 
     return StreamBuilder<BackupSettings>(
-      stream: widget._backupBloc.backupSettingsStream,
-      builder: (context, snapshot) {
-        return Scaffold(
-          appBar: AppBar(
-            leading: backBtn.BackButton(
-              onPressed: () {
-                nav.pop(null);
-              },
-            ),
-            automaticallyImplyLeading: false,
-            iconTheme: themeData.appBarTheme.iconTheme,
-            textTheme: themeData.appBarTheme.textTheme,
-            backgroundColor: themeData.canvasColor,
-            title: Text(
-              texts.remote_server_title,
-              style: themeData.appBarTheme.textTheme.headline6,
-            ),
-            elevation: 0.0, toolbarTextStyle: themeData.appBarTheme.textTheme.bodyText2, titleTextStyle: themeData.appBarTheme.textTheme.headline6,
-          ),
-          body: SingleChildScrollView(
-            reverse: true,
-            child: StreamBuilder<BackupSettings>(
-              stream: widget._backupBloc.backupSettingsStream,
-              builder: (context, snapshot) {
-                var settings = snapshot.data;
-                if (settings == null) {
-                  return Loader();
-                }
-                return GestureDetector(
-                  behavior: HitTestBehavior.opaque,
-                  onTap: () => FocusScope.of(context).requestFocus(FocusNode()),
-                  child: Form(
-                    key: _formKey,
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 16.0,
-                        vertical: 16.0,
-                      ),
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          _formFieldUrl(context),
-                          _formFieldUserName(context),
-                          _formFieldPassword(context),
-                        ],
-                      ),
-                    ),
-                  ),
-                );
-              },
-            ),
-          ),
-          bottomNavigationBar: Padding(
-            padding: EdgeInsets.only(bottom: 0.0),
-            child: SingleButtonBottomBar(
-              stickToBottom: true,
-              text: widget.restore
-                  ? texts.remote_server_action_restore
-                  : texts.remote_server_action_save,
-              onPressed: () async {
-                Uri uri = Uri.parse(_urlController.text);
-                var connectionWarningResponse = true;
-                if (uri.scheme != 'https') {
-                  connectionWarningResponse = await promptAreYouSure(
-                    context,
-                    texts.remote_server_warning_connection_title,
-                    Text(
-                      texts.remote_server_warning_connection_message,
-                    ),
-                  );
-                }
-
-                if (connectionWarningResponse) {
-                  failDiscoverURL = false;
-                  failAuthenticate = false;
-                  if (_formKey.currentState.validate()) {
-                    final newSettings = snapshot.data.copyWith(
-                      remoteServerAuthData: RemoteServerAuthData(
-                        uri.toString(),
-                        _userController.text,
-                        _passwordController.text,
-                        BREEZ_BACKUP_DIR,
->>>>>>> b4a986c0a26276d150d2481ea166c71f9a92989a
+        stream: widget._backupBloc.backupSettingsStream,
+        builder: (context, snapshot) {
+          return Scaffold(
+              appBar: AppBar(
+                leading: backBtn.BackButton(
+                  onPressed: () {
+                    nav.pop(null);
+                  },
+                ),
+                automaticallyImplyLeading: false,
+                iconTheme: themeData.appBarTheme.iconTheme,
+                textTheme: themeData.appBarTheme.textTheme,
+                backgroundColor: themeData.canvasColor,
+                title: Text(
+                  texts.remote_server_title,
+                  style: themeData.appBarTheme.textTheme.headline6,
+                ),
+                elevation: 0.0,
+                toolbarTextStyle: themeData.appBarTheme.textTheme.bodyText2,
+                titleTextStyle: themeData.appBarTheme.textTheme.headline6,
+              ),
+              body: SingleChildScrollView(
+                reverse: true,
+                child: StreamBuilder<BackupSettings>(
+                  stream: widget._backupBloc.backupSettingsStream,
+                  builder: (context, snapshot) {
+                    var settings = snapshot.data;
+                    if (settings == null) {
+                      return Loader();
+                    }
+                    return GestureDetector(
+                      behavior: HitTestBehavior.opaque,
+                      onTap: () =>
+                          FocusScope.of(context).requestFocus(FocusNode()),
+                      child: Form(
+                        key: _formKey,
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 16.0,
+                            vertical: 16.0,
+                          ),
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              _formFieldUrl(context),
+                              _formFieldUserName(context),
+                              _formFieldPassword(context),
+                            ],
+                          ),
+                        ),
                       ),
                     );
                   },
@@ -184,90 +152,100 @@ class RemoteServerAuthPageState extends State<RemoteServerAuthPage> {
               bottomNavigationBar: Padding(
                 padding: EdgeInsets.only(bottom: 0.0),
                 child: SingleButtonBottomBar(
-                  stickToBottom: true,
-                  text: widget.restore ? "RESTORE" : "SAVE",
-                  onPressed: () async {
-                    var continueResponse = true;
-                    Uri uri = Uri.parse(_urlController.text);
-                    if (uri.host.endsWith('onion') &&
-                        widget._torBloc.torConfig == null) {
-                      continueResponse = await promptError(
-                          context,
-                          'Server URL',
-                          Text(
-                            'This URL has an onion domain. You probably need to first enable Tor in the Network settings.',
-                            style:
-                                Theme.of(context).dialogTheme.contentTextStyle,
-                          ),
-                          optionText: 'CONTINUE',
-                          optionFunc: () {
-                            Navigator.of(context).pop();
-                          },
-                          okText: 'SETTINGS',
-                          okFunc: () {
-                            // Navigator.of(context).pop();
-                            Navigator.of(context).push(FadeInRoute(
-                              builder: (_) =>
-                                  withBreezTheme(context, NetworkPage()),
-                            ));
-                            // Navigator.of(context).popUntil((route) => route is RemoteServerAuthPage);
-                            return false;
-                          });
-                    }
+                    stickToBottom: true,
+                    text: widget.restore
+                        ? texts.remote_server_action_restore
+                        : texts.remote_server_action_save,
+                    onPressed: () async {
+                      Uri uri = Uri.parse(_urlController.text);
 
-                    if (continueResponse) {
-                      var connectionWarningResponse = true;
-                      if (!uri.host.endsWith('.onion') &&
-                          uri.scheme == 'http') {
-                        connectionWarningResponse = await promptAreYouSure(
+                      var continueResponse = true;
+                      if (uri.host.endsWith('onion') &&
+                          widget._torBloc.torConfig == null) {
+                        continueResponse = await promptError(
                             context,
-                            "Connection Warning",
+                            texts.remote_server_warning_connection_title,
                             Text(
-                                'Your connection to this remote server may not be a secured connection. Are you sure you want to continue?'));
+                              texts.remote_server_warning_onion_message,
+                              style: Theme.of(context)
+                                  .dialogTheme
+                                  .contentTextStyle,
+                            ),
+                            optionText: texts
+                                .remote_server_onion_warning_dialog_default_action_continue,
+                            optionFunc: () {
+                              Navigator.of(context).pop();
+                            },
+                            okText: texts
+                                .remote_server_onion_warning_dialog_settings,
+                            okFunc: () {
+                              // Navigator.of(context).pop();
+                              Navigator.of(context).push(FadeInRoute(
+                                builder: (_) =>
+                                    withBreezTheme(context, NetworkPage()),
+                              ));
+                              // Navigator.of(context).popUntil((route) => route is RemoteServerAuthPage);
+                              return false;
+                            });
                       }
 
-                      if (connectionWarningResponse) {
-                        var nav = Navigator.of(context);
-                        failDiscoverURL = false;
-                        failAuthenticate = false;
-
-                        if (_formKey.currentState.validate()) {
-                          var newSettings = snapshot.data.copyWith(
+                      if (continueResponse) {
+                        var connectionWarningResponse = true;
+                        if (!uri.host.endsWith('.onion') &&
+                            uri.scheme == 'http') {
+                          connectionWarningResponse = await promptAreYouSure(
+                            context,
+                            texts.remote_server_warning_connection_title,
+                            Text(
+                              texts.remote_server_warning_connection_message,
+                            ),
+                          );
+                        }
+                        if (connectionWarningResponse) {
+                          failDiscoverURL = false;
+                          failAuthenticate = false;
+                          if (_formKey.currentState.validate()) {
+                            final newSettings = snapshot.data.copyWith(
                               remoteServerAuthData: RemoteServerAuthData(
-                                  _urlController.text,
-                                  _userController.text,
-                                  _passwordController.text,
-                                  BREEZ_BACKUP_DIR));
-                          var loader = createLoaderRoute(context,
-                              message: "Testing connection", opacity: 0.8);
-                          Navigator.push(context, loader);
-                          discoverURL(newSettings.remoteServerAuthData)
-                              .then((value) async {
-                            nav.removeRoute(loader);
+                                uri.toString(),
+                                _userController.text,
+                                _passwordController.text,
+                                BREEZ_BACKUP_DIR,
+                              ),
+                            );
 
-                            if (value.authError == DiscoverResult.SUCCESS) {
-                              Navigator.pop(context, value.authData);
-                            }
-                            setState(() {
-                              failDiscoverURL =
-                                  value.authError == DiscoverResult.INVALID_URL;
-                              failAuthenticate = value.authError ==
-                                  DiscoverResult.INVALID_AUTH;
+                            var loader = createLoaderRoute(context,
+                                message: "Testing connection", opacity: 0.8);
+                            Navigator.push(context, loader);
+                            discoverURL(newSettings.remoteServerAuthData)
+                                .then((value) async {
+                              nav.removeRoute(loader);
+
+                              final error = value.authError;
+                              if (error == DiscoverResult.SUCCESS) {
+                                Navigator.pop(context, value.authData);
+                              }
+                              setState(() {
+                                failDiscoverURL =
+                                    error == DiscoverResult.INVALID_URL;
+                                failAuthenticate =
+                                    error == DiscoverResult.INVALID_AUTH;
+                              });
+                              _formKey.currentState.validate();
+                            }).catchError((err) {
+                              nav.removeRoute(loader);
+                              promptError(
+                                  context,
+                                  texts.remote_server_error_remote_server_title,
+                                  Text(
+                                    texts
+                                        .remote_server_error_remote_server_message,
+                                  ));
                             });
-                            _formKey.currentState.validate();
-                          }).catchError((err) {
-                            nav.removeRoute(loader);
-                            promptError(
-                                context,
-                                "Remote Server",
-                                Text(
-                                    "Failed to connect with the remote server, please check your settings."));
-                          });
+                          }
                         }
                       }
-                    }
-                  },
-                ),
+                    }),
               ));
         });
   }
@@ -357,19 +335,19 @@ class RemoteServerAuthPageState extends State<RemoteServerAuthPage> {
     await client.ping();
   }
 
-  // We try to discover the webdav url using a backward search where on every 
+  // We try to discover the webdav url using a backward search where on every
   // step we take the last path segment from the url and append it as a prefix
   // to the folder path.
   Future<DiscoveryResult> discoverURL(RemoteServerAuthData authData) async {
-    RemoteServerAuthData testedAuthData = authData;    
-    while(true) {
+    RemoteServerAuthData testedAuthData = authData;
+    while (true) {
       var testedUrl = Uri.parse(testedAuthData.url);
       var result = await discoverURLInternal(testedAuthData);
       if (result.authError == DiscoverResult.SUCCESS ||
-        result.authError == DiscoverResult.INVALID_AUTH) {
-          return result;
+          result.authError == DiscoverResult.INVALID_AUTH) {
+        return result;
       }
-            
+
       List<String> pathSegments = testedUrl.pathSegments.toList();
 
       // if we reached url origin then we fail.
@@ -377,17 +355,17 @@ class RemoteServerAuthPageState extends State<RemoteServerAuthPage> {
         return DiscoveryResult(testedAuthData, DiscoverResult.INVALID_URL);
       }
       String lastSegment = pathSegments.removeLast();
-      
+
       // we couldn't use webdav with the current root, try differenet origin
       // and move the last path segment as the directory prefix
       testedAuthData = testedAuthData.copyWith(
-        url: testedUrl.replace(pathSegments: pathSegments).toString(), 
-        breezDir: lastSegment + "/" + testedAuthData.breezDir);
-    }    
+          url: testedUrl.replace(pathSegments: pathSegments).toString(),
+          breezDir: lastSegment + "/" + testedAuthData.breezDir);
+    }
   }
 
-  Future<DiscoveryResult> discoverURLInternal(RemoteServerAuthData authData) async {   
-
+  Future<DiscoveryResult> discoverURLInternal(
+      RemoteServerAuthData authData) async {
     var result = await testAuthData(authData);
     if (result == DiscoverResult.SUCCESS ||
         result == DiscoverResult.INVALID_AUTH) {
@@ -411,7 +389,7 @@ class RemoteServerAuthPageState extends State<RemoteServerAuthPage> {
     log.info('remote_server_auth.dart: testAuthData');
     try {
       await widget._backupBloc
-          .testAuth(BackupSettings.remoteServerBackupProvider, authData);
+          .testAuth(BackupSettings.remoteServerBackupProvider(), authData);
 
       /*
       // findProxy will only work for HTTPS but will not work for onion hidden services or HTTP
