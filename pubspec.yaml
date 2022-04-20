@@ -70,7 +70,7 @@ dependencies:
   anytime:
     git:
       url: https://github.com/breez/anytime_podcast_player.git
-      ref: bba6b6b8046d3302432746d2ff9b603b0e434c87
+      ref: 822a7b542dc0c4344569c242486d98bcc43852af
   flutter_typeahead:
     git:
       url: https://github.com/breez/flutter_typeahead.git
