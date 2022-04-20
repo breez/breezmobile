@@ -6,6 +6,7 @@ import 'package:auto_size_text/auto_size_text.dart';
 import 'package:breez/bloc/backup/backup_actions.dart';
 import 'package:breez/bloc/backup/backup_bloc.dart';
 import 'package:breez/bloc/backup/backup_model.dart';
+import 'package:breez/bloc/pos_catalog/bloc.dart';
 import 'package:breez/bloc/user_profile/user_actions.dart';
 import 'package:breez/bloc/user_profile/user_profile_bloc.dart';
 import 'package:breez/logger.dart';
@@ -39,10 +40,14 @@ class _BackupContext {
 class InitialWalkthroughPage extends StatefulWidget {
   final UserProfileBloc _registrationBloc;
   final BackupBloc _backupBloc;
+  final PosCatalogBloc _posCatalogBloc;
+  final Sink<bool> _reloadDatabaseSink;
 
   InitialWalkthroughPage(
     this._registrationBloc,
     this._backupBloc,
+    this._posCatalogBloc,
+    this._reloadDatabaseSink,
   );
 
   @override
@@ -82,6 +87,7 @@ class InitialWalkthroughPageState extends State<InitialWalkthroughPage>
     _restoreFinishedSubscription =
         widget._backupBloc.restoreFinishedStream.listen((restored) {
       if (restored) {
+        _reloadDatabases();
         popToWalkthrough();
         _proceedToRegister();
       }
@@ -256,6 +262,11 @@ class InitialWalkthroughPageState extends State<InitialWalkthroughPage>
       );
       ScaffoldMessenger.of(context).showSnackBar(snackBar);
     }
+  }
+
+  void _reloadDatabases() {
+    widget._posCatalogBloc.reloadPosItemsSink.add(true);
+    widget._reloadDatabaseSink.add(true);
   }
 
   @override
