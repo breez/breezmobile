@@ -475,9 +475,43 @@ class BackupBloc {
 
       _breezLib
           .restore(request.snapshot.nodeID, request.encryptionKey.key)
-          .then((_) => _restoreFinishedController.add(true))
-          .catchError(_restoreFinishedController.addError);
+          .then((_) => _restoreAppData()
+              .then((value) => _restoreFinishedController.add(true))
+              .catchError(_restoreFinishedController.addError));
     });
+  }
+
+  _restoreAppData() async {
+    try {
+      await _restorePosDB();
+      await _restorePodcastsDB();
+    } on Exception catch (exception) {
+      throw exception;
+    }
+  }
+
+  Future<void> _restorePosDB() async {
+    final backupPosDbPath =
+        _backupAppDataDirPath + Platform.pathSeparator + 'product-catalog.db';
+    final posDbPath = await databaseFactory.getDatabasesPath() +
+        Platform.pathSeparator +
+        'product-catalog.db';
+    if (await File(backupPosDbPath).exists()) {
+      await File(backupPosDbPath).copy(posDbPath).catchError((err) {
+        throw Exception("Failed to restore pos items.");
+      });
+    }
+  }
+
+  Future<void> _restorePodcastsDB() async {
+    final backupAnytimeDbPath =
+        _backupAppDataDirPath + Platform.pathSeparator + 'anytime.db';
+    final anytimeDbPath = _appDirPath + Platform.pathSeparator + 'anytime.db';
+    if (await File(backupAnytimeDbPath).exists()) {
+      await File(backupAnytimeDbPath).copy(anytimeDbPath).catchError((err) {
+        throw Exception("Failed to restore podcast library.");
+      });
+    }
   }
 
   close() {
