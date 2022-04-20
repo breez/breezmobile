@@ -41,11 +41,13 @@ class InitialWalkthroughPage extends StatefulWidget {
   final UserProfileBloc _registrationBloc;
   final BackupBloc _backupBloc;
   final PosCatalogBloc _posCatalogBloc;
+  final Sink<bool> _reloadDatabaseSink;
 
   InitialWalkthroughPage(
     this._registrationBloc,
     this._backupBloc,
     this._posCatalogBloc,
+    this._reloadDatabaseSink,
   );
 
   @override
@@ -264,7 +266,7 @@ class InitialWalkthroughPageState extends State<InitialWalkthroughPage>
 
   void _reloadDatabases() {
     widget._posCatalogBloc.reloadPosItemsSink.add(true);
-    // TODO: Reload Anytime DB
+    widget._reloadDatabaseSink.add(true);
   }
 
   @override
