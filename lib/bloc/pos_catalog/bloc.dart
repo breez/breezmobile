@@ -59,10 +59,13 @@ class PosCatalogBloc with AsyncActionsHandler {
 
   Stream<PosReportResult> get posReportResult => _posReportResult.stream;
 
+  Sink<bool> _backupAppDataSink;
   PosCatalogBloc(
     Stream<AccountModel> accountStream,
+    Sink<bool> backupAppDataSink,
     this._repository,
   ) {
+    _backupAppDataSink = backupAppDataSink;
     _loadPosCatalogItemSort();
     _loadItems();
     registerAsyncHandlers({
@@ -176,10 +179,11 @@ class PosCatalogBloc with AsyncActionsHandler {
     });
   }
 
-  Future _loadItems({String filter}) async {
+  Future _loadItems({String filter, bool backupDB = false}) async {
     final items = await _repository.fetchItems(filter: filter);
     final sort = _posItemSort.valueOrNull ?? PosCatalogItemSort.NONE;
     _itemsStreamController.add(_sort(items, sort));
+    if (backupDB) _backupAppDataSink.add(backupDB);
   }
 
   List<Item> _sort(List<Item> catalogItems, PosCatalogItemSort sort) {
@@ -228,19 +232,19 @@ class PosCatalogBloc with AsyncActionsHandler {
 
   Future _addItem(AddItem action) async {
     action.resolve(await _repository.addItem(action.item));
-    _loadItems();
+    _loadItems(backupDB: true);
   }
 
   Future _updateItem(UpdateItem action) async {
     await _repository.updateItem(action.item);
     action.resolve(null);
-    _loadItems();
+    _loadItems(backupDB: true);
   }
 
   Future _deleteItem(DeleteItem action) async {
     await _repository.deleteItem(action.id);
     action.resolve(null);
-    _loadItems();
+    _loadItems(backupDB: true);
   }
 
   Future _fetchItem(FetchItem action) async {
@@ -332,7 +336,7 @@ class PosCatalogBloc with AsyncActionsHandler {
 
   Future resetDB() async {
     await (_repository as SqliteRepository).dropDB();
-    _loadItems();
+    _loadItems(backupDB: true);
   }
 }
 
