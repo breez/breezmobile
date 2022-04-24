@@ -322,10 +322,7 @@ final ThemeData darkTheme = ThemeData(
   ),
 );
 
-final VendorTheme bitrefill = VendorTheme(
-    iconFgColor: Color.fromRGBO(68, 155, 247, 1.0),
-    iconBgColor: Color(0xFFffffff),
-    textColor: Color.fromRGBO(47, 47, 47, 1.0));
+final VendorTheme bitrefill = VendorTheme(iconBgColor: Color(0xFF002B28));
 final VendorTheme lnpizza =
     VendorTheme(iconBgColor: Color(0xFF000000), iconFgColor: Color(0xFFf8e71c));
 final VendorTheme fixedfloat = VendorTheme(iconBgColor: Color(0xFF0B4E7B));
