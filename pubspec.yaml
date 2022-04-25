@@ -23,10 +23,10 @@ dependencies:
   email_validator: "2.0.1"
   extended_image: "6.0.2+1"
   file_picker: "4.5.1"
-  firebase_core: ^1.14.0
-  firebase_database: ^9.0.6
-  firebase_dynamic_links: ^4.0.5
-  firebase_messaging: ^11.2.6
+  firebase_core: "1.15.0"
+  firebase_database: "9.0.12"
+  firebase_dynamic_links: "4.2.0"
+  firebase_messaging: "11.2.14"
   flushbar: ^1.10.4 # discontinued
   flutter_secure_storage: ^5.0.2
   flutter_svg: ^1.0.3
