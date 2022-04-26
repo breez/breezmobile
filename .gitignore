@@ -18,7 +18,6 @@ packages
 /android/app/src/client/google-services.json
 lib/services/breezlib/rpc.proto
 /android/app/libs/breez.aar
-pubspec.lock
 ios/Runner/GoogleService-Info.plist
 ios/bindings.framework/*
 travis/config.sh
