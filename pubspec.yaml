@@ -8,13 +8,13 @@ dependencies:
     sdk: flutter
 
   app_settings: "4.1.5"
-  archive: ^3.1.9
+  archive: "3.3.0"
   auto_size_text: "3.0.0"
   badges: "2.0.2"
   bip39: "1.0.6"
   collection: "1.15.0" # Outdated
   confetti: "0.6.0"
-  connectivity_plus: ^2.2.0
+  connectivity_plus: "2.3.0"
   crypto: "3.0.1"
   csv: "5.0.1"
   dio: "4.0.6"
@@ -30,7 +30,7 @@ dependencies:
   flushbar: "1.10.4" # discontinued
   flutter_secure_storage: "5.0.2"
   flutter_svg: "1.0.3"
-  flutter_web_browser: ^0.16.0
+  flutter_web_browser: "0.17.1"
   google_api_availability: "3.0.1"
   grpc: "3.0.2"
   hex: "0.2.0"
@@ -43,9 +43,9 @@ dependencies:
   logging: "1.0.2"
   package_info_plus: "1.4.2"
   path_provider: "2.0.8"
-  printing: ^5.7.5
+  printing: "5.8.0"
   protobuf: "2.0.1"
-  qr_code_scanner: ^0.6.1
+  qr_code_scanner: "0.7.0"
   qr_code_tools: "0.0.7"
   # qr_flutter has already fixed the build issue with the qr package but did not publish an updated
   # version, they will publish as 4.0.1 for now they recommend to use the master but instead of that
@@ -102,7 +102,7 @@ dev_dependencies:
   flutter_test:
     sdk: flutter
   build_runner: "2.1.8"
-  json_serializable: ^6.1.4
+  json_serializable: "6.1.5"
   mockito: "5.0.17"
   sqflite_common_ffi: "2.1.0+2"
   test: any
