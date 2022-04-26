@@ -9,17 +9,17 @@ dependencies:
 
   app_settings: "4.1.5"
   archive: ^3.1.9
-  auto_size_text: ^3.0.0
-  badges: ^2.0.2
-  bip39: ^1.0.6
-  collection: ^1.15.0
-  confetti: ^0.6.0
+  auto_size_text: "3.0.0"
+  badges: "2.0.2"
+  bip39: "1.0.6"
+  collection: "1.15.0" # Outdated
+  confetti: "0.6.0"
   connectivity_plus: ^2.2.0
-  crypto: ^3.0.1
-  csv: ^5.0.1
+  crypto: "3.0.1"
+  csv: "5.0.1"
   dio: "4.0.6"
-  drag_and_drop_lists: ^0.3.2+2
-  duration: ^3.0.11
+  drag_and_drop_lists: "0.3.2+2"
+  duration: "3.0.11"
   email_validator: "2.0.1"
   extended_image: "6.0.2+1"
   file_picker: "4.5.1"
@@ -27,26 +27,26 @@ dependencies:
   firebase_database: "9.0.12"
   firebase_dynamic_links: "4.2.0"
   firebase_messaging: "11.2.14"
-  flushbar: ^1.10.4 # discontinued
-  flutter_secure_storage: ^5.0.2
-  flutter_svg: ^1.0.3
+  flushbar: "1.10.4" # discontinued
+  flutter_secure_storage: "5.0.2"
+  flutter_svg: "1.0.3"
   flutter_web_browser: ^0.16.0
-  google_api_availability: ^3.0.1
-  grpc: ^3.0.2
-  hex: ^0.2.0
-  image: ^3.1.1
+  google_api_availability: "3.0.1"
+  grpc: "3.0.2"
+  hex: "0.2.0"
+  image: "3.1.1"
   image_cropper: "1.5.1"
   image_picker: "0.8.5"
-  ini: ^2.1.0
-  intl: ^0.17.0
-  json_annotation: ^4.4.0
-  logging: ^1.0.2
+  ini: "2.1.0"
+  intl: "0.17.0"
+  json_annotation: "4.4.0"
+  logging: "1.0.2"
   package_info_plus: "1.4.2"
-  path_provider: ^2.0.8
+  path_provider: "2.0.8"
   printing: ^5.7.5
-  protobuf: ^2.0.1
+  protobuf: "2.0.1"
   qr_code_scanner: ^0.6.1
-  qr_code_tools: ^0.0.7
+  qr_code_tools: "0.0.7"
   # qr_flutter has already fixed the build issue with the qr package but did not publish an updated
   # version, they will publish as 4.0.1 for now they recommend to use the master but instead of that
   # we are using an specific commit to avoid unexpected behaviour in future builds.
@@ -54,17 +54,17 @@ dependencies:
     git:
       url: https://github.com/theyakka/qr.flutter.git
       ref: 1fc6e38c198a76a6fd60b7bd3b4c190cd6c9330b
-  rxdart: ^0.27.3
-  shared_preferences: ^2.0.12
-  simple_animations: ^4.0.1
-  sqflite: ^2.0.2
-  timeago: ^3.2.1
-  tutorial_coach_mark: ^1.2.1
-  uni_links: ^0.5.1
-  url_launcher: ^6.0.18
-  uuid: ^3.0.5
-  validators: ^3.0.0
-  webdav_client: ^1.1.2
+  rxdart: "0.27.3"
+  shared_preferences: "2.0.12"
+  simple_animations: "4.0.1"
+  sqflite: "2.0.2"
+  timeago: "3.2.1"
+  tutorial_coach_mark: "1.2.1"
+  uni_links: "0.5.1"
+  url_launcher: "6.0.18"
+  uuid: "3.0.5"
+  validators: "3.0.0"
+  webdav_client: "1.1.2"
   webview_flutter: "3.0.2"
 
   anytime:
@@ -86,7 +86,7 @@ dependencies:
   share_extend:
     git:
       url: https://github.com/breez/ShareExtend.git
-  md5_file_checksum: ^1.0.3
+  md5_file_checksum: "1.0.3"
 
 dependency_overrides:
   flutter_downloader:
@@ -103,8 +103,8 @@ dev_dependencies:
     sdk: flutter
   build_runner: "2.1.8"
   json_serializable: ^6.1.4
-  mockito: ^5.0.17
-  sqflite_common_ffi: ^2.1.0+2
+  mockito: "5.0.17"
+  sqflite_common_ffi: "2.1.0+2"
   test: any
 
 environment:
