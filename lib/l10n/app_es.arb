@@ -1027,19 +1027,7 @@
   "initial_walk_through_error_backup_location": "No se pudo encontrar ninguna copia de seguridad para esta cuenta",
   "initial_walk_through_error_internal": "Error Interno",
   "restore_pin_title": "Ingrese el PIN de respaldo",
-  "enter_backup_phrase": "Ingrese la frase de respaldo {number}/{total}",
-  "@enter_backup_phrase": {
-    "placeholders": {
-      "number": {
-        "type": "String",
-        "example": "12"
-      },
-      "total": {
-        "type": "String",
-        "example": "24"
-      }
-    }
-  },
+  "enter_backup_phrase": "Ingrese la frase de respaldo",
   "enter_backup_phrase_error": "No se pudo restaurar la copia de seguridad. Verifique que la frase de respaldo se haya ingresado correctamente y vuelva a intentarlo.",
   "enter_backup_phrase_missing_word": "Faltan palabras",
   "enter_backup_phrase_invalid_word": "Palabras inválidas",

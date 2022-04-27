@@ -1027,19 +1027,7 @@
   "initial_walk_through_error_backup_location": "Não foi possível localizar nenhum backup para esta conta",
   "initial_walk_through_error_internal": "Erro interno",
   "restore_pin_title": "Insira o PIN do backup",
-  "enter_backup_phrase": "Insira a frase de backup {number}/{total}",
-  "@enter_backup_phrase": {
-    "placeholders": {
-      "number": {
-        "type": "String",
-        "example": "12"
-      },
-      "total": {
-        "type": "String",
-        "example": "24"
-      }
-    }
-  },
+  "enter_backup_phrase": "Insira a frase de backup",
   "enter_backup_phrase_error": "Falha ao restaurar o backup. Verifique se a frase de backup foi inserida corretamente e tente novamente.",
   "enter_backup_phrase_missing_word": "Faltam palavras",
   "enter_backup_phrase_invalid_word": "Palavras inválidas",

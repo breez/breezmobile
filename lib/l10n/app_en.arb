@@ -1027,19 +1027,7 @@
   "initial_walk_through_error_backup_location": "Could not locate backup for this account",
   "initial_walk_through_error_internal": "Internal Error",
   "restore_pin_title": "Enter backup PIN",
-  "enter_backup_phrase": "Enter your backup phrase {number}/{total}",
-  "@enter_backup_phrase": {
-    "placeholders": {
-      "number": {
-        "type": "String",
-        "example": "12"
-      },
-      "total": {
-        "type": "String",
-        "example": "24"
-      }
-    }
-  },
+  "enter_backup_phrase": "Enter your backup phrase",
   "enter_backup_phrase_error": "Failed to restore from backup. Please make sure backup phrase was correctly entered and try again.",
   "enter_backup_phrase_missing_word": "Missing word",
   "enter_backup_phrase_invalid_word": "Invalid word",
