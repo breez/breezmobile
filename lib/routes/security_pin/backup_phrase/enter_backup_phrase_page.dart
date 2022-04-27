@@ -153,6 +153,7 @@ class EnterBackupPhrasePageState extends State<EnterBackupPhrasePage> {
       autovalidateMode: _autoValidateMode,
       validator: (text) => _onValidate(context, text),
       suggestionsCallback: _getSuggestions,
+      hideOnEmpty: true,
       autoFlipDirection: true,
       suggestionsBoxDecoration: SuggestionsBoxDecoration(
         color: Colors.white,
@@ -191,7 +192,7 @@ class EnterBackupPhrasePageState extends State<EnterBackupPhrasePage> {
   FutureOr<List<String>> _getSuggestions(pattern) {
     var suggestionList =
         WORDLIST.where((item) => item.startsWith(pattern)).toList();
-    return suggestionList.length > 0 ? suggestionList : null;
+    return suggestionList.length > 0 ? suggestionList : List.empty();
   }
 
   String _onValidate(BuildContext context, String text) {
