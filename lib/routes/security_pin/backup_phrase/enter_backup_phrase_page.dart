@@ -71,7 +71,6 @@ class EnterBackupPhrasePageState extends State<EnterBackupPhrasePage> {
             if (_currentPage == 1) {
               Navigator.pop(context);
             } else if (_currentPage > 1) {
-              _formKey.currentState.reset();
               FocusScope.of(context).requestFocus(FocusNode());
               setState(() {
                 _currentPage--;
@@ -247,7 +246,6 @@ class EnterBackupPhrasePageState extends State<EnterBackupPhrasePage> {
             if (_currentPage + 1 == (_lastPage + 1)) {
               _validateBackupPhrase(userProfileBloc);
             } else {
-              _formKey.currentState.reset();
               _currentPage++;
             }
           } else {
