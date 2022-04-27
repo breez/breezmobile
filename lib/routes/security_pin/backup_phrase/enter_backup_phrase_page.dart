@@ -32,6 +32,8 @@ class EnterBackupPhrasePageState extends State<EnterBackupPhrasePage> {
   List<FocusNode> focusNodes = List<FocusNode>.generate(12, (_) => FocusNode());
   List<TextEditingController> textEditingControllers =
       List<TextEditingController>.generate(12, (_) => TextEditingController());
+  int _currentPage;
+  int _lastPage = 2;
   AutovalidateMode _autoValidateMode;
   bool _hasError;
 
@@ -43,7 +45,9 @@ class EnterBackupPhrasePageState extends State<EnterBackupPhrasePage> {
         24,
         (_) => TextEditingController(),
       );
+      _lastPage = 4;
     }
+    _currentPage = 1;
     _autoValidateMode = AutovalidateMode.disabled;
     _hasError = false;
     super.initState();
@@ -53,6 +57,7 @@ class EnterBackupPhrasePageState extends State<EnterBackupPhrasePage> {
   Widget build(BuildContext context) {
     final themeData = Theme.of(context);
     final texts = AppLocalizations.of(context);
+    final query = MediaQuery.of(context);
     final userProfileBloc = AppBlocsProvider.of<UserProfileBloc>(context);
 
     return Scaffold(
@@ -61,18 +66,35 @@ class EnterBackupPhrasePageState extends State<EnterBackupPhrasePage> {
         textTheme: themeData.appBarTheme.textTheme,
         backgroundColor: themeData.canvasColor,
         automaticallyImplyLeading: false,
-        leading: backBtn.BackButton(),
+        leading: backBtn.BackButton(
+          onPressed: () {
+            if (_currentPage == 1) {
+              Navigator.pop(context);
+            } else if (_currentPage > 1) {
+              _formKey.currentState.reset();
+              FocusScope.of(context).requestFocus(FocusNode());
+              setState(() {
+                _currentPage--;
+              });
+            }
+          },
+        ),
         title: Text(
-          texts.enter_backup_phrase,
+          texts.enter_backup_phrase(
+            _currentPage.toString(),
+            _lastPage.toString(),
+          ),
           style: themeData.appBarTheme.textTheme.headline6,
         ),
         elevation: 0.0,
       ),
       body: SingleChildScrollView(
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          mainAxisAlignment: MainAxisAlignment.start,
-          children: _buildRestoreFormContent(context, userProfileBloc),
+        child: Container(
+          height: query.size.height - kToolbarHeight - query.padding.top,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: _buildRestoreFormContent(context, userProfileBloc),
+          ),
         ),
       ),
     );
@@ -82,12 +104,13 @@ class EnterBackupPhrasePageState extends State<EnterBackupPhrasePage> {
     return Form(
       key: _formKey,
       child: Padding(
-        padding: EdgeInsets.fromLTRB(16.0, 8.0, 16.0, 16.0),
+        padding: EdgeInsets.fromLTRB(16.0, 24.0, 16.0, 8.0),
         child: Column(
           mainAxisSize: MainAxisSize.max,
           crossAxisAlignment: CrossAxisAlignment.start,
-          children: List.generate(widget.is24Word ? 24 : 12, (index) {
-            return _typeAheadFormField(index);
+          children: List.generate(6, (index) {
+            final itemIndex = index + (6 * (_currentPage - 1));
+            return _typeAheadFormField(itemIndex);
           }),
         ),
       ),
@@ -132,7 +155,6 @@ class EnterBackupPhrasePageState extends State<EnterBackupPhrasePage> {
       validator: (text) => _onValidate(context, text),
       suggestionsCallback: _getSuggestions,
       autoFlipDirection: true,
-      hideOnEmpty: true,
       suggestionsBoxDecoration: SuggestionsBoxDecoration(
         color: Colors.white,
         constraints: BoxConstraints(
@@ -170,7 +192,7 @@ class EnterBackupPhrasePageState extends State<EnterBackupPhrasePage> {
   FutureOr<List<String>> _getSuggestions(pattern) {
     var suggestionList =
         WORDLIST.where((item) => item.startsWith(pattern)).toList();
-    return suggestionList.length > 0 ? suggestionList : List.empty();
+    return suggestionList.length > 0 ? suggestionList : null;
   }
 
   String _onValidate(BuildContext context, String text) {
@@ -214,13 +236,20 @@ class EnterBackupPhrasePageState extends State<EnterBackupPhrasePage> {
   ) {
     final texts = AppLocalizations.of(context);
     return SingleButtonBottomBar(
-      text: texts.enter_backup_phrase_action_restore,
+      text: _currentPage + 1 == (_lastPage + 1)
+          ? texts.enter_backup_phrase_action_restore
+          : texts.enter_backup_phrase_action_next,
       onPressed: () {
         setState(() {
           _hasError = false;
           if (_formKey.currentState.validate() && !_hasError) {
             _autoValidateMode = AutovalidateMode.disabled;
-            _validateBackupPhrase(userProfileBloc);
+            if (_currentPage + 1 == (_lastPage + 1)) {
+              _validateBackupPhrase(userProfileBloc);
+            } else {
+              _formKey.currentState.reset();
+              _currentPage++;
+            }
           } else {
             _autoValidateMode = AutovalidateMode.always;
           }
