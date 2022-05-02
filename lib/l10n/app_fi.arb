@@ -2,7 +2,7 @@
   "home_drawer_item_title_preferences": "Asetukset",
   "home_drawer_item_title_fiat_currencies": "Valuutat",
   "home_drawer_item_title_network": "Verkko",
-  "home_drawer_item_title_security": "Turvallisuus & varmuuskopiot",
+  "home_drawer_item_title_security": "Turvallisuus & varmuuskopio",
   "home_drawer_item_title_transactions": "Tapahtumat",
   "home_drawer_item_title_balance": "Saldo",
   "home_drawer_item_title_podcasts": "Podcastit",
@@ -19,7 +19,7 @@
   "home_error_podcast_link": "Podcast-linkki",
   "home_broadcast_transaction": "Tapahtumaa lähetetään",
   "home_config_error_title": "Konfiguraatiovirhe",
-  "home_config_error_message": "Breez havaitsi että sama konfiguraatio on käytössä toisessa myös laitteessa, johtuen todennäköisesti varmuuskopion palautuksesta. Breez voi toimia samalla konfiguraatiolla vain yhdessä laitteessa kerrallaan. Asenna Breez uudelleen mikäli haluat sen käyttöön tässä laitteessa.",
+  "home_config_error_message": "Breez havaitsi että, sama konfiguraatio on käytössä myös toisessa laitteessa, johtuen todennäköisesti varmuuskopion palautuksesta. Breez voi toimia samalla konfiguraatiolla vain yhdessä laitteessa kerrallaan. Asenna Breez uudelleen mikäli haluat sen käyttöön tässä laitteessa.",
   "home_config_error_action_exit": "Sulje Breez",
   "home_background_synchronization_title": "Taustasynkronointi",
   "home_background_synchronization_message": "Välittömästi tapahtuvien maksujen toteuttamiseksi Breez synkronoi tietoja taustalla. Sovellus vaatii sinulta luvan toimia myös silloin kun sovellus ei ole avattuna. Myönnä oikeus seuraavassa näkymässä.",
@@ -147,7 +147,7 @@
   },
   "invoice_description_label": "Kuvaus (vapaaehtoinen)",
   "invoice_availability_message_synchronizing": "Maksujen vastaanotto odottaa synkronointia.",
-  "invoice_availability_message_opening_channel": "Maksujen vastaanottamiseksi vaadittavan kanavan avaaminen on kesken. Avaus on valmis yleensä noin 10 minuutin kuluessa. Yritä muutaman minuutin kuluttua uudelleen.",
+  "invoice_availability_message_opening_channel": "Maksujen vastaanottamiseen vaadittavan kanavan avaus on kesken. Avaus on valmis yleensä noin 10 minuutin kuluessa. Yritä muutaman minuutin kuluttua uudelleen.",
   "invoice_receive_label": "Vastaanota enintään: {maxSats}",
   "@invoice_receive_label": {
     "placeholders": {
@@ -337,9 +337,9 @@
   },
   "payment_info_dialog_title": "Maksun tiedot",
   "payment_info_dialog_hint": "Lasku tai tunniste",
-  "payment_info_dialog_hint_expanded": "Syötä LN-lasku, solmu tai Lightning-osoite.",
+  "payment_info_dialog_hint_expanded": "Syötä LN-lasku, solmu- tai Lightning-osoite.",
   "payment_info_dialog_barcode": "Lue viivakoodi",
-  "payment_info_dialog_error": "LN-lasku, solmu tai Lightning-osoite oli virheellinen.",
+  "payment_info_dialog_error": "LN-lasku, solmu- tai Lightning-osoite oli virheellinen.",
   "payment_info_dialog_error_qrcode": "QR-koodia ei tunnistettu.",
   "payment_info_dialog_action_cancel": "Peruuta",
   "payment_info_dialog_action_approve": "HYVÄKSY",
@@ -407,7 +407,7 @@
   },
   "pos_invoice_close": "SULJE",
   "pos_invoice_clear_sale_header": "Peruuta myyntitapahtuma",
-  "pos_invoice_clear_sale_message": "Haluatko tyhjentää ostoskorin sisällön?",
+  "pos_invoice_clear_sale_message": "Haluatko peruuttaa tuotteiden myynnin?",
   "pos_invoice_clear_sale_cancel": "Peruuta",
   "pos_invoice_clear_sale_confirm": "KYLLÄ",
   "pos_invoice_sort_none": "Oletus",
@@ -472,7 +472,7 @@
   "pos_transactions_range_dialog_title": "Määritä aikajakso:",
   "pos_transactions_range_dialog_start": "alkaen",
   "pos_transactions_range_dialog_end": "asti",
-  "pos_transactions_range_dialog_clear": "TYHJENNÄ",
+  "pos_transactions_range_dialog_clear": "Tyhjennä",
   "pos_transactions_range_dialog_apply": "KÄYTÄ AIKAJAKSOA",
   "pos_transactions_item_positive": "{value}",
   "@pos_transactions_item_positive": {
@@ -723,10 +723,10 @@
     }
   },
   "connect_to_pay_payer_sending": "Maksua lähetetään...",
-  "connect_to_pay_payer_wait_sync": "Odota kunnes sovellus synkronoi tietoja.",
+  "connect_to_pay_payer_wait_sync": "Odota, sovellus synkronoi tietoja.",
   "connect_to_pay_payer_synchronizing": "Synkronoidaan...",
   "connect_to_pay_payer_action_close": "SULJE",
-  "connect_to_pay_payment_detail_note": "Maksutietoja (vapaaehtoinen)",
+  "connect_to_pay_payment_detail_note": "Maksun tiedot (vapaaehtoinen)",
   "connect_to_pay_payment_available": "Käytettävissä:",
   "connect_to_pay_payment_action_close": "Sulje",
   "connect_to_pay_payment_action_pay": "MAKSA",
@@ -744,8 +744,8 @@
       }
     }
   },
-  "connect_to_pay_payment_reject": "Maksu hylätty",
-  "connect_to_pay_error_wrong_amount": "Maksun pyynnössä oleva summa on väärä",
+  "connect_to_pay_payment_reject": "Maksu on hylätty",
+  "connect_to_pay_error_wrong_amount": "Maksupyynnössä oleva summa on väärä",
   "connect_to_pay_error_status_tracking_already_started": "Tilanteen seuranta on jo käynnistetty, se pitää pysäyttää ennen uudelleen aloitusta",
   "connect_to_pay_error_link_expired": "Tämä linkki on vanhentunut, eikä se ole kelvollinen maksun suorittamiseksi.",
   "security_and_backup_title": "Turvallisuus & varmuuskopiointi",
@@ -771,8 +771,8 @@
       }
     }
   },
-  "security_and_backup_encrypt": "Salaa varmuuskopiot",
-  "security_and_backup_store_location": "Tallenna varmuuskopiot",
+  "security_and_backup_encrypt": "Salaa varmuuskopio",
+  "security_and_backup_store_location": "Tallenna varmuuskopio",
   "security_and_backup_lock_automatically": "Käytä automaattista lukitusta",
   "security_and_backup_lock_automatically_option_immediate": "Välittömästi",
   "security_and_backup_change_pin": "Vaihda PIN-koodi",
@@ -792,7 +792,7 @@
   "backup_in_progress_action_confirm": "PIILOTA",
   "backup_model_name_apple_icloud": "Apple iCloud",
   "backup_model_name_google_drive": "Google Drive",
-  "backup_model_name_remote_server": "Etä palvelimen jako",
+  "backup_model_name_remote_server": "Verkkolevy",
   "backup_model_error_failed": "Varmuuskopiointi epäonnistui",
   "network_title": "Verkko",
   "network_restart_message": "Uuden Bitcoin-solmun käyttöönotto vaatii sovelluksen uudelleenkäynnistyksen.",
@@ -893,7 +893,7 @@
   "reverse_swap_confirmation_error_funds_fee": "Varasi eivät riitä tapahtumakulujen maksamiseen.",
   "reverse_swap_notification_title": "Toimenpiteitä tarvitaan",
   "reverse_swap_notification_body": "Avaa Breez käynnistämäsi tapahtuman päättämiseksi.",
-  "sync_progress_server_ready": "Synkronoidaan verkkoon",
+  "sync_progress_server_ready": "Odota, sovellus synkronoi tietoja",
   "sync_progress_waiting_network": "Odotetaan verkkoyhteyttä",
   "withdraw_funds_error_min_value": "Nostettava minimimäärä on {minValue}",
   "@withdraw_funds_error_min_value": {
@@ -1024,10 +1024,10 @@
   "initial_walk_through_restoring": "Palautetaan tietoja…",
   "initial_walk_through_sign_in_icloud_title": "iCloud Kirjautuminen",
   "initial_walk_through_sign_in_icloud_message": "Kirjaudu iCloud-tilillesi. Mene aloitusnäkymään, avaa Asetukset, valitse iCloud ja syötä Apple-tunnuksesi. Kytke iCloud Drive -päälle. Mikäli sinulla ei ole iCloud-tiliä, napauta Luo uusi Apple-tunnus.",
-  "initial_walk_through_error_backup_location": "Tällä käyttäjätilillä ei löytynyt varmuuskopioita",
+  "initial_walk_through_error_backup_location": "Tältä käyttäjätililtä ei löytynyt varmuuskopiota",
   "initial_walk_through_error_internal": "Järjestelmävirhe (Internal Error)",
   "restore_pin_title": "Anna varmuuskopion PIN-koodi",
-  "enter_backup_phrase": "Syötä varmuuskopion salauslause {number}/{total}",
+  "enter_backup_phrase": "Syötä varmuuskopion salauslauseen sana {number}/{total}",
   "@enter_backup_phrase": {
     "placeholders": {
       "number": {
@@ -1040,7 +1040,7 @@
       }
     }
   },
-  "enter_backup_phrase_error": "Varmuuskopion palautus epäonnistui. Varmista että syötit salauslauseen oikein ja yritä uudelleen.",
+  "enter_backup_phrase_error": "Varmuuskopion palautus epäonnistui. Yritä syöttää salauslause uudelleen.",
   "enter_backup_phrase_missing_word": "Puuttuva sana",
   "enter_backup_phrase_invalid_word": "Virheellinen sana",
   "enter_backup_phrase_action_restore": "PALAUTA",
@@ -1074,7 +1074,7 @@
     }
   },
   "restore_dialog_download_backup": "Lataa varmuuskopion tiedot",
-  "restore_dialog_download_backup_for_node": "Haluatko ladata varmuuskopion tiedot solmusta: {nodeId}?",
+  "restore_dialog_download_backup_for_node": "Haluatko ladata varmuuskopion tiedot solmutunnisteelle: {nodeId}?",
   "@restore_dialog_download_backup_for_node": {
     "placeholders": {
       "nodeId": {
@@ -1090,9 +1090,9 @@
   "beta_warning_message": "Breez-sovellus on beta-kehitysvaiheessa. On mahdollista että sovellus saattaa aiheuttaa menetyksen osaan tai kaikkiin varoihisi, joita sovelluksella hallitset. Käytä sovellusta ainoastaan jos olet valmis ottamaan tämän riskin.",
   "beta_warning_understand": "Ymmärrän ja hyväksyn riskin",
   "beta_warning_understand_confirmation": "Vahvista että ymmärrät riskin ennen kuin jatkat eteenpäin.",
-  "beta_warning_action_exit": "POISTU",
-  "beta_warning_action_continue": "JATKA",
-  "processing_payment_dialog_synchronizing": "Synkronoidaan verkkoon",
+  "beta_warning_action_exit": "Poistu",
+  "beta_warning_action_continue": "VAHVISTA",
+  "processing_payment_dialog_synchronizing": "Sovellus synkronoi tietoja",
   "processing_payment_dialog_synchronizing_channels": "Sovellus synkronoi kanavien tietoja",
   "processing_payment_dialog_action_close": "Sulje",
   "processing_payment_dialog_processing_payment": "Maksun käsittely",
@@ -1991,7 +1991,7 @@
   "swap_error_invoice_amount_mismatch": "pyydetty määrä ei täsmää alkuperäiseen tapahtumaan.",
   "swap_error_swap_expired": " tapahtuman käsittelyaika ylitettiin.",
   "swap_error_tx_too_small": "tapahtuman summa oli liian käsiteltäväksi.",
-  "status_message_unconfirmed_tx_id": "Sovelus odottaa Bitcoin siirron varmistusta. Siihen saattaa mennä hetkinen...",
+  "status_message_unconfirmed_tx_id": "Sovellus odottaa Bitcoin siirron varmistusta. Siihen saattaa mennä hetkinen...",
   "status_transferring_on_chain_deposit": "Varoja siirretään",
   "status_failed_to_add_funds": "Varojen lisääminen epäonnistui: {error}",
   "@status_failed_to_add_funds": {
