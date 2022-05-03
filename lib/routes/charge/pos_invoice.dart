@@ -263,11 +263,8 @@ class POSInvoiceState extends State<POSInvoice> with TickerProviderStateMixin {
                       context,
                       currentSale,
                     ),
-                    changeCurrency: (currency) => _changeCurrency(
-                      currentSale,
-                      currency,
-                      userProfileBloc,
-                    ),
+                    changeCurrency: (currency) => _changeCurrency(currentSale,
+                        currency, userProfileBloc, currentCurrency),
                   ),
                 ],
               ),
@@ -774,11 +771,11 @@ class POSInvoiceState extends State<POSInvoice> with TickerProviderStateMixin {
     });
   }
 
-  void _changeCurrency(
-    Sale currentSale,
-    String value,
-    UserProfileBloc userProfileBloc,
-  ) {
+  void _changeCurrency(Sale currentSale, String value,
+      UserProfileBloc userProfileBloc, CurrencyWrapper currentCurrency) {
+    if (currentCurrency.shortName.toUpperCase() == value) {
+      return;
+    }
     print(">> _changeCurrency $value");
     setState(() {
       Currency currency = Currency.fromTickerSymbol(value);
