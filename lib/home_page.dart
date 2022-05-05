@@ -612,7 +612,6 @@ class HomeState extends State<Home> with WidgetsBindingObserver {
   Widget _homePage(BuildContext context, BreezUserModel user) {
     final texts = AppLocalizations.of(context);
     final themeData = Theme.of(context);
-    final List<String> anytimeLocales = ['en', 'de', 'pt'];
 
     switch (user.appMode) {
       case AppMode.podcasts:
