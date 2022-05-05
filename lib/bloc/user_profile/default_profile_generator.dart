@@ -17,6 +17,7 @@ class DefaultProfile {
   String buildName(Locale locale) {
     switch (locale.languageCode) {
       case 'es':
+      case 'fr':
       case 'pt':
         return "$animal $color";
 
