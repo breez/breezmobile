@@ -1486,6 +1486,7 @@
   "pos_settings_business_address": "Adresse professionnelle",
   "pos_settings_address_line_1": "Ligne d'adresse 1",
   "pos_settings_address_line_2": "Ligne d'adresse 2",
+  "pos_settings_default_note": "Default Note",
   "pos_settings_id": "ID",
   "pos_settings_name": "Nom",
   "pos_settings_sku": "SKU",

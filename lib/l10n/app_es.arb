@@ -1486,6 +1486,7 @@
   "pos_settings_business_address": "Dirección de Negocios",
   "pos_settings_address_line_1": "Dirección 1",
   "pos_settings_address_line_2": "Dirección 2",
+  "pos_settings_default_note": "Nota Estándar",
   "pos_settings_id": "ID",
   "pos_settings_name": "Nombre",
   "pos_settings_sku": "SKU",
