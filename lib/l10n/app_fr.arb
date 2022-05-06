@@ -25,7 +25,7 @@
   "home_background_synchronization_message": "Afin de prendre en charge les paiements instantanés, Breez a besoin de votre permission pour synchroniser les informations lorsque l'application n'est pas active. Veuillez approuver l'application dans le fenêtre suivante.",
   "home_payment_sent": "Paiement envoyé avec succès !",
   "home_report_sending": "Envoi du rapport...",
-  "invoice_btc_address_title": "Réception via l'adresse BTC",
+  "invoice_btc_address_title": "Recevoir via une adresse BTC",
   "invoice_btc_address_network_error": "Impossible de récupérer une adresse sur le serveur Breez\nVeuillez vérifier votre connexion Internet.",
   "invoice_btc_address_action_retry": "REESSAYER",
   "invoice_btc_address_action_close": "FERMER",
@@ -234,8 +234,8 @@
   "bottom_action_bar_connect_to_pay": "Se connecter pour payer",
   "bottom_action_bar_send_btc_address": "Envoyer à l'adresse BTC",
   "bottom_action_bar_escher": "Encaissement via Escher",
-  "bottom_action_bar_receive_invoice": "Recevoir par facturee",
-  "bottom_action_bar_receive_btc_address": "Réception via l'adresse BTC",
+  "bottom_action_bar_receive_invoice": "Recevoir par facture",
+  "bottom_action_bar_receive_btc_address": "Recevoir via une adresse BTC",
   "bottom_action_bar_buy_bitcoin": "Acheter du bitcoin",
   "bottom_action_bar_warning_balance_title": "Breez exige que vous gardiez {balance} dans votre solde.",
   "@bottom_action_bar_warning_balance_title": {
@@ -758,7 +758,7 @@
       }
     }
   },
-  "security_and_backup_last_backup_with_account": "Dernière sauvegarde: {lastBackup}\nCompte : {accountName}",
+  "security_and_backup_last_backup_with_account": "Dernière sauvegarde : {lastBackup}\nCompte : {accountName}",
   "@security_and_backup_last_backup_with_account": {
     "placeholders": {
       "lastBackup": {
@@ -840,7 +840,7 @@
       }
     }
   },
-  "reverse_swap_title": "Envoyer à l'adresse BTC",
+  "reverse_swap_title": "Envoyer à une adresse BTC",
   "reverse_swap_funding_transaction": "Transaction de financement :",
   "reverse_swap_waiting_channels": "Vous pourrez envoyer vos fonds à une adresse BTC une fois que tous les canaux auront été confirmés.",
   "reverse_swap_confirmation_speed": "Choisir la vitesse de traitement",
@@ -1478,7 +1478,7 @@
   "pos_settings_activate_manager_password": "Activer le mot de passe Manager",
   "pos_settings_change_manager_password": "Changer le mot de passe Manager",
   "pos_settings_manager_password_error_title": "Mot de passe Manager",
-  "pos_settings_manager_password_error_message": "Le mot de passe manager ne peut être configuré que si vous avez une sauvegarde active. Pour déclencher un processus de sauvegarde, allez dans Réception > Réception via l'adresse BTC.",
+  "pos_settings_manager_password_error_message": "Le mot de passe manager ne peut être configuré que si vous avez une sauvegarde active. Pour déclencher un processus de sauvegarde, allez dans Recevoir > Recevoir via une adresse BTC.",
   "pos_settings_manager_password_title": "Mot de passe Manager",
   "pos_settings_manager_password_message": "Si le mot de passe du manager est activé, l'envoi de fonds depuis Breez nécessitera la saisie d'un mot de passe.\nÊtes-vous sûr de vouloir activer le mot de passe manager ?",
   "pos_settings_manager_password_action_create": "CREER",
