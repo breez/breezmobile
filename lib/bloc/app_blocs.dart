@@ -78,6 +78,7 @@ class AppBlocs {
     PosCatalogBloc posCatalogBloc = _registerBloc(
         PosCatalogBloc(
           accountBloc.accountStream,
+          userProfileBloc.userStream,
           sqliteRepository,
         ),
         blocsByType);

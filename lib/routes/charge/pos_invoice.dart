@@ -809,12 +809,15 @@ class POSInvoiceState extends State<POSInvoice> with TickerProviderStateMixin {
     });
   }
 
-  void _clearSale() {
+  void _clearSale() async {
     final posCatalogBloc = AppBlocsProvider.of<PosCatalogBloc>(context);
+    final userProfileBloc = AppBlocsProvider.of<UserProfileBloc>(context);
+    final user = await userProfileBloc.userStream.first;
     setState(() {
       currentPendingItem = null;
       posCatalogBloc.actionsSink.add(SetCurrentSale(Sale(
         saleLines: [],
+        note: user.defaultPosNote,
       )));
     });
   }

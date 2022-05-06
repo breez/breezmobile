@@ -7,6 +7,7 @@ import 'package:breez/bloc/pos_catalog/actions.dart';
 import 'package:breez/bloc/pos_catalog/pos_csv_utils.dart';
 import 'package:breez/bloc/pos_catalog/repository.dart';
 import 'package:breez/bloc/pos_catalog/sqlite/repository.dart';
+import 'package:breez/bloc/user_profile/breez_user_model.dart';
 import 'package:breez/bloc/user_profile/currency.dart';
 import 'package:breez/services/breezlib/data/rpc.pb.dart';
 import 'package:breez/services/injector.dart';
@@ -19,10 +20,13 @@ import 'model.dart';
 class PosCatalogBloc with AsyncActionsHandler {
   // ignore: non_constant_identifier_names
   static final InvalidFile = Exception('INVALID_FILE');
+
   // ignore: non_constant_identifier_names
   static final InvalidData = Exception('INVALID_DATA');
 
   Repository _repository;
+
+  Stream<BreezUserModel> _userStream;
 
   final StreamController<List<Item>> _itemsStreamController =
       BehaviorSubject<List<Item>>();
@@ -61,6 +65,7 @@ class PosCatalogBloc with AsyncActionsHandler {
 
   PosCatalogBloc(
     Stream<AccountModel> accountStream,
+    this._userStream,
     this._repository,
   ) {
     _loadPosCatalogItemSort();
@@ -86,6 +91,7 @@ class PosCatalogBloc with AsyncActionsHandler {
     _currentSaleController.add(Sale(
       saleLines: [],
     ));
+    _trackDefaultSaleNote();
     _trackCurrentSaleRates(accountStream);
     _trackSalePayments();
     _loadIcons();
@@ -147,8 +153,10 @@ class PosCatalogBloc with AsyncActionsHandler {
       await _repository.salePaymentCompleted(paymentHash);
       var paidSale = await _repository.fetchSaleByPaymentHash(paymentHash);
       if (paidSale != null && paidSale.id == _currentSaleController.value.id) {
+        final user = await _userStream.first;
         _currentSaleController.add(Sale(
           saleLines: [],
+          note: user.defaultPosNote,
         ));
       }
     });
@@ -173,6 +181,16 @@ class PosCatalogBloc with AsyncActionsHandler {
         }
         return sl.copyWith(satConversionRate: rate);
       }).toList()));
+    });
+  }
+
+  void _trackDefaultSaleNote() {
+    _userStream.listen((user) {
+      final defaultSaleNote = user.defaultPosNote;
+      final currentSale = _currentSaleController.value;
+      _currentSaleController.add(currentSale.copyWith(
+        note: defaultSaleNote,
+      ));
     });
   }
 

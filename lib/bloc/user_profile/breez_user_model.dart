@@ -24,6 +24,7 @@ class BreezUserModel {
   final double cancellationTimeoutValue;
   final bool hasAdminPassword;
   final BusinessAddress businessAddress;
+  final String defaultPosNote;
   final String posCurrencyShortName;
   final List<String> preferredCurrencies;
   final AppMode appMode;
@@ -47,6 +48,7 @@ class BreezUserModel {
     this.cancellationTimeoutValue = 90.0,
     this.hasAdminPassword = false,
     this.businessAddress,
+    this.defaultPosNote = "",
     this.posCurrencyShortName = "SAT",
     this.preferredCurrencies,
     this.appMode = AppMode.balance,
@@ -71,6 +73,7 @@ class BreezUserModel {
     double cancellationTimeoutValue,
     bool hasAdminPassword,
     BusinessAddress businessAddress,
+    String defaultPosNote,
     String posCurrencyShortName,
     List<String> preferredCurrencies,
     AppMode appMode,
@@ -96,6 +99,7 @@ class BreezUserModel {
           cancellationTimeoutValue ?? this.cancellationTimeoutValue,
       hasAdminPassword: hasAdminPassword ?? this.hasAdminPassword,
       businessAddress: businessAddress ?? this.businessAddress,
+      defaultPosNote: defaultPosNote ?? this.defaultPosNote,
       posCurrencyShortName: posCurrencyShortName ?? this.posCurrencyShortName,
       preferredCurrencies: preferredCurrencies ?? this.preferredCurrencies,
       appMode: appMode ?? this.appMode,
@@ -141,6 +145,7 @@ class BreezUserModel {
         businessAddress = json['businessAddress'] == null
             ? BusinessAddress.initial()
             : BusinessAddress.fromJson(json['businessAddress']),
+        defaultPosNote = json['defaultPosNote'] ?? "",
         posCurrencyShortName = json['posCurrencyShortName'] ?? "SAT",
         preferredCurrencies =
             (json['preferredCurrencies'] as List<dynamic>)?.cast<String>() ??
@@ -170,6 +175,7 @@ class BreezUserModel {
         'hasAdminPassword': hasAdminPassword,
         'posCurrencyShortName': posCurrencyShortName,
         'businessAddress': businessAddress,
+        'defaultPosNote': defaultPosNote,
         'preferredCurrencies': preferredCurrencies,
         'appMode': appMode.index,
         'paymentOptions': paymentOptions,

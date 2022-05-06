@@ -55,20 +55,20 @@ class _PosSettingsPage extends StatefulWidget {
 
 class PosSettingsPageState extends State<_PosSettingsPage> {
   final _scaffoldKey = GlobalKey<ScaffoldState>();
-  final _cancellationTimeoutValueController = TextEditingController();
+  final _cancellationTimeoutController = TextEditingController();
   final _addressLine1Controller = TextEditingController();
   final _addressLine2Controller = TextEditingController();
+  final _defaultNoteController = TextEditingController();
   final _autoSizeGroup = AutoSizeGroup();
 
   @override
   void initState() {
     super.initState();
-    _cancellationTimeoutValueController.text =
-        widget.currentProfile.cancellationTimeoutValue.toString();
-    _addressLine1Controller.text =
-        widget.currentProfile.businessAddress?.addressLine1;
-    _addressLine2Controller.text =
-        widget.currentProfile.businessAddress?.addressLine2;
+    final user = widget.currentProfile;
+    _cancellationTimeoutController.text = "${user.cancellationTimeoutValue}";
+    _addressLine1Controller.text = user.businessAddress?.addressLine1 ?? "";
+    _addressLine2Controller.text = user.businessAddress?.addressLine2 ?? "";
+    _defaultNoteController.text = user.defaultPosNote;
   }
 
   @override
@@ -140,7 +140,7 @@ class PosSettingsPageState extends State<_PosSettingsPage> {
                       Padding(
                         padding: EdgeInsets.only(left: 8.0, right: 16.0),
                         child: Text(
-                          num.parse(_cancellationTimeoutValueController.text)
+                          num.parse(_cancellationTimeoutController.text)
                               .toStringAsFixed(0),
                           style: TextStyle(
                             color: Colors.white,
@@ -156,6 +156,8 @@ class PosSettingsPageState extends State<_PosSettingsPage> {
                   _buildExportItemsTile(context, posCatalogBloc),
                   Divider(),
                   _buildAddressField(context, userProfileBloc, user),
+                  Divider(),
+                  _buildDefaultNote(context),
                 ],
               ),
             );
@@ -175,7 +177,7 @@ class PosSettingsPageState extends State<_PosSettingsPage> {
       divisions: 5,
       onChanged: (double value) {
         FocusScope.of(context).requestFocus(FocusNode());
-        _cancellationTimeoutValueController.text = value.toString();
+        _cancellationTimeoutController.text = value.toString();
         widget._userProfileBloc.userSink.add(
           widget.currentProfile.copyWith(cancellationTimeoutValue: value),
         );
@@ -449,7 +451,7 @@ class PosSettingsPageState extends State<_PosSettingsPage> {
     userProfileBloc.userActionsSink.add(action);
   }
 
-  _buildAddressField(
+  Widget _buildAddressField(
     BuildContext context,
     UserProfileBloc userProfileBloc,
     BreezUserModel user,
@@ -458,7 +460,7 @@ class PosSettingsPageState extends State<_PosSettingsPage> {
     final currentProfile = widget.currentProfile;
 
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 16.0),
+      padding: const EdgeInsets.all(16.0),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -496,6 +498,39 @@ class PosSettingsPageState extends State<_PosSettingsPage> {
               ),
             ),
             onEditingComplete: () => FocusScope.of(context).unfocus(),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildDefaultNote(
+    BuildContext context,
+  ) {
+    final texts = AppLocalizations.of(context);
+    final currentProfile = widget.currentProfile;
+
+    return Padding(
+      padding: const EdgeInsets.symmetric(
+        horizontal: 16.0,
+        vertical: 16.0,
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            texts.pos_settings_default_note,
+          ),
+          TextField(
+            controller: _defaultNoteController,
+            minLines: 1,
+            maxLines: 1,
+            onChanged: (_) => widget._userProfileBloc.userSink.add(
+              currentProfile.copyWith(
+                defaultPosNote: _defaultNoteController.text,
+              ),
+            ),
+            onEditingComplete: () => FocusScope.of(context).nextFocus(),
           ),
         ],
       ),
