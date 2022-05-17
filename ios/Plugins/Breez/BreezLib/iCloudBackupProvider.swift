@@ -84,20 +84,28 @@ class iCloudBackupProvider : NSObject, BindingsNativeBackupProviderProtocol {
         guard let backupAsset = record["backup"] as? CKAsset else {
             return legacyDownloadBackupFiles(record, error: error)
         }
+        let appDatabackupAsset = record["app_data_backup"] as? CKAsset
         
         let tempDir = FileManager.default.temporaryDirectory;
         let destBackupFile = tempDir.appendingPathComponent("backup.zip");
+        let destAppDataBackupFile = tempDir.appendingPathComponent("app_data_backup.zip");
         do {
             
             if (FileManager.default.fileExists(atPath: destBackupFile.path)) {
                 try FileManager.default.removeItem(at: destBackupFile);
             }
             try FileManager.default.copyItem(at: backupAsset.fileURL!, to: destBackupFile)
+            if (appDatabackupAsset != null) {
+                try FileManager.default.copyItem(at: appDatabackupAsset.fileURL!, to: destAppDataBackupFile)
+            }
         } catch let errorEx {
             error?.pointee = NSError(domain: errorEx.localizedDescription, code: 0, userInfo: nil);
             return ""
         }
         let filesArray = [destBackupFile.path];
+        if (appDatabackupAsset != null) {
+            filesArray.append(contentsOf: [destAppDataBackupFile]);
+        }
         return filesArray.joined(separator: ",");
     }
     
@@ -161,7 +169,11 @@ class iCloudBackupProvider : NSObject, BindingsNativeBackupProviderProtocol {
         
         let record = CKRecord(recordType: "BackupSnapshot", recordID: CKRecord.ID(recordName: nodeID!));
         record["backupEncryptionType"] = encryptionType;
-        record["backup"] = CKAsset(fileURL: URL(fileURLWithPath: String(file!)));
+        if (file == "app_data_backup.zip") {
+            record["app_data_backup"] = CKAsset(fileURL: URL(fileURLWithPath: String(file!)));
+        } else {
+            record["backup"] = CKAsset(fileURL: URL(fileURLWithPath: String(file!)));
+        }
         
         if let err = updateRecord(record: record, savePolicy: .allKeys) {
             error?.pointee = NSError(domain: err.localizedDescription, code: 0, userInfo: nil);
