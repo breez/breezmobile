@@ -168,7 +168,7 @@ class iCloudBackupProvider : NSObject, BindingsNativeBackupProviderProtocol {
         
         let record = CKRecord(recordType: "BackupSnapshot", recordID: CKRecord.ID(recordName: nodeID!));
         record["backupEncryptionType"] = encryptionType;
-        if (file == "app_data_backup.zip") {
+        if (URL(fileURLWithPath: String(file!)).lastPathComponent == "app_data_backup.zip") {
             record["app_data_backup"] = CKAsset(fileURL: URL(fileURLWithPath: String(file!)));
         } else {
             record["backup"] = CKAsset(fileURL: URL(fileURLWithPath: String(file!)));
