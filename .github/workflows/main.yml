@@ -24,7 +24,7 @@ jobs:
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v2
-     
+
       - name: Install SSH key
         uses: shimataro/ssh-key-action@v2
         with:
@@ -38,7 +38,7 @@ jobs:
 
       # Runs a set of commands using the runners shell
       - name: Run a multi-line script
-        run: |          
+        run: |
           curl -o golang https://dl.google.com/go/go1.17.6.darwin-amd64.tar.gz
           mkdir go1.16.7
           tar -C $(pwd)/go1.16.7 -xzf golang
@@ -64,8 +64,7 @@ jobs:
           PATH=$PATH:$GOPATH/bin gomobile bind -iosversion=12.4 -target=ios -tags="ios experimental signrpc walletrpc chainrpc invoicesrpc routerrpc backuprpc peerrpc submarineswaprpc breezbackuprpc" -o build/ios/bindings.xcframework -ldflags="-s -w" github.com/breez/breez/bindings
           popd
           brew install ideviceinstaller ios-deploy
-          git clone --branch stable https://github.com/flutter/flutter.git
-          
+          git clone --branch 2.10.5 https://github.com/flutter/flutter.git
           cp -r $GOPATH/src/github.com/breez/breez/build/ios/bindings.xcframework/ios-arm64/Bindings.framework $GITHUB_WORKSPACE/ios/bindings.framework
           rm -rf $GITHUB_WORKSPACE/conf
           git clone builderfiles@packages.breez.technology:configuration -b production $GITHUB_WORKSPACE/temp_config          
@@ -74,10 +73,9 @@ jobs:
           ls $GITHUB_WORKSPACE/conf
           cat $GITHUB_WORKSPACE/conf/breez.conf
           sftp builderfiles@packages.breez.technology:config/conf/GoogleService-Info.plist $GITHUB_WORKSPACE/ios/Runner/GoogleService-Info.plist
-          
           ./flutter/bin/flutter clean
           ./flutter/bin/flutter build ios --no-codesign --no-tree-shake-icons
-    
+
       - name: deploy
         env:
           GOOGLE_SIGN_IN_URL: ${{ secrets.GOOGLE_SIGN_IN_URL }}
