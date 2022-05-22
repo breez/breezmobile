@@ -340,6 +340,8 @@ final VendorTheme fastbitcoins = VendorTheme(
     iconFgColor: Color(0xFF1f2a44),
     textColor: Color(0xFF1f2a44));
 final VendorTheme xsats = VendorTheme(iconBgColor: Color(0xFF000000));
+final VendorTheme geyser =
+    VendorTheme(iconBgColor: Color.fromRGBO(41, 241, 205, 1));
 
 final Map<String, VendorTheme> vendorTheme = {
   "bitrefill": bitrefill,
@@ -352,6 +354,7 @@ final Map<String, VendorTheme> vendorTheme = {
   "kollider": kollider,
   "fastbitcoins": fastbitcoins,
   "xsats": xsats,
+  "geyser": geyser,
 };
 
 final TextStyle drawerItemTextStyle =
