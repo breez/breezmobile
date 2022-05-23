@@ -50,6 +50,11 @@
 				<string>lnurlw</string>
 				<string>lnurlp</string>
 				<string>keyauth</string>
+    <string>LIGHTNING</string>
+    <string>LNURLC</string>
+    <string>LNURLW</string>
+    <string>LNURLP</string>
+    <string>KEYAUTH</string>
 			</array>
 		</dict>
 		<dict>
