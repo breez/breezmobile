@@ -57,6 +57,11 @@ Widget _withTheme(BreezUserModel user, Widget child) {
 class UserApp extends StatelessWidget {
   GlobalKey<NavigatorState> _navigatorKey = GlobalKey<NavigatorState>();
   GlobalKey<NavigatorState> _homeNavigatorKey = GlobalKey<NavigatorState>();
+  Sink<bool> _reloadDatabaseSink;
+
+  UserApp(Sink<bool> reloadDatabaseSink) {
+    _reloadDatabaseSink = reloadDatabaseSink;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -116,6 +121,8 @@ class UserApp extends StatelessWidget {
                     builder: (_) => InitialWalkthroughPage(
                       userProfileBloc,
                       backupBloc,
+                      posCatalogBloc,
+                      _reloadDatabaseSink,
                     ),
                     settings: settings,
                   );

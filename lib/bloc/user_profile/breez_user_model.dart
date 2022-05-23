@@ -2,6 +2,7 @@ import 'package:breez/bloc/podcast_payments/payment_options.dart';
 import 'package:breez/bloc/user_profile/currency.dart';
 import 'package:breez/bloc/user_profile/security_model.dart';
 
+import 'backup_user_preferences.dart';
 import 'business_adress.dart';
 import 'seen_tutorials.dart';
 
@@ -181,4 +182,33 @@ class BreezUserModel {
         'paymentOptions': paymentOptions,
         'seenTutorials': seenTutorials,
       };
+
+  BreezUserModel fromUserPreferences(BackupUserPreferences userPreferences) {
+    return BreezUserModel._(
+      userID,
+      userPreferences.name ?? name,
+      userPreferences.color ?? color,
+      userPreferences.animal ?? animal,
+      currency: userPreferences.currency ?? currency,
+      fiatCurrency: userPreferences.fiatCurrency ?? fiatCurrency,
+      image: userPreferences.image ?? image,
+      securityModel: securityModel,
+      locked: locked,
+      token: token,
+      themeId: themeId,
+      registrationRequested: registrationRequested,
+      hideBalance: userPreferences.hideBalance ?? hideBalance,
+      cancellationTimeoutValue:
+          userPreferences.cancellationTimeoutValue ?? cancellationTimeoutValue,
+      hasAdminPassword: hasAdminPassword,
+      businessAddress: userPreferences.businessAddress ?? businessAddress,
+      posCurrencyShortName:
+          userPreferences.posCurrencyShortName ?? posCurrencyShortName,
+      preferredCurrencies:
+          userPreferences.preferredCurrencies ?? preferredCurrencies,
+      appMode: appMode,
+      paymentOptions: userPreferences.paymentOptions ?? paymentOptions,
+      seenTutorials: seenTutorials,
+    );
+  }
 }

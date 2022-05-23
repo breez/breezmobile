@@ -40,7 +40,7 @@ class AppBlocs {
     return _blocsByType[T];
   }
 
-  factory AppBlocs() {
+  factory AppBlocs(Stream<bool> backupAnytimeDBStream) {
     var blocsByType = Map<Type, Object>();
     final sqliteRepository = SqliteRepository();
     UserProfileBloc userProfileBloc =
@@ -61,8 +61,9 @@ class AppBlocs {
         ConnectPayBloc(userProfileBloc.userStream, accountBloc.accountStream,
             accountBloc.userActionsSink),
         blocsByType);
-    BackupBloc backupBloc =
-        _registerBloc(BackupBloc(userProfileBloc.userStream), blocsByType);
+    BackupBloc backupBloc = _registerBloc(
+        BackupBloc(userProfileBloc.userStream, backupAnytimeDBStream),
+        blocsByType);
     MarketplaceBloc marketplaceBloc =
         _registerBloc(MarketplaceBloc(), blocsByType);
     LSPBloc lspBloc =
@@ -79,6 +80,7 @@ class AppBlocs {
         PosCatalogBloc(
           accountBloc.accountStream,
           userProfileBloc.userStream,
+          backupBloc.backupAppDataSink,
           sqliteRepository,
         ),
         blocsByType);

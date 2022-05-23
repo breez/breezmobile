@@ -696,6 +696,10 @@ class BreezBridge {
     return _invokeMethodWhenReady("requestBackup");
   }
 
+  Future requestAppDataBackup() async {
+    return _invokeMethodWhenReady("requestAppDataBackup");
+  }
+
   Future setBackupEncryptionKey(
       List<int> encryptionKey, String encryptionType) {
     return _invokeMethodImmediate("setBackupEncryptionKey", {

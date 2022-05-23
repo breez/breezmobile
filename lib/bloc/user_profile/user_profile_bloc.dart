@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:breez/bloc/async_action.dart';
+import 'package:breez/bloc/user_profile/backup_user_preferences.dart';
 import 'package:breez/bloc/user_profile/breez_user_model.dart';
 import 'package:breez/bloc/user_profile/currency.dart';
 import 'package:breez/bloc/user_profile/default_profile_generator.dart';
@@ -361,11 +362,29 @@ class UserProfileBloc {
         var userID = token;
         userToRegister = userToRegister.copyWith(token: token, userID: userID);
       }
+      userToRegister = await _restoreUserPreferences(userToRegister);
     } catch (e) {
       _registrationController.addError(e);
     }
     userToRegister = userToRegister.copyWith(registrationRequested: true);
     await _saveChanges(preferences, userToRegister);
+  }
+
+  Future<BreezUserModel> _restoreUserPreferences(
+      BreezUserModel userModel) async {
+    var appDir = await getApplicationDocumentsDirectory();
+    var backupAppDataDirPath =
+        appDir.path + Platform.pathSeparator + 'app_data_backup';
+    final backupUserPrefsPath =
+        backupAppDataDirPath + Platform.pathSeparator + 'userPreferences.txt';
+    if (await File(backupUserPrefsPath).exists()) {
+      final backupUserPrefs = await File(backupUserPrefsPath).readAsString();
+      Map<dynamic, dynamic> userData = json.decode(backupUserPrefs);
+      BackupUserPreferences userPrefs =
+          BackupUserPreferences.fromJson(userData);
+      return userModel.fromUserPreferences(userPrefs);
+    }
+    return userModel;
   }
 
   void _listenCurrencyChange(ServiceInjector injector) {

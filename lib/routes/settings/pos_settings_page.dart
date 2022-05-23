@@ -60,12 +60,13 @@ class PosSettingsPageState extends State<_PosSettingsPage> {
   final _addressLine2Controller = TextEditingController();
   final _defaultNoteController = TextEditingController();
   final _autoSizeGroup = AutoSizeGroup();
+  double _timeoutValue;
 
   @override
   void initState() {
     super.initState();
     final user = widget.currentProfile;
-    _cancellationTimeoutController.text = "${user.cancellationTimeoutValue}";
+    _cancellationTimeoutController.text = "${user.cancellationTimeoutValue.toStringAsFixed(0)}";
     _addressLine1Controller.text = user.businessAddress?.addressLine1 ?? "";
     _addressLine2Controller.text = user.businessAddress?.addressLine2 ?? "";
     _defaultNoteController.text = user.defaultPosNote;
@@ -84,13 +85,12 @@ class PosSettingsPageState extends State<_PosSettingsPage> {
         leading: backBtn.BackButton(),
         automaticallyImplyLeading: false,
         iconTheme: themeData.appBarTheme.iconTheme,
-        textTheme: themeData.appBarTheme.textTheme,
         backgroundColor: themeData.canvasColor,
         title: Text(
           texts.pos_settings_title,
           style: themeData.appBarTheme.textTheme.headline6,
         ),
-        elevation: 0.0,
+        elevation: 0.0, toolbarTextStyle: themeData.appBarTheme.textTheme.bodyText2, titleTextStyle: themeData.appBarTheme.textTheme.headline6,
       ),
       body: SingleChildScrollView(
         reverse: true,
@@ -168,16 +168,20 @@ class PosSettingsPageState extends State<_PosSettingsPage> {
   }
 
   Widget _cancellationSlider(BuildContext context) {
-    final timeoutValue = widget.currentProfile.cancellationTimeoutValue;
     return Slider(
-      value: timeoutValue,
-      label: timeoutValue.toStringAsFixed(0),
+      value: _timeoutValue,
+      label: _timeoutValue.toStringAsFixed(0),
       min: 30.0,
       max: 180.0,
       divisions: 5,
       onChanged: (double value) {
         FocusScope.of(context).requestFocus(FocusNode());
-        _cancellationTimeoutController.text = value.toString();
+        setState(() {
+          _timeoutValue = value;
+          _cancellationTimeoutController.text = value.toStringAsFixed(0);
+        });
+      },
+      onChangeEnd: (double value) {
         widget._userProfileBloc.userSink.add(
           widget.currentProfile.copyWith(cancellationTimeoutValue: value),
         );
@@ -474,14 +478,16 @@ class PosSettingsPageState extends State<_PosSettingsPage> {
             decoration: InputDecoration(
               hintText: texts.pos_settings_address_line_1,
             ),
-            onChanged: (_) => widget._userProfileBloc.userSink.add(
-              currentProfile.copyWith(
-                businessAddress: currentProfile.businessAddress.copyWith(
-                  addressLine1: _addressLine1Controller.text,
+            onEditingComplete: () {
+              widget._userProfileBloc.userSink.add(
+                currentProfile.copyWith(
+                  businessAddress: currentProfile.businessAddress.copyWith(
+                    addressLine1: _addressLine1Controller.text,
+                  ),
                 ),
-              ),
-            ),
-            onEditingComplete: () => FocusScope.of(context).nextFocus(),
+              );
+              FocusScope.of(context).nextFocus();
+            },
           ),
           TextField(
             controller: _addressLine2Controller,
@@ -490,14 +496,16 @@ class PosSettingsPageState extends State<_PosSettingsPage> {
             decoration: InputDecoration(
               hintText: texts.pos_settings_address_line_2,
             ),
-            onChanged: (_) => widget._userProfileBloc.userSink.add(
-              currentProfile.copyWith(
-                businessAddress: currentProfile.businessAddress.copyWith(
-                  addressLine2: _addressLine2Controller.text,
+            onEditingComplete: () {
+              widget._userProfileBloc.userSink.add(
+                currentProfile.copyWith(
+                  businessAddress: currentProfile.businessAddress.copyWith(
+                    addressLine2: _addressLine2Controller.text,
+                  ),
                 ),
-              ),
-            ),
-            onEditingComplete: () => FocusScope.of(context).unfocus(),
+              );
+              FocusScope.of(context).unfocus();
+            },
           ),
         ],
       ),
