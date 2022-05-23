@@ -68,7 +68,7 @@ class PaymentOptionsBloc with AsyncActionsHandler {
     if (prefs.containsKey(_kPaymentOptionOverrideFee)) {
       paymentFeeEnabled = prefs.getBool(_kPaymentOptionOverrideFee);
     } else {
-      paymentFeeEnabled = true;
+      paymentFeeEnabled = _kDefaultOverrideFee;
     }
     _paymentOptionsFeeEnabledStreamController.add(paymentFeeEnabled);
   }
