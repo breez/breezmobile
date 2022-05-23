@@ -25,12 +25,13 @@ class LightningLinksService {
 
   bool _canHandle(String link) {
     if (link == null) return false;
-    return link.startsWith("breez:") ||
-        link.startsWith("lightning:") ||
-        link.startsWith("lnurlc:") ||
-        link.startsWith("lnurlp:") ||
-        link.startsWith("lnurlw:") ||
-        link.startsWith("keyauth:");
+    var lowerCaseLink = link.toLowerCase();
+    return lowerCaseLink.startsWith("breez:") ||
+        lowerCaseLink.startsWith("lightning:") ||
+        lowerCaseLink.startsWith("lnurlc:") ||
+        lowerCaseLink.startsWith("lnurlp:") ||
+        lowerCaseLink.startsWith("lnurlw:") ||
+        lowerCaseLink.startsWith("keyauth:");
   }
 
   close() {
