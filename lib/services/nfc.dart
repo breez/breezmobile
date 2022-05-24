@@ -1,13 +1,16 @@
 import 'dart:async';
 import 'dart:io';
 
+import 'package:breez/logger.dart';
+import 'package:breez/services/device.dart';
 import 'package:flutter/services.dart';
-import 'package:nfc_in_flutter/nfc_in_flutter.dart';
+import 'package:nfc_manager/nfc_manager.dart';
+
+import 'injector.dart';
 
 class NFCService {
   static const _platform = MethodChannel('com.breez.client/nfc');
-  StreamController<String> _lnLinkController =
-      StreamController<String>.broadcast();
+  StreamController<String> _lnLinkController = StreamController<String>.broadcast();
   StreamSubscription _lnLinkListener;
   Timer _checkNfcStartedWithTimer;
 
@@ -19,8 +22,7 @@ class NFCService {
     if (Platform.isAndroid) {
       int fnCalls = 0;
       // Wrap with Future.delayed on debug mode.
-      _checkNfcStartedWithTimer =
-          Timer.periodic(Duration(milliseconds: 100), (Timer t) {
+      _checkNfcStartedWithTimer = Timer.periodic(Duration(milliseconds: 100), (Timer t) {
         if (fnCalls == 5) {
           _checkNfcStartedWithTimer.cancel();
           return;
@@ -41,13 +43,38 @@ class NFCService {
     });
   }
 
-  _listenLnLinks() {
-    _lnLinkListener = NFC.readNDEF().listen(
-      (message) {
-        String lnLink = message.payload;
-        if (lnLink.startsWith("lightning:")) _lnLinkController.add(lnLink);
-      },
-    );
+  _listenLnLinks() async {
+    // Check availability
+    log.info("check if nfc available");
+    bool isAvailable = await NfcManager.instance.isAvailable();
+    log.info("nfc available $isAvailable");
+    if (isAvailable) {
+      ServiceInjector().device.eventStream.distinct().listen((event) {
+        switch (event) {
+          case NotificationType.RESUME:
+          log.info("nfc start session");
+            NfcManager.instance.startSession(
+              onDiscovered: (NfcTag tag) async {
+                var ndef = Ndef.from(tag);                            
+                if (ndef != null) {                                    
+                  for (var rec in ndef.cachedMessage.records) {
+                    String payload = String.fromCharCodes(rec.payload);
+                    var lightningStart = payload.indexOf("lightning:");                    
+                    if (lightningStart >= 0) {
+                       _lnLinkController.add(payload.substring(lightningStart));
+                    }
+                  }
+                }
+              },
+            );
+            break;
+          case NotificationType.PAUSE:
+            log.info("nfc stop session");
+            NfcManager.instance.stopSession();
+            break;
+        }
+      });
+    }
   }
 
   close() {
