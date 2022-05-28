@@ -189,21 +189,22 @@ class BreezUserModel {
       userPreferences.name ?? name,
       userPreferences.color ?? color,
       userPreferences.animal ?? animal,
-      currency: userPreferences.currency ?? currency,
-      fiatCurrency: userPreferences.fiatCurrency ?? fiatCurrency,
+      currency: currency,
+      fiatCurrency: !userPreferences.preferredCurrencies.contains(fiatCurrency)
+          ? userPreferences.preferredCurrencies.first
+          : fiatCurrency,
       image: userPreferences.image ?? image,
       securityModel: securityModel,
       locked: locked,
       token: token,
-      themeId: themeId,
+      themeId: userPreferences.themeId ?? themeId,
       registrationRequested: registrationRequested,
-      hideBalance: userPreferences.hideBalance ?? hideBalance,
+      hideBalance: hideBalance,
       cancellationTimeoutValue:
           userPreferences.cancellationTimeoutValue ?? cancellationTimeoutValue,
       hasAdminPassword: hasAdminPassword,
       businessAddress: userPreferences.businessAddress ?? businessAddress,
-      posCurrencyShortName:
-          userPreferences.posCurrencyShortName ?? posCurrencyShortName,
+      posCurrencyShortName: posCurrencyShortName,
       preferredCurrencies:
           userPreferences.preferredCurrencies ?? preferredCurrencies,
       appMode: appMode,
