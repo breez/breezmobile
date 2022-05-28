@@ -25,6 +25,15 @@ class BackupBloc {
   static const String _signInFailedCode = "AuthError";
   static const String USER_DETAILS_PREFERENCES_KEY = "BreezUserModel.userID";
 
+  static const _kDefaultOverrideFee = false;
+  static const _kDefaultBaseFee = 20;
+  static const _kDefaultProportionalFee = 1.0;
+
+  static const _kPaymentOptionOverrideFee = "PAYMENT_OPTIONS_OVERRIDE_FEE";
+  static const _kPaymentOptionBaseFee = "PAYMENT_OPTIONS_BASE_FEE";
+  static const _kPaymentOptionProportionalFee =
+      "PAYMENT_OPTIONS_PROPORTIONAL_FEE";
+
   final BehaviorSubject<BackupState> _backupStateController =
       BehaviorSubject<BackupState>();
   Stream<BackupState> get backupStateStream => _backupStateController.stream;
@@ -50,6 +59,13 @@ class BackupBloc {
 
   final _backupAppDataController = StreamController<bool>.broadcast();
   Sink<bool> get backupAppDataSink => _backupAppDataController.sink;
+
+  final _restoreLightningFeesController =
+      StreamController<Map<String, dynamic>>.broadcast();
+  Sink<Map<String, dynamic>> get restoreLightningFeesSink =>
+      _restoreLightningFeesController.sink;
+  Stream<Map<String, dynamic>> get restoreLightningFeesStream =>
+      _restoreLightningFeesController.stream;
 
   final _restoreRequestController = StreamController<RestoreRequest>();
   Sink<RestoreRequest> get restoreRequestSink => _restoreRequestController.sink;
@@ -357,11 +373,42 @@ class BackupBloc {
 
   _saveAppData() async {
     try {
+      await _saveLightningFees();
       await _savePosDB();
       await _savePodcastsDB();
     } on Exception catch (exception) {
       throw exception;
     }
+  }
+
+  Future<void> _saveLightningFees() async {
+    final lightningFeesPath =
+        _backupAppDataDirPath + Platform.pathSeparator + 'lightningFees.txt';
+    final lightningFeesPreferences = await _getLightningFeesPreferences();
+    await File(lightningFeesPath)
+        .writeAsString(json.encode(lightningFeesPreferences))
+        .catchError((err) {
+      throw Exception("Failed to save lightning fees.");
+    });
+  }
+
+  Future<Map<String, dynamic>> _getLightningFeesPreferences() async {
+    var preferences = await ServiceInjector().sharedPreferences;
+    bool paymentFeeEnabled = preferences.containsKey(_kPaymentOptionOverrideFee)
+        ? preferences.getBool(_kPaymentOptionOverrideFee)
+        : _kDefaultOverrideFee;
+    int baseFee = preferences.containsKey(_kPaymentOptionBaseFee)
+        ? preferences.getInt(_kPaymentOptionBaseFee)
+        : _kDefaultBaseFee;
+    double proportionalFee =
+        preferences.containsKey(_kPaymentOptionProportionalFee)
+            ? preferences.getDouble(_kPaymentOptionProportionalFee)
+            : _kDefaultProportionalFee;
+    return {
+      _kPaymentOptionOverrideFee: paymentFeeEnabled,
+      _kPaymentOptionBaseFee: baseFee,
+      _kPaymentOptionProportionalFee: proportionalFee,
+    };
   }
 
   Future<void> _savePosDB() async {
@@ -483,10 +530,23 @@ class BackupBloc {
 
   _restoreAppData() async {
     try {
+      await _restoreLightningFees();
       await _restorePosDB();
       await _restorePodcastsDB();
     } on Exception catch (exception) {
       throw exception;
+    }
+  }
+
+  Future<void> _restoreLightningFees() async {
+    final lightningFeesPath =
+        _backupAppDataDirPath + Platform.pathSeparator + 'lightningFees.txt';
+    if (await File(lightningFeesPath).exists()) {
+      final backupLightningFeesPrefs =
+          await File(lightningFeesPath).readAsString();
+      Map<String, dynamic> lightningFeesPrefs =
+          json.decode(backupLightningFeesPrefs);
+      restoreLightningFeesSink.add(lightningFeesPrefs);
     }
   }
 
@@ -517,6 +577,7 @@ class BackupBloc {
   close() {
     _backupNowController.close();
     _backupAppDataController.close();
+    _restoreLightningFeesController.close();
     _restoreRequestController.close();
     _multipleRestoreController.close();
     _restoreFinishedController.close();

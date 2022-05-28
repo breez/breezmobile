@@ -33,7 +33,7 @@ class PaymentOptionsBloc with AsyncActionsHandler {
   Stream<double> get paymentOptionsProportionalFeeStream =>
       _paymentOptionsProportionalFeeStreamController.stream;
 
-  PaymentOptionsBloc() {
+  PaymentOptionsBloc(Stream<Map<String, dynamic>> restoreLightningFeesStream) {
     registerAsyncHandlers({
       ResetPaymentFee: _resetPaymentFee,
       OverridePaymentFee: _updateOverridePaymentFee,
@@ -46,6 +46,7 @@ class PaymentOptionsBloc with AsyncActionsHandler {
     _loadPaymentBaseFeeOverride();
     _loadPaymentProportionalFeeOverride();
     listenActions();
+    _listenRestoreRequests(restoreLightningFeesStream);
   }
 
   Future _resetPaymentFee(
@@ -139,5 +140,25 @@ class PaymentOptionsBloc with AsyncActionsHandler {
       final fee = base + (action.amount / 100.0 * proportional).round();
       action.resolve(fee);
     }
+  }
+
+  void _listenRestoreRequests(
+      Stream<Map<String, dynamic>> restoreLightningFeesStream) {
+    restoreLightningFeesStream.listen((lightningFeesPreferences) {
+      _restoreLightningFees(lightningFeesPreferences);
+    });
+  }
+
+  _restoreLightningFees(Map<String, dynamic> lightningFeesPreferences) {
+    _updateOverridePaymentFee(
+      OverridePaymentFee(lightningFeesPreferences[_kPaymentOptionOverrideFee]),
+    );
+    _updatePaymentOptionsBaseFee(
+      UpdatePaymentBaseFee(lightningFeesPreferences[_kPaymentOptionBaseFee]),
+    );
+    _updatePaymentOptionsProportionalFee(
+      UpdatePaymentProportionalFee(
+          lightningFeesPreferences[_kPaymentOptionProportionalFee]),
+    );
   }
 }
