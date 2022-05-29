@@ -384,11 +384,7 @@ class DevViewState extends State<DevView> {
         title:
             "${addFundsSettings.moonpayIpCheck ? "Disable" : "Enable"} MoonPay IP Check",
         icon: Icons.network_check,
-        function: () => _enableMoonpayIpCheck(addFundsBloc, addFundsSettings)));
-    choices.add(Choice(
-        title: "${settings.isEscherEnabled ? "Disable" : "Enable"} Escher",
-        icon: Icons.monetization_on,
-        function: () => _enableEscher(accBloc, settings)));
+        function: () => _enableMoonpayIpCheck(addFundsBloc, addFundsSettings)));    
     choices.add(Choice(
         title: 'Reset Refunds Status',
         icon: Icons.phone_android,
@@ -497,7 +493,7 @@ class DevViewState extends State<DevView> {
           bloc.userActionsSink.add(SetSeenPaymentStripTutorial(false));
         }));
     choices.add(Choice(
-        title: 'Log cache usage',
+        title: 'Log Cache',
         icon: Icons.phone_android,
         function: _printCacheUsage));
         
@@ -544,12 +540,7 @@ class DevViewState extends State<DevView> {
       AddFundsBloc bloc, AddFundsSettings addFundsSettings) {
     bloc.addFundsSettingsSink.add(addFundsSettings.copyWith(
         moonpayIpCheck: !addFundsSettings.moonpayIpCheck));
-  }
-
-  void _enableEscher(AccountBloc bloc, AccountSettings settings) {
-    bloc.accountSettingsSink
-        .add(settings.copyWith(isEscherEnabled: !settings.isEscherEnabled));
-  }
+  }  
 
   void _describeGraph() async {
     Directory tempDir = await getTemporaryDirectory();
