@@ -1,3 +1,5 @@
+import 'dart:typed_data';
+
 import 'package:breez/services/breezlib/data/rpc.pb.dart';
 import 'package:flutter/cupertino.dart';
 
@@ -28,7 +30,7 @@ extension LnurlMetadata on List<LNUrlPayMetadata> {
       return null;
     }
 
-    final image = Image.memory(imageSource.image.bytes);
+    final image = Image.memory(Uint8List.fromList(imageSource.image.bytes));
     _imageCache[this] = image;
     return image;
   }
