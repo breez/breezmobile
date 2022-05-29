@@ -29,9 +29,9 @@ class NFCService {
         }
         fnCalls++;
         _checkNfcStartedWith();
-      });
-      _listenLnLinks();
+      });      
     }
+    _listenLnLinks();
   }
 
   _checkNfcStartedWith() async {
@@ -47,26 +47,13 @@ class NFCService {
     // Check availability
     log.info("check if nfc available");
     bool isAvailable = await NfcManager.instance.isAvailable();
-    log.info("nfc available $isAvailable");
+    log.info("nfc available $isAvailable");    
     if (isAvailable) {
+      _startNFCSession();
       ServiceInjector().device.eventStream.distinct().listen((event) {
         switch (event) {
           case NotificationType.RESUME:
-          log.info("nfc start session");
-            NfcManager.instance.startSession(
-              onDiscovered: (NfcTag tag) async {
-                var ndef = Ndef.from(tag);                            
-                if (ndef != null) {                                    
-                  for (var rec in ndef.cachedMessage.records) {
-                    String payload = String.fromCharCodes(rec.payload);
-                    var lightningStart = payload.indexOf("lightning:");                    
-                    if (lightningStart >= 0) {
-                       _lnLinkController.add(payload.substring(lightningStart));
-                    }
-                  }
-                }
-              },
-            );
+            _startNFCSession();
             break;
           case NotificationType.PAUSE:
             log.info("nfc stop session");
@@ -75,6 +62,24 @@ class NFCService {
         }
       });
     }
+  }
+
+  _startNFCSession() async {
+    await NfcManager.instance.stopSession();
+    NfcManager.instance.startSession(
+      onDiscovered: (NfcTag tag) async {
+        var ndef = Ndef.from(tag);                            
+        if (ndef != null) {                                    
+          for (var rec in ndef.cachedMessage.records) {
+            String payload = String.fromCharCodes(rec.payload);
+            var lightningStart = payload.indexOf("lightning:");                    
+            if (lightningStart >= 0) {
+                _lnLinkController.add(payload.substring(lightningStart));
+            }
+          }
+        }
+      },
+    );
   }
 
   close() {
