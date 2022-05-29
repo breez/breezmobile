@@ -66,6 +66,7 @@ class PosSettingsPageState extends State<_PosSettingsPage> {
   void initState() {
     super.initState();
     final user = widget.currentProfile;
+    _timeoutValue = user.cancellationTimeoutValue;
     _cancellationTimeoutController.text = "${user.cancellationTimeoutValue.toStringAsFixed(0)}";
     _addressLine1Controller.text = user.businessAddress?.addressLine1 ?? "";
     _addressLine2Controller.text = user.businessAddress?.addressLine2 ?? "";
