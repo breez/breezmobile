@@ -486,7 +486,7 @@ class DevViewState extends State<DevView> {
           }
         }));
     choices.add(Choice(
-        title: "Restore channels",
+        title: "Restore Channels",
         icon: Icons.phone_android,
         function: () async {
           _restoreChannelsBackup();
