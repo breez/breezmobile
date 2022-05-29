@@ -80,6 +80,7 @@ class PaymentOptionsBloc with AsyncActionsHandler {
     final prefs = await _injector.sharedPreferences;
     prefs.setBool(_kPaymentOptionOverrideFee, action.enabled);
     _paymentOptionsFeeEnabledStreamController.add(action.enabled);
+    action.resolve(action.enabled);
   }
 
   void _loadPaymentBaseFeeOverride() async {
@@ -103,6 +104,7 @@ class PaymentOptionsBloc with AsyncActionsHandler {
     }
     prefs.setInt(_kPaymentOptionBaseFee, newFee);
     _paymentOptionsBaseFeeStreamController.add(newFee);
+    action.resolve(newFee);
   }
 
   void _loadPaymentProportionalFeeOverride() async {
@@ -126,6 +128,7 @@ class PaymentOptionsBloc with AsyncActionsHandler {
     }
     prefs.setDouble(_kPaymentOptionProportionalFee, newFee);
     _paymentOptionsProportionalFeeStreamController.add(newFee);
+    action.resolve(newFee);
   }
 
   Future _calculateFee(
