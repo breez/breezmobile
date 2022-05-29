@@ -1,3 +1,4 @@
+import 'package:breez/bloc/backup/backup_bloc.dart';
 import 'package:breez/bloc/blocs_provider.dart';
 import 'package:breez/bloc/payment_options/payment_options_actions.dart';
 import 'package:breez/bloc/payment_options/payment_options_bloc.dart';
@@ -88,9 +89,7 @@ class _PaymentOptionsPageState extends State<PaymentOptionsPage> {
     );
   }
 
-  Widget _body(
-    BuildContext context,
-  ) {
+  Widget _body(BuildContext context) {
     return SingleChildScrollView(
       child: Column(
         children: [
@@ -105,9 +104,7 @@ class _PaymentOptionsPageState extends State<PaymentOptionsPage> {
     );
   }
 
-  Widget _headerFee(
-    BuildContext context,
-  ) {
+  Widget _headerFee(BuildContext context) {
     final texts = AppLocalizations.of(context);
     final themeData = Theme.of(context);
 
@@ -128,9 +125,7 @@ class _PaymentOptionsPageState extends State<PaymentOptionsPage> {
     );
   }
 
-  Widget _overrideFee(
-    BuildContext context,
-  ) {
+  Widget _overrideFee(BuildContext context) {
     final texts = AppLocalizations.of(context);
     final themeData = Theme.of(context);
 
@@ -149,9 +144,7 @@ class _PaymentOptionsPageState extends State<PaymentOptionsPage> {
     );
   }
 
-  Widget _baseFeeWidget(
-    BuildContext context,
-  ) {
+  Widget _baseFeeWidget(BuildContext context) {
     final texts = AppLocalizations.of(context);
 
     return Row(
@@ -194,9 +187,7 @@ class _PaymentOptionsPageState extends State<PaymentOptionsPage> {
     );
   }
 
-  Widget _proportionalFeeWidget(
-    BuildContext context,
-  ) {
+  Widget _proportionalFeeWidget(BuildContext context) {
     final texts = AppLocalizations.of(context);
 
     return Row(
@@ -239,9 +230,7 @@ class _PaymentOptionsPageState extends State<PaymentOptionsPage> {
     );
   }
 
-  Widget _actionsFee(
-    BuildContext context,
-  ) {
+  Widget _actionsFee(BuildContext context) {
     final texts = AppLocalizations.of(context);
 
     return Padding(
@@ -335,10 +324,8 @@ class _PaymentOptionsPageState extends State<PaymentOptionsPage> {
     );
   }
 
-  void _saveProportional(
-    BuildContext context,
-    String value,
-  ) {
+  void _saveProportional(BuildContext context,
+      String value) {
     double newProportionalFee = 0.0;
     try {
       newProportionalFee = double.parse(value);
@@ -350,10 +337,8 @@ class _PaymentOptionsPageState extends State<PaymentOptionsPage> {
     });
   }
 
-  void _saveBase(
-    BuildContext context,
-    String value,
-  ) {
+  void _saveBase(BuildContext context,
+      String value) {
     int newBaseFee = 0;
     try {
       newBaseFee = int.parse(value);
@@ -377,16 +362,26 @@ class _PaymentOptionsPageState extends State<PaymentOptionsPage> {
     _closeKeyboard();
   }
 
-  void _save(
-    BuildContext context,
-  ) {
+  void _save(BuildContext context) async {
     _saveProportional(context, _proportionalFeeController.text);
     _saveBase(context, _baseFeeController.text);
     _closeKeyboard();
 
     final options = AppBlocsProvider.of<PaymentOptionsBloc>(context);
-    options.actionsSink.add(UpdatePaymentProportionalFee(_proportionalFee));
-    options.actionsSink.add(UpdatePaymentBaseFee(_baseFee));
-    options.actionsSink.add(OverridePaymentFee(_overriding));
+    var updatePaymentProportionalFeeAction =
+        UpdatePaymentProportionalFee(_proportionalFee);
+    var updatePaymentBaseFeeAction = UpdatePaymentBaseFee(_baseFee);
+    final overridePaymentFeeAction = OverridePaymentFee(_overriding);
+    options.actionsSink.add(updatePaymentProportionalFeeAction);
+    options.actionsSink.add(updatePaymentBaseFeeAction);
+    options.actionsSink.add(overridePaymentFeeAction);
+    Future.wait([
+      updatePaymentProportionalFeeAction.future,
+      updatePaymentBaseFeeAction.future,
+      overridePaymentFeeAction.future
+    ]).whenComplete(() {
+      final backupBloc = AppBlocsProvider.of<BackupBloc>(context);
+      backupBloc.backupAppDataSink.add(true);
+    });
   }
 }

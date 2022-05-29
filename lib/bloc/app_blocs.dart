@@ -45,8 +45,11 @@ class AppBlocs {
     final sqliteRepository = SqliteRepository();
     UserProfileBloc userProfileBloc =
         _registerBloc(UserProfileBloc(), blocsByType);
+    BackupBloc backupBloc = _registerBloc(
+        BackupBloc(userProfileBloc.userStream, backupAnytimeDBStream),
+        blocsByType);
     PaymentOptionsBloc paymentOptionsBloc = _registerBloc(
-      PaymentOptionsBloc(),
+      PaymentOptionsBloc(backupBloc.restoreLightningFeesStream),
       blocsByType,
     );
     AccountBloc accountBloc = _registerBloc(
@@ -60,9 +63,6 @@ class AppBlocs {
     ConnectPayBloc connectPayBloc = _registerBloc(
         ConnectPayBloc(userProfileBloc.userStream, accountBloc.accountStream,
             accountBloc.userActionsSink),
-        blocsByType);
-    BackupBloc backupBloc = _registerBloc(
-        BackupBloc(userProfileBloc.userStream, backupAnytimeDBStream),
         blocsByType);
     MarketplaceBloc marketplaceBloc =
         _registerBloc(MarketplaceBloc(), blocsByType);
