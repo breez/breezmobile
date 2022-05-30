@@ -759,8 +759,7 @@ class HomeState extends State<Home> with WidgetsBindingObserver {
           texts.home_config_error_message,
           style: themeData.dialogTheme.contentTextStyle,
         ),
-        okText: texts.home_config_error_action_exit,
-        okFunc: () => Navigator.of(context).pop(),
+        okText: texts.home_config_error_action_exit,        
         disableBack: true,
       );
     });
