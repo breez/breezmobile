@@ -502,6 +502,12 @@ class DevViewState extends State<DevView> {
         title: 'Log Cache',
         icon: Icons.phone_android,
         function: _printCacheUsage));
+      
+    choices.add(Choice(
+        title: 'Download Backup',
+        icon: Icons.phone_android,
+        function: () { _downloadSnapshot(accBloc); }
+    ));
         
     return choices;
   }
@@ -581,6 +587,26 @@ class DevViewState extends State<DevView> {
       }
     });
   }
+
+  void _downloadSnapshot(AccountBloc accBloc) async {
+    final nodeID = await accBloc.getPersistentNodeID();
+    final downloaded = await widget._breezBridge.downloadBackup(nodeID);
+    _shareBackup(downloaded.files);
+  }
+
+  Future _shareBackup(List<String> files) async {
+  Directory tempDir = await getTemporaryDirectory();
+  tempDir = await tempDir.createTemp("backup");
+  var encoder = ZipFileEncoder();
+  var zipFile = '${tempDir.path}/backup.zip';
+  encoder.create(zipFile);
+  files.forEach((f) {
+    var file = File(f);
+    encoder.addFile(file, "${file.path.split(Platform.pathSeparator).last}");
+  });
+  encoder.close();
+  ShareExtend.share(zipFile, "file");
+}
 
   void _refreshGraph() async {
     await FlutterDownloader.cancelAll();

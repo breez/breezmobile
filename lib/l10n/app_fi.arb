@@ -21,7 +21,7 @@
   "home_broadcast_transaction": "Tapahtumaa lähetetään",
   "home_config_error_title": "Konfiguraatiovirhe",
   "home_config_error_message": "Breez havaitsi että, sama konfiguraatio on käytössä myös toisessa laitteessa, johtuen todennäköisesti varmuuskopion palautuksesta. Breez voi toimia samalla konfiguraatiolla vain yhdessä laitteessa kerrallaan. Asenna Breez uudelleen mikäli haluat sen käyttöön tässä laitteessa.",
-  "home_config_error_action_exit": "Sulje Breez",
+  "home_config_error_action_exit": "Peruuta",
   "home_background_synchronization_title": "Taustasynkronointi",
   "home_background_synchronization_message": "Välittömästi tapahtuvien maksujen toteuttamiseksi Breez synkronoi tietoja taustalla. Sovellus vaatii sinulta luvan toimia myös silloin kun sovellus ei ole avattuna. Myönnä oikeus seuraavassa näkymässä.",
   "home_payment_sent": "Maksun lähetys onnistui.",

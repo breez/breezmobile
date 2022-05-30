@@ -21,7 +21,7 @@
   "home_broadcast_transaction": "Emitiendo su transacción",
   "home_config_error_title": "Error de configuración",
   "home_config_error_message": "Breez detectó que otro dispositivo tiene la misma configuración (probablemente debido a recuperación). Breez no puede procesar la misma configuración en más de un dispositivo. Por favor reinstale Breez para continuar usando Breez en este dispositivo.",
-  "home_config_error_action_exit": "Salir de Breez",
+  "home_config_error_action_exit": "CANCELAR",
   "home_background_synchronization_title": "Sincronización en segundo plano",
   "home_background_synchronization_message": "Para admitir pagos instantáneos, Breez necesita su permiso para sincronizar la información mientras la aplicación no está activa. Por favor apruebe la aplicación en el siguiente cuadro de diálogo.",
   "home_payment_sent": "¡El pago ha sido enviado con éxito!",

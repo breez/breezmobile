@@ -21,7 +21,7 @@
   "home_broadcast_transaction": "Broadcasting your transaction",
   "home_config_error_title": "Configuration Error",
   "home_config_error_message": "Breez detected another device is running with the same configuration (probably due to restore). Breez cannot run the same configuration on more than one device. Please reinstall Breez if you wish to continue using Breez on this device.",
-  "home_config_error_action_exit": "Exit Breez",
+  "home_config_error_action_exit": "CANCEL",
   "home_background_synchronization_title": "Background Synchronization",
   "home_background_synchronization_message": "In order to support instantaneous payments, Breez needs your permission in order to synchronize the information while the app is not active. Please approve the app in the next dialog.",
   "home_payment_sent": "Payment was successfully sent!",
