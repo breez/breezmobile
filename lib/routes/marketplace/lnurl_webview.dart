@@ -37,7 +37,7 @@ class LNURLWebViewPageState extends State<LNURLWebViewPage> {
   @override
   void initState() {
     super.initState();
-    handleLNUrlAuth(widget.vendorModel, widget.lnurlBloc, widget.responseID)
+    handleLNUrlAuth(widget.vendorModel, widget.endpointURI, widget.lnurlBloc, widget.responseID)
     .then((jwt) {
         if (this.mounted) {
         setState(() => jwtToken = jwt);

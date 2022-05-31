@@ -49,9 +49,13 @@ class VendorRow extends StatelessWidget {
             try {
               var url = _vendor.url;
               if (_vendor.id == "lnmarkets" || _vendor.id == "Kollider") {
+                final endpointURI = _vendor.id == "lnmarkets"
+                      ? Uri.https("api.lnmarkets.com", "v1/lnurl/auth")
+                      : Uri.https(
+                          "api.kollider.xyz", "v1/auth/external/lnurl_auth");
                 var responseID = 
                         _vendor.id == "lnmarkets" ? "lnurl" : "lnurl_auth";
-                var jwtToken = await handleLNUrlAuth(_vendor, lnurlBloc, responseID);
+                var jwtToken = await handleLNUrlAuth(_vendor, endpointURI, lnurlBloc, responseID);
                 url = url + "?token=$jwtToken";
               }
               launch(_vendor.url);
