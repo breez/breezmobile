@@ -8,8 +8,11 @@ import 'package:breez/bloc/marketplace/vendor_model.dart';
 import 'package:http/http.dart' as http;
 
 Future<String> handleLNUrlAuth(VendorModel vendor, LNUrlBloc lnurlBloc, String responsdID) async {
-    Uri uri = Uri.parse(vendor.url); 
-    var response = await http.get(uri);
+    Uri uri = Uri.parse(vendor.url);
+        var response = vendor.id == "lnmarkets"
+        ? await http.post(uri)
+        : await http.get(uri);
+     
     if (response.statusCode != 200 && response.statusCode != 201) {
       throw Exception("Failed to call ${vendor.displayName} API");
     }
