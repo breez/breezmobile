@@ -38,8 +38,12 @@ class LNURLWebViewPageState extends State<LNURLWebViewPage> {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      handleLNUrlAuth(widget.vendorModel, widget.lnurlBloc, widget.responseID)
-          .then((jwt) {
+      handleLNUrlAuth(
+        widget.vendorModel,
+        widget.endpointURI,
+        widget.lnurlBloc,
+        widget.responseID,
+      ).then((jwt) {
         if (mounted) {
           setState(() => jwtToken = jwt);
         }
