@@ -68,7 +68,7 @@ class VendorRow extends StatelessWidget {
                 var jwtToken = await handleLNUrlAuth(_vendor, endpointURI, lnurlBloc, responseID);
                 url = url + "?token=$jwtToken";
               }
-              launch(_vendor.url);
+              launch(url);
             } 
             catch(err) {
               promptError(
