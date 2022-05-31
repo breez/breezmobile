@@ -1,11 +1,11 @@
 import 'package:breez/bloc/account/account_bloc.dart';
-import 'package:breez/bloc/blocs_provider.dart';
-import 'package:breez/bloc/lnurl/lnurl_bloc.dart';
 import 'package:breez/bloc/marketplace/vendor_model.dart';
 import 'package:breez/routes/marketplace/lnurl_auth.dart';
 import 'package:breez/theme_data.dart' as theme;
 import 'package:breez/widgets/error_dialog.dart';
+import 'package:breez/widgets/loader.dart';
 import 'package:breez/widgets/route.dart';
+import 'package:breez_translations/breez_translations_locales.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -21,7 +21,6 @@ class VendorRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final lnurlBloc = AppBlocsProvider.of<LNUrlBloc>(context);
     Color vendorFgColor = theme.vendorTheme[_vendor.id.toLowerCase()]?.iconFgColor ?? Colors.transparent;
     Color vendorBgColor = theme.vendorTheme[_vendor.id.toLowerCase()]?.iconBgColor ?? Colors.white;
     Color vendorTextColor = theme.vendorTheme[_vendor.id.toLowerCase()]?.textColor ?? Colors.black;
@@ -47,70 +46,71 @@ class VendorRow extends StatelessWidget {
         : Container();
 
     final vendorCard = GestureDetector(
-        onTap: () async {
-         
-         // iOS only
-          if (defaultTargetPlatform == TargetPlatform.iOS) {
-            try {
-              var url = _vendor.url;
-              if (_vendor.id == "lnmarkets" || _vendor.id == "Kollider") {
-                var responseID = 
-                        _vendor.id == "lnmarkets" ? "lnurl" : "lnurl_auth";
-                var jwtToken = await handleLNUrlAuth(_vendor, lnurlBloc, responseID);
-                url = url + "?token=$jwtToken";
-              }
-              launch(_vendor.url);
-            } 
-            catch(err) {
-              promptError(
-                context,
-                "Error",
-                Text(err.toString())                
-              );
+      onTap: () async {
+        // iOS only
+        if (defaultTargetPlatform == TargetPlatform.iOS) {
+          final navigator = Navigator.of(context);
+          var loaderRoute = createLoaderRoute(context);
+          try {
+            navigator.push(loaderRoute);
+            var url = _vendor.url;
+            if (_vendor.webLN) {
+              var jwtToken = await handleLNUrlAuth(context, vendor: _vendor);
+              url = "$url?token=$jwtToken";
             }
-            return;
-          }
+            launchUrl(Uri.parse(url));
+          } catch (err) {
+            final texts = context.texts();
 
-          // non iOS
-          Navigator.push(context, FadeInRoute(
-            builder: (_) {
-              if (_vendor.endpointURI != null) {
-                var lnurlBloc = AppBlocsProvider.of<LNUrlBloc>(context);
-                return LNURLWebViewPage(
-                  accountBloc: accountBloc,
-                  vendorModel: _vendor,
-                  lnurlBloc: lnurlBloc,
-                  endpointURI: Uri.tryParse(_vendor.endpointURI),
-                  responseID: _vendor.responseID,
-                );
-              }
-              return VendorWebViewPage(accountBloc, _vendor.url, _vendor.displayName);
-            },
-          ));
-        },
-        child: Container(
-          margin: const EdgeInsets.fromLTRB(32.0, 8.0, 32.0, 8.0),
-          constraints: const BoxConstraints.expand(),
-          decoration: BoxDecoration(
-              color: vendorBgColor,
-              boxShadow: [
-                BoxShadow(
-                  color: theme.BreezColors.grey[600],
-                  blurRadius: 8.0,
-                )
-              ],
-              border: Border.all(
-                  color:
-                      vendorBgColor == Colors.white ? Theme.of(context).highlightColor : Colors.transparent,
-                  style: BorderStyle.solid,
-                  width: 1.0),
-              borderRadius: BorderRadius.circular(14.0)),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: _buildLogo(vendorLogo, vendorTextColor),
+            return promptError(
+              context,
+              texts.lnurl_webview_error_title,
+              Text(err.toString()),
+              okFunc: () => Navigator.of(context).pop(),
+            );
+          } finally {
+            if (loaderRoute.isActive) {
+              navigator.removeRoute(loaderRoute);
+            }
+          }
+          return;
+        }
+
+        // non iOS
+        Navigator.push(
+          context,
+          FadeInRoute(
+            builder: (_) => (_vendor.endpointURI != null)
+                ? LNURLWebViewPage(vendorModel: _vendor)
+                : VendorWebViewPage(_vendor.url, _vendor.displayName),
           ),
-        ));
+        );
+      },
+      child: Container(
+        margin: const EdgeInsets.fromLTRB(32.0, 8.0, 32.0, 8.0),
+        constraints: const BoxConstraints.expand(),
+        decoration: BoxDecoration(
+          color: vendorBgColor,
+          boxShadow: [
+            BoxShadow(
+              color: theme.BreezColors.grey[600],
+              blurRadius: 8.0,
+            )
+          ],
+          border: Border.all(
+            color: vendorBgColor == Colors.white ? Theme.of(context).highlightColor : Colors.transparent,
+            style: BorderStyle.solid,
+            width: 1.0,
+          ),
+          borderRadius: BorderRadius.circular(14.0),
+        ),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: _buildLogo(vendorLogo, vendorTextColor),
+        ),
+      ),
+    );
 
     return vendorCard;
   }

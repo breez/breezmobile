@@ -1,5 +1,3 @@
-import 'package:breez/bloc/account/account_bloc.dart';
-import 'package:breez/bloc/lnurl/lnurl_bloc.dart';
 import 'package:breez/bloc/marketplace/vendor_model.dart';
 import 'package:breez/routes/marketplace/vendor_webview.dart';
 import 'package:breez/widgets/error_dialog.dart';
@@ -10,20 +8,9 @@ import 'package:flutter/material.dart';
 import 'lnurl_auth.dart';
 
 class LNURLWebViewPage extends StatefulWidget {
-  final AccountBloc accountBloc;
   final VendorModel vendorModel;
-  final LNUrlBloc lnurlBloc;
-  final Uri endpointURI;
-  final String responseID;
 
-  const LNURLWebViewPage({
-    Key key,
-    this.accountBloc,
-    this.vendorModel,
-    this.lnurlBloc,
-    this.endpointURI,
-    this.responseID,
-  }) : super(key: key);
+  const LNURLWebViewPage({Key key, this.vendorModel}) : super(key: key);
 
   @override
   State<StatefulWidget> createState() {
@@ -38,8 +25,7 @@ class LNURLWebViewPageState extends State<LNURLWebViewPage> {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      handleLNUrlAuth(widget.vendorModel, widget.lnurlBloc, widget.responseID)
-          .then((jwt) {
+      handleLNUrlAuth(context, vendor: widget.vendorModel).then((jwt) {
         if (mounted) {
           setState(() => jwtToken = jwt);
         }
@@ -81,7 +67,6 @@ class LNURLWebViewPageState extends State<LNURLWebViewPage> {
     }
 
     return VendorWebViewPage(
-      widget.accountBloc,
       "${widget.vendorModel.url}?token=$jwtToken",
       widget.vendorModel.displayName,
     );
