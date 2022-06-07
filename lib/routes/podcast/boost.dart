@@ -295,14 +295,16 @@ class BoostWidget extends StatelessWidget {
     int amount, [
     String message,
   ]) {
+    print("MORITZ: _boost");
     final texts = AppLocalizations.of(context);
-    if (acc.balance.toInt() <= amount) {
+    if (acc.balance.toInt() > amount) {
       showFlushbar(
         context,
         message: texts.podcast_boost_not_enough_founds,
       );
     } else {
       _setBoostAmount(userBloc, amount);
+      print("MORITZ: onBoost" + amount.toString());
       onBoost(
         amount,
         boostMessage: message,

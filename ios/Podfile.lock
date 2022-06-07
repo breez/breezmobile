@@ -68,7 +68,7 @@ PODS:
     - Firebase/Database (= 8.15.0)
     - firebase_core
     - Flutter
-  - firebase_dynamic_links (4.2.3):
+  - firebase_dynamic_links (4.2.4):
     - Firebase/DynamicLinks (= 8.15.0)
     - firebase_core
     - Flutter
@@ -111,7 +111,7 @@ PODS:
     - Flutter
   - flutter_secure_storage (3.3.1):
     - Flutter
-  - flutter_web_browser (0.16.0):
+  - flutter_web_browser (0.17.1):
     - Flutter
   - FMDB (2.7.5):
     - FMDB/standard (= 2.7.5)
@@ -164,6 +164,8 @@ PODS:
   - nanopb/decode (2.30908.0)
   - nanopb/encode (2.30908.0)
   - nfc_in_flutter (1.0.0):
+    - Flutter
+  - nfc_manager (0.0.1):
     - Flutter
   - package_info_plus (0.4.5):
     - Flutter
@@ -224,6 +226,7 @@ DEPENDENCIES:
   - local_auth (from `.symlinks/plugins/local_auth/ios`)
   - md5_file_checksum (from `.symlinks/plugins/md5_file_checksum/ios`)
   - nfc_in_flutter (from `.symlinks/plugins/nfc_in_flutter/ios`)
+  - nfc_manager (from `.symlinks/plugins/nfc_manager/ios`)
   - package_info_plus (from `.symlinks/plugins/package_info_plus/ios`)
   - path_provider_ios (from `.symlinks/plugins/path_provider_ios/ios`)
   - permission_handler (from `.symlinks/plugins/permission_handler/ios`)
@@ -308,6 +311,8 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/md5_file_checksum/ios"
   nfc_in_flutter:
     :path: ".symlinks/plugins/nfc_in_flutter/ios"
+  nfc_manager:
+    :path: ".symlinks/plugins/nfc_manager/ios"
   package_info_plus:
     :path: ".symlinks/plugins/package_info_plus/ios"
   path_provider_ios:
@@ -348,7 +353,7 @@ SPEC CHECKSUMS:
   Firebase: 5f8193dff4b5b7c5d5ef72ae54bb76c08e2b841d
   firebase_core: aa1b92020533f5c23955e388c347c58fd64f8627
   firebase_database: 73ae636e5f5b5ebdc7e216738c5dab6514662025
-  firebase_dynamic_links: 7263ea02f9eb9af202173d2ec093120340e38677
+  firebase_dynamic_links: 790cda523fe03b97956fb3e60d1d3628264dc7aa
   firebase_messaging: 8957bf304b47daf8bf12d0b111fdecc5b33e77a3
   FirebaseCore: 5743c5785c074a794d35f2fff7ecc254a91e08b1
   FirebaseCoreDiagnostics: 92e07a649aeb66352b319d43bdd2ee3942af84cb
@@ -360,7 +365,7 @@ SPEC CHECKSUMS:
   flutter_downloader: 058b9c41564a90500f67f3e432e3524613a7fd83
   flutter_keyboard_visibility: 0339d06371254c3eb25eeb90ba8d17dca8f9c069
   flutter_secure_storage: 7953c38a04c3fdbb00571bcd87d8e3b5ceb9daec
-  flutter_web_browser: abce1ddf6071fe237f7b41bc9e05bb0d9f313ba0
+  flutter_web_browser: 7bccaafbb0c5b8862afe7bcd158f15557109f61f
   FMDB: 2ce00b547f966261cd18927a3ddb07cb6f3db82a
   GoogleDataTransport: 5fffe35792f8b96ec8d6775f5eccd83c998d5a3b
   GoogleSignIn: c90b5bec45e780f54c6a8e1e3c182a86e3dda69d
@@ -376,6 +381,7 @@ SPEC CHECKSUMS:
   MTBBarcodeScanner: f453b33c4b7dfe545d8c6484ed744d55671788cb
   nanopb: a0ba3315591a9ae0a16a309ee504766e90db0c96
   nfc_in_flutter: c656fbfb1ec5b9d021da87b0c87629d62fd5264d
+  nfc_manager: 69e4cd9c15112206ab30246b1ce8d81a75729fdf
   package_info_plus: 6c92f08e1f853dc01228d6f553146438dafcd14e
   path_provider_ios: 14f3d2fd28c4fdb42f44e0f751d12861c43cee02
   permission_handler: ccb20a9fad0ee9b1314a52b70b76b473c5f8dab0
@@ -397,4 +403,4 @@ SPEC CHECKSUMS:
 
 PODFILE CHECKSUM: 3ddfa1653e4c181f0b9007d5106846f345ac219d
 
-COCOAPODS: 1.11.2
+COCOAPODS: 1.11.3

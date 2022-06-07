@@ -759,7 +759,7 @@ class BreezBridge {
 
   Future _invokeMethodWhenReady(String methodName, [dynamic arguments]) {
     if (methodName != "log") {
-      logger.log.info("before invoking method $methodName");
+      //logger.log.info("before invoking method $methodName");
     }
     return _readyCompleter.future.then((completed) {
       return _methodChannel

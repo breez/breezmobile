@@ -124,6 +124,7 @@ class BoostMessageDialogState extends State<BoostMessageDialog> {
       actions.add(
         TextButton(
           onPressed: () {
+            print("MORITZ: onPressed");
             if (_amountKey.currentState?.validate() ?? false) {
               Navigator.pop(context);
               widget.setBoost(

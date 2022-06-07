@@ -47,7 +47,7 @@ bool isLightningAddressURI(String uri) {
 
 parseLightningAddress(String uri) {
   // Ref. https://github.com/andrerfneves/lightning-address/blob/master/DIY.md
-  print('parseLightningAddress: given "$uri"');
+  //print('parseLightningAddress: given "$uri"');
 
   String result;
   if (uri != null && uri.isNotEmpty) {
@@ -61,7 +61,7 @@ parseLightningAddress(String uri) {
     if (!EmailValidator.validate(result)) {
       result = null;
     }
-    print('parseLightningAddress: got "$result"');
+    //print('parseLightningAddress: got "$result"');
   }
   return result;
 }
