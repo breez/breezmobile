@@ -358,11 +358,10 @@ class _TotalSaleCharge extends StatelessWidget {
     final totalAmountInFiat = currentSale.totalAmountInFiat;
 
     final satCurrency = CurrencyWrapper.fromBTC(Currency.SAT);
-    final satMessage = satCurrency.format(
+    final satMessage = (satCurrency.format(
       totalAmountInSats,
       removeTrailingZeros: true,
-      includeDisplayName: true,
-    ).toUpperCase();
+    ) + " " + satCurrency.shortName).toUpperCase();
 
     if (totalAmountInFiat.length == 1) {
       final currency = totalAmountInFiat.entries.first.key;

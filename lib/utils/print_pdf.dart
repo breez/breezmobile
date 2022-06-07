@@ -204,7 +204,7 @@ class PrintService {
         final fiatTotalMsg = saleCurrency.format(
           total,
           removeTrailingZeros: true,
-          includeCurrencySymbol: true,
+          includeDisplayName: true,
         );
         totalMsg = "$totalMsg ($fiatTotalMsg)";
       }
@@ -256,14 +256,14 @@ class PrintService {
             ? [
                 pw.Text(
                   (addParenthesis ? "(" : "") +
-                      "${saleCurrency.format(amount, removeTrailingZeros: true, includeCurrencySymbol: false)} ",
+                      "${_buildPriceValue(saleCurrency, amount)} ",
                   style: pw.TextStyle(
                     font: pw.Font.ttf(fontMap["ltr"]),
                     fontSize: 12.3,
                   ),
                 ),
                 pw.Text(
-                  "${saleCurrency.symbol}",
+                  "${saleCurrency.shortName}",
                   textDirection: pw.TextDirection.rtl,
                   textAlign: pw.TextAlign.right,
                   style: pw.TextStyle(
@@ -282,7 +282,7 @@ class PrintService {
             : [
                 pw.Text(
                   (addParenthesis ? "(" : "") +
-                      "${saleCurrency.format(amount, removeTrailingZeros: true, includeCurrencySymbol: true)}" +
+                      "${_buildPriceValue(saleCurrency, amount)}" +
                       (addParenthesis ? ")" : ""),
                   textDirection: saleCurrency.rtl
                       ? pw.TextDirection.rtl
@@ -296,6 +296,18 @@ class PrintService {
                 ),
               ],
       ),
+    );
+  }
+
+  String _buildPriceValue(CurrencyWrapper saleCurrency, double amount) {
+    if (saleCurrency.shortName == _satCurrency.shortName) {
+      final value = _satCurrency.format(amount, removeTrailingZeros: true);
+      return "$value ${_satCurrency.shortName}";
+    }
+    return saleCurrency.format(
+      amount,
+      removeTrailingZeros: true,
+      includeDisplayName: true,
     );
   }
 
