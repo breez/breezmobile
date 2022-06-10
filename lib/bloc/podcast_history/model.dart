@@ -1,10 +1,13 @@
 import 'dart:convert';
 
-const _kPodcastHistoryTimeRangeDaily = 1;
-const _kPodcastHistoryTimeRangeWeekly = 2;
-const _kPodcastHistoryTimeRangeMonthly = 3;
-const _kPodcastHistoryTimeRangeYearly = 4;
-const _kPodcastHistoryTimeRangeAllTime = 5;
+const _podcastHistoryTimeRangeDaily = 1;
+const _podcastHistoryTimeRangeWeekly = 2;
+const _podcastHistoryTimeRangeMonthly = 3;
+const _podcastHistoryTimeRangeYearly = 4;
+const _podcastHistoryTimeRangeAllTime = 5;
+
+// A const year for filtering on "All Time"
+const _allTimeRangeYear = 2015;
 
 abstract class PodcastHistoryTimeRange {
   final DateTime startDate;
@@ -32,15 +35,15 @@ abstract class PodcastHistoryTimeRange {
     final type = jsonMap["type"] ?? 0;
 
     switch (type) {
-      case _kPodcastHistoryTimeRangeDaily:
+      case _podcastHistoryTimeRangeDaily:
         return PodcastHistoryTimeRangeDaily();
-      case _kPodcastHistoryTimeRangeWeekly:
+      case _podcastHistoryTimeRangeWeekly:
         return PodcastHistoryTimeRangeWeekly();
-      case _kPodcastHistoryTimeRangeMonthly:
+      case _podcastHistoryTimeRangeMonthly:
         return PodcastHistoryTimeRangeMonthly();
-      case _kPodcastHistoryTimeRangeYearly:
+      case _podcastHistoryTimeRangeYearly:
         return PodcastHistoryTimeRange.yearly();
-      case _kPodcastHistoryTimeRangeAllTime:
+      case _podcastHistoryTimeRangeAllTime:
         return PodcastHistoryTimeRange.allTime();
       default:
         return PodcastHistoryTimeRangeDaily();
@@ -79,7 +82,7 @@ class PodcastHistoryTimeRangeDaily extends PodcastHistoryTimeRange {
         );
 
   @override
-  int _type() => _kPodcastHistoryTimeRangeDaily;
+  int _type() => _podcastHistoryTimeRangeDaily;
 }
 
 class PodcastHistoryTimeRangeWeekly extends PodcastHistoryTimeRange {
@@ -97,7 +100,7 @@ class PodcastHistoryTimeRangeWeekly extends PodcastHistoryTimeRange {
         );
 
   @override
-  int _type() => _kPodcastHistoryTimeRangeWeekly;
+  int _type() => _podcastHistoryTimeRangeWeekly;
 }
 
 class PodcastHistoryTimeRangeMonthly extends PodcastHistoryTimeRange {
@@ -115,7 +118,7 @@ class PodcastHistoryTimeRangeMonthly extends PodcastHistoryTimeRange {
         );
 
   @override
-  int _type() => _kPodcastHistoryTimeRangeMonthly;
+  int _type() => _podcastHistoryTimeRangeMonthly;
 }
 
 class PodcastHistoryTimeRangeYearly extends PodcastHistoryTimeRange {
@@ -133,14 +136,14 @@ class PodcastHistoryTimeRangeYearly extends PodcastHistoryTimeRange {
         );
 
   @override
-  int _type() => _kPodcastHistoryTimeRangeYearly;
+  int _type() => _podcastHistoryTimeRangeYearly;
 }
 
 class PodcastHistoryTimeRangeAllTime extends PodcastHistoryTimeRange {
   PodcastHistoryTimeRangeAllTime()
       : super._(
           DateTime(
-            2015,
+            _allTimeRangeYear,
             DateTime.now().month,
             1,
             0,
@@ -151,7 +154,7 @@ class PodcastHistoryTimeRangeAllTime extends PodcastHistoryTimeRange {
         );
 
   @override
-  int _type() => _kPodcastHistoryTimeRangeAllTime;
+  int _type() => _podcastHistoryTimeRangeAllTime;
 }
 
 class PodcastHistorySummationValues {
@@ -170,13 +173,7 @@ const _podcastHistorySortDurationDescending = 'SORT_DURATION_DESCENDING';
 const _podcastHistorySortSatsDescending = 'SORT_SATS_DESCENDING';
 
 abstract class PodcastHistorySortOptions {
-  final String title;
-  bool isSelected;
-
-  PodcastHistorySortOptions._(
-    this.title,
-    this.isSelected,
-  );
+  PodcastHistorySortOptions();
 
   String _type();
 
@@ -208,41 +205,21 @@ abstract class PodcastHistorySortOptions {
   String toJson() {
     return json.encode({
       "type": _type(),
-      "title": title,
-      "isSelected": isSelected,
     });
   }
 }
 
 class PodcastHistorySortRecentlyHeard extends PodcastHistorySortOptions {
-  PodcastHistorySortRecentlyHeard()
-      : super._(
-          "Recent First",
-          false,
-        );
-
   @override
   String _type() => _podcastHistorySortRecentlyAdded;
 }
 
 class PodcastHistorySortDurationDescending extends PodcastHistorySortOptions {
-  PodcastHistorySortDurationDescending()
-      : super._(
-          "Most Listened First",
-          false,
-        );
-
   @override
   String _type() => _podcastHistorySortDurationDescending;
 }
 
 class PodcastHistorySortSatsDescendings extends PodcastHistorySortOptions {
-  PodcastHistorySortSatsDescendings()
-      : super._(
-          "Higest sats Streamed First",
-          false,
-        );
-
   @override
   String _type() => _podcastHistorySortSatsDescending;
 }
