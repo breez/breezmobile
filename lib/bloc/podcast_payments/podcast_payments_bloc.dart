@@ -16,10 +16,12 @@ import 'package:breez/logger.dart';
 import 'package:breez/services/breezlib/breez_bridge.dart';
 import 'package:breez/services/injector.dart';
 import 'package:fixnum/fixnum.dart';
-
+import '../podcast_history/sqflite/podcast_history_database.dart';
+import '../podcast_history/sqflite/podcast_history_model.dart';
 import 'aggregated_payments.dart';
 
 const maxFeePart = 0.2;
+const updatePodcastHistoryFrequencyInSeconds = 5;
 
 class PodcastPaymentsBloc with AsyncActionsHandler {
   final _listeningTime = Map<String, double>();
@@ -109,6 +111,17 @@ class PodcastPaymentsBloc with AsyncActionsHandler {
       final nextPaidMinutes = Duration(
               seconds: _listeningTime[currentPlayedEpisode.contentUrl].floor())
           .inMinutes;
+
+      if (_listeningTime[currentPlayedEpisode.contentUrl].floor() %
+              updatePodcastHistoryFrequencyInSeconds ==
+          0) {
+        _addToPodcastHistory(
+            podcastId: currentPlayedEpisode.metadata["feed"]["id"].toString(),
+            podcastName: currentPlayedEpisode.metadata["feed"]["title"],
+            podcastImageUrl: currentPlayedEpisode.metadata["feed"]["image"],
+            satsSpent: 0,
+            durationInMins: updatePodcastHistoryFrequencyInSeconds / 60);
+      }
 
       // if minutes increased
       print("nextPaidMinutes = " +
@@ -229,14 +242,14 @@ class PodcastPaymentsBloc with AsyncActionsHandler {
                 groupKey: _getPodcastGroupKey(episode),
                 groupName: episode.title,
                 tlv: _getTlv(
-                    boost: boost,
-                    episode: episode,
-                    position: position,
-                    customKey: customKey,
-                    customValue: customValue,
-                    boostMessage: boostMessage,
-                    msatTotal: total * 1000,
-                    senderName: senderName,
+                  boost: boost,
+                  episode: episode,
+                  position: position,
+                  customKey: customKey,
+                  customValue: customValue,
+                  boostMessage: boostMessage,
+                  msatTotal: total * 1000,
+                  senderName: senderName,
                 ))
             .then((payResponse) async {
           if (payResponse.paymentError?.isNotEmpty == true) {
@@ -249,6 +262,15 @@ class PodcastPaymentsBloc with AsyncActionsHandler {
             return;
           }
           log.info("succesfully paid $netPay to destination ${d.address}");
+
+          _addToPodcastHistory(
+              podcastId: episode.metadata["feed"]["id"],
+              podcastName: episode.metadata["feed"]["title"],
+              podcastImageUrl: episode.metadata["feed"]["image"],
+              satsSpent: total,
+              durationInMins: 0,
+              isBoost: boost);
+
           if (!boost) {
             _paymentEventsController
                 .add(PaymentEvent(PaymentEventType.StreamCompleted, payPart));
@@ -334,6 +356,27 @@ class PodcastPaymentsBloc with AsyncActionsHandler {
         .map(((pi) => pi.fee))
         .first
         .timeout(Duration(seconds: 1), onTimeout: () => Int64.ZERO);
+  }
+
+  /// Saves the podcast data to local storage.
+  /// If a boostagram is sent then the number of boostagram is incremented
+  Future _addToPodcastHistory(
+      {String podcastId,
+      String podcastName,
+      String podcastImageUrl,
+      int satsSpent,
+      double durationInMins,
+      bool isBoost = false}) async {
+    final podcastHistoryItem = PodcastHistoryModel(
+        podcastId: podcastId,
+        timeStamp: DateTime.now(),
+        satsSpent: satsSpent,
+        boostagramsSent: isBoost ? 1 : 0,
+        podcastName: podcastName,
+        durationInMins: durationInMins ?? 0,
+        podcastImageUrl: podcastImageUrl);
+
+    await PodcastHistoryDatabase.instance.create(podcastHistoryItem);
   }
 
   Map<Int64, String> _getTlv({
