@@ -73,7 +73,7 @@ class PodcastHistoryPageState extends State<PodcastHistoryPage> {
         automaticallyImplyLeading: false,
         leading: backBtn.BackButton(),
         title: Text(
-          _getAppBarDisplayString(timeRange),
+          _getAppBarDisplayString(timeRange, context),
           style: themeData.appBarTheme.textTheme.headline6,
         ),
         elevation: 0.0,
@@ -119,7 +119,7 @@ class PodcastHistoryPageState extends State<PodcastHistoryPage> {
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
                                     Text(
-                                      "My ${_getAppBarDisplayString(timeRange)}",
+                                      "My ${_getAppBarDisplayString(timeRange, context)}",
                                       style: themeData
                                           .appBarTheme.textTheme.headline6,
                                     ),
@@ -143,7 +143,9 @@ class PodcastHistoryPageState extends State<PodcastHistoryPage> {
                         final imagePath =
                             await File('${directory.path}/image.jpg').create();
                         await imagePath.writeAsBytes(image);
-                        await Share.shareFiles([imagePath.path], text: "HELLO");
+                        await Share.shareFiles([imagePath.path],
+                            text: AppLocalizations.of(context)
+                                .podcast_history_share_message);
 
                         // await ShareExtend.share(imagePath.path, "image");
                       }
@@ -153,7 +155,8 @@ class PodcastHistoryPageState extends State<PodcastHistoryPage> {
                     Icons.share,
                     color: Theme.of(context).canvasColor,
                   ),
-                  label: Text("SHARE"),
+                  label: Text(
+                      AppLocalizations.of(context).podcast_history_share_text),
                 )
               : SizedBox();
         },
@@ -184,13 +187,15 @@ class PodcastHistoryPageState extends State<PodcastHistoryPage> {
                                           .totalDurationInMinsSum)["value"]),
                               _PodcastStatItem(
                                 svg: "src/icon/satoshi_icon.svg",
-                                label: 'sats streamed',
+                                label: AppLocalizations.of(context)
+                                    .podcast_history_sats_streamed,
                                 value: _getCompactNumber(
                                     snapshot.data.totalSatsStreamedSum),
                               ),
                               _PodcastStatItem(
                                 svg: "src/icon/rocket_launch_icon.svg",
-                                label: 'boostagrams sent',
+                                label: AppLocalizations.of(context)
+                                    .podcast_history_boostagrams_sent,
                                 value: _getCompactNumber(
                                     snapshot.data.totalBoostagramSentSum),
                               ),
@@ -282,7 +287,7 @@ Widget _getPodcastHistoryList(
     bool getScreenshotWidget,
     PodcastHistoryTimeRange timeRange}) {
   final podcastHistoryBloc = AppBlocsProvider.of<PodcastHistoryBloc>(context);
-
+  final texts = AppLocalizations.of(context);
   return StreamBuilder(
       stream: podcastHistoryBloc.podcastHistoryList,
       builder: (context, podcastHistoryListSnapshot) {
@@ -296,7 +301,7 @@ Widget _getPodcastHistoryList(
                       height: 40,
                     ),
                     Text(
-                      "Its empty here for",
+                      texts.podcast_history_empty_list_title,
                       style:
                           Theme.of(context).primaryTextTheme.headline3.copyWith(
                                 fontSize: 20,
@@ -308,7 +313,7 @@ Widget _getPodcastHistoryList(
                       height: 8,
                     ),
                     Text(
-                      '"${_getAppBarDisplayString(timeRange)}"',
+                      '"${_getAppBarDisplayString(timeRange, context)}"',
                       style:
                           Theme.of(context).primaryTextTheme.headline3.copyWith(
                                 fontSize: 16,
@@ -318,14 +323,13 @@ Widget _getPodcastHistoryList(
                     ),
                     Padding(
                       padding: const EdgeInsets.only(top: 16, bottom: 40),
-                      child: Text(
-                          "Listen Podcast on Breez to see your podcast history."),
+                      child: Text(texts.podcast_history_empty_list_subtitle),
                     ),
                     ElevatedButton(
                         onPressed: () {
                           Navigator.of(context).pop();
                         },
-                        child: Text("OPEN PODCASTS"))
+                        child: Text(texts.podcast_history_open_podcast_button))
                   ],
                 ),
               ),
@@ -368,18 +372,20 @@ Widget _getPodcastHistoryList(
 
 String _getAppBarDisplayString(
   PodcastHistoryTimeRange timeRange,
+  BuildContext context,
 ) {
+  final texts = AppLocalizations.of(context);
   String title;
   if (timeRange is PodcastHistoryTimeRangeDaily) {
-    title = "Top Daily Podcasts";
+    title = texts.podcast_history_appbar_top_daily;
   } else if (timeRange is PodcastHistoryTimeRangeWeekly) {
-    title = "Top Weekly Podcasts";
+    title = texts.podcast_history_appbar_top_weekly;
   } else if (timeRange is PodcastHistoryTimeRangeMonthly) {
-    title = "Top Monthly Podcasts";
+    title = texts.podcast_history_appbar_top_monthly;
   } else if (timeRange is PodcastHistoryTimeRangeYearly) {
-    title = "Top Yearly Podcasts";
+    title = texts.podcast_history_appbar_top_yearly;
   } else if (timeRange is PodcastHistoryTimeRangeAllTime) {
-    title = "Top Podcasts All Time";
+    title = texts.podcast_history_appbar_top_alltime;
   } else {
     title = "";
   }
@@ -395,15 +401,15 @@ PopupMenuEntry<PodcastHistoryTimeRange> _timeRangeDropdownItem(
 
   String title;
   if (timeRange is PodcastHistoryTimeRangeDaily) {
-    title = "Today";
+    title = texts.podcast_history_timerange_dropdown_today;
   } else if (timeRange is PodcastHistoryTimeRangeWeekly) {
-    title = "This Week";
+    title = texts.podcast_history_timerange_dropdown_week;
   } else if (timeRange is PodcastHistoryTimeRangeMonthly) {
-    title = "This Month";
+    title = texts.podcast_history_timerange_dropdown_month;
   } else if (timeRange is PodcastHistoryTimeRangeYearly) {
-    title = "This Year";
+    title = texts.podcast_history_timerange_dropdown_year;
   } else if (timeRange is PodcastHistoryTimeRangeAllTime) {
-    title = "All Time";
+    title = texts.podcast_history_timerange_dropdown_alltime;
   } else {
     title = "";
   }
@@ -425,14 +431,15 @@ PopupMenuEntry<PodcastHistorySortOptions> _listSortDropdownItem(
   PodcastHistorySortOptions sortOption,
 ) {
   final themeData = Theme.of(context);
+  final texts = AppLocalizations.of(context);
 
   String title;
   if (sortOption is PodcastHistorySortRecentlyHeard) {
-    title = "Recent First";
+    title = texts.podcast_history_sort_dropdown_recent;
   } else if (sortOption is PodcastHistorySortDurationDescending) {
-    title = "Most Listened First";
+    title = texts.podcast_history_sort_dropdown_duration;
   } else if (sortOption is PodcastHistorySortSatsDescendings) {
-    title = "Highest sats Streamed First";
+    title = texts.podcast_history_sort_dropdown_sats;
   } else {
     title = "";
   }
@@ -627,22 +634,7 @@ String _podcastListingTimeString(
   return "${podcastListeningTimeMap["value"]} ${podcastListeningTimeMap["unit"]}";
 }
 
+//Converts the number into compact form (1000 to 1K)
 String _getCompactNumber(num number) {
   return NumberFormat.compact().format(number);
-}
-
-class DummyPodcastHistoryDataModel {
-  final String title;
-  final String sats;
-  final String boostagrams;
-  final String duration;
-  final String imageUrl;
-
-  DummyPodcastHistoryDataModel({
-    this.title,
-    this.sats,
-    this.boostagrams,
-    this.duration,
-    this.imageUrl,
-  });
 }

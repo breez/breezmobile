@@ -460,7 +460,7 @@ class HomeState extends State<Home> with WidgetsBindingObserver {
             [
               DrawerItemConfig(
                 "/podcast_history",
-                "Podcast History",
+                texts.podcast_history_drawer,
                 "src/icon/podcast.png",
               ),
             ],
