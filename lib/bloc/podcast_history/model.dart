@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:breez/bloc/podcast_history/sqflite/podcast_history_model.dart';
 
 const _podcastHistoryTimeRangeDaily = 1;
 const _podcastHistoryTimeRangeWeekly = 2;
@@ -157,15 +158,17 @@ class PodcastHistoryTimeRangeAllTime extends PodcastHistoryTimeRange {
   int _type() => _podcastHistoryTimeRangeAllTime;
 }
 
-class PodcastHistorySummationValues {
+class PodcastHistoryRecord {
   final int totalSatsStreamedSum;
   final int totalBoostagramSentSum;
   final double totalDurationInMinsSum;
+  List<PodcastHistoryModel> podcastHistoryList;
 
-  PodcastHistorySummationValues(
+  PodcastHistoryRecord(
       {this.totalSatsStreamedSum,
       this.totalBoostagramSentSum,
-      this.totalDurationInMinsSum});
+      this.totalDurationInMinsSum,
+      this.podcastHistoryList});
 }
 
 abstract class PodcastHistorySortOptions {

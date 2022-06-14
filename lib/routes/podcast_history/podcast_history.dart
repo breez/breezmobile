@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:io';
+import 'dart:math';
 import 'dart:typed_data';
 import 'package:breez/bloc/podcast_history/model.dart';
 import 'package:breez/theme_data.dart' as theme;
@@ -167,9 +168,9 @@ class PodcastHistoryPageState extends State<PodcastHistoryPage> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              StreamBuilder<PodcastHistorySummationValues>(
-                  stream: podcastHistoryBloc.podcastHistorySumValues,
-                  initialData: PodcastHistorySummationValues(
+              StreamBuilder<PodcastHistoryRecord>(
+                  stream: podcastHistoryBloc.podcastHistoryRecord,
+                  initialData: PodcastHistoryRecord(
                       totalDurationInMinsSum: 0,
                       totalBoostagramSentSum: 0,
                       totalSatsStreamedSum: 0),
@@ -285,11 +286,11 @@ Widget _getPodcastHistoryList(
     PodcastHistoryTimeRange timeRange}) {
   final podcastHistoryBloc = AppBlocsProvider.of<PodcastHistoryBloc>(context);
   final texts = AppLocalizations.of(context);
-  return StreamBuilder(
-      stream: podcastHistoryBloc.podcastHistoryList,
+  return StreamBuilder<PodcastHistoryRecord>(
+      stream: podcastHistoryBloc.podcastHistoryRecord,
       builder: (context, podcastHistoryListSnapshot) {
         if (podcastHistoryListSnapshot.data != null) {
-          if (podcastHistoryListSnapshot.data.isEmpty) {
+          if (podcastHistoryListSnapshot.data.podcastHistoryList.isEmpty) {
             return Center(
               child: Container(
                 child: Column(
@@ -335,11 +336,14 @@ Widget _getPodcastHistoryList(
             //This enables sharing of upto 5 podcasts
             int podcastHistoryLength = 0;
             if (getScreenshotWidget) {
-              podcastHistoryLength = podcastHistoryListSnapshot.data.length <= 5
-                  ? podcastHistoryListSnapshot.data.length
-                  : 5;
+              podcastHistoryLength =
+                  podcastHistoryListSnapshot.data.podcastHistoryList.length <= 5
+                      ? podcastHistoryListSnapshot
+                          .data.podcastHistoryList.length
+                      : 5;
             } else {
-              podcastHistoryLength = podcastHistoryListSnapshot.data.length;
+              podcastHistoryLength =
+                  podcastHistoryListSnapshot.data.podcastHistoryList.length;
             }
 
             return Column(
@@ -348,15 +352,17 @@ Widget _getPodcastHistoryList(
                   Padding(
                     padding: const EdgeInsets.only(bottom: 12),
                     child: _PodcastListTile(
-                        title: podcastHistoryListSnapshot.data[i].podcastName,
-                        sats: _getCompactNumber(
-                            podcastHistoryListSnapshot.data[i].satsSpent),
+                        title: podcastHistoryListSnapshot
+                            .data.podcastHistoryList[i].podcastName,
+                        sats: _getCompactNumber(podcastHistoryListSnapshot
+                            .data.podcastHistoryList[i].satsSpent),
                         boostagrams: _getCompactNumber(
-                            podcastHistoryListSnapshot.data[i].boostagramsSent),
-                        durationInMins:
-                            podcastHistoryListSnapshot.data[i].durationInMins,
-                        imageUrl:
-                            podcastHistoryListSnapshot.data[i].podcastImageUrl),
+                            podcastHistoryListSnapshot
+                                .data.podcastHistoryList[i].boostagramsSent),
+                        durationInMins: podcastHistoryListSnapshot
+                            .data.podcastHistoryList[i].durationInMins,
+                        imageUrl: podcastHistoryListSnapshot
+                            .data.podcastHistoryList[i].podcastImageUrl),
                   ),
               ],
             );
@@ -615,14 +621,18 @@ class _PodcastListTile extends StatelessWidget {
 }
 
 Map<String, String> _podcastListingTimeMap({double durationInMins}) {
-  durationInMins = num.parse(durationInMins.toStringAsFixed(1));
-
   if (durationInMins < 1) {
-    return {"value": "${durationInMins * 60}", "unit": "secs"};
+    return {
+      "value": "${_truncateDecimals(durationInMins * 60, 2)}",
+      "unit": "secs"
+    };
   } else if (durationInMins >= 60) {
-    return {"value": "${durationInMins / 60}", "unit": "hours"};
+    return {
+      "value": "${_truncateDecimals(durationInMins / 60, 2)}",
+      "unit": "hours"
+    };
   } else {
-    return {"value": "$durationInMins", "unit": "mins"};
+    return {"value": "${_truncateDecimals(durationInMins, 2)}", "unit": "mins"};
   }
 }
 
@@ -635,3 +645,6 @@ String _podcastListingTimeString(
 String _getCompactNumber(num number) {
   return NumberFormat.compact().format(number);
 }
+
+num _truncateDecimals(num number, int decimalPlaces) =>
+    (number * pow(10, decimalPlaces)).truncate() / pow(10, decimalPlaces);

@@ -3,7 +3,6 @@ import 'package:breez/bloc/podcast_history/actions.dart';
 import 'package:breez/bloc/podcast_history/model.dart';
 import 'package:breez/bloc/podcast_history/sqflite/podcast_history_database.dart';
 import 'package:breez/bloc/podcast_history/sqflite/podcast_history_model.dart';
-import 'package:collection/collection.dart';
 import 'package:rxdart/rxdart.dart';
 import '../../services/injector.dart';
 
@@ -18,17 +17,17 @@ class PodcastHistoryBloc with AsyncActionsHandler {
 
   Stream<bool> get showShareButton => _showShareButton.stream;
 
-  final BehaviorSubject<PodcastHistorySummationValues>
-      _podcastHistorySumValues = BehaviorSubject();
+  final BehaviorSubject<PodcastHistoryRecord>
+      _podcastHistoryRecordBehaviourSubject = BehaviorSubject();
 
-  Stream<PodcastHistorySummationValues> get podcastHistorySumValues =>
-      _podcastHistorySumValues.stream;
+  Stream<PodcastHistoryRecord> get podcastHistoryRecord =>
+      _podcastHistoryRecordBehaviourSubject.stream;
 
-  final BehaviorSubject<List<PodcastHistoryModel>> _podcastHistoryList =
-      BehaviorSubject();
+  final BehaviorSubject<List<PodcastHistoryModel>>
+      _podcastHistoryListBehaviourSubject = BehaviorSubject();
 
   Stream<List<PodcastHistoryModel>> get podcastHistoryList =>
-      _podcastHistoryList.stream;
+      _podcastHistoryListBehaviourSubject.stream;
 
   final BehaviorSubject<PodcastHistorySortOptions> _podcastHistorySortOption =
       BehaviorSubject();
@@ -37,7 +36,11 @@ class PodcastHistoryBloc with AsyncActionsHandler {
       _podcastHistorySortOption.stream;
 
   //A buffer list comes in use while sorting
-  List<PodcastHistoryModel> bufferPodcastHistoryList = [];
+  PodcastHistoryRecord _podcastHistoryRecordBuffer = PodcastHistoryRecord(
+      totalBoostagramSentSum: 0,
+      totalDurationInMinsSum: 0,
+      totalSatsStreamedSum: 0,
+      podcastHistoryList: []);
 
   PodcastHistoryBloc() {
     registerAsyncHandlers({
@@ -107,12 +110,8 @@ class PodcastHistoryBloc with AsyncActionsHandler {
       DateTime endDate,
       PodcastHistorySortOptions sortOption}) async {
     _showShareButton.add(false);
-    var list = await PodcastHistoryDatabase.instance
+    var _podcastList = await PodcastHistoryDatabase.instance
         .readAllHistory(filterStartDate: startDate, filterEndDate: endDate);
-    List<PodcastHistoryModel> processedList = [];
-    final groups = groupBy(list, (PodcastHistoryModel e) {
-      return e.podcastId;
-    });
 
     ///These "total" values contains sum of the respective values present in history list.
     /// In UI these are displayed on top
@@ -120,56 +119,38 @@ class PodcastHistoryBloc with AsyncActionsHandler {
     int totalBoostagramSum = 0;
     double totalDurationSum = 0;
 
-    groups.forEach((key, value) {
-      int satsSum = 0;
-      int boostagramSum = 0;
-      double durationSum = 0;
-      String podcastName = value.first.podcastName;
-      String podcastImagUrl = value.first.podcastImageUrl;
-
-      value.forEach((element) {
-        satsSum = satsSum + element.satsSpent;
-        boostagramSum = boostagramSum + element.boostagramsSent;
-        durationSum = durationSum + element.durationInMins;
-      });
-      totalSatsSum = totalSatsSum + satsSum;
-      totalBoostagramSum = totalBoostagramSum + boostagramSum;
-      totalDurationSum = totalDurationSum + durationSum;
-      processedList.add(PodcastHistoryModel(
-          podcastId: key,
-          timeStamp: value.last.timeStamp,
-          podcastImageUrl: podcastImagUrl,
-          podcastName: podcastName,
-          satsSpent: satsSum,
-          boostagramsSent: boostagramSum,
-          durationInMins: durationSum));
+    _podcastList.forEach((element) {
+      totalDurationSum = totalDurationSum + element.durationInMins;
+      totalBoostagramSum = totalBoostagramSum + element.boostagramsSent;
+      totalSatsSum = totalSatsSum + element.satsSpent;
     });
 
-    bufferPodcastHistoryList.clear();
-
-    bufferPodcastHistoryList.addAll(processedList);
-    _podcastHistoryList.add(processedList);
+    _podcastHistoryListBehaviourSubject.add(_podcastList);
 
     PodcastHistorySortOptions sortOption =
         await _getPodcastHistorySortOptionFromPrefs();
     _sortList(sortOption);
 
-    _podcastHistorySumValues.add(PodcastHistorySummationValues(
+    PodcastHistoryRecord podcastHistoryRecord = PodcastHistoryRecord(
         totalSatsStreamedSum: totalSatsSum,
         totalBoostagramSentSum: totalBoostagramSum,
-        totalDurationInMinsSum: totalDurationSum));
+        totalDurationInMinsSum: totalDurationSum,
+        podcastHistoryList: _podcastList);
+    _podcastHistoryRecordBuffer = podcastHistoryRecord;
+
+    _podcastHistoryRecordBehaviourSubject.add(podcastHistoryRecord);
 
 //The share button will only be dislayed if the list is not empty
-    if (processedList.isNotEmpty) {
+    if (_podcastList.isNotEmpty) {
       _showShareButton.add(true);
     }
 
-    return processedList;
+    return _podcastList;
   }
 
   _sortList(PodcastHistorySortOptions sortOption) {
     List<PodcastHistoryModel> processedList = []
-      ..addAll(bufferPodcastHistoryList);
+      ..addAll(_podcastHistoryRecordBuffer.podcastHistoryList);
 
     if (sortOption != null) {
       if (sortOption is PodcastHistorySortDurationDescending) {
@@ -181,14 +162,21 @@ class PodcastHistoryBloc with AsyncActionsHandler {
         processedList.sort((a, b) => b.satsSpent.compareTo(a.satsSpent));
       }
     }
+    _podcastHistoryRecordBehaviourSubject.add(PodcastHistoryRecord(
+        totalBoostagramSentSum:
+            _podcastHistoryRecordBuffer.totalBoostagramSentSum,
+        totalSatsStreamedSum: _podcastHistoryRecordBuffer.totalSatsStreamedSum,
+        totalDurationInMinsSum:
+            _podcastHistoryRecordBuffer.totalDurationInMinsSum,
+        podcastHistoryList: processedList));
 
-    _podcastHistoryList.add(processedList);
+    _podcastHistoryListBehaviourSubject.add(processedList);
   }
 
   @override
   dispose() {
-    _podcastHistorySumValues.close();
-    _podcastHistoryList.close();
+    _podcastHistoryRecordBehaviourSubject.close();
+    _podcastHistoryListBehaviourSubject.close();
   }
 }
 

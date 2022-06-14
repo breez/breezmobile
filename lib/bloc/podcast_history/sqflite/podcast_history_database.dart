@@ -1,5 +1,8 @@
+import 'dart:developer';
+
 import 'package:breez/bloc/podcast_history/sqflite/podcast_history_model.dart';
 import 'package:sqflite/sqflite.dart';
+import '../../../logger.dart';
 import '../../pos_catalog/sqlite/db.dart';
 
 class PodcastHistoryDatabase {
@@ -53,14 +56,14 @@ ${PodcastHistoryFields.durationInMins} $doubleType
     final db = await instance.database;
     List<Map<String, Object>> result;
 
-    if (filterStartDate == null || filterEndDate == null) {
-      result = await db.query(
-        podcastHistoryTable,
-      );
-    } else {
-      result = await db.rawQuery(
-          ''' SELECT * FROM $podcastHistoryTable WHERE ${PodcastHistoryFields.timeStamp} >= '${filterStartDate.toIso8601String()}' AND ${PodcastHistoryFields.timeStamp}<='${filterEndDate.toIso8601String()}' ''');
-    }
+    result = await db.rawQuery('''
+
+ SELECT  ${PodcastHistoryFields.podcastId},${PodcastHistoryFields.podcastName},${PodcastHistoryFields.podcastImageUrl},SUM( ${PodcastHistoryFields.durationInMins} ) AS ${PodcastHistoryFields.durationInMins}, SUM( ${PodcastHistoryFields.satsSpent} ) AS ${PodcastHistoryFields.satsSpent} , SUM( ${PodcastHistoryFields.boostagramsSent} ) AS ${PodcastHistoryFields.boostagramsSent}  ,MAX( ${PodcastHistoryFields.timeStamp} ) AS ${PodcastHistoryFields.timeStamp} 
+ FROM $podcastHistoryTable 
+ WHERE ${PodcastHistoryFields.timeStamp} >= '${filterStartDate.toIso8601String()}' AND ${PodcastHistoryFields.timeStamp}<='${filterEndDate.toIso8601String()}'
+ GROUP BY  ${PodcastHistoryFields.podcastId}
+
+        ''');
 
     return result.map((json) => PodcastHistoryModel.fromJson(json)).toList();
   }
