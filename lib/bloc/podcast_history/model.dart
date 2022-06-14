@@ -168,10 +168,6 @@ class PodcastHistorySummationValues {
       this.totalDurationInMinsSum});
 }
 
-const _podcastHistorySortRecentlyAdded = 'SORT_RECENTLY_HEARD';
-const _podcastHistorySortDurationDescending = 'SORT_DURATION_DESCENDING';
-const _podcastHistorySortSatsDescending = 'SORT_SATS_DESCENDING';
-
 abstract class PodcastHistorySortOptions {
   PodcastHistorySortOptions();
 
@@ -188,17 +184,18 @@ abstract class PodcastHistorySortOptions {
 
   static PodcastHistorySortOptions fromJson(String json) {
     final Map<String, dynamic> jsonMap = jsonDecode(json) ?? {};
-    final type = jsonMap["type"] ?? 0;
+    final String type = jsonMap["type"] ?? "";
 
-    switch (type) {
-      case _podcastHistorySortRecentlyAdded:
-        return PodcastHistorySortRecentlyHeard();
-      case _podcastHistorySortDurationDescending:
-        return PodcastHistorySortDurationDescending();
-      case _podcastHistorySortSatsDescending:
-        return PodcastHistorySortSatsDescendings();
-      default:
-        return PodcastHistorySortRecentlyHeard();
+    if (_podcastHistoryKeyFromEnum(
+            PodcastHistorySortEnum.SORT_DURATION_DESCENDING) ==
+        type) {
+      return PodcastHistorySortDurationDescending();
+    } else if (_podcastHistoryKeyFromEnum(
+            PodcastHistorySortEnum.SORT_SATS_DESCENDING) ==
+        type) {
+      return PodcastHistorySortSatsDescendings();
+    } else {
+      return PodcastHistorySortRecentlyHeard();
     }
   }
 
@@ -211,15 +208,29 @@ abstract class PodcastHistorySortOptions {
 
 class PodcastHistorySortRecentlyHeard extends PodcastHistorySortOptions {
   @override
-  String _type() => _podcastHistorySortRecentlyAdded;
+  String _type() =>
+      _podcastHistoryKeyFromEnum(PodcastHistorySortEnum.SORT_RECENTLY_HEARD);
 }
 
 class PodcastHistorySortDurationDescending extends PodcastHistorySortOptions {
   @override
-  String _type() => _podcastHistorySortDurationDescending;
+  String _type() => _podcastHistoryKeyFromEnum(
+      PodcastHistorySortEnum.SORT_DURATION_DESCENDING);
 }
 
 class PodcastHistorySortSatsDescendings extends PodcastHistorySortOptions {
   @override
-  String _type() => _podcastHistorySortSatsDescending;
+  String _type() =>
+      _podcastHistoryKeyFromEnum(PodcastHistorySortEnum.SORT_SATS_DESCENDING);
+}
+
+enum PodcastHistorySortEnum {
+  SORT_RECENTLY_HEARD,
+  SORT_DURATION_DESCENDING,
+  SORT_SATS_DESCENDING
+}
+
+String _podcastHistoryKeyFromEnum(
+    PodcastHistorySortEnum podcastHistorySortEnum) {
+  return podcastHistorySortEnum.toString().split(".").last;
 }

@@ -243,9 +243,6 @@ class PodcastHistoryPageState extends State<PodcastHistoryPage> {
                                               context)
                                           .actionsSink
                                           .add(UpdatePodcastHistorySort(value));
-                                      AppBlocsProvider.of<PodcastHistoryBloc>(
-                                              context)
-                                          .sortList(value);
                                     },
                                     itemBuilder: (ctx) => [
                                       PodcastHistorySortOptions.recentlyHeard(),

@@ -47,7 +47,6 @@ class PodcastHistoryBloc with AsyncActionsHandler {
     listenActions();
 
     _loadSelectedReportTimeRange();
-    _initializeSortOption();
   }
 
   void _loadSelectedReportTimeRange() async {
@@ -57,22 +56,16 @@ class PodcastHistoryBloc with AsyncActionsHandler {
     _podcastHistoryRange.add(timeRange);
   }
 
-  void _initializeSortOption() async {
-    PodcastHistorySortOptions sortOption =
-        await getPodcastHistorySortOptionFromPrefs();
-
-    _podcastHistorySortOption.add(sortOption);
-  }
-
   void _updateSortOption(UpdatePodcastHistorySort action) async {
     final prefs = await ServiceInjector().sharedPreferences;
     prefs.setString(_podcastHistorySortKey, action.sortOptions.toJson());
 
     _podcastHistorySortOption.add(action.sortOptions);
+    _sortList(action.sortOptions);
   }
 
   Future<PodcastHistorySortOptions>
-      getPodcastHistorySortOptionFromPrefs() async {
+      _getPodcastHistorySortOptionFromPrefs() async {
     final prefs = await ServiceInjector().sharedPreferences;
     PodcastHistorySortOptions sortOption;
     if (prefs.containsKey(_podcastHistorySortKey)) {
@@ -154,11 +147,12 @@ class PodcastHistoryBloc with AsyncActionsHandler {
 
     bufferPodcastHistoryList.clear();
 
-    // By default the list is sorted on the basis os recency
-    processedList.sort((a, b) => b.timeStamp.compareTo(a.timeStamp));
-
     bufferPodcastHistoryList.addAll(processedList);
     _podcastHistoryList.add(processedList);
+
+    PodcastHistorySortOptions sortOption =
+        await _getPodcastHistorySortOptionFromPrefs();
+    _sortList(sortOption);
 
     _podcastHistorySumValues.add(PodcastHistorySummationValues(
         totalSatsStreamedSum: totalSatsSum,
@@ -173,7 +167,7 @@ class PodcastHistoryBloc with AsyncActionsHandler {
     return processedList;
   }
 
-  sortList(PodcastHistorySortOptions sortOption) {
+  _sortList(PodcastHistorySortOptions sortOption) {
     List<PodcastHistoryModel> processedList = []
       ..addAll(bufferPodcastHistoryList);
 

@@ -2068,7 +2068,7 @@
   "locale": "fi",
   "app_name": "Breez",
 
-  "podcast_history_drawer": "Podcast-historia",
+  "podcast_history_drawer": "Suosituimmat Podcastit",
   "podcast_history_share_message":  "Suosituimmat podcastit kuuntelivat Breez",
   "podcast_history_share_text":"JAA",
   "podcast_history_sats_streamed":"sats striimattiin",

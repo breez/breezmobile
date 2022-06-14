@@ -2068,7 +2068,7 @@
   "locale": "es",
   "app_name": "Breez",
 
-  "podcast_history_drawer": "Historial de podcasts",
+  "podcast_history_drawer": "Mis Mejores Podcasts",
   "podcast_history_share_message":  "Mis mejores podcasts escuchados en Breez",
   "podcast_history_share_text":"CUOTA",
   "podcast_history_sats_streamed":"sats transmitido",
