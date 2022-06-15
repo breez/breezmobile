@@ -946,16 +946,17 @@
       }
     }
   },
-  "funds_over_limit_dialog_redeem_hour": "Vous pourrez racheter vos fonds après le bloc {lockHeight} (dans environ une heure).",
-  "@funds_over_limit_dialog_redeem_hour": {
+  "approximately_an_hour": "(dans environ une heure)",
+  "approximate_hours": "(~{hours} heures)",
+  "@approximate_hours": {
     "placeholders": {
-      "lockHeight": {
+      "hours": {
         "type": "String",
-        "example": "140659"
+        "example": "42"
       }
     }
   },
-  "funds_over_limit_dialog_redeem_hours": "Vous pourrez racheter vos fonds après le bloc {lockHeight} (~{hoursToUnlock} heures).",
+  "funds_over_limit_dialog_redeem_hours": "Vous pourrez racheter vos fonds après le bloc {lockHeight} {hoursToUnlock}.",
   "@funds_over_limit_dialog_redeem_hours": {
     "placeholders": {
       "lockHeight": {
@@ -964,7 +965,7 @@
       },
       "hoursToUnlock": {
         "type": "String",
-        "example": "7"
+        "example": "(~42 heures)"
       }
     }
   },

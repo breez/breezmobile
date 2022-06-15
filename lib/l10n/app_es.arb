@@ -946,16 +946,17 @@
       }
     }
   },
-  "funds_over_limit_dialog_redeem_hour": "Podrá retirar sus fondos después del bloque {lockHeight} (en aproximadamente 1 hora).",
-  "@funds_over_limit_dialog_redeem_hour": {
+  "approximately_an_hour": "(en aproximadamente 1 hora)",
+  "approximate_hours": "(en aproximadamente {hours} horas)",
+  "@approximate_hours": {
     "placeholders": {
-      "lockHeight": {
+      "hours": {
         "type": "String",
-        "example": "140659"
+        "example": "42"
       }
     }
   },
-  "funds_over_limit_dialog_redeem_hours": "Podrá retirar sus fondos después del bloque {lockHeight} (en aproximadamente {hoursToUnlock} horas).",
+  "funds_over_limit_dialog_redeem_hours": "Podrá retirar sus fondos después del bloque {lockHeight} {hoursToUnlock}.",
   "@funds_over_limit_dialog_redeem_hours": {
     "placeholders": {
       "lockHeight": {
@@ -964,7 +965,7 @@
       },
       "hoursToUnlock": {
         "type": "String",
-        "example": "7"
+        "example": "(en aproximadamente 42 horas)"
       }
     }
   },
