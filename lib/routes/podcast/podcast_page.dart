@@ -30,7 +30,6 @@ import 'package:breez/routes/podcast/podcast_index_api.dart';
 import 'package:breez/routes/podcast/share_episode_button.dart';
 import 'package:breez/routes/podcast/share_podcast_button.dart';
 import 'package:breez/routes/podcast/transport_controls.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 

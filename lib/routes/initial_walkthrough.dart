@@ -200,7 +200,7 @@ class InitialWalkthroughPageState extends State<InitialWalkthroughPage>
   Future _handleSignInException(SignInFailedException e) async {
     final texts = AppLocalizations.of(context);
     final themeData = Theme.of(context);
-    if (e.provider == BackupSettings.icloudBackupProvider) {
+    if (e.provider == BackupSettings.icloudBackupProvider()) {
       await promptError(
         context,
         texts.initial_walk_through_sign_in_icloud_title,

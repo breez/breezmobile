@@ -1,6 +1,5 @@
 import 'dart:async';
 import 'dart:convert';
-import 'dart:ffi';
 import 'dart:io';
 import 'package:breez/bloc/lnurl/lnurl_model.dart';
 import 'package:breez/logger.dart' as logger;
@@ -37,7 +36,7 @@ class BreezBridge {
   Future<DateTime> _inProgressGraphSync;
 
   BreezBridge(this.downloadManager, this.sharedPreferences);
-  
+
   initBreezLib() {
     _eventChannel.receiveBroadcastStream().listen((event) async {
       var notification = NotificationEvent()..mergeFromBuffer(event);
@@ -52,7 +51,7 @@ class BreezBridge {
       _eventsController.add(NotificationEvent()..mergeFromBuffer(event));
     });
     _tempDirFuture = getTemporaryDirectory();
-    _graphDownloader = GraphDownloader(downloadManager, sharedPreferences);    
+    _graphDownloader = GraphDownloader(downloadManager, sharedPreferences);
     _graphDownloader.init().whenComplete(() => initLightningDir());
   }
 
@@ -62,7 +61,8 @@ class BreezBridge {
     var graphDBName = pathComponents.last;
     pathComponents.removeLast();
     pathComponents.add("MD5SUMS");
-    var checksumURL = graphUri.replace(path: pathComponents.join("/")).toString();
+    var checksumURL =
+        graphUri.replace(path: pathComponents.join("/")).toString();
     logger.log.info("graph checksum url: $checksumURL");
     var response = await Dio().get(checksumURL);
     var content = response.data.toString();
@@ -87,11 +87,12 @@ class BreezBridge {
       _inProgressGraphSync =
           _graphDownloader.downloadGraph(downloadURL).then((file) async {
         final fileChecksum =
-        await Md5FileChecksum.getFileChecksum(filePath: file.path);
+            await Md5FileChecksum.getFileChecksum(filePath: file.path);
         var rawBytes = base64.decode(fileChecksum);
         var hexChecksum = HEX.encode(rawBytes);
         if (hexChecksum != checksum) {
-          logger.log.info("graph synchronization wrong checksum $fileChecksum != $checksum, skipping file");
+          logger.log.info(
+              "graph synchronization wrong checksum $fileChecksum != $checksum, skipping file");
           return DateTime.now();
         }
         logger.log.info("graph synchronization started");
@@ -768,7 +769,7 @@ class BreezBridge {
         if (methodName != "log") {
           logger.log.severe("failed to invoke method $methodName $err");
         }
-        if (err.runtimeType == PlatformException) {          
+        if (err.runtimeType == PlatformException) {
           throw (err as PlatformException).message;
         }
         throw err;
@@ -790,22 +791,24 @@ class BreezBridge {
     }
     return _startedCompleter.future.then((completed) {
       if (methodName != "log") {
-        logger.log.info("startCompleted completd: before invoking method immediate $methodName");
+        logger.log.info(
+            "startCompleted completd: before invoking method immediate $methodName");
       }
       return _methodChannel
           .invokeMethod(methodName, arguments)
           .catchError((err) {
-            if (methodName != "log") {
-              logger.log.severe("error invoking method immediate $methodName : $err");
-            }
+        if (methodName != "log") {
+          logger.log
+              .severe("error invoking method immediate $methodName : $err");
+        }
         if (err.runtimeType == PlatformException) {
           if (methodName != "log") {
             logger.log.severe("Error in calling method " + methodName);
           }
           throw (err as PlatformException).message + " method: $methodName";
-        }        
-          throw err;
-        });
+        }
+        throw err;
+      });
     });
   }
 

@@ -67,9 +67,7 @@ class AddFundsBloc extends Bloc {
       this.lspStatusStream) {
     ServiceInjector injector = ServiceInjector();
     BreezBridge breezLib = injector.breezBridge;
-    int requestNumber = 0;
     _addFundRequestController.stream.listen((addFundsInfo) {
-      var currentRequest = ++requestNumber;
       if (!addFundsInfo.newAddress) {
         _addFundResponseController.add(null);
         return;
@@ -77,7 +75,8 @@ class AddFundsBloc extends Bloc {
       userStream.firstWhere((u) => u.userID != null).then((user) async {
         var lspStatus = await this.lspStatusStream.first;
         if (lspStatus.selectedLSP == null) {
-          throw new Exception(getSystemAppLocalizations().lsp_error_not_selected);
+          throw new Exception(
+              getSystemAppLocalizations().lsp_error_not_selected);
         }
         breezLib.addFundsInit(user.userID, lspStatus.selectedLSP).then((reply) {
           AddFundResponse response = AddFundResponse(reply);
@@ -194,7 +193,8 @@ class AddFundsBloc extends Bloc {
       if (response.statusCode != 200 || body == null) {
         String msg = (body?.length ?? 0) > 100 ? body.substring(0, 100) : body;
         log.severe('moonpay response error: $msg');
-        throw getSystemAppLocalizations().add_funds_moonpay_error_service_unavailable;
+        throw getSystemAppLocalizations()
+            .add_funds_moonpay_error_service_unavailable;
       }
       _ipCheckResult = jsonDecode(body)['isAllowed'];
     }

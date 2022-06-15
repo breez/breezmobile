@@ -1,8 +1,6 @@
 import 'dart:async';
-import 'dart:io';
 
 import 'package:anytime/bloc/podcast/audio_bloc.dart';
-import 'package:anytime/l10n/L.dart';
 import 'package:anytime/ui/anytime_podcast_app.dart';
 import 'package:anytime/ui/podcast/now_playing.dart';
 import 'package:audio_service/audio_service.dart';
@@ -43,6 +41,7 @@ import 'package:breez/widgets/payment_failed_report_dialog.dart';
 import 'package:breez/widgets/route.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:provider/provider.dart';
@@ -139,9 +138,8 @@ class HomeState extends State<Home> with WidgetsBindingObserver {
       });
     });
 
-    AudioService.notificationClickEventStream
-        .where((event) => event == true)
-        .listen((event) async {
+    AudioService.notificationClicked.where((event) => event == true).listen(
+        (event) async {
       final userBloc = AppBlocsProvider.of<UserProfileBloc>(context);
       final userModel = await userBloc.userStream.first;
       final nowPlaying = await audioBloc.nowPlaying.first.timeout(
@@ -273,8 +271,8 @@ class HomeState extends State<Home> with WidgetsBindingObserver {
           resizeToAvoidBottomInset: false,
           key: _scaffoldKey,
           appBar: AppBar(
-            brightness: theme.themeId == "BLUE"
-                ? Brightness.light
+            systemOverlayStyle: theme.themeId == "BLUE"
+                ? SystemUiOverlayStyle.dark
                 : themeData.appBarTheme.systemOverlayStyle,
             centerTitle: false,
             actions: [

@@ -1,6 +1,5 @@
 import 'dart:async';
 import 'dart:convert';
-import 'dart:ffi';
 import 'dart:io';
 
 import 'package:breez/bloc/account/account_actions.dart';
@@ -206,7 +205,7 @@ class AccountBloc {
   void _start() {
     log.info("Account bloc started");
     ServiceInjector().sharedPreferences.then((preferences) {
-      _handleRegisterDeviceNode();      
+      _handleRegisterDeviceNode();
       _refreshAccountAndPayments();
       //listen streams
       _listenAccountActions();
@@ -426,10 +425,10 @@ class AccountBloc {
     final fee = await _calculateFee(payRequest.amount.toInt());
     var sendRequest = _breezLib
         .sendPaymentForRequest(
-            payRequest.paymentRequest,
-            amount: payRequest.amount,
-            fee: Int64(fee),
-        )
+      payRequest.paymentRequest,
+      amount: payRequest.amount,
+      fee: Int64(fee),
+    )
         .then((response) async {
       if (response.paymentError.isNotEmpty) {
         var error = PaymentError(
@@ -710,10 +709,10 @@ class AccountBloc {
     log.info("before _refreshPayments");
     return fetchPayments()
         .then((paymentModel) => _paymentsController.add(paymentModel))
-        .catchError((Object err, [StackTrace stack]){
-          log.severe("failed to fetch payments $err");
-          _paymentsController.addError(err, stack);
-        });
+        .catchError((Object err, [StackTrace stack]) {
+      log.severe("failed to fetch payments $err");
+      _paymentsController.addError(err, stack);
+    });
   }
 
   List<PaymentInfo> _groupPayments(List<PaymentInfo> paymentsList) {
@@ -863,10 +862,10 @@ class AccountBloc {
     log.info("Account bloc refreshing account...");
     await _fetchAccount()
         .then((acc) => _accountController.add(acc))
-        .catchError((Object err, [StackTrace stack]){
-          log.severe("failed to fetch account $err");
-          _accountController.addError(err, stack);
-        });
+        .catchError((Object err, [StackTrace stack]) {
+      log.severe("failed to fetch account $err");
+      _accountController.addError(err, stack);
+    });
     _refreshLSPActivity();
     if (_accountController.value.onChainFeeRate == null) {
       _breezLib.getDefaultOnChainFeeRate().then((rate) {

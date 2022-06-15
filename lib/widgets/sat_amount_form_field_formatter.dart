@@ -1,15 +1,14 @@
 import 'package:breez/bloc/user_profile/currency.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter/widgets.dart';
 import 'package:fixnum/fixnum.dart';
 
 class SatAmountFormFieldFormatter extends TextInputFormatter {
   final RegExp _pattern = RegExp(r'[^\d*]');
 
   TextEditingValue formatEditUpdate(
-      TextEditingValue oldValue,
-      TextEditingValue newValue,
-      ) {
+    TextEditingValue oldValue,
+    TextEditingValue newValue,
+  ) {
     final raw = newValue.text.replaceAll(_pattern, '');
     if (raw.isEmpty) {
       return newValue.copyWith(

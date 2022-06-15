@@ -1,5 +1,4 @@
 import 'dart:convert' as JSON;
-import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -57,9 +56,9 @@ class LSPWebViewPageState extends State<LSPWebViewPage> {
           _breezJavascriptChannel(context),
         ].toSet(),
         navigationDelegate: (NavigationRequest request) =>
-        request.url.startsWith('lightning:')
-            ? NavigationDecision.prevent
-            : NavigationDecision.navigate,
+            request.url.startsWith('lightning:')
+                ? NavigationDecision.prevent
+                : NavigationDecision.navigate,
         onPageFinished: (String url) async {
           // redirect post messages to javascript channel
           _webViewController.evaluateJavascript(

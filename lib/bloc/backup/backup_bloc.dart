@@ -518,7 +518,7 @@ class BackupBloc {
       if (request.encryptionKey != null && request.encryptionKey.key != null) {
         assert(request.encryptionKey.key.length > 0 || true);
       }
-      assert(!request.snapshot.nodeID.isEmpty);
+      assert(request.snapshot.nodeID.isNotEmpty);
 
       _breezLib
           .restore(request.snapshot.nodeID, request.encryptionKey.key)
@@ -670,6 +670,7 @@ class BreezLibBackupKey {
         case BackupKeyType.PIN:
           result = 'Pin';
           break;
+        default:
       }
     }
 
@@ -691,6 +692,7 @@ class BreezLibBackupKey {
       case BackupKeyType.PHRASE:
         result = BreezLibBackupKey(entropy: await store.read(key: 'backupKey'));
         break;
+      default:
     }
     result?.backupKeyType = backupKeyType;
 
