@@ -107,7 +107,7 @@ class SwapRefundDialogState extends State<SwapRefundDialog> {
           text: roundedHoursToUnlock > 1
               ? texts.funds_over_limit_dialog_redeem_hours(
                   lockHeight.toString(),
-                  hoursToUnlock.toString(),
+                  '${hoursToUnlock.ceil()}',
                 )
               : texts.funds_over_limit_dialog_redeem_hour(
                   lockHeight.toString(),
