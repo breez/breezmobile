@@ -946,16 +946,17 @@
       }
     }
   },
-  "funds_over_limit_dialog_redeem_hour": "Voit lunastaa varasi Bitcoin-lohkon {lockHeight} jälkeen eli noin tunnin kuluttua.",
-  "@funds_over_limit_dialog_redeem_hour": {
+  "approximately_an_hour": "jälkeen eli noin tunnin kuluttua",
+  "approximate_hours": "jälkeen eli noin (~{hours} tunnin kuluttua)",
+  "@approximate_hours": {
     "placeholders": {
-      "lockHeight": {
+      "hours": {
         "type": "String",
-        "example": "140659"
+        "example": "42"
       }
     }
   },
-  "funds_over_limit_dialog_redeem_hours": "Voit lunastaa varasi Bitcoin-lohkon {lockHeight} jälkeen eli noin (~{hoursToUnlock} tunnin kuluttua).",
+  "funds_over_limit_dialog_redeem_hours": "Voit lunastaa varasi Bitcoin-lohkon {lockHeight} {hoursToUnlock}.",
   "@funds_over_limit_dialog_redeem_hours": {
     "placeholders": {
       "lockHeight": {
@@ -964,7 +965,7 @@
       },
       "hoursToUnlock": {
         "type": "String",
-        "example": "7"
+        "example": "jälkeen eli noin (~42 tunnin kuluttua)"
       }
     }
   },

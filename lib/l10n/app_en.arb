@@ -946,16 +946,17 @@
       }
     }
   },
-  "funds_over_limit_dialog_redeem_hour": "You will be able to redeem your funds after block {lockHeight} (in about an hour).",
-  "@funds_over_limit_dialog_redeem_hour": {
+  "approximately_an_hour": "(in about an hour)",
+  "approximate_hours": "(~{hours} hours)",
+  "@approximate_hours": {
     "placeholders": {
-      "lockHeight": {
+      "hours": {
         "type": "String",
-        "example": "140659"
+        "example": "42"
       }
     }
   },
-  "funds_over_limit_dialog_redeem_hours": "You will be able to redeem your funds after block {lockHeight} (~{hoursToUnlock} hours).",
+  "funds_over_limit_dialog_redeem_hours": "You will be able to redeem your funds after block {lockHeight} {hoursToUnlock}.",
   "@funds_over_limit_dialog_redeem_hours": {
     "placeholders": {
       "lockHeight": {
@@ -964,7 +965,7 @@
       },
       "hoursToUnlock": {
         "type": "String",
-        "example": "7"
+        "example": "(~42 hours)"
       }
     }
   },

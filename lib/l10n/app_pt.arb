@@ -946,16 +946,17 @@
       }
     }
   },
-  "funds_over_limit_dialog_redeem_hour": "Você poderá resgatar seus fundos após o bloco {lockHeight} (aproximadamente em 1 hora).",
-  "@funds_over_limit_dialog_redeem_hour": {
+  "approximately_an_hour": "(aproximadamente em 1 hora)",
+  "approximate_hours": "(aproximadamente em {hours} horas)",
+  "@approximate_hours": {
     "placeholders": {
-      "lockHeight": {
+      "hours": {
         "type": "String",
-        "example": "140659"
+        "example": "42"
       }
     }
   },
-  "funds_over_limit_dialog_redeem_hours": "Você poderá resgatar seus fundos após o bloco {lockHeight} (aproximadamente em {hoursToUnlock} horas).",
+  "funds_over_limit_dialog_redeem_hours": "Você poderá resgatar seus fundos após o bloco {lockHeight} {hoursToUnlock}.",
   "@funds_over_limit_dialog_redeem_hours": {
     "placeholders": {
       "lockHeight": {
@@ -964,7 +965,7 @@
       },
       "hoursToUnlock": {
         "type": "String",
-        "example": "7"
+        "example": "(aproximadamente em 42 horas)"
       }
     }
   },
