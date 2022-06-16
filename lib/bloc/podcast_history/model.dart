@@ -171,69 +171,8 @@ class PodcastHistoryRecord {
       this.podcastHistoryList});
 }
 
-abstract class PodcastHistorySortOptions {
-  PodcastHistorySortOptions();
-
-  String _type();
-
-  factory PodcastHistorySortOptions.recentlyHeard() =
-      PodcastHistorySortRecentlyHeard;
-
-  factory PodcastHistorySortOptions.durationDescending() =
-      PodcastHistorySortDurationDescending;
-
-  factory PodcastHistorySortOptions.satsDecending() =
-      PodcastHistorySortSatsDescendings;
-
-  static PodcastHistorySortOptions fromJson(String json) {
-    final Map<String, dynamic> jsonMap = jsonDecode(json) ?? {};
-    final String type = jsonMap["type"] ?? "";
-
-    if (_podcastHistoryKeyFromEnum(
-            PodcastHistorySortEnum.SORT_DURATION_DESCENDING) ==
-        type) {
-      return PodcastHistorySortDurationDescending();
-    } else if (_podcastHistoryKeyFromEnum(
-            PodcastHistorySortEnum.SORT_SATS_DESCENDING) ==
-        type) {
-      return PodcastHistorySortSatsDescendings();
-    } else {
-      return PodcastHistorySortRecentlyHeard();
-    }
-  }
-
-  String toJson() {
-    return json.encode({
-      "type": _type(),
-    });
-  }
-}
-
-class PodcastHistorySortRecentlyHeard extends PodcastHistorySortOptions {
-  @override
-  String _type() =>
-      _podcastHistoryKeyFromEnum(PodcastHistorySortEnum.SORT_RECENTLY_HEARD);
-}
-
-class PodcastHistorySortDurationDescending extends PodcastHistorySortOptions {
-  @override
-  String _type() => _podcastHistoryKeyFromEnum(
-      PodcastHistorySortEnum.SORT_DURATION_DESCENDING);
-}
-
-class PodcastHistorySortSatsDescendings extends PodcastHistorySortOptions {
-  @override
-  String _type() =>
-      _podcastHistoryKeyFromEnum(PodcastHistorySortEnum.SORT_SATS_DESCENDING);
-}
-
 enum PodcastHistorySortEnum {
   SORT_RECENTLY_HEARD,
   SORT_DURATION_DESCENDING,
   SORT_SATS_DESCENDING
-}
-
-String _podcastHistoryKeyFromEnum(
-    PodcastHistorySortEnum podcastHistorySortEnum) {
-  return podcastHistorySortEnum.toString().split(".").last;
 }

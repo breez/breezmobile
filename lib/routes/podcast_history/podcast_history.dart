@@ -147,8 +147,6 @@ class PodcastHistoryPageState extends State<PodcastHistoryPage> {
                         await Share.shareFiles([imagePath.path],
                             text: AppLocalizations.of(context)
                                 .podcast_history_share_message);
-
-                        // await ShareExtend.share(imagePath.path, "image");
                       }
                     });
                   },
@@ -223,14 +221,14 @@ class PodcastHistoryPageState extends State<PodcastHistoryPage> {
                       initialData: false,
                       builder: (context, snapshot) {
                         return snapshot.data
-                            ? StreamBuilder<PodcastHistorySortOptions>(
+                            ? StreamBuilder<PodcastHistorySortEnum>(
                                 initialData:
-                                    PodcastHistorySortOptions.recentlyHeard(),
+                                    PodcastHistorySortEnum.SORT_RECENTLY_HEARD,
                                 stream:
                                     podcastHistoryBloc.podcastHistorySortOption,
                                 builder: (context, sortOptionSnapshot) {
                                   return PopupMenuButton<
-                                      PodcastHistorySortOptions>(
+                                      PodcastHistorySortEnum>(
                                     padding: EdgeInsets.all(0),
                                     enableFeedback: true,
                                     child: Icon(
@@ -246,10 +244,12 @@ class PodcastHistoryPageState extends State<PodcastHistoryPage> {
                                           .add(UpdatePodcastHistorySort(value));
                                     },
                                     itemBuilder: (ctx) => [
-                                      PodcastHistorySortOptions.recentlyHeard(),
-                                      PodcastHistorySortOptions
-                                          .durationDescending(),
-                                      PodcastHistorySortOptions.satsDecending(),
+                                      PodcastHistorySortEnum
+                                          .SORT_RECENTLY_HEARD,
+                                      PodcastHistorySortEnum
+                                          .SORT_DURATION_DESCENDING,
+                                      PodcastHistorySortEnum
+                                          .SORT_SATS_DESCENDING,
                                     ]
                                         .map((e) => _listSortDropdownItem(
                                               context,
@@ -429,25 +429,24 @@ PopupMenuEntry<PodcastHistoryTimeRange> _timeRangeDropdownItem(
   );
 }
 
-PopupMenuEntry<PodcastHistorySortOptions> _listSortDropdownItem(
+PopupMenuEntry<PodcastHistorySortEnum> _listSortDropdownItem(
   BuildContext context,
-  PodcastHistorySortOptions sortOption,
+  PodcastHistorySortEnum sortOption,
 ) {
   final themeData = Theme.of(context);
   final texts = AppLocalizations.of(context);
-
   String title;
-  if (sortOption is PodcastHistorySortRecentlyHeard) {
+  if (sortOption == PodcastHistorySortEnum.SORT_RECENTLY_HEARD) {
     title = texts.podcast_history_sort_dropdown_recent;
-  } else if (sortOption is PodcastHistorySortDurationDescending) {
+  } else if (sortOption == PodcastHistorySortEnum.SORT_DURATION_DESCENDING) {
     title = texts.podcast_history_sort_dropdown_duration;
-  } else if (sortOption is PodcastHistorySortSatsDescendings) {
+  } else if (sortOption == PodcastHistorySortEnum.SORT_SATS_DESCENDING) {
     title = texts.podcast_history_sort_dropdown_sats;
   } else {
     title = "";
   }
 
-  return PopupMenuItem<PodcastHistorySortOptions>(
+  return PopupMenuItem<PodcastHistorySortEnum>(
     value: sortOption,
     child: Text(
       title,

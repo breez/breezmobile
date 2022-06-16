@@ -1,5 +1,4 @@
 import 'package:breez/bloc/podcast_history/model.dart';
-
 import '../async_action.dart';
 
 class UpdatePodcastHistoryTimeRange extends AsyncAction {
@@ -9,7 +8,6 @@ class UpdatePodcastHistoryTimeRange extends AsyncAction {
 }
 
 class UpdatePodcastHistorySort extends AsyncAction {
-  final PodcastHistorySortOptions sortOptions;
-
+  final PodcastHistorySortEnum sortOptions;
   UpdatePodcastHistorySort(this.sortOptions);
 }

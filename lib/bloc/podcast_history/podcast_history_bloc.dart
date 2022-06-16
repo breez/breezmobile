@@ -23,19 +23,13 @@ class PodcastHistoryBloc with AsyncActionsHandler {
   Stream<PodcastHistoryRecord> get podcastHistoryRecord =>
       _podcastHistoryRecordBehaviourSubject.stream;
 
-  final BehaviorSubject<List<PodcastHistoryModel>>
-      _podcastHistoryListBehaviourSubject = BehaviorSubject();
-
-  Stream<List<PodcastHistoryModel>> get podcastHistoryList =>
-      _podcastHistoryListBehaviourSubject.stream;
-
-  final BehaviorSubject<PodcastHistorySortOptions> _podcastHistorySortOption =
+  final BehaviorSubject<PodcastHistorySortEnum> _podcastHistorySortOption =
       BehaviorSubject();
 
-  Stream<PodcastHistorySortOptions> get podcastHistorySortOption =>
+  Stream<PodcastHistorySortEnum> get podcastHistorySortOption =>
       _podcastHistorySortOption.stream;
 
-  //A buffer list comes in use while sorting
+  //A buffer model comes in use while sorting
   PodcastHistoryRecord _podcastHistoryRecordBuffer = PodcastHistoryRecord(
       totalBoostagramSentSum: 0,
       totalDurationInMinsSum: 0,
@@ -60,25 +54,8 @@ class PodcastHistoryBloc with AsyncActionsHandler {
   }
 
   void _updateSortOption(UpdatePodcastHistorySort action) async {
-    final prefs = await ServiceInjector().sharedPreferences;
-    prefs.setString(_podcastHistorySortKey, action.sortOptions.toJson());
-
     _podcastHistorySortOption.add(action.sortOptions);
     _sortList(action.sortOptions);
-  }
-
-  Future<PodcastHistorySortOptions>
-      _getPodcastHistorySortOptionFromPrefs() async {
-    final prefs = await ServiceInjector().sharedPreferences;
-    PodcastHistorySortOptions sortOption;
-    if (prefs.containsKey(_podcastHistorySortKey)) {
-      sortOption = PodcastHistorySortOptions.fromJson(
-        prefs.getString(_podcastHistorySortKey),
-      );
-    } else {
-      sortOption = PodcastHistorySortOptions.recentlyHeard();
-    }
-    return sortOption;
   }
 
   Future<PodcastHistoryTimeRange> getPodcastHistoryTimeRageFromPrefs() async {
@@ -108,7 +85,7 @@ class PodcastHistoryBloc with AsyncActionsHandler {
   Future<List<PodcastHistoryModel>> fetchPodcastHistory(
       {DateTime startDate,
       DateTime endDate,
-      PodcastHistorySortOptions sortOption}) async {
+      PodcastHistorySortEnum sortOption}) async {
     _showShareButton.add(false);
     var _podcastList = await PodcastHistoryDatabase.instance
         .readAllHistory(filterStartDate: startDate, filterEndDate: endDate);
@@ -125,11 +102,7 @@ class PodcastHistoryBloc with AsyncActionsHandler {
       totalSatsSum = totalSatsSum + element.satsSpent;
     });
 
-    _podcastHistoryListBehaviourSubject.add(_podcastList);
-
-    PodcastHistorySortOptions sortOption =
-        await _getPodcastHistorySortOptionFromPrefs();
-    _sortList(sortOption);
+    _sortList(PodcastHistorySortEnum.SORT_RECENTLY_HEARD);
 
     PodcastHistoryRecord podcastHistoryRecord = PodcastHistoryRecord(
         totalSatsStreamedSum: totalSatsSum,
@@ -148,17 +121,17 @@ class PodcastHistoryBloc with AsyncActionsHandler {
     return _podcastList;
   }
 
-  _sortList(PodcastHistorySortOptions sortOption) {
+  _sortList(PodcastHistorySortEnum sortOption) {
     List<PodcastHistoryModel> processedList = []
       ..addAll(_podcastHistoryRecordBuffer.podcastHistoryList);
 
     if (sortOption != null) {
-      if (sortOption is PodcastHistorySortDurationDescending) {
+      if (sortOption == PodcastHistorySortEnum.SORT_DURATION_DESCENDING) {
         processedList
             .sort((a, b) => b.durationInMins.compareTo(a.durationInMins));
-      } else if (sortOption is PodcastHistorySortRecentlyHeard) {
+      } else if (sortOption == PodcastHistorySortEnum.SORT_RECENTLY_HEARD) {
         processedList.sort((a, b) => b.timeStamp.compareTo(a.timeStamp));
-      } else if (sortOption is PodcastHistorySortSatsDescendings) {
+      } else if (sortOption == PodcastHistorySortEnum.SORT_SATS_DESCENDING) {
         processedList.sort((a, b) => b.satsSpent.compareTo(a.satsSpent));
       }
     }
@@ -169,16 +142,12 @@ class PodcastHistoryBloc with AsyncActionsHandler {
         totalDurationInMinsSum:
             _podcastHistoryRecordBuffer.totalDurationInMinsSum,
         podcastHistoryList: processedList));
-
-    _podcastHistoryListBehaviourSubject.add(processedList);
   }
 
   @override
   dispose() {
     _podcastHistoryRecordBehaviourSubject.close();
-    _podcastHistoryListBehaviourSubject.close();
   }
 }
 
 const _podcastHistoryTimeRangeKey = "PODCAST_HISTORY_TIME_RANGE_JSON";
-const _podcastHistorySortKey = "PODCAST_HISTORY_SORT_JSON";
