@@ -1,8 +1,5 @@
-import 'dart:developer';
-
-import 'package:breez/bloc/podcast_history/sqflite/podcast_history_model.dart';
+import 'package:breez/bloc/podcast_history/sqflite/podcast_history_local_model.dart';
 import 'package:sqflite/sqflite.dart';
-import '../../../logger.dart';
 import '../../pos_catalog/sqlite/db.dart';
 
 class PodcastHistoryDatabase {
@@ -26,29 +23,65 @@ class PodcastHistoryDatabase {
   }
 
   Future _createDB(Database db, int version) async {
-    final fieldIdType = 'INTEGER PRIMARY KEY AUTOINCREMENT';
-    final textType = 'TEXT NOT NULL';
-    final integerType = 'INTEGER NOT NULL';
-    final doubleType = 'DECIMAL NOT NULL';
+    //Create Table for TimeRange
+    await db.execute('''
+CREATE TABLE $podcastHistoryTimeRangeTable (
+${PodcastHistoryTimeRangeFields.fieldId} INTEGER PRIMARY KEY,
+${PodcastHistoryTimeRangeFields.timeRangeKey} TEXT NOT NULL
+ )
+ ''');
 
+    //Create Table for PodcastHistoryRecord
     await db.execute('''
 CREATE TABLE $podcastHistoryTable(
-${PodcastHistoryFields.fieldId} $fieldIdType,
-${PodcastHistoryFields.podcastId} $textType,
-${PodcastHistoryFields.timeStamp} $textType,
-${PodcastHistoryFields.satsSpent} $integerType,
-${PodcastHistoryFields.boostagramsSent} $integerType,
-${PodcastHistoryFields.podcastName} $textType,
-${PodcastHistoryFields.podcastImageUrl} $textType,
-${PodcastHistoryFields.durationInMins} $doubleType
+${PodcastHistoryFields.fieldId} INTEGER PRIMARY KEY AUTOINCREMENT,
+${PodcastHistoryFields.podcastId} TEXT NOT NULL,
+${PodcastHistoryFields.timeStamp} TEXT NOT NULL,
+${PodcastHistoryFields.satsSpent} INTEGER NOT NULL,
+${PodcastHistoryFields.boostagramsSent} INTEGER NOT NULL,
+${PodcastHistoryFields.podcastName} TEXT NOT NULL,
+${PodcastHistoryFields.podcastImageUrl} TEXT NOT NULL,
+${PodcastHistoryFields.durationInMins} 'DECIMAL NOT NULL'
  )
  ''');
   }
 
-  Future<PodcastHistoryModel> create(PodcastHistoryModel podcastHistory) async {
+  Future<PodcastHistoryModel> addToPodcastHistoryRecord(
+      PodcastHistoryModel podcastHistory) async {
     final db = await instance.database;
     final id = await db.insert(podcastHistoryTable, podcastHistory.toJson());
     return podcastHistory.copy(fieldId: id);
+  }
+
+  updatePodcastHistoryTimeRange(String podcastHistoryTimeRangeKey) async {
+    final db = await instance.database;
+
+    List<Map<String, Object>> localTimeRangeData =
+        await db.query(podcastHistoryTimeRangeTable);
+
+    PodcastHistoryTimeRangeDbModel podcastHistoryTimeRangeDbModel =
+        PodcastHistoryTimeRangeDbModel(
+            fieldId: 1, podcastHistoryTimeRangeKey: podcastHistoryTimeRangeKey);
+
+//If the data in sqflite is empty we insert else update
+    if (localTimeRangeData.isEmpty) {
+      await db.insert(podcastHistoryTimeRangeTable,
+          podcastHistoryTimeRangeDbModel.toJson());
+    } else {
+      await db.update(
+          podcastHistoryTimeRangeTable, podcastHistoryTimeRangeDbModel.toJson(),
+          where: '${PodcastHistoryTimeRangeFields.fieldId} = ?',
+          whereArgs: [podcastHistoryTimeRangeDbModel.fieldId]);
+    }
+  }
+
+  Future<PodcastHistoryTimeRangeDbModel> fetchPodcastHistoryTimeRange() async {
+    final db = await instance.database;
+    var localTimeRangeData = await db.query(podcastHistoryTimeRangeTable);
+    if (localTimeRangeData.isEmpty) {
+      return null;
+    }
+    return PodcastHistoryTimeRangeDbModel.fromJson(localTimeRangeData.first);
   }
 
   Future<List<PodcastHistoryModel>> readAllHistory(

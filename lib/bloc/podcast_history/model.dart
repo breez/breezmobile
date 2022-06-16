@@ -1,11 +1,10 @@
-import 'dart:convert';
-import 'package:breez/bloc/podcast_history/sqflite/podcast_history_model.dart';
+import 'package:breez/bloc/podcast_history/sqflite/podcast_history_local_model.dart';
 
-const _podcastHistoryTimeRangeDaily = 1;
-const _podcastHistoryTimeRangeWeekly = 2;
-const _podcastHistoryTimeRangeMonthly = 3;
-const _podcastHistoryTimeRangeYearly = 4;
-const _podcastHistoryTimeRangeAllTime = 5;
+const _podcastHistoryTimeRangeDaily = "Podcast_History_TimeRange_Daily";
+const _podcastHistoryTimeRangeWeekly = "Podcast_History_TimeRange_Weekly";
+const _podcastHistoryTimeRangeMonthly = "Podcast_History_TimeRange_Monthly";
+const _podcastHistoryTimeRangeYearly = "Podcast_History_TimeRange_Yearly";
+const _podcastHistoryTimeRangeAllTime = "Podcast_History_TimeRange_AllTime";
 
 // A const year for filtering on "All Time"
 const _allTimeRangeYear = 2015;
@@ -13,13 +12,13 @@ const _allTimeRangeYear = 2015;
 abstract class PodcastHistoryTimeRange {
   final DateTime startDate;
   final DateTime endDate;
+  final String timeRangeKey;
 
-  const PodcastHistoryTimeRange._(
+  PodcastHistoryTimeRange._({
     this.startDate,
     this.endDate,
-  );
-
-  int _type();
+    this.timeRangeKey,
+  });
 
   factory PodcastHistoryTimeRange.daily() = PodcastHistoryTimeRangeDaily;
 
@@ -31,11 +30,8 @@ abstract class PodcastHistoryTimeRange {
 
   factory PodcastHistoryTimeRange.allTime() = PodcastHistoryTimeRangeAllTime;
 
-  static PodcastHistoryTimeRange fromJson(String json) {
-    final Map<String, dynamic> jsonMap = jsonDecode(json) ?? {};
-    final type = jsonMap["type"] ?? 0;
-
-    switch (type) {
+  static PodcastHistoryTimeRange getTimeRange({String timeRangeKey}) {
+    switch (timeRangeKey) {
       case _podcastHistoryTimeRangeDaily:
         return PodcastHistoryTimeRangeDaily();
       case _podcastHistoryTimeRangeWeekly:
@@ -47,115 +43,94 @@ abstract class PodcastHistoryTimeRange {
       case _podcastHistoryTimeRangeAllTime:
         return PodcastHistoryTimeRange.allTime();
       default:
-        return PodcastHistoryTimeRangeDaily();
+        return PodcastHistoryTimeRangeMonthly();
     }
-  }
-
-  String toJson() {
-    return json.encode({
-      "type": _type(),
-      "startDate": startDate.millisecondsSinceEpoch,
-      "endDate": endDate.millisecondsSinceEpoch,
-    });
   }
 }
 
 class PodcastHistoryTimeRangeDaily extends PodcastHistoryTimeRange {
   PodcastHistoryTimeRangeDaily()
       : super._(
-          DateTime(
-            DateTime.now().year,
-            DateTime.now().month,
-            DateTime.now().day,
-            0,
-            0,
-            0,
-          ),
-          DateTime(
-            DateTime.now().year,
-            DateTime.now().month,
-            DateTime.now().day,
-            23,
-            59,
-            59,
-            999,
-          ),
-        );
-
-  @override
-  int _type() => _podcastHistoryTimeRangeDaily;
+            startDate: DateTime(
+              DateTime.now().year,
+              DateTime.now().month,
+              DateTime.now().day,
+              0,
+              0,
+              0,
+            ),
+            endDate: DateTime(
+              DateTime.now().year,
+              DateTime.now().month,
+              DateTime.now().day,
+              23,
+              59,
+              59,
+              999,
+            ),
+            timeRangeKey: _podcastHistoryTimeRangeDaily);
 }
 
 class PodcastHistoryTimeRangeWeekly extends PodcastHistoryTimeRange {
   PodcastHistoryTimeRangeWeekly()
       : super._(
-          DateTime(
-            DateTime.now().year,
-            DateTime.now().month,
-            DateTime.now().subtract(Duration(days: DateTime.now().weekday)).day,
-            0,
-            0,
-            0,
-          ),
-          DateTime.now(),
-        );
-
-  @override
-  int _type() => _podcastHistoryTimeRangeWeekly;
+            startDate: DateTime(
+              DateTime.now().year,
+              DateTime.now().month,
+              DateTime.now()
+                  .subtract(Duration(days: DateTime.now().weekday))
+                  .day,
+              0,
+              0,
+              0,
+            ),
+            endDate: DateTime.now(),
+            timeRangeKey: _podcastHistoryTimeRangeWeekly);
 }
 
 class PodcastHistoryTimeRangeMonthly extends PodcastHistoryTimeRange {
   PodcastHistoryTimeRangeMonthly()
       : super._(
-          DateTime(
-            DateTime.now().year,
-            DateTime.now().month,
-            1,
-            0,
-            0,
-            0,
-          ),
-          DateTime.now(),
-        );
-
-  @override
-  int _type() => _podcastHistoryTimeRangeMonthly;
+            startDate: DateTime(
+              DateTime.now().year,
+              DateTime.now().month,
+              1,
+              0,
+              0,
+              0,
+            ),
+            endDate: DateTime.now(),
+            timeRangeKey: _podcastHistoryTimeRangeMonthly);
 }
 
 class PodcastHistoryTimeRangeYearly extends PodcastHistoryTimeRange {
   PodcastHistoryTimeRangeYearly()
       : super._(
-          DateTime(
-            DateTime.now().year - 1,
-            DateTime.now().month,
-            1,
-            0,
-            0,
-            0,
-          ),
-          DateTime.now(),
-        );
-
-  @override
-  int _type() => _podcastHistoryTimeRangeYearly;
+            startDate: DateTime(
+              DateTime.now().year - 1,
+              DateTime.now().month,
+              1,
+              0,
+              0,
+              0,
+            ),
+            endDate: DateTime.now(),
+            timeRangeKey: _podcastHistoryTimeRangeYearly);
 }
 
 class PodcastHistoryTimeRangeAllTime extends PodcastHistoryTimeRange {
   PodcastHistoryTimeRangeAllTime()
       : super._(
-          DateTime(
-            _allTimeRangeYear,
-            DateTime.now().month,
-            1,
-            0,
-            0,
-            0,
-          ),
-          DateTime.now(),
-        );
-
-  @override
-  int _type() => _podcastHistoryTimeRangeAllTime;
+            startDate: DateTime(
+              _allTimeRangeYear,
+              DateTime.now().month,
+              1,
+              0,
+              0,
+              0,
+            ),
+            endDate: DateTime.now(),
+            timeRangeKey: _podcastHistoryTimeRangeAllTime);
 }
 
 class PodcastHistoryRecord {

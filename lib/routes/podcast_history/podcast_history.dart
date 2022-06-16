@@ -36,7 +36,7 @@ class PodcastHistoryPageState extends State<PodcastHistoryPage> {
   Future<void> didChangeDependencies() async {
     final podcastHistoryBloc = AppBlocsProvider.of<PodcastHistoryBloc>(context);
     PodcastHistoryTimeRange timeRange =
-        await podcastHistoryBloc.getPodcastHistoryTimeRageFromPrefs();
+        await podcastHistoryBloc.getPodcastHistoryTimeRageFromLocalDb();
 
     podcastHistoryBloc.fetchPodcastHistory(
         startDate: timeRange.startDate, endDate: timeRange.endDate);
@@ -221,43 +221,32 @@ class PodcastHistoryPageState extends State<PodcastHistoryPage> {
                       initialData: false,
                       builder: (context, snapshot) {
                         return snapshot.data
-                            ? StreamBuilder<PodcastHistorySortEnum>(
-                                initialData:
-                                    PodcastHistorySortEnum.SORT_RECENTLY_HEARD,
-                                stream:
-                                    podcastHistoryBloc.podcastHistorySortOption,
-                                builder: (context, sortOptionSnapshot) {
-                                  return PopupMenuButton<
-                                      PodcastHistorySortEnum>(
-                                    padding: EdgeInsets.all(0),
-                                    enableFeedback: true,
-                                    child: Icon(
-                                      Icons.filter_list,
-                                      color: theme.themeId != "BLUE"
-                                          ? Colors.white
-                                          : theme.BreezColors.white[400],
-                                    ),
-                                    onSelected: (value) {
-                                      AppBlocsProvider.of<PodcastHistoryBloc>(
-                                              context)
-                                          .actionsSink
-                                          .add(UpdatePodcastHistorySort(value));
-                                    },
-                                    itemBuilder: (ctx) => [
-                                      PodcastHistorySortEnum
-                                          .SORT_RECENTLY_HEARD,
-                                      PodcastHistorySortEnum
-                                          .SORT_DURATION_DESCENDING,
-                                      PodcastHistorySortEnum
-                                          .SORT_SATS_DESCENDING,
-                                    ]
-                                        .map((e) => _listSortDropdownItem(
-                                              context,
-                                              e,
-                                            ))
-                                        .toList(),
-                                  );
-                                })
+                            ? PopupMenuButton<PodcastHistorySortEnum>(
+                                padding: EdgeInsets.all(0),
+                                enableFeedback: true,
+                                child: Icon(
+                                  Icons.filter_list,
+                                  color: theme.themeId != "BLUE"
+                                      ? Colors.white
+                                      : theme.BreezColors.white[400],
+                                ),
+                                onSelected: (value) {
+                                  AppBlocsProvider.of<PodcastHistoryBloc>(
+                                          context)
+                                      .updateSortOption(value);
+                                },
+                                itemBuilder: (ctx) => [
+                                  PodcastHistorySortEnum.SORT_RECENTLY_HEARD,
+                                  PodcastHistorySortEnum
+                                      .SORT_DURATION_DESCENDING,
+                                  PodcastHistorySortEnum.SORT_SATS_DESCENDING,
+                                ]
+                                    .map((e) => _listSortDropdownItem(
+                                          context,
+                                          e,
+                                        ))
+                                    .toList(),
+                              )
                             : SizedBox();
                       }),
                 ],

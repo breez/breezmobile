@@ -1,6 +1,5 @@
 import 'dart:async';
 import 'dart:convert';
-
 import 'package:anytime/bloc/podcast/audio_bloc.dart';
 import 'package:anytime/bloc/settings/settings_bloc.dart';
 import 'package:anytime/entities/episode.dart';
@@ -17,7 +16,7 @@ import 'package:breez/services/breezlib/breez_bridge.dart';
 import 'package:breez/services/injector.dart';
 import 'package:fixnum/fixnum.dart';
 import '../podcast_history/sqflite/podcast_history_database.dart';
-import '../podcast_history/sqflite/podcast_history_model.dart';
+import '../podcast_history/sqflite/podcast_history_local_model.dart';
 import 'aggregated_payments.dart';
 
 const maxFeePart = 0.2;
@@ -376,7 +375,8 @@ class PodcastPaymentsBloc with AsyncActionsHandler {
         durationInMins: durationInMins ?? 0,
         podcastImageUrl: podcastImageUrl);
 
-    await PodcastHistoryDatabase.instance.create(podcastHistoryItem);
+    await PodcastHistoryDatabase.instance
+        .addToPodcastHistoryRecord(podcastHistoryItem);
   }
 
   Map<Int64, String> _getTlv({

@@ -1,4 +1,30 @@
 final String podcastHistoryTable = 'podcast_history_table';
+final String podcastHistoryTimeRangeTable = 'podcast_history_time_range_table';
+
+class PodcastHistoryTimeRangeFields {
+  static final List<String> values = [fieldId, timeRangeKey];
+  static final String fieldId = '_id';
+  static final String timeRangeKey = 'timeRangeKey';
+}
+
+class PodcastHistoryTimeRangeDbModel {
+  final int fieldId;
+  final String podcastHistoryTimeRangeKey;
+
+  PodcastHistoryTimeRangeDbModel(
+      {this.fieldId, this.podcastHistoryTimeRangeKey});
+
+  Map<String, Object> toJson() => {
+        PodcastHistoryTimeRangeFields.fieldId: fieldId,
+        PodcastHistoryTimeRangeFields.timeRangeKey: podcastHistoryTimeRangeKey,
+      };
+
+  static PodcastHistoryTimeRangeDbModel fromJson(Map<String, Object> json) =>
+      PodcastHistoryTimeRangeDbModel(
+          fieldId: json[PodcastHistoryTimeRangeFields.fieldId] as int,
+          podcastHistoryTimeRangeKey:
+              json[PodcastHistoryTimeRangeFields.timeRangeKey] as String);
+}
 
 class PodcastHistoryFields {
   static final List<String> values = [

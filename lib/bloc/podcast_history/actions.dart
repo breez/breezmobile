@@ -6,8 +6,3 @@ class UpdatePodcastHistoryTimeRange extends AsyncAction {
 
   UpdatePodcastHistoryTimeRange(this.range);
 }
-
-class UpdatePodcastHistorySort extends AsyncAction {
-  final PodcastHistorySortEnum sortOptions;
-  UpdatePodcastHistorySort(this.sortOptions);
-}
