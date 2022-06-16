@@ -457,33 +457,41 @@ class _PodcastStatItem extends StatelessWidget {
   final String svg;
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        Row(
-          children: [
-            Text(
-              value,
-              style: Theme.of(context).primaryTextTheme.headline3.copyWith(
-                    fontSize: 20,
-                    color: Colors.white,
-                    fontWeight: FontWeight.w600,
-                  ),
-            ),
-            SizedBox(
-              width: 8,
-            ),
-            SvgPicture.asset(
+    return Padding(
+      padding: const EdgeInsets.only(right: 4),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Padding(
+            padding: const EdgeInsets.only(top: 6),
+            child: SvgPicture.asset(
               svg,
-              height: 22,
-              width: 40,
+              height: 16,
+              width: 36,
               color: theme.themeId != "BLUE"
                   ? Colors.white
                   : theme.BreezColors.white[400],
-            )
-          ],
-        ),
-        Text(label)
-      ],
+            ),
+          ),
+          SizedBox(
+            width: 6,
+          ),
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                value,
+                style: Theme.of(context).primaryTextTheme.headline3.copyWith(
+                      fontSize: 20,
+                      color: Colors.white,
+                      fontWeight: FontWeight.w600,
+                    ),
+              ),
+              Text(label)
+            ],
+          ),
+        ],
+      ),
     );
   }
 }
@@ -545,6 +553,7 @@ class _PodcastListTile extends StatelessWidget {
                     ),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      crossAxisAlignment: CrossAxisAlignment.end,
                       children: [
                         Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
