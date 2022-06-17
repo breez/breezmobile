@@ -2067,5 +2067,27 @@
     }
   },
   "locale": "pt",
-  "app_name": "Breez"
+  "app_name": "Breez",
+
+   "podcast_history_drawer": "Meus Principais Podcasts",
+  "podcast_history_share_message":  "Meus principais podcasts ouvidos no Breez",
+  "podcast_history_share_text":"COMPARTILHAR",
+  "podcast_history_sats_streamed":"sats transmitido",
+  "podcast_history_boostagrams_sent":"boostagramas enviados",
+  "podcast_history_empty_list_title": "Está vazio aqui para",
+  "podcast_history_empty_list_subtitle": "Ouça Podcast no Breez para ver seu histórico de podcast.",
+  "podcast_history_open_podcast_button": "PODCASTS ABERTOS",
+  "podcast_history_appbar_top_daily":"Principais podcasts diários",
+  "podcast_history_appbar_top_weekly":"Principais podcasts semanais",
+  "podcast_history_appbar_top_monthly":"Principais podcasts mensais",
+  "podcast_history_appbar_top_yearly":"Principais podcasts anuais",
+  "podcast_history_appbar_top_alltime":"Principais podcasts de todos os tempos",
+  "podcast_history_timerange_dropdown_today":"Hoje",
+  "podcast_history_timerange_dropdown_week":"Essa semana",
+  "podcast_history_timerange_dropdown_month":"Este mês",
+  "podcast_history_timerange_dropdown_year":"Este ano",
+  "podcast_history_timerange_dropdown_alltime":"Tempo todo",
+  "podcast_history_sort_dropdown_recent":"Recentes primeiro",
+  "podcast_history_sort_dropdown_duration":"Mais Ouvido Primeiro",
+  "podcast_history_sort_dropdown_sats":"Os sats mais altos transmitidos primeiro"
 }

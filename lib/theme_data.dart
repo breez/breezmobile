@@ -179,7 +179,7 @@ final ThemeData blueTheme = ThemeData(
   elevatedButtonTheme: ElevatedButtonThemeData(),
   radioTheme: RadioThemeData(
     fillColor: MaterialStateProperty.resolveWith(
-          (states) {
+      (states) {
         if (states.contains(MaterialState.selected)) {
           return Color(0xFF0085fb);
         } else {
@@ -563,6 +563,8 @@ final BoxDecoration boxDecoration = BoxDecoration(
 final BoxDecoration autoCompleteBoxDecoration = BoxDecoration(
     color: BreezColors.white[500], borderRadius: BorderRadius.circular(3.0));
 final Color whiteColor = BreezColors.white[500];
+final podcastHistoryTileBackGroundColorBlue = Color.fromRGBO(0, 117, 255, 1.0);
+
 final Color snackBarBackgroundColor = BreezColors.blue[300];
 final Color avatarBackgroundColor = BreezColors.blue[500];
 final Color sessionAvatarBackgroundColor = BreezColors.white[500];

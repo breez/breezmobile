@@ -163,7 +163,7 @@ class HomeState extends State<Home> with WidgetsBindingObserver {
     });
   }
 
-  void _initListens(BuildContext context) {    
+  void _initListens(BuildContext context) {
     if (_listensInit) return;
     _listensInit = true;
     ServiceInjector().breezBridge.initBreezLib();
@@ -440,20 +440,36 @@ class HomeState extends State<Home> with WidgetsBindingObserver {
     BreezUserModel user,
     AppLocalizations texts,
   ) {
-    if (user.appMode == AppMode.pos) {
-      return [
-        DrawerItemConfigGroup(
-          [
-            DrawerItemConfig(
-              "/transactions",
-              texts.home_drawer_item_title_transactions,
-              "src/icon/transactions.png",
-            ),
-          ],
-        ),
-      ];
+    switch (user.appMode) {
+      case AppMode.pos:
+        return [
+          DrawerItemConfigGroup(
+            [
+              DrawerItemConfig(
+                "/transactions",
+                texts.home_drawer_item_title_transactions,
+                "src/icon/transactions.png",
+              ),
+            ],
+          ),
+        ];
+
+      case AppMode.podcasts:
+        return [
+          DrawerItemConfigGroup(
+            [
+              DrawerItemConfig(
+                "/podcast_history",
+                texts.podcast_history_drawer,
+                "src/icon/top_podcast_icon.png",
+              ),
+            ],
+          ),
+        ];
+
+      default:
+        return [];
     }
-    return [];
   }
 
   List<DrawerItemConfigGroup> _drawerConfigAppModeItems(
@@ -759,7 +775,7 @@ class HomeState extends State<Home> with WidgetsBindingObserver {
           texts.home_config_error_message,
           style: themeData.dialogTheme.contentTextStyle,
         ),
-        okText: texts.home_config_error_action_exit,        
+        okText: texts.home_config_error_action_exit,
         disableBack: true,
       );
     });

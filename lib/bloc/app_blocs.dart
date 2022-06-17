@@ -5,6 +5,7 @@ import 'package:breez/bloc/fastbitcoins/fastbitcoins_bloc.dart';
 import 'package:breez/bloc/lnurl/lnurl_bloc.dart';
 import 'package:breez/bloc/marketplace/marketplace_bloc.dart';
 import 'package:breez/bloc/payment_options/payment_options_bloc.dart';
+import 'package:breez/bloc/podcast_history/podcast_history_bloc.dart';
 import 'package:breez/bloc/pos_catalog/bloc.dart';
 import 'package:breez/bloc/pos_catalog/sqlite/repository.dart';
 import 'package:breez/bloc/reverse_swap/reverse_swap_bloc.dart';
@@ -30,6 +31,7 @@ class AppBlocs {
   final PaymentOptionsBloc paymentOptionsBloc;
   final ReverseSwapBloc reverseSwapBloc;
   final Map<Type, Object> _blocsByType;
+  final PodcastHistoryBloc podCastHistoryBloc;
 
   static T _registerBloc<T>(T bloc, Map<Type, Object> blocs) {
     blocs[bloc.runtimeType] = bloc;
@@ -86,6 +88,10 @@ class AppBlocs {
         blocsByType);
     FastbitcoinsBloc fastbitcoinsBloc =
         _registerBloc(FastbitcoinsBloc(), blocsByType);
+    PodcastHistoryBloc podCastHistoryBloc = _registerBloc(
+      PodcastHistoryBloc(),
+      blocsByType,
+    );
 
     return AppBlocs._(
         userProfileBloc,
@@ -100,22 +106,23 @@ class AppBlocs {
         lnurlBloc,
         posCatalogBloc,
         paymentOptionsBloc,
-        blocsByType);
+        blocsByType,
+        podCastHistoryBloc);
   }
 
   AppBlocs._(
-    this.userProfileBloc,
-    this.accountBloc,
-    this.invoicesBloc,
-    this.connectPayBloc,
-    this.backupBloc,
-    this.marketplaceBloc,
-    this.fastbitcoinsBloc,
-    this.lspBloc,
-    this.reverseSwapBloc,
-    this.lnurlBloc,
-    this.posCatalogBloc,
-    this.paymentOptionsBloc,
-    this._blocsByType,
-  );
+      this.userProfileBloc,
+      this.accountBloc,
+      this.invoicesBloc,
+      this.connectPayBloc,
+      this.backupBloc,
+      this.marketplaceBloc,
+      this.fastbitcoinsBloc,
+      this.lspBloc,
+      this.reverseSwapBloc,
+      this.lnurlBloc,
+      this.posCatalogBloc,
+      this.paymentOptionsBloc,
+      this._blocsByType,
+      this.podCastHistoryBloc);
 }

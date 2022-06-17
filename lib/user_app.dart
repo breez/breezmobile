@@ -35,6 +35,7 @@ import 'routes/lsp/select_lsp_page.dart';
 import 'routes/marketplace/marketplace.dart';
 import 'routes/network/network.dart';
 import 'routes/order_card/order_card_page.dart';
+import 'routes/podcast_history/podcast_history.dart';
 import 'routes/security_pin/lock_screen.dart';
 import 'routes/security_pin/security_pin_page.dart';
 import 'routes/settings/pos_settings_page.dart';
@@ -268,6 +269,14 @@ class UserApp extends StatelessWidget {
                                 builder: (_) => withBreezTheme(
                                   context,
                                   NetworkPage(),
+                                ),
+                                settings: settings,
+                              );
+                            case '/podcast_history':
+                              return FadeInRoute(
+                                builder: (_) => withBreezTheme(
+                                  context,
+                                  PodcastHistoryPage(),
                                 ),
                                 settings: settings,
                               );
