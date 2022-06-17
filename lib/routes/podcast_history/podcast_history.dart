@@ -80,6 +80,7 @@ class PodcastHistoryPageState extends State<PodcastHistoryPage> {
         elevation: 0.0,
         actions: [
           PopupMenuButton<PodcastHistoryTimeRange>(
+            color: themeData.canvasColor,
             icon: SvgPicture.asset(
               "src/icon/calendar.svg",
               color: themeData.iconTheme.color,
@@ -115,17 +116,39 @@ class PodcastHistoryPageState extends State<PodcastHistoryPage> {
                               color: themeData.canvasColor,
                               child: Padding(
                                 padding: const EdgeInsets.only(
-                                    top: 60, bottom: 16, left: 16, right: 16),
+                                    bottom: 16, left: 16, right: 16),
                                 child: Column(
+                                  mainAxisSize: MainAxisSize.min,
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
-                                    Text(
-                                      "My ${_getAppBarDisplayString(timeRange, context)}",
-                                      style: themeData
-                                          .appBarTheme.textTheme.headline6,
-                                    ),
                                     SizedBox(
                                       height: 20,
+                                    ),
+                                    Image.asset(
+                                      "src/images/logo-color.png",
+                                      width:
+                                          (MediaQuery.of(context).size.width) /
+                                              6,
+                                      color: Colors.white,
+                                    ),
+                                    SizedBox(
+                                      height: 32,
+                                    ),
+                                    Center(
+                                      child: Text(
+                                        "My ${_getAppBarDisplayString(timeRange, context)}",
+                                        style: Theme.of(context)
+                                            .primaryTextTheme
+                                            .headline3
+                                            .copyWith(
+                                              fontSize: 16,
+                                              color: Colors.white,
+                                              fontWeight: FontWeight.w600,
+                                            ),
+                                      ),
+                                    ),
+                                    SizedBox(
+                                      height: 32,
                                     ),
                                     _getPodcastHistoryList(
                                         context: context,
@@ -145,8 +168,9 @@ class PodcastHistoryPageState extends State<PodcastHistoryPage> {
                             await File('${directory.path}/image.jpg').create();
                         await imagePath.writeAsBytes(image);
                         await Share.shareFiles([imagePath.path],
-                            text: AppLocalizations.of(context)
-                                .podcast_history_share_message);
+                            text: "My " +
+                                _getAppBarDisplayString(timeRange, context) +
+                                " in Breez ⚡ Download here: https://breez.technology");
                       }
                     });
                   },
@@ -155,7 +179,9 @@ class PodcastHistoryPageState extends State<PodcastHistoryPage> {
                     color: Theme.of(context).canvasColor,
                   ),
                   label: Text(
-                      AppLocalizations.of(context).podcast_history_share_text),
+                    AppLocalizations.of(context).podcast_history_share_text,
+                    style: TextStyle(color: themeData.canvasColor),
+                  ),
                 )
               : SizedBox();
         },
@@ -222,6 +248,7 @@ class PodcastHistoryPageState extends State<PodcastHistoryPage> {
                       builder: (context, snapshot) {
                         return snapshot.data
                             ? PopupMenuButton<PodcastHistorySortEnum>(
+                                color: themeData.canvasColor,
                                 padding: EdgeInsets.all(0),
                                 enableFeedback: true,
                                 child: Icon(
@@ -336,6 +363,8 @@ Widget _getPodcastHistoryList(
             }
 
             return Column(
+              mainAxisSize:
+                  getScreenshotWidget ? MainAxisSize.min : MainAxisSize.max,
               children: [
                 for (var i = 0; i < podcastHistoryLength; i++)
                   Padding(
@@ -585,7 +614,7 @@ class _PodcastListTile extends StatelessWidget {
                                 SizedBox(
                                   width: 4,
                                 ),
-                                Text(boostagrams + " Boostagrams")
+                                Text(boostagrams + " boostagrams")
                               ],
                             ),
                           ],
@@ -619,17 +648,14 @@ class _PodcastListTile extends StatelessWidget {
 
 Map<String, String> _podcastListingTimeMap({double durationInMins}) {
   if (durationInMins < 1) {
-    return {
-      "value": "${_truncateDecimals(durationInMins * 60, 2)}",
-      "unit": "secs"
-    };
+    return {"value": "${(durationInMins * 60).toInt()}", "unit": "secs"};
   } else if (durationInMins >= 60) {
     return {
       "value": "${_truncateDecimals(durationInMins / 60, 2)}",
       "unit": "hours"
     };
   } else {
-    return {"value": "${_truncateDecimals(durationInMins, 2)}", "unit": "mins"};
+    return {"value": "${(durationInMins).toInt()}", "unit": "mins"};
   }
 }
 
