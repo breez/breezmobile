@@ -7,13 +7,13 @@ dependencies:
   flutter_localizations:
     sdk: flutter
 
-  app_settings: ^4.1.6
+  app_settings: ^4.1.6 # Outdated
   archive: ^3.1.9
   auto_size_text: ^3.0.0
   badges: ^2.0.2
   bip39: ^1.0.6
   collection: ^1.15.0 # Outdated
-  confetti: ^0.6.0
+  confetti: ^0.6.0 # Outdated
   connectivity_plus: ^2.2.0
   crypto: ^3.0.1
   csv: ^5.0.1
@@ -21,7 +21,7 @@ dependencies:
   drag_and_drop_lists: ^0.3.2+2
   duration: ^3.0.11
   email_validator: ^2.0.1
-  extended_image: ^6.1.0
+  extended_image: ^6.1.0 # Outdated
   file_picker: ^4.5.1
   firebase_core: ^1.15.0
   firebase_database: ^9.0.12
@@ -29,23 +29,25 @@ dependencies:
   firebase_messaging: ^11.2.14
   flushbar: ^1.10.4 # discontinued
   flutter_secure_storage: ^5.0.2
-  flutter_svg: ^1.0.3
+  flutter_svg: ^1.0.3 # Outdated
   flutter_web_browser: ^0.17.1
   google_api_availability: ^3.0.1
   grpc: ^3.0.2
   hex: ^0.2.0
-  image: ^3.1.3
-  image_cropper: ^1.5.1
+  image: ^3.1.3 # Outdated
+  image_cropper: ^2.0.3
   image_picker: ^0.8.5
   ini: ^2.1.0
   intl: ^0.17.0
   json_annotation: ^4.4.0
   logging: ^1.0.2
+  md5_file_checksum: ^1.0.3
+  nfc_manager: ^3.1.1
   package_info_plus: ^1.4.2
   path_provider: ^2.0.8
   printing: ^5.7.5
   protobuf: ^2.0.1
-  qr_code_scanner: ^0.6.1
+  qr_code_scanner: ^0.7.0 # Outdated
   qr_code_tools: ^0.0.7
   # qr_flutter has already fixed the build issue with the qr package but did not publish an updated
   # version, they will publish as 4.0.1 for now they recommend to use the master but instead of that
@@ -55,8 +57,11 @@ dependencies:
       url: https://github.com/theyakka/qr.flutter.git
       ref: 1fc6e38c198a76a6fd60b7bd3b4c190cd6c9330b
   rxdart: ^0.27.3
+  screenshot: ^1.2.3
+  share_plus: ^3.1.0 # Outdated
   shared_preferences: ^2.0.12
-  simple_animations: ^4.0.1
+  shimmer: ^2.0.0
+  simple_animations: ^4.0.2 # Outdated
   sqflite: ^2.0.2
   timeago: ^3.2.1
   tutorial_coach_mark: ^1.2.1
@@ -66,7 +71,6 @@ dependencies:
   validators: ^3.0.0
   webdav_client: ^1.1.2
   webview_flutter: ^3.0.2
-  nfc_manager: ^3.1.1
 
   anytime:
     git:
@@ -87,10 +91,6 @@ dependencies:
   share_extend:
     git:
       url: https://github.com/breez/ShareExtend.git
-  md5_file_checksum: ^1.0.3
-  shimmer: ^2.0.0
-  screenshot: ^1.2.3
-  share_plus: ^3.1.0
 
 dependency_overrides:
   flutter_downloader:
