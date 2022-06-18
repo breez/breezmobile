@@ -41,6 +41,7 @@ ${PodcastHistoryFields.satsSpent} INTEGER NOT NULL,
 ${PodcastHistoryFields.boostagramsSent} INTEGER NOT NULL,
 ${PodcastHistoryFields.podcastName} TEXT NOT NULL,
 ${PodcastHistoryFields.podcastImageUrl} TEXT NOT NULL,
+${PodcastHistoryFields.podcastUrl} TEXT NOT NULL,
 ${PodcastHistoryFields.durationInMins} 'DECIMAL NOT NULL'
  )
  ''');
@@ -91,7 +92,7 @@ ${PodcastHistoryFields.durationInMins} 'DECIMAL NOT NULL'
 
     result = await db.rawQuery('''
 
- SELECT  ${PodcastHistoryFields.podcastId},${PodcastHistoryFields.podcastName},${PodcastHistoryFields.podcastImageUrl},SUM( ${PodcastHistoryFields.durationInMins} ) AS ${PodcastHistoryFields.durationInMins}, SUM( ${PodcastHistoryFields.satsSpent} ) AS ${PodcastHistoryFields.satsSpent} , SUM( ${PodcastHistoryFields.boostagramsSent} ) AS ${PodcastHistoryFields.boostagramsSent}  ,MAX( ${PodcastHistoryFields.timeStamp} ) AS ${PodcastHistoryFields.timeStamp} 
+ SELECT  ${PodcastHistoryFields.podcastId},${PodcastHistoryFields.podcastUrl},${PodcastHistoryFields.podcastName},${PodcastHistoryFields.podcastImageUrl},SUM( ${PodcastHistoryFields.durationInMins} ) AS ${PodcastHistoryFields.durationInMins}, SUM( ${PodcastHistoryFields.satsSpent} ) AS ${PodcastHistoryFields.satsSpent} , SUM( ${PodcastHistoryFields.boostagramsSent} ) AS ${PodcastHistoryFields.boostagramsSent}  ,MAX( ${PodcastHistoryFields.timeStamp} ) AS ${PodcastHistoryFields.timeStamp} 
  FROM $podcastHistoryTable 
  WHERE ${PodcastHistoryFields.timeStamp} >= '${filterStartDate.toIso8601String()}' AND ${PodcastHistoryFields.timeStamp}<='${filterEndDate.toIso8601String()}'
  GROUP BY  ${PodcastHistoryFields.podcastId}

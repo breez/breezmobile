@@ -119,6 +119,7 @@ class PodcastPaymentsBloc with AsyncActionsHandler {
             podcastName: currentPlayedEpisode.metadata["feed"]["title"],
             podcastImageUrl: currentPlayedEpisode.metadata["feed"]["image"],
             satsSpent: 0,
+            podcastUrl: currentPlayedEpisode.metadata["feed"]["originalUrl"],
             durationInMins: updatePodcastHistoryFrequencyInSeconds / 60);
       }
 
@@ -266,6 +267,7 @@ class PodcastPaymentsBloc with AsyncActionsHandler {
               podcastId: episode.metadata["feed"]["id"],
               podcastName: episode.metadata["feed"]["title"],
               podcastImageUrl: episode.metadata["feed"]["image"],
+              podcastUrl: episode.metadata["feed"]["originalUrl"],
               satsSpent: total,
               durationInMins: 0,
               isBoost: boost);
@@ -364,10 +366,12 @@ class PodcastPaymentsBloc with AsyncActionsHandler {
       String podcastName,
       String podcastImageUrl,
       int satsSpent,
+      String podcastUrl,
       double durationInMins,
       bool isBoost = false}) async {
     final podcastHistoryItem = PodcastHistoryModel(
         podcastId: podcastId,
+        podcastUrl: podcastUrl,
         timeStamp: DateTime.now(),
         satsSpent: satsSpent,
         boostagramsSent: isBoost ? 1 : 0,

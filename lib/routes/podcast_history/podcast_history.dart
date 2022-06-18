@@ -13,9 +13,12 @@ import 'package:intl/intl.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:screenshot/screenshot.dart';
 import 'package:share_plus/share_plus.dart';
+import 'package:url_launcher/url_launcher.dart';
 import '../../bloc/blocs_provider.dart';
 import '../../bloc/podcast_history/actions.dart';
 import '../../bloc/podcast_history/podcast_history_bloc.dart';
+import '../../services/deep_links.dart';
+import '../../services/injector.dart';
 import '../../widgets/network_image_builder.dart';
 
 class PodcastHistoryPage extends StatefulWidget {
@@ -370,6 +373,8 @@ Widget _getPodcastHistoryList(
                   Padding(
                     padding: const EdgeInsets.only(bottom: 12),
                     child: _PodcastListTile(
+                        podcastUrl: podcastHistoryListSnapshot
+                            .data.podcastHistoryList[i].podcastUrl,
                         title: podcastHistoryListSnapshot
                             .data.podcastHistoryList[i].podcastName,
                         sats: _getCompactNumber(podcastHistoryListSnapshot
@@ -531,13 +536,16 @@ class _PodcastListTile extends StatelessWidget {
   final String boostagrams;
   final double durationInMins;
   final String imageUrl;
+  final String podcastUrl;
+
   const _PodcastListTile(
       {Key key,
       this.title,
       this.sats,
       this.boostagrams,
       this.durationInMins,
-      this.imageUrl})
+      this.imageUrl,
+      this.podcastUrl})
       : super(key: key);
 
   @override
@@ -551,9 +559,19 @@ class _PodcastListTile extends StatelessWidget {
         height: 100,
         child: Row(
           children: [
-            CustomImageBuilderWidget(
-              imageurl: imageUrl,
-              width: 100,
+            GestureDetector(
+              onTap: () async {
+                DeepLinksService _deepLinks = ServiceInjector().deepLinks;
+                var podcastShareLink =
+                    await _deepLinks.generatePodcastShareLink(
+                  PodcastShareLinkModel(podcastUrl),
+                );
+                launch(podcastShareLink);
+              },
+              child: CustomImageBuilderWidget(
+                imageurl: imageUrl,
+                width: 100,
+              ),
             ),
             Expanded(
               child: Padding(
