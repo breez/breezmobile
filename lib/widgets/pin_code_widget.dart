@@ -268,6 +268,7 @@ class PinCodeWidgetState extends State<PinCodeWidget>
     return InkWell(
       customBorder: CircleBorder(),
       child: Container(
+        // ignore: missing_required_param
         child: TextButton(
           style: TextButton.styleFrom(padding: EdgeInsets.all(0)),
           child: Icon(
@@ -284,6 +285,7 @@ class PinCodeWidgetState extends State<PinCodeWidget>
     return InkWell(
       customBorder: CircleBorder(),
       child: Container(
+        // ignore: missing_required_param
         child: TextButton(
           style: TextButton.styleFrom(padding: EdgeInsets.all(0)),
           child: Icon(
@@ -303,6 +305,7 @@ class PinCodeWidgetState extends State<PinCodeWidget>
     return InkWell(
       customBorder: CircleBorder(),
       child: Container(
+        // ignore: missing_required_param
         child: TextButton(
           style: TextButton.styleFrom(padding: EdgeInsets.all(0)),
           child: Text(

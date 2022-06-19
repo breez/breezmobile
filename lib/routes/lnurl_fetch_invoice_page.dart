@@ -21,6 +21,7 @@ import 'package:breez/widgets/loader.dart';
 import 'package:breez/widgets/single_button_bottom_bar.dart';
 import 'package:breez/widgets/static_loader.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class LNURLFetchInvoicePage extends StatefulWidget {
@@ -184,7 +185,7 @@ class LNURLFetchInvoicePageState extends State<LNURLFetchInvoicePage> {
                           textInputAction: TextInputAction.done,
                           maxLines: null,
                           maxLength: response.commentAllowed.toInt(),
-                          maxLengthEnforced: true,
+                          maxLengthEnforcement: MaxLengthEnforcement.enforced,
                           decoration: InputDecoration(
                             labelText: texts.lnurl_fetch_invoice_comment,
                           ),

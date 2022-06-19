@@ -168,7 +168,6 @@ class AccountPageState extends State<AccountPage>
         payments,
         PAYMENT_LIST_ITEM_HEIGHT,
         widget.firstPaymentItemKey,
-        widget.scrollController,
       ));
       slivers.add(SliverPersistentHeader(
         pinned: true,

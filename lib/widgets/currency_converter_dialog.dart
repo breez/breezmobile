@@ -13,7 +13,6 @@ import 'package:breez/widgets/currency_amount_field_formatter.dart';
 import 'package:breez/widgets/loader.dart';
 import 'package:fixnum/fixnum.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import 'flushbar.dart';

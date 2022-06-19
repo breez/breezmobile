@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 String themeId = "BLUE";
 
@@ -71,7 +72,7 @@ final ThemeData blueTheme = ThemeData(
     ),
     color: Colors.transparent,
     actionsIconTheme: IconThemeData(color: Color.fromRGBO(0, 120, 253, 1.0)),
-    brightness: Brightness.dark,
+    systemOverlayStyle: SystemUiOverlayStyle.light,
   ),
   dialogTheme: DialogTheme(
       titleTextStyle: TextStyle(
@@ -213,7 +214,7 @@ final ThemeData darkTheme = ThemeData(
     ),
     color: Colors.white,
     actionsIconTheme: IconThemeData(color: Colors.white),
-    brightness: Brightness.dark,
+    systemOverlayStyle: SystemUiOverlayStyle.light,
   ),
   dialogTheme: DialogTheme(
       titleTextStyle:

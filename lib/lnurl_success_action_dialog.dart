@@ -6,7 +6,7 @@ import 'package:breez/widgets/flushbar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:share_extend/share_extend.dart';
-import 'package:url_launcher/url_launcher.dart';
+import 'package:url_launcher/url_launcher_string.dart';
 
 void showLNURLSuccessAction(BuildContext context, SuccessAction sa) {
   final texts = AppLocalizations.of(context);
@@ -105,7 +105,7 @@ class _URLRow extends StatelessWidget {
             child: Padding(
               padding: EdgeInsets.zero,
               child: GestureDetector(
-                onTap: () => launch(sharedValue),
+                onTap: () => launchUrlString(sharedValue),
                 child: Text(
                   '$sharedValue',
                   textAlign: TextAlign.left,

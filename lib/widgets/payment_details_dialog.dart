@@ -17,7 +17,6 @@ import 'package:breez/utils/date.dart';
 import 'package:breez/widgets/loader.dart';
 import 'package:collection/collection.dart';
 import 'package:fixnum/fixnum.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:http/http.dart' as http;

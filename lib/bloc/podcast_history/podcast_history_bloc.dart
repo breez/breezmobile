@@ -137,7 +137,8 @@ class PodcastHistoryBloc with AsyncActionsHandler {
   }
 
   @override
-  dispose() {
+  Future dispose() {
     _podcastHistoryRecordBehaviourSubject.close();
+    return super.dispose();
   }
 }

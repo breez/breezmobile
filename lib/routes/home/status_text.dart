@@ -4,8 +4,8 @@ import 'package:breez/utils/min_font_size.dart';
 import 'package:breez/widgets/loading_animated_text.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'package:url_launcher/url_launcher.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:url_launcher/url_launcher_string.dart';
 
 class StatusText extends StatelessWidget {
   final AccountModel account;
@@ -81,7 +81,7 @@ class _LinkTextSpan extends TextSpan {
           text: text ?? url,
           recognizer: TapGestureRecognizer()
             ..onTap = () {
-              launch(url, forceSafariVC: false);
+              launchUrlString(url);
             },
         );
 }

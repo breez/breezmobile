@@ -30,7 +30,6 @@ import 'package:breez/widgets/print_parameters.dart';
 import 'package:breez/widgets/transparent_page_route.dart';
 import 'package:breez/widgets/view_switch.dart';
 import 'package:fixnum/fixnum.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 

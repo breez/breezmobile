@@ -1,5 +1,4 @@
 import 'package:flutter/cupertino.dart';
-import 'package:flutter/material.dart';
 
 class FadeInRoute<T> extends CupertinoPageRoute<T> {
   FadeInRoute({WidgetBuilder builder, RouteSettings settings})

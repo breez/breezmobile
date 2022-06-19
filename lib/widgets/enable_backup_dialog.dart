@@ -4,7 +4,6 @@ import 'package:breez/bloc/backup/backup_bloc.dart';
 import 'package:breez/bloc/backup/backup_model.dart';
 import 'package:breez/routes/security_pin/remote_server_auth.dart';
 import 'package:breez/utils/min_font_size.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
@@ -52,7 +51,7 @@ class EnableBackupDialogState extends State<EnableBackupDialog> {
                   return Container();
                 }
                 bool isRemoteServer = snapshot.data.backupProvider ==
-                    BackupSettings.remoteServerBackupProvider;
+                    BackupSettings.remoteServerBackupProvider();
                 return Container(
                   width: MediaQuery.of(context).size.width,
                   child: Column(
@@ -134,7 +133,7 @@ class EnableBackupDialogState extends State<EnableBackupDialog> {
                     return Container();
                   }
                   bool isRemoteServer = snapshot.data.backupProvider ==
-                      BackupSettings.remoteServerBackupProvider;
+                      BackupSettings.remoteServerBackupProvider();
                   return TextButton(
                     onPressed: (() async {
                       Navigator.pop(widget.context);
@@ -149,19 +148,18 @@ class EnableBackupDialogState extends State<EnableBackupDialog> {
 
                       if (provider != null) {
                         if (widget.signInNeeded &&
-                            provider == BackupSettings.icloudBackupProvider) {
+                            provider == BackupSettings.icloudBackupProvider()) {
                           await promptError(
                               context,
                               texts.backup_dialog_icloud_error_title,
-                              Text(
-                                  texts.backup_dialog_icloud_error_message,
+                              Text(texts.backup_dialog_icloud_error_message,
                                   style: Theme.of(context)
                                       .dialogTheme
                                       .contentTextStyle));
                           return;
                         }
                         if (provider ==
-                            BackupSettings.remoteServerBackupProvider) {
+                            BackupSettings.remoteServerBackupProvider()) {
                           promptAuthData(context, restore: false).then((auth) {
                             if (auth != null) {
                               var action = UpdateBackupSettings(snapshot.data

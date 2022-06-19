@@ -70,6 +70,7 @@ class BoostWidget extends StatelessWidget {
                   acc.data,
                   userModel.paymentOptions.preferredBoostValue,
                 ),
+                // ignore: missing_required_param
                 child: TextButton.icon(
                   style: TextButton.styleFrom(
                     padding: const EdgeInsets.symmetric(
