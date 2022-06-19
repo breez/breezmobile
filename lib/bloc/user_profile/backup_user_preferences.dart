@@ -81,7 +81,7 @@ class BackupUserPreferences {
         'themeId': themeId,
         'preferredCurrencies': preferredCurrencies,
         'cancellationTimeoutValue': cancellationTimeoutValue,
-        'businessAddress': businessAddress,
-        'paymentOptions': paymentOptions,
+        'businessAddress': businessAddress.toJson(),
+        'paymentOptions': paymentOptions.toJson(),
       };
 }
