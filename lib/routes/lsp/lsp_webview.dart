@@ -61,9 +61,9 @@ class LSPWebViewPageState extends State<LSPWebViewPage> {
                 : NavigationDecision.navigate,
         onPageFinished: (String url) async {
           // redirect post messages to javascript channel
-          _webViewController.evaluateJavascript(
-              "window.onmessage = (message) => window.BreezWebView.postMessage(message.data);");
-          _webViewController.evaluateJavascript(await rootBundle
+          _webViewController.runJavascript(
+              'window.onmessage = (message) => window.BreezWebView.postMessage(message.data);');
+          _webViewController.runJavascript(await rootBundle
               .loadString('src/scripts/lightningLinkInterceptor.js'));
         },
       ),

@@ -93,13 +93,13 @@ class VendorWebViewPageState extends State<VendorWebViewPage> {
                 _handleNavigationRequest(request),
             onPageFinished: (String url) async {
               // intercept ln link clicks
-              _webViewController.evaluateJavascript(await rootBundle
+              _webViewController.runJavascript(await rootBundle
                   .loadString('src/scripts/lightningLinkInterceptor.js'));
               // redirect post messages to javascript channel
-              _webViewController.evaluateJavascript(
-                  "window.onmessage = (message) => window.BreezWebView.postMessage(message.data);");
+              _webViewController.runJavascript(
+                  'window.onmessage = (message) => window.BreezWebView.postMessage(message.data);');
               _webViewController
-                  .evaluateJavascript(await _weblnHandlers.initWeblnScript);
+                  .runJavascript(await _weblnHandlers.initWeblnScript);
               print('Page finished loading: $url');
             },
             initialUrl: widget._url),
@@ -135,7 +135,7 @@ class VendorWebViewPageState extends State<VendorWebViewPage> {
           } else {
             _weblnHandlers.handleMessage(postMessage).then((resScript) {
               if (resScript != null) {
-                _webViewController.evaluateJavascript(resScript);
+                _webViewController.runJavascript(resScript);
               }
             });
           }

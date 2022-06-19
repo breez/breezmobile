@@ -105,10 +105,10 @@ class MoonpayWebViewState extends State<MoonpayWebView> {
                           : NavigationDecision.navigate,
                   onPageFinished: (String url) async {
                     // redirect post messages to javascript channel
-                    _webViewController.evaluateJavascript(
-                      "window.onmessage = (message) => window.BreezWebView.postMessage(message.data);",
+                    _webViewController.runJavascript(
+                      'window.onmessage = (message) => window.BreezWebView.postMessage(message.data);',
                     );
-                    _webViewController.evaluateJavascript(
+                    _webViewController.runJavascript(
                       await rootBundle.loadString('src/scripts/moonpay.js'),
                     );
                   },
