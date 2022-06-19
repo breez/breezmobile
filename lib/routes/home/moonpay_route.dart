@@ -27,7 +27,7 @@ void showMoonpayWebview(BuildContext context) {
     FlutterWebBrowser.openWebPage(
       url: order.url,
       customTabsOptions: CustomTabsOptions(
-        addDefaultShareMenuItem: true,
+        shareState: CustomTabsShareState.on,
         showTitle: true,
         urlBarHidingEnabled: true,
       ),
