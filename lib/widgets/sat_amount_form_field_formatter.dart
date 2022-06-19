@@ -1,6 +1,6 @@
 import 'package:breez/bloc/user_profile/currency.dart';
-import 'package:flutter/services.dart';
 import 'package:fixnum/fixnum.dart';
+import 'package:flutter/services.dart';
 
 class SatAmountFormFieldFormatter extends TextInputFormatter {
   final RegExp _pattern = RegExp(r'[^\d*]');
