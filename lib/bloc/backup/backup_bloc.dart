@@ -255,24 +255,14 @@ class BackupBloc {
       BackupUserPreferences storedUserPreferences =
           await _getSavedUserPreferences(backupUserPrefsPath);
       // Update and trigger backup if user preferences has changed
-      if (_compareBackupUserPreferences(
-          userPreferences, storedUserPreferences)) {
+      if (userPreferences.toJson().toString() !=
+          storedUserPreferences.toJson().toString()) {
         await _updateUserPreferences(user)
             .then((_) => backupAppDataSink.add(true));
       }
     } else {
       await _saveUserPreferences();
     }
-  }
-
-  bool _compareBackupUserPreferences(BackupUserPreferences userPreferences,
-      BackupUserPreferences storedUserPreferences) {
-    return userPreferences.toJson().toString() !=
-            storedUserPreferences.toJson().toString() ||
-        userPreferences.businessAddress.toJson().toString() !=
-            storedUserPreferences.businessAddress.toJson().toString() ||
-        userPreferences.paymentOptions.toJson().toString() !=
-            storedUserPreferences.paymentOptions.toJson().toString();
   }
 
   Future<BackupUserPreferences> _getSavedUserPreferences(
