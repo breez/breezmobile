@@ -23,19 +23,15 @@ const AVATAR_DIAMETER = 24.0;
 
 class PaymentItem extends StatelessWidget {
   final PaymentInfo _paymentInfo;
-  final int _itemIndex;
   final bool _firstItem;
   final bool _hideBalance;
   final GlobalKey firstPaymentItemKey;
-  final ScrollController _scrollController;
 
   const PaymentItem(
     this._paymentInfo,
-    this._itemIndex,
     this._firstItem,
     this._hideBalance,
     this.firstPaymentItemKey,
-    this._scrollController,
   );
 
   @override
