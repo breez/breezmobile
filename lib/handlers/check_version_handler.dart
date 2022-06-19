@@ -7,7 +7,7 @@ import 'package:flushbar/flushbar.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:url_launcher/url_launcher.dart';
+import 'package:url_launcher/url_launcher_string.dart';
 
 void checkVersionDialog(
   BuildContext context,
@@ -34,10 +34,11 @@ void checkVersionDialog(
         buttonText: texts.handler_check_version_action_update,
         onDismiss: () {
           if (defaultTargetPlatform == TargetPlatform.iOS) {
-            launch("https://testflight.apple.com/join/wPju2Du7");
+            launchUrlString('https://testflight.apple.com/join/wPju2Du7');
           }
           if (defaultTargetPlatform == TargetPlatform.android) {
-            launch("https://play.google.com/apps/testing/com.breez.client");
+            launchUrlString(
+                'https://play.google.com/apps/testing/com.breez.client');
           }
           return false;
         },
