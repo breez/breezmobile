@@ -1,12 +1,13 @@
 import 'dart:async';
 import 'dart:io';
+
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:qr_code_scanner/qr_code_scanner.dart';
 import 'package:qr_code_tools/qr_code_tools.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class QRScan extends StatefulWidget {
   @override
@@ -64,8 +65,8 @@ class QRScanState extends State<QRScan> {
                 ),
                 onPressed: () async {
                   final _picker = ImagePicker();
-                  PickedFile pickedFile = await _picker
-                      .getImage(source: ImageSource.gallery)
+                  XFile pickedFile = await _picker
+                      .pickImage(source: ImageSource.gallery)
                       .catchError((err) {});
                   final File file = File(pickedFile.path);
                   try {
