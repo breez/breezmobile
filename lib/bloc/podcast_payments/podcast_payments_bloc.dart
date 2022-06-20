@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
+import 'dart:developer';
 import 'package:anytime/bloc/podcast/audio_bloc.dart';
 import 'package:anytime/bloc/settings/settings_bloc.dart';
 import 'package:anytime/entities/episode.dart';
@@ -82,6 +83,7 @@ class PodcastPaymentsBloc with AsyncActionsHandler {
     var sharedPreferences = await injector.sharedPreferences;
     _aggregatedPayments = AggregatedPayments(sharedPreferences);
     // start the payment ticker
+    num secondsPassed = 0.0;
     Timer.periodic(Duration(seconds: 1), (t) async {
       // calculate episode and playing state
       var playingState = await _getAudioState();
@@ -99,7 +101,9 @@ class PodcastPaymentsBloc with AsyncActionsHandler {
 
       if (_listeningTime[currentPlayedEpisode.contentUrl] == null) {
         _listeningTime[currentPlayedEpisode.contentUrl] = 0.0;
+        secondsPassed = 0.0;
       }
+      secondsPassed += 1;
       // minutes before next payment
       var paidMinutes = Duration(
               seconds: _listeningTime[currentPlayedEpisode.contentUrl].floor())
@@ -111,16 +115,15 @@ class PodcastPaymentsBloc with AsyncActionsHandler {
               seconds: _listeningTime[currentPlayedEpisode.contentUrl].floor())
           .inMinutes;
 
-      if (_listeningTime[currentPlayedEpisode.contentUrl].floor() %
-              updatePodcastHistoryFrequencyInSeconds ==
-          0) {
+      if (secondsPassed % updatePodcastHistoryFrequencyInSeconds == 0) {
         _addToPodcastHistory(
             podcastId: currentPlayedEpisode.metadata["feed"]["id"].toString(),
             podcastName: currentPlayedEpisode.metadata["feed"]["title"],
             podcastImageUrl: currentPlayedEpisode.metadata["feed"]["image"],
             satsSpent: 0,
             podcastUrl: currentPlayedEpisode.metadata["feed"]["originalUrl"],
-            durationInMins: updatePodcastHistoryFrequencyInSeconds / 60);
+            durationInMins:
+                (updatePodcastHistoryFrequencyInSeconds * playbackSpeed) / 60);
       }
 
       // if minutes increased
