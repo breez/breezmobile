@@ -2,6 +2,9 @@ import 'dart:async';
 import 'dart:io';
 import 'dart:math';
 import 'dart:typed_data';
+import 'package:anytime/bloc/podcast/podcast_bloc.dart';
+import 'package:anytime/entities/podcast.dart';
+import 'package:anytime/ui/podcast/podcast_details.dart';
 import 'package:breez/bloc/podcast_history/model.dart';
 import 'package:breez/theme_data.dart' as theme;
 import 'package:breez/widgets/back_button.dart' as backBtn;
@@ -13,12 +16,10 @@ import 'package:intl/intl.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:screenshot/screenshot.dart';
 import 'package:share_plus/share_plus.dart';
-import 'package:url_launcher/url_launcher.dart';
+import 'package:provider/provider.dart';
 import '../../bloc/blocs_provider.dart';
 import '../../bloc/podcast_history/actions.dart';
 import '../../bloc/podcast_history/podcast_history_bloc.dart';
-import '../../services/deep_links.dart';
-import '../../services/injector.dart';
 import '../../widgets/network_image_builder.dart';
 
 class PodcastHistoryPage extends StatefulWidget {
@@ -49,8 +50,6 @@ class PodcastHistoryPageState extends State<PodcastHistoryPage> {
 
   @override
   Widget build(BuildContext context) {
-    final texts = AppLocalizations.of(context);
-
     final podcastHistoryBloc = AppBlocsProvider.of<PodcastHistoryBloc>(context);
     return StreamBuilder<PodcastHistoryTimeRange>(
         stream: podcastHistoryBloc.posReportRange.distinct(),
@@ -561,12 +560,19 @@ class _PodcastListTile extends StatelessWidget {
           children: [
             GestureDetector(
               onTap: () async {
-                DeepLinksService _deepLinks = ServiceInjector().deepLinks;
-                var podcastShareLink =
-                    await _deepLinks.generatePodcastShareLink(
-                  PodcastShareLinkModel(podcastUrl),
+                Navigator.pushAndRemoveUntil(
+                  context,
+                  MaterialPageRoute<void>(
+                    builder: (context) => PodcastDetails(
+                      Podcast.fromUrl(url: podcastUrl),
+                      Provider.of<PodcastBloc>(
+                        context,
+                        listen: false,
+                      ),
+                    ),
+                  ),
+                  ModalRoute.withName('/'),
                 );
-                launch(podcastShareLink);
               },
               child: CustomImageBuilderWidget(
                 imageurl: imageUrl,
