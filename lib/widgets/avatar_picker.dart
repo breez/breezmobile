@@ -112,7 +112,7 @@ class AvatarPicker extends StatelessWidget {
             ratioY: 1.0,
           ),
         )
-        .then((file) => _readFile(context, file));
+        .then((croppedFile) => _readFile(context, File(croppedFile.path)));
   }
 
   void _readFile(BuildContext context, File file) {
