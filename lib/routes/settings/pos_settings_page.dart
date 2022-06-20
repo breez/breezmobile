@@ -417,9 +417,10 @@ class PosSettingsPageState extends State<_PosSettingsPage> {
   }) async {
     final texts = AppLocalizations.of(context);
     final backupBloc = AppBlocsProvider.of<BackupBloc>(context);
-    final backupState = await backupBloc.backupStateStream.first;
+    final backupState = await backupBloc.backupStateStream.first
+        .onError((error, stackTrace) => null);
 
-    if (backupState.lastBackupTime == null) {
+    if (backupState?.lastBackupTime == null) {
       await promptError(
         context,
         texts.pos_settings_manager_password_error_title,
