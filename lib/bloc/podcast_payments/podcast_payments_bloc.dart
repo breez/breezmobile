@@ -267,7 +267,7 @@ class PodcastPaymentsBloc with AsyncActionsHandler {
           log.info("succesfully paid $netPay to destination ${d.address}");
 
           _addToPodcastHistory(
-              podcastId: episode.metadata["feed"]["id"],
+              podcastId: episode.metadata["feed"]["id"].toString(),
               podcastName: episode.metadata["feed"]["title"],
               podcastImageUrl: episode.metadata["feed"]["image"],
               podcastUrl: episode.metadata["feed"]["originalUrl"],
