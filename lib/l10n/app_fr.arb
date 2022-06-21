@@ -1533,6 +1533,21 @@
       }
     }
   },
+  "pos_payment_nfc_error_title": "NFC Payment error",
+  "pos_payment_nfc_range_error": "Only payments between {minValue} and {maxValue} are allowed.",
+  "@pos_payment_nfc_range_error": {
+    "placeholders": {
+      "minValue": {
+        "type": "String",
+        "example": "1000 sats"
+      },
+      "maxValue": {
+        "type": "String",
+        "example": "1000 sats"
+      }
+    }
+  },
+  "pos_payment_nfc_error_action_close": "FERMER",
   "successful_payment_print": "Imprimer",
   "successful_payment_received": "Paiement reçu !",
   "payment_options_title": "Lightning Fees",

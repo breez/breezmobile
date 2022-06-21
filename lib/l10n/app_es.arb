@@ -1533,6 +1533,21 @@
       }
     }
   },
+  "pos_payment_nfc_error_title": "Error en el pago con NFC",
+  "pos_payment_nfc_range_error": "Solo se permiten pagos entre {minValue} y {maxValue}.",
+  "@pos_payment_nfc_range_error": {
+    "placeholders": {
+      "minValue": {
+        "type": "String",
+        "example": "1000 sats"
+      },
+      "maxValue": {
+        "type": "String",
+        "example": "1000 sats"
+      }
+    }
+  },
+  "pos_payment_nfc_error_action_close": "CLOSE",
   "successful_payment_print": "Imprimir",
   "successful_payment_received": "¡Pago recibido!",
   "payment_options_title": "Tarifas de la red Lightning",

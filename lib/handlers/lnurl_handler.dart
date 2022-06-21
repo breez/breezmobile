@@ -13,24 +13,29 @@ import '../routes/create_invoice/create_invoice_page.dart';
 import '../routes/lnurl_fetch_invoice_page.dart';
 
 class LNURLHandler {
-  final BuildContext _context;
+  static LNURLHandler _instance;
+
   final LNUrlBloc lnurlBloc;
   ModalRoute _loaderRoute;
+  WithdrawResponseInterceptor withdrawFetchResponseInterceptor;
 
-  LNURLHandler(this._context, this.lnurlBloc) {
-    final texts = AppLocalizations.of(_context);
-    final themeData = Theme.of(_context);
+  factory LNURLHandler(BuildContext context, LNUrlBloc lnurlBloc) =>
+      _instance ??= LNURLHandler._(context, lnurlBloc);
+
+  LNURLHandler._(BuildContext context, this.lnurlBloc) {
+    final texts = AppLocalizations.of(context);
+    final themeData = Theme.of(context);
 
     lnurlBloc.listenLNUrl().listen((response) {
       if (response.runtimeType == fetchLNUrlState) {
-        _setLoading(response == fetchLNUrlState.started);
+        _setLoading(context, response == fetchLNUrlState.started);
       } else {
-        return executeLNURLResponse(_context, lnurlBloc, response);
+        return executeLNURLResponse(context, lnurlBloc, response);
       }
     }).onError((err) async {
       final errorMessage = _getErrorMessage(texts, err.toString());
       promptError(
-        this._context,
+        context,
         texts.handler_lnurl_error_link,
         Text(
           texts.handler_lnurl_error_process(errorMessage),
@@ -61,16 +66,20 @@ class LNURLHandler {
     if (response.runtimeType == ChannelFetchResponse) {
       _openLNURLChannel(context, lnurlBloc, response);
     } else if (response.runtimeType == WithdrawFetchResponse) {
-      Navigator.popUntil(context, (route) {
-        return route.settings.name == "/";
-      });
+      if (withdrawFetchResponseInterceptor != null) {
+        withdrawFetchResponseInterceptor.intercept(response);
+      } else {
+        Navigator.popUntil(context, (route) {
+          return route.settings.name == "/";
+        });
 
-      navigator.push(FadeInRoute(
-        builder: (_) => withBreezTheme(
-          context,
-          CreateInvoicePage(lnurlWithdraw: response),
-        ),
-      ));
+        navigator.push(FadeInRoute(
+          builder: (_) => withBreezTheme(
+            context,
+            CreateInvoicePage(lnurlWithdraw: response),
+          ),
+        ));
+      }
     } else if (response is AuthFetchResponse) {
       Navigator.popUntil(context, (route) {
         return route.settings.name == "/";
@@ -190,16 +199,20 @@ class LNURLHandler {
     });
   }
 
-  _setLoading(bool visible) {
+  _setLoading(BuildContext context, bool visible) {
     if (visible && _loaderRoute == null) {
-      _loaderRoute = createLoaderRoute(_context);
-      Navigator.of(_context).push(_loaderRoute);
+      _loaderRoute = createLoaderRoute(context);
+      Navigator.of(context).push(_loaderRoute);
       return;
     }
 
     if (!visible && _loaderRoute != null) {
-      Navigator.removeRoute(_context, _loaderRoute);
+      Navigator.removeRoute(context, _loaderRoute);
       _loaderRoute = null;
     }
   }
+}
+
+abstract class WithdrawResponseInterceptor {
+  void intercept(WithdrawFetchResponse response);
 }

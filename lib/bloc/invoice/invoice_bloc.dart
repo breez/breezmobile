@@ -45,6 +45,11 @@ class InvoiceBloc with AsyncActionsHandler {
   Stream<PaymentRequestModel> get paidInvoicesStream =>
       _paidInvoicesController.stream;
 
+  final _paidNfcSalesController =
+      StreamController<PaymentRequestModel>.broadcast();
+  Stream<PaymentRequestModel> get paidNfcSalesStream =>
+      _paidNfcSalesController.stream;
+
   Int64 payBlankAmount = Int64(-1);
   BreezBridge _breezLib;
   Device device;
@@ -63,6 +68,7 @@ class InvoiceBloc with AsyncActionsHandler {
     _listenPaidInvoices(_breezLib);
     registerAsyncHandlers({
       NewInvoice: _newInvoice,
+      NfcSaleRequestModel: _nfcSaleRequestModel,
     });
     listenActions();
   }
@@ -131,6 +137,29 @@ class InvoiceBloc with AsyncActionsHandler {
         await _breezLib.getPaymentRequestHash(payReq.paymentRequest);
     action.resolve(PaymentRequestModel(
         memo, payReq.paymentRequest, paymentHash, payReq.lspFee));
+  }
+
+  Future _nfcSaleRequestModel(NfcSaleRequestModel action) async {
+    log.info("Starting NFC Sale");
+    _breezLib.addInvoice(
+      action.amount,
+      payeeName: action.payeeName,
+      payeeImageURL: action.logo,
+      description: action.description,
+      expiry: action.expiry,
+    ).then((payReq) async {
+      log.info("NFC Payment Request received");
+      final request = payReq.paymentRequest;
+      final memo = await _breezLib.decodePaymentRequest(request);
+      final paymentHash = await _breezLib.getPaymentRequestHash(request);
+      await _breezLib.withdrawLNUrl(request);
+      _paidNfcSalesController.add(PaymentRequestModel(
+        memo,
+        request,
+        paymentHash,
+        payReq.lspFee,
+      ));
+    }).catchError(_paidNfcSalesController.addError);
   }
 
   void _listenIncomingInvoices(
@@ -226,5 +255,6 @@ class InvoiceBloc with AsyncActionsHandler {
     _receivedInvoicesController.close();
     _paidInvoicesController.close();
     _decodeInvoiceController.close();
+    _paidNfcSalesController.close();
   }
 }
