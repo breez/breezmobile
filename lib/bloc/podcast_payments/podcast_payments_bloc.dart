@@ -82,6 +82,7 @@ class PodcastPaymentsBloc with AsyncActionsHandler {
     var sharedPreferences = await injector.sharedPreferences;
     _aggregatedPayments = AggregatedPayments(sharedPreferences);
     // start the payment ticker
+    num secondsPassed = 0.0;
     Timer.periodic(Duration(seconds: 1), (t) async {
       // calculate episode and playing state
       var playingState = await _getAudioState();
@@ -99,7 +100,9 @@ class PodcastPaymentsBloc with AsyncActionsHandler {
 
       if (_listeningTime[currentPlayedEpisode.contentUrl] == null) {
         _listeningTime[currentPlayedEpisode.contentUrl] = 0.0;
+        secondsPassed = 0.0;
       }
+      secondsPassed += 1;
       // minutes before next payment
       var paidMinutes = Duration(
               seconds: _listeningTime[currentPlayedEpisode.contentUrl].floor())
@@ -111,15 +114,15 @@ class PodcastPaymentsBloc with AsyncActionsHandler {
               seconds: _listeningTime[currentPlayedEpisode.contentUrl].floor())
           .inMinutes;
 
-      if (_listeningTime[currentPlayedEpisode.contentUrl].floor() %
-              updatePodcastHistoryFrequencyInSeconds ==
-          0) {
+      if (secondsPassed % updatePodcastHistoryFrequencyInSeconds == 0) {
         _addToPodcastHistory(
             podcastId: currentPlayedEpisode.metadata["feed"]["id"].toString(),
             podcastName: currentPlayedEpisode.metadata["feed"]["title"],
             podcastImageUrl: currentPlayedEpisode.metadata["feed"]["image"],
             satsSpent: 0,
-            durationInMins: updatePodcastHistoryFrequencyInSeconds / 60);
+            podcastUrl: currentPlayedEpisode.metadata["feed"]["originalUrl"],
+            durationInMins:
+                (updatePodcastHistoryFrequencyInSeconds * playbackSpeed) / 60);
       }
 
       // if minutes increased
@@ -263,10 +266,11 @@ class PodcastPaymentsBloc with AsyncActionsHandler {
           log.info("succesfully paid $netPay to destination ${d.address}");
 
           _addToPodcastHistory(
-              podcastId: episode.metadata["feed"]["id"],
+              podcastId: episode.metadata["feed"]["id"].toString(),
               podcastName: episode.metadata["feed"]["title"],
               podcastImageUrl: episode.metadata["feed"]["image"],
-              satsSpent: total,
+              podcastUrl: episode.metadata["feed"]["originalUrl"],
+              satsSpent: netPay,
               durationInMins: 0,
               isBoost: boost);
 
@@ -364,10 +368,12 @@ class PodcastPaymentsBloc with AsyncActionsHandler {
       String podcastName,
       String podcastImageUrl,
       int satsSpent,
+      String podcastUrl,
       double durationInMins,
       bool isBoost = false}) async {
     final podcastHistoryItem = PodcastHistoryModel(
         podcastId: podcastId,
+        podcastUrl: podcastUrl,
         timeStamp: DateTime.now(),
         satsSpent: satsSpent,
         boostagramsSent: isBoost ? 1 : 0,

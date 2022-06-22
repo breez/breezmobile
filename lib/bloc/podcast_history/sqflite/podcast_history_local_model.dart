@@ -35,7 +35,8 @@ class PodcastHistoryFields {
     boostagramsSent,
     podcastName,
     durationInMins,
-    podcastImageUrl
+    podcastImageUrl,
+    podcastUrl
   ];
 
   static final String fieldId = '_id';
@@ -46,6 +47,7 @@ class PodcastHistoryFields {
   static final String durationInMins = 'durationInMins';
   static final String podcastName = 'podcastName';
   static final String podcastImageUrl = 'podcastImageUrl';
+  static final String podcastUrl = 'podcastUrl';
 }
 
 class PodcastHistoryModel {
@@ -57,6 +59,7 @@ class PodcastHistoryModel {
   final double durationInMins;
   final String podcastName;
   final String podcastImageUrl;
+  final String podcastUrl;
 
   PodcastHistoryModel(
       {this.fieldId,
@@ -66,7 +69,8 @@ class PodcastHistoryModel {
       this.boostagramsSent,
       this.durationInMins,
       this.podcastName,
-      this.podcastImageUrl});
+      this.podcastImageUrl,
+      this.podcastUrl});
 
   Map<String, Object> toJson() => {
         PodcastHistoryFields.fieldId: fieldId,
@@ -78,6 +82,7 @@ class PodcastHistoryModel {
         PodcastHistoryFields.boostagramsSent: boostagramsSent,
         PodcastHistoryFields.podcastName: podcastName,
         PodcastHistoryFields.podcastImageUrl: podcastImageUrl,
+        PodcastHistoryFields.podcastUrl: podcastUrl,
       };
 
   static PodcastHistoryModel fromJson(Map<String, Object> json) =>
@@ -92,6 +97,7 @@ class PodcastHistoryModel {
         durationInMins: json[PodcastHistoryFields.durationInMins] as double,
         podcastName: json[PodcastHistoryFields.podcastName] as String,
         podcastImageUrl: json[PodcastHistoryFields.podcastImageUrl] as String,
+        podcastUrl: json[PodcastHistoryFields.podcastUrl] as String,
       );
 
   PodcastHistoryModel copy(
@@ -101,14 +107,15 @@ class PodcastHistoryModel {
           int satsSpent,
           int boostagramsSent,
           String podcastName,
-          String podcastImageUrl}) =>
+          String podcastImageUrl,
+          String podcastUrl}) =>
       PodcastHistoryModel(
-        fieldId: fieldId ?? this.fieldId,
-        podcastId: podcastId ?? this.podcastId,
-        satsSpent: satsSpent ?? this.satsSpent,
-        durationInMins: durationInMins ?? this.durationInMins,
-        boostagramsSent: boostagramsSent ?? this.boostagramsSent,
-        podcastName: podcastName ?? this.podcastName,
-        podcastImageUrl: podcastImageUrl ?? this.podcastImageUrl,
-      );
+          fieldId: fieldId ?? this.fieldId,
+          podcastId: podcastId ?? this.podcastId,
+          satsSpent: satsSpent ?? this.satsSpent,
+          durationInMins: durationInMins ?? this.durationInMins,
+          boostagramsSent: boostagramsSent ?? this.boostagramsSent,
+          podcastName: podcastName ?? this.podcastName,
+          podcastImageUrl: podcastImageUrl ?? this.podcastImageUrl,
+          podcastUrl: podcastUrl ?? this.podcastUrl);
 }
