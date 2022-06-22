@@ -1,6 +1,5 @@
 import 'dart:async';
 import 'dart:convert';
-import 'dart:developer';
 import 'package:anytime/bloc/podcast/audio_bloc.dart';
 import 'package:anytime/bloc/settings/settings_bloc.dart';
 import 'package:anytime/entities/episode.dart';
@@ -271,7 +270,7 @@ class PodcastPaymentsBloc with AsyncActionsHandler {
               podcastName: episode.metadata["feed"]["title"],
               podcastImageUrl: episode.metadata["feed"]["image"],
               podcastUrl: episode.metadata["feed"]["originalUrl"],
-              satsSpent: total,
+              satsSpent: netPay,
               durationInMins: 0,
               isBoost: boost);
 
