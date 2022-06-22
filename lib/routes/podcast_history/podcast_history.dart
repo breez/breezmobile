@@ -5,6 +5,7 @@ import 'dart:typed_data';
 import 'package:anytime/bloc/podcast/podcast_bloc.dart';
 import 'package:anytime/entities/podcast.dart';
 import 'package:anytime/ui/podcast/podcast_details.dart';
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:breez/bloc/podcast_history/model.dart';
 import 'package:breez/theme_data.dart' as theme;
 import 'package:breez/widgets/back_button.dart' as backBtn;
@@ -20,7 +21,9 @@ import 'package:provider/provider.dart';
 import '../../bloc/blocs_provider.dart';
 import '../../bloc/podcast_history/actions.dart';
 import '../../bloc/podcast_history/podcast_history_bloc.dart';
+import '../../utils/min_font_size.dart';
 import '../../widgets/network_image_builder.dart';
+import '../../widgets/single_button_bottom_bar.dart';
 
 class PodcastHistoryPage extends StatefulWidget {
   const PodcastHistoryPage({
@@ -56,7 +59,8 @@ class PodcastHistoryPageState extends State<PodcastHistoryPage> {
         initialData: PodcastHistoryTimeRange.monthly(),
         builder: (context, snapshot) {
           if (snapshot.hasData) {
-            final timeRange = snapshot.data ?? PodcastHistoryTimeRange.daily();
+            final timeRange =
+                snapshot.data ?? PodcastHistoryTimeRange.monthly();
 
             return _build(context, timeRange, podcastHistoryBloc);
           } else {
@@ -95,11 +99,9 @@ class PodcastHistoryPageState extends State<PodcastHistoryPage> {
                   .add(UpdatePodcastHistoryTimeRange(value));
             },
             itemBuilder: (ctx) => [
-              PodcastHistoryTimeRange.daily(),
               PodcastHistoryTimeRange.weekly(),
               PodcastHistoryTimeRange.monthly(),
               PodcastHistoryTimeRange.yearly(),
-              PodcastHistoryTimeRange.allTime()
             ].map((e) => _timeRangeDropdownItem(context, e)).toList(),
           )
         ],
@@ -188,112 +190,176 @@ class PodcastHistoryPageState extends State<PodcastHistoryPage> {
               : SizedBox();
         },
       ),
-      body: SingleChildScrollView(
-        child: Padding(
-          padding: EdgeInsets.only(top: 16.0, left: 16.0, right: 16.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              StreamBuilder<PodcastHistoryRecord>(
-                  stream: podcastHistoryBloc.podcastHistoryRecord,
-                  initialData: PodcastHistoryRecord(
-                      totalDurationInMinsSum: 0,
-                      totalBoostagramSentSum: 0,
-                      totalSatsStreamedSum: 0),
-                  builder: (context, snapshot) {
-                    return snapshot.data != null
-                        ? Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              _PodcastStatItem(
-                                  svg: "src/icon/schedule_icon.svg",
-                                  label:
-                                      '${_podcastListingTimeMap(durationInMins: snapshot.data.totalDurationInMinsSum)["unit"]} listened',
-                                  value: _podcastListingTimeMap(
-                                      durationInMins: snapshot.data
-                                          .totalDurationInMinsSum)["value"]),
-                              _PodcastStatItem(
-                                svg: "src/icon/satoshi_icon.svg",
-                                label: AppLocalizations.of(context)
-                                    .podcast_history_sats_streamed,
-                                value: _getCompactNumber(
-                                    snapshot.data.totalSatsStreamedSum),
-                              ),
-                              _PodcastStatItem(
-                                svg: "src/icon/rocket_launch_icon.svg",
-                                label: AppLocalizations.of(context)
-                                    .podcast_history_boostagrams_sent,
-                                value: _getCompactNumber(
-                                    snapshot.data.totalBoostagramSentSum),
-                              ),
-                            ],
-                          )
-                        : SizedBox();
-                  }),
-              SizedBox(
-                height: 16,
-              ),
-              Divider(
-                thickness: 2,
-              ),
-              SizedBox(
-                height: 16,
-              ),
-              Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text("PODCASTS"),
-                  Spacer(),
-                  StreamBuilder<bool>(
-                      stream: podcastHistoryBloc.showShareButton,
-                      initialData: false,
-                      builder: (context, snapshot) {
-                        return snapshot.data
-                            ? PopupMenuButton<PodcastHistorySortEnum>(
-                                color: themeData.canvasColor,
-                                padding: EdgeInsets.all(0),
-                                enableFeedback: true,
-                                child: Icon(
-                                  Icons.filter_list,
-                                  color: theme.themeId != "BLUE"
-                                      ? Colors.white
-                                      : theme.BreezColors.white[400],
-                                ),
-                                onSelected: (value) {
-                                  AppBlocsProvider.of<PodcastHistoryBloc>(
-                                          context)
-                                      .updateSortOption(value);
-                                },
-                                itemBuilder: (ctx) => [
-                                  PodcastHistorySortEnum.SORT_RECENTLY_HEARD,
-                                  PodcastHistorySortEnum
-                                      .SORT_DURATION_DESCENDING,
-                                  PodcastHistorySortEnum.SORT_SATS_DESCENDING,
-                                ]
-                                    .map((e) => _listSortDropdownItem(
-                                          context,
-                                          e,
-                                        ))
-                                    .toList(),
-                              )
-                            : SizedBox();
-                      }),
-                ],
-              ),
-              SizedBox(
-                height: 12,
-              ),
-              _getPodcastHistoryList(
-                  context: context,
-                  getScreenshotWidget: false,
-                  timeRange: timeRange),
-              SizedBox(
-                height: 40,
-              )
-            ],
-          ),
-        ),
-      ),
+      body: StreamBuilder<bool>(
+          stream: podcastHistoryBloc.showShareButton,
+          initialData: false,
+          builder: (context, isListEmptySnapshot) {
+            return isListEmptySnapshot.data
+                ? SingleChildScrollView(
+                    child: Padding(
+                      padding:
+                          EdgeInsets.only(top: 16.0, left: 16.0, right: 16.0),
+                      child: StreamBuilder<bool>(
+                          stream: podcastHistoryBloc.showShareButton,
+                          initialData: false,
+                          builder: (context, isListEmptySnapshot) {
+                            return isListEmptySnapshot.data
+                                ? Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      StreamBuilder<PodcastHistoryRecord>(
+                                          stream: podcastHistoryBloc
+                                              .podcastHistoryRecord,
+                                          initialData: PodcastHistoryRecord(
+                                              totalDurationInMinsSum: 0,
+                                              totalBoostagramSentSum: 0,
+                                              totalSatsStreamedSum: 0),
+                                          builder: (context, snapshot) {
+                                            return snapshot.data != null
+                                                ? Row(
+                                                    mainAxisAlignment:
+                                                        MainAxisAlignment
+                                                            .spaceBetween,
+                                                    children: [
+                                                      _PodcastStatItem(
+                                                          svg:
+                                                              "src/icon/schedule_icon.svg",
+                                                          label:
+                                                              '${_podcastListingTimeMap(durationInMins: snapshot.data.totalDurationInMinsSum)["unit"]} listened',
+                                                          value: _podcastListingTimeMap(
+                                                                  durationInMins:
+                                                                      snapshot
+                                                                          .data
+                                                                          .totalDurationInMinsSum)[
+                                                              "value"]),
+                                                      _PodcastStatItem(
+                                                        svg:
+                                                            "src/icon/satoshi_icon.svg",
+                                                        label: AppLocalizations
+                                                                .of(context)
+                                                            .podcast_history_sats_streamed,
+                                                        value: _getCompactNumber(
+                                                            snapshot.data
+                                                                .totalSatsStreamedSum),
+                                                      ),
+                                                      _PodcastStatItem(
+                                                        svg:
+                                                            "src/icon/rocket_launch_icon.svg",
+                                                        label: AppLocalizations
+                                                                .of(context)
+                                                            .podcast_history_boostagrams_sent,
+                                                        value: _getCompactNumber(
+                                                            snapshot.data
+                                                                .totalBoostagramSentSum),
+                                                      ),
+                                                    ],
+                                                  )
+                                                : SizedBox();
+                                          }),
+                                      SizedBox(
+                                        height: 16,
+                                      ),
+                                      Divider(
+                                        thickness: 2,
+                                      ),
+                                      SizedBox(
+                                        height: 16,
+                                      ),
+                                      Row(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          Text("PODCASTS"),
+                                          Spacer(),
+                                          PopupMenuButton<
+                                              PodcastHistorySortEnum>(
+                                            color: themeData.canvasColor,
+                                            padding: EdgeInsets.all(0),
+                                            enableFeedback: true,
+                                            child: Icon(
+                                              Icons.filter_list,
+                                              color: theme.themeId != "BLUE"
+                                                  ? Colors.white
+                                                  : theme
+                                                      .BreezColors.white[400],
+                                            ),
+                                            onSelected: (value) {
+                                              AppBlocsProvider.of<
+                                                          PodcastHistoryBloc>(
+                                                      context)
+                                                  .updateSortOption(value);
+                                            },
+                                            itemBuilder: (ctx) => [
+                                              PodcastHistorySortEnum
+                                                  .SORT_RECENTLY_HEARD,
+                                              PodcastHistorySortEnum
+                                                  .SORT_DURATION_DESCENDING,
+                                              PodcastHistorySortEnum
+                                                  .SORT_SATS_DESCENDING,
+                                            ]
+                                                .map((e) =>
+                                                    _listSortDropdownItem(
+                                                      context,
+                                                      e,
+                                                    ))
+                                                .toList(),
+                                          )
+                                        ],
+                                      ),
+                                      SizedBox(
+                                        height: 12,
+                                      ),
+                                      _getPodcastHistoryList(
+                                          context: context,
+                                          getScreenshotWidget: false,
+                                          timeRange: timeRange),
+                                      SizedBox(
+                                        height: 40,
+                                      )
+                                    ],
+                                  )
+                                : Column();
+                          }),
+                    ),
+                  )
+                : Stack(
+                    children: [
+                      Positioned(
+                        child: CustomPaint(
+                            painter: _BubblePainterPodcastHistory(context)),
+                      ),
+                      Center(
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          children: [
+                            AutoSizeText(
+                              AppLocalizations.of(context)
+                                  .podcast_history_empty_text,
+                              style: themeData.accentTextTheme.bodyText2
+                                  .copyWith(color: Colors.white),
+                              textAlign: TextAlign.center,
+                              minFontSize: MinFontSize(context).minFontSize,
+                              stepGranularity: 0.1,
+                            ),
+                            Padding(
+                              padding: EdgeInsets.only(
+                                  bottom:
+                                      MediaQuery.of(context).size.height / 25,
+                                  top: MediaQuery.of(context).size.height /
+                                      2.82),
+                              child: SubmitButton(
+                                  AppLocalizations.of(context)
+                                      .podcast_history_open_podcast_button, () {
+                                Navigator.of(context).pop();
+                              }),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  );
+          }),
     );
   }
 }
@@ -308,87 +374,41 @@ Widget _getPodcastHistoryList(
       stream: podcastHistoryBloc.podcastHistoryRecord,
       builder: (context, podcastHistoryListSnapshot) {
         if (podcastHistoryListSnapshot.data != null) {
-          if (podcastHistoryListSnapshot.data.podcastHistoryList.isEmpty) {
-            return Center(
-              child: Container(
-                child: Column(
-                  children: [
-                    SizedBox(
-                      height: 40,
-                    ),
-                    Text(
-                      texts.podcast_history_empty_list_title,
-                      style:
-                          Theme.of(context).primaryTextTheme.headline3.copyWith(
-                                fontSize: 20,
-                                color: Colors.white,
-                                fontWeight: FontWeight.w600,
-                              ),
-                    ),
-                    SizedBox(
-                      height: 8,
-                    ),
-                    Text(
-                      '"${_getAppBarDisplayString(timeRange, context)}"',
-                      style:
-                          Theme.of(context).primaryTextTheme.headline3.copyWith(
-                                fontSize: 16,
-                                color: Colors.white.withOpacity(0.8),
-                                fontWeight: FontWeight.w600,
-                              ),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.only(top: 16, bottom: 40),
-                      child: Text(texts.podcast_history_empty_list_subtitle),
-                    ),
-                    ElevatedButton(
-                        onPressed: () {
-                          Navigator.of(context).pop();
-                        },
-                        child: Text(texts.podcast_history_open_podcast_button))
-                  ],
-                ),
-              ),
-            );
+          //This enables sharing of upto 5 podcasts
+          int podcastHistoryLength = 0;
+          if (getScreenshotWidget) {
+            podcastHistoryLength =
+                podcastHistoryListSnapshot.data.podcastHistoryList.length <= 5
+                    ? podcastHistoryListSnapshot.data.podcastHistoryList.length
+                    : 5;
           } else {
-            //This enables sharing of upto 5 podcasts
-            int podcastHistoryLength = 0;
-            if (getScreenshotWidget) {
-              podcastHistoryLength =
-                  podcastHistoryListSnapshot.data.podcastHistoryList.length <= 5
-                      ? podcastHistoryListSnapshot
-                          .data.podcastHistoryList.length
-                      : 5;
-            } else {
-              podcastHistoryLength =
-                  podcastHistoryListSnapshot.data.podcastHistoryList.length;
-            }
-
-            return Column(
-              mainAxisSize:
-                  getScreenshotWidget ? MainAxisSize.min : MainAxisSize.max,
-              children: [
-                for (var i = 0; i < podcastHistoryLength; i++)
-                  Padding(
-                    padding: const EdgeInsets.only(bottom: 12),
-                    child: _PodcastListTile(
-                        podcastUrl: podcastHistoryListSnapshot
-                            .data.podcastHistoryList[i].podcastUrl,
-                        title: podcastHistoryListSnapshot
-                            .data.podcastHistoryList[i].podcastName,
-                        sats: _getCompactNumber(podcastHistoryListSnapshot
-                            .data.podcastHistoryList[i].satsSpent),
-                        boostagrams: _getCompactNumber(
-                            podcastHistoryListSnapshot
-                                .data.podcastHistoryList[i].boostagramsSent),
-                        durationInMins: podcastHistoryListSnapshot
-                            .data.podcastHistoryList[i].durationInMins,
-                        imageUrl: podcastHistoryListSnapshot
-                            .data.podcastHistoryList[i].podcastImageUrl),
-                  ),
-              ],
-            );
+            podcastHistoryLength =
+                podcastHistoryListSnapshot.data.podcastHistoryList.length;
           }
+
+          return Column(
+            mainAxisSize:
+                getScreenshotWidget ? MainAxisSize.min : MainAxisSize.max,
+            children: [
+              for (var i = 0; i < podcastHistoryLength; i++)
+                Padding(
+                  padding: const EdgeInsets.only(bottom: 12),
+                  child: _PodcastListTile(
+                      podcastUrl: podcastHistoryListSnapshot
+                          .data.podcastHistoryList[i].podcastUrl,
+                      title: podcastHistoryListSnapshot
+                          .data.podcastHistoryList[i].podcastName,
+                      sats: _getCompactNumber(podcastHistoryListSnapshot
+                          .data.podcastHistoryList[i].satsSpent),
+                      boostagrams: _getCompactNumber(podcastHistoryListSnapshot
+                          .data.podcastHistoryList[i].boostagramsSent),
+                      durationInMins: podcastHistoryListSnapshot
+                          .data.podcastHistoryList[i].durationInMins,
+                      imageUrl: podcastHistoryListSnapshot
+                          .data.podcastHistoryList[i].podcastImageUrl),
+                ),
+            ],
+          );
         } else {
           return Center(child: Loader());
         }
@@ -401,16 +421,13 @@ String _getAppBarDisplayString(
 ) {
   final texts = AppLocalizations.of(context);
   String title;
-  if (timeRange is PodcastHistoryTimeRangeDaily) {
-    title = texts.podcast_history_appbar_top_daily;
-  } else if (timeRange is PodcastHistoryTimeRangeWeekly) {
+
+  if (timeRange is PodcastHistoryTimeRangeWeekly) {
     title = texts.podcast_history_appbar_top_weekly;
   } else if (timeRange is PodcastHistoryTimeRangeMonthly) {
     title = texts.podcast_history_appbar_top_monthly;
   } else if (timeRange is PodcastHistoryTimeRangeYearly) {
     title = texts.podcast_history_appbar_top_yearly;
-  } else if (timeRange is PodcastHistoryTimeRangeAllTime) {
-    title = texts.podcast_history_appbar_top_alltime;
   } else {
     title = "";
   }
@@ -425,16 +442,12 @@ PopupMenuEntry<PodcastHistoryTimeRange> _timeRangeDropdownItem(
   final themeData = Theme.of(context);
 
   String title;
-  if (timeRange is PodcastHistoryTimeRangeDaily) {
-    title = texts.podcast_history_timerange_dropdown_today;
-  } else if (timeRange is PodcastHistoryTimeRangeWeekly) {
+  if (timeRange is PodcastHistoryTimeRangeWeekly) {
     title = texts.podcast_history_timerange_dropdown_week;
   } else if (timeRange is PodcastHistoryTimeRangeMonthly) {
     title = texts.podcast_history_timerange_dropdown_month;
   } else if (timeRange is PodcastHistoryTimeRangeYearly) {
     title = texts.podcast_history_timerange_dropdown_year;
-  } else if (timeRange is PodcastHistoryTimeRangeAllTime) {
-    title = texts.podcast_history_timerange_dropdown_alltime;
   } else {
     title = "";
   }
@@ -695,3 +708,56 @@ String _getCompactNumber(num number) {
 
 num _truncateDecimals(num number, int decimalPlaces) =>
     (number * pow(10, decimalPlaces)).truncate() / pow(10, decimalPlaces);
+
+class _BubblePainterPodcastHistory extends CustomPainter {
+  final BuildContext context;
+
+  const _BubblePainterPodcastHistory(
+    this.context,
+  );
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    final size = MediaQuery.of(context).size;
+    final bubblePaint = Paint()
+      ..color = theme.themeId == "BLUE"
+          ? Colors.white.withOpacity(0.3)
+          : Color(0xff4D88EC).withOpacity(0.2)
+      ..style = PaintingStyle.fill;
+    final bubbleRadius = 12.0;
+    final height = size.height - kToolbarHeight;
+    canvas.drawCircle(
+      Offset(size.width * 0.39, height * 0.2),
+      bubbleRadius * 1.75,
+      bubblePaint,
+    );
+    canvas.drawCircle(
+      Offset(size.width * 0.65, height * 0.1),
+      bubbleRadius * 1.5,
+      bubblePaint,
+    );
+    canvas.drawCircle(
+      Offset(size.width / 2, height * 0.36),
+      bubbleRadius,
+      bubblePaint,
+    );
+    canvas.drawCircle(
+      Offset(size.width * 0.39, height * 0.59),
+      bubbleRadius * 1.5,
+      bubblePaint,
+    );
+    canvas.drawCircle(
+      Offset(size.width * 0.65, height * 0.71),
+      bubbleRadius * 1.25,
+      bubblePaint,
+    );
+    canvas.drawCircle(
+      Offset(size.width / 2, height * 0.80),
+      bubbleRadius * 0.75,
+      bubblePaint,
+    );
+  }
+
+  @override
+  bool shouldRepaint(CustomPainter oldDelegate) => true;
+}
