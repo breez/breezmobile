@@ -511,7 +511,7 @@ class DevViewState extends State<DevView> {
         }));
 
     choices.add(Choice(
-        title: 'Reset Top Podcast DB',
+        title: 'Reset Top Podcasts DB',
         icon: Icons.phone_android,
         function: () {
           PodcastHistoryDatabase.instance.resetDatabase();
