@@ -76,6 +76,12 @@ ${PodcastHistoryFields.durationInMins} 'DECIMAL NOT NULL'
     }
   }
 
+  resetDatabase() async {
+    final db = await instance.database;
+    databaseFactory.deleteDatabase(db.path);
+    _database = null;
+  }
+
   Future<PodcastHistoryTimeRangeDbModel> fetchPodcastHistoryTimeRange() async {
     final db = await instance.database;
     var localTimeRangeData = await db.query(podcastHistoryTimeRangeTable);

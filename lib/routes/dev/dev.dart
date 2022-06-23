@@ -29,7 +29,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_downloader/flutter_downloader.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:share_extend/share_extend.dart';
-
+import '../../bloc/podcast_history/sqflite/podcast_history_database.dart';
 import 'default_commands.dart';
 
 bool allowRebroadcastRefunds = false;
@@ -384,7 +384,7 @@ class DevViewState extends State<DevView> {
         title:
             "${addFundsSettings.moonpayIpCheck ? "Disable" : "Enable"} MoonPay IP Check",
         icon: Icons.network_check,
-        function: () => _enableMoonpayIpCheck(addFundsBloc, addFundsSettings)));    
+        function: () => _enableMoonpayIpCheck(addFundsBloc, addFundsSettings)));
     choices.add(Choice(
         title: 'Reset Refunds Status',
         icon: Icons.phone_android,
@@ -502,13 +502,21 @@ class DevViewState extends State<DevView> {
         title: 'Log Cache',
         icon: Icons.phone_android,
         function: _printCacheUsage));
-      
+
     choices.add(Choice(
         title: 'Download Backup',
         icon: Icons.phone_android,
-        function: () { _downloadSnapshot(accBloc); }
-    ));
-        
+        function: () {
+          _downloadSnapshot(accBloc);
+        }));
+
+    choices.add(Choice(
+        title: 'Reset Top Podcast DB',
+        icon: Icons.phone_android,
+        function: () {
+          PodcastHistoryDatabase.instance.resetDatabase();
+        }));
+
     return choices;
   }
 
@@ -552,9 +560,9 @@ class DevViewState extends State<DevView> {
       AddFundsBloc bloc, AddFundsSettings addFundsSettings) {
     bloc.addFundsSettingsSink.add(addFundsSettings.copyWith(
         moonpayIpCheck: !addFundsSettings.moonpayIpCheck));
-  }  
+  }
 
-  void _restoreChannelsBackup() async {    
+  void _restoreChannelsBackup() async {
     var filePath = await widget._breezBridge.getChanBackupPath();
     _sendCommand("restorechanbackup --multi_file $filePath");
   }
@@ -595,18 +603,18 @@ class DevViewState extends State<DevView> {
   }
 
   Future _shareBackup(List<String> files) async {
-  Directory tempDir = await getTemporaryDirectory();
-  tempDir = await tempDir.createTemp("backup");
-  var encoder = ZipFileEncoder();
-  var zipFile = '${tempDir.path}/backup.zip';
-  encoder.create(zipFile);
-  files.forEach((f) {
-    var file = File(f);
-    encoder.addFile(file, "${file.path.split(Platform.pathSeparator).last}");
-  });
-  encoder.close();
-  ShareExtend.share(zipFile, "file");
-}
+    Directory tempDir = await getTemporaryDirectory();
+    tempDir = await tempDir.createTemp("backup");
+    var encoder = ZipFileEncoder();
+    var zipFile = '${tempDir.path}/backup.zip';
+    encoder.create(zipFile);
+    files.forEach((f) {
+      var file = File(f);
+      encoder.addFile(file, "${file.path.split(Platform.pathSeparator).last}");
+    });
+    encoder.close();
+    ShareExtend.share(zipFile, "file");
+  }
 
   void _refreshGraph() async {
     await FlutterDownloader.cancelAll();
