@@ -9,7 +9,6 @@ import 'package:breez/bloc/lnurl/lnurl_bloc.dart';
 import 'package:breez/bloc/lnurl/lnurl_model.dart';
 import 'package:breez/bloc/user_profile/breez_user_model.dart';
 import 'package:breez/bloc/user_profile/currency.dart';
-import 'package:breez/handlers/lnurl_handler.dart';
 import 'package:breez/routes/charge/currency_wrapper.dart';
 import 'package:breez/routes/charge/pos_sale_nfc_error.dart';
 import 'package:breez/services/countdown.dart';
@@ -99,20 +98,14 @@ class _PosPaymentDialogState extends State<PosPaymentDialog> {
     });
 
     _withdrawResponseInterceptor = _PosWithdrawResponseInterceptor(this);
-    LNURLHandler(
-      context,
-      widget._lnUrlBloc,
-    ).withdrawFetchResponseInterceptor = _withdrawResponseInterceptor;
+    widget._lnUrlBloc.withdrawFetchResponseInterceptor = _withdrawResponseInterceptor;
   }
 
   @override
   void dispose() {
     _timerSubscription?.cancel();
     _paidInvoiceSubscription?.cancel();
-    LNURLHandler(
-      context,
-      widget._lnUrlBloc,
-    ).withdrawFetchResponseInterceptor = null;
+    widget._lnUrlBloc.withdrawFetchResponseInterceptor = null;
     super.dispose();
   }
 

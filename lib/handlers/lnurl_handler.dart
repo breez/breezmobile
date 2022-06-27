@@ -1,6 +1,8 @@
 import 'package:breez/bloc/lnurl/lnurl_actions.dart';
 import 'package:breez/bloc/lnurl/lnurl_bloc.dart';
 import 'package:breez/bloc/lnurl/lnurl_model.dart';
+import 'package:breez/routes/create_invoice/create_invoice_page.dart';
+import 'package:breez/routes/lnurl_fetch_invoice_page.dart';
 import 'package:breez/routes/podcast/theme.dart';
 import 'package:breez/routes/sync_progress_dialog.dart';
 import 'package:breez/widgets/error_dialog.dart';
@@ -9,20 +11,11 @@ import 'package:breez/widgets/route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
-import '../routes/create_invoice/create_invoice_page.dart';
-import '../routes/lnurl_fetch_invoice_page.dart';
-
 class LNURLHandler {
-  static LNURLHandler _instance;
-
   final LNUrlBloc lnurlBloc;
   ModalRoute _loaderRoute;
-  WithdrawResponseInterceptor withdrawFetchResponseInterceptor;
 
-  factory LNURLHandler(BuildContext context, LNUrlBloc lnurlBloc) =>
-      _instance ??= LNURLHandler._(context, lnurlBloc);
-
-  LNURLHandler._(BuildContext context, this.lnurlBloc) {
+  LNURLHandler(BuildContext context, this.lnurlBloc) {
     final texts = AppLocalizations.of(context);
     final themeData = Theme.of(context);
 
@@ -66,20 +59,16 @@ class LNURLHandler {
     if (response.runtimeType == ChannelFetchResponse) {
       _openLNURLChannel(context, lnurlBloc, response);
     } else if (response.runtimeType == WithdrawFetchResponse) {
-      if (withdrawFetchResponseInterceptor != null) {
-        withdrawFetchResponseInterceptor.intercept(response);
-      } else {
-        Navigator.popUntil(context, (route) {
-          return route.settings.name == "/";
-        });
+      Navigator.popUntil(context, (route) {
+        return route.settings.name == "/";
+      });
 
-        navigator.push(FadeInRoute(
-          builder: (_) => withBreezTheme(
-            context,
-            CreateInvoicePage(lnurlWithdraw: response),
-          ),
-        ));
-      }
+      navigator.push(FadeInRoute(
+        builder: (_) => withBreezTheme(
+          context,
+          CreateInvoicePage(lnurlWithdraw: response),
+        ),
+      ));
     } else if (response is AuthFetchResponse) {
       Navigator.popUntil(context, (route) {
         return route.settings.name == "/";
@@ -211,8 +200,4 @@ class LNURLHandler {
       _loaderRoute = null;
     }
   }
-}
-
-abstract class WithdrawResponseInterceptor {
-  void intercept(WithdrawFetchResponse response);
 }

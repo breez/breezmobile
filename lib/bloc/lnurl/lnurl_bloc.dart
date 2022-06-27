@@ -24,6 +24,8 @@ class LNUrlBloc with AsyncActionsHandler {
       StreamController<String>.broadcast();
   Sink<String> get lnurlInputSink => _lnurlInputController.sink;
 
+  WithdrawResponseInterceptor withdrawFetchResponseInterceptor;
+
   LNUrlBloc() {
     ServiceInjector injector = ServiceInjector();
     _breezLib = injector.breezBridge;
@@ -69,8 +71,12 @@ class LNUrlBloc with AsyncActionsHandler {
         _lnUrlStreamController.add(fetchLNUrlState.completed);
         if (response.runtimeType == LNUrlResponse) {
           if (response.hasWithdraw()) {
-            _lnUrlStreamController
-                .add(WithdrawFetchResponse(response.withdraw));
+            final withdrawResponse = WithdrawFetchResponse(response.withdraw);
+            if (withdrawFetchResponseInterceptor != null) {
+              withdrawFetchResponseInterceptor.intercept(withdrawResponse);
+            } else {
+              _lnUrlStreamController.add(withdrawResponse);
+            }
           } else if (response.hasChannel()) {
             _lnUrlStreamController.add(ChannelFetchResponse(response.channel));
           } else if (response.hasAuth()) {
@@ -140,4 +146,8 @@ class LNUrlBloc with AsyncActionsHandler {
     _lnurlInputController.close();
     return super.dispose();
   }
+}
+
+abstract class WithdrawResponseInterceptor {
+  void intercept(WithdrawFetchResponse response);
 }
