@@ -177,6 +177,7 @@ class PodcastPaymentsBloc with AsyncActionsHandler {
     String boostMessage = "",
     String senderName = "",
   }) async {
+    int netPaySplitSum = 0;
     if (breezReceiverNode == null) {
       try {
         breezReceiverNode = await _breezLib.receiverNode();
@@ -264,15 +265,7 @@ class PodcastPaymentsBloc with AsyncActionsHandler {
             return;
           }
           log.info("succesfully paid $netPay to destination ${d.address}");
-
-          _addToPodcastHistory(
-              podcastId: episode.metadata["feed"]["id"].toString(),
-              podcastName: episode.metadata["feed"]["title"],
-              podcastImageUrl: episode.metadata["feed"]["image"],
-              podcastUrl: episode.metadata["feed"]["originalUrl"],
-              satsSpent: netPay,
-              durationInMins: 0,
-              isBoost: boost);
+          netPaySplitSum = netPaySplitSum + netPay;
 
           if (!boost) {
             _paymentEventsController
@@ -287,6 +280,16 @@ class PodcastPaymentsBloc with AsyncActionsHandler {
         });
       }
     });
+    if (netPaySplitSum > 0) {
+      _addToPodcastHistory(
+          podcastId: episode.metadata["feed"]["id"].toString(),
+          podcastName: episode.metadata["feed"]["title"],
+          podcastImageUrl: episode.metadata["feed"]["image"],
+          podcastUrl: episode.metadata["feed"]["originalUrl"],
+          satsSpent: netPaySplitSum,
+          durationInMins: 0,
+          isBoost: boost);
+    }
   }
 
   Future<Value> _getLightningPaymentValue(Episode episode) async {
