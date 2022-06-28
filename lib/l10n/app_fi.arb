@@ -2073,7 +2073,7 @@
   "podcast_history_share_message":  "Suosituimmat podcastit kuuntelivat Breez",
   "podcast_history_share_text":"JAA",
   "podcast_history_sats_streamed":"sats striimattiin",
-  "podcast_history_boostagrams_sent":"boostagrams lähetetty",
+  "podcast_history_boostagrams_sent":"boosts lähetetty",
   "podcast_history_open_podcast_button": "AVAA PODCAST",
   "podcast_history_appbar_top_weekly":"Suosituimmat viikoittaiset podcastit",
   "podcast_history_appbar_top_monthly":"Suosituimmat kuukausittaiset podcastit",
@@ -2081,8 +2081,9 @@
   "podcast_history_timerange_dropdown_week":"Mennyt viikko",
   "podcast_history_timerange_dropdown_month":"Kulunut kuukausi",
   "podcast_history_timerange_dropdown_year":"Viime vuosi",
-  "podcast_history_sort_dropdown_recent":"Viimeaikainen ensimmäinen",
-  "podcast_history_sort_dropdown_duration":"Kuunnetuimmat ensin",
-  "podcast_history_sort_dropdown_sats":"Korkein sat Streamed First",
+  "podcast_history_sort_dropdown_recent":"Viimeaikaiset",
+  "podcast_history_sort_dropdown_duration":"Kuunteli",
+  "podcast_history_sort_dropdown_sats":"Maksettu",
+  "podcast_history_sort_dropdown_boosts":"Boosted",
   "podcast_history_empty_text":"Näytettäviä tietoja ei ole saatavilla."
 }
