@@ -212,9 +212,10 @@ class PodcastHistoryPageState extends State<PodcastHistoryPage> {
                                           stream: podcastHistoryBloc
                                               .podcastHistoryRecord,
                                           initialData: PodcastHistoryRecord(
-                                              totalDurationInMinsSum: 0,
                                               totalBoostagramSentSum: 0,
-                                              totalSatsStreamedSum: 0),
+                                              totalDurationInMinsSum: 0,
+                                              totalSatsStreamedSum: 0,
+                                              podcastHistoryList: []),
                                           builder: (context, snapshot) {
                                             return snapshot.data != null
                                                 ? Row(
@@ -297,6 +298,8 @@ class PodcastHistoryPageState extends State<PodcastHistoryPage> {
                                                   .SORT_DURATION_DESCENDING,
                                               PodcastHistorySortEnum
                                                   .SORT_SATS_DESCENDING,
+                                              PodcastHistorySortEnum
+                                                  .SORT_BOOSTS_DESCENDING,
                                             ]
                                                 .map((e) =>
                                                     _listSortDropdownItem(
@@ -477,6 +480,8 @@ PopupMenuEntry<PodcastHistorySortEnum> _listSortDropdownItem(
     title = texts.podcast_history_sort_dropdown_duration;
   } else if (sortOption == PodcastHistorySortEnum.SORT_SATS_DESCENDING) {
     title = texts.podcast_history_sort_dropdown_sats;
+  } else if (sortOption == PodcastHistorySortEnum.SORT_BOOSTS_DESCENDING) {
+    title = texts.podcast_history_sort_dropdown_boosts;
   } else {
     title = "";
   }
@@ -503,41 +508,38 @@ class _PodcastStatItem extends StatelessWidget {
   final String svg;
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.only(right: 4),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Padding(
-            padding: const EdgeInsets.only(top: 6),
-            child: SvgPicture.asset(
-              svg,
-              height: 16,
-              width: 36,
-              color: theme.themeId != "BLUE"
-                  ? Colors.white
-                  : theme.BreezColors.white[400],
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Padding(
+          padding: const EdgeInsets.only(top: 6),
+          child: SvgPicture.asset(
+            svg,
+            height: 16,
+            width: 36,
+            color: theme.themeId != "BLUE"
+                ? Colors.white
+                : theme.BreezColors.white[400],
+          ),
+        ),
+        SizedBox(
+          width: 6,
+        ),
+        Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              value,
+              style: Theme.of(context).primaryTextTheme.headline3.copyWith(
+                    fontSize: 20,
+                    color: Colors.white,
+                    fontWeight: FontWeight.w600,
+                  ),
             ),
-          ),
-          SizedBox(
-            width: 6,
-          ),
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                value,
-                style: Theme.of(context).primaryTextTheme.headline3.copyWith(
-                      fontSize: 20,
-                      color: Colors.white,
-                      fontWeight: FontWeight.w600,
-                    ),
-              ),
-              Text(label)
-            ],
-          ),
-        ],
-      ),
+            Text(label)
+          ],
+        ),
+      ],
     );
   }
 }
@@ -651,7 +653,7 @@ class _PodcastListTile extends StatelessWidget {
                                 SizedBox(
                                   width: 4,
                                 ),
-                                Text(boostagrams + " boostagrams")
+                                Text(boostagrams + " boosts")
                               ],
                             ),
                           ],

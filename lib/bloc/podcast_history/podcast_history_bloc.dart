@@ -125,6 +125,9 @@ class PodcastHistoryBloc with AsyncActionsHandler {
       processedList.sort((a, b) => b.timeStamp.compareTo(a.timeStamp));
     } else if (sortOption == PodcastHistorySortEnum.SORT_SATS_DESCENDING) {
       processedList.sort((a, b) => b.satsSpent.compareTo(a.satsSpent));
+    } else if (sortOption == PodcastHistorySortEnum.SORT_BOOSTS_DESCENDING) {
+      processedList
+          .sort((a, b) => b.boostagramsSent.compareTo(a.boostagramsSent));
     }
 
     _podcastHistoryRecordBehaviourSubject.add(PodcastHistoryRecord(

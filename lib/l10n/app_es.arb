@@ -2073,7 +2073,7 @@
   "podcast_history_share_message":  "Mis mejores podcasts escuchados en Breez",
   "podcast_history_share_text":"CUOTA",
   "podcast_history_sats_streamed":"sats transmitido",
-  "podcast_history_boostagrams_sent":"boostagrams enviado",
+  "podcast_history_boostagrams_sent":"boosts enviado",
   "podcast_history_open_podcast_button": "PODCASTS ABIERTOS",
   "podcast_history_appbar_top_weekly":"Los mejores podcasts semanales",
   "podcast_history_appbar_top_monthly":"Los mejores podcasts mensuales",
@@ -2081,8 +2081,9 @@
   "podcast_history_timerange_dropdown_week":"Semana pasada",
   "podcast_history_timerange_dropdown_month":"El mes pasado",
   "podcast_history_timerange_dropdown_year":"Año pasado",
-  "podcast_history_sort_dropdown_recent":"Reciente Primero",
-  "podcast_history_sort_dropdown_duration":"Lo más escuchado primero",
-  "podcast_history_sort_dropdown_sats":"Los sats más altos transmitidos primero",
-  "podcast_history_empty_text":"No hay datos disponibles para mostrar."
+  "podcast_history_sort_dropdown_recent":"Reciente",
+  "podcast_history_sort_dropdown_duration":"Escuchado",
+  "podcast_history_sort_dropdown_sats":"Pagado",
+   "podcast_history_sort_dropdown_boosts":"Boosted",
+   "podcast_history_empty_text":"No hay datos disponibles para mostrar."
 }
