@@ -5,8 +5,9 @@ import 'package:breez/bloc/account/account_model.dart';
 import 'package:breez/bloc/blocs_provider.dart';
 import 'package:breez/bloc/invoice/invoice_bloc.dart';
 import 'package:breez/bloc/invoice/invoice_model.dart';
+import 'package:breez/bloc/lnurl/lnurl_actions.dart';
 import 'package:breez/bloc/lnurl/lnurl_bloc.dart';
-import 'package:breez/bloc/lnurl/lnurl_model.dart';
+import 'package:breez/bloc/lnurl/nfc_withdraw_invoice_status.dart';
 import 'package:breez/bloc/user_profile/breez_user_model.dart';
 import 'package:breez/bloc/user_profile/currency.dart';
 import 'package:breez/routes/charge/currency_wrapper.dart';
@@ -60,8 +61,8 @@ class _PosPaymentDialogState extends State<PosPaymentDialog> {
   CountDown _paymentTimer;
   StreamSubscription<Duration> _timerSubscription;
   StreamSubscription<PaymentRequestModel> _paidInvoiceSubscription;
+  StreamSubscription<NfcWithdrawInvoiceStatus> _nfcInvoiceSubscription;
   String _countdownString = "3:00";
-  _PosWithdrawResponseInterceptor _withdrawResponseInterceptor;
   var _loadingNfc = false;
   Duration _expiration;
 
@@ -97,15 +98,24 @@ class _PosPaymentDialogState extends State<PosPaymentDialog> {
       });
     });
 
-    _withdrawResponseInterceptor = _PosWithdrawResponseInterceptor(this);
-    widget._lnUrlBloc.withdrawFetchResponseInterceptor = _withdrawResponseInterceptor;
+    _nfcInvoiceSubscription =
+        widget._lnUrlBloc.nfcWithdrawStream.listen(_listenNfcWithdraw);
+
+    widget._lnUrlBloc.actionsSink.add(RegisterNfcSaleRequest(
+      widget._user.avatarURL,
+      widget._note,
+      widget._user.avatarURL,
+      Int64(widget.satAmount.toInt()),
+      Int64(widget._user.cancellationTimeoutValue.toInt()),
+    ));
   }
 
   @override
   void dispose() {
     _timerSubscription?.cancel();
     _paidInvoiceSubscription?.cancel();
-    widget._lnUrlBloc.withdrawFetchResponseInterceptor = null;
+    _nfcInvoiceSubscription?.cancel();
+    widget._lnUrlBloc.actionsSink.add(ClearNfcSaleRequest());
     super.dispose();
   }
 
@@ -320,75 +330,44 @@ class _PosPaymentDialogState extends State<PosPaymentDialog> {
     }
   }
 
-  void _nfcWithdrawFinished({String error, String paymentHash}) {
+  void _nfcWithdrawFinished() {
     if (mounted) {
       setState(() {
         _loadingNfc = false;
       });
-      if (error != null) {
-        showFlushbar(context, message: error);
-      } else {
-        Navigator.of(context).pop(PosPaymentResult(
-          paid: true,
-          nfcPaymentHash: paymentHash,
-        ));
-      }
     }
   }
-}
 
-class _PosWithdrawResponseInterceptor extends WithdrawResponseInterceptor {
-  final _PosPaymentDialogState state;
-
-  _PosWithdrawResponseInterceptor(this.state);
-
-  @override
-  void intercept(WithdrawFetchResponse response) {
-    final context = state.context;
-    final satAmount = state.widget.satAmount;
+  void _listenNfcWithdraw(NfcWithdrawInvoiceStatus status) {
     final texts = AppLocalizations.of(context);
-    if (response.minAmount.toDouble() > satAmount ||
-        response.maxAmount.toDouble() < satAmount) {
+    if (status is NfcWithdrawInvoiceStatusStarted) {
+      _nfcWithdrawStarted();
+    } else if (status is NfcWithdrawInvoiceStatusRangeError) {
       showDialog(
         context: context,
         builder: (_) => PosSaleNfcError(
           texts.pos_payment_nfc_range_error(
-            Currency.SAT.format(response.minAmount, includeDisplayName: false),
-            Currency.SAT.format(response.maxAmount),
+            Currency.SAT.format(status.minAmount, includeDisplayName: false),
+            Currency.SAT.format(status.maxAmount),
           ),
         ),
       );
-    } else {
-      _withdraw(response);
-    }
-  }
-
-  void _withdraw(WithdrawFetchResponse response) {
-    state._nfcWithdrawStarted();
-
-    final expiration = state._expiration;
-    if (expiration == null) {
-      final texts = AppLocalizations.of(state.context);
-      state._nfcWithdrawFinished(
-        error: texts.payment_error_payment_timeout_exceeded,
+      _nfcWithdrawFinished();
+    } else if (status is NfcWithdrawInvoiceStatusTimeoutError) {
+      showFlushbar(
+        context,
+        message: texts.payment_error_payment_timeout_exceeded,
       );
+      _nfcWithdrawFinished();
+    } else if (status is NfcWithdrawInvoiceStatusError) {
+      showFlushbar(context, message: status.message);
+      _nfcWithdrawFinished();
+    } else if (status is NfcWithdrawInvoiceStatusCompleted) {
+      _nfcWithdrawFinished();
+      Navigator.of(context).pop(PosPaymentResult(
+        paid: true,
+        nfcPaymentHash: status.paymentHash,
+      ));
     }
-
-    final invoiceBloc = state.widget._invoiceBloc;
-    invoiceBloc.paidNfcSalesStream.listen((paid) {
-      state._nfcWithdrawFinished(paymentHash: paid.paymentHash);
-    }).onError((error) {
-      state._nfcWithdrawFinished(error: error.toString());
-    });
-
-    invoiceBloc.actionsSink.add(
-      NfcSaleRequestModel(
-        state.widget._user.avatarURL,
-        state.widget._note,
-        state.widget._user.avatarURL,
-        Int64(state.widget.satAmount.toInt()),
-        Int64(expiration.inMilliseconds),
-      ),
-    );
   }
 }

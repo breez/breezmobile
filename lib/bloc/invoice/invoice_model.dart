@@ -13,22 +13,6 @@ class InvoiceRequestModel {
       {this.expiry});
 }
 
-class NfcSaleRequestModel extends AsyncAction {
-  final String payeeName;
-  final String description;
-  final String logo;
-  final Int64 amount;
-  final Int64 expiry;
-
-  NfcSaleRequestModel(
-    this.payeeName,
-    this.description,
-    this.logo,
-    this.amount,
-    this.expiry,
-  );
-}
-
 class PaymentRequestModel {
   final InvoiceMemo _invoice;
   final String _rawPayReq;

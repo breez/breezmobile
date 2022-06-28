@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:breez/bloc/lnurl/nfc_withdraw_invoice_status.dart';
 import 'package:breez/logger.dart';
 import 'package:breez/services/breezlib/breez_bridge.dart';
 import 'package:breez/services/breezlib/data/rpc.pbserver.dart';
@@ -8,10 +9,9 @@ import 'package:breez/utils/lnurl.dart';
 import 'package:breez/utils/locale.dart';
 import 'package:breez/utils/retry.dart';
 import 'package:rxdart/rxdart.dart';
-
-import '../async_actions_handler.dart';
-import 'lnurl_actions.dart';
-import 'lnurl_model.dart';
+import 'package:breez/bloc/async_actions_handler.dart';
+import 'package:breez/bloc/lnurl/lnurl_actions.dart';
+import 'package:breez/bloc/lnurl/lnurl_model.dart';
 
 enum fetchLNUrlState { started, completed }
 
@@ -24,7 +24,11 @@ class LNUrlBloc with AsyncActionsHandler {
       StreamController<String>.broadcast();
   Sink<String> get lnurlInputSink => _lnurlInputController.sink;
 
-  WithdrawResponseInterceptor withdrawFetchResponseInterceptor;
+  StreamController<NfcWithdrawInvoiceStatus> _nfcWithdrawController =
+      StreamController<NfcWithdrawInvoiceStatus>.broadcast();
+  Stream<NfcWithdrawInvoiceStatus> get nfcWithdrawStream =>
+      _nfcWithdrawController.stream;
+  RegisterNfcSaleRequest _nfcSaleRequest;
 
   LNUrlBloc() {
     ServiceInjector injector = ServiceInjector();
@@ -36,6 +40,8 @@ class LNUrlBloc with AsyncActionsHandler {
       OpenChannel: _openChannel,
       Login: _login,
       FetchInvoice: _fetchInvoice,
+      RegisterNfcSaleRequest: _registerNfcSaleRequest,
+      ClearNfcSaleRequest: _clearNfcSaleRequest,
     });
     listenActions();
   }
@@ -72,8 +78,9 @@ class LNUrlBloc with AsyncActionsHandler {
         if (response.runtimeType == LNUrlResponse) {
           if (response.hasWithdraw()) {
             final withdrawResponse = WithdrawFetchResponse(response.withdraw);
-            if (withdrawFetchResponseInterceptor != null) {
-              withdrawFetchResponseInterceptor.intercept(withdrawResponse);
+            final nfcSaleRequest = _nfcSaleRequest;
+            if (nfcSaleRequest != null) {
+              _withdrawNfc(nfcSaleRequest, withdrawResponse);
             } else {
               _lnUrlStreamController.add(withdrawResponse);
             }
@@ -140,14 +147,58 @@ class LNUrlBloc with AsyncActionsHandler {
     action.resolve(await openResult);
   }
 
+  Future _registerNfcSaleRequest(RegisterNfcSaleRequest action) async {
+    _nfcSaleRequest = action;
+  }
+
+  Future _clearNfcSaleRequest(ClearNfcSaleRequest action) async {
+    _nfcSaleRequest = null;
+  }
+
+  Future<void> _withdrawNfc(
+    RegisterNfcSaleRequest action,
+    WithdrawFetchResponse response,
+  ) async {
+    if (response.minAmount > action.amount ||
+        response.maxAmount < action.amount) {
+      log.info("NFC Payment Request rangeError, requested ${action.amount} but the range is ${response.minAmount} - ${response.maxAmount}");
+      _nfcWithdrawController.add(NfcWithdrawInvoiceStatus.rangeError(
+        response.minAmount,
+        response.maxAmount,
+      ));
+    } else if (action.expiry == null) {
+      log.info("NFC Payment Request error, no expiry set");
+      _nfcWithdrawController.add(NfcWithdrawInvoiceStatus.timeoutError());
+    } else {
+      log.info("Starting NFC Sale");
+      _nfcWithdrawController.add(NfcWithdrawInvoiceStatus.started());
+
+      _breezLib.addInvoice(
+        action.amount,
+        payeeName: action.payeeName,
+        payeeImageURL: action.logo,
+        description: action.description,
+        expiry: action.expiry,
+      ).then((payReq) async {
+        log.info("NFC Payment Request received");
+        final request = payReq.paymentRequest;
+        final paymentHash = await _breezLib.getPaymentRequestHash(request);
+        await _breezLib.withdrawLNUrl(request);
+        _nfcWithdrawController.add(NfcWithdrawInvoiceStatus.completed(
+          paymentHash,
+        ));
+      }).catchError((error) {
+        log.info("NFC Payment Request error: $error");
+        _nfcWithdrawController.add(NfcWithdrawInvoiceStatus.error(error));
+      });
+    }
+  }
+
   @override
   Future dispose() {
     _lnUrlStreamController.close();
     _lnurlInputController.close();
+    _nfcWithdrawController.close();
     return super.dispose();
   }
-}
-
-abstract class WithdrawResponseInterceptor {
-  void intercept(WithdrawFetchResponse response);
 }
