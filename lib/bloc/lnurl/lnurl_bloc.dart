@@ -166,31 +166,16 @@ class LNUrlBloc with AsyncActionsHandler {
         response.minAmount,
         response.maxAmount,
       ));
-    } else if (action.expiry == null) {
-      log.info("NFC Payment Request error, no expiry set");
-      _nfcWithdrawController.add(NfcWithdrawInvoiceStatus.timeoutError());
     } else {
       log.info("Starting NFC Sale");
       _nfcWithdrawController.add(NfcWithdrawInvoiceStatus.started());
-
-      _breezLib.addInvoice(
-        action.amount,
-        payeeName: action.payeeName,
-        payeeImageURL: action.logo,
-        description: action.description,
-        expiry: action.expiry,
-      ).then((payReq) async {
-        log.info("NFC Payment Request received");
-        final request = payReq.paymentRequest;
-        final paymentHash = await _breezLib.getPaymentRequestHash(request);
-        await _breezLib.withdrawLNUrl(request);
-        _nfcWithdrawController.add(NfcWithdrawInvoiceStatus.completed(
-          paymentHash,
-        ));
-      }).catchError((error) {
+      try {
+        await _breezLib.withdrawLNUrl(action.paymentRequest.rawPayReq);
+        _nfcWithdrawController.add(NfcWithdrawInvoiceStatus.completed());
+      } catch (error) {
         log.info("NFC Payment Request error: $error");
         _nfcWithdrawController.add(NfcWithdrawInvoiceStatus.error(error));
-      });
+      }
     }
   }
 

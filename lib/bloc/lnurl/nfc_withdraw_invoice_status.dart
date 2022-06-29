@@ -6,14 +6,11 @@ abstract class NfcWithdrawInvoiceStatus {
   factory NfcWithdrawInvoiceStatus.started() =>
       const NfcWithdrawInvoiceStatusStarted();
 
-  factory NfcWithdrawInvoiceStatus.completed(String paymentHash) =>
-      NfcWithdrawInvoiceStatusCompleted(paymentHash);
+  factory NfcWithdrawInvoiceStatus.completed() =>
+      const NfcWithdrawInvoiceStatusCompleted();
 
   factory NfcWithdrawInvoiceStatus.rangeError(Int64 min, Int64 max) =>
       NfcWithdrawInvoiceStatusRangeError(min, max);
-
-  factory NfcWithdrawInvoiceStatus.timeoutError() =>
-      const NfcWithdrawInvoiceStatusTimeoutError();
 
   factory NfcWithdrawInvoiceStatus.error(String message) =>
       NfcWithdrawInvoiceStatusError(message);
@@ -24,11 +21,7 @@ class NfcWithdrawInvoiceStatusStarted extends NfcWithdrawInvoiceStatus {
 }
 
 class NfcWithdrawInvoiceStatusCompleted extends NfcWithdrawInvoiceStatus {
-  final String paymentHash;
-
-  const NfcWithdrawInvoiceStatusCompleted(
-    this.paymentHash,
-  );
+  const NfcWithdrawInvoiceStatusCompleted();
 }
 
 class NfcWithdrawInvoiceStatusRangeError extends NfcWithdrawInvoiceStatus {

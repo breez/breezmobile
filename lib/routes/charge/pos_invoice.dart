@@ -567,16 +567,12 @@ class POSInvoiceState extends State<POSInvoice> with TickerProviderStateMixin {
                 satAmount,
                 account,
                 submittedSale,
-              ).then((res) {
-                if (res?.clearSale != true) {
+              ).then((cleared) {
+                if (!cleared) {
                   final unLockSale = SetCurrentSale(
                     submittedSale.copyWith(priceLocked: false),
                   );
                   posCatalogBloc.actionsSink.add(unLockSale);
-                }
-                final nfcPaymentHash = res?.nfcPaymentHash;
-                if (nfcPaymentHash != null) {
-                  posCatalogBloc.actionsSink.add(SubmitCurrentSale(nfcPaymentHash));
                 }
               });
             });
@@ -614,7 +610,7 @@ class POSInvoiceState extends State<POSInvoice> with TickerProviderStateMixin {
     );
   }
 
-  Future<PosPaymentResult> _showPaymentDialog(
+  Future<bool> _showPaymentDialog(
     InvoiceBloc invoiceBloc,
     LNUrlBloc lnUrlBloc,
     BreezUserModel user,
@@ -640,9 +636,7 @@ class POSInvoiceState extends State<POSInvoice> with TickerProviderStateMixin {
         Navigator.of(context).push(TransparentPageRoute((context) {
           return SuccessfulPaymentRoute(
             onPrint: () async {
-              PaymentInfo paymentInfo = await _findPayment(
-                  res?.nfcPaymentHash ?? payReq.paymentHash,
-              );
+              PaymentInfo paymentInfo = await _findPayment(payReq.paymentHash);
               PrintParameters printParameters = PrintParameters(
                 currentUser: user,
                 account: account,
@@ -656,8 +650,9 @@ class POSInvoiceState extends State<POSInvoice> with TickerProviderStateMixin {
       }
       if (res?.clearSale == true) {
         _clearSale();
+        return true;
       }
-      return res;
+      return false;
     });
   }
 

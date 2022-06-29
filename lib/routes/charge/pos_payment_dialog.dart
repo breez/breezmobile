@@ -25,12 +25,10 @@ import 'package:share_extend/share_extend.dart';
 class PosPaymentResult {
   final bool paid;
   final bool clearSale;
-  final String nfcPaymentHash;
 
   const PosPaymentResult({
     this.paid = false,
     this.clearSale = false,
-    this.nfcPaymentHash,
   });
 }
 
@@ -102,11 +100,8 @@ class _PosPaymentDialogState extends State<PosPaymentDialog> {
         widget._lnUrlBloc.nfcWithdrawStream.listen(_listenNfcWithdraw);
 
     widget._lnUrlBloc.actionsSink.add(RegisterNfcSaleRequest(
-      widget._user.avatarURL,
-      widget._note,
-      widget._user.avatarURL,
       Int64(widget.satAmount.toInt()),
-      Int64(widget._user.cancellationTimeoutValue.toInt()),
+      widget.paymentRequest,
     ));
   }
 
@@ -342,7 +337,10 @@ class _PosPaymentDialogState extends State<PosPaymentDialog> {
     final texts = AppLocalizations.of(context);
     if (status is NfcWithdrawInvoiceStatusStarted) {
       _nfcWithdrawStarted();
-    } else if (status is NfcWithdrawInvoiceStatusRangeError) {
+      return;
+    }
+
+    if (status is NfcWithdrawInvoiceStatusRangeError) {
       showDialog(
         context: context,
         builder: (_) => PosSaleNfcError(
@@ -352,22 +350,15 @@ class _PosPaymentDialogState extends State<PosPaymentDialog> {
           ),
         ),
       );
-      _nfcWithdrawFinished();
     } else if (status is NfcWithdrawInvoiceStatusTimeoutError) {
       showFlushbar(
         context,
         message: texts.payment_error_payment_timeout_exceeded,
       );
-      _nfcWithdrawFinished();
     } else if (status is NfcWithdrawInvoiceStatusError) {
       showFlushbar(context, message: status.message);
-      _nfcWithdrawFinished();
-    } else if (status is NfcWithdrawInvoiceStatusCompleted) {
-      _nfcWithdrawFinished();
-      Navigator.of(context).pop(PosPaymentResult(
-        paid: true,
-        nfcPaymentHash: status.paymentHash,
-      ));
     }
+
+    _nfcWithdrawFinished();
   }
 }

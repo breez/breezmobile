@@ -1,4 +1,5 @@
 import 'package:breez/bloc/async_action.dart';
+import 'package:breez/bloc/invoice/invoice_model.dart';
 import 'package:breez/bloc/lnurl/lnurl_model.dart';
 import 'package:fixnum/fixnum.dart';
 
@@ -36,18 +37,12 @@ class FetchInvoice extends AsyncAction {
 }
 
 class RegisterNfcSaleRequest extends AsyncAction {
-  final String payeeName;
-  final String description;
-  final String logo;
   final Int64 amount;
-  final Int64 expiry;
+  final PaymentRequestModel paymentRequest;
 
   RegisterNfcSaleRequest(
-    this.payeeName,
-    this.description,
-    this.logo,
     this.amount,
-    this.expiry,
+    this.paymentRequest,
   );
 }
 
