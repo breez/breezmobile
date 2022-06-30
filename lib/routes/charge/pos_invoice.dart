@@ -9,6 +9,7 @@ import 'package:breez/bloc/blocs_provider.dart';
 import 'package:breez/bloc/invoice/actions.dart';
 import 'package:breez/bloc/invoice/invoice_bloc.dart';
 import 'package:breez/bloc/invoice/invoice_model.dart';
+import 'package:breez/bloc/lnurl/lnurl_bloc.dart';
 import 'package:breez/bloc/pos_catalog/actions.dart';
 import 'package:breez/bloc/pos_catalog/bloc.dart';
 import 'package:breez/bloc/pos_catalog/model.dart';
@@ -134,6 +135,7 @@ class POSInvoiceState extends State<POSInvoice> with TickerProviderStateMixin {
   Widget build(BuildContext context) {
     final accountBloc = AppBlocsProvider.of<AccountBloc>(context);
     final invoiceBloc = AppBlocsProvider.of<InvoiceBloc>(context);
+    final lnUrlBloc = AppBlocsProvider.of<LNUrlBloc>(context);
     final userProfileBloc = AppBlocsProvider.of<UserProfileBloc>(context);
     final posCatalogBloc = AppBlocsProvider.of<PosCatalogBloc>(context);
 
@@ -183,6 +185,7 @@ class POSInvoiceState extends State<POSInvoice> with TickerProviderStateMixin {
                               userProfileBloc,
                               posCatalogBloc,
                               invoiceBloc,
+                              lnUrlBloc,
                               userProfile,
                               accountModel,
                               currentSale,
@@ -208,6 +211,7 @@ class POSInvoiceState extends State<POSInvoice> with TickerProviderStateMixin {
     UserProfileBloc userProfileBloc,
     PosCatalogBloc posCatalogBloc,
     InvoiceBloc invoiceBloc,
+    LNUrlBloc lnUrlBloc,
     BreezUserModel userProfile,
     AccountModel accountModel,
     Sale currentSale,
@@ -235,6 +239,7 @@ class POSInvoiceState extends State<POSInvoice> with TickerProviderStateMixin {
                   _chargeButton(
                     context,
                     invoiceBloc,
+                    lnUrlBloc,
                     userProfile,
                     accountModel,
                     currentSale,
@@ -255,6 +260,7 @@ class POSInvoiceState extends State<POSInvoice> with TickerProviderStateMixin {
                       context,
                       currentSale,
                       invoiceBloc,
+                      lnUrlBloc,
                       userProfile,
                       accountModel,
                     ),
@@ -303,6 +309,7 @@ class POSInvoiceState extends State<POSInvoice> with TickerProviderStateMixin {
   Widget _chargeButton(
     BuildContext context,
     InvoiceBloc invoiceBloc,
+    LNUrlBloc lnUrlBloc,
     BreezUserModel userProfile,
     AccountModel accountModel,
     Sale currentSale,
@@ -336,6 +343,7 @@ class POSInvoiceState extends State<POSInvoice> with TickerProviderStateMixin {
               context,
               currentSale,
               invoiceBloc,
+              lnUrlBloc,
               userProfile,
               accountModel,
             ),
@@ -427,6 +435,7 @@ class POSInvoiceState extends State<POSInvoice> with TickerProviderStateMixin {
     BuildContext context,
     Sale currentSale,
     InvoiceBloc invoiceBloc,
+    LNUrlBloc lnUrlBloc,
     BreezUserModel user,
     AccountModel account,
   ) {
@@ -552,6 +561,7 @@ class POSInvoiceState extends State<POSInvoice> with TickerProviderStateMixin {
             return addSaleAction.future.then((submittedSale) {
               return _showPaymentDialog(
                 invoiceBloc,
+                lnUrlBloc,
                 user,
                 payReq,
                 satAmount,
@@ -600,8 +610,9 @@ class POSInvoiceState extends State<POSInvoice> with TickerProviderStateMixin {
     );
   }
 
-  Future _showPaymentDialog(
+  Future<bool> _showPaymentDialog(
     InvoiceBloc invoiceBloc,
+    LNUrlBloc lnUrlBloc,
     BreezUserModel user,
     PaymentRequestModel payReq,
     double satAmount,
@@ -609,12 +620,18 @@ class POSInvoiceState extends State<POSInvoice> with TickerProviderStateMixin {
     Sale submittedSale,
   ) {
     return showDialog<PosPaymentResult>(
-        useRootNavigator: false,
-        context: context,
-        barrierDismissible: false,
-        builder: (BuildContext context) {
-          return PosPaymentDialog(invoiceBloc, user, payReq, satAmount);
-        }).then((res) {
+      useRootNavigator: false,
+      context: context,
+      barrierDismissible: false,
+      builder: (context) => PosPaymentDialog(
+        invoiceBloc,
+        lnUrlBloc,
+        user,
+        payReq,
+        satAmount,
+        submittedSale.note,
+      ),
+    ).then((res) {
       if (res?.paid == true) {
         Navigator.of(context).push(TransparentPageRoute((context) {
           return SuccessfulPaymentRoute(
