@@ -218,8 +218,7 @@ class PodcastPaymentsBloc with AsyncActionsHandler {
       return;
     }
     paidPositions[paidPositionKey] = true;
-
-    withBreez.forEach((d) async {
+    final podcastPaymentFutures = withBreez.map((d) async {
       final amount = (d.split * total / totalSplits);
       var payPart = amount.toInt();
       if (!boost) {
@@ -239,7 +238,7 @@ class PodcastPaymentsBloc with AsyncActionsHandler {
         if (!boost) {
           await _aggregatedPayments.addAmount(d.address, -payPart.toDouble());
         }
-        _breezLib
+        return _breezLib
             .sendSpontaneousPayment(d.address, Int64(netPay), d.name,
                 feeLimitMsat: maxFee,
                 groupKey: _getPodcastGroupKey(episode),
@@ -280,6 +279,9 @@ class PodcastPaymentsBloc with AsyncActionsHandler {
         });
       }
     });
+
+    await Future.wait(podcastPaymentFutures);
+
     if (netPaySplitSum > 0) {
       _addToPodcastHistory(
           podcastId: episode.metadata["feed"]["id"].toString(),
@@ -287,7 +289,7 @@ class PodcastPaymentsBloc with AsyncActionsHandler {
           podcastImageUrl: episode.metadata["feed"]["image"],
           podcastUrl: episode.metadata["feed"]["originalUrl"],
           satsSpent: netPaySplitSum,
-          durationInMins: 0,
+          durationInMins: 0.0,
           isBoost: boost);
     }
   }
