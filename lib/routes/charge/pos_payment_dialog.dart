@@ -20,6 +20,7 @@ import 'package:breez/widgets/loader.dart';
 import 'package:fixnum/fixnum.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:share_extend/share_extend.dart';
 
 class PosPaymentResult {
@@ -153,6 +154,13 @@ class _PosPaymentDialogState extends State<PosPaymentDialog> {
         ),
         Row(
           children: <Widget>[
+            SvgPicture.asset(
+              "src/icon/nfc.svg",
+              height: 24,
+              width: 24,
+              color: themeData.dialogTheme.titleTextStyle.color,
+              colorBlendMode: BlendMode.srcATop,
+            ),
             IconButton(
               splashColor: Colors.transparent,
               highlightColor: Colors.transparent,
