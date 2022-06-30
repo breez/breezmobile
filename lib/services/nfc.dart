@@ -29,7 +29,7 @@ class NFCService {
         }
         fnCalls++;
         _checkNfcStartedWith();
-      });      
+      });
     }
     _listenLnLinks();
   }
@@ -47,7 +47,7 @@ class NFCService {
     // Check availability
     log.info("check if nfc available");
     bool isAvailable = await NfcManager.instance.isAvailable();
-    log.info("nfc available $isAvailable");    
+    log.info("nfc available $isAvailable");
     if (isAvailable) {
       _startNFCSession();
       ServiceInjector().device.eventStream.distinct().listen((event) {
@@ -68,13 +68,17 @@ class NFCService {
     await NfcManager.instance.stopSession();
     NfcManager.instance.startSession(
       onDiscovered: (NfcTag tag) async {
-        var ndef = Ndef.from(tag);                            
-        if (ndef != null) {                                    
+        var ndef = Ndef.from(tag);
+        if (ndef != null) {
           for (var rec in ndef.cachedMessage.records) {
             String payload = String.fromCharCodes(rec.payload);
-            var lightningStart = payload.indexOf("lightning:");                    
+            var lightningStart = payload.indexOf("lightning:");
             if (lightningStart >= 0) {
-                _lnLinkController.add(payload.substring(lightningStart));
+              final link = payload.substring(lightningStart);
+              log.info("nfc broadcasting link: $link");
+              _lnLinkController.add(link);
+            } else {
+              log.info("nfc skip payload: $payload");
             }
           }
         }
