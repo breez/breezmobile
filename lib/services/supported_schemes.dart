@@ -1,10 +1,25 @@
+const _validSchemes = [
+  "breez:",
+  "lightning:",
+  "lnurlc:",
+  "lnurlp:",
+  "lnurlw:",
+  "keyauth:",
+];
+
 bool canHandleScheme(String link) {
   if (link == null) return false;
   final sanitized = link.toLowerCase().trim();
-  return sanitized.startsWith("breez:") ||
-      sanitized.startsWith("lightning:") ||
-      sanitized.startsWith("lnurlc:") ||
-      sanitized.startsWith("lnurlp:") ||
-      sanitized.startsWith("lnurlw:") ||
-      sanitized.startsWith("keyauth:");
+  return _validSchemes.any((scheme) => sanitized.startsWith(scheme));
+}
+
+/// Extracts the link from an arbitrary payload removing some special characters
+/// from the beginning of the payload such as 0x00
+String extractPayloadLink(String payload) {
+  try {
+    final scheme = _validSchemes.firstWhere((e) => payload.indexOf(e) >= 0);
+    return payload.substring(payload.indexOf(scheme));
+  } catch (e) {
+    return null;
+  }
 }

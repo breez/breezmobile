@@ -73,9 +73,10 @@ class NFCService {
         if (ndef != null) {
           for (var rec in ndef.cachedMessage.records) {
             String payload = String.fromCharCodes(rec.payload);
-            if (canHandleScheme(payload)) {
-              log.info("nfc broadcasting payload: $payload");
-              _lnLinkController.add(payload);
+            final link = extractPayloadLink(payload);
+            if (link != null) {
+              log.info("nfc broadcasting link: $link");
+              _lnLinkController.add(link);
             } else {
               log.info("nfc skip payload: $payload");
             }
