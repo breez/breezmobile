@@ -3,6 +3,7 @@ import 'dart:io';
 
 import 'package:breez/logger.dart';
 import 'package:breez/services/device.dart';
+import 'package:breez/services/supported_schemes.dart';
 import 'package:flutter/services.dart';
 import 'package:nfc_manager/nfc_manager.dart';
 
@@ -72,11 +73,9 @@ class NFCService {
         if (ndef != null) {
           for (var rec in ndef.cachedMessage.records) {
             String payload = String.fromCharCodes(rec.payload);
-            var lightningStart = payload.indexOf("lightning:");
-            if (lightningStart >= 0) {
-              final link = payload.substring(lightningStart);
-              log.info("nfc broadcasting link: $link");
-              _lnLinkController.add(link);
+            if (canHandleScheme(payload)) {
+              log.info("nfc broadcasting payload: $payload");
+              _lnLinkController.add(payload);
             } else {
               log.info("nfc skip payload: $payload");
             }
