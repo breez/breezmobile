@@ -78,7 +78,11 @@ Check our [active bounties](https://github.com/breez/breezmobile/wiki/Bounties).
 - [x] Backup to WebDav servers (e.g. Nextcloud)
 - [x] Support LNURL-Pay ([bounty redeemed](https://github.com/breez/breezmobile/wiki/Bounties#lnurl-pay-support))
 - [x] Send to a Lightning address
-- [x] Boostagram
+- [x] Boostagrams
+- [x] WebDav backups 
+- [x] Sales reports
+- [x] Top podcasts
+- [x] NFC checkout 
 - [ ] Tor support ([open bounty](https://github.com/breez/breezmobile/wiki/Bounties#tor-support))
 - [ ] Support LNURL-Withdraw balance check
 - [ ] Async payments via Lightning Rod
