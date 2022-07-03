@@ -5,16 +5,22 @@ import 'package:breez/bloc/account/account_model.dart';
 import 'package:breez/bloc/blocs_provider.dart';
 import 'package:breez/bloc/invoice/invoice_bloc.dart';
 import 'package:breez/bloc/invoice/invoice_model.dart';
+import 'package:breez/bloc/lnurl/lnurl_actions.dart';
+import 'package:breez/bloc/lnurl/lnurl_bloc.dart';
+import 'package:breez/bloc/lnurl/nfc_withdraw_invoice_status.dart';
 import 'package:breez/bloc/user_profile/breez_user_model.dart';
 import 'package:breez/bloc/user_profile/currency.dart';
 import 'package:breez/routes/charge/currency_wrapper.dart';
+import 'package:breez/routes/charge/pos_sale_nfc_error.dart';
 import 'package:breez/services/countdown.dart';
 import 'package:breez/services/injector.dart';
 import 'package:breez/widgets/compact_qr_image.dart';
 import 'package:breez/widgets/flushbar.dart';
 import 'package:breez/widgets/loader.dart';
+import 'package:fixnum/fixnum.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:share_extend/share_extend.dart';
 
 class PosPaymentResult {
@@ -29,15 +35,19 @@ class PosPaymentResult {
 
 class PosPaymentDialog extends StatefulWidget {
   final InvoiceBloc _invoiceBloc;
+  final LNUrlBloc _lnUrlBloc;
   final BreezUserModel _user;
   final PaymentRequestModel paymentRequest;
   final double satAmount;
+  final String _note;
 
   const PosPaymentDialog(
     this._invoiceBloc,
+    this._lnUrlBloc,
     this._user,
     this.paymentRequest,
     this.satAmount,
+    this._note,
   );
 
   @override
@@ -50,7 +60,10 @@ class _PosPaymentDialogState extends State<PosPaymentDialog> {
   CountDown _paymentTimer;
   StreamSubscription<Duration> _timerSubscription;
   StreamSubscription<PaymentRequestModel> _paidInvoiceSubscription;
+  StreamSubscription<NfcWithdrawInvoiceStatus> _nfcInvoiceSubscription;
   String _countdownString = "3:00";
+  var _loadingNfc = false;
+  Duration _expiration;
 
   @override
   void initState() {
@@ -62,6 +75,7 @@ class _PosPaymentDialogState extends State<PosPaymentDialog> {
     _timerSubscription = _paymentTimer.stream.listen((d) {
       setState(() {
         final texts = AppLocalizations.of(context);
+        _expiration = d;
         _countdownString = texts.pos_dialog_clock(
           d.inMinutes.toRadixString(10),
           (d.inSeconds - (d.inMinutes * 60)).toRadixString(10).padLeft(2, "0"),
@@ -82,12 +96,22 @@ class _PosPaymentDialogState extends State<PosPaymentDialog> {
         }
       });
     });
+
+    _nfcInvoiceSubscription =
+        widget._lnUrlBloc.nfcWithdrawStream.listen(_listenNfcWithdraw);
+
+    widget._lnUrlBloc.actionsSink.add(RegisterNfcSaleRequest(
+      Int64(widget.satAmount.toInt()),
+      widget.paymentRequest,
+    ));
   }
 
   @override
   void dispose() {
     _timerSubscription?.cancel();
     _paidInvoiceSubscription?.cancel();
+    _nfcInvoiceSubscription?.cancel();
+    widget._lnUrlBloc.actionsSink.add(ClearNfcSaleRequest());
     super.dispose();
   }
 
@@ -130,6 +154,13 @@ class _PosPaymentDialogState extends State<PosPaymentDialog> {
         ),
         Row(
           children: <Widget>[
+            SvgPicture.asset(
+              "src/icon/nfc.svg",
+              height: 24,
+              width: 24,
+              color: themeData.dialogTheme.titleTextStyle.color,
+              colorBlendMode: BlendMode.srcATop,
+            ),
             IconButton(
               splashColor: Colors.transparent,
               highlightColor: Colors.transparent,
@@ -209,9 +240,11 @@ class _PosPaymentDialogState extends State<PosPaymentDialog> {
               child: Container(
                 height: 230.0,
                 width: 230.0,
-                child: CompactQRImage(
-                  data: widget.paymentRequest.rawPayReq,
-                ),
+                child: _loadingNfc
+                    ? Loader()
+                    : CompactQRImage(
+                        data: widget.paymentRequest.rawPayReq,
+                      ),
               ),
             ),
           ),
@@ -290,5 +323,50 @@ class _PosPaymentDialogState extends State<PosPaymentDialog> {
         Navigator.of(context).pop(PosPaymentResult());
       },
     );
+  }
+
+  void _nfcWithdrawStarted() {
+    if (mounted) {
+      setState(() {
+        _loadingNfc = true;
+      });
+    }
+  }
+
+  void _nfcWithdrawFinished() {
+    if (mounted) {
+      setState(() {
+        _loadingNfc = false;
+      });
+    }
+  }
+
+  void _listenNfcWithdraw(NfcWithdrawInvoiceStatus status) {
+    final texts = AppLocalizations.of(context);
+    if (status is NfcWithdrawInvoiceStatusStarted) {
+      _nfcWithdrawStarted();
+      return;
+    }
+
+    if (status is NfcWithdrawInvoiceStatusRangeError) {
+      showDialog(
+        context: context,
+        builder: (_) => PosSaleNfcError(
+          texts.pos_payment_nfc_range_error(
+            Currency.SAT.format(status.minAmount, includeDisplayName: false),
+            Currency.SAT.format(status.maxAmount),
+          ),
+        ),
+      );
+    } else if (status is NfcWithdrawInvoiceStatusTimeoutError) {
+      showFlushbar(
+        context,
+        message: texts.payment_error_payment_timeout_exceeded,
+      );
+    } else if (status is NfcWithdrawInvoiceStatusError) {
+      showFlushbar(context, message: status.message);
+    }
+
+    _nfcWithdrawFinished();
   }
 }

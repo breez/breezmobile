@@ -2,6 +2,7 @@ package com.breez.client.plugins.breez;
 
 import android.content.Intent;
 import android.app.PendingIntent;
+import android.os.Build;
 
 import androidx.annotation.NonNull;
 
@@ -89,7 +90,8 @@ public class BreezShare implements MethodChannel.MethodCallHandler, PluginRegist
                 shareIntent.setType("text/plain");
 
                 Intent receiver = new Intent(binding.getActivity(), BreezShareReceiver.class);
-                PendingIntent pendingIntent = PendingIntent.getBroadcast(binding.getActivity(), 0, receiver, PendingIntent.FLAG_UPDATE_CURRENT);
+                int flags = Build.VERSION.SDK_INT >= Build.VERSION_CODES.S ? PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE : PendingIntent.FLAG_UPDATE_CURRENT;
+                PendingIntent pendingIntent = PendingIntent.getBroadcast(binding.getActivity(), 0, receiver, flags);
 
                 Intent chooserIntent = Intent.createChooser(shareIntent,
                         call.argument("title") == null ? null : (String) call.argument("title"),

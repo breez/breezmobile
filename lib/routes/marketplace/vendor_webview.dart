@@ -5,7 +5,7 @@ import 'package:breez/bloc/blocs_provider.dart';
 import 'package:breez/bloc/invoice/invoice_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:url_launcher/url_launcher.dart';
+import 'package:url_launcher/url_launcher_string.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
 import 'webln_handlers.dart';
@@ -93,13 +93,13 @@ class VendorWebViewPageState extends State<VendorWebViewPage> {
                 _handleNavigationRequest(request),
             onPageFinished: (String url) async {
               // intercept ln link clicks
-              _webViewController.evaluateJavascript(await rootBundle
+              _webViewController.runJavascript(await rootBundle
                   .loadString('src/scripts/lightningLinkInterceptor.js'));
               // redirect post messages to javascript channel
-              _webViewController.evaluateJavascript(
-                  "window.onmessage = (message) => window.BreezWebView.postMessage(message.data);");
+              _webViewController.runJavascript(
+                  'window.onmessage = (message) => window.BreezWebView.postMessage(message.data);');
               _webViewController
-                  .evaluateJavascript(await _weblnHandlers.initWeblnScript);
+                  .runJavascript(await _weblnHandlers.initWeblnScript);
               print('Page finished loading: $url');
             },
             initialUrl: widget._url),
@@ -111,7 +111,7 @@ class VendorWebViewPageState extends State<VendorWebViewPage> {
     if (request.url.startsWith('lightning:')) {
       return NavigationDecision.prevent;
     } else if (request.url.startsWith('tg:')) {
-      launch(request.url);
+      launchUrlString(request.url);
       return NavigationDecision.prevent;
     }
     return NavigationDecision.navigate;
@@ -135,7 +135,7 @@ class VendorWebViewPageState extends State<VendorWebViewPage> {
           } else {
             _weblnHandlers.handleMessage(postMessage).then((resScript) {
               if (resScript != null) {
-                _webViewController.evaluateJavascript(resScript);
+                _webViewController.runJavascript(resScript);
               }
             });
           }

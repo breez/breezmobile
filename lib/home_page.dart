@@ -1,8 +1,6 @@
 import 'dart:async';
-import 'dart:io';
 
 import 'package:anytime/bloc/podcast/audio_bloc.dart';
-import 'package:anytime/l10n/L.dart';
 import 'package:anytime/ui/anytime_podcast_app.dart';
 import 'package:anytime/ui/podcast/now_playing.dart';
 import 'package:audio_service/audio_service.dart';
@@ -43,6 +41,7 @@ import 'package:breez/widgets/payment_failed_report_dialog.dart';
 import 'package:breez/widgets/route.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:provider/provider.dart';
@@ -139,9 +138,8 @@ class HomeState extends State<Home> with WidgetsBindingObserver {
       });
     });
 
-    AudioService.notificationClickEventStream
-        .where((event) => event == true)
-        .listen((event) async {
+    AudioService.notificationClicked.where((event) => event == true).listen(
+        (event) async {
       final userBloc = AppBlocsProvider.of<UserProfileBloc>(context);
       final userModel = await userBloc.userStream.first;
       final nowPlaying = await audioBloc.nowPlaying.first.timeout(
@@ -163,7 +161,7 @@ class HomeState extends State<Home> with WidgetsBindingObserver {
     });
   }
 
-  void _initListens(BuildContext context) {    
+  void _initListens(BuildContext context) {
     if (_listensInit) return;
     _listensInit = true;
     ServiceInjector().breezBridge.initBreezLib();
@@ -273,8 +271,8 @@ class HomeState extends State<Home> with WidgetsBindingObserver {
           resizeToAvoidBottomInset: false,
           key: _scaffoldKey,
           appBar: AppBar(
-            brightness: theme.themeId == "BLUE"
-                ? Brightness.light
+            systemOverlayStyle: theme.themeId == "BLUE"
+                ? SystemUiOverlayStyle.dark
                 : themeData.appBarTheme.systemOverlayStyle,
             centerTitle: false,
             actions: [
@@ -394,6 +392,16 @@ class HomeState extends State<Home> with WidgetsBindingObserver {
         "src/icon/security.png",
         onItemSelected: (_) => protectAdminRoute(context, user, "/security"),
       ),
+      DrawerItemConfig(
+        "",
+        texts.home_drawer_item_title_payment_options,
+        "src/icon/payment_options.png",
+        onItemSelected: (_) => protectAdminRoute(
+          context,
+          user,
+          "/payment_options",
+        ),
+      ),
       ..._drawerConfigAdvancedFlavorItems(context, user, texts),
     ];
   }
@@ -430,20 +438,36 @@ class HomeState extends State<Home> with WidgetsBindingObserver {
     BreezUserModel user,
     AppLocalizations texts,
   ) {
-    if (user.appMode == AppMode.pos) {
-      return [
-        DrawerItemConfigGroup(
-          [
-            DrawerItemConfig(
-              "/transactions",
-              texts.home_drawer_item_title_transactions,
-              "src/icon/transactions.png",
-            ),
-          ],
-        ),
-      ];
+    switch (user.appMode) {
+      case AppMode.pos:
+        return [
+          DrawerItemConfigGroup(
+            [
+              DrawerItemConfig(
+                "/transactions",
+                texts.home_drawer_item_title_transactions,
+                "src/icon/transactions.png",
+              ),
+            ],
+          ),
+        ];
+
+      case AppMode.podcasts:
+        return [
+          DrawerItemConfigGroup(
+            [
+              DrawerItemConfig(
+                "/podcast_history",
+                texts.podcast_history_drawer,
+                "src/icon/top_podcast_icon.png",
+              ),
+            ],
+          ),
+        ];
+
+      default:
+        return [];
     }
-    return [];
   }
 
   List<DrawerItemConfigGroup> _drawerConfigAppModeItems(
@@ -612,7 +636,6 @@ class HomeState extends State<Home> with WidgetsBindingObserver {
   Widget _homePage(BuildContext context, BreezUserModel user) {
     final texts = AppLocalizations.of(context);
     final themeData = Theme.of(context);
-    final List<String> anytimeLocales = ['en', 'de', 'pt'];
 
     switch (user.appMode) {
       case AppMode.podcasts:
@@ -751,7 +774,6 @@ class HomeState extends State<Home> with WidgetsBindingObserver {
           style: themeData.dialogTheme.contentTextStyle,
         ),
         okText: texts.home_config_error_action_exit,
-        okFunc: () => exit(0),
         disableBack: true,
       );
     });

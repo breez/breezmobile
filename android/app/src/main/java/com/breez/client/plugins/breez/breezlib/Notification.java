@@ -30,12 +30,10 @@ public class Notification {
         notificationIntent.putExtra("click_action", "FLUTTER_NOTIFICATION_CLICK");
         notificationIntent.putExtra("user_click", "1");
 
-
         Bitmap icon = BitmapFactory.decodeResource(ctx.getResources(), R.mipmap.ic_launcher);
 
-        PendingIntent appIntent = PendingIntent.getActivity(ctx, 0, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
-
-
+        int flags = Build.VERSION.SDK_INT >= Build.VERSION_CODES.S ? PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE : PendingIntent.FLAG_UPDATE_CURRENT;
+        PendingIntent appIntent = PendingIntent.getActivity(ctx, 0, notificationIntent, flags);
 
         NotificationCompat.Action action =
                 new NotificationCompat.Action.Builder(ic_delete,

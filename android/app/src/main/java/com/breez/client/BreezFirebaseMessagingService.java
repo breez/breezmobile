@@ -59,6 +59,7 @@ public class BreezFirebaseMessagingService extends FirebaseMessagingService {
     private void ShowNotification(Map<String, String> data, RemoteMessage remoteMessage) {
         int notificationID = (int)System.currentTimeMillis() / 1000;
         Bitmap icon = BitmapFactory.decodeResource(getResources(), R.mipmap.ic_launcher);
+        int flags = Build.VERSION.SDK_INT >= Build.VERSION_CODES.S ? PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE : PendingIntent.FLAG_UPDATE_CURRENT;
         PendingIntent approvePendingIntent = PendingIntent.getBroadcast(
                 this,
                 REQUEST_CODE_OPEN,
@@ -66,7 +67,7 @@ public class BreezFirebaseMessagingService extends FirebaseMessagingService {
                         .putExtra(KEY_INTENT_APPROVE, REQUEST_CODE_OPEN)
                         .putExtra(NOTIFICATION_ID, notificationID)
                         .putExtra(EXTRA_REMOTE_MESSAGE, remoteMessage),
-                PendingIntent.FLAG_UPDATE_CURRENT
+                flags
         );
 
         String buttonTitle = data.get("button");

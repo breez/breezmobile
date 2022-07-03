@@ -55,7 +55,7 @@ class FiatConversion {
 
     String formattedAmount = "";
     String spacing = " " * currencyData.spacing;
-    String symbol = (currencyData.position == 1)
+    String symbol = currencyData.rightSideSymbol
         ? spacing + '${currencyData.symbol}'
         : '${currencyData.symbol}' + spacing;
     // if conversion result is less than the minimum it doesn't make sense to display
@@ -70,7 +70,7 @@ class FiatConversion {
       formattedAmount = formatter.format(fiatAmount);
     }
     if (addCurrencySymbol) {
-      formattedAmount = (currencyData.position == 1)
+      formattedAmount = currencyData.rightSideSymbol
           ? formattedAmount + symbol
           : symbol + formattedAmount;
     } else if (includeDisplayName) {

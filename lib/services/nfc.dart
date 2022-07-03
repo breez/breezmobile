@@ -5,8 +5,7 @@ import 'package:flutter/services.dart';
 
 class NFCService {
   static const _platform = MethodChannel('com.breez.client/nfc');
-  StreamController<String> _lnLinkController =
-      StreamController<String>.broadcast();
+  StreamController<String> _lnLinkController = StreamController<String>.broadcast();
   StreamSubscription _lnLinkListener;
   Timer _checkNfcStartedWithTimer;
 
@@ -18,8 +17,7 @@ class NFCService {
     if (Platform.isAndroid) {
       int fnCalls = 0;
       // Wrap with Future.delayed on debug mode.
-      _checkNfcStartedWithTimer =
-          Timer.periodic(Duration(milliseconds: 100), (Timer t) {
+      _checkNfcStartedWithTimer = Timer.periodic(Duration(milliseconds: 100), (Timer t) {
         if (fnCalls == 5) {
           _checkNfcStartedWithTimer.cancel();
           return;
@@ -27,8 +25,8 @@ class NFCService {
         fnCalls++;
         _checkNfcStartedWith();
       });
-      _listenLnLinks();
     }
+    _listenLnLinks();
   }
 
   _checkNfcStartedWith() async {
@@ -40,13 +38,7 @@ class NFCService {
     });
   }
 
-  _listenLnLinks() {
-    // _lnLinkListener = NFC.readNDEF().listen(
-    //   (message) {
-    //     String lnLink = message.payload;
-    //     if (lnLink.startsWith("lightning:")) _lnLinkController.add(lnLink);
-    //   },
-    // );
+  _listenLnLinks() {    
   }
 
   close() {

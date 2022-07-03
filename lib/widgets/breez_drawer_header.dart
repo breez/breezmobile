@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 
 const double _kBreezDrawerHeaderHeight = 160.0 + 1.0; // bottom edge
 

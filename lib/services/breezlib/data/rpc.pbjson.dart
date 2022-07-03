@@ -1,6 +1,6 @@
 ///
 //  Generated code. Do not modify.
-//  source: messages.proto
+//  source: rpc.proto
 //
 // @dart = 2.12
 // ignore_for_file: annotate_overrides,camel_case_types,unnecessary_const,non_constant_identifier_names,library_prefixes,unused_import,unused_shown_name,return_of_invalid_type,unnecessary_this,prefer_final_fields,deprecated_member_use_from_same_package
@@ -205,11 +205,12 @@ const PayInvoiceRequest$json = const {
   '2': const [
     const {'1': 'amount', '3': 1, '4': 1, '5': 3, '10': 'amount'},
     const {'1': 'paymentRequest', '3': 2, '4': 1, '5': 9, '10': 'paymentRequest'},
+    const {'1': 'fee', '3': 3, '4': 1, '5': 3, '10': 'fee'},
   ],
 };
 
 /// Descriptor for `PayInvoiceRequest`. Decode as a `google.protobuf.DescriptorProto`.
-final $typed_data.Uint8List payInvoiceRequestDescriptor = $convert.base64Decode('ChFQYXlJbnZvaWNlUmVxdWVzdBIWCgZhbW91bnQYASABKANSBmFtb3VudBImCg5wYXltZW50UmVxdWVzdBgCIAEoCVIOcGF5bWVudFJlcXVlc3Q=');
+final $typed_data.Uint8List payInvoiceRequestDescriptor = $convert.base64Decode('ChFQYXlJbnZvaWNlUmVxdWVzdBIWCgZhbW91bnQYASABKANSBmFtb3VudBImCg5wYXltZW50UmVxdWVzdBgCIAEoCVIOcGF5bWVudFJlcXVlc3QSEAoDZmVlGAMgASgDUgNmZWU=');
 @$core.Deprecated('Use spontaneousPaymentRequestDescriptor instead')
 const SpontaneousPaymentRequest$json = const {
   '1': 'SpontaneousPaymentRequest',
@@ -781,16 +782,31 @@ const LNURLAuth$json = const {
 
 /// Descriptor for `LNURLAuth`. Decode as a `google.protobuf.DescriptorProto`.
 final $typed_data.Uint8List lNURLAuthDescriptor = $convert.base64Decode('CglMTlVSTEF1dGgSEAoDdGFnGAEgASgJUgN0YWcSDgoCazEYAiABKAlSAmsxEhoKCGNhbGxiYWNrGAMgASgJUghjYWxsYmFjaxISCgRob3N0GAQgASgJUgRob3N0EhAKA2p3dBgFIAEoCFIDand0');
+@$core.Deprecated('Use lNUrlPayImageDescriptor instead')
+const LNUrlPayImage$json = const {
+  '1': 'LNUrlPayImage',
+  '2': const [
+    const {'1': 'data_uri', '3': 1, '4': 1, '5': 9, '10': 'dataUri'},
+    const {'1': 'ext', '3': 2, '4': 1, '5': 9, '10': 'ext'},
+    const {'1': 'bytes', '3': 3, '4': 1, '5': 12, '10': 'bytes'},
+  ],
+};
+
+/// Descriptor for `LNUrlPayImage`. Decode as a `google.protobuf.DescriptorProto`.
+final $typed_data.Uint8List lNUrlPayImageDescriptor = $convert.base64Decode('Cg1MTlVybFBheUltYWdlEhkKCGRhdGFfdXJpGAEgASgJUgdkYXRhVXJpEhAKA2V4dBgCIAEoCVIDZXh0EhQKBWJ5dGVzGAMgASgMUgVieXRlcw==');
 @$core.Deprecated('Use lNUrlPayMetadataDescriptor instead')
 const LNUrlPayMetadata$json = const {
   '1': 'LNUrlPayMetadata',
   '2': const [
     const {'1': 'entry', '3': 1, '4': 3, '5': 9, '10': 'entry'},
+    const {'1': 'description', '3': 2, '4': 1, '5': 9, '10': 'description'},
+    const {'1': 'long_description', '3': 3, '4': 1, '5': 9, '10': 'longDescription'},
+    const {'1': 'image', '3': 4, '4': 1, '5': 11, '6': '.data.LNUrlPayImage', '10': 'image'},
   ],
 };
 
 /// Descriptor for `LNUrlPayMetadata`. Decode as a `google.protobuf.DescriptorProto`.
-final $typed_data.Uint8List lNUrlPayMetadataDescriptor = $convert.base64Decode('ChBMTlVybFBheU1ldGFkYXRhEhQKBWVudHJ5GAEgAygJUgVlbnRyeQ==');
+final $typed_data.Uint8List lNUrlPayMetadataDescriptor = $convert.base64Decode('ChBMTlVybFBheU1ldGFkYXRhEhQKBWVudHJ5GAEgAygJUgVlbnRyeRIgCgtkZXNjcmlwdGlvbhgCIAEoCVILZGVzY3JpcHRpb24SKQoQbG9uZ19kZXNjcmlwdGlvbhgDIAEoCVIPbG9uZ0Rlc2NyaXB0aW9uEikKBWltYWdlGAQgASgLMhMuZGF0YS5MTlVybFBheUltYWdlUgVpbWFnZQ==');
 @$core.Deprecated('Use lNURLPayResponse1Descriptor instead')
 const LNURLPayResponse1$json = const {
   '1': 'LNURLPayResponse1',
@@ -918,11 +934,12 @@ const ReverseSwapPaymentRequest$json = const {
   '2': const [
     const {'1': 'hash', '3': 1, '4': 1, '5': 9, '10': 'hash'},
     const {'1': 'push_notification_details', '3': 2, '4': 1, '5': 11, '6': '.data.PushNotificationDetails', '10': 'pushNotificationDetails'},
+    const {'1': 'fee', '3': 3, '4': 1, '5': 3, '10': 'fee'},
   ],
 };
 
 /// Descriptor for `ReverseSwapPaymentRequest`. Decode as a `google.protobuf.DescriptorProto`.
-final $typed_data.Uint8List reverseSwapPaymentRequestDescriptor = $convert.base64Decode('ChlSZXZlcnNlU3dhcFBheW1lbnRSZXF1ZXN0EhIKBGhhc2gYASABKAlSBGhhc2gSWQoZcHVzaF9ub3RpZmljYXRpb25fZGV0YWlscxgCIAEoCzIdLmRhdGEuUHVzaE5vdGlmaWNhdGlvbkRldGFpbHNSF3B1c2hOb3RpZmljYXRpb25EZXRhaWxz');
+final $typed_data.Uint8List reverseSwapPaymentRequestDescriptor = $convert.base64Decode('ChlSZXZlcnNlU3dhcFBheW1lbnRSZXF1ZXN0EhIKBGhhc2gYASABKAlSBGhhc2gSWQoZcHVzaF9ub3RpZmljYXRpb25fZGV0YWlscxgCIAEoCzIdLmRhdGEuUHVzaE5vdGlmaWNhdGlvbkRldGFpbHNSF3B1c2hOb3RpZmljYXRpb25EZXRhaWxzEhAKA2ZlZRgDIAEoA1IDZmVl');
 @$core.Deprecated('Use pushNotificationDetailsDescriptor instead')
 const PushNotificationDetails$json = const {
   '1': 'PushNotificationDetails',

@@ -1,6 +1,5 @@
 import 'dart:math';
 
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 /// Given 2 items, lets say "Big and long text" and "Small text", it will place items as follow:

@@ -39,6 +39,7 @@ class EnterBackupPhrasePageState extends State<EnterBackupPhrasePage> {
 
   @override
   void initState() {
+    super.initState();
     if (widget.is24Word) {
       focusNodes = List<FocusNode>.generate(24, (_) => FocusNode());
       textEditingControllers = List<TextEditingController>.generate(
@@ -50,7 +51,6 @@ class EnterBackupPhrasePageState extends State<EnterBackupPhrasePage> {
     _currentPage = 1;
     _autoValidateMode = AutovalidateMode.disabled;
     _hasError = false;
-    super.initState();
   }
 
   @override
@@ -60,40 +60,42 @@ class EnterBackupPhrasePageState extends State<EnterBackupPhrasePage> {
     final query = MediaQuery.of(context);
     final userProfileBloc = AppBlocsProvider.of<UserProfileBloc>(context);
 
-    return Scaffold(
-      appBar: AppBar(
-        iconTheme: themeData.appBarTheme.iconTheme,
-        textTheme: themeData.appBarTheme.textTheme,
-        backgroundColor: themeData.canvasColor,
-        automaticallyImplyLeading: false,
-        leading: backBtn.BackButton(
-          onPressed: () {
-            if (_currentPage == 1) {
-              Navigator.pop(context);
-            } else if (_currentPage > 1) {
-              _formKey.currentState.reset();
-              FocusScope.of(context).requestFocus(FocusNode());
-              setState(() {
-                _currentPage--;
-              });
-            }
-          },
-        ),
-        title: Text(
-          texts.enter_backup_phrase(
-            _currentPage.toString(),
-            _lastPage.toString(),
+    return WillPopScope(
+      onWillPop: _onWillPop,
+      child: Scaffold(
+        appBar: AppBar(
+          iconTheme: themeData.appBarTheme.iconTheme,
+          textTheme: themeData.appBarTheme.textTheme,
+          backgroundColor: themeData.canvasColor,
+          automaticallyImplyLeading: false,
+          leading: backBtn.BackButton(
+            onPressed: () {
+              if (_currentPage == 1) {
+                Navigator.pop(context);
+              } else if (_currentPage > 1) {
+                FocusScope.of(context).requestFocus(FocusNode());
+                setState(() {
+                  _currentPage--;
+                });
+              }
+            },
           ),
-          style: themeData.appBarTheme.textTheme.headline6,
+          title: Text(
+            texts.enter_backup_phrase(
+              _currentPage.toString(),
+              _lastPage.toString(),
+            ),
+            style: themeData.appBarTheme.textTheme.headline6,
+          ),
+          elevation: 0.0,
         ),
-        elevation: 0.0,
-      ),
-      body: SingleChildScrollView(
-        child: Container(
-          height: query.size.height - kToolbarHeight - query.padding.top,
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: _buildRestoreFormContent(context, userProfileBloc),
+        body: SingleChildScrollView(
+          child: Container(
+            height: query.size.height - kToolbarHeight - query.padding.top,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: _buildRestoreFormContent(context, userProfileBloc),
+            ),
           ),
         ),
       ),
@@ -154,6 +156,7 @@ class EnterBackupPhrasePageState extends State<EnterBackupPhrasePage> {
       autovalidateMode: _autoValidateMode,
       validator: (text) => _onValidate(context, text),
       suggestionsCallback: _getSuggestions,
+      hideOnEmpty: true,
       autoFlipDirection: true,
       suggestionsBoxDecoration: SuggestionsBoxDecoration(
         color: Colors.white,
@@ -192,7 +195,7 @@ class EnterBackupPhrasePageState extends State<EnterBackupPhrasePage> {
   FutureOr<List<String>> _getSuggestions(pattern) {
     var suggestionList =
         WORDLIST.where((item) => item.startsWith(pattern)).toList();
-    return suggestionList.length > 0 ? suggestionList : null;
+    return suggestionList.length > 0 ? suggestionList : List.empty();
   }
 
   String _onValidate(BuildContext context, String text) {
@@ -247,7 +250,6 @@ class EnterBackupPhrasePageState extends State<EnterBackupPhrasePage> {
             if (_currentPage + 1 == (_lastPage + 1)) {
               _validateBackupPhrase(userProfileBloc);
             } else {
-              _formKey.currentState.reset();
               _currentPage++;
             }
           } else {
@@ -273,5 +275,18 @@ class EnterBackupPhrasePageState extends State<EnterBackupPhrasePage> {
       throw Exception(e.toString());
     }
     widget.onPhraseSubmitted(enteredBackupPhrase);
+  }
+
+  Future<bool> _onWillPop() async {
+    if (_currentPage == 1) {
+      return true;
+    } else if (_currentPage > 1) {
+      FocusScope.of(context).requestFocus(FocusNode());
+      setState(() {
+        _currentPage--;
+      });
+      return false;
+    }
+    return false;
   }
 }

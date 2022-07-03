@@ -99,19 +99,14 @@ class SwapRefundDialogState extends State<SwapRefundDialog> {
       reason = texts.funds_over_limit_dialog_transfer_fail_no_reason_know;
     }
 
-    int roundedHoursToUnlock = hoursToUnlock.round();
     List<TextSpan> redeemText = <TextSpan>[];
     if (hoursToUnlock > 0) {
       redeemText.add(
         TextSpan(
-          text: roundedHoursToUnlock > 1
-              ? texts.funds_over_limit_dialog_redeem_hours(
-                  lockHeight.toString(),
-                  hoursToUnlock.toString(),
-                )
-              : texts.funds_over_limit_dialog_redeem_hour(
-                  lockHeight.toString(),
-                ),
+          text: texts.funds_over_limit_dialog_redeem_hours(
+            lockHeight.toString(),
+            _getHoursToUnlockString(hoursToUnlock),
+          ),
           style: themeData.dialogTheme.contentTextStyle,
         ),
       );
@@ -146,5 +141,13 @@ class SwapRefundDialogState extends State<SwapRefundDialog> {
         children: redeemText,
       ),
     );
+  }
+
+  String _getHoursToUnlockString(double hoursToUnlock) {
+    final texts = AppLocalizations.of(context);
+    int roundedValue = hoursToUnlock.ceil();
+    if (roundedValue <= 0) return '';
+    if (roundedValue <= 1) return texts.approximately_an_hour;
+    return texts.approximate_hours(roundedValue.toString());
   }
 }

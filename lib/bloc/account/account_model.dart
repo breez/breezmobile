@@ -566,6 +566,8 @@ abstract class PaymentInfo {
 
   bool get hasSale;
 
+  List<LNUrlPayMetadata> get metadata;
+
   PaymentInfo copyWith(AccountModel account);
 }
 
@@ -656,6 +658,8 @@ class StreamedPaymentInfo implements PaymentInfo {
   PaymentVendor get vendor => null;
 
   bool get hasSale => false;
+
+  List<LNUrlPayMetadata> get metadata => null;
 }
 
 class SinglePaymentInfo implements PaymentInfo {
@@ -931,6 +935,8 @@ class SinglePaymentInfo implements PaymentInfo {
   SinglePaymentInfo copyWith(AccountModel account) {
     return SinglePaymentInfo(this._paymentResponse, account, this.saleSummary);
   }
+
+  List<LNUrlPayMetadata> get metadata => _paymentResponse.lnurlPayInfo.metadata;
 }
 
 class AddFundResponse {

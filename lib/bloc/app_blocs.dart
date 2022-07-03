@@ -4,6 +4,8 @@ import 'package:breez/bloc/connect_pay/connect_pay_bloc.dart';
 import 'package:breez/bloc/fastbitcoins/fastbitcoins_bloc.dart';
 import 'package:breez/bloc/lnurl/lnurl_bloc.dart';
 import 'package:breez/bloc/marketplace/marketplace_bloc.dart';
+import 'package:breez/bloc/payment_options/payment_options_bloc.dart';
+import 'package:breez/bloc/podcast_history/podcast_history_bloc.dart';
 import 'package:breez/bloc/pos_catalog/bloc.dart';
 import 'package:breez/bloc/pos_catalog/sqlite/repository.dart';
 import 'package:breez/bloc/reverse_swap/reverse_swap_bloc.dart';
@@ -26,8 +28,10 @@ class AppBlocs {
   final LSPBloc lspBloc;
   final LNUrlBloc lnurlBloc;
   final PosCatalogBloc posCatalogBloc;
+  final PaymentOptionsBloc paymentOptionsBloc;
   final ReverseSwapBloc reverseSwapBloc;
   final Map<Type, Object> _blocsByType;
+  final PodcastHistoryBloc podCastHistoryBloc;
 
   static T _registerBloc<T>(T bloc, Map<Type, Object> blocs) {
     blocs[bloc.runtimeType] = bloc;
@@ -38,15 +42,23 @@ class AppBlocs {
     return _blocsByType[T];
   }
 
-  factory AppBlocs() {
+  factory AppBlocs(Stream<bool> backupAnytimeDBStream) {
     var blocsByType = Map<Type, Object>();
     final sqliteRepository = SqliteRepository();
     UserProfileBloc userProfileBloc =
         _registerBloc(UserProfileBloc(), blocsByType);
+    BackupBloc backupBloc = _registerBloc(
+        BackupBloc(userProfileBloc.userStream, backupAnytimeDBStream),
+        blocsByType);
+    PaymentOptionsBloc paymentOptionsBloc = _registerBloc(
+      PaymentOptionsBloc(backupBloc.restoreLightningFeesStream),
+      blocsByType,
+    );
     AccountBloc accountBloc = _registerBloc(
         AccountBloc(
           userProfileBloc.userStream,
           sqliteRepository,
+          paymentOptionsBloc,
         ),
         blocsByType);
     InvoiceBloc invoicesBloc = _registerBloc(InvoiceBloc(), blocsByType);
@@ -54,24 +66,32 @@ class AppBlocs {
         ConnectPayBloc(userProfileBloc.userStream, accountBloc.accountStream,
             accountBloc.userActionsSink),
         blocsByType);
-    BackupBloc backupBloc =
-        _registerBloc(BackupBloc(userProfileBloc.userStream), blocsByType);
     MarketplaceBloc marketplaceBloc =
         _registerBloc(MarketplaceBloc(), blocsByType);
     LSPBloc lspBloc =
         _registerBloc(LSPBloc(accountBloc.accountStream), blocsByType);
     LNUrlBloc lnurlBloc = _registerBloc(LNUrlBloc(), blocsByType);
     ReverseSwapBloc reverseSwapBloc = _registerBloc(
-        ReverseSwapBloc(accountBloc.paymentsStream, userProfileBloc.userStream),
+        ReverseSwapBloc(
+          accountBloc.paymentsStream,
+          userProfileBloc.userStream,
+          paymentOptionsBloc,
+        ),
         blocsByType);
     PosCatalogBloc posCatalogBloc = _registerBloc(
         PosCatalogBloc(
           accountBloc.accountStream,
+          userProfileBloc.userStream,
+          backupBloc.backupAppDataSink,
           sqliteRepository,
         ),
         blocsByType);
     FastbitcoinsBloc fastbitcoinsBloc =
         _registerBloc(FastbitcoinsBloc(), blocsByType);
+    PodcastHistoryBloc podCastHistoryBloc = _registerBloc(
+      PodcastHistoryBloc(),
+      blocsByType,
+    );
 
     return AppBlocs._(
         userProfileBloc,
@@ -85,21 +105,24 @@ class AppBlocs {
         reverseSwapBloc,
         lnurlBloc,
         posCatalogBloc,
-        blocsByType);
+        paymentOptionsBloc,
+        blocsByType,
+        podCastHistoryBloc);
   }
 
   AppBlocs._(
-    this.userProfileBloc,
-    this.accountBloc,
-    this.invoicesBloc,
-    this.connectPayBloc,
-    this.backupBloc,
-    this.marketplaceBloc,
-    this.fastbitcoinsBloc,
-    this.lspBloc,
-    this.reverseSwapBloc,
-    this.lnurlBloc,
-    this.posCatalogBloc,
-    this._blocsByType,
-  );
+      this.userProfileBloc,
+      this.accountBloc,
+      this.invoicesBloc,
+      this.connectPayBloc,
+      this.backupBloc,
+      this.marketplaceBloc,
+      this.fastbitcoinsBloc,
+      this.lspBloc,
+      this.reverseSwapBloc,
+      this.lnurlBloc,
+      this.posCatalogBloc,
+      this.paymentOptionsBloc,
+      this._blocsByType,
+      this.podCastHistoryBloc);
 }

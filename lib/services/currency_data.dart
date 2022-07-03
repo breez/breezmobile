@@ -71,6 +71,8 @@ class CurrencyData {
     currencyData.localeOverrides = localeOverrides;
     return currencyData;
   }
+
+  bool get rightSideSymbol => position == 1;
 }
 
 class CurrencyDataOverride extends CurrencyData {

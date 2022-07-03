@@ -105,9 +105,9 @@ class SendOnchainState extends State<SendOnchain> {
       child: Scaffold(
         backgroundColor: themeData.backgroundColor,
         appBar: AppBar(
-          brightness: theme.themeId == "BLUE"
-              ? Brightness.light
-              : themeData.appBarTheme.brightness,
+          systemOverlayStyle: theme.themeId == "BLUE"
+              ? SystemUiOverlayStyle.dark
+              : themeData.appBarTheme.systemOverlayStyle,
           iconTheme: themeData.appBarTheme.iconTheme,
           textTheme: themeData.appBarTheme.textTheme,
           automaticallyImplyLeading: false,

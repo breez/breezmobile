@@ -1,6 +1,6 @@
 ///
 //  Generated code. Do not modify.
-//  source: messages.proto
+//  source: rpc.proto
 //
 // @dart = 2.12
 // ignore_for_file: annotate_overrides,camel_case_types,unnecessary_const,non_constant_identifier_names,library_prefixes,unused_import,unused_shown_name,return_of_invalid_type,unnecessary_this,prefer_final_fields
@@ -1088,6 +1088,7 @@ class PayInvoiceRequest extends $pb.GeneratedMessage {
   static final $pb.BuilderInfo _i = $pb.BuilderInfo(const $core.bool.fromEnvironment('protobuf.omit_message_names') ? '' : 'PayInvoiceRequest', package: const $pb.PackageName(const $core.bool.fromEnvironment('protobuf.omit_message_names') ? '' : 'data'), createEmptyInstance: create)
     ..aInt64(1, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'amount')
     ..aOS(2, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'paymentRequest', protoName: 'paymentRequest')
+    ..aInt64(3, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'fee')
     ..hasRequiredFields = false
   ;
 
@@ -1095,6 +1096,7 @@ class PayInvoiceRequest extends $pb.GeneratedMessage {
   factory PayInvoiceRequest({
     $fixnum.Int64? amount,
     $core.String? paymentRequest,
+    $fixnum.Int64? fee,
   }) {
     final _result = create();
     if (amount != null) {
@@ -1102,6 +1104,9 @@ class PayInvoiceRequest extends $pb.GeneratedMessage {
     }
     if (paymentRequest != null) {
       _result.paymentRequest = paymentRequest;
+    }
+    if (fee != null) {
+      _result.fee = fee;
     }
     return _result;
   }
@@ -1143,6 +1148,15 @@ class PayInvoiceRequest extends $pb.GeneratedMessage {
   $core.bool hasPaymentRequest() => $_has(1);
   @$pb.TagNumber(2)
   void clearPaymentRequest() => clearField(2);
+
+  @$pb.TagNumber(3)
+  $fixnum.Int64 get fee => $_getI64(2);
+  @$pb.TagNumber(3)
+  set fee($fixnum.Int64 v) { $_setInt64(2, v); }
+  @$pb.TagNumber(3)
+  $core.bool hasFee() => $_has(2);
+  @$pb.TagNumber(3)
+  void clearFee() => clearField(3);
 }
 
 class SpontaneousPaymentRequest extends $pb.GeneratedMessage {
@@ -4277,19 +4291,109 @@ class LNURLAuth extends $pb.GeneratedMessage {
   void clearJwt() => clearField(5);
 }
 
+class LNUrlPayImage extends $pb.GeneratedMessage {
+  static final $pb.BuilderInfo _i = $pb.BuilderInfo(const $core.bool.fromEnvironment('protobuf.omit_message_names') ? '' : 'LNUrlPayImage', package: const $pb.PackageName(const $core.bool.fromEnvironment('protobuf.omit_message_names') ? '' : 'data'), createEmptyInstance: create)
+    ..aOS(1, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'dataUri')
+    ..aOS(2, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'ext')
+    ..a<$core.List<$core.int>>(3, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'bytes', $pb.PbFieldType.OY)
+    ..hasRequiredFields = false
+  ;
+
+  LNUrlPayImage._() : super();
+  factory LNUrlPayImage({
+    $core.String? dataUri,
+    $core.String? ext,
+    $core.List<$core.int>? bytes,
+  }) {
+    final _result = create();
+    if (dataUri != null) {
+      _result.dataUri = dataUri;
+    }
+    if (ext != null) {
+      _result.ext = ext;
+    }
+    if (bytes != null) {
+      _result.bytes = bytes;
+    }
+    return _result;
+  }
+  factory LNUrlPayImage.fromBuffer($core.List<$core.int> i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromBuffer(i, r);
+  factory LNUrlPayImage.fromJson($core.String i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromJson(i, r);
+  @$core.Deprecated(
+  'Using this can add significant overhead to your binary. '
+  'Use [GeneratedMessageGenericExtensions.deepCopy] instead. '
+  'Will be removed in next major version')
+  LNUrlPayImage clone() => LNUrlPayImage()..mergeFromMessage(this);
+  @$core.Deprecated(
+  'Using this can add significant overhead to your binary. '
+  'Use [GeneratedMessageGenericExtensions.rebuild] instead. '
+  'Will be removed in next major version')
+  LNUrlPayImage copyWith(void Function(LNUrlPayImage) updates) => super.copyWith((message) => updates(message as LNUrlPayImage)) as LNUrlPayImage; // ignore: deprecated_member_use
+  $pb.BuilderInfo get info_ => _i;
+  @$core.pragma('dart2js:noInline')
+  static LNUrlPayImage create() => LNUrlPayImage._();
+  LNUrlPayImage createEmptyInstance() => create();
+  static $pb.PbList<LNUrlPayImage> createRepeated() => $pb.PbList<LNUrlPayImage>();
+  @$core.pragma('dart2js:noInline')
+  static LNUrlPayImage getDefault() => _defaultInstance ??= $pb.GeneratedMessage.$_defaultFor<LNUrlPayImage>(create);
+  static LNUrlPayImage? _defaultInstance;
+
+  @$pb.TagNumber(1)
+  $core.String get dataUri => $_getSZ(0);
+  @$pb.TagNumber(1)
+  set dataUri($core.String v) { $_setString(0, v); }
+  @$pb.TagNumber(1)
+  $core.bool hasDataUri() => $_has(0);
+  @$pb.TagNumber(1)
+  void clearDataUri() => clearField(1);
+
+  @$pb.TagNumber(2)
+  $core.String get ext => $_getSZ(1);
+  @$pb.TagNumber(2)
+  set ext($core.String v) { $_setString(1, v); }
+  @$pb.TagNumber(2)
+  $core.bool hasExt() => $_has(1);
+  @$pb.TagNumber(2)
+  void clearExt() => clearField(2);
+
+  @$pb.TagNumber(3)
+  $core.List<$core.int> get bytes => $_getN(2);
+  @$pb.TagNumber(3)
+  set bytes($core.List<$core.int> v) { $_setBytes(2, v); }
+  @$pb.TagNumber(3)
+  $core.bool hasBytes() => $_has(2);
+  @$pb.TagNumber(3)
+  void clearBytes() => clearField(3);
+}
+
 class LNUrlPayMetadata extends $pb.GeneratedMessage {
   static final $pb.BuilderInfo _i = $pb.BuilderInfo(const $core.bool.fromEnvironment('protobuf.omit_message_names') ? '' : 'LNUrlPayMetadata', package: const $pb.PackageName(const $core.bool.fromEnvironment('protobuf.omit_message_names') ? '' : 'data'), createEmptyInstance: create)
     ..pPS(1, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'entry')
+    ..aOS(2, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'description')
+    ..aOS(3, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'longDescription')
+    ..aOM<LNUrlPayImage>(4, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'image', subBuilder: LNUrlPayImage.create)
     ..hasRequiredFields = false
   ;
 
   LNUrlPayMetadata._() : super();
   factory LNUrlPayMetadata({
     $core.Iterable<$core.String>? entry,
+    $core.String? description,
+    $core.String? longDescription,
+    LNUrlPayImage? image,
   }) {
     final _result = create();
     if (entry != null) {
       _result.entry.addAll(entry);
+    }
+    if (description != null) {
+      _result.description = description;
+    }
+    if (longDescription != null) {
+      _result.longDescription = longDescription;
+    }
+    if (image != null) {
+      _result.image = image;
     }
     return _result;
   }
@@ -4316,6 +4420,35 @@ class LNUrlPayMetadata extends $pb.GeneratedMessage {
 
   @$pb.TagNumber(1)
   $core.List<$core.String> get entry => $_getList(0);
+
+  @$pb.TagNumber(2)
+  $core.String get description => $_getSZ(1);
+  @$pb.TagNumber(2)
+  set description($core.String v) { $_setString(1, v); }
+  @$pb.TagNumber(2)
+  $core.bool hasDescription() => $_has(1);
+  @$pb.TagNumber(2)
+  void clearDescription() => clearField(2);
+
+  @$pb.TagNumber(3)
+  $core.String get longDescription => $_getSZ(2);
+  @$pb.TagNumber(3)
+  set longDescription($core.String v) { $_setString(2, v); }
+  @$pb.TagNumber(3)
+  $core.bool hasLongDescription() => $_has(2);
+  @$pb.TagNumber(3)
+  void clearLongDescription() => clearField(3);
+
+  @$pb.TagNumber(4)
+  LNUrlPayImage get image => $_getN(3);
+  @$pb.TagNumber(4)
+  set image(LNUrlPayImage v) { setField(4, v); }
+  @$pb.TagNumber(4)
+  $core.bool hasImage() => $_has(3);
+  @$pb.TagNumber(4)
+  void clearImage() => clearField(4);
+  @$pb.TagNumber(4)
+  LNUrlPayImage ensureImage() => $_ensure(3);
 }
 
 class LNURLPayResponse1 extends $pb.GeneratedMessage {
@@ -5258,6 +5391,7 @@ class ReverseSwapPaymentRequest extends $pb.GeneratedMessage {
   static final $pb.BuilderInfo _i = $pb.BuilderInfo(const $core.bool.fromEnvironment('protobuf.omit_message_names') ? '' : 'ReverseSwapPaymentRequest', package: const $pb.PackageName(const $core.bool.fromEnvironment('protobuf.omit_message_names') ? '' : 'data'), createEmptyInstance: create)
     ..aOS(1, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'hash')
     ..aOM<PushNotificationDetails>(2, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'pushNotificationDetails', subBuilder: PushNotificationDetails.create)
+    ..aInt64(3, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'fee')
     ..hasRequiredFields = false
   ;
 
@@ -5265,6 +5399,7 @@ class ReverseSwapPaymentRequest extends $pb.GeneratedMessage {
   factory ReverseSwapPaymentRequest({
     $core.String? hash,
     PushNotificationDetails? pushNotificationDetails,
+    $fixnum.Int64? fee,
   }) {
     final _result = create();
     if (hash != null) {
@@ -5272,6 +5407,9 @@ class ReverseSwapPaymentRequest extends $pb.GeneratedMessage {
     }
     if (pushNotificationDetails != null) {
       _result.pushNotificationDetails = pushNotificationDetails;
+    }
+    if (fee != null) {
+      _result.fee = fee;
     }
     return _result;
   }
@@ -5315,6 +5453,15 @@ class ReverseSwapPaymentRequest extends $pb.GeneratedMessage {
   void clearPushNotificationDetails() => clearField(2);
   @$pb.TagNumber(2)
   PushNotificationDetails ensurePushNotificationDetails() => $_ensure(1);
+
+  @$pb.TagNumber(3)
+  $fixnum.Int64 get fee => $_getI64(2);
+  @$pb.TagNumber(3)
+  set fee($fixnum.Int64 v) { $_setInt64(2, v); }
+  @$pb.TagNumber(3)
+  $core.bool hasFee() => $_has(2);
+  @$pb.TagNumber(3)
+  void clearFee() => clearField(3);
 }
 
 class PushNotificationDetails extends $pb.GeneratedMessage {
