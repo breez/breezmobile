@@ -19,8 +19,8 @@ packages:
     dependency: "direct main"
     description:
       path: "."
-      ref: a682f1bceb73ce676067385ba10e42b383f94391
-      resolved-ref: a682f1bceb73ce676067385ba10e42b383f94391
+      ref: "4373ff9a9bc6d006729f80f34a1dd9cd72b0722b"
+      resolved-ref: "4373ff9a9bc6d006729f80f34a1dd9cd72b0722b"
       url: "https://github.com/breez/anytime_podcast_player.git"
     source: git
     version: "1.1.65"
@@ -58,7 +58,7 @@ packages:
       name: audio_service
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.18.4"
+    version: "0.18.6"
   audio_service_platform_interface:
     dependency: transitive
     description:
@@ -79,7 +79,7 @@ packages:
       name: audio_session
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.1.7"
+    version: "0.1.8"
   auto_size_text:
     dependency: "direct main"
     description:
@@ -233,7 +233,7 @@ packages:
       name: connectivity_plus
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "2.3.4"
+    version: "2.3.5"
   connectivity_plus_linux:
     dependency: transitive
     description:
@@ -247,7 +247,7 @@ packages:
       name: connectivity_plus_macos
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "1.2.3"
+    version: "1.2.4"
   connectivity_plus_platform_interface:
     dependency: transitive
     description:
@@ -322,8 +322,8 @@ packages:
     dependency: transitive
     description:
       path: "."
-      ref: "42ee70e"
-      resolved-ref: "42ee70e3ce549a4f71032ebe078fd3b1167195db"
+      ref: f58e8efa745e0dc2e14e63717c755ccd57c3fe43
+      resolved-ref: f58e8efa745e0dc2e14e63717c755ccd57c3fe43
       url: "https://github.com/breez/dart-rss"
     source: git
     version: "2.0.1"
@@ -459,77 +459,77 @@ packages:
       name: firebase_core
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "1.18.0"
+    version: "1.19.1"
   firebase_core_platform_interface:
     dependency: transitive
     description:
       name: firebase_core_platform_interface
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "4.4.1"
+    version: "4.4.3"
   firebase_core_web:
     dependency: transitive
     description:
       name: firebase_core_web
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "1.6.5"
+    version: "1.6.6"
   firebase_database:
     dependency: "direct main"
     description:
       name: firebase_database
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "9.0.16"
+    version: "9.0.18"
   firebase_database_platform_interface:
     dependency: transitive
     description:
       name: firebase_database_platform_interface
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.2.1+8"
+    version: "0.2.1+10"
   firebase_database_web:
     dependency: transitive
     description:
       name: firebase_database_web
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.2.0+15"
+    version: "0.2.0+17"
   firebase_dynamic_links:
     dependency: "direct main"
     description:
       name: firebase_dynamic_links
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "4.2.6"
+    version: "4.3.1"
   firebase_dynamic_links_platform_interface:
     dependency: transitive
     description:
       name: firebase_dynamic_links_platform_interface
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.2.3+4"
+    version: "0.2.3+6"
   firebase_messaging:
     dependency: "direct main"
     description:
       name: firebase_messaging
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "11.4.2"
+    version: "11.4.4"
   firebase_messaging_platform_interface:
     dependency: transitive
     description:
       name: firebase_messaging_platform_interface
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "3.5.2"
+    version: "3.5.4"
   firebase_messaging_web:
     dependency: transitive
     description:
       name: firebase_messaging_web
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "2.4.2"
+    version: "2.4.4"
   fixnum:
     dependency: transitive
     description:
@@ -903,14 +903,14 @@ packages:
       name: just_audio
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.9.24"
+    version: "0.9.27"
   just_audio_platform_interface:
     dependency: transitive
     description:
       name: just_audio_platform_interface
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "4.1.0"
+    version: "4.2.0"
   just_audio_web:
     dependency: transitive
     description:
@@ -1206,11 +1206,11 @@ packages:
     dependency: "direct overridden"
     description:
       path: "."
-      ref: e5edaea
-      resolved-ref: e5edaea59e85d45464492afb60ce2e8685b34b00
+      ref: "13bc13bda6432d53905b7b72217b810c5f2db92e"
+      resolved-ref: "13bc13bda6432d53905b7b72217b810c5f2db92e"
       url: "https://github.com/breez/podcast_search.git"
     source: git
-    version: "0.4.2"
+    version: "0.5.1"
   pointycastle:
     dependency: transitive
     description:
@@ -1534,7 +1534,7 @@ packages:
       name: sqflite_common_ffi
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "2.1.1"
+    version: "2.1.1+1"
   sqlite3:
     dependency: transitive
     description:
@@ -1660,7 +1660,7 @@ packages:
       name: url_launcher
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "6.1.3"
+    version: "6.1.4"
   url_launcher_android:
     dependency: transitive
     description:
@@ -1779,7 +1779,7 @@ packages:
       name: webview_flutter_android
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "2.8.11"
+    version: "2.8.14"
   webview_flutter_platform_interface:
     dependency: transitive
     description:
