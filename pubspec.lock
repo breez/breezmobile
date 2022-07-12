@@ -26,11 +26,11 @@ packages:
     dependency: "direct main"
     description:
       path: "."
-      ref: "680649370635864aa2884da0fde115de2f01dbfb"
-      resolved-ref: "680649370635864aa2884da0fde115de2f01dbfb"
+      ref: "2952e058037b9c033f6481c4e203ee909322f1a2"
+      resolved-ref: "2952e058037b9c033f6481c4e203ee909322f1a2"
       url: "https://github.com/breez/anytime_podcast_player.git"
     source: git
-    version: "1.2.0+73"
+    version: "1.2.0+73-breez"
   app_settings:
     dependency: "direct main"
     description:
@@ -322,11 +322,11 @@ packages:
     dependency: transitive
     description:
       path: "."
-      ref: f58e8efa745e0dc2e14e63717c755ccd57c3fe43
-      resolved-ref: f58e8efa745e0dc2e14e63717c755ccd57c3fe43
+      ref: dc20ec54b484ff2ba4956c86b936ab664a36483c
+      resolved-ref: dc20ec54b484ff2ba4956c86b936ab664a36483c
       url: "https://github.com/breez/dart-rss"
     source: git
-    version: "2.0.1"
+    version: "2.0.1-breez"
   dart_style:
     dependency: transitive
     description:
@@ -340,7 +340,7 @@ packages:
       name: dbus
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.7.3"
+    version: "0.7.4"
   device_info_plus:
     dependency: transitive
     description:
@@ -690,7 +690,7 @@ packages:
       name: flutter_svg
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "1.0.3"
+    version: "1.1.1+1"
   flutter_test:
     dependency: "direct dev"
     description: flutter
@@ -814,7 +814,7 @@ packages:
       name: image
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "3.1.3"
+    version: "3.2.0"
   image_cropper:
     dependency: "direct main"
     description:
@@ -1215,14 +1215,14 @@ packages:
       name: permission_handler
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "9.2.0"
+    version: "10.0.0"
   permission_handler_android:
     dependency: transitive
     description:
       name: permission_handler_android
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "9.0.2+1"
+    version: "10.0.0"
   permission_handler_apple:
     dependency: transitive
     description:
@@ -1269,8 +1269,8 @@ packages:
     dependency: "direct overridden"
     description:
       path: "."
-      ref: "13bc13bda6432d53905b7b72217b810c5f2db92e"
-      resolved-ref: "13bc13bda6432d53905b7b72217b810c5f2db92e"
+      ref: "8190101aa49edf0f501cf3688f32a3a87df137c5"
+      resolved-ref: "8190101aa49edf0f501cf3688f32a3a87df137c5"
       url: "https://github.com/breez/podcast_search.git"
     source: git
     version: "0.5.1"
@@ -1879,7 +1879,7 @@ packages:
     source: hosted
     version: "0.2.0+1"
   xml:
-    dependency: transitive
+    dependency: "direct overridden"
     description:
       name: xml
       url: "https://pub.dartlang.org"
