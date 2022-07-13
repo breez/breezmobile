@@ -1833,8 +1833,8 @@
     }
   },
   "lock_screen_enter_pin": "Insira seu PIN",
-  "backup_phrase_generate": "Gerar a frase de backup",
-  "backup_phrase_instructions": "Você verá uma lista de palavras. Anote as palavras e guarde-as em um lugar seguro. Sem essas palavras você não poderá restaurar os seus fundos a partir do backup e seus fundos serão perdidos e a Breez não poderá te ajudar.",
+  "backup_phrase_generate": "Encriptar o backup na nuvem",
+  "backup_phrase_instructions": "Você verá uma lista de palavras. Anote as palavras e guarde-as em um lugar seguro. Sem essas palavras você não poderá restaurar os seus fundos a partir do backup e seus fundos serão perdidos e a Breez não poderá te ajudar. Esta chave não é uma semente de carteira. Ele é usado para criptografar os dados de backup armazenados na nuvem. Estas palavras não são uma semente para a sua carteira. Estas palavras são usadas para criptografar os dados no backup armazenado na nuvem.",
   "backup_phrase_action_confirm": "EU ENTENDO",
   "backup_phrase_action_next": "PRÓXIMO",
   "backup_phrase_warning_disclaimer": "Sua frase de backup existente será inválidada e uma nova frase será gerada na próxima vez que você decidir usar uma frase de backup. Você tem certeza de que você não deseja usar uma frase de backup?",

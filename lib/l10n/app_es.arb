@@ -1833,8 +1833,8 @@
     }
   },
   "lock_screen_enter_pin": "Introduce tu PIN",
-  "backup_phrase_generate": "Generar la frase de respaldo",
-  "backup_phrase_instructions": "Usted verá una lista de palabras. Escriba las palabras y guárdelas en un lugar seguro. Sin estas palabras, no podrá restaurar sus fondos desde la copia de seguridad y sus fondos se perderán y Breez no podrá ayudarlo.",
+  "backup_phrase_generate": "Cifrar copia de seguridad en la nube",
+  "backup_phrase_instructions": "Usted verá una lista de palabras. Escriba las palabras y guárdelas en un lugar seguro. Sin estas palabras, no podrá restaurar sus fondos desde la copia de seguridad y sus fondos se perderán y Breez no podrá ayudarlo. Estas palabras no son una semilla para tu billetera. Estas palabras se utilizan para cifrar los datos en la copia de seguridad almacenada en la nube.",
   "backup_phrase_action_confirm": "ENTIENDO",
   "backup_phrase_action_next": "PRÓXIMO",
   "backup_phrase_warning_disclaimer": "Su frase de respaldo existente no será válida y se generará una nueva frase la próxima vez que decida usar una frase de respaldo. ¿Estás seguro de que no quieres usar una frase de respaldo?",

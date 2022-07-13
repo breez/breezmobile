@@ -1833,8 +1833,8 @@
     }
   },
   "lock_screen_enter_pin": "Enter your PIN",
-  "backup_phrase_generate": "Generate Backup Phrase",
-  "backup_phrase_instructions": "You will be shown a list of words. Write down the words and store them in a safe place. Without these words, you won't be able to restore from backup and your funds will be lost. Breez won’t be able to help.",
+  "backup_phrase_generate": "Encrypt Cloud Backup",
+  "backup_phrase_instructions": "You will be shown a list of words. Write down the words and store them in a safe place. Without these words, you won't be able to restore from backup and your funds will be lost. Breez won’t be able to help. Note these words aren't a wallet seed. They are used to encrypt the backup data stored in the cloud.",
   "backup_phrase_action_confirm": "I UNDERSTAND",
   "backup_phrase_action_next": "NEXT",
   "backup_phrase_warning_disclaimer": "Your existing backup phrase will no longer be valid and a new one will be generated next time you decide to use a backup phrase. Are you sure you don't want to use a backup phrase?",
