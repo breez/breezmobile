@@ -40,18 +40,14 @@ class VendorRow extends StatelessWidget {
         onTap: () {
           Navigator.push(context, FadeInRoute(
             builder: (_) {
-              if (_vendor.id == "lnmarkets" || _vendor.id == "Kollider") {
+              if (_vendor.endpointURI != null) {
                 var lnurlBloc = AppBlocsProvider.of<LNUrlBloc>(context);
                 return LNURLWebViewPage(
                   accountBloc: accountBloc,
                   vendorModel: _vendor,
                   lnurlBloc: lnurlBloc,
-                  endpointURI: _vendor.id == "lnmarkets"
-                      ? Uri.https("api.lnmarkets.com", "v1/lnurl/auth")
-                      : Uri.https(
-                          "api.kollider.xyz", "v1/auth/external/lnurl_auth"),
-                  responseID:
-                      _vendor.id == "lnmarkets" ? "lnurl" : "lnurl_auth",
+                  endpointURI: Uri.tryParse(_vendor.endpointURI),
+                  responseID: _vendor.responseID,
                 );
               }
               return VendorWebViewPage(
