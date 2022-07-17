@@ -4,6 +4,8 @@ class VendorModel {
   final String displayName;
   final String logo;
   final bool onlyShowLogo;
+  final String endpointURI;
+  final String responseID;
 
   const VendorModel(
     this.url,
@@ -11,5 +13,7 @@ class VendorModel {
     this.displayName, {
     this.logo,
     this.onlyShowLogo,
+    this.endpointURI,
+    this.responseID,
   });
 }
