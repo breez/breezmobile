@@ -1533,8 +1533,8 @@
       }
     }
   },
-  "pos_payment_nfc_error_title": "NFC Payment error",
-  "pos_payment_nfc_range_error": "Only payments between {minValue} and {maxValue} are allowed.",
+  "pos_payment_nfc_error_title": "Erreur de paiement NFC",
+  "pos_payment_nfc_range_error": "Seuls les paiements compris entre {minValue} et {maxValue} sont autorisés.",
   "@pos_payment_nfc_range_error": {
     "placeholders": {
       "minValue": {
