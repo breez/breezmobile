@@ -1,12 +1,12 @@
 import 'dart:async';
 
+import 'package:another_flushbar/flushbar.dart';
 import 'package:breez/bloc/account/account_bloc.dart';
 import 'package:breez/logger.dart';
 import 'package:breez/services/device.dart';
 import 'package:breez/services/injector.dart';
 import 'package:breez/theme_data.dart' as theme;
 import 'package:breez/widgets/flushbar.dart';
-import 'package:flushbar/flushbar.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 

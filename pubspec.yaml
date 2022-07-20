@@ -7,47 +7,51 @@ dependencies:
   flutter_localizations:
     sdk: flutter
 
-  app_settings: ^4.1.6 # Outdated
-  archive: ^3.1.9
+  another_flushbar: ^1.10.29
+  app_settings: ^4.1.8
+  archive: ^3.3.1
   auto_size_text: ^3.0.0
-  badges: ^2.0.2
+  badges: ^2.0.3
   bip39: ^1.0.6
-  collection: ^1.15.0 # Outdated
-  confetti: ^0.6.0 # Outdated
-  connectivity_plus: ^2.2.0
-  crypto: ^3.0.1
+  collection: ^1.16.0
+  confetti: ^0.7.0
+  connectivity_plus: ^2.3.6
+  crypto: ^3.0.2
   csv: ^5.0.1
   dio: ^4.0.6
-  drag_and_drop_lists: ^0.3.2+2
+  drag_and_drop_lists: # Target this ref until new release
+    git:
+      url: https://github.com/mauriceraguseinit/DragAndDropLists
+      ref: bb224b167574a35f722c9e9fbfa960dbee232ce5
   duration: ^3.0.11
   email_validator: ^2.0.1
-  extended_image: ^6.1.0 # Outdated
-  file_picker: ^4.5.1
-  firebase_core: ^1.15.0
-  firebase_database: ^9.0.12
-  firebase_dynamic_links: ^4.2.0
-  firebase_messaging: ^11.2.14
-  flushbar: ^1.10.4 # discontinued
+  extended_image: ^6.2.1
+  file_picker: ^4.6.1
+  firebase_core: ^1.19.2
+  firebase_database: ^9.0.19
+  firebase_dynamic_links: ^4.3.2
+  firebase_messaging: ^12.0.0
   flutter_secure_storage: ^5.0.2
-  flutter_svg: ^1.0.3 # Outdated
+  flutter_svg: ^1.1.1+1
   flutter_web_browser: ^0.17.1
   google_api_availability: ^3.0.1
   grpc: ^3.0.2
   hex: ^0.2.0
-  image: ^3.1.3 # Outdated
+  image: ^3.2.0
   image_cropper: ^2.0.3
-  image_picker: ^0.8.5
+  image_picker: ^0.8.5+3
   ini: ^2.1.0
   intl: ^0.17.0
-  json_annotation: ^4.4.0
+  json_annotation: ^4.6.0
+  local_auth: ^2.1.0
   logging: ^1.0.2
   md5_file_checksum: ^1.0.3
   nfc_manager: ^3.1.1
   package_info_plus: ^1.4.2
-  path_provider: ^2.0.8
-  printing: ^5.7.5
-  protobuf: ^2.0.1
-  qr_code_scanner: ^0.7.0 # Outdated
+  path_provider: ^2.0.11
+  printing: ^5.9.1
+  protobuf: ^2.1.0
+  qr_code_scanner: ^1.0.0
   qr_code_tools: ^0.0.7
   # qr_flutter has already fixed the build issue with the qr package but did not publish an updated
   # version, they will publish as 4.0.1 for now they recommend to use the master but instead of that
@@ -56,34 +60,30 @@ dependencies:
     git:
       url: https://github.com/theyakka/qr.flutter.git
       ref: 1fc6e38c198a76a6fd60b7bd3b4c190cd6c9330b
-  rxdart: ^0.27.3
+  rxdart: ^0.27.5
   screenshot: ^1.2.3
-  share_plus: ^3.1.0 # Outdated
-  shared_preferences: ^2.0.12
+  share_plus: ^4.0.10
+  shared_preferences: ^2.0.15
   shimmer: ^2.0.0
-  simple_animations: ^4.0.2 # Outdated
-  sqflite: ^2.0.2
-  timeago: ^3.2.1
-  tutorial_coach_mark: ^1.2.1
+  simple_animations: ^4.2.0
+  sqflite: ^2.0.3
+  timeago: ^3.2.2
+  tutorial_coach_mark: ^1.2.3
   uni_links: ^0.5.1
-  url_launcher: ^6.0.18
-  uuid: ^3.0.5
+  url_launcher: ^6.1.5
+  uuid: ^3.0.6
   validators: ^3.0.0
-  webdav_client: ^1.1.2
-  webview_flutter: ^3.0.2
+  webdav_client: ^1.1.7
+  webview_flutter: ^3.0.4
 
   anytime:
     git:
       url: https://github.com/breez/anytime_podcast_player.git
-      ref: 4373ff9a9bc6d006729f80f34a1dd9cd72b0722b
+      ref: 38122f0127fac64e4888913161e0e7cd00b80d7f
   flutter_typeahead:
     git:
       url: https://github.com/breez/flutter_typeahead.git
-      ref: 7405b9e3e3a32f605f5951499d2eddc8e45c1f74
-  local_auth:
-    git:
-      url: https://github.com/breez/local_auth.git
-      ref: 89649dd86f61f60cf0037d7c3dd418a00fd87692
+      ref: a16aa4deeff1c5e96c6da46da31cb0533f838d8d
   nfc_in_flutter:
     git:
       url: https://github.com/breez/nfc_in_flutter.git
@@ -93,26 +93,28 @@ dependencies:
       url: https://github.com/breez/ShareExtend.git
 
 dependency_overrides:
+  xml: ^6.1.0
   flutter_downloader:
     git:
       url: https://github.com/breez/flutter_downloader.git
-      ref: c3e528b
+      ref: dc7954d80762f33a1696c43b57f132a69b1c8a76
   podcast_search:
     git:
       url: https://github.com/breez/podcast_search.git
-      ref: 13bc13bda6432d53905b7b72217b810c5f2db92e
+      ref: 8190101aa49edf0f501cf3688f32a3a87df137c5
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
-  build_runner: ^2.1.8
-  json_serializable: ^6.1.4
-  mockito: ^5.0.17
-  sqflite_common_ffi: ^2.1.0+2
+  build_runner: ^2.2.0
+  json_serializable: ^6.3.1
+  mockito: ^5.2.0
+  sqflite_common_ffi: ^2.1.1+1
   test: any
 
 environment:
-  sdk: ^2.10.5
+  sdk: ">=2.10.0 <3.0.0"
+  flutter: 3.0.0
 
 flutter:
   uses-material-design: true
@@ -134,6 +136,7 @@ flutter:
     - src/pos-icons/
     - assets/images/
     - assets/icons/
+    - assets/icons/layout/
 
   fonts:
     - family: IBMPlexSans
