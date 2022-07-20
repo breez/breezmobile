@@ -79,7 +79,7 @@ dependencies:
   anytime:
     git:
       url: https://github.com/breez/anytime_podcast_player.git
-      ref: 829a53edb295cc64181ecb0f9f8158b9b3d387b0
+      ref: 38122f0127fac64e4888913161e0e7cd00b80d7f
   flutter_typeahead:
     git:
       url: https://github.com/breez/flutter_typeahead.git
@@ -136,6 +136,7 @@ flutter:
     - src/pos-icons/
     - assets/images/
     - assets/icons/
+    - assets/icons/layout/
 
   fonts:
     - family: IBMPlexSans

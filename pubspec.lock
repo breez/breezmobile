@@ -26,8 +26,8 @@ packages:
     dependency: "direct main"
     description:
       path: "."
-      ref: "829a53edb295cc64181ecb0f9f8158b9b3d387b0"
-      resolved-ref: "829a53edb295cc64181ecb0f9f8158b9b3d387b0"
+      ref: "2b581e8488c4d55f0ed8ae0944423cf6e3d405d2"
+      resolved-ref: "2b581e8488c4d55f0ed8ae0944423cf6e3d405d2"
       url: "https://github.com/breez/anytime_podcast_player.git"
     source: git
     version: "1.2.0+73-breez"
@@ -44,7 +44,7 @@ packages:
       name: archive
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "3.3.0"
+    version: "3.3.1"
   args:
     dependency: transitive
     description:

@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:anytime/bloc/podcast/audio_bloc.dart';
 import 'package:anytime/ui/anytime_podcast_app.dart';
 import 'package:anytime/ui/podcast/now_playing.dart';
+import 'package:anytime/ui/widgets/layout_selector.dart';
 import 'package:audio_service/audio_service.dart';
 import 'package:breez/bloc/account/account_actions.dart';
 import 'package:breez/bloc/account/account_bloc.dart';
@@ -277,13 +278,40 @@ class HomeState extends State<Home> with WidgetsBindingObserver {
             centerTitle: false,
             actions: [
               Padding(
-                padding: const EdgeInsets.all(14.0),
+                padding: const EdgeInsets.fromLTRB(14,14,0,14),
                 child: AccountRequiredActionsIndicator(
                   widget.backupBloc,
                   widget.accountBloc,
                   widget.lspBloc,
                 ),
               ),
+              if (user.appMode == AppMode.podcasts) ...[
+                Padding(
+                  padding: const EdgeInsets.only(right: 16.0),
+                  child: IconButton(
+                    iconSize: 24.0,
+                    padding: EdgeInsets.zero,
+                    icon: ImageIcon(
+                      AssetImage("assets/icons/layout.png"),
+                      color: Theme.of(context).primaryIconTheme.color,
+                    ),
+                    tooltip: 'Layout',
+                    onPressed: () async {
+                      await showModalBottomSheet<void>(
+                        context: context,
+                        backgroundColor: Theme.of(context).backgroundColor,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.only(
+                            topLeft: Radius.circular(16.0),
+                            topRight: Radius.circular(16.0),
+                          ),
+                        ),
+                        builder: (context) => LayoutSelectorWidget(),
+                      );
+                    },
+                  ),
+                )
+              ],
             ],
             leading: _buildMenuIcon(context, user.appMode),
             title: IconButton(
