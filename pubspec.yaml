@@ -9,7 +9,7 @@ dependencies:
 
   another_flushbar: ^1.10.29
   app_settings: ^4.1.8
-  archive: ^3.3.0
+  archive: ^3.3.1
   auto_size_text: ^3.0.0
   badges: ^2.0.3
   bip39: ^1.0.6

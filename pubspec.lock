@@ -26,8 +26,8 @@ packages:
     dependency: "direct main"
     description:
       path: "."
-      ref: "2b581e8488c4d55f0ed8ae0944423cf6e3d405d2"
-      resolved-ref: "2b581e8488c4d55f0ed8ae0944423cf6e3d405d2"
+      ref: "38122f0127fac64e4888913161e0e7cd00b80d7f"
+      resolved-ref: "38122f0127fac64e4888913161e0e7cd00b80d7f"
       url: "https://github.com/breez/anytime_podcast_player.git"
     source: git
     version: "1.2.0+73-breez"
