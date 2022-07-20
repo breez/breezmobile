@@ -16,14 +16,14 @@ PODS:
     - ReachabilitySwift
   - device_info_plus (0.0.1):
     - Flutter
-  - DKImagePickerController/Core (4.3.3):
+  - DKImagePickerController/Core (4.3.4):
     - DKImagePickerController/ImageDataManager
     - DKImagePickerController/Resource
-  - DKImagePickerController/ImageDataManager (4.3.3)
-  - DKImagePickerController/PhotoGallery (4.3.3):
+  - DKImagePickerController/ImageDataManager (4.3.4)
+  - DKImagePickerController/PhotoGallery (4.3.4):
     - DKImagePickerController/Core
     - DKPhotoGallery
-  - DKImagePickerController/Resource (4.3.3)
+  - DKImagePickerController/Resource (4.3.4)
   - DKPhotoGallery (0.0.17):
     - DKPhotoGallery/Core (= 0.0.17)
     - DKPhotoGallery/Model (= 0.0.17)
@@ -50,60 +50,63 @@ PODS:
   - file_picker (0.0.1):
     - DKImagePickerController/PhotoGallery
     - Flutter
-  - Firebase/CoreOnly (8.15.0):
-    - FirebaseCore (= 8.15.0)
-  - Firebase/Database (8.15.0):
+  - Firebase/CoreOnly (9.2.0):
+    - FirebaseCore (= 9.2.0)
+  - Firebase/Database (9.2.0):
     - Firebase/CoreOnly
-    - FirebaseDatabase (~> 8.15.0)
-  - Firebase/DynamicLinks (8.15.0):
+    - FirebaseDatabase (~> 9.2.0)
+  - Firebase/DynamicLinks (9.2.0):
     - Firebase/CoreOnly
-    - FirebaseDynamicLinks (~> 8.15.0)
-  - Firebase/Messaging (8.15.0):
+    - FirebaseDynamicLinks (~> 9.2.0)
+  - Firebase/Messaging (9.2.0):
     - Firebase/CoreOnly
-    - FirebaseMessaging (~> 8.15.0)
-  - firebase_core (1.17.0):
-    - Firebase/CoreOnly (= 8.15.0)
+    - FirebaseMessaging (~> 9.2.0)
+  - firebase_core (1.19.2):
+    - Firebase/CoreOnly (= 9.2.0)
     - Flutter
-  - firebase_database (9.0.14):
-    - Firebase/Database (= 8.15.0)
+  - firebase_database (9.0.19):
+    - Firebase/Database (= 9.2.0)
     - firebase_core
     - Flutter
-  - firebase_dynamic_links (4.2.3):
-    - Firebase/DynamicLinks (= 8.15.0)
+  - firebase_dynamic_links (4.3.2):
+    - Firebase/DynamicLinks (= 9.2.0)
     - firebase_core
     - Flutter
-  - firebase_messaging (11.4.0):
-    - Firebase/Messaging (= 8.15.0)
+  - firebase_messaging (11.4.4):
+    - Firebase/Messaging (= 9.2.0)
     - firebase_core
     - Flutter
-  - FirebaseCore (8.15.0):
-    - FirebaseCoreDiagnostics (~> 8.0)
+  - FirebaseCore (9.2.0):
+    - FirebaseCoreDiagnostics (~> 9.0)
+    - FirebaseCoreInternal (~> 9.0)
     - GoogleUtilities/Environment (~> 7.7)
     - GoogleUtilities/Logger (~> 7.7)
-  - FirebaseCoreDiagnostics (8.15.0):
-    - GoogleDataTransport (~> 9.1)
+  - FirebaseCoreDiagnostics (9.3.0):
+    - GoogleDataTransport (< 10.0.0, >= 9.1.4)
     - GoogleUtilities/Environment (~> 7.7)
     - GoogleUtilities/Logger (~> 7.7)
-    - nanopb (~> 2.30908.0)
-  - FirebaseDatabase (8.15.0):
-    - FirebaseCore (~> 8.0)
+    - nanopb (< 2.30910.0, >= 2.30908.0)
+  - FirebaseCoreInternal (9.3.0):
+    - "GoogleUtilities/NSData+zlib (~> 7.7)"
+  - FirebaseDatabase (9.2.0):
+    - FirebaseCore (~> 9.0)
     - leveldb-library (~> 1.22)
-  - FirebaseDynamicLinks (8.15.0):
-    - FirebaseCore (~> 8.0)
-  - FirebaseInstallations (8.15.0):
-    - FirebaseCore (~> 8.0)
+  - FirebaseDynamicLinks (9.2.0):
+    - FirebaseCore (~> 9.0)
+  - FirebaseInstallations (9.3.0):
+    - FirebaseCore (~> 9.0)
     - GoogleUtilities/Environment (~> 7.7)
     - GoogleUtilities/UserDefaults (~> 7.7)
-    - PromisesObjC (< 3.0, >= 1.2)
-  - FirebaseMessaging (8.15.0):
-    - FirebaseCore (~> 8.0)
-    - FirebaseInstallations (~> 8.0)
-    - GoogleDataTransport (~> 9.1)
+    - PromisesObjC (~> 2.1)
+  - FirebaseMessaging (9.2.0):
+    - FirebaseCore (~> 9.0)
+    - FirebaseInstallations (~> 9.0)
+    - GoogleDataTransport (< 10.0.0, >= 9.1.4)
     - GoogleUtilities/AppDelegateSwizzler (~> 7.7)
     - GoogleUtilities/Environment (~> 7.7)
     - GoogleUtilities/Reachability (~> 7.7)
     - GoogleUtilities/UserDefaults (~> 7.7)
-    - nanopb (~> 2.30908.0)
+    - nanopb (< 2.30910.0, >= 2.30908.0)
   - Flutter (1.0.0)
   - flutter_downloader (0.0.1):
     - Flutter
@@ -111,7 +114,7 @@ PODS:
     - Flutter
   - flutter_secure_storage (3.3.1):
     - Flutter
-  - flutter_web_browser (0.16.0):
+  - flutter_web_browser (0.17.1):
     - Flutter
   - FMDB (2.7.5):
     - FMDB/standard (= 2.7.5)
@@ -158,12 +161,14 @@ PODS:
   - md5_file_checksum (1.0.3):
     - Flutter
   - MTBBarcodeScanner (5.0.11)
-  - nanopb (2.30908.0):
-    - nanopb/decode (= 2.30908.0)
-    - nanopb/encode (= 2.30908.0)
-  - nanopb/decode (2.30908.0)
-  - nanopb/encode (2.30908.0)
+  - nanopb (2.30909.0):
+    - nanopb/decode (= 2.30909.0)
+    - nanopb/encode (= 2.30909.0)
+  - nanopb/decode (2.30909.0)
+  - nanopb/encode (2.30909.0)
   - nfc_in_flutter (1.0.0):
+    - Flutter
+  - nfc_manager (0.0.1):
     - Flutter
   - package_info_plus (0.4.5):
     - Flutter
@@ -173,16 +178,16 @@ PODS:
     - Flutter
   - printing (1.0.0):
     - Flutter
-  - PromisesObjC (2.1.0)
+  - PromisesObjC (2.1.1)
   - qr_code_scanner (0.2.0):
     - Flutter
     - MTBBarcodeScanner
   - qr_code_tools (0.0.7):
     - Flutter
   - ReachabilitySwift (5.0.0)
-  - SDWebImage (5.12.5):
-    - SDWebImage/Core (= 5.12.5)
-  - SDWebImage/Core (5.12.5)
+  - SDWebImage (5.13.1):
+    - SDWebImage/Core (= 5.13.1)
+  - SDWebImage/Core (5.13.1)
   - share_extend (0.0.1):
     - Flutter
   - share_plus (0.0.1):
@@ -224,6 +229,7 @@ DEPENDENCIES:
   - local_auth (from `.symlinks/plugins/local_auth/ios`)
   - md5_file_checksum (from `.symlinks/plugins/md5_file_checksum/ios`)
   - nfc_in_flutter (from `.symlinks/plugins/nfc_in_flutter/ios`)
+  - nfc_manager (from `.symlinks/plugins/nfc_manager/ios`)
   - package_info_plus (from `.symlinks/plugins/package_info_plus/ios`)
   - path_provider_ios (from `.symlinks/plugins/path_provider_ios/ios`)
   - permission_handler (from `.symlinks/plugins/permission_handler/ios`)
@@ -246,6 +252,7 @@ SPEC REPOS:
     - Firebase
     - FirebaseCore
     - FirebaseCoreDiagnostics
+    - FirebaseCoreInternal
     - FirebaseDatabase
     - FirebaseDynamicLinks
     - FirebaseInstallations
@@ -308,6 +315,8 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/md5_file_checksum/ios"
   nfc_in_flutter:
     :path: ".symlinks/plugins/nfc_in_flutter/ios"
+  nfc_manager:
+    :path: ".symlinks/plugins/nfc_manager/ios"
   package_info_plus:
     :path: ".symlinks/plugins/package_info_plus/ios"
   path_provider_ios:
@@ -342,25 +351,26 @@ SPEC CHECKSUMS:
   audio_session: 4f3e461722055d21515cf3261b64c973c062f345
   connectivity_plus: 413a8857dd5d9f1c399a39130850d02fe0feaf7e
   device_info_plus: e5c5da33f982a436e103237c0c85f9031142abed
-  DKImagePickerController: 72fd378f244cef3d27288e0aebf217a4467e4012
+  DKImagePickerController: b512c28220a2b8ac7419f21c491fc8534b7601ac
   DKPhotoGallery: fdfad5125a9fdda9cc57df834d49df790dbb4179
-  file_picker: 3e6c3790de664ccf9b882732d9db5eaf6b8d4eb1
-  Firebase: 5f8193dff4b5b7c5d5ef72ae54bb76c08e2b841d
-  firebase_core: aa1b92020533f5c23955e388c347c58fd64f8627
-  firebase_database: 73ae636e5f5b5ebdc7e216738c5dab6514662025
-  firebase_dynamic_links: 7263ea02f9eb9af202173d2ec093120340e38677
-  firebase_messaging: 8957bf304b47daf8bf12d0b111fdecc5b33e77a3
-  FirebaseCore: 5743c5785c074a794d35f2fff7ecc254a91e08b1
-  FirebaseCoreDiagnostics: 92e07a649aeb66352b319d43bdd2ee3942af84cb
-  FirebaseDatabase: f567afd233e54a303d84423207736590a6feb419
-  FirebaseDynamicLinks: 1dc816ef789c5adac6fede0b46d11478175c70e4
-  FirebaseInstallations: 40bd9054049b2eae9a2c38ef1c3dd213df3605cd
-  FirebaseMessaging: 5e5118a2383b3531e730d974680954c679ca0a13
+  file_picker: 817ab1d8cd2da9d2da412a417162deee3500fc95
+  Firebase: 4ba896cb8e5105d4b9e247e1c1b6222b548df55a
+  firebase_core: ada8be870601fe3c2684dae2356f634189bd598f
+  firebase_database: 1bbc8cb640da163f843ffccf46cc45834fa2aa89
+  firebase_dynamic_links: c550902a43e20498a686908405b4d84194e0b2e4
+  firebase_messaging: 405f36f22122866761e7ba7aa1dcecbae09ef836
+  FirebaseCore: 0e27f2a15d8f7b7ef11e7d93e23b1cbab55d748c
+  FirebaseCoreDiagnostics: 060eb57cc56dfaf40b1b1b5874a5c17c41ce79f8
+  FirebaseCoreInternal: 635d1c9a612a6502b6377a0c92af83758076ffff
+  FirebaseDatabase: 0a888e4bcaa8edc43701597daab336201fb47cc9
+  FirebaseDynamicLinks: f576ccfba05f2813e3679d48ccae5bcfff5714fc
+  FirebaseInstallations: 54b40022cb06e462740c9f2b9fbe38b5e78a825a
+  FirebaseMessaging: 4eaf1b8a7464b2c5e619ad66e9b20ee3e3206b24
   Flutter: 50d75fe2f02b26cc09d224853bb45737f8b3214a
   flutter_downloader: 058b9c41564a90500f67f3e432e3524613a7fd83
   flutter_keyboard_visibility: 0339d06371254c3eb25eeb90ba8d17dca8f9c069
   flutter_secure_storage: 7953c38a04c3fdbb00571bcd87d8e3b5ceb9daec
-  flutter_web_browser: abce1ddf6071fe237f7b41bc9e05bb0d9f313ba0
+  flutter_web_browser: 7bccaafbb0c5b8862afe7bcd158f15557109f61f
   FMDB: 2ce00b547f966261cd18927a3ddb07cb6f3db82a
   GoogleDataTransport: 5fffe35792f8b96ec8d6775f5eccd83c998d5a3b
   GoogleSignIn: c90b5bec45e780f54c6a8e1e3c182a86e3dda69d
@@ -374,17 +384,18 @@ SPEC CHECKSUMS:
   local_auth: 25938960984c3a7f6e3253e3f8d962fdd16852bd
   md5_file_checksum: 2cafda1443902a0f484da20e478dba45d5955318
   MTBBarcodeScanner: f453b33c4b7dfe545d8c6484ed744d55671788cb
-  nanopb: a0ba3315591a9ae0a16a309ee504766e90db0c96
+  nanopb: b552cce312b6c8484180ef47159bc0f65a1f0431
   nfc_in_flutter: c656fbfb1ec5b9d021da87b0c87629d62fd5264d
+  nfc_manager: 69e4cd9c15112206ab30246b1ce8d81a75729fdf
   package_info_plus: 6c92f08e1f853dc01228d6f553146438dafcd14e
   path_provider_ios: 14f3d2fd28c4fdb42f44e0f751d12861c43cee02
   permission_handler: ccb20a9fad0ee9b1314a52b70b76b473c5f8dab0
   printing: eafa00acb682c0ca029d4d98d0798f55a1e27102
-  PromisesObjC: 99b6f43f9e1044bd87a95a60beff28c2c44ddb72
+  PromisesObjC: ab77feca74fa2823e7af4249b8326368e61014cb
   qr_code_scanner: bb67d64904c3b9658ada8c402e8b4d406d5d796e
   qr_code_tools: 5b5dd44ccdfa4b81f645c251e421f61003254b81
   ReachabilitySwift: 985039c6f7b23a1da463388634119492ff86c825
-  SDWebImage: 0905f1b7760fc8ac4198cae0036600d67478751e
+  SDWebImage: fb26a455eeda4c7a55e4dcb6172dbb258af7a4ca
   share_extend: b6748dc53695587891126a89533b862b92548c7b
   share_plus: 056a1e8ac890df3e33cb503afffaf1e9b4fbae68
   shared_preferences_ios: 548a61f8053b9b8a49ac19c1ffbc8b92c50d68ad
@@ -397,4 +408,4 @@ SPEC CHECKSUMS:
 
 PODFILE CHECKSUM: 3ddfa1653e4c181f0b9007d5106846f345ac219d
 
-COCOAPODS: 1.11.2
+COCOAPODS: 1.11.3
