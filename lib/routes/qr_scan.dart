@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
@@ -168,6 +169,8 @@ class QRScanCancelButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final texts = AppLocalizations.of(context);
+
     return Center(
       child: Container(
         decoration: BoxDecoration(
@@ -180,8 +183,8 @@ class QRScanCancelButton extends StatelessWidget {
             onPressed: () {
               Navigator.of(context).pop();
             },
-            child: const Text(
-              "CANCEL",
+            child: Text(
+              texts.qr_scan_action_cancel,
               style: TextStyle(color: Colors.white),
             )),
       ),
