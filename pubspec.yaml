@@ -51,8 +51,8 @@ dependencies:
   path_provider: ^2.0.11
   printing: ^5.9.1
   protobuf: ^2.1.0
-  qr_code_scanner: ^1.0.0
-  qr_code_tools: ^0.0.7
+  mobile_scanner: ^2.0.0
+  scan: ^1.6.0
   # qr_flutter has already fixed the build issue with the qr package but did not publish an updated
   # version, they will publish as 4.0.1 for now they recommend to use the master but instead of that
   # we are using an specific commit to avoid unexpected behaviour in future builds.
@@ -136,7 +136,6 @@ flutter:
     - src/pos-icons/
     - assets/images/
     - assets/icons/
-    - assets/icons/layout/
 
   fonts:
     - family: IBMPlexSans
