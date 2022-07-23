@@ -278,7 +278,9 @@ class HomeState extends State<Home> with WidgetsBindingObserver {
             centerTitle: false,
             actions: [
               Padding(
-                padding: const EdgeInsets.fromLTRB(14,14,0,14),
+                padding: user.appMode == AppMode.podcasts
+                    ? const EdgeInsets.all(14)
+                    : const EdgeInsets.fromLTRB(14, 14, 0, 14),
                 child: AccountRequiredActionsIndicator(
                   widget.backupBloc,
                   widget.accountBloc,
