@@ -2081,10 +2081,7 @@
       }
     }
   },
-  "locale": "pt",
-  "app_name": "Breez",
-
-   "podcast_history_drawer": "Meus Principais Podcasts",
+  "podcast_history_drawer": "Meus Principais Podcasts",
   "podcast_history_share_message":  "Meus principais podcasts ouvidos no Breez",
   "podcast_history_share_text":"COMPARTILHAR",
   "podcast_history_sats_streamed":"sats transmitido",
@@ -2100,5 +2097,7 @@
   "podcast_history_sort_dropdown_duration":"Ouvido",
   "podcast_history_sort_dropdown_sats":"Pago",
   "podcast_history_sort_dropdown_boosts":"Boosted",
-  "podcast_history_empty_text":"Não há dados disponíveis para exibição."
+  "podcast_history_empty_text":"Não há dados disponíveis para exibição.",
+  "locale": "pt",
+  "app_name": "Breez"
 }

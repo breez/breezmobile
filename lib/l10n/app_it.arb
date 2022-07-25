@@ -2081,8 +2081,6 @@
             }
         }
     },
-    "locale": "en",
-    "app_name": "Breez",
     "podcast_history_drawer": "I miei podcast preferiti",
     "podcast_history_share_message": "I miei migliori podcast ascoltati su Breez",
     "podcast_history_share_text": "CONDIVIDI",
@@ -2099,5 +2097,7 @@
     "podcast_history_sort_dropdown_duration": "Ascoltati",
     "podcast_history_sort_dropdown_sats": "Pagati",
     "podcast_history_sort_dropdown_boosts": "Potenziati",
-    "podcast_history_empty_text": "Nessun dato disponibile da visualizzare."
+    "podcast_history_empty_text": "Nessun dato disponibile da visualizzare.",
+    "locale": "en",
+    "app_name": "Breez"
 }

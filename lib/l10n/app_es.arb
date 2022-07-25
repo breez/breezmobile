@@ -2081,9 +2081,6 @@
       }
     }
   },
-  "locale": "es",
-  "app_name": "Breez",
-
   "podcast_history_drawer": "Mis Mejores Podcasts",
   "podcast_history_share_message":  "Mis mejores podcasts escuchados en Breez",
   "podcast_history_share_text":"CUOTA",
@@ -2099,6 +2096,8 @@
   "podcast_history_sort_dropdown_recent":"Reciente",
   "podcast_history_sort_dropdown_duration":"Escuchado",
   "podcast_history_sort_dropdown_sats":"Pagado",
-   "podcast_history_sort_dropdown_boosts":"Boosted",
-   "podcast_history_empty_text":"No hay datos disponibles para mostrar."
+  "podcast_history_sort_dropdown_boosts":"Boosted",
+  "podcast_history_empty_text":"No hay datos disponibles para mostrar.",
+  "locale": "es",
+  "app_name": "Breez"
 }

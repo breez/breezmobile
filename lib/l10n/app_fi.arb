@@ -2081,9 +2081,6 @@
       }
     }
   },
-  "locale": "fi",
-  "app_name": "Breez",
-
   "podcast_history_drawer": "Suosituimmat Podcastit",
   "podcast_history_share_message":  "Suosituimmat podcastit kuuntelivat Breez",
   "podcast_history_share_text":"JAA",
@@ -2100,5 +2097,7 @@
   "podcast_history_sort_dropdown_duration":"Kuunteli",
   "podcast_history_sort_dropdown_sats":"Maksettu",
   "podcast_history_sort_dropdown_boosts":"Boosted",
-  "podcast_history_empty_text":"Näytettäviä tietoja ei ole saatavilla."
+  "podcast_history_empty_text":"Näytettäviä tietoja ei ole saatavilla.",
+  "locale": "fi",
+  "app_name": "Breez"
 }
