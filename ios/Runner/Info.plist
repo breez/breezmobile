@@ -9,6 +9,8 @@
 		<string>en</string>
 		<string>es</string>
 		<string>fi</string>
+		<string>fr</string>
+		<string>it</string>
 		<string>pt</string>
 	</array>
 	<key>NSAppTransportSecurity</key>

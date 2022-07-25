@@ -18,6 +18,7 @@ class DefaultProfile {
     switch (locale.languageCode) {
       case 'es':
       case 'fr':
+      case 'it':
       case 'pt':
         return "$animal $color";
 

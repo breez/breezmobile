@@ -44,6 +44,7 @@ class BreezDateUtils {
     timeago.setLocaleMessages('es', timeago.EsMessages());
     timeago.setLocaleMessages('fi', timeago.FiMessages());
     timeago.setLocaleMessages('fr', timeago.FrMessages());
+    timeago.setLocaleMessages('it', timeago.ItMessages());
     timeago.setLocaleMessages('pt', timeago.PtBrMessages());
   }
 }
