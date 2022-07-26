@@ -1011,6 +1011,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.0.2"
+  mobile_scanner:
+    dependency: "direct main"
+    description:
+      name: mobile_scanner
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "2.0.0"
   mockito:
     dependency: "direct dev"
     description:
@@ -1337,20 +1344,6 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "3.0.1"
-  qr_code_scanner:
-    dependency: "direct main"
-    description:
-      name: qr_code_scanner
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "1.0.0"
-  qr_code_tools:
-    dependency: "direct main"
-    description:
-      name: qr_code_tools
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "0.0.7"
   qr_flutter:
     dependency: "direct main"
     description:
@@ -1374,6 +1367,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "0.27.5"
+  scan:
+    dependency: "direct main"
+    description:
+      name: scan
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "1.6.0"
   screenshot:
     dependency: "direct main"
     description:
@@ -1849,7 +1849,7 @@ packages:
       name: webview_flutter_android
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "2.8.14"
+    version: "2.9.0"
   webview_flutter_platform_interface:
     dependency: transitive
     description:
