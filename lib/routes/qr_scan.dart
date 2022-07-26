@@ -73,63 +73,6 @@ class QRScanState extends State<QRScan> {
       ),
     );
   }
-  /*
-  Positioned buildSwitchCameraButton() {
-    return Positioned(
-      right: 32,
-      bottom: 96,
-      child: IconButton(
-        color: Colors.white,
-        icon: ValueListenableBuilder(
-          valueListenable: cameraController.cameraFacingState,
-          builder: (context, state, child) {
-            switch (state as CameraFacing) {
-              case CameraFacing.front:
-                return const Icon(Icons.camera_rear_outlined);
-              case CameraFacing.back:
-                return const Icon(Icons.camera_front_outlined);
-            }
-          },
-        ),
-        iconSize: 32.0,
-        onPressed: () => cameraController.switchCamera(),
-      ),
-    );
-  }
-
-  Positioned buildToggleFlashButton() {
-    return Positioned(
-      left: 32,
-      bottom: 96,
-      child: ValueListenableBuilder(
-        valueListenable: cameraController.cameraFacingState,
-        builder: (context, state, child) {
-          switch (state as CameraFacing) {
-            case CameraFacing.front:
-              return const SizedBox();
-            case CameraFacing.back:
-              return IconButton(
-                color: Colors.white,
-                icon: ValueListenableBuilder(
-                  valueListenable: cameraController.torchState,
-                  builder: (context, state, child) {
-                    switch (state as TorchState) {
-                      case TorchState.off:
-                        return const Icon(Icons.flash_on_outlined);
-                      case TorchState.on:
-                        return const Icon(Icons.flash_off_outlined);
-                    }
-                  },
-                ),
-                iconSize: 32.0,
-                onPressed: () => cameraController.toggleTorch(),
-              );
-          }
-        },
-      ),
-    );
-  }
-  */
 }
 
 class ImagePickerButton extends StatelessWidget {
