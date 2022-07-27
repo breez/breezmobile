@@ -63,9 +63,7 @@ class LNUrlBloc with AsyncActionsHandler {
           return result;
         })
       ])
-          .where((l) => l != null)
-          .map((l) => l.toLowerCase())
-          .where((l) => isLNURL(l) || isLightningAddress(l))
+          .where((l) => l != null && (isLNURL(l) || isLightningAddress(l)))
           .asyncMap((l) {
         var v = parseLightningAddress(l);
         v ??= l;
