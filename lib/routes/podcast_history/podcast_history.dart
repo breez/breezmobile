@@ -372,7 +372,7 @@ Widget _getPodcastHistoryList(
     bool getScreenshotWidget,
     PodcastHistoryTimeRange timeRange}) {
   final podcastHistoryBloc = AppBlocsProvider.of<PodcastHistoryBloc>(context);
-  final texts = AppLocalizations.of(context);
+
   return StreamBuilder<PodcastHistoryRecord>(
       stream: podcastHistoryBloc.podcastHistoryRecord,
       builder: (context, podcastHistoryListSnapshot) {

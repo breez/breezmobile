@@ -24,13 +24,13 @@ dependencies:
       url: https://github.com/mauriceraguseinit/DragAndDropLists
       ref: bb224b167574a35f722c9e9fbfa960dbee232ce5
   duration: ^3.0.11
-  email_validator: ^2.0.1
+  email_validator: ^2.1.16
   extended_image: ^6.2.1
-  file_picker: ^4.6.1
-  firebase_core: ^1.19.2
-  firebase_database: ^9.0.19
-  firebase_dynamic_links: ^4.3.2
-  firebase_messaging: ^12.0.0
+  file_picker: ^5.0.0
+  firebase_core: ^1.20.0
+  firebase_database: ^9.0.20
+  firebase_dynamic_links: ^4.3.3
+  firebase_messaging: ^12.0.1
   flutter_secure_storage: ^5.0.2
   flutter_svg: ^1.1.1+1
   flutter_web_browser: ^0.17.1
@@ -47,9 +47,9 @@ dependencies:
   logging: ^1.0.2
   md5_file_checksum: ^1.0.3
   nfc_manager: ^3.1.1
-  package_info_plus: ^1.4.2
+  package_info_plus: ^1.4.3
   path_provider: ^2.0.11
-  printing: ^5.9.1
+  printing: ^5.9.2
   protobuf: ^2.1.0
   mobile_scanner: ^2.0.0
   scan: ^1.6.0
@@ -73,13 +73,13 @@ dependencies:
   url_launcher: ^6.1.5
   uuid: ^3.0.6
   validators: ^3.0.0
-  webdav_client: ^1.1.7
+  webdav_client: ^1.1.8
   webview_flutter: ^3.0.4
 
   anytime:
     git:
       url: https://github.com/breez/anytime_podcast_player.git
-      ref: 38122f0127fac64e4888913161e0e7cd00b80d7f
+      ref: cdb01ca612ae4dd2ee5bea484ae8abbe222526d3
   flutter_typeahead:
     git:
       url: https://github.com/breez/flutter_typeahead.git
@@ -93,11 +93,10 @@ dependencies:
       url: https://github.com/breez/ShareExtend.git
 
 dependency_overrides:
-  xml: ^6.1.0
   flutter_downloader:
     git:
       url: https://github.com/breez/flutter_downloader.git
-      ref: dc7954d80762f33a1696c43b57f132a69b1c8a76
+      ref: 60a4470a9b552b287d729e230881f9ac77f5b506
   podcast_search:
     git:
       url: https://github.com/breez/podcast_search.git
