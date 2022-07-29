@@ -45,8 +45,10 @@ class DeepLinksService {
             const AndroidParameters(packageName: "com.breez.client"),
         iosParameters:
             const IOSParameters(bundleId: "technology.breez.client"));
-    final ShortDynamicLink shortLink =
-        await _dynamicLinks.buildShortLink(parameters);
+    final ShortDynamicLink shortLink = await _dynamicLinks.buildShortLink(
+      parameters,
+      shortLinkType: ShortDynamicLinkType.unguessable,
+    );
 
     return shortLink.shortUrl.toString();
   }
