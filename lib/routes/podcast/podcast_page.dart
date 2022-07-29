@@ -243,8 +243,9 @@ class NowPlayingTransportState extends State<NowPlayingTransport> {
                   type: PaymentEventType.StreamCompleted,
                   child: PlayerPositionControls()));
               widgets.add(PlayerTransportControls());
-              widgets.add(
-                  Padding(padding: const EdgeInsets.symmetric(vertical: 8.0)));
+              widgets.add(Padding(
+                padding: const EdgeInsets.only(top: 8.0, bottom: 24.0),
+              ));
               widgets.add(Divider(height: 0.0, thickness: 1));
               widgets.add(Container(
                   color: Theme.of(context).backgroundColor,
