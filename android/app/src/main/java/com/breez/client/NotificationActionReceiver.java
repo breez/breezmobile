@@ -29,8 +29,46 @@ public class NotificationActionReceiver extends BroadcastReceiver {
             notificationIntent.putExtra(s, remoteMessage.getData().get(s));
         }
 
-        NotificationManager manager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
-        manager.cancel(intent.getIntExtra(BreezFirebaseMessagingService.NOTIFICATION_ID, 0));
-        context.startActivity(notificationIntent);
+        Bitmap icon = BitmapFactory.decodeResource(context.getResources(), R.mipmap.ic_launcher);
+
+        int flags = Build.VERSION.SDK_INT >= Build.VERSION_CODES.S ? PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE : PendingIntent.FLAG_UPDATE_CURRENT;
+        PendingIntent appIntent = PendingIntent.getActivity(context, 0, notificationIntent, flags);
+
+        NotificationCompat.Action action =
+                new NotificationCompat.Action.Builder(ic_delete,
+                        actionText, appIntent)
+                        .build();
+
+        NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(context, "channel_id")
+                .setContentTitle(title)
+                .setContentText(body)
+                .setAutoCancel(true)
+                .setSound(RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION))
+                .setContentIntent(appIntent)
+                .setContentInfo("CONTENT")
+                .setLargeIcon(icon)
+                .setColor(0xFF0089f9)
+                .setLights(0xFF0089f9, 1000, 300)
+                .setColorized(true)
+                .setDefaults(android.app.Notification.DEFAULT_VIBRATE)
+                .setSmallIcon(R.mipmap.breez_notify)
+                .addAction(action)
+                .setStyle(new NotificationCompat.BigTextStyle().bigText(body))
+                .setPriority(2);
+
+        NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+        notificationManager.cancel(intent.getIntExtra(BreezFirebaseMessagingService.NOTIFICATION_ID, 0));
+        NotificationChannel notificationChannel;
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            String CHANNEL_ID = "channel_id";
+            CharSequence name = "Breez";
+            int importance = NotificationManager.IMPORTANCE_HIGH;
+            notificationChannel = new NotificationChannel(CHANNEL_ID, name, importance);
+            notificationManager.createNotificationChannel(notificationChannel);
+        }
+
+        final int notificationID = (int)System.currentTimeMillis() / 1000;
+        notificationManager.notify(notificationID, notificationBuilder.build());
     }
 }
