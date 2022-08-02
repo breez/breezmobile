@@ -330,8 +330,6 @@ final VendorTheme fixedfloat = VendorTheme(iconBgColor: Color(0xFF0B4E7B));
 final VendorTheme lnmarkets = VendorTheme(iconBgColor: Color(0xFF384697));
 final VendorTheme fold = VendorTheme(iconBgColor: Color(0xFFFFCF30));
 final VendorTheme boltz = VendorTheme(iconBgColor: Color(0xFF001524));
-final VendorTheme lightnite = VendorTheme(iconBgColor: Color(0xFF530709));
-final VendorTheme spendl = VendorTheme(iconBgColor: Color(0xFFffffff));
 final VendorTheme kollider = VendorTheme(
   iconBgColor: Color.fromRGBO(21, 23, 25, 1),
   iconFgColor: Color.fromRGBO(217, 227, 234, 1),
@@ -341,7 +339,6 @@ final VendorTheme fastbitcoins = VendorTheme(
     iconBgColor: Color(0xFFff7c10),
     iconFgColor: Color(0xFF1f2a44),
     textColor: Color(0xFF1f2a44));
-final VendorTheme xsats = VendorTheme(iconBgColor: Color(0xFF000000));
 final VendorTheme geyser =
     VendorTheme(iconBgColor: Color.fromRGBO(41, 241, 205, 1));
 
@@ -351,11 +348,8 @@ final Map<String, VendorTheme> vendorTheme = {
   "fixedfloat": fixedfloat,
   "lnmarkets": lnmarkets,
   "boltz": boltz,
-  "lightnite": lightnite,
-  "spendl": spendl,
   "kollider": kollider,
   "fastbitcoins": fastbitcoins,
-  "xsats": xsats,
   "geyser": geyser,
   "fold": fold,
 };
