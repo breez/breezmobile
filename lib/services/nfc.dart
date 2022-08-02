@@ -35,6 +35,10 @@ class NFCService {
     _listenLnLinks();
   }
 
+  starSession({bool autoClose}) {
+    _startNFCSession(autoClose: autoClose);
+  }
+
   _checkNfcStartedWith() async {
     _platform.invokeMethod("checkIfStartedWithNfc").then((lnLink) {
       if (lnLink != null && lnLink.toString().isNotEmpty) {
@@ -49,7 +53,7 @@ class NFCService {
     log.info("check if nfc available");
     bool isAvailable = await NfcManager.instance.isAvailable();
     log.info("nfc available $isAvailable");
-    if (isAvailable) {
+    if (isAvailable && Platform.isAndroid) {
       _startNFCSession();
       ServiceInjector().device.eventStream.distinct().listen((event) {
         switch (event) {
@@ -65,18 +69,22 @@ class NFCService {
     }
   }
 
-  _startNFCSession() async {
+  _startNFCSession({bool autoClose = false}) async {
     await NfcManager.instance.stopSession();
-    NfcManager.instance.startSession(
+    NfcManager.instance.startSession(      
       onDiscovered: (NfcTag tag) async {
         var ndef = Ndef.from(tag);
+        log.info("tag data: ${tag.data.toString()}");
         if (ndef != null) {
-          for (var rec in ndef.cachedMessage.records) {
+          for (var rec in ndef.cachedMessage.records) {           
             String payload = String.fromCharCodes(rec.payload);
             final link = extractPayloadLink(payload);
             if (link != null) {
               log.info("nfc broadcasting link: $link");
               _lnLinkController.add(link);
+              if (autoClose) {
+                NfcManager.instance.stopSession();
+              }
             } else {
               log.info("nfc skip payload: $payload");
             }

@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:io';
 
 import 'package:breez/bloc/account/account_bloc.dart';
 import 'package:breez/bloc/account/account_model.dart';
@@ -154,17 +155,20 @@ class _PosPaymentDialogState extends State<PosPaymentDialog> {
         ),
         Row(
           children: <Widget>[
-            SvgPicture.asset(
-              "src/icon/nfc.svg",
-              height: 24,
-              width: 24,
-              color: themeData.dialogTheme.titleTextStyle.color,
-              colorBlendMode: BlendMode.srcATop,
+            IconButton(              
+              padding: EdgeInsets.zero,
+              icon: SvgPicture.asset(                  
+                  "src/icon/nfc.svg",                  
+                  color: Platform.isAndroid ? themeData.dialogTheme.titleTextStyle.color : themeData.primaryTextTheme.button.color,                  
+                ),
+              onPressed: Platform.isAndroid ?  null : () {
+                ServiceInjector().nfc.starSession(autoClose: true);
+              },
             ),
             IconButton(
               splashColor: Colors.transparent,
               highlightColor: Colors.transparent,
-              padding: const EdgeInsets.fromLTRB(14.0, 8.0, 2.0, 8.0),
+              padding: const EdgeInsets.fromLTRB(0.0, 8.0, 2.0, 8.0),
               icon: Icon(IconData(0xe917, fontFamily: 'icomoon')),
               color: themeData.primaryTextTheme.button.color,
               tooltip: texts.pos_dialog_share,

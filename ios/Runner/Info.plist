@@ -403,5 +403,7 @@
         <string>E828BD080F</string>
         <string>F0000000030001</string>
     </array>
+	<key>CADisableMinimumFrameDurationOnPhone</key>
+	<true/>
 </dict>
 </plist>
