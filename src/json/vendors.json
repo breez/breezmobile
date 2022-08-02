@@ -1,0 +1,45 @@
+{
+  "Bitrefill": {
+    "url": "https://www.bitrefill.com/embed/lightning/?apiKey=GAj4sWRVqK3Uau1L&hideQr"
+  },
+  "lnmarkets": {
+    "displayName": "LN Markets",
+    "url": "https://lnmarkets.com/login/breez",
+    "endpointURI": "https://api.lnmarkets.com/v1/lnurl/auth",
+    "responseID": "lnurl"
+  },
+  "Wavlake": {
+    "url": "https://wavlake.com/"
+  },
+  "Fold": {
+    "url": "https://use.foldapp.com/sign-up?referral=breez"
+  },
+  "FixedFloat": {
+    "url": "https://widget.fixedfloat.com/?from=BTCLN&to=LTC&cciesRcvNot=BTCLN",
+    "logo": "src/icon/vendors/bitrefill_logo_lg.png"
+  },
+  "Kollider": {
+    "url": "https://light.kollider.xyz/auth/login",
+    "endpointURI": "https://api.kollider.xyz/v1/auth/external/lnurl_auth",
+    "onlyShowLogo" : false
+  },
+  "Azteco": {
+    "url": "https://azte.co/breezmap.php"
+  },
+  "Boltz": {
+    "url": "https://boltz.exchange/swapbox"
+  },
+  "Geyser": {
+    "url": "https://geyser.fund/"
+  },
+  "Sms4Sats": {
+    "url": "http://sms4sats.com/"
+  },
+  "ln.pizza": {
+    "url": "https://ln.pizza/?breez_wallet"
+  },
+  "LNCal": {
+    "url": "https://lncal.com/",
+    "endpointURI": "https://lncal.com/lnurl/breez"
+  }
+}
