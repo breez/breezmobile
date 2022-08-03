@@ -112,7 +112,6 @@ class HomeState extends State<Home> with WidgetsBindingObserver {
     super.initState();
     audioBloc = Provider.of<AudioBloc>(context, listen: false);
     WidgetsBinding.instance.addObserver(this);
-    audioBloc.transitionLifecycleState(LifecyleState.resume);
 
     _hiddenRoutes.add("/get_refund");
     widget.accountBloc.accountStream.listen((acc) {
@@ -176,7 +175,6 @@ class HomeState extends State<Home> with WidgetsBindingObserver {
 
   @override
   void dispose() {
-    audioBloc.transitionLifecycleState(LifecyleState.pause);
     WidgetsBinding.instance.removeObserver(this);
     _accountNotificationsSubscription?.cancel();
     super.dispose();
