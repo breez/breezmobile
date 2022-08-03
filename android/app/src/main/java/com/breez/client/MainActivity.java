@@ -5,17 +5,22 @@ import com.breez.client.plugins.breez.*;
 import com.ryanheise.audioservice.AudioService;
 import com.ryanheise.audioservice.AudioServicePlugin;
 
+import android.app.NotificationManager;
 import android.content.Context;
 import android.content.Intent;
 import io.flutter.embedding.android.FlutterFragmentActivity;
 import io.flutter.embedding.android.SplashScreen;
 import io.flutter.embedding.engine.FlutterEngine;
-import io.flutter.plugins.GeneratedPluginRegistrant;
+
+import android.os.Build;
+import android.os.Bundle;
 import android.view.WindowManager.LayoutParams;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
+import androidx.core.app.NotificationManagerCompat;
 
 public class MainActivity extends FlutterFragmentActivity {
     private static final String TAG = "Breez";
@@ -43,7 +48,22 @@ public class MainActivity extends FlutterFragmentActivity {
     @Override
     public void onResume() {
         super.onResume();
+        dismissNotification();
         getWindow().clearFlags(LayoutParams.FLAG_SECURE);
+    }
+
+    private void dismissNotification() {
+        int notificationID = getIntent().getIntExtra("NOTIFICATION_ID", -1);
+        if(notificationID != -1) {
+            Log.d(TAG, "Cancel notification:" + notificationID);
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                NotificationManager notificationManager = getNotificationManager();
+                notificationManager.cancel(notificationID);
+            } else {
+                NotificationManagerCompat notificationManagerCompat = getAdaptedOldNotificationManager();
+                notificationManagerCompat.cancel(notificationID);
+            }
+        }
     }
 
     @Override
@@ -66,5 +86,15 @@ public class MainActivity extends FlutterFragmentActivity {
     @Override
     public SplashScreen provideSplashScreen() {
         return null;
+    }
+
+
+    @RequiresApi(Build.VERSION_CODES.O)
+    private NotificationManager getNotificationManager() {
+        return (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+    }
+
+    private NotificationManagerCompat getAdaptedOldNotificationManager() {
+        return NotificationManagerCompat.from(this);
     }
 }
