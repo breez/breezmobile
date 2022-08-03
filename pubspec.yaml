@@ -123,7 +123,6 @@ flutter:
     - cert/letsencrypt.cert
     - conf/lnd.conf
     - conf/breez.conf
-    - conf/marketplace.conf
     - conf/moonpay.conf
     - src/json/
     - src/images/
