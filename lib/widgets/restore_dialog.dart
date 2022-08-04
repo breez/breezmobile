@@ -124,9 +124,11 @@ class RestoreDialogState extends State<RestoreDialog> {
 
     final item = widget.snapshots[index];
     final nodeID = _selectedSnapshot?.nodeID;
-    final date = BreezDateUtils.formatYearMonthDayHourMinute(
-      DateTime.parse(item.modifiedTime),
-    );
+    var date = item.modifiedTime;
+    var parsedDate = DateTime.tryParse(item.modifiedTime);
+    if (parsedDate != null) {
+      date = BreezDateUtils.formatYearMonthDayHourMinute(parsedDate);
+    }
     return ListTile(
       contentPadding: EdgeInsets.symmetric(horizontal: 0.0),
       selected: nodeID == item.nodeID,
