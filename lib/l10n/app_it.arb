@@ -9,7 +9,7 @@
     "home_drawer_item_title_pos": "POS",
     "home_drawer_item_title_apps": "App",
     "home_drawer_item_title_pos_settings": "Impostazioni POS",
-    "home_drawer_item_title_developers": "Sviluppatori",
+    "home_drawer_item_title_developers": "Per sviluppatori",
     "home_drawer_item_title_get_refund": "Ottieni rimborso",
     "home_drawer_item_title_payment_options": "Commissioni Lightning",
     "home_drawer_error_internal": "Errore interno",
@@ -410,7 +410,7 @@
     "pos_invoice_clear_sale_header": "Annullare la vendita?",
     "pos_invoice_clear_sale_message": "Questo annullerà l'attuale transazione.",
     "pos_invoice_clear_sale_cancel": "CANCELLA",
-    "pos_invoice_clear_sale_confirm": "ANNULLA",
+    "pos_invoice_clear_sale_confirm": "OK",
     "pos_invoice_sort_none": "Nessuno",
     "pos_invoice_sort_alphabetically": "Nome",
     "pos_invoice_sort_price": "Prezzo",
@@ -473,7 +473,7 @@
     "pos_transactions_range_dialog_title": "Scegli un intervallo di date:",
     "pos_transactions_range_dialog_start": "Inizio",
     "pos_transactions_range_dialog_end": "Fine",
-    "pos_transactions_range_dialog_clear": "ANNULLA",
+    "pos_transactions_range_dialog_clear": "RESETTA",
     "pos_transactions_range_dialog_apply": "APPLICA FILTRO",
     "pos_transactions_item_positive": "{value}",
     "@pos_transactions_item_positive": {
@@ -805,7 +805,7 @@
     "network_default_node_error": "Breez non è in grado di usare il nodo di default",
     "network_custom_node_error": "Breez non è in grado di connettersi al nodo specificato. Assicurati che il nodo supporti BIP 157.",
     "network_testing_node": "Test del nodo",
-    "amount_form_denomination": "Importo i {denomination}",
+    "amount_form_denomination": "Importo in {denomination}",
     "@amount_form_denomination": {
         "placeholders": {
             "denomination": {
