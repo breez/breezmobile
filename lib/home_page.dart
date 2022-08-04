@@ -104,15 +104,11 @@ class HomeState extends State<Home> with WidgetsBindingObserver {
   String _activeScreen = "breezHome";
   Set _hiddenRoutes = Set<String>();
   StreamSubscription<String> _accountNotificationsSubscription;
-  AudioBloc audioBloc;
   bool _listensInit = false;
 
   @override
   void initState() {
     super.initState();
-    audioBloc = Provider.of<AudioBloc>(context, listen: false);
-    WidgetsBinding.instance.addObserver(this);
-
     _hiddenRoutes.add("/get_refund");
     widget.accountBloc.accountStream.listen((acc) {
       setState(() {
@@ -141,6 +137,7 @@ class HomeState extends State<Home> with WidgetsBindingObserver {
     AudioService.notificationClicked.where((event) => event == true).listen(
         (event) async {
       final userBloc = AppBlocsProvider.of<UserProfileBloc>(context);
+      final audioBloc = Provider.of<AudioBloc>(context, listen: false);
       final userModel = await userBloc.userStream.first;
       final nowPlaying = await audioBloc.nowPlaying.first.timeout(
         Duration(seconds: 1),
@@ -175,7 +172,6 @@ class HomeState extends State<Home> with WidgetsBindingObserver {
 
   @override
   void dispose() {
-    WidgetsBinding.instance.removeObserver(this);
     _accountNotificationsSubscription?.cancel();
     super.dispose();
   }
