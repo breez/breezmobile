@@ -1533,8 +1533,8 @@
       }
     }
   },
-  "pos_payment_nfc_error_title": "NFC Payment error",
-  "pos_payment_nfc_range_error": "Only payments between {minValue} and {maxValue} are allowed.",
+  "pos_payment_nfc_error_title": "Lähimaksuvirhe",
+  "pos_payment_nfc_range_error": "Maksun tulee olla vähintään {minValue} ja {maxValue} enintään.",
   "@pos_payment_nfc_range_error": {
     "placeholders": {
       "minValue": {
@@ -1548,8 +1548,8 @@
     }
   },
   "pos_payment_nfc_error_action_close": "SULJE",
-  "successful_payment_print": "Print",
-  "successful_payment_received": "Payment received!",
+  "successful_payment_print": "Tulosta",
+  "successful_payment_received": "Maksu vastaaotettu!",
   "payment_options_title": "Salamamaksun kulut",
   "payment_options_fee_header": "Salamamaksujen hyväksyttävä enimmäiskulu:",
   "payment_options_fee_override_enable": "Määritä Salamamaksujen hyväksyttävä enimmäiskulu",
