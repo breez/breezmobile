@@ -50,7 +50,7 @@ class PaymentAdjustmentState extends State<PaymentAdjustment> {
         final user = await userBloc.userStream.first;
         if (!user.seenTutorials.paymentStripTutorial) {
           _buildTutorial(context, user);
-          tutorial.show();
+          tutorial.show(context: context);
           setState(() {});
         }
       });
@@ -59,7 +59,6 @@ class PaymentAdjustmentState extends State<PaymentAdjustment> {
 
   void _buildTutorial(BuildContext context, BreezUserModel user) {
     tutorial = TutorialCoachMark(
-      context,
       targets: targets,
       onClickOverlay: (t) {
         if (t.keyTarget == boostWidgetKey) {
