@@ -747,7 +747,7 @@
   },
   "connect_to_pay_payment_reject": "Maksu on hylätty",
   "connect_to_pay_error_wrong_amount": "Maksupyynnössä oleva summa on väärä",
-  "connect_to_pay_error_status_tracking_already_started": "Tilanteen seuranta on jo käynnistetty, se pitää pysäyttää ennen uudelleen aloitusta",
+  "connect_to_pay_error_status_tracking_already_started": "Tilanteen seuranta on jo käynnistetty. Se pitää pysäyttää ennen uudelleen aloitusta",
   "connect_to_pay_error_link_expired": "Tämä linkki on vanhentunut, eikä se ole kelvollinen maksun suorittamiseksi.",
   "security_and_backup_title": "Turvallisuus & varmuuskopiointi",
   "security_and_backup_last_backup_no_account": "Varmuuskopioitu viimeksi {lastBackup}",
@@ -1834,10 +1834,10 @@
   },
   "lock_screen_enter_pin": "Syötä PIN-koodisi",
   "backup_phrase_generate": "Luo varmuuskopion salauslause",
-  "backup_phrase_instructions": "Sinulle näytetään lista sanoja. Kirjoita sanat numerojärjestyksessä ylös ja talleta ne turvalliseen paikkaan. Mikäli joudut palauttamaan varmuuskopion, eikä sinulla ole sanoja tallessa, ei palautus onnistu ja menetät kaikki varasi. Tällöin Breez eikä kukaan muukaan  voi auttaa sinua palautuksessa.",
+  "backup_phrase_instructions": "Seuraavassa näkymässä sinulle näytetään salauslause. Kirjaa numerojärjestyksessä sen sanat muistiin turvalliseen paikkaan. Mikäli joskus tulevaisuudessa joudut palauttamaan varmuuskopion, palautus ei onnistu ilman näitä sanoja. Siinä tapauksessa menetät kaikki sovelluksen hallinnoimat varasi. Tällöin ei Breez, eikä kukaan muukaan, voi auttaa sinua palautuksessa!",
   "backup_phrase_action_confirm": "YMMÄRRÄN",
   "backup_phrase_action_next": "SEURAAVA",
-  "backup_phrase_warning_disclaimer": "Nykyinen varmistuksen salauslause mitätöidään. Uusi lause muodostetaan seuraavalla kerralla, kun otat varmistuksen salauksen käyttöön. Oletko varma että haluat poistaa varmistuksen salauslauseen käytöstä?",
+  "backup_phrase_warning_disclaimer": "Nykyinen varmistuksen salauslause mitätöidään. Oletko varma että haluat poistaa varmistuksen salauksen käytöstä? Jos myöhemmin otat varmistuksen salauksen jälleen käyttöön, niin uusi salauslause luodaan.",
   "backup_phrase_warning_action_yes": "KYLLÄ",
   "backup_phrase_warning_action_no": "En",
   "backup_phrase_warning_action_next": "SEURAAVA",
@@ -1980,7 +1980,7 @@
   "pending_closed_channel_action_ok": "OK",
   "close_warning_dialog_title": "Käyttämättömiä kanavia",
   "close_warning_dialog_action_ok": "OK",
-  "close_warning_dialog_message_begin": "Et ole käyttänyt sovellusta maksujen suorittamiseen viimeisten {duration} päivän aikana. Niinpä maksujen välityspalvelu (Liguitu Service Provide = LSP) on saattanut sulkea salamaverkon kanavasi. Mikäli näin on käynyt, sovellus luo lohkoketju osoitteen ja siirtaa varasi sinne. Kaikki varasi säilyvät omistuksessasi pois lukien tapahtuma- ja ns mining-kulut. Voi palata takaisin lunastamaan varasi milloin vain. Tarkempia tietoja tapahtuneen taustoista lue seuraava artikkeli (englanniksi) ",
+  "close_warning_dialog_message_begin": "Et ole käyttänyt sovellusta maksujen suorittamiseen viimeisten {duration} päivän aikana. Niinpä maksujen välityspalvelu (Liguitu Service Provide = LSP) on saattanut sulkea salamaverkon kanavasi. Mikäli näin on käynyt, sovellus luo lohkoketjuosoitteen ja siirtää varasi sinne. Kaikki varasi säilyvät omistuksessasi, pois lukien tapahtuma- ja mining-kulut. Voi palata ja lunastaa varasi milloin vain. Tarkempia tietoja taustoista lue seuraava artikkeli (englanniksi) ",
   "@close_warning_dialog_message_begin": {
     "placeholders": {
       "duration": {
@@ -2019,7 +2019,7 @@
   "swap_error_funds_exceed_limit": "käsitelty tapahtuma meni yli määritellyn rajan.",
   "swap_error_invoice_amount_mismatch": "pyydetty määrä ei täsmää alkuperäiseen tapahtumaan.",
   "swap_error_swap_expired": " tapahtuman käsittelyaika ylitettiin.",
-  "swap_error_tx_too_small": "tapahtuman summa oli liian käsiteltäväksi.",
+  "swap_error_tx_too_small": "tapahtuman summa oli liian pieni käsiteltäväksi.",
   "status_message_unconfirmed_tx_id": "Sovellus odottaa Bitcoin siirron varmistusta. Siihen saattaa mennä hetkinen...",
   "status_transferring_on_chain_deposit": "Varoja siirretään",
   "status_failed_to_add_funds": "Varojen lisääminen epäonnistui: {error}",
@@ -2031,7 +2031,7 @@
       }
     }
   },
-  "on_chain_payment_error_not_enough_funds": "Varat eivät riita.",
+  "on_chain_payment_error_not_enough_funds": "Varat eivät riitä.",
   "valid_payment_error_exceeds_the_limit": "Maksu ylittään rajan {amount}",
   "@valid_payment_error_exceeds_the_limit": {
     "placeholders": {
@@ -2053,7 +2053,7 @@
   "valid_payment_error_insufficient_balance": "Paikallinen saldo ei riitä",
   "description_waiting_broadcast": "Odotetaan tapahtuman lähettämistä",
   "description_broadcast_done": "Tapahtuma lähetettiin",
-  "description_type_deposit": "Bitcoin siirtp",
+  "description_type_deposit": "Bitcoin-siirto",
   "payment_info_title_bitrefill": "Bitrefill",
   "payment_info_title_breez_sale": "Päiväys [{date}]",
   "@payment_info_title_breez_sale": {
@@ -2067,10 +2067,10 @@
   "payment_info_title_lightning_gifts": "lightning.gifts",
   "payment_info_title_ln_pizza": "ln.pizza",
   "payment_info_title_zebedee": "Zebedee",
-  "payment_info_title_bitcoin_transfer": "Bitcoin siirto",
+  "payment_info_title_bitcoin_transfer": "Bitcoin-siirto",
   "payment_info_title_closed_channel": "Suljettu kanava",
   "payment_info_title_send_to_node": "Lähetä solmulle",
-  "payment_info_title_unknown": "Tintematon",
+  "payment_info_title_unknown": "Tuntematon",
   "payment_info_title_pending_closed_channel": "Odotetaan suljettua kanavaa",
   "payment_error_to_send": "Maksu lähetys epäonnistui: {error}",
   "@payment_error_to_send": {
@@ -2081,23 +2081,23 @@
       }
     }
   },
-  "podcast_history_drawer": "Suosituimmat Podcastit",
-  "podcast_history_share_message":  "Suosituimmat podcastit kuuntelivat Breez",
+  "podcast_history_drawer":"Suosituimmat Podcastit",
+  "podcast_history_share_message":"Suosituimmat podcastit kuuntelivat Breez",
   "podcast_history_share_text":"JAA",
   "podcast_history_sats_streamed":"sats striimattiin",
   "podcast_history_boostagrams_sent":"boosts lähetetty",
   "podcast_history_open_podcast_button": "AVAA PODCAST",
-  "podcast_history_appbar_top_weekly":"Suosituimmat viikoittaiset podcastit",
-  "podcast_history_appbar_top_monthly":"Suosituimmat kuukausittaiset podcastit",
-  "podcast_history_appbar_top_yearly":"Vuoden suosituimmat podcastit",
+  "podcast_history_appbar_top_weekly":"Suosituimmat podcastit viikoittain",
+  "podcast_history_appbar_top_monthly":"Suosituimmat podcastit kuukausittain",
+  "podcast_history_appbar_top_yearly":"Suosituimmat podcastit vuosittain",
   "podcast_history_timerange_dropdown_week":"Mennyt viikko",
   "podcast_history_timerange_dropdown_month":"Kulunut kuukausi",
   "podcast_history_timerange_dropdown_year":"Viime vuosi",
   "podcast_history_sort_dropdown_recent":"Viimeaikaiset",
-  "podcast_history_sort_dropdown_duration":"Kuunteli",
+  "podcast_history_sort_dropdown_duration":"Kesto",
   "podcast_history_sort_dropdown_sats":"Maksettu",
   "podcast_history_sort_dropdown_boosts":"Boosted",
-  "podcast_history_empty_text":"Näytettäviä tietoja ei ole saatavilla.",
+  "podcast_history_empty_text":"Näytettäviä tietoja ei ole.",
   "locale": "fi",
   "app_name": "Breez"
 }
