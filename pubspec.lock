@@ -347,7 +347,7 @@ packages:
       name: device_info_plus
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "4.0.1"
+    version: "4.0.2"
   device_info_plus_linux:
     dependency: transitive
     description:
@@ -368,7 +368,7 @@ packages:
       name: device_info_plus_platform_interface
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "2.3.0+1"
+    version: "2.4.0"
   device_info_plus_web:
     dependency: transitive
     description:
@@ -382,7 +382,7 @@ packages:
       name: device_info_plus_windows
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "3.0.1"
+    version: "3.0.2"
   dio:
     dependency: "direct main"
     description:
@@ -940,35 +940,7 @@ packages:
       name: local_auth
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "2.1.1"
-  local_auth_android:
-    dependency: transitive
-    description:
-      name: local_auth_android
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "1.0.10"
-  local_auth_ios:
-    dependency: transitive
-    description:
-      name: local_auth_ios
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "1.0.8"
-  local_auth_platform_interface:
-    dependency: transitive
-    description:
-      name: local_auth_platform_interface
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "1.0.4"
-  local_auth_windows:
-    dependency: transitive
-    description:
-      name: local_auth_windows
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "1.0.2"
+    version: "1.1.11"
   logging:
     dependency: "direct main"
     description:
@@ -1194,7 +1166,7 @@ packages:
       name: path_provider_windows
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "2.1.1"
+    version: "2.1.2"
   pdf:
     dependency: transitive
     description:

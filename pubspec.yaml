@@ -43,7 +43,8 @@ dependencies:
   ini: ^2.1.0
   intl: ^0.17.0
   json_annotation: ^4.6.0
-  local_auth: ^2.1.1
+  # local_auth: 2.0.0 has breaking changes that are missing documentation
+  local_auth: <2.0.0
   logging: ^1.0.2
   md5_file_checksum: ^1.0.3
   nfc_manager: ^3.1.1
