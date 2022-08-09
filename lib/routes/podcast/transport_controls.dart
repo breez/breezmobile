@@ -149,14 +149,17 @@ class _PlayerTransportControlsState extends State<PlayerTransportControls>
               ),
             ),
             Expanded(flex: 1, child: Container()),
-            SpeedSelectorWidget(
-              onChanged: (double value) {
-                print('Speed callback of $value');
-                audioBloc.playbackSpeed(value);
-              },
+            // Speed selector uses 16-37 as width so we use a container with
+            // the maximum size and centers it to proper alignment
+            Container(
+              width: 37,
+              child: Center(
+                child: SpeedSelectorWidget(
+                  onChanged: (value) => audioBloc.playbackSpeed(value),
+                ),
+              ),
             ),
             Expanded(flex: 1, child: Container()),
-            SizedBox(width: 22.0, height: 0.0),
           ],
         );
       },
