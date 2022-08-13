@@ -76,6 +76,7 @@ dependencies:
   validators: ^3.0.0
   webdav_client: ^1.1.8
   webview_flutter: ^3.0.4
+  ffmpeg_kit_flutter_https_gpl: ^4.5.1
 
   anytime:
     git:

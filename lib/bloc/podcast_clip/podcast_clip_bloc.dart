@@ -11,7 +11,12 @@ import 'package:ffmpeg_kit_flutter_https_gpl/return_code.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:rxdart/rxdart.dart';
 
-enum PodcastClipState { IDLE, FETCHING_AUDIO_CLIP, GENERATING_CLIP }
+enum PodcastClipState {
+  IDLE,
+  FETCHING_IMAGE,
+  FETCHING_AUDIO_CLIP,
+  GENERATING_CLIP
+}
 
 const int _initialSeconds = 10;
 const int _maxClipDuration = 120;
@@ -30,10 +35,6 @@ class PodcastClipBloc with AsyncActionsHandler {
 
   setPodcastClipDetails({PositionState position}) {
     _clipStateBehaviourSubject.add(PodcastClipState.IDLE);
-
-    print("dante ${position.episode.author}");
-    print("dante downloaded ${position.episode.downloaded}");
-
     Duration endTime = position.position + Duration(seconds: _initialSeconds);
 
     PodcastClipDetailsModel podcastClipDetails = PodcastClipDetailsModel(
@@ -56,7 +57,7 @@ class PodcastClipBloc with AsyncActionsHandler {
 
     Duration clipEndTime = clipDetails.endTimeStamp +
         Duration(seconds: durationInSeconds) -
-        Duration(seconds: _initialSeconds);
+        Duration(seconds: clipDetails.clipDuration);
 
     _clipDetailsBehaviourSubject.add(clipDetails.copy(
         clipDuration: durationInSeconds, endTimeStamp: clipEndTime));
@@ -64,24 +65,29 @@ class PodcastClipBloc with AsyncActionsHandler {
 
   incrementDuration() async {
     var clipDetails = await getCurrentPodcastClipDetails();
-    int currentCLipDuration = clipDetails.clipDuration;
+    int currentClipDuration = clipDetails.clipDuration;
 
 //If  duration is less than 10 seconds return
-    if (_maxClipDuration - currentCLipDuration <= 0) {
+    if (_maxClipDuration - currentClipDuration <= 0) {
       return;
     }
     if ((clipDetails.endTimeStamp + Duration(seconds: _initialSeconds)) >
         clipDetails.episodeLength) {
       return;
     }
-
-    int incrementedClipDuration =
-        currentCLipDuration - currentCLipDuration % 10 + _initialSeconds;
-
-    int initialDuration = clipDetails.endTimeStamp.inSeconds -
-        clipDetails.endTimeStamp.inSeconds % 10;
-    Duration incrementedClipEndTime =
-        Duration(seconds: initialDuration) + Duration(seconds: _initialSeconds);
+    int incrementedClipDuration = 0;
+    Duration incrementedClipEndTime = Duration(seconds: 0);
+    if (currentClipDuration % 10 != 0) {
+      incrementedClipDuration =
+          currentClipDuration - currentClipDuration % 10 + _initialSeconds;
+      incrementedClipEndTime = Duration(
+          seconds:
+              clipDetails.startTimeStamp.inSeconds + incrementedClipDuration);
+    } else {
+      incrementedClipDuration = currentClipDuration + _initialSeconds;
+      incrementedClipEndTime = Duration(
+          seconds: clipDetails.endTimeStamp.inSeconds + _initialSeconds);
+    }
 
     _clipDetailsBehaviourSubject.add(clipDetails.copy(
         clipDuration: incrementedClipDuration,
@@ -102,8 +108,8 @@ class PodcastClipBloc with AsyncActionsHandler {
     if (currentCLipDuration % 10 != 0) {
       decrementedClipDuration = currentCLipDuration - currentCLipDuration % 10;
       decrementedClipEndTime = Duration(
-          seconds: clipDetails.endTimeStamp.inSeconds -
-              clipDetails.endTimeStamp.inSeconds % 10);
+          seconds:
+              clipDetails.endTimeStamp.inSeconds - currentCLipDuration % 10);
     } else {
       decrementedClipDuration = currentCLipDuration - _initialSeconds;
       decrementedClipEndTime =
@@ -143,7 +149,7 @@ class PodcastClipBloc with AsyncActionsHandler {
     videoClipPath = videoClipPath + '/VideoClip.mp4';
 
     String clippedVideoCommand =
-        '-i  $audioClipPath -i $episodeImagepath -filter_complex "[0:a]showwaves=colors=0xffffff@0.6:mode=p2p,format=yuva420p[v];[1:v]scale=1060:1280[bg];[bg][v]overlay=(main_w-overlay_w)/2:H*0.8[outv]" -map "[outv]" -map 0:a -c:v libx264 -c:a copy $videoClipPath';
+        '-i  $audioClipPath -i $episodeImagepath -filter_complex "[0:a]showwaves=colors=0xffffff@0.9:mode=p2p,format=yuva420p[v];[1:v]scale=2120:2560[bg];[bg][v]overlay=(main_w-overlay_w)/2:H*0.8[outv]" -map "[outv]" -map 0:a -c:v libx264 -c:a copy $videoClipPath';
 
     FFmpegSession ffpegSessionDetails =
         await FFmpegKit.execute(clippedVideoCommand);
@@ -190,6 +196,10 @@ class PodcastClipBloc with AsyncActionsHandler {
     }
 
     return videoClipPath;
+  }
+
+  setPodcastState(PodcastClipState clipState) {
+    _clipStateBehaviourSubject.add(clipState);
   }
 
   Future<String> initClipDirectory({bool isVideoClip}) async {

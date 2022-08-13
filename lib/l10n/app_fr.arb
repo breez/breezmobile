@@ -49,7 +49,7 @@
         "type": "String",
         "example": "1 000 sats"
       },
-      "liquidity": { 
+      "liquidity": {
         "type": "String",
         "example": "99 000 sats"
       }
@@ -2085,22 +2085,27 @@
     }
   },
   "podcast_history_drawer": "Mes meilleurs podcasts",
-  "podcast_history_share_message":  "Mes meilleurs podcasts écoutés sur Breez",
-  "podcast_history_share_text":"PARTAGER",
-  "podcast_history_sats_streamed":"sats diffusés",
-  "podcast_history_boostagrams_sent":"boosts envoyés",
+  "podcast_history_share_message": "Mes meilleurs podcasts écoutés sur Breez",
+  "podcast_history_share_text": "PARTAGER",
+  "podcast_history_sats_streamed": "sats diffusés",
+  "podcast_history_boostagrams_sent": "boosts envoyés",
   "podcast_history_open_podcast_button": "PODCASTS OUVERTS",
-  "podcast_history_appbar_top_weekly":"Top des podcasts hebdomadaires",
-  "podcast_history_appbar_top_monthly":"Meilleurs podcasts mensuels",
-  "podcast_history_appbar_top_yearly":"Meilleurs podcasts annuels",
-  "podcast_history_timerange_dropdown_week":"La semaine dernière",
-  "podcast_history_timerange_dropdown_month":"Mois passé",
-  "podcast_history_timerange_dropdown_year":"L'année passée",
-  "podcast_history_sort_dropdown_recent":"Récent",
-  "podcast_history_sort_dropdown_duration":"écouté",
-  "podcast_history_sort_dropdown_sats":"Payé",
-  "podcast_history_sort_dropdown_boosts":"Boosted",
-  "podcast_history_empty_text":"Aucune donnée disponible à afficher.",
+  "podcast_history_appbar_top_weekly": "Top des podcasts hebdomadaires",
+  "podcast_history_appbar_top_monthly": "Meilleurs podcasts mensuels",
+  "podcast_history_appbar_top_yearly": "Meilleurs podcasts annuels",
+  "podcast_history_timerange_dropdown_week": "La semaine dernière",
+  "podcast_history_timerange_dropdown_month": "Mois passé",
+  "podcast_history_timerange_dropdown_year": "L'année passée",
+  "podcast_history_sort_dropdown_recent": "Récent",
+  "podcast_history_sort_dropdown_duration": "écouté",
+  "podcast_history_sort_dropdown_sats": "Payé",
+  "podcast_history_sort_dropdown_boosts": "Boosted",
+  "podcast_history_empty_text": "Aucune donnée disponible à afficher.",
+  "podcast_clips_clip_button": "AGRAFE",
+  "podcast_clips_cancel_button": "ANNULER",
+  "podcast_clips_seconds": "seconds",
+  "podcast_clips_dialog_title": "Durée du clip (en secondes)",
+  "podcast_clips_dialog_done": "FINI",
   "locale": "fr",
   "app_name": "Breez"
 }
