@@ -1,11 +1,11 @@
 import 'dart:async';
 import 'dart:io';
+import 'dart:typed_data';
 import 'package:anytime/services/audio/audio_player_service.dart';
 import 'package:breez/bloc/async_actions_handler.dart';
 import 'package:breez/bloc/podcast_clip/podcast_clip_details_model.dart';
 import 'package:ffmpeg_kit_flutter_https_gpl/ffmpeg_kit.dart';
 import 'package:ffmpeg_kit_flutter_https_gpl/ffmpeg_session.dart';
-
 import 'package:ffmpeg_kit_flutter_https_gpl/return_code.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:rxdart/rxdart.dart';
@@ -34,7 +34,6 @@ class PodcastClipBloc with AsyncActionsHandler {
     _clipDetailsBehaviourSubject.add(podcastClipDetails);
   }
 
-// This funcation is called when user enters custom duration
   setPodcastClipDuration({int durationInSeconds}) async {
     var clipDetails = getCurrentPodcastClipDetails();
 
@@ -72,18 +71,18 @@ class PodcastClipBloc with AsyncActionsHandler {
 
   decrementDuration() async {
     var clipDetails = getCurrentPodcastClipDetails();
-    int currentCLipDuration = clipDetails.clipDuration;
+    int currentClipDuration = clipDetails.clipDuration;
 
     //return if duration needs to be greator than 10 seconds
-    if (currentCLipDuration <= _initialSeconds) {
+    if (currentClipDuration <= _initialSeconds) {
       return;
     }
     int decrementedClipDuration = 0;
 
-    if (currentCLipDuration % 10 != 0) {
-      decrementedClipDuration = currentCLipDuration - currentCLipDuration % 10;
+    if (currentClipDuration % 10 != 0) {
+      decrementedClipDuration = currentClipDuration - currentClipDuration % 10;
     } else {
-      decrementedClipDuration = currentCLipDuration - _initialSeconds;
+      decrementedClipDuration = currentClipDuration - _initialSeconds;
     }
 
     setPodcastClipDuration(durationInSeconds: decrementedClipDuration);
@@ -135,7 +134,7 @@ class PodcastClipBloc with AsyncActionsHandler {
     }
   }
 
-  Future<bool> isEpisodeClipable() async {
+  bool isEpisodeClipable() {
     var clipDetails = getCurrentPodcastClipDetails();
 
     // Check if there is time to create a clip of minimun 10 secs
@@ -146,7 +145,13 @@ class PodcastClipBloc with AsyncActionsHandler {
     return true;
   }
 
-  Future<String> clipEpisode({String podcastImageWidgetPath}) async {
+  Future<String> clipEpisode({Uint8List clipImage}) async {
+    final directory = await getTemporaryDirectory();
+    final imageFile = await File('${directory.path}/image.png').create();
+    await imageFile.writeAsBytes(clipImage);
+
+    String podcastImageWidgetPath = imageFile.path;
+
     var clipDetails = getCurrentPodcastClipDetails();
     _clipDetailsBehaviourSubject.add(clipDetails.copy(
         podcastClipState: PodcastClipState.FETCHING_AUDIO_CLIP));
