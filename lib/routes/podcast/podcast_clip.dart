@@ -105,7 +105,7 @@ class PodcastClipWidget extends StatelessWidget {
                                                   children: [
                                                     _minusButton(context, () {
                                                       podcastClipBloc
-                                                          .decrementCount();
+                                                          .decrementDuration();
                                                     }),
                                                     _numberPanel(
                                                         context,
@@ -185,7 +185,7 @@ class PodcastClipWidget extends StatelessWidget {
                                                                 if (image !=
                                                                     null) {
                                                                   final directory =
-                                                                      await getApplicationDocumentsDirectory();
+                                                                      await getTemporaryDirectory();
                                                                   final imagePath =
                                                                       await File(
                                                                               '${directory.path}/image.png')

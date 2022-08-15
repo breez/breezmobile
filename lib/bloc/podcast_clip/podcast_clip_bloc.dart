@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:developer';
 import 'dart:io';
 import 'package:anytime/services/audio/audio_player_service.dart';
 import 'package:breez/bloc/async_actions_handler.dart';
@@ -47,55 +46,44 @@ class PodcastClipBloc with AsyncActionsHandler {
     _clipDetailsBehaviourSubject.add(podcastClipDetails);
   }
 
+// This funcation is called when user enters custom duration
   setPodcastClipDuration({int durationInSeconds}) async {
-    var clipDetails = await getCurrentPodcastClipDetails();
+    var clipDetails = getCurrentPodcastClipDetails();
 
-    if ((clipDetails.endTimeStamp + Duration(seconds: durationInSeconds)) >
+// Check if the duration exceeds the episode length
+    if ((clipDetails.startTimeStamp + Duration(seconds: durationInSeconds)) >
         clipDetails.episodeLength) {
       return;
     }
 
-    Duration clipEndTime = clipDetails.endTimeStamp +
-        Duration(seconds: durationInSeconds) -
-        Duration(seconds: clipDetails.clipDuration);
+    Duration clipEndTime =
+        clipDetails.startTimeStamp + Duration(seconds: durationInSeconds);
 
     _clipDetailsBehaviourSubject.add(clipDetails.copy(
         clipDuration: durationInSeconds, endTimeStamp: clipEndTime));
   }
 
   incrementDuration() async {
-    var clipDetails = await getCurrentPodcastClipDetails();
+    var clipDetails = getCurrentPodcastClipDetails();
     int currentClipDuration = clipDetails.clipDuration;
 
-//If  duration is less than 10 seconds return
+    //If duration is less than 10 seconds return
     if (_maxClipDuration - currentClipDuration <= 0) {
       return;
     }
-    if ((clipDetails.endTimeStamp + Duration(seconds: _initialSeconds)) >
-        clipDetails.episodeLength) {
-      return;
-    }
+
     int incrementedClipDuration = 0;
-    Duration incrementedClipEndTime = Duration(seconds: 0);
     if (currentClipDuration % 10 != 0) {
       incrementedClipDuration =
           currentClipDuration - currentClipDuration % 10 + _initialSeconds;
-      incrementedClipEndTime = Duration(
-          seconds:
-              clipDetails.startTimeStamp.inSeconds + incrementedClipDuration);
     } else {
       incrementedClipDuration = currentClipDuration + _initialSeconds;
-      incrementedClipEndTime = Duration(
-          seconds: clipDetails.endTimeStamp.inSeconds + _initialSeconds);
     }
-
-    _clipDetailsBehaviourSubject.add(clipDetails.copy(
-        clipDuration: incrementedClipDuration,
-        endTimeStamp: incrementedClipEndTime));
+    setPodcastClipDuration(durationInSeconds: incrementedClipDuration);
   }
 
-  decrementCount() async {
-    var clipDetails = await getCurrentPodcastClipDetails();
+  decrementDuration() async {
+    var clipDetails = getCurrentPodcastClipDetails();
     int currentCLipDuration = clipDetails.clipDuration;
 
     //return if duration needs to be greator than 10 seconds
@@ -103,27 +91,19 @@ class PodcastClipBloc with AsyncActionsHandler {
       return;
     }
     int decrementedClipDuration = 0;
-    Duration decrementedClipEndTime = Duration(seconds: 0);
 
     if (currentCLipDuration % 10 != 0) {
       decrementedClipDuration = currentCLipDuration - currentCLipDuration % 10;
-      decrementedClipEndTime = Duration(
-          seconds:
-              clipDetails.endTimeStamp.inSeconds - currentCLipDuration % 10);
     } else {
       decrementedClipDuration = currentCLipDuration - _initialSeconds;
-      decrementedClipEndTime =
-          clipDetails.endTimeStamp - Duration(seconds: _initialSeconds);
     }
 
-    _clipDetailsBehaviourSubject.add(clipDetails.copy(
-        clipDuration: decrementedClipDuration,
-        endTimeStamp: decrementedClipEndTime));
+    setPodcastClipDuration(durationInSeconds: decrementedClipDuration);
   }
 
   Future<String> _getAudioClipPath(
       {PodcastClipDetailsModel clipDetails}) async {
-    var clipDetails = await getCurrentPodcastClipDetails();
+    var clipDetails = getCurrentPodcastClipDetails();
 
     String episodeUrl = clipDetails.episodeDetails.contentUrl;
     String audioClipPath = await initClipDirectory(isVideoClip: false);
@@ -137,10 +117,13 @@ class PodcastClipBloc with AsyncActionsHandler {
         await FFmpegKit.execute(clippedAudioCommand);
 
     final returnCode = await ffpegSessionDetails.getReturnCode();
+
     if (ReturnCode.isSuccess(returnCode)) {
       return audioClipPath;
     } else {
-      return null;
+      String failedStackTrace = await ffpegSessionDetails.getFailStackTrace();
+
+      throw failedStackTrace;
     }
   }
 
@@ -154,19 +137,20 @@ class PodcastClipBloc with AsyncActionsHandler {
     FFmpegSession ffpegSessionDetails =
         await FFmpegKit.execute(clippedVideoCommand);
 
-    String logs = await ffpegSessionDetails.getLogsAsString();
-    log('cliplogs $logs');
     final returnCode = await ffpegSessionDetails.getReturnCode();
     if (ReturnCode.isSuccess(returnCode)) {
       return videoClipPath;
     } else {
-      return null;
+      String failedStackTrace = await ffpegSessionDetails.getFailStackTrace();
+
+      throw failedStackTrace;
     }
   }
 
   Future<bool> isEpisodeClipable() async {
-    var clipDetails = await getCurrentPodcastClipDetails();
+    var clipDetails = getCurrentPodcastClipDetails();
 
+    // Check if there is time to create a clip of minimun 10 secs
     if ((clipDetails.endTimeStamp + Duration(seconds: _initialSeconds)) >
         clipDetails.episodeLength) {
       return false;
@@ -176,14 +160,13 @@ class PodcastClipBloc with AsyncActionsHandler {
 
   Future<String> clipEpisode({String podcastImageWidgetPath}) async {
     _clipStateBehaviourSubject.add(PodcastClipState.FETCHING_AUDIO_CLIP);
-    var clipDetails = await getCurrentPodcastClipDetails();
+    var clipDetails = getCurrentPodcastClipDetails();
     if (clipDetails == null) {
       return null;
     }
     String audioClipPath = await _getAudioClipPath(clipDetails: clipDetails);
 
     if (audioClipPath == null) {
-      //show error method
       return null;
     }
 
@@ -203,29 +186,25 @@ class PodcastClipBloc with AsyncActionsHandler {
   }
 
   Future<String> initClipDirectory({bool isVideoClip}) async {
-    Directory appDocDirectory = await getApplicationDocumentsDirectory();
+    Directory tempDirectory = await getTemporaryDirectory();
 
     String tempClipPath = isVideoClip ? '/VideoClip' : '/tempAudioClip';
-    String finalPath = appDocDirectory.path + tempClipPath;
+    String finalPath = tempDirectory.path + tempClipPath;
 
     final pathExists = await Directory(finalPath).exists();
     if (pathExists) {
       Directory(finalPath).deleteSync(recursive: true);
     }
 
-    var x = await Directory(appDocDirectory.path + tempClipPath)
+    var x = await Directory(tempDirectory.path + tempClipPath)
         .create(recursive: true);
 
     finalPath = x.path;
     return finalPath;
   }
 
-  Future<PodcastClipDetailsModel> getCurrentPodcastClipDetails() async {
-    try {
-      return await clipDetails.first.timeout(Duration(seconds: 1));
-    } catch (e) {
-      return null;
-    }
+  PodcastClipDetailsModel getCurrentPodcastClipDetails() {
+    return _clipDetailsBehaviourSubject.value;
   }
 
   Future<PodcastClipState> getPodcastClipState() async {
