@@ -10,13 +10,6 @@ import 'package:ffmpeg_kit_flutter_https_gpl/return_code.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:rxdart/rxdart.dart';
 
-enum PodcastClipState {
-  IDLE,
-  FETCHING_IMAGE,
-  FETCHING_AUDIO_CLIP,
-  GENERATING_CLIP
-}
-
 const int _initialSeconds = 10;
 const int _maxClipDuration = 120;
 
@@ -27,13 +20,7 @@ class PodcastClipBloc with AsyncActionsHandler {
   Stream<PodcastClipDetailsModel> get clipDetails =>
       _clipDetailsBehaviourSubject.stream;
 
-  final BehaviorSubject<PodcastClipState> _clipStateBehaviourSubject =
-      BehaviorSubject();
-
-  Stream<PodcastClipState> get clipState => _clipStateBehaviourSubject.stream;
-
   setPodcastClipDetails({PositionState position}) {
-    _clipStateBehaviourSubject.add(PodcastClipState.IDLE);
     Duration endTime = position.position + Duration(seconds: _initialSeconds);
 
     PodcastClipDetailsModel podcastClipDetails = PodcastClipDetailsModel(
@@ -41,7 +28,8 @@ class PodcastClipBloc with AsyncActionsHandler {
         endTimeStamp: endTime,
         clipDuration: _initialSeconds,
         episodeLength: position.length,
-        episodeDetails: position.episode);
+        episodeDetails: position.episode,
+        podcastClipState: PodcastClipState.IDLE);
 
     _clipDetailsBehaviourSubject.add(podcastClipDetails);
   }
@@ -159,8 +147,9 @@ class PodcastClipBloc with AsyncActionsHandler {
   }
 
   Future<String> clipEpisode({String podcastImageWidgetPath}) async {
-    _clipStateBehaviourSubject.add(PodcastClipState.FETCHING_AUDIO_CLIP);
     var clipDetails = getCurrentPodcastClipDetails();
+    _clipDetailsBehaviourSubject.add(clipDetails.copy(
+        podcastClipState: PodcastClipState.FETCHING_AUDIO_CLIP));
     if (clipDetails == null) {
       return null;
     }
@@ -172,8 +161,9 @@ class PodcastClipBloc with AsyncActionsHandler {
 
     String videoClipPath = await getVideoClipPath(
         audioClipPath: audioClipPath, episodeImagepath: podcastImageWidgetPath);
+    _clipDetailsBehaviourSubject
+        .add(clipDetails.copy(podcastClipState: PodcastClipState.IDLE));
 
-    _clipStateBehaviourSubject.add(PodcastClipState.IDLE);
     if (videoClipPath == null) {
       return null;
     }
@@ -182,7 +172,9 @@ class PodcastClipBloc with AsyncActionsHandler {
   }
 
   setPodcastState(PodcastClipState clipState) {
-    _clipStateBehaviourSubject.add(clipState);
+    var clipDetails = getCurrentPodcastClipDetails();
+    _clipDetailsBehaviourSubject
+        .add(clipDetails.copy(podcastClipState: clipState));
   }
 
   Future<String> initClipDirectory({bool isVideoClip}) async {
@@ -205,13 +197,5 @@ class PodcastClipBloc with AsyncActionsHandler {
 
   PodcastClipDetailsModel getCurrentPodcastClipDetails() {
     return _clipDetailsBehaviourSubject.value;
-  }
-
-  Future<PodcastClipState> getPodcastClipState() async {
-    try {
-      return await clipState.first.timeout(Duration(seconds: 1));
-    } catch (e) {
-      return null;
-    }
   }
 }

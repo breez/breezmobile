@@ -56,184 +56,175 @@ class PodcastClipWidget extends StatelessWidget {
                         stream: podcastClipBloc.clipDetails,
                         builder: (context, clipDetailSnapshot) {
                           return clipDetailSnapshot.data != null
-                              ? StreamBuilder<PodcastClipState>(
-                                  stream: podcastClipBloc.clipState,
-                                  builder: (context, clipStateSnapshot) {
-                                    return Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      mainAxisSize: MainAxisSize.min,
-                                      children: <Widget>[
-                                        Padding(
-                                          padding: const EdgeInsets.symmetric(
-                                              horizontal: 16),
-                                          child: Column(
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.start,
-                                            children: [
-                                              SizedBox(
-                                                height: 20,
-                                              ),
-                                              Align(
-                                                alignment: Alignment.center,
-                                                child: Text(
-                                                  '${_formatDuration(clipDetailSnapshot.data.startTimeStamp)} - ${_formatDuration(clipDetailSnapshot.data.endTimeStamp)}',
-                                                  style: Theme.of(context)
-                                                      .primaryTextTheme
-                                                      .headline3
-                                                      .copyWith(
-                                                        fontSize: 20,
-                                                        color: Colors.white,
-                                                        fontWeight:
-                                                            FontWeight.w600,
-                                                      ),
-                                                ),
-                                              ),
-                                              SizedBox(
-                                                height: 20,
-                                              ),
-                                              Divider(
-                                                color: Colors.white,
-                                              ),
-                                              SizedBox(
-                                                height: 20,
-                                              ),
-                                              Center(
-                                                child: Row(
-                                                  mainAxisAlignment:
-                                                      MainAxisAlignment.center,
-                                                  children: [
-                                                    _minusButton(context, () {
-                                                      podcastClipBloc
-                                                          .decrementDuration();
-                                                    }),
-                                                    _numberPanel(
-                                                        context,
-                                                        clipDetailSnapshot
-                                                            .data.clipDuration),
-                                                    _plusButton(context, () {
-                                                      podcastClipBloc
-                                                          .incrementDuration();
-                                                    }),
-                                                  ],
-                                                ),
-                                              ),
-                                            ],
+                              ? Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: <Widget>[
+                                    Padding(
+                                      padding: const EdgeInsets.symmetric(
+                                          horizontal: 16),
+                                      child: Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          SizedBox(
+                                            height: 20,
                                           ),
-                                        ),
-                                        Padding(
-                                          padding: const EdgeInsets.only(
-                                              bottom: 12, left: 16, right: 16),
-                                          child: Row(
-                                            children: [
-                                              TextButton(
-                                                  onPressed: () {
-                                                    Navigator.of(context).pop();
-                                                  },
-                                                  child: Text(
-                                                    AppLocalizations.of(context)
-                                                        .podcast_clips_cancel_button,
-                                                    style: Theme.of(context)
-                                                        .primaryTextTheme
-                                                        .headline3
-                                                        .copyWith(
-                                                          fontSize: 16,
-                                                          color: Colors.white
-                                                              .withOpacity(0.5),
-                                                          fontWeight:
-                                                              FontWeight.w500,
-                                                        ),
-                                                  )),
-                                              Spacer(),
-                                              clipStateSnapshot.data ==
-                                                      PodcastClipState.IDLE
-                                                  ? TextButton(
-                                                      onPressed: () async {
-                                                        podcastClipBloc
-                                                            .setPodcastState(
-                                                                PodcastClipState
-                                                                    .FETCHING_IMAGE);
-                                                        Episode e =
-                                                            clipDetailSnapshot
-                                                                .data
-                                                                .episodeDetails;
-                                                        var _image =
-                                                            NetworkImage(
-                                                                e.imageUrl);
+                                          Align(
+                                            alignment: Alignment.center,
+                                            child: Text(
+                                              '${_formatDuration(clipDetailSnapshot.data.startTimeStamp)} - ${_formatDuration(clipDetailSnapshot.data.endTimeStamp)}',
+                                              style: Theme.of(context)
+                                                  .primaryTextTheme
+                                                  .headline3
+                                                  .copyWith(
+                                                    fontSize: 20,
+                                                    color: Colors.white,
+                                                    fontWeight: FontWeight.w600,
+                                                  ),
+                                            ),
+                                          ),
+                                          SizedBox(
+                                            height: 20,
+                                          ),
+                                          Divider(
+                                            color: Colors.white,
+                                          ),
+                                          SizedBox(
+                                            height: 20,
+                                          ),
+                                          Center(
+                                            child: Row(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.center,
+                                              children: [
+                                                _minusButton(context, () {
+                                                  podcastClipBloc
+                                                      .decrementDuration();
+                                                }),
+                                                _numberPanel(
+                                                    context,
+                                                    clipDetailSnapshot
+                                                        .data.clipDuration),
+                                                _plusButton(context, () {
+                                                  podcastClipBloc
+                                                      .incrementDuration();
+                                                }),
+                                              ],
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                    Padding(
+                                      padding: const EdgeInsets.only(
+                                          bottom: 12, left: 16, right: 16),
+                                      child: Row(
+                                        children: [
+                                          TextButton(
+                                              onPressed: () {
+                                                Navigator.of(context).pop();
+                                              },
+                                              child: Text(
+                                                AppLocalizations.of(context)
+                                                    .podcast_clips_cancel_button,
+                                                style: Theme.of(context)
+                                                    .primaryTextTheme
+                                                    .headline3
+                                                    .copyWith(
+                                                      fontSize: 16,
+                                                      color: Colors.white
+                                                          .withOpacity(0.5),
+                                                      fontWeight:
+                                                          FontWeight.w500,
+                                                    ),
+                                              )),
+                                          Spacer(),
+                                          clipDetailSnapshot
+                                                      .data.podcastClipState ==
+                                                  PodcastClipState.IDLE
+                                              ? TextButton(
+                                                  onPressed: () async {
+                                                    podcastClipBloc
+                                                        .setPodcastState(
+                                                            PodcastClipState
+                                                                .FETCHING_IMAGE);
+                                                    Episode e =
+                                                        clipDetailSnapshot.data
+                                                            .episodeDetails;
+                                                    var _image = NetworkImage(
+                                                        e.imageUrl);
 
-                                                        _image
-                                                            .resolve(
-                                                                ImageConfiguration())
-                                                            .addListener(
-                                                          ImageStreamListener(
-                                                            (info, call) {
-                                                              _screenshotController
-                                                                  .captureFromWidget(
-                                                                      _imageWidget(
-                                                                          context:
-                                                                              context,
-                                                                          episodeDetails: clipDetailSnapshot
-                                                                              .data
-                                                                              .episodeDetails),
+                                                    _image
+                                                        .resolve(
+                                                            ImageConfiguration())
+                                                        .addListener(
+                                                      ImageStreamListener(
+                                                        (info, call) {
+                                                          _screenshotController
+                                                              .captureFromWidget(
+                                                                  _imageWidget(
                                                                       context:
                                                                           context,
-                                                                      delay: const Duration(
-                                                                          milliseconds:
-                                                                              10))
-                                                                  .then((Uint8List
-                                                                      image) async {
-                                                                if (image !=
-                                                                    null) {
-                                                                  final directory =
-                                                                      await getTemporaryDirectory();
-                                                                  final imagePath =
-                                                                      await File(
-                                                                              '${directory.path}/image.png')
-                                                                          .create();
-                                                                  await imagePath
-                                                                      .writeAsBytes(
-                                                                          image);
+                                                                      episodeDetails: clipDetailSnapshot
+                                                                          .data
+                                                                          .episodeDetails),
+                                                                  context:
+                                                                      context,
+                                                                  delay: const Duration(
+                                                                      milliseconds:
+                                                                          10))
+                                                              .then((Uint8List
+                                                                  image) async {
+                                                            if (image != null) {
+                                                              final directory =
+                                                                  await getTemporaryDirectory();
+                                                              final imagePath =
+                                                                  await File(
+                                                                          '${directory.path}/image.png')
+                                                                      .create();
+                                                              await imagePath
+                                                                  .writeAsBytes(
+                                                                      image);
 
-                                                                  String path =
-                                                                      await podcastClipBloc.clipEpisode(
-                                                                          podcastImageWidgetPath:
-                                                                              imagePath.path);
-                                                                  if (path !=
-                                                                      null) {
-                                                                    Share.shareFiles(
+                                                              String path = await podcastClipBloc
+                                                                  .clipEpisode(
+                                                                      podcastImageWidgetPath:
+                                                                          imagePath
+                                                                              .path);
+                                                              if (path !=
+                                                                  null) {
+                                                                Share
+                                                                    .shareFiles(
                                                                         [path]);
-                                                                  }
-                                                                }
-                                                              }); // do something
-                                                            },
-                                                          ),
-                                                        );
-                                                      },
-                                                      child: Text(
-                                                          AppLocalizations.of(
-                                                                  context)
-                                                              .podcast_clips_clip_button,
-                                                          style: Theme.of(
-                                                                  context)
-                                                              .primaryTextTheme
-                                                              .headline3
-                                                              .copyWith(
-                                                                fontSize: 16,
-                                                                color: Colors
-                                                                    .white,
-                                                                fontWeight:
-                                                                    FontWeight
-                                                                        .w500,
-                                                              )))
-                                                  : Center(
-                                                      child:
-                                                          CircularProgressIndicator()),
-                                            ],
-                                          ),
-                                        )
-                                      ],
-                                    );
-                                  })
+                                                              }
+                                                            }
+                                                          }); // do something
+                                                        },
+                                                      ),
+                                                    );
+                                                  },
+                                                  child: Text(
+                                                      AppLocalizations.of(
+                                                              context)
+                                                          .podcast_clips_clip_button,
+                                                      style: Theme.of(context)
+                                                          .primaryTextTheme
+                                                          .headline3
+                                                          .copyWith(
+                                                            fontSize: 16,
+                                                            color: Colors.white,
+                                                            fontWeight:
+                                                                FontWeight.w500,
+                                                          )))
+                                              : Center(
+                                                  child:
+                                                      CircularProgressIndicator()),
+                                        ],
+                                      ),
+                                    )
+                                  ],
+                                )
                               : CircularProgressIndicator();
                         });
                   }).then((value) {
