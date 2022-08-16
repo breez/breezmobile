@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:developer';
 import 'dart:io';
 import 'dart:typed_data';
 import 'package:anytime/services/audio/audio_player_service.dart';
@@ -37,9 +38,14 @@ class PodcastClipBloc with AsyncActionsHandler {
   setPodcastClipDuration({int durationInSeconds}) async {
     var clipDetails = getCurrentPodcastClipDetails();
 
-// Check if the duration exceeds the episode length
+    // Check if the duration exceeds the episode length
     if ((clipDetails.startTimeStamp + Duration(seconds: durationInSeconds)) >
         clipDetails.episodeLength) {
+      return;
+    }
+    //Return if the incremented duration is >=  _maxClipDuration or if the decremented duration is less <=0
+    if ((_maxClipDuration + _initialSeconds - durationInSeconds <= 0) ||
+        (durationInSeconds <= 0)) {
       return;
     }
 
@@ -53,13 +59,8 @@ class PodcastClipBloc with AsyncActionsHandler {
   incrementDuration() async {
     var clipDetails = getCurrentPodcastClipDetails();
     int currentClipDuration = clipDetails.clipDuration;
-
-    //If duration is less than 10 seconds return
-    if (_maxClipDuration - currentClipDuration <= 0) {
-      return;
-    }
-
     int incrementedClipDuration = 0;
+
     if (currentClipDuration % 10 != 0) {
       incrementedClipDuration =
           currentClipDuration - currentClipDuration % 10 + _initialSeconds;
@@ -72,11 +73,6 @@ class PodcastClipBloc with AsyncActionsHandler {
   decrementDuration() async {
     var clipDetails = getCurrentPodcastClipDetails();
     int currentClipDuration = clipDetails.clipDuration;
-
-    //return if duration needs to be greator than 10 seconds
-    if (currentClipDuration <= _initialSeconds) {
-      return;
-    }
     int decrementedClipDuration = 0;
 
     if (currentClipDuration % 10 != 0) {
@@ -114,7 +110,8 @@ class PodcastClipBloc with AsyncActionsHandler {
     }
   }
 
-  getVideoClipPath({String audioClipPath, String episodeImagepath}) async {
+  Future<String> getVideoClipPath(
+      {String audioClipPath, String episodeImagepath}) async {
     String videoClipPath = await initClipDirectory(isVideoClip: true);
     videoClipPath = videoClipPath + '/VideoClip.mp4';
 
@@ -146,34 +143,33 @@ class PodcastClipBloc with AsyncActionsHandler {
   }
 
   Future<String> clipEpisode({Uint8List clipImage}) async {
-    final directory = await getTemporaryDirectory();
-    final imageFile = await File('${directory.path}/image.png').create();
-    await imageFile.writeAsBytes(clipImage);
+    PodcastClipDetailsModel clipDetails = getCurrentPodcastClipDetails();
+    try {
+      final directory = await getTemporaryDirectory();
+      final imageFile = await File('${directory.path}/image.png').create();
+      await imageFile.writeAsBytes(clipImage);
 
-    String podcastImageWidgetPath = imageFile.path;
+      String podcastImageWidgetPath = imageFile.path;
 
-    var clipDetails = getCurrentPodcastClipDetails();
-    _clipDetailsBehaviourSubject.add(clipDetails.copy(
-        podcastClipState: PodcastClipState.FETCHING_AUDIO_CLIP));
-    if (clipDetails == null) {
-      return null;
+      _clipDetailsBehaviourSubject.add(clipDetails.copy(
+          podcastClipState: PodcastClipState.FETCHING_AUDIO_CLIP));
+
+      String audioClipPath = await _getAudioClipPath(clipDetails: clipDetails);
+      _clipDetailsBehaviourSubject.add(
+          clipDetails.copy(podcastClipState: PodcastClipState.GENERATING_CLIP));
+
+      String videoClipPath = await getVideoClipPath(
+          audioClipPath: audioClipPath,
+          episodeImagepath: podcastImageWidgetPath);
+
+      return videoClipPath;
+    } catch (e) {
+      log(e);
+      throw "Failed to clip the episode. More details: ${e.toString()}";
+    } finally {
+      _clipDetailsBehaviourSubject
+          .add(clipDetails.copy(podcastClipState: PodcastClipState.IDLE));
     }
-    String audioClipPath = await _getAudioClipPath(clipDetails: clipDetails);
-
-    if (audioClipPath == null) {
-      return null;
-    }
-
-    String videoClipPath = await getVideoClipPath(
-        audioClipPath: audioClipPath, episodeImagepath: podcastImageWidgetPath);
-    _clipDetailsBehaviourSubject
-        .add(clipDetails.copy(podcastClipState: PodcastClipState.IDLE));
-
-    if (videoClipPath == null) {
-      return null;
-    }
-
-    return videoClipPath;
   }
 
   setPodcastState(PodcastClipState clipState) {

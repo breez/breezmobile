@@ -14,6 +14,7 @@ import '../../bloc/podcast_clip/podcast_clip_bloc.dart';
 import '../../bloc/podcast_clip/podcast_clip_details_model.dart';
 import '../../theme_data.dart';
 import '../../utils/min_font_size.dart';
+import '../../widgets/flushbar.dart';
 import '../../widgets/network_image_builder.dart';
 
 class PodcastClipWidget extends StatelessWidget {
@@ -175,14 +176,18 @@ _showClipsBottomSheet(
                                                           delay: const Duration(
                                                               milliseconds:
                                                                   10));
-
-                                              String path =
-                                                  await podcastClipBloc
-                                                      .clipEpisode(
-                                                          clipImage:
-                                                              screenShotImage);
-                                              if (path != null) {
+                                              try {
+                                                String path =
+                                                    await podcastClipBloc
+                                                        .clipEpisode(
+                                                            clipImage:
+                                                                screenShotImage);
                                                 Share.shareFiles([path]);
+                                              } catch (e) {
+                                                showFlushbar(
+                                                  context,
+                                                  message: e.toString(),
+                                                );
                                               }
                                             },
                                           ),
