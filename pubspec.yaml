@@ -66,7 +66,7 @@ dependencies:
   share_plus: ^4.0.10
   shared_preferences: ^2.0.15
   shimmer: ^2.0.0
-  simple_animations: ^4.2.0
+  simple_animations: ^5.0.0+2
   sqflite: ^2.0.3+1
   timeago: ^3.2.2
   tutorial_coach_mark: ^1.2.4
