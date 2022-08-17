@@ -4,6 +4,7 @@ import 'package:anytime/entities/episode.dart';
 import 'package:anytime/services/audio/audio_player_service.dart';
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:breez/theme_data.dart' as breezTheme;
@@ -367,10 +368,11 @@ _imageWidget({BuildContext context, Episode episodeDetails, Image image}) {
                       color: Colors.white,
                       fontWeight: FontWeight.w500,
                     )),
-            Image.asset(
-              "src/images/logo-color.png",
+            SvgPicture.asset(
+              "src/images/logo-color.svg",
               color: Colors.white,
               width: (MediaQuery.of(context).size.width) / 10,
+              colorBlendMode: BlendMode.srcATop,
             ),
           ],
         ),
