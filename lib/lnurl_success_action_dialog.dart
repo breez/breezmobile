@@ -105,7 +105,10 @@ class _URLRow extends StatelessWidget {
             child: Padding(
               padding: EdgeInsets.zero,
               child: GestureDetector(
-                onTap: () => launchUrlString(sharedValue),
+                onTap: () => launchUrlString(
+                  sharedValue,
+                  mode: LaunchMode.externalApplication,
+                ),
                 child: Text(
                   '$sharedValue',
                   textAlign: TextAlign.left,
