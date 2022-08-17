@@ -1719,7 +1719,7 @@
     }
   },
   "lnurl_fetch_invoice_comment": "Kuvaus (valinnainen)",
-    "lnurl_fetch_invoice_error_min": "Maksu vähintään {min}",
+  "lnurl_fetch_invoice_error_min": "Maksu vähintään {min}",
   "@lnurl_fetch_invoice_error_min": {
     "placeholders": {
       "min": {
@@ -2084,23 +2084,28 @@
       }
     }
   },
-  "podcast_history_drawer":"Suosituimmat Podcastit",
-  "podcast_history_share_message":"Suosituimmat podcastit kuuntelivat Breez",
-  "podcast_history_share_text":"JAA",
-  "podcast_history_sats_streamed":"sats striimattiin",
-  "podcast_history_boostagrams_sent":"boosts lähetetty",
+  "podcast_history_drawer": "Suosituimmat Podcastit",
+  "podcast_history_share_message": "Suosituimmat podcastit kuuntelivat Breez",
+  "podcast_history_share_text": "JAA",
+  "podcast_history_sats_streamed": "sats striimattiin",
+  "podcast_history_boostagrams_sent": "boosts lähetetty",
   "podcast_history_open_podcast_button": "AVAA PODCAST",
-  "podcast_history_appbar_top_weekly":"Suosituimmat podcastit viikoittain",
-  "podcast_history_appbar_top_monthly":"Suosituimmat podcastit kuukausittain",
-  "podcast_history_appbar_top_yearly":"Suosituimmat podcastit vuosittain",
-  "podcast_history_timerange_dropdown_week":"Mennyt viikko",
-  "podcast_history_timerange_dropdown_month":"Kulunut kuukausi",
-  "podcast_history_timerange_dropdown_year":"Viime vuosi",
-  "podcast_history_sort_dropdown_recent":"Viimeaikaiset",
-  "podcast_history_sort_dropdown_duration":"Kesto",
-  "podcast_history_sort_dropdown_sats":"Maksettu",
-  "podcast_history_sort_dropdown_boosts":"Boosted",
-  "podcast_history_empty_text":"Näytettäviä tietoja ei ole.",
+  "podcast_history_appbar_top_weekly": "Suosituimmat podcastit viikoittain",
+  "podcast_history_appbar_top_monthly": "Suosituimmat podcastit kuukausittain",
+  "podcast_history_appbar_top_yearly": "Suosituimmat podcastit vuosittain",
+  "podcast_history_timerange_dropdown_week": "Mennyt viikko",
+  "podcast_history_timerange_dropdown_month": "Kulunut kuukausi",
+  "podcast_history_timerange_dropdown_year": "Viime vuosi",
+  "podcast_history_sort_dropdown_recent": "Viimeaikaiset",
+  "podcast_history_sort_dropdown_duration": "Kesto",
+  "podcast_history_sort_dropdown_sats": "Maksettu",
+  "podcast_history_sort_dropdown_boosts": "Boosted",
+  "podcast_history_empty_text": "Näytettäviä tietoja ei ole.",
+  "podcast_clips_clip_button": "CLIP",
+  "podcast_clips_cancel_button": "PERUUTTAA",
+  "podcast_clips_seconds": "sekuntia",
+  "podcast_clips_dialog_title": "Leikkeen kesto (sekunneissa)",
+  "podcast_clips_dialog_done": "TEHTY",
   "locale": "fi",
   "app_name": "Breez"
 }

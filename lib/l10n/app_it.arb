@@ -2101,6 +2101,11 @@
     "podcast_history_sort_dropdown_sats": "Pagati",
     "podcast_history_sort_dropdown_boosts": "Potenziati",
     "podcast_history_empty_text": "Nessun dato disponibile da visualizzare.",
+    "podcast_clips_clip_button": "CLIP",
+    "podcast_clips_cancel_button": "ANNULLA",
+    "podcast_clips_seconds": "secondi",
+    "podcast_clips_dialog_title": "Durata clip (in secondi)",
+    "podcast_clips_dialog_done": "FATTA",
     "locale": "en",
     "app_name": "Breez"
 }
