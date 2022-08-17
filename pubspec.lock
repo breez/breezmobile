@@ -446,6 +446,20 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "2.0.1"
+  ffmpeg_kit_flutter_https_gpl:
+    dependency: "direct main"
+    description:
+      name: ffmpeg_kit_flutter_https_gpl
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "4.5.1"
+  ffmpeg_kit_flutter_platform_interface:
+    dependency: transitive
+    description:
+      name: ffmpeg_kit_flutter_platform_interface
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.2.1"
   file:
     dependency: transitive
     description:
