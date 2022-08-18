@@ -9,7 +9,6 @@ import 'package:provider/provider.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:breez/theme_data.dart' as breezTheme;
 import 'package:screenshot/screenshot.dart';
-import 'package:share_plus/share_plus.dart';
 import '../../bloc/blocs_provider.dart';
 import '../../bloc/podcast_clip/podcast_clip_bloc.dart';
 import '../../bloc/podcast_clip/podcast_clip_details_model.dart';
@@ -65,6 +64,7 @@ _showClipsBottomSheet(
   if (!canBeclipped) {
     return;
   }
+  podcastClipBloc.setClipSharingStatus(status: true);
   _pause(audioBloc);
 
   return showModalBottomSheet<void>(
@@ -134,6 +134,8 @@ _showClipsBottomSheet(
                             children: [
                               TextButton(
                                   onPressed: () {
+                                    podcastClipBloc.setClipSharingStatus(
+                                        status: false);
                                     Navigator.of(context).pop();
                                   },
                                   child: Text(
@@ -178,12 +180,10 @@ _showClipsBottomSheet(
                                                               milliseconds:
                                                                   10));
                                               try {
-                                                String path =
-                                                    await podcastClipBloc
-                                                        .clipEpisode(
-                                                            clipImage:
-                                                                screenShotImage);
-                                                Share.shareFiles([path]);
+                                                await podcastClipBloc
+                                                    .clipEpisode(
+                                                        clipImage:
+                                                            screenShotImage);
                                               } catch (e) {
                                                 showFlushbar(
                                                   context,
@@ -205,7 +205,10 @@ _showClipsBottomSheet(
                                                 color: Colors.white,
                                                 fontWeight: FontWeight.w500,
                                               )))
-                                  : Center(child: CircularProgressIndicator()),
+                                  : Center(
+                                      child: CircularProgressIndicator(
+                                      strokeWidth: 2,
+                                    )),
                             ],
                           ),
                         )
@@ -214,7 +217,9 @@ _showClipsBottomSheet(
                   : CircularProgressIndicator();
             });
       }).then((value) {
+        podcastClipBloc.setClipSharingStatus(status: false);
     _play(audioBloc);
+    
   });
 }
 
