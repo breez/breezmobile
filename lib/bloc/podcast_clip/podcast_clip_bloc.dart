@@ -10,6 +10,7 @@ import 'package:ffmpeg_kit_flutter_https_gpl/ffmpeg_session.dart';
 import 'package:ffmpeg_kit_flutter_https_gpl/return_code.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:rxdart/rxdart.dart';
+import 'package:share_plus/share_plus.dart';
 
 const int _initialSeconds = 10;
 const int _maxClipDuration = 120;
@@ -20,6 +21,9 @@ class PodcastClipBloc with AsyncActionsHandler {
 
   Stream<PodcastClipDetailsModel> get clipDetails =>
       _clipDetailsBehaviourSubject.stream;
+
+//Used as a flag to disable sharing since ongoing ffmpeg commands can't be terminated.
+  bool enableClipSharing = false;
 
   setPodcastClipDetails({PositionState position}) {
     Duration endTime = position.position + Duration(seconds: _initialSeconds);
@@ -33,6 +37,16 @@ class PodcastClipBloc with AsyncActionsHandler {
         podcastClipState: PodcastClipState.IDLE);
 
     _clipDetailsBehaviourSubject.add(podcastClipDetails);
+  }
+
+  setClipSharingStatus({bool status}) {
+    enableClipSharing = status;
+
+    if (status == false) {
+      //Clear the storage if anything is stored
+      initClipDirectory(isVideoClip: true, createDirectory: false);
+      initClipDirectory(isVideoClip: false, createDirectory: false);
+    }
   }
 
   setPodcastClipDuration({int durationInSeconds}) async {
@@ -113,7 +127,7 @@ class PodcastClipBloc with AsyncActionsHandler {
   Future<String> getVideoClipPath(
       {String audioClipPath, String episodeImagepath}) async {
     String videoClipPath = await initClipDirectory(isVideoClip: true);
-    videoClipPath = videoClipPath + '/VideoClip.mp4';
+    videoClipPath = videoClipPath + '/clip.mp4';
 
     String clippedVideoCommand =
         '-i  $audioClipPath -i $episodeImagepath -filter_complex "[0:a]showwaves=colors=0xffffff@0.9:mode=p2p,format=yuva420p[v];[1:v]scale=2120:2560[bg];[bg][v]overlay=(main_w-overlay_w)/2:H*0.8[outv]" -map "[outv]" -map 0:a -c:v libx264 -c:a copy $videoClipPath';
@@ -142,7 +156,7 @@ class PodcastClipBloc with AsyncActionsHandler {
     return true;
   }
 
-  Future<String> clipEpisode({Uint8List clipImage}) async {
+  Future clipEpisode({Uint8List clipImage}) async {
     PodcastClipDetailsModel clipDetails = getCurrentPodcastClipDetails();
     try {
       final directory = await getTemporaryDirectory();
@@ -153,16 +167,26 @@ class PodcastClipBloc with AsyncActionsHandler {
 
       _clipDetailsBehaviourSubject.add(clipDetails.copy(
           podcastClipState: PodcastClipState.FETCHING_AUDIO_CLIP));
+      if (!enableClipSharing) {
+        return;
+      }
 
       String audioClipPath = await _getAudioClipPath(clipDetails: clipDetails);
+
       _clipDetailsBehaviourSubject.add(
           clipDetails.copy(podcastClipState: PodcastClipState.GENERATING_CLIP));
+      if (!enableClipSharing) {
+        return;
+      }
 
       String videoClipPath = await getVideoClipPath(
           audioClipPath: audioClipPath,
           episodeImagepath: podcastImageWidgetPath);
-
-      return videoClipPath;
+      if (!enableClipSharing) {
+        return;
+      } else {
+        Share.shareFiles([videoClipPath]);
+      }
     } catch (e) {
       log(e);
       throw "Failed to clip the episode. More details: ${e.toString()}";
@@ -178,15 +202,19 @@ class PodcastClipBloc with AsyncActionsHandler {
         .add(clipDetails.copy(podcastClipState: clipState));
   }
 
-  Future<String> initClipDirectory({bool isVideoClip}) async {
+  Future<String> initClipDirectory(
+      {bool isVideoClip, bool createDirectory = true}) async {
     Directory tempDirectory = await getTemporaryDirectory();
 
     String tempClipPath = isVideoClip ? '/VideoClip' : '/tempAudioClip';
     String finalPath = tempDirectory.path + tempClipPath;
 
-    final pathExists = await Directory(finalPath).exists();
+    final pathExists =  Directory(finalPath).existsSync();
     if (pathExists) {
       Directory(finalPath).deleteSync(recursive: true);
+    }
+    if (!createDirectory) {
+      return null;
     }
 
     var x = await Directory(tempDirectory.path + tempClipPath)
