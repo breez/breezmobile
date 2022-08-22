@@ -553,6 +553,7 @@ class BackupBloc {
 
       throw error;
     });
+  }
 
   _restoreAppData() async {
     try {

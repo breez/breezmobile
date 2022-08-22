@@ -21,7 +21,7 @@ import 'package:breez/utils/min_font_size.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class _NetworkData {
-  bool torIsActive = false; // TODO(nochiel) TorConroller
+  bool torIsActive = false;
 }
 
 class NetworkPage extends StatefulWidget {
@@ -38,7 +38,6 @@ class NetworkPage extends StatefulWidget {
 class NetworkPageState extends State<NetworkPage> {
   final _formKey = GlobalKey<FormState>();
   BreezBridge _breezLib;
-  ScrollController _scrollController = ScrollController();
   _NetworkData _data = _NetworkData();
   AutoSizeGroup _autoSizeGroup = AutoSizeGroup();
   List<TextEditingController> peerControllers =
@@ -55,32 +54,9 @@ class NetworkPageState extends State<NetworkPage> {
   }
 
   void _loadData() async {
-    await _loadPeer();
-
     bool torActive = await _breezLib.getTorActive();
     setState(() {
       _data.torIsActive = torActive;
-    });
-  }
-
-  Future<bool> _promptForRestart(BuildContext context) {
-    final texts = AppLocalizations.of(context);
-    final themeData = Theme.of(context);
-
-    return promptAreYouSure(
-      context,
-      null,
-      Text(
-        texts.network_restart_message,
-        style: themeData.dialogTheme.contentTextStyle,
-      ),
-      cancelText: texts.network_restart_action_cancel,
-      okText: texts.network_restart_action_confirm,
-    ).then((shouldExit) {
-      if (shouldExit) {
-        exit(0);
-      }
-      return false;
     });
   }
 
@@ -205,7 +181,7 @@ class NetworkPageState extends State<NetworkPage> {
                                             .contentTextStyle));
                                 return;
                               } else {
-                                _promptForRestart(context).then((didRestart) {
+                                _promptForRestart().then((didRestart) {
                                   if (!didRestart) {
                                     setState(() {
                                       this._data.torIsActive = !value;
@@ -271,14 +247,14 @@ class NetworkPageState extends State<NetworkPage> {
 
   Future<bool> _promptForRestart() {
     final texts = AppLocalizations.of(context);
-    final dialogTheme = Theme.of(context).dialogTheme;
+    final themeData = Theme.of(context);
 
     return promptAreYouSure(
       context,
       null,
       Text(
         texts.network_restart_message,
-        style: dialogTheme.contentTextStyle,
+        style: themeData.dialogTheme.contentTextStyle,
       ),
       cancelText: texts.network_restart_action_cancel,
       okText: texts.network_restart_action_confirm,
@@ -286,7 +262,7 @@ class NetworkPageState extends State<NetworkPage> {
       if (shouldExit) {
         exit(0);
       }
-      return true;
+      return false;
     });
   }
 
