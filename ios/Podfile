@@ -3,7 +3,7 @@ platform :ios, '12.1'
 
 # CocoaPods analytics sends network stats synchronously affecting flutter build latency.
 ENV['COCOAPODS_DISABLE_STATS'] = 'true'
-pod 'GoogleSignIn'
+pod 'GoogleSignIn', '~> 6.1.0'
 project 'Runner', {
   'Debug' => :debug,
   'Profile' => :release,
@@ -88,8 +88,13 @@ post_install do |installer|
          ]
        end
    end
+
    project.build_configurations.each do |config|
        config.build_settings['IPHONEOS_DEPLOYMENT_TARGET'] = deployment_target
+   end
+
+   installer.pods_project.build_configuration_list.build_configurations.each do |configuration|
+       configuration.build_settings['CLANG_ALLOW_NON_MODULAR_INCLUDES_IN_FRAMEWORK_MODULES'] = 'YES'
    end
   end
 end

@@ -55,20 +55,22 @@ class _PosSettingsPage extends StatefulWidget {
 
 class PosSettingsPageState extends State<_PosSettingsPage> {
   final _scaffoldKey = GlobalKey<ScaffoldState>();
-  final _cancellationTimeoutValueController = TextEditingController();
+  final _cancellationTimeoutController = TextEditingController();
   final _addressLine1Controller = TextEditingController();
   final _addressLine2Controller = TextEditingController();
+  final _defaultNoteController = TextEditingController();
   final _autoSizeGroup = AutoSizeGroup();
+  double _timeoutValue;
 
   @override
   void initState() {
     super.initState();
-    _cancellationTimeoutValueController.text =
-        widget.currentProfile.cancellationTimeoutValue.toString();
-    _addressLine1Controller.text =
-        widget.currentProfile.businessAddress?.addressLine1;
-    _addressLine2Controller.text =
-        widget.currentProfile.businessAddress?.addressLine2;
+    final user = widget.currentProfile;
+    _timeoutValue = user.cancellationTimeoutValue;
+    _cancellationTimeoutController.text = "${user.cancellationTimeoutValue.toStringAsFixed(0)}";
+    _addressLine1Controller.text = user.businessAddress?.addressLine1 ?? "";
+    _addressLine2Controller.text = user.businessAddress?.addressLine2 ?? "";
+    _defaultNoteController.text = user.defaultPosNote;
   }
 
   @override
@@ -84,13 +86,12 @@ class PosSettingsPageState extends State<_PosSettingsPage> {
         leading: backBtn.BackButton(),
         automaticallyImplyLeading: false,
         iconTheme: themeData.appBarTheme.iconTheme,
-        textTheme: themeData.appBarTheme.textTheme,
         backgroundColor: themeData.canvasColor,
         title: Text(
           texts.pos_settings_title,
           style: themeData.appBarTheme.textTheme.headline6,
         ),
-        elevation: 0.0,
+        elevation: 0.0, toolbarTextStyle: themeData.appBarTheme.textTheme.bodyText2, titleTextStyle: themeData.appBarTheme.textTheme.headline6,
       ),
       body: SingleChildScrollView(
         reverse: true,
@@ -140,7 +141,7 @@ class PosSettingsPageState extends State<_PosSettingsPage> {
                       Padding(
                         padding: EdgeInsets.only(left: 8.0, right: 16.0),
                         child: Text(
-                          num.parse(_cancellationTimeoutValueController.text)
+                          num.parse(_cancellationTimeoutController.text)
                               .toStringAsFixed(0),
                           style: TextStyle(
                             color: Colors.white,
@@ -156,6 +157,8 @@ class PosSettingsPageState extends State<_PosSettingsPage> {
                   _buildExportItemsTile(context, posCatalogBloc),
                   Divider(),
                   _buildAddressField(context, userProfileBloc, user),
+                  Divider(),
+                  _buildDefaultNote(context),
                 ],
               ),
             );
@@ -166,16 +169,20 @@ class PosSettingsPageState extends State<_PosSettingsPage> {
   }
 
   Widget _cancellationSlider(BuildContext context) {
-    final timeoutValue = widget.currentProfile.cancellationTimeoutValue;
     return Slider(
-      value: timeoutValue,
-      label: timeoutValue.toStringAsFixed(0),
+      value: _timeoutValue,
+      label: _timeoutValue.toStringAsFixed(0),
       min: 30.0,
       max: 180.0,
       divisions: 5,
       onChanged: (double value) {
         FocusScope.of(context).requestFocus(FocusNode());
-        _cancellationTimeoutValueController.text = value.toString();
+        setState(() {
+          _timeoutValue = value;
+          _cancellationTimeoutController.text = value.toStringAsFixed(0);
+        });
+      },
+      onChangeEnd: (double value) {
         widget._userProfileBloc.userSink.add(
           widget.currentProfile.copyWith(cancellationTimeoutValue: value),
         );
@@ -410,9 +417,10 @@ class PosSettingsPageState extends State<_PosSettingsPage> {
   }) async {
     final texts = AppLocalizations.of(context);
     final backupBloc = AppBlocsProvider.of<BackupBloc>(context);
-    final backupState = await backupBloc.backupStateStream.first;
+    final backupState = await backupBloc.backupStateStream.first
+        .onError((error, stackTrace) => null);
 
-    if (backupState.lastBackupTime == null) {
+    if (backupState?.lastBackupTime == null) {
       await promptError(
         context,
         texts.pos_settings_manager_password_error_title,
@@ -449,7 +457,7 @@ class PosSettingsPageState extends State<_PosSettingsPage> {
     userProfileBloc.userActionsSink.add(action);
   }
 
-  _buildAddressField(
+  Widget _buildAddressField(
     BuildContext context,
     UserProfileBloc userProfileBloc,
     BreezUserModel user,
@@ -458,7 +466,7 @@ class PosSettingsPageState extends State<_PosSettingsPage> {
     final currentProfile = widget.currentProfile;
 
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 16.0),
+      padding: const EdgeInsets.all(16.0),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -472,14 +480,16 @@ class PosSettingsPageState extends State<_PosSettingsPage> {
             decoration: InputDecoration(
               hintText: texts.pos_settings_address_line_1,
             ),
-            onChanged: (_) => widget._userProfileBloc.userSink.add(
-              currentProfile.copyWith(
-                businessAddress: currentProfile.businessAddress.copyWith(
-                  addressLine1: _addressLine1Controller.text,
+            onEditingComplete: () {
+              widget._userProfileBloc.userSink.add(
+                currentProfile.copyWith(
+                  businessAddress: currentProfile.businessAddress.copyWith(
+                    addressLine1: _addressLine1Controller.text,
+                  ),
                 ),
-              ),
-            ),
-            onEditingComplete: () => FocusScope.of(context).nextFocus(),
+              );
+              FocusScope.of(context).nextFocus();
+            },
           ),
           TextField(
             controller: _addressLine2Controller,
@@ -488,14 +498,49 @@ class PosSettingsPageState extends State<_PosSettingsPage> {
             decoration: InputDecoration(
               hintText: texts.pos_settings_address_line_2,
             ),
+            onEditingComplete: () {
+              widget._userProfileBloc.userSink.add(
+                currentProfile.copyWith(
+                  businessAddress: currentProfile.businessAddress.copyWith(
+                    addressLine2: _addressLine2Controller.text,
+                  ),
+                ),
+              );
+              FocusScope.of(context).unfocus();
+            },
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildDefaultNote(
+    BuildContext context,
+  ) {
+    final texts = AppLocalizations.of(context);
+    final currentProfile = widget.currentProfile;
+
+    return Padding(
+      padding: const EdgeInsets.symmetric(
+        horizontal: 16.0,
+        vertical: 16.0,
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            texts.pos_settings_default_note,
+          ),
+          TextField(
+            controller: _defaultNoteController,
+            minLines: 1,
+            maxLines: 1,
             onChanged: (_) => widget._userProfileBloc.userSink.add(
               currentProfile.copyWith(
-                businessAddress: currentProfile.businessAddress.copyWith(
-                  addressLine2: _addressLine2Controller.text,
-                ),
+                defaultPosNote: _defaultNoteController.text,
               ),
             ),
-            onEditingComplete: () => FocusScope.of(context).unfocus(),
+            onEditingComplete: () => FocusScope.of(context).nextFocus(),
           ),
         ],
       ),

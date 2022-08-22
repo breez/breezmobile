@@ -1,10 +1,9 @@
 import 'dart:async';
-import 'dart:io';
 
 import 'package:anytime/bloc/podcast/audio_bloc.dart';
-import 'package:anytime/l10n/L.dart';
 import 'package:anytime/ui/anytime_podcast_app.dart';
 import 'package:anytime/ui/podcast/now_playing.dart';
+import 'package:anytime/ui/widgets/layout_selector.dart';
 import 'package:audio_service/audio_service.dart';
 import 'package:breez/bloc/account/account_actions.dart';
 import 'package:breez/bloc/account/account_bloc.dart';
@@ -43,6 +42,7 @@ import 'package:breez/widgets/payment_failed_report_dialog.dart';
 import 'package:breez/widgets/route.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:provider/provider.dart';
@@ -104,16 +104,11 @@ class HomeState extends State<Home> with WidgetsBindingObserver {
   String _activeScreen = "breezHome";
   Set _hiddenRoutes = Set<String>();
   StreamSubscription<String> _accountNotificationsSubscription;
-  AudioBloc audioBloc;
   bool _listensInit = false;
 
   @override
   void initState() {
     super.initState();
-    audioBloc = Provider.of<AudioBloc>(context, listen: false);
-    WidgetsBinding.instance.addObserver(this);
-    audioBloc.transitionLifecycleState(LifecyleState.resume);
-
     _hiddenRoutes.add("/get_refund");
     widget.accountBloc.accountStream.listen((acc) {
       setState(() {
@@ -139,10 +134,10 @@ class HomeState extends State<Home> with WidgetsBindingObserver {
       });
     });
 
-    AudioService.notificationClickEventStream
-        .where((event) => event == true)
-        .listen((event) async {
+    AudioService.notificationClicked.where((event) => event == true).listen(
+        (event) async {
       final userBloc = AppBlocsProvider.of<UserProfileBloc>(context);
+      final audioBloc = Provider.of<AudioBloc>(context, listen: false);
       final userModel = await userBloc.userStream.first;
       final nowPlaying = await audioBloc.nowPlaying.first.timeout(
         Duration(seconds: 1),
@@ -163,7 +158,7 @@ class HomeState extends State<Home> with WidgetsBindingObserver {
     });
   }
 
-  void _initListens(BuildContext context) {    
+  void _initListens(BuildContext context) {
     if (_listensInit) return;
     _listensInit = true;
     ServiceInjector().breezBridge.initBreezLib();
@@ -177,8 +172,6 @@ class HomeState extends State<Home> with WidgetsBindingObserver {
 
   @override
   void dispose() {
-    audioBloc.transitionLifecycleState(LifecyleState.pause);
-    WidgetsBinding.instance.removeObserver(this);
     _accountNotificationsSubscription?.cancel();
     super.dispose();
   }
@@ -273,19 +266,48 @@ class HomeState extends State<Home> with WidgetsBindingObserver {
           resizeToAvoidBottomInset: false,
           key: _scaffoldKey,
           appBar: AppBar(
-            brightness: theme.themeId == "BLUE"
-                ? Brightness.light
+            systemOverlayStyle: theme.themeId == "BLUE"
+                ? SystemUiOverlayStyle.dark
                 : themeData.appBarTheme.systemOverlayStyle,
             centerTitle: false,
             actions: [
               Padding(
-                padding: const EdgeInsets.all(14.0),
+                padding: user.appMode == AppMode.podcasts
+                    ? const EdgeInsets.all(14)
+                    : const EdgeInsets.fromLTRB(14, 14, 0, 14),
                 child: AccountRequiredActionsIndicator(
                   widget.backupBloc,
                   widget.accountBloc,
                   widget.lspBloc,
                 ),
               ),
+              if (user.appMode == AppMode.podcasts) ...[
+                Padding(
+                  padding: const EdgeInsets.only(right: 16.0),
+                  child: IconButton(
+                    iconSize: 24.0,
+                    padding: EdgeInsets.zero,
+                    icon: ImageIcon(
+                      AssetImage("assets/icons/layout.png"),
+                      color: Theme.of(context).primaryIconTheme.color,
+                    ),
+                    tooltip: 'Layout',
+                    onPressed: () async {
+                      await showModalBottomSheet<void>(
+                        context: context,
+                        backgroundColor: Theme.of(context).backgroundColor,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.only(
+                            topLeft: Radius.circular(16.0),
+                            topRight: Radius.circular(16.0),
+                          ),
+                        ),
+                        builder: (context) => LayoutSelectorWidget(),
+                      );
+                    },
+                  ),
+                )
+              ],
             ],
             leading: _buildMenuIcon(context, user.appMode),
             title: IconButton(
@@ -394,6 +416,16 @@ class HomeState extends State<Home> with WidgetsBindingObserver {
         "src/icon/security.png",
         onItemSelected: (_) => protectAdminRoute(context, user, "/security"),
       ),
+      DrawerItemConfig(
+        "",
+        texts.home_drawer_item_title_payment_options,
+        "src/icon/payment_options.png",
+        onItemSelected: (_) => protectAdminRoute(
+          context,
+          user,
+          "/payment_options",
+        ),
+      ),
       ..._drawerConfigAdvancedFlavorItems(context, user, texts),
     ];
   }
@@ -430,20 +462,36 @@ class HomeState extends State<Home> with WidgetsBindingObserver {
     BreezUserModel user,
     AppLocalizations texts,
   ) {
-    if (user.appMode == AppMode.pos) {
-      return [
-        DrawerItemConfigGroup(
-          [
-            DrawerItemConfig(
-              "/transactions",
-              texts.home_drawer_item_title_transactions,
-              "src/icon/transactions.png",
-            ),
-          ],
-        ),
-      ];
+    switch (user.appMode) {
+      case AppMode.pos:
+        return [
+          DrawerItemConfigGroup(
+            [
+              DrawerItemConfig(
+                "/transactions",
+                texts.home_drawer_item_title_transactions,
+                "src/icon/transactions.png",
+              ),
+            ],
+          ),
+        ];
+
+      case AppMode.podcasts:
+        return [
+          DrawerItemConfigGroup(
+            [
+              DrawerItemConfig(
+                "/podcast_history",
+                texts.podcast_history_drawer,
+                "src/icon/top_podcast_icon.png",
+              ),
+            ],
+          ),
+        ];
+
+      default:
+        return [];
     }
-    return [];
   }
 
   List<DrawerItemConfigGroup> _drawerConfigAppModeItems(
@@ -612,7 +660,6 @@ class HomeState extends State<Home> with WidgetsBindingObserver {
   Widget _homePage(BuildContext context, BreezUserModel user) {
     final texts = AppLocalizations.of(context);
     final themeData = Theme.of(context);
-    final List<String> anytimeLocales = ['en', 'de', 'pt'];
 
     switch (user.appMode) {
       case AppMode.podcasts:
@@ -751,7 +798,6 @@ class HomeState extends State<Home> with WidgetsBindingObserver {
           style: themeData.dialogTheme.contentTextStyle,
         ),
         okText: texts.home_config_error_action_exit,
-        okFunc: () => exit(0),
         disableBack: true,
       );
     });

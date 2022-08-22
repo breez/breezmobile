@@ -82,7 +82,8 @@ fileprivate let calls : Dictionary<String, BindingExecutor> = [
     "getDefaultOnChainFeeRate": DefaultOnChainFeeRateExecutor(),
     "rate": EmptyArgsBindingExecutor(f: BindingsRate),
     "onResume": VoidBindingExecutor(f: BindingsOnResume),
-    "requestBackup": VoidBindingExecutor(f: BindingsRequestBackup),    
+    "requestBackup": VoidBindingExecutor(f: BindingsRequestBackup),
+    "requestAppDataBackup": VoidBindingExecutor(f: BindingsRequestAppDataBackup),
     "getLogPath": VoidBindingExecutor(f: BindingsGetLogPath),
     "withdrawLnurl": SingleArgBindingExecutor(f: BindingsWithdrawLnurl),
     "connectDirectToLnurl": SingleArgBindingExecutor(f: BindingsConnectDirectToLnurl),
@@ -125,8 +126,11 @@ fileprivate extension BindingExecutor {
         if let data = arg as? Data {
             return FlutterStandardTypedData(bytes: data);
         }
-        if let err = arg as? NSError {
-            return FlutterError(code: "Method Error", message: err.localizedDescription, details: err.description);
+        if let error = arg as? NSString {
+            return arg;
+        }
+        if let error = arg as? NSError {
+            return FlutterError(code: "Method Error", message: error.description, details: error.description);
         }
         if let _ = arg as? Void {
             return nil;

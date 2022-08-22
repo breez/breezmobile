@@ -46,7 +46,7 @@ void main() async {
     await Firebase.initializeApp();
     SharedPreferences.getInstance().then((preferences) async {
       await runMigration(preferences);
-      AppBlocs blocs = AppBlocs();
+      AppBlocs blocs = AppBlocs(repository.backupDatabaseListener);
       runApp(AppBlocsProvider(
           child: AnytimePodcastApp(
               mobileService,
@@ -69,7 +69,8 @@ void main() async {
                             builder: sharePodcastButtonBuilder,
                             child: ShareEpisodeButtonBuilder(
                                 builder: shareEpisodeButtonBuilder,
-                                child: UserApp())))),
+                                child:
+                                    UserApp(repository.reloadDatabaseSink))))),
               )),
           appBlocs: blocs));
     });

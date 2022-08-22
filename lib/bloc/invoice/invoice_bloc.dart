@@ -15,8 +15,7 @@ import 'package:breez/utils/node_id.dart';
 import 'package:breez/utils/lnurl.dart';
 import 'package:fixnum/fixnum.dart';
 import 'package:rxdart/rxdart.dart';
-
-import '../async_actions_handler.dart';
+import 'package:breez/bloc/async_actions_handler.dart';
 
 class InvoiceBloc with AsyncActionsHandler {
   final _newInvoiceRequestController = StreamController<InvoiceRequestModel>();

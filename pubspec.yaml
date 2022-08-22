@@ -7,46 +7,53 @@ dependencies:
   flutter_localizations:
     sdk: flutter
 
-  app_settings: ^4.1.1
-  archive: ^3.1.9
+  another_flushbar: ^1.10.29
+  app_settings: ^4.1.8
+  archive: ^3.3.1
   auto_size_text: ^3.0.0
-  badges: ^2.0.2
+  badges: ^2.0.3
   bip39: ^1.0.6
-  collection: ^1.15.0
-  confetti: ^0.6.0
-  connectivity_plus: ^2.2.0
-  crypto: ^3.0.1
+  collection: ^1.16.0
+  confetti: ^0.7.0
+  connectivity_plus: ^2.3.6
+  crypto: ^3.0.2
   csv: ^5.0.1
-  dio: ^4.0.4
-  drag_and_drop_lists: ^0.3.2+2
+  dio: ^4.0.6
+  drag_and_drop_lists: # Target this ref until new release
+    git:
+      url: https://github.com/mauriceraguseinit/DragAndDropLists
+      ref: bb224b167574a35f722c9e9fbfa960dbee232ce5
   duration: ^3.0.11
-  email_validator: ^2.0.1
-  extended_image: ^6.0.1
-  file_picker: ^4.3.3
-  firebase_core: ^1.14.0
-  firebase_database: ^9.0.6
-  firebase_dynamic_links: ^4.0.5
-  firebase_messaging: ^11.2.6
-  flushbar: ^1.10.4 # discontinued
-  flutter_secure_storage: ^5.0.2
-  flutter_svg: ^1.0.3
-  flutter_web_browser: ^0.16.0
+  email_validator: ^2.1.17
+  extended_image: ^6.2.1
+  file_picker: ^5.0.1
+  firebase_core: ^1.20.0
+  firebase_database: ^9.1.0
+  firebase_dynamic_links: ^4.3.3
+  firebase_messaging: ^12.0.1
+  flutter_secure_storage: ^5.1.0
+  flutter_svg: ^1.1.3
+  flutter_web_browser: ^0.17.1
   google_api_availability: ^3.0.1
   grpc: ^3.0.2
   hex: ^0.2.0
-  image: ^3.1.1
-  image_cropper: ^1.4.1
-  image_picker: ^0.8.4+5
+  image: ^3.2.0
+  image_cropper: ^2.0.3
+  image_picker: ^0.8.5+3
   ini: ^2.1.0
   intl: ^0.17.0
-  json_annotation: ^4.4.0
+  json_annotation: ^4.6.0
+  # local_auth: 2.0.0 has breaking changes that are missing documentation
+  local_auth: <2.0.0
   logging: ^1.0.2
-  package_info_plus: ^1.3.0
-  path_provider: ^2.0.8
-  printing: ^5.7.5
-  protobuf: ^2.0.1
-  qr_code_scanner: ^0.6.1
-  qr_code_tools: ^0.0.7
+  md5_file_checksum: ^1.0.3
+  nfc_manager: ^3.1.1
+  package_info_plus: ^1.4.3
+  path_provider: ^2.0.11
+  printing: ^5.9.2
+  protobuf: ^2.1.0
+  mobile_scanner: ^2.0.0
+  scan: ^1.6.0
   # qr_flutter has already fixed the build issue with the qr package but did not publish an updated
   # version, they will publish as 4.0.1 for now they recommend to use the master but instead of that
   # we are using an specific commit to avoid unexpected behaviour in future builds.
@@ -54,31 +61,30 @@ dependencies:
     git:
       url: https://github.com/theyakka/qr.flutter.git
       ref: 1fc6e38c198a76a6fd60b7bd3b4c190cd6c9330b
-  rxdart: ^0.27.3
-  shared_preferences: ^2.0.12
-  simple_animations: ^4.0.1
-  sqflite: ^2.0.2
-  timeago: ^3.2.1
-  tutorial_coach_mark: ^1.2.1
+  rxdart: ^0.27.5
+  screenshot: ^1.2.3
+  share_plus: ^4.0.10
+  shared_preferences: ^2.0.15
+  shimmer: ^2.0.0
+  simple_animations: ^4.2.0
+  sqflite: ^2.0.3+1
+  timeago: ^3.2.2
+  tutorial_coach_mark: ^1.2.4
   uni_links: ^0.5.1
-  url_launcher: ^6.0.18
-  uuid: ^3.0.5
+  url_launcher: ^6.1.5
+  uuid: ^3.0.6
   validators: ^3.0.0
-  webdav_client: ^1.1.2
-  webview_flutter: ^3.0.0
+  webdav_client: ^1.1.8
+  webview_flutter: ^3.0.4
 
   anytime:
     git:
       url: https://github.com/breez/anytime_podcast_player.git
-      ref: bba6b6b8046d3302432746d2ff9b603b0e434c87
+      ref: 06c1af145c8e646f8ec0935c33d1cf6051210004
   flutter_typeahead:
     git:
       url: https://github.com/breez/flutter_typeahead.git
-      ref: 7405b9e3e3a32f605f5951499d2eddc8e45c1f74
-  local_auth:
-    git:
-      url: https://github.com/breez/local_auth.git
-      ref: 89649dd86f61f60cf0037d7c3dd418a00fd87692
+      ref: a16aa4deeff1c5e96c6da46da31cb0533f838d8d
   nfc_in_flutter:
     git:
       url: https://github.com/breez/nfc_in_flutter.git
@@ -86,29 +92,29 @@ dependencies:
   share_extend:
     git:
       url: https://github.com/breez/ShareExtend.git
-  md5_file_checksum: ^1.0.3
 
 dependency_overrides:
   flutter_downloader:
     git:
       url: https://github.com/breez/flutter_downloader.git
-      ref: c3e528b
+      ref: 60a4470a9b552b287d729e230881f9ac77f5b506
   podcast_search:
     git:
       url: https://github.com/breez/podcast_search.git
-      ref: e5edaea
+      ref: 8190101aa49edf0f501cf3688f32a3a87df137c5
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
-  build_runner: ^2.1.7
-  json_serializable: ^6.1.4
-  mockito: ^5.0.17
-  sqflite_common_ffi: ^2.1.0+2
+  build_runner: ^2.2.0
+  json_serializable: ^6.3.1
+  mockito: ^5.2.0
+  sqflite_common_ffi: ^2.1.1+1
   test: any
 
 environment:
-  sdk: ^2.10.5
+  sdk: ">=2.10.0 <3.0.0"
+  flutter: 3.0.0
 
 flutter:
   uses-material-design: true
@@ -118,7 +124,6 @@ flutter:
     - cert/letsencrypt.cert
     - conf/lnd.conf
     - conf/breez.conf
-    - conf/marketplace.conf
     - conf/moonpay.conf
     - src/json/
     - src/images/

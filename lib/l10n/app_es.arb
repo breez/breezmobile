@@ -11,6 +11,7 @@
   "home_drawer_item_title_pos_settings": "Ajustes de PDV",
   "home_drawer_item_title_developers": "Desarrolladores",
   "home_drawer_item_title_get_refund": "Obtener reembolso",
+  "home_drawer_item_title_payment_options": "Tarifas de la red Lightning",
   "home_drawer_error_internal": "Error interno",
   "home_drawer_error_no_name": "Sin Nombre",
   "home_podcast_title": "Reproductor de podcast Anytime",
@@ -20,7 +21,7 @@
   "home_broadcast_transaction": "Emitiendo su transacción",
   "home_config_error_title": "Error de configuración",
   "home_config_error_message": "Breez detectó que otro dispositivo tiene la misma configuración (probablemente debido a recuperación). Breez no puede procesar la misma configuración en más de un dispositivo. Por favor reinstale Breez para continuar usando Breez en este dispositivo.",
-  "home_config_error_action_exit": "Salir de Breez",
+  "home_config_error_action_exit": "CANCELAR",
   "home_background_synchronization_title": "Sincronización en segundo plano",
   "home_background_synchronization_message": "Para admitir pagos instantáneos, Breez necesita su permiso para sincronizar la información mientras la aplicación no está activa. Por favor apruebe la aplicación en el siguiente cuadro de diálogo.",
   "home_payment_sent": "¡El pago ha sido enviado con éxito!",
@@ -801,6 +802,9 @@
   "network_restart_action_reset": "Restablecer",
   "network_restart_action_save": "Guardar",
   "network_bitcoin_node": "Nodo Bitcoin (BIP 157)",
+  "network_optional_node": "Nodo Bitcoin (BIP 157, opcional)",
+  "network_bitcoin_node_required_error": "Nodo Bitcoin es obligatorio",
+  "network_distinct_node_hint": "Por favor, elija un otro nodo",
   "network_default_node_error": "Breez no ha podido usar el nodo predeterminado.",
   "network_custom_node_error": "Breez no ha podido conectarse al nodo especificado. Asegúrese de que este nodo sea compatible con el BIP 157.",
   "network_testing_node": "Probando el nodo",
@@ -945,16 +949,17 @@
       }
     }
   },
-  "funds_over_limit_dialog_redeem_hour": "Podrá retirar sus fondos después del bloque {lockHeight} (en aproximadamente 1 hora).",
-  "@funds_over_limit_dialog_redeem_hour": {
+  "approximately_an_hour": "(en aproximadamente 1 hora)",
+  "approximate_hours": "(en aproximadamente {hours} horas)",
+  "@approximate_hours": {
     "placeholders": {
-      "lockHeight": {
+      "hours": {
         "type": "String",
-        "example": "140659"
+        "example": "42"
       }
     }
   },
-  "funds_over_limit_dialog_redeem_hours": "Podrá retirar sus fondos después del bloque {lockHeight} (en aproximadamente {hoursToUnlock} horas).",
+  "funds_over_limit_dialog_redeem_hours": "Podrá retirar sus fondos después del bloque {lockHeight} {hoursToUnlock}.",
   "@funds_over_limit_dialog_redeem_hours": {
     "placeholders": {
       "lockHeight": {
@@ -963,7 +968,7 @@
       },
       "hoursToUnlock": {
         "type": "String",
-        "example": "7"
+        "example": "(en aproximadamente 42 horas)"
       }
     }
   },
@@ -1489,6 +1494,7 @@
   "pos_settings_business_address": "Dirección de Negocios",
   "pos_settings_address_line_1": "Dirección 1",
   "pos_settings_address_line_2": "Dirección 2",
+  "pos_settings_default_note": "Nota Estándar",
   "pos_settings_id": "ID",
   "pos_settings_name": "Nombre",
   "pos_settings_sku": "SKU",
@@ -1533,8 +1539,34 @@
       }
     }
   },
+  "pos_payment_nfc_error_title": "Error en el pago con NFC",
+  "pos_payment_nfc_range_error": "Solo se permiten pagos entre {minValue} y {maxValue}.",
+  "@pos_payment_nfc_range_error": {
+    "placeholders": {
+      "minValue": {
+        "type": "String",
+        "example": "1000 sats"
+      },
+      "maxValue": {
+        "type": "String",
+        "example": "1000 sats"
+      }
+    }
+  },
+  "pos_payment_nfc_error_action_close": "CLOSE",
   "successful_payment_print": "Imprimir",
   "successful_payment_received": "¡Pago recibido!",
+  "payment_options_title": "Tarifas de la red Lightning",
+  "payment_options_fee_header": "Tasas máximas para pagos Lightning:",
+  "payment_options_fee_override_enable": "Aplicar tasas máximas (experimental)",
+  "payment_options_base_fee_label": "Tasa base en satoshis",
+  "payment_options_proportional_fee_label": "Tasa Proporcional (%)",
+  "payment_options_fee_action_reset": "Restablecer",
+  "payment_options_fee_action_save": "Guardar",
+  "payment_options_fee_action_cancel": "Cancelar",
+  "payment_options_fee_warning": "Aviso: esta funcionalidad es experimental. Limitar las tarifas puede hacer que los pagos fallen sin mostrar la razón de la falla.",
+  "payment_options_fee_warning_dialog_title": "Aviso",
+  "payment_options_fee_warning_dialog_message": "Esta funcionalidad es experimental. Limitar las tarifas puede hacer que los pagos fallen sin mostrar la razón de la falla.",
   "catalog_item_action_edit": "Editar artículo",
   "catalog_item_action_delete": "Borrar artículo",
   "catalog_item_error_delete": "No se pudo borrar el artículo {name}",
@@ -1807,8 +1839,8 @@
     }
   },
   "lock_screen_enter_pin": "Introduce tu PIN",
-  "backup_phrase_generate": "Generar la frase de respaldo",
-  "backup_phrase_instructions": "Usted verá una lista de palabras. Escriba las palabras y guárdelas en un lugar seguro. Sin estas palabras, no podrá restaurar sus fondos desde la copia de seguridad y sus fondos se perderán y Breez no podrá ayudarlo.",
+  "backup_phrase_generate": "Cifrar copia de seguridad en la nube",
+  "backup_phrase_instructions": "Usted verá una lista de palabras. Escriba las palabras y guárdelas en un lugar seguro. Sin estas palabras, no podrá restaurar sus fondos desde la copia de seguridad y sus fondos se perderán y Breez no podrá ayudarlo. Estas palabras no son una semilla para tu billetera. Estas palabras se utilizan para cifrar los datos en la copia de seguridad almacenada en la nube.",
   "backup_phrase_action_confirm": "ENTIENDO",
   "backup_phrase_action_next": "PRÓXIMO",
   "backup_phrase_warning_disclaimer": "Su frase de respaldo existente no será válida y se generará una nueva frase la próxima vez que decida usar una frase de respaldo. ¿Estás seguro de que no quieres usar una frase de respaldo?",
@@ -2056,6 +2088,23 @@
       }
     }
   },
+  "podcast_history_drawer": "Mis Mejores Podcasts",
+  "podcast_history_share_message":  "Mis mejores podcasts escuchados en Breez",
+  "podcast_history_share_text":"CUOTA",
+  "podcast_history_sats_streamed":"sats transmitido",
+  "podcast_history_boostagrams_sent":"boosts enviado",
+  "podcast_history_open_podcast_button": "PODCASTS ABIERTOS",
+  "podcast_history_appbar_top_weekly":"Los mejores podcasts semanales",
+  "podcast_history_appbar_top_monthly":"Los mejores podcasts mensuales",
+  "podcast_history_appbar_top_yearly":"Los mejores podcasts anuales",
+  "podcast_history_timerange_dropdown_week":"Semana pasada",
+  "podcast_history_timerange_dropdown_month":"El mes pasado",
+  "podcast_history_timerange_dropdown_year":"Año pasado",
+  "podcast_history_sort_dropdown_recent":"Reciente",
+  "podcast_history_sort_dropdown_duration":"Escuchado",
+  "podcast_history_sort_dropdown_sats":"Pagado",
+  "podcast_history_sort_dropdown_boosts":"Boosted",
+  "podcast_history_empty_text":"No hay datos disponibles para mostrar.",
   "locale": "es",
   "app_name": "Breez"
 }

@@ -29,7 +29,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_downloader/flutter_downloader.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:share_extend/share_extend.dart';
-
+import '../../bloc/podcast_history/sqflite/podcast_history_database.dart';
 import 'default_commands.dart';
 
 bool allowRebroadcastRefunds = false;
@@ -46,8 +46,8 @@ class Choice {
 
 final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
+// ignore: must_be_immutable
 class DevView extends StatefulWidget {
-  // ignore: must_be_immutable
   BreezBridge _breezBridge;
   Permissions _permissionsService;
 
@@ -386,10 +386,6 @@ class DevViewState extends State<DevView> {
         icon: Icons.network_check,
         function: () => _enableMoonpayIpCheck(addFundsBloc, addFundsSettings)));
     choices.add(Choice(
-        title: "${settings.isEscherEnabled ? "Disable" : "Enable"} Escher",
-        icon: Icons.monetization_on,
-        function: () => _enableEscher(accBloc, settings)));
-    choices.add(Choice(
         title: 'Reset Refunds Status',
         icon: Icons.phone_android,
         function: () {
@@ -490,6 +486,12 @@ class DevViewState extends State<DevView> {
           }
         }));
     choices.add(Choice(
+        title: "Restore Channels",
+        icon: Icons.phone_android,
+        function: () async {
+          _restoreChannelsBackup();
+        }));
+    choices.add(Choice(
         title: 'Show Tutorials',
         icon: Icons.phone_android,
         function: () {
@@ -497,10 +499,24 @@ class DevViewState extends State<DevView> {
           bloc.userActionsSink.add(SetSeenPaymentStripTutorial(false));
         }));
     choices.add(Choice(
-        title: 'Log cache usage',
+        title: 'Log Cache',
         icon: Icons.phone_android,
         function: _printCacheUsage));
-        
+
+    choices.add(Choice(
+        title: 'Download Backup',
+        icon: Icons.phone_android,
+        function: () {
+          _downloadSnapshot(accBloc);
+        }));
+
+    choices.add(Choice(
+        title: 'Reset Top Podcasts DB',
+        icon: Icons.phone_android,
+        function: () {
+          PodcastHistoryDatabase.instance.resetDatabase();
+        }));
+
     return choices;
   }
 
@@ -546,9 +562,9 @@ class DevViewState extends State<DevView> {
         moonpayIpCheck: !addFundsSettings.moonpayIpCheck));
   }
 
-  void _enableEscher(AccountBloc bloc, AccountSettings settings) {
-    bloc.accountSettingsSink
-        .add(settings.copyWith(isEscherEnabled: !settings.isEscherEnabled));
+  void _restoreChannelsBackup() async {
+    var filePath = await widget._breezBridge.getChanBackupPath();
+    _sendCommand("restorechanbackup --multi_file $filePath");
   }
 
   void _describeGraph() async {
@@ -578,6 +594,26 @@ class DevViewState extends State<DevView> {
         Navigator.pop(context);
       }
     });
+  }
+
+  void _downloadSnapshot(AccountBloc accBloc) async {
+    final nodeID = await accBloc.getPersistentNodeID();
+    final downloaded = await widget._breezBridge.downloadBackup(nodeID);
+    _shareBackup(downloaded.files);
+  }
+
+  Future _shareBackup(List<String> files) async {
+    Directory tempDir = await getTemporaryDirectory();
+    tempDir = await tempDir.createTemp("backup");
+    var encoder = ZipFileEncoder();
+    var zipFile = '${tempDir.path}/backup.zip';
+    encoder.create(zipFile);
+    files.forEach((f) {
+      var file = File(f);
+      encoder.addFile(file, "${file.path.split(Platform.pathSeparator).last}");
+    });
+    encoder.close();
+    ShareExtend.share(zipFile, "file");
   }
 
   void _refreshGraph() async {

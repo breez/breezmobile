@@ -92,7 +92,7 @@ class PosPaymentItem extends StatelessWidget {
 
   Widget _fiatText(BuildContext context) {
     if (_saleSummary == null) return Container();
-    final fiat = _saleSummary.currencies;
+    final fiat = _saleSummary.fiatCurrencies();
     if (fiat == null || fiat.length != 1) return Container();
 
     final texts = AppLocalizations.of(context);

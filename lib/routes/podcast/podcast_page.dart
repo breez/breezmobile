@@ -3,7 +3,9 @@ import 'package:anytime/bloc/discovery/discovery_bloc.dart';
 import 'package:anytime/bloc/new_podcasts/new_podcasts_bloc.dart';
 import 'package:anytime/bloc/podcast/audio_bloc.dart';
 import 'package:anytime/bloc/podcast/episode_bloc.dart';
+import 'package:anytime/bloc/podcast/opml_bloc.dart';
 import 'package:anytime/bloc/podcast/podcast_bloc.dart';
+import 'package:anytime/bloc/podcast/queue_bloc.dart';
 import 'package:anytime/bloc/search/search_bloc.dart';
 import 'package:anytime/bloc/settings/settings_bloc.dart';
 import 'package:anytime/bloc/ui/pager_bloc.dart';
@@ -13,6 +15,7 @@ import 'package:anytime/services/audio/default_audio_player_service.dart';
 import 'package:anytime/services/download/download_service.dart';
 import 'package:anytime/services/download/mobile_download_service.dart';
 import 'package:anytime/services/podcast/mobile_podcast_service.dart';
+import 'package:anytime/services/podcast/opml_service.dart';
 import 'package:anytime/services/podcast/podcast_service.dart';
 import 'package:anytime/services/settings/mobile_settings_service.dart';
 import 'package:anytime/ui/podcast/player_position_controls.dart';
@@ -30,7 +33,6 @@ import 'package:breez/routes/podcast/podcast_index_api.dart';
 import 'package:breez/routes/podcast/share_episode_button.dart';
 import 'package:breez/routes/podcast/share_podcast_button.dart';
 import 'package:breez/routes/podcast/transport_controls.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -55,6 +57,7 @@ class AnytimePodcastApp extends StatefulWidget {
   AudioPlayerService audioPlayerService;
   SettingsBloc settingsBloc;
   MobileSettingsService mobileSettingsService;
+  OPMLService opmlService;
 
   AnytimePodcastApp(this.mobileSettingsService, this.repository, this.child)
       : podcastApi = PodcastIndexAPI() {
@@ -167,6 +170,17 @@ class _AnytimePodcastAppState extends State<AnytimePodcastApp> {
           create: (_) => widget.settingsBloc,
           dispose: (_, value) => value.dispose(),
         ),
+        Provider<OPMLBloc>(
+          create: (_) => OPMLBloc(opmlService: widget.opmlService),
+          dispose: (_, value) => value.dispose(),
+        ),
+        Provider<QueueBloc>(
+          create: (_) => QueueBloc(
+            audioPlayerService: widget.audioPlayerService,
+            podcastService: widget.podcastService,
+          ),
+          dispose: (_, value) => value.dispose(),
+        )
       ],
       child: widget.child,
     );
@@ -229,8 +243,9 @@ class NowPlayingTransportState extends State<NowPlayingTransport> {
                   type: PaymentEventType.StreamCompleted,
                   child: PlayerPositionControls()));
               widgets.add(PlayerTransportControls());
-              widgets.add(
-                  Padding(padding: const EdgeInsets.symmetric(vertical: 8.0)));
+              widgets.add(Padding(
+                padding: const EdgeInsets.only(top: 8.0, bottom: 24.0),
+              ));
               widgets.add(Divider(height: 0.0, thickness: 1));
               widgets.add(Container(
                   color: Theme.of(context).backgroundColor,

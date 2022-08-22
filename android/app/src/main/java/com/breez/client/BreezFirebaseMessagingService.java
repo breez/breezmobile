@@ -1,26 +1,26 @@
 package com.breez.client;
 
+import static android.R.drawable.ic_delete;
+
 import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
-import android.os.Build;
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.media.RingtoneManager;
+import android.os.Build;
+import android.util.Log;
+
 import androidx.core.app.NotificationCompat;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
-import android.util.Log;
 
 import com.breez.client.job.JobManager;
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
+
 import java.util.Map;
 import java.util.logging.Logger;
-
-import static android.R.drawable.ic_delete;
 
 
 public class BreezFirebaseMessagingService extends FirebaseMessagingService {
@@ -57,27 +57,21 @@ public class BreezFirebaseMessagingService extends FirebaseMessagingService {
     }
 
     private void ShowNotification(Map<String, String> data, RemoteMessage remoteMessage) {
-        int notificationID = (int)System.currentTimeMillis() / 1000;
-        Bitmap icon = BitmapFactory.decodeResource(getResources(), R.mipmap.ic_launcher);
-        PendingIntent approvePendingIntent = PendingIntent.getBroadcast(
-                this,
-                REQUEST_CODE_OPEN,
-                new Intent(this, NotificationActionReceiver.class)
-                        .putExtra(KEY_INTENT_APPROVE, REQUEST_CODE_OPEN)
-                        .putExtra(NOTIFICATION_ID, notificationID)
-                        .putExtra(EXTRA_REMOTE_MESSAGE, remoteMessage),
-                PendingIntent.FLAG_UPDATE_CURRENT
-        );
+        int notificationID = (int) System.currentTimeMillis() / 1000;
+        final Intent notificationIntent = new Intent(this, MainActivity.class);
+        notificationIntent.setAction(Intent.ACTION_MAIN);
+        notificationIntent.addCategory(Intent.CATEGORY_LAUNCHER);
+        notificationIntent.putExtra("click_action", "FLUTTER_NOTIFICATION_CLICK");
+        notificationIntent.putExtra("user_click", "1");
+        notificationIntent.putExtra(KEY_INTENT_APPROVE, REQUEST_CODE_OPEN);
+        notificationIntent.putExtra(NOTIFICATION_ID, notificationID);
+        notificationIntent.putExtra(EXTRA_REMOTE_MESSAGE, remoteMessage);
 
-        String buttonTitle = data.get("button");
-        if (buttonTitle == null) {
-            buttonTitle = "Open";
-        }
+        int flags = Build.VERSION.SDK_INT >= Build.VERSION_CODES.S ? PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE : PendingIntent.FLAG_UPDATE_CURRENT;
+        PendingIntent approvePendingIntent = PendingIntent.getActivity(this, REQUEST_CODE_OPEN, notificationIntent, flags);
 
-        NotificationCompat.Action action =
-                new NotificationCompat.Action.Builder(ic_delete,
-                        buttonTitle, approvePendingIntent)
-                        .build();
+        String buttonTitle = data.get("button") != null ? data.get("button") : "Open";
+        NotificationCompat.Action action = new NotificationCompat.Action.Builder(ic_delete, buttonTitle, approvePendingIntent).build();
 
         NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(this, "channel_id")
                 .setContentTitle(data.get("title"))
@@ -86,8 +80,6 @@ public class BreezFirebaseMessagingService extends FirebaseMessagingService {
                 .setSound(RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION))
                 .setContentIntent(approvePendingIntent)
                 .setContentInfo("CONTENT")
-                .setLargeIcon(icon)
-                .setColor(0xFF0089f9)
                 .setLights(0xFF0089f9, 1000, 300)
                 .setColorized(true)
                 .setDefaults(Notification.DEFAULT_VIBRATE)

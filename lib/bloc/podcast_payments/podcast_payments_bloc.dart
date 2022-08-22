@@ -1,6 +1,5 @@
 import 'dart:async';
 import 'dart:convert';
-
 import 'package:anytime/bloc/podcast/audio_bloc.dart';
 import 'package:anytime/bloc/settings/settings_bloc.dart';
 import 'package:anytime/entities/episode.dart';
@@ -16,10 +15,12 @@ import 'package:breez/logger.dart';
 import 'package:breez/services/breezlib/breez_bridge.dart';
 import 'package:breez/services/injector.dart';
 import 'package:fixnum/fixnum.dart';
-
+import '../podcast_history/sqflite/podcast_history_database.dart';
+import '../podcast_history/sqflite/podcast_history_local_model.dart';
 import 'aggregated_payments.dart';
 
 const maxFeePart = 0.2;
+const updatePodcastHistoryFrequencyInSeconds = 5;
 
 class PodcastPaymentsBloc with AsyncActionsHandler {
   final _listeningTime = Map<String, double>();
@@ -81,6 +82,7 @@ class PodcastPaymentsBloc with AsyncActionsHandler {
     var sharedPreferences = await injector.sharedPreferences;
     _aggregatedPayments = AggregatedPayments(sharedPreferences);
     // start the payment ticker
+    num secondsPassed = 0.0;
     Timer.periodic(Duration(seconds: 1), (t) async {
       // calculate episode and playing state
       var playingState = await _getAudioState();
@@ -98,7 +100,9 @@ class PodcastPaymentsBloc with AsyncActionsHandler {
 
       if (_listeningTime[currentPlayedEpisode.contentUrl] == null) {
         _listeningTime[currentPlayedEpisode.contentUrl] = 0.0;
+        secondsPassed = 0.0;
       }
+      secondsPassed += 1;
       // minutes before next payment
       var paidMinutes = Duration(
               seconds: _listeningTime[currentPlayedEpisode.contentUrl].floor())
@@ -109,6 +113,17 @@ class PodcastPaymentsBloc with AsyncActionsHandler {
       final nextPaidMinutes = Duration(
               seconds: _listeningTime[currentPlayedEpisode.contentUrl].floor())
           .inMinutes;
+
+      if (secondsPassed % updatePodcastHistoryFrequencyInSeconds == 0) {
+        _addToPodcastHistory(
+            podcastId: currentPlayedEpisode.metadata["feed"]["id"].toString(),
+            podcastName: currentPlayedEpisode.metadata["feed"]["title"],
+            podcastImageUrl: currentPlayedEpisode.metadata["feed"]["image"],
+            satsSpent: 0,
+            podcastUrl: currentPlayedEpisode.metadata["feed"]["originalUrl"],
+            durationInMins:
+                (updatePodcastHistoryFrequencyInSeconds * playbackSpeed) / 60);
+      }
 
       // if minutes increased
       print("nextPaidMinutes = " +
@@ -162,6 +177,7 @@ class PodcastPaymentsBloc with AsyncActionsHandler {
     String boostMessage = "",
     String senderName = "",
   }) async {
+    int netPaySplitSum = 0;
     if (breezReceiverNode == null) {
       try {
         breezReceiverNode = await _breezLib.receiverNode();
@@ -202,8 +218,7 @@ class PodcastPaymentsBloc with AsyncActionsHandler {
       return;
     }
     paidPositions[paidPositionKey] = true;
-
-    withBreez.forEach((d) async {
+    final podcastPaymentFutures = withBreez.map((d) async {
       final amount = (d.split * total / totalSplits);
       var payPart = amount.toInt();
       if (!boost) {
@@ -223,20 +238,20 @@ class PodcastPaymentsBloc with AsyncActionsHandler {
         if (!boost) {
           await _aggregatedPayments.addAmount(d.address, -payPart.toDouble());
         }
-        _breezLib
+        return _breezLib
             .sendSpontaneousPayment(d.address, Int64(netPay), d.name,
                 feeLimitMsat: maxFee,
                 groupKey: _getPodcastGroupKey(episode),
                 groupName: episode.title,
                 tlv: _getTlv(
-                    boost: boost,
-                    episode: episode,
-                    position: position,
-                    customKey: customKey,
-                    customValue: customValue,
-                    boostMessage: boostMessage,
-                    msatTotal: total * 1000,
-                    senderName: senderName,
+                  boost: boost,
+                  episode: episode,
+                  position: position,
+                  customKey: customKey,
+                  customValue: customValue,
+                  boostMessage: boostMessage,
+                  msatTotal: total * 1000,
+                  senderName: senderName,
                 ))
             .then((payResponse) async {
           if (payResponse.paymentError?.isNotEmpty == true) {
@@ -249,6 +264,8 @@ class PodcastPaymentsBloc with AsyncActionsHandler {
             return;
           }
           log.info("succesfully paid $netPay to destination ${d.address}");
+          netPaySplitSum = netPaySplitSum + netPay;
+
           if (!boost) {
             _paymentEventsController
                 .add(PaymentEvent(PaymentEventType.StreamCompleted, payPart));
@@ -262,6 +279,19 @@ class PodcastPaymentsBloc with AsyncActionsHandler {
         });
       }
     });
+
+    await Future.wait(podcastPaymentFutures);
+
+    if (netPaySplitSum > 0) {
+      _addToPodcastHistory(
+          podcastId: episode.metadata["feed"]["id"].toString(),
+          podcastName: episode.metadata["feed"]["title"],
+          podcastImageUrl: episode.metadata["feed"]["image"],
+          podcastUrl: episode.metadata["feed"]["originalUrl"],
+          satsSpent: netPaySplitSum,
+          durationInMins: 0.0,
+          isBoost: boost);
+    }
   }
 
   Future<Value> _getLightningPaymentValue(Episode episode) async {
@@ -334,6 +364,30 @@ class PodcastPaymentsBloc with AsyncActionsHandler {
         .map(((pi) => pi.fee))
         .first
         .timeout(Duration(seconds: 1), onTimeout: () => Int64.ZERO);
+  }
+
+  /// Saves the podcast data to local storage.
+  /// If a boostagram is sent then the number of boostagram is incremented
+  Future _addToPodcastHistory(
+      {String podcastId,
+      String podcastName,
+      String podcastImageUrl,
+      int satsSpent,
+      String podcastUrl,
+      double durationInMins,
+      bool isBoost = false}) async {
+    final podcastHistoryItem = PodcastHistoryModel(
+        podcastId: podcastId,
+        podcastUrl: podcastUrl,
+        timeStamp: DateTime.now(),
+        satsSpent: satsSpent,
+        boostagramsSent: isBoost ? 1 : 0,
+        podcastName: podcastName,
+        durationInMins: durationInMins ?? 0,
+        podcastImageUrl: podcastImageUrl);
+
+    await PodcastHistoryDatabase.instance
+        .addToPodcastHistoryRecord(podcastHistoryItem);
   }
 
   Map<Int64, String> _getTlv({

@@ -24,7 +24,7 @@ class DownloadTaskManager {
   }
 
   Future _init() async {
-    await FlutterDownloader.initialize();
+    await FlutterDownloader.initialize(ignoreSsl: true);
 
     IsolateNameServer.registerPortWithName(
         _port.sendPort, 'downloader_send_port');

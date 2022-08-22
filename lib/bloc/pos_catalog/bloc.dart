@@ -7,6 +7,7 @@ import 'package:breez/bloc/pos_catalog/actions.dart';
 import 'package:breez/bloc/pos_catalog/pos_csv_utils.dart';
 import 'package:breez/bloc/pos_catalog/repository.dart';
 import 'package:breez/bloc/pos_catalog/sqlite/repository.dart';
+import 'package:breez/bloc/user_profile/breez_user_model.dart';
 import 'package:breez/bloc/user_profile/currency.dart';
 import 'package:breez/services/breezlib/data/rpc.pb.dart';
 import 'package:breez/services/injector.dart';
@@ -19,10 +20,13 @@ import 'model.dart';
 class PosCatalogBloc with AsyncActionsHandler {
   // ignore: non_constant_identifier_names
   static final InvalidFile = Exception('INVALID_FILE');
+
   // ignore: non_constant_identifier_names
   static final InvalidData = Exception('INVALID_DATA');
 
   Repository _repository;
+
+  Stream<BreezUserModel> _userStream;
 
   final StreamController<List<Item>> _itemsStreamController =
       BehaviorSubject<List<Item>>();
@@ -59,11 +63,20 @@ class PosCatalogBloc with AsyncActionsHandler {
 
   Stream<PosReportResult> get posReportResult => _posReportResult.stream;
 
+  Sink<bool> _backupAppDataSink;
+
+  final BehaviorSubject<bool> _reloadPosItems = BehaviorSubject();
+  Sink<bool> get reloadPosItemsSink => _reloadPosItems.sink;
+
   PosCatalogBloc(
     Stream<AccountModel> accountStream,
+    this._userStream,
+    Sink<bool> backupAppDataSink,
     this._repository,
   ) {
+    _backupAppDataSink = backupAppDataSink;
     _loadPosCatalogItemSort();
+    _listenReloadItemsRequests();
     _loadItems();
     registerAsyncHandlers({
       AddItem: _addItem,
@@ -86,6 +99,7 @@ class PosCatalogBloc with AsyncActionsHandler {
     _currentSaleController.add(Sale(
       saleLines: [],
     ));
+    _trackDefaultSaleNote();
     _trackCurrentSaleRates(accountStream);
     _trackSalePayments();
     _loadIcons();
@@ -93,6 +107,10 @@ class PosCatalogBloc with AsyncActionsHandler {
     _loadSelectedPosTab();
     _loadSelectedReportTimeRange();
     _loadSelectedReportResult();
+  }
+
+  void _listenReloadItemsRequests() {
+    _reloadPosItems.stream.listen((_) => _loadItems());
   }
 
   Future _loadIcons() async {
@@ -147,8 +165,10 @@ class PosCatalogBloc with AsyncActionsHandler {
       await _repository.salePaymentCompleted(paymentHash);
       var paidSale = await _repository.fetchSaleByPaymentHash(paymentHash);
       if (paidSale != null && paidSale.id == _currentSaleController.value.id) {
+        final user = await _userStream.first;
         _currentSaleController.add(Sale(
           saleLines: [],
+          note: user.defaultPosNote,
         ));
       }
     });
@@ -176,10 +196,21 @@ class PosCatalogBloc with AsyncActionsHandler {
     });
   }
 
-  Future _loadItems({String filter}) async {
+  void _trackDefaultSaleNote() {
+    _userStream.listen((user) {
+      final defaultSaleNote = user.defaultPosNote;
+      final currentSale = _currentSaleController.value;
+      _currentSaleController.add(currentSale.copyWith(
+        note: defaultSaleNote,
+      ));
+    });
+  }
+  
+  Future _loadItems({String filter, bool backupDB = false}) async {
     final items = await _repository.fetchItems(filter: filter);
     final sort = _posItemSort.valueOrNull ?? PosCatalogItemSort.NONE;
     _itemsStreamController.add(_sort(items, sort));
+    if (backupDB) _backupAppDataSink.add(backupDB);
   }
 
   List<Item> _sort(List<Item> catalogItems, PosCatalogItemSort sort) {
@@ -228,19 +259,19 @@ class PosCatalogBloc with AsyncActionsHandler {
 
   Future _addItem(AddItem action) async {
     action.resolve(await _repository.addItem(action.item));
-    _loadItems();
+    _loadItems(backupDB: true);
   }
 
   Future _updateItem(UpdateItem action) async {
     await _repository.updateItem(action.item);
     action.resolve(null);
-    _loadItems();
+    _loadItems(backupDB: true);
   }
 
   Future _deleteItem(DeleteItem action) async {
     await _repository.deleteItem(action.id);
     action.resolve(null);
-    _loadItems();
+    _loadItems(backupDB: true);
   }
 
   Future _fetchItem(FetchItem action) async {
@@ -332,7 +363,7 @@ class PosCatalogBloc with AsyncActionsHandler {
 
   Future resetDB() async {
     await (_repository as SqliteRepository).dropDB();
-    _loadItems();
+    _loadItems(backupDB: true);
   }
 }
 

@@ -27,7 +27,7 @@ class BarcodeScannerPlaceholder extends StatelessWidget {
         canvasColor: Colors.grey,
       ),
       localizationsDelegates: localizationsDelegates(),
-      supportedLocales: supportedLocales(),
+      supportedLocales: AppLocalizations.supportedLocales,
       home: Scaffold(
         appBar: AppBar(
           iconTheme: themeData.appBarTheme.iconTheme,

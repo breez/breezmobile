@@ -13,9 +13,7 @@
 
 [Breez](https://breez.technology) is a Lightning Network [mobile client](https://github.com/breez/breezmobile) and a [hub](https://github.com/breez/server). It provides a platform for simple, instantaneous bitcoin payments. <br>
 Breez is currently in a public beta, available on [Android](https://play.google.com/apps/testing/com.breez.client) and on [iOS](https://testflight.apple.com/join/wPju2Du7). <br>
-To learn more about, please read [Introducing Breez](https://github.com/breez/breezmobile/wiki/Introducing-Breez). <br>
-
-Check our [active bounties](https://github.com/breez/breezmobile/wiki/Bounties).
+To learn more about, please read [Introducing Breez](https://doc.breez.technology). <br>
 
 ## Features
 
@@ -78,7 +76,11 @@ Check our [active bounties](https://github.com/breez/breezmobile/wiki/Bounties).
 - [x] Backup to WebDav servers (e.g. Nextcloud)
 - [x] Support LNURL-Pay ([bounty redeemed](https://github.com/breez/breezmobile/wiki/Bounties#lnurl-pay-support))
 - [x] Send to a Lightning address
-- [x] Boostagram
+- [x] Boostagrams
+- [x] WebDav backups 
+- [x] Sales reports
+- [x] Top podcasts
+- [x] NFC checkout 
 - [ ] Tor support ([open bounty](https://github.com/breez/breezmobile/wiki/Bounties#tor-support))
 - [ ] Support LNURL-Withdraw balance check
 - [ ] Async payments via Lightning Rod
@@ -89,25 +91,40 @@ Check our [active bounties](https://github.com/breez/breezmobile/wiki/Bounties).
 * Android 7+ 64bit
 * iPhone 6+
 
-## Build
-1. Build `breez.aar` and `bindings.framework` as decribed in https://github.com/breez/breez
-2. For Android: 
-- Symlink `breez.aar` to the `android/app/libs/` directory
-- Create a firebase Android app using the [firebase console](https://console.firebase.google.com/)
-- Generate the `google-services.json` (on "Project settings" menu) and copy it to the `android/app/src/client` directory
-3. For iOS:
-- Copy the bindings.framework directory to the ios directory.
-- Create a firebase iOS app using the [firebase console](https://console.firebase.google.com/)
-- Generate the GoogleServices-info.plist and copy it to ios/Runner directory
-- Run `pod install` from `breezmobile/ios`
-3. Install flutter (stable channel)
+## Setting up the environment
 
-## Run
-Now you can use the following commands to run in a connected device the client app or the pos or to build the corresponding apks:
- - flutter run --flavor=client --target=lib/main.dart
- - flutter run --flavor=pos    --target=lib/main_pos.dart
- - flutter build apk --target-platform=android-arm64 --flavor=client --debug   --target=lib/main.dart
- - flutter build apk --target-platform=android-arm64 --flavor=pos    --debug   --target=lib/main_pos.dart
+### Prerequisites
+
+Make sure you have Flutter 2 installed on your system before continuing the setup process. Flutter 3 is currently not supported yet.
+
+### Setting up for Android
+
+1. Build `breez.aar` as decribed in https://github.com/breez/breez
+2. Create a symlink from the `breez.aar` to `android/app/libs` directory.
+3. Create an Android app on [Firebase](https://console.firebase.google.com/) and download `google-services.json` file.
+  - **Package name (for debugging):** com.breez.client.debug
+4. Copy the downloaded `google-services.json` file to `android/app/src/client` folder.
+
+### Setting up for iOS
+
+1. Build and `bindings.framework` as decribed in https://github.com/breez/breez
+2. Copy the `bindings.framework` directory to the ios directory.
+3. Create an iOS app on [Firebase](https://console.firebase.google.com/) and download `GoogleServices-info.plist` file.
+4. Copy the downloaded `GoogleServices-info.plist` file to `ios` folder.
+5. Run `pod install` from `breezmobile/ios`
+
+## Building and Running
+
+```sh
+# Install dependencies for building
+flutter pub get
+
+# Run a client app on the connected device
+flutter run --flavor=client
+
+# Build a client app as APK file
+flutter build apk --target-platform=android-arm64 --flavor=client --debug
+```
 
 ## [Overview for Developers](https://github.com/breez/breezmobile/wiki/Overview-for-Developers)
 ## [Running Breez in simnet](https://github.com/breez/breezmobile/wiki/Running-Breez-in-simnet)

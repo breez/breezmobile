@@ -71,14 +71,6 @@ class SaleViewState extends State<SaleView> {
             if (updateNote) {
               _noteController.text = sale.note;
             }
-            final thisRoute = ModalRoute.of(context);
-            if (saleInProgress.saleLines.length == 0) {
-              if (thisRoute.isCurrent) {
-                Navigator.of(context).pop();
-              } else {
-                Navigator.of(context).removeRoute(thisRoute);
-              }
-            }
           });
         });
 
@@ -366,11 +358,10 @@ class _TotalSaleCharge extends StatelessWidget {
     final totalAmountInFiat = currentSale.totalAmountInFiat;
 
     final satCurrency = CurrencyWrapper.fromBTC(Currency.SAT);
-    final satMessage = satCurrency.format(
+    final satMessage = (satCurrency.format(
       totalAmountInSats,
       removeTrailingZeros: true,
-      includeDisplayName: true,
-    ).toUpperCase();
+    ) + " " + satCurrency.shortName).toUpperCase();
 
     if (totalAmountInFiat.length == 1) {
       final currency = totalAmountInFiat.entries.first.key;

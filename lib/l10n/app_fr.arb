@@ -1,0 +1,2106 @@
+{
+  "home_drawer_item_title_preferences": "Préférences",
+  "home_drawer_item_title_fiat_currencies": "Monnaies fiat",
+  "home_drawer_item_title_network": "Réseau",
+  "home_drawer_item_title_security": "Sécurité et sauvegarde",
+  "home_drawer_item_title_transactions": "Transactions",
+  "home_drawer_item_title_balance": "Solde",
+  "home_drawer_item_title_podcasts": "Podcasts",
+  "home_drawer_item_title_pos": "Point de Vente (PdV)",
+  "home_drawer_item_title_apps": "Apps",
+  "home_drawer_item_title_pos_settings": "Paramètres du PdV",
+  "home_drawer_item_title_developers": "Développeurs",
+  "home_drawer_item_title_get_refund": "Obtenir le remboursement",
+  "home_drawer_item_title_payment_options": "Lightning Fees",
+  "home_drawer_error_internal": "Erreur interne",
+  "home_drawer_error_no_name": "Nom manquant",
+  "home_podcast_title": "Lecteur de Podcast Anytime",
+  "home_podcast_no_subscriptions": "Utilisez la vue Découverte pour trouver et vous abonner à votre premier podcast.",
+  "home_error_connect_to_pay": "Se connecter pour payer",
+  "home_error_podcast_link": "Lien vers le podcast",
+  "home_broadcast_transaction": "Diffusion de votre transaction",
+  "home_config_error_title": "Erreur de configuration",
+  "home_config_error_message": "Breez a détecté qu'un autre appareil fonctionne avec la même configuration (probablement en raison de la restauration). Breez ne peut pas exécuter la même configuration sur plus d'un appareil. Veuillez réinstaller Breez si vous souhaitez continuer à utiliser Breez sur ce périphérique.",
+  "home_config_error_action_exit": "ANNULER",
+  "home_background_synchronization_title": "Synchronisation en arrière-plan",
+  "home_background_synchronization_message": "Afin de prendre en charge les paiements instantanés, Breez a besoin de votre permission pour synchroniser les informations lorsque l'application n'est pas active. Veuillez approuver l'application dans le fenêtre suivante.",
+  "home_payment_sent": "Paiement envoyé avec succès !",
+  "home_report_sending": "Envoi du rapport...",
+  "invoice_btc_address_title": "Recevoir via une adresse BTC",
+  "invoice_btc_address_network_error": "Impossible de récupérer une adresse sur le serveur Breez\nVeuillez vérifier votre connexion Internet.",
+  "invoice_btc_address_action_retry": "REESSAYER",
+  "invoice_btc_address_action_close": "FERMER",
+  "invoice_btc_address_warning_with_min_fee_account_connected": "Envoyez plus de {minSats} et jusqu'à {maxSats} à cette adresse. Des frais de mise en place de {setUpFee}% avec un minimum de {minFee} seront appliqués pour l'envoi de plus de {liquidity}.",
+  "@invoice_btc_address_warning_with_min_fee_account_connected": {
+    "placeholders": {
+      "minSats": {
+        "type": "String",
+        "example": "2 000 sats"
+      },
+      "maxSats": {
+        "type": "String",
+        "example": "4 000 000 sats"
+      },
+      "setUpFee": {
+        "type": "String",
+        "example": "0.4"
+      },
+      "minFee": {
+        "type": "String",
+        "example": "1 000 sats"
+      },
+      "liquidity": { 
+        "type": "String",
+        "example": "99 000 sats"
+      }
+    }
+  },
+  "invoice_btc_address_warning_without_min_fee_account_connected": "Envoyez plus de {minSats} et jusqu'à {maxSats} à cette adresse. Des frais de mise en place de {setUpFee}% seront appliqués pour l'envoi de plus de {liquidity}.",
+  "@invoice_btc_address_warning_without_min_fee_account_connected": {
+    "placeholders": {
+      "minSats": {
+        "type": "String",
+        "example": "2 000 sats"
+      },
+      "maxSats": {
+        "type": "String",
+        "example": "4 000 000 sats"
+      },
+      "setUpFee": {
+        "type": "String",
+        "example": "0.4"
+      },
+      "liquidity": {
+        "type": "String",
+        "example": "99 000 sats"
+      }
+    }
+  },
+  "invoice_btc_address_warning_with_min_fee_account_not_connected": "Envoyez plus de {minSats} et jusqu'à {maxSats} à cette adresse. Des frais de mise en place de {setUpFee}% avec un minimum de {minFee} seront appliqués sur le montant reçu.",
+  "@invoice_btc_address_warning_with_min_fee_account_not_connected": {
+    "placeholders": {
+      "minSats": {
+        "type": "String",
+        "example": "2 000 sats"
+      },
+      "maxSats": {
+        "type": "String",
+        "example": "4 000 000 sats"
+      },
+      "setUpFee": {
+        "type": "String",
+        "example": "0.4"
+      },
+      "minFee": {
+        "type": "String",
+        "example": "1 000 sats"
+      }
+    }
+  },
+  "invoice_btc_address_warning_without_min_fee_account_not_connected": "Envoyez plus de {minSats} et jusqu'à {maxSats} à cette adresse. Des frais de mise en place de {setUpFee}% seront appliqués sur le montant reçu.",
+  "@invoice_btc_address_warning_without_min_fee_account_not_connected": {
+    "placeholders": {
+      "minSats": {
+        "type": "String",
+        "example": "2 000 sats"
+      },
+      "maxSats": {
+        "type": "String",
+        "example": "4 000 000 sats"
+      },
+      "setUpFee": {
+        "type": "String",
+        "example": "0.4"
+      }
+    }
+  },
+  "invoice_btc_address_deposit_address": "Adresse de dépôt",
+  "invoice_btc_address_deposit_address_copied": "L'adresse de dépôt a été copiée dans votre presse-papiers.",
+  "invoice_btc_address_on_chain_begin": "Breez utilise des Submarine Swaps pour exécuter des transactions on-chain. Cliquez ",
+  "invoice_btc_address_on_chain_here": "ici",
+  "invoice_btc_address_on_chain_end": " pour voir le script associé à cette adresse.",
+  "invoice_btc_address_on_chain_action_ok": "OK",
+  "invoice_title": "Recevoir par facture",
+  "invoice_action_create": "CRÉER",
+  "invoice_action_redeem": "RECLAMER",
+  "invoice_action_scan_barcode": "Scanner le code-barres",
+  "invoice_payment_success": "Paiement reçu avec succès !",
+  "invoice_qr_code_not_detected": "QR code non détecté.",
+  "invoice_receive_fail": "Échec de la réception",
+  "invoice_receive_fail_message": "Raison: {reason}",
+  "@invoice_receive_fail_message": {
+    "placeholders": {
+      "reason": {
+        "type": "String",
+        "example": "Un message d'erreur"
+      }
+    }
+  },
+  "invoice_error_url": "URL invalide",
+  "invoice_insufficient_amount_fee": "Montant insuffisant pour couvrir les frais de mise en place de {fee}",
+  "@invoice_insufficient_amount_fee": {
+    "placeholders": {
+      "fee": {
+        "type": "String",
+        "example": "20 sats"
+      }
+    }
+  },
+  "invoice_description_label": "Description (facultatif)",
+  "invoice_availability_message_synchronizing": "La réception des paiements sera disponible dès que Breez sera synchronisé.",
+  "invoice_availability_message_opening_channel": "Vous pourrez recevoir des paiements une fois que Breez aura fini d'ouvrir un canal sécurisé avec notre serveur. Cela prend généralement ~10 minutes pour être complété. Veuillez réessayer dans quelques minutes.",
+  "invoice_receive_label": "Recevez jusqu'à : {maxSats}",
+  "@invoice_receive_label": {
+    "placeholders": {
+      "maxSats": {
+        "type": "String",
+        "example": "2 000 sats"
+      }
+    }
+  },
+  "invoice_ln_address_warning_with_min_fee_account_connected": "Des frais de mise en place de {setUpFee}% avec un minimum de {minFee} seront appliqués pour recevoir plus de {liquidity}.",
+  "@invoice_ln_address_warning_with_min_fee_account_connected": {
+    "placeholders": {
+      "setUpFee": {
+        "type": "String",
+        "example": "0.4"
+      },
+      "minFee": {
+        "type": "String",
+        "example": "1 000 sats"
+      },
+      "liquidity": {
+        "type": "String",
+        "example": "99 000 sats"
+      }
+    }
+  },
+  "invoice_ln_address_warning_without_min_fee_account_connected": "Des frais de mise en place de {setUpFee}% seront appliqués si vous recevez plus de {liquidity}.",
+  "@invoice_ln_address_warning_without_min_fee_account_connected": {
+    "placeholders": {
+      "setUpFee": {
+        "type": "String",
+        "example": "0.4"
+      },
+      "liquidity": {
+        "type": "String",
+        "example": "99 000 sats"
+      }
+    }
+  },
+  "invoice_ln_address_warning_with_min_fee_account_not_connected": "Des frais de mise en place de {setUpFee}% avec un minimum de {minFee} seront appliqués sur le montant reçu.",
+  "@invoice_ln_address_warning_with_min_fee_account_not_connected": {
+    "placeholders": {
+      "setUpFee": {
+        "type": "String",
+        "example": "0.4"
+      },
+      "minFee": {
+        "type": "String",
+        "example": "1 000 sats"
+      }
+    }
+  },
+  "invoice_ln_address_warning_without_min_fee_account_not_connected": "Des frais de mise en place de {setUpFee}% seront appliqués sur le montant reçu.",
+  "@invoice_ln_address_warning_without_min_fee_account_not_connected": {
+    "placeholders": {
+      "setUpFee": {
+        "type": "String",
+        "example": "0.4"
+      }
+    }
+  },
+  "invoice_bottom_sheet_action_invoice": "FACTURE",
+  "invoice_bottom_sheet_action_pay": "PAYER",
+  "invoice_bottom_sheet_action_receive": "RECEVOIR",
+  "invoice_bottom_sheet_error_qrcode": "Le code QR n'a pas été détecté.",
+  "backup_dialog_title": "Sauvegarde",
+  "backup_dialog_message_remote_server": "Échec de l'enregistrement des fichiers de sauvegarde sur le serveur distant. Veuillez revoir vos paramètres et réessayer.",
+  "backup_dialog_message_default": "Si vous souhaitez pouvoir restaurer vos fonds au cas où cet appareil mobile ou cette application ne seraient plus disponibles (par exemple en cas de perte ou de vol de l'appareil ou de désinstallation de l'application), vous êtes tenu de sauvegarder vos informations.",
+  "backup_dialog_do_not_prompt_again": "Ne plus me demander",
+  "backup_dialog_option_cancel": "PLUS TARD",
+  "backup_dialog_option_ok_remote_server": "PARAMÈTRES",
+  "backup_dialog_option_ok_default": "SAUVEGARDE MAINTENANT",
+  "backup_dialog_icloud_error_title": "Connectez-vous à iCloud",
+  "backup_dialog_icloud_error_message": "Connectez-vous à votre compte iCloud. Sur l'écran d'accueil, lancez Paramètres, appuyez sur iCloud, puis saisissez votre identifiant Apple. Activez iCloud Drive. Si vous n'avez pas de compte iCloud, appuyez sur Créer un nouvel identifiant Apple.",
+  "backup_provider_dialog_title": "Stockage des données de sauvegarde",
+  "backup_provider_dialog_message_restore": "Restaurer les données de sauvegarde de :",
+  "backup_provider_dialog_message_store": "Stockez les données de sauvegarde dans :",
+  "backup_provider_dialog_action_cancel": "ANNULER",
+  "backup_provider_dialog_action_ok": "OK",
+  "tutorial_gotcha": "Je l'ai eu !",
+  "bottom_action_bar_send": "ENVOYER",
+  "bottom_action_bar_receive": "RECEVOIR",
+  "bottom_action_bar_paste_invoice": "Collez la facture ou l'ID",
+  "bottom_action_bar_connect_to_pay": "Se connecter pour payer",
+  "bottom_action_bar_send_btc_address": "Envoyer à l'adresse BTC",
+  "bottom_action_bar_escher": "Encaissement via Escher",
+  "bottom_action_bar_receive_invoice": "Recevoir par facture",
+  "bottom_action_bar_receive_btc_address": "Recevoir via une adresse BTC",
+  "bottom_action_bar_buy_bitcoin": "Acheter du bitcoin",
+  "bottom_action_bar_warning_balance_title": "Breez exige que vous gardiez {balance} dans votre solde.",
+  "@bottom_action_bar_warning_balance_title": {
+    "placeholders": {
+      "balance": {
+        "type": "String",
+        "example": "1.23456789"
+      }
+    }
+  },
+  "payments_filter_action_export": "Exporter",
+  "payments_filter_action_export_failed": "Echec dans l'export des paiements",
+  "payments_filter_option_all": "Toutes les activités",
+  "payments_filter_option_sent": "Envoyé",
+  "payments_filter_option_received": "Reçu",
+  "payments_filter_message_loading_transactions": "Veuillez patienter pendant que Breez charge les transactions.",
+  "payment_details_dialog_closed_channel_title": "Canal fermé",
+  "payment_details_dialog_closed_channel_title_pending": "Canal en attente de fermeture",
+  "payment_details_dialog_closed_channel_ok": "OK",
+  "payment_details_dialog_closed_channel_local_wallet": "Transfert au porte-monnaie local en raison de la fermeture du canal.",
+  "payment_details_dialog_closed_channel_about_hour": "dans une heure environ",
+  "payment_details_dialog_closed_channel_about_hours": "~{hours} heures",
+  "@payment_details_dialog_closed_channel_about_hours": {
+    "placeholders": {
+      "hours": {
+        "type": "String",
+        "example": "2"
+      }
+    }
+  },
+  "payment_details_dialog_closed_channel_transfer_no_estimation": "En attente que les fonds du canal fermé soient transférés vers votre portefeuille local",
+  "payment_details_dialog_closed_channel_transfer_estimation": "En attente que les fonds du canal fermé soient transférés vers votre portefeuille local au bloc ${lockHeight} (${hoursToUnlock})",
+  "@payment_details_dialog_closed_channel_transfer_estimation": {
+    "placeholders": {
+      "lockHeight": {
+        "type": "int",
+        "example": "12345"
+      },
+      "hoursToUnlock": {
+        "type": "String",
+        "example": "dans une heure environ"
+      }
+    }
+  },
+  "payment_details_dialog_transaction_id_copied": "L'ID de la transaction a été copié dans votre presse-papiers.",
+  "payment_details_dialog_restart_text": "Veuillez redémarrer Breez pour réinitialiser les informations de la chaîne pour ce canal.",
+  "payment_details_dialog_restart_cancel": "ANNULER",
+  "payment_details_dialog_restart_exit_breez": "QUITTER BREEZ",
+  "payment_details_dialog_transaction_label_default": "ID de transaction :",
+  "payment_details_dialog_internal_error": "Erreur interne",
+  "payment_details_dialog_refresh_information": "Mettre à jour l'information",
+  "payment_details_dialog_share_transaction": "Partager le hash de la transaction",
+  "payment_details_dialog_share_lightning_address": "Adresse lightning",
+  "payment_details_dialog_share_comment": "Commentaire",
+  "payment_details_dialog_copy_action": "Copie {title}",
+  "@payment_details_dialog_copy_action": {
+    "placeholders": {
+      "title": {
+        "type": "String",
+        "example": "Préimage du paiement"
+      }
+    }
+  },
+  "payment_details_dialog_copied": "{title} a été copié dans votre presse-papiers.",
+  "@payment_details_dialog_copied": {
+    "placeholders": {
+      "title": {
+        "type": "String",
+        "example": "Préimage du paiement"
+      }
+    }
+  },
+  "payment_details_dialog_single_info_pre_image": "Préimage du paiement",
+  "payment_details_dialog_single_info_node_id": "ID du nœud",
+  "payment_details_dialog_single_info_on_chain": "Transaction on-chain",
+  "payment_details_dialog_action_for_payment_description": "Description",
+  "payment_details_dialog_action_for_payment_url": "URL",
+  "payment_details_dialog_action_for_payment_message": "Message",
+  "payment_details_dialog_expiration": "Expiration",
+  "payment_details_dialog_date_and_time": "Date et heure",
+  "payment_details_dialog_amount_title": "Montant",
+  "payment_details_dialog_amount_negative": "-{amount}",
+  "@payment_details_dialog_amount_negative": {
+    "placeholders": {
+      "amount": {
+        "type": "String",
+        "example": "1000 sats"
+      }
+    }
+  },
+  "payment_details_dialog_amount_positive": "+{amount}",
+  "@payment_details_dialog_amount_positive": {
+    "placeholders": {
+      "amount": {
+        "type": "String",
+        "example": "1000 sats"
+      }
+    }
+  },
+  "payment_info_dialog_title": "Information sur le bénéficiaire",
+  "payment_info_dialog_hint": "Facture ou ID",
+  "payment_info_dialog_hint_expanded": "Entrez une facture, un ID de noeud ou une adresse Lightning.",
+  "payment_info_dialog_barcode": "Scanner le code-barres",
+  "payment_info_dialog_error": "Facture, ID ou adresse non valide",
+  "payment_info_dialog_error_qrcode": "Le code QR n'a pas été détecté.",
+  "payment_info_dialog_action_cancel": "ANNULER",
+  "payment_info_dialog_action_approve": "APPROUVER",
+  "pos_invoice_item_management_title_add": "Ajouter un article",
+  "pos_invoice_item_management_title_edit": "Editer l'article",
+  "pos_invoice_item_management_title_save": "SAUVEGARDER",
+  "pos_invoice_item_management_field_name_label": "Nom",
+  "pos_invoice_item_management_field_name_hint": "Entrez un nom",
+  "pos_invoice_item_management_field_name_error": "Le nom est requis",
+  "pos_invoice_item_management_field_price_label": "Prix",
+  "pos_invoice_item_management_field_price_hint": "Entrez un prix",
+  "pos_invoice_item_management_field_price_error": "Le prix est requis",
+  "pos_invoice_item_management_field_sku_label": "SKU",
+  "pos_invoice_item_management_field_sku_hint": "Entrez un SKU",
+  "pos_invoice_item_management_dd_currency_title": "Monnaie",
+  "pos_invoice_item_management_image_title": "Sélectionnez l'image",
+  "pos_invoice_item_management_error_btc_rate": "Impossible de récupérer le taux de change BTC.",
+  "pos_invoice_item_management_avatar_title": "Sélectionner l'image",
+  "pos_invoice_item_management_avatar_search": "Recherchez une image",
+  "pos_invoice_tab_keypad": "Clavier",
+  "pos_invoice_tab_items": "Articles",
+  "pos_invoice_charge_label": "FACTURER {amount} {currencyName}",
+  "@pos_invoice_charge_label": {
+    "placeholders": {
+      "amount": {
+        "type": "String",
+        "example": "2.00"
+      },
+      "currencyName": {
+        "type": "String",
+        "example": "EUR"
+      }
+    }
+  },
+  "pos_invoice_num_pad_clear": "C",
+  "pos_invoice_num_pad_plus": "+",
+  "pos_invoice_search_hint": "Recherche par nom ou par SKU",
+  "pos_invoice_search_empty": "Aucun élément correspondant n'a été trouvé.",
+  "pos_invoice_search_no_items": "Aucun élément à afficher. Ajoutez des articles à cette vue en utilisant le bouton '+'.",
+  "pos_invoice_error_fiat_exchange_rates": "Impossible de récupérer les taux de change fiat.",
+  "pos_invoice_error_submit_header": "Informations requises",
+  "pos_invoice_error_submit_name_avatar": "Veuillez saisir le nom de votre entreprise et sélectionner un logo d'entreprise dans l'écran Paramètres.",
+  "pos_invoice_error_submit_name_only": "Veuillez saisir le nom de votre entreprise dans l'écran Paramètres.",
+  "pos_invoice_error_submit_avatar_only": "Veuillez sélectionner un logo d'entreprise dans l'écran Paramètres.",
+  "pos_invoice_error_fix_action": "ALLER AUX PARAMÈTRES",
+  "pos_invoice_error_capacity_header": "Vous n'avez pas la capacité de recevoir un tel paiement.",
+  "pos_invoice_error_capacity_message": "La taille maximale du paiement que vous pouvez recevoir est {maxAllowed}. Veuillez entrer une valeur inférieure.",
+  "@pos_invoice_error_capacity_message": {
+    "placeholders": {
+      "maxAllowed": {
+        "type": "String",
+        "example": "2.00"
+      }
+    }
+  },
+  "pos_invoice_error_payment_size_header": "Vous avez dépassé la taille maximale du paiement.",
+  "pos_invoice_error_payment_size_message": "La taille maximale du paiement sur le Lightning Network est {maxAllowed}. Veuillez saisir une valeur inférieure ou effectuer le paiement en plusieurs transactions.",
+  "@pos_invoice_error_payment_size_message": {
+    "placeholders": {
+      "maxAllowed": {
+        "type": "String",
+        "example": "2.00"
+      }
+    }
+  },
+  "pos_invoice_close": "FERMER",
+  "pos_invoice_clear_sale_header": "Effacter la vente ?",
+  "pos_invoice_clear_sale_message": "Ceci effacera la transaction en cours.",
+  "pos_invoice_clear_sale_cancel": "ANNULER",
+  "pos_invoice_clear_sale_confirm": "EFFACER",
+  "pos_invoice_sort_none": "Aucun",
+  "pos_invoice_sort_alphabetically": "Nom",
+  "pos_invoice_sort_price": "Prix",
+  "app_animal_bat": "Chauve-souris",
+  "app_animal_bear": "Ours",
+  "app_animal_boar": "Sanglier",
+  "app_animal_cat": "Chat",
+  "app_animal_chick": "Poussin",
+  "app_animal_cow": "Vache",
+  "app_animal_deer": "Cerf",
+  "app_animal_dog": "Chien",
+  "app_animal_eagle": "Aigle",
+  "app_animal_elephant": "Éléphant",
+  "app_animal_fox": "Renard",
+  "app_animal_frog": "Grenouille",
+  "app_animal_hippo": "Hippopotame",
+  "app_animal_hummingbird": "Colibri",
+  "app_animal_koala": "Koala",
+  "app_animal_lion": "Lion",
+  "app_animal_monkey": "Singe",
+  "app_animal_mouse": "Souris",
+  "app_animal_owl": "Hibou",
+  "app_animal_ox": "Boeuf",
+  "app_animal_panda": "Panda",
+  "app_animal_pig": "Cochon",
+  "app_animal_rabbit": "Lapin",
+  "app_animal_seagull": "Mouette",
+  "app_animal_sheep": "Moutons",
+  "app_animal_snake": "Serpent",
+  "app_color_salmon": "Saumon",
+  "app_color_blue": "Bleu",
+  "app_color_turquoise": "Turquoise",
+  "app_color_orchid": "Orchidée",
+  "app_color_purple": "Violet",
+  "app_color_tomato": "Tomate",
+  "app_color_cyan": "Cyan",
+  "app_color_crimson": "Pourpre",
+  "app_color_orange": "Orange",
+  "app_color_lime": "Citron vert",
+  "app_color_pink": "Rose",
+  "app_color_green": "Vert",
+  "app_color_red": "Rouge",
+  "app_color_yellow": "Jaune",
+  "app_color_azure": "Azur",
+  "app_color_silver": "Argenté",
+  "app_color_magenta": "Magenta",
+  "app_color_olive": "Olive",
+  "app_color_violet": "Violet",
+  "app_color_rose": "Rose",
+  "app_color_wine": "Vin",
+  "app_color_mint": "Menthe",
+  "app_color_indigo": "Indigo",
+  "app_color_jade": "Jade",
+  "app_color_coral": "Corail",
+  "pos_transactions_title": "Transactions",
+  "pos_transactions_placeholder": "Les transactions réussies sont affichées ici.",
+  "pos_transactions_action_export": "Exporter",
+  "pos_transactions_action_export_failed": "Echerc dans l'export des paiements.",
+  "pos_transactions_range_no_transactions": "Il n'y a pas de transactions dans cette plage de dates",
+  "pos_transactions_range_dialog_title": "Choisissez une plage de dates :",
+  "pos_transactions_range_dialog_start": "Début",
+  "pos_transactions_range_dialog_end": "Fin",
+  "pos_transactions_range_dialog_clear": "EFFACER",
+  "pos_transactions_range_dialog_apply": "APPLIQUER LE FILTRE",
+  "pos_transactions_item_positive": "{value}",
+  "@pos_transactions_item_positive": {
+    "placeholders": {
+      "value": {
+        "type": "String",
+        "example": "1.234"
+      }
+    }
+  },
+  "pos_transactions_item_negative": "- {value}",
+  "@pos_transactions_item_negative": {
+    "placeholders": {
+      "value": {
+        "type": "String",
+        "example": "1.234"
+      }
+    }
+  },
+  "pos_transactions_item_fiat": "{fiat}",
+  "@pos_transactions_item_fiat": {
+    "placeholders": {
+      "fiat": {
+        "type": "String",
+        "example": "1.234"
+      }
+    }
+  },
+  "sale_view_title": "Vente en cours",
+  "sale_view_note_hint": "Ajouter une note",
+  "sale_view_print": "Imprimer",
+  "sale_view_total_title_read_only_no_fiat": "{value}",
+  "@sale_view_total_title_read_only_no_fiat": {
+    "placeholders": {
+      "value": {
+        "type": "String",
+        "example": "1.234"
+      }
+    }
+  },
+  "sale_view_total_title_charge_no_fiat": "FACTURER {value}",
+  "@sale_view_total_title_charge_no_fiat": {
+    "placeholders": {
+      "value": {
+        "type": "String",
+        "example": "1.234"
+      }
+    }
+  },
+  "sale_view_total_title_read_only_fiat": "{value} ({fiatValue})",
+  "@sale_view_total_title_read_only_fiat": {
+    "placeholders": {
+      "value": {
+        "type": "String",
+        "example": "1.234"
+      },
+      "fiatValue": {
+        "type": "String",
+        "example": "1.23"
+      }
+    }
+  },
+  "sale_view_total_title_charge_fiat": "FACTURER {value} ({fiatValue})",
+  "@sale_view_total_title_charge_fiat": {
+    "placeholders": {
+      "value": {
+        "type": "String",
+        "example": "1.234"
+      },
+      "fiatValue": {
+        "type": "String",
+        "example": "1.23"
+      }
+    }
+  },
+  "fiat_currencies_title": "Monnaies Fiat",
+  "fiat_currencies_save_fail": "Échec de l'enregistrement des modifications.",
+  "connect_to_pay_title_payer": "Se connecter pour payer",
+  "connect_to_pay_title_payee": "Recevoir le paiement",
+  "connect_to_pay_canceled_payer": "Le payeur a annulé la session de paiement",
+  "connect_to_pay_canceled_payee": "Le bénéficiaire a annulé la session de paiement",
+  "connect_to_pay_canceled_remote_user": "{name} a annulé la session de paiement",
+  "@connect_to_pay_canceled_remote_user": {
+    "placeholders": {
+      "name": {
+        "type": "String",
+        "example": "Alice"
+      }
+    }
+  },
+  "connect_to_pay_success_payer": "Vous venez de payer {amount} à {name} !",
+  "@connect_to_pay_success_payer": {
+    "placeholders": {
+      "name": {
+        "type": "String",
+        "example": "Alice"
+      },
+      "amount": {
+        "type": "String",
+        "example": "1.23"
+      }
+    }
+  },
+  "connect_to_pay_success_payee": "{name} vous a payé {amount}!",
+  "@connect_to_pay_success_payee": {
+    "placeholders": {
+      "name": {
+        "type": "String",
+        "example": "Alice"
+      },
+      "amount": {
+        "type": "String",
+        "example": "1.23"
+      }
+    }
+  },
+  "connect_to_pay_exit_warning": "Êtes-vous sûr de vouloir annuler cette session de paiement ?",
+  "connect_to_pay_failed_to_connect": "Échec de la connexion à la session : {error}",
+  "@connect_to_pay_failed_to_connect": {
+    "placeholders": {
+      "error": {
+        "type": "String",
+        "example": "Un message d'erreur"
+      }
+    }
+  },
+  "connect_to_pay_payee_success_received": "Vous avez réussi à avoir {amount}",
+  "@connect_to_pay_payee_success_received": {
+    "placeholders": {
+      "amount": {
+        "type": "String",
+        "example": "1.23"
+      }
+    }
+  },
+  "connect_to_pay_payee_waiting_no_name": "En attente que le payeur entre un montant",
+  "connect_to_pay_payee_waiting_with_name": "En attente de {name} pour entrer un montant",
+  "@connect_to_pay_payee_waiting_with_name": {
+    "placeholders": {
+      "name": {
+        "type": "String",
+        "example": "Alice"
+      }
+    }
+  },
+  "connect_to_pay_payee_waiting_sync": "Veuillez patienter pendant que Breez se synchronise",
+  "connect_to_pay_payee_waiting_sync_action_close": "FERMEZ",
+  "connect_to_pay_payee_message_no_fiat": "{name} veut vous payer {amount}",
+  "@connect_to_pay_payee_message_no_fiat": {
+    "placeholders": {
+      "name": {
+        "type": "String",
+        "example": "Alice"
+      },
+      "amount": {
+        "type": "String",
+        "example": "1.23"
+      }
+    }
+  },
+  "connect_to_pay_payee_message_with_fiat": "{name} veux vous payer {amount} ({fiat})",
+  "@connect_to_pay_payee_message_with_fiat": {
+    "placeholders": {
+      "name": {
+        "type": "String",
+        "example": "Alice"
+      },
+      "amount": {
+        "type": "String",
+        "example": "1.23"
+      },
+      "fiat": {
+        "type": "String",
+        "example": "1.23"
+      }
+    }
+  },
+  "connect_to_pay_payee_error_limit_exceeds": "Ce paiement dépasse votre limite {amount}",
+  "@connect_to_pay_payee_error_limit_exceeds": {
+    "placeholders": {
+      "amount": {
+        "type": "String",
+        "example": "1.23"
+      }
+    }
+  },
+  "connect_to_pay_payee_process": "Traitement du paiement de {nom}",
+  "@connect_to_pay_payee_process": {
+    "placeholders": {
+      "name": {
+        "type": "String",
+        "example": "Alice"
+      }
+    }
+  },
+  "connect_to_pay_payee_setup_fee": "Des frais d'installation de {sats} ({fiat}) sont appliqués à ce paiement.",
+  "@connect_to_pay_payee_setup_fee": {
+    "placeholders": {
+      "sats": {
+        "type": "String",
+        "example": "1.23"
+      },
+      "fiat": {
+        "type": "String",
+        "example": "1.23"
+      }
+    }
+  },
+  "connect_to_pay_payee_action_reject": "Rejeter",
+  "connect_to_pay_payee_action_approve": "Approuver",
+  "connect_to_pay_payer_success": "Vous avez payé {amount} avec succès",
+  "@connect_to_pay_payer_success": {
+    "placeholders": {
+      "amount": {
+        "type": "String",
+        "example": "1.23"
+      }
+    }
+  },
+  "connect_to_pay_payer_enter_amount": "{name} a rejoint la session.\nVeuillez saisir un montant et appuyez sur Payer pour continuer.",
+  "@connect_to_pay_payer_enter_amount": {
+    "placeholders": {
+      "name": {
+        "type": "String",
+        "example": "Alice"
+      }
+    }
+  },
+  "connect_to_pay_payer_share_link": "Appuyez sur le bouton Partager pour partager un lien avec une personne que vous souhaitez payer. Ensuite, veuillez attendre que cette personne clique sur le lien et rejoigne la session.",
+  "connect_to_pay_payer_waiting_join_no_name": "En attente que quelqu'un se joigne à cette session",
+  "connect_to_pay_payer_waiting_join_with_name": "En attente de {name} pour rejoindre cette session",
+  "@connect_to_pay_payer_waiting_join_with_name": {
+    "placeholders": {
+      "name": {
+        "type": "String",
+        "example": "Alice"
+      }
+    }
+  },
+  "connect_to_pay_payer_waiting_approve_no_name": "En attente que quelqu'un approuve votre paiement",
+  "connect_to_pay_payer_waiting_approve_with_name": "En attente que {name} approuve votre paiement",
+  "@connect_to_pay_payer_waiting_approve_with_name": {
+    "placeholders": {
+      "name": {
+        "type": "String",
+        "example": "Alice"
+      }
+    }
+  },
+  "connect_to_pay_payer_sending": "Envoi du paiement...",
+  "connect_to_pay_payer_wait_sync": "Veuillez patienter pendant que Breez se synchronise",
+  "connect_to_pay_payer_synchronizing": "Synchronisation avec le réseau",
+  "connect_to_pay_payer_action_close": "FERMER",
+  "connect_to_pay_payment_detail_note": "Note (facultatif)",
+  "connect_to_pay_payment_available": "Disponible :",
+  "connect_to_pay_payment_action_close": "Fermer",
+  "connect_to_pay_payment_action_pay": "Payer",
+  "connect_to_pay_peer_unknown": "Inconnu",
+  "connect_to_pay_share_text": "{name} veut vous payer via Breez...\nSuivez ce lien pour recevoir le paiement : {address}",
+  "@connect_to_pay_share_text": {
+    "placeholders": {
+      "name": {
+        "type": "String",
+        "example": "Alice"
+      },
+      "address": {
+        "type": "String",
+        "example": "http://an.url.com/link"
+      }
+    }
+  },
+  "connect_to_pay_payment_reject": "Paiement rejeté",
+  "connect_to_pay_error_wrong_amount": "Montant erroné dans la demande de paiement",
+  "connect_to_pay_error_status_tracking_already_started": "Le suivi du statut a déjà commencé, il faut l'arrêter avant de le relancer.",
+  "connect_to_pay_error_link_expired": "Ce lien a expiré et n'est plus valable pour le paiement.",
+  "security_and_backup_title": "Sécurité et sauvegarde",
+  "security_and_backup_last_backup_no_account": "Dernière sauvegarde : {lastBackup}",
+  "@security_and_backup_last_backup_no_account": {
+    "placeholders": {
+      "lastBackup": {
+        "type": "String",
+        "example": "03/01/2022 14:57"
+      }
+    }
+  },
+  "security_and_backup_last_backup_with_account": "Dernière sauvegarde : {lastBackup}\nCompte : {accountName}",
+  "@security_and_backup_last_backup_with_account": {
+    "placeholders": {
+      "lastBackup": {
+        "type": "String",
+        "example": "03/01/2022 14:57"
+      },
+      "accountName": {
+        "type": "String",
+        "example": "adresse@email.com"
+      }
+    }
+  },
+  "security_and_backup_encrypt": "Chiffrer la sauvegarde",
+  "security_and_backup_store_location": "Stocker la sauvegarde dans",
+  "security_and_backup_lock_automatically": "Verrouillage automatique",
+  "security_and_backup_lock_automatically_option_immediate": "Immédiatement",
+  "security_and_backup_change_pin": "Modifier le PIN",
+  "security_and_backup_enable_biometric_option_face": "Activer la reconnaissance faciale",
+  "security_and_backup_enable_biometric_option_face_id": "Activer Face ID",
+  "security_and_backup_enable_biometric_option_fingerprint": "Activer l'empreinte digitale",
+  "security_and_backup_enable_biometric_option_touch_id": "Activer Touch ID",
+  "security_and_backup_enable_biometric_option_none": "",
+  "security_and_backup_validate_biometrics_reason": "Authentifiez-vous pour activer ce paramètre",
+  "security_and_backup_pin_option_create": "Créer un code PIN",
+  "security_and_backup_pin_option_deactivate": "Désactiver le PIN",
+  "security_and_backup_internal_error": "Erreur interne",
+  "security_and_backup_new_pin": "Entrez votre nouveau code PIN",
+  "security_and_backup_new_pin_second_time": "Entrez à nouveau votre nouveau code PIN",
+  "security_and_backup_new_pin_do_not_match": "Le PIN ne correspond pas",
+  "backup_in_progress": "Sauvegarde en cours",
+  "backup_in_progress_action_confirm": "OK",
+  "backup_model_name_apple_icloud": "Apple iCloud",
+  "backup_model_name_google_drive": "Google Drive",
+  "backup_model_name_remote_server": "Serveur distant",
+  "backup_model_error_failed": "Échec de la sauvegarde",
+  "network_title": "Réseau",
+  "network_restart_message": "Veuillez redémarrer Breez pour passer à la nouvelle configuration du noeud Bitcoin..",
+  "network_restart_action_cancel": "ANNULER",
+  "network_restart_action_confirm": "QUITTER BREEZ",
+  "network_restart_action_reset": "Réinitialiser",
+  "network_restart_action_save": "Sauvegarder",
+  "network_bitcoin_node": "Bitcoin Node (BIP 157)",
+  "network_optional_node": "Bitcoin Node (BIP 157, optional)",
+  "network_bitcoin_node_required_error": "This field is required",
+  "network_distinct_node_hint": "Please enter a different node",
+  "network_default_node_error": "Breez est incapable d'utiliser le nœud par défaut.",
+  "network_custom_node_error": "Breez ne parvient pas à se connecter au nœud spécifié. Veuillez vous assurer que ce nœud prend en charge le BIP 157.",
+  "network_testing_node": "Noeud de test",
+  "amount_form_denomination": "Montant en {denomination}",
+  "@amount_form_denomination": {
+    "placeholders": {
+      "denomination": {
+        "type": "String",
+        "example": "sats"
+      }
+    }
+  },
+  "amount_form_insert_hint": "Veuillez saisir le montant en {denomination}",
+  "@amount_form_insert_hint": {
+    "placeholders": {
+      "denomination": {
+        "type": "String",
+        "example": "sats"
+      }
+    }
+  },
+  "amount_form_error_invalid_amount": "Montant invalide",
+  "currency_converter_dialog_error_exchange_rate": "Impossible de récupérer le taux de change du BTC.",
+  "currency_converter_dialog_title": "Entrez le montant en",
+  "currency_converter_dialog_action_cancel": "ANNULER",
+  "currency_converter_dialog_action_done": "TERMINÉ",
+  "currency_converter_dialog_rate": "1 BTC = {rate} {currencyName}",
+  "@currency_converter_dialog_rate": {
+    "placeholders": {
+      "rate": {
+        "type": "String",
+        "example": "42 902.93"
+      },
+      "currencyName": {
+        "type": "String",
+        "example": "EUR"
+      }
+    }
+  },
+  "reverse_swap_title": "Envoyer à une adresse BTC",
+  "reverse_swap_funding_transaction": "Transaction de financement :",
+  "reverse_swap_waiting_channels": "Vous pourrez envoyer vos fonds à une adresse BTC une fois que tous les canaux auront été confirmés.",
+  "reverse_swap_confirmation_speed": "Choisir la vitesse de traitement",
+  "reverse_swap_confirmation_action_confirm": "CONFIRMER",
+  "reverse_swap_confirmation_you_send": "Vous envoyez :",
+  "reverse_swap_confirmation_you_receive": "Vous recevez :",
+  "reverse_swap_confirmation_received_no_fiat": "{received}",
+  "@reverse_swap_confirmation_received_no_fiat": {
+    "placeholders": {
+      "received": {
+        "type": "String",
+        "example": "12 345"
+      }
+    }
+  },
+  "reverse_swap_confirmation_received_with_fiat": "{received} ({fiat})",
+  "@reverse_swap_confirmation_received_with_fiat": {
+    "placeholders": {
+      "received": {
+        "type": "String",
+        "example": "12 345"
+      },
+      "fiat": {
+        "type": "String",
+        "example": "56$"
+      }
+    }
+  },
+  "reverse_swap_confirmation_transaction_fee": "Frais de transaction :",
+  "reverse_swap_confirmation_transaction_fee_value": "-{fee}",
+  "@reverse_swap_confirmation_transaction_fee_value": {
+    "placeholders": {
+      "fee": {
+        "type": "String",
+        "example": "12 345"
+      }
+    }
+  },
+  "reverse_swap_confirmation_boltz_fee": "Frais de service de Boltz :",
+  "reverse_swap_confirmation_boltz_fee_value": "-{boltzFee}",
+  "@reverse_swap_confirmation_boltz_fee_value": {
+    "placeholders": {
+      "boltzFee": {
+        "type": "String",
+        "example": "12 345"
+      }
+    }
+  },
+  "reverse_swap_confirmation_error_fetch_fee": "Échec de la récupération des frais. Veuillez réessayer plus tard.",
+  "reverse_swap_confirmation_error_funds_fee": "Vous n'avez pas assez de fonds pour payer ces frais de réseau de paiement.",
+  "reverse_swap_notification_title": "Action requise",
+  "reverse_swap_notification_body": "Veuillez ouvrir Breez pour effectuer la transaction demandée.",
+  "sync_progress_server_ready": "Synchronisation avec le réseau",
+  "sync_progress_waiting_network": "En attente du réseau",
+  "withdraw_funds_error_min_value": "Doit être au moins {minValue}",
+  "@withdraw_funds_error_min_value": {
+    "placeholders": {
+      "minValue": {
+        "type": "String",
+        "example": "12 345"
+      }
+    }
+  },
+  "withdraw_funds_error_max_value": "Doit être inférieur à {maxValue}",
+  "@withdraw_funds_error_max_value": {
+    "placeholders": {
+      "minValue": {
+        "type": "String",
+        "example": "12 345"
+      }
+    }
+  },
+  "withdraw_funds_use_all_funds": "Utiliser tous les fonds",
+  "withdraw_funds_btc_address": "Adresse BTC",
+  "withdraw_funds_scan_barcode": "Scanner le code-barres",
+  "withdraw_funds_error_invalid_address": "Veuillez entrer une adresse BTC valide",
+  "withdraw_funds_balance": "Solde :",
+  "withdraw_funds_error_qr_code_not_detected": "QR code non détecté.",
+  "withdraw_funds_action_next": "SUIVANT",
+  "swap_in_progress_title": "Envoyer à l'adresse BTC",
+  "swap_in_progress_transaction_id_copied": "L'ID de la transaction a été copié dans votre presse-papiers.",
+  "swap_in_progress_message_waiting_confirmation": "Breez attend que votre transaction soit confirmée.",
+  "swap_in_progress_message_processing_previous_request": "Breez est en train de traiter votre demande précédente. Vous serez informé dès que le traitement sera terminé pour envoyer vos fonds à l'adresse que vous avez indiquée.",
+  "market_place_no_vendors": "Il n'y a pas de vendeurs disponibles pour le moment.",
+  "account_required_actions_backup": "Sauvegarde",
+  "account_page_activation_provider": "Afin d'activer Breez, veuillez sélectionner un fournisseur :",
+  "account_page_activation_provider_action_select": "SÉLECTIONNER...",
+  "account_page_activation_provider_label": "Sélectionnez un fournisseur Lightning",
+  "account_page_activation_provider_hint": "Veuillez sélectionner l'un des fournisseurs suivants afin d'activer Breez et de vous connecter au réseau Lightning.",
+  "account_page_activation_error": "Une erreur s'est produite lors de la récupération des fournisseurs Lightning. Veuillez vérifier votre connexion Internet et réessayer.",
+  "account_page_activation_action_retry": "RÉESSAYER",
+  "account_page_activation_action_select": "SÉLECTIONNER",
+  "funds_over_limit_dialog_on_chain_transaction": "Transaction on-chain",
+  "funds_over_limit_dialog_action_ok": "OK",
+  "funds_over_limit_dialog_transfer_fail_no_reason_know": "Breez n'a pas pu transférer les fonds sur votre balance\n",
+  "funds_over_limit_dialog_transfer_fail_with_reason": "Breez n'a pas été en mesure de transférer les fonds sur votre solde puisque {reason}\n",
+  "@funds_over_limit_dialog_transfer_fail_with_reason": {
+    "placeholders": {
+      "reason": {
+        "type": "String",
+        "example": "A reason of an error"
+      }
+    }
+  },
+  "approximately_an_hour": "(dans environ une heure)",
+  "approximate_hours": "(~{hours} heures)",
+  "@approximate_hours": {
+    "placeholders": {
+      "hours": {
+        "type": "String",
+        "example": "42"
+      }
+    }
+  },
+  "funds_over_limit_dialog_redeem_hours": "Vous pourrez racheter vos fonds après le bloc {lockHeight} {hoursToUnlock}.",
+  "@funds_over_limit_dialog_redeem_hours": {
+    "placeholders": {
+      "lockHeight": {
+        "type": "String",
+        "example": "140659"
+      },
+      "hoursToUnlock": {
+        "type": "String",
+        "example": "(~42 heures)"
+      }
+    }
+  },
+  "funds_over_limit_dialog_refund_begin": "Vous pouvez ",
+  "funds_over_limit_dialog_refund_link": "obtenir un remboursement",
+  "funds_over_limit_dialog_refund_end": " à présent.",
+  "get_refund_title": "Obtenir un remboursement",
+  "get_refund_amount": "Montant : {amount}",
+  "@get_refund_amount": {
+    "placeholders": {
+      "amount": {
+        "type": "String",
+        "example": "12 345"
+      }
+    }
+  },
+  "get_refund_action_broadcasted": "DIFFUSÉE",
+  "get_refund_action_continue": "CONTINUER",
+  "get_refund_transaction": "Transaction de remboursement",
+  "get_refund_failed": "échec",
+  "send_on_chain_broadcast": "DIFFUSER",
+  "send_on_chain_btc_address": "Adresse BTC",
+  "send_on_chain_scan_barcode": "Scanner le code-barres",
+  "send_on_chain_invalid_btc_address": "Veuillez entrer une adresse BTC valide",
+  "send_on_chain_sat_per_byte_fee_rate": "Taux de frais en sats/octet",
+  "send_on_chain_invalid_fee_rate": "Veuillez entrer un taux de frais valide",
+  "send_on_chain_original_transaction": "Transaction initiale",
+  "send_on_chain_amount": "Montant :",
+  "send_on_chain_qr_code_not_detected": "QR code non détecté.",
+  "remote_server_title": "Serveur Distant",
+  "remote_server_server_url_hint": "https://example.nextcloud.com",
+  "remote_server_server_url_label": "URL du Serveur (Nextcloud, WebDav)",
+  "remote_server_server_username_hint": "Nom d'utilisateur :",
+  "remote_server_server_username_label": "Nom d'utilisateur",
+  "remote_server_server_password_hint": "Mot de passe",
+  "remote_server_server_password_label": "Mot de passe",
+  "remote_server_action_restore": "RESTAURER",
+  "remote_server_action_save": "SAUVEGARDER",
+  "remote_server_warning_connection_title": "Avertissement sur la connexion",
+  "remote_server_warning_connection_message": "Votre connexion à ce serveur distant peut ne pas être une connexion sécurisée. Êtes-vous sûr de vouloir continuer ?",
+  "remote_server_testing_connection": "Test de la connexion",
+  "remote_server_error_invalid_username_or_password": "Nom d'utilisateur ou mot de passe invalide",
+  "remote_server_error_invalid_url": "URL invalide",
+  "remote_server_error_remote_server_title": "Serveur Distant",
+  "remote_server_error_remote_server_message": "La connexion avec le serveur distant a échoué, veuillez vérifier vos paramètres..",
+  "error_dialog_default_action_ok": "OK",
+  "error_dialog_default_action_yes": "OUI",
+  "error_dialog_default_action_no": "NON",
+  "error_dialog_default_action_close": "FERMER",
+  "ln_url_success_action_title": "Informations sur l'achat",
+  "ln_url_success_action_link_copied": "le lien a été copié dans votre presse-papiers.",
+  "avatar_picker_action_set_photo": "Définir la Photo",
+  "avatar_picker_action_change_photo": "Changer la Photo",
+  "avatar_picker_error_select_image": "Impossible de sélectionner l'image",
+  "initial_walk_through_welcome_message": "Le moyen le plus simple, le plus rapide et le plus sûr\n de dépenser vos bitcoins.",
+  "initial_walk_through_lets_breeze": "ET QUE CA BREEZ!",
+  "initial_walk_through_restore_from_backup": "Restaurer à partir d'une sauvegarde",
+  "initial_walk_through_restoring": "Restauration des données...",
+  "initial_walk_through_sign_in_icloud_title": "Connectez-vous à iCloud",
+  "initial_walk_through_sign_in_icloud_message": "Connectez-vous à votre compte iCloud. Sur l'écran d'accueil, lancez Paramètres, appuyez sur iCloud, puis saisissez votre identifiant Apple. Activez iCloud Drive. Si vous n'avez pas de compte iCloud, appuyez sur Créer un nouvel identifiant Apple.",
+  "initial_walk_through_error_backup_location": "Impossible de localiser la sauvegarde pour ce compte",
+  "initial_walk_through_error_internal": "Erreur interne",
+  "restore_pin_title": "Entrez le code PIN de sauvegarde",
+  "enter_backup_phrase": "Entrez votre phrase de sauvegarde {number}/{total}",
+  "@enter_backup_phrase": {
+    "placeholders": {
+      "number": {
+        "type": "String",
+        "example": "12"
+      },
+      "total": {
+        "type": "String",
+        "example": "24"
+      }
+    }
+  },
+  "enter_backup_phrase_error": "Échec de la restauration à partir de la sauvegarde. Veuillez vous assurer que la phrase de sauvegarde a été correctement saisie et réessayez.",
+  "enter_backup_phrase_missing_word": "Mot manquant",
+  "enter_backup_phrase_invalid_word": "Mot invalide",
+  "enter_backup_phrase_action_restore": "RESTAURER",
+  "enter_backup_phrase_action_next": "SUIVANT",
+  "restore_dialog_title": "Restaurer",
+  "restore_dialog_multiple_accounts": "Vous avez plusieurs sauvegardes de Breez sur {name}, veuillez choisir celle à restaurer :",
+  "@restore_dialog_multiple_accounts": {
+    "placeholders": {
+      "name": {
+        "type": "String",
+        "example": "Un nom"
+      }
+    }
+  },
+  "restore_dialog_modified_not_encrypted": "{date}",
+  "@restore_dialog_modified_not_encrypted": {
+    "placeholders": {
+      "date": {
+        "type": "String",
+        "example": "03/01/2022 14:57"
+      }
+    }
+  },
+  "restore_dialog_modified_encrypted": "{date} - (Nécessite une clé)",
+  "@restore_dialog_modified_encrypted": {
+    "placeholders": {
+      "date": {
+        "type": "String",
+        "example": "03/01/2022 14:57"
+      }
+    }
+  },
+  "restore_dialog_download_backup": "Télécharger la Sauvegarde",
+  "restore_dialog_download_backup_for_node": "Voulez-vous télécharger les données de sauvegarde pour le noeud : {nodeId} ?",
+  "@restore_dialog_download_backup_for_node": {
+    "placeholders": {
+      "nodeId": {
+        "type": "String",
+        "example": "Un id de noeud"
+      }
+    }
+  },
+  "restore_dialog_action_cancel": "ANNULER",
+  "restore_dialog_action_ok": "OK",
+  "restore_dialog_download_backup_error": "Erreur de téléchargement",
+  "beta_warning_title": "Avertissement de bêta",
+  "beta_warning_message": "Comme Breez est encore en version bêta, il y a un risque que votre argent soit perdu. N'utilisez cette application que si vous êtes prêt à prendre ce risque.",
+  "beta_warning_understand": "Je comprends",
+  "beta_warning_understand_confirmation": "Veuillez confirmer que vous avez compris avant de continuer.",
+  "beta_warning_action_exit": "QUITTER",
+  "beta_warning_action_continue": "CONTINUER",
+  "processing_payment_dialog_synchronizing": "Synchronisation avec le réseau",
+  "processing_payment_dialog_synchronizing_channels": "Breez synchronise vos canaux",
+  "processing_payment_dialog_action_close": "FERMER",
+  "processing_payment_dialog_processing_payment": "Traitement du paiement",
+  "processing_payment_dialog_wait": "Veuillez patienter, votre paiement est en cours de traitement",
+  "payment_request_dialog_requested": "Vous êtes prié de payer :",
+  "payment_request_dialog_requesting": "vous demande de payer :",
+  "payment_request_dialog_action_cancel": "ANNULER",
+  "payment_request_dialog_action_approve": "VALIDER",
+  "payment_failed_report_dialog_title": "Échec du paiement",
+  "payment_failed_report_dialog_message": "L'envoi des détails des paiements échoués à Breez pourrait contribuer à augmenter le taux de réussite des transactions. Voulez-vous envoyer les détails de ce paiement échoué à Breez ?",
+  "payment_failed_report_dialog_do_not_ask_again": "Ne plus me demander",
+  "payment_failed_report_dialog_action_no": "NON",
+  "payment_failed_report_dialog_action_yes": "OUI",
+  "payment_confirmation_dialog_title": "Confirmation de paiement",
+  "payment_confirmation_dialog_confirmation": "Êtes-vous sûr de vouloir payer",
+  "payment_confirmation_dialog_confirmation_end": " ?",
+  "payment_confirmation_dialog_action_no": "NON",
+  "payment_confirmation_dialog_action_yes": "OUI",
+  "no_connection_dialog_title": "Pas de connexion Internet",
+  "no_connection_dialog_tip_begin": "Vous pouvez essayer de:\n",
+  "no_connection_dialog_tip_airplane": "• Désactiver le mode avion\n",
+  "no_connection_dialog_tip_wifi": "• Activer les données mobiles ou le Wi-Fi\n",
+  "no_connection_dialog_tip_signal": "• Vérifier le signal dans votre région\n",
+  "no_connection_dialog_log_view_action": "Voir ",
+  "no_connection_dialog_log_view_message": "vos logs\n",
+  "no_connection_dialog_action_cancel": "ANNULER",
+  "no_connection_dialog_action_try_again": "ESSAYER DE NOUVEAU",
+  "lsp_fee_warning_title": "Frais d'installation",
+  "lsp_fee_warning_action_cancel": "ANNULER",
+  "lsp_fee_warning_action_ok": "OK",
+  "lsp_fee_warning_with_min_fee_account_connected": "Des frais de mise en place de {setUpFee}% avec un minimum de {minFee} seront appliqués pour un achat supérieur à {liquidity}.",
+  "@lsp_fee_warning_with_min_fee_account_connected": {
+    "placeholders": {
+      "setUpFee": {
+        "type": "String",
+        "example": "0.4"
+      },
+      "minFee": {
+        "type": "String",
+        "example": "1 000 sats"
+      },
+      "liquidity": {
+        "type": "String",
+        "example": "99 000 sats"
+      }
+    }
+  },
+  "lsp_fee_warning_without_min_fee_account_connected": "Des frais de mise en place de {setUpFee}% seront appliqués pour un achat supérieur à {liquidity}.",
+  "@lsp_fee_warning_without_min_fee_account_connected": {
+    "placeholders": {
+      "setUpFee": {
+        "type": "String",
+        "example": "0.4"
+      },
+      "liquidity": {
+        "type": "String",
+        "example": "99 000 sats"
+      }
+    }
+  },
+  "lsp_fee_warning_with_min_fee_account_not_connected": "Des frais d'installation de {setUpFee}% avec un minimum de {minFee} seront appliqués sur le montant reçu.",
+  "@lsp_fee_warning_with_min_fee_account_not_connected": {
+    "placeholders": {
+      "setUpFee": {
+        "type": "String",
+        "example": "0.4"
+      },
+      "minFee": {
+        "type": "String",
+        "example": "1 000 sats"
+      }
+    }
+  },
+  "lsp_fee_warning_without_min_fee_account_not_connected": "Des frais d'installation de {setUpFee}% seront appliqués sur le montant reçu.",
+  "@lsp_fee_warning_without_min_fee_account_not_connected": {
+    "placeholders": {
+      "setUpFee": {
+        "type": "String",
+        "example": "0.4"
+      }
+    }
+  },
+  "lsp_error_provider_do_not_exists": "Le LSP n'existe pas",
+  "lsp_error_not_selected": "Le LSP n'a pas été sélectionné",
+  "lost_card_dialog_title": "Carte perdue ou volée",
+  "lost_card_dialog_message": "Si votre carte a été perdue ou volée, vous devez la désactiver dès maintenant pour éviter qu'elle ne soit utilisée par d'autres personnes. La désactivation signifie que vous ne pourrez plus utiliser aucune de vos cartes existantes jusqu'à ce que vous les réactiviez.",
+  "lost_card_dialog_action_cancel": "ANNULER",
+  "lost_card_dialog_action_deactivate": "DESACTIVER",
+  "lost_card_dialog_flush_title": "",
+  "lost_card_dialog_flush_message": "Votre carte a été désactivée.\nVous pouvez commander une nouvelle carte dès maintenant.",
+  "lost_card_dialog_flush_action_order": "COMMANDER",
+  "order_card_action_skip": "PASSER",
+  "order_card_action_ok": "OK",
+  "order_card_action_order": "COMMANDER",
+  "order_card_action_error_name_address_missing": "Le nom et l'adresse sont nécessaires pour vous envoyer une carte Breez. Toutes les informations fournies seront supprimées de nos systèmes après l'envoi de la carte. Vous pouvez ignorer cette étape et continuer à utiliser Breez sans carte.",
+  "order_card_action_order_breez_card": "Commander une carte Breez",
+  "order_card_action_order_card": "Commander une carte",
+  "order_card_success": "La carte Breez sera envoyée sous peu à l'adresse que vous avez indiquée.",
+  "order_card_info_disclaimer": "Pourquoi dois-je fournir\nces informations ?",
+  "order_card_zip_code_label": "Code postal",
+  "order_card_zip_code_error": "Code postal non valide",
+  "order_card_country_label": "Pays",
+  "order_card_country_error_empty": "Veuillez indiquer votre pays",
+  "order_card_country_error_invalid": "Pays invalide",
+  "order_card_state_label": "État",
+  "order_card_country_state_empty": "Veuillez indiquer votre état",
+  "order_card_country_state_invalid": "État invalide",
+  "order_card_city_label": "Ville",
+  "order_card_city_error": "Veuillez indiquer votre ville",
+  "order_card_address_label": "Adresse",
+  "order_card_address_error": "Veuillez indiquer votre adresse",
+  "order_card_email_label": "Adresse e-mail",
+  "order_card_country_email_empty": "Veuillez indiquer votre adresse e-mail",
+  "order_card_country_email_invalid": "Invalid e-mail",
+  "order_card_full_name_label": "Nom complet",
+  "order_card_full_name_error": "Veuillez indiquer votre nom complet",
+  "link_launcher_title": "ID de la transaction :",
+  "link_launcher_link_name": "",
+  "keyboard_done_action": "Fait",
+  "flushbar_default_message": "",
+  "flushbar_default_action": "OK",
+  "fee_chooser_option_economy": "Économie",
+  "fee_chooser_option_regular": "Régulier",
+  "fee_chooser_option_priority": "Prioritaire",
+  "fee_chooser_estimated_delivery_more_than_day": "Livraison estimée : plus d'un jour",
+  "fee_chooser_estimated_delivery_hour": "Livraison estimée : 1 heure",
+  "fee_chooser_estimated_delivery_hours": "Livraison estimée : {hours} heures",
+  "@fee_chooser_estimated_delivery_hours": {
+    "placeholders": {
+      "hours": {
+        "type": "String",
+        "example": "6"
+      }
+    }
+  },
+  "fee_chooser_estimated_delivery_hour_range": "Livraison estimée : {hours}-24 heures",
+  "@fee_chooser_estimated_delivery_hour_range": {
+    "placeholders": {
+      "hours": {
+        "type": "String",
+        "example": "6"
+      }
+    }
+  },
+  "fee_chooser_estimated_delivery_minutes": "Livraison estimée : ~{minutes} minutes",
+  "@fee_chooser_estimated_delivery_minutes": {
+    "placeholders": {
+      "minutes": {
+        "type": "String",
+        "example": "10"
+      }
+    }
+  },
+  "escher_cash_out_amount": "Entrez le montant du retrait :",
+  "escher_action_cancel": "ANNULER",
+  "escher_action_approve": "APPROUVER",
+  "collapsible_list_default_value": "",
+  "collapsible_list_action_copy": "Copier {title}",
+  "@collapsible_list_action_copy": {
+    "placeholders": {
+      "title": {
+        "type": "String",
+        "example": "Un titre"
+      }
+    }
+  },
+  "collapsible_list_copied": "{title} a été copié dans votre presse-papiers.",
+  "@collapsible_list_copied": {
+    "placeholders": {
+      "title": {
+        "type": "String",
+        "example": "Un titre"
+      }
+    }
+  },
+  "close_popup_title": "Quitter Breez",
+  "close_popup_message": "Voulez-vous vraiment vraiment quitter Breez ?",
+  "breez_date_picker_day_and_date": "{day} {date}",
+  "@breez_date_picker_day_and_date": {
+    "placeholders": {
+      "day": {
+        "type": "String",
+        "example": "12"
+      },
+      "date": {
+        "type": "String",
+        "example": "12/12/2121"
+      }
+    }
+  },
+  "breez_date_picker_previous_month_tooltip": "{message} {date}",
+  "@breez_date_picker_previous_month_tooltip": {
+    "placeholders": {
+      "message": {
+        "type": "String",
+        "example": "Mois précédent"
+      },
+      "date": {
+        "type": "String",
+        "example": "12 2121"
+      }
+    }
+  },
+  "breez_date_picker_next_month_tooltip": "{message} {date}",
+  "@breez_date_picker_next_month_tooltip": {
+    "placeholders": {
+      "message": {
+        "type": "String",
+        "example": "Mois suivant"
+      },
+      "date": {
+        "type": "String",
+        "example": "12 2121"
+      }
+    }
+  },
+  "breez_date_picker_error_initial_date_after": "La date initiale doit être égale ou postérieure à la première date",
+  "breez_date_picker_error_initial_date_before": "La date initiale doit être antérieure ou égale à la date finale",
+  "breez_date_picker_error_initial_date_predicate": "La date initiale fournie doit satisfaire le prédicat du jour sélectionnable fourni.",
+  "breez_date_picker_error_initial_date_null": "Le mode initial du sélecteur de date ne doit pas être nul",
+  "breez_date_picker_error_last_date_after": "La dernière date doit être égale ou postérieure à la première date",
+  "breez_avatar_dialog_random": "ALEATOIRE",
+  "breez_avatar_dialog_gallery": "GALERIE",
+  "breez_avatar_dialog_your_name": "Entrez votre nom",
+  "breez_avatar_dialog_action_cancel": "ANNULER",
+  "breez_avatar_dialog_action_save": "SAUVEGARDER",
+  "breez_avatar_dialog_error_upload": "Impossible de télécharger la photo de profil",
+  "barcode_scanner_camera_message": "Pour le scan de QR, veuillez autoriser Breez à accéder à votre appareil photo.",
+  "barcode_scanner_app_settings": "Paramètres de l'application",
+  "utils_retry_failed": "La nouvelle tentative a échoué",
+  "utils_print_pdf_transaction_time": "Transaction Time",
+  "utils_print_pdf_header_item": "Article",
+  "utils_print_pdf_header_price": "Prix",
+  "utils_print_pdf_header_quantity": "Quantité",
+  "utils_print_pdf_header_amount": "Montant",
+  "utils_print_pdf_header_total": "Total",
+  "utils_print_pdf_header_description": "Description:",
+  "utils_print_pdf_header_payment_preimage": "Pré-image du paiement:",
+  "handler_check_version_action_update": "METTRE À JOUR",
+  "handler_check_version_message": "Veuillez mettre à jour Breez à la dernière version.",
+  "handler_channel_connection_message": "Breez est hors ligne",
+  "handler_channel_connection_close": "FERMER",
+  "handler_lnurl_error_link": "Erreur de lien",
+  "handler_lnurl_error_process": "Échec du traitement du lien : {message}",
+  "@handler_lnurl_error_process": {
+    "placeholders": {
+      "message": {
+        "type": "String",
+        "example": "Un message d'erreur"
+      }
+    }
+  },
+  "handler_lnurl_error_gift": "Ce cadeau a déjà été utilisé !",
+  "handler_lnurl_login_anonymously": "Voulez-vous vous connecter anonymement à ",
+  "handler_lnurl_login_error_title": "Erreur de connexion",
+  "handler_lnurl_login_error_message": "Échec de la connexion.\n{message}",
+  "@handler_lnurl_login_error_message": {
+    "placeholders": {
+      "message": {
+        "type": "String",
+        "example": "Un message d'erreur"
+      }
+    }
+  },
+  "handler_lnurl_login_error_unsupported": "LNURL non supporté",
+  "handler_lnurl_open_channel_title": "Ouvrir un Canal",
+  "handler_lnurl_open_channel_message": "Etes-vous sûr de vouloir ouvrir un canal avec {host} ?",
+  "@handler_lnurl_open_channel_message": {
+    "placeholders": {
+      "host": {
+        "type": "String",
+        "example": "Un hôte"
+      }
+    }
+  },
+  "handler_lnurl_open_channel_action_cancel": "ANNULER",
+  "handler_lnurl_open_channel_error_title": "Erreur d'ouverture de canal",
+  "handler_lnurl_open_channel_error_message": "Échec de l'ouverture du canal.\n{message}",
+  "@handler_lnurl_open_channel_error_message": {
+    "placeholders": {
+      "message": {
+        "type": "String",
+        "example": "Un message d'erreur"
+      }
+    }
+  },
+  "handler_podcast_error_load_episode": "Impossible de charger l'épisode. Veuillez vérifier votre connexion.",
+  "handler_podcast_error_load_episode_fallback": "Échec du chargement du podcast.",
+  "handler_sync_ui_message": "Breez se synchronise avec le réseau Bitcoin.",
+  "add_funds_error_deposit": "Breez est en train de traiter votre dépôt précédent. Vous pourrez ajouter d'autres fonds une fois cette opération terminée.",
+  "add_funds_error_withdraw": "Breez est en train de traiter votre précédent retrait. Vous pourrez ajouter d'autres fonds une fois cette opération terminée.",
+  "add_funds_transaction_id_copied": "L'ID de la transaction a été copié dans votre presse-papiers.",
+  "add_funds_item_voucher_title": "Valeur du bon d'achat",
+  "add_funds_item_voucher_message": "{value} {currency}",
+  "@add_funds_item_voucher_message": {
+    "placeholders": {
+      "value": {
+        "type": "String",
+        "example": "123"
+      },
+      "currency": {
+        "type": "String",
+        "example": "btc"
+      }
+    }
+  },
+  "add_funds_item_exchange_rate_title": "Taux de change",
+  "add_funds_item_exchange_rate_message": "{rate} {currency}",
+  "@add_funds_item_exchange_rate_message": {
+    "placeholders": {
+      "rate": {
+        "type": "String",
+        "example": "123"
+      },
+      "currency": {
+        "type": "String",
+        "example": "btc"
+      }
+    }
+  },
+  "add_funds_item_commission_rate_title": "Taux de commission",
+  "add_funds_item_commission_rate_message": "{rate}%",
+  "@add_funds_item_commission_rate_message": {
+    "placeholders": {
+      "rate": {
+        "type": "String",
+        "example": "123"
+      }
+    }
+  },
+  "add_funds_item_commission_total_title": "Total de la Commission",
+  "add_funds_item_commission_total_message": "{commission} {currency}",
+  "@add_funds_item_commission_total_message": {
+    "placeholders": {
+      "commission": {
+        "type": "String",
+        "example": "123"
+      },
+      "currency": {
+        "type": "String",
+        "example": "btc"
+      }
+    }
+  },
+  "add_funds_item_bitcoins_received_title": "Bitcoins reçus",
+  "add_funds_moonpay_title": "MoonPay",
+  "add_funds_moonpay_error_address": "Impossible de récupérer une adresse sur le serveur Breez.\nVeuillez vérifier votre connexion Internet..",
+  "add_funds_moonpay_loading": "Chargement...",
+  "add_funds_moonpay_error_service_unavailable": "Service indisponible. Veuillez réessayer plus tard.",
+  "csv_exporter_date_and_time": "Date et heure",
+  "csv_exporter_title": "Titre",
+  "csv_exporter_description": "Description",
+  "csv_exporter_node_id": "ID du noeud",
+  "csv_exporter_amount": "Montant",
+  "csv_exporter_preimage": "Pre-image",
+  "csv_exporter_tx_hash": "Hash de la TX",
+  "pos_custom_item_name": "Article {index}",
+  "@pos_custom_item_name": {
+    "placeholders": {
+      "index": {
+        "type": "int",
+        "example": "1"
+      }
+    }
+  },
+  "pos_settings_title": "Paramètres du PdV",
+  "pos_settings_cancellation_timeout": "Délai d'annulation du paiement (en secondes)",
+  "pos_settings_items_list": "Liste des articles",
+  "pos_settings_import_csv": "Importater depuis un CSV",
+  "pos_settings_export_csv": "Exporter en CSV",
+  "pos_settings_import_dialog_title": "Importer des articles",
+  "pos_settings_import_dialog_message": "L'importation de cette liste remplacera la liste existante. Êtes-vous sûr de vouloir continuer ?",
+  "pos_settings_import_action_yes": "OUI",
+  "pos_settings_import_action_no": "NON",
+  "pos_settings_import_select_message": "Veuillez sélectionner un fichier .csv.",
+  "pos_settings_import_success_message": "Les articles ont été importés avec succès.",
+  "pos_settings_import_error_generic": "Échec de l'importation des articles du PdV",
+  "pos_settings_import_error_invalid_file": "Le fichier sélectionné n'est pas un fichier CSV valide.",
+  "pos_settings_import_error_invalid_data": "Le fichier sélectionné contient des données non valides.",
+  "pos_settings_export_error_generic": "Échec de l'exportation des articles du PdV.",
+  "pos_settings_export_error_no_items": "Il n'y a aucun élément à exporter.",
+  "pos_settings_create_manager_password": "Créer le mot de passe Manager",
+  "pos_settings_activate_manager_password": "Activer le mot de passe Manager",
+  "pos_settings_change_manager_password": "Changer le mot de passe Manager",
+  "pos_settings_manager_password_error_title": "Mot de passe Manager",
+  "pos_settings_manager_password_error_message": "Le mot de passe manager ne peut être configuré que si vous avez une sauvegarde active. Pour déclencher un processus de sauvegarde, allez dans Recevoir > Recevoir via une adresse BTC.",
+  "pos_settings_manager_password_title": "Mot de passe Manager",
+  "pos_settings_manager_password_message": "Si le mot de passe du manager est activé, l'envoi de fonds depuis Breez nécessitera la saisie d'un mot de passe.\nÊtes-vous sûr de vouloir activer le mot de passe manager ?",
+  "pos_settings_manager_password_action_create": "CREER",
+  "pos_settings_manager_password_action_change": "CHANGER",
+  "pos_settings_business_address": "Adresse professionnelle",
+  "pos_settings_address_line_1": "Ligne d'adresse 1",
+  "pos_settings_address_line_2": "Ligne d'adresse 2",
+  "pos_settings_default_note": "Default Note",
+  "pos_settings_id": "ID",
+  "pos_settings_name": "Nom",
+  "pos_settings_sku": "SKU",
+  "pos_settings_image_url": "URL de l'image",
+  "pos_settings_currency": "Monnaie",
+  "pos_settings_price": "Prix",
+  "pos_password_admin_title": "Mot de passe Manager",
+  "pos_password_admin_error_password_empty": "Le mot de passe est requis",
+  "pos_password_admin_error_password_short": "Au moins 8 caractères sont requis",
+  "pos_password_admin_error_password_match": "Les mots de passe ne correspondent pas",
+  "pos_password_admin_new_password": "Entrez un nouveau mot de passe",
+  "pos_password_admin_confirm_password": "Confirmez le mot de passe",
+  "pos_dialog_clock": "{minutes}:{seconds}",
+  "@pos_dialog_clock": {
+    "placeholders": {
+      "minutes": {
+        "type": "String",
+        "example": "1"
+      },
+      "seconds": {
+        "type": "String",
+        "example": "30"
+      }
+    }
+  },
+  "pos_dialog_title": "Scanner pour payer",
+  "pos_dialog_share": "Partager les données relatives aux factures",
+  "pos_dialog_invoice_copy": "Copier des données de la facture",
+  "pos_dialog_invoice_copied": "Les données de la facture ont été copiées dans votre presse-papiers.",
+  "pos_dialog_clear_sale": "EFFACER",
+  "pos_dialog_cancel": "ANNULER",
+  "pos_dialog_setup_fee": "Des frais d'installation de {fee} ({fiat}) sont appliqués à cette facture.",
+  "@pos_dialog_setup_fee": {
+    "placeholders": {
+      "fee": {
+        "type": "String",
+        "example": "1000 sats"
+      },
+      "fiat": {
+        "type": "String",
+        "example": "30€"
+      }
+    }
+  },
+  "pos_payment_nfc_error_title": "Erreur de paiement NFC",
+  "pos_payment_nfc_range_error": "Seuls les paiements compris entre {minValue} et {maxValue} sont autorisés.",
+  "@pos_payment_nfc_range_error": {
+    "placeholders": {
+      "minValue": {
+        "type": "String",
+        "example": "1000 sats"
+      },
+      "maxValue": {
+        "type": "String",
+        "example": "1000 sats"
+      }
+    }
+  },
+  "pos_payment_nfc_error_action_close": "FERMER",
+  "successful_payment_print": "Imprimer",
+  "successful_payment_received": "Paiement reçu !",
+  "payment_options_title": "Lightning Fees",
+  "payment_options_fee_header": "Maximum fees for Lightning payments:",
+  "payment_options_fee_override_enable": "Enforce fees (experimental)",
+  "payment_options_base_fee_label": "Base Fee in sats",
+  "payment_options_proportional_fee_label": "Proportional Fee (%)",
+  "payment_options_fee_action_reset": "Reset",
+  "payment_options_fee_action_save": "Save",
+  "payment_options_fee_action_cancel": "Cancel",
+  "payment_options_fee_warning": "Warning: this feature is experimental. Limiting fees may cause payments to fail, but the reason for the failure may not be apparent.",
+  "payment_options_fee_warning_dialog_title": "Warning",
+  "payment_options_fee_warning_dialog_message": "This feature is experimental. Limiting fees may cause payments to fail, but the reason for the failure may not be apparent.",
+  "catalog_item_action_edit": "Editer l'article",
+  "catalog_item_action_delete": "Supprimer l'article",
+  "catalog_item_error_delete": "Échec de la suppression de {name}",
+  "@catalog_item_error_delete": {
+    "placeholders": {
+      "name": {
+        "type": "String",
+        "example": "Un nom"
+      }
+    }
+  },
+  "pos_report_dialog_title_daily": "Résumé quotidien",
+  "pos_report_dialog_title_weekly": "Résumé hebdomadaire",
+  "pos_report_dialog_title_monthly": "Résumé mensuel",
+  "pos_report_dialog_title_custom": "Résumé personnalisé",
+  "pos_report_dialog_action_close": "FERMER",
+  "pos_report_dialog_dropdown_item_daily": "Aujourd'hui",
+  "pos_report_dialog_dropdown_item_weekly": "Cette semaine",
+  "pos_report_dialog_dropdown_item_monthly": "Ce mois-ci",
+  "pos_report_dialog_dropdown_item_custom": "Plage personnalisée",
+  "pos_report_dialog_content_sales_label": "Nombre de ventes :",
+  "pos_report_dialog_content_amount_label": "Montant total :",
+  "pos_report_dialog_content_start_date_label": "Date de début :",
+  "pos_report_dialog_content_end_date_label": "Date de fin :",
+  "lnurl_withdraw_dialog_title": "Recevoir des fonds",
+  "lnurl_withdraw_dialog_wait": "Veuillez patienter pendant que votre paiement est en cours de traitement",
+  "lnurl_withdraw_dialog_action_close": "FERMER",
+  "lnurl_withdraw_dialog_error": "Echec de réception des fonds : {error}",
+  "@lnurl_withdraw_dialog_error": {
+    "placeholders": {
+      "error": {
+        "type": "String",
+        "example": "Une erreur"
+      }
+    }
+  },
+  "qr_code_dialog_synchronizing": "Synchronisation avec le réseau",
+  "qr_code_dialog_invoice": "Facture",
+  "qr_code_dialog_action_close": "FERMER",
+  "qr_code_dialog_share": "Partager les données de la facture",
+  "qr_code_dialog_copy": "Copie des données de la facture",
+  "qr_code_dialog_copied": "Les données de la facture ont été copiées dans votre presse-papiers.",
+  "qr_code_dialog_warning_message_error": "Échec de la création de la facture",
+  "qr_code_dialog_warning_message": "Laissez Breez ouvert jusqu'à ce que le paiement soit effectué.",
+  "qr_code_dialog_warning_message_with_lsp": "Des frais d'installation de {setupFee} ({fiatFee}) est appliqué à cette facture. Laissez Breez ouvert jusqu'à ce que le paiement soit effectué.",
+  "@qr_code_dialog_warning_message_with_lsp": {
+    "placeholders": {
+      "setupFee": {
+        "type": "String",
+        "example": "123 sats"
+      },
+      "fiatFee": {
+        "type": "String",
+        "example": "1$"
+      }
+    }
+  },
+  "qr_code_dialog_error": "Impossible de créer une facture {error}. Veuillez réessayer plus tard.",
+  "@qr_code_dialog_error": {
+    "placeholders": {
+      "error": {
+        "type": "String",
+        "example": "Une erreur"
+      }
+    }
+  },
+  "waiting_broadcast_dialog_dialog_title": "Transaction de remboursement",
+  "waiting_broadcast_dialog_dialog_title_error": "Erreur de remboursement",
+  "waiting_broadcast_dialog_action_close": "FERMER",
+  "waiting_broadcast_dialog_action_copy": "Copier le hash de la transaction",
+  "waiting_broadcast_dialog_action_share": "Partager le hash de la transaction",
+  "waiting_broadcast_dialog_transaction_id": "ID de la transacton :",
+  "waiting_broadcast_dialog_content_success": "Les fonds ont bien été envoyés à l'adresse spécifiée.",
+  "waiting_broadcast_dialog_content_warning": "Veuillez patienter pendant que Breez envoie les fonds à l'adresse spécifiée.",
+  "waiting_broadcast_dialog_content_error": "Erreur dans la diffusion de la transaction : {error}",
+  "@waiting_broadcast_dialog_content_error": {
+    "placeholders": {
+      "error": {
+        "type": "String",
+        "example": "Une erreur"
+      }
+    }
+  },
+  "wallet_dashboard_balance_hide": "******",
+  "wallet_dashboard_payment_item_balance_hide": "******",
+  "wallet_dashboard_payment_item_balance_positive": "+ {value}",
+  "@wallet_dashboard_payment_item_balance_positive": {
+    "placeholders": {
+      "value": {
+        "type": "String",
+        "example": "123"
+      }
+    }
+  },
+  "wallet_dashboard_payment_item_balance_negative": "- {value}",
+  "@wallet_dashboard_payment_item_balance_negative": {
+    "placeholders": {
+      "value": {
+        "type": "String",
+        "example": "123"
+      }
+    }
+  },
+  "wallet_dashboard_payment_item_balance_fee": "FRAIS {feeFormatted}",
+  "@wallet_dashboard_payment_item_balance_fee": {
+    "placeholders": {
+      "feeFormatted": {
+        "type": "String",
+        "example": "1"
+      }
+    }
+  },
+  "wallet_dashboard_payment_item_balance_pending_suffix": " (En attente)",
+  "status_text_loading_begin": "Breez est ",
+  "status_text_loading_middle": "en train d'ouvrir un canal sécurisé",
+  "status_text_loading_end": " avec notre serveur. Cela peut prendre un certain temps, mais ne vous inquiétez pas, nous vous informerons lorsque l'application sera prête à envoyer et recevoir des paiements.",
+  "status_text_ready": "Breez est prêt à recevoir des fonds.",
+  "qr_action_button_open_link": "Ouvrir le lien",
+  "qr_action_button_open_link_confirmation": "Êtes-vous sûr de vouloir ouvrir ce lien ?",
+  "qr_action_button_open_link_confirmation_no": "NON",
+  "qr_action_button_open_link_confirmation_yes": "OUI",
+  "qr_action_button_error_code_not_detected": "QR code non détecté.",
+  "qr_action_button_error_code_not_processed": "Le QR code ne peut pas être traité.",
+  "qr_action_button_error_link_title": "Erreur de lien",
+  "qr_action_button_error_link_message": "Échec du traitement du lien : {error}",
+  "@qr_action_button_error_link_message": {
+    "placeholders": {
+      "error": {
+        "type": "String",
+        "example": "Une erreur"
+      }
+    }
+  },
+  "lnurl_webview_error_title": "Erreur",
+  "lnurl_webview_error_invalid_url": "URL invalide",
+  "lnurl_webview_error_message": "Échec de l'appel de l'API {apiName}.",
+  "@lnurl_webview_error_message": {
+    "placeholders": {
+      "apiName": {
+        "type": "String",
+        "example": "Un nom de vendeur"
+      }
+    }
+  },
+  "lnurl_fetch_invoice_action_continue": "CONTINUER",
+  "lnurl_fetch_invoice_pay_to_payee": "Payer à {payee}",
+  "@lnurl_fetch_invoice_pay_to_payee": {
+    "placeholders": {
+      "payee": {
+        "type": "String",
+        "example": "Un bénéficiaire"
+      }
+    }
+  },
+  "lnurl_fetch_invoice_comment": "Commentaire (facultatif)",
+  "lnurl_fetch_invoice_error_min": "Doit être au moins {min}",
+  "@lnurl_fetch_invoice_error_min": {
+    "placeholders": {
+      "min": {
+        "type": "String",
+        "example": "1.23€"
+      }
+    }
+  },
+  "lnurl_fetch_invoice_error_max": "Dépasse la limite {max}",
+  "@lnurl_fetch_invoice_error_max": {
+    "placeholders": {
+      "max": {
+        "type": "String",
+        "example": "1.23€"
+      }
+    }
+  },
+  "lnurl_fetch_invoice_limit": "Entrez un montant compris entre {min} et {max}.",
+  "@lnurl_fetch_invoice_limit": {
+    "placeholders": {
+      "min": {
+        "type": "String",
+        "example": "1.23€"
+      },
+      "max": {
+        "type": "String",
+        "example": "1.23€"
+      }
+    }
+  },
+  "lnurl_fetch_invoice_error_title": "Erreur de LNURL-Pay",
+  "lnurl_fetch_invoice_error_message": "Une erreur s'est produite lors de la tentative de récupération d'une facture auprès de {host}!\nRaison : {reason}",
+  "@lnurl_fetch_invoice_error_message": {
+    "placeholders": {
+      "host": {
+        "type": "String",
+        "example": "http://www.ahost.com"
+      },
+      "reason": {
+        "type": "String",
+        "example": "Une raison"
+      }
+    }
+  },
+  "lnurl_error_unsupported": "LNUrl non supporté",
+  "make_invoice_request_title": "Ce site veut vous payer :",
+  "make_invoice_request_action_cancel": "ANNULER",
+  "make_invoice_request_action_approve": "APPROUVER",
+  "podcast_add_funds_title": "Ajoutez des fonds à votre solde pour envoyer des paiements à ce podcast.",
+  "podcast_add_funds_action_add": "AJOUTER DES FONDS",
+  "podcast_boost_not_enough_founds": "Vous n'avez pas assez de fonds pour effectuer ce paiement.",
+  "podcast_boost_sats": "sats",
+  "podcast_boost_sats_min": "sats/min",
+  "podcast_boost_action_boost": "BOOSTER!",
+  "podcast_boost_action_cancel": "ANNULER",
+  "podcast_boost_action_approve": "APPROUVER",
+  "podcast_boost_symbol_circa": "~",
+  "podcast_boost_send_title": "Envoyer un Boostagram",
+  "podcast_boost_send_optional": "Boostagram (facultatif)",
+  "podcast_boost_send_amount": "Quantité de Boost (en sats)",
+  "podcast_boost_custom_amount": "Entrez un montant personnalisé :",
+  "podcast_boost_custom_amount_error_empty": "Veuillez entrer un montant",
+  "podcast_boost_custom_amount_error_too_few": "Veuillez entrer au moins {amount} de sats.",
+  "@podcast_boost_custom_amount_error_too_few": {
+    "placeholders": {
+      "amount": {
+        "type": "int",
+        "example": "50"
+      }
+    }
+  },
+  "podcast_boost_adjustment_boost": "Booster",
+  "podcast_boost_adjustment_boost_message": "Envoyez un pourboire unique aux créateurs d'une émission. Appuyez longuement pour ajouter un message personnalisé.",
+  "podcast_boost_adjustment_stream_sats": "Streamer des sats",
+  "podcast_boost_adjustment_stream_sats_message": "Streamez des sats aux créateurs tout en écoutant leur émission. Le nombre indique la quantité de sats envoyés par minute. Pour écouter gratuitement, mettez cette valeur à 0.",
+  "podcast_boost_action_share": "Partager",
+  "podcast_boost_share_texts": "{podcast}\n{episode}\n{link}",
+  "@podcast_boost_share_texts": {
+    "placeholders": {
+      "podcast": {
+        "type": "String",
+        "example": "Un podcast"
+      },
+      "episode": {
+        "type": "String",
+        "example": "Un episode"
+      },
+      "link": {
+        "type": "String",
+        "example": "http://link.com"
+      }
+    }
+  },
+  "podcast_boost_share_texts_short": "{podcast}\n{link}",
+  "@podcast_boost_share_texts_short": {
+    "placeholders": {
+      "podcast": {
+        "type": "String",
+        "example": "Un podcast"
+      },
+      "link": {
+        "type": "String",
+        "example": "http://link.com"
+      }
+    }
+  },
+  "podcast_speed_selector_speed": "{speed}x",
+  "@podcast_speed_selector_speed": {
+    "placeholders": {
+      "speed": {
+        "type": "String",
+        "example": "1.5"
+      }
+    }
+  },
+  "lock_screen_enter_pin": "Entrez votre code PIN",
+  "backup_phrase_generate": "Générer une phrase de sauvegarde",
+  "backup_phrase_instructions": "Une liste de mots vous sera présentée. Notez ces mots et conservez-les dans un endroit sûr. Sans ces mots, vous ne pourrez pas restaurer à partir de la sauvegarde et vos fonds seront perdus. Breez ne pourra pas vous aider.",
+  "backup_phrase_action_confirm": "JE COMPRENDS",
+  "backup_phrase_action_next": "SUIVANT",
+  "backup_phrase_warning_disclaimer": "Votre phrase de sauvegarde existante ne sera plus valable et une nouvelle sera générée la prochaine fois que vous déciderez d'utiliser une phrase de sauvegarde. Êtes-vous sûr de ne pas vouloir utiliser une phrase de sauvegarde ?",
+  "backup_phrase_warning_action_yes": "OUI",
+  "backup_phrase_warning_action_no": "NON",
+  "backup_phrase_warning_action_next": "SUIVANT",
+  "backup_phrase_warning_action_backup": "SAUVEGARDE",
+  "backup_phrase_generation_write_words": "Écrivez ces mots",
+  "backup_phrase_generation_index": "{index}.",
+  "@backup_phrase_generation_index": {
+    "placeholders": {
+      "index": {
+        "type": "int",
+        "example": "1"
+      }
+    }
+  },
+  "backup_phrase_generation_verify": "Vérifions",
+  "backup_phrase_generation_type_words": "Veuillez saisir les mots {numberA}, {numberB} et {numberC} de la phrase de sauvegarde générée.",
+  "@backup_phrase_generation_type_words": {
+    "placeholders": {
+      "numberA": {
+        "type": "int",
+        "example": "1"
+      },
+      "numberB": {
+        "type": "int",
+        "example": "2"
+      },
+      "numberC": {
+        "type": "int",
+        "example": "3"
+      }
+    }
+  },
+  "backup_phrase_generation_type_step": "{number}",
+  "@backup_phrase_generation_type_step": {
+    "placeholders": {
+      "number": {
+        "type": "int",
+        "example": "1"
+      }
+    }
+  },
+  "backup_phrase_generation_verification_failed": "La vérification des mots a échoué. Veuillez écrire les mots et réessayer.",
+  "backup_phrase_generation_generic_error": "Erreur interne",
+  "spontaneous_payment_title": "Envoyer le paiement",
+  "spontaneous_payment_action_pay": "PAYER",
+  "spontaneous_payment_action_cancel": "ANNULER",
+  "spontaneous_payment_tip_message": "Message (facultatif)",
+  "spontaneous_payment_generic_message": "Vous pourrez recevoir des paiements une fois que Breez aura fini d'ouvrir un canal sécurisé avec notre serveur. Cela prend habituellement ~10 minutes pour être complété. Veuillez réessayer dans quelques minutes.",
+  "spontaneous_payment_max_amount": "Payez jusqu'à : {amount}",
+  "@spontaneous_payment_max_amount": {
+    "placeholders": {
+      "amount": {
+        "type": "String",
+        "example": "123"
+      }
+    }
+  },
+  "spontaneous_payment_node_id": "ID du noeud",
+  "spontaneous_payment_send_payment_title": "Envoyer le Paiement",
+  "spontaneous_payment_send_payment_message": "Etes-vous sûr de vouloir envoyer {amount} à ce noeud ?n\n{nodeID}",
+  "@spontaneous_payment_send_payment_message": {
+    "placeholders": {
+      "amount": {
+        "type": "String",
+        "example": "123"
+      },
+      "nodeID": {
+        "type": "String",
+        "example": "456"
+      }
+    }
+  },
+  "spontaneous_payment_error_title": "Erreur de paiement",
+  "sweep_all_coins_speed": "Choisir la vitesse de traitement",
+  "sweep_all_coins_action_confirm": "CONFIRMER",
+  "sweep_all_coins_label_send": "Vous envoyez :",
+  "sweep_all_coins_label_receive": "Vous recevez :",
+  "sweep_all_coins_label_transaction_fee": "Frais de transaction :",
+  "sweep_all_coins_fee": "-{fee}",
+  "@sweep_all_coins_fee": {
+    "placeholders": {
+      "fee": {
+        "type": "String",
+        "example": "123"
+      }
+    }
+  },
+  "sweep_all_coins_amount_no_fiat": "{amount}",
+  "@sweep_all_coins_amount_no_fiat": {
+    "placeholders": {
+      "amount": {
+        "type": "String",
+        "example": "123"
+      }
+    }
+  },
+  "sweep_all_coins_amount_with_fiat": "{amount} ({fiat})",
+  "@sweep_all_coins_amount_with_fiat": {
+    "placeholders": {
+      "amount": {
+        "type": "String",
+        "example": "123"
+      },
+      "fiat": {
+        "type": "String",
+        "example": "123"
+      }
+    }
+  },
+  "sweep_all_coins_error_retrieve_fees": "Échec de la récupération des frais. Veuillez réessayer plus tard.",
+  "sweep_all_coins_error_amount_small": "Le montant est trop faible pour être diffusé. Veuillez réessayer plus tard.",
+  "unexpected_funds_title": "Fonds inattendus",
+  "unexpected_funds_message": "Breez a trouvé des fonds inattendus dans son portefeuille sous-jacent (probablement en raison d'un canal fermé). Il est fortement recommandé d'envoyer ces fonds vers une adresse BTC dès que possible.",
+  "unexpected_error_restoring_chain_message": "La restauration des informations de la chaîne peut prendre plusieurs minutes.",
+  "unexpected_error_action_cancel": "ANNULER",
+  "unexpected_error_action_exit": "QUITTER BREEZ",
+  "unexpected_error_action_exit_for_retry": "QUITTER",
+  "unexpected_error_action_try_again": "ESSAYER À NOUVEAU",
+  "unexpected_error_action_just_exit": "QUITTER",
+  "unexpected_error_logs": "vos logs \n",
+  "unexpected_error_view": "Afficher ",
+  "unexpected_error_bullet": "• ",
+  "unexpected_error_bitcoin_node": "votre noeud Bitcoin\n",
+  "unexpected_error_reset": "Réinitialiser ",
+  "unexpected_error_chain_information": "informations sur la chaîne\n",
+  "unexpected_error_recover": "Récupérer ",
+  "unexpected_error_signal": "• Vérifier le signal dans votre secteur\n",
+  "unexpected_error_wifi": "• Activer les données mobiles ou le Wi-Fi\n",
+  "unexpected_error_airplane": "• Désactiver le mode avion\n",
+  "unexpected_error_suggestions": "Vous pouvez essayer:\n",
+  "unexpected_error_title": "Erreur inattendue",
+  "transferring_funds_title": "Transférer les fonds",
+  "select_provider_error_dialog_title": "Erreur de connexion",
+  "select_provider_error_dialog_select_provider_begin": "sélectionnez ",
+  "select_provider_error_dialog_select_provider_end": "un fournisseur.",
+  "select_provider_error_dialog_message": "Afin d'activer Breez, veuillez ",
+  "select_provider_error_dialog_message_error": "Une erreur s'est produite lors de la connexion au fournisseur sélectionné. Afin d'activer Breez, veuillez ",
+  "qr_scan_action_cancel": "ANNULER",
+  "pending_closed_channel_title": "Fermeture de canal en cours",
+  "pending_closed_channel_action_ok": "OK",
+  "close_warning_dialog_title": "Canaux inactifs",
+  "close_warning_dialog_action_ok": "OK",
+  "close_warning_dialog_message_begin": "Vous n'avez pas effectué de paiement avec Breez depuis {duration} jours, donc votre LSP pourrait devoir fermer vos canaux. Si cela se produit, Breez générera une adresse on-chain et y transférera vos fonds. Vous garderez le contrôle total de votre argent, moins les frais de minage encourus par la transaction de transfert, et vous pourrez revenir à tout moment. Pour en savoir plus sur les raisons de cette opération, lisez notre article sur ",
+  "@close_warning_dialog_message_begin": {
+    "placeholders": {
+      "duration": {
+        "type": "int",
+        "example": "12"
+      }
+    }
+  },
+  "close_warning_dialog_message_middle": "liquidité entrante",
+  "close_warning_dialog_message_end": ".",
+  "close_warning_dialog_url": "https://medium.com/breez-technology/lightning-economics-how-i-learned-to-stop-worrying-and-love-inbound-liquidity-511d05aa8b8b",
+  "admin_login_dialog_manager_password": "Mot de passe Manager",
+  "admin_login_dialog_password_label": "Entrez votre mot de passe",
+  "admin_login_dialog_action_cancel": "ANNULER",
+  "admin_login_dialog_action_ok": "OK",
+  "admin_login_dialog_error_authenticate": "Échec de l'authentification en tant que manager",
+  "admin_login_dialog_error_password_required": "Le mot de passe est requis",
+  "admin_login_dialog_error_password_incorrect": "Mot de passe incorrect",
+  "fast_bitcoin_dot_com_voucher": "Bon de réduction pour Fastbitcoins.com",
+  "fast_bitcoin_dot_com_error_service_unavailable": "Service indisponible. Veuillez réessayer plus tard.",
+  "payment_error_insufficient_balance": "Solde insuffisant",
+  "payment_error_insufficient_balance_amount": "Solde insuffisant : vous pouvez envoyer jusqu'à {amount} vers cette destination.",
+  "@payment_error_insufficient_balance_amount": {
+    "placeholders": {
+      "amount": {
+        "type": "String",
+        "example": "1.23€"
+      }
+    }
+  },
+  "payment_error_incorrect_payment_details": "Détails de paiement incorrects",
+  "payment_error_unexpected_error": "Erreur inattendue",
+  "payment_error_no_route": "Pas de route",
+  "payment_error_payment_timeout_exceeded": "Dépassement du délai de paiement",
+  "payment_error_none": "",
+  "swap_error_funds_exceed_limit": "la transaction exécutée était supérieure à la limite spécifiée.",
+  "swap_error_invoice_amount_mismatch": "le montant demandé ne correspond pas à la transaction originale.",
+  "swap_error_swap_expired": "la transaction a expiré.",
+  "swap_error_tx_too_small": "la taille de la transaction était trop petite pour être traitée.",
+  "status_message_unconfirmed_tx_id": "Breez attend que le transfert de bitcoins soit confirmé. Cela peut prendre un certain temps",
+  "status_transferring_on_chain_deposit": "Transfert des fonds en cours",
+  "status_failed_to_add_funds": "L'ajout de fonds a échoué : {error}",
+  "@status_failed_to_add_funds": {
+    "placeholders": {
+      "error": {
+        "type": "String",
+        "example": "Une erreur"
+      }
+    }
+  },
+  "on_chain_payment_error_not_enough_funds": "Pas assez de fonds.",
+  "valid_payment_error_exceeds_the_limit": "Le paiement dépasse la limite {amount}",
+  "@valid_payment_error_exceeds_the_limit": {
+    "placeholders": {
+      "amount": {
+        "type": "String",
+        "example": "123€"
+      }
+    }
+  },
+  "valid_payment_error_keep_balance": "Breez vous demande de garder {amount} dans votre balance.",
+  "@valid_payment_error_keep_balance": {
+    "placeholders": {
+      "amount": {
+        "type": "String",
+        "example": "123€"
+      }
+    }
+  },
+  "valid_payment_error_insufficient_balance": "Solde local insuffisant",
+  "description_waiting_broadcast": "Attente de la diffusion de la transaction",
+  "description_broadcast_done": "La transaction a été diffusée",
+  "description_type_deposit": "Transfert de bitcoins",
+  "payment_info_title_bitrefill": "Bitrefill",
+  "payment_info_title_breez_sale": "Vente [{date}]",
+  "@payment_info_title_breez_sale": {
+    "placeholders": {
+      "date": {
+        "type": "String",
+        "example": "1/2/22"
+      }
+    }
+  },
+  "payment_info_title_lightning_gifts": "lightning.gifts",
+  "payment_info_title_ln_pizza": "ln.pizza",
+  "payment_info_title_zebedee": "Zebedee",
+  "payment_info_title_bitcoin_transfer": "Transfert de bitcoins",
+  "payment_info_title_closed_channel": "Channel fermé",
+  "payment_info_title_send_to_node": "Envoyer au noeud",
+  "payment_info_title_unknown": "Inconnu",
+  "payment_info_title_pending_closed_channel": "Fermeture de canal en cours",
+  "payment_error_to_send": "Échec de l'envoi du paiement : {error}",
+  "@payment_error_to_send": {
+    "placeholders": {
+      "error": {
+        "type": "String",
+        "example": "Une erreur"
+      }
+    }
+  },
+  "podcast_history_drawer": "Mes meilleurs podcasts",
+  "podcast_history_share_message":  "Mes meilleurs podcasts écoutés sur Breez",
+  "podcast_history_share_text":"PARTAGER",
+  "podcast_history_sats_streamed":"sats diffusés",
+  "podcast_history_boostagrams_sent":"boosts envoyés",
+  "podcast_history_open_podcast_button": "PODCASTS OUVERTS",
+  "podcast_history_appbar_top_weekly":"Top des podcasts hebdomadaires",
+  "podcast_history_appbar_top_monthly":"Meilleurs podcasts mensuels",
+  "podcast_history_appbar_top_yearly":"Meilleurs podcasts annuels",
+  "podcast_history_timerange_dropdown_week":"La semaine dernière",
+  "podcast_history_timerange_dropdown_month":"Mois passé",
+  "podcast_history_timerange_dropdown_year":"L'année passée",
+  "podcast_history_sort_dropdown_recent":"Récent",
+  "podcast_history_sort_dropdown_duration":"écouté",
+  "podcast_history_sort_dropdown_sats":"Payé",
+  "podcast_history_sort_dropdown_boosts":"Boosted",
+  "podcast_history_empty_text":"Aucune donnée disponible à afficher.",
+  "locale": "fr",
+  "app_name": "Breez"
+}

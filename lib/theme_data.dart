@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 String themeId = "BLUE";
 
@@ -71,7 +72,7 @@ final ThemeData blueTheme = ThemeData(
     ),
     color: Colors.transparent,
     actionsIconTheme: IconThemeData(color: Color.fromRGBO(0, 120, 253, 1.0)),
-    brightness: Brightness.dark,
+    systemOverlayStyle: SystemUiOverlayStyle.light,
   ),
   dialogTheme: DialogTheme(
       titleTextStyle: TextStyle(
@@ -179,7 +180,7 @@ final ThemeData blueTheme = ThemeData(
   elevatedButtonTheme: ElevatedButtonThemeData(),
   radioTheme: RadioThemeData(
     fillColor: MaterialStateProperty.resolveWith(
-          (states) {
+      (states) {
         if (states.contains(MaterialState.selected)) {
           return Color(0xFF0085fb);
         } else {
@@ -213,7 +214,7 @@ final ThemeData darkTheme = ThemeData(
     ),
     color: Colors.white,
     actionsIconTheme: IconThemeData(color: Colors.white),
-    brightness: Brightness.dark,
+    systemOverlayStyle: SystemUiOverlayStyle.light,
   ),
   dialogTheme: DialogTheme(
       titleTextStyle:
@@ -322,14 +323,12 @@ final ThemeData darkTheme = ThemeData(
   ),
 );
 
-final VendorTheme bitrefill = VendorTheme(
-    iconFgColor: Color.fromRGBO(68, 155, 247, 1.0),
-    iconBgColor: Color(0xFFffffff),
-    textColor: Color.fromRGBO(47, 47, 47, 1.0));
+final VendorTheme bitrefill = VendorTheme(iconBgColor: Color(0xFF002B28));
 final VendorTheme lnpizza =
     VendorTheme(iconBgColor: Color(0xFF000000), iconFgColor: Color(0xFFf8e71c));
 final VendorTheme fixedfloat = VendorTheme(iconBgColor: Color(0xFF0B4E7B));
 final VendorTheme lnmarkets = VendorTheme(iconBgColor: Color(0xFF384697));
+final VendorTheme fold = VendorTheme(iconBgColor: Color(0xFFFFCF30));
 final VendorTheme boltz = VendorTheme(iconBgColor: Color(0xFF001524));
 final VendorTheme lightnite = VendorTheme(iconBgColor: Color(0xFF530709));
 final VendorTheme spendl = VendorTheme(iconBgColor: Color(0xFFffffff));
@@ -343,6 +342,8 @@ final VendorTheme fastbitcoins = VendorTheme(
     iconFgColor: Color(0xFF1f2a44),
     textColor: Color(0xFF1f2a44));
 final VendorTheme xsats = VendorTheme(iconBgColor: Color(0xFF000000));
+final VendorTheme geyser =
+    VendorTheme(iconBgColor: Color.fromRGBO(41, 241, 205, 1));
 
 final Map<String, VendorTheme> vendorTheme = {
   "bitrefill": bitrefill,
@@ -355,6 +356,8 @@ final Map<String, VendorTheme> vendorTheme = {
   "kollider": kollider,
   "fastbitcoins": fastbitcoins,
   "xsats": xsats,
+  "geyser": geyser,
+  "fold": fold,
 };
 
 final TextStyle drawerItemTextStyle =
@@ -563,6 +566,8 @@ final BoxDecoration boxDecoration = BoxDecoration(
 final BoxDecoration autoCompleteBoxDecoration = BoxDecoration(
     color: BreezColors.white[500], borderRadius: BorderRadius.circular(3.0));
 final Color whiteColor = BreezColors.white[500];
+final podcastHistoryTileBackGroundColorBlue = Color.fromRGBO(0, 117, 255, 1.0);
+
 final Color snackBarBackgroundColor = BreezColors.blue[300];
 final Color avatarBackgroundColor = BreezColors.blue[500];
 final Color sessionAvatarBackgroundColor = BreezColors.white[500];

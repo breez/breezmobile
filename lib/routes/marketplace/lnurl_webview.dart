@@ -40,14 +40,16 @@ class LNURLWebViewPageState extends State<LNURLWebViewPage> {
   @override
   void initState() {
     super.initState();
-    _handleLNUrlAuth().catchError(
-      (err) => promptError(
-        context,
-        AppLocalizations.of(context).lnurl_webview_error_title,
-        Text(err.toString()),
-        okFunc: () => Navigator.of(context).pop(),
-      ),
-    );
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _handleLNUrlAuth().catchError(
+            (err) => promptError(
+          context,
+          AppLocalizations.of(context).lnurl_webview_error_title,
+          Text(err.toString()),
+          okFunc: () => Navigator.of(context).pop(),
+        ),
+      );
+    });
   }
 
   Future _handleLNUrlAuth() async {

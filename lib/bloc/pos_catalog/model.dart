@@ -336,8 +336,11 @@ class SaleSummary {
         satValue = json["sat_value"].toInt(),
         currencies = json["currencies"].toString().split(",").toList();
 
-  bool isSingleCurrency() {
-    return currencies.length == 1;
+  List<String> fiatCurrencies() {
+    return currencies
+        .map((e) => e.toUpperCase())
+        .where((e) => e != "BTC" && e != "SAT")
+        .toList();
   }
 }
 

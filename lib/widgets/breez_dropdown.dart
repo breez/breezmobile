@@ -7,7 +7,6 @@ import 'dart:math' as math;
 import 'dart:ui' show window;
 
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 
 const Duration _kDropdownMenuDuration = Duration(milliseconds: 300);
 const double _kMenuItemHeight = kMinInteractiveDimension;

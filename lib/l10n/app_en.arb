@@ -11,6 +11,7 @@
   "home_drawer_item_title_pos_settings": "POS Settings",
   "home_drawer_item_title_developers": "Developers",
   "home_drawer_item_title_get_refund": "Get Refund",
+  "home_drawer_item_title_payment_options": "Lightning Fees",
   "home_drawer_error_internal": "Internal Error",
   "home_drawer_error_no_name": "No Name",
   "home_podcast_title": "Anytime Podcast Player",
@@ -20,7 +21,7 @@
   "home_broadcast_transaction": "Broadcasting your transaction",
   "home_config_error_title": "Configuration Error",
   "home_config_error_message": "Breez detected another device is running with the same configuration (probably due to restore). Breez cannot run the same configuration on more than one device. Please reinstall Breez if you wish to continue using Breez on this device.",
-  "home_config_error_action_exit": "Exit Breez",
+  "home_config_error_action_exit": "CANCEL",
   "home_background_synchronization_title": "Background Synchronization",
   "home_background_synchronization_message": "In order to support instantaneous payments, Breez needs your permission in order to synchronize the information while the app is not active. Please approve the app in the next dialog.",
   "home_payment_sent": "Payment was successfully sent!",
@@ -801,6 +802,9 @@
   "network_restart_action_reset": "Reset",
   "network_restart_action_save": "Save",
   "network_bitcoin_node": "Bitcoin Node (BIP 157)",
+  "network_optional_node": "Bitcoin Node (BIP 157, optional)",
+  "network_bitcoin_node_required_error": "This field is required",
+  "network_distinct_node_hint": "Please enter a different node",
   "network_default_node_error": "Breez is unable to use the default node.",
   "network_custom_node_error": "Breez is unable to connect to the specified node. Please make sure this node supports BIP 157.",
   "network_testing_node": "Testing node",
@@ -945,16 +949,17 @@
       }
     }
   },
-  "funds_over_limit_dialog_redeem_hour": "You will be able to redeem your funds after block {lockHeight} (in about an hour).",
-  "@funds_over_limit_dialog_redeem_hour": {
+  "approximately_an_hour": "(in about an hour)",
+  "approximate_hours": "(~{hours} hours)",
+  "@approximate_hours": {
     "placeholders": {
-      "lockHeight": {
+      "hours": {
         "type": "String",
-        "example": "140659"
+        "example": "42"
       }
     }
   },
-  "funds_over_limit_dialog_redeem_hours": "You will be able to redeem your funds after block {lockHeight} (~{hoursToUnlock} hours).",
+  "funds_over_limit_dialog_redeem_hours": "You will be able to redeem your funds after block {lockHeight} {hoursToUnlock}.",
   "@funds_over_limit_dialog_redeem_hours": {
     "placeholders": {
       "lockHeight": {
@@ -963,7 +968,7 @@
       },
       "hoursToUnlock": {
         "type": "String",
-        "example": "7"
+        "example": "(~42 hours)"
       }
     }
   },
@@ -1489,6 +1494,7 @@
   "pos_settings_business_address": "Business Address",
   "pos_settings_address_line_1": "Address Line 1",
   "pos_settings_address_line_2": "Address Line 2",
+  "pos_settings_default_note": "Default Note",
   "pos_settings_id": "ID",
   "pos_settings_name": "Name",
   "pos_settings_sku": "SKU",
@@ -1533,8 +1539,34 @@
       }
     }
   },
+  "pos_payment_nfc_error_title": "NFC Payment error",
+  "pos_payment_nfc_range_error": "Only payments between {minValue} and {maxValue} are allowed.",
+  "@pos_payment_nfc_range_error": {
+    "placeholders": {
+      "minValue": {
+        "type": "String",
+        "example": "1000 sats"
+      },
+      "maxValue": {
+        "type": "String",
+        "example": "1000 sats"
+      }
+    }
+  },
+  "pos_payment_nfc_error_action_close": "CLOSE",
   "successful_payment_print": "Print",
   "successful_payment_received": "Payment received!",
+  "payment_options_title": "Lightning Fees",
+  "payment_options_fee_header": "Maximum fees for Lightning payments:",
+  "payment_options_fee_override_enable": "Enforce fees (experimental)",
+  "payment_options_base_fee_label": "Base Fee in sats",
+  "payment_options_proportional_fee_label": "Proportional Fee (%)",
+  "payment_options_fee_action_reset": "Reset",
+  "payment_options_fee_action_save": "Save",
+  "payment_options_fee_action_cancel": "Cancel",
+  "payment_options_fee_warning": "Warning: this feature is experimental. Limiting fees may cause payments to fail, but the reason for the failure may not be apparent.",
+  "payment_options_fee_warning_dialog_title": "Warning",
+  "payment_options_fee_warning_dialog_message": "This feature is experimental. Limiting fees may cause payments to fail, but the reason for the failure may not be apparent.",
   "catalog_item_action_edit": "Edit Item",
   "catalog_item_action_delete": "Delete Item",
   "catalog_item_error_delete": "Failed to delete {name}",
@@ -1807,8 +1839,8 @@
     }
   },
   "lock_screen_enter_pin": "Enter your PIN",
-  "backup_phrase_generate": "Generate Backup Phrase",
-  "backup_phrase_instructions": "You will be shown a list of words. Write down the words and store them in a safe place. Without these words, you won't be able to restore from backup and your funds will be lost. Breez won’t be able to help.",
+  "backup_phrase_generate": "Encrypt Cloud Backup",
+  "backup_phrase_instructions": "You will be shown a list of words. Write down the words and store them in a safe place. Without these words, you won't be able to restore from backup and your funds will be lost. Breez won’t be able to help. Note these words aren't a wallet seed. They are used to encrypt the backup data stored in the cloud.",
   "backup_phrase_action_confirm": "I UNDERSTAND",
   "backup_phrase_action_next": "NEXT",
   "backup_phrase_warning_disclaimer": "Your existing backup phrase will no longer be valid and a new one will be generated next time you decide to use a backup phrase. Are you sure you don't want to use a backup phrase?",
@@ -2056,6 +2088,23 @@
       }
     }
   },
+  "podcast_history_drawer": "My Top Podcasts",
+  "podcast_history_share_message":  "My top podcasts listened on Breez",
+  "podcast_history_share_text":"SHARE",
+  "podcast_history_sats_streamed":"sats streamed",
+  "podcast_history_boostagrams_sent":"boosts sent",
+  "podcast_history_open_podcast_button": "OPEN PODCASTS",
+  "podcast_history_appbar_top_weekly":"Top Weekly Podcasts",
+  "podcast_history_appbar_top_monthly":"Top Monthly Podcasts",
+  "podcast_history_appbar_top_yearly":"Top Yearly Podcasts",
+  "podcast_history_timerange_dropdown_week":"Past Week",
+  "podcast_history_timerange_dropdown_month":"Past Month",
+  "podcast_history_timerange_dropdown_year":"Past Year",
+  "podcast_history_sort_dropdown_recent":"Recent",
+  "podcast_history_sort_dropdown_duration":"Listened",
+  "podcast_history_sort_dropdown_sats":"Paid",
+  "podcast_history_sort_dropdown_boosts":"Boosted",
+  "podcast_history_empty_text":"No available data to display.",
   "locale": "en",
   "app_name": "Breez"
 }

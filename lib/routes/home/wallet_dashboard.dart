@@ -183,7 +183,7 @@ class WalletDashboardState extends State<WalletDashboard> {
         ),
         children: [
           TextSpan(
-            text: widget._accountModel.currency.displayName,
+            text: " ${widget._accountModel.currency.displayName}",
             style: headline4.copyWith(
               fontSize: startHeaderSize * 0.6 -
                   (startHeaderSize * 0.6 - endHeaderFontSize) *

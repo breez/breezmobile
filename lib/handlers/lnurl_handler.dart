@@ -1,6 +1,8 @@
 import 'package:breez/bloc/lnurl/lnurl_actions.dart';
 import 'package:breez/bloc/lnurl/lnurl_bloc.dart';
 import 'package:breez/bloc/lnurl/lnurl_model.dart';
+import 'package:breez/routes/create_invoice/create_invoice_page.dart';
+import 'package:breez/routes/lnurl_fetch_invoice_page.dart';
 import 'package:breez/routes/podcast/theme.dart';
 import 'package:breez/routes/sync_progress_dialog.dart';
 import 'package:breez/widgets/error_dialog.dart';
@@ -9,28 +11,24 @@ import 'package:breez/widgets/route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
-import '../routes/create_invoice/create_invoice_page.dart';
-import '../routes/lnurl_fetch_invoice_page.dart';
-
 class LNURLHandler {
-  final BuildContext _context;
   final LNUrlBloc lnurlBloc;
   ModalRoute _loaderRoute;
 
-  LNURLHandler(this._context, this.lnurlBloc) {
-    final texts = AppLocalizations.of(_context);
-    final themeData = Theme.of(_context);
+  LNURLHandler(BuildContext context, this.lnurlBloc) {
+    final texts = AppLocalizations.of(context);
+    final themeData = Theme.of(context);
 
     lnurlBloc.listenLNUrl().listen((response) {
       if (response.runtimeType == fetchLNUrlState) {
-        _setLoading(response == fetchLNUrlState.started);
+        _setLoading(context, response == fetchLNUrlState.started);
       } else {
-        return executeLNURLResponse(_context, lnurlBloc, response);
+        return executeLNURLResponse(context, lnurlBloc, response);
       }
     }).onError((err) async {
       final errorMessage = _getErrorMessage(texts, err.toString());
       promptError(
-        this._context,
+        context,
         texts.handler_lnurl_error_link,
         Text(
           texts.handler_lnurl_error_process(errorMessage),
@@ -190,15 +188,15 @@ class LNURLHandler {
     });
   }
 
-  _setLoading(bool visible) {
+  _setLoading(BuildContext context, bool visible) {
     if (visible && _loaderRoute == null) {
-      _loaderRoute = createLoaderRoute(_context);
-      Navigator.of(_context).push(_loaderRoute);
+      _loaderRoute = createLoaderRoute(context);
+      Navigator.of(context).push(_loaderRoute);
       return;
     }
 
     if (!visible && _loaderRoute != null) {
-      Navigator.removeRoute(_context, _loaderRoute);
+      Navigator.removeRoute(context, _loaderRoute);
       _loaderRoute = null;
     }
   }

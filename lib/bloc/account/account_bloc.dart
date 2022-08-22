@@ -9,6 +9,8 @@ import 'package:breez/bloc/account/account_permissions_handler.dart';
 import 'package:breez/bloc/account/fiat_conversion.dart';
 import 'package:breez/bloc/async_action.dart';
 import 'package:breez/bloc/csv_exporter.dart';
+import 'package:breez/bloc/payment_options/payment_options_actions.dart';
+import 'package:breez/bloc/payment_options/payment_options_bloc.dart';
 import 'package:breez/bloc/pos_catalog/repository.dart';
 import 'package:breez/bloc/user_profile/breez_user_model.dart';
 import 'package:breez/logger.dart';
@@ -24,6 +26,7 @@ import 'package:breez/services/notifications.dart';
 import 'package:breez/utils/retry.dart';
 import 'package:collection/collection.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
+import 'package:fixnum/fixnum.dart';
 import 'package:flutter/foundation.dart';
 import 'package:rxdart/rxdart.dart';
 
@@ -135,10 +138,12 @@ class AccountBloc {
   Stream<BreezUserModel> userProfileStream;
   TorBloc torBloc = TorBloc();
   Completer<bool> startDaemonCompleter = Completer<bool>();
+  PaymentOptionsBloc _paymentOptionsBloc;
 
   AccountBloc(
     this.userProfileStream,
     this._posRepository,
+    this._paymentOptionsBloc,
   ) {
     init();
   }
@@ -203,7 +208,7 @@ class AccountBloc {
   void _start() {
     log.info("Account bloc started");
     ServiceInjector().sharedPreferences.then((preferences) {
-      _handleRegisterDeviceNode();      
+      _handleRegisterDeviceNode();
       _refreshAccountAndPayments();
       //listen streams
       _listenAccountActions();
@@ -420,9 +425,13 @@ class AccountBloc {
     if (action.ignoreGlobalFeedback) {
       _ignoredFeedbackPayments[payRequest.paymentRequest] = true;
     }
+    final fee = await _calculateFee(payRequest.amount.toInt());
     var sendRequest = _breezLib
-        .sendPaymentForRequest(payRequest.paymentRequest,
-            amount: payRequest.amount)
+        .sendPaymentForRequest(
+      payRequest.paymentRequest,
+      amount: payRequest.amount,
+      fee: Int64(fee),
+    )
         .then((response) async {
       if (response.paymentError.isNotEmpty) {
         var error = PaymentError(
@@ -719,10 +728,10 @@ class AccountBloc {
     log.info("before _refreshPayments");
     return fetchPayments()
         .then((paymentModel) => _paymentsController.add(paymentModel))
-        .catchError((Object err, [StackTrace stack]){
-          log.severe("failed to fetch payments $err");
-          _paymentsController.addError(err, stack);
-        });
+        .catchError((Object err, [StackTrace stack]) {
+      log.severe("failed to fetch payments $err");
+      _paymentsController.addError(err, stack);
+    });
   }
 
   List<PaymentInfo> _groupPayments(List<PaymentInfo> paymentsList) {
@@ -872,10 +881,10 @@ class AccountBloc {
     log.info("Account bloc refreshing account...");
     await _fetchAccount()
         .then((acc) => _accountController.add(acc))
-        .catchError((Object err, [StackTrace stack]){
-          log.severe("failed to fetch account $err");
-          _accountController.addError(err, stack);
-        });
+        .catchError((Object err, [StackTrace stack]) {
+      log.severe("failed to fetch account $err");
+      _accountController.addError(err, stack);
+    });
     _refreshLSPActivity();
     if (_accountController.value.onChainFeeRate == null) {
       _breezLib.getDefaultOnChainFeeRate().then((rate) {
@@ -941,6 +950,12 @@ class AccountBloc {
       fiatShortName: _currentUser?.fiatCurrency,
       preferredCurrencies: _currentUser?.preferredCurrencies,
     ));
+  }
+
+  Future<int> _calculateFee(int amount) async {
+    final calculateFee = CalculateFee(amount);
+    _paymentOptionsBloc.actionsSink.add(calculateFee);
+    return await calculateFee.future;
   }
 
   close() {

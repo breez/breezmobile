@@ -11,14 +11,12 @@ class PaymentsList extends StatelessWidget {
   final List<PaymentInfo> _payments;
   final double _itemHeight;
   final GlobalKey firstPaymentItemKey;
-  final ScrollController scrollController;
 
   const PaymentsList(
     this._userModel,
     this._payments,
     this._itemHeight,
     this.firstPaymentItemKey,
-    this.scrollController,
   );
 
   @override
@@ -30,11 +28,9 @@ class PaymentsList extends StatelessWidget {
           final payment = _payments[index];
           return PaymentItem(
             payment,
-            index,
             0 == index,
             _userModel.hideBalance,
             firstPaymentItemKey,
-            scrollController,
           );
         },
         childCount: _payments.length,

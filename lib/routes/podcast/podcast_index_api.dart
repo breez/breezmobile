@@ -31,9 +31,11 @@ class PodcastIndexAPI extends PodcastApi {
   }
 
   @override
-  Future<SearchResult> charts(
-    int size,
-  ) async {
+  Future<SearchResult> charts({
+    int size = 20,
+    String genre,
+    String searchProvider,
+  }) async {
     return compute(_charts, 0);
   }
 
@@ -46,14 +48,16 @@ class PodcastIndexAPI extends PodcastApi {
   }
 
   static Future<SearchResult> _search(String term) {
-    return Search(userAgent: Environment.userAgent())
-        .search(
-          term,
-          queryParams: {"val": "lightning"},
+    return Search(
+          userAgent: Environment.userAgent(),
           searchProvider: PodcastIndexProvider(
             key: 'XXWQEGULBJABVHZUM8NF',
             secret: 'KZ2uy4upvq4t3e\$m\$3r2TeFS2fEpFTAaF92xcNdX',
           ),
+        )
+        .search(
+          term,
+          queryParams: {"val": "lightning"},
         )
         .timeout(Duration(seconds: 10));
   }
@@ -61,11 +65,11 @@ class PodcastIndexAPI extends PodcastApi {
   static Future<SearchResult> _charts(int size) {
     return Search(
       userAgent: Environment.userAgent(),
-    ).charts(
       searchProvider: PodcastIndexProvider(
         key: 'NBVJ9GPWMLPXJMFFD3KV',
         secret: 'be7kR2CWeCFk4nkKCKV4XAX35y2eXrDeCPvs#v4F',
       ),
+    ).charts(
       queryParams: {
         'val': 'lightning',
         'aponly': 'true',
@@ -105,5 +109,18 @@ class PodcastIndexAPI extends PodcastApi {
           .setTrustedCertificatesBytes(_certificateAuthorityBytes);
       _defaultSecurityContext = SecurityContext.defaultContext;
     }
+  }
+
+  @override
+  List<String> genres(String searchProvider) {
+    var provider = PodcastIndexProvider(
+      key: 'NBVJ9GPWMLPXJMFFD3KV',
+      secret: 'be7kR2CWeCFk4nkKCKV4XAX35y2eXrDeCPvs#v4F',
+    );
+
+    return Search(
+      userAgent: Environment.userAgent(),
+      searchProvider: provider,
+    ).genres();
   }
 }

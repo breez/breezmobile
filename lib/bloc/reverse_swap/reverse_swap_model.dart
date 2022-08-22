@@ -1,5 +1,3 @@
-import 'dart:ffi';
-
 import 'package:breez/services/breezlib/data/rpc.pb.dart';
 import 'package:fixnum/fixnum.dart';
 

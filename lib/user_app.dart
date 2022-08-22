@@ -10,6 +10,7 @@ import 'package:breez/bloc/user_profile/user_actions.dart';
 import 'package:breez/bloc/user_profile/user_profile_bloc.dart';
 import 'package:breez/l10n/locales.dart';
 import 'package:breez/routes/fiat_currencies/fiat_currency_settings.dart';
+import 'package:breez/routes/payment_options/payment_options_page.dart';
 import 'package:breez/routes/podcast/theme.dart';
 import 'package:breez/routes/qr_scan.dart';
 import 'package:breez/utils/locale.dart';
@@ -17,6 +18,7 @@ import 'package:breez/widgets/route.dart';
 import 'package:breez/widgets/static_loader.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import 'bloc/lnurl/lnurl_bloc.dart';
 import 'bloc/lsp/lsp_bloc.dart';
@@ -34,6 +36,7 @@ import 'routes/lsp/select_lsp_page.dart';
 import 'routes/marketplace/marketplace.dart';
 import 'routes/network/network.dart';
 import 'routes/order_card/order_card_page.dart';
+import 'routes/podcast_history/podcast_history.dart';
 import 'routes/security_pin/lock_screen.dart';
 import 'routes/security_pin/security_pin_page.dart';
 import 'routes/settings/pos_settings_page.dart';
@@ -56,6 +59,11 @@ Widget _withTheme(BreezUserModel user, Widget child) {
 class UserApp extends StatelessWidget {
   GlobalKey<NavigatorState> _navigatorKey = GlobalKey<NavigatorState>();
   GlobalKey<NavigatorState> _homeNavigatorKey = GlobalKey<NavigatorState>();
+  Sink<bool> _reloadDatabaseSink;
+
+  UserApp(Sink<bool> reloadDatabaseSink) {
+    _reloadDatabaseSink = reloadDatabaseSink;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -92,7 +100,7 @@ class UserApp extends StatelessWidget {
             title: getSystemAppLocalizations().app_name,
             theme: theme.themeMap[user.themeId],
             localizationsDelegates: localizationsDelegates(),
-            supportedLocales: supportedLocales(),
+            supportedLocales: AppLocalizations.supportedLocales,
             builder: (BuildContext context, Widget child) {
               final MediaQueryData data = MediaQuery.of(context);
               return MediaQuery(
@@ -115,6 +123,8 @@ class UserApp extends StatelessWidget {
                     builder: (_) => InitialWalkthroughPage(
                       userProfileBloc,
                       backupBloc,
+                      posCatalogBloc,
+                      _reloadDatabaseSink,
                     ),
                     settings: settings,
                   );
@@ -263,6 +273,14 @@ class UserApp extends StatelessWidget {
                                 ),
                                 settings: settings,
                               );
+                            case '/podcast_history':
+                              return FadeInRoute(
+                                builder: (_) => withBreezTheme(
+                                  context,
+                                  PodcastHistoryPage(),
+                                ),
+                                settings: settings,
+                              );
                             case '/security':
                               return FadeInRoute(
                                 builder: (_) => withBreezTheme(
@@ -271,6 +289,14 @@ class UserApp extends StatelessWidget {
                                     userProfileBloc,
                                     backupBloc,
                                   ),
+                                ),
+                                settings: settings,
+                              );
+                            case '/payment_options':
+                              return FadeInRoute(
+                                builder: (_) => withBreezTheme(
+                                  context,
+                                  PaymentOptionsPage(),
                                 ),
                                 settings: settings,
                               );

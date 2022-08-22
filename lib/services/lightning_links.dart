@@ -1,9 +1,9 @@
 import 'dart:async';
 
+import 'package:breez/logger.dart';
+import 'package:breez/services/supported_schemes.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:uni_links/uni_links.dart';
-
-import '../logger.dart';
 
 class LightningLinksService {
   final StreamController<String> _linksNotificationsController =
@@ -13,7 +13,7 @@ class LightningLinksService {
 
   LightningLinksService() {
     Rx.merge([getInitialLink().asStream(), linkStream])
-        .where(_canHandle)
+        .where(canHandleScheme)
         .listen((l) {
       log.info("Got lightning link: $l");
       if (l.startsWith("breez:")) {
@@ -21,16 +21,6 @@ class LightningLinksService {
       }
       _linksNotificationsController.add(l);
     });
-  }
-
-  bool _canHandle(String link) {
-    if (link == null) return false;
-    return link.startsWith("breez:") ||
-        link.startsWith("lightning:") ||
-        link.startsWith("lnurlc:") ||
-        link.startsWith("lnurlp:") ||
-        link.startsWith("lnurlw:") ||
-        link.startsWith("keyauth:");
   }
 
   close() {

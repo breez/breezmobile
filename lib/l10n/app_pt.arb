@@ -11,6 +11,7 @@
   "home_drawer_item_title_pos_settings": "Configurações do PDV",
   "home_drawer_item_title_developers": "Desenvolvedores",
   "home_drawer_item_title_get_refund": "Obter Reembolso",
+  "home_drawer_item_title_payment_options": "Taxas de Pagamento",
   "home_drawer_error_internal": "Erro interno",
   "home_drawer_error_no_name": "Sem nome",
   "home_podcast_title": "Anytime Podcast Player",
@@ -20,7 +21,7 @@
   "home_broadcast_transaction": "Transmitindo sua transação",
   "home_config_error_title": "Erro de configuração",
   "home_config_error_message": "Detectou-se que outro dispositivo está sendo executado com a mesma configuração (provavelmente devido à restauração). A Breez não pode executar a mesma configuração em mais de um dispositivo. Reinstale o Breez se desejar continuar usando a Breez neste dispositivo.",
-  "home_config_error_action_exit": "Sair da Breez",
+  "home_config_error_action_exit": "CANCELAR",
   "home_background_synchronization_title": "Sincronização em segundo plano",
   "home_background_synchronization_message": "Para suportar pagamentos instantâneos, a Breez precisa de sua permissão para sincronizar as informações enquanto o aplicativo não estiver ativo. Dê a aprovação para o aplicativo na próxima caixa de diálogo.",
   "home_payment_sent": "O pagamento foi enviado com sucesso!",
@@ -801,6 +802,9 @@
   "network_restart_action_reset": "Redefinir",
   "network_restart_action_save": "Salvar",
   "network_bitcoin_node": "Servidor de Bitcoin (BIP 157)",
+  "network_optional_node": "Servidor de Bitcoin (BIP 157, opcional)",
+  "network_bitcoin_node_required_error": "Servidor de Bitcoin é obrigatório",
+  "network_distinct_node_hint": "Por favor, use um servidor diferente",
   "network_default_node_error": "Não foi possível utilizar o servidor padrão.",
   "network_custom_node_error": "Não foi possível se conectar ao servidor especificado. Certifique-se de que este servidor é compatível com o BIP 157.",
   "network_testing_node": "Testando o servidor",
@@ -945,16 +949,17 @@
       }
     }
   },
-  "funds_over_limit_dialog_redeem_hour": "Você poderá resgatar seus fundos após o bloco {lockHeight} (aproximadamente em 1 hora).",
-  "@funds_over_limit_dialog_redeem_hour": {
+  "approximately_an_hour": "(aproximadamente em 1 hora)",
+  "approximate_hours": "(aproximadamente em {hours} horas)",
+  "@approximate_hours": {
     "placeholders": {
-      "lockHeight": {
+      "hours": {
         "type": "String",
-        "example": "140659"
+        "example": "42"
       }
     }
   },
-  "funds_over_limit_dialog_redeem_hours": "Você poderá resgatar seus fundos após o bloco {lockHeight} (aproximadamente em {hoursToUnlock} horas).",
+  "funds_over_limit_dialog_redeem_hours": "Você poderá resgatar seus fundos após o bloco {lockHeight} {hoursToUnlock}.",
   "@funds_over_limit_dialog_redeem_hours": {
     "placeholders": {
       "lockHeight": {
@@ -963,7 +968,7 @@
       },
       "hoursToUnlock": {
         "type": "String",
-        "example": "7"
+        "example": "(aproximadamente em 42 horas)"
       }
     }
   },
@@ -1489,6 +1494,7 @@
   "pos_settings_business_address": "Endereço comercial",
   "pos_settings_address_line_1": "Endereço 1",
   "pos_settings_address_line_2": "Endereço 2",
+  "pos_settings_default_note": "Nota Padrão",
   "pos_settings_id": "ID",
   "pos_settings_name": "Nome",
   "pos_settings_sku": "SKU",
@@ -1533,8 +1539,34 @@
       }
     }
   },
+  "pos_payment_nfc_error_title": "Erro no pagamento com NFC",
+  "pos_payment_nfc_range_error": "Apenas pagamentos entre {minValue} e {maxValue} são permitidos.",
+  "@pos_payment_nfc_range_error": {
+    "placeholders": {
+      "minValue": {
+        "type": "String",
+        "example": "1000 sats"
+      },
+      "maxValue": {
+        "type": "String",
+        "example": "1000 sats"
+      }
+    }
+  },
+  "pos_payment_nfc_error_action_close": "CERRAR",
   "successful_payment_print": "Imprimir",
   "successful_payment_received": "Pagamento recebido!",
+  "payment_options_title": "Taxas de Pagamento",
+  "payment_options_fee_header": "Taxas máximas para pagamentos relâmpagos:",
+  "payment_options_fee_override_enable": "Aplicar taxas máximas (experimental)",
+  "payment_options_base_fee_label": "Taxa base em satoshis",
+  "payment_options_proportional_fee_label": "Taxa proporcional (%)",
+  "payment_options_fee_action_reset": "Redefinir",
+  "payment_options_fee_action_save": "Salvar",
+  "payment_options_fee_action_cancel": "Cancelar",
+  "payment_options_fee_warning": "Atenção: este recurso é experimental. Limitar as taxas pode fazer com que os pagamentos falhem sem exibir o motivo da falha.",
+  "payment_options_fee_warning_dialog_title": "Atenção",
+  "payment_options_fee_warning_dialog_message": "Este recurso é experimental. Limitar as taxas pode fazer com que os pagamentos falhem sem exibir o motivo da falha.",
   "catalog_item_action_edit": "Editar Item",
   "catalog_item_action_delete": "Deletar Item",
   "catalog_item_error_delete": "Falha ao deletar o item {name}",
@@ -1807,8 +1839,8 @@
     }
   },
   "lock_screen_enter_pin": "Insira seu PIN",
-  "backup_phrase_generate": "Gerar a frase de backup",
-  "backup_phrase_instructions": "Você verá uma lista de palavras. Anote as palavras e guarde-as em um lugar seguro. Sem essas palavras você não poderá restaurar os seus fundos a partir do backup e seus fundos serão perdidos e a Breez não poderá te ajudar.",
+  "backup_phrase_generate": "Encriptar o backup na nuvem",
+  "backup_phrase_instructions": "Você verá uma lista de palavras. Anote as palavras e guarde-as em um lugar seguro. Sem essas palavras você não poderá restaurar os seus fundos a partir do backup e seus fundos serão perdidos e a Breez não poderá te ajudar. Esta chave não é uma semente de carteira. Ele é usado para criptografar os dados de backup armazenados na nuvem. Estas palavras não são uma semente para a sua carteira. Estas palavras são usadas para criptografar os dados no backup armazenado na nuvem.",
   "backup_phrase_action_confirm": "EU ENTENDO",
   "backup_phrase_action_next": "PRÓXIMO",
   "backup_phrase_warning_disclaimer": "Sua frase de backup existente será inválidada e uma nova frase será gerada na próxima vez que você decidir usar uma frase de backup. Você tem certeza de que você não deseja usar uma frase de backup?",
@@ -2056,6 +2088,23 @@
       }
     }
   },
+  "podcast_history_drawer": "Meus Principais Podcasts",
+  "podcast_history_share_message":  "Meus principais podcasts ouvidos no Breez",
+  "podcast_history_share_text":"COMPARTILHAR",
+  "podcast_history_sats_streamed":"sats transmitido",
+  "podcast_history_boostagrams_sent":"boosts enviados",
+  "podcast_history_open_podcast_button": "PODCASTS ABERTOS",
+  "podcast_history_appbar_top_weekly":"Principais podcasts semanais",
+  "podcast_history_appbar_top_monthly":"Principais podcasts mensais",
+  "podcast_history_appbar_top_yearly":"Principais podcasts anuais",
+  "podcast_history_timerange_dropdown_week":"Semana passada",
+  "podcast_history_timerange_dropdown_month":"Mês passado",
+  "podcast_history_timerange_dropdown_year":"Ano passado",
+  "podcast_history_sort_dropdown_recent":"Recente",
+  "podcast_history_sort_dropdown_duration":"Ouvido",
+  "podcast_history_sort_dropdown_sats":"Pago",
+  "podcast_history_sort_dropdown_boosts":"Boosted",
+  "podcast_history_empty_text":"Não há dados disponíveis para exibição.",
   "locale": "pt",
   "app_name": "Breez"
 }
