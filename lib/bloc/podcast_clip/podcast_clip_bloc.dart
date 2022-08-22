@@ -1,16 +1,18 @@
 import 'dart:async';
-import 'dart:developer';
 import 'dart:io';
 import 'dart:typed_data';
+
 import 'package:anytime/services/audio/audio_player_service.dart';
 import 'package:breez/bloc/async_actions_handler.dart';
 import 'package:breez/bloc/podcast_clip/podcast_clip_details_model.dart';
 import 'package:ffmpeg_kit_flutter_https_gpl/ffmpeg_kit.dart';
 import 'package:ffmpeg_kit_flutter_https_gpl/ffmpeg_session.dart';
 import 'package:ffmpeg_kit_flutter_https_gpl/return_code.dart';
+import 'package:image/image.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:share_plus/share_plus.dart';
+import 'package:breez/logger.dart';
 
 const int _initialSeconds = 10;
 const int _maxClipDuration = 120;
@@ -124,13 +126,32 @@ class PodcastClipBloc with AsyncActionsHandler {
     }
   }
 
-  Future<String> getVideoClipPath(
-      {String audioClipPath, String episodeImagepath}) async {
+  // ffmpeg is crashing if we send odd number
+  int _forceEven(int number) {
+    if (number.isEven) return number;
+    return number - 1;
+  }
+
+  Future<String> getVideoClipPath({
+    String audioClipPath,
+    String episodeImagePath,
+    int width,
+    int height,
+  }) async {
     String videoClipPath = await initClipDirectory(isVideoClip: true);
     videoClipPath = videoClipPath + '/clip.mp4';
 
-    String clippedVideoCommand =
-        '-i  $audioClipPath -i $episodeImagepath -filter_complex "[0:a]showwaves=colors=0xffffff@0.9:mode=p2p,format=yuva420p[v];[1:v]scale=2120:2560[bg];[bg][v]overlay=(main_w-overlay_w)/2:H*0.8[outv]" -map "[outv]" -map 0:a -c:v libx264 -c:a copy $videoClipPath';
+    // https://ffmpeg.org/ffmpeg-filters.html#showwaves
+    final showWaveColor = "colors=0xffffff@0.5";
+    final mode = "mode=cline";
+    final size = "size=${_forceEven((width * 0.8).toInt())}x${_forceEven((height * 0.3).toInt())}";
+    final scale = "scale=lin";
+    final scaleValue = "[1:v]scale=${_forceEven(width)}:${_forceEven(height)}[bg]";
+    final format = "format=yuva420p[v]";
+    final overlay = "[bg][v]overlay=(main_w-overlay_w)/2:${_forceEven((height * 0.7).toInt())}[outv]";
+    final filterComplex = "[0:a]showwaves=$showWaveColor:$mode:$size:$scale,$format;$scaleValue;$overlay";
+    final clippedVideoCommand = '-i  $audioClipPath -i $episodeImagePath -filter_complex $filterComplex -map "[outv]" -map 0:a -c:v libx264 -c:a copy $videoClipPath';
+    log.info("ffmpeg command: $clippedVideoCommand");
 
     FFmpegSession ffpegSessionDetails =
         await FFmpegKit.execute(clippedVideoCommand);
@@ -163,6 +184,10 @@ class PodcastClipBloc with AsyncActionsHandler {
       final imageFile = await File('${directory.path}/image.png').create();
       await imageFile.writeAsBytes(clipImage);
 
+      final image = decodeImage(imageFile.readAsBytesSync());
+      final width = image.width;
+      final height = image.height;
+
       String podcastImageWidgetPath = imageFile.path;
 
       _clipDetailsBehaviourSubject.add(clipDetails.copy(
@@ -180,15 +205,19 @@ class PodcastClipBloc with AsyncActionsHandler {
       }
 
       String videoClipPath = await getVideoClipPath(
-          audioClipPath: audioClipPath,
-          episodeImagepath: podcastImageWidgetPath);
+        audioClipPath: audioClipPath,
+        episodeImagePath: podcastImageWidgetPath,
+        width: width,
+        height: height,
+      );
+
       if (!enableClipSharing) {
         return;
       } else {
         Share.shareFiles([videoClipPath]);
       }
     } catch (e) {
-      log(e);
+      log.warning(e);
       throw "Failed to clip the episode. More details: ${e.toString()}";
     } finally {
       _clipDetailsBehaviourSubject

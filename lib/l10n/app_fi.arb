@@ -2106,6 +2106,7 @@
   "podcast_clips_seconds": "sekuntia",
   "podcast_clips_dialog_title": "Leikkeen kesto (sekunneissa)",
   "podcast_clips_dialog_done": "TEHTY",
+  "podcast_clips_error": "An error has occurred while clipping the episode. Please try again.",
   "locale": "fi",
   "app_name": "Breez"
 }
