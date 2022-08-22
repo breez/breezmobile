@@ -2106,6 +2106,7 @@
   "podcast_clips_seconds": "seconds",
   "podcast_clips_dialog_title": "Durée du clip (en secondes)",
   "podcast_clips_dialog_done": "FINI",
+  "podcast_clips_error": "An error has occurred while clipping the episode. Please try again.",
   "locale": "fr",
   "app_name": "Breez"
 }

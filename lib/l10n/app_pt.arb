@@ -2101,11 +2101,12 @@
   "podcast_history_sort_dropdown_sats": "Pago",
   "podcast_history_sort_dropdown_boosts": "Boosted",
   "podcast_history_empty_text": "Não há dados disponíveis para exibição.",
-  "podcast_clips_clip_button": "GRAMPO",
+  "podcast_clips_clip_button": "CORTE",
   "podcast_clips_cancel_button": "CANCELAR",
   "podcast_clips_seconds": "segundos",
   "podcast_clips_dialog_title": "Duração do clipe (em segundos)",
-  "podcast_clips_dialog_done": "FEITA",
+  "podcast_clips_dialog_done": "PRONTO",
+  "podcast_clips_error": "Ocorreu um erro ao cortar o episódio, por favor tente novamente.",
   "locale": "pt",
   "app_name": "Breez"
 }

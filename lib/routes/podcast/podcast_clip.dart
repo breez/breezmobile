@@ -9,6 +9,7 @@ import 'package:provider/provider.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:breez/theme_data.dart' as breezTheme;
 import 'package:screenshot/screenshot.dart';
+import 'package:breez/logger.dart';
 import '../../bloc/blocs_provider.dart';
 import '../../bloc/podcast_clip/podcast_clip_bloc.dart';
 import '../../bloc/podcast_clip/podcast_clip_details_model.dart';
@@ -185,9 +186,11 @@ _showClipsBottomSheet(
                                                         clipImage:
                                                             screenShotImage);
                                               } catch (e) {
+                                                log.warning(e);
                                                 showFlushbar(
                                                   context,
-                                                  message: e.toString(),
+                                                  message: AppLocalizations.of(context)
+                                                      .podcast_clips_error,
                                                 );
                                               }
                                             },
@@ -322,6 +325,8 @@ _imageWidget({BuildContext context, Episode episodeDetails, Image image}) {
       children: [
         Text(
           episodeDetails.author,
+          maxLines: 2,
+          overflow: TextOverflow.ellipsis,
           style: Theme.of(context).primaryTextTheme.headline3.copyWith(
                 fontSize: 12,
                 color: Colors.white,
@@ -344,6 +349,8 @@ _imageWidget({BuildContext context, Episode episodeDetails, Image image}) {
         ),
         Text(
           episodeDetails.podcast,
+          maxLines: 2,
+          overflow: TextOverflow.ellipsis,
           style: Theme.of(context).primaryTextTheme.headline3.copyWith(
                 fontSize: 12,
                 color: Colors.white,
@@ -355,6 +362,8 @@ _imageWidget({BuildContext context, Episode episodeDetails, Image image}) {
         ),
         Text(
           episodeDetails.title,
+          maxLines: 2,
+          overflow: TextOverflow.ellipsis,
           style: Theme.of(context).primaryTextTheme.headline3.copyWith(
                 fontSize: 16,
                 color: Colors.white,
@@ -362,7 +371,7 @@ _imageWidget({BuildContext context, Episode episodeDetails, Image image}) {
               ),
         ),
         SizedBox(
-          height: 48,
+          height: 60,
         ),
         Row(
           mainAxisAlignment: MainAxisAlignment.end,
