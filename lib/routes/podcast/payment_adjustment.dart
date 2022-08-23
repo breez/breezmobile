@@ -42,7 +42,7 @@ class PaymentAdjustmentState extends State<PaymentAdjustment> {
 
   TutorialCoachMark tutorial;
   List<TargetFocus> targets = [];
-  int tutorialStreamSats = 50;
+  int tutorialStreamSats = 0;
 
   @override
   void initState() {
