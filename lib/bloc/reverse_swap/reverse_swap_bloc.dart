@@ -48,6 +48,7 @@ class ReverseSwapBloc with AsyncActionsHandler {
     registerAsyncHandlers({
       NewReverseSwap: _newReverseSwap,
       GetClaimFeeEstimates: _getFeeClaimEstimates,
+      GetRefundFee: _getRefundFee,
       FetchInProgressSwap: _fetchInProgressSwap,
       GetReverseSwapPolicy: _reverseSwapPolicy,
     });
@@ -87,6 +88,16 @@ class ReverseSwapBloc with AsyncActionsHandler {
     var estimates =
         await _breezLib.reverseSwapClaimFeeEstimates(action.claimAddress);
     action.resolve(ReverseSwapClaimFeeEstimates(estimates));
+  }
+
+  Future _getRefundFee(GetRefundFee action) async {
+    var fee = await _breezLib.refundFees(
+      action.address,
+      action.refundAddress,
+      action.targetConf,
+      action.feeRate,
+    );
+    action.resolve(fee);
   }
 
   Future _fetchInProgressSwap(FetchInProgressSwap action) async {

@@ -26,6 +26,15 @@ class GetClaimFeeEstimates extends AsyncAction {
   GetClaimFeeEstimates(this.claimAddress);
 }
 
+class GetRefundFee extends AsyncAction {
+  final String address;
+  final String refundAddress;
+  final int targetConf;
+  final Int64 feeRate;
+
+  GetRefundFee(this.address, this.refundAddress, this.targetConf, this.feeRate);
+}
+
 class FetchInProgressSwap extends AsyncAction {}
 
 class GetReverseSwapPolicy extends AsyncAction {}
