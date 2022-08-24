@@ -9,6 +9,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import 'flushbar.dart';
+import 'payment_address_form_field.dart';
 
 class EnterPaymentInfoDialog extends StatefulWidget {
   final BuildContext context;
@@ -87,26 +88,14 @@ class EnterPaymentInfoDialogState extends State<EnterPaymentInfoDialog> {
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              TextFormField(
-                decoration: InputDecoration(
-                  labelText: texts.payment_info_dialog_hint,
-                  suffixIcon: IconButton(
-                    padding: EdgeInsets.only(top: 21.0),
-                    alignment: Alignment.bottomRight,
-                    icon: Image(
-                      image: AssetImage("src/icon/qr_scan.png"),
-                      color: themeData.primaryIconTheme.color,
-                      fit: BoxFit.contain,
-                      width: 24.0,
-                      height: 24.0,
-                    ),
-                    tooltip: texts.payment_info_dialog_barcode,
-                    onPressed: () => _scanBarcode(context),
-                  ),
-                ),
+              PaymentAddressFormField(
                 focusNode: _paymentInfoFocusNode,
                 controller: _paymentInfoController,
-                style: TextStyle(
+                label: texts.payment_info_dialog_hint,
+                iconColor: themeData.primaryIconTheme.color,
+                tooltip: texts.payment_info_dialog_barcode,
+                onPressed: _scanBarcode,
+                textStyle: TextStyle(
                   color: themeData.primaryTextTheme.headline4.color,
                 ),
                 validator: (value) {
@@ -118,15 +107,15 @@ class EnterPaymentInfoDialogState extends State<EnterPaymentInfoDialog> {
                   return null;
                 },
               ),
-              _scannerErrorMessage.length > 0
-                  ? Padding(
-                      padding: const EdgeInsets.only(top: 8.0),
-                      child: Text(
-                        _scannerErrorMessage,
-                        style: theme.validatorStyle,
-                      ),
-                    )
-                  : SizedBox(),
+              if (_scannerErrorMessage.length > 0) ...[
+                Padding(
+                  padding: const EdgeInsets.only(top: 8.0),
+                  child: Text(
+                    _scannerErrorMessage,
+                    style: theme.validatorStyle,
+                  ),
+                )
+              ],
               Padding(
                 padding: EdgeInsets.only(top: 8),
                 child: Text(
@@ -199,7 +188,7 @@ class EnterPaymentInfoDialogState extends State<EnterPaymentInfoDialog> {
     return actions;
   }
 
-  Future _scanBarcode(BuildContext context) async {
+  Future _scanBarcode() async {
     final texts = AppLocalizations.of(context);
 
     FocusScope.of(context).requestFocus(FocusNode());

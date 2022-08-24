@@ -4,7 +4,7 @@ import 'package:breez/bloc/blocs_provider.dart';
 import 'package:breez/routes/dev/dev.dart';
 import 'package:breez/widgets/back_button.dart' as backBtn;
 import 'package:breez/widgets/loader.dart';
-import 'package:breez/widgets/send_onchain.dart';
+import 'package:breez/widgets/send_onchain/send_onchain.dart';
 import 'package:breez/widgets/single_button_bottom_bar.dart';
 import 'package:fixnum/fixnum.dart';
 import 'package:flutter/material.dart';
@@ -122,7 +122,6 @@ class GetRefundPage extends StatelessWidget {
         builder: (_) => SendOnchain(
           account,
           item.confirmedAmount,
-          texts.get_refund_transaction,
           (destAddress, feeRate) {
             return broadcastAndWait(
               context,
@@ -134,6 +133,7 @@ class GetRefundPage extends StatelessWidget {
               return str;
             });
           },
+          refundAddress: item.address,
           originalTransaction: originalTransaction,
         ),
       ),

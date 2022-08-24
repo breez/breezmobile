@@ -15,6 +15,7 @@ import 'package:breez/widgets/back_button.dart' as backBtn;
 import 'package:breez/widgets/error_dialog.dart';
 import 'package:breez/widgets/flushbar.dart';
 import 'package:breez/widgets/loader.dart';
+import 'package:breez/widgets/payment_address_form_field.dart';
 import 'package:breez/widgets/single_button_bottom_bar.dart';
 import 'package:breez/widgets/static_loader.dart';
 import 'package:breez/widgets/warning_box.dart';
@@ -184,26 +185,14 @@ class WithdrawFundsPageState extends State<WithdrawFundsPage> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     optionalMessage,
-                    TextFormField(
+                    PaymentAddressFormField(
                       readOnly: fetching,
                       controller: _addressController,
-                      decoration: InputDecoration(
-                        labelText: texts.withdraw_funds_btc_address,
-                        suffixIcon: IconButton(
-                          padding: EdgeInsets.only(top: 21.0),
-                          alignment: Alignment.bottomRight,
-                          icon: Image(
-                            image: AssetImage("src/icon/qr_scan.png"),
-                            color: theme.BreezColors.white[500],
-                            fit: BoxFit.contain,
-                            width: 24.0,
-                            height: 24.0,
-                          ),
-                          tooltip: texts.withdraw_funds_scan_barcode,
-                          onPressed: () => _scanBarcode(context, acc),
-                        ),
-                      ),
-                      style: theme.FieldTextStyle.textStyle,
+                      label: texts.withdraw_funds_btc_address,
+                      iconColor: theme.BreezColors.white[500],
+                      tooltip: texts.withdraw_funds_scan_barcode,
+                      onPressed: () => _scanBarcode(acc),
+                      textStyle: theme.FieldTextStyle.textStyle,
                       validator: (value) {
                         if (_addressValidated == null) {
                           return texts.withdraw_funds_error_invalid_address;
@@ -211,33 +200,30 @@ class WithdrawFundsPageState extends State<WithdrawFundsPage> {
                         return null;
                       },
                     ),
-                    _scannerErrorMessage.length > 0
-                        ? Text(
-                            _scannerErrorMessage,
-                            style: theme.validatorStyle,
-                          )
-                        : SizedBox(),
+                    if (_scannerErrorMessage.length > 0) ...[
+                      Text(_scannerErrorMessage, style: theme.validatorStyle)
+                    ],
                     ...amountWidget,
                     Container(
                       padding: EdgeInsets.only(top: 36.0),
                       child: _buildAvailableBTC(texts, acc),
                     ),
                     SizedBox(height: 40.0),
-                    !fetching
-                        ? SizedBox()
-                        : Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            mainAxisSize: MainAxisSize.max,
-                            children: [
-                              Container(
-                                child: Loader(
-                                  strokeWidth: 2.0,
-                                  color: themeData.colorScheme.onSurface
-                                      .withOpacity(0.5),
-                                ),
-                              ),
-                            ],
+                    if (fetching) ...[
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        mainAxisSize: MainAxisSize.max,
+                        children: [
+                          Container(
+                            child: Loader(
+                              strokeWidth: 2.0,
+                              color: themeData.colorScheme.onSurface
+                                  .withOpacity(0.5),
+                            ),
                           ),
+                        ],
+                      )
+                    ],
                   ],
                 ),
               ),
@@ -308,7 +294,7 @@ class WithdrawFundsPageState extends State<WithdrawFundsPage> {
     });
   }
 
-  Future _scanBarcode(BuildContext context, AccountModel account) async {
+  Future _scanBarcode(AccountModel account) async {
     final texts = AppLocalizations.of(context);
     FocusScope.of(context).requestFocus(FocusNode());
     String barcode = await Navigator.pushNamed<String>(context, "/qr_scan");
