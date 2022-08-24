@@ -638,6 +638,18 @@ class BreezBridge {
         .then((reply) => AddFundInitReply()..mergeFromBuffer(reply ?? []));
   }
 
+  Future<Int64> refundFees(
+      String address, String refundAddress, int targetConf, Int64 feeRate) {
+    var refundRequest = RefundRequest()
+      ..satPerByte = feeRate
+      ..address = address
+      ..targetConf = targetConf
+      ..refundAddress = refundAddress;
+    return _invokeMethodWhenReady(
+            "refundFees", {"argument": refundRequest.writeToBuffer()})
+        .then((res) => Int64(res as int));
+  }
+
   Future<String> refund(String address, String refundAddress, Int64 feeRate) {
     var refundRequest = RefundRequest()
       ..satPerByte = feeRate
