@@ -23,14 +23,13 @@ class GetRefundPage extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         iconTheme: themeData.appBarTheme.iconTheme,
-        textTheme: themeData.appBarTheme.textTheme,
         backgroundColor: themeData.canvasColor,
         leading: backBtn.BackButton(),
         title: Text(
           texts.get_refund_title,
           style: themeData.appBarTheme.textTheme.headline6,
         ),
-        elevation: 0.0,
+        elevation: 0.0, toolbarTextStyle: themeData.appBarTheme.textTheme.bodyText2, titleTextStyle: themeData.appBarTheme.textTheme.headline6,
       ),
       body: StreamBuilder<AccountModel>(
         stream: accountBloc.accountStream,
@@ -84,9 +83,7 @@ class GetRefundPage extends StatelessWidget {
                       item.lastRefundTxID.isNotEmpty
                           ? texts.get_refund_action_broadcasted
                           : texts.get_refund_action_continue,
-                      item.lastRefundTxID.isNotEmpty && !allowRebroadcastRefunds
-                          ? null
-                          : () => onRefund(context, account, item),
+                      () => onRefund(context, account, item),
                     ),
                   ),
                 ),
