@@ -585,6 +585,44 @@ final Color circularLoaderColor = BreezColors.blue[200].withOpacity(0.7);
 final Color warningBoxColor = Color.fromRGBO(251, 233, 148, 0.1);
 final BorderSide greyBorderSide = BorderSide(color: BreezColors.grey[500]);
 
+ThemeData get calendarTheme =>
+    themeId == "BLUE" ? calendarLightTheme : calendarDarkTheme;
+
+final ThemeData calendarLightTheme = ThemeData.light().copyWith(
+  colorScheme: const ColorScheme.light(
+    primary: Color.fromRGBO(5, 93, 235, 1.0),
+  ),
+  textButtonTheme: TextButtonThemeData(
+    style: TextButton.styleFrom(foregroundColor: BreezColors.blue[500]),
+  ),
+  dialogTheme: const DialogTheme(
+    shape: RoundedRectangleBorder(
+      borderRadius: BorderRadius.all(
+        Radius.circular(12.0),
+      ),
+    ),
+  ),
+);
+
+final ThemeData calendarDarkTheme = ThemeData.dark().copyWith(
+  colorScheme: const ColorScheme.light(
+    primary: Color(0xFF4B89EB), // header bg color
+    onPrimary: Colors.white, // header text color
+    onSurface: Colors.white, // body text color
+  ),
+  textButtonTheme: TextButtonThemeData(
+    style: TextButton.styleFrom(foregroundColor: const Color(0xFF7aa5eb)),
+  ),
+  dialogTheme: const DialogTheme(
+    backgroundColor: Color(0xFF152a3d),
+    shape: RoundedRectangleBorder(
+      borderRadius: BorderRadius.all(
+        Radius.circular(12.0),
+      ),
+    ),
+  ),
+);
+
 class FieldTextStyle {
   FieldTextStyle._();
 
