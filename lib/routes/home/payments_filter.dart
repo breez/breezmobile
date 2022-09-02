@@ -125,6 +125,17 @@ class PaymentsFilterState extends State<PaymentsFilter> {
   String _filter;
   Map<String, List<PaymentType>> _filterMap;
 
+  DateTime formattedStartDate;
+  DateTime formattedEndDate;
+
+  @override
+  void initState() {
+    super.initState();
+    final today = DateTime.now();
+    formattedStartDate = DateTime(widget._paymentsModel.firstDate.year, widget._paymentsModel.firstDate.month, widget._paymentsModel.firstDate.day, 0, 0, 0);
+    formattedEndDate = DateTime(today.year, today.month, today.day, 23, 59, 59, 999);
+  }
+
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
@@ -180,12 +191,19 @@ class PaymentsFilterState extends State<PaymentsFilter> {
                 context: context,
                 builder: (_) => CalendarDialog(widget._paymentsModel.firstDate),
               ).then((result) {
-                widget._accountBloc.paymentFilterSink.add(
-                  widget._paymentsModel.filter.copyWith(
-                      filter: _getFilterType(_filter),
-                      startDate: result[0],
-                      endDate: result[1]),
-                );
+                bool hasStartDateChanged = result[0] != formattedStartDate;
+                bool hasEndDateChanged = result[1] != formattedEndDate;
+                bool hasDateFilterChanged = hasStartDateChanged || hasEndDateChanged;
+
+                if (hasDateFilterChanged) {
+                  widget._accountBloc.paymentFilterSink.add(
+                    widget._paymentsModel.filter.copyWith(
+                        filter: _getFilterType(_filter),
+                        startDate: result[0],
+                        endDate: result[1],
+                    ),
+                  );
+                }
               })
             : ScaffoldMessenger.of(context).showSnackBar(
                 SnackBar(
