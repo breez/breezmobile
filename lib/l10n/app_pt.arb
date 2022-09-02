@@ -114,8 +114,8 @@
       }
     }
   },
-  "invoice_btc_address_deposit_address": "Endereço de depósito",
-  "invoice_btc_address_deposit_address_copied": "O endereço de depósito foi copiado para a área de transferência.",
+  "invoice_btc_address_deposit_address": "Endereço",
+  "invoice_btc_address_deposit_address_copied": "O endereço foi copiado para a área de transferência.",
   "invoice_btc_address_on_chain_begin": "A Breez está usando a função Submarine Swaps para executar transações pela rede Bitcoin. Toque ",
   "invoice_btc_address_on_chain_here": "aqui",
   "invoice_btc_address_on_chain_end": " para ver o script associado a este endereço.",
