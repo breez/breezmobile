@@ -35,6 +35,7 @@ class VerifyBackupPhrasePageState extends State<VerifyBackupPhrasePage> {
     final query = MediaQuery.of(context);
     final texts = context.texts();
     final backupBloc = AppBlocsProvider.of<BackupBloc>(context);
+
     return Scaffold(
       appBar: AppBar(
         automaticallyImplyLeading: false,
