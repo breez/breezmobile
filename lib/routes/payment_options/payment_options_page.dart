@@ -240,8 +240,8 @@ class _PaymentOptionsPageState extends State<PaymentOptionsPage> {
         children: [
           OutlinedButton(
             style: OutlinedButton.styleFrom(
+              foregroundColor: Colors.white,
               side: BorderSide(color: Colors.white),
-              primary: Colors.white,
             ),
             child: Text(
               texts.payment_options_fee_action_reset,
@@ -251,8 +251,8 @@ class _PaymentOptionsPageState extends State<PaymentOptionsPage> {
           SizedBox(width: 12.0),
           OutlinedButton(
             style: OutlinedButton.styleFrom(
+              foregroundColor: Colors.white,
               side: BorderSide(color: Colors.white),
-              primary: Colors.white,
             ),
             child: Text(
               texts.payment_options_fee_action_save,

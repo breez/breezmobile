@@ -352,7 +352,7 @@ class InitialWalkthroughPageState extends State<InitialWalkthroughPage>
                       child: ElevatedButton(
                         style: ElevatedButton.styleFrom(
                           padding: EdgeInsets.fromLTRB(16, 4, 16, 4),
-                          primary: themeData.buttonColor,
+                          backgroundColor: themeData.buttonColor,
                           elevation: 0.0,
                           shape: const StadiumBorder(),
                         ),

@@ -47,11 +47,11 @@ class AddFundsMessage extends StatelessWidget {
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(6.0),
                   ),
+                  backgroundColor: themeData.primaryColor,
                   padding: const EdgeInsets.symmetric(
                     vertical: 12,
                     horizontal: 12,
                   ),
-                  backgroundColor: themeData.primaryColor,
                 ),
                 onPressed: () => showReceiveOptions(context, accountModel),
                 child: AutoSizeText(

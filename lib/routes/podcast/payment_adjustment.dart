@@ -171,7 +171,7 @@ class PaymentAdjustmentState extends State<PaymentAdjustment> {
                   context,
                   ElevatedButton(
                     style: ElevatedButton.styleFrom(
-                      primary: Colors.white,
+                      backgroundColor: Colors.white,
                     ),
                     child: Text(
                       texts.tutorial_gotcha,

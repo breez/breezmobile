@@ -332,7 +332,7 @@ class _TotalSaleCharge extends StatelessWidget {
 
     return ElevatedButton(
       style: ElevatedButton.styleFrom(
-        primary: themeData.primaryColorLight,
+        backgroundColor: themeData.primaryColorLight,
         padding: EdgeInsets.only(top: 14.0, bottom: 14.0),
       ),
       child: Text(

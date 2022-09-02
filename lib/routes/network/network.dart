@@ -105,12 +105,13 @@ class NetworkPageState extends State<NetworkPage> {
                 children: [
                   if (this._data.showTor)
                     SimpleSwitch(
-                      text: _data.torIsActive ? texts.network_tor_disable : texts.network_tor_enable,
+                      text: _data.torIsActive
+                          ? texts.network_tor_disable
+                          : texts.network_tor_enable,
                       switchValue: _data.torIsActive,
                       onChanged: _torSwitchChanged,
                     ),
-                  if (this._data.showTor)
-                    Divider(),
+                  if (this._data.showTor) Divider(),
                   Padding(
                     padding: const EdgeInsets.fromLTRB(16, 8, 16, 16),
                     child: Column(
@@ -141,8 +142,8 @@ class NetworkPageState extends State<NetworkPage> {
                             children: [
                               OutlinedButton(
                                 style: OutlinedButton.styleFrom(
+                                  foregroundColor: Colors.white,
                                   side: BorderSide(color: Colors.white),
-                                  primary: Colors.white,
                                 ),
                                 child: Text(texts.network_restart_action_reset),
                                 onPressed: _resetNodes,
@@ -150,8 +151,8 @@ class NetworkPageState extends State<NetworkPage> {
                               SizedBox(width: 12.0),
                               OutlinedButton(
                                 style: OutlinedButton.styleFrom(
+                                  foregroundColor: Colors.white,
                                   side: BorderSide(color: Colors.white),
-                                  primary: Colors.white,
                                 ),
                                 child: Text(texts.network_restart_action_save),
                                 onPressed: saveNodes,

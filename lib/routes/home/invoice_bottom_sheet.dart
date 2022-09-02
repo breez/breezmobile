@@ -133,7 +133,7 @@ class InvoiceBottomSheetState extends State<InvoiceBottomSheet>
       duration: Duration(milliseconds: 150),
       child: ElevatedButton(
         style: ElevatedButton.styleFrom(
-          primary: blueTheme
+          backgroundColor: blueTheme
               ? isFirst
                   ? Colors.white
                   : themeData.primaryColorLight

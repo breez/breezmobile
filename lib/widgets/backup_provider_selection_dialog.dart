@@ -105,7 +105,7 @@ class BackupProviderSelectionDialogState
       actions: [
         TextButton(
           style: TextButton.styleFrom(
-            primary: themeData.primaryTextTheme.button.color,
+            foregroundColor: themeData.primaryTextTheme.button.color,
           ),
           onPressed: () => Navigator.pop(context, null),
           child: Text(texts.backup_provider_dialog_action_cancel),
@@ -115,7 +115,7 @@ class BackupProviderSelectionDialogState
           builder: (context, snapshot) {
             return TextButton(
               style: TextButton.styleFrom(
-                primary: themeData.primaryTextTheme.button.color,
+                foregroundColor: themeData.primaryTextTheme.button.color,
               ),
               onPressed: () => _selectProvider(snapshot.data),
               child: Text(texts.backup_provider_dialog_action_ok),

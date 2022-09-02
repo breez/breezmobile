@@ -68,6 +68,7 @@ class SessionInstructions extends StatelessWidget {
                   padding: EdgeInsets.only(left: 4, right: 4),
                   child: OutlinedButton(
                     style: OutlinedButton.styleFrom(
+                      foregroundColor: theme.BreezColors.white[500],
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(6.0),
                       ),
@@ -75,7 +76,6 @@ class SessionInstructions extends StatelessWidget {
                         color: theme.BreezColors.white[500],
                         style: BorderStyle.solid,
                       ),
-                      primary: theme.BreezColors.white[500],
                     ),
                     child: Text(
                       action.toUpperCase(),

@@ -107,7 +107,7 @@ class RestoreDialogState extends State<RestoreDialog> {
         ),
         TextButton(
           style: TextButton.styleFrom(
-            primary: theme.BreezColors.blue[500],
+            foregroundColor: theme.BreezColors.blue[500],
           ),
           onPressed: _selectedSnapshot == null
               ? null
