@@ -87,7 +87,7 @@ class PaymentItem extends StatelessWidget {
                             _paymentInfo.creationTimestamp.toInt() * 1000,
                           ),
                         ),
-                        style: themeData.accentTextTheme.caption,
+                        style: themeData.textTheme.caption,
                       ),
                       _pendingSuffix(context),
                     ],
@@ -132,7 +132,7 @@ class PaymentItem extends StatelessWidget {
     return _paymentInfo.pending
         ? Text(
             texts.wallet_dashboard_payment_item_balance_pending_suffix,
-            style: themeData.accentTextTheme.caption.copyWith(
+            style: themeData.textTheme.caption.copyWith(
               color: theme.customData[theme.themeId].pendingTextColor,
             ),
           )
@@ -177,7 +177,7 @@ class PaymentItem extends StatelessWidget {
       _hideBalance
           ? texts.wallet_dashboard_payment_item_balance_hide
           : texts.wallet_dashboard_payment_item_balance_fee(feeFormatted),
-      style: themeData.accentTextTheme.caption,
+      style: themeData.textTheme.caption,
     );
   }
 

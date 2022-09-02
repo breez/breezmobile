@@ -32,18 +32,18 @@ class StatusText extends StatelessWidget {
         textElements: [
           TextSpan(
             text: texts.status_text_loading_begin,
-            style: themeData.accentTextTheme.bodyText2,
+            style: themeData.textTheme.bodyText2,
           ),
           _LinkTextSpan(
             text: texts.status_text_loading_middle,
             url: account.channelFundingTxUrl,
-            style: themeData.accentTextTheme.bodyText2.copyWith(
+            style: themeData.textTheme.bodyText2.copyWith(
               decoration: TextDecoration.underline,
             ),
           ),
           TextSpan(
             text: texts.status_text_loading_end,
-            style: themeData.accentTextTheme.bodyText2,
+            style: themeData.textTheme.bodyText2,
           ),
         ],
       );
@@ -52,7 +52,7 @@ class StatusText extends StatelessWidget {
     if (account == null || account.statusMessage == null) {
       return AutoSizeText(
         texts.status_text_ready,
-        style: themeData.accentTextTheme.bodyText2,
+        style: themeData.textTheme.bodyText2,
         textAlign: TextAlign.center,
         minFontSize: MinFontSize(context).minFontSize,
         stepGranularity: 0.1,
@@ -65,7 +65,7 @@ class StatusText extends StatelessWidget {
         ? LoadingAnimatedText(account.statusMessage)
         : Text(
             account.statusMessage,
-            style: themeData.accentTextTheme.bodyText2,
+            style: themeData.textTheme.bodyText2,
             textAlign: TextAlign.center,
           );
   }
