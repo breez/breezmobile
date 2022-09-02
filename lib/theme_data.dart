@@ -88,7 +88,6 @@ final ThemeData blueTheme = ThemeData(
   dialogBackgroundColor: Colors.transparent,
   errorColor: Color(0xffffe685),
   dividerColor: Color(0x33ffffff),
-  buttonColor: Colors.white,
   cardColor: BreezColors.blue[500],
   highlightColor: BreezColors.blue[200],
   textTheme: TextTheme(
@@ -180,7 +179,9 @@ final ThemeData blueTheme = ThemeData(
   ),
   textButtonTheme: TextButtonThemeData(),
   outlinedButtonTheme: OutlinedButtonThemeData(),
-  elevatedButtonTheme: ElevatedButtonThemeData(),
+  elevatedButtonTheme: ElevatedButtonThemeData(
+    style: ElevatedButton.styleFrom(backgroundColor: Colors.white),
+  ),
   radioTheme: RadioThemeData(
     fillColor: MaterialStateProperty.resolveWith(
       (states) {
@@ -233,7 +234,6 @@ final ThemeData darkTheme = ThemeData(
   dialogBackgroundColor: Colors.transparent,
   errorColor: Color(0xFFeddc97),
   dividerColor: Color(0x337aa5eb),
-  buttonColor: Color(0xFF0085fb),
   cardColor: Color(0xFF121212),
   highlightColor: Color(0xFF0085fb),
   textTheme: TextTheme(
@@ -321,7 +321,9 @@ final ThemeData darkTheme = ThemeData(
   ),
   textButtonTheme: TextButtonThemeData(),
   outlinedButtonTheme: OutlinedButtonThemeData(),
-  elevatedButtonTheme: ElevatedButtonThemeData(),
+  elevatedButtonTheme: ElevatedButtonThemeData(
+    style: ElevatedButton.styleFrom(backgroundColor: Color(0xFF4B89EB)),
+  ),
   radioTheme: RadioThemeData(
     fillColor: MaterialStateProperty.resolveWith((states) {
       return Colors.white;
@@ -588,6 +590,8 @@ final BorderSide greyBorderSide = BorderSide(color: BreezColors.grey[500]);
 
 ThemeData get calendarTheme =>
     themeId == "BLUE" ? calendarLightTheme : calendarDarkTheme;
+
+Color get buttonColor => themeId == "BLUE" ? Colors.white : Color(0xFF4B89EB);
 
 final ThemeData calendarLightTheme = ThemeData.light().copyWith(
   colorScheme: const ColorScheme.light(

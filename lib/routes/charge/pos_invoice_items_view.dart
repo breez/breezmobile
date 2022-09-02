@@ -50,9 +50,7 @@ class PosInvoiceItemsView extends StatelessWidget {
                 sort,
               ),
               floatingActionButton: FloatingActionButton(
-                child: Icon(
-                  Icons.add,
-                ),
+                child: Icon(Icons.add),
                 backgroundColor: Colors.white,
                 foregroundColor: themeData.primaryColorLight,
                 onPressed: () => Navigator.of(context).pushNamed("/add_item"),
