@@ -5,8 +5,8 @@ import 'package:breez/theme_data.dart' as theme;
 import 'package:breez/widgets/back_button.dart' as backBtn;
 import 'package:breez/widgets/error_dialog.dart';
 import 'package:breez/widgets/single_button_bottom_bar.dart';
-import 'package:flutter/material.dart';
 import 'package:fixnum/fixnum.dart';
+import 'package:flutter/material.dart';
 
 class SetHeightHintPage extends StatefulWidget {
   @override
@@ -33,16 +33,10 @@ class _SetHeightHintPageState extends State<SetHeightHintPage> {
     AccountBloc accountBloc = AppBlocsProvider.of<AccountBloc>(context);
     return Scaffold(
         appBar: AppBar(
-            iconTheme: Theme.of(context).appBarTheme.iconTheme,
-            textTheme: Theme.of(context).appBarTheme.textTheme,
-            backgroundColor: Theme.of(context).canvasColor,
-            automaticallyImplyLeading: false,
-            leading: backBtn.BackButton(),
-            title: Text(
-              "Set Height Hint",
-              style: Theme.of(context).appBarTheme.textTheme.headline6,
-            ),
-            elevation: 0.0),
+          automaticallyImplyLeading: false,
+          leading: backBtn.BackButton(),
+          title: Text("Set Height Hint"),
+        ),
         body: Padding(
           padding: EdgeInsets.only(top: 16.0, left: 16.0, right: 16.0),
           child: Form(

@@ -4,8 +4,9 @@ import 'package:breez/bloc/lsp/lsp_model.dart';
 import 'package:breez/widgets/loader.dart';
 import 'package:breez/widgets/route.dart';
 import 'package:breez/widgets/single_button_bottom_bar.dart';
-import 'package:flutter/material.dart';
 import 'package:breez_translations/breez_translations_locales.dart';
+import 'package:flutter/material.dart';
+
 import 'lsp_webview.dart';
 
 class SelectLSPPage extends StatefulWidget {
@@ -60,15 +61,8 @@ class SelectLSPPageState extends State<SelectLSPPage> {
 
     return Scaffold(
       appBar: AppBar(
-        iconTheme: themeData.appBarTheme.iconTheme,
-        textTheme: themeData.appBarTheme.textTheme,
-        backgroundColor: themeData.canvasColor,
         automaticallyImplyLeading: false,
-        elevation: 0.0,
-        title: Text(
-          texts.account_page_activation_provider_label,
-          style: themeData.appBarTheme.textTheme.headline6,
-        ),
+        title: Text(texts.account_page_activation_provider_label),
         actions: [
           IconButton(
             onPressed: () => Navigator.pop(context),

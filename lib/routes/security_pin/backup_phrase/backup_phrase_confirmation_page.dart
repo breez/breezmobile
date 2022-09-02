@@ -2,12 +2,12 @@ import 'package:auto_size_text/auto_size_text.dart';
 import 'package:bip39/bip39.dart' as bip39;
 import 'package:breez/routes/podcast/theme.dart';
 import 'package:breez/theme_data.dart' as theme;
-import 'package:breez/utils/min_font_size.dart';
 import 'package:breez/widgets/back_button.dart' as backBtn;
 import 'package:breez/widgets/route.dart';
 import 'package:breez/widgets/single_button_bottom_bar.dart';
-import 'package:flutter/material.dart';
 import 'package:breez_translations/breez_translations_locales.dart';
+import 'package:flutter/material.dart';
+
 import 'generate_backup_phrase_page.dart';
 
 class BackupPhraseGeneratorConfirmationPage extends StatefulWidget {
@@ -22,21 +22,16 @@ class BackupPhraseGeneratorConfirmationPageState
 
   @override
   Widget build(BuildContext context) {
-    final themeData = Theme.of(context);
     final texts = context.texts();
+
     return Scaffold(
       appBar: AppBar(
-        iconTheme: themeData.appBarTheme.iconTheme,
-        textTheme: themeData.appBarTheme.textTheme,
-        backgroundColor: themeData.canvasColor,
         automaticallyImplyLeading: false,
         leading: backBtn.BackButton(),
         title: AutoSizeText(
           texts.backup_phrase_generate,
-          style: themeData.appBarTheme.textTheme.headline6,
           maxLines: 1,
         ),
-        elevation: 0.0,
       ),
       body: Column(
         children: [

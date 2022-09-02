@@ -78,20 +78,13 @@ class PosSettingsPageState extends State<_PosSettingsPage> {
     final posCatalogBloc = AppBlocsProvider.of<PosCatalogBloc>(context);
     final userProfileBloc = AppBlocsProvider.of<UserProfileBloc>(context);
     final texts = context.texts();
-    final themeData = Theme.of(context);
 
     return Scaffold(
       key: _scaffoldKey,
       appBar: AppBar(
-        leading: backBtn.BackButton(),
         automaticallyImplyLeading: false,
-        iconTheme: themeData.appBarTheme.iconTheme,
-        backgroundColor: themeData.canvasColor,
-        title: Text(
-          texts.pos_settings_title,
-          style: themeData.appBarTheme.textTheme.headline6,
-        ),
-        elevation: 0.0, toolbarTextStyle: themeData.appBarTheme.textTheme.bodyText2, titleTextStyle: themeData.appBarTheme.textTheme.headline6,
+        leading: backBtn.BackButton(),
+        title: Text(texts.pos_settings_title),
       ),
       body: SingleChildScrollView(
         reverse: true,

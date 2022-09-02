@@ -137,17 +137,10 @@ class ReverseSwapConfirmationState extends State<ReverseSwapConfirmation> {
 
     return Scaffold(
       appBar: AppBar(
-        iconTheme: themeData.appBarTheme.iconTheme,
-        textTheme: themeData.appBarTheme.textTheme,
-        backgroundColor: themeData.canvasColor,
         leading: backBtn.BackButton(onPressed: () {
           widget.onPrevious();
         }),
-        title: Text(
-          texts.reverse_swap_confirmation_speed,
-          style: themeData.appBarTheme.textTheme.headline6,
-        ),
-        elevation: 0.0,
+        title: Text(texts.reverse_swap_confirmation_speed),
       ),
       body: StreamBuilder<AccountModel>(
         stream: accountBloc.accountStream,

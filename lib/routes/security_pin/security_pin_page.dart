@@ -76,7 +76,6 @@ class SecurityPageState extends State<SecurityPage>
   @override
   Widget build(BuildContext context) {
     final texts = context.texts();
-    final themeData = Theme.of(context);
 
     return StreamBuilder<BackupState>(
       stream: widget.backupBloc.backupStateStream,
@@ -109,16 +108,9 @@ class SecurityPageState extends State<SecurityPage>
 
             return Scaffold(
               appBar: AppBar(
-                iconTheme: themeData.appBarTheme.iconTheme,
-                textTheme: themeData.appBarTheme.textTheme,
-                backgroundColor: themeData.canvasColor,
                 automaticallyImplyLeading: false,
                 leading: backBtn.BackButton(),
-                title: Text(
-                  texts.security_and_backup_title_and_backup,
-                  style: themeData.appBarTheme.textTheme.headline6,
-                ),
-                elevation: 0.0,
+                title: Text(texts.security_and_backup_title),
               ),
               body: ListView(
                 children: _buildSecurityPINTiles(

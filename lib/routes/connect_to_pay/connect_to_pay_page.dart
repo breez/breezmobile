@@ -194,6 +194,8 @@ class ConnectToPayPageState extends State<ConnectToPayPage> {
     return Scaffold(
       key: _key,
       appBar: AppBar(
+        leading: backBtn.BackButton(onPressed: _onBackPressed),
+        title: Text(_title),
         actions: _error == null
             ? [
                 IconButton(
@@ -205,17 +207,6 @@ class ConnectToPayPageState extends State<ConnectToPayPage> {
                 ),
               ]
             : null,
-        iconTheme: themeData.appBarTheme.iconTheme,
-        textTheme: themeData.appBarTheme.textTheme,
-        backgroundColor: themeData.canvasColor,
-        leading: backBtn.BackButton(
-          onPressed: _onBackPressed,
-        ),
-        title: Text(
-          _title,
-          style: themeData.appBarTheme.textTheme.headline6,
-        ),
-        elevation: 0.0,
       ),
       body: buildBody(),
     );

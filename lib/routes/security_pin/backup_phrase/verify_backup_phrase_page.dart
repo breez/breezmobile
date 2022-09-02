@@ -32,22 +32,14 @@ class VerifyBackupPhrasePageState extends State<VerifyBackupPhrasePage> {
 
   @override
   Widget build(BuildContext context) {
-    final themeData = Theme.of(context);
     final query = MediaQuery.of(context);
     final texts = context.texts();
     final backupBloc = AppBlocsProvider.of<BackupBloc>(context);
     return Scaffold(
       appBar: AppBar(
-        iconTheme: themeData.appBarTheme.iconTheme,
-        textTheme: themeData.appBarTheme.textTheme,
-        backgroundColor: themeData.canvasColor,
         automaticallyImplyLeading: false,
         leading: backBtn.BackButton(),
-        title: Text(
-          texts.backup_phrase_generation_verify,
-          style: themeData.appBarTheme.textTheme.headline6,
-        ),
-        elevation: 0.0,
+        title: Text(texts.backup_phrase_generation_verify),
       ),
       body: SingleChildScrollView(
         child: Container(

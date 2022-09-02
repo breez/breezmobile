@@ -40,7 +40,6 @@ class DepositToBTCAddressPageState extends State<DepositToBTCAddressPage> {
   @override
   Widget build(BuildContext context) {
     final texts = context.texts();
-    final themeData = Theme.of(context);
 
     final accountBloc = AppBlocsProvider.of<AccountBloc>(context);
     final lspBloc = AppBlocsProvider.of<LSPBloc>(context);
@@ -59,15 +58,8 @@ class DepositToBTCAddressPageState extends State<DepositToBTCAddressPage> {
                   return Material(
                     child: Scaffold(
                       appBar: AppBar(
-                        iconTheme: themeData.appBarTheme.iconTheme,
-                        textTheme: themeData.appBarTheme.textTheme,
-                        backgroundColor: themeData.canvasColor,
                         leading: backBtn.BackButton(),
-                        title: Text(
-                          texts.invoice_btc_address_title,
-                          style: themeData.appBarTheme.textTheme.headline6,
-                        ),
-                        elevation: 0.0,
+                        title: Text(texts.invoice_btc_address_title),
                       ),
                       body: getBody(
                         context,

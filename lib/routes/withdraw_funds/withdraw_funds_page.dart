@@ -86,17 +86,10 @@ class WithdrawFundsPageState extends State<WithdrawFundsPage> {
 
     return Scaffold(
       appBar: AppBar(
-        iconTheme: themeData.appBarTheme.iconTheme,
-        textTheme: themeData.appBarTheme.textTheme,
-        backgroundColor: themeData.canvasColor,
         leading: backBtn.BackButton(
           onPressed: () => Navigator.of(context).pop(),
         ),
-        title: Text(
-          widget.title,
-          style: themeData.appBarTheme.textTheme.headline6,
-        ),
-        elevation: 0.0,
+        title: Text(widget.title),
       ),
       body: StreamBuilder<AccountModel>(
         stream: accountBloc.accountStream,

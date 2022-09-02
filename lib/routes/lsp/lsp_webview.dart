@@ -26,23 +26,17 @@ class LSPWebViewPageState extends State<LSPWebViewPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        automaticallyImplyLeading: false,
+        title: Text(widget._title),
         actions: <Widget>[
           IconButton(
-              icon: Icon(
-                Icons.close,
-                color: Theme.of(context).iconTheme.color,
-              ),
-              onPressed: () => Navigator.pop(context))
+            icon: Icon(
+              Icons.close,
+              color: Theme.of(context).iconTheme.color,
+            ),
+            onPressed: () => Navigator.pop(context),
+          )
         ],
-        automaticallyImplyLeading: false,
-        iconTheme: Theme.of(context).appBarTheme.iconTheme,
-        textTheme: Theme.of(context).appBarTheme.textTheme,
-        backgroundColor: Theme.of(context).canvasColor,
-        title: Text(
-          widget._title,
-          style: Theme.of(context).appBarTheme.textTheme.headline6,
-        ),
-        elevation: 0.0,
       ),
       body: WebView(
         initialUrl: widget._url,

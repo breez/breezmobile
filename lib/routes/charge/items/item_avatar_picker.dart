@@ -45,20 +45,12 @@ class ItemAvatarPickerState extends State<ItemAvatarPicker> {
 
   @override
   Widget build(BuildContext context) {
-    final themeData = Theme.of(context);
     final texts = context.texts();
 
     return Scaffold(
       appBar: AppBar(
-        iconTheme: themeData.appBarTheme.iconTheme,
-        textTheme: themeData.appBarTheme.textTheme,
-        backgroundColor: themeData.canvasColor,
         leading: backBtn.BackButton(),
-        title: Text(
-          texts.pos_invoice_item_management_avatar_title,
-          style: themeData.appBarTheme.textTheme.headline6,
-        ),
-        elevation: 0.0,
+        title: Text(texts.pos_invoice_item_management_avatar_title),
       ),
       body: Padding(
         padding: EdgeInsets.only(top: 16, left: 0.0, right: 0.0),

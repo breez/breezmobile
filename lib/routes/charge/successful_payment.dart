@@ -1,7 +1,6 @@
-import 'package:breez/theme_data.dart' as theme;
 import 'package:breez/widgets/particles_animations.dart';
-import 'package:flutter/material.dart';
 import 'package:breez_translations/breez_translations_locales.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 
 class SuccessfulPaymentRoute extends StatefulWidget {

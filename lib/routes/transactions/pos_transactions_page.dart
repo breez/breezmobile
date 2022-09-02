@@ -92,21 +92,13 @@ class PosTransactionsPageState extends State<PosTransactionsPage> {
     List<Widget> actions,
   ]) {
     final texts = context.texts();
-    final themeData = Theme.of(context);
 
     return Scaffold(
       key: _scaffoldKey,
       appBar: AppBar(
-        iconTheme: themeData.appBarTheme.iconTheme,
-        textTheme: themeData.appBarTheme.textTheme,
-        backgroundColor: themeData.canvasColor,
         leading: backBtn.BackButton(),
-        title: Text(
-          texts.pos_transactions_title,
-          style: themeData.appBarTheme.textTheme.headline6,
-        ),
+        title: Text(texts.pos_transactions_title),
         actions: actions == null ? [] : actions,
-        elevation: 0.0,
       ),
       body: body,
     );
@@ -227,7 +219,6 @@ class PosTransactionsPageState extends State<PosTransactionsPage> {
     AccountModel accountModel,
   ) {
     final texts = context.texts();
-    final themeData = Theme.of(context);
     final filter = paymentsModel.filter;
     final payments = paymentsModel.paymentsList;
     final hasDateRange = filter.startDate != null && filter.endDate != null;
@@ -255,10 +246,8 @@ class PosTransactionsPageState extends State<PosTransactionsPage> {
                   hasDateRange
                       ? SliverAppBar(
                           pinned: true,
-                          elevation: 0.0,
                           expandedHeight: 32.0,
                           automaticallyImplyLeading: false,
-                          backgroundColor: themeData.canvasColor,
                           flexibleSpace: _buildDateFilterChip(filter),
                         )
                       : SliverPadding(

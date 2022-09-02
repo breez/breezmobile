@@ -269,7 +269,26 @@ class HomeState extends State<Home> with WidgetsBindingObserver {
             systemOverlayStyle: theme.themeId == "BLUE"
                 ? SystemUiOverlayStyle.dark
                 : themeData.appBarTheme.systemOverlayStyle,
+            iconTheme: IconThemeData(color: Color.fromARGB(255, 0, 133, 251)),
+            backgroundColor: (user.appMode == AppMode.pos)
+                ? themeData.backgroundColor
+                : theme.customData[theme.themeId].dashboardBgColor,
+            leading: _buildMenuIcon(context, user.appMode),
             centerTitle: false,
+            title: IconButton(
+              padding: EdgeInsets.zero,
+              icon: SvgPicture.asset(
+                "src/images/logo-color.svg",
+                height: 23.5,
+                width: 62.7,
+                color: themeData.appBarTheme.actionsIconTheme.color,
+                colorBlendMode: BlendMode.srcATop,
+              ),
+              iconSize: 64,
+              onPressed: () async {
+                _scaffoldKey.currentState.openDrawer();
+              },
+            ),
             actions: [
               Padding(
                 padding: user.appMode == AppMode.podcasts
@@ -309,28 +328,6 @@ class HomeState extends State<Home> with WidgetsBindingObserver {
                 )
               ],
             ],
-            leading: _buildMenuIcon(context, user.appMode),
-            title: IconButton(
-              padding: EdgeInsets.zero,
-              icon: SvgPicture.asset(
-                "src/images/logo-color.svg",
-                height: 23.5,
-                width: 62.7,
-                color: themeData.appBarTheme.actionsIconTheme.color,
-                colorBlendMode: BlendMode.srcATop,
-              ),
-              iconSize: 64,
-              onPressed: () async {
-                _scaffoldKey.currentState.openDrawer();
-              },
-            ),
-            iconTheme: IconThemeData(
-              color: Color.fromARGB(255, 0, 133, 251),
-            ),
-            backgroundColor: (user.appMode == AppMode.pos)
-                ? themeData.backgroundColor
-                : theme.customData[theme.themeId].dashboardBgColor,
-            elevation: 0.0,
           ),
           drawerEnableOpenDragGesture: true,
           drawerDragStartBehavior: DragStartBehavior.down,

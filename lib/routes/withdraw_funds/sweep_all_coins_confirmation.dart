@@ -92,17 +92,10 @@ class SweepAllCoinsConfirmationState extends State<SweepAllCoinsConfirmation> {
     final texts = context.texts();
     return Scaffold(
       appBar: AppBar(
-        iconTheme: themeData.appBarTheme.iconTheme,
-        textTheme: themeData.appBarTheme.textTheme,
-        backgroundColor: themeData.canvasColor,
         leading: backBtn.BackButton(onPressed: () {
           widget.onPrevious();
         }),
-        title: Text(
-          texts.sweep_all_coins_speed,
-          style: themeData.appBarTheme.textTheme.headline6,
-        ),
-        elevation: 0.0,
+        title: Text(texts.sweep_all_coins_speed),
       ),
       body: StreamBuilder<AccountModel>(
         stream: AppBlocsProvider.of<AccountBloc>(context).accountStream,

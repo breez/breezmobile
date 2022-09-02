@@ -68,20 +68,12 @@ class _PaymentOptionsPageState extends State<PaymentOptionsPage> {
   @override
   Widget build(BuildContext context) {
     final texts = context.texts();
-    final themeData = Theme.of(context);
 
     return Scaffold(
       appBar: AppBar(
-        iconTheme: themeData.appBarTheme.iconTheme,
-        textTheme: themeData.appBarTheme.textTheme,
-        backgroundColor: themeData.canvasColor,
         automaticallyImplyLeading: false,
         leading: backBtn.BackButton(),
-        title: Text(
-          texts.payment_options_title,
-          style: themeData.appBarTheme.textTheme.headline6,
-        ),
-        elevation: 0.0,
+        title: Text(texts.payment_options_title),
       ),
       body: (_loadingOverride || _loadingBaseFee || _loadingProportionalFee)
           ? Container()

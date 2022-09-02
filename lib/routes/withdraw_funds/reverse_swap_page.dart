@@ -96,19 +96,12 @@ class ReverseSwapPageState extends State<ReverseSwapPage> {
         final accountModel = accSnapshot.data;
 
         return Scaffold(
-          appBar: !_policyCompleter.isCompleted ||
-                  _loadingError != null
+          appBar: !_policyCompleter.isCompleted || _loadingError != null
               ? AppBar(
-                  iconTheme: themeData.appBarTheme.iconTheme,
-                  backgroundColor: themeData.canvasColor,
                   leading: backBtn.BackButton(
                     onPressed: () => Navigator.of(context).pop(),
                   ),
-                  title: Text(
-                    texts.reverse_swap_title,
-                    style: themeData.appBarTheme.textTheme.headline6,
-                  ),
-                  elevation: 0.0, toolbarTextStyle: themeData.appBarTheme.textTheme.bodyText2, titleTextStyle: themeData.appBarTheme.textTheme.headline6,
+                  title: Text(texts.reverse_swap_title),
                 )
               : null,
           body: FutureBuilder<Object>(

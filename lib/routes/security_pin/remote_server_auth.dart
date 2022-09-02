@@ -1,23 +1,20 @@
-import 'dart:convert';
 import 'dart:io';
 
-import 'package:breez/bloc/tor/bloc.dart';
 import 'package:breez/bloc/backup/backup_bloc.dart';
 import 'package:breez/bloc/backup/backup_model.dart';
 import 'package:breez/bloc/blocs_provider.dart';
-import 'package:breez/routes/podcast/theme.dart';
+import 'package:breez/bloc/tor/bloc.dart';
+import 'package:breez/logger.dart';
 import 'package:breez/routes/network/network.dart';
+import 'package:breez/routes/podcast/theme.dart';
 import 'package:breez/widgets/back_button.dart' as backBtn;
 import 'package:breez/widgets/error_dialog.dart';
 import 'package:breez/widgets/loader.dart';
 import 'package:breez/widgets/route.dart';
 import 'package:breez/widgets/single_button_bottom_bar.dart';
-import 'package:breez/logger.dart';
-import 'package:dio/dio.dart';
-import 'package:flutter/material.dart';
 import 'package:breez_translations/breez_translations_locales.dart';
+import 'package:flutter/material.dart';
 import 'package:validators/validators.dart';
-import 'package:webdav_client/webdav_client.dart' as webdav;
 
 Future<RemoteServerAuthData> promptAuthData(
   BuildContext context, {
@@ -90,7 +87,6 @@ class RemoteServerAuthPageState extends State<RemoteServerAuthPage> {
   @override
   Widget build(BuildContext context) {
     final texts = context.texts();
-    final themeData = Theme.of(context);
     final nav = Navigator.of(context);
 
     return StreamBuilder<BackupSettings>(
@@ -98,22 +94,13 @@ class RemoteServerAuthPageState extends State<RemoteServerAuthPage> {
         builder: (context, snapshot) {
           return Scaffold(
               appBar: AppBar(
+                automaticallyImplyLeading: false,
                 leading: backBtn.BackButton(
                   onPressed: () {
                     nav.pop(null);
                   },
                 ),
-                automaticallyImplyLeading: false,
-                iconTheme: themeData.appBarTheme.iconTheme,
-                textTheme: themeData.appBarTheme.textTheme,
-                backgroundColor: themeData.canvasColor,
-                title: Text(
-                  texts.remote_server_title,
-                  style: themeData.appBarTheme.textTheme.headline6,
-                ),
-                elevation: 0.0,
-                toolbarTextStyle: themeData.appBarTheme.textTheme.bodyText2,
-                titleTextStyle: themeData.appBarTheme.textTheme.headline6,
+                title: Text(texts.remote_server_title),
               ),
               body: SingleChildScrollView(
                 reverse: true,

@@ -63,16 +63,19 @@ final ThemeData blueTheme = ThemeData(
   backgroundColor: Colors.white,
   bottomAppBarTheme: BottomAppBarTheme(elevation: 0),
   appBarTheme: AppBarTheme(
-    textTheme: TextTheme(
+    elevation: 0.0,
+    backgroundColor: BreezColors.blue[500],
+    iconTheme: IconThemeData(color: Colors.white),
+    systemOverlayStyle: SystemUiOverlayStyle.light,
+    actionsIconTheme: IconThemeData(color: Color.fromRGBO(0, 120, 253, 1.0)),
+    toolbarTextStyle: TextTheme(
       headline6:
           TextStyle(color: Colors.white, fontSize: 18.0, letterSpacing: 0.22),
-    ),
-    iconTheme: IconThemeData(
-      color: Colors.white,
-    ),
-    color: Colors.transparent,
-    actionsIconTheme: IconThemeData(color: Color.fromRGBO(0, 120, 253, 1.0)),
-    systemOverlayStyle: SystemUiOverlayStyle.light,
+    ).bodyText2,
+    titleTextStyle: TextTheme(
+      headline6:
+          TextStyle(color: Colors.white, fontSize: 18.0, letterSpacing: 0.22),
+    ).headline6,
   ),
   dialogTheme: DialogTheme(
       titleTextStyle: TextStyle(
@@ -205,16 +208,19 @@ final ThemeData darkTheme = ThemeData(
   backgroundColor: Color(0xFF152a3d),
   bottomAppBarTheme: BottomAppBarTheme(elevation: 0),
   appBarTheme: AppBarTheme(
-    textTheme: TextTheme(
+    elevation: 0.0,
+    backgroundColor: Color(0xFF0c2031),
+    iconTheme: IconThemeData(color: Colors.white),
+    systemOverlayStyle: SystemUiOverlayStyle.light,
+    actionsIconTheme: IconThemeData(color: Colors.white),
+    toolbarTextStyle: TextTheme(
       headline6:
           TextStyle(color: Colors.white, fontSize: 18.0, letterSpacing: 0.22),
-    ),
-    iconTheme: IconThemeData(
-      color: Colors.white,
-    ),
-    color: Colors.white,
-    actionsIconTheme: IconThemeData(color: Colors.white),
-    systemOverlayStyle: SystemUiOverlayStyle.light,
+    ).bodyText2,
+    titleTextStyle: TextTheme(
+      headline6:
+          TextStyle(color: Colors.white, fontSize: 18.0, letterSpacing: 0.22),
+    ).headline6,
   ),
   dialogTheme: DialogTheme(
       titleTextStyle:

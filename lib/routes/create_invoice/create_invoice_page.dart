@@ -148,10 +148,8 @@ class CreateInvoicePageState extends State<CreateInvoicePage> {
         },
       ),
       appBar: AppBar(
-        iconTheme: themeData.appBarTheme.iconTheme,
-        textTheme: themeData.appBarTheme.textTheme,
-        backgroundColor: themeData.canvasColor,
         leading: backBtn.BackButton(),
+        title: Text(texts.invoice_title),
         actions: [
           StreamBuilder<Object>(
             stream: accountBloc.accountStream,
@@ -177,11 +175,6 @@ class CreateInvoicePageState extends State<CreateInvoicePage> {
             },
           )
         ],
-        title: Text(
-          texts.invoice_title,
-          style: themeData.appBarTheme.textTheme.headline6,
-        ),
-        elevation: 0.0,
       ),
       body: StreamBuilder<AccountModel>(
         stream: accountBloc.accountStream,

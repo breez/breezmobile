@@ -153,15 +153,8 @@ class LNURLFetchInvoicePageState extends State<LNURLFetchInvoicePage> {
             );
           }),
       appBar: AppBar(
-        iconTheme: themeData.appBarTheme.iconTheme,
-        textTheme: themeData.appBarTheme.textTheme,
-        backgroundColor: themeData.canvasColor,
         leading: backBtn.BackButton(),
-        title: Text(
-          texts.lnurl_fetch_invoice_pay_to_payee(payee),
-          style: themeData.appBarTheme.textTheme.headline6,
-        ),
-        elevation: 0.0,
+        title: Text(texts.lnurl_fetch_invoice_pay_to_payee(payee)),
       ),
       body: StreamBuilder<AccountModel>(
         stream: accountBloc.accountStream,

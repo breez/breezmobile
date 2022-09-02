@@ -94,7 +94,6 @@ class AddressWidget extends StatelessWidget {
 
   List<Widget> _buildShareAndCopyIcons(BuildContext context) {
     final texts = context.texts();
-    final themeData = Theme.of(context);
 
     List<Widget> _icons = [];
     if (address == null) {

@@ -108,10 +108,12 @@ class SendOnchainState extends State<SendOnchain> {
           systemOverlayStyle: theme.themeId == "BLUE"
               ? SystemUiOverlayStyle.dark
               : themeData.appBarTheme.systemOverlayStyle,
-          iconTheme: themeData.appBarTheme.iconTheme,
-          textTheme: themeData.appBarTheme.textTheme,
           automaticallyImplyLeading: false,
-          backgroundColor: themeData.backgroundColor,
+          title: Text(
+            widget._title,
+            style: dialogTheme.titleTextStyle,
+            textAlign: TextAlign.left,
+          ),
           actions: [
             IconButton(
               onPressed: () => Navigator.pop(context),
@@ -121,12 +123,6 @@ class SendOnchainState extends State<SendOnchain> {
               ),
             ),
           ],
-          title: Text(
-            widget._title,
-            style: dialogTheme.titleTextStyle,
-            textAlign: TextAlign.left,
-          ),
-          elevation: 0.0,
         ),
         bottomNavigationBar: BottomAppBar(
           elevation: 0,

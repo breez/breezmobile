@@ -20,7 +20,6 @@ class ConditionalDeposit extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final themeData = Theme.of(context);
     final texts = context.texts();
     final accountBloc = AppBlocsProvider.of<AccountBloc>(context);
 
@@ -50,15 +49,8 @@ class ConditionalDeposit extends StatelessWidget {
 
         return Scaffold(
           appBar: AppBar(
-            iconTheme: themeData.appBarTheme.iconTheme,
-            textTheme: themeData.appBarTheme.textTheme,
-            backgroundColor: themeData.canvasColor,
             leading: backBtn.BackButton(),
-            title: Text(
-              title,
-              style: themeData.appBarTheme.textTheme.headline6,
-            ),
-            elevation: 0.0,
+            title: Text(title),
           ),
           body: Column(
             mainAxisSize: MainAxisSize.max,

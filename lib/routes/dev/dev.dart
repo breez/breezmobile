@@ -9,6 +9,7 @@ import 'package:breez/bloc/account/add_funds_model.dart';
 import 'package:breez/bloc/backup/backup_bloc.dart';
 import 'package:breez/bloc/backup/backup_model.dart';
 import 'package:breez/bloc/blocs_provider.dart';
+import 'package:breez/bloc/podcast_history/sqflite/podcast_history_database.dart';
 import 'package:breez/bloc/pos_catalog/bloc.dart';
 import 'package:breez/bloc/pos_catalog/sqlite/db.dart';
 import 'package:breez/bloc/user_profile/breez_user_model.dart';
@@ -29,7 +30,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_downloader/flutter_downloader.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:share_plus/share_plus.dart';
-import 'package:breez/bloc/podcast_history/sqflite/podcast_history_database.dart';
+
 import 'default_commands.dart';
 
 bool allowRebroadcastRefunds = false;
@@ -149,12 +150,8 @@ class DevViewState extends State<DevView> {
                               return Scaffold(
                                 key: _scaffoldKey,
                                 appBar: AppBar(
-                                  iconTheme:
-                                      Theme.of(context).appBarTheme.iconTheme,
-                                  backgroundColor:
-                                      Theme.of(context).canvasColor,
                                   leading: backBtn.BackButton(),
-                                  elevation: 0.0,
+                                  title: Text("Developers"),
                                   actions: <Widget>[
                                     PopupMenuButton<Choice>(
                                       onSelected: widget._select,
@@ -185,13 +182,6 @@ class DevViewState extends State<DevView> {
                                       },
                                     ),
                                   ],
-                                  title: Text(
-                                    "Developers",
-                                    style: Theme.of(context)
-                                        .appBarTheme
-                                        .textTheme
-                                        .headline6,
-                                  ),
                                 ),
                                 body: Column(
                                     crossAxisAlignment:

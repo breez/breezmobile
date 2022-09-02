@@ -383,21 +383,13 @@ class ItemPageState extends State<ItemPage> {
     List<Widget> actions,
   ]) {
     final texts = context.texts();
-    final themeData = Theme.of(context);
 
     return Scaffold(
       key: _scaffoldKey,
       appBar: AppBar(
-        iconTheme: themeData.appBarTheme.iconTheme,
-        textTheme: themeData.appBarTheme.textTheme,
-        backgroundColor: themeData.canvasColor,
         leading: backBtn.BackButton(),
-        title: Text(
-          _title,
-          style: themeData.appBarTheme.textTheme.headline6,
-        ),
+        title: Text(_title),
         actions: actions == null ? <Widget>[] : actions,
-        elevation: 0.0,
       ),
       body: body,
       bottomNavigationBar: SingleButtonBottomBar(

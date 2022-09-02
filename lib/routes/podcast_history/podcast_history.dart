@@ -76,16 +76,9 @@ class PodcastHistoryPageState extends State<PodcastHistoryPage> {
     final themeData = Theme.of(context);
     return Scaffold(
       appBar: AppBar(
-        iconTheme: themeData.appBarTheme.iconTheme,
-        textTheme: themeData.appBarTheme.textTheme,
-        backgroundColor: themeData.canvasColor,
         automaticallyImplyLeading: false,
         leading: backBtn.BackButton(),
-        title: Text(
-          _getAppBarDisplayString(timeRange, context),
-          style: themeData.appBarTheme.textTheme.headline6,
-        ),
-        elevation: 0.0,
+        title: Text(_getAppBarDisplayString(timeRange, context)),
         actions: [
           PopupMenuButton<PodcastHistoryTimeRange>(
             color: themeData.canvasColor,

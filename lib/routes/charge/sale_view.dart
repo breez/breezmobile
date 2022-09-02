@@ -121,14 +121,8 @@ class SaleViewState extends State<SaleView> {
         }
         return Scaffold(
           appBar: AppBar(
-            iconTheme: themeData.appBarTheme.iconTheme,
-            textTheme: themeData.appBarTheme.textTheme,
-            backgroundColor: themeData.canvasColor,
             leading: backBtn.BackButton(),
-            title: Text(
-              title,
-              style: themeData.appBarTheme.textTheme.headline6,
-            ),
+            title: Text(title),
             actions: widget.readOnly
                 ? _buildPrintIcon(context, accModel)
                 : [
@@ -142,7 +136,6 @@ class SaleViewState extends State<SaleView> {
                       },
                     ),
                   ],
-            elevation: 0.0,
           ),
           extendBody: false,
           backgroundColor: themeData.backgroundColor,
