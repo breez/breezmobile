@@ -105,14 +105,7 @@ final ThemeData blueTheme = ThemeData(
           fontSize: 12.3,
           fontWeight: FontWeight.w400,
           letterSpacing: 0.25,
-          height: 1.22),
-      bodyText2: TextStyle(color: BreezColors.grey[600]),
-      caption: TextStyle(
-          color: Color(0xb3303234),
-          fontSize: 10.5,
-          fontWeight: FontWeight.w400,
-          height: 1.16,
-          letterSpacing: 0.39)),
+          height: 1.22)),
   primaryTextTheme: TextTheme(
     headline4: TextStyle(
         color: BreezColors.grey[500],
@@ -153,6 +146,7 @@ final ThemeData blueTheme = ThemeData(
   bottomAppBarColor: Color(0xFF0085fb),
   fontFamily: 'IBMPlexSans',
   accentTextTheme: TextTheme(
+    bodyText2: TextStyle(color: BreezColors.grey[600]),
     headline4: TextStyle(
         color: Color.fromRGBO(0, 133, 251, 1.0),
         fontSize: 30.0,
@@ -176,6 +170,12 @@ final ThemeData blueTheme = ThemeData(
         fontWeight: FontWeight.w500,
         height: 1.2,
         letterSpacing: 0.25),
+    caption: TextStyle(
+        color: Color(0xb3303234),
+        fontSize: 10.5,
+        fontWeight: FontWeight.w400,
+        height: 1.16,
+        letterSpacing: 0.39),
   ),
   textButtonTheme: TextButtonThemeData(),
   outlinedButtonTheme: OutlinedButtonThemeData(),
@@ -251,14 +251,7 @@ final ThemeData darkTheme = ThemeData(
           fontSize: 12.3,
           fontWeight: FontWeight.w400,
           letterSpacing: 0.25,
-          height: 1.22),
-      bodyText2: TextStyle(color: Colors.white),
-      caption: TextStyle(
-          color: Colors.white.withOpacity(0.7),
-          fontSize: 10.5,
-          fontWeight: FontWeight.w400,
-          height: 1.16,
-          letterSpacing: 0.39)),
+          height: 1.22)),
   primaryTextTheme: TextTheme(
     headline4: TextStyle(
         color: Colors.white,
@@ -295,6 +288,7 @@ final ThemeData darkTheme = ThemeData(
   bottomAppBarColor: Color(0xFF0085fb),
   fontFamily: 'IBMPlexSans',
   accentTextTheme: TextTheme(
+      bodyText2: TextStyle(color: Colors.white),
       headline4: TextStyle(
           color: Colors.white,
           fontSize: 30.0,
@@ -318,7 +312,12 @@ final ThemeData darkTheme = ThemeData(
           fontWeight: FontWeight.w400,
           height: 1.2,
           letterSpacing: 0.25),
-  ),
+      caption: TextStyle(
+          color: Colors.white.withOpacity(0.7),
+          fontSize: 10.5,
+          fontWeight: FontWeight.w400,
+          height: 1.16,
+          letterSpacing: 0.39)),
   textButtonTheme: TextButtonThemeData(),
   outlinedButtonTheme: OutlinedButtonThemeData(),
   elevatedButtonTheme: ElevatedButtonThemeData(

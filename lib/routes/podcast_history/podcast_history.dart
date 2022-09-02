@@ -315,7 +315,7 @@ class PodcastHistoryPageState extends State<PodcastHistoryPage> {
                             AutoSizeText(
                               BreezTranslations.of(context)
                                   .podcast_history_empty_text,
-                              style: themeData.textTheme.bodyText2
+                              style: themeData.accentTextTheme.bodyText2
                                   .copyWith(color: Colors.white),
                               textAlign: TextAlign.center,
                               minFontSize: MinFontSize(context).minFontSize,
