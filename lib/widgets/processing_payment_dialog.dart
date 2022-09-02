@@ -194,7 +194,7 @@ class ProcessingPaymentDialogState extends State<ProcessingPaymentDialog>
         title: texts.processing_payment_dialog_synchronizing,
       ),
       actions: [
-        FlatButton(
+        TextButton(
           onPressed: _closeDialog,
           child: Text(
             texts.processing_payment_dialog_action_close,
