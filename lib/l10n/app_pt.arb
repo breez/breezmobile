@@ -121,7 +121,7 @@
   "invoice_btc_address_on_chain_end": " para ver o script associado a este endereço.",
   "invoice_btc_address_on_chain_action_ok": "OK",
   "invoice_title": "Receber via Fatura",
-  "invoice_action_create": "RECEBER",
+  "invoice_action_create": "COBRAR",
   "invoice_action_redeem": "RESGATAR",
   "invoice_action_scan_barcode": "Ler código de barras",
   "invoice_payment_success": "O pagamento foi recebido com sucesso!",
