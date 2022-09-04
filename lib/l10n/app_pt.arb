@@ -362,7 +362,7 @@
   "pos_invoice_item_management_avatar_search": "Busque por uma imagem",
   "pos_invoice_tab_keypad": "Teclado",
   "pos_invoice_tab_items": "Itens",
-  "pos_invoice_charge_label": "RECEBER {amount} {currencyName}",
+  "pos_invoice_charge_label": "COBRAR {amount} {currencyName}",
   "@pos_invoice_charge_label": {
     "placeholders": {
       "amount": {
