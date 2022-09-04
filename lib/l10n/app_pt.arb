@@ -514,7 +514,7 @@
       }
     }
   },
-  "sale_view_total_title_charge_no_fiat": "RECEBER {value}",
+  "sale_view_total_title_charge_no_fiat": "COBRAR {value}",
   "@sale_view_total_title_charge_no_fiat": {
     "placeholders": {
       "value": {
