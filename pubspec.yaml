@@ -7,7 +7,7 @@ dependencies:
   flutter_localizations:
     sdk: flutter
 
-  another_flushbar: ^1.10.29
+  another_flushbar: ^1.12.29
   app_settings: ^4.1.8
   archive: ^3.3.1
   auto_size_text: ^3.0.0
@@ -26,8 +26,8 @@ dependencies:
   drag_and_drop_lists: ^0.3.3
   duration: ^3.0.11
   email_validator: ^2.1.17
-  extended_image: ^6.2.1
-  file_picker: ^5.0.1
+  extended_image: ^6.3.0
+  file_picker: ^5.1.0
   firebase_core: ^1.24.0
   # Version 4.5.2 breaks, it is necessary to update firebase as a whole
   firebase_core_platform_interface: 4.5.1
@@ -35,7 +35,7 @@ dependencies:
   firebase_dynamic_links: ^4.3.10
   firebase_messaging: ^13.1.0
   flutter_secure_storage: ^6.0.0
-  flutter_svg: ^1.1.3
+  flutter_svg: ^1.1.5
   flutter_web_browser: ^0.17.1
   google_api_availability: ^3.0.1
   grpc: ^3.0.2
@@ -46,14 +46,13 @@ dependencies:
   ini: ^2.1.0
   intl: ^0.17.0
   json_annotation: ^4.6.0
-  # local_auth: 2.0.0 has breaking changes that are missing documentation
   local_auth: <2.0.0
   logging: ^1.0.2
   md5_file_checksum: ^1.0.3
   nfc_manager: ^3.1.1
   package_info_plus: ^1.4.3+1
   path_provider: ^2.0.11
-  printing: ^5.9.2
+  printing: ^5.9.3
   protobuf: ^2.1.0
   mobile_scanner: ^2.1.0
   # qr_flutter has already fixed the build issue with the qr package but did not publish an updated
@@ -109,8 +108,8 @@ dev_dependencies:
   flutter_test:
     sdk: flutter
   build_runner: ^2.3.0
-  json_serializable: ^6.3.1
-  mockito: ^5.3.0
+  json_serializable: ^6.3.2
+  mockito: ^5.3.1
   sqflite_common_ffi: ^2.1.1+1
   test: any
 
