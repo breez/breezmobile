@@ -16,7 +16,7 @@
   "home_drawer_error_no_name": "Nimetön",
   "home_podcast_title": "Anytime Podcast Player",
   "home_podcast_no_subscriptions": "Etsi ja tilaa ensimmäinen podcast Discover -näkymästä.",
-  "home_error_connect_to_pay": "Yhdistä maksajaan",
+  "home_error_connect_to_pay": "Linkitä vastaanottaja",
   "home_error_podcast_link": "Podcast-linkki",
   "home_broadcast_transaction": "Tapahtumaa lähetetään",
   "home_config_error_title": "Konfiguraatiovirhe",
@@ -26,7 +26,7 @@
   "home_background_synchronization_message": "Välittömästi tapahtuvien maksujen toteuttamiseksi Breez synkronoi tietoja taustalla. Sovellus vaatii sinulta luvan toimia myös silloin kun sovellus ei ole avattuna. Myönnä oikeus seuraavassa näkymässä.",
   "home_payment_sent": "Maksun lähetys onnistui.",
   "home_report_sending": "Raporttia lähetetään.",
-  "invoice_btc_address_title": "Talleta bitcoin-osoitteella",
+  "invoice_btc_address_title": "Vastaanota Bitcoin-maksu",
   "invoice_btc_address_network_error": "Bitcoin-osoitteen haku palvelimelta epäonnistui.\nTarkista Internet-yhteyden toiminta.",
   "invoice_btc_address_action_retry": "YRITÄ UUDELLEEN",
   "invoice_btc_address_action_close": "SULJE",
@@ -146,7 +146,7 @@
       }
     }
   },
-  "invoice_description_label": "Kuvaus (vapaaehtoinen)",
+  "invoice_description_label": "Kuvaus (ei pakollinen tieto)",
   "invoice_availability_message_synchronizing": "Maksujen vastaanotto odottaa synkronointia.",
   "invoice_availability_message_opening_channel": "Maksujen vastaanottamiseen vaadittavan kanavan avaus on kesken. Avaus on valmis yleensä noin 10 minuutin kuluessa. Yritä muutaman minuutin kuluttua uudelleen.",
   "invoice_receive_label": "Vastaanota enintään: {maxSats}",
@@ -231,13 +231,13 @@
   "tutorial_gotcha": "Kas niin!",
   "bottom_action_bar_send": "LÄHETÄ",
   "bottom_action_bar_receive": "VASTAANOTA",
-  "bottom_action_bar_paste_invoice": "Syötä tai liitä LN-maksu",
-  "bottom_action_bar_connect_to_pay": "Yhdistä maksajaan",
-  "bottom_action_bar_send_btc_address": "Nosto Bitcoin-osoitteeseen",
+  "bottom_action_bar_paste_invoice": "Lightning-maksu",
+  "bottom_action_bar_connect_to_pay": "Linkitä vastaanottaja",
+  "bottom_action_bar_send_btc_address": "Bitcoin-maksu",
   "bottom_action_bar_escher": "Cash-Out via Escher",
-  "bottom_action_bar_receive_invoice": "Luo Lightning-lasku",
-  "bottom_action_bar_receive_btc_address": "Talletus Bitcoin-osoitteeseen",
-  "bottom_action_bar_buy_bitcoin": "Osta Bitcoineja",
+  "bottom_action_bar_receive_invoice": "Lightning-maksu",
+  "bottom_action_bar_receive_btc_address": "Bitcoin-maksu",
+  "bottom_action_bar_buy_bitcoin": "Osta bitcoineja",
   "bottom_action_bar_warning_balance_title": "Breez vaatii, että saldosi on vähintään {balance}.",
   "@bottom_action_bar_warning_balance_title": {
     "placeholders": {
@@ -551,7 +551,7 @@
   },
   "fiat_currencies_title": "Valuutat",
   "fiat_currencies_save_fail": "Muutosten tallennus epäonnistui.",
-  "connect_to_pay_title_payer": "Yhdistä maksajaan",
+  "connect_to_pay_title_payer": "Linkitä vastaanottaja",
   "connect_to_pay_title_payee": "Maksun vastaanotto",
   "connect_to_pay_canceled_payer": "Maksaja keskeytti maksutapahtuman.",
   "connect_to_pay_canceled_payee": "Maksunsaaja keskeytti maksutapahtuman.",
@@ -702,7 +702,7 @@
       }
     }
   },
-  "connect_to_pay_payer_share_link": "Lähetä maksajalle maksulinkki valitsemalla Jaa-kuvake ja odota kunnes maksaja liittyy maksutapahtumaan.",
+  "connect_to_pay_payer_share_link": "Lähetä maksun vastaanottajalle linkki valitsemalla Jaa-kuvake ja odota kunnes maksaja liittyy maksutapahtumaan.",
   "connect_to_pay_payer_waiting_join_no_name": "Odotetaan kunnes joku liittyy maksutapahtumaan.",
   "connect_to_pay_payer_waiting_join_with_name": "Odotetaan että {name} liittyy maksutapahtumaan.",
   "@connect_to_pay_payer_waiting_join_with_name": {
@@ -727,12 +727,13 @@
   "connect_to_pay_payer_wait_sync": "Odota, sovellus synkronoi tietoja.",
   "connect_to_pay_payer_synchronizing": "Synkronoidaan...",
   "connect_to_pay_payer_action_close": "SULJE",
-  "connect_to_pay_payment_detail_note": "Maksun tiedot (vapaaehtoinen)",
+  "connect_to_pay_payment_detail_note": "Maksun tiedot (ei pakollinen tieto)",
   "connect_to_pay_payment_available": "Käytettävissä:",
   "connect_to_pay_payment_action_close": "Sulje",
   "connect_to_pay_payment_action_pay": "MAKSA",
   "connect_to_pay_peer_unknown": "Tuntematon",
-  "connect_to_pay_share_text": "{name} haluaa maksaa sinulle Breez-sovelluksella. Vastaanota maksu avaamalla seuraava linkki: {address}",
+  "connect_to_pay_share_text": "{name} haluaa lähettää sinulle varoja. Avaa
+  linkki: {address}",
   "@connect_to_pay_share_text": {
     "placeholders": {
       "name": {
@@ -844,9 +845,9 @@
       }
     }
   },
-  "reverse_swap_title": "Nosta Bitcoin-osoitteeseen",
+  "reverse_swap_title": "Lähetä Bitcoin-osoitteeseen",
   "reverse_swap_funding_transaction": "Varojen siirto:",
-  "reverse_swap_waiting_channels": "Nosto Bitcoin-osoitteeseen on mahdollista vasta kaikkien kanavien avausvahvistuksien jälkeen.",
+  "reverse_swap_waiting_channels": "Bitcoin-osoitteeseen lähettäminen on mahdollista vasta kaikkien kanavien avausvahvistuksien jälkeen.",
   "reverse_swap_confirmation_speed": "Valitse käsittelyn prioriteetti",
   "reverse_swap_confirmation_action_confirm": "LÄHETÄ",
   "reverse_swap_confirmation_you_send": "Sinä lähetät:",
@@ -918,7 +919,7 @@
     }
   },
   "withdraw_funds_use_all_funds": "Käytä kaikki varat",
-  "withdraw_funds_btc_address": "Nosto Bitcoin-osoitteeseen",
+  "withdraw_funds_btc_address": "Vastaanottajan Bitcoin-osoite",
   "withdraw_funds_scan_barcode": "Lue QR-koodi",
   "withdraw_funds_error_invalid_address": "Bitcoin-osoitetta ei tunnistettu",
   "withdraw_funds_balance": "Saldo:",
@@ -1483,7 +1484,7 @@
   "pos_settings_activate_manager_password": "Ota päällikön salasana käyttöön",
   "pos_settings_change_manager_password": "Vaihda päällikön salasana",
   "pos_settings_manager_password_error_title": "Päällikön salasana",
-  "pos_settings_manager_password_error_message": "Päällikön salasana voidaan määrittää vasta varmuuskopioinnin olleessa aktiivinen. Saat varmuuskopioinnin aktivoitua valitsemalla päävalikosta Vastaanota ja Vastaanota bitcoin-soitteella.",
+  "pos_settings_manager_password_error_message": "Päällikön salasana voidaan määrittää vasta varmuuskopioinnin olleessa aktiivinen. Saat varmuuskopioinnin aktivoitua valitsemalla päävalikosta Vastaanota ja Bitcoin-maksu.",
   "pos_settings_manager_password_title": "Päällikön salasana",
   "pos_settings_manager_password_message": "Jos päällikön salasana on otettu käyttöön, niin varojen nostaminen sovelluksesta vaatii salasanan.\nOletko varma että haluat ottaa päällikön salasanan käyttöön?",
   "pos_settings_manager_password_action_create": "LUO",
@@ -1718,7 +1719,7 @@
       }
     }
   },
-  "lnurl_fetch_invoice_comment": "Kuvaus (valinnainen)",
+  "lnurl_fetch_invoice_comment": "Kuvaus (ei pakollinen tieto)",
   "lnurl_fetch_invoice_error_min": "Maksu vähintään {min}",
   "@lnurl_fetch_invoice_error_min": {
     "placeholders": {
@@ -1765,7 +1766,7 @@
     }
   },
   "lnurl_error_unsupported": "LNUrl muoto ei ole tuettu",
-  "make_invoice_request_title": "Tämä sivusto haluaa maksaa sinulle:",
+  "make_invoice_request_title": "Sivusto haluaa maksaa sinulle:",
   "make_invoice_request_action_cancel": "Peruuta",
   "make_invoice_request_action_approve": "HYVÄKSY",
   "podcast_add_funds_title": "Jotta voit lähettää maksuja tälle podcast:ille, tulee sinun ensin lisatä varoja saldollesi.",
@@ -1778,8 +1779,8 @@
   "podcast_boost_action_approve": "HYVÄKSY",
   "podcast_boost_symbol_circa": "~",
   "podcast_boost_send_title": "Lähetä Boostagram:iin",
-  "podcast_boost_send_optional": "Boostagram (valinnainen)",
-  "podcast_boost_send_amount": "Boost määrä  satosheina)",
+  "podcast_boost_send_optional": "Boostagram (ei pakollinen tieto)",
+  "podcast_boost_send_amount": "Boost määrä (satosheina)",
   "podcast_boost_custom_amount": "Syötä vapaavalintainen määrä:",
   "podcast_boost_custom_amount_error_empty": "Syötä määrä",
   "podcast_boost_custom_amount_error_too_few": "Syötä määräksi vähintään {amount} satoshia.",
@@ -1887,7 +1888,7 @@
   "spontaneous_payment_title": "Lähetä maksu",
   "spontaneous_payment_action_pay": "MAKSA",
   "spontaneous_payment_action_cancel": "Peruuta",
-  "spontaneous_payment_tip_message": "Maksun viesti (vapaaehtoinen)",
+  "spontaneous_payment_tip_message": "Maksun viesti (ei pakollinen tieto)",
   "spontaneous_payment_generic_message": "Voit vastaanottaa maksuja vasta kun, Breez saa avattua turvallisen kanavan palvelimeen. Avaus kestää tyypillisesti noin ~10 minuuttia. Odota muutama minuutti ja yritä sitten uudelleen.",
   "spontaneous_payment_max_amount": "Maksa enintään: {amount}",
   "@spontaneous_payment_max_amount": {
@@ -1983,7 +1984,7 @@
   "pending_closed_channel_action_ok": "OK",
   "close_warning_dialog_title": "Käyttämättömiä kanavia",
   "close_warning_dialog_action_ok": "OK",
-  "close_warning_dialog_message_begin": "Et ole käyttänyt sovellusta maksujen suorittamiseen viimeisten {duration} päivän aikana. Niinpä maksujen välityspalvelu (Liguitu Service Provide = LSP) on saattanut sulkea salamaverkon kanavasi. Mikäli näin on käynyt, sovellus luo lohkoketjuosoitteen ja siirtää varasi sinne. Kaikki varasi säilyvät omistuksessasi, pois lukien tapahtuma- ja mining-kulut. Voi palata ja lunastaa varasi milloin vain. Tarkempia tietoja taustoista lue seuraava artikkeli (englanniksi) ",
+  "close_warning_dialog_message_begin": "Et ole käyttänyt sovellusta maksujen suorittamiseen viimeisten {duration} päivän aikana. Niinpä maksujen välityspalvelu (Liquidity Service Provide = LSP) on saattanut sulkea salamaverkon kanavasi. Mikäli näin on käynyt, sovellus luo lohkoketjuosoitteen ja siirtää varasi sinne. Kaikki varasi säilyvät omistuksessasi, pois lukien tapahtuma- ja mining-kulut. Voi palata ja lunastaa varasi milloin vain. Tarkempia tietoja taustoista lue seuraava artikkeli (englanniksi) ",
   "@close_warning_dialog_message_begin": {
     "placeholders": {
       "duration": {
@@ -2101,12 +2102,12 @@
   "podcast_history_sort_dropdown_sats": "Maksettu",
   "podcast_history_sort_dropdown_boosts": "Boosted",
   "podcast_history_empty_text": "Näytettäviä tietoja ei ole.",
-  "podcast_clips_clip_button": "CLIP",
-  "podcast_clips_cancel_button": "PERUUTTAA",
+  "podcast_clips_clip_button": "LEIKKAA",
+  "podcast_clips_cancel_button": "Peruuta",
   "podcast_clips_seconds": "sekuntia",
   "podcast_clips_dialog_title": "Leikkeen kesto (sekunneissa)",
-  "podcast_clips_dialog_done": "TEHTY",
-  "podcast_clips_error": "An error has occurred while clipping the episode. Please try again.",
+  "podcast_clips_dialog_done": "VALMIS",
+  "podcast_clips_error": "Jakson leikkaamisessa tapahtui virhe. Yritä uudelleen.",
   "locale": "fi",
   "app_name": "Breez"
 }
