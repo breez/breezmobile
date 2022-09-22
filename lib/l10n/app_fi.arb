@@ -732,8 +732,7 @@
   "connect_to_pay_payment_action_close": "Sulje",
   "connect_to_pay_payment_action_pay": "MAKSA",
   "connect_to_pay_peer_unknown": "Tuntematon",
-  "connect_to_pay_share_text": "{name} haluaa lähettää sinulle varoja. Avaa
-  linkki: {address}",
+  "connect_to_pay_share_text": "{name} haluaa lähettää sinulle varoja. Avaa linkki: {address}",
   "@connect_to_pay_share_text": {
     "placeholders": {
       "name": {
