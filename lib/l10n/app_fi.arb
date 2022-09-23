@@ -1448,7 +1448,7 @@
   "add_funds_moonpay_loading": "Ladataan…",
   "add_funds_moonpay_error_service_unavailable": "Palvelu ei ole käytettävissä. Yritä myöhemmin uudelleen.",
   "csv_exporter_date_and_time": "Päivä ja aika",
-  "csv_exporter_title": "Otsikko",
+  "csv_exporter_title": "Vastapuoli",
   "csv_exporter_description": "Kuvaus",
   "csv_exporter_node_id": "Solmun ID",
   "csv_exporter_amount": "Määrä",
