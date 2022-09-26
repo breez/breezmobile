@@ -6,9 +6,9 @@
   "home_drawer_item_title_transactions": "Tapahtumat",
   "home_drawer_item_title_balance": "Saldo",
   "home_drawer_item_title_podcasts": "Podcastit",
-  "home_drawer_item_title_pos": "Myyntipiste",
+  "home_drawer_item_title_pos": "Maksupääte",
   "home_drawer_item_title_apps": "Sovellukset",
-  "home_drawer_item_title_pos_settings": "Myyntipisteasetukset",
+  "home_drawer_item_title_pos_settings": "Maksupääteasetukset",
   "home_drawer_item_title_developers": "Sovelluskehittäjille",
   "home_drawer_item_title_get_refund": "Varojen lunastus",
   "home_drawer_item_title_payment_options": "Salamamaksun kulut",
@@ -1463,7 +1463,7 @@
       }
     }
   },
-  "pos_settings_title": "Myyntipisteen asetukset",
+  "pos_settings_title": "Maksupäätteen asetukset",
   "pos_settings_cancellation_timeout": "Vastaanotettavan maksun aikakatkaisu (sekuntia)",
   "pos_settings_items_list": "Tuotelistaus",
   "pos_settings_import_csv": "Tuo CSV-tiedostosta",
@@ -2058,7 +2058,7 @@
   "description_broadcast_done": "Tapahtuma lähetettiin",
   "description_type_deposit": "Bitcoin-siirto",
   "payment_info_title_bitrefill": "Bitrefill",
-  "payment_info_title_breez_sale": "Päiväys [{date}]",
+  "payment_info_title_breez_sale": "Maksupääte [{date}]",
   "@payment_info_title_breez_sale": {
     "placeholders": {
       "date": {
