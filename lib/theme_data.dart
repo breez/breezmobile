@@ -56,9 +56,9 @@ final ThemeData blueTheme = ThemeData(
       .copyWith(primary: Colors.white, secondary: Colors.white),
   primaryColor: Color.fromRGBO(255, 255, 255, 1.0),
   primaryColorDark: BreezColors.blue[900],
-  primaryColorLight: Color.fromRGBO(0, 133, 251, 1.0),
+  primaryColorLight: Color.fromRGBO(255, 0, 0, 1.0),
   floatingActionButtonTheme: FloatingActionButtonThemeData(
-      backgroundColor: Color.fromRGBO(0, 133, 251, 1.0)),
+      backgroundColor: Color.fromRGBO(255, 0, 0, 1.0)),
   canvasColor: BreezColors.blue[500],
   backgroundColor: Colors.white,
   bottomAppBarTheme: BottomAppBarTheme(elevation: 0),
@@ -71,7 +71,7 @@ final ThemeData blueTheme = ThemeData(
       color: Colors.white,
     ),
     color: Colors.transparent,
-    actionsIconTheme: IconThemeData(color: Color.fromRGBO(0, 120, 253, 1.0)),
+    actionsIconTheme: IconThemeData(color: Color.fromRGBO(255, 0, 0, 1.0)),
     systemOverlayStyle: SystemUiOverlayStyle.light,
   ),
   dialogTheme: DialogTheme(
@@ -138,20 +138,20 @@ final ThemeData blueTheme = ThemeData(
   ),
   textSelectionTheme: TextSelectionThemeData(
     selectionColor: Color.fromRGBO(0, 133, 251, 0.25),
-    selectionHandleColor: Color(0xFF0085fb),
+    selectionHandleColor: Color.fromRGBO(255, 0, 0, 1.0),
   ),
   primaryIconTheme: IconThemeData(color: BreezColors.grey[500]),
-  bottomAppBarColor: Color(0xFF0085fb),
+  bottomAppBarColor: Color.fromRGBO(255, 0, 0, 1.0),
   fontFamily: 'IBMPlexSans',
   accentTextTheme: TextTheme(
     bodyText2: TextStyle(color: BreezColors.grey[600]),
     headline4: TextStyle(
-        color: Color.fromRGBO(0, 133, 251, 1.0),
+        color: Color.fromRGBO(255, 0, 0, 1.0),
         fontSize: 30.0,
         fontWeight: FontWeight.w600,
         height: 1.52),
     subtitle1: TextStyle(
-        color: Color.fromRGBO(0, 133, 251, 1.0),
+        color: Color.fromRGBO(255, 0, 0, 1.0),
         fontSize: 15,
         fontWeight: FontWeight.w500,
         height: 1.24,
@@ -182,7 +182,7 @@ final ThemeData blueTheme = ThemeData(
     fillColor: MaterialStateProperty.resolveWith(
       (states) {
         if (states.contains(MaterialState.selected)) {
-          return Color(0xFF0085fb);
+          return Color.fromRGBO(255, 0, 0, 1.0);
         } else {
           return Color(0x8a000000);
         }

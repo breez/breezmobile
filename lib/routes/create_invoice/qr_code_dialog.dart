@@ -341,7 +341,8 @@ class QrCodeDialogState extends State<QrCodeDialog>
       if (lspFee != 0) {
         return texts.qr_code_dialog_warning_message_with_lsp(
           Currency.SAT.format(lspFee),
-          accSnapshot.data.fiatCurrency.format(lspFee),
+          // FIXME
+          '0',//accSnapshot.data.fiatCurrency.format(lspFee),
         );
       }
       return texts.qr_code_dialog_warning_message;

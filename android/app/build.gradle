@@ -29,7 +29,7 @@ android {
     }
 
     defaultConfig {
-        applicationId "com.breez.client"
+        applicationId "com.elenpay.wallet.client"
         minSdkVersion 24
         targetSdkVersion 32
         multiDexEnabled true
@@ -55,12 +55,12 @@ android {
         debug {
             applicationIdSuffix '.debug'
             versionNameSuffix '-DEBUG'
-            resValue "string", "app_name", "Breez Debug"
+            resValue "string", "app_name", "ElenWallet Debug"
         }
         release {
             signingConfig signingConfigs.release
             shrinkResources false
-            resValue "string", "app_name", "Breez"
+            resValue "string", "app_name", "ElenWallet"
         }
     }
 
