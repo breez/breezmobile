@@ -24,10 +24,11 @@ dependencies:
   csv: ^5.0.1
   dio: ^4.0.6
   drag_and_drop_lists: ^0.3.3
-  duration: ^3.0.11
+  duration: ^3.0.12
   email_validator: ^2.1.17
-  extended_image: ^6.3.0
-  file_picker: ^5.1.0
+
+  extended_image: ^6.3.1
+  file_picker: ^5.2.0+1
   firebase_core: ^1.24.0
   # Version 4.5.2 breaks, it is necessary to update firebase as a whole
   firebase_core_platform_interface: 4.5.1
@@ -45,11 +46,11 @@ dependencies:
   image_picker: ^0.8.5+3
   ini: ^2.1.0
   intl: ^0.17.0
-  json_annotation: ^4.6.0
+  json_annotation: ^4.7.0
   local_auth: <2.0.0
   logging: ^1.0.2
   md5_file_checksum: ^1.0.3
-  nfc_manager: ^3.1.1
+  nfc_manager: ^3.2.0
   package_info_plus: ^1.4.3+1
   path_provider: ^2.0.11
   printing: ^5.9.3
@@ -68,11 +69,11 @@ dependencies:
   shared_preferences: ^2.0.15
   shimmer: ^2.0.0
   simple_animations: ^5.0.0+2
-  sqflite: ^2.0.3+1
+  sqflite: ^2.1.0
   timeago: ^3.3.0
   tutorial_coach_mark: ^1.2.4
   uni_links: ^0.5.1
-  url_launcher: ^6.1.5
+  url_launcher: ^6.1.6
   uuid: ^3.0.6
   validators: ^3.0.0
   webdav_client: ^1.1.8
@@ -108,8 +109,8 @@ dev_dependencies:
   flutter_test:
     sdk: flutter
   build_runner: ^2.3.0
-  json_serializable: ^6.3.2
-  mockito: ^5.3.1
+  json_serializable: ^6.4.1
+  mockito: ^5.3.2
   sqflite_common_ffi: ^2.1.1+1
   test: any
 
