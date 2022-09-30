@@ -1454,6 +1454,7 @@
   "csv_exporter_amount": "Määrä",
   "csv_exporter_preimage": "Preimage",
   "csv_exporter_tx_hash": "Tapahtumatunnus",
+  "csv_exporter_fee": "Kulut",
   "pos_custom_item_name": "Tuotenimi {index}",
   "@pos_custom_item_name": {
     "placeholders": {

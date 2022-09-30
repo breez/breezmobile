@@ -1454,6 +1454,7 @@
     "csv_exporter_amount": "Importo",
     "csv_exporter_preimage": "Preimage",
     "csv_exporter_tx_hash": "Hash TX",
+    "csv_exporter_fee": "Fee",
     "pos_custom_item_name": "Articolo {index}",
     "@pos_custom_item_name": {
         "placeholders": {

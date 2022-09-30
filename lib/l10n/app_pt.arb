@@ -1454,6 +1454,7 @@
   "csv_exporter_amount": "Quantia",
   "csv_exporter_preimage": "Comprovante",
   "csv_exporter_tx_hash": "TX Hash",
+  "csv_exporter_fee": "Taxa",
   "pos_custom_item_name": "Item {index}",
   "@pos_custom_item_name": {
     "placeholders": {
