@@ -45,6 +45,7 @@ class LSPBloc with AsyncActionsHandler {
       var selectedLSP = sp.getString(SELECTED_LSP_PREFERENCES_KEY);
       _lspsStatusController
           .add(LSPStatus.initial().copyWith(selectedLSP: selectedLSP));
+      _breezLib.setSelectedLspID(selectedLSP);
       _listenReconnects();
       _handleAccountChangs(sp);
       _handleLSPStatusChanges(sp);
@@ -73,6 +74,7 @@ class LSPBloc with AsyncActionsHandler {
     String selectedLSP = action.lspID;
     _lspsStatusController.add(_lspsStatusController.value
         .copyWith(selectedLSP: selectedLSP, lastConnectionError: null));
+    _breezLib.setSelectedLspID(selectedLSP);
     await accountStream.where((a) => a.synced).first;
 
     try {

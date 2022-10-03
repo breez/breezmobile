@@ -23,9 +23,10 @@ class BreezBridge {
   static const _methodChannel = MethodChannel('com.breez.client/breez_lib');
   static const _eventChannel =
       EventChannel('com.breez.client/breez_lib_notifications');
-
+  
   final DownloadTaskManager downloadManager;
   final Future<SharedPreferences> sharedPreferences;
+  String _selectedLspID;
   Completer _readyCompleter = Completer();
   Completer _startedCompleter = Completer();
   StreamController _eventsController =
@@ -54,6 +55,10 @@ class BreezBridge {
     _tempDirFuture = getTemporaryDirectory();
     _graphDownloader = GraphDownloader(downloadManager, sharedPreferences);
     _graphDownloader.init().whenComplete(() => initLightningDir());
+  }
+
+  void setSelectedLspID(String lspID) {
+    _selectedLspID = lspID;
   }
 
   Future fetchGraphChecksum(String downloadURL) async {
@@ -502,7 +507,7 @@ class BreezBridge {
       String payerImageURL,
       String description,
       Int64 expiry,
-      LSPInformation lspInfo}) async {
+      LSPInformation inputLSP}) async {
     InvoiceMemo invoice = InvoiceMemo();
     invoice.amount = amount;
     if (payeeImageURL != null) {
@@ -522,11 +527,22 @@ class BreezBridge {
     }
 
     var request = AddInvoiceRequest()..invoiceDetails = invoice;
-    if (lspInfo == null) {
+    var lspInfo = inputLSP;
+
+    // if we got lsp in input let's use it
+    if (lspInfo != null) {    
+      request.lspInfo = lspInfo;
+    }else {      
+      // if we have a selected lsp, let's use it
       var lsps = await getLSPList();
-      var keys = lsps.lsps.keys.toList();
-      if (keys.length == 1) {
-        request.lspInfo = lsps.lsps[keys[0]];
+      if (_selectedLspID != null) {
+        request.lspInfo = lsps.lsps[_selectedLspID];
+      } else {
+        // if we only have one lsp in our options, let's use it.
+        var keys = lsps.lsps.keys.toList();
+        if (keys.length == 1) {
+          request.lspInfo = lsps.lsps[keys[0]];
+        }
       }
     }
 
