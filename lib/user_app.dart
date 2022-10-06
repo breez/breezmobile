@@ -18,6 +18,7 @@ import 'package:breez/widgets/route.dart';
 import 'package:breez/widgets/static_loader.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import 'bloc/lnurl/lnurl_bloc.dart';
 import 'bloc/lsp/lsp_bloc.dart';
@@ -99,7 +100,7 @@ class UserApp extends StatelessWidget {
             title: getSystemAppLocalizations().app_name,
             theme: theme.themeMap[user.themeId],
             localizationsDelegates: localizationsDelegates(),
-            supportedLocales: supportedLocales(),
+            supportedLocales: AppLocalizations.supportedLocales,
             builder: (BuildContext context, Widget child) {
               final MediaQueryData data = MediaQuery.of(context);
               return MediaQuery(

@@ -5,6 +5,7 @@ import 'package:breez/routes/create_invoice/create_invoice_page.dart';
 import 'package:breez/routes/lnurl_fetch_invoice_page.dart';
 import 'package:breez/routes/podcast/theme.dart';
 import 'package:breez/routes/sync_progress_dialog.dart';
+import 'package:breez/utils/exceptions.dart';
 import 'package:breez/widgets/error_dialog.dart';
 import 'package:breez/widgets/loader.dart';
 import 'package:breez/widgets/route.dart';
@@ -26,7 +27,7 @@ class LNURLHandler {
         return executeLNURLResponse(context, lnurlBloc, response);
       }
     }).onError((err) async {
-      final errorMessage = _getErrorMessage(texts, err.toString());
+      final errorMessage = _getErrorMessage(texts, err);
       promptError(
         context,
         texts.handler_lnurl_error_link,
@@ -38,12 +39,12 @@ class LNURLHandler {
     });
   }
 
-  String _getErrorMessage(AppLocalizations texts, String error) {
-    switch (error) {
+  String _getErrorMessage(AppLocalizations texts, Object error) {
+    switch (error.toString()) {
       case "GIFT_SPENT":
         return texts.handler_lnurl_error_gift;
       default:
-        return error;
+        return extractExceptionMessage(error);
     }
   }
 

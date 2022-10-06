@@ -31,9 +31,11 @@ class PodcastIndexAPI extends PodcastApi {
   }
 
   @override
-  Future<SearchResult> charts(
-    int size,
-  ) async {
+  Future<SearchResult> charts({
+    int size = 20,
+    String genre,
+    String searchProvider,
+  }) async {
     return compute(_charts, 0);
   }
 
@@ -107,5 +109,18 @@ class PodcastIndexAPI extends PodcastApi {
           .setTrustedCertificatesBytes(_certificateAuthorityBytes);
       _defaultSecurityContext = SecurityContext.defaultContext;
     }
+  }
+
+  @override
+  List<String> genres(String searchProvider) {
+    var provider = PodcastIndexProvider(
+      key: 'NBVJ9GPWMLPXJMFFD3KV',
+      secret: 'be7kR2CWeCFk4nkKCKV4XAX35y2eXrDeCPvs#v4F',
+    );
+
+    return Search(
+      userAgent: Environment.userAgent(),
+      searchProvider: provider,
+    ).genres();
   }
 }

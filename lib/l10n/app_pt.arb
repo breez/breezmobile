@@ -114,8 +114,8 @@
       }
     }
   },
-  "invoice_btc_address_deposit_address": "Endereço de depósito",
-  "invoice_btc_address_deposit_address_copied": "O endereço de depósito foi copiado para a área de transferência.",
+  "invoice_btc_address_deposit_address": "Endereço",
+  "invoice_btc_address_deposit_address_copied": "O endereço foi copiado para a área de transferência.",
   "invoice_btc_address_on_chain_begin": "A Breez está usando a função Submarine Swaps para executar transações pela rede Bitcoin. Toque ",
   "invoice_btc_address_on_chain_here": "aqui",
   "invoice_btc_address_on_chain_end": " para ver o script associado a este endereço.",
@@ -317,7 +317,7 @@
   "payment_details_dialog_action_for_payment_message": "Mensagem",
   "payment_details_dialog_expiration": "Vencimento",
   "payment_details_dialog_date_and_time": "Data & Hora",
-  "payment_details_dialog_amount_title": "Quantidade",
+  "payment_details_dialog_amount_title": "Quantia",
   "payment_details_dialog_amount_negative": "-{amount}",
   "@payment_details_dialog_amount_negative": {
     "placeholders": {
@@ -802,6 +802,9 @@
   "network_restart_action_reset": "Redefinir",
   "network_restart_action_save": "Salvar",
   "network_bitcoin_node": "Servidor de Bitcoin (BIP 157)",
+  "network_optional_node": "Servidor de Bitcoin (BIP 157, opcional)",
+  "network_bitcoin_node_required_error": "Servidor de Bitcoin é obrigatório",
+  "network_distinct_node_hint": "Por favor, use um servidor diferente",
   "network_default_node_error": "Não foi possível utilizar o servidor padrão.",
   "network_custom_node_error": "Não foi possível se conectar ao servidor especificado. Certifique-se de que este servidor é compatível com o BIP 157.",
   "network_testing_node": "Testando o servidor",
@@ -1451,6 +1454,7 @@
   "csv_exporter_amount": "Quantia",
   "csv_exporter_preimage": "Comprovante",
   "csv_exporter_tx_hash": "TX Hash",
+  "csv_exporter_fee": "Taxa",
   "pos_custom_item_name": "Item {index}",
   "@pos_custom_item_name": {
     "placeholders": {
@@ -1833,8 +1837,8 @@
     }
   },
   "lock_screen_enter_pin": "Insira seu PIN",
-  "backup_phrase_generate": "Gerar a frase de backup",
-  "backup_phrase_instructions": "Você verá uma lista de palavras. Anote as palavras e guarde-as em um lugar seguro. Sem essas palavras você não poderá restaurar os seus fundos a partir do backup e seus fundos serão perdidos e a Breez não poderá te ajudar.",
+  "backup_phrase_generate": "Encriptar o backup na nuvem",
+  "backup_phrase_instructions": "Você verá uma lista de palavras. Anote as palavras e guarde-as em um lugar seguro. Sem essas palavras você não poderá restaurar os seus fundos a partir do backup e seus fundos serão perdidos e a Breez não poderá te ajudar. Esta chave não é uma semente de carteira. Ele é usado para criptografar os dados de backup armazenados na nuvem. Estas palavras não são uma semente para a sua carteira. Estas palavras são usadas para criptografar os dados no backup armazenado na nuvem.",
   "backup_phrase_action_confirm": "EU ENTENDO",
   "backup_phrase_action_next": "PRÓXIMO",
   "backup_phrase_warning_disclaimer": "Sua frase de backup existente será inválidada e uma nova frase será gerada na próxima vez que você decidir usar uma frase de backup. Você tem certeza de que você não deseja usar uma frase de backup?",
@@ -2081,24 +2085,29 @@
       }
     }
   },
-  "locale": "pt",
-  "app_name": "Breez",
-
-   "podcast_history_drawer": "Meus Principais Podcasts",
-  "podcast_history_share_message":  "Meus principais podcasts ouvidos no Breez",
-  "podcast_history_share_text":"COMPARTILHAR",
-  "podcast_history_sats_streamed":"sats transmitido",
-  "podcast_history_boostagrams_sent":"boosts enviados",
+  "podcast_history_drawer": "Meus Principais Podcasts",
+  "podcast_history_share_message": "Meus principais podcasts ouvidos no Breez",
+  "podcast_history_share_text": "COMPARTILHAR",
+  "podcast_history_sats_streamed": "sats transmitido",
+  "podcast_history_boostagrams_sent": "boosts enviados",
   "podcast_history_open_podcast_button": "PODCASTS ABERTOS",
-  "podcast_history_appbar_top_weekly":"Principais podcasts semanais",
-  "podcast_history_appbar_top_monthly":"Principais podcasts mensais",
-  "podcast_history_appbar_top_yearly":"Principais podcasts anuais",
-  "podcast_history_timerange_dropdown_week":"Semana passada",
-  "podcast_history_timerange_dropdown_month":"Mês passado",
-  "podcast_history_timerange_dropdown_year":"Ano passado",
-  "podcast_history_sort_dropdown_recent":"Recente",
-  "podcast_history_sort_dropdown_duration":"Ouvido",
-  "podcast_history_sort_dropdown_sats":"Pago",
-  "podcast_history_sort_dropdown_boosts":"Boosted",
-  "podcast_history_empty_text":"Não há dados disponíveis para exibição."
+  "podcast_history_appbar_top_weekly": "Principais podcasts semanais",
+  "podcast_history_appbar_top_monthly": "Principais podcasts mensais",
+  "podcast_history_appbar_top_yearly": "Principais podcasts anuais",
+  "podcast_history_timerange_dropdown_week": "Semana passada",
+  "podcast_history_timerange_dropdown_month": "Mês passado",
+  "podcast_history_timerange_dropdown_year": "Ano passado",
+  "podcast_history_sort_dropdown_recent": "Recente",
+  "podcast_history_sort_dropdown_duration": "Ouvido",
+  "podcast_history_sort_dropdown_sats": "Pago",
+  "podcast_history_sort_dropdown_boosts": "Boosted",
+  "podcast_history_empty_text": "Não há dados disponíveis para exibição.",
+  "podcast_clips_clip_button": "CORTE",
+  "podcast_clips_cancel_button": "CANCELAR",
+  "podcast_clips_seconds": "segundos",
+  "podcast_clips_dialog_title": "Duração do clipe (em segundos)",
+  "podcast_clips_dialog_done": "PRONTO",
+  "podcast_clips_error": "Ocorreu um erro ao cortar o episódio, por favor tente novamente.",
+  "locale": "pt",
+  "app_name": "Breez"
 }

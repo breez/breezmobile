@@ -13,10 +13,10 @@ class Particles extends StatefulWidget {
   });
 
   @override
-  _ParticlesState createState() => _ParticlesState();
+  ParticlesState createState() => ParticlesState();
 }
 
-class _ParticlesState extends State<Particles> {
+class ParticlesState extends State<Particles> {
   final random = Random();
   final startTime = DateTime.now();
   final List<ParticleModel> particles = [];
@@ -31,9 +31,10 @@ class _ParticlesState extends State<Particles> {
 
   @override
   Widget build(BuildContext context) {
-    return LoopAnimation<int>(
+    return LoopAnimationBuilder<int>(
+      duration: const Duration(seconds: 1),
       tween: ConstantTween(1),
-      builder: (context, child, value) {
+      builder: (context, animation, child) {
         final time = DateTime.now().difference(startTime);
         _simulateParticles(time);
         return CustomPaint(
@@ -44,14 +45,16 @@ class _ParticlesState extends State<Particles> {
   }
 
   _simulateParticles(Duration time) {
-    particles.forEach((particle) => particle.maintainRestart(time));
+    for (var particle in particles) {
+      particle.maintainRestart(time);
+    }
   }
 }
 
 class ParticleModel {
   Animatable tween;
   double size;
-  _AnimationProgress animationProgress;
+  AnimationProgress animationProgress;
   Random random;
 
   ParticleModel(this.random) {
@@ -63,26 +66,26 @@ class ParticleModel {
     final endPosition = Offset(-0.2 + 1.4 * random.nextDouble(), -0.2);
     final duration = Duration(milliseconds: 3000 + random.nextInt(6000));
 
-    tween = MultiTween<MyAniPropsEnum>()
-      ..add(
+    tween = MovieTween()
+      ..tween(
         MyAniPropsEnum.X,
         Tween(
           begin: startPosition.dx,
           end: endPosition.dx,
         ),
-        duration,
-        Curves.easeInOutSine,
+        duration: duration,
+        curve: Curves.easeInOutSine,
       )
-      ..add(
+      ..tween(
         MyAniPropsEnum.Y,
         Tween(
           begin: startPosition.dy,
           end: endPosition.dy,
         ),
-        duration,
-        Curves.easeIn,
+        duration: duration,
+        curve: Curves.easeIn,
       );
-    animationProgress = _AnimationProgress(
+    animationProgress = AnimationProgress(
       duration: duration,
       startTime: time,
     );
@@ -111,9 +114,9 @@ class ParticlePainter extends CustomPainter {
   void paint(Canvas canvas, Size size) {
     final paint = Paint()..color = color.withAlpha(150);
 
-    particles.forEach((particle) {
+    for (var particle in particles) {
       var progress = particle.animationProgress.progress(time);
-      final MultiTweenValues animation = particle.tween.transform(progress);
+      final Movie animation = particle.tween.transform(progress);
       final position = Offset(
         animation.get(MyAniPropsEnum.X) * size.width,
         animation.get(MyAniPropsEnum.Y) * size.height,
@@ -123,7 +126,7 @@ class ParticlePainter extends CustomPainter {
         size.width * 0.2 * particle.size,
         paint,
       );
-    });
+    }
   }
 
   @override
@@ -133,27 +136,27 @@ class ParticlePainter extends CustomPainter {
 class AnimatedBackground extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    final tween = MultiTween()
-      ..add(
+    final tween = MovieTween()
+      ..tween(
         MyAniPropsEnum.COLOR1,
         ColorTween(
-          begin: Color(0xff8a113a),
+          begin: const Color(0xff8a113a),
           end: Colors.lightBlue.shade900,
         ),
       )
-      ..add(
+      ..tween(
         MyAniPropsEnum.COLOR2,
         ColorTween(
-          begin: Color(0xff440216),
+          begin: const Color(0xff440216),
           end: Colors.blue.shade600,
         ),
       );
 
-    return CustomAnimation(
-      control: CustomAnimationControl.mirror,
+    return CustomAnimationBuilder<dynamic>(
+      control: Control.mirror,
       tween: tween,
       duration: tween.duration,
-      builder: (context, child, animation) {
+      builder: (context, animation, child) {
         return Container(
           decoration: BoxDecoration(
             gradient: LinearGradient(
@@ -178,11 +181,11 @@ enum MyAniPropsEnum {
   COLOR2,
 }
 
-class _AnimationProgress {
+class AnimationProgress {
   final Duration duration;
   final Duration startTime;
 
-  const _AnimationProgress({
+  const AnimationProgress({
     this.duration,
     this.startTime,
   });

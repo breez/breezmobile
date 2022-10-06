@@ -4,6 +4,7 @@ import 'package:flutter_gen/gen_l10n/app_localizations_en.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations_es.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations_fi.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations_fr.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations_it.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations_pt.dart';
 
 enum ProfileAnimal {
@@ -178,6 +179,7 @@ Map<String, Map<String, ProfileAnimal>> _animalsFromName = {
   "es": _buildAnimalsFromName(AppLocalizationsEs()),
   "fi": _buildAnimalsFromName(AppLocalizationsFi()),
   "fr": _buildAnimalsFromName(AppLocalizationsFr()),
+  "it": _buildAnimalsFromName(AppLocalizationsIt()),
   "pt": _buildAnimalsFromName(AppLocalizationsPt()),
 };
 

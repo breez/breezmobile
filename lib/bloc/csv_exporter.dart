@@ -42,6 +42,7 @@ class CsvExporter {
       paymentItem.add(paymentInfo.amount.toString());
       paymentItem.add(paymentInfo.preimage);
       paymentItem.add(paymentInfo.paymentHash);
+      paymentItem.add(paymentInfo.fee.toString());
       for (var currency in fiatCurrencies) {
         final fiat = sale?.totalAmountInFiat;
         if (fiat != null && fiat.containsKey(currency)) {
@@ -60,6 +61,7 @@ class CsvExporter {
       texts.csv_exporter_amount,
       texts.csv_exporter_preimage,
       texts.csv_exporter_tx_hash,
+      texts.csv_exporter_fee,
       ...fiatCurrencies,
     ]);
     log.info("generating payment finished");
@@ -88,13 +90,13 @@ class CsvExporter {
     log.info("create breez payments path started");
     final directory = await getTemporaryDirectory();
     String filePath = '${directory.path}/BreezPayments';
-    filePath = appendFilterInformation(filePath);
+    filePath = _appendFilterInformation(filePath);
     filePath += ".csv";
     log.info("create breez payments path finished");
     return filePath;
   }
 
-  String appendFilterInformation(String filePath) {
+  String _appendFilterInformation(String filePath) {
     log.info("add filter information to path started");
     if (listEquals(
         this.filter.paymentType, [PaymentType.SENT, PaymentType.WITHDRAWAL])) {

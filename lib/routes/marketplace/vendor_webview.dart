@@ -110,7 +110,7 @@ class VendorWebViewPageState extends State<VendorWebViewPage> {
   _handleNavigationRequest(NavigationRequest request) {
     if (request.url.startsWith('lightning:')) {
       return NavigationDecision.prevent;
-    } else if (request.url.startsWith('tg:')) {
+    } else if (request.url.startsWith('tg:') || request.url.startsWith('fold:')) {
       launchUrlString(request.url);
       return NavigationDecision.prevent;
     }

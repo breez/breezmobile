@@ -22,28 +22,39 @@
          FlutterApplication and put your custom class here. -->
     <application
         android:extractNativeLibs="true"
-        android:requestLegacyExternalStorage="true" 
+        android:requestLegacyExternalStorage="true"
         android:name=".BreezApplication"
         android:label="@string/app_name"
         android:icon="@mipmap/ic_launcher"
         android:usesCleartextTraffic="true"
         android:allowBackup="false">
 
-      <meta-data
-          android:name="flutterEmbedding"
-          android:value="2" />
-        <meta-data android:name="com.google.firebase.messaging.default_notification_icon"
+        <meta-data
+            android:name="flutterEmbedding"
+            android:value="2" />
+        <meta-data
+            android:name="com.google.firebase.messaging.default_notification_icon"
             android:resource="@drawable/breez_notify" />
+        <meta-data
+            android:name="com.google.firebase.messaging.default_notification_color"
+            android:resource="@color/breez_notification_color" />
+        <meta-data
+            android:name="com.google.firebase.messaging.default_notification_channel_id"
+            android:value="@string/default_notification_channel_id" />
 
-        <service android:name="com.ryanheise.audioservice.AudioService"
-            android:exported="true" tools:ignore="Instantiatable">
+        <service
+            android:name="com.ryanheise.audioservice.AudioService"
+            android:exported="true"
+            tools:ignore="Instantiatable">
             <intent-filter>
                 <action android:name="android.media.browse.MediaBrowserService" />
             </intent-filter>
         </service>
 
-        <receiver android:name="com.ryanheise.audioservice.MediaButtonReceiver"
-            android:exported="true" tools:ignore="Instantiatable">
+        <receiver
+            android:name="com.ryanheise.audioservice.MediaButtonReceiver"
+            android:exported="true"
+            tools:ignore="Instantiatable">
             <intent-filter>
                 <action android:name="android.intent.action.MEDIA_BUTTON" />
             </intent-filter>
@@ -140,8 +151,9 @@
                 <action android:name="android.intent.action.VIEW"/>
                 <category android:name="android.intent.category.DEFAULT"/>
                 <category android:name="android.intent.category.BROWSABLE"/>
-                <data android:host="breez.link" android:scheme="http"/>
-                <data android:host="breez.link" android:scheme="https"/>
+                <data android:host="breez.link"/>
+                <data android:scheme="http"/>
+                <data android:scheme="https"/>
             </intent-filter>
 
             <intent-filter>
@@ -153,8 +165,9 @@
                 <action android:name="android.intent.action.VIEW"/>
                 <category android:name="android.intent.category.DEFAULT"/>
                 <category android:name="android.intent.category.BROWSABLE"/>
-                <data android:host="breez.page.link" android:scheme="http"/>
-                <data android:host="breez.page.link" android:scheme="https"/>
+                <data android:host="breez.page.link"/>
+                <data android:scheme="http"/>
+                <data android:scheme="https"/>
             </intent-filter>
 
         </activity>
@@ -175,11 +188,6 @@
                 <action android:name="com.google.firebase.MESSAGING_EVENT"/>
             </intent-filter>
         </service>
-        <receiver
-            android:name=".NotificationActionReceiver"
-            android:enabled="true"
-            android:exported="false">
-        </receiver>
         <receiver 
             android:enabled="true" 
             android:name=".BreezShareReceiver" 

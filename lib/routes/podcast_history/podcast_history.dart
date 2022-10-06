@@ -128,12 +128,13 @@ class PodcastHistoryPageState extends State<PodcastHistoryPage> {
                                     SizedBox(
                                       height: 20,
                                     ),
-                                    Image.asset(
-                                      "src/images/logo-color.png",
+                                    SvgPicture.asset(
+                                      "src/images/logo-color.svg",
                                       width:
                                           (MediaQuery.of(context).size.width) /
                                               6,
                                       color: Colors.white,
+                                      colorBlendMode: BlendMode.srcATop,
                                     ),
                                     SizedBox(
                                       height: 32,
@@ -372,7 +373,7 @@ Widget _getPodcastHistoryList(
     bool getScreenshotWidget,
     PodcastHistoryTimeRange timeRange}) {
   final podcastHistoryBloc = AppBlocsProvider.of<PodcastHistoryBloc>(context);
-  final texts = AppLocalizations.of(context);
+
   return StreamBuilder<PodcastHistoryRecord>(
       stream: podcastHistoryBloc.podcastHistoryRecord,
       builder: (context, podcastHistoryListSnapshot) {
