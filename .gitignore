@@ -18,8 +18,8 @@ packages
 /android/app/src/client/google-services.json
 lib/services/breezlib/rpc.proto
 /android/app/libs/breez.aar
-ios/Runner/GoogleService-Info.plist
-ios/bindings.framework/*
+# ios/Runner/GoogleService-Info.plist
+# ios/bindings.framework/*
 travis/config.sh
 android/key.properties
 ios/Flutter/flutter_export_environment.sh
