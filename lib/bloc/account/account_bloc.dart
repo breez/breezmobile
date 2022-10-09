@@ -220,6 +220,11 @@ class AccountBloc {
     });
   }
 
+  void setNodeUpgrading(bool upgrading) {
+    _accountController
+          .add(_accountController.value.copyWith(nodeUpgrading: upgrading));
+  }
+
   Stream<List<PaymentInfo>> get pendingChannelsStream {
     return _paymentsController.map((paymentModel) => paymentModel
         .nonFilteredItems

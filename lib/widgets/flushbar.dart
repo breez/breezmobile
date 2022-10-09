@@ -11,6 +11,9 @@ Flushbar showFlushbar(
   String buttonText,
   FlushbarPosition position = FlushbarPosition.BOTTOM,
   bool Function() onDismiss,
+  bool isDismissible = true,
+  Widget icon,
+  Widget button,
   Duration duration = const Duration(seconds: 8),
 }) {
   final themeData = Theme.of(context);
@@ -18,6 +21,7 @@ Flushbar showFlushbar(
 
   Flushbar flush;
   flush = Flushbar(
+    isDismissible: isDismissible,
     flushbarPosition: position,
     titleText: title == null
         ? null
@@ -33,7 +37,8 @@ Flushbar showFlushbar(
           textAlign: TextAlign.left,
         ),
     backgroundColor: theme.snackBarBackgroundColor,
-    mainButton: TextButton(
+    icon: icon,
+    mainButton: button != null ? button : buttonText == "" ? null : TextButton(
       onPressed: () {
         bool dismiss = onDismiss != null ? onDismiss() : true;
         if (dismiss) {
