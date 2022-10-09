@@ -57,33 +57,33 @@ PODS:
   - file_picker (0.0.1):
     - DKImagePickerController/PhotoGallery
     - Flutter
-  - Firebase/CoreOnly (9.5.0):
-    - FirebaseCore (= 9.5.0)
-  - Firebase/Database (9.5.0):
+  - Firebase/CoreOnly (9.6.0):
+    - FirebaseCore (= 9.6.0)
+  - Firebase/Database (9.6.0):
     - Firebase/CoreOnly
-    - FirebaseDatabase (~> 9.5.0)
-  - Firebase/DynamicLinks (9.5.0):
+    - FirebaseDatabase (~> 9.6.0)
+  - Firebase/DynamicLinks (9.6.0):
     - Firebase/CoreOnly
-    - FirebaseDynamicLinks (~> 9.5.0)
-  - Firebase/Messaging (9.5.0):
+    - FirebaseDynamicLinks (~> 9.6.0)
+  - Firebase/Messaging (9.6.0):
     - Firebase/CoreOnly
-    - FirebaseMessaging (~> 9.5.0)
-  - firebase_core (1.22.0):
-    - Firebase/CoreOnly (= 9.5.0)
+    - FirebaseMessaging (~> 9.6.0)
+  - firebase_core (1.24.0):
+    - Firebase/CoreOnly (= 9.6.0)
     - Flutter
-  - firebase_database (9.1.4):
-    - Firebase/Database (= 9.5.0)
+  - firebase_database (9.1.7):
+    - Firebase/Database (= 9.6.0)
     - firebase_core
     - Flutter
-  - firebase_dynamic_links (4.3.7):
-    - Firebase/DynamicLinks (= 9.5.0)
+  - firebase_dynamic_links (4.3.10):
+    - Firebase/DynamicLinks (= 9.6.0)
     - firebase_core
     - Flutter
-  - firebase_messaging (12.0.3):
-    - Firebase/Messaging (= 9.5.0)
+  - firebase_messaging (13.1.0):
+    - Firebase/Messaging (= 9.6.0)
     - firebase_core
     - Flutter
-  - FirebaseCore (9.5.0):
+  - FirebaseCore (9.6.0):
     - FirebaseCoreDiagnostics (~> 9.0)
     - FirebaseCoreInternal (~> 9.0)
     - GoogleUtilities/Environment (~> 7.7)
@@ -95,17 +95,17 @@ PODS:
     - nanopb (< 2.30910.0, >= 2.30908.0)
   - FirebaseCoreInternal (9.6.0):
     - "GoogleUtilities/NSData+zlib (~> 7.7)"
-  - FirebaseDatabase (9.5.0):
+  - FirebaseDatabase (9.6.0):
     - FirebaseCore (~> 9.0)
     - leveldb-library (~> 1.22)
-  - FirebaseDynamicLinks (9.5.0):
+  - FirebaseDynamicLinks (9.6.0):
     - FirebaseCore (~> 9.0)
   - FirebaseInstallations (9.6.0):
     - FirebaseCore (~> 9.0)
     - GoogleUtilities/Environment (~> 7.7)
     - GoogleUtilities/UserDefaults (~> 7.7)
     - PromisesObjC (~> 2.1)
-  - FirebaseMessaging (9.5.0):
+  - FirebaseMessaging (9.6.0):
     - FirebaseCore (~> 9.0)
     - FirebaseInstallations (~> 9.0)
     - GoogleDataTransport (< 10.0.0, >= 9.1.4)
@@ -151,22 +151,22 @@ PODS:
     - GoogleToolboxForMac/Defines (= 2.3.2)
     - "GoogleToolboxForMac/NSString+URLArguments (= 2.3.2)"
   - "GoogleToolboxForMac/NSString+URLArguments (2.3.2)"
-  - GoogleUtilities/AppDelegateSwizzler (7.8.0):
+  - GoogleUtilities/AppDelegateSwizzler (7.7.0):
     - GoogleUtilities/Environment
     - GoogleUtilities/Logger
     - GoogleUtilities/Network
-  - GoogleUtilities/Environment (7.8.0):
+  - GoogleUtilities/Environment (7.7.0):
     - PromisesObjC (< 3.0, >= 1.2)
-  - GoogleUtilities/Logger (7.8.0):
+  - GoogleUtilities/Logger (7.7.0):
     - GoogleUtilities/Environment
-  - GoogleUtilities/Network (7.8.0):
+  - GoogleUtilities/Network (7.7.0):
     - GoogleUtilities/Logger
     - "GoogleUtilities/NSData+zlib"
     - GoogleUtilities/Reachability
-  - "GoogleUtilities/NSData+zlib (7.8.0)"
-  - GoogleUtilities/Reachability (7.8.0):
+  - "GoogleUtilities/NSData+zlib (7.7.0)"
+  - GoogleUtilities/Reachability (7.7.0):
     - GoogleUtilities/Logger
-  - GoogleUtilities/UserDefaults (7.8.0):
+  - GoogleUtilities/UserDefaults (7.7.0):
     - GoogleUtilities/Logger
   - GoogleUtilitiesComponents (1.1.0):
     - GoogleUtilities/Logger
@@ -413,18 +413,18 @@ SPEC CHECKSUMS:
   ffmpeg-kit-ios-https-gpl: 35ebfb4070b7236b2130689745636aad92764530
   ffmpeg_kit_flutter_https_gpl: f14fd7b47d495b929bebe5901c76abbe04343779
   file_picker: 817ab1d8cd2da9d2da412a417162deee3500fc95
-  Firebase: 800f16f07af493d98d017446a315c27af0552f41
-  firebase_core: 31872a49ffe0bf6f834e7044c7334e433536735a
-  firebase_database: 88f9e181d43edb8e8a640c23791b8ae4e3e1da52
-  firebase_dynamic_links: 0004551f927f87dc7dadbdc2b843cfab0f3067c7
-  firebase_messaging: 481127341dc6e4e437e08ff4f2451c1c59d61c4d
-  FirebaseCore: 25c0400b670fd1e2f2104349cd3b5dcce8d9418f
+  Firebase: 5ae8b7cf8efce559a653aef0ad95bab3f427c351
+  firebase_core: 7c28ecc1e5dd74e03829ac3e9ff5ba3314e737a9
+  firebase_database: 115298eac49923a9b69a10c56f6ecf8eee10601c
+  firebase_dynamic_links: 30b2cc48b8c7493ad07f6a87fe7023b9729e8091
+  firebase_messaging: a2a8c6db6d799c7f59b1c0d7c68a2f0027bfa2c4
+  FirebaseCore: 2082fffcd855f95f883c0a1641133eb9bbe76d40
   FirebaseCoreDiagnostics: 99a495094b10a57eeb3ae8efa1665700ad0bdaa6
   FirebaseCoreInternal: bca76517fe1ed381e989f5e7d8abb0da8d85bed3
-  FirebaseDatabase: 0e2d3b1c935bb5ae704afc2f5c0adda365102312
-  FirebaseDynamicLinks: e2805928aefebd742288161f99469ab84d4aa8c8
+  FirebaseDatabase: 3de19e533a73d45e25917b46aafe1dd344ec8119
+  FirebaseDynamicLinks: 894ee3b4e56a77abee067d371c9a23e7b5a3c686
   FirebaseInstallations: 0a115432c4e223c5ab20b0dbbe4cbefa793a0e8e
-  FirebaseMessaging: 732623518591384f61c287e3d8f65294beb7ffb3
+  FirebaseMessaging: a4d7910e4af663c9cbfc1071c5bef34651690949
   Flutter: f04841e97a9d0b0a8025694d0796dd46242b2854
   flutter_downloader: b7301ae057deadd4b1650dc7c05375f10ff12c39
   flutter_keyboard_visibility: 0339d06371254c3eb25eeb90ba8d17dca8f9c069
@@ -435,7 +435,7 @@ SPEC CHECKSUMS:
   GoogleMLKit: 755661c46990a85e42278015f26400286d98ad95
   GoogleSignIn: c90b5bec45e780f54c6a8e1e3c182a86e3dda69d
   GoogleToolboxForMac: 8bef7c7c5cf7291c687cf5354f39f9db6399ad34
-  GoogleUtilities: 1d20a6ad97ef46f67bbdec158ce00563a671ebb7
+  GoogleUtilities: e0913149f6b0625b553d70dae12b49fc62914fd1
   GoogleUtilitiesComponents: 679b2c881db3b615a2777504623df6122dd20afe
   GTMAppAuth: 4d8f864896f3646f0c33baf38a28362f4c601e15
   GTMSessionFetcher: 5595ec75acf5be50814f81e9189490412bad82ba
