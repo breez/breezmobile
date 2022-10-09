@@ -47,58 +47,65 @@ PODS:
   - DKPhotoGallery/Resource (0.0.17):
     - SDWebImage
     - SwiftyGif
+  - ffmpeg-kit-ios-https-gpl (4.5.1)
+  - ffmpeg_kit_flutter_https_gpl (4.5.1):
+    - ffmpeg_kit_flutter_https_gpl/https-gpl (= 4.5.1)
+    - Flutter
+  - ffmpeg_kit_flutter_https_gpl/https-gpl (4.5.1):
+    - ffmpeg-kit-ios-https-gpl (= 4.5.1)
+    - Flutter
   - file_picker (0.0.1):
     - DKImagePickerController/PhotoGallery
     - Flutter
-  - Firebase/CoreOnly (9.3.0):
-    - FirebaseCore (= 9.3.0)
-  - Firebase/Database (9.3.0):
+  - Firebase/CoreOnly (9.6.0):
+    - FirebaseCore (= 9.6.0)
+  - Firebase/Database (9.6.0):
     - Firebase/CoreOnly
-    - FirebaseDatabase (~> 9.3.0)
-  - Firebase/DynamicLinks (9.3.0):
+    - FirebaseDatabase (~> 9.6.0)
+  - Firebase/DynamicLinks (9.6.0):
     - Firebase/CoreOnly
-    - FirebaseDynamicLinks (~> 9.3.0)
-  - Firebase/Messaging (9.3.0):
+    - FirebaseDynamicLinks (~> 9.6.0)
+  - Firebase/Messaging (9.6.0):
     - Firebase/CoreOnly
-    - FirebaseMessaging (~> 9.3.0)
-  - firebase_core (1.20.0):
-    - Firebase/CoreOnly (= 9.3.0)
+    - FirebaseMessaging (~> 9.6.0)
+  - firebase_core (1.24.0):
+    - Firebase/CoreOnly (= 9.6.0)
     - Flutter
-  - firebase_database (9.0.20):
-    - Firebase/Database (= 9.3.0)
+  - firebase_database (9.1.7):
+    - Firebase/Database (= 9.6.0)
     - firebase_core
     - Flutter
-  - firebase_dynamic_links (4.3.3):
-    - Firebase/DynamicLinks (= 9.3.0)
+  - firebase_dynamic_links (4.3.10):
+    - Firebase/DynamicLinks (= 9.6.0)
     - firebase_core
     - Flutter
-  - firebase_messaging (12.0.1):
-    - Firebase/Messaging (= 9.3.0)
+  - firebase_messaging (13.1.0):
+    - Firebase/Messaging (= 9.6.0)
     - firebase_core
     - Flutter
-  - FirebaseCore (9.3.0):
+  - FirebaseCore (9.6.0):
     - FirebaseCoreDiagnostics (~> 9.0)
     - FirebaseCoreInternal (~> 9.0)
     - GoogleUtilities/Environment (~> 7.7)
     - GoogleUtilities/Logger (~> 7.7)
-  - FirebaseCoreDiagnostics (9.3.0):
+  - FirebaseCoreDiagnostics (9.6.0):
     - GoogleDataTransport (< 10.0.0, >= 9.1.4)
     - GoogleUtilities/Environment (~> 7.7)
     - GoogleUtilities/Logger (~> 7.7)
     - nanopb (< 2.30910.0, >= 2.30908.0)
-  - FirebaseCoreInternal (9.3.0):
+  - FirebaseCoreInternal (9.6.0):
     - "GoogleUtilities/NSData+zlib (~> 7.7)"
-  - FirebaseDatabase (9.3.0):
+  - FirebaseDatabase (9.6.0):
     - FirebaseCore (~> 9.0)
     - leveldb-library (~> 1.22)
-  - FirebaseDynamicLinks (9.3.0):
+  - FirebaseDynamicLinks (9.6.0):
     - FirebaseCore (~> 9.0)
-  - FirebaseInstallations (9.3.0):
+  - FirebaseInstallations (9.6.0):
     - FirebaseCore (~> 9.0)
     - GoogleUtilities/Environment (~> 7.7)
     - GoogleUtilities/UserDefaults (~> 7.7)
     - PromisesObjC (~> 2.1)
-  - FirebaseMessaging (9.3.0):
+  - FirebaseMessaging (9.6.0):
     - FirebaseCore (~> 9.0)
     - FirebaseInstallations (~> 9.0)
     - GoogleDataTransport (< 10.0.0, >= 9.1.4)
@@ -175,7 +182,7 @@ PODS:
   - just_audio (0.0.1):
     - Flutter
   - leveldb-library (1.22.1)
-  - local_auth_ios (0.0.1):
+  - local_auth (0.0.1):
     - Flutter
   - md5_file_checksum (1.0.3):
     - Flutter
@@ -251,6 +258,7 @@ DEPENDENCIES:
   - audio_session (from `.symlinks/plugins/audio_session/ios`)
   - connectivity_plus (from `.symlinks/plugins/connectivity_plus/ios`)
   - device_info_plus (from `.symlinks/plugins/device_info_plus/ios`)
+  - ffmpeg_kit_flutter_https_gpl (from `.symlinks/plugins/ffmpeg_kit_flutter_https_gpl/ios`)
   - file_picker (from `.symlinks/plugins/file_picker/ios`)
   - firebase_core (from `.symlinks/plugins/firebase_core/ios`)
   - firebase_database (from `.symlinks/plugins/firebase_database/ios`)
@@ -265,7 +273,7 @@ DEPENDENCIES:
   - image_cropper (from `.symlinks/plugins/image_cropper/ios`)
   - image_picker_ios (from `.symlinks/plugins/image_picker_ios/ios`)
   - just_audio (from `.symlinks/plugins/just_audio/ios`)
-  - local_auth_ios (from `.symlinks/plugins/local_auth_ios/ios`)
+  - local_auth (from `.symlinks/plugins/local_auth/ios`)
   - md5_file_checksum (from `.symlinks/plugins/md5_file_checksum/ios`)
   - mobile_scanner (from `.symlinks/plugins/mobile_scanner/ios`)
   - nfc_in_flutter (from `.symlinks/plugins/nfc_in_flutter/ios`)
@@ -288,6 +296,7 @@ SPEC REPOS:
     - AppAuth
     - DKImagePickerController
     - DKPhotoGallery
+    - ffmpeg-kit-ios-https-gpl
     - Firebase
     - FirebaseCore
     - FirebaseCoreDiagnostics
@@ -329,6 +338,8 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/connectivity_plus/ios"
   device_info_plus:
     :path: ".symlinks/plugins/device_info_plus/ios"
+  ffmpeg_kit_flutter_https_gpl:
+    :path: ".symlinks/plugins/ffmpeg_kit_flutter_https_gpl/ios"
   file_picker:
     :path: ".symlinks/plugins/file_picker/ios"
   firebase_core:
@@ -355,8 +366,8 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/image_picker_ios/ios"
   just_audio:
     :path: ".symlinks/plugins/just_audio/ios"
-  local_auth_ios:
-    :path: ".symlinks/plugins/local_auth_ios/ios"
+  local_auth:
+    :path: ".symlinks/plugins/local_auth/ios"
   md5_file_checksum:
     :path: ".symlinks/plugins/md5_file_checksum/ios"
   mobile_scanner:
@@ -399,20 +410,22 @@ SPEC CHECKSUMS:
   device_info_plus: e5c5da33f982a436e103237c0c85f9031142abed
   DKImagePickerController: b512c28220a2b8ac7419f21c491fc8534b7601ac
   DKPhotoGallery: fdfad5125a9fdda9cc57df834d49df790dbb4179
+  ffmpeg-kit-ios-https-gpl: 35ebfb4070b7236b2130689745636aad92764530
+  ffmpeg_kit_flutter_https_gpl: f14fd7b47d495b929bebe5901c76abbe04343779
   file_picker: 817ab1d8cd2da9d2da412a417162deee3500fc95
-  Firebase: ef75abb1cdbc746d5a38f4e26c422c807b189b8c
-  firebase_core: 96214f90497b808a2cf2a24517084c5f6de37b53
-  firebase_database: 0643b8de71ac87697817b7b1317e8f70cafa7735
-  firebase_dynamic_links: 0cc25cd58aa0b24acfcf10e1aaf6f32323f1c361
-  firebase_messaging: a2cd2c6dd7b5430bb9e4e50e9a474413ae3bce09
-  FirebaseCore: c088995ece701a021a48a1348ea0174877de2a6a
-  FirebaseCoreDiagnostics: 060eb57cc56dfaf40b1b1b5874a5c17c41ce79f8
-  FirebaseCoreInternal: 635d1c9a612a6502b6377a0c92af83758076ffff
-  FirebaseDatabase: 92350185966ddd283842aa9ca07e188691f3b8ad
-  FirebaseDynamicLinks: af0acc2d1fa117a074e84a3c06a1d9f817443490
-  FirebaseInstallations: 54b40022cb06e462740c9f2b9fbe38b5e78a825a
-  FirebaseMessaging: 2f6e38b6133059eb796ec224104f09379298a8c3
-  Flutter: 50d75fe2f02b26cc09d224853bb45737f8b3214a
+  Firebase: 5ae8b7cf8efce559a653aef0ad95bab3f427c351
+  firebase_core: 7c28ecc1e5dd74e03829ac3e9ff5ba3314e737a9
+  firebase_database: 115298eac49923a9b69a10c56f6ecf8eee10601c
+  firebase_dynamic_links: 30b2cc48b8c7493ad07f6a87fe7023b9729e8091
+  firebase_messaging: a2a8c6db6d799c7f59b1c0d7c68a2f0027bfa2c4
+  FirebaseCore: 2082fffcd855f95f883c0a1641133eb9bbe76d40
+  FirebaseCoreDiagnostics: 99a495094b10a57eeb3ae8efa1665700ad0bdaa6
+  FirebaseCoreInternal: bca76517fe1ed381e989f5e7d8abb0da8d85bed3
+  FirebaseDatabase: 3de19e533a73d45e25917b46aafe1dd344ec8119
+  FirebaseDynamicLinks: 894ee3b4e56a77abee067d371c9a23e7b5a3c686
+  FirebaseInstallations: 0a115432c4e223c5ab20b0dbbe4cbefa793a0e8e
+  FirebaseMessaging: a4d7910e4af663c9cbfc1071c5bef34651690949
+  Flutter: f04841e97a9d0b0a8025694d0796dd46242b2854
   flutter_downloader: b7301ae057deadd4b1650dc7c05375f10ff12c39
   flutter_keyboard_visibility: 0339d06371254c3eb25eeb90ba8d17dca8f9c069
   flutter_secure_storage: 7953c38a04c3fdbb00571bcd87d8e3b5ceb9daec
@@ -430,7 +443,7 @@ SPEC CHECKSUMS:
   image_picker_ios: b786a5dcf033a8336a657191401bfdf12017dabb
   just_audio: baa7252489dbcf47a4c7cc9ca663e9661c99aafa
   leveldb-library: 50c7b45cbd7bf543c81a468fe557a16ae3db8729
-  local_auth_ios: 0d333dde7780f669e66f19d2ff6005f3ea84008d
+  local_auth: 1740f55d7af0a2e2a8684ce225fe79d8931e808c
   md5_file_checksum: 2cafda1443902a0f484da20e478dba45d5955318
   MLImage: a454f9f8ecfd537783a12f9488f5be1a68820829
   MLKitBarcodeScanning: b8257854f6afc1c8443d61ec6b98c28b35625df6
@@ -439,7 +452,7 @@ SPEC CHECKSUMS:
   mobile_scanner: 073e39c0c96360297389f4db68e4297a1fa58349
   nanopb: b552cce312b6c8484180ef47159bc0f65a1f0431
   nfc_in_flutter: c656fbfb1ec5b9d021da87b0c87629d62fd5264d
-  nfc_manager: 69e4cd9c15112206ab30246b1ce8d81a75729fdf
+  nfc_manager: d7da7cb781f7744b94df5fe9dbca904ac4a0939e
   package_info_plus: 6c92f08e1f853dc01228d6f553146438dafcd14e
   path_provider_ios: 14f3d2fd28c4fdb42f44e0f751d12861c43cee02
   permission_handler_apple: 44366e37eaf29454a1e7b1b7d736c2cceaeb17ce
