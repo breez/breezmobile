@@ -41,7 +41,7 @@ class CheckChannelConnection {
 
   void startSubscription(AccountBloc accountBloc, BuildContext context) {
     _subscription = accountBloc.accountStream
-        .map((acc) => !(acc.connected && !acc.readyForPayments))
+        .map((acc) => !(acc.connected && !acc.readyForPayments) || acc.nodeUpgrading == true)
         .distinct()
         .listen((ready) {
       if (ready) {
@@ -74,8 +74,7 @@ class CheckChannelConnection {
     log.info("Account is not ready for payments, Breez is offline");
     if (_flushbar != null) {
       return;
-    }
-
+    }        
     final texts = AppLocalizations.of(context);
     _flushbar = showFlushbar(
       context,

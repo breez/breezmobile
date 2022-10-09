@@ -686,7 +686,7 @@ class BreezBridge {
   }
 
   Future checkVersion() {
-    return _invokeMethodWhenReady("checkVersion");
+    return _invokeMethodImmediate("checkVersion");
   }
 
   Future<String> validateAddress(String address) {
