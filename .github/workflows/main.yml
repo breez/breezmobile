@@ -54,13 +54,11 @@ jobs:
           export GOPATH=$TMP_GOPATH
           echo "gopath= $GOPATH"
           go install golang.org/x/mobile/cmd/gomobile
-          echo "got gomobile"          
-          go install golang.org/x/mobile/cmd/gobind
-          echo "got gobind gopath=$GOPATH"
+          echo "gomobile was installed!"          
           echo $(ls $GOPATH)
           echo $(ls $GOPATH/bin)
           $GOPATH/bin/gomobile init
-          mkdir -p build/ios          
+          mkdir -p build/ios
           PATH=$PATH:$GOPATH/bin gomobile bind -iosversion=12.4 -target=ios -tags="ios experimental signrpc walletrpc chainrpc invoicesrpc routerrpc backuprpc peerrpc submarineswaprpc breezbackuprpc" -o build/ios/bindings.xcframework -ldflags="-s -w" github.com/breez/breez/bindings
           popd
           brew install ideviceinstaller ios-deploy
