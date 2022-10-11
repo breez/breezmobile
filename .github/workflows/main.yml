@@ -67,7 +67,7 @@ jobs:
           git clone --branch stable https://github.com/flutter/flutter.git
           cp -r $GOPATH/src/github.com/breez/breez/build/ios/bindings.xcframework/ios-arm64/Bindings.framework $GITHUB_WORKSPACE/ios/bindings.framework
           rm -rf $GITHUB_WORKSPACE/conf
-          git clone builderfiles@packages.breez.technology:configuration -b production $GITHUB_WORKSPACE/temp_config          
+          git clone builderfiles@packages.breez.technology:configuration -b staging $GITHUB_WORKSPACE/temp_config          
           cp -r $GITHUB_WORKSPACE/temp_config/conf $GITHUB_WORKSPACE/conf
           echo "ls conf ***"
           ls $GITHUB_WORKSPACE/conf
