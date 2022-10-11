@@ -9,6 +9,7 @@ import 'package:ffmpeg_kit_flutter_https_gpl/ffmpeg_kit.dart';
 import 'package:ffmpeg_kit_flutter_https_gpl/ffmpeg_session.dart';
 import 'package:ffmpeg_kit_flutter_https_gpl/return_code.dart';
 import 'package:image/image.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:share_plus/share_plus.dart';
@@ -214,7 +215,7 @@ class PodcastClipBloc with AsyncActionsHandler {
       if (!enableClipSharing) {
         return;
       } else {
-        Share.shareFiles([videoClipPath]);
+        Share.shareXFiles([XFile(videoClipPath)]);
       }
     } catch (e) {
       log.warning(e);
