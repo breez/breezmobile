@@ -53,9 +53,9 @@ jobs:
           export GOPRIVATE=github.com/btcsuite/btcd
           export GOPATH=$TMP_GOPATH
           echo "gopath= $GOPATH"
-          go get golang.org/x/mobile/cmd/gomobile
+          go install golang.org/x/mobile/cmd/gomobile
           echo "got gomobile"          
-          go get golang.org/x/mobile/cmd/gobind
+          go install golang.org/x/mobile/cmd/gobind
           echo "got gobind gopath=$GOPATH"
           echo $(ls $GOPATH)
           echo $(ls $GOPATH/bin)
