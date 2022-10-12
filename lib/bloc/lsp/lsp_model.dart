@@ -24,7 +24,7 @@ class LSPStatus {
         selectedLSP ?? this.selectedLSP);
   }
 
-  bool get selectionRequired => selectedLSP == null && availableLSPs.length > 1;
+  bool get selectionRequired => currentLSP == null && availableLSPs.length > 1;
 
   LSPInfo get currentLSP =>
       availableLSPs.firstWhere((element) => element.lspID == selectedLSP,
