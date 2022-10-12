@@ -867,6 +867,9 @@ class HomeState extends State<Home> with WidgetsBindingObserver {
 
       final accountModel = await widget.accountBloc.accountStream.first;
       final errorString = error.toDisplayMessage(accountModel.currency);
+      if (error.validationError && errorString.contains("payment is in transition")) {
+        return;
+      }
       showFlushbar(context, message: "$errorString");
 
       if (!error.validationError) {
