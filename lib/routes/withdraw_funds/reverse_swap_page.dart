@@ -92,17 +92,13 @@ class ReverseSwapPageState extends State<ReverseSwapPage> {
     return StreamBuilder<AccountModel>(
       stream: accountBloc.accountStream,
       builder: (context, accSnapshot) {
-        final accountModel = accSnapshot.data;
-        final unconfirmedChannels = accountModel?.unconfirmedChannels;
-        final hasUnconfirmed = (unconfirmedChannels?.length ?? 0) > 0;
+        final accountModel = accSnapshot.data;        
 
         return Scaffold(
           appBar: !_policyCompleter.isCompleted ||
-                  _loadingError != null ||
-                  hasUnconfirmed
+                  _loadingError != null
               ? AppBar(
                   iconTheme: themeData.appBarTheme.iconTheme,
-                  textTheme: themeData.appBarTheme.textTheme,
                   backgroundColor: themeData.canvasColor,
                   leading: backBtn.BackButton(
                     onPressed: () => Navigator.of(context).pop(),
@@ -111,18 +107,12 @@ class ReverseSwapPageState extends State<ReverseSwapPage> {
                     texts.reverse_swap_title,
                     style: themeData.appBarTheme.textTheme.headline6,
                   ),
-                  elevation: 0.0,
+                  elevation: 0.0, toolbarTextStyle: themeData.appBarTheme.textTheme.bodyText2, titleTextStyle: themeData.appBarTheme.textTheme.headline6,
                 )
               : null,
           body: FutureBuilder<Object>(
             future: _policyCompleter.future,
-            builder: (context, snapshot) {
-              if (hasUnconfirmed) {
-                return UnconfirmedChannels(
-                  accountModel: accountModel,
-                  unconfirmedChannels: unconfirmedChannels,
-                );
-              }
+            builder: (context, snapshot) {              
               if (snapshot.error != null) {
                 return Center(
                   child: Text(
