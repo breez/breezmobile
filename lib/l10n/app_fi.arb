@@ -1492,7 +1492,7 @@
   "pos_settings_business_address": "Toimipaikan tiedot",
   "pos_settings_address_line_1": "Rivi 1",
   "pos_settings_address_line_2": "Rivi 2",
-  "pos_settings_default_note": "Default Note",
+  "pos_settings_default_note": "Vakiona käytettävä Kuvaus -teksti",
   "pos_settings_id": "ID",
   "pos_settings_name": "Nimi",
   "pos_settings_sku": "Tuotetunnus",
@@ -2005,8 +2005,8 @@
   "admin_login_dialog_error_password_incorrect": "Virheellinen salasana",
   "fast_bitcoin_dot_com_voucher": "Fastbitcoins.com Voucher-lipuke",
   "fast_bitcoin_dot_com_error_service_unavailable": "Palvelu ei ole käytettävissä. Yritä myöhemmin uudelleen.",
-  "payment_error_insufficient_balance": "Riittämätön saldo",
-  "payment_error_insufficient_balance_amount": "Riittämätön saldo: voit lähettää tähän kohteeseen enintään {amount}",
+  "payment_error_insufficient_balance": "Maksuvirhe",
+  "payment_error_insufficient_balance_amount": "Käytösaldosi tai vastaanottajan enimmäismäärä on {amount}",
   "@payment_error_insufficient_balance_amount": {
     "placeholders": {
       "amount": {
