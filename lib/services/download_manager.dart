@@ -3,7 +3,10 @@ import 'dart:isolate';
 import 'dart:ui';
 
 import 'package:anytime/entities/downloadable.dart';
+import 'package:breez/logger.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter_downloader/flutter_downloader.dart';
+import 'package:logging/logging.dart';
 import 'package:rxdart/subjects.dart';
 
 class DownloadStatus {
@@ -17,6 +20,7 @@ class DownloadStatus {
 class DownloadTaskManager {
   final ReceivePort _port = ReceivePort();
   final downloadController = BehaviorSubject<DownloadStatus>();
+
   Stream<DownloadStatus> get downloadProgress => downloadController.stream;
 
   DownloadTaskManager() {
@@ -49,6 +53,9 @@ class DownloadTaskManager {
         state = DownloadState.paused;
       }
 
+      log.info('graph - Callback on UI isolate: '
+          'task ($id) is in status ($state) and process ($progress)');
+
       downloadController.add(DownloadStatus(id, progress, state));
     });
     FlutterDownloader.registerCallback(downloadCallback);
@@ -56,6 +63,7 @@ class DownloadTaskManager {
 
   Future<String> enqueTask(String url, String downloadPath, String fileName,
       {showNotification = false}) async {
+    log.info('graph - enqueTask called');
     return await FlutterDownloader.enqueue(
       url: url,
       savedDir: downloadPath,
@@ -76,8 +84,26 @@ class DownloadTaskManager {
 
   static void downloadCallback(
       String id, DownloadTaskStatus status, int progress) {
-    final send = IsolateNameServer.lookupPortByName('downloader_send_port');
+    var state = DownloadState.none;
 
+    if (status == DownloadTaskStatus.enqueued) {
+      state = DownloadState.queued;
+    } else if (status == DownloadTaskStatus.canceled) {
+      state = DownloadState.cancelled;
+    } else if (status == DownloadTaskStatus.complete) {
+      state = DownloadState.downloaded;
+    } else if (status == DownloadTaskStatus.running) {
+      state = DownloadState.downloading;
+    } else if (status == DownloadTaskStatus.failed) {
+      state = DownloadState.failed;
+    } else if (status == DownloadTaskStatus.paused) {
+      state = DownloadState.paused;
+    }
+    log.info(
+      'graph - Callback on background isolate: '
+      'task ($id) is in status ($state) and process ($progress)',
+    );
+    final send = IsolateNameServer.lookupPortByName('downloader_send_port');
     send.send([id, status, progress]);
   }
 }

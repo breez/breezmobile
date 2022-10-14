@@ -91,7 +91,7 @@ class GraphDownloader {
     var downloadDir = Directory(downloadDirPath);
     downloadDir.createSync(recursive: true);
     downloadManager.enqueTask(downloadURL, downloadDir.path, "channel.db");
-
+    log.info("Graph download finished");
     return _downloadCompleter.future;
   }
 
