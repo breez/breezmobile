@@ -97,7 +97,7 @@ dependency_overrides:
   flutter_downloader:
     git:
       url: https://github.com/breez/flutter_downloader.git
-      ref: 7b0a31dabb5a31928a3fd466f346d67443b18f7e
+      ref: efb893f821260e32fc99e3035ea507b296874b62
   podcast_search:
     git:
       url: https://github.com/breez/podcast_search.git
