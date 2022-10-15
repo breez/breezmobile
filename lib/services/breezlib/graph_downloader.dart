@@ -23,17 +23,37 @@ class GraphDownloader {
   GraphDownloader(this.downloadManager, this.preferences);
 
   Future init() async {
+    Timer.periodic(Duration(seconds: 10), (timer) async {
+      var tasks = await downloadManager.loadTasks();
+      tasks.forEach((currentTask) {
+        var f = File(currentTask.savedDir +
+            Platform.pathSeparator +
+            currentTask.filename);
+
+      log.info("GraphDownloader periodic file exists: ${f.existsSync()}");
+      log.info("GraphDownloader periodic task: progress=${currentTask.progress}, status=${currentTask.status}, id=${currentTask.taskId}");
+      });
+    });
     downloadManager.downloadProgress.listen((event) async {
+      log.info("GraphDownloader event: ${event.id}");
+      log.info("GraphDownloader event: ${event.status}");
+      log.info("GraphDownloader event: ${event.percentage}");      
       var tasks = await downloadManager.loadTasks();
       var downloadURL = (await preferences).getString("graph_url");
       var currentTask = tasks.firstWhere(
           (t) => t.url == downloadURL && t.taskId == event.id,
           orElse: () => null);
+      log.info("GraphDownloader task status = ${currentTask.status}");
+      var f = File(currentTask.savedDir +
+            Platform.pathSeparator +
+            currentTask.filename);
+
+      log.info("GraphDownloadern file exists: ${f.existsSync()}");
       if (currentTask != null &&
           finalTaskStatuses.contains(currentTask.status)) {
         await _onTaskFinished(currentTask);
       }
-    });
+    });    
   }
 
   Future _onTaskFinished(DownloadTask currentTask) async {
@@ -48,7 +68,7 @@ class GraphDownloader {
     }
   }
 
-  Future<File> downloadGraph(String downloadURL) async {
+  Future<File> downloadGraph(String downloadURL) async {   
     if (_downloadCompleter == null) {
       _downloadCompleter = Completer<File>();
     }

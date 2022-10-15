@@ -85,11 +85,11 @@ class BreezBridge {
     await _readyCompleter.future;
     await Future.delayed(Duration(seconds: 10));
     var downloadURL = await graphURL();
-    logger.log.info("graph download url: $downloadURL");
+    logger.log.info("GraphDownloader graph download url: $downloadURL");
     if (downloadURL.isNotEmpty) {
-      logger.log.info("fetching graph checksum");
+      logger.log.info("GraphDownloader fetching graph checksum");
       var checksum = await fetchGraphChecksum(downloadURL);
-      logger.log.info("graph checksum = $checksum, downloading graph");
+      logger.log.info("GraphDownloader graph checksum = $checksum, downloading graph");
       _inProgressGraphSync =
           _graphDownloader.downloadGraph(downloadURL).then((file) async {
         final fileChecksum =
@@ -98,15 +98,15 @@ class BreezBridge {
         var hexChecksum = HEX.encode(rawBytes);
         if (hexChecksum != checksum) {
           logger.log.info(
-              "graph synchronization wrong checksum $fileChecksum != $checksum, skipping file");
+              "GraphDownloader graph synchronization wrong checksum $fileChecksum != $checksum, skipping file");
           return DateTime.now();
         }
-        logger.log.info("graph synchronization started");
+        logger.log.info("GraphDownloader graph synchronization started");
         await syncGraphFromFile(file.path);
-        logger.log.info("graph synchronized succesfully");
+        logger.log.info("GraphDownloader graph synchronized succesfully");
         return DateTime.now();
       }).catchError((err) {
-        logger.log.info("graph synchronized failed ${err.toString()}");
+        logger.log.info("GraphDownloader graph synchronized failed ${err.toString()}");
       }).whenComplete(() {
         _graphDownloader.deleteDownloads();
       });
