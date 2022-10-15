@@ -595,8 +595,8 @@ packages:
     dependency: "direct overridden"
     description:
       path: "."
-      ref: f58358cb58a142f4165a4ce4b2359920d0c9a956
-      resolved-ref: f58358cb58a142f4165a4ce4b2359920d0c9a956
+      ref: "7b0a31dabb5a31928a3fd466f346d67443b18f7e"
+      resolved-ref: "7b0a31dabb5a31928a3fd466f346d67443b18f7e"
       url: "https://github.com/breez/flutter_downloader.git"
     source: git
     version: "1.8.4"
