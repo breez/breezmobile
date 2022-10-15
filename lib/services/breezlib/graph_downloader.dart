@@ -19,21 +19,11 @@ class GraphDownloader {
   ];
   bool handlingFile = false;
   Completer<File> _downloadCompleter;
+  Timer _downloadTimer;
 
   GraphDownloader(this.downloadManager, this.preferences);
 
-  Future init() async {
-    Timer.periodic(Duration(seconds: 10), (timer) async {
-      var tasks = await downloadManager.loadTasks();
-      tasks.forEach((currentTask) {
-        var f = File(currentTask.savedDir +
-            Platform.pathSeparator +
-            currentTask.filename);
-
-      log.info("GraphDownloader periodic file exists: ${f.existsSync()}");
-      log.info("GraphDownloader periodic task: progress=${currentTask.progress}, status=${currentTask.status}, id=${currentTask.taskId}");
-      });
-    });
+  Future init() async {    
     downloadManager.downloadProgress.listen((event) async {
       log.info("GraphDownloader event: ${event.id}");
       log.info("GraphDownloader event: ${event.status}");
@@ -56,7 +46,22 @@ class GraphDownloader {
     });    
   }
 
+  void pollGraphDownload(String taskID) {
+    _downloadTimer = Timer.periodic(Duration(seconds: 3), (timer) async {
+      var tasks = await downloadManager.loadTasks();
+      final polledTask = tasks.firstWhere((t) => t.taskId == taskID, orElse: () => null);
+      if (polledTask != null) {
+        log.info("GraphDownloader polled task: progress=${polledTask.progress}, status=${polledTask.status}, id=${polledTask.taskId}");
+        if (finalTaskStatuses.contains(polledTask.status)) {        
+          _onTaskFinished(polledTask);
+        }
+      }
+    });
+  }
+
   Future _onTaskFinished(DownloadTask currentTask) async {
+    _downloadTimer?.cancel();
+    _downloadTimer = null;
     if (_downloadCompleter != null) {
       if (currentTask.status == DownloadTaskStatus.complete) {
         _downloadCompleter.complete(File(currentTask.savedDir +
@@ -100,6 +105,7 @@ class GraphDownloader {
         if (tasks[i].status == DownloadTaskStatus.running) {
           log.info(
               "Already has graph download task running, not starting another one");
+          pollGraphDownload(tasks[i].taskId);
           return _downloadCompleter.future;
         }
       }
@@ -110,8 +116,8 @@ class GraphDownloader {
     var downloadDirPath = appDir.path + Platform.pathSeparator + 'Download';
     var downloadDir = Directory(downloadDirPath);
     downloadDir.createSync(recursive: true);
-    downloadManager.enqueTask(downloadURL, downloadDir.path, "channel.db");
-
+    String taskID = await downloadManager.enqueTask(downloadURL, downloadDir.path, "channel.db");
+    pollGraphDownload(taskID);
     return _downloadCompleter.future;
   }
 
