@@ -18,8 +18,7 @@ class GraphDownloader {
     DownloadTaskStatus.undefined
   ];
   bool handlingFile = false;
-  Completer<File> _downloadCompleter;
-  Timer _downloadTimer;
+  Completer<File> _downloadCompleter;  
 
   GraphDownloader(this.downloadManager, this.preferences);
 
@@ -44,24 +43,9 @@ class GraphDownloader {
         await _onTaskFinished(currentTask);
       }
     });    
-  }
+  }  
 
-  void pollGraphDownload(String taskID) {
-    _downloadTimer = Timer.periodic(Duration(seconds: 3), (timer) async {
-      var tasks = await downloadManager.loadTasks();
-      final polledTask = tasks.firstWhere((t) => t.taskId == taskID, orElse: () => null);
-      if (polledTask != null) {
-        log.info("GraphDownloader polled task: progress=${polledTask.progress}, status=${polledTask.status}, id=${polledTask.taskId}");
-        if (finalTaskStatuses.contains(polledTask.status)) {        
-          _onTaskFinished(polledTask);
-        }
-      }
-    });
-  }
-
-  Future _onTaskFinished(DownloadTask currentTask) async {
-    _downloadTimer?.cancel();
-    _downloadTimer = null;
+  Future _onTaskFinished(DownloadTask currentTask) async {    
     if (_downloadCompleter != null) {
       if (currentTask.status == DownloadTaskStatus.complete) {
         _downloadCompleter.complete(File(currentTask.savedDir +
@@ -104,8 +88,7 @@ class GraphDownloader {
 
         if (tasks[i].status == DownloadTaskStatus.running) {
           log.info(
-              "Already has graph download task running, not starting another one");
-          pollGraphDownload(tasks[i].taskId);
+              "Already has graph download task running, not starting another one");          
           return _downloadCompleter.future;
         }
       }
@@ -116,8 +99,7 @@ class GraphDownloader {
     var downloadDirPath = appDir.path + Platform.pathSeparator + 'Download';
     var downloadDir = Directory(downloadDirPath);
     downloadDir.createSync(recursive: true);
-    String taskID = await downloadManager.enqueTask(downloadURL, downloadDir.path, "channel.db");
-    pollGraphDownload(taskID);
+    await downloadManager.enqueTask(downloadURL, downloadDir.path, "channel.db");    
     return _downloadCompleter.future;
   }
 
