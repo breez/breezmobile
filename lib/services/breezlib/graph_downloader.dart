@@ -31,15 +31,10 @@ class GraphDownloader {
       var downloadURL = (await preferences).getString("graph_url");
       var currentTask = tasks.firstWhere(
           (t) => t.url == downloadURL && t.taskId == event.id,
-          orElse: () => null);
-      log.info("GraphDownloader task status = ${currentTask.status}");
-      var f = File(currentTask.savedDir +
-            Platform.pathSeparator +
-            currentTask.filename);
-
-      log.info("GraphDownloadern file exists: ${f.existsSync()}");
+          orElse: () => null);                  
       if (currentTask != null &&
           finalTaskStatuses.contains(currentTask.status)) {
+        log.info("GraphDownloader task status = ${currentTask.status}");
         await _onTaskFinished(currentTask);
       }
     });    
