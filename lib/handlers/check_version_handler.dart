@@ -59,7 +59,7 @@ void checkVersionDialog(
         buttonText: texts.handler_check_version_action_update,
         onDismiss: () {
           if (defaultTargetPlatform == TargetPlatform.iOS) {
-            launchUrlString('https://testflight.apple.com/join/wPju2Du7');
+            launchUrlString('https://apps.apple.com/us/app/breez-lightning-client-pos/id1463604142');
           }
           if (defaultTargetPlatform == TargetPlatform.android) {
             launchUrlString(
