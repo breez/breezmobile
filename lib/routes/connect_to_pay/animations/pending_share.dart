@@ -1,6 +1,6 @@
 import 'dart:math' as math;
 
-import 'package:breez/theme_data.dart' as theme;
+import 'package:clovrlabs_wallet/theme_data.dart' as theme;
 import 'package:flutter/material.dart';
 
 class PendingShareIndicator extends StatefulWidget {
@@ -77,7 +77,7 @@ class PendingShareIndicatorState extends State<PendingShareIndicator>
 }
 
 class _ConnectedCustomPainter extends CustomPainter {
-  final Color color = theme.BreezColors.blue[500];
+  final Color color = theme.ElenPayWalletColors.dark_grey[500];
   final Animation<double> _scale1;
   final Animation<double> _scale2;
   final Animation<double> _rotate;

@@ -1,6 +1,6 @@
 import 'dart:async';
 
-import 'package:breez/bloc/marketplace/vendor_model.dart';
+import 'package:clovrlabs_wallet/bloc/marketplace/vendor_model.dart';
 import 'package:flutter/services.dart';
 import 'package:rxdart/rxdart.dart';
 

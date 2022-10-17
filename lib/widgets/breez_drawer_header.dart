@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 const double _kBreezDrawerHeaderHeight = 160.0 + 1.0; // bottom edge
 
-class BreezDrawerHeader extends DrawerHeader {
+class WalletDrawerHeader extends DrawerHeader {
   final Decoration decoration;
   final EdgeInsetsGeometry padding;
   final EdgeInsetsGeometry margin;
@@ -10,7 +10,7 @@ class BreezDrawerHeader extends DrawerHeader {
   final Curve curve;
   final Widget child;
 
-  const BreezDrawerHeader({
+  const WalletDrawerHeader({
     Key key,
     this.decoration,
     this.margin = const EdgeInsets.only(bottom: 16.0),

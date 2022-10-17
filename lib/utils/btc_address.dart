@@ -1,4 +1,4 @@
-import 'package:breez/bloc/user_profile/currency.dart';
+import 'package:clovrlabs_wallet/bloc/user_profile/currency.dart';
 import 'package:fixnum/fixnum.dart';
 
 BTCAddressInfo parseBTCAddress(String scannedString) {

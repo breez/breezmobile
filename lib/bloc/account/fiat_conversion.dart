@@ -1,7 +1,7 @@
 import 'dart:math';
 
-import 'package:breez/services/currency_data.dart';
-import 'package:breez/utils/currency_formatter.dart';
+import 'package:clovrlabs_wallet/services/currency_data.dart';
+import 'package:clovrlabs_wallet/utils/currency_formatter.dart';
 import 'package:fixnum/fixnum.dart';
 
 class FiatConversion {

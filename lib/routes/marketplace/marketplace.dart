@@ -1,8 +1,8 @@
-import 'package:breez/bloc/account/account_bloc.dart';
-import 'package:breez/bloc/blocs_provider.dart';
-import 'package:breez/bloc/marketplace/marketplace_bloc.dart';
-import 'package:breez/bloc/marketplace/vendor_model.dart';
-import 'package:breez/theme_data.dart' as theme;
+import 'package:clovrlabs_wallet/bloc/account/account_bloc.dart';
+import 'package:clovrlabs_wallet/bloc/blocs_provider.dart';
+import 'package:clovrlabs_wallet/bloc/marketplace/marketplace_bloc.dart';
+import 'package:clovrlabs_wallet/bloc/marketplace/vendor_model.dart';
+import 'package:clovrlabs_wallet/theme_data.dart' as theme;
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
@@ -24,7 +24,7 @@ class MarketplacePageState extends State<MarketplacePage> {
 
     return Scaffold(
       key: _scaffoldKey,
-      backgroundColor: theme.themeId == "BLUE"
+      backgroundColor: theme.themeId == "WHITE"
           ? Theme.of(context).backgroundColor
           : Theme.of(context).canvasColor,
       body: StreamBuilder(
@@ -50,7 +50,7 @@ class MarketplacePageState extends State<MarketplacePage> {
           AppLocalizations.of(context).market_place_no_vendors,
           textAlign: TextAlign.center,
           style: Theme.of(context).textTheme.headline4.copyWith(
-                color: theme.themeId == "BLUE"
+                color: theme.themeId == "WHITE"
                     ? Theme.of(context).canvasColor
                     : Colors.white,
               ),

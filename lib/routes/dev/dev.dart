@@ -1,35 +1,27 @@
 import 'dart:io';
 
 import 'package:archive/archive_io.dart';
-import 'package:breez/bloc/account/account_actions.dart';
-import 'package:breez/bloc/account/account_bloc.dart';
-import 'package:breez/bloc/account/account_model.dart';
-import 'package:breez/bloc/account/add_funds_bloc.dart';
-import 'package:breez/bloc/account/add_funds_model.dart';
-import 'package:breez/bloc/backup/backup_bloc.dart';
-import 'package:breez/bloc/backup/backup_model.dart';
-import 'package:breez/bloc/blocs_provider.dart';
-import 'package:breez/bloc/pos_catalog/bloc.dart';
-import 'package:breez/bloc/pos_catalog/sqlite/db.dart';
-import 'package:breez/bloc/user_profile/breez_user_model.dart';
-import 'package:breez/bloc/user_profile/user_actions.dart';
-import 'package:breez/bloc/user_profile/user_profile_bloc.dart';
-import 'package:breez/logger.dart';
-import 'package:breez/routes/dev/set_height_hint.dart';
-import 'package:breez/services/breezlib/breez_bridge.dart';
-import 'package:breez/services/injector.dart';
-import 'package:breez/services/permissions.dart';
-import 'package:breez/theme_data.dart' as theme;
-import 'package:breez/widgets/back_button.dart' as backBtn;
-import 'package:breez/widgets/error_dialog.dart';
-import 'package:breez/widgets/loader.dart';
-import 'package:breez/widgets/route.dart';
-import 'package:file_picker/file_picker.dart';
+import 'package:clovrlabs_wallet/bloc/account/account_bloc.dart';
+import 'package:clovrlabs_wallet/bloc/account/account_model.dart';
+import 'package:clovrlabs_wallet/bloc/account/add_funds_bloc.dart';
+import 'package:clovrlabs_wallet/bloc/account/add_funds_model.dart';
+import 'package:clovrlabs_wallet/bloc/backup/backup_bloc.dart';
+import 'package:clovrlabs_wallet/bloc/backup/backup_model.dart';
+import 'package:clovrlabs_wallet/bloc/blocs_provider.dart';
+import 'package:clovrlabs_wallet/bloc/user_profile/clovr_user_model.dart';
+import 'package:clovrlabs_wallet/bloc/user_profile/user_profile_bloc.dart';
+import 'package:clovrlabs_wallet/logger.dart';
+import 'package:clovrlabs_wallet/services/breezlib/breez_bridge.dart';
+import 'package:clovrlabs_wallet/services/injector.dart';
+import 'package:clovrlabs_wallet/services/permissions.dart';
+import 'package:clovrlabs_wallet/theme_data.dart' as theme;
+import 'package:clovrlabs_wallet/widgets/back_button.dart' as backBtn;
+import 'package:clovrlabs_wallet/widgets/error_dialog.dart';
+import 'package:clovrlabs_wallet/widgets/loader.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_downloader/flutter_downloader.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:share_extend/share_extend.dart';
-import '../../bloc/podcast_history/sqflite/podcast_history_database.dart';
 import 'default_commands.dart';
 
 bool allowRebroadcastRefunds = false;
@@ -143,7 +135,7 @@ class DevViewState extends State<DevView> {
                   return StreamBuilder(
                       stream: addFundsBloc.addFundsSettingsStream,
                       builder: (context, addFundsSettingsSnapshot) {
-                        return StreamBuilder<BreezUserModel>(
+                        return StreamBuilder<ClovrUserModel>(
                             stream: userBloc.userStream,
                             builder: (context, userSnapshot) {
                               return Scaffold(
@@ -187,10 +179,10 @@ class DevViewState extends State<DevView> {
                                   ],
                                   title: Text(
                                     "Developers",
-                                    style: Theme.of(context)
-                                        .appBarTheme
-                                        .textTheme
-                                        .headline6,
+                                    // style: Theme.of(context)
+                                    //     .appBarTheme
+                                    //     .toolbarTextStyle
+                                    //     .,
                                   ),
                                 ),
                                 body: Column(
@@ -333,10 +325,11 @@ class DevViewState extends State<DevView> {
       AddFundsBloc addFundsBloc,
       AddFundsSettings addFundsSettings,
       UserProfileBloc userBloc,
-      BreezUserModel userModel) {
+      ClovrUserModel userModel) {
     List<Choice> choices = <Choice>[];
     choices.addAll([
       Choice(title: 'Share Logs', icon: Icons.share, function: shareLog),
+      // The code commented temporary
       /*
       Choice(
           title: 'Show Initial Screen',
@@ -358,20 +351,24 @@ class DevViewState extends State<DevView> {
           title: 'Update Graph',
           icon: Icons.phone_android,
           function: _refreshGraph),
+      Choice(
+          title: 'Download Graph',
+          icon: Icons.phone_android,
+          function: _downloadGraph),
     ]);
 
-    if (Platform.isAndroid) {
-      choices.add(Choice(
-          title: 'Battery Optimization',
-          icon: Icons.phone_android,
-          function: _showOptimizationsSettings));
-    }
-    if (settings.ignoreWalletBalance) {
-      choices.add(Choice(
-          title: "Show Excess Funds",
-          icon: Icons.phone_android,
-          function: () => _setShowExcessFunds(accBloc, settings)));
-    }
+    // if (Platform.isAndroid) {
+    //   choices.add(Choice(
+    //       title: 'Battery Optimization',
+    //       icon: Icons.phone_android,
+    //       function: _showOptimizationsSettings));
+    // }
+    // if (settings.ignoreWalletBalance) {
+    //   choices.add(Choice(
+    //       title: "Show Excess Funds",
+    //       icon: Icons.phone_android,
+    //       function: () => _setShowExcessFunds(accBloc, settings)));
+    // }
     if (settings.failedPaymentBehavior != BugReportBehavior.PROMPT) {
       choices.add(Choice(
           title: 'Reset Payment Report',
@@ -379,41 +376,41 @@ class DevViewState extends State<DevView> {
           function: () {
             _resetBugReportBehavior(accBloc, settings);
           }));
-    }
-    choices.add(Choice(
-        title:
-            "${addFundsSettings.moonpayIpCheck ? "Disable" : "Enable"} MoonPay IP Check",
-        icon: Icons.network_check,
-        function: () => _enableMoonpayIpCheck(addFundsBloc, addFundsSettings)));
-    choices.add(Choice(
-        title: 'Reset Refunds Status',
-        icon: Icons.phone_android,
-        function: () {
-          allowRebroadcastRefunds = true;
-        }));
-    choices.add(Choice(
-        title: "Recover Chain Information",
-        icon: Icons.phone_android,
-        function: () async {
-          ResetChainService resetAction = ResetChainService();
-          accBloc.userActionsSink.add(resetAction);
-          await resetAction.future;
-          _promptForRestart();
-        }));
+    };
+    // choices.add(Choice(
+    //     title:
+    //         "${addFundsSettings.moonpayIpCheck ? "Disable" : "Enable"} MoonPay IP Check",
+    //     icon: Icons.network_check,
+    //     function: () => _enableMoonpayIpCheck(addFundsBloc, addFundsSettings)));
+    // choices.add(Choice(
+    //     title: 'Reset Refunds Status',
+    //     icon: Icons.phone_android,
+    //     function: () {
+    //       allowRebroadcastRefunds = true;
+    //     }));
+    // choices.add(Choice(
+    //     title: "Recover Chain Information",
+    //     icon: Icons.phone_android,
+    //     function: () async {
+    //       ResetChainService resetAction = ResetChainService();
+    //       accBloc.userActionsSink.add(resetAction);
+    //       await resetAction.future;
+    //       _promptForRestart();
+    //     }));
     choices.add(Choice(
         title: "Refresh Private Channels",
         icon: Icons.phone_android,
         function: () async {
           await widget._breezBridge.populateChannePolicy();
         }));
-    choices.add(Choice(
-        title: "Reset Unconfirmed Swap",
-        icon: Icons.phone_android,
-        function: () async {
-          await widget._breezBridge.setNonBlockingUnconfirmedSwaps();
-          await widget._breezBridge
-              .resetUnconfirmedReverseSwapClaimTransaction();
-        }));
+    // choices.add(Choice(
+    //     title: "Reset Unconfirmed Swap",
+    //     icon: Icons.phone_android,
+    //     function: () async {
+    //       await widget._breezBridge.setNonBlockingUnconfirmedSwaps();
+    //       await widget._breezBridge
+    //           .resetUnconfirmedReverseSwapClaimTransaction();
+    //     }));
 
     choices.add(Choice(
         title: "Export DB Files",
@@ -437,67 +434,60 @@ class DevViewState extends State<DevView> {
           ShareExtend.share(zipFile, "file");
         }));
 
-    choices.add(Choice(
-      title: "Export Product Catalog DB",
-      icon: Icons.file_upload,
-      function: () async {
-        final databasePath = await getDatabasePath();
-        ShareExtend.share(databasePath, "file");
-      },
-    ));
+    // choices.add(Choice(
+    //   title: "Export Product Catalog DB",
+    //   icon: Icons.file_upload,
+    //   function: () async {
+    //     final databasePath = await getDatabasePath();
+    //     ShareExtend.share(databasePath, "file");
+    //   },
+    // ));
 
-    choices.add(Choice(
-      title: "Import Product Catalog DB",
-      icon: Icons.file_download,
-      function: () async {
-        final fileResult = await FilePicker.platform.pickFiles(
-          dialogTitle: "Select Product Catalog DB",
-        );
-        if (fileResult != null && fileResult.files.length > 0) {
-          final file = fileResult.files.first;
-          if (file.path.endsWith(".db")) {
-            final databasePath = await getDatabasePath();
-            await File(file.path).copy(databasePath);
-          } else {
-            log.warning("Invalid file type for product catalog DB");
-          }
-        } else {
-          log.info("No file selected for product catalog DB");
-        }
-      },
-    ));
+    // choices.add(Choice(
+    //   title: "Import Product Catalog DB",
+    //   icon: Icons.file_download,
+    //   function: () async {
+    //     final fileResult = await FilePicker.platform.pickFiles(
+    //       dialogTitle: "Select Product Catalog DB",
+    //     );
+    //     if (fileResult != null && fileResult.files.length > 0) {
+    //       final file = fileResult.files.first;
+    //       if (file.path.endsWith(".db")) {
+    //         final databasePath = await getDatabasePath();
+    //         await File(file.path).copy(databasePath);
+    //       } else {
+    //         log.warning("Invalid file type for product catalog DB");
+    //       }
+    //     } else {
+    //       log.info("No file selected for product catalog DB");
+    //     }
+    //   },
+    // ));
 
-    choices.add(Choice(
-        title: 'Reset POS DB',
-        icon: Icons.phone_android,
-        function: () {
-          PosCatalogBloc bloc = AppBlocsProvider.of<PosCatalogBloc>(context);
-          bloc.resetDB();
-        }));
-    choices.add(Choice(
-        title: "Set Height Hint",
-        icon: Icons.phone_android,
-        function: () async {
-          final success = await Navigator.of(context).push(FadeInRoute(
-            builder: (_) => SetHeightHintPage(),
-          ));
-          if (success == true) {
-            _promptForRestart();
-          }
-        }));
-    choices.add(Choice(
-        title: "Restore Channels",
-        icon: Icons.phone_android,
-        function: () async {
-          _restoreChannelsBackup();
-        }));
-    choices.add(Choice(
-        title: 'Show Tutorials',
-        icon: Icons.phone_android,
-        function: () {
-          UserProfileBloc bloc = AppBlocsProvider.of<UserProfileBloc>(context);
-          bloc.userActionsSink.add(SetSeenPaymentStripTutorial(false));
-        }));
+    // choices.add(Choice(
+    //     title: "Set Height Hint",
+    //     icon: Icons.phone_android,
+    //     function: () async {
+    //       final success = await Navigator.of(context).push(FadeInRoute(
+    //         builder: (_) => SetHeightHintPage(),
+    //       ));
+    //       if (success == true) {
+    //         _promptForRestart();
+    //       }
+    //     }));
+    // choices.add(Choice(
+    //     title: "Restore Channels",
+    //     icon: Icons.phone_android,
+    //     function: () async {
+    //       _restoreChannelsBackup();
+    //     }));
+    // choices.add(Choice(
+    //     title: 'Show Tutorials',
+    //     icon: Icons.phone_android,
+    //     function: () {
+    //       UserProfileBloc bloc = AppBlocsProvider.of<UserProfileBloc>(context);
+    //       bloc.userActionsSink.add(SetSeenPaymentStripTutorial(false));
+    //     }));
     choices.add(Choice(
         title: 'Log Cache',
         icon: Icons.phone_android,
@@ -508,13 +498,6 @@ class DevViewState extends State<DevView> {
         icon: Icons.phone_android,
         function: () {
           _downloadSnapshot(accBloc);
-        }));
-
-    choices.add(Choice(
-        title: 'Reset Top Podcasts DB',
-        icon: Icons.phone_android,
-        function: () {
-          PodcastHistoryDatabase.instance.resetDatabase();
         }));
 
     return choices;
@@ -623,7 +606,13 @@ class DevViewState extends State<DevView> {
         createLoaderRoute(context, message: "Deleting graph...", opacity: 0.8));
     widget._breezBridge.deleteGraph().whenComplete(() {
       Navigator.pop(context);
-      _promptForRestart();
+      // _promptForRestart();
+    });
+  }
+
+  void _downloadGraph() async{
+    await widget._breezBridge.syncGraphIfNeeded().whenComplete(() {
+      log.info("download complete");
     });
   }
 
@@ -653,10 +642,10 @@ class DevViewState extends State<DevView> {
     return promptAreYouSure(
             context,
             null,
-            Text("Please restart to resynchronize Breez.",
+            Text("Please restart to resynchronize.",
                 style: Theme.of(context).dialogTheme.contentTextStyle),
             cancelText: "CANCEL",
-            okText: "EXIT BREEZ")
+            okText: "EXIT")
         .then((shouldExit) {
       if (shouldExit) {
         exit(0);

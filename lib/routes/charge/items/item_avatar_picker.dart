@@ -1,10 +1,10 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:badges/badges.dart';
-import 'package:breez/bloc/blocs_provider.dart';
-import 'package:breez/bloc/pos_catalog/bloc.dart';
-import 'package:breez/bloc/pos_catalog/model.dart';
-import 'package:breez/theme_data.dart';
-import 'package:breez/widgets/back_button.dart' as backBtn;
+import 'package:clovrlabs_wallet/bloc/blocs_provider.dart';
+import 'package:clovrlabs_wallet/bloc/pos_catalog/bloc.dart';
+import 'package:clovrlabs_wallet/bloc/pos_catalog/model.dart';
+import 'package:clovrlabs_wallet/theme_data.dart';
+import 'package:clovrlabs_wallet/widgets/back_button.dart' as backBtn;
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_svg/svg.dart';
@@ -56,7 +56,7 @@ class ItemAvatarPickerState extends State<ItemAvatarPicker> {
         leading: backBtn.BackButton(),
         title: Text(
           texts.pos_invoice_item_management_avatar_title,
-          style: themeData.appBarTheme.textTheme.headline6,
+          // style: themeData.appBarTheme.textTheme.headline6,
         ),
         elevation: 0.0,
       ),

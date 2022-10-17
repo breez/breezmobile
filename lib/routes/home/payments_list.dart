@@ -1,5 +1,5 @@
-import 'package:breez/bloc/account/account_model.dart';
-import 'package:breez/bloc/user_profile/breez_user_model.dart';
+import 'package:clovrlabs_wallet/bloc/account/account_model.dart';
+import 'package:clovrlabs_wallet/bloc/user_profile/clovr_user_model.dart';
 import 'package:flutter/material.dart';
 
 import 'payment_item.dart';
@@ -7,7 +7,7 @@ import 'payment_item.dart';
 const BOTTOM_PADDING = 8.0;
 
 class PaymentsList extends StatelessWidget {
-  final BreezUserModel _userModel;
+  final ClovrUserModel _userModel;
   final List<PaymentInfo> _payments;
   final double _itemHeight;
   final GlobalKey firstPaymentItemKey;

@@ -1,8 +1,8 @@
 import 'package:app_settings/app_settings.dart';
-import 'package:breez/bloc/invoice/invoice_bloc.dart';
-import 'package:breez/l10n/locales.dart';
-import 'package:breez/theme_data.dart' as theme;
-import 'package:breez/widgets/back_button.dart' as backBtn;
+import 'package:clovrlabs_wallet/bloc/invoice/invoice_bloc.dart';
+import 'package:clovrlabs_wallet/l10n/locales.dart';
+import 'package:clovrlabs_wallet/theme_data.dart' as theme;
+import 'package:clovrlabs_wallet/widgets/back_button.dart' as backBtn;
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
@@ -57,7 +57,7 @@ class BarcodeScannerPlaceholder extends StatelessWidget {
                 ),
                 ElevatedButton(
                   style: ElevatedButton.styleFrom(
-                    primary: theme.BreezColors.white[500],
+                    primary: theme.ElenPayWalletColors.white[500],
                     elevation: 0.0,
                     shape: const StadiumBorder(),
                     padding: EdgeInsets.fromLTRB(12.0, 8.0, 12.0, 8.0),

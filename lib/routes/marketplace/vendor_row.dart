@@ -1,9 +1,9 @@
-import 'package:breez/bloc/account/account_bloc.dart';
-import 'package:breez/bloc/blocs_provider.dart';
-import 'package:breez/bloc/lnurl/lnurl_bloc.dart';
-import 'package:breez/bloc/marketplace/vendor_model.dart';
-import 'package:breez/theme_data.dart' as theme;
-import 'package:breez/widgets/route.dart';
+import 'package:clovrlabs_wallet/bloc/account/account_bloc.dart';
+import 'package:clovrlabs_wallet/bloc/blocs_provider.dart';
+import 'package:clovrlabs_wallet/bloc/lnurl/lnurl_bloc.dart';
+import 'package:clovrlabs_wallet/bloc/marketplace/vendor_model.dart';
+import 'package:clovrlabs_wallet/theme_data.dart' as theme;
+import 'package:clovrlabs_wallet/widgets/route.dart';
 import 'package:flutter/material.dart';
 
 import 'lnurl_webview.dart';
@@ -66,7 +66,7 @@ class VendorRow extends StatelessWidget {
               color: _vendorBgColor,
               boxShadow: [
                 BoxShadow(
-                  color: theme.BreezColors.grey[600],
+                  color: theme.ElenPayWalletColors.grey[600],
                   blurRadius: 8.0,
                 )
               ],

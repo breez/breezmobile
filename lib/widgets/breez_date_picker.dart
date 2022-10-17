@@ -5,7 +5,7 @@
 import 'dart:async';
 import 'dart:math' as math;
 
-import 'package:breez/theme_data.dart' as theme;
+import 'package:clovrlabs_wallet/theme_data.dart' as theme;
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
@@ -443,7 +443,7 @@ class DayPicker extends StatelessWidget {
 
         BoxDecoration decoration;
         TextStyle itemStyle = TextStyle(
-          color: theme.themeId == "BLUE" ? Colors.black : Colors.white,
+          color: theme.themeId == "WHITE" ? Colors.black : Colors.white,
         );
 
         final bool isSelectedDay = selectedDate.year == year &&
@@ -463,7 +463,7 @@ class DayPicker extends StatelessWidget {
             currentDate.day == day) {
           // The current day gets a different text color.
           itemStyle = TextStyle(
-            color: theme.themeId == "BLUE" ? Colors.black : Colors.white,
+            color: theme.themeId == "WHITE" ? Colors.black : Colors.white,
             fontSize: 20.0,
           );
         }

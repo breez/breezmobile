@@ -1,14 +1,14 @@
-import 'package:breez/bloc/account/account_bloc.dart';
-import 'package:breez/bloc/account/account_model.dart';
-import 'package:breez/bloc/blocs_provider.dart';
-import 'package:breez/bloc/lsp/lsp_bloc.dart';
-import 'package:breez/bloc/lsp/lsp_model.dart';
-import 'package:breez/bloc/user_profile/breez_user_model.dart';
-import 'package:breez/bloc/user_profile/currency.dart';
-import 'package:breez/bloc/user_profile/user_profile_bloc.dart';
-import 'package:breez/theme_data.dart' as theme;
-import 'package:breez/utils/date.dart';
-import 'package:breez/widgets/fixed_sliver_delegate.dart';
+import 'package:clovrlabs_wallet/bloc/account/account_bloc.dart';
+import 'package:clovrlabs_wallet/bloc/account/account_model.dart';
+import 'package:clovrlabs_wallet/bloc/blocs_provider.dart';
+import 'package:clovrlabs_wallet/bloc/lsp/lsp_bloc.dart';
+import 'package:clovrlabs_wallet/bloc/lsp/lsp_model.dart';
+import 'package:clovrlabs_wallet/bloc/user_profile/clovr_user_model.dart';
+import 'package:clovrlabs_wallet/bloc/user_profile/currency.dart';
+import 'package:clovrlabs_wallet/bloc/user_profile/user_profile_bloc.dart';
+import 'package:clovrlabs_wallet/theme_data.dart' as theme;
+import 'package:clovrlabs_wallet/utils/date.dart';
+import 'package:clovrlabs_wallet/widgets/fixed_sliver_delegate.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
@@ -75,7 +75,7 @@ class AccountPageState extends State<AccountPage>
               stream: _accountBloc.paymentsStream,
               builder: (context, snapshot) {
                 final paymentsModel = snapshot.data ?? PaymentsModel.initial();
-                return StreamBuilder<BreezUserModel>(
+                return StreamBuilder<ClovrUserModel>(
                   stream: _userProfileBloc.userStream,
                   builder: (context, snapshot) {
                     final userModel = snapshot.data;
@@ -102,7 +102,7 @@ class AccountPageState extends State<AccountPage>
     BuildContext context,
     PaymentsModel paymentsModel,
     AccountModel account,
-    BreezUserModel userModel,
+    ClovrUserModel userModel,
   ) {
     final lspBloc = AppBlocsProvider.of<LSPBloc>(context);
     final queryData = MediaQuery.of(context);
@@ -209,9 +209,6 @@ class AccountPageState extends State<AccountPage>
       key: Key("account_sliver"),
       fit: StackFit.expand,
       children: [
-        paymentsModel.nonFilteredItems.length == 0
-            ? CustomPaint(painter: BubblePainter(context))
-            : SizedBox(),
         CustomScrollView(
           controller: widget.scrollController,
           slivers: slivers,
@@ -260,49 +257,6 @@ class AccountPageState extends State<AccountPage>
   }
 }
 
-class BubblePainter extends CustomPainter {
-  final BuildContext context;
-
-  const BubblePainter(
-    this.context,
-  );
-
-  @override
-  void paint(Canvas canvas, Size size) {
-    final size = MediaQuery.of(context).size;
-    final bubblePaint = Paint()
-      ..color = theme.themeId == "BLUE"
-          ? Color(0xFF0085fb).withOpacity(0.1)
-          : Color(0xff4D88EC).withOpacity(0.1)
-      ..style = PaintingStyle.fill;
-    final bubbleRadius = 12.0;
-    final height = size.height - kToolbarHeight;
-    canvas.drawCircle(
-      Offset(size.width / 2, height * 0.36),
-      bubbleRadius,
-      bubblePaint,
-    );
-    canvas.drawCircle(
-      Offset(size.width * 0.39, height * 0.59),
-      bubbleRadius * 1.5,
-      bubblePaint,
-    );
-    canvas.drawCircle(
-      Offset(size.width * 0.65, height * 0.71),
-      bubbleRadius * 1.25,
-      bubblePaint,
-    );
-    canvas.drawCircle(
-      Offset(size.width / 2, height * 0.80),
-      bubbleRadius * 0.75,
-      bubblePaint,
-    );
-  }
-
-  @override
-  bool shouldRepaint(CustomPainter oldDelegate) => true;
-}
-
 class WalletDashboardHeaderDelegate extends SliverPersistentHeaderDelegate {
   final AccountBloc accountBloc;
   final UserProfileBloc _userProfileBloc;
@@ -318,7 +272,7 @@ class WalletDashboardHeaderDelegate extends SliverPersistentHeaderDelegate {
     double shrinkOffset,
     bool overlapsContent,
   ) {
-    return StreamBuilder<BreezUserModel>(
+    return StreamBuilder<ClovrUserModel>(
       stream: _userProfileBloc.userStream,
       builder: (settingCtx, userSnapshot) {
         return StreamBuilder<AccountModel>(

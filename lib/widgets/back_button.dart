@@ -9,7 +9,7 @@ class BackButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return IconButton(
-        icon: Icon(iconData ?? IconData(0xe906, fontFamily: 'icomoon')),
+        icon: Icon(iconData ?? Icons.arrow_back, color: Colors.white),
         onPressed: this.onPressed ??
             () {
               Navigator.pop(context);

@@ -1,7 +1,7 @@
 import 'dart:async';
 
-import 'package:breez/bloc/connect_pay/connect_pay_model.dart';
-import 'package:breez/utils/locale.dart';
+import 'package:clovrlabs_wallet/bloc/connect_pay/connect_pay_model.dart';
+import 'package:clovrlabs_wallet/utils/locale.dart';
 import 'package:firebase_database/firebase_database.dart';
 
 class OnlineStatusUpdater {

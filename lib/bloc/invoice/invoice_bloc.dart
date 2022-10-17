@@ -1,21 +1,20 @@
 import 'dart:async';
 
-import 'package:breez/bloc/invoice/actions.dart';
-import 'package:breez/bloc/invoice/invoice_model.dart';
-import 'package:breez/logger.dart';
-import 'package:breez/services/breezlib/breez_bridge.dart';
-import 'package:breez/services/breezlib/data/rpc.pb.dart';
-import 'package:breez/services/device.dart';
-import 'package:breez/services/injector.dart';
-import 'package:breez/services/lightning_links.dart';
-import 'package:breez/services/nfc.dart';
-import 'package:breez/services/notifications.dart';
-import 'package:breez/utils/bip21.dart';
-import 'package:breez/utils/node_id.dart';
-import 'package:breez/utils/lnurl.dart';
+import 'package:clovrlabs_wallet/bloc/invoice/actions.dart';
+import 'package:clovrlabs_wallet/bloc/invoice/invoice_model.dart';
+import 'package:clovrlabs_wallet/logger.dart';
+import 'package:clovrlabs_wallet/services/breezlib/breez_bridge.dart';
+import 'package:clovrlabs_wallet/services/breezlib/data/rpc.pb.dart';
+import 'package:clovrlabs_wallet/services/device.dart';
+import 'package:clovrlabs_wallet/services/injector.dart';
+import 'package:clovrlabs_wallet/services/lightning_links.dart';
+import 'package:clovrlabs_wallet/services/notifications.dart';
+import 'package:clovrlabs_wallet/utils/bip21.dart';
+import 'package:clovrlabs_wallet/utils/node_id.dart';
+import 'package:clovrlabs_wallet/utils/lnurl.dart';
 import 'package:fixnum/fixnum.dart';
 import 'package:rxdart/rxdart.dart';
-import 'package:breez/bloc/async_actions_handler.dart';
+import 'package:clovrlabs_wallet/bloc/async_actions_handler.dart';
 
 class InvoiceBloc with AsyncActionsHandler {
   final _newInvoiceRequestController = StreamController<InvoiceRequestModel>();
@@ -51,14 +50,13 @@ class InvoiceBloc with AsyncActionsHandler {
   InvoiceBloc() {
     ServiceInjector injector = ServiceInjector();
     _breezLib = injector.breezBridge;
-    NFCService nfc = injector.nfc;
     Notifications notificationsService = injector.notifications;
     LightningLinksService lightningLinks = ServiceInjector().lightningLinks;
     device = injector.device;
 
-    _listenInvoiceRequests(_breezLib, nfc);
+    _listenInvoiceRequests(_breezLib);
     _listenIncomingInvoices(
-        notificationsService, _breezLib, nfc, lightningLinks, device);
+        notificationsService, _breezLib, lightningLinks, device);
     _listenPaidInvoices(_breezLib);
     registerAsyncHandlers({
       NewInvoice: _newInvoice,
@@ -98,7 +96,7 @@ class InvoiceBloc with AsyncActionsHandler {
         return null;
       }).where((event) => event != null);
 
-  void _listenInvoiceRequests(BreezBridge breezLib, NFCService nfc) {
+  void _listenInvoiceRequests(BreezBridge breezLib) {
     _newInvoiceRequestController.stream.listen((invoiceRequest) {
       _readyInvoicesController.add(null);
       breezLib
@@ -135,7 +133,6 @@ class InvoiceBloc with AsyncActionsHandler {
   void _listenIncomingInvoices(
       Notifications notificationService,
       BreezBridge breezLib,
-      NFCService nfc,
       LightningLinksService links,
       Device device) {
     Rx.merge([
@@ -144,7 +141,6 @@ class InvoiceBloc with AsyncActionsHandler {
           .map((message) {
         return message["payment_request"];
       }),
-      nfc.receivedLnLinks(),
       _decodeInvoiceController.stream,
       _newLightningLinkController.stream,
       links.linksNotifications,

@@ -1,7 +1,7 @@
 import 'dart:async';
 
-import 'package:breez/logger.dart';
-import 'package:breez/services/breez_server/generated/breez.pbgrpc.dart';
+import 'package:clovrlabs_wallet/logger.dart';
+import 'package:clovrlabs_wallet/services/breez_server/generated/breez.pbgrpc.dart';
 import 'package:fixnum/fixnum.dart';
 import 'package:flutter/services.dart';
 import 'package:grpc/grpc.dart';

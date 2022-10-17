@@ -1,7 +1,7 @@
 import 'dart:async';
 
-import 'package:breez/logger.dart';
-import 'package:breez/services/supported_schemes.dart';
+import 'package:clovrlabs_wallet/logger.dart';
+import 'package:clovrlabs_wallet/services/supported_schemes.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:uni_links/uni_links.dart';
 

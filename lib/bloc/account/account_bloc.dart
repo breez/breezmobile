@@ -2,26 +2,26 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
-import 'package:breez/bloc/account/account_actions.dart';
-import 'package:breez/bloc/account/account_permissions_handler.dart';
-import 'package:breez/bloc/account/fiat_conversion.dart';
-import 'package:breez/bloc/async_action.dart';
-import 'package:breez/bloc/csv_exporter.dart';
-import 'package:breez/bloc/payment_options/payment_options_actions.dart';
-import 'package:breez/bloc/payment_options/payment_options_bloc.dart';
-import 'package:breez/bloc/pos_catalog/repository.dart';
-import 'package:breez/bloc/user_profile/breez_user_model.dart';
-import 'package:breez/logger.dart';
-import 'package:breez/services/background_task.dart';
-import 'package:breez/services/breez_server/server.dart';
-import 'package:breez/services/breezlib/breez_bridge.dart';
-import 'package:breez/services/breezlib/data/rpc.pb.dart';
-import 'package:breez/services/currency_data.dart';
-import 'package:breez/services/currency_service.dart';
-import 'package:breez/services/device.dart';
-import 'package:breez/services/injector.dart';
-import 'package:breez/services/notifications.dart';
-import 'package:breez/utils/retry.dart';
+import 'package:clovrlabs_wallet/bloc/account/account_actions.dart';
+import 'package:clovrlabs_wallet/bloc/account/account_permissions_handler.dart';
+import 'package:clovrlabs_wallet/bloc/account/fiat_conversion.dart';
+import 'package:clovrlabs_wallet/bloc/async_action.dart';
+import 'package:clovrlabs_wallet/bloc/csv_exporter.dart';
+import 'package:clovrlabs_wallet/bloc/payment_options/payment_options_actions.dart';
+import 'package:clovrlabs_wallet/bloc/payment_options/payment_options_bloc.dart';
+import 'package:clovrlabs_wallet/bloc/pos_catalog/repository.dart';
+import 'package:clovrlabs_wallet/bloc/user_profile/clovr_user_model.dart';
+import 'package:clovrlabs_wallet/logger.dart';
+import 'package:clovrlabs_wallet/services/background_task.dart';
+import 'package:clovrlabs_wallet/services/breez_server/server.dart';
+import 'package:clovrlabs_wallet/services/breezlib/breez_bridge.dart';
+import 'package:clovrlabs_wallet/services/breezlib/data/rpc.pb.dart';
+import 'package:clovrlabs_wallet/services/currency_data.dart';
+import 'package:clovrlabs_wallet/services/currency_service.dart';
+import 'package:clovrlabs_wallet/services/device.dart';
+import 'package:clovrlabs_wallet/services/injector.dart';
+import 'package:clovrlabs_wallet/services/notifications.dart';
+import 'package:clovrlabs_wallet/utils/retry.dart';
 import 'package:collection/collection.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:fixnum/fixnum.dart';
@@ -123,7 +123,7 @@ class AccountBloc {
   Sink get optimizationWhitelistRequestSink =>
       _permissionsHandler.optimizationWhitelistRequestSink;
 
-  BreezUserModel _currentUser;
+  ClovrUserModel _currentUser;
   bool _startedLightning = false;
   bool _retryingLightningService = false;
   BreezServer _breezServer;
@@ -133,7 +133,7 @@ class AccountBloc {
   BackgroundTaskService _backgroundService;
   CurrencyService _currencyService;
   Completer _onBoardingCompleter = Completer();
-  Stream<BreezUserModel> userProfileStream;
+  Stream<ClovrUserModel> userProfileStream;
   Completer<bool> startDaemonCompleter = Completer<bool>();
   PaymentOptionsBloc _paymentOptionsBloc;
 
@@ -195,7 +195,7 @@ class AccountBloc {
       _device.eventStream
           .where((e) => e == NotificationType.RESUME)
           .listen((e) {
-        startDaemonCompleter.complete(true);
+         startDaemonCompleter.complete(true);
       });
     } else {
       startDaemonCompleter.complete(true);
@@ -218,11 +218,6 @@ class AccountBloc {
       _trackOnBoardingStatus();
       _listenEnableAccount();
     });
-  }
-
-  void setNodeUpgrading(bool upgrading) {
-    _accountController
-          .add(_accountController.value.copyWith(nodeUpgrading: upgrading));
   }
 
   Stream<List<PaymentInfo>> get pendingChannelsStream {
@@ -566,7 +561,7 @@ class AccountBloc {
     });
   }
 
-  _listenUserChanges(Stream<BreezUserModel> userProfileStream) {
+  _listenUserChanges(Stream<ClovrUserModel> userProfileStream) {
     userProfileStream.listen((user) async {
       if (user.token != null && user.token != _currentUser?.token) {
         log.info(
@@ -767,7 +762,8 @@ class AccountBloc {
   void _listenAccountChanges() {
     StreamSubscription<NotificationEvent> eventSubscription;
     eventSubscription = _breezLib.notificationStream.listen((event) async {
-      print('_breezLib.notificationStream received: ${event.type}.');
+      if(event.type != NotificationEvent_NotificationType.INFO)
+        print('_breezLib.notificationStream received: ${event.type}.');
       if (event.type ==
           NotificationEvent_NotificationType.LIGHTNING_SERVICE_DOWN) {
         _accountController

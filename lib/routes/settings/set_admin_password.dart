@@ -1,9 +1,9 @@
-import 'package:breez/bloc/blocs_provider.dart';
-import 'package:breez/bloc/user_profile/user_actions.dart';
-import 'package:breez/bloc/user_profile/user_profile_bloc.dart';
-import 'package:breez/theme_data.dart' as theme;
-import 'package:breez/widgets/back_button.dart' as backBtn;
-import 'package:breez/widgets/single_button_bottom_bar.dart';
+import 'package:clovrlabs_wallet/bloc/blocs_provider.dart';
+import 'package:clovrlabs_wallet/bloc/user_profile/user_actions.dart';
+import 'package:clovrlabs_wallet/bloc/user_profile/user_profile_bloc.dart';
+import 'package:clovrlabs_wallet/theme_data.dart' as theme;
+import 'package:clovrlabs_wallet/widgets/back_button.dart' as backBtn;
+import 'package:clovrlabs_wallet/widgets/single_button_bottom_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
@@ -52,7 +52,7 @@ class _SetAdminPasswordState extends State<SetAdminPasswordPage> {
         leading: backBtn.BackButton(),
         title: Text(
           texts.pos_password_admin_title,
-          style: themeData.appBarTheme.textTheme.headline6,
+          // style: themeData.appBarTheme.textTheme.headline6,
         ),
         elevation: 0.0,
       ),

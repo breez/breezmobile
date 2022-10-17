@@ -1,14 +1,13 @@
-import 'package:breez/bloc/lnurl/lnurl_actions.dart';
-import 'package:breez/bloc/lnurl/lnurl_bloc.dart';
-import 'package:breez/bloc/lnurl/lnurl_model.dart';
-import 'package:breez/routes/create_invoice/create_invoice_page.dart';
-import 'package:breez/routes/lnurl_fetch_invoice_page.dart';
-import 'package:breez/routes/podcast/theme.dart';
-import 'package:breez/routes/sync_progress_dialog.dart';
-import 'package:breez/utils/exceptions.dart';
-import 'package:breez/widgets/error_dialog.dart';
-import 'package:breez/widgets/loader.dart';
-import 'package:breez/widgets/route.dart';
+import 'package:clovrlabs_wallet/bloc/lnurl/lnurl_actions.dart';
+import 'package:clovrlabs_wallet/bloc/lnurl/lnurl_bloc.dart';
+import 'package:clovrlabs_wallet/bloc/lnurl/lnurl_model.dart';
+import 'package:clovrlabs_wallet/routes/create_invoice/create_invoice_page.dart';
+import 'package:clovrlabs_wallet/routes/lnurl_fetch_invoice_page.dart';
+import 'package:clovrlabs_wallet/routes/sync_progress_dialog.dart';
+import 'package:clovrlabs_wallet/utils/exceptions.dart';
+import 'package:clovrlabs_wallet/widgets/error_dialog.dart';
+import 'package:clovrlabs_wallet/widgets/loader.dart';
+import 'package:clovrlabs_wallet/widgets/route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
@@ -65,11 +64,10 @@ class LNURLHandler {
       });
 
       navigator.push(FadeInRoute(
-        builder: (_) => withBreezTheme(
-          context,
+        builder: (_) =>
           CreateInvoicePage(lnurlWithdraw: response),
         ),
-      ));
+      );
     } else if (response is AuthFetchResponse) {
       Navigator.popUntil(context, (route) {
         return route.settings.name == "/";
@@ -118,10 +116,10 @@ class LNURLHandler {
       });
 
       navigator.push(FadeInRoute(
-        builder: (_) => withBreezTheme(
-          context,
+        builder: (_) =>
+
           LNURLFetchInvoicePage(response),
-        ),
+
       ));
     } else {
       throw texts.handler_lnurl_login_error_unsupported;

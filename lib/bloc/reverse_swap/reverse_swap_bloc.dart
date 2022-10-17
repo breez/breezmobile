@@ -1,18 +1,18 @@
 import 'dart:async';
 
-import 'package:breez/bloc/account/account_model.dart';
-import 'package:breez/bloc/async_actions_handler.dart';
-import 'package:breez/bloc/payment_options/payment_options_actions.dart';
-import 'package:breez/bloc/payment_options/payment_options_bloc.dart';
-import 'package:breez/bloc/reverse_swap/reverse_swap_actions.dart';
-import 'package:breez/bloc/reverse_swap/reverse_swap_model.dart';
-import 'package:breez/bloc/user_profile/breez_user_model.dart';
-import 'package:breez/logger.dart';
-import 'package:breez/services/breezlib/breez_bridge.dart';
-import 'package:breez/services/breezlib/data/rpc.pb.dart';
-import 'package:breez/services/injector.dart';
-import 'package:breez/services/notifications.dart';
-import 'package:breez/utils/locale.dart';
+import 'package:clovrlabs_wallet/bloc/account/account_model.dart';
+import 'package:clovrlabs_wallet/bloc/async_actions_handler.dart';
+import 'package:clovrlabs_wallet/bloc/payment_options/payment_options_actions.dart';
+import 'package:clovrlabs_wallet/bloc/payment_options/payment_options_bloc.dart';
+import 'package:clovrlabs_wallet/bloc/reverse_swap/reverse_swap_actions.dart';
+import 'package:clovrlabs_wallet/bloc/reverse_swap/reverse_swap_model.dart';
+import 'package:clovrlabs_wallet/bloc/user_profile/clovr_user_model.dart';
+import 'package:clovrlabs_wallet/logger.dart';
+import 'package:clovrlabs_wallet/services/breezlib/breez_bridge.dart';
+import 'package:clovrlabs_wallet/services/breezlib/data/rpc.pb.dart';
+import 'package:clovrlabs_wallet/services/injector.dart';
+import 'package:clovrlabs_wallet/services/notifications.dart';
+import 'package:clovrlabs_wallet/utils/locale.dart';
 import 'package:fixnum/fixnum.dart';
 import 'package:rxdart/rxdart.dart';
 
@@ -29,9 +29,9 @@ class ReverseSwapBloc with AsyncActionsHandler {
   Stream<void> get broadcastTxStream => _broadcastTxStreamController.stream;
 
   final Stream<PaymentsModel> _paymentsStream;
-  final Stream<BreezUserModel> _userStream;
+  final Stream<ClovrUserModel> _userStream;
   BreezBridge _breezLib;
-  BreezUserModel _currentUser;
+  ClovrUserModel _currentUser;
   int refreshInProgressIndex = 0;
   Notifications _notificationsService;
   PaymentOptionsBloc _paymentOptionsBloc;

@@ -1,11 +1,11 @@
 import 'dart:convert' as JSON;
 
-import 'package:breez/bloc/account/add_funds_bloc.dart';
-import 'package:breez/bloc/account/add_funds_model.dart';
-import 'package:breez/bloc/account/moonpay_order.dart';
-import 'package:breez/bloc/blocs_provider.dart';
-import 'package:breez/theme_data.dart' as theme;
-import 'package:breez/widgets/loader.dart';
+import 'package:clovrlabs_wallet/bloc/account/add_funds_bloc.dart';
+import 'package:clovrlabs_wallet/bloc/account/add_funds_model.dart';
+import 'package:clovrlabs_wallet/bloc/account/moonpay_order.dart';
+import 'package:clovrlabs_wallet/bloc/blocs_provider.dart';
+import 'package:clovrlabs_wallet/theme_data.dart' as theme;
+import 'package:clovrlabs_wallet/widgets/loader.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart' show SystemChannels, rootBundle;
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -77,7 +77,7 @@ class MoonpayWebViewState extends State<MoonpayWebView> {
           backgroundColor: themeData.canvasColor,
           title: Text(
             texts.add_funds_moonpay_title,
-            style: themeData.appBarTheme.textTheme.headline6,
+            // style: themeData.appBarTheme.textTheme.headline6,
           ),
           elevation: 0.0,
         ),
@@ -158,7 +158,7 @@ class MoonpayWebViewState extends State<MoonpayWebView> {
           )
         : Center(
             child: Loader(
-              color: theme.BreezColors.white[400],
+              color: theme.ElenPayWalletColors.white[400],
             ),
           );
   }

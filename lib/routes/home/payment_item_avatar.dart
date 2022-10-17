@@ -1,7 +1,7 @@
-import 'package:breez/bloc/account/account_model.dart';
-import 'package:breez/theme_data.dart' as theme;
-import 'package:breez/utils/lnurl_metadata_extension.dart';
-import 'package:breez/widgets/breez_avatar.dart';
+import 'package:clovrlabs_wallet/bloc/account/account_model.dart';
+import 'package:clovrlabs_wallet/theme_data.dart' as theme;
+import 'package:clovrlabs_wallet/utils/lnurl_metadata_extension.dart';
+import 'package:clovrlabs_wallet/widgets/wallet_avatar.dart';
 import 'package:flutter/material.dart';
 
 class PaymentItemAvatar extends StatelessWidget {
@@ -22,7 +22,7 @@ class PaymentItemAvatar extends StatelessWidget {
           backgroundColor: Colors.white,
           child: ImageIcon(
             AssetImage("src/icon/podcast.png"),
-            color: theme.BreezColors.blue[500],
+            color: theme.ElenPayWalletColors.dark_grey[500],
             size: 0.6 * radius * 2,
           ),
         );
@@ -44,7 +44,7 @@ class PaymentItemAvatar extends StatelessWidget {
       final metadataImage = _metadataImage();
       if (metadataImage != null) return metadataImage;
 
-      return BreezAvatar(paymentItem.imageURL, radius: radius);
+      return ElenPayAvatar(paymentItem.imageURL, radius: radius);
     }
   }
 

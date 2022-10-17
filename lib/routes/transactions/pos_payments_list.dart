@@ -1,5 +1,5 @@
-import 'package:breez/bloc/account/account_model.dart';
-import 'package:breez/routes/transactions/pos_payment_item.dart';
+import 'package:clovrlabs_wallet/bloc/account/account_model.dart';
+import 'package:clovrlabs_wallet/routes/transactions/pos_payment_item.dart';
 import 'package:flutter/material.dart';
 
 class PosPaymentsList extends StatelessWidget {

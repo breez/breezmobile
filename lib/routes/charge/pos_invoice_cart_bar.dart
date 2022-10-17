@@ -1,10 +1,10 @@
 import 'package:badges/badges.dart';
-import 'package:breez/bloc/account/account_model.dart';
-import 'package:breez/bloc/user_profile/currency.dart';
-import 'package:breez/routes/charge/currency_wrapper.dart';
-import 'package:breez/routes/charge/sale_view.dart';
-import 'package:breez/theme_data.dart' as theme;
-import 'package:breez/widgets/breez_dropdown.dart';
+import 'package:clovrlabs_wallet/bloc/account/account_model.dart';
+import 'package:clovrlabs_wallet/bloc/user_profile/currency.dart';
+import 'package:clovrlabs_wallet/routes/charge/currency_wrapper.dart';
+import 'package:clovrlabs_wallet/routes/charge/sale_view.dart';
+import 'package:clovrlabs_wallet/theme_data.dart' as theme;
+import 'package:clovrlabs_wallet/widgets/breez_dropdown.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 

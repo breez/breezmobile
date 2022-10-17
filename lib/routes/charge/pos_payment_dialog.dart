@@ -1,28 +1,23 @@
 import 'dart:async';
-import 'dart:io';
 
-import 'package:breez/bloc/account/account_bloc.dart';
-import 'package:breez/bloc/account/account_model.dart';
-import 'package:breez/bloc/blocs_provider.dart';
-import 'package:breez/bloc/invoice/invoice_bloc.dart';
-import 'package:breez/bloc/invoice/invoice_model.dart';
-import 'package:breez/bloc/lnurl/lnurl_actions.dart';
-import 'package:breez/bloc/lnurl/lnurl_bloc.dart';
-import 'package:breez/bloc/lnurl/nfc_withdraw_invoice_status.dart';
-import 'package:breez/bloc/user_profile/breez_user_model.dart';
-import 'package:breez/bloc/user_profile/currency.dart';
-import 'package:breez/routes/charge/currency_wrapper.dart';
-import 'package:breez/routes/charge/pos_sale_nfc_error.dart';
-import 'package:breez/services/countdown.dart';
-import 'package:breez/services/injector.dart';
-import 'package:breez/widgets/compact_qr_image.dart';
-import 'package:breez/widgets/flushbar.dart';
-import 'package:breez/widgets/loader.dart';
+import 'package:clovrlabs_wallet/bloc/account/account_bloc.dart';
+import 'package:clovrlabs_wallet/bloc/account/account_model.dart';
+import 'package:clovrlabs_wallet/bloc/blocs_provider.dart';
+import 'package:clovrlabs_wallet/bloc/invoice/invoice_bloc.dart';
+import 'package:clovrlabs_wallet/bloc/invoice/invoice_model.dart';
+import 'package:clovrlabs_wallet/bloc/lnurl/lnurl_actions.dart';
+import 'package:clovrlabs_wallet/bloc/lnurl/lnurl_bloc.dart';
+import 'package:clovrlabs_wallet/bloc/user_profile/clovr_user_model.dart';
+import 'package:clovrlabs_wallet/bloc/user_profile/currency.dart';
+import 'package:clovrlabs_wallet/routes/charge/currency_wrapper.dart';
+import 'package:clovrlabs_wallet/services/countdown.dart';
+import 'package:clovrlabs_wallet/services/injector.dart';
+import 'package:clovrlabs_wallet/widgets/compact_qr_image.dart';
+import 'package:clovrlabs_wallet/widgets/flushbar.dart';
+import 'package:clovrlabs_wallet/widgets/loader.dart';
 import 'package:fixnum/fixnum.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:flutter_svg/flutter_svg.dart';
-import 'package:share_extend/share_extend.dart';
 
 class PosPaymentResult {
   final bool paid;
@@ -37,7 +32,7 @@ class PosPaymentResult {
 class PosPaymentDialog extends StatefulWidget {
   final InvoiceBloc _invoiceBloc;
   final LNUrlBloc _lnUrlBloc;
-  final BreezUserModel _user;
+  final ClovrUserModel _user;
   final PaymentRequestModel paymentRequest;
   final double satAmount;
   final String _note;
@@ -61,9 +56,7 @@ class _PosPaymentDialogState extends State<PosPaymentDialog> {
   CountDown _paymentTimer;
   StreamSubscription<Duration> _timerSubscription;
   StreamSubscription<PaymentRequestModel> _paidInvoiceSubscription;
-  StreamSubscription<NfcWithdrawInvoiceStatus> _nfcInvoiceSubscription;
   String _countdownString = "3:00";
-  var _loadingNfc = false;
   Duration _expiration;
 
   @override
@@ -97,22 +90,12 @@ class _PosPaymentDialogState extends State<PosPaymentDialog> {
         }
       });
     });
-
-    _nfcInvoiceSubscription =
-        widget._lnUrlBloc.nfcWithdrawStream.listen(_listenNfcWithdraw);
-
-    widget._lnUrlBloc.actionsSink.add(RegisterNfcSaleRequest(
-      Int64(widget.satAmount.toInt()),
-      widget.paymentRequest,
-    ));
   }
 
   @override
   void dispose() {
     _timerSubscription?.cancel();
     _paidInvoiceSubscription?.cancel();
-    _nfcInvoiceSubscription?.cancel();
-    widget._lnUrlBloc.actionsSink.add(ClearNfcSaleRequest());
     super.dispose();
   }
 
@@ -155,33 +138,24 @@ class _PosPaymentDialogState extends State<PosPaymentDialog> {
         ),
         Row(
           children: <Widget>[
-            IconButton(              
-              padding: EdgeInsets.zero,
-              icon: SvgPicture.asset(                  
-                  "src/icon/nfc.svg",                  
-                  color: Platform.isAndroid ? themeData.dialogTheme.titleTextStyle.color : themeData.primaryTextTheme.button.color,                  
-                ),
-              onPressed: Platform.isAndroid ?  null : () {
-                ServiceInjector().nfc.starSession(autoClose: true);
-              },
-            ),
-            IconButton(
-              splashColor: Colors.transparent,
-              highlightColor: Colors.transparent,
-              padding: const EdgeInsets.fromLTRB(0.0, 8.0, 2.0, 8.0),
-              icon: Icon(IconData(0xe917, fontFamily: 'icomoon')),
-              color: themeData.primaryTextTheme.button.color,
-              tooltip: texts.pos_dialog_share,
-              onPressed: () => ShareExtend.share(
-                "lightning:" + widget.paymentRequest.rawPayReq,
-                "text",
-              ),
-            ),
+            // IconButton(
+            //   splashColor: Colors.transparent,
+            //   highlightColor: Colors.transparent,
+            //   padding: const EdgeInsets.fromLTRB(0.0, 8.0, 2.0, 8.0),
+            //   icon: Icon(IconData(
+            //     0xe917,
+            //   )),
+            //   color: themeData.primaryTextTheme.button.color,
+            //   tooltip: texts.pos_dialog_share,
+            //   onPressed: () => ShareExtend.share(
+            //     "lightning:" + widget.paymentRequest.rawPayReq,
+            //     "text",
+            //   ),
+            // ),
             IconButton(
               splashColor: Colors.transparent,
               highlightColor: Colors.transparent,
               padding: const EdgeInsets.fromLTRB(2.0, 8.0, 14.0, 8.0),
-              icon: Icon(IconData(0xe90b, fontFamily: 'icomoon')),
               color: themeData.primaryTextTheme.button.color,
               tooltip: texts.pos_dialog_invoice_copy,
               onPressed: () {
@@ -244,9 +218,7 @@ class _PosPaymentDialogState extends State<PosPaymentDialog> {
               child: Container(
                 height: 230.0,
                 width: 230.0,
-                child: _loadingNfc
-                    ? Loader()
-                    : CompactQRImage(
+                child: CompactQRImage(
                         data: widget.paymentRequest.rawPayReq,
                       ),
               ),
@@ -327,50 +299,5 @@ class _PosPaymentDialogState extends State<PosPaymentDialog> {
         Navigator.of(context).pop(PosPaymentResult());
       },
     );
-  }
-
-  void _nfcWithdrawStarted() {
-    if (mounted) {
-      setState(() {
-        _loadingNfc = true;
-      });
-    }
-  }
-
-  void _nfcWithdrawFinished() {
-    if (mounted) {
-      setState(() {
-        _loadingNfc = false;
-      });
-    }
-  }
-
-  void _listenNfcWithdraw(NfcWithdrawInvoiceStatus status) {
-    final texts = AppLocalizations.of(context);
-    if (status is NfcWithdrawInvoiceStatusStarted) {
-      _nfcWithdrawStarted();
-      return;
-    }
-
-    if (status is NfcWithdrawInvoiceStatusRangeError) {
-      showDialog(
-        context: context,
-        builder: (_) => PosSaleNfcError(
-          texts.pos_payment_nfc_range_error(
-            Currency.SAT.format(status.minAmount, includeDisplayName: false),
-            Currency.SAT.format(status.maxAmount),
-          ),
-        ),
-      );
-    } else if (status is NfcWithdrawInvoiceStatusTimeoutError) {
-      showFlushbar(
-        context,
-        message: texts.payment_error_payment_timeout_exceeded,
-      );
-    } else if (status is NfcWithdrawInvoiceStatusError) {
-      showFlushbar(context, message: status.message);
-    }
-
-    _nfcWithdrawFinished();
   }
 }

@@ -1,4 +1,4 @@
-import 'package:breez/bloc/account/fiat_conversion.dart';
+import 'package:clovrlabs_wallet/bloc/account/fiat_conversion.dart';
 import 'package:flutter/services.dart';
 
 class CurrencyAmountFieldFormatter extends TextInputFormatter {

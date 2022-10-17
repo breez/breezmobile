@@ -1,10 +1,10 @@
 import 'dart:io';
 
-import 'package:breez/bloc/account/account_model.dart';
-import 'package:breez/bloc/pos_catalog/model.dart';
-import 'package:breez/logger.dart';
-import 'package:breez/utils/date.dart';
-import 'package:breez/utils/locale.dart';
+import 'package:clovrlabs_wallet/bloc/account/account_model.dart';
+import 'package:clovrlabs_wallet/bloc/pos_catalog/model.dart';
+import 'package:clovrlabs_wallet/logger.dart';
+import 'package:clovrlabs_wallet/utils/date.dart';
+import 'package:clovrlabs_wallet/utils/locale.dart';
 import 'package:csv/csv.dart';
 import 'package:flutter/foundation.dart';
 import 'package:intl/intl.dart';
@@ -78,21 +78,21 @@ class CsvExporter {
   }
 
   Future<String> _saveCsvFile(String csv) async {
-    log.info("save breez payments to csv started");
+    log.info("save ClovrLabs Wallet payments to csv started");
     String filePath = await _createCsvFilePath();
     final file = File(filePath);
     await file.writeAsString(csv);
-    log.info("save breez payments to csv finished");
+    log.info("save ClovrLabs Wallet payments to csv finished");
     return file.path;
   }
 
   Future<String> _createCsvFilePath() async {
-    log.info("create breez payments path started");
+    log.info("create ClovrLabs Wallet payments path started");
     final directory = await getTemporaryDirectory();
     String filePath = '${directory.path}/BreezPayments';
     filePath = _appendFilterInformation(filePath);
     filePath += ".csv";
-    log.info("create breez payments path finished");
+    log.info("create ClovrLabs Wallet payments path finished");
     return filePath;
   }
 

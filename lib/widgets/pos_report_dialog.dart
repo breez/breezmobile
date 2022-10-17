@@ -1,15 +1,15 @@
-import 'package:breez/bloc/account/account_bloc.dart';
-import 'package:breez/bloc/account/account_model.dart';
-import 'package:breez/bloc/blocs_provider.dart';
-import 'package:breez/bloc/pos_catalog/actions.dart';
-import 'package:breez/bloc/pos_catalog/bloc.dart';
-import 'package:breez/bloc/pos_catalog/model.dart';
-import 'package:breez/bloc/user_profile/currency.dart';
-import 'package:breez/routes/charge/currency_wrapper.dart';
-import 'package:breez/theme_data.dart' as theme;
-import 'package:breez/utils/date.dart';
-import 'package:breez/widgets/calendar_dialog.dart';
-import 'package:breez/widgets/loader.dart';
+import 'package:clovrlabs_wallet/bloc/account/account_bloc.dart';
+import 'package:clovrlabs_wallet/bloc/account/account_model.dart';
+import 'package:clovrlabs_wallet/bloc/blocs_provider.dart';
+import 'package:clovrlabs_wallet/bloc/pos_catalog/actions.dart';
+import 'package:clovrlabs_wallet/bloc/pos_catalog/bloc.dart';
+import 'package:clovrlabs_wallet/bloc/pos_catalog/model.dart';
+import 'package:clovrlabs_wallet/bloc/user_profile/currency.dart';
+import 'package:clovrlabs_wallet/routes/charge/currency_wrapper.dart';
+import 'package:clovrlabs_wallet/theme_data.dart' as theme;
+import 'package:clovrlabs_wallet/utils/date.dart';
+import 'package:clovrlabs_wallet/widgets/calendar_dialog.dart';
+import 'package:clovrlabs_wallet/widgets/loader.dart';
 import 'package:fixnum/fixnum.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -394,7 +394,7 @@ class PosReportDialog extends StatelessWidget {
   }
 
   Color _highlight(ThemeData themeData) {
-    return theme.themeId == "BLUE" ? themeData.canvasColor : Colors.white;
+    return theme.themeId == "WHITE" ? themeData.canvasColor : Colors.white;
   }
 
   String _contentAmount(

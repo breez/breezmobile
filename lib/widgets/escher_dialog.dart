@@ -1,8 +1,8 @@
-import 'package:breez/bloc/account/account_bloc.dart';
-import 'package:breez/bloc/account/account_model.dart';
-import 'package:breez/bloc/user_profile/currency.dart';
-import 'package:breez/theme_data.dart' as theme;
-import 'package:breez/widgets/amount_form_field.dart';
+import 'package:clovrlabs_wallet/bloc/account/account_bloc.dart';
+import 'package:clovrlabs_wallet/bloc/account/account_model.dart';
+import 'package:clovrlabs_wallet/bloc/user_profile/currency.dart';
+import 'package:clovrlabs_wallet/theme_data.dart' as theme;
+import 'package:clovrlabs_wallet/widgets/amount_form_field.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:url_launcher/url_launcher_string.dart';
@@ -130,7 +130,7 @@ class EscherDialogState extends State<EscherDialog> {
           primary: themeData.textTheme.button.color,
         ),
         primaryColor: themeData.textTheme.button.color,
-        errorColor: theme.themeId == "BLUE" ? Colors.red : themeData.errorColor,
+        errorColor: theme.themeId == "WHITE" ? Colors.red : themeData.errorColor,
       ),
       child: Form(
         autovalidateMode: AutovalidateMode.always,

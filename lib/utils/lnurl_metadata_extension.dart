@@ -1,6 +1,6 @@
 import 'dart:typed_data';
 
-import 'package:breez/services/breezlib/data/rpc.pb.dart';
+import 'package:clovrlabs_wallet/services/breezlib/data/rpc.pb.dart';
 import 'package:flutter/cupertino.dart';
 
 Map<List<LNUrlPayMetadata>, Image> _imageCache = {};
@@ -30,13 +30,7 @@ extension LnurlMetadata on List<LNUrlPayMetadata> {
       return null;
     }
 
-    final bytes = imageSource.image.bytes;
-    if (bytes == null || bytes.isEmpty) {
-      _imageCache[this] = null;
-      return null;
-    }
-
-    final image = Image.memory(Uint8List.fromList(bytes));
+    final image = Image.memory(Uint8List.fromList(imageSource.image.bytes));
     _imageCache[this] = image;
     return image;
   }

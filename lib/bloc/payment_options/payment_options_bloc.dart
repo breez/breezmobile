@@ -1,8 +1,8 @@
 import 'dart:async';
 
-import 'package:breez/bloc/async_actions_handler.dart';
-import 'package:breez/bloc/payment_options/payment_options_actions.dart';
-import 'package:breez/services/injector.dart';
+import 'package:clovrlabs_wallet/bloc/async_actions_handler.dart';
+import 'package:clovrlabs_wallet/bloc/payment_options/payment_options_actions.dart';
+import 'package:clovrlabs_wallet/services/injector.dart';
 import 'package:rxdart/rxdart.dart';
 
 const _kDefaultOverrideFee = false;

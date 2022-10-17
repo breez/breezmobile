@@ -1,10 +1,10 @@
 import 'dart:io';
 
-import 'package:breez/bloc/account/account_model.dart';
-import 'package:breez/bloc/csv_exporter.dart';
-import 'package:breez/bloc/pos_catalog/model.dart';
-import 'package:breez/bloc/user_profile/currency.dart';
-import 'package:breez/services/breezlib/data/rpc.pb.dart';
+import 'package:clovrlabs_wallet/bloc/account/account_model.dart';
+import 'package:clovrlabs_wallet/bloc/csv_exporter.dart';
+import 'package:clovrlabs_wallet/bloc/pos_catalog/model.dart';
+import 'package:clovrlabs_wallet/bloc/user_profile/currency.dart';
+import 'package:clovrlabs_wallet/services/breezlib/data/rpc.pb.dart';
 import 'package:fixnum/fixnum.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:path_provider_platform_interface/path_provider_platform_interface.dart';

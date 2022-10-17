@@ -1,5 +1,5 @@
-import 'package:breez/theme_data.dart' as theme;
-import 'package:breez/widgets/transparent_page_route.dart';
+import 'package:clovrlabs_wallet/theme_data.dart' as theme;
+import 'package:clovrlabs_wallet/widgets/transparent_page_route.dart';
 import 'package:flutter/material.dart';
 
 class Loader extends StatelessWidget {

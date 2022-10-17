@@ -1,7 +1,7 @@
 import 'dart:typed_data';
 
-import 'package:breez/bloc/pos_catalog/model.dart';
-import 'package:breez/bloc/pos_catalog/sqlite/repository.dart';
+import 'package:clovrlabs_wallet/bloc/pos_catalog/model.dart';
+import 'package:clovrlabs_wallet/bloc/pos_catalog/sqlite/repository.dart';
 import 'package:test/test.dart';
 
 import 'mocks.dart';

@@ -1,6 +1,6 @@
 import 'dart:async';
 
-import 'package:breez/logger.dart';
+import 'package:clovrlabs_wallet/logger.dart';
 import 'package:firebase_dynamic_links/firebase_dynamic_links.dart';
 import 'package:rxdart/rxdart.dart';
 

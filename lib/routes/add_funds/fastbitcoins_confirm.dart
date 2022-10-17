@@ -1,5 +1,5 @@
-import 'package:breez/bloc/fastbitcoins/fastbitcoins_model.dart';
-import 'package:breez/bloc/user_profile/breez_user_model.dart';
+import 'package:clovrlabs_wallet/bloc/fastbitcoins/fastbitcoins_model.dart';
+import 'package:clovrlabs_wallet/bloc/user_profile/clovr_user_model.dart';
 import 'package:fixnum/fixnum.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -7,7 +7,7 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 class FastBitcoinsConfirmWidget extends StatelessWidget {
   final ValidateRequestModel request;
   final ValidateResponseModel response;
-  final BreezUserModel user;
+  final ClovrUserModel user;
 
   const FastBitcoinsConfirmWidget({
     Key key,

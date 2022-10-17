@@ -1,6 +1,6 @@
 import 'dart:convert';
 
-import 'package:breez/utils/locale.dart';
+import 'package:clovrlabs_wallet/utils/locale.dart';
 
 abstract class DBItem {
   Map<String, dynamic> toMap();

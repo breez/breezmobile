@@ -1,7 +1,7 @@
 import 'dart:async';
 import 'dart:io';
 
-import 'package:breez/logger.dart';
+import 'package:clovrlabs_wallet/logger.dart';
 import 'package:flutter_downloader/flutter_downloader.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -18,29 +18,25 @@ class GraphDownloader {
     DownloadTaskStatus.undefined
   ];
   bool handlingFile = false;
-  Completer<File> _downloadCompleter;  
+  Completer<File> _downloadCompleter;
 
   GraphDownloader(this.downloadManager, this.preferences);
 
-  Future init() async {    
+  Future init() async {
     downloadManager.downloadProgress.listen((event) async {
-      log.info("GraphDownloader event: ${event.id}");
-      log.info("GraphDownloader event: ${event.status}");
-      log.info("GraphDownloader event: ${event.percentage}");      
       var tasks = await downloadManager.loadTasks();
       var downloadURL = (await preferences).getString("graph_url");
       var currentTask = tasks.firstWhere(
           (t) => t.url == downloadURL && t.taskId == event.id,
-          orElse: () => null);                  
+          orElse: () => null);
       if (currentTask != null &&
           finalTaskStatuses.contains(currentTask.status)) {
-        log.info("GraphDownloader task status = ${currentTask.status}");
         await _onTaskFinished(currentTask);
       }
-    });    
-  }  
+    });
+  }
 
-  Future _onTaskFinished(DownloadTask currentTask) async {    
+  Future _onTaskFinished(DownloadTask currentTask) async {
     if (_downloadCompleter != null) {
       if (currentTask.status == DownloadTaskStatus.complete) {
         _downloadCompleter.complete(File(currentTask.savedDir +
@@ -52,7 +48,7 @@ class GraphDownloader {
     }
   }
 
-  Future<File> downloadGraph(String downloadURL) async {   
+  Future<File> downloadGraph(String downloadURL) async {
     if (_downloadCompleter == null) {
       _downloadCompleter = Completer<File>();
     }
@@ -83,7 +79,7 @@ class GraphDownloader {
 
         if (tasks[i].status == DownloadTaskStatus.running) {
           log.info(
-              "Already has graph download task running, not starting another one");          
+              "Already has graph download task running, not starting another one");
           return _downloadCompleter.future;
         }
       }
@@ -94,7 +90,8 @@ class GraphDownloader {
     var downloadDirPath = appDir.path + Platform.pathSeparator + 'Download';
     var downloadDir = Directory(downloadDirPath);
     downloadDir.createSync(recursive: true);
-    await downloadManager.enqueTask(downloadURL, downloadDir.path, "channel.db");    
+    downloadManager.enqueTask(downloadURL, downloadDir.path, "channel.db");
+
     return _downloadCompleter.future;
   }
 

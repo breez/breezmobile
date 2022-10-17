@@ -1,10 +1,10 @@
-import 'package:breez/bloc/invoice/invoice_bloc.dart';
-import 'package:breez/bloc/lnurl/lnurl_bloc.dart';
-import 'package:breez/routes/spontaneous_payment/spontaneous_payment_page.dart';
-import 'package:breez/theme_data.dart' as theme;
-import 'package:breez/utils/lnurl.dart';
-import 'package:breez/utils/node_id.dart';
-import 'package:breez/widgets/route.dart';
+import 'package:clovrlabs_wallet/bloc/invoice/invoice_bloc.dart';
+import 'package:clovrlabs_wallet/bloc/lnurl/lnurl_bloc.dart';
+import 'package:clovrlabs_wallet/routes/spontaneous_payment/spontaneous_payment_page.dart';
+import 'package:clovrlabs_wallet/theme_data.dart' as theme;
+import 'package:clovrlabs_wallet/utils/lnurl.dart';
+import 'package:clovrlabs_wallet/utils/node_id.dart';
+import 'package:clovrlabs_wallet/widgets/route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
@@ -77,7 +77,7 @@ class EnterPaymentInfoDialogState extends State<EnterPaymentInfoDialog> {
           primary: themeData.textTheme.button.color,
         ),
         primaryColor: themeData.textTheme.button.color,
-        errorColor: theme.themeId == "BLUE" ? Colors.red : themeData.errorColor,
+        errorColor: theme.themeId == "WHITE" ? Colors.red : themeData.errorColor,
       ),
       child: Container(
         width: MediaQuery.of(context).size.width,
@@ -133,9 +133,9 @@ class EnterPaymentInfoDialogState extends State<EnterPaymentInfoDialog> {
                   texts.payment_info_dialog_hint_expanded,
                   style: theme.FieldTextStyle.labelStyle.copyWith(
                     fontSize: 13.0,
-                    color: theme.themeId == "BLUE"
-                        ? theme.BreezColors.grey[500]
-                        : theme.BreezColors.white[200],
+                    color: theme.themeId == "WHITE"
+                        ? theme.ElenPayWalletColors.grey[500]
+                        : theme.ElenPayWalletColors.white[200],
                   ),
                 ),
               ),
@@ -186,7 +186,7 @@ class EnterPaymentInfoDialogState extends State<EnterPaymentInfoDialog> {
 
             if (_decodeInvoice(_paymentInfoController.text) != null) {
               widget.invoiceBloc.decodeInvoiceSink
-                  .add(_paymentInfoController.text);
+                  .add('LNBCRT1P34TNQ3PP5P3V6QM2QPNM466429H7Q4CRUZHWGH8H9PLQXVCH96W4Q07DU9KSSDQQCQZPGXQRRSSSP5PFMZJZRDDTJ9ULCTF76RRDNPFUX8R90JGMJX09VXU56EK4UGZ0US9QYYSSQ3QKCWJW6WQUJ2AGHLYSMLLRWEMQZMX8ZNLCNQ7LG9ASC0DRQFNYS9RZH62ZV2TXVZKMF7K65Z28SCN50KV4AJNVXRUX8E5V30TFE8GCPDMUPKP');
             }
           }
         }),

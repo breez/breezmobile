@@ -1,4 +1,4 @@
-import 'package:breez/bloc/account/account_model.dart';
+import 'package:clovrlabs_wallet/bloc/account/account_model.dart';
 import 'package:flutter/material.dart';
 
 class StatusIndicator extends StatelessWidget {

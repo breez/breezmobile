@@ -1,4 +1,4 @@
-import 'package:breez/utils/date.dart';
+import 'package:clovrlabs_wallet/utils/date.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 DateTime firstDay() => DateTime(2021, 1, 1, 0, 0, 0);

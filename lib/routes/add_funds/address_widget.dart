@@ -1,7 +1,7 @@
-import 'package:breez/services/injector.dart';
-import 'package:breez/theme_data.dart' as theme;
-import 'package:breez/widgets/compact_qr_image.dart';
-import 'package:breez/widgets/flushbar.dart';
+import 'package:clovrlabs_wallet/services/injector.dart';
+import 'package:clovrlabs_wallet/theme_data.dart' as theme;
+import 'package:clovrlabs_wallet/widgets/compact_qr_image.dart';
+import 'package:clovrlabs_wallet/widgets/flushbar.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -104,7 +104,6 @@ class AddressWidget extends StatelessWidget {
       return _icons;
     }
     Widget _shareIcon = IconButton(
-      icon: Icon(IconData(0xe917, fontFamily: 'icomoon')),
       color: themeData.buttonColor,
       onPressed: () {
         final RenderBox box = context.findRenderObject();
@@ -114,9 +113,10 @@ class AddressWidget extends StatelessWidget {
           sharePositionOrigin: box.localToGlobal(Offset.zero) & box.size,
         );
       },
+      icon: Icon(Icons.share),
     );
     Widget _copyIcon = IconButton(
-      icon: Icon(IconData(0xe90b, fontFamily: 'icomoon')),
+      icon: Icon(Icons.copy),
       color: themeData.buttonColor,
       onPressed: () {
         ServiceInjector().device.setClipboardText(address);
@@ -126,8 +126,8 @@ class AddressWidget extends StatelessWidget {
         );
       },
     );
-    _icons.add(_shareIcon);
     _icons.add(_copyIcon);
+    _icons.add(_shareIcon);
     return _icons;
   }
 

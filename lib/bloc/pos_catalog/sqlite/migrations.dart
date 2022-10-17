@@ -1,4 +1,4 @@
-import 'package:breez/services/injector.dart';
+import 'package:clovrlabs_wallet/services/injector.dart';
 import 'package:sqflite/sqflite.dart';
 
 Future<void> fromVersion1ToVersion2(Database db) async {
@@ -8,8 +8,8 @@ Future<void> fromVersion1ToVersion2(Database db) async {
     """,
   );
 
-  final breez = ServiceInjector().breezBridge;
-  final payments = await breez.getPayments();
+  final ElenPayWallet= ServiceInjector().breezBridge;
+  final payments = await ElenPayWallet.getPayments();
 
   for (final payment in payments.paymentsList) {
     final date = payment.creationTimestamp.toInt() * 1000;

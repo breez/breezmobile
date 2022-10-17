@@ -1,24 +1,23 @@
 import 'dart:async';
 
 import 'package:auto_size_text/auto_size_text.dart';
-import 'package:breez/bloc/account/account_bloc.dart';
-import 'package:breez/bloc/account/account_model.dart';
-import 'package:breez/bloc/account/add_fund_vendor_model.dart';
-import 'package:breez/bloc/account/add_funds_bloc.dart';
-import 'package:breez/bloc/blocs_provider.dart';
-import 'package:breez/bloc/invoice/invoice_bloc.dart';
-import 'package:breez/bloc/invoice/invoice_model.dart';
-import 'package:breez/bloc/lnurl/lnurl_bloc.dart';
-import 'package:breez/bloc/lsp/lsp_bloc.dart';
-import 'package:breez/bloc/lsp/lsp_model.dart';
-import 'package:breez/routes/podcast/theme.dart';
-import 'package:breez/routes/spontaneous_payment/spontaneous_payment_page.dart';
-import 'package:breez/theme_data.dart' as theme;
-import 'package:breez/widgets/enter_payment_info_dialog.dart';
-import 'package:breez/widgets/escher_dialog.dart';
-import 'package:breez/widgets/lsp_fee.dart';
-import 'package:breez/widgets/route.dart';
-import 'package:breez/widgets/warning_box.dart';
+import 'package:clovrlabs_wallet/bloc/account/account_bloc.dart';
+import 'package:clovrlabs_wallet/bloc/account/account_model.dart';
+import 'package:clovrlabs_wallet/bloc/account/add_fund_vendor_model.dart';
+import 'package:clovrlabs_wallet/bloc/account/add_funds_bloc.dart';
+import 'package:clovrlabs_wallet/bloc/blocs_provider.dart';
+import 'package:clovrlabs_wallet/bloc/invoice/invoice_bloc.dart';
+import 'package:clovrlabs_wallet/bloc/invoice/invoice_model.dart';
+import 'package:clovrlabs_wallet/bloc/lnurl/lnurl_bloc.dart';
+import 'package:clovrlabs_wallet/bloc/lsp/lsp_bloc.dart';
+import 'package:clovrlabs_wallet/bloc/lsp/lsp_model.dart';
+import 'package:clovrlabs_wallet/routes/spontaneous_payment/spontaneous_payment_page.dart';
+import 'package:clovrlabs_wallet/theme_data.dart' as theme;
+import 'package:clovrlabs_wallet/widgets/enter_payment_info_dialog.dart';
+import 'package:clovrlabs_wallet/widgets/escher_dialog.dart';
+import 'package:clovrlabs_wallet/widgets/lsp_fee.dart';
+import 'package:clovrlabs_wallet/widgets/route.dart';
+import 'package:clovrlabs_wallet/widgets/warning_box.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
@@ -36,7 +35,8 @@ class BottomActionsBar extends StatelessWidget {
     return BottomAppBar(
       child: Container(
         height: 60,
-        color: Theme.of(context).bottomAppBarColor,
+        color: theme
+            .customData[theme.themeId].buttonAppBar,
         child: Row(
           mainAxisSize: MainAxisSize.max,
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -114,24 +114,24 @@ class BottomActionsBar extends StatelessWidget {
                         }
                       },
                     ),
-                    Divider(
-                      height: 0.0,
-                      color: Colors.white.withOpacity(0.2),
-                      indent: 72.0,
-                    ),
-                    ListTile(
-                        enabled: account.connected,
-                        leading: _ActionImage(
-                            iconAssetPath: "src/icon/connect_to_pay.png",
-                            enabled: account.connected),
-                        title: Text(
-                          texts.bottom_action_bar_connect_to_pay,
-                          style: theme.bottomSheetTextStyle,
-                        ),
-                        onTap: () {
-                          Navigator.of(context).pop();
-                          Navigator.of(context).pushNamed("/connect_to_pay");
-                        }),
+                    // Divider(
+                    //   height: 0.0,
+                    //   color: Colors.white.withOpacity(0.2),
+                    //   indent: 72.0,
+                    // ),
+                    // ListTile(
+                    //     enabled: account.connected,
+                    //     leading: _ActionImage(
+                    //         iconAssetPath: "src/icon/connect_to_pay.png",
+                    //         enabled: account.connected),
+                    //     title: Text(
+                    //       texts.bottom_action_bar_connect_to_pay,
+                    //       style: theme.bottomSheetTextStyle,
+                    //     ),
+                    //     onTap: () {
+                    //       Navigator.of(context).pop();
+                    //       Navigator.of(context).pushNamed("/connect_to_pay");
+                    //     }),
                     Divider(
                       height: 0.0,
                       color: Colors.white.withOpacity(0.2),
@@ -260,8 +260,7 @@ Future showReceiveOptions(BuildContext parentContext, AccountModel account) {
   return showModalBottomSheet(
     context: parentContext,
     builder: (ctx) {
-      return withBreezTheme(
-        parentContext,
+      return
         StreamBuilder<LSPStatus>(
           stream: lspBloc.lspStatusStream,
           builder: (context, lspSnapshot) {
@@ -353,7 +352,6 @@ Future showReceiveOptions(BuildContext parentContext, AccountModel account) {
               },
             );
           },
-        ),
       );
     },
   );

@@ -2,10 +2,10 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
-import 'package:breez/bloc/lnurl/lnurl_model.dart';
-import 'package:breez/logger.dart' as logger;
-import 'package:breez/services/breezlib/data/rpc.pb.dart';
-import 'package:breez/services/download_manager.dart';
+import 'package:clovrlabs_wallet/bloc/lnurl/lnurl_model.dart';
+import 'package:clovrlabs_wallet/logger.dart' as logger;
+import 'package:clovrlabs_wallet/services/breezlib/data/rpc.pb.dart';
+import 'package:clovrlabs_wallet/services/download_manager.dart';
 import 'package:dio/dio.dart';
 import 'package:fixnum/fixnum.dart';
 import 'package:flutter/services.dart';
@@ -14,10 +14,11 @@ import 'package:ini/ini.dart';
 import 'package:md5_file_checksum/md5_file_checksum.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'dart:developer' as dartLog;
 
 import 'graph_downloader.dart';
 
-// This is the bridge to the native breez library. Protobuf messages are used as the interface and to generate the classes use the bellow command.
+// This is the bridge to the native ClovrLabs Wallet library. Protobuf messages are used as the interface and to generate the classes use the bellow command.
 // protoc --dart_out=grpc:lib/services/breezlib/data/ -Ilib/services/breezlib/ lib/services/breezlib/rpc.proto
 class BreezBridge {
   static const _methodChannel = MethodChannel('com.breez.client/breez_lib');
@@ -42,6 +43,9 @@ class BreezBridge {
   initBreezLib() {
     _eventChannel.receiveBroadcastStream().listen((event) async {
       var notification = NotificationEvent()..mergeFromBuffer(event);
+      var data = notification.data.toString().replaceAll("\x00", "");
+      data = data.substring(1, data.length-1);
+      dartLog.log("LIB: " + data);
       if (notification.type == NotificationEvent_NotificationType.READY) {
         ready = true;
         _readyCompleter.complete();
@@ -85,11 +89,11 @@ class BreezBridge {
     await _readyCompleter.future;
     await Future.delayed(Duration(seconds: 10));
     var downloadURL = await graphURL();
-    logger.log.info("GraphDownloader graph download url: $downloadURL");
+    logger.log.info("graph download url: $downloadURL");
     if (downloadURL.isNotEmpty) {
-      logger.log.info("GraphDownloader fetching graph checksum");
+      logger.log.info("fetching graph checksum");
       var checksum = await fetchGraphChecksum(downloadURL);
-      logger.log.info("GraphDownloader graph checksum = $checksum, downloading graph");
+      logger.log.info("graph checksum = $checksum, downloading graph");
       _inProgressGraphSync =
           _graphDownloader.downloadGraph(downloadURL).then((file) async {
         final fileChecksum =
@@ -98,15 +102,15 @@ class BreezBridge {
         var hexChecksum = HEX.encode(rawBytes);
         if (hexChecksum != checksum) {
           logger.log.info(
-              "GraphDownloader graph synchronization wrong checksum $fileChecksum != $checksum, skipping file");
+              "graph synchronization wrong checksum $fileChecksum != $checksum, skipping file");
           return DateTime.now();
         }
-        logger.log.info("GraphDownloader graph synchronization started");
+        logger.log.info("graph synchronization started");
         await syncGraphFromFile(file.path);
-        logger.log.info("GraphDownloader graph synchronized succesfully");
+        logger.log.info("graph synchronized succesfully");
         return DateTime.now();
       }).catchError((err) {
-        logger.log.info("GraphDownloader graph synchronized failed ${err.toString()}");
+        logger.log.info("graph synchronized failed ${err.toString()}");
       }).whenComplete(() {
         _graphDownloader.deleteDownloads();
       });
@@ -124,7 +128,7 @@ class BreezBridge {
       return copyBreezConfig(workingDir.path).then((_) async {
         var tmpDir = await _tempDirFuture;
         await init(workingDir.path, tmpDir.path);
-        logger.log.info("breez library init finished");
+        logger.log.info("library init finished");
         _startedCompleter.complete(true);
       });
     });
@@ -160,9 +164,9 @@ class BreezBridge {
   }
 
   Future _start() async {
-    print(" breez bridge - start...");
+    print("ClovrLabs Wallet bridge - start...");
     return _methodChannel.invokeMethod("start").then((_) {
-      print(" breez bridge - start lightning finished");
+      print("ClovrLabs Wallet bridge - start lightning finished");
     });
   }
 
@@ -525,7 +529,9 @@ class BreezBridge {
     if (description != null) {
       invoice.description = description;
     }
-
+    if (expiry != null) {
+      invoice.expiry = expiry;
+    }
     var request = AddInvoiceRequest()..invoiceDetails = invoice;
     var lspInfo = inputLSP;
 
@@ -686,7 +692,7 @@ class BreezBridge {
   }
 
   Future checkVersion() {
-    return _invokeMethodImmediate("checkVersion");
+    return _invokeMethodWhenReady("checkVersion");
   }
 
   Future<String> validateAddress(String address) {

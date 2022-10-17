@@ -91,6 +91,7 @@ class NotificationEvent_NotificationType extends $pb.ProtobufEnum {
   static const NotificationEvent_NotificationType REVERSE_SWAP_CLAIM_FAILED = NotificationEvent_NotificationType._(17, const $core.bool.fromEnvironment('protobuf.omit_enum_names') ? '' : 'REVERSE_SWAP_CLAIM_FAILED');
   static const NotificationEvent_NotificationType REVERSE_SWAP_CLAIM_CONFIRMED = NotificationEvent_NotificationType._(18, const $core.bool.fromEnvironment('protobuf.omit_enum_names') ? '' : 'REVERSE_SWAP_CLAIM_CONFIRMED');
   static const NotificationEvent_NotificationType LSP_CHANNEL_OPENED = NotificationEvent_NotificationType._(19, const $core.bool.fromEnvironment('protobuf.omit_enum_names') ? '' : 'LSP_CHANNEL_OPENED');
+  static const NotificationEvent_NotificationType INFO = NotificationEvent_NotificationType._(20, const $core.bool.fromEnvironment('protobuf.omit_enum_names') ? '' : 'INFO');
 
   static const $core.List<NotificationEvent_NotificationType> values = <NotificationEvent_NotificationType> [
     READY,
@@ -113,6 +114,7 @@ class NotificationEvent_NotificationType extends $pb.ProtobufEnum {
     REVERSE_SWAP_CLAIM_FAILED,
     REVERSE_SWAP_CLAIM_CONFIRMED,
     LSP_CHANNEL_OPENED,
+    INFO
   ];
 
   static final $core.Map<$core.int, NotificationEvent_NotificationType> _byValue = $pb.ProtobufEnum.initByValue(values);

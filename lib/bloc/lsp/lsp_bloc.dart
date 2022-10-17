@@ -1,12 +1,12 @@
 import 'dart:async';
 
-import 'package:breez/bloc/account/account_model.dart';
-import 'package:breez/bloc/lsp/lsp_model.dart';
-import 'package:breez/services/breezlib/breez_bridge.dart';
-import 'package:breez/services/breezlib/data/rpc.pb.dart';
-import 'package:breez/services/injector.dart';
-import 'package:breez/utils/locale.dart';
-import 'package:breez/utils/retry.dart';
+import 'package:clovrlabs_wallet/bloc/account/account_model.dart';
+import 'package:clovrlabs_wallet/bloc/lsp/lsp_model.dart';
+import 'package:clovrlabs_wallet/services/breezlib/breez_bridge.dart';
+import 'package:clovrlabs_wallet/services/breezlib/data/rpc.pb.dart';
+import 'package:clovrlabs_wallet/services/injector.dart';
+import 'package:clovrlabs_wallet/utils/locale.dart';
+import 'package:clovrlabs_wallet/utils/retry.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 

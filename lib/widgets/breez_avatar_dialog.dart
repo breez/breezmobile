@@ -2,12 +2,12 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:auto_size_text/auto_size_text.dart';
-import 'package:breez/bloc/user_profile/breez_user_model.dart';
-import 'package:breez/bloc/user_profile/user_actions.dart';
-import 'package:breez/bloc/user_profile/user_profile_bloc.dart';
-import 'package:breez/theme_data.dart' as theme;
-import 'package:breez/utils/min_font_size.dart';
-import 'package:breez/widgets/breez_avatar.dart';
+import 'package:clovrlabs_wallet/bloc/user_profile/clovr_user_model.dart';
+import 'package:clovrlabs_wallet/bloc/user_profile/user_actions.dart';
+import 'package:clovrlabs_wallet/bloc/user_profile/user_profile_bloc.dart';
+import 'package:clovrlabs_wallet/theme_data.dart' as theme;
+import 'package:clovrlabs_wallet/utils/min_font_size.dart';
+import 'package:clovrlabs_wallet/widgets/wallet_avatar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:image/image.dart' as DartImage;
@@ -21,7 +21,7 @@ var _transparentImage = DartImage.Image(scaledWidth, scaledWidth);
 
 Widget breezAvatarDialog(BuildContext context, UserProfileBloc userBloc) {
   AutoSizeGroup _autoSizeGroup = AutoSizeGroup();
-  BreezUserModel _currentSettings;
+  ClovrUserModel _currentSettings;
   File _pickedImage;
   bool _isUploading = false;
 
@@ -67,7 +67,7 @@ Widget breezAvatarDialog(BuildContext context, UserProfileBloc userBloc) {
                       top: Radius.circular(12.0),
                     ),
                   ),
-                  color: theme.themeId == "BLUE"
+                  color: theme.themeId == "WHITE"
                       ? themeData.primaryColorDark
                       : themeData.canvasColor,
                 ),
@@ -102,7 +102,7 @@ Widget breezAvatarDialog(BuildContext context, UserProfileBloc userBloc) {
                         },
                       ),
                     ),
-                    StreamBuilder<BreezUserModel>(
+                    StreamBuilder<ClovrUserModel>(
                       stream: userBloc.userPreviewStream,
                       builder: (context, snapshot) {
                         final userModel = snapshot.data;
@@ -132,7 +132,7 @@ Widget breezAvatarDialog(BuildContext context, UserProfileBloc userBloc) {
                               Padding(
                                 child: AspectRatio(
                                   aspectRatio: 1,
-                                  child: BreezAvatar(
+                                  child: ElenPayAvatar(
                                     _pickedImage?.path ?? userModel.avatarURL,
                                     radius: 36.0,
                                   ),

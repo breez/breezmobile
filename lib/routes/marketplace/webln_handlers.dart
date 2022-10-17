@@ -1,10 +1,10 @@
 import 'dart:async';
 import 'dart:convert' as JSON;
 
-import 'package:breez/bloc/account/account_bloc.dart';
-import 'package:breez/bloc/account/account_model.dart';
-import 'package:breez/bloc/invoice/invoice_bloc.dart';
-import 'package:breez/bloc/invoice/invoice_model.dart';
+import 'package:clovrlabs_wallet/bloc/account/account_bloc.dart';
+import 'package:clovrlabs_wallet/bloc/account/account_model.dart';
+import 'package:clovrlabs_wallet/bloc/invoice/invoice_bloc.dart';
+import 'package:clovrlabs_wallet/bloc/invoice/invoice_model.dart';
 import 'package:fixnum/fixnum.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart' show rootBundle;

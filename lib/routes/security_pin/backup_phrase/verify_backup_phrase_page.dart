@@ -1,15 +1,15 @@
 import 'dart:math';
 
 import 'package:bip39/bip39.dart' as bip39;
-import 'package:breez/bloc/backup/backup_actions.dart';
-import 'package:breez/bloc/backup/backup_bloc.dart';
-import 'package:breez/bloc/backup/backup_model.dart';
-import 'package:breez/bloc/blocs_provider.dart';
-import 'package:breez/routes/backup_in_progress_dialog.dart';
-import 'package:breez/theme_data.dart' as theme;
-import 'package:breez/widgets/back_button.dart' as backBtn;
-import 'package:breez/widgets/error_dialog.dart';
-import 'package:breez/widgets/single_button_bottom_bar.dart';
+import 'package:clovrlabs_wallet/bloc/backup/backup_actions.dart';
+import 'package:clovrlabs_wallet/bloc/backup/backup_bloc.dart';
+import 'package:clovrlabs_wallet/bloc/backup/backup_model.dart';
+import 'package:clovrlabs_wallet/bloc/blocs_provider.dart';
+import 'package:clovrlabs_wallet/routes/backup_in_progress_dialog.dart';
+import 'package:clovrlabs_wallet/theme_data.dart' as theme;
+import 'package:clovrlabs_wallet/widgets/back_button.dart' as backBtn;
+import 'package:clovrlabs_wallet/widgets/error_dialog.dart';
+import 'package:clovrlabs_wallet/widgets/single_button_bottom_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
@@ -45,7 +45,7 @@ class VerifyBackupPhrasePageState extends State<VerifyBackupPhrasePage> {
         leading: backBtn.BackButton(),
         title: Text(
           texts.backup_phrase_generation_verify,
-          style: themeData.appBarTheme.textTheme.headline6,
+          // style: themeData.appBarTheme.textTheme.headline6,
         ),
         elevation: 0.0,
       ),
@@ -133,7 +133,7 @@ class VerifyBackupPhrasePageState extends State<VerifyBackupPhrasePage> {
           _randomlySelectedIndexes[2] + 1,
         ),
         style: theme.backupPhraseInformationTextStyle.copyWith(
-          color: theme.BreezColors.white[300],
+          color: theme.ElenPayWalletColors.white[300],
         ),
         textAlign: TextAlign.center,
       ),

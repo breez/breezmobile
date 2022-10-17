@@ -3,13 +3,13 @@ library breez.logger;
 import 'dart:async';
 import 'dart:io';
 
-import 'package:breez/services/breezlib/breez_bridge.dart';
-import 'package:breez/services/injector.dart';
+import 'package:clovrlabs_wallet/services/breezlib/breez_bridge.dart';
+import 'package:clovrlabs_wallet/services/injector.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:logging/logging.dart';
 import 'package:share_extend/share_extend.dart';
 
-final Logger log = Logger('Breez');
+final Logger log = Logger('CloverWallet');
 
 Future<File> get _logFile async {
   var logPath = await ServiceInjector().breezBridge.getLogPath();
@@ -49,3 +49,5 @@ class BreezLogger {
     };
   }
 }
+
+

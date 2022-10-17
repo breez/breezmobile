@@ -29,12 +29,12 @@ android {
     }
 
     defaultConfig {
-        applicationId "com.elenpay.wallet.client"
+        applicationId "com.clovrlabs.wallet"
         minSdkVersion 24
-        targetSdkVersion 32
+        targetSdkVersion 33
         multiDexEnabled true
         versionCode 1
-        versionName "0.15-beta"
+        versionName "1.0.0"
     }
 
     signingConfigs {
@@ -53,19 +53,22 @@ android {
 
     buildTypes {
         debug {
-            applicationIdSuffix '.debug'
+//            applicationIdSuffix ''
             versionNameSuffix '-DEBUG'
-            resValue "string", "app_name", "ElenWallet Debug"
+            resValue "string", "app_name", "Clovrlabs Wallet Debug"
         }
         release {
             signingConfig signingConfigs.release
             shrinkResources false
-            resValue "string", "app_name", "ElenWallet"
+            resValue "string", "app_name", "Clovrlabs wallet"
         }
     }
 
     flavorDimensions "breez"
     productFlavors {
+        development{
+            dimension "breez"
+        }
         client {
             dimension "breez"
         }

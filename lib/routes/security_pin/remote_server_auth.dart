@@ -1,12 +1,12 @@
-import 'package:breez/bloc/backup/backup_bloc.dart';
-import 'package:breez/bloc/backup/backup_model.dart';
-import 'package:breez/bloc/blocs_provider.dart';
-import 'package:breez/routes/podcast/theme.dart';
-import 'package:breez/widgets/back_button.dart' as backBtn;
-import 'package:breez/widgets/error_dialog.dart';
-import 'package:breez/widgets/loader.dart';
-import 'package:breez/widgets/route.dart';
-import 'package:breez/widgets/single_button_bottom_bar.dart';
+import 'package:clovrlabs_wallet/bloc/backup/backup_bloc.dart';
+import 'package:clovrlabs_wallet/bloc/backup/backup_model.dart';
+import 'package:clovrlabs_wallet/bloc/blocs_provider.dart';
+import 'package:clovrlabs_wallet/utils/theme.dart';
+import 'package:clovrlabs_wallet/widgets/back_button.dart' as backBtn;
+import 'package:clovrlabs_wallet/widgets/error_dialog.dart';
+import 'package:clovrlabs_wallet/widgets/loader.dart';
+import 'package:clovrlabs_wallet/widgets/route.dart';
+import 'package:clovrlabs_wallet/widgets/single_button_bottom_bar.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -20,7 +20,8 @@ Future<RemoteServerAuthData> promptAuthData(
   return Navigator.of(context).push<RemoteServerAuthData>(FadeInRoute(
     builder: (BuildContext context) {
       final backupBloc = AppBlocsProvider.of<BackupBloc>(context);
-      return withBreezTheme(
+      return
+        withElenPayWalletTheme(
         context,
         RemoteServerAuthPage(backupBloc, restore),
       );
@@ -100,9 +101,10 @@ class RemoteServerAuthPageState extends State<RemoteServerAuthPage> {
             backgroundColor: themeData.canvasColor,
             title: Text(
               texts.remote_server_title,
-              style: themeData.appBarTheme.textTheme.headline6,
+              // style: themeData.appBarTheme.textTheme.headline6,
             ),
-            elevation: 0.0, toolbarTextStyle: themeData.appBarTheme.textTheme.bodyText2, titleTextStyle: themeData.appBarTheme.textTheme.headline6,
+            elevation: 0.0, toolbarTextStyle: themeData.appBarTheme.textTheme.bodyText2,
+            // titleTextStyle: themeData.appBarTheme.textTheme.headline6,
           ),
           body: SingleChildScrollView(
             reverse: true,

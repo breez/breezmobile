@@ -1,8 +1,8 @@
 import 'package:auto_size_text/auto_size_text.dart';
-import 'package:breez/services/breezlib/data/rpc.pbgrpc.dart';
-import 'package:breez/services/injector.dart';
-import 'package:breez/widgets/error_dialog.dart';
-import 'package:breez/widgets/flushbar.dart';
+import 'package:clovrlabs_wallet/services/breezlib/data/rpc.pbgrpc.dart';
+import 'package:clovrlabs_wallet/services/injector.dart';
+import 'package:clovrlabs_wallet/widgets/error_dialog.dart';
+import 'package:clovrlabs_wallet/widgets/flushbar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_web_browser/flutter_web_browser.dart';
@@ -147,9 +147,7 @@ class _URLRow extends StatelessWidget {
                     padding: EdgeInsets.zero,
                     iconSize: 16.0,
                     color: themeData.primaryTextTheme.button.color,
-                    icon: Icon(
-                      IconData(0xe90b, fontFamily: 'icomoon'),
-                    ),
+
                     onPressed: () {
                       ServiceInjector().device.setClipboardText(sharedValue);
                       showFlushbar(
@@ -157,7 +155,7 @@ class _URLRow extends StatelessWidget {
                         message: texts.ln_url_success_action_link_copied,
                         duration: Duration(seconds: 4),
                       );
-                    },
+                    }, icon: null,
                   ),
                   IconButton(
                     padding: EdgeInsets.zero,

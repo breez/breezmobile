@@ -1,10 +1,10 @@
 import 'dart:io';
 
-import 'package:breez/bloc/account/account_actions.dart';
-import 'package:breez/bloc/account/account_bloc.dart';
-import 'package:breez/services/injector.dart';
-import 'package:breez/theme_data.dart' as theme;
-import 'package:breez/widgets/error_dialog.dart';
+import 'package:clovrlabs_wallet/bloc/account/account_actions.dart';
+import 'package:clovrlabs_wallet/bloc/account/account_bloc.dart';
+import 'package:clovrlabs_wallet/services/injector.dart';
+import 'package:clovrlabs_wallet/theme_data.dart' as theme;
+import 'package:clovrlabs_wallet/widgets/error_dialog.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:share_extend/share_extend.dart';

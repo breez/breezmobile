@@ -1,9 +1,9 @@
 import 'package:auto_size_text/auto_size_text.dart';
-import 'package:breez/bloc/backup/backup_actions.dart';
-import 'package:breez/bloc/backup/backup_bloc.dart';
-import 'package:breez/bloc/backup/backup_model.dart';
-import 'package:breez/routes/security_pin/remote_server_auth.dart';
-import 'package:breez/utils/min_font_size.dart';
+import 'package:clovrlabs_wallet/bloc/backup/backup_actions.dart';
+import 'package:clovrlabs_wallet/bloc/backup/backup_bloc.dart';
+import 'package:clovrlabs_wallet/bloc/backup/backup_model.dart';
+import 'package:clovrlabs_wallet/routes/security_pin/remote_server_auth.dart';
+import 'package:clovrlabs_wallet/utils/min_font_size.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 

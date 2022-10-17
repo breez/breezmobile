@@ -2,32 +2,31 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:auto_size_text/auto_size_text.dart';
-import 'package:breez/bloc/account/account_bloc.dart';
-import 'package:breez/bloc/account/account_model.dart';
-import 'package:breez/bloc/blocs_provider.dart';
-import 'package:breez/bloc/invoice/invoice_bloc.dart';
-import 'package:breez/bloc/invoice/invoice_model.dart';
-import 'package:breez/bloc/lnurl/lnurl_actions.dart';
-import 'package:breez/bloc/lnurl/lnurl_bloc.dart';
-import 'package:breez/bloc/lnurl/lnurl_model.dart';
-import 'package:breez/bloc/lsp/lsp_bloc.dart';
-import 'package:breez/bloc/lsp/lsp_model.dart';
-import 'package:breez/logger.dart';
-import 'package:breez/routes/charge/successful_payment.dart';
-import 'package:breez/routes/podcast/theme.dart';
-import 'package:breez/services/injector.dart';
-import 'package:breez/theme_data.dart' as theme;
-import 'package:breez/utils/min_font_size.dart';
-import 'package:breez/widgets/amount_form_field.dart';
-import 'package:breez/widgets/back_button.dart' as backBtn;
-import 'package:breez/widgets/error_dialog.dart';
-import 'package:breez/widgets/flushbar.dart';
-import 'package:breez/widgets/keyboard_done_action.dart';
-import 'package:breez/widgets/loader.dart';
-import 'package:breez/widgets/single_button_bottom_bar.dart';
-import 'package:breez/widgets/static_loader.dart';
-import 'package:breez/widgets/transparent_page_route.dart';
-import 'package:breez/widgets/warning_box.dart';
+import 'package:clovrlabs_wallet/bloc/account/account_bloc.dart';
+import 'package:clovrlabs_wallet/bloc/account/account_model.dart';
+import 'package:clovrlabs_wallet/bloc/blocs_provider.dart';
+import 'package:clovrlabs_wallet/bloc/invoice/invoice_bloc.dart';
+import 'package:clovrlabs_wallet/bloc/invoice/invoice_model.dart';
+import 'package:clovrlabs_wallet/bloc/lnurl/lnurl_actions.dart';
+import 'package:clovrlabs_wallet/bloc/lnurl/lnurl_bloc.dart';
+import 'package:clovrlabs_wallet/bloc/lnurl/lnurl_model.dart';
+import 'package:clovrlabs_wallet/bloc/lsp/lsp_bloc.dart';
+import 'package:clovrlabs_wallet/bloc/lsp/lsp_model.dart';
+import 'package:clovrlabs_wallet/logger.dart';
+import 'package:clovrlabs_wallet/routes/charge/successful_payment.dart';
+import 'package:clovrlabs_wallet/services/injector.dart';
+import 'package:clovrlabs_wallet/theme_data.dart' as theme;
+import 'package:clovrlabs_wallet/utils/min_font_size.dart';
+import 'package:clovrlabs_wallet/widgets/amount_form_field.dart';
+import 'package:clovrlabs_wallet/widgets/back_button.dart' as backBtn;
+import 'package:clovrlabs_wallet/widgets/error_dialog.dart';
+import 'package:clovrlabs_wallet/widgets/flushbar.dart';
+import 'package:clovrlabs_wallet/widgets/keyboard_done_action.dart';
+import 'package:clovrlabs_wallet/widgets/loader.dart';
+import 'package:clovrlabs_wallet/widgets/single_button_bottom_bar.dart';
+import 'package:clovrlabs_wallet/widgets/static_loader.dart';
+import 'package:clovrlabs_wallet/widgets/transparent_page_route.dart';
+import 'package:clovrlabs_wallet/widgets/warning_box.dart';
 import 'package:fixnum/fixnum.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -161,7 +160,7 @@ class CreateInvoicePageState extends State<CreateInvoicePage> {
                 alignment: Alignment.center,
                 icon: Image(
                   image: AssetImage("src/icon/qr_scan.png"),
-                  color: theme.BreezColors.white[500],
+                  color: theme.ElenPayWalletColors.white[500],
                   fit: BoxFit.contain,
                   width: 24.0,
                   height: 24.0,
@@ -179,7 +178,7 @@ class CreateInvoicePageState extends State<CreateInvoicePage> {
         ],
         title: Text(
           texts.invoice_title,
-          style: themeData.appBarTheme.textTheme.headline6,
+          // style: themeData.appBarTheme.textTheme.headline6,
         ),
         elevation: 0.0,
       ),
@@ -487,6 +486,7 @@ class CreateInvoicePageState extends State<CreateInvoicePage> {
         _descriptionController.text,
         null,
         account.currency.parse(_amountController.text),
+        expiry:  Int64(24*60*60),
       ),
     );
     final navigator = Navigator.of(context);
@@ -518,7 +518,7 @@ class CreateInvoicePageState extends State<CreateInvoicePage> {
     if (result == true) {
       if (currentRoute.isCurrent) {
         navigator.push(TransparentPageRoute((ctx) {
-          return withBreezTheme(ctx, SuccessfulPaymentRoute());
+          return  SuccessfulPaymentRoute();
         }));
       }
     } else {

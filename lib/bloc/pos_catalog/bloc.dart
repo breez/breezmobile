@@ -1,16 +1,16 @@
 import 'dart:async';
 import 'dart:convert';
 
-import 'package:breez/bloc/account/account_model.dart';
-import 'package:breez/bloc/async_actions_handler.dart';
-import 'package:breez/bloc/pos_catalog/actions.dart';
-import 'package:breez/bloc/pos_catalog/pos_csv_utils.dart';
-import 'package:breez/bloc/pos_catalog/repository.dart';
-import 'package:breez/bloc/pos_catalog/sqlite/repository.dart';
-import 'package:breez/bloc/user_profile/breez_user_model.dart';
-import 'package:breez/bloc/user_profile/currency.dart';
-import 'package:breez/services/breezlib/data/rpc.pb.dart';
-import 'package:breez/services/injector.dart';
+import 'package:clovrlabs_wallet/bloc/account/account_model.dart';
+import 'package:clovrlabs_wallet/bloc/async_actions_handler.dart';
+import 'package:clovrlabs_wallet/bloc/pos_catalog/actions.dart';
+import 'package:clovrlabs_wallet/bloc/pos_catalog/pos_csv_utils.dart';
+import 'package:clovrlabs_wallet/bloc/pos_catalog/repository.dart';
+import 'package:clovrlabs_wallet/bloc/pos_catalog/sqlite/repository.dart';
+import 'package:clovrlabs_wallet/bloc/user_profile/clovr_user_model.dart';
+import 'package:clovrlabs_wallet/bloc/user_profile/currency.dart';
+import 'package:clovrlabs_wallet/services/breezlib/data/rpc.pb.dart';
+import 'package:clovrlabs_wallet/services/injector.dart';
 import 'package:flutter/services.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:rxdart/subjects.dart';
@@ -26,7 +26,7 @@ class PosCatalogBloc with AsyncActionsHandler {
 
   Repository _repository;
 
-  Stream<BreezUserModel> _userStream;
+  Stream<ClovrUserModel> _userStream;
 
   final StreamController<List<Item>> _itemsStreamController =
       BehaviorSubject<List<Item>>();

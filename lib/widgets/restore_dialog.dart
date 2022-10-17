@@ -1,12 +1,12 @@
 import 'dart:io';
 
 import 'package:archive/archive_io.dart';
-import 'package:breez/bloc/backup/backup_actions.dart';
-import 'package:breez/bloc/backup/backup_bloc.dart';
-import 'package:breez/bloc/backup/backup_model.dart';
-import 'package:breez/services/breezlib/data/rpc.pbgrpc.dart';
-import 'package:breez/theme_data.dart' as theme;
-import 'package:breez/utils/date.dart';
+import 'package:clovrlabs_wallet/bloc/backup/backup_actions.dart';
+import 'package:clovrlabs_wallet/bloc/backup/backup_bloc.dart';
+import 'package:clovrlabs_wallet/bloc/backup/backup_model.dart';
+import 'package:clovrlabs_wallet/services/breezlib/data/rpc.pbgrpc.dart';
+import 'package:clovrlabs_wallet/theme_data.dart' as theme;
+import 'package:clovrlabs_wallet/utils/date.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:path_provider/path_provider.dart';
@@ -107,7 +107,7 @@ class RestoreDialogState extends State<RestoreDialog> {
         ),
         TextButton(
           style: TextButton.styleFrom(
-            primary: theme.BreezColors.blue[500],
+            primary: theme.ElenPayWalletColors.dark_grey[500],
           ),
           onPressed: _selectedSnapshot == null
               ? null
@@ -135,7 +135,7 @@ class RestoreDialogState extends State<RestoreDialog> {
       trailing: nodeID == item.nodeID
           ? Icon(
               Icons.check,
-              color: theme.BreezColors.blue[500],
+              color: theme.ElenPayWalletColors.dark_grey[500],
             )
           : Icon(Icons.check),
       title: Text(

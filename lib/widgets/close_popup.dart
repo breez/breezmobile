@@ -1,6 +1,6 @@
 import 'dart:io';
 
-import 'package:breez/widgets/error_dialog.dart';
+import 'package:clovrlabs_wallet/widgets/error_dialog.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 

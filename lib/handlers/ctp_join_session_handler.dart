@@ -1,7 +1,7 @@
-import 'package:breez/bloc/connect_pay/connect_pay_bloc.dart';
-import 'package:breez/bloc/user_profile/user_profile_bloc.dart';
-import 'package:breez/routes/admin_login_dialog.dart';
-import 'package:breez/widgets/loader.dart';
+import 'package:clovrlabs_wallet/bloc/connect_pay/connect_pay_bloc.dart';
+import 'package:clovrlabs_wallet/bloc/user_profile/user_profile_bloc.dart';
+import 'package:clovrlabs_wallet/routes/admin_login_dialog.dart';
+import 'package:clovrlabs_wallet/widgets/loader.dart';
 import 'package:flutter/material.dart';
 
 class CTPJoinSessionHandler {

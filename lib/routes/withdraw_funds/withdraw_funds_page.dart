@@ -1,23 +1,23 @@
 import 'dart:async';
 
 import 'package:auto_size_text/auto_size_text.dart';
-import 'package:breez/bloc/account/account_bloc.dart';
-import 'package:breez/bloc/account/account_model.dart';
-import 'package:breez/bloc/blocs_provider.dart';
-import 'package:breez/bloc/reverse_swap/reverse_swap_bloc.dart';
-import 'package:breez/services/breezlib/breez_bridge.dart';
-import 'package:breez/services/injector.dart';
-import 'package:breez/theme_data.dart' as theme;
-import 'package:breez/utils/btc_address.dart';
-import 'package:breez/utils/min_font_size.dart';
-import 'package:breez/widgets/amount_form_field.dart';
-import 'package:breez/widgets/back_button.dart' as backBtn;
-import 'package:breez/widgets/error_dialog.dart';
-import 'package:breez/widgets/flushbar.dart';
-import 'package:breez/widgets/loader.dart';
-import 'package:breez/widgets/single_button_bottom_bar.dart';
-import 'package:breez/widgets/static_loader.dart';
-import 'package:breez/widgets/warning_box.dart';
+import 'package:clovrlabs_wallet/bloc/account/account_bloc.dart';
+import 'package:clovrlabs_wallet/bloc/account/account_model.dart';
+import 'package:clovrlabs_wallet/bloc/blocs_provider.dart';
+import 'package:clovrlabs_wallet/bloc/reverse_swap/reverse_swap_bloc.dart';
+import 'package:clovrlabs_wallet/services/breezlib/breez_bridge.dart';
+import 'package:clovrlabs_wallet/services/injector.dart';
+import 'package:clovrlabs_wallet/theme_data.dart' as theme;
+import 'package:clovrlabs_wallet/utils/btc_address.dart';
+import 'package:clovrlabs_wallet/utils/min_font_size.dart';
+import 'package:clovrlabs_wallet/widgets/amount_form_field.dart';
+import 'package:clovrlabs_wallet/widgets/back_button.dart' as backBtn;
+import 'package:clovrlabs_wallet/widgets/error_dialog.dart';
+import 'package:clovrlabs_wallet/widgets/flushbar.dart';
+import 'package:clovrlabs_wallet/widgets/loader.dart';
+import 'package:clovrlabs_wallet/widgets/single_button_bottom_bar.dart';
+import 'package:clovrlabs_wallet/widgets/static_loader.dart';
+import 'package:clovrlabs_wallet/widgets/warning_box.dart';
 import 'package:fixnum/fixnum.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -93,7 +93,7 @@ class WithdrawFundsPageState extends State<WithdrawFundsPage> {
         ),
         title: Text(
           widget.title,
-          style: themeData.appBarTheme.textTheme.headline6,
+          // style: themeData.appBarTheme.textTheme.headline6,
         ),
         elevation: 0.0,
       ),
@@ -194,7 +194,7 @@ class WithdrawFundsPageState extends State<WithdrawFundsPage> {
                           alignment: Alignment.bottomRight,
                           icon: Image(
                             image: AssetImage("src/icon/qr_scan.png"),
-                            color: theme.BreezColors.white[500],
+                            color: theme.ElenPayWalletColors.white[500],
                             fit: BoxFit.contain,
                             width: 24.0,
                             height: 24.0,

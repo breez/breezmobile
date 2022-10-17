@@ -1,4 +1,4 @@
-import 'package:breez/theme_data.dart' as theme;
+import 'package:clovrlabs_wallet/theme_data.dart' as theme;
 import 'package:another_flushbar/flushbar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -11,9 +11,6 @@ Flushbar showFlushbar(
   String buttonText,
   FlushbarPosition position = FlushbarPosition.BOTTOM,
   bool Function() onDismiss,
-  bool isDismissible = true,
-  Widget icon,
-  Widget button,
   Duration duration = const Duration(seconds: 8),
 }) {
   final themeData = Theme.of(context);
@@ -21,7 +18,6 @@ Flushbar showFlushbar(
 
   Flushbar flush;
   flush = Flushbar(
-    isDismissible: isDismissible,
     flushbarPosition: position,
     titleText: title == null
         ? null
@@ -37,8 +33,7 @@ Flushbar showFlushbar(
           textAlign: TextAlign.left,
         ),
     backgroundColor: theme.snackBarBackgroundColor,
-    icon: icon,
-    mainButton: button != null ? button : buttonText == "" ? null : TextButton(
+    mainButton: TextButton(
       onPressed: () {
         bool dismiss = onDismiss != null ? onDismiss() : true;
         if (dismiss) {

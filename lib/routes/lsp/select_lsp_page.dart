@@ -1,9 +1,9 @@
-import 'package:breez/bloc/lsp/lsp_actions.dart';
-import 'package:breez/bloc/lsp/lsp_bloc.dart';
-import 'package:breez/bloc/lsp/lsp_model.dart';
-import 'package:breez/widgets/loader.dart';
-import 'package:breez/widgets/route.dart';
-import 'package:breez/widgets/single_button_bottom_bar.dart';
+import 'package:clovrlabs_wallet/bloc/lsp/lsp_actions.dart';
+import 'package:clovrlabs_wallet/bloc/lsp/lsp_bloc.dart';
+import 'package:clovrlabs_wallet/bloc/lsp/lsp_model.dart';
+import 'package:clovrlabs_wallet/widgets/loader.dart';
+import 'package:clovrlabs_wallet/widgets/route.dart';
+import 'package:clovrlabs_wallet/widgets/single_button_bottom_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'lsp_webview.dart';
@@ -67,7 +67,7 @@ class SelectLSPPageState extends State<SelectLSPPage> {
         elevation: 0.0,
         title: Text(
           texts.account_page_activation_provider_label,
-          style: themeData.appBarTheme.textTheme.headline6,
+          // style: themeData.appBarTheme.textTheme.headline6,
         ),
         actions: [
           IconButton(

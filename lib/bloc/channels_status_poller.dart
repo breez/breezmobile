@@ -1,6 +1,6 @@
 import 'dart:async';
 
-import 'package:breez/services/breezlib/data/rpc.pb.dart';
+import 'package:clovrlabs_wallet/services/breezlib/data/rpc.pb.dart';
 
 import '../logger.dart';
 import 'account/account_actions.dart';

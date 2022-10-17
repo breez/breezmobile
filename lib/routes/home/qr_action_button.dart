@@ -1,23 +1,23 @@
 import 'dart:async';
 
-import 'package:breez/bloc/account/account_model.dart';
-import 'package:breez/bloc/blocs_provider.dart';
-import 'package:breez/bloc/invoice/invoice_bloc.dart';
-import 'package:breez/bloc/lnurl/lnurl_actions.dart';
-import 'package:breez/bloc/lnurl/lnurl_bloc.dart';
-import 'package:breez/handlers/lnurl_handler.dart';
-import 'package:breez/routes/spontaneous_payment/spontaneous_payment_page.dart';
-import 'package:breez/routes/withdraw_funds/reverse_swap_page.dart';
-import 'package:breez/services/injector.dart';
-import 'package:breez/theme_data.dart' as theme;
-import 'package:breez/utils/bip21.dart';
-import 'package:breez/utils/btc_address.dart';
-import 'package:breez/utils/lnurl.dart';
-import 'package:breez/utils/node_id.dart';
-import 'package:breez/widgets/error_dialog.dart';
-import 'package:breez/widgets/flushbar.dart';
-import 'package:breez/widgets/loader.dart';
-import 'package:breez/widgets/route.dart';
+import 'package:clovrlabs_wallet/bloc/account/account_model.dart';
+import 'package:clovrlabs_wallet/bloc/blocs_provider.dart';
+import 'package:clovrlabs_wallet/bloc/invoice/invoice_bloc.dart';
+import 'package:clovrlabs_wallet/bloc/lnurl/lnurl_actions.dart';
+import 'package:clovrlabs_wallet/bloc/lnurl/lnurl_bloc.dart';
+import 'package:clovrlabs_wallet/handlers/lnurl_handler.dart';
+import 'package:clovrlabs_wallet/routes/spontaneous_payment/spontaneous_payment_page.dart';
+import 'package:clovrlabs_wallet/routes/withdraw_funds/reverse_swap_page.dart';
+import 'package:clovrlabs_wallet/services/injector.dart';
+import 'package:clovrlabs_wallet/theme_data.dart' as theme;
+import 'package:clovrlabs_wallet/utils/bip21.dart';
+import 'package:clovrlabs_wallet/utils/btc_address.dart';
+import 'package:clovrlabs_wallet/utils/lnurl.dart';
+import 'package:clovrlabs_wallet/utils/node_id.dart';
+import 'package:clovrlabs_wallet/widgets/error_dialog.dart';
+import 'package:clovrlabs_wallet/widgets/flushbar.dart';
+import 'package:clovrlabs_wallet/widgets/loader.dart';
+import 'package:clovrlabs_wallet/widgets/route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_svg/svg.dart';
@@ -142,7 +142,7 @@ class QrActionButton extends StatelessWidget {
           },
           child: SvgPicture.asset(
             "src/icon/qr_scan.svg",
-            color: theme.BreezColors.white[500],
+            color: theme.ElenPayWalletColors.white[500],
             fit: BoxFit.contain,
             width: 24.0,
             height: 24.0,

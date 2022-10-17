@@ -1,11 +1,11 @@
 import 'dart:math';
 
-import 'package:breez/bloc/account/account_model.dart';
-import 'package:breez/bloc/connect_pay/connect_pay_model.dart';
-import 'package:breez/theme_data.dart' as theme;
-import 'package:breez/widgets/amount_form_field.dart';
-import 'package:breez/widgets/keyboard_done_action.dart';
-import 'package:breez/widgets/single_button_bottom_bar.dart';
+import 'package:clovrlabs_wallet/bloc/account/account_model.dart';
+import 'package:clovrlabs_wallet/bloc/connect_pay/connect_pay_model.dart';
+import 'package:clovrlabs_wallet/theme_data.dart' as theme;
+import 'package:clovrlabs_wallet/widgets/amount_form_field.dart';
+import 'package:clovrlabs_wallet/widgets/keyboard_done_action.dart';
+import 'package:clovrlabs_wallet/widgets/single_button_bottom_bar.dart';
 import 'package:fixnum/fixnum.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';

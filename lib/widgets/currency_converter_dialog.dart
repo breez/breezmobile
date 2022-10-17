@@ -1,16 +1,16 @@
 import 'package:auto_size_text/auto_size_text.dart';
-import 'package:breez/bloc/account/account_actions.dart';
-import 'package:breez/bloc/account/account_bloc.dart';
-import 'package:breez/bloc/account/account_model.dart';
-import 'package:breez/bloc/account/fiat_conversion.dart';
-import 'package:breez/bloc/blocs_provider.dart';
-import 'package:breez/bloc/user_profile/user_profile_bloc.dart';
-import 'package:breez/routes/charge/currency_wrapper.dart';
-import 'package:breez/theme_data.dart' as theme;
-import 'package:breez/utils/min_font_size.dart';
-import 'package:breez/widgets/breez_dropdown.dart';
-import 'package:breez/widgets/currency_amount_field_formatter.dart';
-import 'package:breez/widgets/loader.dart';
+import 'package:clovrlabs_wallet/bloc/account/account_actions.dart';
+import 'package:clovrlabs_wallet/bloc/account/account_bloc.dart';
+import 'package:clovrlabs_wallet/bloc/account/account_model.dart';
+import 'package:clovrlabs_wallet/bloc/account/fiat_conversion.dart';
+import 'package:clovrlabs_wallet/bloc/blocs_provider.dart';
+import 'package:clovrlabs_wallet/bloc/user_profile/user_profile_bloc.dart';
+import 'package:clovrlabs_wallet/routes/charge/currency_wrapper.dart';
+import 'package:clovrlabs_wallet/theme_data.dart' as theme;
+import 'package:clovrlabs_wallet/utils/min_font_size.dart';
+import 'package:clovrlabs_wallet/widgets/breez_dropdown.dart';
+import 'package:clovrlabs_wallet/widgets/currency_amount_field_formatter.dart';
+import 'package:clovrlabs_wallet/widgets/loader.dart';
 import 'package:fixnum/fixnum.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -146,7 +146,7 @@ class CurrencyConverterDialogState extends State<CurrencyConverterDialog>
           title: Theme(
             data: themeData.copyWith(
               brightness: Brightness.light,
-              canvasColor: theme.BreezColors.white[500],
+              canvasColor: theme.ElenPayWalletColors.white[500],
             ),
             child: _dialogBody(context, account),
           ),
@@ -227,7 +227,7 @@ class CurrencyConverterDialogState extends State<CurrencyConverterDialog>
   Widget _dialogContent(BuildContext context, AccountModel account) {
     final themeData = Theme.of(context);
 
-    final isBlue = theme.themeId == "BLUE";
+    final isBlue = theme.themeId == "WHITE";
 
     return Column(
       mainAxisSize: MainAxisSize.min,

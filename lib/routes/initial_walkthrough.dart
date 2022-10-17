@@ -2,27 +2,32 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
-import 'package:auto_size_text/auto_size_text.dart';
-import 'package:breez/bloc/backup/backup_actions.dart';
-import 'package:breez/bloc/backup/backup_bloc.dart';
-import 'package:breez/bloc/backup/backup_model.dart';
-import 'package:breez/bloc/pos_catalog/bloc.dart';
-import 'package:breez/bloc/user_profile/user_actions.dart';
-import 'package:breez/bloc/user_profile/user_profile_bloc.dart';
-import 'package:breez/logger.dart';
-import 'package:breez/theme_data.dart' as theme;
-import 'package:breez/widgets/backup_provider_selection_dialog.dart';
-import 'package:breez/widgets/error_dialog.dart';
-import 'package:breez/widgets/flushbar.dart';
-import 'package:breez/widgets/loader.dart';
-import 'package:breez/widgets/restore_dialog.dart';
-import 'package:breez/widgets/route.dart';
+import 'package:clovrlabs_wallet/bloc/backup/backup_actions.dart';
+import 'package:clovrlabs_wallet/bloc/backup/backup_bloc.dart';
+import 'package:clovrlabs_wallet/bloc/backup/backup_model.dart';
+import 'package:clovrlabs_wallet/bloc/pos_catalog/bloc.dart';
+import 'package:clovrlabs_wallet/bloc/user_profile/user_actions.dart';
+import 'package:clovrlabs_wallet/bloc/user_profile/user_profile_bloc.dart';
+import 'package:clovrlabs_wallet/logger.dart';
+import 'package:clovrlabs_wallet/theme_data.dart' as themeApp;
+import 'package:clovrlabs_wallet/widgets/backup_provider_selection_dialog.dart';
+import 'package:clovrlabs_wallet/widgets/error_dialog.dart';
+import 'package:clovrlabs_wallet/widgets/flushbar.dart';
+import 'package:clovrlabs_wallet/widgets/loader.dart';
+import 'package:clovrlabs_wallet/widgets/restore_dialog.dart';
+import 'package:clovrlabs_wallet/widgets/route.dart';
 import 'package:crypto/crypto.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_animate/animate.dart';
+import 'package:flutter_animate/effects/effects.dart';
+import 'package:flutter_animate/extensions/extensions.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:hex/hex.dart';
 import 'package:rxdart/rxdart.dart';
 
+import '../theme_data.dart';
+import '../utils/animatin_view.dart';
 import 'beta_warning_dialog.dart';
 import 'security_pin/backup_phrase/enter_backup_phrase_page.dart';
 import 'security_pin/restore_pin.dart';
@@ -41,13 +46,11 @@ class InitialWalkthroughPage extends StatefulWidget {
   final UserProfileBloc _registrationBloc;
   final BackupBloc _backupBloc;
   final PosCatalogBloc _posCatalogBloc;
-  final Sink<bool> _reloadDatabaseSink;
 
   InitialWalkthroughPage(
     this._registrationBloc,
     this._backupBloc,
     this._posCatalogBloc,
-    this._reloadDatabaseSink,
   );
 
   @override
@@ -266,7 +269,6 @@ class InitialWalkthroughPageState extends State<InitialWalkthroughPage>
 
   void _reloadDatabases() {
     widget._posCatalogBloc.reloadPosItemsSink.add(true);
-    widget._reloadDatabaseSink.add(true);
   }
 
   @override
@@ -296,6 +298,7 @@ class InitialWalkthroughPageState extends State<InitialWalkthroughPage>
     final themeData = Theme.of(context);
 
     return Scaffold(
+      backgroundColor: themeData.backgroundColor,
       key: _scaffoldKey,
       body: WillPopScope(
         onWillPop: _onWillPop,
@@ -304,79 +307,36 @@ class InitialWalkthroughPageState extends State<InitialWalkthroughPage>
           child: Stack(
             children: [
               Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  Expanded(
-                    flex: 200,
-                    child: Container(),
-                  ),
-                  Expanded(
-                    flex: 171,
-                    child: AnimatedBuilder(
-                      animation: _animation,
-                      builder: (BuildContext context, Widget child) {
-                        String frame =
-                            _animation.value.toString().padLeft(2, '0');
-                        return Image.asset(
-                          'src/animations/welcome/frame_${frame}_delay-0.04s.png',
-                          gaplessPlayback: true,
-                          fit: BoxFit.cover,
-                        );
-                      },
-                    ),
-                  ),
-                  Expanded(
-                    flex: 200,
-                    child: Container(),
-                  ),
-                  Expanded(
-                    flex: 48,
-                    child: Padding(
-                      padding: EdgeInsets.only(left: 24, right: 24),
-                      child: AutoSizeText(
-                        texts.initial_walk_through_welcome_message,
-                        textAlign: TextAlign.center,
-                        style: theme.welcomeTextStyle,
-                      ),
-                    ),
-                  ),
-                  Expanded(
-                    flex: 60,
-                    child: Container(),
-                  ),
-                  Container(
-                    height: 48.0,
-                    width: 168.0,
+                  VisualView(key: UniqueKey()),
+                  Center(
                     child: ElevatedButton(
                       style: ElevatedButton.styleFrom(
                         padding: EdgeInsets.fromLTRB(16, 4, 16, 4),
-                        primary: themeData.buttonColor,
+                        backgroundColor: themeApp
+                            .customData[themeApp.themeId].buttonBackgroundColor,
                         elevation: 0.0,
-                        shape: const StadiumBorder(),
                       ),
                       child: Text(
                         texts.initial_walk_through_lets_breeze,
-                        style: themeData.textTheme.button,
+                        style: themeApp.signUpStyle,
                       ),
                       onPressed: () => _letsBreez(context),
                     ),
                   ),
-                  Expanded(
-                    flex: 40,
-                    child: Padding(
-                      padding: EdgeInsets.only(top: 10.0),
-                      child: GestureDetector(
-                        onTap: () => _restoreFromBackup(context),
-                        child: Text(
-                          texts.initial_walk_through_restore_from_backup,
-                          style: theme.restoreLinkStyle,
-                        ),
-                      ),
-                    ),
-                  ),
-                  Expanded(
-                    flex: 120,
-                    child: Container(),
-                  ),
+                  // temp comment
+                  // Padding(
+                  //   padding: EdgeInsets.only(top: 10.0),
+                  //   child: GestureDetector(
+                  //     onTap: () => _restoreFromBackup(context),
+                  //     child: Text(
+                  //       texts.initial_walk_through_restore_from_backup,
+                  //       style: themeApp.restoreLinkStyle,
+                  //     ),
+                  //   ),
+                  // ),
                 ],
               ),
             ],

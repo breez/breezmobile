@@ -1,10 +1,10 @@
-import 'package:breez/bloc/account/account_bloc.dart';
-import 'package:breez/bloc/account/account_model.dart';
-import 'package:breez/bloc/blocs_provider.dart';
-import 'package:breez/services/injector.dart';
-import 'package:breez/widgets/back_button.dart' as backBtn;
-import 'package:breez/widgets/flushbar.dart';
-import 'package:breez/widgets/link_launcher.dart';
+import 'package:clovrlabs_wallet/bloc/account/account_bloc.dart';
+import 'package:clovrlabs_wallet/bloc/account/account_model.dart';
+import 'package:clovrlabs_wallet/bloc/blocs_provider.dart';
+import 'package:clovrlabs_wallet/services/injector.dart';
+import 'package:clovrlabs_wallet/widgets/back_button.dart' as backBtn;
+import 'package:clovrlabs_wallet/widgets/flushbar.dart';
+import 'package:clovrlabs_wallet/widgets/link_launcher.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
@@ -56,7 +56,7 @@ class ConditionalDeposit extends StatelessWidget {
             leading: backBtn.BackButton(),
             title: Text(
               title,
-              style: themeData.appBarTheme.textTheme.headline6,
+              // style: themeData.appBarTheme.textTheme.headline6,
             ),
             elevation: 0.0,
           ),

@@ -1,13 +1,13 @@
-import 'package:breez/bloc/account/account_bloc.dart';
-import 'package:breez/bloc/account/account_model.dart';
-import 'package:breez/bloc/account/add_funds_bloc.dart';
-import 'package:breez/bloc/account/add_funds_model.dart';
-import 'package:breez/bloc/blocs_provider.dart';
-import 'package:breez/bloc/lsp/lsp_bloc.dart';
-import 'package:breez/bloc/lsp/lsp_model.dart';
-import 'package:breez/widgets/back_button.dart' as backBtn;
-import 'package:breez/widgets/single_button_bottom_bar.dart';
-import 'package:breez/widgets/warning_box.dart';
+import 'package:clovrlabs_wallet/bloc/account/account_bloc.dart';
+import 'package:clovrlabs_wallet/bloc/account/account_model.dart';
+import 'package:clovrlabs_wallet/bloc/account/add_funds_bloc.dart';
+import 'package:clovrlabs_wallet/bloc/account/add_funds_model.dart';
+import 'package:clovrlabs_wallet/bloc/blocs_provider.dart';
+import 'package:clovrlabs_wallet/bloc/lsp/lsp_bloc.dart';
+import 'package:clovrlabs_wallet/bloc/lsp/lsp_model.dart';
+import 'package:clovrlabs_wallet/widgets/back_button.dart' as backBtn;
+import 'package:clovrlabs_wallet/widgets/single_button_bottom_bar.dart';
+import 'package:clovrlabs_wallet/widgets/warning_box.dart';
 import 'package:fixnum/fixnum.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -65,7 +65,7 @@ class DepositToBTCAddressPageState extends State<DepositToBTCAddressPage> {
                         leading: backBtn.BackButton(),
                         title: Text(
                           texts.invoice_btc_address_title,
-                          style: themeData.appBarTheme.textTheme.headline6,
+                          // style: themeData.appBarTheme.textTheme.headline6,
                         ),
                         elevation: 0.0,
                       ),

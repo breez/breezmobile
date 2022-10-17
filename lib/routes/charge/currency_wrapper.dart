@@ -1,6 +1,6 @@
-import 'package:breez/bloc/account/account_model.dart';
-import 'package:breez/bloc/account/fiat_conversion.dart';
-import 'package:breez/bloc/user_profile/currency.dart';
+import 'package:clovrlabs_wallet/bloc/account/account_model.dart';
+import 'package:clovrlabs_wallet/bloc/account/fiat_conversion.dart';
+import 'package:clovrlabs_wallet/bloc/user_profile/currency.dart';
 
 class CurrencyWrapper {
   final Currency btc;

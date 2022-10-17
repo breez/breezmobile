@@ -1,11 +1,11 @@
-import 'package:breez/bloc/account/account_model.dart';
-import 'package:breez/bloc/pos_catalog/actions.dart';
-import 'package:breez/bloc/pos_catalog/bloc.dart';
-import 'package:breez/bloc/pos_catalog/model.dart';
-import 'package:breez/routes/charge/currency_wrapper.dart';
-import 'package:breez/theme_data.dart';
-import 'package:breez/widgets/flushbar.dart';
-import 'package:breez/widgets/route.dart';
+import 'package:clovrlabs_wallet/bloc/account/account_model.dart';
+import 'package:clovrlabs_wallet/bloc/pos_catalog/actions.dart';
+import 'package:clovrlabs_wallet/bloc/pos_catalog/bloc.dart';
+import 'package:clovrlabs_wallet/bloc/pos_catalog/model.dart';
+import 'package:clovrlabs_wallet/routes/charge/currency_wrapper.dart';
+import 'package:clovrlabs_wallet/theme_data.dart';
+import 'package:clovrlabs_wallet/widgets/flushbar.dart';
+import 'package:clovrlabs_wallet/widgets/route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 

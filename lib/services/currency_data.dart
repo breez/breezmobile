@@ -1,6 +1,6 @@
 import 'dart:convert';
 
-import 'package:breez/utils/locale.dart';
+import 'package:clovrlabs_wallet/utils/locale.dart';
 
 Map<String, CurrencyData> currencyDataFromJson(String str) =>
     Map.from(json.decode(str)).map((k, v) =>

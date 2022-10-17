@@ -2,13 +2,13 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
-import 'package:breez/bloc/backup/backup_model.dart';
-import 'package:breez/bloc/user_profile/backup_user_preferences.dart';
-import 'package:breez/bloc/user_profile/breez_user_model.dart';
-import 'package:breez/services/background_task.dart';
-import 'package:breez/services/breezlib/breez_bridge.dart';
-import 'package:breez/services/breezlib/data/rpc.pb.dart';
-import 'package:breez/services/injector.dart';
+import 'package:clovrlabs_wallet/bloc/backup/backup_model.dart';
+import 'package:clovrlabs_wallet/bloc/user_profile/backup_user_preferences.dart';
+import 'package:clovrlabs_wallet/bloc/user_profile/clovr_user_model.dart';
+import 'package:clovrlabs_wallet/services/background_task.dart';
+import 'package:clovrlabs_wallet/services/breezlib/breez_bridge.dart';
+import 'package:clovrlabs_wallet/services/breezlib/data/rpc.pb.dart';
+import 'package:clovrlabs_wallet/services/injector.dart';
 import 'package:crypto/crypto.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
@@ -36,49 +36,63 @@ class BackupBloc {
 
   final BehaviorSubject<BackupState> _backupStateController =
       BehaviorSubject<BackupState>();
+
   Stream<BackupState> get backupStateStream => _backupStateController.stream;
 
   final StreamController<bool> _promptBackupController =
       StreamController<bool>.broadcast();
+
   Stream<bool> get promptBackupStream => _promptBackupController.stream;
 
   final StreamController<bool> _backupPromptVisibleController =
       BehaviorSubject<bool>.seeded(false);
+
   Stream<bool> get backupPromptVisibleStream =>
       _backupPromptVisibleController.stream;
+
   Sink<bool> get backupPromptVisibleSink => _backupPromptVisibleController.sink;
 
   final BehaviorSubject<BackupSettings> _backupSettingsController =
       BehaviorSubject<BackupSettings>.seeded(BackupSettings.start());
+
   Stream<BackupSettings> get backupSettingsStream =>
       _backupSettingsController.stream;
+
   Sink<BackupSettings> get backupSettingsSink => _backupSettingsController.sink;
 
   final _backupNowController = StreamController<bool>();
+
   Sink<bool> get backupNowSink => _backupNowController.sink;
 
   final _backupAppDataController = StreamController<bool>.broadcast();
+
   Sink<bool> get backupAppDataSink => _backupAppDataController.sink;
 
   final _restoreLightningFeesController =
       StreamController<Map<String, dynamic>>.broadcast();
+
   Sink<Map<String, dynamic>> get restoreLightningFeesSink =>
       _restoreLightningFeesController.sink;
+
   Stream<Map<String, dynamic>> get restoreLightningFeesStream =>
       _restoreLightningFeesController.stream;
 
   final _restoreRequestController = StreamController<RestoreRequest>();
+
   Sink<RestoreRequest> get restoreRequestSink => _restoreRequestController.sink;
 
   final _multipleRestoreController =
       StreamController<List<SnapshotInfo>>.broadcast();
+
   Stream<List<SnapshotInfo>> get multipleRestoreStream =>
       _multipleRestoreController.stream;
 
   final _restoreFinishedController = StreamController<bool>.broadcast();
+
   Stream<bool> get restoreFinishedStream => _restoreFinishedController.stream;
 
   final _backupActionsController = StreamController<AsyncAction>.broadcast();
+
   Sink<AsyncAction> get backupActionsSink => _backupActionsController.sink;
 
   BreezBridge _breezLib;
@@ -96,8 +110,8 @@ class BackupBloc {
   static const String LAST_BACKUP_STATE_PREFERENCE_KEY = "backup_last_state";
 
   BackupBloc(
-    Stream<BreezUserModel> userStream,
-    Stream<bool> backupAnytimeDBStream,
+    Stream<ClovrUserModel> userStream,
+    // Stream<bool> backupAnytimeDBStream,
   ) {
     _initAppDataPathAndDir();
     ServiceInjector injector = ServiceInjector();
@@ -111,15 +125,15 @@ class BackupBloc {
 
     SharedPreferences.getInstance().then((sp) async {
       _sharedPreferences = sp;
-      // Read the backupKey from the secure storage and initialize the breez user model appropriately
+      // Read the backupKey from the secure storage and initialize the ClovrLabs Wallet  user model appropriately
       await _initializePersistentData();
       _listenBackupPaths();
       _listenBackupNowRequests();
-      _listenAppDataBackupRequests(backupAnytimeDBStream);
+      // _listenAppDataBackupRequests(backupAnytimeDBStream);
       _listenRestoreRequests();
       _scheduleBackgroundTasks();
 
-      // Read the backupKey from the secure storage and initialize the breez user model appropriately
+      // Read the backupKey from the secure storage and initialize the ClovrLabs Wallet user model appropriately
       _setBreezLibBackupKey();
       if (_backupSettingsController.value.backupProvider != null) {
         await _updateBackupProvider(_backupSettingsController.value);
@@ -229,19 +243,19 @@ class BackupBloc {
     });
   }
 
-  void _listenPinCodeChange(Stream<BreezUserModel> userStream) {
+  void _listenPinCodeChange(Stream<ClovrUserModel> userStream) {
     userStream.listen((user) {
       _setBreezLibBackupKey();
     });
   }
 
-  void _listenUserPreferenceChanges(Stream<BreezUserModel> userStream) {
+  void _listenUserPreferenceChanges(Stream<ClovrUserModel> userStream) {
     userStream.listen((user) async {
       await _compareUserPreferences(user);
     });
   }
 
-  Future<void> _compareUserPreferences(BreezUserModel user) async {
+  Future<void> _compareUserPreferences(ClovrUserModel user) async {
     var appDir = await getApplicationDocumentsDirectory();
     var backupAppDataDirPath =
         appDir.path + Platform.pathSeparator + 'app_data_backup';
@@ -271,7 +285,7 @@ class BackupBloc {
     return BackupUserPreferences.fromJson(json.decode(backupUserPrefs));
   }
 
-  Future<void> _updateUserPreferences(BreezUserModel userModel) async {
+  Future<void> _updateUserPreferences(ClovrUserModel userModel) async {
     final backupUserPrefsPath =
         _backupAppDataDirPath + Platform.pathSeparator + 'userPreferences.txt';
     var backupUserPreferences =
@@ -290,8 +304,8 @@ class BackupBloc {
     var preferences = await ServiceInjector().sharedPreferences;
     var userPreferences =
         preferences.getString(USER_DETAILS_PREFERENCES_KEY) ?? "{}";
-    BreezUserModel userModel =
-        BreezUserModel.fromJson(json.decode(userPreferences));
+    ClovrUserModel userModel =
+    ClovrUserModel.fromJson(json.decode(userPreferences));
     var backupUserPreferences =
         BackupUserPreferences.fromJson(userModel.toJson());
     await File(backupUserPrefsPath)
@@ -375,7 +389,6 @@ class BackupBloc {
     try {
       await _saveLightningFees();
       await _savePosDB();
-      await _savePodcastsDB();
     } on Exception catch (exception) {
       throw exception;
     }
@@ -423,18 +436,6 @@ class BackupBloc {
               'product-catalog.db')
           .catchError((err) {
         throw Exception("Failed to copy pos items.");
-      });
-    }
-  }
-
-  Future<void> _savePodcastsDB() async {
-    // Copy Podcasts library to backup directory
-    final anytimeDbPath = _appDirPath + Platform.pathSeparator + 'anytime.db';
-    if (await databaseExists(anytimeDbPath)) {
-      File(anytimeDbPath)
-          .copy(_backupAppDataDirPath + Platform.pathSeparator + 'anytime.db')
-          .catchError((err) {
-        throw Exception("Failed to copy podcast library.");
       });
     }
   }
@@ -633,6 +634,7 @@ class BreezLibBackupKey {
   String entropy;
 
   List<int> _key;
+
   set key(List<int> v) => _key = v;
 
   List<int> get key {

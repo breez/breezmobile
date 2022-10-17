@@ -1,4 +1,4 @@
-import 'package:breez/bloc/app_blocs.dart';
+import 'package:clovrlabs_wallet/bloc/app_blocs.dart';
 import 'package:flutter/material.dart';
 
 class AppBlocsProvider extends InheritedWidget {

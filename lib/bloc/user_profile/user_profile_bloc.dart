@@ -2,21 +2,20 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
-import 'package:breez/bloc/async_action.dart';
-import 'package:breez/bloc/user_profile/backup_user_preferences.dart';
-import 'package:breez/bloc/user_profile/breez_user_model.dart';
-import 'package:breez/bloc/user_profile/currency.dart';
-import 'package:breez/bloc/user_profile/default_profile_generator.dart';
-import 'package:breez/bloc/user_profile/security_model.dart';
-import 'package:breez/bloc/user_profile/user_actions.dart';
-import 'package:breez/logger.dart';
-import 'package:breez/services/breez_server/server.dart';
-import 'package:breez/services/breezlib/breez_bridge.dart';
-import 'package:breez/services/device.dart';
-import 'package:breez/services/injector.dart';
-import 'package:breez/services/local_auth_service.dart';
-import 'package:breez/services/notifications.dart';
-import 'package:breez/utils/locale.dart';
+import 'package:clovrlabs_wallet/bloc/async_action.dart';
+import 'package:clovrlabs_wallet/bloc/user_profile/backup_user_preferences.dart';
+import 'package:clovrlabs_wallet/bloc/user_profile/clovr_user_model.dart';
+import 'package:clovrlabs_wallet/bloc/user_profile/currency.dart';
+import 'package:clovrlabs_wallet/bloc/user_profile/security_model.dart';
+import 'package:clovrlabs_wallet/bloc/user_profile/user_actions.dart';
+import 'package:clovrlabs_wallet/logger.dart';
+import 'package:clovrlabs_wallet/services/breez_server/server.dart';
+import 'package:clovrlabs_wallet/services/breezlib/breez_bridge.dart';
+import 'package:clovrlabs_wallet/services/device.dart';
+import 'package:clovrlabs_wallet/services/injector.dart';
+import 'package:clovrlabs_wallet/services/local_auth_service.dart';
+import 'package:clovrlabs_wallet/services/notifications.dart';
+import 'package:clovrlabs_wallet/utils/locale.dart';
 import 'package:crypto/crypto.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
@@ -41,27 +40,35 @@ class UserProfileBloc {
 
   Map<Type, Function> _actionHandlers = Map();
   final _userActionsController = StreamController<AsyncAction>.broadcast();
+
   Sink<AsyncAction> get userActionsSink => _userActionsController.sink;
   final _registrationController = StreamController<void>();
+
   Sink<void> get registerSink => _registrationController.sink;
 
-  final _userStreamController = BehaviorSubject<BreezUserModel>();
-  Stream<BreezUserModel> get userStream => _userStreamController.stream;
+  final _userStreamController = BehaviorSubject<ClovrUserModel>();
 
-  final _userStreamPreviewController = BehaviorSubject<BreezUserModel>();
-  Stream<BreezUserModel> get userPreviewStream =>
+  Stream<ClovrUserModel> get userStream => _userStreamController.stream;
+
+  final _userStreamPreviewController = BehaviorSubject<ClovrUserModel>();
+
+  Stream<ClovrUserModel> get userPreviewStream =>
       _userStreamPreviewController.stream;
 
   final _currencyController = BehaviorSubject<Currency>();
+
   Sink<Currency> get currencySink => _currencyController.sink;
 
   final _fiatConversionController = BehaviorSubject<String>();
+
   Sink<String> get fiatConversionSink => _fiatConversionController.sink;
 
-  final _userController = BehaviorSubject<BreezUserModel>();
-  Sink<BreezUserModel> get userSink => _userController.sink;
+  final _userController = BehaviorSubject<ClovrUserModel>();
+
+  Sink<ClovrUserModel> get userSink => _userController.sink;
 
   final _randomizeController = BehaviorSubject<void>();
+
   Sink<void> get randomizeSink => _randomizeController.sink;
 
   UserProfileBloc() {
@@ -117,7 +124,7 @@ class UserProfileBloc {
       _userStreamController.firstWhere((u) => u != null).then((user) {
         // automatic refresh registration on startup if we already passed the walkthrough.
         if (user.registrationRequested) {
-          _refreshRegistration(_userStreamController.value);
+         _refreshRegistration(_userStreamController.value);
         }
       });
     });
@@ -152,24 +159,22 @@ class UserProfileBloc {
       String jsonStr =
           preferences.getString(USER_DETAILS_PREFERENCES_KEY) ?? "{}";
       Map profile = json.decode(jsonStr);
-      BreezUserModel user = BreezUserModel.fromJson(profile);
+      ClovrUserModel user = ClovrUserModel.fromJson(profile);
 
       // First time we create a user, initialize with random data.
       if (profile.isEmpty) {
-        final texts = getSystemAppLocalizations();
-        final defaultProfile = generateDefaultProfile(texts);
         user = user.copyWith(
-          name: defaultProfile.buildName(getSystemLocale()),
-          color: defaultProfile.color,
-          animal: defaultProfile.animal,
+          name: "Test User",
         );
       }
       if (!user.registered && Platform.isAndroid) {
-        GooglePlayServicesAvailability availability = await GoogleApiAvailability.instance.checkGooglePlayServicesAvailability();
+        GooglePlayServicesAvailability availability =
+            await GoogleApiAvailability.instance
+                .checkGooglePlayServicesAvailability();
         print("GooglePlayServicesAvailability:" + availability.toString());
         if ((availability == GooglePlayServicesAvailability.serviceMissing) ||
-          (availability == GooglePlayServicesAvailability.serviceDisabled) ||
-          (availability == GooglePlayServicesAvailability.serviceInvalid)) {
+            (availability == GooglePlayServicesAvailability.serviceDisabled) ||
+            (availability == GooglePlayServicesAvailability.serviceInvalid)) {
           var uuid = Uuid();
           user = user.copyWith(userID: "random-" + uuid.v4());
         }
@@ -259,7 +264,8 @@ class UserProfileBloc {
     } catch (e) {
       //  This is a temporary workaround for flutter_secure_storage issues
       //  on apps published in Google Play for Android devices
-      if(e.toString().contains("java.lang.NullPointerException") && Platform.isAndroid){
+      if (e.toString().contains("java.lang.NullPointerException") &&
+          Platform.isAndroid) {
         action.resolve(true);
         return;
       }
@@ -351,14 +357,15 @@ class UserProfileBloc {
     });
   }
 
-  Future _refreshRegistration(BreezUserModel user) async {
+  Future _refreshRegistration(ClovrUserModel user) async {
     var userToRegister = user;
     SharedPreferences preferences = await _preferences;
     try {
       String token = await _notifications.getToken();
 
-      if (token != null && (token != user.token || user.userID == null || user.userID.isEmpty)) {
-        //var userID = await _breezServer.registerDevice(token);
+      if (token != null &&
+          (token != user.token || user.userID == null || user.userID.isEmpty)) {
+        // var userID = await _breezServer.registerDevice(token);
         var userID = token;
         userToRegister = userToRegister.copyWith(token: token, userID: userID);
       }
@@ -370,8 +377,8 @@ class UserProfileBloc {
     await _saveChanges(preferences, userToRegister);
   }
 
-  Future<BreezUserModel> _restoreUserPreferences(
-      BreezUserModel userModel) async {
+  Future<ClovrUserModel> _restoreUserPreferences(
+      ClovrUserModel userModel) async {
     var appDir = await getApplicationDocumentsDirectory();
     var backupAppDataDirPath =
         appDir.path + Platform.pathSeparator + 'app_data_backup';
@@ -412,12 +419,8 @@ class UserProfileBloc {
 
   void _listenRandomizeRequest(ServiceInjector injector) {
     _randomizeController.stream.listen((request) async {
-      final texts = getSystemAppLocalizations();
-      final defaultProfile = generateDefaultProfile(texts);
       _userStreamPreviewController.add(_currentUser.copyWith(
-        name: defaultProfile.buildName(getSystemLocale()),
-        color: defaultProfile.color,
-        animal: defaultProfile.animal,
+        name: "",
         image: '',
       ));
     });
@@ -436,14 +439,14 @@ class UserProfileBloc {
   }
 
   Future<bool> _saveChanges(
-      SharedPreferences preferences, BreezUserModel user) {
+      SharedPreferences preferences, ClovrUserModel user) {
     var res =
         preferences.setString(USER_DETAILS_PREFERENCES_KEY, json.encode(user));
     _publishUser(user);
     return res;
   }
 
-  void _publishUser(BreezUserModel user) {
+  void _publishUser(ClovrUserModel user) {
     if (user?.token == null) {
       print("UserProfileBloc publish first user null token");
     } else {
@@ -453,7 +456,7 @@ class UserProfileBloc {
     _userStreamPreviewController.add(user);
   }
 
-  BreezUserModel get _currentUser => _userStreamController.value;
+  ClovrUserModel get _currentUser => _userStreamController.value;
 
   close() {
     _registrationController.close();

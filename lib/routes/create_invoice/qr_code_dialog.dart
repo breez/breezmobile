@@ -1,16 +1,16 @@
 import 'dart:async';
 
-import 'package:breez/bloc/account/account_bloc.dart';
-import 'package:breez/bloc/account/account_model.dart';
-import 'package:breez/bloc/invoice/invoice_bloc.dart';
-import 'package:breez/bloc/invoice/invoice_model.dart';
-import 'package:breez/bloc/user_profile/currency.dart';
-import 'package:breez/services/injector.dart';
-import 'package:breez/theme_data.dart' as theme;
-import 'package:breez/widgets/circular_progress.dart';
-import 'package:breez/widgets/compact_qr_image.dart';
-import 'package:breez/widgets/flushbar.dart';
-import 'package:breez/widgets/warning_box.dart';
+import 'package:clovrlabs_wallet/bloc/account/account_bloc.dart';
+import 'package:clovrlabs_wallet/bloc/account/account_model.dart';
+import 'package:clovrlabs_wallet/bloc/invoice/invoice_bloc.dart';
+import 'package:clovrlabs_wallet/bloc/invoice/invoice_model.dart';
+import 'package:clovrlabs_wallet/bloc/user_profile/currency.dart';
+import 'package:clovrlabs_wallet/services/injector.dart';
+import 'package:clovrlabs_wallet/theme_data.dart' as theme;
+import 'package:clovrlabs_wallet/widgets/circular_progress.dart';
+import 'package:clovrlabs_wallet/widgets/compact_qr_image.dart';
+import 'package:clovrlabs_wallet/widgets/flushbar.dart';
+import 'package:clovrlabs_wallet/widgets/warning_box.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:share_extend/share_extend.dart';
@@ -153,10 +153,7 @@ class QrCodeDialogState extends State<QrCodeDialog>
                                   right: 2.0,
                                   left: 14.0,
                                 ),
-                                icon: Icon(IconData(
-                                  0xe917,
-                                  fontFamily: "icomoon",
-                                )),
+
                                 color: themeData.primaryTextTheme.button.color,
                                 onPressed: () {
                                   ShareExtend.share(
@@ -164,6 +161,12 @@ class QrCodeDialogState extends State<QrCodeDialog>
                                     "text",
                                   );
                                 },
+                                icon: Image.asset(
+                                  "src/icon/session_share.png",
+                                  height: 24.0,
+                                  width: 24.0,
+                                  color: themeData.appBarTheme.actionsIconTheme.color,
+                                ),
                               ),
                               message: texts.qr_code_dialog_share,
                             ),
@@ -177,10 +180,7 @@ class QrCodeDialogState extends State<QrCodeDialog>
                                   right: 14.0,
                                   left: 2.0,
                                 ),
-                                icon: Icon(IconData(
-                                  0xe90b,
-                                  fontFamily: "icomoon",
-                                )),
+
                                 color: themeData.primaryTextTheme.button.color,
                                 onPressed: () {
                                   ServiceInjector()
@@ -192,6 +192,12 @@ class QrCodeDialogState extends State<QrCodeDialog>
                                     duration: Duration(seconds: 3),
                                   );
                                 },
+                                icon: Image.asset(
+                                  "src/icon/paste.png",
+                                  height: 24.0,
+                                  width: 24.0,
+                                  color: themeData.appBarTheme.actionsIconTheme.color,
+                                ),
                               ),
                               message: texts.qr_code_dialog_copy,
                             ),
@@ -313,8 +319,8 @@ class QrCodeDialogState extends State<QrCodeDialog>
             vertical: 12,
             horizontal: 8,
           ),
-          backgroundColor: theme.themeId == "BLUE" ? Color(0xFFf3f8fc) : null,
-          borderColor: theme.themeId == "BLUE" ? Color(0xFF0085fb) : null,
+          backgroundColor: theme.themeId == "WHITE" ? Color(0xFFf3f8fc) : null,
+          borderColor: theme.themeId == "WHITE" ? Color(0xFF0085fb) : null,
           child: Text(
             _warningMessage(context, hasError, snapshot, accSnapshot),
             textAlign: TextAlign.center,
@@ -342,7 +348,7 @@ class QrCodeDialogState extends State<QrCodeDialog>
         return texts.qr_code_dialog_warning_message_with_lsp(
           Currency.SAT.format(lspFee),
           // FIXME
-          '0',//accSnapshot.data.fiatCurrency.format(lspFee),
+          '0', //accSnapshot.data.fiatCurrency.format(lspFee),
         );
       }
       return texts.qr_code_dialog_warning_message;

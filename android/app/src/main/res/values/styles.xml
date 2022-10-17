@@ -1,8 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+<!--    <style name="LaunchTheme" parent="Theme.AppCompat.Light.NoActionBar">-->
+<!--        &lt;!&ndash; Show a splash screen on the activity. Automatically removed when-->
+<!--             Flutter draws its first frame &ndash;&gt;-->
+<!--        <item name="android:background">@drawable/splash_screen</item>-->
+<!--&lt;!&ndash;        <item name="android:windowAnimationStyle">@null</item>&ndash;&gt;-->
+<!--        <item name="android:windowFullscreen">true</item>-->
+<!--&lt;!&ndash;        <item name="android:windowContentOverlay">@null</item>&ndash;&gt;-->
+<!--    </style>-->
+
     <style name="LaunchTheme" parent="Theme.AppCompat.Light.NoActionBar">
         <!-- Show a splash screen on the activity. Automatically removed when
              Flutter draws its first frame -->
-        <item name="android:windowBackground">@drawable/launch_background</item>
+        <item name="android:windowBackground">@color/notification_color</item>
     </style>
 </resources>

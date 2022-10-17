@@ -1,20 +1,20 @@
 import 'dart:async';
 
 import 'package:auto_size_text/auto_size_text.dart';
-import 'package:breez/bloc/account/account_actions.dart';
-import 'package:breez/bloc/account/account_bloc.dart';
-import 'package:breez/bloc/account/account_model.dart';
-import 'package:breez/bloc/blocs_provider.dart';
-import 'package:breez/theme_data.dart' as theme;
-import 'package:breez/utils/min_font_size.dart';
-import 'package:breez/widgets/amount_form_field.dart';
-import 'package:breez/widgets/back_button.dart' as backBtn;
-import 'package:breez/widgets/collapsible_list_item.dart';
-import 'package:breez/widgets/error_dialog.dart';
-import 'package:breez/widgets/keyboard_done_action.dart';
-import 'package:breez/widgets/processing_payment_dialog.dart';
-import 'package:breez/widgets/single_button_bottom_bar.dart';
-import 'package:breez/widgets/static_loader.dart';
+import 'package:clovrlabs_wallet/bloc/account/account_actions.dart';
+import 'package:clovrlabs_wallet/bloc/account/account_bloc.dart';
+import 'package:clovrlabs_wallet/bloc/account/account_model.dart';
+import 'package:clovrlabs_wallet/bloc/blocs_provider.dart';
+import 'package:clovrlabs_wallet/theme_data.dart' as theme;
+import 'package:clovrlabs_wallet/utils/min_font_size.dart';
+import 'package:clovrlabs_wallet/widgets/amount_form_field.dart';
+import 'package:clovrlabs_wallet/widgets/back_button.dart' as backBtn;
+import 'package:clovrlabs_wallet/widgets/collapsible_list_item.dart';
+import 'package:clovrlabs_wallet/widgets/error_dialog.dart';
+import 'package:clovrlabs_wallet/widgets/keyboard_done_action.dart';
+import 'package:clovrlabs_wallet/widgets/processing_payment_dialog.dart';
+import 'package:clovrlabs_wallet/widgets/single_button_bottom_bar.dart';
+import 'package:clovrlabs_wallet/widgets/static_loader.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -102,7 +102,7 @@ class SpontaneousPaymentPageState extends State<SpontaneousPaymentPage> {
         leading: backBtn.BackButton(),
         title: Text(
           texts.spontaneous_payment_title,
-          style: themeData.appBarTheme.textTheme.headline6,
+          // style: themeData.appBarTheme.textTheme.headline6,
         ),
         elevation: 0.0,
       ),

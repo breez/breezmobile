@@ -1,6 +1,6 @@
-import 'package:breez/bloc/account/account_model.dart';
-import 'package:breez/bloc/pos_catalog/bloc.dart';
-import 'package:breez/bloc/pos_catalog/model.dart';
+import 'package:clovrlabs_wallet/bloc/account/account_model.dart';
+import 'package:clovrlabs_wallet/bloc/pos_catalog/bloc.dart';
+import 'package:clovrlabs_wallet/bloc/pos_catalog/model.dart';
 import 'package:flutter/material.dart';
 
 import 'catalog_item.dart';

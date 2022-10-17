@@ -1,22 +1,22 @@
 import 'dart:async';
 
-import 'package:breez/bloc/account/account_bloc.dart';
-import 'package:breez/bloc/account/account_model.dart';
-import 'package:breez/bloc/blocs_provider.dart';
-import 'package:breez/bloc/pos_catalog/actions.dart';
-import 'package:breez/bloc/pos_catalog/bloc.dart';
-import 'package:breez/bloc/pos_catalog/model.dart';
-import 'package:breez/bloc/user_profile/breez_user_model.dart';
-import 'package:breez/bloc/user_profile/currency.dart';
-import 'package:breez/bloc/user_profile/user_profile_bloc.dart';
-import 'package:breez/routes/charge/currency_wrapper.dart';
-import 'package:breez/theme_data.dart' as theme;
-import 'package:breez/utils/date.dart';
-import 'package:breez/utils/print_pdf.dart';
-import 'package:breez/widgets/back_button.dart' as backBtn;
-import 'package:breez/widgets/loader.dart';
-import 'package:breez/widgets/payment_details_dialog.dart';
-import 'package:breez/widgets/print_parameters.dart';
+import 'package:clovrlabs_wallet/bloc/account/account_bloc.dart';
+import 'package:clovrlabs_wallet/bloc/account/account_model.dart';
+import 'package:clovrlabs_wallet/bloc/blocs_provider.dart';
+import 'package:clovrlabs_wallet/bloc/pos_catalog/actions.dart';
+import 'package:clovrlabs_wallet/bloc/pos_catalog/bloc.dart';
+import 'package:clovrlabs_wallet/bloc/pos_catalog/model.dart';
+import 'package:clovrlabs_wallet/bloc/user_profile/clovr_user_model.dart';
+import 'package:clovrlabs_wallet/bloc/user_profile/currency.dart';
+import 'package:clovrlabs_wallet/bloc/user_profile/user_profile_bloc.dart';
+import 'package:clovrlabs_wallet/routes/charge/currency_wrapper.dart';
+import 'package:clovrlabs_wallet/theme_data.dart' as theme;
+import 'package:clovrlabs_wallet/utils/date.dart';
+import 'package:clovrlabs_wallet/utils/print_pdf.dart';
+import 'package:clovrlabs_wallet/widgets/back_button.dart' as backBtn;
+import 'package:clovrlabs_wallet/widgets/loader.dart';
+import 'package:clovrlabs_wallet/widgets/payment_details_dialog.dart';
+import 'package:clovrlabs_wallet/widgets/print_parameters.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -127,7 +127,7 @@ class SaleViewState extends State<SaleView> {
             leading: backBtn.BackButton(),
             title: Text(
               title,
-              style: themeData.appBarTheme.textTheme.headline6,
+              // style: themeData.appBarTheme.textTheme.headline6,
             ),
             actions: widget.readOnly
                 ? _buildPrintIcon(context, accModel)
@@ -178,7 +178,7 @@ class SaleViewState extends State<SaleView> {
           ),
           bottomNavigationBar: Container(
             decoration: BoxDecoration(
-              color: theme.themeId == "BLUE"
+              color: theme.themeId == "WHITE"
                   ? themeData.backgroundColor
                   : themeData.canvasColor,
               boxShadow: [
@@ -271,7 +271,7 @@ class SaleViewState extends State<SaleView> {
     final userBloc = AppBlocsProvider.of<UserProfileBloc>(context);
 
     return [
-      StreamBuilder<BreezUserModel>(
+      StreamBuilder<ClovrUserModel>(
         stream: userBloc.userStream,
         builder: (context, snapshot) {
           var user = snapshot.data;
@@ -416,10 +416,10 @@ class SaleLinesList extends StatelessWidget {
         //primary: false,
         itemBuilder: (context, index) {
           return ListTileTheme(
-            textColor: theme.themeId == "BLUE"
+            textColor: theme.themeId == "WHITE"
                 ? themeData.canvasColor
                 : themeData.textTheme.subtitle1.color,
-            iconColor: theme.themeId == "BLUE"
+            iconColor: theme.themeId == "WHITE"
                 ? themeData.canvasColor
                 : themeData.textTheme.subtitle1.color,
             child: Column(
@@ -466,7 +466,7 @@ class SaleLinesList extends StatelessWidget {
                   height: 0.0,
                   color: index == currentSale.saleLines.length - 1
                       ? Colors.white.withOpacity(0.0)
-                      : (theme.themeId == "BLUE"
+                      : (theme.themeId == "WHITE"
                               ? themeData.canvasColor
                               : themeData.textTheme.subtitle1.color)
                           .withOpacity(0.5),
@@ -500,7 +500,7 @@ class SaleLineWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final listTileThemeData = ListTileTheme.of(context);
-    final iconColor = theme.themeId == "BLUE"
+    final iconColor = theme.themeId == "WHITE"
         ? Colors.black.withOpacity(0.3)
         : listTileThemeData.iconColor.withOpacity(0.5);
 
@@ -540,7 +540,7 @@ class SaleLineWidget extends StatelessWidget {
                 child: Text(
                   saleLine.quantity.toString(),
                   style: TextStyle(
-                    color: theme.themeId == "BLUE"
+                    color: theme.themeId == "WHITE"
                         ? Colors.black.withOpacity(0.7)
                         : listTileThemeData.textColor,
                     fontSize: 18.0,
@@ -588,7 +588,7 @@ class CurrencyDisplay extends StatelessWidget {
     TextStyle textStyle = TextStyle(
       color: ListTileTheme.of(context)
           .textColor
-          .withOpacity(theme.themeId == "BLUE" ? 0.75 : 0.5),
+          .withOpacity(theme.themeId == "WHITE" ? 0.75 : 0.5),
     );
     return SingleChildScrollView(
       scrollDirection: Axis.horizontal,

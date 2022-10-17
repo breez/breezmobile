@@ -1,7 +1,7 @@
-import 'package:breez/bloc/connect_pay/connect_pay_model.dart';
-import 'package:breez/theme_data.dart' as theme;
-import 'package:breez/widgets/breez_avatar.dart';
-import 'package:breez/widgets/delay_render.dart';
+import 'package:clovrlabs_wallet/bloc/connect_pay/connect_pay_model.dart';
+import 'package:clovrlabs_wallet/theme_data.dart' as theme;
+import 'package:clovrlabs_wallet/widgets/wallet_avatar.dart';
+import 'package:clovrlabs_wallet/widgets/delay_render.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 
@@ -44,7 +44,7 @@ class ConnectedPeer extends StatelessWidget {
             child: AnimatedOpacity(
                 duration: Duration(milliseconds: 1000),
                 opacity: !showShare ? 1.0 : 0.0,
-                child: AlienAvatar())),
+                child: UnknownAvatar())),
         Positioned(
             child: !showShare && !showAlien
                 ? buildPeerAvatar(imageURL)
@@ -93,14 +93,14 @@ class ConnectedPeer extends StatelessWidget {
 
   Widget buildPeerAvatar(String imageURL) {
     if (_me || _renderPayer) {
-      return BreezAvatar(imageURL,
+      return ElenPayAvatar(imageURL,
           radius: 30.0, backgroundColor: theme.sessionAvatarBackgroundColor);
     }
 
     return AnimatedOpacity(
         duration: Duration(milliseconds: 1000),
         opacity: 1.0,
-        child: BreezAvatar(imageURL,
+        child: ElenPayAvatar(imageURL,
             radius: 30.0, backgroundColor: theme.sessionAvatarBackgroundColor));
   }
 
@@ -133,7 +133,7 @@ class _ShareInviteWidget extends StatelessWidget {
         duration: Duration(milliseconds: 1000),
         opacity: _loading ? 0.0 : 1.0,
         child: AvatarDecorator(IconButton(
-          icon: Icon(Icons.share, color: theme.BreezColors.blue[500]),
+          icon: Icon(Icons.share, color: theme.ElenPayWalletColors.dark_grey[500]),
           onPressed: () => _onShareInvite(),
         )),
       ))
@@ -160,10 +160,11 @@ class AvatarDecorator extends StatelessWidget {
   }
 }
 
-class AlienAvatar extends StatelessWidget {
+class UnknownAvatar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return AvatarDecorator(SvgPicture.asset("src/icon/alien.svg",
-        color: Color.fromARGB(255, 0, 166, 68)));
+    return AvatarDecorator(
+      Image.asset("src/images/unknown.png"),
+    );
   }
 }

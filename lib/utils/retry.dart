@@ -1,6 +1,6 @@
 import "dart:async";
 
-import 'package:breez/utils/locale.dart';
+import 'package:clovrlabs_wallet/utils/locale.dart';
 
 Future<dynamic> retry(
   Future<dynamic> f(), {

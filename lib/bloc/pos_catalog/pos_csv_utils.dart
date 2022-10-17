@@ -1,10 +1,10 @@
 import 'dart:convert';
 import 'dart:io';
 
-import 'package:breez/bloc/pos_catalog/bloc.dart';
-import 'package:breez/bloc/pos_catalog/model.dart';
-import 'package:breez/logger.dart';
-import 'package:breez/utils/locale.dart';
+import 'package:clovrlabs_wallet/bloc/pos_catalog/bloc.dart';
+import 'package:clovrlabs_wallet/bloc/pos_catalog/model.dart';
+import 'package:clovrlabs_wallet/logger.dart';
+import 'package:clovrlabs_wallet/utils/locale.dart';
 import 'package:csv/csv.dart';
 import 'package:flutter/foundation.dart';
 import 'package:path_provider/path_provider.dart';
@@ -50,20 +50,20 @@ class PosCsvUtils {
   }
 
   Future<String> _saveCsvFile(String csv) async {
-    log.info("save breez pos items to csv started");
+    log.info("save ClovrLabs Wallet pos items to csv started");
     String filePath = await _createCsvFilePath();
     final file = File(filePath);
     await file.writeAsString(csv);
-    log.info("save breez pos items to csv finished");
+    log.info("save ClovrLabs Wallet pos items to csv finished");
     return file.path;
   }
 
   Future<String> _createCsvFilePath() async {
-    log.info("create breez pos items path started");
+    log.info("create ClovrLabs Wallet pos items path started");
     final directory = await getTemporaryDirectory();
     String filePath = '${directory.path}/BreezPosItems';
     filePath += ".csv";
-    log.info("create breez pos items path finished");
+    log.info("create ClovrLabs Wallet pos items path finished");
     return filePath;
   }
 

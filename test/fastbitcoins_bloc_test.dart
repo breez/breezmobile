@@ -1,8 +1,8 @@
 import 'dart:convert';
 
-import 'package:breez/bloc/fastbitcoins/fastbitcoins_bloc.dart';
-import 'package:breez/bloc/fastbitcoins/fastbitcoins_model.dart';
-import 'package:breez/services/injector.dart';
+import 'package:clovrlabs_wallet/bloc/fastbitcoins/fastbitcoins_bloc.dart';
+import 'package:clovrlabs_wallet/bloc/fastbitcoins/fastbitcoins_model.dart';
+import 'package:clovrlabs_wallet/services/injector.dart';
 import 'package:http/http.dart';
 import 'package:test/test.dart';
 

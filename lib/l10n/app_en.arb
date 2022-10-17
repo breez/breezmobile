@@ -20,14 +20,14 @@
   "home_error_podcast_link": "Podcast Link",
   "home_broadcast_transaction": "Broadcasting your transaction",
   "home_config_error_title": "Configuration Error",
-  "home_config_error_message": "Breez detected another device is running with the same configuration (probably due to restore). Breez cannot run the same configuration on more than one device. Please reinstall Breez if you wish to continue using Breez on this device.",
+  "home_config_error_message": "ElenPay detected another device is running with the same configuration (probably due to restore). ClovrLabs Wallet cannot run the same configuration on more than one device. Please reinstall ClovrLabs Wallet if you wish to continue using ClovrLabs Wallet on this device.",
   "home_config_error_action_exit": "CANCEL",
   "home_background_synchronization_title": "Background Synchronization",
-  "home_background_synchronization_message": "In order to support instantaneous payments, Breez needs your permission in order to synchronize the information while the app is not active. Please approve the app in the next dialog.",
+  "home_background_synchronization_message": "In order to support instantaneous payments, ClovrLabs Wallet  needs your permission in order to synchronize the information while the app is not active. Please approve the app in the next dialog.",
   "home_payment_sent": "Payment was successfully sent!",
   "home_report_sending": "Sending Report…",
   "invoice_btc_address_title": "Receive via BTC Address",
-  "invoice_btc_address_network_error": "Failed to retrieve an address from Breez server\nPlease check your internet connection.",
+  "invoice_btc_address_network_error": "Failed to retrieve an address from ClovrLabs Wallet server\nPlease check your internet connection.",
   "invoice_btc_address_action_retry": "RETRY",
   "invoice_btc_address_action_close": "CLOSE",
   "invoice_btc_address_warning_with_min_fee_account_connected": "Send more than {minSats} and up to {maxSats} to this address. A setup fee of {setUpFee}% with a minimum of {minFee} will be applied for sending more than {liquidity}.",
@@ -116,7 +116,7 @@
   },
   "invoice_btc_address_deposit_address": "Deposit Address",
   "invoice_btc_address_deposit_address_copied": "Deposit address was copied to your clipboard.",
-  "invoice_btc_address_on_chain_begin": "Breez is using Submarine Swaps to execute on-chain transactions. Click ",
+  "invoice_btc_address_on_chain_begin": "ClovrLabs is using Submarine Swaps to execute on-chain transactions. Click ",
   "invoice_btc_address_on_chain_here": "here",
   "invoice_btc_address_on_chain_end": " to view the script associated with this address.",
   "invoice_btc_address_on_chain_action_ok": "OK",
@@ -147,8 +147,8 @@
     }
   },
   "invoice_description_label": "Description (optional)",
-  "invoice_availability_message_synchronizing": "Receiving payments will be available as soon as Breez is synchronized.",
-  "invoice_availability_message_opening_channel": "You will be able to receive payments after Breez is finished opening a secure channel with our server. This usually takes ~10 minutes to be completed. Please try again in a couple of minutes.",
+  "invoice_availability_message_synchronizing": "Receiving payments will be available as soon as ClovrLabs Wallet is synchronized.",
+  "invoice_availability_message_opening_channel": "You will be able to receive payments after ClovrLabs Wallet is finished opening a secure channel with our server. This usually takes ~10 minutes to be completed. Please try again in a couple of minutes.",
   "invoice_receive_label": "Receive up to: {maxSats}",
   "@invoice_receive_label": {
     "placeholders": {
@@ -238,7 +238,7 @@
   "bottom_action_bar_receive_invoice": "Receive via Invoice",
   "bottom_action_bar_receive_btc_address": "Receive via BTC Address",
   "bottom_action_bar_buy_bitcoin": "Buy Bitcoin",
-  "bottom_action_bar_warning_balance_title": "Breez requires you to keep {balance} in your balance.",
+  "bottom_action_bar_warning_balance_title": "ClovrLabs requires you to keep {balance} in your balance.",
   "@bottom_action_bar_warning_balance_title": {
     "placeholders": {
       "balance": {
@@ -252,7 +252,7 @@
   "payments_filter_option_all": "All Activities",
   "payments_filter_option_sent": "Sent",
   "payments_filter_option_received": "Received",
-  "payments_filter_message_loading_transactions": "Please wait while Breez is loading transactions.",
+  "payments_filter_message_loading_transactions": "Please wait while ClovrLabs Wallet is loading transactions.",
   "payment_details_dialog_closed_channel_title": "Closed Channel",
   "payment_details_dialog_closed_channel_title_pending": "Pending Closed Channel",
   "payment_details_dialog_closed_channel_ok": "OK",
@@ -282,9 +282,9 @@
     }
   },
   "payment_details_dialog_transaction_id_copied": "Transaction ID was copied to your clipboard.",
-  "payment_details_dialog_restart_text": "Please restart Breez to reset chain information for this channel.",
+  "payment_details_dialog_restart_text": "Please restart ClovrLabs Wallet to reset chain information for this channel.",
   "payment_details_dialog_restart_cancel": "CANCEL",
-  "payment_details_dialog_restart_exit_breez": "EXIT BREEZ",
+  "payment_details_dialog_restart_exit_breez": "EXIT ClovrLabs",
   "payment_details_dialog_transaction_label_default": "Transaction ID:",
   "payment_details_dialog_internal_error": "Internal Error",
   "payment_details_dialog_refresh_information": "Refresh Information",
@@ -619,7 +619,7 @@
       }
     }
   },
-  "connect_to_pay_payee_waiting_sync": "Please wait while Breez is synchronizing",
+  "connect_to_pay_payee_waiting_sync": "Please wait while ClovrLabs Wallet is synchronizing",
   "connect_to_pay_payee_waiting_sync_action_close": "CLOSE",
   "connect_to_pay_payee_message_no_fiat": "{name} wants to pay you {amount}",
   "@connect_to_pay_payee_message_no_fiat": {
@@ -724,7 +724,7 @@
     }
   },
   "connect_to_pay_payer_sending": "Sending payment…",
-  "connect_to_pay_payer_wait_sync": "Please wait while Breez is synchronizing",
+  "connect_to_pay_payer_wait_sync": "Please wait while ClovrLabs Wallet is synchronizing",
   "connect_to_pay_payer_synchronizing": "Synchronizing to the network",
   "connect_to_pay_payer_action_close": "CLOSE",
   "connect_to_pay_payment_detail_note": "Note (optional)",
@@ -732,7 +732,7 @@
   "connect_to_pay_payment_action_close": "Close",
   "connect_to_pay_payment_action_pay": "Pay",
   "connect_to_pay_peer_unknown": "Unknown",
-  "connect_to_pay_share_text": "{name} wants to pay you via Breez…\nFollow this link to receive payment: {address}",
+  "connect_to_pay_share_text": "{name} wants to pay you via ClovrLabs…\nFollow this link to receive payment: {address}",
   "@connect_to_pay_share_text": {
     "placeholders": {
       "name": {
@@ -796,17 +796,17 @@
   "backup_model_name_remote_server": "Remote Server",
   "backup_model_error_failed": "Backup Failed",
   "network_title": "Network",
-  "network_restart_message": "Please restart Breez to switch to the new Bitcoin Node configuration.",
+  "network_restart_message": "Please restart ClovrLabs Wallet to switch to the new Bitcoin Node configuration.",
   "network_restart_action_cancel": "CANCEL",
-  "network_restart_action_confirm": "EXIT BREEZ",
+  "network_restart_action_confirm": "EXIT ClovrLabs",
   "network_restart_action_reset": "Reset",
   "network_restart_action_save": "Save",
   "network_bitcoin_node": "Bitcoin Node (BIP 157)",
   "network_optional_node": "Bitcoin Node (BIP 157, optional)",
   "network_bitcoin_node_required_error": "This field is required",
   "network_distinct_node_hint": "Please enter a different node",
-  "network_default_node_error": "Breez is unable to use the default node.",
-  "network_custom_node_error": "Breez is unable to connect to the specified node. Please make sure this node supports BIP 157.",
+  "network_default_node_error": "ClovrLabs is unable to use the default node.",
+  "network_custom_node_error": "ClovrLabs is unable to connect to the specified node. Please make sure this node supports BIP 157.",
   "network_testing_node": "Testing node",
   "amount_form_denomination": "Amount in {denomination}",
   "@amount_form_denomination": {
@@ -896,7 +896,7 @@
   "reverse_swap_confirmation_error_fetch_fee": "Failed to retrieve fees. Please try again later.",
   "reverse_swap_confirmation_error_funds_fee": "You don't have enough funds for this payment network fee.",
   "reverse_swap_notification_title": "Action Required",
-  "reverse_swap_notification_body": "Please open Breez to complete your requested transaction.",
+  "reverse_swap_notification_body": "Please open ClovrLabs Wallet to complete your requested transaction.",
   "sync_progress_server_ready": "Synchronizing to the network",
   "sync_progress_waiting_network": "Waiting for network",
   "withdraw_funds_error_min_value": "Must be at least {minValue}",
@@ -926,21 +926,21 @@
   "withdraw_funds_action_next": "NEXT",
   "swap_in_progress_title": "Send to BTC Address",
   "swap_in_progress_transaction_id_copied": "Transaction ID was copied to your clipboard.",
-  "swap_in_progress_message_waiting_confirmation": "Breez is waiting for your transaction to be confirmed.",
-  "swap_in_progress_message_processing_previous_request": "Breez is currently processing your previous request. You'll be notified once processing is completed to send your funds to the address you've specified.",
+  "swap_in_progress_message_waiting_confirmation": "ClovrLabs is waiting for your transaction to be confirmed.",
+  "swap_in_progress_message_processing_previous_request": "ClovrLabs is currently processing your previous request. You'll be notified once processing is completed to send your funds to the address you've specified.",
   "market_place_no_vendors": "There are no available vendors at the moment.",
   "account_required_actions_backup": "Backup",
-  "account_page_activation_provider": "In order to activate Breez, please select a provider:",
+  "account_page_activation_provider": "In order to activate ClovrLabs, please select a provider:",
   "account_page_activation_provider_action_select": "SELECT…",
   "account_page_activation_provider_label": "Select a Lightning Provider",
-  "account_page_activation_provider_hint": "Please select one of the following providers in order to activate Breez and connect to the Lightning network.",
+  "account_page_activation_provider_hint": "Please select one of the following providers in order to activate ClovrLabs Wallet and connect to the Lightning network.",
   "account_page_activation_error": "There was an error fetching lightning providers. Please check your internet connection and try again.",
   "account_page_activation_action_retry": "RETRY",
   "account_page_activation_action_select": "SELECT",
   "funds_over_limit_dialog_on_chain_transaction": "On-chain Transaction",
   "funds_over_limit_dialog_action_ok": "OK",
-  "funds_over_limit_dialog_transfer_fail_no_reason_know": "Breez was not able to transfer the funds to your balance\n",
-  "funds_over_limit_dialog_transfer_fail_with_reason": "Breez was not able to transfer the funds to your balance since {reason}\n",
+  "funds_over_limit_dialog_transfer_fail_no_reason_know": "ClovrLabs was not able to transfer the funds to your balance\n",
+  "funds_over_limit_dialog_transfer_fail_with_reason": "ClovrLabs was not able to transfer the funds to your balance since {reason}\n",
   "@funds_over_limit_dialog_transfer_fail_with_reason": {
     "placeholders": {
       "reason": {
@@ -1024,7 +1024,7 @@
   "avatar_picker_action_change_photo": "Change Photo",
   "avatar_picker_error_select_image": "Failed to Select Image",
   "initial_walk_through_welcome_message": "The simplest, fastest & safest way\nto spend your bitcoins",
-  "initial_walk_through_lets_breeze": "LET'S BREEZ!",
+  "initial_walk_through_lets_breeze": "SIGN UP",
   "initial_walk_through_restore_from_backup": "Restore from backup",
   "initial_walk_through_restoring": "Restoring data…",
   "initial_walk_through_sign_in_icloud_title": "Sign in to iCloud",
@@ -1051,7 +1051,7 @@
   "enter_backup_phrase_action_restore": "RESTORE",
   "enter_backup_phrase_action_next": "NEXT",
   "restore_dialog_title": "Restore",
-  "restore_dialog_multiple_accounts": "You have multiple Breez backups on {name}, please choose which one to restore:",
+  "restore_dialog_multiple_accounts": "You have multiple ClovrLabs Wallet backups on {name}, please choose which one to restore:",
   "@restore_dialog_multiple_accounts": {
     "placeholders": {
       "name": {
@@ -1092,13 +1092,13 @@
   "restore_dialog_action_ok": "OK",
   "restore_dialog_download_backup_error": "Download Error",
   "beta_warning_title": "Beta Warning",
-  "beta_warning_message": "Since Breez is still in beta, there is a chance your money will be lost. Use this app only if you are willing to take this risk.",
+  "beta_warning_message": "Since ClovrLabs Wallet does not support yet the back up feature, there is a chance your money is lost. Use the app only if you are willing to take this risk.",
   "beta_warning_understand": "I understand",
   "beta_warning_understand_confirmation": "Please confirm that you understand before you continue.",
   "beta_warning_action_exit": "EXIT",
   "beta_warning_action_continue": "CONTINUE",
   "processing_payment_dialog_synchronizing": "Synchronizing to the network",
-  "processing_payment_dialog_synchronizing_channels": "Breez is synchronizing your channels",
+  "processing_payment_dialog_synchronizing_channels": "ClovrLabs is synchronizing your channels",
   "processing_payment_dialog_action_close": "CLOSE",
   "processing_payment_dialog_processing_payment": "Processing Payment",
   "processing_payment_dialog_wait": "Please wait while your payment is being processed",
@@ -1107,7 +1107,7 @@
   "payment_request_dialog_action_cancel": "CANCEL",
   "payment_request_dialog_action_approve": "APPROVE",
   "payment_failed_report_dialog_title": "Failed Payment",
-  "payment_failed_report_dialog_message": "Sending failed payment details to Breez could help increase successful transactions rate.\nDo you want to send this failed payment details to Breez?",
+  "payment_failed_report_dialog_message": "Sending failed payment details to ClovrLabs Wallet could help increase successful transactions rate.\nDo you want to send this failed payment details to ClovrLabs?",
   "payment_failed_report_dialog_do_not_ask_again": "Don't ask me again",
   "payment_failed_report_dialog_action_no": "NO",
   "payment_failed_report_dialog_action_yes": "YES",
@@ -1192,10 +1192,10 @@
   "order_card_action_skip": "SKIP",
   "order_card_action_ok": "OK",
   "order_card_action_order": "ORDER",
-  "order_card_action_error_name_address_missing": "Name and address are required for sending you a Breez card. Any information provided will be deleted from our systems after card has been sent. You may skip this step and continue using Breez without a card.",
-  "order_card_action_order_breez_card": "Order a Breez Card",
+  "order_card_action_error_name_address_missing": "Name and address are required for sending you aClovrLabscard. Any information provided will be deleted from our systems after card has been sent. You may skip this step and continue usingClovrLabswithout a card.",
+  "order_card_action_order_breez_card": "Order ClovrLabs card",
   "order_card_action_order_card": "Order Card",
-  "order_card_success": "Breez card will be sent shortly to the address you have specified.",
+  "order_card_success": "ClovrLabs card will be sent shortly to the address you have specified.",
   "order_card_info_disclaimer": "Why do I need to provide\nthis information?",
   "order_card_zip_code_label": "Zip",
   "order_card_zip_code_error": "Invalid zip code",
@@ -1273,8 +1273,8 @@
       }
     }
   },
-  "close_popup_title": "Exit Breez",
-  "close_popup_message": "Do you really want to quit Breez?",
+  "close_popup_title": "Exit ClovrLabs",
+  "close_popup_message": "Do you really want to quit ClovrLabs?",
   "breez_date_picker_day_and_date": "{day} {date}",
   "@breez_date_picker_day_and_date": {
     "placeholders": {
@@ -1325,7 +1325,7 @@
   "breez_avatar_dialog_action_cancel": "CANCEL",
   "breez_avatar_dialog_action_save": "SAVE",
   "breez_avatar_dialog_error_upload": "Failed to upload profile picture",
-  "barcode_scanner_camera_message": "For QR scan, please grant Breez access to your camera.",
+  "barcode_scanner_camera_message": "For QR scan, please grantClovrLabsaccess to your camera.",
   "barcode_scanner_app_settings": "App Settings",
   "utils_retry_failed": "Retry failed",
   "utils_print_pdf_transaction_time": "Transaction Time",
@@ -1337,8 +1337,8 @@
   "utils_print_pdf_header_description": "Description:",
   "utils_print_pdf_header_payment_preimage": "Payment Preimage:",
   "handler_check_version_action_update": "UPDATE",
-  "handler_check_version_message": "Please update Breez to the latest version.",
-  "handler_channel_connection_message": "Breez is offline",
+  "handler_check_version_message": "Please update app to the latest version.",
+  "handler_channel_connection_message": "ClovrLabs is offline",
   "handler_channel_connection_close": "CLOSE",
   "handler_lnurl_error_link": "Link Error",
   "handler_lnurl_error_process": "Failed to process link: {message}",
@@ -1386,9 +1386,9 @@
   },
   "handler_podcast_error_load_episode": "Failed to load episode. Please check your connection.",
   "handler_podcast_error_load_episode_fallback": "Failed to load podcast.",
-  "handler_sync_ui_message": "Breez is synchronizing to the Bitcoin network",
-  "add_funds_error_deposit": "Breez is processing your previous deposit. You will be able to add more funds once this operation is completed.",
-  "add_funds_error_withdraw": "Breez is processing your previous withdrawal. You will be able to add more funds once this operation is completed.",
+  "handler_sync_ui_message": "ClovrLabs is synchronizing to the Bitcoin network",
+  "add_funds_error_deposit": "ClovrLabs is processing your previous deposit. You will be able to add more funds once this operation is completed.",
+  "add_funds_error_withdraw": "ClovrLabs is processing your previous withdrawal. You will be able to add more funds once this operation is completed.",
   "add_funds_transaction_id_copied": "Transaction ID was copied to your clipboard.",
   "add_funds_item_voucher_title": "Voucher value",
   "add_funds_item_voucher_message": "{value} {currency}",
@@ -1444,7 +1444,7 @@
   },
   "add_funds_item_bitcoins_received_title": "Bitcoins received",
   "add_funds_moonpay_title": "MoonPay",
-  "add_funds_moonpay_error_address": "Failed to retrieve an address from Breez server\nPlease check your internet connection.",
+  "add_funds_moonpay_error_address": "Failed to retrieve an address fromClovrLabsserver\nPlease check your internet connection.",
   "add_funds_moonpay_loading": "Loading…",
   "add_funds_moonpay_error_service_unavailable": "Service Unavailable. Please try again later.",
   "csv_exporter_date_and_time": "Date & Time",
@@ -1486,7 +1486,7 @@
   "pos_settings_manager_password_error_title": "Manager Password",
   "pos_settings_manager_password_error_message": "Manager Password can be configured only if you have an active backup. To trigger a backup process, go to Receive > Receive via BTC Address.",
   "pos_settings_manager_password_title": "Manager Password",
-  "pos_settings_manager_password_message": "If Manager Password is activated, sending funds from Breez will require you to enter a password.\nAre you sure you want to activate Manager Password?",
+  "pos_settings_manager_password_message": "If Manager Password is activated, sending funds fromClovrLabswill require you to enter a password.\nAre you sure you want to activate Manager Password?",
   "pos_settings_manager_password_action_create": "CREATE",
   "pos_settings_manager_password_action_change": "CHANGE",
   "pos_settings_business_address": "Business Address",
@@ -1537,21 +1537,6 @@
       }
     }
   },
-  "pos_payment_nfc_error_title": "NFC Payment error",
-  "pos_payment_nfc_range_error": "Only payments between {minValue} and {maxValue} are allowed.",
-  "@pos_payment_nfc_range_error": {
-    "placeholders": {
-      "minValue": {
-        "type": "String",
-        "example": "1000 sats"
-      },
-      "maxValue": {
-        "type": "String",
-        "example": "1000 sats"
-      }
-    }
-  },
-  "pos_payment_nfc_error_action_close": "CLOSE",
   "successful_payment_print": "Print",
   "successful_payment_received": "Payment received!",
   "payment_options_title": "Lightning Fees",
@@ -1562,9 +1547,9 @@
   "payment_options_fee_action_reset": "Reset",
   "payment_options_fee_action_save": "Save",
   "payment_options_fee_action_cancel": "Cancel",
-  "payment_options_fee_warning": "Warning: this feature is experimental. Limiting fees may cause payments to fail, but the reason for the failure may not be apparent.",
+  "payment_options_fee_warning": "Limiting fees may cause payments to fail, but the reason for the failure may not be apparent.",
   "payment_options_fee_warning_dialog_title": "Warning",
-  "payment_options_fee_warning_dialog_message": "This feature is experimental. Limiting fees may cause payments to fail, but the reason for the failure may not be apparent.",
+  "payment_options_fee_warning_dialog_message": "Limiting fees may cause payments to fail, but the reason for the failure may not be apparent.",
   "catalog_item_action_edit": "Edit Item",
   "catalog_item_action_delete": "Delete Item",
   "catalog_item_error_delete": "Failed to delete {name}",
@@ -1608,8 +1593,8 @@
   "qr_code_dialog_copy": "Copy invoice data",
   "qr_code_dialog_copied": "Invoice data was copied to your clipboard.",
   "qr_code_dialog_warning_message_error": "Failed to create invoice",
-  "qr_code_dialog_warning_message": "Keep Breez open until the payment is completed.",
-  "qr_code_dialog_warning_message_with_lsp": "A setup fee of {setupFee} ({fiatFee}) is applied to this invoice. Keep Breez open until the payment is completed.",
+  "qr_code_dialog_warning_message": "Keep Clovr Labs open until the payment is completed.",
+  "qr_code_dialog_warning_message_with_lsp": "A setup fee of {setupFee} ({fiatFee}) is applied to this invoice. Keep Clovr Labs open until the payment is completed.",
   "@qr_code_dialog_warning_message_with_lsp": {
     "placeholders": {
       "setupFee": {
@@ -1638,7 +1623,7 @@
   "waiting_broadcast_dialog_action_share": "Share Transaction Hash",
   "waiting_broadcast_dialog_transaction_id": "Transaction ID:",
   "waiting_broadcast_dialog_content_success": "Funds were successfully sent to the specified address.",
-  "waiting_broadcast_dialog_content_warning": "Please wait while Breez is sending the funds to the specified address.",
+  "waiting_broadcast_dialog_content_warning": "Please wait whileClovrLabsis sending the funds to the specified address.",
   "waiting_broadcast_dialog_content_error": "Error in broadcasting transaction: {error}",
   "@waiting_broadcast_dialog_content_error": {
     "placeholders": {
@@ -1678,10 +1663,10 @@
     }
   },
   "wallet_dashboard_payment_item_balance_pending_suffix": " (Pending)",
-  "status_text_loading_begin": "Breez is ",
+  "status_text_loading_begin": "ClovrLabs is ",
   "status_text_loading_middle": "opening a secure channel",
   "status_text_loading_end": " with our server. This might take a while, but don't worry, we'll notify you when the app is ready to send and receive payments.",
-  "status_text_ready": "Breez is ready to receive funds.",
+  "status_text_ready": "ClovrLabs is ready to receive funds.",
   "qr_action_button_open_link": "Open Link",
   "qr_action_button_open_link_confirmation": "Are you sure you want to open this link?",
   "qr_action_button_open_link_confirmation_no": "NO",
@@ -1838,7 +1823,7 @@
   },
   "lock_screen_enter_pin": "Enter your PIN",
   "backup_phrase_generate": "Encrypt Cloud Backup",
-  "backup_phrase_instructions": "You will be shown a list of words. Write down the words and store them in a safe place. Without these words, you won't be able to restore from backup and your funds will be lost. Breez won’t be able to help. Note these words aren't a wallet seed. They are used to encrypt the backup data stored in the cloud.",
+  "backup_phrase_instructions": "You will be shown a list of words. Write down the words and store them in a safe place. Without these words, you won't be able to restore from backup and your funds will be lost.ClovrLabswon’t be able to help. Note these words aren't a wallet seed. They are used to encrypt the backup data stored in the cloud.",
   "backup_phrase_action_confirm": "I UNDERSTAND",
   "backup_phrase_action_next": "NEXT",
   "backup_phrase_warning_disclaimer": "Your existing backup phrase will no longer be valid and a new one will be generated next time you decide to use a backup phrase. Are you sure you don't want to use a backup phrase?",
@@ -1889,7 +1874,7 @@
   "spontaneous_payment_action_pay": "PAY",
   "spontaneous_payment_action_cancel": "CANCEL",
   "spontaneous_payment_tip_message": "Tip Message (optional)",
-  "spontaneous_payment_generic_message": "You will be able to receive payments after Breez is finished opening a secure channel with our server. This usually takes ~10 minutes to be completed. Please try again in a couple of minutes.",
+  "spontaneous_payment_generic_message": "You will be able to receive payments afterClovrLabsis finished opening a secure channel with our server. This usually takes ~10 minutes to be completed. Please try again in a couple of minutes.",
   "spontaneous_payment_max_amount": "Pay up to: {amount}",
   "@spontaneous_payment_max_amount": {
     "placeholders": {
@@ -1954,10 +1939,10 @@
   "sweep_all_coins_error_retrieve_fees": "Failed to retrieve fees. Please try again later.",
   "sweep_all_coins_error_amount_small": "The amount is too small to broadcast. Please try again later.",
   "unexpected_funds_title": "Unexpected Funds",
-  "unexpected_funds_message": "Breez found unexpected funds in its underlying wallet (probably due to a closed channel). It is highly recommended you send these fund to a BTC address as soon as possible.",
+  "unexpected_funds_message": "ClovrLabs found unexpected funds in its underlying wallet (probably due to a closed channel). It is highly recommended you send these fund to a BTC address as soon as possible.",
   "unexpected_error_restoring_chain_message": "Restoring chain information might take several minutes.",
   "unexpected_error_action_cancel": "CANCEL",
-  "unexpected_error_action_exit": "EXIT BREEZ",
+  "unexpected_error_action_exit": "EXIT ClovrLabs",
   "unexpected_error_action_exit_for_retry": "EXIT",
   "unexpected_error_action_try_again": "TRY AGAIN",
   "unexpected_error_action_just_exit": "EXIT",
@@ -1977,14 +1962,14 @@
   "select_provider_error_dialog_title": "Connection Error",
   "select_provider_error_dialog_select_provider_begin": "select ",
   "select_provider_error_dialog_select_provider_end": "a provider.",
-  "select_provider_error_dialog_message": "In order to activate Breez, please ",
-  "select_provider_error_dialog_message_error": "There was an error connecting to the selected provider. In order to activate Breez, please ",
+  "select_provider_error_dialog_message": "In order to activate ClovrLabs, please ",
+  "select_provider_error_dialog_message_error": "There was an error connecting to the selected provider. In order to activate ClovrLabs, please ",
   "qr_scan_action_cancel": "CANCEL",
   "pending_closed_channel_title": "Pending Closed Channel",
   "pending_closed_channel_action_ok": "OK",
   "close_warning_dialog_title": "Inactive Channels",
   "close_warning_dialog_action_ok": "OK",
-  "close_warning_dialog_message_begin": "You haven't made any payments with Breez for {duration} days, so your LSP might have to close your channels. Should this happen, Breez will generate an on-chain address and sweep your funds into it. You will retain complete control of your money, less the mining fee incurred by the sweep transaction, and you can come back any time. To learn more about why this happens, read our post on ",
+  "close_warning_dialog_message_begin": "You haven't made any payments withClovrLabsfor {duration} days, so your LSP might have to close your channels. Should this happen,ClovrLabswill generate an on-chain address and sweep your funds into it. You will retain complete control of your money, less the mining fee incurred by the sweep transaction, and you can come back any time. To learn more about why this happens, read our post on ",
   "@close_warning_dialog_message_begin": {
     "placeholders": {
       "duration": {
@@ -1995,7 +1980,7 @@
   },
   "close_warning_dialog_message_middle": "inbound liquidity",
   "close_warning_dialog_message_end": ".",
-  "close_warning_dialog_url": "https://medium.com/breez-technology/lightning-economics-how-i-learned-to-stop-worrying-and-love-inbound-liquidity-511d05aa8b8b",
+  "close_warning_dialog_url": "",
   "admin_login_dialog_manager_password": "Manager Password",
   "admin_login_dialog_password_label": "Enter your password",
   "admin_login_dialog_action_cancel": "CANCEL",
@@ -2024,7 +2009,7 @@
   "swap_error_invoice_amount_mismatch": "the requested amount doesn't match the original transaction.",
   "swap_error_swap_expired": "the transaction had expired.",
   "swap_error_tx_too_small": "the transaction size was too small to process.",
-  "status_message_unconfirmed_tx_id": "Breez is waiting for Bitcoin transfer to be confirmed. This might take a while",
+  "status_message_unconfirmed_tx_id": "ClovrLabs is waiting for Bitcoin transfer to be confirmed. This might take a while",
   "status_transferring_on_chain_deposit": "Transferring funds",
   "status_failed_to_add_funds": "Failed to add funds: {error}",
   "@status_failed_to_add_funds": {
@@ -2045,7 +2030,7 @@
       }
     }
   },
-  "valid_payment_error_keep_balance": "Breez requires you to keep {amount} in your balance.",
+  "valid_payment_error_keep_balance": "ClovrLabs requires you to keep {amount} in your balance.",
   "@valid_payment_error_keep_balance": {
     "placeholders": {
       "amount": {
@@ -2086,7 +2071,7 @@
     }
   },
   "podcast_history_drawer": "My Top Podcasts",
-  "podcast_history_share_message": "My top podcasts listened on Breez",
+  "podcast_history_share_message": "My top podcasts listened on ClovrLabs",
   "podcast_history_share_text": "SHARE",
   "podcast_history_sats_streamed": "sats streamed",
   "podcast_history_boostagrams_sent": "boosts sent",
@@ -2109,5 +2094,5 @@
   "podcast_clips_dialog_done": "DONE",
   "podcast_clips_error": "An error has occurred while clipping the episode. Please try again.",
   "locale": "en",
-  "app_name": "Breez"
+  "app_name": "ClovrLabs Wallet"
 }

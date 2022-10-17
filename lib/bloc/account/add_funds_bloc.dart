@@ -1,15 +1,15 @@
 import 'dart:async';
 import 'dart:convert';
 
-import 'package:breez/bloc/account/account_model.dart';
-import 'package:breez/bloc/lsp/lsp_model.dart';
-import 'package:breez/bloc/user_profile/breez_user_model.dart';
-import 'package:breez/bloc/user_profile/currency.dart';
-import 'package:breez/logger.dart';
-import 'package:breez/services/breez_server/server.dart';
-import 'package:breez/services/breezlib/breez_bridge.dart';
-import 'package:breez/services/injector.dart';
-import 'package:breez/utils/locale.dart';
+import 'package:clovrlabs_wallet/bloc/account/account_model.dart';
+import 'package:clovrlabs_wallet/bloc/lsp/lsp_model.dart';
+import 'package:clovrlabs_wallet/bloc/user_profile/clovr_user_model.dart';
+import 'package:clovrlabs_wallet/bloc/user_profile/currency.dart';
+import 'package:clovrlabs_wallet/logger.dart';
+import 'package:clovrlabs_wallet/services/breez_server/server.dart';
+import 'package:clovrlabs_wallet/services/breezlib/breez_bridge.dart';
+import 'package:clovrlabs_wallet/services/injector.dart';
+import 'package:clovrlabs_wallet/utils/locale.dart';
 import 'package:flutter/services.dart';
 import 'package:http/http.dart' as http;
 import "package:ini/ini.dart";
@@ -63,7 +63,7 @@ class AddFundsBloc extends Bloc {
   Sink<AddFundsSettings> get addFundsSettingsSink =>
       _addFundsSettingsController.sink;
 
-  AddFundsBloc(Stream<BreezUserModel> userStream, this.accountStream,
+  AddFundsBloc(Stream<ClovrUserModel> userStream, this.accountStream,
       this.lspStatusStream) {
     ServiceInjector injector = ServiceInjector();
     BreezBridge breezLib = injector.breezBridge;
@@ -162,7 +162,7 @@ class AddFundsBloc extends Bloc {
         addFundsSettings != null ? json.decode(addFundsSettings) : {};
     _isMoonpayAllowed = settings["moonpayIpCheck"] == false;
     if (!_isMoonpayAllowed) {
-      _isMoonpayAllowed = await _isIPMoonpayAllowed();
+      // _isMoonpayAllowed = await  _isIPMoonpayAllowed();
     }
     preferences.remove(PENDING_MOONPAY_ORDER_KEY);
     _populateAvailableVendors();
@@ -172,7 +172,7 @@ class AddFundsBloc extends Bloc {
           ADD_FUNDS_SETTINGS_PREFERENCES_KEY, json.encode(settings.toJson()));
       _isMoonpayAllowed = settings.moonpayIpCheck == false;
       if (!_isMoonpayAllowed) {
-        _isMoonpayAllowed = await _isIPMoonpayAllowed();
+        // _isMoonpayAllowed = await _isIPMoonpayAllowed();
       }
       _populateAvailableVendors();
     });

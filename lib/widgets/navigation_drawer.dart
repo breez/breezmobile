@@ -1,15 +1,14 @@
 import 'dart:async';
 
 import 'package:auto_size_text/auto_size_text.dart';
-import 'package:breez/bloc/blocs_provider.dart';
-import 'package:breez/bloc/user_profile/breez_user_model.dart';
-import 'package:breez/bloc/user_profile/user_actions.dart';
-import 'package:breez/bloc/user_profile/user_profile_bloc.dart';
-import 'package:breez/theme_data.dart' as theme;
-import 'package:breez/widgets/breez_avatar.dart';
-import 'package:breez/widgets/breez_avatar_dialog.dart';
-import 'package:breez/widgets/breez_drawer_header.dart';
-import 'package:breez/widgets/error_dialog.dart';
+import 'package:clovrlabs_wallet/bloc/blocs_provider.dart';
+import 'package:clovrlabs_wallet/bloc/user_profile/clovr_user_model.dart';
+import 'package:clovrlabs_wallet/bloc/user_profile/user_actions.dart';
+import 'package:clovrlabs_wallet/bloc/user_profile/user_profile_bloc.dart';
+import 'package:clovrlabs_wallet/theme_data.dart' as theme;
+import 'package:clovrlabs_wallet/widgets/wallet_avatar.dart';
+import 'package:clovrlabs_wallet/widgets/breez_drawer_header.dart';
+import 'package:clovrlabs_wallet/widgets/error_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
@@ -67,7 +66,7 @@ class NavigationDrawer extends StatelessWidget {
     final userProfileBloc = AppBlocsProvider.of<UserProfileBloc>(context);
 
     List<Widget> children = [
-      _breezDrawerHeader(userProfileBloc, _avatar),
+      _walletDrawerHeader(userProfileBloc, _avatar),
       Padding(padding: EdgeInsets.only(top: 16)),
     ];
     _drawerGroupedItems.forEach((groupItems) {
@@ -141,59 +140,45 @@ class _ListDivider extends StatelessWidget {
   }
 }
 
-Widget _breezDrawerHeader(UserProfileBloc user, bool drawAvatar) {
+Widget _walletDrawerHeader(UserProfileBloc user, bool drawAvatar) {
   return Container(
     color: theme.customData[theme.themeId].navigationDrawerHeaderBgColor,
-    child: BreezDrawerHeader(
-      padding: EdgeInsets.only(left: 16.0),
+    child: WalletDrawerHeader(
       child: _buildDrawerHeaderContent(user, drawAvatar),
     ),
   );
 }
 
-StreamBuilder<BreezUserModel> _buildDrawerHeaderContent(
+StreamBuilder<ClovrUserModel> _buildDrawerHeaderContent(
   UserProfileBloc user,
   bool drawAvatar,
 ) {
-  return StreamBuilder<BreezUserModel>(
+  return StreamBuilder<ClovrUserModel>(
     stream: user.userStream,
     builder: (context, snapshot) {
-      if (!snapshot.hasData) {
-        return Container();
-      } else {
-        List<Widget> drawerHeaderContent = [];
-        drawerHeaderContent.add(_buildThemeSwitch(snapshot, user, context));
-        if (drawAvatar) {
-          drawerHeaderContent
-            ..add(_buildAvatarButton(snapshot))
-            ..add(_buildBottomRow(snapshot, context));
-        }
-        return GestureDetector(
-          onTap: drawAvatar
-              ? () {
-                  showDialog<bool>(
-                    useRootNavigator: false,
-                    context: context,
-                    barrierDismissible: false,
-                    builder: (context) => breezAvatarDialog(context, user),
-                  );
-                }
-              : null,
-          child: Column(children: drawerHeaderContent),
-        );
-      }
+      return Container(
+        child: Center(
+          child: Padding(
+            padding: const EdgeInsets.all(24.0),
+            child: Image.asset(
+              "src/images/text_logo.png",
+              width: MediaQuery.of(context).size.width,
+            ),
+          ),
+        ),
+      );
     },
   );
 }
 
 GestureDetector _buildThemeSwitch(
-  AsyncSnapshot<BreezUserModel> snapshot,
+  AsyncSnapshot<ClovrUserModel> snapshot,
   UserProfileBloc user,
   BuildContext context,
 ) {
   return GestureDetector(
     onTap: () => _changeTheme(
-      snapshot.data.themeId == "BLUE" ? "DARK" : "BLUE",
+      snapshot.data.themeId == "WHITE" ? "DARK" : "WHITE",
       user,
       context,
     ),
@@ -218,7 +203,7 @@ GestureDetector _buildThemeSwitch(
                   "src/icon/ic_lightmode.png",
                   height: 24,
                   width: 24,
-                  color: snapshot.data.themeId == "BLUE"
+                  color: snapshot.data.themeId == "WHITE"
                       ? Colors.white
                       : Colors.white30,
                 ),
@@ -267,16 +252,16 @@ Future _changeTheme(
   });
 }
 
-Row _buildAvatarButton(AsyncSnapshot<BreezUserModel> snapshot) {
+Row _buildAvatarButton(AsyncSnapshot<ClovrUserModel> snapshot) {
   return Row(
     children: [
-      BreezAvatar(snapshot.data.avatarURL, radius: 24.0),
+      ElenPayAvatar(snapshot.data.avatarURL, radius: 24.0),
     ],
   );
 }
 
 Row _buildBottomRow(
-  AsyncSnapshot<BreezUserModel> snapshot,
+  AsyncSnapshot<ClovrUserModel> snapshot,
   BuildContext context,
 ) {
   return Row(
@@ -289,7 +274,7 @@ Row _buildBottomRow(
 
 Padding _buildUsername(
   BuildContext context,
-  AsyncSnapshot<BreezUserModel> snapshot,
+  AsyncSnapshot<ClovrUserModel> snapshot,
 ) {
   final texts = AppLocalizations.of(context);
 
@@ -393,13 +378,14 @@ class _ExpansionTile extends StatelessWidget {
     return Theme(
       data: _expansionTileTheme,
       child: ExpansionTile(
+          iconColor: Colors.white,
         title: Padding(
           padding: EdgeInsets.only(left: 8.0, right: 8.0),
           child: icon.assetName == ""
               ? null
               : Text(
                   title,
-                  style: theme.drawerItemTextStyle,
+                  style: TextStyle(color: Colors.white),
                 ),
         ),
         leading: Padding(
@@ -408,6 +394,7 @@ class _ExpansionTile extends StatelessWidget {
               ? Text(
                   title,
                   style: theme.drawerItemTextStyle.copyWith(
+                    color: Colors.white,
                     fontWeight: FontWeight.w500,
                   ),
                 )
@@ -423,6 +410,7 @@ class _ExpansionTile extends StatelessWidget {
                   child: item,
                 ))
             .toList(),
+        initiallyExpanded: true,
         onExpansionChanged: (isExpanded) {
           if (isExpanded)
             Timer(

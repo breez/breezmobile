@@ -1,4 +1,4 @@
-import 'package:breez/theme_data.dart' as theme;
+import 'package:clovrlabs_wallet/theme_data.dart' as theme;
 import 'package:flutter/material.dart';
 
 class SessionInstructions extends StatelessWidget {
@@ -72,10 +72,10 @@ class SessionInstructions extends StatelessWidget {
                         borderRadius: BorderRadius.circular(6.0),
                       ),
                       side: BorderSide(
-                        color: theme.BreezColors.white[500],
+                        color: theme.ElenPayWalletColors.white[500],
                         style: BorderStyle.solid,
                       ),
-                      primary: theme.BreezColors.white[500],
+                      primary: theme.ElenPayWalletColors.white[500],
                     ),
                     child: Text(
                       action.toUpperCase(),

@@ -1,20 +1,20 @@
 import 'dart:async';
 import 'dart:convert';
 
-import 'package:breez/bloc/account/account_actions.dart';
-import 'package:breez/bloc/account/account_model.dart';
-import 'package:breez/bloc/async_action.dart';
-import 'package:breez/bloc/connect_pay/connect_pay_model.dart';
-import 'package:breez/bloc/connect_pay/payee_session.dart';
-import 'package:breez/bloc/connect_pay/payer_session.dart';
-import 'package:breez/bloc/user_profile/breez_user_model.dart';
-import 'package:breez/logger.dart';
-import 'package:breez/services/breez_server/server.dart';
-import 'package:breez/services/breezlib/breez_bridge.dart';
-import 'package:breez/services/breezlib/data/rpc.pb.dart';
-import 'package:breez/services/deep_links.dart';
-import 'package:breez/services/injector.dart';
-import 'package:breez/utils/locale.dart';
+import 'package:clovrlabs_wallet/bloc/account/account_actions.dart';
+import 'package:clovrlabs_wallet/bloc/account/account_model.dart';
+import 'package:clovrlabs_wallet/bloc/async_action.dart';
+import 'package:clovrlabs_wallet/bloc/connect_pay/connect_pay_model.dart';
+import 'package:clovrlabs_wallet/bloc/connect_pay/payee_session.dart';
+import 'package:clovrlabs_wallet/bloc/connect_pay/payer_session.dart';
+import 'package:clovrlabs_wallet/bloc/user_profile/clovr_user_model.dart';
+import 'package:clovrlabs_wallet/logger.dart';
+import 'package:clovrlabs_wallet/services/breez_server/server.dart';
+import 'package:clovrlabs_wallet/services/breezlib/breez_bridge.dart';
+import 'package:clovrlabs_wallet/services/breezlib/data/rpc.pb.dart';
+import 'package:clovrlabs_wallet/services/deep_links.dart';
+import 'package:clovrlabs_wallet/services/injector.dart';
+import 'package:clovrlabs_wallet/utils/locale.dart';
 import 'package:fixnum/fixnum.dart';
 import 'package:grpc/grpc.dart';
 import 'package:rxdart/rxdart.dart';
@@ -34,9 +34,9 @@ class ConnectPayBloc {
       _sessionInvitesController.stream;
 
   Sink<AsyncAction> _accountActions;
-  BreezUserModel _currentUser;
+  ClovrUserModel _currentUser;
 
-  ConnectPayBloc(Stream<BreezUserModel> userStream,
+  ConnectPayBloc(Stream<ClovrUserModel> userStream,
       Stream<AccountModel> accountStream, Sink<AsyncAction> accountActions) {
     _accountActions = accountActions;
     userStream.listen((user) => _currentUser = user);
@@ -164,12 +164,12 @@ class ConnectPayBloc {
 
 abstract class RemoteSession {
   Stream<void> terminationStream;
-  BreezUserModel _currentUser;
+  ClovrUserModel _currentUser;
 
   RemoteSession(this._currentUser);
 
   String get sessionID;
-  BreezUserModel get currentUser => _currentUser;
+  ClovrUserModel get currentUser => _currentUser;
   Stream<PaymentSessionState> get paymentSessionStateStream;
   Stream<PaymentSessionError> get sessionErrors;
   Future start(SessionLinkModel sessionLink);

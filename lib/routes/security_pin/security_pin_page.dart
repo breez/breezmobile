@@ -1,22 +1,22 @@
 import 'package:auto_size_text/auto_size_text.dart';
-import 'package:breez/bloc/backup/backup_actions.dart';
-import 'package:breez/bloc/backup/backup_bloc.dart';
-import 'package:breez/bloc/backup/backup_model.dart';
-import 'package:breez/bloc/user_profile/breez_user_model.dart';
-import 'package:breez/bloc/user_profile/security_model.dart';
-import 'package:breez/bloc/user_profile/user_actions.dart';
-import 'package:breez/bloc/user_profile/user_profile_bloc.dart';
-import 'package:breez/routes/backup_in_progress_dialog.dart';
-import 'package:breez/routes/podcast/theme.dart';
-import 'package:breez/routes/security_pin/remote_server_auth.dart';
-import 'package:breez/services/local_auth_service.dart';
-import 'package:breez/theme_data.dart' as theme;
-import 'package:breez/utils/date.dart';
-import 'package:breez/utils/min_font_size.dart';
-import 'package:breez/widgets/back_button.dart' as backBtn;
-import 'package:breez/widgets/error_dialog.dart';
-import 'package:breez/widgets/flushbar.dart';
-import 'package:breez/widgets/route.dart';
+import 'package:clovrlabs_wallet/bloc/backup/backup_actions.dart';
+import 'package:clovrlabs_wallet/bloc/backup/backup_bloc.dart';
+import 'package:clovrlabs_wallet/bloc/backup/backup_model.dart';
+import 'package:clovrlabs_wallet/bloc/user_profile/clovr_user_model.dart';
+import 'package:clovrlabs_wallet/bloc/user_profile/security_model.dart';
+import 'package:clovrlabs_wallet/bloc/user_profile/user_actions.dart';
+import 'package:clovrlabs_wallet/bloc/user_profile/user_profile_bloc.dart';
+import 'package:clovrlabs_wallet/routes/backup_in_progress_dialog.dart';
+import 'package:clovrlabs_wallet/utils/theme.dart';
+import 'package:clovrlabs_wallet/routes/security_pin/remote_server_auth.dart';
+import 'package:clovrlabs_wallet/services/local_auth_service.dart';
+import 'package:clovrlabs_wallet/theme_data.dart' as theme;
+import 'package:clovrlabs_wallet/utils/date.dart';
+import 'package:clovrlabs_wallet/utils/min_font_size.dart';
+import 'package:clovrlabs_wallet/widgets/back_button.dart' as backBtn;
+import 'package:clovrlabs_wallet/widgets/error_dialog.dart';
+import 'package:clovrlabs_wallet/widgets/flushbar.dart';
+import 'package:clovrlabs_wallet/widgets/route.dart';
 import 'package:duration/duration.dart';
 import 'package:duration/locale.dart';
 import 'package:flutter/material.dart';
@@ -81,7 +81,7 @@ class SecurityPageState extends State<SecurityPage>
       stream: widget.backupBloc.backupStateStream,
       builder: (ctx, backupStateSnapshot) => StreamBuilder<BackupSettings>(
         stream: widget.backupBloc.backupSettingsStream,
-        builder: (context, backupSnapshot) => StreamBuilder<BreezUserModel>(
+        builder: (context, backupSnapshot) => StreamBuilder<ClovrUserModel>(
           stream: widget.userProfileBloc.userStream,
           builder: (context, snapshot) {
             if (!snapshot.hasData) {
@@ -115,7 +115,7 @@ class SecurityPageState extends State<SecurityPage>
                 leading: backBtn.BackButton(),
                 title: Text(
                   texts.security_and_backup_title,
-                  style: themeData.appBarTheme.textTheme.headline6,
+                  // style: themeData.appBarTheme.textTheme.headline6,
                 ),
                 elevation: 0.0,
               ),
@@ -253,7 +253,7 @@ class SecurityPageState extends State<SecurityPage>
               Navigator.push(
                 context,
                 FadeInRoute(
-                  builder: (BuildContext context) => withBreezTheme(
+                  builder: (BuildContext context) => withElenPayWalletTheme(
                     context,
                     BackupPhraseGeneratorConfirmationPage(),
                   ),
@@ -613,7 +613,7 @@ class SecurityPageState extends State<SecurityPage>
     Navigator.of(context).push(
       FadeInRoute(
         builder: (BuildContext context) {
-          return withBreezTheme(
+          return withElenPayWalletTheme(
             context,
             ChangePinCode(),
           );

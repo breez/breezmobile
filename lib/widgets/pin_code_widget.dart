@@ -1,12 +1,12 @@
 import 'dart:math';
 
-import 'package:breez/bloc/user_profile/breez_user_model.dart';
-import 'package:breez/bloc/user_profile/user_actions.dart';
-import 'package:breez/bloc/user_profile/user_profile_bloc.dart';
-import 'package:breez/services/local_auth_service.dart';
-import 'package:breez/theme_data.dart' as theme;
-import 'package:breez/widgets/circular_button.dart';
-import 'package:breez/widgets/flushbar.dart';
+import 'package:clovrlabs_wallet/bloc/user_profile/clovr_user_model.dart';
+import 'package:clovrlabs_wallet/bloc/user_profile/user_actions.dart';
+import 'package:clovrlabs_wallet/bloc/user_profile/user_profile_bloc.dart';
+import 'package:clovrlabs_wallet/services/local_auth_service.dart';
+import 'package:clovrlabs_wallet/theme_data.dart' as theme;
+import 'package:clovrlabs_wallet/widgets/circular_button.dart';
+import 'package:clovrlabs_wallet/widgets/flushbar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
@@ -110,14 +110,6 @@ class PinCodeWidgetState extends State<PinCodeWidget>
         mainAxisSize: MainAxisSize.max,
         children: <Widget>[
           Flexible(
-            flex: 20,
-            child: Container(
-              child: Center(
-                child: _buildBreezLogo(context),
-              ),
-            ),
-          ),
-          Flexible(
             flex: 30,
             child: Container(
               child: Column(
@@ -135,14 +127,6 @@ class PinCodeWidgetState extends State<PinCodeWidget>
     );
   }
 
-  Widget _buildBreezLogo(BuildContext context) {
-    return SvgPicture.asset(
-      "src/images/logo-color.svg",
-      width: (MediaQuery.of(context).size.width) / 3,
-      color: Colors.white,
-      colorBlendMode: BlendMode.srcATop,
-    );
-  }
 
   Container _buildPinCircles() {
     return Container(
@@ -233,7 +217,7 @@ class PinCodeWidgetState extends State<PinCodeWidget>
                       ((widget.onFingerprintEntered != null) &&
                           _enteredPinCode.length > 0)
                   ? _buildEraseButton()
-                  : StreamBuilder<BreezUserModel>(
+                  : StreamBuilder<ClovrUserModel>(
                       stream: widget.userProfileBloc.userStream,
                       builder: (context, snapshot) {
                         if (!snapshot.hasData ||
@@ -253,7 +237,7 @@ class PinCodeWidgetState extends State<PinCodeWidget>
   }
 
   Widget _buildBiometricsButton(
-      AsyncSnapshot<BreezUserModel> snapshot, BuildContext context) {
+      AsyncSnapshot<ClovrUserModel> snapshot, BuildContext context) {
     return CircularButton(
       child: Icon(
         _enrolledBiometrics == LocalAuthenticationOption.FACE ||

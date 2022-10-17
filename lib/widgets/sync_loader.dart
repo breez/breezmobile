@@ -1,5 +1,5 @@
-import 'package:breez/widgets/circular_progress.dart';
-import 'package:breez/widgets/transparent_page_route.dart';
+import 'package:clovrlabs_wallet/widgets/circular_progress.dart';
+import 'package:clovrlabs_wallet/widgets/transparent_page_route.dart';
 import 'package:flutter/material.dart';
 
 class SyncUIRoute<T> extends TransparentPageRoute<T> {

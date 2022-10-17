@@ -29,15 +29,6 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.12.29"
-  anytime:
-    dependency: "direct main"
-    description:
-      path: "."
-      ref: "062ea0082eb4df5cdd16e6cefe9126075a253cc9"
-      resolved-ref: "062ea0082eb4df5cdd16e6cefe9126075a253cc9"
-      url: "https://github.com/breez/anytime_podcast_player.git"
-    source: git
-    version: "1.2.1+74-breez"
   app_settings:
     dependency: "direct main"
     description:
@@ -66,34 +57,6 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "2.9.0"
-  audio_service:
-    dependency: transitive
-    description:
-      name: audio_service
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "0.18.7"
-  audio_service_platform_interface:
-    dependency: transitive
-    description:
-      name: audio_service_platform_interface
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "0.1.0"
-  audio_service_web:
-    dependency: transitive
-    description:
-      name: audio_service_web
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "0.1.1"
-  audio_session:
-    dependency: transitive
-    description:
-      name: audio_session
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "0.1.10"
   auto_size_text:
     dependency: "direct main"
     description:
@@ -142,7 +105,7 @@ packages:
       name: build_config
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "1.1.0"
+    version: "1.1.1"
   build_daemon:
     dependency: transitive
     description:
@@ -170,7 +133,7 @@ packages:
       name: build_runner_core
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "7.2.4"
+    version: "7.2.6"
   built_collection:
     dependency: transitive
     description:
@@ -199,13 +162,6 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "2.0.1"
-  cli_util:
-    dependency: transitive
-    description:
-      name: cli_util
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "0.3.5"
   clock:
     dependency: transitive
     description:
@@ -275,7 +231,7 @@ packages:
       name: connectivity_plus_platform_interface
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "1.2.1"
+    version: "1.2.3"
   connectivity_plus_web:
     dependency: transitive
     description:
@@ -318,13 +274,6 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "3.0.2"
-  csslib:
-    dependency: transitive
-    description:
-      name: csslib
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "0.17.2"
   csv:
     dependency: "direct main"
     description:
@@ -332,22 +281,6 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "5.0.1"
-  cupertino_icons:
-    dependency: transitive
-    description:
-      name: cupertino_icons
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "1.0.5"
-  dart_rss:
-    dependency: transitive
-    description:
-      path: "."
-      ref: dc20ec54b484ff2ba4956c86b936ab664a36483c
-      resolved-ref: dc20ec54b484ff2ba4956c86b936ab664a36483c
-      url: "https://github.com/breez/dart-rss"
-    source: git
-    version: "2.0.1-breez"
   dart_style:
     dependency: transitive
     description:
@@ -362,48 +295,6 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "0.7.8"
-  device_info_plus:
-    dependency: transitive
-    description:
-      name: device_info_plus
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "4.1.3"
-  device_info_plus_linux:
-    dependency: transitive
-    description:
-      name: device_info_plus_linux
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "3.0.0"
-  device_info_plus_macos:
-    dependency: transitive
-    description:
-      name: device_info_plus_macos
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "3.0.0"
-  device_info_plus_platform_interface:
-    dependency: transitive
-    description:
-      name: device_info_plus_platform_interface
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "3.0.0"
-  device_info_plus_web:
-    dependency: transitive
-    description:
-      name: device_info_plus_web
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "3.0.0"
-  device_info_plus_windows:
-    dependency: transitive
-    description:
-      name: device_info_plus_windows
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "4.1.0"
   dio:
     dependency: "direct main"
     description:
@@ -487,7 +378,7 @@ packages:
       name: file_picker
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "5.2.1"
+    version: "5.2.2"
   firebase_core:
     dependency: "direct main"
     description:
@@ -550,7 +441,7 @@ packages:
       name: firebase_messaging
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "13.1.0"
+    version: "12.0.3"
   firebase_messaging_platform_interface:
     dependency: transitive
     description:
@@ -577,50 +468,22 @@ packages:
     description: flutter
     source: sdk
     version: "0.0.0"
-  flutter_cache_manager:
-    dependency: transitive
+  flutter_animate:
+    dependency: "direct main"
     description:
-      name: flutter_cache_manager
+      name: flutter_animate
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "3.3.0"
-  flutter_dialogs:
-    dependency: transitive
-    description:
-      name: flutter_dialogs
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "3.0.0"
+    version: "2.0.1"
   flutter_downloader:
     dependency: "direct overridden"
     description:
       path: "."
-      ref: "7a90641a687e27cc3cb451389f1281faceeef56f"
-      resolved-ref: "7a90641a687e27cc3cb451389f1281faceeef56f"
+      ref: "60a4470a9b552b287d729e230881f9ac77f5b506"
+      resolved-ref: "60a4470a9b552b287d729e230881f9ac77f5b506"
       url: "https://github.com/breez/flutter_downloader.git"
     source: git
-    version: "1.8.4"
-  flutter_html:
-    dependency: transitive
-    description:
-      name: flutter_html
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "3.0.0-alpha.6"
-  flutter_html_svg:
-    dependency: transitive
-    description:
-      name: flutter_html_svg
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "3.0.0-alpha.4"
-  flutter_html_table:
-    dependency: transitive
-    description:
-      name: flutter_html_table
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "3.0.0-alpha.4"
+    version: "1.8.1"
   flutter_keyboard_visibility:
     dependency: transitive
     description:
@@ -663,20 +526,6 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.0.0"
-  flutter_launcher_icons:
-    dependency: transitive
-    description:
-      name: flutter_launcher_icons
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "0.10.0"
-  flutter_layout_grid:
-    dependency: transitive
-    description:
-      name: flutter_layout_grid
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "1.0.6"
   flutter_localizations:
     dependency: "direct main"
     description: flutter
@@ -731,13 +580,6 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.1.2"
-  flutter_spinkit:
-    dependency: transitive
-    description:
-      name: flutter_spinkit
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "5.1.0"
   flutter_svg:
     dependency: "direct main"
     description:
@@ -753,12 +595,10 @@ packages:
   flutter_typeahead:
     dependency: "direct main"
     description:
-      path: "."
-      ref: a16aa4deeff1c5e96c6da46da31cb0533f838d8d
-      resolved-ref: a16aa4deeff1c5e96c6da46da31cb0533f838d8d
-      url: "https://github.com/breez/flutter_typeahead.git"
-    source: git
-    version: "4.0.0"
+      name: flutter_typeahead
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "4.1.1"
   flutter_web_browser:
     dependency: "direct main"
     description:
@@ -805,7 +645,7 @@ packages:
       name: graphs
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "2.1.0"
+    version: "2.2.0"
   grpc:
     dependency: "direct main"
     description:
@@ -820,13 +660,6 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "0.2.0"
-  html:
-    dependency: transitive
-    description:
-      name: html
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "0.15.0"
   http:
     dependency: transitive
     description:
@@ -966,28 +799,7 @@ packages:
       name: json_serializable
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "6.5.1"
-  just_audio:
-    dependency: transitive
-    description:
-      name: just_audio
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "0.9.29"
-  just_audio_platform_interface:
-    dependency: transitive
-    description:
-      name: just_audio_platform_interface
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "4.2.0"
-  just_audio_web:
-    dependency: transitive
-    description:
-      name: just_audio_web
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "0.4.7"
+    version: "6.5.3"
   local_auth:
     dependency: "direct main"
     description:
@@ -1051,13 +863,6 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "5.3.2"
-  mp3_info:
-    dependency: transitive
-    description:
-      name: mp3_info
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "0.2.0"
   nested:
     dependency: transitive
     description:
@@ -1065,22 +870,6 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.0.0"
-  nfc_in_flutter:
-    dependency: "direct main"
-    description:
-      path: "."
-      ref: "97f610be82bfe42d5ce86c348d931d61949fa517"
-      resolved-ref: "97f610be82bfe42d5ce86c348d931d61949fa517"
-      url: "https://github.com/breez/nfc_in_flutter.git"
-    source: git
-    version: "3.0.0"
-  nfc_manager:
-    dependency: "direct main"
-    description:
-      name: nfc_manager
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "3.2.0"
   nm:
     dependency: transitive
     description:
@@ -1095,13 +884,6 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "2.0.1"
-  numerus:
-    dependency: transitive
-    description:
-      name: numerus
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "2.0.0"
   package_config:
     dependency: transitive
     description:
@@ -1228,55 +1010,6 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "3.8.3"
-  pedantic:
-    dependency: transitive
-    description:
-      name: pedantic
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "1.11.1"
-  percent_indicator:
-    dependency: transitive
-    description:
-      name: percent_indicator
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "4.2.2"
-  permission_handler:
-    dependency: transitive
-    description:
-      name: permission_handler
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "10.1.0"
-  permission_handler_android:
-    dependency: transitive
-    description:
-      name: permission_handler_android
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "10.1.0"
-  permission_handler_apple:
-    dependency: transitive
-    description:
-      name: permission_handler_apple
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "9.0.6"
-  permission_handler_platform_interface:
-    dependency: transitive
-    description:
-      name: permission_handler_platform_interface
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "3.9.0"
-  permission_handler_windows:
-    dependency: transitive
-    description:
-      name: permission_handler_windows
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "0.1.1"
   petitparser:
     dependency: transitive
     description:
@@ -1298,15 +1031,6 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "2.1.3"
-  podcast_search:
-    dependency: "direct overridden"
-    description:
-      path: "."
-      ref: "8190101aa49edf0f501cf3688f32a3a87df137c5"
-      resolved-ref: "8190101aa49edf0f501cf3688f32a3a87df137c5"
-      url: "https://github.com/breez/podcast_search.git"
-    source: git
-    version: "0.5.1"
   pointycastle:
     dependency: transitive
     description:
@@ -1343,7 +1067,7 @@ packages:
     source: hosted
     version: "2.1.0"
   provider:
-    dependency: transitive
+    dependency: "direct main"
     description:
       name: provider
       url: "https://pub.dartlang.org"
@@ -1379,13 +1103,6 @@ packages:
       url: "https://github.com/theyakka/qr.flutter.git"
     source: git
     version: "4.0.1"
-  quiver:
-    dependency: transitive
-    description:
-      name: quiver
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "3.1.0"
   rxdart:
     dependency: "direct main"
     description:
@@ -1407,29 +1124,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.2.3"
-  scrollable_positioned_list:
-    dependency: transitive
-    description:
-      name: scrollable_positioned_list
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "0.3.5"
-  sembast:
-    dependency: transitive
-    description:
-      name: sembast
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "3.3.1"
   share_extend:
     dependency: "direct main"
     description:
-      path: "."
-      ref: HEAD
-      resolved-ref: "493fa1c3c766a0aecca7209c1e52cba487d836a6"
-      url: "https://github.com/breez/ShareExtend.git"
-    source: git
-    version: "1.0.8"
+      name: share_extend
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "2.0.0"
   share_plus:
     dependency: "direct main"
     description:
@@ -1457,7 +1158,7 @@ packages:
       name: share_plus_platform_interface
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "3.1.1"
+    version: "3.1.2"
   share_plus_web:
     dependency: transitive
     description:
@@ -1595,14 +1296,14 @@ packages:
       name: source_map_stack_trace
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "2.1.0"
+    version: "2.1.1"
   source_maps:
     dependency: transitive
     description:
       name: source_maps
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.10.10"
+    version: "0.10.11"
   source_span:
     dependency: transitive
     description:
@@ -1637,7 +1338,7 @@ packages:
       name: sqlite3
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "1.9.0"
+    version: "1.9.1"
   stack_trace:
     dependency: transitive
     description:
@@ -1919,5 +1620,5 @@ packages:
     source: hosted
     version: "3.1.1"
 sdks:
-  dart: ">=2.18.1 <3.0.0"
+  dart: ">=2.18.0 <3.0.0"
   flutter: ">=3.3.0"

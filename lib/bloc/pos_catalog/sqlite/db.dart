@@ -1,6 +1,6 @@
 import 'dart:async';
 
-import 'package:breez/bloc/pos_catalog/sqlite/migrations.dart';
+import 'package:clovrlabs_wallet/bloc/pos_catalog/sqlite/migrations.dart';
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
 

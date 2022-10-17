@@ -1,11 +1,11 @@
-import 'package:breez/bloc/account/account_actions.dart';
-import 'package:breez/bloc/account/account_bloc.dart';
-import 'package:breez/bloc/account/account_model.dart';
-import 'package:breez/theme_data.dart' as theme;
-import 'package:breez/widgets/calendar_dialog.dart';
-import 'package:breez/widgets/fixed_sliver_delegate.dart';
-import 'package:breez/widgets/flushbar.dart';
-import 'package:breez/widgets/loader.dart';
+import 'package:clovrlabs_wallet/bloc/account/account_actions.dart';
+import 'package:clovrlabs_wallet/bloc/account/account_bloc.dart';
+import 'package:clovrlabs_wallet/bloc/account/account_model.dart';
+import 'package:clovrlabs_wallet/theme_data.dart' as theme;
+import 'package:clovrlabs_wallet/widgets/calendar_dialog.dart';
+import 'package:clovrlabs_wallet/widgets/fixed_sliver_delegate.dart';
+import 'package:clovrlabs_wallet/widgets/flushbar.dart';
+import 'package:clovrlabs_wallet/widgets/loader.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -295,7 +295,7 @@ class PaymentsFilterState extends State<PaymentsFilter> {
       child: IconButton(
         icon: Icon(
           Icons.more_vert,
-          color: theme.themeId == "BLUE"
+          color: theme.themeId == "WHITE"
               ? themeData.accentTextTheme.subtitle2.color.withOpacity(0.25)
               : themeData.disabledColor,
           size: 24.0,

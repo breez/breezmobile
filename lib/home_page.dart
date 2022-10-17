@@ -1,58 +1,48 @@
 import 'dart:async';
 
-import 'package:anytime/bloc/podcast/audio_bloc.dart';
-import 'package:anytime/ui/anytime_podcast_app.dart';
-import 'package:anytime/ui/podcast/now_playing.dart';
-import 'package:anytime/ui/widgets/layout_selector.dart';
-import 'package:audio_service/audio_service.dart';
-import 'package:breez/bloc/account/account_actions.dart';
-import 'package:breez/bloc/account/account_bloc.dart';
-import 'package:breez/bloc/account/account_model.dart';
-import 'package:breez/bloc/account/add_fund_vendor_model.dart';
-import 'package:breez/bloc/account/add_funds_bloc.dart';
-import 'package:breez/bloc/backup/backup_bloc.dart';
-import 'package:breez/bloc/blocs_provider.dart';
-import 'package:breez/bloc/connect_pay/connect_pay_bloc.dart';
-import 'package:breez/bloc/invoice/invoice_bloc.dart';
-import 'package:breez/bloc/lnurl/lnurl_bloc.dart';
-import 'package:breez/bloc/lsp/lsp_bloc.dart';
-import 'package:breez/bloc/lsp/lsp_model.dart';
-import 'package:breez/bloc/reverse_swap/reverse_swap_bloc.dart';
-import 'package:breez/bloc/user_profile/breez_user_model.dart';
-import 'package:breez/bloc/user_profile/user_profile_bloc.dart';
-import 'package:breez/handlers/check_channel_connection_handler.dart';
-import 'package:breez/routes/admin_login_dialog.dart';
-import 'package:breez/routes/charge/pos_invoice.dart';
-import 'package:breez/routes/home/bottom_actions_bar.dart';
-import 'package:breez/routes/home/qr_action_button.dart';
-import 'package:breez/routes/marketplace/marketplace.dart';
-import 'package:breez/routes/podcast/podcast_page.dart' as breezPodcast;
-import 'package:breez/routes/podcast/theme.dart';
-import 'package:breez/services/injector.dart';
-import 'package:breez/theme_data.dart' as theme;
-import 'package:breez/widgets/close_popup.dart';
-import 'package:breez/widgets/error_dialog.dart';
-import 'package:breez/widgets/fade_in_widget.dart';
-import 'package:breez/widgets/flushbar.dart';
-import 'package:breez/widgets/loader.dart';
-import 'package:breez/widgets/loading_animated_text.dart';
-import 'package:breez/widgets/lost_card_dialog.dart' as lostCard;
-import 'package:breez/widgets/navigation_drawer.dart';
-import 'package:breez/widgets/payment_failed_report_dialog.dart';
-import 'package:breez/widgets/route.dart';
+import 'package:clovrlabs_wallet/bloc/account/account_actions.dart';
+import 'package:clovrlabs_wallet/bloc/account/account_bloc.dart';
+import 'package:clovrlabs_wallet/bloc/account/account_model.dart';
+import 'package:clovrlabs_wallet/bloc/account/add_fund_vendor_model.dart';
+import 'package:clovrlabs_wallet/bloc/account/add_funds_bloc.dart';
+import 'package:clovrlabs_wallet/bloc/backup/backup_bloc.dart';
+import 'package:clovrlabs_wallet/bloc/blocs_provider.dart';
+import 'package:clovrlabs_wallet/bloc/connect_pay/connect_pay_bloc.dart';
+import 'package:clovrlabs_wallet/bloc/invoice/invoice_bloc.dart';
+import 'package:clovrlabs_wallet/bloc/lnurl/lnurl_bloc.dart';
+import 'package:clovrlabs_wallet/bloc/lsp/lsp_bloc.dart';
+import 'package:clovrlabs_wallet/bloc/lsp/lsp_model.dart';
+import 'package:clovrlabs_wallet/bloc/reverse_swap/reverse_swap_bloc.dart';
+import 'package:clovrlabs_wallet/bloc/user_profile/clovr_user_model.dart';
+import 'package:clovrlabs_wallet/bloc/user_profile/user_profile_bloc.dart';
+import 'package:clovrlabs_wallet/handlers/check_channel_connection_handler.dart';
+import 'package:clovrlabs_wallet/routes/admin_login_dialog.dart';
+import 'package:clovrlabs_wallet/routes/charge/pos_invoice.dart';
+import 'package:clovrlabs_wallet/routes/home/bottom_actions_bar.dart';
+import 'package:clovrlabs_wallet/routes/home/qr_action_button.dart';
+import 'package:clovrlabs_wallet/routes/marketplace/marketplace.dart';
+import 'package:clovrlabs_wallet/utils/theme.dart';
+import 'package:clovrlabs_wallet/services/injector.dart';
+import 'package:clovrlabs_wallet/theme_data.dart' as theme;
+import 'package:clovrlabs_wallet/widgets/close_popup.dart';
+import 'package:clovrlabs_wallet/widgets/error_dialog.dart';
+import 'package:clovrlabs_wallet/widgets/fade_in_widget.dart';
+import 'package:clovrlabs_wallet/widgets/flushbar.dart';
+import 'package:clovrlabs_wallet/widgets/loader.dart';
+import 'package:clovrlabs_wallet/widgets/loading_animated_text.dart';
+import 'package:clovrlabs_wallet/widgets/lost_card_dialog.dart' as lostCard;
+import 'package:clovrlabs_wallet/widgets/navigation_drawer.dart';
+import 'package:clovrlabs_wallet/widgets/payment_failed_report_dialog.dart';
+import 'package:clovrlabs_wallet/widgets/route.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:flutter_svg/svg.dart';
-import 'package:provider/provider.dart';
 
 import 'bloc/invoice/invoice_model.dart';
 import 'bloc/user_profile/user_actions.dart';
-import 'handlers/check_version_handler.dart';
 import 'handlers/ctp_join_session_handler.dart';
 import 'handlers/lnurl_handler.dart';
-import 'handlers/podcast_url_handler.dart';
 import 'handlers/received_invoice_notification.dart';
 import 'handlers/showPinHandler.dart';
 import 'handlers/sync_ui_handler.dart';
@@ -88,7 +78,7 @@ class Home extends StatefulWidget {
   );
 
   final List<DrawerItemConfig> _screens = List<DrawerItemConfig>.unmodifiable([
-    DrawerItemConfig("breezHome", "Breez", ""),
+    DrawerItemConfig("ClovrLabs", "ClovrLabs", ""),
   ]);
 
   final Map<String, Widget> _screenBuilders = {};
@@ -100,8 +90,7 @@ class Home extends StatefulWidget {
 }
 
 class HomeState extends State<Home> with WidgetsBindingObserver {
-  final GlobalKey podcastMenuItemKey = GlobalKey();
-  String _activeScreen = "breezHome";
+  String _activeScreen = "ClovrLabs";
   Set _hiddenRoutes = Set<String>();
   StreamSubscription<String> _accountNotificationsSubscription;
   bool _listensInit = false;
@@ -133,29 +122,6 @@ class HomeState extends State<Home> with WidgetsBindingObserver {
         activeAccountRoutes.forEach((r) => addOrRemove(r));
       });
     });
-
-    AudioService.notificationClicked.where((event) => event == true).listen(
-        (event) async {
-      final userBloc = AppBlocsProvider.of<UserProfileBloc>(context);
-      final audioBloc = Provider.of<AudioBloc>(context, listen: false);
-      final userModel = await userBloc.userStream.first;
-      final nowPlaying = await audioBloc.nowPlaying.first.timeout(
-        Duration(seconds: 1),
-      );
-      if (nowPlaying != null &&
-          !breezPodcast.NowPlayingTransport.nowPlayingVisible) {
-        Navigator.of(context).push(
-          MaterialPageRoute<void>(
-            builder: (context) => withPodcastTheme(userModel, NowPlaying()),
-            fullscreenDialog: false,
-          ),
-        );
-      }
-    }, onDone: () {
-      print("done");
-    }, onError: (e) {
-      print("error " + e.toString());
-    });
   }
 
   void _initListens(BuildContext context) {
@@ -179,16 +145,18 @@ class HomeState extends State<Home> with WidgetsBindingObserver {
   @override
   Widget build(BuildContext context) {
     _initListens(context);
+
     final addFundsBloc = BlocProvider.of<AddFundsBloc>(context);
     final lspBloc = AppBlocsProvider.of<LSPBloc>(context);
     final texts = AppLocalizations.of(context);
+    // return SizedBox();
 
     return WillPopScope(
       onWillPop: willPopCallback(
         context,
         canCancel: () => _scaffoldKey.currentState?.isDrawerOpen ?? false,
       ),
-      child: StreamBuilder<BreezUserModel>(
+      child: StreamBuilder<ClovrUserModel>(
         stream: widget.userProfileBloc.userStream,
         builder: (context, userSnapshot) {
           final user = userSnapshot.data;
@@ -248,7 +216,7 @@ class HomeState extends State<Home> with WidgetsBindingObserver {
 
   Widget _build(
     BuildContext context,
-    BreezUserModel user,
+    ClovrUserModel user,
     AccountModel account,
     AccountSettings settings,
     LSPStatus lspStatus,
@@ -266,70 +234,25 @@ class HomeState extends State<Home> with WidgetsBindingObserver {
           resizeToAvoidBottomInset: false,
           key: _scaffoldKey,
           appBar: AppBar(
-            systemOverlayStyle: theme.themeId == "BLUE"
+            systemOverlayStyle: theme.themeId == "WHITE"
                 ? SystemUiOverlayStyle.dark
                 : themeData.appBarTheme.systemOverlayStyle,
             centerTitle: false,
             actions: [
               Padding(
-                padding: user.appMode == AppMode.podcasts
-                    ? const EdgeInsets.all(14)
-                    : const EdgeInsets.fromLTRB(14, 14, 0, 14),
+                padding: const EdgeInsets.fromLTRB(14, 14, 0, 14),
                 child: AccountRequiredActionsIndicator(
                   widget.backupBloc,
                   widget.accountBloc,
                   widget.lspBloc,
                 ),
               ),
-              if (user.appMode == AppMode.podcasts) ...[
-                Padding(
-                  padding: const EdgeInsets.only(right: 16.0),
-                  child: IconButton(
-                    iconSize: 24.0,
-                    padding: EdgeInsets.zero,
-                    icon: ImageIcon(
-                      AssetImage("assets/icons/layout.png"),
-                      color: Theme.of(context).primaryIconTheme.color,
-                    ),
-                    tooltip: 'Layout',
-                    onPressed: () async {
-                      await showModalBottomSheet<void>(
-                        context: context,
-                        backgroundColor: Theme.of(context).backgroundColor,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.only(
-                            topLeft: Radius.circular(16.0),
-                            topRight: Radius.circular(16.0),
-                          ),
-                        ),
-                        builder: (context) => LayoutSelectorWidget(),
-                      );
-                    },
-                  ),
-                )
-              ],
             ],
             leading: _buildMenuIcon(context, user.appMode),
-            title: IconButton(
-              padding: EdgeInsets.zero,
-              icon: SvgPicture.asset(
-                "src/images/logo-color.svg",
-                height: 23.5,
-                width: 62.7,
-                color: themeData.appBarTheme.actionsIconTheme.color,
-                colorBlendMode: BlendMode.srcATop,
-              ),
-              iconSize: 64,
-              onPressed: () async {
-                _scaffoldKey.currentState.openDrawer();
-              },
-            ),
             iconTheme: IconThemeData(
-              color: Color.fromARGB(255, 0, 133, 251),
+              color: Color.fromARGB(255, 0, 0, 0),
             ),
-            backgroundColor: (user.appMode == AppMode.pos)
-                ? themeData.backgroundColor
-                : theme.customData[theme.themeId].dashboardBgColor,
+            backgroundColor: Color.fromARGB(255, 255, 255, 255),
             elevation: 0.0,
           ),
           drawerEnableOpenDragGesture: true,
@@ -355,11 +278,10 @@ class HomeState extends State<Home> with WidgetsBindingObserver {
               : null,
           floatingActionButtonLocation:
               FloatingActionButtonLocation.centerDocked,
-          body: widget._screenBuilders[_activeScreen] ??
-              _homePage(
-                context,
-                user,
-              ),
+          body: _homePage(
+            context,
+            user,
+          ),
         ),
       ),
     );
@@ -367,7 +289,7 @@ class HomeState extends State<Home> with WidgetsBindingObserver {
 
   NavigationDrawer _navigationDrawer(
     BuildContext context,
-    BreezUserModel user,
+    ClovrUserModel user,
     AccountModel account,
     AccountSettings settings,
     LSPStatus lspStatus,
@@ -377,13 +299,13 @@ class HomeState extends State<Home> with WidgetsBindingObserver {
     return NavigationDrawer(
       true,
       [
-        ..._drawerConfigRefundItems(
-          context,
-          user,
-          account.swapFundsStatus.maturedRefundableAddresses,
-        ),
+        // Comment temporary
+        // ..._drawerConfigRefundItems(
+        //   context,
+        //   user,
+        //   account.swapFundsStatus.maturedRefundableAddresses,
+        // ),
         ..._drawerConfigAppModeItems(context, user, texts),
-        ..._drawerConfigFlavorItems(context, user, texts),
         DrawerItemConfigGroup(
           _filterItems(_drawerConfigToFilter(context, user, texts)),
           groupTitle: texts.home_drawer_item_title_preferences,
@@ -396,15 +318,16 @@ class HomeState extends State<Home> with WidgetsBindingObserver {
 
   List<DrawerItemConfig> _drawerConfigToFilter(
     BuildContext context,
-    BreezUserModel user,
+    ClovrUserModel user,
     AppLocalizations texts,
   ) {
     return [
-      DrawerItemConfig(
-        "/fiat_currency",
-        texts.home_drawer_item_title_fiat_currencies,
-        "src/icon/fiat_currencies.png",
-      ),
+      // Temporary commented
+      // DrawerItemConfig(
+      //   "/fiat_currency",
+      //   texts.home_drawer_item_title_fiat_currencies,
+      //   "src/icon/fiat_currencies.png",
+      // ),
       DrawerItemConfig(
         "/network",
         texts.home_drawer_item_title_network,
@@ -432,7 +355,7 @@ class HomeState extends State<Home> with WidgetsBindingObserver {
 
   List<DrawerItemConfigGroup> _drawerConfigRefundItems(
     BuildContext context,
-    BreezUserModel user,
+    ClovrUserModel user,
     List<RefundableAddress> refundableAddresses,
   ) {
     if (refundableAddresses.length == 0) {
@@ -459,7 +382,7 @@ class HomeState extends State<Home> with WidgetsBindingObserver {
 
   List<DrawerItemConfigGroup> _drawerConfigFlavorItems(
     BuildContext context,
-    BreezUserModel user,
+    ClovrUserModel user,
     AppLocalizations texts,
   ) {
     switch (user.appMode) {
@@ -476,19 +399,6 @@ class HomeState extends State<Home> with WidgetsBindingObserver {
           ),
         ];
 
-      case AppMode.podcasts:
-        return [
-          DrawerItemConfigGroup(
-            [
-              DrawerItemConfig(
-                "/podcast_history",
-                texts.podcast_history_drawer,
-                "src/icon/top_podcast_icon.png",
-              ),
-            ],
-          ),
-        ];
-
       default:
         return [];
     }
@@ -496,21 +406,17 @@ class HomeState extends State<Home> with WidgetsBindingObserver {
 
   List<DrawerItemConfigGroup> _drawerConfigAppModeItems(
     BuildContext context,
-    BreezUserModel user,
+    ClovrUserModel user,
     AppLocalizations texts,
   ) {
     return [
       DrawerItemConfigGroup([_drawerItemBalance(context, user, texts)]),
-      DrawerItemConfigGroup([_drawerItemPodcast(context, user, texts)]),
-      DrawerItemConfigGroup([_drawerItemPos(context, user, texts)]),
-      DrawerItemConfigGroup([_drawerItemLightningApps(context, user, texts)]),
-      DrawerItemConfigGroup([]),
     ];
   }
 
   DrawerItemConfig _drawerItemBalance(
     BuildContext context,
-    BreezUserModel user,
+    ClovrUserModel user,
     AppLocalizations texts,
   ) {
     return DrawerItemConfig(
@@ -533,35 +439,9 @@ class HomeState extends State<Home> with WidgetsBindingObserver {
     );
   }
 
-  DrawerItemConfig _drawerItemPodcast(
-    BuildContext context,
-    BreezUserModel user,
-    AppLocalizations texts,
-  ) {
-    return DrawerItemConfig(
-      "",
-      texts.home_drawer_item_title_podcasts,
-      "src/icon/podcast.png",
-      key: podcastMenuItemKey,
-      isSelected: user.appMode == AppMode.podcasts,
-      onItemSelected: (_) {
-        protectAdminAction(
-          context,
-          user,
-          () {
-            widget.userProfileBloc.userActionsSink.add(
-              SetAppMode(AppMode.podcasts),
-            );
-            return Future.value(null);
-          },
-        );
-      },
-    );
-  }
-
   DrawerItemConfig _drawerItemPos(
     BuildContext context,
-    BreezUserModel user,
+    ClovrUserModel user,
     AppLocalizations texts,
   ) {
     return DrawerItemConfig(
@@ -579,7 +459,7 @@ class HomeState extends State<Home> with WidgetsBindingObserver {
 
   DrawerItemConfig _drawerItemLightningApps(
     BuildContext context,
-    BreezUserModel user,
+    ClovrUserModel user,
     AppLocalizations texts,
   ) {
     return DrawerItemConfig(
@@ -603,7 +483,7 @@ class HomeState extends State<Home> with WidgetsBindingObserver {
 
   List<DrawerItemConfig> _drawerConfigAdvancedFlavorItems(
     BuildContext context,
-    BreezUserModel user,
+    ClovrUserModel user,
     AppLocalizations texts,
   ) {
     if (user.appMode == AppMode.pos) {
@@ -644,8 +524,6 @@ class HomeState extends State<Home> with WidgetsBindingObserver {
 
   String _getAppModesAssetName(AppMode appMode) {
     switch (appMode) {
-      case (AppMode.podcasts):
-        return "src/icon/podcast.png";
       case (AppMode.pos):
         return "src/icon/pos.png";
       case (AppMode.apps):
@@ -657,23 +535,11 @@ class HomeState extends State<Home> with WidgetsBindingObserver {
     }
   }
 
-  Widget _homePage(BuildContext context, BreezUserModel user) {
+  Widget _homePage(BuildContext context, ClovrUserModel user) {
     final texts = AppLocalizations.of(context);
     final themeData = Theme.of(context);
 
     switch (user.appMode) {
-      case AppMode.podcasts:
-        return Container(
-          color: themeData.bottomAppBarColor,
-          child: SafeArea(
-            child: AnytimeHomePage(
-              topBarVisible: false,
-              inlineSearch: true,
-              noSubscriptionsMessage: texts.home_podcast_no_subscriptions,
-              title: texts.home_podcast_title,
-            ),
-          ),
-        );
       case AppMode.pos:
         return POSInvoice();
       case AppMode.apps:
@@ -728,7 +594,8 @@ class HomeState extends State<Home> with WidgetsBindingObserver {
           return route.settings.name != "/connect_to_pay";
         });
         var ctpRoute = FadeInRoute(
-          builder: (_) => withBreezTheme(context, ConnectToPayPage(session)),
+          builder: (_) =>
+              withElenPayWalletTheme(context, ConnectToPayPage(session)),
           settings: RouteSettings(name: "/connect_to_pay"),
         );
         Navigator.of(context).push(ctpRoute);
@@ -744,16 +611,6 @@ class HomeState extends State<Home> with WidgetsBindingObserver {
         );
       },
     );
-    PodcastURLHandler(widget.userProfileBloc, this.context, (e) {
-      promptError(
-        context,
-        texts.home_error_podcast_link,
-        Text(
-          e.toString(),
-          style: themeData.dialogTheme.contentTextStyle,
-        ),
-      );
-    });
     SyncUIHandler(widget.accountBloc, context);
     ShowPinHandler(widget.userProfileBloc, context);
 
@@ -778,7 +635,8 @@ class HomeState extends State<Home> with WidgetsBindingObserver {
         ),
       );
     });
-    checkVersionDialog(context, widget.userProfileBloc);
+    // Check app updating
+    // checkVersionDialog(context, widget.userProfileBloc);
     CheckChannelConnection().startListen(context, widget.accountBloc);
   }
 
@@ -867,9 +725,6 @@ class HomeState extends State<Home> with WidgetsBindingObserver {
 
       final accountModel = await widget.accountBloc.accountStream.first;
       final errorString = error.toDisplayMessage(accountModel.currency);
-      if (error.validationError && errorString.contains("payment is in transition")) {
-        return;
-      }
       showFlushbar(context, message: "$errorString");
 
       if (!error.validationError) {

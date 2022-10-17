@@ -1,5 +1,5 @@
-import 'package:breez/theme_data.dart' as theme;
-import 'package:breez/widgets/particles_animations.dart';
+import 'package:clovrlabs_wallet/theme_data.dart' as theme;
+import 'package:clovrlabs_wallet/widgets/particles_animations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_svg/svg.dart';
@@ -38,16 +38,7 @@ class SuccessfulPaymentRouteState extends State<SuccessfulPaymentRoute>
 
   @override
   Widget build(BuildContext context) {
-    return Stack(
-      children: [
-        Positioned.fill(
-          child: Particles(
-            50,
-            color: Colors.blue.withAlpha(150),
-          ),
-        ),
-      ],
-    );
+    return Container();
   }
 
   Widget _buildDialog(BuildContext context) {
@@ -112,11 +103,9 @@ class SuccessfulPaymentRouteState extends State<SuccessfulPaymentRoute>
               shape: BoxShape.circle,
             ),
             child: Image(
-              image: const AssetImage("src/icon/ic_done.png"),
+              image: const AssetImage("src/icon/approve.png"),
               height: 48.0,
-              color: theme.themeId == "BLUE"
-                  ? const Color.fromRGBO(0, 133, 251, 1.0)
-                  : Colors.white,
+              color: Colors.white,
             ),
           ),
         ),

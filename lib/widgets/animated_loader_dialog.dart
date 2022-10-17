@@ -1,4 +1,4 @@
-import 'package:breez/theme_data.dart' as theme;
+import 'package:clovrlabs_wallet/theme_data.dart' as theme;
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
@@ -24,8 +24,8 @@ AlertDialog createAnimatedLoaderDialog(
           textAlign: TextAlign.center,
         ),
         Image.asset(
-          theme.themeId == "BLUE"
-              ? 'src/images/breez_loader_blue.gif'
+          theme.themeId == "WHITE"
+              ? 'src/images/loader.gif'
               : 'src/images/breez_loader_dark.gif',
           height: 64.0,
           gaplessPlayback: true,

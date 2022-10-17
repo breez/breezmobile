@@ -1,7 +1,7 @@
-import 'package:breez/bloc/user_profile/currency.dart';
-import 'package:breez/routes/charge/currency_wrapper.dart';
-import 'package:breez/utils/date.dart';
-import 'package:breez/widgets/print_parameters.dart';
+import 'package:clovrlabs_wallet/bloc/user_profile/currency.dart';
+import 'package:clovrlabs_wallet/routes/charge/currency_wrapper.dart';
+import 'package:clovrlabs_wallet/utils/date.dart';
+import 'package:clovrlabs_wallet/widgets/print_parameters.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';

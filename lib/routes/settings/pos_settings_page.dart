@@ -1,21 +1,21 @@
 import 'dart:io';
 
 import 'package:auto_size_text/auto_size_text.dart';
-import 'package:breez/bloc/backup/backup_bloc.dart';
-import 'package:breez/bloc/blocs_provider.dart';
-import 'package:breez/bloc/pos_catalog/actions.dart';
-import 'package:breez/bloc/pos_catalog/bloc.dart';
-import 'package:breez/bloc/user_profile/breez_user_model.dart';
-import 'package:breez/bloc/user_profile/user_actions.dart';
-import 'package:breez/bloc/user_profile/user_profile_bloc.dart';
-import 'package:breez/routes/settings/set_admin_password.dart';
-import 'package:breez/utils/min_font_size.dart';
-import 'package:breez/widgets/back_button.dart' as backBtn;
-import 'package:breez/widgets/error_dialog.dart';
-import 'package:breez/widgets/flushbar.dart';
-import 'package:breez/widgets/loader.dart';
-import 'package:breez/widgets/route.dart';
-import 'package:breez/widgets/static_loader.dart';
+import 'package:clovrlabs_wallet/bloc/backup/backup_bloc.dart';
+import 'package:clovrlabs_wallet/bloc/blocs_provider.dart';
+import 'package:clovrlabs_wallet/bloc/pos_catalog/actions.dart';
+import 'package:clovrlabs_wallet/bloc/pos_catalog/bloc.dart';
+import 'package:clovrlabs_wallet/bloc/user_profile/clovr_user_model.dart';
+import 'package:clovrlabs_wallet/bloc/user_profile/user_actions.dart';
+import 'package:clovrlabs_wallet/bloc/user_profile/user_profile_bloc.dart';
+import 'package:clovrlabs_wallet/routes/settings/set_admin_password.dart';
+import 'package:clovrlabs_wallet/utils/min_font_size.dart';
+import 'package:clovrlabs_wallet/widgets/back_button.dart' as backBtn;
+import 'package:clovrlabs_wallet/widgets/error_dialog.dart';
+import 'package:clovrlabs_wallet/widgets/flushbar.dart';
+import 'package:clovrlabs_wallet/widgets/loader.dart';
+import 'package:clovrlabs_wallet/widgets/route.dart';
+import 'package:clovrlabs_wallet/widgets/static_loader.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -26,7 +26,7 @@ class PosSettingsPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final _userProfileBloc = AppBlocsProvider.of<UserProfileBloc>(context);
-    return StreamBuilder<BreezUserModel>(
+    return StreamBuilder<ClovrUserModel>(
       stream: _userProfileBloc.userStream,
       builder: (context, snapshot) {
         if (snapshot.hasData) {
@@ -40,7 +40,7 @@ class PosSettingsPage extends StatelessWidget {
 
 class _PosSettingsPage extends StatefulWidget {
   final UserProfileBloc _userProfileBloc;
-  final BreezUserModel currentProfile;
+  final ClovrUserModel currentProfile;
 
   const _PosSettingsPage(
     this._userProfileBloc,
@@ -89,13 +89,14 @@ class PosSettingsPageState extends State<_PosSettingsPage> {
         backgroundColor: themeData.canvasColor,
         title: Text(
           texts.pos_settings_title,
-          style: themeData.appBarTheme.textTheme.headline6,
+          // style: themeData.appBarTheme.textTheme.headline6,
         ),
-        elevation: 0.0, toolbarTextStyle: themeData.appBarTheme.textTheme.bodyText2, titleTextStyle: themeData.appBarTheme.textTheme.headline6,
+        elevation: 0.0, toolbarTextStyle: themeData.appBarTheme.textTheme.bodyText2,
+        // titleTextStyle: themeData.appBarTheme.textTheme.headline6,
       ),
       body: SingleChildScrollView(
         reverse: true,
-        child: StreamBuilder<BreezUserModel>(
+        child: StreamBuilder<ClovrUserModel>(
           stream: userProfileBloc.userStream,
           builder: (context, snapshot) {
             var user = snapshot.data;
@@ -193,7 +194,7 @@ class PosSettingsPageState extends State<_PosSettingsPage> {
   List<Widget> _buildAdminPasswordTiles(
     BuildContext context,
     UserProfileBloc userProfileBloc,
-    BreezUserModel user,
+    ClovrUserModel user,
   ) {
     var widgets = [
       Divider(),
@@ -370,7 +371,7 @@ class PosSettingsPageState extends State<_PosSettingsPage> {
   ListTile _buildEnablePasswordTile(
     BuildContext context,
     UserProfileBloc userProfileBloc,
-    BreezUserModel user,
+    ClovrUserModel user,
   ) {
     final texts = AppLocalizations.of(context);
     return ListTile(
@@ -460,7 +461,7 @@ class PosSettingsPageState extends State<_PosSettingsPage> {
   Widget _buildAddressField(
     BuildContext context,
     UserProfileBloc userProfileBloc,
-    BreezUserModel user,
+    ClovrUserModel user,
   ) {
     final texts = AppLocalizations.of(context);
     final currentProfile = widget.currentProfile;

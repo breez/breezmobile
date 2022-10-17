@@ -1,6 +1,6 @@
 import 'dart:convert';
 
-import 'package:breez/utils/locale.dart';
+import 'package:clovrlabs_wallet/utils/locale.dart';
 import 'package:flutter/foundation.dart';
 
 class RemoteServerAuthData {

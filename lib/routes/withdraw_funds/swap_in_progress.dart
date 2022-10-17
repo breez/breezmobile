@@ -1,9 +1,9 @@
-import 'package:breez/bloc/reverse_swap/reverse_swap_model.dart';
-import 'package:breez/services/injector.dart';
-import 'package:breez/widgets/back_button.dart' as backBtn;
-import 'package:breez/widgets/flushbar.dart';
-import 'package:breez/widgets/link_launcher.dart';
-import 'package:breez/widgets/loader.dart';
+import 'package:clovrlabs_wallet/bloc/reverse_swap/reverse_swap_model.dart';
+import 'package:clovrlabs_wallet/services/injector.dart';
+import 'package:clovrlabs_wallet/widgets/back_button.dart' as backBtn;
+import 'package:clovrlabs_wallet/widgets/flushbar.dart';
+import 'package:clovrlabs_wallet/widgets/link_launcher.dart';
+import 'package:clovrlabs_wallet/widgets/loader.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
@@ -30,7 +30,7 @@ class SwapInProgress extends StatelessWidget {
         }),
         title: Text(
           texts.swap_in_progress_title,
-          style: themeData.appBarTheme.textTheme.headline6,
+          // style: themeData.appBarTheme.textTheme.headline6,
         ),
         elevation: 0.0,
       ),

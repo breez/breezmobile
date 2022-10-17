@@ -1,12 +1,12 @@
-import 'package:breez/bloc/account/account_model.dart';
-import 'package:breez/bloc/blocs_provider.dart';
-import 'package:breez/bloc/pos_catalog/actions.dart';
-import 'package:breez/bloc/pos_catalog/bloc.dart';
-import 'package:breez/routes/charge/sale_view.dart';
-import 'package:breez/theme_data.dart' as theme;
-import 'package:breez/utils/date.dart';
-import 'package:breez/widgets/payment_details_dialog.dart';
-import 'package:breez/widgets/route.dart';
+import 'package:clovrlabs_wallet/bloc/account/account_model.dart';
+import 'package:clovrlabs_wallet/bloc/blocs_provider.dart';
+import 'package:clovrlabs_wallet/bloc/pos_catalog/actions.dart';
+import 'package:clovrlabs_wallet/bloc/pos_catalog/bloc.dart';
+import 'package:clovrlabs_wallet/routes/charge/sale_view.dart';
+import 'package:clovrlabs_wallet/theme_data.dart' as theme;
+import 'package:clovrlabs_wallet/utils/date.dart';
+import 'package:clovrlabs_wallet/widgets/payment_details_dialog.dart';
+import 'package:clovrlabs_wallet/widgets/route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
@@ -70,7 +70,7 @@ class PaymentItem extends StatelessWidget {
                   offset: Offset(-8, 0),
                   child: Text(
                     _title(context),
-                    style: themeData.accentTextTheme.subtitle2,
+                    style: TextStyle(color: Colors.black),
                     overflow: TextOverflow.ellipsis,
                   ),
                 ),

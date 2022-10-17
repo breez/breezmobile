@@ -1,14 +1,14 @@
 import 'dart:math';
 
-import 'package:breez/bloc/account/account_bloc.dart';
-import 'package:breez/bloc/account/account_model.dart';
-import 'package:breez/bloc/user_profile/user_actions.dart';
-import 'package:breez/bloc/user_profile/user_profile_bloc.dart';
-import 'package:breez/services/currency_data.dart';
-import 'package:breez/theme_data.dart' as theme;
-import 'package:breez/widgets/back_button.dart' as backBtn;
-import 'package:breez/widgets/flushbar.dart';
-import 'package:breez/widgets/loader.dart';
+import 'package:clovrlabs_wallet/bloc/account/account_bloc.dart';
+import 'package:clovrlabs_wallet/bloc/account/account_model.dart';
+import 'package:clovrlabs_wallet/bloc/user_profile/user_actions.dart';
+import 'package:clovrlabs_wallet/bloc/user_profile/user_profile_bloc.dart';
+import 'package:clovrlabs_wallet/services/currency_data.dart';
+import 'package:clovrlabs_wallet/theme_data.dart' as theme;
+import 'package:clovrlabs_wallet/widgets/back_button.dart' as backBtn;
+import 'package:clovrlabs_wallet/widgets/flushbar.dart';
+import 'package:clovrlabs_wallet/widgets/loader.dart';
 import 'package:drag_and_drop_lists/drag_and_drop_lists.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -60,7 +60,7 @@ class FiatCurrencySettingsState extends State<FiatCurrencySettings> {
             leading: backBtn.BackButton(),
             title: Text(
               texts.fiat_currencies_title,
-              style: themeData.appBarTheme.textTheme.headline6,
+              // style: themeData.appBarTheme.textTheme.headline6,
             ),
             elevation: 0.0,
           ),
@@ -80,7 +80,7 @@ class FiatCurrencySettingsState extends State<FiatCurrencySettings> {
                 padding: const EdgeInsets.all(16.0),
                 child: Icon(
                   Icons.drag_handle,
-                  color: theme.BreezColors.white[200],
+                  color: theme.ElenPayWalletColors.white[200],
                 ),
               ),
             ),

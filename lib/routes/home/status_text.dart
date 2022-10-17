@@ -1,7 +1,7 @@
 import 'package:auto_size_text/auto_size_text.dart';
-import 'package:breez/bloc/account/account_model.dart';
-import 'package:breez/utils/min_font_size.dart';
-import 'package:breez/widgets/loading_animated_text.dart';
+import 'package:clovrlabs_wallet/bloc/account/account_model.dart';
+import 'package:clovrlabs_wallet/utils/min_font_size.dart';
+import 'package:clovrlabs_wallet/widgets/loading_animated_text.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -32,12 +32,12 @@ class StatusText extends StatelessWidget {
         textElements: [
           TextSpan(
             text: texts.status_text_loading_begin,
-            style: themeData.accentTextTheme.bodyText2,
+            style: themeData.accentTextTheme.bodyMedium,
           ),
           _LinkTextSpan(
             text: texts.status_text_loading_middle,
             url: account.channelFundingTxUrl,
-            style: themeData.accentTextTheme.bodyText2.copyWith(
+            style: themeData.accentTextTheme.bodyMedium.copyWith(
               decoration: TextDecoration.underline,
             ),
           ),
@@ -49,23 +49,13 @@ class StatusText extends StatelessWidget {
       );
     }
 
-    if (account == null || account.statusMessage == null) {
-      return AutoSizeText(
-        texts.status_text_ready,
-        style: themeData.accentTextTheme.bodyText2,
-        textAlign: TextAlign.center,
-        minFontSize: MinFontSize(context).minFontSize,
-        stepGranularity: 0.1,
-      );
-    }
-
     var swapError = account.swapFundsStatus?.error;
     bool loading = swapError == null || swapError.isEmpty;
     return loading
         ? LoadingAnimatedText(account.statusMessage)
         : Text(
             account.statusMessage,
-            style: themeData.accentTextTheme.bodyText2,
+            style: themeData.accentTextTheme.bodyMedium,
             textAlign: TextAlign.center,
           );
   }

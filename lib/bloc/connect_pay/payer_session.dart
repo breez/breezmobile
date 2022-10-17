@@ -1,21 +1,21 @@
 import 'dart:async';
 import 'dart:convert';
 
-import 'package:breez/bloc/account/account_model.dart';
-import 'package:breez/bloc/connect_pay/connect_pay_bloc.dart';
-import 'package:breez/bloc/connect_pay/encryption.dart';
-import 'package:breez/bloc/connect_pay/firebase_session_channel.dart';
-import 'package:breez/bloc/connect_pay/online_status_updater.dart';
-import 'package:breez/bloc/user_profile/breez_user_model.dart';
-import 'package:breez/logger.dart';
-import 'package:breez/services/background_task.dart';
-import 'package:breez/services/breez_server/server.dart';
-import 'package:breez/services/breezlib/breez_bridge.dart';
-import 'package:breez/services/breezlib/data/rpc.pb.dart';
-import 'package:breez/services/deep_links.dart';
-import 'package:breez/services/device.dart';
-import 'package:breez/services/injector.dart';
-import 'package:breez/utils/locale.dart';
+import 'package:clovrlabs_wallet/bloc/account/account_model.dart';
+import 'package:clovrlabs_wallet/bloc/connect_pay/connect_pay_bloc.dart';
+import 'package:clovrlabs_wallet/bloc/connect_pay/encryption.dart';
+import 'package:clovrlabs_wallet/bloc/connect_pay/firebase_session_channel.dart';
+import 'package:clovrlabs_wallet/bloc/connect_pay/online_status_updater.dart';
+import 'package:clovrlabs_wallet/bloc/user_profile/clovr_user_model.dart';
+import 'package:clovrlabs_wallet/logger.dart';
+import 'package:clovrlabs_wallet/services/background_task.dart';
+import 'package:clovrlabs_wallet/services/breez_server/server.dart';
+import 'package:clovrlabs_wallet/services/breezlib/breez_bridge.dart';
+import 'package:clovrlabs_wallet/services/breezlib/data/rpc.pb.dart';
+import 'package:clovrlabs_wallet/services/deep_links.dart';
+import 'package:clovrlabs_wallet/services/device.dart';
+import 'package:clovrlabs_wallet/services/injector.dart';
+import 'package:clovrlabs_wallet/utils/locale.dart';
 import 'package:fixnum/fixnum.dart';
 import 'package:rxdart/rxdart.dart';
 
@@ -55,7 +55,7 @@ class PayerRemoteSession extends RemoteSession with OnlineStatusUpdater {
   DeepLinksService _deepLinks = ServiceInjector().deepLinks;
   BackgroundTaskService _backgroundService =
       ServiceInjector().backgroundTaskService;
-  BreezUserModel _currentUser;
+  ClovrUserModel _currentUser;
   var sessionState = Map<String, dynamic>();
   SessionLinkModel sessionLink;
   Completer _sessionCompleter = Completer();

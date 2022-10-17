@@ -1,7 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
 
-import 'package:breez/bloc/pos_catalog/model.dart';
+import 'package:clovrlabs_wallet/bloc/pos_catalog/model.dart';
 import 'package:crypto/crypto.dart';
 import 'package:sqflite/sqflite.dart';
 

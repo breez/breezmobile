@@ -1,12 +1,12 @@
 import 'dart:async';
 
 import 'package:another_flushbar/flushbar.dart';
-import 'package:breez/bloc/account/account_bloc.dart';
-import 'package:breez/logger.dart';
-import 'package:breez/services/device.dart';
-import 'package:breez/services/injector.dart';
-import 'package:breez/theme_data.dart' as theme;
-import 'package:breez/widgets/flushbar.dart';
+import 'package:clovrlabs_wallet/bloc/account/account_bloc.dart';
+import 'package:clovrlabs_wallet/logger.dart';
+import 'package:clovrlabs_wallet/services/device.dart';
+import 'package:clovrlabs_wallet/services/injector.dart';
+import 'package:clovrlabs_wallet/theme_data.dart' as theme;
+import 'package:clovrlabs_wallet/widgets/flushbar.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
@@ -41,7 +41,7 @@ class CheckChannelConnection {
 
   void startSubscription(AccountBloc accountBloc, BuildContext context) {
     _subscription = accountBloc.accountStream
-        .map((acc) => !(acc.connected && !acc.readyForPayments) || acc.nodeUpgrading == true)
+        .map((acc) => !(acc.connected && !acc.readyForPayments))
         .distinct()
         .listen((ready) {
       if (ready) {
@@ -71,10 +71,11 @@ class CheckChannelConnection {
   }
 
   void _notReadyForPayments(BuildContext context) {
-    log.info("Account is not ready for payments, Breez is offline");
+    log.info("Account is not ready for payments, ClovrLabs Wallet is offline");
     if (_flushbar != null) {
       return;
-    }        
+    }
+
     final texts = AppLocalizations.of(context);
     _flushbar = showFlushbar(
       context,

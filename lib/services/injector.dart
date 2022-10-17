@@ -1,16 +1,15 @@
 import 'dart:async';
 
-import 'package:breez/services/breez_server/server.dart';
-import 'package:breez/services/breezlib/breez_bridge.dart';
-import 'package:breez/services/currency_service.dart';
-import 'package:breez/services/deep_links.dart';
-import 'package:breez/services/device.dart';
-import 'package:breez/services/download_manager.dart';
-import 'package:breez/services/lightning_links.dart';
-import 'package:breez/services/local_auth_service.dart';
-import 'package:breez/services/nfc.dart';
-import 'package:breez/services/notifications.dart';
-import 'package:breez/services/permissions.dart';
+import 'package:clovrlabs_wallet/services/breez_server/server.dart';
+import 'package:clovrlabs_wallet/services/breezlib/breez_bridge.dart';
+import 'package:clovrlabs_wallet/services/currency_service.dart';
+import 'package:clovrlabs_wallet/services/deep_links.dart';
+import 'package:clovrlabs_wallet/services/device.dart';
+import 'package:clovrlabs_wallet/services/download_manager.dart';
+import 'package:clovrlabs_wallet/services/lightning_links.dart';
+import 'package:clovrlabs_wallet/services/local_auth_service.dart';
+import 'package:clovrlabs_wallet/services/notifications.dart';
+import 'package:clovrlabs_wallet/services/permissions.dart';
 import 'package:http/http.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -23,7 +22,6 @@ class ServiceInjector {
   BreezServer _breezServer;
   FirebaseNotifications _notifications;
   BreezBridge _breezBridge;
-  NFCService _nfcService;
   DeepLinksService _deepLinksService;
   LightningLinksService _lightningLinksService;
   Device _device;
@@ -48,10 +46,6 @@ class ServiceInjector {
 
   Notifications get notifications {
     return _notifications ??= FirebaseNotifications();
-  }
-
-  NFCService get nfc {
-    return _nfcService ??= NFCService();
   }
 
   BreezServer get breezServer {

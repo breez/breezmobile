@@ -1,9 +1,9 @@
-import 'package:breez/bloc/backup/backup_bloc.dart';
-import 'package:breez/bloc/blocs_provider.dart';
-import 'package:breez/bloc/payment_options/payment_options_actions.dart';
-import 'package:breez/bloc/payment_options/payment_options_bloc.dart';
-import 'package:breez/widgets/back_button.dart' as backBtn;
-import 'package:breez/widgets/warning_box.dart';
+import 'package:clovrlabs_wallet/bloc/backup/backup_bloc.dart';
+import 'package:clovrlabs_wallet/bloc/blocs_provider.dart';
+import 'package:clovrlabs_wallet/bloc/payment_options/payment_options_actions.dart';
+import 'package:clovrlabs_wallet/bloc/payment_options/payment_options_bloc.dart';
+import 'package:clovrlabs_wallet/widgets/back_button.dart' as backBtn;
+import 'package:clovrlabs_wallet/widgets/warning_box.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -79,7 +79,7 @@ class _PaymentOptionsPageState extends State<PaymentOptionsPage> {
         leading: backBtn.BackButton(),
         title: Text(
           texts.payment_options_title,
-          style: themeData.appBarTheme.textTheme.headline6,
+          // style: themeData.appBarTheme.textTheme.headline6,
         ),
         elevation: 0.0,
       ),

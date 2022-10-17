@@ -1,12 +1,11 @@
 import 'dart:async';
 
-import 'package:breez/services/breez_server/server.dart';
-import 'package:breez/services/breezlib/breez_bridge.dart';
-import 'package:breez/services/breezlib/data/rpc.pb.dart';
-import 'package:breez/services/device.dart';
-import 'package:breez/services/injector.dart';
-import 'package:breez/services/nfc.dart';
-import 'package:breez/services/notifications.dart';
+import 'package:clovrlabs_wallet/services/breez_server/server.dart';
+import 'package:clovrlabs_wallet/services/breezlib/breez_bridge.dart';
+import 'package:clovrlabs_wallet/services/breezlib/data/rpc.pb.dart';
+import 'package:clovrlabs_wallet/services/device.dart';
+import 'package:clovrlabs_wallet/services/injector.dart';
+import 'package:clovrlabs_wallet/services/notifications.dart';
 import 'package:fixnum/fixnum.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -49,11 +48,6 @@ class NotificationsMock extends Mock implements Notifications {
       new BehaviorSubject<Map<String, dynamic>>().stream;
 }
 
-class NFCServiceMock extends Mock implements NFCService {
-  Stream<String> receivedBreezIds() {
-    return new StreamController<String>().stream;
-  }
-}
 
 class BreezLibMock extends Mock implements BreezBridge {
   Future<AddInvoiceReply> addInvoice(

@@ -1,4 +1,4 @@
-import 'package:breez/theme_data.dart' as theme;
+import 'package:clovrlabs_wallet/theme_data.dart' as theme;
 import 'package:flutter/material.dart';
 
 class PulseAnimationDecorator extends StatefulWidget {

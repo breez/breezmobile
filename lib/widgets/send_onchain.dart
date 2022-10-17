@@ -1,10 +1,10 @@
 import 'dart:async';
 
-import 'package:breez/bloc/account/account_model.dart';
-import 'package:breez/services/injector.dart';
-import 'package:breez/theme_data.dart' as theme;
-import 'package:breez/widgets/collapsible_list_item.dart';
-import 'package:breez/widgets/keyboard_done_action.dart';
+import 'package:clovrlabs_wallet/bloc/account/account_model.dart';
+import 'package:clovrlabs_wallet/services/injector.dart';
+import 'package:clovrlabs_wallet/theme_data.dart' as theme;
+import 'package:clovrlabs_wallet/widgets/collapsible_list_item.dart';
+import 'package:clovrlabs_wallet/widgets/keyboard_done_action.dart';
 import 'package:fixnum/fixnum.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -100,12 +100,12 @@ class SendOnchainState extends State<SendOnchain> {
         ),
         primaryColor: themeData.textTheme.button.color,
         unselectedWidgetColor: themeData.canvasColor,
-        errorColor: theme.themeId == "BLUE" ? Colors.red : themeData.errorColor,
+        errorColor: theme.themeId == "WHITE" ? Colors.red : themeData.errorColor,
       ),
       child: Scaffold(
         backgroundColor: themeData.backgroundColor,
         appBar: AppBar(
-          systemOverlayStyle: theme.themeId == "BLUE"
+          systemOverlayStyle: theme.themeId == "WHITE"
               ? SystemUiOverlayStyle.dark
               : themeData.appBarTheme.systemOverlayStyle,
           iconTheme: themeData.appBarTheme.iconTheme,

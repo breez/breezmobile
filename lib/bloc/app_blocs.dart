@@ -1,16 +1,14 @@
-import 'package:breez/bloc/account/account_bloc.dart';
-import 'package:breez/bloc/backup/backup_bloc.dart';
-import 'package:breez/bloc/connect_pay/connect_pay_bloc.dart';
-import 'package:breez/bloc/fastbitcoins/fastbitcoins_bloc.dart';
-import 'package:breez/bloc/lnurl/lnurl_bloc.dart';
-import 'package:breez/bloc/marketplace/marketplace_bloc.dart';
-import 'package:breez/bloc/payment_options/payment_options_bloc.dart';
-import 'package:breez/bloc/podcast_clip/podcast_clip_bloc.dart';
-import 'package:breez/bloc/podcast_history/podcast_history_bloc.dart';
-import 'package:breez/bloc/pos_catalog/bloc.dart';
-import 'package:breez/bloc/pos_catalog/sqlite/repository.dart';
-import 'package:breez/bloc/reverse_swap/reverse_swap_bloc.dart';
-import 'package:breez/bloc/user_profile/user_profile_bloc.dart';
+import 'package:clovrlabs_wallet/bloc/account/account_bloc.dart';
+import 'package:clovrlabs_wallet/bloc/backup/backup_bloc.dart';
+import 'package:clovrlabs_wallet/bloc/connect_pay/connect_pay_bloc.dart';
+import 'package:clovrlabs_wallet/bloc/fastbitcoins/fastbitcoins_bloc.dart';
+import 'package:clovrlabs_wallet/bloc/lnurl/lnurl_bloc.dart';
+import 'package:clovrlabs_wallet/bloc/marketplace/marketplace_bloc.dart';
+import 'package:clovrlabs_wallet/bloc/payment_options/payment_options_bloc.dart';
+import 'package:clovrlabs_wallet/bloc/pos_catalog/bloc.dart';
+import 'package:clovrlabs_wallet/bloc/pos_catalog/sqlite/repository.dart';
+import 'package:clovrlabs_wallet/bloc/reverse_swap/reverse_swap_bloc.dart';
+import 'package:clovrlabs_wallet/bloc/user_profile/user_profile_bloc.dart';
 
 import 'invoice/invoice_bloc.dart';
 import 'lsp/lsp_bloc.dart';
@@ -32,8 +30,6 @@ class AppBlocs {
   final PaymentOptionsBloc paymentOptionsBloc;
   final ReverseSwapBloc reverseSwapBloc;
   final Map<Type, Object> _blocsByType;
-  final PodcastHistoryBloc podCastHistoryBloc;
-  final PodcastClipBloc podCastClipBloc;
 
   static T _registerBloc<T>(T bloc, Map<Type, Object> blocs) {
     blocs[bloc.runtimeType] = bloc;
@@ -44,14 +40,13 @@ class AppBlocs {
     return _blocsByType[T];
   }
 
-  factory AppBlocs(Stream<bool> backupAnytimeDBStream) {
+  factory AppBlocs() {
     var blocsByType = Map<Type, Object>();
     final sqliteRepository = SqliteRepository();
     UserProfileBloc userProfileBloc =
         _registerBloc(UserProfileBloc(), blocsByType);
-    BackupBloc backupBloc = _registerBloc(
-        BackupBloc(userProfileBloc.userStream, backupAnytimeDBStream),
-        blocsByType);
+    BackupBloc backupBloc =
+        _registerBloc(BackupBloc(userProfileBloc.userStream), blocsByType);
     PaymentOptionsBloc paymentOptionsBloc = _registerBloc(
       PaymentOptionsBloc(backupBloc.restoreLightningFeesStream),
       blocsByType,
@@ -90,14 +85,6 @@ class AppBlocs {
         blocsByType);
     FastbitcoinsBloc fastbitcoinsBloc =
         _registerBloc(FastbitcoinsBloc(), blocsByType);
-    PodcastHistoryBloc podCastHistoryBloc = _registerBloc(
-      PodcastHistoryBloc(),
-      blocsByType,
-    );
-    PodcastClipBloc podCastClipBloc = _registerBloc(
-      PodcastClipBloc(),
-      blocsByType,
-    );
 
     return AppBlocs._(
         userProfileBloc,
@@ -112,9 +99,7 @@ class AppBlocs {
         lnurlBloc,
         posCatalogBloc,
         paymentOptionsBloc,
-        blocsByType,
-        podCastHistoryBloc,
-        podCastClipBloc);
+        blocsByType);
   }
 
   AppBlocs._(
@@ -130,7 +115,5 @@ class AppBlocs {
       this.lnurlBloc,
       this.posCatalogBloc,
       this.paymentOptionsBloc,
-      this._blocsByType,
-      this.podCastHistoryBloc,
-      this.podCastClipBloc);
+      this._blocsByType);
 }

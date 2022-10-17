@@ -1,15 +1,15 @@
 import 'dart:async';
 
-import 'package:breez/bloc/account/account_bloc.dart';
-import 'package:breez/bloc/account/account_model.dart';
-import 'package:breez/bloc/blocs_provider.dart';
-import 'package:breez/bloc/reverse_swap/reverse_swap_actions.dart';
-import 'package:breez/bloc/reverse_swap/reverse_swap_bloc.dart';
-import 'package:breez/bloc/reverse_swap/reverse_swap_model.dart';
-import 'package:breez/widgets/back_button.dart' as backBtn;
-import 'package:breez/widgets/error_dialog.dart';
-import 'package:breez/widgets/loader.dart';
-import 'package:breez/widgets/payment_details_dialog.dart';
+import 'package:clovrlabs_wallet/bloc/account/account_bloc.dart';
+import 'package:clovrlabs_wallet/bloc/account/account_model.dart';
+import 'package:clovrlabs_wallet/bloc/blocs_provider.dart';
+import 'package:clovrlabs_wallet/bloc/reverse_swap/reverse_swap_actions.dart';
+import 'package:clovrlabs_wallet/bloc/reverse_swap/reverse_swap_bloc.dart';
+import 'package:clovrlabs_wallet/bloc/reverse_swap/reverse_swap_model.dart';
+import 'package:clovrlabs_wallet/widgets/back_button.dart' as backBtn;
+import 'package:clovrlabs_wallet/widgets/error_dialog.dart';
+import 'package:clovrlabs_wallet/widgets/loader.dart';
+import 'package:clovrlabs_wallet/widgets/payment_details_dialog.dart';
 import 'package:fixnum/fixnum.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -92,27 +92,37 @@ class ReverseSwapPageState extends State<ReverseSwapPage> {
     return StreamBuilder<AccountModel>(
       stream: accountBloc.accountStream,
       builder: (context, accSnapshot) {
-        final accountModel = accSnapshot.data;        
+        final accountModel = accSnapshot.data;
+        final unconfirmedChannels = accountModel?.unconfirmedChannels;
+        final hasUnconfirmed = (unconfirmedChannels?.length ?? 0) > 0;
 
         return Scaffold(
           appBar: !_policyCompleter.isCompleted ||
-                  _loadingError != null
+                  _loadingError != null ||
+                  hasUnconfirmed
               ? AppBar(
                   iconTheme: themeData.appBarTheme.iconTheme,
+                  textTheme: themeData.appBarTheme.textTheme,
                   backgroundColor: themeData.canvasColor,
                   leading: backBtn.BackButton(
                     onPressed: () => Navigator.of(context).pop(),
                   ),
                   title: Text(
                     texts.reverse_swap_title,
-                    style: themeData.appBarTheme.textTheme.headline6,
+                    // style: themeData.appBarTheme.textTheme.headline6,
                   ),
-                  elevation: 0.0, toolbarTextStyle: themeData.appBarTheme.textTheme.bodyText2, titleTextStyle: themeData.appBarTheme.textTheme.headline6,
+                  elevation: 0.0,
                 )
               : null,
           body: FutureBuilder<Object>(
             future: _policyCompleter.future,
-            builder: (context, snapshot) {              
+            builder: (context, snapshot) {
+              if (hasUnconfirmed) {
+                return UnconfirmedChannels(
+                  accountModel: accountModel,
+                  unconfirmedChannels: unconfirmedChannels,
+                );
+              }
               if (snapshot.error != null) {
                 return Center(
                   child: Text(

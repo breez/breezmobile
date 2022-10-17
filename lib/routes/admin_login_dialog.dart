@@ -1,14 +1,14 @@
-import 'package:breez/bloc/blocs_provider.dart';
-import 'package:breez/bloc/user_profile/breez_user_model.dart';
-import 'package:breez/bloc/user_profile/user_actions.dart';
-import 'package:breez/bloc/user_profile/user_profile_bloc.dart';
-import 'package:breez/theme_data.dart' as theme;
+import 'package:clovrlabs_wallet/bloc/blocs_provider.dart';
+import 'package:clovrlabs_wallet/bloc/user_profile/clovr_user_model.dart';
+import 'package:clovrlabs_wallet/bloc/user_profile/user_actions.dart';
+import 'package:clovrlabs_wallet/bloc/user_profile/user_profile_bloc.dart';
+import 'package:clovrlabs_wallet/theme_data.dart' as theme;
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 Future protectAdminAction(
   BuildContext context,
-  BreezUserModel user,
+  ClovrUserModel user,
   Future onNext(),
 ) async {
   if (user.appMode == AppMode.pos && user.hasAdminPassword) {
@@ -26,7 +26,7 @@ Future protectAdminAction(
 
 Future protectAdminRoute(
   BuildContext context,
-  BreezUserModel user,
+  ClovrUserModel user,
   String route,
 ) async {
   if (user.appMode == AppMode.pos && user.hasAdminPassword) {
@@ -86,7 +86,7 @@ class _AdminLoginDialogState extends State<_AdminLoginDialog> {
           ),
           primaryColor: themeData.textTheme.button.color,
           errorColor:
-              theme.themeId == "BLUE" ? Colors.red : themeData.errorColor,
+              theme.themeId == "Dark" ? Colors.red : themeData.errorColor,
         ),
         child: Container(
           width: MediaQuery.of(context).size.width,

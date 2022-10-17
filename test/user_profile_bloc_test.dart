@@ -1,6 +1,6 @@
-import 'package:breez/bloc/user_profile/breez_user_model.dart';
-import 'package:breez/bloc/user_profile/user_profile_bloc.dart';
-import 'package:breez/services/injector.dart';
+import 'package:clovrlabs_wallet/bloc/user_profile/clovr_user_model.dart';
+import 'package:clovrlabs_wallet/bloc/user_profile/user_profile_bloc.dart';
+import 'package:clovrlabs_wallet/services/injector.dart';
 import 'package:test/test.dart';
 import 'bloc_tester.dart';
 import 'mocks.dart';
@@ -16,7 +16,7 @@ void main() {
     });
 
     test("should return empty user when not registered", () async {
-      new BlocTester<void, BreezUserModel>(_userProfileBloc.userStream, (user) => expect(user.userID, null));        
+      new BlocTester<void, ClovrUserModel>(_userProfileBloc.userStream, (user) => expect(user.userID, null));
     });
 
     test("shoud return registered user", () async{

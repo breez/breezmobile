@@ -1,11 +1,11 @@
 import 'dart:async';
 
-import 'package:breez/bloc/user_profile/breez_user_model.dart';
+import 'package:clovrlabs_wallet/bloc/user_profile/clovr_user_model.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class SplashPage extends StatefulWidget {
-  final BreezUserModel _user;
+  final ClovrUserModel _user;
 
   SplashPage(this._user);
 
@@ -47,12 +47,7 @@ class SplashPageState extends State<SplashPage> {
     return Scaffold(
         body: Stack(children: <Widget>[
       Center(
-        child: Image.asset(
-          'src/images/splash-animation.gif',
-          fit: BoxFit.contain,
-          gaplessPlayback: true,
-          width: MediaQuery.of(context).size.width / 3,
-        ),
+        child: SizedBox(),
       ),
     ]));
   }

@@ -1,6 +1,6 @@
 import 'dart:io';
 
-import 'package:breez/bloc/async_action.dart';
+import 'package:clovrlabs_wallet/bloc/async_action.dart';
 
 import 'model.dart';
 

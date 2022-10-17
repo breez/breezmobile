@@ -1,4 +1,4 @@
-import 'package:breez/bloc/pos_catalog/model.dart';
+import 'package:clovrlabs_wallet/bloc/pos_catalog/model.dart';
 
 abstract class Repository {
   //Assets

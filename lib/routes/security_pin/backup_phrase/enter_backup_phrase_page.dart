@@ -1,11 +1,11 @@
 import 'dart:async';
 
 import 'package:bip39/bip39.dart' as bip39;
-import 'package:breez/bloc/blocs_provider.dart';
-import 'package:breez/bloc/user_profile/user_profile_bloc.dart';
-import 'package:breez/theme_data.dart' as theme;
-import 'package:breez/widgets/back_button.dart' as backBtn;
-import 'package:breez/widgets/single_button_bottom_bar.dart';
+import 'package:clovrlabs_wallet/bloc/blocs_provider.dart';
+import 'package:clovrlabs_wallet/bloc/user_profile/user_profile_bloc.dart';
+import 'package:clovrlabs_wallet/theme_data.dart' as theme;
+import 'package:clovrlabs_wallet/widgets/back_button.dart' as backBtn;
+import 'package:clovrlabs_wallet/widgets/single_button_bottom_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_typeahead/flutter_typeahead.dart';
@@ -85,7 +85,7 @@ class EnterBackupPhrasePageState extends State<EnterBackupPhrasePage> {
               _currentPage.toString(),
               _lastPage.toString(),
             ),
-            style: themeData.appBarTheme.textTheme.headline6,
+            // style: themeData.appBarTheme.textTheme.headline6,
           ),
           elevation: 0.0,
         ),
@@ -172,7 +172,7 @@ class EnterBackupPhrasePageState extends State<EnterBackupPhrasePage> {
             border: Border(
               bottom: BorderSide(
                 width: 0.5,
-                color: theme.BreezColors.blue[500],
+                color: theme.ElenPayWalletColors.dark_grey[500],
               ),
             ),
           ),

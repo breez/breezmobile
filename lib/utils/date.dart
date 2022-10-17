@@ -1,6 +1,6 @@
 import 'dart:io' show Platform;
 
-import 'package:breez/utils/locale.dart';
+import 'package:clovrlabs_wallet/utils/locale.dart';
 import "package:intl/intl.dart";
 import 'package:timeago/timeago.dart' as timeago;
 

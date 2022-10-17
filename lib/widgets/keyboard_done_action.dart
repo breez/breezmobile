@@ -1,4 +1,4 @@
-import 'package:breez/theme_data.dart' as theme;
+import 'package:clovrlabs_wallet/theme_data.dart' as theme;
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -55,7 +55,7 @@ class KeyboardDoneAction {
                     child: Text(
                       texts.keyboard_done_action,
                       style: TextStyle(
-                        color: theme.BreezColors.blue[500],
+                        color: theme.ElenPayWalletColors.dark_grey[500],
                         fontWeight: FontWeight.bold,
                       ),
                     ),

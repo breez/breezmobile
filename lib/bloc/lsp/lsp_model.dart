@@ -1,4 +1,4 @@
-import 'package:breez/services/breezlib/data/rpc.pb.dart';
+import 'package:clovrlabs_wallet/services/breezlib/data/rpc.pb.dart';
 
 enum LSPConnectionStatus {
   InProgress,
@@ -24,7 +24,7 @@ class LSPStatus {
         selectedLSP ?? this.selectedLSP);
   }
 
-  bool get selectionRequired => currentLSP == null && availableLSPs.length > 1;
+  bool get selectionRequired => selectedLSP == null && availableLSPs.length > 1;
 
   LSPInfo get currentLSP =>
       availableLSPs.firstWhere((element) => element.lspID == selectedLSP,

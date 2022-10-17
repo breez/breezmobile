@@ -1,7 +1,7 @@
-import 'package:breez/bloc/async_action.dart';
-import 'package:breez/bloc/podcast_payments/payment_options.dart';
+import 'package:clovrlabs_wallet/bloc/async_action.dart';
+import 'package:clovrlabs_wallet/bloc/podcast_payments/payment_options.dart';
 
-import 'breez_user_model.dart';
+import 'clovr_user_model.dart';
 import 'security_model.dart';
 
 class UpdateSecurityModel extends AsyncAction {

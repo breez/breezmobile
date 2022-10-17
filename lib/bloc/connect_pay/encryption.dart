@@ -1,4 +1,4 @@
-import 'package:breez/services/breezlib/breez_bridge.dart';
+import 'package:clovrlabs_wallet/services/breezlib/breez_bridge.dart';
 
 abstract class MessageInterceptor {
   Future<String> transformOutgoingMessage(String message);

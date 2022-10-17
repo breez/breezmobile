@@ -1,5 +1,5 @@
-import 'package:breez/bloc/async_action.dart';
-import 'package:breez/bloc/reverse_swap/reverse_swap_model.dart';
+import 'package:clovrlabs_wallet/bloc/async_action.dart';
+import 'package:clovrlabs_wallet/bloc/reverse_swap/reverse_swap_model.dart';
 import 'package:fixnum/fixnum.dart';
 
 class NewReverseSwap extends AsyncAction {

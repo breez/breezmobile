@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
-String themeId = "BLUE";
+String themeId = "WHITE";
 
 class CustomData {
   BlendMode loaderColorBlendMode;
@@ -12,6 +12,9 @@ class CustomData {
   Color paymentListDividerColor;
   Color navigationDrawerHeaderBgColor;
   Color navigationDrawerBgColor;
+  Color textBottomColor;
+  Color buttonBackgroundColor;
+  Color buttonAppBar;
 
   CustomData(
       {this.loaderColorBlendMode,
@@ -21,79 +24,97 @@ class CustomData {
       this.paymentListBgColor,
       this.paymentListDividerColor,
       this.navigationDrawerHeaderBgColor,
-      this.navigationDrawerBgColor});
+      this.navigationDrawerBgColor,
+      this.buttonBackgroundColor,
+      this.buttonAppBar,
+      this.textBottomColor});
 }
 
-final Map<String, ThemeData> themeMap = {"BLUE": blueTheme, "DARK": darkTheme};
-final CustomData blueThemeCustomData = CustomData(
+final Map<String, ThemeData> themeMap = {
+  "WHITE": whiteTheme,
+  "DARK": darkTheme
+};
+final CustomData whiteThemeCustomData = CustomData(
   loaderColorBlendMode: BlendMode.multiply,
-  loaderAssetPath: 'src/images/breez_loader_blue.gif',
-  dashboardBgColor: Colors.white,
-  pendingTextColor: Color(0xff4D88EC),
+  loaderAssetPath: 'src/images/loader.gif',
+  dashboardBgColor: Color.fromRGBO(255, 255, 255, 1.0),
+  pendingTextColor: Color(0xffffffff),
   paymentListBgColor: Color(0xFFf9f9f9),
   paymentListDividerColor: Color.fromRGBO(0, 0, 0, 0.12),
-  navigationDrawerBgColor: BreezColors.blue[500],
-  navigationDrawerHeaderBgColor: Color.fromRGBO(0, 103, 255, 1),
+  navigationDrawerBgColor: ElenPayWalletColors.dark_grey[500],
+  navigationDrawerHeaderBgColor: Color.fromRGBO(255, 255, 255, 1.0),
+  textBottomColor: Color.fromRGBO(0, 0, 0, 1.0),
+  buttonBackgroundColor: Color.fromRGBO(255, 255, 255, 1.0),
+  buttonAppBar: Color.fromRGBO(220, 220, 220, 0.7019607843137254),
 );
 final CustomData darkThemeCustomData = CustomData(
   loaderColorBlendMode: BlendMode.srcIn,
-  loaderAssetPath: 'src/images/breez_loader_dark.gif',
-  pendingTextColor: Color(0xFF0085fb),
+  loaderAssetPath: 'src/images/loader.gif',
+  pendingTextColor: Color(0xffffffff),
   dashboardBgColor: Color(0xFF0D1F33),
   paymentListBgColor: Color(0xFF152a3d),
   paymentListDividerColor: Color.fromRGBO(255, 255, 255, 0.12),
   navigationDrawerBgColor: Color(0xFF152a3d),
   navigationDrawerHeaderBgColor: Color.fromRGBO(13, 32, 50, 1),
+  textBottomColor: Color.fromRGBO(255, 255, 255, 1.0),
+  buttonBackgroundColor: Color.fromRGBO(255, 255, 255, 1.0),
+  buttonAppBar: Color.fromRGBO(0, 0, 0, 0.5019607843137255),
 );
 final Map<String, CustomData> customData = {
-  "BLUE": blueThemeCustomData,
+  "WHITE": whiteThemeCustomData,
   "DARK": darkThemeCustomData
 };
 
-final ThemeData blueTheme = ThemeData(
+final ThemeData whiteTheme = ThemeData(
   brightness: Brightness.dark,
-  colorScheme: ColorScheme.dark()
-      .copyWith(primary: Colors.white, secondary: Colors.white),
   primaryColor: Color.fromRGBO(255, 255, 255, 1.0),
-  primaryColorDark: BreezColors.blue[900],
-  primaryColorLight: Color.fromRGBO(255, 0, 0, 1.0),
-  floatingActionButtonTheme: FloatingActionButtonThemeData(
-      backgroundColor: Color.fromRGBO(255, 0, 0, 1.0)),
-  canvasColor: BreezColors.blue[500],
-  backgroundColor: Colors.white,
+  primaryColorDark: ElenPayWalletColors.dark_grey[900],
+  primaryColorLight: Color(0xff000000),
+  floatingActionButtonTheme:
+      FloatingActionButtonThemeData(backgroundColor: Color(0xff000000)),
+  canvasColor: ElenPayWalletColors.dark_grey[500],
   bottomAppBarTheme: BottomAppBarTheme(elevation: 0),
   appBarTheme: AppBarTheme(
-    textTheme: TextTheme(
-      headline6:
-          TextStyle(color: Colors.white, fontSize: 18.0, letterSpacing: 0.22),
-    ),
     iconTheme: IconThemeData(
-      color: Colors.white,
+      color: Colors.grey,
     ),
     color: Colors.transparent,
-    actionsIconTheme: IconThemeData(color: Color.fromRGBO(255, 0, 0, 1.0)),
-    systemOverlayStyle: SystemUiOverlayStyle.light,
+    actionsIconTheme: IconThemeData(color: Color.fromRGBO(0, 0, 0, 1.0)),
+    systemOverlayStyle: SystemUiOverlayStyle.light, toolbarTextStyle: TextTheme(
+      titleLarge:
+          TextStyle(color: Colors.white, fontSize: 18.0, letterSpacing: 0.22),
+    ).bodyMedium, titleTextStyle: TextTheme(
+      titleLarge:
+          TextStyle(color: Colors.white, fontSize: 18.0, letterSpacing: 0.22),
+    ).titleLarge,
   ),
   dialogTheme: DialogTheme(
       titleTextStyle: TextStyle(
-          color: BreezColors.grey[600], fontSize: 20.5, letterSpacing: 0.25),
-      contentTextStyle:
-          TextStyle(color: BreezColors.grey[500], fontSize: 16.0, height: 1.5),
+          color: ElenPayWalletColors.grey[600],
+          fontSize: 20.5,
+          letterSpacing: 0.25),
+      contentTextStyle: TextStyle(
+          color: ElenPayWalletColors.grey[500], fontSize: 16.0, height: 1.5),
       backgroundColor: Colors.white,
       shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.all(Radius.circular(12.0)))),
   dialogBackgroundColor: Colors.transparent,
   errorColor: Color(0xffffe685),
   dividerColor: Color(0x33ffffff),
-  buttonColor: Colors.white,
-  cardColor: BreezColors.blue[500],
-  highlightColor: BreezColors.blue[200],
+  buttonColor: Colors.black,
+  cardColor: ElenPayWalletColors.dark_grey[500],
+  highlightColor: ElenPayWalletColors.dark_grey[200],
   textTheme: TextTheme(
       subtitle2: TextStyle(
-          color: BreezColors.grey[600], fontSize: 14.3, letterSpacing: 0.2),
-      headline5: TextStyle(color: BreezColors.grey[600], fontSize: 26.0),
+          color: ElenPayWalletColors.grey[600],
+          fontSize: 14.3,
+          letterSpacing: 0.2),
+      headline5:
+          TextStyle(color: ElenPayWalletColors.grey[600], fontSize: 26.0),
       button: TextStyle(
-          color: BreezColors.blue[500], fontSize: 14.3, letterSpacing: 1.25),
+          color: ElenPayWalletColors.dark_grey[500],
+          fontSize: 14.3,
+          letterSpacing: 1.25),
       headline4: TextStyle(
         color: Color(0xffffe685),
         fontSize: 18.0,
@@ -106,52 +127,55 @@ final ThemeData blueTheme = ThemeData(
           height: 1.22)),
   primaryTextTheme: TextTheme(
     headline4: TextStyle(
-        color: BreezColors.grey[500],
+        color: ElenPayWalletColors.grey[500],
         fontSize: 14.0,
         letterSpacing: 0.0,
         height: 1.28,
         fontWeight: FontWeight.w500,
         fontFamily: 'IBMPlexSans'),
     headline3: TextStyle(
-        color: BreezColors.grey[500],
+        color: ElenPayWalletColors.grey[500],
         fontSize: 14.0,
         letterSpacing: 0.0,
         height: 1.28),
     headline5: TextStyle(
-        color: BreezColors.grey[500],
+        color: ElenPayWalletColors.grey[500],
         fontSize: 24.0,
         letterSpacing: 0.0,
         height: 1.28,
         fontWeight: FontWeight.w500,
         fontFamily: 'IBMPlexSans'),
     bodyText2: TextStyle(
-        color: BreezColors.blue[900],
+        color: ElenPayWalletColors.dark_grey[900],
         fontSize: 16.4,
         letterSpacing: 0.15,
         fontWeight: FontWeight.w500,
         fontFamily: 'IBMPlexSans'),
     subtitle2: TextStyle(
-        color: BreezColors.white[500], fontSize: 10.0, letterSpacing: 0.09),
+        color: ElenPayWalletColors.white[500],
+        fontSize: 10.0,
+        letterSpacing: 0.09),
     button: TextStyle(
-        color: BreezColors.blue[500], fontSize: 14.3, letterSpacing: 1.25),
-    caption: TextStyle(color: BreezColors.grey[500], fontSize: 12.0),
+        color: ElenPayWalletColors.dark_grey[500],
+        fontSize: 14.3,
+        letterSpacing: 1.25),
+    caption: TextStyle(color: ElenPayWalletColors.grey[500], fontSize: 12.0),
   ),
   textSelectionTheme: TextSelectionThemeData(
     selectionColor: Color.fromRGBO(0, 133, 251, 0.25),
-    selectionHandleColor: Color.fromRGBO(255, 0, 0, 1.0),
+    selectionHandleColor: Color.fromRGBO(0, 0, 0, 1.0),
   ),
-  primaryIconTheme: IconThemeData(color: BreezColors.grey[500]),
-  bottomAppBarColor: Color.fromRGBO(255, 0, 0, 1.0),
+  primaryIconTheme: IconThemeData(color: ElenPayWalletColors.grey[500]),
   fontFamily: 'IBMPlexSans',
   accentTextTheme: TextTheme(
-    bodyText2: TextStyle(color: BreezColors.grey[600]),
+    bodyText2: TextStyle(color: ElenPayWalletColors.grey[600]),
     headline4: TextStyle(
-        color: Color.fromRGBO(255, 0, 0, 1.0),
+        color: Color.fromRGBO(0, 0, 0, 1.0),
         fontSize: 30.0,
         fontWeight: FontWeight.w600,
         height: 1.52),
     subtitle1: TextStyle(
-        color: Color.fromRGBO(255, 0, 0, 1.0),
+        color: Color.fromRGBO(0, 0, 0, 1.0),
         fontSize: 15,
         fontWeight: FontWeight.w500,
         height: 1.24,
@@ -182,7 +206,7 @@ final ThemeData blueTheme = ThemeData(
     fillColor: MaterialStateProperty.resolveWith(
       (states) {
         if (states.contains(MaterialState.selected)) {
-          return Color.fromRGBO(255, 0, 0, 1.0);
+          return Color.fromRGBO(0, 0, 0, 1.0);
         } else {
           return Color(0x8a000000);
         }
@@ -196,12 +220,12 @@ final ThemeData darkTheme = ThemeData(
   brightness: Brightness.dark,
   colorScheme: ColorScheme.dark()
       .copyWith(primary: Colors.white, secondary: Colors.white),
-  primaryColor: Color(0xFF7aa5eb),
+  primaryColor: Color(0xffffffff),
   primaryColorDark: Color(0xFF00081C),
-  primaryColorLight: Color(0xFF4B89EB),
+  primaryColorLight: Color(0xFFFFFFFF),
   floatingActionButtonTheme:
-      FloatingActionButtonThemeData(backgroundColor: Color(0xFF4B89EB)),
-  canvasColor: Color(0xFF0c2031),
+      FloatingActionButtonThemeData(backgroundColor: Color(0xFFEAEAEA)),
+  canvasColor: Color(0xffffffff),
   backgroundColor: Color(0xFF152a3d),
   bottomAppBarTheme: BottomAppBarTheme(elevation: 0),
   appBarTheme: AppBarTheme(
@@ -210,24 +234,34 @@ final ThemeData darkTheme = ThemeData(
           TextStyle(color: Colors.white, fontSize: 18.0, letterSpacing: 0.22),
     ),
     iconTheme: IconThemeData(
-      color: Colors.white,
+      color: Color(0xFFFFFFFF),
     ),
-    color: Colors.white,
-    actionsIconTheme: IconThemeData(color: Colors.white),
+    color: Color(0xFFFFFFFF),
+    actionsIconTheme: IconThemeData(
+      color: Color(0xFFFFFFFF),
+    ),
     systemOverlayStyle: SystemUiOverlayStyle.light,
+    toolbarTextStyle: TextTheme(
+      titleLarge:
+          TextStyle(color: Colors.white, fontSize: 18.0, letterSpacing: 0.22),
+    ).bodyMedium,
+    titleTextStyle: TextTheme(
+      titleLarge:
+          TextStyle(color: Colors.white, fontSize: 18.0, letterSpacing: 0.22),
+    ).titleLarge,
   ),
   dialogTheme: DialogTheme(
       titleTextStyle:
-          TextStyle(color: Colors.white, fontSize: 20.5, letterSpacing: 0.25),
+          TextStyle(color: Colors.white60, fontSize: 20.5, letterSpacing: 0.25),
       contentTextStyle:
-          TextStyle(color: Colors.white70, fontSize: 16.0, height: 1.5),
+          TextStyle(color: Colors.white60, fontSize: 16.0, height: 1.5),
       backgroundColor: Color(0xFF152a3d),
       shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.all(Radius.circular(12.0)))),
   dialogBackgroundColor: Colors.transparent,
   errorColor: Color(0xFFeddc97),
   dividerColor: Color(0x337aa5eb),
-  buttonColor: Color(0xFF4B89EB),
+  buttonColor: Color(0xFFD5D5D5),
   cardColor: Color(0xFF121212),
   highlightColor: Color(0xFF81acf1),
   textTheme: TextTheme(
@@ -272,15 +306,17 @@ final ThemeData darkTheme = ThemeData(
     button: TextStyle(
         color: Color(0xFF7aa5eb), fontSize: 14.3, letterSpacing: 1.25),
     subtitle2: TextStyle(
-        color: BreezColors.white[500], fontSize: 10.0, letterSpacing: 0.09),
-    caption: TextStyle(color: BreezColors.white[400], fontSize: 12.0),
+        color: ElenPayWalletColors.white[500],
+        fontSize: 10.0,
+        letterSpacing: 0.09),
+    caption: TextStyle(color: ElenPayWalletColors.white[400], fontSize: 12.0),
   ),
   textSelectionTheme: TextSelectionThemeData(
     selectionColor: Color.fromRGBO(255, 255, 255, 0.5),
-    selectionHandleColor: Color(0xff4D88EC),
+    selectionHandleColor: Color(0xffffffff),
   ),
   primaryIconTheme: IconThemeData(color: Color(0xFF7aa5eb)),
-  bottomAppBarColor: Color(0xff4D88EC),
+  bottomAppBarColor: Color(0xfffafafa),
   fontFamily: 'IBMPlexSans',
   accentTextTheme: TextTheme(
       bodyText2: TextStyle(color: Colors.white),
@@ -363,19 +399,22 @@ final Map<String, VendorTheme> vendorTheme = {
 final TextStyle drawerItemTextStyle =
     TextStyle(height: 1.2, letterSpacing: 0.25, fontSize: 14.3);
 final TextStyle notificationTextStyle = TextStyle(
-    color: BreezColors.grey[500],
+    color: ElenPayWalletColors.grey[500],
     fontSize: 10.0,
     letterSpacing: 0.06,
     height: 1.10);
 final TextStyle addFundsBtnStyle = TextStyle(
-    color: BreezColors.white[400], fontSize: 16.0, letterSpacing: 1.25);
+    color: ElenPayWalletColors.white[400], fontSize: 16.0, letterSpacing: 1.25);
 final TextStyle bottomAppBarBtnStyle = TextStyle(
-    color: Colors.white,
+    color: Colors.black,
     fontSize: 13.5,
     letterSpacing: 1.2,
     fontWeight: FontWeight.w600,
     height: 1.24,
     fontFamily: 'IBMPlexSans');
+
+final TextStyle signUpStyle = TextStyle(color: Colors.black, fontSize: 14.0);
+
 final TextStyle bottomSheetTextStyle = TextStyle(
     fontFamily: 'IBMPlexSans',
     fontSize: 15,
@@ -383,67 +422,66 @@ final TextStyle bottomSheetTextStyle = TextStyle(
     fontWeight: FontWeight.w400,
     height: 1.30);
 final TextStyle addFundsItemsStyle = TextStyle(
-    color: BreezColors.white[500],
+    color: ElenPayWalletColors.white[500],
     fontSize: 14.3,
     letterSpacing: 1.25,
     height: 1.16,
     fontWeight: FontWeight.w500,
     fontFamily: 'IBMPlexSans');
 final TextStyle bottomSheetMenuItemStyle = TextStyle(
-    color: BreezColors.white[400], fontSize: 14.3, letterSpacing: 0.55);
+    color: ElenPayWalletColors.white[400], fontSize: 14.3, letterSpacing: 0.55);
 final TextStyle autoCompleteStyle =
     TextStyle(color: Colors.black, fontSize: 14.0);
-final TextStyle blueLinkStyle =
-    TextStyle(color: BreezColors.blue[500], fontSize: 16.0, height: 1.5);
+final TextStyle blueLinkStyle = TextStyle(
+    color: ElenPayWalletColors.dark_grey[500], fontSize: 16.0, height: 1.5);
 final TextStyle avatarDialogStyle = TextStyle(
-    color: BreezColors.blue[900],
+    color: ElenPayWalletColors.dark_grey[900],
     fontSize: 16.4,
     letterSpacing: 0.15,
     fontWeight: FontWeight.w500,
     fontFamily: 'IBMPlexSans');
 final TextStyle errorStyle = TextStyle(color: errorColor, fontSize: 12.0);
 final TextStyle textStyle =
-    TextStyle(color: BreezColors.white[400], fontSize: 16.0);
+    TextStyle(color: ElenPayWalletColors.white[400], fontSize: 16.0);
 final TextStyle navigationDrawerHandleStyle = TextStyle(
     fontSize: 16.0,
     letterSpacing: 0.2,
     color: Color.fromRGBO(255, 255, 255, 0.6));
 final TextStyle warningStyle = TextStyle(color: errorColor, fontSize: 16.0);
 final TextStyle instructionStyle =
-    TextStyle(color: BreezColors.white[400], fontSize: 14.3);
+    TextStyle(color: ElenPayWalletColors.white[400], fontSize: 14.3);
 final TextStyle validatorStyle =
     TextStyle(color: Color(0xFFe3b42f), fontSize: 12.0, height: 1.25);
-final TextStyle welcomeTextStyle =
-    TextStyle(color: BreezColors.white[500], fontSize: 16.0, height: 1.1);
+final TextStyle welcomeTextStyle = TextStyle(
+    color: ElenPayWalletColors.white[500], fontSize: 16.0, height: 1.1);
 final TextStyle skipStyle = TextStyle(
-    color: BreezColors.white[500], fontSize: 16.0, letterSpacing: 1.25);
+    color: ElenPayWalletColors.white[500], fontSize: 16.0, letterSpacing: 1.25);
 final TextStyle buttonStyle = TextStyle(
-    color: BreezColors.blue[500], fontSize: 14.3, letterSpacing: 1.25);
+    color: ElenPayWalletColors.dark_grey[500], fontSize: 14.3, letterSpacing: 1.25);
 final TextStyle whiteButtonStyle = TextStyle(
-    color: BreezColors.white[500], fontSize: 14.3, letterSpacing: 1.25);
+    color: ElenPayWalletColors.white[500], fontSize: 14.3, letterSpacing: 1.25);
 final TextStyle appBarLogoStyle = TextStyle(
-    color: BreezColors.logo[2],
+    color: ElenPayWalletColors.grey[2],
     fontSize: 23.5,
     letterSpacing: 0.15,
-    fontFamily: 'Breez Logo',
     height: 0.9);
 final TextStyle posTransactionTitleStyle = TextStyle(
-    color: BreezColors.white[500],
+    color: ElenPayWalletColors.white[500],
     fontSize: 14.4,
     letterSpacing: 0.44,
     height: 1.28);
 final TextStyle transactionTitleStyle = TextStyle(
-    color: BreezColors.white[500],
+    color: ElenPayWalletColors.white[500],
     fontSize: 14.3,
     letterSpacing: 0.25,
     height: 1.2);
 final TextStyle transactionSubtitleStyle = TextStyle(
-    color: BreezColors.white[200],
+    color: ElenPayWalletColors.white[200],
     fontSize: 12.3,
     letterSpacing: 0.4,
     height: 1.16);
 final TextStyle transactionAmountStyle = TextStyle(
-    color: BreezColors.white[500],
+    color: ElenPayWalletColors.white[500],
     fontSize: 16.4,
     letterSpacing: 0.5,
     height: 1.28,
@@ -462,83 +500,83 @@ final TextStyle posWithdrawalTransactionAmountStyle = TextStyle(
     fontWeight: FontWeight.w500,
     fontFamily: 'IBMPlexSans');
 final TextStyle cancelButtonStyle = TextStyle(
-    color: BreezColors.red[600],
+    color: ElenPayWalletColors.red[600],
     letterSpacing: 1.25,
     height: 1.16,
     fontSize: 14.0,
     fontWeight: FontWeight.w500,
     fontFamily: 'IBMPlexSans');
 final TextStyle backupPhraseInformationTextStyle = TextStyle(
-    color: BreezColors.white[500],
+    color: ElenPayWalletColors.white[500],
     fontSize: 14.3,
     letterSpacing: 0.4,
     height: 1.16);
 final TextStyle backupPhraseConfirmationTextStyle = TextStyle(
-    color: BreezColors.white[500],
+    color: ElenPayWalletColors.white[500],
     fontSize: 14.3,
     letterSpacing: 1.25,
     height: 1.16,
     fontWeight: FontWeight.w500,
     fontFamily: 'IBMPlexSans');
 final TextStyle mnemonicsTextStyle = TextStyle(
-    color: BreezColors.white[400],
+    color: ElenPayWalletColors.white[400],
     fontSize: 16.4,
     letterSpacing: 0.73,
     height: 1.25);
 final TextStyle invoiceMemoStyle = TextStyle(
-    color: BreezColors.grey[500],
+    color: ElenPayWalletColors.grey[500],
     fontSize: 12.3,
     height: 1.16,
     letterSpacing: 0.4);
 final TextStyle invoiceChargeAmountStyle = TextStyle(
-    color: BreezColors.white[500],
+    color: ElenPayWalletColors.white[500],
     fontSize: 14.3,
     height: 1.16,
     letterSpacing: 1.25);
 final TextStyle invoiceAmountStyle = TextStyle(
-    color: BreezColors.grey[600],
+    color: ElenPayWalletColors.grey[600],
     fontSize: 18.0,
     height: 1.32,
     letterSpacing: 0.2);
 final TextStyle currencyDropdownStyle = TextStyle(
-    color: BreezColors.grey[600],
+    color: ElenPayWalletColors.grey[600],
     fontSize: 16.3,
     height: 1.32,
     letterSpacing: 0.15);
 final TextStyle numPadNumberStyle = TextStyle(
-    color: BreezColors.white[500], fontSize: 20.0, letterSpacing: 0.18);
+    color: ElenPayWalletColors.white[500], fontSize: 20.0, letterSpacing: 0.18);
 final TextStyle numPadAdditionStyle = TextStyle(
-    color: BreezColors.white[500], fontSize: 32.0, letterSpacing: 0.18);
+    color: ElenPayWalletColors.white[500], fontSize: 32.0, letterSpacing: 0.18);
 final TextStyle smallTextStyle = TextStyle(
-    color: BreezColors.white[500], fontSize: 10.0, letterSpacing: 0.09);
+    color: ElenPayWalletColors.white[500], fontSize: 10.0, letterSpacing: 0.09);
 final TextStyle linkStyle = TextStyle(
-    color: BreezColors.white[300],
+    color: ElenPayWalletColors.white[300],
     fontSize: 12.3,
     letterSpacing: 0.4,
     height: 1.2,
     decoration: TextDecoration.underline);
 final TextStyle restoreLinkStyle = TextStyle(
-    color: BreezColors.white[300],
+    color: ElenPayWalletColors.white[300],
     fontSize: 12.0,
     letterSpacing: 0.4,
     height: 1.2,
     decoration: TextDecoration.underline);
 final TextStyle snackBarStyle = TextStyle(
-    color: BreezColors.white[500],
+    color: ElenPayWalletColors.white[500],
     fontSize: 14.0,
     letterSpacing: 0.25,
     height: 1.2);
 final TextStyle sessionActionBtnStyle = TextStyle(fontSize: 12.3);
 final TextStyle sessionNotificationStyle = TextStyle(fontSize: 14.2);
 final TextStyle paymentDetailsTitleStyle = TextStyle(
-    color: BreezColors.grey[500],
+    color: ElenPayWalletColors.grey[500],
     fontSize: 14.0,
     letterSpacing: 0.0,
     height: 1.28,
     fontWeight: FontWeight.w500,
     fontFamily: 'IBMPlexSans');
 final TextStyle paymentDetailsSubtitleStyle = TextStyle(
-    color: BreezColors.grey[500],
+    color: ElenPayWalletColors.grey[500],
     fontSize: 14.0,
     letterSpacing: 0.0,
     height: 1.28);
@@ -548,54 +586,57 @@ final TextStyle fastbitcoinsTextStyle = TextStyle(
     letterSpacing: 0.0,
     fontFamily: 'ComfortaaBold');
 final TextStyle vendorTitleStyle = TextStyle(
-    color: BreezColors.white[500],
+    color: ElenPayWalletColors.white[500],
     fontSize: 36.0,
     fontWeight: FontWeight.w600,
     letterSpacing: 1.1,
     fontFamily: 'Roboto');
 final TextStyle fiatConversionTitleStyle = TextStyle(
-    color: BreezColors.white[500],
+    color: ElenPayWalletColors.white[500],
     fontSize: 16.3,
     letterSpacing: 0.25,
     height: 1.2);
 final TextStyle fiatConversionDescriptionStyle =
-    TextStyle(color: BreezColors.white[200], fontSize: 14.3);
+    TextStyle(color: ElenPayWalletColors.white[200], fontSize: 14.3);
 final BoxDecoration boxDecoration = BoxDecoration(
-    border:
-        Border(bottom: BorderSide(color: BreezColors.white[500], width: 1.5)));
+    border: Border(
+        bottom: BorderSide(color: ElenPayWalletColors.white[500], width: 1.5)));
 final BoxDecoration autoCompleteBoxDecoration = BoxDecoration(
-    color: BreezColors.white[500], borderRadius: BorderRadius.circular(3.0));
-final Color whiteColor = BreezColors.white[500];
-final podcastHistoryTileBackGroundColorBlue = Color.fromRGBO(0, 117, 255, 1.0);
-
-final Color snackBarBackgroundColor = BreezColors.blue[300];
-final Color avatarBackgroundColor = BreezColors.blue[500];
-final Color sessionAvatarBackgroundColor = BreezColors.white[500];
+    color: ElenPayWalletColors.white[500],
+    borderRadius: BorderRadius.circular(3.0));
+final Color whiteColor = ElenPayWalletColors.white[500];
+final Color snackBarBackgroundColor = ElenPayWalletColors.dark_grey[300];
+final Color avatarBackgroundColor = ElenPayWalletColors.dark_grey[500];
+final Color sessionAvatarBackgroundColor = ElenPayWalletColors.white[500];
 final Color pulseAnimationColor = Color.fromRGBO(100, 155, 230, 1.0);
 final Color marketplaceButtonColor = Color.fromRGBO(229, 238, 251, 0.09);
 final Color errorColor = Color(0xffffe685);
-final Color circularLoaderColor = BreezColors.blue[200].withOpacity(0.7);
+final Color circularLoaderColor =
+    ElenPayWalletColors.dark_grey[200].withOpacity(0.7);
 final Color warningBoxColor = Color.fromRGBO(251, 233, 148, 0.1);
-final BorderSide greyBorderSide = BorderSide(color: BreezColors.grey[500]);
+final BorderSide greyBorderSide =
+    BorderSide(color: ElenPayWalletColors.grey[500]);
 
 class FieldTextStyle {
   FieldTextStyle._();
 
   static TextStyle textStyle = TextStyle(
-      color: BreezColors.white[500], fontSize: 16.4, letterSpacing: 0.15);
+      color: ElenPayWalletColors.white[500],
+      fontSize: 16.4,
+      letterSpacing: 0.15);
   static TextStyle labelStyle =
-      TextStyle(color: BreezColors.white[200], letterSpacing: 0.4);
+      TextStyle(color: ElenPayWalletColors.white[200], letterSpacing: 0.4);
 }
 
-class BreezColors {
-  BreezColors._(); // this basically makes it so you can instantiate this class
+class ElenPayWalletColors {
+  ElenPayWalletColors._(); // this basically makes it so you can instantiate this class
 
-  static const Map<int, Color> blue = <int, Color>{
-    200: Color.fromRGBO(0, 117, 255, 1.0),
-    300: Color.fromRGBO(51, 69, 96, 1.0),
-    500: Color.fromRGBO(5, 93, 235, 1.0),
+  static const Map<int, Color> dark_grey = <int, Color>{
+    200: Color.fromRGBO(119, 119, 126, 1.0),
+    300: Color.fromRGBO(125, 129, 133, 1.0),
+    500: Color.fromRGBO(128, 128, 133, 1.0),
     800: Color.fromRGBO(51, 255, 255, 0.3),
-    900: Color.fromRGBO(19, 85, 191, 1.0),
+    900: Color.fromRGBO(101, 101, 101, 1.0),
   };
 
   static const Map<int, Color> white = <int, Color>{
@@ -606,18 +647,13 @@ class BreezColors {
   };
 
   static const Map<int, Color> grey = <int, Color>{
-    500: Color(0xFF4d5d75),
-    600: Color(0xFF334560),
+    500: Color(0xff000000),
+    600: Color(0xFFFFFFFF),
   };
 
   static const Map<int, Color> red = <int, Color>{
     500: Color(0xFFff2036),
     600: Color(0xFFff1d24),
-  };
-  static const Map<int, Color> logo = <int, Color>{
-    1: Color.fromRGBO(0, 156, 249, 1.0),
-    2: Color.fromRGBO(0, 137, 252, 1.0),
-    3: Color.fromRGBO(0, 120, 253, 1.0),
   };
 }
 
@@ -631,13 +667,15 @@ class VendorTheme {
 
 extension CustomStyles on TextTheme {
   TextStyle get itemTitleStyle =>
-      TextStyle(color: BreezColors.white[500], fontSize: 16.4);
+      TextStyle(color: ElenPayWalletColors.white[500], fontSize: 16.4);
 
   TextStyle get itemPriceStyle => TextStyle(
-      color: BreezColors.white[500], letterSpacing: 0.5, fontSize: 14.3);
+      color: ElenPayWalletColors.white[500],
+      letterSpacing: 0.5,
+      fontSize: 14.3);
 }
 
 extension CustomIconThemes on IconThemeData {
   IconThemeData get deleteBadgeIconTheme =>
-      IconThemeData(color: BreezColors.grey[500], size: 20.0);
+      IconThemeData(color: ElenPayWalletColors.grey[500], size: 20.0);
 }

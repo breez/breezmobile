@@ -2,7 +2,7 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:math';
 
-import 'package:breez/services/breezlib/breez_bridge.dart';
+import 'package:clovrlabs_wallet/services/breezlib/breez_bridge.dart';
 
 class AccountSynchronizer {
   final BreezBridge _breezLib;

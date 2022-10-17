@@ -1,11 +1,11 @@
 import 'package:auto_size_text/auto_size_text.dart';
-import 'package:breez/bloc/account/account_actions.dart';
-import 'package:breez/bloc/account/account_bloc.dart';
-import 'package:breez/bloc/account/account_model.dart';
-import 'package:breez/bloc/invoice/invoice_model.dart';
-import 'package:breez/theme_data.dart' as theme;
-import 'package:breez/widgets/amount_form_field.dart';
-import 'package:breez/widgets/breez_avatar.dart';
+import 'package:clovrlabs_wallet/bloc/account/account_actions.dart';
+import 'package:clovrlabs_wallet/bloc/account/account_bloc.dart';
+import 'package:clovrlabs_wallet/bloc/account/account_model.dart';
+import 'package:clovrlabs_wallet/bloc/invoice/invoice_model.dart';
+import 'package:clovrlabs_wallet/theme_data.dart' as theme;
+import 'package:clovrlabs_wallet/widgets/amount_form_field.dart';
+import 'package:clovrlabs_wallet/widgets/wallet_avatar.dart';
 import 'package:fixnum/fixnum.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -88,7 +88,7 @@ class PaymentRequestInfoDialogState extends State<PaymentRequestInfoDialog> {
         ? null
         : Padding(
             padding: EdgeInsets.only(top: 48, bottom: 8),
-            child: BreezAvatar(
+            child: ElenPayAvatar(
               widget.invoice.payeeImageURL,
               radius: 32.0,
             ),
@@ -176,7 +176,7 @@ class PaymentRequestInfoDialogState extends State<PaymentRequestInfoDialog> {
           ),
           primaryColor: themeData.textTheme.button.color,
           errorColor:
-              theme.themeId == "BLUE" ? Colors.red : themeData.errorColor,
+              theme.themeId == "WHITE" ? Colors.red : themeData.errorColor,
         ),
         child: Form(
           autovalidateMode: AutovalidateMode.always,
@@ -277,7 +277,7 @@ class PaymentRequestInfoDialogState extends State<PaymentRequestInfoDialog> {
         textAlign: TextAlign.center,
         style: themeData.primaryTextTheme.headline3.copyWith(
           fontSize: 16,
-          color: theme.themeId == "BLUE" ? Colors.red : themeData.errorColor,
+          color: theme.themeId == "WHITE" ? Colors.red : themeData.errorColor,
         ),
       ),
     );

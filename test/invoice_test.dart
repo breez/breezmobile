@@ -1,4 +1,4 @@
-import 'package:breez/utils/bip21.dart';
+import 'package:clovrlabs_wallet/utils/bip21.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {

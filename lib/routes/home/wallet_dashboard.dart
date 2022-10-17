@@ -1,16 +1,16 @@
 import 'dart:math';
 
-import 'package:breez/bloc/account/account_model.dart';
-import 'package:breez/bloc/account/fiat_conversion.dart';
-import 'package:breez/bloc/user_profile/breez_user_model.dart';
-import 'package:breez/bloc/user_profile/currency.dart';
-import 'package:breez/theme_data.dart' as theme;
+import 'package:clovrlabs_wallet/bloc/account/account_model.dart';
+import 'package:clovrlabs_wallet/bloc/account/fiat_conversion.dart';
+import 'package:clovrlabs_wallet/bloc/user_profile/clovr_user_model.dart';
+import 'package:clovrlabs_wallet/bloc/user_profile/currency.dart';
+import 'package:clovrlabs_wallet/theme_data.dart' as theme;
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class WalletDashboard extends StatefulWidget {
   final AccountModel _accountModel;
-  final BreezUserModel _userModel;
+  final ClovrUserModel _userModel;
   final double _height;
   final double _offsetFactor;
   final Function(Currency currency) _onCurrencyChange;

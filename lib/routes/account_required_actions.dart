@@ -1,18 +1,18 @@
 import 'dart:async';
 
-import 'package:breez/bloc/account/account_actions.dart';
-import 'package:breez/bloc/account/account_bloc.dart';
-import 'package:breez/bloc/account/account_model.dart';
-import 'package:breez/bloc/backup/backup_bloc.dart';
-import 'package:breez/bloc/backup/backup_model.dart';
-import 'package:breez/bloc/lsp/lsp_bloc.dart';
-import 'package:breez/bloc/lsp/lsp_model.dart';
-import 'package:breez/routes/close_warning_dialog.dart';
-import 'package:breez/services/breezlib/data/rpc.pb.dart';
-import 'package:breez/widgets/enable_backup_dialog.dart';
-import 'package:breez/widgets/flushbar.dart';
-import 'package:breez/widgets/rotator.dart';
-import 'package:breez/widgets/route.dart';
+import 'package:clovrlabs_wallet/bloc/account/account_actions.dart';
+import 'package:clovrlabs_wallet/bloc/account/account_bloc.dart';
+import 'package:clovrlabs_wallet/bloc/account/account_model.dart';
+import 'package:clovrlabs_wallet/bloc/backup/backup_bloc.dart';
+import 'package:clovrlabs_wallet/bloc/backup/backup_model.dart';
+import 'package:clovrlabs_wallet/bloc/lsp/lsp_bloc.dart';
+import 'package:clovrlabs_wallet/bloc/lsp/lsp_model.dart';
+import 'package:clovrlabs_wallet/routes/close_warning_dialog.dart';
+import 'package:clovrlabs_wallet/services/breezlib/data/rpc.pb.dart';
+import 'package:clovrlabs_wallet/widgets/enable_backup_dialog.dart';
+import 'package:clovrlabs_wallet/widgets/flushbar.dart';
+import 'package:clovrlabs_wallet/widgets/rotator.dart';
+import 'package:clovrlabs_wallet/widgets/route.dart';
 import 'package:fixnum/fixnum.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -114,7 +114,7 @@ class AccountRequiredActionsIndicatorState
       );
     }
 
-    return null;
+    return SizedBox();
   }
 
   int _inactiveWarningDuration(
@@ -228,43 +228,45 @@ class AccountRequiredActionsIndicatorState
       );
     }
 
-    if (hasError) {
-      bool signInNeeded = false;
-      if (backupError.runtimeType == BackupFailedException) {
-        signInNeeded =
-            (backupError as BackupFailedException).authenticationError;
-      }
-      warnings.add(WarningAction(() async {
-        showDialog(
-          useRootNavigator: false,
-          barrierDismissible: false,
-          context: context,
-          builder: (_) => EnableBackupDialog(
-            context,
-            widget._backupBloc,
-            signInNeeded: signInNeeded,
-          ),
-        );
-      }));
-    }
+    // Commented backup temporary
+    // if (hasError) {
+    //   bool signInNeeded = false;
+    //   if (backupError.runtimeType == BackupFailedException) {
+    //     signInNeeded =
+    //         (backupError as BackupFailedException).authenticationError;
+    //   }
+    //   warnings.add(WarningAction(() async {
+    //     showDialog(
+    //       useRootNavigator: false,
+    //       barrierDismissible: false,
+    //       context: context,
+    //       builder: (_) => EnableBackupDialog(
+    //         context,
+    //         widget._backupBloc,
+    //         signInNeeded: signInNeeded,
+    //       ),
+    //     );
+    //   }));
+    // }
 
-    final availableLSPs = lspStatus?.availableLSPs ?? [];
-    if (lspActivity != null) {
-      availableLSPs.forEach((element) {});
-      int inactiveWarningDuration = this._inactiveWarningDuration(
-        availableLSPs,
-        lspActivity.activity,
-      );
-      if (inactiveWarningDuration > 0) {
-        warnings.add(WarningAction(() async {
-          showDialog(
-              useRootNavigator: false,
-              barrierDismissible: false,
-              context: context,
-              builder: (_) => CloseWarningDialog(inactiveWarningDuration));
-        }));
-      }
-    }
+     // LSP Network
+    // final availableLSPs = lspStatus?.availableLSPs ?? [];
+    // if (lspActivity != null) {
+    //   availableLSPs.forEach((element) {});
+    //   int inactiveWarningDuration = this._inactiveWarningDuration(
+    //     availableLSPs,
+    //     lspActivity.activity,
+    //   );
+    //   if (inactiveWarningDuration > 0) {
+    //     warnings.add(WarningAction(() async {
+    //       showDialog(
+    //           useRootNavigator: false,
+    //           barrierDismissible: false,
+    //           context: context,
+    //           builder: (_) => CloseWarningDialog(inactiveWarningDuration));
+    //     }));
+    //   }
+    // }
 
     final loaderIcon = _buildLoader(backup, accountModel);
     if (loaderIcon != null) {

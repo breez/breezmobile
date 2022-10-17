@@ -1,9 +1,9 @@
 import 'dart:async';
 
-import 'package:breez/bloc/account/account_bloc.dart';
-import 'package:breez/bloc/account/account_model.dart';
-import 'package:breez/services/injector.dart';
-import 'package:breez/theme_data.dart' as theme;
+import 'package:clovrlabs_wallet/bloc/account/account_bloc.dart';
+import 'package:clovrlabs_wallet/bloc/account/account_model.dart';
+import 'package:clovrlabs_wallet/services/injector.dart';
+import 'package:clovrlabs_wallet/theme_data.dart' as theme;
 import 'package:fixnum/fixnum.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -193,12 +193,7 @@ class _WaitBroadcastDialog extends State<WaitBroadcastDialog> {
                       tooltip: texts.waiting_broadcast_dialog_action_copy,
                       iconSize: 16.0,
                       color: themeData.primaryTextTheme.button.color,
-                      icon: Icon(
-                        IconData(
-                          0xe90b,
-                          fontFamily: "icomoon",
-                        ),
-                      ),
+
                       onPressed: () => ServiceInjector()
                           .device
                           .setClipboardText(_response.txID),

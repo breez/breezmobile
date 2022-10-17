@@ -2,19 +2,19 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:auto_size_text/auto_size_text.dart';
-import 'package:breez/bloc/account/account_actions.dart';
-import 'package:breez/bloc/account/account_bloc.dart';
-import 'package:breez/bloc/account/account_model.dart';
-import 'package:breez/bloc/blocs_provider.dart';
-import 'package:breez/bloc/lsp/lsp_bloc.dart';
-import 'package:breez/bloc/lsp/lsp_model.dart';
-import 'package:breez/bloc/user_profile/currency.dart';
-import 'package:breez/routes/home/payment_item_avatar.dart';
-import 'package:breez/services/breezlib/data/rpc.pb.dart';
-import 'package:breez/services/injector.dart';
-import 'package:breez/theme_data.dart' as theme;
-import 'package:breez/utils/date.dart';
-import 'package:breez/widgets/loader.dart';
+import 'package:clovrlabs_wallet/bloc/account/account_actions.dart';
+import 'package:clovrlabs_wallet/bloc/account/account_bloc.dart';
+import 'package:clovrlabs_wallet/bloc/account/account_model.dart';
+import 'package:clovrlabs_wallet/bloc/blocs_provider.dart';
+import 'package:clovrlabs_wallet/bloc/lsp/lsp_bloc.dart';
+import 'package:clovrlabs_wallet/bloc/lsp/lsp_model.dart';
+import 'package:clovrlabs_wallet/bloc/user_profile/currency.dart';
+import 'package:clovrlabs_wallet/routes/home/payment_item_avatar.dart';
+import 'package:clovrlabs_wallet/services/breezlib/data/rpc.pb.dart';
+import 'package:clovrlabs_wallet/services/injector.dart';
+import 'package:clovrlabs_wallet/theme_data.dart' as theme;
+import 'package:clovrlabs_wallet/utils/date.dart';
+import 'package:clovrlabs_wallet/widgets/loader.dart';
 import 'package:collection/collection.dart';
 import 'package:fixnum/fixnum.dart';
 import 'package:flutter/material.dart';
@@ -88,7 +88,7 @@ Future<Null> showPaymentDetailsDialog(
                 top: Radius.circular(12.0),
               ),
             ),
-            color: theme.themeId == "BLUE"
+            color: theme.themeId == "WHITE"
                 ? themeData.primaryColorDark
                 : themeData.canvasColor,
           ),
@@ -468,14 +468,12 @@ class ShareablePaymentRow extends StatelessWidget {
                         ),
                         iconSize: 16.0,
                         color: themeData.primaryTextTheme.button.color,
-                        icon: Icon(
-                          IconData(0xe90b, fontFamily: 'icomoon'),
-                        ),
                         onPressed: () {
                           ServiceInjector()
                               .device
                               .setClipboardText(sharedValue);
                           Navigator.pop(context);
+
                           showFlushbar(
                             context,
                             message: texts.payment_details_dialog_copied(
@@ -484,6 +482,7 @@ class ShareablePaymentRow extends StatelessWidget {
                             duration: Duration(seconds: 4),
                           );
                         },
+                        icon: Icon(Icons.copy),
                       ),
                       IconButton(
                         padding: EdgeInsets.only(right: 8.0),

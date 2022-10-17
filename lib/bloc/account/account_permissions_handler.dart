@@ -2,8 +2,8 @@ library account;
 
 import 'dart:async';
 
-import 'package:breez/services/injector.dart';
-import 'package:breez/services/permissions.dart';
+import 'package:clovrlabs_wallet/services/injector.dart';
+import 'package:clovrlabs_wallet/services/permissions.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 

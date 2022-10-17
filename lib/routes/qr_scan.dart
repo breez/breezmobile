@@ -19,7 +19,6 @@ class QRScan extends StatefulWidget {
 
 class QRScanState extends State<QRScan> {
   final GlobalKey qrKey = GlobalKey(debugLabel: 'QR');
-  var popped = false;
   MobileScannerController cameraController = MobileScannerController(
     facing: CameraFacing.back,
     torchEnabled: false,
@@ -44,11 +43,9 @@ class QRScanState extends State<QRScan> {
                     allowDuplicates: false,
                     controller: cameraController,
                     onDetect: (barcode, args) {
-                      if (popped || !mounted) return;
                       if (barcode.rawValue == null) {
                         debugPrint('Failed to scan QR code.');
                       } else {
-                        popped = true;
                         final String code = barcode.rawValue;
                         Navigator.of(context).pop(code);
                       }

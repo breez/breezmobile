@@ -156,12 +156,12 @@ class Breez : NSObject, FlutterPlugin, BindingsAppServicesProtocol, FlutterStrea
         DispatchQueue.global().async {
             var errorPtr: NSError?;
             guard let provider = self.backupProvider else {
-                result(FlutterError(code: "AuthError", message: "Failed to signIn breez library", details: ""));
+                result(FlutterError(code: "AuthError", message: "Failed to signIn Clovr Labs library", details: ""));
                 return;
             }
             var _ = self.backupAuthenticators[provider]?.backupProviderSignIn(silent: false, in: &errorPtr);
             if let _ = errorPtr {
-                result(FlutterError(code: "AuthError", message: "Failed to sign in breez library", details: ""));
+                result(FlutterError(code: "AuthError", message: "Failed to sign in Clovr Labs library", details: ""));
                 return;
             }
             
@@ -172,7 +172,7 @@ class Breez : NSObject, FlutterPlugin, BindingsAppServicesProtocol, FlutterStrea
     func signOut(call: FlutterMethodCall, result: @escaping FlutterResult){
         DispatchQueue.global().async {
             guard let provider = self.backupProvider else {
-                result(FlutterError(code: "AuthError", message: "Failed to sign out breez library", details: ""));
+                result(FlutterError(code: "AuthError", message: "Failed to sign out Clovr Labs library", details: ""));
                 return;
             }
             self.backupAuthenticators[provider]?.signOut();

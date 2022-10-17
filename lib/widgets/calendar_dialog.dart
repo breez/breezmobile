@@ -1,8 +1,8 @@
 import 'dart:async';
 
-import 'package:breez/theme_data.dart' as theme;
-import 'package:breez/utils/date.dart';
-import 'package:breez/widgets/breez_date_picker.dart';
+import 'package:clovrlabs_wallet/theme_data.dart' as theme;
+import 'package:clovrlabs_wallet/utils/date.dart';
+import 'package:clovrlabs_wallet/widgets/breez_date_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
@@ -71,7 +71,7 @@ class _CalendarDialogState extends State<CalendarDialog> {
             texts.pos_transactions_range_dialog_clear,
             style: theme.cancelButtonStyle.copyWith(
               color:
-                  theme.themeId == "BLUE" ? Colors.red : themeData.errorColor,
+                  theme.themeId == "WHITE" ? Colors.red : themeData.errorColor,
             ),
           ),
           onPressed: _clearFilter,
@@ -103,7 +103,7 @@ class _CalendarDialogState extends State<CalendarDialog> {
 
     return GestureDetector(
       child: Theme(
-        data: theme.themeId == "BLUE"
+        data: theme.themeId == "WHITE"
             ? themeData
             : themeData.copyWith(
                 disabledColor: themeData.backgroundColor,

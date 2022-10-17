@@ -1,4 +1,4 @@
-import 'package:breez/theme_data.dart' as theme;
+import 'package:clovrlabs_wallet/theme_data.dart' as theme;
 import 'package:flutter/material.dart';
 
 class WarningBox extends StatelessWidget {
@@ -31,7 +31,7 @@ class WarningBox extends StatelessWidget {
               border: Border.all(
                   color: borderColor != null
                       ? borderColor
-                      : theme.themeId == "BLUE"
+                      : theme.themeId == "WHITE"
                           ? Color.fromRGBO(250, 239, 188, 0.6)
                           : Color.fromRGBO(227, 180, 47, 0.6))),
           child: this.child),

@@ -1,12 +1,12 @@
 import 'dart:convert';
 import 'dart:math';
 
-import 'package:breez/bloc/account/fiat_conversion.dart';
-import 'package:breez/bloc/pos_catalog/model.dart';
-import 'package:breez/bloc/user_profile/currency.dart';
-import 'package:breez/services/breezlib/data/rpc.pb.dart';
-import 'package:breez/utils/date.dart';
-import 'package:breez/utils/locale.dart';
+import 'package:clovrlabs_wallet/bloc/account/fiat_conversion.dart';
+import 'package:clovrlabs_wallet/bloc/pos_catalog/model.dart';
+import 'package:clovrlabs_wallet/bloc/user_profile/currency.dart';
+import 'package:clovrlabs_wallet/services/breezlib/data/rpc.pb.dart';
+import 'package:clovrlabs_wallet/utils/date.dart';
+import 'package:clovrlabs_wallet/utils/locale.dart';
 import 'package:fixnum/fixnum.dart';
 
 enum BugReportBehavior {
@@ -211,7 +211,6 @@ class AccountModel {
   final bool syncedToChain;
   final bool serverReady;
   final SyncUIState syncUIState;
-  final bool nodeUpgrading;
 
   AccountModel(
     this._accountResponse,
@@ -229,7 +228,6 @@ class AccountModel {
     this.syncedToChain = false,
     this.serverReady = false,
     this.syncUIState = SyncUIState.NONE,
-    this.nodeUpgrading,
   });
 
   AccountModel.initial()
@@ -264,7 +262,6 @@ class AccountModel {
     double syncProgress,
     bool syncedToChain,
     bool serverReady,
-    bool nodeUpgrading,
     bool initial,
     SyncUIState syncUIState,
   }) {
@@ -284,7 +281,6 @@ class AccountModel {
       serverReady: serverReady ?? this.serverReady,
       syncUIState: syncUIState ?? this.syncUIState,
       initial: initial ?? this.initial,
-      nodeUpgrading: nodeUpgrading ?? this.nodeUpgrading
     );
   }
 

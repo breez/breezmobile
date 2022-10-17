@@ -1,6 +1,6 @@
 import 'package:auto_size_text/auto_size_text.dart';
-import 'package:breez/bloc/connect_pay/connect_pay_model.dart';
-import 'package:breez/widgets/layouts.dart';
+import 'package:clovrlabs_wallet/bloc/connect_pay/connect_pay_model.dart';
+import 'package:clovrlabs_wallet/widgets/layouts.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 

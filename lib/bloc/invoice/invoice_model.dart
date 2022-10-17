@@ -1,4 +1,4 @@
-import 'package:breez/services/breezlib/data/rpc.pb.dart';
+import 'package:clovrlabs_wallet/services/breezlib/data/rpc.pb.dart';
 import 'package:fixnum/fixnum.dart';
 
 class InvoiceRequestModel {

@@ -1,4 +1,4 @@
-import 'package:breez/widgets/sat_amount_form_field_formatter.dart';
+import 'package:clovrlabs_wallet/widgets/sat_amount_form_field_formatter.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_test/flutter_test.dart';
 

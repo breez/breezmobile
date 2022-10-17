@@ -1,8 +1,8 @@
-import 'package:breez/bloc/account/account_model.dart';
-import 'package:breez/bloc/user_profile/currency.dart';
-import 'package:breez/theme_data.dart' as theme;
-import 'package:breez/widgets/currency_converter_dialog.dart';
-import 'package:breez/widgets/sat_amount_form_field_formatter.dart';
+import 'package:clovrlabs_wallet/bloc/account/account_model.dart';
+import 'package:clovrlabs_wallet/bloc/user_profile/currency.dart';
+import 'package:clovrlabs_wallet/theme_data.dart' as theme;
+import 'package:clovrlabs_wallet/widgets/currency_converter_dialog.dart';
+import 'package:clovrlabs_wallet/widgets/sat_amount_form_field_formatter.dart';
 import 'package:fixnum/fixnum.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -52,25 +52,10 @@ class AmountFormField extends TextFormField {
                           : "src/icon/btc_convert.png",
                       color: iconColor != null
                           ? iconColor
-                          : theme.BreezColors.white[500],
+                          : theme.ElenPayWalletColors.white[500],
                     ),
                     padding: EdgeInsets.only(top: 21.0),
                     alignment: Alignment.bottomRight,
-                    onPressed: () => showDialog(
-                      useRootNavigator: false,
-                      context: context,
-                      builder: (_) => CurrencyConverterDialog(
-                        returnFN != null
-                            ? returnFN
-                            : (value) =>
-                                controller.text = accountModel.currency.format(
-                                  accountModel.currency.parse(value),
-                                  includeCurrencySymbol: false,
-                                  includeDisplayName: false,
-                                ),
-                        validatorFn,
-                      ),
-                    ),
                   ),
           ),
           style: style,

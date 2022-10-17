@@ -1,4 +1,4 @@
-import 'package:breez/services/currency_data.dart';
+import 'package:clovrlabs_wallet/services/currency_data.dart';
 import 'package:flutter/services.dart';
 
 class CurrencyService {

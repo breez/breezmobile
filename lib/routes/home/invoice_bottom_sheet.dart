@@ -1,13 +1,13 @@
 import 'package:auto_size_text/auto_size_text.dart';
-import 'package:breez/bloc/invoice/invoice_bloc.dart';
-import 'package:breez/bloc/user_profile/breez_user_model.dart';
-import 'package:breez/bloc/user_profile/user_profile_bloc.dart';
-import 'package:breez/routes/spontaneous_payment/spontaneous_payment_page.dart';
-import 'package:breez/theme_data.dart' as theme;
-import 'package:breez/utils/min_font_size.dart';
-import 'package:breez/utils/node_id.dart';
-import 'package:breez/widgets/flushbar.dart';
-import 'package:breez/widgets/route.dart';
+import 'package:clovrlabs_wallet/bloc/invoice/invoice_bloc.dart';
+import 'package:clovrlabs_wallet/bloc/user_profile/clovr_user_model.dart';
+import 'package:clovrlabs_wallet/bloc/user_profile/user_profile_bloc.dart';
+import 'package:clovrlabs_wallet/routes/spontaneous_payment/spontaneous_payment_page.dart';
+import 'package:clovrlabs_wallet/theme_data.dart' as theme;
+import 'package:clovrlabs_wallet/utils/min_font_size.dart';
+import 'package:clovrlabs_wallet/utils/node_id.dart';
+import 'package:clovrlabs_wallet/widgets/flushbar.dart';
+import 'package:clovrlabs_wallet/widgets/route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
@@ -44,7 +44,7 @@ class InvoiceBottomSheetState extends State<InvoiceBottomSheet>
     final texts = AppLocalizations.of(context);
     final navigator = Navigator.of(context);
 
-    return StreamBuilder<BreezUserModel>(
+    return StreamBuilder<ClovrUserModel>(
       stream: widget.userProfileBloc.userStream,
       builder: (context, snapshot) {
         if (!snapshot.hasData) return Container();
@@ -125,7 +125,7 @@ class InvoiceBottomSheetState extends State<InvoiceBottomSheet>
     bool isFirst = false,
   }) {
     final themeData = Theme.of(context);
-    final blueTheme = themeId == "BLUE";
+    final blueTheme = themeId == "WHITE";
 
     return AnimatedContainer(
       width: widget.isSmallView ? 56.0 : 126.0,

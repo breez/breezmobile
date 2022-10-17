@@ -1,10 +1,9 @@
 import 'package:auto_size_text/auto_size_text.dart';
-import 'package:breez/routes/podcast/theme.dart';
-import 'package:breez/theme_data.dart' as theme;
-import 'package:breez/utils/min_font_size.dart';
-import 'package:breez/widgets/back_button.dart' as backBtn;
-import 'package:breez/widgets/route.dart';
-import 'package:breez/widgets/single_button_bottom_bar.dart';
+import 'package:clovrlabs_wallet/theme_data.dart' as theme;
+import 'package:clovrlabs_wallet/utils/min_font_size.dart';
+import 'package:clovrlabs_wallet/widgets/back_button.dart' as backBtn;
+import 'package:clovrlabs_wallet/widgets/route.dart';
+import 'package:clovrlabs_wallet/widgets/single_button_bottom_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'verify_backup_phrase_page.dart';
@@ -48,7 +47,7 @@ class GenerateBackupPhrasePageState extends State<GenerateBackupPhrasePage> {
           ),
           title: AutoSizeText(
             texts.backup_phrase_generation_write_words,
-            style: themeData.appBarTheme.textTheme.headline6,
+            // style: themeData.appBarTheme.textTheme.headline6,
             maxLines: 1,
           ),
           elevation: 0.0,
@@ -138,11 +137,10 @@ class GenerateBackupPhrasePageState extends State<GenerateBackupPhrasePage> {
         Navigator.push(
           context,
           FadeInRoute(
-            builder: (_) => withBreezTheme(
-              context,
+            builder: (_) =>
               VerifyBackupPhrasePage(widget.mnemonics),
             ),
-          ),
+
         );
       },
     );

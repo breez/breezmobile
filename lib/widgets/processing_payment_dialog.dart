@@ -1,12 +1,12 @@
 import 'dart:async';
 
-import 'package:breez/bloc/account/account_bloc.dart';
-import 'package:breez/bloc/account/account_model.dart';
-import 'package:breez/bloc/channels_status_poller.dart';
-import 'package:breez/theme_data.dart' as theme;
-import 'package:breez/widgets/loading_animated_text.dart';
-import 'package:breez/widgets/payment_request_dialog.dart';
-import 'package:breez/widgets/sync_loader.dart';
+import 'package:clovrlabs_wallet/bloc/account/account_bloc.dart';
+import 'package:clovrlabs_wallet/bloc/account/account_model.dart';
+import 'package:clovrlabs_wallet/bloc/channels_status_poller.dart';
+import 'package:clovrlabs_wallet/theme_data.dart' as theme;
+import 'package:clovrlabs_wallet/widgets/loading_animated_text.dart';
+import 'package:clovrlabs_wallet/widgets/payment_request_dialog.dart';
+import 'package:clovrlabs_wallet/widgets/sync_loader.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:rxdart/rxdart.dart';
@@ -216,7 +216,7 @@ class ProcessingPaymentDialogState extends State<ProcessingPaymentDialog>
           themeData.loaderAssetPath,
           height: 64.0,
           colorBlendMode: themeData.loaderColorBlendMode ?? BlendMode.srcIn,
-          color: theme.themeId == "BLUE"
+          color: theme.themeId == "WHITE"
               ? colorAnimation?.value ?? Colors.transparent
               : null,
           gaplessPlayback: true,
@@ -262,7 +262,7 @@ class ProcessingPaymentDialogState extends State<ProcessingPaymentDialog>
                   children: _buildProcessingPaymentDialog(context),
                 ),
                 decoration: ShapeDecoration(
-                  color: theme.themeId == "BLUE"
+                  color: theme.themeId == "WHITE"
                       ? colorAnimation.value
                       : controller.value >= 0.25
                           ? themeData.backgroundColor

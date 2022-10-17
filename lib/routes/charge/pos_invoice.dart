@@ -1,35 +1,35 @@
 import 'dart:async';
 import 'dart:math';
 
-import 'package:breez/bloc/account/account_actions.dart';
-import 'package:breez/bloc/account/account_bloc.dart';
-import 'package:breez/bloc/account/account_model.dart';
-import 'package:breez/bloc/account/fiat_conversion.dart';
-import 'package:breez/bloc/blocs_provider.dart';
-import 'package:breez/bloc/invoice/actions.dart';
-import 'package:breez/bloc/invoice/invoice_bloc.dart';
-import 'package:breez/bloc/invoice/invoice_model.dart';
-import 'package:breez/bloc/lnurl/lnurl_bloc.dart';
-import 'package:breez/bloc/pos_catalog/actions.dart';
-import 'package:breez/bloc/pos_catalog/bloc.dart';
-import 'package:breez/bloc/pos_catalog/model.dart';
-import 'package:breez/bloc/user_profile/breez_user_model.dart';
-import 'package:breez/bloc/user_profile/currency.dart';
-import 'package:breez/bloc/user_profile/user_actions.dart';
-import 'package:breez/bloc/user_profile/user_profile_bloc.dart';
-import 'package:breez/routes/charge/currency_wrapper.dart';
-import 'package:breez/routes/charge/pos_invoice_cart_bar.dart';
-import 'package:breez/routes/charge/pos_invoice_items_view.dart';
-import 'package:breez/routes/charge/pos_invoice_num_pad.dart';
-import 'package:breez/routes/charge/successful_payment.dart';
-import 'package:breez/theme_data.dart' as theme;
-import 'package:breez/utils/print_pdf.dart';
-import 'package:breez/widgets/error_dialog.dart';
-import 'package:breez/widgets/flushbar.dart';
-import 'package:breez/widgets/loader.dart';
-import 'package:breez/widgets/print_parameters.dart';
-import 'package:breez/widgets/transparent_page_route.dart';
-import 'package:breez/widgets/view_switch.dart';
+import 'package:clovrlabs_wallet/bloc/account/account_actions.dart';
+import 'package:clovrlabs_wallet/bloc/account/account_bloc.dart';
+import 'package:clovrlabs_wallet/bloc/account/account_model.dart';
+import 'package:clovrlabs_wallet/bloc/account/fiat_conversion.dart';
+import 'package:clovrlabs_wallet/bloc/blocs_provider.dart';
+import 'package:clovrlabs_wallet/bloc/invoice/actions.dart';
+import 'package:clovrlabs_wallet/bloc/invoice/invoice_bloc.dart';
+import 'package:clovrlabs_wallet/bloc/invoice/invoice_model.dart';
+import 'package:clovrlabs_wallet/bloc/lnurl/lnurl_bloc.dart';
+import 'package:clovrlabs_wallet/bloc/pos_catalog/actions.dart';
+import 'package:clovrlabs_wallet/bloc/pos_catalog/bloc.dart';
+import 'package:clovrlabs_wallet/bloc/pos_catalog/model.dart';
+import 'package:clovrlabs_wallet/bloc/user_profile/clovr_user_model.dart';
+import 'package:clovrlabs_wallet/bloc/user_profile/currency.dart';
+import 'package:clovrlabs_wallet/bloc/user_profile/user_actions.dart';
+import 'package:clovrlabs_wallet/bloc/user_profile/user_profile_bloc.dart';
+import 'package:clovrlabs_wallet/routes/charge/currency_wrapper.dart';
+import 'package:clovrlabs_wallet/routes/charge/pos_invoice_cart_bar.dart';
+import 'package:clovrlabs_wallet/routes/charge/pos_invoice_items_view.dart';
+import 'package:clovrlabs_wallet/routes/charge/pos_invoice_num_pad.dart';
+import 'package:clovrlabs_wallet/routes/charge/successful_payment.dart';
+import 'package:clovrlabs_wallet/theme_data.dart' as theme;
+import 'package:clovrlabs_wallet/utils/print_pdf.dart';
+import 'package:clovrlabs_wallet/widgets/error_dialog.dart';
+import 'package:clovrlabs_wallet/widgets/flushbar.dart';
+import 'package:clovrlabs_wallet/widgets/loader.dart';
+import 'package:clovrlabs_wallet/widgets/print_parameters.dart';
+import 'package:clovrlabs_wallet/widgets/transparent_page_route.dart';
+import 'package:clovrlabs_wallet/widgets/view_switch.dart';
 import 'package:fixnum/fixnum.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -151,7 +151,7 @@ class POSInvoiceState extends State<POSInvoice> with TickerProviderStateMixin {
             },
             child: Builder(
               builder: (BuildContext context) {
-                return StreamBuilder<BreezUserModel>(
+                return StreamBuilder<ClovrUserModel>(
                   stream: userProfileBloc.userStream,
                   builder: (context, snapshot) {
                     final userProfile = snapshot.data;
@@ -212,7 +212,7 @@ class POSInvoiceState extends State<POSInvoice> with TickerProviderStateMixin {
     PosCatalogBloc posCatalogBloc,
     InvoiceBloc invoiceBloc,
     LNUrlBloc lnUrlBloc,
-    BreezUserModel userProfile,
+    ClovrUserModel userProfile,
     AccountModel accountModel,
     Sale currentSale,
     List<FiatConversion> rates,
@@ -310,7 +310,7 @@ class POSInvoiceState extends State<POSInvoice> with TickerProviderStateMixin {
     BuildContext context,
     InvoiceBloc invoiceBloc,
     LNUrlBloc lnUrlBloc,
-    BreezUserModel userProfile,
+    ClovrUserModel userProfile,
     AccountModel accountModel,
     Sale currentSale,
     double totalAmount,
@@ -436,7 +436,7 @@ class POSInvoiceState extends State<POSInvoice> with TickerProviderStateMixin {
     Sale currentSale,
     InvoiceBloc invoiceBloc,
     LNUrlBloc lnUrlBloc,
-    BreezUserModel user,
+    ClovrUserModel user,
     AccountModel account,
   ) {
     final texts = AppLocalizations.of(context);
@@ -613,7 +613,7 @@ class POSInvoiceState extends State<POSInvoice> with TickerProviderStateMixin {
   Future<bool> _showPaymentDialog(
     InvoiceBloc invoiceBloc,
     LNUrlBloc lnUrlBloc,
-    BreezUserModel user,
+    ClovrUserModel user,
     PaymentRequestModel payReq,
     double satAmount,
     AccountModel account,

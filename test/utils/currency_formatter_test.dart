@@ -1,4 +1,4 @@
-import 'package:breez/utils/currency_formatter.dart';
+import 'package:clovrlabs_wallet/utils/currency_formatter.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 CurrencyFormatter make() => CurrencyFormatter();

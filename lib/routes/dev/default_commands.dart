@@ -18,6 +18,7 @@ class Command extends StatelessWidget {
             child: Text(
               command,
               textAlign: TextAlign.left,
+              style: TextStyle(color: Colors.black),
             )));
   }
 }

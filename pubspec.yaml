@@ -1,5 +1,6 @@
-name: breez
-description: A new Flutter project.
+name: clovrlabs_wallet
+description: ClovrLabs Wallet
+version: 1.0.1
 
 dependencies:
   flutter:
@@ -24,10 +25,10 @@ dependencies:
   email_validator: ^2.1.17
   extended_image: ^6.2.1
   file_picker: ^5.0.1
-  firebase_core: ^1.24.0
-  firebase_database: ^9.1.7
-  firebase_dynamic_links: ^4.3.10
-  firebase_messaging: ^13.1.0
+  firebase_core: ^1.20.1
+  firebase_database: ^9.1.1
+  firebase_dynamic_links: ^4.3.4
+  firebase_messaging: ^12.0.2
   flutter_secure_storage: ^6.0.0
   flutter_svg: ^1.1.3
   flutter_web_browser: ^0.17.1
@@ -40,11 +41,9 @@ dependencies:
   ini: ^2.1.0
   intl: ^0.17.0
   json_annotation: ^4.6.0
-  # local_auth: 2.0.0 has breaking changes that are missing documentation
   local_auth: <2.0.0
   logging: ^1.0.2
   md5_file_checksum: ^1.0.3
-  nfc_manager: ^3.1.1
   package_info_plus: ^1.4.3+1
   path_provider: ^2.0.11
   printing: ^5.9.2
@@ -74,22 +73,14 @@ dependencies:
   webdav_client: ^1.1.8
   webview_flutter: ^3.0.4
   ffmpeg_kit_flutter_https_gpl: ^4.5.1
+  provider: ^6.0.4
+  share_extend: ^2.0.0
+  flutter_typeahead: ^4.1.1
+  flutter_animate: ^2.0.0
 
-  anytime:
-    git:
-      url: https://github.com/breez/anytime_podcast_player.git
-      ref: 062ea0082eb4df5cdd16e6cefe9126075a253cc9
-  flutter_typeahead:
-    git:
-      url: https://github.com/breez/flutter_typeahead.git
-      ref: a16aa4deeff1c5e96c6da46da31cb0533f838d8d
-  nfc_in_flutter:
-    git:
-      url: https://github.com/breez/nfc_in_flutter.git
-      ref: 97f610be82bfe42d5ce86c348d931d61949fa517
-  share_extend:
-    git:
-      url: https://github.com/breez/ShareExtend.git
+flutter_intl:
+  enabled: true
+  class_name: AppLocalizations
 
 dependency_overrides:
   meta: ^1.8.0
@@ -97,11 +88,7 @@ dependency_overrides:
   flutter_downloader:
     git:
       url: https://github.com/breez/flutter_downloader.git
-      ref: 7a90641a687e27cc3cb451389f1281faceeef56f
-  podcast_search:
-    git:
-      url: https://github.com/breez/podcast_search.git
-      ref: 8190101aa49edf0f501cf3688f32a3a87df137c5
+      ref: 60a4470a9b552b287d729e230881f9ac77f5b506
 
 dev_dependencies:
   flutter_test:
@@ -128,12 +115,9 @@ flutter:
     - src/json/
     - src/images/
     - src/icon/
-    - src/icon/animals/
     - src/icon/vendors/
-    - src/animations/welcome/
     - src/scripts/
     - src/pos-icons/
-    - assets/images/
     - assets/icons/
 
   fonts:
@@ -180,9 +164,6 @@ flutter:
     - family: animals
       fonts:
         - asset: fonts/animals.ttf
-    - family: Breez Logo
-      fonts:
-        - asset: fonts/breezlogo.ttf
     - family: ComfortaaBold
       fonts:
         - asset: fonts/Comfortaa-Bold.ttf

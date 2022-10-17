@@ -1,80 +1,40 @@
 import 'dart:async';
 import 'dart:convert';
 
-import 'package:anytime/bloc/podcast/audio_bloc.dart';
-import 'package:anytime/bloc/settings/settings_bloc.dart';
-import 'package:anytime/repository/sembast/sembast_repository.dart';
-import 'package:anytime/ui/podcast/now_playing.dart';
-import 'package:anytime/ui/podcast/podcast_details.dart';
-import 'package:anytime/ui/widgets/episode_tile.dart';
-import 'package:anytime/ui/widgets/placeholder_builder.dart';
-import 'package:breez/services/breezlib/breez_bridge.dart';
-import 'package:breez/services/injector.dart';
-import 'package:breez/utils/date.dart';
+import 'package:clovrlabs_wallet/services/breezlib/breez_bridge.dart';
+import 'package:clovrlabs_wallet/services/injector.dart';
+import 'package:clovrlabs_wallet/utils/date.dart';
 import 'package:firebase_core/firebase_core.dart';
-import 'package:provider/provider.dart';
-import 'package:anytime/services/settings/mobile_settings_service.dart';
-import 'package:breez/bloc/app_blocs.dart';
-import 'package:breez/bloc/backup/backup_bloc.dart';
-import 'package:breez/bloc/blocs_provider.dart';
-import 'package:breez/bloc/podcast_payments/podcast_payments_bloc.dart';
-import 'package:breez/logger.dart';
-import 'package:breez/routes/podcast/podcast_page.dart';
-import 'package:breez/user_app.dart';
+import 'package:clovrlabs_wallet/bloc/app_blocs.dart';
+import 'package:clovrlabs_wallet/bloc/backup/backup_bloc.dart';
+import 'package:clovrlabs_wallet/bloc/blocs_provider.dart';
+import 'package:clovrlabs_wallet/logger.dart';
+import 'package:clovrlabs_wallet/wallet_manager.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_downloader/flutter_downloader.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'bloc/backup/backup_model.dart';
 import 'bloc/user_profile/user_profile_bloc.dart';
 
 void main() async {
-  // runZonedGuarded wrapper is required to log Dart errors.
   runZonedGuarded(() async {
     WidgetsFlutterBinding.ensureInitialized();
     BreezLogger();
     SystemChrome.setPreferredOrientations(
         [DeviceOrientation.portraitUp, DeviceOrientation.portraitDown]);
-    //initializeDateFormatting(Platform.localeName, null);
     BreezDateUtils.setupLocales();
-    var mobileService = await MobileSettingsService.instance();
-    mobileService.autoOpenNowPlaying = true;
-    mobileService.showFunding = false;
-    mobileService.searchProvider = 'podcastindex';
-    final repository = SembastRepository();
     await Firebase.initializeApp();
     SharedPreferences.getInstance().then((preferences) async {
-      await runMigration(preferences);
-      AppBlocs blocs = AppBlocs(repository.backupDatabaseListener);
+      // await runMigration(preferences);
       runApp(AppBlocsProvider(
-          child: AnytimePodcastApp(
-              mobileService,
-              repository,
-              Provider<PodcastPaymentsBloc>(
-                lazy: false,
-                create: (ctx) => PodcastPaymentsBloc(
-                    blocs.userProfileBloc,
-                    blocs.accountBloc,
-                    Provider.of<SettingsBloc>(ctx, listen: false),
-                    Provider.of<AudioBloc>(ctx, listen: false),
-                    repository),
-                dispose: (_, value) => value.dispose(),
-                child: PlayerControlsBuilder(
-                    builder: playerBuilder,
-                    child: PlaceholderBuilder(
-                        builder: placeholderBuilder,
-                        errorBuilder: errorPlaceholderBuilder,
-                        child: SharePodcastButtonBuilder(
-                            builder: sharePodcastButtonBuilder,
-                            child: ShareEpisodeButtonBuilder(
-                                builder: shareEpisodeButtonBuilder,
-                                child:
-                                    UserApp(repository.reloadDatabaseSink))))),
-              )),
-          appBlocs: blocs));
+          child: WalletManager(), appBlocs: AppBlocs()));
     });
   }, (error, stackTrace) async {
+    stackTrace.toString();
+    print(error.toString());
     BreezBridge breezBridge = ServiceInjector().breezBridge;
     if (error is! FlutterErrorDetails) {
       breezBridge.log(

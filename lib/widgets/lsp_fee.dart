@@ -1,6 +1,6 @@
-import 'package:breez/bloc/account/account_model.dart';
-import 'package:breez/bloc/lsp/lsp_model.dart';
-import 'package:breez/routes/home/moonpay_route.dart';
+import 'package:clovrlabs_wallet/bloc/account/account_model.dart';
+import 'package:clovrlabs_wallet/bloc/lsp/lsp_model.dart';
+import 'package:clovrlabs_wallet/routes/home/moonpay_route.dart';
 import 'package:fixnum/fixnum.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';

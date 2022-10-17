@@ -1,4 +1,4 @@
-import 'package:breez/utils/exceptions.dart';
+import 'package:clovrlabs_wallet/utils/exceptions.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {

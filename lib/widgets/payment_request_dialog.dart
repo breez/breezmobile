@@ -1,13 +1,12 @@
 import 'dart:async';
 
-import 'package:breez/bloc/account/account_actions.dart';
-import 'package:breez/bloc/account/account_bloc.dart';
-import 'package:breez/bloc/account/account_model.dart';
-import 'package:breez/bloc/invoice/invoice_model.dart';
-import 'package:breez/routes/podcast/theme.dart';
-import 'package:breez/widgets/payment_confirmation_dialog.dart';
-import 'package:breez/widgets/payment_request_info_dialog.dart';
-import 'package:breez/widgets/processing_payment_dialog.dart';
+import 'package:clovrlabs_wallet/bloc/account/account_actions.dart';
+import 'package:clovrlabs_wallet/bloc/account/account_bloc.dart';
+import 'package:clovrlabs_wallet/bloc/account/account_model.dart';
+import 'package:clovrlabs_wallet/bloc/invoice/invoice_model.dart';
+import 'package:clovrlabs_wallet/widgets/payment_confirmation_dialog.dart';
+import 'package:clovrlabs_wallet/widgets/payment_request_info_dialog.dart';
+import 'package:clovrlabs_wallet/widgets/processing_payment_dialog.dart';
 import 'package:fixnum/fixnum.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -62,7 +61,7 @@ class PaymentRequestDialogState extends State<PaymentRequestDialog> {
   Widget build(BuildContext context) {
     return WillPopScope(
       onWillPop: _onWillPop,
-      child: withBreezTheme(context, showPaymentRequestDialog()),
+      child: showPaymentRequestDialog(),
     );
   }
 

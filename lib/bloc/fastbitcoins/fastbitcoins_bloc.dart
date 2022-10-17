@@ -1,12 +1,12 @@
 import 'dart:async';
 import 'dart:convert';
 
-import 'package:breez/bloc/fastbitcoins/fastbitcoins_model.dart';
-import 'package:breez/logger.dart';
-import 'package:breez/services/breezlib/breez_bridge.dart';
-import 'package:breez/services/breezlib/data/rpc.pbgrpc.dart';
-import 'package:breez/services/injector.dart';
-import 'package:breez/utils/locale.dart';
+import 'package:clovrlabs_wallet/bloc/fastbitcoins/fastbitcoins_model.dart';
+import 'package:clovrlabs_wallet/logger.dart';
+import 'package:clovrlabs_wallet/services/breezlib/breez_bridge.dart';
+import 'package:clovrlabs_wallet/services/breezlib/data/rpc.pbgrpc.dart';
+import 'package:clovrlabs_wallet/services/injector.dart';
+import 'package:clovrlabs_wallet/utils/locale.dart';
 import 'package:fixnum/fixnum.dart';
 import 'package:http/http.dart';
 

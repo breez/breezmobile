@@ -1,7 +1,7 @@
-import 'package:breez/bloc/account/add_funds_bloc.dart';
-import 'package:breez/bloc/account/add_funds_model.dart';
-import 'package:breez/bloc/blocs_provider.dart';
-import 'package:breez/widgets/loader.dart';
+import 'package:clovrlabs_wallet/bloc/account/add_funds_bloc.dart';
+import 'package:clovrlabs_wallet/bloc/account/add_funds_model.dart';
+import 'package:clovrlabs_wallet/bloc/blocs_provider.dart';
+import 'package:clovrlabs_wallet/widgets/loader.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_web_browser/flutter_web_browser.dart';
