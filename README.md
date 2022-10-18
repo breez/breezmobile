@@ -13,7 +13,7 @@
 
 [Breez](https://breez.technology) is a Lightning Network [mobile client](https://github.com/breez/breezmobile) and a [hub](https://github.com/breez/server). It provides a platform for simple, instantaneous bitcoin payments. <br>
 Breez is currently in a public beta, available on [Android](https://play.google.com/apps/testing/com.breez.client) and on [iOS](https://testflight.apple.com/join/wPju2Du7). <br>
-To learn more about, please read [Introducing Breez](https://doc.breez.technology). <br>
+To learn more about it, please read [Introducing Breez](https://doc.breez.technology). <br>
 
 ## Features
 
@@ -54,7 +54,7 @@ To learn more about, please read [Introducing Breez](https://doc.breez.technolog
 - [x] Export payments to .csv
 - [x] Support 3rd-party LSPs
 - [x] Biometric login
-- [x] Fast on-boarding
+- [x] Fast onboarding
 - [x] Pay w/o full sync
 - [x] Implement lnurl-withdraw 
 - [x] Send on-chain via reverse Submarine Swaps
@@ -99,7 +99,7 @@ Make sure you have Flutter 2 installed on your system before continuing the setu
 
 ### Setting up for Android
 
-1. Build `breez.aar` as decribed in https://github.com/breez/breez
+1. Build `breez.aar` as described in https://github.com/breez/breez
 2. Create a symlink from the `breez.aar` to `android/app/libs` directory.
 3. Create an Android app on [Firebase](https://console.firebase.google.com/) and download `google-services.json` file.
   - **Package name (for debugging):** com.breez.client.debug
@@ -107,7 +107,7 @@ Make sure you have Flutter 2 installed on your system before continuing the setu
 
 ### Setting up for iOS
 
-1. Build and `bindings.framework` as decribed in https://github.com/breez/breez
+1. Build and `bindings.framework` as described in https://github.com/breez/breez
 2. Copy the `bindings.framework` directory to the ios directory.
 3. Create an iOS app on [Firebase](https://console.firebase.google.com/) and download `GoogleServices-info.plist` file.
 4. Copy the downloaded `GoogleServices-info.plist` file to `ios` folder.
