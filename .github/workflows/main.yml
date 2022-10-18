@@ -45,8 +45,7 @@ jobs:
           export PATH=$(pwd)/go1.19.2/go/bin:$PATH
           export GOROOT=$(pwd)/go1.19.2/go
           go version
-          brew update
-          brew install bazaar
+          brew update          
           git clone --branch lnd-merge-0.15.1 https://github.com/breez/breez.git gopath/src/github.com/breez/breez
           export TMP_GOPATH=$(pwd)/gopath
           pushd gopath/src/github.com/breez/breez
