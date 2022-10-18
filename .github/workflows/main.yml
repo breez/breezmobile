@@ -46,7 +46,7 @@ jobs:
           export GOROOT=$(pwd)/go1.19.2/go
           go version
           brew update          
-          git clone --branch lnd-merge-0.15.1 https://github.com/breez/breez.git gopath/src/github.com/breez/breez
+          git clone --branch lnd-merge-0.15.3 https://github.com/breez/breez.git gopath/src/github.com/breez/breez
           export TMP_GOPATH=$(pwd)/gopath
           pushd gopath/src/github.com/breez/breez
           export GOPRIVATE=github.com/btcsuite/btcd
