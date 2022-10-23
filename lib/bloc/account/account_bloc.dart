@@ -197,6 +197,7 @@ class AccountBloc {
       _listenRoutingConnectionChanges();
       _trackOnBoardingStatus();
       _listenEnableAccount();
+      log.info("Account finished registration of listeners");
     });
   }
 
