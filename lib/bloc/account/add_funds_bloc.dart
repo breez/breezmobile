@@ -72,6 +72,7 @@ class AddFundsBloc extends Bloc {
         _addFundResponseController.add(null);
         return;
       }
+<<<<<<< HEAD
       userStream.first.then((user) async {
         var lspStatus = await this.lspStatusStream.first;
         if (lspStatus.selectedLSP == null) {
@@ -88,6 +89,17 @@ class AddFundsBloc extends Bloc {
           _addFundResponseController.addError(err);
           _moonpayNextOrderController.addError(err);
         });
+=======
+      breezLib.addFundsInit("user.userID", "62b09753-c742-4150-9656-5e5a55eefba0").then((reply) {
+        AddFundResponse response = AddFundResponse(reply);
+        if (addFundsInfo.isMoonpay) {
+          _attachMoonpayUrl(response, injector.breezServer);
+        }
+        _addFundResponseController.add(response);
+      }).catchError((err) {
+        _addFundResponseController.addError(err);
+        _moonpayNextOrderController.addError(err);
+>>>>>>> 94e6cf98 (temp remove line, due to bug)
       });
     });
     _populateAvailableVendors();
