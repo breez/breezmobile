@@ -149,7 +149,6 @@ class CreateInvoicePageState extends State<CreateInvoicePage> {
       ),
       appBar: AppBar(
         iconTheme: themeData.appBarTheme.iconTheme,
-        textTheme: themeData.appBarTheme.textTheme,
         backgroundColor: themeData.canvasColor,
         leading: backBtn.BackButton(),
         actions: [
@@ -181,7 +180,7 @@ class CreateInvoicePageState extends State<CreateInvoicePage> {
           texts.invoice_title,
           style: themeData.appBarTheme.textTheme.headline6,
         ),
-        elevation: 0.0,
+        elevation: 0.0, toolbarTextStyle: themeData.appBarTheme.textTheme.bodyText2, titleTextStyle: themeData.appBarTheme.textTheme.headline6,
       ),
       body: StreamBuilder<AccountModel>(
         stream: accountBloc.accountStream,
@@ -240,7 +239,7 @@ class CreateInvoicePageState extends State<CreateInvoicePage> {
                             validatorFn: validatePayment,
                             style: theme.FieldTextStyle.textStyle,
                           ),
-                          _buildReceivableBTC(context, acc, lspStatus),
+                         // _buildReceivableBTC(context, acc, lspStatus),
                           StreamBuilder<AccountModel>(
                             stream: accountBloc.accountStream,
                             builder: (context, accSnapshot) {
