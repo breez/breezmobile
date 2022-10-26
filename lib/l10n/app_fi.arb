@@ -803,6 +803,7 @@
   "network_restart_action_save": "TALLENNA",
   "network_bitcoin_node": "Käytettävän Bitcoin-solmun (BIP 157) verkko-osoite",
   "network_optional_node": "Vaihtoehtoisen Bitcoin-solmun (BIP 157) verkko-osoite",
+  "network_rest_node" : "Bitcoin Node Rest API (BIP 157, http/https)",
   "network_bitcoin_node_required_error": "Tieto on välttämätön",
   "network_distinct_node_hint": "Syötä toisen solmun verkko-osoite",
   "network_default_node_error": "Sovellus ei saa yhteyttä oletus-solmuun.",

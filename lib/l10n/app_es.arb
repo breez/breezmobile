@@ -803,6 +803,7 @@
   "network_restart_action_save": "Guardar",
   "network_bitcoin_node": "Nodo Bitcoin (BIP 157)",
   "network_optional_node": "Nodo Bitcoin (BIP 157, opcional)",
+  "network_rest_node" : "Bitcoin Node Rest API (BIP 157, http/https)",
   "network_bitcoin_node_required_error": "Nodo Bitcoin es obligatorio",
   "network_distinct_node_hint": "Por favor, elija un otro nodo",
   "network_default_node_error": "Breez no ha podido usar el nodo predeterminado.",

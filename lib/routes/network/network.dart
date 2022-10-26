@@ -28,7 +28,7 @@ class NetworkPageState extends State<NetworkPage> {
   final _formKey = GlobalKey<FormState>();
   BreezBridge _breezLib;
   List<TextEditingController> peerControllers =
-      List<TextEditingController>.generate(2, (_) => TextEditingController());
+      List<TextEditingController>.generate(3, (_) => TextEditingController());
 
   Completer loadPeersAction;
 
@@ -102,6 +102,16 @@ class NetworkPageState extends State<NetworkPage> {
                             return null;
                           },
                         ),
+                        PeerWidget(
+                          label: texts.network_optional_node,
+                          peerController: peerControllers[2],
+                          validator: (value) {
+                            if (_areNodesDistinct(value)) {
+                              return texts.network_rest_node;
+                            }
+                            return null;
+                          },
+                        ),
                         SizedBox(height: 12.0),
                         Row(
                           mainAxisAlignment: MainAxisAlignment.end,
@@ -149,7 +159,7 @@ class NetworkPageState extends State<NetworkPage> {
     if (nodeIsValid) {
       await _breezLib.setPeers([]);
       peerControllers = List<TextEditingController>.generate(
-          2, (_) => TextEditingController());
+          3, (_) => TextEditingController());
       await _loadPeers();
       setState(() {});
       _promptForRestart();
