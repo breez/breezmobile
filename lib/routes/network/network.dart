@@ -103,7 +103,7 @@ class NetworkPageState extends State<NetworkPage> {
                           },
                         ),
                         PeerWidget(
-                          label: texts.network_optional_node,
+                          label: texts.network_rest_node,
                           peerController: peerControllers[2],
                           validator: (value) {
                             if (_areNodesDistinct(value)) {
