@@ -803,7 +803,7 @@
   "network_restart_action_save": "Salvar",
   "network_bitcoin_node": "Servidor de Bitcoin (BIP 157)",
   "network_optional_node": "Servidor de Bitcoin (BIP 157, opcional)",
-  "network_rest_node" : "Bitcoin Node Rest API (BIP 157, http/https)",
+  "network_rest_node" : "(https, optional)",
   "network_bitcoin_node_required_error": "Servidor de Bitcoin é obrigatório",
   "network_distinct_node_hint": "Por favor, use um servidor diferente",
   "network_default_node_error": "Não foi possível utilizar o servidor padrão.",
