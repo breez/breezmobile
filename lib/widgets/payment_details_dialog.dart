@@ -747,12 +747,14 @@ class TxWidget extends StatelessWidget {
   final String txURL;
   final String txID;
   final String txLabel;
+  final EdgeInsets padding;
 
   const TxWidget({
     Key key,
     this.txURL,
     this.txID,
     this.txLabel,
+    this.padding,
   }) : super(key: key);
 
   @override
@@ -770,7 +772,7 @@ class TxWidget extends StatelessWidget {
       mainAxisSize: MainAxisSize.min,
       children: [
         Padding(
-          padding: EdgeInsets.only(top: 20.0),
+          padding: padding ?? EdgeInsets.only(top: 20.0),
           child: LinkLauncher(
             linkTitle: txLabel ??
                 texts.payment_details_dialog_transaction_label_default,

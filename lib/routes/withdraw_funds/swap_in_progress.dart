@@ -1,9 +1,7 @@
 import 'package:breez/bloc/reverse_swap/reverse_swap_model.dart';
-import 'package:breez/services/injector.dart';
 import 'package:breez/widgets/back_button.dart' as backBtn;
-import 'package:breez/widgets/flushbar.dart';
-import 'package:breez/widgets/link_launcher.dart';
 import 'package:breez/widgets/loader.dart';
+import 'package:breez/widgets/payment_details_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
@@ -58,25 +56,10 @@ class SwapInProgress extends StatelessWidget {
           ),
         ),
         txId.isNotEmpty
-            ? Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Padding(
-                    padding: EdgeInsets.fromLTRB(30.0, 30.0, 30.0, 0.0),
-                    child: LinkLauncher(
-                      linkName: txId,
-                      linkAddress: "https://blockstream.info/tx/$txId",
-                      onCopy: () {
-                        ServiceInjector().device.setClipboardText(txId);
-                        showFlushbar(
-                          context,
-                          message: texts.swap_in_progress_transaction_id_copied,
-                          duration: Duration(seconds: 3),
-                        );
-                      },
-                    ),
-                  ),
-                ],
+            ? TxWidget(
+                txID: txId,
+                txURL: "https://blockstream.info/tx/$txId",
+                padding: EdgeInsets.fromLTRB(30.0, 30.0, 30.0, 0.0),
               )
             : SizedBox(),
       ],
