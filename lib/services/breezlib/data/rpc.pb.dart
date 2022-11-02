@@ -3,7 +3,7 @@
 //  source: rpc.proto
 //
 // @dart = 2.12
-// ignore_for_file: annotate_overrides,camel_case_types,unnecessary_const,non_constant_identifier_names,library_prefixes,unused_import,unused_shown_name,return_of_invalid_type,unnecessary_this,prefer_final_fields
+// ignore_for_file: annotate_overrides,camel_case_types,constant_identifier_names,directives_ordering,library_prefixes,non_constant_identifier_names,prefer_final_fields,return_of_invalid_type,unnecessary_const,unnecessary_import,unnecessary_this,unused_import,unused_shown_name
 
 import 'dart:core' as $core;
 
@@ -5542,6 +5542,7 @@ class PushNotificationDetails extends $pb.GeneratedMessage {
 class ReverseSwapPaymentStatus extends $pb.GeneratedMessage {
   static final $pb.BuilderInfo _i = $pb.BuilderInfo(const $core.bool.fromEnvironment('protobuf.omit_message_names') ? '' : 'ReverseSwapPaymentStatus', package: const $pb.PackageName(const $core.bool.fromEnvironment('protobuf.omit_message_names') ? '' : 'data'), createEmptyInstance: create)
     ..aOS(1, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'hash')
+    ..aOS(2, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'txID', protoName: 'txID')
     ..a<$core.int>(3, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'eta', $pb.PbFieldType.O3)
     ..hasRequiredFields = false
   ;
@@ -5549,11 +5550,15 @@ class ReverseSwapPaymentStatus extends $pb.GeneratedMessage {
   ReverseSwapPaymentStatus._() : super();
   factory ReverseSwapPaymentStatus({
     $core.String? hash,
+    $core.String? txID,
     $core.int? eta,
   }) {
     final _result = create();
     if (hash != null) {
       _result.hash = hash;
+    }
+    if (txID != null) {
+      _result.txID = txID;
     }
     if (eta != null) {
       _result.eta = eta;
@@ -5590,12 +5595,21 @@ class ReverseSwapPaymentStatus extends $pb.GeneratedMessage {
   @$pb.TagNumber(1)
   void clearHash() => clearField(1);
 
+  @$pb.TagNumber(2)
+  $core.String get txID => $_getSZ(1);
+  @$pb.TagNumber(2)
+  set txID($core.String v) { $_setString(1, v); }
+  @$pb.TagNumber(2)
+  $core.bool hasTxID() => $_has(1);
+  @$pb.TagNumber(2)
+  void clearTxID() => clearField(2);
+
   @$pb.TagNumber(3)
-  $core.int get eta => $_getIZ(1);
+  $core.int get eta => $_getIZ(2);
   @$pb.TagNumber(3)
-  set eta($core.int v) { $_setSignedInt32(1, v); }
+  set eta($core.int v) { $_setSignedInt32(2, v); }
   @$pb.TagNumber(3)
-  $core.bool hasEta() => $_has(1);
+  $core.bool hasEta() => $_has(2);
   @$pb.TagNumber(3)
   void clearEta() => clearField(3);
 }
