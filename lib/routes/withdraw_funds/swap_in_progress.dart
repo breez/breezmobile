@@ -40,7 +40,7 @@ class SwapInProgress extends StatelessWidget {
     if (swapInProgress == null) return Center(child: Loader());
 
     final texts = AppLocalizations.of(context);
-    final txId = swapInProgress.claimTxId;
+    final txId = swapInProgress.claimTxId ?? swapInProgress.lockTxID;
 
     return Column(
       mainAxisSize: MainAxisSize.max,
