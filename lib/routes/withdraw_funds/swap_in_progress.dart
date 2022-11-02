@@ -17,52 +17,45 @@ class SwapInProgress extends StatelessWidget {
   Widget build(BuildContext context) {
     final texts = AppLocalizations.of(context);
     final themeData = Theme.of(context);
+    final txId = swapInProgress.claimTxId ?? swapInProgress.lockTxID;
 
     return Scaffold(
       appBar: AppBar(
         iconTheme: themeData.appBarTheme.iconTheme,
         textTheme: themeData.appBarTheme.textTheme,
         backgroundColor: themeData.canvasColor,
-        leading: backBtn.BackButton(onPressed: () {
-          Navigator.of(context).pop();
-        }),
+        leading: backBtn.BackButton(),
         title: Text(
           texts.swap_in_progress_title,
           style: themeData.appBarTheme.textTheme.headline6,
         ),
         elevation: 0.0,
       ),
-      body: _body(context),
-    );
-  }
-
-  Widget _body(BuildContext context) {
-    if (swapInProgress == null) return Center(child: Loader());
-
-    final texts = AppLocalizations.of(context);
-    final txId = swapInProgress.claimTxId ?? swapInProgress.lockTxID;
-
-    return Column(
-      mainAxisSize: MainAxisSize.max,
-      crossAxisAlignment: CrossAxisAlignment.stretch,
-      children: [
-        Padding(
-          padding: EdgeInsets.only(top: 50.0, left: 30.0, right: 30.0),
-          child: Text(
-            txId.isEmpty
-                ? texts.swap_in_progress_message_processing_previous_request
-                : texts.swap_in_progress_message_waiting_confirmation,
-            textAlign: TextAlign.center,
-          ),
-        ),
-        txId.isNotEmpty
-            ? TxWidget(
-                txID: txId,
-                txURL: "https://blockstream.info/tx/$txId",
-                padding: EdgeInsets.fromLTRB(30.0, 30.0, 30.0, 0.0),
-              )
-            : SizedBox(),
-      ],
+      body: (swapInProgress == null)
+          ? Center(child: Loader())
+          : Column(
+              mainAxisSize: MainAxisSize.max,
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                Padding(
+                  padding: EdgeInsets.only(top: 50.0, left: 30.0, right: 30.0),
+                  child: Text(
+                    txId.isEmpty
+                        ? texts
+                            .swap_in_progress_message_processing_previous_request
+                        : texts.swap_in_progress_message_waiting_confirmation,
+                    textAlign: TextAlign.center,
+                  ),
+                ),
+                txId.isNotEmpty
+                    ? TxWidget(
+                        txID: txId,
+                        txURL: "https://blockstream.info/tx/$txId",
+                        padding: EdgeInsets.fromLTRB(30.0, 30.0, 30.0, 0.0),
+                      )
+                    : SizedBox(),
+              ],
+            ),
     );
   }
 }
