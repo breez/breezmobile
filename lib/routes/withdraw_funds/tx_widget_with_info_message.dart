@@ -33,13 +33,13 @@ class TxWidgetWithInfoMsg extends StatelessWidget {
                   textAlign: TextAlign.center,
                 ),
               ),
-              txId.isNotEmpty
-                  ? TxWidget(
-                      txID: txId,
-                      txURL: "https://blockstream.info/tx/$txId",
-                      padding: EdgeInsets.fromLTRB(30.0, 30.0, 30.0, 0.0),
-                    )
-                  : SizedBox(),
+              if (txId.isNotEmpty) ...[
+                TxWidget(
+                  txID: txId,
+                  txURL: "https://blockstream.info/tx/$txId",
+                  padding: EdgeInsets.fromLTRB(30.0, 30.0, 30.0, 0.0),
+                )
+              ]
             ],
           );
   }
