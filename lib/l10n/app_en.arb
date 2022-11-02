@@ -926,7 +926,7 @@
   "withdraw_funds_action_next": "NEXT",
   "swap_in_progress_title": "Send to BTC Address",
   "swap_in_progress_transaction_id_copied": "Transaction ID was copied to your clipboard.",
-  "swap_in_progress_message_waiting_confirmation": "Breez is waiting for your transaction to be confirmed.",
+  "swap_in_progress_message_waiting_confirmation": "Breez is waiting for the following transaction to be confirmed before sending your funds to the specified address.",
   "swap_in_progress_message_processing_previous_request": "Breez is currently processing your previous request. You'll be notified once processing is completed to send your funds to the address you've specified.",
   "market_place_no_vendors": "There are no available vendors at the moment.",
   "account_required_actions_backup": "Backup",
