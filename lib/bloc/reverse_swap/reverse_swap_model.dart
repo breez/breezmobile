@@ -73,5 +73,12 @@ class InProgressReverseSwaps {
     return _statuses.paymentsStatus[0].eta;
   }
 
+  String get lockTxID {
+    if (_statuses.paymentsStatus.length == 0) {
+      return "";
+    }
+    return _statuses.paymentsStatus[0].txID;
+  }
+
   bool get isEmpty => _statuses == null && claimTxId == null;
 }
