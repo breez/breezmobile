@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:breez/theme_data.dart';
 import 'package:flutter/material.dart';
 
 class LoadingAnimatedText extends StatefulWidget {
@@ -42,7 +43,7 @@ class LoadingAnimatedTextState extends State<LoadingAnimatedText> {
     var textElements = widget.textElements.toList();
     return RichText(
         text: TextSpan(
-            style: widget.textStyle ?? Theme.of(context).accentTextTheme.bodyText2,
+            style: widget.textStyle ?? Theme.of(context).statusTextStyle,
             text: widget._loadingMessage,
             children: textElements
               ..addAll(<TextSpan>[

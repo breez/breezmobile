@@ -145,38 +145,6 @@ final ThemeData blueTheme = ThemeData(
   primaryIconTheme: IconThemeData(color: BreezColors.grey[500]),
   bottomAppBarColor: Color(0xFF0085fb),
   fontFamily: 'IBMPlexSans',
-  accentTextTheme: TextTheme(
-    bodyText2: TextStyle(color: BreezColors.grey[600]),
-    headline4: TextStyle(
-        color: Color.fromRGBO(0, 133, 251, 1.0),
-        fontSize: 30.0,
-        fontWeight: FontWeight.w600,
-        height: 1.52),
-    subtitle1: TextStyle(
-        color: Color.fromRGBO(0, 133, 251, 1.0),
-        fontSize: 15,
-        fontWeight: FontWeight.w500,
-        height: 1.24,
-        letterSpacing: 0.2),
-    headline6: TextStyle(
-        color: Colors.black,
-        fontSize: 13.5,
-        fontWeight: FontWeight.w500,
-        height: 1.2,
-        letterSpacing: 0.5),
-    subtitle2: TextStyle(
-        color: Colors.black,
-        fontSize: 13.5,
-        fontWeight: FontWeight.w500,
-        height: 1.2,
-        letterSpacing: 0.25),
-    caption: TextStyle(
-        color: Color(0xb3303234),
-        fontSize: 10.5,
-        fontWeight: FontWeight.w400,
-        height: 1.16,
-        letterSpacing: 0.39),
-  ),
   textButtonTheme: TextButtonThemeData(),
   outlinedButtonTheme: OutlinedButtonThemeData(),
   elevatedButtonTheme: ElevatedButtonThemeData(
@@ -287,37 +255,6 @@ final ThemeData darkTheme = ThemeData(
   primaryIconTheme: IconThemeData(color: Colors.white),
   bottomAppBarColor: Color(0xFF0085fb),
   fontFamily: 'IBMPlexSans',
-  accentTextTheme: TextTheme(
-      bodyText2: TextStyle(color: Colors.white),
-      headline4: TextStyle(
-          color: Colors.white,
-          fontSize: 30.0,
-          fontWeight: FontWeight.w600,
-          height: 1.56),
-      subtitle1: TextStyle(
-          color: Colors.white,
-          fontSize: 15,
-          fontWeight: FontWeight.w500,
-          height: 1.24,
-          letterSpacing: 0.2),
-      headline6: TextStyle(
-          color: Colors.white,
-          fontSize: 13.5,
-          fontWeight: FontWeight.w500,
-          height: 1.28,
-          letterSpacing: 0.5),
-      subtitle2: TextStyle(
-          color: Colors.white,
-          fontSize: 12.25,
-          fontWeight: FontWeight.w400,
-          height: 1.2,
-          letterSpacing: 0.25),
-      caption: TextStyle(
-          color: Colors.white.withOpacity(0.7),
-          fontSize: 10.5,
-          fontWeight: FontWeight.w400,
-          height: 1.16,
-          letterSpacing: 0.39)),
   textButtonTheme: TextButtonThemeData(),
   outlinedButtonTheme: OutlinedButtonThemeData(),
   elevatedButtonTheme: ElevatedButtonThemeData(
@@ -689,4 +626,92 @@ extension CustomStyles on TextTheme {
 extension CustomIconThemes on IconThemeData {
   IconThemeData get deleteBadgeIconTheme =>
       IconThemeData(color: BreezColors.grey[500], size: 20.0);
+}
+
+extension ThemeExtensions on ThemeData {
+  bool get isLightTheme => primaryColor == blueTheme.primaryColor;
+
+  // Replaces accentTextTheme.bodyText2
+  TextStyle get statusTextStyle => isLightTheme
+      ? TextStyle(color: BreezColors.grey[600])
+      : TextStyle(color: Colors.white);
+
+  // Replaces accentTextTheme.subtitle2
+  TextStyle get paymentItemTitleTextStyle => isLightTheme
+      ? const TextStyle(
+          color: Colors.black,
+          fontSize: 13.5,
+          fontWeight: FontWeight.w500,
+          height: 1.2,
+          letterSpacing: 0.25,
+        )
+      : const TextStyle(
+          color: Colors.white,
+          fontSize: 12.25,
+          fontWeight: FontWeight.w400,
+          height: 1.2,
+          letterSpacing: 0.25,
+        );
+
+  // Replaces accentTextTheme.headline6
+  TextStyle get paymentItemAmountTextStyle => isLightTheme
+      ? const TextStyle(
+          color: Colors.black,
+          fontSize: 13.5,
+          fontWeight: FontWeight.w500,
+          height: 1.2,
+          letterSpacing: 0.5,
+        )
+      : const TextStyle(
+          color: Colors.white,
+          fontSize: 13.5,
+          fontWeight: FontWeight.w500,
+          height: 1.28,
+          letterSpacing: 0.5,
+        );
+
+  // Replaces accentTextTheme.caption
+  TextStyle get paymentItemSubtitleTextStyle => isLightTheme
+      ? const TextStyle(
+          color: Color(0xb3303234),
+          fontSize: 10.5,
+          fontWeight: FontWeight.w400,
+          height: 1.16,
+          letterSpacing: 0.39,
+        )
+      : TextStyle(
+          color: Colors.white.withOpacity(0.7),
+          fontSize: 10.5,
+          fontWeight: FontWeight.w400,
+          height: 1.16,
+          letterSpacing: 0.39,
+        );
+
+  // Replaces accentTextTheme.headline4
+  TextStyle get walletDashboardHeaderTextStyle => isLightTheme
+      ? TextStyle(
+          color: Color.fromRGBO(0, 133, 251, 1.0),
+          fontSize: 30.0,
+          fontWeight: FontWeight.w600,
+          height: 1.52)
+      : TextStyle(
+          color: Colors.white,
+          fontSize: 30.0,
+          fontWeight: FontWeight.w600,
+          height: 1.56);
+
+  // Replaces accentTextTheme.subtitle1
+  TextStyle get walletDashboardFiatTextStyle => isLightTheme
+      ? TextStyle(
+          color: Color.fromRGBO(0, 133, 251, 1.0),
+          fontSize: 15,
+          fontWeight: FontWeight.w500,
+          height: 1.24,
+          letterSpacing: 0.2)
+      : TextStyle(
+          color: Colors.white,
+          fontSize: 15,
+          fontWeight: FontWeight.w500,
+          height: 1.24,
+          letterSpacing: 0.2);
 }

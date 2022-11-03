@@ -40,7 +40,7 @@ class WalletDashboardState extends State<WalletDashboard> {
   @override
   Widget build(BuildContext context) {
     final themeData = Theme.of(context);
-    final headline4 = themeData.accentTextTheme.headline4;
+    final headline4 = themeData.walletDashboardHeaderTextStyle;
 
     double startHeaderSize = headline4.fontSize;
     double endHeaderFontSize = headline4.fontSize - 8.0;
@@ -155,7 +155,7 @@ class WalletDashboardState extends State<WalletDashboard> {
 
     return Text(
       "${widget._accountModel.formattedFiatBalance}",
-      style: themeData.accentTextTheme.headline4.copyWith(
+      style: themeData.walletDashboardHeaderTextStyle.copyWith(
         fontSize: startHeaderSize -
             (startHeaderSize - endHeaderFontSize) * widget._offsetFactor,
       ),
@@ -168,7 +168,7 @@ class WalletDashboardState extends State<WalletDashboard> {
     double endHeaderFontSize,
   ) {
     final themeData = Theme.of(context);
-    final headline4 = themeData.accentTextTheme.headline4;
+    final headline4 = themeData.walletDashboardHeaderTextStyle;
 
     return RichText(
       text: TextSpan(
@@ -205,7 +205,7 @@ class WalletDashboardState extends State<WalletDashboard> {
 
     return Text(
       texts.wallet_dashboard_balance_hide,
-      style: themeData.accentTextTheme.headline4.copyWith(
+      style: themeData.walletDashboardHeaderTextStyle.copyWith(
         fontSize: startHeaderSize -
             (startHeaderSize - endHeaderFontSize) * widget._offsetFactor,
       ),
@@ -214,7 +214,7 @@ class WalletDashboardState extends State<WalletDashboard> {
 
   Widget _fiatButton(BuildContext context) {
     final themeData = Theme.of(context);
-    final subtitle1 = themeData.accentTextTheme.subtitle1;
+    final subtitle1 = themeData.walletDashboardFiatTextStyle;
 
     return TextButton(
       style: ButtonStyle(

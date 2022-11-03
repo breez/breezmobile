@@ -181,7 +181,7 @@ class PaymentsFilterState extends State<PaymentsFilter> {
       child: IconButton(
         icon: SvgPicture.asset(
           "src/icon/calendar.svg",
-          color: themeData.accentTextTheme.subtitle2.color,
+          color: themeData.paymentItemTitleTextStyle.color,
           width: 24.0,
           height: 24.0,
         ),
@@ -228,9 +228,9 @@ class PaymentsFilterState extends State<PaymentsFilter> {
         child: ButtonTheme(
           alignedDropdown: true,
           child: DropdownButton(
-            iconEnabledColor: themeData.accentTextTheme.subtitle2.color,
+            iconEnabledColor: themeData.paymentItemTitleTextStyle.color,
             value: _filter,
-            style: themeData.accentTextTheme.subtitle2,
+            style: themeData.paymentItemTitleTextStyle,
             items: [
               texts.payments_filter_option_all,
               texts.payments_filter_option_sent,
@@ -241,7 +241,7 @@ class PaymentsFilterState extends State<PaymentsFilter> {
                 child: Material(
                   child: Text(
                     value,
-                    style: themeData.accentTextTheme.subtitle2,
+                    style: themeData.paymentItemTitleTextStyle,
                   ),
                 ),
               );
@@ -290,7 +290,7 @@ class PaymentsFilterState extends State<PaymentsFilter> {
           color: themeData.backgroundColor,
           icon: Icon(
             Icons.more_vert,
-            color: themeData.accentTextTheme.subtitle2.color,
+            color: themeData.paymentItemTitleTextStyle.color,
           ),
           padding: EdgeInsets.zero,
           offset: Offset(12, 24),
@@ -314,7 +314,7 @@ class PaymentsFilterState extends State<PaymentsFilter> {
         icon: Icon(
           Icons.more_vert,
           color: theme.themeId == "BLUE"
-              ? themeData.accentTextTheme.subtitle2.color.withOpacity(0.25)
+              ? themeData.paymentItemTitleTextStyle.color.withOpacity(0.25)
               : themeData.disabledColor,
           size: 24.0,
         ),
