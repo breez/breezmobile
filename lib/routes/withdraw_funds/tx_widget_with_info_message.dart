@@ -15,7 +15,7 @@ class TxWidgetWithInfoMsg extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final texts = AppLocalizations.of(context);
-    final txId = swapInProgress.claimTxId ?? swapInProgress.lockTxID;
+    final txId = swapInProgress?.claimTxId ?? swapInProgress?.lockTxID;
 
     return (swapInProgress == null)
         ? Center(child: Loader())
