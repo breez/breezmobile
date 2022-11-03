@@ -50,7 +50,7 @@ class DownloadTaskManager {
       log.info("GraphDownloader2 callback $id, $status, $progress");
       _updateProgress(id, progress, status);      
     });
-    log.info("GraphDownloader reguster success = $success");
+    log.info("GraphDownloader register success = $success");
     FlutterDownloader.registerCallback(downloadCallback);
 
     final allTasks = await loadTasks();

@@ -944,21 +944,21 @@ class SinglePaymentInfo implements PaymentInfo {
 }
 
 class AddFundResponse {
-  AddFundInitReply _addfundReply;
+  AddFundInitReply _addFundReply;
 
-  AddFundResponse(this._addfundReply);
+  AddFundResponse(this._addFundReply);
 
-  String get errorMessage => _addfundReply.errorMessage;
+  String get errorMessage => _addFundReply.errorMessage;
 
-  Int64 get maxAllowedDeposit => _addfundReply.maxAllowedDeposit;
+  Int64 get maxAllowedDeposit => _addFundReply.maxAllowedDeposit;
 
-  String get address => _addfundReply.address;
+  String get address => _addFundReply.address;
 
-  String get backupJson => _addfundReply.backupJson;
+  String get backupJson => _addFundReply.backupJson;
 
-  Int64 get requiredReserve => _addfundReply.requiredReserve;
+  Int64 get requiredReserve => _addFundReply.requiredReserve;
 
-  Int64 get minAllowedDeposit => _addfundReply.minAllowedDeposit;
+  Int64 get minAllowedDeposit => _addFundReply.minAllowedDeposit;
 }
 
 class RefundableDepositModel {

@@ -263,7 +263,7 @@ class PodcastPaymentsBloc with AsyncActionsHandler {
                 "failed to pay $netPay to destination ${d.address}, error=${payResponse.paymentError} trying next time...");
             return;
           }
-          log.info("succesfully paid $netPay to destination ${d.address}");
+          log.info("successfully paid $netPay to destination ${d.address}");
           netPaySplitSum = netPaySplitSum + netPay;
 
           if (!boost) {

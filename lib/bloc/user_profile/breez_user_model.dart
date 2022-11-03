@@ -3,7 +3,7 @@ import 'package:breez/bloc/user_profile/currency.dart';
 import 'package:breez/bloc/user_profile/security_model.dart';
 
 import 'backup_user_preferences.dart';
-import 'business_adress.dart';
+import 'business_address.dart';
 import 'seen_tutorials.dart';
 
 enum AppMode { balance, podcasts, pos, apps }

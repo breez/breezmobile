@@ -292,7 +292,7 @@ class PaymentAdjustmentState extends State<PaymentAdjustment> {
       flex: 5,
       child: Padding(
         padding: const EdgeInsets.only(left: 16, right: 0),
-        child: WithConfettyPaymentEffect(
+        child: WithConfettiPaymentEffect(
           type: PaymentEventType.BoostStarted,
           child: BoostWidget(
             key: boostWidgetKey,

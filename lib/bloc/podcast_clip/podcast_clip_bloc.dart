@@ -167,10 +167,10 @@ class PodcastClipBloc with AsyncActionsHandler {
     }
   }
 
-  bool isEpisodeClipable() {
+  bool isEpisodeClippable() {
     var clipDetails = getCurrentPodcastClipDetails();
 
-    // Check if there is time to create a clip of minimun 10 secs
+    // Check if there is time to create a clip of minimum 10 secs
     if ((clipDetails.endTimeStamp + Duration(seconds: _initialSeconds)) >
         clipDetails.episodeLength) {
       return false;

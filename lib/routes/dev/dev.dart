@@ -398,7 +398,7 @@ class DevViewState extends State<DevView> {
         title: "Refresh Private Channels",
         icon: Icons.phone_android,
         function: () async {
-          await widget._breezBridge.populateChannePolicy();
+          await widget._breezBridge.populateChannelPolicy();
         }));
     choices.add(Choice(
         title: "Reset Unconfirmed Swap",

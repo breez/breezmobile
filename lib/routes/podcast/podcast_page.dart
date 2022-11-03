@@ -239,7 +239,7 @@ class NowPlayingTransportState extends State<NowPlayingTransport> {
                 widgets.add(AddFundsMessage(accountModel: snapshot.data));
                 widgets.add(Divider(height: 0.0, thickness: 1));
               }
-              widgets.add(WithConfettyPaymentEffect(
+              widgets.add(WithConfettiPaymentEffect(
                   type: PaymentEventType.StreamCompleted,
                   child: PlayerPositionControls()));
               widgets.add(PlayerTransportControls());

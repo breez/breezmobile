@@ -104,7 +104,7 @@ class BreezBridge {
         }
         logger.log.info("GraphDownloader graph synchronization started");
         await syncGraphFromFile(file.path);
-        logger.log.info("GraphDownloader graph synchronized succesfully");
+        logger.log.info("GraphDownloader graph synchronized successfully");
         return DateTime.now();
       }).catchError((err) {
         logger.log.info(
@@ -432,7 +432,7 @@ class BreezBridge {
     // } catch (err) {
     //   logger.log.info("payment failed, checking if graph sync is needed");
     //   if (_inProgressGraphSync != null) {
-    //     logger.log.info("has pending graph sync task, wating...");
+    //     logger.log.info("has pending graph sync task, waiting...");
     //     try {
     //       var lastSyncTime = await _inProgressGraphSync.timeout(Duration(seconds: 30));
     //       if (lastSyncTime.isAfter(startPaymentTime)) {
@@ -462,7 +462,7 @@ class BreezBridge {
         "sendPaymentFailureBugReport", {"argument": traceReport});
   }
 
-  Future populateChannePolicy() {
+  Future populateChannelPolicy() {
     return _invokeMethodWhenReady("populateChannelPolicy");
   }
 
@@ -847,7 +847,7 @@ class BreezBridge {
     return _startedCompleter.future.then((completed) {
       if (methodName != "log") {
         logger.log.info(
-            "startCompleted completd: before invoking method immediate $methodName");
+            "startCompleted completed: before invoking method immediate $methodName");
       }
       return _methodChannel
           .invokeMethod(methodName, arguments)

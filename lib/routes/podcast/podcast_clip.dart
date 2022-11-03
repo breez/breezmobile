@@ -62,8 +62,8 @@ _showClipsBottomSheet(
   if (position != null) {
     podcastClipBloc.setPodcastClipDetails(position: position);
   }
-  bool canBeclipped = podcastClipBloc.isEpisodeClipable();
-  if (!canBeclipped) {
+  bool canBeClipped = podcastClipBloc.isEpisodeClippable();
+  if (!canBeClipped) {
     return;
   }
   podcastClipBloc.setClipSharingStatus(status: true);
@@ -227,7 +227,7 @@ _showClipsBottomSheet(
   });
 }
 
-Widget _numberPanel(BuildContext context, int durationInseconds) {
+Widget _numberPanel(BuildContext context, int durationInSeconds) {
   final minFontSize = 9.0 / MediaQuery.of(context).textScaleFactor;
   return GestureDetector(
     onTap: () => showDialog(
@@ -244,7 +244,7 @@ Widget _numberPanel(BuildContext context, int durationInseconds) {
             width: 42,
             height: 20,
             child: AutoSizeText(
-              durationInseconds.toString(),
+              durationInSeconds.toString(),
               textAlign: TextAlign.center,
               style: Theme.of(context).primaryTextTheme.headline3.copyWith(
                   fontSize: 16,

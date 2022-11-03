@@ -29,7 +29,7 @@ void main() {
       _injector.mockHandler = (request) => Future.value(Response(body, code));
     }
 
-    test("shoud validate with error", () async {
+    test("should validate with error", () async {
       _mockResponse(
         200,
         """{
@@ -52,7 +52,7 @@ void main() {
       await tester.run();
     });
 
-    test("shoud redeem with error", () async {
+    test("should redeem with error", () async {
       _mockResponse(
         200,
         """{

@@ -7,10 +7,10 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'dart:math';
 
-class Confetty extends StatelessWidget {
+class Confetti extends StatelessWidget {
   final ConfettiController controller;
 
-  const Confetty({
+  const Confetti({
     Key key,
     @required this.controller,
   }) : super(key: key);
@@ -40,11 +40,11 @@ class Confetty extends StatelessWidget {
   }
 }
 
-class WithConfettyPaymentEffect extends StatefulWidget {
+class WithConfettiPaymentEffect extends StatefulWidget {
   final Widget child;
   final PaymentEventType type;
 
-  const WithConfettyPaymentEffect({
+  const WithConfettiPaymentEffect({
     Key key,
     this.child,
     this.type,
@@ -52,11 +52,11 @@ class WithConfettyPaymentEffect extends StatefulWidget {
 
   @override
   State<StatefulWidget> createState() {
-    return WithConfettyPaymentEffectState();
+    return WithConfettiPaymentEffectState();
   }
 }
 
-class WithConfettyPaymentEffectState extends State<WithConfettyPaymentEffect> {
+class WithConfettiPaymentEffectState extends State<WithConfettiPaymentEffect> {
   final controller = ConfettiController(duration: Duration(seconds: 1));
   StreamSubscription<PaymentEvent> subscription;
 
@@ -90,7 +90,7 @@ class WithConfettyPaymentEffectState extends State<WithConfettyPaymentEffect> {
           children: [
             Align(
               alignment: Alignment.center,
-              child: Confetty(
+              child: Confetti(
                 controller: controller,
               ),
             ),

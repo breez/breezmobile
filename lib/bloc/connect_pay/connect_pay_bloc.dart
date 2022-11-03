@@ -55,7 +55,7 @@ class ConnectPayBloc {
   }
 
   Future startSession(PayerRemoteSession currentSession) {
-    log.info("starting a remote payment sessino as payer...");
+    log.info("starting a remote payment session as payer...");
     //clean current session on terminate
     currentSession.terminationStream.first.then((_) {
       if (_currentSession == currentSession) {
@@ -66,10 +66,10 @@ class ConnectPayBloc {
     return _breezServer
         .joinSession(true, _currentUser.name, _currentUser.token)
         .then((newSessionReply) async {
-      log.info("succesfullly joined to a remote session");
+      log.info("successfullly joined to a remote session");
       CreateRatchetSessionReply session = await _breezLib.createRatchetSession(
           newSessionReply.sessionID, newSessionReply.expiry);
-      log.info("succesfully created an encrypted session");
+      log.info("successfully created an encrypted session");
       SessionLinkModel payerLink =
           SessionLinkModel(session.sessionID, session.secret, session.pubKey);
       currentSession.start(payerLink);

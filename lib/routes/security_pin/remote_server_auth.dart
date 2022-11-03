@@ -333,7 +333,7 @@ class RemoteServerAuthPageState extends State<RemoteServerAuthPage> {
       }
       String lastSegment = pathSegments.removeLast();
 
-      // we couldn't use webdav with the current root, try differenet origin
+      // we couldn't use webdav with the current root, try different origin
       // and move the last path segment as the directory prefix
       testedAuthData = testedAuthData.copyWith(
           url: testedUrl.replace(pathSegments: pathSegments).toString(),

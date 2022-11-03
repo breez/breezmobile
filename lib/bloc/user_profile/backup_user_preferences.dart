@@ -1,6 +1,6 @@
 
 import '../podcast_payments/payment_options.dart';
-import 'business_adress.dart';
+import 'business_address.dart';
 
 class BackupUserPreferences {
   final String name;

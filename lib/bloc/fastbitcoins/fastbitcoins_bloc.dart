@@ -76,7 +76,7 @@ class FastbitcoinsBloc {
           description: texts.fast_bitcoin_dot_com_voucher,
         );
         request.lightningInvoice = payreq.paymentRequest;
-        log.info("fastbicoins request: " + jsonEncode(request.toJson()));
+        log.info("fastbitcoins request: " + jsonEncode(request.toJson()));
         Uri uri = Uri.https(baseURL, "w-api/v1/breez/redeem");
         var response = await _client.post(uri,
             body: jsonEncode(request.toJson()));

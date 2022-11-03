@@ -226,7 +226,9 @@ class BackupBloc {
         String secureValue =
             json.encode(settings.remoteServerAuthData.toJson());
         await _secureStorage.write(
-            key: "remoteServerAuthData", value: secureValue, mOptions: MacOsOptions(synchronizable: true));
+            key: "remoteServerAuthData",
+            value: secureValue,
+            mOptions: MacOsOptions(synchronizable: true));
       }
     });
   }
@@ -619,7 +621,7 @@ class SnapshotInfo {
   SnapshotInfo(
       this.nodeID, this.modifiedTime, this.encrypted, this.encryptionType) {
     log.info(
-        "New Snapshot encrypted = ${this.encrypted} encrytionType = ${this.encryptionType}");
+        "New Snapshot encrypted = ${this.encrypted} encryptionType = ${this.encryptionType}");
   }
 
   SnapshotInfo.fromJson(Map<String, dynamic> json)

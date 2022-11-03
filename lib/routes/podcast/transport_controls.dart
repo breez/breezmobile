@@ -144,7 +144,7 @@ class _PlayerTransportControlsState extends State<PlayerTransportControls>
                   onPressed: () {
                     return snapshot.data == AudioState.buffering
                         ? null
-                        : _fastforward(audioBloc);
+                        : _fastForward(audioBloc);
                   },
                   padding: const EdgeInsets.all(0.0),
                   icon: SvgPicture.asset(
@@ -186,7 +186,7 @@ class _PlayerTransportControlsState extends State<PlayerTransportControls>
     audioBloc.transitionState(TransitionState.rewind);
   }
 
-  void _fastforward(AudioBloc audioBloc) {
+  void _fastForward(AudioBloc audioBloc) {
     audioBloc.transitionState(TransitionState.fastforward);
   }
 }

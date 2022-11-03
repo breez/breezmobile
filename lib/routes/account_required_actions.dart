@@ -118,12 +118,12 @@ class AccountRequiredActionsIndicatorState
   }
 
   int _inactiveWarningDuration(
-    List<LSPInfo> lsps,
+    List<LSPInfo> lspList,
     Map<String, Int64> activity,
   ) {
     int warningDuration = 0;
     int currentTimestamp = DateTime.now().millisecondsSinceEpoch ~/ 1000;
-    lsps.forEach((l) {
+    lspList.forEach((l) {
       if (activity.containsKey(l.lspID) &&
           ((currentTimestamp - activity[l.lspID].toInt()) >
               4 * (l.maxInactiveDuration ~/ 5))) {

@@ -28,7 +28,7 @@ class VendorWebViewPage extends StatefulWidget {
 }
 
 class VendorWebViewPageState extends State<VendorWebViewPage> {
-  WeblnHandlers _weblnHandlers;
+  WebLNHandlers _weblnHandlers;
   InvoiceBloc _invoiceBloc;
   bool _isInit = false;
 
@@ -38,7 +38,7 @@ class VendorWebViewPageState extends State<VendorWebViewPage> {
   void didChangeDependencies() {
     if (!_isInit) {
       _invoiceBloc = AppBlocsProvider.of<InvoiceBloc>(context);
-      _weblnHandlers = WeblnHandlers(context, widget.accountBloc, _invoiceBloc);
+      _weblnHandlers = WebLNHandlers(context, widget.accountBloc, _invoiceBloc);
 
       _isInit = true;
     }
@@ -92,7 +92,7 @@ class VendorWebViewPageState extends State<VendorWebViewPage> {
               _webViewController.runJavascript(
                   'window.onmessage = (message) => window.BreezWebView.postMessage(message.data);');
               _webViewController
-                  .runJavascript(await _weblnHandlers.initWeblnScript);
+                  .runJavascript(await _weblnHandlers.initWebLNScript);
               print('Page finished loading: $url');
             },
             initialUrl: widget._url),

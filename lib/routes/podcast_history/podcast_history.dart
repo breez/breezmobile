@@ -354,7 +354,7 @@ Widget _getPodcastHistoryList(
       stream: podcastHistoryBloc.podcastHistoryRecord,
       builder: (context, podcastHistoryListSnapshot) {
         if (podcastHistoryListSnapshot.data != null) {
-          //This enables sharing of upto 5 podcasts
+          //This enables sharing of up to 5 podcasts
           int podcastHistoryLength = 0;
           if (getScreenshotWidget) {
             podcastHistoryLength =
