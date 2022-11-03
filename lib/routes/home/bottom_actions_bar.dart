@@ -202,7 +202,6 @@ class _Action extends StatelessWidget {
   final AutoSizeGroup group;
   final String iconAssetPath;
   final Function() onPress;
-  final Alignment minimizedAlignment;
 
   const _Action({
     Key key,
@@ -210,7 +209,6 @@ class _Action extends StatelessWidget {
     this.group,
     this.iconAssetPath,
     this.onPress,
-    this.minimizedAlignment = Alignment.center,
   }) : super(key: key);
 
   @override

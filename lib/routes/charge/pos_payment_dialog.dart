@@ -40,7 +40,6 @@ class PosPaymentDialog extends StatefulWidget {
   final BreezUserModel _user;
   final PaymentRequestModel paymentRequest;
   final double satAmount;
-  final String _note;
 
   const PosPaymentDialog(
     this._invoiceBloc,
@@ -48,7 +47,6 @@ class PosPaymentDialog extends StatefulWidget {
     this._user,
     this.paymentRequest,
     this.satAmount,
-    this._note,
   );
 
   @override
@@ -64,7 +62,6 @@ class _PosPaymentDialogState extends State<PosPaymentDialog> {
   StreamSubscription<NfcWithdrawInvoiceStatus> _nfcInvoiceSubscription;
   String _countdownString = "3:00";
   var _loadingNfc = false;
-  Duration _expiration;
 
   @override
   void initState() {
@@ -76,7 +73,7 @@ class _PosPaymentDialogState extends State<PosPaymentDialog> {
     _timerSubscription = _paymentTimer.stream.listen((d) {
       setState(() {
         final texts = context.texts();
-        _expiration = d;
+
         _countdownString = texts.pos_dialog_clock(
           d.inMinutes.toRadixString(10),
           (d.inSeconds - (d.inMinutes * 60)).toRadixString(10).padLeft(2, "0"),
@@ -155,15 +152,19 @@ class _PosPaymentDialogState extends State<PosPaymentDialog> {
         ),
         Row(
           children: <Widget>[
-            IconButton(              
+            IconButton(
               padding: EdgeInsets.zero,
-              icon: SvgPicture.asset(                  
-                  "src/icon/nfc.svg",                  
-                  color: Platform.isAndroid ? themeData.dialogTheme.titleTextStyle.color : themeData.primaryTextTheme.button.color,                  
-                ),
-              onPressed: Platform.isAndroid ?  null : () {
-                ServiceInjector().nfc.starSession(autoClose: true);
-              },
+              icon: SvgPicture.asset(
+                "src/icon/nfc.svg",
+                color: Platform.isAndroid
+                    ? themeData.dialogTheme.titleTextStyle.color
+                    : themeData.primaryTextTheme.button.color,
+              ),
+              onPressed: Platform.isAndroid
+                  ? null
+                  : () {
+                      ServiceInjector().nfc.starSession(autoClose: true);
+                    },
             ),
             IconButton(
               splashColor: Colors.transparent,

@@ -629,7 +629,6 @@ class POSInvoiceState extends State<POSInvoice> with TickerProviderStateMixin {
         user,
         payReq,
         satAmount,
-        submittedSale.note,
       ),
     ).then((res) {
       if (res?.paid == true) {
