@@ -43,7 +43,7 @@ android {
             if (filePath != null) {
                 keyAlias keystoreProperties['keyAlias']
                 keyPassword keystoreProperties['keyPassword']
-                storeFile file('key.jks')
+                storeFile file(filePath)
                 storePassword keystoreProperties['storePassword']
             } else {
                 println("No storeFile provided, release builds are not possible")
