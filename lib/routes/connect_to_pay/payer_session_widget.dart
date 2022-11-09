@@ -211,7 +211,7 @@ class WaitingChannelsSyncUIState extends State<WaitingChannelsSyncUI> {
                     },
                   ),
                   actions: [
-                    FlatButton(
+                    TextButton(
                       onPressed: () => Navigator.pop(context),
                       child: Text(
                         texts.connect_to_pay_payer_action_close,

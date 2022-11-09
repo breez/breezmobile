@@ -23,9 +23,10 @@ class BreezBridge {
   static const _methodChannel = MethodChannel('com.breez.client/breez_lib');
   static const _eventChannel =
       EventChannel('com.breez.client/breez_lib_notifications');
-
+  
   final DownloadTaskManager downloadManager;
   final Future<SharedPreferences> sharedPreferences;
+  String _selectedLspID;
   Completer _readyCompleter = Completer();
   Completer _startedCompleter = Completer();
   StreamController _eventsController =
@@ -56,6 +57,10 @@ class BreezBridge {
     _graphDownloader.init().whenComplete(() => initLightningDir());
   }
 
+  void setSelectedLspID(String lspID) {
+    _selectedLspID = lspID;
+  }
+
   Future fetchGraphChecksum(String downloadURL) async {
     var graphUri = Uri.parse(downloadURL);
     var pathComponents = graphUri.path.split("/");
@@ -80,11 +85,11 @@ class BreezBridge {
     await _readyCompleter.future;
     await Future.delayed(Duration(seconds: 10));
     var downloadURL = await graphURL();
-    logger.log.info("graph download url: $downloadURL");
+    logger.log.info("GraphDownloader graph download url: $downloadURL");
     if (downloadURL.isNotEmpty) {
-      logger.log.info("fetching graph checksum");
+      logger.log.info("GraphDownloader fetching graph checksum");
       var checksum = await fetchGraphChecksum(downloadURL);
-      logger.log.info("graph checksum = $checksum, downloading graph");
+      logger.log.info("GraphDownloader graph checksum = $checksum, downloading graph");
       _inProgressGraphSync =
           _graphDownloader.downloadGraph(downloadURL).then((file) async {
         final fileChecksum =
@@ -93,15 +98,15 @@ class BreezBridge {
         var hexChecksum = HEX.encode(rawBytes);
         if (hexChecksum != checksum) {
           logger.log.info(
-              "graph synchronization wrong checksum $fileChecksum != $checksum, skipping file");
+              "GraphDownloader graph synchronization wrong checksum $fileChecksum != $checksum, skipping file");
           return DateTime.now();
         }
-        logger.log.info("graph synchronization started");
+        logger.log.info("GraphDownloader graph synchronization started");
         await syncGraphFromFile(file.path);
-        logger.log.info("graph synchronized succesfully");
+        logger.log.info("GraphDownloader graph synchronized succesfully");
         return DateTime.now();
       }).catchError((err) {
-        logger.log.info("graph synchronized failed ${err.toString()}");
+        logger.log.info("GraphDownloader graph synchronized failed ${err.toString()}");
       }).whenComplete(() {
         _graphDownloader.deleteDownloads();
       });
@@ -504,7 +509,7 @@ class BreezBridge {
       String payerImageURL,
       String description,
       Int64 expiry,
-      LSPInformation lspInfo}) async {
+      LSPInformation inputLSP}) async {
     InvoiceMemo invoice = InvoiceMemo();
     invoice.amount = amount;
     if (payeeImageURL != null) {
@@ -524,11 +529,22 @@ class BreezBridge {
     }
 
     var request = AddInvoiceRequest()..invoiceDetails = invoice;
-    if (lspInfo == null) {
+    var lspInfo = inputLSP;
+
+    // if we got lsp in input let's use it
+    if (lspInfo != null) {    
+      request.lspInfo = lspInfo;
+    }else {      
+      // if we have a selected lsp, let's use it
       var lsps = await getLSPList();
-      var keys = lsps.lsps.keys.toList();
-      if (keys.length == 1) {
-        request.lspInfo = lsps.lsps[keys[0]];
+      if (_selectedLspID != null) {
+        request.lspInfo = lsps.lsps[_selectedLspID];
+      } else {
+        // if we only have one lsp in our options, let's use it.
+        var keys = lsps.lsps.keys.toList();
+        if (keys.length == 1) {
+          request.lspInfo = lsps.lsps[keys[0]];
+        }
       }
     }
 
@@ -672,7 +688,7 @@ class BreezBridge {
   }
 
   Future checkVersion() {
-    return _invokeMethodWhenReady("checkVersion");
+    return _invokeMethodImmediate("checkVersion");
   }
 
   Future<String> validateAddress(String address) {

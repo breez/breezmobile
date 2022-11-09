@@ -30,7 +30,13 @@ extension LnurlMetadata on List<LNUrlPayMetadata> {
       return null;
     }
 
-    final image = Image.memory(Uint8List.fromList(imageSource.image.bytes));
+    final bytes = imageSource.image.bytes;
+    if (bytes == null || bytes.isEmpty) {
+      _imageCache[this] = null;
+      return null;
+    }
+
+    final image = Image.memory(Uint8List.fromList(bytes));
     _imageCache[this] = image;
     return image;
   }

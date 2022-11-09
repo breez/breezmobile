@@ -1454,6 +1454,7 @@
     "csv_exporter_amount": "Importo",
     "csv_exporter_preimage": "Preimage",
     "csv_exporter_tx_hash": "Hash TX",
+    "csv_exporter_fee": "Fee",
     "pos_custom_item_name": "Articolo {index}",
     "@pos_custom_item_name": {
         "placeholders": {
@@ -2101,6 +2102,12 @@
     "podcast_history_sort_dropdown_sats": "Pagati",
     "podcast_history_sort_dropdown_boosts": "Potenziati",
     "podcast_history_empty_text": "Nessun dato disponibile da visualizzare.",
+    "podcast_clips_clip_button": "CLIP",
+    "podcast_clips_cancel_button": "ANNULLA",
+    "podcast_clips_seconds": "secondi",
+    "podcast_clips_dialog_title": "Durata clip (in secondi)",
+    "podcast_clips_dialog_done": "FATTA",
+    "podcast_clips_error": "An error has occurred while clipping the episode. Please try again.",
     "locale": "en",
     "app_name": "Breez"
 }

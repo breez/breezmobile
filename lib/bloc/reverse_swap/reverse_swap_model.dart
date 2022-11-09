@@ -66,12 +66,13 @@ class InProgressReverseSwaps {
 
   InProgressReverseSwaps(this._statuses, this.claimTxId);
 
-  int get lockupTxETA {
-    if (_statuses.paymentsStatus.length == 0) {
-      return -1;
-    }
-    return _statuses.paymentsStatus[0].eta;
-  }
+  int get lockupTxETA => (_statuses.paymentsStatus.isNotEmpty)
+      ? _statuses.paymentsStatus[0].eta
+      : -1;
+
+  String get lockTxID => (_statuses.paymentsStatus.isNotEmpty)
+      ? _statuses.paymentsStatus[0].txID
+      : "";
 
   bool get isEmpty => _statuses == null && claimTxId == null;
 }

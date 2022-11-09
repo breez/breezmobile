@@ -6,6 +6,7 @@ import 'package:breez/bloc/fastbitcoins/fastbitcoins_bloc.dart';
 import 'package:breez/bloc/lnurl/lnurl_bloc.dart';
 import 'package:breez/bloc/marketplace/marketplace_bloc.dart';
 import 'package:breez/bloc/payment_options/payment_options_bloc.dart';
+import 'package:breez/bloc/podcast_clip/podcast_clip_bloc.dart';
 import 'package:breez/bloc/podcast_history/podcast_history_bloc.dart';
 import 'package:breez/bloc/pos_catalog/bloc.dart';
 import 'package:breez/bloc/pos_catalog/sqlite/repository.dart';
@@ -35,6 +36,7 @@ class AppBlocs {
 
   final Map<Type, Object> _blocsByType;
   final PodcastHistoryBloc podCastHistoryBloc;
+  final PodcastClipBloc podCastClipBloc;
 
   static T _registerBloc<T>(T bloc, Map<Type, Object> blocs) {
     blocs[bloc.runtimeType] = bloc;
@@ -96,6 +98,10 @@ class AppBlocs {
       PodcastHistoryBloc(),
       blocsByType,
     );
+    PodcastClipBloc podCastClipBloc = _registerBloc(
+      PodcastClipBloc(),
+      blocsByType,
+    );
 
     return AppBlocs._(
         userProfileBloc,
@@ -112,7 +118,8 @@ class AppBlocs {
         posCatalogBloc,
         paymentOptionsBloc,
         blocsByType,
-        podCastHistoryBloc);
+        podCastHistoryBloc,
+        podCastClipBloc);
   }
 
   AppBlocs._(
@@ -130,5 +137,6 @@ class AppBlocs {
       this.posCatalogBloc,
       this.paymentOptionsBloc,
       this._blocsByType,
-      this.podCastHistoryBloc);
+      this.podCastHistoryBloc,
+      this.podCastClipBloc);
 }

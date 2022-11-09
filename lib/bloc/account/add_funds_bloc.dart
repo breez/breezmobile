@@ -72,13 +72,13 @@ class AddFundsBloc extends Bloc {
         _addFundResponseController.add(null);
         return;
       }
-      userStream.firstWhere((u) => u.userID != null).then((user) async {
+      userStream.first.then((user) async {
         var lspStatus = await this.lspStatusStream.first;
         if (lspStatus.selectedLSP == null) {
           throw new Exception(
               getSystemAppLocalizations().lsp_error_not_selected);
         }
-        breezLib.addFundsInit(user.userID, lspStatus.selectedLSP).then((reply) {
+        breezLib.addFundsInit(user.userID ?? "", lspStatus.selectedLSP).then((reply) {
           AddFundResponse response = AddFundResponse(reply);
           if (addFundsInfo.isMoonpay) {
             _attachMoonpayUrl(response, injector.breezServer);

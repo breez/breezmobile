@@ -8,6 +8,7 @@ import 'package:anytime/bloc/podcast/audio_bloc.dart';
 import 'package:anytime/l10n/L.dart';
 import 'package:anytime/services/audio/audio_player_service.dart';
 import 'package:anytime/ui/widgets/sleep_selector.dart';
+import 'package:breez/routes/podcast/podcast_clip.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -79,87 +80,94 @@ class _PlayerTransportControlsState extends State<PlayerTransportControls>
       builder: (context, snapshot) {
         final audioState = snapshot.data;
 
-        return Row(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          mainAxisAlignment: MainAxisAlignment.center,
-          mainAxisSize: MainAxisSize.max,
-          children: <Widget>[
-            Expanded(flex: 1, child: Container()),
-            // Add SleepSelector inside a 37 width sized
-            // box to proper alignment with SpeedSelector
-            SizedBox(
-              width: 37.0,
-              height: 24.0,
-              child: Center(
-                child: SleepSelector(
+        return Column(
+          children: [
+            PodcastClipWidget(),
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              mainAxisAlignment: MainAxisAlignment.center,
+              mainAxisSize: MainAxisSize.max,
+              children: <Widget>[
+                Expanded(flex: 1, child: Container()),
+                // Add SleepSelector inside a 37 width sized
+                // box to proper alignment with SpeedSelector
+                SizedBox(
+                  width: 37.0,
+                  height: 24.0,
+                  child: Center(
+                    child: SleepSelector(
+                      padding: const EdgeInsets.all(0.0),
+                      constraints: const BoxConstraints(
+                        maxHeight: 24.0,
+                        minHeight: 24.0,
+                        maxWidth: 24.0,
+                        minWidth: 24.0,
+                      ),
+                      iconOn: SvgPicture.asset(
+                        'assets/icons/sleep_on.svg',
+                        color: theme.buttonTheme.colorScheme.onPrimary,
+                        height: 24.0,
+                        width: 24.0,
+                      ),
+                      iconOff: SvgPicture.asset(
+                        'assets/icons/sleep_off.svg',
+                        color: theme.buttonTheme.colorScheme.onPrimary,
+                        height: 24.0,
+                        width: 24.0,
+                      ),
+                    ),
+                  ),
+                ),
+                Expanded(flex: 1, child: Container()),
+                IconButton(
+                  onPressed: () {
+                    return snapshot.data == AudioState.buffering
+                        ? null
+                        : _rewind(audioBloc);
+                  },
+                  tooltip: L.of(context).rewind_button_label,
                   padding: const EdgeInsets.all(0.0),
-                  constraints: const BoxConstraints(
-                    maxHeight: 24.0,
-                    minHeight: 24.0,
-                    maxWidth: 24.0,
-                    minWidth: 24.0,
-                  ),
-                  iconOn: SvgPicture.asset(
-                    'assets/icons/sleep_on.svg',
+                  icon: SvgPicture.asset("src/icon/ic_backward.svg",
+                      width: 48.0,
+                      height: 48.0,
+                      color: theme.buttonTheme.colorScheme.onPrimary),
+                ),
+                Expanded(flex: 1, child: Container()),
+                _PlayButton(
+                  audioState: audioState,
+                  onPlay: () => _play(audioBloc),
+                  onPause: () => _pause(audioBloc),
+                  playPauseController: _playPauseController,
+                ),
+                Expanded(flex: 1, child: Container()),
+                IconButton(
+                  onPressed: () {
+                    return snapshot.data == AudioState.buffering
+                        ? null
+                        : _fastforward(audioBloc);
+                  },
+                  padding: const EdgeInsets.all(0.0),
+                  icon: SvgPicture.asset(
+                    "src/icon/ic_forward.svg",
+                    width: 48.0,
+                    height: 48.0,
                     color: theme.buttonTheme.colorScheme.onPrimary,
-                    height: 24.0,
-                    width: 24.0,
-                  ),
-                  iconOff: SvgPicture.asset(
-                    'assets/icons/sleep_off.svg',
-                    color: theme.buttonTheme.colorScheme.onPrimary,
-                    height: 24.0,
-                    width: 24.0,
                   ),
                 ),
-              ),
-            ),
-            Expanded(flex: 1, child: Container()),
-            IconButton(
-              onPressed: () {
-                return snapshot.data == AudioState.buffering ? null : _rewind(audioBloc);
-              },
-              tooltip: L.of(context).rewind_button_label,
-              padding: const EdgeInsets.all(0.0),
-              icon: SvgPicture.asset(
-                "src/icon/ic_backward.svg",
-                width: 48.0,
-                height: 48.0,
-                color: theme.buttonTheme.colorScheme.onPrimary
-              ),
-            ),
-            Expanded(flex: 1, child: Container()),
-            _PlayButton(
-              audioState: audioState,
-              onPlay: () => _play(audioBloc),
-              onPause: () => _pause(audioBloc),
-              playPauseController: _playPauseController,
-            ),
-            Expanded(flex: 1, child: Container()),
-            IconButton(
-              onPressed: () {
-                return snapshot.data == AudioState.buffering ? null : _fastforward(audioBloc);
-              },
-              padding: const EdgeInsets.all(0.0),
-              icon: SvgPicture.asset(
-                "src/icon/ic_forward.svg",
-                width: 48.0,
-                height: 48.0,
-                color: theme.buttonTheme.colorScheme.onPrimary,
-              ),
-            ),
-            Expanded(flex: 1, child: Container()),
-            // Speed selector uses 16-37 as width so we use a container with
-            // the maximum size and centers it to proper alignment
-            Container(
-              width: 37,
-              child: Center(
-                child: SpeedSelectorWidget(
-                  onChanged: (value) => audioBloc.playbackSpeed(value),
+                Expanded(flex: 1, child: Container()),
+                // Speed selector uses 16-37 as width so we use a container with
+                // the maximum size and centers it to proper alignment
+                Container(
+                  width: 37,
+                  child: Center(
+                    child: SpeedSelectorWidget(
+                      onChanged: (value) => audioBloc.playbackSpeed(value),
+                    ),
+                  ),
                 ),
-              ),
+                Expanded(flex: 1, child: Container()),
+              ],
             ),
-            Expanded(flex: 1, child: Container()),
           ],
         );
       },

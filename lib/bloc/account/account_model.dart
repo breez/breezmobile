@@ -211,6 +211,7 @@ class AccountModel {
   final bool syncedToChain;
   final bool serverReady;
   final SyncUIState syncUIState;
+  final bool nodeUpgrading;
 
   AccountModel(
     this._accountResponse,
@@ -228,6 +229,7 @@ class AccountModel {
     this.syncedToChain = false,
     this.serverReady = false,
     this.syncUIState = SyncUIState.NONE,
+    this.nodeUpgrading,
   });
 
   AccountModel.initial()
@@ -262,6 +264,7 @@ class AccountModel {
     double syncProgress,
     bool syncedToChain,
     bool serverReady,
+    bool nodeUpgrading,
     bool initial,
     SyncUIState syncUIState,
   }) {
@@ -281,6 +284,7 @@ class AccountModel {
       serverReady: serverReady ?? this.serverReady,
       syncUIState: syncUIState ?? this.syncUIState,
       initial: initial ?? this.initial,
+      nodeUpgrading: nodeUpgrading ?? this.nodeUpgrading
     );
   }
 

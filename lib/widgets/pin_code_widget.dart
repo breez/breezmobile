@@ -8,6 +8,7 @@ import 'package:breez/theme_data.dart' as theme;
 import 'package:breez/widgets/circular_button.dart';
 import 'package:breez/widgets/flushbar.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 
 const PIN_CODE_LENGTH = 6;
 
@@ -134,11 +135,12 @@ class PinCodeWidgetState extends State<PinCodeWidget>
     );
   }
 
-  Image _buildBreezLogo(BuildContext context) {
-    return Image.asset(
-      "src/images/logo-color.png",
+  Widget _buildBreezLogo(BuildContext context) {
+    return SvgPicture.asset(
+      "src/images/logo-color.svg",
       width: (MediaQuery.of(context).size.width) / 3,
       color: Colors.white,
+      colorBlendMode: BlendMode.srcATop,
     );
   }
 

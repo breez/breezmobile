@@ -34,7 +34,7 @@ android {
         targetSdkVersion 32
         multiDexEnabled true
         versionCode 1
-        versionName "0.12-beta"
+        versionName "0.15-beta"
     }
 
     signingConfigs {

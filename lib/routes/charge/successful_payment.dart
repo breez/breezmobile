@@ -1,5 +1,5 @@
 import 'package:breez/theme_data.dart' as theme;
-import 'package:breez/widgets/practicles_animations.dart';
+import 'package:breez/widgets/particles_animations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_svg/svg.dart';
