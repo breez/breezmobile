@@ -808,6 +808,8 @@
   "network_default_node_error": "Breez est incapable d'utiliser le nœud par défaut.",
   "network_custom_node_error": "Breez ne parvient pas à se connecter au nœud spécifié. Veuillez vous assurer que ce nœud prend en charge le BIP 157.",
   "network_testing_node": "Noeud de test",
+  "network_tor_enable": "Enable Tor",
+  "network_tor_disable": "Disable Tor",
   "amount_form_denomination": "Montant en {denomination}",
   "@amount_form_denomination": {
     "placeholders": {

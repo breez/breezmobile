@@ -150,7 +150,9 @@ class NetworkPageState extends State<NetworkPage> {
                     ListTile(
                         title: Container(
                           child: AutoSizeText(
-                            '${this._data.torIsActive ? "Disable" : "Enable"} Tor',
+                            this._data.torIsActive
+                                ? texts.network_tor_disable
+                                : texts.network_tor_enable,
                             style: TextStyle(color: Colors.white),
                             maxLines: 1,
                             minFontSize: MinFontSize(context).minFontSize,

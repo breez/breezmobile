@@ -808,6 +808,8 @@
   "network_default_node_error": "Sovellus ei saa yhteyttä oletus-solmuun.",
   "network_custom_node_error": "Sovellus ei saa yhteyttä määritettyyn solmuun. Varmista että siinä on BIP 157 -tuki.",
   "network_testing_node": "Testataan yhteyttä määritetyyn uuteen solmuun",
+  "network_tor_enable": "Enable Tor",
+  "network_tor_disable": "Disable Tor",
   "amount_form_denomination": "Määrä valuutassa {denomination}",
   "@amount_form_denomination": {
     "placeholders": {

@@ -808,6 +808,8 @@
   "network_default_node_error": "Breez is unable to use the default node.",
   "network_custom_node_error": "Breez is unable to connect to the specified node. Please make sure this node supports BIP 157.",
   "network_testing_node": "Testing node",
+  "network_tor_enable": "Enable Tor",
+  "network_tor_disable": "Disable Tor",
   "amount_form_denomination": "Amount in {denomination}",
   "@amount_form_denomination": {
     "placeholders": {

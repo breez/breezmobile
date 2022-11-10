@@ -808,6 +808,8 @@
   "network_default_node_error": "Não foi possível utilizar o servidor padrão.",
   "network_custom_node_error": "Não foi possível se conectar ao servidor especificado. Certifique-se de que este servidor é compatível com o BIP 157.",
   "network_testing_node": "Testando o servidor",
+  "network_tor_enable": "Enable Tor",
+  "network_tor_disable": "Disable Tor",
   "amount_form_denomination": "Quantia em {denomination}",
   "@amount_form_denomination": {
     "placeholders": {
