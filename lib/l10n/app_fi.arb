@@ -926,7 +926,7 @@
   "withdraw_funds_action_next": "JATKA",
   "swap_in_progress_title": "Lähetä Bitcoin-osoitteeseen",
   "swap_in_progress_transaction_id_copied": "Tapahtumatunniste kopioitiin leikepöydälle.",
-  "swap_in_progress_message_waiting_confirmation": "Odotetaan tapahtuman vahvistusta.",
+  "swap_in_progress_message_waiting_confirmation": "Odotetaan seuraavan tapahtuman vahvistusta, sen jälkeen varat lähetetään määritettyyn osoitteeseen.",
   "swap_in_progress_message_processing_previous_request": "Edellisen tapahtuman käsittely on kesken. Saat ilmoituksen kun tapahtuma valmistuu.",
   "market_place_no_vendors": "Sovelluskaupasta ei löydy toimittajia.",
   "account_required_actions_backup": "Varmuuskopio",
