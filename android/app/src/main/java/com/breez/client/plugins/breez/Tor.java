@@ -30,6 +30,9 @@ import org.torproject.jni.TorService;
 import net.freehaven.tor.control.ConfigEntry;
 import net.freehaven.tor.control.TorControlConnection;
 
+import javax.inject.Singleton;
+
+@Singleton
 public class Tor implements FlutterPlugin, MethodCallHandler {
 
     private static final String TOR_CHANNEL = "com.breez.client/tor";
