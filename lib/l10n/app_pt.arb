@@ -810,6 +810,10 @@
   "network_testing_node": "Testando o servidor",
   "network_tor_enable": "Enable Tor",
   "network_tor_disable": "Disable Tor",
+  "network_tor_enabling": "Enabling Tor",
+  "network_tor_disabling": "Disabling Tor",
+  "network_tor_enable_error": "Breez is unable to enable Tor. Please restart Breez and try again.",
+  "network_tor_disable_error": "Breez is unable to disable Tor. Please restart Breez and try again.",
   "amount_form_denomination": "Quantia em {denomination}",
   "@amount_form_denomination": {
     "placeholders": {

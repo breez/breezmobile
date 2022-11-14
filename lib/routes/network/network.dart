@@ -177,7 +177,9 @@ class NetworkPageState extends State<NetworkPage> {
                                     context,
                                     null,
                                     Text(
-                                        'Breez is unable to ${value ? "enable" : "disable"} Tor. Please restart Breez and try again.',
+                                        value
+                                            ? texts.network_tor_enable_error
+                                            : texts.network_tor_disable,
                                         style: Theme.of(context)
                                             .dialogTheme
                                             .contentTextStyle));
@@ -400,13 +402,18 @@ class _SetTorActiveDialogState extends State<_SetTorActiveDialog> {
       _allowPop = true;
       Navigator.pop(context, err);
     });
-    _text = '${widget.enable ? "Enabling" : "Disabling"} Tor';
   }
 
   @override
   Widget build(BuildContext context) {
+    final texts = AppLocalizations.of(context);
     return WillPopScope(
         onWillPop: () => Future.value(_allowPop),
-        child: createAnimatedLoaderDialog(context, _text, withOKButton: false));
+        child: createAnimatedLoaderDialog(
+            context,
+            widget.enable
+                ? texts.network_tor_enabling
+                : texts.network_tor_disabling,
+            withOKButton: false));
   }
 }

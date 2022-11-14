@@ -809,7 +809,11 @@
     "network_custom_node_error": "Breez non è in grado di connettersi al nodo specificato. Assicurati che il nodo supporti BIP 157.",
     "network_testing_node": "Test del nodo",
     "network_tor_enable": "Enable Tor",
-  "network_tor_disable": "Disable Tor",
+    "network_tor_disable": "Disable Tor",
+    "network_tor_enabling": "Enabling Tor",
+    "network_tor_disabling": "Disabling Tor",
+    "network_tor_enable_error": "Breez is unable to enable Tor. Please restart Breez and try again.",
+    "network_tor_disable_error": "Breez is unable to disable Tor. Please restart Breez and try again.",
     "amount_form_denomination": "Importo in {denomination}",
     "@amount_form_denomination": {
         "placeholders": {
