@@ -22,6 +22,10 @@ void main() {
       _userProfileBloc = new UserProfileBloc();
     });
 
+    tearDown(() async {
+      await platform.tearDown();
+    });
+
     test("should return empty user when not registered", () async {
       new BlocTester<void, BreezUserModel>(
         _userProfileBloc.userStream,

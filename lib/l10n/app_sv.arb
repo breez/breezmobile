@@ -911,7 +911,7 @@
   "withdraw_funds_error_max_value": "Måste vara mindre än {maxValue}",
   "@withdraw_funds_error_max_value": {
     "placeholders": {
-      "minValue": {
+      "maxValue": {
         "type": "String",
         "example": "12 345"
       }
@@ -1224,7 +1224,7 @@
   "fee_chooser_option_priority": "Prioriterad",
   "fee_chooser_estimated_delivery_more_than_day": "Beräknad leverans: mer än en dag",
   "fee_chooser_estimated_delivery_hour": "Beräknad leverans: 1 timme",
-  "fee_chooser_estimated_delivery_hours": "Beräknad leverans: {timmar} timmar",
+  "fee_chooser_estimated_delivery_hours": "Beräknad leverans: {hours} timmar",
   "@fee_chooser_estimated_delivery_hours": {
     "placeholders": {
       "hours": {
@@ -1233,7 +1233,7 @@
       }
     }
   },
-  "fee_chooser_estimated_delivery_hour_range": "Beräknad leverans: {timmar}-24 timmar",
+  "fee_chooser_estimated_delivery_hour_range": "Beräknad leverans: {hours}-24 timmar",
   "@fee_chooser_estimated_delivery_hour_range": {
     "placeholders": {
       "hours": {
@@ -1242,7 +1242,7 @@
       }
     }
   },
-  "fee_chooser_estimated_delivery_minutes": "Beräknad leverans: ~{minuter} minuter",
+  "fee_chooser_estimated_delivery_minutes": "Beräknad leverans: ~{minutes} minuter",
   "@fee_chooser_estimated_delivery_minutes": {
     "placeholders": {
       "minutes": {
@@ -1341,7 +1341,7 @@
   "handler_channel_connection_message": "Breez är offline",
   "handler_channel_connection_close": "STÄNG",
   "handler_lnurl_error_link": "Länkfel",
-  "handler_lnurl_error_process": "Det gick inte att bearbeta länken: {meddelande}",
+  "handler_lnurl_error_process": "Det gick inte att bearbeta länken: {message}",
   "@handler_lnurl_error_process": {
     "placeholders": {
       "message": {
@@ -1901,7 +1901,7 @@
   },
   "spontaneous_payment_node_id": "Nod ID",
   "spontaneous_payment_send_payment_title": "Skicka betalning",
-  "spontaneous_payment_send_payment_message": "Är du säker på att du vill {amount} till denna nod?\n\n{nodID}",
+  "spontaneous_payment_send_payment_message": "Är du säker på att du vill {amount} till denna nod?\n\n{nodeID}",
   "@spontaneous_payment_send_payment_message": {
     "placeholders": {
       "amount": {

@@ -911,7 +911,7 @@
     "withdraw_funds_error_max_value": "Deve essere meno di {maxValue}",
     "@withdraw_funds_error_max_value": {
         "placeholders": {
-            "minValue": {
+            "maxValue": {
                 "type": "String",
                 "example": "12 345"
             }
@@ -1857,7 +1857,7 @@
         }
     },
     "backup_phrase_generation_verify": "Verifichiamo",
-    "backup_phrase_generation_type_words": "Digita le parole numero {numero}, {numero} e {numero} della frase di backup generata.",
+    "backup_phrase_generation_type_words": "Digita le parole numero {numberA}, {numberB} e {numberC} della frase di backup generata.",
     "@backup_phrase_generation_type_words": {
         "placeholders": {
             "numberA": {
