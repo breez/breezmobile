@@ -911,7 +911,7 @@
   "withdraw_funds_error_max_value": "Nostettava enimmäismäärä on {maxValue}",
   "@withdraw_funds_error_max_value": {
     "placeholders": {
-      "minValue": {
+      "maxValue": {
         "type": "String",
         "example": "12 345"
       }
@@ -1051,7 +1051,7 @@
   "enter_backup_phrase_action_restore": "PALAUTA",
   "enter_backup_phrase_action_next": "SEURAAVA",
   "restore_dialog_title": "Varmuuskopion palautus",
-  "restore_dialog_multiple_accounts": "Tililläsi on tallennettuna useita varmuuskopioita. Valitse palautettava varmuuskopio:",
+  "restore_dialog_multiple_accounts": "Tililläsi on tallennettuna useita varmuuskopioita {name}. Valitse palautettava varmuuskopio:",
   "@restore_dialog_multiple_accounts": {
     "placeholders": {
       "name": {
