@@ -64,7 +64,7 @@ class BreezLibMock extends Mock implements BreezBridge {
     String payerImageURL,
     String description,
     Int64 expiry,
-    LSPInformation lspInfo,
+    LSPInformation inputLSP,
   }) {
     return Future.value(AddInvoiceReply());
   }
