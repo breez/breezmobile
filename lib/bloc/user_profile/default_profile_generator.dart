@@ -24,6 +24,7 @@ class DefaultProfile {
 
       case 'en':
       case 'fi':
+      case 'sv':
       default:
         return "$color $animal";
     }

@@ -8,6 +8,7 @@ import 'package:flutter_gen/gen_l10n/app_localizations_fi.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations_fr.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations_it.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations_pt.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations_sv.dart';
 
 Locale getSystemLocale() {
   final localeName = Platform.localeName;
@@ -36,6 +37,8 @@ AppLocalizations getSystemAppLocalizations() {
       return AppLocalizationsIt();
     case 'pt':
       return AppLocalizationsPt();
+    case 'sv':
+      return AppLocalizationsSv();
     default:
       return AppLocalizationsEn();
   }
