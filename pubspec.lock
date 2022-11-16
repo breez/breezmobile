@@ -33,8 +33,8 @@ packages:
     dependency: "direct main"
     description:
       path: "."
-      ref: "0e1c78850c9fb1eca0babb5cc3f1e5820ecad987"
-      resolved-ref: "0e1c78850c9fb1eca0babb5cc3f1e5820ecad987"
+      ref: "7dc9827fd545f048c564608cbfc3eca76539c768"
+      resolved-ref: "7dc9827fd545f048c564608cbfc3eca76539c768"
       url: "https://github.com/breez/anytime_podcast_player.git"
     source: git
     version: "1.2.1+74-breez"
@@ -496,12 +496,12 @@ packages:
     source: hosted
     version: "1.24.0"
   firebase_core_platform_interface:
-    dependency: transitive
+    dependency: "direct main"
     description:
       name: firebase_core_platform_interface
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "4.5.2"
+    version: "4.5.1"
   firebase_core_web:
     dependency: transitive
     description:
