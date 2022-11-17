@@ -15,7 +15,7 @@ dependencies:
   bip39: ^1.0.6
   collection: ^1.16.0
   confetti: ^0.7.0
-  connectivity_plus: ^2.3.6+1
+  connectivity_plus: ^2.3.9
   crypto: ^3.0.2
   csv: ^5.0.1
   dio: ^4.0.6
@@ -25,6 +25,8 @@ dependencies:
   extended_image: ^6.2.1
   file_picker: ^5.0.1
   firebase_core: ^1.24.0
+  # Version 4.5.2 breaks, it is necessary to update firebase as a whole
+  firebase_core_platform_interface: 4.5.1
   firebase_database: ^9.1.7
   firebase_dynamic_links: ^4.3.10
   firebase_messaging: ^13.1.0
@@ -60,7 +62,7 @@ dependencies:
       ref: 1fc6e38c198a76a6fd60b7bd3b4c190cd6c9330b
   rxdart: ^0.27.5
   screenshot: ^1.2.3
-  share_plus: ^4.0.10+1
+  share_plus: ^4.5.3
   shared_preferences: ^2.0.15
   shimmer: ^2.0.0
   simple_animations: ^5.0.0+2
@@ -78,7 +80,7 @@ dependencies:
   anytime:
     git:
       url: https://github.com/breez/anytime_podcast_player.git
-      ref: 0e1c78850c9fb1eca0babb5cc3f1e5820ecad987
+      ref: 7dc9827fd545f048c564608cbfc3eca76539c768
   flutter_typeahead:
     git:
       url: https://github.com/breez/flutter_typeahead.git
@@ -106,7 +108,7 @@ dependency_overrides:
 dev_dependencies:
   flutter_test:
     sdk: flutter
-  build_runner: ^2.2.0
+  build_runner: ^2.3.0
   json_serializable: ^6.3.1
   mockito: ^5.3.0
   sqflite_common_ffi: ^2.1.1+1
