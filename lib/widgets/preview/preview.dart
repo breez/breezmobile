@@ -49,7 +49,7 @@ class _PreviewState extends State<Preview> {
               ),
               Container(
                 height: 48.0,
-                color: theme?.appBarTheme?.backgroundColor ?? Colors.white60,
+                color: theme?.canvasColor,
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
