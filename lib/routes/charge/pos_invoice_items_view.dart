@@ -69,6 +69,7 @@ class PosInvoiceItemsView extends StatelessWidget {
     List<Item> catalogItems,
     PosCatalogItemSort sort,
   ) {
+    final texts = AppLocalizations.of(context);
     return Column(
       mainAxisAlignment: MainAxisAlignment.start,
       children: [
@@ -82,16 +83,29 @@ class PosInvoiceItemsView extends StatelessWidget {
           ],
         ),
         Expanded(
-          child: SingleChildScrollView(
-            scrollDirection: Axis.vertical,
-            child: ListView(
-              primary: false,
-              shrinkWrap: true,
-              children: catalogItems?.length == 0
-                  ? _emptyCatalog(context)
-                  : _filledCatalog(context, catalogItems),
-            ),
-          ),
+          child: catalogItems == null || catalogItems?.length == 0
+              ? Padding(
+                  // Extra space for the floating action button
+                  padding: const EdgeInsets.fromLTRB(0, 0, 0, 80),
+                  child: Center(
+                    child: AutoSizeText(
+                      itemFilterController.text.isNotEmpty
+                          ? texts.pos_invoice_search_empty
+                          : texts.pos_invoice_search_no_items,
+                      textAlign: TextAlign.center,
+                      minFontSize: MinFontSize(context).minFontSize,
+                      stepGranularity: 0.1,
+                    ),
+                  ),
+                )
+              : SingleChildScrollView(
+                  scrollDirection: Axis.vertical,
+                  child: ListView(
+                    primary: false,
+                    shrinkWrap: true,
+                    children: _filledCatalog(context, catalogItems),
+                  ),
+                ),
         ),
       ],
     );
@@ -303,27 +317,6 @@ class PosInvoiceItemsView extends StatelessWidget {
     );
   }
 
-  List<Widget> _emptyCatalog(BuildContext context) {
-    final texts = AppLocalizations.of(context);
-    return [
-      Padding(
-        padding: const EdgeInsets.only(
-          top: 180.0,
-          left: 40.0,
-          right: 40.0,
-        ),
-        child: AutoSizeText(
-          itemFilterController.text.isNotEmpty
-              ? texts.pos_invoice_search_empty
-              : texts.pos_invoice_search_no_items,
-          textAlign: TextAlign.center,
-          minFontSize: MinFontSize(context).minFontSize,
-          stepGranularity: 0.1,
-        ),
-      ),
-    ];
-  }
-
   List<Widget> _filledCatalog(
     BuildContext context,
     List<Item> catalogItems,
@@ -336,6 +329,7 @@ class PosInvoiceItemsView extends StatelessWidget {
         catalogItems,
         (item, avatarKey) => addItem(item, avatarKey),
       ),
+      // Extra space for the floating action button
       Container(height: 80.0),
     ];
   }
