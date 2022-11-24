@@ -171,7 +171,8 @@ class NetworkPageState extends State<NetworkPage> {
                                       testFuture: _breezLib.setTorActive(value),
                                       enable: value));
 
-                              print('setTorActive returned with $error');
+                              print(
+                                  'setTorActive returned with error: $error ');
                               if (error != null) {
                                 await promptError(
                                     context,
@@ -185,13 +186,15 @@ class NetworkPageState extends State<NetworkPage> {
                                             .contentTextStyle));
                                 return;
                               } else {
-                                _promptForRestart().then((didRestart) {
-                                  if (!didRestart) {
-                                    setState(() {
-                                      this._data.torIsActive = !value;
-                                    });
-                                  }
-                                });
+                                !value
+                                    ? _resetNodes()
+                                    : _promptForRestart().then((didRestart) {
+                                        if (!didRestart) {
+                                          setState(() {
+                                            this._data.torIsActive = !value;
+                                          });
+                                        }
+                                      });
                               }
                             }))
                   ],
