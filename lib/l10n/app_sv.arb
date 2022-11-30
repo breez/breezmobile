@@ -1,0 +1,2113 @@
+{
+  "home_drawer_item_title_preferences": "Inställningar",
+  "home_drawer_item_title_fiat_currencies": "Valutor",
+  "home_drawer_item_title_network": "Nätverk",
+  "home_drawer_item_title_security": "Säkerhet och Backup",
+  "home_drawer_item_title_transactions": "Transaktioner",
+  "home_drawer_item_title_balance": "Balans",
+  "home_drawer_item_title_podcasts": "Podcasts",
+  "home_drawer_item_title_pos": "POS Terminal",
+  "home_drawer_item_title_apps": "Apps",
+  "home_drawer_item_title_pos_settings": "POS Inställningar",
+  "home_drawer_item_title_developers": "Utvecklare",
+  "home_drawer_item_title_get_refund": "Återbetalning",
+  "home_drawer_item_title_payment_options": "Lightning Fees",
+  "home_drawer_error_internal": "Internt fel",
+  "home_drawer_error_no_name": "Inget namn",
+  "home_podcast_title": "Anytime Podcast Spelare",
+  "home_podcast_no_subscriptions": "Använd Discover vyn för att hitta och prenumerera på din första podcast",
+  "home_error_connect_to_pay": "Koppla för att betala",
+  "home_error_podcast_link": "Podcast Länk",
+  "home_broadcast_transaction": "Sänd din transaktion",
+  "home_config_error_title": "Konfigurationsfel",
+  "home_config_error_message": "Breez upptäckte att en annan enhet körs med samma konfiguration (troligen på grund av återställning). Breez kan inte köra samma konfiguration på mer än en enhet. Installera om Breez om du vill fortsätta använda Breez på den här enheten.",
+  "home_config_error_action_exit": "Avbryt",
+  "home_background_synchronization_title": "Bakgrundssykronisering",
+  "home_background_synchronization_message": "För att stödja omedelbara betalningar behöver Breez ditt tillstånd för att synkronisera informationen medan appen inte är aktiv. Vänligen godkänn appen i nästa dialogruta.",
+  "home_payment_sent": "Betalningen har skickats!",
+  "home_report_sending": "Skickar rapport...",
+  "invoice_btc_address_title": "Ta emot via BTC adress",
+  "invoice_btc_address_network_error": "Det gick inte att hämta en adress från Breez servern\nKontrollera din internetanslutning.",
+  "invoice_btc_address_action_retry": "FÖRSÖK IGEN",
+  "invoice_btc_address_action_close": "STÄNG",
+  "invoice_btc_address_warning_with_min_fee_account_connected": "Skicka mer än {minSats} och upp till {maxSats} till den här adressen. En installationsavgift på {setUpFee}% med ett minimum av {minFee} kommer att tas ut för att skicka mer än {liquidity}.",
+  "@invoice_btc_address_warning_with_min_fee_account_connected": {
+    "placeholders": {
+      "minSats": {
+        "type": "String",
+        "example": "2 000 sats"
+      },
+      "maxSats": {
+        "type": "String",
+        "example": "4 000 000 sats"
+      },
+      "setUpFee": {
+        "type": "String",
+        "example": "0.4"
+      },
+      "minFee": {
+        "type": "String",
+        "example": "1 000 sats"
+      },
+      "liquidity": {
+        "type": "String",
+        "example": "99 000 sats"
+      }
+    }
+  },
+  "invoice_btc_address_warning_without_min_fee_account_connected": "Skicka mer än {minSats} och upp till {maxSats} till den här adressen. En installationsavgift på {setUpFee} % kommer att tas ut för att skicka mer än {liquidity}.",
+  "@invoice_btc_address_warning_without_min_fee_account_connected": {
+    "placeholders": {
+      "minSats": {
+        "type": "String",
+        "example": "2 000 sats"
+      },
+      "maxSats": {
+        "type": "String",
+        "example": "4 000 000 sats"
+      },
+      "setUpFee": {
+        "type": "String",
+        "example": "0.4"
+      },
+      "liquidity": {
+        "type": "String",
+        "example": "99 000 sats"
+      }
+    }
+  },
+  "invoice_btc_address_warning_with_min_fee_account_not_connected": "Skicka mer än {minSats} och upp till {maxSats} till den här adressen. En installationsavgift på {setUpFee} % med ett minimum av {minFee} kommer att debiteras på det mottagna beloppet.",
+  "@invoice_btc_address_warning_with_min_fee_account_not_connected": {
+    "placeholders": {
+      "minSats": {
+        "type": "String",
+        "example": "2 000 sats"
+      },
+      "maxSats": {
+        "type": "String",
+        "example": "4 000 000 sats"
+      },
+      "setUpFee": {
+        "type": "String",
+        "example": "0.4"
+      },
+      "minFee": {
+        "type": "String",
+        "example": "1 000 sats"
+      }
+    }
+  },
+  "invoice_btc_address_warning_without_min_fee_account_not_connected": "Skicka mer än {minSats} och upp till {maxSats} till den här adressen. En installationsavgift på {setUpFee} % kommer att tas ut på det mottagna beloppet.",
+  "@invoice_btc_address_warning_without_min_fee_account_not_connected": {
+    "placeholders": {
+      "minSats": {
+        "type": "String",
+        "example": "2 000 sats"
+      },
+      "maxSats": {
+        "type": "String",
+        "example": "4 000 000 sats"
+      },
+      "setUpFee": {
+        "type": "String",
+        "example": "0.4"
+      }
+    }
+  },
+  "invoice_btc_address_deposit_address": "Insättningsadress",
+  "invoice_btc_address_deposit_address_copied": "Insättningsadressen kopierades till ditt urklipp.",
+  "invoice_btc_address_on_chain_begin": "Breez använder Submarine Swaps för att utföra on-chain-transaktioner. Klick ",
+  "invoice_btc_address_on_chain_here": "här",
+  "invoice_btc_address_on_chain_end": " för att visa skriptet som är kopplat till den här adressen.",
+  "invoice_btc_address_on_chain_action_ok": "OK",
+  "invoice_title": "Ta emot via Invoice",
+  "invoice_action_create": "SKAPA",
+  "invoice_action_redeem": "LÖS IN",
+  "invoice_action_scan_barcode": "Scanna Streckkod",
+  "invoice_payment_success": "Betalning emottagen!",
+  "invoice_qr_code_not_detected": "QR-kod upptäcktes inte.",
+  "invoice_receive_fail": "Mottagning misslyckades",
+  "invoice_receive_fail_message": "Anledning: {reason}",
+  "@invoice_receive_fail_message": {
+    "placeholders": {
+      "reason": {
+        "type": "String",
+        "example": "An error message"
+      }
+    }
+  },
+  "invoice_error_url": "Ogiltig URL",
+  "invoice_insufficient_amount_fee": "Otillräckligt belopp för att täcka installationsavgifterna för {fee}",
+  "@invoice_insufficient_amount_fee": {
+    "placeholders": {
+      "fee": {
+        "type": "String",
+        "example": "20 sats"
+      }
+    }
+  },
+  "invoice_description_label": "Beskrivning (valfritt)",
+  "invoice_availability_message_synchronizing": "Att ta emot betalningar kommer att vara tillgängligt så snart Breez är synkroniserat.",
+  "invoice_availability_message_opening_channel": "Du kommer att kunna ta emot betalningar efter att Breez har öppnat en säker kanal med vår server. Detta tar vanligtvis ~10 minuter att slutföra. Försök igen om ett par minuter.",
+  "invoice_receive_label": "Ta emot upp till: {maxSats}",
+  "@invoice_receive_label": {
+    "placeholders": {
+      "maxSats": {
+        "type": "String",
+        "example": "2 000 sats"
+      }
+    }
+  },
+  "invoice_ln_address_warning_with_min_fee_account_connected": "En installationsavgift på {setUpFee} % med ett minimum av {minFee} kommer att tas ut för att ta emot mer än {liquidity}.",
+  "@invoice_ln_address_warning_with_min_fee_account_connected": {
+    "placeholders": {
+      "setUpFee": {
+        "type": "String",
+        "example": "0.4"
+      },
+      "minFee": {
+        "type": "String",
+        "example": "1 000 sats"
+      },
+      "liquidity": {
+        "type": "String",
+        "example": "99 000 sats"
+      }
+    }
+  },
+  "invoice_ln_address_warning_without_min_fee_account_connected": "En installationsavgift på {setUpFee} % kommer att tas ut för att ta emot mer än {liquidity}.",
+  "@invoice_ln_address_warning_without_min_fee_account_connected": {
+    "placeholders": {
+      "setUpFee": {
+        "type": "String",
+        "example": "0.4"
+      },
+      "liquidity": {
+        "type": "String",
+        "example": "99 000 sats"
+      }
+    }
+  },
+  "invoice_ln_address_warning_with_min_fee_account_not_connected": "En installationsavgift på {setUpFee} % med ett minimum av {minFee} kommer att debiteras på det mottagna beloppet.",
+  "@invoice_ln_address_warning_with_min_fee_account_not_connected": {
+    "placeholders": {
+      "setUpFee": {
+        "type": "String",
+        "example": "0.4"
+      },
+      "minFee": {
+        "type": "String",
+        "example": "1 000 sats"
+      }
+    }
+  },
+  "invoice_ln_address_warning_without_min_fee_account_not_connected": "En installationsavgift på {setUpFee} % kommer att tas ut på det mottagna beloppet.",
+  "@invoice_ln_address_warning_without_min_fee_account_not_connected": {
+    "placeholders": {
+      "setUpFee": {
+        "type": "String",
+        "example": "0.4"
+      }
+    }
+  },
+  "invoice_bottom_sheet_action_invoice": "INVOICE",
+  "invoice_bottom_sheet_action_pay": "BETALA",
+  "invoice_bottom_sheet_action_receive": "TA EMOT",
+  "invoice_bottom_sheet_error_qrcode": "QR-kod upptäcktes inte.",
+  "backup_dialog_title": "Backup",
+  "backup_dialog_message_remote_server": "Det gick inte att spara säkerhetskopior på fjärrservern. Granska dina inställningar och försök igen.",
+  "backup_dialog_message_default": "Om du vill kunna återställa dina pengar om den här mobila enheten eller den här appen inte längre är tillgänglig (t.ex. förlorad eller stulen enhet eller appavinstallation) måste du säkerhetskopiera din information.",
+  "backup_dialog_do_not_prompt_again": "Fråga inte igen",
+  "backup_dialog_option_cancel": "SENARE",
+  "backup_dialog_option_ok_remote_server": "INSTÄLLNINGAR",
+  "backup_dialog_option_ok_default": "TA BACKUP NU",
+  "backup_dialog_icloud_error_title": "Logga in på iCloud",
+  "backup_dialog_icloud_error_message": "Logga in på ditt iCloud-konto. Starta Inställningar på hemskärmen, tryck på iCloud och ange ditt Apple-ID. Slå på iCloud Drive. Om du inte har ett iCloud-konto trycker du på Skapa ett nytt Apple-ID.",
+  "backup_provider_dialog_title": "Säkerhetskopiering",
+  "backup_provider_dialog_message_restore": "Återställ backup från:",
+  "backup_provider_dialog_message_store": "Spara backup i:",
+  "backup_provider_dialog_action_cancel": "AVBRYT",
+  "backup_provider_dialog_action_ok": "OK",
+  "tutorial_gotcha": "Gotcha!",
+  "bottom_action_bar_send": "SÄND",
+  "bottom_action_bar_receive": "TA EMOT",
+  "bottom_action_bar_paste_invoice": "Klistra in Invoice el ID",
+  "bottom_action_bar_connect_to_pay": "Koppla för att betala",
+  "bottom_action_bar_send_btc_address": "Skicka till BTC Adress",
+  "bottom_action_bar_escher": "Cash-Out via Escher",
+  "bottom_action_bar_receive_invoice": "Ta emot via Invoice",
+  "bottom_action_bar_receive_btc_address": "Receive via BTC Address",
+  "bottom_action_bar_buy_bitcoin": "Köp Bitcoin",
+  "bottom_action_bar_warning_balance_title": "Breez kräver att du har {balance} i ditt saldo.",
+  "@bottom_action_bar_warning_balance_title": {
+    "placeholders": {
+      "balance": {
+        "type": "String",
+        "example": "1.23456789"
+      }
+    }
+  },
+  "payments_filter_action_export": "Export",
+  "payments_filter_action_export_failed": "Det gick inte att exportera betalningar.",
+  "payments_filter_option_all": "Alla Aktiviteter",
+  "payments_filter_option_sent": "Sänt",
+  "payments_filter_option_received": "Mottaget",
+  "payments_filter_message_loading_transactions": "Vänta medan Breez laddar transaktioner.",
+  "payment_details_dialog_closed_channel_title": "Stängd Channel",
+  "payment_details_dialog_closed_channel_title_pending": "Väntar på Stängd Channel",
+  "payment_details_dialog_closed_channel_ok": "OK",
+  "payment_details_dialog_closed_channel_local_wallet": "Överför till lokal plånbok på grund av stängd kanal.",
+  "payment_details_dialog_closed_channel_about_hour": "ungefär om en timme",
+  "payment_details_dialog_closed_channel_about_hours": "~{hours} tim",
+  "@payment_details_dialog_closed_channel_about_hours": {
+    "placeholders": {
+      "hours": {
+        "type": "String",
+        "example": "2"
+      }
+    }
+  },
+  "payment_details_dialog_closed_channel_transfer_no_estimation": "Väntar på att stängda kanalmedel ska överföras till din lokala plånbok",
+  "payment_details_dialog_closed_channel_transfer_estimation": "Väntar på att stängda kanalmedel ska överföras till din lokala plånbok i blocket ${lockHeight} (${hoursToUnlock})",
+  "@payment_details_dialog_closed_channel_transfer_estimation": {
+    "placeholders": {
+      "lockHeight": {
+        "type": "int",
+        "example": "12345"
+      },
+      "hoursToUnlock": {
+        "type": "String",
+        "example": "in about an hour"
+      }
+    }
+  },
+  "payment_details_dialog_transaction_id_copied": "Transaktions-ID kopierades till ditt urklipp.",
+  "payment_details_dialog_restart_text": "Starta om Breez för att återställa kedjeinformation för den här kanalen.",
+  "payment_details_dialog_restart_cancel": "AVBRYT",
+  "payment_details_dialog_restart_exit_breez": "STÄNG BREEZ",
+  "payment_details_dialog_transaction_label_default": "Transaktions ID:",
+  "payment_details_dialog_internal_error": "Internt Fel",
+  "payment_details_dialog_refresh_information": "Uppdatera information",
+  "payment_details_dialog_share_transaction": "Dela transaktions hash",
+  "payment_details_dialog_share_lightning_address": "Lightning Adress",
+  "payment_details_dialog_share_comment": "Kommentera",
+  "payment_details_dialog_copy_action": "Kpiera {title}",
+  "@payment_details_dialog_copy_action": {
+    "placeholders": {
+      "title": {
+        "type": "String",
+        "example": "Payment Preimage"
+      }
+    }
+  },
+  "payment_details_dialog_copied": "{title} kopierades till clipboard.",
+  "@payment_details_dialog_copied": {
+    "placeholders": {
+      "title": {
+        "type": "String",
+        "example": "Payment Preimage"
+      }
+    }
+  },
+  "payment_details_dialog_single_info_pre_image": "Payment Preimage",
+  "payment_details_dialog_single_info_node_id": "Node ID",
+  "payment_details_dialog_single_info_on_chain": "On-chain Transaction",
+  "payment_details_dialog_action_for_payment_description": "Beskrivning",
+  "payment_details_dialog_action_for_payment_url": "URL",
+  "payment_details_dialog_action_for_payment_message": "Meddelande",
+  "payment_details_dialog_expiration": "Upphör",
+  "payment_details_dialog_date_and_time": "Datum & tid",
+  "payment_details_dialog_amount_title": "Summa",
+  "payment_details_dialog_amount_negative": "-{amount}",
+  "@payment_details_dialog_amount_negative": {
+    "placeholders": {
+      "amount": {
+        "type": "String",
+        "example": "1000 sats"
+      }
+    }
+  },
+  "payment_details_dialog_amount_positive": "+{amount}",
+  "@payment_details_dialog_amount_positive": {
+    "placeholders": {
+      "amount": {
+        "type": "String",
+        "example": "1000 sats"
+      }
+    }
+  },
+  "payment_info_dialog_title": "Mottagarinformation",
+  "payment_info_dialog_hint": "Invoice el ID",
+  "payment_info_dialog_hint_expanded": "Ange en Invoice, Nod-ID eller en Lightning-adress.",
+  "payment_info_dialog_barcode": "Scanna Barcode",
+  "payment_info_dialog_error": "Ogiltig invoice, ID el Address",
+  "payment_info_dialog_error_qrcode": "QR-kod upptäcktes inte.",
+  "payment_info_dialog_action_cancel": "AVBRYT",
+  "payment_info_dialog_action_approve": "GODKÄNN",
+  "pos_invoice_item_management_title_add": "Lägg till artikel",
+  "pos_invoice_item_management_title_edit": "Ändra artikel",
+  "pos_invoice_item_management_title_save": "SPARA",
+  "pos_invoice_item_management_field_name_label": "Namn",
+  "pos_invoice_item_management_field_name_hint": "Skriv in ett namn",
+  "pos_invoice_item_management_field_name_error": "Namn krävs",
+  "pos_invoice_item_management_field_price_label": "Pris",
+  "pos_invoice_item_management_field_price_hint": "SKriv in ett pris",
+  "pos_invoice_item_management_field_price_error": "Pris krävs",
+  "pos_invoice_item_management_field_sku_label": "SKU",
+  "pos_invoice_item_management_field_sku_hint": "Skriv ett SKU",
+  "pos_invoice_item_management_dd_currency_title": "Valuta",
+  "pos_invoice_item_management_image_title": "Välj bild",
+  "pos_invoice_item_management_error_btc_rate": "Det gick inte att hämta BTC-växelkursen.",
+  "pos_invoice_item_management_avatar_title": "Välj bild",
+  "pos_invoice_item_management_avatar_search": "Sök efter en bild",
+  "pos_invoice_tab_keypad": "knappsats",
+  "pos_invoice_tab_items": "Artiklar",
+  "pos_invoice_charge_label": "DEBITERA {amount} {currencyName}",
+  "@pos_invoice_charge_label": {
+    "placeholders": {
+      "amount": {
+        "type": "String",
+        "example": "2.00"
+      },
+      "currencyName": {
+        "type": "String",
+        "example": "USD"
+      }
+    }
+  },
+  "pos_invoice_num_pad_clear": "C",
+  "pos_invoice_num_pad_plus": "+",
+  "pos_invoice_search_hint": "Sök efter namn el SKU",
+  "pos_invoice_search_empty": "Inga matchande artiklar hittades.",
+  "pos_invoice_search_no_items": "Inga artiklar att visa.\nLägg till artikel i den här vyn med knappen '+'.",
+  "pos_invoice_error_fiat_exchange_rates": "Det gick inte att hämta valutakurser.",
+  "pos_invoice_error_submit_header": "Obligatorisk information",
+  "pos_invoice_error_submit_name_avatar": "Ange ditt företagsnamn och välj en företagslogo på vyn för Inställningar.",
+  "pos_invoice_error_submit_name_only": "Ange ditt företagsnamn på vyn för Inställningar.",
+  "pos_invoice_error_submit_avatar_only": "Välj en företagslogo på vyn för Inställningar.",
+  "pos_invoice_error_fix_action": "GÅ TILL INSTÄLLNINGAR",
+  "pos_invoice_error_capacity_header": "Du har inte kapacitet att ta emot sådan betalning.",
+  "pos_invoice_error_capacity_message": "Den maximala summan du kan ta emot är {maxAllowed}. Ange ett mindre värde.",
+  "@pos_invoice_error_capacity_message": {
+    "placeholders": {
+      "maxAllowed": {
+        "type": "String",
+        "example": "2.00"
+      }
+    }
+  },
+  "pos_invoice_error_payment_size_header": "Du har överskridit den maximala betalsumman.",
+  "pos_invoice_error_payment_size_message": "Maximal summan på Lightning Network är {maxAllowed}. Ange ett mindre värde eller slutför betalningen i flera transaktioner.",
+  "@pos_invoice_error_payment_size_message": {
+    "placeholders": {
+      "maxAllowed": {
+        "type": "String",
+        "example": "2.00"
+      }
+    }
+  },
+  "pos_invoice_close": "STÄNG",
+  "pos_invoice_clear_sale_header": "Rensa försäljning?",
+  "pos_invoice_clear_sale_message": "Detta kommer att radera den aktuella transaktionen.",
+  "pos_invoice_clear_sale_cancel": "AVBRYT",
+  "pos_invoice_clear_sale_confirm": "RENSA",
+  "pos_invoice_sort_none": "Ingen",
+  "pos_invoice_sort_alphabetically": "Namn",
+  "pos_invoice_sort_price": "Pris",
+  "app_animal_bat": "Bat",
+  "app_animal_bear": "Bear",
+  "app_animal_boar": "Boar",
+  "app_animal_cat": "Cat",
+  "app_animal_chick": "Chick",
+  "app_animal_cow": "Cow",
+  "app_animal_deer": "Deer",
+  "app_animal_dog": "Dog",
+  "app_animal_eagle": "Eagle",
+  "app_animal_elephant": "Elephant",
+  "app_animal_fox": "Fox",
+  "app_animal_frog": "Frog",
+  "app_animal_hippo": "Hippo",
+  "app_animal_hummingbird": "Hummingbird",
+  "app_animal_koala": "Koala",
+  "app_animal_lion": "Lion",
+  "app_animal_monkey": "Monkey",
+  "app_animal_mouse": "Mouse",
+  "app_animal_owl": "Owl",
+  "app_animal_ox": "Ox",
+  "app_animal_panda": "Panda",
+  "app_animal_pig": "Pig",
+  "app_animal_rabbit": "Rabbit",
+  "app_animal_seagull": "Seagull",
+  "app_animal_sheep": "Sheep",
+  "app_animal_snake": "Snake",
+  "app_color_salmon": "Salmon",
+  "app_color_blue": "Blue",
+  "app_color_turquoise": "Turquoise",
+  "app_color_orchid": "Orchid",
+  "app_color_purple": "Purple",
+  "app_color_tomato": "Tomato",
+  "app_color_cyan": "Cyan",
+  "app_color_crimson": "Crimson",
+  "app_color_orange": "Orange",
+  "app_color_lime": "Lime",
+  "app_color_pink": "Pink",
+  "app_color_green": "Green",
+  "app_color_red": "Red",
+  "app_color_yellow": "Yellow",
+  "app_color_azure": "Azure",
+  "app_color_silver": "Silver",
+  "app_color_magenta": "Magenta",
+  "app_color_olive": "Olive",
+  "app_color_violet": "Violet",
+  "app_color_rose": "Rose",
+  "app_color_wine": "Wine",
+  "app_color_mint": "Mint",
+  "app_color_indigo": "Indigo",
+  "app_color_jade": "Jade",
+  "app_color_coral": "Coral",
+  "pos_transactions_title": "Transaktioner",
+  "pos_transactions_placeholder": "Lyckade transaktioner visas här.",
+  "pos_transactions_action_export": "Exportera",
+  "pos_transactions_action_export_failed": "Det gick inte att exportera betalningar.",
+  "pos_transactions_range_no_transactions": "Det finns inga transaktioner inom detta datumintervall",
+  "pos_transactions_range_dialog_title": "Rensa datumintervall:",
+  "pos_transactions_range_dialog_start": "Start",
+  "pos_transactions_range_dialog_end": "Slut",
+  "pos_transactions_range_dialog_clear": "RENSA",
+  "pos_transactions_range_dialog_apply": "ANVÄND FILTER",
+  "pos_transactions_item_positive": "{value}",
+  "@pos_transactions_item_positive": {
+    "placeholders": {
+      "value": {
+        "type": "String",
+        "example": "1.234"
+      }
+    }
+  },
+  "pos_transactions_item_negative": "- {value}",
+  "@pos_transactions_item_negative": {
+    "placeholders": {
+      "value": {
+        "type": "String",
+        "example": "1.234"
+      }
+    }
+  },
+  "pos_transactions_item_fiat": "{fiat}",
+  "@pos_transactions_item_fiat": {
+    "placeholders": {
+      "fiat": {
+        "type": "String",
+        "example": "1.234"
+      }
+    }
+  },
+  "sale_view_title": "Aktuell försäljning",
+  "sale_view_note_hint": "Lägg till anteckning",
+  "sale_view_print": "Skriv ut",
+  "sale_view_total_title_read_only_no_fiat": "{value}",
+  "@sale_view_total_title_read_only_no_fiat": {
+    "placeholders": {
+      "value": {
+        "type": "String",
+        "example": "1.234"
+      }
+    }
+  },
+  "sale_view_total_title_charge_no_fiat": "KOSTNAD {value}",
+  "@sale_view_total_title_charge_no_fiat": {
+    "placeholders": {
+      "value": {
+        "type": "String",
+        "example": "1.234"
+      }
+    }
+  },
+  "sale_view_total_title_read_only_fiat": "{value} ({fiatValue})",
+  "@sale_view_total_title_read_only_fiat": {
+    "placeholders": {
+      "value": {
+        "type": "String",
+        "example": "1.234"
+      },
+      "fiatValue": {
+        "type": "String",
+        "example": "1.23"
+      }
+    }
+  },
+  "sale_view_total_title_charge_fiat": "KOSTNAD {value} ({fiatValue})",
+  "@sale_view_total_title_charge_fiat": {
+    "placeholders": {
+      "value": {
+        "type": "String",
+        "example": "1.234"
+      },
+      "fiatValue": {
+        "type": "String",
+        "example": "1.23"
+      }
+    }
+  },
+  "fiat_currencies_title": "Valutor",
+  "fiat_currencies_save_fail": "Det gick inte att spara ändringarna.",
+  "connect_to_pay_title_payer": "Anslut för att betala",
+  "connect_to_pay_title_payee": "Taemot betalning",
+  "connect_to_pay_canceled_payer": "Betalaren har avbrutit betalningssessionen",
+  "connect_to_pay_canceled_payee": "Betalningsmottagaren har avbrutit betalningssessionen",
+  "connect_to_pay_canceled_remote_user": "{name} har avbrutit betalningssessionen",
+  "@connect_to_pay_canceled_remote_user": {
+    "placeholders": {
+      "name": {
+        "type": "String",
+        "example": "Alice"
+      }
+    }
+  },
+  "connect_to_pay_success_payer": "Du har framgångsrikt betalat {name} {amount}!",
+  "@connect_to_pay_success_payer": {
+    "placeholders": {
+      "name": {
+        "type": "String",
+        "example": "Alice"
+      },
+      "amount": {
+        "type": "String",
+        "example": "1.23"
+      }
+    }
+  },
+  "connect_to_pay_success_payee": "{name} har framgångsrikt betalat {amount}!",
+  "@connect_to_pay_success_payee": {
+    "placeholders": {
+      "name": {
+        "type": "String",
+        "example": "Alice"
+      },
+      "amount": {
+        "type": "String",
+        "example": "1.23"
+      }
+    }
+  },
+  "connect_to_pay_exit_warning": "Är du säker på att du vill avbryta den här betalningssessionen?",
+  "connect_to_pay_failed_to_connect": "Det gick inte att ansluta till sessionen: {error}",
+  "@connect_to_pay_failed_to_connect": {
+    "placeholders": {
+      "error": {
+        "type": "String",
+        "example": "An error message"
+      }
+    }
+  },
+  "connect_to_pay_payee_success_received": "Du tog emot {amount}",
+  "@connect_to_pay_payee_success_received": {
+    "placeholders": {
+      "amount": {
+        "type": "String",
+        "example": "1.23"
+      }
+    }
+  },
+  "connect_to_pay_payee_waiting_no_name": "Väntar på att betalaren ska ange ett belopp",
+  "connect_to_pay_payee_waiting_with_name": "Väntar på att {name} ska ange ett belopp",
+  "@connect_to_pay_payee_waiting_with_name": {
+    "placeholders": {
+      "name": {
+        "type": "String",
+        "example": "Alice"
+      }
+    }
+  },
+  "connect_to_pay_payee_waiting_sync": "Vänta medan Breez synkroniserar",
+  "connect_to_pay_payee_waiting_sync_action_close": "STÄNG",
+  "connect_to_pay_payee_message_no_fiat": "{name} vill betala dig {amount}",
+  "@connect_to_pay_payee_message_no_fiat": {
+    "placeholders": {
+      "name": {
+        "type": "String",
+        "example": "Alice"
+      },
+      "amount": {
+        "type": "String",
+        "example": "1.23"
+      }
+    }
+  },
+  "connect_to_pay_payee_message_with_fiat": "{name} vill betala dig {amount} ({fiat})",
+  "@connect_to_pay_payee_message_with_fiat": {
+    "placeholders": {
+      "name": {
+        "type": "String",
+        "example": "Alice"
+      },
+      "amount": {
+        "type": "String",
+        "example": "1.23"
+      },
+      "fiat": {
+        "type": "String",
+        "example": "1.23"
+      }
+    }
+  },
+  "connect_to_pay_payee_error_limit_exceeds": "Denna betalning överskrider din gräns {amount}",
+  "@connect_to_pay_payee_error_limit_exceeds": {
+    "placeholders": {
+      "amount": {
+        "type": "String",
+        "example": "1.23"
+      }
+    }
+  },
+  "connect_to_pay_payee_process": "Bearbetar {name} betalning",
+  "@connect_to_pay_payee_process": {
+    "placeholders": {
+      "name": {
+        "type": "String",
+        "example": "Alice"
+      }
+    }
+  },
+  "connect_to_pay_payee_setup_fee": "En installationsavgift på {sats} ({fiat}) tillkommer för denna betalning.",
+  "@connect_to_pay_payee_setup_fee": {
+    "placeholders": {
+      "sats": {
+        "type": "String",
+        "example": "1.23"
+      },
+      "fiat": {
+        "type": "String",
+        "example": "1.23"
+      }
+    }
+  },
+  "connect_to_pay_payee_action_reject": "Avvisa",
+  "connect_to_pay_payee_action_approve": "Godkänn",
+  "connect_to_pay_payer_success": "Du har framgångsrikt betalat {amount}",
+  "@connect_to_pay_payer_success": {
+    "placeholders": {
+      "amount": {
+        "type": "String",
+        "example": "1.23"
+      }
+    }
+  },
+  "connect_to_pay_payer_enter_amount": "{name} gick med i sessionen.\nAnge ett belopp och tryck på Betala för att fortsätta.",
+  "@connect_to_pay_payer_enter_amount": {
+    "placeholders": {
+      "name": {
+        "type": "String",
+        "example": "Alice"
+      }
+    }
+  },
+  "connect_to_pay_payer_share_link": "Tryck på knappen Dela för att dela en länk med en person som du vill betala. Vänta sedan medan den här personen klickar på länken och går med i sessionen.",
+  "connect_to_pay_payer_waiting_join_no_name": "Väntar på att någon ska gå med i denna session",
+  "connect_to_pay_payer_waiting_join_with_name": "Väntar på att {name} ska gå med i denna session",
+  "@connect_to_pay_payer_waiting_join_with_name": {
+    "placeholders": {
+      "name": {
+        "type": "String",
+        "example": "Alice"
+      }
+    }
+  },
+  "connect_to_pay_payer_waiting_approve_no_name": "Väntar på att någon ska godkänna din betalning",
+  "connect_to_pay_payer_waiting_approve_with_name": "Väntar på att {name} ska godkänna din betalning",
+  "@connect_to_pay_payer_waiting_approve_with_name": {
+    "placeholders": {
+      "name": {
+        "type": "String",
+        "example": "Alice"
+      }
+    }
+  },
+  "connect_to_pay_payer_sending": "Skickar betalning...",
+  "connect_to_pay_payer_wait_sync": "Vänta medan Breez synkroniserar",
+  "connect_to_pay_payer_synchronizing": "Synkroniserar med nätverket",
+  "connect_to_pay_payer_action_close": "STÄNG",
+  "connect_to_pay_payment_detail_note": "Notis (valfritt)",
+  "connect_to_pay_payment_available": "Tillgängligt:",
+  "connect_to_pay_payment_action_close": "Stäng",
+  "connect_to_pay_payment_action_pay": "Betala",
+  "connect_to_pay_peer_unknown": "Okänd",
+  "connect_to_pay_share_text": "{name} vill betala dig via Breez...\nFölj den här länken för att ta emot betalning: {address}",
+  "@connect_to_pay_share_text": {
+    "placeholders": {
+      "name": {
+        "type": "String",
+        "example": "Alice"
+      },
+      "address": {
+        "type": "String",
+        "example": "http://an.url.com/link"
+      }
+    }
+  },
+  "connect_to_pay_payment_reject": "Betalning avvisad",
+  "connect_to_pay_error_wrong_amount": "Fel belopp i betalningsförfrågan",
+  "connect_to_pay_error_status_tracking_already_started": "Statusspårning redan påbörjad, måste stoppas innan start igen",
+  "connect_to_pay_error_link_expired": "Denna länk hade upphört att gälla och är inte längre giltig för betalning.",
+  "security_and_backup_title": "Säkerhet & Backup",
+  "security_and_backup_last_backup_no_account": "Senaste backup: {lastBackup}",
+  "@security_and_backup_last_backup_no_account": {
+    "placeholders": {
+      "lastBackup": {
+        "type": "String",
+        "example": "03/01/2022 14:57"
+      }
+    }
+  },
+  "security_and_backup_last_backup_with_account": "Senaste backup: {lastBackup} Konto: {accountName}",
+  "@security_and_backup_last_backup_with_account": {
+    "placeholders": {
+      "lastBackup": {
+        "type": "String",
+        "example": "03/01/2022 14:57"
+      },
+      "accountName": {
+        "type": "String",
+        "example": "address@email.com"
+      }
+    }
+  },
+  "security_and_backup_encrypt": "Krypter Cloud Backup",
+  "security_and_backup_store_location": "Spara backup data",
+  "security_and_backup_lock_automatically": "Lås Automatiskt",
+  "security_and_backup_lock_automatically_option_immediate": "Omedelbar",
+  "security_and_backup_change_pin": "Ändra PIN",
+  "security_and_backup_enable_biometric_option_face": "Aktivera Face",
+  "security_and_backup_enable_biometric_option_face_id": "Aktivera Face ID",
+  "security_and_backup_enable_biometric_option_fingerprint": "Aktivera Fingerprint",
+  "security_and_backup_enable_biometric_option_touch_id": "Aktivera Touch ID",
+  "security_and_backup_enable_biometric_option_none": "",
+  "security_and_backup_validate_biometrics_reason": "Autentisera för att aktivera inställningen",
+  "security_and_backup_pin_option_create": "Skapa PIN",
+  "security_and_backup_pin_option_deactivate": "Avaktivera PIN",
+  "security_and_backup_internal_error": "Internt Fel",
+  "security_and_backup_new_pin": "Skriv in ny PIN",
+  "security_and_backup_new_pin_second_time": "Skriv ny PIN igen",
+  "security_and_backup_new_pin_do_not_match": "PIN matchar ej",
+  "backup_in_progress": "Backup pågår",
+  "backup_in_progress_action_confirm": "OK",
+  "backup_model_name_apple_icloud": "Apple iCloud",
+  "backup_model_name_google_drive": "Google Drive",
+  "backup_model_name_remote_server": "Remote Server",
+  "backup_model_error_failed": "Backup Misslyckades",
+  "network_title": "Nätverk",
+  "network_restart_message": "Starta om Breez för att byta till den nya Bitcoin Node-konfigurationen.",
+  "network_restart_action_cancel": "AVBRYT",
+  "network_restart_action_confirm": "AVSLUTA BREEZ",
+  "network_restart_action_reset": "Återställ",
+  "network_restart_action_save": "Spara",
+  "network_bitcoin_node": "Bitcoin Nod (BIP 157)",
+  "network_optional_node": "Bitcoin Nod (BIP 157, frivillig)",
+  "network_bitcoin_node_required_error": "Obligatoriskt fält",
+  "network_distinct_node_hint": "Ange en annan nod",
+  "network_default_node_error": "Breez kan inte använda standardnoden.",
+  "network_custom_node_error": "Breez kan inte ansluta till den angivna noden. Se till att denna nod stöder BIP 157.",
+  "network_testing_node": "Test nod",
+  "amount_form_denomination": "Belopp i {denomination}",
+  "@amount_form_denomination": {
+    "placeholders": {
+      "denomination": {
+        "type": "String",
+        "example": "sats"
+      }
+    }
+  },
+  "amount_form_insert_hint": "Ange beloppet i {denomination}",
+  "@amount_form_insert_hint": {
+    "placeholders": {
+      "denomination": {
+        "type": "String",
+        "example": "sats"
+      }
+    }
+  },
+  "amount_form_error_invalid_amount": "Ogiltigt belopp",
+  "currency_converter_dialog_error_exchange_rate": "Det gick inte att hämta BTC växelkursen.",
+  "currency_converter_dialog_title": "Ange belopp i",
+  "currency_converter_dialog_action_cancel": "AVBRYT",
+  "currency_converter_dialog_action_done": "GENOMFÖRT",
+  "currency_converter_dialog_rate": "1 BTC = {rate} {currencyName}",
+  "@currency_converter_dialog_rate": {
+    "placeholders": {
+      "rate": {
+        "type": "String",
+        "example": "42 902.93"
+      },
+      "currencyName": {
+        "type": "String",
+        "example": "USD"
+      }
+    }
+  },
+  "reverse_swap_title": "Skicka till BTC adress",
+  "reverse_swap_funding_transaction": "Finansieringstransaktion:",
+  "reverse_swap_waiting_channels": "Du kommer att kunna skicka dina pengar till en BTC adress när alla kanaler har bekräftats.",
+  "reverse_swap_confirmation_speed": "Välj Bearbetningshastighet",
+  "reverse_swap_confirmation_action_confirm": "BEKRÄFTA",
+  "reverse_swap_confirmation_you_send": "Du skickar:",
+  "reverse_swap_confirmation_you_receive": "Du tar emot:",
+  "reverse_swap_confirmation_received_no_fiat": "{received}",
+  "@reverse_swap_confirmation_received_no_fiat": {
+    "placeholders": {
+      "received": {
+        "type": "String",
+        "example": "12 345"
+      }
+    }
+  },
+  "reverse_swap_confirmation_received_with_fiat": "{received} ({fiat})",
+  "@reverse_swap_confirmation_received_with_fiat": {
+    "placeholders": {
+      "received": {
+        "type": "String",
+        "example": "12 345"
+      },
+      "fiat": {
+        "type": "String",
+        "example": "56$"
+      }
+    }
+  },
+  "reverse_swap_confirmation_transaction_fee": "Transaktionsavgift:",
+  "reverse_swap_confirmation_transaction_fee_value": "-{fee}",
+  "@reverse_swap_confirmation_transaction_fee_value": {
+    "placeholders": {
+      "fee": {
+        "type": "String",
+        "example": "12 345"
+      }
+    }
+  },
+  "reverse_swap_confirmation_boltz_fee": "Boltz service avgift:",
+  "reverse_swap_confirmation_boltz_fee_value": "-{boltzFee}",
+  "@reverse_swap_confirmation_boltz_fee_value": {
+    "placeholders": {
+      "boltzFee": {
+        "type": "String",
+        "example": "12 345"
+      }
+    }
+  },
+  "reverse_swap_confirmation_error_fetch_fee": "Det gick inte att hämta avgifter. Vänligen försök igen senare.",
+  "reverse_swap_confirmation_error_funds_fee": "Du har inte tillräckligt med pengar för denna nätverksavgift.",
+  "reverse_swap_notification_title": "Ååtgärd krävs",
+  "reverse_swap_notification_body": "Öppna Breez för att slutföra din begärda transaktion.",
+  "sync_progress_server_ready": "Synkronisera till nätverket",
+  "sync_progress_waiting_network": "Väntar på nätverk",
+  "withdraw_funds_error_min_value": "Måste vara minst {minValue}",
+  "@withdraw_funds_error_min_value": {
+    "placeholders": {
+      "minValue": {
+        "type": "String",
+        "example": "12 345"
+      }
+    }
+  },
+  "withdraw_funds_error_max_value": "Måste vara mindre än {maxValue}",
+  "@withdraw_funds_error_max_value": {
+    "placeholders": {
+      "maxValue": {
+        "type": "String",
+        "example": "12 345"
+      }
+    }
+  },
+  "withdraw_funds_use_all_funds": "Använd alla medel",
+  "withdraw_funds_btc_address": "BTC Adress",
+  "withdraw_funds_scan_barcode": "Scanna Barcode",
+  "withdraw_funds_error_invalid_address": "Vänligen ange en giltig BTC adress",
+  "withdraw_funds_balance": "Balans:",
+  "withdraw_funds_error_qr_code_not_detected": "QR-koden upptäcktes inte.",
+  "withdraw_funds_action_next": "NÄSTA",
+  "swap_in_progress_title": "Skicka till BTC adress",
+  "swap_in_progress_transaction_id_copied": "Transaktions-ID kopierades till urklipp.",
+  "swap_in_progress_message_waiting_confirmation": "Breez väntar på att följande transaktion ska bekräftas innan dina pengar skickas till den angivna adressen.",
+  "swap_in_progress_message_processing_previous_request": "Breez bearbetar för närvarande din tidigare begäran. Du kommer att meddelas när bearbetningen är klar för att skicka dina pengar till den adress du har angett.",
+  "market_place_no_vendors": "Det finns inga tillgängliga leverantörer för tillfället.",
+  "account_required_actions_backup": "Backup",
+  "account_page_activation_provider": "För att aktivera Breez, välj en leverantör:",
+  "account_page_activation_provider_action_select": "VÄLJ…",
+  "account_page_activation_provider_label": "Välj en Lightning leverantör",
+  "account_page_activation_provider_hint": "Välj en av följande leverantörer för att aktivera Breez och ansluta till Lightning-nätverket.",
+  "account_page_activation_error": "Det gick inte att hämta lightning-leverantörer. Kontrollera din internetanslutning och försök igen.",
+  "account_page_activation_action_retry": "FÖRSÖK IGEN",
+  "account_page_activation_action_select": "VÄLJ",
+  "funds_over_limit_dialog_on_chain_transaction": "On-chain Transaktion",
+  "funds_over_limit_dialog_action_ok": "OK",
+  "funds_over_limit_dialog_transfer_fail_no_reason_know": "Breez kunde inte överföra pengarna till ditt saldo\n",
+  "funds_over_limit_dialog_transfer_fail_with_reason": "Breez kunde inte överföra pengarna till ditt saldo pga {reason}\n",
+  "@funds_over_limit_dialog_transfer_fail_with_reason": {
+    "placeholders": {
+      "reason": {
+        "type": "String",
+        "example": "A reason of an error"
+      }
+    }
+  },
+  "approximately_an_hour": "(om ungefär en timme)",
+  "approximate_hours": "(~{hours} timmar)",
+  "@approximate_hours": {
+    "placeholders": {
+      "hours": {
+        "type": "String",
+        "example": "42"
+      }
+    }
+  },
+  "funds_over_limit_dialog_redeem_hours": "Du kommer att kunna lösa in dina pengar efter block {lockHeight} {hoursToUnlock}.",
+  "@funds_over_limit_dialog_redeem_hours": {
+    "placeholders": {
+      "lockHeight": {
+        "type": "String",
+        "example": "140659"
+      },
+      "hoursToUnlock": {
+        "type": "String",
+        "example": "(~42 timmar)"
+      }
+    }
+  },
+  "funds_over_limit_dialog_refund_begin": "Du kan ",
+  "funds_over_limit_dialog_refund_link": "få en återbetalning",
+  "funds_over_limit_dialog_refund_end": " nu.",
+  "get_refund_title": "Få återbetalning",
+  "get_refund_amount": "Belopp: {amount}",
+  "@get_refund_amount": {
+    "placeholders": {
+      "amount": {
+        "type": "String",
+        "example": "12 345"
+      }
+    }
+  },
+  "get_refund_action_broadcasted": "SÄNT",
+  "get_refund_action_continue": "FORTSÄTT",
+  "get_refund_transaction": "Återbetalningstransaktion",
+  "get_refund_failed": "misslyckades",
+  "send_on_chain_broadcast": "SÄND",
+  "send_on_chain_btc_address": "BTC Adress",
+  "send_on_chain_scan_barcode": "Scanna Barcode",
+  "send_on_chain_invalid_btc_address": "Vänligen ange en giltig BTC-adress",
+  "send_on_chain_sat_per_byte_fee_rate": "Sat Per Byte Avgiftssats",
+  "send_on_chain_invalid_fee_rate": "Ange en giltig avgiftssats",
+  "send_on_chain_original_transaction": "Ursprunglig transaktion",
+  "send_on_chain_amount": "Belopp:",
+  "send_on_chain_qr_code_not_detected": "QR-koden upptäcktes inte.",
+  "remote_server_title": "Remote Server",
+  "remote_server_server_url_hint": "https://example.nextcloud.com",
+  "remote_server_server_url_label": "Server URL (Nextcloud, WebDav)",
+  "remote_server_server_username_hint": "Användarnamn",
+  "remote_server_server_username_label": "Användarnamn",
+  "remote_server_server_password_hint": "Lösenord",
+  "remote_server_server_password_label": "Lösenord",
+  "remote_server_action_restore": "ÅTERSTÄLL",
+  "remote_server_action_save": "SPARA",
+  "remote_server_warning_connection_title": "Anslutningsvarning",
+  "remote_server_warning_connection_message": "Din anslutning till den här servern kanske inte är en säker anslutning. Är du säker på att du vill fortsätta?",
+  "remote_server_testing_connection": "Testar nåbarhet",
+  "remote_server_error_invalid_username_or_password": "Ogiltigt användarnamn eller lösenord",
+  "remote_server_error_invalid_url": "Ogiltig URL",
+  "remote_server_error_remote_server_title": "Server",
+  "remote_server_error_remote_server_message": "Det gick inte att ansluta till servern, kontrollera dina inställningar.",
+  "error_dialog_default_action_ok": "OK",
+  "error_dialog_default_action_yes": "JA",
+  "error_dialog_default_action_no": "NEJ",
+  "error_dialog_default_action_close": "STÄNG",
+  "ln_url_success_action_title": "Köpinformation",
+  "ln_url_success_action_link_copied": "länken kopierades till urklipp.",
+  "avatar_picker_action_set_photo": "Välj foto",
+  "avatar_picker_action_change_photo": "Byt foto",
+  "avatar_picker_error_select_image": "Det gick inte att välja bild",
+  "initial_walk_through_welcome_message": "Det enklaste, snabbaste och säkraste sättet\natt spendera dina bitcoins",
+  "initial_walk_through_lets_breeze": "LET'S BREEZ!",
+  "initial_walk_through_restore_from_backup": "Återställ från backup",
+  "initial_walk_through_restoring": "Återställer data…",
+  "initial_walk_through_sign_in_icloud_title": "Logga in på iCloud",
+  "initial_walk_through_sign_in_icloud_message": "Logga in på ditt iCloud-konto. Starta Inställningar på hemskärmen, tryck på iCloud och ange ditt Apple-ID. Slå på iCloud Drive. Om du inte har ett iCloud-konto trycker du på Skapa ett nytt Apple-ID.",
+  "initial_walk_through_error_backup_location": "Det gick inte att hitta backupen för det här kontot",
+  "initial_walk_through_error_internal": "Internt Fel",
+  "restore_pin_title": "Skriv in backup PIN",
+  "enter_backup_phrase": "Ange din backup fras {number}/{total}",
+  "@enter_backup_phrase": {
+    "placeholders": {
+      "number": {
+        "type": "String",
+        "example": "12"
+      },
+      "total": {
+        "type": "String",
+        "example": "24"
+      }
+    }
+  },
+  "enter_backup_phrase_error": "Det gick inte att återställa från backup. Se till att backup frasen har angetts korrekt och försök igen.",
+  "enter_backup_phrase_missing_word": "Saknat ord",
+  "enter_backup_phrase_invalid_word": "Ogiltigt ord",
+  "enter_backup_phrase_action_restore": "ÅTERSTÄLL",
+  "enter_backup_phrase_action_next": "NÄSTA",
+  "restore_dialog_title": "Återställ",
+  "restore_dialog_multiple_accounts": "Du har flera Breez-säkerhetskopior på {name}, välj vilken du vill återställa:",
+  "@restore_dialog_multiple_accounts": {
+    "placeholders": {
+      "name": {
+        "type": "String",
+        "example": "A name"
+      }
+    }
+  },
+  "restore_dialog_modified_not_encrypted": "{date}",
+  "@restore_dialog_modified_not_encrypted": {
+    "placeholders": {
+      "date": {
+        "type": "String",
+        "example": "03/01/2022 14:57"
+      }
+    }
+  },
+  "restore_dialog_modified_encrypted": "{date} - (Kräver nyckel)",
+  "@restore_dialog_modified_encrypted": {
+    "placeholders": {
+      "date": {
+        "type": "String",
+        "example": "03/01/2022 14:57"
+      }
+    }
+  },
+  "restore_dialog_download_backup": "Ladda Ned Backup",
+  "restore_dialog_download_backup_for_node": "Vill du ladda ner backup'ad data för nod: {nodeId}?",
+  "@restore_dialog_download_backup_for_node": {
+    "placeholders": {
+      "nodeId": {
+        "type": "String",
+        "example": "A node id"
+      }
+    }
+  },
+  "restore_dialog_action_cancel": "AVBRYT",
+  "restore_dialog_action_ok": "OK",
+  "restore_dialog_download_backup_error": "Nedladdningsfel",
+  "beta_warning_title": "Beta Varning",
+  "beta_warning_message": "Eftersom Breez fortfarande är i beta, finns det en chans att dina pengar går förlorade. Använd den här appen endast om du är villig att ta denna risk.",
+  "beta_warning_understand": "Jag förstår",
+  "beta_warning_understand_confirmation": "Bekräfta att du förstår innan du fortsätter.",
+  "beta_warning_action_exit": "AVSLUTA",
+  "beta_warning_action_continue": "FÖRTSÄTT",
+  "processing_payment_dialog_synchronizing": "Synkroniserar med nätverket",
+  "processing_payment_dialog_synchronizing_channels": "Breez synkroniserar dina kanaler",
+  "processing_payment_dialog_action_close": "STÄNG",
+  "processing_payment_dialog_processing_payment": "Bearbetar betalning",
+  "processing_payment_dialog_wait": "Vänta medan din betalning behandlas",
+  "payment_request_dialog_requested": "Du uppmanas att betala:",
+  "payment_request_dialog_requesting": "ber dig betala:",
+  "payment_request_dialog_action_cancel": "AVBRYT",
+  "payment_request_dialog_action_approve": "GODKÄNN",
+  "payment_failed_report_dialog_title": "Misslyckad betalning",
+  "payment_failed_report_dialog_message": "Att skicka misslyckade betalningsuppgifter till Breez kan hjälpa till att öka antalet framgångsrika transaktioner.\nVill du skicka denna misslyckade betalningsinformation till Breez?",
+  "payment_failed_report_dialog_do_not_ask_again": "Fråga mig inte igen",
+  "payment_failed_report_dialog_action_no": "NEJ",
+  "payment_failed_report_dialog_action_yes": "JA",
+  "payment_confirmation_dialog_title": "Betalningsbekräftelse",
+  "payment_confirmation_dialog_confirmation": "Är du säker på att du vill betala",
+  "payment_confirmation_dialog_confirmation_end": " ?",
+  "payment_confirmation_dialog_action_no": "NEJ",
+  "payment_confirmation_dialog_action_yes": "JA",
+  "no_connection_dialog_title": "Ingen internetanslutning",
+  "no_connection_dialog_tip_begin": "Du kan prova:\n",
+  "no_connection_dialog_tip_airplane": "• Stänga av flygplansläget\n",
+  "no_connection_dialog_tip_wifi": "• Aktivera mobildata eller Wi-Fi\n",
+  "no_connection_dialog_tip_signal": "• Kontrollera signalen i ditt område\n",
+  "no_connection_dialog_log_view_action": "Titta på ",
+  "no_connection_dialog_log_view_message": "dina loggar \n",
+  "no_connection_dialog_action_cancel": "AVBRYT",
+  "no_connection_dialog_action_try_again": "PROVA IGEN",
+  "lsp_fee_warning_title": "Installationsavgift",
+  "lsp_fee_warning_action_cancel": "AVBRYT",
+  "lsp_fee_warning_action_ok": "OK",
+  "lsp_fee_warning_with_min_fee_account_connected": "En installationsavgift på {setUpFee} % med ett minimum av {minFee} kommer att tas ut för att köpa mer än {liquidity}.",
+  "@lsp_fee_warning_with_min_fee_account_connected": {
+    "placeholders": {
+      "setUpFee": {
+        "type": "String",
+        "example": "0.4"
+      },
+      "minFee": {
+        "type": "String",
+        "example": "1 000 sats"
+      },
+      "liquidity": {
+        "type": "String",
+        "example": "99 000 sats"
+      }
+    }
+  },
+  "lsp_fee_warning_without_min_fee_account_connected": "En installationsavgift på {setUpFee} % kommer att tas ut för att köpa mer än {liquidity}.",
+  "@lsp_fee_warning_without_min_fee_account_connected": {
+    "placeholders": {
+      "setUpFee": {
+        "type": "String",
+        "example": "0.4"
+      },
+      "liquidity": {
+        "type": "String",
+        "example": "99 000 sats"
+      }
+    }
+  },
+  "lsp_fee_warning_with_min_fee_account_not_connected": "En installationsavgift på {setUpFee} % med ett minimum av {minFee} kommer att debiteras på det mottagna beloppet.",
+  "@lsp_fee_warning_with_min_fee_account_not_connected": {
+    "placeholders": {
+      "setUpFee": {
+        "type": "String",
+        "example": "0.4"
+      },
+      "minFee": {
+        "type": "String",
+        "example": "1 000 sats"
+      }
+    }
+  },
+  "lsp_fee_warning_without_min_fee_account_not_connected": "En installationsavgift på {setUpFee} % kommer att tas ut på det mottagna beloppet.",
+  "@lsp_fee_warning_without_min_fee_account_not_connected": {
+    "placeholders": {
+      "setUpFee": {
+        "type": "String",
+        "example": "0.4"
+      }
+    }
+  },
+  "lsp_error_provider_do_not_exists": "LSP existerar ej",
+  "lsp_error_not_selected": "lsp valdes ej",
+  "lost_card_dialog_title": "Förlorat eller stulet kort",
+  "lost_card_dialog_message": "Om ditt kort har tappats bort eller blivit stulet bör du avaktivera det nu för att förhindra att det används av andra. Avaktivera betyder att du inte kommer att kunna använda något av dina befintliga kort förrän du återaktiverar dem.",
+  "lost_card_dialog_action_cancel": "AVBRYT",
+  "lost_card_dialog_action_deactivate": "AVAKTIVERA",
+  "lost_card_dialog_flush_title": "",
+  "lost_card_dialog_flush_message": "Ditt kort har inaktiverats.\nDu kan beställa ett nytt kort nu.",
+  "lost_card_dialog_flush_action_order": "BESTÄLL",
+  "order_card_action_skip": "HOPPA ÖVER",
+  "order_card_action_ok": "OK",
+  "order_card_action_order": "BESTÄLL",
+  "order_card_action_error_name_address_missing": "Namn och adress krävs för att skicka ett Breez-kort. All information som tillhandahålls kommer att raderas från våra system efter att kortet har skickats. Du kan hoppa över detta steg och fortsätta använda Breez utan kort.",
+  "order_card_action_order_breez_card": "Beställ ett Breez Kort",
+  "order_card_action_order_card": "Beställ Kort",
+  "order_card_success": "Breez-kortet skickas inom kort till den adress du har angett.",
+  "order_card_info_disclaimer": "Varför måste jag lämna\nden här informationen?",
+  "order_card_zip_code_label": "Postnummer",
+  "order_card_zip_code_error": "Ogiltigt postnummer",
+  "order_card_country_label": "Land",
+  "order_card_country_error_empty": "Ange ditt land",
+  "order_card_country_error_invalid": "Ogiltigt land",
+  "order_card_state_label": "Stat",
+  "order_card_country_state_empty": "Ange din stat",
+  "order_card_country_state_invalid": "Ogiltig state",
+  "order_card_city_label": "Stad",
+  "order_card_city_error": "Ange din stad",
+  "order_card_address_label": "Adress",
+  "order_card_address_error": "Ange din adress",
+  "order_card_email_label": "E-post Adress",
+  "order_card_country_email_empty": "Ange din e-post address",
+  "order_card_country_email_invalid": "Ogiltig e-mail",
+  "order_card_full_name_label": "Fullständigt namn",
+  "order_card_full_name_error": "Ange ditt fullständiga namn",
+  "link_launcher_title": "Transastions ID:",
+  "link_launcher_link_name": "",
+  "keyboard_done_action": "Genomfört",
+  "flushbar_default_message": "",
+  "flushbar_default_action": "OK",
+  "fee_chooser_option_economy": "Ekonomi",
+  "fee_chooser_option_regular": "Valig",
+  "fee_chooser_option_priority": "Prioriterad",
+  "fee_chooser_estimated_delivery_more_than_day": "Beräknad leverans: mer än en dag",
+  "fee_chooser_estimated_delivery_hour": "Beräknad leverans: 1 timme",
+  "fee_chooser_estimated_delivery_hours": "Beräknad leverans: {hours} timmar",
+  "@fee_chooser_estimated_delivery_hours": {
+    "placeholders": {
+      "hours": {
+        "type": "String",
+        "example": "6"
+      }
+    }
+  },
+  "fee_chooser_estimated_delivery_hour_range": "Beräknad leverans: {hours}-24 timmar",
+  "@fee_chooser_estimated_delivery_hour_range": {
+    "placeholders": {
+      "hours": {
+        "type": "String",
+        "example": "6"
+      }
+    }
+  },
+  "fee_chooser_estimated_delivery_minutes": "Beräknad leverans: ~{minutes} minuter",
+  "@fee_chooser_estimated_delivery_minutes": {
+    "placeholders": {
+      "minutes": {
+        "type": "String",
+        "example": "10"
+      }
+    }
+  },
+  "escher_cash_out_amount": "Ange utbetalningsbelopp:",
+  "escher_action_cancel": "AVBRYT",
+  "escher_action_approve": "GODKÄNN",
+  "collapsible_list_default_value": "",
+  "collapsible_list_action_copy": "Kopiera {title}",
+  "@collapsible_list_action_copy": {
+    "placeholders": {
+      "title": {
+        "type": "String",
+        "example": "En titel"
+      }
+    }
+  },
+  "collapsible_list_copied": "{title} kopierades till urklipp.",
+  "@collapsible_list_copied": {
+    "placeholders": {
+      "title": {
+        "type": "String",
+        "example": "En titel"
+      }
+    }
+  },
+  "close_popup_title": "Avsluta Breez",
+  "close_popup_message": "Vill du verkligen avsluta Breez?",
+  "breez_date_picker_day_and_date": "{day} {date}",
+  "@breez_date_picker_day_and_date": {
+    "placeholders": {
+      "day": {
+        "type": "String",
+        "example": "12"
+      },
+      "date": {
+        "type": "String",
+        "example": "12/12/2121"
+      }
+    }
+  },
+  "breez_date_picker_previous_month_tooltip": "{message} {date}",
+  "@breez_date_picker_previous_month_tooltip": {
+    "placeholders": {
+      "message": {
+        "type": "String",
+        "example": "Föregående månad"
+      },
+      "date": {
+        "type": "String",
+        "example": "12 2121"
+      }
+    }
+  },
+  "breez_date_picker_next_month_tooltip": "{message} {date}",
+  "@breez_date_picker_next_month_tooltip": {
+    "placeholders": {
+      "message": {
+        "type": "String",
+        "example": "Nästa månad"
+      },
+      "date": {
+        "type": "String",
+        "example": "12 2121"
+      }
+    }
+  },
+  "breez_date_picker_error_initial_date_after": "Inledande datumet måste vara på eller efter första datumet",
+  "breez_date_picker_error_initial_date_before": "Inledande datumet måste vara på eller före det sista datumet",
+  "breez_date_picker_error_initial_date_predicate": "Inledande datumet måste uppfylla det angivna valbara dagspredikatet",
+  "breez_date_picker_error_initial_date_null": "Inledande datumet får inte vara null",
+  "breez_date_picker_error_last_date_after": "Sista datumet måste vara på eller efter första datumet",
+  "breez_avatar_dialog_random": "SLUMPARTAT",
+  "breez_avatar_dialog_gallery": "GALLERI",
+  "breez_avatar_dialog_your_name": "Skriv ditt namn",
+  "breez_avatar_dialog_action_cancel": "AVBRYT",
+  "breez_avatar_dialog_action_save": "SPARA",
+  "breez_avatar_dialog_error_upload": "Det gick inte att ladda upp profilbilden",
+  "barcode_scanner_camera_message": "För QR-skanning, vänligen ge Breez åtkomst till din kamera.",
+  "barcode_scanner_app_settings": "App Inställningar",
+  "utils_retry_failed": "Omförsök misslyckades",
+  "utils_print_pdf_transaction_time": "Transaktionstid",
+  "utils_print_pdf_header_item": "Artikel",
+  "utils_print_pdf_header_price": "Pris",
+  "utils_print_pdf_header_quantity": "Kvantitet",
+  "utils_print_pdf_header_amount": "Belopp",
+  "utils_print_pdf_header_total": "Summa",
+  "utils_print_pdf_header_description": "Beskrivning:",
+  "utils_print_pdf_header_payment_preimage": "Betalningsförbild:",
+  "handler_check_version_action_update": "UPPDATERA",
+  "handler_check_version_message": "Uppdatera Breez till den senaste versionen.",
+  "handler_channel_connection_message": "Breez är offline",
+  "handler_channel_connection_close": "STÄNG",
+  "handler_lnurl_error_link": "Länkfel",
+  "handler_lnurl_error_process": "Det gick inte att bearbeta länken: {message}",
+  "@handler_lnurl_error_process": {
+    "placeholders": {
+      "message": {
+        "type": "String",
+        "example": "Ett felmeddelande"
+      }
+    }
+  },
+  "handler_lnurl_error_gift": "Denna gåva har lösts in!",
+  "handler_lnurl_login_anonymously": "Vill du logga in anonymt på ",
+  "handler_lnurl_login_error_title": "Login Fel",
+  "handler_lnurl_login_error_message": "Kunde inte logga in.\n{message}",
+  "@handler_lnurl_login_error_message": {
+    "placeholders": {
+      "message": {
+        "type": "String",
+        "example": "Ett felmeddelande"
+      }
+    }
+  },
+  "handler_lnurl_login_error_unsupported": "Osupporterad LNURL",
+  "handler_lnurl_open_channel_title": "Öppna kanal",
+  "handler_lnurl_open_channel_message": "Är du säker på att du vill öppna en kanal med {host}?",
+  "@handler_lnurl_open_channel_message": {
+    "placeholders": {
+      "host": {
+        "type": "String",
+        "example": "En host"
+      }
+    }
+  },
+  "handler_lnurl_open_channel_action_cancel": "AVBRYT",
+  "handler_lnurl_open_channel_error_title": "Öppna kanal fel",
+  "handler_lnurl_open_channel_error_message": "Det gick inte att öppna kanalen.\n{message}",
+  "@handler_lnurl_open_channel_error_message": {
+    "placeholders": {
+      "message": {
+        "type": "String",
+        "example": "Ett felmeddelande"
+      }
+    }
+  },
+  "handler_podcast_error_load_episode": "Det gick inte att ladda avsnittet. Kontrollera din anslutning.",
+  "handler_podcast_error_load_episode_fallback": "Det gick inte att läsa in podden.",
+  "handler_sync_ui_message": "Breez synkroniserar med Bitcoin-nätverket",
+  "add_funds_error_deposit": "Breez behandlar din tidigare insättning. Du kommer att kunna lägga till mer pengar när denna operation är klar.",
+  "add_funds_error_withdraw": "Breez behandlar ditt tidigare uttag. Du kommer att kunna lägga till mer pengar när denna operation är klar.",
+  "add_funds_transaction_id_copied": "Transaktions-ID kopierades till urklipp.",
+  "add_funds_item_voucher_title": "Voucher värde",
+  "add_funds_item_voucher_message": "{value} {currency}",
+  "@add_funds_item_voucher_message": {
+    "placeholders": {
+      "value": {
+        "type": "String",
+        "example": "123"
+      },
+      "currency": {
+        "type": "String",
+        "example": "btc"
+      }
+    }
+  },
+  "add_funds_item_exchange_rate_title": "Växlingskurs",
+  "add_funds_item_exchange_rate_message": "{rate} {currency}",
+  "@add_funds_item_exchange_rate_message": {
+    "placeholders": {
+      "rate": {
+        "type": "String",
+        "example": "123"
+      },
+      "currency": {
+        "type": "String",
+        "example": "btc"
+      }
+    }
+  },
+  "add_funds_item_commission_rate_title": "Provisionssats",
+  "add_funds_item_commission_rate_message": "{rate}%",
+  "@add_funds_item_commission_rate_message": {
+    "placeholders": {
+      "rate": {
+        "type": "String",
+        "example": "123"
+      }
+    }
+  },
+  "add_funds_item_commission_total_title": "Provision totalt",
+  "add_funds_item_commission_total_message": "{commission} {currency}",
+  "@add_funds_item_commission_total_message": {
+    "placeholders": {
+      "commission": {
+        "type": "String",
+        "example": "123"
+      },
+      "currency": {
+        "type": "String",
+        "example": "btc"
+      }
+    }
+  },
+  "add_funds_item_bitcoins_received_title": "Bitcoins emottagna",
+  "add_funds_moonpay_title": "MoonPay",
+  "add_funds_moonpay_error_address": "Det gick inte att hämta en adress från Breez-servern\nKontrollera din internetanslutning.",
+  "add_funds_moonpay_loading": "Laddar…",
+  "add_funds_moonpay_error_service_unavailable": "Tjänsten är inte tillgänglig. Vänligen försök igen senare.",
+  "csv_exporter_date_and_time": "Datum & Tid",
+  "csv_exporter_title": "Titel",
+  "csv_exporter_description": "Beskrivning",
+  "csv_exporter_node_id": "Nod ID",
+  "csv_exporter_amount": "Belopp",
+  "csv_exporter_preimage": "Preimage",
+  "csv_exporter_tx_hash": "TX Hash",
+  "csv_exporter_fee": "Avgift",
+  "pos_custom_item_name": "Artikel {index}",
+  "@pos_custom_item_name": {
+    "placeholders": {
+      "index": {
+        "type": "int",
+        "example": "1"
+      }
+    }
+  },
+  "pos_settings_title": "POS Inställningar",
+  "pos_settings_cancellation_timeout": "Timeout för annullering av betalning (i sekunder)",
+  "pos_settings_items_list": "Artikellista",
+  "pos_settings_import_csv": "Importera från CSV",
+  "pos_settings_export_csv": "Exporta till CSV",
+  "pos_settings_import_dialog_title": "Importa Artiklar",
+  "pos_settings_import_dialog_message": "Att importera den här listan kommer att åsidosätta den befintliga. Är du säker på att du vill fortsätta?",
+  "pos_settings_import_action_yes": "JA",
+  "pos_settings_import_action_no": "NEJ",
+  "pos_settings_import_select_message": "Välj en .csv-fil.",
+  "pos_settings_import_success_message": "Artiklarna har importerats.",
+  "pos_settings_import_error_generic": "Det gick inte att importera POS-artiklar.",
+  "pos_settings_import_error_invalid_file": "Den valda filen är inte en giltig CSV-fil.",
+  "pos_settings_import_error_invalid_data": "Den valda filen innehåller ogiltiga data.",
+  "pos_settings_export_error_generic": "Det gick inte att exportera POS-artiklar.",
+  "pos_settings_export_error_no_items": "Det finns inga artiklar att exportera.",
+  "pos_settings_create_manager_password": "Skapa chefslösenord",
+  "pos_settings_activate_manager_password": "Aktivera chefslösenord",
+  "pos_settings_change_manager_password": "Ändra chefslösenord",
+  "pos_settings_manager_password_error_title": "Chefslösenord",
+  "pos_settings_manager_password_error_message": "Chefslösenord kan endast konfigureras om du har en aktiv säkerhetskopia. För att utlösa en säkerhetskopieringsprocess, gå till Ta emot > Ta emot via BTC-adress.",
+  "pos_settings_manager_password_title": "Chefslösenord",
+  "pos_settings_manager_password_message": "Om chefslösenord är aktiverat kommer du att behöva ange ett lösenord för att skicka pengar från Breez.\nÄr du säker på att du vill aktivera chefslösenord?",
+  "pos_settings_manager_password_action_create": "SKAPA",
+  "pos_settings_manager_password_action_change": "ÄNDRA",
+  "pos_settings_business_address": "Företagsadress",
+  "pos_settings_address_line_1": "Adress Rad 1",
+  "pos_settings_address_line_2": "Adress Rad 2",
+  "pos_settings_default_note": "Standardnotis",
+  "pos_settings_id": "ID",
+  "pos_settings_name": "Namn",
+  "pos_settings_sku": "SKU",
+  "pos_settings_image_url": "Bild URL",
+  "pos_settings_currency": "Valuta",
+  "pos_settings_price": "Pris",
+  "pos_password_admin_title": "Chefslösenord",
+  "pos_password_admin_error_password_empty": "Lösenord krävs",
+  "pos_password_admin_error_password_short": "Minst 8 tecken krävs",
+  "pos_password_admin_error_password_match": "Lösenorden matchar inte",
+  "pos_password_admin_new_password": "Skriv in ett nytt lösenord",
+  "pos_password_admin_confirm_password": "Bekräfta lösenord",
+  "pos_dialog_clock": "{minutes}:{seconds}",
+  "@pos_dialog_clock": {
+    "placeholders": {
+      "minutes": {
+        "type": "String",
+        "example": "1"
+      },
+      "seconds": {
+        "type": "String",
+        "example": "30"
+      }
+    }
+  },
+  "pos_dialog_title": "Scanna för att betala",
+  "pos_dialog_share": "Dela invoice",
+  "pos_dialog_invoice_copy": "Koipera invoice",
+  "pos_dialog_invoice_copied": "Invoice kopierades till urklipp.",
+  "pos_dialog_clear_sale": "RENSA",
+  "pos_dialog_cancel": "AVBRYT",
+  "pos_dialog_setup_fee": "En konfigurationsavgift på {fee} ({fiat}) tillkommer på denna faktura.",
+  "@pos_dialog_setup_fee": {
+    "placeholders": {
+      "fee": {
+        "type": "String",
+        "example": "1000 sats"
+      },
+      "fiat": {
+        "type": "String",
+        "example": "$ 30"
+      }
+    }
+  },
+  "pos_payment_nfc_error_title": "NFC betalningsfel",
+  "pos_payment_nfc_range_error": "Endast betalningar mellan {minValue} och {maxValue} är tillåtna.",
+  "@pos_payment_nfc_range_error": {
+    "placeholders": {
+      "minValue": {
+        "type": "String",
+        "example": "1000 sats"
+      },
+      "maxValue": {
+        "type": "String",
+        "example": "1000 sats"
+      }
+    }
+  },
+  "pos_payment_nfc_error_action_close": "STÄNG",
+  "successful_payment_print": "Skriv ut",
+  "successful_payment_received": "Betalning mottagen!",
+  "payment_options_title": "Lightning avgifter",
+  "payment_options_fee_header": "Maximala avgifter för Lightning-betalningar:",
+  "payment_options_fee_override_enable": "Genomföra avgifter (experimentell)",
+  "payment_options_base_fee_label": "Basavgift i sats",
+  "payment_options_proportional_fee_label": "Proportionell avgift (%)",
+  "payment_options_fee_action_reset": "Återställ",
+  "payment_options_fee_action_save": "Spara",
+  "payment_options_fee_action_cancel": "Avbryt",
+  "payment_options_fee_warning": "Varning: den här funktionen är experimentell. Begränsande avgifter kan göra att betalningar misslyckas, men orsaken till misslyckandet kanske inte är uppenbar.",
+  "payment_options_fee_warning_dialog_title": "Varning",
+  "payment_options_fee_warning_dialog_message": "Denna funktion är experimentell. Begränsande avgifter kan göra att betalningar misslyckas, men orsaken till misslyckandet kanske inte är uppenbar.",
+  "catalog_item_action_edit": "Ändra Artikel",
+  "catalog_item_action_delete": "Ta bort Artikel",
+  "catalog_item_error_delete": "Det gick inte att ta bort {name}",
+  "@catalog_item_error_delete": {
+    "placeholders": {
+      "name": {
+        "type": "String",
+        "example": "Ett namn"
+      }
+    }
+  },
+  "pos_report_dialog_title_daily": "Daglig sammanfattning",
+  "pos_report_dialog_title_weekly": "Veckosammanfattning",
+  "pos_report_dialog_title_monthly": "Månadsöversikt",
+  "pos_report_dialog_title_custom": "Anpassad sammanfattning",
+  "pos_report_dialog_action_close": "STÄNG",
+  "pos_report_dialog_dropdown_item_daily": "Idag",
+  "pos_report_dialog_dropdown_item_weekly": "Denna vecka",
+  "pos_report_dialog_dropdown_item_monthly": "Denna månad",
+  "pos_report_dialog_dropdown_item_custom": "Anpassat intervall",
+  "pos_report_dialog_content_sales_label": "Antal försäljningar:",
+  "pos_report_dialog_content_amount_label": "Totala summan:",
+  "pos_report_dialog_content_start_date_label": "Start datum:",
+  "pos_report_dialog_content_end_date_label": "Slut datum:",
+  "lnurl_withdraw_dialog_title": "Ta emot medel",
+  "lnurl_withdraw_dialog_wait": "Vänta medan din betalning behandlas",
+  "lnurl_withdraw_dialog_action_close": "STÄNG",
+  "lnurl_withdraw_dialog_error": "Det gick inte att ta emot pengar: {error}",
+  "@lnurl_withdraw_dialog_error": {
+    "placeholders": {
+      "error": {
+        "type": "String",
+        "example": "Ett fel"
+      }
+    }
+  },
+  "qr_code_dialog_synchronizing": "Synkronisera till nätverket",
+  "qr_code_dialog_invoice": "Invoice",
+  "qr_code_dialog_action_close": "STÄNG",
+  "qr_code_dialog_share": "Dela invoice",
+  "qr_code_dialog_copy": "Kopiera invoice",
+  "qr_code_dialog_copied": "Invoice kopierades till urklipp",
+  "qr_code_dialog_warning_message_error": "Det gick inte att skapa invoice",
+  "qr_code_dialog_warning_message": "Håll Breez öppet tills betalningen är klar.",
+  "qr_code_dialog_warning_message_with_lsp": "En installationsavgift på {setupFee} ({fiatFee}) tillkommer på denna faktura. Håll Breez öppet tills betalningen är klar.",
+  "@qr_code_dialog_warning_message_with_lsp": {
+    "placeholders": {
+      "setupFee": {
+        "type": "String",
+        "example": "123 sats"
+      },
+      "fiatFee": {
+        "type": "String",
+        "example": "1$"
+      }
+    }
+  },
+  "qr_code_dialog_error": "Failed to create an invoice {error}. Please try again later.",
+  "@qr_code_dialog_error": {
+    "placeholders": {
+      "error": {
+        "type": "String",
+        "example": "Ett fel"
+      }
+    }
+  },
+  "waiting_broadcast_dialog_dialog_title": "Återbetalningstransaktion",
+  "waiting_broadcast_dialog_dialog_title_error": "Återbetalningsfel",
+  "waiting_broadcast_dialog_action_close": "STÄNG",
+  "waiting_broadcast_dialog_action_copy": "Kopiera transaktionshash",
+  "waiting_broadcast_dialog_action_share": "Dela transaktionshash",
+  "waiting_broadcast_dialog_transaction_id": "Transaktions ID:",
+  "waiting_broadcast_dialog_content_success": "Pengarna skickades till den angivna adressen.",
+  "waiting_broadcast_dialog_content_warning": "Vänta medan Breez skickar pengarna till den angivna adressen.",
+  "waiting_broadcast_dialog_content_error": "Fel i sändningstransaktionen: {error}",
+  "@waiting_broadcast_dialog_content_error": {
+    "placeholders": {
+      "error": {
+        "type": "String",
+        "example": "Ett fel"
+      }
+    }
+  },
+  "wallet_dashboard_balance_hide": "******",
+  "wallet_dashboard_payment_item_balance_hide": "******",
+  "wallet_dashboard_payment_item_balance_positive": "+ {value}",
+  "@wallet_dashboard_payment_item_balance_positive": {
+    "placeholders": {
+      "value": {
+        "type": "String",
+        "example": "123"
+      }
+    }
+  },
+  "wallet_dashboard_payment_item_balance_negative": "- {value}",
+  "@wallet_dashboard_payment_item_balance_negative": {
+    "placeholders": {
+      "value": {
+        "type": "String",
+        "example": "123"
+      }
+    }
+  },
+  "wallet_dashboard_payment_item_balance_fee": "Avgift {feeFormatted}",
+  "@wallet_dashboard_payment_item_balance_fee": {
+    "placeholders": {
+      "feeFormatted": {
+        "type": "String",
+        "example": "1"
+      }
+    }
+  },
+  "wallet_dashboard_payment_item_balance_pending_suffix": " (Väntar)",
+  "status_text_loading_begin": "Breez ",
+  "status_text_loading_middle": "öppnar en säker kanal",
+  "status_text_loading_end": " med vår server. Detta kan ta ett tag, men oroa dig inte, vi meddelar dig när appen är redo att skicka och ta emot betalningar.",
+  "status_text_ready": "Breez är redo att ta emot pengar.",
+  "qr_action_button_open_link": "Öppna länk",
+  "qr_action_button_open_link_confirmation": "Är du säker på att du vill öppna den här länken?",
+  "qr_action_button_open_link_confirmation_no": "NEJ",
+  "qr_action_button_open_link_confirmation_yes": "JA",
+  "qr_action_button_error_code_not_detected": "QR-kod upptäcktes inte.",
+  "qr_action_button_error_code_not_processed": "QR-kod kan inte hanteras.",
+  "qr_action_button_error_link_title": "Länk Fel",
+  "qr_action_button_error_link_message": "Det gick inte att hantera länken: {error}",
+  "@qr_action_button_error_link_message": {
+    "placeholders": {
+      "error": {
+        "type": "String",
+        "example": "Ett fel"
+      }
+    }
+  },
+  "lnurl_webview_error_title": "Felmeddelande",
+  "lnurl_webview_error_invalid_url": "Ogiltig URL",
+  "lnurl_webview_error_message": "Det gick inte att anropa {apiName} API",
+  "@lnurl_webview_error_message": {
+    "placeholders": {
+      "apiName": {
+        "type": "String",
+        "example": "Ett säljarnamn"
+      }
+    }
+  },
+  "lnurl_fetch_invoice_action_continue": "FORTSÄTT",
+  "lnurl_fetch_invoice_pay_to_payee": "Betala till {payee}",
+  "@lnurl_fetch_invoice_pay_to_payee": {
+    "placeholders": {
+      "payee": {
+        "type": "String",
+        "example": "En mottagare"
+      }
+    }
+  },
+  "lnurl_fetch_invoice_comment": "Kommentar (valfritt)",
+  "lnurl_fetch_invoice_error_min": "Måste vara minst {min}",
+  "@lnurl_fetch_invoice_error_min": {
+    "placeholders": {
+      "min": {
+        "type": "String",
+        "example": "$ 1.23"
+      }
+    }
+  },
+  "lnurl_fetch_invoice_error_max": "Överskrider gränsen {max}",
+  "@lnurl_fetch_invoice_error_max": {
+    "placeholders": {
+      "max": {
+        "type": "String",
+        "example": "$ 1.23"
+      }
+    }
+  },
+  "lnurl_fetch_invoice_limit": "Ange ett belopp mellan {min} och {max}",
+  "@lnurl_fetch_invoice_limit": {
+    "placeholders": {
+      "min": {
+        "type": "String",
+        "example": "$ 1.23"
+      },
+      "max": {
+        "type": "String",
+        "example": "$ 1.23"
+      }
+    }
+  },
+  "lnurl_fetch_invoice_error_title": "LNURL-Betal Fel",
+  "lnurl_fetch_invoice_error_message": "Ett fel uppstod vid försök att hämta en Invoice från {host}!\nOrsak: {reason}",
+  "@lnurl_fetch_invoice_error_message": {
+    "placeholders": {
+      "host": {
+        "type": "String",
+        "example": "http://www.ahost.com"
+      },
+      "reason": {
+        "type": "String",
+        "example": "En anledning"
+      }
+    }
+  },
+  "lnurl_error_unsupported": "Osupporterad LNUrl",
+  "make_invoice_request_title": "Den här sidan vill betala dig:",
+  "make_invoice_request_action_cancel": "AVBRYT",
+  "make_invoice_request_action_approve": "GODKÄNN",
+  "podcast_add_funds_title": "Lägg till pengar till ditt saldo för att skicka betalningar till denna podcast.",
+  "podcast_add_funds_action_add": "LÄGG TILL PENGAR",
+  "podcast_boost_not_enough_founds": "Du har inte tillräckligt med pengar för att slutföra den här betalningen.",
+  "podcast_boost_sats": "sats",
+  "podcast_boost_sats_min": "sats/min",
+  "podcast_boost_action_boost": "BOOST!",
+  "podcast_boost_action_cancel": "AVBRYT",
+  "podcast_boost_action_approve": "GODKÄNN",
+  "podcast_boost_symbol_circa": "~",
+  "podcast_boost_send_title": "Skicka ett Boostagram",
+  "podcast_boost_send_optional": "Boostagram (valfritt)",
+  "podcast_boost_send_amount": "Boost Amount (in sats)",
+  "podcast_boost_custom_amount": "Ange ett anpassat belopp:",
+  "podcast_boost_custom_amount_error_empty": "Ange ett belopp",
+  "podcast_boost_custom_amount_error_too_few": "Ange minst {amount} sats.",
+  "@podcast_boost_custom_amount_error_too_few": {
+    "placeholders": {
+      "amount": {
+        "type": "int",
+        "example": "50"
+      }
+    }
+  },
+  "podcast_boost_adjustment_boost": "Boost",
+  "podcast_boost_adjustment_boost_message": "Skicka dricks till programskaparna. Tryck länge för att lägga till ett personligt meddelande.",
+  "podcast_boost_adjustment_stream_sats": "Stream sats",
+  "podcast_boost_adjustment_stream_sats_message": "Streama sats till skaparna medan du lyssnar på deras program. Siffran anger mängden sats som skickas per minut. För att lyssna gratis, ställ in detta värde till 0.",
+  "podcast_boost_action_share": "Dela",
+  "podcast_boost_share_texts": "{podcast}\n{episode}\n{link}",
+  "@podcast_boost_share_texts": {
+    "placeholders": {
+      "podcast": {
+        "type": "String",
+        "example": "En podcast"
+      },
+      "episode": {
+        "type": "String",
+        "example": "Ett avsnitt"
+      },
+      "link": {
+        "type": "String",
+        "example": "http://link.com"
+      }
+    }
+  },
+  "podcast_boost_share_texts_short": "{podcast}\n{link}",
+  "@podcast_boost_share_texts_short": {
+    "placeholders": {
+      "podcast": {
+        "type": "String",
+        "example": "En podcast"
+      },
+      "link": {
+        "type": "String",
+        "example": "http://link.com"
+      }
+    }
+  },
+  "podcast_speed_selector_speed": "{speed}x",
+  "@podcast_speed_selector_speed": {
+    "placeholders": {
+      "speed": {
+        "type": "String",
+        "example": "1.5"
+      }
+    }
+  },
+  "lock_screen_enter_pin": "Ange din PIN",
+  "backup_phrase_generate": "Kryptera Cloud Backup",
+  "backup_phrase_instructions": "Du kommer att se en lista med ord. Skriv ner orden och förvara dem på ett säkert ställe. Utan dessa ord kommer du inte att kunna återställa från backup och dina pengar kommer att gå förlorade. Breez kommer inte att kunna hjälpa. Observera att dessa ord inte är ett plånboksfrö. De används för att kryptera säkerhetskopieringsdata som lagras i molnet.",
+  "backup_phrase_action_confirm": "JAG FÖRSTÅR",
+  "backup_phrase_action_next": "NÄSTA",
+  "backup_phrase_warning_disclaimer": "Din befintliga backup fras kommer inte längre att vara giltig och en ny kommer att genereras nästa gång du bestämmer dig för att använda en backup fras. Är du säker på att du inte vill använda en backup fras?",
+  "backup_phrase_warning_action_yes": "JA",
+  "backup_phrase_warning_action_no": "NEJ",
+  "backup_phrase_warning_action_next": "NÄSTA",
+  "backup_phrase_warning_action_backup": "BACKUP",
+  "backup_phrase_generation_write_words": "Skriv ned dessa ord",
+  "backup_phrase_generation_index": "{index}.",
+  "@backup_phrase_generation_index": {
+    "placeholders": {
+      "index": {
+        "type": "int",
+        "example": "1"
+      }
+    }
+  },
+  "backup_phrase_generation_verify": "Låt oss verifiera",
+  "backup_phrase_generation_type_words": "Vänligen skriv in ord nummer {numberA}, {numberB} och {numberC} i den genererade backup frasen.",
+  "@backup_phrase_generation_type_words": {
+    "placeholders": {
+      "numberA": {
+        "type": "int",
+        "example": "1"
+      },
+      "numberB": {
+        "type": "int",
+        "example": "2"
+      },
+      "numberC": {
+        "type": "int",
+        "example": "3"
+      }
+    }
+  },
+  "backup_phrase_generation_type_step": "{number}",
+  "@backup_phrase_generation_type_step": {
+    "placeholders": {
+      "number": {
+        "type": "int",
+        "example": "1"
+      }
+    }
+  },
+  "backup_phrase_generation_verification_failed": "Det gick inte att verifiera orden. Skriv ner orden och försök igen.",
+  "backup_phrase_generation_generic_error": "Internt Fel",
+  "spontaneous_payment_title": "Skicka betalning",
+  "spontaneous_payment_action_pay": "BETALA",
+  "spontaneous_payment_action_cancel": "AVBRYT",
+  "spontaneous_payment_tip_message": "Dricksmeddelande (valfritt)",
+  "spontaneous_payment_generic_message": "Du kommer att kunna ta emot betalningar efter att Breez har öppnat en säker kanal med vår server. Detta tar vanligtvis ~10 minuter att slutföra. Försök igen om ett par minuter.",
+  "spontaneous_payment_max_amount": "Betala upp till: {amount}",
+  "@spontaneous_payment_max_amount": {
+    "placeholders": {
+      "amount": {
+        "type": "String",
+        "example": "123"
+      }
+    }
+  },
+  "spontaneous_payment_node_id": "Nod ID",
+  "spontaneous_payment_send_payment_title": "Skicka betalning",
+  "spontaneous_payment_send_payment_message": "Är du säker på att du vill {amount} till denna nod?\n\n{nodeID}",
+  "@spontaneous_payment_send_payment_message": {
+    "placeholders": {
+      "amount": {
+        "type": "String",
+        "example": "123"
+      },
+      "nodeID": {
+        "type": "String",
+        "example": "456"
+      }
+    }
+  },
+  "spontaneous_payment_error_title": "Betalningsfel",
+  "sweep_all_coins_speed": "Välj Bearbetningshastighet",
+  "sweep_all_coins_action_confirm": "BEKRÄFTA",
+  "sweep_all_coins_label_send": "Du skickar:",
+  "sweep_all_coins_label_receive": "Du tar emot:",
+  "sweep_all_coins_label_transaction_fee": "Transaktionsavgift:",
+  "sweep_all_coins_fee": "-{fee}",
+  "@sweep_all_coins_fee": {
+    "placeholders": {
+      "fee": {
+        "type": "String",
+        "example": "123"
+      }
+    }
+  },
+  "sweep_all_coins_amount_no_fiat": "{amount}",
+  "@sweep_all_coins_amount_no_fiat": {
+    "placeholders": {
+      "amount": {
+        "type": "String",
+        "example": "123"
+      }
+    }
+  },
+  "sweep_all_coins_amount_with_fiat": "{amount} ({fiat})",
+  "@sweep_all_coins_amount_with_fiat": {
+    "placeholders": {
+      "amount": {
+        "type": "String",
+        "example": "123"
+      },
+      "fiat": {
+        "type": "String",
+        "example": "123"
+      }
+    }
+  },
+  "sweep_all_coins_error_retrieve_fees": "Det gick inte att hämta avgifter. Vänligen försök igen senare.",
+  "sweep_all_coins_error_amount_small": "Beloppet är för litet för att sändas. Vänligen försök igen senare.",
+  "unexpected_funds_title": "Oväntade medel",
+  "unexpected_funds_message": "Breez hittade oväntade medel i sin underliggande plånbok (troligen på grund av en stängd kanal). Det rekommenderas starkt att du skickar dessa fonder till en BTC-adress så snart som möjligt.",
+  "unexpected_error_restoring_chain_message": "Det kan ta flera minuter att återställa kedjeinformation.",
+  "unexpected_error_action_cancel": "AVBRYT",
+  "unexpected_error_action_exit": "AVSLUTA BREEZ",
+  "unexpected_error_action_exit_for_retry": "AVSLUTA",
+  "unexpected_error_action_try_again": "FÖRSÖK IGEN",
+  "unexpected_error_action_just_exit": "AVSLUTA",
+  "unexpected_error_logs": "dina loggar \n",
+  "unexpected_error_view": "Läs ",
+  "unexpected_error_bullet": "• ",
+  "unexpected_error_bitcoin_node": "din Bitcoin-nod\n",
+  "unexpected_error_reset": "Återställ ",
+  "unexpected_error_chain_information": "kedjeinformation\n",
+  "unexpected_error_recover": "Återskapa ",
+  "unexpected_error_signal": "• Kontrollera signalen i ditt område\n",
+  "unexpected_error_wifi": "• Aktiverar mobildata eller Wi-Fi\n",
+  "unexpected_error_airplane": "• Stäng av flygplansläget\n",
+  "unexpected_error_suggestions": "Du kan försöka:\n",
+  "unexpected_error_title": "Oväntat fel",
+  "transferring_funds_title": "Överför medel",
+  "select_provider_error_dialog_title": "Anslutningsfel",
+  "select_provider_error_dialog_select_provider_begin": "välj ",
+  "select_provider_error_dialog_select_provider_end": "en leverantör.",
+  "select_provider_error_dialog_message": "För att aktivera Breez, ",
+  "select_provider_error_dialog_message_error": "Det gick inte att ansluta till den valda leverantören. För att aktivera Breez, ",
+  "qr_scan_action_cancel": "AVBRYT",
+  "pending_closed_channel_title": "Väntande stängd kanal",
+  "pending_closed_channel_action_ok": "OK",
+  "close_warning_dialog_title": "Inaktiva kanaler",
+  "close_warning_dialog_action_ok": "OK",
+  "close_warning_dialog_message_begin": "Du har inte gjort några betalningar med Breez på {duration} dagar, så din LSP kan behöva stänga dina kanaler. Om detta skulle hända kommer Breez att generera en on-chain-adress och sopa in dina pengar i den. Du kommer att behålla fullständig kontroll över dina pengar, minus gruvavgiften som uppstår vid sveptransaktionen, och du kan komma tillbaka när som helst. För att lära dig mer om varför detta händer, läs vårt inlägg på ",
+  "@close_warning_dialog_message_begin": {
+    "placeholders": {
+      "duration": {
+        "type": "int",
+        "example": "12"
+      }
+    }
+  },
+  "close_warning_dialog_message_middle": "inkommande likviditet",
+  "close_warning_dialog_message_end": ".",
+  "close_warning_dialog_url": "https://medium.com/breez-technology/lightning-economics-how-i-learned-to-stop-worrying-and-love-inbound-liquidity-511d05aa8b8b",
+  "admin_login_dialog_manager_password": "Chefslösenord",
+  "admin_login_dialog_password_label": "Ange ditt lösenord",
+  "admin_login_dialog_action_cancel": "AVBRYT",
+  "admin_login_dialog_action_ok": "OK",
+  "admin_login_dialog_error_authenticate": "Det gick inte att autentisera som Chef",
+  "admin_login_dialog_error_password_required": "Lösenord krävs",
+  "admin_login_dialog_error_password_incorrect": "Fel lösenord",
+  "fast_bitcoin_dot_com_voucher": "Fastbitcoins.com Voucher",
+  "fast_bitcoin_dot_com_error_service_unavailable": "Tjänsten är inte tillgänglig. Vänligen försök igen senare.",
+  "payment_error_insufficient_balance": "Otillräcklig balans",
+  "payment_error_insufficient_balance_amount": "Otillräckligt saldo: du kan skicka upp till {amount} till denna destination",
+  "@payment_error_insufficient_balance_amount": {
+    "placeholders": {
+      "amount": {
+        "type": "String",
+        "example": "$ 1.23"
+      }
+    }
+  },
+  "payment_error_incorrect_payment_details": "Felaktiga betalningsuppgifter",
+  "payment_error_unexpected_error": "Oväntat fel",
+  "payment_error_no_route": "Ingen route",
+  "payment_error_payment_timeout_exceeded": "Betalningstiden har överskridits",
+  "payment_error_none": "",
+  "swap_error_funds_exceed_limit": "den utförda transaktionen var över den angivna gränsen.",
+  "swap_error_invoice_amount_mismatch": "det begärda beloppet matchar inte den ursprungliga transaktionen.",
+  "swap_error_swap_expired": "transaktionen hade löpt ut.",
+  "swap_error_tx_too_small": "transaktionsstorleken var för liten för att bearbetas.",
+  "status_message_unconfirmed_tx_id": "Breez väntar på att Bitcoin-överföringen ska bekräftas. Det här kan ta ett tag",
+  "status_transferring_on_chain_deposit": "Överför medel",
+  "status_failed_to_add_funds": "Det gick inte att lägga till pengar: {error}",
+  "@status_failed_to_add_funds": {
+    "placeholders": {
+      "error": {
+        "type": "String",
+        "example": "Ett fel"
+      }
+    }
+  },
+  "on_chain_payment_error_not_enough_funds": "Inte tillräckligt med pengar.",
+  "valid_payment_error_exceeds_the_limit": "Betalningen överskrider gränsen {amount}",
+  "@valid_payment_error_exceeds_the_limit": {
+    "placeholders": {
+      "amount": {
+        "type": "String",
+        "example": "$ 123"
+      }
+    }
+  },
+  "valid_payment_error_keep_balance": "Breez kräver att du har {amount} i ditt saldo.",
+  "@valid_payment_error_keep_balance": {
+    "placeholders": {
+      "amount": {
+        "type": "String",
+        "example": "$ 123"
+      }
+    }
+  },
+  "valid_payment_error_insufficient_balance": "Otillräcklig lokalt saldo",
+  "description_waiting_broadcast": "Väntar på att sända transaktionen",
+  "description_broadcast_done": "Transaktionen sändes",
+  "description_type_deposit": "Bitcoin överföring",
+  "payment_info_title_bitrefill": "Bitrefill",
+  "payment_info_title_breez_sale": "Sale [{date}]",
+  "@payment_info_title_breez_sale": {
+    "placeholders": {
+      "date": {
+        "type": "String",
+        "example": "1/2/22"
+      }
+    }
+  },
+  "payment_info_title_lightning_gifts": "lightning.gifts",
+  "payment_info_title_ln_pizza": "ln.pizza",
+  "payment_info_title_zebedee": "Zebedee",
+  "payment_info_title_bitcoin_transfer": "Bitcoin överföring",
+  "payment_info_title_closed_channel": "Stängd kanal",
+  "payment_info_title_send_to_node": "Skicka till Nod",
+  "payment_info_title_unknown": "Okänd",
+  "payment_info_title_pending_closed_channel": "Väntande stängd kanal",
+  "payment_error_to_send": "Det gick inte att skicka betalning: {error}",
+  "@payment_error_to_send": {
+    "placeholders": {
+      "error": {
+        "type": "String",
+        "example": "An error"
+      }
+    }
+  },
+  "podcast_history_drawer": "Mina bästa poddar",
+  "podcast_history_share_message": "Mina bästa poddar lyssnade på Breez",
+  "podcast_history_share_text": "DELA",
+  "podcast_history_sats_streamed": "sats streamade",
+  "podcast_history_boostagrams_sent": "boosts sända",
+  "podcast_history_open_podcast_button": "ÖPPNA PODCASTS",
+  "podcast_history_appbar_top_weekly": "Bästa Poddar per vecka",
+  "podcast_history_appbar_top_monthly": "Bästa Poddar per månad",
+  "podcast_history_appbar_top_yearly": "Bästa Poddar per år",
+  "podcast_history_timerange_dropdown_week": "Senaste veckan",
+  "podcast_history_timerange_dropdown_month": "Senaste månaden",
+  "podcast_history_timerange_dropdown_year": "Senaste året",
+  "podcast_history_sort_dropdown_recent": "Nyligen",
+  "podcast_history_sort_dropdown_duration": "Lyssnade",
+  "podcast_history_sort_dropdown_sats": "Betalt",
+  "podcast_history_sort_dropdown_boosts": "Boosted",
+  "podcast_history_empty_text": "Inge tillgänglig data att visa.",
+  "podcast_clips_clip_button": "KLIPP",
+  "podcast_clips_cancel_button": "AVBRYT",
+  "podcast_clips_seconds": "sekunder",
+  "podcast_clips_dialog_title": "Klipplängd (i sekunder)",
+  "podcast_clips_dialog_done": "GJORT",
+  "podcast_clips_error": "Ett fel uppstod när avsnittet klipptes. Var god försök igen.",
+  "locale": "sv",
+  "app_name": "Breez"
+}

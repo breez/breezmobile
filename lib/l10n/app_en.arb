@@ -917,7 +917,7 @@
   "withdraw_funds_error_max_value": "Must be less than {maxValue}",
   "@withdraw_funds_error_max_value": {
     "placeholders": {
-      "minValue": {
+      "maxValue": {
         "type": "String",
         "example": "12 345"
       }

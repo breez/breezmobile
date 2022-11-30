@@ -660,7 +660,7 @@
       }
     }
   },
-  "connect_to_pay_payee_process": "Traitement du paiement de {nom}",
+  "connect_to_pay_payee_process": "Traitement du paiement de {name}",
   "@connect_to_pay_payee_process": {
     "placeholders": {
       "name": {
@@ -917,7 +917,7 @@
   "withdraw_funds_error_max_value": "Doit être inférieur à {maxValue}",
   "@withdraw_funds_error_max_value": {
     "placeholders": {
-      "minValue": {
+      "maxValue": {
         "type": "String",
         "example": "12 345"
       }

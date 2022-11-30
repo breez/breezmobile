@@ -6,6 +6,7 @@ import 'package:flutter_gen/gen_l10n/app_localizations_fi.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations_fr.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations_it.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations_pt.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations_sv.dart';
 
 enum ProfileColor {
   SALMON,
@@ -176,6 +177,7 @@ Map<String, Map<String, ProfileColor>> _colorsFromName = {
   "fr": _buildColorsFromName(AppLocalizationsFr()),
   "it": _buildColorsFromName(AppLocalizationsIt()),
   "pt": _buildColorsFromName(AppLocalizationsPt()),
+  "sv": _buildColorsFromName(AppLocalizationsSv()),
 };
 
 Map<String, ProfileColor> _buildColorsFromName(AppLocalizations local) => {
