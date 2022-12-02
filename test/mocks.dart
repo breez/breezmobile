@@ -8,14 +8,14 @@ import 'package:breez/services/injector.dart';
 import 'package:breez/services/nfc.dart';
 import 'package:breez/services/notifications.dart';
 import 'package:fixnum/fixnum.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:http/http.dart';
 import 'package:http/testing.dart';
 import 'package:mockito/mockito.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:sqflite_common_ffi/src/mixin/handler_mixin.dart';
+import 'package:sqflite/sqflite.dart';
+import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 
 class SharedPreferencesMock extends Mock implements SharedPreferences {
   Map<String, bool> _cache = {};
@@ -113,22 +113,6 @@ class InjectorMock extends Mock implements ServiceInjector {
 
 void sqfliteFfiInitAsMockMethodCallHandler() {
   TestWidgetsFlutterBinding.ensureInitialized();
-  final binding = TestDefaultBinaryMessengerBinding.instance;
-  binding.defaultBinaryMessenger.setMockMethodCallHandler(
-    MethodChannel('com.tekartik.sqflite'),
-    (methodCall) async {
-      try {
-        return await FfiMethodCall(
-          methodCall.method,
-          methodCall.arguments,
-        ).handleInIsolate();
-      } on SqfliteFfiException catch (e) {
-        throw PlatformException(
-          code: e.code,
-          message: e.message,
-          details: e.details,
-        );
-      }
-    },
-  );
+  sqfliteFfiInit();
+  databaseFactory = databaseFactoryFfi;
 }
