@@ -897,6 +897,15 @@
   "reverse_swap_confirmation_error_funds_fee": "No hay fondos suficientes para pagar la tarifa de pago en la red.",
   "reverse_swap_notification_title": "Acción requerida",
   "reverse_swap_notification_body": "Abra Breez para completar la transacción solicitada.",
+  "reverse_swap_upstream_generic_error_message": "{errorMessage}. Por favor intente de nuevo más tarde.",
+  "@reverse_swap_upstream_generic_error_message": {
+    "placeholders": {
+      "errorMessage": {
+        "type": "String",
+        "example": "Failed to retrieve fees"
+      }
+    }
+  },
   "sync_progress_server_ready": "Sincronizando con la red",
   "sync_progress_waiting_network": "Esperando la red",
   "withdraw_funds_error_min_value": "Debe ser al menos {minValue}",

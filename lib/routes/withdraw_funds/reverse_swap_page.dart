@@ -6,6 +6,7 @@ import 'package:breez/bloc/blocs_provider.dart';
 import 'package:breez/bloc/reverse_swap/reverse_swap_actions.dart';
 import 'package:breez/bloc/reverse_swap/reverse_swap_bloc.dart';
 import 'package:breez/bloc/reverse_swap/reverse_swap_model.dart';
+import 'package:breez/utils/exceptions.dart';
 import 'package:breez/widgets/back_button.dart' as backBtn;
 import 'package:breez/widgets/error_dialog.dart';
 import 'package:breez/widgets/loader.dart';
@@ -92,7 +93,7 @@ class ReverseSwapPageState extends State<ReverseSwapPage> {
     return StreamBuilder<AccountModel>(
       stream: accountBloc.accountStream,
       builder: (context, accSnapshot) {
-        final accountModel = accSnapshot.data;        
+        final accountModel = accSnapshot.data;
 
         return Scaffold(
           appBar: !_policyCompleter.isCompleted ||
@@ -112,12 +113,20 @@ class ReverseSwapPageState extends State<ReverseSwapPage> {
               : null,
           body: FutureBuilder<Object>(
             future: _policyCompleter.future,
-            builder: (context, snapshot) {              
+            builder: (context, snapshot) {
               if (snapshot.error != null) {
                 return Center(
-                  child: Text(
-                    snapshot.error.toString(),
-                    textAlign: TextAlign.center,
+                  child: Padding(
+                    padding: const EdgeInsets.fromLTRB(32, 0, 32, 0),
+                    child: Text(
+                      texts.reverse_swap_upstream_generic_error_message(
+                        extractExceptionMessage(
+                          snapshot.error,
+                          clearTrailingDot: true,
+                        ),
+                      ),
+                      textAlign: TextAlign.center,
+                    ),
                   ),
                 );
               }
@@ -259,7 +268,7 @@ class ReverseSwapPageState extends State<ReverseSwapPage> {
     return swap.future.then((value) {
       Navigator.of(context).pop();
     }).catchError((err) async {
-      await promptError(context, null, Text(err.toString()));
+      await promptError(context, null, Text(extractExceptionMessage(err)));
     });
   }
 }

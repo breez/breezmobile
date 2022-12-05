@@ -897,6 +897,15 @@
   "reverse_swap_confirmation_error_funds_fee": "Vous n'avez pas assez de fonds pour payer ces frais de réseau de paiement.",
   "reverse_swap_notification_title": "Action requise",
   "reverse_swap_notification_body": "Veuillez ouvrir Breez pour effectuer la transaction demandée.",
+  "reverse_swap_upstream_generic_error_message": "{errorMessage}. Please try again later.",
+  "@reverse_swap_upstream_generic_error_message": {
+    "placeholders": {
+      "errorMessage": {
+        "type": "String",
+        "example": "Failed to retrieve fees"
+      }
+    }
+  },
   "sync_progress_server_ready": "Synchronisation avec le réseau",
   "sync_progress_waiting_network": "En attente du réseau",
   "withdraw_funds_error_min_value": "Doit être au moins {minValue}",

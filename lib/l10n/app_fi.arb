@@ -897,6 +897,15 @@
   "reverse_swap_confirmation_error_funds_fee": "Varasi eivät riitä tapahtumakulujen maksamiseen.",
   "reverse_swap_notification_title": "Toimenpiteitä tarvitaan",
   "reverse_swap_notification_body": "Avaa Breez käynnistämäsi tapahtuman päättämiseksi.",
+  "reverse_swap_upstream_generic_error_message": "{errorMessage}. Please try again later.",
+  "@reverse_swap_upstream_generic_error_message": {
+    "placeholders": {
+      "errorMessage": {
+        "type": "String",
+        "example": "Failed to retrieve fees"
+      }
+    }
+  },
   "sync_progress_server_ready": "Odota, sovellus synkronoi tietoja",
   "sync_progress_waiting_network": "Odotetaan verkkoyhteyttä",
   "withdraw_funds_error_min_value": "Nostettava minimimäärä on {minValue}",

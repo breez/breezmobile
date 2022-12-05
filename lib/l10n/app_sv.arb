@@ -897,6 +897,15 @@
   "reverse_swap_confirmation_error_funds_fee": "Du har inte tillräckligt med pengar för denna nätverksavgift.",
   "reverse_swap_notification_title": "Ååtgärd krävs",
   "reverse_swap_notification_body": "Öppna Breez för att slutföra din begärda transaktion.",
+  "reverse_swap_upstream_generic_error_message": "{errorMessage}. Please try again later.",
+  "@reverse_swap_upstream_generic_error_message": {
+    "placeholders": {
+      "errorMessage": {
+        "type": "String",
+        "example": "Failed to retrieve fees"
+      }
+    }
+  },
   "sync_progress_server_ready": "Synkronisera till nätverket",
   "sync_progress_waiting_network": "Väntar på nätverk",
   "withdraw_funds_error_min_value": "Måste vara minst {minValue}",
