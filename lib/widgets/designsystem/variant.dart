@@ -1,0 +1,4 @@
+enum Variant {
+  primary,
+  secondary,
+}
