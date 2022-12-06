@@ -1,4 +1,5 @@
-import 'package:auto_size_text/auto_size_text.dart';
+import 'package:breez/widgets/designsystem/button/action_button.dart';
+import 'package:breez/widgets/designsystem/variant.dart';
 import 'package:flutter/material.dart';
 
 class SingleButtonBottomBar extends StatelessWidget {
@@ -55,18 +56,12 @@ class SubmitButton extends StatelessWidget {
         minHeight: 48.0,
         minWidth: 168.0,
       ),
-      child: ElevatedButton(
-        style: ElevatedButton.styleFrom(
-          primary: Theme.of(context).buttonColor,
-          elevation: 0.0,
-          shape: const StadiumBorder(),
-        ),
-        child: AutoSizeText(
-          this.text,
-          maxLines: 1,
-          style: Theme.of(context).textTheme.button,
-        ),
+      child: ActionButton(
+        text:  this.text,
         onPressed: this.onPressed,
+        enabled: true,
+        fill: true,
+        variant: Variant.fab,
       ),
     );
   }

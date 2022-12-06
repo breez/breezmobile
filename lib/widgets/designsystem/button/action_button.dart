@@ -41,7 +41,7 @@ class ActionButton extends StatelessWidget {
           const Size(40, 40),
         ),
         shape: MaterialStateProperty.all<OutlinedBorder>(
-          variant == Variant.primary
+          variant == Variant.primary || variant == Variant.fab
               ? RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(8.0),
                 )
@@ -87,21 +87,37 @@ class ActionButton extends StatelessWidget {
           );
   }
 
-  Color _backgroundColor(ThemeData themeData) => variant == Variant.primary
-      ? enabled
-          ? themeData.primaryColorDark
-          : themeData.primaryColorDark.withOpacity(_kDisabledOpacity)
-      : enabled
-          ? themeData.colorScheme.onSurface
-          : themeData.colorScheme.onSurface.withOpacity(_kDisabledOpacity);
+  Color _backgroundColor(ThemeData themeData) {
+    switch (variant) {
+      case Variant.primary:
+        return enabled ? themeData.primaryColorDark : themeData.primaryColorDark.withOpacity(_kDisabledOpacity);
+      case Variant.secondary:
+        return enabled
+            ? themeData.colorScheme.onSurface
+            : themeData.colorScheme.onSurface.withOpacity(_kDisabledOpacity);
+      case Variant.fab:
+        return enabled ? themeData.buttonColor : themeData.buttonColor.withOpacity(_kDisabledOpacity);
+    }
+    throw Exception('Unknown variant: $variant');
+  }
 
-  Color _foregroundColor(ThemeData themeData) => variant == Variant.primary
-      ? enabled
-          ? themeData.colorScheme.onSurface
-          : themeData.colorScheme.onSurface.withOpacity(_kDisabledOpacity)
-      : enabled
-          ? themeData.primaryColorDark
-          : themeData.primaryColorDark.withOpacity(_kDisabledOpacity);
+  Color _foregroundColor(ThemeData themeData) {
+    switch (variant) {
+      case Variant.primary:
+        return enabled
+            ? themeData.colorScheme.onSurface
+            : themeData.colorScheme.onSurface.withOpacity(_kDisabledOpacity);
+      case Variant.secondary:
+        return enabled
+            ? themeData.primaryColorDark
+            : themeData.primaryColorDark.withOpacity(_kDisabledOpacity);
+      case Variant.fab:
+        return enabled
+            ? themeData.textTheme.button.color
+            : themeData.textTheme.button.color.withOpacity(_kDisabledOpacity);
+    }
+    throw Exception('Unknown variant: $variant');
+  }
 }
 
 // Preview
