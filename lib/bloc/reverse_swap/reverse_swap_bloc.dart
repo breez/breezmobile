@@ -93,9 +93,9 @@ class ReverseSwapBloc with AsyncActionsHandler {
     String unconfirmedTx =
         await _breezLib.unconfirmedReverseSwapClaimTransaction();
     ReverseSwapPaymentStatuses payments = await _breezLib.reverseSwapPayments();
-    InProgressReverseSwaps swap = InProgressReverseSwaps(null, null);
-    if (unconfirmedTx.isNotEmpty || payments.paymentsStatus.length > 0) {
-      swap = InProgressReverseSwaps(payments, unconfirmedTx);
+    InProgressReverseSwaps swap = InProgressReverseSwaps(null);
+    if (unconfirmedTx.isNotEmpty && payments.paymentsStatus.length > 0) {
+      swap = InProgressReverseSwaps(payments);
     }
     _swapsInProgressController.add(swap);
     action.resolve(swap);

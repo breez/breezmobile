@@ -16,7 +16,7 @@ class TxWidgetWithInfoMsg extends StatelessWidget {
   Widget build(BuildContext context) {
     final texts = AppLocalizations.of(context);
 
-    final txId = swapInProgress.lockTxID ?? swapInProgress.claimTxId;
+    final txId = swapInProgress.lockTxID;
 
     return Column(
       mainAxisSize: MainAxisSize.max,
