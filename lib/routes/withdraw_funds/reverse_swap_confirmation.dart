@@ -128,9 +128,10 @@ class ReverseSwapConfirmationState extends State<ReverseSwapConfirmation> {
 
     final accountBloc = AppBlocsProvider.of<AccountBloc>(context);
 
-    final rsAmounts = feeOptions[selectedFeeIndex] != null
-        ? amounts[feeOptions[selectedFeeIndex].confirmationTarget]
-        : null;
+    final rsAmounts =
+        (feeOptions != null && feeOptions[selectedFeeIndex] != null)
+            ? amounts[feeOptions[selectedFeeIndex].confirmationTarget]
+            : null;
 
     return Scaffold(
       appBar: AppBar(
