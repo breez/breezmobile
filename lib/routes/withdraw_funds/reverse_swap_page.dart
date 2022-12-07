@@ -143,7 +143,7 @@ class ReverseSwapPageState extends State<ReverseSwapPage> {
                 stream: reverseSwapBloc.swapInProgressStream,
                 builder: (context, snapshot) {
                   final swapInProgress = snapshot.data;
-                  if (swapInProgress != null || !swapInProgress.isEmpty) {
+                  if (swapInProgress != null && swapInProgress.isNotEmpty) {
                     return SwapInProgress(swapInProgress: swapInProgress);
                   }
 

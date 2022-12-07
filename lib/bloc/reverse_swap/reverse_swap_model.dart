@@ -74,5 +74,5 @@ class InProgressReverseSwaps {
       ? _statuses.paymentsStatus[0].txID
       : "";
 
-  bool get isEmpty => _statuses == null && claimTxId == null;
+  bool get isNotEmpty => _statuses != null && claimTxId != null;
 }
