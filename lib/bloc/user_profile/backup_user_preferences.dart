@@ -18,7 +18,7 @@ class BackupUserPreferences {
     this.color,
     this.animal, {
     this.image,
-    this.themeId = "DARK",
+    this.themeId = "BLUE",
     this.preferredCurrencies,
     this.cancellationTimeoutValue = 90.0,
     this.businessAddress,
@@ -55,7 +55,7 @@ class BackupUserPreferences {
         color = json['color'],
         animal = json['animal'],
         image = json['image'],
-        themeId = json['themeId'] ?? "DARK",
+        themeId = json['themeId'] ?? "BLUE",
         preferredCurrencies =
             (json['preferredCurrencies'] as List<dynamic>)?.cast<String>() ??
                 <String>['USD', 'EUR', 'GBP', 'JPY'],

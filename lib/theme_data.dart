@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
-String themeId = "DARK";
+String themeId = "BLUE";
 
 class CustomData {
   BlendMode loaderColorBlendMode;

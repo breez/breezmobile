@@ -43,7 +43,7 @@ class BreezUserModel {
     this.securityModel,
     this.locked,
     this.token = '',
-    this.themeId = "DARK",
+    this.themeId = "BLUE",
     this.registrationRequested = false,
     this.hideBalance = false,
     this.cancellationTimeoutValue = 90.0,
@@ -135,7 +135,7 @@ class BreezUserModel {
             : SecurityModel.fromJson(
                 json['securityModel'],
               ),
-        themeId = json['themeId'] == null ? "DARK" : json['themeId'],
+        themeId = json['themeId'] == null ? "BLUE" : json['themeId'],
         registrationRequested =
             json['registrationRequested'] ?? json['token'] != null,
         hideBalance = json['hideBalance'] ?? false,
