@@ -346,7 +346,9 @@ class UserProfileBloc {
   }
 
   void _listenRegistrationRequests(ServiceInjector injector) {
-    _registrationController.stream.listen((request) async {
+    _registrationController.stream.listen((request) async {      
+      SharedPreferences preferences = await _preferences;
+      await _saveChanges(preferences, _userStreamController.value.copyWith(themeId: "DARK"));
       _refreshRegistration(_userStreamController.value);
     });
   }
@@ -366,7 +368,7 @@ class UserProfileBloc {
     } catch (e) {
       _registrationController.addError(e);
     }
-    userToRegister = userToRegister.copyWith(registrationRequested: true);
+    userToRegister = _userStreamController.value.copyWith(registrationRequested: true);
     await _saveChanges(preferences, userToRegister);
   }
 
