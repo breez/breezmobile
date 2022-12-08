@@ -90,12 +90,14 @@ class ReverseSwapBloc with AsyncActionsHandler {
   }
 
   Future _fetchInProgressSwap(FetchInProgressSwap action) async {
-    String unconfirmedTx =
-        await _breezLib.unconfirmedReverseSwapClaimTransaction();
+    // We will have to see if there are any in flight payments
     ReverseSwapPaymentStatuses payments = await _breezLib.reverseSwapPayments();
-    InProgressReverseSwaps swap = InProgressReverseSwaps(null, null);
-    if (unconfirmedTx.isNotEmpty || payments.paymentsStatus.length > 0) {
-      swap = InProgressReverseSwaps(payments, unconfirmedTx);
+    InProgressReverseSwaps swap;
+    // If there are any in flight payments we display the txid to the user.
+    if (payments.paymentsStatus.length > 0) {
+      swap = InProgressReverseSwaps(payments);
+    } else {
+      swap = InProgressReverseSwaps(null);
     }
     _swapsInProgressController.add(swap);
     action.resolve(swap);

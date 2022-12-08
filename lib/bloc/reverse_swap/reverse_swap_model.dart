@@ -62,9 +62,8 @@ class ReverseSwapClaimFeeEstimates {
 
 class InProgressReverseSwaps {
   final ReverseSwapPaymentStatuses _statuses;
-  final String claimTxId;
 
-  InProgressReverseSwaps(this._statuses, this.claimTxId);
+  InProgressReverseSwaps(this._statuses);
 
   int get lockupTxETA => (_statuses?.paymentsStatus?.isNotEmpty == true)
       ? _statuses.paymentsStatus[0].eta
@@ -74,5 +73,5 @@ class InProgressReverseSwaps {
       ? _statuses.paymentsStatus[0].txID
       : "";
 
-  bool get isNotEmpty => _statuses != null && claimTxId != null;
+  bool get isNotEmpty => _statuses != null;
 }
