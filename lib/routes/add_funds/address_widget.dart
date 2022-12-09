@@ -105,7 +105,6 @@ class AddressWidget extends StatelessWidget {
     }
     Widget _shareIcon = IconButton(
       icon: Icon(IconData(0xe917, fontFamily: 'icomoon')),
-      color: themeData.buttonColor,
       onPressed: () {
         final RenderBox box = context.findRenderObject();
         ShareExtend.share(
@@ -117,7 +116,6 @@ class AddressWidget extends StatelessWidget {
     );
     Widget _copyIcon = IconButton(
       icon: Icon(IconData(0xe90b, fontFamily: 'icomoon')),
-      color: themeData.buttonColor,
       onPressed: () {
         ServiceInjector().device.setClipboardText(address);
         showFlushbar(

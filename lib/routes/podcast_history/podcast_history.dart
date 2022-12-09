@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:io';
 import 'dart:math';
 import 'dart:typed_data';
+
 import 'package:anytime/bloc/podcast/podcast_bloc.dart';
 import 'package:anytime/entities/podcast.dart';
 import 'package:anytime/ui/podcast/podcast_details.dart';
@@ -15,9 +16,10 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:intl/intl.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:provider/provider.dart';
 import 'package:screenshot/screenshot.dart';
 import 'package:share_plus/share_plus.dart';
-import 'package:provider/provider.dart';
+
 import '../../bloc/blocs_provider.dart';
 import '../../bloc/podcast_history/actions.dart';
 import '../../bloc/podcast_history/podcast_history_bloc.dart';
@@ -108,11 +110,13 @@ class PodcastHistoryPageState extends State<PodcastHistoryPage> {
       ),
       floatingActionButton: StreamBuilder<bool>(
         stream: podcastHistoryBloc.showShareButton,
-        initialData: false,
         builder: (context, snapshot) {
+          if (!snapshot.hasData) {
+            return SizedBox();
+          }
+
           return snapshot.data
               ? FloatingActionButton.extended(
-                  backgroundColor: Colors.white,
                   onPressed: () async {
                     await _screenshotController
                         .captureFromWidget(
@@ -180,12 +184,12 @@ class PodcastHistoryPageState extends State<PodcastHistoryPage> {
                     });
                   },
                   icon: Icon(
-                    Icons.share,
-                    color: Theme.of(context).canvasColor,
+                    Icons.share_outlined,
+                    color: Colors.white,
                   ),
                   label: Text(
                     AppLocalizations.of(context).podcast_history_share_text,
-                    style: TextStyle(color: themeData.canvasColor),
+                    style: TextStyle(color: Colors.white),
                   ),
                 )
               : SizedBox();
@@ -193,138 +197,116 @@ class PodcastHistoryPageState extends State<PodcastHistoryPage> {
       ),
       body: StreamBuilder<bool>(
           stream: podcastHistoryBloc.showShareButton,
-          initialData: false,
           builder: (context, isListEmptySnapshot) {
+            if (!isListEmptySnapshot.hasData) {
+              return Center(child: Loader());
+            }
+
             return isListEmptySnapshot.data
                 ? SingleChildScrollView(
                     child: Padding(
                       padding:
                           EdgeInsets.only(top: 16.0, left: 16.0, right: 16.0),
-                      child: StreamBuilder<bool>(
-                          stream: podcastHistoryBloc.showShareButton,
-                          initialData: false,
-                          builder: (context, isListEmptySnapshot) {
-                            return isListEmptySnapshot.data
-                                ? Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      StreamBuilder<PodcastHistoryRecord>(
-                                          stream: podcastHistoryBloc
-                                              .podcastHistoryRecord,
-                                          initialData: PodcastHistoryRecord(
-                                              totalBoostagramSentSum: 0,
-                                              totalDurationInMinsSum: 0,
-                                              totalSatsStreamedSum: 0,
-                                              podcastHistoryList: []),
-                                          builder: (context, snapshot) {
-                                            return snapshot.data != null
-                                                ? Row(
-                                                    mainAxisAlignment:
-                                                        MainAxisAlignment
-                                                            .spaceBetween,
-                                                    children: [
-                                                      _PodcastStatItem(
-                                                          svg:
-                                                              "src/icon/schedule_icon.svg",
-                                                          label:
-                                                              '${_podcastListingTimeMap(durationInMins: snapshot.data.totalDurationInMinsSum)["unit"]} listened',
-                                                          value: _podcastListingTimeMap(
-                                                                  durationInMins:
-                                                                      snapshot
-                                                                          .data
-                                                                          .totalDurationInMinsSum)[
-                                                              "value"]),
-                                                      _PodcastStatItem(
-                                                        svg:
-                                                            "src/icon/satoshi_icon.svg",
-                                                        label: AppLocalizations
-                                                                .of(context)
-                                                            .podcast_history_sats_streamed,
-                                                        value: _getCompactNumber(
-                                                            snapshot.data
-                                                                .totalSatsStreamedSum),
-                                                      ),
-                                                      _PodcastStatItem(
-                                                        svg:
-                                                            "src/icon/rocket_launch_icon.svg",
-                                                        label: AppLocalizations
-                                                                .of(context)
-                                                            .podcast_history_boostagrams_sent,
-                                                        value: _getCompactNumber(
-                                                            snapshot.data
-                                                                .totalBoostagramSentSum),
-                                                      ),
-                                                    ],
-                                                  )
-                                                : SizedBox();
-                                          }),
-                                      SizedBox(
-                                        height: 16,
-                                      ),
-                                      Divider(
-                                        thickness: 2,
-                                      ),
-                                      SizedBox(
-                                        height: 16,
-                                      ),
-                                      Row(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          StreamBuilder<PodcastHistoryRecord>(
+                              stream: podcastHistoryBloc.podcastHistoryRecord,
+                              initialData: PodcastHistoryRecord(
+                                  totalBoostagramSentSum: 0,
+                                  totalDurationInMinsSum: 0,
+                                  totalSatsStreamedSum: 0,
+                                  podcastHistoryList: []),
+                              builder: (context, snapshot) {
+                                return snapshot.data != null
+                                    ? Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceBetween,
                                         children: [
-                                          Text("PODCASTS"),
-                                          Spacer(),
-                                          PopupMenuButton<
-                                              PodcastHistorySortEnum>(
-                                            color: themeData.canvasColor,
-                                            padding: EdgeInsets.all(0),
-                                            enableFeedback: true,
-                                            child: Icon(
-                                              Icons.filter_list,
-                                              color: theme.themeId != "BLUE"
-                                                  ? Colors.white
-                                                  : theme
-                                                      .BreezColors.white[400],
-                                            ),
-                                            onSelected: (value) {
-                                              AppBlocsProvider.of<
-                                                          PodcastHistoryBloc>(
-                                                      context)
-                                                  .updateSortOption(value);
-                                            },
-                                            itemBuilder: (ctx) => [
-                                              PodcastHistorySortEnum
-                                                  .SORT_RECENTLY_HEARD,
-                                              PodcastHistorySortEnum
-                                                  .SORT_DURATION_DESCENDING,
-                                              PodcastHistorySortEnum
-                                                  .SORT_SATS_DESCENDING,
-                                              PodcastHistorySortEnum
-                                                  .SORT_BOOSTS_DESCENDING,
-                                            ]
-                                                .map((e) =>
-                                                    _listSortDropdownItem(
-                                                      context,
-                                                      e,
-                                                    ))
-                                                .toList(),
-                                          )
+                                          _PodcastStatItem(
+                                              svg: "src/icon/schedule_icon.svg",
+                                              label:
+                                                  '${_podcastListingTimeMap(durationInMins: snapshot.data.totalDurationInMinsSum)["unit"]} listened',
+                                              value: _podcastListingTimeMap(
+                                                      durationInMins: snapshot
+                                                          .data
+                                                          .totalDurationInMinsSum)[
+                                                  "value"]),
+                                          _PodcastStatItem(
+                                            svg: "src/icon/satoshi_icon.svg",
+                                            label: AppLocalizations.of(context)
+                                                .podcast_history_sats_streamed,
+                                            value: _getCompactNumber(snapshot
+                                                .data.totalSatsStreamedSum),
+                                          ),
+                                          _PodcastStatItem(
+                                            svg:
+                                                "src/icon/rocket_launch_icon.svg",
+                                            label: AppLocalizations.of(context)
+                                                .podcast_history_boostagrams_sent,
+                                            value: _getCompactNumber(snapshot
+                                                .data.totalBoostagramSentSum),
+                                          ),
                                         ],
-                                      ),
-                                      SizedBox(
-                                        height: 12,
-                                      ),
-                                      _getPodcastHistoryList(
-                                          context: context,
-                                          getScreenshotWidget: false,
-                                          timeRange: timeRange),
-                                      SizedBox(
-                                        height: 40,
                                       )
-                                    ],
-                                  )
-                                : Column();
-                          }),
+                                    : SizedBox();
+                              }),
+                          SizedBox(
+                            height: 16,
+                          ),
+                          Divider(
+                            thickness: 2,
+                          ),
+                          SizedBox(
+                            height: 16,
+                          ),
+                          Row(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text("PODCASTS"),
+                              Spacer(),
+                              PopupMenuButton<PodcastHistorySortEnum>(
+                                color: themeData.canvasColor,
+                                padding: EdgeInsets.all(0),
+                                enableFeedback: true,
+                                child: Icon(
+                                  Icons.filter_list,
+                                  color: theme.themeId != "BLUE"
+                                      ? Colors.white
+                                      : theme.BreezColors.white[400],
+                                ),
+                                onSelected: (value) {
+                                  AppBlocsProvider.of<PodcastHistoryBloc>(
+                                          context)
+                                      .updateSortOption(value);
+                                },
+                                itemBuilder: (ctx) => [
+                                  PodcastHistorySortEnum.SORT_RECENTLY_HEARD,
+                                  PodcastHistorySortEnum
+                                      .SORT_DURATION_DESCENDING,
+                                  PodcastHistorySortEnum.SORT_SATS_DESCENDING,
+                                  PodcastHistorySortEnum.SORT_BOOSTS_DESCENDING,
+                                ]
+                                    .map((e) => _listSortDropdownItem(
+                                          context,
+                                          e,
+                                        ))
+                                    .toList(),
+                              )
+                            ],
+                          ),
+                          SizedBox(
+                            height: 12,
+                          ),
+                          _getPodcastHistoryList(
+                              context: context,
+                              getScreenshotWidget: false,
+                              timeRange: timeRange),
+                          SizedBox(
+                            height: 40,
+                          )
+                        ],
+                      ),
                     ),
                   )
                 : Stack(

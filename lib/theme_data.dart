@@ -38,7 +38,7 @@ final CustomData blueThemeCustomData = CustomData(
 final CustomData darkThemeCustomData = CustomData(
   loaderColorBlendMode: BlendMode.srcIn,
   loaderAssetPath: 'src/images/breez_loader_dark.gif',
-  pendingTextColor: Color(0xFF0085fb),
+  pendingTextColor: Color(0xff4D88EC),
   dashboardBgColor: Color(0xFF0D1F33),
   paymentListBgColor: Color(0xFF152a3d),
   paymentListDividerColor: Color.fromRGBO(255, 255, 255, 0.12),
@@ -196,11 +196,11 @@ final ThemeData darkTheme = ThemeData(
   brightness: Brightness.dark,
   colorScheme: ColorScheme.dark()
       .copyWith(primary: Colors.white, secondary: Colors.white),
-  primaryColor: Color(0xFF7aa5eb),
+  primaryColor: Color(0xFF0085FB),
   primaryColorDark: Color(0xFF00081C),
-  primaryColorLight: Color(0xFF4B89EB),
+  primaryColorLight: Color(0xFF0085FB),
   floatingActionButtonTheme:
-      FloatingActionButtonThemeData(backgroundColor: Color(0xFF4B89EB)),
+      FloatingActionButtonThemeData(backgroundColor: Color(0xFF0085fb)),
   canvasColor: Color(0xFF0c2031),
   backgroundColor: Color(0xFF152a3d),
   bottomAppBarTheme: BottomAppBarTheme(elevation: 0),
@@ -227,9 +227,9 @@ final ThemeData darkTheme = ThemeData(
   dialogBackgroundColor: Colors.transparent,
   errorColor: Color(0xFFeddc97),
   dividerColor: Color(0x337aa5eb),
-  buttonColor: Color(0xFF4B89EB),
+  buttonColor: Colors.white,
   cardColor: Color(0xFF121212),
-  highlightColor: Color(0xFF81acf1),
+  highlightColor: Color(0xFF0085fb),
   textTheme: TextTheme(
       subtitle2:
           TextStyle(color: Colors.white, fontSize: 14.3, letterSpacing: 0.2),
@@ -269,18 +269,17 @@ final ThemeData darkTheme = ThemeData(
         letterSpacing: 0.15,
         fontWeight: FontWeight.w500,
         fontFamily: 'IBMPlexSans'),
-    button: TextStyle(
-        color: Color(0xFF7aa5eb), fontSize: 14.3, letterSpacing: 1.25),
+    button: TextStyle(color: Colors.white, fontSize: 14.3, letterSpacing: 1.25),
     subtitle2: TextStyle(
         color: BreezColors.white[500], fontSize: 10.0, letterSpacing: 0.09),
     caption: TextStyle(color: BreezColors.white[400], fontSize: 12.0),
   ),
   textSelectionTheme: TextSelectionThemeData(
     selectionColor: Color.fromRGBO(255, 255, 255, 0.5),
-    selectionHandleColor: Color(0xff4D88EC),
+    selectionHandleColor: Color(0xFF0085fb),
   ),
-  primaryIconTheme: IconThemeData(color: Color(0xFF7aa5eb)),
-  bottomAppBarColor: Color(0xff4D88EC),
+  primaryIconTheme: IconThemeData(color: Colors.white),
+  bottomAppBarColor: Color(0xFF0085fb),
   fontFamily: 'IBMPlexSans',
   accentTextTheme: TextTheme(
       bodyText2: TextStyle(color: Colors.white),

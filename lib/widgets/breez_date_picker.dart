@@ -75,9 +75,8 @@ class _DatePickerHeader extends StatelessWidget {
     Color yearColor;
     switch (themeData.primaryColorBrightness) {
       case Brightness.dark:
-        dayColor = mode == DatePickerMode.day ? Colors.black87 : Colors.black54;
-        yearColor =
-            mode == DatePickerMode.year ? Colors.black87 : Colors.black54;
+        dayColor = mode == DatePickerMode.day ? Colors.white : Colors.white38;
+        yearColor = mode == DatePickerMode.year ? Colors.white : Colors.white38;
         break;
       case Brightness.light:
         dayColor = mode == DatePickerMode.day ? Colors.white : Colors.white70;
@@ -99,7 +98,7 @@ class _DatePickerHeader extends StatelessWidget {
         backgroundColor = themeData.primaryColor;
         break;
       case Brightness.dark:
-        backgroundColor = themeData.primaryTextTheme.button.color;
+        backgroundColor = themeData.canvasColor;
         break;
     }
 
@@ -451,7 +450,7 @@ class DayPicker extends StatelessWidget {
             selectedDate.day == day;
         if (isSelectedDay) {
           // The selected day gets a circle background highlight, and a contrasting text color.
-          itemStyle = TextStyle(color: Colors.white);
+          itemStyle = TextStyle(color: themeData.primaryColor);
           decoration = BoxDecoration(
             color: themeData.primaryTextTheme.button.color,
             shape: BoxShape.circle,
@@ -877,7 +876,9 @@ class _YearPickerState extends State<YearPicker> {
   @override
   Widget build(BuildContext context) {
     assert(debugCheckHasMaterial(context));
-    final TextStyle style = TextStyle(color: Colors.black87);
+    final TextStyle style = TextStyle(
+      color: theme.themeId == "BLUE" ? Colors.black87 : Colors.white38,
+    );
     return ListView.builder(
       controller: scrollController,
       itemExtent: _itemExtent,
@@ -885,7 +886,11 @@ class _YearPickerState extends State<YearPicker> {
       itemBuilder: (BuildContext context, int index) {
         final year = widget.firstDate.year + index;
         final isSelected = year == widget.selectedDate.year;
-        final itemStyle = isSelected ? TextStyle(color: Colors.black87) : style;
+        final itemStyle = isSelected
+            ? TextStyle(
+                color: theme.themeId == "BLUE" ? Colors.black : Colors.white,
+              )
+            : style;
         return InkWell(
           key: ValueKey<int>(year),
           onTap: () {
