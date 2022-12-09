@@ -265,7 +265,7 @@ WidgetBuilder playerBuilder(int duration) {
 
 WidgetBuilder placeholderBuilder() {
   final WidgetBuilder builder = (BuildContext context) => Container(
-        color: Theme.of(context).primaryColor,
+        color: Theme.of(context).primaryColorLight,
         constraints: BoxConstraints.expand(),
       );
   return builder;

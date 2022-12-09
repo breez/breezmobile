@@ -196,7 +196,7 @@ final ThemeData darkTheme = ThemeData(
   brightness: Brightness.dark,
   colorScheme: ColorScheme.dark()
       .copyWith(primary: Colors.white, secondary: Colors.white),
-  primaryColor: Color(0xFF7aa5eb),
+  primaryColor: Color(0xFF0085FB),
   primaryColorDark: Color(0xFF00081C),
   primaryColorLight: Color(0xFF0085FB),
   floatingActionButtonTheme:
@@ -270,7 +270,7 @@ final ThemeData darkTheme = ThemeData(
         fontWeight: FontWeight.w500,
         fontFamily: 'IBMPlexSans'),
     button: TextStyle(
-        color: Color(0xFF7aa5eb), fontSize: 14.3, letterSpacing: 1.25),
+        color: Colors.white, fontSize: 14.3, letterSpacing: 1.25),
     subtitle2: TextStyle(
         color: BreezColors.white[500], fontSize: 10.0, letterSpacing: 0.09),
     caption: TextStyle(color: BreezColors.white[400], fontSize: 12.0),
@@ -279,7 +279,7 @@ final ThemeData darkTheme = ThemeData(
     selectionColor: Color.fromRGBO(255, 255, 255, 0.5),
     selectionHandleColor: Color(0xFF0085fb),
   ),
-  primaryIconTheme: IconThemeData(color: Color(0xFF7aa5eb)),
+  primaryIconTheme: IconThemeData(color: Colors.white),
   bottomAppBarColor: Color(0xFF0085fb),
   fontFamily: 'IBMPlexSans',
   accentTextTheme: TextTheme(
