@@ -117,9 +117,9 @@ Widget withPodcastTheme(BreezUserModel user, Widget child) {
             )
         : Themes.darkTheme().themeData.copyWith(
               brightness: Brightness.dark,
-              primaryColor: Color(0xFF4B89EB),
+              primaryColor: Color(0xFF0085fb),
               primaryColorBrightness: Brightness.dark,
-              primaryColorLight: Color(0xFF81acf1),
+              primaryColorLight: Color(0xFF0085fb),
               primaryColorDark: Color(0xFF00081C),
               colorScheme: ColorScheme.dark(
                 primary: Colors.white,
@@ -127,21 +127,21 @@ Widget withPodcastTheme(BreezUserModel user, Widget child) {
                 onSecondary: Colors.white,
               ),
               sliderTheme: SliderThemeData(
-                valueIndicatorColor: Color(0xFF81acf1),
+                valueIndicatorColor: Color(0xFF0085fb),
                 valueIndicatorTextStyle: TextStyle(color: Colors.white),
               ),
               canvasColor: Color(0xFF0c2031),
               scaffoldBackgroundColor: Color(0xFF0c2031),
-              bottomAppBarColor: Color(0xff4D88EC),
+              bottomAppBarColor: Color(0xFF0085fb),
               bottomAppBarTheme: BottomAppBarTheme(elevation: 0),
               cardColor: Colors.black,
               dividerColor: Colors.white.withOpacity(0.2),
-              highlightColor: Color(0xFF81acf1),
+              highlightColor: Color(0xFF0085fb),
               splashColor: Color(0x66c8c8c8),
-              selectedRowColor: Color(0xFF4B89EB),
+              selectedRowColor: Color(0xFF0085fb),
               unselectedWidgetColor: Color(0x8a000000),
               disabledColor: Color(0x77ffffff),
-              toggleableActiveColor: Color(0xFF4B89EB),
+              toggleableActiveColor: Color(0xFF0085fb),
               secondaryHeaderColor: Color(0xfffff3e0),
               textSelectionTheme: TextSelectionThemeData(
                 selectionColor: Color.fromRGBO(255, 255, 255, 0.25),
@@ -150,7 +150,7 @@ Widget withPodcastTheme(BreezUserModel user, Widget child) {
               ),
               backgroundColor: Color(0xFF152a3d),
               dialogBackgroundColor: Color(0xFF0c2031),
-              indicatorColor: Color(0xFF81acf1),
+              indicatorColor: Color(0xFF0085fb),
               hintColor: Color(0x80ffffff),
               errorColor: Color(0xFFeddc97),
               dialogTheme: currentTheme.dialogTheme,
@@ -162,7 +162,7 @@ Widget withPodcastTheme(BreezUserModel user, Widget child) {
                         .copyWith(
                             primary: currentTheme.primaryTextTheme.button.color,
                             onPrimary: Colors.white,
-                            onSecondary: Color(0xFF4B89EB),
+                            onSecondary: Color(0xFF0085fb),
                             onSurface: Color(0x77ffffff)),
                   ),
               primaryTextTheme:
