@@ -70,7 +70,7 @@ class PaymentAdjustmentState extends State<PaymentAdjustment> {
           tutorial.next();
         }
       },
-      colorShadow: Theme.of(context).primaryColorLight,
+      colorShadow: Theme.of(context).primaryColor,
       hideSkip: true,
       onFinish: () {
         final userBloc = AppBlocsProvider.of<UserProfileBloc>(context);
@@ -176,7 +176,7 @@ class PaymentAdjustmentState extends State<PaymentAdjustment> {
                     child: Text(
                       texts.tutorial_gotcha,
                       style: theme.primaryTextTheme.button.copyWith(
-                        color: theme.primaryColorLight,
+                        color: theme.primaryColor,
                       ),
                     ),
                     onPressed: () {

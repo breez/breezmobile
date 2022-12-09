@@ -51,7 +51,7 @@ class AddFundsMessage extends StatelessWidget {
                     vertical: 12,
                     horizontal: 12,
                   ),
-                  backgroundColor: themeData.primaryColorLight,
+                  backgroundColor: themeData.primaryColor,
                 ),
                 onPressed: () => showReceiveOptions(context, accountModel),
                 child: AutoSizeText(

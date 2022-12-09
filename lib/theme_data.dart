@@ -227,7 +227,7 @@ final ThemeData darkTheme = ThemeData(
   dialogBackgroundColor: Colors.transparent,
   errorColor: Color(0xFFeddc97),
   dividerColor: Color(0x337aa5eb),
-  buttonColor: Color(0xFF0085fb),
+  buttonColor: Colors.white,
   cardColor: Color(0xFF121212),
   highlightColor: Color(0xFF0085fb),
   textTheme: TextTheme(
@@ -269,8 +269,7 @@ final ThemeData darkTheme = ThemeData(
         letterSpacing: 0.15,
         fontWeight: FontWeight.w500,
         fontFamily: 'IBMPlexSans'),
-    button: TextStyle(
-        color: Colors.white, fontSize: 14.3, letterSpacing: 1.25),
+    button: TextStyle(color: Colors.white, fontSize: 14.3, letterSpacing: 1.25),
     subtitle2: TextStyle(
         color: BreezColors.white[500], fontSize: 10.0, letterSpacing: 0.09),
     caption: TextStyle(color: BreezColors.white[400], fontSize: 12.0),
