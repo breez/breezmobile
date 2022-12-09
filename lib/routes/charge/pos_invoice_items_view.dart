@@ -5,7 +5,7 @@ import 'package:breez/bloc/pos_catalog/actions.dart';
 import 'package:breez/bloc/pos_catalog/bloc.dart';
 import 'package:breez/bloc/pos_catalog/model.dart';
 import 'package:breez/routes/charge/items/items_list.dart';
-import 'package:breez/routes/podcast/podcast_page.dart';
+import 'package:breez/theme_data.dart' as theme;
 import 'package:breez/utils/min_font_size.dart';
 import 'package:breez/widgets/loader.dart';
 import 'package:flutter/material.dart';
@@ -137,7 +137,9 @@ class PosInvoiceItemsView extends StatelessWidget {
         if (offset == null) return;
         final newOption = await showMenu(
           context: context,
-          color: Theme.of(context).canvasColor,
+          color: theme.themeId == "BLUE"
+              ? Theme.of(context).canvasColor
+              : Theme.of(context).backgroundColor,
           position: RelativeRect.fromLTRB(offset.dx, offset.dy, 0, 0),
           items: items.map((e) => _dropdownItem(context, e, sort)).toList(),
         );
