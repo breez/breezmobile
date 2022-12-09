@@ -53,8 +53,8 @@ class PosInvoiceItemsView extends StatelessWidget {
                 child: Icon(
                   Icons.add,
                 ),
-                backgroundColor: themeData.buttonColor,
-                foregroundColor: themeData.textTheme.button.color,
+                backgroundColor: Colors.white,
+                foregroundColor: themeData.primaryColorLight,
                 onPressed: () => Navigator.of(context).pushNamed("/add_item"),
               ),
             );

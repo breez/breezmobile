@@ -227,7 +227,7 @@ final ThemeData darkTheme = ThemeData(
   dialogBackgroundColor: Colors.transparent,
   errorColor: Color(0xFFeddc97),
   dividerColor: Color(0x337aa5eb),
-  buttonColor: Colors.white,
+  buttonColor: Color(0xFF0085fb),
   cardColor: Color(0xFF121212),
   highlightColor: Color(0xFF0085fb),
   textTheme: TextTheme(
