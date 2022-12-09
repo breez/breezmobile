@@ -897,12 +897,12 @@
   "reverse_swap_confirmation_error_funds_fee": "Varasi eivät riitä tapahtumakulujen maksamiseen.",
   "reverse_swap_notification_title": "Toimenpiteitä tarvitaan",
   "reverse_swap_notification_body": "Avaa Breez käynnistämäsi tapahtuman päättämiseksi.",
-  "reverse_swap_upstream_generic_error_message": "{errorMessage}. Please try again later.",
+  "reverse_swap_upstream_generic_error_message": "{errorMessage}. Yritä myöhemmin uudelleen.",
   "@reverse_swap_upstream_generic_error_message": {
     "placeholders": {
       "errorMessage": {
         "type": "String",
-        "example": "Failed to retrieve fees"
+        "example": "Kulutietojen haku epäonnistui"
       }
     }
   },
