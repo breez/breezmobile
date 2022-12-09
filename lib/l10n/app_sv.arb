@@ -729,8 +729,8 @@
   "connect_to_pay_payer_action_close": "STÄNG",
   "connect_to_pay_payment_detail_note": "Notis (valfritt)",
   "connect_to_pay_payment_available": "Tillgängligt:",
-  "connect_to_pay_payment_action_close": "Stäng",
-  "connect_to_pay_payment_action_pay": "Betala",
+  "connect_to_pay_payment_action_close": "STÄNG",
+  "connect_to_pay_payment_action_pay": "BETALA",
   "connect_to_pay_peer_unknown": "Okänd",
   "connect_to_pay_share_text": "{name} vill betala dig via Breez...\nFölj den här länken för att ta emot betalning: {address}",
   "@connect_to_pay_share_text": {

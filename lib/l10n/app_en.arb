@@ -729,8 +729,8 @@
   "connect_to_pay_payer_action_close": "CLOSE",
   "connect_to_pay_payment_detail_note": "Note (optional)",
   "connect_to_pay_payment_available": "Available:",
-  "connect_to_pay_payment_action_close": "Close",
-  "connect_to_pay_payment_action_pay": "Pay",
+  "connect_to_pay_payment_action_close": "CLOSE",
+  "connect_to_pay_payment_action_pay": "PAY",
   "connect_to_pay_peer_unknown": "Unknown",
   "connect_to_pay_share_text": "{name} wants to pay you via Breez…\nFollow this link to receive payment: {address}",
   "@connect_to_pay_share_text": {
