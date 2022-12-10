@@ -81,7 +81,7 @@ To learn more about it, please read [Introducing Breez](https://doc.breez.techno
 - [x] Sales reports
 - [x] Top podcasts
 - [x] NFC checkout 
-- [ ] Tor support ([open bounty](https://github.com/breez/breezmobile/wiki/Bounties#tor-support))
+- [ ] Tor support
 - [ ] Support LNURL-Withdraw balance check
 - [ ] Async payments via Lightning Rod
 - [ ] Neutrino sync optimizations
@@ -126,5 +126,5 @@ flutter run --flavor=client
 flutter build apk --target-platform=android-arm64 --flavor=client --debug
 ```
 
-## [Overview for Developers](https://github.com/breez/breezmobile/wiki/Overview-for-Developers)
-## [Running Breez in simnet](https://github.com/breez/breezmobile/wiki/Running-Breez-in-simnet)
+## [Overview for Developers](https://doc.breez.technology/Overview-for-Developers.html)
+## [Running Breez in simnet](https://doc.breez.technology/Running-Breez-in-simnet.html)
