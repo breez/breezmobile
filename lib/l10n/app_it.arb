@@ -1631,7 +1631,7 @@
             }
         }
     },
-    "qr_code_dialog_error": "Impossibile creare una Invoice {errore}. Per favore riprova più tardi.",
+    "qr_code_dialog_error": "Impossibile creare una Invoice {error}. Per favore riprova più tardi.",
     "@qr_code_dialog_error": {
         "placeholders": {
             "error": {
@@ -2117,6 +2117,6 @@
     "podcast_clips_dialog_title": "Durata clip (in secondi)",
     "podcast_clips_dialog_done": "FATTA",
     "podcast_clips_error": "An error has occurred while clipping the episode. Please try again.",
-    "locale": "en",
+    "locale": "it",
     "app_name": "Breez"
 }

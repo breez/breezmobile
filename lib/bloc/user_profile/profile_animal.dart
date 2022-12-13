@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations_de.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations_en.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations_es.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations_fi.dart';
@@ -176,6 +177,7 @@ extension ProfileAnimalExtension on ProfileAnimal {
 }
 
 Map<String, Map<String, ProfileAnimal>> _animalsFromName = {
+  "de": _buildAnimalsFromName(AppLocalizationsDe()),
   "en": _buildAnimalsFromName(AppLocalizationsEn()),
   "es": _buildAnimalsFromName(AppLocalizationsEs()),
   "fi": _buildAnimalsFromName(AppLocalizationsFi()),

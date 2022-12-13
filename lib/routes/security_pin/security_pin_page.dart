@@ -411,6 +411,7 @@ class SecurityPageState extends State<SecurityPage>
     }
     final enLocale = EnglishDurationLocale();
     final locales = {
+      "de": GermanDurationLocale(),
       "en": enLocale,
       "es": SpanishDurationLanguage(),
       "fi": FinnishDurationLocale(),
