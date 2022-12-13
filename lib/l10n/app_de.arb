@@ -416,7 +416,7 @@
   "pos_invoice_sort_price": "Preis",
   "app_animal_bat": "Fledermaus",
   "app_animal_bear": "Bär",
-  "app_animal_boar": "Wildschein",
+  "app_animal_boar": "Wildschwein",
   "app_animal_cat": "Katze",
   "app_animal_chick": "Küken",
   "app_animal_cow": "Kuh",
@@ -553,7 +553,7 @@
   "fiat_currencies_save_fail": "Änderungen konnten nicht gespeichert werden.",
   "connect_to_pay_title_payer": "Zum Zahlen verbinden",
   "connect_to_pay_title_payee": "Zahlung erhalten",
-  "connect_to_pay_canceled_payer": "Der Zahler hat die Zahlung abgebrochen",
+  "connect_to_pay_canceled_payer": "Der Bezahlende hat die Zahlung abgebrochen",
   "connect_to_pay_canceled_payee": "Der Zahlungsempfänger hat die Zahlung abgebrochen",
   "connect_to_pay_canceled_remote_user": "{name} hat die Zahlung abgebrochen",
   "@connect_to_pay_canceled_remote_user": {
@@ -621,7 +621,7 @@
   },
   "connect_to_pay_payee_waiting_sync": "Bitte warte während Breez synchronisiert",
   "connect_to_pay_payee_waiting_sync_action_close": "SCHLIEßEN",
-  "connect_to_pay_payee_message_no_fiat": "{name} möchte dir {amount} zahlen",
+  "connect_to_pay_payee_message_no_fiat": "{name} möchte dir {amount} senden",
   "@connect_to_pay_payee_message_no_fiat": {
     "placeholders": {
       "name": {
@@ -634,7 +634,7 @@
       }
     }
   },
-  "connect_to_pay_payee_message_with_fiat": "{name} möchte dir {amount} ({fiat}) zahlen",
+  "connect_to_pay_payee_message_with_fiat": "{name} möchte dir {amount} ({fiat}) senden",
   "@connect_to_pay_payee_message_with_fiat": {
     "placeholders": {
       "name": {
@@ -777,8 +777,8 @@
   "security_and_backup_lock_automatically": "Automatisch sperren",
   "security_and_backup_lock_automatically_option_immediate": "Sofort",
   "security_and_backup_change_pin": "PIN ändern",
-  "security_and_backup_enable_biometric_option_face": "Face ID aktivieren",
-  "security_and_backup_enable_biometric_option_face_id": "Face ID aktivieren",
+  "security_and_backup_enable_biometric_option_face": "Gesichtserkennung aktivieren",
+  "security_and_backup_enable_biometric_option_face_id": "Gesichtserkennung aktivieren",
   "security_and_backup_enable_biometric_option_fingerprint": "Touch ID aktivieren",
   "security_and_backup_enable_biometric_option_touch_id": "Touch ID aktivieren",
   "security_and_backup_enable_biometric_option_none": "",
@@ -786,7 +786,7 @@
   "security_and_backup_pin_option_create": "PIN erstellen",
   "security_and_backup_pin_option_deactivate": "PIN deaktivieren",
   "security_and_backup_internal_error": "Interner Fehler",
-  "security_and_backup_new_pin": "Gib einen neuen PIN an",
+  "security_and_backup_new_pin": "Gib einen neuen PIN ein",
   "security_and_backup_new_pin_second_time": "Gib deinen PIN erneut ein",
   "security_and_backup_new_pin_do_not_match": "PIN stimmt nicht überein",
   "backup_in_progress": "Backup wird druchgeführt",
@@ -846,7 +846,7 @@
   },
   "reverse_swap_title": "An BTC-Adresse senden",
   "reverse_swap_funding_transaction": "Funding-Transaktion:",
-  "reverse_swap_waiting_channels": "Sobald alle Kanäle bestätigt sind, kannst du deine Bitcoins an eine BTC-Adresse senden",
+  "reverse_swap_waiting_channels": "Sobald alle Kanäle bestätigt sind, kannst du deine bitcoin an eine BTC-Adresse senden",
   "reverse_swap_confirmation_speed": "Wähle Verarbeitungsgeschwindigkeit",
   "reverse_swap_confirmation_action_confirm": "BESTÄTIGEN",
   "reverse_swap_confirmation_you_send": "Du sendest:",
@@ -894,7 +894,7 @@
     }
   },
   "reverse_swap_confirmation_error_fetch_fee": "Die Gebühren konnten nicht abgerufen werden. Bitte versuche es später noch einmal.",
-  "reverse_swap_confirmation_error_funds_fee": "Du hast nicht genug Bitcoins für die Netzwerkgebühr.",
+  "reverse_swap_confirmation_error_funds_fee": "Du hast nicht genug bitcoin für die Netzwerkgebühr.",
   "reverse_swap_notification_title": "Aktion erforderlich",
   "reverse_swap_notification_body": "Bitte öffne Breez, um die gewünschte Transaktion abzuschließen.",
   "reverse_swap_upstream_generic_error_message": "{errorMessage}. Bitte versuche es später erneut.",
@@ -926,7 +926,7 @@
       }
     }
   },
-  "withdraw_funds_use_all_funds": "Alle Bitcoins verwenden",
+  "withdraw_funds_use_all_funds": "Maximale Summe verwenden",
   "withdraw_funds_btc_address": "BTC Adresse",
   "withdraw_funds_scan_barcode": "Barcode scannen",
   "withdraw_funds_error_invalid_address": "Bitte gib eine gültige BTC Address an",
@@ -935,8 +935,8 @@
   "withdraw_funds_action_next": "WEITER",
   "swap_in_progress_title": "An BTC Adresse senden",
   "swap_in_progress_transaction_id_copied": "Transaktions-ID wurde in Ihre Zwischenablage kopiert.",
-  "swap_in_progress_message_waiting_confirmation": "Breez wartet auf die Bestätigung der folgenden Transaktion, bevor deine Bitcoins an die angegebene Adresse gesendet werden",
-  "swap_in_progress_message_processing_previous_request": "Breez bearbeitet derzeit deine vorherige Anfrage. Du wirst benachrichtigt, sobald die Bearbeitung abgeschlossen ist, um deine Bitcoins an die von dir angegebene Adresse zu senden",
+  "swap_in_progress_message_waiting_confirmation": "Breez wartet auf die Bestätigung der folgenden Transaktion, bevor deine bitcoin an die angegebene Adresse gesendet werden",
+  "swap_in_progress_message_processing_previous_request": "Breez bearbeitet derzeit deine vorherige Anfrage. Du wirst benachrichtigt, sobald die Bearbeitung abgeschlossen ist, um deine bitcoin an die von dir angegebene Adresse zu senden",
   "market_place_no_vendors": "Zurzeit sind keine Anbieter verfügbar.",
   "account_required_actions_backup": "Backup",
   "account_page_activation_provider": "Um Breez zu aktivieren, wähle bitte einen Anbieter:",
@@ -1016,7 +1016,7 @@
   "remote_server_server_password_label": "Passwort",
   "remote_server_action_restore": "WIEDERHERSTELLEN",
   "remote_server_action_save": "SPEICHERN",
-  "remote_server_warning_connection_title": "Verbindungswarnung",
+  "remote_server_warning_connection_title": "Warnung",
   "remote_server_warning_connection_message": "Deine Verbindung zu diesem Remote-Server ist möglicherweise nicht sicher. Bist du sicher, dass du fortfahren möchtest?",
   "remote_server_testing_connection": "Teste Verbindung",
   "remote_server_error_invalid_username_or_password": "Ungültiger Benutzername oder Passwort",
@@ -1029,10 +1029,10 @@
   "error_dialog_default_action_close": "SCHLIEßEN",
   "ln_url_success_action_title": "Informationen zum Kauf",
   "ln_url_success_action_link_copied": "Link wurde in deine Zwischenablage kopiert.",
-  "avatar_picker_action_set_photo": "Foto auswählen",
-  "avatar_picker_action_change_photo": "Foto wechseln",
+  "avatar_picker_action_set_photo": "Bild auswählen",
+  "avatar_picker_action_change_photo": "Bild wechseln",
   "avatar_picker_error_select_image": "Bildauswahl fehlgeschlagen",
-  "initial_walk_through_welcome_message": "Der einfachste, schnellste und sicherste Weg\ndeine Bitcoins auszugeben",
+  "initial_walk_through_welcome_message": "Der einfachste, schnellste und sicherste Weg\ndeine bitcoin auszugeben",
   "initial_walk_through_lets_breeze": "LET'S BREEZ!",
   "initial_walk_through_restore_from_backup": "Wiederherstellen vom Backup",
   "initial_walk_through_restoring": "Stelle Daten her…",
@@ -1101,7 +1101,7 @@
   "restore_dialog_action_ok": "OK",
   "restore_dialog_download_backup_error": "Download-Fehler",
   "beta_warning_title": "Beta Warnung",
-  "beta_warning_message": "Da sich Breez noch im Beta-Stadium befindet, besteht die Möglichkeit, dass deine Bitcoins verloren gehen. Verwende diese App nur, wenn de bereit bist, dieses Risiko einzugehen",
+  "beta_warning_message": "Da sich Breez noch im Beta-Stadium befindet, besteht die Möglichkeit, dass deine bitcoin verloren gehen. Verwende diese App nur, wenn de bereit bist, dieses Risiko einzugehen",
   "beta_warning_understand": "Ich verstehe",
   "beta_warning_understand_confirmation": "Bitte bestätige, dass du verstanden hast, bevor du fortfährst",
   "beta_warning_action_exit": "BEENDEN",
@@ -1451,7 +1451,7 @@
       }
     }
   },
-  "add_funds_item_bitcoins_received_title": "Bitcoins erhalten",
+  "add_funds_item_bitcoins_received_title": "bitcoin erhalten",
     "add_funds_moonpay_title": "MoonPay",
   "add_funds_moonpay_error_address": "Es konnte keine Adresse vom Breez-Server abgerufen werden\nBitte überprüfe deine Internetverbindung.",
   "add_funds_moonpay_loading": "Lade…",
@@ -1646,8 +1646,8 @@
   "waiting_broadcast_dialog_action_copy": "Transaktions-Hash kopieren",
   "waiting_broadcast_dialog_action_share": "Transaktions-Hash teilen",
   "waiting_broadcast_dialog_transaction_id": "Transaktions-ID:",
-  "waiting_broadcast_dialog_content_success": "Die Bitcoins wurden erfolgreich an die angegebene Adresse gesendet.",
-  "waiting_broadcast_dialog_content_warning": "Bitte warte, während Breez die Bitcoins an die angegebene Adresse sendet.",
+  "waiting_broadcast_dialog_content_success": "Die bitcoin wurden erfolgreich an die angegebene Adresse gesendet.",
+  "waiting_broadcast_dialog_content_warning": "Bitte warte, während Breez die bitcoin an die angegebene Adresse sendet.",
   "waiting_broadcast_dialog_content_error": "Fehler beim Senden der Transaktion: {error}",
   "@waiting_broadcast_dialog_content_error": {
     "placeholders": {
@@ -1690,7 +1690,7 @@
   "status_text_loading_begin": "Breez öffnet ",
   "status_text_loading_middle": "einen sicheren Channel",
   "status_text_loading_end": " mit dem Server. Das kann eine Weile dauern, aber keine Sorge, wir benachrichtigen dich, sobald die App bereit ist, Zahlungen zu senden und zu empfangen.",
-  "status_text_ready": "Breez ist bereit, Bitcoins zu erhalten.",
+  "status_text_ready": "Breez ist bereit, bitcoin zu erhalten.",
   "qr_action_button_open_link": "Link öffnen",
   "qr_action_button_open_link_confirmation": "Bist du sicher, dass du diesen Link öffnen möchtest?",
   "qr_action_button_open_link_confirmation_no": "NEIN",
@@ -1847,7 +1847,7 @@
   },
   "lock_screen_enter_pin": "Gib deine PIN ein",
   "backup_phrase_generate": "Cloud-Backup verschlüsseln",
-  "backup_phrase_instructions": "Es wird dir eine Liste mit Wörtern gezeigt. Schreibe die Wörter auf und bewahre sie an einem sicheren Ort auf. Ohne diese Wörter kannst du das Backup nicht wiederherstellen und deine Bitcoins sind verloren. Breez wird dir nicht helfen können. Beachte, dass diese Wörter kein Wallet-Seed sind. Sie werden verwendet, um die in der Cloud gespeicherten Backup-Daten zu verschlüsseln.",
+  "backup_phrase_instructions": "Es wird dir eine Liste mit Wörtern gezeigt. Schreibe die Wörter auf und bewahre sie an einem sicheren Ort auf. Ohne diese Wörter kannst du das Backup nicht wiederherstellen und deine bitcoin sind verloren. Breez wird dir nicht helfen können. Beachte, dass diese Wörter kein Wallet-Seed sind. Sie werden verwendet, um die in der Cloud gespeicherten Backup-Daten zu verschlüsseln.",
   "backup_phrase_action_confirm": "ICH VERSTEHE",
   "backup_phrase_action_next": "WEITER",
   "backup_phrase_warning_disclaimer": "Deine bestehende Sicherungsphrase ist dann nicht mehr gültig und es wird eine neue generiert, wenn du das nächste Mal eine Sicherungsphrase verwenden möchtest. Bist du sicher, dass du keine Sicherungsphrase verwenden möchtest?",
@@ -1993,7 +1993,7 @@
   "pending_closed_channel_action_ok": "OK",
   "close_warning_dialog_title": "Inaktive Channels",
   "close_warning_dialog_action_ok": "OK",
-  "close_warning_dialog_message_begin": "Du hast seit {Dauer} Tagen keine Zahlungen an Breez geleistet, so dass dein LSP Ihre Channels möglicherweise schließen muss. Sollte dies der Fall sein, wird Breez eine On-Chain-Adresse generieren und deine Bitcoins dorthin transferieren. Du behältst die vollständige Kontrolle über deine Bitcoins, abzüglich der Mining-Gebühr, die durch die Sweep-Transaktion anfällt. Um mehr darüber zu erfahren, warum dies geschieht, lese unseren Beitrag über ",
+  "close_warning_dialog_message_begin": "Du hast seit {Dauer} Tagen keine Zahlungen an Breez geleistet, so dass dein LSP Ihre Channels möglicherweise schließen muss. Sollte dies der Fall sein, wird Breez eine On-Chain-Adresse generieren und deine bitcoin dorthin transferieren. Du behältst die vollständige Kontrolle über deine bitcoin, abzüglich der Mining-Gebühr, die durch die Sweep-Transaktion anfällt. Um mehr darüber zu erfahren, warum dies geschieht, lese unseren Beitrag über ",
   "@close_warning_dialog_message_begin": {
     "placeholders": {
       "duration": {
