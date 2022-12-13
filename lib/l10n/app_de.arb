@@ -30,7 +30,7 @@
   "invoice_btc_address_network_error": "Es konnte keine Adresse vom Breez-Server abgerufen werden\nBitte überprüfe deine Internetverbindung.",
   "invoice_btc_address_action_retry": "ERNEUT VERSUCHEN",
   "invoice_btc_address_action_close": "SCHLIEßEN",
-  "invoice_btc_address_warning_with_min_fee_account_connected": Sende mehr als {minSats} und bis zu {maxSats} an diese Adresse. Eine Einrichtungsgebühr von {setUpFee}% mit einem Minimum von {minFee} wird für den Versand von mehr als {liquidity} erhoben.",
+  "invoice_btc_address_warning_with_min_fee_account_connected": "Sende mehr als {minSats} und bis zu {maxSats} an diese Adresse. Eine Einrichtungsgebühr von {setUpFee}% mit einem Minimum von {minFee} wird für den Versand von mehr als {liquidity} erhoben.",
   "@invoice_btc_address_warning_with_min_fee_account_connected": {
     "placeholders": {
       "minSats": {
@@ -158,7 +158,7 @@
       }
     }
   },
-  "invoice_ln_address_warning_with_min_fee_account_connected": "Für den Empfang von mehr als {Liquidität} wird eine Einrichtungsgebühr von {setUpFee}% mit einem Minimum von {minFee} erhoben.",
+  "invoice_ln_address_warning_with_min_fee_account_connected": "Für den Empfang von mehr als {liquidity} wird eine Einrichtungsgebühr von {setUpFee}% mit einem Minimum von {minFee} erhoben.",
   "@invoice_ln_address_warning_with_min_fee_account_connected": {
     "placeholders": {
       "setUpFee": {
@@ -175,7 +175,7 @@
       }
     }
   },
-  "invoice_ln_address_warning_without_min_fee_account_connected": "Für den Empfang von mehr als {Liquidität} wird eine Einrichtungsgebühr von {setUpFee}% erhoben.",
+  "invoice_ln_address_warning_without_min_fee_account_connected": "Für den Empfang von mehr als {liquidity} wird eine Einrichtungsgebühr von {setUpFee}% erhoben.",
   "@invoice_ln_address_warning_without_min_fee_account_connected": {
     "placeholders": {
       "setUpFee": {
@@ -222,7 +222,7 @@
   "backup_dialog_option_ok_remote_server": "EINSTELLUNGEN",
   "backup_dialog_option_ok_default": "BACKUP ERSTELLEN",
   "backup_dialog_icloud_error_title": "Bei iCloud anmelden",
-  "backup_dialog_icloud_error_message": "Melde dich bei deinem iCloud-Konto an. Starte die Einstellungen App, tippe auf iCloud und gebe deine Apple ID ein. Schalte iCloud Drive ein. Wenn du kein iCloud-Konto hast, tippe auf "Neue Apple ID erstellen",
+  "backup_dialog_icloud_error_message": "Melde dich bei deinem iCloud-Konto an. Starte die Einstellungen App, tippe auf iCloud und gebe deine Apple ID ein. Schalte iCloud Drive ein. Wenn du kein iCloud-Konto hast, tippe auf Neue Apple ID erstellen",
   "backup_provider_dialog_title": "Backup Speicherort",
   "backup_provider_dialog_message_restore": "Wiederherstellung von:",
   "backup_provider_dialog_message_store": "Backup speichern in:",
@@ -231,7 +231,7 @@
   "tutorial_gotcha": "Verstanden!",
   "bottom_action_bar_send": "SENDEN",
   "bottom_action_bar_receive": "EMPFANGEN",
-  "bottom_action_bar_paste_invoice": "Rechnung oder ID einfügen,
+  "bottom_action_bar_paste_invoice": "Rechnung oder ID einfügen",
   "bottom_action_bar_connect_to_pay": "Zum Zahlen verbinden",
   "bottom_action_bar_send_btc_address": "An BTC Adresse senden",
   "bottom_action_bar_escher": "Cash-Out via Escher",
@@ -379,7 +379,7 @@
   "pos_invoice_num_pad_plus": "+",
   "pos_invoice_search_hint": "Suche nach Name oder SKU",
   "pos_invoice_search_empty": "Keine passenden Artikel gefunden.",
-  "pos_invoice_search_no_items": "Keine Elemente.\n Füge mit der Schaltfläche "+" Elemente zu dieser Ansicht hinzu.",
+  "pos_invoice_search_no_items": "Keine Elemente.\n Füge mit der Schaltfläche Elemente zu dieser Ansicht hinzu.",
   "pos_invoice_error_fiat_exchange_rates": "Abruf von Fiat-Wechselkursen fehlgeschlagen.",
   "pos_invoice_error_submit_header": "Erforderliche Informationen",
   "pos_invoice_error_submit_name_avatar": "Bitte gib unter Einstellungen deinen Firmennamen an und wähle ein Firmenlogo.",
@@ -748,7 +748,7 @@
   "connect_to_pay_payment_reject": "Zahlung abgelehnt",
   "connect_to_pay_error_wrong_amount": "Falscher Betrag in der Zahlungsaufforderung",
   "connect_to_pay_error_status_tracking_already_started": "Statusverfolgung bereits gestartet, muss vor erneutem Start gestoppt werden",
-  "connect_to_pay_error_link_expired": Dieser Link ist abgelaufen und nicht mehr gültig für die Zahlung.",
+  "connect_to_pay_error_link_expired": "Dieser Link ist abgelaufen und nicht mehr gültig für die Zahlung.",
   "security_and_backup_title": "Sicherheit & Backup",
   "security_and_backup_last_backup_no_account": "Letztes Backup: {lastBackup}",
   "@security_and_backup_last_backup_no_account": {
@@ -948,8 +948,8 @@
   "account_page_activation_action_select": "AUSWÄHLEN",
   "funds_over_limit_dialog_on_chain_transaction": "On-chain Transaktion",
   "funds_over_limit_dialog_action_ok": "OK",
-  "funds_over_limit_dialog_transfer_fail_no_reason_know": "Breez was not able to transfer the funds to your balance\n",
-  "funds_over_limit_dialog_transfer_fail_with_reason": "Breez war nicht in der Lage, den Transfer auf dein Guthaben gutzuschreiben\n",
+  "funds_over_limit_dialog_transfer_fail_no_reason_know": "Breez war nicht in der Lage, den Transfer auf dein Guthaben gutzuschreiben\n",
+  "funds_over_limit_dialog_transfer_fail_with_reason": "Breez war nicht in der Lage, den Transfer auf dein Guthaben gutzuschreiben {reason}\n",
   "@funds_over_limit_dialog_transfer_fail_with_reason": {
     "placeholders": {
       "reason": {
@@ -1116,7 +1116,7 @@
   "payment_request_dialog_action_cancel": "ABBRECHEN",
   "payment_request_dialog_action_approve": "BESTÄTIGEN",
   "payment_failed_report_dialog_title": "Zahlung fehlgeschlagen",
-  "payment_failed_report_dialog_message": "Die Übermittlung von Angaben zu fehlgeschlagenen Zahlungen an Breez kann dazu beitragen, die Erfolgsquote bei Transaktionen zu erhöhen.\nMöchtest du diese Angaben zu fehlgeschlagenen Zahlungen an Breez senden?
+  "payment_failed_report_dialog_message": "Die Übermittlung von Angaben zu fehlgeschlagenen Zahlungen an Breez kann dazu beitragen, die Erfolgsquote bei Transaktionen zu erhöhen.\nMöchtest du diese Angaben zu fehlgeschlagenen Zahlungen an Breez senden?",
   "payment_failed_report_dialog_do_not_ask_again": "Nicht noch einmal fragen",
   "payment_failed_report_dialog_action_no": "NEIN",
   "payment_failed_report_dialog_action_yes": "JA",
@@ -1631,7 +1631,7 @@
       }
     }
   },
-  "qr_code_dialog_error": "Die Erstellung einer Rechnung ist fehlgeschlagen {Fehler}. Bitte versuche es später noch einmal.",
+  "qr_code_dialog_error": "Die Erstellung einer Rechnung ist fehlgeschlagen {error}. Bitte versuche es später noch einmal.",
   "@qr_code_dialog_error": {
     "placeholders": {
       "error": {
@@ -1761,7 +1761,7 @@
     }
   },
   "lnurl_fetch_invoice_error_title": "LNURL-Zahlungsfehler",
-  "lnurl_fetch_invoice_error_message": "Beim Versuch, eine Rechnung von {host} abzurufen, ist ein Fehler aufgetreten!
+  "lnurl_fetch_invoice_error_message": "Beim Versuch, eine Rechnung von {host} abzurufen, ist ein Fehler aufgetreten!\nMotiv {reason}",
   "@lnurl_fetch_invoice_error_message": {
     "placeholders": {
       "host": {
@@ -1866,7 +1866,7 @@
     }
   },
   "backup_phrase_generation_verify": "Wörter prüfen",
-  "backup_phrase_generation_type_words": "Bitte gib die Wörter Nummer {NummerA}, {NummerB} und {NummerC} des generierten Sicherungsschlüssels ein.",
+  "backup_phrase_generation_type_words": "Bitte gib die Wörter Nummer {numberA}, {numberB} und {numberC} des generierten Sicherungsschlüssels ein.",
   "@backup_phrase_generation_type_words": {
     "placeholders": {
       "numberA": {
@@ -1910,7 +1910,7 @@
   },
   "spontaneous_payment_node_id": "Node-ID",
   "spontaneous_payment_send_payment_title": "Zahlung senden",
-  "spontaneous_payment_send_payment_message": "Bist du sicher, dass du dieser Node {Betrag} zuweisen möchten?
+  "spontaneous_payment_send_payment_message": "Bist du sicher, dass du dieser Node {amount} zuweisen möchten?\n\n{nodeID}",
   "@spontaneous_payment_send_payment_message": {
     "placeholders": {
       "amount": {
@@ -1993,7 +1993,7 @@
   "pending_closed_channel_action_ok": "OK",
   "close_warning_dialog_title": "Inaktive Channels",
   "close_warning_dialog_action_ok": "OK",
-  "close_warning_dialog_message_begin": "Du hast seit {Dauer} Tagen keine Zahlungen an Breez geleistet, so dass dein LSP Ihre Channels möglicherweise schließen muss. Sollte dies der Fall sein, wird Breez eine On-Chain-Adresse generieren und deine bitcoin dorthin transferieren. Du behältst die vollständige Kontrolle über deine bitcoin, abzüglich der Mining-Gebühr, die durch die Sweep-Transaktion anfällt. Um mehr darüber zu erfahren, warum dies geschieht, lese unseren Beitrag über ",
+  "close_warning_dialog_message_begin": "Du hast seit {duration} Tagen keine Zahlungen an Breez geleistet, so dass dein LSP Ihre Channels möglicherweise schließen muss. Sollte dies der Fall sein, wird Breez eine On-Chain-Adresse generieren und deine bitcoin dorthin transferieren. Du behältst die vollständige Kontrolle über deine bitcoin, abzüglich der Mining-Gebühr, die durch die Sweep-Transaktion anfällt. Um mehr darüber zu erfahren, warum dies geschieht, lese unseren Beitrag über ",
   "@close_warning_dialog_message_begin": {
     "placeholders": {
       "duration": {
@@ -2054,7 +2054,7 @@
       }
     }
   },
-  "valid_payment_error_keep_balance": "Breez verlangt von dir, dass du {Betrag} in deinem Konto behältst.",
+  "valid_payment_error_keep_balance": "Breez verlangt von dir, dass du {amount} in deinem Konto behältst.",
   "@valid_payment_error_keep_balance": {
     "placeholders": {
       "amount": {
@@ -2110,7 +2110,7 @@
   "podcast_history_sort_dropdown_duration": "Gehört",
   "podcast_history_sort_dropdown_sats": "Gezahlt",
   "podcast_history_sort_dropdown_boosts": "Boosted",
-  "podcast_history_empty_text": Keine Daten zur Anzeige verfügbar.",
+  "podcast_history_empty_text": "Keine Daten zur Anzeige verfügbar.",
   "podcast_clips_clip_button": "CLIP",
   "podcast_clips_cancel_button": "ABBRECHEN",
   "podcast_clips_seconds": "Sekunden",

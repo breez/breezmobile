@@ -26,3 +26,4 @@ ios/Flutter/flutter_export_environment.sh
 manual-build/
 ios/.symlinks/
 coverage/
+untranslated_messages.txt

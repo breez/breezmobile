@@ -1,3 +1,4 @@
+import 'package:flutter_gen/gen_l10n/app_localizations_de.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations_en.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations_es.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations_fi.dart';
@@ -8,20 +9,27 @@ import 'package:flutter_gen/gen_l10n/app_localizations_sv.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {
-  final locales = [
-    AppLocalizationsEn(),
-    AppLocalizationsEs(),
-    AppLocalizationsFi(),
-    AppLocalizationsFr(),
-    AppLocalizationsIt(),
-    AppLocalizationsPt(),
-    AppLocalizationsSv(),
-  ];
+  final locales = {
+    "de": AppLocalizationsDe(),
+    "en": AppLocalizationsEn(),
+    "es": AppLocalizationsEs(),
+    "fi": AppLocalizationsFi(),
+    "fr": AppLocalizationsFr(),
+    "it": AppLocalizationsIt(),
+    "pt": AppLocalizationsPt(),
+    "sv": AppLocalizationsSv(),
+  };
+
+  test('locale key is correct', () {
+    for (final locale in locales.entries) {
+      expect(locale.value.localeName, locale.key);
+    }
+  });
 
   // a unwarned translator can accidentaly change the placeholder key of a text
   // this test will fail if that happens
   group('placeholders should be present on texts', () {
-    for (final locale in locales) {
+    for (final locale in locales.values) {
       test('invoice_btc_address_warning_with_min_fee_account_connected for ${locale.locale}', () {
         final text = locale.invoice_btc_address_warning_with_min_fee_account_connected(
             minSats, maxSats, setUpFee, minFee, liquidity);
@@ -690,52 +698,57 @@ void main() {
         final text = locale.payment_error_to_send(error);
         expect(text.contains(error), true);
       });
+
+      test('reverse_swap_upstream_generic_error_message for ${locale.locale}', () {
+        final text = locale.reverse_swap_upstream_generic_error_message(error);
+        expect(text.contains(error), true);
+      });
     }
   });
 }
 
-const accountName = "accountName";
-const address = "address";
+const accountName = "aLongAccountNameToAvoidFalsePositive";
+const address = "aLongAddressToAvoidFalsePositive";
 const amount = "34567";
 const amountInt = 34567;
-const apiName = "apiName";
-const balance = "balance";
-const commission = "commission";
-const currency = "currency";
-const currencyName = "currencyName";
-const date = "date";
-const day = "day";
-const denomination = "denomination";
+const apiName = "aLongApiNameToAvoidFalsePositive";
+const balance = "aLongBalanceToAvoidFalsePositive";
+const commission = "aLongCommissionToAvoidFalsePositive";
+const currency = "aLongCurrencyToAvoidFalsePositive";
+const currencyName = "aLongCurrencyNameToAvoidFalsePositive";
+const date = "aLongDateToAvoidFalsePositive";
+const day = "aLongDayToAvoidFalsePositive";
+const denomination = "aLongDenominationToAvoidFalsePositive";
 const duration = "3487";
 const durationInt = 3487;
-const episode = "episode";
-const error = "error";
-const fee = "fee";
-const fiat = "fiat";
-const fiatFee = "fiatFee";
-const fiatValue = "fiatValue";
-const host = "host";
-const hours = "hours";
-const hoursToUnlock = "hoursToUnlock";
+const episode = "aLongEpisodeToAvoidFalsePositive";
+const error = "aLongErrorToAvoidFalsePositive";
+const fee = "aLongFeeToAvoidFalsePositive";
+const fiat = "aLongFiatToAvoidFalsePositive";
+const fiatFee = "aLongFiatFeeToAvoidFalsePositive";
+const fiatValue = "aLongFiatValueToAvoidFalsePositive";
+const host = "aLongHostToAvoidFalsePositive";
+const hours = "aLongHoursToAvoidFalsePositive";
+const hoursToUnlock = "aLongHoursToUnlockToAvoidFalsePositive";
 const index = "67890";
 const indexInt = 67890;
-const lastBackup = "lastBackup";
-const link = "link";
-const liquidity = "liquidity";
+const lastBackup = "aLongLastBackupToAvoidFalsePositive";
+const link = "aLongLinkToAvoidFalsePositive";
+const liquidity = "aLongLiquidityToAvoidFalsePositive";
 const lockHeight = "12345";
 const lockHeightInt = 12345;
-const max = "max";
-const maxAllowed = "maxAllowed";
-const maxSats = "maxSats";
-const maxValue = "maxValue";
-const message = "message";
-const min = "min";
-const minFee = "minFee";
-const minSats = "minSats";
-const minutes = "minutes";
-const minValue = "minValue";
-const name = "name";
-const nodeId = "nodeId";
+const max = "aLongMaxToAvoidFalsePositive";
+const maxAllowed = "aLongMaxAllowedToAvoidFalsePositive";
+const maxSats = "aLongMaxSatsToAvoidFalsePositive";
+const maxValue = "aLongMaxValueToAvoidFalsePositive";
+const message = "aLongMessageToAvoidFalsePositive";
+const min = "aLongMinToAvoidFalsePositive";
+const minFee = "aLongMinFeeToAvoidFalsePositive";
+const minSats = "aLongMinSatsToAvoidFalsePositive";
+const minutes = "aLongMinutesToAvoidFalsePositive";
+const minValue = "aLongMinValueToAvoidFalsePositive";
+const name = "aLongNameToAvoidFalsePositive";
+const nodeId = "aLongNodeIdToAvoidFalsePositive";
 const number = "7654";
 const numberA = "99";
 const numberAInt = 99;
@@ -744,15 +757,15 @@ const numberBInt = 88;
 const numberC = "77";
 const numberCInt = 77;
 const numberInt = 7654;
-const payee = "payee";
-const podcast = "podcast";
-const rate = "rate";
-const reason = "reason";
-const received = "received";
-const sats = "sats";
-const seconds = "seconds";
-const setUpFee = "setUpFee";
-const speed = "speed";
-const title = "title";
-const total = "total";
-const value = "value";
+const payee = "aLongPayeeToAvoidFalsePositive";
+const podcast = "aLongPodcastToAvoidFalsePositive";
+const rate = "aLongRateToAvoidFalsePositive";
+const reason = "aLongReasonToAvoidFalsePositive";
+const received = "aLongReceivedToAvoidFalsePositive";
+const sats = "aLongSatsToAvoidFalsePositive";
+const seconds = "aLongSecondsToAvoidFalsePositive";
+const setUpFee = "aLongSetUpFeeToAvoidFalsePositive";
+const speed = "aLongSpeedToAvoidFalsePositive";
+const title = "aLongTitleToAvoidFalsePositive";
+const total = "aLongTotalToAvoidFalsePositive";
+const value = "aLongValueToAvoidFalsePositive";

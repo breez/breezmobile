@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations_de.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations_en.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations_es.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations_fi.dart';
@@ -171,6 +172,7 @@ extension ProfileColorExtension on ProfileColor {
 }
 
 Map<String, Map<String, ProfileColor>> _colorsFromName = {
+  "de": _buildColorsFromName(AppLocalizationsDe()),
   "en": _buildColorsFromName(AppLocalizationsEn()),
   "es": _buildColorsFromName(AppLocalizationsEs()),
   "fi": _buildColorsFromName(AppLocalizationsFi()),

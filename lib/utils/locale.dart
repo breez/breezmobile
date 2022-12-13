@@ -2,6 +2,7 @@ import 'dart:io';
 import 'dart:ui';
 
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations_de.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations_en.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations_es.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations_fi.dart';
@@ -25,6 +26,8 @@ Locale getSystemLocale() {
 /// an AppLocalizations object without a BuildContext object
 AppLocalizations getSystemAppLocalizations() {
   switch (getSystemLocale().languageCode) {
+    case 'de':
+      return AppLocalizationsDe();
     case 'en':
       return AppLocalizationsEn();
     case 'es':
