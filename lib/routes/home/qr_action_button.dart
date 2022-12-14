@@ -146,7 +146,7 @@ class QrActionButton extends StatelessWidget {
                 return;
               }
 
-              log.finest("Scanned string is something else");
+              log.finest("Scanned string is unrecognized");
               showFlushbar(
                 context,
                 message: texts.qr_action_button_error_code_not_processed,
