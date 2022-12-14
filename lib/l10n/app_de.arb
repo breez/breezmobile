@@ -1993,7 +1993,7 @@
   "pending_closed_channel_action_ok": "OK",
   "close_warning_dialog_title": "Inaktive Channels",
   "close_warning_dialog_action_ok": "OK",
-  "close_warning_dialog_message_begin": "Du hast seit {duration} Tagen keine Zahlungen an Breez geleistet, so dass dein LSP Ihre Channels möglicherweise schließen muss. Sollte dies der Fall sein, wird Breez eine On-Chain-Adresse generieren und deine bitcoin dorthin transferieren. Du behältst die vollständige Kontrolle über deine bitcoin, abzüglich der Mining-Gebühr, die durch die Sweep-Transaktion anfällt. Um mehr darüber zu erfahren, warum dies geschieht, lese unseren Beitrag über ",
+  "close_warning_dialog_message_begin": "Du hast seit {duration} Tagen keine Zahlungen mehr an Breez geleistet, so dass dein LSP seine Channels möglicherweise schließen muss. Sollte dies der Fall sein, wird Breez eine On-Chain-Adresse generieren und deine bitcoin dorthin transferieren. Du behältst die vollständige Kontrolle über deine bitcoin, abzüglich der Mining-Gebühr, die durch die Sweep-Transaktion anfällt. Um mehr darüber zu erfahren, warum dies geschieht, lese unseren Beitrag über ",
   "@close_warning_dialog_message_begin": {
     "placeholders": {
       "duration": {
