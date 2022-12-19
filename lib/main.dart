@@ -28,7 +28,7 @@ void main() async {
     BreezDateUtils.setupLocales();
     await Firebase.initializeApp();
     SharedPreferences.getInstance().then((preferences) async {
-      // await runMigration(preferences);
+       await runMigration(preferences);
       runApp(AppBlocsProvider(
           child: WalletManager(), appBlocs: AppBlocs()));
     });

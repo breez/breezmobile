@@ -111,7 +111,7 @@ class BackupBloc {
 
   BackupBloc(
     Stream<ClovrUserModel> userStream,
-    // Stream<bool> backupAnytimeDBStream,
+    Stream<bool> backupAnytimeDBStream,
   ) {
     _initAppDataPathAndDir();
     ServiceInjector injector = ServiceInjector();
@@ -129,7 +129,7 @@ class BackupBloc {
       await _initializePersistentData();
       _listenBackupPaths();
       _listenBackupNowRequests();
-      // _listenAppDataBackupRequests(backupAnytimeDBStream);
+      _listenAppDataBackupRequests(backupAnytimeDBStream);
       _listenRestoreRequests();
       _scheduleBackgroundTasks();
 
@@ -389,6 +389,7 @@ class BackupBloc {
     try {
       await _saveLightningFees();
       await _savePosDB();
+      await _savePodcastsDB();
     } on Exception catch (exception) {
       throw exception;
     }
@@ -436,6 +437,18 @@ class BackupBloc {
               'product-catalog.db')
           .catchError((err) {
         throw Exception("Failed to copy pos items.");
+      });
+    }
+  }
+
+  Future<void> _savePodcastsDB() async {
+    // Copy Podcasts library to backup directory
+    final anytimeDbPath = _appDirPath + Platform.pathSeparator + 'anytime.db';
+    if (await databaseExists(anytimeDbPath)) {
+      File(anytimeDbPath)
+          .copy(_backupAppDataDirPath + Platform.pathSeparator + 'anytime.db')
+          .catchError((err) {
+        throw Exception("Failed to copy podcast library.");
       });
     }
   }
