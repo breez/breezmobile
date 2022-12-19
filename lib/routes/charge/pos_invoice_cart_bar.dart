@@ -1,10 +1,9 @@
 import 'package:badges/badges.dart';
 import 'package:breez/bloc/account/account_model.dart';
-import 'package:breez/bloc/user_profile/currency.dart';
+import 'package:breez/routes/charge/cart/cart_bar_drop_down_button.dart';
 import 'package:breez/routes/charge/currency_wrapper.dart';
 import 'package:breez/routes/charge/sale_view.dart';
 import 'package:breez/theme_data.dart' as theme;
-import 'package:breez/widgets/breez_dropdown.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
@@ -113,51 +112,13 @@ class _PosInvoiceCartBarState extends State<PosInvoiceCartBar> {
             data: themeData.copyWith(
               canvasColor: themeData.backgroundColor,
             ),
-            child: _dropDown(context),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _dropDown(BuildContext context) {
-    final textTheme = Theme.of(context).textTheme;
-
-    List<CurrencyWrapper> currencies = [];
-    currencies.addAll(
-      Currency.currencies.map((c) => CurrencyWrapper.fromBTC(c)),
-    );
-    currencies.addAll(
-      widget.accountModel.preferredFiatConversionList
-          .map((f) => CurrencyWrapper.fromFiat(f)),
-    );
-    final dropDownItems = currencies.map(
-      (value) => DropdownMenuItem<String>(
-        value: value.shortName,
-        child: Material(
-          child: Text(
-            value.shortName.toUpperCase(),
-            textAlign: TextAlign.right,
-            style: theme.invoiceAmountStyle.copyWith(
-              color: textTheme.headline5.color,
+            child: CartBarDropDownButton(
+              widget.currentCurrency.shortName,
+              widget.accountModel,
+              widget.changeCurrency,
             ),
           ),
-        ),
-      ),
-    );
-
-    return DropdownButtonHideUnderline(
-      child: ButtonTheme(
-        alignedDropdown: true,
-        child: BreezDropdownButton(
-          onChanged: widget.changeCurrency,
-          iconEnabledColor: textTheme.headline5.color,
-          value: widget.currentCurrency.shortName,
-          style: theme.invoiceAmountStyle.copyWith(
-            color: textTheme.headline5.color,
-          ),
-          items: dropDownItems.toList(),
-        ),
+        ],
       ),
     );
   }

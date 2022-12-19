@@ -8,7 +8,6 @@ import 'package:breez/bloc/user_profile/user_profile_bloc.dart';
 import 'package:breez/routes/charge/currency_wrapper.dart';
 import 'package:breez/theme_data.dart' as theme;
 import 'package:breez/utils/min_font_size.dart';
-import 'package:breez/widgets/breez_dropdown.dart';
 import 'package:breez/widgets/currency_amount_field_formatter.dart';
 import 'package:breez/widgets/loader.dart';
 import 'package:fixnum/fixnum.dart';
@@ -166,18 +165,16 @@ class CurrencyConverterDialogState extends State<CurrencyConverterDialog>
     final items = account.preferredFiatConversionList.map((value) {
       return DropdownMenuItem<String>(
         value: value.currencyData.shortName,
-        child: Material(
-          child: Container(
-            width: 36,
-            child: AutoSizeText(
-              value.currencyData.shortName,
-              textAlign: TextAlign.left,
-              style: themeData.dialogTheme.titleTextStyle,
-              maxLines: 1,
-              minFontSize: MinFontSize(context).minFontSize,
-              stepGranularity: 0.1,
-              group: _autoSizeGroup,
-            ),
+        child: Container(
+          width: 36,
+          child: AutoSizeText(
+            value.currencyData.shortName,
+            textAlign: TextAlign.left,
+            style: themeData.dialogTheme.titleTextStyle,
+            maxLines: 1,
+            minFontSize: MinFontSize(context).minFontSize,
+            stepGranularity: 0.1,
+            group: _autoSizeGroup,
           ),
         ),
       );
@@ -209,7 +206,7 @@ class CurrencyConverterDialogState extends State<CurrencyConverterDialog>
             child: DropdownButtonHideUnderline(
               child: ButtonTheme(
                 alignedDropdown: true,
-                child: BreezDropdownButton(
+                child: DropdownButton(
                   onChanged: (value) => _selectFiatCurrency(value),
                   value: account.fiatCurrency.currencyData.shortName,
                   iconEnabledColor: themeData.dialogTheme.titleTextStyle.color,
