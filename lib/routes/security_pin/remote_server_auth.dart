@@ -159,10 +159,10 @@ class RemoteServerAuthPageState extends State<RemoteServerAuthPage> {
                     onPressed: () async {
                       Uri uri = Uri.parse(_urlController.text);
 
-                      var continueResponse = true;
+                      bool connectionWarningResponse = true;
                       if (uri.host.endsWith('onion') &&
                           widget._torBloc.torConfig == null) {
-                        continueResponse = await promptError(
+                        await promptError(
                             context,
                             texts.remote_server_warning_connection_title,
                             Text(
@@ -178,8 +178,8 @@ class RemoteServerAuthPageState extends State<RemoteServerAuthPage> {
                             },
                             okText: texts
                                 .remote_server_onion_warning_dialog_settings,
-                            okFunc: () {
-                              // Navigator.of(context).pop();
+                            okFunc: () async {
+                              connectionWarningResponse = false;
                               Navigator.of(context).push(FadeInRoute(
                                 builder: (_) =>
                                     withBreezTheme(context, NetworkPage()),
@@ -188,61 +188,57 @@ class RemoteServerAuthPageState extends State<RemoteServerAuthPage> {
                               return false;
                             });
                       }
-
-                      if (continueResponse) {
-                        var connectionWarningResponse = true;
-                        if (!uri.host.endsWith('.onion') &&
-                            uri.scheme == 'http') {
-                          connectionWarningResponse = await promptAreYouSure(
-                            context,
-                            texts.remote_server_warning_connection_title,
-                            Text(
-                              texts.remote_server_warning_connection_message,
+                      if (!uri.host.endsWith('.onion') &&
+                          uri.scheme == 'http') {
+                        connectionWarningResponse = await promptAreYouSure(
+                          context,
+                          texts.remote_server_warning_connection_title,
+                          Text(
+                            texts.remote_server_warning_connection_message,
+                          ),
+                        );
+                      }
+                      if (connectionWarningResponse) {
+                        failDiscoverURL = false;
+                        failAuthenticate = false;
+                        if (_formKey.currentState.validate()) {
+                          final newSettings = snapshot.data.copyWith(
+                            remoteServerAuthData: RemoteServerAuthData(
+                              uri.toString(),
+                              _userController.text,
+                              _passwordController.text,
+                              BREEZ_BACKUP_DIR,
                             ),
                           );
-                        }
-                        if (connectionWarningResponse) {
-                          failDiscoverURL = false;
-                          failAuthenticate = false;
-                          if (_formKey.currentState.validate()) {
-                            final newSettings = snapshot.data.copyWith(
-                              remoteServerAuthData: RemoteServerAuthData(
-                                uri.toString(),
-                                _userController.text,
-                                _passwordController.text,
-                                BREEZ_BACKUP_DIR,
-                              ),
-                            );
 
-                            var loader = createLoaderRoute(context,
-                                message: "Testing connection", opacity: 0.8);
-                            Navigator.push(context, loader);
-                            discoverURL(newSettings.remoteServerAuthData)
-                                .then((value) async {
-                              nav.removeRoute(loader);
+                          var loader = createLoaderRoute(context,
+                              message: "Testing connection", opacity: 0.8);
+                          Navigator.push(context, loader);
+                          discoverURL(newSettings.remoteServerAuthData)
+                              .then((value) async {
+                            nav.removeRoute(loader);
 
-                              final error = value.authError;
-                              if (error == DiscoverResult.SUCCESS) {
-                                Navigator.pop(context, value.authData);
-                              }
-                              setState(() {
-                                failDiscoverURL =
-                                    error == DiscoverResult.INVALID_URL;
-                                failAuthenticate =
-                                    error == DiscoverResult.INVALID_AUTH;
-                              });
-                              _formKey.currentState.validate();
-                            }).catchError((err) {
-                              nav.removeRoute(loader);
-                              promptError(
-                                  context,
-                                  texts.remote_server_error_remote_server_title,
-                                  Text(
-                                    texts
-                                        .remote_server_error_remote_server_message,
-                                  ));
+                            final error = value.authError;
+                            if (error == DiscoverResult.SUCCESS) {
+                              Navigator.pop(context, value.authData);
+                            }
+                            setState(() {
+                              failDiscoverURL =
+                                  error == DiscoverResult.INVALID_URL;
+                              failAuthenticate =
+                                  error == DiscoverResult.INVALID_AUTH;
                             });
-                          }
+                            _formKey.currentState.validate();
+                          }).catchError((err) {
+                            nav.removeRoute(loader);
+                            promptError(
+                                context,
+                                texts.remote_server_error_remote_server_title,
+                                Text(
+                                  texts
+                                      .remote_server_error_remote_server_message,
+                                ));
+                          });
                         }
                       }
                     }),
@@ -376,7 +372,7 @@ class RemoteServerAuthPageState extends State<RemoteServerAuthPage> {
     if (!url.endsWith("/")) {
       url = url + "/";
     }
-    final nextCloudURL = url + "remote.php/webdav";
+    final nextCloudURL = url + "remote.php/files/";
     result = await testAuthData(authData.copyWith(url: nextCloudURL));
     if (result == DiscoverResult.SUCCESS ||
         result == DiscoverResult.INVALID_AUTH) {
@@ -390,22 +386,6 @@ class RemoteServerAuthPageState extends State<RemoteServerAuthPage> {
     try {
       await widget._backupBloc
           .testAuth(BackupSettings.remoteServerBackupProvider(), authData);
-
-      /*
-      // findProxy will only work for HTTPS but will not work for onion hidden services or HTTP
-      // because it does not support SOCKS. It it did we could do something like this:
-      if (widget._torBloc.torConfig != null) {
-        final http = widget._torBloc.torConfig.http;
-        (client.c.httpClientAdapter as DefaultHttpClientAdapter)
-            .onHttpClientCreate = (client) {
-          client.findProxy = (uri) {
-            log.info('client.findProxy: $uri');
-            return 'PROXY localhost:${http}';
-          };
-        };
-      }
-      */
-
     } on SignInFailedException catch (e) {
       log.warning('remote_server_auth.dart: testAuthData: $e');
       return DiscoverResult.INVALID_AUTH;
