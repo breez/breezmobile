@@ -817,6 +817,14 @@ class BreezBridge {
         .then((result) => result as bool);
   }
 
+  Future setBackupTorConfig(TorConfig torConfig) {
+    return _invokeMethodImmediate(
+            'setBackupTorConfig', {'argument': torConfig?.writeToBuffer()})
+        .then((_) {
+      print(" breez bridge - set backup torcofig");
+    });
+  }
+
   Future _invokeMethodWhenReady(String methodName, [dynamic arguments]) {
     if (methodName != "log") {
       logger.log.info("before invoking method $methodName");

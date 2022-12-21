@@ -181,8 +181,8 @@ class AccountBloc {
     _paymentsController.add(PaymentsModel.initial());
     _paymentFilterController.add(PaymentFilterModel.initial());
     _accountSettingsController.add(AccountSettings.start());
-    
-    _start();    
+
+    _start();
   }
 
   void _start() {
@@ -206,7 +206,7 @@ class AccountBloc {
 
   void setNodeUpgrading(bool upgrading) {
     _accountController
-          .add(_accountController.value.copyWith(nodeUpgrading: upgrading));
+        .add(_accountController.value.copyWith(nodeUpgrading: upgrading));
   }
 
   Stream<List<PaymentInfo>> get pendingChannelsStream {
@@ -588,6 +588,7 @@ class AccountBloc {
         log.info('accountBloc.listenUserChanges: using Tor');
         try {
           torConfig ??= await torBloc.startTor();
+          await _breezLib.setBackupTorConfig(torConfig);
         } catch (e) {
           _lightningDownController.add(false);
         }
@@ -617,7 +618,6 @@ class AccountBloc {
             _listenRefundableDeposits();
             _updateExchangeRates();
             _listenRefundBroadcasts();
-
           } catch (e) {
             _lightningDownController.add(false);
           }
