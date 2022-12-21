@@ -23,7 +23,7 @@ class BreezBridge {
   static const _methodChannel = MethodChannel('com.breez.client/breez_lib');
   static const _eventChannel =
       EventChannel('com.breez.client/breez_lib_notifications');
-  
+
   final DownloadTaskManager downloadManager;
   final Future<SharedPreferences> sharedPreferences;
   String _selectedLspID;
@@ -89,7 +89,8 @@ class BreezBridge {
     if (downloadURL.isNotEmpty) {
       logger.log.info("GraphDownloader fetching graph checksum");
       var checksum = await fetchGraphChecksum(downloadURL);
-      logger.log.info("GraphDownloader graph checksum = $checksum, downloading graph");
+      logger.log.info(
+          "GraphDownloader graph checksum = $checksum, downloading graph");
       _inProgressGraphSync =
           _graphDownloader.downloadGraph(downloadURL).then((file) async {
         final fileChecksum =
@@ -106,7 +107,8 @@ class BreezBridge {
         logger.log.info("GraphDownloader graph synchronized succesfully");
         return DateTime.now();
       }).catchError((err) {
-        logger.log.info("GraphDownloader graph synchronized failed ${err.toString()}");
+        logger.log.info(
+            "GraphDownloader graph synchronized failed ${err.toString()}");
       }).whenComplete(() {
         _graphDownloader.deleteDownloads();
       });
@@ -532,9 +534,9 @@ class BreezBridge {
     var lspInfo = inputLSP;
 
     // if we got lsp in input let's use it
-    if (lspInfo != null) {    
+    if (lspInfo != null) {
       request.lspInfo = lspInfo;
-    }else {      
+    } else {
       // if we have a selected lsp, let's use it
       var lsps = await getLSPList();
       if (_selectedLspID != null) {
@@ -807,7 +809,7 @@ class BreezBridge {
   }
 
   Future setTorActive(bool enabled) {
-    return _invokeMethodWhenReady('setTorActive', {'argument': enabled});
+    return _invokeMethodImmediate('setTorActive', {'argument': enabled});
   }
 
   Future<bool> getTorActive() {
