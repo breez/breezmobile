@@ -17,7 +17,7 @@ public class NativeMethods {
 }
 
 
-fileprivate let calls : Dictionary<String, BindingExecutor> = [
+fileprivate let calls : [String:BindingExecutor] = [
     "start": EmptyArgsBindingExecutor(f: BindingsStart),
     "stop": VoidBindingExecutor(f: BindingsStop),
     "restartDaemon": EmptyArgsBindingExecutor(f: BindingsRestartDaemon),
