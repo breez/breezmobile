@@ -200,15 +200,6 @@ public class Tor implements FlutterPlugin, MethodCallHandler {
             fail(result, "FAIL", "Binding to TorService has failed.", null);
         }
 
-
-        // Save the defaults that tor-android uses.
-        /*
-           torConfig.put("HTTP", "8118");
-           torConfig.put("SOCKS", "9050");
-           Log.i(TAG, "onMethodCall: calling result.success(torConfig)");
-           success(result, torConfig);      // TODO(nochiel) Can This be used here?
-           */
-
     }
 
 

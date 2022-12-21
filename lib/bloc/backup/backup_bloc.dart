@@ -317,9 +317,6 @@ class BackupBloc {
     var encryptionKey =
         await BreezLibBackupKey.fromSettings(_secureStorage, backupKeyType);
 
-    // We call _breezLib.setBackupEncryptionKey even if encryptionKey?.key == null
-    // because breezLib sets a persistent flag on whether to use encryption if len(encryptionKey?.key) > 0.
-    // Maybe setUseEncryption should be set explicitly for clarity? (@nochiel)
     return _breezLib.setBackupEncryptionKey(
         encryptionKey?.key, encryptionKey?.type);
   }
@@ -530,7 +527,6 @@ class BackupBloc {
     });
   }
 
-  // TODO(nochiel) Verify that this isn't redundant.
   Future testAuth(BackupProvider provider, RemoteServerAuthData authData) {
     return _breezLib
         .testBackupAuth(provider.name, json.encode(authData.toJson()))
