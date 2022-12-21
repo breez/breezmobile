@@ -77,7 +77,7 @@ class PendingShareIndicatorState extends State<PendingShareIndicator>
 }
 
 class _ConnectedCustomPainter extends CustomPainter {
-  final Color color = theme.ElenPayWalletColors.dark_grey[500];
+  final Color color = theme.ClovrLabsWalletColors.dark_grey[500];
   final Animation<double> _scale1;
   final Animation<double> _scale2;
   final Animation<double> _rotate;

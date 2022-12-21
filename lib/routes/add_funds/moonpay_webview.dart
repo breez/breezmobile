@@ -158,7 +158,7 @@ class MoonpayWebViewState extends State<MoonpayWebView> {
           )
         : Center(
             child: Loader(
-              color: theme.ElenPayWalletColors.white[400],
+              color: theme.ClovrLabsWalletColors.white[400],
             ),
           );
   }

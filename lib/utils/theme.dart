@@ -5,7 +5,7 @@ import 'package:clovrlabs_wallet/bloc/user_profile/user_profile_bloc.dart';
 import 'package:clovrlabs_wallet/theme_data.dart' as theme;
 import 'package:flutter/material.dart';
 
-Widget withElenPayWalletTheme(BuildContext context, Widget child) {
+Widget withClovrLabsWalletTheme(BuildContext context, Widget child) {
   UserProfileBloc userProfileBloc =
       AppBlocsProvider.of<UserProfileBloc>(context);
   return StreamBuilder<ClovrUserModel>(

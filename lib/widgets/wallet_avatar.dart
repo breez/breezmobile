@@ -2,12 +2,12 @@ import 'package:clovrlabs_wallet/theme_data.dart' as theme;
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 
-class ElenPayAvatar extends StatelessWidget {
+class ClovrLabsAvatar extends StatelessWidget {
   final String avatarURL;
   final double radius;
   final Color backgroundColor;
 
-  ElenPayAvatar(this.avatarURL, {this.radius = 20.0, this.backgroundColor});
+  ClovrLabsAvatar(this.avatarURL, {this.radius = 20.0, this.backgroundColor});
 
   @override
   Widget build(BuildContext context) {

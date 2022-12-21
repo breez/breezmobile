@@ -52,7 +52,7 @@ class AmountFormField extends TextFormField {
                           : "src/icon/btc_convert.png",
                       color: iconColor != null
                           ? iconColor
-                          : theme.ElenPayWalletColors.white[500],
+                          : theme.ClovrLabsWalletColors.white[500],
                     ),
                     padding: EdgeInsets.only(top: 21.0),
                     alignment: Alignment.bottomRight,

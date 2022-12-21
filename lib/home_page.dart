@@ -595,7 +595,7 @@ class HomeState extends State<Home> with WidgetsBindingObserver {
         });
         var ctpRoute = FadeInRoute(
           builder: (_) =>
-              withElenPayWalletTheme(context, ConnectToPayPage(session)),
+              withClovrLabsWalletTheme(context, ConnectToPayPage(session)),
           settings: RouteSettings(name: "/connect_to_pay"),
         );
         Navigator.of(context).push(ctpRoute);

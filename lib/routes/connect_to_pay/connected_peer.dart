@@ -93,14 +93,14 @@ class ConnectedPeer extends StatelessWidget {
 
   Widget buildPeerAvatar(String imageURL) {
     if (_me || _renderPayer) {
-      return ElenPayAvatar(imageURL,
+      return ClovrLabsAvatar(imageURL,
           radius: 30.0, backgroundColor: theme.sessionAvatarBackgroundColor);
     }
 
     return AnimatedOpacity(
         duration: Duration(milliseconds: 1000),
         opacity: 1.0,
-        child: ElenPayAvatar(imageURL,
+        child: ClovrLabsAvatar(imageURL,
             radius: 30.0, backgroundColor: theme.sessionAvatarBackgroundColor));
   }
 
@@ -133,7 +133,7 @@ class _ShareInviteWidget extends StatelessWidget {
         duration: Duration(milliseconds: 1000),
         opacity: _loading ? 0.0 : 1.0,
         child: AvatarDecorator(IconButton(
-          icon: Icon(Icons.share, color: theme.ElenPayWalletColors.dark_grey[500]),
+          icon: Icon(Icons.share, color: theme.ClovrLabsWalletColors.dark_grey[500]),
           onPressed: () => _onShareInvite(),
         )),
       ))

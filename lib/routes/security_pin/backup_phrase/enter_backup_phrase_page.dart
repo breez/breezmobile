@@ -172,7 +172,7 @@ class EnterBackupPhrasePageState extends State<EnterBackupPhrasePage> {
             border: Border(
               bottom: BorderSide(
                 width: 0.5,
-                color: theme.ElenPayWalletColors.dark_grey[500],
+                color: theme.ClovrLabsWalletColors.dark_grey[500],
               ),
             ),
           ),

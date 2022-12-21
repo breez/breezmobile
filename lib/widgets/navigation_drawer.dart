@@ -255,7 +255,7 @@ Future _changeTheme(
 Row _buildAvatarButton(AsyncSnapshot<ClovrUserModel> snapshot) {
   return Row(
     children: [
-      ElenPayAvatar(snapshot.data.avatarURL, radius: 24.0),
+      ClovrLabsAvatar(snapshot.data.avatarURL, radius: 24.0),
     ],
   );
 }

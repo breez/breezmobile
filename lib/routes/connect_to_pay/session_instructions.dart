@@ -72,10 +72,10 @@ class SessionInstructions extends StatelessWidget {
                         borderRadius: BorderRadius.circular(6.0),
                       ),
                       side: BorderSide(
-                        color: theme.ElenPayWalletColors.white[500],
+                        color: theme.ClovrLabsWalletColors.white[500],
                         style: BorderStyle.solid,
                       ),
-                      primary: theme.ElenPayWalletColors.white[500],
+                      primary: theme.ClovrLabsWalletColors.white[500],
                     ),
                     child: Text(
                       action.toUpperCase(),

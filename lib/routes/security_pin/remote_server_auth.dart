@@ -21,7 +21,7 @@ Future<RemoteServerAuthData> promptAuthData(
     builder: (BuildContext context) {
       final backupBloc = AppBlocsProvider.of<BackupBloc>(context);
       return
-        withElenPayWalletTheme(
+        withClovrLabsWalletTheme(
         context,
         RemoteServerAuthPage(backupBloc, restore),
       );
@@ -103,8 +103,8 @@ class RemoteServerAuthPageState extends State<RemoteServerAuthPage> {
               texts.remote_server_title,
               // style: themeData.appBarTheme.textTheme.headline6,
             ),
-            elevation: 0.0, toolbarTextStyle: themeData.appBarTheme.textTheme.bodyText2,
-            // titleTextStyle: themeData.appBarTheme.textTheme.headline6,
+            elevation: 0.0,
+            titleTextStyle: themeData.dialogTheme.titleTextStyle,
           ),
           body: SingleChildScrollView(
             reverse: true,

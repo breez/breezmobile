@@ -57,7 +57,7 @@ class BarcodeScannerPlaceholder extends StatelessWidget {
                 ),
                 ElevatedButton(
                   style: ElevatedButton.styleFrom(
-                    primary: theme.ElenPayWalletColors.white[500],
+                    primary: theme.ClovrLabsWalletColors.white[500],
                     elevation: 0.0,
                     shape: const StadiumBorder(),
                     padding: EdgeInsets.fromLTRB(12.0, 8.0, 12.0, 8.0),

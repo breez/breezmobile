@@ -80,7 +80,7 @@ class FiatCurrencySettingsState extends State<FiatCurrencySettings> {
                 padding: const EdgeInsets.all(16.0),
                 child: Icon(
                   Icons.drag_handle,
-                  color: theme.ElenPayWalletColors.white[200],
+                  color: theme.ClovrLabsWalletColors.white[200],
                 ),
               ),
             ),

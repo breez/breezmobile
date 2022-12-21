@@ -41,7 +41,7 @@ final CustomData whiteThemeCustomData = CustomData(
   pendingTextColor: Color(0xffffffff),
   paymentListBgColor: Color(0xFFf9f9f9),
   paymentListDividerColor: Color.fromRGBO(0, 0, 0, 0.12),
-  navigationDrawerBgColor: ElenPayWalletColors.dark_grey[500],
+  navigationDrawerBgColor: ClovrLabsWalletColors.dark_grey[500],
   navigationDrawerHeaderBgColor: Color.fromRGBO(255, 255, 255, 1.0),
   textBottomColor: Color.fromRGBO(0, 0, 0, 1.0),
   buttonBackgroundColor: Color.fromRGBO(255, 255, 255, 1.0),
@@ -68,11 +68,11 @@ final Map<String, CustomData> customData = {
 final ThemeData whiteTheme = ThemeData(
   brightness: Brightness.dark,
   primaryColor: Color.fromRGBO(255, 255, 255, 1.0),
-  primaryColorDark: ElenPayWalletColors.dark_grey[900],
+  primaryColorDark: ClovrLabsWalletColors.dark_grey[900],
   primaryColorLight: Color(0xff000000),
   floatingActionButtonTheme:
       FloatingActionButtonThemeData(backgroundColor: Color(0xff000000)),
-  canvasColor: ElenPayWalletColors.dark_grey[500],
+  canvasColor: ClovrLabsWalletColors.dark_grey[500],
   bottomAppBarTheme: BottomAppBarTheme(elevation: 0),
   appBarTheme: AppBarTheme(
     iconTheme: IconThemeData(
@@ -90,11 +90,11 @@ final ThemeData whiteTheme = ThemeData(
   ),
   dialogTheme: DialogTheme(
       titleTextStyle: TextStyle(
-          color: ElenPayWalletColors.grey[600],
+          color: ClovrLabsWalletColors.grey[600],
           fontSize: 20.5,
           letterSpacing: 0.25),
       contentTextStyle: TextStyle(
-          color: ElenPayWalletColors.grey[500], fontSize: 16.0, height: 1.5),
+          color: ClovrLabsWalletColors.grey[500], fontSize: 16.0, height: 1.5),
       backgroundColor: Colors.white,
       shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.all(Radius.circular(12.0)))),
@@ -102,17 +102,17 @@ final ThemeData whiteTheme = ThemeData(
   errorColor: Color(0xffffe685),
   dividerColor: Color(0x33ffffff),
   buttonColor: Colors.black,
-  cardColor: ElenPayWalletColors.dark_grey[500],
-  highlightColor: ElenPayWalletColors.dark_grey[200],
+  cardColor: ClovrLabsWalletColors.dark_grey[500],
+  highlightColor: ClovrLabsWalletColors.dark_grey[200],
   textTheme: TextTheme(
       subtitle2: TextStyle(
-          color: ElenPayWalletColors.grey[600],
+          color: ClovrLabsWalletColors.grey[600],
           fontSize: 14.3,
           letterSpacing: 0.2),
       headline5:
-          TextStyle(color: ElenPayWalletColors.grey[600], fontSize: 26.0),
+          TextStyle(color: ClovrLabsWalletColors.grey[600], fontSize: 26.0),
       button: TextStyle(
-          color: ElenPayWalletColors.dark_grey[500],
+          color: ClovrLabsWalletColors.dark_grey[500],
           fontSize: 14.3,
           letterSpacing: 1.25),
       headline4: TextStyle(
@@ -127,48 +127,48 @@ final ThemeData whiteTheme = ThemeData(
           height: 1.22)),
   primaryTextTheme: TextTheme(
     headline4: TextStyle(
-        color: ElenPayWalletColors.grey[500],
+        color: ClovrLabsWalletColors.grey[500],
         fontSize: 14.0,
         letterSpacing: 0.0,
         height: 1.28,
         fontWeight: FontWeight.w500,
         fontFamily: 'IBMPlexSans'),
     headline3: TextStyle(
-        color: ElenPayWalletColors.grey[500],
+        color: ClovrLabsWalletColors.grey[500],
         fontSize: 14.0,
         letterSpacing: 0.0,
         height: 1.28),
     headline5: TextStyle(
-        color: ElenPayWalletColors.grey[500],
+        color: ClovrLabsWalletColors.grey[500],
         fontSize: 24.0,
         letterSpacing: 0.0,
         height: 1.28,
         fontWeight: FontWeight.w500,
         fontFamily: 'IBMPlexSans'),
     bodyText2: TextStyle(
-        color: ElenPayWalletColors.dark_grey[900],
+        color: ClovrLabsWalletColors.dark_grey[900],
         fontSize: 16.4,
         letterSpacing: 0.15,
         fontWeight: FontWeight.w500,
         fontFamily: 'IBMPlexSans'),
     subtitle2: TextStyle(
-        color: ElenPayWalletColors.white[500],
+        color: ClovrLabsWalletColors.white[500],
         fontSize: 10.0,
         letterSpacing: 0.09),
     button: TextStyle(
-        color: ElenPayWalletColors.dark_grey[500],
+        color: ClovrLabsWalletColors.dark_grey[500],
         fontSize: 14.3,
         letterSpacing: 1.25),
-    caption: TextStyle(color: ElenPayWalletColors.grey[500], fontSize: 12.0),
+    caption: TextStyle(color: ClovrLabsWalletColors.grey[500], fontSize: 12.0),
   ),
   textSelectionTheme: TextSelectionThemeData(
     selectionColor: Color.fromRGBO(0, 133, 251, 0.25),
     selectionHandleColor: Color.fromRGBO(0, 0, 0, 1.0),
   ),
-  primaryIconTheme: IconThemeData(color: ElenPayWalletColors.grey[500]),
+  primaryIconTheme: IconThemeData(color: ClovrLabsWalletColors.grey[500]),
   fontFamily: 'IBMPlexSans',
   accentTextTheme: TextTheme(
-    bodyText2: TextStyle(color: ElenPayWalletColors.grey[600]),
+    bodyText2: TextStyle(color: ClovrLabsWalletColors.grey[600]),
     headline4: TextStyle(
         color: Color.fromRGBO(0, 0, 0, 1.0),
         fontSize: 30.0,
@@ -306,10 +306,10 @@ final ThemeData darkTheme = ThemeData(
     button: TextStyle(
         color: Color(0xFF7aa5eb), fontSize: 14.3, letterSpacing: 1.25),
     subtitle2: TextStyle(
-        color: ElenPayWalletColors.white[500],
+        color: ClovrLabsWalletColors.white[500],
         fontSize: 10.0,
         letterSpacing: 0.09),
-    caption: TextStyle(color: ElenPayWalletColors.white[400], fontSize: 12.0),
+    caption: TextStyle(color: ClovrLabsWalletColors.white[400], fontSize: 12.0),
   ),
   textSelectionTheme: TextSelectionThemeData(
     selectionColor: Color.fromRGBO(255, 255, 255, 0.5),
@@ -399,12 +399,12 @@ final Map<String, VendorTheme> vendorTheme = {
 final TextStyle drawerItemTextStyle =
     TextStyle(height: 1.2, letterSpacing: 0.25, fontSize: 14.3);
 final TextStyle notificationTextStyle = TextStyle(
-    color: ElenPayWalletColors.grey[500],
+    color: ClovrLabsWalletColors.grey[500],
     fontSize: 10.0,
     letterSpacing: 0.06,
     height: 1.10);
 final TextStyle addFundsBtnStyle = TextStyle(
-    color: ElenPayWalletColors.white[400], fontSize: 16.0, letterSpacing: 1.25);
+    color: ClovrLabsWalletColors.white[400], fontSize: 16.0, letterSpacing: 1.25);
 final TextStyle bottomAppBarBtnStyle = TextStyle(
     color: Colors.black,
     fontSize: 13.5,
@@ -422,66 +422,66 @@ final TextStyle bottomSheetTextStyle = TextStyle(
     fontWeight: FontWeight.w400,
     height: 1.30);
 final TextStyle addFundsItemsStyle = TextStyle(
-    color: ElenPayWalletColors.white[500],
+    color: ClovrLabsWalletColors.white[500],
     fontSize: 14.3,
     letterSpacing: 1.25,
     height: 1.16,
     fontWeight: FontWeight.w500,
     fontFamily: 'IBMPlexSans');
 final TextStyle bottomSheetMenuItemStyle = TextStyle(
-    color: ElenPayWalletColors.white[400], fontSize: 14.3, letterSpacing: 0.55);
+    color: ClovrLabsWalletColors.white[400], fontSize: 14.3, letterSpacing: 0.55);
 final TextStyle autoCompleteStyle =
     TextStyle(color: Colors.black, fontSize: 14.0);
 final TextStyle blueLinkStyle = TextStyle(
-    color: ElenPayWalletColors.dark_grey[500], fontSize: 16.0, height: 1.5);
+    color: ClovrLabsWalletColors.dark_grey[500], fontSize: 16.0, height: 1.5);
 final TextStyle avatarDialogStyle = TextStyle(
-    color: ElenPayWalletColors.dark_grey[900],
+    color: ClovrLabsWalletColors.dark_grey[900],
     fontSize: 16.4,
     letterSpacing: 0.15,
     fontWeight: FontWeight.w500,
     fontFamily: 'IBMPlexSans');
 final TextStyle errorStyle = TextStyle(color: errorColor, fontSize: 12.0);
 final TextStyle textStyle =
-    TextStyle(color: ElenPayWalletColors.white[400], fontSize: 16.0);
+    TextStyle(color: ClovrLabsWalletColors.white[400], fontSize: 16.0);
 final TextStyle navigationDrawerHandleStyle = TextStyle(
     fontSize: 16.0,
     letterSpacing: 0.2,
     color: Color.fromRGBO(255, 255, 255, 0.6));
 final TextStyle warningStyle = TextStyle(color: errorColor, fontSize: 16.0);
 final TextStyle instructionStyle =
-    TextStyle(color: ElenPayWalletColors.white[400], fontSize: 14.3);
+    TextStyle(color: ClovrLabsWalletColors.white[400], fontSize: 14.3);
 final TextStyle validatorStyle =
     TextStyle(color: Color(0xFFe3b42f), fontSize: 12.0, height: 1.25);
 final TextStyle welcomeTextStyle = TextStyle(
-    color: ElenPayWalletColors.white[500], fontSize: 16.0, height: 1.1);
+    color: ClovrLabsWalletColors.white[500], fontSize: 16.0, height: 1.1);
 final TextStyle skipStyle = TextStyle(
-    color: ElenPayWalletColors.white[500], fontSize: 16.0, letterSpacing: 1.25);
+    color: ClovrLabsWalletColors.white[500], fontSize: 16.0, letterSpacing: 1.25);
 final TextStyle buttonStyle = TextStyle(
-    color: ElenPayWalletColors.dark_grey[500], fontSize: 14.3, letterSpacing: 1.25);
+    color: ClovrLabsWalletColors.dark_grey[500], fontSize: 14.3, letterSpacing: 1.25);
 final TextStyle whiteButtonStyle = TextStyle(
-    color: ElenPayWalletColors.white[500], fontSize: 14.3, letterSpacing: 1.25);
+    color: ClovrLabsWalletColors.white[500], fontSize: 14.3, letterSpacing: 1.25);
 final TextStyle appBarLogoStyle = TextStyle(
-    color: ElenPayWalletColors.grey[2],
+    color: ClovrLabsWalletColors.grey[2],
     fontSize: 23.5,
     letterSpacing: 0.15,
     height: 0.9);
 final TextStyle posTransactionTitleStyle = TextStyle(
-    color: ElenPayWalletColors.white[500],
+    color: ClovrLabsWalletColors.white[500],
     fontSize: 14.4,
     letterSpacing: 0.44,
     height: 1.28);
 final TextStyle transactionTitleStyle = TextStyle(
-    color: ElenPayWalletColors.white[500],
+    color: ClovrLabsWalletColors.white[500],
     fontSize: 14.3,
     letterSpacing: 0.25,
     height: 1.2);
 final TextStyle transactionSubtitleStyle = TextStyle(
-    color: ElenPayWalletColors.white[200],
+    color: ClovrLabsWalletColors.white[200],
     fontSize: 12.3,
     letterSpacing: 0.4,
     height: 1.16);
 final TextStyle transactionAmountStyle = TextStyle(
-    color: ElenPayWalletColors.white[500],
+    color: ClovrLabsWalletColors.white[500],
     fontSize: 16.4,
     letterSpacing: 0.5,
     height: 1.28,
@@ -500,83 +500,83 @@ final TextStyle posWithdrawalTransactionAmountStyle = TextStyle(
     fontWeight: FontWeight.w500,
     fontFamily: 'IBMPlexSans');
 final TextStyle cancelButtonStyle = TextStyle(
-    color: ElenPayWalletColors.red[600],
+    color: ClovrLabsWalletColors.red[600],
     letterSpacing: 1.25,
     height: 1.16,
     fontSize: 14.0,
     fontWeight: FontWeight.w500,
     fontFamily: 'IBMPlexSans');
 final TextStyle backupPhraseInformationTextStyle = TextStyle(
-    color: ElenPayWalletColors.white[500],
+    color: ClovrLabsWalletColors.white[500],
     fontSize: 14.3,
     letterSpacing: 0.4,
     height: 1.16);
 final TextStyle backupPhraseConfirmationTextStyle = TextStyle(
-    color: ElenPayWalletColors.white[500],
+    color: ClovrLabsWalletColors.white[500],
     fontSize: 14.3,
     letterSpacing: 1.25,
     height: 1.16,
     fontWeight: FontWeight.w500,
     fontFamily: 'IBMPlexSans');
 final TextStyle mnemonicsTextStyle = TextStyle(
-    color: ElenPayWalletColors.white[400],
+    color: ClovrLabsWalletColors.white[400],
     fontSize: 16.4,
     letterSpacing: 0.73,
     height: 1.25);
 final TextStyle invoiceMemoStyle = TextStyle(
-    color: ElenPayWalletColors.grey[500],
+    color: ClovrLabsWalletColors.grey[500],
     fontSize: 12.3,
     height: 1.16,
     letterSpacing: 0.4);
 final TextStyle invoiceChargeAmountStyle = TextStyle(
-    color: ElenPayWalletColors.white[500],
+    color: ClovrLabsWalletColors.white[500],
     fontSize: 14.3,
     height: 1.16,
     letterSpacing: 1.25);
 final TextStyle invoiceAmountStyle = TextStyle(
-    color: ElenPayWalletColors.grey[600],
+    color: ClovrLabsWalletColors.grey[600],
     fontSize: 18.0,
     height: 1.32,
     letterSpacing: 0.2);
 final TextStyle currencyDropdownStyle = TextStyle(
-    color: ElenPayWalletColors.grey[600],
+    color: ClovrLabsWalletColors.grey[600],
     fontSize: 16.3,
     height: 1.32,
     letterSpacing: 0.15);
 final TextStyle numPadNumberStyle = TextStyle(
-    color: ElenPayWalletColors.white[500], fontSize: 20.0, letterSpacing: 0.18);
+    color: ClovrLabsWalletColors.white[500], fontSize: 20.0, letterSpacing: 0.18);
 final TextStyle numPadAdditionStyle = TextStyle(
-    color: ElenPayWalletColors.white[500], fontSize: 32.0, letterSpacing: 0.18);
+    color: ClovrLabsWalletColors.white[500], fontSize: 32.0, letterSpacing: 0.18);
 final TextStyle smallTextStyle = TextStyle(
-    color: ElenPayWalletColors.white[500], fontSize: 10.0, letterSpacing: 0.09);
+    color: ClovrLabsWalletColors.white[500], fontSize: 10.0, letterSpacing: 0.09);
 final TextStyle linkStyle = TextStyle(
-    color: ElenPayWalletColors.white[300],
+    color: ClovrLabsWalletColors.white[300],
     fontSize: 12.3,
     letterSpacing: 0.4,
     height: 1.2,
     decoration: TextDecoration.underline);
 final TextStyle restoreLinkStyle = TextStyle(
-    color: ElenPayWalletColors.white[300],
+    color: ClovrLabsWalletColors.white[300],
     fontSize: 12.0,
     letterSpacing: 0.4,
     height: 1.2,
     decoration: TextDecoration.underline);
 final TextStyle snackBarStyle = TextStyle(
-    color: ElenPayWalletColors.white[500],
+    color: ClovrLabsWalletColors.white[500],
     fontSize: 14.0,
     letterSpacing: 0.25,
     height: 1.2);
 final TextStyle sessionActionBtnStyle = TextStyle(fontSize: 12.3);
 final TextStyle sessionNotificationStyle = TextStyle(fontSize: 14.2);
 final TextStyle paymentDetailsTitleStyle = TextStyle(
-    color: ElenPayWalletColors.grey[500],
+    color: ClovrLabsWalletColors.grey[500],
     fontSize: 14.0,
     letterSpacing: 0.0,
     height: 1.28,
     fontWeight: FontWeight.w500,
     fontFamily: 'IBMPlexSans');
 final TextStyle paymentDetailsSubtitleStyle = TextStyle(
-    color: ElenPayWalletColors.grey[500],
+    color: ClovrLabsWalletColors.grey[500],
     fontSize: 14.0,
     letterSpacing: 0.0,
     height: 1.28);
@@ -586,50 +586,50 @@ final TextStyle fastbitcoinsTextStyle = TextStyle(
     letterSpacing: 0.0,
     fontFamily: 'ComfortaaBold');
 final TextStyle vendorTitleStyle = TextStyle(
-    color: ElenPayWalletColors.white[500],
+    color: ClovrLabsWalletColors.white[500],
     fontSize: 36.0,
     fontWeight: FontWeight.w600,
     letterSpacing: 1.1,
     fontFamily: 'Roboto');
 final TextStyle fiatConversionTitleStyle = TextStyle(
-    color: ElenPayWalletColors.white[500],
+    color: ClovrLabsWalletColors.white[500],
     fontSize: 16.3,
     letterSpacing: 0.25,
     height: 1.2);
 final TextStyle fiatConversionDescriptionStyle =
-    TextStyle(color: ElenPayWalletColors.white[200], fontSize: 14.3);
+    TextStyle(color: ClovrLabsWalletColors.white[200], fontSize: 14.3);
 final BoxDecoration boxDecoration = BoxDecoration(
     border: Border(
-        bottom: BorderSide(color: ElenPayWalletColors.white[500], width: 1.5)));
+        bottom: BorderSide(color: ClovrLabsWalletColors.white[500], width: 1.5)));
 final BoxDecoration autoCompleteBoxDecoration = BoxDecoration(
-    color: ElenPayWalletColors.white[500],
+    color: ClovrLabsWalletColors.white[500],
     borderRadius: BorderRadius.circular(3.0));
-final Color whiteColor = ElenPayWalletColors.white[500];
-final Color snackBarBackgroundColor = ElenPayWalletColors.dark_grey[300];
-final Color avatarBackgroundColor = ElenPayWalletColors.dark_grey[500];
-final Color sessionAvatarBackgroundColor = ElenPayWalletColors.white[500];
+final Color whiteColor = ClovrLabsWalletColors.white[500];
+final Color snackBarBackgroundColor = ClovrLabsWalletColors.dark_grey[300];
+final Color avatarBackgroundColor = ClovrLabsWalletColors.dark_grey[500];
+final Color sessionAvatarBackgroundColor = ClovrLabsWalletColors.white[500];
 final Color pulseAnimationColor = Color.fromRGBO(100, 155, 230, 1.0);
 final Color marketplaceButtonColor = Color.fromRGBO(229, 238, 251, 0.09);
 final Color errorColor = Color(0xffffe685);
 final Color circularLoaderColor =
-    ElenPayWalletColors.dark_grey[200].withOpacity(0.7);
+    ClovrLabsWalletColors.dark_grey[200].withOpacity(0.7);
 final Color warningBoxColor = Color.fromRGBO(251, 233, 148, 0.1);
 final BorderSide greyBorderSide =
-    BorderSide(color: ElenPayWalletColors.grey[500]);
+    BorderSide(color: ClovrLabsWalletColors.grey[500]);
 
 class FieldTextStyle {
   FieldTextStyle._();
 
   static TextStyle textStyle = TextStyle(
-      color: ElenPayWalletColors.white[500],
+      color: ClovrLabsWalletColors.white[500],
       fontSize: 16.4,
       letterSpacing: 0.15);
   static TextStyle labelStyle =
-      TextStyle(color: ElenPayWalletColors.white[200], letterSpacing: 0.4);
+      TextStyle(color: ClovrLabsWalletColors.white[200], letterSpacing: 0.4);
 }
 
-class ElenPayWalletColors {
-  ElenPayWalletColors._(); // this basically makes it so you can instantiate this class
+class ClovrLabsWalletColors {
+  ClovrLabsWalletColors._(); // this basically makes it so you can instantiate this class
 
   static const Map<int, Color> dark_grey = <int, Color>{
     200: Color.fromRGBO(119, 119, 126, 1.0),
@@ -667,15 +667,15 @@ class VendorTheme {
 
 extension CustomStyles on TextTheme {
   TextStyle get itemTitleStyle =>
-      TextStyle(color: ElenPayWalletColors.white[500], fontSize: 16.4);
+      TextStyle(color: ClovrLabsWalletColors.white[500], fontSize: 16.4);
 
   TextStyle get itemPriceStyle => TextStyle(
-      color: ElenPayWalletColors.white[500],
+      color: ClovrLabsWalletColors.white[500],
       letterSpacing: 0.5,
       fontSize: 14.3);
 }
 
 extension CustomIconThemes on IconThemeData {
   IconThemeData get deleteBadgeIconTheme =>
-      IconThemeData(color: ElenPayWalletColors.grey[500], size: 20.0);
+      IconThemeData(color: ClovrLabsWalletColors.grey[500], size: 20.0);
 }

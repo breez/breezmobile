@@ -55,7 +55,7 @@ class KeyboardDoneAction {
                     child: Text(
                       texts.keyboard_done_action,
                       style: TextStyle(
-                        color: theme.ElenPayWalletColors.dark_grey[500],
+                        color: theme.ClovrLabsWalletColors.dark_grey[500],
                         fontWeight: FontWeight.bold,
                       ),
                     ),

@@ -253,7 +253,7 @@ class SecurityPageState extends State<SecurityPage>
               Navigator.push(
                 context,
                 FadeInRoute(
-                  builder: (BuildContext context) => withElenPayWalletTheme(
+                  builder: (BuildContext context) => withClovrLabsWalletTheme(
                     context,
                     BackupPhraseGeneratorConfirmationPage(),
                   ),
@@ -613,7 +613,7 @@ class SecurityPageState extends State<SecurityPage>
     Navigator.of(context).push(
       FadeInRoute(
         builder: (BuildContext context) {
-          return withElenPayWalletTheme(
+          return withClovrLabsWalletTheme(
             context,
             ChangePinCode(),
           );

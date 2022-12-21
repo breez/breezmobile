@@ -80,13 +80,14 @@ class BackupProviderSelectionDialogState
                             )
                           : Icon(
                               Icons.check,
-                              color: themeData.backgroundColor,
+                              color: Colors.white,
                             ),
                       title: Text(
                         providers[index].displayName,
                         style: themeData.dialogTheme.titleTextStyle.copyWith(
                           fontSize: 14.3,
                           height: 1.2,
+                            color: Colors.black
                         ), // Color needs to change
                       ),
                       onTap: () {

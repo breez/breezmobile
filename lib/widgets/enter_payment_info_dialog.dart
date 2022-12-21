@@ -134,8 +134,8 @@ class EnterPaymentInfoDialogState extends State<EnterPaymentInfoDialog> {
                   style: theme.FieldTextStyle.labelStyle.copyWith(
                     fontSize: 13.0,
                     color: theme.themeId == "WHITE"
-                        ? theme.ElenPayWalletColors.grey[500]
-                        : theme.ElenPayWalletColors.white[200],
+                        ? theme.ClovrLabsWalletColors.grey[500]
+                        : theme.ClovrLabsWalletColors.white[200],
                   ),
                 ),
               ),

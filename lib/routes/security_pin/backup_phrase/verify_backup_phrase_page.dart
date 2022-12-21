@@ -133,7 +133,7 @@ class VerifyBackupPhrasePageState extends State<VerifyBackupPhrasePage> {
           _randomlySelectedIndexes[2] + 1,
         ),
         style: theme.backupPhraseInformationTextStyle.copyWith(
-          color: theme.ElenPayWalletColors.white[300],
+          color: theme.ClovrLabsWalletColors.white[300],
         ),
         textAlign: TextAlign.center,
       ),

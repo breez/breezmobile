@@ -208,7 +208,7 @@ class WalletManager extends StatelessWidget {
                             case '/send_coins':
                               return MaterialPageRoute(
                                 fullscreenDialog: true,
-                                builder: (_) => withElenPayWalletTheme(
+                                builder: (_) => withClovrLabsWalletTheme(
                                   context,
                                   UnexpectedFunds(),
                                 ),
@@ -229,7 +229,7 @@ class WalletManager extends StatelessWidget {
                               );
                             case '/create_invoice':
                               return FadeInRoute(
-                                builder: (_) => withElenPayWalletTheme(
+                                builder: (_) => withClovrLabsWalletTheme(
                                   context,
                                   CreateInvoicePage(),
                                 ),
@@ -237,7 +237,7 @@ class WalletManager extends StatelessWidget {
                               );
                             case '/fiat_currency':
                               return FadeInRoute(
-                                builder: (_) => withElenPayWalletTheme(
+                                builder: (_) => withClovrLabsWalletTheme(
                                   context,
                                   FiatCurrencySettings(
                                     accountBloc,
@@ -248,7 +248,7 @@ class WalletManager extends StatelessWidget {
                               );
                             case '/network':
                               return FadeInRoute(
-                                builder: (_) => withElenPayWalletTheme(
+                                builder: (_) => withClovrLabsWalletTheme(
                                   context,
                                   NetworkPage(),
                                 ),
@@ -256,7 +256,7 @@ class WalletManager extends StatelessWidget {
                               );
                             case '/security':
                               return FadeInRoute(
-                                builder: (_) => withElenPayWalletTheme(
+                                builder: (_) => withClovrLabsWalletTheme(
                                   context,
                                   SecurityPage(
                                     userProfileBloc,
@@ -267,7 +267,7 @@ class WalletManager extends StatelessWidget {
                               );
                             case '/payment_options':
                               return FadeInRoute(
-                                builder: (_) => withElenPayWalletTheme(
+                                builder: (_) => withClovrLabsWalletTheme(
                                   context,
                                   PaymentOptionsPage(),
                                 ),
@@ -275,7 +275,7 @@ class WalletManager extends StatelessWidget {
                               );
                             case '/developers':
                               return FadeInRoute(
-                                builder: (_) => withElenPayWalletTheme(
+                                builder: (_) => withClovrLabsWalletTheme(
                                   context,
                                   DevView(),
                                 ),
@@ -283,7 +283,7 @@ class WalletManager extends StatelessWidget {
                               );
                             case '/connect_to_pay':
                               return FadeInRoute(
-                                builder: (_) => withElenPayWalletTheme(
+                                builder: (_) => withClovrLabsWalletTheme(
                                   context,
                                   ConnectToPayPage(null),
                                 ),

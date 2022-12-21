@@ -20,7 +20,7 @@
   "home_error_podcast_link": "Podcast Link",
   "home_broadcast_transaction": "Broadcasting your transaction",
   "home_config_error_title": "Configuration Error",
-  "home_config_error_message": "ElenPay detected another device is running with the same configuration (probably due to restore). ClovrLabs Wallet cannot run the same configuration on more than one device. Please reinstall ClovrLabs Wallet if you wish to continue using ClovrLabs Wallet on this device.",
+  "home_config_error_message": "ClovrLabs Wallet detected another device is running with the same configuration (probably due to restore). ClovrLabs Wallet cannot run the same configuration on more than one device. Please reinstall ClovrLabs Wallet if you wish to continue using ClovrLabs Wallet on this device.",
   "home_config_error_action_exit": "CANCEL",
   "home_background_synchronization_title": "Background Synchronization",
   "home_background_synchronization_message": "In order to support instantaneous payments, ClovrLabs Wallet  needs your permission in order to synchronize the information while the app is not active. Please approve the app in the next dialog.",

@@ -142,7 +142,7 @@ class QrActionButton extends StatelessWidget {
           },
           child: SvgPicture.asset(
             "src/icon/qr_scan.svg",
-            color: theme.ElenPayWalletColors.white[500],
+            color: theme.ClovrLabsWalletColors.white[500],
             fit: BoxFit.contain,
             width: 24.0,
             height: 24.0,

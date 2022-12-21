@@ -146,7 +146,7 @@ class CurrencyConverterDialogState extends State<CurrencyConverterDialog>
           title: Theme(
             data: themeData.copyWith(
               brightness: Brightness.light,
-              canvasColor: theme.ElenPayWalletColors.white[500],
+              canvasColor: theme.ClovrLabsWalletColors.white[500],
             ),
             child: _dialogBody(context, account),
           ),

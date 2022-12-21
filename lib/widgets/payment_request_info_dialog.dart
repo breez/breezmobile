@@ -88,7 +88,7 @@ class PaymentRequestInfoDialogState extends State<PaymentRequestInfoDialog> {
         ? null
         : Padding(
             padding: EdgeInsets.only(top: 48, bottom: 8),
-            child: ElenPayAvatar(
+            child: ClovrLabsAvatar(
               widget.invoice.payeeImageURL,
               radius: 32.0,
             ),

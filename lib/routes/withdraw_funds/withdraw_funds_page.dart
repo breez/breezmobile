@@ -194,7 +194,7 @@ class WithdrawFundsPageState extends State<WithdrawFundsPage> {
                           alignment: Alignment.bottomRight,
                           icon: Image(
                             image: AssetImage("src/icon/qr_scan.png"),
-                            color: theme.ElenPayWalletColors.white[500],
+                            color: theme.ClovrLabsWalletColors.white[500],
                             fit: BoxFit.contain,
                             width: 24.0,
                             height: 24.0,

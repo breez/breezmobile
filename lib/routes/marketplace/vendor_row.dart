@@ -66,7 +66,7 @@ class VendorRow extends StatelessWidget {
               color: _vendorBgColor,
               boxShadow: [
                 BoxShadow(
-                  color: theme.ElenPayWalletColors.grey[600],
+                  color: theme.ClovrLabsWalletColors.grey[600],
                   blurRadius: 8.0,
                 )
               ],

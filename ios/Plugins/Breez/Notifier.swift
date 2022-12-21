@@ -11,25 +11,25 @@ import Foundation
 class Notifier : NSObject {
     
     static var notificationCenter : UNUserNotificationCenter?;
-    static let openElenPayWalletAction = UNNotificationAction(identifier: "openElenPayAction", title: "Open ElenPay Wallet", options: [.foreground])
-    static let openElenPayCategory = UNNotificationCategory(identifier: "openElenPay", actions: [openElenPayWalletAction], intentIdentifiers: [], options: [])
+    static let openClovrLabsWalletAction = UNNotificationAction(identifier: "openClovrLabsAction", title: "Open ClovrLabs Wallet", options: [.foreground])
+    static let openClovrLabsCategory = UNNotificationCategory(identifier: "openClovrLabs", actions: [openClovrLabsWalletAction], intentIdentifiers: [], options: [])
     
     static func getNotificationCenter() -> UNUserNotificationCenter{
         if (notificationCenter == nil) {
             notificationCenter = UNUserNotificationCenter.current()
-            notificationCenter!.setNotificationCategories([openElenPayCategory])
+            notificationCenter!.setNotificationCategories([openClovrLabsCategory])
         }
         return notificationCenter!;
     }
     
     static func showClosedChannelNotification() {
-        showNotification(withTitle: "Action Required", withBody: "ElenPay Wallet has identified a change in the state of one of your payment channels. It is highly recommended you open ElenPay Wallet in order to ensure access to your funds.", withActionCategoryId: openElenPayCategory.identifier, withIdentifier: "channelswatcher");
+        showNotification(withTitle: "Action Required", withBody: "Clovr Labs Wallet has identified a change in the state of one of your payment channels. It is highly recommended you open Clovr Labs Wallet in order to ensure access to your funds.", withActionCategoryId: openClovrLabsCategory.identifier, withIdentifier: "channelswatcher");
     }
     
     static func scheduleSyncRequiredNotification() {
         let center =  getNotificationCenter();
         center.removePendingNotificationRequests(withIdentifiers: ["syncwatcher"])
-        showNotification(withTitle: "Action Required", withBody: "ElenPay Wallet has not been synchronized for more than 24 hours. It is highly recommended you openElenPay Walletin order to ensure access to your funds.", withActionCategoryId: openElenPayCategory.identifier, withIdentifier: "syncwatcher", withDelay: 3600 * 24 * 3);
+        showNotification(withTitle: "Action Required", withBody: "Clovr Labs Wallet has not been synchronized for more than 24 hours. It is highly recommended you open Clovr Labs Wallet in order to ensure access to your funds.", withActionCategoryId: openClovrLabsCategory.identifier, withIdentifier: "syncwatcher", withDelay: 3600 * 24 * 3);
     }
     
     static func showNotification(withTitle title: String, withBody body: String,

@@ -132,7 +132,7 @@ Widget breezAvatarDialog(BuildContext context, UserProfileBloc userBloc) {
                               Padding(
                                 child: AspectRatio(
                                   aspectRatio: 1,
-                                  child: ElenPayAvatar(
+                                  child: ClovrLabsAvatar(
                                     _pickedImage?.path ?? userModel.avatarURL,
                                     radius: 36.0,
                                   ),

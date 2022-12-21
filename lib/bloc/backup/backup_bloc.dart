@@ -111,7 +111,6 @@ class BackupBloc {
 
   BackupBloc(
     Stream<ClovrUserModel> userStream,
-    Stream<bool> backupAnytimeDBStream,
   ) {
     _initAppDataPathAndDir();
     ServiceInjector injector = ServiceInjector();
@@ -125,15 +124,14 @@ class BackupBloc {
 
     SharedPreferences.getInstance().then((sp) async {
       _sharedPreferences = sp;
-      // Read the backupKey from the secure storage and initialize the ClovrLabs Wallet  user model appropriately
+      // Read the backupKey from the secure storage and initialize the Clovr Labs Wallet  user model appropriately
       await _initializePersistentData();
       _listenBackupPaths();
       _listenBackupNowRequests();
-      _listenAppDataBackupRequests(backupAnytimeDBStream);
       _listenRestoreRequests();
       _scheduleBackgroundTasks();
 
-      // Read the backupKey from the secure storage and initialize the ClovrLabs Wallet user model appropriately
+      // Read the backupKey from the secure storage and initialize the Clovr Labs Wallet user model appropriately
       _setBreezLibBackupKey();
       if (_backupSettingsController.value.backupProvider != null) {
         await _updateBackupProvider(_backupSettingsController.value);
@@ -546,7 +544,6 @@ class BackupBloc {
     try {
       await _restoreLightningFees();
       await _restorePosDB();
-      await _restorePodcastsDB();
     } on Exception catch (exception) {
       throw exception;
     }

@@ -107,7 +107,7 @@ class RestoreDialogState extends State<RestoreDialog> {
         ),
         TextButton(
           style: TextButton.styleFrom(
-            primary: theme.ElenPayWalletColors.dark_grey[500],
+            primary: theme.ClovrLabsWalletColors.dark_grey[500],
           ),
           onPressed: _selectedSnapshot == null
               ? null
@@ -135,7 +135,7 @@ class RestoreDialogState extends State<RestoreDialog> {
       trailing: nodeID == item.nodeID
           ? Icon(
               Icons.check,
-              color: theme.ElenPayWalletColors.dark_grey[500],
+              color: theme.ClovrLabsWalletColors.dark_grey[500],
             )
           : Icon(Icons.check),
       title: Text(

@@ -22,7 +22,7 @@ class PaymentItemAvatar extends StatelessWidget {
           backgroundColor: Colors.white,
           child: ImageIcon(
             AssetImage("src/icon/podcast.png"),
-            color: theme.ElenPayWalletColors.dark_grey[500],
+            color: theme.ClovrLabsWalletColors.dark_grey[500],
             size: 0.6 * radius * 2,
           ),
         );
@@ -44,7 +44,7 @@ class PaymentItemAvatar extends StatelessWidget {
       final metadataImage = _metadataImage();
       if (metadataImage != null) return metadataImage;
 
-      return ElenPayAvatar(paymentItem.imageURL, radius: radius);
+      return ClovrLabsAvatar(paymentItem.imageURL, radius: radius);
     }
   }
 

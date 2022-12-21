@@ -326,17 +326,16 @@ class InitialWalkthroughPageState extends State<InitialWalkthroughPage>
                       onPressed: () => _letsBreez(context),
                     ),
                   ),
-                  // temp comment
-                  // Padding(
-                  //   padding: EdgeInsets.only(top: 10.0),
-                  //   child: GestureDetector(
-                  //     onTap: () => _restoreFromBackup(context),
-                  //     child: Text(
-                  //       texts.initial_walk_through_restore_from_backup,
-                  //       style: themeApp.restoreLinkStyle,
-                  //     ),
-                  //   ),
-                  // ),
+                  Padding(
+                    padding: EdgeInsets.only(top: 10.0),
+                    child: GestureDetector(
+                      onTap: () => _restoreFromBackup(context),
+                      child: Text(
+                        texts.initial_walk_through_restore_from_backup,
+                        style: themeApp.restoreLinkStyle,
+                      ),
+                    ),
+                  ),
                 ],
               ),
             ],
