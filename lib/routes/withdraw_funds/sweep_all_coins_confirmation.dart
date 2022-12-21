@@ -3,6 +3,8 @@ import 'package:breez/bloc/account/account_actions.dart';
 import 'package:breez/bloc/account/account_bloc.dart';
 import 'package:breez/bloc/account/account_model.dart';
 import 'package:breez/bloc/blocs_provider.dart';
+import 'package:breez/logger.dart';
+import 'package:breez/utils/exceptions.dart';
 import 'package:breez/utils/min_font_size.dart';
 import 'package:breez/widgets/back_button.dart' as backBtn;
 import 'package:breez/widgets/error_dialog.dart';
@@ -159,16 +161,18 @@ class SweepAllCoinsConfirmationState extends State<SweepAllCoinsConfirmation> {
           : SingleButtonBottomBar(
               text: texts.sweep_all_coins_action_confirm,
               onPressed: () {
+                log.info("Sweep all coins using $selectedFeeIndex of ${transactions.logDescription((e) => e.fees.toString())}");
                 Navigator.of(context).push(createLoaderRoute(context));
                 widget.onConfirm(transactions[selectedFeeIndex]).then((_) {
                   Navigator.of(context).pop();
                 }).catchError((error) {
+                  log.warning("Sweep all coins error", error);
                   Navigator.of(context).pop();
                   promptError(
                     context,
                     null,
                     Text(
-                      error.toString(),
+                      extractExceptionMessage(error, texts: texts),
                       style: themeData.dialogTheme.contentTextStyle,
                     ),
                   );
