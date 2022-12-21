@@ -18,7 +18,7 @@ public class NativeMethods {
 
 
 fileprivate let calls : [String:BindingExecutor] = [
-    "start": EmptyArgsBindingExecutor(f: BindingsStart),
+    "start": SingleArgBindingExecutor(f: BindingsStart),
     "stop": VoidBindingExecutor(f: BindingsStop),
     "restartDaemon": EmptyArgsBindingExecutor(f: BindingsRestartDaemon),
     
@@ -28,7 +28,7 @@ fileprivate let calls : [String:BindingExecutor] = [
     "availableSnapshots": EmptyArgsBindingExecutor(f: BindingsAvailableSnapshots),
     "backupFiles": EmptyArgsBindingExecutor(f: BindingsBackupFiles),
     "connectAccount": EmptyArgsBindingExecutor(f: BindingsConnectAccount),
-    
+
     "decodePaymentRequest": SingleArgBindingExecutor(f: BindingsDecodePaymentRequest),
     "getPaymentRequestHash": SingleArgBindingExecutor(f: BindingsGetPaymentRequestHash),
     "getAccountInfo": EmptyArgsBindingExecutor(f: BindingsGetAccountInfo),
@@ -38,9 +38,9 @@ fileprivate let calls : [String:BindingExecutor] = [
     "connectToLnurl": SingleArgBindingExecutor(f: BindingsConnectToLnurl),
     "enableAccount": SingleArgBindingExecutor(f: BindingsEnableAccount),
     "downloadBackup": SingleArgBindingExecutor(f: BindingsDownloadBackup),
-    
+
     "getFundStatus": SingleArgBindingExecutor(f: BindingsGetFundStatus),
-    "getPayments": EmptyArgsBindingExecutor(f: BindingsGetPayments),    
+    "getPayments": EmptyArgsBindingExecutor(f: BindingsGetPayments),
     
     "getRelatedInvoice": SingleArgBindingExecutor(f: BindingsGetRelatedInvoice),
     "getLogger": SingleArgBindingExecutor(f: BindingsGetLogger),
@@ -55,7 +55,7 @@ fileprivate let calls : [String:BindingExecutor] = [
     "refund": SingleArgBindingExecutor(f: BindingsRefund),
     "registerChannelOpenedNotification": SingleArgBindingExecutor(f: BindingsRegisterChannelOpenedNotification),
     "registerPeriodicSync": SingleArgBindingExecutor(f: BindingsRegisterPeriodicSync),
-    "registerReceivePaymentReadyNotification": SingleArgBindingExecutor(f: BindingsRegisterReceivePaymentReadyNotification),    
+    "registerReceivePaymentReadyNotification": SingleArgBindingExecutor(f: BindingsRegisterReceivePaymentReadyNotification),
     "sendCommand": SingleArgBindingExecutor(f: BindingsSendCommand),
     "sendPaymentFailureBugReport": SingleArgBindingExecutor(f: BindingsSendPaymentFailureBugReport),
     "sendPaymentForRequest": SingleArgBindingExecutor(f: BindingsSendPaymentForRequest),
@@ -98,7 +98,7 @@ fileprivate let calls : [String:BindingExecutor] = [
     "unconfirmedChannelsStatus": SingleArgBindingExecutor(f: BindingsUnconfirmedChannelsStatus),
     "resetClosedChannelChainInfo": SingleArgBindingExecutor(f: BindingsResetClosedChannelChainInfo),
     "setNonBlockingUnconfirmedSwaps": EmptyArgsBindingExecutor(f: BindingsSetNonBlockingUnconfirmedSwaps),
-    
+
     //jobs
     //    FOUNDATION_EXPORT id<BindingsJobController> BindingsNewClosedChannelsJob(NSString* workingDir, NSError** error);
     //    FOUNDATION_EXPORT id<BindingsJobController> BindingsNewSyncJob(NSString* workingDir, NSError** error);
