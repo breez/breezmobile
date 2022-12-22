@@ -172,7 +172,7 @@ class RemoteServerAuthPageState extends State<RemoteServerAuthPage> {
                                   .contentTextStyle,
                             ),
                             optionText: texts
-                                .remote_server_onion_warning_dialog_default_action_continue,
+                                .remote_server_onion_warning_dialog_default_action_cancel,
                             optionFunc: () {
                               Navigator.of(context).pop();
                             },
@@ -321,16 +321,6 @@ class RemoteServerAuthPageState extends State<RemoteServerAuthPage> {
     );
   }
 
-  Future testConnection(RemoteServerAuthData authData) async {
-    var client = webdav.newClient(
-      authData.url,
-      user: authData.user,
-      password: authData.password,
-      debug: true,
-    );
-    await client.ping();
-  }
-
   // We try to discover the webdav url using a backward search where on every
   // step we take the last path segment from the url and append it as a prefix
   // to the folder path.
@@ -372,7 +362,7 @@ class RemoteServerAuthPageState extends State<RemoteServerAuthPage> {
     if (!url.endsWith("/")) {
       url = url + "/";
     }
-    final nextCloudURL = url + "remote.php/files/";
+    final nextCloudURL = url + "remote.php/dav/";
     result = await testAuthData(authData.copyWith(url: nextCloudURL));
     if (result == DiscoverResult.SUCCESS ||
         result == DiscoverResult.INVALID_AUTH) {

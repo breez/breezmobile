@@ -1021,7 +1021,7 @@
   "remote_server_error_remote_server_title": "Servidor remoto",
   "remote_server_error_remote_server_message": "Falha ao conectar com o servidor remoto, verifique suas configurações.",
   "remote_server_warning_onion_message": "Esta URL tem um domínio onion. Você precisa primeiro habilitar o Tor nas configurações de rede.",
-  "remote_server_onion_warning_dialog_default_action_continue": "CONTINUAR",
+  "remote_server_onion_warning_dialog_default_action_cancel": "CONTINUAR",
   "remote_server_onion_warning_dialog_settings": "CONFIGURAÇÕES",
   "error_dialog_default_action_ok": "OK",
   "error_dialog_default_action_yes": "SIM",

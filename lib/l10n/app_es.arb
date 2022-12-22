@@ -1021,7 +1021,7 @@
   "remote_server_error_remote_server_title": "Servidor Remoto",
   "remote_server_error_remote_server_message": "No se pudo conectar al servidor remoto, verifique su configuración.",
   "remote_server_warning_onion_message":"Esta URL tiene un dominio de cebolla. Primero debe habilitar Tor en la configuración de red",
-  "remote_server_onion_warning_dialog_default_action_continue": "CONTINUAR",
+  "remote_server_onion_warning_dialog_default_action_cancel": "CANCELAR",
   "remote_server_onion_warning_dialog_settings": "CONFIGURACIÓN",
   "error_dialog_default_action_ok": "OK",
   "error_dialog_default_action_yes": "SÍ",
