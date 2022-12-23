@@ -11,6 +11,8 @@ import android.content.Intent;
 import io.flutter.embedding.android.FlutterFragmentActivity;
 import io.flutter.embedding.android.SplashScreen;
 import io.flutter.embedding.engine.FlutterEngine;
+import io.flutter.embedding.engine.plugins.PluginRegistry;
+import io.flutter.plugins.GeneratedPluginRegistrant;
 
 import android.os.Build;
 import android.os.Bundle;
@@ -27,10 +29,13 @@ public class MainActivity extends FlutterFragmentActivity {
 
     @Override
     public void configureFlutterEngine(@NonNull FlutterEngine flutterEngine) {
-        Log.d(TAG, "Breez activity created...");
+        Log.d(TAG, "Breez activity created...");    
         BreezApplication.isRunning = true;
 
         registerBreezPlugins(flutterEngine);
+
+        GeneratedPluginRegistrant.registerWith(flutterEngine);
+
     }
 
     @Override
@@ -77,10 +82,12 @@ public class MainActivity extends FlutterFragmentActivity {
     void registerBreezPlugins(@NonNull FlutterEngine flutterEngine) {
         flutterEngine.getPlugins().add(new NfcHandler());
         BreezApplication.breezShare = new BreezShare();
-        flutterEngine.getPlugins().add(BreezApplication.breezShare);
-        flutterEngine.getPlugins().add(new Breez());
-        flutterEngine.getPlugins().add(new LifecycleEvents());
-        flutterEngine.getPlugins().add(new Permissions());
+        final PluginRegistry pluginRegistry = flutterEngine.getPlugins();
+        pluginRegistry.add(BreezApplication.breezShare);
+        pluginRegistry.add(new Breez());
+        pluginRegistry.add(new LifecycleEvents());
+        pluginRegistry.add(new Permissions());
+        pluginRegistry.add(new Tor());
     }
 
     @Override

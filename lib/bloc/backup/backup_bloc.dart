@@ -8,6 +8,7 @@ import 'package:breez/bloc/user_profile/breez_user_model.dart';
 import 'package:breez/services/background_task.dart';
 import 'package:breez/services/breezlib/breez_bridge.dart';
 import 'package:breez/services/breezlib/data/rpc.pb.dart';
+import 'package:breez/logger.dart';
 import 'package:breez/services/injector.dart';
 import 'package:crypto/crypto.dart';
 import 'package:flutter/services.dart';
@@ -23,6 +24,7 @@ import 'backup_actions.dart';
 
 class BackupBloc {
   static const String _signInFailedCode = "AuthError";
+  static const String _notFoundCode = "NotFoundError";
   static const String USER_DETAILS_PREFERENCES_KEY = "BreezUserModel.userID";
 
   static const _kDefaultOverrideFee = false;
@@ -315,9 +317,6 @@ class BackupBloc {
     var encryptionKey =
         await BreezLibBackupKey.fromSettings(_secureStorage, backupKeyType);
 
-    // We call _breezLib.setBackupEncryptionKey even if encryptionKey?.key == null
-    // because breezLib sets a persistent flag on whether to use encryption if len(encryptionKey?.key) > 0.
-    // Maybe setUseEncryption should be set explicitly for clarity? (@nochiel)
     return _breezLib.setBackupEncryptionKey(
         encryptionKey?.key, encryptionKey?.type);
   }
@@ -528,6 +527,30 @@ class BackupBloc {
     });
   }
 
+  Future testAuth(BackupProvider provider, RemoteServerAuthData authData) {
+    return _breezLib
+        .testBackupAuth(provider.name, json.encode(authData.toJson()))
+        .catchError((error) {
+      log.info('backupBloc.testAuth caught error: $error');
+
+      if (error is PlatformException) {
+        var e = (error as PlatformException);
+        // Handle PlatformException(ResultError, "AuthError", Failed to invoke testBackupAuth, null)
+        switch (e.message) {
+          case _signInFailedCode:
+            throw SignInFailedException(provider);
+            break;
+
+          case _notFoundCode:
+            throw RemoteServerNotFoundException();
+            break;
+        }
+      }
+
+      throw error;
+    });
+  }
+
   _restoreAppData() async {
     try {
       await _restoreLightningFees();
@@ -595,7 +618,7 @@ class SnapshotInfo {
 
   SnapshotInfo(
       this.nodeID, this.modifiedTime, this.encrypted, this.encryptionType) {
-    print(
+    log.info(
         "New Snapshot encrypted = ${this.encrypted} encrytionType = ${this.encryptionType}");
   }
 
@@ -622,6 +645,14 @@ class SignInFailedException implements Exception {
 
   String toString() {
     return "Sign in failed";
+  }
+}
+
+class RemoteServerNotFoundException implements Exception {
+  RemoteServerNotFoundException();
+
+  String toString() {
+    return "The server/url was not found.";
   }
 }
 

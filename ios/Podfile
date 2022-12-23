@@ -31,6 +31,8 @@ target 'Runner' do
   use_frameworks!
   use_modular_headers!
 
+  pod 'Tor', podspec: 'https://raw.githubusercontent.com/iCepa/Tor.framework/v405.8.1/Tor.podspec'
+
   flutter_install_all_ios_pods File.dirname(File.realpath(__FILE__))
 end
 

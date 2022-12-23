@@ -23,7 +23,7 @@ class BreezBridge {
   static const _methodChannel = MethodChannel('com.breez.client/breez_lib');
   static const _eventChannel =
       EventChannel('com.breez.client/breez_lib_notifications');
-  
+
   final DownloadTaskManager downloadManager;
   final Future<SharedPreferences> sharedPreferences;
   String _selectedLspID;
@@ -89,7 +89,8 @@ class BreezBridge {
     if (downloadURL.isNotEmpty) {
       logger.log.info("GraphDownloader fetching graph checksum");
       var checksum = await fetchGraphChecksum(downloadURL);
-      logger.log.info("GraphDownloader graph checksum = $checksum, downloading graph");
+      logger.log.info(
+          "GraphDownloader graph checksum = $checksum, downloading graph");
       _inProgressGraphSync =
           _graphDownloader.downloadGraph(downloadURL).then((file) async {
         final fileChecksum =
@@ -106,7 +107,8 @@ class BreezBridge {
         logger.log.info("GraphDownloader graph synchronized succesfully");
         return DateTime.now();
       }).catchError((err) {
-        logger.log.info("GraphDownloader graph synchronized failed ${err.toString()}");
+        logger.log.info(
+            "GraphDownloader graph synchronized failed ${err.toString()}");
       }).whenComplete(() {
         _graphDownloader.deleteDownloads();
       });
@@ -149,8 +151,8 @@ class BreezBridge {
         .then((result) => Rates()..mergeFromBuffer(result ?? []));
   }
 
-  Future startLightning() {
-    return _startedCompleter.future.then((_) => _start()).then((_) {
+  Future startLightning(TorConfig torConfig) {
+    return _startedCompleter.future.then((_) => _start(torConfig)).then((_) {
       syncGraphIfNeeded();
     });
   }
@@ -159,9 +161,11 @@ class BreezBridge {
     return _methodChannel.invokeMethod("restartDaemon");
   }
 
-  Future _start() async {
-    print(" breez bridge - start...");
-    return _methodChannel.invokeMethod("start").then((_) {
+  Future _start(TorConfig torConfig) async {
+    logger.log.info("breez_bridge.dart: _start");
+
+    return _invokeMethodImmediate(
+        "start", {"argument": torConfig?.writeToBuffer()}).then((_) {
       print(" breez bridge - start lightning finished");
     });
   }
@@ -530,9 +534,9 @@ class BreezBridge {
     var lspInfo = inputLSP;
 
     // if we got lsp in input let's use it
-    if (lspInfo != null) {    
+    if (lspInfo != null) {
       request.lspInfo = lspInfo;
-    }else {      
+    } else {
       // if we have a selected lsp, let's use it
       var lsps = await getLSPList();
       if (_selectedLspID != null) {
@@ -753,6 +757,12 @@ class BreezBridge {
     }
   }
 
+  Future testBackupAuth(String provider, String authData) {
+    logger.log.info('breez_bridge.dart: testBackupAuth');
+    return _methodChannel.invokeMethod(
+        'testBackupAuth', {'provider': provider, 'authData': authData});
+  }
+
   Future<dynamic> signIn(bool force) {
     return _methodChannel.invokeMethod("signIn", {"force": force});
   }
@@ -775,6 +785,46 @@ class BreezBridge {
     logger.log.info("copyBreezConfig finished");
   }
 
+  Future enableAccount(bool enabled) {
+    return _invokeMethodWhenReady("enableAccount", {"argument": enabled});
+  }
+
+  Future<String> backupFiles() {
+    return _invokeMethodWhenReady("backupFiles").then((res) => res as String);
+  }
+
+  Future<List<String>> getWalletDBpFilePath() async {
+    String lines = await rootBundle.loadString('conf/breez.conf');
+    var config = Config.fromString(lines);
+    String lndDir = (await getApplicationDocumentsDirectory()).path;
+    List<String> result = [];
+    String network = config.get('Application Options', 'network');
+    String reply = await backupFiles();
+    List files = json.decode(reply);
+    if (files != null) {
+      result.addAll(files.map((e) => e as String));
+    }
+    result.add('$lndDir/data/chain/bitcoin/$network/wallet.db');
+    return result;
+  }
+
+  Future setTorActive(bool enabled) {
+    return _invokeMethodImmediate('setTorActive', {'argument': enabled});
+  }
+
+  Future<bool> getTorActive() {
+    return _invokeMethodImmediate('getTorActive')
+        .then((result) => result as bool);
+  }
+
+  Future setBackupTorConfig(TorConfig torConfig) {
+    return _invokeMethodImmediate(
+            'setBackupTorConfig', {'argument': torConfig?.writeToBuffer()})
+        .then((_) {
+      print(" breez bridge - set backup torcofig");
+    });
+  }
+
   Future _invokeMethodWhenReady(String methodName, [dynamic arguments]) {
     if (methodName != "log") {
       logger.log.info("before invoking method $methodName");
@@ -786,20 +836,18 @@ class BreezBridge {
         if (methodName != "log") {
           logger.log.severe("failed to invoke method $methodName $err");
         }
+
         if (err.runtimeType == PlatformException) {
+          logger.log.severe(
+              "Error in calling method '$methodName' with arguments: $arguments.");
+          logger.log.severe(
+              "Error in calling method '$methodName' with error: $err.");
+
           throw (err as PlatformException).message;
         }
         throw err;
       });
     });
-  }
-
-  Future enableAccount(bool enabled) {
-    return _invokeMethodWhenReady("enableAccount", {"argument": enabled});
-  }
-
-  Future<String> backupFiles() {
-    return _invokeMethodWhenReady("backupFiles").then((res) => res as String);
   }
 
   Future _invokeMethodImmediate(String methodName, [dynamic arguments]) {
@@ -822,6 +870,11 @@ class BreezBridge {
           if (methodName != "log") {
             logger.log.severe("Error in calling method " + methodName);
           }
+
+          logger.log.severe(
+              "Error in calling method '$methodName' with arguments: $arguments.");
+          logger.log.severe(
+              "Error in calling method '$methodName' with error: $err.");
           throw (err as PlatformException).message + " method: $methodName";
         }
         throw err;
@@ -829,27 +882,11 @@ class BreezBridge {
     });
   }
 
-  Future<List<String>> getWalletDBpFilePath() async {
-    String lines = await rootBundle.loadString('conf/breez.conf');
-    var config = Config.fromString(lines);
-    String lndDir = (await getApplicationDocumentsDirectory()).path;
-    List<String> result = [];
-    String network = config.get('Application Options', 'network');
-    String reply = await backupFiles();
-    List files = json.decode(reply);
-    if (files != null) {
-      result.addAll(files.map((e) => e as String));
-    }
-    result.add('$lndDir/breez.db');
-    result.add('$lndDir/data/chain/bitcoin/$network/channel.backup');
-    return result;
-  }
-
   Future<String> getChanBackupPath() async {
     String lines = await rootBundle.loadString('conf/breez.conf');
     var config = Config.fromString(lines);
-    String lndDir = (await getApplicationDocumentsDirectory()).path;    
-    String network = config.get('Application Options', 'network');    
-    return '$lndDir/data/chain/bitcoin/$network/channel.backup';    
+    String lndDir = (await getApplicationDocumentsDirectory()).path;
+    String network = config.get('Application Options', 'network');
+    return '$lndDir/data/chain/bitcoin/$network/channel.backup';
   }
 }

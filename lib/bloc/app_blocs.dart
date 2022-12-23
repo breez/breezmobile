@@ -1,4 +1,5 @@
 import 'package:breez/bloc/account/account_bloc.dart';
+import 'package:breez/bloc/tor/bloc.dart';
 import 'package:breez/bloc/backup/backup_bloc.dart';
 import 'package:breez/bloc/connect_pay/connect_pay_bloc.dart';
 import 'package:breez/bloc/fastbitcoins/fastbitcoins_bloc.dart';
@@ -21,6 +22,7 @@ Bloc stands for Business Logic Component.
 class AppBlocs {
   final UserProfileBloc userProfileBloc;
   final AccountBloc accountBloc;
+  final TorBloc torBloc;
   final InvoiceBloc invoicesBloc;
   final ConnectPayBloc connectPayBloc;
   final BackupBloc backupBloc;
@@ -31,6 +33,7 @@ class AppBlocs {
   final PosCatalogBloc posCatalogBloc;
   final PaymentOptionsBloc paymentOptionsBloc;
   final ReverseSwapBloc reverseSwapBloc;
+
   final Map<Type, Object> _blocsByType;
   final PodcastHistoryBloc podCastHistoryBloc;
   final PodcastClipBloc podCastClipBloc;
@@ -63,6 +66,7 @@ class AppBlocs {
           paymentOptionsBloc,
         ),
         blocsByType);
+    TorBloc torBloc = _registerBloc(accountBloc.torBloc, blocsByType);
     InvoiceBloc invoicesBloc = _registerBloc(InvoiceBloc(), blocsByType);
     ConnectPayBloc connectPayBloc = _registerBloc(
         ConnectPayBloc(userProfileBloc.userStream, accountBloc.accountStream,
@@ -102,6 +106,7 @@ class AppBlocs {
     return AppBlocs._(
         userProfileBloc,
         accountBloc,
+        torBloc,
         invoicesBloc,
         connectPayBloc,
         backupBloc,
@@ -120,6 +125,7 @@ class AppBlocs {
   AppBlocs._(
       this.userProfileBloc,
       this.accountBloc,
+      this.torBloc,
       this.invoicesBloc,
       this.connectPayBloc,
       this.backupBloc,

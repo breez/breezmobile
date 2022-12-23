@@ -59,9 +59,14 @@ class Breez : NSObject, FlutterPlugin, BindingsAppServicesProtocol, FlutterStrea
             initBreez(call: call, result: result);
             return;
         }
-        
+
         if (call.method == "setBackupProvider") {
             setBackupProvider(call: call, result: result);
+            return;
+        }
+
+        if(call.method == "testBackupAuth") {
+            testBackupAuth(call: call, result: result);
             return;
         }
        
@@ -122,7 +127,7 @@ class Breez : NSObject, FlutterPlugin, BindingsAppServicesProtocol, FlutterStrea
         }
         result(FlutterError(code: "Missing Argument", message: "Expecting a dictionary", details: nil));
     }
-    
+
     func log(call: FlutterMethodCall, result: @escaping FlutterResult){
         if let args = call.arguments as? Dictionary<String,Any> {
             let msg : String = args["msg"] as! String;
@@ -149,6 +154,25 @@ class Breez : NSObject, FlutterPlugin, BindingsAppServicesProtocol, FlutterStrea
             self.backupProvider = providerName;
             result(true);
         }
+        result(FlutterError(code: "Missing Argument", message: "Expecting a dictionary", details: nil));
+    }
+
+    func testBackupAuth(call: FlutterMethodCall, result: @escaping FlutterResult) {
+        if let args = call.arguments as? Dictionary<String, Any> {
+            let provider : String = args["provider"] as! String;
+            var auth = "";
+            if let authData : String = args["authData"] as? String {
+                auth = authData
+            }
+            var error: NSError?;
+            BindingsTestBackupAuth(provider, auth, &error);
+            if let error = error {
+                result(FlutterError(code: "AuthError", message: error.localizedDescription, details: ""));
+                return;
+            }
+            result(true);
+        }
+
         result(FlutterError(code: "Missing Argument", message: "Expecting a dictionary", details: nil));
     }
     

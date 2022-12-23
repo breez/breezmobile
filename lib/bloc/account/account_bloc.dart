@@ -2,6 +2,8 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:breez/bloc/tor/bloc.dart';
+
 import 'package:breez/bloc/account/account_actions.dart';
 import 'package:breez/bloc/account/account_permissions_handler.dart';
 import 'package:breez/bloc/account/fiat_conversion.dart';
@@ -133,6 +135,7 @@ class AccountBloc {
   CurrencyService _currencyService;
   Completer _onBoardingCompleter = Completer();
   Stream<BreezUserModel> userProfileStream;
+  TorBloc torBloc = TorBloc();
   Completer<bool> startDaemonCompleter = Completer<bool>();
   PaymentOptionsBloc _paymentOptionsBloc;
 
@@ -178,8 +181,8 @@ class AccountBloc {
     _paymentsController.add(PaymentsModel.initial());
     _paymentFilterController.add(PaymentFilterModel.initial());
     _accountSettingsController.add(AccountSettings.start());
-    
-    _start();    
+
+    _start();
   }
 
   void _start() {
@@ -203,7 +206,7 @@ class AccountBloc {
 
   void setNodeUpgrading(bool upgrading) {
     _accountController
-          .add(_accountController.value.copyWith(nodeUpgrading: upgrading));
+        .add(_accountController.value.copyWith(nodeUpgrading: upgrading));
   }
 
   Stream<List<PaymentInfo>> get pendingChannelsStream {
@@ -576,6 +579,22 @@ class AccountBloc {
       );
       _paymentsController.add(updatedPayments);
 
+      // Start tor
+      TorConfig torConfig;
+      final useTor = await _breezLib.getTorActive();
+      log.info('AccountBloc: useTor : $useTor.');
+      if (useTor) {
+        torConfig = torBloc.torConfig;
+        log.info('accountBloc.listenUserChanges: using Tor');
+        try {
+          torConfig ??= await torBloc.startTor();
+          await _breezLib.setBackupTorConfig(torConfig);
+        } catch (e) {
+          _lightningDownController.add(false);
+        }
+        assert(torConfig != null);
+      }
+
       //start lightning
       if (user.registrationRequested) {
         if (!_startedLightning) {
@@ -588,7 +607,7 @@ class AccountBloc {
           });
           log.info("account: starting lightning...");
           try {
-            await _breezLib.startLightning();
+            await _breezLib.startLightning(torConfig);
             log.info("account: lightning started");
             if (user.token != null) {
               _breezLib.registerPeriodicSync(user.token);

@@ -243,6 +243,7 @@ PODS:
   - sqflite (0.0.2):
     - Flutter
     - FMDB (>= 2.7.5)
+  - Tor (405.8.1)
   - SwiftyGif (5.4.3)
   - TOCropViewController (2.6.1)
   - uni_links (0.0.1):
@@ -287,6 +288,7 @@ DEPENDENCIES:
   - share_plus (from `.symlinks/plugins/share_plus/ios`)
   - shared_preferences_ios (from `.symlinks/plugins/shared_preferences_ios/ios`)
   - sqflite (from `.symlinks/plugins/sqflite/ios`)
+  - Tor (from `https://raw.githubusercontent.com/iCepa/Tor.framework/v405.8.1/Tor.podspec`)
   - uni_links (from `.symlinks/plugins/uni_links/ios`)
   - url_launcher_ios (from `.symlinks/plugins/url_launcher_ios/ios`)
   - webview_flutter_wkwebview (from `.symlinks/plugins/webview_flutter_wkwebview/ios`)
@@ -394,6 +396,8 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/shared_preferences_ios/ios"
   sqflite:
     :path: ".symlinks/plugins/sqflite/ios"
+  Tor:
+    :podspec: https://raw.githubusercontent.com/iCepa/Tor.framework/v405.8.1/Tor.podspec
   uni_links:
     :path: ".symlinks/plugins/uni_links/ios"
   url_launcher_ios:
@@ -466,6 +470,7 @@ SPEC CHECKSUMS:
   share_plus: 056a1e8ac890df3e33cb503afffaf1e9b4fbae68
   shared_preferences_ios: 548a61f8053b9b8a49ac19c1ffbc8b92c50d68ad
   sqflite: 6d358c025f5b867b29ed92fc697fd34924e11904
+  Tor: fad2cec0e7ef5f889fecdaf69e5edd6df0438326
   SwiftyGif: 6c3eafd0ce693cad58bb63d2b2fb9bacb8552780
   TOCropViewController: edfd4f25713d56905ad1e0b9f5be3fbe0f59c863
   uni_links: d97da20c7701486ba192624d99bffaaffcfc298a
