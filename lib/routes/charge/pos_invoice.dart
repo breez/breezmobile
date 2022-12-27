@@ -17,11 +17,15 @@ import 'package:breez/bloc/user_profile/breez_user_model.dart';
 import 'package:breez/bloc/user_profile/currency.dart';
 import 'package:breez/bloc/user_profile/user_actions.dart';
 import 'package:breez/bloc/user_profile/user_profile_bloc.dart';
+import 'package:breez/logger.dart';
 import 'package:breez/routes/charge/currency_wrapper.dart';
+import 'package:breez/routes/charge/items/item_avatar.dart';
 import 'package:breez/routes/charge/pos_invoice_cart_bar.dart';
 import 'package:breez/routes/charge/pos_invoice_items_view.dart';
 import 'package:breez/routes/charge/pos_invoice_num_pad.dart';
+import 'package:breez/routes/charge/pos_payment_dialog.dart';
 import 'package:breez/routes/charge/successful_payment.dart';
+import 'package:breez/routes/sync_progress_dialog.dart';
 import 'package:breez/theme_data.dart' as theme;
 import 'package:breez/utils/print_pdf.dart';
 import 'package:breez/widgets/error_dialog.dart';
@@ -33,10 +37,6 @@ import 'package:breez/widgets/view_switch.dart';
 import 'package:fixnum/fixnum.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-
-import '../sync_progress_dialog.dart';
-import 'items/item_avatar.dart';
-import 'pos_payment_dialog.dart';
 
 class POSInvoice extends StatefulWidget {
   POSInvoice();
@@ -789,10 +789,10 @@ class POSInvoiceState extends State<POSInvoice> with TickerProviderStateMixin {
 
   void _changeCurrency(Sale currentSale, String value,
       UserProfileBloc userProfileBloc, CurrencyWrapper currentCurrency) {
+    log.info("_changeCurrency from ${currentCurrency.shortName} to $value");
     if (currentCurrency.shortName.toUpperCase() == value) {
       return;
     }
-    print(">> _changeCurrency $value");
     setState(() {
       Currency currency = Currency.fromTickerSymbol(value);
 
