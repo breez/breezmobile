@@ -6,6 +6,8 @@
 import 'dart:async';
 import 'dart:io';
 
+import 'package:auto_size_text/auto_size_text.dart';
+import 'package:breez/logger.dart';
 import 'package:breez/services/breezlib/breez_bridge.dart';
 import 'package:breez/services/breezlib/data/rpc.pb.dart';
 import 'package:breez/services/injector.dart';
@@ -16,8 +18,6 @@ import 'package:breez/widgets/error_dialog.dart';
 import 'package:breez/widgets/loader.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
-import 'package:auto_size_text/auto_size_text.dart';
-import 'package:breez/utils/min_font_size.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class _NetworkData {
@@ -39,7 +39,6 @@ class NetworkPageState extends State<NetworkPage> {
   final _formKey = GlobalKey<FormState>();
   BreezBridge _breezLib;
   _NetworkData _data = _NetworkData();
-  AutoSizeGroup _autoSizeGroup = AutoSizeGroup();
   List<TextEditingController> peerControllers =
       List<TextEditingController>.generate(2, (_) => TextEditingController());
 
@@ -60,7 +59,7 @@ class NetworkPageState extends State<NetworkPage> {
     });
   }
 
-  void _loadPeers() async {
+  Future<void> _loadPeers() async {
     loadPeersAction = Completer();
     Peers peers = await _breezLib.getPeers();
     peers.peer.forEachIndexed(
@@ -88,20 +87,72 @@ class NetworkPageState extends State<NetworkPage> {
           ),
           elevation: 0.0,
         ),
-        body: Padding(
-          padding: EdgeInsets.only(top: 16.0, left: 16.0, right: 16.0),
-          child: FutureBuilder(
-            future: loadPeersAction.future,
-            builder: (context, snapshot) {
-              if (!snapshot.hasData) {
-                return Center(child: Loader(color: Colors.white));
-              }
-              return Form(
-                key: _formKey,
-                child: ListView(
-                  scrollDirection: Axis.vertical,
-                  children: [
-                    Column(
+        body: FutureBuilder(
+          future: loadPeersAction.future,
+          builder: (context, snapshot) {
+            if (!snapshot.hasData) {
+              return Center(child: Loader(color: Colors.white));
+            }
+            return Form(
+              key: _formKey,
+              child: ListView(
+                scrollDirection: Axis.vertical,
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(16, 8, 16, 8),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.max,
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          this._data.torIsActive ? texts.network_tor_disable : texts.network_tor_enable,
+                          style: TextStyle(color: Colors.white),
+                          maxLines: 1,
+                        ),
+                        Switch(
+                          value: this._data.torIsActive,
+                          activeColor: Colors.white,
+                          onChanged: (bool value) async {
+                            final error = await showDialog(
+                              useRootNavigator: false,
+                              context: context,
+                              builder: (ctx) => _SetTorActiveDialog(
+                                testFuture: _breezLib.setTorActive(value),
+                                enable: value,
+                              ),
+                            );
+
+                            if (error != null) {
+                              log.info('setTorActive error', error);
+                              await promptError(
+                                context,
+                                null,
+                                Text(
+                                  value ? texts.network_tor_enable_error : texts.network_tor_disable,
+                                  style: themeData.dialogTheme.contentTextStyle,
+                                ),
+                              );
+                              return;
+                            } else {
+                              !value
+                                  ? _resetNodes()
+                                  : _promptForRestart().then((didRestart) {
+                                      if (!didRestart) {
+                                        setState(() {
+                                          this._data.torIsActive = !value;
+                                        });
+                                      }
+                                    });
+                            }
+                          },
+                        ),
+                      ],
+                    ),
+                  ),
+                  Divider(),
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(16, 8, 16, 16),
+                    child: Column(
                       children: [
                         PeerWidget(
                           peerController: peerControllers[0],
@@ -122,86 +173,38 @@ class NetworkPageState extends State<NetworkPage> {
                             return null;
                           },
                         ),
-                        SizedBox(height: 12.0),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.end,
-                          children: [
-                            OutlinedButton(
-                              style: OutlinedButton.styleFrom(
-                                side: BorderSide(color: Colors.white),
-                                primary: Colors.white,
+                        Padding(
+                          padding: const EdgeInsets.fromLTRB(16, 12, 16, 16),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.end,
+                            children: [
+                              OutlinedButton(
+                                style: OutlinedButton.styleFrom(
+                                  side: BorderSide(color: Colors.white),
+                                  primary: Colors.white,
+                                ),
+                                child: Text(texts.network_restart_action_reset),
+                                onPressed: _resetNodes,
                               ),
-                              child: Text(texts.network_restart_action_reset),
-                              onPressed: _resetNodes,
-                            ),
-                            SizedBox(width: 12.0),
-                            OutlinedButton(
-                              style: OutlinedButton.styleFrom(
-                                side: BorderSide(color: Colors.white),
-                                primary: Colors.white,
+                              SizedBox(width: 12.0),
+                              OutlinedButton(
+                                style: OutlinedButton.styleFrom(
+                                  side: BorderSide(color: Colors.white),
+                                  primary: Colors.white,
+                                ),
+                                child: Text(texts.network_restart_action_save),
+                                onPressed: saveNodes,
                               ),
-                              child: Text(texts.network_restart_action_save),
-                              onPressed: saveNodes,
-                            ),
-                          ],
+                            ],
+                          ),
                         ),
                       ],
                     ),
-                    ListTile(
-                        title: Container(
-                          child: AutoSizeText(
-                            this._data.torIsActive
-                                ? texts.network_tor_disable
-                                : texts.network_tor_enable,
-                            style: TextStyle(color: Colors.white),
-                            maxLines: 1,
-                            minFontSize: MinFontSize(context).minFontSize,
-                            stepGranularity: 0.1,
-                            group: _autoSizeGroup,
-                          ),
-                        ),
-                        trailing: Switch(
-                            value: this._data.torIsActive,
-                            activeColor: Colors.white,
-                            onChanged: (bool value) async {
-                              var error = await showDialog(
-                                  useRootNavigator: false,
-                                  context: context,
-                                  builder: (ctx) => _SetTorActiveDialog(
-                                      testFuture: _breezLib.setTorActive(value),
-                                      enable: value));
-
-                              print(
-                                  'setTorActive returned with error: $error ');
-                              if (error != null) {
-                                await promptError(
-                                    context,
-                                    null,
-                                    Text(
-                                        value
-                                            ? texts.network_tor_enable_error
-                                            : texts.network_tor_disable,
-                                        style: Theme.of(context)
-                                            .dialogTheme
-                                            .contentTextStyle));
-                                return;
-                              } else {
-                                !value
-                                    ? _resetNodes()
-                                    : _promptForRestart().then((didRestart) {
-                                        if (!didRestart) {
-                                          setState(() {
-                                            this._data.torIsActive = !value;
-                                          });
-                                        }
-                                      });
-                              }
-                            }))
-                  ],
-                ),
-              );
-            },
-          ),
+                  ),
+                ],
+              ),
+            );
+          },
         ),
       ),
     );
