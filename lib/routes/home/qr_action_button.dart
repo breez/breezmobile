@@ -6,6 +6,7 @@ import 'package:breez/bloc/invoice/invoice_bloc.dart';
 import 'package:breez/bloc/lnurl/lnurl_actions.dart';
 import 'package:breez/bloc/lnurl/lnurl_bloc.dart';
 import 'package:breez/handlers/lnurl_handler.dart';
+import 'package:breez/logger.dart';
 import 'package:breez/routes/spontaneous_payment/spontaneous_payment_page.dart';
 import 'package:breez/routes/withdraw_funds/reverse_swap_page.dart';
 import 'package:breez/services/injector.dart';
@@ -46,10 +47,12 @@ class QrActionButton extends StatelessWidget {
         height: 64,
         child: FloatingActionButton(
           onPressed: () async {
+            log.finest("Start qr code scan");
             final scannedString = await Navigator.pushNamed<String>(
               context,
               "/qr_scan",
             );
+            log.finest("Scanned string: '$scannedString'");
             if (scannedString != null) {
               if (scannedString.isEmpty) {
                 showFlushbar(
@@ -62,6 +65,7 @@ class QrActionButton extends StatelessWidget {
 
               // lnurl string
               if (isLNURL(lower)) {
+                log.finest("Scanned string is a lnurl");
                 await _handleLNUrl(lnurlBloc, context, scannedString);
                 return;
               }
@@ -69,6 +73,7 @@ class QrActionButton extends StatelessWidget {
               // lightning address
               final v = parseLightningAddress(scannedString);
               if (v != null) {
+                log.finest("Scanned string is a lightning address");
                 lnurlBloc.lnurlInputSink.add(v);
                 return;
               }
@@ -76,11 +81,13 @@ class QrActionButton extends StatelessWidget {
               // bip 121
               String lnInvoice = extractBolt11FromBip21(lower);
               if (lnInvoice != null) {
+                log.finest("Scanned string is a bolt11 extract from bip 21");
                 lower = lnInvoice;
               }
 
               // regular lightning invoice.
               if (lower.startsWith("lightning:") || lower.startsWith("ln")) {
+                log.finest("Scanned string is a regular lightning invoice");
                 invoiceBloc.decodeInvoiceSink.add(scannedString);
                 return;
               }
@@ -89,6 +96,7 @@ class QrActionButton extends StatelessWidget {
               BTCAddressInfo btcInvoice = parseBTCAddress(scannedString);
 
               if (await _isBTCAddress(btcInvoice.address)) {
+                log.finest("Scanned string is a bitcoin address");
                 String requestAmount;
                 if (btcInvoice.satAmount != null) {
                   requestAmount = account.currency.format(
@@ -106,8 +114,10 @@ class QrActionButton extends StatelessWidget {
                 ));
                 return;
               }
+
               var nodeID = parseNodeId(scannedString);
               if (nodeID != null) {
+                log.finest("Scanned string is a node id");
                 Navigator.of(context).push(FadeInRoute(
                   builder: (_) => SpontaneousPaymentPage(
                     nodeID,
@@ -119,6 +129,7 @@ class QrActionButton extends StatelessWidget {
 
               // Open on whenever app the system links to
               if (await canLaunchUrlString(scannedString)) {
+                log.finest("Scanned string is a launchable url");
                 _handleWebAddress(context, scannedString);
                 return;
               }
@@ -130,10 +141,12 @@ class QrActionButton extends StatelessWidget {
                 allowUnderscore: true,
               );
               if (validUrl) {
+                log.finest("Scanned string is a valid url");
                 _handleWebAddress(context, scannedString);
                 return;
               }
 
+              log.finest("Scanned string is unrecognized");
               showFlushbar(
                 context,
                 message: texts.qr_action_button_error_code_not_processed,
