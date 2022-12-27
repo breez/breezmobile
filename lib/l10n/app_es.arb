@@ -2127,6 +2127,7 @@
   "podcast_clips_dialog_title": "Duración del clip (en segundos)",
   "podcast_clips_dialog_done": "Hecho",
   "podcast_clips_error": "Se ha producido un error al recortar el episodio. Por favor, inténtalo de nuevo.",
+  "localized_error_message_invalid_pair_hash": "Las tasas expiraron. Por favor, inténtalo de nuevo.",
   "locale": "es",
   "app_name": "Breez"
 }

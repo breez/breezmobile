@@ -1,4 +1,12 @@
 import 'package:breez/utils/exceptions.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations_de.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations_en.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations_es.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations_fi.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations_fr.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations_it.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations_pt.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations_sv.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {
@@ -55,6 +63,27 @@ void main() {
             clearTrailingDot: clearTrailingDot,
           ),
           clearTrailingDot ? 'Max daily limit spent' : 'Max daily limit spent.',
+        );
+      });
+    }
+  });
+
+  final locales = {
+    "de": AppLocalizationsDe(),
+    "en": AppLocalizationsEn(),
+    "es": AppLocalizationsEs(),
+    "fi": AppLocalizationsFi(),
+    "fr": AppLocalizationsFr(),
+    "it": AppLocalizationsIt(),
+    "pt": AppLocalizationsPt(),
+    "sv": AppLocalizationsSv(),
+  };
+  group("localizedExceptionMessage", () {
+    for (final locale in locales.values) {
+      test("invalid pair hash for ${locale.locale}", () {
+        expect(
+          extractExceptionMessage("invalid pair hash", texts: locale),
+          locale.localized_error_message_invalid_pair_hash,
         );
       });
     }

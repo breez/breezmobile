@@ -49,3 +49,9 @@ class BreezLogger {
     };
   }
 }
+
+extension LogDescriptionOnList<T> on List<T> {
+  String logDescription(String Function(T e) description) {
+    return "[${fold("", (p, e) => p.isEmpty ? description(e) : "$p,${description(e)}")}]";
+  }
+}

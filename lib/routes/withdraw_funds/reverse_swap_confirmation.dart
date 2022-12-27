@@ -5,6 +5,8 @@ import 'package:breez/bloc/blocs_provider.dart';
 import 'package:breez/bloc/reverse_swap/reverse_swap_actions.dart';
 import 'package:breez/bloc/reverse_swap/reverse_swap_bloc.dart';
 import 'package:breez/bloc/reverse_swap/reverse_swap_model.dart';
+import 'package:breez/logger.dart';
+import 'package:breez/utils/exceptions.dart';
 import 'package:breez/utils/min_font_size.dart';
 import 'package:breez/widgets/back_button.dart' as backBtn;
 import 'package:breez/widgets/error_dialog.dart';
@@ -211,6 +213,7 @@ class ReverseSwapConfirmationState extends State<ReverseSwapConfirmation> {
           : SingleButtonBottomBar(
               text: texts.reverse_swap_confirmation_action_confirm,
               onPressed: () {
+                log.info("Reverse swap confirmed");
                 Navigator.of(context).push(createLoaderRoute(context));
                 widget
                     .onFeeConfirmed(
@@ -224,12 +227,13 @@ class ReverseSwapConfirmationState extends State<ReverseSwapConfirmation> {
                     .then((_) => Navigator.of(context).pop())
                     .catchError(
                   (error) {
+                    log.warning("Reverse swap error", error);
                     Navigator.of(context).pop();
                     promptError(
                       context,
                       null,
                       Text(
-                        error.toString(),
+                        extractExceptionMessage(error, texts: texts),
                         style: themeData.dialogTheme.contentTextStyle,
                       ),
                     );
