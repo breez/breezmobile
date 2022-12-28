@@ -119,6 +119,10 @@ class BreezBridge {
     _graphDownloader.deleteDownloads();
   }
 
+  Future deleteAllDownloads() async {
+    _graphDownloader.deleteAllDownloads();
+  }
+
   initLightningDir() {
     logger.log.info("initLightningDir started");
 

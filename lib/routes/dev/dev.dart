@@ -358,6 +358,10 @@ class DevViewState extends State<DevView> {
           title: 'Update Graph',
           icon: Icons.phone_android,
           function: _refreshGraph),
+      Choice(
+          title: 'Clear Downloads',
+          icon: Icons.phone_android,
+          function: _deleteInProgressDownloads)
     ]);
 
     if (Platform.isAndroid) {
@@ -625,6 +629,11 @@ class DevViewState extends State<DevView> {
       Navigator.pop(context);
       _promptForRestart();
     });
+  }
+
+  void _deleteInProgressDownloads() async {
+    await FlutterDownloader.cancelAll();
+    await widget._breezBridge.deleteAllDownloads();
   }
 
   void _printCacheUsage() async {

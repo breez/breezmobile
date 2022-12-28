@@ -113,4 +113,12 @@ class GraphDownloader {
     });
     _downloadCompleter = null;
   }
+
+  Future deleteAllDownloads() async {
+    var tasks = await downloadManager.loadTasks();    
+    tasks.forEach((t) async {
+      await downloadManager.removeTask(t.taskId, shouldDeleteContent: true);
+    });
+    _downloadCompleter = null;
+  }
 }
