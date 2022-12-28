@@ -2127,7 +2127,7 @@
   "podcast_clips_dialog_title": "Leikkeen kesto (sekunneissa)",
   "podcast_clips_dialog_done": "VALMIS",
   "podcast_clips_error": "Jakson leikkaamisessa tapahtui virhe. Yritä uudelleen.",
-  "localized_error_message_invalid_pair_hash": "Fee estimations have expired. Please retry.",
+  "localized_error_message_invalid_pair_hash": "Kulujen määräarvio on vanhentunut. Yritä uudelleen.",
   "locale": "fi",
   "app_name": "Breez"
 }
