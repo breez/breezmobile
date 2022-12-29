@@ -22,7 +22,7 @@ import 'package:fixnum/fixnum.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:share_extend/share_extend.dart';
+import 'package:share_plus/share_plus.dart';
 
 class PosPaymentResult {
   final bool paid;
@@ -172,9 +172,8 @@ class _PosPaymentDialogState extends State<PosPaymentDialog> {
               icon: Icon(IconData(0xe917, fontFamily: 'icomoon')),
               color: themeData.primaryTextTheme.button.color,
               tooltip: texts.pos_dialog_share,
-              onPressed: () => ShareExtend.share(
+              onPressed: () => Share.share(
                 "lightning:" + widget.paymentRequest.rawPayReq,
-                "text",
               ),
             ),
             IconButton(

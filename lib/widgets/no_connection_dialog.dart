@@ -5,7 +5,7 @@ import 'package:breez/theme_data.dart' as theme;
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:share_extend/share_extend.dart';
+import 'package:share_plus/share_plus.dart';
 
 Future<bool> showNoConnectionDialog(BuildContext context) {
   return showDialog<bool>(
@@ -51,9 +51,8 @@ Future<bool> showNoConnectionDialog(BuildContext context) {
                   style: theme.blueLinkStyle,
                   recognizer: TapGestureRecognizer()
                     ..onTap = () async {
-                      ShareExtend.share(
-                        await ServiceInjector().breezBridge.getLogPath(),
-                        "file",
+                      Share.shareFiles(
+                        [await ServiceInjector().breezBridge.getLogPath()],
                       );
                     },
                 ),
