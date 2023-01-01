@@ -13,6 +13,7 @@ import 'package:breez/services/injector.dart';
 import 'package:breez/theme_data.dart' as theme;
 import 'package:breez/utils/bip21.dart';
 import 'package:breez/utils/btc_address.dart';
+import 'package:breez/utils/external_browser.dart';
 import 'package:breez/utils/lnurl.dart';
 import 'package:breez/utils/node_id.dart';
 import 'package:breez/widgets/error_dialog.dart';
@@ -296,7 +297,7 @@ class QrActionButton extends StatelessWidget {
                 style: themeData.primaryTextTheme.button,
               ),
               onPressed: () async {
-                await launchUrlString(url);
+                await launchLinkOnExternalBrowser(url);
                 Navigator.of(context).pop();
               },
             ),
