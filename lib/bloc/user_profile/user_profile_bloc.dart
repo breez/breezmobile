@@ -174,6 +174,10 @@ class UserProfileBloc {
           user = user.copyWith(userID: "random-" + uuid.v4());
         }
       }
+      var pinCode = await _secureStorage.read(key: 'pinCode');
+      if (pinCode == null || pinCode == "") {
+        user = user.copyWith(securityModel: user.securityModel.copyWith(requiresPin: false));
+      }
       user = user.copyWith(locked: user.securityModel.requiresPin);
       print("USER:" + user.toJson().toString());
       _publishUser(user);
