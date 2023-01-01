@@ -226,7 +226,7 @@ class BackupBloc {
         String secureValue =
             json.encode(settings.remoteServerAuthData.toJson());
         await _secureStorage.write(
-            key: "remoteServerAuthData", value: secureValue);
+            key: "remoteServerAuthData", value: secureValue, mOptions: MacOsOptions(synchronizable: true));
       }
     });
   }
@@ -534,7 +534,7 @@ class BackupBloc {
       log.info('backupBloc.testAuth caught error: $error');
 
       if (error is PlatformException) {
-        var e = (error as PlatformException);
+        var e = error;
         // Handle PlatformException(ResultError, "AuthError", Failed to invoke testBackupAuth, null)
         switch (e.message) {
           case _signInFailedCode:
