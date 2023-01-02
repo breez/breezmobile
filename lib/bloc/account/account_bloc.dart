@@ -27,7 +27,7 @@ import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:fixnum/fixnum.dart';
 import 'package:flutter/foundation.dart';
 import 'package:rxdart/rxdart.dart';
-
+import '../../services/rate_service.dart';
 import 'account_model.dart';
 import 'account_synchronizer.dart';
 
@@ -136,6 +136,7 @@ class AccountBloc {
   Stream<ClovrUserModel> userProfileStream;
   Completer<bool> startDaemonCompleter = Completer<bool>();
   PaymentOptionsBloc _paymentOptionsBloc;
+  RateService _rateService;
 
   AccountBloc(
     this.userProfileStream,
@@ -154,6 +155,7 @@ class AccountBloc {
     _device = injector.device;
     _backgroundService = injector.backgroundTaskService;
     _currencyService = injector.currencyService;
+    _rateService = injector.rateService;
     _actionHandlers = {
       UnconfirmedChannelsStatusAction: unconfirmedChannelsStatusAction,
       SendPaymentFailureReport: _handleSendQueryRoute,
@@ -217,6 +219,7 @@ class AccountBloc {
       _listenRoutingConnectionChanges();
       _trackOnBoardingStatus();
       _listenEnableAccount();
+      log.info("Account finished registration of listeners");
     });
   }
 
@@ -921,10 +924,11 @@ class AccountBloc {
 
   Future _getExchangeRate() async {
     _currencyData = await _currencyService.currencies();
-    Rates _rate = await _breezLib.rate();
-    List<FiatConversion> _fiatConversionList = _rate.rates
-        .map((rate) => FiatConversion(_currencyData[rate.coin], rate.value))
+    Map<String, double> _rate = await _rateService.getRate('https://api.coingecko.com/api/v3/exchange_rates');
+    List<FiatConversion> _fiatConversionList = _rate.keys
+        .map((key) => FiatConversion(_currencyData[key.toUpperCase()], _rate[key]))
         .toList();
+    _fiatConversionList.removeWhere((item) => item.currencyData == null);
     _fiatConversionList =
         _sortFiatConversionList(fiatConversionList: _fiatConversionList);
     _accountController.add(_accountController.value.copyWith(

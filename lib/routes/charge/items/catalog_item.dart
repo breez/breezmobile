@@ -100,7 +100,7 @@ class CatalogItem extends StatelessWidget {
               ),
               title: Text(
                 _itemInfo.name,
-                style: themeData.textTheme.itemTitleStyle,
+                style: TextStyle(color: ClovrLabsWalletColors.dark_grey[500]),
                 overflow: TextOverflow.ellipsis,
               ),
               trailing: Column(

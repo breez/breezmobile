@@ -283,6 +283,10 @@ class PosInvoiceItemsView extends StatelessWidget {
         enabled: catalogItems != null,
         decoration: InputDecoration(
           hintText: texts.pos_invoice_search_hint,
+          focusedBorder: UnderlineInputBorder(
+            borderSide: BorderSide(color: Colors.black),
+          ),
+          iconColor: Colors.black,
           contentPadding: const EdgeInsets.only(top: 16, left: 16),
           suffixIcon: IconButton(
             icon: Icon(

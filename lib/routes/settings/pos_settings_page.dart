@@ -91,7 +91,7 @@ class PosSettingsPageState extends State<_PosSettingsPage> {
           texts.pos_settings_title,
           // style: themeData.appBarTheme.textTheme.headline6,
         ),
-        elevation: 0.0, toolbarTextStyle: themeData.appBarTheme.textTheme.bodyText2,
+        // elevation: 0.0, toolbarTextStyle: themeData.appBarTheme.textTheme.bodyText2,
         // titleTextStyle: themeData.appBarTheme.textTheme.headline6,
       ),
       body: SingleChildScrollView(

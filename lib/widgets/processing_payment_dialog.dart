@@ -4,6 +4,7 @@ import 'package:clovrlabs_wallet/bloc/account/account_bloc.dart';
 import 'package:clovrlabs_wallet/bloc/account/account_model.dart';
 import 'package:clovrlabs_wallet/bloc/channels_status_poller.dart';
 import 'package:clovrlabs_wallet/theme_data.dart' as theme;
+import 'package:clovrlabs_wallet/widgets/circular_progress.dart';
 import 'package:clovrlabs_wallet/widgets/loading_animated_text.dart';
 import 'package:clovrlabs_wallet/widgets/payment_request_dialog.dart';
 import 'package:clovrlabs_wallet/widgets/sync_loader.dart';
@@ -212,14 +213,8 @@ class ProcessingPaymentDialogState extends State<ProcessingPaymentDialog>
       _buildContent(context),
       Padding(
         padding: const EdgeInsets.only(bottom: 24.0),
-        child: Image.asset(
-          themeData.loaderAssetPath,
-          height: 64.0,
-          colorBlendMode: themeData.loaderColorBlendMode ?? BlendMode.srcIn,
-          color: theme.themeId == "WHITE"
-              ? colorAnimation?.value ?? Colors.transparent
-              : null,
-          gaplessPlayback: true,
+        child: CircularProgress(
+          size: 64.0,
         ),
       )
     ];
@@ -256,10 +251,19 @@ class ProcessingPaymentDialogState extends State<ProcessingPaymentDialog>
               child: Container(
                 height: startHeight,
                 width: queryData.size.width,
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  mainAxisSize: MainAxisSize.min,
-                  children: _buildProcessingPaymentDialog(context),
+                child: Flex(
+                  direction: Axis.vertical,
+                  children: [
+                    Expanded(
+                      child: SingleChildScrollView(
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          mainAxisSize: MainAxisSize.min,
+                          children: _buildProcessingPaymentDialog(context),
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
                 decoration: ShapeDecoration(
                   color: theme.themeId == "WHITE"
@@ -283,14 +287,13 @@ class ProcessingPaymentDialogState extends State<ProcessingPaymentDialog>
 
   Container _buildTitle(BuildContext context) {
     final texts = AppLocalizations.of(context);
-    final themeData = Theme.of(context);
 
     return Container(
       height: 64.0,
       padding: EdgeInsets.fromLTRB(24.0, 24.0, 24.0, 8.0),
       child: Text(
         texts.processing_payment_dialog_processing_payment,
-        style: themeData.dialogTheme.titleTextStyle,
+        style: TextStyle(color: Colors.black),
         textAlign: TextAlign.center,
       ),
     );

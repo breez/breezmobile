@@ -3,7 +3,8 @@ import 'package:flutter/material.dart';
 
 import 'loading_animated_text.dart';
 
-class CircularProgress extends StatelessWidget {
+class CircularProgress  extends StatefulWidget {
+
   final double value;
   final String title;
   final double size;
@@ -12,6 +13,27 @@ class CircularProgress extends StatelessWidget {
   const CircularProgress(
       {Key key, this.value, this.title, this.size, this.color})
       : super(key: key);
+
+  @override
+  State<StatefulWidget> createState() {
+    return CircularProgressState();
+  }
+}
+
+class CircularProgressState
+    extends State<CircularProgress> with TickerProviderStateMixin {
+    AnimationController _animationController;
+
+    @override
+    void initState() {
+      super.initState();
+      _animationController = new AnimationController(
+        vsync: this,
+        duration: new Duration(milliseconds: 2000),
+      );
+      _animationController.repeat();
+
+    }
 
   @override
   Widget build(BuildContext context) {
@@ -23,38 +45,44 @@ class CircularProgress extends StatelessWidget {
           alignment: Alignment.center,
           children: <Widget>[
             Container(
-              height: size,
-              width: size,
-              child: CircularProgressIndicator(
-                value: value,
-                semanticsLabel: title,
-                backgroundColor: Colors.grey.withOpacity(0.5),
-                valueColor: AlwaysStoppedAnimation<Color>(
-                  color,
-                ),
-              ),
-            ),
-            value == null
+              height: widget.size,
+              width: widget.size,
+              child: RotationTransition(
+                child: Image(
+                  image:AssetImage("src/images/logo.png"),),
+                turns: _animationController,
+              )
+    ),
+            widget.value == null
                 ? SizedBox()
                 : Center(
                     child: Container(
-                    width: size * 0.6,
-                    child: AutoSizeText("${(value * 100).round().toString()}%",
+                    width: widget.size * 0.6,
+                    child: AutoSizeText("${(widget.value * 100).round().toString()}%",
                         textAlign: TextAlign.center,
                         maxLines: 1,
-                        style: TextStyle(fontSize: size / 4, color: color)),
+                        style: TextStyle(fontSize: widget.size / 4, color: widget.color)),
                   )),
           ],
         ),
-        Padding(
-          padding: EdgeInsets.only(top: size / 5),
+        widget.value == null
+            ? SizedBox()
+            :Padding(
+          padding: EdgeInsets.only(top: widget.size / 5),
           child: LoadingAnimatedText(
-            title,
+            widget.title,
             textAlign: TextAlign.center,
-            textStyle: TextStyle(color: color),
+            textStyle: TextStyle(color: widget.color),
           ),
         )
       ],
     );
   }
+    @override
+    void dispose() {
+      _animationController.stop();//do i need to call it as well?
+      _animationController.dispose();
+      super.dispose();// and does it matter if i dispose the controller before this line or after this line.
+    }
+
 }

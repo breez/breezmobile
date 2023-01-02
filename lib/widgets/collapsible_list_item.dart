@@ -69,6 +69,7 @@ class CollapsibleListItem extends StatelessWidget {
                       mainAxisAlignment: MainAxisAlignment.end,
                       children: [
                         IconButton(
+                          icon: Icon(Icons.info),
                           alignment: Alignment.centerRight,
                           padding: EdgeInsets.only(right: 8.0),
                           tooltip: texts.collapsible_list_action_copy(title),

@@ -10,6 +10,7 @@ import 'package:clovrlabs_wallet/bloc/user_profile/currency.dart';
 import 'package:clovrlabs_wallet/routes/charge/items/item_avatar.dart';
 import 'package:clovrlabs_wallet/theme_data.dart' as theme;
 import 'package:clovrlabs_wallet/utils/min_font_size.dart';
+import 'package:clovrlabs_wallet/widgets/InputDecorationWallet.dart';
 import 'package:clovrlabs_wallet/widgets/back_button.dart' as backBtn;
 import 'package:clovrlabs_wallet/widgets/flushbar.dart';
 import 'package:clovrlabs_wallet/widgets/route.dart';
@@ -172,10 +173,9 @@ class ItemPageState extends State<ItemPage> {
     return TextFormField(
       textCapitalization: TextCapitalization.words,
       controller: _nameController,
-      decoration: InputDecoration(
+      decoration: InputDecorationWallet(
         labelText: texts.pos_invoice_item_management_field_name_label,
         hintText: texts.pos_invoice_item_management_field_name_hint,
-        border: UnderlineInputBorder(),
       ),
       style: theme.FieldTextStyle.textStyle,
       validator: (value) {
@@ -199,10 +199,9 @@ class ItemPageState extends State<ItemPage> {
         ),
       ],
       controller: _priceController,
-      decoration: InputDecoration(
+      decoration: InputDecorationWallet(
         labelText: texts.pos_invoice_item_management_field_price_label,
         hintText: texts.pos_invoice_item_management_field_price_hint,
-        border: UnderlineInputBorder(),
       ),
       style: theme.FieldTextStyle.textStyle,
       validator: (value) {
@@ -218,10 +217,9 @@ class ItemPageState extends State<ItemPage> {
     final texts = AppLocalizations.of(context);
     return TextFormField(
       controller: _skuController,
-      decoration: InputDecoration(
+      decoration: InputDecorationWallet(
         labelText: texts.pos_invoice_item_management_field_sku_label,
         hintText: texts.pos_invoice_item_management_field_sku_hint,
-        border: UnderlineInputBorder(),
       ),
       style: theme.FieldTextStyle.textStyle,
     );
@@ -253,7 +251,7 @@ class ItemPageState extends State<ItemPage> {
             child: Text(
               value.tickerSymbol,
               style: theme.FieldTextStyle.textStyle.copyWith(
-                color: themeData.colorScheme.secondary,
+                color: Colors.white,
               ),
             ),
           );
@@ -264,7 +262,7 @@ class ItemPageState extends State<ItemPage> {
               child: new Text(
                 fiat.currencyData.shortName,
                 style: theme.FieldTextStyle.textStyle.copyWith(
-                  color: themeData.colorScheme.secondary,
+                  color: Colors.white,
                 ),
               ),
             );

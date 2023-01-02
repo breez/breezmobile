@@ -77,6 +77,7 @@ class ViewSwitch extends StatelessWidget {
                     _icon(themeData, item, index),
                     Text(
                       item.text,
+
                       style: _textStyle(themeData, index),
                     )
                   ],
@@ -105,7 +106,7 @@ class ViewSwitch extends StatelessWidget {
       padding: const EdgeInsets.only(right: 8.0),
       child: Icon(
         item.iconData,
-        color: tint.withOpacity(selected == index ? 1 : 0.5),
+        color: Colors.white.withOpacity(selected == index ? 1 : 0.5),
       ),
     );
   }
@@ -127,7 +128,7 @@ class ViewSwitch extends StatelessWidget {
 
   TextStyle _textStyle(ThemeData themeData, index) {
     return themeData.textTheme.button.copyWith(
-      color: textTint.withOpacity(selected == index ? 1 : 0.5),
+      color:  Colors.white.withOpacity(selected == index ? 1 : 0.5),
     );
   }
 }

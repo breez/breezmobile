@@ -359,9 +359,12 @@ class _TotalSaleCharge extends StatelessWidget {
 
     final satCurrency = CurrencyWrapper.fromBTC(Currency.SAT);
     final satMessage = (satCurrency.format(
-      totalAmountInSats,
-      removeTrailingZeros: true,
-    ) + " " + satCurrency.shortName).toUpperCase();
+              totalAmountInSats,
+              removeTrailingZeros: true,
+            ) +
+            " " +
+            satCurrency.shortName)
+        .toUpperCase();
 
     if (totalAmountInFiat.length == 1) {
       final currency = totalAmountInFiat.entries.first.key;
@@ -371,11 +374,13 @@ class _TotalSaleCharge extends StatelessWidget {
           currency,
           accountModel,
         );
-        final fiatValue = saleCurrency.format(
-          total,
-          removeTrailingZeros: true,
-          includeCurrencySymbol: true,
-        ).toUpperCase();
+        final fiatValue = saleCurrency
+            .format(
+              total,
+              removeTrailingZeros: true,
+              includeCurrencySymbol: true,
+            )
+            .toUpperCase();
         return readOnly
             ? texts.sale_view_total_title_read_only_fiat(satMessage, fiatValue)
             : texts.sale_view_total_title_charge_fiat(satMessage, fiatValue);
@@ -513,6 +518,9 @@ class SaleLineWidget extends StatelessWidget {
         ),
         title: Text(
           saleLine.itemName,
+          style: TextStyle(
+            color: Colors.white,
+          ),
         ),
         subtitle: CurrencyDisplay(
           currency: CurrencyWrapper.fromShortName(
@@ -531,7 +539,7 @@ class SaleLineWidget extends StatelessWidget {
                 : IconButton(
                     iconSize: 22.0,
                     color: iconColor,
-                    icon: Icon(Icons.add),
+                    icon: Icon(Icons.add, color: Colors.white,),
                     onPressed: () => onChangeQuantity(1),
                   ),
             Container(
@@ -554,9 +562,11 @@ class SaleLineWidget extends StatelessWidget {
                     iconSize: 22.0,
                     color: iconColor,
                     icon: Icon(
+
                       saleLine.quantity == 1
                           ? Icons.delete_outline
                           : Icons.remove,
+                      color: Colors.white,
                     ),
                     onPressed: () => saleLine.quantity == 1
                         ? onDelete()

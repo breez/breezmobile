@@ -18,6 +18,7 @@ import 'package:clovrlabs_wallet/widgets/loader.dart';
 import 'package:fixnum/fixnum.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:share_extend/share_extend.dart';
 
 class PosPaymentResult {
   final bool paid;
@@ -138,24 +139,25 @@ class _PosPaymentDialogState extends State<PosPaymentDialog> {
         ),
         Row(
           children: <Widget>[
-            // IconButton(
-            //   splashColor: Colors.transparent,
-            //   highlightColor: Colors.transparent,
-            //   padding: const EdgeInsets.fromLTRB(0.0, 8.0, 2.0, 8.0),
-            //   icon: Icon(IconData(
-            //     0xe917,
-            //   )),
-            //   color: themeData.primaryTextTheme.button.color,
-            //   tooltip: texts.pos_dialog_share,
-            //   onPressed: () => ShareExtend.share(
-            //     "lightning:" + widget.paymentRequest.rawPayReq,
-            //     "text",
-            //   ),
-            // ),
+            IconButton(
+              splashColor: Colors.transparent,
+              highlightColor: Colors.transparent,
+              padding: const EdgeInsets.fromLTRB(0.0, 8.0, 2.0, 8.0),
+              icon: Icon(Icons.share),
+              color: themeData.primaryTextTheme.button.color,
+              tooltip: texts.pos_dialog_share,
+              onPressed: () => ShareExtend.share(
+                "lightning:" + widget.paymentRequest.rawPayReq,
+                "text",
+              ),
+            ),
             IconButton(
               splashColor: Colors.transparent,
               highlightColor: Colors.transparent,
               padding: const EdgeInsets.fromLTRB(2.0, 8.0, 14.0, 8.0),
+              icon: Icon(
+                IconData(0xe90b, fontFamily: 'icomoon'),
+              ),
               color: themeData.primaryTextTheme.button.color,
               tooltip: texts.pos_dialog_invoice_copy,
               onPressed: () {
@@ -219,8 +221,8 @@ class _PosPaymentDialogState extends State<PosPaymentDialog> {
                 height: 230.0,
                 width: 230.0,
                 child: CompactQRImage(
-                        data: widget.paymentRequest.rawPayReq,
-                      ),
+                  data: widget.paymentRequest.rawPayReq,
+                ),
               ),
             ),
           ),

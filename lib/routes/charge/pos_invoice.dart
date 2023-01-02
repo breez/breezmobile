@@ -217,6 +217,7 @@ class POSInvoiceState extends State<POSInvoice> with TickerProviderStateMixin {
     Sale currentSale,
     List<FiatConversion> rates,
   ) {
+    final themeData = Theme.of(context);
     final persistedCurrency = CurrencyWrapper.fromShortName(
       accountModel.posCurrencyShortName,
       accountModel,
@@ -230,59 +231,58 @@ class POSInvoiceState extends State<POSInvoice> with TickerProviderStateMixin {
     return Stack(
       children: [
         Column(
-          mainAxisSize: MainAxisSize.max,
+          mainAxisSize: MainAxisSize.min,
           children: <Widget>[
             Container(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: <Widget>[
-                  _chargeButton(
-                    context,
-                    invoiceBloc,
-                    lnUrlBloc,
-                    userProfile,
-                    accountModel,
-                    currentSale,
-                    totalAmount,
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.only(bottom: 24),
-                    child: _buildViewSwitch(context),
-                  ),
-                  PosInvoiceCartBar(
-                    badgeKey: badgeKey,
-                    totalNumOfItems: currentSale.totalNumOfItems,
-                    accountModel: accountModel,
-                    currentCurrency: currentCurrency,
-                    isKeypadView: _isKeypadView,
-                    currentAmount: currentAmount,
-                    onInvoiceSubmit: () => _onInvoiceSubmitted(
-                      context,
-                      currentSale,
-                      invoiceBloc,
-                      lnUrlBloc,
-                      userProfile,
-                      accountModel,
-                    ),
-                    approveClear: () => _approveClear(
-                      context,
-                      currentSale,
-                    ),
-                    changeCurrency: (currency) => _changeCurrency(currentSale,
-                        currency, userProfileBloc, currentCurrency),
-                  ),
-                ],
+              child: _buildViewSwitch(context),
+              color: themeData.backgroundColor,
+            ),
+            Container(
+              color: themeData.backgroundColor,
+              child: PosInvoiceCartBar(
+                badgeKey: badgeKey,
+                totalNumOfItems: currentSale.totalNumOfItems,
+                accountModel: accountModel,
+                currentCurrency: currentCurrency,
+                isKeypadView: _isKeypadView,
+                currentAmount: currentAmount,
+                onInvoiceSubmit: () => _onInvoiceSubmitted(
+                  context,
+                  currentSale,
+                  invoiceBloc,
+                  lnUrlBloc,
+                  userProfile,
+                  accountModel,
+                ),
+                approveClear: () => _approveClear(
+                  context,
+                  currentSale,
+                ),
+                changeCurrency: (currency) => _changeCurrency(
+                  currentSale,
+                  currency,
+                  userProfileBloc,
+                  currentCurrency,
+                ),
               ),
-              decoration: BoxDecoration(
-                color: Theme.of(context).backgroundColor,
-              ),
-              height: max(184.0, MediaQuery.of(context).size.height * 0.3),
             ),
             _tabBody(
               context,
               posCatalogBloc,
               accountModel,
               currentSale,
+            ),
+            Container(
+              color: themeData.backgroundColor,
+              child: _chargeButton(
+                context,
+                invoiceBloc,
+                lnUrlBloc,
+                userProfile,
+                accountModel,
+                currentSale,
+                totalAmount,
+              ),
             ),
           ],
         ),

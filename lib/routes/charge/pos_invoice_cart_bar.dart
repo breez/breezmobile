@@ -80,7 +80,7 @@ class _PosInvoiceCartBarState extends State<PosInvoiceCartBar> {
                       child: Image.asset(
                         "src/icon/cart.png",
                         width: 24.0,
-                        color: themeData.primaryTextTheme.button.color,
+                        color: Colors.white,
                       ),
                     ),
                   ),

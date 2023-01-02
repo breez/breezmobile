@@ -10,6 +10,7 @@ import 'package:clovrlabs_wallet/services/lightning_links.dart';
 import 'package:clovrlabs_wallet/services/local_auth_service.dart';
 import 'package:clovrlabs_wallet/services/notifications.dart';
 import 'package:clovrlabs_wallet/services/permissions.dart';
+import 'package:clovrlabs_wallet/services/rate_service.dart';
 import 'package:http/http.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -33,6 +34,7 @@ class ServiceInjector {
   LocalAuthenticationService _localAuthService;
   DownloadTaskManager _downloadManager = DownloadTaskManager();
   Client _client;
+  RateService _rateService;
 
   factory ServiceInjector() {
     return _injector != null ? _injector : _singleton;
@@ -50,6 +52,10 @@ class ServiceInjector {
 
   BreezServer get breezServer {
     return _breezServer ??= BreezServer();
+  }
+
+  RateService get rateService {
+    return _rateService ??= RateService();
   }
 
   BreezBridge get breezBridge {

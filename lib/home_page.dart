@@ -306,6 +306,7 @@ class HomeState extends State<Home> with WidgetsBindingObserver {
         //   account.swapFundsStatus.maturedRefundableAddresses,
         // ),
         ..._drawerConfigAppModeItems(context, user, texts),
+        DrawerItemConfigGroup([_drawerItemPos(context, user, texts)]),
         DrawerItemConfigGroup(
           _filterItems(_drawerConfigToFilter(context, user, texts)),
           groupTitle: texts.home_drawer_item_title_preferences,
@@ -322,12 +323,11 @@ class HomeState extends State<Home> with WidgetsBindingObserver {
     AppLocalizations texts,
   ) {
     return [
-      // Temporary commented
-      // DrawerItemConfig(
-      //   "/fiat_currency",
-      //   texts.home_drawer_item_title_fiat_currencies,
-      //   "src/icon/fiat_currencies.png",
-      // ),
+      DrawerItemConfig(
+        "/fiat_currency",
+        texts.home_drawer_item_title_fiat_currencies,
+        "src/icon/fiat_currencies.png",
+      ),
       DrawerItemConfig(
         "/network",
         texts.home_drawer_item_title_network,

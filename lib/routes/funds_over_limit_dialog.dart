@@ -39,13 +39,11 @@ class SwapRefundDialogState extends State<SwapRefundDialog> {
     final texts = AppLocalizations.of(context);
 
     return AlertDialog(
-      titlePadding: EdgeInsets.fromLTRB(24.0, 22.0, 24.0, 16.0),
       title: AutoSizeText(
         texts.funds_over_limit_dialog_on_chain_transaction,
         style: themeData.dialogTheme.titleTextStyle,
         maxLines: 1,
       ),
-      contentPadding: EdgeInsets.fromLTRB(24.0, 8.0, 24.0, 24.0),
       content: FutureBuilder(
         future: this._fetchFuture,
         initialData: "loading",

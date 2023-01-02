@@ -635,7 +635,7 @@ class ClovrLabsWalletColors {
     200: Color.fromRGBO(119, 119, 126, 1.0),
     300: Color.fromRGBO(125, 129, 133, 1.0),
     500: Color.fromRGBO(128, 128, 133, 1.0),
-    800: Color.fromRGBO(51, 255, 255, 0.3),
+    800: Color.fromRGBO(133, 134, 134, 1.0),
     900: Color.fromRGBO(101, 101, 101, 1.0),
   };
 

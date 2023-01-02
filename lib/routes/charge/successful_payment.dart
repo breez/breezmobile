@@ -99,13 +99,11 @@ class SuccessfulPaymentRouteState extends State<SuccessfulPaymentRoute>
           padding: const EdgeInsets.only(top: 20, bottom: 40),
           child: Container(
             decoration: new BoxDecoration(
-              color: themeData.buttonColor,
               shape: BoxShape.circle,
             ),
             child: Image(
               image: const AssetImage("src/icon/approve.png"),
               height: 48.0,
-              color: Colors.white,
             ),
           ),
         ),
