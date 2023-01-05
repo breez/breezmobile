@@ -1043,7 +1043,7 @@ packages:
       name: mobile_scanner
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "2.0.0"
+    version: "2.1.0"
   mockito:
     dependency: "direct dev"
     description:
@@ -1393,13 +1393,6 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "0.27.7"
-  scan:
-    dependency: "direct main"
-    description:
-      name: scan
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "1.6.0"
   screenshot:
     dependency: "direct main"
     description:

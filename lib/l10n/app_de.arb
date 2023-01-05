@@ -1999,6 +1999,7 @@
   "select_provider_error_dialog_message": "Um Breez zu aktivieren, bitte ",
   "select_provider_error_dialog_message_error": "Es ist ein Fehler bei der Verbindung mit dem ausgewählten Anbieter aufgetreten. Um Breez zu aktivieren, wähle bitte ",
   "qr_scan_action_cancel": "ABBRECHEN",
+  "qr_scan_gallery_failed": "No QR Code found in the image",
   "pending_closed_channel_title": "Ausstehende Channel-Schließung ",
   "pending_closed_channel_action_ok": "OK",
   "close_warning_dialog_title": "Inaktive Channels",

@@ -1999,6 +1999,7 @@
   "select_provider_error_dialog_message": "Jotta saat sovelluksen aktivoitua, niin ",
   "select_provider_error_dialog_message_error": "Yhteys valittuun palvelun tarjoajaan ei onnistunut. Jotta sovelluksen aktivointi onnistuu, niin ",
   "qr_scan_action_cancel": "Peruuta",
+  "qr_scan_gallery_failed": "No QR Code found in the image",
   "pending_closed_channel_title": "Odotetaan suljettua Kanavaa",
   "pending_closed_channel_action_ok": "OK",
   "close_warning_dialog_title": "Käyttämättömiä kanavia",

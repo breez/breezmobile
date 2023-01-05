@@ -1,14 +1,13 @@
 import 'dart:io';
 
+import 'package:breez/logger.dart';
+import 'package:breez/widgets/scan_overlay.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
-import 'package:scan/scan.dart';
-
-import '../widgets/scan_overlay.dart';
 
 class QRScan extends StatefulWidget {
   @override
@@ -44,12 +43,14 @@ class QRScanState extends State<QRScan> {
                     allowDuplicates: false,
                     controller: cameraController,
                     onDetect: (barcode, args) {
+                      log.info("Barcode detected: $barcode");
                       if (popped || !mounted) return;
                       if (barcode.rawValue == null) {
-                        debugPrint('Failed to scan QR code.');
+                        log.warning("Failed to scan QR code.");
                       } else {
                         popped = true;
                         final String code = barcode.rawValue;
+                        log.info("Popping read QR code $code");
                         Navigator.of(context).pop(code);
                       }
                     },
@@ -61,7 +62,7 @@ class QRScanState extends State<QRScan> {
           Positioned(
             right: 10,
             top: 5,
-            child: const ImagePickerButton(),
+            child: ImagePickerButton(cameraController),
           ),
           Positioned(
             bottom: 30.0,
@@ -79,12 +80,17 @@ class QRScanState extends State<QRScan> {
 }
 
 class ImagePickerButton extends StatelessWidget {
-  const ImagePickerButton({
+  final MobileScannerController cameraController;
+
+  const ImagePickerButton(
+    this.cameraController, {
     Key key,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+    final texts = AppLocalizations.of(context);
+
     return IconButton(
       padding: const EdgeInsets.fromLTRB(0, 32, 24, 0),
       icon: SvgPicture.asset(
@@ -95,14 +101,26 @@ class ImagePickerButton extends StatelessWidget {
       ),
       onPressed: () async {
         final picker = ImagePicker();
-        XFile pickedFile = await picker
-            .pickImage(source: ImageSource.gallery)
-            .catchError((err) {});
+        XFile pickedFile = await picker.pickImage(source: ImageSource.gallery).catchError((err) {
+          log.warning("Failed to pick image", err);
+        });
+        log.info("Picked image: ${pickedFile.path}");
         final File file = File(pickedFile.path);
         try {
-          String data = await Scan.parse(file.path);
-          Navigator.of(context).pop(data);
-        } catch (_) {}
+          final found = await cameraController.analyzeImage(file.path);
+          if (!found) {
+            log.info("No QR code found in image");
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Text(texts.qr_scan_gallery_failed),
+              ),
+            );
+          } else {
+            log.info("QR code found in image");
+          }
+        } catch (err) {
+          log.warning("Failed to analyze image", err);
+        }
       },
     );
   }

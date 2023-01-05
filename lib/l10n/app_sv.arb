@@ -1999,6 +1999,7 @@
   "select_provider_error_dialog_message": "För att aktivera Breez, ",
   "select_provider_error_dialog_message_error": "Det gick inte att ansluta till den valda leverantören. För att aktivera Breez, ",
   "qr_scan_action_cancel": "AVBRYT",
+  "qr_scan_gallery_failed": "No QR Code found in the image",
   "pending_closed_channel_title": "Väntande stängd kanal",
   "pending_closed_channel_action_ok": "OK",
   "close_warning_dialog_title": "Inaktiva kanaler",
