@@ -1728,7 +1728,7 @@
     }
   },
   "lnurl_fetch_invoice_action_continue": "JATKA",
-  "lnurl_fetch_invoice_pay_to_payee": "Maksun vastaanottaja {payee}",
+  "lnurl_fetch_invoice_pay_to_payee": "Saaja {payee}",
   "@lnurl_fetch_invoice_pay_to_payee": {
     "placeholders": {
       "payee": {
