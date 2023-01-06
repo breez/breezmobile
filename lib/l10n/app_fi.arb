@@ -1536,7 +1536,7 @@
       }
     }
   },
-  "pos_dialog_title": "LASKUN SKANNAUS:",
+  "pos_dialog_title": "Lue lasku",
   "pos_dialog_share": "Jaa lasku",
   "pos_dialog_invoice_copy": "Kopioi lasku",
   "pos_dialog_invoice_copied": "Lasku kopioitiin leikepöydälle.",
@@ -1571,7 +1571,7 @@
   },
   "pos_payment_nfc_error_action_close": "SULJE",
   "successful_payment_print": "Tulosta",
-  "successful_payment_received": "Maksu vastaaotettu!",
+  "successful_payment_received": "Maksu vastaanotettu!",
   "payment_options_title": "Salamamaksun kulut",
   "payment_options_fee_header": "Salamamaksujen hyväksyttävä enimmäiskulu:",
   "payment_options_fee_override_enable": "ota käyttöön",
