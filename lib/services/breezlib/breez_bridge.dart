@@ -183,13 +183,6 @@ class BreezBridge {
         "syncGraphFromFile", {"argument": sourceFilePath});
   }
 
-  Future unconfirmedChannelsStatus(UnconfirmedChannelsStatus status) {
-    return _invokeMethodWhenReady("unconfirmedChannelsStatus", {
-      "argument": status?.writeToBuffer()
-    }).then(
-        (result) => UnconfirmedChannelsStatus()..mergeFromBuffer(result ?? []));
-  }
-
   void log(String msg, String level) {
     _invokeMethodImmediate("log", {"msg": msg, "lvl": level});
   }
@@ -557,13 +550,6 @@ class BreezBridge {
     return _invokeMethodWhenReady(
             "addInvoice", {"argument": request.writeToBuffer()})
         .then((res) => AddInvoiceReply()..mergeFromBuffer(res ?? []));
-  }
-
-  Future<SyncLSPChannelsResponse> syncLSPChannels(LSPInformation lsp) {
-    var request = SyncLSPChannelsRequest()..lspInfo = lsp;
-    return _invokeMethodWhenReady(
-            "syncLSPChannels", {"argument": request.writeToBuffer()})
-        .then((res) => SyncLSPChannelsResponse()..mergeFromBuffer(res ?? []));
   }
 
   Future<CheckLSPClosedChannelMismatchResponse> checkLSPClosedChannelMismatch(
