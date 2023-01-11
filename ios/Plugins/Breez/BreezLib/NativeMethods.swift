@@ -92,10 +92,8 @@ fileprivate let calls : Dictionary<String, BindingExecutor> = [
     "deleteGraph": EmptyArgsBindingExecutor(f: BindingsDeleteGraph),
     "graphURL": EmptyArgsBindingExecutor(f: BindingsGraphURL),
     "resetUnconfirmedReverseSwapClaimTransaction": EmptyArgsBindingExecutor(f: BindingsResetUnconfirmedReverseSwapClaimTransaction),
-    "populateChannelPolicy": VoidBindingExecutor(f: BindingsPopulateChannelPolicy),
-    "syncLSPChannels": SingleArgBindingExecutor(f: BindingsSyncLSPChannels),
-    "checkLSPClosedChannelMismatch": SingleArgBindingExecutor(f: BindingsCheckLSPClosedChannelMismatch),
-    "unconfirmedChannelsStatus": SingleArgBindingExecutor(f: BindingsUnconfirmedChannelsStatus),
+    "populateChannelPolicy": VoidBindingExecutor(f: BindingsPopulateChannelPolicy),    
+    "checkLSPClosedChannelMismatch": SingleArgBindingExecutor(f: BindingsCheckLSPClosedChannelMismatch),    
     "resetClosedChannelChainInfo": SingleArgBindingExecutor(f: BindingsResetClosedChannelChainInfo),
     "setNonBlockingUnconfirmedSwaps": EmptyArgsBindingExecutor(f: BindingsSetNonBlockingUnconfirmedSwaps),
     

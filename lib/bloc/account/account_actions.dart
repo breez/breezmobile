@@ -17,12 +17,6 @@ class RestartDaemon extends AsyncAction {}
 
 class FetchSwapFundStatus extends AsyncAction {}
 
-class UnconfirmedChannelsStatusAction extends AsyncAction {
-  final UnconfirmedChannelsStatus oldStatus;
-
-  UnconfirmedChannelsStatusAction(this.oldStatus);
-}
-
 class SetNonBlockingUnconfirmedSwaps extends AsyncAction {}
 
 class FetchPayments extends AsyncAction {}

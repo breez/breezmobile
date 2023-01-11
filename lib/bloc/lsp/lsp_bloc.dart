@@ -48,8 +48,7 @@ class LSPBloc with AsyncActionsHandler {
       _breezLib.setSelectedLspID(selectedLSP);
       _listenReconnects();
       _handleAccountChangs(sp);
-      _handleLSPStatusChanges(sp);
-      _handleSyncLSPChannels();
+      _handleLSPStatusChanges(sp);      
     });
   }
 
@@ -113,20 +112,6 @@ class LSPBloc with AsyncActionsHandler {
         _reconnectStreamController.add(null);
       }
     });
-  }
-
-  Future _handleSyncLSPChannels() async {
-    try {
-      await this.accountStream.firstWhere((a) => a.syncedToChain);
-      var status = await this
-          .lspStatusStream
-          .firstWhere((status) => status.currentLSP != null);
-      var syncResult = await _breezLib.syncLSPChannels(status.currentLSP.raw);
-      log.info("finished to sync lsp channels: " +
-          syncResult.hasMismatch.toString());
-    } catch (err) {
-      log.severe("failed to sync lsp channels: " + err.toString());
-    }
   }
 
   void _handleLSPStatusChanges(SharedPreferences sp) {
