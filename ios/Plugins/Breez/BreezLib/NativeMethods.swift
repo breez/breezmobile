@@ -43,7 +43,7 @@ fileprivate let calls : [String:BindingExecutor] = [
 
     "getFundStatus": SingleArgBindingExecutor(f: BindingsGetFundStatus),
     "getPayments": EmptyArgsBindingExecutor(f: BindingsGetPayments),
-    
+
     "getRelatedInvoice": SingleArgBindingExecutor(f: BindingsGetRelatedInvoice),
     "getLogger": SingleArgBindingExecutor(f: BindingsGetLogger),
     "setPeers": SingleArgBindingExecutor(f: BindingsSetPeers),
@@ -94,10 +94,8 @@ fileprivate let calls : [String:BindingExecutor] = [
     "deleteGraph": EmptyArgsBindingExecutor(f: BindingsDeleteGraph),
     "graphURL": EmptyArgsBindingExecutor(f: BindingsGraphURL),
     "resetUnconfirmedReverseSwapClaimTransaction": EmptyArgsBindingExecutor(f: BindingsResetUnconfirmedReverseSwapClaimTransaction),
-    "populateChannelPolicy": VoidBindingExecutor(f: BindingsPopulateChannelPolicy),
-    "syncLSPChannels": SingleArgBindingExecutor(f: BindingsSyncLSPChannels),
-    "checkLSPClosedChannelMismatch": SingleArgBindingExecutor(f: BindingsCheckLSPClosedChannelMismatch),
-    "unconfirmedChannelsStatus": SingleArgBindingExecutor(f: BindingsUnconfirmedChannelsStatus),
+    "populateChannelPolicy": VoidBindingExecutor(f: BindingsPopulateChannelPolicy),    
+    "checkLSPClosedChannelMismatch": SingleArgBindingExecutor(f: BindingsCheckLSPClosedChannelMismatch),    
     "resetClosedChannelChainInfo": SingleArgBindingExecutor(f: BindingsResetClosedChannelChainInfo),
     "setNonBlockingUnconfirmedSwaps": EmptyArgsBindingExecutor(f: BindingsSetNonBlockingUnconfirmedSwaps),
 
