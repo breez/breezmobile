@@ -35,11 +35,11 @@
     "placeholders": {
       "minSats": {
         "type": "String",
-        "example": "2 000 satoshia"
+        "example": "2 000 sat"
       },
       "maxSats": {
         "type": "String",
-        "example": "4 000 000 satoshia"
+        "example": "4 000 000 sat"
       },
       "setUpFee": {
         "type": "String",
@@ -47,11 +47,11 @@
       },
       "minFee": {
         "type": "String",
-        "example": "1 000 satoshia"
+        "example": "1 000 sat"
       },
       "liquidity": {
         "type": "String",
-        "example": "99 000 satoshia"
+        "example": "99 000 sat"
       }
     }
   },
@@ -60,11 +60,11 @@
     "placeholders": {
       "minSats": {
         "type": "String",
-        "example": "2 000 satoshia"
+        "example": "2 000 sat"
       },
       "maxSats": {
         "type": "String",
-        "example": "4 000 000 satoshia"
+        "example": "4 000 000 sat"
       },
       "setUpFee": {
         "type": "String",
@@ -72,7 +72,7 @@
       },
       "liquidity": {
         "type": "String",
-        "example": "99 000 satoshia"
+        "example": "99 000 sat"
       }
     }
   },
@@ -81,11 +81,11 @@
     "placeholders": {
       "minSats": {
         "type": "String",
-        "example": "2 000 satoshia"
+        "example": "2 000 sat"
       },
       "maxSats": {
         "type": "String",
-        "example": "4 000 000 satoshia"
+        "example": "4 000 000 sat"
       },
       "setUpFee": {
         "type": "String",
@@ -93,7 +93,7 @@
       },
       "minFee": {
         "type": "String",
-        "example": "1 000 satoshia"
+        "example": "1 000 sat"
       }
     }
   },
@@ -102,11 +102,11 @@
     "placeholders": {
       "minSats": {
         "type": "String",
-        "example": "2 000 satoshia"
+        "example": "2 000 sat"
       },
       "maxSats": {
         "type": "String",
-        "example": "4 000 000 satoshia"
+        "example": "4 000 000 sat"
       },
       "setUpFee": {
         "type": "String",
@@ -142,7 +142,7 @@
     "placeholders": {
       "fee": {
         "type": "String",
-        "example": "20 satoshia"
+        "example": "20 sat"
       }
     }
   },
@@ -154,7 +154,7 @@
     "placeholders": {
       "maxSats": {
         "type": "String",
-        "example": "2 000 satoshia"
+        "example": "2 000 sat"
       }
     }
   },
@@ -167,11 +167,11 @@
       },
       "minFee": {
         "type": "String",
-        "example": "1 000 satoshia"
+        "example": "1 000 sat"
       },
       "liquidity": {
         "type": "String",
-        "example": "99 000 satoshia"
+        "example": "99 000 sat"
       }
     }
   },
@@ -184,7 +184,7 @@
       },
       "liquidity": {
         "type": "String",
-        "example": "99 000 satoshia"
+        "example": "99 000 sat"
       }
     }
   },
@@ -197,7 +197,7 @@
       },
       "minFee": {
         "type": "String",
-        "example": "1 000 satoshia"
+        "example": "1 000 sat"
       }
     }
   },
@@ -323,7 +323,7 @@
     "placeholders": {
       "amount": {
         "type": "String",
-        "example": "1000 satoshia"
+        "example": "1000 sat"
       }
     }
   },
@@ -332,7 +332,7 @@
     "placeholders": {
       "amount": {
         "type": "String",
-        "example": "1000 satoshia"
+        "example": "1000 sat"
       }
     }
   },
@@ -819,7 +819,7 @@
     "placeholders": {
       "denomination": {
         "type": "String",
-        "example": "satoshia"
+        "example": "sat"
       }
     }
   },
@@ -828,7 +828,7 @@
     "placeholders": {
       "denomination": {
         "type": "String",
-        "example": "satoshia"
+        "example": "sat"
       }
     }
   },
@@ -1155,11 +1155,11 @@
       },
       "minFee": {
         "type": "String",
-        "example": "1 000 satoshia"
+        "example": "1 000 sat"
       },
       "liquidity": {
         "type": "String",
-        "example": "99 000 satoshia"
+        "example": "99 000 sat"
       }
     }
   },
@@ -1172,7 +1172,7 @@
       },
       "liquidity": {
         "type": "String",
-        "example": "99 000 satoshia"
+        "example": "99 000 sat"
       }
     }
   },
@@ -1185,7 +1185,7 @@
       },
       "minFee": {
         "type": "String",
-        "example": "1 000 satoshia"
+        "example": "1 000 sat"
       }
     }
   },
@@ -1547,7 +1547,7 @@
     "placeholders": {
       "fee": {
         "type": "String",
-        "example": "1000 satoshia"
+        "example": "1000 sat"
       },
       "fiat": {
         "type": "String",
@@ -1561,11 +1561,11 @@
     "placeholders": {
       "minValue": {
         "type": "String",
-        "example": "1000 sats"
+        "example": "1000 sat"
       },
       "maxValue": {
         "type": "String",
-        "example": "1000 sats"
+        "example": "1000 sat"
       }
     }
   },
@@ -1632,11 +1632,11 @@
     "placeholders": {
       "setupFee": {
         "type": "String",
-        "example": "123 satoshia"
+        "example": "123 sat"
       },
       "fiatFee": {
         "type": "String",
-        "example": "€1"
+        "example": "1 €"
       }
     }
   },
@@ -1787,11 +1787,11 @@
   "make_invoice_request_title": "Sivusto haluaa maksaa sinulle:",
   "make_invoice_request_action_cancel": "Peruuta",
   "make_invoice_request_action_approve": "HYVÄKSY",
-  "podcast_add_funds_title": "Jotta voit lähettää maksuja tälle podcast:ille, tulee sinun ensin lisatä varoja saldollesi.",
+  "podcast_add_funds_title": "Sinulla tulee olla saldoa, jotta voit lähettää satosheja tälle podcast:ille.",
   "podcast_add_funds_action_add": "LISÄÄ VAROJA",
   "podcast_boost_not_enough_founds": "Sinulla ei ole tarpeeksi varoja maksun suorittamiseksi.",
-  "podcast_boost_sats": "satoshia",
-  "podcast_boost_sats_min": "sats/min",
+  "podcast_boost_sats": "sat",
+  "podcast_boost_sats_min": "sat/min",
   "podcast_boost_action_boost": "BOOST!",
   "podcast_boost_action_cancel": "Peruuta",
   "podcast_boost_action_approve": "HYVÄKSY",
@@ -1801,7 +1801,7 @@
   "podcast_boost_send_amount": "Boost määrä (satosheina)",
   "podcast_boost_custom_amount": "Syötä vapaavalintainen määrä:",
   "podcast_boost_custom_amount_error_empty": "Syötä määrä",
-  "podcast_boost_custom_amount_error_too_few": "Syötä määräksi vähintään {amount} satoshia.",
+  "podcast_boost_custom_amount_error_too_few": "Syötä määräksi vähintään {amount} sat.",
   "@podcast_boost_custom_amount_error_too_few": {
     "placeholders": {
       "amount": {
@@ -1810,10 +1810,10 @@
       }
     }
   },
-  "podcast_boost_adjustment_boost": "Boost",
-  "podcast_boost_adjustment_boost_message": "Lähetä ohjelman tekijöille kertaluontoinen lahjoitus. Paina pitkään lisätäksesi mukaan henkilökohtaisen viestin.",
-  "podcast_boost_adjustment_stream_sats": "Streamaa satosheja",
-  "podcast_boost_adjustment_stream_sats_message": "Streamaa satosheja ohjelman tekijöille samalla kun seuraat ohjelmaa. Syötä satosheja jotka lähetetään jokaisesta seuraamastasi minuutista. Jos haluat seurata ohjelmaa ilmaiseksi syötä tähän nolla.",
+	  "podcast_boost_adjustment_boost": "Buustaa",
+	  "podcast_boost_adjustment_boost_message": "Anna tekijöille kertaluontoinen lahjoitus. Paina pitkään ja lisää mukaan henkilökohtainen viesti.",
+	  "podcast_boost_adjustment_stream_sats": "Striimaa satosheja",
+	  "podcast_boost_adjustment_stream_sats_message": "Striimaa satosheja ohjelman tekijöille samalla kun seuraat ohjelmaa. Anna satoshimäärä jonka lähetät seuraamastasi minuutista. Jos haluat seurata ohjelmaa ilmaiseksi syötä tähän nolla.",
   "podcast_boost_action_share": "Jaa",
   "podcast_boost_share_texts": "{podcast}\n{episode}\n{link}",
   "@podcast_boost_share_texts": {
@@ -2107,7 +2107,7 @@
   "podcast_history_drawer": "Suosituimmat Podcastit",
   "podcast_history_share_message": "Suosituimmat podcastit kuuntelivat Breez",
   "podcast_history_share_text": "JAA",
-  "podcast_history_sats_streamed": "sats striimattiin",
+  "podcast_history_sats_streamed": "sat striimattiin",
   "podcast_history_boostagrams_sent": "boosts lähetetty",
   "podcast_history_open_podcast_button": "AVAA PODCAST",
   "podcast_history_appbar_top_weekly": "Suosituimmat podcastit viikoittain",
