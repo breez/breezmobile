@@ -166,6 +166,7 @@ class Tor : NSObject, FlutterPlugin {
                     self?.torController?.removeObserver(self?.progressObs)
                     self?.torController?.getInfoForKeys(["net/listeners/socks", "net/listeners/control"]) { response in
                         guard let socksAddr = response.first, !socksAddr.isEmpty else {
+                            print("error")
                             self?.status = .stopped
                             return // insert error here
                         }
@@ -207,19 +208,8 @@ class Tor : NSObject, FlutterPlugin {
         conf.clientOnly = true
         conf.avoidDiskWrites = true
         
-        if let dataDirectory = FileManager.default.urls(for: .coreServiceDirectory, in: .userDomainMask).first?.appendingPathComponent("tor", isDirectory: true) {
-            try? FileManager.default.removeItem(at: dataDirectory)
-            try? FileManager.default.createDirectory(at: dataDirectory, withIntermediateDirectories: true)
-            guard FileManager.default.fileExists(atPath: dataDirectory.path) else {
-                            result(FlutterError(code: "FAIL",message: "Breez could not create the Tor directory",
-                                                details: nil))
-                            return conf
-                        }
-            conf.dataDirectory = dataDirectory
-            conf.clientAuthDirectory = dataDirectory.appendingPathComponent("auth")
-            
-        }
-        
+        conf.dataDirectory = FileManager.default.torDir
+        conf.clientAuthDirectory = FileManager.default.authDir
 
         // GeoIP files for circuit node country display.
         conf.geoipFile = Bundle.geoIp?.geoipFile
@@ -243,7 +233,7 @@ class Tor : NSObject, FlutterPlugin {
             "SocksPort": "auto",
 
             // Miscelaneous
-            "MaxMemInQueues": "5MB"]
+            "MaxMemInQueues": "15MB"]
 
 //            if Logger.ENABLE_LOGGING,
 //               let logfile = FileManager.default.torLogFile?.truncate()
@@ -258,8 +248,6 @@ class Tor : NSObject, FlutterPlugin {
     private func torReconnect(_ callback: ((_ success: Bool) -> Void)? = nil) {
             torController?.resetConnection(callback)
     }
-    
-    
     
 
     deinit {
