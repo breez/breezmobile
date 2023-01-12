@@ -1,7 +1,7 @@
  
 import Foundation
 import Flutter
-
+import Reachability
 
 class Tor : NSObject, FlutterPlugin {
     
@@ -35,6 +35,7 @@ class Tor : NSObject, FlutterPlugin {
         }
     }
 
+    static let shared = Tor()
     
     static let localhost = "127.0.0.1"
 
@@ -56,14 +57,21 @@ class Tor : NSObject, FlutterPlugin {
     private var progressObs: Any?
     private var establishedObs: Any?
     
+    private var reachability: Reachability?
     
+    
+    /*override private init() {
+        super.init()
+        self.torController?.resetConnection()
+              
+    }*/
 
     public static func register(with registrar: FlutterPluginRegistrar) {
         
         let TOR_CHANNEL  = "com.breez.client/tor"
-        let instance = Tor()
+        
 	    let channel = FlutterMethodChannel(name: TOR_CHANNEL, binaryMessenger: registrar.messenger())
-        registrar.addMethodCallDelegate(instance, channel: channel)
+        registrar.addMethodCallDelegate(shared, channel: channel)
 
     }
     
@@ -76,33 +84,27 @@ class Tor : NSObject, FlutterPlugin {
             result(FlutterMethodNotImplemented)
             return
         }
-        do {
-            try startTor(call: call, result: result)
-        } catch {
-            result(FlutterError(code: "TorError", message: "Breez encountered an unexpected error)", details: ""))
-        }
+        startTor(call: call, result: result)
+        
         
         
     }
     
-    func startTor(call: FlutterMethodCall, result: @escaping FlutterResult) throws {
-        
+    func startTor(call: FlutterMethodCall, result: @escaping FlutterResult) {
+        print(status)
         self.status = .starting
         
-        if !torRunning {
-            print("getting tor conf")
-            torConf = getTorConf(result: result)
-
-//            if let debug = torConf?.compile().joined(separator: ", ") {
-//                Logger.log(debug, to: FileManager.default.torLogFile)
-//            }
-
-            torThread = TorThread(configuration: torConf)
-
-            torThread?.start()
+        if !torRunning && self.status != .stopped {
+            self.torConf = getTorConf(result: result)
+                    
+            self.torThread = TorThread(configuration: torConf)
+            
+            self.torThread?.start()
         }
         
-        controllerQueue.asyncAfter(deadline: .now() + 0.65) {
+       
+        
+        controllerQueue.asyncAfter(deadline: .now() + 1) {
             if self.torController == nil, let url = self.torConf?.controlPortFile {
                 self.torController = TorController(controlPortFile: url)
             }
@@ -160,28 +162,27 @@ class Tor : NSObject, FlutterPlugin {
                     }
                     self?.torController?.removeObserver(self?.establishedObs)
                     self?.torController?.removeObserver(self?.progressObs)
-                    self?.torController?.getInfoForKeys(["net/listeners/socks", "net/listeners/dns"]) { response in
+                    self?.torController?.getInfoForKeys(["net/listeners/socks", "net/listeners/control"]) { response in
                         guard let socksAddr = response.first, !socksAddr.isEmpty else {
                             self?.status = .stopped
                             return // insert error here
                         }
-                        guard let dnsAddr = response.last, !dnsAddr.isEmpty else {
+                        guard let controlPort = response.last,!controlPort.isEmpty else {
                             self?.status = .stopped
-                            return // insert error
+                            return
                         }
                         self?.status = .started
-                        
+                        print("Control",controlPort,"socks",socksAddr)
+                        let config = [
+                            "SOCKS"         : "127.0.0.1:\(socksAddr)",
+                            "Control"       : "127.0.0.1:\(controlPort)",
+                            "HTTP"          : "127.0.0.1:\(socksAddr)",
+                        ]
+                        result(config)
                     }
                 })
             }
         }
-        let config = [
-            "SOCKS"        : "127.0.0.1:9050",
-            "Control"   : "127.0.0.1:9051",
-            "HTTP"        : "127.0.0.1:0",
-        ]
-        
-        result(config)
     }
     
     func getCircuits(_ completion: @escaping ([TorCircuit]) -> Void) {
@@ -195,8 +196,6 @@ class Tor : NSObject, FlutterPlugin {
     
     // MARK: Private methods
     
-   
-    
     private func getTorConf(result: @escaping FlutterResult) -> TorConfiguration {
         let conf = TorConfiguration()
 
@@ -206,7 +205,7 @@ class Tor : NSObject, FlutterPlugin {
         conf.clientOnly = true
         conf.avoidDiskWrites = true
         
-        if let dataDirectory = FileManager.default.urls(for: .cachesDirectory, in: .userDomainMask).first?.appendingPathComponent("tor", isDirectory: true) {
+        if let dataDirectory = FileManager.default.urls(for: .coreServiceDirectory, in: .userDomainMask).first?.appendingPathComponent("tor", isDirectory: true) {
             try? FileManager.default.removeItem(at: dataDirectory)
             try? FileManager.default.createDirectory(at: dataDirectory, withIntermediateDirectories: true)
             guard FileManager.default.fileExists(atPath: dataDirectory.path) else {
@@ -262,6 +261,7 @@ class Tor : NSObject, FlutterPlugin {
     
 
     deinit {
+        status = .stopped
         torController?.removeObserver(self.establishedObs)
         torController?.removeObserver(self.progressObs)
 
@@ -273,5 +273,4 @@ class Tor : NSObject, FlutterPlugin {
 
         torConf = nil
     }
-
 }
