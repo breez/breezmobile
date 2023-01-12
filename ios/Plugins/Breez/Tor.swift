@@ -164,22 +164,30 @@ class Tor : NSObject, FlutterPlugin {
                     }
                     self?.torController?.removeObserver(self?.establishedObs)
                     self?.torController?.removeObserver(self?.progressObs)
-                    self?.torController?.getInfoForKeys(["net/listeners/socks", "net/listeners/control"]) { response in
+                    self?.torController?.getInfoForKeys(["net/listeners/socks","net/listeners/httptunnel", "net/listeners/control"]) { response in
                         guard let socksAddr = response.first, !socksAddr.isEmpty else {
                             print("error")
                             self?.status = .stopped
-                            return // insert error here
+                            return 
                         }
+                        
+                        let httpTunnelPort = response[1]
+                        if httpTunnelPort.isEmpty {
+                            self?.status = .stopped
+                            return
+                        }
+                        
                         guard let controlPort = response.last,!controlPort.isEmpty else {
                             self?.status = .stopped
                             return
                         }
                         self?.status = .started
+                        print("TYPE RESPONSE",type(of: response))
                         print("Control",controlPort,"socks",socksAddr)
                         let config = [
-                            "SOCKS"         : "127.0.0.1:\(socksAddr)",
-                            "Control"       : "127.0.0.1:\(controlPort)",
-                            "HTTP"          : "127.0.0.1:\(socksAddr)",
+                            "SOCKS"         : "\(socksAddr)",
+                            "Control"       : "\(controlPort)",
+                            "HTTP"          : "\(httpTunnelPort)",
                         ]
                         result(config)
                     }
@@ -231,6 +239,9 @@ class Tor : NSObject, FlutterPlugin {
 
             // SOCKS5
             "SocksPort": "auto",
+            
+            // HTTPTunnelPort
+            "HTTPTunnelPort": "auto",
 
             // Miscelaneous
             "MaxMemInQueues": "15MB"]
