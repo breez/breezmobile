@@ -1,7 +1,6 @@
  
 import Foundation
 import Flutter
-import Reachability
 
 class Tor : NSObject, FlutterPlugin {
     
@@ -57,7 +56,6 @@ class Tor : NSObject, FlutterPlugin {
     private var progressObs: Any?
     private var establishedObs: Any?
     
-    private var reachability: Reachability?
     
     
     /*override private init() {
@@ -84,7 +82,11 @@ class Tor : NSObject, FlutterPlugin {
             result(FlutterMethodNotImplemented)
             return
         }
-        startTor(call: call, result: result)
+        
+        if self.status == .stopped {
+            startTor(call: call, result: result)
+        }
+        
         
         
         
