@@ -70,14 +70,14 @@ class BackupPhraseGeneratorConfirmationPageState
         left: 48,
         right: 48,
       ),
-      child: Container(
-        height: 96,
-        child: AutoSizeText(
+      child: ConstrainedBox(
+        constraints: BoxConstraints(
+          minHeight: 96,
+        ),
+        child: Text(
           texts.backup_phrase_instructions,
           style: theme.backupPhraseInformationTextStyle,
           textAlign: TextAlign.center,
-          minFontSize: MinFontSize(context).minFontSize,
-          stepGranularity: 0.1,
         ),
       ),
     );
