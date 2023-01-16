@@ -4,7 +4,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:rxdart/rxdart.dart';
-import 'package:share_extend/share_extend.dart';
+import 'package:share_plus/share_plus.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 enum NotificationType { RESUME, PAUSE }
@@ -58,7 +58,7 @@ class Device {
     if (defaultTargetPlatform == TargetPlatform.android) {
       return _breezShareChannel.invokeMethod("share", {"text": text});
     }
-    return ShareExtend.share(text, "text");
+    return Share.share(text);
   }
 
   fetchClipboard(SharedPreferences preferences) {

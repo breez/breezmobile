@@ -2129,6 +2129,8 @@
   "podcast_clips_dialog_done": "DONE",
   "podcast_clips_error": "An error has occurred while clipping the episode. Please try again.",
   "localized_error_message_invalid_pair_hash": "Fee estimations have expired. Please retry.",
+  "share_log_text": "Share Log",
+  "share_file_title": "Share File",
   "locale": "en",
   "app_name": "Breez"
 }

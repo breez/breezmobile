@@ -2129,6 +2129,8 @@
   "podcast_clips_dialog_done": "FERTIG",
   "podcast_clips_error": "Beim Ausschneiden der Folge ist ein Fehler aufgetreten. Bitte versuche es erneut",
   "localized_error_message_invalid_pair_hash": "Fee estimations have expired. Please retry.",
+  "share_log_text": "Share Log",
+  "share_file_title": "Share File",
   "locale": "de",
   "app_name": "Breez"
 }

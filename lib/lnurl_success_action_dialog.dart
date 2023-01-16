@@ -6,7 +6,7 @@ import 'package:breez/widgets/error_dialog.dart';
 import 'package:breez/widgets/flushbar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:share_extend/share_extend.dart';
+import 'package:share_plus/share_plus.dart';
 
 void showLNURLSuccessAction(BuildContext context, SuccessAction sa) {
   final texts = AppLocalizations.of(context);
@@ -150,7 +150,7 @@ class _URLRow extends StatelessWidget {
                     color: themeData.primaryTextTheme.button.color,
                     icon: Icon(Icons.share),
                     onPressed: () {
-                      ShareExtend.share(sharedValue, "text");
+                      Share.share(sharedValue);
                     },
                   ),
                 ],

@@ -5,9 +5,10 @@ import 'dart:io';
 
 import 'package:breez/services/breezlib/breez_bridge.dart';
 import 'package:breez/services/injector.dart';
+import 'package:breez/utils/locale.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:logging/logging.dart';
-import 'package:share_extend/share_extend.dart';
+import 'package:share_plus/share_plus.dart';
 
 final Logger log = Logger('Breez');
 
@@ -18,12 +19,18 @@ Future<File> get _logFile async {
 
 void shareLog() {
   _logFile.then((file) {
-    ShareExtend.share(file.path, "file");
+    Share.shareFiles(
+      [file.path],
+      text: getSystemAppLocalizations().share_log_text,
+    );
   });
 }
 
 Future shareFile(String filePath) {
-  return ShareExtend.share(filePath, "file");
+  return Share.shareFiles(
+    [filePath],
+    text: getSystemAppLocalizations().share_file_title,
+  );
 }
 
 class BreezLogger {

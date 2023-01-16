@@ -20,7 +20,7 @@ import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:path/path.dart' as path;
-import 'package:share_extend/share_extend.dart';
+import 'package:share_plus/share_plus.dart';
 
 class PosSettingsPage extends StatelessWidget {
   @override
@@ -335,7 +335,7 @@ class PosSettingsPageState extends State<_PosSettingsPage> {
     navigator.push(createLoaderRoute(context));
     action.future.then((filePath) {
       navigator.pop();
-      ShareExtend.share(filePath, "file");
+      Share.shareFiles([filePath]);
     }).catchError((err) {
       navigator.pop();
       final errorMessage = err.toString() == "EMPTY_LIST"

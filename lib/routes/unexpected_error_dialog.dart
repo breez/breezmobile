@@ -7,7 +7,7 @@ import 'package:breez/theme_data.dart' as theme;
 import 'package:breez/widgets/error_dialog.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'package:share_extend/share_extend.dart';
+import 'package:share_plus/share_plus.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 void listenUnexpectedError(BuildContext context, AccountBloc accountBloc) async {
@@ -113,9 +113,8 @@ void listenUnexpectedError(BuildContext context, AccountBloc accountBloc) async 
               style: theme.blueLinkStyle,
               recognizer: TapGestureRecognizer()
                 ..onTap = () async {
-                  ShareExtend.share(
-                    await ServiceInjector().breezBridge.getLogPath(),
-                    "file",
+                  Share.shareFiles(
+                      [await ServiceInjector().breezBridge.getLogPath()],
                   );
                 },
             ),

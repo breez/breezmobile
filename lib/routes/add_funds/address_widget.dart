@@ -5,7 +5,7 @@ import 'package:breez/widgets/flushbar.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:share_extend/share_extend.dart';
+import 'package:share_plus/share_plus.dart';
 
 class AddressWidget extends StatelessWidget {
   final String address;
@@ -107,10 +107,14 @@ class AddressWidget extends StatelessWidget {
       icon: Icon(IconData(0xe917, fontFamily: 'icomoon')),
       onPressed: () {
         final RenderBox box = context.findRenderObject();
-        ShareExtend.share(
+        final offset = box.localToGlobal(Offset.zero) & box.size;
+        final rect = Rect.fromPoints(
+          offset.topLeft,
+          offset.bottomRight,
+        );
+        Share.share(
           address,
-          "text",
-          sharePositionOrigin: box.localToGlobal(Offset.zero) & box.size,
+          sharePositionOrigin: rect,
         );
       },
     );
@@ -146,11 +150,14 @@ class AddressWidget extends StatelessWidget {
               recognizer: TapGestureRecognizer()
                 ..onTap = () {
                   final RenderBox box = context.findRenderObject();
-                  ShareExtend.share(
+                  final offset = box.localToGlobal(Offset.zero) & box.size;
+                  final rect = Rect.fromPoints(
+                    offset.topLeft,
+                    offset.bottomRight,
+                  );
+                  Share.share(
                     backupJson,
-                    "text",
-                    sharePositionOrigin:
-                        box.localToGlobal(Offset.zero) & box.size,
+                    sharePositionOrigin: rect,
                   );
                 },
             ),

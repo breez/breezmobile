@@ -61,7 +61,7 @@ dependencies:
       ref: 1fc6e38c198a76a6fd60b7bd3b4c190cd6c9330b
   rxdart: ^0.27.5
   screenshot: ^1.2.3
-  share_plus: ^4.5.3
+  share_plus: ^6.3.0
   shared_preferences: ^2.0.15
   shimmer: ^2.0.0
   simple_animations: ^5.0.0+2
@@ -79,7 +79,7 @@ dependencies:
   anytime:
     git:
       url: https://github.com/breez/anytime_podcast_player.git
-      ref: 7dc9827fd545f048c564608cbfc3eca76539c768
+      ref: f1fd2401fc61e021584d57081594265abb56110a
   flutter_typeahead:
     git:
       url: https://github.com/breez/flutter_typeahead.git
@@ -88,9 +88,6 @@ dependencies:
     git:
       url: https://github.com/breez/nfc_in_flutter.git
       ref: 97f610be82bfe42d5ce86c348d931d61949fa517
-  share_extend:
-    git:
-      url: https://github.com/breez/ShareExtend.git
 
 dependency_overrides:
   meta: ^1.8.0

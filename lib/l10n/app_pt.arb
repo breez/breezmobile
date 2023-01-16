@@ -2129,6 +2129,8 @@
   "podcast_clips_dialog_done": "PRONTO",
   "podcast_clips_error": "Ocorreu um erro ao cortar o episódio, por favor tente novamente.",
   "localized_error_message_invalid_pair_hash": "As taxas expiraram, por favor tente novamente.",
+  "share_log_text": "Compartilhar Log",
+  "share_file_title": "Compartilhar Arquivo",
   "locale": "pt",
   "app_name": "Breez"
 }

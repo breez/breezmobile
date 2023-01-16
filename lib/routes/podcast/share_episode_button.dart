@@ -1,7 +1,7 @@
 import 'package:breez/services/deep_links.dart';
 import 'package:breez/services/injector.dart';
 import 'package:flutter/material.dart';
-import 'package:share_extend/share_extend.dart';
+import 'package:share_plus/share_plus.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class ShareEpisodeButton extends StatelessWidget {
@@ -37,13 +37,12 @@ class ShareEpisodeButton extends StatelessWidget {
               episodeID: episodeID,
             ),
           );
-          ShareExtend.share(
+          Share.share(
             texts.podcast_boost_share_texts(
               podcastTitle,
               episodeTitle,
               podcastShareLink,
             ),
-            "text",
           );
         },
         child: Column(

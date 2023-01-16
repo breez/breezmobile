@@ -13,7 +13,7 @@ import 'package:breez/widgets/pos_report_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:share_extend/share_extend.dart';
+import 'package:share_plus/share_plus.dart';
 
 import 'pos_payments_list.dart';
 
@@ -211,7 +211,7 @@ class PosTransactionsPageState extends State<PosTransactionsPage> {
     Navigator.of(context).push(createLoaderRoute(context));
     action.future.then((filePath) {
       Navigator.of(context).pop();
-      ShareExtend.share(filePath, "file");
+      Share.shareFiles([filePath]);
     }).catchError((err) {
       Navigator.of(context).pop();
       showFlushbar(

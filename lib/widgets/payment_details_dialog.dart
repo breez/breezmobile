@@ -14,17 +14,16 @@ import 'package:breez/services/breezlib/data/rpc.pb.dart';
 import 'package:breez/services/injector.dart';
 import 'package:breez/theme_data.dart' as theme;
 import 'package:breez/utils/date.dart';
+import 'package:breez/widgets/error_dialog.dart';
+import 'package:breez/widgets/flushbar.dart';
+import 'package:breez/widgets/link_launcher.dart';
 import 'package:breez/widgets/loader.dart';
 import 'package:collection/collection.dart';
 import 'package:fixnum/fixnum.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:http/http.dart' as http;
-import 'package:share_extend/share_extend.dart';
-
-import 'error_dialog.dart';
-import 'flushbar.dart';
-import 'link_launcher.dart';
+import 'package:share_plus/share_plus.dart';
 
 final AutoSizeGroup _labelGroup = AutoSizeGroup();
 final AutoSizeGroup _valueGroup = AutoSizeGroup();
@@ -492,7 +491,7 @@ class ShareablePaymentRow extends StatelessWidget {
                         color: themeData.primaryTextTheme.button.color,
                         icon: Icon(Icons.share),
                         onPressed: () {
-                          ShareExtend.share(sharedValue, "text");
+                          Share.share(sharedValue);
                         },
                       ),
                     ],

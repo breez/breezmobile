@@ -2129,6 +2129,8 @@
   "podcast_clips_dialog_done": "VALMIS",
   "podcast_clips_error": "Jakson leikkaamisessa tapahtui virhe. Yritä uudelleen.",
   "localized_error_message_invalid_pair_hash": "Kulujen määräarvio on vanhentunut. Yritä uudelleen.",
+  "share_log_text": "Share Log",
+  "share_file_title": "Share File",
   "locale": "fi",
   "app_name": "Breez"
 }

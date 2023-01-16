@@ -13,7 +13,7 @@ import 'package:breez/widgets/flushbar.dart';
 import 'package:breez/widgets/warning_box.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:share_extend/share_extend.dart';
+import 'package:share_plus/share_plus.dart';
 
 class QrCodeDialog extends StatefulWidget {
   final BuildContext context;
@@ -159,9 +159,8 @@ class QrCodeDialogState extends State<QrCodeDialog>
                                 )),
                                 color: themeData.primaryTextTheme.button.color,
                                 onPressed: () {
-                                  ShareExtend.share(
-                                    "lightning:" + requestModel.rawPayReq,
-                                    "text",
+                                  Share.share(
+                                      "lightning:" + requestModel.rawPayReq,
                                   );
                                 },
                               ),

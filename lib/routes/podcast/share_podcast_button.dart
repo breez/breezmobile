@@ -2,7 +2,7 @@ import 'package:breez/services/deep_links.dart';
 import 'package:breez/services/injector.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:share_extend/share_extend.dart';
+import 'package:share_plus/share_plus.dart';
 
 class SharePodcastButton extends StatelessWidget {
   final String podcastTitle;
@@ -32,12 +32,11 @@ class SharePodcastButton extends StatelessWidget {
             var podcastShareLink = await _deepLinks.generatePodcastShareLink(
               PodcastShareLinkModel(podcastURL),
             );
-            ShareExtend.share(
+            Share.share(
               texts.podcast_boost_share_texts_short(
                 podcastTitle,
                 podcastShareLink,
               ),
-              "text",
             );
           },
         ),

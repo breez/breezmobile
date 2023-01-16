@@ -28,8 +28,8 @@ import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_downloader/flutter_downloader.dart';
 import 'package:path_provider/path_provider.dart';
-import 'package:share_extend/share_extend.dart';
-import '../../bloc/podcast_history/sqflite/podcast_history_database.dart';
+import 'package:share_plus/share_plus.dart';
+import 'package:breez/bloc/podcast_history/sqflite/podcast_history_database.dart';
 import 'default_commands.dart';
 
 bool allowRebroadcastRefunds = false;
@@ -438,7 +438,7 @@ class DevViewState extends State<DevView> {
             i += 1;
           });
           encoder.close();
-          ShareExtend.share(zipFile, "file");
+          Share.shareFiles([zipFile]);
         }));
 
     choices.add(Choice(
@@ -446,7 +446,7 @@ class DevViewState extends State<DevView> {
       icon: Icons.file_upload,
       function: () async {
         final databasePath = await getDatabasePath();
-        ShareExtend.share(databasePath, "file");
+        Share.shareFiles([databasePath]);
       },
     ));
 
@@ -537,7 +537,7 @@ class DevViewState extends State<DevView> {
     String filePath = '${tempDir.path}/$command.json';
     File file = File(filePath);
     await file.writeAsString(text, flush: true);
-    ShareExtend.share(filePath, "file");
+    Share.shareFiles([filePath]);
   }
 
   void _showOptimizationsSettings() async {
@@ -617,7 +617,7 @@ class DevViewState extends State<DevView> {
       encoder.addFile(file, "${file.path.split(Platform.pathSeparator).last}");
     });
     encoder.close();
-    ShareExtend.share(zipFile, "file");
+    Share.shareFiles([zipFile]);
   }
 
   void _refreshGraph() async {
