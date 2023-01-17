@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:breez/bloc/tor/bloc.dart';
 import 'package:breez/bloc/backup/backup_bloc.dart';
@@ -160,33 +161,36 @@ class RemoteServerAuthPageState extends State<RemoteServerAuthPage> {
                       Uri uri = Uri.parse(_urlController.text);
 
                       bool connectionWarningResponse = true;
-                      if (uri.host.endsWith('onion') &&
-                          widget._torBloc.torConfig == null) {
-                        await promptError(
-                            context,
-                            texts.remote_server_warning_connection_title,
-                            Text(
-                              texts.remote_server_warning_onion_message,
-                              style: Theme.of(context)
-                                  .dialogTheme
-                                  .contentTextStyle,
-                            ),
-                            optionText: texts
-                                .remote_server_onion_warning_dialog_default_action_cancel,
-                            optionFunc: () {
-                              Navigator.of(context).pop();
-                            },
-                            okText: texts
-                                .remote_server_onion_warning_dialog_settings,
-                            okFunc: () async {
-                              connectionWarningResponse = false;
-                              Navigator.of(context).push(FadeInRoute(
-                                builder: (_) =>
-                                    withBreezTheme(context, NetworkPage()),
-                              ));
-                              // Navigator.of(context).popUntil((route) => route is RemoteServerAuthPage);
-                              return false;
-                            });
+                      bool isAndroid = Platform.isAndroid;
+                      if (isAndroid) {
+                        if (uri.host.endsWith('onion') &&
+                            widget._torBloc.torConfig == null) {
+                          await promptError(
+                              context,
+                              texts.remote_server_warning_connection_title,
+                              Text(
+                                texts.remote_server_warning_onion_message,
+                                style: Theme.of(context)
+                                    .dialogTheme
+                                    .contentTextStyle,
+                              ),
+                              optionText: texts
+                                  .remote_server_onion_warning_dialog_default_action_cancel,
+                              optionFunc: () {
+                                Navigator.of(context).pop();
+                              },
+                              okText: texts
+                                  .remote_server_onion_warning_dialog_settings,
+                              okFunc: () async {
+                                connectionWarningResponse = false;
+                                Navigator.of(context).push(FadeInRoute(
+                                  builder: (_) =>
+                                      withBreezTheme(context, NetworkPage()),
+                                ));
+                                // Navigator.of(context).popUntil((route) => route is RemoteServerAuthPage);
+                                return false;
+                              });
+                        }
                       }
                       if (!uri.host.endsWith('.onion') &&
                           uri.scheme == 'http') {
