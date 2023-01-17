@@ -56,13 +56,65 @@ class Tor : NSObject, FlutterPlugin {
     private var progressObs: Any?
     private var establishedObs: Any?
     
+    private lazy var sessionConfiguration: URLSessionConfiguration = .default
+    
+    lazy var session = URLSession(configuration: sessionConfiguration)
+    
+    public lazy var onionAuth: TorOnionAuth? = {
+        guard let dir = FileManager.default.authDir else {
+            return nil
+        }
+
+        return TorOnionAuth(withPrivateDir: dir, andPublicDir: nil)
+    }()
     
     
-    /*override private init() {
+    override private init() {
         super.init()
-        self.torController?.resetConnection()
-              
-    }*/
+        
+        sessionConfiguration.connectionProxyDictionary = [kCFProxyTypeKey: kCFProxyTypeSOCKS, kCFStreamPropertySOCKSProxyHost: "localhost", kCFStreamPropertySOCKSProxyPort: 54509]
+        session = URLSession(configuration: sessionConfiguration)
+        
+        let conf = TorConfiguration()
+
+        conf.ignoreMissingTorrc = true
+        conf.cookieAuthentication = true
+        conf.autoControlPort = true
+        conf.clientOnly = true
+        conf.avoidDiskWrites = true
+        
+        conf.dataDirectory = FileManager.default.torDir
+        conf.clientAuthDirectory = FileManager.default.authDir
+
+        // GeoIP files for circuit node country display.
+        conf.geoipFile = Bundle.geoIp?.geoipFile
+        conf.geoip6File = Bundle.geoIp?.geoip6File
+
+
+        conf.options = [
+            // DNS
+            //"DNSPort": "auto",
+            "AutomapHostsOnResolve": "1",
+            // By default, localhost resp. link-local addresses will be returned by Tor.
+            // That seems to not get accepted by iOS. Use private network addresses instead.
+            "VirtualAddrNetworkIPv4": "10.192.0.0/10",
+            "VirtualAddrNetworkIPv6": "[FC00::]/7",
+
+            // Log
+            "LogMessageDomains": "1",
+            "SafeLogging": "1",
+
+            // SOCKS5
+            "SocksPort": "5450",
+
+            
+            // HTTPTunnelPort
+            //"HTTPTunnelPort": "auto",
+
+            // Miscelaneous
+            "MaxMemInQueues": "50MB"]
+        self.torConf = conf
+    }
 
     public static func register(with registrar: FlutterPluginRegistrar) {
         
@@ -86,20 +138,24 @@ class Tor : NSObject, FlutterPlugin {
         if self.status == .stopped {
             startTor(call: call, result: result)
         }
-        
-        
+        DispatchQueue.main.asyncAfter(deadline: .now() + 10.0) { // Change `2.0` to the desired
+            self.testURL()
+        }
         
         
     }
     
     func startTor(call: FlutterMethodCall, result: @escaping FlutterResult) {
-        print(status)
         self.status = .starting
         
         if !torRunning && self.status != .stopped {
-            self.torConf = getTorConf(result: result)
+            
+            if self.torConf == nil {
+                self.torConf = getTorConf(result: result)
+            }
+            
                     
-            self.torThread = TorThread(configuration: torConf)
+            self.torThread = TorThread(configuration: self.torConf)
             
             self.torThread?.start()
         }
@@ -182,14 +238,13 @@ class Tor : NSObject, FlutterPlugin {
                             return
                         }
                         self?.status = .started
-                        print("TYPE RESPONSE",type(of: response))
-                        print("Control",controlPort,"socks",socksAddr)
                         let config = [
                             "SOCKS"         : "\(socksAddr)",
                             "Control"       : "\(controlPort)",
-                            "HTTP"          : "\(httpTunnelPort)",
+                            "HTTP"          : "\(socksAddr)",
                         ]
                         result(config)
+                        
                     }
                 })
             }
@@ -238,13 +293,13 @@ class Tor : NSObject, FlutterPlugin {
             "SafeLogging": "1",
 
             // SOCKS5
-            "SocksPort": "auto",
+            "SocksPort": "54509",
             
             // HTTPTunnelPort
-            "HTTPTunnelPort": "auto",
+            //"HTTPTunnelPort": "auto",
 
             // Miscelaneous
-            "MaxMemInQueues": "15MB"]
+            "MaxMemInQueues": "50MB"]
 
 //            if Logger.ENABLE_LOGGING,
 //               let logfile = FileManager.default.torLogFile?.truncate()
@@ -258,6 +313,20 @@ class Tor : NSObject, FlutterPlugin {
     
     private func torReconnect(_ callback: ((_ success: Bool) -> Void)? = nil) {
             torController?.resetConnection(callback)
+    }
+    
+    
+    
+    private func testURL(){
+        let url = URL(string: "http://check.torproject.org")!
+        let task = self.session.dataTask(with: url) {data , response, error in
+            if let data = data {
+                print(data)
+            } else if let error = error {
+                print("HTTP Request Failed \(error)")
+            }
+        }
+        task.resume()
     }
     
 
