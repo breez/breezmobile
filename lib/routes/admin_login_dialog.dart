@@ -4,7 +4,7 @@ import 'package:breez/bloc/user_profile/user_actions.dart';
 import 'package:breez/bloc/user_profile/user_profile_bloc.dart';
 import 'package:breez/theme_data.dart' as theme;
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:breez_translations/breez_translations_locales.dart';
 
 Future protectAdminAction(
   BuildContext context,
@@ -30,7 +30,7 @@ Future protectAdminRoute(
   String route,
 ) async {
   if (user.appMode == AppMode.pos && user.hasAdminPassword) {
-    final texts = AppLocalizations.of(context);
+    final texts = context.texts();
     bool loggedIn = await showDialog(
       useRootNavigator: false,
       context: context,
@@ -66,7 +66,7 @@ class _AdminLoginDialogState extends State<_AdminLoginDialog> {
   @override
   Widget build(BuildContext context) {
     final themeData = Theme.of(context);
-    final texts = AppLocalizations.of(context);
+    final texts = context.texts();
     final userProfileBloc = AppBlocsProvider.of<UserProfileBloc>(context);
 
     return AlertDialog(

@@ -15,7 +15,7 @@ import 'package:breez/widgets/single_button_bottom_bar.dart';
 import 'package:breez/logger.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:breez_translations/breez_translations_locales.dart';
 import 'package:validators/validators.dart';
 import 'package:webdav_client/webdav_client.dart' as webdav;
 
@@ -89,7 +89,7 @@ class RemoteServerAuthPageState extends State<RemoteServerAuthPage> {
 
   @override
   Widget build(BuildContext context) {
-    final texts = AppLocalizations.of(context);
+    final texts = context.texts();
     final themeData = Theme.of(context);
     final nav = Navigator.of(context);
 
@@ -251,7 +251,7 @@ class RemoteServerAuthPageState extends State<RemoteServerAuthPage> {
   }
 
   Widget _formFieldUrl(BuildContext context) {
-    final texts = AppLocalizations.of(context);
+    final texts = context.texts();
     return TextFormField(
       controller: _urlController,
       minLines: 1,
@@ -277,7 +277,7 @@ class RemoteServerAuthPageState extends State<RemoteServerAuthPage> {
   }
 
   Widget _formFieldUserName(BuildContext context) {
-    final texts = AppLocalizations.of(context);
+    final texts = context.texts();
     return TextFormField(
       validator: (value) {
         if (failAuthenticate) {
@@ -297,7 +297,7 @@ class RemoteServerAuthPageState extends State<RemoteServerAuthPage> {
   }
 
   Widget _formFieldPassword(BuildContext context) {
-    final texts = AppLocalizations.of(context);
+    final texts = context.texts();
     return TextFormField(
       validator: (value) {
         if (failAuthenticate) {

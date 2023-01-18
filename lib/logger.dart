@@ -5,7 +5,7 @@ import 'dart:io';
 
 import 'package:breez/services/breezlib/breez_bridge.dart';
 import 'package:breez/services/injector.dart';
-import 'package:breez/utils/locale.dart';
+import 'package:breez_translations/breez_translations_locales.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:logging/logging.dart';
 import 'package:share_plus/share_plus.dart';

@@ -2,11 +2,10 @@ import 'package:breez/bloc/account/account_bloc.dart';
 import 'package:breez/bloc/blocs_provider.dart';
 import 'package:breez/bloc/marketplace/marketplace_bloc.dart';
 import 'package:breez/bloc/marketplace/vendor_model.dart';
+import 'package:breez/routes/marketplace/vendor_row.dart';
 import 'package:breez/theme_data.dart' as theme;
+import 'package:breez_translations/generated/breez_translations.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-
-import 'vendor_row.dart';
 
 class MarketplacePage extends StatefulWidget {
   @override
@@ -47,7 +46,7 @@ class MarketplacePageState extends State<MarketplacePage> {
       child: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Text(
-          AppLocalizations.of(context).market_place_no_vendors,
+          BreezTranslations.of(context).market_place_no_vendors,
           textAlign: TextAlign.center,
           style: Theme.of(context).textTheme.headline4.copyWith(
                 color: theme.themeId == "BLUE"

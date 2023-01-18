@@ -17,7 +17,7 @@ import 'package:breez/widgets/single_button_bottom_bar.dart';
 import 'package:breez/widgets/static_loader.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:breez_translations/breez_translations_locales.dart';
 
 class SpontaneousPaymentPage extends StatefulWidget {
   final String nodeID;
@@ -70,7 +70,7 @@ class SpontaneousPaymentPageState extends State<SpontaneousPaymentPage> {
   @override
   Widget build(BuildContext context) {
     final themeData = Theme.of(context);
-    final texts = AppLocalizations.of(context);
+    final texts = context.texts();
     final accountBloc = AppBlocsProvider.of<AccountBloc>(context);
 
     return Scaffold(
@@ -196,7 +196,7 @@ class SpontaneousPaymentPageState extends State<SpontaneousPaymentPage> {
   }
 
   Widget _buildPayableBTC(BuildContext context, AccountModel acc) {
-    final texts = AppLocalizations.of(context);
+    final texts = context.texts();
     return GestureDetector(
       child: AutoSizeText(
         texts.spontaneous_payment_max_amount(
@@ -215,7 +215,7 @@ class SpontaneousPaymentPageState extends State<SpontaneousPaymentPage> {
   }
 
   Widget _buildNodeIdDescription(BuildContext context) {
-    final texts = AppLocalizations.of(context);
+    final texts = context.texts();
     return CollapsibleListItem(
       title: texts.spontaneous_payment_node_id,
       sharedValue: widget.nodeID,
@@ -230,7 +230,7 @@ class SpontaneousPaymentPageState extends State<SpontaneousPaymentPage> {
     AccountBloc accBloc,
     AccountModel account,
   ) async {
-    final texts = AppLocalizations.of(context);
+    final texts = context.texts();
     final themeData = Theme.of(context);
 
     String tipMessage = _descriptionController.text;

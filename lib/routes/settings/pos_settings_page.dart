@@ -18,7 +18,7 @@ import 'package:breez/widgets/route.dart';
 import 'package:breez/widgets/static_loader.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:breez_translations/breez_translations_locales.dart';
 import 'package:path/path.dart' as path;
 import 'package:share_plus/share_plus.dart';
 
@@ -77,7 +77,7 @@ class PosSettingsPageState extends State<_PosSettingsPage> {
   Widget build(BuildContext context) {
     final posCatalogBloc = AppBlocsProvider.of<PosCatalogBloc>(context);
     final userProfileBloc = AppBlocsProvider.of<UserProfileBloc>(context);
-    final texts = AppLocalizations.of(context);
+    final texts = context.texts();
     final themeData = Theme.of(context);
 
     return Scaffold(
@@ -211,7 +211,7 @@ class PosSettingsPageState extends State<_PosSettingsPage> {
     BuildContext context,
     PosCatalogBloc posCatalogBloc,
   ) {
-    final texts = AppLocalizations.of(context);
+    final texts = context.texts();
     final themeData = Theme.of(context);
     return ListTile(
       title: Container(
@@ -266,7 +266,7 @@ class PosSettingsPageState extends State<_PosSettingsPage> {
     BuildContext context,
     PosCatalogBloc posCatalogBloc,
   ) async {
-    final texts = AppLocalizations.of(context);
+    final texts = context.texts();
     final themeData = Theme.of(context);
     final navigator = Navigator.of(context);
 
@@ -327,7 +327,7 @@ class PosSettingsPageState extends State<_PosSettingsPage> {
     BuildContext context,
     PosCatalogBloc posCatalogBloc,
   ) async {
-    final texts = AppLocalizations.of(context);
+    final texts = context.texts();
     final navigator = Navigator.of(context);
 
     var action = ExportItems();
@@ -346,7 +346,7 @@ class PosSettingsPageState extends State<_PosSettingsPage> {
   }
 
   ListTile _buildSetPasswordTile(BuildContext context) {
-    final texts = AppLocalizations.of(context);
+    final texts = context.texts();
     return ListTile(
       title: Container(
         child: AutoSizeText(
@@ -372,7 +372,7 @@ class PosSettingsPageState extends State<_PosSettingsPage> {
     UserProfileBloc userProfileBloc,
     BreezUserModel user,
   ) {
-    final texts = AppLocalizations.of(context);
+    final texts = context.texts();
     return ListTile(
       title: AutoSizeText(
         user.hasAdminPassword
@@ -415,7 +415,7 @@ class PosSettingsPageState extends State<_PosSettingsPage> {
     BuildContext context, {
     bool isNew = false,
   }) async {
-    final texts = AppLocalizations.of(context);
+    final texts = context.texts();
     final backupBloc = AppBlocsProvider.of<BackupBloc>(context);
     final backupState = await backupBloc.backupStateStream.first
         .onError((error, stackTrace) => null);
@@ -462,7 +462,7 @@ class PosSettingsPageState extends State<_PosSettingsPage> {
     UserProfileBloc userProfileBloc,
     BreezUserModel user,
   ) {
-    final texts = AppLocalizations.of(context);
+    final texts = context.texts();
     final currentProfile = widget.currentProfile;
 
     return Padding(
@@ -517,7 +517,7 @@ class PosSettingsPageState extends State<_PosSettingsPage> {
   Widget _buildDefaultNote(
     BuildContext context,
   ) {
-    final texts = AppLocalizations.of(context);
+    final texts = context.texts();
     final currentProfile = widget.currentProfile;
 
     return Padding(

@@ -3,7 +3,7 @@ import 'package:breez/bloc/account/account_model.dart';
 import 'package:breez/routes/home/bottom_actions_bar.dart';
 import 'package:breez/utils/min_font_size.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:breez_translations/breez_translations_locales.dart';
 
 class AddFundsMessage extends StatelessWidget {
   final AccountModel accountModel;
@@ -15,7 +15,7 @@ class AddFundsMessage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final texts = AppLocalizations.of(context);
+    final texts = context.texts();
     final themeData = Theme.of(context);
     final minFontSize = MinFontSize(context).minFontSize;
 

@@ -6,7 +6,7 @@ import 'package:breez/services/injector.dart';
 import 'package:breez/theme_data.dart' as theme;
 import 'package:fixnum/fixnum.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:breez_translations/breez_translations_locales.dart';
 import 'package:share_plus/share_plus.dart';
 
 class WaitBroadcastDialog extends StatefulWidget {
@@ -65,7 +65,7 @@ class _WaitBroadcastDialog extends State<WaitBroadcastDialog> {
   @override
   Widget build(BuildContext context) {
     final themeData = Theme.of(context);
-    final texts = AppLocalizations.of(context);
+    final texts = context.texts();
 
     return Theme(
       data: themeData.copyWith(
@@ -99,7 +99,7 @@ class _WaitBroadcastDialog extends State<WaitBroadcastDialog> {
   }
 
   String getTitleText(BuildContext context) {
-    final texts = AppLocalizations.of(context);
+    final texts = context.texts();
     if (_error != null) {
       return texts.waiting_broadcast_dialog_dialog_title_error;
     }
@@ -107,7 +107,7 @@ class _WaitBroadcastDialog extends State<WaitBroadcastDialog> {
   }
 
   Widget getContent(BuildContext context) {
-    final texts = AppLocalizations.of(context);
+    final texts = context.texts();
     final themeData = Theme.of(context);
 
     if (_error != null) {
@@ -124,7 +124,7 @@ class _WaitBroadcastDialog extends State<WaitBroadcastDialog> {
   }
 
   Widget getWaitingContent(BuildContext context) {
-    final texts = AppLocalizations.of(context);
+    final texts = context.texts();
     final themeData = Theme.of(context);
 
     return Column(
@@ -148,7 +148,7 @@ class _WaitBroadcastDialog extends State<WaitBroadcastDialog> {
   }
 
   Widget getResultContent(BuildContext context) {
-    final texts = AppLocalizations.of(context);
+    final texts = context.texts();
     final themeData = Theme.of(context);
 
     return Column(

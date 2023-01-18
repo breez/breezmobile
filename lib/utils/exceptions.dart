@@ -1,10 +1,10 @@
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:breez_translations/generated/breez_translations.dart';
 
 String extractExceptionMessage(
   Object exception, {
   bool clearTrailingDot = false,
-  // pass AppLocalizations if you want to replace the error message with a localized one
-  AppLocalizations texts,
+  // pass BreezTranslations if you want to replace the error message with a localized one
+  BreezTranslations texts,
 }) {
   final detailRegex = r'((?<=\"detail\":\")(.*)(?=.*\"}))';
   final nsLocalizedRegex = r'((?<={NSLocalizedDescription=)(.*)(?=}))';
@@ -22,7 +22,7 @@ String extractExceptionMessage(
 }
 
 String _localizedExceptionMessage(
-  AppLocalizations texts,
+  BreezTranslations texts,
   String originalMessage,
 ) {
   switch (originalMessage.toLowerCase()) {

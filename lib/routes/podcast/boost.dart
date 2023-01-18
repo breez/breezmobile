@@ -12,7 +12,7 @@ import 'package:breez/utils/min_font_size.dart';
 import 'package:breez/widgets/flushbar.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:breez_translations/breez_translations_locales.dart';
 import 'custom_amount_dialog.dart';
 
 class BoostWidget extends StatelessWidget {
@@ -30,7 +30,7 @@ class BoostWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final themeData = Theme.of(context);
-    final texts = AppLocalizations.of(context);
+    final texts = context.texts();
 
     final userBloc = AppBlocsProvider.of<UserProfileBloc>(context);
     final accountBloc = AppBlocsProvider.of<AccountBloc>(context);
@@ -160,7 +160,7 @@ class BoostWidget extends StatelessWidget {
   }
 
   Widget _numberPanel(BuildContext context, UserProfileBloc userBloc) {
-    final texts = AppLocalizations.of(context);
+    final texts = context.texts();
     final minFontSize = 9.0 / MediaQuery.of(context).textScaleFactor;
     return Positioned(
       left: 24,
@@ -244,7 +244,7 @@ class BoostWidget extends StatelessWidget {
   }
 
   String _formatBoostAmount(BuildContext context) {
-    final texts = AppLocalizations.of(context);
+    final texts = context.texts();
     var boostValue = userModel.paymentOptions.preferredBoostValue;
     final count = pow(10, (boostValue.toString().length - 3));
     var roundedValue = boostValue / count;
@@ -296,7 +296,7 @@ class BoostWidget extends StatelessWidget {
     int amount, [
     String message,
   ]) {
-    final texts = AppLocalizations.of(context);
+    final texts = context.texts();
     if (acc.balance.toInt() <= amount) {
       showFlushbar(
         context,

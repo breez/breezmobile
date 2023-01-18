@@ -14,20 +14,34 @@ import 'package:breez/bloc/backup/backup_bloc.dart';
 import 'package:breez/bloc/blocs_provider.dart';
 import 'package:breez/bloc/connect_pay/connect_pay_bloc.dart';
 import 'package:breez/bloc/invoice/invoice_bloc.dart';
+import 'package:breez/bloc/invoice/invoice_model.dart';
 import 'package:breez/bloc/lnurl/lnurl_bloc.dart';
 import 'package:breez/bloc/lsp/lsp_bloc.dart';
 import 'package:breez/bloc/lsp/lsp_model.dart';
 import 'package:breez/bloc/reverse_swap/reverse_swap_bloc.dart';
 import 'package:breez/bloc/user_profile/breez_user_model.dart';
+import 'package:breez/bloc/user_profile/user_actions.dart';
 import 'package:breez/bloc/user_profile/user_profile_bloc.dart';
 import 'package:breez/handlers/check_channel_connection_handler.dart';
+import 'package:breez/handlers/check_version_handler.dart';
+import 'package:breez/handlers/ctp_join_session_handler.dart';
+import 'package:breez/handlers/lnurl_handler.dart';
+import 'package:breez/handlers/podcast_url_handler.dart';
+import 'package:breez/handlers/received_invoice_notification.dart';
+import 'package:breez/handlers/showPinHandler.dart';
+import 'package:breez/handlers/sync_ui_handler.dart';
+import 'package:breez/lnurl_success_action_dialog.dart';
+import 'package:breez/routes/account_required_actions.dart';
 import 'package:breez/routes/admin_login_dialog.dart';
 import 'package:breez/routes/charge/pos_invoice.dart';
+import 'package:breez/routes/connect_to_pay/connect_to_pay_page.dart';
+import 'package:breez/routes/home/account_page.dart';
 import 'package:breez/routes/home/bottom_actions_bar.dart';
 import 'package:breez/routes/home/qr_action_button.dart';
 import 'package:breez/routes/marketplace/marketplace.dart';
 import 'package:breez/routes/podcast/podcast_page.dart' as breezPodcast;
 import 'package:breez/routes/podcast/theme.dart';
+import 'package:breez/routes/unexpected_error_dialog.dart';
 import 'package:breez/services/injector.dart';
 import 'package:breez/theme_data.dart' as theme;
 import 'package:breez/widgets/close_popup.dart';
@@ -40,27 +54,13 @@ import 'package:breez/widgets/lost_card_dialog.dart' as lostCard;
 import 'package:breez/widgets/navigation_drawer.dart';
 import 'package:breez/widgets/payment_failed_report_dialog.dart';
 import 'package:breez/widgets/route.dart';
+import 'package:breez_translations/breez_translations_locales.dart';
+import 'package:breez_translations/generated/breez_translations.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:provider/provider.dart';
-
-import 'bloc/invoice/invoice_model.dart';
-import 'bloc/user_profile/user_actions.dart';
-import 'handlers/check_version_handler.dart';
-import 'handlers/ctp_join_session_handler.dart';
-import 'handlers/lnurl_handler.dart';
-import 'handlers/podcast_url_handler.dart';
-import 'handlers/received_invoice_notification.dart';
-import 'handlers/showPinHandler.dart';
-import 'handlers/sync_ui_handler.dart';
-import 'lnurl_success_action_dialog.dart';
-import 'routes/account_required_actions.dart';
-import 'routes/connect_to_pay/connect_to_pay_page.dart';
-import 'routes/home/account_page.dart';
-import 'routes/unexpected_error_dialog.dart';
 
 final GlobalKey firstPaymentItemKey = GlobalKey();
 final ScrollController scrollController = ScrollController();
@@ -181,7 +181,7 @@ class HomeState extends State<Home> with WidgetsBindingObserver {
     _initListens(context);
     final addFundsBloc = BlocProvider.of<AddFundsBloc>(context);
     final lspBloc = AppBlocsProvider.of<LSPBloc>(context);
-    final texts = AppLocalizations.of(context);
+    final texts = context.texts();
 
     return WillPopScope(
       onWillPop: willPopCallback(
@@ -253,7 +253,7 @@ class HomeState extends State<Home> with WidgetsBindingObserver {
     AccountSettings settings,
     LSPStatus lspStatus,
     List<AddFundVendorModel> vendor,
-    AppLocalizations texts,
+    BreezTranslations texts,
   ) {
     final themeData = Theme.of(context);
     final mediaSize = MediaQuery.of(context).size;
@@ -372,7 +372,7 @@ class HomeState extends State<Home> with WidgetsBindingObserver {
     AccountSettings settings,
     LSPStatus lspStatus,
     List<AddFundVendorModel> vendor,
-    AppLocalizations texts,
+    BreezTranslations texts,
   ) {
     return NavigationDrawer(
       true,
@@ -397,7 +397,7 @@ class HomeState extends State<Home> with WidgetsBindingObserver {
   List<DrawerItemConfig> _drawerConfigToFilter(
     BuildContext context,
     BreezUserModel user,
-    AppLocalizations texts,
+    BreezTranslations texts,
   ) {
     return [
       DrawerItemConfig(
@@ -412,7 +412,7 @@ class HomeState extends State<Home> with WidgetsBindingObserver {
       ),
       DrawerItemConfig(
         "",
-        texts.home_drawer_item_title_security,
+        texts.home_drawer_item_title_security_and_backup,
         "src/icon/security.png",
         onItemSelected: (_) => protectAdminRoute(context, user, "/security"),
       ),
@@ -438,7 +438,7 @@ class HomeState extends State<Home> with WidgetsBindingObserver {
     if (refundableAddresses.length == 0) {
       return [];
     }
-    final texts = AppLocalizations.of(context);
+    final texts = context.texts();
     return [
       DrawerItemConfigGroup(
         [
@@ -460,7 +460,7 @@ class HomeState extends State<Home> with WidgetsBindingObserver {
   List<DrawerItemConfigGroup> _drawerConfigFlavorItems(
     BuildContext context,
     BreezUserModel user,
-    AppLocalizations texts,
+    BreezTranslations texts,
   ) {
     switch (user.appMode) {
       case AppMode.pos:
@@ -497,7 +497,7 @@ class HomeState extends State<Home> with WidgetsBindingObserver {
   List<DrawerItemConfigGroup> _drawerConfigAppModeItems(
     BuildContext context,
     BreezUserModel user,
-    AppLocalizations texts,
+    BreezTranslations texts,
   ) {
     return [
       DrawerItemConfigGroup([_drawerItemBalance(context, user, texts)]),
@@ -511,7 +511,7 @@ class HomeState extends State<Home> with WidgetsBindingObserver {
   DrawerItemConfig _drawerItemBalance(
     BuildContext context,
     BreezUserModel user,
-    AppLocalizations texts,
+    BreezTranslations texts,
   ) {
     return DrawerItemConfig(
       "",
@@ -536,7 +536,7 @@ class HomeState extends State<Home> with WidgetsBindingObserver {
   DrawerItemConfig _drawerItemPodcast(
     BuildContext context,
     BreezUserModel user,
-    AppLocalizations texts,
+    BreezTranslations texts,
   ) {
     return DrawerItemConfig(
       "",
@@ -562,7 +562,7 @@ class HomeState extends State<Home> with WidgetsBindingObserver {
   DrawerItemConfig _drawerItemPos(
     BuildContext context,
     BreezUserModel user,
-    AppLocalizations texts,
+    BreezTranslations texts,
   ) {
     return DrawerItemConfig(
       "",
@@ -580,7 +580,7 @@ class HomeState extends State<Home> with WidgetsBindingObserver {
   DrawerItemConfig _drawerItemLightningApps(
     BuildContext context,
     BreezUserModel user,
-    AppLocalizations texts,
+    BreezTranslations texts,
   ) {
     return DrawerItemConfig(
       "",
@@ -604,7 +604,7 @@ class HomeState extends State<Home> with WidgetsBindingObserver {
   List<DrawerItemConfig> _drawerConfigAdvancedFlavorItems(
     BuildContext context,
     BreezUserModel user,
-    AppLocalizations texts,
+    BreezTranslations texts,
   ) {
     if (user.appMode == AppMode.pos) {
       return [
@@ -658,7 +658,7 @@ class HomeState extends State<Home> with WidgetsBindingObserver {
   }
 
   Widget _homePage(BuildContext context, BreezUserModel user) {
-    final texts = AppLocalizations.of(context);
+    final texts = context.texts();
     final themeData = Theme.of(context);
 
     switch (user.appMode) {
@@ -707,7 +707,7 @@ class HomeState extends State<Home> with WidgetsBindingObserver {
 
   void _registerNotificationHandlers(BuildContext context) {
     final themeData = Theme.of(context);
-    final texts = AppLocalizations.of(context);
+    final texts = context.texts();
 
     InvoiceNotificationsHandler(
       context,
@@ -783,7 +783,7 @@ class HomeState extends State<Home> with WidgetsBindingObserver {
   }
 
   void _listenBackupConflicts(BuildContext context) {
-    final texts = AppLocalizations.of(context);
+    final texts = context.texts();
     final themeData = Theme.of(context);
 
     widget.accountBloc.nodeConflictStream.listen((_) async {
@@ -809,7 +809,7 @@ class HomeState extends State<Home> with WidgetsBindingObserver {
   }
 
   void _listenWhitelistPermissionsRequest(BuildContext context) {
-    final texts = AppLocalizations.of(context);
+    final texts = context.texts();
     final themeData = Theme.of(context);
 
     widget.accountBloc.optimizationWhitelistExplainStream.listen((_) async {
@@ -828,7 +828,7 @@ class HomeState extends State<Home> with WidgetsBindingObserver {
   }
 
   void _listenPaymentResults(BuildContext context) {
-    final texts = AppLocalizations.of(context);
+    final texts = context.texts();
 
     widget.accountBloc.completedPaymentsStream.listen((fulfilledPayment) async {
       final paymentHash = fulfilledPayment.paymentHash;

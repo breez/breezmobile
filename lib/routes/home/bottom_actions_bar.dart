@@ -20,7 +20,7 @@ import 'package:breez/widgets/lsp_fee.dart';
 import 'package:breez/widgets/route.dart';
 import 'package:breez/widgets/warning_box.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:breez_translations/breez_translations_locales.dart';
 
 class BottomActionsBar extends StatelessWidget {
   final AccountModel account;
@@ -30,7 +30,7 @@ class BottomActionsBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final texts = AppLocalizations.of(context);
+    final texts = context.texts();
     AutoSizeGroup actionsGroup = AutoSizeGroup();
 
     return BottomAppBar(
@@ -63,7 +63,7 @@ class BottomActionsBar extends StatelessWidget {
   }
 
   Future _showSendOptions(BuildContext context) async {
-    final texts = AppLocalizations.of(context);
+    final texts = context.texts();
     InvoiceBloc invoiceBloc = AppBlocsProvider.of<InvoiceBloc>(context);
     AccountBloc accBloc = AppBlocsProvider.of<AccountBloc>(context);
     LNUrlBloc lnurlBloc = AppBlocsProvider.of<LNUrlBloc>(context);
@@ -253,7 +253,7 @@ class _ActionImage extends StatelessWidget {
 }
 
 Future showReceiveOptions(BuildContext parentContext, AccountModel account) {
-  final texts = AppLocalizations.of(parentContext);
+  final texts = parentContext.texts();
   AddFundsBloc addFundsBloc = BlocProvider.of<AddFundsBloc>(parentContext);
   LSPBloc lspBloc = AppBlocsProvider.of<LSPBloc>(parentContext);
 

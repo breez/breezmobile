@@ -9,7 +9,7 @@ import 'package:breez/widgets/single_button_bottom_bar.dart';
 import 'package:fixnum/fixnum.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:breez_translations/breez_translations_locales.dart';
 
 class PaymentDetailsForm extends StatefulWidget {
   final AccountModel _account;
@@ -54,7 +54,7 @@ class _PaymentDetailsFormState extends State<PaymentDetailsForm> {
     const double bottomBarHeight = 96.0;
     const double formMinHeight = 250.0;
 
-    final texts = AppLocalizations.of(context);
+    final texts = context.texts();
 
     return LayoutBuilder(builder: (context, constraints) {
       _maxHeight = max(_maxHeight, constraints.maxHeight);

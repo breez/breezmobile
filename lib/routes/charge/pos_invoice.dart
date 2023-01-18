@@ -36,7 +36,7 @@ import 'package:breez/widgets/transparent_page_route.dart';
 import 'package:breez/widgets/view_switch.dart';
 import 'package:fixnum/fixnum.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:breez_translations/breez_translations_locales.dart';
 
 class POSInvoice extends StatefulWidget {
   POSInvoice();
@@ -68,7 +68,7 @@ class POSInvoiceState extends State<POSInvoice> with TickerProviderStateMixin {
 
   @override
   void didChangeDependencies() {
-    final texts = AppLocalizations.of(context);
+    final texts = context.texts();
     final posCatalogBloc = AppBlocsProvider.of<PosCatalogBloc>(context);
 
     if (accountSubscription == null) {
@@ -316,7 +316,7 @@ class POSInvoiceState extends State<POSInvoice> with TickerProviderStateMixin {
     double totalAmount,
   ) {
     final themeData = Theme.of(context);
-    final texts = AppLocalizations.of(context);
+    final texts = context.texts();
     final amount = currentCurrency.format(totalAmount).toUpperCase();
     final currencyName = currentCurrency.shortName.toUpperCase();
 
@@ -355,7 +355,7 @@ class POSInvoiceState extends State<POSInvoice> with TickerProviderStateMixin {
 
   Widget _buildViewSwitch(BuildContext context) {
     final themeData = Theme.of(context);
-    final texts = AppLocalizations.of(context);
+    final texts = context.texts();
     return ViewSwitch(
       selected: _isKeypadView ? 0 : 1,
       tint: themeData.primaryTextTheme.button.color,
@@ -439,7 +439,7 @@ class POSInvoiceState extends State<POSInvoice> with TickerProviderStateMixin {
     BreezUserModel user,
     AccountModel account,
   ) {
-    final texts = AppLocalizations.of(context);
+    final texts = context.texts();
     final themeData = Theme.of(context);
 
     final errorName = user.name == null;
@@ -589,7 +589,7 @@ class POSInvoiceState extends State<POSInvoice> with TickerProviderStateMixin {
   }
 
   Future<bool> waitForSync(BuildContext context) {
-    final texts = AppLocalizations.of(context);
+    final texts = context.texts();
     return showDialog(
       useRootNavigator: false,
       context: context,
@@ -839,7 +839,7 @@ class POSInvoiceState extends State<POSInvoice> with TickerProviderStateMixin {
   }
 
   void _approveClear(BuildContext context, Sale currentSale) {
-    final texts = AppLocalizations.of(context);
+    final texts = context.texts();
     final themeData = Theme.of(context);
 
     if (currentSale.totalChargeSat > 0 || currentAmount > 0) {

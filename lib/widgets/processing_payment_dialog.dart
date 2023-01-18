@@ -6,7 +6,7 @@ import 'package:breez/theme_data.dart' as theme;
 import 'package:breez/widgets/loading_animated_text.dart';
 import 'package:breez/widgets/payment_request_dialog.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:breez_translations/breez_translations_locales.dart';
 import 'package:rxdart/rxdart.dart';
 
 const PAYMENT_LIST_ITEM_HEIGHT = 72.0;
@@ -242,7 +242,7 @@ class ProcessingPaymentDialogState extends State<ProcessingPaymentDialog>
   }
 
   Container _buildTitle(BuildContext context) {
-    final texts = AppLocalizations.of(context);
+    final texts = context.texts();
     final themeData = Theme.of(context);
 
     return Container(
@@ -257,7 +257,7 @@ class ProcessingPaymentDialogState extends State<ProcessingPaymentDialog>
   }
 
   Widget _buildContent(BuildContext context) {
-    final texts = AppLocalizations.of(context);
+    final texts = context.texts();
     final themeData = Theme.of(context);
     final queryData = MediaQuery.of(context);
 

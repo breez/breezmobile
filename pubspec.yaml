@@ -13,6 +13,10 @@ dependencies:
   auto_size_text: ^3.0.0
   badges: ^2.0.3
   bip39: ^1.0.6
+  breez_translations:
+    git:
+      url: https://github.com/breez/Breez-Translations.git
+      ref: 9c8cc35d9e289a9696ab15ad91734ff12739b171
   collection: ^1.16.0
   confetti: ^0.7.0
   connectivity_plus: ^2.3.9
@@ -79,7 +83,7 @@ dependencies:
   anytime:
     git:
       url: https://github.com/breez/anytime_podcast_player.git
-      ref: f1fd2401fc61e021584d57081594265abb56110a
+      ref: 4169cd904b93bda16837fe3e28d42fe26731905d
   flutter_typeahead:
     git:
       url: https://github.com/breez/flutter_typeahead.git

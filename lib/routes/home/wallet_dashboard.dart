@@ -6,7 +6,7 @@ import 'package:breez/bloc/user_profile/breez_user_model.dart';
 import 'package:breez/bloc/user_profile/currency.dart';
 import 'package:breez/theme_data.dart' as theme;
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:breez_translations/breez_translations_locales.dart';
 
 class WalletDashboard extends StatefulWidget {
   final AccountModel _accountModel;
@@ -201,7 +201,7 @@ class WalletDashboardState extends State<WalletDashboard> {
     double endHeaderFontSize,
   ) {
     final themeData = Theme.of(context);
-    final texts = AppLocalizations.of(context);
+    final texts = context.texts();
 
     return Text(
       texts.wallet_dashboard_balance_hide,

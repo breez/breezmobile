@@ -2,7 +2,7 @@ import 'package:another_flushbar/flushbar.dart';
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:breez/theme_data.dart' as theme;
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:breez_translations/breez_translations_locales.dart';
 
 class LostCardDialog extends StatelessWidget {
   const LostCardDialog();
@@ -11,7 +11,7 @@ class LostCardDialog extends StatelessWidget {
   Widget build(BuildContext context) {
     final themeData = Theme.of(context);
     final queryData = MediaQuery.of(context);
-    final texts = AppLocalizations.of(context);
+    final texts = context.texts();
 
     Flushbar _lostCardFlush;
     _lostCardFlush = Flushbar(

@@ -10,7 +10,7 @@ import 'package:breez/widgets/warning_box.dart';
 import 'package:fixnum/fixnum.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:breez_translations/breez_translations_locales.dart';
 
 import '../sync_progress_dialog.dart';
 import 'peers_connection.dart';
@@ -77,7 +77,7 @@ class PayeeSessionWidget extends StatelessWidget {
   }
 
   void _onAction(BuildContext context, String action) {
-    final texts = AppLocalizations.of(context);
+    final texts = context.texts();
     if (action == texts.connect_to_pay_payee_action_reject) {
       _currentSession.rejectPaymentSink.add(null);
     } else {
@@ -89,7 +89,7 @@ class PayeeSessionWidget extends StatelessWidget {
     BuildContext context,
     PaymentSessionState sessionState,
   ) {
-    final texts = AppLocalizations.of(context);
+    final texts = context.texts();
     if (_account.synced) {
       final payerData = sessionState.payerData;
       final payeeData = sessionState.payeeData;
@@ -107,7 +107,7 @@ class PayeeSessionWidget extends StatelessWidget {
     BuildContext context,
     PaymentSessionState sessionState,
   ) {
-    final texts = AppLocalizations.of(context);
+    final texts = context.texts();
     final amount = sessionState.payerData.amount;
     if (amount != null && _account.maxAllowedToReceive < amount) {
       return [
@@ -123,7 +123,7 @@ class PayeeSessionWidget extends StatelessWidget {
     LSPStatus lspStatus,
     int amount,
   ) {
-    final texts = AppLocalizations.of(context);
+    final texts = context.texts();
     final lsp = lspStatus.currentLSP;
     num feeSats = 0;
     if (amount > acc.maxInboundLiquidity.toInt()) {
@@ -153,7 +153,7 @@ class _PayeeInstructions extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final texts = AppLocalizations.of(context);
+    final texts = context.texts();
     final themeData = Theme.of(context);
     final defaultTextStyle = DefaultTextStyle.of(context);
 

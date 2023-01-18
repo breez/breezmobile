@@ -2,7 +2,7 @@ import 'package:auto_size_text/auto_size_text.dart';
 import 'package:breez/bloc/pos_catalog/model.dart';
 import 'package:breez/theme_data.dart' as theme;
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:breez_translations/breez_translations_locales.dart';
 
 class PosInvoiceNumPad extends StatelessWidget {
   final Sale currentSale;
@@ -112,7 +112,7 @@ class PosInvoiceNumPad extends StatelessWidget {
   }
 
   Widget _clearButton(BuildContext context) {
-    final texts = AppLocalizations.of(context);
+    final texts = context.texts();
     final themeData = Theme.of(context);
     return Container(
       width: width / 3.0,
@@ -141,7 +141,7 @@ class PosInvoiceNumPad extends StatelessWidget {
   }
 
   Widget _additionButton(BuildContext context) {
-    final texts = AppLocalizations.of(context);
+    final texts = context.texts();
     final themeData = Theme.of(context);
     return Container(
       width: width / 3.0,

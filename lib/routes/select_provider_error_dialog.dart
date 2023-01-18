@@ -2,7 +2,7 @@ import 'package:breez/theme_data.dart' as theme;
 import 'package:breez/widgets/error_dialog.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:breez_translations/breez_translations_locales.dart';
 
 void showProviderErrorDialog(
   BuildContext context,
@@ -10,7 +10,7 @@ void showProviderErrorDialog(
   Function() onSelect,
 ) {
   final themeData = Theme.of(context);
-  final texts = AppLocalizations.of(context);
+  final texts = context.texts();
 
   promptError(
     context,

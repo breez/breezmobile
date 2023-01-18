@@ -8,7 +8,7 @@ import 'package:breez/services/injector.dart';
 import 'package:breez/theme_data.dart' as theme;
 import 'package:breez/widgets/flushbar.dart';
 import 'package:flutter/widgets.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:breez_translations/breez_translations_locales.dart';
 
 class CheckChannelConnection {
   static final _instance = CheckChannelConnection._internal();
@@ -75,7 +75,7 @@ class CheckChannelConnection {
     if (_flushbar != null) {
       return;
     }        
-    final texts = AppLocalizations.of(context);
+    final texts = context.texts();
     _flushbar = showFlushbar(
       context,
       buttonText: texts.handler_channel_connection_close,

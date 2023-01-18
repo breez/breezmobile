@@ -1,7 +1,7 @@
 import 'package:breez/theme_data.dart' as theme;
 import 'package:another_flushbar/flushbar.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:breez_translations/breez_translations_locales.dart';
 
 Flushbar showFlushbar(
   BuildContext context, {
@@ -17,7 +17,7 @@ Flushbar showFlushbar(
   Duration duration = const Duration(seconds: 8),
 }) {
   final themeData = Theme.of(context);
-  final texts = AppLocalizations.of(context);
+  final texts = context.texts();
 
   Flushbar flush;
   flush = Flushbar(

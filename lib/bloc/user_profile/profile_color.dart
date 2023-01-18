@@ -1,13 +1,13 @@
+import 'package:breez_translations/generated/breez_translations.dart';
+import 'package:breez_translations/generated/breez_translations_de.dart';
+import 'package:breez_translations/generated/breez_translations_en.dart';
+import 'package:breez_translations/generated/breez_translations_es.dart';
+import 'package:breez_translations/generated/breez_translations_fi.dart';
+import 'package:breez_translations/generated/breez_translations_fr.dart';
+import 'package:breez_translations/generated/breez_translations_it.dart';
+import 'package:breez_translations/generated/breez_translations_pt.dart';
+import 'package:breez_translations/generated/breez_translations_sv.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations_de.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations_en.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations_es.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations_fi.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations_fr.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations_it.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations_pt.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations_sv.dart';
 
 enum ProfileColor {
   SALMON,
@@ -37,7 +37,7 @@ enum ProfileColor {
   CORAL,
 }
 
-ProfileColor profileColorFromName(String name, AppLocalizations texts) {
+ProfileColor profileColorFromName(String name, BreezTranslations texts) {
   final key = name.toLowerCase();
   final localizedNames = _colorsFromName[texts.locale];
 
@@ -56,7 +56,7 @@ ProfileColor profileColorFromName(String name, AppLocalizations texts) {
 }
 
 extension ProfileColorExtension on ProfileColor {
-  String name(AppLocalizations texts) {
+  String name(BreezTranslations texts) {
     switch (this) {
       case ProfileColor.SALMON:
         return texts.app_color_salmon;
@@ -172,17 +172,17 @@ extension ProfileColorExtension on ProfileColor {
 }
 
 Map<String, Map<String, ProfileColor>> _colorsFromName = {
-  "de": _buildColorsFromName(AppLocalizationsDe()),
-  "en": _buildColorsFromName(AppLocalizationsEn()),
-  "es": _buildColorsFromName(AppLocalizationsEs()),
-  "fi": _buildColorsFromName(AppLocalizationsFi()),
-  "fr": _buildColorsFromName(AppLocalizationsFr()),
-  "it": _buildColorsFromName(AppLocalizationsIt()),
-  "pt": _buildColorsFromName(AppLocalizationsPt()),
-  "sv": _buildColorsFromName(AppLocalizationsSv()),
+  "de": _buildColorsFromName(BreezTranslationsDe()),
+  "en": _buildColorsFromName(BreezTranslationsEn()),
+  "es": _buildColorsFromName(BreezTranslationsEs()),
+  "fi": _buildColorsFromName(BreezTranslationsFi()),
+  "fr": _buildColorsFromName(BreezTranslationsFr()),
+  "it": _buildColorsFromName(BreezTranslationsIt()),
+  "pt": _buildColorsFromName(BreezTranslationsPt()),
+  "sv": _buildColorsFromName(BreezTranslationsSv()),
 };
 
-Map<String, ProfileColor> _buildColorsFromName(AppLocalizations local) => {
+Map<String, ProfileColor> _buildColorsFromName(BreezTranslations local) => {
       local.app_color_salmon.toLowerCase(): ProfileColor.SALMON,
       local.app_color_blue.toLowerCase(): ProfileColor.BLUE,
       local.app_color_turquoise.toLowerCase(): ProfileColor.TURQUOISE,

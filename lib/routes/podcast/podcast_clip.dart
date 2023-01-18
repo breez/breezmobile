@@ -1,22 +1,23 @@
 import 'dart:typed_data';
+
 import 'package:anytime/bloc/podcast/audio_bloc.dart';
 import 'package:anytime/entities/episode.dart';
 import 'package:anytime/services/audio/audio_player_service.dart';
 import 'package:auto_size_text/auto_size_text.dart';
+import 'package:breez/bloc/blocs_provider.dart';
+import 'package:breez/bloc/podcast_clip/podcast_clip_bloc.dart';
+import 'package:breez/bloc/podcast_clip/podcast_clip_details_model.dart';
+import 'package:breez/logger.dart';
+import 'package:breez/theme_data.dart' as breezTheme;
+import 'package:breez/utils/min_font_size.dart';
+import 'package:breez/widgets/flushbar.dart';
+import 'package:breez/widgets/network_image_builder.dart';
+import 'package:breez_translations/breez_translations_locales.dart';
+import 'package:breez_translations/generated/breez_translations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:provider/provider.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:breez/theme_data.dart' as breezTheme;
 import 'package:screenshot/screenshot.dart';
-import 'package:breez/logger.dart';
-import '../../bloc/blocs_provider.dart';
-import '../../bloc/podcast_clip/podcast_clip_bloc.dart';
-import '../../bloc/podcast_clip/podcast_clip_details_model.dart';
-import '../../theme_data.dart';
-import '../../utils/min_font_size.dart';
-import '../../widgets/flushbar.dart';
-import '../../widgets/network_image_builder.dart';
 
 class PodcastClipWidget extends StatelessWidget {
   PodcastClipWidget({Key key}) : super(key: key);
@@ -140,7 +141,7 @@ _showClipsBottomSheet(
                                     Navigator.of(context).pop();
                                   },
                                   child: Text(
-                                    AppLocalizations.of(context)
+                                    BreezTranslations.of(context)
                                         .podcast_clips_cancel_button,
                                     style: Theme.of(context)
                                         .primaryTextTheme
@@ -189,7 +190,7 @@ _showClipsBottomSheet(
                                                 log.warning(e);
                                                 showFlushbar(
                                                   context,
-                                                  message: AppLocalizations.of(context)
+                                                  message: BreezTranslations.of(context)
                                                       .podcast_clips_error,
                                                 );
                                               }
@@ -198,7 +199,7 @@ _showClipsBottomSheet(
                                         );
                                       },
                                       child: Text(
-                                          AppLocalizations.of(context)
+                                          BreezTranslations.of(context)
                                               .podcast_clips_clip_button,
                                           style: Theme.of(context)
                                               .primaryTextTheme
@@ -256,7 +257,7 @@ Widget _numberPanel(BuildContext context, int durationInseconds) {
             ),
           ),
           AutoSizeText(
-            AppLocalizations.of(context).podcast_clips_seconds,
+            BreezTranslations.of(context).podcast_clips_seconds,
             textAlign: TextAlign.center,
             style: Theme.of(context).primaryTextTheme.headline3.copyWith(
                   fontSize: 16,
@@ -316,8 +317,8 @@ _imageWidget({BuildContext context, Episode episodeDetails, Image image}) {
             begin: Alignment.topCenter,
             end: Alignment.bottomCenter,
             colors: [
-          BreezColors.blue[500],
-          BreezColors.blue[500].withOpacity(0.5)
+          breezTheme.BreezColors.blue[500],
+          breezTheme.BreezColors.blue[500].withOpacity(0.5)
         ])),
     padding: EdgeInsets.only(left: 20, right: 20, top: 20, bottom: 28),
     child: Column(
@@ -425,7 +426,7 @@ class _CustomClipsDurationDialogState extends State<CustomClipsDurationDialog> {
     final theme = Theme.of(context);
     return AlertDialog(
       title: Text(
-        AppLocalizations.of(context).podcast_clips_dialog_title,
+        BreezTranslations.of(context).podcast_clips_dialog_title,
         style: theme.dialogTheme.titleTextStyle.copyWith(
           fontSize: 16,
         ),
@@ -454,7 +455,7 @@ class _CustomClipsDurationDialogState extends State<CustomClipsDurationDialog> {
   }
 
   List<Widget> _buildActions(BuildContext context) {
-    final texts = AppLocalizations.of(context);
+    final texts = context.texts();
     final themeData = Theme.of(context);
     final podcastClipBloc = AppBlocsProvider.of<PodcastClipBloc>(context);
 
@@ -480,7 +481,7 @@ class _CustomClipsDurationDialogState extends State<CustomClipsDurationDialog> {
             }
           },
           child: Text(
-            AppLocalizations.of(context).podcast_clips_dialog_done,
+            BreezTranslations.of(context).podcast_clips_dialog_done,
             style: themeData.primaryTextTheme.button,
           ),
         ),

@@ -5,7 +5,7 @@ import 'package:breez/theme_data.dart' as theme;
 import 'package:breez/widgets/back_button.dart' as backBtn;
 import 'package:breez/widgets/single_button_bottom_bar.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:breez_translations/breez_translations_locales.dart';
 
 class SetAdminPasswordPage extends StatefulWidget {
   final String submitAction;
@@ -39,7 +39,7 @@ class _SetAdminPasswordState extends State<SetAdminPasswordPage> {
 
   @override
   Widget build(BuildContext context) {
-    final texts = AppLocalizations.of(context);
+    final texts = context.texts();
     final themeData = Theme.of(context);
     final userProfileBloc = AppBlocsProvider.of<UserProfileBloc>(context);
 

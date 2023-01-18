@@ -9,7 +9,7 @@ import 'package:breez/theme_data.dart' as theme;
 import 'package:breez/utils/min_font_size.dart';
 import 'package:breez/widgets/breez_avatar.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:breez_translations/breez_translations_locales.dart';
 import 'package:image/image.dart' as DartImage;
 import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
@@ -51,7 +51,7 @@ Widget breezAvatarDialog(BuildContext context, UserProfileBloc userBloc) {
       builder: (context, setState) {
         final themeData = Theme.of(context);
         final queryData = MediaQuery.of(context);
-        final texts = AppLocalizations.of(context);
+        final texts = context.texts();
         final navigator = Navigator.of(context);
         final minFontSize = MinFontSize(context);
 

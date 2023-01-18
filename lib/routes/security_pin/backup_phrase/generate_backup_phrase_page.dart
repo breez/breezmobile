@@ -6,7 +6,7 @@ import 'package:breez/widgets/back_button.dart' as backBtn;
 import 'package:breez/widgets/route.dart';
 import 'package:breez/widgets/single_button_bottom_bar.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:breez_translations/breez_translations_locales.dart';
 import 'verify_backup_phrase_page.dart';
 
 class GenerateBackupPhrasePage extends StatefulWidget {
@@ -34,7 +34,7 @@ class GenerateBackupPhrasePageState extends State<GenerateBackupPhrasePage> {
   @override
   Widget build(BuildContext context) {
     final themeData = Theme.of(context);
-    final texts = AppLocalizations.of(context);
+    final texts = context.texts();
     return WillPopScope(
       onWillPop: () => _onWillPop(context),
       child: Scaffold(
@@ -64,7 +64,7 @@ class GenerateBackupPhrasePageState extends State<GenerateBackupPhrasePage> {
     int index,
     String mnemonic,
   ) {
-    final texts = AppLocalizations.of(context);
+    final texts = context.texts();
     return Container(
       height: 48,
       width: 150,
@@ -131,7 +131,7 @@ class GenerateBackupPhrasePageState extends State<GenerateBackupPhrasePage> {
   }
 
   Widget _buildNextBtn(BuildContext context) {
-    final texts = AppLocalizations.of(context);
+    final texts = context.texts();
     return SingleButtonBottomBar(
       text: texts.backup_phrase_warning_action_next,
       onPressed: () {

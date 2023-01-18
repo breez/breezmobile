@@ -1,6 +1,6 @@
 import 'dart:io' show Platform;
 
-import 'package:breez/utils/locale.dart';
+import 'package:breez_translations/breez_translations_locales.dart';
 import "package:intl/intl.dart";
 import 'package:timeago/timeago.dart' as timeago;
 

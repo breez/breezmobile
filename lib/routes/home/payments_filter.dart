@@ -8,7 +8,7 @@ import 'package:breez/widgets/flushbar.dart';
 import 'package:breez/widgets/loader.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:breez_translations/breez_translations_locales.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:share_plus/share_plus.dart';
 
@@ -133,7 +133,7 @@ class PaymentsFilterState extends State<PaymentsFilter> {
 
   @override
   Widget build(BuildContext context) {
-    final texts = AppLocalizations.of(context);
+    final texts = context.texts();
 
     if (_filter == null) {
       _filterMap = {
@@ -162,7 +162,7 @@ class PaymentsFilterState extends State<PaymentsFilter> {
   }
 
   Padding _buildCalendarButton(BuildContext context) {
-    final texts = AppLocalizations.of(context);
+    final texts = context.texts();
     final themeData = Theme.of(context);
 
     return Padding(
@@ -199,7 +199,7 @@ class PaymentsFilterState extends State<PaymentsFilter> {
   }
 
   Theme _buildFilterDropdown(BuildContext context) {
-    final texts = AppLocalizations.of(context);
+    final texts = context.texts();
     final themeData = Theme.of(context);
 
     return Theme(
@@ -257,13 +257,13 @@ class PaymentsFilterState extends State<PaymentsFilter> {
         return entry.key;
       }
     }
-    final texts = AppLocalizations.of(context);
+    final texts = context.texts();
     return texts.payments_filter_option_all;
   }
 
   Padding _buildExportButton(BuildContext context) {
     final themeData = Theme.of(context);
-    final texts = AppLocalizations.of(context);
+    final texts = context.texts();
 
     if (widget._paymentsModel.paymentsList.isNotEmpty) {
       return Padding(
@@ -310,7 +310,7 @@ class PaymentsFilterState extends State<PaymentsFilter> {
   }
 
   Future _exportPayments(BuildContext context) async {
-    final texts = AppLocalizations.of(context);
+    final texts = context.texts();
     var action = ExportPayments();
     widget._accountBloc.userActionsSink.add(action);
     Navigator.of(context).push(createLoaderRoute(context));

@@ -1,10 +1,11 @@
+import 'package:anytime/l10n/L.dart';
 import 'package:app_settings/app_settings.dart';
 import 'package:breez/bloc/invoice/invoice_bloc.dart';
 import 'package:breez/l10n/locales.dart';
 import 'package:breez/theme_data.dart' as theme;
 import 'package:breez/widgets/back_button.dart' as backBtn;
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:breez_translations/breez_translations_locales.dart';
 
 class BarcodeScannerPlaceholder extends StatelessWidget {
   final InvoiceBloc invoiceBloc;
@@ -18,7 +19,7 @@ class BarcodeScannerPlaceholder extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final themeData = Theme.of(context);
-    final texts = AppLocalizations.of(context);
+    final texts = context.texts();
 
     return MaterialApp(
       theme: themeData.copyWith(
@@ -26,8 +27,11 @@ class BarcodeScannerPlaceholder extends StatelessWidget {
         primaryColor: Colors.yellow,
         canvasColor: Colors.grey,
       ),
-      localizationsDelegates: localizationsDelegates(),
-      supportedLocales: AppLocalizations.supportedLocales,
+      localizationsDelegates: localizationsDelegates().toList()..addAll([
+        const LocalisationsDelegate(),
+        const AnytimeFallbackLocalizationDelegate(),
+      ]),
+      supportedLocales: supportedLocales(),
       home: Scaffold(
         appBar: AppBar(
           iconTheme: themeData.appBarTheme.iconTheme,

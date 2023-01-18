@@ -19,7 +19,7 @@ import 'package:breez/widgets/restore_dialog.dart';
 import 'package:breez/widgets/route.dart';
 import 'package:crypto/crypto.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:breez_translations/breez_translations_locales.dart';
 import 'package:hex/hex.dart';
 import 'package:rxdart/rxdart.dart';
 
@@ -116,7 +116,7 @@ class InitialWalkthroughPageState extends State<InitialWalkthroughPage>
   }
 
   Future<void> _listenBackupContext(_BackupContext backupContext) async {
-    final texts = AppLocalizations.of(context);
+    final texts = context.texts();
     final options = backupContext.snapshots;
     if (options.length == 0) {
       popToWalkthrough(
@@ -182,7 +182,7 @@ class InitialWalkthroughPageState extends State<InitialWalkthroughPage>
     log.info('$logKey: snapshotInfo with timestamp: ${snapshot?.modifiedTime}');
     log.info('$logKey: using key with length: ${key?.length}');
 
-    final texts = AppLocalizations.of(context);
+    final texts = context.texts();
     widget._backupBloc.restoreRequestSink.add(RestoreRequest(
       snapshot,
       BreezLibBackupKey(key: key),
@@ -198,7 +198,7 @@ class InitialWalkthroughPageState extends State<InitialWalkthroughPage>
   }
 
   Future _handleSignInException(SignInFailedException e) async {
-    final texts = AppLocalizations.of(context);
+    final texts = context.texts();
     final themeData = Theme.of(context);
     if (e.provider == BackupSettings.icloudBackupProvider()) {
       await promptError(
@@ -227,7 +227,7 @@ class InitialWalkthroughPageState extends State<InitialWalkthroughPage>
   }
 
   Future _createBackupPhrase(String entropy) async {
-    final texts = AppLocalizations.of(context);
+    final texts = context.texts();
     final themeData = Theme.of(context);
     final saveBackupKeyAction = SaveBackupKey(entropy);
     widget._backupBloc.backupActionsSink.add(saveBackupKeyAction);
@@ -292,7 +292,7 @@ class InitialWalkthroughPageState extends State<InitialWalkthroughPage>
 
   @override
   Widget build(BuildContext context) {
-    final texts = AppLocalizations.of(context);
+    final texts = context.texts();
     final themeData = Theme.of(context);
 
     return Scaffold(
@@ -387,7 +387,7 @@ class InitialWalkthroughPageState extends State<InitialWalkthroughPage>
   }
 
   void _letsBreez(BuildContext context) {
-    final texts = AppLocalizations.of(context);
+    final texts = context.texts();
     final themeData = Theme.of(context);
 
     showDialog(

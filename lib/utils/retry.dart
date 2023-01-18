@@ -1,6 +1,6 @@
 import "dart:async";
 
-import 'package:breez/utils/locale.dart';
+import 'package:breez_translations/breez_translations_locales.dart';
 
 Future<dynamic> retry(
   Future<dynamic> f(), {

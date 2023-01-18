@@ -6,7 +6,7 @@ import 'package:breez/bloc/pos_catalog/model.dart';
 import 'package:breez/theme_data.dart';
 import 'package:breez/widgets/back_button.dart' as backBtn;
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:breez_translations/breez_translations_locales.dart';
 import 'package:flutter_svg/svg.dart';
 
 import '../../../utils/min_font_size.dart';
@@ -46,7 +46,7 @@ class ItemAvatarPickerState extends State<ItemAvatarPicker> {
   @override
   Widget build(BuildContext context) {
     final themeData = Theme.of(context);
-    final texts = AppLocalizations.of(context);
+    final texts = context.texts();
 
     return Scaffold(
       appBar: AppBar(
@@ -80,7 +80,7 @@ class ItemAvatarPickerState extends State<ItemAvatarPicker> {
 
   Widget _buildItemAvatar(BuildContext context) {
     final themeData = Theme.of(context);
-    final texts = AppLocalizations.of(context);
+    final texts = context.texts();
 
     return Badge(
       showBadge: _selectedImage != "",
@@ -165,7 +165,7 @@ class ItemAvatarPickerState extends State<ItemAvatarPicker> {
   }
 
   Widget _buildSearchBar(BuildContext context) {
-    final texts = AppLocalizations.of(context);
+    final texts = context.texts();
 
     return Row(
       children: <Widget>[

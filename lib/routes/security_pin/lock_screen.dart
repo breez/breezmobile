@@ -3,7 +3,7 @@ import 'package:breez/widgets/back_button.dart' as backBtn;
 import 'package:breez/widgets/close_popup.dart';
 import 'package:breez/widgets/pin_code_widget.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:breez_translations/breez_translations_locales.dart';
 
 const PIN_CODE_LENGTH = 6;
 
@@ -25,7 +25,7 @@ class AppLockScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final texts = AppLocalizations.of(context);
+    final texts = context.texts();
     final themeData = Theme.of(context);
     return WillPopScope(
       onWillPop: willPopCallback(

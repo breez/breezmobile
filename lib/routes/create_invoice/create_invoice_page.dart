@@ -14,6 +14,8 @@ import 'package:breez/bloc/lsp/lsp_bloc.dart';
 import 'package:breez/bloc/lsp/lsp_model.dart';
 import 'package:breez/logger.dart';
 import 'package:breez/routes/charge/successful_payment.dart';
+import 'package:breez/routes/create_invoice/lnurl_withdraw_dialog.dart';
+import 'package:breez/routes/create_invoice/qr_code_dialog.dart';
 import 'package:breez/routes/podcast/theme.dart';
 import 'package:breez/services/injector.dart';
 import 'package:breez/theme_data.dart' as theme;
@@ -28,13 +30,11 @@ import 'package:breez/widgets/single_button_bottom_bar.dart';
 import 'package:breez/widgets/static_loader.dart';
 import 'package:breez/widgets/transparent_page_route.dart';
 import 'package:breez/widgets/warning_box.dart';
+import 'package:breez_translations/breez_translations_locales.dart';
+import 'package:breez_translations/generated/breez_translations.dart';
 import 'package:fixnum/fixnum.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-
-import 'lnurl_withdraw_dialog.dart';
-import 'qr_code_dialog.dart';
 
 class CreateInvoicePage extends StatefulWidget {
   final WithdrawFetchResponse lnurlWithdraw;
@@ -64,7 +64,7 @@ class CreateInvoicePageState extends State<CreateInvoicePage> {
 
   @override
   void didChangeDependencies() {
-    final texts = AppLocalizations.of(context);
+    final texts = context.texts();
     final invoiceBloc = AppBlocsProvider.of<InvoiceBloc>(context);
     final accBloc = AppBlocsProvider.of<AccountBloc>(context);
 
@@ -106,7 +106,7 @@ class CreateInvoicePageState extends State<CreateInvoicePage> {
 
   @override
   Widget build(BuildContext context) {
-    final texts = AppLocalizations.of(context);
+    final texts = context.texts();
     final themeData = Theme.of(context);
 
     final accountBloc = AppBlocsProvider.of<AccountBloc>(context);
@@ -293,7 +293,7 @@ class CreateInvoicePageState extends State<CreateInvoicePage> {
   }
 
   String _availabilityMessage(
-    AppLocalizations texts,
+    BreezTranslations texts,
     AsyncSnapshot<AccountModel> accSnapshot,
   ) {
     if (accSnapshot.hasError) {
@@ -315,7 +315,7 @@ class CreateInvoicePageState extends State<CreateInvoicePage> {
     LSPStatus lspStatus,
   ) {
     final themeData = Theme.of(context);
-    final texts = AppLocalizations.of(context);
+    final texts = context.texts();
 
     LSPInfo lsp = lspStatus?.currentLSP;
     Widget warning = lsp == null
@@ -367,7 +367,7 @@ class CreateInvoicePageState extends State<CreateInvoicePage> {
   }
 
   String formatFeeMessage(
-    AppLocalizations texts,
+    BreezTranslations texts,
     AccountModel accountModel,
     LSPInfo lspInfo,
   ) {
@@ -408,7 +408,7 @@ class CreateInvoicePageState extends State<CreateInvoicePage> {
   }
 
   Future _scanBarcode(BuildContext context, AccountModel account) async {
-    final texts = AppLocalizations.of(context);
+    final texts = context.texts();
     final navigator = Navigator.of(context);
     final themeData = Theme.of(context);
 
@@ -447,7 +447,7 @@ class CreateInvoicePageState extends State<CreateInvoicePage> {
     AccountModel account,
     String lnurl,
   ) async {
-    final texts = AppLocalizations.of(context);
+    final texts = context.texts();
     final lnurlBloc = AppBlocsProvider.of<LNUrlBloc>(context);
     Fetch fetchAction = Fetch(lnurl);
     lnurlBloc.actionsSink.add(fetchAction);

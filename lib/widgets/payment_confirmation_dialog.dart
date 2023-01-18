@@ -5,7 +5,7 @@ import 'package:breez/bloc/account/account_model.dart';
 import 'package:breez/bloc/invoice/invoice_model.dart';
 import 'package:fixnum/fixnum.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:breez_translations/breez_translations_locales.dart';
 
 class PaymentConfirmationDialog extends StatelessWidget {
   final AccountBloc accountBloc;
@@ -51,7 +51,7 @@ class PaymentConfirmationDialog extends StatelessWidget {
 
   Container _buildTitle(BuildContext context) {
     final themeData = Theme.of(context);
-    final texts = AppLocalizations.of(context);
+    final texts = context.texts();
 
     return Container(
       height: 64.0,
@@ -67,7 +67,7 @@ class PaymentConfirmationDialog extends StatelessWidget {
   Widget _buildContent(BuildContext context) {
     final themeData = Theme.of(context);
     final queryData = MediaQuery.of(context);
-    final texts = AppLocalizations.of(context);
+    final texts = context.texts();
 
     return Container(
       child: Padding(
@@ -111,7 +111,7 @@ class PaymentConfirmationDialog extends StatelessWidget {
 
   Container _buildActions(BuildContext context) {
     final themeData = Theme.of(context);
-    final texts = AppLocalizations.of(context);
+    final texts = context.texts();
 
     List<Widget> children = [
       TextButton(

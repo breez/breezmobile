@@ -11,7 +11,7 @@ import 'package:breez/widgets/back_button.dart' as backBtn;
 import 'package:breez/widgets/error_dialog.dart';
 import 'package:breez/widgets/single_button_bottom_bar.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:breez_translations/breez_translations_locales.dart';
 
 class VerifyBackupPhrasePage extends StatefulWidget {
   final String _mnemonics;
@@ -34,7 +34,7 @@ class VerifyBackupPhrasePageState extends State<VerifyBackupPhrasePage> {
   Widget build(BuildContext context) {
     final themeData = Theme.of(context);
     final query = MediaQuery.of(context);
-    final texts = AppLocalizations.of(context);
+    final texts = context.texts();
     final backupBloc = AppBlocsProvider.of<BackupBloc>(context);
     return Scaffold(
       appBar: AppBar(
@@ -90,7 +90,7 @@ class VerifyBackupPhrasePageState extends State<VerifyBackupPhrasePage> {
     BackupSettings backupSettings,
     BackupBloc backupBloc,
   ) {
-    final texts = AppLocalizations.of(context);
+    final texts = context.texts();
     return SingleButtonBottomBar(
       text: texts.backup_phrase_warning_action_backup,
       onPressed: () {
@@ -120,7 +120,7 @@ class VerifyBackupPhrasePageState extends State<VerifyBackupPhrasePage> {
   }
 
   Padding _buildInstructions(BuildContext context) {
-    final texts = AppLocalizations.of(context);
+    final texts = context.texts();
     return Padding(
       padding: const EdgeInsets.only(
         left: 72,
@@ -142,7 +142,7 @@ class VerifyBackupPhrasePageState extends State<VerifyBackupPhrasePage> {
 
   List<Widget> _buildVerificationFormContent(BuildContext context) {
     final themeData = Theme.of(context);
-    final texts = AppLocalizations.of(context);
+    final texts = context.texts();
     List<Widget> selectedWordList = List.generate(
       _randomlySelectedIndexes.length,
       (index) {
@@ -190,7 +190,7 @@ class VerifyBackupPhrasePageState extends State<VerifyBackupPhrasePage> {
     BackupBloc backupBloc,
   ) async {
     final themeData = Theme.of(context);
-    final texts = AppLocalizations.of(context);
+    final texts = context.texts();
     final saveBackupKey = SaveBackupKey(
       bip39.mnemonicToEntropy(widget._mnemonics),
     );
@@ -233,7 +233,7 @@ class VerifyBackupPhrasePageState extends State<VerifyBackupPhrasePage> {
     BackupBloc backupBloc,
   ) async {
     final themeData = Theme.of(context);
-    final texts = AppLocalizations.of(context);
+    final texts = context.texts();
     var action = UpdateBackupSettings(backupSettings);
     backupBloc.backupActionsSink.add(action);
     Navigator.popUntil(context, ModalRoute.withName("/security"));

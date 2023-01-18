@@ -4,7 +4,7 @@ import 'package:breez/bloc/account/account_model.dart';
 import 'package:breez/routes/podcast/theme.dart';
 import 'package:breez/widgets/sync_loader.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:breez_translations/breez_translations_locales.dart';
 
 class SyncUIHandler {
   final AccountBloc _accountBloc;
@@ -43,7 +43,7 @@ class SyncUIHandler {
 }
 
 ModalRoute _createSyncRoute(BuildContext context, AccountBloc accBloc) {
-  final texts = AppLocalizations.of(context);
+  final texts = context.texts();
   return SyncUIRoute((context) {
     return StreamBuilder<AccountModel>(
       stream: accBloc.accountStream,

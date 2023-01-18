@@ -3,7 +3,7 @@ import 'dart:ui';
 
 import 'package:breez/bloc/user_profile/profile_animal.dart';
 import 'package:breez/bloc/user_profile/profile_color.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:breez_translations/generated/breez_translations.dart';
 
 class DefaultProfile {
   final String color;
@@ -32,7 +32,7 @@ class DefaultProfile {
   }
 }
 
-DefaultProfile generateDefaultProfile(AppLocalizations texts) {
+DefaultProfile generateDefaultProfile(BreezTranslations texts) {
   final random = Random();
 
   final colors = ProfileColor.values;

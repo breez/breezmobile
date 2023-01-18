@@ -6,7 +6,7 @@ import 'package:breez/widgets/back_button.dart' as backBtn;
 import 'package:breez/widgets/warning_box.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:breez_translations/breez_translations_locales.dart';
 
 class PaymentOptionsPage extends StatefulWidget {
   const PaymentOptionsPage({
@@ -67,7 +67,7 @@ class _PaymentOptionsPageState extends State<PaymentOptionsPage> {
 
   @override
   Widget build(BuildContext context) {
-    final texts = AppLocalizations.of(context);
+    final texts = context.texts();
     final themeData = Theme.of(context);
 
     return Scaffold(
@@ -105,7 +105,7 @@ class _PaymentOptionsPageState extends State<PaymentOptionsPage> {
   }
 
   Widget _headerFee(BuildContext context) {
-    final texts = AppLocalizations.of(context);
+    final texts = context.texts();
     final themeData = Theme.of(context);
 
     return Row(
@@ -126,7 +126,7 @@ class _PaymentOptionsPageState extends State<PaymentOptionsPage> {
   }
 
   Widget _overrideFee(BuildContext context) {
-    final texts = AppLocalizations.of(context);
+    final texts = context.texts();
     final themeData = Theme.of(context);
 
     return CheckboxListTile(
@@ -145,7 +145,7 @@ class _PaymentOptionsPageState extends State<PaymentOptionsPage> {
   }
 
   Widget _baseFeeWidget(BuildContext context) {
-    final texts = AppLocalizations.of(context);
+    final texts = context.texts();
 
     return Row(
       children: [
@@ -188,7 +188,7 @@ class _PaymentOptionsPageState extends State<PaymentOptionsPage> {
   }
 
   Widget _proportionalFeeWidget(BuildContext context) {
-    final texts = AppLocalizations.of(context);
+    final texts = context.texts();
 
     return Row(
       children: [
@@ -231,7 +231,7 @@ class _PaymentOptionsPageState extends State<PaymentOptionsPage> {
   }
 
   Widget _actionsFee(BuildContext context) {
-    final texts = AppLocalizations.of(context);
+    final texts = context.texts();
 
     return Padding(
       padding: const EdgeInsets.fromLTRB(16.0, 8.0, 16.0, 8.0),
@@ -274,7 +274,7 @@ class _PaymentOptionsPageState extends State<PaymentOptionsPage> {
   }
 
   Widget _saveDialog(BuildContext context) {
-    final texts = AppLocalizations.of(context);
+    final texts = context.texts();
     final themeData = Theme.of(context);
 
     return AlertDialog(
@@ -309,7 +309,7 @@ class _PaymentOptionsPageState extends State<PaymentOptionsPage> {
   }
 
   Widget _warningBox(BuildContext context) {
-    final texts = AppLocalizations.of(context);
+    final texts = context.texts();
     return WarningBox(
       child: Column(
         mainAxisSize: MainAxisSize.min,

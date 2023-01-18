@@ -3,7 +3,7 @@ import 'dart:async';
 import 'package:breez/bloc/account/account_model.dart';
 import 'package:breez/widgets/animated_loader_dialog.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:breez_translations/breez_translations_locales.dart';
 
 Widget buildTransferFundsInProgressDialog(
   BuildContext context,
@@ -52,7 +52,7 @@ class _TransferFundsInProgressDialogState
 
   @override
   Widget build(BuildContext context) {
-    final texts = AppLocalizations.of(context);
+    final texts = context.texts();
     return createAnimatedLoaderDialog(
       context,
       texts.transferring_funds_title,

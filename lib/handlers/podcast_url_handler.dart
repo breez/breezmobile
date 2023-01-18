@@ -16,7 +16,7 @@ import 'package:breez/services/injector.dart';
 import 'package:breez/widgets/flushbar.dart';
 import 'package:breez/widgets/loader.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:breez_translations/breez_translations_locales.dart';
 import 'package:provider/provider.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:uni_links/uni_links.dart';
@@ -67,7 +67,7 @@ Future handleDeeplink(
   String podcastURL,
   String episodeID,
 ) async {
-  final texts = AppLocalizations.of(context);
+  final texts = context.texts();
 
   if (episodeID != null) {
     try {

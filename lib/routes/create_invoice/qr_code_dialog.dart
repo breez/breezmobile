@@ -12,7 +12,7 @@ import 'package:breez/widgets/compact_qr_image.dart';
 import 'package:breez/widgets/flushbar.dart';
 import 'package:breez/widgets/warning_box.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:breez_translations/breez_translations_locales.dart';
 import 'package:share_plus/share_plus.dart';
 
 class QrCodeDialog extends StatefulWidget {
@@ -72,7 +72,7 @@ class QrCodeDialogState extends State<QrCodeDialog>
     _invoiceSubscription = widget._invoiceBloc.readyInvoicesStream.listen(
       (event) {},
       onError: (err) {
-        final texts = AppLocalizations.of(context);
+        final texts = context.texts();
         onFinish(texts.qr_code_dialog_error(err));
       },
     );
@@ -112,7 +112,7 @@ class QrCodeDialogState extends State<QrCodeDialog>
   @override
   Widget build(BuildContext context) {
     final themeData = Theme.of(context);
-    final texts = AppLocalizations.of(context);
+    final texts = context.texts();
 
     return StreamBuilder<PaymentRequestModel>(
       stream: widget._invoiceBloc.readyInvoicesStream,
@@ -332,7 +332,7 @@ class QrCodeDialogState extends State<QrCodeDialog>
     AsyncSnapshot<PaymentRequestModel> snapshot,
     AsyncSnapshot<AccountModel> accSnapshot,
   ) {
-    final texts = AppLocalizations.of(context);
+    final texts = context.texts();
     if (hasError) {
       return texts.qr_code_dialog_warning_message_error;
     } else {
@@ -349,7 +349,7 @@ class QrCodeDialogState extends State<QrCodeDialog>
 
   Widget _buildCloseButton(BuildContext context) {
     final themeData = Theme.of(context);
-    final texts = AppLocalizations.of(context);
+    final texts = context.texts();
 
     return TextButton(
       onPressed: (() {

@@ -18,7 +18,7 @@ import 'package:breez/widgets/error_dialog.dart';
 import 'package:breez/widgets/loader.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:breez_translations/breez_translations_locales.dart';
 
 class _NetworkData {
   bool torIsActive = false;
@@ -74,7 +74,7 @@ class NetworkPageState extends State<NetworkPage> {
 
   @override
   Widget build(BuildContext context) {
-    final texts = AppLocalizations.of(context);
+    final texts = context.texts();
     final themeData = Theme.of(context);
 
     return ButtonTheme(
@@ -242,7 +242,7 @@ class NetworkPageState extends State<NetworkPage> {
   }
 
   Future<bool> _testNode({String peer = "", String nodeError}) async {
-    final texts = AppLocalizations.of(context);
+    final texts = context.texts();
     final dialogTheme = Theme.of(context).dialogTheme;
 
     var error = await showDialog(
@@ -268,7 +268,7 @@ class NetworkPageState extends State<NetworkPage> {
   }
 
   Future<bool> _promptForRestart() {
-    final texts = AppLocalizations.of(context);
+    final texts = context.texts();
     final themeData = Theme.of(context);
 
     return promptAreYouSure(
@@ -289,7 +289,7 @@ class NetworkPageState extends State<NetworkPage> {
   }
 
   void saveNodes() async {
-    final texts = AppLocalizations.of(context);
+    final texts = context.texts();
     if (_formKey.currentState.validate()) {
       final nodeSet = Set<String>();
       peerControllers.forEach((peerData) {
@@ -336,7 +336,7 @@ class PeerWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final texts = AppLocalizations.of(context);
+    final texts = context.texts();
     return Container(
       padding: EdgeInsets.only(top: 8.0),
       child: TextFormField(
@@ -382,7 +382,7 @@ class _TestingPeerDialogState extends State<_TestingPeerDialog> {
 
   @override
   Widget build(BuildContext context) {
-    final texts = AppLocalizations.of(context);
+    final texts = context.texts();
     return WillPopScope(
       onWillPop: () => Future.value(_allowPop),
       child: createAnimatedLoaderDialog(
@@ -424,7 +424,7 @@ class _SetTorActiveDialogState extends State<_SetTorActiveDialog> {
 
   @override
   Widget build(BuildContext context) {
-    final texts = AppLocalizations.of(context);
+    final texts = context.texts();
     return WillPopScope(
         onWillPop: () => Future.value(_allowPop),
         child: createAnimatedLoaderDialog(

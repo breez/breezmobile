@@ -8,7 +8,7 @@ import 'package:breez/widgets/send_onchain.dart';
 import 'package:breez/widgets/single_button_bottom_bar.dart';
 import 'package:fixnum/fixnum.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:breez_translations/breez_translations_locales.dart';
 
 import 'wait_broadcast_dialog.dart';
 
@@ -16,7 +16,7 @@ class GetRefundPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final themeData = Theme.of(context);
-    final texts = AppLocalizations.of(context);
+    final texts = context.texts();
 
     final accountBloc = AppBlocsProvider.of<AccountBloc>(context);
 
@@ -51,7 +51,7 @@ class GetRefundPage extends StatelessWidget {
   }
 
   List<Widget> _children(BuildContext context, AccountModel account) {
-    final texts = AppLocalizations.of(context);
+    final texts = context.texts();
 
     return account.swapFundsStatus.maturedRefundableAddresses.map((item) {
       return Padding(
@@ -107,7 +107,7 @@ class GetRefundPage extends StatelessWidget {
     AccountModel account,
     RefundableAddress item,
   ) {
-    final texts = AppLocalizations.of(context);
+    final texts = context.texts();
 
     final ids = item.confirmedTransactionIds;
     String originalTransaction;
@@ -146,7 +146,7 @@ class GetRefundPage extends StatelessWidget {
     String toAddress,
     Int64 feeRate,
   ) {
-    final texts = AppLocalizations.of(context);
+    final texts = context.texts();
     final accountBloc = AppBlocsProvider.of<AccountBloc>(context);
     return showDialog<bool>(
       useRootNavigator: false,

@@ -4,7 +4,7 @@ import 'dart:io';
 import 'package:breez/logger.dart';
 import 'package:breez/widgets/error_dialog.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:breez_translations/breez_translations_locales.dart';
 import 'package:image/image.dart' as DartImage;
 import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
@@ -42,7 +42,7 @@ class AvatarPicker extends StatelessWidget {
   }
 
   Widget _getPickerWidget(BuildContext context) {
-    final texts = AppLocalizations.of(context);
+    final texts = context.texts();
 
     return Container(
       child: Column(
@@ -117,7 +117,7 @@ class AvatarPicker extends StatelessWidget {
 
   void _readFile(BuildContext context, File file) {
     if (file == null) return;
-    final texts = AppLocalizations.of(context);
+    final texts = context.texts();
     file
         .readAsBytes()
         .then(_scaleAndFormatPNG)

@@ -8,7 +8,7 @@ import 'package:breez/services/breezlib/data/rpc.pbgrpc.dart';
 import 'package:breez/theme_data.dart' as theme;
 import 'package:breez/utils/date.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:breez_translations/breez_translations_locales.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:share_plus/share_plus.dart';
 
@@ -41,7 +41,7 @@ class RestoreDialogState extends State<RestoreDialog> {
   }
 
   Widget createRestoreDialog() {
-    final texts = AppLocalizations.of(context);
+    final texts = context.texts();
     final themeData = Theme.of(context);
 
     return AlertDialog(
@@ -119,7 +119,7 @@ class RestoreDialogState extends State<RestoreDialog> {
   }
 
   Widget _itemBuilder(BuildContext context, int index) {
-    final texts = AppLocalizations.of(context);
+    final texts = context.texts();
     final themeData = Theme.of(context);
 
     final item = widget.snapshots[index];

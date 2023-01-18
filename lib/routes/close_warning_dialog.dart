@@ -1,6 +1,6 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:breez_translations/breez_translations_locales.dart';
 import 'package:url_launcher/url_launcher_string.dart';
 
 class CloseWarningDialog extends StatelessWidget {
@@ -13,7 +13,7 @@ class CloseWarningDialog extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final themeData = Theme.of(context);
-    final texts = AppLocalizations.of(context);
+    final texts = context.texts();
 
     return Theme(
       data: themeData.copyWith(
@@ -48,7 +48,7 @@ class CloseWarningDialog extends StatelessWidget {
     BuildContext context,
   ) {
     final themeData = Theme.of(context);
-    final texts = AppLocalizations.of(context);
+    final texts = context.texts();
 
     return [
       Padding(

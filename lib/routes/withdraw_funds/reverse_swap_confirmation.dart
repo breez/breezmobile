@@ -15,7 +15,7 @@ import 'package:breez/widgets/loader.dart';
 import 'package:breez/widgets/single_button_bottom_bar.dart';
 import 'package:fixnum/fixnum.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:breez_translations/breez_translations_locales.dart';
 
 class ReverseSwapConfirmation extends StatefulWidget {
   final ReverseSwapRequest swap;
@@ -126,7 +126,7 @@ class ReverseSwapConfirmationState extends State<ReverseSwapConfirmation> {
   @override
   Widget build(BuildContext context) {
     final themeData = Theme.of(context);
-    final texts = AppLocalizations.of(context);
+    final texts = context.texts();
 
     final accountBloc = AppBlocsProvider.of<AccountBloc>(context);
 
@@ -251,7 +251,7 @@ class ReverseSwapConfirmationState extends State<ReverseSwapConfirmation> {
     boltzFees,
     received,
   ) {
-    final texts = AppLocalizations.of(context);
+    final texts = context.texts();
     final themeData = Theme.of(context);
     final minFont = MinFontSize(context);
 

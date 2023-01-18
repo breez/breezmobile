@@ -3,15 +3,15 @@ import 'package:breez/bloc/user_profile/currency.dart';
 import 'package:breez/theme_data.dart' as theme;
 import 'package:breez/widgets/currency_converter_dialog.dart';
 import 'package:breez/widgets/sat_amount_form_field_formatter.dart';
+import 'package:breez_translations/generated/breez_translations.dart';
 import 'package:fixnum/fixnum.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class AmountFormField extends TextFormField {
   final AccountModel accountModel;
   final String Function(Int64 amount) validatorFn;
-  final AppLocalizations texts;
+  final BreezTranslations texts;
 
   AmountFormField({
     this.accountModel,

@@ -8,6 +8,10 @@ import 'package:breez/bloc/user_profile/user_actions.dart';
 import 'package:breez/bloc/user_profile/user_profile_bloc.dart';
 import 'package:breez/routes/backup_in_progress_dialog.dart';
 import 'package:breez/routes/podcast/theme.dart';
+import 'package:breez/routes/security_pin/backup_phrase/backup_phrase_confirmation_page.dart';
+import 'package:breez/routes/security_pin/backup_phrase/backup_phrase_warning_dialog.dart';
+import 'package:breez/routes/security_pin/change_pin_code.dart';
+import 'package:breez/routes/security_pin/lock_screen.dart';
 import 'package:breez/routes/security_pin/remote_server_auth.dart';
 import 'package:breez/services/local_auth_service.dart';
 import 'package:breez/theme_data.dart' as theme;
@@ -17,15 +21,11 @@ import 'package:breez/widgets/back_button.dart' as backBtn;
 import 'package:breez/widgets/error_dialog.dart';
 import 'package:breez/widgets/flushbar.dart';
 import 'package:breez/widgets/route.dart';
+import 'package:breez_translations/breez_translations_locales.dart';
+import 'package:breez_translations/generated/breez_translations.dart';
 import 'package:duration/duration.dart';
 import 'package:duration/locale.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-
-import 'backup_phrase/backup_phrase_confirmation_page.dart';
-import 'backup_phrase/backup_phrase_warning_dialog.dart';
-import 'change_pin_code.dart';
-import 'lock_screen.dart';
 
 class SecurityPage extends StatefulWidget {
   final UserProfileBloc userProfileBloc;
@@ -74,7 +74,7 @@ class SecurityPageState extends State<SecurityPage>
 
   @override
   Widget build(BuildContext context) {
-    final texts = AppLocalizations.of(context);
+    final texts = context.texts();
     final themeData = Theme.of(context);
 
     return StreamBuilder<BackupState>(
@@ -114,7 +114,7 @@ class SecurityPageState extends State<SecurityPage>
                 automaticallyImplyLeading: false,
                 leading: backBtn.BackButton(),
                 title: Text(
-                  texts.security_and_backup_title,
+                  texts.security_and_backup_title_and_backup,
                   style: themeData.appBarTheme.textTheme.headline6,
                 ),
                 elevation: 0.0,
@@ -146,7 +146,7 @@ class SecurityPageState extends State<SecurityPage>
     final lastBackupTime = backupState.lastBackupTime;
     if (lastBackupTime == null) return SizedBox();
 
-    final texts = AppLocalizations.of(context);
+    final texts = context.texts();
     final accountName = backupState.lastBackupAccountName;
     final lastBackup = BreezDateUtils.formatYearMonthDayHourMinute(
       lastBackupTime,
@@ -231,7 +231,7 @@ class SecurityPageState extends State<SecurityPage>
     SecurityModel securityModel,
     BackupSettings backupSettings,
   ) {
-    final texts = AppLocalizations.of(context);
+    final texts = context.texts();
 
     return ListTile(
       title: Container(
@@ -290,7 +290,7 @@ class SecurityPageState extends State<SecurityPage>
     SecurityModel securityModel,
     BackupSettings backupSettings,
   ) {
-    final texts = AppLocalizations.of(context);
+    final texts = context.texts();
 
     return ListTile(
       title: Container(
@@ -358,7 +358,7 @@ class SecurityPageState extends State<SecurityPage>
     SecurityModel securityModel,
     BackupSettings backupSettings,
   ) {
-    final texts = AppLocalizations.of(context);
+    final texts = context.texts();
 
     return ListTile(
       title: Container(
@@ -405,7 +405,7 @@ class SecurityPageState extends State<SecurityPage>
     );
   }
 
-  String _formatSeconds(AppLocalizations texts, int seconds) {
+  String _formatSeconds(BreezTranslations texts, int seconds) {
     if (seconds == 0) {
       return texts.security_and_backup_lock_automatically_option_immediate;
     }
@@ -468,7 +468,7 @@ class SecurityPageState extends State<SecurityPage>
     SecurityModel securityModel,
     BackupSettings backupSettings,
   ) {
-    final texts = AppLocalizations.of(context);
+    final texts = context.texts();
 
     return ListTile(
       title: Container(
@@ -499,7 +499,7 @@ class SecurityPageState extends State<SecurityPage>
     SecurityModel securityModel,
     BackupSettings backupSettings,
   ) {
-    final texts = AppLocalizations.of(context);
+    final texts = context.texts();
 
     return ListTile(
       title: AutoSizeText(
@@ -541,7 +541,7 @@ class SecurityPageState extends State<SecurityPage>
     SecurityModel securityModel,
     BackupSettings backupSettings,
   ) async {
-    final texts = AppLocalizations.of(context);
+    final texts = context.texts();
 
     final validateBiometricsAction = ValidateBiometrics(
       localizedReason: texts.security_and_backup_validate_biometrics_reason,
@@ -566,7 +566,7 @@ class SecurityPageState extends State<SecurityPage>
     SecurityModel securityModel,
     BackupSettings backupSettings,
   ) {
-    final texts = AppLocalizations.of(context);
+    final texts = context.texts();
 
     return ListTile(
       title: AutoSizeText(
@@ -609,7 +609,7 @@ class SecurityPageState extends State<SecurityPage>
     SecurityModel securityModel,
     BackupSettings backupSettings,
   ) {
-    final texts = AppLocalizations.of(context);
+    final texts = context.texts();
     final themeData = Theme.of(context);
 
     Navigator.of(context).push(
@@ -658,7 +658,7 @@ class SecurityPageState extends State<SecurityPage>
   }
 
   Future _resetSecurityModel(BuildContext context) async {
-    final texts = AppLocalizations.of(context);
+    final texts = context.texts();
     final themeData = Theme.of(context);
 
     var action = ResetSecurityModel();
@@ -682,7 +682,7 @@ class SecurityPageState extends State<SecurityPage>
     BackupSettings backupSettings, {
     bool pinCodeChanged = false,
   }) async {
-    final texts = AppLocalizations.of(context);
+    final texts = context.texts();
     final themeData = Theme.of(context);
 
     _screenLocked = false;
@@ -705,7 +705,7 @@ class SecurityPageState extends State<SecurityPage>
     BackupSettings oldBackupSettings,
     BackupSettings newBackupSettings,
   ) async {
-    final texts = AppLocalizations.of(context);
+    final texts = context.texts();
     final themeData = Theme.of(context);
 
     _screenLocked = false;
@@ -742,7 +742,7 @@ class SecurityPageState extends State<SecurityPage>
     });
   }
 
-  String _localAuthenticationOptionLabel(AppLocalizations texts) {
+  String _localAuthenticationOptionLabel(BreezTranslations texts) {
     switch (_localAuthenticationOption) {
       case LocalAuthenticationOption.FACE:
         return texts.security_and_backup_enable_biometric_option_face;

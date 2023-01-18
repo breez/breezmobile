@@ -1,7 +1,7 @@
 import 'dart:async';
 
 import 'package:breez/bloc/connect_pay/connect_pay_model.dart';
-import 'package:breez/utils/locale.dart';
+import 'package:breez_translations/breez_translations_locales.dart';
 import 'package:firebase_database/firebase_database.dart';
 
 class OnlineStatusUpdater {

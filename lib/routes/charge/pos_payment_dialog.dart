@@ -20,7 +20,7 @@ import 'package:breez/widgets/flushbar.dart';
 import 'package:breez/widgets/loader.dart';
 import 'package:fixnum/fixnum.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:breez_translations/breez_translations_locales.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:share_plus/share_plus.dart';
 
@@ -75,7 +75,7 @@ class _PosPaymentDialogState extends State<PosPaymentDialog> {
     ));
     _timerSubscription = _paymentTimer.stream.listen((d) {
       setState(() {
-        final texts = AppLocalizations.of(context);
+        final texts = context.texts();
         _expiration = d;
         _countdownString = texts.pos_dialog_clock(
           d.inMinutes.toRadixString(10),
@@ -141,7 +141,7 @@ class _PosPaymentDialogState extends State<PosPaymentDialog> {
     BuildContext context,
     AccountModel account,
   ) {
-    final texts = AppLocalizations.of(context);
+    final texts = context.texts();
     final themeData = Theme.of(context);
 
     return Row(
@@ -205,7 +205,7 @@ class _PosPaymentDialogState extends State<PosPaymentDialog> {
     AccountModel account,
   ) {
     final themeData = Theme.of(context);
-    final texts = AppLocalizations.of(context);
+    final texts = context.texts();
 
     final lspFee = widget.paymentRequest.lspFee;
     var saleCurrency = CurrencyWrapper.fromShortName(
@@ -292,7 +292,7 @@ class _PosPaymentDialogState extends State<PosPaymentDialog> {
 
   Widget _clearSaleButton(BuildContext context) {
     final themeData = Theme.of(context);
-    final texts = AppLocalizations.of(context);
+    final texts = context.texts();
 
     return TextButton(
       style: TextButton.styleFrom(
@@ -311,7 +311,7 @@ class _PosPaymentDialogState extends State<PosPaymentDialog> {
 
   Widget _cancelButton(BuildContext context) {
     final themeData = Theme.of(context);
-    final texts = AppLocalizations.of(context);
+    final texts = context.texts();
 
     return TextButton(
       style: TextButton.styleFrom(
@@ -345,7 +345,7 @@ class _PosPaymentDialogState extends State<PosPaymentDialog> {
   }
 
   void _listenNfcWithdraw(NfcWithdrawInvoiceStatus status) {
-    final texts = AppLocalizations.of(context);
+    final texts = context.texts();
     if (status is NfcWithdrawInvoiceStatusStarted) {
       _nfcWithdrawStarted();
       return;

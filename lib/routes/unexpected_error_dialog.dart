@@ -8,10 +8,10 @@ import 'package:breez/widgets/error_dialog.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:share_plus/share_plus.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:breez_translations/breez_translations_locales.dart';
 
 void listenUnexpectedError(BuildContext context, AccountBloc accountBloc) async {
-  final texts = AppLocalizations.of(context);
+  final texts = context.texts();
   final themeData = Theme.of(context);
   final torEnabled = await ServiceInjector().breezBridge.getTorActive();
   accountBloc.lightningDownStream.listen((allowRetry) {
@@ -141,7 +141,7 @@ void listenUnexpectedError(BuildContext context, AccountBloc accountBloc) async 
 
 Future _promptForRestart(BuildContext context) {
   final themeData = Theme.of(context);
-  final texts = AppLocalizations.of(context);
+  final texts = context.texts();
   return promptAreYouSure(
     context,
     null,

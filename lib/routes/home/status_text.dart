@@ -4,7 +4,7 @@ import 'package:breez/utils/min_font_size.dart';
 import 'package:breez/widgets/loading_animated_text.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:breez_translations/breez_translations_locales.dart';
 import 'package:url_launcher/url_launcher_string.dart';
 
 class StatusText extends StatelessWidget {
@@ -19,7 +19,7 @@ class StatusText extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final themeData = Theme.of(context);
-    final texts = AppLocalizations.of(context);
+    final texts = context.texts();
 
     if (message != null) {
       return LoadingAnimatedText(message);

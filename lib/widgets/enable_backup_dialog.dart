@@ -5,7 +5,7 @@ import 'package:breez/bloc/backup/backup_model.dart';
 import 'package:breez/routes/security_pin/remote_server_auth.dart';
 import 'package:breez/utils/min_font_size.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:breez_translations/breez_translations_locales.dart';
 
 import 'backup_provider_selection_dialog.dart';
 import 'error_dialog.dart';
@@ -32,7 +32,7 @@ class EnableBackupDialogState extends State<EnableBackupDialog> {
   }
 
   Widget createEnableBackupDialog(BuildContext context) {
-    final texts = AppLocalizations.of(context);
+    final texts = context.texts();
     return Theme(
         data: Theme.of(context).copyWith(
           unselectedWidgetColor: Theme.of(context).canvasColor,

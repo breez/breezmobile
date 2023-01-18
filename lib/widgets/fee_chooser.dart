@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:breez_translations/breez_translations_locales.dart';
 
 class FeeChooser extends StatelessWidget {
   final FeeOption economyFee;
@@ -19,7 +19,7 @@ class FeeChooser extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final texts = AppLocalizations.of(context);
+    final texts = context.texts();
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
@@ -164,7 +164,7 @@ class ProcessingSpeed extends StatelessWidget {
   }
 
   String _estimatedDelivery(BuildContext context) {
-    final texts = AppLocalizations.of(context);
+    final texts = context.texts();
     final hours = targetConfirmation / 6;
 
     if (hours >= 12.0) {

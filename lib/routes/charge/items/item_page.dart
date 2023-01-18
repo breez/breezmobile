@@ -16,7 +16,7 @@ import 'package:breez/widgets/route.dart';
 import 'package:breez/widgets/single_button_bottom_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:breez_translations/breez_translations_locales.dart';
 
 import '../currency_wrapper.dart';
 import 'item_avatar_picker.dart';
@@ -53,7 +53,7 @@ class ItemPageState extends State<ItemPage> {
   @override
   void didChangeDependencies() {
     if (!_isInit) {
-      final texts = AppLocalizations.of(context);
+      final texts = context.texts();
       _accountBloc = AppBlocsProvider.of<AccountBloc>(context);
 
       _title = texts.pos_invoice_item_management_title_add;
@@ -168,7 +168,7 @@ class ItemPageState extends State<ItemPage> {
   }
 
   Widget _nameField(BuildContext context) {
-    final texts = AppLocalizations.of(context);
+    final texts = context.texts();
     return TextFormField(
       textCapitalization: TextCapitalization.words,
       controller: _nameController,
@@ -188,7 +188,7 @@ class ItemPageState extends State<ItemPage> {
   }
 
   Widget _priceField(BuildContext context) {
-    final texts = AppLocalizations.of(context);
+    final texts = context.texts();
     return TextFormField(
       keyboardType: TextInputType.numberWithOptions(
         decimal: true,
@@ -215,7 +215,7 @@ class ItemPageState extends State<ItemPage> {
   }
 
   Widget _skuField(BuildContext context) {
-    final texts = AppLocalizations.of(context);
+    final texts = context.texts();
     return TextFormField(
       controller: _skuController,
       decoration: InputDecoration(
@@ -231,7 +231,7 @@ class ItemPageState extends State<ItemPage> {
     BuildContext context,
     AccountModel account,
   ) {
-    final texts = AppLocalizations.of(context);
+    final texts = context.texts();
     final themeData = Theme.of(context);
     final queryData = MediaQuery.of(this.context);
 
@@ -300,7 +300,7 @@ class ItemPageState extends State<ItemPage> {
   }
 
   Widget _buildSelectImageButton(BuildContext context) {
-    final texts = AppLocalizations.of(context);
+    final texts = context.texts();
     final themeData = Theme.of(context);
 
     return Container(
@@ -382,7 +382,7 @@ class ItemPageState extends State<ItemPage> {
     Widget body, [
     List<Widget> actions,
   ]) {
-    final texts = AppLocalizations.of(context);
+    final texts = context.texts();
     final themeData = Theme.of(context);
 
     return Scaffold(
