@@ -22,6 +22,7 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class _NetworkData {
   bool torIsActive = false;
+  bool showTor = false;
 }
 
 class NetworkPage extends StatefulWidget {
@@ -48,15 +49,19 @@ class NetworkPageState extends State<NetworkPage> {
   void initState() {
     super.initState();
     _breezLib = ServiceInjector().breezBridge;
-    _loadPeers();
+
     _loadData();
+    _loadPeers();
   }
 
   void _loadData() async {
-    bool torActive = await _breezLib.getTorActive();
-    setState(() {
-      _data.torIsActive = torActive;
-    });
+    _data.showTor = Platform.isAndroid;
+    if (_data.showTor) {
+      bool torActive = await _breezLib.getTorActive();
+      setState(() {
+        _data.torIsActive = torActive;
+      });
+    }
   }
 
   Future<void> _loadPeers() async {
@@ -98,58 +103,65 @@ class NetworkPageState extends State<NetworkPage> {
               child: ListView(
                 scrollDirection: Axis.vertical,
                 children: [
-                  Padding(
-                    padding: const EdgeInsets.fromLTRB(16, 8, 16, 8),
-                    child: Row(
-                      mainAxisSize: MainAxisSize.max,
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(
-                          this._data.torIsActive ? texts.network_tor_disable : texts.network_tor_enable,
-                          style: TextStyle(color: Colors.white),
-                          maxLines: 1,
-                        ),
-                        Switch(
-                          value: this._data.torIsActive,
-                          activeColor: Colors.white,
-                          onChanged: (bool value) async {
-                            final error = await showDialog(
-                              useRootNavigator: false,
-                              context: context,
-                              builder: (ctx) => _SetTorActiveDialog(
-                                testFuture: _breezLib.setTorActive(value),
-                                enable: value,
+                  this._data.showTor
+                      ? Padding(
+                          padding: const EdgeInsets.fromLTRB(16, 8, 16, 8),
+                          child: Row(
+                            mainAxisSize: MainAxisSize.max,
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text(
+                                this._data.torIsActive
+                                    ? texts.network_tor_disable
+                                    : texts.network_tor_enable,
+                                style: TextStyle(color: Colors.white),
+                                maxLines: 1,
                               ),
-                            );
+                              Switch(
+                                value: this._data.torIsActive,
+                                activeColor: Colors.white,
+                                onChanged: (bool value) async {
+                                  final error = await showDialog(
+                                    useRootNavigator: false,
+                                    context: context,
+                                    builder: (ctx) => _SetTorActiveDialog(
+                                      testFuture: _breezLib.setTorActive(value),
+                                      enable: value,
+                                    ),
+                                  );
 
-                            if (error != null) {
-                              log.info('setTorActive error', error);
-                              await promptError(
-                                context,
-                                null,
-                                Text(
-                                  value ? texts.network_tor_enable_error : texts.network_tor_disable,
-                                  style: themeData.dialogTheme.contentTextStyle,
-                                ),
-                              );
-                              return;
-                            } else {
-                              !value
-                                  ? _resetNodes()
-                                  : _promptForRestart().then((didRestart) {
-                                      if (!didRestart) {
-                                        setState(() {
-                                          this._data.torIsActive = !value;
-                                        });
-                                      }
-                                    });
-                            }
-                          },
-                        ),
-                      ],
-                    ),
-                  ),
-                  Divider(),
+                                  if (error != null) {
+                                    log.info('setTorActive error', error);
+                                    await promptError(
+                                      context,
+                                      null,
+                                      Text(
+                                        value
+                                            ? texts.network_tor_enable_error
+                                            : texts.network_tor_disable,
+                                        style: themeData
+                                            .dialogTheme.contentTextStyle,
+                                      ),
+                                    );
+                                    return;
+                                  } else {
+                                    !value
+                                        ? _resetNodes()
+                                        : _promptForRestart()
+                                            .then((didRestart) {
+                                            if (!didRestart) {
+                                              setState(() {
+                                                this._data.torIsActive = !value;
+                                              });
+                                            }
+                                          });
+                                  }
+                                },
+                              ),
+                            ],
+                          ),
+                        )
+                      : Divider(),
                   Padding(
                     padding: const EdgeInsets.fromLTRB(16, 8, 16, 16),
                     child: Column(
