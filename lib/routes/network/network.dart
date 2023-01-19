@@ -6,7 +6,6 @@
 import 'dart:async';
 import 'dart:io';
 
-import 'package:auto_size_text/auto_size_text.dart';
 import 'package:breez/logger.dart';
 import 'package:breez/services/breezlib/breez_bridge.dart';
 import 'package:breez/services/breezlib/data/rpc.pb.dart';
@@ -103,8 +102,8 @@ class NetworkPageState extends State<NetworkPage> {
               child: ListView(
                 scrollDirection: Axis.vertical,
                 children: [
-                  this._data.showTor
-                      ? Padding(
+                  if (this._data.showTor)
+                    Padding(
                           padding: const EdgeInsets.fromLTRB(16, 8, 16, 8),
                           child: Row(
                             mainAxisSize: MainAxisSize.max,
@@ -160,8 +159,9 @@ class NetworkPageState extends State<NetworkPage> {
                               ),
                             ],
                           ),
-                        )
-                      : Divider(),
+                        ),
+                  if (this._data.showTor)
+                    Divider(),
                   Padding(
                     padding: const EdgeInsets.fromLTRB(16, 8, 16, 16),
                     child: Column(
