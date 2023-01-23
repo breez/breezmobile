@@ -18,6 +18,7 @@ import 'package:breez/theme_data.dart' as theme;
 import 'package:breez/utils/date.dart';
 import 'package:breez/utils/min_font_size.dart';
 import 'package:breez/widgets/back_button.dart' as backBtn;
+import 'package:breez/widgets/designsystem/switch/simple_switch.dart';
 import 'package:breez/widgets/error_dialog.dart';
 import 'package:breez/widgets/flushbar.dart';
 import 'package:breez/widgets/route.dart';
@@ -226,62 +227,51 @@ class SecurityPageState extends State<SecurityPage>
     return _tiles;
   }
 
-  ListTile _buildGenerateBackupPhraseTile(
+  Widget _buildGenerateBackupPhraseTile(
     BuildContext context,
     SecurityModel securityModel,
     BackupSettings backupSettings,
   ) {
     final texts = context.texts();
 
-    return ListTile(
-      title: Container(
-        child: AutoSizeText(
-          texts.security_and_backup_encrypt,
-          style: TextStyle(color: Colors.white),
-          maxLines: 1,
-          minFontSize: MinFontSize(context).minFontSize,
-          stepGranularity: 0.1,
-          group: _autoSizeGroup,
-        ),
-      ),
-      trailing: Switch(
-        value: backupSettings.backupKeyType == BackupKeyType.PHRASE,
-        activeColor: Colors.white,
-        onChanged: (bool value) async {
-          if (this.mounted) {
-            if (value) {
-              Navigator.push(
-                context,
-                FadeInRoute(
-                  builder: (BuildContext context) => withBreezTheme(
-                    context,
-                    BackupPhraseGeneratorConfirmationPage(),
-                  ),
+    return SimpleSwitch(
+      text: texts.security_and_backup_encrypt,
+      switchValue: backupSettings.backupKeyType == BackupKeyType.PHRASE,
+      group: _autoSizeGroup,
+      onChanged: (bool value) async {
+        if (this.mounted) {
+          if (value) {
+            Navigator.push(
+              context,
+              FadeInRoute(
+                builder: (BuildContext context) => withBreezTheme(
+                  context,
+                  BackupPhraseGeneratorConfirmationPage(),
                 ),
-              );
-            } else {
-              showDialog(
-                context: context,
-                barrierDismissible: false,
-                builder: (BuildContext context) {
-                  return BackupPhraseWarningDialog();
-                },
-              ).then(
-                (approved) {
-                  if (approved)
-                    _updateBackupSettings(
-                      context,
-                      backupSettings,
-                      backupSettings.copyWith(
-                        keyType: BackupKeyType.NONE,
-                      ),
-                    ).then((value) => triggerBackup());
-                },
-              );
-            }
+              ),
+            );
+          } else {
+            showDialog(
+              context: context,
+              barrierDismissible: false,
+              builder: (BuildContext context) {
+                return BackupPhraseWarningDialog();
+              },
+            ).then(
+              (approved) {
+                if (approved)
+                  _updateBackupSettings(
+                    context,
+                    backupSettings,
+                    backupSettings.copyWith(
+                      keyType: BackupKeyType.NONE,
+                    ),
+                  ).then((value) => triggerBackup());
+              },
+            );
           }
-        },
-      ),
+        }
+      },
     );
   }
 
@@ -494,45 +484,35 @@ class SecurityPageState extends State<SecurityPage>
     );
   }
 
-  ListTile _buildEnableBiometricAuthTile(
+  Widget _buildEnableBiometricAuthTile(
     BuildContext context,
     SecurityModel securityModel,
     BackupSettings backupSettings,
   ) {
     final texts = context.texts();
 
-    return ListTile(
-      title: AutoSizeText(
-        _localAuthenticationOptionLabel(texts),
-        style: TextStyle(color: Colors.white),
-        maxLines: 1,
-        minFontSize: MinFontSize(context).minFontSize,
-        stepGranularity: 0.1,
-        group: securityModel.requiresPin ? _autoSizeGroup : null,
-      ),
-      trailing: Switch(
-        key: Key(_renderIndex.toString()),
-        activeColor: Colors.white,
-        value: securityModel.isFingerprintEnabled,
-        onChanged: (value) {
-          if (this.mounted) {
-            if (value) {
-              _validateBiometrics(
-                context,
-                securityModel,
-                backupSettings,
-              );
-            } else {
-              _updateSecurityModel(
-                context,
-                securityModel,
-                securityModel.copyWith(isFingerprintEnabled: false),
-                backupSettings,
-              );
-            }
+    return SimpleSwitch(
+      text: _localAuthenticationOptionLabel(texts),
+      switchValue: securityModel.isFingerprintEnabled,
+      group: securityModel.requiresPin ? _autoSizeGroup : null,
+      onChanged: (value) {
+        if (this.mounted) {
+          if (value) {
+            _validateBiometrics(
+              context,
+              securityModel,
+              backupSettings,
+            );
+          } else {
+            _updateSecurityModel(
+              context,
+              securityModel,
+              securityModel.copyWith(isFingerprintEnabled: false),
+              backupSettings,
+            );
           }
-        },
-      ),
+        }
+      },
     );
   }
 
@@ -561,39 +541,26 @@ class SecurityPageState extends State<SecurityPage>
     );
   }
 
-  ListTile _buildDisablePINTile(
+  Widget _buildDisablePINTile(
     BuildContext context,
     SecurityModel securityModel,
     BackupSettings backupSettings,
   ) {
     final texts = context.texts();
 
-    return ListTile(
-      title: AutoSizeText(
-        securityModel.requiresPin
-            ? texts.security_and_backup_pin_option_deactivate
-            : texts.security_and_backup_pin_option_create,
-        style: TextStyle(color: Colors.white),
-        maxLines: 1,
-        minFontSize: MinFontSize(context).minFontSize,
-        stepGranularity: 0.1,
-        group: securityModel.requiresPin ? _autoSizeGroup : null,
-      ),
+    return SimpleSwitch(
+      text: securityModel.requiresPin
+          ? texts.security_and_backup_pin_option_deactivate
+          : texts.security_and_backup_pin_option_create,
       trailing: securityModel.requiresPin
-          ? Switch(
-              value: securityModel.requiresPin,
-              activeColor: Colors.white,
-              onChanged: (bool value) {
-                if (this.mounted) {
-                  _resetSecurityModel(context);
-                }
-              },
-            )
+          ? null
           : Icon(
               Icons.keyboard_arrow_right,
               color: Colors.white,
               size: 30.0,
             ),
+      switchValue: securityModel.requiresPin,
+      group: securityModel.requiresPin ? _autoSizeGroup : null,
       onTap: securityModel.requiresPin
           ? null
           : () => _onChangePinSelected(
@@ -601,6 +568,11 @@ class SecurityPageState extends State<SecurityPage>
                 securityModel,
                 backupSettings,
               ),
+      onChanged: (bool value) {
+        if (this.mounted) {
+          _resetSecurityModel(context);
+        }
+      },
     );
   }
 

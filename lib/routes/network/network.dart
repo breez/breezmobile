@@ -13,11 +13,12 @@ import 'package:breez/services/injector.dart';
 import 'package:breez/theme_data.dart' as theme;
 import 'package:breez/widgets/animated_loader_dialog.dart';
 import 'package:breez/widgets/back_button.dart' as backBtn;
+import 'package:breez/widgets/designsystem/switch/simple_switch.dart';
 import 'package:breez/widgets/error_dialog.dart';
 import 'package:breez/widgets/loader.dart';
+import 'package:breez_translations/breez_translations_locales.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
-import 'package:breez_translations/breez_translations_locales.dart';
 
 class _NetworkData {
   bool torIsActive = false;
@@ -103,63 +104,11 @@ class NetworkPageState extends State<NetworkPage> {
                 scrollDirection: Axis.vertical,
                 children: [
                   if (this._data.showTor)
-                    Padding(
-                          padding: const EdgeInsets.fromLTRB(16, 8, 16, 8),
-                          child: Row(
-                            mainAxisSize: MainAxisSize.max,
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Text(
-                                this._data.torIsActive
-                                    ? texts.network_tor_disable
-                                    : texts.network_tor_enable,
-                                style: TextStyle(color: Colors.white),
-                                maxLines: 1,
-                              ),
-                              Switch(
-                                value: this._data.torIsActive,
-                                activeColor: Colors.white,
-                                onChanged: (bool value) async {
-                                  final error = await showDialog(
-                                    useRootNavigator: false,
-                                    context: context,
-                                    builder: (ctx) => _SetTorActiveDialog(
-                                      testFuture: _breezLib.setTorActive(value),
-                                      enable: value,
-                                    ),
-                                  );
-
-                                  if (error != null) {
-                                    log.info('setTorActive error', error);
-                                    await promptError(
-                                      context,
-                                      null,
-                                      Text(
-                                        value
-                                            ? texts.network_tor_enable_error
-                                            : texts.network_tor_disable,
-                                        style: themeData
-                                            .dialogTheme.contentTextStyle,
-                                      ),
-                                    );
-                                    return;
-                                  } else {
-                                    !value
-                                        ? _resetNodes()
-                                        : _promptForRestart()
-                                            .then((didRestart) {
-                                            if (!didRestart) {
-                                              setState(() {
-                                                this._data.torIsActive = !value;
-                                              });
-                                            }
-                                          });
-                                  }
-                                },
-                              ),
-                            ],
-                          ),
-                        ),
+                    SimpleSwitch(
+                      text: _data.torIsActive ? texts.network_tor_disable : texts.network_tor_enable,
+                      switchValue: _data.torIsActive,
+                      onChanged: _torSwitchChanged,
+                    ),
                   if (this._data.showTor)
                     Divider(),
                   Padding(
@@ -318,6 +267,43 @@ class NetworkPageState extends State<NetworkPage> {
       } catch (e) {
         rethrow;
       }
+    }
+  }
+
+  Future<void> _torSwitchChanged(bool value) async {
+    final texts = context.texts();
+    final themeData = Theme.of(context);
+
+    final error = await showDialog(
+      useRootNavigator: false,
+      context: context,
+      builder: (ctx) => _SetTorActiveDialog(
+        testFuture: _breezLib.setTorActive(value),
+        enable: value,
+      ),
+    );
+
+    if (error != null) {
+      log.info('setTorActive error', error);
+      await promptError(
+        context,
+        null,
+        Text(
+          value ? texts.network_tor_enable_error : texts.network_tor_disable,
+          style: themeData.dialogTheme.contentTextStyle,
+        ),
+      );
+      return;
+    } else {
+      !value
+          ? _resetNodes()
+          : _promptForRestart().then((didRestart) {
+              if (!didRestart) {
+                setState(() {
+                  this._data.torIsActive = !value;
+                });
+              }
+            });
     }
   }
 }
