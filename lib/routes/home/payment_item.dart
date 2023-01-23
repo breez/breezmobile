@@ -8,7 +8,7 @@ import 'package:breez/utils/date.dart';
 import 'package:breez/widgets/payment_details_dialog.dart';
 import 'package:breez/widgets/route.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:breez_translations/breez_translations_locales.dart';
 
 import 'flip_transition.dart';
 import 'payment_item_avatar.dart';
@@ -126,7 +126,7 @@ class PaymentItem extends StatelessWidget {
   }
 
   Widget _pendingSuffix(BuildContext context) {
-    final texts = AppLocalizations.of(context);
+    final texts = context.texts();
     final themeData = Theme.of(context);
 
     return _paymentInfo.pending
@@ -140,7 +140,7 @@ class PaymentItem extends StatelessWidget {
   }
 
   Widget _paymentAmount(BuildContext context) {
-    final texts = AppLocalizations.of(context);
+    final texts = context.texts();
     final themeData = Theme.of(context);
 
     final type = _paymentInfo.type;
@@ -163,7 +163,7 @@ class PaymentItem extends StatelessWidget {
   }
 
   Widget _paymentFee(BuildContext context) {
-    final texts = AppLocalizations.of(context);
+    final texts = context.texts();
     final themeData = Theme.of(context);
 
     final fee = _paymentInfo.fee;

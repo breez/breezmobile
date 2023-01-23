@@ -8,9 +8,10 @@ import 'package:breez/bloc/marketplace/vendor_model.dart';
 import 'package:breez/routes/marketplace/vendor_webview.dart';
 import 'package:breez/widgets/error_dialog.dart';
 import 'package:breez/widgets/loader.dart';
+import 'package:breez_translations/generated/breez_translations.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:breez_translations/breez_translations_locales.dart';
 
 class LNURLWebViewPage extends StatefulWidget {
   final AccountBloc accountBloc;
@@ -44,7 +45,7 @@ class LNURLWebViewPageState extends State<LNURLWebViewPage> {
       _handleLNUrlAuth().catchError(
             (err) => promptError(
           context,
-          AppLocalizations.of(context).lnurl_webview_error_title,
+          BreezTranslations.of(context).lnurl_webview_error_title,
           Text(err.toString()),
           okFunc: () => Navigator.of(context).pop(),
         ),
@@ -53,7 +54,7 @@ class LNURLWebViewPageState extends State<LNURLWebViewPage> {
   }
 
   Future _handleLNUrlAuth() async {
-    final texts = AppLocalizations.of(context);
+    final texts = context.texts();
     Uri uri = widget.endpointURI;
     var response = widget.vendorModel.id == "lnmarkets"
         ? await http.post(uri)

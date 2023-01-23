@@ -5,7 +5,7 @@ import 'package:breez/bloc/account/account_model.dart';
 import 'package:breez/widgets/loader.dart';
 import 'package:breez/widgets/payment_details_dialog.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:breez_translations/breez_translations_locales.dart';
 
 class PendingClosedChannelDialog extends StatefulWidget {
   final AccountBloc accountBloc;
@@ -36,7 +36,7 @@ class PendingClosedChannelDialogState
   @override
   Widget build(BuildContext context) {
     final themeData = Theme.of(context);
-    final texts = AppLocalizations.of(context);
+    final texts = context.texts();
 
     return AlertDialog(
       titlePadding: const EdgeInsets.fromLTRB(24.0, 22.0, 24.0, 16.0),

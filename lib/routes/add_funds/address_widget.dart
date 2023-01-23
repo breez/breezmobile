@@ -4,7 +4,7 @@ import 'package:breez/widgets/compact_qr_image.dart';
 import 'package:breez/widgets/flushbar.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:breez_translations/breez_translations_locales.dart';
 import 'package:share_plus/share_plus.dart';
 
 class AddressWidget extends StatelessWidget {
@@ -18,7 +18,7 @@ class AddressWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final texts = AppLocalizations.of(context);
+    final texts = context.texts();
     final themeData = Theme.of(context);
 
     return Column(
@@ -93,7 +93,7 @@ class AddressWidget extends StatelessWidget {
   }
 
   List<Widget> _buildShareAndCopyIcons(BuildContext context) {
-    final texts = AppLocalizations.of(context);
+    final texts = context.texts();
     final themeData = Theme.of(context);
 
     List<Widget> _icons = [];
@@ -134,7 +134,7 @@ class AddressWidget extends StatelessWidget {
   }
 
   void _showAlertDialog(BuildContext context) {
-    final texts = AppLocalizations.of(context);
+    final texts = context.texts();
     final themeData = Theme.of(context);
 
     AlertDialog dialog = AlertDialog(

@@ -1,7 +1,7 @@
 import 'package:breez/theme_data.dart' as theme;
 import 'package:breez/widgets/particles_animations.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:breez_translations/breez_translations_locales.dart';
 import 'package:flutter_svg/svg.dart';
 
 class SuccessfulPaymentRoute extends StatefulWidget {
@@ -52,7 +52,7 @@ class SuccessfulPaymentRouteState extends State<SuccessfulPaymentRoute>
 
   Widget _buildDialog(BuildContext context) {
     final themeData = Theme.of(context);
-    final texts = AppLocalizations.of(context);
+    final texts = context.texts();
 
     return GestureDetector(
       behavior: HitTestBehavior.translucent,
@@ -90,7 +90,7 @@ class SuccessfulPaymentRouteState extends State<SuccessfulPaymentRoute>
 
   _buildSuccessfulPaymentMessage(BuildContext context) {
     final themeData = Theme.of(context);
-    final texts = AppLocalizations.of(context);
+    final texts = context.texts();
 
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,

@@ -6,7 +6,7 @@ import 'package:breez/bloc/account/account_model.dart';
 import 'package:breez/bloc/blocs_provider.dart';
 import 'package:breez/widgets/loader.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:breez_translations/breez_translations_locales.dart';
 import 'sweep_all_coins_confirmation.dart';
 import 'withdraw_funds_page.dart';
 
@@ -38,7 +38,7 @@ class UnexpectedFundsState extends State<UnexpectedFunds> {
   @override
   Widget build(BuildContext context) {
     final themeData = Theme.of(context);
-    final texts = AppLocalizations.of(context);
+    final texts = context.texts();
     final accountBloc = AppBlocsProvider.of<AccountBloc>(context);
     return Scaffold(
       body: StreamBuilder<AccountModel>(

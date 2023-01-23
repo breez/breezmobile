@@ -8,7 +8,7 @@ import 'package:breez/widgets/flushbar.dart';
 import 'package:breez/widgets/no_connection_dialog.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:breez_translations/breez_translations_locales.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:url_launcher/url_launcher_string.dart';
 
@@ -16,7 +16,7 @@ void checkVersionDialog(
   BuildContext context,
   UserProfileBloc userProfileBloc,
 ) {
-  final texts = AppLocalizations.of(context);
+  final texts = context.texts();
   final themeData = Theme.of(context);
   AccountBloc accBloc = AppBlocsProvider.of<AccountBloc>(context);
   CheckVersion action = CheckVersion();

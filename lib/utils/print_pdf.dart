@@ -2,9 +2,10 @@ import 'package:breez/bloc/user_profile/currency.dart';
 import 'package:breez/routes/charge/currency_wrapper.dart';
 import 'package:breez/utils/date.dart';
 import 'package:breez/widgets/print_parameters.dart';
+import 'package:breez_translations/generated/breez_translations.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:breez_translations/breez_translations_locales.dart';
 import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
 import 'package:printing/printing.dart';
@@ -18,7 +19,7 @@ class PrintService {
   );
 
   printAsPDF(BuildContext context) async {
-    final texts = AppLocalizations.of(context);
+    final texts = context.texts();
 
     try {
       final doc = pw.Document();
@@ -67,7 +68,7 @@ class PrintService {
     );
   }
 
-  _buildTransactionTime(AppLocalizations texts) {
+  _buildTransactionTime(BreezTranslations texts) {
     final creationTimestamp = printParameters.paymentInfo?.creationTimestamp;
 
     return pw.Row(
@@ -113,7 +114,7 @@ class PrintService {
   }
 
   pw.Table _buildTable(
-    AppLocalizations texts,
+    BreezTranslations texts,
     Map<String, ByteData> fontMap,
   ) {
     return pw.Table(
@@ -124,7 +125,7 @@ class PrintService {
   }
 
   _buildTableContent(
-    AppLocalizations texts,
+    BreezTranslations texts,
     Map<String, ByteData> fontMap,
   ) {
     List<pw.TableRow> saleLines = [];
@@ -134,7 +135,7 @@ class PrintService {
     return saleLines;
   }
 
-  _addTableHeader(AppLocalizations texts) {
+  _addTableHeader(BreezTranslations texts) {
     return pw.TableRow(
       children: [
         _buildTableItem(texts.utils_print_pdf_header_item),
@@ -183,7 +184,7 @@ class PrintService {
   }
 
   _addTotalLineToTable(
-    AppLocalizations texts,
+    BreezTranslations texts,
     Map<String, ByteData> fontMap,
   ) {
     final sale = printParameters.submittedSale;
@@ -350,7 +351,7 @@ class PrintService {
     );
   }
 
-  pw.Widget _buildDescription(AppLocalizations texts) {
+  pw.Widget _buildDescription(BreezTranslations texts) {
     return printParameters.submittedSale.note != null
         ? pw.Column(
             mainAxisSize: pw.MainAxisSize.min,
@@ -371,7 +372,7 @@ class PrintService {
         : pw.SizedBox();
   }
 
-  pw.Widget _buildPaymentInfo(AppLocalizations texts) {
+  pw.Widget _buildPaymentInfo(BreezTranslations texts) {
     final preimage = printParameters.paymentInfo?.preimage;
     return preimage != null && preimage.isNotEmpty
         ? pw.Column(

@@ -11,7 +11,7 @@ import 'package:breez/widgets/breez_avatar_dialog.dart';
 import 'package:breez/widgets/breez_drawer_header.dart';
 import 'package:breez/widgets/error_dialog.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:breez_translations/breez_translations_locales.dart';
 
 class DrawerItemConfig {
   final GlobalKey key;
@@ -251,7 +251,7 @@ Future _changeTheme(
   BuildContext context,
 ) async {
   final themeData = Theme.of(context);
-  final texts = AppLocalizations.of(context);
+  final texts = context.texts();
 
   var action = ChangeTheme(themeId);
   userProfileBloc.userActionsSink.add(action);
@@ -291,7 +291,7 @@ Padding _buildUsername(
   BuildContext context,
   AsyncSnapshot<BreezUserModel> snapshot,
 ) {
-  final texts = AppLocalizations.of(context);
+  final texts = context.texts();
 
   return Padding(
     padding: EdgeInsets.only(top: 8.0),

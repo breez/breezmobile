@@ -11,7 +11,7 @@ import 'package:breez/widgets/flushbar.dart';
 import 'package:breez/widgets/loader.dart';
 import 'package:breez/widgets/pos_report_dialog.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:breez_translations/breez_translations_locales.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:share_plus/share_plus.dart';
 
@@ -44,7 +44,7 @@ class PosTransactionsPageState extends State<PosTransactionsPage> {
 
   @override
   Widget build(BuildContext context) {
-    final texts = AppLocalizations.of(context);
+    final texts = context.texts();
 
     return StreamBuilder<AccountModel>(
       stream: _accountBloc.accountStream,
@@ -91,7 +91,7 @@ class PosTransactionsPageState extends State<PosTransactionsPage> {
     Widget body, [
     List<Widget> actions,
   ]) {
-    final texts = AppLocalizations.of(context);
+    final texts = context.texts();
     final themeData = Theme.of(context);
 
     return Scaffold(
@@ -160,7 +160,7 @@ class PosTransactionsPageState extends State<PosTransactionsPage> {
     PaymentsModel paymentsModel,
   ) {
     final themeData = Theme.of(context);
-    final texts = AppLocalizations.of(context);
+    final texts = context.texts();
 
     if (paymentsModel.paymentsList.isNotEmpty) {
       return Padding(
@@ -205,7 +205,7 @@ class PosTransactionsPageState extends State<PosTransactionsPage> {
   }
 
   Future _exportTransactions(BuildContext context) async {
-    final texts = AppLocalizations.of(context);
+    final texts = context.texts();
     var action = ExportPayments();
     _accountBloc.userActionsSink.add(action);
     Navigator.of(context).push(createLoaderRoute(context));
@@ -226,7 +226,7 @@ class PosTransactionsPageState extends State<PosTransactionsPage> {
     PaymentsModel paymentsModel,
     AccountModel accountModel,
   ) {
-    final texts = AppLocalizations.of(context);
+    final texts = context.texts();
     final themeData = Theme.of(context);
     final filter = paymentsModel.filter;
     final payments = paymentsModel.paymentsList;

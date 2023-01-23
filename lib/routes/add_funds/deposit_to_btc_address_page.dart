@@ -5,15 +5,15 @@ import 'package:breez/bloc/account/add_funds_model.dart';
 import 'package:breez/bloc/blocs_provider.dart';
 import 'package:breez/bloc/lsp/lsp_bloc.dart';
 import 'package:breez/bloc/lsp/lsp_model.dart';
+import 'package:breez/routes/add_funds/address_widget.dart';
+import 'package:breez/routes/add_funds/conditional_deposit.dart';
 import 'package:breez/widgets/back_button.dart' as backBtn;
 import 'package:breez/widgets/single_button_bottom_bar.dart';
 import 'package:breez/widgets/warning_box.dart';
+import 'package:breez_translations/breez_translations_locales.dart';
+import 'package:breez_translations/generated/breez_translations.dart';
 import 'package:fixnum/fixnum.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-
-import 'address_widget.dart';
-import 'conditional_deposit.dart';
 
 class DepositToBTCAddressPage extends StatefulWidget {
   const DepositToBTCAddressPage();
@@ -39,7 +39,7 @@ class DepositToBTCAddressPageState extends State<DepositToBTCAddressPage> {
 
   @override
   Widget build(BuildContext context) {
-    final texts = AppLocalizations.of(context);
+    final texts = context.texts();
     final themeData = Theme.of(context);
 
     final accountBloc = AppBlocsProvider.of<AccountBloc>(context);
@@ -102,7 +102,7 @@ class DepositToBTCAddressPageState extends State<DepositToBTCAddressPage> {
     LSPStatus lspStatus,
     String error,
   ) {
-    final texts = AppLocalizations.of(context);
+    final texts = context.texts();
 
     String errorMessage;
     if (error != null) {
@@ -161,7 +161,7 @@ class DepositToBTCAddressPageState extends State<DepositToBTCAddressPage> {
   }
 
   String _sendMessage(
-    AppLocalizations texts,
+    BreezTranslations texts,
     AccountModel accountModel,
     LSPInfo lspInfo,
     Int64 minAllowedDeposit,
@@ -241,7 +241,7 @@ class DepositToBTCAddressPageState extends State<DepositToBTCAddressPage> {
     AccountModel account, {
     hasError = false,
   }) {
-    final texts = AppLocalizations.of(context);
+    final texts = context.texts();
 
     if (hasError || response?.errorMessage?.isNotEmpty == true) {
       return SingleButtonBottomBar(

@@ -12,7 +12,7 @@ import 'package:breez/widgets/calendar_dialog.dart';
 import 'package:breez/widgets/loader.dart';
 import 'package:fixnum/fixnum.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:breez_translations/breez_translations_locales.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
 class PosReportDialog extends StatelessWidget {
@@ -57,7 +57,7 @@ class PosReportDialog extends StatelessWidget {
     PosReportTimeRange timeRange,
     PosReportResult result,
   ) {
-    final texts = AppLocalizations.of(context);
+    final texts = context.texts();
     final themeData = Theme.of(context);
 
     return AlertDialog(
@@ -118,7 +118,7 @@ class PosReportDialog extends StatelessWidget {
     BuildContext context,
     PosReportTimeRange timeRange,
   ) {
-    final texts = AppLocalizations.of(context);
+    final texts = context.texts();
     final themeData = Theme.of(context);
 
     String title;
@@ -221,7 +221,7 @@ class PosReportDialog extends StatelessWidget {
     BuildContext context,
     PosReportTimeRange timeRange,
   ) {
-    final texts = AppLocalizations.of(context);
+    final texts = context.texts();
     final themeData = Theme.of(context);
 
     String title;
@@ -267,7 +267,7 @@ class PosReportDialog extends StatelessWidget {
     PosReportTimeRange timeRange,
     PosReportResult result,
   ) {
-    final texts = AppLocalizations.of(context);
+    final texts = context.texts();
     final themeData = Theme.of(context);
     final isDaily = timeRange is PosReportTimeRangeDaily;
     final showTotal = result is PosReportResultData && result.isSingleFiat();

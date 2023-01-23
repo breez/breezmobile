@@ -1,7 +1,7 @@
 import 'package:breez/theme_data.dart' as theme;
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:breez_translations/breez_translations_locales.dart';
 
 const double _kBarSize = 45.0;
 
@@ -32,7 +32,7 @@ class KeyboardDoneAction {
   void _showOverlay() {
     OverlayState os = Overlay.of(focusNodes[0].context);
     _overlayEntry = OverlayEntry(builder: (context) {
-      final texts = AppLocalizations.of(context);
+      final texts = context.texts();
       final queryData = MediaQuery.of(context);
       // Update and build footer, if any
       return Positioned(

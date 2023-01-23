@@ -4,7 +4,7 @@ import 'package:breez/bloc/user_profile/currency.dart';
 import 'package:breez/theme_data.dart' as theme;
 import 'package:breez/widgets/amount_form_field.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:breez_translations/breez_translations_locales.dart';
 import 'package:url_launcher/url_launcher_string.dart';
 
 import 'keyboard_done_action.dart';
@@ -100,7 +100,7 @@ class EscherDialogState extends State<EscherDialog> {
 
   Widget _buildRequestPayTextWidget(BuildContext context) {
     final themeData = Theme.of(context);
-    final texts = AppLocalizations.of(context);
+    final texts = context.texts();
 
     return Padding(
       padding: EdgeInsets.only(top: 36, bottom: 8),
@@ -115,7 +115,7 @@ class EscherDialogState extends State<EscherDialog> {
   }
 
   Widget _buildAmountWidget(BuildContext context, AccountModel account) {
-    final texts = AppLocalizations.of(context);
+    final texts = context.texts();
     final themeData = Theme.of(context);
 
     return Theme(
@@ -158,7 +158,7 @@ class EscherDialogState extends State<EscherDialog> {
   }
 
   Widget _buildActions(BuildContext context, AccountModel account) {
-    final texts = AppLocalizations.of(context);
+    final texts = context.texts();
     final themeData = Theme.of(context);
 
     List<Widget> actions = [

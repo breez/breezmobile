@@ -4,7 +4,7 @@ import 'package:breez/bloc/account/account_model.dart';
 import 'package:breez/bloc/pos_catalog/model.dart';
 import 'package:breez/logger.dart';
 import 'package:breez/utils/date.dart';
-import 'package:breez/utils/locale.dart';
+import 'package:breez_translations/breez_translations_locales.dart';
 import 'package:csv/csv.dart';
 import 'package:flutter/foundation.dart';
 import 'package:intl/intl.dart';

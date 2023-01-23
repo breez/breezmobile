@@ -8,7 +8,7 @@ import 'package:breez/widgets/keyboard_done_action.dart';
 import 'package:fixnum/fixnum.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:breez_translations/breez_translations_locales.dart';
 
 import 'flushbar.dart';
 
@@ -83,7 +83,7 @@ class SendOnchainState extends State<SendOnchain> {
 
   @override
   Widget build(BuildContext context) {
-    final texts = AppLocalizations.of(context);
+    final texts = context.texts();
     final themeData = Theme.of(context);
     final dialogTheme = themeData.dialogTheme;
 
@@ -252,7 +252,7 @@ class SendOnchainState extends State<SendOnchain> {
 
   Widget _buildAvailableBTC(BuildContext context, AccountModel acc) {
     final themeData = Theme.of(context);
-    final texts = AppLocalizations.of(context);
+    final texts = context.texts();
 
     return Row(
       children: [
@@ -278,7 +278,7 @@ class SendOnchainState extends State<SendOnchain> {
   }
 
   Future _scanBarcode() async {
-    final texts = AppLocalizations.of(context);
+    final texts = context.texts();
     FocusScope.of(context).requestFocus(FocusNode());
     String barcode = await Navigator.pushNamed<String>(context, "/qr_scan");
     if (barcode == null) {

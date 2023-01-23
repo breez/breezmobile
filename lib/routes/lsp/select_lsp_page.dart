@@ -5,7 +5,7 @@ import 'package:breez/widgets/loader.dart';
 import 'package:breez/widgets/route.dart';
 import 'package:breez/widgets/single_button_bottom_bar.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:breez_translations/breez_translations_locales.dart';
 import 'lsp_webview.dart';
 
 class SelectLSPPage extends StatefulWidget {
@@ -56,7 +56,7 @@ class SelectLSPPageState extends State<SelectLSPPage> {
   @override
   Widget build(BuildContext context) {
     final themeData = Theme.of(context);
-    final texts = AppLocalizations.of(context);
+    final texts = context.texts();
 
     return Scaffold(
       appBar: AppBar(
@@ -150,7 +150,7 @@ class SelectLSPPageState extends State<SelectLSPPage> {
   }
 
   Widget _buildBottomButton(BuildContext context) {
-    final texts = AppLocalizations.of(context);
+    final texts = context.texts();
 
     if (_error != null) {
       return SingleButtonBottomBar(

@@ -18,10 +18,11 @@ import 'package:breez/widgets/error_dialog.dart';
 import 'package:breez/widgets/flushbar.dart';
 import 'package:breez/widgets/link_launcher.dart';
 import 'package:breez/widgets/loader.dart';
+import 'package:breez_translations/generated/breez_translations.dart';
 import 'package:collection/collection.dart';
 import 'package:fixnum/fixnum.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:breez_translations/breez_translations_locales.dart';
 import 'package:http/http.dart' as http;
 import 'package:share_plus/share_plus.dart';
 
@@ -34,7 +35,7 @@ Future<Null> showPaymentDetailsDialog(
 ) {
   final themeData = Theme.of(context);
   var mediaQuery = MediaQuery.of(context);
-  final texts = AppLocalizations.of(context);
+  final texts = context.texts();
 
   if (paymentInfo.type == PaymentType.CLOSED_CHANNEL) {
     final lspBloc = AppBlocsProvider.of<LSPBloc>(context);
@@ -311,7 +312,7 @@ Future<Null> showPaymentDetailsDialog(
 
 Widget _amountText(
   PaymentInfo paymentInfo,
-  AppLocalizations texts,
+  BreezTranslations texts,
   ThemeData themeData,
 ) {
   final amount = paymentInfo.currency.format(paymentInfo.amount);
@@ -330,7 +331,7 @@ Widget _amountText(
 
 List<Widget> _getPaymentInfoDetails(
   PaymentInfo paymentInfo,
-  AppLocalizations texts,
+  BreezTranslations texts,
 ) {
   if (paymentInfo is StreamedPaymentInfo) {
     return _getStreamedPaymentInfoDetails(paymentInfo);
@@ -359,7 +360,7 @@ List<Widget> _getStreamedPaymentInfoDetails(StreamedPaymentInfo paymentInfo) {
 List<Widget> _getLNUrlSuccessActionForPayment(
   BuildContext context,
   SuccessAction sa,
-  AppLocalizations texts,
+  BreezTranslations texts,
 ) {
   return <Widget>[
     if (sa.tag == 'url') ...[
@@ -382,7 +383,7 @@ List<Widget> _getLNUrlSuccessActionForPayment(
 
 List<Widget> _getSinglePaymentInfoDetails(
   PaymentInfo paymentInfo,
-  AppLocalizations texts,
+  BreezTranslations texts,
 ) {
   return List<Widget>.from({
     paymentInfo.preimage == null || paymentInfo.preimage.isEmpty
@@ -419,7 +420,7 @@ class ShareablePaymentRow extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final themeData = Theme.of(context);
-    final texts = AppLocalizations.of(context);
+    final texts = context.texts();
     final _expansionTileTheme =
         themeData.copyWith(dividerColor: themeData.backgroundColor);
     return Theme(
@@ -623,7 +624,7 @@ class ClosedChannelPaymentDetailsState
   @override
   Widget build(BuildContext context) {
     final themeData = Theme.of(context);
-    final texts = AppLocalizations.of(context);
+    final texts = context.texts();
     if (!widget.closedChannel.pending) {
       return Column(
         mainAxisSize: MainAxisSize.min,
@@ -723,7 +724,7 @@ class ClosedChannelPaymentDetailsState
 
   Future<bool> _promptForRestart() {
     final themeData = Theme.of(context);
-    final texts = AppLocalizations.of(context);
+    final texts = context.texts();
     return promptAreYouSure(
       context,
       null,
@@ -761,7 +762,7 @@ class TxWidget extends StatelessWidget {
     if (this.txURL == null) {
       return SizedBox();
     }
-    final texts = AppLocalizations.of(context);
+    final texts = context.texts();
     var textStyle = DefaultTextStyle.of(context).style;
     textStyle = textStyle.copyWith(
       fontSize: textStyle.fontSize * 0.8,

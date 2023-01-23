@@ -1,7 +1,7 @@
 import 'package:breez/bloc/user_profile/currency.dart';
 import 'package:breez/routes/podcast/custom_amount_form.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:breez_translations/breez_translations_locales.dart';
 
 class CustomAmountDialog extends StatefulWidget {
   final int customAmount;
@@ -40,7 +40,7 @@ class CustomAmountDialogState extends State<CustomAmountDialog> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final texts = AppLocalizations.of(context);
+    final texts = context.texts();
     return AlertDialog(
       title: Text(
         texts.podcast_boost_custom_amount,
@@ -70,7 +70,7 @@ class CustomAmountDialogState extends State<CustomAmountDialog> {
   }
 
   List<Widget> _buildActions(BuildContext context) {
-    final texts = AppLocalizations.of(context);
+    final texts = context.texts();
     final themeData = Theme.of(context);
 
     List<Widget> actions = [

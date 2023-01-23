@@ -9,7 +9,7 @@ import 'package:breez/utils/node_id.dart';
 import 'package:breez/widgets/flushbar.dart';
 import 'package:breez/widgets/route.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:breez_translations/breez_translations_locales.dart';
 
 class InvoiceBottomSheet extends StatefulWidget {
   final InvoiceBloc invoiceBloc;
@@ -41,7 +41,7 @@ class InvoiceBottomSheetState extends State<InvoiceBottomSheet>
 
   @override
   Widget build(BuildContext context) {
-    final texts = AppLocalizations.of(context);
+    final texts = context.texts();
     final navigator = Navigator.of(context);
 
     return StreamBuilder<BreezUserModel>(

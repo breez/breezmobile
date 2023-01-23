@@ -9,15 +9,16 @@ import 'package:breez/utils/exceptions.dart';
 import 'package:breez/widgets/error_dialog.dart';
 import 'package:breez/widgets/loader.dart';
 import 'package:breez/widgets/route.dart';
+import 'package:breez_translations/generated/breez_translations.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:breez_translations/breez_translations_locales.dart';
 
 class LNURLHandler {
   final LNUrlBloc lnurlBloc;
   ModalRoute _loaderRoute;
 
   LNURLHandler(BuildContext context, this.lnurlBloc) {
-    final texts = AppLocalizations.of(context);
+    final texts = context.texts();
     final themeData = Theme.of(context);
 
     lnurlBloc.listenLNUrl().listen((response) {
@@ -39,7 +40,7 @@ class LNURLHandler {
     });
   }
 
-  String _getErrorMessage(AppLocalizations texts, Object error) {
+  String _getErrorMessage(BreezTranslations texts, Object error) {
     switch (error.toString()) {
       case "GIFT_SPENT":
         return texts.handler_lnurl_error_gift;
@@ -53,7 +54,7 @@ class LNURLHandler {
     LNUrlBloc lnurlBloc,
     dynamic response,
   ) {
-    final texts = AppLocalizations.of(context);
+    final texts = context.texts();
     final themeData = Theme.of(context);
     final navigator = Navigator.of(context);
 
@@ -133,7 +134,7 @@ class LNURLHandler {
     LNUrlBloc lnurlBloc,
     ChannelFetchResponse response,
   ) {
-    final texts = AppLocalizations.of(context);
+    final texts = context.texts();
     final themeData = Theme.of(context);
     final navigator = Navigator.of(context);
 

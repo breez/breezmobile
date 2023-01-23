@@ -1,12 +1,12 @@
 import 'package:breez/utils/exceptions.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations_de.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations_en.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations_es.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations_fi.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations_fr.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations_it.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations_pt.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations_sv.dart';
+import 'package:breez_translations/generated/breez_translations_de.dart';
+import 'package:breez_translations/generated/breez_translations_en.dart';
+import 'package:breez_translations/generated/breez_translations_es.dart';
+import 'package:breez_translations/generated/breez_translations_fi.dart';
+import 'package:breez_translations/generated/breez_translations_fr.dart';
+import 'package:breez_translations/generated/breez_translations_it.dart';
+import 'package:breez_translations/generated/breez_translations_pt.dart';
+import 'package:breez_translations/generated/breez_translations_sv.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {
@@ -69,14 +69,14 @@ void main() {
   });
 
   final locales = {
-    "de": AppLocalizationsDe(),
-    "en": AppLocalizationsEn(),
-    "es": AppLocalizationsEs(),
-    "fi": AppLocalizationsFi(),
-    "fr": AppLocalizationsFr(),
-    "it": AppLocalizationsIt(),
-    "pt": AppLocalizationsPt(),
-    "sv": AppLocalizationsSv(),
+    "de": BreezTranslationsDe(),
+    "en": BreezTranslationsEn(),
+    "es": BreezTranslationsEs(),
+    "fi": BreezTranslationsFi(),
+    "fr": BreezTranslationsFr(),
+    "it": BreezTranslationsIt(),
+    "pt": BreezTranslationsPt(),
+    "sv": BreezTranslationsSv(),
   };
   group("localizedExceptionMessage", () {
     for (final locale in locales.values) {

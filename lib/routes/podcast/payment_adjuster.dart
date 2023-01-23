@@ -7,7 +7,7 @@ import 'package:breez/bloc/user_profile/user_actions.dart';
 import 'package:breez/bloc/user_profile/user_profile_bloc.dart';
 import 'package:breez/utils/min_font_size.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:breez_translations/breez_translations_locales.dart';
 import 'package:intl/intl.dart';
 
 import 'custom_amount_dialog.dart';
@@ -72,7 +72,7 @@ class PaymentAdjuster extends StatelessWidget {
   }
 
   Widget _numberPanel(BuildContext context, UserProfileBloc userBloc) {
-    final texts = AppLocalizations.of(context);
+    final texts = context.texts();
     final minFontSize = 9.0 / MediaQuery.of(context).textScaleFactor;
     return Positioned(
       left: 0,
@@ -163,7 +163,7 @@ class PaymentAdjuster extends StatelessWidget {
   }
 
   String _formatSatsPerMinAmount(BuildContext context) {
-    final texts = AppLocalizations.of(context);
+    final texts = context.texts();
     var satsPerMinValue = userModel.paymentOptions.preferredSatsPerMinValue;
     final count = pow(10, (satsPerMinValue.toString().length - 3));
     var roundedValue = satsPerMinValue / count;

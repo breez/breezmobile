@@ -18,9 +18,10 @@ import 'package:breez/widgets/loader.dart';
 import 'package:breez/widgets/single_button_bottom_bar.dart';
 import 'package:breez/widgets/static_loader.dart';
 import 'package:breez/widgets/warning_box.dart';
+import 'package:breez_translations/generated/breez_translations.dart';
 import 'package:fixnum/fixnum.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:breez_translations/breez_translations_locales.dart';
 
 class WithdrawFundsPage extends StatefulWidget {
   final Future Function(Int64 amount, String destAddress, bool isMax) onNext;
@@ -77,7 +78,7 @@ class WithdrawFundsPageState extends State<WithdrawFundsPage> {
 
   @override
   Widget build(BuildContext context) {
-    final texts = AppLocalizations.of(context);
+    final texts = context.texts();
     final themeData = Theme.of(context);
 
     final reverseSwapBloc = AppBlocsProvider.of<ReverseSwapBloc>(context);
@@ -253,7 +254,7 @@ class WithdrawFundsPageState extends State<WithdrawFundsPage> {
     );
   }
 
-  Widget _buildAvailableBTC(AppLocalizations texts, AccountModel acc) {
+  Widget _buildAvailableBTC(BreezTranslations texts, AccountModel acc) {
     return Row(
       children: [
         Text(
@@ -309,7 +310,7 @@ class WithdrawFundsPageState extends State<WithdrawFundsPage> {
   }
 
   Future _scanBarcode(BuildContext context, AccountModel account) async {
-    final texts = AppLocalizations.of(context);
+    final texts = context.texts();
     FocusScope.of(context).requestFocus(FocusNode());
     String barcode = await Navigator.pushNamed<String>(context, "/qr_scan");
     if (barcode.isEmpty) {
@@ -376,7 +377,7 @@ class _NextButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final texts = AppLocalizations.of(context);
+    final texts = context.texts();
     return StreamBuilder<AccountModel>(
       stream: accountBloc.accountStream,
       builder: (context, snapshot) {

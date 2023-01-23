@@ -1,7 +1,7 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:breez_translations/breez_translations_locales.dart';
 
 class BetaWarningDialog extends StatefulWidget {
   @override
@@ -19,7 +19,7 @@ class _BetaWarningDialogState extends State<BetaWarningDialog> {
 
   @override
   Widget build(BuildContext context) {
-    final texts = AppLocalizations.of(context);
+    final texts = context.texts();
     final themeData = Theme.of(context);
 
     return Theme(
@@ -67,7 +67,7 @@ class _BetaWarningDialogState extends State<BetaWarningDialog> {
   }
 
   List<Widget> _getContent(BuildContext context) {
-    final texts = AppLocalizations.of(context);
+    final texts = context.texts();
     final themeData = Theme.of(context);
 
     return [

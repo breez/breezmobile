@@ -1,13 +1,13 @@
+import 'package:breez_translations/generated/breez_translations.dart';
+import 'package:breez_translations/generated/breez_translations_de.dart';
+import 'package:breez_translations/generated/breez_translations_en.dart';
+import 'package:breez_translations/generated/breez_translations_es.dart';
+import 'package:breez_translations/generated/breez_translations_fi.dart';
+import 'package:breez_translations/generated/breez_translations_fr.dart';
+import 'package:breez_translations/generated/breez_translations_it.dart';
+import 'package:breez_translations/generated/breez_translations_pt.dart';
+import 'package:breez_translations/generated/breez_translations_sv.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations_de.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations_en.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations_es.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations_fi.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations_fr.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations_it.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations_pt.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations_sv.dart';
 
 enum ProfileAnimal {
   BAT,
@@ -38,7 +38,7 @@ enum ProfileAnimal {
   SNAKE,
 }
 
-ProfileAnimal profileAnimalFromName(String name, AppLocalizations texts) {
+ProfileAnimal profileAnimalFromName(String name, BreezTranslations texts) {
   final key = name.toLowerCase();
   final localizedNames = _animalsFromName[texts.locale];
 
@@ -57,7 +57,7 @@ ProfileAnimal profileAnimalFromName(String name, AppLocalizations texts) {
 }
 
 extension ProfileAnimalExtension on ProfileAnimal {
-  String name(AppLocalizations texts) {
+  String name(BreezTranslations texts) {
     switch (this) {
       case ProfileAnimal.BAT:
         return texts.app_animal_bat;
@@ -177,17 +177,17 @@ extension ProfileAnimalExtension on ProfileAnimal {
 }
 
 Map<String, Map<String, ProfileAnimal>> _animalsFromName = {
-  "de": _buildAnimalsFromName(AppLocalizationsDe()),
-  "en": _buildAnimalsFromName(AppLocalizationsEn()),
-  "es": _buildAnimalsFromName(AppLocalizationsEs()),
-  "fi": _buildAnimalsFromName(AppLocalizationsFi()),
-  "fr": _buildAnimalsFromName(AppLocalizationsFr()),
-  "it": _buildAnimalsFromName(AppLocalizationsIt()),
-  "pt": _buildAnimalsFromName(AppLocalizationsPt()),
-  "sv": _buildAnimalsFromName(AppLocalizationsSv()),
+  "de": _buildAnimalsFromName(BreezTranslationsDe()),
+  "en": _buildAnimalsFromName(BreezTranslationsEn()),
+  "es": _buildAnimalsFromName(BreezTranslationsEs()),
+  "fi": _buildAnimalsFromName(BreezTranslationsFi()),
+  "fr": _buildAnimalsFromName(BreezTranslationsFr()),
+  "it": _buildAnimalsFromName(BreezTranslationsIt()),
+  "pt": _buildAnimalsFromName(BreezTranslationsPt()),
+  "sv": _buildAnimalsFromName(BreezTranslationsSv()),
 };
 
-Map<String, ProfileAnimal> _buildAnimalsFromName(AppLocalizations local) => {
+Map<String, ProfileAnimal> _buildAnimalsFromName(BreezTranslations local) => {
       local.app_animal_bat.toLowerCase(): ProfileAnimal.BAT,
       local.app_animal_bear.toLowerCase(): ProfileAnimal.BEAR,
       local.app_animal_boar.toLowerCase(): ProfileAnimal.BOAR,

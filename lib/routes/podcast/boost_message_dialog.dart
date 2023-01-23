@@ -2,7 +2,7 @@ import 'package:breez/bloc/user_profile/currency.dart';
 import 'package:breez/routes/podcast/custom_amount_form.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:breez_translations/breez_translations_locales.dart';
 
 class BoostMessageDialog extends StatefulWidget {
   final int customAmount;
@@ -46,7 +46,7 @@ class BoostMessageDialogState extends State<BoostMessageDialog> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final texts = AppLocalizations.of(context);
+    final texts = context.texts();
     return AlertDialog(
       scrollable: true,
       title: Text(
@@ -63,7 +63,7 @@ class BoostMessageDialogState extends State<BoostMessageDialog> {
 
   Widget _buildMessageWidget(BuildContext context) {
     final theme = Theme.of(context);
-    final texts = AppLocalizations.of(context);
+    final texts = context.texts();
     return Column(
       mainAxisSize: MainAxisSize.min,
       mainAxisAlignment: MainAxisAlignment.center,
@@ -108,7 +108,7 @@ class BoostMessageDialogState extends State<BoostMessageDialog> {
   }
 
   List<Widget> _buildActions(BuildContext context) {
-    final texts = AppLocalizations.of(context);
+    final texts = context.texts();
     final theme = Theme.of(context);
     List<Widget> actions = [
       TextButton(

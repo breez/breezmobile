@@ -4,7 +4,7 @@ import 'package:breez/logger.dart';
 import 'package:breez/widgets/scan_overlay.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:breez_translations/breez_translations_locales.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
@@ -89,7 +89,7 @@ class ImagePickerButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final texts = AppLocalizations.of(context);
+    final texts = context.texts();
 
     return IconButton(
       padding: const EdgeInsets.fromLTRB(0, 32, 24, 0),
@@ -133,7 +133,7 @@ class QRScanCancelButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final texts = AppLocalizations.of(context);
+    final texts = context.texts();
 
     return Center(
       child: Container(

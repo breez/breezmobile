@@ -1,6 +1,6 @@
 import 'package:breez/utils/external_browser.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:breez_translations/breez_translations_locales.dart';
 
 class LinkLauncher extends StatelessWidget {
   final double iconSize;
@@ -22,7 +22,7 @@ class LinkLauncher extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final texts = AppLocalizations.of(context);
+    final texts = context.texts();
     final style = this.textStyle ?? DefaultTextStyle.of(context).style;
 
     return Column(

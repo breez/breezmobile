@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:breez_translations/breez_translations_locales.dart';
 
 class BackupPhraseWarningDialog extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final themeData = Theme.of(context);
-    final texts = AppLocalizations.of(context);
+    final texts = context.texts();
     return Theme(
       data: themeData.copyWith(
         unselectedWidgetColor: themeData.canvasColor,
@@ -38,7 +38,7 @@ class BackupPhraseWarningDialog extends StatelessWidget {
   }
 
   List<Widget> _getContent(BuildContext context) {
-    final texts = AppLocalizations.of(context);
+    final texts = context.texts();
     final themeData = Theme.of(context);
     return [
       Padding(

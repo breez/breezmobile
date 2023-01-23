@@ -33,8 +33,8 @@ packages:
     dependency: "direct main"
     description:
       path: "."
-      ref: f1fd2401fc61e021584d57081594265abb56110a
-      resolved-ref: f1fd2401fc61e021584d57081594265abb56110a
+      ref: "4169cd904b93bda16837fe3e28d42fe26731905d"
+      resolved-ref: "4169cd904b93bda16837fe3e28d42fe26731905d"
       url: "https://github.com/breez/anytime_podcast_player.git"
     source: git
     version: "1.2.1+74-breez"
@@ -129,6 +129,15 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "2.1.0"
+  breez_translations:
+    dependency: "direct main"
+    description:
+      path: "."
+      ref: "9c8cc35d9e289a9696ab15ad91734ff12739b171"
+      resolved-ref: "9c8cc35d9e289a9696ab15ad91734ff12739b171"
+      url: "https://github.com/breez/Breez-Translations.git"
+    source: git
+    version: "1.0.0"
   build:
     dependency: transitive
     description:
@@ -1875,5 +1884,5 @@ packages:
     source: hosted
     version: "3.1.1"
 sdks:
-  dart: ">=2.18.1 <3.0.0"
+  dart: ">=2.18.6 <3.0.0"
   flutter: ">=3.3.0"

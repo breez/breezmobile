@@ -9,7 +9,7 @@ import 'package:breez/widgets/single_button_bottom_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:http/http.dart' as http;
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:breez_translations/breez_translations_locales.dart';
 
 class _CustomerData {
   String fullName = '';
@@ -328,7 +328,7 @@ class OrderCardPageState extends State<OrderCardPage> {
   }
 
   List<Widget> _showSkipButton(BuildContext context, bool showSkip) {
-    final texts = AppLocalizations.of(context);
+    final texts = context.texts();
 
     if (showSkip) {
       return [
@@ -351,7 +351,7 @@ class OrderCardPageState extends State<OrderCardPage> {
 
   void _showAlertDialog(BuildContext context) {
     final themeData = Theme.of(context);
-    final texts = AppLocalizations.of(context);
+    final texts = context.texts();
 
     showDialog(
       useRootNavigator: false,
@@ -385,7 +385,7 @@ class OrderCardPageState extends State<OrderCardPage> {
   @override
   Widget build(BuildContext context) {
     final themeData = Theme.of(context);
-    final texts = AppLocalizations.of(context);
+    final texts = context.texts();
 
     bool _showSkip = widget.showSkip ?? false;
     return Scaffold(
@@ -495,7 +495,7 @@ class OrderCardPageState extends State<OrderCardPage> {
   }
 
   Widget _fullName(BuildContext context) {
-    final texts = AppLocalizations.of(context);
+    final texts = context.texts();
     return Container(
       padding: const EdgeInsets.only(top: 8.0),
       child: TextFormField(
@@ -518,7 +518,7 @@ class OrderCardPageState extends State<OrderCardPage> {
   }
 
   Widget _email(BuildContext context) {
-    final texts = AppLocalizations.of(context);
+    final texts = context.texts();
     return Container(
       padding: const EdgeInsets.only(top: 8.0),
       child: TextFormField(
@@ -543,7 +543,7 @@ class OrderCardPageState extends State<OrderCardPage> {
   }
 
   Widget _address(BuildContext context) {
-    final texts = AppLocalizations.of(context);
+    final texts = context.texts();
     return Container(
       padding: const EdgeInsets.only(top: 19.0),
       child: TextFormField(
@@ -566,7 +566,7 @@ class OrderCardPageState extends State<OrderCardPage> {
   }
 
   Widget _city(BuildContext context) {
-    final texts = AppLocalizations.of(context);
+    final texts = context.texts();
     return Expanded(
       flex: 200,
       child: Container(
@@ -592,7 +592,7 @@ class OrderCardPageState extends State<OrderCardPage> {
   }
 
   Widget _state(BuildContext context) {
-    final texts = AppLocalizations.of(context);
+    final texts = context.texts();
     return Expanded(
       flex: 128,
       child: Container(
@@ -625,7 +625,7 @@ class OrderCardPageState extends State<OrderCardPage> {
   }
 
   Widget _country(BuildContext context) {
-    final texts = AppLocalizations.of(context);
+    final texts = context.texts();
     return Expanded(
       flex: 200,
       child: Container(
@@ -655,7 +655,7 @@ class OrderCardPageState extends State<OrderCardPage> {
   }
 
   Widget _zipCode(BuildContext context) {
-    final texts = AppLocalizations.of(context);
+    final texts = context.texts();
     return Expanded(
       flex: 128,
       child: Container(
@@ -684,7 +684,7 @@ class OrderCardPageState extends State<OrderCardPage> {
   }
 
   Widget _disclaimer(BuildContext context) {
-    final texts = AppLocalizations.of(context);
+    final texts = context.texts();
     return Padding(
       padding: EdgeInsets.only(top: 40.0),
       child: InkWell(

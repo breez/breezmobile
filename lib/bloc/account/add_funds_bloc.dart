@@ -2,6 +2,10 @@ import 'dart:async';
 import 'dart:convert';
 
 import 'package:breez/bloc/account/account_model.dart';
+import 'package:breez/bloc/account/add_fund_vendor_model.dart';
+import 'package:breez/bloc/account/add_funds_model.dart';
+import 'package:breez/bloc/account/moonpay_order.dart';
+import 'package:breez/bloc/blocs_provider.dart';
 import 'package:breez/bloc/lsp/lsp_model.dart';
 import 'package:breez/bloc/user_profile/breez_user_model.dart';
 import 'package:breez/bloc/user_profile/currency.dart';
@@ -9,16 +13,11 @@ import 'package:breez/logger.dart';
 import 'package:breez/services/breez_server/server.dart';
 import 'package:breez/services/breezlib/breez_bridge.dart';
 import 'package:breez/services/injector.dart';
-import 'package:breez/utils/locale.dart';
+import 'package:breez_translations/breez_translations_locales.dart';
 import 'package:flutter/services.dart';
 import 'package:http/http.dart' as http;
 import "package:ini/ini.dart";
 import 'package:rxdart/rxdart.dart';
-
-import '../blocs_provider.dart';
-import 'add_fund_vendor_model.dart';
-import 'add_funds_model.dart';
-import 'moonpay_order.dart';
 
 class AddFundsBloc extends Bloc {
   static const String ADD_FUNDS_SETTINGS_PREFERENCES_KEY = "add_funds_settings";

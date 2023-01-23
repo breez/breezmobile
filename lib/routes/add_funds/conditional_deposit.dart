@@ -6,7 +6,7 @@ import 'package:breez/widgets/back_button.dart' as backBtn;
 import 'package:breez/widgets/flushbar.dart';
 import 'package:breez/widgets/link_launcher.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:breez_translations/breez_translations_locales.dart';
 
 class ConditionalDeposit extends StatelessWidget {
   final Widget enabledChild;
@@ -21,7 +21,7 @@ class ConditionalDeposit extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final themeData = Theme.of(context);
-    final texts = AppLocalizations.of(context);
+    final texts = context.texts();
     final accountBloc = AppBlocsProvider.of<AccountBloc>(context);
 
     return StreamBuilder<AccountModel>(
@@ -98,7 +98,7 @@ class ConditionalDeposit extends StatelessWidget {
   }
 
   Widget _linkLauncher(BuildContext context, String unconfirmedTxID) {
-    final texts = AppLocalizations.of(context);
+    final texts = context.texts();
     return LinkLauncher(
       linkName: unconfirmedTxID,
       linkAddress: "https://blockstream.info/tx/$unconfirmedTxID",

@@ -21,7 +21,7 @@ import 'package:breez/widgets/flushbar.dart';
 import 'package:breez/widgets/loader.dart';
 import 'package:breez/widgets/route.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:breez_translations/breez_translations_locales.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:url_launcher/url_launcher_string.dart';
 import 'package:validators/validators.dart';
@@ -37,7 +37,7 @@ class QrActionButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final texts = AppLocalizations.of(context);
+    final texts = context.texts();
     final invoiceBloc = AppBlocsProvider.of<InvoiceBloc>(context);
     final lnurlBloc = AppBlocsProvider.of<LNUrlBloc>(context);
 
@@ -179,7 +179,7 @@ class QrActionButton extends StatelessWidget {
     BuildContext context,
     String lnurl,
   ) async {
-    final texts = AppLocalizations.of(context);
+    final texts = context.texts();
     final fetchAction = Fetch(lnurl);
     final cancelCompleter = Completer();
     final loaderRoute = createLoaderRoute(context, onClose: () {
@@ -216,7 +216,7 @@ class QrActionButton extends StatelessWidget {
   }
 
   void _handleWebAddress(BuildContext context, String url) {
-    final texts = AppLocalizations.of(context);
+    final texts = context.texts();
     final themeData = Theme.of(context);
     final dialogTheme = themeData.dialogTheme;
     final size = MediaQuery.of(context).size;

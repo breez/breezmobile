@@ -10,7 +10,7 @@ import 'package:breez/widgets/sync_loader.dart';
 import 'package:fixnum/fixnum.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:breez_translations/breez_translations_locales.dart';
 import 'package:rxdart/subjects.dart';
 
 import 'payment_details_form.dart';
@@ -97,7 +97,7 @@ class _PayerInstructions extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final texts = AppLocalizations.of(context);
+    final texts = context.texts();
 
     final payeeData = sessionState.payeeData;
     final payerData = sessionState.payerData;
@@ -186,7 +186,7 @@ class WaitingChannelsSyncUIState extends State<WaitingChannelsSyncUI> {
 
   @override
   Widget build(BuildContext context) {
-    final texts = AppLocalizations.of(context);
+    final texts = context.texts();
     final themeData = Theme.of(context);
     final defaultTextStyle = DefaultTextStyle.of(context);
 

@@ -8,7 +8,7 @@ import 'package:breez/theme_data.dart' as theme;
 import 'package:breez/widgets/loader.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart' show SystemChannels, rootBundle;
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:breez_translations/breez_translations_locales.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
 import 'conditional_deposit.dart';
@@ -48,7 +48,7 @@ class MoonpayWebViewState extends State<MoonpayWebView> {
 
   @override
   Widget build(BuildContext context) {
-    final texts = AppLocalizations.of(context);
+    final texts = context.texts();
     return ConditionalDeposit(
       title: texts.add_funds_moonpay_title,
       enabledChild: _buildWebView(context),
@@ -56,7 +56,7 @@ class MoonpayWebViewState extends State<MoonpayWebView> {
   }
 
   Widget _buildWebView(BuildContext context) {
-    final texts = AppLocalizations.of(context);
+    final texts = context.texts();
     final themeData = Theme.of(context);
 
     return Material(
@@ -137,7 +137,7 @@ class MoonpayWebViewState extends State<MoonpayWebView> {
   }
 
   Widget _buildLoadingScreen(BuildContext context) {
-    final texts = AppLocalizations.of(context);
+    final texts = context.texts();
     return _error != null
         ? Column(
             mainAxisSize: MainAxisSize.max,

@@ -14,7 +14,7 @@ import 'package:breez/services/breezlib/breez_bridge.dart';
 import 'package:breez/services/breezlib/data/rpc.pb.dart';
 import 'package:breez/services/deep_links.dart';
 import 'package:breez/services/injector.dart';
-import 'package:breez/utils/locale.dart';
+import 'package:breez_translations/breez_translations_locales.dart';
 import 'package:fixnum/fixnum.dart';
 import 'package:grpc/grpc.dart';
 import 'package:rxdart/rxdart.dart';
@@ -22,7 +22,6 @@ import 'package:rxdart/rxdart.dart';
 /*
 Bloc that responsible for creating online payments session.
 The handling of the session itself is not done here but within the concrete session implementation.
-
 */
 class ConnectPayBloc {
   BreezBridge _breezLib = ServiceInjector().breezBridge;

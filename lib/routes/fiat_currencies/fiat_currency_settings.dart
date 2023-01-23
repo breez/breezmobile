@@ -9,10 +9,11 @@ import 'package:breez/theme_data.dart' as theme;
 import 'package:breez/widgets/back_button.dart' as backBtn;
 import 'package:breez/widgets/flushbar.dart';
 import 'package:breez/widgets/loader.dart';
+import 'package:breez_translations/generated/breez_translations.dart';
 import 'package:drag_and_drop_lists/drag_and_drop_lists.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:breez_translations/breez_translations_locales.dart';
 
 const double ITEM_HEIGHT = 72.0;
 
@@ -37,7 +38,7 @@ class FiatCurrencySettingsState extends State<FiatCurrencySettings> {
   @override
   Widget build(BuildContext context) {
     final themeData = Theme.of(context);
-    final texts = AppLocalizations.of(context);
+    final texts = context.texts();
 
     return StreamBuilder<AccountModel>(
       stream: widget.accountBloc.accountStream.distinct((acc1, acc2) {
@@ -140,7 +141,7 @@ class FiatCurrencySettingsState extends State<FiatCurrencySettings> {
     AccountModel account,
     int index,
   ) {
-    final texts = AppLocalizations.of(context);
+    final texts = context.texts();
     final themeData = Theme.of(context);
 
     final fiatConversion = account.fiatConversionList[index];
@@ -195,7 +196,7 @@ class FiatCurrencySettingsState extends State<FiatCurrencySettings> {
     );
   }
 
-  String _subtitle(AppLocalizations texts, CurrencyData currencyData) {
+  String _subtitle(BreezTranslations texts, CurrencyData currencyData) {
     final localizedName = currencyData.localizedName[texts.locale];
     return localizedName ?? currencyData.name;
   }
@@ -222,7 +223,7 @@ class FiatCurrencySettingsState extends State<FiatCurrencySettings> {
     AccountModel account,
     List<String> preferredFiatCurrencies,
   ) {
-    final texts = AppLocalizations.of(context);
+    final texts = context.texts();
     var action = UpdatePreferredCurrencies(preferredFiatCurrencies);
     widget.userProfileBloc.userActionsSink.add(action);
     action.future.then((_) {

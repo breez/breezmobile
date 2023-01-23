@@ -2,7 +2,7 @@ import 'package:breez/bloc/fastbitcoins/fastbitcoins_model.dart';
 import 'package:breez/bloc/user_profile/breez_user_model.dart';
 import 'package:fixnum/fixnum.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:breez_translations/breez_translations_locales.dart';
 
 class FastBitcoinsConfirmWidget extends StatelessWidget {
   final ValidateRequestModel request;
@@ -19,7 +19,7 @@ class FastBitcoinsConfirmWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final queryData = MediaQuery.of(context);
-    final texts = AppLocalizations.of(context);
+    final texts = context.texts();
 
     return Container(
       width: queryData.size.width,

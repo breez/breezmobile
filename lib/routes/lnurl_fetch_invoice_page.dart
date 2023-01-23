@@ -22,7 +22,7 @@ import 'package:breez/widgets/single_button_bottom_bar.dart';
 import 'package:breez/widgets/static_loader.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:breez_translations/breez_translations_locales.dart';
 
 class LNURLFetchInvoicePage extends StatefulWidget {
   final PayFetchResponse payFetchResponse;
@@ -92,7 +92,7 @@ class LNURLFetchInvoicePageState extends State<LNURLFetchInvoicePage> {
   @override
   Widget build(BuildContext context) {
     final themeData = Theme.of(context);
-    final texts = AppLocalizations.of(context);
+    final texts = context.texts();
     final accountBloc = AppBlocsProvider.of<AccountBloc>(context);
     final invoiceBloc = AppBlocsProvider.of<InvoiceBloc>(context);
     final lnurlBloc = AppBlocsProvider.of<LNUrlBloc>(context);
@@ -350,7 +350,7 @@ class LNURLFetchInvoicePageState extends State<LNURLFetchInvoicePage> {
 
     */
 
-    final texts = AppLocalizations.of(context);
+    final texts = context.texts();
     var navigator = Navigator.of(context);
     _currentRoute = ModalRoute.of(navigator.context);
     _loaderRoute = createLoaderRoute(context);

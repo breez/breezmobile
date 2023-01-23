@@ -7,25 +7,25 @@ import 'package:anytime/bloc/podcast/podcast_bloc.dart';
 import 'package:anytime/entities/podcast.dart';
 import 'package:anytime/ui/podcast/podcast_details.dart';
 import 'package:auto_size_text/auto_size_text.dart';
+import 'package:breez/bloc/blocs_provider.dart';
+import 'package:breez/bloc/podcast_history/actions.dart';
 import 'package:breez/bloc/podcast_history/model.dart';
+import 'package:breez/bloc/podcast_history/podcast_history_bloc.dart';
 import 'package:breez/theme_data.dart' as theme;
+import 'package:breez/utils/min_font_size.dart';
 import 'package:breez/widgets/back_button.dart' as backBtn;
 import 'package:breez/widgets/loader.dart';
+import 'package:breez/widgets/network_image_builder.dart';
+import 'package:breez/widgets/single_button_bottom_bar.dart';
+import 'package:breez_translations/breez_translations_locales.dart';
+import 'package:breez_translations/generated/breez_translations.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:intl/intl.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:provider/provider.dart';
 import 'package:screenshot/screenshot.dart';
 import 'package:share_plus/share_plus.dart';
-
-import '../../bloc/blocs_provider.dart';
-import '../../bloc/podcast_history/actions.dart';
-import '../../bloc/podcast_history/podcast_history_bloc.dart';
-import '../../utils/min_font_size.dart';
-import '../../widgets/network_image_builder.dart';
-import '../../widgets/single_button_bottom_bar.dart';
 
 class PodcastHistoryPage extends StatefulWidget {
   const PodcastHistoryPage({
@@ -188,7 +188,7 @@ class PodcastHistoryPageState extends State<PodcastHistoryPage> {
                     color: Colors.white,
                   ),
                   label: Text(
-                    AppLocalizations.of(context).podcast_history_share_text,
+                    BreezTranslations.of(context).podcast_history_share_text,
                     style: TextStyle(color: Colors.white),
                   ),
                 )
@@ -234,7 +234,7 @@ class PodcastHistoryPageState extends State<PodcastHistoryPage> {
                                                   "value"]),
                                           _PodcastStatItem(
                                             svg: "src/icon/satoshi_icon.svg",
-                                            label: AppLocalizations.of(context)
+                                            label: BreezTranslations.of(context)
                                                 .podcast_history_sats_streamed,
                                             value: _getCompactNumber(snapshot
                                                 .data.totalSatsStreamedSum),
@@ -242,7 +242,7 @@ class PodcastHistoryPageState extends State<PodcastHistoryPage> {
                                           _PodcastStatItem(
                                             svg:
                                                 "src/icon/rocket_launch_icon.svg",
-                                            label: AppLocalizations.of(context)
+                                            label: BreezTranslations.of(context)
                                                 .podcast_history_boostagrams_sent,
                                             value: _getCompactNumber(snapshot
                                                 .data.totalBoostagramSentSum),
@@ -320,7 +320,7 @@ class PodcastHistoryPageState extends State<PodcastHistoryPage> {
                           mainAxisAlignment: MainAxisAlignment.end,
                           children: [
                             AutoSizeText(
-                              AppLocalizations.of(context)
+                              BreezTranslations.of(context)
                                   .podcast_history_empty_text,
                               style: themeData.accentTextTheme.bodyText2
                                   .copyWith(color: Colors.white),
@@ -335,7 +335,7 @@ class PodcastHistoryPageState extends State<PodcastHistoryPage> {
                                   top: MediaQuery.of(context).size.height /
                                       2.82),
                               child: SubmitButton(
-                                  AppLocalizations.of(context)
+                                  BreezTranslations.of(context)
                                       .podcast_history_open_podcast_button, () {
                                 Navigator.of(context).pop();
                               }),
@@ -405,7 +405,7 @@ String _getAppBarDisplayString(
   PodcastHistoryTimeRange timeRange,
   BuildContext context,
 ) {
-  final texts = AppLocalizations.of(context);
+  final texts = context.texts();
   String title;
 
   if (timeRange is PodcastHistoryTimeRangeWeekly) {
@@ -424,7 +424,7 @@ PopupMenuEntry<PodcastHistoryTimeRange> _timeRangeDropdownItem(
   BuildContext context,
   PodcastHistoryTimeRange timeRange,
 ) {
-  final texts = AppLocalizations.of(context);
+  final texts = context.texts();
   final themeData = Theme.of(context);
 
   String title;
@@ -455,7 +455,7 @@ PopupMenuEntry<PodcastHistorySortEnum> _listSortDropdownItem(
   PodcastHistorySortEnum sortOption,
 ) {
   final themeData = Theme.of(context);
-  final texts = AppLocalizations.of(context);
+  final texts = context.texts();
   String title;
   if (sortOption == PodcastHistorySortEnum.SORT_RECENTLY_HEARD) {
     title = texts.podcast_history_sort_dropdown_recent;

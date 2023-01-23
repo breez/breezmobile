@@ -1,6 +1,6 @@
 import 'package:breez/theme_data.dart' as theme;
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:breez_translations/breez_translations_locales.dart';
 
 import 'loading_animated_text.dart';
 
@@ -10,7 +10,7 @@ AlertDialog createAnimatedLoaderDialog(
   bool withOKButton = true,
 }) {
   final themeData = Theme.of(context);
-  final texts = AppLocalizations.of(context);
+  final texts = context.texts();
 
   return AlertDialog(
     contentPadding: EdgeInsets.only(left: 24.0, right: 24.0, top: 24.0),

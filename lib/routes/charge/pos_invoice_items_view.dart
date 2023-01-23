@@ -9,7 +9,7 @@ import 'package:breez/theme_data.dart' as theme;
 import 'package:breez/utils/min_font_size.dart';
 import 'package:breez/widgets/loader.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:breez_translations/breez_translations_locales.dart';
 
 class PosInvoiceItemsView extends StatelessWidget {
   final Sale currentSale;
@@ -70,7 +70,7 @@ class PosInvoiceItemsView extends StatelessWidget {
     List<Item> catalogItems,
     PosCatalogItemSort sort,
   ) {
-    final texts = AppLocalizations.of(context);
+    final texts = context.texts();
     return Column(
       mainAxisAlignment: MainAxisAlignment.start,
       children: [
@@ -171,7 +171,7 @@ class PosInvoiceItemsView extends StatelessWidget {
     BuildContext context,
     PosCatalogItemSort value,
   ) {
-    final texts = AppLocalizations.of(context);
+    final texts = context.texts();
     String text;
     Widget icon;
     Widget handler;
@@ -292,7 +292,7 @@ class PosInvoiceItemsView extends StatelessWidget {
     BuildContext context,
     List<Item> catalogItems,
   ) {
-    final texts = AppLocalizations.of(context);
+    final texts = context.texts();
 
     return Expanded(
       flex: 1,

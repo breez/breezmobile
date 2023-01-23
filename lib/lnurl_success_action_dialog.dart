@@ -4,12 +4,12 @@ import 'package:breez/services/injector.dart';
 import 'package:breez/utils/external_browser.dart';
 import 'package:breez/widgets/error_dialog.dart';
 import 'package:breez/widgets/flushbar.dart';
+import 'package:breez_translations/breez_translations_locales.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:share_plus/share_plus.dart';
 
 void showLNURLSuccessAction(BuildContext context, SuccessAction sa) {
-  final texts = AppLocalizations.of(context);
+  final texts = context.texts();
   final AutoSizeGroup _labelGroup = AutoSizeGroup();
 
   promptMessage(
@@ -85,7 +85,7 @@ class _URLRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final texts = AppLocalizations.of(context);
+    final texts = context.texts();
     final themeData = Theme.of(context);
 
     final _expansionTileTheme = themeData.copyWith(

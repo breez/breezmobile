@@ -13,7 +13,7 @@ import 'package:breez/widgets/flushbar.dart';
 import 'package:breez/widgets/loader.dart';
 import 'package:fixnum/fixnum.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:breez_translations/breez_translations_locales.dart';
 
 import 'payee_session_widget.dart';
 import 'payer_session_widget.dart';
@@ -51,7 +51,7 @@ class ConnectToPayPageState extends State<ConnectToPayPage> {
   @override
   void didChangeDependencies() {
     if (!_isInit) {
-      final texts = AppLocalizations.of(context);
+      final texts = context.texts();
       final ctpBloc = AppBlocsProvider.of<ConnectPayBloc>(context);
 
       try {
@@ -88,7 +88,7 @@ class ConnectToPayPageState extends State<ConnectToPayPage> {
   }
 
   void registerEndOfSessionListener(BuildContext context) async {
-    final texts = AppLocalizations.of(context);
+    final texts = context.texts();
     _endOfSessionSubscription =
         _currentSession.paymentSessionStateStream.listen(
       (session) {
@@ -163,7 +163,7 @@ class ConnectToPayPageState extends State<ConnectToPayPage> {
   }
 
   void _onTerminateSession(BuildContext context) async {
-    final texts = AppLocalizations.of(context);
+    final texts = context.texts();
     final themeData = Theme.of(context);
 
     bool cancel = await promptAreYouSure(
@@ -281,7 +281,7 @@ class SessionErrorWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final texts = AppLocalizations.of(context);
+    final texts = context.texts();
 
     return Padding(
       padding: const EdgeInsets.all(16.0),

@@ -19,7 +19,7 @@ import 'package:breez/widgets/payment_details_dialog.dart';
 import 'package:breez/widgets/print_parameters.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:breez_translations/breez_translations_locales.dart';
 import 'package:flutter_svg/svg.dart';
 
 import 'items/item_avatar.dart';
@@ -97,7 +97,7 @@ class SaleViewState extends State<SaleView> {
 
   @override
   Widget build(BuildContext context) {
-    final texts = AppLocalizations.of(context);
+    final texts = context.texts();
     final themeData = Theme.of(context);
     final accountBloc = AppBlocsProvider.of<AccountBloc>(context);
 
@@ -214,7 +214,7 @@ class SaleViewState extends State<SaleView> {
   Widget _note(BuildContext context) {
     if (!showNote) return SizedBox();
 
-    final texts = AppLocalizations.of(context);
+    final texts = context.texts();
     final themeData = Theme.of(context);
 
     return Container(
@@ -266,7 +266,7 @@ class SaleViewState extends State<SaleView> {
     BuildContext context,
     AccountModel account,
   ) {
-    final texts = AppLocalizations.of(context);
+    final texts = context.texts();
     final themeData = Theme.of(context);
     final userBloc = AppBlocsProvider.of<UserProfileBloc>(context);
 
@@ -352,7 +352,7 @@ class _TotalSaleCharge extends StatelessWidget {
   }
 
   String _title(BuildContext context) {
-    final texts = AppLocalizations.of(context);
+    final texts = context.texts();
 
     final totalAmountInSats = currentSale.totalAmountInSats;
     final totalAmountInFiat = currentSale.totalAmountInFiat;

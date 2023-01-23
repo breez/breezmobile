@@ -3,7 +3,7 @@ import 'package:breez/bloc/lsp/lsp_model.dart';
 import 'package:breez/routes/home/moonpay_route.dart';
 import 'package:fixnum/fixnum.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:breez_translations/breez_translations_locales.dart';
 
 import 'error_dialog.dart';
 
@@ -15,7 +15,7 @@ promptLSPFeeAndNavigate(
 ) {
   final themeData = Theme.of(context);
   final navigator = Navigator.of(context);
-  final texts = AppLocalizations.of(context);
+  final texts = context.texts();
 
   promptAreYouSure(
     context,
@@ -43,7 +43,7 @@ String _formatFeeMessage(
   LSPInfo lsp,
 ) {
   if (lsp == null) return "";
-  final texts = AppLocalizations.of(context);
+  final texts = context.texts();
 
   final showMinFeeMessage = lsp.channelMinimumFeeMsat > 0;
   final connected = acc.connected;

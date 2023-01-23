@@ -6,7 +6,7 @@ import 'package:breez/theme_data.dart' as theme;
 import 'package:breez/widgets/loader.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:breez_translations/breez_translations_locales.dart';
 
 class SwapRefundDialog extends StatefulWidget {
   final AccountBloc accountBloc;
@@ -36,7 +36,7 @@ class SwapRefundDialogState extends State<SwapRefundDialog> {
   @override
   Widget build(BuildContext context) {
     final themeData = Theme.of(context);
-    final texts = AppLocalizations.of(context);
+    final texts = context.texts();
 
     return AlertDialog(
       titlePadding: EdgeInsets.fromLTRB(24.0, 22.0, 24.0, 16.0),
@@ -84,7 +84,7 @@ class SwapRefundDialogState extends State<SwapRefundDialog> {
     SwapFundStatus swapStatus,
   ) {
     final themeData = Theme.of(context);
-    final texts = AppLocalizations.of(context);
+    final texts = context.texts();
 
     RefundableAddress swapAddress = swapStatus.waitingRefundAddresses[0];
     int lockHeight = swapAddress.lockHeight;
@@ -144,7 +144,7 @@ class SwapRefundDialogState extends State<SwapRefundDialog> {
   }
 
   String _getHoursToUnlockString(double hoursToUnlock) {
-    final texts = AppLocalizations.of(context);
+    final texts = context.texts();
     int roundedValue = hoursToUnlock.ceil();
     if (roundedValue <= 0) return '';
     if (roundedValue <= 1) return texts.approximately_an_hour;

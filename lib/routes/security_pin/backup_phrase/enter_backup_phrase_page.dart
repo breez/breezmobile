@@ -7,7 +7,7 @@ import 'package:breez/theme_data.dart' as theme;
 import 'package:breez/widgets/back_button.dart' as backBtn;
 import 'package:breez/widgets/single_button_bottom_bar.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:breez_translations/breez_translations_locales.dart';
 import 'package:flutter_typeahead/flutter_typeahead.dart';
 
 import 'wordlist.dart';
@@ -56,7 +56,7 @@ class EnterBackupPhrasePageState extends State<EnterBackupPhrasePage> {
   @override
   Widget build(BuildContext context) {
     final themeData = Theme.of(context);
-    final texts = AppLocalizations.of(context);
+    final texts = context.texts();
     final query = MediaQuery.of(context);
     final userProfileBloc = AppBlocsProvider.of<UserProfileBloc>(context);
 
@@ -123,7 +123,7 @@ class EnterBackupPhrasePageState extends State<EnterBackupPhrasePage> {
     BuildContext context,
     UserProfileBloc userProfileBloc,
   ) {
-    final texts = AppLocalizations.of(context);
+    final texts = context.texts();
     List<Widget> restoreFormContent = [];
     restoreFormContent..add(_buildForm());
     if (_hasError) {
@@ -199,7 +199,7 @@ class EnterBackupPhrasePageState extends State<EnterBackupPhrasePage> {
   }
 
   String _onValidate(BuildContext context, String text) {
-    final texts = AppLocalizations.of(context);
+    final texts = context.texts();
     if (text.length == 0) {
       return texts.enter_backup_phrase_missing_word;
     }
@@ -237,7 +237,7 @@ class EnterBackupPhrasePageState extends State<EnterBackupPhrasePage> {
     BuildContext context,
     UserProfileBloc userProfileBloc,
   ) {
-    final texts = AppLocalizations.of(context);
+    final texts = context.texts();
     return SingleButtonBottomBar(
       text: _currentPage + 1 == (_lastPage + 1)
           ? texts.enter_backup_phrase_action_restore

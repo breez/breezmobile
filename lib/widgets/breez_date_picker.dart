@@ -9,7 +9,7 @@ import 'package:breez/theme_data.dart' as theme;
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:breez_translations/breez_translations_locales.dart';
 
 /// Initial display mode of the date picker dialog.
 ///
@@ -412,7 +412,7 @@ class DayPicker extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final texts = AppLocalizations.of(context);
+    final texts = context.texts();
     final localizations = MaterialLocalizations.of(context);
     final themeData = Theme.of(context);
 
@@ -733,7 +733,7 @@ class _MonthPickerState extends State<MonthPicker> {
   @override
   Widget build(BuildContext context) {
     final themeData = Theme.of(context);
-    final texts = AppLocalizations.of(context);
+    final texts = context.texts();
 
     return SizedBox(
       width: _kMonthPickerPortraitWidth,
@@ -1184,7 +1184,7 @@ Future<DateTime> showBreezDatePicker({
   Locale locale,
   TextDirection textDirection,
 }) async {
-  final texts = AppLocalizations.of(context);
+  final texts = context.texts();
 
   assert(
     !initialDate.isBefore(firstDate),

@@ -13,7 +13,7 @@ import 'package:breez/widgets/loader.dart';
 import 'package:breez/widgets/payment_details_dialog.dart';
 import 'package:fixnum/fixnum.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:breez_translations/breez_translations_locales.dart';
 import 'package:rxdart/subjects.dart';
 
 import '../sync_progress_dialog.dart';
@@ -85,7 +85,7 @@ class ReverseSwapPageState extends State<ReverseSwapPage> {
   @override
   Widget build(BuildContext context) {
     final themeData = Theme.of(context);
-    final texts = AppLocalizations.of(context);
+    final texts = context.texts();
 
     final reverseSwapBloc = AppBlocsProvider.of<ReverseSwapBloc>(context);
     final accountBloc = AppBlocsProvider.of<AccountBloc>(context);
@@ -203,7 +203,7 @@ class ReverseSwapPageState extends State<ReverseSwapPage> {
     bool initialIsMax,
     ReverseSwapRequest currentSwap,
   ) {
-    final texts = AppLocalizations.of(context);
+    final texts = context.texts();
 
     return PageView(
       controller: _pageController,
@@ -285,7 +285,7 @@ class UnconfirmedChannels extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final texts = AppLocalizations.of(context);
+    final texts = context.texts();
 
     final rows = unconfirmedChannels.map((chainPoint) {
       final tx = chainPoint.split(":")[0];

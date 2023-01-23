@@ -1,6 +1,6 @@
 import 'package:breez/bloc/user_profile/currency.dart';
-import 'package:breez/utils/locale.dart';
 import 'package:breez/widgets/sat_amount_form_field_formatter.dart';
+import 'package:breez_translations/breez_translations_locales.dart';
 import 'package:fixnum/fixnum.dart';
 import 'package:flutter/material.dart';
 
