@@ -1,8 +1,9 @@
 # Breez Mobile Client
 
 <p align='center'>
-  <img src='https://breez.technology/prod/images/app/personal/13-6d70412da5.png' height='300' alt='screenshot' />
-  <img src='https://breez.technology/prod/images/app/personal/11-801d846b7f.png' height='300' alt='screenshot' />
+  <img src='https://breez.technology/balance-illustration.webp' height='300' alt='screenshot' />
+  <img src='https://breez.technology/pos-illustration.webp' height='300' alt='screenshot' />
+  <img src='https://breez.technology/podcast-illustration.webp' height='300' alt='screenshot' />
 </p>
 
 [Breez](https://breez.technology) is a Lightning Network [mobile client](https://github.com/breez/breezmobile) and a [hub](https://github.com/breez/server). It provides a platform for simple, instantaneous bitcoin payments. <br>
