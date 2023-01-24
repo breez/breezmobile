@@ -75,7 +75,7 @@ PODS:
     - Firebase/Database (= 9.6.0)
     - firebase_core
     - Flutter
-  - firebase_dynamic_links (4.3.10):
+  - firebase_dynamic_links (4.3.11):
     - Firebase/DynamicLinks (= 9.6.0)
     - firebase_core
     - Flutter
@@ -130,11 +130,11 @@ PODS:
     - GoogleUtilities/Environment (~> 7.7)
     - nanopb (< 2.30910.0, >= 2.30908.0)
     - PromisesObjC (< 3.0, >= 1.2)
-  - GoogleMLKit/BarcodeScanning (2.6.0):
+  - GoogleMLKit/BarcodeScanning (3.2.0):
     - GoogleMLKit/MLKitCore
-    - MLKitBarcodeScanning (~> 1.7.0)
-  - GoogleMLKit/MLKitCore (2.6.0):
-    - MLKitCommon (~> 5.0.0)
+    - MLKitBarcodeScanning (~> 2.2.0)
+  - GoogleMLKit/MLKitCore (3.2.0):
+    - MLKitCommon (~> 8.0.0)
   - GoogleSignIn (6.1.0):
     - AppAuth (~> 1.4)
     - GTMAppAuth (~> 1.0)
@@ -186,11 +186,11 @@ PODS:
     - Flutter
   - md5_file_checksum (1.0.3):
     - Flutter
-  - MLImage (1.0.0-beta2)
-  - MLKitBarcodeScanning (1.7.0):
-    - MLKitCommon (~> 5.0)
-    - MLKitVision (~> 3.0)
-  - MLKitCommon (5.0.0):
+  - MLImage (1.0.0-beta3)
+  - MLKitBarcodeScanning (2.2.0):
+    - MLKitCommon (~> 8.0)
+    - MLKitVision (~> 4.2)
+  - MLKitCommon (8.0.0):
     - GoogleDataTransport (~> 9.0)
     - GoogleToolboxForMac/Logger (~> 2.1)
     - "GoogleToolboxForMac/NSData+zlib (~> 2.1)"
@@ -199,16 +199,16 @@ PODS:
     - GoogleUtilitiesComponents (~> 1.0)
     - GTMSessionFetcher/Core (~> 1.1)
     - Protobuf (~> 3.12)
-  - MLKitVision (3.0.0):
+  - MLKitVision (4.2.0):
     - GoogleToolboxForMac/Logger (~> 2.1)
     - "GoogleToolboxForMac/NSData+zlib (~> 2.1)"
     - GTMSessionFetcher/Core (~> 1.1)
-    - MLImage (= 1.0.0-beta2)
-    - MLKitCommon (~> 5.0)
+    - MLImage (= 1.0.0-beta3)
+    - MLKitCommon (~> 8.0)
     - Protobuf (~> 3.12)
   - mobile_scanner (0.0.1):
     - Flutter
-    - GoogleMLKit/BarcodeScanning (~> 2.6.0)
+    - GoogleMLKit/BarcodeScanning (~> 3.2.0)
   - nanopb (2.30909.0):
     - nanopb/decode (= 2.30909.0)
     - nanopb/encode (= 2.30909.0)
@@ -227,15 +227,11 @@ PODS:
   - printing (1.0.0):
     - Flutter
   - PromisesObjC (2.1.1)
-  - Protobuf (3.21.4)
+  - Protobuf (3.21.12)
   - ReachabilitySwift (5.0.0)
-  - scan (0.0.1):
-    - Flutter
   - SDWebImage (5.13.2):
     - SDWebImage/Core (= 5.13.2)
   - SDWebImage/Core (5.13.2)
-  - share_extend (0.0.1):
-    - Flutter
   - share_plus (0.0.1):
     - Flutter
   - shared_preferences_ios (0.0.1):
@@ -243,9 +239,9 @@ PODS:
   - sqflite (0.0.2):
     - Flutter
     - FMDB (>= 2.7.5)
-  - Tor (405.8.1)
   - SwiftyGif (5.4.3)
   - TOCropViewController (2.6.1)
+  - Tor (405.8.1)
   - uni_links (0.0.1):
     - Flutter
   - url_launcher_ios (0.0.1):
@@ -283,8 +279,6 @@ DEPENDENCIES:
   - path_provider_ios (from `.symlinks/plugins/path_provider_ios/ios`)
   - permission_handler_apple (from `.symlinks/plugins/permission_handler_apple/ios`)
   - printing (from `.symlinks/plugins/printing/ios`)
-  - scan (from `.symlinks/plugins/scan/ios`)
-  - share_extend (from `.symlinks/plugins/share_extend/ios`)
   - share_plus (from `.symlinks/plugins/share_plus/ios`)
   - shared_preferences_ios (from `.symlinks/plugins/shared_preferences_ios/ios`)
   - sqflite (from `.symlinks/plugins/sqflite/ios`)
@@ -386,10 +380,6 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/permission_handler_apple/ios"
   printing:
     :path: ".symlinks/plugins/printing/ios"
-  scan:
-    :path: ".symlinks/plugins/scan/ios"
-  share_extend:
-    :path: ".symlinks/plugins/share_extend/ios"
   share_plus:
     :path: ".symlinks/plugins/share_plus/ios"
   shared_preferences_ios:
@@ -420,7 +410,7 @@ SPEC CHECKSUMS:
   Firebase: 5ae8b7cf8efce559a653aef0ad95bab3f427c351
   firebase_core: 7c28ecc1e5dd74e03829ac3e9ff5ba3314e737a9
   firebase_database: 115298eac49923a9b69a10c56f6ecf8eee10601c
-  firebase_dynamic_links: 30b2cc48b8c7493ad07f6a87fe7023b9729e8091
+  firebase_dynamic_links: 8fc870871acfbbd39172cb430e4a04c0fe2be4c7
   firebase_messaging: a2a8c6db6d799c7f59b1c0d7c68a2f0027bfa2c4
   FirebaseCore: 2082fffcd855f95f883c0a1641133eb9bbe76d40
   FirebaseCoreDiagnostics: 99a495094b10a57eeb3ae8efa1665700ad0bdaa6
@@ -436,7 +426,7 @@ SPEC CHECKSUMS:
   flutter_web_browser: 7bccaafbb0c5b8862afe7bcd158f15557109f61f
   FMDB: 2ce00b547f966261cd18927a3ddb07cb6f3db82a
   GoogleDataTransport: 1c8145da7117bd68bbbed00cf304edb6a24de00f
-  GoogleMLKit: 755661c46990a85e42278015f26400286d98ad95
+  GoogleMLKit: 0017a6a8372e1a182139b9def4d89be5d87ca5a7
   GoogleSignIn: c90b5bec45e780f54c6a8e1e3c182a86e3dda69d
   GoogleToolboxForMac: 8bef7c7c5cf7291c687cf5354f39f9db6399ad34
   GoogleUtilities: e0913149f6b0625b553d70dae12b49fc62914fd1
@@ -449,11 +439,11 @@ SPEC CHECKSUMS:
   leveldb-library: 50c7b45cbd7bf543c81a468fe557a16ae3db8729
   local_auth: 1740f55d7af0a2e2a8684ce225fe79d8931e808c
   md5_file_checksum: 2cafda1443902a0f484da20e478dba45d5955318
-  MLImage: a454f9f8ecfd537783a12f9488f5be1a68820829
-  MLKitBarcodeScanning: b8257854f6afc1c8443d61ec6b98c28b35625df6
-  MLKitCommon: 3bc17c6f7d25ce3660f030350b46ae7ec9ebca6e
-  MLKitVision: e87dc3f2e456a6ab32361ebd985e078dd2746143
-  mobile_scanner: 073e39c0c96360297389f4db68e4297a1fa58349
+  MLImage: 489dfec109f21da8621b28d476401aaf7a0d4ff4
+  MLKitBarcodeScanning: d92fe1911001ec36870162c5a0eb206f612b7169
+  MLKitCommon: f6da6c5659618c070b50a80db01248ebe2964175
+  MLKitVision: 96c96571190b7f63eddf4a12068ce8a8689e0d2c
+  mobile_scanner: 0cf06f3d5224576aa24ade02a6f73d8b2551c7bf
   nanopb: b552cce312b6c8484180ef47159bc0f65a1f0431
   nfc_in_flutter: c656fbfb1ec5b9d021da87b0c87629d62fd5264d
   nfc_manager: d7da7cb781f7744b94df5fe9dbca904ac4a0939e
@@ -462,21 +452,19 @@ SPEC CHECKSUMS:
   permission_handler_apple: 44366e37eaf29454a1e7b1b7d736c2cceaeb17ce
   printing: eafa00acb682c0ca029d4d98d0798f55a1e27102
   PromisesObjC: ab77feca74fa2823e7af4249b8326368e61014cb
-  Protobuf: 85a48c73d708782e2869564c0438e211aae98e7a
+  Protobuf: 120350fc38646e2dedc26f49ecba778184ea1de2
   ReachabilitySwift: 985039c6f7b23a1da463388634119492ff86c825
-  scan: aea35bb4aa59ccc8839c576a18cd57c7d492cc86
   SDWebImage: 72f86271a6f3139cc7e4a89220946489d4b9a866
-  share_extend: b6748dc53695587891126a89533b862b92548c7b
   share_plus: 056a1e8ac890df3e33cb503afffaf1e9b4fbae68
   shared_preferences_ios: 548a61f8053b9b8a49ac19c1ffbc8b92c50d68ad
   sqflite: 6d358c025f5b867b29ed92fc697fd34924e11904
-  Tor: fad2cec0e7ef5f889fecdaf69e5edd6df0438326
   SwiftyGif: 6c3eafd0ce693cad58bb63d2b2fb9bacb8552780
   TOCropViewController: edfd4f25713d56905ad1e0b9f5be3fbe0f59c863
+  Tor: fad2cec0e7ef5f889fecdaf69e5edd6df0438326
   uni_links: d97da20c7701486ba192624d99bffaaffcfc298a
   url_launcher_ios: 839c58cdb4279282219f5e248c3321761ff3c4de
   webview_flutter_wkwebview: b7e70ef1ddded7e69c796c7390ee74180182971f
 
-PODFILE CHECKSUM: 3ddfa1653e4c181f0b9007d5106846f345ac219d
+PODFILE CHECKSUM: ef7fa92d8242f8f58d9aa60a4928be7b473f69a9
 
 COCOAPODS: 1.11.3
