@@ -1,4 +1,4 @@
-import 'package:badges/badges.dart';
+import 'package:badges/badges.dart' as badges;
 import 'package:breez/bloc/account/account_model.dart';
 import 'package:breez/routes/charge/cart/cart_bar_drop_down_button.dart';
 import 'package:breez/routes/charge/currency_wrapper.dart';
@@ -63,10 +63,10 @@ class _PosInvoiceCartBarState extends State<PosInvoiceCartBar> {
                 child: Container(
                   alignment: Alignment.centerLeft,
                   width: 80.0,
-                  child: Badge(
+                  child: badges.Badge(
                     key: widget.badgeKey,
-                    position: BadgePosition.topEnd(top: 5, end: -10),
-                    animationType: BadgeAnimationType.scale,
+                    position: badges.BadgePosition.topEnd(top: 5, end: -10),
+                    animationType: badges.BadgeAnimationType.scale,
                     badgeColor: badgeColor,
                     badgeContent: Text(
                       "${widget.totalNumOfItems}",

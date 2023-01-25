@@ -51,7 +51,7 @@ import 'package:breez/widgets/flushbar.dart';
 import 'package:breez/widgets/loader.dart';
 import 'package:breez/widgets/loading_animated_text.dart';
 import 'package:breez/widgets/lost_card_dialog.dart' as lostCard;
-import 'package:breez/widgets/navigation_drawer.dart';
+import 'package:breez/widgets/breez_navigation_drawer.dart';
 import 'package:breez/widgets/payment_failed_report_dialog.dart';
 import 'package:breez/widgets/route.dart';
 import 'package:breez_translations/breez_translations_locales.dart';
@@ -365,7 +365,7 @@ class HomeState extends State<Home> with WidgetsBindingObserver {
     );
   }
 
-  NavigationDrawer _navigationDrawer(
+  BreezNavigationDrawer _navigationDrawer(
     BuildContext context,
     BreezUserModel user,
     AccountModel account,
@@ -374,7 +374,7 @@ class HomeState extends State<Home> with WidgetsBindingObserver {
     List<AddFundVendorModel> vendor,
     BreezTranslations texts,
   ) {
-    return NavigationDrawer(
+    return BreezNavigationDrawer(
       true,
       [
         ..._drawerConfigRefundItems(
@@ -867,7 +867,8 @@ class HomeState extends State<Home> with WidgetsBindingObserver {
 
       final accountModel = await widget.accountBloc.accountStream.first;
       final errorString = error.toDisplayMessage(accountModel.currency);
-      if (error.validationError && errorString.contains("payment is in transition")) {
+      if (error.validationError &&
+          errorString.contains("payment is in transition")) {
         return;
       }
       showFlushbar(context, message: "$errorString");
