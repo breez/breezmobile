@@ -243,6 +243,15 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "0.3.5"
+  clipboard_watcher:
+    dependency: "direct main"
+    description:
+      path: "."
+      ref: f12cdc89d1aba43e36f4af21c54efb10413095bd
+      resolved-ref: f12cdc89d1aba43e36f4af21c54efb10413095bd
+      url: "https://github.com/ademar111190/clipboard_watcher"
+    source: git
+    version: "0.1.3"
   clock:
     dependency: transitive
     description:

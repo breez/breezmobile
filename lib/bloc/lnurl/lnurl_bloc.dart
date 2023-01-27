@@ -1,5 +1,8 @@
 import 'dart:async';
 
+import 'package:breez/bloc/async_actions_handler.dart';
+import 'package:breez/bloc/lnurl/lnurl_actions.dart';
+import 'package:breez/bloc/lnurl/lnurl_model.dart';
 import 'package:breez/bloc/lnurl/nfc_withdraw_invoice_status.dart';
 import 'package:breez/logger.dart';
 import 'package:breez/services/breezlib/breez_bridge.dart';
@@ -9,9 +12,6 @@ import 'package:breez/utils/lnurl.dart';
 import 'package:breez/utils/retry.dart';
 import 'package:breez_translations/breez_translations_locales.dart';
 import 'package:rxdart/rxdart.dart';
-import 'package:breez/bloc/async_actions_handler.dart';
-import 'package:breez/bloc/lnurl/lnurl_actions.dart';
-import 'package:breez/bloc/lnurl/lnurl_model.dart';
 
 enum fetchLNUrlState { started, completed }
 
@@ -55,7 +55,10 @@ class LNUrlBloc with AsyncActionsHandler {
         injector.nfc.receivedLnLinks(),
         injector.lightningLinks.linksNotifications,
         _lnurlInputController.stream,
-        injector.device.distinctClipboardStream.where((l) {
+        injector.device.clipboardStream
+            .distinct()
+            .skip(1) // Skip previous session clipboard
+            .where((l) {
           var result = true;
           if (isLightningAddress(l)) {
             result = isLightningAddressURI(l);

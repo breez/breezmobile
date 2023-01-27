@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:breez/bloc/async_actions_handler.dart';
 import 'package:breez/bloc/invoice/actions.dart';
 import 'package:breez/bloc/invoice/invoice_model.dart';
 import 'package:breez/logger.dart';
@@ -11,11 +12,10 @@ import 'package:breez/services/lightning_links.dart';
 import 'package:breez/services/nfc.dart';
 import 'package:breez/services/notifications.dart';
 import 'package:breez/utils/bip21.dart';
-import 'package:breez/utils/node_id.dart';
 import 'package:breez/utils/lnurl.dart';
+import 'package:breez/utils/node_id.dart';
 import 'package:fixnum/fixnum.dart';
 import 'package:rxdart/rxdart.dart';
-import 'package:breez/bloc/async_actions_handler.dart';
 
 class InvoiceBloc with AsyncActionsHandler {
   final _newInvoiceRequestController = StreamController<InvoiceRequestModel>();
@@ -66,8 +66,10 @@ class InvoiceBloc with AsyncActionsHandler {
     listenActions();
   }
 
-  Stream<Future<DecodedClipboardData>> get decodedClipboardStream =>
-      device.rawClipboardStream.map((clipboardData) async {
+  Stream<Future<DecodedClipboardData>> get decodedClipboardStream => device.clipboardStream
+          .distinct()
+          .skip(1) // Skip previous session clipboard
+          .map((clipboardData) async {
         if (clipboardData != null && parseNodeId(clipboardData) != null) {
           return DecodedClipboardData(parseNodeId(clipboardData), "nodeID");
         }
@@ -148,9 +150,12 @@ class InvoiceBloc with AsyncActionsHandler {
       _decodeInvoiceController.stream,
       _newLightningLinkController.stream,
       links.linksNotifications,
-      device.distinctClipboardStream.where((s) =>
-          s.toLowerCase().startsWith("ln") ||
-          s.toLowerCase().startsWith("lightning:"))
+      device.clipboardStream
+          .distinct()
+          .skip(1) // Skip previous session clipboard
+          .where((s) =>
+              s.toLowerCase().startsWith("ln") ||
+              s.toLowerCase().startsWith("lightning:")),
     ])
         .map((s) {
           if (isLightningAddress(s)) {
