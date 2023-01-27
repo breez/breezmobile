@@ -60,7 +60,6 @@ class InitialWalkthroughPage extends StatefulWidget {
 class InitialWalkthroughPageState extends State<InitialWalkthroughPage>
     with TickerProviderStateMixin {
   AnimationController _controller;
-  Animation<int> _animation;
 
   StreamSubscription<bool> _restoreFinishedSubscription;
   StreamSubscription<List<SnapshotInfo>> _multipleRestoreSubscription;
@@ -111,7 +110,6 @@ class InitialWalkthroughPageState extends State<InitialWalkthroughPage>
       vsync: this,
       duration: const Duration(milliseconds: 2720),
     )..forward(from: 0.0);
-    _animation = IntTween(begin: 0, end: 67).animate(_controller);
     if (_controller.isCompleted) {
       _controller.stop();
       _controller.dispose();

@@ -1,11 +1,3 @@
-//
-//  iCloundAuthenticator.swift
-//  Runner
-//
-//  Created by Roei Erez on 9/15/19.
-//  Copyright © 2019 The Chromium Authors. All rights reserved.
-//
-
 import Foundation
 import CloudKit
 import Bindings
@@ -25,9 +17,7 @@ class iCloudBackupProvider : NSObject, BindingsNativeBackupProviderProtocol {
         
         let pred = NSPredicate(value: true);
         let query = CKQuery(recordType: "BackupSnapshot", predicate: pred)
-        query.sortDescriptors = [NSSortDescriptor(key: "modificationDate", ascending: false)]
         let operation = CKQueryOperation(query: query)
-        operation.desiredKeys = ["modificationDate", "backupID", "backupEncryptionType"]
         operation.resultsLimit = 100;
         operation.recordFetchedBlock = { record in
             resultRecords.append(record);
@@ -83,7 +73,7 @@ class iCloudBackupProvider : NSObject, BindingsNativeBackupProviderProtocol {
         
         guard let backupAsset = record["backup"] as? CKAsset else {
             return legacyDownloadBackupFiles(record, error: error)
-        }        
+        }
         
         let tempDir = FileManager.default.temporaryDirectory;
         let destBackupFile = tempDir.appendingPathComponent("backup.zip");
@@ -98,7 +88,7 @@ class iCloudBackupProvider : NSObject, BindingsNativeBackupProviderProtocol {
             if let appDatabackupAsset = record["app_data_backup"] as? CKAsset {
             let destAppDataBackupFile = tempDir.appendingPathComponent("app_data_backup.zip")
                 try FileManager.default.copyItem(at: appDatabackupAsset.fileURL!, to: destAppDataBackupFile)
-                filesArray.append(destAppDataBackupFile.path);             
+                filesArray.append(destAppDataBackupFile.path);
             }
         } catch let errorEx {
             error?.pointee = NSError(domain: errorEx.localizedDescription, code: 0, userInfo: nil);

@@ -7,7 +7,7 @@
 	<key>CFBundleDevelopmentRegion</key>
 	<string>en</string>
 	<key>CFBundleDisplayName</key>
-	<string>ClovrLabs Wallet</string>
+	<string>Clovr Labs Wallet</string>
 	<key>CFBundleExecutable</key>
 	<string>$(EXECUTABLE_NAME)</string>
 	<key>CFBundleIdentifier</key>
@@ -29,9 +29,11 @@
 	<key>CFBundleURLTypes</key>
 	<array>
 		<dict>
+			<key>CFBundleTypeRole</key>
+			<string>Viewer</string>
 			<key>CFBundleURLSchemes</key>
 			<array>
-				<string>$(GOOGLE_SIGNIN_URL)</string>
+				<string>com.googleusercontent.apps.627353432544-5n2dacud5i80vt5t76f41b0q0bh2iruk</string>
 			</array>
 		</dict>
 		<dict>
@@ -76,7 +78,7 @@
 	<key>NSCameraUsageDescription</key>
 	<string>Camera permission is required for QR code scanning.</string>
 	<key>NSPhotoLibraryUsageDescription</key>
-    <string>Required for selecting QR code from the photo gallery.</string>
+	<string>Required for selecting QR code from the photo gallery.</string>
 	<key>UIApplicationSupportsIndirectInputEvents</key>
 	<true/>
 	<key>UIBackgroundModes</key>

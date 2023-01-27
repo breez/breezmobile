@@ -494,8 +494,10 @@ class BackupBloc {
               return SnapshotInfo.fromJson(s);
             }).toList();
           }
-          snapshots
-              .sort((s1, s2) => s2.modifiedTime.compareTo(s1.modifiedTime));
+          if(snapshots.isNotEmpty) {
+            snapshots
+                .sort((s1, s2) => s2.modifiedTime.compareTo(s1.modifiedTime));
+          }
           _multipleRestoreController.add(snapshots);
         }).catchError((error) {
           if (error.runtimeType == PlatformException) {
