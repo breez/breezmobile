@@ -203,4 +203,13 @@
         </receiver>
 
     </application>
+    <!-- Android 11 has introduced package visibility changes,
+    when targeting API level 30 or above
+    adding a queries section to AndroidManifest.xml is needed
+    otherwise Custom Tabs won't return results-->
+    <queries>
+        <intent>
+            <action android:name="android.support.customtabs.action.CustomTabsService" />
+        </intent>
+    </queries>
 </manifest>
