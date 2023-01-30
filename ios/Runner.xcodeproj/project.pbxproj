@@ -3,12 +3,13 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 50;
+	objectVersion = 46;
 	objects = {
 
 /* Begin PBXBuildFile section */
 		1498D2341E8E89220040F4C2 /* GeneratedPluginRegistrant.m in Sources */ = {isa = PBXBuildFile; fileRef = 1498D2331E8E89220040F4C2 /* GeneratedPluginRegistrant.m */; };
 		3B3967161E833CAA004F5970 /* AppFrameworkInfo.plist in Resources */ = {isa = PBXBuildFile; fileRef = 3B3967151E833CAA004F5970 /* AppFrameworkInfo.plist */; };
+		451BC6072987DE780004B43D /* FileManger+Helpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 451BC6062987DE780004B43D /* FileManger+Helpers.swift */; };
 		6F068F372301566B009A1818 /* main.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F068F362301566B009A1818 /* main.swift */; };
 		6F09D3B2225DEDEC00867443 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F09D3B1225DEDEC00867443 /* AppDelegate.swift */; };
 		6F09D3D7225E232000867443 /* Breez.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F09D3D6225E232000867443 /* Breez.swift */; };
@@ -35,6 +36,7 @@
 		1498D2321E8E86230040F4C2 /* GeneratedPluginRegistrant.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = GeneratedPluginRegistrant.h; sourceTree = "<group>"; };
 		1498D2331E8E89220040F4C2 /* GeneratedPluginRegistrant.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GeneratedPluginRegistrant.m; sourceTree = "<group>"; };
 		3B3967151E833CAA004F5970 /* AppFrameworkInfo.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = AppFrameworkInfo.plist; path = Flutter/AppFrameworkInfo.plist; sourceTree = "<group>"; };
+		451BC6062987DE780004B43D /* FileManger+Helpers.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "FileManger+Helpers.swift"; sourceTree = "<group>"; };
 		6F068F362301566B009A1818 /* main.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = main.swift; sourceTree = "<group>"; };
 		6F09D3B0225DEDEC00867443 /* Runner-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Runner-Bridging-Header.h"; sourceTree = "<group>"; };
 		6F09D3B1225DEDEC00867443 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -81,6 +83,14 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		451BC6052987DE780004B43D /* Helpers */ = {
+			isa = PBXGroup;
+			children = (
+				451BC6062987DE780004B43D /* FileManger+Helpers.swift */,
+			);
+			path = Helpers;
+			sourceTree = "<group>";
+		};
 		4D11D739AD83EE6648F33D6C /* Pods */ = {
 			isa = PBXGroup;
 			children = (
@@ -102,6 +112,7 @@
 			isa = PBXGroup;
 			children = (
 				845127C526F6D76B00B04CA2 /* Tor.swift */,
+				451BC6052987DE780004B43D /* Helpers */,
 				6F09D3D5225E230100867443 /* BreezLib */,
 				6F09D3E1225F584000867443 /* LifecycleEvents.swift */,
 				6FCA79772279E33D002E4572 /* Notifier.swift */,
@@ -487,6 +498,7 @@
 				6F068F372301566B009A1818 /* main.swift in Sources */,
 				6F09D3B2225DEDEC00867443 /* AppDelegate.swift in Sources */,
 				845127C626F6D76B00B04CA2 /* Tor.swift in Sources */,
+				451BC6072987DE780004B43D /* FileManger+Helpers.swift in Sources */,
 				1498D2341E8E89220040F4C2 /* GeneratedPluginRegistrant.m in Sources */,
 				6F09D3E2225F584000867443 /* LifecycleEvents.swift in Sources */,
 			);
@@ -636,10 +648,7 @@
 				);
 				INFOPLIST_FILE = Runner/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 12.1;
-				LD_RUNPATH_SEARCH_PATHS = (
-					"$(inherited)",
-					"@executable_path/Frameworks",
-				);
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)/Flutter",
@@ -677,10 +686,7 @@
 				);
 				INFOPLIST_FILE = Runner/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 12.1;
-				LD_RUNPATH_SEARCH_PATHS = (
-					"$(inherited)",
-					"@executable_path/Frameworks",
-				);
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)/Flutter",
