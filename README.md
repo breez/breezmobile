@@ -90,7 +90,7 @@ To learn more about it, please read [Introducing Breez](https://doc.breez.techno
 
 ### Prerequisites
 
-Make sure you have Flutter 2 installed on your system before continuing the setup process. Flutter 3 is currently not supported yet.
+Make sure you have Flutter 3 installed on your system before continuing the setup process.
 
 ### Setting up for Android
 
