@@ -11,15 +11,16 @@ import 'package:breez/bloc/user_profile/user_actions.dart';
 import 'package:breez/bloc/user_profile/user_profile_bloc.dart';
 import 'package:breez/logger.dart';
 import 'package:breez/theme_data.dart' as theme;
+import 'package:breez/theme_data.dart';
 import 'package:breez/widgets/backup_provider_selection_dialog.dart';
 import 'package:breez/widgets/error_dialog.dart';
 import 'package:breez/widgets/flushbar.dart';
 import 'package:breez/widgets/loader.dart';
 import 'package:breez/widgets/restore_dialog.dart';
 import 'package:breez/widgets/route.dart';
+import 'package:breez_translations/breez_translations_locales.dart';
 import 'package:crypto/crypto.dart';
 import 'package:flutter/material.dart';
-import 'package:breez_translations/breez_translations_locales.dart';
 import 'package:hex/hex.dart';
 import 'package:rxdart/rxdart.dart';
 
@@ -295,91 +296,94 @@ class InitialWalkthroughPageState extends State<InitialWalkthroughPage>
     final texts = context.texts();
     final themeData = Theme.of(context);
 
-    return Scaffold(
-      key: _scaffoldKey,
-      body: WillPopScope(
-        onWillPop: _onWillPop,
-        child: Padding(
-          padding: EdgeInsets.only(top: 24.0),
-          child: Stack(
-            children: [
-              Column(
-                children: [
-                  Expanded(
-                    flex: 200,
-                    child: Container(),
-                  ),
-                  Expanded(
-                    flex: 171,
-                    child: AnimatedBuilder(
-                      animation: _animation,
-                      builder: (BuildContext context, Widget child) {
-                        String frame =
-                            _animation.value.toString().padLeft(2, '0');
-                        return Image.asset(
-                          'src/animations/welcome/frame_${frame}_delay-0.04s.png',
-                          gaplessPlayback: true,
-                          fit: BoxFit.cover,
-                        );
-                      },
+    return Theme(
+      data: blueTheme,
+      child: Scaffold(
+        key: _scaffoldKey,
+        body: WillPopScope(
+          onWillPop: _onWillPop,
+          child: Padding(
+            padding: EdgeInsets.only(top: 24.0),
+            child: Stack(
+              children: [
+                Column(
+                  children: [
+                    Expanded(
+                      flex: 200,
+                      child: Container(),
                     ),
-                  ),
-                  Expanded(
-                    flex: 200,
-                    child: Container(),
-                  ),
-                  Expanded(
-                    flex: 48,
-                    child: Padding(
-                      padding: EdgeInsets.only(left: 24, right: 24),
-                      child: AutoSizeText(
-                        texts.initial_walk_through_welcome_message,
-                        textAlign: TextAlign.center,
-                        style: theme.welcomeTextStyle,
+                    Expanded(
+                      flex: 171,
+                      child: AnimatedBuilder(
+                        animation: _animation,
+                        builder: (BuildContext context, Widget child) {
+                          String frame =
+                              _animation.value.toString().padLeft(2, '0');
+                          return Image.asset(
+                            'src/animations/welcome/frame_${frame}_delay-0.04s.png',
+                            gaplessPlayback: true,
+                            fit: BoxFit.cover,
+                          );
+                        },
                       ),
                     ),
-                  ),
-                  Expanded(
-                    flex: 60,
-                    child: Container(),
-                  ),
-                  Container(
-                    height: 48.0,
-                    width: 168.0,
-                    child: ElevatedButton(
-                      style: ElevatedButton.styleFrom(
-                        padding: EdgeInsets.fromLTRB(16, 4, 16, 4),
-                        primary: themeData.buttonColor,
-                        elevation: 0.0,
-                        shape: const StadiumBorder(),
-                      ),
-                      child: Text(
-                        texts.initial_walk_through_lets_breeze,
-                        style: themeData.textTheme.button,
-                      ),
-                      onPressed: () => _letsBreez(context),
+                    Expanded(
+                      flex: 200,
+                      child: Container(),
                     ),
-                  ),
-                  Expanded(
-                    flex: 40,
-                    child: Padding(
-                      padding: EdgeInsets.only(top: 10.0),
-                      child: GestureDetector(
-                        onTap: () => _restoreFromBackup(context),
-                        child: Text(
-                          texts.initial_walk_through_restore_from_backup,
-                          style: theme.restoreLinkStyle,
+                    Expanded(
+                      flex: 48,
+                      child: Padding(
+                        padding: EdgeInsets.only(left: 24, right: 24),
+                        child: AutoSizeText(
+                          texts.initial_walk_through_welcome_message,
+                          textAlign: TextAlign.center,
+                          style: theme.welcomeTextStyle,
                         ),
                       ),
                     ),
-                  ),
-                  Expanded(
-                    flex: 120,
-                    child: Container(),
-                  ),
-                ],
-              ),
-            ],
+                    Expanded(
+                      flex: 60,
+                      child: Container(),
+                    ),
+                    Container(
+                      height: 48.0,
+                      width: 168.0,
+                      child: ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                          padding: EdgeInsets.fromLTRB(16, 4, 16, 4),
+                          primary: themeData.buttonColor,
+                          elevation: 0.0,
+                          shape: const StadiumBorder(),
+                        ),
+                        child: Text(
+                          texts.initial_walk_through_lets_breeze,
+                          style: themeData.textTheme.button,
+                        ),
+                        onPressed: () => _letsBreez(context),
+                      ),
+                    ),
+                    Expanded(
+                      flex: 40,
+                      child: Padding(
+                        padding: EdgeInsets.only(top: 10.0),
+                        child: GestureDetector(
+                          onTap: () => _restoreFromBackup(context),
+                          child: Text(
+                            texts.initial_walk_through_restore_from_backup,
+                            style: theme.restoreLinkStyle,
+                          ),
+                        ),
+                      ),
+                    ),
+                    Expanded(
+                      flex: 120,
+                      child: Container(),
+                    ),
+                  ],
+                ),
+              ],
+            ),
           ),
         ),
       ),
