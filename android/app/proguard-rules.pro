@@ -1,2 +1,3 @@
 -keep class androidx.lifecycle.DefaultLifecycleObserver
 -keep class io.flutter.plugin.editing.** { *; }
+-keep class org.torproject.jni.** { *; }
