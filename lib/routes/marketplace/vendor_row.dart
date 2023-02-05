@@ -65,7 +65,7 @@ class VendorRow extends StatelessWidget {
                           "api.kollider.xyz", "v1/auth/external/lnurl_auth");
                 var responseID = 
                         _vendor.id == "lnmarkets" ? "lnurl" : "lnurl_auth";
-                var jwtToken = await handleLNUrlAuth(_vendor, endpointURI, lnurlBloc, responseID);
+                var jwtToken = await handleLNUrlAuth(context, _vendor, endpointURI, lnurlBloc, responseID);
                 url = url + "?token=$jwtToken";
               }
               launch(url);
