@@ -76,11 +76,10 @@ To learn more about it, please read [Introducing Breez](https://doc.breez.techno
 - [x] Sales reports
 - [x] Top podcasts
 - [x] NFC checkout 
-- [ ] Tor support
+- [x] Tor support (Android)
+- [x] Neutrino sync optimizations
 - [ ] Support LNURL-Withdraw balance check
-- [ ] Async payments via Lightning Rod
-- [ ] Neutrino sync optimizations
-- [ ] Support SD storage
+- [ ] Async payments
 
 ## System Requirements
 * Android 7+ 64bit
