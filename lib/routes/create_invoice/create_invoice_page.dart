@@ -240,6 +240,21 @@ class CreateInvoicePageState extends State<CreateInvoicePage> {
                             validatorFn: validatePayment,
                             style: theme.FieldTextStyle.textStyle,
                           ),
+                          if (!_withdrawFetchResponse.isFixedAmount) ...[
+                            Padding(
+                              padding: const EdgeInsets.only(top: 8),
+                              child: Text(
+                                texts.lnurl_fetch_invoice_limit(
+                                  acc.currency
+                                      .format(_withdrawFetchResponse.minAmount),
+                                  acc.currency
+                                      .format(_withdrawFetchResponse.maxAmount),
+                                ),
+                                textAlign: TextAlign.left,
+                                style: theme.FieldTextStyle.labelStyle,
+                              ),
+                            )
+                          ],
                           _buildReceivableBTC(context, acc, lspStatus),
                           StreamBuilder<AccountModel>(
                             stream: accountBloc.accountStream,
@@ -467,11 +482,9 @@ class CreateInvoicePageState extends State<CreateInvoicePage> {
   ) {
     _withdrawFetchResponse = response;
     _descriptionController.text = response.defaultDescription;
-    _amountController.text = account.currency.format(
-      response.maxAmount,
-      includeDisplayName: false,
-      userInput: true,
-    );
+    if (response.isFixedAmount) {
+      _amountController.text = "${response.minAmount}";
+    }
   }
 
   Future _createInvoice(
