@@ -76,11 +76,10 @@ To learn more about it, please read [Introducing Breez](https://doc.breez.techno
 - [x] Sales reports
 - [x] Top podcasts
 - [x] NFC checkout 
-- [ ] Tor support
+- [x] Tor support (Android)
+- [x] Neutrino sync optimizations
 - [ ] Support LNURL-Withdraw balance check
-- [ ] Async payments via Lightning Rod
-- [ ] Neutrino sync optimizations
-- [ ] Support SD storage
+- [ ] Async payments
 
 ## System Requirements
 * Android 7+ 64bit
@@ -90,7 +89,7 @@ To learn more about it, please read [Introducing Breez](https://doc.breez.techno
 
 ### Prerequisites
 
-Make sure you have Flutter 2 installed on your system before continuing the setup process. Flutter 3 is currently not supported yet.
+Make sure you have Flutter 3 installed on your system before continuing the setup process.
 
 ### Setting up for Android
 

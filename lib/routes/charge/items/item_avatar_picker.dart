@@ -1,5 +1,5 @@
 import 'package:auto_size_text/auto_size_text.dart';
-import 'package:badges/badges.dart';
+import 'package:badges/badges.dart' as badges;
 import 'package:breez/bloc/blocs_provider.dart';
 import 'package:breez/bloc/pos_catalog/bloc.dart';
 import 'package:breez/bloc/pos_catalog/model.dart';
@@ -82,10 +82,10 @@ class ItemAvatarPickerState extends State<ItemAvatarPicker> {
     final themeData = Theme.of(context);
     final texts = context.texts();
 
-    return Badge(
+    return badges.Badge(
       showBadge: _selectedImage != "",
-      position: BadgePosition.topEnd(top: 5, end: -10),
-      animationType: BadgeAnimationType.fade,
+      position: badges.BadgePosition.topEnd(top: 5, end: -10),
+      animationType: badges.BadgeAnimationType.fade,
       badgeColor: themeData.primaryTextTheme.subtitle2.color,
       badgeContent: _buildResetIconBadge(context),
       child: _selectedImage == "" && widget.itemName == ""

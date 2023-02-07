@@ -20,6 +20,7 @@ lib/services/breezlib/rpc.proto
 /android/app/libs/breez.aar
 ios/Runner/GoogleService-Info.plist
 ios/bindings.framework/*
+ios/bindings.xcframework/*
 travis/config.sh
 android/key.properties
 ios/Flutter/flutter_export_environment.sh
