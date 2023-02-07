@@ -23,6 +23,7 @@ class PaymentDetailsTxId extends StatelessWidget {
     return ShareablePaymentRow(
       title: texts.payment_details_dialog_single_info_on_chain,
       sharedValue: redeemTxID,
+      isTxID: true,
     );
   }
 }

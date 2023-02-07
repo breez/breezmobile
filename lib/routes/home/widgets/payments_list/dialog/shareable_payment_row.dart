@@ -1,5 +1,6 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:breez/services/injector.dart';
+import 'package:breez/utils/external_browser.dart';
 import 'package:breez/widgets/flushbar.dart';
 import 'package:breez_translations/breez_translations_locales.dart';
 import 'package:flutter/material.dart';
@@ -10,6 +11,7 @@ class ShareablePaymentRow extends StatelessWidget {
   final String sharedValue;
   final AutoSizeGroup labelAutoSizeGroup;
   final AutoSizeGroup valueAutoSizeGroup;
+  final bool isTxID;
 
   const ShareablePaymentRow({
     Key key,
@@ -17,6 +19,7 @@ class ShareablePaymentRow extends StatelessWidget {
     this.sharedValue,
     this.labelAutoSizeGroup,
     this.valueAutoSizeGroup,
+    this.isTxID,
   }) : super(key: key);
 
   @override
@@ -45,12 +48,19 @@ class ShareablePaymentRow extends StatelessWidget {
               Expanded(
                 child: Padding(
                   padding: EdgeInsets.only(left: 16.0, right: 0.0),
-                  child: Text(
-                    sharedValue,
-                    textAlign: TextAlign.left,
-                    overflow: TextOverflow.clip,
-                    maxLines: 4,
-                    style: themeData.primaryTextTheme.headline3.copyWith(fontSize: 10),
+                  child: GestureDetector(
+                    onTap: () => isTxID
+                        ? launchLinkOnExternalBrowser(
+                            "https://blockstream.info/tx/$sharedValue")
+                        : null,
+                    child: Text(
+                      sharedValue,
+                      textAlign: TextAlign.left,
+                      overflow: TextOverflow.clip,
+                      maxLines: 4,
+                      style: themeData.primaryTextTheme.headline3
+                          .copyWith(fontSize: 10),
+                    ),
                   ),
                 ),
               ),
@@ -65,14 +75,17 @@ class ShareablePaymentRow extends StatelessWidget {
                       IconButton(
                         alignment: Alignment.centerRight,
                         padding: EdgeInsets.only(right: 8.0),
-                        tooltip: texts.payment_details_dialog_copy_action(title),
+                        tooltip:
+                            texts.payment_details_dialog_copy_action(title),
                         iconSize: 16.0,
                         color: themeData.primaryTextTheme.button.color,
                         icon: Icon(
                           IconData(0xe90b, fontFamily: 'icomoon'),
                         ),
                         onPressed: () {
-                          ServiceInjector().device.setClipboardText(sharedValue);
+                          ServiceInjector()
+                              .device
+                              .setClipboardText(sharedValue);
                           Navigator.pop(context);
                           showFlushbar(
                             context,
