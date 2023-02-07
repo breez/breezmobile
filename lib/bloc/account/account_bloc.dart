@@ -156,7 +156,7 @@ class AccountBloc {
     _device = injector.device;
     _backgroundService = injector.backgroundTaskService;
     _currencyService = injector.currencyService;
-    _actionHandlers = {      
+    _actionHandlers = {
       SendPaymentFailureReport: _handleSendQueryRoute,
       ResetNetwork: _handleResetNetwork,
       RestartDaemon: _handleRestartDaemon,
@@ -214,7 +214,7 @@ class AccountBloc {
         .where(
             (item) => item.type == PaymentType.CLOSED_CHANNEL && item.pending)
         .toList());
-  }  
+  }
 
   void _listenEnableAccount() {
     _accountEnableController.stream.listen((enable) {
@@ -572,20 +572,22 @@ class AccountBloc {
       );
       _paymentsController.add(updatedPayments);
 
-      // Start tor
       TorConfig torConfig;
-      final useTor = await _breezLib.getTorActive();
-      log.info('AccountBloc: useTor : $useTor.');
-      if (useTor) {
-        torConfig = torBloc.torConfig;
-        log.info('accountBloc.listenUserChanges: using Tor');
-        try {
-          torConfig ??= await torBloc.startTor();
-          await _breezLib.setBackupTorConfig(torConfig);
-        } catch (e) {
-          _lightningDownController.add(false);
+      if (Platform.isAndroid) {
+        // Start tor
+
+        final useTor = await _breezLib.getTorActive();
+        log.info('AccountBloc: useTor : $useTor.');
+        if (useTor) {
+          torConfig = torBloc.torConfig;
+          log.info('accountBloc.listenUserChanges: using Tor');
+          try {
+            torConfig ??= await torBloc.startTor();
+          } catch (e) {
+            _lightningDownController.add(false);
+          }
+          assert(torConfig != null);
         }
-        assert(torConfig != null);
       }
 
       //start lightning
