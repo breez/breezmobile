@@ -76,7 +76,7 @@ dependencies:
   uuid: ^3.0.7
   validators: ^3.0.0
   webdav_client: ^1.1.8
-  webview_flutter: ^3.0.4 #
+  webview_flutter: ^4.0.2
 
   anytime:
     git:
@@ -116,7 +116,7 @@ dev_dependencies:
 
 environment:
   sdk: ">=2.10.0 <3.0.0"
-  flutter: 3.0.0
+  flutter: ">=3.7.1"
 
 flutter:
   uses-material-design: true
