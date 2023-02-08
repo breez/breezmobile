@@ -189,12 +189,13 @@ Future _shareBackup(List<String> files) async {
   Directory tempDir = await getTemporaryDirectory();
   tempDir = await tempDir.createTemp("backup");
   var encoder = ZipFileEncoder();
-  var zipFile = '${tempDir.path}/backup.zip';
-  encoder.create(zipFile);
+  var zipFilePath = '${tempDir.path}/backup.zip';
+  encoder.create(zipFilePath);
   files.forEach((f) {
     var file = File(f);
     encoder.addFile(file, "${file.path.split(Platform.pathSeparator).last}");
   });
   encoder.close();
-  Share.shareFiles([zipFile]);
+  final zipFile = XFile(zipFilePath);
+  Share.shareXFiles([zipFile]);
 }

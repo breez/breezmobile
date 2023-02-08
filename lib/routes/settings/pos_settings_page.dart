@@ -328,7 +328,7 @@ class PosSettingsPageState extends State<_PosSettingsPage> {
     navigator.push(createLoaderRoute(context));
     action.future.then((filePath) {
       navigator.pop();
-      Share.shareFiles([filePath]);
+      Share.shareXFiles([filePath]);
     }).catchError((err) {
       navigator.pop();
       final errorMessage = err.toString() == "EMPTY_LIST"

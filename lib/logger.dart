@@ -19,16 +19,18 @@ Future<File> get _logFile async {
 
 void shareLog() {
   _logFile.then((file) {
-    Share.shareFiles(
-      [file.path],
+    final logFile = XFile(file.path);
+    Share.shareXFiles(
+      [logFile],
       text: getSystemAppLocalizations().share_log_text,
     );
   });
 }
 
 Future shareFile(String filePath) {
-  return Share.shareFiles(
-    [filePath],
+  final file = XFile(filePath);
+  return Share.shareXFiles(
+    [file],
     text: getSystemAppLocalizations().share_file_title,
   );
 }

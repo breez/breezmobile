@@ -334,7 +334,7 @@ class PaymentsFilterState extends State<PaymentsFilter> {
     Navigator.of(context).push(createLoaderRoute(context));
     action.future.then((filePath) {
       Navigator.of(context).pop();
-      Share.shareFiles([filePath]);
+      Share.shareXFiles([filePath]);
     }).catchError((err) {
       Navigator.of(context).pop();
       showFlushbar(

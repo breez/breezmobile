@@ -51,8 +51,11 @@ Future<bool> showNoConnectionDialog(BuildContext context) {
                   style: theme.blueLinkStyle,
                   recognizer: TapGestureRecognizer()
                     ..onTap = () async {
-                      Share.shareFiles(
-                        [await ServiceInjector().breezBridge.getLogPath()],
+                      final logFile = XFile(
+                        await ServiceInjector().breezBridge.getLogPath(),
+                      );
+                      Share.shareXFiles(
+                        [logFile],
                       );
                     },
                 ),

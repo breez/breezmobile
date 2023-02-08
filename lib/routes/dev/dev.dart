@@ -155,7 +155,9 @@ class DevViewState extends State<DevView> {
                                   actions: <Widget>[
                                     PopupMenuButton<Choice>(
                                       onSelected: widget._select,
-                                      color: Theme.of(context).colorScheme.background,
+                                      color: Theme.of(context)
+                                          .colorScheme
+                                          .background,
                                       icon: Icon(
                                         Icons.more_vert,
                                         color:
@@ -418,8 +420,8 @@ class DevViewState extends State<DevView> {
           var walletFiles =
               await ServiceInjector().breezBridge.getWalletDBpFilePath();
           var encoder = ZipFileEncoder();
-          var zipFile = '${tempDir.path}/wallet-files.zip';
-          encoder.create(zipFile);
+          var zipFilePath = '${tempDir.path}/wallet-files.zip';
+          encoder.create(zipFilePath);
           var i = 1;
           walletFiles.forEach((f) {
             var file = File(f);
@@ -428,7 +430,8 @@ class DevViewState extends State<DevView> {
             i += 1;
           });
           encoder.close();
-          Share.shareFiles([zipFile]);
+          final zipFile = XFile(zipFilePath);
+          Share.shareXFiles([zipFile]);
         }));
 
     choices.add(Choice(
@@ -436,7 +439,8 @@ class DevViewState extends State<DevView> {
       icon: Icons.file_upload,
       function: () async {
         final databasePath = await getDatabasePath();
-        Share.shareFiles([databasePath]);
+        final databaseFile = XFile(databasePath);
+        Share.shareXFiles([databaseFile]);
       },
     ));
 
@@ -527,7 +531,8 @@ class DevViewState extends State<DevView> {
     String filePath = '${tempDir.path}/$command.json';
     File file = File(filePath);
     await file.writeAsString(text, flush: true);
-    Share.shareFiles([filePath]);
+    final xFile = XFile(filePath);
+    Share.shareXFiles([xFile]);
   }
 
   void _showOptimizationsSettings() async {
@@ -600,14 +605,15 @@ class DevViewState extends State<DevView> {
     Directory tempDir = await getTemporaryDirectory();
     tempDir = await tempDir.createTemp("backup");
     var encoder = ZipFileEncoder();
-    var zipFile = '${tempDir.path}/backup.zip';
-    encoder.create(zipFile);
+    var zipFilePath = '${tempDir.path}/backup.zip';
+    encoder.create(zipFilePath);
     files.forEach((f) {
       var file = File(f);
       encoder.addFile(file, "${file.path.split(Platform.pathSeparator).last}");
     });
     encoder.close();
-    Share.shareFiles([zipFile]);
+    final zipFile = XFile(zipFilePath);
+    Share.shareXFiles([zipFile]);
   }
 
   void _refreshGraph() async {
