@@ -45,10 +45,8 @@ Widget withPodcastTheme(BreezUserModel user, Widget child) {
               dividerColor: Color.fromRGBO(0, 0, 0, 0.10),
               highlightColor: Color.fromRGBO(0, 117, 255, 1.0),
               splashColor: Color(0x66c8c8c8),
-              selectedRowColor: Color.fromRGBO(0, 133, 251, 1.0),
               unselectedWidgetColor: Color(0x8a000000),
               disabledColor: Colors.blueGrey,
-              toggleableActiveColor: Color.fromRGBO(0, 133, 251, 1.0),
               secondaryHeaderColor: Color(0xfffff3e0),
               textSelectionTheme: TextSelectionThemeData(
                 selectionColor: Color.fromRGBO(0, 117, 255, 0.25),
@@ -108,13 +106,58 @@ Widget withPodcastTheme(BreezUserModel user, Widget child) {
                 //backgroundColor: Color.fromRGBO(5, 93, 235, 1.0),
                 foregroundColor: Color.fromRGBO(5, 93, 235, 1.0),
               ),
-              radioTheme: currentTheme.radioTheme,
               colorScheme: ColorScheme.light(
                 primary: Color.fromRGBO(0, 117, 255, 1.0),
                 secondary: Color.fromRGBO(0, 133, 251, 1.0),
                 onSecondary: Colors.black,
                 background: Color(0xFFf3f8fc),
               ).copyWith(error: Color(0xffffe685)),
+              switchTheme: SwitchThemeData(
+                thumbColor: MaterialStateProperty.resolveWith<Color>(
+                    (Set<MaterialState> states) {
+                  if (states.contains(MaterialState.disabled)) {
+                    return null;
+                  }
+                  if (states.contains(MaterialState.selected)) {
+                    return Color.fromRGBO(0, 133, 251, 1.0);
+                  }
+                  return null;
+                }),
+                trackColor: MaterialStateProperty.resolveWith<Color>(
+                    (Set<MaterialState> states) {
+                  if (states.contains(MaterialState.disabled)) {
+                    return null;
+                  }
+                  if (states.contains(MaterialState.selected)) {
+                    return Color.fromRGBO(0, 133, 251, 1.0);
+                  }
+                  return null;
+                }),
+              ),
+              radioTheme: currentTheme.radioTheme.copyWith(
+                fillColor: MaterialStateProperty.resolveWith<Color>(
+                    (Set<MaterialState> states) {
+                  if (states.contains(MaterialState.disabled)) {
+                    return null;
+                  }
+                  if (states.contains(MaterialState.selected)) {
+                    return Color.fromRGBO(0, 133, 251, 1.0);
+                  }
+                  return null;
+                }),
+              ),
+              checkboxTheme: CheckboxThemeData(
+                fillColor: MaterialStateProperty.resolveWith<Color>(
+                    (Set<MaterialState> states) {
+                  if (states.contains(MaterialState.disabled)) {
+                    return null;
+                  }
+                  if (states.contains(MaterialState.selected)) {
+                    return Color.fromRGBO(0, 133, 251, 1.0);
+                  }
+                  return null;
+                }),
+              ),
             )
         : Themes.darkTheme().themeData.copyWith(
               brightness: Brightness.dark,
@@ -135,10 +178,8 @@ Widget withPodcastTheme(BreezUserModel user, Widget child) {
               dividerColor: Colors.white.withOpacity(0.2),
               highlightColor: Color(0xFF0085fb),
               splashColor: Color(0x66c8c8c8),
-              selectedRowColor: Color(0xFF0085fb),
               unselectedWidgetColor: Color(0x8a000000),
               disabledColor: Color(0x77ffffff),
-              toggleableActiveColor: Color(0xFF0085fb),
               secondaryHeaderColor: Color(0xfffff3e0),
               textSelectionTheme: TextSelectionThemeData(
                 selectionColor: Color.fromRGBO(255, 255, 255, 0.25),
@@ -187,13 +228,58 @@ Widget withPodcastTheme(BreezUserModel user, Widget child) {
               appBarTheme: currentTheme.appBarTheme.copyWith(
                   //backgroundColor: Color(0xFF0c2031),
                   color: currentTheme.colorScheme.background),
-              radioTheme: currentTheme.radioTheme,
               colorScheme: ColorScheme.dark(
                 primary: Colors.white,
                 secondary: Colors.white,
                 onSecondary: Colors.white,
                 background: Color(0xFF152a3d),
               ).copyWith(error: Color(0xFFeddc97)),
+              switchTheme: SwitchThemeData(
+                thumbColor: MaterialStateProperty.resolveWith<Color>(
+                    (Set<MaterialState> states) {
+                  if (states.contains(MaterialState.disabled)) {
+                    return null;
+                  }
+                  if (states.contains(MaterialState.selected)) {
+                    return Color(0xFF0085fb);
+                  }
+                  return null;
+                }),
+                trackColor: MaterialStateProperty.resolveWith<Color>(
+                    (Set<MaterialState> states) {
+                  if (states.contains(MaterialState.disabled)) {
+                    return null;
+                  }
+                  if (states.contains(MaterialState.selected)) {
+                    return Color(0xFF0085fb);
+                  }
+                  return null;
+                }),
+              ),
+              radioTheme: currentTheme.radioTheme.copyWith(
+                fillColor: MaterialStateProperty.resolveWith<Color>(
+                    (Set<MaterialState> states) {
+                  if (states.contains(MaterialState.disabled)) {
+                    return null;
+                  }
+                  if (states.contains(MaterialState.selected)) {
+                    return Color(0xFF0085fb);
+                  }
+                  return null;
+                }),
+              ),
+              checkboxTheme: CheckboxThemeData(
+                fillColor: MaterialStateProperty.resolveWith<Color>(
+                    (Set<MaterialState> states) {
+                  if (states.contains(MaterialState.disabled)) {
+                    return null;
+                  }
+                  if (states.contains(MaterialState.selected)) {
+                    return Color(0xFF0085fb);
+                  }
+                  return null;
+                }),
+              ),
             ),
   );
 }
