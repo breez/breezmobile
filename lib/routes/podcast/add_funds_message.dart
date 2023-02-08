@@ -21,7 +21,7 @@ class AddFundsMessage extends StatelessWidget {
 
     return Container(
       height: 64,
-      color: themeData.backgroundColor,
+      color: themeData.colorScheme.background,
       child: Padding(
         padding: const EdgeInsets.fromLTRB(24.0, 12.0, 20.0, 12.0),
         child: Row(

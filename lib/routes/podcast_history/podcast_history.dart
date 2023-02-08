@@ -545,7 +545,7 @@ class _PodcastListTile extends StatelessWidget {
       borderRadius: BorderRadius.circular(10),
       child: Container(
         color: theme.themeId != "BLUE"
-            ? Theme.of(context).backgroundColor
+            ? Theme.of(context).colorScheme.background
             : theme.podcastHistoryTileBackGroundColorBlue,
         height: 100,
         child: Row(

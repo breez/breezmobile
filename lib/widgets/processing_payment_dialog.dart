@@ -67,7 +67,7 @@ class ProcessingPaymentDialogState extends State<ProcessingPaymentDialog>
           );
           colorAnimation = ColorTween(
             begin: Theme.of(context).canvasColor,
-            end: Theme.of(context).backgroundColor,
+            end: Theme.of(context).colorScheme.background,
           ).animate(controller)
             ..addListener(() {
               setState(() {});
@@ -225,7 +225,7 @@ class ProcessingPaymentDialogState extends State<ProcessingPaymentDialog>
                   color: theme.themeId == "BLUE"
                       ? colorAnimation.value
                       : controller.value >= 0.25
-                          ? themeData.backgroundColor
+                          ? themeData.colorScheme.background
                           : colorAnimation.value,
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(

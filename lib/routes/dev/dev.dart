@@ -155,7 +155,7 @@ class DevViewState extends State<DevView> {
                                   actions: <Widget>[
                                     PopupMenuButton<Choice>(
                                       onSelected: widget._select,
-                                      color: Theme.of(context).backgroundColor,
+                                      color: Theme.of(context).colorScheme.background,
                                       icon: Icon(
                                         Icons.more_vert,
                                         color:

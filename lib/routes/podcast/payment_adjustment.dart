@@ -261,7 +261,7 @@ class PaymentAdjustmentState extends State<PaymentAdjustment> {
           var userModel = snapshot.data;
           return Container(
             height: 64,
-            color: themeData.backgroundColor,
+            color: themeData.colorScheme.background,
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [

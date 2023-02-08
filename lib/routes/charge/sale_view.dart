@@ -138,7 +138,7 @@ class SaleViewState extends State<SaleView> {
                   ],
           ),
           extendBody: false,
-          backgroundColor: themeData.backgroundColor,
+          backgroundColor: themeData.colorScheme.background,
           body: GestureDetector(
             onTap: () {
               final currentFocus = FocusScope.of(context);
@@ -172,7 +172,7 @@ class SaleViewState extends State<SaleView> {
           bottomNavigationBar: Container(
             decoration: BoxDecoration(
               color: theme.themeId == "BLUE"
-                  ? themeData.backgroundColor
+                  ? themeData.colorScheme.background
                   : themeData.canvasColor,
               boxShadow: [
                 BoxShadow(
@@ -181,7 +181,7 @@ class SaleViewState extends State<SaleView> {
                   blurRadius: 5.0,
                 ),
                 BoxShadow(
-                  color: themeData.backgroundColor,
+                  color: themeData.colorScheme.background,
                 )
               ],
             ),

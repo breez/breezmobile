@@ -24,7 +24,7 @@ class StatusIndicator extends StatelessWidget {
   Widget createStatusIndicator() {
     return LinearProgressIndicator(
         valueColor:
-            AlwaysStoppedAnimation<Color>(Theme.of(context).backgroundColor),
+            AlwaysStoppedAnimation<Color>(Theme.of(context).colorScheme.background),
         backgroundColor: Theme.of(context).highlightColor);
   }
 }

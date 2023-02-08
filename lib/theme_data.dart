@@ -52,15 +52,17 @@ final Map<String, CustomData> customData = {
 
 final ThemeData blueTheme = ThemeData(
   brightness: Brightness.dark,
-  colorScheme: ColorScheme.dark()
-      .copyWith(primary: Colors.white, secondary: Colors.white),
+  colorScheme: ColorScheme.dark().copyWith(
+    primary: Colors.white,
+    secondary: Colors.white,
+    background: Colors.white,
+  ),
   primaryColor: Color.fromRGBO(255, 255, 255, 1.0),
   primaryColorDark: BreezColors.blue[900],
   primaryColorLight: Color.fromRGBO(0, 133, 251, 1.0),
   floatingActionButtonTheme: FloatingActionButtonThemeData(
       backgroundColor: Color.fromRGBO(0, 133, 251, 1.0)),
   canvasColor: BreezColors.blue[500],
-  backgroundColor: Colors.white,
   bottomAppBarTheme: BottomAppBarTheme(elevation: 0),
   appBarTheme: AppBarTheme(
     elevation: 0.0,
@@ -166,15 +168,17 @@ final ThemeData blueTheme = ThemeData(
 // Color(0xFF121212) values are tbd
 final ThemeData darkTheme = ThemeData(
   brightness: Brightness.dark,
-  colorScheme: ColorScheme.dark()
-      .copyWith(primary: Colors.white, secondary: Colors.white),
+  colorScheme: ColorScheme.dark().copyWith(
+    primary: Colors.white,
+    secondary: Colors.white,
+    background: Color(0xFF152a3d),
+  ),
   primaryColor: Color(0xFF0085FB),
   primaryColorDark: Color(0xFF00081C),
   primaryColorLight: Color(0xFF0085FB),
   floatingActionButtonTheme:
       FloatingActionButtonThemeData(backgroundColor: Color(0xFF0085fb)),
   canvasColor: Color(0xFF0c2031),
-  backgroundColor: Color(0xFF152a3d),
   bottomAppBarTheme: BottomAppBarTheme(elevation: 0),
   appBarTheme: AppBarTheme(
     elevation: 0.0,

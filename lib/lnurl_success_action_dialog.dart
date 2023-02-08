@@ -93,7 +93,7 @@ class _URLRow extends StatelessWidget {
       colorScheme: ColorScheme.dark(
         secondary: themeData.primaryTextTheme.button.color,
       ),
-      dividerColor: themeData.backgroundColor,
+      dividerColor: themeData.colorScheme.background,
     );
     return Theme(
       data: _expansionTileTheme,

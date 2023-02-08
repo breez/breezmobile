@@ -158,7 +158,7 @@ class PosTransactionsPageState extends State<PosTransactionsPage> {
       return Padding(
         padding: const EdgeInsets.only(right: 16.0),
         child: PopupMenuButton(
-          color: themeData.backgroundColor,
+          color: themeData.colorScheme.background,
           icon: Icon(
             Icons.more_vert,
             color: themeData.iconTheme.color,

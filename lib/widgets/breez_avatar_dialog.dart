@@ -123,7 +123,7 @@ Widget breezAvatarDialog(BuildContext context, UserProfileBloc userBloc) {
                                                 .primaryTextTheme.button.color,
                                           ),
                                           backgroundColor:
-                                              themeData.backgroundColor,
+                                              themeData.colorScheme.background,
                                         ),
                                       ),
                                       padding: EdgeInsets.only(top: 26.0),

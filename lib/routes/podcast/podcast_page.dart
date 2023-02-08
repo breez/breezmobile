@@ -248,7 +248,7 @@ class NowPlayingTransportState extends State<NowPlayingTransport> {
               ));
               widgets.add(Divider(height: 0.0, thickness: 1));
               widgets.add(Container(
-                  color: Theme.of(context).backgroundColor,
+                  color: Theme.of(context).colorScheme.background,
                   child: SafeArea(child: PaymentAdjustment())));
               return Column(mainAxisSize: MainAxisSize.min, children: widgets);
             },

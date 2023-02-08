@@ -56,7 +56,7 @@ class _SpeedSelectorWidgetState extends State<SpeedSelectorWidget> {
               onTap: () {
                 showModalBottomSheet<void>(
                   context: context,
-                  backgroundColor: themeData.backgroundColor,
+                  backgroundColor: themeData.colorScheme.background,
                   shape: const RoundedRectangleBorder(
                     borderRadius: const BorderRadius.only(
                       topLeft: const Radius.circular(10.0),

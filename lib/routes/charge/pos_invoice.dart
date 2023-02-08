@@ -235,10 +235,10 @@ class POSInvoiceState extends State<POSInvoice> with TickerProviderStateMixin {
           children: <Widget>[
             Container(
               child: _buildViewSwitch(context),
-              color: themeData.backgroundColor,
+              color: themeData.colorScheme.background,
             ),
             Container(
-              color: themeData.backgroundColor,
+              color: themeData.colorScheme.background,
               child: PosInvoiceCartBar(
                 badgeKey: badgeKey,
                 totalNumOfItems: currentSale.totalNumOfItems,
@@ -273,7 +273,7 @@ class POSInvoiceState extends State<POSInvoice> with TickerProviderStateMixin {
               currentSale,
             ),
             Container(
-              color: themeData.backgroundColor,
+              color: themeData.colorScheme.background,
               child: _chargeButton(
                 context,
                 invoiceBloc,

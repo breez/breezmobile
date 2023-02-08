@@ -23,7 +23,7 @@ class BarcodeScannerPlaceholder extends StatelessWidget {
 
     return MaterialApp(
       theme: themeData.copyWith(
-        backgroundColor: Colors.red,
+        colorScheme: themeData.colorScheme.copyWith(background: Colors.red),
         primaryColor: Colors.yellow,
         canvasColor: Colors.grey,
       ),

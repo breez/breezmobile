@@ -35,6 +35,7 @@ Widget withPodcastTheme(BreezUserModel user, Widget child) {
                 primary: Color.fromRGBO(0, 117, 255, 1.0),
                 secondary: Color.fromRGBO(0, 133, 251, 1.0),
                 onSecondary: Colors.black,
+                background: Color(0xFFf3f8fc),
               ),
               sliderTheme: SliderThemeData(
                 valueIndicatorColor: Color.fromRGBO(0, 117, 255, 1.0),
@@ -58,7 +59,6 @@ Widget withPodcastTheme(BreezUserModel user, Widget child) {
                 selectionHandleColor: Color(0xFF0085fb),
                 cursorColor: Color.fromRGBO(0, 133, 251, 1.0),
               ),
-              backgroundColor: Color(0xFFf3f8fc),
               dialogBackgroundColor: Color(0xffffffff),
               indicatorColor: Colors.orange,
               hintColor: Color(0x8a000000),
@@ -108,7 +108,7 @@ Widget withPodcastTheme(BreezUserModel user, Widget child) {
                 backgroundColor: currentTheme.scaffoldBackgroundColor,
               ),
               appBarTheme: currentTheme.appBarTheme.copyWith(
-                color: currentTheme.backgroundColor,
+                color: currentTheme.colorScheme.background,
                 //backgroundColor: Color.fromRGBO(5, 93, 235, 1.0),
                 foregroundColor: Color.fromRGBO(5, 93, 235, 1.0),
               ),
@@ -123,6 +123,7 @@ Widget withPodcastTheme(BreezUserModel user, Widget child) {
                 primary: Colors.white,
                 secondary: Colors.white,
                 onSecondary: Colors.white,
+                background: Color(0xFF152a3d),
               ),
               sliderTheme: SliderThemeData(
                 valueIndicatorColor: Color(0xFF0085fb),
@@ -146,7 +147,6 @@ Widget withPodcastTheme(BreezUserModel user, Widget child) {
                 selectionHandleColor: Color(0xFF0085fb),
                 cursorColor: Colors.white,
               ),
-              backgroundColor: Color(0xFF152a3d),
               dialogBackgroundColor: Color(0xFF0c2031),
               indicatorColor: Color(0xFF0085fb),
               hintColor: Color(0x80ffffff),
@@ -188,7 +188,7 @@ Widget withPodcastTheme(BreezUserModel user, Widget child) {
                   ),
               appBarTheme: currentTheme.appBarTheme.copyWith(
                   //backgroundColor: Color(0xFF0c2031),
-                  color: currentTheme.backgroundColor),
+                  color: currentTheme.colorScheme.background),
               radioTheme: currentTheme.radioTheme,
             ),
   );

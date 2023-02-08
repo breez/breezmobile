@@ -105,7 +105,7 @@ class _CalendarDialogState extends State<CalendarDialog> {
         data: theme.themeId == "BLUE"
             ? themeData
             : themeData.copyWith(
-                disabledColor: themeData.backgroundColor,
+                disabledColor: themeData.colorScheme.background,
               ),
         child: TextField(
           decoration: InputDecoration(

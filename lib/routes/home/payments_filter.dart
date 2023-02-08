@@ -287,7 +287,7 @@ class PaymentsFilterState extends State<PaymentsFilter> {
       return Padding(
         padding: const EdgeInsets.only(right: 0.0),
         child: PopupMenuButton(
-          color: themeData.backgroundColor,
+          color: themeData.colorScheme.background,
           icon: Icon(
             Icons.more_vert,
             color: themeData.paymentItemTitleTextStyle.color,

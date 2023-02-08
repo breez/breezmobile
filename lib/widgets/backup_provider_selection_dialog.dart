@@ -80,7 +80,7 @@ class BackupProviderSelectionDialogState
                             )
                           : Icon(
                               Icons.check,
-                              color: themeData.backgroundColor,
+                              color: themeData.colorScheme.background,
                             ),
                       title: Text(
                         providers[index].displayName,

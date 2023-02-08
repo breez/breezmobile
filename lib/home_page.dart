@@ -271,7 +271,7 @@ class HomeState extends State<Home> with WidgetsBindingObserver {
                 : themeData.appBarTheme.systemOverlayStyle,
             iconTheme: IconThemeData(color: Color.fromARGB(255, 0, 133, 251)),
             backgroundColor: (user.appMode == AppMode.pos)
-                ? themeData.backgroundColor
+                ? themeData.colorScheme.background
                 : theme.customData[theme.themeId].dashboardBgColor,
             leading: _buildMenuIcon(context, user.appMode),
             centerTitle: false,
@@ -314,7 +314,7 @@ class HomeState extends State<Home> with WidgetsBindingObserver {
                     onPressed: () async {
                       await showModalBottomSheet<void>(
                         context: context,
-                        backgroundColor: Theme.of(context).backgroundColor,
+                        backgroundColor: Theme.of(context).colorScheme.background,
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.only(
                             topLeft: Radius.circular(16.0),

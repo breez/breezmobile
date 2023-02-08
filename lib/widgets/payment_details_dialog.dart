@@ -422,7 +422,7 @@ class ShareablePaymentRow extends StatelessWidget {
     final themeData = Theme.of(context);
     final texts = context.texts();
     final _expansionTileTheme =
-        themeData.copyWith(dividerColor: themeData.backgroundColor);
+        themeData.copyWith(dividerColor: themeData.colorScheme.background);
     return Theme(
       data: _expansionTileTheme,
       child: ExpansionTile(
@@ -810,7 +810,7 @@ class _Destination extends StatelessWidget {
     final themeData = Theme.of(context);
     return Theme(
       data: themeData.copyWith(
-        dividerColor: themeData.backgroundColor,
+        dividerColor: themeData.colorScheme.background,
       ),
       child: ExpansionTile(
         iconColor: themeData.primaryTextTheme.button.color,

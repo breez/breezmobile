@@ -201,7 +201,7 @@ class CurrencyConverterDialogState extends State<CurrencyConverterDialog>
           ),
           Theme(
             data: themeData.copyWith(
-              canvasColor: themeData.backgroundColor,
+              canvasColor: themeData.colorScheme.background,
             ),
             child: DropdownButtonHideUnderline(
               child: ButtonTheme(

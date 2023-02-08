@@ -110,7 +110,7 @@ class _PosInvoiceCartBarState extends State<PosInvoiceCartBar> {
           ),
           Theme(
             data: themeData.copyWith(
-              canvasColor: themeData.backgroundColor,
+              canvasColor: themeData.colorScheme.background,
             ),
             child: CartBarDropDownButton(
               widget.currentCurrency.shortName,

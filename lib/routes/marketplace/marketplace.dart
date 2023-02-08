@@ -24,7 +24,7 @@ class MarketplacePageState extends State<MarketplacePage> {
     return Scaffold(
       key: _scaffoldKey,
       backgroundColor: theme.themeId == "BLUE"
-          ? Theme.of(context).backgroundColor
+          ? Theme.of(context).colorScheme.background
           : Theme.of(context).canvasColor,
       body: StreamBuilder(
         stream: marketplaceBloc.vendorsStream,

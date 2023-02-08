@@ -103,7 +103,7 @@ class SendOnchainState extends State<SendOnchain> {
         errorColor: theme.themeId == "BLUE" ? Colors.red : themeData.errorColor,
       ),
       child: Scaffold(
-        backgroundColor: themeData.backgroundColor,
+        backgroundColor: themeData.colorScheme.background,
         appBar: AppBar(
           systemOverlayStyle: theme.themeId == "BLUE"
               ? SystemUiOverlayStyle.dark
@@ -126,7 +126,7 @@ class SendOnchainState extends State<SendOnchain> {
         ),
         bottomNavigationBar: BottomAppBar(
           elevation: 0,
-          color: themeData.backgroundColor,
+          color: themeData.colorScheme.background,
           child: Padding(
             padding: const EdgeInsets.only(right: 12.0),
             child: Row(

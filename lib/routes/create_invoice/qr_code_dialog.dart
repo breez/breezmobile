@@ -235,7 +235,7 @@ class QrCodeDialogState extends State<QrCodeDialog>
                                   valueColor: AlwaysStoppedAnimation<Color>(
                                     themeData.primaryTextTheme.button.color,
                                   ),
-                                  backgroundColor: themeData.backgroundColor,
+                                  backgroundColor: themeData.colorScheme.background,
                                 ),
                               ),
                             ),
