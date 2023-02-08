@@ -273,7 +273,7 @@ WidgetBuilder placeholderBuilder() {
 
 WidgetBuilder errorPlaceholderBuilder() {
   final WidgetBuilder builder = (BuildContext context) => Placeholder(
-        color: Theme.of(context).errorColor,
+        color: Theme.of(context).colorScheme.error,
         strokeWidth: 1,
       );
   return builder;

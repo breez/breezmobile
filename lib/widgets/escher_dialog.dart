@@ -126,11 +126,13 @@ class EscherDialogState extends State<EscherDialog> {
           ),
         ),
         hintColor: themeData.dialogTheme.contentTextStyle.color,
+        primaryColor: themeData.textTheme.labelLarge.color,
         colorScheme: ColorScheme.dark(
           primary: themeData.textTheme.labelLarge.color,
+          error: theme.themeId == "BLUE"
+              ? Colors.red
+              : themeData.colorScheme.error,
         ),
-        primaryColor: themeData.textTheme.labelLarge.color,
-        errorColor: theme.themeId == "BLUE" ? Colors.red : themeData.errorColor,
       ),
       child: Form(
         autovalidateMode: AutovalidateMode.always,

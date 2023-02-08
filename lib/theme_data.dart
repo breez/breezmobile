@@ -52,11 +52,6 @@ final Map<String, CustomData> customData = {
 
 final ThemeData blueTheme = ThemeData(
   brightness: Brightness.dark,
-  colorScheme: ColorScheme.dark().copyWith(
-    primary: Colors.white,
-    secondary: Colors.white,
-    background: Colors.white,
-  ),
   primaryColor: Color.fromRGBO(255, 255, 255, 1.0),
   primaryColorDark: BreezColors.blue[900],
   primaryColorLight: Color.fromRGBO(0, 133, 251, 1.0),
@@ -88,7 +83,6 @@ final ThemeData blueTheme = ThemeData(
       shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.all(Radius.circular(12.0)))),
   dialogBackgroundColor: Colors.transparent,
-  errorColor: Color(0xffffe685),
   dividerColor: Color(0x33ffffff),
   cardColor: BreezColors.blue[500],
   highlightColor: BreezColors.blue[200],
@@ -162,17 +156,16 @@ final ThemeData blueTheme = ThemeData(
         }
       },
     ),
-  ),
+  ), colorScheme: ColorScheme.dark().copyWith(
+    primary: Colors.white,
+    secondary: Colors.white,
+    background: Colors.white,
+  ).copyWith(error: Color(0xffffe685)),
 );
 
 // Color(0xFF121212) values are tbd
 final ThemeData darkTheme = ThemeData(
   brightness: Brightness.dark,
-  colorScheme: ColorScheme.dark().copyWith(
-    primary: Colors.white,
-    secondary: Colors.white,
-    background: Color(0xFF152a3d),
-  ),
   primaryColor: Color(0xFF0085FB),
   primaryColorDark: Color(0xFF00081C),
   primaryColorLight: Color(0xFF0085FB),
@@ -204,7 +197,6 @@ final ThemeData darkTheme = ThemeData(
       shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.all(Radius.circular(12.0)))),
   dialogBackgroundColor: Colors.transparent,
-  errorColor: Color(0xFFeddc97),
   dividerColor: Color(0x337aa5eb),
   cardColor: Color(0xFF121212),
   highlightColor: Color(0xFF0085fb),
@@ -268,7 +260,11 @@ final ThemeData darkTheme = ThemeData(
     fillColor: MaterialStateProperty.resolveWith((states) {
       return Colors.white;
     }),
-  ),
+  ), colorScheme: ColorScheme.dark().copyWith(
+    primary: Colors.white,
+    secondary: Colors.white,
+    background: Color(0xFF152a3d),
+  ).copyWith(error: Color(0xFFeddc97)),
 );
 
 final VendorTheme bitrefill = VendorTheme(iconBgColor: Color(0xFF002B28));

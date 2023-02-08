@@ -173,10 +173,11 @@ class PaymentRequestInfoDialogState extends State<PaymentRequestInfoDialog> {
           hintColor: themeData.dialogTheme.contentTextStyle.color,
           colorScheme: ColorScheme.dark(
             primary: themeData.textTheme.labelLarge.color,
+            error: theme.themeId == "BLUE"
+                ? Colors.red
+                : themeData.colorScheme.error,
           ),
           primaryColor: themeData.textTheme.labelLarge.color,
-          errorColor:
-              theme.themeId == "BLUE" ? Colors.red : themeData.errorColor,
         ),
         child: Form(
           autovalidateMode: AutovalidateMode.always,
@@ -277,7 +278,9 @@ class PaymentRequestInfoDialogState extends State<PaymentRequestInfoDialog> {
         textAlign: TextAlign.center,
         style: themeData.primaryTextTheme.headline3.copyWith(
           fontSize: 16,
-          color: theme.themeId == "BLUE" ? Colors.red : themeData.errorColor,
+          color: theme.themeId == "BLUE"
+              ? Colors.red
+              : themeData.colorScheme.error,
         ),
       ),
     );

@@ -261,7 +261,7 @@ class CreateInvoicePageState extends State<CreateInvoicePage> {
                                         message,
                                         textAlign: TextAlign.center,
                                         style: theme.warningStyle.copyWith(
-                                          color: themeData.errorColor,
+                                          color: themeData.colorScheme.error,
                                         ),
                                       ),
                                     ],

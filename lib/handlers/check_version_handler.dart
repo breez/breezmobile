@@ -38,7 +38,7 @@ void checkVersionDialog(
         buttonText: "",        
         icon: SvgPicture.asset(
           "src/icon/warning.svg",
-          color: themeData.errorColor,
+          color: themeData.colorScheme.error,
         )
       );
     }

@@ -241,17 +241,17 @@ class CurrencyConverterDialogState extends State<CurrencyConverterDialog>
               ),
               errorBorder: UnderlineInputBorder(
                 borderSide: BorderSide(
-                  color: isBlue ? Colors.red : themeData.errorColor,
+                  color: isBlue ? Colors.red : themeData.colorScheme.error,
                 ),
               ),
               focusedErrorBorder: UnderlineInputBorder(
                 borderSide: BorderSide(
-                  color: isBlue ? Colors.red : themeData.errorColor,
+                  color: isBlue ? Colors.red : themeData.colorScheme.error,
                 ),
               ),
               errorMaxLines: 2,
               errorStyle: themeData.primaryTextTheme.bodySmall.copyWith(
-                color: isBlue ? Colors.red : themeData.errorColor,
+                color: isBlue ? Colors.red : themeData.colorScheme.error,
               ),
             ),
             // Do not allow '.' when fractionSize is 0 and only allow fiat currencies fractionSize number of digits after decimal point

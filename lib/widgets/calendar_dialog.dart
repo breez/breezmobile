@@ -70,7 +70,7 @@ class _CalendarDialogState extends State<CalendarDialog> {
             texts.pos_transactions_range_dialog_clear,
             style: theme.cancelButtonStyle.copyWith(
               color:
-                  theme.themeId == "BLUE" ? Colors.red : themeData.errorColor,
+                  theme.themeId == "BLUE" ? Colors.red : themeData.colorScheme.error,
             ),
           ),
           onPressed: _clearFilter,

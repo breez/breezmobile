@@ -260,7 +260,7 @@ class PinCodeWidgetState extends State<PinCodeWidget>
                 _enrolledBiometrics == LocalAuthenticationOption.FACE_ID
             ? Icons.face
             : Icons.fingerprint,
-        color: Theme.of(context).errorColor,
+        color: Theme.of(context).colorScheme.error,
       ),
       onTap: _inputEnabled ? () => _validateBiometrics(force: true) : null,
     );

@@ -205,7 +205,7 @@ class SweepAllCoinsConfirmationState extends State<SweepAllCoinsConfirmation> {
               child: AutoSizeText(
                 acc.currency.format(_sweepAmount),
                 style: TextStyle(
-                  color: themeData.errorColor,
+                  color: themeData.colorScheme.error,
                 ),
                 maxLines: 1,
                 minFontSize: MinFontSize(context).minFontSize,
@@ -233,7 +233,7 @@ class SweepAllCoinsConfirmationState extends State<SweepAllCoinsConfirmation> {
                   ),
                 ),
                 style: TextStyle(
-                  color: themeData.errorColor.withOpacity(0.4),
+                  color: themeData.colorScheme.error.withOpacity(0.4),
                 ),
                 maxLines: 1,
                 minFontSize: MinFontSize(context).minFontSize,
@@ -264,7 +264,7 @@ class SweepAllCoinsConfirmationState extends State<SweepAllCoinsConfirmation> {
                         acc.fiatCurrency.format(receive),
                       ),
                 style: TextStyle(
-                  color: themeData.errorColor,
+                  color: themeData.colorScheme.error,
                 ),
                 maxLines: 1,
                 minFontSize: MinFontSize(context).minFontSize,

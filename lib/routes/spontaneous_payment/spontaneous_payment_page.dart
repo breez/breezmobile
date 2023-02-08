@@ -168,7 +168,7 @@ class SpontaneousPaymentPageState extends State<SpontaneousPaymentPage> {
                                 message,
                                 textAlign: TextAlign.center,
                                 style: theme.warningStyle.copyWith(
-                                  color: themeData.errorColor,
+                                  color: themeData.colorScheme.error,
                                 ),
                               ),
                             ],

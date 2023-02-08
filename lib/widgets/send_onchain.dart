@@ -97,10 +97,12 @@ class SendOnchainState extends State<SendOnchain> {
         hintColor: dialogTheme.contentTextStyle.color,
         colorScheme: ColorScheme.dark(
           primary: themeData.textTheme.labelLarge.color,
+          error: theme.themeId == "BLUE"
+              ? Colors.red
+              : themeData.colorScheme.error,
         ),
         primaryColor: themeData.textTheme.labelLarge.color,
         unselectedWidgetColor: themeData.canvasColor,
-        errorColor: theme.themeId == "BLUE" ? Colors.red : themeData.errorColor,
       ),
       child: Scaffold(
         backgroundColor: themeData.colorScheme.background,

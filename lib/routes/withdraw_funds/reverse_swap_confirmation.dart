@@ -271,7 +271,7 @@ class ReverseSwapConfirmationState extends State<ReverseSwapConfirmation> {
             trailing: Container(
               child: AutoSizeText(
                 acc.currency.format(toSend),
-                style: TextStyle(color: themeData.errorColor),
+                style: TextStyle(color: themeData.colorScheme.error,),
                 maxLines: 1,
                 minFontSize: minFont.minFontSize,
                 stepGranularity: 0.1,
@@ -296,7 +296,7 @@ class ReverseSwapConfirmationState extends State<ReverseSwapConfirmation> {
                   acc.currency.format(boltzFees),
                 ),
                 style: TextStyle(
-                  color: themeData.errorColor.withOpacity(0.4),
+                  color: themeData.colorScheme.error.withOpacity(0.4),
                 ),
                 maxLines: 1,
                 minFontSize: minFont.minFontSize,
@@ -320,7 +320,7 @@ class ReverseSwapConfirmationState extends State<ReverseSwapConfirmation> {
                   acc.currency.format(Int64(feeOptions[selectedFeeIndex].sats)),
                 ),
                 style: TextStyle(
-                  color: themeData.errorColor.withOpacity(0.4),
+                  color: themeData.colorScheme.error.withOpacity(0.4),
                 ),
                 maxLines: 1,
                 minFontSize: minFont.minFontSize,
@@ -351,7 +351,7 @@ class ReverseSwapConfirmationState extends State<ReverseSwapConfirmation> {
                         acc.fiatCurrency.format(received),
                       ),
                 style: TextStyle(
-                  color: themeData.errorColor,
+                  color: themeData.colorScheme.error,
                 ),
                 maxLines: 1,
                 minFontSize: minFont.minFontSize,

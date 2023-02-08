@@ -31,12 +31,6 @@ Widget withPodcastTheme(BreezUserModel user, Widget child) {
               primaryColor: Color.fromRGBO(0, 133, 251, 1.0),
               primaryColorLight: Color.fromRGBO(0, 117, 255, 1.0),
               primaryColorDark: Color.fromRGBO(19, 85, 191, 1.0),
-              colorScheme: ColorScheme.light(
-                primary: Color.fromRGBO(0, 117, 255, 1.0),
-                secondary: Color.fromRGBO(0, 133, 251, 1.0),
-                onSecondary: Colors.black,
-                background: Color(0xFFf3f8fc),
-              ),
               sliderTheme: SliderThemeData(
                 valueIndicatorColor: Color.fromRGBO(0, 117, 255, 1.0),
                 valueIndicatorTextStyle: TextStyle(color: Colors.white),
@@ -62,7 +56,6 @@ Widget withPodcastTheme(BreezUserModel user, Widget child) {
               dialogBackgroundColor: Color(0xffffffff),
               indicatorColor: Colors.orange,
               hintColor: Color(0x8a000000),
-              errorColor: Color(0xffffe685),
               dialogTheme: currentTheme.dialogTheme,
               buttonTheme: Themes.lightTheme().themeData.buttonTheme.copyWith(
                     colorScheme: Themes.lightTheme()
@@ -113,19 +106,18 @@ Widget withPodcastTheme(BreezUserModel user, Widget child) {
                 //backgroundColor: Color.fromRGBO(5, 93, 235, 1.0),
                 foregroundColor: Color.fromRGBO(5, 93, 235, 1.0),
               ),
-              radioTheme: currentTheme.radioTheme,
+              radioTheme: currentTheme.radioTheme, colorScheme: ColorScheme.light(
+                primary: Color.fromRGBO(0, 117, 255, 1.0),
+                secondary: Color.fromRGBO(0, 133, 251, 1.0),
+                onSecondary: Colors.black,
+                background: Color(0xFFf3f8fc),
+              ).copyWith(error: Color(0xffffe685)),
             )
         : Themes.darkTheme().themeData.copyWith(
               brightness: Brightness.dark,
               primaryColor: Color(0xFF0085fb),
               primaryColorLight: Color(0xFF81acf1),
               primaryColorDark: Color(0xFF0085fb),
-              colorScheme: ColorScheme.dark(
-                primary: Colors.white,
-                secondary: Colors.white,
-                onSecondary: Colors.white,
-                background: Color(0xFF152a3d),
-              ),
               sliderTheme: SliderThemeData(
                 valueIndicatorColor: Color(0xFF0085fb),
                 valueIndicatorTextStyle: TextStyle(color: Colors.white),
@@ -151,7 +143,6 @@ Widget withPodcastTheme(BreezUserModel user, Widget child) {
               dialogBackgroundColor: Color(0xFF0c2031),
               indicatorColor: Color(0xFF0085fb),
               hintColor: Color(0x80ffffff),
-              errorColor: Color(0xFFeddc97),
               dialogTheme: currentTheme.dialogTheme,
               buttonTheme: Themes.darkTheme().themeData.buttonTheme.copyWith(
                     colorScheme: Themes.darkTheme()
@@ -191,7 +182,12 @@ Widget withPodcastTheme(BreezUserModel user, Widget child) {
               appBarTheme: currentTheme.appBarTheme.copyWith(
                   //backgroundColor: Color(0xFF0c2031),
                   color: currentTheme.colorScheme.background),
-              radioTheme: currentTheme.radioTheme,
+              radioTheme: currentTheme.radioTheme, colorScheme: ColorScheme.dark(
+                primary: Colors.white,
+                secondary: Colors.white,
+                onSecondary: Colors.white,
+                background: Color(0xFF152a3d),
+              ).copyWith(error: Color(0xFFeddc97)),
             ),
   );
 }
