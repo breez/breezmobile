@@ -69,7 +69,7 @@ class AddressWidget extends StatelessWidget {
                       },
                       child: Text(
                         address,
-                        style: themeData.primaryTextTheme.subtitle2,
+                        style: themeData.primaryTextTheme.titleSmall,
                       ),
                     ),
                   ),

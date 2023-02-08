@@ -87,7 +87,7 @@ final ThemeData blueTheme = ThemeData(
   cardColor: BreezColors.blue[500],
   highlightColor: BreezColors.blue[200],
   textTheme: TextTheme(
-      subtitle2: TextStyle(
+      titleSmall: TextStyle(
           color: BreezColors.grey[600], fontSize: 14.3, letterSpacing: 0.2),
       headlineSmall: TextStyle(color: BreezColors.grey[600], fontSize: 26.0),
       labelLarge: TextStyle(
@@ -128,7 +128,7 @@ final ThemeData blueTheme = ThemeData(
         letterSpacing: 0.15,
         fontWeight: FontWeight.w500,
         fontFamily: 'IBMPlexSans'),
-    subtitle2: TextStyle(
+    titleSmall: TextStyle(
         color: BreezColors.white[500], fontSize: 10.0, letterSpacing: 0.09),
     labelLarge: TextStyle(
         color: BreezColors.blue[500], fontSize: 14.3, letterSpacing: 1.25),
@@ -201,7 +201,7 @@ final ThemeData darkTheme = ThemeData(
   cardColor: Color(0xFF121212),
   highlightColor: Color(0xFF0085fb),
   textTheme: TextTheme(
-      subtitle2:
+      titleSmall:
           TextStyle(color: Colors.white, fontSize: 14.3, letterSpacing: 0.2),
       headlineSmall: TextStyle(color: Colors.white, fontSize: 26.0),
       labelLarge:
@@ -240,7 +240,7 @@ final ThemeData darkTheme = ThemeData(
         fontWeight: FontWeight.w500,
         fontFamily: 'IBMPlexSans'),
     labelLarge: TextStyle(color: Colors.white, fontSize: 14.3, letterSpacing: 1.25),
-    subtitle2: TextStyle(
+    titleSmall: TextStyle(
         color: BreezColors.white[500], fontSize: 10.0, letterSpacing: 0.09),
     bodySmall: TextStyle(color: BreezColors.white[400], fontSize: 12.0),
   ),
@@ -636,7 +636,7 @@ extension ThemeExtensions on ThemeData {
       ? TextStyle(color: BreezColors.grey[600])
       : TextStyle(color: Colors.white);
 
-  // Replaces accentTextTheme.subtitle2
+  // Replaces accentTextTheme.titleSmall
   TextStyle get paymentItemTitleTextStyle => isLightTheme
       ? const TextStyle(
           color: Colors.black,

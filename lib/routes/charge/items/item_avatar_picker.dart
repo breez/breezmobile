@@ -78,7 +78,7 @@ class ItemAvatarPickerState extends State<ItemAvatarPicker> {
       showBadge: _selectedImage != "",
       position: badges.BadgePosition.topEnd(top: 5, end: -10),
       animationType: badges.BadgeAnimationType.fade,
-      badgeColor: themeData.primaryTextTheme.subtitle2.color,
+      badgeColor: themeData.primaryTextTheme.titleSmall.color,
       badgeContent: _buildResetIconBadge(context),
       child: _selectedImage == "" && widget.itemName == ""
           ? Container(
