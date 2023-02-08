@@ -8,52 +8,51 @@ dependencies:
     sdk: flutter
 
   another_flushbar: ^1.12.29
-  app_settings: ^4.1.8
-  archive: ^3.3.2
+  app_settings: ^4.2.0
+  archive: ^3.3.6
   auto_size_text: ^3.0.0
-  badges: ^2.0.3
+  badges: ^2.0.3 #
   bip39: ^1.0.6
   breez_translations:
     git:
       url: https://github.com/breez/Breez-Translations.git
       ref: 9c8cc35d9e289a9696ab15ad91734ff12739b171
-  collection: ^1.16.0
   confetti: ^0.7.0
-  connectivity_plus: ^2.3.9
+  connectivity_plus: ^2.3.9 #
   crypto: ^3.0.2
   csv: ^5.0.1
   dio: ^4.0.6
   drag_and_drop_lists: ^0.3.3
   duration: ^3.0.12
   email_validator: ^2.1.17
-  extended_image: ^6.3.1
+  extended_image: ^6.4.0
   ffmpeg_kit_flutter_https_gpl: ^5.1.0
-  file_picker: ^5.2.2
-  firebase_core: ^2.1.1
+  file_picker: ^5.2.5
+  firebase_core: ^2.4.1
   # Version 4.5.2 breaks, it is necessary to update firebase as a whole
-  firebase_core_platform_interface: 4.5.1
-  firebase_database: ^10.0.3
-  firebase_dynamic_links: ^5.0.3
-  firebase_messaging: ^14.0.3
-  flutter_secure_storage: ^6.0.0
-  flutter_svg: ^1.1.6
+  firebase_core_platform_interface: ^4.5.2
+  firebase_database: ^10.0.9
+  firebase_dynamic_links: ^5.0.11
+  firebase_messaging: ^14.2.1
+  flutter_secure_storage: ^7.0.1
+  flutter_svg: ^1.1.6 #
   flutter_web_browser: ^0.17.1
   google_api_availability: ^3.0.1
   grpc: ^3.1.0
   hex: ^0.2.0
-  image: ^3.2.2
+  image: ^3.3.0 #
   image_cropper: ^3.0.1
-  image_picker: ^0.8.6
+  image_picker: ^0.8.6+1
   ini: ^2.1.0
-  intl: ^0.17.0
-  json_annotation: ^4.7.0
-  local_auth: <2.0.0
-  logging: ^1.0.2
-  md5_file_checksum: ^1.0.3
+  intl: ^0.18.0
+  json_annotation: ^4.8.0
+  local_auth: <2.0.0 #
+  logging: ^1.1.1
+  md5_file_checksum: ^1.0.4
   nfc_manager: ^3.2.0
-  package_info_plus: ^3.0.1
-  path_provider: ^2.0.11
-  printing: ^5.9.3
+  package_info_plus: ^3.0.2
+  path_provider: ^2.0.12
+  printing: ^5.9.3 #
   protobuf: ^2.1.0
   mobile_scanner: ^2.1.0
   # qr_flutter has already fixed the build issue with the qr package but did not publish an updated
@@ -63,21 +62,21 @@ dependencies:
     git:
       url: https://github.com/theyakka/qr.flutter.git
       ref: 1fc6e38c198a76a6fd60b7bd3b4c190cd6c9330b
-  rxdart: ^0.27.5
-  screenshot: ^1.2.3
+  rxdart: ^0.27.7
+  screenshot: ^1.3.0
   share_plus: ^6.3.0
-  shared_preferences: ^2.0.15
+  shared_preferences: ^2.0.17
   shimmer: ^2.0.0
-  simple_animations: ^5.0.0+2
-  sqflite: ^2.2.0+3
+  simple_animations: ^5.0.0+3
+  sqflite: ^2.2.4+1
   timeago: ^3.3.0
   tutorial_coach_mark: ^1.2.4
   uni_links: ^0.5.1
-  url_launcher: ^6.1.6
-  uuid: ^3.0.6
+  url_launcher: ^6.1.9
+  uuid: ^3.0.7
   validators: ^3.0.0
   webdav_client: ^1.1.8
-  webview_flutter: ^3.0.4
+  webview_flutter: ^3.0.4 #
 
   anytime:
     git:
@@ -93,8 +92,10 @@ dependencies:
       ref: 97f610be82bfe42d5ce86c348d931d61949fa517
 
 dependency_overrides:
-  meta: ^1.8.0
-  path: ^1.8.2
+  collection: ^1.17.1
+  intl: ^0.18.0
+  meta: ^1.9.0
+  path: ^1.8.3
   flutter_downloader:
     git:
       url: https://github.com/breez/flutter_downloader.git
@@ -107,10 +108,10 @@ dependency_overrides:
 dev_dependencies:
   flutter_test:
     sdk: flutter
-  build_runner: ^2.3.0
-  json_serializable: ^6.5.4
+  build_runner: ^2.3.3
+  json_serializable: ^6.6.1
   mockito: ^5.3.2
-  sqflite_common_ffi: ^2.2.0+1
+  sqflite_common_ffi: ^2.2.1+1
   test: any
 
 environment:
