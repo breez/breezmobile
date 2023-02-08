@@ -278,7 +278,7 @@ class CurrencyConverterDialogState extends State<CurrencyConverterDialog>
             children: [
               Text(
                 _contentMessage(context, account),
-                style: themeData.textTheme.headline5.copyWith(
+                style: themeData.textTheme.headlineSmall.copyWith(
                   fontSize: 16.0,
                 ),
               ),

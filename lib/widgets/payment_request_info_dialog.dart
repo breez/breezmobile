@@ -212,7 +212,7 @@ class PaymentRequestInfoDialogState extends State<PaymentRequestInfoDialog> {
           _showFiatCurrency && account.fiatCurrency != null
               ? account.fiatCurrency.format(widget.invoice.amount)
               : account.currency.format(widget.invoice.amount),
-          style: themeData.primaryTextTheme.headline5,
+          style: themeData.primaryTextTheme.headlineSmall,
           textAlign: TextAlign.center,
         ),
       ),

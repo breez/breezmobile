@@ -31,7 +31,7 @@ class MakeInvoiceRequest extends StatelessWidget {
       ),
       Text(
         account.currency.format(Int64(amount)),
-        style: themeData.primaryTextTheme.headline5,
+        style: themeData.primaryTextTheme.headlineSmall,
         textAlign: TextAlign.center,
       )
     ];

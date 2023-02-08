@@ -89,7 +89,7 @@ final ThemeData blueTheme = ThemeData(
   textTheme: TextTheme(
       subtitle2: TextStyle(
           color: BreezColors.grey[600], fontSize: 14.3, letterSpacing: 0.2),
-      headline5: TextStyle(color: BreezColors.grey[600], fontSize: 26.0),
+      headlineSmall: TextStyle(color: BreezColors.grey[600], fontSize: 26.0),
       labelLarge: TextStyle(
           color: BreezColors.blue[500], fontSize: 14.3, letterSpacing: 1.25),
       headlineMedium: TextStyle(
@@ -115,7 +115,7 @@ final ThemeData blueTheme = ThemeData(
         fontSize: 14.0,
         letterSpacing: 0.0,
         height: 1.28),
-    headline5: TextStyle(
+    headlineSmall: TextStyle(
         color: BreezColors.grey[500],
         fontSize: 24.0,
         letterSpacing: 0.0,
@@ -203,7 +203,7 @@ final ThemeData darkTheme = ThemeData(
   textTheme: TextTheme(
       subtitle2:
           TextStyle(color: Colors.white, fontSize: 14.3, letterSpacing: 0.2),
-      headline5: TextStyle(color: Colors.white, fontSize: 26.0),
+      headlineSmall: TextStyle(color: Colors.white, fontSize: 26.0),
       labelLarge:
           TextStyle(color: Colors.white, fontSize: 14.3, letterSpacing: 1.25),
       headlineMedium: TextStyle(
@@ -226,7 +226,7 @@ final ThemeData darkTheme = ThemeData(
         fontFamily: 'IBMPlexSans'),
     displaySmall: TextStyle(
         color: Colors.white, fontSize: 14.0, letterSpacing: 0.0, height: 1.28),
-    headline5: TextStyle(
+    headlineSmall: TextStyle(
         color: Colors.white,
         fontSize: 24.0,
         letterSpacing: 0.0,

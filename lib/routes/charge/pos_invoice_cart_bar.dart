@@ -100,7 +100,7 @@ class _PosInvoiceCartBarState extends State<PosInvoiceCartBar> {
                         : "",
                     maxLines: 1,
                     style: theme.invoiceAmountStyle.copyWith(
-                      color: themeData.textTheme.headline5.color,
+                      color: themeData.textTheme.headlineSmall.color,
                     ),
                     textAlign: TextAlign.right,
                   ),

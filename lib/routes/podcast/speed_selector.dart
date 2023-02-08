@@ -161,7 +161,7 @@ class _SpeedSliderState extends State<SpeedSlider> {
                   ? speed.toStringAsFixed(0).toString()
                   : speed.toString(),
             ),
-            style: themeData.primaryTextTheme.headline5,
+            style: themeData.primaryTextTheme.headlineSmall,
           ),
         ),
         Row(
