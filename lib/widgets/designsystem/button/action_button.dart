@@ -1,6 +1,7 @@
 import 'package:breez/widgets/designsystem/variant.dart';
 import 'package:breez/widgets/preview/preview.dart';
 import 'package:flutter/material.dart';
+import 'package:breez/theme_data.dart' as theme;
 
 const _kDisabledOpacity = 0.8;
 
@@ -35,7 +36,9 @@ class ActionButton extends StatelessWidget {
           _backgroundColor(themeData),
         ),
         padding: MaterialStateProperty.all<EdgeInsetsGeometry>(
-          text != null ? const EdgeInsets.symmetric(horizontal: 16.0) : const EdgeInsets.all(0.0),
+          text != null
+              ? const EdgeInsets.symmetric(horizontal: 16.0)
+              : const EdgeInsets.all(0.0),
         ),
         minimumSize: MaterialStateProperty.all<Size>(
           const Size(40, 40),
@@ -90,13 +93,17 @@ class ActionButton extends StatelessWidget {
   Color _backgroundColor(ThemeData themeData) {
     switch (variant) {
       case Variant.primary:
-        return enabled ? themeData.primaryColorDark : themeData.primaryColorDark.withOpacity(_kDisabledOpacity);
+        return enabled
+            ? themeData.primaryColorDark
+            : themeData.primaryColorDark.withOpacity(_kDisabledOpacity);
       case Variant.secondary:
         return enabled
             ? themeData.colorScheme.onSurface
             : themeData.colorScheme.onSurface.withOpacity(_kDisabledOpacity);
       case Variant.fab:
-        return enabled ? themeData.buttonColor : themeData.buttonColor.withOpacity(_kDisabledOpacity);
+        return enabled
+            ? theme.buttonColor
+            : theme.buttonColor.withOpacity(_kDisabledOpacity);
     }
     throw Exception('Unknown variant: $variant');
   }
@@ -114,7 +121,8 @@ class ActionButton extends StatelessWidget {
       case Variant.fab:
         return enabled
             ? themeData.textTheme.labelLarge.color
-            : themeData.textTheme.labelLarge.color.withOpacity(_kDisabledOpacity);
+            : themeData.textTheme.labelLarge.color
+                .withOpacity(_kDisabledOpacity);
     }
     throw Exception('Unknown variant: $variant');
   }
