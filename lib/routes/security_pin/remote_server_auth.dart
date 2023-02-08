@@ -368,7 +368,7 @@ class RemoteServerAuthPageState extends State<RemoteServerAuthPage> {
     } on SignInFailedException catch (e) {
       log.warning('remote_server_auth.dart: testAuthData: $e');
       return DiscoverResult.INVALID_AUTH;
-    } on RemoteServerNotFoundException catch (e) {
+    } on RemoteServerNotFoundException {
       return DiscoverResult.INVALID_URL;
     }
 
