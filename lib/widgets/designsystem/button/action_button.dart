@@ -66,7 +66,7 @@ class ActionButton extends StatelessWidget {
           if (text != null)
             Text(
               text,
-              style: themeData.textTheme.button.copyWith(
+              style: themeData.textTheme.labelLarge.copyWith(
                 color: _foregroundColor(themeData),
               ),
             ),
@@ -113,8 +113,8 @@ class ActionButton extends StatelessWidget {
             : themeData.primaryColorDark.withOpacity(_kDisabledOpacity);
       case Variant.fab:
         return enabled
-            ? themeData.textTheme.button.color
-            : themeData.textTheme.button.color.withOpacity(_kDisabledOpacity);
+            ? themeData.textTheme.labelLarge.color
+            : themeData.textTheme.labelLarge.color.withOpacity(_kDisabledOpacity);
     }
     throw Exception('Unknown variant: $variant');
   }

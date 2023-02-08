@@ -77,7 +77,7 @@ class PaymentFailedReportDialogState extends State<PaymentFailedReportDialog> {
                         Theme(
                           data: themeData.copyWith(
                             unselectedWidgetColor:
-                                themeData.textTheme.button.color,
+                                themeData.textTheme.labelLarge.color,
                           ),
                           child: Checkbox(
                             activeColor: themeData.canvasColor,
@@ -110,7 +110,7 @@ class PaymentFailedReportDialogState extends State<PaymentFailedReportDialog> {
             },
             child: Text(
               texts.payment_failed_report_dialog_action_no,
-              style: themeData.primaryTextTheme.button,
+              style: themeData.primaryTextTheme.labelLarge,
             ),
           ),
           SimpleDialogOption(
@@ -120,7 +120,7 @@ class PaymentFailedReportDialogState extends State<PaymentFailedReportDialog> {
             }),
             child: Text(
               texts.payment_failed_report_dialog_action_yes,
-              style: themeData.primaryTextTheme.button,
+              style: themeData.primaryTextTheme.labelLarge,
             ),
           ),
         ],

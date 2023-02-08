@@ -82,9 +82,9 @@ class _AdminLoginDialogState extends State<_AdminLoginDialog> {
           ),
           hintColor: themeData.dialogTheme.contentTextStyle.color,
           colorScheme: ColorScheme.dark(
-            primary: themeData.textTheme.button.color,
+            primary: themeData.textTheme.labelLarge.color,
           ),
-          primaryColor: themeData.textTheme.button.color,
+          primaryColor: themeData.textTheme.labelLarge.color,
           errorColor:
               theme.themeId == "BLUE" ? Colors.red : themeData.errorColor,
         ),
@@ -138,14 +138,14 @@ class _AdminLoginDialogState extends State<_AdminLoginDialog> {
         TextButton(
           child: Text(
             texts.admin_login_dialog_action_cancel,
-            style: themeData.primaryTextTheme.button,
+            style: themeData.primaryTextTheme.labelLarge,
           ),
           onPressed: () => Navigator.of(context).pop(false),
         ),
         TextButton(
           child: Text(
             texts.admin_login_dialog_action_ok,
-            style: themeData.primaryTextTheme.button,
+            style: themeData.primaryTextTheme.labelLarge,
           ),
           onPressed: () async {
             if (_formKey.currentState.validate()) {

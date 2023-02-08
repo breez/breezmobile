@@ -56,7 +56,7 @@ class SyncProgressDialogState extends State<SyncProgressDialog> {
           width: MediaQuery.of(context).size.width,
           height: 150.0,
           child: CircularProgress(
-            color: widget.progressColor ?? themeData.textTheme.button.color,
+            color: widget.progressColor ?? themeData.textTheme.labelLarge.color,
             size: 100.0,
             value: acc.serverReady ? acc.syncProgress : null,
             title: acc.serverReady

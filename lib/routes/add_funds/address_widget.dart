@@ -173,7 +173,7 @@ class AddressWidget extends StatelessWidget {
           },
           child: Text(
             texts.invoice_btc_address_on_chain_action_ok,
-            style: themeData.primaryTextTheme.button,
+            style: themeData.primaryTextTheme.labelLarge,
           ),
         ),
       ],

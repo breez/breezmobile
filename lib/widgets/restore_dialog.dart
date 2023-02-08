@@ -102,7 +102,7 @@ class RestoreDialogState extends State<RestoreDialog> {
           onPressed: () => Navigator.pop(widget.context, null),
           child: Text(
             texts.restore_dialog_action_cancel,
-            style: themeData.primaryTextTheme.button,
+            style: themeData.primaryTextTheme.labelLarge,
           ),
         ),
         TextButton(

@@ -76,7 +76,7 @@ class BackupProviderSelectionDialogState
                       trailing: _selectedProviderIndex == index
                           ? Icon(
                               Icons.check,
-                              color: themeData.primaryTextTheme.button.color,
+                              color: themeData.primaryTextTheme.labelLarge.color,
                             )
                           : Icon(
                               Icons.check,
@@ -105,7 +105,7 @@ class BackupProviderSelectionDialogState
       actions: [
         TextButton(
           style: TextButton.styleFrom(
-            foregroundColor: themeData.primaryTextTheme.button.color,
+            foregroundColor: themeData.primaryTextTheme.labelLarge.color,
           ),
           onPressed: () => Navigator.pop(context, null),
           child: Text(texts.backup_provider_dialog_action_cancel),
@@ -115,7 +115,7 @@ class BackupProviderSelectionDialogState
           builder: (context, snapshot) {
             return TextButton(
               style: TextButton.styleFrom(
-                foregroundColor: themeData.primaryTextTheme.button.color,
+                foregroundColor: themeData.primaryTextTheme.labelLarge.color,
               ),
               onPressed: () => _selectProvider(snapshot.data),
               child: Text(texts.backup_provider_dialog_action_ok),

@@ -282,14 +282,14 @@ class _PaymentOptionsPageState extends State<PaymentOptionsPage> {
         TextButton(
           child: Text(
             texts.payment_options_fee_action_cancel,
-            style: themeData.primaryTextTheme.button,
+            style: themeData.primaryTextTheme.labelLarge,
           ),
           onPressed: () => Navigator.pop(context),
         ),
         TextButton(
           child: Text(
             texts.payment_options_fee_action_save,
-            style: themeData.primaryTextTheme.button,
+            style: themeData.primaryTextTheme.labelLarge,
           ),
           onPressed: () {
             _save(context);

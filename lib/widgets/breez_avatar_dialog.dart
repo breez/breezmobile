@@ -120,7 +120,7 @@ Widget breezAvatarDialog(BuildContext context, UserProfileBloc userBloc) {
                                           valueColor:
                                               AlwaysStoppedAnimation<Color>(
                                             themeData
-                                                .primaryTextTheme.button.color,
+                                                .primaryTextTheme.labelLarge.color,
                                           ),
                                           backgroundColor:
                                               themeData.colorScheme.background,
@@ -199,14 +199,14 @@ Widget breezAvatarDialog(BuildContext context, UserProfileBloc userBloc) {
             TextButton(
               child: Text(
                 texts.breez_avatar_dialog_action_cancel,
-                style: themeData.primaryTextTheme.button,
+                style: themeData.primaryTextTheme.labelLarge,
               ),
               onPressed: _isUploading ? null : () => navigator.pop(),
             ),
             TextButton(
               child: Text(
                 texts.breez_avatar_dialog_action_save,
-                style: themeData.primaryTextTheme.button,
+                style: themeData.primaryTextTheme.labelLarge,
               ),
               onPressed: _isUploading
                   ? null

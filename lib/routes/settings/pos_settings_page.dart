@@ -234,7 +234,7 @@ class PosSettingsPageState extends State<_PosSettingsPage> {
               value: Choice(() => _importItems(context, posCatalogBloc)),
               child: Text(
                 texts.pos_settings_import_csv,
-                style: themeData.textTheme.button,
+                style: themeData.textTheme.labelLarge,
               ),
             ),
             PopupMenuItem(
@@ -242,7 +242,7 @@ class PosSettingsPageState extends State<_PosSettingsPage> {
               value: Choice(() => _exportItems(context, posCatalogBloc)),
               child: Text(
                 texts.pos_settings_export_csv,
-                style: themeData.textTheme.button,
+                style: themeData.textTheme.labelLarge,
               ),
             ),
           ],

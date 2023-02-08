@@ -61,14 +61,14 @@ class MakeInvoiceRequest extends StatelessWidget {
             onPressed: () => Navigator.pop(context, false),
             child: Text(
               texts.make_invoice_request_action_cancel,
-              style: themeData.primaryTextTheme.button,
+              style: themeData.primaryTextTheme.labelLarge,
             ),
           ),
           SimpleDialogOption(
             onPressed: () => Navigator.pop(context, true),
             child: Text(
               texts.make_invoice_request_action_approve,
-              style: themeData.primaryTextTheme.button,
+              style: themeData.primaryTextTheme.labelLarge,
             ),
           ),
         ],

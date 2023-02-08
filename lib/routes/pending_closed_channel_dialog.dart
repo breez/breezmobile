@@ -75,7 +75,7 @@ class PendingClosedChannelDialogState
           onPressed: () => Navigator.pop(context),
           child: Text(
             texts.pending_closed_channel_action_ok,
-            style: themeData.primaryTextTheme.button,
+            style: themeData.primaryTextTheme.labelLarge,
           ),
         )
       ],

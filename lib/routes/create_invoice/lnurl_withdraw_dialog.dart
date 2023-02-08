@@ -157,7 +157,7 @@ class LNUrlWithdrawDialogState extends State<LNURlWithdrawDialog>
                   onPressed: () => onFinish(false),
                   child: Text(
                     texts.lnurl_withdraw_dialog_action_close,
-                    style: themeData.primaryTextTheme.button,
+                    style: themeData.primaryTextTheme.labelLarge,
                   ),
                 )
               ],

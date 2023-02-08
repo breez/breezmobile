@@ -301,7 +301,7 @@ class PaymentsFilterState extends State<PaymentsFilter> {
               value: Choice(() => _exportPayments(context)),
               child: Text(
                 texts.payments_filter_action_export,
-                style: themeData.textTheme.button,
+                style: themeData.textTheme.labelLarge,
               ),
             ),
           ],

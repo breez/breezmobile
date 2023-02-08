@@ -423,7 +423,7 @@ class DayPicker extends StatelessWidget {
     final List<Widget> labels = [];
 
     labels.addAll(_getDayHeaders(
-      TextStyle(color: themeData.primaryTextTheme.button.color),
+      TextStyle(color: themeData.primaryTextTheme.labelLarge.color),
       localizations,
     ));
     for (int i = 0; true; i += 1) {
@@ -452,7 +452,7 @@ class DayPicker extends StatelessWidget {
           // The selected day gets a circle background highlight, and a contrasting text color.
           itemStyle = TextStyle(color: themeData.primaryColor);
           decoration = BoxDecoration(
-            color: themeData.primaryTextTheme.button.color,
+            color: themeData.primaryTextTheme.labelLarge.color,
             shape: BoxShape.circle,
           );
         } else if (disabled) {
@@ -517,7 +517,7 @@ class DayPicker extends StatelessWidget {
                 child: Text(
                   localizations.formatMonthYear(displayedMonth),
                   style: TextStyle(
-                    color: themeData.primaryTextTheme.button.color,
+                    color: themeData.primaryTextTheme.labelLarge.color,
                   ),
                 ),
               ),
@@ -757,7 +757,7 @@ class _MonthPickerState extends State<MonthPicker> {
             child: Semantics(
               sortKey: _MonthPickerSortKey.previousMonth,
               child: IconButton(
-                color: themeData.primaryTextTheme.button.color,
+                color: themeData.primaryTextTheme.labelLarge.color,
                 icon: const Icon(Icons.chevron_left),
                 tooltip: _isDisplayingFirstMonth
                     ? null
@@ -776,7 +776,7 @@ class _MonthPickerState extends State<MonthPicker> {
             child: Semantics(
               sortKey: _MonthPickerSortKey.nextMonth,
               child: IconButton(
-                color: themeData.primaryTextTheme.button.color,
+                color: themeData.primaryTextTheme.labelLarge.color,
                 icon: const Icon(Icons.chevron_right),
                 tooltip: _isDisplayingLastMonth
                     ? null
@@ -1059,14 +1059,14 @@ class _DatePickerDialogState extends State<_DatePickerDialog> {
           TextButton(
             child: Text(
               localizations.cancelButtonLabel,
-              style: themeData.primaryTextTheme.button,
+              style: themeData.primaryTextTheme.labelLarge,
             ),
             onPressed: _handleCancel,
           ),
           TextButton(
             child: Text(
               localizations.okButtonLabel,
-              style: themeData.primaryTextTheme.button,
+              style: themeData.primaryTextTheme.labelLarge,
             ),
             onPressed: _handleOk,
           ),

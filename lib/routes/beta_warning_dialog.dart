@@ -43,7 +43,7 @@ class _BetaWarningDialogState extends State<BetaWarningDialog> {
             onPressed: () => exit(0),
             child: Text(
               texts.beta_warning_action_exit,
-              style: themeData.primaryTextTheme.button,
+              style: themeData.primaryTextTheme.labelLarge,
             ),
           ),
           TextButton(
@@ -58,7 +58,7 @@ class _BetaWarningDialogState extends State<BetaWarningDialog> {
             }),
             child: Text(
               texts.beta_warning_action_continue,
-              style: themeData.primaryTextTheme.button,
+              style: themeData.primaryTextTheme.labelLarge,
             ),
           ),
         ],
@@ -86,7 +86,7 @@ class _BetaWarningDialogState extends State<BetaWarningDialog> {
           children: [
             Theme(
               data: themeData.copyWith(
-                unselectedWidgetColor: themeData.textTheme.button.color,
+                unselectedWidgetColor: themeData.textTheme.labelLarge.color,
               ),
               child: Checkbox(
                 activeColor: themeData.canvasColor,

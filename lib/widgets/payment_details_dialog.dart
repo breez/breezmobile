@@ -68,7 +68,7 @@ Future<Null> showPaymentDetailsDialog(
               onPressed: () => Navigator.pop(ctx),
               child: Text(
                 texts.payment_details_dialog_closed_channel_ok,
-                style: themeData.primaryTextTheme.button,
+                style: themeData.primaryTextTheme.labelLarge,
               ),
             ),
           ],
@@ -426,8 +426,8 @@ class ShareablePaymentRow extends StatelessWidget {
     return Theme(
       data: _expansionTileTheme,
       child: ExpansionTile(
-        iconColor: themeData.primaryTextTheme.button.color,
-        collapsedIconColor: themeData.primaryTextTheme.button.color,
+        iconColor: themeData.primaryTextTheme.labelLarge.color,
+        collapsedIconColor: themeData.primaryTextTheme.labelLarge.color,
         title: AutoSizeText(
           title,
           style: themeData.primaryTextTheme.headline4,
@@ -467,7 +467,7 @@ class ShareablePaymentRow extends StatelessWidget {
                           title,
                         ),
                         iconSize: 16.0,
-                        color: themeData.primaryTextTheme.button.color,
+                        color: themeData.primaryTextTheme.labelLarge.color,
                         icon: Icon(
                           IconData(0xe90b, fontFamily: 'icomoon'),
                         ),
@@ -489,7 +489,7 @@ class ShareablePaymentRow extends StatelessWidget {
                         padding: EdgeInsets.only(right: 8.0),
                         tooltip: texts.payment_details_dialog_share_transaction,
                         iconSize: 16.0,
-                        color: themeData.primaryTextTheme.button.color,
+                        color: themeData.primaryTextTheme.labelLarge.color,
                         icon: Icon(Icons.share),
                         onPressed: () {
                           Share.share(sharedValue);
@@ -711,7 +711,7 @@ class ClosedChannelPaymentDetailsState
                       },
                       child: Text(
                         texts.payment_details_dialog_refresh_information,
-                        style: themeData.primaryTextTheme.button,
+                        style: themeData.primaryTextTheme.labelLarge,
                       ),
                     ),
                   ),
@@ -813,8 +813,8 @@ class _Destination extends StatelessWidget {
         dividerColor: themeData.colorScheme.background,
       ),
       child: ExpansionTile(
-        iconColor: themeData.primaryTextTheme.button.color,
-        collapsedIconColor: themeData.primaryTextTheme.button.color,
+        iconColor: themeData.primaryTextTheme.labelLarge.color,
+        collapsedIconColor: themeData.primaryTextTheme.labelLarge.color,
         title: AutoSizeText(
           title,
           style: themeData.primaryTextTheme.headline4,

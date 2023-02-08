@@ -172,7 +172,7 @@ class PosTransactionsPageState extends State<PosTransactionsPage> {
               value: Choice(() => _exportTransactions(context)),
               child: Text(
                 texts.pos_transactions_action_export,
-                style: themeData.textTheme.button,
+                style: themeData.textTheme.labelLarge,
               ),
             ),
           ],

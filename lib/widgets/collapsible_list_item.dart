@@ -72,7 +72,7 @@ class CollapsibleListItem extends StatelessWidget {
                           padding: EdgeInsets.only(right: 8.0),
                           tooltip: texts.collapsible_list_action_copy(title),
                           iconSize: 16.0,
-                          color: userStyle.color ?? textTheme.button.color,
+                          color: userStyle.color ?? textTheme.labelLarge.color,
                           icon: Icon(
                             IconData(0xe90b, fontFamily: 'icomoon'),
                           ),
@@ -91,7 +91,7 @@ class CollapsibleListItem extends StatelessWidget {
                         IconButton(
                           padding: EdgeInsets.only(right: 8.0),
                           iconSize: 16.0,
-                          color: userStyle.color ?? textTheme.button.color,
+                          color: userStyle.color ?? textTheme.labelLarge.color,
                           icon: Icon(Icons.share),
                           onPressed: () {
                             Share.share(sharedValue);

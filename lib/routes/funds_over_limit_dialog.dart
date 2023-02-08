@@ -72,7 +72,7 @@ class SwapRefundDialogState extends State<SwapRefundDialog> {
           onPressed: () => Navigator.pop(context),
           child: Text(
             texts.funds_over_limit_dialog_action_ok,
-            style: themeData.primaryTextTheme.button,
+            style: themeData.primaryTextTheme.labelLarge,
           ),
         )
       ],

@@ -109,7 +109,7 @@ class FeeChooser extends StatelessWidget {
         onPressed: disabled ? null : () => onSelect(index),
         child: Text(
           text,
-          style: themeData.textTheme.button.copyWith(
+          style: themeData.textTheme.labelLarge.copyWith(
             color: disabled
                 ? themeData.colorScheme.onSurface.withOpacity(0.4)
                 : isSelected
@@ -155,7 +155,7 @@ class ProcessingSpeed extends StatelessWidget {
       children: [
         Text(
           _estimatedDelivery(context),
-          style: themeData.textTheme.button.copyWith(
+          style: themeData.textTheme.labelLarge.copyWith(
             color: themeData.colorScheme.onSurface.withOpacity(0.4),
           ),
         ),

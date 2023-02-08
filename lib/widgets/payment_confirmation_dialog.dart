@@ -124,7 +124,7 @@ class PaymentConfirmationDialog extends StatelessWidget {
         ),
         child: Text(
           texts.payment_confirmation_dialog_action_no,
-          style: themeData.primaryTextTheme.button,
+          style: themeData.primaryTextTheme.labelLarge,
         ),
         onPressed: () => _onCancel(),
       ),
@@ -138,7 +138,7 @@ class PaymentConfirmationDialog extends StatelessWidget {
         ),
         child: Text(
           texts.payment_confirmation_dialog_action_yes,
-          style: themeData.primaryTextTheme.button,
+          style: themeData.primaryTextTheme.labelLarge,
         ),
         onPressed: () {
           _onPaymentApproved(SendPayment(PayRequest(

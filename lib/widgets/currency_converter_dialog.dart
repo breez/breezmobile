@@ -97,7 +97,7 @@ class CurrencyConverterDialogState extends State<CurrencyConverterDialog>
       _colorAnimation = ColorTween(
         // change to white according to theme
         begin: themeData.primaryTextTheme.headline4.color,
-        end: themeData.primaryTextTheme.button.color,
+        end: themeData.primaryTextTheme.labelLarge.color,
       ).animate(_controller)
         ..addListener(() {
           setState(() {});
@@ -299,7 +299,7 @@ class CurrencyConverterDialogState extends State<CurrencyConverterDialog>
         onPressed: () => Navigator.pop(context),
         child: Text(
           texts.currency_converter_dialog_action_cancel,
-          style: themeData.primaryTextTheme.button,
+          style: themeData.primaryTextTheme.labelLarge,
         ),
       ),
     ];
@@ -323,7 +323,7 @@ class CurrencyConverterDialogState extends State<CurrencyConverterDialog>
           },
           child: Text(
             texts.currency_converter_dialog_action_done,
-            style: themeData.primaryTextTheme.button,
+            style: themeData.primaryTextTheme.labelLarge,
           ),
         ),
       );

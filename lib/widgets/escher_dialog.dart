@@ -127,9 +127,9 @@ class EscherDialogState extends State<EscherDialog> {
         ),
         hintColor: themeData.dialogTheme.contentTextStyle.color,
         colorScheme: ColorScheme.dark(
-          primary: themeData.textTheme.button.color,
+          primary: themeData.textTheme.labelLarge.color,
         ),
-        primaryColor: themeData.textTheme.button.color,
+        primaryColor: themeData.textTheme.labelLarge.color,
         errorColor: theme.themeId == "BLUE" ? Colors.red : themeData.errorColor,
       ),
       child: Form(
@@ -166,7 +166,7 @@ class EscherDialogState extends State<EscherDialog> {
         onPressed: () => Navigator.pop(context),
         child: Text(
           texts.escher_action_cancel,
-          style: themeData.primaryTextTheme.button,
+          style: themeData.primaryTextTheme.labelLarge,
         ),
       ),
     ];
@@ -190,7 +190,7 @@ class EscherDialogState extends State<EscherDialog> {
             },
             child: Text(
               texts.escher_action_approve,
-              style: themeData.primaryTextTheme.button,
+              style: themeData.primaryTextTheme.labelLarge,
             ),
           ),
         );

@@ -464,7 +464,7 @@ class _CustomClipsDurationDialogState extends State<CustomClipsDurationDialog> {
         onPressed: () => Navigator.pop(context),
         child: Text(
           texts.podcast_boost_action_cancel,
-          style: themeData.primaryTextTheme.button,
+          style: themeData.primaryTextTheme.labelLarge,
         ),
       ),
     ];
@@ -482,7 +482,7 @@ class _CustomClipsDurationDialogState extends State<CustomClipsDurationDialog> {
           },
           child: Text(
             BreezTranslations.of(context).podcast_clips_dialog_done,
-            style: themeData.primaryTextTheme.button,
+            style: themeData.primaryTextTheme.labelLarge,
           ),
         ),
       );

@@ -60,7 +60,7 @@ class LostCardDialog extends StatelessWidget {
           onPressed: () => Navigator.pop(context),
           child: Text(
             texts.lost_card_dialog_action_cancel,
-            style: themeData.primaryTextTheme.button,
+            style: themeData.primaryTextTheme.labelLarge,
           ),
         ),
         TextButton(
@@ -70,7 +70,7 @@ class LostCardDialog extends StatelessWidget {
           },
           child: Text(
             texts.lost_card_dialog_action_deactivate,
-            style: themeData.primaryTextTheme.button,
+            style: themeData.primaryTextTheme.labelLarge,
           ),
         ),
       ],

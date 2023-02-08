@@ -83,7 +83,7 @@ class EnableBackupDialogState extends State<EnableBackupDialog> {
                                     data: Theme.of(context).copyWith(
                                         unselectedWidgetColor: Theme.of(context)
                                             .textTheme
-                                            .button
+                                            .labelLarge
                                             .color),
                                     child: Checkbox(
                                         activeColor: Colors.white,
@@ -122,7 +122,7 @@ class EnableBackupDialogState extends State<EnableBackupDialog> {
               onPressed: () => Navigator.pop(widget.context),
               child: Text(
                 texts.backup_dialog_option_cancel,
-                style: Theme.of(context).primaryTextTheme.button,
+                style: Theme.of(context).primaryTextTheme.labelLarge,
                 maxLines: 1,
               ),
             ),
@@ -178,7 +178,7 @@ class EnableBackupDialogState extends State<EnableBackupDialog> {
                       isRemoteServer
                           ? texts.backup_dialog_option_ok_remote_server
                           : texts.backup_dialog_option_ok_default,
-                      style: Theme.of(context).primaryTextTheme.button,
+                      style: Theme.of(context).primaryTextTheme.labelLarge,
                       maxLines: 1,
                     ),
                   );

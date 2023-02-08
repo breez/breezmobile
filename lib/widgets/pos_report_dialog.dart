@@ -82,7 +82,7 @@ class PosReportDialog extends StatelessWidget {
         TextButton(
           child: Text(
             texts.pos_report_dialog_action_close,
-            style: themeData.primaryTextTheme.button.copyWith(
+            style: themeData.primaryTextTheme.labelLarge.copyWith(
               color: _highlight(themeData),
             ),
           ),

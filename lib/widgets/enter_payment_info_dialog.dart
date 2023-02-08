@@ -74,9 +74,9 @@ class EnterPaymentInfoDialogState extends State<EnterPaymentInfoDialog> {
         ),
         hintColor: themeData.dialogTheme.contentTextStyle.color,
         colorScheme: ColorScheme.dark(
-          primary: themeData.textTheme.button.color,
+          primary: themeData.textTheme.labelLarge.color,
         ),
-        primaryColor: themeData.textTheme.button.color,
+        primaryColor: themeData.textTheme.labelLarge.color,
         errorColor: theme.themeId == "BLUE" ? Colors.red : themeData.errorColor,
       ),
       child: Container(
@@ -155,7 +155,7 @@ class EnterPaymentInfoDialogState extends State<EnterPaymentInfoDialog> {
         onPressed: () => Navigator.pop(context),
         child: Text(
           texts.payment_info_dialog_action_cancel,
-          style: themeData.primaryTextTheme.button,
+          style: themeData.primaryTextTheme.labelLarge,
         ),
       )
     ];
@@ -192,7 +192,7 @@ class EnterPaymentInfoDialogState extends State<EnterPaymentInfoDialog> {
         }),
         child: Text(
           texts.payment_info_dialog_action_approve,
-          style: themeData.primaryTextTheme.button,
+          style: themeData.primaryTextTheme.labelLarge,
         ),
       ));
     }

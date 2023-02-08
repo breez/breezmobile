@@ -126,7 +126,7 @@ class ViewSwitch extends StatelessWidget {
   }
 
   TextStyle _textStyle(ThemeData themeData, index) {
-    return themeData.textTheme.button.copyWith(
+    return themeData.textTheme.labelLarge.copyWith(
       color: textTint.withOpacity(selected == index ? 1 : 0.5),
     );
   }

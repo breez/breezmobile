@@ -36,7 +36,7 @@ class CloseWarningDialog extends StatelessWidget {
             onPressed: () => Navigator.of(context).pop(),
             child: Text(
               texts.close_warning_dialog_action_ok,
-              style: themeData.primaryTextTheme.button,
+              style: themeData.primaryTextTheme.labelLarge,
             ),
           ),
         ],

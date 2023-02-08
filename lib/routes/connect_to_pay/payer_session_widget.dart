@@ -215,7 +215,7 @@ class WaitingChannelsSyncUIState extends State<WaitingChannelsSyncUI> {
                       onPressed: () => Navigator.pop(context),
                       child: Text(
                         texts.connect_to_pay_payer_action_close,
-                        style: themeData.primaryTextTheme.button,
+                        style: themeData.primaryTextTheme.labelLarge,
                       ),
                     ),
                   ],

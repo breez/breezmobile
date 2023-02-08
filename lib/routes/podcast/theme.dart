@@ -70,18 +70,19 @@ Widget withPodcastTheme(BreezUserModel user, Widget child) {
                         .buttonTheme
                         .colorScheme
                         .copyWith(
-                            primary: currentTheme.primaryTextTheme.button.color,
+                            primary:
+                                currentTheme.primaryTextTheme.labelLarge.color,
                             onPrimary: Color.fromRGBO(0, 133, 251, 1.0),
                             onSecondary: Color.fromRGBO(178, 241, 255, 1.0),
                             onSurface: Colors.blueGrey),
                   ),
-              primaryTextTheme: Typography.material2018(
-                      platform: TargetPlatform.android)
-                  .black
-                  .apply(fontFamily: 'IBMPlexSans')
-                  .copyWith(
-                    button: currentTheme.primaryTextTheme.button,
-                  ),
+              primaryTextTheme:
+                  Typography.material2018(platform: TargetPlatform.android)
+                      .black
+                      .apply(fontFamily: 'IBMPlexSans')
+                      .copyWith(
+                        labelLarge: currentTheme.primaryTextTheme.labelLarge,
+                      ),
               textTheme:
                   Typography.material2018(platform: TargetPlatform.android)
                       .black
@@ -89,10 +90,10 @@ Widget withPodcastTheme(BreezUserModel user, Widget child) {
                         fontFamily: 'IBMPlexSans',
                       )
                       .copyWith(
-                        button: Typography.material2018(
+                        labelLarge: Typography.material2018(
                                 platform: TargetPlatform.android)
                             .black
-                            .button
+                            .labelLarge
                             .copyWith(color: Color.fromRGBO(5, 93, 235, 1.0)),
                         headline6: Typography.material2018(
                                 platform: TargetPlatform.android)
@@ -158,7 +159,8 @@ Widget withPodcastTheme(BreezUserModel user, Widget child) {
                         .buttonTheme
                         .colorScheme
                         .copyWith(
-                            primary: currentTheme.primaryTextTheme.button.color,
+                            primary:
+                                currentTheme.primaryTextTheme.labelLarge.color,
                             onPrimary: Colors.white,
                             onSecondary: Color(0xFF0085fb),
                             onSurface: Color(0x77ffffff)),
@@ -168,7 +170,7 @@ Widget withPodcastTheme(BreezUserModel user, Widget child) {
                       .white
                       .apply(fontFamily: 'IBMPlexSans')
                       .copyWith(
-                        button: currentTheme.primaryTextTheme.button,
+                        labelLarge: currentTheme.primaryTextTheme.labelLarge,
                       ),
               textTheme: Typography.material2018(
                       platform: TargetPlatform.android)

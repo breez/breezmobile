@@ -357,7 +357,7 @@ class InitialWalkthroughPageState extends State<InitialWalkthroughPage>
                         ),
                         child: Text(
                           texts.initial_walk_through_lets_breeze,
-                          style: themeData.textTheme.button,
+                          style: themeData.textTheme.labelLarge,
                         ),
                         onPressed: () => _letsBreez(context),
                       ),

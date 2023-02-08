@@ -395,7 +395,7 @@ class NoLSPWidget extends StatelessWidget {
                     borderRadius: BorderRadius.circular(6.0),
                   ),
                   side: BorderSide(
-                    color: themeData.textTheme.button.color,
+                    color: themeData.textTheme.labelLarge.color,
                     style: BorderStyle.solid,
                   ),
                 ),
@@ -403,7 +403,7 @@ class NoLSPWidget extends StatelessWidget {
                   texts.account_page_activation_provider_action_select,
                   style: TextStyle(
                     fontSize: 12.3,
-                    color: themeData.textTheme.button.color,
+                    color: themeData.textTheme.labelLarge.color,
                   ),
                 ),
                 onPressed: () => Navigator.of(context).pushNamed("/select_lsp"),

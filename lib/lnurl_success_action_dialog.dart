@@ -89,9 +89,9 @@ class _URLRow extends StatelessWidget {
     final themeData = Theme.of(context);
 
     final _expansionTileTheme = themeData.copyWith(
-      unselectedWidgetColor: themeData.primaryTextTheme.button.color,
+      unselectedWidgetColor: themeData.primaryTextTheme.labelLarge.color,
       colorScheme: ColorScheme.dark(
-        secondary: themeData.primaryTextTheme.button.color,
+        secondary: themeData.primaryTextTheme.labelLarge.color,
       ),
       dividerColor: themeData.colorScheme.background,
     );
@@ -131,7 +131,7 @@ class _URLRow extends StatelessWidget {
                     alignment: Alignment.centerRight,
                     padding: EdgeInsets.zero,
                     iconSize: 16.0,
-                    color: themeData.primaryTextTheme.button.color,
+                    color: themeData.primaryTextTheme.labelLarge.color,
                     icon: Icon(
                       IconData(0xe90b, fontFamily: 'icomoon'),
                     ),
@@ -147,7 +147,7 @@ class _URLRow extends StatelessWidget {
                   IconButton(
                     padding: EdgeInsets.zero,
                     iconSize: 16.0,
-                    color: themeData.primaryTextTheme.button.color,
+                    color: themeData.primaryTextTheme.labelLarge.color,
                     icon: Icon(Icons.share),
                     onPressed: () {
                       Share.share(sharedValue);

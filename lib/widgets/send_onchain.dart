@@ -96,9 +96,9 @@ class SendOnchainState extends State<SendOnchain> {
         ),
         hintColor: dialogTheme.contentTextStyle.color,
         colorScheme: ColorScheme.dark(
-          primary: themeData.textTheme.button.color,
+          primary: themeData.textTheme.labelLarge.color,
         ),
-        primaryColor: themeData.textTheme.button.color,
+        primaryColor: themeData.textTheme.labelLarge.color,
         unselectedWidgetColor: themeData.canvasColor,
         errorColor: theme.themeId == "BLUE" ? Colors.red : themeData.errorColor,
       ),
@@ -148,7 +148,7 @@ class SendOnchainState extends State<SendOnchain> {
                   }),
                   child: Text(
                     texts.send_on_chain_broadcast,
-                    style: themeData.primaryTextTheme.button,
+                    style: themeData.primaryTextTheme.labelLarge,
                   ),
                 ),
               ],

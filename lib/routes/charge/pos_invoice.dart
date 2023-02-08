@@ -358,8 +358,8 @@ class POSInvoiceState extends State<POSInvoice> with TickerProviderStateMixin {
     final texts = context.texts();
     return ViewSwitch(
       selected: _isKeypadView ? 0 : 1,
-      tint: themeData.primaryTextTheme.button.color,
-      textTint: themeData.textTheme.button.color,
+      tint: themeData.primaryTextTheme.labelLarge.color,
+      textTint: themeData.textTheme.labelLarge.color,
       items: [
         ViewSwitchItem(
           texts.pos_invoice_tab_keypad,
@@ -477,7 +477,7 @@ class POSInvoiceState extends State<POSInvoice> with TickerProviderStateMixin {
               TextButton(
                 child: Text(
                   texts.pos_invoice_error_fix_action,
-                  style: themeData.primaryTextTheme.button,
+                  style: themeData.primaryTextTheme.labelLarge,
                 ),
                 onPressed: () {
                   final navigator = Navigator.of(context);
@@ -602,7 +602,7 @@ class POSInvoiceState extends State<POSInvoice> with TickerProviderStateMixin {
             }),
             child: Text(
               texts.pos_invoice_close,
-              style: Theme.of(context).primaryTextTheme.button,
+              style: Theme.of(context).primaryTextTheme.labelLarge,
             ),
           ),
         ],
@@ -858,7 +858,7 @@ class POSInvoiceState extends State<POSInvoice> with TickerProviderStateMixin {
             onPressed: () => Navigator.pop(context),
             child: Text(
               texts.pos_invoice_clear_sale_cancel,
-              style: themeData.primaryTextTheme.button,
+              style: themeData.primaryTextTheme.labelLarge,
             ),
           ),
           TextButton(
@@ -868,7 +868,7 @@ class POSInvoiceState extends State<POSInvoice> with TickerProviderStateMixin {
             },
             child: Text(
               texts.pos_invoice_clear_sale_confirm,
-              style: themeData.primaryTextTheme.button,
+              style: themeData.primaryTextTheme.labelLarge,
             ),
           ),
         ],

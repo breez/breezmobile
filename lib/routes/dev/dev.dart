@@ -176,7 +176,7 @@ class DevViewState extends State<DevView> {
                                             child: Text(choice.title,
                                                 style: Theme.of(context)
                                                     .textTheme
-                                                    .button),
+                                                    .labelLarge),
                                           );
                                         }).toList();
                                       },

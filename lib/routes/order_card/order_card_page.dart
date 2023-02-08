@@ -366,7 +366,7 @@ class OrderCardPageState extends State<OrderCardPage> {
             onPressed: () => Navigator.pop(context),
             child: Text(
               texts.order_card_action_ok,
-              style: themeData.primaryTextTheme.button,
+              style: themeData.primaryTextTheme.labelLarge,
             ),
           ),
         ],

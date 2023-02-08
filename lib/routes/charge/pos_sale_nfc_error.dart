@@ -34,7 +34,7 @@ class PosSaleNfcError extends StatelessWidget {
             onPressed: () => Navigator.of(context).pop(),
             child: Text(
               texts.pos_payment_nfc_error_action_close,
-              style: themeData.primaryTextTheme.button,
+              style: themeData.primaryTextTheme.labelLarge,
             ),
           )
         ],

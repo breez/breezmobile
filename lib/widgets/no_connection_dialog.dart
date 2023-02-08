@@ -68,14 +68,14 @@ Future<bool> showNoConnectionDialog(BuildContext context) {
           TextButton(
             child: Text(
               texts.no_connection_dialog_action_cancel,
-              style: themeData.primaryTextTheme.button,
+              style: themeData.primaryTextTheme.labelLarge,
             ),
             onPressed: () => navigator.pop(false),
           ),
           TextButton(
             child: Text(
               texts.no_connection_dialog_action_try_again,
-              style: themeData.primaryTextTheme.button,
+              style: themeData.primaryTextTheme.labelLarge,
             ),
             onPressed: () => navigator.pop(true),
           ),

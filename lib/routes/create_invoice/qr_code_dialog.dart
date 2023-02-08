@@ -157,7 +157,7 @@ class QrCodeDialogState extends State<QrCodeDialog>
                                   0xe917,
                                   fontFamily: "icomoon",
                                 )),
-                                color: themeData.primaryTextTheme.button.color,
+                                color: themeData.primaryTextTheme.labelLarge.color,
                                 onPressed: () {
                                   Share.share(
                                       "lightning:" + requestModel.rawPayReq,
@@ -180,7 +180,7 @@ class QrCodeDialogState extends State<QrCodeDialog>
                                   0xe90b,
                                   fontFamily: "icomoon",
                                 )),
-                                color: themeData.primaryTextTheme.button.color,
+                                color: themeData.primaryTextTheme.labelLarge.color,
                                 onPressed: () {
                                   ServiceInjector()
                                       .device
@@ -221,7 +221,7 @@ class QrCodeDialogState extends State<QrCodeDialog>
                       height: 310.0,
                       child: synced == false
                           ? CircularProgress(
-                              color: themeData.textTheme.button.color,
+                              color: themeData.textTheme.labelLarge.color,
                               size: 100.0,
                               value: syncProgress,
                               title: texts.qr_code_dialog_synchronizing,
@@ -233,7 +233,7 @@ class QrCodeDialogState extends State<QrCodeDialog>
                                 width: 80.0,
                                 child: CircularProgressIndicator(
                                   valueColor: AlwaysStoppedAnimation<Color>(
-                                    themeData.primaryTextTheme.button.color,
+                                    themeData.primaryTextTheme.labelLarge.color,
                                   ),
                                   backgroundColor: themeData.colorScheme.background,
                                 ),
@@ -357,7 +357,7 @@ class QrCodeDialogState extends State<QrCodeDialog>
       }),
       child: Text(
         texts.qr_code_dialog_action_close,
-        style: themeData.primaryTextTheme.button,
+        style: themeData.primaryTextTheme.labelLarge,
       ),
     );
   }

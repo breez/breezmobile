@@ -59,7 +59,7 @@ Future<Null> promptError(
             TextButton(
               child: Text(
                 okText ?? texts.error_dialog_default_action_ok,
-                style: themeData.primaryTextTheme.button,
+                style: themeData.primaryTextTheme.labelLarge,
               ),
               onPressed: () {
                 canPop = true;
@@ -115,7 +115,7 @@ Future<bool> promptAreYouSure(
           TextButton(
             child: Text(
               cancelText ?? texts.error_dialog_default_action_no,
-              style: themeData.primaryTextTheme.button,
+              style: themeData.primaryTextTheme.labelLarge,
             ),
             onPressed: () {
               Navigator.of(context).pop(false);
@@ -124,7 +124,7 @@ Future<bool> promptAreYouSure(
           TextButton(
             child: Text(
               okText ?? texts.error_dialog_default_action_yes,
-              style: themeData.primaryTextTheme.button,
+              style: themeData.primaryTextTheme.labelLarge,
             ),
             onPressed: () => Navigator.of(context).pop(true),
           ),
@@ -172,7 +172,7 @@ Future<bool> promptMessage(
           TextButton(
             child: Text(
               closeText ?? texts.error_dialog_default_action_close,
-              style: themeData.primaryTextTheme.button,
+              style: themeData.primaryTextTheme.labelLarge,
             ),
             onPressed: () => Navigator.of(context).pop(false),
           ),

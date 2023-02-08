@@ -175,7 +175,7 @@ class PaymentAdjustmentState extends State<PaymentAdjustment> {
                     ),
                     child: Text(
                       texts.tutorial_gotcha,
-                      style: theme.primaryTextTheme.button.copyWith(
+                      style: theme.primaryTextTheme.labelLarge.copyWith(
                         color: theme.primaryColor,
                       ),
                     ),

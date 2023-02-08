@@ -97,7 +97,7 @@ class SyncProgressLoader extends StatelessWidget {
       width: MediaQuery.of(context).size.width,
       height: 150.0,
       child: CircularProgress(
-          color: progressColor ?? Theme.of(context).textTheme.button.color,
+          color: progressColor ?? Theme.of(context).textTheme.labelLarge.color,
           size: 100.0,
           value: value,
           title: title),

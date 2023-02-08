@@ -158,7 +158,7 @@ class _PosPaymentDialogState extends State<PosPaymentDialog> {
                 "src/icon/nfc.svg",
                 color: Platform.isAndroid
                     ? themeData.dialogTheme.titleTextStyle.color
-                    : themeData.primaryTextTheme.button.color,
+                    : themeData.primaryTextTheme.labelLarge.color,
               ),
               onPressed: Platform.isAndroid
                   ? null
@@ -171,7 +171,7 @@ class _PosPaymentDialogState extends State<PosPaymentDialog> {
               highlightColor: Colors.transparent,
               padding: const EdgeInsets.fromLTRB(0.0, 8.0, 2.0, 8.0),
               icon: Icon(IconData(0xe917, fontFamily: 'icomoon')),
-              color: themeData.primaryTextTheme.button.color,
+              color: themeData.primaryTextTheme.labelLarge.color,
               tooltip: texts.pos_dialog_share,
               onPressed: () => Share.share(
                 "lightning:" + widget.paymentRequest.rawPayReq,
@@ -182,7 +182,7 @@ class _PosPaymentDialogState extends State<PosPaymentDialog> {
               highlightColor: Colors.transparent,
               padding: const EdgeInsets.fromLTRB(2.0, 8.0, 14.0, 8.0),
               icon: Icon(IconData(0xe90b, fontFamily: 'icomoon')),
-              color: themeData.primaryTextTheme.button.color,
+              color: themeData.primaryTextTheme.labelLarge.color,
               tooltip: texts.pos_dialog_invoice_copy,
               onPressed: () {
                 ServiceInjector()
@@ -302,7 +302,7 @@ class _PosPaymentDialogState extends State<PosPaymentDialog> {
       child: Text(
         texts.pos_dialog_clear_sale,
         textAlign: TextAlign.center,
-        style: themeData.primaryTextTheme.button,
+        style: themeData.primaryTextTheme.labelLarge,
       ),
       onPressed: () {
         Navigator.of(context).pop(PosPaymentResult(clearSale: true));
@@ -321,7 +321,7 @@ class _PosPaymentDialogState extends State<PosPaymentDialog> {
       child: Text(
         texts.pos_dialog_cancel,
         textAlign: TextAlign.center,
-        style: themeData.primaryTextTheme.button,
+        style: themeData.primaryTextTheme.labelLarge,
       ),
       onPressed: () {
         Navigator.of(context).pop(PosPaymentResult());

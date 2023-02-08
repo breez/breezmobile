@@ -172,9 +172,9 @@ class PaymentRequestInfoDialogState extends State<PaymentRequestInfoDialog> {
           ),
           hintColor: themeData.dialogTheme.contentTextStyle.color,
           colorScheme: ColorScheme.dark(
-            primary: themeData.textTheme.button.color,
+            primary: themeData.textTheme.labelLarge.color,
           ),
-          primaryColor: themeData.textTheme.button.color,
+          primaryColor: themeData.textTheme.labelLarge.color,
           errorColor:
               theme.themeId == "BLUE" ? Colors.red : themeData.errorColor,
         ),
@@ -292,7 +292,7 @@ class PaymentRequestInfoDialogState extends State<PaymentRequestInfoDialog> {
         onPressed: () => widget._onCancel(),
         child: Text(
           texts.payment_request_dialog_action_cancel,
-          style: themeData.primaryTextTheme.button,
+          style: themeData.primaryTextTheme.labelLarge,
         ),
       )
     ];
@@ -320,7 +320,7 @@ class PaymentRequestInfoDialogState extends State<PaymentRequestInfoDialog> {
         }),
         child: Text(
           texts.payment_request_dialog_action_approve,
-          style: themeData.primaryTextTheme.button,
+          style: themeData.primaryTextTheme.labelLarge,
         ),
       ));
     }

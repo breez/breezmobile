@@ -157,7 +157,7 @@ class LNURLHandler {
                 TextButton(
                   child: Text(
                     texts.handler_lnurl_open_channel_action_cancel,
-                    style: themeData.primaryTextTheme.button,
+                    style: themeData.primaryTextTheme.labelLarge,
                   ),
                   onPressed: () => navigator.pop(false),
                 ),
