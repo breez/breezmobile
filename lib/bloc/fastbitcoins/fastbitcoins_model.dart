@@ -59,7 +59,7 @@ class ValidateResponseModel {
 
 @JsonSerializable()
 class RedeemRequestModel {
-  @JsonKey(ignore: true)
+  @JsonKey(includeFromJson: false, includeToJson: false)
   ValidateResponseModel validateResponse;
   @JsonKey(name: 'email_address')
   final String emailAddress;
