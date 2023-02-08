@@ -22,8 +22,8 @@ class LNURLHandler {
     final themeData = Theme.of(context);
 
     lnurlBloc.listenLNUrl().listen((response) {
-      if (response.runtimeType == fetchLNUrlState) {
-        _setLoading(context, response == fetchLNUrlState.started);
+      if (response.runtimeType == FetchLNUrlState) {
+        _setLoading(context, response == FetchLNUrlState.started);
       } else {
         return executeLNURLResponse(context, lnurlBloc, response);
       }

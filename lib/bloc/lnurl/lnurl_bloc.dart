@@ -13,7 +13,7 @@ import 'package:breez/bloc/async_actions_handler.dart';
 import 'package:breez/bloc/lnurl/lnurl_actions.dart';
 import 'package:breez/bloc/lnurl/lnurl_model.dart';
 
-enum fetchLNUrlState { started, completed }
+enum FetchLNUrlState { started, completed }
 
 class LNUrlBloc with AsyncActionsHandler {
   BreezBridge _breezLib;
@@ -67,12 +67,12 @@ class LNUrlBloc with AsyncActionsHandler {
           .asyncMap((l) {
         var v = parseLightningAddress(l);
         v ??= l;
-        _lnUrlStreamController.add(fetchLNUrlState.started);
+        _lnUrlStreamController.add(FetchLNUrlState.started);
         return _breezLib.fetchLNUrl(v).catchError((error) {
           throw error.toString();
         });
       }).map((response) {
-        _lnUrlStreamController.add(fetchLNUrlState.completed);
+        _lnUrlStreamController.add(FetchLNUrlState.completed);
         if (response.runtimeType == LNUrlResponse) {
           if (response.hasWithdraw()) {
             final withdrawResponse = WithdrawFetchResponse(response.withdraw);
@@ -94,7 +94,7 @@ class LNUrlBloc with AsyncActionsHandler {
           }
         }
       }).handleError((error) {
-        _lnUrlStreamController.add(fetchLNUrlState.completed);
+        _lnUrlStreamController.add(FetchLNUrlState.completed);
         _lnUrlStreamController.addError(error.toString());
       }).listen((_) {});
     }
