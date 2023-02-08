@@ -94,7 +94,7 @@ _showClipsBottomSheet(
                                   '${_formatDuration(clipDetailSnapshot.data.startTimeStamp)} - ${_formatDuration(clipDetailSnapshot.data.endTimeStamp)}',
                                   style: Theme.of(context)
                                       .primaryTextTheme
-                                      .headline3
+                                      .displaySmall
                                       .copyWith(
                                         fontSize: 20,
                                         color: Colors.white,
@@ -145,7 +145,7 @@ _showClipsBottomSheet(
                                         .podcast_clips_cancel_button,
                                     style: Theme.of(context)
                                         .primaryTextTheme
-                                        .headline3
+                                        .displaySmall
                                         .copyWith(
                                           fontSize: 16,
                                           color: Colors.white.withOpacity(0.5),
@@ -203,7 +203,7 @@ _showClipsBottomSheet(
                                               .podcast_clips_clip_button,
                                           style: Theme.of(context)
                                               .primaryTextTheme
-                                              .headline3
+                                              .displaySmall
                                               .copyWith(
                                                 fontSize: 16,
                                                 color: Colors.white,
@@ -246,7 +246,7 @@ Widget _numberPanel(BuildContext context, int durationInSeconds) {
             child: AutoSizeText(
               durationInSeconds.toString(),
               textAlign: TextAlign.center,
-              style: Theme.of(context).primaryTextTheme.headline3.copyWith(
+              style: Theme.of(context).primaryTextTheme.displaySmall.copyWith(
                   fontSize: 16,
                   color: Colors.white,
                   fontWeight: FontWeight.w500,
@@ -259,7 +259,7 @@ Widget _numberPanel(BuildContext context, int durationInSeconds) {
           AutoSizeText(
             BreezTranslations.of(context).podcast_clips_seconds,
             textAlign: TextAlign.center,
-            style: Theme.of(context).primaryTextTheme.headline3.copyWith(
+            style: Theme.of(context).primaryTextTheme.displaySmall.copyWith(
                   fontSize: 16,
                   color: Colors.white.withOpacity(0.7),
                   fontWeight: FontWeight.w500,
@@ -328,7 +328,7 @@ _imageWidget({BuildContext context, Episode episodeDetails, Image image}) {
           episodeDetails.author,
           maxLines: 2,
           overflow: TextOverflow.ellipsis,
-          style: Theme.of(context).primaryTextTheme.headline3.copyWith(
+          style: Theme.of(context).primaryTextTheme.displaySmall.copyWith(
                 fontSize: 12,
                 color: Colors.white,
                 fontWeight: FontWeight.w500,
@@ -352,7 +352,7 @@ _imageWidget({BuildContext context, Episode episodeDetails, Image image}) {
           episodeDetails.podcast,
           maxLines: 2,
           overflow: TextOverflow.ellipsis,
-          style: Theme.of(context).primaryTextTheme.headline3.copyWith(
+          style: Theme.of(context).primaryTextTheme.displaySmall.copyWith(
                 fontSize: 12,
                 color: Colors.white,
                 fontWeight: FontWeight.w500,
@@ -365,7 +365,7 @@ _imageWidget({BuildContext context, Episode episodeDetails, Image image}) {
           episodeDetails.title,
           maxLines: 2,
           overflow: TextOverflow.ellipsis,
-          style: Theme.of(context).primaryTextTheme.headline3.copyWith(
+          style: Theme.of(context).primaryTextTheme.displaySmall.copyWith(
                 fontSize: 16,
                 color: Colors.white,
                 fontWeight: FontWeight.w600,
@@ -378,7 +378,7 @@ _imageWidget({BuildContext context, Episode episodeDetails, Image image}) {
           mainAxisAlignment: MainAxisAlignment.end,
           children: [
             Text("Clipped by ",
-                style: Theme.of(context).primaryTextTheme.headline3.copyWith(
+                style: Theme.of(context).primaryTextTheme.displaySmall.copyWith(
                       fontSize: 12,
                       color: Colors.white,
                       fontWeight: FontWeight.w500,

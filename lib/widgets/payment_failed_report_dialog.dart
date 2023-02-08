@@ -66,7 +66,7 @@ class PaymentFailedReportDialogState extends State<PaymentFailedReportDialog> {
                     padding: const EdgeInsets.only(left: 15.0, right: 12.0),
                     child: Text(
                       texts.payment_failed_report_dialog_message,
-                      style: themeData.primaryTextTheme.headline3
+                      style: themeData.primaryTextTheme.displaySmall
                           .copyWith(fontSize: 16),
                     ),
                   ),
@@ -93,7 +93,7 @@ class PaymentFailedReportDialogState extends State<PaymentFailedReportDialog> {
                         ),
                         Text(
                           texts.payment_failed_report_dialog_do_not_ask_again,
-                          style: themeData.primaryTextTheme.headline3.copyWith(
+                          style: themeData.primaryTextTheme.displaySmall.copyWith(
                             fontSize: 16,
                           ),
                         ),

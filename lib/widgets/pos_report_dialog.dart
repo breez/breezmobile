@@ -387,7 +387,7 @@ class PosReportDialog extends StatelessWidget {
       padding: const EdgeInsets.all(8.0),
       child: Text(
         text,
-        style: themeData.primaryTextTheme.headline3.copyWith(
+        style: themeData.primaryTextTheme.displaySmall.copyWith(
           fontSize: 16.0,
         ),
       ),

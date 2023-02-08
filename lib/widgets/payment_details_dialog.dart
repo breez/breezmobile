@@ -217,7 +217,7 @@ Future<Null> showPaymentDetailsDialog(
                                   paymentInfo.creationTimestamp.toInt() * 1000,
                                 ),
                               ),
-                              style: themeData.primaryTextTheme.headline3,
+                              style: themeData.primaryTextTheme.displaySmall,
                               textAlign: TextAlign.right,
                               maxLines: 1,
                               group: _valueGroup,
@@ -259,7 +259,7 @@ Future<Null> showPaymentDetailsDialog(
                                       1000,
                                 ),
                               ),
-                              style: themeData.primaryTextTheme.headline3,
+                              style: themeData.primaryTextTheme.displaySmall,
                               textAlign: TextAlign.right,
                               maxLines: 1,
                               group: _valueGroup,
@@ -322,7 +322,7 @@ Widget _amountText(
       : texts.payment_details_dialog_amount_positive(amount);
   return AutoSizeText(
     text,
-    style: themeData.primaryTextTheme.headline3,
+    style: themeData.primaryTextTheme.displaySmall,
     textAlign: TextAlign.right,
     maxLines: 1,
     group: _valueGroup,
@@ -447,7 +447,7 @@ class ShareablePaymentRow extends StatelessWidget {
                     textAlign: TextAlign.left,
                     overflow: TextOverflow.clip,
                     maxLines: 4,
-                    style: themeData.primaryTextTheme.headline3
+                    style: themeData.primaryTextTheme.displaySmall
                         .copyWith(fontSize: 10),
                   ),
                 ),
@@ -832,7 +832,7 @@ class _Destination extends StatelessWidget {
                   padding: EdgeInsets.only(left: 16.0, right: 16.0),
                   child: AutoSizeText(
                     currency.format(amount),
-                    style: themeData.primaryTextTheme.headline3,
+                    style: themeData.primaryTextTheme.displaySmall,
                     textAlign: TextAlign.right,
                     maxLines: 1,
                     group: _valueGroup,

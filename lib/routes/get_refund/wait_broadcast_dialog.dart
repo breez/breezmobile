@@ -230,7 +230,7 @@ class _WaitBroadcastDialog extends State<WaitBroadcastDialog> {
                   textAlign: TextAlign.left,
                   overflow: TextOverflow.clip,
                   maxLines: 4,
-                  style: themeData.primaryTextTheme.headline3.copyWith(
+                  style: themeData.primaryTextTheme.displaySmall.copyWith(
                     fontSize: 10,
                   ),
                 ),

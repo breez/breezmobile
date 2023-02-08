@@ -53,7 +53,7 @@ class CollapsibleListItem extends StatelessWidget {
                       textAlign: TextAlign.left,
                       overflow: TextOverflow.clip,
                       maxLines: 4,
-                      style: textTheme.headline3
+                      style: textTheme.displaySmall
                           .copyWith(fontSize: 10)
                           .merge(userStyle),
                     ),

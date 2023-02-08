@@ -66,7 +66,7 @@ class EnableBackupDialogState extends State<EnableBackupDialog> {
                               : texts.backup_dialog_message_default,
                           style: Theme.of(context)
                               .primaryTextTheme
-                              .headline3
+                              .displaySmall
                               .copyWith(fontSize: 16),
                           minFontSize: MinFontSize(context).minFontSize,
                           stepGranularity: 0.1,
@@ -102,7 +102,7 @@ class EnableBackupDialogState extends State<EnableBackupDialog> {
                                     texts.backup_dialog_do_not_prompt_again,
                                     style: Theme.of(context)
                                         .primaryTextTheme
-                                        .headline3
+                                        .displaySmall
                                         .copyWith(fontSize: 16),
                                     maxLines: 1,
                                     minFontSize:

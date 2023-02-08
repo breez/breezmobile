@@ -110,7 +110,7 @@ final ThemeData blueTheme = ThemeData(
         height: 1.28,
         fontWeight: FontWeight.w500,
         fontFamily: 'IBMPlexSans'),
-    headline3: TextStyle(
+    displaySmall: TextStyle(
         color: BreezColors.grey[500],
         fontSize: 14.0,
         letterSpacing: 0.0,
@@ -224,7 +224,7 @@ final ThemeData darkTheme = ThemeData(
         height: 1.28,
         fontWeight: FontWeight.w500,
         fontFamily: 'IBMPlexSans'),
-    headline3: TextStyle(
+    displaySmall: TextStyle(
         color: Colors.white, fontSize: 14.0, letterSpacing: 0.0, height: 1.28),
     headline5: TextStyle(
         color: Colors.white,

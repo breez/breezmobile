@@ -75,7 +75,7 @@ class _BetaWarningDialogState extends State<BetaWarningDialog> {
         padding: const EdgeInsets.only(left: 15.0, right: 12.0),
         child: Text(
           texts.beta_warning_message,
-          style: themeData.primaryTextTheme.headline3.copyWith(
+          style: themeData.primaryTextTheme.displaySmall.copyWith(
             fontSize: 16,
           ),
         ),
@@ -100,7 +100,7 @@ class _BetaWarningDialogState extends State<BetaWarningDialog> {
             ),
             Text(
               texts.beta_warning_understand,
-              style: themeData.primaryTextTheme.headline3.copyWith(
+              style: themeData.primaryTextTheme.displaySmall.copyWith(
                 fontSize: 16,
               ),
             ),
@@ -113,7 +113,7 @@ class _BetaWarningDialogState extends State<BetaWarningDialog> {
           padding: const EdgeInsets.fromLTRB(16.0, 0.0, 16.0, 0.0),
           child: Text(
             texts.beta_warning_understand_confirmation,
-            style: themeData.primaryTextTheme.headline3
+            style: themeData.primaryTextTheme.displaySmall
                 .copyWith(
                   fontSize: 16,
                 )

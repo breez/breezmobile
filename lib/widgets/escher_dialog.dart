@@ -106,7 +106,7 @@ class EscherDialogState extends State<EscherDialog> {
       padding: EdgeInsets.only(top: 36, bottom: 8),
       child: Text(
         texts.escher_cash_out_amount,
-        style: themeData.primaryTextTheme.headline3.copyWith(
+        style: themeData.primaryTextTheme.displaySmall.copyWith(
           fontSize: 16,
         ),
         textAlign: TextAlign.center,

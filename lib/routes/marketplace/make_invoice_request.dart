@@ -24,7 +24,7 @@ class MakeInvoiceRequest extends StatelessWidget {
     List<Widget> children = [
       Text(
         texts.make_invoice_request_title,
-        style: themeData.primaryTextTheme.headline3.copyWith(
+        style: themeData.primaryTextTheme.displaySmall.copyWith(
           fontSize: 16,
         ),
         textAlign: TextAlign.center,
@@ -41,7 +41,7 @@ class MakeInvoiceRequest extends StatelessWidget {
         padding: const EdgeInsets.fromLTRB(16.0, 0.0, 16.0, 8.0),
         child: AutoSizeText(
           description,
-          style: themeData.primaryTextTheme.headline3.copyWith(
+          style: themeData.primaryTextTheme.displaySmall.copyWith(
             fontSize: 16,
           ),
           textAlign:

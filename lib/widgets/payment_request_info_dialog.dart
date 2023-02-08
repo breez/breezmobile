@@ -153,7 +153,7 @@ class PaymentRequestInfoDialogState extends State<PaymentRequestInfoDialog> {
       payeeName == null || payeeName.isEmpty
           ? texts.payment_request_dialog_requested
           : texts.payment_request_dialog_requesting,
-      style: themeData.primaryTextTheme.headline3.copyWith(fontSize: 16),
+      style: themeData.primaryTextTheme.displaySmall.copyWith(fontSize: 16),
       textAlign: TextAlign.center,
     );
   }
@@ -247,7 +247,7 @@ class PaymentRequestInfoDialogState extends State<PaymentRequestInfoDialog> {
                 child: SingleChildScrollView(
                   child: AutoSizeText(
                     description,
-                    style: themeData.primaryTextTheme.headline3
+                    style: themeData.primaryTextTheme.displaySmall
                         .copyWith(fontSize: 16),
                     textAlign:
                         description.length > 40 && !description.contains("\n")
@@ -276,7 +276,7 @@ class PaymentRequestInfoDialogState extends State<PaymentRequestInfoDialog> {
         validationError,
         maxLines: 3,
         textAlign: TextAlign.center,
-        style: themeData.primaryTextTheme.headline3.copyWith(
+        style: themeData.primaryTextTheme.displaySmall.copyWith(
           fontSize: 16,
           color: theme.themeId == "BLUE"
               ? Colors.red

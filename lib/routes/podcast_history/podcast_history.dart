@@ -142,7 +142,7 @@ class PodcastHistoryPageState extends State<PodcastHistoryPage> {
                                         "My ${_getAppBarDisplayString(timeRange, context)}",
                                         style: Theme.of(context)
                                             .primaryTextTheme
-                                            .headline3
+                                            .displaySmall
                                             .copyWith(
                                               fontSize: 16,
                                               color: Colors.white,
@@ -507,7 +507,7 @@ class _PodcastStatItem extends StatelessWidget {
           children: [
             Text(
               value,
-              style: Theme.of(context).primaryTextTheme.headline3.copyWith(
+              style: Theme.of(context).primaryTextTheme.displaySmall.copyWith(
                     fontSize: 20,
                     color: Colors.white,
                     fontWeight: FontWeight.w600,
@@ -583,7 +583,7 @@ class _PodcastListTile extends StatelessWidget {
                         title,
                         style: Theme.of(context)
                             .primaryTextTheme
-                            .headline3
+                            .displaySmall
                             .copyWith(
                               fontSize: 16,
                               color: Colors.white,
@@ -641,7 +641,7 @@ class _PodcastListTile extends StatelessWidget {
                             "$sats sats",
                             style: Theme.of(context)
                                 .primaryTextTheme
-                                .headline3
+                                .displaySmall
                                 .copyWith(
                                   fontSize: 16,
                                   color: Colors.white,

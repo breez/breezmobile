@@ -107,7 +107,7 @@ class _PaymentOptionsPageState extends State<PaymentOptionsPage> {
             padding: const EdgeInsets.fromLTRB(16.0, 16.0, 16.0, 8.0),
             child: Text(
               texts.payment_options_fee_header,
-              style: themeData.primaryTextTheme.headline3.copyWith(
+              style: themeData.primaryTextTheme.displaySmall.copyWith(
                 color: Colors.white,
               ),
             ),
@@ -129,7 +129,7 @@ class _PaymentOptionsPageState extends State<PaymentOptionsPage> {
       onChanged: (value) => setState(() => _overriding = value),
       title: Text(
         texts.payment_options_fee_override_enable,
-        style: themeData.primaryTextTheme.headline3.copyWith(
+        style: themeData.primaryTextTheme.displaySmall.copyWith(
           color: Colors.white,
         ),
       ),

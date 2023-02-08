@@ -66,7 +66,7 @@ class RestoreDialogState extends State<RestoreDialog> {
                 texts.restore_dialog_multiple_accounts(
                   snapshot.data.backupProvider.displayName,
                 ),
-                style: themeData.primaryTextTheme.headline3.copyWith(
+                style: themeData.primaryTextTheme.displaySmall.copyWith(
                   fontSize: 16,
                 ),
               );

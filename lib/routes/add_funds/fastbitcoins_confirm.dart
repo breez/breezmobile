@@ -87,7 +87,7 @@ class ConfirmationItem extends StatelessWidget {
         ),
         trailing: Text(
           details,
-          style: themeData.primaryTextTheme.headline3,
+          style: themeData.primaryTextTheme.displaySmall,
           textAlign: TextAlign.left,
         ),
       ),

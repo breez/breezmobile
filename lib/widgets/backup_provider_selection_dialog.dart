@@ -51,7 +51,7 @@ class BackupProviderSelectionDialogState
             widget.restore
                 ? texts.backup_provider_dialog_message_restore
                 : texts.backup_provider_dialog_message_store,
-            style: themeData.primaryTextTheme.headline3.copyWith(
+            style: themeData.primaryTextTheme.displaySmall.copyWith(
               fontSize: 16,
             ),
           ),
