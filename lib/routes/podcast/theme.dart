@@ -37,8 +37,10 @@ Widget withPodcastTheme(BreezUserModel user, Widget child) {
               ),
               canvasColor: Color.fromRGBO(5, 93, 235, 1.0),
               scaffoldBackgroundColor: Color(0xffffffff),
-              bottomAppBarColor: Color(0xFF0085fb),
-              bottomAppBarTheme: BottomAppBarTheme(elevation: 0),
+              bottomAppBarTheme: BottomAppBarTheme(
+                elevation: 0,
+                color: Color(0xFF0085fb),
+              ),
               cardColor: Color(0xffffffff),
               dividerColor: Color.fromRGBO(0, 0, 0, 0.10),
               highlightColor: Color.fromRGBO(0, 117, 255, 1.0),
@@ -106,7 +108,8 @@ Widget withPodcastTheme(BreezUserModel user, Widget child) {
                 //backgroundColor: Color.fromRGBO(5, 93, 235, 1.0),
                 foregroundColor: Color.fromRGBO(5, 93, 235, 1.0),
               ),
-              radioTheme: currentTheme.radioTheme, colorScheme: ColorScheme.light(
+              radioTheme: currentTheme.radioTheme,
+              colorScheme: ColorScheme.light(
                 primary: Color.fromRGBO(0, 117, 255, 1.0),
                 secondary: Color.fromRGBO(0, 133, 251, 1.0),
                 onSecondary: Colors.black,
@@ -124,8 +127,10 @@ Widget withPodcastTheme(BreezUserModel user, Widget child) {
               ),
               canvasColor: Color(0xFF0c2031),
               scaffoldBackgroundColor: Color(0xFF0c2031),
-              bottomAppBarColor: Color(0xFF0085fb),
-              bottomAppBarTheme: BottomAppBarTheme(elevation: 0),
+              bottomAppBarTheme: BottomAppBarTheme(
+                elevation: 0,
+                color: Color(0xFF0085fb),
+              ),
               cardColor: Colors.black,
               dividerColor: Colors.white.withOpacity(0.2),
               highlightColor: Color(0xFF0085fb),
@@ -182,7 +187,8 @@ Widget withPodcastTheme(BreezUserModel user, Widget child) {
               appBarTheme: currentTheme.appBarTheme.copyWith(
                   //backgroundColor: Color(0xFF0c2031),
                   color: currentTheme.colorScheme.background),
-              radioTheme: currentTheme.radioTheme, colorScheme: ColorScheme.dark(
+              radioTheme: currentTheme.radioTheme,
+              colorScheme: ColorScheme.dark(
                 primary: Colors.white,
                 secondary: Colors.white,
                 onSecondary: Colors.white,

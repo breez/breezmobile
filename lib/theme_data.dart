@@ -58,7 +58,10 @@ final ThemeData blueTheme = ThemeData(
   floatingActionButtonTheme: FloatingActionButtonThemeData(
       backgroundColor: Color.fromRGBO(0, 133, 251, 1.0)),
   canvasColor: BreezColors.blue[500],
-  bottomAppBarTheme: BottomAppBarTheme(elevation: 0),
+  bottomAppBarTheme: BottomAppBarTheme(
+    elevation: 0,
+    color: Color(0xFF0085fb),
+  ),
   appBarTheme: AppBarTheme(
     elevation: 0.0,
     backgroundColor: BreezColors.blue[500],
@@ -139,7 +142,6 @@ final ThemeData blueTheme = ThemeData(
     selectionHandleColor: Color(0xFF0085fb),
   ),
   primaryIconTheme: IconThemeData(color: BreezColors.grey[500]),
-  bottomAppBarColor: Color(0xFF0085fb),
   fontFamily: 'IBMPlexSans',
   textButtonTheme: TextButtonThemeData(),
   outlinedButtonTheme: OutlinedButtonThemeData(),
@@ -156,11 +158,14 @@ final ThemeData blueTheme = ThemeData(
         }
       },
     ),
-  ), colorScheme: ColorScheme.dark().copyWith(
-    primary: Colors.white,
-    secondary: Colors.white,
-    background: Colors.white,
-  ).copyWith(error: Color(0xffffe685)),
+  ),
+  colorScheme: ColorScheme.dark()
+      .copyWith(
+        primary: Colors.white,
+        secondary: Colors.white,
+        background: Colors.white,
+      )
+      .copyWith(error: Color(0xffffe685)),
 );
 
 // Color(0xFF121212) values are tbd
@@ -172,7 +177,10 @@ final ThemeData darkTheme = ThemeData(
   floatingActionButtonTheme:
       FloatingActionButtonThemeData(backgroundColor: Color(0xFF0085fb)),
   canvasColor: Color(0xFF0c2031),
-  bottomAppBarTheme: BottomAppBarTheme(elevation: 0),
+  bottomAppBarTheme: BottomAppBarTheme(
+    elevation: 0,
+    color: Color(0xFF0085fb),
+  ),
   appBarTheme: AppBarTheme(
     elevation: 0.0,
     backgroundColor: Color(0xFF0c2031),
@@ -239,7 +247,8 @@ final ThemeData darkTheme = ThemeData(
         letterSpacing: 0.15,
         fontWeight: FontWeight.w500,
         fontFamily: 'IBMPlexSans'),
-    labelLarge: TextStyle(color: Colors.white, fontSize: 14.3, letterSpacing: 1.25),
+    labelLarge:
+        TextStyle(color: Colors.white, fontSize: 14.3, letterSpacing: 1.25),
     titleSmall: TextStyle(
         color: BreezColors.white[500], fontSize: 10.0, letterSpacing: 0.09),
     bodySmall: TextStyle(color: BreezColors.white[400], fontSize: 12.0),
@@ -249,7 +258,6 @@ final ThemeData darkTheme = ThemeData(
     selectionHandleColor: Color(0xFF0085fb),
   ),
   primaryIconTheme: IconThemeData(color: Colors.white),
-  bottomAppBarColor: Color(0xFF0085fb),
   fontFamily: 'IBMPlexSans',
   textButtonTheme: TextButtonThemeData(),
   outlinedButtonTheme: OutlinedButtonThemeData(),
@@ -260,11 +268,14 @@ final ThemeData darkTheme = ThemeData(
     fillColor: MaterialStateProperty.resolveWith((states) {
       return Colors.white;
     }),
-  ), colorScheme: ColorScheme.dark().copyWith(
-    primary: Colors.white,
-    secondary: Colors.white,
-    background: Color(0xFF152a3d),
-  ).copyWith(error: Color(0xFFeddc97)),
+  ),
+  colorScheme: ColorScheme.dark()
+      .copyWith(
+        primary: Colors.white,
+        secondary: Colors.white,
+        background: Color(0xFF152a3d),
+      )
+      .copyWith(error: Color(0xFFeddc97)),
 );
 
 final VendorTheme bitrefill = VendorTheme(iconBgColor: Color(0xFF002B28));

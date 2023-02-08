@@ -314,7 +314,8 @@ class HomeState extends State<Home> with WidgetsBindingObserver {
                     onPressed: () async {
                       await showModalBottomSheet<void>(
                         context: context,
-                        backgroundColor: Theme.of(context).colorScheme.background,
+                        backgroundColor:
+                            Theme.of(context).colorScheme.background,
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.only(
                             topLeft: Radius.circular(16.0),
@@ -661,7 +662,7 @@ class HomeState extends State<Home> with WidgetsBindingObserver {
     switch (user.appMode) {
       case AppMode.podcasts:
         return Container(
-          color: themeData.bottomAppBarColor,
+          color: themeData.bottomAppBarTheme.color,
           child: SafeArea(
             child: AnytimeHomePage(
               topBarVisible: false,

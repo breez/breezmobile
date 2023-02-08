@@ -244,7 +244,7 @@ class AccountPageState extends State<AccountPage>
             Padding(
               padding: EdgeInsets.only(top: 8, left: 16.0, bottom: 8),
               child: Chip(
-                backgroundColor: Theme.of(context).bottomAppBarColor,
+                backgroundColor: Theme.of(context).bottomAppBarTheme.color,
                 label: Text(BreezDateUtils.formatFilterDateRange(
                   filter.startDate,
                   filter.endDate,
