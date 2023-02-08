@@ -137,7 +137,7 @@ class EnterBackupPhrasePageState extends State<EnterBackupPhrasePage> {
       padding: EdgeInsets.only(left: 16, right: 16),
       child: Text(
         errorMessage,
-        style: themeData.textTheme.headline4.copyWith(
+        style: themeData.textTheme.headlineMedium.copyWith(
           fontSize: 12,
         ),
       ),

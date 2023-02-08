@@ -109,7 +109,7 @@ class EnterPaymentInfoDialogState extends State<EnterPaymentInfoDialog> {
                 focusNode: _paymentInfoFocusNode,
                 controller: _paymentInfoController,
                 style: TextStyle(
-                  color: themeData.primaryTextTheme.headline4.color,
+                  color: themeData.primaryTextTheme.headlineMedium.color,
                 ),
                 validator: (value) {
                   if (parseNodeId(value) == null &&

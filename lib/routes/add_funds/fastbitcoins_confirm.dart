@@ -82,7 +82,7 @@ class ConfirmationItem extends StatelessWidget {
       child: ListTile(
         title: Text(
           title,
-          style: themeData.primaryTextTheme.headline4,
+          style: themeData.primaryTextTheme.headlineMedium,
           textAlign: TextAlign.left,
         ),
         trailing: Text(

@@ -40,10 +40,10 @@ class WalletDashboardState extends State<WalletDashboard> {
   @override
   Widget build(BuildContext context) {
     final themeData = Theme.of(context);
-    final headline4 = themeData.walletDashboardHeaderTextStyle;
+    final headlineMedium = themeData.walletDashboardHeaderTextStyle;
 
-    double startHeaderSize = headline4.fontSize;
-    double endHeaderFontSize = headline4.fontSize - 8.0;
+    double startHeaderSize = headlineMedium.fontSize;
+    double endHeaderFontSize = headlineMedium.fontSize - 8.0;
 
     return GestureDetector(
       child: Stack(
@@ -168,11 +168,11 @@ class WalletDashboardState extends State<WalletDashboard> {
     double endHeaderFontSize,
   ) {
     final themeData = Theme.of(context);
-    final headline4 = themeData.walletDashboardHeaderTextStyle;
+    final headlineMedium = themeData.walletDashboardHeaderTextStyle;
 
     return RichText(
       text: TextSpan(
-        style: headline4.copyWith(
+        style: headlineMedium.copyWith(
           fontSize: startHeaderSize -
               (startHeaderSize - endHeaderFontSize) * widget._offsetFactor,
         ),
@@ -184,7 +184,7 @@ class WalletDashboardState extends State<WalletDashboard> {
         children: [
           TextSpan(
             text: " ${widget._accountModel.currency.displayName}",
-            style: headline4.copyWith(
+            style: headlineMedium.copyWith(
               fontSize: startHeaderSize * 0.6 -
                   (startHeaderSize * 0.6 - endHeaderFontSize) *
                       widget._offsetFactor,

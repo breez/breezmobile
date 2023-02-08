@@ -92,7 +92,7 @@ final ThemeData blueTheme = ThemeData(
       headline5: TextStyle(color: BreezColors.grey[600], fontSize: 26.0),
       labelLarge: TextStyle(
           color: BreezColors.blue[500], fontSize: 14.3, letterSpacing: 1.25),
-      headline4: TextStyle(
+      headlineMedium: TextStyle(
         color: Color(0xffffe685),
         fontSize: 18.0,
       ),
@@ -103,7 +103,7 @@ final ThemeData blueTheme = ThemeData(
           letterSpacing: 0.25,
           height: 1.22)),
   primaryTextTheme: TextTheme(
-    headline4: TextStyle(
+    headlineMedium: TextStyle(
         color: BreezColors.grey[500],
         fontSize: 14.0,
         letterSpacing: 0.0,
@@ -206,7 +206,7 @@ final ThemeData darkTheme = ThemeData(
       headline5: TextStyle(color: Colors.white, fontSize: 26.0),
       labelLarge:
           TextStyle(color: Colors.white, fontSize: 14.3, letterSpacing: 1.25),
-      headline4: TextStyle(
+      headlineMedium: TextStyle(
         color: Color(0xffffe685),
         fontSize: 18.0,
       ),
@@ -217,7 +217,7 @@ final ThemeData darkTheme = ThemeData(
           letterSpacing: 0.25,
           height: 1.22)),
   primaryTextTheme: TextTheme(
-    headline4: TextStyle(
+    headlineMedium: TextStyle(
         color: Colors.white,
         fontSize: 14.0,
         letterSpacing: 0.0,
@@ -687,7 +687,7 @@ extension ThemeExtensions on ThemeData {
           letterSpacing: 0.39,
         );
 
-  // Replaces accentTextTheme.headline4
+  // Replaces accentTextTheme.headlineMedium
   TextStyle get walletDashboardHeaderTextStyle => isLightTheme
       ? TextStyle(
           color: Color.fromRGBO(0, 133, 251, 1.0),

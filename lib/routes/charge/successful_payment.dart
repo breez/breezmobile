@@ -99,7 +99,7 @@ class SuccessfulPaymentRouteState extends State<SuccessfulPaymentRoute>
         Text(
           texts.successful_payment_received,
           textAlign: TextAlign.center,
-          style: themeData.primaryTextTheme.headline4.copyWith(
+          style: themeData.primaryTextTheme.headlineMedium.copyWith(
             fontSize: 16,
           ),
         ),

@@ -96,7 +96,7 @@ class CurrencyConverterDialogState extends State<CurrencyConverterDialog>
 
       _colorAnimation = ColorTween(
         // change to white according to theme
-        begin: themeData.primaryTextTheme.headline4.color,
+        begin: themeData.primaryTextTheme.headlineMedium.color,
         end: themeData.primaryTextTheme.labelLarge.color,
       ).animate(_controller)
         ..addListener(() {

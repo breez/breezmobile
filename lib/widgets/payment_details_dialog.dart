@@ -146,7 +146,7 @@ Future<Null> showPaymentDetailsDialog(
                         child: SingleChildScrollView(
                           child: AutoSizeText(
                             paymentInfo.description,
-                            style: themeData.primaryTextTheme.headline4,
+                            style: themeData.primaryTextTheme.headlineMedium,
                             textAlign: paymentInfo.description.length > 40 &&
                                     !paymentInfo.description.contains("\n")
                                 ? TextAlign.start
@@ -168,7 +168,7 @@ Future<Null> showPaymentDetailsDialog(
                           padding: const EdgeInsets.only(right: 8.0),
                           child: AutoSizeText(
                             texts.payment_details_dialog_amount_title,
-                            style: themeData.primaryTextTheme.headline4,
+                            style: themeData.primaryTextTheme.headlineMedium,
                             textAlign: TextAlign.left,
                             maxLines: 1,
                             group: _labelGroup,
@@ -200,7 +200,7 @@ Future<Null> showPaymentDetailsDialog(
                           padding: const EdgeInsets.only(right: 8.0),
                           child: AutoSizeText(
                             texts.payment_details_dialog_date_and_time,
-                            style: themeData.primaryTextTheme.headline4,
+                            style: themeData.primaryTextTheme.headlineMedium,
                             textAlign: TextAlign.left,
                             maxLines: 1,
                             group: _labelGroup,
@@ -240,7 +240,7 @@ Future<Null> showPaymentDetailsDialog(
                           padding: const EdgeInsets.only(right: 8.0),
                           child: AutoSizeText(
                             texts.payment_details_dialog_expiration,
-                            style: themeData.primaryTextTheme.headline4,
+                            style: themeData.primaryTextTheme.headlineMedium,
                             textAlign: TextAlign.left,
                             maxLines: 1,
                             group: _labelGroup,
@@ -430,7 +430,7 @@ class ShareablePaymentRow extends StatelessWidget {
         collapsedIconColor: themeData.primaryTextTheme.labelLarge.color,
         title: AutoSizeText(
           title,
-          style: themeData.primaryTextTheme.headline4,
+          style: themeData.primaryTextTheme.headlineMedium,
           maxLines: 1,
           group: _labelGroup,
         ),
@@ -817,7 +817,7 @@ class _Destination extends StatelessWidget {
         collapsedIconColor: themeData.primaryTextTheme.labelLarge.color,
         title: AutoSizeText(
           title,
-          style: themeData.primaryTextTheme.headline4,
+          style: themeData.primaryTextTheme.headlineMedium,
           textAlign: TextAlign.left,
           maxLines: 1,
           group: _labelGroup,

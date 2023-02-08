@@ -138,7 +138,7 @@ class PaymentRequestInfoDialogState extends State<PaymentRequestInfoDialog> {
             "${widget.invoice.payeeName}",
             style: Theme.of(context)
                 .primaryTextTheme
-                .headline4
+                .headlineMedium
                 .copyWith(fontSize: 16),
             textAlign: TextAlign.center,
           );

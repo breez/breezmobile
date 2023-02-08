@@ -178,7 +178,7 @@ class _WaitBroadcastDialog extends State<WaitBroadcastDialog> {
               flex: 1,
               child: Text(
                 texts.waiting_broadcast_dialog_transaction_id,
-                style: themeData.primaryTextTheme.headline4,
+                style: themeData.primaryTextTheme.headlineMedium,
               ),
             ),
             Expanded(

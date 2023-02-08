@@ -48,7 +48,7 @@ class MarketplacePageState extends State<MarketplacePage> {
         child: Text(
           BreezTranslations.of(context).market_place_no_vendors,
           textAlign: TextAlign.center,
-          style: Theme.of(context).textTheme.headline4.copyWith(
+          style: Theme.of(context).textTheme.headlineMedium.copyWith(
                 color: theme.themeId == "BLUE"
                     ? Theme.of(context).canvasColor
                     : Colors.white,

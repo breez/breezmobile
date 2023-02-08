@@ -99,7 +99,7 @@ class _AdminLoginDialogState extends State<_AdminLoginDialog> {
                 key: _formKey,
                 child: TextFormField(
                   style: TextStyle(
-                    color: themeData.primaryTextTheme.headline4.color,
+                    color: themeData.primaryTextTheme.headlineMedium.color,
                   ),
                   focusNode: _passwordFocus,
                   obscureText: _passwordObscured,

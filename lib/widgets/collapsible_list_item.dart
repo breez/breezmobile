@@ -36,7 +36,7 @@ class CollapsibleListItem extends StatelessWidget {
           collapsedIconColor: userStyle.color,
           title: AutoSizeText(
             title,
-            style: textTheme.headline4.merge(userStyle),
+            style: textTheme.headlineMedium.merge(userStyle),
             maxLines: 1,
             group: labelGroup,
           ),

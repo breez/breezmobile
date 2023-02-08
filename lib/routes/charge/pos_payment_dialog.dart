@@ -235,7 +235,7 @@ class _PosPaymentDialogState extends State<PosPaymentDialog> {
                 ) +
                 priceInSaleCurrency,
             textAlign: TextAlign.center,
-            style: themeData.primaryTextTheme.headline4,
+            style: themeData.primaryTextTheme.headlineMedium,
           ),
           Padding(
             padding: const EdgeInsets.symmetric(vertical: 8.0),
@@ -262,13 +262,13 @@ class _PosPaymentDialogState extends State<PosPaymentDialog> {
                       account.fiatCurrency.format(lspFee),
                     ),
                     textAlign: TextAlign.center,
-                    style: themeData.primaryTextTheme.headline4,
+                    style: themeData.primaryTextTheme.headlineMedium,
                   ),
                 ),
           Text(
             _countdownString,
             textAlign: TextAlign.center,
-            style: themeData.primaryTextTheme.headline4.copyWith(
+            style: themeData.primaryTextTheme.headlineMedium.copyWith(
               fontSize: 16,
             ),
           ),

@@ -83,7 +83,7 @@ class _DatePickerHeader extends StatelessWidget {
         yearColor = mode == DatePickerMode.year ? Colors.white : Colors.white70;
         break;
     }
-    final TextStyle dayStyle = headerTextTheme.headline4.copyWith(
+    final TextStyle dayStyle = headerTextTheme.headlineMedium.copyWith(
       color: dayColor,
       height: 1.4,
     );
