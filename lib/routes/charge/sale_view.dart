@@ -411,10 +411,10 @@ class SaleLinesList extends StatelessWidget {
           return ListTileTheme(
             textColor: theme.themeId == "BLUE"
                 ? themeData.canvasColor
-                : themeData.textTheme.subtitle1.color,
+                : themeData.textTheme.titleMedium.color,
             iconColor: theme.themeId == "BLUE"
                 ? themeData.canvasColor
-                : themeData.textTheme.subtitle1.color,
+                : themeData.textTheme.titleMedium.color,
             child: Column(
               children: [
                 SaleLineWidget(
@@ -461,7 +461,7 @@ class SaleLinesList extends StatelessWidget {
                       ? Colors.white.withOpacity(0.0)
                       : (theme.themeId == "BLUE"
                               ? themeData.canvasColor
-                              : themeData.textTheme.subtitle1.color)
+                              : themeData.textTheme.titleMedium.color)
                           .withOpacity(0.5),
                   indent: 72.0,
                 ),

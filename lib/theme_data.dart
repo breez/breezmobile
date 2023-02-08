@@ -700,7 +700,7 @@ extension ThemeExtensions on ThemeData {
           fontWeight: FontWeight.w600,
           height: 1.56);
 
-  // Replaces accentTextTheme.subtitle1
+  // Replaces accentTextTheme.titleMedium
   TextStyle get walletDashboardFiatTextStyle => isLightTheme
       ? TextStyle(
           color: Color.fromRGBO(0, 133, 251, 1.0),

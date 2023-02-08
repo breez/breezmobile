@@ -214,7 +214,7 @@ class WalletDashboardState extends State<WalletDashboard> {
 
   Widget _fiatButton(BuildContext context) {
     final themeData = Theme.of(context);
-    final subtitle1 = themeData.walletDashboardFiatTextStyle;
+    final titleMedium = themeData.walletDashboardFiatTextStyle;
 
     return TextButton(
       style: ButtonStyle(
@@ -239,8 +239,8 @@ class WalletDashboardState extends State<WalletDashboard> {
       },
       child: Text(
         "${widget._accountModel.formattedFiatBalance}",
-        style: subtitle1.copyWith(
-          color: subtitle1.color.withOpacity(
+        style: titleMedium.copyWith(
+          color: titleMedium.color.withOpacity(
             pow(1.00 - widget._offsetFactor, 2),
           ),
         ),

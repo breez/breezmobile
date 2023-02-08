@@ -340,7 +340,7 @@ Future showReceiveOptions(BuildContext parentContext, AccountModel account) {
                               ),
                               maxFontSize: Theme.of(context)
                                   .textTheme
-                                  .subtitle1
+                                  .titleMedium
                                   .fontSize,
                               style: Theme.of(context).textTheme.titleLarge,
                               textAlign: TextAlign.center,

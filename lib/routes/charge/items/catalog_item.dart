@@ -48,7 +48,7 @@ class CatalogItem extends StatelessWidget {
                 child: TextButton.icon(
                   label: Text(
                     texts.catalog_item_action_edit,
-                    style: themeData.textTheme.subtitle1,
+                    style: themeData.textTheme.titleMedium,
                   ),
                   icon: Icon(
                     Icons.edit_rounded,
@@ -70,7 +70,7 @@ class CatalogItem extends StatelessWidget {
                 child: TextButton.icon(
                   label: Text(
                     texts.catalog_item_action_delete,
-                    style: themeData.textTheme.subtitle1,
+                    style: themeData.textTheme.titleMedium,
                   ),
                   icon: Icon(
                     Icons.delete_forever_rounded,
