@@ -35,8 +35,6 @@ Future<RemoteServerAuthData> promptAuthData(
 const String BREEZ_BACKUP_DIR = "DO_NOT_DELETE_Breez_Backup";
 
 class RemoteServerAuthPage extends StatefulWidget {
-  final String _title = "Remote Server";
-
   final BackupBloc _backupBloc;
   final TorBloc _torBloc;
   final bool restore;

@@ -390,7 +390,6 @@ class _SetTorActiveDialog extends StatefulWidget {
 
 class _SetTorActiveDialogState extends State<_SetTorActiveDialog> {
   bool _allowPop = false;
-  String _text;
 
   @override
   void initState() {
