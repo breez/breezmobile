@@ -11,21 +11,21 @@ dependencies:
   app_settings: ^4.2.0
   archive: ^3.3.6
   auto_size_text: ^3.0.0
-  badges: ^2.0.3 #
+  badges: ^3.0.2
   bip39: ^1.0.6
   breez_translations:
     git:
       url: https://github.com/breez/Breez-Translations.git
       ref: 9c8cc35d9e289a9696ab15ad91734ff12739b171
   confetti: ^0.7.0
-  connectivity_plus: ^2.3.9 #
+  connectivity_plus: ^3.0.2
   crypto: ^3.0.2
   csv: ^5.0.1
   dio: ^4.0.6
   drag_and_drop_lists: ^0.3.3
   duration: ^3.0.12
   email_validator: ^2.1.17
-  extended_image: ^6.4.0
+  extended_image: ^7.0.0
   ffmpeg_kit_flutter_https_gpl: ^5.1.0
   file_picker: ^5.2.5
   firebase_core: ^2.4.1
@@ -81,7 +81,7 @@ dependencies:
   anytime:
     git:
       url: https://github.com/breez/anytime_podcast_player.git
-      ref: 4169cd904b93bda16837fe3e28d42fe26731905d
+      ref: 246d35b508d84af5540b814f8b300d153b25ad4f
   flutter_typeahead:
     git:
       url: https://github.com/breez/flutter_typeahead.git

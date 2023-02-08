@@ -66,8 +66,8 @@ class _PosInvoiceCartBarState extends State<PosInvoiceCartBar> {
                   child: badges.Badge(
                     key: widget.badgeKey,
                     position: badges.BadgePosition.topEnd(top: 5, end: -10),
-                    animationType: badges.BadgeAnimationType.scale,
-                    badgeColor: badgeColor,
+                    badgeAnimation: badges.BadgeAnimation.scale(),
+                    badgeStyle: badges.BadgeStyle(badgeColor: badgeColor),
                     badgeContent: Text(
                       "${widget.totalNumOfItems}",
                       style: TextStyle(
