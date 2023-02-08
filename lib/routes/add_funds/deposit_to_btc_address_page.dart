@@ -141,7 +141,7 @@ class DepositToBTCAddressPageState extends State<DepositToBTCAddressPage> {
                           minAllowedDeposit,
                           maxAllowedDeposit,
                         ),
-                        style: Theme.of(context).textTheme.headline6,
+                        style: Theme.of(context).textTheme.titleLarge,
                         textAlign: TextAlign.center,
                       ),
                     ],

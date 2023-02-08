@@ -136,7 +136,7 @@ class PosReportDialog extends StatelessWidget {
 
     return Text(
       title,
-      style: themeData.primaryTextTheme.headline6.copyWith(
+      style: themeData.primaryTextTheme.titleLarge.copyWith(
         color: _highlight(themeData),
       ),
     );

@@ -88,10 +88,10 @@ Widget withPodcastTheme(BreezUserModel user, Widget child) {
                             .black
                             .labelLarge
                             .copyWith(color: Color.fromRGBO(5, 93, 235, 1.0)),
-                        headline6: Typography.material2018(
+                        titleLarge: Typography.material2018(
                                 platform: TargetPlatform.android)
                             .black
-                            .headline6
+                            .titleLarge
                             .copyWith(
                                 fontWeight: FontWeight.w400, fontSize: 14.3),
                       ),
@@ -168,10 +168,10 @@ Widget withPodcastTheme(BreezUserModel user, Widget child) {
                   .white
                   .apply(fontFamily: 'IBMPlexSans')
                   .copyWith(
-                    headline6: Typography.material2018(
+                    titleLarge: Typography.material2018(
                             platform: TargetPlatform.android)
                         .white
-                        .headline6
+                        .titleLarge
                         .copyWith(fontWeight: FontWeight.w400, fontSize: 14.3),
                   ),
               primaryIconTheme: IconThemeData(color: Colors.white),

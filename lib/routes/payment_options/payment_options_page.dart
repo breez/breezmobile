@@ -308,7 +308,7 @@ class _PaymentOptionsPageState extends State<PaymentOptionsPage> {
         children: [
           Text(
             texts.payment_options_fee_warning,
-            style: Theme.of(context).textTheme.headline6,
+            style: Theme.of(context).textTheme.titleLarge,
             textAlign: TextAlign.center,
           ),
         ],

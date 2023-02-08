@@ -320,7 +320,7 @@ class CreateInvoicePageState extends State<CreateInvoicePage> {
               children: [
                 Text(
                   formatFeeMessage(texts, acc, lsp),
-                  style: themeData.textTheme.headline6,
+                  style: themeData.textTheme.titleLarge,
                   textAlign: TextAlign.center,
                 ),
               ],

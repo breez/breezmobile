@@ -66,7 +66,7 @@ class PayeeSessionWidget extends StatelessWidget {
                         _lspStatus,
                         snapshot.data.payerData.amount,
                       ),
-                      style: Theme.of(context).textTheme.headline6,
+                      style: Theme.of(context).textTheme.titleLarge,
                       textAlign: TextAlign.center,
                     ),
                   ),

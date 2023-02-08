@@ -105,7 +105,7 @@ class WithdrawFundsPageState extends State<WithdrawFundsPage> {
                   ),
                   child: Text(
                     widget.optionalMessage,
-                    style: themeData.textTheme.headline6,
+                    style: themeData.textTheme.titleLarge,
                   ),
                 );
           List<Widget> amountWidget = [];

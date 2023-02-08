@@ -66,13 +66,13 @@ final ThemeData blueTheme = ThemeData(
     systemOverlayStyle: SystemUiOverlayStyle.light,
     actionsIconTheme: IconThemeData(color: Color.fromRGBO(0, 120, 253, 1.0)),
     toolbarTextStyle: TextTheme(
-      headline6:
+      titleLarge:
           TextStyle(color: Colors.white, fontSize: 18.0, letterSpacing: 0.22),
     ).bodyMedium,
     titleTextStyle: TextTheme(
-      headline6:
+      titleLarge:
           TextStyle(color: Colors.white, fontSize: 18.0, letterSpacing: 0.22),
-    ).headline6,
+    ).titleLarge,
   ),
   dialogTheme: DialogTheme(
       titleTextStyle: TextStyle(
@@ -96,7 +96,7 @@ final ThemeData blueTheme = ThemeData(
         color: Color(0xffffe685),
         fontSize: 18.0,
       ),
-      headline6: TextStyle(
+      titleLarge: TextStyle(
           color: Colors.white,
           fontSize: 12.3,
           fontWeight: FontWeight.w400,
@@ -180,13 +180,13 @@ final ThemeData darkTheme = ThemeData(
     systemOverlayStyle: SystemUiOverlayStyle.light,
     actionsIconTheme: IconThemeData(color: Colors.white),
     toolbarTextStyle: TextTheme(
-      headline6:
+      titleLarge:
           TextStyle(color: Colors.white, fontSize: 18.0, letterSpacing: 0.22),
     ).bodyMedium,
     titleTextStyle: TextTheme(
-      headline6:
+      titleLarge:
           TextStyle(color: Colors.white, fontSize: 18.0, letterSpacing: 0.22),
-    ).headline6,
+    ).titleLarge,
   ),
   dialogTheme: DialogTheme(
       titleTextStyle:
@@ -210,7 +210,7 @@ final ThemeData darkTheme = ThemeData(
         color: Color(0xffffe685),
         fontSize: 18.0,
       ),
-      headline6: TextStyle(
+      titleLarge: TextStyle(
           color: Colors.white,
           fontSize: 12.3,
           fontWeight: FontWeight.w400,
@@ -653,7 +653,7 @@ extension ThemeExtensions on ThemeData {
           letterSpacing: 0.25,
         );
 
-  // Replaces accentTextTheme.headline6
+  // Replaces accentTextTheme.titleLarge
   TextStyle get paymentItemAmountTextStyle => isLightTheme
       ? const TextStyle(
           color: Colors.black,

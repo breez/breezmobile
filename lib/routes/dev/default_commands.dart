@@ -29,7 +29,7 @@ class Category extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Text(name, style: Theme.of(context).textTheme.headline6);
+    return Text(name, style: Theme.of(context).textTheme.titleLarge);
   }
 }
 

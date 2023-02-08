@@ -342,7 +342,7 @@ Future showReceiveOptions(BuildContext parentContext, AccountModel account) {
                                   .textTheme
                                   .subtitle1
                                   .fontSize,
-                              style: Theme.of(context).textTheme.headline6,
+                              style: Theme.of(context).textTheme.titleLarge,
                               textAlign: TextAlign.center,
                             ),
                           ),

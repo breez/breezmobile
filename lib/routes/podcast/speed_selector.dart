@@ -149,7 +149,7 @@ class _SpeedSliderState extends State<SpeedSlider> {
           ),
           child: Text(
             L.of(context).audio_settings_playback_speed_label,
-            style: themeData.primaryTextTheme.headline6,
+            style: themeData.primaryTextTheme.titleLarge,
           ),
         ),
         Divider(),
