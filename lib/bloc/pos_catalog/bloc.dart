@@ -365,6 +365,10 @@ class PosCatalogBloc with AsyncActionsHandler {
     await (_repository as SqliteRepository).dropDB();
     _loadItems(backupDB: true);
   }
+
+  close() {
+    _reloadPosItems.close();
+  }
 }
 
 const _kPosReportTimeRangeKey = "POS_REPORT_TIME_RANGE_JSON";
