@@ -1,5 +1,5 @@
 import 'package:breez/bloc/reverse_swap/reverse_swap_model.dart';
-import 'package:breez/widgets/payment_details_dialog.dart';
+import 'package:breez/routes/home/widgets/payments_list/dialog/tx_widget.dart';
 import 'package:breez_translations/breez_translations_locales.dart';
 import 'package:flutter/material.dart';
 

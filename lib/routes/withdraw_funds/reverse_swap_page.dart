@@ -6,20 +6,19 @@ import 'package:breez/bloc/blocs_provider.dart';
 import 'package:breez/bloc/reverse_swap/reverse_swap_actions.dart';
 import 'package:breez/bloc/reverse_swap/reverse_swap_bloc.dart';
 import 'package:breez/bloc/reverse_swap/reverse_swap_model.dart';
+import 'package:breez/routes/home/widgets/payments_list/dialog/tx_widget.dart';
+import 'package:breez/routes/sync_progress_dialog.dart';
+import 'package:breez/routes/withdraw_funds/reverse_swap_confirmation.dart';
+import 'package:breez/routes/withdraw_funds/swap_in_progress.dart';
+import 'package:breez/routes/withdraw_funds/withdraw_funds_page.dart';
 import 'package:breez/utils/exceptions.dart';
 import 'package:breez/widgets/back_button.dart' as backBtn;
 import 'package:breez/widgets/error_dialog.dart';
 import 'package:breez/widgets/loader.dart';
-import 'package:breez/widgets/payment_details_dialog.dart';
+import 'package:breez_translations/breez_translations_locales.dart';
 import 'package:fixnum/fixnum.dart';
 import 'package:flutter/material.dart';
-import 'package:breez_translations/breez_translations_locales.dart';
 import 'package:rxdart/subjects.dart';
-
-import '../sync_progress_dialog.dart';
-import 'reverse_swap_confirmation.dart';
-import 'swap_in_progress.dart';
-import 'withdraw_funds_page.dart';
 
 class ReverseSwapPage extends StatefulWidget {
   final String userAddress;
