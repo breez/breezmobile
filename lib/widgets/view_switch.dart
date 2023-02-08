@@ -15,10 +15,10 @@ class ViewSwitch extends StatelessWidget {
   final List<ViewSwitchItem> items;
 
   const ViewSwitch({
-    this.selected: 0,
-    this.tint: Colors.white,
-    this.textTint: Colors.white,
-    this.items: const [],
+    this.selected = 0,
+    this.tint = Colors.white,
+    this.textTint = Colors.white,
+    this.items = const [],
     Key key,
   }) : super(key: key);
 

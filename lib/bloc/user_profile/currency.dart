@@ -34,7 +34,7 @@ class Currency extends Object {
 
   int parseToInt(
     String amountStr, {
-    int def: 0,
+    int def = 0,
   }) {
     int value;
     try {
