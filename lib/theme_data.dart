@@ -73,7 +73,7 @@ final ThemeData blueTheme = ThemeData(
     toolbarTextStyle: TextTheme(
       headline6:
           TextStyle(color: Colors.white, fontSize: 18.0, letterSpacing: 0.22),
-    ).bodyText2,
+    ).bodyMedium,
     titleTextStyle: TextTheme(
       headline6:
           TextStyle(color: Colors.white, fontSize: 18.0, letterSpacing: 0.22),
@@ -128,7 +128,7 @@ final ThemeData blueTheme = ThemeData(
         height: 1.28,
         fontWeight: FontWeight.w500,
         fontFamily: 'IBMPlexSans'),
-    bodyText2: TextStyle(
+    bodyMedium: TextStyle(
         color: BreezColors.blue[900],
         fontSize: 16.4,
         letterSpacing: 0.15,
@@ -189,7 +189,7 @@ final ThemeData darkTheme = ThemeData(
     toolbarTextStyle: TextTheme(
       headline6:
           TextStyle(color: Colors.white, fontSize: 18.0, letterSpacing: 0.22),
-    ).bodyText2,
+    ).bodyMedium,
     titleTextStyle: TextTheme(
       headline6:
           TextStyle(color: Colors.white, fontSize: 18.0, letterSpacing: 0.22),
@@ -241,7 +241,7 @@ final ThemeData darkTheme = ThemeData(
         height: 1.28,
         fontWeight: FontWeight.w500,
         fontFamily: 'IBMPlexSans'),
-    bodyText2: TextStyle(
+    bodyMedium: TextStyle(
         color: Colors.white,
         fontSize: 16.4,
         letterSpacing: 0.15,
@@ -635,7 +635,7 @@ extension CustomIconThemes on IconThemeData {
 extension ThemeExtensions on ThemeData {
   bool get isLightTheme => primaryColor == blueTheme.primaryColor;
 
-  // Replaces accentTextTheme.bodyText2
+  // Replaces accentTextTheme.bodyMedium
   TextStyle get statusTextStyle => isLightTheme
       ? TextStyle(color: BreezColors.grey[600])
       : TextStyle(color: Colors.white);

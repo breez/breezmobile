@@ -29,7 +29,7 @@ class AddFundsMessage extends StatelessWidget {
             Expanded(
               child: AutoSizeText(
                 texts.podcast_add_funds_title,
-                style: themeData.textTheme.bodyText2.copyWith(
+                style: themeData.textTheme.bodyMedium.copyWith(
                   letterSpacing: 0.25,
                   height: 1.24,
                 ),
@@ -59,7 +59,7 @@ class AddFundsMessage extends StatelessWidget {
                   minFontSize: minFontSize,
                   stepGranularity: 0.1,
                   maxLines: 1,
-                  style: themeData.textTheme.bodyText2.copyWith(
+                  style: themeData.textTheme.bodyMedium.copyWith(
                     color: Colors.white,
                     letterSpacing: 1,
                     height: 1.24,
