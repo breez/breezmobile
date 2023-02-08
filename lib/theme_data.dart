@@ -138,7 +138,7 @@ final ThemeData blueTheme = ThemeData(
         color: BreezColors.white[500], fontSize: 10.0, letterSpacing: 0.09),
     labelLarge: TextStyle(
         color: BreezColors.blue[500], fontSize: 14.3, letterSpacing: 1.25),
-    caption: TextStyle(color: BreezColors.grey[500], fontSize: 12.0),
+    bodySmall: TextStyle(color: BreezColors.grey[500], fontSize: 12.0),
   ),
   textSelectionTheme: TextSelectionThemeData(
     selectionColor: Color.fromRGBO(0, 133, 251, 0.25),
@@ -250,7 +250,7 @@ final ThemeData darkTheme = ThemeData(
     labelLarge: TextStyle(color: Colors.white, fontSize: 14.3, letterSpacing: 1.25),
     subtitle2: TextStyle(
         color: BreezColors.white[500], fontSize: 10.0, letterSpacing: 0.09),
-    caption: TextStyle(color: BreezColors.white[400], fontSize: 12.0),
+    bodySmall: TextStyle(color: BreezColors.white[400], fontSize: 12.0),
   ),
   textSelectionTheme: TextSelectionThemeData(
     selectionColor: Color.fromRGBO(255, 255, 255, 0.5),
@@ -674,7 +674,7 @@ extension ThemeExtensions on ThemeData {
           letterSpacing: 0.5,
         );
 
-  // Replaces accentTextTheme.caption
+  // Replaces accentTextTheme.bodySmall
   TextStyle get paymentItemSubtitleTextStyle => isLightTheme
       ? const TextStyle(
           color: Color(0xb3303234),

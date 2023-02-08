@@ -250,7 +250,7 @@ class CurrencyConverterDialogState extends State<CurrencyConverterDialog>
                 ),
               ),
               errorMaxLines: 2,
-              errorStyle: themeData.primaryTextTheme.caption.copyWith(
+              errorStyle: themeData.primaryTextTheme.bodySmall.copyWith(
                 color: isBlue ? Colors.red : themeData.errorColor,
               ),
             ),

@@ -142,13 +142,13 @@ class RestoreDialogState extends State<RestoreDialog> {
         item.encrypted
             ? texts.restore_dialog_modified_encrypted(date)
             : texts.restore_dialog_modified_not_encrypted(date),
-        style: themeData.primaryTextTheme.caption
+        style: themeData.primaryTextTheme.bodySmall
             .copyWith(fontSize: 9)
             .apply(fontSizeDelta: 1.3),
       ),
       subtitle: Text(
         item.nodeID,
-        style: themeData.primaryTextTheme.caption.copyWith(fontSize: 9),
+        style: themeData.primaryTextTheme.bodySmall.copyWith(fontSize: 9),
       ),
       onLongPress: () {
         var nodeID = item.nodeID;

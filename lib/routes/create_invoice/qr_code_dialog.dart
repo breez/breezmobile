@@ -319,7 +319,7 @@ class QrCodeDialogState extends State<QrCodeDialog>
             textAlign: TextAlign.center,
             style: (hasError)
                 ? themeData.dialogTheme.contentTextStyle
-                : themeData.primaryTextTheme.caption,
+                : themeData.primaryTextTheme.bodySmall,
           ),
         );
       },
