@@ -18,7 +18,7 @@ class TorBloc {
       log.info('TorBloc.startTor: startTorService returned!');
 
       if (response.isNotEmpty) {
-        log.info('TorBloc.startTor: received response: ${response}');
+        log.info('TorBloc.startTor: received response: $response');
 
         torConfig = TorConfig();
 
@@ -41,7 +41,7 @@ class TorBloc {
         log.info('torBloc.startTor: torConfig.http: ${torConfig.http}');
 
         log.info(
-            'TorBloc.startTor: tor has started with config : ${torConfig}');
+            'TorBloc.startTor: tor has started with config : $torConfig');
       }
     } on PlatformException catch (e) {
       log.info('TorBloc.startTor failed: $e');
