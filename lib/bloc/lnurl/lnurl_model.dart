@@ -9,6 +9,7 @@ class WithdrawFetchResponse {
   String get defaultDescription => response.defaultDescription;
   Int64 get minAmount => response.minAmount;
   Int64 get maxAmount => response.maxAmount;
+  bool get isFixedAmount => response.minAmount == response.maxAmount;
 }
 
 class ChannelFetchResponse {
@@ -47,6 +48,7 @@ class PayFetchResponse {
   List<LNUrlPayMetadata> get metadata => response.metadata;
   String get tag => response.tag;
   String get comment => response.comment;
+  bool get isFixedAmount => response.minAmount == response.maxAmount;
 
   set amount(Int64 v) => response.amount = v;
   set comment(String s) => response.comment = s;
