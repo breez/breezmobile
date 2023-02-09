@@ -218,17 +218,19 @@ class LNURLFetchInvoicePageState extends State<LNURLFetchInvoicePage> {
                     },
                     style: theme.FieldTextStyle.textStyle,
                   ),
-                  Padding(
-                    padding: const EdgeInsets.only(top: 8),
-                    child: Text(
-                      texts.lnurl_fetch_invoice_limit(
-                        acc.currency.format(response.minAmount),
-                        acc.currency.format(response.maxAmount),
+                  if (!response.isFixedAmount) ...[
+                    Padding(
+                      padding: const EdgeInsets.only(top: 8),
+                      child: Text(
+                        texts.lnurl_fetch_invoice_limit(
+                          acc.currency.format(response.minAmount),
+                          acc.currency.format(response.maxAmount),
+                        ),
+                        textAlign: TextAlign.left,
+                        style: theme.FieldTextStyle.labelStyle,
                       ),
-                      textAlign: TextAlign.left,
-                      style: theme.FieldTextStyle.labelStyle,
-                    ),
-                  ),
+                    )
+                  ],
                   Container(
                     width: MediaQuery.of(context).size.width,
                     height: 48,
@@ -328,8 +330,12 @@ class LNURLFetchInvoicePageState extends State<LNURLFetchInvoicePage> {
   ) {
     _payFetchResponse = response;
     _commentController.text = response.comment;
-    if (response.minAmount == response.maxAmount) {
-      _amountController.text = "${response.minAmount}";
+    if (response.isFixedAmount) {
+      _amountController.text = account.currency.format(
+        response.maxAmount,
+        includeDisplayName: false,
+        userInput: true,
+      );
     }
   }
 
