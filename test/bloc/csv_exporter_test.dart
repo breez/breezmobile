@@ -38,7 +38,7 @@ void main() {
     test('csv file should have item line', () async {
       final filePath = await _make().export();
       final lines = await new File(filePath).readAsLines();
-      expect(lines[1], "9/13/2020 9:26 AM,A title,A description,A destination,1234,A preimage,A payment hash,5,10.0");
+      expect(lines[1], "9/13/2020 3:26 PM,A title,A description,A destination,1234,A preimage,A payment hash,5,10.0");
     });
   });
 }
