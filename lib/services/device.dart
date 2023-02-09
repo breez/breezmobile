@@ -1,6 +1,6 @@
 import 'dart:async';
-
-import 'package:flutter/foundation.dart';
+import 'package:breez/logger.dart';
+import 'package:clipboard_watcher/clipboard_watcher.dart';
 import 'package:flutter/services.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:rxdart/rxdart.dart';
@@ -9,39 +9,41 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 enum NotificationType { RESUME, PAUSE }
 
-class Device {
+class Device extends ClipboardListener {
   static const EventChannel _notificationsChannel =
       EventChannel('com.breez.client/lifecycle_events_notifications');
-  static const MethodChannel _breezShareChannel =
-      MethodChannel('com.breez.client/share_breez');
 
   final StreamController _eventsController =
       StreamController<NotificationType>.broadcast();
   Stream<NotificationType> get eventStream => _eventsController.stream;
 
-  final _distinctClipboardController = BehaviorSubject<String>();
-  Stream get distinctClipboardStream => _distinctClipboardController.stream;
+  final _clipboardController = BehaviorSubject<String>();
+  Stream<String> get clipboardStream => _clipboardController.stream.where((e) => e != _lastFromAppClip);
 
-  final _rawClipboardController = BehaviorSubject<String>();
-  Stream<String> get rawClipboardStream => _rawClipboardController.stream;
-
-  String _lastClipping = "";
   static const String LAST_CLIPPING_PREFERENCES_KEY = "lastClipping";
+  static const String LAST_FROM_APP_CLIPPING_PREFERENCES_KEY = "lastFromAppClipping";
+
+  String _lastFromAppClip;
 
   Device() {
+    log.finest("Initing Device");
+
     var sharedPreferences = SharedPreferences.getInstance();
     sharedPreferences.then((preferences) {
-      _lastClipping =
-          preferences.getString(LAST_CLIPPING_PREFERENCES_KEY) ?? "";
+      _lastFromAppClip = preferences.getString(LAST_FROM_APP_CLIPPING_PREFERENCES_KEY);
+      // Start with the last clipping of the previous session so we can avoid
+      // triggering a repeat of the same action handled on the previous session.
+      _clipboardController.add(preferences.getString(LAST_CLIPPING_PREFERENCES_KEY) ?? "");
+      log.finest("Last clipping: $_lastFromAppClip");
       fetchClipboard(preferences);
     });
+    clipboardWatcher.addListener(this);
+    clipboardWatcher.start();
 
     _notificationsChannel.receiveBroadcastStream().listen((event) {
+      log.finest("Received lifecycle event: $event");
       if (event == "resume") {
         _eventsController.add(NotificationType.RESUME);
-        sharedPreferences.then((preferences) {
-          fetchClipboard(preferences);
-        });
       }
       if (event == "pause") {
         _eventsController.add(NotificationType.PAUSE);
@@ -50,28 +52,26 @@ class Device {
   }
 
   Future setClipboardText(String text) async {
+    log.finest("Setting clipboard text: $text");
+    _lastFromAppClip = text;
+    final prefs = await SharedPreferences.getInstance();
+    prefs.setString(LAST_FROM_APP_CLIPPING_PREFERENCES_KEY, text);
     await Clipboard.setData(ClipboardData(text: text));
-    fetchClipboard(await SharedPreferences.getInstance());
   }
 
   Future shareText(String text) {
-    if (defaultTargetPlatform == TargetPlatform.android) {
-      return _breezShareChannel.invokeMethod("share", {"text": text});
-    }
+    log.finest("Sharing text: $text");
     return Share.share(text);
   }
 
-  fetchClipboard(SharedPreferences preferences) {
+  void fetchClipboard(SharedPreferences preferences) {
+    log.finest("Fetching clipboard");
     Clipboard.getData("text/plain").then((clipboardData) {
-      if (clipboardData != null) {
-        var text = clipboardData.text;
-
-        _rawClipboardController.add(text);
-        if (text != _lastClipping) {
-          _distinctClipboardController.add(text);
-          preferences.setString(LAST_CLIPPING_PREFERENCES_KEY, text);
-          _lastClipping = text;
-        }
+      final text = clipboardData?.text;
+      log.finest("Clipboard text: $text");
+      if (text != null) {
+        _clipboardController.add(text);
+        preferences.setString(LAST_CLIPPING_PREFERENCES_KEY, text);
       }
     });
   }
@@ -79,5 +79,13 @@ class Device {
   Future<String> appVersion() async {
     PackageInfo packageInfo = await PackageInfo.fromPlatform();
     return "${packageInfo.version}.${packageInfo.buildNumber}";
+  }
+
+  @override
+  void onClipboardChanged() {
+    log.finest("Clipboard changed");
+    SharedPreferences.getInstance().then((preferences) {
+      fetchClipboard(preferences);
+    });
   }
 }
