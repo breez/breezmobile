@@ -21,61 +21,64 @@ class AddressWidget extends StatelessWidget {
     final texts = context.texts();
     final themeData = Theme.of(context);
 
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.start,
-      children: [
-        Container(
-          padding: EdgeInsets.only(left: 16.0, top: 24.0, right: 16.0),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Text(
-                texts.invoice_btc_address_deposit_address,
-                style: theme.FieldTextStyle.labelStyle,
-              ),
-              Container(
-                child: Row(
-                  children: _buildShareAndCopyIcons(context),
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 16.0),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.start,
+        children: [
+          Container(
+            padding: EdgeInsets.only(top: 24.0),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(
+                  texts.invoice_btc_address_deposit_address,
+                  style: theme.FieldTextStyle.labelStyle,
                 ),
-              ),
-            ],
+                Container(
+                  child: Row(
+                    children: _buildShareAndCopyIcons(context),
+                  ),
+                ),
+              ],
+            ),
           ),
-        ),
-        address == null
-            ? _buildQRPlaceholder()
-            : Column(
-                children: [
-                  GestureDetector(
-                    child: Container(
-                      margin: const EdgeInsets.only(top: 32.0, bottom: 16.0),
-                      padding: const EdgeInsets.all(8.6),
-                      child: CompactQRImage(
-                        data: "bitcoin:" + address,
-                        size: 180.0,
+          address == null
+              ? _buildQRPlaceholder()
+              : Column(
+                  children: [
+                    GestureDetector(
+                      child: Container(
+                        margin: const EdgeInsets.only(top: 32.0, bottom: 16.0),
+                        padding: const EdgeInsets.all(8.6),
+                        child: CompactQRImage(
+                          data: "bitcoin:" + address,
+                          size: 180.0,
+                        ),
+                      ),
+                      onLongPress: () => _showAlertDialog(context),
+                    ),
+                    Container(
+                      padding: EdgeInsets.only(top: 16.0),
+                      child: GestureDetector(
+                        onTap: () {
+                          ServiceInjector().device.setClipboardText(address);
+                          showFlushbar(
+                            context,
+                            message: texts
+                                .invoice_btc_address_deposit_address_copied,
+                          );
+                        },
+                        child: Text(
+                          address,
+                          style: themeData.primaryTextTheme.titleSmall,
+                        ),
                       ),
                     ),
-                    onLongPress: () => _showAlertDialog(context),
-                  ),
-                  Container(
-                    padding: EdgeInsets.only(top: 16.0),
-                    child: GestureDetector(
-                      onTap: () {
-                        ServiceInjector().device.setClipboardText(address);
-                        showFlushbar(
-                          context,
-                          message:
-                              texts.invoice_btc_address_deposit_address_copied,
-                        );
-                      },
-                      child: Text(
-                        address,
-                        style: themeData.primaryTextTheme.titleSmall,
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-      ],
+                  ],
+                ),
+        ],
+      ),
     );
   }
 
