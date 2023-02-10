@@ -573,6 +573,22 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "5.2.5"
+  fimber:
+    dependency: "direct main"
+    description:
+      name: fimber
+      sha256: "1415768ddd9fd66f134dbc53f731107554c98175a63d4e93234478a113ffabb8"
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.6.6"
+  fimber_io:
+    dependency: "direct main"
+    description:
+      name: fimber_io
+      sha256: "73eb090d4442f845a6ab4eeebbe973ca0f767fd67520ce4e2167aa2e3ae1bea9"
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.6.6"
   firebase_core:
     dependency: "direct main"
     description:
@@ -699,6 +715,14 @@ packages:
       url: "https://github.com/breez/flutter_downloader.git"
     source: git
     version: "1.8.4"
+  flutter_fimber:
+    dependency: "direct main"
+    description:
+      name: flutter_fimber
+      sha256: "6b8ba81faca9c786573c3c7e4c94341b890e594803dc433ae57243a7355c917f"
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.6.5"
   flutter_html:
     dependency: transitive
     description:
@@ -1148,7 +1172,7 @@ packages:
     source: hosted
     version: "1.1.11"
   logging:
-    dependency: "direct main"
+    dependency: transitive
     description:
       name: logging
       sha256: "04094f2eb032cbb06c6f6e8d3607edcfcb0455e2bb6cbc010cb01171dcb64e6d"

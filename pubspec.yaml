@@ -32,6 +32,10 @@ dependencies:
   email_validator: ^2.1.17
   extended_image: ^6.2.1
   file_picker: ^5.0.1
+  fimber: ^0.6.6
+  fimber_io: ^0.6.6
+  # Doesn't support: Linux Mac Windows
+  flutter_fimber: ^0.6.5
   firebase_core: ^1.24.0
   # Version 4.5.2 breaks, it is necessary to update firebase as a whole
   firebase_core_platform_interface: 4.5.1
@@ -52,7 +56,6 @@ dependencies:
   json_annotation: ^4.6.0
   # local_auth: 2.0.0 has breaking changes that are missing documentation
   local_auth: <2.0.0
-  logging: ^1.0.2
   md5_file_checksum: ^1.0.3
   nfc_manager: ^3.1.1
   package_info_plus: ^1.4.3+1
