@@ -265,7 +265,7 @@ Widget withPodcastTheme(BreezUserModel user, Widget child) {
                   if (states.contains(MaterialState.selected)) {
                     return Color(0xFF0085fb);
                   }
-                  return null;
+                  return Colors.white;
                 }),
               ),
               checkboxTheme: CheckboxThemeData(
