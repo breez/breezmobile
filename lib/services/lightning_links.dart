@@ -1,9 +1,11 @@
 import 'dart:async';
 
-import 'package:breez/logger.dart';
 import 'package:breez/services/supported_schemes.dart';
+import 'package:fimber/fimber.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:uni_links/uni_links.dart';
+
+final _log = FimberLog("LightningLinksService");
 
 class LightningLinksService {
   final StreamController<String> _linksNotificationsController =
@@ -15,7 +17,7 @@ class LightningLinksService {
     Rx.merge([getInitialLink().asStream(), linkStream])
         .where(canHandleScheme)
         .listen((l) {
-      log.info("Got lightning link: $l");
+      _log.v("Got lightning link: $l");
       if (l.startsWith("breez:")) {
         l = l.substring(6);
       }

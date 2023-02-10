@@ -17,16 +17,17 @@ import 'package:breez/bloc/podcast_payments/podcast_payments_bloc.dart';
 import 'package:breez/bloc/user_profile/user_profile_bloc.dart';
 import 'package:breez/logger.dart';
 import 'package:breez/routes/podcast/podcast_page.dart';
-import 'package:breez/services/breezlib/breez_bridge.dart';
-import 'package:breez/services/injector.dart';
 import 'package:breez/user_app.dart';
 import 'package:breez/utils/date.dart';
+import 'package:fimber/fimber.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+
+final _log = FimberLog("Main");
 
 void main() async {
   // runZonedGuarded wrapper is required to log Dart errors.
@@ -74,10 +75,8 @@ void main() async {
           appBlocs: blocs));
     });
   }, (error, stackTrace) async {
-    BreezBridge breezBridge = ServiceInjector().breezBridge;
     if (error is! FlutterErrorDetails) {
-      breezBridge.log(
-          error.toString() + '\n' + stackTrace.toString(), "FlutterError");
+      _log.e("FlutterError: $error", ex: error, stacktrace: stackTrace);
     }
   });
 }

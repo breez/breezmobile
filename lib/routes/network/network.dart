@@ -6,7 +6,6 @@
 import 'dart:async';
 import 'dart:io';
 
-import 'package:breez/logger.dart';
 import 'package:breez/services/breezlib/breez_bridge.dart';
 import 'package:breez/services/breezlib/data/rpc.pb.dart';
 import 'package:breez/services/injector.dart';
@@ -18,7 +17,10 @@ import 'package:breez/widgets/error_dialog.dart';
 import 'package:breez/widgets/loader.dart';
 import 'package:breez_translations/breez_translations_locales.dart';
 import 'package:collection/collection.dart';
+import 'package:fimber/fimber.dart';
 import 'package:flutter/material.dart';
+
+final _log = FimberLog("NetworkPage");
 
 class _NetworkData {
   bool torIsActive = false;
@@ -284,7 +286,7 @@ class NetworkPageState extends State<NetworkPage> {
     );
 
     if (error != null) {
-      log.info('setTorActive error', error);
+      _log.w('setTorActive error', ex: error);
       await promptError(
         context,
         null,

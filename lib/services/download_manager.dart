@@ -3,9 +3,11 @@ import 'dart:isolate';
 import 'dart:ui';
 
 import 'package:anytime/entities/downloadable.dart';
+import 'package:fimber/fimber.dart';
 import 'package:flutter_downloader/flutter_downloader.dart';
 import 'package:rxdart/subjects.dart';
-import 'package:breez/logger.dart';
+
+final _log = FimberLog("DownloadTaskManager");
 
 class DownloadStatus {
   final String id;
@@ -34,10 +36,10 @@ class DownloadTaskManager {
 
   Future _init() async {
     print("GraphDownloader before Initialize");
-    log.info("GraphDownloader before Initialize");
+    _log.v("GraphDownloader before Initialize");
     await FlutterDownloader.initialize(ignoreSsl: true, debug: true);
     print("GraphDownloader after Initialize");
-    log.info("GraphDownloader after Initialize");
+    _log.v("GraphDownloader after Initialize");
 
     bool success = IsolateNameServer.registerPortWithName(
         _port.sendPort, 'downloader_send_port');    
@@ -47,10 +49,10 @@ class DownloadTaskManager {
       final progress = data[2] as int;
       
       print("GraphDownloader2 callback $id, $status, $progress");
-      log.info("GraphDownloader2 callback $id, $status, $progress");
+      _log.v("GraphDownloader2 callback $id, $status, $progress");
       _updateProgress(id, progress, status);      
     });
-    log.info("GraphDownloader reguster success = $success");
+    _log.v("GraphDownloader reguster success = $success");
     FlutterDownloader.registerCallback(downloadCallback);
 
     final allTasks = await loadTasks();
@@ -128,7 +130,7 @@ class DownloadTaskManager {
       String id, DownloadTaskStatus status, int progress) {
     final send = IsolateNameServer.lookupPortByName('downloader_send_port');
     print("GraphDownloader callback $id, $status, $progress");
-    log.info("GraphDownloader callback $id, $status, $progress");
+    _log.v("GraphDownloader callback $id, $status, $progress");
     send.send([id, status, progress]);
   }
 }

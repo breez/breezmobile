@@ -3,7 +3,6 @@ import 'dart:async';
 import 'package:breez/bloc/async_actions_handler.dart';
 import 'package:breez/bloc/invoice/actions.dart';
 import 'package:breez/bloc/invoice/invoice_model.dart';
-import 'package:breez/logger.dart';
 import 'package:breez/services/breezlib/breez_bridge.dart';
 import 'package:breez/services/breezlib/data/rpc.pb.dart';
 import 'package:breez/services/device.dart';
@@ -14,8 +13,11 @@ import 'package:breez/services/notifications.dart';
 import 'package:breez/utils/bip21.dart';
 import 'package:breez/utils/lnurl.dart';
 import 'package:breez/utils/node_id.dart';
+import 'package:fimber/fimber.dart';
 import 'package:fixnum/fixnum.dart';
 import 'package:rxdart/rxdart.dart';
+
+final _log = FimberLog("InvoiceBloc");
 
 class InvoiceBloc with AsyncActionsHandler {
   final _newInvoiceRequestController = StreamController<InvoiceRequestModel>();
@@ -110,7 +112,7 @@ class InvoiceBloc with AsyncActionsHandler {
               description: invoiceRequest.description,
               expiry: invoiceRequest.expiry)
           .then((payReq) async {
-        log.info("Payment Request: " + payReq.paymentRequest);
+        _log.v("Payment Request: " + payReq.paymentRequest);
         var memo = await _breezLib.decodePaymentRequest(payReq.paymentRequest);
         var paymentHash =
             await _breezLib.getPaymentRequestHash(payReq.paymentRequest);
@@ -184,19 +186,19 @@ class InvoiceBloc with AsyncActionsHandler {
           //filter out our own payment requests
           try {
             await breezLib.getRelatedInvoice(paymentRequest);
-            log.info("filtering our invoice from clipboard");
+            _log.v("filtering our invoice from clipboard");
             _receivedInvoicesController.add(null);
             _receivedInvoicesController.addError(
                 PaymentRequestModel(null, paymentRequest, null, Int64(0)));
             return null;
           } catch (e) {
-            log.info("detected not our invoice, continue to decoding");
+            _log.v("detected not our invoice, continue to decoding");
             return paymentRequest;
           }
         })
         .where((paymentRequest) => paymentRequest != null)
         .asyncMap((paymentRequest) {
-          log.info('Decoding invoice.');
+          _log.v('Decoding invoice.');
           return breezLib.decodePaymentRequest(paymentRequest).then(
               (invoice) async {
             var paymentHash =

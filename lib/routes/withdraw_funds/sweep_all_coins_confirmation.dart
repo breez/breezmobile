@@ -11,9 +11,12 @@ import 'package:breez/widgets/error_dialog.dart';
 import 'package:breez/widgets/fee_chooser.dart';
 import 'package:breez/widgets/loader.dart';
 import 'package:breez/widgets/single_button_bottom_bar.dart';
+import 'package:fimber/fimber.dart';
 import 'package:fixnum/fixnum.dart';
 import 'package:flutter/material.dart';
 import 'package:breez_translations/breez_translations_locales.dart';
+
+final _log = FimberLog("");
 
 class SweepAllCoinsConfirmation extends StatefulWidget {
   final AccountBloc accountBloc;
@@ -161,12 +164,12 @@ class SweepAllCoinsConfirmationState extends State<SweepAllCoinsConfirmation> {
           : SingleButtonBottomBar(
               text: texts.sweep_all_coins_action_confirm,
               onPressed: () {
-                log.info("Sweep all coins using $selectedFeeIndex of ${transactions.logDescription((e) => e.fees.toString())}");
+                _log.v("Sweep all coins using $selectedFeeIndex of ${transactions.logDescription((e) => e.fees.toString())}");
                 Navigator.of(context).push(createLoaderRoute(context));
                 widget.onConfirm(transactions[selectedFeeIndex]).then((_) {
                   Navigator.of(context).pop();
                 }).catchError((error) {
-                  log.warning("Sweep all coins error", error);
+                  _log.w("Sweep all coins error", ex: error);
                   Navigator.of(context).pop();
                   promptError(
                     context,

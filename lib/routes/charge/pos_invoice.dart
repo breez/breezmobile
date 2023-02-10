@@ -17,7 +17,6 @@ import 'package:breez/bloc/user_profile/breez_user_model.dart';
 import 'package:breez/bloc/user_profile/currency.dart';
 import 'package:breez/bloc/user_profile/user_actions.dart';
 import 'package:breez/bloc/user_profile/user_profile_bloc.dart';
-import 'package:breez/logger.dart';
 import 'package:breez/routes/charge/currency_wrapper.dart';
 import 'package:breez/routes/charge/items/item_avatar.dart';
 import 'package:breez/routes/charge/pos_invoice_cart_bar.dart';
@@ -34,9 +33,12 @@ import 'package:breez/widgets/loader.dart';
 import 'package:breez/widgets/print_parameters.dart';
 import 'package:breez/widgets/transparent_page_route.dart';
 import 'package:breez/widgets/view_switch.dart';
+import 'package:fimber/fimber.dart';
 import 'package:fixnum/fixnum.dart';
 import 'package:flutter/material.dart';
 import 'package:breez_translations/breez_translations_locales.dart';
+
+final _log = FimberLog("POSInvoice");
 
 class POSInvoice extends StatefulWidget {
   POSInvoice();
@@ -789,7 +791,7 @@ class POSInvoiceState extends State<POSInvoice> with TickerProviderStateMixin {
 
   void _changeCurrency(Sale currentSale, String value,
       UserProfileBloc userProfileBloc, CurrencyWrapper currentCurrency) {
-    log.info("_changeCurrency from ${currentCurrency.shortName} to $value");
+    _log.v("_changeCurrency from ${currentCurrency.shortName} to $value");
     if (currentCurrency.shortName.toUpperCase() == value) {
       return;
     }

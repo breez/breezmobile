@@ -9,7 +9,6 @@ import 'package:breez/bloc/invoice/invoice_bloc.dart';
 import 'package:breez/bloc/lnurl/lnurl_actions.dart';
 import 'package:breez/bloc/lnurl/lnurl_bloc.dart';
 import 'package:breez/bloc/lnurl/lnurl_model.dart';
-import 'package:breez/logger.dart';
 import 'package:breez/theme_data.dart' as theme;
 import 'package:breez/utils/lnurl_metadata_extension.dart';
 import 'package:breez/utils/min_font_size.dart';
@@ -20,9 +19,12 @@ import 'package:breez/widgets/keyboard_done_action.dart';
 import 'package:breez/widgets/loader.dart';
 import 'package:breez/widgets/single_button_bottom_bar.dart';
 import 'package:breez/widgets/static_loader.dart';
+import 'package:fimber/fimber.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:breez_translations/breez_translations_locales.dart';
+
+final _log = FimberLog("LNURLFetchInvoicePage");
 
 class LNURLFetchInvoicePage extends StatefulWidget {
   final PayFetchResponse payFetchResponse;
@@ -84,7 +86,7 @@ class LNURLFetchInvoicePageState extends State<LNURLFetchInvoicePage> {
 
   @override
   void dispose() {
-    log.info('LNURLFetchInvoicePage disposed.');
+    _log.v('LNURLFetchInvoicePage disposed.');
     _doneAction.dispose();
     super.dispose();
   }
@@ -346,7 +348,7 @@ class LNURLFetchInvoicePageState extends State<LNURLFetchInvoicePage> {
     LNUrlBloc lnurlBloc,
     AccountModel account,
   ) async {
-    log.info('_getInvoice.');
+    _log.v('_getInvoice.');
     /*
          5. LN WALLET makes a GET request using callback with the following query parameters:
          amount (input) - user specified sum in MilliSatoshi
@@ -382,8 +384,7 @@ class LNURLFetchInvoicePageState extends State<LNURLFetchInvoicePage> {
       );
     }).then((payinfo) {
       invoiceBloc.decodeInvoiceSink.add(payinfo.invoice);
-      log.info(
-          '_getInvoice: Found LNUrlPayInfo. Beginning payment request flow.');
+      _log.v('_getInvoice: Found LNUrlPayInfo. Beginning payment request flow.');
       _removeLoader();
 
       /*

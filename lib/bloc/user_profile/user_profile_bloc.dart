@@ -9,7 +9,6 @@ import 'package:breez/bloc/user_profile/currency.dart';
 import 'package:breez/bloc/user_profile/default_profile_generator.dart';
 import 'package:breez/bloc/user_profile/security_model.dart';
 import 'package:breez/bloc/user_profile/user_actions.dart';
-import 'package:breez/logger.dart';
 import 'package:breez/services/breez_server/server.dart';
 import 'package:breez/services/breezlib/breez_bridge.dart';
 import 'package:breez/services/device.dart';
@@ -18,6 +17,7 @@ import 'package:breez/services/local_auth_service.dart';
 import 'package:breez/services/notifications.dart';
 import 'package:breez_translations/breez_translations_locales.dart';
 import 'package:crypto/crypto.dart';
+import 'package:fimber/fimber.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:google_api_availability/google_api_availability.dart';
@@ -26,6 +26,8 @@ import 'package:path_provider/path_provider.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:uuid/uuid.dart';
+
+final _log = FimberLog("UserProfileBloc");
 
 class UserProfileBloc {
   static const PROFILE_DATA_FOLDER_PATH = "profile";
@@ -241,7 +243,7 @@ class UserProfileBloc {
         });
       });
     } catch (error) {
-      log.severe(error);
+      _log.e(error.toString(), ex: error);
       throw error;
     }
   }

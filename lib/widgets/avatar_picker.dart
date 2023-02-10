@@ -1,13 +1,15 @@
 import 'dart:async';
 import 'dart:io';
 
-import 'package:breez/logger.dart';
 import 'package:breez/widgets/error_dialog.dart';
+import 'package:fimber/fimber.dart';
 import 'package:flutter/material.dart';
 import 'package:breez_translations/breez_translations_locales.dart';
 import 'package:image/image.dart' as DartImage;
 import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
+
+final _log = FimberLog("AvatarPicker");
 
 class AvatarPicker extends StatelessWidget {
   final String imagePath;
@@ -100,7 +102,7 @@ class AvatarPicker extends StatelessWidget {
     final _picker = ImagePicker();
     XFile pickedFile =
         await _picker.pickImage(source: ImageSource.gallery).catchError((err) {
-      log.severe(err.toString());
+      _log.e(err.toString(), ex: err);
     });
     final File file = File(pickedFile.path);
     return ImageCropper()
@@ -144,7 +146,7 @@ class AvatarPicker extends StatelessWidget {
     );
     final width = centered.width;
     final height = centered.height;
-    log.info('trimmed.width $width trimmed.height $height');
+    _log.v('trimmed.width $width trimmed.height $height');
     return DartImage.encodePng(centered);
   }
 }

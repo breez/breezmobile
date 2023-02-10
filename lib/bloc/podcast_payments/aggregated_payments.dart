@@ -1,8 +1,9 @@
 import 'dart:convert';
 
+import 'package:fimber/fimber.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import '../../logger.dart';
+final _log = FimberLog("AggregatedPayments");
 
 class AggregatedPayments {
   static const String AGGREGATED_PAYMENTS_KEY = "AGGREGATED_PAYMENTS_KEY";
@@ -18,9 +19,9 @@ class AggregatedPayments {
       try {
         Map<String, dynamic> amounts = json.decode(persistedAggregation);
         aggregatedAmount = amounts.cast<String, double>();
-        log.info("loaded persisted aggregation: $aggregatedAmount");
+        _log.v("loaded persisted aggregation: $aggregatedAmount");
       } catch (err) {
-        log.severe("failed to load persisted aggregation", err);
+        _log.e("failed to load persisted aggregation", ex: err);
       }
     }
   }

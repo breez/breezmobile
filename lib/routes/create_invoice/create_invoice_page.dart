@@ -12,7 +12,6 @@ import 'package:breez/bloc/lnurl/lnurl_bloc.dart';
 import 'package:breez/bloc/lnurl/lnurl_model.dart';
 import 'package:breez/bloc/lsp/lsp_bloc.dart';
 import 'package:breez/bloc/lsp/lsp_model.dart';
-import 'package:breez/logger.dart';
 import 'package:breez/routes/charge/successful_payment.dart';
 import 'package:breez/routes/create_invoice/lnurl_withdraw_dialog.dart';
 import 'package:breez/routes/create_invoice/qr_code_dialog.dart';
@@ -32,9 +31,12 @@ import 'package:breez/widgets/transparent_page_route.dart';
 import 'package:breez/widgets/warning_box.dart';
 import 'package:breez_translations/breez_translations_locales.dart';
 import 'package:breez_translations/generated/breez_translations.dart';
+import 'package:fimber/fimber.dart';
 import 'package:fixnum/fixnum.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+
+final _log = FimberLog("CreateInvoicePage");
 
 class CreateInvoicePage extends StatefulWidget {
   final WithdrawFetchResponse lnurlWithdraw;
@@ -519,7 +521,7 @@ class CreateInvoicePageState extends State<CreateInvoicePage> {
           barrierDismissible: false,
           builder: (_) => dialog,
         ), () {
-      log.info("waiting for payment background task finished");
+      _log.v("waiting for payment background task finished");
     });
   }
 

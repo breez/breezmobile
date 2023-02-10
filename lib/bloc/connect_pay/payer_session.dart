@@ -9,7 +9,6 @@ import 'package:breez/bloc/connect_pay/encryption.dart';
 import 'package:breez/bloc/connect_pay/firebase_session_channel.dart';
 import 'package:breez/bloc/connect_pay/online_status_updater.dart';
 import 'package:breez/bloc/user_profile/breez_user_model.dart';
-import 'package:breez/logger.dart';
 import 'package:breez/services/background_task.dart';
 import 'package:breez/services/breez_server/server.dart';
 import 'package:breez/services/breezlib/breez_bridge.dart';
@@ -18,8 +17,11 @@ import 'package:breez/services/deep_links.dart';
 import 'package:breez/services/device.dart';
 import 'package:breez/services/injector.dart';
 import 'package:breez_translations/breez_translations_locales.dart';
+import 'package:fimber/fimber.dart';
 import 'package:fixnum/fixnum.dart';
 import 'package:rxdart/rxdart.dart';
+
+final _log = FimberLog("PaymentSession");
 
 // A concrete implementation of RemoteSession from the payer side.
 class PayerRemoteSession extends RemoteSession with OnlineStatusUpdater {
@@ -73,10 +75,10 @@ class PayerRemoteSession extends RemoteSession with OnlineStatusUpdater {
   }
 
   Future start(SessionLinkModel sessionLink) async {
-    log.info("payer session starting...");
+    _log.v("payer session starting…");
     this.sessionLink = sessionLink;
     await _loadPersistedSessionInfo();
-    log.info("payer session loaded persisted payee info");
+    _log.v("payer session loaded persisted payee info");
     if (sessionLink.sessionSecret != null) {
       _watchInviteRequests(SessionLinkModel(
           sessionID, sessionLink.sessionSecret, sessionLink.initiatorPubKey));
@@ -92,7 +94,7 @@ class PayerRemoteSession extends RemoteSession with OnlineStatusUpdater {
       _channel.sendResetMessage();
     }
     _handleIncomingMessages();
-    log.info("payer session started");
+    _log.v("payer session started");
   }
 
   _loadPersistedSessionInfo() async {
@@ -179,17 +181,17 @@ class PayerRemoteSession extends RemoteSession with OnlineStatusUpdater {
   bool get _isTerminated => _terminationStreamController.isClosed;
 
   void _watchInviteRequests(SessionLinkModel sessionLink) {
-    log.info("payer session generating invite link");
+    _log.v("payer session generating invite link");
     _deepLinks
         .generateSessionInviteLink(SessionLinkModel(sessionLink.sessionID,
             sessionLink.sessionSecret, sessionLink.initiatorPubKey))
         .then((inviteLink) {
-      log.info("payer session generating invite link completed");
+      _log.v("payer session generating invite link completed");
       _currentSessionInvite = inviteLink;
       _paymentSessionController
           .add(_currentSession.copyWith(invitationReady: true));
     }).catchError((err) {
-      log.info(
+      _log.v(
           "payer session generating invite link failed: " + err.toString());
     });
 
@@ -245,7 +247,7 @@ class PayerRemoteSession extends RemoteSession with OnlineStatusUpdater {
       }
       _paymentSessionController.add(nextState);
       _backgroundService.runAsTask(_sessionCompleter.future, () {
-        log.info("payer session background task finished");
+        _log.v("payer session background task finished");
       });
       return this.sendPayment(paymentRequest, invoice.amount).then((_) {
         if (!this._paymentSent) {

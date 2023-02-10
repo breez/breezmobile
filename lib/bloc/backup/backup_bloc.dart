@@ -2,15 +2,17 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:breez/bloc/async_action.dart';
+import 'package:breez/bloc/backup/backup_actions.dart';
 import 'package:breez/bloc/backup/backup_model.dart';
 import 'package:breez/bloc/user_profile/backup_user_preferences.dart';
 import 'package:breez/bloc/user_profile/breez_user_model.dart';
 import 'package:breez/services/background_task.dart';
 import 'package:breez/services/breezlib/breez_bridge.dart';
 import 'package:breez/services/breezlib/data/rpc.pb.dart';
-import 'package:breez/logger.dart';
 import 'package:breez/services/injector.dart';
 import 'package:crypto/crypto.dart';
+import 'package:fimber/fimber.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:hex/hex.dart';
@@ -19,8 +21,7 @@ import 'package:rxdart/rxdart.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sqflite/sqflite.dart';
 
-import '../async_action.dart';
-import 'backup_actions.dart';
+final _log = FimberLog("BackupBloc");
 
 class BackupBloc {
   static const String _signInFailedCode = "AuthError";
@@ -531,7 +532,7 @@ class BackupBloc {
     return _breezLib
         .testBackupAuth(provider.name, json.encode(authData.toJson()))
         .catchError((error) {
-      log.info('backupBloc.testAuth caught error: $error');
+      _log.w('backupBloc.testAuth caught error: $error', ex: error);
 
       if (error is PlatformException) {
         var e = error;
@@ -618,8 +619,7 @@ class SnapshotInfo {
 
   SnapshotInfo(
       this.nodeID, this.modifiedTime, this.encrypted, this.encryptionType) {
-    log.info(
-        "New Snapshot encrypted = ${this.encrypted} encrytionType = ${this.encryptionType}");
+    _log.v("New Snapshot encrypted = ${this.encrypted} encrytionType = ${this.encryptionType}");
   }
 
   SnapshotInfo.fromJson(Map<String, dynamic> json)

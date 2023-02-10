@@ -24,13 +24,17 @@ import 'package:breez/widgets/back_button.dart' as backBtn;
 import 'package:breez/widgets/error_dialog.dart';
 import 'package:breez/widgets/loader.dart';
 import 'package:breez/widgets/route.dart';
+import 'package:breez_translations/breez_translations_locales.dart';
 import 'package:file_picker/file_picker.dart';
+import 'package:fimber/fimber.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_downloader/flutter_downloader.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:breez/bloc/podcast_history/sqflite/podcast_history_database.dart';
 import 'default_commands.dart';
+
+final _log = FimberLog("DevPage");
 
 bool allowRebroadcastRefunds = false;
 final _cliInputController = TextEditingController();
@@ -463,10 +467,10 @@ class DevViewState extends State<DevView> {
             final databasePath = await getDatabasePath();
             await File(file.path).copy(databasePath);
           } else {
-            log.warning("Invalid file type for product catalog DB");
+            _log.w("Invalid file type for product catalog DB");
           }
         } else {
-          log.info("No file selected for product catalog DB");
+          _log.v("No file selected for product catalog DB");
         }
       },
     ));
@@ -591,7 +595,10 @@ class DevViewState extends State<DevView> {
       encoder.close();
       File("${tempDir.path}/graph.json").deleteSync();
       if (!userCancelled) {
-        return shareFile("${tempDir.path}/graph.zip");
+        return Share.shareXFiles(
+          [XFile("${tempDir.path}/graph.zip")],
+          text: getSystemAppLocalizations().share_file_title,
+        );
       }
     }).whenComplete(() {
       if (!userCancelled) {
@@ -639,20 +646,18 @@ class DevViewState extends State<DevView> {
   void _printCacheUsage() async {
     Directory tempDir = await getTemporaryDirectory();
     var stats = await tempDir.stat();
-    log.info("temp dir size = ${stats.size / 1024}kb");
+    _log.v("temp dir size = ${stats.size / 1024}kb");
     var children = tempDir.listSync();
     children.forEach((child) async {
       var childStats = await child.stat();
       var idDir = (child is Directory);
-      log.info(
-          '${idDir ? "Directory - " : "File - "} path: ${child.path}: ${childStats.size / 1024}kb');
+      _log.v('${idDir ? "Directory - " : "File - "} path: ${child.path}: ${childStats.size / 1024}kb');
       if (child is Directory) {
         var secondLevelChildren = child.listSync();
         secondLevelChildren.forEach((secondLevelChild) async {
           var idChildDir = (secondLevelChild is Directory);
           var secondLevelChildStats = await secondLevelChild.stat();
-          log.info(
-              "\t${idChildDir ? "Directory - " : "File - "} path: ${secondLevelChild.path}: ${secondLevelChildStats.size / 1024}kb");
+          _log.v("\t${idChildDir ? "Directory - " : "File - "} path: ${secondLevelChild.path}: ${secondLevelChildStats.size / 1024}kb");
         });
       }
     });

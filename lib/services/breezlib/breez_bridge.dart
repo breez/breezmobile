@@ -3,10 +3,11 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:breez/bloc/lnurl/lnurl_model.dart';
-import 'package:breez/logger.dart' as logger;
 import 'package:breez/services/breezlib/data/rpc.pb.dart';
+import 'package:breez/services/breezlib/graph_downloader.dart';
 import 'package:breez/services/download_manager.dart';
 import 'package:dio/dio.dart';
+import 'package:fimber/fimber.dart';
 import 'package:fixnum/fixnum.dart';
 import 'package:flutter/services.dart';
 import 'package:hex/hex.dart';
@@ -15,7 +16,7 @@ import 'package:md5_file_checksum/md5_file_checksum.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import 'graph_downloader.dart';
+final _log = FimberLog("BreezBridge");
 
 // This is the bridge to the native breez library. Protobuf messages are used as the interface and to generate the classes use the bellow command.
 // protoc --dart_out=grpc:lib/services/breezlib/data/ -Ilib/services/breezlib/ lib/services/breezlib/rpc.proto
@@ -69,7 +70,7 @@ class BreezBridge {
     pathComponents.add("MD5SUMS");
     var checksumURL =
         graphUri.replace(path: pathComponents.join("/")).toString();
-    logger.log.info("graph checksum url: $checksumURL");
+    _log.v("graph checksum url: $checksumURL");
     var response = await Dio().get(checksumURL);
     var content = response.data.toString();
     var currentVersionLine = LineSplitter.split(content).firstWhere((line) {
@@ -85,11 +86,11 @@ class BreezBridge {
     await _readyCompleter.future;
     await Future.delayed(Duration(seconds: 10));
     var downloadURL = await graphURL();
-    logger.log.info("GraphDownloader graph download url: $downloadURL");
+    _log.v("GraphDownloader graph download url: $downloadURL");
     if (downloadURL.isNotEmpty) {
-      logger.log.info("GraphDownloader fetching graph checksum");
+      _log.v("GraphDownloader fetching graph checksum");
       var checksum = await fetchGraphChecksum(downloadURL);
-      logger.log.info(
+      _log.v(
           "GraphDownloader graph checksum = $checksum, downloading graph");
       _inProgressGraphSync =
           _graphDownloader.downloadGraph(downloadURL).then((file) async {
@@ -98,16 +99,16 @@ class BreezBridge {
         var rawBytes = base64.decode(fileChecksum);
         var hexChecksum = HEX.encode(rawBytes);
         if (hexChecksum != checksum) {
-          logger.log.info(
+          _log.v(
               "GraphDownloader graph synchronization wrong checksum $fileChecksum != $checksum, skipping file");
           return DateTime.now();
         }
-        logger.log.info("GraphDownloader graph synchronization started");
+        _log.v("GraphDownloader graph synchronization started");
         await syncGraphFromFile(file.path);
-        logger.log.info("GraphDownloader graph synchronized succesfully");
+        _log.v("GraphDownloader graph synchronized succesfully");
         return DateTime.now();
       }).catchError((err) {
-        logger.log.info(
+        _log.v(
             "GraphDownloader graph synchronized failed ${err.toString()}");
       }).whenComplete(() {
         _graphDownloader.deleteDownloads();
@@ -124,13 +125,13 @@ class BreezBridge {
   }
 
   initLightningDir() {
-    logger.log.info("initLightningDir started");
+    _log.v("initLightningDir started");
 
     getApplicationDocumentsDirectory().then((workingDir) {
       return copyBreezConfig(workingDir.path).then((_) async {
         var tmpDir = await _tempDirFuture;
         await init(workingDir.path, tmpDir.path);
-        logger.log.info("breez library init finished");
+        _log.v("breez library init finished");
         _startedCompleter.complete(true);
       });
     });
@@ -166,7 +167,7 @@ class BreezBridge {
   }
 
   Future _start(TorConfig torConfig) async {
-    logger.log.info("breez_bridge.dart: _start");
+    _log.v("breez_bridge.dart: _start");
 
     return _invokeMethodImmediate(
         "start", {"argument": torConfig?.writeToBuffer()}).then((_) {
@@ -183,14 +184,10 @@ class BreezBridge {
         "syncGraphFromFile", {"argument": sourceFilePath});
   }
 
-  void log(String msg, String level) {
-    _invokeMethodImmediate("log", {"msg": msg, "lvl": level});
-  }
-
   Future<LNUrlResponse> fetchLNUrl(String lnurl) {
     var result = _invokeMethodImmediate("fetchLnurl", {"argument": lnurl})
         .then((result) => LNUrlResponse()..mergeFromBuffer(result ?? []));
-    logger.log.info("fetchLNUrl");
+    _log.v("fetchLNUrl");
     return result;
   }
 
@@ -402,18 +399,18 @@ class BreezBridge {
   Future<PaymentResponse> _invokePaymentWithGraphSyncAndRetry(
       Future<PaymentResponse> payFunc()) async {
     var startPaymentTime = DateTime.now();
-    logger.log.info("payment started at ${startPaymentTime.toString()}");
+    _log.v("payment started at ${startPaymentTime.toString()}");
 
     return payFunc().then((response) {
       if (response.paymentError.isEmpty || _inProgressGraphSync == null) {
         return response;
       }
-      logger.log.info("payment failed, checking if graph sync is needed");
+      _log.v("payment failed, checking if graph sync is needed");
       return _inProgressGraphSync
           .timeout(Duration(seconds: 50))
           .then((lastSyncTime) {
         if (lastSyncTime.isAfter(startPaymentTime)) {
-          logger.log.info(
+          _log.v(
               "last sync time is newer than payment start, retrying payment...");
           return payFunc();
         }
@@ -422,38 +419,13 @@ class BreezBridge {
         return Future.value(response);
       });
     });
-
-    // try {
-    //   var response = await payFunc();
-    //   if (response.paymentError.isNotEmpty) {
-    //     throw response.paymentError;
-    //   }
-    //   return response;
-    // } catch (err) {
-    //   logger.log.info("payment failed, checking if graph sync is needed");
-    //   if (_inProgressGraphSync != null) {
-    //     logger.log.info("has pending graph sync task, wating...");
-    //     try {
-    //       var lastSyncTime = await _inProgressGraphSync.timeout(Duration(seconds: 30));
-    //       if (lastSyncTime.isAfter(startPaymentTime)) {
-    //         logger.log.info("last sync time is newer than payment start, retrying payment...");
-    //         var res = await payFunc();
-    //         return res;
-    //       }
-    //     } catch (e) {
-    //       throw err;
-    //     }
-    //   }
-
-    //   throw err;
-    // }
   }
 
   Future<String> graphURL() {
     return _invokeMethodImmediate("graphURL")
         .then((result) => result as String)
         .catchError((e) {
-      logger.log.info("Error in graphURL:" + e.toString());
+      _log.v("Error in graphURL:" + e.toString());
     });
   }
 
@@ -748,7 +720,7 @@ class BreezBridge {
   }
 
   Future testBackupAuth(String provider, String authData) {
-    logger.log.info('breez_bridge.dart: testBackupAuth');
+    _log.v('breez_bridge.dart: testBackupAuth');
     return _methodChannel.invokeMethod(
         'testBackupAuth', {'provider': provider, 'authData': authData});
   }
@@ -762,7 +734,7 @@ class BreezBridge {
   }
 
   Future copyBreezConfig(String workingDir) async {
-    logger.log.info("copyBreezConfig started");
+    _log.v("copyBreezConfig started");
 
     File file = File(workingDir + "/breez.conf");
     String configString = await rootBundle.loadString('conf/breez.conf');
@@ -772,7 +744,7 @@ class BreezBridge {
     String data = await rootBundle.loadString('conf/lnd.conf');
     lndConf.writeAsStringSync(data, flush: true);
 
-    logger.log.info("copyBreezConfig finished");
+    _log.v("copyBreezConfig finished");
   }
 
   Future enableAccount(bool enabled) {
@@ -817,21 +789,19 @@ class BreezBridge {
 
   Future _invokeMethodWhenReady(String methodName, [dynamic arguments]) {
     if (methodName != "log") {
-      logger.log.info("before invoking method $methodName");
+      _log.v("before invoking method $methodName");
     }
     return _readyCompleter.future.then((completed) {
       return _methodChannel
           .invokeMethod(methodName, arguments)
           .catchError((err) {
         if (methodName != "log") {
-          logger.log.severe("failed to invoke method $methodName $err");
+          _log.e("failed to invoke method $methodName $err", ex: err);
         }
 
         if (err.runtimeType == PlatformException) {
-          logger.log.severe(
-              "Error in calling method '$methodName' with arguments: $arguments.");
-          logger.log.severe(
-              "Error in calling method '$methodName' with error: $err.");
+          _log.e("Error in calling method '$methodName' with arguments: $arguments.", ex: err);
+          _log.e("Error in calling method '$methodName' with error: $err.", ex: err);
 
           throw (err as PlatformException).message;
         }
@@ -842,29 +812,25 @@ class BreezBridge {
 
   Future _invokeMethodImmediate(String methodName, [dynamic arguments]) {
     if (methodName != "log") {
-      logger.log.info("before invoking method immediate $methodName");
+      _log.v("before invoking method immediate $methodName");
     }
     return _startedCompleter.future.then((completed) {
       if (methodName != "log") {
-        logger.log.info(
-            "startCompleted completd: before invoking method immediate $methodName");
+        _log.v("startCompleted completd: before invoking method immediate $methodName");
       }
       return _methodChannel
           .invokeMethod(methodName, arguments)
           .catchError((err) {
         if (methodName != "log") {
-          logger.log
-              .severe("error invoking method immediate $methodName : $err");
+          _log.e("error invoking method immediate $methodName : $err");
         }
         if (err.runtimeType == PlatformException) {
           if (methodName != "log") {
-            logger.log.severe("Error in calling method " + methodName);
+            _log.e("Error in calling method " + methodName, ex: err);
           }
 
-          logger.log.severe(
-              "Error in calling method '$methodName' with arguments: $arguments.");
-          logger.log.severe(
-              "Error in calling method '$methodName' with error: $err.");
+          _log.e("Error in calling method '$methodName' with arguments: $arguments.", ex: err);
+          _log.e("Error in calling method '$methodName' with error: $err.", ex: err);
           throw (err as PlatformException).message + " method: $methodName";
         }
         throw err;

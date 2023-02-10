@@ -3,11 +3,13 @@ import 'dart:io';
 
 import 'package:breez/bloc/pos_catalog/bloc.dart';
 import 'package:breez/bloc/pos_catalog/model.dart';
-import 'package:breez/logger.dart';
 import 'package:breez_translations/breez_translations_locales.dart';
 import 'package:csv/csv.dart';
+import 'package:fimber/fimber.dart';
 import 'package:flutter/foundation.dart';
 import 'package:path_provider/path_provider.dart';
+
+final _log = FimberLog("PosCsvUtils");
 
 class PosCsvUtils {
   final List itemList;
@@ -15,16 +17,16 @@ class PosCsvUtils {
   PosCsvUtils({this.itemList});
 
   Future export() async {
-    log.info("export pos items started");
+    _log.v("export pos items started");
     String tmpFilePath =
         await _saveCsvFile(const ListToCsvConverter().convert(_generateList()));
-    log.info("export pos items finished");
+    _log.v("export pos items finished");
     return tmpFilePath;
   }
 
   List _generateList() {
     final texts = getSystemAppLocalizations();
-    log.info("generating payment list started");
+    _log.v("generating payment list started");
     List<List<dynamic>> paymentList =
         List.generate(this.itemList.length, (index) {
       List paymentItem = [];
@@ -45,30 +47,30 @@ class PosCsvUtils {
       texts.pos_settings_currency,
       texts.pos_settings_price,
     ]);
-    log.info("generating pos items finished");
+    _log.v("generating pos items finished");
     return paymentList;
   }
 
   Future<String> _saveCsvFile(String csv) async {
-    log.info("save breez pos items to csv started");
+    _log.v("save breez pos items to csv started");
     String filePath = await _createCsvFilePath();
     final file = File(filePath);
     await file.writeAsString(csv);
-    log.info("save breez pos items to csv finished");
+    _log.v("save breez pos items to csv finished");
     return file.path;
   }
 
   Future<String> _createCsvFilePath() async {
-    log.info("create breez pos items path started");
+    _log.v("create breez pos items path started");
     final directory = await getTemporaryDirectory();
     String filePath = '${directory.path}/BreezPosItems';
     filePath += ".csv";
-    log.info("create breez pos items path finished");
+    _log.v("create breez pos items path finished");
     return filePath;
   }
 
   Future retrieveItemListFromCSV(File csvFile) async {
-    log.info("retrieve item list from csv started");
+    _log.v("retrieve item list from csv started");
     return _populateItemListFromCsv(await _getCsvList(csvFile));
   }
 
@@ -80,7 +82,7 @@ class PosCsvUtils {
           .transform(utf8.decoder)
           .transform(new CsvToListConverter(shouldParseNumbers: false))
           .toList();
-      log.info("header control started");
+      _log.v("header control started");
       List<String> headerRow = List<String>.from(csvList.elementAt(0));
       var defaultHeaders = [
         texts.pos_settings_id,
@@ -95,7 +97,7 @@ class PosCsvUtils {
       }
       // remove header row
       csvList.removeAt(0);
-      log.info("header control finished");
+      _log.v("header control finished");
       return csvList;
     } catch (e) {
       throw PosCatalogBloc.InvalidFile;
@@ -121,7 +123,7 @@ class PosCsvUtils {
         );
         itemsList.add(item);
       });
-      log.info("retrieving item list from csv finished");
+      _log.v("retrieving item list from csv finished");
       return itemsList;
     } catch (e) {
       throw PosCatalogBloc.InvalidData;

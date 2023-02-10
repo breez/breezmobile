@@ -1,13 +1,15 @@
 import 'dart:io';
 
-import 'package:breez/logger.dart';
 import 'package:breez/widgets/scan_overlay.dart';
+import 'package:fimber/fimber.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:breez_translations/breez_translations_locales.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
+
+final _log = FimberLog("QRScan");
 
 class QRScan extends StatefulWidget {
   @override
@@ -43,14 +45,14 @@ class QRScanState extends State<QRScan> {
                     allowDuplicates: false,
                     controller: cameraController,
                     onDetect: (barcode, args) {
-                      log.info("Barcode detected: $barcode");
+                      _log.v("Barcode detected: $barcode");
                       if (popped || !mounted) return;
                       if (barcode.rawValue == null) {
-                        log.warning("Failed to scan QR code.");
+                        _log.w("Failed to scan QR code.");
                       } else {
                         popped = true;
                         final String code = barcode.rawValue;
-                        log.info("Popping read QR code $code");
+                        _log.v("Popping read QR code $code");
                         Navigator.of(context).pop(code);
                       }
                     },
@@ -102,24 +104,24 @@ class ImagePickerButton extends StatelessWidget {
       onPressed: () async {
         final picker = ImagePicker();
         XFile pickedFile = await picker.pickImage(source: ImageSource.gallery).catchError((err) {
-          log.warning("Failed to pick image", err);
+          _log.w("Failed to pick image", ex: err);
         });
-        log.info("Picked image: ${pickedFile.path}");
+        _log.v("Picked image: ${pickedFile.path}");
         final File file = File(pickedFile.path);
         try {
           final found = await cameraController.analyzeImage(file.path);
           if (!found) {
-            log.info("No QR code found in image");
+            _log.v("No QR code found in image");
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(
                 content: Text(texts.qr_scan_gallery_failed),
               ),
             );
           } else {
-            log.info("QR code found in image");
+            _log.v("QR code found in image");
           }
         } catch (err) {
-          log.warning("Failed to analyze image", err);
+          _log.w("Failed to analyze image", ex: err);
         }
       },
     );

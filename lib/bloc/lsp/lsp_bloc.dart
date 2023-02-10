@@ -4,14 +4,16 @@ import 'package:breez/bloc/account/account_model.dart';
 import 'package:breez/bloc/async_actions_handler.dart';
 import 'package:breez/bloc/lsp/lsp_actions.dart';
 import 'package:breez/bloc/lsp/lsp_model.dart';
-import 'package:breez/logger.dart';
 import 'package:breez/services/breezlib/breez_bridge.dart';
 import 'package:breez/services/breezlib/data/rpc.pb.dart';
 import 'package:breez/services/injector.dart';
 import 'package:breez/utils/retry.dart';
 import 'package:breez_translations/breez_translations_locales.dart';
+import 'package:fimber/fimber.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+
+final _log = FimberLog("LSPBloc");
 
 class LSPBloc with AsyncActionsHandler {
   static const String SELECTED_LSP_PREFERENCES_KEY =
@@ -77,13 +79,13 @@ class LSPBloc with AsyncActionsHandler {
 
     try {
       await retry(() async {
-        log.info("connecting to LSP...");
+        _log.v("connecting to LSP…");
         var sp = await ServiceInjector().sharedPreferences;
         sp.setString(SELECTED_LSP_PREFERENCES_KEY, selectedLSP);
         action.resolve(await _breezLib.connectToLSPPeer(action.lspID));
       }, tryLimit: 3, interval: Duration(seconds: 2));
     } catch (err) {
-      log.info("Failed to connect to LSP: " + err.toString());
+      _log.v("Failed to connect to LSP: " + err.toString());
       _lspsStatusController.add(_lspsStatusController.value
           .copyWith(lastConnectionError: err.toString()));
       rethrow;
@@ -101,13 +103,13 @@ class LSPBloc with AsyncActionsHandler {
         if (await _selectedLSP == null) {
           var availableLSPs = _lspsStatusController.value.availableLSPs;
           if (availableLSPs.length == 1) {
-            log.info("LSP - not selected, selecting default");
+            _log.v("LSP - not selected, selecting default");
             this.actionsSink.add(ConnectLSP(availableLSPs[0].lspID, null));
           }
           return;
         }
 
-        log.info("LSP - account changed adding reconnect request");
+        _log.v("LSP - account changed adding reconnect request");
         _reconnectStreamController.add(null);
       }
     });
@@ -115,7 +117,7 @@ class LSPBloc with AsyncActionsHandler {
 
   void _handleLSPStatusChanges(SharedPreferences sp) {
     _lspsStatusController.stream.listen((status) {
-      log.info("LSP - status changed adding reconnect request");
+      _log.v("LSP - status changed adding reconnect request");
       _reconnectStreamController.add(null);
     });
   }
@@ -143,18 +145,18 @@ class LSPBloc with AsyncActionsHandler {
   Future _ensureLSPConnected() async {
     var lsp = await _selectedLSP;
     if (lsp == null) {
-      log.info("LSP - skipping reconnect, lsp not selected");
+      _log.v("LSP - skipping reconnect, lsp not selected");
       return;
     }
-    log.info("LSP - has selected lsp ensuring reconnect");
+    _log.v("LSP - has selected lsp ensuring reconnect");
     var acc = await _breezLib.getAccount();
     if (acc.connectedPeers.contains(lsp.pubKey)) {
-      log.info("LSP - already contains lsp peer, no need for reconnect");
+      _log.v("LSP - already contains lsp peer, no need for reconnect");
       return;
     }
-    log.info("LSP - do reconnect to lsp peer");
+    _log.v("LSP - do reconnect to lsp peer");
     await _breezLib.connectToLSPPeer(lsp.lspID);
-    log.info("LSP - reconnected success");
+    _log.v("LSP - reconnected success");
   }
 
   void close() async {

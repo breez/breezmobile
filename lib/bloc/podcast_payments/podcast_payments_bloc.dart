@@ -11,13 +11,15 @@ import 'package:breez/bloc/podcast_payments/actions.dart';
 import 'package:breez/bloc/podcast_payments/model.dart';
 import 'package:breez/bloc/user_profile/breez_user_model.dart';
 import 'package:breez/bloc/user_profile/user_profile_bloc.dart';
-import 'package:breez/logger.dart';
 import 'package:breez/services/breezlib/breez_bridge.dart';
 import 'package:breez/services/injector.dart';
+import 'package:fimber/fimber.dart';
 import 'package:fixnum/fixnum.dart';
-import '../podcast_history/sqflite/podcast_history_database.dart';
-import '../podcast_history/sqflite/podcast_history_local_model.dart';
+import 'package:breez/bloc/podcast_history/sqflite/podcast_history_database.dart';
+import 'package:breez/bloc/podcast_history/sqflite/podcast_history_local_model.dart';
 import 'aggregated_payments.dart';
+
+final _log = FimberLog("PodcastPaymentsBloc");
 
 const maxFeePart = 0.2;
 const updatePodcastHistoryFrequencyInSeconds = 5;
@@ -133,7 +135,7 @@ class PodcastPaymentsBloc with AsyncActionsHandler {
           " time = " +
           _listeningTime[currentPlayedEpisode.contentUrl].floor().toString());
       if (nextPaidMinutes > paidMinutes) {
-        log.info("paying recipients " + nextPaidMinutes.toString());
+        _log.v("paying recipients $nextPaidMinutes");
         final value = await _getLightningPaymentValue(currentPlayedEpisode);
         if (value != null) {
           _payRecipients(currentPlayedEpisode, value.recipients,
@@ -182,7 +184,7 @@ class PodcastPaymentsBloc with AsyncActionsHandler {
       try {
         breezReceiverNode = await _breezLib.receiverNode();
       } catch (err) {
-        log.severe("failed to fetch receiver node: ", err);
+        _log.e("failed to fetch receiver node: ", ex: err);
       }
     }
     double totalSplits =
@@ -213,8 +215,7 @@ class PodcastPaymentsBloc with AsyncActionsHandler {
 
     // in case not boost we want to ensure any minutes is not paid more than one time.
     if (!boost && paidPositions[paidPositionKey] == true) {
-      log.info(
-          "skipping paying minute $minuteToPay for episode ${episode.title}");
+      _log.v("skipping paying minute $minuteToPay for episode ${episode.title}");
       return;
     }
     paidPositions[paidPositionKey] = true;
@@ -231,10 +232,9 @@ class PodcastPaymentsBloc with AsyncActionsHandler {
       final netPay = payPart - lastFee.toInt();
       final maxFee = Int64((netPay * 1000 * maxFeePart).toInt());
 
-      log.info(
-          "starting recipient payment boost=$boost netPay=$netPay from total: $total with fee: $maxFee split=${d.split} lastFee = $lastFee");
+      _log.v("starting recipient payment boost=$boost netPay=$netPay from total: $total with fee: $maxFee split=${d.split} lastFee = $lastFee");
       if (netPay > 0 && amount <= total && maxFee > 0) {
-        log.info("trying to pay $netPay to destination ${d.address}");
+        _log.v("trying to pay $netPay to destination ${d.address}");
         if (!boost) {
           await _aggregatedPayments.addAmount(d.address, -payPart.toDouble());
         }
@@ -259,11 +259,10 @@ class PodcastPaymentsBloc with AsyncActionsHandler {
               await _aggregatedPayments.addAmount(
                   d.address, payPart.toDouble());
             }
-            log.info(
-                "failed to pay $netPay to destination ${d.address}, error=${payResponse.paymentError} trying next time...");
+            _log.v("failed to pay $netPay to destination ${d.address}, error=${payResponse.paymentError} trying next time...");
             return;
           }
-          log.info("succesfully paid $netPay to destination ${d.address}");
+          _log.v("succesfully paid $netPay to destination ${d.address}");
           netPaySplitSum = netPaySplitSum + netPay;
 
           if (!boost) {
@@ -274,8 +273,7 @@ class PodcastPaymentsBloc with AsyncActionsHandler {
           if (!boost) {
             await _aggregatedPayments.addAmount(d.address, payPart.toDouble());
           }
-          log.info(
-              "failed to pay $netPay to destination ${d.address}, error=$err trying next time...");
+          _log.v("failed to pay $netPay to destination ${d.address}, error=$err trying next time...");
         });
       }
     });

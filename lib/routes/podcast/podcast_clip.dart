@@ -7,17 +7,19 @@ import 'package:auto_size_text/auto_size_text.dart';
 import 'package:breez/bloc/blocs_provider.dart';
 import 'package:breez/bloc/podcast_clip/podcast_clip_bloc.dart';
 import 'package:breez/bloc/podcast_clip/podcast_clip_details_model.dart';
-import 'package:breez/logger.dart';
 import 'package:breez/theme_data.dart' as breezTheme;
 import 'package:breez/utils/min_font_size.dart';
 import 'package:breez/widgets/flushbar.dart';
 import 'package:breez/widgets/network_image_builder.dart';
 import 'package:breez_translations/breez_translations_locales.dart';
 import 'package:breez_translations/generated/breez_translations.dart';
+import 'package:fimber/fimber.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:provider/provider.dart';
 import 'package:screenshot/screenshot.dart';
+
+final _log = FimberLog("PodcastClip");
 
 class PodcastClipWidget extends StatelessWidget {
   PodcastClipWidget({Key key}) : super(key: key);
@@ -187,7 +189,7 @@ _showClipsBottomSheet(
                                                         clipImage:
                                                             screenShotImage);
                                               } catch (e) {
-                                                log.warning(e);
+                                                _log.w(e.toString(), ex: e);
                                                 showFlushbar(
                                                   context,
                                                   message: BreezTranslations.of(context)

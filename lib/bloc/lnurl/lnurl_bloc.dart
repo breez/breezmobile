@@ -4,14 +4,16 @@ import 'package:breez/bloc/async_actions_handler.dart';
 import 'package:breez/bloc/lnurl/lnurl_actions.dart';
 import 'package:breez/bloc/lnurl/lnurl_model.dart';
 import 'package:breez/bloc/lnurl/nfc_withdraw_invoice_status.dart';
-import 'package:breez/logger.dart';
 import 'package:breez/services/breezlib/breez_bridge.dart';
 import 'package:breez/services/breezlib/data/rpc.pbserver.dart';
 import 'package:breez/services/injector.dart';
 import 'package:breez/utils/lnurl.dart';
 import 'package:breez/utils/retry.dart';
 import 'package:breez_translations/breez_translations_locales.dart';
+import 'package:fimber/fimber.dart';
 import 'package:rxdart/rxdart.dart';
+
+final _log = FimberLog("LNUrlBloc");
 
 enum fetchLNUrlState { started, completed }
 
@@ -47,7 +49,7 @@ class LNUrlBloc with AsyncActionsHandler {
   }
 
   listenLNUrl() {
-    log.info('listenLNUrl');
+    _log.v('listenLNUrl');
     if (_lnUrlStreamController == null) {
       _lnUrlStreamController = StreamController.broadcast();
       final injector = ServiceInjector();
@@ -162,19 +164,19 @@ class LNUrlBloc with AsyncActionsHandler {
   ) async {
     if (response.minAmount > action.amount ||
         response.maxAmount < action.amount) {
-      log.info("NFC Payment Request rangeError, requested ${action.amount} but the range is ${response.minAmount} - ${response.maxAmount}");
+      _log.v("NFC Payment Request rangeError, requested ${action.amount} but the range is ${response.minAmount} - ${response.maxAmount}");
       _nfcWithdrawController.add(NfcWithdrawInvoiceStatus.rangeError(
         response.minAmount,
         response.maxAmount,
       ));
     } else {
-      log.info("Starting NFC Sale");
+      _log.v("Starting NFC Sale");
       _nfcWithdrawController.add(NfcWithdrawInvoiceStatus.started());
       try {
         await _breezLib.withdrawLNUrl(action.paymentRequest.rawPayReq);
         _nfcWithdrawController.add(NfcWithdrawInvoiceStatus.completed());
       } catch (error) {
-        log.info("NFC Payment Request error: $error");
+        _log.v("NFC Payment Request error: $error");
         _nfcWithdrawController.add(NfcWithdrawInvoiceStatus.error(error));
       }
     }

@@ -1,8 +1,10 @@
 import 'dart:async';
 
-import 'package:breez/logger.dart';
+import 'package:fimber/fimber.dart';
 import 'package:firebase_dynamic_links/firebase_dynamic_links.dart';
 import 'package:rxdart/rxdart.dart';
+
+final _log = FimberLog("DeepLinksService");
 
 class DeepLinksService {
   static const SESSION_SECRET = "sessionSecret";
@@ -29,7 +31,7 @@ class DeepLinksService {
     var data = await FirebaseDynamicLinks.instance.getInitialLink();
     publishLink(data);
     _dynamicLinks.onLink.listen(publishLink).onError((error) {
-      log.severe("Failed to fetch dynamic link " + error.toString());
+      _log.w("Failed to fetch dynamic link " + error.toString(), ex: error);
     });
   }
 

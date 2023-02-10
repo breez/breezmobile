@@ -7,7 +7,6 @@ import 'package:breez/bloc/connect_pay/encryption.dart';
 import 'package:breez/bloc/connect_pay/firebase_session_channel.dart';
 import 'package:breez/bloc/connect_pay/online_status_updater.dart';
 import 'package:breez/bloc/user_profile/breez_user_model.dart';
-import 'package:breez/logger.dart';
 import 'package:breez/services/background_task.dart';
 import 'package:breez/services/breez_server/server.dart';
 import 'package:breez/services/breezlib/breez_bridge.dart';
@@ -15,8 +14,11 @@ import 'package:breez/services/breezlib/data/rpc.pb.dart';
 import 'package:breez/services/deep_links.dart';
 import 'package:breez/services/injector.dart';
 import 'package:breez_translations/breez_translations_locales.dart';
+import 'package:fimber/fimber.dart';
 import 'package:fixnum/fixnum.dart';
 import 'package:rxdart/rxdart.dart';
+
+final _log = FimberLog("PaymentRemoteSession");
 
 /*
 A concrete implementation of RemoteSession from the payee side.
@@ -106,7 +108,7 @@ class PayeeRemoteSession extends RemoteSession with OnlineStatusUpdater {
           .then((payReq) => _sendPaymentRequest(payReq.paymentRequest))
           .then((_) {
         _backgroundService.runAsTask(_sessionCompleter.future, () {
-          log.info("payee session background task finished");
+          _log.v("payee session background task finished");
         });
       });
     }).catchError(_onInvoiceError);

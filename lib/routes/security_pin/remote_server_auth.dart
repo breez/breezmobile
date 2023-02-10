@@ -1,4 +1,3 @@
-import 'dart:convert';
 import 'dart:io';
 
 import 'package:breez/bloc/tor/bloc.dart';
@@ -12,12 +11,12 @@ import 'package:breez/widgets/error_dialog.dart';
 import 'package:breez/widgets/loader.dart';
 import 'package:breez/widgets/route.dart';
 import 'package:breez/widgets/single_button_bottom_bar.dart';
-import 'package:breez/logger.dart';
-import 'package:dio/dio.dart';
+import 'package:fimber/fimber.dart';
 import 'package:flutter/material.dart';
 import 'package:breez_translations/breez_translations_locales.dart';
 import 'package:validators/validators.dart';
-import 'package:webdav_client/webdav_client.dart' as webdav;
+
+final _log = FimberLog("RemoteServerAuth");
 
 Future<RemoteServerAuthData> promptAuthData(
   BuildContext context, {
@@ -376,12 +375,12 @@ class RemoteServerAuthPageState extends State<RemoteServerAuthPage> {
   }
 
   Future<DiscoverResult> testAuthData(RemoteServerAuthData authData) async {
-    log.info('remote_server_auth.dart: testAuthData');
+    _log.v('remote_server_auth.dart: testAuthData');
     try {
       await widget._backupBloc
           .testAuth(BackupSettings.remoteServerBackupProvider(), authData);
     } on SignInFailedException catch (e) {
-      log.warning('remote_server_auth.dart: testAuthData: $e');
+      _log.w('remote_server_auth.dart: testAuthData: $e', ex: e);
       return DiscoverResult.INVALID_AUTH;
     } on RemoteServerNotFoundException catch (e) {
       return DiscoverResult.INVALID_URL;

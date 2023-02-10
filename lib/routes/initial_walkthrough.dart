@@ -9,7 +9,9 @@ import 'package:breez/bloc/backup/backup_model.dart';
 import 'package:breez/bloc/pos_catalog/bloc.dart';
 import 'package:breez/bloc/user_profile/user_actions.dart';
 import 'package:breez/bloc/user_profile/user_profile_bloc.dart';
-import 'package:breez/logger.dart';
+import 'package:breez/routes/beta_warning_dialog.dart';
+import 'package:breez/routes/security_pin/backup_phrase/enter_backup_phrase_page.dart';
+import 'package:breez/routes/security_pin/restore_pin.dart';
 import 'package:breez/theme_data.dart' as theme;
 import 'package:breez/theme_data.dart';
 import 'package:breez/widgets/backup_provider_selection_dialog.dart';
@@ -20,13 +22,12 @@ import 'package:breez/widgets/restore_dialog.dart';
 import 'package:breez/widgets/route.dart';
 import 'package:breez_translations/breez_translations_locales.dart';
 import 'package:crypto/crypto.dart';
+import 'package:fimber/fimber.dart';
 import 'package:flutter/material.dart';
 import 'package:hex/hex.dart';
 import 'package:rxdart/rxdart.dart';
 
-import 'beta_warning_dialog.dart';
-import 'security_pin/backup_phrase/enter_backup_phrase_page.dart';
-import 'security_pin/restore_pin.dart';
+final _log = FimberLog("InitialWalkthroughPage");
 
 class _BackupContext {
   final BackupSettings settings;
@@ -141,8 +142,7 @@ class InitialWalkthroughPageState extends State<InitialWalkthroughPage>
     if (toRestore != null) {
       if (toRestore.encrypted) {
         if (toRestore.encryptionType.startsWith("Mnemonics")) {
-          log.info(
-              'initial_walkthrough.dart: restoring backup with mnemonic of type "${toRestore.encryptionType}"');
+          _log.v('initial_walkthrough.dart: restoring backup with mnemonic of type "${toRestore.encryptionType}"');
 
           restoreUsingPhrase(
             toRestore.encryptionType == "Mnemonics",
@@ -180,8 +180,8 @@ class InitialWalkthroughPageState extends State<InitialWalkthroughPage>
 
   void _restore(SnapshotInfo snapshot, List<int> key) {
     final logKey = "initial_walkthrough.dart.restore";
-    log.info('$logKey: snapshotInfo with timestamp: ${snapshot?.modifiedTime}');
-    log.info('$logKey: using key with length: ${key?.length}');
+    _log.v('$logKey: snapshotInfo with timestamp: ${snapshot?.modifiedTime}');
+    _log.v('$logKey: using key with length: ${key?.length}');
 
     final texts = context.texts();
     widget._backupBloc.restoreRequestSink.add(RestoreRequest(

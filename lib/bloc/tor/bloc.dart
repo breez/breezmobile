@@ -1,26 +1,24 @@
 import 'dart:async';
 
+import 'package:fimber/fimber.dart';
 import 'package:flutter/services.dart';
-
-import 'package:breez/logger.dart';
 import 'package:breez/services/breezlib/data/rpc.pb.dart';
+
+final _log = FimberLog("TorBloc");
 
 class TorBloc {
   static const platform = MethodChannel('com.breez.client/tor');
   TorConfig torConfig;
-  bool _torHasStarted = false;
-  // backgroundService?
 
   Future<TorConfig> startTor() async {
-    log.info('TorBloc.startTor');
+    _log.v("TorBloc.startTor");
     try {
       final response = await platform.invokeMethod('startTorService');
       assert(response.isNotEmpty);
-      log.info('TorBloc.startTor: startTorService returned!');
+      _log.v("TorBloc.startTor: startTorService returned!");
 
       if (response.isNotEmpty) {
-        _torHasStarted = true;
-        log.info('TorBloc.startTor: received response: ${response}');
+        _log.v("TorBloc.startTor: received response: $response");
 
         torConfig = TorConfig();
 
@@ -28,25 +26,24 @@ class TorBloc {
         var port = Uri.parse(url).port;
         assert(port > 0);
         torConfig.control = "$port";
-        log.info('torBloc.startTor: torConfig.control: ${torConfig.control}');
+        _log.v("torBloc.startTor: torConfig.control: ${torConfig.control}");
 
         url = "socks://${response['SOCKS']}".replaceAll('"', '');
         port = Uri.parse(url).port;
         assert(port > 0);
         torConfig.socks = "$port";
-        log.info('torBloc.startTor: torConfig.socks: ${torConfig.socks}');
+        _log.v("torBloc.startTor: torConfig.socks: ${torConfig.socks}");
 
         url = "http://${response['HTTP']}".replaceAll('"', '');
         port = Uri.parse(url).port;
         assert(port > 0);
         torConfig.http = "$port";
-        log.info('torBloc.startTor: torConfig.http: ${torConfig.http}');
+        _log.v("torBloc.startTor: torConfig.http: ${torConfig.http}");
 
-        log.info(
-            'TorBloc.startTor: tor has started with config : ${torConfig}');
+        _log.v("TorBloc.startTor: tor has started with config : $torConfig");
       }
     } on PlatformException catch (e) {
-      log.info('TorBloc.startTor failed: $e');
+      _log.e("TorBloc.startTor failed: $e", ex: e);
     }
 
     return torConfig;
