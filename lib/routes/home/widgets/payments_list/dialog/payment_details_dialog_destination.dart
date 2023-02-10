@@ -23,14 +23,14 @@ class PaymentDetailsDialogDestination extends StatelessWidget {
     final themeData = Theme.of(context);
     return Theme(
       data: themeData.copyWith(
-        dividerColor: themeData.backgroundColor,
+        dividerColor: themeData.colorScheme.background,
       ),
       child: ExpansionTile(
-        iconColor: themeData.primaryTextTheme.button.color,
-        collapsedIconColor: themeData.primaryTextTheme.button.color,
+        iconColor: themeData.primaryTextTheme.labelLarge.color,
+        collapsedIconColor: themeData.primaryTextTheme.labelLarge.color,
         title: AutoSizeText(
           title,
-          style: themeData.primaryTextTheme.headline4,
+          style: themeData.primaryTextTheme.headlineMedium,
           textAlign: TextAlign.left,
           maxLines: 1,
           group: labelAutoSizeGroup,
@@ -45,7 +45,7 @@ class PaymentDetailsDialogDestination extends StatelessWidget {
                   padding: EdgeInsets.only(left: 16.0, right: 16.0),
                   child: AutoSizeText(
                     currency.format(amount),
-                    style: themeData.primaryTextTheme.headline3,
+                    style: themeData.primaryTextTheme.displaySmall,
                     textAlign: TextAlign.right,
                     maxLines: 1,
                     group: valueAutoSizeGroup,

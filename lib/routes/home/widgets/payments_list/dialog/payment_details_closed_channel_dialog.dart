@@ -46,7 +46,7 @@ class PaymentDetailsDialogClosedChannelDialog extends StatelessWidget {
           onPressed: () => Navigator.pop(context),
           child: Text(
             texts.payment_details_dialog_closed_channel_ok,
-            style: themeData.primaryTextTheme.button,
+            style: themeData.primaryTextTheme.labelLarge,
           ),
         ),
       ],

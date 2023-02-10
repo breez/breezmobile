@@ -36,7 +36,7 @@ class PaymentDetailsDialogDate extends StatelessWidget {
             padding: const EdgeInsets.only(right: 8.0),
             child: AutoSizeText(
               texts.payment_details_dialog_date_and_time,
-              style: themeData.primaryTextTheme.headline4,
+              style: themeData.primaryTextTheme.headlineMedium,
               textAlign: TextAlign.left,
               maxLines: 1,
               group: labelAutoSizeGroup,
@@ -53,7 +53,7 @@ class PaymentDetailsDialogDate extends StatelessWidget {
                     time * 1000,
                   ),
                 ),
-                style: themeData.primaryTextTheme.headline3,
+                style: themeData.primaryTextTheme.displaySmall,
                 textAlign: TextAlign.right,
                 maxLines: 1,
                 group: valueAutoSizeGroup,

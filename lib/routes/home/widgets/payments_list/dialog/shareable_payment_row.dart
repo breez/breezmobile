@@ -29,14 +29,14 @@ class ShareablePaymentRow extends StatelessWidget {
 
     return Theme(
       data: themeData.copyWith(
-        dividerColor: themeData.backgroundColor,
+        dividerColor: themeData.colorScheme.background,
       ),
       child: ExpansionTile(
-        iconColor: themeData.primaryTextTheme.button.color,
-        collapsedIconColor: themeData.primaryTextTheme.button.color,
+        iconColor: themeData.primaryTextTheme.labelLarge.color,
+        collapsedIconColor: themeData.primaryTextTheme.labelLarge.color,
         title: AutoSizeText(
           title,
-          style: themeData.primaryTextTheme.headline4,
+          style: themeData.primaryTextTheme.headlineMedium,
           maxLines: 1,
           group: labelAutoSizeGroup,
         ),
@@ -58,7 +58,7 @@ class ShareablePaymentRow extends StatelessWidget {
                       textAlign: TextAlign.left,
                       overflow: TextOverflow.clip,
                       maxLines: 4,
-                      style: themeData.primaryTextTheme.headline3
+                      style: themeData.primaryTextTheme.displaySmall
                           .copyWith(fontSize: 10),
                     ),
                   ),
@@ -78,7 +78,7 @@ class ShareablePaymentRow extends StatelessWidget {
                         tooltip:
                             texts.payment_details_dialog_copy_action(title),
                         iconSize: 16.0,
-                        color: themeData.primaryTextTheme.button.color,
+                        color: themeData.primaryTextTheme.labelLarge.color,
                         icon: Icon(
                           IconData(0xe90b, fontFamily: 'icomoon'),
                         ),
@@ -98,7 +98,7 @@ class ShareablePaymentRow extends StatelessWidget {
                         padding: EdgeInsets.only(right: 8.0),
                         tooltip: texts.payment_details_dialog_share_transaction,
                         iconSize: 16.0,
-                        color: themeData.primaryTextTheme.button.color,
+                        color: themeData.primaryTextTheme.labelLarge.color,
                         icon: Icon(Icons.share),
                         onPressed: () => Share.share(sharedValue),
                       ),
