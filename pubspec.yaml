@@ -22,23 +22,23 @@ dependencies:
       url: https://github.com/ademar111190/clipboard_watcher
       ref: f12cdc89d1aba43e36f4af21c54efb10413095bd
   confetti: ^0.7.0
-  connectivity_plus: ^3.0.2
+  connectivity_plus: ^3.0.3
   crypto: ^3.0.2
   csv: ^5.0.1
   dio: ^4.0.6
   drag_and_drop_lists: ^0.3.3
   duration: ^3.0.12
   email_validator: ^2.1.17
-  extended_image: ^7.0.0
+  extended_image: ^7.0.1
   ffmpeg_kit_flutter_https_gpl: ^5.1.0
   file_picker: ^5.2.5
-  firebase_core: ^2.4.1
+  firebase_core: ^2.5.0
   # Version 4.5.2 breaks, it is necessary to update firebase as a whole
-  firebase_core_platform_interface: ^4.5.2
-  firebase_database: ^10.0.9
-  firebase_dynamic_links: ^5.0.11
-  firebase_messaging: ^14.2.1
-  flutter_secure_storage: ^7.0.1
+  firebase_core_platform_interface: ^4.5.3
+  firebase_database: ^10.0.10
+  firebase_dynamic_links: ^5.0.12
+  firebase_messaging: ^14.2.2
+  flutter_secure_storage: ^8.0.0
   flutter_svg: ^1.1.6 #
   flutter_web_browser: ^0.17.1
   google_api_availability: ^3.0.1
@@ -54,11 +54,11 @@ dependencies:
   logging: ^1.1.1
   md5_file_checksum: ^1.0.4
   nfc_manager: ^3.2.0
-  package_info_plus: ^3.0.2
+  package_info_plus: ^3.0.3
   path_provider: ^2.0.12
   printing: ^5.9.3 #
   protobuf: ^2.1.0
-  mobile_scanner: ^2.1.0
+  mobile_scanner: ^3.0.0
   # qr_flutter has already fixed the build issue with the qr package but did not publish an updated
   # version, they will publish as 4.0.1 for now they recommend to use the master but instead of that
   # we are using an specific commit to avoid unexpected behaviour in future builds.
@@ -68,7 +68,7 @@ dependencies:
       ref: 1fc6e38c198a76a6fd60b7bd3b4c190cd6c9330b
   rxdart: ^0.27.7
   screenshot: ^1.3.0
-  share_plus: ^6.3.0
+  share_plus: ^6.3.1
   shared_preferences: ^2.0.17
   shimmer: ^2.0.0
   simple_animations: ^5.0.0+3

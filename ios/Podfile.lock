@@ -70,18 +70,18 @@ PODS:
   - Firebase/Messaging (10.3.0):
     - Firebase/CoreOnly
     - FirebaseMessaging (~> 10.3.0)
-  - firebase_core (2.4.1):
+  - firebase_core (2.5.0):
     - Firebase/CoreOnly (= 10.3.0)
     - Flutter
-  - firebase_database (10.0.9):
+  - firebase_database (10.0.10):
     - Firebase/Database (= 10.3.0)
     - firebase_core
     - Flutter
-  - firebase_dynamic_links (5.0.11):
+  - firebase_dynamic_links (5.0.12):
     - Firebase/DynamicLinks (= 10.3.0)
     - firebase_core
     - Flutter
-  - firebase_messaging (14.2.1):
+  - firebase_messaging (14.2.2):
     - Firebase/Messaging (= 10.3.0)
     - firebase_core
     - Flutter
@@ -202,7 +202,7 @@ PODS:
     - MLImage (= 1.0.0-beta3)
     - MLKitCommon (~> 8.0)
     - Protobuf (~> 3.12)
-  - mobile_scanner (0.0.1):
+  - mobile_scanner (3.0.0):
     - Flutter
     - GoogleMLKit/BarcodeScanning (~> 3.2.0)
   - nanopb (2.30909.0):
@@ -409,10 +409,10 @@ SPEC CHECKSUMS:
   ffmpeg_kit_flutter_https_gpl: 6434a09be0b21b6ee399e855935684f5e81cb5b7
   file_picker: ce3938a0df3cc1ef404671531facef740d03f920
   Firebase: f92fc551ead69c94168d36c2b26188263860acd9
-  firebase_core: bf59c32d2e53814f558efa20840c1902fa2fe461
-  firebase_database: 64eb24851aa709a26fb33fccd1b422658e307c76
-  firebase_dynamic_links: e5ca49679928f5d46e2db5168656975eae39d379
-  firebase_messaging: ee597229fc260f8fa491fa8f2d4a32dfbfa406fa
+  firebase_core: f95c8bbe65213d406d592573ad42a12d64849cb8
+  firebase_database: dd5a3c1373d208971d314fc462ad7bd5f5fb9073
+  firebase_dynamic_links: e54ad1b1b2e5eb156d3a9df7373b68feef7293b3
+  firebase_messaging: 3daef9f9ee5b91de2f282895ec91cc5e5ca78556
   FirebaseCore: 988754646ab3bd4bdcb740f1bfe26b9f6c0d5f2a
   FirebaseCoreInternal: e463f41bb935cd049505bf7e9a5bdd7dcea90df6
   FirebaseDatabase: d0732ba8aece0eccfa0cfb3ef540e7ba6fa1c6a6
@@ -443,7 +443,7 @@ SPEC CHECKSUMS:
   MLKitBarcodeScanning: d92fe1911001ec36870162c5a0eb206f612b7169
   MLKitCommon: f6da6c5659618c070b50a80db01248ebe2964175
   MLKitVision: 96c96571190b7f63eddf4a12068ce8a8689e0d2c
-  mobile_scanner: 0cf06f3d5224576aa24ade02a6f73d8b2551c7bf
+  mobile_scanner: 004f7ad2fe4e2b5a3e6ed0bc4b83ca9c5b5dd975
   nanopb: b552cce312b6c8484180ef47159bc0f65a1f0431
   nfc_in_flutter: c656fbfb1ec5b9d021da87b0c87629d62fd5264d
   nfc_manager: d7da7cb781f7744b94df5fe9dbca904ac4a0939e
