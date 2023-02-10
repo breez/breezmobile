@@ -105,13 +105,19 @@ class _PlayerTransportControlsState extends State<PlayerTransportControls>
                       ),
                       iconOn: SvgPicture.asset(
                         'assets/icons/sleep_on.svg',
-                        color: theme.buttonTheme.colorScheme.onPrimary,
+                        colorFilter: ColorFilter.mode(
+                          theme.buttonTheme.colorScheme.onPrimary,
+                          BlendMode.srcATop,
+                        ),
                         height: 24.0,
                         width: 24.0,
                       ),
                       iconOff: SvgPicture.asset(
                         'assets/icons/sleep_off.svg',
-                        color: theme.buttonTheme.colorScheme.onPrimary,
+                        colorFilter: ColorFilter.mode(
+                          theme.buttonTheme.colorScheme.onPrimary,
+                          BlendMode.srcATop,
+                        ),
                         height: 24.0,
                         width: 24.0,
                       ),
@@ -127,10 +133,15 @@ class _PlayerTransportControlsState extends State<PlayerTransportControls>
                   },
                   tooltip: L.of(context).rewind_button_label,
                   padding: const EdgeInsets.all(0.0),
-                  icon: SvgPicture.asset("src/icon/ic_backward.svg",
-                      width: 48.0,
-                      height: 48.0,
-                      color: theme.buttonTheme.colorScheme.onPrimary),
+                  icon: SvgPicture.asset(
+                    "src/icon/ic_backward.svg",
+                    width: 48.0,
+                    height: 48.0,
+                    colorFilter: ColorFilter.mode(
+                      theme.buttonTheme.colorScheme.onPrimary,
+                      BlendMode.srcATop,
+                    ),
+                  ),
                 ),
                 Expanded(flex: 1, child: Container()),
                 _PlayButton(
@@ -151,7 +162,10 @@ class _PlayerTransportControlsState extends State<PlayerTransportControls>
                     "src/icon/ic_forward.svg",
                     width: 48.0,
                     height: 48.0,
-                    color: theme.buttonTheme.colorScheme.onPrimary,
+                    colorFilter: ColorFilter.mode(
+                      theme.buttonTheme.colorScheme.onPrimary,
+                      BlendMode.srcATop,
+                    ),
                   ),
                 ),
                 Expanded(flex: 1, child: Container()),

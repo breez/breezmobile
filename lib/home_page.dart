@@ -281,8 +281,10 @@ class HomeState extends State<Home> with WidgetsBindingObserver {
                 "src/images/logo-color.svg",
                 height: 23.5,
                 width: 62.7,
-                color: themeData.appBarTheme.actionsIconTheme.color,
-                colorBlendMode: BlendMode.srcATop,
+                colorFilter: ColorFilter.mode(
+                  themeData.appBarTheme.actionsIconTheme.color,
+                  BlendMode.srcATop,
+                ),
               ),
               iconSize: 64,
               onPressed: () async {

@@ -39,24 +39,24 @@ dependencies:
   firebase_dynamic_links: ^5.0.12
   firebase_messaging: ^14.2.2
   flutter_secure_storage: ^8.0.0
-  flutter_svg: ^1.1.6 #
+  flutter_svg: ^2.0.0+1
   flutter_web_browser: ^0.17.1
   google_api_availability: ^3.0.1
   grpc: ^3.1.0
   hex: ^0.2.0
-  image: ^3.3.0 #
+  image: ^3.3.0 # anytime>flutter_launcher_icons depends on image ^3.0.2
   image_cropper: ^3.0.1
   image_picker: ^0.8.6+1
   ini: ^2.1.0
   intl: ^0.18.0
   json_annotation: ^4.8.0
-  local_auth: <2.0.0 #
+  local_auth: <2.0.0 # Can't differentiate between biometric types on local auth 2.0.0+
   logging: ^1.1.1
   md5_file_checksum: ^1.0.4
   nfc_manager: ^3.2.0
   package_info_plus: ^3.0.3
   path_provider: ^2.0.12
-  printing: ^5.9.3 #
+  printing: ^5.9.3 # printing >=5.10.0 depends on image ^4.0.02
   protobuf: ^2.1.0
   mobile_scanner: ^3.0.0
   # qr_flutter has already fixed the build issue with the qr package but did not publish an updated
@@ -85,7 +85,7 @@ dependencies:
   anytime:
     git:
       url: https://github.com/breez/anytime_podcast_player.git
-      ref: 246d35b508d84af5540b814f8b300d153b25ad4f
+      ref: 78aacfdf2503177b575833a306c4d1144ebe0877
   flutter_typeahead:
     git:
       url: https://github.com/breez/flutter_typeahead.git

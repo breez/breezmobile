@@ -190,7 +190,8 @@ _showClipsBottomSheet(
                                                 log.warning(e);
                                                 showFlushbar(
                                                   context,
-                                                  message: BreezTranslations.of(context)
+                                                  message: BreezTranslations.of(
+                                                          context)
                                                       .podcast_clips_error,
                                                 );
                                               }
@@ -221,9 +222,8 @@ _showClipsBottomSheet(
                   : CircularProgressIndicator();
             });
       }).then((value) {
-        podcastClipBloc.setClipSharingStatus(status: false);
+    podcastClipBloc.setClipSharingStatus(status: false);
     _play(audioBloc);
-    
   });
 }
 
@@ -385,9 +385,11 @@ _imageWidget({BuildContext context, Episode episodeDetails, Image image}) {
                     )),
             SvgPicture.asset(
               "src/images/logo-color.svg",
-              color: Colors.white,
+              colorFilter: ColorFilter.mode(
+                Colors.white,
+                BlendMode.srcATop,
+              ),
               width: (MediaQuery.of(context).size.width) / 10,
-              colorBlendMode: BlendMode.srcATop,
             ),
           ],
         ),

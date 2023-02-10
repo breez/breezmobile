@@ -132,8 +132,15 @@ class PaymentsFilterState extends State<PaymentsFilter> {
   void initState() {
     super.initState();
     final today = DateTime.now();
-    formattedStartDate = DateTime(widget._paymentsModel.firstDate.year, widget._paymentsModel.firstDate.month, widget._paymentsModel.firstDate.day, 0, 0, 0);
-    formattedEndDate = DateTime(today.year, today.month, today.day, 23, 59, 59, 999);
+    formattedStartDate = DateTime(
+        widget._paymentsModel.firstDate.year,
+        widget._paymentsModel.firstDate.month,
+        widget._paymentsModel.firstDate.day,
+        0,
+        0,
+        0);
+    formattedEndDate =
+        DateTime(today.year, today.month, today.day, 23, 59, 59, 999);
   }
 
   @override
@@ -181,7 +188,10 @@ class PaymentsFilterState extends State<PaymentsFilter> {
       child: IconButton(
         icon: SvgPicture.asset(
           "src/icon/calendar.svg",
-          color: themeData.paymentItemTitleTextStyle.color,
+          colorFilter: ColorFilter.mode(
+            themeData.paymentItemTitleTextStyle.color,
+            BlendMode.srcATop,
+          ),
           width: 24.0,
           height: 24.0,
         ),
@@ -193,14 +203,15 @@ class PaymentsFilterState extends State<PaymentsFilter> {
               ).then((result) {
                 bool hasStartDateChanged = result[0] != formattedStartDate;
                 bool hasEndDateChanged = result[1] != formattedEndDate;
-                bool hasDateFilterChanged = hasStartDateChanged || hasEndDateChanged;
+                bool hasDateFilterChanged =
+                    hasStartDateChanged || hasEndDateChanged;
 
                 if (hasDateFilterChanged) {
                   widget._accountBloc.paymentFilterSink.add(
                     widget._paymentsModel.filter.copyWith(
-                        filter: _getFilterType(_filter),
-                        startDate: result[0],
-                        endDate: result[1],
+                      filter: _getFilterType(_filter),
+                      startDate: result[0],
+                      endDate: result[1],
                     ),
                   );
                 }

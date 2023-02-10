@@ -280,7 +280,10 @@ class SaleViewState extends State<SaleView> {
               color: themeData.iconTheme.color,
               icon: SvgPicture.asset(
                 "src/icon/printer.svg",
-                color: Colors.white,
+                colorFilter: ColorFilter.mode(
+                  Colors.white,
+                  BlendMode.srcATop,
+                ),
                 fit: BoxFit.contain,
                 width: 24.0,
                 height: 24.0,
@@ -352,9 +355,12 @@ class _TotalSaleCharge extends StatelessWidget {
 
     final satCurrency = CurrencyWrapper.fromBTC(Currency.SAT);
     final satMessage = (satCurrency.format(
-      totalAmountInSats,
-      removeTrailingZeros: true,
-    ) + " " + satCurrency.shortName).toUpperCase();
+              totalAmountInSats,
+              removeTrailingZeros: true,
+            ) +
+            " " +
+            satCurrency.shortName)
+        .toUpperCase();
 
     if (totalAmountInFiat.length == 1) {
       final currency = totalAmountInFiat.entries.first.key;
@@ -364,11 +370,13 @@ class _TotalSaleCharge extends StatelessWidget {
           currency,
           accountModel,
         );
-        final fiatValue = saleCurrency.format(
-          total,
-          removeTrailingZeros: true,
-          includeCurrencySymbol: true,
-        ).toUpperCase();
+        final fiatValue = saleCurrency
+            .format(
+              total,
+              removeTrailingZeros: true,
+              includeCurrencySymbol: true,
+            )
+            .toUpperCase();
         return readOnly
             ? texts.sale_view_total_title_read_only_fiat(satMessage, fiatValue)
             : texts.sale_view_total_title_charge_fiat(satMessage, fiatValue);

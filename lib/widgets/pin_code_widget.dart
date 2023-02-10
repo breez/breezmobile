@@ -139,8 +139,10 @@ class PinCodeWidgetState extends State<PinCodeWidget>
     return SvgPicture.asset(
       "src/images/logo-color.svg",
       width: (MediaQuery.of(context).size.width) / 3,
-      color: Colors.white,
-      colorBlendMode: BlendMode.srcATop,
+      colorFilter: ColorFilter.mode(
+        Colors.white,
+        BlendMode.srcATop,
+      ),
     );
   }
 
@@ -181,11 +183,17 @@ class PinCodeWidgetState extends State<PinCodeWidget>
     return _errorMessage.isNotEmpty
         ? Text(
             _errorMessage,
-            style: Theme.of(context).textTheme.headlineMedium.copyWith(fontSize: 12),
+            style: Theme.of(context)
+                .textTheme
+                .headlineMedium
+                .copyWith(fontSize: 12),
           )
         : Text(
             "",
-            style: Theme.of(context).textTheme.headlineMedium.copyWith(fontSize: 12),
+            style: Theme.of(context)
+                .textTheme
+                .headlineMedium
+                .copyWith(fontSize: 12),
           );
   }
 

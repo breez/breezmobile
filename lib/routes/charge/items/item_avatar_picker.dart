@@ -219,7 +219,13 @@ class ItemAvatarPickerState extends State<ItemAvatarPicker> {
 
   Widget _icon(ProductIcon icon) {
     return IconButton(
-      icon: SvgPicture.asset(icon.assetPath, color: Colors.white),
+      icon: SvgPicture.asset(
+        icon.assetPath,
+        colorFilter: ColorFilter.mode(
+          Colors.white,
+          BlendMode.srcATop,
+        ),
+      ),
       iconSize: 36,
       onPressed: () => setState(() {
         _selectedImage = "icon:${icon.name}";

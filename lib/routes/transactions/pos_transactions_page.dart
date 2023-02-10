@@ -111,7 +111,10 @@ class PosTransactionsPageState extends State<PosTransactionsPage> {
     return IconButton(
       icon: SvgPicture.asset(
         "src/icon/pos_report.svg",
-        color: themeData.iconTheme.color,
+        colorFilter: ColorFilter.mode(
+          themeData.iconTheme.color,
+          BlendMode.srcATop,
+        ),
         width: 24.0,
         height: 24.0,
       ),
@@ -128,7 +131,10 @@ class PosTransactionsPageState extends State<PosTransactionsPage> {
     return IconButton(
       icon: SvgPicture.asset(
         "src/icon/calendar.svg",
-        color: themeData.iconTheme.color,
+        colorFilter: ColorFilter.mode(
+          themeData.iconTheme.color,
+          BlendMode.srcATop,
+        ),
         width: 24.0,
         height: 24.0,
       ),

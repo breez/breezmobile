@@ -381,7 +381,10 @@ class WarningActionState extends State<WarningAction>
         child: widget.iconWidget ??
             SvgPicture.asset(
               "src/icon/warning.svg",
-              color: themeData.appBarTheme.actionsIconTheme.color,
+              colorFilter: ColorFilter.mode(
+                themeData.appBarTheme.actionsIconTheme.color,
+                BlendMode.srcATop,
+              ),
             ),
       ),
       tooltip: texts.account_required_actions_backup,

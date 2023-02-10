@@ -163,7 +163,14 @@ class AvatarDecorator extends StatelessWidget {
 class AlienAvatar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return AvatarDecorator(SvgPicture.asset("src/icon/alien.svg",
-        color: Color.fromARGB(255, 0, 166, 68)));
+    return AvatarDecorator(
+      SvgPicture.asset(
+        "src/icon/alien.svg",
+        colorFilter: ColorFilter.mode(
+          Color.fromARGB(255, 0, 166, 68),
+          BlendMode.srcATop,
+        ),
+      ),
+    );
   }
 }

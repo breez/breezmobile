@@ -106,9 +106,14 @@ class _IconAvatar extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.center,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: <Widget>[
-          SvgPicture.asset("src/pos-icons/$iconName.svg",
-              color: IconTheme.of(context).color,
-              width: useDecoration ? radius : radius * 1.5)
+          SvgPicture.asset(
+            "src/pos-icons/$iconName.svg",
+            colorFilter: ColorFilter.mode(
+              IconTheme.of(context).color,
+              BlendMode.srcATop,
+            ),
+            width: useDecoration ? radius : radius * 1.5,
+          )
         ],
       ),
     );

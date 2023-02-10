@@ -84,7 +84,10 @@ class PodcastHistoryPageState extends State<PodcastHistoryPage> {
             color: themeData.canvasColor,
             icon: SvgPicture.asset(
               "src/icon/calendar.svg",
-              color: themeData.iconTheme.color,
+              colorFilter: ColorFilter.mode(
+                themeData.iconTheme.color,
+                BlendMode.srcATop,
+              ),
               width: 24.0,
               height: 24.0,
             ),
@@ -130,8 +133,10 @@ class PodcastHistoryPageState extends State<PodcastHistoryPage> {
                                       width:
                                           (MediaQuery.of(context).size.width) /
                                               6,
-                                      color: Colors.white,
-                                      colorBlendMode: BlendMode.srcATop,
+                                      colorFilter: ColorFilter.mode(
+                                        Colors.white,
+                                        BlendMode.srcATop,
+                                      ),
                                     ),
                                     SizedBox(
                                       height: 32,
@@ -493,9 +498,12 @@ class _PodcastStatItem extends StatelessWidget {
             svg,
             height: 16,
             width: 36,
-            color: theme.themeId != "BLUE"
-                ? Colors.white
-                : theme.BreezColors.white[400],
+            colorFilter: ColorFilter.mode(
+              theme.themeId != "BLUE"
+                  ? Colors.white
+                  : theme.BreezColors.white[400],
+              BlendMode.srcATop,
+            ),
           ),
         ),
         SizedBox(

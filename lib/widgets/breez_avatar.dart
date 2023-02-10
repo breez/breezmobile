@@ -62,7 +62,10 @@ class _UnknownAvatar extends StatelessWidget {
         backgroundColor: backgroundColor,
         radius: radius,
         child: SvgPicture.asset("src/icon/alien.svg",
-            color: Color.fromARGB(255, 0, 166, 68),
+            colorFilter: ColorFilter.mode(
+              Color.fromARGB(255, 0, 166, 68),
+              BlendMode.srcATop,
+            ),
             width: 0.70 * radius * 2,
             height: 0.70 *
                 radius *
@@ -143,13 +146,13 @@ class _DataImageAvatar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-      final uri = UriData.parse(this.avatarURL);
-      final _bytes = uri.contentAsBytes();
+    final uri = UriData.parse(this.avatarURL);
+    final _bytes = uri.contentAsBytes();
     return CircleAvatar(
-        backgroundColor: theme.sessionAvatarBackgroundColor,
+      backgroundColor: theme.sessionAvatarBackgroundColor,
       radius: radius,
       child: ClipOval(
-        child: Image.memory(_bytes) ,
+        child: Image.memory(_bytes),
       ),
     );
   }
@@ -222,7 +225,10 @@ class _PosSaleAvatar extends StatelessWidget {
       radius: radius,
       child: SvgPicture.asset(
         "src/icon/pos_sale_avatar.svg",
-        color: theme.BreezColors.blue[500],
+        colorFilter: ColorFilter.mode(
+          theme.BreezColors.blue[500],
+          BlendMode.srcATop,
+        ),
         width: size,
         height: size,
       ),

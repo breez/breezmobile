@@ -209,7 +209,10 @@ class PosReportDialog extends StatelessWidget {
       child: Center(
         child: SvgPicture.asset(
           "src/icon/calendar.svg",
-          color: _highlight(themeData),
+          colorFilter: ColorFilter.mode(
+            _highlight(themeData),
+            BlendMode.srcATop,
+          ),
           width: 24.0,
           height: 24.0,
         ),

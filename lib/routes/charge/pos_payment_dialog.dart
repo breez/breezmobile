@@ -156,9 +156,12 @@ class _PosPaymentDialogState extends State<PosPaymentDialog> {
               padding: EdgeInsets.zero,
               icon: SvgPicture.asset(
                 "src/icon/nfc.svg",
-                color: Platform.isAndroid
-                    ? themeData.dialogTheme.titleTextStyle.color
-                    : themeData.primaryTextTheme.labelLarge.color,
+                colorFilter: ColorFilter.mode(
+                  Platform.isAndroid
+                      ? themeData.dialogTheme.titleTextStyle.color
+                      : themeData.primaryTextTheme.labelLarge.color,
+                  BlendMode.srcATop,
+                ),
               ),
               onPressed: Platform.isAndroid
                   ? null

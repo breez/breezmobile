@@ -37,8 +37,8 @@ packages:
     dependency: "direct main"
     description:
       path: "."
-      ref: "246d35b508d84af5540b814f8b300d153b25ad4f"
-      resolved-ref: "246d35b508d84af5540b814f8b300d153b25ad4f"
+      ref: "78aacfdf2503177b575833a306c4d1144ebe0877"
+      resolved-ref: "78aacfdf2503177b575833a306c4d1144ebe0877"
       url: "https://github.com/breez/anytime_podcast_player.git"
     source: git
     version: "1.2.1+74-breez"
@@ -627,22 +627,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "3.0.0-alpha.6"
-  flutter_html_svg:
-    dependency: transitive
-    description:
-      name: flutter_html_svg
-      sha256: "49f1bdbe2bfcfb684fe21295397cc82a281ab6293e9e9205a04eab5035b8612d"
-      url: "https://pub.dev"
-    source: hosted
-    version: "3.0.0-alpha.4"
-  flutter_html_table:
-    dependency: transitive
-    description:
-      name: flutter_html_table
-      sha256: b01c4867466740e8c177459f241e66ad67d4e7f6a081649ba1f035e925bbefa5
-      url: "https://pub.dev"
-    source: hosted
-    version: "3.0.0-alpha.4"
   flutter_keyboard_visibility:
     dependency: transitive
     description:
@@ -699,14 +683,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "0.11.0"
-  flutter_layout_grid:
-    dependency: transitive
-    description:
-      name: flutter_layout_grid
-      sha256: "86c1b21520612edfbb93f189b3ec05058470570f3a5c08ce10c92cc76a6e814e"
-      url: "https://pub.dev"
-    source: hosted
-    version: "1.0.6"
   flutter_localizations:
     dependency: "direct main"
     description: flutter
@@ -780,10 +756,10 @@ packages:
     dependency: "direct main"
     description:
       name: flutter_svg
-      sha256: "6ff9fa12892ae074092de2fa6a9938fb21dbabfdaa2ff57dc697ff912fc8d4b2"
+      sha256: f999d84ad2efda1c4c3956e7968b713b3a24b06f0a0e4798e844e16bbb9bb70b
       url: "https://pub.dev"
     source: hosted
-    version: "1.1.6"
+    version: "2.0.0+1"
   flutter_test:
     dependency: "direct dev"
     description: flutter
@@ -1220,14 +1196,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.8.3"
-  path_drawing:
-    dependency: transitive
-    description:
-      name: path_drawing
-      sha256: bbb1934c0cbb03091af082a6389ca2080345291ef07a5fa6d6e078ba8682f977
-      url: "https://pub.dev"
-    source: hosted
-    version: "1.0.1"
   path_parsing:
     dependency: transitive
     description:
@@ -1462,14 +1430,6 @@ packages:
       url: "https://github.com/theyakka/qr.flutter.git"
     source: git
     version: "4.0.1"
-  quiver:
-    dependency: transitive
-    description:
-      name: quiver
-      sha256: b1c1ac5ce6688d77f65f3375a9abb9319b3cb32486bdc7a1e0fdf004d7ba4e47
-      url: "https://pub.dev"
-    source: hosted
-    version: "3.2.1"
   rxdart:
     dependency: "direct main"
     description:
@@ -1907,6 +1867,30 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "3.0.0"
+  vector_graphics:
+    dependency: transitive
+    description:
+      name: vector_graphics
+      sha256: "09562ef5f47aa84f6567495adb6b9cb2a3192b82c352623b8bd00b300d62603b"
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.0.1"
+  vector_graphics_codec:
+    dependency: transitive
+    description:
+      name: vector_graphics_codec
+      sha256: "886e57742644ebed024dc3ade29712e37eea1b03d294fb314c0a3386243fe5a6"
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.0.1"
+  vector_graphics_compiler:
+    dependency: transitive
+    description:
+      name: vector_graphics_compiler
+      sha256: "5d9010c4a292766c55395b2288532579a85673f8148460d1e233d98ffe10d24e"
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.0.1"
   vector_math:
     dependency: transitive
     description:
