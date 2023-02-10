@@ -1,59 +1,96 @@
 library breez.logger;
 
-import 'dart:async';
 import 'dart:io';
 
-import 'package:breez/services/breezlib/breez_bridge.dart';
-import 'package:breez/services/injector.dart';
-import 'package:breez_translations/breez_translations_locales.dart';
-import 'package:flutter/cupertino.dart';
-import 'package:logging/logging.dart';
+import 'package:archive/archive_io.dart';
+import 'package:fimber_io/fimber_io.dart';
+import 'package:flutter_fimber/flutter_fimber.dart';
+import 'package:flutter/foundation.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:share_plus/share_plus.dart';
 
-final Logger log = Logger('Breez');
+final _log = FimberLog("logger");
 
-Future<File> get _logFile async {
-  var logPath = await ServiceInjector().breezBridge.getLogPath();
-  return File(logPath);
-}
-
-void shareLog() {
-  _logFile.then((file) {
-    Share.shareFiles(
-      [file.path],
-      text: getSystemAppLocalizations().share_log_text,
-    );
-  });
-}
-
-Future shareFile(String filePath) {
-  return Share.shareFiles(
-    [filePath],
-    text: getSystemAppLocalizations().share_file_title,
-  );
+void shareLog() async {
+  final appDir = await getApplicationDocumentsDirectory();
+  final encoder = ZipFileEncoder();
+  final zipFilePath = "${appDir.path}/breez.logs.zip";
+  encoder.create(zipFilePath);
+  encoder.addDirectory(Directory("${appDir.path}/logs/"));
+  encoder.close();
+  final zipFile = XFile(zipFilePath);
+  Share.shareXFiles([zipFile]);
 }
 
 class BreezLogger {
   BreezLogger() {
-    BreezBridge breezBridge = ServiceInjector().breezBridge;
-    Logger.root.level = Level.ALL;
-    Logger.root.onRecord.listen((LogRecord rec) {
-      breezBridge.log(rec.message, rec.level.name);
-      print(rec.message);
-    });
-    // Log flutter errors
-    FlutterError.onError = (FlutterErrorDetails details) {
-      if (details == null) {
-        print("Ignore log, details is null");
-        return;
+    final logLevels = [
+      "V", // log.v Verbose
+      "D", // log.d Debug
+      "I", // log.i Info
+      "W", // log.w Warning
+      "E", // log.e Error
+    ];
+
+    if (kDebugMode) {
+      Fimber.plantTree(FimberTree(
+        logLevels: logLevels,
+      ));
+    }
+
+    getApplicationDocumentsDirectory().then(
+          (appDir) {
+        _pruneLogs(appDir);
+        final tokens = [
+          CustomFormatTree.timeStampToken,
+          CustomFormatTree.levelToken,
+          CustomFormatTree.tagToken,
+          CustomFormatTree.messageToken,
+          CustomFormatTree.fileNameToken,
+          CustomFormatTree.lineNumberToken,
+          CustomFormatTree.filePathToken,
+          CustomFormatTree.exceptionMsgToken,
+          CustomFormatTree.exceptionStackToken,
+        ];
+        Fimber.plantTree(
+          SizeRollingFileTree(
+            DataSize(megabytes: 10),
+            filenamePrefix: "${appDir.path}/logs/breez.",
+            filenamePostfix: ".log",
+            logLevels: logLevels,
+            logFormat: tokens.fold("", (p, e) => p == "" ? e : "$p :: $e"),
+          ),
+        );
+        FlutterError.onError = (FlutterErrorDetails details) async {
+          FlutterError.presentError(details);
+          final name = details.context?.name ?? "FlutterError";
+          final exception = details.exceptionAsString();
+          _log.e("$exception --$name", ex: details, stacktrace: details.stack);
+        };
+      },
+    );
+  }
+}
+
+void _pruneLogs(Directory appDir) {
+  final loggingFolder = Directory("${appDir.path}/logs/");
+  if (loggingFolder.existsSync()) {
+    // Get and sort log files by modified date
+    List<FileSystemEntity> filesToBePruned = loggingFolder
+        .listSync(followLinks: false)
+        .where((e) => e.path.endsWith('.log'))
+        .toList()
+      ..sort((l, r) => l.statSync().modified.compareTo(r.statSync().modified));
+    // Delete all except last 2 logs
+    if (filesToBePruned.length > 2) {
+      filesToBePruned.removeRange(
+        filesToBePruned.length - 2,
+        filesToBePruned.length,
+      );
+      for (var logFile in filesToBePruned) {
+        logFile.delete();
       }
-      FlutterError.presentError(details);
-      final stack = details.stack?.toString() ?? "NoStack";
-      final name = details.context?.name ?? "FlutterError";
-      final exception = details.exceptionAsString();
-      breezBridge.log(exception + '\n' + stack, name);
-      print(exception + '\n' + stack + " --" + name);
-    };
+    }
   }
 }
 
