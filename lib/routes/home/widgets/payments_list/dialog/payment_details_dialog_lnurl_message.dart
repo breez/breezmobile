@@ -19,21 +19,18 @@ class PaymentDetailsDialogLnurlMessage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final texts = context.texts();
-    final action = paymentInfo.lnurlPayInfo?.successAction;
-    final message = action?.message?.trim();
 
-    if (paymentInfo.type != PaymentType.SENT ||
-        (action.tag != 'message' && action.tag != 'aes') ||
-        message == null ||
-        message.isEmpty) {
-      return Container();
-    }
-
-    return ShareablePaymentRow(
-      title: texts.payment_details_dialog_action_for_payment_message,
-      sharedValue: message,
-      labelAutoSizeGroup: labelAutoSizeGroup,
-      valueAutoSizeGroup: valueAutoSizeGroup,
-    );
+    return (paymentInfo.type == PaymentType.SENT &&
+            paymentInfo.lnurlPayInfo != null &&
+            paymentInfo.lnurlPayInfo.successAction != null &&
+            (paymentInfo.lnurlPayInfo.successAction.tag == "message" ||
+                paymentInfo.lnurlPayInfo.successAction.tag == "aes"))
+        ? ShareablePaymentRow(
+            title: texts.payment_details_dialog_action_for_payment_message,
+            sharedValue: paymentInfo.lnurlPayInfo.successAction.message,
+            labelAutoSizeGroup: labelAutoSizeGroup,
+            valueAutoSizeGroup: valueAutoSizeGroup,
+          )
+        : Container();
   }
 }
