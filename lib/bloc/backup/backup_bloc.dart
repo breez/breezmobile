@@ -534,7 +534,7 @@ class BackupBloc {
       if (error is PlatformException) {
         var e = error;
         // Handle PlatformException(ResultError, "AuthError", Failed to invoke testBackupAuth, null)
-        switch (e.message) {
+        switch (e.code) {
           case _signInFailedCode:
             throw SignInFailedException(provider);
             break;
