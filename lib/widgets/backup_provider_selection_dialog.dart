@@ -65,7 +65,7 @@ class BackupProviderSelectionDialogState
               final providers = BackupSettings.availableBackupProviders();
               return Container(
                 width: 150.0,
-                height: 100.0,
+                height: providers.length * 50.0,
                 child: ListView.builder(
                   shrinkWrap: false,
                   itemCount: providers.length,
