@@ -341,6 +341,7 @@ class RemoteServerAuthPageState extends State<RemoteServerAuthPage> {
 
   Future<DiscoveryResult> discoverURLInternal(
       RemoteServerAuthData authData) async {
+    // First we try to use the path the user inserted
     var result = await testAuthData(authData);
     if (result == DiscoverResult.SUCCESS ||
         result == DiscoverResult.INVALID_AUTH) {
@@ -351,7 +352,18 @@ class RemoteServerAuthPageState extends State<RemoteServerAuthPage> {
     if (!url.endsWith("/")) {
       url = "$url/";
     }
-    final nextCloudURL = "${url}remote.php/dav/";
+
+    // New version NC23
+    // here we try to query the nextcloud instance with the path on the format
+    // [url:port]/https://docs.nextcloud.com/server/latest/user_manual/en/files/access_webdav.html#nextcloud-desktop-and-mobile-clients
+    String username = authData.user;
+    String nextCloudURL = url + "remote.php/dav/files/$username";
+    result = await testAuthData(authData.copyWith(url: nextCloudURL));
+    if (result == DiscoverResult.SUCCESS ||
+        result == DiscoverResult.INVALID_AUTH) {
+      return DiscoveryResult(authData.copyWith(url: nextCloudURL), result);
+    }
+
     result = await testAuthData(authData.copyWith(url: nextCloudURL));
     if (result == DiscoverResult.SUCCESS ||
         result == DiscoverResult.INVALID_AUTH) {
@@ -370,6 +382,10 @@ class RemoteServerAuthPageState extends State<RemoteServerAuthPage> {
       return DiscoverResult.INVALID_AUTH;
     } on RemoteServerNotFoundException {
       return DiscoverResult.INVALID_URL;
+    } on MethodNotFoundException {
+      return DiscoverResult.METHOD_NOT_FOUND;
+    } on NoBackupFoundException {
+      return DiscoverResult.INVALID_URL;
     }
 
     return DiscoverResult.SUCCESS;
@@ -380,6 +396,8 @@ enum DiscoverResult {
   SUCCESS,
   INVALID_URL,
   INVALID_AUTH,
+  METHOD_NOT_FOUND,
+  BACKUP_NOT_FOUND
 }
 
 class DiscoveryResult {

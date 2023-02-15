@@ -23,8 +23,11 @@ import '../async_action.dart';
 import 'backup_actions.dart';
 
 class BackupBloc {
-  static const String _signInFailedCode = "AuthError";
-  static const String _notFoundCode = "NotFoundError";
+  static const String _signInFailedCode = "401";
+  static const String _methodNotFound = "405";
+  static const String _notFoundCode = "404";
+  static const String _noAccess = "403";
+  static const String _resultError = "ResultError";
   static const String USER_DETAILS_PREFERENCES_KEY = "BreezUserModel.userID";
 
   static const _kDefaultOverrideFee = false;
@@ -170,6 +173,7 @@ class BackupBloc {
       var map = settings.remoteServerAuthData.toJson();
       authData = json.encode(map);
     }
+
     await _breezLib.setBackupProvider(settings.backupProvider.name, authData);
   }
 
@@ -495,20 +499,25 @@ class BackupBloc {
           snapshots
               .sort((s1, s2) => s2.modifiedTime.compareTo(s1.modifiedTime));
           _multipleRestoreController.add(snapshots);
+          if (backups == null) {
+            throw NoBackupFoundException(
+                _backupSettingsController.value.backupProvider);
+          }
         }).catchError((error) {
           if (error.runtimeType == PlatformException) {
             PlatformException e = (error as PlatformException);
             if (e.code == _signInFailedCode || e.message == _signInFailedCode) {
               error = SignInFailedException(
                   _backupSettingsController.value.backupProvider);
+            } else if (e.message == _noAccess) {
+              error = NoBackupFoundException(
+                  _backupSettingsController.value.backupProvider);
             } else {
               error = (error as PlatformException).message;
             }
           }
-
           _restoreFinishedController.addError(error);
         });
-
         return;
       }
 
@@ -528,25 +537,33 @@ class BackupBloc {
   Future testAuth(BackupProvider provider, RemoteServerAuthData authData) {
     return _breezLib
         .testBackupAuth(provider.name, json.encode(authData.toJson()))
-        .catchError((error) {
-      log.info('backupBloc.testAuth caught error: $error');
+        .catchError(
+      (error) {
+        log.info('backupBloc.testAuth caught error: $error');
 
-      if (error is PlatformException) {
-        var e = error;
-        // Handle PlatformException(ResultError, "AuthError", Failed to invoke testBackupAuth, null)
-        switch (e.code) {
-          case _signInFailedCode:
-            throw SignInFailedException(provider);
-            break;
-
-          case _notFoundCode:
-            throw RemoteServerNotFoundException();
-            break;
+        if (error is PlatformException) {
+          var e = error;
+          // Handle PlatformException(ResultError, "AuthError", Failed to invoke testBackupAuth, null)
+          switch (e.message) {
+            case _signInFailedCode:
+              throw SignInFailedException(provider);
+              break;
+            case _methodNotFound:
+              throw MethodNotFoundException(provider);
+              break;
+            case _noAccess:
+              throw NoBackupFoundException(provider);
+              break;
+            case _notFoundCode:
+              throw RemoteServerNotFoundException();
+              break;
+            case _resultError:
+              throw NoBackupFoundException(provider);
+          }
         }
-      }
-
-      throw error;
-    });
+        throw error;
+      },
+    );
   }
 
   _restoreAppData() async {
@@ -642,6 +659,24 @@ class SignInFailedException implements Exception {
   @override
   String toString() {
     return "Sign in failed";
+  }
+}
+
+class MethodNotFoundException implements Exception {
+  final BackupProvider provider;
+  MethodNotFoundException(this.provider);
+
+  String toString() {
+    return "Method not found";
+  }
+}
+
+class NoBackupFoundException implements Exception {
+  final BackupProvider provider;
+  NoBackupFoundException(this.provider);
+
+  String toString() {
+    return "No backup found, please use full URL";
   }
 }
 
