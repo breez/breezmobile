@@ -27,7 +27,6 @@ class BackupBloc {
   static const String _methodNotFound = "405";
   static const String _notFoundCode = "404";
   static const String _noAccess = "403";
-  static const String _resultError = "ResultError";
   static const String USER_DETAILS_PREFERENCES_KEY = "BreezUserModel.userID";
 
   static const _kDefaultOverrideFee = false;
@@ -500,8 +499,7 @@ class BackupBloc {
               .sort((s1, s2) => s2.modifiedTime.compareTo(s1.modifiedTime));
           _multipleRestoreController.add(snapshots);
           if (backups == null) {
-            throw NoBackupFoundException(
-                _backupSettingsController.value.backupProvider);
+            throw NoBackupFoundException();
           }
         }).catchError((error) {
           if (error.runtimeType == PlatformException) {
@@ -510,8 +508,7 @@ class BackupBloc {
               error = SignInFailedException(
                   _backupSettingsController.value.backupProvider);
             } else if (e.message == _noAccess) {
-              error = NoBackupFoundException(
-                  _backupSettingsController.value.backupProvider);
+              error = NoBackupFoundException();
             } else {
               error = (error as PlatformException).message;
             }
@@ -549,16 +546,14 @@ class BackupBloc {
               throw SignInFailedException(provider);
               break;
             case _methodNotFound:
-              throw MethodNotFoundException(provider);
+              throw MethodNotFoundException();
               break;
             case _noAccess:
-              throw NoBackupFoundException(provider);
+              throw NoBackupFoundException();
               break;
             case _notFoundCode:
               throw RemoteServerNotFoundException();
               break;
-            case _resultError:
-              throw NoBackupFoundException(provider);
           }
         }
         throw error;
@@ -663,8 +658,7 @@ class SignInFailedException implements Exception {
 }
 
 class MethodNotFoundException implements Exception {
-  final BackupProvider provider;
-  MethodNotFoundException(this.provider);
+  MethodNotFoundException();
 
   String toString() {
     return "Method not found";
@@ -672,20 +666,20 @@ class MethodNotFoundException implements Exception {
 }
 
 class NoBackupFoundException implements Exception {
-  final BackupProvider provider;
-  NoBackupFoundException(this.provider);
+  NoBackupFoundException();
 
   String toString() {
-    return "No backup found, please use full URL";
+    return "No backup found, please use double check the address";
   }
 }
 
 class RemoteServerNotFoundException implements Exception {
-  RemoteServerNotFoundException();
+  final BackupProvider provider;
+  RemoteServerNotFoundException(this.provider);
 
   @override
   String toString() {
-    return "The server/url was not found.";
+    return "The server was not found. Please check the address";
   }
 }
 

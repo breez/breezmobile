@@ -251,7 +251,7 @@ class RemoteServerAuthPageState extends State<RemoteServerAuthPage> {
         if (!failDiscoverURL && validURL) {
           return null;
         }
-        return texts.remote_server_error_invalid_url;
+        return NoBackupFoundException().toString();
       },
       decoration: InputDecoration(
         hintText: texts.remote_server_server_url_hint,
@@ -385,7 +385,7 @@ class RemoteServerAuthPageState extends State<RemoteServerAuthPage> {
     } on MethodNotFoundException {
       return DiscoverResult.METHOD_NOT_FOUND;
     } on NoBackupFoundException {
-      return DiscoverResult.INVALID_URL;
+      return DiscoverResult.BACKUP_NOT_FOUND;
     }
 
     return DiscoverResult.SUCCESS;
