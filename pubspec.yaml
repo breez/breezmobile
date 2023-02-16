@@ -25,21 +25,21 @@ dependencies:
   connectivity_plus: ^3.0.3
   crypto: ^3.0.2
   csv: ^5.0.1
-  dio: ^4.0.6
+  dio: ^5.0.0
   drag_and_drop_lists: ^0.3.3
   duration: ^3.0.12
   email_validator: ^2.1.17
-  extended_image: ^7.0.1
+  extended_image: ^7.0.2
   ffmpeg_kit_flutter_https_gpl: ^5.1.0
   file_picker: ^5.2.5
-  firebase_core: ^2.5.0
+  firebase_core: ^2.6.1
   # Version 4.5.2 breaks, it is necessary to update firebase as a whole
   firebase_core_platform_interface: ^4.5.3
-  firebase_database: ^10.0.10
-  firebase_dynamic_links: ^5.0.12
-  firebase_messaging: ^14.2.2
+  firebase_database: ^10.0.13
+  firebase_dynamic_links: ^5.0.14
+  firebase_messaging: ^14.2.4
   flutter_secure_storage: ^8.0.0
-  flutter_svg: ^2.0.0+1
+  flutter_svg: ^2.0.1
   flutter_web_browser: ^0.17.1
   google_api_availability: ^3.0.1
   grpc: ^3.1.0
@@ -74,12 +74,12 @@ dependencies:
   simple_animations: ^5.0.0+3
   sqflite: ^2.2.4+1
   timeago: ^3.3.0
-  tutorial_coach_mark: ^1.2.4
+  tutorial_coach_mark: ^1.2.5
   uni_links: ^0.5.1
   url_launcher: ^6.1.9
   uuid: ^3.0.7
   validators: ^3.0.0
-  webdav_client: ^1.1.8
+  webdav_client: ^1.1.9
   webview_flutter: ^4.0.2
 
   anytime:
@@ -94,6 +94,7 @@ dependencies:
     git:
       url: https://github.com/breez/nfc_in_flutter.git
       ref: 97f610be82bfe42d5ce86c348d931d61949fa517
+  # Opened a PR and waiting for changes to be published on pub.dev
 
 dependency_overrides:
   collection: ^1.17.1
@@ -107,7 +108,7 @@ dependency_overrides:
   podcast_search:
     git:
       url: https://github.com/breez/podcast_search.git
-      ref: 8190101aa49edf0f501cf3688f32a3a87df137c5
+      ref: 5bd8e96728291b11dbc4b1fbac123681000be07d
 
 dev_dependencies:
   flutter_test:
