@@ -40,13 +40,11 @@ class TorBloc {
         torConfig.http = "$port";
         log.info('torBloc.startTor: torConfig.http: ${torConfig.http}');
 
-        log.info(
-            'TorBloc.startTor: tor has started with config : $torConfig');
+        log.info('TorBloc.startTor: tor has started with config : $torConfig');
       }
     } on PlatformException catch (e) {
       log.info('TorBloc.startTor failed: $e');
     }
-
     return torConfig;
   }
 }
