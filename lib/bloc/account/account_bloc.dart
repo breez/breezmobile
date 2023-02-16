@@ -199,6 +199,7 @@ class AccountBloc {
       _listenRoutingConnectionChanges();
       _trackOnBoardingStatus();
       _listenEnableAccount();
+      _initialiseTor();
       log.info("Account finished registration of listeners");
     });
   }
@@ -544,6 +545,28 @@ class AccountBloc {
     });
   }
 
+  void _initialiseTor() async {
+    TorConfig torConfig;
+    if (Platform.isAndroid) {
+      // Start tor
+      final useTor = await _breezLib.getTorActive();
+      log.info('AccountBloc: useTor : $useTor.');
+      if (useTor) {
+        torConfig = torBloc.torConfig;
+        log.info('accountBloc.listenUserChanges: using Tor');
+        try {
+          torConfig ??= await torBloc.startTor();
+        } catch (e) {
+          _lightningDownController.add(false);
+        }
+        //throw error
+        if (torConfig != null) {
+          _breezLib.setBackupTorConfig(torConfig);
+        }
+      }
+    }
+  }
+
   _listenUserChanges(Stream<BreezUserModel> userProfileStream) {
     userProfileStream.listen((user) async {
       if (user.token != null && user.token != _currentUser?.token) {
@@ -573,24 +596,6 @@ class AccountBloc {
       );
       _paymentsController.add(updatedPayments);
 
-      TorConfig torConfig;
-      if (Platform.isAndroid) {
-        // Start tor
-
-        final useTor = await _breezLib.getTorActive();
-        log.info('AccountBloc: useTor : $useTor.');
-        if (useTor) {
-          torConfig = torBloc.torConfig;
-          log.info('accountBloc.listenUserChanges: using Tor');
-          try {
-            torConfig ??= await torBloc.startTor();
-          } catch (e) {
-            _lightningDownController.add(false);
-          }
-          assert(torConfig != null);
-        }
-      }
-
       //start lightning
       if (user.registrationRequested) {
         if (!_startedLightning) {
@@ -603,7 +608,7 @@ class AccountBloc {
           });
           log.info("account: starting lightning...");
           try {
-            await _breezLib.startLightning(torConfig);
+            await _breezLib.startLightning(torBloc.torConfig);
             log.info("account: lightning started");
             if (user.token != null) {
               _breezLib.registerPeriodicSync(user.token);
