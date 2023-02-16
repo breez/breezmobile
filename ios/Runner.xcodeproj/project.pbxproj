@@ -3,11 +3,12 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 50;
+	objectVersion = 54;
 	objects = {
 
 /* Begin PBXBuildFile section */
 		1498D2341E8E89220040F4C2 /* GeneratedPluginRegistrant.m in Sources */ = {isa = PBXBuildFile; fileRef = 1498D2331E8E89220040F4C2 /* GeneratedPluginRegistrant.m */; };
+		254C886F299EB599003043D5 /* bindings.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = 254C886E299EB599003043D5 /* bindings.xcframework */; };
 		3B3967161E833CAA004F5970 /* AppFrameworkInfo.plist in Resources */ = {isa = PBXBuildFile; fileRef = 3B3967151E833CAA004F5970 /* AppFrameworkInfo.plist */; };
 		6F068F372301566B009A1818 /* main.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F068F362301566B009A1818 /* main.swift */; };
 		6F09D3B2225DEDEC00867443 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F09D3B1225DEDEC00867443 /* AppDelegate.swift */; };
@@ -22,7 +23,6 @@
 		6FCA797622796CA6002E4572 /* ChainSync.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FCA797522796CA6002E4572 /* ChainSync.swift */; };
 		6FCA79782279E33D002E4572 /* Notifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FCA79772279E33D002E4572 /* Notifier.swift */; };
 		845127C626F6D76B00B04CA2 /* Tor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 845127C526F6D76B00B04CA2 /* Tor.swift */; };
-		84C7168626F1B5DB00331098 /* bindings.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6F09D3DB225E7BBC00867443 /* bindings.framework */; };
 		9740EEB41CF90195004384FC /* Debug.xcconfig in Resources */ = {isa = PBXBuildFile; fileRef = 9740EEB21CF90195004384FC /* Debug.xcconfig */; };
 		9740EEB51CF90195004384FC /* Generated.xcconfig in Resources */ = {isa = PBXBuildFile; fileRef = 9740EEB31CF90195004384FC /* Generated.xcconfig */; };
 		97C146FC1CF9000F007C117D /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 97C146FA1CF9000F007C117D /* Main.storyboard */; };
@@ -34,12 +34,12 @@
 /* Begin PBXFileReference section */
 		1498D2321E8E86230040F4C2 /* GeneratedPluginRegistrant.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = GeneratedPluginRegistrant.h; sourceTree = "<group>"; };
 		1498D2331E8E89220040F4C2 /* GeneratedPluginRegistrant.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GeneratedPluginRegistrant.m; sourceTree = "<group>"; };
+		254C886E299EB599003043D5 /* bindings.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; path = bindings.xcframework; sourceTree = "<group>"; };
 		3B3967151E833CAA004F5970 /* AppFrameworkInfo.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = AppFrameworkInfo.plist; path = Flutter/AppFrameworkInfo.plist; sourceTree = "<group>"; };
 		6F068F362301566B009A1818 /* main.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = main.swift; sourceTree = "<group>"; };
 		6F09D3B0225DEDEC00867443 /* Runner-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Runner-Bridging-Header.h"; sourceTree = "<group>"; };
 		6F09D3B1225DEDEC00867443 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		6F09D3D6225E232000867443 /* Breez.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Breez.swift; sourceTree = "<group>"; };
-		6F09D3DB225E7BBC00867443 /* bindings.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = bindings.framework; sourceTree = "<group>"; };
 		6F09D3DD225F2AD300867443 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		6F09D3DF225F45EB00867443 /* NativeMethods.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NativeMethods.swift; sourceTree = "<group>"; };
 		6F09D3E1225F584000867443 /* LifecycleEvents.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LifecycleEvents.swift; sourceTree = "<group>"; };
@@ -72,9 +72,9 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				254C886F299EB599003043D5 /* bindings.xcframework in Frameworks */,
 				6F3FAFCA232E610400680AC5 /* CloudKit.framework in Frameworks */,
 				F4CCB6D5A2A55E2FF11892BD /* Pods_Runner.framework in Frameworks */,
-				84C7168626F1B5DB00331098 /* bindings.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -183,10 +183,10 @@
 		E5F01C87D6084F818230B447 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				254C886E299EB599003043D5 /* bindings.xcframework */,
 				6F262CE4247EAEE100BAC844 /* libsqlite3.tbd */,
 				6F262CE2247EAED200BAC844 /* libsqlite3.0.tbd */,
 				6F3FAFC9232E610400680AC5 /* CloudKit.framework */,
-				6F09D3DB225E7BBC00867443 /* bindings.framework */,
 				906EE6F42E7D9C694B7DD59E /* Pods_Runner.framework */,
 			);
 			name = Frameworks;
@@ -286,6 +286,7 @@
 /* Begin PBXShellScriptBuildPhase section */
 		3B06AD1E1E4923F5004D2608 /* Thin Binary */ = {
 			isa = PBXShellScriptBuildPhase;
+			alwaysOutOfDate = 1;
 			buildActionMask = 2147483647;
 			files = (
 			);
@@ -436,6 +437,7 @@
 		};
 		9740EEB61CF901F6004384FC /* Run Script */ = {
 			isa = PBXShellScriptBuildPhase;
+			alwaysOutOfDate = 1;
 			buildActionMask = 2147483647;
 			files = (
 			);
