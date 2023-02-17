@@ -8,11 +8,13 @@ import 'package:breez/bloc/user_profile/breez_user_model.dart';
 import 'package:breez/bloc/user_profile/user_actions.dart';
 import 'package:breez/bloc/user_profile/user_profile_bloc.dart';
 import 'package:breez/routes/podcast/boost_message_dialog.dart';
+import 'package:breez/routes/podcast/widget/number_panel.dart';
 import 'package:breez/utils/min_font_size.dart';
 import 'package:breez/widgets/flushbar.dart';
+import 'package:breez_translations/breez_translations_locales.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:breez_translations/breez_translations_locales.dart';
+
 import 'custom_amount_dialog.dart';
 
 class BoostWidget extends StatelessWidget {
@@ -121,7 +123,26 @@ class BoostWidget extends StatelessWidget {
                     fit: StackFit.loose,
                     children: [
                       _minusButton(context),
-                      _numberPanel(context, userBloc),
+                      Positioned(
+                        left: 24,
+                        top: 16,
+                        child: NumberPanel(
+                          topLabel: _formatBoostAmount(context),
+                          bottomLabel: texts.podcast_boost_sats,
+                          width: 42,
+                          innerWidth: 38,
+                          onTap: () => showDialog(
+                            useRootNavigator: false,
+                            context: context,
+                            builder: (c) => CustomAmountDialog(
+                              userModel.paymentOptions.customBoostValue,
+                              userModel.paymentOptions.presetBoostAmountsList,
+                              (boostAmount) =>
+                                  _setBoostAmount(userBloc, boostAmount),
+                            ),
+                          ),
+                        ),
+                      ),
                       _plusButton(context),
                     ],
                   ),
@@ -153,62 +174,6 @@ class BoostWidget extends StatelessWidget {
               size: 20,
               color: themeData.appBarTheme.actionsIconTheme.color,
             ),
-          ),
-        ),
-      ),
-    );
-  }
-
-  Widget _numberPanel(BuildContext context, UserProfileBloc userBloc) {
-    final texts = context.texts();
-    final minFontSize = 9.0 / MediaQuery.of(context).textScaleFactor;
-    return Positioned(
-      left: 24,
-      top: 16,
-      child: GestureDetector(
-        onTap: () => showDialog(
-          useRootNavigator: false,
-          context: context,
-          builder: (c) => CustomAmountDialog(
-            userModel.paymentOptions.customBoostValue,
-            userModel.paymentOptions.presetBoostAmountsList,
-            (boostAmount) => _setBoostAmount(userBloc, boostAmount),
-          ),
-        ),
-        child: SizedBox(
-          width: 42,
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              SizedBox(
-                width: 38,
-                height: 20,
-                child: AutoSizeText(
-                  _formatBoostAmount(context),
-                  textAlign: TextAlign.center,
-                  style: const TextStyle(
-                    fontSize: 14.3,
-                    letterSpacing: 1,
-                    fontWeight: FontWeight.w600,
-                    height: 1.2,
-                  ),
-                  minFontSize: minFontSize,
-                  stepGranularity: 0.1,
-                  maxLines: 1,
-                ),
-              ),
-              AutoSizeText(
-                texts.podcast_boost_sats,
-                textAlign: TextAlign.center,
-                style: const TextStyle(
-                  fontSize: 10,
-                  letterSpacing: 1,
-                ),
-                minFontSize: MinFontSize(context).minFontSize,
-                stepGranularity: 0.1,
-              ),
-            ],
           ),
         ),
       ),

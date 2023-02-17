@@ -1,16 +1,14 @@
 import 'dart:math';
 
-import 'package:auto_size_text/auto_size_text.dart';
 import 'package:breez/bloc/blocs_provider.dart';
 import 'package:breez/bloc/user_profile/breez_user_model.dart';
 import 'package:breez/bloc/user_profile/user_actions.dart';
 import 'package:breez/bloc/user_profile/user_profile_bloc.dart';
-import 'package:breez/utils/min_font_size.dart';
-import 'package:flutter/material.dart';
+import 'package:breez/routes/podcast/custom_amount_dialog.dart';
+import 'package:breez/routes/podcast/widget/number_panel.dart';
 import 'package:breez_translations/breez_translations_locales.dart';
+import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-
-import 'custom_amount_dialog.dart';
 
 class PaymentAdjuster extends StatelessWidget {
   final BreezUserModel userModel;
@@ -24,7 +22,9 @@ class PaymentAdjuster extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final texts = context.texts();
     final userBloc = AppBlocsProvider.of<UserProfileBloc>(context);
+
     return Row(
       mainAxisSize: MainAxisSize.max,
       mainAxisAlignment: MainAxisAlignment.center,
@@ -34,7 +34,32 @@ class PaymentAdjuster extends StatelessWidget {
           child: Stack(
             children: [
               _minusButton(context),
-              _numberPanel(context, userBloc),
+              Positioned(
+                left: 0,
+                right: 0,
+                top: 16,
+                child: NumberPanel(
+                  topLabel: _formatSatsPerMinAmount(context),
+                  bottomLabel: texts.podcast_boost_sats_min,
+                  width: 56,
+                  innerWidth: 42,
+                  onTap: () => showDialog(
+                    useRootNavigator: true,
+                    context: context,
+                    builder: (c) => CustomAmountDialog(
+                      userModel.paymentOptions.customSatsPerMinValue,
+                      userModel.paymentOptions.presetSatsPerMinuteAmountsList,
+                      (satsPerMinute) =>
+                          userBloc.userActionsSink.add(SetPaymentOptions(
+                        userModel.paymentOptions.copyWith(
+                          preferredSatsPerMinValue: satsPerMinute,
+                          customSatsPerMinValue: satsPerMinute,
+                        ),
+                      )),
+                    ),
+                  ),
+                ),
+              ),
               _plusButton(context),
             ],
           ),
@@ -65,69 +90,6 @@ class PaymentAdjuster extends StatelessWidget {
                 color: themeData.appBarTheme.actionsIconTheme.color,
               ),
             ),
-          ),
-        ),
-      ),
-    );
-  }
-
-  Widget _numberPanel(BuildContext context, UserProfileBloc userBloc) {
-    final texts = context.texts();
-    final minFontSize = 9.0 / MediaQuery.of(context).textScaleFactor;
-    return Positioned(
-      left: 0,
-      right: 0,
-      top: 16,
-      child: GestureDetector(
-        onTap: () => showDialog(
-          useRootNavigator: true,
-          context: context,
-          builder: (c) => CustomAmountDialog(
-            userModel.paymentOptions.customSatsPerMinValue,
-            userModel.paymentOptions.presetSatsPerMinuteAmountsList,
-            (satsPerMinute) => userBloc.userActionsSink.add(SetPaymentOptions(
-              userModel.paymentOptions.copyWith(
-                preferredSatsPerMinValue: satsPerMinute,
-                customSatsPerMinValue: satsPerMinute,
-              ),
-            )),
-          ),
-        ),
-        child: SizedBox(
-          width: 56,
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              SizedBox(
-                width: 42,
-                height: 20,
-                child: AutoSizeText(
-                  _formatSatsPerMinAmount(context),
-                  textAlign: TextAlign.center,
-                  style: const TextStyle(
-                    fontSize: 14.3,
-                    letterSpacing: 1,
-                    fontWeight: FontWeight.w600,
-                    height: 1.2,
-                  ),
-                  minFontSize: minFontSize,
-                  stepGranularity: 0.1,
-                  maxLines: 1,
-                ),
-              ),
-              AutoSizeText(
-                texts.podcast_boost_sats_min,
-                textAlign: TextAlign.center,
-                style: const TextStyle(
-                  fontSize: 10,
-                  letterSpacing: 1,
-                ),
-                minFontSize: MinFontSize(context).minFontSize,
-                stepGranularity: 0.1,
-                maxLines: 1,
-              ),
-            ],
           ),
         ),
       ),
