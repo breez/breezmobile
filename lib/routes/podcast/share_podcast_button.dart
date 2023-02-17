@@ -28,8 +28,8 @@ class SharePodcastButton extends StatelessWidget {
             size: 22,
           ),
           onPressed: () async {
-            DeepLinksService _deepLinks = ServiceInjector().deepLinks;
-            var podcastShareLink = await _deepLinks.generatePodcastShareLink(
+            DeepLinksService deepLinks = ServiceInjector().deepLinks;
+            var podcastShareLink = await deepLinks.generatePodcastShareLink(
               PodcastShareLinkModel(podcastURL),
             );
             Share.share(

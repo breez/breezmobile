@@ -39,8 +39,8 @@ class AddFundsMessage extends StatelessWidget {
                 maxLines: 2,
               ),
             ),
-            SizedBox(width: 16),
-            Container(
+            const SizedBox(width: 16),
+            SizedBox(
               width: 100,
               child: ElevatedButton(
                 style: ElevatedButton.styleFrom(

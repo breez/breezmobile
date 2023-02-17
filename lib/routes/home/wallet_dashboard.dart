@@ -46,6 +46,17 @@ class WalletDashboardState extends State<WalletDashboard> {
     double endHeaderFontSize = headlineMedium.fontSize - 8.0;
 
     return GestureDetector(
+      behavior: HitTestBehavior.translucent,
+      onLongPressStart: (_) {
+        setState(() {
+          _showFiatCurrency = true;
+        });
+      },
+      onLongPressEnd: (_) {
+        setState(() {
+          _showFiatCurrency = false;
+        });
+      },
       child: Stack(
         alignment: AlignmentDirectional.topCenter,
         children: [
@@ -100,7 +111,7 @@ class WalletDashboardState extends State<WalletDashboard> {
                                       endHeaderFontSize,
                                     ),
                         )
-                      : SizedBox(),
+                      : const SizedBox(),
             ),
           ),
           Positioned(
@@ -112,22 +123,11 @@ class WalletDashboardState extends State<WalletDashboard> {
                       isAboveMinAmount(widget._accountModel?.fiatCurrency) &&
                       !widget._userModel.hideBalance
                   ? _fiatButton(context)
-                  : SizedBox(),
+                  : const SizedBox(),
             ),
           ),
         ],
       ),
-      behavior: HitTestBehavior.translucent,
-      onLongPressStart: (_) {
-        setState(() {
-          _showFiatCurrency = true;
-        });
-      },
-      onLongPressEnd: (_) {
-        setState(() {
-          _showFiatCurrency = false;
-        });
-      },
     );
   }
 
@@ -154,7 +154,7 @@ class WalletDashboardState extends State<WalletDashboard> {
     final themeData = Theme.of(context);
 
     return Text(
-      "${widget._accountModel.formattedFiatBalance}",
+      widget._accountModel.formattedFiatBalance,
       style: themeData.walletDashboardHeaderTextStyle.copyWith(
         fontSize: startHeaderSize -
             (startHeaderSize - endHeaderFontSize) * widget._offsetFactor,
@@ -238,7 +238,7 @@ class WalletDashboardState extends State<WalletDashboard> {
         }
       },
       child: Text(
-        "${widget._accountModel.formattedFiatBalance}",
+        widget._accountModel.formattedFiatBalance,
         style: titleMedium.copyWith(
           color: titleMedium.color.withOpacity(
             pow(1.00 - widget._offsetFactor, 2),

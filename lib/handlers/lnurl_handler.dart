@@ -84,7 +84,7 @@ class LNURLHandler {
             text: texts.handler_lnurl_login_anonymously,
             children: [
               TextSpan(
-                text: "${response.host}",
+                text: response.host,
                 style: themeData.dialogTheme.contentTextStyle.copyWith(
                   fontWeight: FontWeight.bold,
                 ),
@@ -152,7 +152,7 @@ class LNURLHandler {
           barrierDismissible: false,
           builder: (BuildContext context) {
             return AlertDialog(
-              content: SyncProgressDialog(closeOnSync: true),
+              content: const SyncProgressDialog(closeOnSync: true),
               actions: [
                 TextButton(
                   child: Text(

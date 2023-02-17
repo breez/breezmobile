@@ -57,7 +57,7 @@ class WithConfettiPaymentEffect extends StatefulWidget {
 }
 
 class WithConfettiPaymentEffectState extends State<WithConfettiPaymentEffect> {
-  final controller = ConfettiController(duration: Duration(seconds: 1));
+  final controller = ConfettiController(duration: const Duration(seconds: 1));
   StreamSubscription<PaymentEvent> subscription;
 
   @override

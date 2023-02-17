@@ -19,7 +19,7 @@ class PodcastIndexMetadataLoader {
     }
 
     final feedId = episode.metadata["feed"]["id"];
-    if (feedId == null || !(feedId is int)) {
+    if (feedId == null || feedId is! int) {
       return Future.value({});
     }
 

@@ -21,7 +21,7 @@ class FiatCurrencySettings extends StatefulWidget {
   final AccountBloc accountBloc;
   final UserProfileBloc userProfileBloc;
 
-  FiatCurrencySettings(
+  const FiatCurrencySettings(
     this.accountBloc,
     this.userProfileBloc,
   );
@@ -33,7 +33,7 @@ class FiatCurrencySettings extends StatefulWidget {
 }
 
 class FiatCurrencySettingsState extends State<FiatCurrencySettings> {
-  final _scrollController = new ScrollController();
+  final _scrollController = ScrollController();
 
   @override
   Widget build(BuildContext context) {
@@ -49,12 +49,12 @@ class FiatCurrencySettingsState extends State<FiatCurrencySettings> {
 
         if (account.fiatConversionList.isEmpty ||
             account.fiatCurrency == null) {
-          return Loader();
+          return const Loader();
         }
 
         return Scaffold(
           appBar: AppBar(
-            leading: backBtn.BackButton(),
+            leading: const backBtn.BackButton(),
             title: Text(texts.fiat_currencies_title),
           ),
           body: DragAndDropLists(
@@ -88,7 +88,7 @@ class FiatCurrencySettingsState extends State<FiatCurrencySettings> {
     AccountModel account,
   ) {
     return DragAndDropList(
-      header: SizedBox(),
+      header: const SizedBox(),
       canDrag: false,
       children: List.generate(account.fiatConversionList.length, (index) {
         return DragAndDropItem(

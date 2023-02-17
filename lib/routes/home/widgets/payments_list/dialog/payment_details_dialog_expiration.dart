@@ -46,7 +46,7 @@ class PaymentDetailsDialogExpiration extends StatelessWidget {
             child: SingleChildScrollView(
               scrollDirection: Axis.horizontal,
               reverse: true,
-              padding: EdgeInsets.only(left: 8.0),
+              padding: const EdgeInsets.only(left: 8.0),
               child: AutoSizeText(
                 BreezDateUtils.formatYearMonthDayHourMinute(
                   DateTime.fromMillisecondsSinceEpoch(

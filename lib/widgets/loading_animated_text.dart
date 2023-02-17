@@ -9,7 +9,7 @@ class LoadingAnimatedText extends StatefulWidget {
   final TextAlign textAlign;
   final List<TextSpan> textElements;
 
-  LoadingAnimatedText(this._loadingMessage,
+  const LoadingAnimatedText(this._loadingMessage,
       {this.textStyle, this.textAlign, this.textElements = const []});
 
   @override
@@ -25,7 +25,7 @@ class LoadingAnimatedTextState extends State<LoadingAnimatedText> {
   @override
   void initState() {
     super.initState();
-    _loadingTimer = Timer.periodic(Duration(milliseconds: 400), (timer) {
+    _loadingTimer = Timer.periodic(const Duration(milliseconds: 400), (timer) {
       setState(() {
         _timerIteration++;
       });
@@ -50,13 +50,13 @@ class LoadingAnimatedTextState extends State<LoadingAnimatedText> {
                 TextSpan(text: loadingDots),
                 TextSpan(
                     text: paddingDots,
-                    style: TextStyle(color: Colors.transparent))
+                    style: const TextStyle(color: Colors.transparent))
               ])),
         textAlign:
-            widget.textAlign == null ? TextAlign.center : widget.textAlign);
+            widget.textAlign ?? TextAlign.center);
   }
 
-  String get loadingDots => '${List.filled(_timerIteration % 4, ".").join("")}';
+  String get loadingDots => List.filled(_timerIteration % 4, ".").join("");
   String get paddingDots =>
-      '${List.filled(3 - _timerIteration % 4, ".").join("")}';
+      List.filled(3 - _timerIteration % 4, ".").join("");
 }

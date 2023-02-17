@@ -20,7 +20,7 @@ import 'package:provider/provider.dart';
 import 'package:screenshot/screenshot.dart';
 
 class PodcastClipWidget extends StatelessWidget {
-  PodcastClipWidget({Key key}) : super(key: key);
+  const PodcastClipWidget({Key key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -85,7 +85,7 @@ _showClipsBottomSheet(
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              SizedBox(
+                              const SizedBox(
                                 height: 20,
                               ),
                               Align(
@@ -102,13 +102,13 @@ _showClipsBottomSheet(
                                       ),
                                 ),
                               ),
-                              SizedBox(
+                              const SizedBox(
                                 height: 20,
                               ),
-                              Divider(
+                              const Divider(
                                 color: Colors.white,
                               ),
-                              SizedBox(
+                              const SizedBox(
                                 height: 20,
                               ),
                               Center(
@@ -152,7 +152,7 @@ _showClipsBottomSheet(
                                           fontWeight: FontWeight.w500,
                                         ),
                                   )),
-                              Spacer(),
+                              const Spacer(),
                               clipDetailSnapshot.data.podcastClipState ==
                                       PodcastClipState.IDLE
                                   ? TextButton(
@@ -161,10 +161,10 @@ _showClipsBottomSheet(
                                             PodcastClipState.FETCHING_IMAGE);
                                         Episode e = clipDetailSnapshot
                                             .data.episodeDetails;
-                                        var _image = NetworkImage(e.imageUrl);
+                                        var image = NetworkImage(e.imageUrl);
 
-                                        _image
-                                            .resolve(ImageConfiguration())
+                                        image
+                                            .resolve(const ImageConfiguration())
                                             .addListener(
                                           ImageStreamListener(
                                             (info, call) async {
@@ -210,7 +210,7 @@ _showClipsBottomSheet(
                                                 color: Colors.white,
                                                 fontWeight: FontWeight.w500,
                                               )))
-                                  : Center(
+                                  : const Center(
                                       child: CircularProgressIndicator(
                                       strokeWidth: 2,
                                     )),
@@ -219,7 +219,7 @@ _showClipsBottomSheet(
                         )
                       ],
                     )
-                  : CircularProgressIndicator();
+                  : const CircularProgressIndicator();
             });
       }).then((value) {
     podcastClipBloc.setClipSharingStatus(status: false);
@@ -233,14 +233,14 @@ Widget _numberPanel(BuildContext context, int durationInSeconds) {
     onTap: () => showDialog(
         useRootNavigator: true,
         context: context,
-        builder: (c) => CustomClipsDurationDialog()),
+        builder: (c) => const CustomClipsDurationDialog()),
     child: SizedBox(
       width: 56,
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          Container(
+          SizedBox(
             width: 42,
             height: 20,
             child: AutoSizeText(
@@ -278,7 +278,7 @@ Widget _durationToggleButton(
     BuildContext context, Function() onTap, IconData icon) {
   final themeData = Theme.of(context);
   return GestureDetector(
-    child: Container(
+    child: SizedBox(
       width: 32,
       height: 64,
       child: Material(
@@ -303,7 +303,7 @@ Widget _durationToggleButton(
 Future<PositionState> getPositionDetails(AudioBloc audioBloc) async {
   PositionState position;
   try {
-    position = await audioBloc.playPosition.first.timeout(Duration(seconds: 1));
+    position = await audioBloc.playPosition.first.timeout(const Duration(seconds: 1));
   } catch (e) {
     position = null;
   }
@@ -320,7 +320,7 @@ _imageWidget({BuildContext context, Episode episodeDetails, Image image}) {
           breezTheme.BreezColors.blue[500],
           breezTheme.BreezColors.blue[500].withOpacity(0.5)
         ])),
-    padding: EdgeInsets.only(left: 20, right: 20, top: 20, bottom: 28),
+    padding: const EdgeInsets.only(left: 20, right: 20, top: 20, bottom: 28),
     child: Column(
       mainAxisSize: MainAxisSize.min,
       children: [
@@ -334,7 +334,7 @@ _imageWidget({BuildContext context, Episode episodeDetails, Image image}) {
                 fontWeight: FontWeight.w500,
               ),
         ),
-        SizedBox(
+        const SizedBox(
           height: 8,
         ),
         ClipRRect(
@@ -345,7 +345,7 @@ _imageWidget({BuildContext context, Episode episodeDetails, Image image}) {
             height: 300,
           ),
         ),
-        SizedBox(
+        const SizedBox(
           height: 4,
         ),
         Text(
@@ -358,7 +358,7 @@ _imageWidget({BuildContext context, Episode episodeDetails, Image image}) {
                 fontWeight: FontWeight.w500,
               ),
         ),
-        SizedBox(
+        const SizedBox(
           height: 16,
         ),
         Text(
@@ -371,7 +371,7 @@ _imageWidget({BuildContext context, Episode episodeDetails, Image image}) {
                 fontWeight: FontWeight.w600,
               ),
         ),
-        SizedBox(
+        const SizedBox(
           height: 60,
         ),
         Row(
@@ -385,7 +385,7 @@ _imageWidget({BuildContext context, Episode episodeDetails, Image image}) {
                     )),
             SvgPicture.asset(
               "src/images/logo-color.svg",
-              colorFilter: ColorFilter.mode(
+              colorFilter: const ColorFilter.mode(
                 Colors.white,
                 BlendMode.srcATop,
               ),

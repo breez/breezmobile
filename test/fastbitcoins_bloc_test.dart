@@ -9,28 +9,28 @@ import 'package:test/test.dart';
 import 'bloc_tester.dart';
 import 'mocks.dart';
 
-FastbitcoinsBloc _make() => new FastbitcoinsBloc(
+FastbitcoinsBloc _make() => FastbitcoinsBloc(
       baseURL: FastbitcoinsBloc.TESTING_URL,
     );
 
 void main() {
   group('fastbitcoins bloc', () {
-    InjectorMock _injector = new InjectorMock();
+    InjectorMock injector = InjectorMock();
 
     setUp(() async {
-      ServiceInjector.configure(_injector);
+      ServiceInjector.configure(injector);
     });
 
     tearDown(() async {
-      _injector.mockHandler = null;
+      injector.mockHandler = null;
     });
 
-    void _mockResponse(int code, String body) {
-      _injector.mockHandler = (request) => Future.value(Response(body, code));
+    void mockResponse(int code, String body) {
+      injector.mockHandler = (request) => Future.value(Response(body, code));
     }
 
     test("should validate with error", () async {
-      _mockResponse(
+      mockResponse(
         200,
         """{
           "email_address": "test@gmail.com",
@@ -41,19 +41,19 @@ void main() {
           "kyc_required": 1
         }""",
       );
-      FastbitcoinsBloc _fastBitcoinsBloc = _make();
-      var tester = new BlocTester<ValidateRequestModel, ValidateResponseModel>(
-          _fastBitcoinsBloc.validateResponseStream, (res) {
+      FastbitcoinsBloc fastBitcoinsBloc = _make();
+      var tester = BlocTester<ValidateRequestModel, ValidateResponseModel>(
+          fastBitcoinsBloc.validateResponseStream, (res) {
         print(jsonEncode(res.toJson()));
         expect(res, isNotNull);
         expect(res.error, 1);
-      }, _fastBitcoinsBloc.validateRequestSink,
-          new ValidateRequestModel("test@gmail.com", "code", 1, "USD"));
+      }, fastBitcoinsBloc.validateRequestSink,
+          ValidateRequestModel("test@gmail.com", "code", 1, "USD"));
       await tester.run();
     });
 
     test("should redeem with error", () async {
-      _mockResponse(
+      mockResponse(
         200,
         """{
           "email_address": "test@gmail.com",
@@ -65,23 +65,23 @@ void main() {
           "error": 0
         }""",
       );
-      FastbitcoinsBloc _fastBitcoinsBloc = _make();
-      var redeemRequest = new RedeemRequestModel(
+      FastbitcoinsBloc fastBitcoinsBloc = _make();
+      var redeemRequest = RedeemRequestModel(
           "test@gmail.com", "code", 1, "USD", 0, "")
         ..validateResponse =
-            new ValidateResponseModel(0, "", 0, 0, "", 0, 1.0, 1.0, 0, 0.0, 0);
-      var tester = new BlocTester<RedeemRequestModel, RedeemResponseModel>(
-          _fastBitcoinsBloc.redeemResponseStream, (res) {
+            ValidateResponseModel(0, "", 0, 0, "", 0, 1.0, 1.0, 0, 0.0, 0);
+      var tester = BlocTester<RedeemRequestModel, RedeemResponseModel>(
+          fastBitcoinsBloc.redeemResponseStream, (res) {
         print(jsonEncode(res.toJson()));
         expect(res, isNotNull);
         expect(res.error, 0);
-      }, _fastBitcoinsBloc.redeemRequestSink,
+      }, fastBitcoinsBloc.redeemRequestSink,
           redeemRequest);
       await tester.run();
     });
 
     test("validate should throw error", () async {
-      _mockResponse(
+      mockResponse(
         200,
         """{
           "email_address": "test@gmail.com",
@@ -93,14 +93,14 @@ void main() {
           "error_message": "An error message"
         }""",
       );
-      FastbitcoinsBloc _fastBitcoinsBloc = _make();
-      var tester = new BlocTester<ValidateRequestModel, ValidateResponseModel>(
-          _fastBitcoinsBloc.validateResponseStream,
+      FastbitcoinsBloc fastBitcoinsBloc = _make();
+      var tester = BlocTester<ValidateRequestModel, ValidateResponseModel>(
+          fastBitcoinsBloc.validateResponseStream,
           (res) {
             fail('res should not be parsed $res');
           },
-          _fastBitcoinsBloc.validateRequestSink,
-          new ValidateRequestModel("test@gmail.com", "code", 1, "USD"),
+          fastBitcoinsBloc.validateRequestSink,
+          ValidateRequestModel("test@gmail.com", "code", 1, "USD"),
           (e) {
             expect(e, 'An error message');
           });
@@ -108,7 +108,7 @@ void main() {
     });
 
     test("redeem should throw error", () async {
-      _mockResponse(
+      mockResponse(
         200,
         """{
           "email_address": "test@gmail.com",
@@ -122,17 +122,17 @@ void main() {
           "error_message": "An error message"
         }""",
       );
-      FastbitcoinsBloc _fastBitcoinsBloc = _make();
-      var redeemRequest = new RedeemRequestModel(
+      FastbitcoinsBloc fastBitcoinsBloc = _make();
+      var redeemRequest = RedeemRequestModel(
           "test@gmail.com", "code", 1, "USD", 0, "")
         ..validateResponse =
-            new ValidateResponseModel(0, "", 0, 0, "", 0, 1.0, 1.0, 0, 0.0, 0);
-      var tester = new BlocTester<RedeemRequestModel, RedeemResponseModel>(
-          _fastBitcoinsBloc.redeemResponseStream,
+            ValidateResponseModel(0, "", 0, 0, "", 0, 1.0, 1.0, 0, 0.0, 0);
+      var tester = BlocTester<RedeemRequestModel, RedeemResponseModel>(
+          fastBitcoinsBloc.redeemResponseStream,
           (res) {
             fail('res should not be parsed $res');
           },
-          _fastBitcoinsBloc.redeemRequestSink,
+          fastBitcoinsBloc.redeemRequestSink,
           redeemRequest,
           (e) {
             expect(e, 'An error message');
@@ -141,15 +141,15 @@ void main() {
     });
 
     test("validate should throw error when status code is not 200", () async {
-      _mockResponse(503, '');
-      FastbitcoinsBloc _fastBitcoinsBloc = _make();
-      var tester = new BlocTester<ValidateRequestModel, ValidateResponseModel>(
-          _fastBitcoinsBloc.validateResponseStream,
+      mockResponse(503, '');
+      FastbitcoinsBloc fastBitcoinsBloc = _make();
+      var tester = BlocTester<ValidateRequestModel, ValidateResponseModel>(
+          fastBitcoinsBloc.validateResponseStream,
           (res) {
             fail('res should not be parsed $res');
           },
-          _fastBitcoinsBloc.validateRequestSink,
-          new ValidateRequestModel("test@gmail.com", "code", 1, "USD"),
+          fastBitcoinsBloc.validateRequestSink,
+          ValidateRequestModel("test@gmail.com", "code", 1, "USD"),
           (e) {
             expect(e, 'Service Unavailable. Please try again later.');
           });
@@ -157,7 +157,7 @@ void main() {
     });
 
     test("redeem should throw error when status code is not 200", () async {
-      _mockResponse(
+      mockResponse(
         503,
         """{
           "email_address": "test@gmail.com",
@@ -171,17 +171,17 @@ void main() {
           "error_message": "An error message"
         }""",
       );
-      FastbitcoinsBloc _fastBitcoinsBloc = _make();
-      var redeemRequest = new RedeemRequestModel(
+      FastbitcoinsBloc fastBitcoinsBloc = _make();
+      var redeemRequest = RedeemRequestModel(
           "test@gmail.com", "code", 1, "USD", 0, "")
         ..validateResponse =
-            new ValidateResponseModel(0, "", 0, 0, "", 0, 1.0, 1.0, 0, 0.0, 0);
-      var tester = new BlocTester<RedeemRequestModel, RedeemResponseModel>(
-          _fastBitcoinsBloc.redeemResponseStream,
+            ValidateResponseModel(0, "", 0, 0, "", 0, 1.0, 1.0, 0, 0.0, 0);
+      var tester = BlocTester<RedeemRequestModel, RedeemResponseModel>(
+          fastBitcoinsBloc.redeemResponseStream,
           (res) {
             fail('res should not be parsed $res');
           },
-          _fastBitcoinsBloc.redeemRequestSink,
+          fastBitcoinsBloc.redeemRequestSink,
           redeemRequest,
           (e) {
             expect(e, 'Service Unavailable. Please try again later.');
@@ -191,7 +191,7 @@ void main() {
 
     test('match production and test base urls', () async {
       FastbitcoinsBloc test = _make();
-      FastbitcoinsBloc production = new FastbitcoinsBloc();
+      FastbitcoinsBloc production = FastbitcoinsBloc();
       expect(test.baseURL, FastbitcoinsBloc.TESTING_URL);
       expect(production.baseURL, FastbitcoinsBloc.PRODUCTION_URL);
     });
@@ -203,10 +203,10 @@ void main() {
 
   group('Json', () {
     test('ValidateRequestModel fromJson should parse a Model', () async {
-      final emailAddress = 'an email address';
-      final code = 'a code';
-      final value = 1.2;
-      final currency = 'a currency';
+      const emailAddress = 'an email address';
+      const code = 'a code';
+      const value = 1.2;
+      const currency = 'a currency';
       final model = ValidateRequestModel.fromJson({
         'email_address': emailAddress,
         'code': code,
@@ -220,13 +220,13 @@ void main() {
     });
 
     test('RedeemRequestModel fromJson should parse a Model', () async {
-      final emailAddress = 'an email address';
-      final code = 'a code';
-      final value = 1.2;
-      final currency = 'a currency';
-      final quotationId = 3;
-      final quotationSecret = 'a quotation secret';
-      final lightningInvoice = 'a lightning invoice';
+      const emailAddress = 'an email address';
+      const code = 'a code';
+      const value = 1.2;
+      const currency = 'a currency';
+      const quotationId = 3;
+      const quotationSecret = 'a quotation secret';
+      const lightningInvoice = 'a lightning invoice';
       final model = RedeemRequestModel.fromJson({
         'email_address': emailAddress,
         'code': code,

@@ -11,7 +11,7 @@ class AddressWidget extends StatelessWidget {
   final String address;
   final String backupJson;
 
-  AddressWidget(
+  const AddressWidget(
     this.address,
     this.backupJson,
   );
@@ -27,7 +27,7 @@ class AddressWidget extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.start,
         children: [
           Container(
-            padding: EdgeInsets.only(top: 24.0),
+            padding: const EdgeInsets.only(top: 24.0),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
@@ -35,10 +35,8 @@ class AddressWidget extends StatelessWidget {
                   texts.invoice_btc_address_deposit_address,
                   style: theme.FieldTextStyle.labelStyle,
                 ),
-                Container(
-                  child: Row(
-                    children: _buildShareAndCopyIcons(context),
-                  ),
+                Row(
+                  children: _buildShareAndCopyIcons(context),
                 ),
               ],
             ),
@@ -52,14 +50,14 @@ class AddressWidget extends StatelessWidget {
                         margin: const EdgeInsets.only(top: 32.0, bottom: 16.0),
                         padding: const EdgeInsets.all(8.6),
                         child: CompactQRImage(
-                          data: "bitcoin:" + address,
+                          data: "bitcoin:$address",
                           size: 180.0,
                         ),
                       ),
                       onLongPress: () => _showAlertDialog(context),
                     ),
                     Container(
-                      padding: EdgeInsets.only(top: 16.0),
+                      padding: const EdgeInsets.only(top: 16.0),
                       child: GestureDetector(
                         onTap: () {
                           ServiceInjector().device.setClipboardText(address);
@@ -88,8 +86,8 @@ class AddressWidget extends StatelessWidget {
       height: 188.6,
       margin: const EdgeInsets.only(top: 32.0, bottom: 16.0),
       padding: const EdgeInsets.all(8.6),
-      child: Padding(
-        padding: const EdgeInsets.all(32.0),
+      child: const Padding(
+        padding: EdgeInsets.all(32.0),
         child: CircularProgressIndicator(),
       ),
     );
@@ -98,15 +96,15 @@ class AddressWidget extends StatelessWidget {
   List<Widget> _buildShareAndCopyIcons(BuildContext context) {
     final texts = context.texts();
 
-    List<Widget> _icons = [];
+    List<Widget> icons = [];
     if (address == null) {
-      _icons.add(SizedBox(
+      icons.add(const SizedBox(
         height: 48.0,
       ));
-      return _icons;
+      return icons;
     }
-    Widget _shareIcon = IconButton(
-      icon: Icon(IconData(0xe917, fontFamily: 'icomoon')),
+    Widget shareIcon = IconButton(
+      icon: const Icon(IconData(0xe917, fontFamily: 'icomoon')),
       onPressed: () {
         final RenderBox box = context.findRenderObject();
         final offset = box.localToGlobal(Offset.zero) & box.size;
@@ -120,8 +118,8 @@ class AddressWidget extends StatelessWidget {
         );
       },
     );
-    Widget _copyIcon = IconButton(
-      icon: Icon(IconData(0xe90b, fontFamily: 'icomoon')),
+    Widget copyIcon = IconButton(
+      icon: const Icon(IconData(0xe90b, fontFamily: 'icomoon')),
       onPressed: () {
         ServiceInjector().device.setClipboardText(address);
         showFlushbar(
@@ -130,9 +128,9 @@ class AddressWidget extends StatelessWidget {
         );
       },
     );
-    _icons.add(_shareIcon);
-    _icons.add(_copyIcon);
-    return _icons;
+    icons.add(shareIcon);
+    icons.add(copyIcon);
+    return icons;
   }
 
   void _showAlertDialog(BuildContext context) {
@@ -140,7 +138,7 @@ class AddressWidget extends StatelessWidget {
     final themeData = Theme.of(context);
 
     AlertDialog dialog = AlertDialog(
-      contentPadding: EdgeInsets.fromLTRB(20.0, 20.0, 20.0, 4.0),
+      contentPadding: const EdgeInsets.fromLTRB(20.0, 20.0, 20.0, 4.0),
       content: RichText(
         text: TextSpan(
           style: themeData.dialogTheme.contentTextStyle,
@@ -148,7 +146,7 @@ class AddressWidget extends StatelessWidget {
           children: [
             TextSpan(
               text: texts.invoice_btc_address_on_chain_here,
-              style: TextStyle(color: Colors.blue),
+              style: const TextStyle(color: Colors.blue),
               recognizer: TapGestureRecognizer()
                 ..onTap = () {
                   final RenderBox box = context.findRenderObject();

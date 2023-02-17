@@ -15,7 +15,7 @@ class MarketplacePage extends StatefulWidget {
 }
 
 class MarketplacePageState extends State<MarketplacePage> {
-  final _scaffoldKey = new GlobalKey<ScaffoldState>();
+  final _scaffoldKey = GlobalKey<ScaffoldState>();
 
   @override
   Widget build(BuildContext context) {
@@ -61,7 +61,7 @@ class MarketplacePageState extends State<MarketplacePage> {
   Widget _buildVendors(List<VendorModel> vendorModel) {
     final accountBloc = AppBlocsProvider.of<AccountBloc>(context);
 
-    return Container(
+    return SizedBox(
       height: MediaQuery.of(context).size.height -
           kToolbarHeight -
           MediaQuery.of(context).padding.top,

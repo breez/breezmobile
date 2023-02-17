@@ -114,7 +114,7 @@ class DevViewState extends State<DevView> {
             dividerColor: Colors.transparent,
           ),
           child: ListView(children: defaultCliCommandsText((command) {
-            _cliInputController.text = command + " ";
+            _cliInputController.text = "$command ";
             FocusScope.of(_scaffoldKey.currentState.context)
                 .requestFocus(_cliEntryFocusNode);
           })));
@@ -150,8 +150,8 @@ class DevViewState extends State<DevView> {
                               return Scaffold(
                                 key: _scaffoldKey,
                                 appBar: AppBar(
-                                  leading: backBtn.BackButton(),
-                                  title: Text("Developers"),
+                                  leading: const backBtn.BackButton(),
+                                  title: const Text("Developers"),
                                   actions: <Widget>[
                                     PopupMenuButton<Choice>(
                                       onSelected: widget._select,
@@ -199,7 +199,7 @@ class DevViewState extends State<DevView> {
                                                 child: TextField(
                                               focusNode: _cliEntryFocusNode,
                                               controller: _cliInputController,
-                                              decoration: InputDecoration(
+                                              decoration: const InputDecoration(
                                                   hintText:
                                                       'Enter a command or use the links below'),
                                               onSubmitted: (command) {
@@ -207,7 +207,7 @@ class DevViewState extends State<DevView> {
                                               },
                                             )),
                                             IconButton(
-                                              icon: Icon(Icons.play_arrow),
+                                              icon: const Icon(Icons.play_arrow),
                                               tooltip: 'Run',
                                               onPressed: () {
                                                 _sendCommand(
@@ -215,7 +215,7 @@ class DevViewState extends State<DevView> {
                                               },
                                             ),
                                             IconButton(
-                                              icon: Icon(Icons.clear),
+                                              icon: const Icon(Icons.clear),
                                               tooltip: 'Clear',
                                               onPressed: () {
                                                 setState(() {
@@ -232,20 +232,20 @@ class DevViewState extends State<DevView> {
                                       Expanded(
                                           flex: 1,
                                           child: Container(
-                                            padding: EdgeInsets.only(
+                                            padding: const EdgeInsets.only(
                                                 top: 10.0,
                                                 left: 10.0,
                                                 right: 10.0),
                                             child: Container(
                                               padding: _showDefaultCommands
-                                                  ? EdgeInsets.all(0.0)
-                                                  : EdgeInsets.all(2.0),
+                                                  ? const EdgeInsets.all(0.0)
+                                                  : const EdgeInsets.all(2.0),
                                               decoration: BoxDecoration(
                                                   border: _showDefaultCommands
                                                       ? null
                                                       : Border.all(
                                                           width: 1.0,
-                                                          color: Color(
+                                                          color: const Color(
                                                               0x80FFFFFF))),
                                               child: Column(
                                                 mainAxisSize: MainAxisSize.max,
@@ -260,7 +260,7 @@ class DevViewState extends State<DevView> {
                                                                   .end,
                                                           children: <Widget>[
                                                             IconButton(
-                                                              icon: Icon(Icons
+                                                              icon: const Icon(Icons
                                                                   .content_copy),
                                                               tooltip:
                                                                   'Copy to Clipboard',
@@ -283,14 +283,14 @@ class DevViewState extends State<DevView> {
                                                                       theme
                                                                           .snackBarBackgroundColor,
                                                                   duration:
-                                                                      Duration(
+                                                                      const Duration(
                                                                           seconds:
                                                                               2),
                                                                 ));
                                                               },
                                                             ),
                                                             IconButton(
-                                                              icon: Icon(
+                                                              icon: const Icon(
                                                                   Icons.share),
                                                               iconSize: 19.0,
                                                               tooltip: 'Share',
@@ -328,7 +328,7 @@ class DevViewState extends State<DevView> {
       BreezUserModel userModel) {
     List<Choice> choices = <Choice>[];
     choices.addAll([
-      Choice(title: 'Share Logs', icon: Icons.share, function: shareLog),
+      const Choice(title: 'Share Logs', icon: Icons.share, function: shareLog),
       /*
       Choice(
           title: 'Show Initial Screen',
@@ -423,12 +423,12 @@ class DevViewState extends State<DevView> {
           var zipFilePath = '${tempDir.path}/wallet-files.zip';
           encoder.create(zipFilePath);
           var i = 1;
-          walletFiles.forEach((f) {
+          for (var f in walletFiles) {
             var file = File(f);
             encoder.addFile(file,
                 "${i.toString()}_${file.path.split(Platform.pathSeparator).last}");
             i += 1;
-          });
+          }
           encoder.close();
           final zipFile = XFile(zipFilePath);
           Share.shareXFiles([zipFile]);
@@ -451,7 +451,7 @@ class DevViewState extends State<DevView> {
         final fileResult = await FilePicker.platform.pickFiles(
           dialogTitle: "Select Product Catalog DB",
         );
-        if (fileResult != null && fileResult.files.length > 0) {
+        if (fileResult != null && fileResult.files.isNotEmpty) {
           final file = fileResult.files.first;
           if (file.path.endsWith(".db")) {
             final databasePath = await getDatabasePath();
@@ -607,10 +607,10 @@ class DevViewState extends State<DevView> {
     var encoder = ZipFileEncoder();
     var zipFilePath = '${tempDir.path}/backup.zip';
     encoder.create(zipFilePath);
-    files.forEach((f) {
+    for (var f in files) {
       var file = File(f);
-      encoder.addFile(file, "${file.path.split(Platform.pathSeparator).last}");
-    });
+      encoder.addFile(file, file.path.split(Platform.pathSeparator).last);
+    }
     encoder.close();
     final zipFile = XFile(zipFilePath);
     Share.shareXFiles([zipFile]);
@@ -637,21 +637,21 @@ class DevViewState extends State<DevView> {
     var stats = await tempDir.stat();
     log.info("temp dir size = ${stats.size / 1024}kb");
     var children = tempDir.listSync();
-    children.forEach((child) async {
+    for (var child in children) {
       var childStats = await child.stat();
       var idDir = (child is Directory);
       log.info(
           '${idDir ? "Directory - " : "File - "} path: ${child.path}: ${childStats.size / 1024}kb');
       if (child is Directory) {
         var secondLevelChildren = child.listSync();
-        secondLevelChildren.forEach((secondLevelChild) async {
+        for (var secondLevelChild in secondLevelChildren) {
           var idChildDir = (secondLevelChild is Directory);
           var secondLevelChildStats = await secondLevelChild.stat();
           log.info(
               "\t${idChildDir ? "Directory - " : "File - "} path: ${secondLevelChild.path}: ${secondLevelChildStats.size / 1024}kb");
-        });
+        }
       }
-    });
+    }
   }
 
   Future _promptForRestart() {

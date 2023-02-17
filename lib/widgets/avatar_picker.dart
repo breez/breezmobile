@@ -35,7 +35,7 @@ class AvatarPicker extends StatelessWidget {
         _pickImage(context);
       },
       child: Padding(
-        padding: EdgeInsets.only(top: 16.0),
+        padding: const EdgeInsets.only(top: 16.0),
         child: _getPickerWidget(context),
       ),
     );
@@ -45,30 +45,6 @@ class AvatarPicker extends StatelessWidget {
     final texts = context.texts();
 
     return Container(
-      child: Column(
-        mainAxisSize: MainAxisSize.max,
-        mainAxisAlignment: MainAxisAlignment.center,
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          Image(
-            image: AssetImage("src/icon/camera.png"),
-            color: Colors.white,
-            width: 24.0,
-            height: 24.0,
-          ),
-          Text(
-            imagePath == null
-                ? texts.avatar_picker_action_set_photo
-                : texts.avatar_picker_action_change_photo,
-            style: TextStyle(
-              fontSize: 10.0,
-              color: Color.fromRGBO(255, 255, 255, 0.88),
-              letterSpacing: 0.0,
-              fontFamily: "IBMPlexSans",
-            ),
-          ),
-        ],
-      ),
       width: renderedWidth.roundToDouble(),
       height: renderedWidth.roundToDouble(),
       decoration: BoxDecoration(
@@ -83,23 +59,47 @@ class AvatarPicker extends StatelessWidget {
         image: DecorationImage(
           colorFilter: ColorFilter.mode(
             imagePath == null
-                ? Color.fromRGBO(5, 93, 235, 0.8)
-                : Color.fromRGBO(51, 69, 96, 0.4),
+                ? const Color.fromRGBO(5, 93, 235, 0.8)
+                : const Color.fromRGBO(51, 69, 96, 0.4),
             BlendMode.srcATop,
           ),
           image: imagePath == null
-              ? AssetImage("src/images/avatarbg.png")
+              ? const AssetImage("src/images/avatarbg.png")
               : FileImage(File(imagePath)),
           fit: BoxFit.cover,
         ),
+      ),
+      child: Column(
+        mainAxisSize: MainAxisSize.max,
+        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          const Image(
+            image: AssetImage("src/icon/camera.png"),
+            color: Colors.white,
+            width: 24.0,
+            height: 24.0,
+          ),
+          Text(
+            imagePath == null
+                ? texts.avatar_picker_action_set_photo
+                : texts.avatar_picker_action_change_photo,
+            style: const TextStyle(
+              fontSize: 10.0,
+              color: Color.fromRGBO(255, 255, 255, 0.88),
+              letterSpacing: 0.0,
+              fontFamily: "IBMPlexSans",
+            ),
+          ),
+        ],
       ),
     );
   }
 
   Future _pickImage(BuildContext context) async {
-    final _picker = ImagePicker();
+    final picker = ImagePicker();
     XFile pickedFile =
-        await _picker.pickImage(source: ImageSource.gallery).catchError((err) {
+        await picker.pickImage(source: ImageSource.gallery).catchError((err) {
       log.severe(err.toString());
     });
     final File file = File(pickedFile.path);
@@ -107,7 +107,7 @@ class AvatarPicker extends StatelessWidget {
         .cropImage(
           sourcePath: file.path,
           cropStyle: CropStyle.circle,
-          aspectRatio: CropAspectRatio(
+          aspectRatio: const CropAspectRatio(
             ratioX: 1.0,
             ratioY: 1.0,
           ),

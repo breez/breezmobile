@@ -3,7 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:breez_translations/breez_translations_locales.dart';
 
-Future<Null> promptError(
+Future<void> promptError(
   BuildContext context,
   String title,
   Widget body, {
@@ -17,9 +17,9 @@ Future<Null> promptError(
   final themeData = Theme.of(context);
 
   bool canPop = !disableBack;
-  Future<bool> Function() canPopCallback = () => Future.value(canPop);
+  canPopCallback() => Future.value(canPop);
 
-  return showDialog<Null>(
+  return showDialog<void>(
     useRootNavigator: false,
     context: context,
     barrierDismissible: false, // user must tap button!
@@ -27,7 +27,7 @@ Future<Null> promptError(
       return WillPopScope(
         onWillPop: canPopCallback,
         child: AlertDialog(
-          contentPadding: EdgeInsets.fromLTRB(16.0, 16.0, 16.0, 0.0),
+          contentPadding: const EdgeInsets.fromLTRB(16.0, 16.0, 16.0, 0.0),
           title: title == null
               ? null
               : Text(
@@ -96,9 +96,9 @@ Future<bool> promptAreYouSure(
           style: themeData.dialogTheme.titleTextStyle,
         );
   if (titleWidget != null && wideTitle) {
-    titleWidget = Container(
-      child: titleWidget,
+    titleWidget = SizedBox(
       width: MediaQuery.of(context).size.width,
+      child: titleWidget,
     );
   }
   return showDialog<bool>(
@@ -153,9 +153,9 @@ Future<bool> promptMessage(
           style: themeData.dialogTheme.titleTextStyle,
         );
   if (titleWidget != null && wideTitle) {
-    titleWidget = Container(
-      child: titleWidget,
+    titleWidget = SizedBox(
       width: MediaQuery.of(context).size.width,
+      child: titleWidget,
     );
   }
   return showDialog<bool>(

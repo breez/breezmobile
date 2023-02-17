@@ -28,7 +28,7 @@ class ConditionalDeposit extends StatelessWidget {
       builder: (ctx, snapshot) {
         final account = snapshot.data;
         if (account == null) {
-          return SizedBox();
+          return const SizedBox();
         }
 
         final unconfirmedTxID = account.swapFundsStatus.unconfirmedTxID;
@@ -49,7 +49,7 @@ class ConditionalDeposit extends StatelessWidget {
 
         return Scaffold(
           appBar: AppBar(
-            leading: backBtn.BackButton(),
+            leading: const backBtn.BackButton(),
             title: Text(title),
           ),
           body: Column(
@@ -57,7 +57,7 @@ class ConditionalDeposit extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               Padding(
-                padding: EdgeInsets.only(
+                padding: const EdgeInsets.only(
                   top: 50.0,
                   left: 30.0,
                   right: 30.0,
@@ -72,7 +72,7 @@ class ConditionalDeposit extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Padding(
-                          padding: EdgeInsets.only(
+                          padding: const EdgeInsets.only(
                             top: 30.0,
                             left: 30.0,
                             right: 30.0,
@@ -81,7 +81,7 @@ class ConditionalDeposit extends StatelessWidget {
                         ),
                       ],
                     )
-                  : SizedBox(),
+                  : const SizedBox(),
             ],
           ),
         );
@@ -99,7 +99,7 @@ class ConditionalDeposit extends StatelessWidget {
         showFlushbar(
           context,
           message: texts.add_funds_transaction_id_copied,
-          duration: Duration(seconds: 3),
+          duration: const Duration(seconds: 3),
         );
       },
     );

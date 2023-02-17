@@ -15,6 +15,7 @@ class FirebaseNotifications implements Notifications {
 
   final StreamController<Map<dynamic, dynamic>> _notificationController =
       BehaviorSubject<Map<dynamic, dynamic>>();
+  @override
   Stream<Map<dynamic, dynamic>> get notifications =>
       _notificationController.stream;
 
@@ -25,7 +26,7 @@ class FirebaseNotifications implements Notifications {
   }
 
   Future<dynamic> _onMessage(RemoteMessage message) {
-    log.info("_onMessage = " + message.data.toString());
+    log.info("_onMessage = ${message.data}");
     var data = message.data["data"] ?? message.data["aps"] ?? message.data;
     if (data != null) {
       _notificationController.add(data);
@@ -34,7 +35,7 @@ class FirebaseNotifications implements Notifications {
   }
 
   Future<dynamic> _onResume(RemoteMessage message) {
-    log.info("_onResume = " + message.data.toString());
+    log.info("_onResume = ${message.data}");
     var data = message.data["data"] ?? message.data;
     if (data != null) {
       _notificationController.add(data);

@@ -43,7 +43,7 @@ class WebLNHandlers {
   Future<String> handleMessage(postMessage) async {
     Map<String,
             Future<Map<String, dynamic>> Function(Map<String, dynamic> data)>
-        _handlersMapping = {
+        handlersMapping = {
       "sendPayment": _sendPayment,
       "makeInvoice": _makeInvoice,
       "enable": (_) => Future.value({}),
@@ -54,7 +54,7 @@ class WebLNHandlers {
 
     String action = postMessage["action"];
     var requestId = postMessage["requestId"];
-    var handler = _handlersMapping[action];
+    var handler = handlersMapping[action];
     if (handler != null) {
       try {
         var result = await handler(postMessage);

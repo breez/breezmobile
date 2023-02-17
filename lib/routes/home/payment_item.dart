@@ -50,14 +50,14 @@ class PaymentItem extends StatelessWidget {
               ListTile(
                 leading: Container(
                   height: PAYMENT_LIST_ITEM_HEIGHT,
-                  decoration: _createdWithin(Duration(seconds: 10))
+                  decoration: _createdWithin(const Duration(seconds: 10))
                       ? BoxDecoration(
                           color: Colors.white,
                           shape: BoxShape.circle,
                           boxShadow: [
                             BoxShadow(
                               color: Colors.black.withOpacity(0.1),
-                              offset: Offset(0.5, 0.5),
+                              offset: const Offset(0.5, 0.5),
                               blurRadius: 5.0,
                             ),
                           ],
@@ -67,7 +67,7 @@ class PaymentItem extends StatelessWidget {
                 ),
                 key: _firstItem ? firstPaymentItemKey : null,
                 title: Transform.translate(
-                  offset: Offset(-8, 0),
+                  offset: const Offset(-8, 0),
                   child: Text(
                     _title(context),
                     style: themeData.paymentItemTitleTextStyle,
@@ -75,7 +75,7 @@ class PaymentItem extends StatelessWidget {
                   ),
                 ),
                 subtitle: Transform.translate(
-                  offset: Offset(-8, 0),
+                  offset: const Offset(-8, 0),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.start,
                     mainAxisSize: MainAxisSize.min,
@@ -93,7 +93,7 @@ class PaymentItem extends StatelessWidget {
                     ],
                   ),
                 ),
-                trailing: Container(
+                trailing: SizedBox(
                   height: 44,
                   child: Column(
                     mainAxisAlignment:
@@ -136,7 +136,7 @@ class PaymentItem extends StatelessWidget {
               color: theme.customData[theme.themeId].pendingTextColor,
             ),
           )
-        : SizedBox();
+        : const SizedBox();
   }
 
   Widget _paymentAmount(BuildContext context) {
@@ -167,7 +167,7 @@ class PaymentItem extends StatelessWidget {
     final themeData = Theme.of(context);
 
     final fee = _paymentInfo.fee;
-    if (fee == 0 || _paymentInfo.pending) return SizedBox();
+    if (fee == 0 || _paymentInfo.pending) return const SizedBox();
     final feeFormatted = _paymentInfo.currency.format(
       fee,
       includeDisplayName: false,
@@ -183,7 +183,7 @@ class PaymentItem extends StatelessWidget {
 
   Widget _buildPaymentItemAvatar() {
     // Show Flip Transition if the payment item is created within last 10 seconds
-    if (_createdWithin(Duration(seconds: 10))) {
+    if (_createdWithin(const Duration(seconds: 10))) {
       return PaymentItemAvatar(_paymentInfo, radius: 16);
     } else {
       return FlipTransition(
@@ -191,7 +191,7 @@ class PaymentItem extends StatelessWidget {
           _paymentInfo,
           radius: 16,
         ),
-        SuccessAvatar(radius: 16),
+        const SuccessAvatar(radius: 16),
         radius: 16,
       );
     }

@@ -64,11 +64,11 @@ class GenerateBackupPhrasePageState extends State<GenerateBackupPhrasePage> {
     return Container(
       height: 48,
       width: 150,
-      padding: EdgeInsets.all(8),
+      padding: const EdgeInsets.all(8),
       decoration: BoxDecoration(
         border: Border.all(color: Colors.white30),
         borderRadius: const BorderRadius.all(
-          const Radius.circular(4),
+          Radius.circular(4),
         ),
       ),
       child: Row(

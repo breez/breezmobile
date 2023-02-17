@@ -39,13 +39,13 @@ class BoostWidget extends StatelessWidget {
       stream: accountBloc.accountStream,
       builder: (context, acc) {
         if (acc.data == null) {
-          return SizedBox();
+          return const SizedBox();
         }
         return Row(
           mainAxisSize: MainAxisSize.max,
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Container(
+            SizedBox(
               width: 88,
               child: GestureDetector(
                 behavior: HitTestBehavior.translucent,
@@ -81,18 +81,18 @@ class BoostWidget extends StatelessWidget {
                       borderRadius: BorderRadius.circular(6.0),
                       side: BorderSide(
                         color: themeData.brightness == Brightness.light
-                            ? Color(0xFF0085fb)
+                            ? const Color(0xFF0085fb)
                             : Colors.white70,
                         width: 1.6,
                       ),
                     ),
                   ),
                   icon: ImageIcon(
-                    AssetImage("src/icon/boost.png"),
+                    const AssetImage("src/icon/boost.png"),
                     size: 20,
                     color: themeData.appBarTheme.actionsIconTheme.color,
                   ),
-                  label: Container(
+                  label: SizedBox(
                     width: 44,
                     child: AutoSizeText(
                       texts.podcast_boost_action_boost,
@@ -115,7 +115,7 @@ class BoostWidget extends StatelessWidget {
               fit: FlexFit.tight,
               flex: 1,
               child: Center(
-                child: Container(
+                child: SizedBox(
                   width: 92,
                   child: Stack(
                     fit: StackFit.loose,
@@ -137,7 +137,7 @@ class BoostWidget extends StatelessWidget {
   Widget _minusButton(BuildContext context) {
     final themeData = Theme.of(context);
     return GestureDetector(
-      child: Container(
+      child: SizedBox(
         width: 32,
         height: 64,
         child: Material(
@@ -181,13 +181,13 @@ class BoostWidget extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              Container(
+              SizedBox(
                 width: 38,
                 height: 20,
                 child: AutoSizeText(
                   _formatBoostAmount(context),
                   textAlign: TextAlign.center,
-                  style: TextStyle(
+                  style: const TextStyle(
                     fontSize: 14.3,
                     letterSpacing: 1,
                     fontWeight: FontWeight.w600,
@@ -201,7 +201,7 @@ class BoostWidget extends StatelessWidget {
               AutoSizeText(
                 texts.podcast_boost_sats,
                 textAlign: TextAlign.center,
-                style: TextStyle(
+                style: const TextStyle(
                   fontSize: 10,
                   letterSpacing: 1,
                 ),
@@ -220,7 +220,7 @@ class BoostWidget extends StatelessWidget {
     return Positioned(
       left: 60,
       child: GestureDetector(
-        child: Container(
+        child: SizedBox(
           width: 32,
           height: 64,
           child: Material(

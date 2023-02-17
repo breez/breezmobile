@@ -47,7 +47,7 @@ class ShareablePaymentRow extends StatelessWidget {
             children: [
               Expanded(
                 child: Padding(
-                  padding: EdgeInsets.only(left: 16.0, right: 0.0),
+                  padding: const EdgeInsets.only(left: 16.0, right: 0.0),
                   child: GestureDetector(
                     onTap: () => isTxID
                         ? launchLinkOnExternalBrowser(
@@ -74,12 +74,12 @@ class ShareablePaymentRow extends StatelessWidget {
                     children: [
                       IconButton(
                         alignment: Alignment.centerRight,
-                        padding: EdgeInsets.only(right: 8.0),
+                        padding: const EdgeInsets.only(right: 8.0),
                         tooltip:
                             texts.payment_details_dialog_copy_action(title),
                         iconSize: 16.0,
                         color: themeData.primaryTextTheme.labelLarge.color,
-                        icon: Icon(
+                        icon: const Icon(
                           IconData(0xe90b, fontFamily: 'icomoon'),
                         ),
                         onPressed: () {
@@ -90,16 +90,16 @@ class ShareablePaymentRow extends StatelessWidget {
                           showFlushbar(
                             context,
                             message: texts.payment_details_dialog_copied(title),
-                            duration: Duration(seconds: 4),
+                            duration: const Duration(seconds: 4),
                           );
                         },
                       ),
                       IconButton(
-                        padding: EdgeInsets.only(right: 8.0),
+                        padding: const EdgeInsets.only(right: 8.0),
                         tooltip: texts.payment_details_dialog_share_transaction,
                         iconSize: 16.0,
                         color: themeData.primaryTextTheme.labelLarge.color,
-                        icon: Icon(Icons.share),
+                        icon: const Icon(Icons.share),
                         onPressed: () => Share.share(sharedValue),
                       ),
                     ],

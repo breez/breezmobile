@@ -50,12 +50,12 @@ class PosPaymentDialog extends StatefulWidget {
   );
 
   @override
-  _PosPaymentDialogState createState() {
-    return _PosPaymentDialogState();
+  PosPaymentDialogState createState() {
+    return PosPaymentDialogState();
   }
 }
 
-class _PosPaymentDialogState extends State<PosPaymentDialog> {
+class PosPaymentDialogState extends State<PosPaymentDialog> {
   CountDown _paymentTimer;
   StreamSubscription<Duration> _timerSubscription;
   StreamSubscription<PaymentRequestModel> _paidInvoiceSubscription;
@@ -82,7 +82,7 @@ class _PosPaymentDialogState extends State<PosPaymentDialog> {
     }, onDone: () {
       final navigator = Navigator.of(context);
       if (navigator.canPop()) {
-        navigator.pop(PosPaymentResult());
+        navigator.pop(const PosPaymentResult());
       }
     });
 
@@ -90,7 +90,7 @@ class _PosPaymentDialogState extends State<PosPaymentDialog> {
         widget._invoiceBloc.paidInvoicesStream.listen((paidRequest) {
       setState(() {
         if (paidRequest.paymentHash == widget.paymentRequest.paymentHash) {
-          Navigator.of(context).pop(PosPaymentResult(paid: true));
+          Navigator.of(context).pop(const PosPaymentResult(paid: true));
         }
       });
     });
@@ -121,7 +121,7 @@ class _PosPaymentDialogState extends State<PosPaymentDialog> {
       builder: (context, snapshot) {
         final account = snapshot.data;
         if (account == null) {
-          return Loader();
+          return const Loader();
         }
 
         return AlertDialog(
@@ -173,18 +173,18 @@ class _PosPaymentDialogState extends State<PosPaymentDialog> {
               splashColor: Colors.transparent,
               highlightColor: Colors.transparent,
               padding: const EdgeInsets.fromLTRB(0.0, 8.0, 2.0, 8.0),
-              icon: Icon(IconData(0xe917, fontFamily: 'icomoon')),
+              icon: const Icon(IconData(0xe917, fontFamily: 'icomoon')),
               color: themeData.primaryTextTheme.labelLarge.color,
               tooltip: texts.pos_dialog_share,
               onPressed: () => Share.share(
-                "lightning:" + widget.paymentRequest.rawPayReq,
+                "lightning:${widget.paymentRequest.rawPayReq}",
               ),
             ),
             IconButton(
               splashColor: Colors.transparent,
               highlightColor: Colors.transparent,
               padding: const EdgeInsets.fromLTRB(2.0, 8.0, 14.0, 8.0),
-              icon: Icon(IconData(0xe90b, fontFamily: 'icomoon')),
+              icon: const Icon(IconData(0xe90b, fontFamily: 'icomoon')),
               color: themeData.primaryTextTheme.labelLarge.color,
               tooltip: texts.pos_dialog_invoice_copy,
               onPressed: () {
@@ -194,7 +194,7 @@ class _PosPaymentDialogState extends State<PosPaymentDialog> {
                 showFlushbar(
                   context,
                   message: texts.pos_dialog_invoice_copied,
-                  duration: Duration(seconds: 3),
+                  duration: const Duration(seconds: 3),
                 );
               },
             ),
@@ -244,11 +244,11 @@ class _PosPaymentDialogState extends State<PosPaymentDialog> {
             padding: const EdgeInsets.symmetric(vertical: 8.0),
             child: AspectRatio(
               aspectRatio: 1.0,
-              child: Container(
+              child: SizedBox(
                 height: 230.0,
                 width: 230.0,
                 child: _loadingNfc
-                    ? Loader()
+                    ? const Loader()
                     : CompactQRImage(
                         data: widget.paymentRequest.rawPayReq,
                       ),
@@ -256,7 +256,7 @@ class _PosPaymentDialogState extends State<PosPaymentDialog> {
             ),
           ),
           lspFee == 0
-              ? SizedBox()
+              ? const SizedBox()
               : Padding(
                   padding: const EdgeInsets.only(bottom: 8.0),
                   child: Text(
@@ -308,7 +308,7 @@ class _PosPaymentDialogState extends State<PosPaymentDialog> {
         style: themeData.primaryTextTheme.labelLarge,
       ),
       onPressed: () {
-        Navigator.of(context).pop(PosPaymentResult(clearSale: true));
+        Navigator.of(context).pop(const PosPaymentResult(clearSale: true));
       },
     );
   }
@@ -327,7 +327,7 @@ class _PosPaymentDialogState extends State<PosPaymentDialog> {
         style: themeData.primaryTextTheme.labelLarge,
       ),
       onPressed: () {
-        Navigator.of(context).pop(PosPaymentResult());
+        Navigator.of(context).pop(const PosPaymentResult());
       },
     );
   }

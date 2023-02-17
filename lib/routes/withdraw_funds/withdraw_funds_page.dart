@@ -86,7 +86,7 @@ class WithdrawFundsPageState extends State<WithdrawFundsPage> {
 
     return Scaffold(
       appBar: AppBar(
-        leading: backBtn.BackButton(),
+        leading: const backBtn.BackButton(),
         title: Text(widget.title),
       ),
       body: StreamBuilder<AccountModel>(
@@ -96,10 +96,10 @@ class WithdrawFundsPageState extends State<WithdrawFundsPage> {
 
           final acc = snapshot.data;
           Widget optionalMessage = widget.optionalMessage == null
-              ? SizedBox()
+              ? const SizedBox()
               : WarningBox(
-                  boxPadding: EdgeInsets.only(bottom: 24),
-                  contentPadding: EdgeInsets.symmetric(
+                  boxPadding: const EdgeInsets.only(bottom: 24),
+                  contentPadding: const EdgeInsets.symmetric(
                     vertical: 12,
                     horizontal: 8,
                   ),
@@ -137,14 +137,12 @@ class WithdrawFundsPageState extends State<WithdrawFundsPage> {
             ));
             amountWidget.add(ListTile(
               contentPadding: EdgeInsets.zero,
-              title: Container(
-                child: AutoSizeText(
-                  texts.withdraw_funds_use_all_funds,
-                  style: TextStyle(color: Colors.white),
-                  maxLines: 1,
-                  minFontSize: MinFontSize(context).minFontSize,
-                  stepGranularity: 0.1,
-                ),
+              title: AutoSizeText(
+                texts.withdraw_funds_use_all_funds,
+                style: const TextStyle(color: Colors.white),
+                maxLines: 1,
+                minFontSize: MinFontSize(context).minFontSize,
+                stepGranularity: 0.1,
               ),
               trailing: Switch(
                 value: _isMax,
@@ -170,7 +168,7 @@ class WithdrawFundsPageState extends State<WithdrawFundsPage> {
             child: Form(
               key: _formKey,
               child: Padding(
-                padding: EdgeInsets.fromLTRB(16.0, 24.0, 16.0, 40.0),
+                padding: const EdgeInsets.fromLTRB(16.0, 24.0, 16.0, 40.0),
                 child: Column(
                   mainAxisSize: MainAxisSize.max,
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -182,10 +180,10 @@ class WithdrawFundsPageState extends State<WithdrawFundsPage> {
                       decoration: InputDecoration(
                         labelText: texts.withdraw_funds_btc_address,
                         suffixIcon: IconButton(
-                          padding: EdgeInsets.only(top: 21.0),
+                          padding: const EdgeInsets.only(top: 21.0),
                           alignment: Alignment.bottomRight,
                           icon: Image(
-                            image: AssetImage("src/icon/qr_scan.png"),
+                            image: const AssetImage("src/icon/qr_scan.png"),
                             color: theme.BreezColors.white[500],
                             fit: BoxFit.contain,
                             width: 24.0,
@@ -203,30 +201,28 @@ class WithdrawFundsPageState extends State<WithdrawFundsPage> {
                         return null;
                       },
                     ),
-                    _scannerErrorMessage.length > 0
+                    _scannerErrorMessage.isNotEmpty
                         ? Text(
                             _scannerErrorMessage,
                             style: theme.validatorStyle,
                           )
-                        : SizedBox(),
+                        : const SizedBox(),
                     ...amountWidget,
                     Container(
-                      padding: EdgeInsets.only(top: 36.0),
+                      padding: const EdgeInsets.only(top: 36.0),
                       child: _buildAvailableBTC(texts, acc),
                     ),
-                    SizedBox(height: 40.0),
+                    const SizedBox(height: 40.0),
                     !fetching
-                        ? SizedBox()
+                        ? const SizedBox()
                         : Row(
                             mainAxisAlignment: MainAxisAlignment.center,
                             mainAxisSize: MainAxisSize.max,
                             children: [
-                              Container(
-                                child: Loader(
-                                  strokeWidth: 2.0,
-                                  color: themeData.colorScheme.onSurface
-                                      .withOpacity(0.5),
-                                ),
+                              Loader(
+                                strokeWidth: 2.0,
+                                color: themeData.colorScheme.onSurface
+                                    .withOpacity(0.5),
                               ),
                             ],
                           ),
@@ -253,7 +249,7 @@ class WithdrawFundsPageState extends State<WithdrawFundsPage> {
           style: theme.textStyle,
         ),
         Padding(
-          padding: EdgeInsets.only(left: 3.0),
+          padding: const EdgeInsets.only(left: 3.0),
           child: Text(
             acc.currency.format(widget.policy.balance),
             style: theme.textStyle,
@@ -266,7 +262,7 @@ class WithdrawFundsPageState extends State<WithdrawFundsPage> {
   void _onNext(
     AccountModel acc,
     ReverseSwapBloc reverseSwapBloc,
-    bool _isNext,
+    bool isNext,
   ) {
     if (fetching) {
       return;
@@ -374,7 +370,7 @@ class _NextButton extends StatelessWidget {
       builder: (context, snapshot) {
         final acc = snapshot.data;
         return Padding(
-          padding: EdgeInsets.only(bottom: 36.0, top: 8.0),
+          padding: const EdgeInsets.only(bottom: 36.0, top: 8.0),
           child: fetching
               ? null
               : Column(

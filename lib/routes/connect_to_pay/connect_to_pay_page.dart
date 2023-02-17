@@ -92,11 +92,9 @@ class ConnectToPayPageState extends State<ConnectToPayPage> {
     _endOfSessionSubscription =
         _currentSession.paymentSessionStateStream.listen(
       (session) {
-        if (_remoteUserName == null) {
-          _remoteUserName = _payer
+        _remoteUserName ??= _payer
               ? session.payeeData?.userName
               : session.payerData?.userName;
-        }
 
         if (session.remotePartyCancelled) {
           _popWithMessage(
@@ -218,7 +216,7 @@ class ConnectToPayPageState extends State<ConnectToPayPage> {
     }
 
     if (_currentSession == null) {
-      return Center(child: Loader());
+      return const Center(child: Loader());
     }
 
     if (_currentSession == null) {
@@ -232,7 +230,7 @@ class ConnectToPayPageState extends State<ConnectToPayPage> {
       stream: _currentSession.paymentSessionStateStream,
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.done) {
-          return Center(child: Loader());
+          return const Center(child: Loader());
         }
 
         return StreamBuilder<LSPStatus>(
@@ -242,7 +240,7 @@ class ConnectToPayPageState extends State<ConnectToPayPage> {
               stream: accountBloc.accountStream,
               builder: (context, snapshot) {
                 if (!snapshot.hasData) {
-                  return Center(child: Loader());
+                  return const Center(child: Loader());
                 }
                 if (_currentSession.runtimeType == PayerRemoteSession) {
                   return PayerSessionWidget(

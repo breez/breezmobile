@@ -48,7 +48,7 @@ class ViewSwitch extends StatelessWidget {
     for (var item in items) {
       if (index > 0) {
         children.add(
-          Container(
+          SizedBox(
             height: 20,
             child: VerticalDivider(
               width: max(16, emptyWidth / items.length),
@@ -67,7 +67,7 @@ class ViewSwitch extends StatelessWidget {
               behavior: HitTestBehavior.translucent,
               onTap: item.onTap,
               child: ConstrainedBox(
-                constraints: BoxConstraints(
+                constraints: const BoxConstraints(
                   minHeight: 48.0,
                 ),
                 child: Row(

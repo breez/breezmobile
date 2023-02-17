@@ -25,12 +25,12 @@ import 'package:share_plus/share_plus.dart';
 class PosSettingsPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    final _userProfileBloc = AppBlocsProvider.of<UserProfileBloc>(context);
+    final userProfileBloc = AppBlocsProvider.of<UserProfileBloc>(context);
     return StreamBuilder<BreezUserModel>(
-      stream: _userProfileBloc.userStream,
+      stream: userProfileBloc.userStream,
       builder: (context, snapshot) {
         if (snapshot.hasData) {
-          return _PosSettingsPage(_userProfileBloc, snapshot.data);
+          return _PosSettingsPage(userProfileBloc, snapshot.data);
         }
         return StaticLoader();
       },
@@ -67,7 +67,7 @@ class PosSettingsPageState extends State<_PosSettingsPage> {
     super.initState();
     final user = widget.currentProfile;
     _timeoutValue = user.cancellationTimeoutValue;
-    _cancellationTimeoutController.text = "${user.cancellationTimeoutValue.toStringAsFixed(0)}";
+    _cancellationTimeoutController.text = user.cancellationTimeoutValue.toStringAsFixed(0);
     _addressLine1Controller.text = user.businessAddress?.addressLine1 ?? "";
     _addressLine2Controller.text = user.businessAddress?.addressLine2 ?? "";
     _defaultNoteController.text = user.defaultPosNote;
@@ -83,7 +83,7 @@ class PosSettingsPageState extends State<_PosSettingsPage> {
       key: _scaffoldKey,
       appBar: AppBar(
         automaticallyImplyLeading: false,
-        leading: backBtn.BackButton(),
+        leading: const backBtn.BackButton(),
         title: Text(texts.pos_settings_title),
       ),
       body: SingleChildScrollView(
@@ -93,7 +93,7 @@ class PosSettingsPageState extends State<_PosSettingsPage> {
           builder: (context, snapshot) {
             var user = snapshot.data;
             if (user == null) {
-              return Loader();
+              return const Loader();
             }
             return GestureDetector(
               behavior: HitTestBehavior.opaque,
@@ -112,7 +112,7 @@ class PosSettingsPageState extends State<_PosSettingsPage> {
                     ),
                     child: Text(
                       texts.pos_settings_cancellation_timeout,
-                      style: TextStyle(
+                      style: const TextStyle(
                         fontSize: 12.4,
                         letterSpacing: 0.11,
                         height: 1.24,
@@ -124,7 +124,7 @@ class PosSettingsPageState extends State<_PosSettingsPage> {
                     mainAxisAlignment: MainAxisAlignment.start,
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
-                      Container(
+                      SizedBox(
                         width: 304.0,
                         child: Padding(
                           padding: EdgeInsets.zero,
@@ -132,11 +132,11 @@ class PosSettingsPageState extends State<_PosSettingsPage> {
                         ),
                       ),
                       Padding(
-                        padding: EdgeInsets.only(left: 8.0, right: 16.0),
+                        padding: const EdgeInsets.only(left: 8.0, right: 16.0),
                         child: Text(
                           num.parse(_cancellationTimeoutController.text)
                               .toStringAsFixed(0),
-                          style: TextStyle(
+                          style: const TextStyle(
                             color: Colors.white,
                             fontSize: 12.4,
                             letterSpacing: 0.11,
@@ -146,11 +146,11 @@ class PosSettingsPageState extends State<_PosSettingsPage> {
                     ],
                   ),
                   ..._buildAdminPasswordTiles(context, userProfileBloc, user),
-                  Divider(),
+                  const Divider(),
                   _buildExportItemsTile(context, posCatalogBloc),
-                  Divider(),
+                  const Divider(),
                   _buildAddressField(context, userProfileBloc, user),
-                  Divider(),
+                  const Divider(),
                   _buildDefaultNote(context),
                 ],
               ),
@@ -189,12 +189,12 @@ class PosSettingsPageState extends State<_PosSettingsPage> {
     BreezUserModel user,
   ) {
     var widgets = [
-      Divider(),
+      const Divider(),
       _buildEnablePasswordTile(context, userProfileBloc, user),
     ];
     if (user.hasAdminPassword) {
       widgets
-        ..add(Divider())
+        ..add(const Divider())
         ..add(_buildSetPasswordTile(context));
     }
     return widgets;
@@ -207,15 +207,13 @@ class PosSettingsPageState extends State<_PosSettingsPage> {
     final texts = context.texts();
     final themeData = Theme.of(context);
     return ListTile(
-      title: Container(
-        child: AutoSizeText(
-          texts.pos_settings_items_list,
-          style: TextStyle(color: Colors.white),
-          maxLines: 1,
-          minFontSize: MinFontSize(context).minFontSize,
-          stepGranularity: 0.1,
-          group: _autoSizeGroup,
-        ),
+      title: AutoSizeText(
+        texts.pos_settings_items_list,
+        style: const TextStyle(color: Colors.white),
+        maxLines: 1,
+        minFontSize: MinFontSize(context).minFontSize,
+        stepGranularity: 0.1,
+        group: _autoSizeGroup,
       ),
       trailing: Padding(
         padding: const EdgeInsets.only(right: 0.0),
@@ -226,7 +224,7 @@ class PosSettingsPageState extends State<_PosSettingsPage> {
             color: themeData.iconTheme.color,
           ),
           padding: EdgeInsets.zero,
-          offset: Offset(12, 36),
+          offset: const Offset(12, 36),
           onSelected: _select,
           itemBuilder: (context) => [
             PopupMenuItem(
@@ -341,17 +339,15 @@ class PosSettingsPageState extends State<_PosSettingsPage> {
   ListTile _buildSetPasswordTile(BuildContext context) {
     final texts = context.texts();
     return ListTile(
-      title: Container(
-        child: AutoSizeText(
-          texts.pos_settings_change_manager_password,
-          style: TextStyle(color: Colors.white),
-          maxLines: 1,
-          minFontSize: MinFontSize(context).minFontSize,
-          stepGranularity: 0.1,
-          group: _autoSizeGroup,
-        ),
+      title: AutoSizeText(
+        texts.pos_settings_change_manager_password,
+        style: const TextStyle(color: Colors.white),
+        maxLines: 1,
+        minFontSize: MinFontSize(context).minFontSize,
+        stepGranularity: 0.1,
+        group: _autoSizeGroup,
       ),
-      trailing: Icon(
+      trailing: const Icon(
         Icons.keyboard_arrow_right,
         color: Colors.white,
         size: 30.0,
@@ -371,7 +367,7 @@ class PosSettingsPageState extends State<_PosSettingsPage> {
         user.hasAdminPassword
             ? texts.pos_settings_activate_manager_password
             : texts.pos_settings_create_manager_password,
-        style: TextStyle(color: Colors.white),
+        style: const TextStyle(color: Colors.white),
         maxLines: 1,
         minFontSize: MinFontSize(context).minFontSize,
         stepGranularity: 0.1,
@@ -382,13 +378,13 @@ class PosSettingsPageState extends State<_PosSettingsPage> {
               value: user.hasAdminPassword,
               activeColor: Colors.white,
               onChanged: (bool value) {
-                if (this.mounted) {
+                if (mounted) {
                   _resetAdminPassword(userProfileBloc);
                 }
               },
             )
-          : Padding(
-              padding: const EdgeInsets.only(right: 8.0),
+          : const Padding(
+              padding: EdgeInsets.only(right: 8.0),
               child: Icon(
                 Icons.keyboard_arrow_right,
                 color: Colors.white,

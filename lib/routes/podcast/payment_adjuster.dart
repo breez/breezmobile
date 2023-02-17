@@ -29,7 +29,7 @@ class PaymentAdjuster extends StatelessWidget {
       mainAxisSize: MainAxisSize.max,
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        Container(
+        SizedBox(
           width: 120,
           child: Stack(
             children: [
@@ -48,7 +48,7 @@ class PaymentAdjuster extends StatelessWidget {
     return Positioned(
       left: 8,
       child: GestureDetector(
-        child: Container(
+        child: SizedBox(
           width: 32,
           height: 64,
           child: Material(
@@ -99,13 +99,13 @@ class PaymentAdjuster extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              Container(
+              SizedBox(
                 width: 42,
                 height: 20,
                 child: AutoSizeText(
                   _formatSatsPerMinAmount(context),
                   textAlign: TextAlign.center,
-                  style: TextStyle(
+                  style: const TextStyle(
                     fontSize: 14.3,
                     letterSpacing: 1,
                     fontWeight: FontWeight.w600,
@@ -119,7 +119,7 @@ class PaymentAdjuster extends StatelessWidget {
               AutoSizeText(
                 texts.podcast_boost_sats_min,
                 textAlign: TextAlign.center,
-                style: TextStyle(
+                style: const TextStyle(
                   fontSize: 10,
                   letterSpacing: 1,
                 ),
@@ -139,7 +139,7 @@ class PaymentAdjuster extends StatelessWidget {
     return Positioned(
       right: 8,
       child: GestureDetector(
-        child: Container(
+        child: SizedBox(
           width: 32,
           height: 64,
           child: Material(

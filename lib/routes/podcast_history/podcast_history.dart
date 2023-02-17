@@ -39,7 +39,7 @@ class PodcastHistoryPage extends StatefulWidget {
 }
 
 class PodcastHistoryPageState extends State<PodcastHistoryPage> {
-  ScreenshotController _screenshotController = ScreenshotController();
+  final ScreenshotController _screenshotController = ScreenshotController();
 
   @override
   Future<void> didChangeDependencies() async {
@@ -77,7 +77,7 @@ class PodcastHistoryPageState extends State<PodcastHistoryPage> {
     return Scaffold(
       appBar: AppBar(
         automaticallyImplyLeading: false,
-        leading: backBtn.BackButton(),
+        leading: const backBtn.BackButton(),
         title: Text(_getAppBarDisplayString(timeRange, context)),
         actions: [
           PopupMenuButton<PodcastHistoryTimeRange>(
@@ -108,7 +108,7 @@ class PodcastHistoryPageState extends State<PodcastHistoryPage> {
         stream: podcastHistoryBloc.showShareButton,
         builder: (context, snapshot) {
           if (!snapshot.hasData) {
-            return SizedBox();
+            return const SizedBox();
           }
 
           return snapshot.data
@@ -125,7 +125,7 @@ class PodcastHistoryPageState extends State<PodcastHistoryPage> {
                                   mainAxisSize: MainAxisSize.min,
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
-                                    SizedBox(
+                                    const SizedBox(
                                       height: 20,
                                     ),
                                     SvgPicture.asset(
@@ -133,12 +133,12 @@ class PodcastHistoryPageState extends State<PodcastHistoryPage> {
                                       width:
                                           (MediaQuery.of(context).size.width) /
                                               6,
-                                      colorFilter: ColorFilter.mode(
+                                      colorFilter: const ColorFilter.mode(
                                         Colors.white,
                                         BlendMode.srcATop,
                                       ),
                                     ),
-                                    SizedBox(
+                                    const SizedBox(
                                       height: 32,
                                     ),
                                     Center(
@@ -154,7 +154,7 @@ class PodcastHistoryPageState extends State<PodcastHistoryPage> {
                                             ),
                                       ),
                                     ),
-                                    SizedBox(
+                                    const SizedBox(
                                       height: 32,
                                     ),
                                     _getPodcastHistoryList(
@@ -175,36 +175,34 @@ class PodcastHistoryPageState extends State<PodcastHistoryPage> {
                             await File('${directory.path}/image.jpg').create();
                         await imagePath.writeAsBytes(image);
                         await Share.shareXFiles([XFile(imagePath.path)],
-                            text: "My " +
-                                _getAppBarDisplayString(timeRange, context) +
-                                " in Breez ⚡ Download here: https://breez.technology");
+                            text: "My ${_getAppBarDisplayString(timeRange, context)} in Breez ⚡ Download here: https://breez.technology");
                       }
                     });
                   },
-                  icon: Icon(
+                  icon: const Icon(
                     Icons.share_outlined,
                     color: Colors.white,
                   ),
                   label: Text(
                     BreezTranslations.of(context).podcast_history_share_text,
-                    style: TextStyle(color: Colors.white),
+                    style: const TextStyle(color: Colors.white),
                   ),
                 )
-              : SizedBox();
+              : const SizedBox();
         },
       ),
       body: StreamBuilder<bool>(
           stream: podcastHistoryBloc.showShareButton,
           builder: (context, isListEmptySnapshot) {
             if (!isListEmptySnapshot.hasData) {
-              return Center(child: Loader());
+              return const Center(child: Loader());
             }
 
             return isListEmptySnapshot.data
                 ? SingleChildScrollView(
                     child: Padding(
                       padding:
-                          EdgeInsets.only(top: 16.0, left: 16.0, right: 16.0),
+                          const EdgeInsets.only(top: 16.0, left: 16.0, right: 16.0),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
@@ -247,25 +245,25 @@ class PodcastHistoryPageState extends State<PodcastHistoryPage> {
                                           ),
                                         ],
                                       )
-                                    : SizedBox();
+                                    : const SizedBox();
                               }),
-                          SizedBox(
+                          const SizedBox(
                             height: 16,
                           ),
-                          Divider(
+                          const Divider(
                             thickness: 2,
                           ),
-                          SizedBox(
+                          const SizedBox(
                             height: 16,
                           ),
                           Row(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Text("PODCASTS"),
-                              Spacer(),
+                              const Text("PODCASTS"),
+                              const Spacer(),
                               PopupMenuButton<PodcastHistorySortEnum>(
                                 color: themeData.canvasColor,
-                                padding: EdgeInsets.all(0),
+                                padding: const EdgeInsets.all(0),
                                 enableFeedback: true,
                                 child: Icon(
                                   Icons.filter_list,
@@ -293,14 +291,14 @@ class PodcastHistoryPageState extends State<PodcastHistoryPage> {
                               )
                             ],
                           ),
-                          SizedBox(
+                          const SizedBox(
                             height: 12,
                           ),
                           _getPodcastHistoryList(
                               context: context,
                               getScreenshotWidget: false,
                               timeRange: timeRange),
-                          SizedBox(
+                          const SizedBox(
                             height: 40,
                           )
                         ],
@@ -394,7 +392,7 @@ Widget _getPodcastHistoryList(
             ],
           );
         } else {
-          return Center(child: Loader());
+          return const Center(child: Loader());
         }
       });
 }
@@ -506,7 +504,7 @@ class _PodcastStatItem extends StatelessWidget {
             ),
           ),
         ),
-        SizedBox(
+        const SizedBox(
           width: 6,
         ),
         Column(
@@ -580,7 +578,7 @@ class _PodcastListTile extends StatelessWidget {
             ),
             Expanded(
               child: Padding(
-                padding: EdgeInsets.only(top: 8, bottom: 8, left: 12),
+                padding: const EdgeInsets.only(top: 8, bottom: 8, left: 12),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -600,7 +598,7 @@ class _PodcastListTile extends StatelessWidget {
                         maxLines: 1,
                       ),
                     ),
-                    SizedBox(
+                    const SizedBox(
                       height: 12,
                     ),
                     Row(
@@ -612,11 +610,11 @@ class _PodcastListTile extends StatelessWidget {
                           children: [
                             Row(
                               children: [
-                                Icon(
+                                const Icon(
                                   Icons.schedule,
                                   size: 16,
                                 ),
-                                SizedBox(
+                                const SizedBox(
                                   width: 4,
                                 ),
                                 Text(_podcastListingTimeString(
@@ -625,19 +623,19 @@ class _PodcastListTile extends StatelessWidget {
                                             durationInMins: durationInMins)))
                               ],
                             ),
-                            SizedBox(
+                            const SizedBox(
                               height: 8,
                             ),
                             Row(
                               children: [
-                                Icon(
+                                const Icon(
                                   Icons.rocket_launch_outlined,
                                   size: 16,
                                 ),
-                                SizedBox(
+                                const SizedBox(
                                   width: 4,
                                 ),
-                                Text(boostagrams + " boosts")
+                                Text("$boostagrams boosts")
                               ],
                             ),
                           ],
@@ -708,9 +706,9 @@ class _BubblePainterPodcastHistory extends CustomPainter {
     final bubblePaint = Paint()
       ..color = theme.themeId == "BLUE"
           ? Colors.white.withOpacity(0.3)
-          : Color(0xff4D88EC).withOpacity(0.2)
+          : const Color(0xff4D88EC).withOpacity(0.2)
       ..style = PaintingStyle.fill;
-    final bubbleRadius = 12.0;
+    const bubbleRadius = 12.0;
     final height = size.height - kToolbarHeight;
     canvas.drawCircle(
       Offset(size.width * 0.39, height * 0.2),

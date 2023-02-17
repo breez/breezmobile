@@ -45,7 +45,7 @@ class _SetAdminPasswordState extends State<SetAdminPasswordPage> {
     return Scaffold(
       appBar: AppBar(
         automaticallyImplyLeading: false,
-        leading: backBtn.BackButton(),
+        leading: const backBtn.BackButton(),
         title: Text(texts.pos_password_admin_title),
       ),
       body: Padding(
@@ -62,7 +62,7 @@ class _SetAdminPasswordState extends State<SetAdminPasswordPage> {
                   _repeatPasswordFocus.requestFocus();
                 },
                 validator: (value) {
-                  if (value.length == 0) {
+                  if (value.isEmpty) {
                     return texts.pos_password_admin_error_password_empty;
                   }
 
@@ -75,7 +75,7 @@ class _SetAdminPasswordState extends State<SetAdminPasswordPage> {
                 decoration: InputDecoration(
                   labelText: texts.pos_password_admin_new_password,
                   suffixIcon: IconButton(
-                    icon: Icon(Icons.remove_red_eye),
+                    icon: const Icon(Icons.remove_red_eye),
                     onPressed: () {
                       setState(() {
                         _passwordObscured = !_passwordObscured;
@@ -86,7 +86,7 @@ class _SetAdminPasswordState extends State<SetAdminPasswordPage> {
                 style: theme.FieldTextStyle.textStyle,
                 textCapitalization: TextCapitalization.words,
               ),
-              SizedBox(height: 12.0),
+              const SizedBox(height: 12.0),
               TextFormField(
                 obscureText: _repeatPasswordObscured,
                 focusNode: _repeatPasswordFocus,
@@ -94,7 +94,7 @@ class _SetAdminPasswordState extends State<SetAdminPasswordPage> {
                 decoration: InputDecoration(
                   labelText: texts.pos_password_admin_confirm_password,
                   suffixIcon: IconButton(
-                    icon: Icon(Icons.remove_red_eye),
+                    icon: const Icon(Icons.remove_red_eye),
                     onPressed: () {
                       setState(() {
                         _repeatPasswordObscured = !_repeatPasswordObscured;

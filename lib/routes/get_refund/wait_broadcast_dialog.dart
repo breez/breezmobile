@@ -137,7 +137,7 @@ class _WaitBroadcastDialog extends State<WaitBroadcastDialog> {
           textAlign: TextAlign.center,
         ),
         Padding(
-          padding: EdgeInsets.only(top: 8.0),
+          padding: const EdgeInsets.only(top: 8.0),
           child: Image.asset(
             theme.customData[theme.themeId].loaderAssetPath,
             gaplessPlayback: true,
@@ -182,7 +182,7 @@ class _WaitBroadcastDialog extends State<WaitBroadcastDialog> {
               ),
             ),
             Expanded(
-              child: Container(
+              child: SizedBox(
                 height: 36.0,
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.end,
@@ -193,7 +193,7 @@ class _WaitBroadcastDialog extends State<WaitBroadcastDialog> {
                       tooltip: texts.waiting_broadcast_dialog_action_copy,
                       iconSize: 16.0,
                       color: themeData.primaryTextTheme.labelLarge.color,
-                      icon: Icon(
+                      icon: const Icon(
                         IconData(
                           0xe90b,
                           fontFamily: "icomoon",
@@ -209,7 +209,7 @@ class _WaitBroadcastDialog extends State<WaitBroadcastDialog> {
                       tooltip: texts.waiting_broadcast_dialog_action_share,
                       iconSize: 16.0,
                       color: themeData.primaryTextTheme.labelLarge.color,
-                      icon: Icon(Icons.share),
+                      icon: const Icon(Icons.share),
                       onPressed: () => Share.share(_response.txID),
                     ),
                   ],

@@ -9,7 +9,7 @@ class LSPWebViewPage extends StatefulWidget {
   final String _url;
   final String _title;
 
-  LSPWebViewPage(
+  const LSPWebViewPage(
     this._url,
     this._title,
   );

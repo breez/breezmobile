@@ -37,7 +37,7 @@ class AccountBloc {
   static const String ACCOUNT_SETTINGS_PREFERENCES_KEY = "account_settings";
   static const String PERSISTENT_NODE_ID_PREFERENCES_KEY = "PERSISTENT_NODE_ID";
 
-  Repository _posRepository;
+  final Repository _posRepository;
 
   Timer _exchangeRateTimer;
   Map<String, CurrencyData> _currencyData;
@@ -45,7 +45,7 @@ class AccountBloc {
   final _userActionsController = StreamController<AsyncAction>.broadcast();
   AccountSynchronizer _accountSynchronizer;
   Sink<AsyncAction> get userActionsSink => _userActionsController.sink;
-  Map<Type, Function> _actionHandlers = Map();
+  Map<Type, Function> _actionHandlers = {};
 
   final _reconnectStreamController = StreamController<void>.broadcast();
   Sink<void> get _reconnectSink => _reconnectStreamController.sink;
@@ -97,7 +97,7 @@ class AccountBloc {
   Stream<CompletedPayment> get completedPaymentsStream =>
       _completedPaymentsController.stream;
 
-  Map<String, bool> _ignoredFeedbackPayments = Map<String, bool>();
+  final Map<String, bool> _ignoredFeedbackPayments = <String, bool>{};
 
   Stream<PaymentInfo> get pendingPaymentStream {
     var newestPaymentTime =
@@ -133,11 +133,11 @@ class AccountBloc {
   Device _device;
   BackgroundTaskService _backgroundService;
   CurrencyService _currencyService;
-  Completer _onBoardingCompleter = Completer();
+  final Completer _onBoardingCompleter = Completer();
   Stream<BreezUserModel> userProfileStream;
   TorBloc torBloc = TorBloc();
   Completer<bool> startDaemonCompleter = Completer<bool>();
-  PaymentOptionsBloc _paymentOptionsBloc;
+  final PaymentOptionsBloc _paymentOptionsBloc;
 
   AccountBloc(
     this.userProfileStream,
@@ -276,10 +276,10 @@ class AccountBloc {
   }
 
   Future _fetchRates(FetchRates rates) async {
-    if (this._accountController.value.fiatConversionList.isEmpty) {
+    if (_accountController.value.fiatConversionList.isEmpty) {
       await _getExchangeRate();
     }
-    rates.resolve(this._accountController.value.fiatConversionList);
+    rates.resolve(_accountController.value.fiatConversionList);
   }
 
   List<FiatConversion> _sortFiatConversionList(
@@ -292,21 +292,21 @@ class AccountBloc {
         f1.currencyData.shortName.compareTo(f2.currencyData.shortName));
 
     // Then give precedence to the preferred items.
-    _currentUser.preferredCurrencies.reversed.forEach((p) {
+    for (var p in _currentUser.preferredCurrencies.reversed) {
       var preferred = toSort.firstWhere((e) => e.currencyData.shortName == p,
           orElse: () => null);
       if (preferred != null) {
         toSort.remove(preferred);
         toSort.insert(0, preferred);
       }
-    });
+    }
     return toSort;
   }
 
   Future _handleSendQueryRoute(SendPaymentFailureReport action) async {
     Map<String, dynamic> jsonReport = json.decode(action.traceReport);
     jsonReport["app version"] = await _device.appVersion();
-    JsonEncoder encoder = JsonEncoder.withIndent('\t');
+    JsonEncoder encoder = const JsonEncoder.withIndent('\t');
     String report = encoder.convert(jsonReport);
     action.resolve(await _breezLib.sendPaymentFailureBugReport(report));
   }
@@ -359,7 +359,7 @@ class AccountBloc {
 
   Future _handleResetChainService(ResetChainService action) async {
     var workingDir = await _breezLib.getWorkingDir();
-    var bootstrapFile = File(workingDir.path + "/$FORCE_BOOTSTRAP_FILE_NAME");
+    var bootstrapFile = File("${workingDir.path}/$FORCE_BOOTSTRAP_FILE_NAME");
     action.resolve(await bootstrapFile.create(recursive: true));
   }
 
@@ -387,7 +387,8 @@ class AccountBloc {
         _completedPaymentsController.addError(error);
         return Future.error(error);
       }
-      _completedPaymentsController.add(CompletedPayment(null, null, null));
+      _completedPaymentsController
+          .add(const CompletedPayment(null, null, null));
       return response;
     });
 
@@ -496,8 +497,8 @@ class AccountBloc {
   void _listenConnectivityChanges() {
     var connectivity = Connectivity();
     connectivity.onConnectivityChanged.skip(1).listen((connectivityResult) {
-      log.info("_listenConnectivityChanges: connection changed to: " +
-          connectivityResult.toString());
+      log.info(
+          "_listenConnectivityChanges: connection changed to: $connectivityResult");
       if (connectivityResult != ConnectivityResult.none) {
         _reconnectSink.add(null);
       }
@@ -507,7 +508,7 @@ class AccountBloc {
   void _listenReconnects() {
     Future connectingFuture = Future.value(null);
     _reconnectStreamController.stream
-        .debounceTime(Duration(milliseconds: 500))
+        .debounceTime(const Duration(milliseconds: 500))
         .listen((_) async {
       connectingFuture = connectingFuture.whenComplete(() async {
         var acc = _accountController.value;
@@ -636,7 +637,7 @@ class AccountBloc {
           bool moreThan3DaysOff = Duration(
                   milliseconds: DateTime.now().millisecondsSinceEpoch -
                       startPollTimestamp) >
-              Duration(days: 3);
+              const Duration(days: 3);
           var syncUIState = _accountController.value.syncUIState;
           if ((moreThan3DaysOff || newNode) &&
               _accountController.value.syncUIState == SyncUIState.NONE &&
@@ -659,11 +660,11 @@ class AccountBloc {
     }
 
     return _breezLib.getFundStatus(_currentUser.userID ?? "").then((status) {
-      log.severe("fund status = " + status.writeToJson());
+      log.severe("fund status = ${status.writeToJson()}");
       _accountController
           .add(_accountController.value.copyWith(addedFundsReply: status));
     }).catchError((err) {
-      log.severe("Error in getFundStatus " + err.toString());
+      log.severe("Error in getFundStatus $err");
     });
   }
 
@@ -674,14 +675,14 @@ class AccountBloc {
   }
 
   Future<PaymentsModel> fetchPayments() async {
-    DateTime _firstDate;
+    DateTime firstDate;
     log.info("refreshing payments...");
 
     final hashedSales = await _posRepository.fetchSaleSummaryByPaymentHashes();
 
     log.info("refreshing payments after fetching sales hashes...");
     return _breezLib.getPayments().then((payments) {
-      List<PaymentInfo> _paymentsList = payments.paymentsList
+      List<PaymentInfo> paymentsList = payments.paymentsList
           .map((payment) => SinglePaymentInfo(
                 payment,
                 _accountController.value,
@@ -689,18 +690,17 @@ class AccountBloc {
               ))
           .toList();
 
-      if (_paymentsList.length > 0) {
-        _firstDate = DateTime.fromMillisecondsSinceEpoch(
-          _paymentsList.last.creationTimestamp.toInt() * 1000,
+      if (paymentsList.isNotEmpty) {
+        firstDate = DateTime.fromMillisecondsSinceEpoch(
+          paymentsList.last.creationTimestamp.toInt() * 1000,
         );
       }
-      log.info("refresh payments finished " +
-          payments.paymentsList.length.toString());
+      log.info("refresh payments finished ${payments.paymentsList.length}");
       return PaymentsModel(
-        _paymentsList,
-        _filterPayments(_paymentsList),
+        paymentsList,
+        _filterPayments(paymentsList),
         _paymentFilterController.value,
-        _firstDate ?? DateTime(DateTime.now().year),
+        firstDate ?? DateTime(DateTime.now().year),
       );
     });
   }
@@ -746,7 +746,7 @@ class AccountBloc {
         .toSet();
     if (_paymentFilterController.value.startDate != null &&
         _paymentFilterController.value.endDate != null) {
-      Set<PaymentInfo> _dateFilteredPaymentsSet = paymentsList
+      Set<PaymentInfo> dateFilteredPaymentsSet = paymentsList
           .where((p) => (p.creationTimestamp.toInt() * 1000 >=
                   _paymentFilterController
                       .value.startDate.millisecondsSinceEpoch &&
@@ -754,7 +754,7 @@ class AccountBloc {
                   _paymentFilterController
                       .value.endDate.millisecondsSinceEpoch))
           .toSet();
-      return _dateFilteredPaymentsSet.intersection(paymentsSet).toList();
+      return dateFilteredPaymentsSet.intersection(paymentsSet).toList();
     }
     return paymentsSet.toList();
   }
@@ -816,7 +816,7 @@ class AccountBloc {
       if (event.type == NotificationEvent_NotificationType.PAYMENT_FAILED) {
         var paymentRequest = event.data[0];
         var error = event.data[2];
-        var traceReport;
+        String traceReport;
         if (event.data.length > 3) {
           traceReport = event.data[3];
         }
@@ -838,10 +838,8 @@ class AccountBloc {
     return _breezLib.getAccount().then((acc) {
       log.info("_fetchAccount id: ${acc.id}");
       if (acc.id.isNotEmpty) {
-        log.info("ACCOUNT CHANGED BALANCE=" +
-            acc.balance.toString() +
-            " STATUS = " +
-            acc.status.toString());
+        log.info(
+            "ACCOUNT CHANGED BALANCE=${acc.balance} STATUS = ${acc.status}");
         return _accountController.value.copyWith(
             accountResponse: acc,
             currency: _currentUser?.currency,
@@ -868,10 +866,13 @@ class AccountBloc {
     });
     _refreshLSPActivity();
     if (_accountController.value.onChainFeeRate == null) {
-      _breezLib.getDefaultOnChainFeeRate().then((rate) {
-        if (rate.toInt() > 0) {
-          _accountController
-              .add(_accountController.value.copyWith(onChainFeeRate: rate));
+      _breezLib.getDefaultOnChainFeeRate().then((defaultOnChainFeeRate) {
+        if (defaultOnChainFeeRate.toInt() > 0) {
+          _accountController.add(
+            _accountController.value.copyWith(
+              onChainFeeRate: defaultOnChainFeeRate,
+            ),
+          );
         }
       });
     }
@@ -897,7 +898,7 @@ class AccountBloc {
   }
 
   Future _updateExchangeRates() {
-    return retry(_getExchangeRate, interval: Duration(seconds: 5))
+    return retry(_getExchangeRate, interval: const Duration(seconds: 5))
         .whenComplete(() {
       _startExchangeRateTimer();
       _device.eventStream.listen((e) {
@@ -913,21 +914,21 @@ class AccountBloc {
   }
 
   _startExchangeRateTimer() {
-    _exchangeRateTimer = Timer.periodic(Duration(seconds: 30), (_) async {
+    _exchangeRateTimer = Timer.periodic(const Duration(seconds: 30), (_) async {
       _getExchangeRate();
     });
   }
 
   Future _getExchangeRate() async {
     _currencyData = await _currencyService.currencies();
-    Rates _rate = await _breezLib.rate();
-    List<FiatConversion> _fiatConversionList = _rate.rates
+    Rates rate = await _breezLib.rate();
+    List<FiatConversion> fiatConversionList = rate.rates
         .map((rate) => FiatConversion(_currencyData[rate.coin], rate.value))
         .toList();
-    _fiatConversionList =
-        _sortFiatConversionList(fiatConversionList: _fiatConversionList);
+    fiatConversionList =
+        _sortFiatConversionList(fiatConversionList: fiatConversionList);
     _accountController.add(_accountController.value.copyWith(
-      fiatConversionList: _fiatConversionList,
+      fiatConversionList: fiatConversionList,
       fiatShortName: _currentUser?.fiatCurrency,
       preferredCurrencies: _currentUser?.preferredCurrencies,
     ));

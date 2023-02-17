@@ -64,7 +64,7 @@ class ReverseSwapConfirmationState extends State<ReverseSwapConfirmation> {
       }
 
       if (widget.swap.isMax) {
-        amounts = new Map.fromIterable(
+        amounts = Map.fromIterable(
           trimmedTargetConfirmations,
           key: (e) => e,
           value: (e) {
@@ -83,7 +83,7 @@ class ReverseSwapConfirmationState extends State<ReverseSwapConfirmation> {
           },
         );
       } else {
-        amounts = new Map.fromIterable(
+        amounts = Map.fromIterable(
           trimmedTargetConfirmations,
           key: (e) => e,
           value: (e) {
@@ -111,7 +111,7 @@ class ReverseSwapConfirmationState extends State<ReverseSwapConfirmation> {
               amounts[e.confirmationTarget].toSend <= widget.swap.available)
           .toList();
 
-      if (feeOptions.length > 0) {
+      if (feeOptions.isNotEmpty) {
         setState(() {
           _showConfirm = true;
         });
@@ -156,10 +156,10 @@ class ReverseSwapConfirmationState extends State<ReverseSwapConfirmation> {
                 );
               }
               if (snap.connectionState != ConnectionState.done || acc == null) {
-                return SizedBox();
+                return const SizedBox();
               }
 
-              if (feeOptions.where((f) => f != null).length == 0) {
+              if (feeOptions.where((f) => f != null).isEmpty) {
                 return _ErrorMessage(
                   message: texts.reverse_swap_confirmation_error_funds_fee,
                 );
@@ -167,26 +167,24 @@ class ReverseSwapConfirmationState extends State<ReverseSwapConfirmation> {
 
               return Container(
                 height: 500.0,
-                padding: EdgeInsets.fromLTRB(16.0, 24.0, 16.0, 40.0),
+                padding: const EdgeInsets.fromLTRB(16.0, 24.0, 16.0, 40.0),
                 width: MediaQuery.of(context).size.width,
                 child: Column(
                   //mainAxisSize: MainAxisSize.max,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Container(
-                      child: FeeChooser(
-                        economyFee: feeOptions[0],
-                        regularFee: feeOptions[1],
-                        priorityFee: feeOptions[2],
-                        selectedIndex: this.selectedFeeIndex,
-                        onSelect: (index) {
-                          this.setState(() {
-                            this.selectedFeeIndex = index;
-                          });
-                        },
-                      ),
+                    FeeChooser(
+                      economyFee: feeOptions[0],
+                      regularFee: feeOptions[1],
+                      priorityFee: feeOptions[2],
+                      selectedIndex: selectedFeeIndex,
+                      onSelect: (index) {
+                        setState(() {
+                          selectedFeeIndex = index;
+                        });
+                      },
                     ),
-                    SizedBox(height: 36.0),
+                    const SizedBox(height: 36.0),
                     buildSummary(
                       context,
                       acc,
@@ -250,7 +248,7 @@ class ReverseSwapConfirmationState extends State<ReverseSwapConfirmation> {
 
     return Container(
       decoration: BoxDecoration(
-        borderRadius: BorderRadius.all(Radius.circular(5.0)),
+        borderRadius: const BorderRadius.all(Radius.circular(5.0)),
         border: Border.all(
           color: themeData.colorScheme.onSurface.withOpacity(0.4),
         ),
@@ -259,104 +257,88 @@ class ReverseSwapConfirmationState extends State<ReverseSwapConfirmation> {
         shrinkWrap: true,
         children: [
           ListTile(
-            title: Container(
-              child: AutoSizeText(
-                texts.reverse_swap_confirmation_you_send,
-                style: TextStyle(color: Colors.white),
-                maxLines: 1,
-                minFontSize: minFont.minFontSize,
-                stepGranularity: 0.1,
-              ),
+            title: AutoSizeText(
+              texts.reverse_swap_confirmation_you_send,
+              style: const TextStyle(color: Colors.white),
+              maxLines: 1,
+              minFontSize: minFont.minFontSize,
+              stepGranularity: 0.1,
             ),
-            trailing: Container(
-              child: AutoSizeText(
-                acc.currency.format(toSend),
-                style: TextStyle(color: themeData.colorScheme.error,),
-                maxLines: 1,
-                minFontSize: minFont.minFontSize,
-                stepGranularity: 0.1,
-              ),
+            trailing: AutoSizeText(
+              acc.currency.format(toSend),
+              style: TextStyle(color: themeData.colorScheme.error,),
+              maxLines: 1,
+              minFontSize: minFont.minFontSize,
+              stepGranularity: 0.1,
             ),
           ),
           ListTile(
-            title: Container(
-              child: AutoSizeText(
-                texts.reverse_swap_confirmation_boltz_fee,
-                style: TextStyle(
-                  color: Colors.white.withOpacity(0.4),
-                ),
-                maxLines: 1,
-                minFontSize: minFont.minFontSize,
-                stepGranularity: 0.1,
+            title: AutoSizeText(
+              texts.reverse_swap_confirmation_boltz_fee,
+              style: TextStyle(
+                color: Colors.white.withOpacity(0.4),
               ),
+              maxLines: 1,
+              minFontSize: minFont.minFontSize,
+              stepGranularity: 0.1,
             ),
-            trailing: Container(
-              child: AutoSizeText(
-                texts.reverse_swap_confirmation_boltz_fee_value(
-                  acc.currency.format(boltzFees),
-                ),
-                style: TextStyle(
-                  color: themeData.colorScheme.error.withOpacity(0.4),
-                ),
-                maxLines: 1,
-                minFontSize: minFont.minFontSize,
-                stepGranularity: 0.1,
+            trailing: AutoSizeText(
+              texts.reverse_swap_confirmation_boltz_fee_value(
+                acc.currency.format(boltzFees),
               ),
+              style: TextStyle(
+                color: themeData.colorScheme.error.withOpacity(0.4),
+              ),
+              maxLines: 1,
+              minFontSize: minFont.minFontSize,
+              stepGranularity: 0.1,
             ),
           ),
           ListTile(
-            title: Container(
-              child: AutoSizeText(
-                texts.reverse_swap_confirmation_transaction_fee,
-                style: TextStyle(color: Colors.white.withOpacity(0.4)),
-                maxLines: 1,
-                minFontSize: minFont.minFontSize,
-                stepGranularity: 0.1,
-              ),
+            title: AutoSizeText(
+              texts.reverse_swap_confirmation_transaction_fee,
+              style: TextStyle(color: Colors.white.withOpacity(0.4)),
+              maxLines: 1,
+              minFontSize: minFont.minFontSize,
+              stepGranularity: 0.1,
             ),
-            trailing: Container(
-              child: AutoSizeText(
-                texts.reverse_swap_confirmation_transaction_fee_value(
-                  acc.currency.format(Int64(feeOptions[selectedFeeIndex].sats)),
-                ),
-                style: TextStyle(
-                  color: themeData.colorScheme.error.withOpacity(0.4),
-                ),
-                maxLines: 1,
-                minFontSize: minFont.minFontSize,
-                stepGranularity: 0.1,
+            trailing: AutoSizeText(
+              texts.reverse_swap_confirmation_transaction_fee_value(
+                acc.currency.format(Int64(feeOptions[selectedFeeIndex].sats)),
               ),
+              style: TextStyle(
+                color: themeData.colorScheme.error.withOpacity(0.4),
+              ),
+              maxLines: 1,
+              minFontSize: minFont.minFontSize,
+              stepGranularity: 0.1,
             ),
           ),
           ListTile(
-            title: Container(
-              child: AutoSizeText(
-                texts.reverse_swap_confirmation_you_receive,
-                style: TextStyle(
-                  color: Colors.white,
-                ),
-                maxLines: 1,
-                minFontSize: minFont.minFontSize,
-                stepGranularity: 0.1,
+            title: AutoSizeText(
+              texts.reverse_swap_confirmation_you_receive,
+              style: const TextStyle(
+                color: Colors.white,
               ),
+              maxLines: 1,
+              minFontSize: minFont.minFontSize,
+              stepGranularity: 0.1,
             ),
-            trailing: Container(
-              child: AutoSizeText(
-                acc.fiatCurrency == null
-                    ? texts.reverse_swap_confirmation_received_no_fiat(
-                        acc.currency.format(received),
-                      )
-                    : texts.reverse_swap_confirmation_received_with_fiat(
-                        acc.currency.format(received),
-                        acc.fiatCurrency.format(received),
-                      ),
-                style: TextStyle(
-                  color: themeData.colorScheme.error,
-                ),
-                maxLines: 1,
-                minFontSize: minFont.minFontSize,
-                stepGranularity: 0.1,
+            trailing: AutoSizeText(
+              acc.fiatCurrency == null
+                  ? texts.reverse_swap_confirmation_received_no_fiat(
+                      acc.currency.format(received),
+                    )
+                  : texts.reverse_swap_confirmation_received_with_fiat(
+                      acc.currency.format(received),
+                      acc.fiatCurrency.format(received),
+                    ),
+              style: TextStyle(
+                color: themeData.colorScheme.error,
               ),
+              maxLines: 1,
+              minFontSize: minFont.minFontSize,
+              stepGranularity: 0.1,
             ),
           ),
         ],
@@ -376,7 +358,7 @@ class _ErrorMessage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: EdgeInsets.only(top: 40.0, left: 40.0, right: 40.0),
+      padding: const EdgeInsets.only(top: 40.0, left: 40.0, right: 40.0),
       child: Row(
         mainAxisSize: MainAxisSize.max,
         mainAxisAlignment: MainAxisAlignment.center,

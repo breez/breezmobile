@@ -18,7 +18,7 @@ import 'package:sqflite/sqflite.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 
 class SharedPreferencesMock extends Mock implements SharedPreferences {
-  Map<String, bool> _cache = {};
+  final Map<String, bool> _cache = {};
 
   @override
   bool getBool(String key) {
@@ -33,6 +33,7 @@ class SharedPreferencesMock extends Mock implements SharedPreferences {
 }
 
 class BreezServerMock extends Mock implements BreezServer {
+  @override
   Future<String> registerDevice(String token, String nodeid) {
     return Future<String>.value("1234");
   }
@@ -46,16 +47,17 @@ class NotificationsMock extends Mock implements Notifications {
 
   @override
   Stream<Map<String, dynamic>> get notifications =>
-      new BehaviorSubject<Map<String, dynamic>>().stream;
+      BehaviorSubject<Map<String, dynamic>>().stream;
 }
 
 class NFCServiceMock extends Mock implements NFCService {
   Stream<String> receivedBreezIds() {
-    return new StreamController<String>().stream;
+    return StreamController<String>().stream;
   }
 }
 
 class BreezLibMock extends Mock implements BreezBridge {
+  @override
   Future<AddInvoiceReply> addInvoice(
     Int64 amount, {
     String payeeName,
@@ -74,6 +76,7 @@ class DeviceMock extends Mock implements Device {
   final StreamController<NotificationType> _eventsController =
       StreamController.broadcast();
 
+  @override
   Stream<NotificationType> get eventStream => _eventsController.stream;
 
   void dispose() {
@@ -89,6 +92,7 @@ class FirebaseNotificationsMock extends Mock implements FirebaseNotifications {
 class InjectorMock extends Mock implements ServiceInjector {
   MockClientHandler mockHandler;
 
+  @override
   BreezBridge get breezBridge {
     return BreezLibMock();
   }

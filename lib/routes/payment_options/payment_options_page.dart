@@ -28,6 +28,7 @@ class _PaymentOptionsPageState extends State<PaymentOptionsPage> {
   bool _loadingProportionalFee = false;
   double _proportionalFee = 0.0;
 
+  @override
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -72,7 +73,7 @@ class _PaymentOptionsPageState extends State<PaymentOptionsPage> {
     return Scaffold(
       appBar: AppBar(
         automaticallyImplyLeading: false,
-        leading: backBtn.BackButton(),
+        leading: const backBtn.BackButton(),
         title: Text(texts.payment_options_title),
       ),
       body: (_loadingOverride || _loadingBaseFee || _loadingProportionalFee)
@@ -147,14 +148,14 @@ class _PaymentOptionsPageState extends State<PaymentOptionsPage> {
             child: Form(
               child: TextFormField(
                 enabled: _overriding,
-                keyboardType: TextInputType.numberWithOptions(decimal: false),
+                keyboardType: const TextInputType.numberWithOptions(decimal: false),
                 inputFormatters: [
                   FilteringTextInputFormatter.digitsOnly,
                 ],
                 controller: _baseFeeController,
                 decoration: InputDecoration(
                   labelText: texts.payment_options_base_fee_label,
-                  border: UnderlineInputBorder(),
+                  border: const UnderlineInputBorder(),
                 ),
                 validator: (value) {
                   if (value.isEmpty) {
@@ -190,14 +191,14 @@ class _PaymentOptionsPageState extends State<PaymentOptionsPage> {
             child: Form(
               child: TextFormField(
                 enabled: _overriding,
-                keyboardType: TextInputType.numberWithOptions(decimal: true),
+                keyboardType: const TextInputType.numberWithOptions(decimal: true),
                 inputFormatters: [
                   FilteringTextInputFormatter.allow(RegExp(r'^\d+\.?\d{0,2}')),
                 ],
                 controller: _proportionalFeeController,
                 decoration: InputDecoration(
                   labelText: texts.payment_options_proportional_fee_label,
-                  border: UnderlineInputBorder(),
+                  border: const UnderlineInputBorder(),
                 ),
                 validator: (value) {
                   if (value.isEmpty) {
@@ -233,18 +234,18 @@ class _PaymentOptionsPageState extends State<PaymentOptionsPage> {
           OutlinedButton(
             style: OutlinedButton.styleFrom(
               foregroundColor: Colors.white,
-              side: BorderSide(color: Colors.white),
+              side: const BorderSide(color: Colors.white),
             ),
             child: Text(
               texts.payment_options_fee_action_reset,
             ),
             onPressed: () => _reset(context),
           ),
-          SizedBox(width: 12.0),
+          const SizedBox(width: 12.0),
           OutlinedButton(
             style: OutlinedButton.styleFrom(
               foregroundColor: Colors.white,
-              side: BorderSide(color: Colors.white),
+              side: const BorderSide(color: Colors.white),
             ),
             child: Text(
               texts.payment_options_fee_action_save,

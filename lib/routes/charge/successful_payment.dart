@@ -77,7 +77,7 @@ class SuccessfulPaymentRouteState extends State<SuccessfulPaymentRoute>
                   onPressed: widget.onPrint,
                 ),
               )
-            : SizedBox(
+            : const SizedBox(
                 height: 40,
               ),
         titlePadding: const EdgeInsets.symmetric(
@@ -109,7 +109,7 @@ class SuccessfulPaymentRouteState extends State<SuccessfulPaymentRoute>
         Padding(
           padding: const EdgeInsets.only(top: 20, bottom: 40),
           child: Container(
-            decoration: new BoxDecoration(
+            decoration: const BoxDecoration(
               color: Colors.white,
               shape: BoxShape.circle,
             ),

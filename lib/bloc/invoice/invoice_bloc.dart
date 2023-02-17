@@ -110,7 +110,7 @@ class InvoiceBloc with AsyncActionsHandler {
               description: invoiceRequest.description,
               expiry: invoiceRequest.expiry)
           .then((payReq) async {
-        log.info("Payment Request: " + payReq.paymentRequest);
+        log.info("Payment Request: ${payReq.paymentRequest}");
         var memo = await _breezLib.decodePaymentRequest(payReq.paymentRequest);
         var paymentHash =
             await _breezLib.getPaymentRequestHash(payReq.paymentRequest);

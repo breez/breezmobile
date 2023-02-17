@@ -20,11 +20,11 @@ class LNUrlBloc with AsyncActionsHandler {
 
   StreamController _lnUrlStreamController;
 
-  StreamController<String> _lnurlInputController =
+  final StreamController<String> _lnurlInputController =
       StreamController<String>.broadcast();
   Sink<String> get lnurlInputSink => _lnurlInputController.sink;
 
-  StreamController<NfcWithdrawInvoiceStatus> _nfcWithdrawController =
+  final StreamController<NfcWithdrawInvoiceStatus> _nfcWithdrawController =
       StreamController<NfcWithdrawInvoiceStatus>.broadcast();
   Stream<NfcWithdrawInvoiceStatus> get nfcWithdrawStream =>
       _nfcWithdrawController.stream;
@@ -144,7 +144,7 @@ class LNUrlBloc with AsyncActionsHandler {
         () => _breezLib.connectDirectToLnurl(
             action.uri, action.k1, action.callback),
         tryLimit: 3,
-        interval: Duration(seconds: 5));
+        interval: const Duration(seconds: 5));
     action.resolve(await openResult);
   }
 

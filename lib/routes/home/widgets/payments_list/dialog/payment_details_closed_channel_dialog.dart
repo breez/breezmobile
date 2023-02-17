@@ -23,14 +23,14 @@ class PaymentDetailsDialogClosedChannelDialog extends StatelessWidget {
     final accountBloc = AppBlocsProvider.of<AccountBloc>(context);
 
     return AlertDialog(
-      titlePadding: EdgeInsets.fromLTRB(24.0, 22.0, 0.0, 16.0),
+      titlePadding: const EdgeInsets.fromLTRB(24.0, 22.0, 0.0, 16.0),
       title: Text(
         paymentInfo.pending
             ? texts.payment_details_dialog_closed_channel_title_pending
             : texts.payment_details_dialog_closed_channel_title,
         style: themeData.dialogTheme.titleTextStyle,
       ),
-      contentPadding: EdgeInsets.fromLTRB(24.0, 8.0, 24.0, 24.0),
+      contentPadding: const EdgeInsets.fromLTRB(24.0, 8.0, 24.0, 24.0),
       content: StreamBuilder<LSPStatus>(
         stream: lspBloc.lspStatusStream,
         builder: (context, snapshot) {

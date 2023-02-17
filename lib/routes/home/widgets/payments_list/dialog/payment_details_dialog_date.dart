@@ -28,7 +28,7 @@ class PaymentDetailsDialogDate extends StatelessWidget {
 
     return Container(
       height: 36.0,
-      padding: EdgeInsets.only(left: 16.0, right: 16.0, top: 8.0),
+      padding: const EdgeInsets.only(left: 16.0, right: 16.0, top: 8.0),
       child: Row(
         mainAxisSize: MainAxisSize.max,
         children: <Widget>[
@@ -46,7 +46,7 @@ class PaymentDetailsDialogDate extends StatelessWidget {
             child: SingleChildScrollView(
               scrollDirection: Axis.horizontal,
               reverse: true,
-              padding: EdgeInsets.only(left: 8.0),
+              padding: const EdgeInsets.only(left: 8.0),
               child: AutoSizeText(
                 BreezDateUtils.formatYearMonthDayHourMinute(
                   DateTime.fromMillisecondsSinceEpoch(

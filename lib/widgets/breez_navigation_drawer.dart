@@ -68,16 +68,16 @@ class BreezNavigationDrawer extends StatelessWidget {
 
     List<Widget> children = [
       _breezDrawerHeader(userProfileBloc, _avatar),
-      Padding(padding: EdgeInsets.only(top: 16)),
+      const Padding(padding: EdgeInsets.only(top: 16)),
     ];
-    _drawerGroupedItems.forEach((groupItems) {
+    for (var groupItems in _drawerGroupedItems) {
       children.addAll(_createDrawerGroupWidgets(
         groupItems,
         context,
         _drawerGroupedItems.indexOf(groupItems),
-        withDivider: children.length > 0 && groupItems.withDivider,
+        withDivider: children.isNotEmpty && groupItems.withDivider,
       ));
-    });
+    }
 
     return Theme(
       data: themeData.copyWith(
@@ -87,7 +87,7 @@ class BreezNavigationDrawer extends StatelessWidget {
         child: ListView(
           controller: _scrollController,
           // Important: Remove any padding from the ListView.
-          padding: EdgeInsets.only(bottom: 20.0),
+          padding: const EdgeInsets.only(bottom: 20.0),
           children: children,
         ),
       ),
@@ -107,7 +107,7 @@ class BreezNavigationDrawer extends StatelessWidget {
               action.onItemSelected ?? _onItemSelected,
             ))
         .toList();
-    if (group.groupTitle != null && groupItems.length > 0) {
+    if (group.groupTitle != null && groupItems.isNotEmpty) {
       groupItems = group.items
           .map((action) => _actionTile(
                 action,
@@ -116,15 +116,15 @@ class BreezNavigationDrawer extends StatelessWidget {
                 subTile: true,
               ))
           .toList();
-      groupItems = []..add(_ExpansionTile(
+      groupItems = [_ExpansionTile(
           items: groupItems,
           title: group.groupTitle,
           icon: AssetImage(group.groupAssetImage),
           controller: _scrollController,
-        ));
+        )];
     }
 
-    if (groupItems.length > 0 && withDivider && index != 0) {
+    if (groupItems.isNotEmpty && withDivider && index != 0) {
       groupItems.insert(0, _ListDivider());
     }
     return groupItems;
@@ -134,7 +134,7 @@ class BreezNavigationDrawer extends StatelessWidget {
 class _ListDivider extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return Padding(
+    return const Padding(
       padding: EdgeInsets.only(left: 8.0, right: 8.0),
       child: Divider(),
     );
@@ -145,7 +145,7 @@ Widget _breezDrawerHeader(UserProfileBloc user, bool drawAvatar) {
   return Container(
     color: theme.customData[theme.themeId].navigationDrawerHeaderBgColor,
     child: BreezDrawerHeader(
-      padding: EdgeInsets.only(left: 16.0),
+      padding: const EdgeInsets.only(left: 16.0),
       child: _buildDrawerHeaderContent(user, drawAvatar),
     ),
   );
@@ -201,14 +201,14 @@ GestureDetector _buildThemeSwitch(
       mainAxisAlignment: MainAxisAlignment.end,
       children: [
         Padding(
-          padding: EdgeInsets.only(
+          padding: const EdgeInsets.only(
             top: 10,
             right: 16.0,
           ),
           child: Container(
             width: 64,
-            padding: EdgeInsets.all(4),
-            decoration: ShapeDecoration(
+            padding: const EdgeInsets.all(4),
+            decoration: const ShapeDecoration(
               shape: StadiumBorder(),
               color: theme.marketplaceButtonColor,
             ),
@@ -222,7 +222,7 @@ GestureDetector _buildThemeSwitch(
                       ? Colors.white
                       : Colors.white30,
                 ),
-                Container(
+                const SizedBox(
                   height: 20,
                   width: 8,
                   child: VerticalDivider(
@@ -230,7 +230,7 @@ GestureDetector _buildThemeSwitch(
                   ),
                 ),
                 ImageIcon(
-                  AssetImage("src/icon/ic_darkmode.png"),
+                  const AssetImage("src/icon/ic_darkmode.png"),
                   color: snapshot.data.themeId == "DARK"
                       ? Colors.white
                       : Colors.white30,
@@ -294,7 +294,7 @@ Padding _buildUsername(
   final texts = context.texts();
 
   return Padding(
-    padding: EdgeInsets.only(top: 8.0),
+    padding: const EdgeInsets.only(top: 8.0),
     child: AutoSizeText(
       snapshot.data.name ?? texts.home_drawer_error_no_name,
       style: theme.navigationDrawerHandleStyle,
@@ -328,7 +328,7 @@ Widget _actionTile(
               color: action.isSelected
                   ? themeData.primaryColorLight
                   : Colors.transparent,
-              borderRadius: BorderRadius.horizontal(
+              borderRadius: const BorderRadius.horizontal(
                 right: Radius.circular(32),
               ),
             ),
@@ -336,14 +336,14 @@ Widget _actionTile(
         key: action.key,
         shape: subTile != null
             ? null
-            : RoundedRectangleBorder(
+            : const RoundedRectangleBorder(
                 borderRadius: BorderRadius.horizontal(
                   right: Radius.circular(32),
                 ),
               ),
         leading: Padding(
           padding: subTile != null
-              ? EdgeInsets.only(left: 28.0)
+              ? const EdgeInsets.only(left: 28.0)
               : const EdgeInsets.symmetric(horizontal: 8.0),
           child: ImageIcon(
             AssetImage(action.icon),
@@ -387,14 +387,14 @@ class _ExpansionTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final themeData = Theme.of(context);
-    final _expansionTileTheme = themeData.copyWith(
+    final expansionTileTheme = themeData.copyWith(
       dividerColor: themeData.canvasColor,
     );
     return Theme(
-      data: _expansionTileTheme,
+      data: expansionTileTheme,
       child: ExpansionTile(
         title: Padding(
-          padding: EdgeInsets.only(left: 8.0, right: 8.0),
+          padding: const EdgeInsets.only(left: 8.0, right: 8.0),
           child: icon.assetName == ""
               ? null
               : Text(
@@ -403,7 +403,7 @@ class _ExpansionTile extends StatelessWidget {
                 ),
         ),
         leading: Padding(
-          padding: EdgeInsets.only(left: 8.0),
+          padding: const EdgeInsets.only(left: 8.0),
           child: icon.assetName == ""
               ? Text(
                   title,
@@ -419,20 +419,21 @@ class _ExpansionTile extends StatelessWidget {
         ),
         children: items
             .map((item) => Padding(
-                  padding: EdgeInsets.only(left: 0.0),
+                  padding: const EdgeInsets.only(left: 0.0),
                   child: item,
                 ))
             .toList(),
         onExpansionChanged: (isExpanded) {
-          if (isExpanded)
+          if (isExpanded) {
             Timer(
-              Duration(milliseconds: 200),
+              const Duration(milliseconds: 200),
               () => controller.animateTo(
                 controller.position.maxScrollExtent + 28.0,
-                duration: Duration(milliseconds: 400),
+                duration: const Duration(milliseconds: 400),
                 curve: Curves.ease,
               ),
             );
+          }
           // 28 = bottom padding of list + intrinsic bottom padding
         },
       ),

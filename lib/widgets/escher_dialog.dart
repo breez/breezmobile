@@ -49,17 +49,17 @@ class EscherDialogState extends State<EscherDialog> {
 
   @override
   Widget build(BuildContext context) {
-    List<Widget> _paymentRequestDialog = [];
+    List<Widget> paymentRequestDialog = [];
 
-    _addIfNotNull(_paymentRequestDialog, _buildPaymentRequestContent());
+    _addIfNotNull(paymentRequestDialog, _buildPaymentRequestContent());
     return Dialog(
-      child: Container(
+      child: SizedBox(
         key: _dialogKey,
         width: MediaQuery.of(context).size.width,
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           mainAxisSize: MainAxisSize.min,
-          children: _paymentRequestDialog,
+          children: paymentRequestDialog,
         ),
       ),
     );
@@ -71,7 +71,7 @@ class EscherDialogState extends State<EscherDialog> {
       builder: (context, snapshot) {
         var account = snapshot.data;
         if (account == null) {
-          return Container(width: 0.0, height: 0.0);
+          return const SizedBox(width: 0.0, height: 0.0);
         }
 
         List<Widget> children = [];
@@ -80,7 +80,7 @@ class EscherDialogState extends State<EscherDialog> {
         _addIfNotNull(children, _buildActions(context, account));
 
         return Container(
-          padding: EdgeInsets.fromLTRB(8.0, 0.0, 8.0, 16.0),
+          padding: const EdgeInsets.fromLTRB(8.0, 0.0, 8.0, 16.0),
           width: MediaQuery.of(context).size.width,
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
@@ -103,7 +103,7 @@ class EscherDialogState extends State<EscherDialog> {
     final texts = context.texts();
 
     return Padding(
-      padding: EdgeInsets.only(top: 36, bottom: 8),
+      padding: const EdgeInsets.only(top: 36, bottom: 8),
       child: Text(
         texts.escher_cash_out_amount,
         style: themeData.primaryTextTheme.displaySmall.copyWith(
@@ -139,7 +139,7 @@ class EscherDialogState extends State<EscherDialog> {
         key: _formKey,
         child: Padding(
           padding: const EdgeInsets.only(left: 16.0, right: 16.0),
-          child: Container(
+          child: SizedBox(
             height: 80.0,
             child: AmountFormField(
               context: context,

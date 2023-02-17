@@ -68,13 +68,13 @@ class ClosedChannelPaymentDetailsState
       widget.accountBloc.userActionsSink.add(checkChannels);
       checkChannels.future.then((value) {
         var response = value as CheckLSPClosedChannelMismatchResponse;
-        if (response.mismatch && this.mounted) {
+        if (response.mismatch && mounted) {
           setState(() {
             showRefreshChainButton = true;
           });
         }
       }).whenComplete(() {
-        if (this.mounted) {
+        if (mounted) {
           setState(() {
             mismatchedLoading = false;
           });
@@ -188,21 +188,21 @@ class ClosedChannelPaymentDetailsState
             ? Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 mainAxisSize: MainAxisSize.min,
-                children: [
+                children: const [
                   Padding(
-                    padding: const EdgeInsets.only(top: 20.0),
+                    padding: EdgeInsets.only(top: 20.0),
                     child: Loader(),
                   )
                 ],
               )
-            : SizedBox(),
+            : const SizedBox(),
         showRefreshChainButton
             ? Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   Padding(
-                    padding: EdgeInsets.only(top: 20.0),
+                    padding: const EdgeInsets.only(top: 20.0),
                     child: TextButton(
                       onPressed: () {
                         _onResetChainInfoPressed().then((_) {
@@ -226,7 +226,7 @@ class ClosedChannelPaymentDetailsState
                   ),
                 ],
               )
-            : SizedBox(),
+            : const SizedBox(),
       ],
     );
   }

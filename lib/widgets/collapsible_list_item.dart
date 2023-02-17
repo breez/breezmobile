@@ -47,7 +47,7 @@ class CollapsibleListItem extends StatelessWidget {
               children: [
                 Expanded(
                   child: Padding(
-                    padding: EdgeInsets.only(left: 16.0, right: 0.0),
+                    padding: const EdgeInsets.only(left: 16.0, right: 0.0),
                     child: Text(
                       sharedValue ?? texts.collapsible_list_default_value,
                       textAlign: TextAlign.left,
@@ -69,11 +69,11 @@ class CollapsibleListItem extends StatelessWidget {
                       children: [
                         IconButton(
                           alignment: Alignment.centerRight,
-                          padding: EdgeInsets.only(right: 8.0),
+                          padding: const EdgeInsets.only(right: 8.0),
                           tooltip: texts.collapsible_list_action_copy(title),
                           iconSize: 16.0,
                           color: userStyle.color ?? textTheme.labelLarge.color,
-                          icon: Icon(
+                          icon: const Icon(
                             IconData(0xe90b, fontFamily: 'icomoon'),
                           ),
                           onPressed: () {
@@ -84,15 +84,15 @@ class CollapsibleListItem extends StatelessWidget {
                             showFlushbar(
                               context,
                               message: texts.collapsible_list_copied(title),
-                              duration: Duration(seconds: 4),
+                              duration: const Duration(seconds: 4),
                             );
                           },
                         ),
                         IconButton(
-                          padding: EdgeInsets.only(right: 8.0),
+                          padding: const EdgeInsets.only(right: 8.0),
                           iconSize: 16.0,
                           color: userStyle.color ?? textTheme.labelLarge.color,
-                          icon: Icon(Icons.share),
+                          icon: const Icon(Icons.share),
                           onPressed: () {
                             Share.share(sharedValue);
                           },

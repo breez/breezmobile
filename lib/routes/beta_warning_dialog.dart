@@ -5,10 +5,10 @@ import 'package:breez_translations/breez_translations_locales.dart';
 
 class BetaWarningDialog extends StatefulWidget {
   @override
-  _BetaWarningDialogState createState() => _BetaWarningDialogState();
+  BetaWarningDialogState createState() => BetaWarningDialogState();
 }
 
-class _BetaWarningDialogState extends State<BetaWarningDialog> {
+class BetaWarningDialogState extends State<BetaWarningDialog> {
   bool _isUnderstood = false;
   bool _showReminderText = false;
 
@@ -27,12 +27,12 @@ class _BetaWarningDialogState extends State<BetaWarningDialog> {
         unselectedWidgetColor: themeData.canvasColor,
       ),
       child: AlertDialog(
-        titlePadding: EdgeInsets.fromLTRB(24.0, 22.0, 0.0, 16.0),
+        titlePadding: const EdgeInsets.fromLTRB(24.0, 22.0, 0.0, 16.0),
         title: Text(
           texts.beta_warning_title,
           style: themeData.dialogTheme.titleTextStyle,
         ),
-        contentPadding: EdgeInsets.fromLTRB(8.0, 8.0, 8.0, 24.0),
+        contentPadding: const EdgeInsets.fromLTRB(8.0, 8.0, 8.0, 24.0),
         content: Column(
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.stretch,

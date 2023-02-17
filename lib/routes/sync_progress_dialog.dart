@@ -27,13 +27,13 @@ class SyncProgressDialogState extends State<SyncProgressDialog> {
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    if (_accountBloc == null && this.widget.closeOnSync) {
+    if (_accountBloc == null && widget.closeOnSync) {
       _accountBloc = AppBlocsProvider.of<AccountBloc>(context);
       _accountBloc.accountStream
           .firstWhere((a) => a?.syncedToChain == true && a.serverReady,
               orElse: () => null)
           .then((a) {
-        if (this.mounted) {
+        if (mounted) {
           Navigator.of(context).pop(true);
         }
       });
@@ -50,9 +50,9 @@ class SyncProgressDialogState extends State<SyncProgressDialog> {
       stream: accountBloc.accountStream,
       builder: (context, snapshot) {
         AccountModel acc = snapshot.data;
-        if (acc == null) return SizedBox();
+        if (acc == null) return const SizedBox();
 
-        return Container(
+        return SizedBox(
           width: MediaQuery.of(context).size.width,
           height: 150.0,
           child: CircularProgress(

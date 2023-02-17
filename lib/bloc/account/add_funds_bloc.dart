@@ -23,7 +23,7 @@ class AddFundsBloc extends Bloc {
   static const String ADD_FUNDS_SETTINGS_PREFERENCES_KEY = "add_funds_settings";
   static const String PENDING_MOONPAY_ORDER_KEY = "pending_moonpay_order";
   static bool _ipCheckResult = false;
-  static Duration staleOrderInterval = Duration(hours: 1);
+  static Duration staleOrderInterval = const Duration(hours: 1);
 
   bool _isMoonpayAllowed = false;
 
@@ -72,9 +72,9 @@ class AddFundsBloc extends Bloc {
         return;
       }
       userStream.first.then((user) async {
-        var lspStatus = await this.lspStatusStream.first;
+        var lspStatus = await lspStatusStream.first;
         if (lspStatus.selectedLSP == null) {
-          throw new Exception(
+          throw Exception(
               getSystemAppLocalizations().lsp_error_not_selected);
         }
         breezLib.addFundsInit(user.userID ?? "", lspStatus.selectedLSP).then((reply) {
@@ -105,14 +105,14 @@ class AddFundsBloc extends Bloc {
               pendingMoonpayOrder.orderTimestamp ?? 0));
       hasPendingOrder = timePending <= staleOrderInterval;
     }
-    List<AddFundVendorModel> _vendorList = [];
-    _vendorList.add(AddFundVendorModel(
+    List<AddFundVendorModel> vendorList = [];
+    vendorList.add(AddFundVendorModel(
       texts.bottom_action_bar_receive_btc_address,
       "src/icon/bitcoin.png",
       "/deposit_btc_address",
       enabled: !hasPendingOrder,
     ));
-    _vendorList.add(AddFundVendorModel(
+    vendorList.add(AddFundVendorModel(
       texts.bottom_action_bar_buy_bitcoin,
       "src/icon/credit_card.png",
       "/buy_bitcoin",
@@ -120,7 +120,7 @@ class AddFundsBloc extends Bloc {
       enabled: !hasPendingOrder,
       showLSPFee: true,
     ));
-    _availableVendorsController.add(_vendorList);
+    _availableVendorsController.add(vendorList);
   }
 
   Future _attachMoonpayUrl(
@@ -137,8 +137,7 @@ class AddFundsBloc extends Bloc {
           response.maxAllowedDeposit,
           includeDisplayName: false,
           removeTrailingZeros: true);
-      String queryString = "?" +
-          [
+      String queryString = "?${[
             "apiKey=$apiKey",
             "currencyCode=$currencyCode",
             "colorCode=$colorCode",
@@ -146,7 +145,7 @@ class AddFundsBloc extends Bloc {
             "enabledPaymentMethods=credit_debit_card%2Csepa_bank_transfer%2Cgbp_bank_transfer",
             "walletAddress=$walletAddress",
             "maxQuoteCurrencyAmount=$maxQuoteCurrencyAmount"
-          ].join("&");
+          ].join("&")}";
       String moonpayUrl = await breezServer.signUrl(baseUrl, queryString);
       _moonpayNextOrderController
           .add(MoonpayOrder(walletAddress, moonpayUrl, null));
@@ -241,6 +240,7 @@ class AddFundsBloc extends Bloc {
     });
   }
 
+  @override
   dispose() {
     _addFundRequestController.close();
     _addFundResponseController.close();

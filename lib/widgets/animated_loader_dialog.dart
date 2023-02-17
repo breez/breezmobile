@@ -13,7 +13,7 @@ AlertDialog createAnimatedLoaderDialog(
   final texts = context.texts();
 
   return AlertDialog(
-    contentPadding: EdgeInsets.only(left: 24.0, right: 24.0, top: 24.0),
+    contentPadding: const EdgeInsets.only(left: 24.0, right: 24.0, top: 24.0),
     content: Column(
       mainAxisAlignment: MainAxisAlignment.center,
       mainAxisSize: MainAxisSize.min,

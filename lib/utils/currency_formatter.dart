@@ -6,7 +6,7 @@ class CurrencyFormatter {
   final NumberFormat formatter = _defineFormatter();
 
   static NumberFormat _defineFormatter() {
-    numberFormatSymbols['space-between'] = NumberSymbols(
+    numberFormatSymbols['space-between'] = const NumberSymbols(
       NAME: "zz",
       DECIMAL_SEP: '.',
       GROUP_SEP: '\u00A0',

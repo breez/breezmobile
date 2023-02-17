@@ -24,8 +24,8 @@ Bloc that responsible for creating online payments session.
 The handling of the session itself is not done here but within the concrete session implementation.
 */
 class ConnectPayBloc {
-  BreezBridge _breezLib = ServiceInjector().breezBridge;
-  BreezServer _breezServer = ServiceInjector().breezServer;
+  final BreezBridge _breezLib = ServiceInjector().breezBridge;
+  final BreezServer _breezServer = ServiceInjector().breezServer;
   RemoteSession _currentSession;
   final StreamController _sessionInvitesController =
       BehaviorSubject<SessionLinkModel>();
@@ -127,7 +127,7 @@ class ConnectPayBloc {
         if (err.code == StatusCode.unknown) {
           throw SessionExpiredException();
         }
-        throw e;
+        rethrow;
       }
       throw SessionExpiredException();
     }
@@ -163,7 +163,7 @@ class ConnectPayBloc {
 
 abstract class RemoteSession {
   Stream<void> terminationStream;
-  BreezUserModel _currentUser;
+  final BreezUserModel _currentUser;
 
   RemoteSession(this._currentUser);
 
@@ -176,5 +176,6 @@ abstract class RemoteSession {
 }
 
 class SessionExpiredException implements Exception {
+  @override
   String toString() => getSystemAppLocalizations().connect_to_pay_error_link_expired;
 }

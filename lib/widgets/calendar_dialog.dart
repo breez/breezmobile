@@ -17,10 +17,10 @@ class CalendarDialog extends StatefulWidget {
   });
 
   @override
-  _CalendarDialogState createState() => _CalendarDialogState();
+  CalendarDialogState createState() => CalendarDialogState();
 }
 
-class _CalendarDialogState extends State<CalendarDialog> {
+class CalendarDialogState extends State<CalendarDialog> {
   final _startDateController = TextEditingController();
   final _endDateController = TextEditingController();
   DateTime _startDate;
@@ -66,6 +66,7 @@ class _CalendarDialogState extends State<CalendarDialog> {
       ),
       actions: [
         TextButton(
+          onPressed: _clearFilter,
           child: Text(
             texts.pos_transactions_range_dialog_clear,
             style: theme.cancelButtonStyle.copyWith(
@@ -73,7 +74,6 @@ class _CalendarDialogState extends State<CalendarDialog> {
                   theme.themeId == "BLUE" ? Colors.red : themeData.colorScheme.error,
             ),
           ),
-          onPressed: _clearFilter,
         ),
         TextButton(
           child: Text(
@@ -101,6 +101,12 @@ class _CalendarDialogState extends State<CalendarDialog> {
     final themeData = Theme.of(context);
 
     return GestureDetector(
+      onTap: () {
+        setState(() {
+          _selectDate(context, isStartBtn);
+        });
+      },
+      behavior: HitTestBehavior.translucent,
       child: Theme(
         data: theme.themeId == "BLUE"
             ? themeData
@@ -117,16 +123,10 @@ class _CalendarDialogState extends State<CalendarDialog> {
           style: themeData.dialogTheme.contentTextStyle,
         ),
       ),
-      onTap: () {
-        setState(() {
-          _selectDate(context, isStartBtn);
-        });
-      },
-      behavior: HitTestBehavior.translucent,
     );
   }
 
-  Future<Null> _selectDate(BuildContext context, bool isStartBtn) async {
+  Future<void> _selectDate(BuildContext context, bool isStartBtn) async {
     DateTime selectedDate = await showDatePicker(
       initialEntryMode: DatePickerEntryMode.calendarOnly,
       context: context,

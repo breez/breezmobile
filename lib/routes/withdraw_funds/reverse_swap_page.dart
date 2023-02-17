@@ -199,7 +199,7 @@ class ReverseSwapPageState extends State<ReverseSwapPage> {
 
     return PageView(
       controller: _pageController,
-      physics: NeverScrollableScrollPhysics(),
+      physics: const NeverScrollableScrollPhysics(),
       children: [
         WithdrawFundsPage(
           title: texts.reverse_swap_title,
@@ -224,21 +224,21 @@ class ReverseSwapPageState extends State<ReverseSwapPage> {
                 pol,
               ));
               _pageController.nextPage(
-                duration: Duration(milliseconds: 250),
+                duration: const Duration(milliseconds: 250),
                 curve: Curves.easeInOut,
               );
             });
           },
         ),
         currentSwap == null
-            ? SizedBox()
+            ? const SizedBox()
             : ReverseSwapConfirmation(
                 swap: currentSwap,
                 bloc: reverseSwapBloc,
                 onFeeConfirmed: _onFeeConfirmed,
                 onPrevious: () => _pageController
                     .previousPage(
-                      duration: Duration(milliseconds: 250),
+                      duration: const Duration(milliseconds: 250),
                       curve: Curves.easeInOut,
                     )
                     .then((_) => _reverseSwapsStream.add(null)),
@@ -290,8 +290,8 @@ class UnconfirmedChannels extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.only(top: 48, left: 16, right: 16),
       child: AnimatedCrossFade(
-        duration: Duration(milliseconds: 300),
-        crossFadeState: this.accountModel.synced
+        duration: const Duration(milliseconds: 300),
+        crossFadeState: accountModel.synced
             ? CrossFadeState.showSecond
             : CrossFadeState.showFirst,
         firstChild: Column(
@@ -300,7 +300,7 @@ class UnconfirmedChannels extends StatelessWidget {
             Row(
               mainAxisSize: MainAxisSize.max,
               mainAxisAlignment: MainAxisAlignment.center,
-              children: [
+              children: const [
                 Expanded(
                   child: SyncProgressDialog(
                     progressColor: Colors.white,

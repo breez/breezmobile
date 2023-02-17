@@ -1,7 +1,7 @@
 import 'dart:async';
 
 class AsyncAction {
-  Completer _completer = Completer();
+  final Completer _completer = Completer();
 
   Future get future => _completer.future;
 

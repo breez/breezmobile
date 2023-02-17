@@ -15,7 +15,7 @@ class EnableBackupDialog extends StatefulWidget {
   final BackupBloc backupBloc;
   final bool signInNeeded;
 
-  EnableBackupDialog(this.context, this.backupBloc,
+  const EnableBackupDialog(this.context, this.backupBloc,
       {this.signInNeeded = false});
 
   @override
@@ -25,7 +25,7 @@ class EnableBackupDialog extends StatefulWidget {
 }
 
 class EnableBackupDialogState extends State<EnableBackupDialog> {
-  AutoSizeGroup _autoSizeGroup = AutoSizeGroup();
+  final AutoSizeGroup _autoSizeGroup = AutoSizeGroup();
   @override
   Widget build(BuildContext context) {
     return createEnableBackupDialog(context);
@@ -38,12 +38,12 @@ class EnableBackupDialogState extends State<EnableBackupDialog> {
           unselectedWidgetColor: Theme.of(context).canvasColor,
         ),
         child: AlertDialog(
-          titlePadding: EdgeInsets.fromLTRB(24.0, 22.0, 0.0, 16.0),
+          titlePadding: const EdgeInsets.fromLTRB(24.0, 22.0, 0.0, 16.0),
           title: Text(
             texts.backup_dialog_title,
             style: Theme.of(context).dialogTheme.titleTextStyle,
           ),
-          contentPadding: EdgeInsets.fromLTRB(8.0, 8.0, 8.0, 24.0),
+          contentPadding: const EdgeInsets.fromLTRB(8.0, 8.0, 8.0, 24.0),
           content: StreamBuilder<BackupSettings>(
               stream: widget.backupBloc.backupSettingsStream,
               builder: (context, snapshot) {
@@ -52,7 +52,7 @@ class EnableBackupDialogState extends State<EnableBackupDialog> {
                 }
                 bool isRemoteServer = snapshot.data.backupProvider ==
                     BackupSettings.remoteServerBackupProvider();
-                return Container(
+                return SizedBox(
                   width: MediaQuery.of(context).size.width,
                   child: Column(
                     mainAxisSize: MainAxisSize.min,
@@ -74,7 +74,7 @@ class EnableBackupDialogState extends State<EnableBackupDialog> {
                         ),
                       ),
                       isRemoteServer
-                          ? SizedBox()
+                          ? const SizedBox()
                           : Padding(
                               padding: const EdgeInsets.only(top: 16.0),
                               child: Row(
@@ -138,13 +138,11 @@ class EnableBackupDialogState extends State<EnableBackupDialog> {
                     onPressed: (() async {
                       Navigator.pop(widget.context);
                       var provider = snapshot.data.backupProvider;
-                      if (provider == null) {
-                        provider = await showDialog(
+                      provider ??= await showDialog(
                             useRootNavigator: false,
                             context: context,
                             builder: (_) => BackupProviderSelectionDialog(
                                 backupBloc: widget.backupBloc));
-                      }
 
                       if (provider != null) {
                         if (widget.signInNeeded &&

@@ -39,7 +39,7 @@ import 'package:flutter/material.dart';
 import 'package:breez_translations/breez_translations_locales.dart';
 
 class POSInvoice extends StatefulWidget {
-  POSInvoice();
+  const POSInvoice();
 
   @override
   State<StatefulWidget> createState() {
@@ -50,7 +50,7 @@ class POSInvoice extends StatefulWidget {
 class POSInvoiceState extends State<POSInvoice> with TickerProviderStateMixin {
   final GlobalKey badgeKey = GlobalKey();
 
-  TextEditingController _itemFilterController = TextEditingController();
+  final TextEditingController _itemFilterController = TextEditingController();
 
   bool _useFiat = false;
   CurrencyWrapper currentCurrency;
@@ -83,7 +83,7 @@ class POSInvoiceState extends State<POSInvoice> with TickerProviderStateMixin {
       accountBloc.userActionsSink.add(fetchRatesAction);
       _fetchRatesActionFuture = fetchRatesAction.future;
       _fetchRatesActionFuture.catchError((err) {
-        if (this.mounted) {
+        if (mounted) {
           setState(() {
             showFlushbar(
               context,
@@ -101,7 +101,7 @@ class POSInvoiceState extends State<POSInvoice> with TickerProviderStateMixin {
       );
 
       currentSaleSubscription = posCatalogBloc.currentSaleStream.listen((s) {
-        if (currentPendingItem == null || !this.mounted) {
+        if (currentPendingItem == null || !mounted) {
           return;
         }
 
@@ -156,7 +156,7 @@ class POSInvoiceState extends State<POSInvoice> with TickerProviderStateMixin {
                   builder: (context, snapshot) {
                     final userProfile = snapshot.data;
                     if (userProfile == null) {
-                      return Center(child: Loader());
+                      return const Center(child: Loader());
                     }
 
                     return StreamBuilder<AccountModel>(
@@ -168,7 +168,7 @@ class POSInvoiceState extends State<POSInvoice> with TickerProviderStateMixin {
                         }
 
                         return FutureBuilder(
-                          initialData: [],
+                          initialData: const [],
                           future: _fetchRatesActionFuture,
                           builder: (context, snapshot) {
                             List<FiatConversion> rates = [];
@@ -223,7 +223,7 @@ class POSInvoiceState extends State<POSInvoice> with TickerProviderStateMixin {
       accountModel,
     );
     if (persistedCurrency == null && rates.isEmpty) {
-      return Center(child: Loader());
+      return const Center(child: Loader());
     }
     final totalAmount =
         currentSale.totalChargeSat / currentCurrency.satConversionRate;
@@ -234,8 +234,8 @@ class POSInvoiceState extends State<POSInvoice> with TickerProviderStateMixin {
           mainAxisSize: MainAxisSize.min,
           children: <Widget>[
             Container(
-              child: _buildViewSwitch(context),
               color: themeData.colorScheme.background,
+              child: _buildViewSwitch(context),
             ),
             Container(
               color: themeData.colorScheme.background,
@@ -288,6 +288,8 @@ class POSInvoiceState extends State<POSInvoice> with TickerProviderStateMixin {
         ),
         _itemInTransition != null
             ? Positioned(
+                left: _transitionAnimation.value.left,
+                top: _transitionAnimation.value.top,
                 child: ScaleTransition(
                   scale: _scaleTransition,
                   child: Opacity(
@@ -298,10 +300,8 @@ class POSInvoiceState extends State<POSInvoice> with TickerProviderStateMixin {
                     ),
                   ),
                 ),
-                left: _transitionAnimation.value.left,
-                top: _transitionAnimation.value.top,
               )
-            : SizedBox(),
+            : const SizedBox(),
       ],
     );
   }
@@ -321,7 +321,7 @@ class POSInvoiceState extends State<POSInvoice> with TickerProviderStateMixin {
     final currencyName = currentCurrency.shortName.toUpperCase();
 
     return Padding(
-      padding: EdgeInsets.fromLTRB(16.0, 16.0, 16.0, 16.0),
+      padding: const EdgeInsets.fromLTRB(16.0, 16.0, 16.0, 16.0),
       child: ConstrainedBox(
         constraints: const BoxConstraints(
           minWidth: double.infinity,
@@ -331,7 +331,7 @@ class POSInvoiceState extends State<POSInvoice> with TickerProviderStateMixin {
           child: ElevatedButton(
             style: ElevatedButton.styleFrom(
               backgroundColor: themeData.primaryColorLight,
-              padding: EdgeInsets.only(top: 14.0, bottom: 14.0),
+              padding: const EdgeInsets.only(top: 14.0, bottom: 14.0),
             ),
             child: Text(
               texts.pos_invoice_charge_label(amount, currencyName),
@@ -390,7 +390,7 @@ class POSInvoiceState extends State<POSInvoice> with TickerProviderStateMixin {
         builder: (context, constraints) {
           final height = constraints.maxHeight;
           final width = constraints.maxWidth;
-          return Container(
+          return SizedBox(
             height: constraints.maxHeight,
             child: _isKeypadView
                 ? PosInvoiceNumPad(
@@ -456,7 +456,7 @@ class POSInvoiceState extends State<POSInvoice> with TickerProviderStateMixin {
     }
 
     if (errorMessage != null) {
-      return showDialog<Null>(
+      return showDialog<void>(
         useRootNavigator: false,
         context: context,
         barrierDismissible: false, // user must tap button!
@@ -466,7 +466,7 @@ class POSInvoiceState extends State<POSInvoice> with TickerProviderStateMixin {
               texts.pos_invoice_error_submit_header,
               style: themeData.dialogTheme.titleTextStyle,
             ),
-            contentPadding: EdgeInsets.fromLTRB(24.0, 8.0, 24.0, 8.0),
+            contentPadding: const EdgeInsets.fromLTRB(24.0, 8.0, 24.0, 8.0),
             content: SingleChildScrollView(
               child: Text(
                 errorMessage,
@@ -486,7 +486,7 @@ class POSInvoiceState extends State<POSInvoice> with TickerProviderStateMixin {
                 },
               ),
             ],
-            shape: RoundedRectangleBorder(
+            shape: const RoundedRectangleBorder(
               borderRadius: BorderRadius.all(
                 Radius.circular(12.0),
               ),
@@ -580,7 +580,7 @@ class POSInvoiceState extends State<POSInvoice> with TickerProviderStateMixin {
             showFlushbar(
               context,
               message: error.toString(),
-              duration: Duration(seconds: 10),
+              duration: const Duration(seconds: 10),
             );
           });
         });
@@ -594,7 +594,7 @@ class POSInvoiceState extends State<POSInvoice> with TickerProviderStateMixin {
       useRootNavigator: false,
       context: context,
       builder: (context) => AlertDialog(
-        content: SyncProgressDialog(closeOnSync: true),
+        content: const SyncProgressDialog(closeOnSync: true),
         actions: <Widget>[
           TextButton(
             onPressed: (() {
@@ -685,7 +685,7 @@ class POSInvoiceState extends State<POSInvoice> with TickerProviderStateMixin {
     RenderBox avatarPos = avatarKey.currentContext.findRenderObject();
     final startPos = avatarPos.localToGlobal(
       Offset.zero,
-      ancestor: this.context.findRenderObject(),
+      ancestor: context.findRenderObject(),
     );
     final begin = RelativeRect.fromLTRB(startPos.dx, startPos.dy, 0, 0);
 
@@ -693,7 +693,7 @@ class POSInvoiceState extends State<POSInvoice> with TickerProviderStateMixin {
     RenderBox cartBox = badgeKey.currentContext.findRenderObject();
     final endPos = cartBox.localToGlobal(
       Offset.zero,
-      ancestor: this.context.findRenderObject(),
+      ancestor: context.findRenderObject(),
     );
     final end = RelativeRect.fromLTRB(startPos.dx, endPos.dy, 0, 0);
 
@@ -701,7 +701,7 @@ class POSInvoiceState extends State<POSInvoice> with TickerProviderStateMixin {
 
     final controller = AnimationController(
       vsync: this,
-      duration: Duration(milliseconds: 700),
+      duration: const Duration(milliseconds: 700),
     );
 
     _transitionAnimation = tween
@@ -714,7 +714,7 @@ class POSInvoiceState extends State<POSInvoice> with TickerProviderStateMixin {
     // handle scale animation.
     final scaleController = AnimationController(
       vsync: this,
-      duration: Duration(milliseconds: 700),
+      duration: const Duration(milliseconds: 700),
     );
     _scaleTransition = CurvedAnimation(
       parent: scaleController,
@@ -724,7 +724,7 @@ class POSInvoiceState extends State<POSInvoice> with TickerProviderStateMixin {
     // handle opacity animation.
     final opacityController = AnimationController(
       vsync: this,
-      duration: Duration(milliseconds: 700),
+      duration: const Duration(milliseconds: 700),
     );
     _opacityTransition = CurvedAnimation(
       parent: opacityController,
@@ -852,7 +852,7 @@ class POSInvoiceState extends State<POSInvoice> with TickerProviderStateMixin {
           texts.pos_invoice_clear_sale_message,
           style: themeData.dialogTheme.contentTextStyle,
         ),
-        contentPadding: EdgeInsets.fromLTRB(24.0, 24.0, 24.0, 12.0),
+        contentPadding: const EdgeInsets.fromLTRB(24.0, 24.0, 24.0, 12.0),
         actions: <Widget>[
           TextButton(
             onPressed: () => Navigator.pop(context),
@@ -872,7 +872,7 @@ class POSInvoiceState extends State<POSInvoice> with TickerProviderStateMixin {
             ),
           ),
         ],
-        shape: RoundedRectangleBorder(
+        shape: const RoundedRectangleBorder(
           borderRadius: BorderRadius.all(
             Radius.circular(12.0),
           ),

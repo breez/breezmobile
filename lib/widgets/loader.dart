@@ -6,19 +6,19 @@ class Loader extends StatelessWidget {
   final double value;
   final String label;
   final Color color;
-  final strokeWidth;
+  final double strokeWidth;
 
-  Loader({this.value, this.label, this.color, this.strokeWidth = 4.0});
+  const Loader({this.value, this.label, this.color, this.strokeWidth = 4.0});
 
   @override
   Widget build(BuildContext context) {
     return Stack(alignment: FractionalOffset.center, children: <Widget>[
       CircularProgressIndicator(
-        value: this.value,
+        value: value,
         semanticsLabel: label,
-        strokeWidth: this.strokeWidth,
+        strokeWidth: strokeWidth,
         valueColor: AlwaysStoppedAnimation<Color>(
-          this.color ?? theme.circularLoaderColor,
+          color ?? theme.circularLoaderColor,
         ),
       ),
     ]);
@@ -63,7 +63,7 @@ class FullScreenLoader extends StatelessWidget {
             left: 0.0,
             right: 0.0,
             child: Container(
-                color: bgColor.withOpacity(this.opacity),
+                color: bgColor.withOpacity(opacity),
                 height: MediaQuery.of(context).size.height,
                 width: MediaQuery.of(context).size.width,
                 child: Column(
@@ -71,19 +71,19 @@ class FullScreenLoader extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: <Widget>[
                     Loader(
-                        value: this.value,
-                        label: this.message,
-                        color: this.progressColor),
+                        value: value,
+                        label: message,
+                        color: progressColor),
                     Padding(
                       padding: const EdgeInsets.only(top: 16.0),
                       child: message != null
                           ? Text(message, textAlign: TextAlign.center)
-                          : SizedBox(),
+                          : const SizedBox(),
                     )
                   ],
                 )),
           ),
-          this.onClose != null
+          onClose != null
               ? Padding(
                   padding:
                       const EdgeInsets.symmetric(horizontal: 16, vertical: 30),
@@ -91,12 +91,12 @@ class FullScreenLoader extends StatelessWidget {
                     alignment: Alignment.topRight,
                     child: IconButton(
                         color: Colors.white,
-                        onPressed: () => this.onClose(),
+                        onPressed: () => onClose(),
                         icon: Icon(Icons.close,
                             color: Theme.of(context).iconTheme.color)),
                   ),
                 )
-              : SizedBox(),
+              : const SizedBox(),
         ],
       ),
     );
@@ -125,7 +125,7 @@ class TransparentRouteLoaderState extends State<TransparentRouteLoader> {
     super.initState();
     if (widget.action != null) {
       widget.action.whenComplete(() {
-        if (this.mounted) {
+        if (mounted) {
           Navigator.pop(context);
         }
       });

@@ -42,7 +42,7 @@ class _PosInvoiceCartBarState extends State<PosInvoiceCartBar> {
     final badgeColor = themeData.floatingActionButtonTheme.backgroundColor;
 
     return Padding(
-      padding: EdgeInsets.only(left: 0.0, right: 16.0),
+      padding: const EdgeInsets.only(left: 0.0, right: 16.0),
       child: Row(
         children: <Widget>[
           Expanded(
@@ -66,11 +66,11 @@ class _PosInvoiceCartBarState extends State<PosInvoiceCartBar> {
                   child: badges.Badge(
                     key: widget.badgeKey,
                     position: badges.BadgePosition.topEnd(top: 5, end: -10),
-                    badgeAnimation: badges.BadgeAnimation.scale(),
+                    badgeAnimation: const badges.BadgeAnimation.scale(),
                     badgeStyle: badges.BadgeStyle(badgeColor: badgeColor),
                     badgeContent: Text(
                       "${widget.totalNumOfItems}",
-                      style: TextStyle(
+                      style: const TextStyle(
                         color: Colors.white,
                       ),
                     ),
@@ -93,7 +93,7 @@ class _PosInvoiceCartBarState extends State<PosInvoiceCartBar> {
               child: SingleChildScrollView(
                 scrollDirection: Axis.horizontal,
                 child: Padding(
-                  padding: EdgeInsets.only(left: 8.0),
+                  padding: const EdgeInsets.only(left: 8.0),
                   child: Text(
                     widget.isKeypadView
                         ? widget.currentCurrency.format(widget.currentAmount)

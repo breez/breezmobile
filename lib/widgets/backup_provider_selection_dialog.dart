@@ -32,8 +32,8 @@ class BackupProviderSelectionDialogState
     final texts = context.texts();
 
     return AlertDialog(
-      titlePadding: EdgeInsets.fromLTRB(24.0, 22.0, 24.0, 16.0),
-      title: Container(
+      titlePadding: const EdgeInsets.fromLTRB(24.0, 22.0, 24.0, 16.0),
+      title: SizedBox(
         width: MediaQuery.of(context).size.width,
         height: 30,
         child: AutoSizeText(
@@ -42,7 +42,7 @@ class BackupProviderSelectionDialogState
           maxLines: 1,
         ),
       ),
-      contentPadding: EdgeInsets.fromLTRB(24.0, 8.0, 24.0, 24.0),
+      contentPadding: const EdgeInsets.fromLTRB(24.0, 8.0, 24.0, 24.0),
       content: Column(
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -59,11 +59,11 @@ class BackupProviderSelectionDialogState
             stream: widget.backupBloc.backupSettingsStream,
             builder: (context, snapshot) {
               if (!snapshot.hasData) {
-                return SizedBox();
+                return const SizedBox();
               }
 
               final providers = BackupSettings.availableBackupProviders();
-              return Container(
+              return SizedBox(
                 width: 150.0,
                 height: providers.length * 50.0,
                 child: ListView.builder(
@@ -71,7 +71,7 @@ class BackupProviderSelectionDialogState
                   itemCount: providers.length,
                   itemBuilder: (BuildContext context, int index) {
                     return ListTile(
-                      contentPadding: EdgeInsets.symmetric(horizontal: 0.0),
+                      contentPadding: const EdgeInsets.symmetric(horizontal: 0.0),
                       selected: _selectedProviderIndex == index,
                       trailing: _selectedProviderIndex == index
                           ? Icon(
@@ -123,7 +123,7 @@ class BackupProviderSelectionDialogState
           },
         )
       ],
-      shape: RoundedRectangleBorder(
+      shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.all(Radius.circular(12.0)),
       ),
     );

@@ -19,7 +19,7 @@ class PaymentFilterSliver extends StatefulWidget {
   final AccountBloc _accountBloc;
   final PaymentsModel _paymentsModel;
 
-  PaymentFilterSliver(
+  const PaymentFilterSliver(
     this._controller,
     this._minSize,
     this._maxSize,
@@ -78,7 +78,7 @@ class PaymentFilterSliverState extends State<PaymentFilterSliver> {
               ),
         builder: (context, shrinkedHeight, overlapContent) {
           return AnimatedOpacity(
-            duration: Duration(milliseconds: 100),
+            duration: const Duration(milliseconds: 100),
             opacity: !_hasNoFilter
                 ? 1.0
                 : (scrollOffset - widget._maxSize / 2).clamp(0.0, 1.0),
@@ -110,7 +110,7 @@ class PaymentsFilter extends StatefulWidget {
   final AccountBloc _accountBloc;
   final PaymentsModel _paymentsModel;
 
-  PaymentsFilter(
+  const PaymentsFilter(
     this._accountBloc,
     this._paymentsModel,
   );
@@ -184,7 +184,7 @@ class PaymentsFilterState extends State<PaymentsFilter> {
     final themeData = Theme.of(context);
 
     return Padding(
-      padding: EdgeInsets.only(left: 0.0, right: 0.0),
+      padding: const EdgeInsets.only(left: 0.0, right: 0.0),
       child: IconButton(
         icon: SvgPicture.asset(
           "src/icon/calendar.svg",
@@ -273,8 +273,8 @@ class PaymentsFilterState extends State<PaymentsFilter> {
     );
   }
 
-  List<PaymentType> _getFilterType(String _filter) {
-    return _filterMap[_filter] ?? PaymentType.values;
+  List<PaymentType> _getFilterType(String filter) {
+    return _filterMap[filter] ?? PaymentType.values;
   }
 
   String _getFilterTypeString(
@@ -304,7 +304,7 @@ class PaymentsFilterState extends State<PaymentsFilter> {
             color: themeData.paymentItemTitleTextStyle.color,
           ),
           padding: EdgeInsets.zero,
-          offset: Offset(12, 24),
+          offset: const Offset(12, 24),
           onSelected: _select,
           itemBuilder: (context) => [
             PopupMenuItem(

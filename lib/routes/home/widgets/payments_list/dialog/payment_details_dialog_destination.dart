@@ -42,7 +42,7 @@ class PaymentDetailsDialogDestination extends StatelessWidget {
             children: [
               Expanded(
                 child: Padding(
-                  padding: EdgeInsets.only(left: 16.0, right: 16.0),
+                  padding: const EdgeInsets.only(left: 16.0, right: 16.0),
                   child: AutoSizeText(
                     currency.format(amount),
                     style: themeData.primaryTextTheme.displaySmall,

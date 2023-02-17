@@ -21,14 +21,14 @@ class GetRefundPage extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
-        leading: backBtn.BackButton(),
+        leading: const backBtn.BackButton(),
         title: Text(texts.get_refund_title),
       ),
       body: StreamBuilder<AccountModel>(
         stream: accountBloc.accountStream,
         builder: (context, accSnapshot) {
           if (!accSnapshot.hasData || !accSnapshot.hasData) {
-            return Loader();
+            return const Loader();
           }
           if (accSnapshot.hasError) {
             return Text(accSnapshot.error.toString());
@@ -84,7 +84,7 @@ class GetRefundPage extends StatelessWidget {
                 ),
               ],
             ),
-            Divider(
+            const Divider(
               height: 0.0,
               color: Color.fromRGBO(255, 255, 255, 0.52),
             ),
@@ -103,7 +103,7 @@ class GetRefundPage extends StatelessWidget {
 
     final ids = item.confirmedTransactionIds;
     String originalTransaction;
-    if (ids.length > 0) {
+    if (ids.isNotEmpty) {
       originalTransaction = ids[ids.length - 1];
     }
 

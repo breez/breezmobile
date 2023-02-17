@@ -4,7 +4,7 @@ import 'async_action.dart';
 
 class AsyncActionsHandler {
   final _actionsController = StreamController<AsyncAction>.broadcast();
-  Map<Type, Function> _actionHandlers = Map();
+  final Map<Type, Function> _actionHandlers = {};
 
   Sink<AsyncAction> get actionsSink => _actionsController.sink;
 

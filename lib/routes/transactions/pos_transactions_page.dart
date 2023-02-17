@@ -61,7 +61,7 @@ class PosTransactionsPageState extends State<PosTransactionsPage> {
 
             if ((account != null && !account.initial) &&
                 (paymentsModel != null &&
-                    paymentsModel.paymentsList.length == 0 &&
+                    paymentsModel.paymentsList.isEmpty &&
                     paymentsModel.filter == PaymentFilterModel.initial())) {
               return _buildScaffold(
                 context,
@@ -96,9 +96,9 @@ class PosTransactionsPageState extends State<PosTransactionsPage> {
     return Scaffold(
       key: _scaffoldKey,
       appBar: AppBar(
-        leading: backBtn.BackButton(),
+        leading: const backBtn.BackButton(),
         title: Text(texts.pos_transactions_title),
-        actions: actions == null ? [] : actions,
+        actions: actions ?? [],
       ),
       body: body,
     );
@@ -121,7 +121,7 @@ class PosTransactionsPageState extends State<PosTransactionsPage> {
       onPressed: () => showDialog(
         useRootNavigator: false,
         context: context,
-        builder: (_) => PosReportDialog(),
+        builder: (_) => const PosReportDialog(),
       ),
     );
   }
@@ -170,7 +170,7 @@ class PosTransactionsPageState extends State<PosTransactionsPage> {
             color: themeData.iconTheme.color,
           ),
           padding: EdgeInsets.zero,
-          offset: Offset(0, 48),
+          offset: const Offset(0, 48),
           onSelected: _select,
           itemBuilder: (context) => [
             PopupMenuItem(
@@ -232,7 +232,7 @@ class PosTransactionsPageState extends State<PosTransactionsPage> {
     return Stack(
       fit: StackFit.expand,
       children: [
-        (hasDateRange && payments.length == 0)
+        (hasDateRange && payments.isEmpty)
             ? Column(
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: [
@@ -256,7 +256,7 @@ class PosTransactionsPageState extends State<PosTransactionsPage> {
                           automaticallyImplyLeading: false,
                           flexibleSpace: _buildDateFilterChip(filter),
                         )
-                      : SliverPadding(
+                      : const SliverPadding(
                           padding: EdgeInsets.zero,
                         ),
                   PosPaymentsList(
@@ -281,7 +281,7 @@ class PosTransactionsPageState extends State<PosTransactionsPage> {
       mainAxisAlignment: MainAxisAlignment.start,
       children: [
         Padding(
-          padding: EdgeInsets.only(left: 16.0),
+          padding: const EdgeInsets.only(left: 16.0),
           child: Chip(
             label: Text(
               BreezDateUtils.formatFilterDateRange(

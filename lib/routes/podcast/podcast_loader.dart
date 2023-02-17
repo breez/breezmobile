@@ -37,8 +37,8 @@ class PodcastIndexClient {
 
     return Dio(
       BaseOptions(
-        connectTimeout: Duration(milliseconds: 10000),
-        receiveTimeout: Duration(milliseconds: 10000),
+        connectTimeout: const Duration(milliseconds: 10000),
+        receiveTimeout: const Duration(milliseconds: 10000),
         responseType: ResponseType.json,
         headers: {
           'X-Auth-Date': newUnixTime,

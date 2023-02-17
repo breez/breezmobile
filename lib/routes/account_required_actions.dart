@@ -30,7 +30,7 @@ class AccountRequiredActionsIndicator extends StatefulWidget {
   final AccountBloc _accountBloc;
   final LSPBloc lspBloc;
 
-  AccountRequiredActionsIndicator(
+  const AccountRequiredActionsIndicator(
     this._backupBloc,
     this._accountBloc,
     this.lspBloc,
@@ -58,7 +58,7 @@ class AccountRequiredActionsIndicatorState
           .listen((settings) => _currentSettings = settings);
 
       _promptEnableSubscription = widget._backupBloc.promptBackupStream
-          .delay(Duration(seconds: 4))
+          .delay(const Duration(seconds: 4))
           .listen((needSignIn) async {
         if (_currentSettings.promptOnError && !showingBackupDialog) {
           showingBackupDialog = true;
@@ -107,7 +107,7 @@ class AccountRequiredActionsIndicatorState
         },
         iconWidget: Rotator(
           child: Image(
-            image: AssetImage("src/icon/sync.png"),
+            image: const AssetImage("src/icon/sync.png"),
             color: Theme.of(context).appBarTheme.actionsIconTheme.color,
           ),
         ),
@@ -123,7 +123,7 @@ class AccountRequiredActionsIndicatorState
   ) {
     int warningDuration = 0;
     int currentTimestamp = DateTime.now().millisecondsSinceEpoch ~/ 1000;
-    lspList.forEach((l) {
+    for (var l in lspList) {
       if (activity.containsKey(l.lspID) &&
           ((currentTimestamp - activity[l.lspID].toInt()) >
               4 * (l.maxInactiveDuration ~/ 5))) {
@@ -133,7 +133,7 @@ class AccountRequiredActionsIndicatorState
           warningDuration = (currentTimestamp - activity[l.lspID].toInt());
         }
       }
-    });
+    }
     return warningDuration;
   }
 
@@ -250,8 +250,8 @@ class AccountRequiredActionsIndicatorState
 
     final availableLSPs = lspStatus?.availableLSPs ?? [];
     if (lspActivity != null) {
-      availableLSPs.forEach((element) {});
-      int inactiveWarningDuration = this._inactiveWarningDuration(
+      for (var element in availableLSPs) {}
+      int inactiveWarningDuration = _inactiveWarningDuration(
         availableLSPs,
         lspActivity.activity,
       );
@@ -273,7 +273,7 @@ class AccountRequiredActionsIndicatorState
 
     final swapStatus = accountModel?.swapFundsStatus;
     // only warn on refundable addresses that weren't refunded in the past.
-    if (swapStatus != null && swapStatus.waitingRefundAddresses.length > 0) {
+    if (swapStatus != null && swapStatus.waitingRefundAddresses.isNotEmpty) {
       warnings.add(WarningAction(() => showDialog(
             useRootNavigator: false,
             barrierDismissible: false,
@@ -291,7 +291,7 @@ class AccountRequiredActionsIndicatorState
         ),
         iconWidget: Rotator(
             child: Image(
-          image: AssetImage("src/icon/sync.png"),
+          image: const AssetImage("src/icon/sync.png"),
           color: themeData.appBarTheme.actionsIconTheme.color,
         )),
       ));
@@ -311,8 +311,8 @@ class AccountRequiredActionsIndicatorState
       }));
     }
 
-    if (warnings.length == 0) {
-      return SizedBox();
+    if (warnings.isEmpty) {
+      return const SizedBox();
     }
 
     return Row(
@@ -327,7 +327,7 @@ class WarningAction extends StatefulWidget {
   final void Function() onTap;
   final Widget iconWidget;
 
-  WarningAction(
+  const WarningAction(
     this.onTap, {
     this.iconWidget,
   });
@@ -348,7 +348,7 @@ class WarningActionState extends State<WarningAction>
     super.initState();
     _animationController = AnimationController(
       vsync: this,
-      duration: Duration(seconds: 1),
+      duration: const Duration(seconds: 1),
     );
     //use Tween animation here, to animate between the values of 1.0 & 2.5.
     _animation = Tween<double>(
@@ -376,7 +376,7 @@ class WarningActionState extends State<WarningAction>
     return IconButton(
       iconSize: 45.0,
       padding: EdgeInsets.zero,
-      icon: Container(
+      icon: SizedBox(
         width: 45 * _animation.value,
         child: widget.iconWidget ??
             SvgPicture.asset(
@@ -388,7 +388,7 @@ class WarningActionState extends State<WarningAction>
             ),
       ),
       tooltip: texts.account_required_actions_backup,
-      onPressed: this.widget.onTap,
+      onPressed: widget.onTap,
     );
   }
 }

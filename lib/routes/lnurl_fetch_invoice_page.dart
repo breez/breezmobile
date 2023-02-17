@@ -66,7 +66,7 @@ class LNURLFetchInvoicePageState extends State<LNURLFetchInvoicePage> {
         }
 
         Future.delayed(
-          Duration(milliseconds: 200),
+          const Duration(milliseconds: 200),
           () => FocusScope.of(context).requestFocus(_amountFocusNode),
         );
       }
@@ -153,7 +153,7 @@ class LNURLFetchInvoicePageState extends State<LNURLFetchInvoicePage> {
             );
           }),
       appBar: AppBar(
-        leading: backBtn.BackButton(),
+        leading: const backBtn.BackButton(),
         title: Text(texts.lnurl_fetch_invoice_pay_to_payee(payee)),
       ),
       body: StreamBuilder<AccountModel>(
@@ -266,7 +266,7 @@ class LNURLFetchInvoicePageState extends State<LNURLFetchInvoicePage> {
                           ),
                         );
                       } else {
-                        return SizedBox();
+                        return const SizedBox();
                       }
                     },
                   ),
@@ -307,7 +307,7 @@ class LNURLFetchInvoicePageState extends State<LNURLFetchInvoicePage> {
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
         ConstrainedBox(
-          constraints: BoxConstraints(
+          constraints: const BoxConstraints(
             maxWidth: 125,
             maxHeight: 125,
           ),

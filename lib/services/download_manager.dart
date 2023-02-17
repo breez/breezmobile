@@ -54,29 +54,27 @@ class DownloadTaskManager {
     FlutterDownloader.registerCallback(downloadCallback);
 
     final allTasks = await loadTasks();
-    allTasks.forEach((t) {
+    for (var t in allTasks) {
       _tasksToPoll.add(t.taskId);
-    });
+    }
     pollTasksStatus();
   }
 
   void pollTasksStatus() {
-    if (_downloadTimer == null) {
-      _downloadTimer = Timer.periodic(Duration(seconds: 3), (timer) async {
+    _downloadTimer ??= Timer.periodic(const Duration(seconds: 3), (timer) async {
         var tasks = await loadTasks();
         final polledTasks = tasks.where((t) => _tasksToPoll.contains(t.taskId));
-        polledTasks.forEach((task) {
+        for (var task in polledTasks) {
           _updateProgress(task.taskId, task.progress, task.status);
           if (finalTaskStatuses.contains(task.status)) {
             _tasksToPoll.remove(task.taskId);
           }
-        });
+        }
         if (_tasksToPoll.isEmpty) {
           _downloadTimer?.cancel();
           _downloadTimer = null;
         }
       });
-    }
   }
 
   void _updateProgress(String taskID, int progress, DownloadTaskStatus status) {

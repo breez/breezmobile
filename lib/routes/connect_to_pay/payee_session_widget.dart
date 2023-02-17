@@ -21,7 +21,7 @@ class PayeeSessionWidget extends StatelessWidget {
   final AccountModel _account;
   final LSPStatus _lspStatus;
 
-  PayeeSessionWidget(
+  const PayeeSessionWidget(
     this._currentSession,
     this._account,
     this._lspStatus,
@@ -32,7 +32,7 @@ class PayeeSessionWidget extends StatelessWidget {
     return StreamBuilder<PaymentSessionState>(
       stream: _currentSession.paymentSessionStateStream,
       builder: (context, snapshot) {
-        if (!snapshot.hasData) return Center(child: Loader());
+        if (!snapshot.hasData) return const Center(child: Loader());
 
         final sessionState = snapshot.data;
         final payerAmount = snapshot?.data?.payerData?.amount;
@@ -56,9 +56,9 @@ class PayeeSessionWidget extends StatelessWidget {
               child: PeersConnection(sessionState),
             ),
             payerAmount == null || _account.maxInboundLiquidity >= payerAmount
-                ? SizedBox()
+                ? const SizedBox()
                 : WarningBox(
-                    contentPadding: EdgeInsets.all(8),
+                    contentPadding: const EdgeInsets.all(8),
                     child: Text(
                       _formatFeeMessage(
                         context,
@@ -146,7 +146,7 @@ class _PayeeInstructions extends StatelessWidget {
   final PaymentSessionState _sessionState;
   final AccountModel _account;
 
-  _PayeeInstructions(
+  const _PayeeInstructions(
     this._sessionState,
     this._account,
   );
@@ -185,7 +185,7 @@ class _PayeeInstructions extends StatelessWidget {
                   useRootNavigator: false,
                   context: context,
                   builder: (context) => AlertDialog(
-                    content: SyncProgressDialog(),
+                    content: const SyncProgressDialog(),
                     actions: [
                       TextButton(
                         onPressed: () => Navigator.pop(context),

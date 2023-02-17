@@ -107,7 +107,7 @@ class RemoteServerAuthPageState extends State<RemoteServerAuthPage> {
                   builder: (context, snapshot) {
                     var settings = snapshot.data;
                     if (settings == null) {
-                      return Loader();
+                      return const Loader();
                     }
                     return GestureDetector(
                       behavior: HitTestBehavior.opaque,
@@ -136,7 +136,7 @@ class RemoteServerAuthPageState extends State<RemoteServerAuthPage> {
                 ),
               ),
               bottomNavigationBar: Padding(
-                padding: EdgeInsets.only(bottom: 0.0),
+                padding: const EdgeInsets.only(bottom: 0.0),
                 child: SingleButtonBottomBar(
                     stickToBottom: true,
                     text: widget.restore
@@ -170,7 +170,7 @@ class RemoteServerAuthPageState extends State<RemoteServerAuthPage> {
                                 connectionWarningResponse = false;
                                 Navigator.of(context).push(FadeInRoute(
                                   builder: (_) =>
-                                      withBreezTheme(context, NetworkPage()),
+                                      withBreezTheme(context, const NetworkPage()),
                                 ));
                                 // Navigator.of(context).popUntil((route) => route is RemoteServerAuthPage);
                                 return false;
@@ -298,7 +298,7 @@ class RemoteServerAuthPageState extends State<RemoteServerAuthPage> {
         hintText: texts.remote_server_server_password_hint,
         labelText: texts.remote_server_server_password_label,
         suffixIcon: IconButton(
-          icon: Icon(Icons.remove_red_eye),
+          icon: const Icon(Icons.remove_red_eye),
           onPressed: () {
             setState(() {
               _passwordObscured = !_passwordObscured;
@@ -326,7 +326,7 @@ class RemoteServerAuthPageState extends State<RemoteServerAuthPage> {
       List<String> pathSegments = testedUrl.pathSegments.toList();
 
       // if we reached url origin then we fail.
-      if (pathSegments.length == 0) {
+      if (pathSegments.isEmpty) {
         return DiscoveryResult(testedAuthData, DiscoverResult.INVALID_URL);
       }
       String lastSegment = pathSegments.removeLast();
@@ -335,7 +335,7 @@ class RemoteServerAuthPageState extends State<RemoteServerAuthPage> {
       // and move the last path segment as the directory prefix
       testedAuthData = testedAuthData.copyWith(
           url: testedUrl.replace(pathSegments: pathSegments).toString(),
-          breezDir: lastSegment + "/" + testedAuthData.breezDir);
+          breezDir: "$lastSegment/${testedAuthData.breezDir}");
     }
   }
 
@@ -349,9 +349,9 @@ class RemoteServerAuthPageState extends State<RemoteServerAuthPage> {
 
     var url = authData.url;
     if (!url.endsWith("/")) {
-      url = url + "/";
+      url = "$url/";
     }
-    final nextCloudURL = url + "remote.php/dav/";
+    final nextCloudURL = "${url}remote.php/dav/";
     result = await testAuthData(authData.copyWith(url: nextCloudURL));
     if (result == DiscoverResult.SUCCESS ||
         result == DiscoverResult.INVALID_AUTH) {

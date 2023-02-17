@@ -37,7 +37,7 @@ class ServiceInjector {
   Client _client;
 
   factory ServiceInjector() {
-    return _injector != null ? _injector : _singleton;
+    return _injector ?? _singleton;
   }
 
   ServiceInjector._internal();

@@ -32,7 +32,7 @@ class PaymentDetailsDialogAmount extends StatelessWidget {
 
     return Container(
       height: 36.0,
-      padding: EdgeInsets.only(left: 16.0, right: 16.0),
+      padding: const EdgeInsets.only(left: 16.0, right: 16.0),
       child: Row(
         mainAxisSize: MainAxisSize.max,
         children: [

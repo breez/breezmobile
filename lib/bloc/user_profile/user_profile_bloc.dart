@@ -31,7 +31,7 @@ class UserProfileBloc {
   static const PROFILE_DATA_FOLDER_PATH = "profile";
   static const String USER_DETAILS_PREFERENCES_KEY = "BreezUserModel.userID";
 
-  final FlutterSecureStorage _secureStorage = FlutterSecureStorage();
+  final FlutterSecureStorage _secureStorage = const FlutterSecureStorage();
   BreezServer _breezServer;
   Notifications _notifications;
   Device _deviceService;
@@ -39,7 +39,7 @@ class UserProfileBloc {
   Future<SharedPreferences> _preferences;
   BreezBridge _breezBridge;
 
-  Map<Type, Function> _actionHandlers = Map();
+  Map<Type, Function> _actionHandlers = {};
   final _userActionsController = StreamController<AsyncAction>.broadcast();
   Sink<AsyncAction> get userActionsSink => _userActionsController.sink;
   final _registrationController = StreamController<void>();
@@ -166,16 +166,16 @@ class UserProfileBloc {
       }
       if (!user.registered && Platform.isAndroid) {
         GooglePlayServicesAvailability availability = await GoogleApiAvailability.instance.checkGooglePlayServicesAvailability();
-        print("GooglePlayServicesAvailability:" + availability.toString());
+        print("GooglePlayServicesAvailability:$availability");
         if ((availability == GooglePlayServicesAvailability.serviceMissing) ||
           (availability == GooglePlayServicesAvailability.serviceDisabled) ||
           (availability == GooglePlayServicesAvailability.serviceInvalid)) {
-          var uuid = Uuid();
-          user = user.copyWith(userID: "random-" + uuid.v4());
+          var uuid = const Uuid();
+          user = user.copyWith(userID: "random-${uuid.v4()}");
         }
       }
       user = user.copyWith(locked: user.securityModel.requiresPin);
-      print("USER:" + user.toJson().toString());
+      print("USER:${user.toJson()}");
       _publishUser(user);
     });
   }
@@ -242,7 +242,7 @@ class UserProfileBloc {
       });
     } catch (error) {
       log.severe(error);
-      throw error;
+      rethrow;
     }
   }
 
@@ -253,7 +253,7 @@ class UserProfileBloc {
   }
 
   Future _validatePinCode(ValidatePinCode action) async {
-    var pinCode;
+    String pinCode;
     try {
       pinCode = await _secureStorage.read(key: 'pinCode');
     } catch (e) {
@@ -374,9 +374,9 @@ class UserProfileBloc {
       BreezUserModel userModel) async {
     var appDir = await getApplicationDocumentsDirectory();
     var backupAppDataDirPath =
-        appDir.path + Platform.pathSeparator + 'app_data_backup';
+        '${appDir.path}${Platform.pathSeparator}app_data_backup';
     final backupUserPrefsPath =
-        backupAppDataDirPath + Platform.pathSeparator + 'userPreferences.txt';
+        '$backupAppDataDirPath${Platform.pathSeparator}userPreferences.txt';
     if (await File(backupUserPrefsPath).exists()) {
       final backupUserPrefs = await File(backupUserPrefsPath).readAsString();
       Map<dynamic, dynamic> userData = json.decode(backupUserPrefs);
@@ -447,7 +447,7 @@ class UserProfileBloc {
     if (user?.token == null) {
       print("UserProfileBloc publish first user null token");
     } else {
-      print("UserProfileBloc before _publishUser token = " + user.token);
+      print("UserProfileBloc before _publishUser token = ${user.token}");
     }
     _userStreamController.add(user);
     _userStreamPreviewController.add(user);

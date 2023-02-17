@@ -53,8 +53,8 @@ class BreezLogger {
       final stack = details.stack?.toString() ?? "NoStack";
       final name = details.context?.name ?? "FlutterError";
       final exception = details.exceptionAsString();
-      breezBridge.log(exception + '\n' + stack, name);
-      print(exception + '\n' + stack + " --" + name);
+      breezBridge.log('$exception\n$stack', name);
+      print("$exception\n$stack --$name");
     };
   }
 }

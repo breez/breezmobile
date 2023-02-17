@@ -20,7 +20,7 @@ class PaymentDetailsDialogTitle extends StatelessWidget {
       children: <Widget>[
         Container(
           decoration: ShapeDecoration(
-            shape: RoundedRectangleBorder(
+            shape: const RoundedRectangleBorder(
               borderRadius: BorderRadius.vertical(
                 top: Radius.circular(12.0),
               ),
@@ -33,7 +33,7 @@ class PaymentDetailsDialogTitle extends StatelessWidget {
           width: mediaQuery.size.width,
         ),
         Padding(
-          padding: EdgeInsets.only(top: 32.0),
+          padding: const EdgeInsets.only(top: 32.0),
           child: Center(
             child: PaymentItemAvatar(
               paymentInfo,

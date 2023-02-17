@@ -45,12 +45,12 @@ class RestoreDialogState extends State<RestoreDialog> {
     final themeData = Theme.of(context);
 
     return AlertDialog(
-      titlePadding: EdgeInsets.fromLTRB(24.0, 22.0, 0.0, 16.0),
+      titlePadding: const EdgeInsets.fromLTRB(24.0, 22.0, 0.0, 16.0),
       title: Text(
         texts.restore_dialog_title,
         style: themeData.dialogTheme.titleTextStyle,
       ),
-      contentPadding: EdgeInsets.fromLTRB(24.0, 8.0, 24.0, 24.0),
+      contentPadding: const EdgeInsets.fromLTRB(24.0, 8.0, 24.0, 24.0),
       content: Column(
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -59,7 +59,7 @@ class RestoreDialogState extends State<RestoreDialog> {
             stream: widget.backupBloc.backupSettingsStream,
             builder: (context, snapshot) {
               if (!snapshot.hasData) {
-                return SizedBox();
+                return const SizedBox();
               }
 
               return Text(
@@ -73,8 +73,8 @@ class RestoreDialogState extends State<RestoreDialog> {
             },
           ),
           Padding(
-            padding: EdgeInsets.only(top: 16.0),
-            child: Container(
+            padding: const EdgeInsets.only(top: 16.0),
+            child: SizedBox(
               width: 150.0,
               height: 200.0,
               child: ListView.builder(
@@ -130,14 +130,14 @@ class RestoreDialogState extends State<RestoreDialog> {
       date = BreezDateUtils.formatYearMonthDayHourMinute(parsedDate);
     }
     return ListTile(
-      contentPadding: EdgeInsets.symmetric(horizontal: 0.0),
+      contentPadding: const EdgeInsets.symmetric(horizontal: 0.0),
       selected: nodeID == item.nodeID,
       trailing: nodeID == item.nodeID
           ? Icon(
               Icons.check,
               color: theme.BreezColors.blue[500],
             )
-          : Icon(Icons.check),
+          : const Icon(Icons.check),
       title: Text(
         item.encrypted
             ? texts.restore_dialog_modified_encrypted(date)
@@ -191,10 +191,10 @@ Future _shareBackup(List<String> files) async {
   var encoder = ZipFileEncoder();
   var zipFilePath = '${tempDir.path}/backup.zip';
   encoder.create(zipFilePath);
-  files.forEach((f) {
+  for (var f in files) {
     var file = File(f);
-    encoder.addFile(file, "${file.path.split(Platform.pathSeparator).last}");
-  });
+    encoder.addFile(file, file.path.split(Platform.pathSeparator).last);
+  }
   encoder.close();
   final zipFile = XFile(zipFilePath);
   Share.shareXFiles([zipFile]);

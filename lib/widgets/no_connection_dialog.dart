@@ -19,7 +19,7 @@ Future<bool> showNoConnectionDialog(BuildContext context) {
       final navigator = Navigator.of(context);
 
       return AlertDialog(
-        contentPadding: EdgeInsets.fromLTRB(16.0, 16.0, 16.0, 0.0),
+        contentPadding: const EdgeInsets.fromLTRB(16.0, 16.0, 16.0, 0.0),
         title: Text(
           texts.no_connection_dialog_title,
           style: dialogTheme.titleTextStyle,

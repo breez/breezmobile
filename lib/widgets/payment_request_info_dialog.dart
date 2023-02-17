@@ -44,7 +44,7 @@ class PaymentRequestInfoDialogState extends State<PaymentRequestInfoDialog> {
   final _formKey = GlobalKey<FormState>();
   final _invoiceAmountController = TextEditingController();
   final _amountFocusNode = FocusNode();
-  final _amountToPayMap = Map<String, dynamic>();
+  final _amountToPayMap = <String, dynamic>{};
 
   KeyboardDoneAction _doneAction;
   bool _showFiatCurrency = false;
@@ -66,9 +66,9 @@ class PaymentRequestInfoDialogState extends State<PaymentRequestInfoDialog> {
 
   @override
   Widget build(BuildContext context) {
-    List<Widget> _paymentRequestDialog = [];
-    _addIfNotNull(_paymentRequestDialog, _buildPaymentRequestTitle());
-    _addIfNotNull(_paymentRequestDialog, _buildPaymentRequestContent());
+    List<Widget> paymentRequestDialog = [];
+    _addIfNotNull(paymentRequestDialog, _buildPaymentRequestTitle());
+    _addIfNotNull(paymentRequestDialog, _buildPaymentRequestContent());
     return Dialog(
       child: Container(
         constraints: BoxConstraints(minHeight: widget.minHeight),
@@ -77,7 +77,7 @@ class PaymentRequestInfoDialogState extends State<PaymentRequestInfoDialog> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           mainAxisSize: MainAxisSize.min,
-          children: _paymentRequestDialog,
+          children: paymentRequestDialog,
         ),
       ),
     );
@@ -87,7 +87,7 @@ class PaymentRequestInfoDialogState extends State<PaymentRequestInfoDialog> {
     return widget.invoice.payeeImageURL.isEmpty
         ? null
         : Padding(
-            padding: EdgeInsets.only(top: 48, bottom: 8),
+            padding: const EdgeInsets.only(top: 48, bottom: 8),
             child: BreezAvatar(
               widget.invoice.payeeImageURL,
               radius: 32.0,
@@ -101,7 +101,7 @@ class PaymentRequestInfoDialogState extends State<PaymentRequestInfoDialog> {
       builder: (context, snapshot) {
         final account = snapshot.data;
         if (account == null) {
-          return Container(width: 0.0, height: 0.0);
+          return const SizedBox(width: 0.0, height: 0.0);
         }
 
         List<Widget> children = [];
@@ -113,7 +113,7 @@ class PaymentRequestInfoDialogState extends State<PaymentRequestInfoDialog> {
         _addIfNotNull(children, _buildActions(context, account));
 
         return Container(
-          padding: EdgeInsets.fromLTRB(8.0, 0.0, 8.0, 16.0),
+          padding: const EdgeInsets.fromLTRB(8.0, 0.0, 8.0, 16.0),
           width: MediaQuery.of(context).size.width,
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
@@ -135,7 +135,7 @@ class PaymentRequestInfoDialogState extends State<PaymentRequestInfoDialog> {
     return widget.invoice.payeeName == null
         ? null
         : Text(
-            "${widget.invoice.payeeName}",
+            widget.invoice.payeeName,
             style: Theme.of(context)
                 .primaryTextTheme
                 .headlineMedium
@@ -184,7 +184,7 @@ class PaymentRequestInfoDialogState extends State<PaymentRequestInfoDialog> {
           key: _formKey,
           child: Padding(
             padding: const EdgeInsets.only(left: 16.0, right: 16.0),
-            child: Container(
+            child: SizedBox(
               height: 80.0,
               child: AmountFormField(
                 context: context,
@@ -204,6 +204,17 @@ class PaymentRequestInfoDialogState extends State<PaymentRequestInfoDialog> {
     }
 
     return GestureDetector(
+      behavior: HitTestBehavior.translucent,
+      onLongPressStart: (_) {
+        setState(() {
+          _showFiatCurrency = true;
+        });
+      },
+      onLongPressEnd: (_) {
+        setState(() {
+          _showFiatCurrency = false;
+        });
+      },
       child: ConstrainedBox(
         constraints: const BoxConstraints(
           minWidth: double.infinity,
@@ -216,17 +227,6 @@ class PaymentRequestInfoDialogState extends State<PaymentRequestInfoDialog> {
           textAlign: TextAlign.center,
         ),
       ),
-      behavior: HitTestBehavior.translucent,
-      onLongPressStart: (_) {
-        setState(() {
-          _showFiatCurrency = true;
-        });
-      },
-      onLongPressEnd: (_) {
-        setState(() {
-          _showFiatCurrency = false;
-        });
-      },
     );
   }
 
@@ -237,9 +237,9 @@ class PaymentRequestInfoDialogState extends State<PaymentRequestInfoDialog> {
     return description == null || description.isEmpty
         ? null
         : Padding(
-            padding: EdgeInsets.only(top: 8.0, left: 16.0, right: 16.0),
+            padding: const EdgeInsets.only(top: 8.0, left: 16.0, right: 16.0),
             child: Container(
-              constraints: BoxConstraints(
+              constraints: const BoxConstraints(
                 maxHeight: 200,
                 minWidth: double.infinity,
               ),
@@ -348,7 +348,9 @@ class PaymentRequestInfoDialogState extends State<PaymentRequestInfoDialog> {
     if (amount == 0) {
       try {
         amount = acc.currency.parse(_invoiceAmountController.text);
-      } catch (e) {}
+      } catch (e) {
+        // do nothing.
+      }
     }
     return amount;
   }

@@ -29,21 +29,21 @@ final CustomData blueThemeCustomData = CustomData(
   loaderColorBlendMode: BlendMode.multiply,
   loaderAssetPath: 'src/images/breez_loader_blue.gif',
   dashboardBgColor: Colors.white,
-  pendingTextColor: Color(0xff4D88EC),
-  paymentListBgColor: Color(0xFFf9f9f9),
-  paymentListDividerColor: Color.fromRGBO(0, 0, 0, 0.12),
+  pendingTextColor: const Color(0xff4D88EC),
+  paymentListBgColor: const Color(0xFFf9f9f9),
+  paymentListDividerColor: const Color.fromRGBO(0, 0, 0, 0.12),
   navigationDrawerBgColor: BreezColors.blue[500],
-  navigationDrawerHeaderBgColor: Color.fromRGBO(0, 103, 255, 1),
+  navigationDrawerHeaderBgColor: const Color.fromRGBO(0, 103, 255, 1),
 );
 final CustomData darkThemeCustomData = CustomData(
   loaderColorBlendMode: BlendMode.srcIn,
   loaderAssetPath: 'src/images/breez_loader_dark.gif',
-  pendingTextColor: Color(0xff4D88EC),
-  dashboardBgColor: Color(0xFF0D1F33),
-  paymentListBgColor: Color(0xFF152a3d),
-  paymentListDividerColor: Color.fromRGBO(255, 255, 255, 0.12),
-  navigationDrawerBgColor: Color(0xFF152a3d),
-  navigationDrawerHeaderBgColor: Color.fromRGBO(13, 32, 50, 1),
+  pendingTextColor: const Color(0xff4D88EC),
+  dashboardBgColor: const Color(0xFF0D1F33),
+  paymentListBgColor: const Color(0xFF152a3d),
+  paymentListDividerColor: const Color.fromRGBO(255, 255, 255, 0.12),
+  navigationDrawerBgColor: const Color(0xFF152a3d),
+  navigationDrawerHeaderBgColor: const Color.fromRGBO(13, 32, 50, 1),
 );
 final Map<String, CustomData> customData = {
   "BLUE": blueThemeCustomData,
@@ -52,27 +52,27 @@ final Map<String, CustomData> customData = {
 
 final ThemeData blueTheme = ThemeData(
   brightness: Brightness.dark,
-  primaryColor: Color.fromRGBO(255, 255, 255, 1.0),
+  primaryColor: const Color.fromRGBO(255, 255, 255, 1.0),
   primaryColorDark: BreezColors.blue[900],
-  primaryColorLight: Color.fromRGBO(0, 133, 251, 1.0),
-  floatingActionButtonTheme: FloatingActionButtonThemeData(
+  primaryColorLight: const Color.fromRGBO(0, 133, 251, 1.0),
+  floatingActionButtonTheme: const FloatingActionButtonThemeData(
       backgroundColor: Color.fromRGBO(0, 133, 251, 1.0)),
   canvasColor: BreezColors.blue[500],
-  bottomAppBarTheme: BottomAppBarTheme(
+  bottomAppBarTheme: const BottomAppBarTheme(
     elevation: 0,
     color: Color(0xFF0085fb),
   ),
   appBarTheme: AppBarTheme(
     elevation: 0.0,
     backgroundColor: BreezColors.blue[500],
-    iconTheme: IconThemeData(color: Colors.white),
+    iconTheme: const IconThemeData(color: Colors.white),
     systemOverlayStyle: SystemUiOverlayStyle.light,
-    actionsIconTheme: IconThemeData(color: Color.fromRGBO(0, 120, 253, 1.0)),
-    toolbarTextStyle: TextTheme(
+    actionsIconTheme: const IconThemeData(color: Color.fromRGBO(0, 120, 253, 1.0)),
+    toolbarTextStyle: const TextTheme(
       titleLarge:
           TextStyle(color: Colors.white, fontSize: 18.0, letterSpacing: 0.22),
     ).bodyMedium,
-    titleTextStyle: TextTheme(
+    titleTextStyle: const TextTheme(
       titleLarge:
           TextStyle(color: Colors.white, fontSize: 18.0, letterSpacing: 0.22),
     ).titleLarge,
@@ -83,10 +83,10 @@ final ThemeData blueTheme = ThemeData(
       contentTextStyle:
           TextStyle(color: BreezColors.grey[500], fontSize: 16.0, height: 1.5),
       backgroundColor: Colors.white,
-      shape: RoundedRectangleBorder(
+      shape: const RoundedRectangleBorder(
           borderRadius: BorderRadius.all(Radius.circular(12.0)))),
   dialogBackgroundColor: Colors.transparent,
-  dividerColor: Color(0x33ffffff),
+  dividerColor: const Color(0x33ffffff),
   cardColor: BreezColors.blue[500],
   highlightColor: BreezColors.blue[200],
   textTheme: TextTheme(
@@ -95,11 +95,11 @@ final ThemeData blueTheme = ThemeData(
       headlineSmall: TextStyle(color: BreezColors.grey[600], fontSize: 26.0),
       labelLarge: TextStyle(
           color: BreezColors.blue[500], fontSize: 14.3, letterSpacing: 1.25),
-      headlineMedium: TextStyle(
+      headlineMedium: const TextStyle(
         color: Color(0xffffe685),
         fontSize: 18.0,
       ),
-      titleLarge: TextStyle(
+      titleLarge: const TextStyle(
           color: Colors.white,
           fontSize: 12.3,
           fontWeight: FontWeight.w400,
@@ -137,14 +137,14 @@ final ThemeData blueTheme = ThemeData(
         color: BreezColors.blue[500], fontSize: 14.3, letterSpacing: 1.25),
     bodySmall: TextStyle(color: BreezColors.grey[500], fontSize: 12.0),
   ),
-  textSelectionTheme: TextSelectionThemeData(
+  textSelectionTheme: const TextSelectionThemeData(
     selectionColor: Color.fromRGBO(0, 133, 251, 0.25),
     selectionHandleColor: Color(0xFF0085fb),
   ),
   primaryIconTheme: IconThemeData(color: BreezColors.grey[500]),
   fontFamily: 'IBMPlexSans',
-  textButtonTheme: TextButtonThemeData(),
-  outlinedButtonTheme: OutlinedButtonThemeData(),
+  textButtonTheme: const TextButtonThemeData(),
+  outlinedButtonTheme: const OutlinedButtonThemeData(),
   elevatedButtonTheme: ElevatedButtonThemeData(
     style: ElevatedButton.styleFrom(backgroundColor: Colors.white),
   ),
@@ -152,51 +152,51 @@ final ThemeData blueTheme = ThemeData(
     fillColor: MaterialStateProperty.resolveWith(
       (states) {
         if (states.contains(MaterialState.selected)) {
-          return Color(0xFF0085fb);
+          return const Color(0xFF0085fb);
         } else {
-          return Color(0x8a000000);
+          return const Color(0x8a000000);
         }
       },
     ),
   ),
-  colorScheme: ColorScheme.dark()
+  colorScheme: const ColorScheme.dark()
       .copyWith(
         primary: Colors.white,
         secondary: Colors.white,
         background: Colors.white,
       )
-      .copyWith(error: Color(0xffffe685)),
+      .copyWith(error: const Color(0xffffe685)),
 );
 
 // Color(0xFF121212) values are tbd
 final ThemeData darkTheme = ThemeData(
   brightness: Brightness.dark,
-  primaryColor: Color(0xFF0085FB),
-  primaryColorDark: Color(0xFF00081C),
-  primaryColorLight: Color(0xFF0085FB),
+  primaryColor: const Color(0xFF0085FB),
+  primaryColorDark: const Color(0xFF00081C),
+  primaryColorLight: const Color(0xFF0085FB),
   floatingActionButtonTheme:
-      FloatingActionButtonThemeData(backgroundColor: Color(0xFF0085fb)),
-  canvasColor: Color(0xFF0c2031),
-  bottomAppBarTheme: BottomAppBarTheme(
+      const FloatingActionButtonThemeData(backgroundColor: Color(0xFF0085fb)),
+  canvasColor: const Color(0xFF0c2031),
+  bottomAppBarTheme: const BottomAppBarTheme(
     elevation: 0,
     color: Color(0xFF0085fb),
   ),
   appBarTheme: AppBarTheme(
     elevation: 0.0,
-    backgroundColor: Color(0xFF0c2031),
-    iconTheme: IconThemeData(color: Colors.white),
+    backgroundColor: const Color(0xFF0c2031),
+    iconTheme: const IconThemeData(color: Colors.white),
     systemOverlayStyle: SystemUiOverlayStyle.light,
-    actionsIconTheme: IconThemeData(color: Colors.white),
-    toolbarTextStyle: TextTheme(
+    actionsIconTheme: const IconThemeData(color: Colors.white),
+    toolbarTextStyle: const TextTheme(
       titleLarge:
           TextStyle(color: Colors.white, fontSize: 18.0, letterSpacing: 0.22),
     ).bodyMedium,
-    titleTextStyle: TextTheme(
+    titleTextStyle: const TextTheme(
       titleLarge:
           TextStyle(color: Colors.white, fontSize: 18.0, letterSpacing: 0.22),
     ).titleLarge,
   ),
-  dialogTheme: DialogTheme(
+  dialogTheme: const DialogTheme(
       titleTextStyle:
           TextStyle(color: Colors.white, fontSize: 20.5, letterSpacing: 0.25),
       contentTextStyle:
@@ -205,10 +205,10 @@ final ThemeData darkTheme = ThemeData(
       shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.all(Radius.circular(12.0)))),
   dialogBackgroundColor: Colors.transparent,
-  dividerColor: Color(0x337aa5eb),
-  cardColor: Color(0xFF121212),
-  highlightColor: Color(0xFF0085fb),
-  textTheme: TextTheme(
+  dividerColor: const Color(0x337aa5eb),
+  cardColor: const Color(0xFF121212),
+  highlightColor: const Color(0xFF0085fb),
+  textTheme: const TextTheme(
       titleSmall:
           TextStyle(color: Colors.white, fontSize: 14.3, letterSpacing: 0.2),
       headlineSmall: TextStyle(color: Colors.white, fontSize: 26.0),
@@ -225,81 +225,81 @@ final ThemeData darkTheme = ThemeData(
           letterSpacing: 0.25,
           height: 1.22)),
   primaryTextTheme: TextTheme(
-    headlineMedium: TextStyle(
+    headlineMedium: const TextStyle(
         color: Colors.white,
         fontSize: 14.0,
         letterSpacing: 0.0,
         height: 1.28,
         fontWeight: FontWeight.w500,
         fontFamily: 'IBMPlexSans'),
-    displaySmall: TextStyle(
+    displaySmall: const TextStyle(
         color: Colors.white, fontSize: 14.0, letterSpacing: 0.0, height: 1.28),
-    headlineSmall: TextStyle(
+    headlineSmall: const TextStyle(
         color: Colors.white,
         fontSize: 24.0,
         letterSpacing: 0.0,
         height: 1.28,
         fontWeight: FontWeight.w500,
         fontFamily: 'IBMPlexSans'),
-    bodyMedium: TextStyle(
+    bodyMedium: const TextStyle(
         color: Colors.white,
         fontSize: 16.4,
         letterSpacing: 0.15,
         fontWeight: FontWeight.w500,
         fontFamily: 'IBMPlexSans'),
     labelLarge:
-        TextStyle(color: Colors.white, fontSize: 14.3, letterSpacing: 1.25),
+        const TextStyle(color: Colors.white, fontSize: 14.3, letterSpacing: 1.25),
     titleSmall: TextStyle(
         color: BreezColors.white[500], fontSize: 10.0, letterSpacing: 0.09),
     bodySmall: TextStyle(color: BreezColors.white[400], fontSize: 12.0),
   ),
-  textSelectionTheme: TextSelectionThemeData(
+  textSelectionTheme: const TextSelectionThemeData(
     selectionColor: Color.fromRGBO(255, 255, 255, 0.5),
     selectionHandleColor: Color(0xFF0085fb),
   ),
-  primaryIconTheme: IconThemeData(color: Colors.white),
+  primaryIconTheme: const IconThemeData(color: Colors.white),
   fontFamily: 'IBMPlexSans',
-  textButtonTheme: TextButtonThemeData(),
-  outlinedButtonTheme: OutlinedButtonThemeData(),
+  textButtonTheme: const TextButtonThemeData(),
+  outlinedButtonTheme: const OutlinedButtonThemeData(),
   elevatedButtonTheme: ElevatedButtonThemeData(
-    style: ElevatedButton.styleFrom(backgroundColor: Color(0xFF4B89EB)),
+    style: ElevatedButton.styleFrom(backgroundColor: const Color(0xFF4B89EB)),
   ),
   radioTheme: RadioThemeData(
     fillColor: MaterialStateProperty.resolveWith((states) {
       return Colors.white;
     }),
   ),
-  colorScheme: ColorScheme.dark()
+  colorScheme: const ColorScheme.dark()
       .copyWith(
         primary: Colors.white,
         secondary: Colors.white,
-        background: Color(0xFF152a3d),
+        background: const Color(0xFF152a3d),
       )
-      .copyWith(error: Color(0xFFeddc97)),
+      .copyWith(error: const Color(0xFFeddc97)),
 );
 
-final VendorTheme bitrefill = VendorTheme(iconBgColor: Color(0xFF002B28));
+final VendorTheme bitrefill = VendorTheme(iconBgColor: const Color(0xFF002B28));
 final VendorTheme lnpizza =
-    VendorTheme(iconBgColor: Color(0xFF000000), iconFgColor: Color(0xFFf8e71c));
-final VendorTheme fixedfloat = VendorTheme(iconBgColor: Color(0xFF0B4E7B));
-final VendorTheme lnmarkets = VendorTheme(iconBgColor: Color(0xFF384697));
-final VendorTheme fold = VendorTheme(iconBgColor: Color(0xFFFFCF30));
-final VendorTheme boltz = VendorTheme(iconBgColor: Color(0xFF001524));
-final VendorTheme lightnite = VendorTheme(iconBgColor: Color(0xFF530709));
-final VendorTheme spendl = VendorTheme(iconBgColor: Color(0xFFffffff));
+    VendorTheme(iconBgColor: const Color(0xFF000000), iconFgColor: const Color(0xFFf8e71c));
+final VendorTheme fixedfloat = VendorTheme(iconBgColor: const Color(0xFF0B4E7B));
+final VendorTheme lnmarkets = VendorTheme(iconBgColor: const Color(0xFF384697));
+final VendorTheme fold = VendorTheme(iconBgColor: const Color(0xFFFFCF30));
+final VendorTheme boltz = VendorTheme(iconBgColor: const Color(0xFF001524));
+final VendorTheme lightnite = VendorTheme(iconBgColor: const Color(0xFF530709));
+final VendorTheme spendl = VendorTheme(iconBgColor: const Color(0xFFffffff));
 final VendorTheme kollider = VendorTheme(
-  iconBgColor: Color.fromRGBO(21, 23, 25, 1),
-  iconFgColor: Color.fromRGBO(217, 227, 234, 1),
-  textColor: Color.fromRGBO(217, 227, 234, 1),
+  iconBgColor: const Color.fromRGBO(21, 23, 25, 1),
+  iconFgColor: const Color.fromRGBO(217, 227, 234, 1),
+  textColor: const Color.fromRGBO(217, 227, 234, 1),
 );
 final VendorTheme fastbitcoins = VendorTheme(
-    iconBgColor: Color(0xFFff7c10),
-    iconFgColor: Color(0xFF1f2a44),
-    textColor: Color(0xFF1f2a44));
-final VendorTheme xsats = VendorTheme(iconBgColor: Color(0xFF000000));
+    iconBgColor: const Color(0xFFff7c10),
+    iconFgColor: const Color(0xFF1f2a44),
+    textColor: const Color(0xFF1f2a44));
+final VendorTheme xsats = VendorTheme(iconBgColor: const Color(0xFF000000));
 final VendorTheme geyser =
-    VendorTheme(iconBgColor: Color.fromRGBO(41, 241, 205, 1));
-final VendorTheme wavlake = VendorTheme(iconBgColor: Color(0xFF171817));
+    VendorTheme(iconBgColor: const Color.fromRGBO(41, 241, 205, 1));
+final VendorTheme wavlake = VendorTheme(iconBgColor: const Color(0xFF171817));
 
 final Map<String, VendorTheme> vendorTheme = {
   "bitrefill": bitrefill,
@@ -317,7 +317,7 @@ final Map<String, VendorTheme> vendorTheme = {
   "wavlake": wavlake,
 };
 
-final TextStyle drawerItemTextStyle =
+const TextStyle drawerItemTextStyle =
     TextStyle(height: 1.2, letterSpacing: 0.25, fontSize: 14.3);
 final TextStyle notificationTextStyle = TextStyle(
     color: BreezColors.grey[500],
@@ -326,14 +326,14 @@ final TextStyle notificationTextStyle = TextStyle(
     height: 1.10);
 final TextStyle addFundsBtnStyle = TextStyle(
     color: BreezColors.white[400], fontSize: 16.0, letterSpacing: 1.25);
-final TextStyle bottomAppBarBtnStyle = TextStyle(
+const TextStyle bottomAppBarBtnStyle = TextStyle(
     color: Colors.white,
     fontSize: 13.5,
     letterSpacing: 1.2,
     fontWeight: FontWeight.w600,
     height: 1.24,
     fontFamily: 'IBMPlexSans');
-final TextStyle bottomSheetTextStyle = TextStyle(
+const TextStyle bottomSheetTextStyle = TextStyle(
     fontFamily: 'IBMPlexSans',
     fontSize: 15,
     letterSpacing: 1.2,
@@ -348,7 +348,7 @@ final TextStyle addFundsItemsStyle = TextStyle(
     fontFamily: 'IBMPlexSans');
 final TextStyle bottomSheetMenuItemStyle = TextStyle(
     color: BreezColors.white[400], fontSize: 14.3, letterSpacing: 0.55);
-final TextStyle autoCompleteStyle =
+const TextStyle autoCompleteStyle =
     TextStyle(color: Colors.black, fontSize: 14.0);
 final TextStyle blueLinkStyle =
     TextStyle(color: BreezColors.blue[500], fontSize: 16.0, height: 1.5);
@@ -358,17 +358,17 @@ final TextStyle avatarDialogStyle = TextStyle(
     letterSpacing: 0.15,
     fontWeight: FontWeight.w500,
     fontFamily: 'IBMPlexSans');
-final TextStyle errorStyle = TextStyle(color: errorColor, fontSize: 12.0);
+const TextStyle errorStyle = TextStyle(color: errorColor, fontSize: 12.0);
 final TextStyle textStyle =
     TextStyle(color: BreezColors.white[400], fontSize: 16.0);
-final TextStyle navigationDrawerHandleStyle = TextStyle(
+const TextStyle navigationDrawerHandleStyle = TextStyle(
     fontSize: 16.0,
     letterSpacing: 0.2,
     color: Color.fromRGBO(255, 255, 255, 0.6));
-final TextStyle warningStyle = TextStyle(color: errorColor, fontSize: 16.0);
+const TextStyle warningStyle = TextStyle(color: errorColor, fontSize: 16.0);
 final TextStyle instructionStyle =
     TextStyle(color: BreezColors.white[400], fontSize: 14.3);
-final TextStyle validatorStyle =
+const TextStyle validatorStyle =
     TextStyle(color: Color(0xFFe3b42f), fontSize: 12.0, height: 1.25);
 final TextStyle welcomeTextStyle =
     TextStyle(color: BreezColors.white[500], fontSize: 16.0, height: 1.1);
@@ -406,12 +406,12 @@ final TextStyle transactionAmountStyle = TextStyle(
     height: 1.28,
     fontWeight: FontWeight.w500,
     fontFamily: 'IBMPlexSans');
-final TextStyle posWithdrawalTransactionTitleStyle = TextStyle(
+const TextStyle posWithdrawalTransactionTitleStyle = TextStyle(
     color: Color.fromRGBO(255, 255, 255, 0.7),
     fontSize: 14.4,
     letterSpacing: 0.44,
     height: 1.28);
-final TextStyle posWithdrawalTransactionAmountStyle = TextStyle(
+const TextStyle posWithdrawalTransactionAmountStyle = TextStyle(
     color: Color.fromRGBO(255, 255, 255, 0.7),
     fontSize: 16.4,
     letterSpacing: 0.5,
@@ -485,8 +485,8 @@ final TextStyle snackBarStyle = TextStyle(
     fontSize: 14.0,
     letterSpacing: 0.25,
     height: 1.2);
-final TextStyle sessionActionBtnStyle = TextStyle(fontSize: 12.3);
-final TextStyle sessionNotificationStyle = TextStyle(fontSize: 14.2);
+const TextStyle sessionActionBtnStyle = TextStyle(fontSize: 12.3);
+const TextStyle sessionNotificationStyle = TextStyle(fontSize: 14.2);
 final TextStyle paymentDetailsTitleStyle = TextStyle(
     color: BreezColors.grey[500],
     fontSize: 14.0,
@@ -523,22 +523,22 @@ final BoxDecoration boxDecoration = BoxDecoration(
 final BoxDecoration autoCompleteBoxDecoration = BoxDecoration(
     color: BreezColors.white[500], borderRadius: BorderRadius.circular(3.0));
 final Color whiteColor = BreezColors.white[500];
-final podcastHistoryTileBackGroundColorBlue = Color.fromRGBO(0, 117, 255, 1.0);
+const podcastHistoryTileBackGroundColorBlue = Color.fromRGBO(0, 117, 255, 1.0);
 
 final Color snackBarBackgroundColor = BreezColors.blue[300];
 final Color avatarBackgroundColor = BreezColors.blue[500];
 final Color sessionAvatarBackgroundColor = BreezColors.white[500];
-final Color pulseAnimationColor = Color.fromRGBO(100, 155, 230, 1.0);
-final Color marketplaceButtonColor = Color.fromRGBO(229, 238, 251, 0.09);
-final Color errorColor = Color(0xffffe685);
+const Color pulseAnimationColor = Color.fromRGBO(100, 155, 230, 1.0);
+const Color marketplaceButtonColor = Color.fromRGBO(229, 238, 251, 0.09);
+const Color errorColor = Color(0xffffe685);
 final Color circularLoaderColor = BreezColors.blue[200].withOpacity(0.7);
-final Color warningBoxColor = Color.fromRGBO(251, 233, 148, 0.1);
+const Color warningBoxColor = Color.fromRGBO(251, 233, 148, 0.1);
 final BorderSide greyBorderSide = BorderSide(color: BreezColors.grey[500]);
 
 ThemeData get calendarTheme =>
     themeId == "BLUE" ? calendarLightTheme : calendarDarkTheme;
 
-Color get buttonColor => themeId == "BLUE" ? Colors.white : Color(0xFF4B89EB);
+Color get buttonColor => themeId == "BLUE" ? Colors.white : const Color(0xFF4B89EB);
 
 final ThemeData calendarLightTheme = ThemeData.light().copyWith(
   colorScheme: const ColorScheme.light(
@@ -645,7 +645,7 @@ extension ThemeExtensions on ThemeData {
   // Replaces accentTextTheme.bodyMedium
   TextStyle get statusTextStyle => isLightTheme
       ? TextStyle(color: BreezColors.grey[600])
-      : TextStyle(color: Colors.white);
+      : const TextStyle(color: Colors.white);
 
   // Replaces accentTextTheme.titleSmall
   TextStyle get paymentItemTitleTextStyle => isLightTheme
@@ -700,12 +700,12 @@ extension ThemeExtensions on ThemeData {
 
   // Replaces accentTextTheme.headlineMedium
   TextStyle get walletDashboardHeaderTextStyle => isLightTheme
-      ? TextStyle(
+      ? const TextStyle(
           color: Color.fromRGBO(0, 133, 251, 1.0),
           fontSize: 30.0,
           fontWeight: FontWeight.w600,
           height: 1.52)
-      : TextStyle(
+      : const TextStyle(
           color: Colors.white,
           fontSize: 30.0,
           fontWeight: FontWeight.w600,
@@ -713,13 +713,13 @@ extension ThemeExtensions on ThemeData {
 
   // Replaces accentTextTheme.titleMedium
   TextStyle get walletDashboardFiatTextStyle => isLightTheme
-      ? TextStyle(
+      ? const TextStyle(
           color: Color.fromRGBO(0, 133, 251, 1.0),
           fontSize: 15,
           fontWeight: FontWeight.w500,
           height: 1.24,
           letterSpacing: 0.2)
-      : TextStyle(
+      : const TextStyle(
           color: Colors.white,
           fontSize: 15,
           fontWeight: FontWeight.w500,

@@ -27,7 +27,7 @@ class BackupPhraseGeneratorConfirmationPageState
     return Scaffold(
       appBar: AppBar(
         automaticallyImplyLeading: false,
-        leading: backBtn.BackButton(),
+        leading: const backBtn.BackButton(),
         title: AutoSizeText(
           texts.backup_phrase_generate,
           maxLines: 1,
@@ -48,7 +48,7 @@ class BackupPhraseGeneratorConfirmationPageState
   }
 
   Widget _buildBackupPhraseImage() {
-    return Expanded(
+    return const Expanded(
       flex: 2,
       child: Image(
         image: AssetImage("src/images/generate_backup_phrase.png"),
@@ -61,12 +61,12 @@ class BackupPhraseGeneratorConfirmationPageState
   Widget _buildInstructions(BuildContext context) {
     final texts = context.texts();
     return Padding(
-      padding: EdgeInsets.only(
+      padding: const EdgeInsets.only(
         left: 48,
         right: 48,
       ),
       child: ConstrainedBox(
-        constraints: BoxConstraints(
+        constraints: const BoxConstraints(
           minHeight: 96,
         ),
         child: Text(
@@ -112,7 +112,7 @@ class BackupPhraseGeneratorConfirmationPageState
   Widget _buildNextBtn(BuildContext context, bool isUnderstood) {
     final texts = context.texts();
     return Padding(
-      padding: EdgeInsets.only(top: 24),
+      padding: const EdgeInsets.only(top: 24),
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [

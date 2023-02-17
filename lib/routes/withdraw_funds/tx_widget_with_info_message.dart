@@ -22,7 +22,7 @@ class TxWidgetWithInfoMsg extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         Padding(
-          padding: EdgeInsets.only(top: 50.0, left: 30.0, right: 30.0),
+          padding: const EdgeInsets.only(top: 50.0, left: 30.0, right: 30.0),
           child: Text(
             txId.isEmpty
                 ? texts.swap_in_progress_message_processing_previous_request
@@ -34,7 +34,7 @@ class TxWidgetWithInfoMsg extends StatelessWidget {
           TxWidget(
             txID: txId,
             txURL: "https://blockstream.info/tx/$txId",
-            padding: EdgeInsets.fromLTRB(30.0, 30.0, 30.0, 0.0),
+            padding: const EdgeInsets.fromLTRB(30.0, 30.0, 30.0, 0.0),
           )
         ]
       ],

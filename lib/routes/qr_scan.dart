@@ -98,7 +98,7 @@ class ImagePickerButton extends StatelessWidget {
       padding: const EdgeInsets.fromLTRB(0, 32, 24, 0),
       icon: SvgPicture.asset(
         "src/icon/image.svg",
-        colorFilter: ColorFilter.mode(
+        colorFilter: const ColorFilter.mode(
           Colors.white,
           BlendMode.srcATop,
         ),
@@ -157,7 +157,7 @@ class QRScanCancelButton extends StatelessWidget {
             },
             child: Text(
               texts.qr_scan_action_cancel,
-              style: TextStyle(color: Colors.white),
+              style: const TextStyle(color: Colors.white),
             )),
       ),
     );

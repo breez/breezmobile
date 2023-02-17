@@ -12,10 +12,10 @@ class ChangePinCode extends StatefulWidget {
   }) : super(key: key);
 
   @override
-  _ChangePinCodeState createState() => _ChangePinCodeState();
+  ChangePinCodeState createState() => ChangePinCodeState();
 }
 
-class _ChangePinCodeState extends State<ChangePinCode> {
+class ChangePinCodeState extends State<ChangePinCode> {
   String _label;
   String _tmpPinCode = "";
 
@@ -23,9 +23,7 @@ class _ChangePinCodeState extends State<ChangePinCode> {
   Widget build(BuildContext context) {
     final texts = context.texts();
 
-    if (_label == null) {
-      _label = texts.security_and_backup_new_pin;
-    }
+    _label ??= texts.security_and_backup_new_pin;
 
     return Scaffold(
       appBar: AppBar(

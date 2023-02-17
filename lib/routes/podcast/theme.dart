@@ -13,10 +13,10 @@ Widget withBreezTheme(BuildContext context, Widget child) {
     builder: (context, snapshot) {
       var user = snapshot.data;
       if (user == null) {
-        return SizedBox();
+        return const SizedBox();
       }
       var currentTheme = theme.themeMap[user.themeId];
-      return Theme(child: child, data: currentTheme);
+      return Theme(data: currentTheme, child: child);
     },
   );
 }
@@ -24,38 +24,37 @@ Widget withBreezTheme(BuildContext context, Widget child) {
 Widget withPodcastTheme(BreezUserModel user, Widget child) {
   var currentTheme = theme.themeMap[user.themeId];
   return Theme(
-    child: child,
     data: user.themeId == "BLUE"
         ? Themes.lightTheme().themeData.copyWith(
               brightness: Brightness.light,
-              primaryColor: Color.fromRGBO(0, 133, 251, 1.0),
-              primaryColorLight: Color.fromRGBO(0, 117, 255, 1.0),
-              primaryColorDark: Color.fromRGBO(19, 85, 191, 1.0),
-              sliderTheme: SliderThemeData(
+              primaryColor: const Color.fromRGBO(0, 133, 251, 1.0),
+              primaryColorLight: const Color.fromRGBO(0, 117, 255, 1.0),
+              primaryColorDark: const Color.fromRGBO(19, 85, 191, 1.0),
+              sliderTheme: const SliderThemeData(
                 valueIndicatorColor: Color.fromRGBO(0, 117, 255, 1.0),
                 valueIndicatorTextStyle: TextStyle(color: Colors.white),
               ),
-              canvasColor: Color.fromRGBO(5, 93, 235, 1.0),
-              scaffoldBackgroundColor: Color(0xffffffff),
-              bottomAppBarTheme: BottomAppBarTheme(
+              canvasColor: const Color.fromRGBO(5, 93, 235, 1.0),
+              scaffoldBackgroundColor: const Color(0xffffffff),
+              bottomAppBarTheme: const BottomAppBarTheme(
                 elevation: 0,
                 color: Color(0xFF0085fb),
               ),
-              cardColor: Color(0xffffffff),
-              dividerColor: Color.fromRGBO(0, 0, 0, 0.10),
-              highlightColor: Color.fromRGBO(0, 117, 255, 1.0),
-              splashColor: Color(0x66c8c8c8),
-              unselectedWidgetColor: Color(0x8a000000),
+              cardColor: const Color(0xffffffff),
+              dividerColor: const Color.fromRGBO(0, 0, 0, 0.10),
+              highlightColor: const Color.fromRGBO(0, 117, 255, 1.0),
+              splashColor: const Color(0x66c8c8c8),
+              unselectedWidgetColor: const Color(0x8a000000),
               disabledColor: Colors.blueGrey,
-              secondaryHeaderColor: Color(0xfffff3e0),
-              textSelectionTheme: TextSelectionThemeData(
+              secondaryHeaderColor: const Color(0xfffff3e0),
+              textSelectionTheme: const TextSelectionThemeData(
                 selectionColor: Color.fromRGBO(0, 117, 255, 0.25),
                 selectionHandleColor: Color(0xFF0085fb),
                 cursorColor: Color.fromRGBO(0, 133, 251, 1.0),
               ),
-              dialogBackgroundColor: Color(0xffffffff),
+              dialogBackgroundColor: const Color(0xffffffff),
               indicatorColor: Colors.orange,
-              hintColor: Color(0x8a000000),
+              hintColor: const Color(0x8a000000),
               dialogTheme: currentTheme.dialogTheme,
               buttonTheme: Themes.lightTheme().themeData.buttonTheme.copyWith(
                     colorScheme: Themes.lightTheme()
@@ -65,8 +64,8 @@ Widget withPodcastTheme(BreezUserModel user, Widget child) {
                         .copyWith(
                             primary:
                                 currentTheme.primaryTextTheme.labelLarge.color,
-                            onPrimary: Color.fromRGBO(0, 133, 251, 1.0),
-                            onSecondary: Color.fromRGBO(178, 241, 255, 1.0),
+                            onPrimary: const Color.fromRGBO(0, 133, 251, 1.0),
+                            onSecondary: const Color.fromRGBO(178, 241, 255, 1.0),
                             onSurface: Colors.blueGrey),
                   ),
               primaryTextTheme:
@@ -87,7 +86,7 @@ Widget withPodcastTheme(BreezUserModel user, Widget child) {
                                 platform: TargetPlatform.android)
                             .black
                             .labelLarge
-                            .copyWith(color: Color.fromRGBO(5, 93, 235, 1.0)),
+                            .copyWith(color: const Color.fromRGBO(5, 93, 235, 1.0)),
                         titleLarge: Typography.material2018(
                                 platform: TargetPlatform.android)
                             .black
@@ -96,22 +95,22 @@ Widget withPodcastTheme(BreezUserModel user, Widget child) {
                                 fontWeight: FontWeight.w400, fontSize: 14.3),
                       ),
               primaryIconTheme:
-                  IconThemeData(color: Color.fromRGBO(0, 133, 251, 1.0)),
-              iconTheme: IconThemeData(color: Colors.white, size: 32.0),
+                  const IconThemeData(color: Color.fromRGBO(0, 133, 251, 1.0)),
+              iconTheme: const IconThemeData(color: Colors.white, size: 32.0),
               bottomSheetTheme: BottomSheetThemeData(
                 backgroundColor: currentTheme.scaffoldBackgroundColor,
               ),
               appBarTheme: currentTheme.appBarTheme.copyWith(
                 color: currentTheme.colorScheme.background,
                 //backgroundColor: Color.fromRGBO(5, 93, 235, 1.0),
-                foregroundColor: Color.fromRGBO(5, 93, 235, 1.0),
+                foregroundColor: const Color.fromRGBO(5, 93, 235, 1.0),
               ),
-              colorScheme: ColorScheme.light(
+              colorScheme: const ColorScheme.light(
                 primary: Color.fromRGBO(0, 117, 255, 1.0),
                 secondary: Color.fromRGBO(0, 133, 251, 1.0),
                 onSecondary: Colors.black,
                 background: Color(0xFFf3f8fc),
-              ).copyWith(error: Color(0xffffe685)),
+              ).copyWith(error: const Color(0xffffe685)),
               switchTheme: SwitchThemeData(
                 thumbColor: MaterialStateProperty.resolveWith<Color>(
                     (Set<MaterialState> states) {
@@ -119,7 +118,7 @@ Widget withPodcastTheme(BreezUserModel user, Widget child) {
                     return null;
                   }
                   if (states.contains(MaterialState.selected)) {
-                    return Color.fromRGBO(0, 133, 251, 1.0);
+                    return const Color.fromRGBO(0, 133, 251, 1.0);
                   }
                   return null;
                 }),
@@ -129,7 +128,7 @@ Widget withPodcastTheme(BreezUserModel user, Widget child) {
                     return null;
                   }
                   if (states.contains(MaterialState.selected)) {
-                    return Color.fromRGBO(0, 133, 251, 1.0);
+                    return const Color.fromRGBO(0, 133, 251, 1.0);
                   }
                   return null;
                 }),
@@ -141,7 +140,7 @@ Widget withPodcastTheme(BreezUserModel user, Widget child) {
                     return null;
                   }
                   if (states.contains(MaterialState.selected)) {
-                    return Color.fromRGBO(0, 133, 251, 1.0);
+                    return const Color.fromRGBO(0, 133, 251, 1.0);
                   }
                   return null;
                 }),
@@ -153,7 +152,7 @@ Widget withPodcastTheme(BreezUserModel user, Widget child) {
                     return null;
                   }
                   if (states.contains(MaterialState.selected)) {
-                    return Color.fromRGBO(0, 133, 251, 1.0);
+                    return const Color.fromRGBO(0, 133, 251, 1.0);
                   }
                   return null;
                 }),
@@ -161,34 +160,34 @@ Widget withPodcastTheme(BreezUserModel user, Widget child) {
             )
         : Themes.darkTheme().themeData.copyWith(
               brightness: Brightness.dark,
-              primaryColor: Color(0xFF0085fb),
-              primaryColorLight: Color(0xFF81acf1),
-              primaryColorDark: Color(0xFF0085fb),
-              sliderTheme: SliderThemeData(
+              primaryColor: const Color(0xFF0085fb),
+              primaryColorLight: const Color(0xFF81acf1),
+              primaryColorDark: const Color(0xFF0085fb),
+              sliderTheme: const SliderThemeData(
                 valueIndicatorColor: Color(0xFF0085fb),
                 valueIndicatorTextStyle: TextStyle(color: Colors.white),
               ),
-              canvasColor: Color(0xFF0c2031),
-              scaffoldBackgroundColor: Color(0xFF0c2031),
-              bottomAppBarTheme: BottomAppBarTheme(
+              canvasColor: const Color(0xFF0c2031),
+              scaffoldBackgroundColor: const Color(0xFF0c2031),
+              bottomAppBarTheme: const BottomAppBarTheme(
                 elevation: 0,
                 color: Color(0xFF0085fb),
               ),
               cardColor: Colors.black,
               dividerColor: Colors.white.withOpacity(0.2),
-              highlightColor: Color(0xFF0085fb),
-              splashColor: Color(0x66c8c8c8),
-              unselectedWidgetColor: Color(0x8a000000),
-              disabledColor: Color(0x77ffffff),
-              secondaryHeaderColor: Color(0xfffff3e0),
-              textSelectionTheme: TextSelectionThemeData(
+              highlightColor: const Color(0xFF0085fb),
+              splashColor: const Color(0x66c8c8c8),
+              unselectedWidgetColor: const Color(0x8a000000),
+              disabledColor: const Color(0x77ffffff),
+              secondaryHeaderColor: const Color(0xfffff3e0),
+              textSelectionTheme: const TextSelectionThemeData(
                 selectionColor: Color.fromRGBO(255, 255, 255, 0.25),
                 selectionHandleColor: Color(0xFF0085fb),
                 cursorColor: Colors.white,
               ),
-              dialogBackgroundColor: Color(0xFF0c2031),
-              indicatorColor: Color(0xFF0085fb),
-              hintColor: Color(0x80ffffff),
+              dialogBackgroundColor: const Color(0xFF0c2031),
+              indicatorColor: const Color(0xFF0085fb),
+              hintColor: const Color(0x80ffffff),
               dialogTheme: currentTheme.dialogTheme,
               buttonTheme: Themes.darkTheme().themeData.buttonTheme.copyWith(
                     colorScheme: Themes.darkTheme()
@@ -199,8 +198,8 @@ Widget withPodcastTheme(BreezUserModel user, Widget child) {
                             primary:
                                 currentTheme.primaryTextTheme.labelLarge.color,
                             onPrimary: Colors.white,
-                            onSecondary: Color(0xFF0085fb),
-                            onSurface: Color(0x77ffffff)),
+                            onSecondary: const Color(0xFF0085fb),
+                            onSurface: const Color(0x77ffffff)),
                   ),
               primaryTextTheme:
                   Typography.material2018(platform: TargetPlatform.android)
@@ -220,20 +219,20 @@ Widget withPodcastTheme(BreezUserModel user, Widget child) {
                         .titleLarge
                         .copyWith(fontWeight: FontWeight.w400, fontSize: 14.3),
                   ),
-              primaryIconTheme: IconThemeData(color: Colors.white),
-              iconTheme: IconThemeData(color: Colors.white, size: 32.0),
+              primaryIconTheme: const IconThemeData(color: Colors.white),
+              iconTheme: const IconThemeData(color: Colors.white, size: 32.0),
               dividerTheme: Themes.darkTheme().themeData.dividerTheme.copyWith(
-                    color: Color(0xff444444),
+                    color: const Color(0xff444444),
                   ),
               appBarTheme: currentTheme.appBarTheme.copyWith(
                   //backgroundColor: Color(0xFF0c2031),
                   color: currentTheme.colorScheme.background),
-              colorScheme: ColorScheme.dark(
+              colorScheme: const ColorScheme.dark(
                 primary: Colors.white,
                 secondary: Colors.white,
                 onSecondary: Colors.white,
                 background: Color(0xFF152a3d),
-              ).copyWith(error: Color(0xFFeddc97)),
+              ).copyWith(error: const Color(0xFFeddc97)),
               switchTheme: SwitchThemeData(
                 thumbColor: MaterialStateProperty.resolveWith<Color>(
                     (Set<MaterialState> states) {
@@ -241,7 +240,7 @@ Widget withPodcastTheme(BreezUserModel user, Widget child) {
                     return null;
                   }
                   if (states.contains(MaterialState.selected)) {
-                    return Color(0xFF0085fb);
+                    return const Color(0xFF0085fb);
                   }
                   return null;
                 }),
@@ -251,7 +250,7 @@ Widget withPodcastTheme(BreezUserModel user, Widget child) {
                     return null;
                   }
                   if (states.contains(MaterialState.selected)) {
-                    return Color(0xFF0085fb);
+                    return const Color(0xFF0085fb);
                   }
                   return null;
                 }),
@@ -263,7 +262,7 @@ Widget withPodcastTheme(BreezUserModel user, Widget child) {
                     return null;
                   }
                   if (states.contains(MaterialState.selected)) {
-                    return Color(0xFF0085fb);
+                    return const Color(0xFF0085fb);
                   }
                   return Colors.white;
                 }),
@@ -275,11 +274,12 @@ Widget withPodcastTheme(BreezUserModel user, Widget child) {
                     return null;
                   }
                   if (states.contains(MaterialState.selected)) {
-                    return Color(0xFF0085fb);
+                    return const Color(0xFF0085fb);
                   }
                   return null;
                 }),
               ),
             ),
+    child: child,
   );
 }

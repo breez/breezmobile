@@ -27,7 +27,7 @@ class PosReportDialog extends StatelessWidget {
       stream: accountBloc.accountStream,
       builder: (context, snapshot) {
         final accountModel = snapshot.data;
-        if (accountModel == null) return Loader();
+        if (accountModel == null) return const Loader();
 
         return StreamBuilder<PosReportTimeRange>(
           stream: posCatalogBloc.posReportRange.distinct(),
@@ -69,7 +69,7 @@ class PosReportDialog extends StatelessWidget {
       content: Builder(
         builder: (context) {
           final size = MediaQuery.of(context).size;
-          return Container(
+          return SizedBox(
             height: timeRange is PosReportTimeRangeDaily ? 180 : 220,
             width: size.width - 64,
             child: result is PosReportResultLoad
@@ -146,13 +146,13 @@ class PosReportDialog extends StatelessWidget {
     BuildContext context,
     PosReportTimeRange timeRange,
   ) {
-    TapDownDetails _details;
+    TapDownDetails details;
     return GestureDetector(
       onTapDown: (details) {
-        _details = details;
+        details = details;
       },
       onTap: () async {
-        final offset = _details?.globalPosition;
+        final offset = details?.globalPosition;
         if (offset == null) return;
         final newOption = await showMenu(
           context: context,
@@ -258,7 +258,7 @@ class PosReportDialog extends StatelessWidget {
     return Column(
       mainAxisSize: MainAxisSize.max,
       mainAxisAlignment: MainAxisAlignment.center,
-      children: [
+      children: const [
         Loader(),
       ],
     );

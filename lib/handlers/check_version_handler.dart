@@ -50,7 +50,7 @@ void checkVersionDialog(
         print("-- showNoConnectionDialog --");
         print(retry);
         if (retry == true) {
-          Future.delayed(Duration(seconds: 1), () {
+          Future.delayed(const Duration(seconds: 1), () {
             checkVersionDialog(context, userProfileBloc);
           });
         }

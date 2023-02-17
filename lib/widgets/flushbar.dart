@@ -27,7 +27,7 @@ Flushbar showFlushbar(
         ? null
         : Text(
             title,
-            style: TextStyle(height: 0.0),
+            style: const TextStyle(height: 0.0),
           ),
     duration: duration == Duration.zero ? null : duration,
     messageText: messageWidget ??
@@ -38,7 +38,7 @@ Flushbar showFlushbar(
         ),
     backgroundColor: theme.snackBarBackgroundColor,
     icon: icon,
-    mainButton: button != null ? button : buttonText == "" ? null : TextButton(
+    mainButton: button ?? (buttonText == "" ? null : TextButton(
       onPressed: () {
         bool dismiss = onDismiss != null ? onDismiss() : true;
         if (dismiss) {
@@ -51,7 +51,7 @@ Flushbar showFlushbar(
           color: themeData.colorScheme.error,
         ),
       ),
-    ),
+    )),
   )..show(context);
 
   return flush;

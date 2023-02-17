@@ -16,7 +16,7 @@ class VendorWebViewPage extends StatefulWidget {
   final String _url;
   final String _title;
 
-  VendorWebViewPage(
+  const VendorWebViewPage(
     this.accountBloc,
     this._url,
     this._title,

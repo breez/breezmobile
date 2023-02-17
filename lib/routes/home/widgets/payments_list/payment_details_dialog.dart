@@ -24,7 +24,7 @@ import 'package:flutter/material.dart';
 final AutoSizeGroup _labelGroup = AutoSizeGroup();
 final AutoSizeGroup _valueGroup = AutoSizeGroup();
 
-Future<Null> showPaymentDetailsDialog(
+Future<void> showPaymentDetailsDialog(
   BuildContext context,
   PaymentInfo paymentInfo,
 ) {
@@ -40,7 +40,7 @@ Future<Null> showPaymentDetailsDialog(
     );
   }
 
-  return showDialog<Null>(
+  return showDialog<void>(
     useRootNavigator: false,
     context: context,
     builder: (_) => AlertDialog(
@@ -48,9 +48,9 @@ Future<Null> showPaymentDetailsDialog(
       title: PaymentDetailsDialogTitle(
         paymentInfo: paymentInfo,
       ),
-      contentPadding: EdgeInsets.fromLTRB(8.0, 16.0, 8.0, 16.0),
+      contentPadding: const EdgeInsets.fromLTRB(8.0, 16.0, 8.0, 16.0),
       content: SingleChildScrollView(
-        child: Container(
+        child: SizedBox(
           width: MediaQuery.of(context).size.width,
           child: Column(
             mainAxisSize: MainAxisSize.min,
@@ -107,7 +107,7 @@ Future<Null> showPaymentDetailsDialog(
           ),
         ),
       ),
-      shape: RoundedRectangleBorder(
+      shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(
           bottom: Radius.circular(12.0),
           top: Radius.circular(13.0),

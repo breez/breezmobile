@@ -7,7 +7,9 @@ String extractBolt11FromBip21(String bip21) {
       if (bolt11 != null && bolt11.isNotEmpty) {
         return bolt11;
       }
-    } on FormatException {} // do nothing.
+    } on FormatException {
+      // do nothing.
+    }
   }
   return null;
 }

@@ -15,7 +15,7 @@ class _WaitingPeerConnectWidgetState extends State<WaitingPeerConnectWidget>
   void initState() {
     super.initState();
     _animationController = AnimationController(vsync: this);
-    _animationController.repeat(period: Duration(seconds: 3));
+    _animationController.repeat(period: const Duration(seconds: 3));
     _animationController.addListener(() => setState(() {}));
   }
 
@@ -45,7 +45,7 @@ class _ConnectingCustomPainter extends CustomPainter {
         marginBetweenCircles =
             (width - (circleHeight * numberOfCircles)) / (numberOfCircles - 1);
 
-    drawCircle(canvas, 0, size.centerLeft(Offset(2.5, 0.0)));
+    drawCircle(canvas, 0, size.centerLeft(const Offset(2.5, 0.0)));
     for (var i = 1; i < numberOfCircles; ++i) {
       drawCircle(
           canvas,

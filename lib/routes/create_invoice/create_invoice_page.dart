@@ -83,7 +83,7 @@ class CreateInvoicePageState extends State<CreateInvoicePage> {
       _isInit = true;
       if (widget.lnurlWithdraw == null) {
         Future.delayed(
-          Duration(milliseconds: 200),
+          const Duration(milliseconds: 200),
           () => FocusScope.of(context).requestFocus(_amountFocusNode),
         );
       }
@@ -148,7 +148,7 @@ class CreateInvoicePageState extends State<CreateInvoicePage> {
         },
       ),
       appBar: AppBar(
-        leading: backBtn.BackButton(),
+        leading: const backBtn.BackButton(),
         title: Text(texts.invoice_title),
         actions: [
           StreamBuilder<Object>(
@@ -158,7 +158,7 @@ class CreateInvoicePageState extends State<CreateInvoicePage> {
               return IconButton(
                 alignment: Alignment.center,
                 icon: Image(
-                  image: AssetImage("src/icon/qr_scan.png"),
+                  image: const AssetImage("src/icon/qr_scan.png"),
                   color: theme.BreezColors.white[500],
                   fit: BoxFit.contain,
                   width: 24.0,
@@ -205,7 +205,7 @@ class CreateInvoicePageState extends State<CreateInvoicePage> {
               return Form(
                 key: _formKey,
                 child: Padding(
-                  padding: EdgeInsets.fromLTRB(16.0, 24.0, 16.0, 40.0),
+                  padding: const EdgeInsets.fromLTRB(16.0, 24.0, 16.0, 40.0),
                   child: Scrollbar(
                     child: SingleChildScrollView(
                       child: Column(
@@ -265,7 +265,7 @@ class CreateInvoicePageState extends State<CreateInvoicePage> {
                                   message += '.';
                                 }
                                 return Container(
-                                  padding: EdgeInsets.only(
+                                  padding: const EdgeInsets.only(
                                     top: 50.0,
                                     left: 30.0,
                                     right: 30.0,
@@ -283,7 +283,7 @@ class CreateInvoicePageState extends State<CreateInvoicePage> {
                                   ),
                                 );
                               } else {
-                                return SizedBox();
+                                return const SizedBox();
                               }
                             },
                           )
@@ -327,9 +327,9 @@ class CreateInvoicePageState extends State<CreateInvoicePage> {
 
     LSPInfo lsp = lspStatus?.currentLSP;
     Widget warning = lsp == null
-        ? SizedBox()
+        ? const SizedBox()
         : WarningBox(
-            boxPadding: EdgeInsets.fromLTRB(16, 30, 16, 16),
+            boxPadding: const EdgeInsets.fromLTRB(16, 30, 16, 16),
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
@@ -345,7 +345,7 @@ class CreateInvoicePageState extends State<CreateInvoicePage> {
       return Container(
         width: MediaQuery.of(context).size.width,
         height: 164,
-        padding: EdgeInsets.only(top: 16.0),
+        padding: const EdgeInsets.only(top: 16.0),
         child: GestureDetector(
           child: Column(
             mainAxisAlignment: MainAxisAlignment.start,
@@ -524,7 +524,7 @@ class CreateInvoicePageState extends State<CreateInvoicePage> {
     if (result == true) {
       if (currentRoute.isCurrent) {
         navigator.push(TransparentPageRoute((ctx) {
-          return withBreezTheme(ctx, SuccessfulPaymentRoute());
+          return withBreezTheme(ctx, const SuccessfulPaymentRoute());
         }));
       }
     } else {

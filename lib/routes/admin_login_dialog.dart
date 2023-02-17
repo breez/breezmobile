@@ -9,7 +9,7 @@ import 'package:breez_translations/breez_translations_locales.dart';
 Future protectAdminAction(
   BuildContext context,
   BreezUserModel user,
-  Future onNext(),
+  Future Function() onNext,
 ) async {
   if (user.appMode == AppMode.pos && user.hasAdminPassword) {
     bool loggedIn = await showDialog(
@@ -89,7 +89,7 @@ class _AdminLoginDialogState extends State<_AdminLoginDialog> {
           ),
           primaryColor: themeData.textTheme.labelLarge.color,
         ),
-        child: Container(
+        child: SizedBox(
           width: MediaQuery.of(context).size.width,
           height: 100.0,
           child: ListView(
@@ -113,7 +113,7 @@ class _AdminLoginDialogState extends State<_AdminLoginDialog> {
                     }
                   },
                   validator: (value) {
-                    if (value.length == 0) {
+                    if (value.isEmpty) {
                       return texts.admin_login_dialog_error_password_required;
                     }
                     return _lastError;
@@ -122,7 +122,7 @@ class _AdminLoginDialogState extends State<_AdminLoginDialog> {
                   decoration: InputDecoration(
                     labelText: texts.admin_login_dialog_password_label,
                     suffixIcon: IconButton(
-                      icon: Icon(Icons.remove_red_eye),
+                      icon: const Icon(Icons.remove_red_eye),
                       onPressed: () => setState(() {
                         _passwordObscured = !_passwordObscured;
                       }),

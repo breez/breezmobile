@@ -16,8 +16,8 @@ class SetHeightHintPage extends StatefulWidget {
 }
 
 class _SetHeightHintPageState extends State<SetHeightHintPage> {
-  TextEditingController _channelPointController = new TextEditingController();
-  TextEditingController _hintCacheController = new TextEditingController();
+  final TextEditingController _channelPointController = TextEditingController();
+  final TextEditingController _hintCacheController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
   final FocusNode _channelIDFocus = FocusNode();
   final FocusNode _heightHintFocus = FocusNode();
@@ -34,11 +34,11 @@ class _SetHeightHintPageState extends State<SetHeightHintPage> {
     return Scaffold(
         appBar: AppBar(
           automaticallyImplyLeading: false,
-          leading: backBtn.BackButton(),
-          title: Text("Set Height Hint"),
+          leading: const backBtn.BackButton(),
+          title: const Text("Set Height Hint"),
         ),
         body: Padding(
-          padding: EdgeInsets.only(top: 16.0, left: 16.0, right: 16.0),
+          padding: const EdgeInsets.only(top: 16.0, left: 16.0, right: 16.0),
           child: Form(
               key: _formKey,
               child: ListView(
@@ -50,17 +50,17 @@ class _SetHeightHintPageState extends State<SetHeightHintPage> {
                       _channelIDFocus.requestFocus();
                     },
                     controller: _channelPointController,
-                    decoration: InputDecoration(
+                    decoration: const InputDecoration(
                       labelText: "Enter a channel point",
                     ),
                     style: theme.FieldTextStyle.textStyle,
                     textCapitalization: TextCapitalization.words,
                   ),
-                  SizedBox(height: 12.0),
+                  const SizedBox(height: 12.0),
                   TextFormField(
                     focusNode: _heightHintFocus,
                     textInputAction: TextInputAction.done,
-                    decoration: InputDecoration(
+                    decoration: const InputDecoration(
                       labelText: "Enter height hint",
                     ),
                     controller: _hintCacheController,

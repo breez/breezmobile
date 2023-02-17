@@ -65,7 +65,7 @@ class ActionButton extends StatelessWidget {
               leadingIcon,
               color: _foregroundColor(themeData),
             ),
-          if (leadingIcon != null && text != null) SizedBox(width: 8.0),
+          if (leadingIcon != null && text != null) const SizedBox(width: 8.0),
           if (text != null)
             Text(
               text,
@@ -73,7 +73,7 @@ class ActionButton extends StatelessWidget {
                 color: _foregroundColor(themeData),
               ),
             ),
-          if (trailingIcon != null && text != null) SizedBox(width: 8.0),
+          if (trailingIcon != null && text != null) const SizedBox(width: 8.0),
           if (trailingIcon != null)
             Icon(
               trailingIcon,
@@ -131,7 +131,7 @@ class ActionButton extends StatelessWidget {
 // Preview
 
 void main() {
-  runApp(Preview([
+  runApp(const Preview([
     ActionButton(
       text: 'Primary',
     ),

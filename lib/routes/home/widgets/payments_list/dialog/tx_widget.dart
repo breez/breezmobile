@@ -20,8 +20,8 @@ class TxWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    if (this.txURL == null) {
-      return SizedBox();
+    if (txURL == null) {
+      return const SizedBox();
     }
 
     final texts = context.texts();
@@ -35,18 +35,18 @@ class TxWidget extends StatelessWidget {
       mainAxisSize: MainAxisSize.min,
       children: [
         Padding(
-          padding: padding ?? EdgeInsets.only(top: 20.0),
+          padding: padding ?? const EdgeInsets.only(top: 20.0),
           child: LinkLauncher(
             linkTitle: txLabel ?? texts.payment_details_dialog_transaction_label_default,
             textStyle: textStyle,
-            linkName: this.txID,
-            linkAddress: this.txURL,
+            linkName: txID,
+            linkAddress: txURL,
             onCopy: () {
-              ServiceInjector().device.setClipboardText(this.txID);
+              ServiceInjector().device.setClipboardText(txID);
               showFlushbar(
                 context,
                 message: texts.payment_details_dialog_transaction_id_copied,
-                duration: Duration(seconds: 3),
+                duration: const Duration(seconds: 3),
               );
             },
           ),

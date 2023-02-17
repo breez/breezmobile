@@ -47,7 +47,7 @@ class SpontaneousPaymentPageState extends State<SpontaneousPaymentPage> {
   void initState() {
     _doneAction = KeyboardDoneAction(<FocusNode>[_amountFocusNode]);
     Future.delayed(
-      Duration(milliseconds: 200),
+      const Duration(milliseconds: 200),
       () => FocusScope.of(context).requestFocus(_amountFocusNode),
     );
     super.initState();
@@ -56,9 +56,7 @@ class SpontaneousPaymentPageState extends State<SpontaneousPaymentPage> {
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    if (_currentRoute == null) {
-      _currentRoute = ModalRoute.of(context);
-    }
+    _currentRoute ??= ModalRoute.of(context);
   }
 
   @override
@@ -96,7 +94,7 @@ class SpontaneousPaymentPageState extends State<SpontaneousPaymentPage> {
         },
       ),
       appBar: AppBar(
-        leading: backBtn.BackButton(),
+        leading: const backBtn.BackButton(),
         title: Text(texts.spontaneous_payment_title),
       ),
       body: StreamBuilder<AccountModel>(
@@ -137,7 +135,7 @@ class SpontaneousPaymentPageState extends State<SpontaneousPaymentPage> {
                   Container(
                     width: MediaQuery.of(context).size.width,
                     height: 48,
-                    padding: EdgeInsets.only(top: 16.0),
+                    padding: const EdgeInsets.only(top: 16.0),
                     child: _buildPayableBTC(context, acc),
                   ),
                   StreamBuilder(
@@ -175,7 +173,7 @@ class SpontaneousPaymentPageState extends State<SpontaneousPaymentPage> {
                           ),
                         );
                       } else {
-                        return SizedBox();
+                        return const SizedBox();
                       }
                     },
                   )
@@ -212,7 +210,7 @@ class SpontaneousPaymentPageState extends State<SpontaneousPaymentPage> {
     return CollapsibleListItem(
       title: texts.spontaneous_payment_node_id,
       sharedValue: widget.nodeID,
-      userStyle: TextStyle(
+      userStyle: const TextStyle(
         color: Colors.white,
       ),
     );
@@ -235,7 +233,7 @@ class SpontaneousPaymentPageState extends State<SpontaneousPaymentPage> {
       Text(
         texts.spontaneous_payment_send_payment_message(
           account.currency.format(amount),
-          this.widget.nodeID,
+          widget.nodeID,
         ),
       ),
       okText: texts.spontaneous_payment_action_pay,
@@ -256,7 +254,7 @@ class SpontaneousPaymentPageState extends State<SpontaneousPaymentPage> {
             context,
             () {
               var sendPayment = Future.delayed(
-                Duration(seconds: 1),
+                const Duration(seconds: 1),
                 () {
                   accBloc.userActionsSink.add(sendAction);
                   return sendAction.future;

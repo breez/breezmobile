@@ -20,11 +20,11 @@ import 'speed_selector.dart';
 /// See [NowPlaying].
 class PlayerTransportControls extends StatefulWidget {
   @override
-  _PlayerTransportControlsState createState() =>
-      _PlayerTransportControlsState();
+  PlayerTransportControlsState createState() =>
+      PlayerTransportControlsState();
 }
 
-class _PlayerTransportControlsState extends State<PlayerTransportControls>
+class PlayerTransportControlsState extends State<PlayerTransportControls>
     with SingleTickerProviderStateMixin {
   AnimationController _playPauseController;
   StreamSubscription<AudioState> _audioStateSubscription;
@@ -37,7 +37,7 @@ class _PlayerTransportControlsState extends State<PlayerTransportControls>
     final audioBloc = Provider.of<AudioBloc>(context, listen: false);
 
     _playPauseController =
-        AnimationController(vsync: this, duration: Duration(milliseconds: 300));
+        AnimationController(vsync: this, duration: const Duration(milliseconds: 300));
 
     /// Seems a little hacky, but when we load the form we want the play/pause
     /// button to be in the correct state. If we are building the first frame,
@@ -82,7 +82,7 @@ class _PlayerTransportControlsState extends State<PlayerTransportControls>
 
         return Column(
           children: [
-            PodcastClipWidget(),
+            const PodcastClipWidget(),
             Row(
               crossAxisAlignment: CrossAxisAlignment.center,
               mainAxisAlignment: MainAxisAlignment.center,
@@ -171,7 +171,7 @@ class _PlayerTransportControlsState extends State<PlayerTransportControls>
                 Expanded(flex: 1, child: Container()),
                 // Speed selector uses 16-37 as width so we use a container with
                 // the maximum size and centers it to proper alignment
-                Container(
+                SizedBox(
                   width: 37,
                   child: Center(
                     child: SpeedSelectorWidget(
@@ -232,7 +232,7 @@ class _PlayButton extends StatelessWidget {
               : L.of(context).play_button_label,
           child: TextButton(
             style: TextButton.styleFrom(
-              shape: CircleBorder(),
+              shape: const CircleBorder(),
             ),
             onPressed: null,
             child: SpinKitRing(
