@@ -172,9 +172,8 @@ class RemoteServerAuthPageState extends State<RemoteServerAuthPage> {
                               optionText: texts
                                   .remote_server_onion_warning_dialog_default_action_cancel,
                               optionFunc: () {
-                                // TODO ubbabeck don't attempt to query
-                                // navigator pop something
-                                return;
+                                connectionWarningResponse = false;
+                                Navigator.pop(context);
                               },
                               okText: texts
                                   .remote_server_onion_warning_dialog_settings,
@@ -184,7 +183,6 @@ class RemoteServerAuthPageState extends State<RemoteServerAuthPage> {
                                   builder: (_) =>
                                       withBreezTheme(context, NetworkPage()),
                                 ));
-                                // Navigator.of(context).popUntil((route) => route is RemoteServerAuthPage);
                                 return false;
                               });
                         }

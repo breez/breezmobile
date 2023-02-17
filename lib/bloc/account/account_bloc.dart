@@ -135,7 +135,7 @@ class AccountBloc {
   CurrencyService _currencyService;
   final Completer _onBoardingCompleter = Completer();
   Stream<BreezUserModel> userProfileStream;
-  TorBloc torBloc = TorBloc();
+  TorBloc torBloc;
   Completer<bool> startDaemonCompleter = Completer<bool>();
   final PaymentOptionsBloc _paymentOptionsBloc;
 
@@ -156,6 +156,7 @@ class AccountBloc {
     _device = injector.device;
     _backgroundService = injector.backgroundTaskService;
     _currencyService = injector.currencyService;
+    torBloc = injector.torBloc;
     _actionHandlers = {
       SendPaymentFailureReport: _handleSendQueryRoute,
       ResetNetwork: _handleResetNetwork,
@@ -184,8 +185,9 @@ class AccountBloc {
     _start();
   }
 
-  void _start() {
+  void _start() async {
     log.info("Account bloc started");
+    this.torBloc.torConfig = await _startTorIfNeeded();
     ServiceInjector().sharedPreferences.then((preferences) {
       _handleRegisterDeviceNode();
       _refreshAccountAndPayments();
@@ -199,7 +201,6 @@ class AccountBloc {
       _listenRoutingConnectionChanges();
       _trackOnBoardingStatus();
       _listenEnableAccount();
-      _initialiseTor();
       log.info("Account finished registration of listeners");
     });
   }
@@ -545,26 +546,25 @@ class AccountBloc {
     });
   }
 
-  void _initialiseTor() async {
-    TorConfig torConfig;
+  Future<TorConfig> _startTorIfNeeded() async {
     if (Platform.isAndroid) {
       // Start tor
       final useTor = await _breezLib.getTorActive();
       log.info('AccountBloc: useTor : $useTor.');
       if (useTor) {
-        torConfig = torBloc.torConfig;
         log.info('accountBloc.listenUserChanges: using Tor');
         try {
-          torConfig ??= await torBloc.startTor();
+          this.torBloc.torConfig ??= await torBloc.startTor();
         } catch (e) {
           _lightningDownController.add(false);
         }
         //throw error
-        if (torConfig != null) {
-          _breezLib.setBackupTorConfig(torConfig);
+        if (this.torBloc.torConfig != null) {
+          _breezLib.setBackupTorConfig(this.torBloc.torConfig);
         }
       }
     }
+    return this.torBloc.torConfig;
   }
 
   _listenUserChanges(Stream<BreezUserModel> userProfileStream) {
@@ -608,7 +608,9 @@ class AccountBloc {
           });
           log.info("account: starting lightning...");
           try {
-            await _breezLib.startLightning(torBloc.torConfig);
+            TorConfig c = this.torBloc.torConfig;
+            log.info("Starting lightning with $c");
+            await _breezLib.startLightning(this.torBloc.torConfig);
             log.info("account: lightning started");
             if (user.token != null) {
               _breezLib.registerPeriodicSync(user.token);
