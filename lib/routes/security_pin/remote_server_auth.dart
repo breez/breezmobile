@@ -7,7 +7,6 @@ import 'package:breez/bloc/tor/bloc.dart';
 import 'package:breez/logger.dart';
 import 'package:breez/routes/network/network.dart';
 import 'package:breez/routes/podcast/theme.dart';
-import 'package:breez/services/breezlib/breez_bridge.dart';
 import 'package:breez/services/injector.dart';
 import 'package:breez/widgets/back_button.dart' as backBtn;
 import 'package:breez/widgets/error_dialog.dart';
@@ -62,8 +61,6 @@ class RemoteServerAuthPageState extends State<RemoteServerAuthPage> {
 
   ServiceInjector injector = ServiceInjector();
 
-  BreezBridge _breezLib;
-
   String appendPath(String uri, List<String> pathSegments) {
     var uriObject = Uri.parse(uri);
     uriObject = uriObject.replace(
@@ -74,7 +71,6 @@ class RemoteServerAuthPageState extends State<RemoteServerAuthPage> {
   @override
   void initState() {
     super.initState();
-    _breezLib = injector.breezBridge;
     widget._backupBloc.backupSettingsStream.first.then(
       (value) {
         var data = value.remoteServerAuthData;
@@ -179,10 +175,14 @@ class RemoteServerAuthPageState extends State<RemoteServerAuthPage> {
                                   .remote_server_onion_warning_dialog_settings,
                               okFunc: () async {
                                 connectionWarningResponse = false;
-                                Navigator.of(context).push(FadeInRoute(
-                                  builder: (_) =>
-                                      withBreezTheme(context, NetworkPage()),
-                                ));
+                                Navigator.of(context).push(
+                                  FadeInRoute(
+                                    builder: (_) => withBreezTheme(
+                                      context,
+                                      const NetworkPage(),
+                                    ),
+                                  ),
+                                );
                                 return false;
                               });
                         }
@@ -200,6 +200,7 @@ class RemoteServerAuthPageState extends State<RemoteServerAuthPage> {
                       if (connectionWarningResponse) {
                         failDiscoverURL = false;
                         failAuthenticate = false;
+                        failNoBackupFound = false;
                         if (_formKey.currentState.validate()) {
                           final newSettings = snapshot.data.copyWith(
                             remoteServerAuthData: RemoteServerAuthData(
@@ -210,8 +211,11 @@ class RemoteServerAuthPageState extends State<RemoteServerAuthPage> {
                             ),
                           );
 
-                          var loader = createLoaderRoute(context,
-                              message: "Testing connection", opacity: 0.8);
+                          var loader = createLoaderRoute(
+                            context,
+                            message: "Testing connection",
+                            opacity: 0.8,
+                          );
                           Navigator.push(context, loader);
                           discoverURL(newSettings.remoteServerAuthData)
                               .then((value) async {
@@ -363,22 +367,16 @@ class RemoteServerAuthPageState extends State<RemoteServerAuthPage> {
       return DiscoveryResult(authData, result);
     }
 
-    var url = authData.url;
-    if (!url.endsWith("/")) {
-      url = "$url/";
-    }
-
-    // New version NC23
-    // here we try to query the nextcloud instance with the path on the format
-    // [url:port]/https://docs.nextcloud.com/server/latest/user_manual/en/files/access_webdav.html#nextcloud-desktop-and-mobile-clients
-    String username = authData.user;
-    String nextCloudURL = url + "remote.php/dav/files/$username";
-    result = await testAuthData(authData.copyWith(url: nextCloudURL));
-    if (result == DiscoverResult.SUCCESS ||
-        result == DiscoverResult.INVALID_AUTH) {
-      return DiscoveryResult(authData.copyWith(url: nextCloudURL), result);
-    }
-
+    // Backwards compatibility
+    // since the user might accidentally insert a wrong path we'll reconstruct
+    // the url to be the short url+remote.php/webdav.
+    Uri uri = Uri.parse(authData.url); // + "remote.php/webdav/";
+    final nextCloudURL = Uri(
+            scheme: uri.scheme,
+            host: uri.host,
+            port: uri.port,
+            path: "remote.php/webdav/")
+        .toString();
     result = await testAuthData(authData.copyWith(url: nextCloudURL));
     if (result == DiscoverResult.SUCCESS ||
         result == DiscoverResult.INVALID_AUTH) {

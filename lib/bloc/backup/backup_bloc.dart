@@ -172,7 +172,6 @@ class BackupBloc {
       var map = settings.remoteServerAuthData.toJson();
       authData = json.encode(map);
     }
-
     await _breezLib.setBackupProvider(settings.backupProvider.name, authData);
   }
 
@@ -417,10 +416,12 @@ class BackupBloc {
 
   Future<void> _savePosDB() async {
     // Copy POS items to backup directory
-    final posDbPath = '${await databaseFactory.getDatabasesPath()}${Platform.pathSeparator}product-catalog.db';
+    final posDbPath =
+        '${await databaseFactory.getDatabasesPath()}${Platform.pathSeparator}product-catalog.db';
     if (await databaseExists(posDbPath)) {
       File(posDbPath)
-          .copy('$_backupAppDataDirPath${Platform.pathSeparator}product-catalog.db')
+          .copy(
+              '$_backupAppDataDirPath${Platform.pathSeparator}product-catalog.db')
           .catchError((err) {
         throw Exception("Failed to copy pos items.");
       });
@@ -586,7 +587,8 @@ class BackupBloc {
   Future<void> _restorePosDB() async {
     final backupPosDbPath =
         '$_backupAppDataDirPath${Platform.pathSeparator}product-catalog.db';
-    final posDbPath = '${await databaseFactory.getDatabasesPath()}${Platform.pathSeparator}product-catalog.db';
+    final posDbPath =
+        '${await databaseFactory.getDatabasesPath()}${Platform.pathSeparator}product-catalog.db';
     if (await File(backupPosDbPath).exists()) {
       await File(backupPosDbPath).copy(posDbPath).catchError((err) {
         throw Exception("Failed to restore pos items.");
@@ -660,6 +662,7 @@ class SignInFailedException implements Exception {
 class MethodNotFoundException implements Exception {
   MethodNotFoundException();
 
+  @override
   String toString() {
     return "Method not found";
   }
@@ -668,15 +671,13 @@ class MethodNotFoundException implements Exception {
 class NoBackupFoundException implements Exception {
   NoBackupFoundException();
 
+  @override
   String toString() {
     return "No backup found, please use double check the address";
   }
 }
 
 class RemoteServerNotFoundException implements Exception {
-  final BackupProvider provider;
-  RemoteServerNotFoundException(this.provider);
-
   @override
   String toString() {
     return "The server was not found. Please check the address";

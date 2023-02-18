@@ -187,7 +187,7 @@ class AccountBloc {
 
   void _start() async {
     log.info("Account bloc started");
-    this.torBloc.torConfig = await _startTorIfNeeded();
+    torBloc.torConfig = await _startTorIfNeeded();
     ServiceInjector().sharedPreferences.then((preferences) {
       _handleRegisterDeviceNode();
       _refreshAccountAndPayments();
@@ -554,17 +554,17 @@ class AccountBloc {
       if (useTor) {
         log.info('accountBloc.listenUserChanges: using Tor');
         try {
-          this.torBloc.torConfig ??= await torBloc.startTor();
+          torBloc.torConfig ??= await torBloc.startTor();
         } catch (e) {
           _lightningDownController.add(false);
         }
-        //throw error
-        if (this.torBloc.torConfig != null) {
-          _breezLib.setBackupTorConfig(this.torBloc.torConfig);
+        // throw error
+        if (torBloc.torConfig != null) {
+          _breezLib.setBackupTorConfig(torBloc.torConfig);
         }
       }
     }
-    return this.torBloc.torConfig;
+    return torBloc.torConfig;
   }
 
   _listenUserChanges(Stream<BreezUserModel> userProfileStream) {
@@ -608,9 +608,9 @@ class AccountBloc {
           });
           log.info("account: starting lightning...");
           try {
-            TorConfig c = this.torBloc.torConfig;
+            TorConfig c = torBloc.torConfig;
             log.info("Starting lightning with $c");
-            await _breezLib.startLightning(this.torBloc.torConfig);
+            await _breezLib.startLightning(torBloc.torConfig);
             log.info("account: lightning started");
             if (user.token != null) {
               _breezLib.registerPeriodicSync(user.token);
