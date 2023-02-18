@@ -157,93 +157,97 @@ class SendOnchainState extends State<SendOnchain> {
             ),
           ),
         ),
-        body: LayoutBuilder(builder: (context, constraints) {
-          return SingleChildScrollView(
-            child: Form(
-              key: _formKey,
-              child: Padding(
-                padding: const EdgeInsets.fromLTRB(16.0, 12.0, 16.0, 0.0),
-                child: Column(
-                  mainAxisSize: MainAxisSize.max,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    widget.prefixMessage != null
-                        ? Text(
-                            widget.prefixMessage,
-                            style: TextStyle(
+        body: LayoutBuilder(
+          builder: (context, constraints) {
+            return SingleChildScrollView(
+              child: Form(
+                key: _formKey,
+                child: Padding(
+                  padding: const EdgeInsets.fromLTRB(16.0, 12.0, 16.0, 0.0),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.max,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      widget.prefixMessage != null
+                          ? Text(
+                              widget.prefixMessage,
+                              style: TextStyle(
+                                color: dialogTheme.contentTextStyle.color,
+                                fontSize: 16.0,
+                                height: 1.2,
+                              ),
+                            )
+                          : const SizedBox(),
+                      TextFormField(
+                        controller: _addressController,
+                        decoration: InputDecoration(
+                          labelText: texts.send_on_chain_btc_address,
+                          suffixIcon: IconButton(
+                            padding: const EdgeInsets.only(top: 21.0),
+                            alignment: Alignment.bottomRight,
+                            icon: Image(
+                              image: const AssetImage("src/icon/qr_scan.png"),
                               color: dialogTheme.contentTextStyle.color,
-                              fontSize: 16.0,
-                              height: 1.2,
+                              fit: BoxFit.contain,
+                              width: 24.0,
+                              height: 24.0,
                             ),
-                          )
-                        : const SizedBox(),
-                    TextFormField(
-                      controller: _addressController,
-                      decoration: InputDecoration(
-                        labelText: texts.send_on_chain_btc_address,
-                        suffixIcon: IconButton(
-                          padding: const EdgeInsets.only(top: 21.0),
-                          alignment: Alignment.bottomRight,
-                          icon: Image(
-                            image: const AssetImage("src/icon/qr_scan.png"),
-                            color: dialogTheme.contentTextStyle.color,
-                            fit: BoxFit.contain,
-                            width: 24.0,
-                            height: 24.0,
+                            tooltip: texts.send_on_chain_scan_barcode,
+                            onPressed: _scanBarcode,
                           ),
-                          tooltip: texts.send_on_chain_scan_barcode,
-                          onPressed: _scanBarcode,
                         ),
+                        style: dialogTheme.contentTextStyle,
+                        validator: (value) {
+                          if (_addressValidated == null) {
+                            return texts.send_on_chain_invalid_btc_address;
+                          }
+                          return null;
+                        },
                       ),
-                      style: dialogTheme.contentTextStyle,
-                      validator: (value) {
-                        if (_addressValidated == null) {
-                          return texts.send_on_chain_invalid_btc_address;
-                        }
-                        return null;
-                      },
-                    ),
-                    _scannerErrorMessage.isNotEmpty
-                        ? Text(
-                            _scannerErrorMessage,
-                            style: theme.validatorStyle,
-                          )
-                        : const SizedBox(),
-                    TextFormField(
-                      focusNode: _feeFocusNode,
-                      controller: _feeController,
-                      inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-                      keyboardType: TextInputType.number,
-                      decoration: InputDecoration(
-                        labelText: texts.send_on_chain_sat_per_byte_fee_rate,
+                      _scannerErrorMessage.isNotEmpty
+                          ? Text(
+                              _scannerErrorMessage,
+                              style: theme.validatorStyle,
+                            )
+                          : const SizedBox(),
+                      TextFormField(
+                        focusNode: _feeFocusNode,
+                        controller: _feeController,
+                        inputFormatters: [
+                          FilteringTextInputFormatter.digitsOnly
+                        ],
+                        keyboardType: TextInputType.number,
+                        decoration: InputDecoration(
+                          labelText: texts.send_on_chain_sat_per_byte_fee_rate,
+                        ),
+                        style: dialogTheme.contentTextStyle,
+                        validator: (value) {
+                          if (_feeController.text.isEmpty) {
+                            return texts.send_on_chain_invalid_fee_rate;
+                          }
+                          return null;
+                        },
                       ),
-                      style: dialogTheme.contentTextStyle,
-                      validator: (value) {
-                        if (_feeController.text.isEmpty) {
-                          return texts.send_on_chain_invalid_fee_rate;
-                        }
-                        return null;
-                      },
-                    ),
-                    Container(
-                      padding: const EdgeInsets.only(top: 12.0),
-                      child: _buildAvailableBTC(context, widget._account),
-                    ),
-                    widget.originalTransaction != null
-                        ? CollapsibleListItem(
-                            title: texts.send_on_chain_original_transaction,
-                            sharedValue: widget.originalTransaction,
-                            userStyle: dialogTheme.contentTextStyle.copyWith(
-                              fontWeight: FontWeight.normal,
-                            ),
-                          )
-                        : const SizedBox()
-                  ],
+                      Container(
+                        padding: const EdgeInsets.only(top: 12.0),
+                        child: _buildAvailableBTC(context, widget._account),
+                      ),
+                      widget.originalTransaction != null
+                          ? CollapsibleListItem(
+                              title: texts.send_on_chain_original_transaction,
+                              sharedValue: widget.originalTransaction,
+                              userStyle: dialogTheme.contentTextStyle.copyWith(
+                                fontWeight: FontWeight.normal,
+                              ),
+                            )
+                          : const SizedBox()
+                    ],
+                  ),
                 ),
               ),
-            ),
-          );
-        }),
+            );
+          },
+        ),
       ),
     );
   }
@@ -278,21 +282,24 @@ class SendOnchainState extends State<SendOnchain> {
   Future _scanBarcode() async {
     final texts = context.texts();
     FocusScope.of(context).requestFocus(FocusNode());
-    String barcode = await Navigator.pushNamed<String>(context, "/qr_scan");
-    if (barcode == null) {
-      return;
-    }
-    if (barcode.isEmpty) {
-      showFlushbar(
-        context,
-        message: texts.send_on_chain_qr_code_not_detected,
-      );
-      return;
-    }
-    setState(() {
-      _addressController.text = barcode;
-      _scannerErrorMessage = "";
-    });
+    await Navigator.pushNamed<String>(context, "/qr_scan").then(
+      (barcode) async {
+        if (barcode == null) {
+          return;
+        }
+        if (barcode.isEmpty) {
+          showFlushbar(
+            context,
+            message: texts.send_on_chain_qr_code_not_detected,
+          );
+          return;
+        }
+        setState(() {
+          _addressController.text = barcode;
+          _scannerErrorMessage = "";
+        });
+      },
+    );
   }
 
   Future<bool> _asyncValidate() {

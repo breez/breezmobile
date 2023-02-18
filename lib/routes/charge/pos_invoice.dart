@@ -82,16 +82,18 @@ class POSInvoiceState extends State<POSInvoice> with TickerProviderStateMixin {
       FetchRates fetchRatesAction = FetchRates();
       accountBloc.userActionsSink.add(fetchRatesAction);
       _fetchRatesActionFuture = fetchRatesAction.future;
-      _fetchRatesActionFuture.catchError((err) {
-        if (mounted) {
-          setState(() {
-            showFlushbar(
-              context,
-              message: texts.pos_invoice_error_fiat_exchange_rates,
-            );
-          });
-        }
-      });
+      _fetchRatesActionFuture.catchError(
+        (err) {
+          if (mounted) {
+            setState(() {
+              showFlushbar(
+                context,
+                message: texts.pos_invoice_error_fiat_exchange_rates,
+              );
+            });
+          }
+        },
+      );
 
       _itemFilterController.addListener(
         () {
@@ -100,25 +102,32 @@ class POSInvoiceState extends State<POSInvoice> with TickerProviderStateMixin {
         },
       );
 
-      currentSaleSubscription = posCatalogBloc.currentSaleStream.listen((s) {
-        if (currentPendingItem == null || !mounted) {
-          return;
-        }
+      currentSaleSubscription = posCatalogBloc.currentSaleStream.listen(
+        (s) {
+          if (currentPendingItem == null || !mounted) {
+            return;
+          }
 
-        // if the current pending item does not exist, then it was removed.
-        if (s.saleLines.firstWhere(
-                (s) => s.isCustom && s.itemName == currentPendingItem.itemName,
-                orElse: () => null) ==
-            null) {
-          setState(() {
-            currentPendingItem = null;
-          });
-        }
-      });
+          // if the current pending item does not exist, then it was removed.
+          if (s.saleLines.firstWhere(
+                  (s) =>
+                      s.isCustom && s.itemName == currentPendingItem.itemName,
+                  orElse: () => null) ==
+              null) {
+            setState(
+              () {
+                currentPendingItem = null;
+              },
+            );
+          }
+        },
+      );
 
-      posCatalogBloc.selectedPosTabStream.listen((tab) {
-        _changeView(tab == "KEYPAD");
-      });
+      posCatalogBloc.selectedPosTabStream.listen(
+        (tab) {
+          _changeView(tab == "KEYPAD");
+        },
+      );
 
       super.didChangeDependencies();
     }
@@ -363,16 +372,16 @@ class POSInvoiceState extends State<POSInvoice> with TickerProviderStateMixin {
       items: [
         ViewSwitchItem(
           texts.pos_invoice_tab_keypad,
-          () => AppBlocsProvider.of<PosCatalogBloc>(context)
-              .actionsSink
-              .add(UpdatePosSelectedTab("KEYPAD")),
+          () => AppBlocsProvider.of<PosCatalogBloc>(context).actionsSink.add(
+                UpdatePosSelectedTab("KEYPAD"),
+              ),
           iconData: Icons.dialpad,
         ),
         ViewSwitchItem(
           texts.pos_invoice_tab_items,
-          () => AppBlocsProvider.of<PosCatalogBloc>(context)
-              .actionsSink
-              .add(UpdatePosSelectedTab("ITEMS")),
+          () => AppBlocsProvider.of<PosCatalogBloc>(context).actionsSink.add(
+                UpdatePosSelectedTab("ITEMS"),
+              ),
           iconData: Icons.playlist_add,
         ),
       ],
@@ -539,52 +548,62 @@ class POSInvoiceState extends State<POSInvoice> with TickerProviderStateMixin {
       final posCatalogBloc = AppBlocsProvider.of<PosCatalogBloc>(context);
       final lockSale = SetCurrentSale(currentSale.copyWith(priceLocked: true));
       posCatalogBloc.actionsSink.add(lockSale);
-      waitForSync(context).then((value) {
-        if (!value) {
-          return;
-        }
-        lockSale.future.then((value) {
-          final newInvoiceAction = NewInvoice(
-            InvoiceRequestModel(
-              user.name,
-              lockSale.currentSale.note,
-              user.avatarURL,
-              Int64(satAmount.toInt()),
-              expiry: Int64(user.cancellationTimeoutValue.toInt()),
-            ),
-          );
-          invoiceBloc.actionsSink.add(newInvoiceAction);
-          newInvoiceAction.future.then((value) {
-            final payReq = value as PaymentRequestModel;
-            final addSaleAction = SubmitCurrentSale(payReq.paymentHash);
-            posCatalogBloc.actionsSink.add(addSaleAction);
-            return addSaleAction.future.then((submittedSale) {
-              return _showPaymentDialog(
-                invoiceBloc,
-                lnUrlBloc,
-                user,
-                payReq,
-                satAmount,
-                account,
-                submittedSale,
-              ).then((cleared) {
-                if (!cleared) {
-                  final unLockSale = SetCurrentSale(
-                    submittedSale.copyWith(priceLocked: false),
+      waitForSync(context).then(
+        (value) {
+          if (!value) {
+            return;
+          }
+          lockSale.future.then(
+            (value) {
+              final newInvoiceAction = NewInvoice(
+                InvoiceRequestModel(
+                  user.name,
+                  lockSale.currentSale.note,
+                  user.avatarURL,
+                  Int64(satAmount.toInt()),
+                  expiry: Int64(user.cancellationTimeoutValue.toInt()),
+                ),
+              );
+              invoiceBloc.actionsSink.add(newInvoiceAction);
+              newInvoiceAction.future.then(
+                (value) {
+                  final payReq = value as PaymentRequestModel;
+                  final addSaleAction = SubmitCurrentSale(payReq.paymentHash);
+                  posCatalogBloc.actionsSink.add(addSaleAction);
+                  return addSaleAction.future.then(
+                    (submittedSale) {
+                      return _showPaymentDialog(
+                        invoiceBloc,
+                        lnUrlBloc,
+                        user,
+                        payReq,
+                        satAmount,
+                        account,
+                        submittedSale,
+                      ).then((cleared) {
+                        if (!cleared) {
+                          final unLockSale = SetCurrentSale(
+                            submittedSale.copyWith(priceLocked: false),
+                          );
+                          posCatalogBloc.actionsSink.add(unLockSale);
+                        }
+                      });
+                    },
                   );
-                  posCatalogBloc.actionsSink.add(unLockSale);
-                }
-              });
-            });
-          }).catchError((error) {
-            showFlushbar(
-              context,
-              message: error.toString(),
-              duration: const Duration(seconds: 10),
-            );
-          });
-        });
-      });
+                },
+              ).catchError(
+                (error) {
+                  showFlushbar(
+                    context,
+                    message: error.toString(),
+                    duration: const Duration(seconds: 10),
+                  );
+                },
+              );
+            },
+          );
+        },
+      );
     }
   }
 
@@ -597,9 +616,9 @@ class POSInvoiceState extends State<POSInvoice> with TickerProviderStateMixin {
         content: const SyncProgressDialog(closeOnSync: true),
         actions: <Widget>[
           TextButton(
-            onPressed: (() {
+            onPressed: () {
               Navigator.pop(context, false);
-            }),
+            },
             child: Text(
               texts.pos_invoice_close,
               style: Theme.of(context).primaryTextTheme.labelLarge,
@@ -630,35 +649,46 @@ class POSInvoiceState extends State<POSInvoice> with TickerProviderStateMixin {
         payReq,
         satAmount,
       ),
-    ).then((res) {
-      if (res?.paid == true) {
-        Navigator.of(context).push(TransparentPageRoute((context) {
-          return SuccessfulPaymentRoute(
-            onPrint: () async {
-              PaymentInfo paymentInfo = await _findPayment(payReq.paymentHash);
-              PrintParameters printParameters = PrintParameters(
-                currentUser: user,
-                account: account,
-                submittedSale: submittedSale,
-                paymentInfo: paymentInfo,
-              );
-              return PrintService(printParameters).printAsPDF(context);
-            },
+    ).then(
+      (res) {
+        if (res?.paid == true) {
+          Navigator.of(context).push(
+            TransparentPageRoute(
+              (context) {
+                return SuccessfulPaymentRoute(
+                  onPrint: () async {
+                    await _findPayment(payReq.paymentHash).then(
+                      (paymentInfo) {
+                        PrintParameters printParameters = PrintParameters(
+                          currentUser: user,
+                          account: account,
+                          submittedSale: submittedSale,
+                          paymentInfo: paymentInfo,
+                        );
+                        return PrintService(printParameters)
+                            .printAsPDF(context);
+                      },
+                    );
+                  },
+                );
+              },
+            ),
           );
-        }));
-      }
-      if (res?.clearSale == true) {
-        _clearSale();
-        return true;
-      }
-      return false;
-    });
+        }
+        if (res?.clearSale == true) {
+          _clearSale();
+          return true;
+        }
+        return false;
+      },
+    );
   }
 
   Future<PaymentInfo> _findPayment(String paymentHash) async {
     AccountBloc accountBloc = AppBlocsProvider.of<AccountBloc>(context);
-    PaymentsModel paymentsModel = await accountBloc.paymentsStream
-        .firstWhere((paymentsModel) => paymentsModel != null);
+    PaymentsModel paymentsModel = await accountBloc.paymentsStream.firstWhere(
+      (paymentsModel) => paymentsModel != null,
+    );
     return paymentsModel.paymentsList
         .firstWhere((paymentInfo) => paymentInfo.paymentHash == paymentHash);
   }
@@ -731,18 +761,22 @@ class POSInvoiceState extends State<POSInvoice> with TickerProviderStateMixin {
       curve: Curves.easeInExpo,
     );
 
-    controller.addListener(() {
-      setState(() {
-        if (controller.status == AnimationStatus.completed) {
-          controller.dispose();
-          scaleController.dispose();
-          opacityController.dispose();
-          if (_itemInTransition == item) {
-            _itemInTransition = null;
-          }
-        }
-      });
-    });
+    controller.addListener(
+      () {
+        setState(
+          () {
+            if (controller.status == AnimationStatus.completed) {
+              controller.dispose();
+              scaleController.dispose();
+              opacityController.dispose();
+              if (_itemInTransition == item) {
+                _itemInTransition = null;
+              }
+            }
+          },
+        );
+      },
+    );
 
     scaleController.reverse(from: 1.0);
     opacityController.forward(from: 0.7);
@@ -786,55 +820,69 @@ class POSInvoiceState extends State<POSInvoice> with TickerProviderStateMixin {
     });
   }
 
-  void _changeCurrency(Sale currentSale, String value,
-      UserProfileBloc userProfileBloc, CurrencyWrapper currentCurrency) {
+  void _changeCurrency(
+    Sale currentSale,
+    String value,
+    UserProfileBloc userProfileBloc,
+    CurrencyWrapper currentCurrency,
+  ) {
     log.info("_changeCurrency from ${currentCurrency.shortName} to $value");
     if (currentCurrency.shortName.toUpperCase() == value) {
       return;
     }
-    setState(() {
-      Currency currency = Currency.fromTickerSymbol(value);
+    setState(
+      () {
+        Currency currency = Currency.fromTickerSymbol(value);
 
-      bool flipFiat = _useFiat == (currency != null);
-      if (flipFiat) {
-        _useFiat = !_useFiat;
-      }
-      _clearAmounts(currentSale);
+        bool flipFiat = _useFiat == (currency != null);
+        if (flipFiat) {
+          _useFiat = !_useFiat;
+        }
+        _clearAmounts(currentSale);
 
-      if (currency != null) {
-        userProfileBloc.currencySink.add(currency);
-      } else {
-        userProfileBloc.fiatConversionSink.add(value);
-      }
-      SetPOSCurrency setPOSCurrency = SetPOSCurrency(value);
-      userProfileBloc.userActionsSink.add(setPOSCurrency);
-    });
+        if (currency != null) {
+          userProfileBloc.currencySink.add(currency);
+        } else {
+          userProfileBloc.fiatConversionSink.add(value);
+        }
+        SetPOSCurrency setPOSCurrency = SetPOSCurrency(value);
+        userProfileBloc.userActionsSink.add(setPOSCurrency);
+      },
+    );
   }
 
   void _clearAmounts(Sale currentSale) {
     final posCatalogBloc = AppBlocsProvider.of<PosCatalogBloc>(context);
-    setState(() {
-      if (currentPendingItem != null) {
-        currentSale = currentSale.removeItem(
-          (sl) => sl.isCustom && sl.itemName == currentPendingItem.itemName,
-        );
-        currentPendingItem = null;
-        posCatalogBloc.actionsSink.add(SetCurrentSale(currentSale));
-      }
-    });
+    setState(
+      () {
+        if (currentPendingItem != null) {
+          currentSale = currentSale.removeItem(
+            (sl) => sl.isCustom && sl.itemName == currentPendingItem.itemName,
+          );
+          currentPendingItem = null;
+          posCatalogBloc.actionsSink.add(SetCurrentSale(currentSale));
+        }
+      },
+    );
   }
 
   void _clearSale() async {
     final posCatalogBloc = AppBlocsProvider.of<PosCatalogBloc>(context);
     final userProfileBloc = AppBlocsProvider.of<UserProfileBloc>(context);
     final user = await userProfileBloc.userStream.first;
-    setState(() {
-      currentPendingItem = null;
-      posCatalogBloc.actionsSink.add(SetCurrentSale(Sale(
-        saleLines: [],
-        note: user.defaultPosNote,
-      )));
-    });
+    setState(
+      () {
+        currentPendingItem = null;
+        posCatalogBloc.actionsSink.add(
+          SetCurrentSale(
+            Sale(
+              saleLines: [],
+              note: user.defaultPosNote,
+            ),
+          ),
+        );
+      },
+    );
   }
 
   void _approveClear(BuildContext context, Sale currentSale) {

@@ -187,26 +187,29 @@ class NetworkPageState extends State<NetworkPage> {
     final texts = context.texts();
     final dialogTheme = Theme.of(context).dialogTheme;
 
-    var error = await showDialog(
+    return await showDialog(
       useRootNavigator: false,
       context: context,
       builder: (ctx) => _TestingPeerDialog(
         peer: peer,
         testFuture: _breezLib.testPeer(peer),
       ),
-    );
+    ).then(
+      (error) async {
+        if (error != null) {
+          await promptError(
+            context,
+            null,
+            Text(
+              nodeError ?? texts.network_default_node_error,
+              style: dialogTheme.contentTextStyle,
+            ),
+          );
+        }
 
-    if (error != null) {
-      await promptError(
-        context,
-        null,
-        Text(
-          nodeError ?? texts.network_default_node_error,
-          style: dialogTheme.contentTextStyle,
-        ),
-      );
-    }
-    return error == null;
+        return error == null;
+      },
+    );
   }
 
   Future<bool> _promptForRestart() {
@@ -222,12 +225,14 @@ class NetworkPageState extends State<NetworkPage> {
       ),
       cancelText: texts.network_restart_action_cancel,
       okText: texts.network_restart_action_confirm,
-    ).then((shouldExit) {
-      if (shouldExit) {
-        exit(0);
-      }
-      return false;
-    });
+    ).then(
+      (shouldExit) {
+        if (shouldExit) {
+          exit(0);
+        }
+        return false;
+      },
+    );
   }
 
   void saveNodes() async {
@@ -243,15 +248,18 @@ class NetworkPageState extends State<NetworkPage> {
       try {
         if (nodeSet.isNotEmpty) {
           // Validate nodes sequentially
-          await Future.forEach(nodeSet, (node) async {
-            final nodeIsValid = await _testNode(
-              peer: node,
-              nodeError: texts.network_custom_node_error,
-            );
-            if (!nodeIsValid) {
-              throw Exception(texts.network_custom_node_error);
-            }
-          });
+          await Future.forEach(
+            nodeSet,
+            (node) async {
+              final nodeIsValid = await _testNode(
+                peer: node,
+                nodeError: texts.network_custom_node_error,
+              );
+              if (!nodeIsValid) {
+                throw Exception(texts.network_custom_node_error);
+              }
+            },
+          );
           await _breezLib.setPeers(nodeSet.toList());
           _promptForRestart();
         } else {
@@ -267,37 +275,45 @@ class NetworkPageState extends State<NetworkPage> {
     final texts = context.texts();
     final themeData = Theme.of(context);
 
-    final error = await showDialog(
+    await showDialog(
       useRootNavigator: false,
       context: context,
       builder: (ctx) => _SetTorActiveDialog(
         testFuture: _breezLib.setTorActive(value),
         enable: value,
       ),
+    ).then(
+      (error) async {
+        if (error != null) {
+          log.info('setTorActive error', error);
+          await promptError(
+            context,
+            null,
+            Text(
+              value
+                  ? texts.network_tor_enable_error
+                  : texts.network_tor_disable,
+              style: themeData.dialogTheme.contentTextStyle,
+            ),
+          );
+          return;
+        } else {
+          !value
+              ? _resetNodes()
+              : _promptForRestart().then(
+                  (didRestart) {
+                    if (!didRestart) {
+                      setState(
+                        () {
+                          _data.torIsActive = !value;
+                        },
+                      );
+                    }
+                  },
+                );
+        }
+      },
     );
-
-    if (error != null) {
-      log.info('setTorActive error', error);
-      await promptError(
-        context,
-        null,
-        Text(
-          value ? texts.network_tor_enable_error : texts.network_tor_disable,
-          style: themeData.dialogTheme.contentTextStyle,
-        ),
-      );
-      return;
-    } else {
-      !value
-          ? _resetNodes()
-          : _promptForRestart().then((didRestart) {
-              if (!didRestart) {
-                setState(() {
-                  _data.torIsActive = !value;
-                });
-              }
-            });
-    }
   }
 }
 
@@ -394,22 +410,26 @@ class _SetTorActiveDialogState extends State<_SetTorActiveDialog> {
   @override
   void initState() {
     super.initState();
-    widget.testFuture.then((_) => Navigator.pop(context)).catchError((err) {
-      _allowPop = true;
-      Navigator.pop(context, err);
-    });
+    widget.testFuture.then((_) => Navigator.pop(context)).catchError(
+      (err) {
+        _allowPop = true;
+        Navigator.pop(context, err);
+      },
+    );
   }
 
   @override
   Widget build(BuildContext context) {
     final texts = context.texts();
     return WillPopScope(
-        onWillPop: () => Future.value(_allowPop),
-        child: createAnimatedLoaderDialog(
-            context,
-            widget.enable
-                ? texts.network_tor_enabling
-                : texts.network_tor_disabling,
-            withOKButton: false));
+      onWillPop: () => Future.value(_allowPop),
+      child: createAnimatedLoaderDialog(
+        context,
+        widget.enable
+            ? texts.network_tor_enabling
+            : texts.network_tor_disabling,
+        withOKButton: false,
+      ),
+    );
   }
 }

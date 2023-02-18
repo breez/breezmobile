@@ -57,7 +57,8 @@ Widget _withTheme(BreezUserModel user, Widget child) {
 // ignore: must_be_immutable
 class UserApp extends StatelessWidget {
   final GlobalKey<NavigatorState> _navigatorKey = GlobalKey<NavigatorState>();
-  final GlobalKey<NavigatorState> _homeNavigatorKey = GlobalKey<NavigatorState>();
+  final GlobalKey<NavigatorState> _homeNavigatorKey =
+      GlobalKey<NavigatorState>();
   Sink<bool> _reloadDatabaseSink;
 
   UserApp(Sink<bool> reloadDatabaseSink) {
@@ -98,10 +99,11 @@ class UserApp extends StatelessWidget {
             navigatorKey: _navigatorKey,
             title: getSystemAppLocalizations().app_name,
             theme: theme.themeMap[user.themeId],
-            localizationsDelegates: localizationsDelegates().toList()..addAll([
-              const LocalisationsDelegate(),
-              const AnytimeFallbackLocalizationDelegate(),
-            ]),
+            localizationsDelegates: localizationsDelegates().toList()
+              ..addAll([
+                const LocalisationsDelegate(),
+                const AnytimeFallbackLocalizationDelegate(),
+              ]),
             supportedLocales: supportedLocales(),
             builder: (BuildContext context, Widget child) {
               final MediaQueryData data = MediaQuery.of(context);
@@ -155,10 +157,14 @@ class UserApp extends StatelessWidget {
                                     if (isValid) {
                                       await Future.delayed(
                                         const Duration(milliseconds: 200),
+                                      ).then(
+                                        (value) {
+                                          Navigator.pop(ctx);
+                                          userProfileBloc.userActionsSink.add(
+                                            SetLockState(false),
+                                          );
+                                        },
                                       );
-                                      Navigator.pop(ctx);
-                                      userProfileBloc.userActionsSink
-                                          .add(SetLockState(false));
                                     }
                                   }
                                 : null,

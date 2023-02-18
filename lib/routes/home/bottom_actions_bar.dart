@@ -81,37 +81,48 @@ class BottomActionsBar extends StatelessWidget {
                     ListTile(
                       enabled: account.connected,
                       leading: _ActionImage(
-                          iconAssetPath: "src/icon/paste.png",
-                          enabled: account.connected),
+                        iconAssetPath: "src/icon/paste.png",
+                        enabled: account.connected,
+                      ),
                       title: Text(
                         texts.bottom_action_bar_paste_invoice,
                         style: theme.bottomSheetTextStyle,
                       ),
                       onTap: () async {
                         Navigator.of(context).pop();
-                        DecodedClipboardData clipboardData =
-                            await snapshot.data;
-                        if (clipboardData != null) {
-                          if (clipboardData.type == "lnurl" ||
-                              clipboardData.type == "lightning-address") {
-                            lnurlBloc.lnurlInputSink.add(clipboardData.data);
-                          } else if (clipboardData.type == "invoice") {
-                            invoiceBloc.decodeInvoiceSink
-                                .add(clipboardData.data);
-                          } else if (clipboardData.type == "nodeID") {
-                            Navigator.of(context).push(FadeInRoute(
-                              builder: (_) => SpontaneousPaymentPage(
-                                  clipboardData.data, firstPaymentItemKey),
-                            ));
-                          }
-                        } else {
-                          return showDialog(
+                        await snapshot.data.then((clipboardData) {
+                          if (clipboardData != null) {
+                            if (clipboardData.type == "lnurl" ||
+                                clipboardData.type == "lightning-address") {
+                              lnurlBloc.lnurlInputSink.add(clipboardData.data);
+                            } else if (clipboardData.type == "invoice") {
+                              invoiceBloc.decodeInvoiceSink.add(
+                                clipboardData.data,
+                              );
+                            } else if (clipboardData.type == "nodeID") {
+                              Navigator.of(context).push(
+                                FadeInRoute(
+                                  builder: (_) => SpontaneousPaymentPage(
+                                    clipboardData.data,
+                                    firstPaymentItemKey,
+                                  ),
+                                ),
+                              );
+                            }
+                          } else {
+                            return showDialog(
                               useRootNavigator: false,
                               context: context,
                               barrierDismissible: false,
-                              builder: (_) => EnterPaymentInfoDialog(context,
-                                  invoiceBloc, lnurlBloc, firstPaymentItemKey));
-                        }
+                              builder: (_) => EnterPaymentInfoDialog(
+                                context,
+                                invoiceBloc,
+                                lnurlBloc,
+                                firstPaymentItemKey,
+                              ),
+                            );
+                          }
+                        });
                       },
                     ),
                     Divider(
@@ -166,23 +177,28 @@ class BottomActionsBar extends StatelessWidget {
                                   indent: 72.0,
                                 ),
                                 ListTile(
+                                  enabled: account.connected,
+                                  leading: _ActionImage(
+                                    iconAssetPath: "src/icon/escher.png",
                                     enabled: account.connected,
-                                    leading: _ActionImage(
-                                        iconAssetPath: "src/icon/escher.png",
-                                        enabled: account.connected),
-                                    title: Text(
-                                      texts.bottom_action_bar_escher,
-                                      style: theme.bottomSheetTextStyle,
-                                    ),
-                                    onTap: () {
-                                      Navigator.pop(context);
-                                      return showDialog(
-                                          useRootNavigator: false,
-                                          context: context,
-                                          barrierDismissible: false,
-                                          builder: (_) =>
-                                              EscherDialog(context, accBloc));
-                                    }),
+                                  ),
+                                  title: Text(
+                                    texts.bottom_action_bar_escher,
+                                    style: theme.bottomSheetTextStyle,
+                                  ),
+                                  onTap: () {
+                                    Navigator.pop(context);
+                                    showDialog(
+                                      useRootNavigator: false,
+                                      context: context,
+                                      barrierDismissible: false,
+                                      builder: (_) => EscherDialog(
+                                        context,
+                                        accBloc,
+                                      ),
+                                    );
+                                  },
+                                ),
                               ],
                             );
                           } else {
@@ -223,7 +239,8 @@ class _Action extends StatelessWidget {
           text,
           textAlign: TextAlign.center,
           style: theme.bottomAppBarBtnStyle.copyWith(
-              fontSize: 13.5 / MediaQuery.of(context).textScaleFactor),
+            fontSize: 13.5 / MediaQuery.of(context).textScaleFactor,
+          ),
           maxLines: 1,
         ),
       ),
@@ -283,9 +300,10 @@ Future showReceiveOptions(BuildContext parentContext, AccountModel account) {
                           enabled: v.enabled &&
                               (account.connected || !v.requireActiveChannel),
                           leading: _ActionImage(
-                              iconAssetPath: v.icon,
-                              enabled:
-                                  account.connected || !v.requireActiveChannel),
+                            iconAssetPath: v.icon,
+                            enabled:
+                                account.connected || !v.requireActiveChannel,
+                          ),
                           title: Text(
                             v.shortName ?? v.name,
                             style: theme.bottomSheetTextStyle,

@@ -205,17 +205,20 @@ class OrderCardPageState extends State<OrderCardPage> {
         "fields": "country_code"
       },
     );
-    final response = await http.get(uri);
-    if (response.statusCode == 200) {
-      Map data = json.decode(response.body);
-      _userCountryShort = data["country_code"];
-    } else {
-      Locale myLocale = Localizations.localeOf(context);
-      _userCountryShort = myLocale.countryCode;
-    }
-    await _loadCountries();
-    await _loadStates();
-    _changeStatesList();
+    await http.get(uri).then(
+      (response) async {
+        if (response.statusCode == 200) {
+          Map data = json.decode(response.body);
+          _userCountryShort = data["country_code"];
+        } else {
+          Locale myLocale = Localizations.localeOf(context);
+          _userCountryShort = myLocale.countryCode;
+        }
+        await _loadCountries();
+        await _loadStates();
+        _changeStatesList();
+      },
+    );
   }
 
   Future _loadCountries() async {
@@ -271,21 +274,23 @@ class OrderCardPageState extends State<OrderCardPage> {
     List<InkWell> list = [];
     int number = _statesShow.length > 2 ? 3 : _statesShow.length;
     for (int i = 0; i < number; i++) {
-      list.add(InkWell(
-        child: Container(
-          padding: const EdgeInsets.only(left: 10.0),
-          alignment: Alignment.centerLeft,
-          height: 35.0,
-          child: Text(
-            _statesShow[i],
-            overflow: TextOverflow.ellipsis,
-            style: theme.autoCompleteStyle,
+      list.add(
+        InkWell(
+          child: Container(
+            padding: const EdgeInsets.only(left: 10.0),
+            alignment: Alignment.centerLeft,
+            height: 35.0,
+            child: Text(
+              _statesShow[i],
+              overflow: TextOverflow.ellipsis,
+              style: theme.autoCompleteStyle,
+            ),
           ),
+          onTap: () {
+            _stateController.text = _statesShow[i];
+          },
         ),
-        onTap: () {
-          _stateController.text = _statesShow[i];
-        },
-      ));
+      );
     }
 
     return SizedBox(
@@ -301,21 +306,23 @@ class OrderCardPageState extends State<OrderCardPage> {
     List<InkWell> list = [];
     int number = _countriesShow.length > 2 ? 3 : _countriesShow.length;
     for (int i = 0; i < number; i++) {
-      list.add(InkWell(
-        child: Container(
-          padding: const EdgeInsets.only(left: 10.0),
-          alignment: Alignment.centerLeft,
-          height: 35.0,
-          child: Text(
-            _countriesShow[i],
-            overflow: TextOverflow.ellipsis,
-            style: theme.autoCompleteStyle,
+      list.add(
+        InkWell(
+          child: Container(
+            padding: const EdgeInsets.only(left: 10.0),
+            alignment: Alignment.centerLeft,
+            height: 35.0,
+            child: Text(
+              _countriesShow[i],
+              overflow: TextOverflow.ellipsis,
+              style: theme.autoCompleteStyle,
+            ),
           ),
+          onTap: () {
+            _countryController.text = _countriesShow[i];
+          },
         ),
-        onTap: () {
-          _countryController.text = _countriesShow[i];
-        },
-      ));
+      );
     }
 
     return SizedBox(

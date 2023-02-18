@@ -44,17 +44,24 @@ class PaymentAdjustmentState extends State<PaymentAdjustment> {
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
-      Future.delayed(const Duration(seconds: 1)).then((value) async {
-        final userBloc = AppBlocsProvider.of<UserProfileBloc>(context);
-        final user = await userBloc.userStream.first;
-        if (!user.seenTutorials.paymentStripTutorial) {
-          _buildTutorial(context, user);
-          tutorial.show(context: context);
-          setState(() {});
-        }
-      });
-    });
+    WidgetsBinding.instance.addPostFrameCallback(
+      (timeStamp) async {
+        Future.delayed(const Duration(seconds: 1)).then(
+          (value) async {
+            final userBloc = AppBlocsProvider.of<UserProfileBloc>(context);
+            await userBloc.userStream.first.then(
+              (user) {
+                if (!user.seenTutorials.paymentStripTutorial) {
+                  _buildTutorial(context, user);
+                  tutorial.show(context: context);
+                  setState(() {});
+                }
+              },
+            );
+          },
+        );
+      },
+    );
   }
 
   void _buildTutorial(BuildContext context, BreezUserModel user) {
@@ -83,118 +90,126 @@ class PaymentAdjustmentState extends State<PaymentAdjustment> {
   void _buildTutorialTargets(BuildContext context, BreezUserModel user) {
     final texts = context.texts();
     final theme = Theme.of(context);
-    targets.add(TargetFocus(
-      identify: "BoostWidget",
-      keyTarget: boostWidgetKey,
-      shape: ShapeLightFocus.RRect,
-      radius: 4,
-      paddingFocus: 8,
-      enableOverlayTab: true,
-      contents: [
-        TargetContent(
-          align: ContentAlign.top,
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                texts.podcast_boost_adjustment_boost,
-                style: const TextStyle(
-                  fontWeight: FontWeight.bold,
-                  color: Colors.white,
-                  fontSize: 20.0,
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.only(top: 10.0),
-                child: Text(
-                  texts.podcast_boost_adjustment_boost_message,
+    targets.add(
+      TargetFocus(
+        identify: "BoostWidget",
+        keyTarget: boostWidgetKey,
+        shape: ShapeLightFocus.RRect,
+        radius: 4,
+        paddingFocus: 8,
+        enableOverlayTab: true,
+        contents: [
+          TargetContent(
+            align: ContentAlign.top,
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  texts.podcast_boost_adjustment_boost,
                   style: const TextStyle(
+                    fontWeight: FontWeight.bold,
                     color: Colors.white,
+                    fontSize: 20.0,
                   ),
                 ),
-              ),
-            ],
-          ),
-        ),
-      ],
-    ));
-    targets.add(TargetFocus(
-      identify: "PaymentAdjuster",
-      keyTarget: paymentAdjusterKey,
-      shape: ShapeLightFocus.RRect,
-      radius: 4,
-      paddingFocus: 4,
-      enableTargetTab: false,
-      contents: [
-        TargetContent(
-          align: ContentAlign.top,
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                texts.podcast_boost_adjustment_stream_sats,
-                style: const TextStyle(
-                  fontWeight: FontWeight.bold,
-                  color: Colors.white,
-                  fontSize: 20.0,
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.only(top: 10.0),
-                child: Text(
-                  texts.podcast_boost_adjustment_stream_sats_message,
-                  style: const TextStyle(
-                    color: Colors.white,
-                  ),
-                ),
-              ),
-              StatefulBuilder(builder: (context, changeState) {
-                return Padding(
+                Padding(
                   padding: const EdgeInsets.only(top: 10.0),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      _tutorialOption(0, changeState),
-                      _tutorialOption(10, changeState),
-                      _tutorialOption(25, changeState),
-                      _tutorialOption(50, changeState),
-                      _tutorialOption(100, changeState),
-                    ],
-                  ),
-                );
-              }),
-              Padding(
-                padding: const EdgeInsets.only(top: 10.0),
-                child: withBreezTheme(
-                  context,
-                  ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.white,
+                  child: Text(
+                    texts.podcast_boost_adjustment_boost_message,
+                    style: const TextStyle(
+                      color: Colors.white,
                     ),
-                    child: Text(
-                      texts.tutorial_gotcha,
-                      style: theme.primaryTextTheme.labelLarge.copyWith(
-                        color: theme.primaryColor,
-                      ),
-                    ),
-                    onPressed: () {
-                      AppBlocsProvider.of<UserProfileBloc>(context)
-                          .userActionsSink
-                          .add(SetPaymentOptions(user.paymentOptions.copyWith(
-                            preferredSatsPerMinValue: tutorialStreamSats,
-                          )));
-                      tutorial.finish();
-                    },
                   ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
-        ),
-      ],
-    ));
+        ],
+      ),
+    );
+    targets.add(
+      TargetFocus(
+        identify: "PaymentAdjuster",
+        keyTarget: paymentAdjusterKey,
+        shape: ShapeLightFocus.RRect,
+        radius: 4,
+        paddingFocus: 4,
+        enableTargetTab: false,
+        contents: [
+          TargetContent(
+            align: ContentAlign.top,
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  texts.podcast_boost_adjustment_stream_sats,
+                  style: const TextStyle(
+                    fontWeight: FontWeight.bold,
+                    color: Colors.white,
+                    fontSize: 20.0,
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.only(top: 10.0),
+                  child: Text(
+                    texts.podcast_boost_adjustment_stream_sats_message,
+                    style: const TextStyle(
+                      color: Colors.white,
+                    ),
+                  ),
+                ),
+                StatefulBuilder(builder: (context, changeState) {
+                  return Padding(
+                    padding: const EdgeInsets.only(top: 10.0),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        _tutorialOption(0, changeState),
+                        _tutorialOption(10, changeState),
+                        _tutorialOption(25, changeState),
+                        _tutorialOption(50, changeState),
+                        _tutorialOption(100, changeState),
+                      ],
+                    ),
+                  );
+                }),
+                Padding(
+                  padding: const EdgeInsets.only(top: 10.0),
+                  child: withBreezTheme(
+                    context,
+                    ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.white,
+                      ),
+                      child: Text(
+                        texts.tutorial_gotcha,
+                        style: theme.primaryTextTheme.labelLarge.copyWith(
+                          color: theme.primaryColor,
+                        ),
+                      ),
+                      onPressed: () {
+                        AppBlocsProvider.of<UserProfileBloc>(context)
+                            .userActionsSink
+                            .add(
+                              SetPaymentOptions(
+                                user.paymentOptions.copyWith(
+                                  preferredSatsPerMinValue: tutorialStreamSats,
+                                ),
+                              ),
+                            );
+                        tutorial.finish();
+                      },
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
   }
 
   Widget _tutorialOption(int sats, Function(Function()) changeState) {
@@ -219,9 +234,11 @@ class PaymentAdjustmentState extends State<PaymentAdjustment> {
                     width: 1.0,
                   ),
           ),
-          onPressed: () => changeState(() {
-            tutorialStreamSats = sats;
-          }),
+          onPressed: () => changeState(
+            () {
+              tutorialStreamSats = sats;
+            },
+          ),
           child: Center(
             child: AutoSizeText(
               sats.toString(),
@@ -263,7 +280,11 @@ class PaymentAdjustmentState extends State<PaymentAdjustment> {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                _booster(paymentsBloc, userProfileBloc, userModel),
+                _booster(
+                  paymentsBloc,
+                  userProfileBloc,
+                  userModel,
+                ),
                 SizedBox(
                   height: 64,
                   width: 1,
@@ -272,7 +293,11 @@ class PaymentAdjustmentState extends State<PaymentAdjustment> {
                     color: themeData.dividerColor,
                   ),
                 ),
-                _adjuster(paymentsBloc, userProfileBloc, userModel),
+                _adjuster(
+                  paymentsBloc,
+                  userProfileBloc,
+                  userModel,
+                ),
               ],
             ),
           );
@@ -303,11 +328,13 @@ class PaymentAdjustmentState extends State<PaymentAdjustment> {
               ));
             },
             onChanged: (int boostAmount) {
-              userProfileBloc.userActionsSink.add(SetPaymentOptions(
-                userModel.paymentOptions.copyWith(
-                  preferredBoostValue: boostAmount,
+              userProfileBloc.userActionsSink.add(
+                SetPaymentOptions(
+                  userModel.paymentOptions.copyWith(
+                    preferredBoostValue: boostAmount,
+                  ),
                 ),
-              ));
+              );
             },
           ),
         ),
@@ -330,11 +357,13 @@ class PaymentAdjustmentState extends State<PaymentAdjustment> {
             userModel: userModel,
             onChanged: (int satsPerMinute) {
               paymentsBloc.actionsSink.add(AdjustAmount(satsPerMinute));
-              userProfileBloc.userActionsSink.add(SetPaymentOptions(
-                userModel.paymentOptions.copyWith(
-                  preferredSatsPerMinValue: satsPerMinute,
+              userProfileBloc.userActionsSink.add(
+                SetPaymentOptions(
+                  userModel.paymentOptions.copyWith(
+                    preferredSatsPerMinValue: satsPerMinute,
+                  ),
                 ),
-              ));
+              );
             },
           ),
         ),

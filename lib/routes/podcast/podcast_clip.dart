@@ -1,5 +1,3 @@
-import 'dart:typed_data';
-
 import 'package:anytime/bloc/podcast/audio_bloc.dart';
 import 'package:anytime/entities/episode.dart';
 import 'package:anytime/services/audio/audio_player_service.dart';
@@ -54,25 +52,27 @@ class PodcastClipWidget extends StatelessWidget {
   }
 }
 
-_showClipsBottomSheet(
-    {BuildContext context,
-    AudioBloc audioBloc,
-    PodcastClipBloc podcastClipBloc}) async {
-  PositionState position = await getPositionDetails(audioBloc);
-  if (position != null) {
-    podcastClipBloc.setPodcastClipDetails(position: position);
-  }
-  bool canBeClipped = podcastClipBloc.isEpisodeClippable();
-  if (!canBeClipped) {
-    return;
-  }
-  podcastClipBloc.setClipSharingStatus(status: true);
-  _pause(audioBloc);
+_showClipsBottomSheet({
+  BuildContext context,
+  AudioBloc audioBloc,
+  PodcastClipBloc podcastClipBloc,
+}) async {
+  await getPositionDetails(audioBloc).then(
+    (position) async {
+      if (position != null) {
+        podcastClipBloc.setPodcastClipDetails(position: position);
+      }
+      bool canBeClipped = podcastClipBloc.isEpisodeClippable();
+      if (!canBeClipped) {
+        return;
+      }
+      podcastClipBloc.setClipSharingStatus(status: true);
+      _pause(audioBloc);
 
-  return showModalBottomSheet<void>(
-      context: context,
-      builder: (BuildContext context) {
-        return StreamBuilder<PodcastClipDetailsModel>(
+      return showModalBottomSheet<void>(
+        context: context,
+        builder: (BuildContext context) {
+          return StreamBuilder<PodcastClipDetailsModel>(
             stream: podcastClipBloc.clipDetails,
             builder: (context, clipDetailSnapshot) {
               return clipDetailSnapshot.data != null
@@ -115,14 +115,24 @@ _showClipsBottomSheet(
                                 child: Row(
                                   mainAxisAlignment: MainAxisAlignment.center,
                                   children: [
-                                    _durationToggleButton(context, () {
-                                      podcastClipBloc.decrementDuration();
-                                    }, Icons.remove_circle_outline),
-                                    _numberPanel(context,
-                                        clipDetailSnapshot.data.clipDuration),
-                                    _durationToggleButton(context, () {
-                                      podcastClipBloc.incrementDuration();
-                                    }, Icons.add_circle_outline),
+                                    _durationToggleButton(
+                                      context,
+                                      () {
+                                        podcastClipBloc.decrementDuration();
+                                      },
+                                      Icons.remove_circle_outline,
+                                    ),
+                                    _numberPanel(
+                                      context,
+                                      clipDetailSnapshot.data.clipDuration,
+                                    ),
+                                    _durationToggleButton(
+                                      context,
+                                      () {
+                                        podcastClipBloc.incrementDuration();
+                                      },
+                                      Icons.add_circle_outline,
+                                    ),
                                   ],
                                 ),
                               ),
@@ -131,100 +141,122 @@ _showClipsBottomSheet(
                         ),
                         Padding(
                           padding: const EdgeInsets.only(
-                              bottom: 12, left: 16, right: 16),
+                            bottom: 12,
+                            left: 16,
+                            right: 16,
+                          ),
                           child: Row(
                             children: [
                               TextButton(
-                                  onPressed: () {
-                                    podcastClipBloc.setClipSharingStatus(
-                                        status: false);
-                                    Navigator.of(context).pop();
-                                  },
-                                  child: Text(
-                                    BreezTranslations.of(context)
-                                        .podcast_clips_cancel_button,
-                                    style: Theme.of(context)
-                                        .primaryTextTheme
-                                        .displaySmall
-                                        .copyWith(
-                                          fontSize: 16,
-                                          color: Colors.white.withOpacity(0.5),
-                                          fontWeight: FontWeight.w500,
-                                        ),
-                                  )),
+                                onPressed: () {
+                                  podcastClipBloc.setClipSharingStatus(
+                                    status: false,
+                                  );
+                                  Navigator.of(context).pop();
+                                },
+                                child: Text(
+                                  BreezTranslations.of(
+                                    context,
+                                  ).podcast_clips_cancel_button,
+                                  style: Theme.of(
+                                    context,
+                                  ).primaryTextTheme.displaySmall.copyWith(
+                                        fontSize: 16,
+                                        color: Colors.white.withOpacity(0.5),
+                                        fontWeight: FontWeight.w500,
+                                      ),
+                                ),
+                              ),
                               const Spacer(),
                               clipDetailSnapshot.data.podcastClipState ==
                                       PodcastClipState.IDLE
                                   ? TextButton(
                                       onPressed: () async {
                                         podcastClipBloc.setPodcastState(
-                                            PodcastClipState.FETCHING_IMAGE);
+                                          PodcastClipState.FETCHING_IMAGE,
+                                        );
                                         Episode e = clipDetailSnapshot
                                             .data.episodeDetails;
                                         var image = NetworkImage(e.imageUrl);
 
                                         image
-                                            .resolve(const ImageConfiguration())
+                                            .resolve(
+                                          const ImageConfiguration(),
+                                        )
                                             .addListener(
                                           ImageStreamListener(
                                             (info, call) async {
-                                              Uint8List screenShotImage =
-                                                  await ScreenshotController()
-                                                      .captureFromWidget(
-                                                          _imageWidget(
-                                                              context: context,
-                                                              episodeDetails:
-                                                                  clipDetailSnapshot
-                                                                      .data
-                                                                      .episodeDetails),
-                                                          context: context,
-                                                          delay: const Duration(
-                                                              milliseconds:
-                                                                  10));
-                                              try {
-                                                await podcastClipBloc
-                                                    .clipEpisode(
-                                                        clipImage:
-                                                            screenShotImage);
-                                              } catch (e) {
-                                                log.warning(e);
-                                                showFlushbar(
-                                                  context,
-                                                  message: BreezTranslations.of(
-                                                          context)
-                                                      .podcast_clips_error,
-                                                );
-                                              }
+                                              await ScreenshotController()
+                                                  .captureFromWidget(
+                                                _imageWidget(
+                                                  context: context,
+                                                  episodeDetails:
+                                                      clipDetailSnapshot
+                                                          .data.episodeDetails,
+                                                ),
+                                                context: context,
+                                                delay: const Duration(
+                                                  milliseconds: 10,
+                                                ),
+                                              )
+                                                  .then(
+                                                (screenShotImage) async {
+                                                  try {
+                                                    await podcastClipBloc
+                                                        .clipEpisode(
+                                                      clipImage:
+                                                          screenShotImage,
+                                                    );
+                                                  } catch (e) {
+                                                    log.warning(e);
+                                                    showFlushbar(
+                                                      context,
+                                                      message: BreezTranslations
+                                                              .of(context)
+                                                          .podcast_clips_error,
+                                                    );
+                                                  }
+                                                },
+                                              );
                                             },
                                           ),
                                         );
                                       },
                                       child: Text(
-                                          BreezTranslations.of(context)
-                                              .podcast_clips_clip_button,
-                                          style: Theme.of(context)
-                                              .primaryTextTheme
-                                              .displaySmall
-                                              .copyWith(
-                                                fontSize: 16,
-                                                color: Colors.white,
-                                                fontWeight: FontWeight.w500,
-                                              )))
+                                        BreezTranslations.of(context)
+                                            .podcast_clips_clip_button,
+                                        style: Theme.of(context)
+                                            .primaryTextTheme
+                                            .displaySmall
+                                            .copyWith(
+                                              fontSize: 16,
+                                              color: Colors.white,
+                                              fontWeight: FontWeight.w500,
+                                            ),
+                                      ),
+                                    )
                                   : const Center(
                                       child: CircularProgressIndicator(
-                                      strokeWidth: 2,
-                                    )),
+                                        strokeWidth: 2,
+                                      ),
+                                    ),
                             ],
                           ),
                         )
                       ],
                     )
                   : const CircularProgressIndicator();
-            });
-      }).then((value) {
-    podcastClipBloc.setClipSharingStatus(status: false);
-    _play(audioBloc);
-  });
+            },
+          );
+        },
+      ).then(
+        (value) {
+          podcastClipBloc.setClipSharingStatus(status: false);
+          _play(audioBloc);
+        },
+      );
+    },
+  );
 }
 
 Widget _numberPanel(BuildContext context, int durationInSeconds) {
@@ -275,7 +307,10 @@ Widget _numberPanel(BuildContext context, int durationInSeconds) {
 }
 
 Widget _durationToggleButton(
-    BuildContext context, Function() onTap, IconData icon) {
+  BuildContext context,
+  Function() onTap,
+  IconData icon,
+) {
   final themeData = Theme.of(context);
   return GestureDetector(
     child: SizedBox(
@@ -303,23 +338,30 @@ Widget _durationToggleButton(
 Future<PositionState> getPositionDetails(AudioBloc audioBloc) async {
   PositionState position;
   try {
-    position = await audioBloc.playPosition.first.timeout(const Duration(seconds: 1));
+    position =
+        await audioBloc.playPosition.first.timeout(const Duration(seconds: 1));
   } catch (e) {
     position = null;
   }
   return position;
 }
 
-_imageWidget({BuildContext context, Episode episodeDetails, Image image}) {
+_imageWidget({
+  BuildContext context,
+  Episode episodeDetails,
+  Image image,
+}) {
   return Container(
     decoration: BoxDecoration(
-        gradient: LinearGradient(
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
-            colors: [
+      gradient: LinearGradient(
+        begin: Alignment.topCenter,
+        end: Alignment.bottomCenter,
+        colors: [
           breezTheme.BreezColors.blue[500],
           breezTheme.BreezColors.blue[500].withOpacity(0.5)
-        ])),
+        ],
+      ),
+    ),
     padding: const EdgeInsets.only(left: 20, right: 20, top: 20, bottom: 28),
     child: Column(
       mainAxisSize: MainAxisSize.min,
@@ -377,12 +419,14 @@ _imageWidget({BuildContext context, Episode episodeDetails, Image image}) {
         Row(
           mainAxisAlignment: MainAxisAlignment.end,
           children: [
-            Text("Clipped by ",
-                style: Theme.of(context).primaryTextTheme.displaySmall.copyWith(
-                      fontSize: 12,
-                      color: Colors.white,
-                      fontWeight: FontWeight.w500,
-                    )),
+            Text(
+              "Clipped by ",
+              style: Theme.of(context).primaryTextTheme.displaySmall.copyWith(
+                    fontSize: 12,
+                    color: Colors.white,
+                    fontWeight: FontWeight.w500,
+                  ),
+            ),
             SvgPicture.asset(
               "src/images/logo-color.svg",
               colorFilter: const ColorFilter.mode(
@@ -476,10 +520,12 @@ class _CustomClipsDurationDialogState extends State<CustomClipsDurationDialog> {
           onPressed: () {
             if (_formKey.currentState.validate()) {
               Navigator.pop(context);
-              int durationInSeconds =
-                  int.parse(_clipDurationTextEditingController.text);
+              int durationInSeconds = int.parse(
+                _clipDurationTextEditingController.text,
+              );
               podcastClipBloc.setPodcastClipDuration(
-                  durationInSeconds: durationInSeconds);
+                durationInSeconds: durationInSeconds,
+              );
             }
           },
           child: Text(

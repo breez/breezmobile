@@ -221,8 +221,10 @@ class WithdrawFundsPageState extends State<WithdrawFundsPage> {
                             children: [
                               Loader(
                                 strokeWidth: 2.0,
-                                color: themeData.colorScheme.onSurface
-                                    .withOpacity(0.5),
+                                color:
+                                    themeData.colorScheme.onSurface.withOpacity(
+                                  0.5,
+                                ),
                               ),
                             ],
                           ),
@@ -299,29 +301,33 @@ class WithdrawFundsPageState extends State<WithdrawFundsPage> {
   Future _scanBarcode(BuildContext context, AccountModel account) async {
     final texts = context.texts();
     FocusScope.of(context).requestFocus(FocusNode());
-    String barcode = await Navigator.pushNamed<String>(context, "/qr_scan");
-    if (barcode.isEmpty) {
-      showFlushbar(
-        context,
-        message: texts.withdraw_funds_error_qr_code_not_detected,
-      );
-      return;
-    }
-    BTCAddressInfo btcInvoice = parseBTCAddress(barcode);
-    String amount;
-    if (btcInvoice.satAmount != null) {
-      amount = account.currency.format(
-        btcInvoice.satAmount,
-        userInput: true,
-        includeDisplayName: false,
-        removeTrailingZeros: true,
-      );
-    }
-    setState(() {
-      _addressController.text = btcInvoice.address;
-      _amountController.text = amount ?? _amountController.text;
-      _scannerErrorMessage = "";
-    });
+
+    await Navigator.pushNamed<String>(context, "/qr_scan").then(
+      (barcode) async {
+        if (barcode.isEmpty) {
+          showFlushbar(
+            context,
+            message: texts.withdraw_funds_error_qr_code_not_detected,
+          );
+          return;
+        }
+        BTCAddressInfo btcInvoice = parseBTCAddress(barcode);
+        String amount;
+        if (btcInvoice.satAmount != null) {
+          amount = account.currency.format(
+            btcInvoice.satAmount,
+            userInput: true,
+            includeDisplayName: false,
+            removeTrailingZeros: true,
+          );
+        }
+        setState(() {
+          _addressController.text = btcInvoice.address;
+          _amountController.text = amount ?? _amountController.text;
+          _scannerErrorMessage = "";
+        });
+      },
+    );
   }
 
   Future<bool> _asyncValidate() {

@@ -110,49 +110,64 @@ class HomeState extends State<Home> with WidgetsBindingObserver {
   void initState() {
     super.initState();
     _hiddenRoutes.add("/get_refund");
-    widget.accountBloc.accountStream.listen((acc) {
-      setState(() {
-        if (acc != null &&
-            acc.swapFundsStatus.maturedRefundableAddresses.isNotEmpty) {
-          _hiddenRoutes.remove("/get_refund");
-        } else {
-          _hiddenRoutes.add("/get_refund");
-        }
-      });
-    });
+    widget.accountBloc.accountStream.listen(
+      (acc) {
+        setState(
+          () {
+            if (acc != null &&
+                acc.swapFundsStatus.maturedRefundableAddresses.isNotEmpty) {
+              _hiddenRoutes.remove("/get_refund");
+            } else {
+              _hiddenRoutes.add("/get_refund");
+            }
+          },
+        );
+      },
+    );
 
-    widget.accountBloc.accountStream.listen((acc) {
-      var activeAccountRoutes = [
-        "/connect_to_pay",
-        "/pay_invoice",
-        "/create_invoice"
-      ];
-      Function addOrRemove =
-          acc.connected ? _hiddenRoutes.remove : _hiddenRoutes.add;
-      setState(() {
-        for (var r in activeAccountRoutes) {
-          addOrRemove(r);
-        }
-      });
-    });
+    widget.accountBloc.accountStream.listen(
+      (acc) {
+        var activeAccountRoutes = [
+          "/connect_to_pay",
+          "/pay_invoice",
+          "/create_invoice"
+        ];
+        Function addOrRemove =
+            acc.connected ? _hiddenRoutes.remove : _hiddenRoutes.add;
+        setState(
+          () {
+            for (var r in activeAccountRoutes) {
+              addOrRemove(r);
+            }
+          },
+        );
+      },
+    );
 
     AudioService.notificationClicked.where((event) => event == true).listen(
         (event) async {
       final userBloc = AppBlocsProvider.of<UserProfileBloc>(context);
       final audioBloc = Provider.of<AudioBloc>(context, listen: false);
-      final userModel = await userBloc.userStream.first;
-      final nowPlaying = await audioBloc.nowPlaying.first.timeout(
-        const Duration(seconds: 1),
+      await userBloc.userStream.first.then(
+        (userModel) async {
+          await audioBloc.nowPlaying.first
+              .timeout(const Duration(seconds: 1))
+              .then((nowPlaying) {
+            if (nowPlaying != null &&
+                !breezPodcast.NowPlayingTransport.nowPlayingVisible) {
+              Navigator.of(context).push(
+                MaterialPageRoute<void>(
+                  builder: (context) => withPodcastTheme(
+                    userModel,
+                    NowPlaying(),
+                  ),
+                  fullscreenDialog: false,
+                ),
+              );
+            }
+          });
+        },
       );
-      if (nowPlaying != null &&
-          !breezPodcast.NowPlayingTransport.nowPlayingVisible) {
-        Navigator.of(context).push(
-          MaterialPageRoute<void>(
-            builder: (context) => withPodcastTheme(userModel, NowPlaying()),
-            fullscreenDialog: false,
-          ),
-        );
-      }
     }, onDone: () {
       print("done");
     }, onError: (e) {
@@ -271,7 +286,9 @@ class HomeState extends State<Home> with WidgetsBindingObserver {
             systemOverlayStyle: theme.themeId == "BLUE"
                 ? SystemUiOverlayStyle.dark
                 : themeData.appBarTheme.systemOverlayStyle,
-            iconTheme: const IconThemeData(color: Color.fromARGB(255, 0, 133, 251)),
+            iconTheme: const IconThemeData(
+              color: Color.fromARGB(255, 0, 133, 251),
+            ),
             backgroundColor: (user.appMode == AppMode.pos)
                 ? themeData.colorScheme.background
                 : theme.customData[theme.themeId].dashboardBgColor,
@@ -594,8 +611,9 @@ class HomeState extends State<Home> with WidgetsBindingObserver {
           context,
           user,
           () {
-            widget.userProfileBloc.userActionsSink
-                .add(SetAppMode(AppMode.apps));
+            widget.userProfileBloc.userActionsSink.add(
+              SetAppMode(AppMode.apps),
+            );
             return Future.value(null);
           },
         );
@@ -698,11 +716,13 @@ class HomeState extends State<Home> with WidgetsBindingObserver {
           builder: (_) => const lostCard.LostCardDialog(),
         );
       } else {
-        Navigator.of(context).pushNamed(itemName).then((message) {
-          if (message != null && message.runtimeType == String) {
-            showFlushbar(context, message: message);
-          }
-        });
+        Navigator.of(context).pushNamed(itemName).then(
+          (message) {
+            if (message != null && message.runtimeType == String) {
+              showFlushbar(context, message: message);
+            }
+          },
+        );
       }
     }
   }
@@ -726,11 +746,17 @@ class HomeState extends State<Home> with WidgetsBindingObserver {
       widget.ctpBloc,
       this.context,
       (session) {
-        Navigator.popUntil(context, (route) {
-          return route.settings.name != "/connect_to_pay";
-        });
+        Navigator.popUntil(
+          context,
+          (route) {
+            return route.settings.name != "/connect_to_pay";
+          },
+        );
         var ctpRoute = FadeInRoute(
-          builder: (_) => withBreezTheme(context, ConnectToPayPage(session)),
+          builder: (_) => withBreezTheme(
+            context,
+            ConnectToPayPage(session),
+          ),
           settings: const RouteSettings(name: "/connect_to_pay"),
         );
         Navigator.of(context).push(ctpRoute);
@@ -746,16 +772,20 @@ class HomeState extends State<Home> with WidgetsBindingObserver {
         );
       },
     );
-    PodcastURLHandler(widget.userProfileBloc, this.context, (e) {
-      promptError(
-        context,
-        texts.home_error_podcast_link,
-        Text(
-          e.toString(),
-          style: themeData.dialogTheme.contentTextStyle,
-        ),
-      );
-    });
+    PodcastURLHandler(
+      widget.userProfileBloc,
+      this.context,
+      (e) {
+        promptError(
+          context,
+          texts.home_error_podcast_link,
+          Text(
+            e.toString(),
+            style: themeData.dialogTheme.contentTextStyle,
+          ),
+        );
+      },
+    );
     SyncUIHandler(widget.accountBloc, context);
     ShowPinHandler(widget.userProfileBloc, context);
 
@@ -770,16 +800,18 @@ class HomeState extends State<Home> with WidgetsBindingObserver {
         message: e.toString(),
       ),
     );
-    widget.reverseSwapBloc.broadcastTxStream.listen((_) {
-      showFlushbar(
-        context,
-        messageWidget: LoadingAnimatedText(
-          texts.home_broadcast_transaction,
-          textStyle: theme.snackBarStyle,
-          textAlign: TextAlign.left,
-        ),
-      );
-    });
+    widget.reverseSwapBloc.broadcastTxStream.listen(
+      (_) {
+        showFlushbar(
+          context,
+          messageWidget: LoadingAnimatedText(
+            texts.home_broadcast_transaction,
+            textStyle: theme.snackBarStyle,
+            textAlign: TextAlign.left,
+          ),
+        );
+      },
+    );
     checkVersionDialog(context, widget.userProfileBloc);
     CheckChannelConnection().startListen(context, widget.accountBloc);
   }
@@ -788,121 +820,142 @@ class HomeState extends State<Home> with WidgetsBindingObserver {
     final texts = context.texts();
     final themeData = Theme.of(context);
 
-    widget.accountBloc.nodeConflictStream.listen((_) async {
-      Navigator.popUntil(context, (route) {
-        return route.settings.name == "/";
-      });
-      await promptError(
-        context,
-        texts.home_config_error_title,
-        Text(
-          texts.home_config_error_message,
-          style: themeData.dialogTheme.contentTextStyle,
-        ),
-        okText: texts.home_config_error_action_exit,
-        disableBack: true,
-      );
-    });
+    widget.accountBloc.nodeConflictStream.listen(
+      (_) async {
+        Navigator.popUntil(context, (route) {
+          return route.settings.name == "/";
+        });
+        await promptError(
+          context,
+          texts.home_config_error_title,
+          Text(
+            texts.home_config_error_message,
+            style: themeData.dialogTheme.contentTextStyle,
+          ),
+          okText: texts.home_config_error_action_exit,
+          disableBack: true,
+        );
+      },
+    );
   }
 
   void _listenLSPSelectionPrompt(BuildContext context) async {
-    widget.lspBloc.lspPromptStream.first
-        .then((_) => Navigator.of(context).pushNamed("/select_lsp"));
+    widget.lspBloc.lspPromptStream.first.then(
+      (_) => Navigator.of(context).pushNamed("/select_lsp"),
+    );
   }
 
   void _listenWhitelistPermissionsRequest(BuildContext context) {
     final texts = context.texts();
     final themeData = Theme.of(context);
 
-    widget.accountBloc.optimizationWhitelistExplainStream.listen((_) async {
-      await promptError(
-        context,
-        texts.home_background_synchronization_title,
-        Text(
-          texts.home_background_synchronization_message,
-          style: themeData.dialogTheme.contentTextStyle,
-        ),
-        okFunc: () => widget.accountBloc.optimizationWhitelistRequestSink.add(
-          null,
-        ),
-      );
-    });
+    widget.accountBloc.optimizationWhitelistExplainStream.listen(
+      (_) async {
+        await promptError(
+          context,
+          texts.home_background_synchronization_title,
+          Text(
+            texts.home_background_synchronization_message,
+            style: themeData.dialogTheme.contentTextStyle,
+          ),
+          okFunc: () => widget.accountBloc.optimizationWhitelistRequestSink.add(
+            null,
+          ),
+        );
+      },
+    );
   }
 
   void _listenPaymentResults(BuildContext context) {
     final texts = context.texts();
 
-    widget.accountBloc.completedPaymentsStream.listen((fulfilledPayment) async {
-      final paymentHash = fulfilledPayment.paymentHash;
-      print('_listenPaymentResults processing: $paymentHash');
+    widget.accountBloc.completedPaymentsStream.listen(
+      (fulfilledPayment) async {
+        final paymentHash = fulfilledPayment.paymentHash;
+        print('_listenPaymentResults processing: $paymentHash');
 
-      if (!fulfilledPayment.cancelled &&
-          !fulfilledPayment.ignoreGlobalFeedback) {
-        await scrollController.animateTo(
-          scrollController.position.minScrollExtent,
-          duration: const Duration(milliseconds: 10),
-          curve: Curves.ease,
+        if (!fulfilledPayment.cancelled &&
+            !fulfilledPayment.ignoreGlobalFeedback) {
+          await scrollController
+              .animateTo(
+            scrollController.position.minScrollExtent,
+            duration: const Duration(milliseconds: 10),
+            curve: Curves.ease,
+          )
+              .then(
+            (_) async {
+              var action =
+                  fulfilledPayment?.paymentItem?.lnurlPayInfo?.successAction;
+              if (action?.hasTag() == true) {
+                await Future.delayed(const Duration(seconds: 1)).then(
+                  (value) => showLNURLSuccessAction(context, action),
+                );
+              } else {
+                showFlushbar(
+                  context,
+                  messageWidget: SingleChildScrollView(
+                    child: Text(
+                      texts.home_payment_sent,
+                    ),
+                  ),
+                );
+              }
+            },
+          );
+        }
+      },
+      onError: (err) async {
+        var error = err as PaymentError;
+        if (error.ignoreGlobalFeedback) {
+          return;
+        }
+        final settings = await widget.accountBloc.accountSettingsStream.first;
+        final behavior = settings.failedPaymentBehavior;
+        bool prompt = behavior == BugReportBehavior.PROMPT;
+
+        await widget.accountBloc.accountStream.first.then(
+          (accountModel) async {
+            final errorString = error.toDisplayMessage(accountModel.currency);
+            if (error.validationError &&
+                errorString.contains("payment is in transition")) {
+              return;
+            }
+            showFlushbar(context, message: errorString);
+
+            if (!error.validationError) {
+              if (prompt) {
+                await showDialog(
+                  useRootNavigator: false,
+                  context: context,
+                  barrierDismissible: false,
+                  builder: (_) => PaymentFailedReportDialog(
+                    context,
+                    widget.accountBloc,
+                  ),
+                ).then(
+                  (send) async {
+                    if (send) {
+                      var sendAction =
+                          SendPaymentFailureReport(error.traceReport);
+                      widget.accountBloc.userActionsSink.add(sendAction);
+                      await Navigator.push(
+                        context,
+                        createLoaderRoute(
+                          context,
+                          message: texts.home_report_sending,
+                          opacity: 0.8,
+                          action: sendAction.future,
+                        ),
+                      );
+                    }
+                  },
+                );
+              }
+            }
+          },
         );
-
-        var action = fulfilledPayment?.paymentItem?.lnurlPayInfo?.successAction;
-        if (action?.hasTag() == true) {
-          await Future.delayed(const Duration(seconds: 1));
-          showLNURLSuccessAction(context, action);
-        } else {
-          showFlushbar(
-            context,
-            messageWidget: SingleChildScrollView(
-              child: Text(texts.home_payment_sent),
-            ),
-          );
-        }
-      }
-    }, onError: (err) async {
-      var error = err as PaymentError;
-      if (error.ignoreGlobalFeedback) {
-        return;
-      }
-      final settings = await widget.accountBloc.accountSettingsStream.first;
-      final behavior = settings.failedPaymentBehavior;
-      bool prompt = behavior == BugReportBehavior.PROMPT;
-      bool send = behavior == BugReportBehavior.SEND_REPORT;
-
-      final accountModel = await widget.accountBloc.accountStream.first;
-      final errorString = error.toDisplayMessage(accountModel.currency);
-      if (error.validationError &&
-          errorString.contains("payment is in transition")) {
-        return;
-      }
-      showFlushbar(context, message: errorString);
-
-      if (!error.validationError) {
-        if (prompt) {
-          send = await showDialog(
-            useRootNavigator: false,
-            context: context,
-            barrierDismissible: false,
-            builder: (_) => PaymentFailedReportDialog(
-              context,
-              widget.accountBloc,
-            ),
-          );
-        }
-
-        if (send) {
-          var sendAction = SendPaymentFailureReport(error.traceReport);
-          widget.accountBloc.userActionsSink.add(sendAction);
-          await Navigator.push(
-            context,
-            createLoaderRoute(
-              context,
-              message: texts.home_report_sending,
-              opacity: 0.8,
-              action: sendAction.future,
-            ),
-          );
-        }
-      }
-    });
+      },
+    );
   }
 
   List<DrawerItemConfig> _filterItems(List<DrawerItemConfig> items) {

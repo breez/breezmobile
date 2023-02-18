@@ -24,23 +24,29 @@ class SplashPageState extends State<SplashPage> {
   }
 
   Future checkIfFirstRun() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    bool isFirstRun = (prefs.getBool('isFirstRun') ?? true);
-    if (widget._user.registered == null ||
-        widget._user.registered == false ||
-        isFirstRun) {
-      prefs.setBool('isFirstRun', false);
-      _startTime();
-    } else {
-      prefs.setBool('isFirstRun', true);
-      Navigator.of(context).pushReplacementNamed('/');
-    }
+    await SharedPreferences.getInstance().then(
+      (prefs) {
+        bool isFirstRun = (prefs.getBool('isFirstRun') ?? true);
+        if (widget._user.registered == null ||
+            widget._user.registered == false ||
+            isFirstRun) {
+          prefs.setBool('isFirstRun', false);
+          _startTime();
+        } else {
+          prefs.setBool('isFirstRun', true);
+          Navigator.of(context).pushReplacementNamed('/');
+        }
+      },
+    );
   }
 
   _startTime() async {
-    return Timer(const Duration(milliseconds: 3600), () {
-      Navigator.of(context).pushReplacementNamed('/intro');
-    });
+    return Timer(
+      const Duration(milliseconds: 3600),
+      () {
+        Navigator.of(context).pushReplacementNamed('/intro');
+      },
+    );
   }
 
   @override

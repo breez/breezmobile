@@ -401,45 +401,58 @@ class InitialWalkthroughPageState extends State<InitialWalkthroughPage>
       builder: (BuildContext context) {
         return BetaWarningDialog();
       },
-    ).then((approved) {
-      if (approved) {
-        final resetSecurity = ResetSecurityModel();
-        widget._registrationBloc.userActionsSink.add(resetSecurity);
-        resetSecurity.future.then((_) {
-          _proceedToRegister();
-        }).catchError((err) {
-          promptError(
-            context,
-            texts.initial_walk_through_error_internal,
-            Text(
-              err.toString(),
-              style: themeData.dialogTheme.contentTextStyle,
-            ),
+    ).then(
+      (approved) {
+        if (approved) {
+          final resetSecurity = ResetSecurityModel();
+          widget._registrationBloc.userActionsSink.add(resetSecurity);
+          resetSecurity.future.then((_) {
+            _proceedToRegister();
+          }).catchError(
+            (err) {
+              promptError(
+                context,
+                texts.initial_walk_through_error_internal,
+                Text(
+                  err.toString(),
+                  style: themeData.dialogTheme.contentTextStyle,
+                ),
+              );
+            },
           );
-        });
-      }
-    });
+        }
+      },
+    );
   }
 
   void _restoreFromBackup(BuildContext context) {
-    widget._backupBloc.backupSettingsStream.first.then((settings) async {
-      final providers = BackupSettings.availableBackupProviders();
-      var backupProvider = settings.backupProvider;
-      if (backupProvider == null || providers.length > 1) {
-        backupProvider = await showDialog(
-          useRootNavigator: false,
-          context: context,
-          builder: (_) => BackupProviderSelectionDialog(
-            backupBloc: widget._backupBloc,
-            restore: true,
-          ),
-        );
-      }
-      if (backupProvider != null) {
-        // Restore then start lightninglib
-        Navigator.push(context, createLoaderRoute(context));
-        widget._backupBloc.restoreRequestSink.add(null);
-      }
-    });
+    widget._backupBloc.backupSettingsStream.first.then(
+      (settings) async {
+        final providers = BackupSettings.availableBackupProviders();
+        var backupProvider = settings.backupProvider;
+        if (backupProvider == null || providers.length > 1) {
+          await showDialog(
+            useRootNavigator: false,
+            context: context,
+            builder: (_) => BackupProviderSelectionDialog(
+              backupBloc: widget._backupBloc,
+              restore: true,
+            ),
+          ).then(
+            (backupProvider) {
+              if (backupProvider != null) {
+                // Restore then start lightninglib
+                Navigator.push(context, createLoaderRoute(context));
+                widget._backupBloc.restoreRequestSink.add(null);
+              }
+            },
+          );
+        } else if (backupProvider != null) {
+          // Restore then start lightninglib
+          Navigator.push(context, createLoaderRoute(context));
+          widget._backupBloc.restoreRequestSink.add(null);
+        }
+      },
+    );
   }
 }

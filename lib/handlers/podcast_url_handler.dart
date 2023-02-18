@@ -78,43 +78,49 @@ Future handleDeeplink(
       // Wait for the podcast details to load
       await podcastBloc.details
           .firstWhere((blocState) => blocState is! BlocLoadingState)
-          .then((blocState) async {
-        if (blocState is BlocErrorState) {
-          throw texts.handler_podcast_error_load_episode;
-        } else if (blocState is BlocPopulatedState) {
-          // Retrieve episode list and play matching episode
-          var episodeList = await podcastBloc.episodes
-              .firstWhere((episodeList) => episodeList.isNotEmpty);
-          var episode = episodeList.firstWhere(
-            (episode) => episode.guid == episodeID,
-            orElse: () => null,
-          );
-          if (episode != null) {
-            final audioBloc = Provider.of<AudioBloc>(
-              context,
-              listen: false,
+          .then(
+        (blocState) async {
+          if (blocState is BlocErrorState) {
+            throw texts.handler_podcast_error_load_episode;
+          } else if (blocState is BlocPopulatedState) {
+            // Retrieve episode list and play matching episode
+            await podcastBloc.episodes
+                .firstWhere((episodeList) => episodeList.isNotEmpty)
+                .then(
+              (episodeList) async {
+                var episode = episodeList.firstWhere(
+                  (episode) => episode.guid == episodeID,
+                  orElse: () => null,
+                );
+                if (episode != null) {
+                  final audioBloc = Provider.of<AudioBloc>(
+                    context,
+                    listen: false,
+                  );
+                  final settingsBloc = Provider.of<SettingsBloc>(
+                    context,
+                    listen: false,
+                  );
+                  audioBloc.play(episode);
+                  final settings = settingsBloc.currentSettings;
+                  if (settings.autoOpenNowPlaying) {
+                    Navigator.pushAndRemoveUntil(
+                      context,
+                      MaterialPageRoute<void>(
+                        builder: (context) => NowPlaying(),
+                        fullscreenDialog: false,
+                      ),
+                      ModalRoute.withName('/'),
+                    );
+                  }
+                } else {
+                  await _navigateToPodcast(context, podcastURL);
+                }
+              },
             );
-            final settingsBloc = Provider.of<SettingsBloc>(
-              context,
-              listen: false,
-            );
-            audioBloc.play(episode);
-            final settings = settingsBloc.currentSettings;
-            if (settings.autoOpenNowPlaying) {
-              Navigator.pushAndRemoveUntil(
-                context,
-                MaterialPageRoute<void>(
-                  builder: (context) => NowPlaying(),
-                  fullscreenDialog: false,
-                ),
-                ModalRoute.withName('/'),
-              );
-            }
-          } else {
-            await _navigateToPodcast(context, podcastURL);
           }
-        }
-      });
+        },
+      );
     } catch (e) {
       throw e.toString();
     }

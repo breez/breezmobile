@@ -125,8 +125,9 @@ class _SetAdminPasswordState extends State<SetAdminPasswordPage> {
           if (_formKey.currentState.validate()) {
             final action = SetAdminPassword(_passwordController.text);
             userProfileBloc.userActionsSink.add(action);
-            await action.future;
-            Navigator.of(context).pop();
+            await action.future.then(
+              (_) => Navigator.of(context).pop(),
+            );
           }
         },
       ),

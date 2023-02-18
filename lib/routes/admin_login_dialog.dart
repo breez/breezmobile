@@ -29,6 +29,7 @@ Future protectAdminRoute(
   BreezUserModel user,
   String route,
 ) async {
+  final navigator = Navigator.of(context);
   if (user.appMode == AppMode.pos && user.hasAdminPassword) {
     final texts = context.texts();
     bool loggedIn = await showDialog(
@@ -40,7 +41,7 @@ Future protectAdminRoute(
       return Future.error(texts.admin_login_dialog_error_authenticate);
     }
   }
-  Navigator.of(context).pushNamed(route);
+  navigator.pushNamed(route);
 }
 
 class _AdminLoginDialog extends StatefulWidget {
@@ -123,9 +124,11 @@ class _AdminLoginDialogState extends State<_AdminLoginDialog> {
                     labelText: texts.admin_login_dialog_password_label,
                     suffixIcon: IconButton(
                       icon: const Icon(Icons.remove_red_eye),
-                      onPressed: () => setState(() {
-                        _passwordObscured = !_passwordObscured;
-                      }),
+                      onPressed: () => setState(
+                        () {
+                          _passwordObscured = !_passwordObscured;
+                        },
+                      ),
                     ),
                   ),
                   textCapitalization: TextCapitalization.words,
@@ -153,11 +156,15 @@ class _AdminLoginDialogState extends State<_AdminLoginDialog> {
               try {
                 var action = VerifyAdminPassword(_passwordController.text);
                 userProfileBloc.userActionsSink.add(action);
-                bool verified = await action.future;
-                if (!verified) {
-                  throw texts.admin_login_dialog_error_password_incorrect;
-                }
-                Navigator.of(context).pop(true);
+                await action.future;
+                await action.future.then(
+                  (verified) {
+                    if (!verified) {
+                      throw texts.admin_login_dialog_error_password_incorrect;
+                    }
+                    Navigator.of(context).pop(true);
+                  },
+                );
               } catch (err) {
                 setState(() {
                   _lastError = err.toString();

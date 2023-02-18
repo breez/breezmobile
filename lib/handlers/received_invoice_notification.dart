@@ -36,45 +36,59 @@ class InvoiceNotificationsHandler {
     // show payment request dialog for decoded requests
     _receivedInvoicesStream
         .where((payreq) => payreq != null && !_handlingRequest)
-        .listen((payreq) async {
-      var account = await _accountBloc.accountStream
-          .firstWhere((a) => !a.initial, orElse: () => null);
-      if (account == null || !account.connected) {
-        return;
-      }
-      if (!payreq.loaded) {
-        _setLoading(true);
-        return;
-      }
-      var user = await _userProfileBloc.userStream.firstWhere((u) => u != null);
-      _setLoading(false);
-      _handlingRequest = true;
+        .listen(
+      (payreq) async {
+        var account = await _accountBloc.accountStream
+            .firstWhere((a) => !a.initial, orElse: () => null);
+        if (account == null || !account.connected) {
+          return;
+        }
+        if (!payreq.loaded) {
+          _setLoading(true);
+          return;
+        }
+        await _userProfileBloc.userStream.firstWhere((u) => u != null).then(
+          (user) {
+            _setLoading(false);
+            _handlingRequest = true;
 
-      // Close the drawer before showing payment request dialog
-      if (scaffoldController.currentState.isDrawerOpen) {
-        Navigator.pop(_context);
-      }
+            // Close the drawer before showing payment request dialog
+            if (scaffoldController.currentState.isDrawerOpen) {
+              Navigator.pop(_context);
+            }
 
-      protectAdminAction(_context, user, () {
-        return showDialog(
-            useRootNavigator: false,
-            context: _context,
-            barrierDismissible: false,
-            builder: (_) => paymentRequest.PaymentRequestDialog(
+            protectAdminAction(
+              _context,
+              user,
+              () {
+                return showDialog(
+                  useRootNavigator: false,
+                  context: _context,
+                  barrierDismissible: false,
+                  builder: (_) => paymentRequest.PaymentRequestDialog(
                     _context,
                     _accountBloc,
                     payreq,
                     firstPaymentItemKey,
-                    scrollController, () {
-                  _handlingRequest = false;
-                }));
-      });
-    }).onError((error) {
-      _setLoading(false);
-      if (error is PaymentRequestError) {
-        showFlushbar(_context, message: error.message);
-      }
-    });
+                    scrollController,
+                    () {
+                      _handlingRequest = false;
+                    },
+                  ),
+                );
+              },
+            );
+          },
+        );
+      },
+    ).onError(
+      (error) {
+        _setLoading(false);
+        if (error is PaymentRequestError) {
+          showFlushbar(_context, message: error.message);
+        }
+      },
+    );
   }
 
   _setLoading(bool visible) {

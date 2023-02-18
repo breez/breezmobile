@@ -122,13 +122,17 @@ class SelectLSPPageState extends State<SelectLSPPage> {
                       itemBuilder: (BuildContext context, int index) {
                         var selected = _selectedLSP?.lspID == lsps[index].lspID;
                         return ListTile(
-                          contentPadding: const EdgeInsets.symmetric(horizontal: 0.0),
+                          contentPadding: const EdgeInsets.symmetric(
+                            horizontal: 0.0,
+                          ),
                           selected: selected,
                           trailing: selected ? const Icon(Icons.check) : null,
                           title: Text(lsps[index].name),
-                          onTap: () => setState(() {
-                            _selectedLSP = lsps[index];
-                          }),
+                          onTap: () => setState(
+                            () {
+                              _selectedLSP = lsps[index];
+                            },
+                          ),
                         );
                       },
                     ),
@@ -162,9 +166,10 @@ class SelectLSPPageState extends State<SelectLSPPage> {
       return SingleButtonBottomBar(
         text: texts.account_page_activation_action_select,
         onPressed: () async {
+          final navigator = Navigator.of(context);
           ConnectLSP connectAction;
           if (url?.isNotEmpty == true) {
-            final lnurl = await Navigator.of(context).push<String>(
+            final lnurl = await navigator.push<String>(
               FadeInRoute(
                 builder: (_) => LSPWebViewPage(
                   url,
@@ -181,7 +186,7 @@ class SelectLSPPageState extends State<SelectLSPPage> {
 
           if (connectAction != null) {
             widget.lstBloc.actionsSink.add(connectAction);
-            Navigator.of(context).pop();
+            navigator.pop();
           }
         },
       );

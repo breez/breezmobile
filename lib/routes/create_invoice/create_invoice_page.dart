@@ -73,11 +73,15 @@ class CreateInvoicePageState extends State<CreateInvoicePage> {
         Navigator.pop(context, texts.invoice_payment_success);
       });
       if (widget.lnurlWithdraw != null) {
-        accBloc.accountStream.first.then((account) {
-          setState(() {
-            applyWithdrawFetchResponse(widget.lnurlWithdraw, account);
-          });
-        });
+        accBloc.accountStream.first.then(
+          (account) {
+            setState(
+              () {
+                applyWithdrawFetchResponse(widget.lnurlWithdraw, account);
+              },
+            );
+          },
+        );
       }
 
       _isInit = true;
@@ -233,7 +237,8 @@ class CreateInvoicePageState extends State<CreateInvoicePage> {
                             validatorFn: validatePayment,
                             style: theme.FieldTextStyle.textStyle,
                           ),
-                          if (_withdrawFetchResponse != null && !_withdrawFetchResponse.isFixedAmount) ...[
+                          if (_withdrawFetchResponse != null &&
+                              !_withdrawFetchResponse.isFixedAmount) ...[
                             Padding(
                               padding: const EdgeInsets.only(top: 8),
                               child: Text(
@@ -417,27 +422,30 @@ class CreateInvoicePageState extends State<CreateInvoicePage> {
 
   Future _scanBarcode(BuildContext context, AccountModel account) async {
     final texts = context.texts();
-    final navigator = Navigator.of(context);
     final themeData = Theme.of(context);
 
     TransparentPageRoute loaderRoute;
     try {
       FocusScope.of(context).requestFocus(FocusNode());
-      String barcode = await Navigator.pushNamed<String>(context, "/qr_scan");
-      if (barcode == null) {
-        return;
-      }
-      if (barcode.isEmpty) {
-        showFlushbar(context, message: texts.invoice_qr_code_not_detected);
-        return;
-      }
-      loaderRoute = createLoaderRoute(context);
-      navigator.push(loaderRoute);
-      await _handleLNUrlWithdraw(context, account, barcode);
-      navigator.removeRoute(loaderRoute);
+      await Navigator.pushNamed<String>(context, "/qr_scan").then(
+        (barcode) async {
+          if (barcode == null) {
+            return;
+          }
+          if (barcode.isEmpty) {
+            showFlushbar(context, message: texts.invoice_qr_code_not_detected);
+            return;
+          }
+          loaderRoute = createLoaderRoute(context);
+          Navigator.of(context).push(loaderRoute);
+          await _handleLNUrlWithdraw(context, account, barcode).then(
+            (_) => Navigator.of(context).removeRoute(loaderRoute),
+          );
+        },
+      );
     } catch (e) {
       if (loaderRoute != null) {
-        navigator.removeRoute(loaderRoute);
+        Navigator.of(context).removeRoute(loaderRoute);
       }
       promptError(
         context,
@@ -499,21 +507,33 @@ class CreateInvoicePageState extends State<CreateInvoicePage> {
     navigator.pop();
     var currentRoute = ModalRoute.of(navigator.context);
     Widget dialog = _withdrawFetchResponse != null
-        ? LNURlWithdrawDialog(invoiceBloc, accountBloc, lnurlBloc, (result) {
-            onPaymentFinished(result, currentRoute, navigator);
-          })
-        : QrCodeDialog(context, invoiceBloc, accountBloc, (result) {
-            onPaymentFinished(result, currentRoute, navigator);
-          });
+        ? LNURlWithdrawDialog(
+            invoiceBloc,
+            accountBloc,
+            lnurlBloc,
+            (result) {
+              onPaymentFinished(result, currentRoute, navigator);
+            },
+          )
+        : QrCodeDialog(
+            context,
+            invoiceBloc,
+            accountBloc,
+            (result) {
+              onPaymentFinished(result, currentRoute, navigator);
+            },
+          );
     return _bgService.runAsTask(
-        showDialog(
-          useRootNavigator: false,
-          context: context,
-          barrierDismissible: false,
-          builder: (_) => dialog,
-        ), () {
-      log.info("waiting for payment background task finished");
-    });
+      showDialog(
+        useRootNavigator: false,
+        context: context,
+        barrierDismissible: false,
+        builder: (_) => dialog,
+      ),
+      () {
+        log.info("waiting for payment background task finished");
+      },
+    );
   }
 
   onPaymentFinished(
@@ -523,9 +543,13 @@ class CreateInvoicePageState extends State<CreateInvoicePage> {
   ) {
     if (result == true) {
       if (currentRoute.isCurrent) {
-        navigator.push(TransparentPageRoute((ctx) {
-          return withBreezTheme(ctx, const SuccessfulPaymentRoute());
-        }));
+        navigator.push(
+          TransparentPageRoute(
+            (ctx) {
+              return withBreezTheme(ctx, const SuccessfulPaymentRoute());
+            },
+          ),
+        );
       }
     } else {
       if (result is String) {

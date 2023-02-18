@@ -67,7 +67,8 @@ class PosSettingsPageState extends State<_PosSettingsPage> {
     super.initState();
     final user = widget.currentProfile;
     _timeoutValue = user.cancellationTimeoutValue;
-    _cancellationTimeoutController.text = user.cancellationTimeoutValue.toStringAsFixed(0);
+    _cancellationTimeoutController.text =
+        user.cancellationTimeoutValue.toStringAsFixed(0);
     _addressLine1Controller.text = user.businessAddress?.addressLine1 ?? "";
     _addressLine2Controller.text = user.businessAddress?.addressLine2 ?? "";
     _defaultNoteController.text = user.defaultPosNote;
@@ -193,9 +194,10 @@ class PosSettingsPageState extends State<_PosSettingsPage> {
       _buildEnablePasswordTile(context, userProfileBloc, user),
     ];
     if (user.hasAdminPassword) {
-      widgets
-        ..add(const Divider())
-        ..add(_buildSetPasswordTile(context));
+      widgets.addAll([
+        const Divider(),
+        _buildSetPasswordTile(context),
+      ]);
     }
     return widgets;
   }
@@ -271,47 +273,52 @@ class PosSettingsPageState extends State<_PosSettingsPage> {
       contentPadding: const EdgeInsets.fromLTRB(24.0, 16.0, 24.0, 8.0),
       cancelText: texts.pos_settings_import_action_no,
       okText: texts.pos_settings_import_action_yes,
-    ).then((acknowledged) async {
-      if (acknowledged) {
-        await FilePicker.platform.clearTemporaryFiles();
-        FilePickerResult result = await FilePicker.platform.pickFiles();
-        if (result == null) {
-          return;
-        }
-        File importFile = File(result.files.single.path);
-        String fileExtension = path.extension(importFile.path);
-        if (fileExtension == ".csv") {
-          var action = ImportItems(importFile);
-          posCatalogBloc.actionsSink.add(action);
-          var loaderRoute = createLoaderRoute(context);
-          navigator.push(loaderRoute);
-          action.future.then((_) {
-            navigator.removeRoute(loaderRoute);
-            navigator.pop();
-            showFlushbar(
-              context,
-              message: texts.pos_settings_import_success_message,
-            );
-          }).catchError((err) {
-            navigator.removeRoute(loaderRoute);
-            String errorMessage;
-            if (err == PosCatalogBloc.InvalidFile) {
-              errorMessage = texts.pos_settings_import_error_invalid_file;
-            } else if (err == PosCatalogBloc.InvalidData) {
-              errorMessage = texts.pos_settings_import_error_invalid_data;
-            } else {
-              errorMessage = texts.pos_settings_import_error_generic;
-            }
-            showFlushbar(context, message: errorMessage);
-          });
-        } else {
-          showFlushbar(
-            context,
-            message: texts.pos_settings_import_select_message,
+    ).then(
+      (acknowledged) async {
+        if (acknowledged) {
+          await FilePicker.platform.clearTemporaryFiles();
+          await FilePicker.platform.pickFiles().then(
+            (result) {
+              if (result == null) {
+                return;
+              }
+              File importFile = File(result.files.single.path);
+              String fileExtension = path.extension(importFile.path);
+              if (fileExtension == ".csv") {
+                var action = ImportItems(importFile);
+                posCatalogBloc.actionsSink.add(action);
+                var loaderRoute = createLoaderRoute(context);
+                navigator.push(loaderRoute);
+                action.future.then((_) {
+                  navigator.removeRoute(loaderRoute);
+                  navigator.pop();
+                  showFlushbar(
+                    context,
+                    message: texts.pos_settings_import_success_message,
+                  );
+                }).catchError((err) {
+                  navigator.removeRoute(loaderRoute);
+                  String errorMessage;
+                  if (err == PosCatalogBloc.InvalidFile) {
+                    errorMessage = texts.pos_settings_import_error_invalid_file;
+                  } else if (err == PosCatalogBloc.InvalidData) {
+                    errorMessage = texts.pos_settings_import_error_invalid_data;
+                  } else {
+                    errorMessage = texts.pos_settings_import_error_generic;
+                  }
+                  showFlushbar(context, message: errorMessage);
+                });
+              } else {
+                showFlushbar(
+                  context,
+                  message: texts.pos_settings_import_select_message,
+                );
+              }
+            },
           );
         }
-      }
-    });
+      },
+    );
   }
 
   Future _exportItems(
@@ -406,39 +413,46 @@ class PosSettingsPageState extends State<_PosSettingsPage> {
   }) async {
     final texts = context.texts();
     final backupBloc = AppBlocsProvider.of<BackupBloc>(context);
-    final backupState = await backupBloc.backupStateStream.first
-        .onError((error, stackTrace) => null);
+    await backupBloc.backupStateStream.first
+        .onError((error, stackTrace) => null)
+        .then(
+      (backupState) async {
+        if (backupState?.lastBackupTime == null) {
+          await promptError(
+            context,
+            texts.pos_settings_manager_password_error_title,
+            Text(
+              texts.pos_settings_manager_password_error_message,
+            ),
+          );
+          return;
+        }
 
-    if (backupState?.lastBackupTime == null) {
-      await promptError(
-        context,
-        texts.pos_settings_manager_password_error_title,
-        Text(
-          texts.pos_settings_manager_password_error_message,
-        ),
-      );
-      return;
-    }
-
-    bool confirmed = true;
-    if (isNew) {
-      confirmed = await promptAreYouSure(
-        context,
-        texts.pos_settings_manager_password_title,
-        Text(
-          texts.pos_settings_manager_password_message,
-        ),
-      );
-    }
-    if (confirmed) {
-      Navigator.of(context).push(FadeInRoute(
-        builder: (_) => SetAdminPasswordPage(
-          submitAction: isNew
-              ? texts.pos_settings_manager_password_action_create
-              : texts.pos_settings_manager_password_action_change,
-        ),
-      ));
-    }
+        if (isNew) {
+          await promptAreYouSure(
+            context,
+            texts.pos_settings_manager_password_title,
+            Text(
+              texts.pos_settings_manager_password_message,
+            ),
+          ).then(
+            (confirmed) {
+              if (confirmed) {
+                Navigator.of(context).push(
+                  FadeInRoute(
+                    builder: (_) => SetAdminPasswordPage(
+                      submitAction: isNew
+                          ? texts.pos_settings_manager_password_action_create
+                          : texts.pos_settings_manager_password_action_change,
+                    ),
+                  ),
+                );
+              }
+            },
+          );
+        }
+      },
+    );
   }
 
   _resetAdminPassword(UserProfileBloc userProfileBloc) {

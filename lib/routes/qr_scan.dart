@@ -107,25 +107,29 @@ class ImagePickerButton extends StatelessWidget {
       ),
       onPressed: () async {
         final picker = ImagePicker();
-        XFile pickedFile = await picker
-            .pickImage(source: ImageSource.gallery)
-            .catchError((err) {
-          log.warning("Failed to pick image", err);
-        });
+        XFile pickedFile =
+            await picker.pickImage(source: ImageSource.gallery).catchError(
+          (err) {
+            log.warning("Failed to pick image", err);
+          },
+        );
         log.info("Picked image: ${pickedFile.path}");
         final File file = File(pickedFile.path);
         try {
-          final found = await cameraController.analyzeImage(file.path);
-          if (!found) {
-            log.info("No QR code found in image");
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
-                content: Text(texts.qr_scan_gallery_failed),
-              ),
-            );
-          } else {
-            log.info("QR code found in image");
-          }
+          await cameraController.analyzeImage(file.path).then(
+            (found) {
+              if (!found) {
+                log.info("No QR code found in image");
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                    content: Text(texts.qr_scan_gallery_failed),
+                  ),
+                );
+              } else {
+                log.info("QR code found in image");
+              }
+            },
+          );
         } catch (err) {
           log.warning("Failed to analyze image", err);
         }
@@ -146,19 +150,25 @@ class QRScanCancelButton extends StatelessWidget {
     return Center(
       child: Container(
         decoration: BoxDecoration(
-            borderRadius: const BorderRadius.all(Radius.circular(12.0)),
-            border: Border.all(color: Colors.white.withOpacity(0.8))),
+          borderRadius: const BorderRadius.all(
+            Radius.circular(12.0),
+          ),
+          border: Border.all(
+            color: Colors.white.withOpacity(0.8),
+          ),
+        ),
         child: TextButton(
-            style: TextButton.styleFrom(
-              padding: const EdgeInsets.only(right: 35, left: 35),
-            ),
-            onPressed: () {
-              Navigator.of(context).pop();
-            },
-            child: Text(
-              texts.qr_scan_action_cancel,
-              style: const TextStyle(color: Colors.white),
-            )),
+          style: TextButton.styleFrom(
+            padding: const EdgeInsets.only(right: 35, left: 35),
+          ),
+          onPressed: () {
+            Navigator.of(context).pop();
+          },
+          child: Text(
+            texts.qr_scan_action_cancel,
+            style: const TextStyle(color: Colors.white),
+          ),
+        ),
       ),
     );
   }

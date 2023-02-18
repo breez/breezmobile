@@ -27,17 +27,19 @@ class LNURLHandler {
       } else {
         return executeLNURLResponse(context, lnurlBloc, response);
       }
-    }).onError((err) async {
-      final errorMessage = _getErrorMessage(texts, err);
-      promptError(
-        context,
-        texts.handler_lnurl_error_link,
-        Text(
-          texts.handler_lnurl_error_process(errorMessage),
-          style: themeData.dialogTheme.contentTextStyle,
-        ),
-      );
-    });
+    }).onError(
+      (err) async {
+        final errorMessage = _getErrorMessage(texts, err);
+        promptError(
+          context,
+          texts.handler_lnurl_error_link,
+          Text(
+            texts.handler_lnurl_error_process(errorMessage),
+            style: themeData.dialogTheme.contentTextStyle,
+          ),
+        );
+      },
+    );
   }
 
   String _getErrorMessage(BreezTranslations texts, Object error) {
@@ -56,7 +58,6 @@ class LNURLHandler {
   ) {
     final texts = context.texts();
     final themeData = Theme.of(context);
-    final navigator = Navigator.of(context);
 
     if (response.runtimeType == ChannelFetchResponse) {
       _openLNURLChannel(context, lnurlBloc, response);
@@ -65,12 +66,14 @@ class LNURLHandler {
         return route.settings.name == "/";
       });
 
-      navigator.push(FadeInRoute(
-        builder: (_) => withBreezTheme(
-          context,
-          CreateInvoicePage(lnurlWithdraw: response),
+      Navigator.of(context).push(
+        FadeInRoute(
+          builder: (_) => withBreezTheme(
+            context,
+            CreateInvoicePage(lnurlWithdraw: response),
+          ),
         ),
-      ));
+      );
     } else if (response is AuthFetchResponse) {
       Navigator.popUntil(context, (route) {
         return route.settings.name == "/";
@@ -96,34 +99,43 @@ class LNURLHandler {
             ],
           ),
         ),
-      ).then((value) {
-        if (value == true) {
-          var loaderRoute = createLoaderRoute(context);
-          navigator.push(loaderRoute);
-          var action = Login(response);
-          lnurlBloc.actionsSink.add(action);
-          action.future.catchError((err) {
-            promptError(
-              context,
-              texts.handler_lnurl_login_error_title,
-              Text(
-                texts.handler_lnurl_login_error_message(err.toString()),
-              ),
+      ).then(
+        (value) {
+          if (value == true) {
+            var loaderRoute = createLoaderRoute(context);
+            Navigator.of(context).push(loaderRoute);
+            var action = Login(response);
+            lnurlBloc.actionsSink.add(action);
+            action.future.catchError((err) {
+              promptError(
+                context,
+                texts.handler_lnurl_login_error_title,
+                Text(
+                  texts.handler_lnurl_login_error_message(err.toString()),
+                ),
+              );
+            }).whenComplete(
+              () => Navigator.of(context).removeRoute(loaderRoute),
             );
-          }).whenComplete(() => navigator.removeRoute(loaderRoute));
-        }
-      });
+          }
+        },
+      );
     } else if (response is PayFetchResponse) {
-      Navigator.popUntil(context, (route) {
-        return route.settings.name == "/";
-      });
+      Navigator.popUntil(
+        context,
+        (route) {
+          return route.settings.name == "/";
+        },
+      );
 
-      navigator.push(FadeInRoute(
-        builder: (_) => withBreezTheme(
-          context,
-          LNURLFetchInvoicePage(response),
+      Navigator.of(context).push(
+        FadeInRoute(
+          builder: (_) => withBreezTheme(
+            context,
+            LNURLFetchInvoicePage(response),
+          ),
         ),
-      ));
+      );
     } else {
       throw texts.handler_lnurl_login_error_unsupported;
     }
@@ -136,7 +148,6 @@ class LNURLHandler {
   ) {
     final texts = context.texts();
     final themeData = Theme.of(context);
-    final navigator = Navigator.of(context);
 
     promptAreYouSure(
       context,
@@ -144,50 +155,57 @@ class LNURLHandler {
       Text(texts.handler_lnurl_open_channel_message(
         Uri.parse(response.callback).host,
       )),
-    ).then((value) async {
-      if (value) {
-        var synced = await showDialog(
-          context: context,
-          useRootNavigator: false,
-          barrierDismissible: false,
-          builder: (BuildContext context) {
-            return AlertDialog(
-              content: const SyncProgressDialog(closeOnSync: true),
-              actions: [
-                TextButton(
-                  child: Text(
-                    texts.handler_lnurl_open_channel_action_cancel,
-                    style: themeData.primaryTextTheme.labelLarge,
+    ).then(
+      (value) async {
+        if (value) {
+          await showDialog(
+            context: context,
+            useRootNavigator: false,
+            barrierDismissible: false,
+            builder: (BuildContext context) {
+              return AlertDialog(
+                content: const SyncProgressDialog(closeOnSync: true),
+                actions: [
+                  TextButton(
+                    child: Text(
+                      texts.handler_lnurl_open_channel_action_cancel,
+                      style: themeData.primaryTextTheme.labelLarge,
+                    ),
+                    onPressed: () => Navigator.of(context).pop(false),
                   ),
-                  onPressed: () => navigator.pop(false),
-                ),
-              ],
-            );
-          },
-        );
-        if (synced == true) {
-          var loaderRoute = createLoaderRoute(context);
-          navigator.push(loaderRoute);
-          var action = OpenChannel(
-            response.uri,
-            response.callback,
-            response.k1,
+                ],
+              );
+            },
+          ).then(
+            (synced) {
+              if (synced == true) {
+                var loaderRoute = createLoaderRoute(context);
+                Navigator.of(context).push(loaderRoute);
+                var action = OpenChannel(
+                  response.uri,
+                  response.callback,
+                  response.k1,
+                );
+                lnurlBloc.actionsSink.add(action);
+                action.future.catchError((err) {
+                  promptError(
+                    context,
+                    texts.handler_lnurl_open_channel_error_title,
+                    Text(
+                      texts.handler_lnurl_open_channel_error_message(
+                        err.toString(),
+                      ),
+                    ),
+                  );
+                }).whenComplete(
+                  () => Navigator.of(context).removeRoute(loaderRoute),
+                );
+              }
+            },
           );
-          lnurlBloc.actionsSink.add(action);
-          action.future.catchError((err) {
-            promptError(
-              context,
-              texts.handler_lnurl_open_channel_error_title,
-              Text(
-                texts.handler_lnurl_open_channel_error_message(
-                  err.toString(),
-                ),
-              ),
-            );
-          }).whenComplete(() => navigator.removeRoute(loaderRoute));
         }
-      }
-    });
+      },
+    );
   }
 
   _setLoading(BuildContext context, bool visible) {

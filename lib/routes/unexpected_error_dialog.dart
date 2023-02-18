@@ -38,29 +38,37 @@ void listenUnexpectedError(
             ),
             if (torEnabled) ...<TextSpan>[
               TextSpan(
-                  text: texts.unexpected_error_bullet,
-                  style: Theme.of(context).dialogTheme.contentTextStyle),
+                text: texts.unexpected_error_bullet,
+                style: Theme.of(context).dialogTheme.contentTextStyle,
+              ),
               TextSpan(
-                  text: '${texts.unexpected_error_deactivate_tor} ',
-                  style: theme.blueLinkStyle,
-                  recognizer: TapGestureRecognizer()
-                    ..onTap = () async {
-                      _promptForRestart(context).then((ok) async {
+                text: '${texts.unexpected_error_deactivate_tor} ',
+                style: theme.blueLinkStyle,
+                recognizer: TapGestureRecognizer()
+                  ..onTap = () async {
+                    _promptForRestart(context).then(
+                      (ok) async {
                         if (ok) {
                           await ServiceInjector()
                               .breezBridge
                               .setTorActive(false);
                           ResetNetwork resetAction = ResetNetwork();
                           accountBloc.userActionsSink.add(resetAction);
-                          await resetAction.future;
-                          Navigator.pop(context);
-                          accountBloc.userActionsSink.add(RestartDaemon());
+                          await resetAction.future.then(
+                            (_) {
+                              Navigator.pop(context);
+                              accountBloc.userActionsSink.add(RestartDaemon());
+                            },
+                          );
                         }
-                      });
-                    }),
+                      },
+                    );
+                  },
+              ),
               TextSpan(
-                  text: "Tor\n",
-                  style: Theme.of(context).dialogTheme.contentTextStyle)
+                text: "Tor\n",
+                style: Theme.of(context).dialogTheme.contentTextStyle,
+              )
             ],
             TextSpan(
               text: texts.unexpected_error_bullet,
@@ -71,14 +79,16 @@ void listenUnexpectedError(
               style: theme.blueLinkStyle,
               recognizer: TapGestureRecognizer()
                 ..onTap = () async {
-                  _promptForRestart(context).then((ok) async {
-                    if (ok) {
-                      ResetChainService resetAction = ResetChainService();
-                      accountBloc.userActionsSink.add(resetAction);
-                      await resetAction.future;
-                      exit(0);
-                    }
-                  });
+                  _promptForRestart(context).then(
+                    (ok) async {
+                      if (ok) {
+                        ResetChainService resetAction = ResetChainService();
+                        accountBloc.userActionsSink.add(resetAction);
+                        await resetAction.future;
+                        exit(0);
+                      }
+                    },
+                  );
                 },
             ),
             TextSpan(
@@ -96,9 +106,12 @@ void listenUnexpectedError(
                 ..onTap = () async {
                   ResetNetwork resetAction = ResetNetwork();
                   accountBloc.userActionsSink.add(resetAction);
-                  await resetAction.future;
-                  Navigator.pop(context);
-                  accountBloc.userActionsSink.add(RestartDaemon());
+                  await resetAction.future.then(
+                    (_) {
+                      Navigator.pop(context);
+                      accountBloc.userActionsSink.add(RestartDaemon());
+                    },
+                  );
                 },
             ),
             TextSpan(

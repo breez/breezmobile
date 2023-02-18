@@ -163,40 +163,42 @@ class EnterPaymentInfoDialogState extends State<EnterPaymentInfoDialog> {
     ];
 
     if (_paymentInfoController.text.isNotEmpty) {
-      actions.add(SimpleDialogOption(
-        onPressed: (() async {
-          if (_formKey.currentState.validate()) {
-            Navigator.of(context).pop();
-            var nodeID = parseNodeId(_paymentInfoController.text);
-            if (nodeID != null) {
-              Navigator.of(context).push(FadeInRoute(
-                builder: (_) => SpontaneousPaymentPage(
-                  nodeID,
-                  widget.firstPaymentItemKey,
-                ),
-              ));
-              return;
-            }
+      actions.add(
+        SimpleDialogOption(
+          onPressed: (() async {
+            if (_formKey.currentState.validate()) {
+              Navigator.of(context).pop();
+              var nodeID = parseNodeId(_paymentInfoController.text);
+              if (nodeID != null) {
+                Navigator.of(context).push(FadeInRoute(
+                  builder: (_) => SpontaneousPaymentPage(
+                    nodeID,
+                    widget.firstPaymentItemKey,
+                  ),
+                ));
+                return;
+              }
 
-            final lightningAddress = parseLightningAddress(
-              _paymentInfoController.text,
-            );
-            if (lightningAddress != null) {
-              widget.lnurlBloc.lnurlInputSink.add(lightningAddress);
-              return;
-            }
+              final lightningAddress = parseLightningAddress(
+                _paymentInfoController.text,
+              );
+              if (lightningAddress != null) {
+                widget.lnurlBloc.lnurlInputSink.add(lightningAddress);
+                return;
+              }
 
-            if (_decodeInvoice(_paymentInfoController.text) != null) {
-              widget.invoiceBloc.decodeInvoiceSink
-                  .add(_paymentInfoController.text);
+              if (_decodeInvoice(_paymentInfoController.text) != null) {
+                widget.invoiceBloc.decodeInvoiceSink
+                    .add(_paymentInfoController.text);
+              }
             }
-          }
-        }),
-        child: Text(
-          texts.payment_info_dialog_action_approve,
-          style: themeData.primaryTextTheme.labelLarge,
+          }),
+          child: Text(
+            texts.payment_info_dialog_action_approve,
+            style: themeData.primaryTextTheme.labelLarge,
+          ),
         ),
-      ));
+      );
     }
     return actions;
   }
@@ -205,21 +207,24 @@ class EnterPaymentInfoDialogState extends State<EnterPaymentInfoDialog> {
     final texts = context.texts();
 
     FocusScope.of(context).requestFocus(FocusNode());
-    String barcode = await Navigator.pushNamed<String>(context, "/qr_scan");
-    if (barcode == null) {
-      return;
-    }
-    if (barcode.isEmpty) {
-      showFlushbar(
-        context,
-        message: texts.payment_info_dialog_error_qrcode,
-      );
-      return;
-    }
-    setState(() {
-      _paymentInfoController.text = barcode;
-      _scannerErrorMessage = "";
-    });
+    await Navigator.pushNamed<String>(context, "/qr_scan").then(
+      (barcode) async {
+        if (barcode == null) {
+          return;
+        }
+        if (barcode.isEmpty) {
+          showFlushbar(
+            context,
+            message: texts.payment_info_dialog_error_qrcode,
+          );
+          return;
+        }
+        setState(() {
+          _paymentInfoController.text = barcode;
+          _scannerErrorMessage = "";
+        });
+      },
+    );
   }
 
   String _decodeInvoice(String invoiceString) {
