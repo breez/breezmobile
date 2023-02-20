@@ -23,9 +23,10 @@ import '../async_action.dart';
 import 'backup_actions.dart';
 
 class BackupBloc {
-  static const String _signInFailedCode = "AuthError";
+  static const String _signInFailedCode = "401";
+  static const String _signInFailedMessage = "AuthError";
   static const String _methodNotFound = "405";
-  static const String _notFoundCode = "404";
+  static const String _notFoundMessage = "404";
   static const String _noAccess = "403";
   static const String _empty = "empty";
   static const String USER_DETAILS_PREFERENCES_KEY = "BreezUserModel.userID";
@@ -503,7 +504,10 @@ class BackupBloc {
         }).catchError((error) {
           if (error.runtimeType == PlatformException) {
             PlatformException e = (error as PlatformException);
-            if (e.code == _signInFailedCode || e.message == "401") {
+            // the error code equals the message from the go library so
+            // not to confuse the two.
+            if (e.code == _signInFailedMessage ||
+                e.message == _signInFailedCode) {
               error = SignInFailedException(
                   _backupSettingsController.value.backupProvider);
             } else if (e.code == _empty) {
@@ -543,13 +547,16 @@ class BackupBloc {
             case _signInFailedCode:
               throw SignInFailedException(provider);
               break;
+            case _signInFailedMessage:
+              throw SignInFailedException(provider);
+              break;
             case _methodNotFound:
               throw MethodNotFoundException();
               break;
             case _noAccess:
               throw NoBackupFoundException();
               break;
-            case _notFoundCode:
+            case _notFoundMessage:
               throw RemoteServerNotFoundException();
               break;
             case _empty:
