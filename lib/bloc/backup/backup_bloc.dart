@@ -23,10 +23,11 @@ import '../async_action.dart';
 import 'backup_actions.dart';
 
 class BackupBloc {
-  static const String _signInFailedCode = "401";
+  static const String _signInFailedCode = "AuthError";
   static const String _methodNotFound = "405";
   static const String _notFoundCode = "404";
   static const String _noAccess = "403";
+  static const String _empty = "empty";
   static const String USER_DETAILS_PREFERENCES_KEY = "BreezUserModel.userID";
 
   static const _kDefaultOverrideFee = false;
@@ -499,16 +500,13 @@ class BackupBloc {
           snapshots
               .sort((s1, s2) => s2.modifiedTime.compareTo(s1.modifiedTime));
           _multipleRestoreController.add(snapshots);
-          if (backups == null) {
-            throw NoBackupFoundException();
-          }
         }).catchError((error) {
           if (error.runtimeType == PlatformException) {
             PlatformException e = (error as PlatformException);
-            if (e.code == _signInFailedCode || e.message == _signInFailedCode) {
+            if (e.code == _signInFailedCode || e.message == "401") {
               error = SignInFailedException(
                   _backupSettingsController.value.backupProvider);
-            } else if (e.message == _noAccess) {
+            } else if (e.code == _empty) {
               error = NoBackupFoundException();
             } else {
               error = (error as PlatformException).message;
@@ -541,7 +539,6 @@ class BackupBloc {
 
         if (error is PlatformException) {
           var e = error;
-          // Handle PlatformException(ResultError, "AuthError", Failed to invoke testBackupAuth, null)
           switch (e.message) {
             case _signInFailedCode:
               throw SignInFailedException(provider);
@@ -555,6 +552,8 @@ class BackupBloc {
             case _notFoundCode:
               throw RemoteServerNotFoundException();
               break;
+            case _empty:
+              throw NoBackupFoundException();
           }
         }
         throw error;
@@ -669,11 +668,9 @@ class MethodNotFoundException implements Exception {
 }
 
 class NoBackupFoundException implements Exception {
-  NoBackupFoundException();
-
   @override
   String toString() {
-    return "No backup found, please use double check the address";
+    return "No backup found";
   }
 }
 

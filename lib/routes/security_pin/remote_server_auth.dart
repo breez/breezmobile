@@ -15,6 +15,7 @@ import 'package:breez/widgets/route.dart';
 import 'package:breez/widgets/single_button_bottom_bar.dart';
 import 'package:breez_translations/breez_translations_locales.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:validators/validators.dart';
 
 Future<RemoteServerAuthData> promptAuthData(
@@ -350,11 +351,21 @@ class RemoteServerAuthPageState extends State<RemoteServerAuthPage> {
       }
       String lastSegment = pathSegments.removeLast();
 
-      // we couldn't use webdav with the current root, try different origin
+      // we couldn't use webdav with the current root, try differenet origin
       // and move the last path segment as the directory prefix
       testedAuthData = testedAuthData.copyWith(
           url: testedUrl.replace(pathSegments: pathSegments).toString(),
-          breezDir: "$lastSegment/${testedAuthData.breezDir}");
+          breezDir: lastSegment + "/" + testedAuthData.breezDir);
+
+      if (result.authError == DiscoverResult.BACKUP_NOT_FOUND) {
+        // ignore: use_build_context_synchronously
+        await promptMessage(
+            context,
+            NoBackupFoundException().toString(),
+            // ignore: use_build_context_synchronously
+            Text(context.texts().initial_walk_through_error_backup_location));
+        return result;
+      }
     }
   }
 
@@ -377,6 +388,9 @@ class RemoteServerAuthPageState extends State<RemoteServerAuthPage> {
             port: uri.port,
             path: "remote.php/webdav/")
         .toString();
+    if (authData.url == nextCloudURL) {
+      return DiscoveryResult(authData, result);
+    }
     result = await testAuthData(authData.copyWith(url: nextCloudURL));
     if (result == DiscoverResult.SUCCESS ||
         result == DiscoverResult.INVALID_AUTH) {
@@ -397,10 +411,23 @@ class RemoteServerAuthPageState extends State<RemoteServerAuthPage> {
       return DiscoverResult.INVALID_URL;
     } on MethodNotFoundException {
       return DiscoverResult.METHOD_NOT_FOUND;
-    } on NoBackupFoundException {
-      return DiscoverResult.BACKUP_NOT_FOUND;
     }
 
+    // Since we are restoring we cannot be sure whenever the account has any
+    // backups.
+    if (widget.restore) {
+      try {
+        await injector.breezBridge.getAvailableBackups();
+      } on Exception catch (error) {
+        if (error.runtimeType == PlatformException) {
+          PlatformException e = (error as PlatformException);
+          if (e.code == "empty") {
+            failNoBackupFound = true;
+            return DiscoverResult.BACKUP_NOT_FOUND;
+          }
+        }
+      }
+    }
     return DiscoverResult.SUCCESS;
   }
 }
