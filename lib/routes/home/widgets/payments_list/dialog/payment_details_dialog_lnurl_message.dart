@@ -21,9 +21,10 @@ class PaymentDetailsDialogLnurlMessage extends StatelessWidget {
     final texts = context.texts();
     final action = paymentInfo.lnurlPayInfo?.successAction;
     final message = action?.message?.trim();
+    final tag = action?.tag;
 
     if (paymentInfo.type != PaymentType.SENT ||
-        (action.tag != 'message' && action.tag != 'aes') ||
+        (tag != 'message' && tag != 'aes') ||
         message == null ||
         message.isEmpty) {
       return Container();
