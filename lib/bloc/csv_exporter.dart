@@ -13,8 +13,13 @@ import 'package:path_provider/path_provider.dart';
 class CsvExporter {
   final List<CsvData> data;
   final PaymentFilterModel filter;
+  final bool usesUtcTime;
 
-  CsvExporter(this.data, this.filter);
+  const CsvExporter(
+    this.data,
+    this.filter, {
+    this.usesUtcTime = false,
+  });
 
   Future export() async {
     log.info("export payments started");
@@ -34,8 +39,11 @@ class CsvExporter {
       final paymentInfo = data.paymentInfo;
       final sale = data.sale;
       paymentItem.add(BreezDateUtils.formatYearMonthDayHourMinute(
-          DateTime.fromMillisecondsSinceEpoch(
-              paymentInfo.creationTimestamp.toInt() * 1000)));
+        DateTime.fromMillisecondsSinceEpoch(
+          paymentInfo.creationTimestamp.toInt() * 1000,
+          isUtc: usesUtcTime,
+        ),
+      ));
       paymentItem.add(paymentInfo.title);
       paymentItem.add(paymentInfo.description);
       paymentItem.add(paymentInfo.destination);
