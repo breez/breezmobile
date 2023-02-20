@@ -412,22 +412,6 @@ class RemoteServerAuthPageState extends State<RemoteServerAuthPage> {
     } on MethodNotFoundException {
       return DiscoverResult.METHOD_NOT_FOUND;
     }
-
-    // Since we are restoring we cannot be sure whenever the account has any
-    // backups.
-    if (widget.restore) {
-      try {
-        await injector.breezBridge.getAvailableBackups();
-      } on Exception catch (error) {
-        if (error.runtimeType == PlatformException) {
-          PlatformException e = (error as PlatformException);
-          if (e.code == "empty") {
-            failNoBackupFound = true;
-            return DiscoverResult.BACKUP_NOT_FOUND;
-          }
-        }
-      }
-    }
     return DiscoverResult.SUCCESS;
   }
 }
