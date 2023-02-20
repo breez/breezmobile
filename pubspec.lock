@@ -150,8 +150,8 @@ packages:
     dependency: "direct main"
     description:
       path: "."
-      ref: "9c8cc35d9e289a9696ab15ad91734ff12739b171"
-      resolved-ref: "9c8cc35d9e289a9696ab15ad91734ff12739b171"
+      ref: b8d93a18c9511fcceed42de5d1cef70cf66bbfc0
+      resolved-ref: b8d93a18c9511fcceed42de5d1cef70cf66bbfc0
       url: "https://github.com/breez/Breez-Translations.git"
     source: git
     version: "1.0.0"
@@ -935,10 +935,10 @@ packages:
     dependency: "direct main"
     description:
       name: image_picker
-      sha256: f98d76672d309c8b7030c323b3394669e122d52b307d2bbd8d06bd70f5b2aabe
+      sha256: d39cc12402dab8365fe5b5370e64694ae0223d675c36b15ff0490b7cc3d32551
       url: "https://pub.dev"
     source: hosted
-    version: "0.8.6+1"
+    version: "0.8.6+2"
   image_picker_android:
     dependency: transitive
     description:
@@ -959,10 +959,10 @@ packages:
     dependency: transitive
     description:
       name: image_picker_ios
-      sha256: "8ffb14b43713d7c43fb21299cc18181cc5b39bd3ea1cc427a085c6400fe5aa52"
+      sha256: "884ed71165bc01ffe1b0b7813e6fa17e1e9442da974656f99b79a292371303d6"
       url: "https://pub.dev"
     source: hosted
-    version: "0.8.6+7"
+    version: "0.8.6+8"
   image_picker_platform_interface:
     dependency: transitive
     description:
@@ -1336,10 +1336,10 @@ packages:
     dependency: transitive
     description:
       name: petitparser
-      sha256: "49392a45ced973e8d94a85fdb21293fbb40ba805fc49f2965101ae748a3683b4"
+      sha256: "32e46db8021f6d027d9221b937653f5c8aa043e0dc093998e18331912f22936b"
       url: "https://pub.dev"
     source: hosted
-    version: "5.1.0"
+    version: "5.2.0"
   platform:
     dependency: transitive
     description:
@@ -1767,10 +1767,10 @@ packages:
     dependency: "direct main"
     description:
       name: tutorial_coach_mark
-      sha256: d54f5ee73c42da52449abaf94bbd860d159defdd15db08a59d0fa88f540d0dda
+      sha256: "7cc5364d1df475cdcd759c1b97bde5092ba53e80c1db848684e601fde38c0337"
       url: "https://pub.dev"
     source: hosted
-    version: "1.2.5"
+    version: "1.2.6"
   typed_data:
     dependency: transitive
     description:
@@ -1959,10 +1959,10 @@ packages:
     dependency: "direct main"
     description:
       name: webview_flutter
-      sha256: f7ec234830f86d0ef2bd664e8460b0038b8c1a83ff076035cad74ac70273753c
+      sha256: dad1f2caa3272071275436984eb123276a6810dbe7cd6f4c60697640b56a4699
       url: "https://pub.dev"
     source: hosted
-    version: "4.0.2"
+    version: "4.0.4"
   webview_flutter_android:
     dependency: transitive
     description:
