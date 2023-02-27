@@ -10,16 +10,18 @@ WebViewController setWebViewController({
     ..setJavaScriptMode(JavaScriptMode.unrestricted)
     ..setNavigationDelegate(
       NavigationDelegate(
-        onNavigationRequest: onNavigationRequest ??
+        onNavigationRequest: (NavigationRequest request) =>
+            onNavigationRequest(request) ??
             (NavigationRequest request) => request.url.startsWith('lightning:')
                 ? NavigationDecision.prevent
                 : NavigationDecision.navigate,
-        onPageFinished: onPageFinished,
+        onPageFinished: (String url) => onPageFinished(url),
       ),
     )
     ..addJavaScriptChannel(
       "BreezWebView",
-      onMessageReceived: onMessageReceived,
+      onMessageReceived: (JavaScriptMessage message) =>
+          onMessageReceived(message),
     )
     ..loadRequest(Uri.parse(url));
 }
