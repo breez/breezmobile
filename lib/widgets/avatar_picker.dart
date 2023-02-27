@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:io';
+import 'dart:typed_data';
 
 import 'package:breez/logger.dart';
 import 'package:breez/widgets/error_dialog.dart';
@@ -129,22 +130,20 @@ class AvatarPicker extends StatelessWidget {
             ));
   }
 
-  List<int> _scaleAndFormatPNG(List<int> imageBytes) {
-    DartImage.Image image = DartImage.decodeImage(imageBytes);
-    DartImage.Image resized = DartImage.copyResize(
-      image,
-      width: image.width < image.height ? -1 : scaledWidth,
-      height: image.width < image.height ? scaledWidth : -1,
-    );
-    DartImage.Image centered = DartImage.copyInto(
-      DartImage.Image(scaledWidth, scaledWidth),
-      resized,
-      dstX: ((scaledWidth - resized.width) / 2).round(),
-      dstY: ((scaledWidth - resized.height) / 2).round(),
-    );
-    final width = centered.width;
-    final height = centered.height;
-    log.info('trimmed.width $width trimmed.height $height');
-    return DartImage.encodePng(centered);
+  Uint8List _scaleAndFormatPNG(List<int> imageBytes) {
+    const int scaledSize = 200;
+    try {
+      final image = DartImage.decodeImage(imageBytes);
+      final resized = DartImage.copyResize(
+        image,
+        width: image.width < image.height ? -1 : scaledSize,
+        height: image.width < image.height ? scaledSize : -1,
+      );
+      log.info(
+          'trimmed.width ${resized.width} trimmed.height ${resized.height}');
+      return DartImage.encodePng(resized);
+    } catch (e) {
+      rethrow;
+    }
   }
 }

@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:io';
+import 'dart:typed_data';
 
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:breez/bloc/user_profile/breez_user_model.dart';
@@ -15,9 +16,6 @@ import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
 
 import 'flushbar.dart';
-
-int scaledWidth = 200;
-var _transparentImage = DartImage.Image(scaledWidth, scaledWidth);
 
 Widget breezAvatarDialog(BuildContext context, UserProfileBloc userBloc) {
   AutoSizeGroup autoSizeGroup = AutoSizeGroup();
@@ -255,7 +253,7 @@ Widget breezAvatarDialog(BuildContext context, UserProfileBloc userBloc) {
 Future _uploadImage(File pickedImage, UserProfileBloc userBloc) async {
   return pickedImage
       .readAsBytes()
-      .then(scaleAndFormatPNG)
+      .then(_scaleAndFormatPNG)
       .then((imageBytes) async {
     var action = UploadProfilePicture(imageBytes);
     userBloc.userActionsSink.add(action);
@@ -263,13 +261,17 @@ Future _uploadImage(File pickedImage, UserProfileBloc userBloc) async {
   });
 }
 
-List<int> scaleAndFormatPNG(List<int> imageBytes) {
-  DartImage.Image image = DartImage.decodeImage(imageBytes);
-  DartImage.Image resized = DartImage.copyResize(image,
-      width: image.width < image.height ? -1 : scaledWidth,
-      height: image.width < image.height ? scaledWidth : -1);
-  DartImage.Image centered = DartImage.copyInto(_transparentImage, resized,
-      dstX: ((scaledWidth - resized.width) / 2).round(),
-      dstY: ((scaledWidth - resized.height) / 2).round());
-  return DartImage.encodePng(centered);
+Uint8List _scaleAndFormatPNG(List<int> imageBytes) {
+  const int scaledSize = 200;
+  try {
+    final image = DartImage.decodeImage(imageBytes);
+    final resized = DartImage.copyResize(
+      image,
+      width: image.width < image.height ? -1 : scaledSize,
+      height: image.width < image.height ? scaledSize : -1,
+    );
+    return DartImage.encodePng(resized);
+  } catch (e) {
+    rethrow;
+  }
 }

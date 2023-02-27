@@ -50,7 +50,7 @@ dependencies:
   grpc: ^3.1.0
   hex: ^0.2.0
   http: ^0.13.5
-  image: ^3.3.0 # anytime>flutter_launcher_icons depends on image ^3.0.2
+  image: ^4.0.15
   image_cropper: ^3.0.1
   image_picker: ^0.8.6+3
   ini: ^2.1.0
@@ -64,9 +64,9 @@ dependencies:
   path: ^1.8.3
   path_provider: ^2.0.13
   path_provider_platform_interface: ^2.0.6
-  pdf: <3.9.0 # pdf >=3.9.0 depends on image ^4.0.02
+  pdf: ^3.9.0
   plugin_platform_interface: ^2.1.4
-  printing: <5.10.0 # printing >=5.10.0 depends on image ^4.0.02
+  printing: ^5.10.1
   protobuf: ^2.1.0
   provider: ^6.0.5
   meta: ^1.9.0
@@ -97,7 +97,7 @@ dependencies:
   anytime:
     git:
       url: https://github.com/breez/anytime_podcast_player.git
-      ref: d8b717057e059616dd4026ff70929cd808a8ec35
+      ref: 5f74c55adb8d395a5f0e96e2906f47511b0052bd
   flutter_downloader:
     git:
       url: https://github.com/breez/flutter_downloader.git
