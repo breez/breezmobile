@@ -32,6 +32,10 @@
   "Geyser": {
     "url": "https://geyser.fund/"
   },
+  "Lightsats": {
+    "url": "https://lightsats.com",
+    "endpointURI": "https://lightsats.com/api/auth/lnurl/generate-secret"
+  },
   "Sms4Sats": {
     "url": "http://sms4sats.com/"
   },
