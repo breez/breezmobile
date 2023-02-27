@@ -250,7 +250,6 @@ class AccountRequiredActionsIndicatorState
 
     final availableLSPs = lspStatus?.availableLSPs ?? [];
     if (lspActivity != null) {
-      for (var element in availableLSPs) {}
       int inactiveWarningDuration = _inactiveWarningDuration(
         availableLSPs,
         lspActivity.activity,
