@@ -5,10 +5,10 @@ import 'dart:io';
 import 'package:breez/bloc/backup/backup_model.dart';
 import 'package:breez/bloc/user_profile/backup_user_preferences.dart';
 import 'package:breez/bloc/user_profile/breez_user_model.dart';
+import 'package:breez/logger.dart';
 import 'package:breez/services/background_task.dart';
 import 'package:breez/services/breezlib/breez_bridge.dart';
 import 'package:breez/services/breezlib/data/rpc.pb.dart';
-import 'package:breez/logger.dart';
 import 'package:breez/services/injector.dart';
 import 'package:crypto/crypto.dart';
 import 'package:flutter/services.dart';
@@ -89,7 +89,7 @@ class BackupBloc {
   bool _backupServiceNeedLogin = false;
   bool _enableBackupPrompt = false;
   Map<Type, Function> _actionHandlers = Map();
-  final FlutterSecureStorage _secureStorage = FlutterSecureStorage();
+  FlutterSecureStorage _secureStorage;
   String _appDirPath;
   String _backupAppDataDirPath;
 
@@ -99,10 +99,13 @@ class BackupBloc {
 
   BackupBloc(
     Stream<BreezUserModel> userStream,
-    Stream<bool> backupAnytimeDBStream,
-  ) {
+    Stream<bool> backupAnytimeDBStream, {
+    ServiceInjector serviceInjector,
+    FlutterSecureStorage secureStorage,
+  }) {
     _initAppDataPathAndDir();
-    ServiceInjector injector = ServiceInjector();
+    _secureStorage = secureStorage ?? FlutterSecureStorage();
+    ServiceInjector injector = serviceInjector ?? ServiceInjector();
     _breezLib = injector.breezBridge;
     _tasksService = injector.backgroundTaskService;
     _actionHandlers = {
@@ -150,25 +153,34 @@ class BackupBloc {
   }
 
   Future _updateBackupSettings(UpdateBackupSettings action) async {
-    var currentSettings = _backupSettingsController.value;
-    _backupSettingsController.add(action.settings);
-    if (action.settings.backupKeyType != currentSettings.backupKeyType) {
-      await _setBreezLibBackupKey(backupKeyType: action.settings.backupKeyType);
+    final oldSettings = _backupSettingsController.value;
+    final newSettings = action.settings;
+    log.info("update backup from:\n$oldSettings to:\n$newSettings");
+    _backupSettingsController.add(newSettings);
+    if (newSettings.backupKeyType != oldSettings.backupKeyType) {
+      log.info("update backup key type");
+      await _setBreezLibBackupKey(backupKeyType: newSettings.backupKeyType);
+    } else {
+      log.info("backup key type continue to be the same");
     }
-    if (action.settings.backupProvider != currentSettings.backupProvider ||
-        !currentSettings.remoteServerAuthData
-            .equal(action.settings.remoteServerAuthData)) {
-      await _updateBackupProvider(action.settings);
+    if (newSettings.backupProvider != oldSettings.backupProvider ||
+        !oldSettings.remoteServerAuthData.equal(newSettings.remoteServerAuthData)) {
+      log.info("update backup provider");
+      await _updateBackupProvider(newSettings);
+    } else {
+      log.info("backup provider continue to be the same");
     }
-    action.resolve(action.settings);
+    action.resolve(newSettings);
   }
 
   Future _updateBackupProvider(BackupSettings settings) async {
     String authData;
-    if (settings.backupProvider.name ==
-        BackupSettings.remoteServerBackupProvider().name) {
+    if (settings.backupProvider.name == BackupSettings.remoteServerBackupProvider().name) {
+      log.info("update backup provider auth data as a remote server");
       var map = settings.remoteServerAuthData.toJson();
       authData = json.encode(map);
+    } else {
+      log.info("update backup provider auth data as ${settings.backupProvider.name} server");
     }
     await _breezLib.setBackupProvider(settings.backupProvider.name, authData);
   }
