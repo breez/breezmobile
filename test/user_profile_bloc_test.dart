@@ -5,24 +5,30 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:path_provider_platform_interface/path_provider_platform_interface.dart';
 
 import 'bloc_tester.dart';
-import 'mocks.dart';
-import 'utils/fake_path_provider_platform.dart';
+import 'mocks/fake_path_provider_platform.dart';
+import 'mocks/injector_mock.dart';
+import 'mocks/unit_logger.dart';
 
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
-  final platform = FakePathProviderPlatform();
+
   group('breez_user_model_tests', () {
-    InjectorMock _injector = new InjectorMock();
+    InjectorMock _injector;
     UserProfileBloc _userProfileBloc;
+    FakePathProviderPlatform platform;
 
     setUp(() async {
+      setUpLogger();
+      platform = FakePathProviderPlatform();
       await platform.setUp();
       PathProviderPlatform.instance = platform;
+      _injector = InjectorMock();
       ServiceInjector.configure(_injector);
       _userProfileBloc = new UserProfileBloc();
     });
 
     tearDown(() async {
+      _injector.dispose();
       await platform.tearDown();
     });
 
@@ -35,7 +41,9 @@ void main() {
 
     test("shoud return registered user", () async {
       _userProfileBloc.registerSink.add(null);
-      var userID = await _userProfileBloc.userStream.firstWhere((p) => p != null && p.userID != null).then((p) => p.userID);
+      final userID = await _userProfileBloc.userStream
+          .firstWhere((p) => p != null && p.userID != null)
+          .then((p) => p.userID);
       expect(userID, isNotNull);
     });
   });

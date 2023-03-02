@@ -4,7 +4,7 @@ import 'package:breez/bloc/pos_catalog/model.dart';
 import 'package:breez/bloc/pos_catalog/sqlite/repository.dart';
 import 'package:test/test.dart';
 
-import 'mocks.dart';
+import 'mocks/sqflite_mock.dart';
 
 SqliteRepository repo;
 

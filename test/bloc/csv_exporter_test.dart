@@ -9,7 +9,7 @@ import 'package:fixnum/fixnum.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:path_provider_platform_interface/path_provider_platform_interface.dart';
 
-import '../utils/fake_path_provider_platform.dart';
+import '../mocks/fake_path_provider_platform.dart';
 
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();

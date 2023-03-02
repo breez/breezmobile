@@ -7,7 +7,8 @@ import 'package:http/http.dart';
 import 'package:test/test.dart';
 
 import 'bloc_tester.dart';
-import 'mocks.dart';
+import 'mocks/injector_mock.dart';
+import 'mocks/unit_logger.dart';
 
 FastbitcoinsBloc _make() => new FastbitcoinsBloc(
       baseURL: FastbitcoinsBloc.TESTING_URL,
@@ -15,14 +16,17 @@ FastbitcoinsBloc _make() => new FastbitcoinsBloc(
 
 void main() {
   group('fastbitcoins bloc', () {
-    InjectorMock _injector = new InjectorMock();
+    InjectorMock _injector;
 
     setUp(() async {
+      setUpLogger();
+      _injector = InjectorMock();
       ServiceInjector.configure(_injector);
     });
 
     tearDown(() async {
       _injector.mockHandler = null;
+      _injector.dispose();
     });
 
     void _mockResponse(int code, String body) {
