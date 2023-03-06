@@ -23,8 +23,12 @@ import '../async_action.dart';
 import 'backup_actions.dart';
 
 class BackupBloc {
-  static const String _signInFailedCode = "AuthError";
-  static const String _notFoundCode = "NotFoundError";
+  static const String _signInFailedCode = "401";
+  static const String _signInFailedMessage = "AuthError";
+  static const String _methodNotFound = "405";
+  static const String _notFoundMessage = "404";
+  static const String _noAccess = "403";
+  static const String _empty = "empty";
   static const String USER_DETAILS_PREFERENCES_KEY = "BreezUserModel.userID";
 
   static const _kDefaultOverrideFee = false;
@@ -414,10 +418,12 @@ class BackupBloc {
 
   Future<void> _savePosDB() async {
     // Copy POS items to backup directory
-    final posDbPath = '${await databaseFactory.getDatabasesPath()}${Platform.pathSeparator}product-catalog.db';
+    final posDbPath =
+        '${await databaseFactory.getDatabasesPath()}${Platform.pathSeparator}product-catalog.db';
     if (await databaseExists(posDbPath)) {
       File(posDbPath)
-          .copy('$_backupAppDataDirPath${Platform.pathSeparator}product-catalog.db')
+          .copy(
+              '$_backupAppDataDirPath${Platform.pathSeparator}product-catalog.db')
           .catchError((err) {
         throw Exception("Failed to copy pos items.");
       });
@@ -498,17 +504,20 @@ class BackupBloc {
         }).catchError((error) {
           if (error.runtimeType == PlatformException) {
             PlatformException e = (error as PlatformException);
-            if (e.code == _signInFailedCode || e.message == _signInFailedCode) {
+            // the error code equals the message from the go library so
+            // not to confuse the two.
+            if (e.code == _signInFailedMessage ||
+                e.message == _signInFailedCode) {
               error = SignInFailedException(
                   _backupSettingsController.value.backupProvider);
+            } else if (e.code == _empty) {
+              error = NoBackupFoundException();
             } else {
               error = (error as PlatformException).message;
             }
           }
-
           _restoreFinishedController.addError(error);
         });
-
         return;
       }
 
@@ -528,25 +537,35 @@ class BackupBloc {
   Future testAuth(BackupProvider provider, RemoteServerAuthData authData) {
     return _breezLib
         .testBackupAuth(provider.name, json.encode(authData.toJson()))
-        .catchError((error) {
-      log.info('backupBloc.testAuth caught error: $error');
+        .catchError(
+      (error) {
+        log.info('backupBloc.testAuth caught error: $error');
 
-      if (error is PlatformException) {
-        var e = error;
-        // Handle PlatformException(ResultError, "AuthError", Failed to invoke testBackupAuth, null)
-        switch (e.message) {
-          case _signInFailedCode:
-            throw SignInFailedException(provider);
-            break;
-
-          case _notFoundCode:
-            throw RemoteServerNotFoundException();
-            break;
+        if (error is PlatformException) {
+          var e = error;
+          switch (e.message) {
+            case _signInFailedCode:
+              throw SignInFailedException(provider);
+              break;
+            case _signInFailedMessage:
+              throw SignInFailedException(provider);
+              break;
+            case _methodNotFound:
+              throw MethodNotFoundException();
+              break;
+            case _noAccess:
+              throw NoBackupFoundException();
+              break;
+            case _notFoundMessage:
+              throw RemoteServerNotFoundException();
+              break;
+            case _empty:
+              throw NoBackupFoundException();
+          }
         }
-      }
-
-      throw error;
-    });
+        throw error;
+      },
+    );
   }
 
   _restoreAppData() async {
@@ -574,7 +593,8 @@ class BackupBloc {
   Future<void> _restorePosDB() async {
     final backupPosDbPath =
         '$_backupAppDataDirPath${Platform.pathSeparator}product-catalog.db';
-    final posDbPath = '${await databaseFactory.getDatabasesPath()}${Platform.pathSeparator}product-catalog.db';
+    final posDbPath =
+        '${await databaseFactory.getDatabasesPath()}${Platform.pathSeparator}product-catalog.db';
     if (await File(backupPosDbPath).exists()) {
       await File(backupPosDbPath).copy(posDbPath).catchError((err) {
         throw Exception("Failed to restore pos items.");
@@ -645,12 +665,26 @@ class SignInFailedException implements Exception {
   }
 }
 
-class RemoteServerNotFoundException implements Exception {
-  RemoteServerNotFoundException();
+class MethodNotFoundException implements Exception {
+  MethodNotFoundException();
 
   @override
   String toString() {
-    return "The server/url was not found.";
+    return "Method not found";
+  }
+}
+
+class NoBackupFoundException implements Exception {
+  @override
+  String toString() {
+    return "No backup found";
+  }
+}
+
+class RemoteServerNotFoundException implements Exception {
+  @override
+  String toString() {
+    return "The server was not found. Please check the address";
   }
 }
 
