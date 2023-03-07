@@ -51,7 +51,7 @@ void main() {
         secureStorage: secureStorageMock,
       );
       // Await the list actions that are triggered by the constructor and is async.
-      await Future.delayed(Duration(milliseconds: 100));
+      await Future.delayed(const Duration(milliseconds: 100));
       return bloc;
     }
 
@@ -78,7 +78,8 @@ void main() {
       final newSettings = await action.future;
 
       expect(newSettings, googleSettings);
-      expect(injectorMock.breezLibMock.backupProviderSet, googleSettings.backupProvider.name);
+      expect(injectorMock.breezLibMock.backupProviderSet,
+          googleSettings.backupProvider.name);
       expect(injectorMock.breezLibMock.backupAuthDataSet, isNull);
     });
   });

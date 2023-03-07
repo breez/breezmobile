@@ -15,7 +15,6 @@ import 'package:breez/widgets/route.dart';
 import 'package:breez/widgets/single_button_bottom_bar.dart';
 import 'package:breez_translations/breez_translations_locales.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:validators/validators.dart';
 
 Future<RemoteServerAuthData> promptAuthData(
@@ -355,7 +354,7 @@ class RemoteServerAuthPageState extends State<RemoteServerAuthPage> {
       // and move the last path segment as the directory prefix
       testedAuthData = testedAuthData.copyWith(
           url: testedUrl.replace(pathSegments: pathSegments).toString(),
-          breezDir: lastSegment + "/" + testedAuthData.breezDir);
+          breezDir: "$lastSegment/${testedAuthData.breezDir}");
 
       if (result.authError == DiscoverResult.BACKUP_NOT_FOUND) {
         // ignore: use_build_context_synchronously
