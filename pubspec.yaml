@@ -52,7 +52,7 @@ dependencies:
   http: ^0.13.5
   image: ^4.0.15
   image_cropper: ^3.0.1
-  image_picker: ^0.8.6+3
+  image_picker: ^0.8.6+4
   ini: ^2.1.0
   intl: ^0.18.0
   json_annotation: ^4.8.0
@@ -92,7 +92,7 @@ dependencies:
   uuid: ^3.0.7
   validators: ^3.0.0
   webdav_client: ^1.2.0
-  webview_flutter: ^4.0.5
+  webview_flutter: ^4.0.6
 
   anytime:
     git:
