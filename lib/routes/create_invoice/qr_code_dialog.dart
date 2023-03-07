@@ -5,6 +5,7 @@ import 'package:breez/bloc/account/account_model.dart';
 import 'package:breez/bloc/invoice/invoice_bloc.dart';
 import 'package:breez/bloc/invoice/invoice_model.dart';
 import 'package:breez/bloc/user_profile/currency.dart';
+import 'package:breez/logger.dart';
 import 'package:breez/services/injector.dart';
 import 'package:breez/theme_data.dart' as theme;
 import 'package:breez/widgets/circular_progress.dart';
@@ -338,9 +339,16 @@ class QrCodeDialogState extends State<QrCodeDialog>
     } else {
       final lspFee = snapshot.data.lspFee;
       if (lspFee != 0) {
+        var fiatCurrencyString = "";
+        if ( accSnapshot.data.fiatCurrency != null ) {
+          fiatCurrencyString = accSnapshot.data.fiatCurrency.format(lspFee);
+        }
+        else {
+          log.info("Failed to format LSP fee as a fiat currency");
+        }
         return texts.qr_code_dialog_warning_message_with_lsp(
           Currency.SAT.format(lspFee),
-          accSnapshot.data.fiatCurrency.format(lspFee),
+          fiatCurrencyString,
         );
       }
       return texts.qr_code_dialog_warning_message;
