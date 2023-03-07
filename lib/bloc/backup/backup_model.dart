@@ -68,6 +68,11 @@ class BackupProvider {
 
   @override
   int get hashCode => name.hashCode;
+
+  @override
+  String toString() {
+    return 'BackupProvider{name: $name, displayName: $displayName}';
+  }
 }
 
 enum BackupKeyType {
@@ -155,6 +160,29 @@ class BackupSettings {
       providers.insert(0, icloudBackupProvider());
     }
     return providers;
+  }
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is BackupSettings &&
+          runtimeType == other.runtimeType &&
+          promptOnError == other.promptOnError &&
+          backupKeyType == other.backupKeyType &&
+          backupProvider == other.backupProvider &&
+          remoteServerAuthData == other.remoteServerAuthData;
+
+  @override
+  int get hashCode =>
+      promptOnError.hashCode ^
+      backupKeyType.hashCode ^
+      backupProvider.hashCode ^
+      remoteServerAuthData.hashCode;
+
+  @override
+  String toString() {
+    return 'BackupSettings{promptOnError: $promptOnError, backupKeyType: $backupKeyType, '
+        'backupProvider: $backupProvider, remoteServerAuthData: $remoteServerAuthData}';
   }
 }
 
