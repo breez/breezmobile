@@ -115,7 +115,7 @@ class SecurityPageState extends State<SecurityPage>
                 automaticallyImplyLeading: false,
                 leading: backBtn.BackButton(),
                 title: Text(
-                  texts.security_and_backup_title_and_backup,
+                  texts.security_and_backup_title,
                   style: themeData.appBarTheme.textTheme.headline6,
                 ),
                 elevation: 0.0,
