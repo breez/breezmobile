@@ -4,7 +4,7 @@ class ScrollWatcher extends StatefulWidget {
   final ScrollController controller;
   final Function(BuildContext context, double offset) builder;
 
-  ScrollWatcher({this.controller, this.builder});
+  const ScrollWatcher({this.controller, this.builder});
 
   @override
   State<StatefulWidget> createState() {

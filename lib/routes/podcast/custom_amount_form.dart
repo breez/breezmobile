@@ -47,7 +47,7 @@ class CustomAmountTextEditingController extends TextEditingController {
   CustomAmountTextEditingController({
     int customAmount,
   }) : super() {
-    this.text = _initialCustomAmount(customAmount);
+    text = _initialCustomAmount(customAmount);
   }
 
   String _initialCustomAmount(int customAmount) {

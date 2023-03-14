@@ -32,8 +32,8 @@ class BackupProviderSelectionDialogState
     final texts = context.texts();
 
     return AlertDialog(
-      titlePadding: EdgeInsets.fromLTRB(24.0, 22.0, 24.0, 16.0),
-      title: Container(
+      titlePadding: const EdgeInsets.fromLTRB(24.0, 22.0, 24.0, 16.0),
+      title: SizedBox(
         width: MediaQuery.of(context).size.width,
         height: 30,
         child: AutoSizeText(
@@ -42,7 +42,7 @@ class BackupProviderSelectionDialogState
           maxLines: 1,
         ),
       ),
-      contentPadding: EdgeInsets.fromLTRB(24.0, 8.0, 24.0, 24.0),
+      contentPadding: const EdgeInsets.fromLTRB(24.0, 8.0, 24.0, 24.0),
       content: Column(
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -51,7 +51,7 @@ class BackupProviderSelectionDialogState
             widget.restore
                 ? texts.backup_provider_dialog_message_restore
                 : texts.backup_provider_dialog_message_store,
-            style: themeData.primaryTextTheme.headline3.copyWith(
+            style: themeData.primaryTextTheme.displaySmall.copyWith(
               fontSize: 16,
             ),
           ),
@@ -59,28 +59,28 @@ class BackupProviderSelectionDialogState
             stream: widget.backupBloc.backupSettingsStream,
             builder: (context, snapshot) {
               if (!snapshot.hasData) {
-                return SizedBox();
+                return const SizedBox();
               }
 
               final providers = BackupSettings.availableBackupProviders();
-              return Container(
+              return SizedBox(
                 width: 150.0,
-                height: 100.0,
+                height: providers.length * 50.0,
                 child: ListView.builder(
                   shrinkWrap: false,
                   itemCount: providers.length,
                   itemBuilder: (BuildContext context, int index) {
                     return ListTile(
-                      contentPadding: EdgeInsets.symmetric(horizontal: 0.0),
+                      contentPadding: const EdgeInsets.symmetric(horizontal: 0.0),
                       selected: _selectedProviderIndex == index,
                       trailing: _selectedProviderIndex == index
                           ? Icon(
                               Icons.check,
-                              color: themeData.primaryTextTheme.button.color,
+                              color: themeData.primaryTextTheme.labelLarge.color,
                             )
                           : Icon(
                               Icons.check,
-                              color: themeData.backgroundColor,
+                              color: themeData.colorScheme.background,
                             ),
                       title: Text(
                         providers[index].displayName,
@@ -105,7 +105,7 @@ class BackupProviderSelectionDialogState
       actions: [
         TextButton(
           style: TextButton.styleFrom(
-            primary: themeData.primaryTextTheme.button.color,
+            foregroundColor: themeData.primaryTextTheme.labelLarge.color,
           ),
           onPressed: () => Navigator.pop(context, null),
           child: Text(texts.backup_provider_dialog_action_cancel),
@@ -115,7 +115,7 @@ class BackupProviderSelectionDialogState
           builder: (context, snapshot) {
             return TextButton(
               style: TextButton.styleFrom(
-                primary: themeData.primaryTextTheme.button.color,
+                foregroundColor: themeData.primaryTextTheme.labelLarge.color,
               ),
               onPressed: () => _selectProvider(snapshot.data),
               child: Text(texts.backup_provider_dialog_action_ok),
@@ -123,7 +123,7 @@ class BackupProviderSelectionDialogState
           },
         )
       ],
-      shape: RoundedRectangleBorder(
+      shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.all(Radius.circular(12.0)),
       ),
     );

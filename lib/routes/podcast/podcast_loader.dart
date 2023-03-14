@@ -37,8 +37,8 @@ class PodcastIndexClient {
 
     return Dio(
       BaseOptions(
-        connectTimeout: 10000,
-        receiveTimeout: 10000,
+        connectTimeout: const Duration(milliseconds: 10000),
+        receiveTimeout: const Duration(milliseconds: 10000),
         responseType: ResponseType.json,
         headers: {
           'X-Auth-Date': newUnixTime,
@@ -62,13 +62,15 @@ class PodcastIndexClient {
     }).catchError((e) {
       if (e is DioError) {
         switch (e.type) {
-          case DioErrorType.connectTimeout:
+          case DioErrorType.connectionError:
+          case DioErrorType.connectionTimeout:
           case DioErrorType.sendTimeout:
           case DioErrorType.receiveTimeout:
-          case DioErrorType.other:
+          case DioErrorType.unknown:
             throw PodcastTimeoutException(e.message);
             break;
-          case DioErrorType.response:
+          case DioErrorType.badCertificate:
+          case DioErrorType.badResponse:
             throw PodcastFailedException(e.message);
             break;
           case DioErrorType.cancel:
@@ -94,13 +96,15 @@ class PodcastIndexClient {
     }).catchError((e) {
       if (e is DioError) {
         switch (e.type) {
-          case DioErrorType.connectTimeout:
+          case DioErrorType.connectionError:
+          case DioErrorType.connectionTimeout:
           case DioErrorType.sendTimeout:
           case DioErrorType.receiveTimeout:
-          case DioErrorType.other:
+          case DioErrorType.unknown:
             throw PodcastTimeoutException(e.message);
             break;
-          case DioErrorType.response:
+          case DioErrorType.badCertificate:
+          case DioErrorType.badResponse:
             throw PodcastFailedException(e.message);
             break;
           case DioErrorType.cancel:
@@ -127,13 +131,15 @@ class PodcastIndexClient {
     }).catchError((e) {
       if (e is DioError) {
         switch (e.type) {
-          case DioErrorType.connectTimeout:
+          case DioErrorType.connectionError:
+          case DioErrorType.connectionTimeout:
           case DioErrorType.sendTimeout:
           case DioErrorType.receiveTimeout:
-          case DioErrorType.other:
+          case DioErrorType.unknown:
             throw PodcastTimeoutException(e.message);
             break;
-          case DioErrorType.response:
+          case DioErrorType.badCertificate:
+          case DioErrorType.badResponse:
             throw PodcastFailedException(e.message);
             break;
           case DioErrorType.cancel:

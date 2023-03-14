@@ -50,19 +50,15 @@ class AmountFormField extends TextFormField {
                       (accountModel.fiatCurrency != null)
                           ? accountModel.fiatCurrency.logoPath
                           : "src/icon/btc_convert.png",
-                      color: iconColor != null
-                          ? iconColor
-                          : theme.BreezColors.white[500],
+                      color: iconColor ?? theme.BreezColors.white[500],
                     ),
-                    padding: EdgeInsets.only(top: 21.0),
+                    padding: const EdgeInsets.only(top: 21.0),
                     alignment: Alignment.bottomRight,
                     onPressed: () => showDialog(
                       useRootNavigator: false,
                       context: context,
                       builder: (_) => CurrencyConverterDialog(
-                        returnFN != null
-                            ? returnFN
-                            : (value) =>
+                        returnFN ?? (value) =>
                                 controller.text = accountModel.currency.format(
                                   accountModel.currency.parse(value),
                                   includeCurrencySymbol: false,

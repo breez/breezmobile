@@ -23,7 +23,7 @@ class BreezDateUtils {
       _yearMonthDayHourMinuteSecondFormat.format(d);
 
   static String formatTimelineRelative(DateTime d) {
-    if (DateTime.now().subtract(Duration(days: 4)).isBefore(d)) {
+    if (DateTime.now().subtract(const Duration(days: 4)).isBefore(d)) {
       return timeago.format(d, locale: getSystemLocale().languageCode);
     } else {
       return formatYearMonthDay(d);
@@ -36,7 +36,7 @@ class BreezDateUtils {
     var formatter = (startDate.year == endDate.year)
         ? _monthDateFormat
         : _yearMonthDayFormat;
-    return formatter.format(startDate) + "-" + formatter.format(endDate);
+    return "${formatter.format(startDate)}-${formatter.format(endDate)}";
   }
 
   static void setupLocales() {

@@ -15,10 +15,10 @@ class ViewSwitch extends StatelessWidget {
   final List<ViewSwitchItem> items;
 
   const ViewSwitch({
-    this.selected: 0,
-    this.tint: Colors.white,
-    this.textTint: Colors.white,
-    this.items: const [],
+    this.selected = 0,
+    this.tint = Colors.white,
+    this.textTint = Colors.white,
+    this.items = const [],
     Key key,
   }) : super(key: key);
 
@@ -48,7 +48,7 @@ class ViewSwitch extends StatelessWidget {
     for (var item in items) {
       if (index > 0) {
         children.add(
-          Container(
+          SizedBox(
             height: 20,
             child: VerticalDivider(
               width: max(16, emptyWidth / items.length),
@@ -67,7 +67,7 @@ class ViewSwitch extends StatelessWidget {
               behavior: HitTestBehavior.translucent,
               onTap: item.onTap,
               child: ConstrainedBox(
-                constraints: BoxConstraints(
+                constraints: const BoxConstraints(
                   minHeight: 48.0,
                 ),
                 child: Row(
@@ -126,7 +126,7 @@ class ViewSwitch extends StatelessWidget {
   }
 
   TextStyle _textStyle(ThemeData themeData, index) {
-    return themeData.textTheme.button.copyWith(
+    return themeData.textTheme.labelLarge.copyWith(
       color: textTint.withOpacity(selected == index ? 1 : 0.5),
     );
   }

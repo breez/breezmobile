@@ -13,8 +13,8 @@ void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
 
   group('breez_user_model_tests', () {
-    InjectorMock _injector;
-    UserProfileBloc _userProfileBloc;
+    InjectorMock injector;
+    UserProfileBloc userProfileBloc;
     FakePathProviderPlatform platform;
 
     setUp(() async {
@@ -22,26 +22,26 @@ void main() {
       platform = FakePathProviderPlatform();
       await platform.setUp();
       PathProviderPlatform.instance = platform;
-      _injector = InjectorMock();
-      ServiceInjector.configure(_injector);
-      _userProfileBloc = new UserProfileBloc();
+      injector = InjectorMock();
+      ServiceInjector.configure(injector);
+      userProfileBloc = UserProfileBloc();
     });
 
     tearDown(() async {
-      _injector.dispose();
+      injector.dispose();
       await platform.tearDown();
     });
 
     test("should return empty user when not registered", () async {
-      new BlocTester<void, BreezUserModel>(
-        _userProfileBloc.userStream,
+      BlocTester<void, BreezUserModel>(
+        userProfileBloc.userStream,
         (user) => expect(user.userID, null),
       );
     });
 
-    test("shoud return registered user", () async {
-      _userProfileBloc.registerSink.add(null);
-      final userID = await _userProfileBloc.userStream
+    test("should return registered user", () async {
+      userProfileBloc.registerSink.add(null);
+      var userID = await userProfileBloc.userStream
           .firstWhere((p) => p != null && p.userID != null)
           .then((p) => p.userID);
       expect(userID, isNotNull);

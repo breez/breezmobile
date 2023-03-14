@@ -16,7 +16,7 @@ class BlocTester<Input, Out> {
   ]);
 
   Future<void> run() {
-    Completer completer = new Completer<Out>();
+    Completer completer = Completer<Out>();
     outStream.listen((data) => completer.complete(data)).onError((e) {
       if (handleError != null) {
         handleError(e);

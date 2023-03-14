@@ -8,6 +8,7 @@ class CurrencyAmountFieldFormatter extends TextInputFormatter {
     this.fiatConversion,
   );
 
+  @override
   TextEditingValue formatEditUpdate(
     TextEditingValue oldValue,
     TextEditingValue newValue,

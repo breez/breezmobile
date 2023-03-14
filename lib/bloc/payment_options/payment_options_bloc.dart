@@ -15,7 +15,7 @@ const _kPaymentOptionBaseFee = "PAYMENT_OPTIONS_BASE_FEE";
 const _kPaymentOptionProportionalFee = "PAYMENT_OPTIONS_PROPORTIONAL_FEE";
 
 class PaymentOptionsBloc with AsyncActionsHandler {
-  ServiceInjector _injector = ServiceInjector();
+  final ServiceInjector _injector = ServiceInjector();
 
   final _paymentOptionsFeeEnabledStreamController = BehaviorSubject<bool>();
 

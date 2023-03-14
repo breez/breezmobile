@@ -26,31 +26,24 @@ class VerifyBackupPhrasePage extends StatefulWidget {
 
 class VerifyBackupPhrasePageState extends State<VerifyBackupPhrasePage> {
   final _formKey = GlobalKey<FormState>();
-  List _randomlySelectedIndexes = [];
+  final List _randomlySelectedIndexes = [];
   List<String> _mnemonicsList;
   bool _hasError;
 
   @override
   Widget build(BuildContext context) {
-    final themeData = Theme.of(context);
     final query = MediaQuery.of(context);
     final texts = context.texts();
     final backupBloc = AppBlocsProvider.of<BackupBloc>(context);
+
     return Scaffold(
       appBar: AppBar(
-        iconTheme: themeData.appBarTheme.iconTheme,
-        textTheme: themeData.appBarTheme.textTheme,
-        backgroundColor: themeData.canvasColor,
         automaticallyImplyLeading: false,
-        leading: backBtn.BackButton(),
-        title: Text(
-          texts.backup_phrase_generation_verify,
-          style: themeData.appBarTheme.textTheme.headline6,
-        ),
-        elevation: 0.0,
+        leading: const backBtn.BackButton(),
+        title: Text(texts.backup_phrase_generation_verify),
       ),
       body: SingleChildScrollView(
-        child: Container(
+        child: SizedBox(
           height: query.size.height - kToolbarHeight - query.padding.top,
           child: Column(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -156,7 +149,7 @@ class VerifyBackupPhrasePageState extends State<VerifyBackupPhrasePage> {
             ),
             style: theme.FieldTextStyle.textStyle,
             validator: (text) {
-              if (text.length == 0 ||
+              if (text.isEmpty ||
                   text.toLowerCase().trim() !=
                       _mnemonicsList[_randomlySelectedIndexes[index]]) {
                 setState(() {
@@ -174,9 +167,9 @@ class VerifyBackupPhrasePageState extends State<VerifyBackupPhrasePage> {
     );
     if (_hasError) {
       selectedWordList
-        ..add(Text(
+        .add(Text(
           texts.backup_phrase_generation_verification_failed,
-          style: themeData.textTheme.headline4.copyWith(
+          style: themeData.textTheme.headlineMedium.copyWith(
             fontSize: 12,
           ),
         ));

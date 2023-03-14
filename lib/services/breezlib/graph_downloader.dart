@@ -53,9 +53,7 @@ class GraphDownloader {
   }
 
   Future<File> downloadGraph(String downloadURL) async {   
-    if (_downloadCompleter == null) {
-      _downloadCompleter = Completer<File>();
-    }
+    _downloadCompleter ??= Completer<File>();
     (await preferences).setString("graph_url", downloadURL);
 
     var tasks = await downloadManager.loadTasks();
@@ -91,7 +89,7 @@ class GraphDownloader {
 
     log.info("Graph download started");
     var appDir = await getApplicationDocumentsDirectory();
-    var downloadDirPath = appDir.path + Platform.pathSeparator + 'Download';
+    var downloadDirPath = '${appDir.path}${Platform.pathSeparator}Download';
     var downloadDir = Directory(downloadDirPath);
     downloadDir.createSync(recursive: true);
     await downloadManager.enqueTask(downloadURL, downloadDir.path, "channel.db");    
@@ -106,19 +104,19 @@ class GraphDownloader {
       DownloadTaskStatus.failed
     ];
     var graphURL = (await preferences).getString("graph_url");
-    tasks.forEach((t) async {
+    for (var t in tasks) {
       if (t.url == graphURL && finishedStatuses.contains(t.status)) {
         await downloadManager.removeTask(t.taskId, shouldDeleteContent: true);
       }
-    });
+    }
     _downloadCompleter = null;
   }
 
   Future deleteAllDownloads() async {
     var tasks = await downloadManager.loadTasks();    
-    tasks.forEach((t) async {
+    for (var t in tasks) {
       await downloadManager.removeTask(t.taskId, shouldDeleteContent: true);
-    });
+    }
     _downloadCompleter = null;
   }
 }

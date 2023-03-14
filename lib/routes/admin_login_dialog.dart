@@ -9,7 +9,7 @@ import 'package:breez_translations/breez_translations_locales.dart';
 Future protectAdminAction(
   BuildContext context,
   BreezUserModel user,
-  Future onNext(),
+  Future Function() onNext,
 ) async {
   if (user.appMode == AppMode.pos && user.hasAdminPassword) {
     bool loggedIn = await showDialog(
@@ -82,13 +82,14 @@ class _AdminLoginDialogState extends State<_AdminLoginDialog> {
           ),
           hintColor: themeData.dialogTheme.contentTextStyle.color,
           colorScheme: ColorScheme.dark(
-            primary: themeData.textTheme.button.color,
+            primary: themeData.textTheme.labelLarge.color,
+            error: theme.themeId == "BLUE"
+                ? Colors.red
+                : themeData.colorScheme.error,
           ),
-          primaryColor: themeData.textTheme.button.color,
-          errorColor:
-              theme.themeId == "BLUE" ? Colors.red : themeData.errorColor,
+          primaryColor: themeData.textTheme.labelLarge.color,
         ),
-        child: Container(
+        child: SizedBox(
           width: MediaQuery.of(context).size.width,
           height: 100.0,
           child: ListView(
@@ -98,7 +99,7 @@ class _AdminLoginDialogState extends State<_AdminLoginDialog> {
                 key: _formKey,
                 child: TextFormField(
                   style: TextStyle(
-                    color: themeData.primaryTextTheme.headline4.color,
+                    color: themeData.primaryTextTheme.headlineMedium.color,
                   ),
                   focusNode: _passwordFocus,
                   obscureText: _passwordObscured,
@@ -112,7 +113,7 @@ class _AdminLoginDialogState extends State<_AdminLoginDialog> {
                     }
                   },
                   validator: (value) {
-                    if (value.length == 0) {
+                    if (value.isEmpty) {
                       return texts.admin_login_dialog_error_password_required;
                     }
                     return _lastError;
@@ -121,7 +122,7 @@ class _AdminLoginDialogState extends State<_AdminLoginDialog> {
                   decoration: InputDecoration(
                     labelText: texts.admin_login_dialog_password_label,
                     suffixIcon: IconButton(
-                      icon: Icon(Icons.remove_red_eye),
+                      icon: const Icon(Icons.remove_red_eye),
                       onPressed: () => setState(() {
                         _passwordObscured = !_passwordObscured;
                       }),
@@ -138,14 +139,14 @@ class _AdminLoginDialogState extends State<_AdminLoginDialog> {
         TextButton(
           child: Text(
             texts.admin_login_dialog_action_cancel,
-            style: themeData.primaryTextTheme.button,
+            style: themeData.primaryTextTheme.labelLarge,
           ),
           onPressed: () => Navigator.of(context).pop(false),
         ),
         TextButton(
           child: Text(
             texts.admin_login_dialog_action_ok,
-            style: themeData.primaryTextTheme.button,
+            style: themeData.primaryTextTheme.labelLarge,
           ),
           onPressed: () async {
             if (_formKey.currentState.validate()) {

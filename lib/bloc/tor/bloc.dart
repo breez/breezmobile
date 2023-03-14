@@ -8,7 +8,6 @@ import 'package:breez/services/breezlib/data/rpc.pb.dart';
 class TorBloc {
   static const platform = MethodChannel('com.breez.client/tor');
   TorConfig torConfig;
-  bool _torHasStarted = false;
   // backgroundService?
 
   Future<TorConfig> startTor() async {
@@ -19,8 +18,7 @@ class TorBloc {
       log.info('TorBloc.startTor: startTorService returned!');
 
       if (response.isNotEmpty) {
-        _torHasStarted = true;
-        log.info('TorBloc.startTor: received response: ${response}');
+        log.info('TorBloc.startTor: received response: $response');
 
         torConfig = TorConfig();
 
@@ -42,13 +40,11 @@ class TorBloc {
         torConfig.http = "$port";
         log.info('torBloc.startTor: torConfig.http: ${torConfig.http}');
 
-        log.info(
-            'TorBloc.startTor: tor has started with config : ${torConfig}');
+        log.info('TorBloc.startTor: tor has started with config : $torConfig');
       }
     } on PlatformException catch (e) {
       log.info('TorBloc.startTor failed: $e');
     }
-
     return torConfig;
   }
 }

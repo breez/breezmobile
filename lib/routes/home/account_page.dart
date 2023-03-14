@@ -55,7 +55,7 @@ class AccountPageState extends State<AccountPage>
       _accountBloc.paymentFilterStream.listen((event) {
         widget.scrollController.position
             .restoreOffset(widget.scrollController.offset + 1);
-        Future.delayed(Duration(milliseconds: 150), () => {setState(() {})});
+        Future.delayed(const Duration(milliseconds: 150), () => {setState(() {})});
       });
       _isInit = true;
     }
@@ -116,7 +116,7 @@ class AccountPageState extends State<AccountPage>
     final endDate = paymentsModel?.filter?.endDate;
     final dateFilterSpace = startDate != null && endDate != null ? 0.65 : 0.0;
     final payments = paymentsModel.paymentsList;
-    final bottomPlaceholderSpace = payments == null || payments.length == 0
+    final bottomPlaceholderSpace = payments == null || payments.isEmpty
         ? 0.0
         : (listHeightSpace -
                 (PAYMENT_LIST_ITEM_HEIGHT + 8) *
@@ -133,7 +133,7 @@ class AccountPageState extends State<AccountPage>
       delegate: WalletDashboardHeaderDelegate(_accountBloc, _userProfileBloc),
       pinned: true,
     ));
-    if (paymentsModel.nonFilteredItems.length > 0) {
+    if (paymentsModel.nonFilteredItems.isNotEmpty) {
       slivers.add(PaymentFilterSliver(
         widget.scrollController,
         FILTER_MIN_SIZE,
@@ -151,7 +151,7 @@ class AccountPageState extends State<AccountPage>
             FILTER_MAX_SIZE / 1.2,
             builder: (context, shrinkedHeight, overlapContent) {
               return Container(
-                padding: EdgeInsets.only(bottom: 8),
+                padding: const EdgeInsets.only(bottom: 8),
                 height: FILTER_MAX_SIZE / 1.2,
                 color: theme.customData[theme.themeId].dashboardBgColor,
                 child: _buildDateFilterChip(context, paymentsModel.filter),
@@ -162,7 +162,7 @@ class AccountPageState extends State<AccountPage>
       ));
     }
 
-    if (paymentsModel.nonFilteredItems.length > 0) {
+    if (paymentsModel.nonFilteredItems.isNotEmpty) {
       slivers.add(PaymentsList(
         userModel,
         payments,
@@ -192,11 +192,9 @@ class AccountPageState extends State<AccountPage>
                     ),
                   );
                 }
-                return Container(
-                  child: Padding(
-                    padding: const EdgeInsets.fromLTRB(40.0, 120.0, 40.0, 0.0),
-                    child: StatusText(account, message: message),
-                  ),
+                return Padding(
+                  padding: const EdgeInsets.fromLTRB(40.0, 120.0, 40.0, 0.0),
+                  child: StatusText(account, message: message),
                 );
               },
             );
@@ -206,12 +204,12 @@ class AccountPageState extends State<AccountPage>
     }
 
     return Stack(
-      key: Key("account_sliver"),
+      key: const Key("account_sliver"),
       fit: StackFit.expand,
       children: [
-        paymentsModel.nonFilteredItems.length == 0
+        paymentsModel.nonFilteredItems.isEmpty
             ? CustomPaint(painter: BubblePainter(context))
-            : SizedBox(),
+            : const SizedBox(),
         CustomScrollView(
           controller: widget.scrollController,
           slivers: slivers,
@@ -242,9 +240,9 @@ class AccountPageState extends State<AccountPage>
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
             Padding(
-              padding: EdgeInsets.only(top: 8, left: 16.0, bottom: 8),
+              padding: const EdgeInsets.only(top: 8, left: 16.0, bottom: 8),
               child: Chip(
-                backgroundColor: Theme.of(context).bottomAppBarColor,
+                backgroundColor: Theme.of(context).bottomAppBarTheme.color,
                 label: Text(BreezDateUtils.formatFilterDateRange(
                   filter.startDate,
                   filter.endDate,
@@ -272,10 +270,10 @@ class BubblePainter extends CustomPainter {
     final size = MediaQuery.of(context).size;
     final bubblePaint = Paint()
       ..color = theme.themeId == "BLUE"
-          ? Color(0xFF0085fb).withOpacity(0.1)
-          : Color(0xff4D88EC).withOpacity(0.1)
+          ? const Color(0xFF0085fb).withOpacity(0.1)
+          : const Color(0xff4D88EC).withOpacity(0.1)
       ..style = PaintingStyle.fill;
-    final bubbleRadius = 12.0;
+    const bubbleRadius = 12.0;
     final height = size.height - kToolbarHeight;
     canvas.drawCircle(
       Offset(size.width / 2, height * 0.36),
@@ -382,12 +380,12 @@ class NoLSPWidget extends StatelessWidget {
             )
           ],
         ),
-        SizedBox(height: 24),
+        const SizedBox(height: 24),
         Row(
           mainAxisAlignment: MainAxisAlignment.center,
           mainAxisSize: MainAxisSize.max,
           children: [
-            Container(
+            SizedBox(
               height: 24.0,
               child: OutlinedButton(
                 style: OutlinedButton.styleFrom(
@@ -395,7 +393,7 @@ class NoLSPWidget extends StatelessWidget {
                     borderRadius: BorderRadius.circular(6.0),
                   ),
                   side: BorderSide(
-                    color: themeData.textTheme.button.color,
+                    color: themeData.textTheme.labelLarge.color,
                     style: BorderStyle.solid,
                   ),
                 ),
@@ -403,7 +401,7 @@ class NoLSPWidget extends StatelessWidget {
                   texts.account_page_activation_provider_action_select,
                   style: TextStyle(
                     fontSize: 12.3,
-                    color: themeData.textTheme.button.color,
+                    color: themeData.textTheme.labelLarge.color,
                   ),
                 ),
                 onPressed: () => Navigator.of(context).pushNamed("/select_lsp"),

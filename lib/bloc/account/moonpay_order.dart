@@ -6,7 +6,7 @@ class MoonpayOrder {
   MoonpayOrder(this.address, this.url, this.orderTimestamp);
 
   MoonpayOrder.fromJson(Map<String, dynamic> json)
-      : this(json["address"], json["url"], json["orderTimestamp"] ?? null);
+      : this(json["address"], json["url"], json["orderTimestamp"]);
 
   Map<String, dynamic> toJson() {
     return {
@@ -17,6 +17,6 @@ class MoonpayOrder {
   }
 
   MoonpayOrder copyWith({int orderTimestamp}) {
-    return MoonpayOrder(this.address, this.url, orderTimestamp);
+    return MoonpayOrder(address, url, orderTimestamp);
   }
 }

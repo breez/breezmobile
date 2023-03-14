@@ -45,7 +45,7 @@ class CurrencyConverterDialogState extends State<CurrencyConverterDialog>
 
   double _exchangeRate;
 
-  AutoSizeGroup _autoSizeGroup = AutoSizeGroup();
+  final AutoSizeGroup _autoSizeGroup = AutoSizeGroup();
 
   bool _isInit = false;
 
@@ -55,7 +55,7 @@ class CurrencyConverterDialogState extends State<CurrencyConverterDialog>
     _fiatAmountController.addListener(() => setState(() {}));
     _controller = AnimationController(
       vsync: this,
-      duration: Duration(milliseconds: 400),
+      duration: const Duration(milliseconds: 400),
     );
     // Loop back to start and stop
     _controller.addStatusListener((status) {
@@ -83,7 +83,7 @@ class CurrencyConverterDialogState extends State<CurrencyConverterDialog>
       });
 
       fetchRatesAction.future.catchError((err) {
-        if (this.mounted) {
+        if (mounted) {
           setState(() {
             Navigator.pop(context);
             showFlushbar(
@@ -96,8 +96,8 @@ class CurrencyConverterDialogState extends State<CurrencyConverterDialog>
 
       _colorAnimation = ColorTween(
         // change to white according to theme
-        begin: themeData.primaryTextTheme.headline4.color,
-        end: themeData.primaryTextTheme.button.color,
+        begin: themeData.primaryTextTheme.headlineMedium.color,
+        end: themeData.primaryTextTheme.labelLarge.color,
       ).animate(_controller)
         ..addListener(() {
           setState(() {});
@@ -128,7 +128,7 @@ class CurrencyConverterDialogState extends State<CurrencyConverterDialog>
 
         if (account.preferredFiatConversionList.isEmpty ||
             account.fiatCurrency == null) {
-          return Loader();
+          return const Loader();
         }
 
         double exchangeRate = account.preferredFiatConversionList
@@ -149,8 +149,8 @@ class CurrencyConverterDialogState extends State<CurrencyConverterDialog>
             ),
             child: _dialogBody(context, account),
           ),
-          titlePadding: EdgeInsets.fromLTRB(24.0, 16.0, 16.0, 8.0),
-          contentPadding: EdgeInsets.fromLTRB(24.0, 0.0, 24.0, 16.0),
+          titlePadding: const EdgeInsets.fromLTRB(24.0, 16.0, 16.0, 8.0),
+          contentPadding: const EdgeInsets.fromLTRB(24.0, 0.0, 24.0, 16.0),
           content: _dialogContent(context, account),
           actions: _buildActions(context, account),
         );
@@ -165,7 +165,7 @@ class CurrencyConverterDialogState extends State<CurrencyConverterDialog>
     final items = account.preferredFiatConversionList.map((value) {
       return DropdownMenuItem<String>(
         value: value.currencyData.shortName,
-        child: Container(
+        child: SizedBox(
           width: 36,
           child: AutoSizeText(
             value.currencyData.shortName,
@@ -180,7 +180,7 @@ class CurrencyConverterDialogState extends State<CurrencyConverterDialog>
       );
     });
 
-    return Container(
+    return SizedBox(
       width: MediaQuery.of(context).size.width,
       height: 50.0,
       child: Row(
@@ -188,6 +188,7 @@ class CurrencyConverterDialogState extends State<CurrencyConverterDialog>
         children: [
           Expanded(
             child: Padding(
+              padding: const EdgeInsets.only(right: 0.0, bottom: 2.0),
               child: AutoSizeText(
                 texts.currency_converter_dialog_title,
                 style: themeData.dialogTheme.titleTextStyle,
@@ -196,12 +197,11 @@ class CurrencyConverterDialogState extends State<CurrencyConverterDialog>
                 stepGranularity: 0.1,
                 group: _autoSizeGroup,
               ),
-              padding: const EdgeInsets.only(right: 0.0, bottom: 2.0),
             ),
           ),
           Theme(
             data: themeData.copyWith(
-              canvasColor: themeData.backgroundColor,
+              canvasColor: themeData.colorScheme.background,
             ),
             child: DropdownButtonHideUnderline(
               child: ButtonTheme(
@@ -241,24 +241,24 @@ class CurrencyConverterDialogState extends State<CurrencyConverterDialog>
               ),
               errorBorder: UnderlineInputBorder(
                 borderSide: BorderSide(
-                  color: isBlue ? Colors.red : themeData.errorColor,
+                  color: isBlue ? Colors.red : themeData.colorScheme.error,
                 ),
               ),
               focusedErrorBorder: UnderlineInputBorder(
                 borderSide: BorderSide(
-                  color: isBlue ? Colors.red : themeData.errorColor,
+                  color: isBlue ? Colors.red : themeData.colorScheme.error,
                 ),
               ),
               errorMaxLines: 2,
-              errorStyle: themeData.primaryTextTheme.caption.copyWith(
-                color: isBlue ? Colors.red : themeData.errorColor,
+              errorStyle: themeData.primaryTextTheme.bodySmall.copyWith(
+                color: isBlue ? Colors.red : themeData.colorScheme.error,
               ),
             ),
             // Do not allow '.' when fractionSize is 0 and only allow fiat currencies fractionSize number of digits after decimal point
             inputFormatters: [
               CurrencyAmountFieldFormatter(account.fiatCurrency),
             ],
-            keyboardType: TextInputType.numberWithOptions(decimal: true),
+            keyboardType: const TextInputType.numberWithOptions(decimal: true),
             focusNode: _fiatAmountFocusNode,
             autofocus: true,
             onEditingComplete: () => _fiatAmountFocusNode.unfocus(),
@@ -278,7 +278,7 @@ class CurrencyConverterDialogState extends State<CurrencyConverterDialog>
             children: [
               Text(
                 _contentMessage(context, account),
-                style: themeData.textTheme.headline5.copyWith(
+                style: themeData.textTheme.headlineSmall.copyWith(
                   fontSize: 16.0,
                 ),
               ),
@@ -299,7 +299,7 @@ class CurrencyConverterDialogState extends State<CurrencyConverterDialog>
         onPressed: () => Navigator.pop(context),
         child: Text(
           texts.currency_converter_dialog_action_cancel,
-          style: themeData.primaryTextTheme.button,
+          style: themeData.primaryTextTheme.labelLarge,
         ),
       ),
     ];
@@ -323,7 +323,7 @@ class CurrencyConverterDialogState extends State<CurrencyConverterDialog>
           },
           child: Text(
             texts.currency_converter_dialog_action_done,
-            style: themeData.primaryTextTheme.button,
+            style: themeData.primaryTextTheme.labelLarge,
           ),
         ),
       );
@@ -373,7 +373,7 @@ class CurrencyConverterDialogState extends State<CurrencyConverterDialog>
     return _exchangeRate == null
         ? Text(
             "",
-            style: themeData.primaryTextTheme.subtitle2,
+            style: themeData.primaryTextTheme.titleSmall,
           )
         : Text(
             texts.currency_converter_dialog_rate(
@@ -383,7 +383,7 @@ class CurrencyConverterDialogState extends State<CurrencyConverterDialog>
               ),
               fiatConversion.currencyData.shortName,
             ),
-            style: themeData.primaryTextTheme.subtitle2.copyWith(
+            style: themeData.primaryTextTheme.titleSmall.copyWith(
               color: _colorAnimation.value,
             ),
           );

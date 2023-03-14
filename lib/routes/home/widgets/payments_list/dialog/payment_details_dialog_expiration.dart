@@ -21,7 +21,8 @@ class PaymentDetailsDialogExpiration extends StatelessWidget {
     final texts = context.texts();
     final themeData = Theme.of(context);
 
-    if (!paymentInfo.pending || paymentInfo.type == PaymentType.CLOSED_CHANNEL) {
+    if (!paymentInfo.pending ||
+        paymentInfo.type == PaymentType.CLOSED_CHANNEL) {
       return Container();
     }
 
@@ -35,7 +36,7 @@ class PaymentDetailsDialogExpiration extends StatelessWidget {
             padding: const EdgeInsets.only(right: 8.0),
             child: AutoSizeText(
               texts.payment_details_dialog_expiration,
-              style: themeData.primaryTextTheme.headline4,
+              style: themeData.primaryTextTheme.headlineMedium,
               textAlign: TextAlign.left,
               maxLines: 1,
               group: labelAutoSizeGroup,
@@ -45,14 +46,14 @@ class PaymentDetailsDialogExpiration extends StatelessWidget {
             child: SingleChildScrollView(
               scrollDirection: Axis.horizontal,
               reverse: true,
-              padding: EdgeInsets.only(left: 8.0),
+              padding: const EdgeInsets.only(left: 8.0),
               child: AutoSizeText(
                 BreezDateUtils.formatYearMonthDayHourMinute(
                   DateTime.fromMillisecondsSinceEpoch(
                     paymentInfo.pendingExpirationTimestamp.toInt() * 1000,
                   ),
                 ),
-                style: themeData.primaryTextTheme.headline3,
+                style: themeData.primaryTextTheme.displaySmall,
                 textAlign: TextAlign.right,
                 maxLines: 1,
                 group: valueAutoSizeGroup,

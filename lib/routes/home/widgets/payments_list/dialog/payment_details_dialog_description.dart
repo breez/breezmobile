@@ -30,7 +30,7 @@ class PaymentDetailsDialogDescription extends StatelessWidget {
           child: SingleChildScrollView(
             child: AutoSizeText(
               description,
-              style: themeData.primaryTextTheme.headline4,
+              style: themeData.primaryTextTheme.headlineMedium,
               textAlign: description.length > 40 && !description.contains("\n") ? TextAlign.start : TextAlign.center,
             ),
           ),

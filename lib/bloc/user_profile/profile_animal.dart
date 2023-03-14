@@ -119,57 +119,57 @@ extension ProfileAnimalExtension on ProfileAnimal {
   IconData get iconData {
     switch (this) {
       case ProfileAnimal.BAT:
-        return IconData(0xe900, fontFamily: 'animals');
+        return const IconData(0xe900, fontFamily: 'animals');
       case ProfileAnimal.BEAR:
-        return IconData(0xe901, fontFamily: 'animals');
+        return const IconData(0xe901, fontFamily: 'animals');
       case ProfileAnimal.BOAR:
-        return IconData(0xe902, fontFamily: 'animals');
+        return const IconData(0xe902, fontFamily: 'animals');
       case ProfileAnimal.CAT:
-        return IconData(0xe903, fontFamily: 'animals');
+        return const IconData(0xe903, fontFamily: 'animals');
       case ProfileAnimal.CHICK:
-        return IconData(0xe904, fontFamily: 'animals');
+        return const IconData(0xe904, fontFamily: 'animals');
       case ProfileAnimal.COW:
-        return IconData(0xe905, fontFamily: 'animals');
+        return const IconData(0xe905, fontFamily: 'animals');
       case ProfileAnimal.DEER:
-        return IconData(0xe906, fontFamily: 'animals');
+        return const IconData(0xe906, fontFamily: 'animals');
       case ProfileAnimal.DOG:
-        return IconData(0xe907, fontFamily: 'animals');
+        return const IconData(0xe907, fontFamily: 'animals');
       case ProfileAnimal.EAGLE:
-        return IconData(0xe908, fontFamily: 'animals');
+        return const IconData(0xe908, fontFamily: 'animals');
       case ProfileAnimal.ELEPHANT:
-        return IconData(0xe909, fontFamily: 'animals');
+        return const IconData(0xe909, fontFamily: 'animals');
       case ProfileAnimal.FOX:
-        return IconData(0xe90a, fontFamily: 'animals');
+        return const IconData(0xe90a, fontFamily: 'animals');
       case ProfileAnimal.FROG:
-        return IconData(0xe90b, fontFamily: 'animals');
+        return const IconData(0xe90b, fontFamily: 'animals');
       case ProfileAnimal.HIPPO:
-        return IconData(0xe90c, fontFamily: 'animals');
+        return const IconData(0xe90c, fontFamily: 'animals');
       case ProfileAnimal.HUMMINGBIRD:
-        return IconData(0xe90d, fontFamily: 'animals');
+        return const IconData(0xe90d, fontFamily: 'animals');
       case ProfileAnimal.KOALA:
-        return IconData(0xe90e, fontFamily: 'animals');
+        return const IconData(0xe90e, fontFamily: 'animals');
       case ProfileAnimal.LION:
-        return IconData(0xe90f, fontFamily: 'animals');
+        return const IconData(0xe90f, fontFamily: 'animals');
       case ProfileAnimal.MONKEY:
-        return IconData(0xe910, fontFamily: 'animals');
+        return const IconData(0xe910, fontFamily: 'animals');
       case ProfileAnimal.MOUSE:
-        return IconData(0xe911, fontFamily: 'animals');
+        return const IconData(0xe911, fontFamily: 'animals');
       case ProfileAnimal.OWL:
-        return IconData(0xe912, fontFamily: 'animals');
+        return const IconData(0xe912, fontFamily: 'animals');
       case ProfileAnimal.OX:
-        return IconData(0xe913, fontFamily: 'animals');
+        return const IconData(0xe913, fontFamily: 'animals');
       case ProfileAnimal.PANDA:
-        return IconData(0xe914, fontFamily: 'animals');
+        return const IconData(0xe914, fontFamily: 'animals');
       case ProfileAnimal.PIG:
-        return IconData(0xe915, fontFamily: 'animals');
+        return const IconData(0xe915, fontFamily: 'animals');
       case ProfileAnimal.RABBIT:
-        return IconData(0xe916, fontFamily: 'animals');
+        return const IconData(0xe916, fontFamily: 'animals');
       case ProfileAnimal.SEAGULL:
-        return IconData(0xe917, fontFamily: 'animals');
+        return const IconData(0xe917, fontFamily: 'animals');
       case ProfileAnimal.SHEEP:
-        return IconData(0xe918, fontFamily: 'animals');
+        return const IconData(0xe918, fontFamily: 'animals');
       case ProfileAnimal.SNAKE:
-        return IconData(0xe919, fontFamily: 'animals');
+        return const IconData(0xe919, fontFamily: 'animals');
       default:
         return Icons.bug_report;
     }

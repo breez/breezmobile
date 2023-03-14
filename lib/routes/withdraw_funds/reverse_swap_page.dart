@@ -95,19 +95,12 @@ class ReverseSwapPageState extends State<ReverseSwapPage> {
         final accountModel = accSnapshot.data;
 
         return Scaffold(
-          appBar: !_policyCompleter.isCompleted ||
-                  _loadingError != null
+          appBar: !_policyCompleter.isCompleted || _loadingError != null
               ? AppBar(
-                  iconTheme: themeData.appBarTheme.iconTheme,
-                  backgroundColor: themeData.canvasColor,
                   leading: backBtn.BackButton(
                     onPressed: () => Navigator.of(context).pop(),
                   ),
-                  title: Text(
-                    texts.reverse_swap_title,
-                    style: themeData.appBarTheme.textTheme.headline6,
-                  ),
-                  elevation: 0.0, toolbarTextStyle: themeData.appBarTheme.textTheme.bodyText2, titleTextStyle: themeData.appBarTheme.textTheme.headline6,
+                  title: Text(texts.reverse_swap_title),
                 )
               : null,
           body: FutureBuilder<Object>(
@@ -206,7 +199,7 @@ class ReverseSwapPageState extends State<ReverseSwapPage> {
 
     return PageView(
       controller: _pageController,
-      physics: NeverScrollableScrollPhysics(),
+      physics: const NeverScrollableScrollPhysics(),
       children: [
         WithdrawFundsPage(
           title: texts.reverse_swap_title,
@@ -231,21 +224,21 @@ class ReverseSwapPageState extends State<ReverseSwapPage> {
                 pol,
               ));
               _pageController.nextPage(
-                duration: Duration(milliseconds: 250),
+                duration: const Duration(milliseconds: 250),
                 curve: Curves.easeInOut,
               );
             });
           },
         ),
         currentSwap == null
-            ? SizedBox()
+            ? const SizedBox()
             : ReverseSwapConfirmation(
                 swap: currentSwap,
                 bloc: reverseSwapBloc,
                 onFeeConfirmed: _onFeeConfirmed,
                 onPrevious: () => _pageController
                     .previousPage(
-                      duration: Duration(milliseconds: 250),
+                      duration: const Duration(milliseconds: 250),
                       curve: Curves.easeInOut,
                     )
                     .then((_) => _reverseSwapsStream.add(null)),
@@ -297,8 +290,8 @@ class UnconfirmedChannels extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.only(top: 48, left: 16, right: 16),
       child: AnimatedCrossFade(
-        duration: Duration(milliseconds: 300),
-        crossFadeState: this.accountModel.synced
+        duration: const Duration(milliseconds: 300),
+        crossFadeState: accountModel.synced
             ? CrossFadeState.showSecond
             : CrossFadeState.showFirst,
         firstChild: Column(
@@ -307,7 +300,7 @@ class UnconfirmedChannels extends StatelessWidget {
             Row(
               mainAxisSize: MainAxisSize.max,
               mainAxisAlignment: MainAxisAlignment.center,
-              children: [
+              children: const [
                 Expanded(
                   child: SyncProgressDialog(
                     progressColor: Colors.white,

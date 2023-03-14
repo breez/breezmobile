@@ -5,11 +5,11 @@ class AlignMiddle extends StatelessWidget {
   final double height;
   final double width;
 
-  AlignMiddle({this.child, this.height, this.width});
+  const AlignMiddle({this.child, this.height, this.width});
 
   @override
   Widget build(BuildContext context) {
-    return Container(
+    return SizedBox(
       height: height,
       width: width,
       child: Column(

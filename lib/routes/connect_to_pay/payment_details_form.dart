@@ -16,7 +16,7 @@ class PaymentDetailsForm extends StatefulWidget {
   final PaymentSessionState _sessionState;
   final Function(Int64 amount, {String description}) _onSubmitPaymentDetails;
 
-  PaymentDetailsForm(
+  const PaymentDetailsForm(
     this._account,
     this._sessionState,
     this._onSubmitPaymentDetails,
@@ -62,7 +62,7 @@ class _PaymentDetailsFormState extends State<PaymentDetailsForm> {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Container(
+            SizedBox(
               height: max(
                 formMinHeight,
                 constraints.maxHeight - bottomBarHeight,
@@ -94,7 +94,7 @@ class _PaymentDetailsFormState extends State<PaymentDetailsForm> {
                         style: theme.FieldTextStyle.textStyle,
                       ),
                       Container(
-                        padding: EdgeInsets.only(top: 36.0),
+                        padding: const EdgeInsets.only(top: 36.0),
                         child: Row(
                           children: [
                             Text(
@@ -102,7 +102,7 @@ class _PaymentDetailsFormState extends State<PaymentDetailsForm> {
                               style: theme.textStyle,
                             ),
                             Padding(
-                              padding: EdgeInsets.only(left: 3.0),
+                              padding: const EdgeInsets.only(left: 3.0),
                               child: Text(
                                 widget._account.currency.format(
                                   widget._account.balance,

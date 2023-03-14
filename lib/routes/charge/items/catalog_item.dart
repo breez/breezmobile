@@ -42,15 +42,15 @@ class CatalogItem extends StatelessWidget {
           child: PopupMenuButton(
             key: _menuKey,
             color: themeData.highlightColor,
-            offset: Offset(12, 24),
+            offset: const Offset(12, 24),
             itemBuilder: (_) => [
               PopupMenuItem(
                 child: TextButton.icon(
                   label: Text(
                     texts.catalog_item_action_edit,
-                    style: themeData.textTheme.subtitle1,
+                    style: themeData.textTheme.titleMedium,
                   ),
-                  icon: Icon(
+                  icon: const Icon(
                     Icons.edit_rounded,
                     color: Colors.white,
                   ),
@@ -70,9 +70,9 @@ class CatalogItem extends StatelessWidget {
                 child: TextButton.icon(
                   label: Text(
                     texts.catalog_item_action_delete,
-                    style: themeData.textTheme.subtitle1,
+                    style: themeData.textTheme.titleMedium,
                   ),
-                  icon: Icon(
+                  icon: const Icon(
                     Icons.delete_forever_rounded,
                     color: Colors.white,
                   ),
@@ -139,8 +139,8 @@ class CatalogItem extends StatelessWidget {
         Divider(
           height: 0.0,
           color: _lastItem
-              ? Color.fromRGBO(255, 255, 255, 0.0)
-              : Color.fromRGBO(255, 255, 255, 0.12),
+              ? const Color.fromRGBO(255, 255, 255, 0.0)
+              : const Color.fromRGBO(255, 255, 255, 0.12),
           indent: 72.0,
         ),
       ],

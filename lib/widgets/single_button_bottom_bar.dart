@@ -17,7 +17,7 @@ class SingleButtonBottomBar extends StatelessWidget {
   Widget build(BuildContext context) {
     return Padding(
       padding: EdgeInsets.only(
-        bottom: this.stickToBottom
+        bottom: stickToBottom
             ? MediaQuery.of(context).viewInsets.bottom + 40.0
             : 40.0,
       ),
@@ -25,13 +25,13 @@ class SingleButtonBottomBar extends StatelessWidget {
         mainAxisSize: MainAxisSize.min,
         children: [
           ConstrainedBox(
-            constraints: BoxConstraints(
+            constraints: const BoxConstraints(
               minHeight: 48.0,
               minWidth: 168.0,
             ),
             child: SubmitButton(
-              this.text,
-              this.onPressed,
+              text,
+              onPressed,
             ),
           ),
         ],
@@ -52,13 +52,13 @@ class SubmitButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ConstrainedBox(
-      constraints: BoxConstraints(
+      constraints: const BoxConstraints(
         minHeight: 48.0,
         minWidth: 168.0,
       ),
       child: ActionButton(
-        text:  this.text,
-        onPressed: this.onPressed,
+        text:  text,
+        onPressed: onPressed,
         enabled: true,
         fill: true,
         variant: Variant.fab,

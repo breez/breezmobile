@@ -31,7 +31,7 @@ class PosPaymentItem extends StatelessWidget {
       alignment: Alignment.bottomCenter,
       children: [
         Padding(
-          padding: EdgeInsets.only(bottom: 10.0),
+          padding: const EdgeInsets.only(bottom: 10.0),
           child: ListTile(
             title: Text(
               BreezDateUtils.formatYearMonthDayHourMinute(
@@ -63,8 +63,8 @@ class PosPaymentItem extends StatelessWidget {
         Divider(
           height: 0.0,
           color: _lastItem
-              ? Color.fromRGBO(255, 255, 255, 0.0)
-              : Color.fromRGBO(255, 255, 255, 0.12),
+              ? const Color.fromRGBO(255, 255, 255, 0.0)
+              : const Color.fromRGBO(255, 255, 255, 0.12),
           indent: 16.0,
         ),
       ],

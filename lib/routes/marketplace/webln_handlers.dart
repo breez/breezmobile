@@ -11,39 +11,39 @@ import 'package:flutter/services.dart' show rootBundle;
 
 import 'make_invoice_request.dart';
 
-class WeblnHandlers {
+class WebLNHandlers {
   final BuildContext context;
   final AccountBloc accountBloc;
   final InvoiceBloc invoiceBloc;
   StreamSubscription<CompletedPayment> _sentPaymentResultSubscription;
   StreamSubscription<PaymentRequestModel> _readyInvoicesSubscription;
   StreamSubscription<AccountModel> _accountModelSubscription;
-  Completer<String> _currentInovoiceRequestCompleter;
+  Completer<String> _currentInvoiceRequestCompleter;
   AccountModel _account;
 
-  WeblnHandlers(this.context, this.accountBloc, this.invoiceBloc) {
+  WebLNHandlers(this.context, this.accountBloc, this.invoiceBloc) {
     _readyInvoicesSubscription = invoiceBloc.readyInvoicesStream
         .asBroadcastStream()
         .where((p) => p != null)
         .listen((bolt11) {
-      _currentInovoiceRequestCompleter?.complete(bolt11.rawPayReq);
-      _currentInovoiceRequestCompleter = null;
+      _currentInvoiceRequestCompleter?.complete(bolt11.rawPayReq);
+      _currentInvoiceRequestCompleter = null;
     }, onError: (_) {
-      _currentInovoiceRequestCompleter?.completeError("Failed");
-      _currentInovoiceRequestCompleter = null;
+      _currentInvoiceRequestCompleter?.completeError("Failed");
+      _currentInvoiceRequestCompleter = null;
     });
 
     _accountModelSubscription =
         accountBloc.accountStream.listen((acc) => _account = acc);
   }
 
-  Future<String> get initWeblnScript =>
+  Future<String> get initWebLNScript =>
       rootBundle.loadString('src/scripts/initializeWebLN.js');
 
   Future<String> handleMessage(postMessage) async {
     Map<String,
             Future<Map<String, dynamic>> Function(Map<String, dynamic> data)>
-        _handlersMapping = {
+        handlersMapping = {
       "sendPayment": _sendPayment,
       "makeInvoice": _makeInvoice,
       "enable": (_) => Future.value({}),
@@ -54,7 +54,7 @@ class WeblnHandlers {
 
     String action = postMessage["action"];
     var requestId = postMessage["requestId"];
-    var handler = _handlersMapping[action];
+    var handler = handlersMapping[action];
     if (handler != null) {
       try {
         var result = await handler(postMessage);
@@ -124,8 +124,8 @@ class WeblnHandlers {
   }
 
   Future<String> _trackInvoice() {
-    _currentInovoiceRequestCompleter = Completer<String>();
-    return _currentInovoiceRequestCompleter.future;
+    _currentInvoiceRequestCompleter = Completer<String>();
+    return _currentInvoiceRequestCompleter.future;
   }
 
   Future _trackPayment(String bolt11) {

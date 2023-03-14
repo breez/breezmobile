@@ -19,16 +19,18 @@ Future<File> get _logFile async {
 
 void shareLog() {
   _logFile.then((file) {
-    Share.shareFiles(
-      [file.path],
+    final logFile = XFile(file.path);
+    Share.shareXFiles(
+      [logFile],
       text: getSystemAppLocalizations().share_log_text,
     );
   });
 }
 
 Future shareFile(String filePath) {
-  return Share.shareFiles(
-    [filePath],
+  final file = XFile(filePath);
+  return Share.shareXFiles(
+    [file],
     text: getSystemAppLocalizations().share_file_title,
   );
 }
@@ -51,8 +53,8 @@ class BreezLogger {
       final stack = details.stack?.toString() ?? "NoStack";
       final name = details.context?.name ?? "FlutterError";
       final exception = details.exceptionAsString();
-      breezBridge.log(exception + '\n' + stack, name);
-      print(exception + '\n' + stack + " --" + name);
+      breezBridge.log('$exception\n$stack', name);
+      print("$exception\n$stack --$name");
     };
   }
 }

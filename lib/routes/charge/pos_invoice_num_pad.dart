@@ -26,7 +26,7 @@ class PosInvoiceNumPad extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
+    return SizedBox(
       width: width,
       height: height,
       child: Column(
@@ -92,7 +92,7 @@ class PosInvoiceNumPad extends StatelessWidget {
       height: height / 4.0,
       decoration: BoxDecoration(
         border: Border.all(
-          color: themeData.backgroundColor,
+          color: themeData.colorScheme.background,
           width: 0.5,
         ),
       ),
@@ -119,7 +119,7 @@ class PosInvoiceNumPad extends StatelessWidget {
       height: height / 4.0,
       decoration: BoxDecoration(
         border: Border.all(
-          color: themeData.backgroundColor,
+          color: themeData.colorScheme.background,
           width: 0.5,
         ),
       ),
@@ -148,7 +148,7 @@ class PosInvoiceNumPad extends StatelessWidget {
       height: height / 4.0,
       decoration: BoxDecoration(
         border: Border.all(
-          color: themeData.backgroundColor,
+          color: themeData.colorScheme.background,
           width: 0.5,
         ),
       ),

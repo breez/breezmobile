@@ -52,7 +52,7 @@ class FeeChooser extends StatelessWidget {
             )
           ],
         ),
-        SizedBox(
+        const SizedBox(
           height: 12.0,
         ),
         Row(
@@ -76,16 +76,16 @@ class FeeChooser extends StatelessWidget {
     final themeData = Theme.of(context);
     final borderColor = themeData.colorScheme.onSurface.withOpacity(0.4);
     Border border;
-    var borderRadius;
+    BorderRadius borderRadius;
     if (index == 0) {
       border = Border.all(color: borderColor);
-      borderRadius = BorderRadius.only(
+      borderRadius = const BorderRadius.only(
         topLeft: Radius.circular(5.0),
         bottomLeft: Radius.circular(5.0),
       );
     } else if (index == 2) {
       border = Border.all(color: borderColor);
-      borderRadius = BorderRadius.only(
+      borderRadius = const BorderRadius.only(
         topRight: Radius.circular(5.0),
         bottomRight: Radius.circular(5.0),
       );
@@ -96,7 +96,7 @@ class FeeChooser extends StatelessWidget {
       );
     }
 
-    bool isSelected = this.selectedIndex == index;
+    bool isSelected = selectedIndex == index;
     return DecoratedBox(
       decoration: BoxDecoration(
         borderRadius: borderRadius,
@@ -109,7 +109,7 @@ class FeeChooser extends StatelessWidget {
         onPressed: disabled ? null : () => onSelect(index),
         child: Text(
           text,
-          style: themeData.textTheme.button.copyWith(
+          style: themeData.textTheme.labelLarge.copyWith(
             color: disabled
                 ? themeData.colorScheme.onSurface.withOpacity(0.4)
                 : isSelected
@@ -155,7 +155,7 @@ class ProcessingSpeed extends StatelessWidget {
       children: [
         Text(
           _estimatedDelivery(context),
-          style: themeData.textTheme.button.copyWith(
+          style: themeData.textTheme.labelLarge.copyWith(
             color: themeData.colorScheme.onSurface.withOpacity(0.4),
           ),
         ),

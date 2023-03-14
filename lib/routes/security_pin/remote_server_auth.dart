@@ -1,23 +1,21 @@
-import 'dart:convert';
 import 'dart:io';
 
-import 'package:breez/bloc/tor/bloc.dart';
 import 'package:breez/bloc/backup/backup_bloc.dart';
 import 'package:breez/bloc/backup/backup_model.dart';
 import 'package:breez/bloc/blocs_provider.dart';
-import 'package:breez/routes/podcast/theme.dart';
+import 'package:breez/bloc/tor/bloc.dart';
+import 'package:breez/logger.dart';
 import 'package:breez/routes/network/network.dart';
+import 'package:breez/routes/podcast/theme.dart';
+import 'package:breez/services/injector.dart';
 import 'package:breez/widgets/back_button.dart' as backBtn;
 import 'package:breez/widgets/error_dialog.dart';
 import 'package:breez/widgets/loader.dart';
 import 'package:breez/widgets/route.dart';
 import 'package:breez/widgets/single_button_bottom_bar.dart';
-import 'package:breez/logger.dart';
-import 'package:dio/dio.dart';
-import 'package:flutter/material.dart';
 import 'package:breez_translations/breez_translations_locales.dart';
+import 'package:flutter/material.dart';
 import 'package:validators/validators.dart';
-import 'package:webdav_client/webdav_client.dart' as webdav;
 
 Future<RemoteServerAuthData> promptAuthData(
   BuildContext context, {
@@ -38,8 +36,6 @@ Future<RemoteServerAuthData> promptAuthData(
 const String BREEZ_BACKUP_DIR = "DO_NOT_DELETE_Breez_Backup";
 
 class RemoteServerAuthPage extends StatefulWidget {
-  final String _title = "Remote Server";
-
   final BackupBloc _backupBloc;
   final TorBloc _torBloc;
   final bool restore;
@@ -59,8 +55,11 @@ class RemoteServerAuthPageState extends State<RemoteServerAuthPage> {
   final _passwordController = TextEditingController();
 
   bool failDiscoverURL = false;
+  bool failNoBackupFound = false;
   bool failAuthenticate = false;
   bool _passwordObscured = true;
+
+  ServiceInjector injector = ServiceInjector();
 
   String appendPath(String uri, List<String> pathSegments) {
     var uriObject = Uri.parse(uri);
@@ -72,25 +71,26 @@ class RemoteServerAuthPageState extends State<RemoteServerAuthPage> {
   @override
   void initState() {
     super.initState();
-    widget._backupBloc.backupSettingsStream.first.then((value) {
-      var data = value.remoteServerAuthData;
-      if (data != null) {
-        var backupDirPathSegments = data.breezDir.split("/");
-        _urlController.text = data.url;
-        if (backupDirPathSegments.length > 1) {
-          backupDirPathSegments.removeLast();
-          _urlController.text = appendPath(data.url, backupDirPathSegments);
+    widget._backupBloc.backupSettingsStream.first.then(
+      (value) {
+        var data = value.remoteServerAuthData;
+        if (data != null) {
+          var backupDirPathSegments = data.breezDir.split("/");
+          _urlController.text = data.url;
+          if (backupDirPathSegments.length > 1) {
+            backupDirPathSegments.removeLast();
+            _urlController.text = appendPath(data.url, backupDirPathSegments);
+          }
+          _userController.text = data.user;
+          _passwordController.text = data.password;
         }
-        _userController.text = data.user;
-        _passwordController.text = data.password;
-      }
-    });
+      },
+    );
   }
 
   @override
   Widget build(BuildContext context) {
     final texts = context.texts();
-    final themeData = Theme.of(context);
     final nav = Navigator.of(context);
 
     return StreamBuilder<BackupSettings>(
@@ -98,22 +98,13 @@ class RemoteServerAuthPageState extends State<RemoteServerAuthPage> {
         builder: (context, snapshot) {
           return Scaffold(
               appBar: AppBar(
+                automaticallyImplyLeading: false,
                 leading: backBtn.BackButton(
                   onPressed: () {
                     nav.pop(null);
                   },
                 ),
-                automaticallyImplyLeading: false,
-                iconTheme: themeData.appBarTheme.iconTheme,
-                textTheme: themeData.appBarTheme.textTheme,
-                backgroundColor: themeData.canvasColor,
-                title: Text(
-                  texts.remote_server_title,
-                  style: themeData.appBarTheme.textTheme.headline6,
-                ),
-                elevation: 0.0,
-                toolbarTextStyle: themeData.appBarTheme.textTheme.bodyText2,
-                titleTextStyle: themeData.appBarTheme.textTheme.headline6,
+                title: Text(texts.remote_server_title),
               ),
               body: SingleChildScrollView(
                 reverse: true,
@@ -122,7 +113,7 @@ class RemoteServerAuthPageState extends State<RemoteServerAuthPage> {
                   builder: (context, snapshot) {
                     var settings = snapshot.data;
                     if (settings == null) {
-                      return Loader();
+                      return const Loader();
                     }
                     return GestureDetector(
                       behavior: HitTestBehavior.opaque,
@@ -151,7 +142,7 @@ class RemoteServerAuthPageState extends State<RemoteServerAuthPage> {
                 ),
               ),
               bottomNavigationBar: Padding(
-                padding: EdgeInsets.only(bottom: 0.0),
+                padding: const EdgeInsets.only(bottom: 0.0),
                 child: SingleButtonBottomBar(
                     stickToBottom: true,
                     text: widget.restore
@@ -177,17 +168,21 @@ class RemoteServerAuthPageState extends State<RemoteServerAuthPage> {
                               optionText: texts
                                   .remote_server_onion_warning_dialog_default_action_cancel,
                               optionFunc: () {
-                                Navigator.of(context).pop();
+                                connectionWarningResponse = false;
+                                Navigator.pop(context);
                               },
                               okText: texts
                                   .remote_server_onion_warning_dialog_settings,
                               okFunc: () async {
                                 connectionWarningResponse = false;
-                                Navigator.of(context).push(FadeInRoute(
-                                  builder: (_) =>
-                                      withBreezTheme(context, NetworkPage()),
-                                ));
-                                // Navigator.of(context).popUntil((route) => route is RemoteServerAuthPage);
+                                Navigator.of(context).push(
+                                  FadeInRoute(
+                                    builder: (_) => withBreezTheme(
+                                      context,
+                                      const NetworkPage(),
+                                    ),
+                                  ),
+                                );
                                 return false;
                               });
                         }
@@ -205,6 +200,7 @@ class RemoteServerAuthPageState extends State<RemoteServerAuthPage> {
                       if (connectionWarningResponse) {
                         failDiscoverURL = false;
                         failAuthenticate = false;
+                        failNoBackupFound = false;
                         if (_formKey.currentState.validate()) {
                           final newSettings = snapshot.data.copyWith(
                             remoteServerAuthData: RemoteServerAuthData(
@@ -215,8 +211,11 @@ class RemoteServerAuthPageState extends State<RemoteServerAuthPage> {
                             ),
                           );
 
-                          var loader = createLoaderRoute(context,
-                              message: "Testing connection", opacity: 0.8);
+                          var loader = createLoaderRoute(
+                            context,
+                            message: "Testing connection",
+                            opacity: 0.8,
+                          );
                           Navigator.push(context, loader);
                           discoverURL(newSettings.remoteServerAuthData)
                               .then((value) async {
@@ -231,6 +230,8 @@ class RemoteServerAuthPageState extends State<RemoteServerAuthPage> {
                                   error == DiscoverResult.INVALID_URL;
                               failAuthenticate =
                                   error == DiscoverResult.INVALID_AUTH;
+                              failNoBackupFound =
+                                  error == DiscoverResult.BACKUP_NOT_FOUND;
                             });
                             _formKey.currentState.validate();
                           }).catchError((err) {
@@ -265,6 +266,9 @@ class RemoteServerAuthPageState extends State<RemoteServerAuthPage> {
         );
         if (!failDiscoverURL && validURL) {
           return null;
+        }
+        if (failNoBackupFound) {
+          return NoBackupFoundException().toString();
         }
         return texts.remote_server_error_invalid_url;
       },
@@ -313,7 +317,7 @@ class RemoteServerAuthPageState extends State<RemoteServerAuthPage> {
         hintText: texts.remote_server_server_password_hint,
         labelText: texts.remote_server_server_password_label,
         suffixIcon: IconButton(
-          icon: Icon(Icons.remove_red_eye),
+          icon: const Icon(Icons.remove_red_eye),
           onPressed: () {
             setState(() {
               _passwordObscured = !_passwordObscured;
@@ -341,7 +345,7 @@ class RemoteServerAuthPageState extends State<RemoteServerAuthPage> {
       List<String> pathSegments = testedUrl.pathSegments.toList();
 
       // if we reached url origin then we fail.
-      if (pathSegments.length == 0) {
+      if (pathSegments.isEmpty) {
         return DiscoveryResult(testedAuthData, DiscoverResult.INVALID_URL);
       }
       String lastSegment = pathSegments.removeLast();
@@ -350,23 +354,42 @@ class RemoteServerAuthPageState extends State<RemoteServerAuthPage> {
       // and move the last path segment as the directory prefix
       testedAuthData = testedAuthData.copyWith(
           url: testedUrl.replace(pathSegments: pathSegments).toString(),
-          breezDir: lastSegment + "/" + testedAuthData.breezDir);
+          breezDir: "$lastSegment/${testedAuthData.breezDir}");
+
+      if (result.authError == DiscoverResult.BACKUP_NOT_FOUND) {
+        // ignore: use_build_context_synchronously
+        await promptMessage(
+            context,
+            NoBackupFoundException().toString(),
+            // ignore: use_build_context_synchronously
+            Text(context.texts().initial_walk_through_error_backup_location));
+        return result;
+      }
     }
   }
 
   Future<DiscoveryResult> discoverURLInternal(
       RemoteServerAuthData authData) async {
+    // First we try to use the path the user inserted
     var result = await testAuthData(authData);
     if (result == DiscoverResult.SUCCESS ||
         result == DiscoverResult.INVALID_AUTH) {
       return DiscoveryResult(authData, result);
     }
 
-    var url = authData.url;
-    if (!url.endsWith("/")) {
-      url = url + "/";
+    // Backwards compatibility
+    // since the user might accidentally insert a wrong path we'll reconstruct
+    // the url to be the short url+remote.php/webdav.
+    Uri uri = Uri.parse(authData.url); // + "remote.php/webdav/";
+    final nextCloudURL = Uri(
+            scheme: uri.scheme,
+            host: uri.host,
+            port: uri.port,
+            path: "remote.php/webdav/")
+        .toString();
+    if (authData.url == nextCloudURL) {
+      return DiscoveryResult(authData, result);
     }
-    final nextCloudURL = url + "remote.php/dav/";
     result = await testAuthData(authData.copyWith(url: nextCloudURL));
     if (result == DiscoverResult.SUCCESS ||
         result == DiscoverResult.INVALID_AUTH) {
@@ -383,10 +406,11 @@ class RemoteServerAuthPageState extends State<RemoteServerAuthPage> {
     } on SignInFailedException catch (e) {
       log.warning('remote_server_auth.dart: testAuthData: $e');
       return DiscoverResult.INVALID_AUTH;
-    } on RemoteServerNotFoundException catch (e) {
+    } on RemoteServerNotFoundException {
       return DiscoverResult.INVALID_URL;
+    } on MethodNotFoundException {
+      return DiscoverResult.METHOD_NOT_FOUND;
     }
-
     return DiscoverResult.SUCCESS;
   }
 }
@@ -395,6 +419,8 @@ enum DiscoverResult {
   SUCCESS,
   INVALID_URL,
   INVALID_AUTH,
+  METHOD_NOT_FOUND,
+  BACKUP_NOT_FOUND
 }
 
 class DiscoveryResult {

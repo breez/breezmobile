@@ -5,7 +5,7 @@ import 'package:mockito/mockito.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class SharedPreferencesMock extends Mock implements SharedPreferences {
-  Map<String, bool> _cache = {};
+  final Map<String, bool> _cache = {};
 
   @override
   bool getBool(String key) {

@@ -20,18 +20,20 @@ class PaymentDetailsDialogTitle extends StatelessWidget {
       children: <Widget>[
         Container(
           decoration: ShapeDecoration(
-            shape: RoundedRectangleBorder(
+            shape: const RoundedRectangleBorder(
               borderRadius: BorderRadius.vertical(
                 top: Radius.circular(12.0),
               ),
             ),
-            color: theme.themeId == "BLUE" ? themeData.primaryColorDark : themeData.canvasColor,
+            color: theme.themeId == "BLUE"
+                ? themeData.primaryColorDark
+                : themeData.canvasColor,
           ),
           height: 64.0,
           width: mediaQuery.size.width,
         ),
         Padding(
-          padding: EdgeInsets.only(top: 32.0),
+          padding: const EdgeInsets.only(top: 32.0),
           child: Center(
             child: PaymentItemAvatar(
               paymentInfo,

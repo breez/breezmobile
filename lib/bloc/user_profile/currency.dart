@@ -34,7 +34,7 @@ class Currency extends Object {
 
   int parseToInt(
     String amountStr, {
-    int def: 0,
+    int def = 0,
   }) {
     int value;
     try {
@@ -51,7 +51,7 @@ class Currency extends Object {
       tickerSymbol.toLowerCase() == "sat" ? "sats" : tickerSymbol;
 
   String get symbol {
-    switch (this.tickerSymbol) {
+    switch (tickerSymbol) {
       case "BTC":
         return "₿";
       case "SAT":
@@ -62,7 +62,7 @@ class Currency extends Object {
   }
 
   RegExp get whitelistedPattern {
-    switch (this.tickerSymbol) {
+    switch (tickerSymbol) {
       case "BTC":
         return RegExp("^\\d+\\.?\\d{0,8}");
       case "SAT":

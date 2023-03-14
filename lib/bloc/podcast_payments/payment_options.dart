@@ -61,8 +61,9 @@ class PaymentOptions {
 
   List get satsPerMinuteIntervalsList {
     List satsPerMinuteIntervalsList = presetSatsPerMinuteAmountsList;
-    if (customSatsPerMinValue != null)
+    if (customSatsPerMinValue != null) {
       satsPerMinuteIntervalsList.add(customSatsPerMinValue);
+    }
     satsPerMinuteIntervalsList.sort();
     // short-hand for toSet().toList() which removes duplicates
     return [

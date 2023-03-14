@@ -28,7 +28,7 @@ class PaymentDetailsDialogContentTitle extends StatelessWidget {
       ),
       child: AutoSizeText(
         title,
-        style: themeData.primaryTextTheme.headline5,
+        style: themeData.primaryTextTheme.headlineSmall,
         textAlign: TextAlign.center,
         overflow: TextOverflow.ellipsis,
         maxLines: 1,

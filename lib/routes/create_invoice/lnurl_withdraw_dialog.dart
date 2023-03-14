@@ -44,7 +44,7 @@ class LNUrlWithdrawDialogState extends State<LNURlWithdrawDialog>
     super.initState();
     final controller = AnimationController(
       vsync: this,
-      duration: Duration(milliseconds: 1000),
+      duration: const Duration(milliseconds: 1000),
     );
     _opacityAnimation = Tween<double>(
       begin: 0.0,
@@ -55,7 +55,7 @@ class LNUrlWithdrawDialogState extends State<LNURlWithdrawDialog>
     ));
     controller.value = 1.0;
     controller.addStatusListener((status) {
-      if (status == AnimationStatus.dismissed && this.mounted) {
+      if (status == AnimationStatus.dismissed && mounted) {
         onFinish(true);
       }
     });
@@ -66,7 +66,7 @@ class LNUrlWithdrawDialogState extends State<LNURlWithdrawDialog>
       return widget.accountBloc.accountStream
           .firstWhere((a) => a != null && a.syncedToChain == true)
           .then((_) {
-        if (this.mounted && payReqModel != null) {
+        if (mounted && payReqModel != null) {
           Withdraw withdrawAction = Withdraw(payReqModel.rawPayReq);
           widget.lnurlBloc.actionsSink.add(withdrawAction);
           _listenPaidInvoice(payReqModel, controller);
@@ -90,8 +90,8 @@ class LNUrlWithdrawDialogState extends State<LNURlWithdrawDialog>
       orElse: () => null,
     );
     if (payreq != null) {
-      Timer(Duration(milliseconds: 1000), () {
-        if (this.mounted) {
+      Timer(const Duration(milliseconds: 1000), () {
+        if (mounted) {
           controller.reverse();
         }
       });
@@ -101,9 +101,7 @@ class LNUrlWithdrawDialogState extends State<LNURlWithdrawDialog>
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    if (_currentRoute == null) {
-      _currentRoute = ModalRoute.of(context);
-    }
+    _currentRoute ??= ModalRoute.of(context);
   }
 
   @override
@@ -133,21 +131,21 @@ class LNUrlWithdrawDialogState extends State<LNURlWithdrawDialog>
                         textAlign: TextAlign.center,
                       )
                     : snapshot.hasData && snapshot.data.syncedToChain != true
-                        ? SizedBox()
+                        ? const SizedBox()
                         : LoadingAnimatedText(
                             texts.lnurl_withdraw_dialog_wait,
                             textStyle: themeData.dialogTheme.contentTextStyle,
                             textAlign: TextAlign.center,
                           ),
                 _error != null
-                    ? SizedBox(height: 16.0)
+                    ? const SizedBox(height: 16.0)
                     : snapshot.hasData && snapshot.data.syncedToChain != true
-                        ? Padding(
-                            padding: const EdgeInsets.only(bottom: 12.0),
+                        ? const Padding(
+                            padding: EdgeInsets.only(bottom: 12.0),
                             child: SyncProgressDialog(closeOnSync: false),
                           )
                         : Padding(
-                            padding: EdgeInsets.only(top: 8.0),
+                            padding: const EdgeInsets.only(top: 8.0),
                             child: Image.asset(
                               theme.customData[theme.themeId].loaderAssetPath,
                               gaplessPlayback: true,
@@ -157,7 +155,7 @@ class LNUrlWithdrawDialogState extends State<LNURlWithdrawDialog>
                   onPressed: () => onFinish(false),
                   child: Text(
                     texts.lnurl_withdraw_dialog_action_close,
-                    style: themeData.primaryTextTheme.button,
+                    style: themeData.primaryTextTheme.labelLarge,
                   ),
                 )
               ],

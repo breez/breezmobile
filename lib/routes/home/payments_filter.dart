@@ -19,7 +19,7 @@ class PaymentFilterSliver extends StatefulWidget {
   final AccountBloc _accountBloc;
   final PaymentsModel _paymentsModel;
 
-  PaymentFilterSliver(
+  const PaymentFilterSliver(
     this._controller,
     this._minSize,
     this._maxSize,
@@ -78,7 +78,7 @@ class PaymentFilterSliverState extends State<PaymentFilterSliver> {
               ),
         builder: (context, shrinkedHeight, overlapContent) {
           return AnimatedOpacity(
-            duration: Duration(milliseconds: 100),
+            duration: const Duration(milliseconds: 100),
             opacity: !_hasNoFilter
                 ? 1.0
                 : (scrollOffset - widget._maxSize / 2).clamp(0.0, 1.0),
@@ -110,7 +110,7 @@ class PaymentsFilter extends StatefulWidget {
   final AccountBloc _accountBloc;
   final PaymentsModel _paymentsModel;
 
-  PaymentsFilter(
+  const PaymentsFilter(
     this._accountBloc,
     this._paymentsModel,
   );
@@ -124,6 +124,24 @@ class PaymentsFilter extends StatefulWidget {
 class PaymentsFilterState extends State<PaymentsFilter> {
   String _filter;
   Map<String, List<PaymentType>> _filterMap;
+
+  DateTime formattedStartDate;
+  DateTime formattedEndDate;
+
+  @override
+  void initState() {
+    super.initState();
+    final today = DateTime.now();
+    formattedStartDate = DateTime(
+        widget._paymentsModel.firstDate.year,
+        widget._paymentsModel.firstDate.month,
+        widget._paymentsModel.firstDate.day,
+        0,
+        0,
+        0);
+    formattedEndDate =
+        DateTime(today.year, today.month, today.day, 23, 59, 59, 999);
+  }
 
   @override
   void didChangeDependencies() {
@@ -166,11 +184,14 @@ class PaymentsFilterState extends State<PaymentsFilter> {
     final themeData = Theme.of(context);
 
     return Padding(
-      padding: EdgeInsets.only(left: 0.0, right: 0.0),
+      padding: const EdgeInsets.only(left: 0.0, right: 0.0),
       child: IconButton(
         icon: SvgPicture.asset(
           "src/icon/calendar.svg",
-          color: themeData.accentTextTheme.subtitle2.color,
+          colorFilter: ColorFilter.mode(
+            themeData.paymentItemTitleTextStyle.color,
+            BlendMode.srcATop,
+          ),
           width: 24.0,
           height: 24.0,
         ),
@@ -180,12 +201,20 @@ class PaymentsFilterState extends State<PaymentsFilter> {
                 context: context,
                 builder: (_) => CalendarDialog(widget._paymentsModel.firstDate),
               ).then((result) {
-                widget._accountBloc.paymentFilterSink.add(
-                  widget._paymentsModel.filter.copyWith(
+                bool hasStartDateChanged = result[0] != formattedStartDate;
+                bool hasEndDateChanged = result[1] != formattedEndDate;
+                bool hasDateFilterChanged =
+                    hasStartDateChanged || hasEndDateChanged;
+
+                if (hasDateFilterChanged) {
+                  widget._accountBloc.paymentFilterSink.add(
+                    widget._paymentsModel.filter.copyWith(
                       filter: _getFilterType(_filter),
                       startDate: result[0],
-                      endDate: result[1]),
-                );
+                      endDate: result[1],
+                    ),
+                  );
+                }
               })
             : ScaffoldMessenger.of(context).showSnackBar(
                 SnackBar(
@@ -210,9 +239,9 @@ class PaymentsFilterState extends State<PaymentsFilter> {
         child: ButtonTheme(
           alignedDropdown: true,
           child: DropdownButton(
-            iconEnabledColor: themeData.accentTextTheme.subtitle2.color,
+            iconEnabledColor: themeData.paymentItemTitleTextStyle.color,
             value: _filter,
-            style: themeData.accentTextTheme.subtitle2,
+            style: themeData.paymentItemTitleTextStyle,
             items: [
               texts.payments_filter_option_all,
               texts.payments_filter_option_sent,
@@ -223,7 +252,7 @@ class PaymentsFilterState extends State<PaymentsFilter> {
                 child: Material(
                   child: Text(
                     value,
-                    style: themeData.accentTextTheme.subtitle2,
+                    style: themeData.paymentItemTitleTextStyle,
                   ),
                 ),
               );
@@ -244,8 +273,8 @@ class PaymentsFilterState extends State<PaymentsFilter> {
     );
   }
 
-  List<PaymentType> _getFilterType(String _filter) {
-    return _filterMap[_filter] ?? PaymentType.values;
+  List<PaymentType> _getFilterType(String filter) {
+    return _filterMap[filter] ?? PaymentType.values;
   }
 
   String _getFilterTypeString(
@@ -269,13 +298,13 @@ class PaymentsFilterState extends State<PaymentsFilter> {
       return Padding(
         padding: const EdgeInsets.only(right: 0.0),
         child: PopupMenuButton(
-          color: themeData.backgroundColor,
+          color: themeData.colorScheme.background,
           icon: Icon(
             Icons.more_vert,
-            color: themeData.accentTextTheme.subtitle2.color,
+            color: themeData.paymentItemTitleTextStyle.color,
           ),
           padding: EdgeInsets.zero,
-          offset: Offset(12, 24),
+          offset: const Offset(12, 24),
           onSelected: _select,
           itemBuilder: (context) => [
             PopupMenuItem(
@@ -283,7 +312,7 @@ class PaymentsFilterState extends State<PaymentsFilter> {
               value: Choice(() => _exportPayments(context)),
               child: Text(
                 texts.payments_filter_action_export,
-                style: themeData.textTheme.button,
+                style: themeData.textTheme.labelLarge,
               ),
             ),
           ],
@@ -296,7 +325,7 @@ class PaymentsFilterState extends State<PaymentsFilter> {
         icon: Icon(
           Icons.more_vert,
           color: theme.themeId == "BLUE"
-              ? themeData.accentTextTheme.subtitle2.color.withOpacity(0.25)
+              ? themeData.paymentItemTitleTextStyle.color.withOpacity(0.25)
               : themeData.disabledColor,
           size: 24.0,
         ),
@@ -316,7 +345,7 @@ class PaymentsFilterState extends State<PaymentsFilter> {
     Navigator.of(context).push(createLoaderRoute(context));
     action.future.then((filePath) {
       Navigator.of(context).pop();
-      Share.shareFiles([filePath]);
+      Share.shareXFiles([filePath]);
     }).catchError((err) {
       Navigator.of(context).pop();
       showFlushbar(

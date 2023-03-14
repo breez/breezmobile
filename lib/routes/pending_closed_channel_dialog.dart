@@ -47,11 +47,11 @@ class PendingClosedChannelDialogState
       ),
       contentPadding: const EdgeInsets.fromLTRB(24.0, 8.0, 24.0, 24.0),
       content: FutureBuilder(
-        future: this._fetchFuture,
+        future: _fetchFuture,
         initialData: null,
         builder: (ctx, loadingSnapshot) {
           if (loadingSnapshot.connectionState != ConnectionState.done) {
-            return Loader();
+            return const Loader();
           }
 
           return StreamBuilder<List<PaymentInfo>>(
@@ -59,8 +59,8 @@ class PendingClosedChannelDialogState
             builder: (ctx, snapshot) {
               final pendingClosedChannels = snapshot?.data;
               if (pendingClosedChannels == null ||
-                  pendingClosedChannels.length == 0) {
-                return Loader();
+                  pendingClosedChannels.isEmpty) {
+                return const Loader();
               }
 
               return ClosedChannelPaymentDetails(
@@ -75,7 +75,7 @@ class PendingClosedChannelDialogState
           onPressed: () => Navigator.pop(context),
           child: Text(
             texts.pending_closed_channel_action_ok,
-            style: themeData.primaryTextTheme.button,
+            style: themeData.primaryTextTheme.labelLarge,
           ),
         )
       ],

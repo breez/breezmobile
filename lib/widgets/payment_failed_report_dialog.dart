@@ -50,12 +50,12 @@ class PaymentFailedReportDialogState extends State<PaymentFailedReportDialog> {
         unselectedWidgetColor: themeData.canvasColor,
       ),
       child: AlertDialog(
-        titlePadding: EdgeInsets.fromLTRB(24.0, 22.0, 0.0, 16.0),
+        titlePadding: const EdgeInsets.fromLTRB(24.0, 22.0, 0.0, 16.0),
         title: Text(
           texts.payment_failed_report_dialog_title,
           style: themeData.dialogTheme.titleTextStyle,
         ),
-        contentPadding: EdgeInsets.fromLTRB(8.0, 8.0, 8.0, 24.0),
+        contentPadding: const EdgeInsets.fromLTRB(8.0, 8.0, 8.0, 24.0),
         content: _settings == null
             ? Container()
             : Column(
@@ -66,7 +66,7 @@ class PaymentFailedReportDialogState extends State<PaymentFailedReportDialog> {
                     padding: const EdgeInsets.only(left: 15.0, right: 12.0),
                     child: Text(
                       texts.payment_failed_report_dialog_message,
-                      style: themeData.primaryTextTheme.headline3
+                      style: themeData.primaryTextTheme.displaySmall
                           .copyWith(fontSize: 16),
                     ),
                   ),
@@ -77,7 +77,7 @@ class PaymentFailedReportDialogState extends State<PaymentFailedReportDialog> {
                         Theme(
                           data: themeData.copyWith(
                             unselectedWidgetColor:
-                                themeData.textTheme.button.color,
+                                themeData.textTheme.labelLarge.color,
                           ),
                           child: Checkbox(
                             activeColor: themeData.canvasColor,
@@ -93,7 +93,7 @@ class PaymentFailedReportDialogState extends State<PaymentFailedReportDialog> {
                         ),
                         Text(
                           texts.payment_failed_report_dialog_do_not_ask_again,
-                          style: themeData.primaryTextTheme.headline3.copyWith(
+                          style: themeData.primaryTextTheme.displaySmall.copyWith(
                             fontSize: 16,
                           ),
                         ),
@@ -110,7 +110,7 @@ class PaymentFailedReportDialogState extends State<PaymentFailedReportDialog> {
             },
             child: Text(
               texts.payment_failed_report_dialog_action_no,
-              style: themeData.primaryTextTheme.button,
+              style: themeData.primaryTextTheme.labelLarge,
             ),
           ),
           SimpleDialogOption(
@@ -120,7 +120,7 @@ class PaymentFailedReportDialogState extends State<PaymentFailedReportDialog> {
             }),
             child: Text(
               texts.payment_failed_report_dialog_action_yes,
-              style: themeData.primaryTextTheme.button,
+              style: themeData.primaryTextTheme.labelLarge,
             ),
           ),
         ],

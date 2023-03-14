@@ -20,11 +20,11 @@ import 'speed_selector.dart';
 /// See [NowPlaying].
 class PlayerTransportControls extends StatefulWidget {
   @override
-  _PlayerTransportControlsState createState() =>
-      _PlayerTransportControlsState();
+  PlayerTransportControlsState createState() =>
+      PlayerTransportControlsState();
 }
 
-class _PlayerTransportControlsState extends State<PlayerTransportControls>
+class PlayerTransportControlsState extends State<PlayerTransportControls>
     with SingleTickerProviderStateMixin {
   AnimationController _playPauseController;
   StreamSubscription<AudioState> _audioStateSubscription;
@@ -37,7 +37,7 @@ class _PlayerTransportControlsState extends State<PlayerTransportControls>
     final audioBloc = Provider.of<AudioBloc>(context, listen: false);
 
     _playPauseController =
-        AnimationController(vsync: this, duration: Duration(milliseconds: 300));
+        AnimationController(vsync: this, duration: const Duration(milliseconds: 300));
 
     /// Seems a little hacky, but when we load the form we want the play/pause
     /// button to be in the correct state. If we are building the first frame,
@@ -82,7 +82,7 @@ class _PlayerTransportControlsState extends State<PlayerTransportControls>
 
         return Column(
           children: [
-            PodcastClipWidget(),
+            const PodcastClipWidget(),
             Row(
               crossAxisAlignment: CrossAxisAlignment.center,
               mainAxisAlignment: MainAxisAlignment.center,
@@ -105,13 +105,19 @@ class _PlayerTransportControlsState extends State<PlayerTransportControls>
                       ),
                       iconOn: SvgPicture.asset(
                         'assets/icons/sleep_on.svg',
-                        color: theme.buttonTheme.colorScheme.onPrimary,
+                        colorFilter: ColorFilter.mode(
+                          theme.buttonTheme.colorScheme.onPrimary,
+                          BlendMode.srcATop,
+                        ),
                         height: 24.0,
                         width: 24.0,
                       ),
                       iconOff: SvgPicture.asset(
                         'assets/icons/sleep_off.svg',
-                        color: theme.buttonTheme.colorScheme.onPrimary,
+                        colorFilter: ColorFilter.mode(
+                          theme.buttonTheme.colorScheme.onPrimary,
+                          BlendMode.srcATop,
+                        ),
                         height: 24.0,
                         width: 24.0,
                       ),
@@ -127,10 +133,15 @@ class _PlayerTransportControlsState extends State<PlayerTransportControls>
                   },
                   tooltip: L.of(context).rewind_button_label,
                   padding: const EdgeInsets.all(0.0),
-                  icon: SvgPicture.asset("src/icon/ic_backward.svg",
-                      width: 48.0,
-                      height: 48.0,
-                      color: theme.buttonTheme.colorScheme.onPrimary),
+                  icon: SvgPicture.asset(
+                    "src/icon/ic_backward.svg",
+                    width: 48.0,
+                    height: 48.0,
+                    colorFilter: ColorFilter.mode(
+                      theme.buttonTheme.colorScheme.onPrimary,
+                      BlendMode.srcATop,
+                    ),
+                  ),
                 ),
                 Expanded(flex: 1, child: Container()),
                 _PlayButton(
@@ -144,20 +155,23 @@ class _PlayerTransportControlsState extends State<PlayerTransportControls>
                   onPressed: () {
                     return snapshot.data == AudioState.buffering
                         ? null
-                        : _fastforward(audioBloc);
+                        : _fastForward(audioBloc);
                   },
                   padding: const EdgeInsets.all(0.0),
                   icon: SvgPicture.asset(
                     "src/icon/ic_forward.svg",
                     width: 48.0,
                     height: 48.0,
-                    color: theme.buttonTheme.colorScheme.onPrimary,
+                    colorFilter: ColorFilter.mode(
+                      theme.buttonTheme.colorScheme.onPrimary,
+                      BlendMode.srcATop,
+                    ),
                   ),
                 ),
                 Expanded(flex: 1, child: Container()),
                 // Speed selector uses 16-37 as width so we use a container with
                 // the maximum size and centers it to proper alignment
-                Container(
+                SizedBox(
                   width: 37,
                   child: Center(
                     child: SpeedSelectorWidget(
@@ -186,7 +200,7 @@ class _PlayerTransportControlsState extends State<PlayerTransportControls>
     audioBloc.transitionState(TransitionState.rewind);
   }
 
-  void _fastforward(AudioBloc audioBloc) {
+  void _fastForward(AudioBloc audioBloc) {
     audioBloc.transitionState(TransitionState.fastforward);
   }
 }
@@ -218,7 +232,7 @@ class _PlayButton extends StatelessWidget {
               : L.of(context).play_button_label,
           child: TextButton(
             style: TextButton.styleFrom(
-              shape: CircleBorder(),
+              shape: const CircleBorder(),
             ),
             onPressed: null,
             child: SpinKitRing(

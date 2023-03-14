@@ -29,14 +29,14 @@ class ShareablePaymentRow extends StatelessWidget {
 
     return Theme(
       data: themeData.copyWith(
-        dividerColor: themeData.backgroundColor,
+        dividerColor: themeData.colorScheme.background,
       ),
       child: ExpansionTile(
-        iconColor: themeData.primaryTextTheme.button.color,
-        collapsedIconColor: themeData.primaryTextTheme.button.color,
+        iconColor: themeData.primaryTextTheme.labelLarge.color,
+        collapsedIconColor: themeData.primaryTextTheme.labelLarge.color,
         title: AutoSizeText(
           title,
-          style: themeData.primaryTextTheme.headline4,
+          style: themeData.primaryTextTheme.headlineMedium,
           maxLines: 1,
           group: labelAutoSizeGroup,
         ),
@@ -47,7 +47,7 @@ class ShareablePaymentRow extends StatelessWidget {
             children: [
               Expanded(
                 child: Padding(
-                  padding: EdgeInsets.only(left: 16.0, right: 0.0),
+                  padding: const EdgeInsets.only(left: 16.0, right: 0.0),
                   child: GestureDetector(
                     onTap: () => isTxID
                         ? launchLinkOnExternalBrowser(
@@ -58,7 +58,7 @@ class ShareablePaymentRow extends StatelessWidget {
                       textAlign: TextAlign.left,
                       overflow: TextOverflow.clip,
                       maxLines: 4,
-                      style: themeData.primaryTextTheme.headline3
+                      style: themeData.primaryTextTheme.displaySmall
                           .copyWith(fontSize: 10),
                     ),
                   ),
@@ -74,12 +74,12 @@ class ShareablePaymentRow extends StatelessWidget {
                     children: [
                       IconButton(
                         alignment: Alignment.centerRight,
-                        padding: EdgeInsets.only(right: 8.0),
+                        padding: const EdgeInsets.only(right: 8.0),
                         tooltip:
                             texts.payment_details_dialog_copy_action(title),
                         iconSize: 16.0,
-                        color: themeData.primaryTextTheme.button.color,
-                        icon: Icon(
+                        color: themeData.primaryTextTheme.labelLarge.color,
+                        icon: const Icon(
                           IconData(0xe90b, fontFamily: 'icomoon'),
                         ),
                         onPressed: () {
@@ -90,16 +90,16 @@ class ShareablePaymentRow extends StatelessWidget {
                           showFlushbar(
                             context,
                             message: texts.payment_details_dialog_copied(title),
-                            duration: Duration(seconds: 4),
+                            duration: const Duration(seconds: 4),
                           );
                         },
                       ),
                       IconButton(
-                        padding: EdgeInsets.only(right: 8.0),
+                        padding: const EdgeInsets.only(right: 8.0),
                         tooltip: texts.payment_details_dialog_share_transaction,
                         iconSize: 16.0,
-                        color: themeData.primaryTextTheme.button.color,
-                        icon: Icon(Icons.share),
+                        color: themeData.primaryTextTheme.labelLarge.color,
+                        icon: const Icon(Icons.share),
                         onPressed: () => Share.share(sharedValue),
                       ),
                     ],

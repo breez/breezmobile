@@ -56,6 +56,7 @@ class ProcessingPaymentDialogState extends State<ProcessingPaymentDialog>
     super.initState();    
   }
 
+  @override
   void didChangeDependencies() {
     if (!_isInit) {
       Future.value(true).then((_) {        
@@ -63,11 +64,11 @@ class ProcessingPaymentDialogState extends State<ProcessingPaymentDialog>
           _currentRoute = ModalRoute.of(context);
           controller = AnimationController(
             vsync: this,
-            duration: Duration(milliseconds: 500),
+            duration: const Duration(milliseconds: 500),
           );
           colorAnimation = ColorTween(
             begin: Theme.of(context).canvasColor,
-            end: Theme.of(context).backgroundColor,
+            end: Theme.of(context).colorScheme.background,
           ).animate(controller)
             ..addListener(() {
               setState(() {});
@@ -111,12 +112,12 @@ class ProcessingPaymentDialogState extends State<ProcessingPaymentDialog>
 
     _pendingPaymentSubscription = widget.accountBloc.pendingPaymentStream
         .where((p) => p.fullPending)
-        .debounceTime(Duration(seconds: 10))
+        .debounceTime(const Duration(seconds: 10))
         .listen((p) => _animateClose());
   }
 
   void _animateClose() {
-    Future.delayed(Duration(milliseconds: 50)).then((_) {
+    Future.delayed(const Duration(milliseconds: 50)).then((_) {
       _initializeTransitionAnimation();
       setState(() {
         _animating = true;
@@ -139,8 +140,8 @@ class ProcessingPaymentDialogState extends State<ProcessingPaymentDialog>
     RelativeRect startPosition = endPosition;
     final paymentCtx = widget.firstPaymentItemKey.currentContext;
     if (paymentCtx != null) {
-      RenderBox _paymentTableBox = paymentCtx.findRenderObject();
-      final dy = _paymentTableBox.localToGlobal(Offset.zero).dy;
+      RenderBox paymentTableBox = paymentCtx.findRenderObject();
+      final dy = paymentTableBox.localToGlobal(Offset.zero).dy;
       final start = dy - statusBarHeight;
       final end = safeArea - start - PAYMENT_LIST_ITEM_HEIGHT;
       startPosition = RelativeRect.fromLTRB(0.0, start, 0.0, end);
@@ -216,22 +217,22 @@ class ProcessingPaymentDialogState extends State<ProcessingPaymentDialog>
               child: Container(
                 height: startHeight,
                 width: queryData.size.width,
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  mainAxisSize: MainAxisSize.min,
-                  children: _buildProcessingPaymentDialog(context),
-                ),
                 decoration: ShapeDecoration(
                   color: theme.themeId == "BLUE"
                       ? colorAnimation.value
                       : controller.value >= 0.25
-                          ? themeData.backgroundColor
+                          ? themeData.colorScheme.background
                           : colorAnimation.value,
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(
                       borderAnimation.value,
                     ),
                   ),
+                ),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  mainAxisSize: MainAxisSize.min,
+                  children: _buildProcessingPaymentDialog(context),
                 ),
               ),
             ),
@@ -247,7 +248,7 @@ class ProcessingPaymentDialogState extends State<ProcessingPaymentDialog>
 
     return Container(
       height: 64.0,
-      padding: EdgeInsets.fromLTRB(24.0, 24.0, 24.0, 8.0),
+      padding: const EdgeInsets.fromLTRB(24.0, 24.0, 24.0, 8.0),
       child: Text(
         texts.processing_payment_dialog_processing_payment,
         style: themeData.dialogTheme.titleTextStyle,
@@ -261,22 +262,20 @@ class ProcessingPaymentDialogState extends State<ProcessingPaymentDialog>
     final themeData = Theme.of(context);
     final queryData = MediaQuery.of(context);
 
-    return Container(
-      child: Padding(
-        padding: EdgeInsets.fromLTRB(16.0, 0.0, 16.0, 0.0),
-        child: Container(
-          width: queryData.size.width,
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              LoadingAnimatedText(
-                texts.processing_payment_dialog_wait,
-                textStyle: themeData.dialogTheme.contentTextStyle,
-                textAlign: TextAlign.center,
-              ),
-            ],
-          ),
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(16.0, 0.0, 16.0, 0.0),
+      child: SizedBox(
+        width: queryData.size.width,
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            LoadingAnimatedText(
+              texts.processing_payment_dialog_wait,
+              textStyle: themeData.dialogTheme.contentTextStyle,
+              textAlign: TextAlign.center,
+            ),
+          ],
         ),
       ),
     );

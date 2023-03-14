@@ -55,7 +55,6 @@ class EnterBackupPhrasePageState extends State<EnterBackupPhrasePage> {
 
   @override
   Widget build(BuildContext context) {
-    final themeData = Theme.of(context);
     final texts = context.texts();
     final query = MediaQuery.of(context);
     final userProfileBloc = AppBlocsProvider.of<UserProfileBloc>(context);
@@ -64,9 +63,6 @@ class EnterBackupPhrasePageState extends State<EnterBackupPhrasePage> {
       onWillPop: _onWillPop,
       child: Scaffold(
         appBar: AppBar(
-          iconTheme: themeData.appBarTheme.iconTheme,
-          textTheme: themeData.appBarTheme.textTheme,
-          backgroundColor: themeData.canvasColor,
           automaticallyImplyLeading: false,
           leading: backBtn.BackButton(
             onPressed: () {
@@ -85,12 +81,10 @@ class EnterBackupPhrasePageState extends State<EnterBackupPhrasePage> {
               _currentPage.toString(),
               _lastPage.toString(),
             ),
-            style: themeData.appBarTheme.textTheme.headline6,
           ),
-          elevation: 0.0,
         ),
         body: SingleChildScrollView(
-          child: Container(
+          child: SizedBox(
             height: query.size.height - kToolbarHeight - query.padding.top,
             child: Column(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -106,7 +100,7 @@ class EnterBackupPhrasePageState extends State<EnterBackupPhrasePage> {
     return Form(
       key: _formKey,
       child: Padding(
-        padding: EdgeInsets.fromLTRB(16.0, 24.0, 16.0, 8.0),
+        padding: const EdgeInsets.fromLTRB(16.0, 24.0, 16.0, 8.0),
         child: Column(
           mainAxisSize: MainAxisSize.max,
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -125,25 +119,25 @@ class EnterBackupPhrasePageState extends State<EnterBackupPhrasePage> {
   ) {
     final texts = context.texts();
     List<Widget> restoreFormContent = [];
-    restoreFormContent..add(_buildForm());
+    restoreFormContent.add(_buildForm());
     if (_hasError) {
       restoreFormContent
-        ..add(_buildErrorMessage(
+        .add(_buildErrorMessage(
           context,
           texts.enter_backup_phrase_error,
         ));
     }
-    restoreFormContent..add(_buildBottomBtn(context, userProfileBloc));
+    restoreFormContent.add(_buildBottomBtn(context, userProfileBloc));
     return restoreFormContent;
   }
 
   Widget _buildErrorMessage(BuildContext context, String errorMessage) {
     final themeData = Theme.of(context);
     return Padding(
-      padding: EdgeInsets.only(left: 16, right: 16),
+      padding: const EdgeInsets.only(left: 16, right: 16),
       child: Text(
         errorMessage,
-        style: themeData.textTheme.headline4.copyWith(
+        style: themeData.textTheme.headlineMedium.copyWith(
           fontSize: 12,
         ),
       ),
@@ -158,7 +152,7 @@ class EnterBackupPhrasePageState extends State<EnterBackupPhrasePage> {
       suggestionsCallback: _getSuggestions,
       hideOnEmpty: true,
       autoFlipDirection: true,
-      suggestionsBoxDecoration: SuggestionsBoxDecoration(
+      suggestionsBoxDecoration: const SuggestionsBoxDecoration(
         color: Colors.white,
         constraints: BoxConstraints(
           minWidth: 180,
@@ -195,12 +189,12 @@ class EnterBackupPhrasePageState extends State<EnterBackupPhrasePage> {
   FutureOr<List<String>> _getSuggestions(pattern) {
     var suggestionList =
         WORDLIST.where((item) => item.startsWith(pattern)).toList();
-    return suggestionList.length > 0 ? suggestionList : List.empty();
+    return suggestionList.isNotEmpty ? suggestionList : List.empty();
   }
 
   String _onValidate(BuildContext context, String text) {
     final texts = context.texts();
-    if (text.length == 0) {
+    if (text.isEmpty) {
       return texts.enter_backup_phrase_missing_word;
     }
     if (!WORDLIST.contains(text.toLowerCase().trim())) {

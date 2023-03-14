@@ -83,7 +83,7 @@ void main() {
 
     test('insert should keep 18 digits to avoid overflow', () {
       final formatter = SatAmountFormFieldFormatter();
-      final bigNumber = '123 456 789 123 456 789';
+      const bigNumber = '123 456 789 123 456 789';
       final oldValue = textEditingValue(bigNumber);
       final newValue = textEditingValue('$bigNumber 123');
       final formatted = formatter.formatEditUpdate(oldValue, newValue);

@@ -16,7 +16,7 @@ class EnterPaymentInfoDialog extends StatefulWidget {
   final LNUrlBloc lnurlBloc;
   final GlobalKey firstPaymentItemKey;
 
-  EnterPaymentInfoDialog(
+  const EnterPaymentInfoDialog(
     this.context,
     this.invoiceBloc,
     this.lnurlBloc,
@@ -50,12 +50,12 @@ class EnterPaymentInfoDialogState extends State<EnterPaymentInfoDialog> {
     final texts = context.texts();
 
     return AlertDialog(
-      titlePadding: EdgeInsets.fromLTRB(24.0, 22.0, 0.0, 16.0),
+      titlePadding: const EdgeInsets.fromLTRB(24.0, 22.0, 0.0, 16.0),
       title: Text(
         texts.payment_info_dialog_title,
         style: themeData.dialogTheme.titleTextStyle,
       ),
-      contentPadding: EdgeInsets.fromLTRB(24.0, 8.0, 24.0, 24.0),
+      contentPadding: const EdgeInsets.fromLTRB(24.0, 8.0, 24.0, 24.0),
       content: _buildPaymentInfoForm(context),
       actions: _buildActions(context),
     );
@@ -74,12 +74,14 @@ class EnterPaymentInfoDialogState extends State<EnterPaymentInfoDialog> {
         ),
         hintColor: themeData.dialogTheme.contentTextStyle.color,
         colorScheme: ColorScheme.dark(
-          primary: themeData.textTheme.button.color,
+          primary: themeData.textTheme.labelLarge.color,
+          error: theme.themeId == "BLUE"
+              ? Colors.red
+              : themeData.colorScheme.error,
         ),
-        primaryColor: themeData.textTheme.button.color,
-        errorColor: theme.themeId == "BLUE" ? Colors.red : themeData.errorColor,
+        primaryColor: themeData.textTheme.labelLarge.color,
       ),
-      child: Container(
+      child: SizedBox(
         width: MediaQuery.of(context).size.width,
         child: Form(
           key: _formKey,
@@ -91,10 +93,10 @@ class EnterPaymentInfoDialogState extends State<EnterPaymentInfoDialog> {
                 decoration: InputDecoration(
                   labelText: texts.payment_info_dialog_hint,
                   suffixIcon: IconButton(
-                    padding: EdgeInsets.only(top: 21.0),
+                    padding: const EdgeInsets.only(top: 21.0),
                     alignment: Alignment.bottomRight,
                     icon: Image(
-                      image: AssetImage("src/icon/qr_scan.png"),
+                      image: const AssetImage("src/icon/qr_scan.png"),
                       color: themeData.primaryIconTheme.color,
                       fit: BoxFit.contain,
                       width: 24.0,
@@ -107,7 +109,7 @@ class EnterPaymentInfoDialogState extends State<EnterPaymentInfoDialog> {
                 focusNode: _paymentInfoFocusNode,
                 controller: _paymentInfoController,
                 style: TextStyle(
-                  color: themeData.primaryTextTheme.headline4.color,
+                  color: themeData.primaryTextTheme.headlineMedium.color,
                 ),
                 validator: (value) {
                   if (parseNodeId(value) == null &&
@@ -118,7 +120,7 @@ class EnterPaymentInfoDialogState extends State<EnterPaymentInfoDialog> {
                   return null;
                 },
               ),
-              _scannerErrorMessage.length > 0
+              _scannerErrorMessage.isNotEmpty
                   ? Padding(
                       padding: const EdgeInsets.only(top: 8.0),
                       child: Text(
@@ -126,9 +128,9 @@ class EnterPaymentInfoDialogState extends State<EnterPaymentInfoDialog> {
                         style: theme.validatorStyle,
                       ),
                     )
-                  : SizedBox(),
+                  : const SizedBox(),
               Padding(
-                padding: EdgeInsets.only(top: 8),
+                padding: const EdgeInsets.only(top: 8),
                 child: Text(
                   texts.payment_info_dialog_hint_expanded,
                   style: theme.FieldTextStyle.labelStyle.copyWith(
@@ -155,7 +157,7 @@ class EnterPaymentInfoDialogState extends State<EnterPaymentInfoDialog> {
         onPressed: () => Navigator.pop(context),
         child: Text(
           texts.payment_info_dialog_action_cancel,
-          style: themeData.primaryTextTheme.button,
+          style: themeData.primaryTextTheme.labelLarge,
         ),
       )
     ];
@@ -192,7 +194,7 @@ class EnterPaymentInfoDialogState extends State<EnterPaymentInfoDialog> {
         }),
         child: Text(
           texts.payment_info_dialog_action_approve,
-          style: themeData.primaryTextTheme.button,
+          style: themeData.primaryTextTheme.labelLarge,
         ),
       ));
     }

@@ -19,7 +19,7 @@ class PinCodeWidget extends StatefulWidget {
   final UserProfileBloc userProfileBloc;
   final String localizedReason;
 
-  PinCodeWidget(this.label, this.onPinEntered,
+  const PinCodeWidget(this.label, this.onPinEntered,
       {this.onFingerprintEntered, this.userProfileBloc, this.localizedReason});
 
   @override
@@ -75,7 +75,7 @@ class PinCodeWidgetState extends State<PinCodeWidget>
   Future _promptBiometrics() async {
     _enrolledBiometrics = await _getEnrolledBiometrics();
     if (_enrolledBiometrics != LocalAuthenticationOption.NONE) {
-      await Future.delayed(Duration(milliseconds: 240));
+      await Future.delayed(const Duration(milliseconds: 240));
       _validateBiometrics();
     }
   }
@@ -87,14 +87,14 @@ class PinCodeWidgetState extends State<PinCodeWidget>
   }
 
   void _validateBiometrics({bool force = false}) async {
-    if (this.mounted && (!biometricsValidated || force)) {
+    if (mounted && (!biometricsValidated || force)) {
       biometricsValidated = true;
       var validateBiometricsAction =
           ValidateBiometrics(localizedReason: widget.localizedReason);
       widget.userProfileBloc.userActionsSink.add(validateBiometricsAction);
       validateBiometricsAction.future.then((isValid) async {
         setState(() => _enteredPinCode = (isValid) ? "123456" : "");
-        Future.delayed(Duration(milliseconds: 160), () {
+        Future.delayed(const Duration(milliseconds: 160), () {
           return widget.onFingerprintEntered(isValid);
         });
       }, onError: (error) {
@@ -104,6 +104,7 @@ class PinCodeWidgetState extends State<PinCodeWidget>
     }
   }
 
+  @override
   Widget build(BuildContext context) {
     return SafeArea(
       child: Column(
@@ -111,23 +112,19 @@ class PinCodeWidgetState extends State<PinCodeWidget>
         children: <Widget>[
           Flexible(
             flex: 20,
-            child: Container(
-              child: Center(
-                child: _buildBreezLogo(context),
-              ),
+            child: Center(
+              child: _buildBreezLogo(context),
             ),
           ),
           Flexible(
             flex: 30,
-            child: Container(
-              child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: <Widget>[
-                    Text(widget.label),
-                    _buildPinCircles(),
-                    _buildErrorMessage()
-                  ]),
-            ),
+            child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: <Widget>[
+                  Text(widget.label),
+                  _buildPinCircles(),
+                  _buildErrorMessage()
+                ]),
           ),
           Flexible(flex: 50, child: Container(child: _numPad(context)))
         ],
@@ -139,8 +136,10 @@ class PinCodeWidgetState extends State<PinCodeWidget>
     return SvgPicture.asset(
       "src/images/logo-color.svg",
       width: (MediaQuery.of(context).size.width) / 3,
-      color: Colors.white,
-      colorBlendMode: BlendMode.srcATop,
+      colorFilter: const ColorFilter.mode(
+        Colors.white,
+        BlendMode.srcATop,
+      ),
     );
   }
 
@@ -162,9 +161,9 @@ class PinCodeWidgetState extends State<PinCodeWidget>
     var list = <Widget>[];
     for (int i = 0; i < PIN_CODE_LENGTH; i++) {
       list.add(AnimatedContainer(
-        duration: Duration(milliseconds: 150),
-        padding: EdgeInsets.only(top: 24.0),
-        margin: EdgeInsets.only(bottom: 0),
+        duration: const Duration(milliseconds: 150),
+        padding: const EdgeInsets.only(top: 24.0),
+        margin: const EdgeInsets.only(bottom: 0),
         width: _enteredPinCode.length == PIN_CODE_LENGTH ? 28 : 24,
         height: _enteredPinCode.length == PIN_CODE_LENGTH ? 28 : 24,
         decoration: BoxDecoration(
@@ -181,11 +180,17 @@ class PinCodeWidgetState extends State<PinCodeWidget>
     return _errorMessage.isNotEmpty
         ? Text(
             _errorMessage,
-            style: Theme.of(context).textTheme.headline4.copyWith(fontSize: 12),
+            style: Theme.of(context)
+                .textTheme
+                .headlineMedium
+                .copyWith(fontSize: 12),
           )
         : Text(
             "",
-            style: Theme.of(context).textTheme.headline4.copyWith(fontSize: 12),
+            style: Theme.of(context)
+                .textTheme
+                .headlineMedium
+                .copyWith(fontSize: 12),
           );
   }
 
@@ -231,7 +236,7 @@ class PinCodeWidgetState extends State<PinCodeWidget>
               _numberButton("0"),
               widget.onFingerprintEntered == null ||
                       ((widget.onFingerprintEntered != null) &&
-                          _enteredPinCode.length > 0)
+                          _enteredPinCode.isNotEmpty)
                   ? _buildEraseButton()
                   : StreamBuilder<BreezUserModel>(
                       stream: widget.userProfileBloc.userStream,
@@ -255,69 +260,60 @@ class PinCodeWidgetState extends State<PinCodeWidget>
   Widget _buildBiometricsButton(
       AsyncSnapshot<BreezUserModel> snapshot, BuildContext context) {
     return CircularButton(
+      onTap: _inputEnabled ? () => _validateBiometrics(force: true) : null,
       child: Icon(
         _enrolledBiometrics == LocalAuthenticationOption.FACE ||
                 _enrolledBiometrics == LocalAuthenticationOption.FACE_ID
             ? Icons.face
             : Icons.fingerprint,
-        color: Theme.of(context).errorColor,
+        color: Theme.of(context).colorScheme.error,
       ),
-      onTap: _inputEnabled ? () => _validateBiometrics(force: true) : null,
     );
   }
 
   Widget _buildClearButton() {
     return InkWell(
-      customBorder: CircleBorder(),
-      child: Container(
-        // ignore: missing_required_param
-        child: TextButton(
-          style: TextButton.styleFrom(padding: EdgeInsets.all(0)),
-          child: Icon(
-            Icons.delete_forever,
-            color: Colors.white,
-          ),
+      customBorder: const CircleBorder(),
+      onTap: _inputEnabled ? () => _setPinCodeInput("") : null,
+      child: TextButton(
+        style: TextButton.styleFrom(padding: const EdgeInsets.all(0)),
+        child: const Icon(
+          Icons.delete_forever,
+          color: Colors.white,
         ),
       ),
-      onTap: _inputEnabled ? () => _setPinCodeInput("") : null,
     );
   }
 
   Widget _buildEraseButton() {
     return InkWell(
-      customBorder: CircleBorder(),
-      child: Container(
-        // ignore: missing_required_param
-        child: TextButton(
-          style: TextButton.styleFrom(padding: EdgeInsets.all(0)),
-          child: Icon(
-            Icons.backspace,
-            color: Colors.white,
-          ),
-        ),
-      ),
+      customBorder: const CircleBorder(),
       onTap: _inputEnabled
           ? () => _setPinCodeInput(
               _enteredPinCode.substring(0, max(_enteredPinCode.length, 1) - 1))
           : null,
+      child: TextButton(
+        style: TextButton.styleFrom(padding: const EdgeInsets.all(0)),
+        child: const Icon(
+          Icons.backspace,
+          color: Colors.white,
+        ),
+      ),
     );
   }
 
   Widget _numberButton(String number) {
     return InkWell(
-      customBorder: CircleBorder(),
-      child: Container(
-        // ignore: missing_required_param
-        child: TextButton(
-          style: TextButton.styleFrom(padding: EdgeInsets.all(0)),
-          child: Text(
-            number,
-            textAlign: TextAlign.center,
-            style: theme.numPadNumberStyle,
-          ),
+      customBorder: const CircleBorder(),
+      onTap: _inputEnabled ? () => _onNumButtonPressed(number) : null,
+      child: TextButton(
+        style: TextButton.styleFrom(padding: const EdgeInsets.all(0)),
+        child: Text(
+          number,
+          textAlign: TextAlign.center,
+          style: theme.numPadNumberStyle,
         ),
       ),
-      onTap: _inputEnabled ? () => _onNumButtonPressed(number) : null,
     );
   }
 
@@ -329,12 +325,12 @@ class PinCodeWidgetState extends State<PinCodeWidget>
     if (_enteredPinCode.length == PIN_CODE_LENGTH) {
       _inputEnabled = false;
       String pinCodeToValidate = _enteredPinCode;
-      Future.delayed(Duration(milliseconds: 200), () {
+      Future.delayed(const Duration(milliseconds: 200), () {
         widget
             .onPinEntered(pinCodeToValidate)
             .catchError((err) => _errorMessage = err.toString().substring(10))
             .whenComplete(() {
-          if (!this.mounted) {
+          if (!mounted) {
             return;
           }
           _setPinCodeInput("");

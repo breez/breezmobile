@@ -4,7 +4,7 @@ import 'package:breez/theme_data.dart' as theme;
 import 'package:flutter/material.dart';
 
 class PendingShareIndicator extends StatefulWidget {
-  PendingShareIndicator();
+  const PendingShareIndicator();
 
   @override
   State<StatefulWidget> createState() {
@@ -53,7 +53,7 @@ class PendingShareIndicatorState extends State<PendingShareIndicator>
     ).animate(
       CurvedAnimation(
         parent: controller,
-        curve: Interval(
+        curve: const Interval(
           0.0,
           1.0,
           curve: Curves.linear,

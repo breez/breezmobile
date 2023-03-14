@@ -40,7 +40,6 @@ class DepositToBTCAddressPageState extends State<DepositToBTCAddressPage> {
   @override
   Widget build(BuildContext context) {
     final texts = context.texts();
-    final themeData = Theme.of(context);
 
     final accountBloc = AppBlocsProvider.of<AccountBloc>(context);
     final lspBloc = AppBlocsProvider.of<LSPBloc>(context);
@@ -59,15 +58,8 @@ class DepositToBTCAddressPageState extends State<DepositToBTCAddressPage> {
                   return Material(
                     child: Scaffold(
                       appBar: AppBar(
-                        iconTheme: themeData.appBarTheme.iconTheme,
-                        textTheme: themeData.appBarTheme.textTheme,
-                        backgroundColor: themeData.canvasColor,
-                        leading: backBtn.BackButton(),
-                        title: Text(
-                          texts.invoice_btc_address_title,
-                          style: themeData.appBarTheme.textTheme.headline6,
-                        ),
-                        elevation: 0.0,
+                        leading: const backBtn.BackButton(),
+                        title: Text(texts.invoice_btc_address_title),
                       ),
                       body: getBody(
                         context,
@@ -119,7 +111,7 @@ class DepositToBTCAddressPageState extends State<DepositToBTCAddressPage> {
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           Padding(
-            padding: EdgeInsets.only(top: 50.0, left: 30.0, right: 30.0),
+            padding: const EdgeInsets.only(top: 50.0, left: 30.0, right: 30.0),
             child: Text(errorMessage, textAlign: TextAlign.center),
           ),
         ],
@@ -136,7 +128,7 @@ class DepositToBTCAddressPageState extends State<DepositToBTCAddressPage> {
         children: [
           AddressWidget(response?.address, response?.backupJson),
           response == null || lspInfo == null
-              ? SizedBox()
+              ? const SizedBox()
               : WarningBox(
                   child: Column(
                     mainAxisSize: MainAxisSize.min,
@@ -149,7 +141,7 @@ class DepositToBTCAddressPageState extends State<DepositToBTCAddressPage> {
                           minAllowedDeposit,
                           maxAllowedDeposit,
                         ),
-                        style: Theme.of(context).textTheme.headline6,
+                        style: Theme.of(context).textTheme.titleLarge,
                         textAlign: TextAlign.center,
                       ),
                     ],
@@ -258,6 +250,6 @@ class DepositToBTCAddressPageState extends State<DepositToBTCAddressPage> {
       );
     }
 
-    return SizedBox();
+    return const SizedBox();
   }
 }

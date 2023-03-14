@@ -9,6 +9,7 @@ import 'package:breez/bloc/account/add_funds_model.dart';
 import 'package:breez/bloc/backup/backup_bloc.dart';
 import 'package:breez/bloc/backup/backup_model.dart';
 import 'package:breez/bloc/blocs_provider.dart';
+import 'package:breez/bloc/podcast_history/sqflite/podcast_history_database.dart';
 import 'package:breez/bloc/pos_catalog/bloc.dart';
 import 'package:breez/bloc/pos_catalog/sqlite/db.dart';
 import 'package:breez/bloc/user_profile/breez_user_model.dart';
@@ -29,7 +30,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_downloader/flutter_downloader.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:share_plus/share_plus.dart';
-import 'package:breez/bloc/podcast_history/sqflite/podcast_history_database.dart';
+
 import 'default_commands.dart';
 
 bool allowRebroadcastRefunds = false;
@@ -113,7 +114,7 @@ class DevViewState extends State<DevView> {
             dividerColor: Colors.transparent,
           ),
           child: ListView(children: defaultCliCommandsText((command) {
-            _cliInputController.text = command + " ";
+            _cliInputController.text = "$command ";
             FocusScope.of(_scaffoldKey.currentState.context)
                 .requestFocus(_cliEntryFocusNode);
           })));
@@ -149,16 +150,14 @@ class DevViewState extends State<DevView> {
                               return Scaffold(
                                 key: _scaffoldKey,
                                 appBar: AppBar(
-                                  iconTheme:
-                                      Theme.of(context).appBarTheme.iconTheme,
-                                  backgroundColor:
-                                      Theme.of(context).canvasColor,
-                                  leading: backBtn.BackButton(),
-                                  elevation: 0.0,
+                                  leading: const backBtn.BackButton(),
+                                  title: const Text("Developers"),
                                   actions: <Widget>[
                                     PopupMenuButton<Choice>(
                                       onSelected: widget._select,
-                                      color: Theme.of(context).backgroundColor,
+                                      color: Theme.of(context)
+                                          .colorScheme
+                                          .background,
                                       icon: Icon(
                                         Icons.more_vert,
                                         color:
@@ -179,19 +178,12 @@ class DevViewState extends State<DevView> {
                                             child: Text(choice.title,
                                                 style: Theme.of(context)
                                                     .textTheme
-                                                    .button),
+                                                    .labelLarge),
                                           );
                                         }).toList();
                                       },
                                     ),
                                   ],
-                                  title: Text(
-                                    "Developers",
-                                    style: Theme.of(context)
-                                        .appBarTheme
-                                        .textTheme
-                                        .headline6,
-                                  ),
                                 ),
                                 body: Column(
                                     crossAxisAlignment:
@@ -207,7 +199,7 @@ class DevViewState extends State<DevView> {
                                                 child: TextField(
                                               focusNode: _cliEntryFocusNode,
                                               controller: _cliInputController,
-                                              decoration: InputDecoration(
+                                              decoration: const InputDecoration(
                                                   hintText:
                                                       'Enter a command or use the links below'),
                                               onSubmitted: (command) {
@@ -215,7 +207,7 @@ class DevViewState extends State<DevView> {
                                               },
                                             )),
                                             IconButton(
-                                              icon: Icon(Icons.play_arrow),
+                                              icon: const Icon(Icons.play_arrow),
                                               tooltip: 'Run',
                                               onPressed: () {
                                                 _sendCommand(
@@ -223,7 +215,7 @@ class DevViewState extends State<DevView> {
                                               },
                                             ),
                                             IconButton(
-                                              icon: Icon(Icons.clear),
+                                              icon: const Icon(Icons.clear),
                                               tooltip: 'Clear',
                                               onPressed: () {
                                                 setState(() {
@@ -240,20 +232,20 @@ class DevViewState extends State<DevView> {
                                       Expanded(
                                           flex: 1,
                                           child: Container(
-                                            padding: EdgeInsets.only(
+                                            padding: const EdgeInsets.only(
                                                 top: 10.0,
                                                 left: 10.0,
                                                 right: 10.0),
                                             child: Container(
                                               padding: _showDefaultCommands
-                                                  ? EdgeInsets.all(0.0)
-                                                  : EdgeInsets.all(2.0),
+                                                  ? const EdgeInsets.all(0.0)
+                                                  : const EdgeInsets.all(2.0),
                                               decoration: BoxDecoration(
                                                   border: _showDefaultCommands
                                                       ? null
                                                       : Border.all(
                                                           width: 1.0,
-                                                          color: Color(
+                                                          color: const Color(
                                                               0x80FFFFFF))),
                                               child: Column(
                                                 mainAxisSize: MainAxisSize.max,
@@ -268,7 +260,7 @@ class DevViewState extends State<DevView> {
                                                                   .end,
                                                           children: <Widget>[
                                                             IconButton(
-                                                              icon: Icon(Icons
+                                                              icon: const Icon(Icons
                                                                   .content_copy),
                                                               tooltip:
                                                                   'Copy to Clipboard',
@@ -291,14 +283,14 @@ class DevViewState extends State<DevView> {
                                                                       theme
                                                                           .snackBarBackgroundColor,
                                                                   duration:
-                                                                      Duration(
+                                                                      const Duration(
                                                                           seconds:
                                                                               2),
                                                                 ));
                                                               },
                                                             ),
                                                             IconButton(
-                                                              icon: Icon(
+                                                              icon: const Icon(
                                                                   Icons.share),
                                                               iconSize: 19.0,
                                                               tooltip: 'Share',
@@ -336,7 +328,7 @@ class DevViewState extends State<DevView> {
       BreezUserModel userModel) {
     List<Choice> choices = <Choice>[];
     choices.addAll([
-      Choice(title: 'Share Logs', icon: Icons.share, function: shareLog),
+      const Choice(title: 'Share Logs', icon: Icons.share, function: shareLog),
       /*
       Choice(
           title: 'Show Initial Screen',
@@ -408,7 +400,7 @@ class DevViewState extends State<DevView> {
         title: "Refresh Private Channels",
         icon: Icons.phone_android,
         function: () async {
-          await widget._breezBridge.populateChannePolicy();
+          await widget._breezBridge.populateChannelPolicy();
         }));
     choices.add(Choice(
         title: "Reset Unconfirmed Swap",
@@ -428,17 +420,18 @@ class DevViewState extends State<DevView> {
           var walletFiles =
               await ServiceInjector().breezBridge.getWalletDBpFilePath();
           var encoder = ZipFileEncoder();
-          var zipFile = '${tempDir.path}/wallet-files.zip';
-          encoder.create(zipFile);
+          var zipFilePath = '${tempDir.path}/wallet-files.zip';
+          encoder.create(zipFilePath);
           var i = 1;
-          walletFiles.forEach((f) {
+          for (var f in walletFiles) {
             var file = File(f);
             encoder.addFile(file,
                 "${i.toString()}_${file.path.split(Platform.pathSeparator).last}");
             i += 1;
-          });
+          }
           encoder.close();
-          Share.shareFiles([zipFile]);
+          final zipFile = XFile(zipFilePath);
+          Share.shareXFiles([zipFile]);
         }));
 
     choices.add(Choice(
@@ -446,7 +439,8 @@ class DevViewState extends State<DevView> {
       icon: Icons.file_upload,
       function: () async {
         final databasePath = await getDatabasePath();
-        Share.shareFiles([databasePath]);
+        final databaseFile = XFile(databasePath);
+        Share.shareXFiles([databaseFile]);
       },
     ));
 
@@ -457,7 +451,7 @@ class DevViewState extends State<DevView> {
         final fileResult = await FilePicker.platform.pickFiles(
           dialogTitle: "Select Product Catalog DB",
         );
-        if (fileResult != null && fileResult.files.length > 0) {
+        if (fileResult != null && fileResult.files.isNotEmpty) {
           final file = fileResult.files.first;
           if (file.path.endsWith(".db")) {
             final databasePath = await getDatabasePath();
@@ -537,7 +531,8 @@ class DevViewState extends State<DevView> {
     String filePath = '${tempDir.path}/$command.json';
     File file = File(filePath);
     await file.writeAsString(text, flush: true);
-    Share.shareFiles([filePath]);
+    final xFile = XFile(filePath);
+    Share.shareXFiles([xFile]);
   }
 
   void _showOptimizationsSettings() async {
@@ -610,14 +605,15 @@ class DevViewState extends State<DevView> {
     Directory tempDir = await getTemporaryDirectory();
     tempDir = await tempDir.createTemp("backup");
     var encoder = ZipFileEncoder();
-    var zipFile = '${tempDir.path}/backup.zip';
-    encoder.create(zipFile);
-    files.forEach((f) {
+    var zipFilePath = '${tempDir.path}/backup.zip';
+    encoder.create(zipFilePath);
+    for (var f in files) {
       var file = File(f);
-      encoder.addFile(file, "${file.path.split(Platform.pathSeparator).last}");
-    });
+      encoder.addFile(file, file.path.split(Platform.pathSeparator).last);
+    }
     encoder.close();
-    Share.shareFiles([zipFile]);
+    final zipFile = XFile(zipFilePath);
+    Share.shareXFiles([zipFile]);
   }
 
   void _refreshGraph() async {
@@ -641,21 +637,21 @@ class DevViewState extends State<DevView> {
     var stats = await tempDir.stat();
     log.info("temp dir size = ${stats.size / 1024}kb");
     var children = tempDir.listSync();
-    children.forEach((child) async {
+    for (var child in children) {
       var childStats = await child.stat();
       var idDir = (child is Directory);
       log.info(
           '${idDir ? "Directory - " : "File - "} path: ${child.path}: ${childStats.size / 1024}kb');
       if (child is Directory) {
         var secondLevelChildren = child.listSync();
-        secondLevelChildren.forEach((secondLevelChild) async {
+        for (var secondLevelChild in secondLevelChildren) {
           var idChildDir = (secondLevelChild is Directory);
           var secondLevelChildStats = await secondLevelChild.stat();
           log.info(
               "\t${idChildDir ? "Directory - " : "File - "} path: ${secondLevelChild.path}: ${secondLevelChildStats.size / 1024}kb");
-        });
+        }
       }
-    });
+    }
   }
 
   Future _promptForRestart() {
