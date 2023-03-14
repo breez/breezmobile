@@ -224,7 +224,7 @@ PODS:
   - printing (1.0.0):
     - Flutter
   - PromisesObjC (2.2.0)
-  - Protobuf (3.22.0)
+  - Protobuf (3.22.1)
   - ReachabilitySwift (5.0.0)
   - SDWebImage (5.15.5):
     - SDWebImage/Core (= 5.15.5)
@@ -452,7 +452,7 @@ SPEC CHECKSUMS:
   permission_handler_apple: 44366e37eaf29454a1e7b1b7d736c2cceaeb17ce
   printing: eafa00acb682c0ca029d4d98d0798f55a1e27102
   PromisesObjC: 09985d6d70fbe7878040aa746d78236e6946d2ef
-  Protobuf: 5e6cbc143d02fe08585d86b0098f8b755d2caaab
+  Protobuf: d7f7c8329edf5eb8af65547a8ba3e9c1cee927d5
   ReachabilitySwift: 985039c6f7b23a1da463388634119492ff86c825
   SDWebImage: fd7e1a22f00303e058058278639bf6196ee431fe
   share_plus: 056a1e8ac890df3e33cb503afffaf1e9b4fbae68
