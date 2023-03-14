@@ -192,13 +192,13 @@ class AccountBloc {
       //listen streams
       _listenAccountActions();
       _handleAccountSettings();
-      _listenUserChanges(userProfileStream);
-      _listenFilterChanges();
-      _listenAccountChanges();
-      _listenMempoolTransactions();
-      _listenRoutingConnectionChanges();
-      _trackOnBoardingStatus();
-      _listenEnableAccount();
+      // _listenUserChanges(userProfileStream);
+      // _listenFilterChanges();
+      // _listenAccountChanges();
+      // _listenMempoolTransactions();
+      // _listenRoutingConnectionChanges();
+      // _trackOnBoardingStatus();
+      // _listenEnableAccount();
       log.info("Account finished registration of listeners");
     });
   }
