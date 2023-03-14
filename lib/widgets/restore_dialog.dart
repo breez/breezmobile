@@ -45,12 +45,12 @@ class RestoreDialogState extends State<RestoreDialog> {
     final themeData = Theme.of(context);
 
     return AlertDialog(
-      titlePadding: EdgeInsets.fromLTRB(24.0, 22.0, 0.0, 16.0),
+      titlePadding: const EdgeInsets.fromLTRB(24.0, 22.0, 0.0, 16.0),
       title: Text(
         texts.restore_dialog_title,
         style: themeData.dialogTheme.titleTextStyle,
       ),
-      contentPadding: EdgeInsets.fromLTRB(24.0, 8.0, 24.0, 24.0),
+      contentPadding: const EdgeInsets.fromLTRB(24.0, 8.0, 24.0, 24.0),
       content: Column(
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -59,22 +59,22 @@ class RestoreDialogState extends State<RestoreDialog> {
             stream: widget.backupBloc.backupSettingsStream,
             builder: (context, snapshot) {
               if (!snapshot.hasData) {
-                return SizedBox();
+                return const SizedBox();
               }
 
               return Text(
                 texts.restore_dialog_multiple_accounts(
                   snapshot.data.backupProvider.displayName,
                 ),
-                style: themeData.primaryTextTheme.headline3.copyWith(
+                style: themeData.primaryTextTheme.displaySmall.copyWith(
                   fontSize: 16,
                 ),
               );
             },
           ),
           Padding(
-            padding: EdgeInsets.only(top: 16.0),
-            child: Container(
+            padding: const EdgeInsets.only(top: 16.0),
+            child: SizedBox(
               width: 150.0,
               height: 200.0,
               child: ListView.builder(
@@ -102,12 +102,12 @@ class RestoreDialogState extends State<RestoreDialog> {
           onPressed: () => Navigator.pop(widget.context, null),
           child: Text(
             texts.restore_dialog_action_cancel,
-            style: themeData.primaryTextTheme.button,
+            style: themeData.primaryTextTheme.labelLarge,
           ),
         ),
         TextButton(
           style: TextButton.styleFrom(
-            primary: theme.BreezColors.blue[500],
+            foregroundColor: theme.BreezColors.blue[500],
           ),
           onPressed: _selectedSnapshot == null
               ? null
@@ -130,25 +130,25 @@ class RestoreDialogState extends State<RestoreDialog> {
       date = BreezDateUtils.formatYearMonthDayHourMinute(parsedDate);
     }
     return ListTile(
-      contentPadding: EdgeInsets.symmetric(horizontal: 0.0),
+      contentPadding: const EdgeInsets.symmetric(horizontal: 0.0),
       selected: nodeID == item.nodeID,
       trailing: nodeID == item.nodeID
           ? Icon(
               Icons.check,
               color: theme.BreezColors.blue[500],
             )
-          : Icon(Icons.check),
+          : const Icon(Icons.check),
       title: Text(
         item.encrypted
             ? texts.restore_dialog_modified_encrypted(date)
             : texts.restore_dialog_modified_not_encrypted(date),
-        style: themeData.primaryTextTheme.caption
+        style: themeData.primaryTextTheme.bodySmall
             .copyWith(fontSize: 9)
             .apply(fontSizeDelta: 1.3),
       ),
       subtitle: Text(
         item.nodeID,
-        style: themeData.primaryTextTheme.caption.copyWith(fontSize: 9),
+        style: themeData.primaryTextTheme.bodySmall.copyWith(fontSize: 9),
       ),
       onLongPress: () {
         var nodeID = item.nodeID;
@@ -189,12 +189,13 @@ Future _shareBackup(List<String> files) async {
   Directory tempDir = await getTemporaryDirectory();
   tempDir = await tempDir.createTemp("backup");
   var encoder = ZipFileEncoder();
-  var zipFile = '${tempDir.path}/backup.zip';
-  encoder.create(zipFile);
-  files.forEach((f) {
+  var zipFilePath = '${tempDir.path}/backup.zip';
+  encoder.create(zipFilePath);
+  for (var f in files) {
     var file = File(f);
-    encoder.addFile(file, "${file.path.split(Platform.pathSeparator).last}");
-  });
+    encoder.addFile(file, file.path.split(Platform.pathSeparator).last);
+  }
   encoder.close();
-  Share.shareFiles([zipFile]);
+  final zipFile = XFile(zipFilePath);
+  Share.shareXFiles([zipFile]);
 }

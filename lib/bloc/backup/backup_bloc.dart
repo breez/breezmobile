@@ -5,10 +5,10 @@ import 'dart:io';
 import 'package:breez/bloc/backup/backup_model.dart';
 import 'package:breez/bloc/user_profile/backup_user_preferences.dart';
 import 'package:breez/bloc/user_profile/breez_user_model.dart';
+import 'package:breez/logger.dart';
 import 'package:breez/services/background_task.dart';
 import 'package:breez/services/breezlib/breez_bridge.dart';
 import 'package:breez/services/breezlib/data/rpc.pb.dart';
-import 'package:breez/logger.dart';
 import 'package:breez/services/injector.dart';
 import 'package:crypto/crypto.dart';
 import 'package:flutter/services.dart';
@@ -23,8 +23,12 @@ import '../async_action.dart';
 import 'backup_actions.dart';
 
 class BackupBloc {
-  static const String _signInFailedCode = "AuthError";
-  static const String _notFoundCode = "NotFoundError";
+  static const String _signInFailedCode = "401";
+  static const String _signInFailedMessage = "AuthError";
+  static const String _methodNotFound = "405";
+  static const String _notFoundMessage = "404";
+  static const String _noAccess = "403";
+  static const String _empty = "empty";
   static const String USER_DETAILS_PREFERENCES_KEY = "BreezUserModel.userID";
 
   static const _kDefaultOverrideFee = false;
@@ -88,8 +92,8 @@ class BackupBloc {
   SharedPreferences _sharedPreferences;
   bool _backupServiceNeedLogin = false;
   bool _enableBackupPrompt = false;
-  Map<Type, Function> _actionHandlers = Map();
-  final FlutterSecureStorage _secureStorage = FlutterSecureStorage();
+  Map<Type, Function> _actionHandlers = {};
+  FlutterSecureStorage _secureStorage;
   String _appDirPath;
   String _backupAppDataDirPath;
 
@@ -99,10 +103,13 @@ class BackupBloc {
 
   BackupBloc(
     Stream<BreezUserModel> userStream,
-    Stream<bool> backupAnytimeDBStream,
-  ) {
+    Stream<bool> backupAnytimeDBStream, {
+    ServiceInjector serviceInjector,
+    FlutterSecureStorage secureStorage,
+  }) {
     _initAppDataPathAndDir();
-    ServiceInjector injector = ServiceInjector();
+    _secureStorage = secureStorage ?? const FlutterSecureStorage();
+    ServiceInjector injector = serviceInjector ?? ServiceInjector();
     _breezLib = injector.breezBridge;
     _tasksService = injector.backgroundTaskService;
     _actionHandlers = {
@@ -136,7 +143,7 @@ class BackupBloc {
     var appDir = await getApplicationDocumentsDirectory();
     _appDirPath = appDir.path;
     _backupAppDataDirPath =
-        _appDirPath + Platform.pathSeparator + 'app_data_backup';
+        '$_appDirPath${Platform.pathSeparator}app_data_backup';
     Directory(_backupAppDataDirPath).createSync(recursive: true);
   }
 
@@ -150,25 +157,37 @@ class BackupBloc {
   }
 
   Future _updateBackupSettings(UpdateBackupSettings action) async {
-    var currentSettings = _backupSettingsController.value;
-    _backupSettingsController.add(action.settings);
-    if (action.settings.backupKeyType != currentSettings.backupKeyType) {
-      await _setBreezLibBackupKey(backupKeyType: action.settings.backupKeyType);
+    final oldSettings = _backupSettingsController.value;
+    final newSettings = action.settings;
+    log.info("update backup from:\n$oldSettings to:\n$newSettings");
+    _backupSettingsController.add(newSettings);
+    if (newSettings.backupKeyType != oldSettings.backupKeyType) {
+      log.info("update backup key type");
+      await _setBreezLibBackupKey(backupKeyType: newSettings.backupKeyType);
+    } else {
+      log.info("backup key type continue to be the same");
     }
-    if (action.settings.backupProvider != currentSettings.backupProvider ||
-        !currentSettings.remoteServerAuthData
-            .equal(action.settings.remoteServerAuthData)) {
-      await _updateBackupProvider(action.settings);
+    if (newSettings.backupProvider != oldSettings.backupProvider ||
+        !oldSettings.remoteServerAuthData
+            .equal(newSettings.remoteServerAuthData)) {
+      log.info("update backup provider");
+      await _updateBackupProvider(newSettings);
+    } else {
+      log.info("backup provider continue to be the same");
     }
-    action.resolve(action.settings);
+    action.resolve(newSettings);
   }
 
   Future _updateBackupProvider(BackupSettings settings) async {
     String authData;
     if (settings.backupProvider.name ==
         BackupSettings.remoteServerBackupProvider().name) {
+      log.info("update backup provider auth data as a remote server");
       var map = settings.remoteServerAuthData.toJson();
       authData = json.encode(map);
+    } else {
+      log.info(
+          "update backup provider auth data as ${settings.backupProvider.name} server");
     }
     await _breezLib.setBackupProvider(settings.backupProvider.name, authData);
   }
@@ -177,7 +196,7 @@ class BackupBloc {
     //last backup time persistency
     String backupStateJson =
         _sharedPreferences.getString(LAST_BACKUP_STATE_PREFERENCE_KEY);
-    BackupState backupState = BackupState(null, false, null);
+    BackupState backupState = const BackupState(null, false, null);
     if (backupStateJson != null) {
       backupState = BackupState.fromJson(json.decode(backupStateJson));
     }
@@ -226,7 +245,9 @@ class BackupBloc {
         String secureValue =
             json.encode(settings.remoteServerAuthData.toJson());
         await _secureStorage.write(
-            key: "remoteServerAuthData", value: secureValue, mOptions: MacOsOptions(synchronizable: true));
+            key: "remoteServerAuthData",
+            value: secureValue,
+            mOptions: const MacOsOptions(synchronizable: true));
       }
     });
   }
@@ -246,9 +267,9 @@ class BackupBloc {
   Future<void> _compareUserPreferences(BreezUserModel user) async {
     var appDir = await getApplicationDocumentsDirectory();
     var backupAppDataDirPath =
-        appDir.path + Platform.pathSeparator + 'app_data_backup';
+        '${appDir.path}${Platform.pathSeparator}app_data_backup';
     final backupUserPrefsPath =
-        backupAppDataDirPath + Platform.pathSeparator + 'userPreferences.txt';
+        '$backupAppDataDirPath${Platform.pathSeparator}userPreferences.txt';
     // Check if userPreferences file exists
     if (await File(backupUserPrefsPath).exists()) {
       // Compare updated user preferences against stored user preferences
@@ -275,7 +296,7 @@ class BackupBloc {
 
   Future<void> _updateUserPreferences(BreezUserModel userModel) async {
     final backupUserPrefsPath =
-        _backupAppDataDirPath + Platform.pathSeparator + 'userPreferences.txt';
+        '$_backupAppDataDirPath${Platform.pathSeparator}userPreferences.txt';
     var backupUserPreferences =
         BackupUserPreferences.fromJson(userModel.toJson());
     await File(backupUserPrefsPath)
@@ -288,7 +309,7 @@ class BackupBloc {
   // Save BreezUserModel json to backup directory
   Future<void> _saveUserPreferences() async {
     final backupUserPrefsPath =
-        _backupAppDataDirPath + Platform.pathSeparator + 'userPreferences.txt';
+        '$_backupAppDataDirPath${Platform.pathSeparator}userPreferences.txt';
     var preferences = await ServiceInjector().sharedPreferences;
     var userPreferences =
         preferences.getString(USER_DETAILS_PREFERENCES_KEY) ?? "{}";
@@ -375,14 +396,14 @@ class BackupBloc {
       await _saveLightningFees();
       await _savePosDB();
       await _savePodcastsDB();
-    } on Exception catch (exception) {
-      throw exception;
+    } on Exception {
+      rethrow;
     }
   }
 
   Future<void> _saveLightningFees() async {
     final lightningFeesPath =
-        _backupAppDataDirPath + Platform.pathSeparator + 'lightningFees.txt';
+        '$_backupAppDataDirPath${Platform.pathSeparator}lightningFees.txt';
     final lightningFeesPreferences = await _getLightningFeesPreferences();
     await File(lightningFeesPath)
         .writeAsString(json.encode(lightningFeesPreferences))
@@ -412,14 +433,12 @@ class BackupBloc {
 
   Future<void> _savePosDB() async {
     // Copy POS items to backup directory
-    final posDbPath = await databaseFactory.getDatabasesPath() +
-        Platform.pathSeparator +
-        'product-catalog.db';
+    final posDbPath =
+        '${await databaseFactory.getDatabasesPath()}${Platform.pathSeparator}product-catalog.db';
     if (await databaseExists(posDbPath)) {
       File(posDbPath)
-          .copy(_backupAppDataDirPath +
-              Platform.pathSeparator +
-              'product-catalog.db')
+          .copy(
+              '$_backupAppDataDirPath${Platform.pathSeparator}product-catalog.db')
           .catchError((err) {
         throw Exception("Failed to copy pos items.");
       });
@@ -428,10 +447,10 @@ class BackupBloc {
 
   Future<void> _savePodcastsDB() async {
     // Copy Podcasts library to backup directory
-    final anytimeDbPath = _appDirPath + Platform.pathSeparator + 'anytime.db';
+    final anytimeDbPath = '$_appDirPath${Platform.pathSeparator}anytime.db';
     if (await databaseExists(anytimeDbPath)) {
       File(anytimeDbPath)
-          .copy(_backupAppDataDirPath + Platform.pathSeparator + 'anytime.db')
+          .copy('$_backupAppDataDirPath${Platform.pathSeparator}anytime.db')
           .catchError((err) {
         throw Exception("Failed to copy podcast library.");
       });
@@ -500,22 +519,25 @@ class BackupBloc {
         }).catchError((error) {
           if (error.runtimeType == PlatformException) {
             PlatformException e = (error as PlatformException);
-            if (e.code == _signInFailedCode || e.message == _signInFailedCode) {
+            // the error code equals the message from the go library so
+            // not to confuse the two.
+            if (e.code == _signInFailedMessage ||
+                e.message == _signInFailedCode) {
               error = SignInFailedException(
                   _backupSettingsController.value.backupProvider);
+            } else if (e.code == _empty) {
+              error = NoBackupFoundException();
             } else {
               error = (error as PlatformException).message;
             }
           }
-
           _restoreFinishedController.addError(error);
         });
-
         return;
       }
 
       if (request.encryptionKey != null && request.encryptionKey.key != null) {
-        assert(request.encryptionKey.key.length > 0 || true);
+        assert(request.encryptionKey.key.isNotEmpty || true);
       }
       assert(request.snapshot.nodeID.isNotEmpty);
 
@@ -530,25 +552,35 @@ class BackupBloc {
   Future testAuth(BackupProvider provider, RemoteServerAuthData authData) {
     return _breezLib
         .testBackupAuth(provider.name, json.encode(authData.toJson()))
-        .catchError((error) {
-      log.info('backupBloc.testAuth caught error: $error');
+        .catchError(
+      (error) {
+        log.info('backupBloc.testAuth caught error: $error');
 
-      if (error is PlatformException) {
-        var e = error;
-        // Handle PlatformException(ResultError, "AuthError", Failed to invoke testBackupAuth, null)
-        switch (e.message) {
-          case _signInFailedCode:
-            throw SignInFailedException(provider);
-            break;
-
-          case _notFoundCode:
-            throw RemoteServerNotFoundException();
-            break;
+        if (error is PlatformException) {
+          var e = error;
+          switch (e.message) {
+            case _signInFailedCode:
+              throw SignInFailedException(provider);
+              break;
+            case _signInFailedMessage:
+              throw SignInFailedException(provider);
+              break;
+            case _methodNotFound:
+              throw MethodNotFoundException();
+              break;
+            case _noAccess:
+              throw NoBackupFoundException();
+              break;
+            case _notFoundMessage:
+              throw RemoteServerNotFoundException();
+              break;
+            case _empty:
+              throw NoBackupFoundException();
+          }
         }
-      }
-
-      throw error;
-    });
+        throw error;
+      },
+    );
   }
 
   _restoreAppData() async {
@@ -556,14 +588,14 @@ class BackupBloc {
       await _restoreLightningFees();
       await _restorePosDB();
       await _restorePodcastsDB();
-    } on Exception catch (exception) {
-      throw exception;
+    } on Exception {
+      rethrow;
     }
   }
 
   Future<void> _restoreLightningFees() async {
     final lightningFeesPath =
-        _backupAppDataDirPath + Platform.pathSeparator + 'lightningFees.txt';
+        '$_backupAppDataDirPath${Platform.pathSeparator}lightningFees.txt';
     if (await File(lightningFeesPath).exists()) {
       final backupLightningFeesPrefs =
           await File(lightningFeesPath).readAsString();
@@ -575,10 +607,9 @@ class BackupBloc {
 
   Future<void> _restorePosDB() async {
     final backupPosDbPath =
-        _backupAppDataDirPath + Platform.pathSeparator + 'product-catalog.db';
-    final posDbPath = await databaseFactory.getDatabasesPath() +
-        Platform.pathSeparator +
-        'product-catalog.db';
+        '$_backupAppDataDirPath${Platform.pathSeparator}product-catalog.db';
+    final posDbPath =
+        '${await databaseFactory.getDatabasesPath()}${Platform.pathSeparator}product-catalog.db';
     if (await File(backupPosDbPath).exists()) {
       await File(backupPosDbPath).copy(posDbPath).catchError((err) {
         throw Exception("Failed to restore pos items.");
@@ -588,8 +619,8 @@ class BackupBloc {
 
   Future<void> _restorePodcastsDB() async {
     final backupAnytimeDbPath =
-        _backupAppDataDirPath + Platform.pathSeparator + 'anytime.db';
-    final anytimeDbPath = _appDirPath + Platform.pathSeparator + 'anytime.db';
+        '$_backupAppDataDirPath${Platform.pathSeparator}anytime.db';
+    final anytimeDbPath = '$_appDirPath${Platform.pathSeparator}anytime.db';
     if (await File(backupAnytimeDbPath).exists()) {
       await File(backupAnytimeDbPath).copy(anytimeDbPath).catchError((err) {
         throw Exception("Failed to restore podcast library.");
@@ -619,7 +650,7 @@ class SnapshotInfo {
   SnapshotInfo(
       this.nodeID, this.modifiedTime, this.encrypted, this.encryptionType) {
     log.info(
-        "New Snapshot encrypted = ${this.encrypted} encrytionType = ${this.encryptionType}");
+        "New Snapshot encrypted = $encrypted encryptionType = $encryptionType");
   }
 
   SnapshotInfo.fromJson(Map<String, dynamic> json)
@@ -643,16 +674,32 @@ class SignInFailedException implements Exception {
 
   SignInFailedException(this.provider);
 
+  @override
   String toString() {
     return "Sign in failed";
   }
 }
 
-class RemoteServerNotFoundException implements Exception {
-  RemoteServerNotFoundException();
+class MethodNotFoundException implements Exception {
+  MethodNotFoundException();
 
+  @override
   String toString() {
-    return "The server/url was not found.";
+    return "Method not found";
+  }
+}
+
+class NoBackupFoundException implements Exception {
+  @override
+  String toString() {
+    return "No backup found";
+  }
+}
+
+class RemoteServerNotFoundException implements Exception {
+  @override
+  String toString() {
+    return "The server was not found. Please check the address";
   }
 }
 

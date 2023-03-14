@@ -73,7 +73,7 @@ class SweepAllCoinsConfirmationState extends State<SweepAllCoinsConfirmation> {
               .map((index) => FeeOption(transactions[index].fees.toInt(),
                   trimmedTargetConfirmations[index]))
               .toList();
-      if (feeOptions.length > 0) {
+      if (feeOptions.isNotEmpty) {
         setState(() {
           _showConfirm = true;
         });
@@ -92,17 +92,10 @@ class SweepAllCoinsConfirmationState extends State<SweepAllCoinsConfirmation> {
     final texts = context.texts();
     return Scaffold(
       appBar: AppBar(
-        iconTheme: themeData.appBarTheme.iconTheme,
-        textTheme: themeData.appBarTheme.textTheme,
-        backgroundColor: themeData.canvasColor,
         leading: backBtn.BackButton(onPressed: () {
           widget.onPrevious();
         }),
-        title: Text(
-          texts.sweep_all_coins_speed,
-          style: themeData.appBarTheme.textTheme.headline6,
-        ),
-        elevation: 0.0,
+        title: Text(texts.sweep_all_coins_speed),
       ),
       body: StreamBuilder<AccountModel>(
         stream: AppBlocsProvider.of<AccountBloc>(context).accountStream,
@@ -120,10 +113,10 @@ class SweepAllCoinsConfirmationState extends State<SweepAllCoinsConfirmation> {
               if (futureSnapshot.connectionState != ConnectionState.done ||
                   acc == null) {
                 //render loader
-                return SizedBox();
+                return const SizedBox();
               }
 
-              if (feeOptions.where((f) => f != null).length == 0) {
+              if (feeOptions.where((f) => f != null).isEmpty) {
                 return _ErrorMessage(
                   message: texts.sweep_all_coins_error_amount_small,
                 );
@@ -136,18 +129,16 @@ class SweepAllCoinsConfirmationState extends State<SweepAllCoinsConfirmation> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Container(
-                      child: FeeChooser(
-                        economyFee: feeOptions[0],
-                        regularFee: feeOptions[1],
-                        priorityFee: feeOptions[2],
-                        selectedIndex: this.selectedFeeIndex,
-                        onSelect: (index) => setState(() {
-                          this.selectedFeeIndex = index;
-                        }),
-                      ),
+                    FeeChooser(
+                      economyFee: feeOptions[0],
+                      regularFee: feeOptions[1],
+                      priorityFee: feeOptions[2],
+                      selectedIndex: selectedFeeIndex,
+                      onSelect: (index) => setState(() {
+                        selectedFeeIndex = index;
+                      }),
                     ),
-                    SizedBox(height: 36.0),
+                    const SizedBox(height: 36.0),
                     buildSummary(context, acc),
                   ],
                 ),
@@ -188,7 +179,7 @@ class SweepAllCoinsConfirmationState extends State<SweepAllCoinsConfirmation> {
     final receive = _sweepAmount - feeOptions[selectedFeeIndex].sats;
     return Container(
       decoration: BoxDecoration(
-        borderRadius: BorderRadius.all(Radius.circular(5.0)),
+        borderRadius: const BorderRadius.all(Radius.circular(5.0)),
         border: Border.all(
           color: themeData.colorScheme.onSurface.withOpacity(0.4),
         ),
@@ -197,86 +188,74 @@ class SweepAllCoinsConfirmationState extends State<SweepAllCoinsConfirmation> {
         shrinkWrap: true,
         children: [
           ListTile(
-            title: Container(
-              child: AutoSizeText(
-                texts.sweep_all_coins_label_send,
-                style: TextStyle(
-                  color: Colors.white,
-                ),
-                maxLines: 1,
-                minFontSize: MinFontSize(context).minFontSize,
-                stepGranularity: 0.1,
+            title: AutoSizeText(
+              texts.sweep_all_coins_label_send,
+              style: const TextStyle(
+                color: Colors.white,
               ),
+              maxLines: 1,
+              minFontSize: MinFontSize(context).minFontSize,
+              stepGranularity: 0.1,
             ),
-            trailing: Container(
-              child: AutoSizeText(
-                acc.currency.format(_sweepAmount),
-                style: TextStyle(
-                  color: themeData.errorColor,
-                ),
-                maxLines: 1,
-                minFontSize: MinFontSize(context).minFontSize,
-                stepGranularity: 0.1,
+            trailing: AutoSizeText(
+              acc.currency.format(_sweepAmount),
+              style: TextStyle(
+                color: themeData.colorScheme.error,
               ),
+              maxLines: 1,
+              minFontSize: MinFontSize(context).minFontSize,
+              stepGranularity: 0.1,
             ),
           ),
           ListTile(
-            title: Container(
-              child: AutoSizeText(
-                texts.sweep_all_coins_label_transaction_fee,
-                style: TextStyle(
-                  color: Colors.white.withOpacity(0.4),
-                ),
-                maxLines: 1,
-                minFontSize: MinFontSize(context).minFontSize,
-                stepGranularity: 0.1,
+            title: AutoSizeText(
+              texts.sweep_all_coins_label_transaction_fee,
+              style: TextStyle(
+                color: Colors.white.withOpacity(0.4),
               ),
+              maxLines: 1,
+              minFontSize: MinFontSize(context).minFontSize,
+              stepGranularity: 0.1,
             ),
-            trailing: Container(
-              child: AutoSizeText(
-                texts.sweep_all_coins_fee(
-                  acc.currency.format(
-                    Int64(feeOptions[selectedFeeIndex].sats),
-                  ),
+            trailing: AutoSizeText(
+              texts.sweep_all_coins_fee(
+                acc.currency.format(
+                  Int64(feeOptions[selectedFeeIndex].sats),
                 ),
-                style: TextStyle(
-                  color: themeData.errorColor.withOpacity(0.4),
-                ),
-                maxLines: 1,
-                minFontSize: MinFontSize(context).minFontSize,
-                stepGranularity: 0.1,
               ),
+              style: TextStyle(
+                color: themeData.colorScheme.error.withOpacity(0.4),
+              ),
+              maxLines: 1,
+              minFontSize: MinFontSize(context).minFontSize,
+              stepGranularity: 0.1,
             ),
           ),
           ListTile(
-            title: Container(
-              child: AutoSizeText(
-                texts.sweep_all_coins_label_receive,
-                style: TextStyle(
-                  color: Colors.white,
-                ),
-                maxLines: 1,
-                minFontSize: MinFontSize(context).minFontSize,
-                stepGranularity: 0.1,
+            title: AutoSizeText(
+              texts.sweep_all_coins_label_receive,
+              style: const TextStyle(
+                color: Colors.white,
               ),
+              maxLines: 1,
+              minFontSize: MinFontSize(context).minFontSize,
+              stepGranularity: 0.1,
             ),
-            trailing: Container(
-              child: AutoSizeText(
-                acc.fiatCurrency == null
-                    ? texts.sweep_all_coins_amount_no_fiat(
-                        acc.currency.format(receive),
-                      )
-                    : texts.sweep_all_coins_amount_with_fiat(
-                        acc.currency.format(receive),
-                        acc.fiatCurrency.format(receive),
-                      ),
-                style: TextStyle(
-                  color: themeData.errorColor,
-                ),
-                maxLines: 1,
-                minFontSize: MinFontSize(context).minFontSize,
-                stepGranularity: 0.1,
+            trailing: AutoSizeText(
+              acc.fiatCurrency == null
+                  ? texts.sweep_all_coins_amount_no_fiat(
+                      acc.currency.format(receive),
+                    )
+                  : texts.sweep_all_coins_amount_with_fiat(
+                      acc.currency.format(receive),
+                      acc.fiatCurrency.format(receive),
+                    ),
+              style: TextStyle(
+                color: themeData.colorScheme.error,
               ),
+              maxLines: 1,
+              minFontSize: MinFontSize(context).minFontSize,
+              stepGranularity: 0.1,
             ),
           ),
         ],

@@ -19,7 +19,7 @@ class UnexpectedFunds extends StatefulWidget {
 
 class UnexpectedFundsState extends State<UnexpectedFunds> {
   String _destAddress;
-  PageController _pageController = PageController();
+  final PageController _pageController = PageController();
 
   @override
   void initState() {
@@ -54,7 +54,7 @@ class UnexpectedFundsState extends State<UnexpectedFunds> {
           final balance = accSnapshot.data.walletBalance;
           return PageView(
             controller: _pageController,
-            physics: NeverScrollableScrollPhysics(),
+            physics: const NeverScrollableScrollPhysics(),
             children: [
               WithdrawFundsPage(
                 title: texts.unexpected_funds_title,
@@ -68,9 +68,9 @@ class UnexpectedFundsState extends State<UnexpectedFunds> {
                 ),
                 onNext: (amount, address, _) {
                   setState(() {
-                    this._destAddress = address;
+                    _destAddress = address;
                     _pageController.nextPage(
-                      duration: Duration(milliseconds: 250),
+                      duration: const Duration(milliseconds: 250),
                       curve: Curves.easeInOut,
                     );
                   });
@@ -78,7 +78,7 @@ class UnexpectedFundsState extends State<UnexpectedFunds> {
                 },
               ),
               _destAddress == null
-                  ? SizedBox()
+                  ? const SizedBox()
                   : SweepAllCoinsConfirmation(
                       accountBloc: accountBloc,
                       address: _destAddress,
@@ -90,7 +90,7 @@ class UnexpectedFundsState extends State<UnexpectedFunds> {
                       },
                       onPrevious: () {
                         _pageController.previousPage(
-                          duration: Duration(milliseconds: 250),
+                          duration: const Duration(milliseconds: 250),
                           curve: Curves.easeInOut,
                         );
                       },

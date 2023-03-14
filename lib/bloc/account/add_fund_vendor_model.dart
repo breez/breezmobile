@@ -23,11 +23,11 @@ class AddFundVendorModel {
     bool isAllowed,
   }) {
     return AddFundVendorModel(
-      this.name,
-      this.icon,
-      this.route,
+      name,
+      icon,
+      route,
       isAllowed: isAllowed ?? this.isAllowed,
-      enabled: this.enabled,
+      enabled: enabled,
     );
   }
 }

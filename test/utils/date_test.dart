@@ -81,7 +81,7 @@ void main() {
     test('one second ago should return a moment ago', () {
       expect(
         BreezDateUtils.formatTimelineRelative(
-          DateTime.now().subtract(Duration(seconds: 1)),
+          DateTime.now().subtract(const Duration(seconds: 1)),
         ),
         'a moment ago',
       );
@@ -90,7 +90,7 @@ void main() {
     test('one second ago should return a moment ago', () {
       expect(
         BreezDateUtils.formatTimelineRelative(
-          DateTime.now().subtract(Duration(seconds: 1)),
+          DateTime.now().subtract(const Duration(seconds: 1)),
         ),
         'a moment ago',
       );
@@ -99,7 +99,7 @@ void main() {
     test('one minute ago should return a minute ago', () {
       expect(
         BreezDateUtils.formatTimelineRelative(
-          DateTime.now().subtract(Duration(minutes: 1)),
+          DateTime.now().subtract(const Duration(minutes: 1)),
         ),
         'a minute ago',
       );
@@ -108,7 +108,7 @@ void main() {
     test('one hour ago should return about an hour ago', () {
       expect(
         BreezDateUtils.formatTimelineRelative(
-          DateTime.now().subtract(Duration(hours: 1)),
+          DateTime.now().subtract(const Duration(hours: 1)),
         ),
         'about an hour ago',
       );
@@ -117,7 +117,7 @@ void main() {
     test('one day ago should return a day ago', () {
       expect(
         BreezDateUtils.formatTimelineRelative(
-          DateTime.now().subtract(Duration(days: 1)),
+          DateTime.now().subtract(const Duration(days: 1)),
         ),
         'a day ago',
       );
@@ -126,7 +126,7 @@ void main() {
     test('three days ago should return 3 days ago', () {
       expect(
         BreezDateUtils.formatTimelineRelative(
-          DateTime.now().subtract(Duration(days: 3)),
+          DateTime.now().subtract(const Duration(days: 3)),
         ),
         '3 days ago',
       );

@@ -19,17 +19,16 @@ class PaymentDetailsDialogLnurlAddress extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final texts = context.texts();
-    final address = paymentInfo.lnurlPayInfo?.lightningAddress?.trim();
 
-    if (paymentInfo.type != PaymentType.SENT || address == null || address.isEmpty) {
-      return Container();
-    }
-
-    return ShareablePaymentRow(
-      title: texts.payment_details_dialog_share_lightning_address,
-      sharedValue: address,
-      labelAutoSizeGroup: labelAutoSizeGroup,
-      valueAutoSizeGroup: valueAutoSizeGroup,
-    );
+    return (paymentInfo.type == PaymentType.SENT &&
+            paymentInfo.lnurlPayInfo != null &&
+            paymentInfo.lnurlPayInfo.lightningAddress.isNotEmpty)
+        ? ShareablePaymentRow(
+            title: texts.payment_details_dialog_share_lightning_address,
+            sharedValue: paymentInfo.lnurlPayInfo.lightningAddress.trim(),
+            labelAutoSizeGroup: labelAutoSizeGroup,
+            valueAutoSizeGroup: valueAutoSizeGroup,
+          )
+        : Container();
   }
 }

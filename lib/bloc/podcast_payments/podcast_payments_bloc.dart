@@ -23,7 +23,7 @@ const maxFeePart = 0.2;
 const updatePodcastHistoryFrequencyInSeconds = 5;
 
 class PodcastPaymentsBloc with AsyncActionsHandler {
-  final _listeningTime = Map<String, double>();
+  final _listeningTime = <String, double>{};
   final AudioBloc audioBloc;
   final SettingsBloc settingsBloc;
   final Repository repository;
@@ -39,7 +39,7 @@ class PodcastPaymentsBloc with AsyncActionsHandler {
   AggregatedPayments _aggregatedPayments;
   BreezUserModel user;
   String breezReceiverNode;
-  Map<String, bool> paidPositions = Map<String, bool>();
+  Map<String, bool> paidPositions = <String, bool>{};
 
   PodcastPaymentsBloc(this.userProfile, this.accountBloc, this.settingsBloc,
       this.audioBloc, this.repository) {
@@ -83,7 +83,7 @@ class PodcastPaymentsBloc with AsyncActionsHandler {
     _aggregatedPayments = AggregatedPayments(sharedPreferences);
     // start the payment ticker
     num secondsPassed = 0.0;
-    Timer.periodic(Duration(seconds: 1), (t) async {
+    Timer.periodic(const Duration(seconds: 1), (t) async {
       // calculate episode and playing state
       var playingState = await _getAudioState();
       if (playingState != AudioState.playing) {
@@ -126,14 +126,9 @@ class PodcastPaymentsBloc with AsyncActionsHandler {
       }
 
       // if minutes increased
-      print("nextPaidMinutes = " +
-          nextPaidMinutes.toString() +
-          " playbackSpeed=" +
-          playbackSpeed.toString() +
-          " time = " +
-          _listeningTime[currentPlayedEpisode.contentUrl].floor().toString());
+      print("nextPaidMinutes = $nextPaidMinutes playbackSpeed=$playbackSpeed time = ${_listeningTime[currentPlayedEpisode.contentUrl].floor()}");
       if (nextPaidMinutes > paidMinutes) {
-        log.info("paying recipients " + nextPaidMinutes.toString());
+        log.info("paying recipients $nextPaidMinutes");
         final value = await _getLightningPaymentValue(currentPlayedEpisode);
         if (value != null) {
           _payRecipients(currentPlayedEpisode, value.recipients,
@@ -145,7 +140,7 @@ class PodcastPaymentsBloc with AsyncActionsHandler {
 
   Future<AudioState> _getAudioState() {
     try {
-      return audioBloc.playingState.first.timeout(Duration(seconds: 1));
+      return audioBloc.playingState.first.timeout(const Duration(seconds: 1));
     } catch (e) {
       return null;
     }
@@ -153,7 +148,7 @@ class PodcastPaymentsBloc with AsyncActionsHandler {
 
   Future<Episode> _getCurrentPlayingEpisode() {
     try {
-      return audioBloc.nowPlaying.first.timeout(Duration(seconds: 1));
+      return audioBloc.nowPlaying.first.timeout(const Duration(seconds: 1));
     } catch (e) {
       return null;
     }
@@ -162,7 +157,7 @@ class PodcastPaymentsBloc with AsyncActionsHandler {
   Future<double> _getCurrentPlaybackSpeed() async {
     try {
       var settings =
-          await settingsBloc.settings.first.timeout(Duration(seconds: 1));
+          await settingsBloc.settings.first.timeout(const Duration(seconds: 1));
       return settings?.playbackSpeed;
     } catch (e) {
       return 1.0;
@@ -202,8 +197,10 @@ class PodcastPaymentsBloc with AsyncActionsHandler {
     PositionState position;
     try {
       position =
-          await audioBloc.playPosition.first.timeout(Duration(seconds: 1));
-    } catch (e) {}
+          await audioBloc.playPosition.first.timeout(const Duration(seconds: 1));
+    } catch (e) {
+      // do nothing.
+    }
 
     // calculate the minute to pay.
     var minuteToPay = position.position.inMinutes;
@@ -263,7 +260,7 @@ class PodcastPaymentsBloc with AsyncActionsHandler {
                 "failed to pay $netPay to destination ${d.address}, error=${payResponse.paymentError} trying next time...");
             return;
           }
-          log.info("succesfully paid $netPay to destination ${d.address}");
+          log.info("successfully paid $netPay to destination ${d.address}");
           netPaySplitSum = netPaySplitSum + netPay;
 
           if (!boost) {
@@ -347,7 +344,7 @@ class PodcastPaymentsBloc with AsyncActionsHandler {
   }
 
   String _getPodcastGroupKey(Episode episode) {
-    final info = Map<String, dynamic>();
+    final info = <String, dynamic>{};
     info["content_url"] = episode.contentUrl;
     final metadata = episode?.metadata;
     if (metadata != null && metadata["feed"] != null) {
@@ -363,7 +360,7 @@ class PodcastPaymentsBloc with AsyncActionsHandler {
         .where((pi) => pi != null)
         .map(((pi) => pi.fee))
         .first
-        .timeout(Duration(seconds: 1), onTimeout: () => Int64.ZERO);
+        .timeout(const Duration(seconds: 1), onTimeout: () => Int64.ZERO);
   }
 
   /// Saves the podcast data to local storage.
@@ -400,7 +397,7 @@ class PodcastPaymentsBloc with AsyncActionsHandler {
     int msatTotal,
     String senderName,
   }) {
-    var tlv = Map<String, dynamic>();
+    var tlv = <String, dynamic>{};
     tlv["podcast"] = _getPodcastTitle(episode);
     tlv["episode"] = episode.title;
     tlv["action"] = boost ? "boost" : "stream";
@@ -412,7 +409,7 @@ class PodcastPaymentsBloc with AsyncActionsHandler {
     tlv["sender_name"] = senderName;
     if (boost && boostMessage != null) tlv["message"] = boostMessage;
     var encoded = json.encode(tlv);
-    var records = Map<Int64, String>();
+    var records = <Int64, String>{};
     records[Int64(7629169)] = encoded;
     if (customKey != null && customValue != null) {
       int recordKey = int.tryParse(customKey);
@@ -463,11 +460,11 @@ class Value {
 
     final recipients = <ValueDestination>[];
     final destinationsJson = map['destinations'] as List<dynamic>;
-    destinationsJson.forEach((d) {
+    for (var d in destinationsJson) {
       if (d is Map<String, dynamic>) {
         recipients.add(ValueDestination.fromJson(d));
       }
-    });
+    }
 
     return Value._(
         model: ValueModel.fromJson(map['model']), recipients: recipients);

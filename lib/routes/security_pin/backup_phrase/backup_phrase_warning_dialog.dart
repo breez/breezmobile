@@ -22,14 +22,14 @@ class BackupPhraseWarningDialog extends StatelessWidget {
             onPressed: () => Navigator.of(context).pop(false),
             child: Text(
               texts.backup_phrase_warning_action_no,
-              style: themeData.primaryTextTheme.button,
+              style: themeData.primaryTextTheme.labelLarge,
             ),
           ),
           TextButton(
             onPressed: () => Navigator.of(context).pop(true),
             child: Text(
               texts.backup_phrase_warning_action_yes,
-              style: themeData.primaryTextTheme.button,
+              style: themeData.primaryTextTheme.labelLarge,
             ),
           ),
         ],

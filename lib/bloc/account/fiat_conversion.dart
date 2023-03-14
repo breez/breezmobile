@@ -25,16 +25,16 @@ class FiatConversion {
     }
   }
 
-  RegExp get whitelistedPattern => this.currencyData.fractionSize == 0
+  RegExp get whitelistedPattern => currencyData.fractionSize == 0
       ? RegExp(r'\d+')
-      : RegExp("^\\d+\\.?\\d{0,${this.currencyData.fractionSize ?? 2}}");
+      : RegExp("^\\d+\\.?\\d{0,${currencyData.fractionSize ?? 2}}");
 
   Int64 fiatToSat(double fiatAmount) {
-    return Int64((fiatAmount / this.exchangeRate * 100000000).round());
+    return Int64((fiatAmount / exchangeRate * 100000000).round());
   }
 
   double satToFiat(Int64 satoshies) {
-    return satoshies.toDouble() / 100000000 * this.exchangeRate;
+    return satoshies.toDouble() / 100000000 * exchangeRate;
   }
 
   String format(Int64 amount) {
@@ -56,13 +56,13 @@ class FiatConversion {
     String formattedAmount = "";
     String spacing = " " * currencyData.spacing;
     String symbol = currencyData.rightSideSymbol
-        ? spacing + '${currencyData.symbol}'
-        : '${currencyData.symbol}' + spacing;
+        ? '$spacing${currencyData.symbol}'
+        : '${currencyData.symbol}$spacing';
     // if conversion result is less than the minimum it doesn't make sense to display
     // it.
     if (!allowBelowMin && fiatAmount < minimumAmount) {
       formattedAmount = minimumAmount.toStringAsFixed(fractionSize);
-      symbol = '< ' + symbol;
+      symbol = '< $symbol';
     } else {
       final formatter = CurrencyFormatter().formatter;
       formatter.minimumFractionDigits = fractionSize;

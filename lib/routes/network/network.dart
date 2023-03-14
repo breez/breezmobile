@@ -39,7 +39,7 @@ class NetworkPage extends StatefulWidget {
 class NetworkPageState extends State<NetworkPage> {
   final _formKey = GlobalKey<FormState>();
   BreezBridge _breezLib;
-  _NetworkData _data = _NetworkData();
+  final _NetworkData _data = _NetworkData();
   List<TextEditingController> peerControllers =
       List<TextEditingController>.generate(2, (_) => TextEditingController());
 
@@ -75,42 +75,35 @@ class NetworkPageState extends State<NetworkPage> {
   @override
   Widget build(BuildContext context) {
     final texts = context.texts();
-    final themeData = Theme.of(context);
 
     return ButtonTheme(
       height: 28.0,
       child: Scaffold(
         appBar: AppBar(
-          iconTheme: themeData.appBarTheme.iconTheme,
-          textTheme: themeData.appBarTheme.textTheme,
-          backgroundColor: themeData.canvasColor,
           automaticallyImplyLeading: false,
-          leading: backBtn.BackButton(),
-          title: Text(
-            texts.network_title,
-            style: themeData.appBarTheme.textTheme.headline6,
-          ),
-          elevation: 0.0,
+          leading: const backBtn.BackButton(),
+          title: Text(texts.network_title),
         ),
         body: FutureBuilder(
           future: loadPeersAction.future,
           builder: (context, snapshot) {
             if (!snapshot.hasData) {
-              return Center(child: Loader(color: Colors.white));
+              return const Center(child: Loader(color: Colors.white));
             }
             return Form(
               key: _formKey,
               child: ListView(
                 scrollDirection: Axis.vertical,
                 children: [
-                  if (this._data.showTor)
+                  if (_data.showTor)
                     SimpleSwitch(
-                      text: _data.torIsActive ? texts.network_tor_disable : texts.network_tor_enable,
+                      text: _data.torIsActive
+                          ? texts.network_tor_disable
+                          : texts.network_tor_enable,
                       switchValue: _data.torIsActive,
                       onChanged: _torSwitchChanged,
                     ),
-                  if (this._data.showTor)
-                    Divider(),
+                  if (_data.showTor) const Divider(),
                   Padding(
                     padding: const EdgeInsets.fromLTRB(16, 8, 16, 16),
                     child: Column(
@@ -141,20 +134,20 @@ class NetworkPageState extends State<NetworkPage> {
                             children: [
                               OutlinedButton(
                                 style: OutlinedButton.styleFrom(
-                                  side: BorderSide(color: Colors.white),
-                                  primary: Colors.white,
+                                  foregroundColor: Colors.white,
+                                  side: const BorderSide(color: Colors.white),
                                 ),
-                                child: Text(texts.network_restart_action_reset),
                                 onPressed: _resetNodes,
+                                child: Text(texts.network_restart_action_reset),
                               ),
-                              SizedBox(width: 12.0),
+                              const SizedBox(width: 12.0),
                               OutlinedButton(
                                 style: OutlinedButton.styleFrom(
-                                  side: BorderSide(color: Colors.white),
-                                  primary: Colors.white,
+                                  foregroundColor: Colors.white,
+                                  side: const BorderSide(color: Colors.white),
                                 ),
-                                child: Text(texts.network_restart_action_save),
                                 onPressed: saveNodes,
+                                child: Text(texts.network_restart_action_save),
                               ),
                             ],
                           ),
@@ -240,12 +233,12 @@ class NetworkPageState extends State<NetworkPage> {
   void saveNodes() async {
     final texts = context.texts();
     if (_formKey.currentState.validate()) {
-      final nodeSet = Set<String>();
-      peerControllers.forEach((peerData) {
+      final nodeSet = <String>{};
+      for (var peerData in peerControllers) {
         if (peerData.text.isNotEmpty) {
           nodeSet.add(peerData.text);
         }
-      });
+      }
 
       try {
         if (nodeSet.isNotEmpty) {
@@ -300,7 +293,7 @@ class NetworkPageState extends State<NetworkPage> {
           : _promptForRestart().then((didRestart) {
               if (!didRestart) {
                 setState(() {
-                  this._data.torIsActive = !value;
+                  _data.torIsActive = !value;
                 });
               }
             });
@@ -324,7 +317,7 @@ class PeerWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     final texts = context.texts();
     return Container(
-      padding: EdgeInsets.only(top: 8.0),
+      padding: const EdgeInsets.only(top: 8.0),
       child: TextFormField(
         decoration: InputDecoration(
           labelText: label ?? texts.network_bitcoin_node,
@@ -374,7 +367,7 @@ class _TestingPeerDialogState extends State<_TestingPeerDialog> {
       child: createAnimatedLoaderDialog(
         context,
         widget.peer.isNotEmpty
-            ? texts.network_testing_node + ": " + widget.peer
+            ? "${texts.network_testing_node}: ${widget.peer}"
             : texts.network_testing_node,
         withOKButton: false,
       ),
@@ -397,7 +390,6 @@ class _SetTorActiveDialog extends StatefulWidget {
 
 class _SetTorActiveDialogState extends State<_SetTorActiveDialog> {
   bool _allowPop = false;
-  String _text;
 
   @override
   void initState() {

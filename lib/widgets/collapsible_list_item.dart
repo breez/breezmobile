@@ -36,7 +36,7 @@ class CollapsibleListItem extends StatelessWidget {
           collapsedIconColor: userStyle.color,
           title: AutoSizeText(
             title,
-            style: textTheme.headline4.merge(userStyle),
+            style: textTheme.headlineMedium.merge(userStyle),
             maxLines: 1,
             group: labelGroup,
           ),
@@ -47,13 +47,13 @@ class CollapsibleListItem extends StatelessWidget {
               children: [
                 Expanded(
                   child: Padding(
-                    padding: EdgeInsets.only(left: 16.0, right: 0.0),
+                    padding: const EdgeInsets.only(left: 16.0, right: 0.0),
                     child: Text(
                       sharedValue ?? texts.collapsible_list_default_value,
                       textAlign: TextAlign.left,
                       overflow: TextOverflow.clip,
                       maxLines: 4,
-                      style: textTheme.headline3
+                      style: textTheme.displaySmall
                           .copyWith(fontSize: 10)
                           .merge(userStyle),
                     ),
@@ -69,11 +69,11 @@ class CollapsibleListItem extends StatelessWidget {
                       children: [
                         IconButton(
                           alignment: Alignment.centerRight,
-                          padding: EdgeInsets.only(right: 8.0),
+                          padding: const EdgeInsets.only(right: 8.0),
                           tooltip: texts.collapsible_list_action_copy(title),
                           iconSize: 16.0,
-                          color: userStyle.color ?? textTheme.button.color,
-                          icon: Icon(
+                          color: userStyle.color ?? textTheme.labelLarge.color,
+                          icon: const Icon(
                             IconData(0xe90b, fontFamily: 'icomoon'),
                           ),
                           onPressed: () {
@@ -84,15 +84,15 @@ class CollapsibleListItem extends StatelessWidget {
                             showFlushbar(
                               context,
                               message: texts.collapsible_list_copied(title),
-                              duration: Duration(seconds: 4),
+                              duration: const Duration(seconds: 4),
                             );
                           },
                         ),
                         IconButton(
-                          padding: EdgeInsets.only(right: 8.0),
+                          padding: const EdgeInsets.only(right: 8.0),
                           iconSize: 16.0,
-                          color: userStyle.color ?? textTheme.button.color,
-                          icon: Icon(Icons.share),
+                          color: userStyle.color ?? textTheme.labelLarge.color,
+                          icon: const Icon(Icons.share),
                           onPressed: () {
                             Share.share(sharedValue);
                           },

@@ -1,6 +1,6 @@
 
 import '../podcast_payments/payment_options.dart';
-import 'business_adress.dart';
+import 'business_address.dart';
 
 class BackupUserPreferences {
   final String name;
@@ -59,9 +59,7 @@ class BackupUserPreferences {
         preferredCurrencies =
             (json['preferredCurrencies'] as List<dynamic>)?.cast<String>() ??
                 <String>['USD', 'EUR', 'GBP', 'JPY'],
-        cancellationTimeoutValue = json['cancellationTimeoutValue'] == null
-            ? 90.0
-            : json['cancellationTimeoutValue'],
+        cancellationTimeoutValue = json['cancellationTimeoutValue'] ?? 90.0,
         businessAddress = json['businessAddress'] == null
             ? BusinessAddress.initial()
             : json['businessAddress'].runtimeType == BusinessAddress

@@ -5,6 +5,7 @@ import 'package:breez/bloc/account/add_funds_model.dart';
 import 'package:breez/bloc/account/moonpay_order.dart';
 import 'package:breez/bloc/blocs_provider.dart';
 import 'package:breez/theme_data.dart' as theme;
+import 'package:breez/utils/webview_controller_util.dart';
 import 'package:breez/widgets/loader.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart' show SystemChannels, rootBundle;
@@ -35,9 +36,14 @@ class MoonpayWebViewState extends State<MoonpayWebView> {
       _addFundsBloc = BlocProvider.of<AddFundsBloc>(context);
       _addFundsBloc.addFundRequestSink.add(AddFundsInfo(false, false));
 
-      _addFundsBloc.moonpayNextOrderStream.first
-          .then((order) => setState(() => _order = order))
-          .catchError((err) => setState(() => _error = err.toString()));
+      _addFundsBloc.moonpayNextOrderStream.first.then((order) {
+        setState(() => _order = order);
+        _webViewController = setWebViewController(
+          url: order.url,
+          onPageFinished: _onPageFinished,
+          onMessageReceived: _onMessageReceived,
+        );
+      }).catchError((err) => setState(() => _error = err.toString()));
 
       _addFundsBloc.addFundRequestSink.add(AddFundsInfo(true, false));
 
@@ -62,6 +68,8 @@ class MoonpayWebViewState extends State<MoonpayWebView> {
     return Material(
       child: Scaffold(
         appBar: AppBar(
+          automaticallyImplyLeading: false,
+          title: Text(texts.add_funds_moonpay_title),
           actions: [
             IconButton(
               icon: Icon(
@@ -71,15 +79,6 @@ class MoonpayWebViewState extends State<MoonpayWebView> {
               onPressed: () => Navigator.pop(context),
             )
           ],
-          automaticallyImplyLeading: false,
-          iconTheme: themeData.appBarTheme.iconTheme,
-          textTheme: themeData.appBarTheme.textTheme,
-          backgroundColor: themeData.canvasColor,
-          title: Text(
-            texts.add_funds_moonpay_title,
-            style: themeData.appBarTheme.textTheme.headline6,
-          ),
-          elevation: 0.0,
         ),
         body: (_order == null || _error != null)
             ? _buildLoadingScreen(context)
@@ -88,52 +87,33 @@ class MoonpayWebViewState extends State<MoonpayWebView> {
                   // hide keyboard on click
                   SystemChannels.textInput.invokeMethod('TextInput.hide');
                 },
-                child: WebView(
-                  initialUrl: _order.url,
-                  onWebViewCreated: (WebViewController webViewController) {
-                    setState(() {
-                      _webViewController = webViewController;
-                    });
-                  },
-                  javascriptMode: JavascriptMode.unrestricted,
-                  javascriptChannels: <JavascriptChannel>[
-                    _breezJavascriptChannel(context),
-                  ].toSet(),
-                  navigationDelegate: (NavigationRequest request) =>
-                      request.url.startsWith('lightning:')
-                          ? NavigationDecision.prevent
-                          : NavigationDecision.navigate,
-                  onPageFinished: (String url) async {
-                    // redirect post messages to javascript channel
-                    _webViewController.runJavascript(
-                      'window.onmessage = (message) => window.BreezWebView.postMessage(message.data);',
-                    );
-                    _webViewController.runJavascript(
-                      await rootBundle.loadString('src/scripts/moonpay.js'),
-                    );
-                  },
-                ),
+                child: WebViewWidget(controller: _webViewController),
               ),
       ),
     );
   }
 
-  JavascriptChannel _breezJavascriptChannel(BuildContext context) {
-    return JavascriptChannel(
-      name: "BreezWebView",
-      onMessageReceived: (JavascriptMessage message) {
-        if (message != null) {
-          var postMessage = JSON.jsonDecode(message.message);
-          if (postMessage['status'] == "completed") {
-            _addFundsBloc.completedMoonpayOrderSink.add(
-              _order.copyWith(
-                orderTimestamp: DateTime.now().millisecondsSinceEpoch,
-              ),
-            );
-          }
-        }
-      },
+  void _onPageFinished(String url) async {
+    // redirect post messages to javascript channel
+    _webViewController.runJavaScript(
+      'window.onmessage = (message) => window.BreezWebView.postMessage(message.data);',
     );
+    _webViewController.runJavaScript(
+      await rootBundle.loadString('src/scripts/moonpay.js'),
+    );
+  }
+
+  void _onMessageReceived(JavaScriptMessage message) {
+    if (message != null) {
+      var postMessage = JSON.jsonDecode(message.message);
+      if (postMessage['status'] == "completed") {
+        _addFundsBloc.completedMoonpayOrderSink.add(
+          _order.copyWith(
+            orderTimestamp: DateTime.now().millisecondsSinceEpoch,
+          ),
+        );
+      }
+    }
   }
 
   Widget _buildLoadingScreen(BuildContext context) {
@@ -144,7 +124,7 @@ class MoonpayWebViewState extends State<MoonpayWebView> {
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               Padding(
-                padding: EdgeInsets.only(
+                padding: const EdgeInsets.only(
                   top: 50.0,
                   left: 30.0,
                   right: 30.0,

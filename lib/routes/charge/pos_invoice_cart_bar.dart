@@ -42,7 +42,7 @@ class _PosInvoiceCartBarState extends State<PosInvoiceCartBar> {
     final badgeColor = themeData.floatingActionButtonTheme.backgroundColor;
 
     return Padding(
-      padding: EdgeInsets.only(left: 0.0, right: 16.0),
+      padding: const EdgeInsets.only(left: 0.0, right: 16.0),
       child: Row(
         children: <Widget>[
           Expanded(
@@ -66,11 +66,11 @@ class _PosInvoiceCartBarState extends State<PosInvoiceCartBar> {
                   child: badges.Badge(
                     key: widget.badgeKey,
                     position: badges.BadgePosition.topEnd(top: 5, end: -10),
-                    animationType: badges.BadgeAnimationType.scale,
-                    badgeColor: badgeColor,
+                    badgeAnimation: const badges.BadgeAnimation.scale(),
+                    badgeStyle: badges.BadgeStyle(badgeColor: badgeColor),
                     badgeContent: Text(
                       "${widget.totalNumOfItems}",
-                      style: TextStyle(
+                      style: const TextStyle(
                         color: Colors.white,
                       ),
                     ),
@@ -79,7 +79,7 @@ class _PosInvoiceCartBarState extends State<PosInvoiceCartBar> {
                       child: Image.asset(
                         "src/icon/cart.png",
                         width: 24.0,
-                        color: themeData.primaryTextTheme.button.color,
+                        color: themeData.primaryTextTheme.labelLarge.color,
                       ),
                     ),
                   ),
@@ -93,14 +93,14 @@ class _PosInvoiceCartBarState extends State<PosInvoiceCartBar> {
               child: SingleChildScrollView(
                 scrollDirection: Axis.horizontal,
                 child: Padding(
-                  padding: EdgeInsets.only(left: 8.0),
+                  padding: const EdgeInsets.only(left: 8.0),
                   child: Text(
                     widget.isKeypadView
                         ? widget.currentCurrency.format(widget.currentAmount)
                         : "",
                     maxLines: 1,
                     style: theme.invoiceAmountStyle.copyWith(
-                      color: themeData.textTheme.headline5.color,
+                      color: themeData.textTheme.headlineSmall.color,
                     ),
                     textAlign: TextAlign.right,
                   ),
@@ -110,7 +110,7 @@ class _PosInvoiceCartBarState extends State<PosInvoiceCartBar> {
           ),
           Theme(
             data: themeData.copyWith(
-              canvasColor: themeData.backgroundColor,
+              canvasColor: themeData.colorScheme.background,
             ),
             child: CartBarDropDownButton(
               widget.currentCurrency.shortName,

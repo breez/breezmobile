@@ -4,8 +4,9 @@ import 'package:breez/bloc/lsp/lsp_model.dart';
 import 'package:breez/widgets/loader.dart';
 import 'package:breez/widgets/route.dart';
 import 'package:breez/widgets/single_button_bottom_bar.dart';
-import 'package:flutter/material.dart';
 import 'package:breez_translations/breez_translations_locales.dart';
+import 'package:flutter/material.dart';
+
 import 'lsp_webview.dart';
 
 class SelectLSPPage extends StatefulWidget {
@@ -60,15 +61,8 @@ class SelectLSPPageState extends State<SelectLSPPage> {
 
     return Scaffold(
       appBar: AppBar(
-        iconTheme: themeData.appBarTheme.iconTheme,
-        textTheme: themeData.appBarTheme.textTheme,
-        backgroundColor: themeData.canvasColor,
         automaticallyImplyLeading: false,
-        elevation: 0.0,
-        title: Text(
-          texts.account_page_activation_provider_label,
-          style: themeData.appBarTheme.textTheme.headline6,
-        ),
+        title: Text(texts.account_page_activation_provider_label),
         actions: [
           IconButton(
             onPressed: () => Navigator.pop(context),
@@ -99,8 +93,8 @@ class SelectLSPPageState extends State<SelectLSPPage> {
             );
           }
 
-          if (!snapshot.hasData || snapshot.data.availableLSPs.length == 0) {
-            return Center(child: Loader());
+          if (!snapshot.hasData || snapshot.data.availableLSPs.isEmpty) {
+            return const Center(child: Loader());
           }
 
           final lsps = snapshot.data.availableLSPs ?? [];
@@ -114,7 +108,7 @@ class SelectLSPPageState extends State<SelectLSPPage> {
                 Flexible(
                   child: Text(
                     texts.account_page_activation_provider_hint,
-                    style: TextStyle(color: Colors.white),
+                    style: const TextStyle(color: Colors.white),
                     textAlign: TextAlign.left,
                   ),
                 ),
@@ -128,9 +122,9 @@ class SelectLSPPageState extends State<SelectLSPPage> {
                       itemBuilder: (BuildContext context, int index) {
                         var selected = _selectedLSP?.lspID == lsps[index].lspID;
                         return ListTile(
-                          contentPadding: EdgeInsets.symmetric(horizontal: 0.0),
+                          contentPadding: const EdgeInsets.symmetric(horizontal: 0.0),
                           selected: selected,
-                          trailing: selected ? Icon(Icons.check) : null,
+                          trailing: selected ? const Icon(Icons.check) : null,
                           title: Text(lsps[index].name),
                           onTap: () => setState(() {
                             _selectedLSP = lsps[index];

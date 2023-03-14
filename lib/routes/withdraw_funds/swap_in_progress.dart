@@ -15,19 +15,13 @@ class SwapInProgress extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final texts = context.texts();
-    final themeData = Theme.of(context);
 
     return Scaffold(
       appBar: AppBar(
-        iconTheme: themeData.appBarTheme.iconTheme,
-        textTheme: themeData.appBarTheme.textTheme,
-        backgroundColor: themeData.canvasColor,
-        leading: backBtn.BackButton(),
-        title: Text(
-          texts.swap_in_progress_title,
-          style: themeData.appBarTheme.textTheme.headline6,
-        ),
-        elevation: 0.0,
+        leading: backBtn.BackButton(onPressed: () {
+          Navigator.of(context).pop();
+        }),
+        title: Text(texts.swap_in_progress_title),
       ),
       body: TxWidgetWithInfoMsg(swapInProgress: swapInProgress),
     );

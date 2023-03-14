@@ -78,10 +78,10 @@ class AnytimePodcastApp extends StatefulWidget {
   }
 
   @override
-  _AnytimePodcastAppState createState() => _AnytimePodcastAppState();
+  AnytimePodcastAppState createState() => AnytimePodcastAppState();
 }
 
-class _AnytimePodcastAppState extends State<AnytimePodcastApp> {
+class AnytimePodcastAppState extends State<AnytimePodcastApp> {
   ThemeData theme;
 
   @override
@@ -221,35 +221,35 @@ class NowPlayingTransportState extends State<NowPlayingTransport> {
         stream: userBloc.userStream,
         builder: (context, userSnapshot) {
           if (!userSnapshot.hasData) {
-            return SizedBox();
+            return const SizedBox();
           }
           var userModel = userSnapshot.data;
           return StreamBuilder<AccountModel>(
             stream: accountBloc.accountStream,
             builder: (context, snapshot) {
               if (!snapshot.hasData) {
-                return SizedBox();
+                return const SizedBox();
               }
 
               List<Widget> widgets = [];
-              widgets.add(Divider(height: 0.0, thickness: 1));
+              widgets.add(const Divider(height: 0.0, thickness: 1));
               // We'll also show add funds message if user tries to boost and has no balance
               if (snapshot.data.balance <
                   userModel.paymentOptions.preferredSatsPerMinValue) {
                 widgets.add(AddFundsMessage(accountModel: snapshot.data));
-                widgets.add(Divider(height: 0.0, thickness: 1));
+                widgets.add(const Divider(height: 0.0, thickness: 1));
               }
-              widgets.add(WithConfettyPaymentEffect(
+              widgets.add(WithConfettiPaymentEffect(
                   type: PaymentEventType.StreamCompleted,
                   child: PlayerPositionControls()));
               widgets.add(PlayerTransportControls());
-              widgets.add(Padding(
-                padding: const EdgeInsets.only(top: 8.0, bottom: 24.0),
+              widgets.add(const Padding(
+                padding: EdgeInsets.only(top: 8.0, bottom: 24.0),
               ));
-              widgets.add(Divider(height: 0.0, thickness: 1));
+              widgets.add(const Divider(height: 0.0, thickness: 1));
               widgets.add(Container(
-                  color: Theme.of(context).backgroundColor,
-                  child: SafeArea(child: PaymentAdjustment())));
+                  color: Theme.of(context).colorScheme.background,
+                  child: const SafeArea(child: PaymentAdjustment())));
               return Column(mainAxisSize: MainAxisSize.min, children: widgets);
             },
           );
@@ -258,22 +258,21 @@ class NowPlayingTransportState extends State<NowPlayingTransport> {
 }
 
 WidgetBuilder playerBuilder(int duration) {
-  final WidgetBuilder builder =
-      (BuildContext context) => NowPlayingTransport(duration: duration);
+  builder(BuildContext context) => NowPlayingTransport(duration: duration);
   return builder;
 }
 
 WidgetBuilder placeholderBuilder() {
-  final WidgetBuilder builder = (BuildContext context) => Container(
+  builder(BuildContext context) => Container(
         color: Theme.of(context).primaryColorLight,
-        constraints: BoxConstraints.expand(),
+        constraints: const BoxConstraints.expand(),
       );
   return builder;
 }
 
 WidgetBuilder errorPlaceholderBuilder() {
-  final WidgetBuilder builder = (BuildContext context) => Placeholder(
-        color: Theme.of(context).errorColor,
+  builder(BuildContext context) => Placeholder(
+        color: Theme.of(context).colorScheme.error,
         strokeWidth: 1,
       );
   return builder;
@@ -281,14 +280,14 @@ WidgetBuilder errorPlaceholderBuilder() {
 
 WidgetBuilder sharePodcastButtonBuilder(
     String podcastTitle, String podcastURL) {
-  final WidgetBuilder builder = (BuildContext context) =>
+  builder(BuildContext context) =>
       SharePodcastButton(podcastTitle: podcastTitle, podcastURL: podcastURL);
   return builder;
 }
 
 WidgetBuilder shareEpisodeButtonBuilder(String podcastTitle, String podcastURL,
     String episodeTitle, String episodeID) {
-  final WidgetBuilder builder = (BuildContext context) => ShareEpisodeButton(
+  builder(BuildContext context) => ShareEpisodeButton(
       podcastTitle: podcastTitle,
       podcastURL: podcastURL,
       episodeTitle: episodeTitle,

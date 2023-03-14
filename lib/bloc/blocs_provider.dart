@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 class AppBlocsProvider extends InheritedWidget {
   final AppBlocs appBlocs;
 
-  AppBlocsProvider({Key key, Widget child, this.appBlocs})
+  const AppBlocsProvider({Key key, Widget child, this.appBlocs})
       : super(key: key, child: child);
 
   @override
@@ -59,14 +59,14 @@ class _BlocProviderState<T extends Bloc> extends State<BlocProvider<T>> {
 
   @override
   Widget build(BuildContext context) {
-    return _Inherited<T>(child: widget.builder(context), bloc: _bloc);
+    return _Inherited<T>(bloc: _bloc, child: widget.builder(context));
   }
 }
 
 class _Inherited<T> extends InheritedWidget {
   final T bloc;
 
-  _Inherited({Key key, Widget child, this.bloc})
+  const _Inherited({Key key, Widget child, this.bloc})
       : super(key: key, child: child);
 
   @override

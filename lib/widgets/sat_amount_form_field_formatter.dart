@@ -5,6 +5,7 @@ import 'package:flutter/services.dart';
 class SatAmountFormFieldFormatter extends TextInputFormatter {
   final RegExp _pattern = RegExp(r'[^\d*]');
 
+  @override
   TextEditingValue formatEditUpdate(
     TextEditingValue oldValue,
     TextEditingValue newValue,
@@ -13,11 +14,11 @@ class SatAmountFormFieldFormatter extends TextInputFormatter {
     if (raw.isEmpty) {
       return newValue.copyWith(
         text: '',
-        selection: TextSelection.collapsed(offset: 0),
+        selection: const TextSelection.collapsed(offset: 0),
       );
     }
 
-    var value;
+    Int64 value;
     try {
       value = Int64.parseInt(raw.length > 18 ? raw.substring(0, 18) : raw);
     } catch (ignored) {

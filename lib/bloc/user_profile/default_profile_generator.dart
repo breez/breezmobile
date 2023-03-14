@@ -35,8 +35,8 @@ class DefaultProfile {
 DefaultProfile generateDefaultProfile(BreezTranslations texts) {
   final random = Random();
 
-  final colors = ProfileColor.values;
-  final animals = ProfileAnimal.values;
+  const colors = ProfileColor.values;
+  const animals = ProfileAnimal.values;
 
   final randomColor = colors.elementAt(random.nextInt(colors.length));
   final randomAnimal = animals.elementAt(random.nextInt(animals.length));

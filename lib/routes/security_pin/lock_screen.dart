@@ -26,7 +26,7 @@ class AppLockScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final texts = context.texts();
-    final themeData = Theme.of(context);
+
     return WillPopScope(
       onWillPop: willPopCallback(
         context,
@@ -36,13 +36,9 @@ class AppLockScreen extends StatelessWidget {
       child: Scaffold(
         appBar: canCancel == true
             ? AppBar(
-                iconTheme: themeData.appBarTheme.iconTheme,
-                textTheme: themeData.appBarTheme.textTheme,
-                backgroundColor: themeData.canvasColor,
                 leading: backBtn.BackButton(
                   onPressed: () => Navigator.pop(context, false),
                 ),
-                elevation: 0.0,
               )
             : null,
         body: PinCodeWidget(

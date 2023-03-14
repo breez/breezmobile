@@ -34,7 +34,7 @@ class ReverseSwapBloc with AsyncActionsHandler {
   BreezUserModel _currentUser;
   int refreshInProgressIndex = 0;
   Notifications _notificationsService;
-  PaymentOptionsBloc _paymentOptionsBloc;
+  final PaymentOptionsBloc _paymentOptionsBloc;
 
   ReverseSwapBloc(
     this._paymentsStream,
@@ -63,7 +63,7 @@ class ReverseSwapBloc with AsyncActionsHandler {
             NotificationEvent_NotificationType.ACCOUNT_CHANGED
           ].contains(n.type);
         })
-        .debounceTime(Duration(milliseconds: 500))
+        .debounceTime(const Duration(milliseconds: 500))
         .listen((_) {
           _refreshInProgressSwaps();
         });
@@ -74,11 +74,11 @@ class ReverseSwapBloc with AsyncActionsHandler {
   }
 
   Future _refreshInProgressSwaps() async {
-    var currentRefresh = this.refreshInProgressIndex;
+    var currentRefresh = refreshInProgressIndex;
     var status = await _fetchInProgressSwap(FetchInProgressSwap());
 
     // only push to the stream if we didn't get another refresh request.
-    if (currentRefresh == this.refreshInProgressIndex) {
+    if (currentRefresh == refreshInProgressIndex) {
       _swapsInProgressController.add(status);
     }
   }
@@ -94,7 +94,7 @@ class ReverseSwapBloc with AsyncActionsHandler {
     ReverseSwapPaymentStatuses payments = await _breezLib.reverseSwapPayments();
     InProgressReverseSwaps swap;
     // If there are any in flight payments we display the txid to the user.
-    if (payments.paymentsStatus.length > 0) {
+    if (payments.paymentsStatus.isNotEmpty) {
       swap = InProgressReverseSwaps(payments);
     } else {
       swap = InProgressReverseSwaps(null);
@@ -130,7 +130,7 @@ class ReverseSwapBloc with AsyncActionsHandler {
     );
 
     var resultCompleter = Completer();
-    var onComplete = ({String error}) {
+    onComplete({String error}) {
       if (resultCompleter.isCompleted) {
         return;
       }
@@ -139,7 +139,7 @@ class ReverseSwapBloc with AsyncActionsHandler {
       } else {
         resultCompleter.complete();
       }
-    };
+    }
 
     final fee = await _calculateFee(action.amount.toInt());
     Future.any([

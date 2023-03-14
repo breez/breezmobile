@@ -76,7 +76,7 @@ class LNURLWebViewPageState extends State<LNURLWebViewPage> {
     var action = Login(authResponse, jwt: true);
     widget.lnurlBloc.actionsSink.add(action);
     String jwt = await action.future;
-    if (this.mounted) {
+    if (mounted) {
       setState(() => jwtToken = jwt);
     }
   }
@@ -84,11 +84,11 @@ class LNURLWebViewPageState extends State<LNURLWebViewPage> {
   @override
   Widget build(BuildContext context) {
     if (jwtToken == null) {
-      return Material(child: Loader());
+      return const Material(child: Loader());
     }
     return VendorWebViewPage(
       widget.accountBloc,
-      widget.vendorModel.url + "?token=$jwtToken",
+      "${widget.vendorModel.url}?token=$jwtToken",
       widget.vendorModel.displayName,
     );
   }

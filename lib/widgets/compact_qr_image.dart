@@ -48,7 +48,7 @@ class CompactQRImage extends StatelessWidget {
   final String data;
   final double size;
 
-  CompactQRImage({Key key, this.data, this.size}) : super(key: key);
+  const CompactQRImage({Key key, this.data, this.size}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -62,7 +62,7 @@ class CompactQRImage extends StatelessWidget {
          Ref. https://bitcoinops.org/en/bech32-sending-support/#creating-more-efficient-qr-codes-with-bech32-addresses
       */
       data: data?.toUpperCase(),
-      size: this.size,
+      size: size,
     );
   }
 

@@ -24,8 +24,8 @@ Bloc that responsible for creating online payments session.
 The handling of the session itself is not done here but within the concrete session implementation.
 */
 class ConnectPayBloc {
-  BreezBridge _breezLib = ServiceInjector().breezBridge;
-  BreezServer _breezServer = ServiceInjector().breezServer;
+  final BreezBridge _breezLib = ServiceInjector().breezBridge;
+  final BreezServer _breezServer = ServiceInjector().breezServer;
   RemoteSession _currentSession;
   final StreamController _sessionInvitesController =
       BehaviorSubject<SessionLinkModel>();
@@ -55,7 +55,7 @@ class ConnectPayBloc {
   }
 
   Future startSession(PayerRemoteSession currentSession) {
-    log.info("starting a remote payment sessino as payer...");
+    log.info("starting a remote payment session as payer...");
     //clean current session on terminate
     currentSession.terminationStream.first.then((_) {
       if (_currentSession == currentSession) {
@@ -66,10 +66,10 @@ class ConnectPayBloc {
     return _breezServer
         .joinSession(true, _currentUser.name, _currentUser.token)
         .then((newSessionReply) async {
-      log.info("succesfullly joined to a remote session");
+      log.info("successfullly joined to a remote session");
       CreateRatchetSessionReply session = await _breezLib.createRatchetSession(
           newSessionReply.sessionID, newSessionReply.expiry);
-      log.info("succesfully created an encrypted session");
+      log.info("successfully created an encrypted session");
       SessionLinkModel payerLink =
           SessionLinkModel(session.sessionID, session.secret, session.pubKey);
       currentSession.start(payerLink);
@@ -127,7 +127,7 @@ class ConnectPayBloc {
         if (err.code == StatusCode.unknown) {
           throw SessionExpiredException();
         }
-        throw e;
+        rethrow;
       }
       throw SessionExpiredException();
     }
@@ -163,7 +163,7 @@ class ConnectPayBloc {
 
 abstract class RemoteSession {
   Stream<void> terminationStream;
-  BreezUserModel _currentUser;
+  final BreezUserModel _currentUser;
 
   RemoteSession(this._currentUser);
 
@@ -176,5 +176,6 @@ abstract class RemoteSession {
 }
 
 class SessionExpiredException implements Exception {
+  @override
   String toString() => getSystemAppLocalizations().connect_to_pay_error_link_expired;
 }

@@ -8,7 +8,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 class SplashPage extends StatefulWidget {
   final BreezUserModel _user;
 
-  SplashPage(this._user);
+  const SplashPage(this._user);
 
   @override
   SplashPageState createState() {
@@ -25,10 +25,10 @@ class SplashPageState extends State<SplashPage> {
 
   Future checkIfFirstRun() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    bool _isFirstRun = (prefs.getBool('isFirstRun') ?? true);
+    bool isFirstRun = (prefs.getBool('isFirstRun') ?? true);
     if (widget._user.registered == null ||
         widget._user.registered == false ||
-        _isFirstRun) {
+        isFirstRun) {
       prefs.setBool('isFirstRun', false);
       _startTime();
     } else {
@@ -38,7 +38,7 @@ class SplashPageState extends State<SplashPage> {
   }
 
   _startTime() async {
-    return Timer(Duration(milliseconds: 3600), () {
+    return Timer(const Duration(milliseconds: 3600), () {
       Navigator.of(context).pushReplacementNamed('/intro');
     });
   }

@@ -9,7 +9,7 @@ import 'package:fixnum/fixnum.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:path_provider_platform_interface/path_provider_platform_interface.dart';
 
-import '../utils/fake_path_provider_platform.dart';
+import '../mocks/fake_path_provider_platform.dart';
 
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
@@ -31,13 +31,13 @@ void main() {
 
     test('csv file should have header', () async {
       final filePath = await _make().export();
-      final lines = await new File(filePath).readAsLines();
+      final lines = await File(filePath).readAsLines();
       expect(lines[0], "Date & Time,Title,Description,Node ID,Amount,Preimage,TX Hash,Fee,USD");
     });
 
     test('csv file should have item line', () async {
       final filePath = await _make().export();
-      final lines = await new File(filePath).readAsLines();
+      final lines = await File(filePath).readAsLines();
       expect(lines[1], "9/13/2020 12:26 PM,A title,A description,A destination,1234,A preimage,A payment hash,5,10.0");
     });
   });

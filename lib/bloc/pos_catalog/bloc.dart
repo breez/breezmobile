@@ -24,9 +24,9 @@ class PosCatalogBloc with AsyncActionsHandler {
   // ignore: non_constant_identifier_names
   static final InvalidData = Exception('INVALID_DATA');
 
-  Repository _repository;
+  final Repository _repository;
 
-  Stream<BreezUserModel> _userStream;
+  final Stream<BreezUserModel> _userStream;
 
   final StreamController<List<Item>> _itemsStreamController =
       BehaviorSubject<List<Item>>();
@@ -240,7 +240,7 @@ class PosCatalogBloc with AsyncActionsHandler {
 
   _exportItems(ExportItems action) async {
     List<Item> itemList = await _repository.fetchItems();
-    if (itemList.length != 0) {
+    if (itemList.isNotEmpty) {
       action.resolve(await PosCsvUtils(itemList: itemList).export());
     } else {
       throw Exception("EMPTY_LIST");
@@ -364,6 +364,10 @@ class PosCatalogBloc with AsyncActionsHandler {
   Future resetDB() async {
     await (_repository as SqliteRepository).dropDB();
     _loadItems(backupDB: true);
+  }
+
+  close() {
+    _reloadPosItems.close();
   }
 }
 

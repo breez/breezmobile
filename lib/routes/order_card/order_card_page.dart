@@ -6,10 +6,10 @@ import 'package:breez/services/injector.dart';
 import 'package:breez/theme_data.dart' as theme;
 import 'package:breez/widgets/back_button.dart' as backBtn;
 import 'package:breez/widgets/single_button_bottom_bar.dart';
+import 'package:breez_translations/breez_translations_locales.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:http/http.dart' as http;
-import 'package:breez_translations/breez_translations_locales.dart';
 
 class _CustomerData {
   String fullName = '';
@@ -47,19 +47,19 @@ class OrderCardPageState extends State<OrderCardPage> {
   final FocusNode _zipFocusNode = FocusNode();
 
   String _userCountryShort = "";
-  Map _countriesJSON = Map();
-  Map _statesJSON = Map();
-  List<String> _specialCountriesShort = [];
+  Map _countriesJSON = {};
+  Map _statesJSON = {};
+  final List<String> _specialCountriesShort = [];
   List<String> _states = [];
-  List<String> _statesShow = [];
-  List<String> _countriesShow = [];
+  final List<String> _statesShow = [];
+  final List<String> _countriesShow = [];
   bool _showStatesList = false;
   bool _showCountriesList = false;
   AutovalidateMode _autoValidateState = AutovalidateMode.disabled;
   AutovalidateMode _autoValidateCountry = AutovalidateMode.disabled;
   AutovalidateMode _autoValidateZip = AutovalidateMode.disabled;
 
-  _CustomerData _data = _CustomerData();
+  final _CustomerData _data = _CustomerData();
 
   BreezServer _breezServer;
 
@@ -102,7 +102,7 @@ class OrderCardPageState extends State<OrderCardPage> {
 
   void _onChangeState() {
     String inputText = _stateController.text;
-    if (inputText.length > 0) {
+    if (inputText.isNotEmpty) {
       _statesShow.clear();
       for (int i = 0; i < _states.length; i++) {
         if (_states[i].length >= inputText.length &&
@@ -111,7 +111,7 @@ class OrderCardPageState extends State<OrderCardPage> {
         }
       }
 
-      if (_statesShow.length > 0 &&
+      if (_statesShow.isNotEmpty &&
           !_statesShow.contains(inputText) &&
           _stateFocusNode.hasFocus) {
         _statesShow.sort();
@@ -136,14 +136,14 @@ class OrderCardPageState extends State<OrderCardPage> {
 
   void _onChangeCountry() {
     String inputText = _countryController.text;
-    if (inputText.length > 0) {
+    if (inputText.isNotEmpty) {
       _countriesJSON.forEach(_iterateMapEntryGetCountryShort);
       _changeStatesList();
 
       _countriesShow.clear();
       _countriesJSON.forEach(_iterateMapEntryGetCountriesShow);
 
-      if (_countriesShow.length > 0 &&
+      if (_countriesShow.isNotEmpty &&
           !_countriesShow.contains(inputText) &&
           _countryFocusNode.hasFocus) {
         _countriesShow.sort();
@@ -172,7 +172,7 @@ class OrderCardPageState extends State<OrderCardPage> {
   void _onChangeZip() {
     setState(() {
       _autoValidateZip =
-          (_zipController.text.length > 0 && !_zipFocusNode.hasFocus)
+          (_zipController.text.isNotEmpty && !_zipFocusNode.hasFocus)
               ? AutovalidateMode.always
               : AutovalidateMode.disabled;
     });
@@ -273,7 +273,7 @@ class OrderCardPageState extends State<OrderCardPage> {
     for (int i = 0; i < number; i++) {
       list.add(InkWell(
         child: Container(
-          padding: EdgeInsets.only(left: 10.0),
+          padding: const EdgeInsets.only(left: 10.0),
           alignment: Alignment.centerLeft,
           height: 35.0,
           child: Text(
@@ -288,7 +288,7 @@ class OrderCardPageState extends State<OrderCardPage> {
       ));
     }
 
-    return Container(
+    return SizedBox(
       height: list.length * 35.0,
       width: MediaQuery.of(context).size.width,
       child: ListView(
@@ -303,7 +303,7 @@ class OrderCardPageState extends State<OrderCardPage> {
     for (int i = 0; i < number; i++) {
       list.add(InkWell(
         child: Container(
-          padding: EdgeInsets.only(left: 10.0),
+          padding: const EdgeInsets.only(left: 10.0),
           alignment: Alignment.centerLeft,
           height: 35.0,
           child: Text(
@@ -318,7 +318,7 @@ class OrderCardPageState extends State<OrderCardPage> {
       ));
     }
 
-    return Container(
+    return SizedBox(
       height: list.length * 35.0,
       width: MediaQuery.of(context).size.width,
       child: ListView(
@@ -366,7 +366,7 @@ class OrderCardPageState extends State<OrderCardPage> {
             onPressed: () => Navigator.pop(context),
             child: Text(
               texts.order_card_action_ok,
-              style: themeData.primaryTextTheme.button,
+              style: themeData.primaryTextTheme.labelLarge,
             ),
           ),
         ],
@@ -376,7 +376,7 @@ class OrderCardPageState extends State<OrderCardPage> {
 
   Widget _showLeadingButton(bool showSkip) {
     if (!showSkip) {
-      return backBtn.BackButton();
+      return const backBtn.BackButton();
     } else {
       return null;
     }
@@ -384,25 +384,19 @@ class OrderCardPageState extends State<OrderCardPage> {
 
   @override
   Widget build(BuildContext context) {
-    final themeData = Theme.of(context);
     final texts = context.texts();
 
-    bool _showSkip = widget.showSkip ?? false;
+    bool showSkip = widget.showSkip ?? false;
     return Scaffold(
       appBar: AppBar(
-        iconTheme: themeData.appBarTheme.iconTheme,
-        textTheme: themeData.appBarTheme.textTheme,
-        backgroundColor: themeData.canvasColor,
         automaticallyImplyLeading: false,
-        leading: _showLeadingButton(_showSkip),
+        leading: _showLeadingButton(showSkip),
         title: Text(
-          _showSkip
+          showSkip
               ? texts.order_card_action_order_breez_card
               : texts.order_card_action_order_card,
-          style: themeData.appBarTheme.textTheme.headline6,
         ),
-        elevation: 0.0,
-        actions: _showSkipButton(context, _showSkip),
+        actions: _showSkipButton(context, showSkip),
       ),
       body: Padding(
         padding: const EdgeInsets.only(top: 16.0, left: 16.0, right: 16.0),
@@ -505,7 +499,7 @@ class OrderCardPageState extends State<OrderCardPage> {
         style: theme.FieldTextStyle.textStyle,
         textCapitalization: TextCapitalization.words,
         onSaved: (String value) {
-          this._data.fullName = value;
+          _data.fullName = value;
         },
         validator: (value) {
           if (value.isEmpty) {
@@ -528,7 +522,7 @@ class OrderCardPageState extends State<OrderCardPage> {
         style: theme.FieldTextStyle.textStyle,
         textCapitalization: TextCapitalization.none,
         onSaved: (String value) {
-          this._data.email = value;
+          _data.email = value;
         },
         validator: (value) {
           if (value.isEmpty) {
@@ -553,7 +547,7 @@ class OrderCardPageState extends State<OrderCardPage> {
         style: theme.FieldTextStyle.textStyle,
         textCapitalization: TextCapitalization.words,
         onSaved: (String value) {
-          this._data.address = value;
+          _data.address = value;
         },
         validator: (value) {
           if (value.isEmpty) {
@@ -569,24 +563,22 @@ class OrderCardPageState extends State<OrderCardPage> {
     final texts = context.texts();
     return Expanded(
       flex: 200,
-      child: Container(
-        child: TextFormField(
-          focusNode: _cityFocusNode,
-          decoration: InputDecoration(
-            labelText: texts.order_card_city_label,
-          ),
-          style: theme.FieldTextStyle.textStyle,
-          textCapitalization: TextCapitalization.words,
-          onSaved: (String value) {
-            this._data.city = value;
-          },
-          validator: (value) {
-            if (value.isEmpty) {
-              return texts.order_card_city_error;
-            }
-            return null;
-          },
+      child: TextFormField(
+        focusNode: _cityFocusNode,
+        decoration: InputDecoration(
+          labelText: texts.order_card_city_label,
         ),
+        style: theme.FieldTextStyle.textStyle,
+        textCapitalization: TextCapitalization.words,
+        onSaved: (String value) {
+          _data.city = value;
+        },
+        validator: (value) {
+          if (value.isEmpty) {
+            return texts.order_card_city_error;
+          }
+          return null;
+        },
       ),
     );
   }
@@ -607,7 +599,7 @@ class OrderCardPageState extends State<OrderCardPage> {
           style: theme.FieldTextStyle.textStyle,
           textCapitalization: TextCapitalization.words,
           onSaved: (String value) {
-            this._data.state = value;
+            _data.state = value;
           },
           validator: (value) {
             if (value.isEmpty &&
@@ -628,28 +620,26 @@ class OrderCardPageState extends State<OrderCardPage> {
     final texts = context.texts();
     return Expanded(
       flex: 200,
-      child: Container(
-        child: TextFormField(
-          autovalidateMode: _autoValidateCountry,
-          controller: _countryController,
-          focusNode: _countryFocusNode,
-          decoration: InputDecoration(
-            labelText: texts.order_card_country_label,
-          ),
-          style: theme.FieldTextStyle.textStyle,
-          textCapitalization: TextCapitalization.words,
-          onSaved: (String value) {
-            this._data.country = value;
-          },
-          validator: (value) {
-            if (value.isEmpty) {
-              return texts.order_card_country_error_empty;
-            } else if (!_checkCountry(value)) {
-              return texts.order_card_country_error_invalid;
-            }
-            return null;
-          },
+      child: TextFormField(
+        autovalidateMode: _autoValidateCountry,
+        controller: _countryController,
+        focusNode: _countryFocusNode,
+        decoration: InputDecoration(
+          labelText: texts.order_card_country_label,
         ),
+        style: theme.FieldTextStyle.textStyle,
+        textCapitalization: TextCapitalization.words,
+        onSaved: (String value) {
+          _data.country = value;
+        },
+        validator: (value) {
+          if (value.isEmpty) {
+            return texts.order_card_country_error_empty;
+          } else if (!_checkCountry(value)) {
+            return texts.order_card_country_error_invalid;
+          }
+          return null;
+        },
       ),
     );
   }
@@ -670,7 +660,7 @@ class OrderCardPageState extends State<OrderCardPage> {
           style: theme.FieldTextStyle.textStyle,
           keyboardType: TextInputType.number,
           onSaved: (String value) {
-            this._data.zip = value;
+            _data.zip = value;
           },
           validator: (value) {
             if (value.isNotEmpty && !_validateZip(value)) {
@@ -686,7 +676,7 @@ class OrderCardPageState extends State<OrderCardPage> {
   Widget _disclaimer(BuildContext context) {
     final texts = context.texts();
     return Padding(
-      padding: EdgeInsets.only(top: 40.0),
+      padding: const EdgeInsets.only(top: 40.0),
       child: InkWell(
         child: Text(
           texts.order_card_info_disclaimer,

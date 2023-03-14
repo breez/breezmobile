@@ -10,11 +10,11 @@ class SyncUIRoute<T> extends TransparentPageRoute<T> {
       Animation<double> secondaryAnimation, Widget child) {
     var curve = CurvedAnimation(parent: controller, curve: Curves.easeOut);
     return ScaleTransition(
-        scale: curve, child: child, alignment: Alignment.topRight);
+        scale: curve, alignment: Alignment.topRight, child: child);
   }
 
   @override
-  Duration get transitionDuration => Duration(milliseconds: 300);
+  Duration get transitionDuration => const Duration(milliseconds: 300);
 }
 
 class TransparentRouteLoader extends StatefulWidget {
@@ -37,9 +37,9 @@ class TransparentRouteLoaderState extends State<TransparentRouteLoader> {
   @override
   void didUpdateWidget(TransparentRouteLoader oldWidget) {
     super.didUpdateWidget(oldWidget);
-    if (oldWidget.message != this.widget.message ||
-        oldWidget.opacity != this.widget.opacity ||
-        oldWidget.value != this.widget.value) {
+    if (oldWidget.message != widget.message ||
+        oldWidget.opacity != widget.opacity ||
+        oldWidget.value != widget.value) {
       setState(() {});
     }
   }
@@ -72,8 +72,8 @@ class TransparentRouteLoaderState extends State<TransparentRouteLoader> {
               alignment: Alignment.topRight,
               child: IconButton(
                   color: Colors.white,
-                  onPressed: this.widget.onClose,
-                  icon: Icon(Icons.unfold_less)),
+                  onPressed: widget.onClose,
+                  icon: const Icon(Icons.unfold_less)),
             ),
           ),
         ],
@@ -93,11 +93,11 @@ class SyncProgressLoader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
+    return SizedBox(
       width: MediaQuery.of(context).size.width,
       height: 150.0,
       child: CircularProgress(
-          color: progressColor ?? Theme.of(context).textTheme.button.color,
+          color: progressColor ?? Theme.of(context).textTheme.labelLarge.color,
           size: 100.0,
           value: value,
           title: title),

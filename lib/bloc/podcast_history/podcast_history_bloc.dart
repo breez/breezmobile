@@ -84,7 +84,7 @@ class PodcastHistoryBloc with AsyncActionsHandler {
       DateTime endDate,
       PodcastHistorySortEnum sortOption}) async {
     _showShareButton.add(false);
-    var _podcastList = await PodcastHistoryDatabase.instance
+    var podcastList = await PodcastHistoryDatabase.instance
         .readAllHistory(filterStartDate: startDate, filterEndDate: endDate);
 
     ///These "total" values contains sum of the respective values present in history list.
@@ -93,30 +93,31 @@ class PodcastHistoryBloc with AsyncActionsHandler {
     int totalBoostagramSum = 0;
     double totalDurationSum = 0;
 
-    _podcastList.forEach((element) {
+    for (var element in podcastList) {
       totalDurationSum = totalDurationSum + element.durationInMins;
       totalBoostagramSum = totalBoostagramSum + element.boostagramsSent;
       totalSatsSum = totalSatsSum + element.satsSpent;
-    });
+    }
 
     PodcastHistoryRecord podcastHistoryRecord = PodcastHistoryRecord(
         totalSatsStreamedSum: totalSatsSum,
         totalBoostagramSentSum: totalBoostagramSum,
         totalDurationInMinsSum: totalDurationSum,
-        podcastHistoryList: _podcastList);
+        podcastHistoryList: podcastList);
     _podcastHistoryRecordBuffer = podcastHistoryRecord;
 
     _sortList(PodcastHistorySortEnum.SORT_RECENTLY_HEARD);
 
 //The share button will only be dislayed if the list is not empty
-    if (_podcastList.isNotEmpty) {
+    if (podcastList.isNotEmpty) {
       _showShareButton.add(true);
     }
   }
 
   _sortList(PodcastHistorySortEnum sortOption) {
-    List<PodcastHistoryModel> processedList = []
-      ..addAll(_podcastHistoryRecordBuffer.podcastHistoryList);
+    List<PodcastHistoryModel> processedList = [
+      ..._podcastHistoryRecordBuffer.podcastHistoryList
+    ];
 
     if (sortOption == PodcastHistorySortEnum.SORT_DURATION_DESCENDING) {
       processedList

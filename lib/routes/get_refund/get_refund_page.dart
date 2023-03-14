@@ -15,28 +15,20 @@ import 'wait_broadcast_dialog.dart';
 class GetRefundPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    final themeData = Theme.of(context);
     final texts = context.texts();
 
     final accountBloc = AppBlocsProvider.of<AccountBloc>(context);
 
     return Scaffold(
       appBar: AppBar(
-        iconTheme: themeData.appBarTheme.iconTheme,
-        textTheme: themeData.appBarTheme.textTheme,
-        backgroundColor: themeData.canvasColor,
-        leading: backBtn.BackButton(),
-        title: Text(
-          texts.get_refund_title,
-          style: themeData.appBarTheme.textTheme.headline6,
-        ),
-        elevation: 0.0,
+        leading: const backBtn.BackButton(),
+        title: Text(texts.get_refund_title),
       ),
       body: StreamBuilder<AccountModel>(
         stream: accountBloc.accountStream,
         builder: (context, accSnapshot) {
           if (!accSnapshot.hasData || !accSnapshot.hasData) {
-            return Loader();
+            return const Loader();
           }
           if (accSnapshot.hasError) {
             return Text(accSnapshot.error.toString());
@@ -92,7 +84,7 @@ class GetRefundPage extends StatelessWidget {
                 ),
               ],
             ),
-            Divider(
+            const Divider(
               height: 0.0,
               color: Color.fromRGBO(255, 255, 255, 0.52),
             ),
@@ -111,7 +103,7 @@ class GetRefundPage extends StatelessWidget {
 
     final ids = item.confirmedTransactionIds;
     String originalTransaction;
-    if (ids.length > 0) {
+    if (ids.isNotEmpty) {
       originalTransaction = ids[ids.length - 1];
     }
 

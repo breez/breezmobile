@@ -10,7 +10,7 @@ import "package:ini/ini.dart";
 //proto command:
 //protoc --dart_out=grpc:lib/services/breez_server/generated/ -Ilib/services/breez_server/protobuf/ lib/services/breez_server/protobuf/breez.proto
 class BreezServer {
-  static final defaultCallOptions = CallOptions(timeout: Duration(seconds: 10));
+  static final defaultCallOptions = CallOptions(timeout: const Duration(seconds: 10));
 
   ClientChannel _channel;
 
@@ -50,7 +50,7 @@ class BreezServer {
   Future<String> uploadLogo(List<int> logo) async {
     await _ensureValidChannel();
     var posClient = PosClient(_channel,
-        options: CallOptions(timeout: Duration(seconds: 30)));
+        options: CallOptions(timeout: const Duration(seconds: 30)));
     return posClient
         .uploadLogo(UploadFileRequest()..content = logo)
         .then((reply) => reply.url);
@@ -101,7 +101,7 @@ class BreezServer {
     }
 
     var infoClient = InformationClient(_channel,
-        options: CallOptions(timeout: Duration(seconds: 2)));
+        options: CallOptions(timeout: const Duration(seconds: 2)));
     try {
       await infoClient.ping(PingRequest());
     } catch (e) {
@@ -120,6 +120,6 @@ class BreezServer {
     }
     return ClientChannel(hostdetails[0],
         port: int.parse(hostdetails[1]),
-        options: ChannelOptions(credentials: ChannelCredentials.secure()));
+        options: const ChannelOptions(credentials: ChannelCredentials.secure()));
   }
 }

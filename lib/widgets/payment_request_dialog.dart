@@ -28,7 +28,7 @@ class PaymentRequestDialog extends StatefulWidget {
   final ScrollController scrollController;
   final Function() onComplete;
 
-  PaymentRequestDialog(this.context, this.accountBloc, this.invoice,
+  const PaymentRequestDialog(this.context, this.accountBloc, this.invoice,
       this.firstPaymentItemKey, this.scrollController, this.onComplete);
 
   @override
@@ -53,9 +53,7 @@ class PaymentRequestDialogState extends State<PaymentRequestDialog> {
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    if (_currentRoute == null) {
-      _currentRoute = ModalRoute.of(context);
-    }
+    _currentRoute ??= ModalRoute.of(context);
   }
 
   @override
@@ -68,7 +66,7 @@ class PaymentRequestDialogState extends State<PaymentRequestDialog> {
 
   // Do not pop dialog if there's a payment being processed
   Future<bool> _onWillPop() async {
-    if (this._state == PaymentRequestState.PROCESSING_PAYMENT) {
+    if (_state == PaymentRequestState.PROCESSING_PAYMENT) {
       return false;
     }
     widget.accountBloc.userActionsSink.add(CancelPaymentRequest(
@@ -80,8 +78,8 @@ class PaymentRequestDialogState extends State<PaymentRequestDialog> {
     const double minHeight = 220;
     if (_state == PaymentRequestState.PROCESSING_PAYMENT) {
       return ProcessingPaymentDialog(widget.context, () {
-        widget.accountBloc.userActionsSink.add(this._sendPayment);
-        return this._sendPayment.future;
+        widget.accountBloc.userActionsSink.add(_sendPayment);
+        return _sendPayment.future;
       }, widget.accountBloc, widget.firstPaymentItemKey, _onStateChange,
           minHeight);
     } else if (_state == PaymentRequestState.WAITING_FOR_CONFIRMATION) {

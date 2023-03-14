@@ -24,14 +24,14 @@ class MakeInvoiceRequest extends StatelessWidget {
     List<Widget> children = [
       Text(
         texts.make_invoice_request_title,
-        style: themeData.primaryTextTheme.headline3.copyWith(
+        style: themeData.primaryTextTheme.displaySmall.copyWith(
           fontSize: 16,
         ),
         textAlign: TextAlign.center,
       ),
       Text(
         account.currency.format(Int64(amount)),
-        style: themeData.primaryTextTheme.headline5,
+        style: themeData.primaryTextTheme.headlineSmall,
         textAlign: TextAlign.center,
       )
     ];
@@ -41,7 +41,7 @@ class MakeInvoiceRequest extends StatelessWidget {
         padding: const EdgeInsets.fromLTRB(16.0, 0.0, 16.0, 8.0),
         child: AutoSizeText(
           description,
-          style: themeData.primaryTextTheme.headline3.copyWith(
+          style: themeData.primaryTextTheme.displaySmall.copyWith(
             fontSize: 16,
           ),
           textAlign:
@@ -61,14 +61,14 @@ class MakeInvoiceRequest extends StatelessWidget {
             onPressed: () => Navigator.pop(context, false),
             child: Text(
               texts.make_invoice_request_action_cancel,
-              style: themeData.primaryTextTheme.button,
+              style: themeData.primaryTextTheme.labelLarge,
             ),
           ),
           SimpleDialogOption(
             onPressed: () => Navigator.pop(context, true),
             child: Text(
               texts.make_invoice_request_action_approve,
-              style: themeData.primaryTextTheme.button,
+              style: themeData.primaryTextTheme.labelLarge,
             ),
           ),
         ],

@@ -13,11 +13,11 @@ class LostCardDialog extends StatelessWidget {
     final queryData = MediaQuery.of(context);
     final texts = context.texts();
 
-    Flushbar _lostCardFlush;
-    _lostCardFlush = Flushbar(
+    Flushbar lostCardFlush;
+    lostCardFlush = Flushbar(
       titleText: Text(
         texts.lost_card_dialog_flush_title,
-        style: TextStyle(
+        style: const TextStyle(
           height: 0.0,
         ),
       ),
@@ -26,11 +26,11 @@ class LostCardDialog extends StatelessWidget {
         style: theme.snackBarStyle,
         textAlign: TextAlign.left,
       ),
-      duration: Duration(seconds: 8),
+      duration: const Duration(seconds: 8),
       backgroundColor: theme.snackBarBackgroundColor,
       mainButton: TextButton(
         onPressed: () {
-          _lostCardFlush.dismiss(true);
+          lostCardFlush.dismiss(true);
           Navigator.pushReplacementNamed(context, "/order_card");
         },
         child: Text(
@@ -46,31 +46,31 @@ class LostCardDialog extends StatelessWidget {
         style: themeData.dialogTheme.titleTextStyle,
         maxLines: 2,
       ),
-      titlePadding: EdgeInsets.fromLTRB(24.0, 22.0, 24.0, 8.0),
-      content: Container(
+      titlePadding: const EdgeInsets.fromLTRB(24.0, 22.0, 24.0, 8.0),
+      content: SizedBox(
         width: queryData.size.width,
         child: AutoSizeText(
           texts.lost_card_dialog_message,
           style: themeData.dialogTheme.contentTextStyle,
         ),
       ),
-      contentPadding: EdgeInsets.fromLTRB(24.0, 0.0, 24.0, 8.0),
+      contentPadding: const EdgeInsets.fromLTRB(24.0, 0.0, 24.0, 8.0),
       actions: [
         TextButton(
           onPressed: () => Navigator.pop(context),
           child: Text(
             texts.lost_card_dialog_action_cancel,
-            style: themeData.primaryTextTheme.button,
+            style: themeData.primaryTextTheme.labelLarge,
           ),
         ),
         TextButton(
           onPressed: () {
             Navigator.pop(context);
-            _lostCardFlush.show(context);
+            lostCardFlush.show(context);
           },
           child: Text(
             texts.lost_card_dialog_action_deactivate,
-            style: themeData.primaryTextTheme.button,
+            style: themeData.primaryTextTheme.labelLarge,
           ),
         ),
       ],

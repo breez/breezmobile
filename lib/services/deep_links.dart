@@ -15,21 +15,21 @@ class DeepLinksService {
 
   DeepLinksService() {
     _dynamicLinks = FirebaseDynamicLinks.instance;
-    Timer(Duration(seconds: 2), listen);
+    Timer(const Duration(seconds: 2), listen);
   }
 
   void listen() async {
-    var publishLink = (PendingDynamicLinkData data) async {
+    publishLink(PendingDynamicLinkData data) async {
       final Uri uri = data?.link;
       if (uri != null) {
         _linksNotificationsController.add(uri.toString());
       }
-    };
+    }
 
     var data = await FirebaseDynamicLinks.instance.getInitialLink();
     publishLink(data);
     _dynamicLinks.onLink.listen(publishLink).onError((error) {
-      log.severe("Failed to fetch dynamic link " + error.toString());
+      log.severe("Failed to fetch dynamic link $error");
     });
   }
 
@@ -87,10 +87,9 @@ class PodcastShareLinkModel {
   PodcastShareLinkModel(this.feedURL, {this.episodeID});
 
   String toLinkQuery() {
-    return 'feedURL=${Uri.encodeQueryComponent(feedURL)}' +
-        (episodeID != null
+    return 'feedURL=${Uri.encodeQueryComponent(feedURL)}${episodeID != null
             ? '&episodeID=${Uri.encodeQueryComponent(episodeID)}'
-            : '');
+            : ''}';
   }
 
   static PodcastShareLinkModel fromLinkQuery(String queryStr) {

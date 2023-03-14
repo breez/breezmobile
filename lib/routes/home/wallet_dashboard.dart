@@ -40,12 +40,23 @@ class WalletDashboardState extends State<WalletDashboard> {
   @override
   Widget build(BuildContext context) {
     final themeData = Theme.of(context);
-    final headline4 = themeData.accentTextTheme.headline4;
+    final headlineMedium = themeData.walletDashboardHeaderTextStyle;
 
-    double startHeaderSize = headline4.fontSize;
-    double endHeaderFontSize = headline4.fontSize - 8.0;
+    double startHeaderSize = headlineMedium.fontSize;
+    double endHeaderFontSize = headlineMedium.fontSize - 8.0;
 
     return GestureDetector(
+      behavior: HitTestBehavior.translucent,
+      onLongPressStart: (_) {
+        setState(() {
+          _showFiatCurrency = true;
+        });
+      },
+      onLongPressEnd: (_) {
+        setState(() {
+          _showFiatCurrency = false;
+        });
+      },
       child: Stack(
         alignment: AlignmentDirectional.topCenter,
         children: [
@@ -100,7 +111,7 @@ class WalletDashboardState extends State<WalletDashboard> {
                                       endHeaderFontSize,
                                     ),
                         )
-                      : SizedBox(),
+                      : const SizedBox(),
             ),
           ),
           Positioned(
@@ -112,22 +123,11 @@ class WalletDashboardState extends State<WalletDashboard> {
                       isAboveMinAmount(widget._accountModel?.fiatCurrency) &&
                       !widget._userModel.hideBalance
                   ? _fiatButton(context)
-                  : SizedBox(),
+                  : const SizedBox(),
             ),
           ),
         ],
       ),
-      behavior: HitTestBehavior.translucent,
-      onLongPressStart: (_) {
-        setState(() {
-          _showFiatCurrency = true;
-        });
-      },
-      onLongPressEnd: (_) {
-        setState(() {
-          _showFiatCurrency = false;
-        });
-      },
     );
   }
 
@@ -154,8 +154,8 @@ class WalletDashboardState extends State<WalletDashboard> {
     final themeData = Theme.of(context);
 
     return Text(
-      "${widget._accountModel.formattedFiatBalance}",
-      style: themeData.accentTextTheme.headline4.copyWith(
+      widget._accountModel.formattedFiatBalance,
+      style: themeData.walletDashboardHeaderTextStyle.copyWith(
         fontSize: startHeaderSize -
             (startHeaderSize - endHeaderFontSize) * widget._offsetFactor,
       ),
@@ -168,11 +168,11 @@ class WalletDashboardState extends State<WalletDashboard> {
     double endHeaderFontSize,
   ) {
     final themeData = Theme.of(context);
-    final headline4 = themeData.accentTextTheme.headline4;
+    final headlineMedium = themeData.walletDashboardHeaderTextStyle;
 
     return RichText(
       text: TextSpan(
-        style: headline4.copyWith(
+        style: headlineMedium.copyWith(
           fontSize: startHeaderSize -
               (startHeaderSize - endHeaderFontSize) * widget._offsetFactor,
         ),
@@ -184,7 +184,7 @@ class WalletDashboardState extends State<WalletDashboard> {
         children: [
           TextSpan(
             text: " ${widget._accountModel.currency.displayName}",
-            style: headline4.copyWith(
+            style: headlineMedium.copyWith(
               fontSize: startHeaderSize * 0.6 -
                   (startHeaderSize * 0.6 - endHeaderFontSize) *
                       widget._offsetFactor,
@@ -205,7 +205,7 @@ class WalletDashboardState extends State<WalletDashboard> {
 
     return Text(
       texts.wallet_dashboard_balance_hide,
-      style: themeData.accentTextTheme.headline4.copyWith(
+      style: themeData.walletDashboardHeaderTextStyle.copyWith(
         fontSize: startHeaderSize -
             (startHeaderSize - endHeaderFontSize) * widget._offsetFactor,
       ),
@@ -214,7 +214,7 @@ class WalletDashboardState extends State<WalletDashboard> {
 
   Widget _fiatButton(BuildContext context) {
     final themeData = Theme.of(context);
-    final subtitle1 = themeData.accentTextTheme.subtitle1;
+    final titleMedium = themeData.walletDashboardFiatTextStyle;
 
     return TextButton(
       style: ButtonStyle(
@@ -238,9 +238,9 @@ class WalletDashboardState extends State<WalletDashboard> {
         }
       },
       child: Text(
-        "${widget._accountModel.formattedFiatBalance}",
-        style: subtitle1.copyWith(
-          color: subtitle1.color.withOpacity(
+        widget._accountModel.formattedFiatBalance,
+        style: titleMedium.copyWith(
+          color: titleMedium.color.withOpacity(
             pow(1.00 - widget._offsetFactor, 2),
           ),
         ),

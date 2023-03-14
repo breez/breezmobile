@@ -36,7 +36,7 @@ class CloseWarningDialog extends StatelessWidget {
             onPressed: () => Navigator.of(context).pop(),
             child: Text(
               texts.close_warning_dialog_action_ok,
-              style: themeData.primaryTextTheme.button,
+              style: themeData.primaryTextTheme.labelLarge,
             ),
           ),
         ],
@@ -60,21 +60,21 @@ class CloseWarningDialog extends StatelessWidget {
                 text: texts.close_warning_dialog_message_begin(
                   inactiveDuration ~/ 86400,
                 ),
-                style: themeData.primaryTextTheme.headline3.copyWith(
+                style: themeData.primaryTextTheme.displaySmall.copyWith(
                   fontSize: 16,
                 ),
               ),
               _LinkTextSpan(
                 text: texts.close_warning_dialog_message_middle,
                 url: texts.close_warning_dialog_url,
-                style: themeData.primaryTextTheme.headline3.copyWith(
+                style: themeData.primaryTextTheme.displaySmall.copyWith(
                   fontSize: 16,
                   decoration: TextDecoration.underline,
                 ),
               ),
               TextSpan(
                 text: texts.close_warning_dialog_message_end,
-                style: themeData.primaryTextTheme.headline3.copyWith(
+                style: themeData.primaryTextTheme.displaySmall.copyWith(
                   fontSize: 16,
                 ),
               ),

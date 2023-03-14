@@ -4,7 +4,7 @@ import 'package:breez/bloc/pos_catalog/model.dart';
 import 'package:breez/bloc/pos_catalog/sqlite/repository.dart';
 import 'package:test/test.dart';
 
-import 'mocks.dart';
+import 'mocks/sqflite_mock.dart';
 
 SqliteRepository repo;
 
@@ -96,13 +96,13 @@ void main() {
     });
 
     test("fetchSaleByPaymentHash when paymentHash is unknown should return null", () async {
-      final hash = "a_hash";
+      const hash = "a_hash";
       final sale = await repo.fetchSaleByPaymentHash(hash);
       expect(sale, isNull);
     });
 
     test("fetchSaleByPaymentHash when paymentHash is valid should return sale", () async {
-      final hash = "a_hash";
+      const hash = "a_hash";
       await repo.addSale(
         Sale(
           saleLines: [

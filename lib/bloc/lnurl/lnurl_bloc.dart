@@ -13,18 +13,18 @@ import 'package:breez/utils/retry.dart';
 import 'package:breez_translations/breez_translations_locales.dart';
 import 'package:rxdart/rxdart.dart';
 
-enum fetchLNUrlState { started, completed }
+enum FetchLNUrlState { started, completed }
 
 class LNUrlBloc with AsyncActionsHandler {
   BreezBridge _breezLib;
 
   StreamController _lnUrlStreamController;
 
-  StreamController<String> _lnurlInputController =
+  final StreamController<String> _lnurlInputController =
       StreamController<String>.broadcast();
   Sink<String> get lnurlInputSink => _lnurlInputController.sink;
 
-  StreamController<NfcWithdrawInvoiceStatus> _nfcWithdrawController =
+  final StreamController<NfcWithdrawInvoiceStatus> _nfcWithdrawController =
       StreamController<NfcWithdrawInvoiceStatus>.broadcast();
   Stream<NfcWithdrawInvoiceStatus> get nfcWithdrawStream =>
       _nfcWithdrawController.stream;
@@ -70,12 +70,12 @@ class LNUrlBloc with AsyncActionsHandler {
           .asyncMap((l) {
         var v = parseLightningAddress(l);
         v ??= l;
-        _lnUrlStreamController.add(fetchLNUrlState.started);
+        _lnUrlStreamController.add(FetchLNUrlState.started);
         return _breezLib.fetchLNUrl(v).catchError((error) {
           throw error.toString();
         });
       }).map((response) {
-        _lnUrlStreamController.add(fetchLNUrlState.completed);
+        _lnUrlStreamController.add(FetchLNUrlState.completed);
         if (response.runtimeType == LNUrlResponse) {
           if (response.hasWithdraw()) {
             final withdrawResponse = WithdrawFetchResponse(response.withdraw);
@@ -97,7 +97,7 @@ class LNUrlBloc with AsyncActionsHandler {
           }
         }
       }).handleError((error) {
-        _lnUrlStreamController.add(fetchLNUrlState.completed);
+        _lnUrlStreamController.add(FetchLNUrlState.completed);
         _lnUrlStreamController.addError(error.toString());
       }).listen((_) {});
     }
@@ -144,7 +144,7 @@ class LNUrlBloc with AsyncActionsHandler {
         () => _breezLib.connectDirectToLnurl(
             action.uri, action.k1, action.callback),
         tryLimit: 3,
-        interval: Duration(seconds: 5));
+        interval: const Duration(seconds: 5));
     action.resolve(await openResult);
   }
 

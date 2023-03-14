@@ -13,20 +13,20 @@ class VendorRow extends StatelessWidget {
   final AccountBloc accountBloc;
   final VendorModel _vendor;
 
-  VendorRow(this.accountBloc, this._vendor);
+  const VendorRow(this.accountBloc, this._vendor);
 
   @override
   Widget build(BuildContext context) {
-    Color _vendorFgColor =
+    Color vendorFgColor =
         theme.vendorTheme[_vendor.id.toLowerCase()]?.iconFgColor ??
             Colors.transparent;
-    Color _vendorBgColor =
+    Color vendorBgColor =
         theme.vendorTheme[_vendor.id.toLowerCase()]?.iconBgColor ??
             Colors.white;
-    Color _vendorTextColor =
+    Color vendorTextColor =
         theme.vendorTheme[_vendor.id.toLowerCase()]?.textColor ?? Colors.black;
 
-    final _vendorLogo = _vendor.logo != null
+    final vendorLogo = _vendor.logo != null
         ? Image(
             image: AssetImage(_vendor.logo),
             height: (_vendor.id == 'Wavlake')
@@ -39,12 +39,12 @@ class VendorRow extends StatelessWidget {
                     ? 156
                     : 196
                 : null,
-            color: _vendorFgColor,
+            color: vendorFgColor,
             colorBlendMode: BlendMode.srcATop,
           )
         : Container();
 
-    final _vendorCard = GestureDetector(
+    final vendorCard = GestureDetector(
         onTap: () {
           Navigator.push(context, FadeInRoute(
             builder: (_) {
@@ -64,10 +64,10 @@ class VendorRow extends StatelessWidget {
           ));
         },
         child: Container(
-          margin: EdgeInsets.fromLTRB(32.0, 8.0, 32.0, 8.0),
-          constraints: BoxConstraints.expand(),
+          margin: const EdgeInsets.fromLTRB(32.0, 8.0, 32.0, 8.0),
+          constraints: const BoxConstraints.expand(),
           decoration: BoxDecoration(
-              color: _vendorBgColor,
+              color: vendorBgColor,
               boxShadow: [
                 BoxShadow(
                   color: theme.BreezColors.grey[600],
@@ -75,7 +75,7 @@ class VendorRow extends StatelessWidget {
                 )
               ],
               border: Border.all(
-                  color: _vendorBgColor == Colors.white
+                  color: vendorBgColor == Colors.white
                       ? Theme.of(context).highlightColor
                       : Colors.transparent,
                   style: BorderStyle.solid,
@@ -84,22 +84,22 @@ class VendorRow extends StatelessWidget {
           child: Row(
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.center,
-            children: _buildLogo(_vendorLogo, _vendorTextColor),
+            children: _buildLogo(vendorLogo, vendorTextColor),
           ),
         ));
 
-    return _vendorCard;
+    return vendorCard;
   }
 
-  List<Widget> _buildLogo(Widget _vendorLogo, _vendorTextColor) {
+  List<Widget> _buildLogo(Widget vendorLogo, vendorTextColor) {
     if (_vendor.onlyShowLogo) {
-      return <Widget>[_vendorLogo];
+      return <Widget>[vendorLogo];
     } else {
       return <Widget>[
-        _vendorLogo,
-        Padding(padding: EdgeInsets.only(left: 8.0)),
+        vendorLogo,
+        const Padding(padding: EdgeInsets.only(left: 8.0)),
         Text(_vendor.displayName,
-            style: theme.vendorTitleStyle.copyWith(color: _vendorTextColor)),
+            style: theme.vendorTitleStyle.copyWith(color: vendorTextColor)),
       ];
     }
   }

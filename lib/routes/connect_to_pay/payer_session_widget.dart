@@ -21,7 +21,7 @@ class PayerSessionWidget extends StatelessWidget {
   final PayerRemoteSession _currentSession;
   final AccountModel _account;
 
-  PayerSessionWidget(
+  const PayerSessionWidget(
     this._currentSession,
     this._account,
   );
@@ -61,9 +61,11 @@ class PayerSessionWidget extends StatelessWidget {
 
   Widget _waitingFormPayee(PaymentSessionState sessionState) {
     return Expanded(
+      flex: 1,
       child: Padding(
         padding: const EdgeInsets.fromLTRB(32.0, 0.0, 32.0, 0.0),
         child: DelayRender(
+          duration: PaymentSessionState.connectionEmulationDuration,
           child: PaymentDetailsForm(
             _account,
             sessionState,
@@ -72,10 +74,8 @@ class PayerSessionWidget extends StatelessWidget {
               PaymentDetails(amountToPay, description),
             ),
           ),
-          duration: PaymentSessionState.connectionEmulationDuration,
         ),
       ),
-      flex: 1,
     );
   }
 
@@ -90,7 +90,7 @@ class _PayerInstructions extends StatelessWidget {
   final PaymentSessionState sessionState;
   final AccountModel _account;
 
-  _PayerInstructions(
+  const _PayerInstructions(
     this.sessionState,
     this._account,
   );
@@ -170,7 +170,7 @@ class WaitingChannelsSyncUIState extends State<WaitingChannelsSyncUI> {
   @override
   void didUpdateWidget(WaitingChannelsSyncUI oldWidget) {
     super.didUpdateWidget(oldWidget);
-    if (oldWidget.progress != this.widget.progress) {
+    if (oldWidget.progress != widget.progress) {
       progress.add(widget.progress);
     }
   }
@@ -215,7 +215,7 @@ class WaitingChannelsSyncUIState extends State<WaitingChannelsSyncUI> {
                       onPressed: () => Navigator.pop(context),
                       child: Text(
                         texts.connect_to_pay_payer_action_close,
-                        style: themeData.primaryTextTheme.button,
+                        style: themeData.primaryTextTheme.labelLarge,
                       ),
                     ),
                   ],

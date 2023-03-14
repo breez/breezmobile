@@ -32,7 +32,7 @@ class PaymentDetailsDialogAmount extends StatelessWidget {
 
     return Container(
       height: 36.0,
-      padding: EdgeInsets.only(left: 16.0, right: 16.0),
+      padding: const EdgeInsets.only(left: 16.0, right: 16.0),
       child: Row(
         mainAxisSize: MainAxisSize.max,
         children: [
@@ -40,7 +40,7 @@ class PaymentDetailsDialogAmount extends StatelessWidget {
             padding: const EdgeInsets.only(right: 8.0),
             child: AutoSizeText(
               texts.payment_details_dialog_amount_title,
-              style: themeData.primaryTextTheme.headline4,
+              style: themeData.primaryTextTheme.headlineMedium,
               textAlign: TextAlign.left,
               maxLines: 1,
               group: labelAutoSizeGroup,
@@ -52,7 +52,7 @@ class PaymentDetailsDialogAmount extends StatelessWidget {
               reverse: true,
               child: AutoSizeText(
                 text,
-                style: themeData.primaryTextTheme.headline3,
+                style: themeData.primaryTextTheme.displaySmall,
                 textAlign: TextAlign.right,
                 maxLines: 1,
                 group: valueAutoSizeGroup,

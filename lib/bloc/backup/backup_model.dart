@@ -34,7 +34,7 @@ class RemoteServerAuthData {
   }
 
   bool equal(RemoteServerAuthData other) {
-    return json.encode(this.toJson()) == json.encode(other.toJson());
+    return json.encode(toJson()) == json.encode(other.toJson());
   }
 
   RemoteServerAuthData copyWith({
@@ -63,11 +63,16 @@ class BackupProvider {
 
   @override
   bool operator ==(Object other) {
-    return other is BackupProvider && this.name == other.name;
+    return other is BackupProvider && name == other.name;
   }
 
   @override
   int get hashCode => name.hashCode;
+
+  @override
+  String toString() {
+    return 'BackupProvider{name: $name, displayName: $displayName}';
+  }
 }
 
 enum BackupKeyType {
@@ -110,7 +115,7 @@ class BackupSettings {
         defaultTargetPlatform == TargetPlatform.android
             ? googleBackupProvider()
             : null,
-        RemoteServerAuthData(null, null, null, null),
+        const RemoteServerAuthData(null, null, null, null),
       );
 
   BackupSettings copyWith({
@@ -121,7 +126,7 @@ class BackupSettings {
   }) {
     return BackupSettings(
       promptOnError ?? this.promptOnError,
-      keyType ?? this.backupKeyType,
+      keyType ?? backupKeyType,
       backupProvider ?? this.backupProvider,
       remoteServerAuthData ?? this.remoteServerAuthData,
     );
@@ -155,6 +160,29 @@ class BackupSettings {
       providers.insert(0, icloudBackupProvider());
     }
     return providers;
+  }
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is BackupSettings &&
+          runtimeType == other.runtimeType &&
+          promptOnError == other.promptOnError &&
+          backupKeyType == other.backupKeyType &&
+          backupProvider == other.backupProvider &&
+          remoteServerAuthData == other.remoteServerAuthData;
+
+  @override
+  int get hashCode =>
+      promptOnError.hashCode ^
+      backupKeyType.hashCode ^
+      backupProvider.hashCode ^
+      remoteServerAuthData.hashCode;
+
+  @override
+  String toString() {
+    return 'BackupSettings{promptOnError: $promptOnError, backupKeyType: $backupKeyType, '
+        'backupProvider: $backupProvider, remoteServerAuthData: $remoteServerAuthData}';
   }
 }
 
@@ -195,6 +223,7 @@ class BackupFailedException implements Exception {
     this.authenticationError,
   );
 
+  @override
   String toString() {
     return getSystemAppLocalizations().backup_model_error_failed;
   }

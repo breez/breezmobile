@@ -15,7 +15,7 @@ class SuccessAvatar extends StatelessWidget {
       child: Transform(
         transform: Matrix4.identity()..rotateY(pi),
         alignment: Alignment.center,
-        child: Icon(
+        child: const Icon(
           Icons.check_rounded,
           color: Color(0xb3303234),
         ),

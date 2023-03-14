@@ -26,7 +26,7 @@ class BottomActionsBar extends StatelessWidget {
   final AccountModel account;
   final GlobalKey firstPaymentItemKey;
 
-  BottomActionsBar(this.account, this.firstPaymentItemKey);
+  const BottomActionsBar(this.account, this.firstPaymentItemKey);
 
   @override
   Widget build(BuildContext context) {
@@ -36,7 +36,7 @@ class BottomActionsBar extends StatelessWidget {
     return BottomAppBar(
       child: Container(
         height: 60,
-        color: Theme.of(context).bottomAppBarColor,
+        color: Theme.of(context).bottomAppBarTheme.color,
         child: Row(
           mainAxisSize: MainAxisSize.max,
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -77,7 +77,7 @@ class BottomActionsBar extends StatelessWidget {
                 return Column(
                   mainAxisSize: MainAxisSize.min,
                   children: <Widget>[
-                    SizedBox(height: 8.0),
+                    const SizedBox(height: 8.0),
                     ListTile(
                       enabled: account.connected,
                       leading: _ActionImage(
@@ -154,7 +154,7 @@ class BottomActionsBar extends StatelessWidget {
                         stream: accBloc.accountSettingsStream,
                         builder: (context, settingsSnapshot) {
                           if (!settingsSnapshot.hasData) {
-                            return SizedBox();
+                            return const SizedBox();
                           }
                           AccountSettings settings = settingsSnapshot.data;
                           if (settings.isEscherEnabled) {
@@ -186,10 +186,10 @@ class BottomActionsBar extends StatelessWidget {
                               ],
                             );
                           } else {
-                            return SizedBox();
+                            return const SizedBox();
                           }
                         }),
-                    SizedBox(height: 8.0)
+                    const SizedBox(height: 8.0)
                   ],
                 );
               });
@@ -202,7 +202,6 @@ class _Action extends StatelessWidget {
   final AutoSizeGroup group;
   final String iconAssetPath;
   final Function() onPress;
-  final Alignment minimizedAlignment;
 
   const _Action({
     Key key,
@@ -210,7 +209,6 @@ class _Action extends StatelessWidget {
     this.group,
     this.iconAssetPath,
     this.onPress,
-    this.minimizedAlignment = Alignment.center,
   }) : super(key: key);
 
   @override
@@ -220,7 +218,7 @@ class _Action extends StatelessWidget {
         style: TextButton.styleFrom(
           padding: EdgeInsets.zero,
         ),
-        onPressed: this.onPress,
+        onPressed: onPress,
         child: Text(
           text,
           textAlign: TextAlign.center,
@@ -269,7 +267,7 @@ Future showReceiveOptions(BuildContext parentContext, AccountModel account) {
               stream: addFundsBloc.availableVendorsStream,
               builder: (context, snapshot) {
                 if (snapshot.data == null) {
-                  return SizedBox();
+                  return const SizedBox();
                 }
 
                 List<Widget> children =
@@ -312,10 +310,10 @@ Future showReceiveOptions(BuildContext parentContext, AccountModel account) {
                 return Column(
                   mainAxisSize: MainAxisSize.min,
                   children: <Widget>[
-                    SizedBox(height: 8.0),
+                    const SizedBox(height: 8.0),
                     ListTile(
                         enabled: true,
-                        leading: _ActionImage(
+                        leading: const _ActionImage(
                           iconAssetPath: "src/icon/paste.png",
                           enabled: true,
                         ),
@@ -329,10 +327,10 @@ Future showReceiveOptions(BuildContext parentContext, AccountModel account) {
                         }),
                     ...children,
                     account.warningMaxChanReserveAmount == 0
-                        ? SizedBox(height: 8.0)
+                        ? const SizedBox(height: 8.0)
                         : WarningBox(
-                            boxPadding: EdgeInsets.all(16),
-                            contentPadding: EdgeInsets.all(8),
+                            boxPadding: const EdgeInsets.all(16),
+                            contentPadding: const EdgeInsets.all(8),
                             child: AutoSizeText(
                               texts.bottom_action_bar_warning_balance_title(
                                 account.currency.format(
@@ -342,9 +340,9 @@ Future showReceiveOptions(BuildContext parentContext, AccountModel account) {
                               ),
                               maxFontSize: Theme.of(context)
                                   .textTheme
-                                  .subtitle1
+                                  .titleMedium
                                   .fontSize,
-                              style: Theme.of(context).textTheme.headline6,
+                              style: Theme.of(context).textTheme.titleLarge,
                               textAlign: TextAlign.center,
                             ),
                           ),

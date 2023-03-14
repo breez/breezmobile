@@ -51,7 +51,7 @@ To learn more about it, please read [Introducing Breez](https://doc.breez.techno
 - [x] Biometric login
 - [x] Fast onboarding
 - [x] Pay w/o full sync
-- [x] Implement lnurl-withdraw 
+- [x] Implement lnurl-withdraw
 - [x] Send on-chain via reverse Submarine Swaps
 - [x] Improve hodl invoice support
 - [x] POS POC release
@@ -72,17 +72,18 @@ To learn more about it, please read [Introducing Breez](https://doc.breez.techno
 - [x] Support LNURL-Pay ([bounty redeemed](https://github.com/breez/breezmobile/wiki/Bounties#lnurl-pay-support))
 - [x] Send to a Lightning address
 - [x] Boostagrams
-- [x] WebDav backups 
+- [x] WebDav backups
 - [x] Sales reports
 - [x] Top podcasts
-- [x] NFC checkout 
+- [x] NFC checkout
 - [x] Tor support (Android)
 - [x] Neutrino sync optimizations
 - [ ] Async payments
 
 ## System Requirements
-* Android 7+ 64bit
-* iPhone 6+
+
+- Android 7+ 64bit
+- iPhone 6+
 
 ## Setting up the environment
 
@@ -92,18 +93,20 @@ Make sure you have Flutter 3 installed on your system before continuing the setu
 
 ### Setting up for Android
 
-1. Build `breez.aar` as described in https://github.com/breez/breez
+1. Build `breez.aar` as described in <https://github.com/breez/breez>
 2. Create a symlink from the `breez.aar` to `android/app/libs` directory.
 3. Create an Android app on [Firebase](https://console.firebase.google.com/) and download `google-services.json` file.
-  - **Package name (for debugging):** com.breez.client.debug
+
+- **Package name (for debugging):** com.breez.client.debug
+
 4. Copy the downloaded `google-services.json` file to `android/app/src/client` folder.
 
 ### Setting up for iOS
 
-1. Build and `bindings.framework` as described in https://github.com/breez/breez
-2. Copy the `bindings.framework` directory to the ios directory.
+1. Build and `bindings.xcframework` as described in <https://github.com/breez/breez>
+2. Copy the `bindings.xcframework` directory to the ios directory.
 3. Create an iOS app on [Firebase](https://console.firebase.google.com/) and download `GoogleServices-info.plist` file.
-4. Copy the downloaded `GoogleServices-info.plist` file to `ios` folder.
+4. Copy the downloaded `GoogleServices-info.plist` file to `ios/Runner` folder.
 5. Run `pod install` from `breezmobile/ios`
 
 ## Building and Running
@@ -120,4 +123,5 @@ flutter build apk --target-platform=android-arm64 --flavor=client --debug
 ```
 
 ## [Overview for Developers](https://doc.breez.technology/Overview-for-Developers.html)
+
 ## [Running Breez in simnet](https://doc.breez.technology/Running-Breez-in-simnet.html)

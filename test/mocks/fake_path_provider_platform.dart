@@ -5,7 +5,7 @@ import 'package:path_provider_platform_interface/path_provider_platform_interfac
 import 'package:plugin_platform_interface/plugin_platform_interface.dart';
 
 class FakePathProviderPlatform extends Fake with MockPlatformInterfaceMixin implements PathProviderPlatform {
-  final basePath = "${Directory.current.path}/.dart_tool/fake_path_provider";
+  final basePath = "${Directory.current.path}/.dart_tool/fpp/${DateTime.now().millisecondsSinceEpoch}";
 
   Future<void> setUp() async {
     Directory(basePath).createSync(recursive: true);

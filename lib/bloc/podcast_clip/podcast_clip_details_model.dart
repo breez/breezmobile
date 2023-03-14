@@ -24,8 +24,8 @@ class PodcastClipDetailsModel {
           startTimeStamp: startTimeStamp ?? this.startTimeStamp,
           endTimeStamp: endTimeStamp ?? this.endTimeStamp,
           clipDuration: clipDuration ?? this.clipDuration,
-          episodeDetails: this.episodeDetails,
-          episodeLength: this.episodeLength,
+          episodeDetails: episodeDetails,
+          episodeLength: episodeLength,
           podcastClipState: podcastClipState ?? this.podcastClipState);
 }
 

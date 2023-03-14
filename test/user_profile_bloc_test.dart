@@ -5,37 +5,45 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:path_provider_platform_interface/path_provider_platform_interface.dart';
 
 import 'bloc_tester.dart';
-import 'mocks.dart';
-import 'utils/fake_path_provider_platform.dart';
+import 'mocks/fake_path_provider_platform.dart';
+import 'mocks/injector_mock.dart';
+import 'mocks/unit_logger.dart';
 
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
-  final platform = FakePathProviderPlatform();
+
   group('breez_user_model_tests', () {
-    InjectorMock _injector = new InjectorMock();
-    UserProfileBloc _userProfileBloc;
+    InjectorMock injector;
+    UserProfileBloc userProfileBloc;
+    FakePathProviderPlatform platform;
 
     setUp(() async {
+      setUpLogger();
+      platform = FakePathProviderPlatform();
       await platform.setUp();
       PathProviderPlatform.instance = platform;
-      ServiceInjector.configure(_injector);
-      _userProfileBloc = new UserProfileBloc();
+      injector = InjectorMock();
+      ServiceInjector.configure(injector);
+      userProfileBloc = UserProfileBloc();
     });
 
     tearDown(() async {
+      injector.dispose();
       await platform.tearDown();
     });
 
     test("should return empty user when not registered", () async {
-      new BlocTester<void, BreezUserModel>(
-        _userProfileBloc.userStream,
+      BlocTester<void, BreezUserModel>(
+        userProfileBloc.userStream,
         (user) => expect(user.userID, null),
       );
     });
 
-    test("shoud return registered user", () async {
-      _userProfileBloc.registerSink.add(null);
-      var userID = await _userProfileBloc.userStream.firstWhere((p) => p != null && p.userID != null).then((p) => p.userID);
+    test("should return registered user", () async {
+      userProfileBloc.registerSink.add(null);
+      var userID = await userProfileBloc.userStream
+          .firstWhere((p) => p != null && p.userID != null)
+          .then((p) => p.userID);
       expect(userID, isNotNull);
     });
   });

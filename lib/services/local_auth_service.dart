@@ -35,7 +35,7 @@ class LocalAuthenticationService {
           biometricOnly: true,
           localizedReason: localizedReason ?? 'Authenticate to Sign-In.',
           useErrorDialogs: false,
-          androidAuthStrings: AndroidAuthMessages(biometricHint: ""));
+          androidAuthStrings: const AndroidAuthMessages(biometricHint: ""));
     } on PlatformException catch (error) {
       if (error.code == "LockedOut" || error.code == "PermanentlyLockedOut") {
         throw error.message;

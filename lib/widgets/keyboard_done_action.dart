@@ -11,12 +11,16 @@ class KeyboardDoneAction {
 
   KeyboardDoneAction(this.focusNodes) {
     if (defaultTargetPlatform == TargetPlatform.iOS) {
-      focusNodes.forEach((f) => f.addListener(_onFocus));
+      for (var f in focusNodes) {
+        f.addListener(_onFocus);
+      }
     }
   }
 
   void dispose() {
-    focusNodes.forEach((f) => f.removeListener(_onFocus));
+    for (var f in focusNodes) {
+      f.removeListener(_onFocus);
+    }
     _overlayEntry?.remove();
   }
 
@@ -41,7 +45,7 @@ class KeyboardDoneAction {
         right: 0,
         child: Material(
           color: Colors.grey[200],
-          child: Container(
+          child: SizedBox(
             height: _kBarSize,
             width: queryData.size.width,
             child: Column(
@@ -51,7 +55,7 @@ class KeyboardDoneAction {
                 InkWell(
                   onTap: () => FocusScope.of(context).requestFocus(FocusNode()),
                   child: Padding(
-                    padding: EdgeInsets.all(8.0),
+                    padding: const EdgeInsets.all(8.0),
                     child: Text(
                       texts.keyboard_done_action,
                       style: TextStyle(

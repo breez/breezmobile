@@ -40,7 +40,7 @@ class PosInvoiceItemsView extends StatelessWidget {
           stream: posCatalogBloc.itemsStream,
           builder: (context, snapshot) {
             final posCatalog = snapshot.data;
-            if (posCatalog == null) return Loader();
+            if (posCatalog == null) return const Loader();
 
             return Scaffold(
               body: _buildCatalogContent(
@@ -50,12 +50,10 @@ class PosInvoiceItemsView extends StatelessWidget {
                 sort,
               ),
               floatingActionButton: FloatingActionButton(
-                child: Icon(
-                  Icons.add,
-                ),
                 backgroundColor: Colors.white,
                 foregroundColor: themeData.primaryColorLight,
                 onPressed: () => Navigator.of(context).pushNamed("/add_item"),
+                child: const Icon(Icons.add),
               ),
             );
           },
@@ -84,7 +82,7 @@ class PosInvoiceItemsView extends StatelessWidget {
           ],
         ),
         Expanded(
-          child: catalogItems == null || catalogItems?.length == 0
+          child: catalogItems == null || catalogItems.isEmpty
               ? Padding(
                   // Extra space for the floating action button
                   padding: const EdgeInsets.fromLTRB(0, 0, 0, 80),
@@ -127,19 +125,19 @@ class PosInvoiceItemsView extends StatelessWidget {
           : PosCatalogItemSort.PRICE_SMALL_TO_BIG,
     ];
 
-    TapDownDetails _details;
+    TapDownDetails details;
     return GestureDetector(
       onTapDown: (details) {
-        _details = details;
+        details = details;
       },
       onTap: () async {
-        final offset = _details?.globalPosition;
+        final offset = details?.globalPosition;
         if (offset == null) return;
         final newOption = await showMenu(
           context: context,
           color: theme.themeId == "BLUE"
               ? Theme.of(context).canvasColor
-              : Theme.of(context).backgroundColor,
+              : Theme.of(context).colorScheme.background,
           position: RelativeRect.fromLTRB(offset.dx, offset.dy, 0, 0),
           items: items.map((e) => _dropdownItem(context, e, sort)).toList(),
         );
@@ -178,28 +176,28 @@ class PosInvoiceItemsView extends StatelessWidget {
     switch (value) {
       case PosCatalogItemSort.NONE:
         text = texts.pos_invoice_sort_none;
-        icon = SizedBox(width: 24, height: 24);
-        handler = Icon(Icons.sort);
+        icon = const SizedBox(width: 24, height: 24);
+        handler = const Icon(Icons.sort);
         break;
       case PosCatalogItemSort.ALPHABETICALLY_A_Z:
         text = texts.pos_invoice_sort_alphabetically;
-        icon = Icon(Icons.arrow_downward);
-        handler = Icon(Icons.sort_by_alpha);
+        icon = const Icon(Icons.arrow_downward);
+        handler = const Icon(Icons.sort_by_alpha);
         break;
       case PosCatalogItemSort.ALPHABETICALLY_Z_A:
         text = texts.pos_invoice_sort_alphabetically;
-        icon = Icon(Icons.arrow_upward);
-        handler = Icon(Icons.sort_by_alpha);
+        icon = const Icon(Icons.arrow_upward);
+        handler = const Icon(Icons.sort_by_alpha);
         break;
       case PosCatalogItemSort.PRICE_SMALL_TO_BIG:
         text = texts.pos_invoice_sort_price;
-        icon = Icon(Icons.arrow_downward);
-        handler = Icon(Icons.filter_list);
+        icon = const Icon(Icons.arrow_downward);
+        handler = const Icon(Icons.filter_list);
         break;
       case PosCatalogItemSort.PRICE_BIG_TO_SMALL:
         text = texts.pos_invoice_sort_price;
-        icon = Icon(Icons.arrow_upward);
-        handler = Icon(Icons.filter_list);
+        icon = const Icon(Icons.arrow_upward);
+        handler = const Icon(Icons.filter_list);
         break;
     }
     return _SortMenuItemHelper(text, icon, handler);
@@ -247,7 +245,7 @@ class PosInvoiceItemsView extends StatelessWidget {
               ),
             ),
           ),
-          SizedBox(width: 32),
+          const SizedBox(width: 32),
           helper.icon,
         ],
       ),
@@ -313,9 +311,9 @@ class PosInvoiceItemsView extends StatelessWidget {
                     itemFilterController.text = "";
                     FocusScope.of(context).requestFocus(FocusNode());
                   },
-            padding: EdgeInsets.only(right: 24, top: 4),
+            padding: const EdgeInsets.only(right: 24, top: 4),
           ),
-          border: UnderlineInputBorder(),
+          border: const UnderlineInputBorder(),
         ),
       ),
     );

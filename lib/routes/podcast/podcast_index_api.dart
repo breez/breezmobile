@@ -13,7 +13,7 @@ import 'package:podcast_search/podcast_search.dart';
 /// interacts with the iTunes search API via the podcast_search package.
 class PodcastIndexAPI extends PodcastApi {
   SecurityContext _defaultSecurityContext;
-  List<int> _certificateAuthorityBytes = [];
+  final List<int> _certificateAuthorityBytes = [];
   final Search api = Search();
 
   @override
@@ -59,7 +59,7 @@ class PodcastIndexAPI extends PodcastApi {
           term,
           queryParams: {"val": "lightning"},
         )
-        .timeout(Duration(seconds: 10));
+        .timeout(const Duration(seconds: 10));
   }
 
   static Future<SearchResult> _charts(int size) {
@@ -74,7 +74,7 @@ class PodcastIndexAPI extends PodcastApi {
         'val': 'lightning',
         'aponly': 'true',
       },
-    ).timeout(Duration(seconds: 10));
+    ).timeout(const Duration(seconds: 10));
   }
 
   static Future<SearchResult> _mostRecent() {
@@ -89,7 +89,7 @@ class PodcastIndexAPI extends PodcastApi {
         'val': 'lightning',
         'aponly': 'true',
       },
-    ).timeout(Duration(seconds: 10));
+    ).timeout(const Duration(seconds: 10));
   }
 
   static Future<Podcast> _loadFeed(String url) {

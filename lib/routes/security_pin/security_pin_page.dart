@@ -76,7 +76,6 @@ class SecurityPageState extends State<SecurityPage>
   @override
   Widget build(BuildContext context) {
     final texts = context.texts();
-    final themeData = Theme.of(context);
 
     return StreamBuilder<BackupState>(
       stream: widget.backupBloc.backupStateStream,
@@ -92,14 +91,14 @@ class SecurityPageState extends State<SecurityPage>
             final backupState = backupStateSnapshot.data;
             final userModel = snapshot.data;
 
-            if (userModel.securityModel.requiresPin && this._screenLocked) {
+            if (userModel.securityModel.requiresPin && _screenLocked) {
               return AppLockScreen(
                 (pinEntered) {
                   final validateAction = ValidatePinCode(pinEntered);
                   widget.userProfileBloc.userActionsSink.add(validateAction);
                   return validateAction.future.then((_) {
                     setState(() {
-                      this._screenLocked = false;
+                      _screenLocked = false;
                     });
                   });
                 },
@@ -109,16 +108,9 @@ class SecurityPageState extends State<SecurityPage>
 
             return Scaffold(
               appBar: AppBar(
-                iconTheme: themeData.appBarTheme.iconTheme,
-                textTheme: themeData.appBarTheme.textTheme,
-                backgroundColor: themeData.canvasColor,
                 automaticallyImplyLeading: false,
-                leading: backBtn.BackButton(),
-                title: Text(
-                  texts.security_and_backup_title_and_backup,
-                  style: themeData.appBarTheme.textTheme.headline6,
-                ),
-                elevation: 0.0,
+                leading: const backBtn.BackButton(),
+                title: Text(texts.security_and_backup_title),
               ),
               body: ListView(
                 children: _buildSecurityPINTiles(
@@ -143,9 +135,9 @@ class SecurityPageState extends State<SecurityPage>
   }
 
   Widget _lastBackup(BuildContext context, BackupState backupState) {
-    if (backupState == null) return SizedBox();
+    if (backupState == null) return const SizedBox();
     final lastBackupTime = backupState.lastBackupTime;
-    if (lastBackupTime == null) return SizedBox();
+    if (lastBackupTime == null) return const SizedBox();
 
     final texts = context.texts();
     final accountName = backupState.lastBackupAccountName;
@@ -169,7 +161,7 @@ class SecurityPageState extends State<SecurityPage>
     SecurityModel securityModel,
     BackupSettings backupSettings,
   ) {
-    List<Widget> _tiles = [
+    List<Widget> tiles = [
       _buildDisablePINTile(
         context,
         securityModel,
@@ -177,22 +169,22 @@ class SecurityPageState extends State<SecurityPage>
       ),
     ];
     if (securityModel.requiresPin) {
-      _tiles
-        ..add(Divider())
+      tiles
+        ..add(const Divider())
         ..add(_buildPINIntervalTile(
           context,
           securityModel,
           backupSettings,
         ))
-        ..add(Divider())
+        ..add(const Divider())
         ..add(_buildChangePINTile(
           context,
           securityModel,
           backupSettings,
         ));
       if (_localAuthenticationOption != LocalAuthenticationOption.NONE) {
-        _tiles
-          ..add(Divider())
+        tiles
+          ..add(const Divider())
           ..add(_buildEnableBiometricAuthTile(
             context,
             securityModel,
@@ -200,8 +192,8 @@ class SecurityPageState extends State<SecurityPage>
           ));
       }
     }
-    _tiles
-      ..add(Divider())
+    tiles
+      ..add(const Divider())
       ..add(_buildBackupProviderTitle(
         context,
         securityModel,
@@ -209,22 +201,22 @@ class SecurityPageState extends State<SecurityPage>
       ));
     if (backupSettings.backupProvider?.name ==
         BackupSettings.remoteServerBackupProvider().name) {
-      _tiles
-        ..add(Divider())
+      tiles
+        ..add(const Divider())
         ..add(_buildRemoteServerAuthDataTile(
           context,
           securityModel,
           backupSettings,
         ));
     }
-    _tiles
-      ..add(Divider())
+    tiles
+      ..add(const Divider())
       ..add(_buildGenerateBackupPhraseTile(
         context,
         securityModel,
         backupSettings,
       ));
-    return _tiles;
+    return tiles;
   }
 
   Widget _buildGenerateBackupPhraseTile(
@@ -239,7 +231,7 @@ class SecurityPageState extends State<SecurityPage>
       switchValue: backupSettings.backupKeyType == BackupKeyType.PHRASE,
       group: _autoSizeGroup,
       onChanged: (bool value) async {
-        if (this.mounted) {
+        if (mounted) {
           if (value) {
             Navigator.push(
               context,
@@ -259,7 +251,7 @@ class SecurityPageState extends State<SecurityPage>
               },
             ).then(
               (approved) {
-                if (approved)
+                if (approved) {
                   _updateBackupSettings(
                     context,
                     backupSettings,
@@ -267,6 +259,7 @@ class SecurityPageState extends State<SecurityPage>
                       keyType: BackupKeyType.NONE,
                     ),
                   ).then((value) => triggerBackup());
+                }
               },
             );
           }
@@ -283,15 +276,13 @@ class SecurityPageState extends State<SecurityPage>
     final texts = context.texts();
 
     return ListTile(
-      title: Container(
-        child: AutoSizeText(
-          texts.security_and_backup_store_location,
-          style: TextStyle(color: Colors.white),
-          maxLines: 1,
-          minFontSize: MinFontSize(context).minFontSize,
-          stepGranularity: 0.1,
-          group: _autoSizeGroup,
-        ),
+      title: AutoSizeText(
+        texts.security_and_backup_store_location,
+        style: const TextStyle(color: Colors.white),
+        maxLines: 1,
+        minFontSize: MinFontSize(context).minFontSize,
+        stepGranularity: 0.1,
+        group: _autoSizeGroup,
       ),
       trailing: DropdownButtonHideUnderline(
         child: DropdownButton<BackupProvider>(
@@ -327,14 +318,12 @@ class SecurityPageState extends State<SecurityPage>
           items: BackupSettings.availableBackupProviders().map((provider) {
             return DropdownMenuItem(
               value: provider,
-              child: Container(
-                child: AutoSizeText(
-                  provider.displayName,
-                  style: theme.FieldTextStyle.textStyle,
-                  maxLines: 1,
-                  minFontSize: MinFontSize(context).minFontSize,
-                  stepGranularity: 0.1,
-                ),
+              child: AutoSizeText(
+                provider.displayName,
+                style: theme.FieldTextStyle.textStyle,
+                maxLines: 1,
+                minFontSize: MinFontSize(context).minFontSize,
+                stepGranularity: 0.1,
               ),
             );
           }).toList(),
@@ -351,15 +340,13 @@ class SecurityPageState extends State<SecurityPage>
     final texts = context.texts();
 
     return ListTile(
-      title: Container(
-        child: AutoSizeText(
-          texts.security_and_backup_lock_automatically,
-          style: TextStyle(color: Colors.white),
-          maxLines: 1,
-          minFontSize: MinFontSize(context).minFontSize,
-          stepGranularity: 0.1,
-          group: _autoSizeGroup,
-        ),
+      title: AutoSizeText(
+        texts.security_and_backup_lock_automatically,
+        style: const TextStyle(color: Colors.white),
+        maxLines: 1,
+        minFontSize: MinFontSize(context).minFontSize,
+        stepGranularity: 0.1,
+        group: _autoSizeGroup,
       ),
       trailing: DropdownButtonHideUnderline(
         child: DropdownButton(
@@ -379,14 +366,12 @@ class SecurityPageState extends State<SecurityPage>
           items: SecurityModel.lockIntervals.map((int seconds) {
             return DropdownMenuItem(
               value: seconds,
-              child: Container(
-                child: AutoSizeText(
-                  _formatSeconds(texts, seconds),
-                  style: theme.FieldTextStyle.textStyle,
-                  maxLines: 1,
-                  minFontSize: MinFontSize(context).minFontSize,
-                  stepGranularity: 0.1,
-                ),
+              child: AutoSizeText(
+                _formatSeconds(texts, seconds),
+                style: theme.FieldTextStyle.textStyle,
+                maxLines: 1,
+                minFontSize: MinFontSize(context).minFontSize,
+                stepGranularity: 0.1,
               ),
             );
           }).toList(),
@@ -399,16 +384,16 @@ class SecurityPageState extends State<SecurityPage>
     if (seconds == 0) {
       return texts.security_and_backup_lock_automatically_option_immediate;
     }
-    final enLocale = EnglishDurationLocale();
+    const enLocale = EnglishDurationLocale();
     final locales = {
-      "de": GermanDurationLocale(),
+      "de": const GermanDurationLocale(),
       "en": enLocale,
-      "es": SpanishDurationLanguage(),
-      "fi": FinnishDurationLocale(),
-      "fr": FrenchDurationLocale(),
-      "it": ItalianDurationLocale(),
-      "pt": PortugueseBRDurationLanguage(),
-      "sv": SwedishDurationLanguage(),
+      "es": const SpanishDurationLanguage(),
+      "fi": const FinnishDurationLocale(),
+      "fr": const FrenchDurationLocale(),
+      "it": const ItalianDurationLocale(),
+      "pt": const PortugueseBRDurationLanguage(),
+      "sv": const SwedishDurationLanguage(),
     };
     return printDuration(
       Duration(seconds: seconds),
@@ -422,17 +407,15 @@ class SecurityPageState extends State<SecurityPage>
     BackupSettings backupSettings,
   ) {
     return ListTile(
-      title: Container(
-        child: AutoSizeText(
-          BackupSettings.remoteServerBackupProvider().displayName,
-          style: TextStyle(color: Colors.white),
-          maxLines: 1,
-          minFontSize: MinFontSize(context).minFontSize,
-          stepGranularity: 0.1,
-          group: _autoSizeGroup,
-        ),
+      title: AutoSizeText(
+        BackupSettings.remoteServerBackupProvider().displayName,
+        style: const TextStyle(color: Colors.white),
+        maxLines: 1,
+        minFontSize: MinFontSize(context).minFontSize,
+        stepGranularity: 0.1,
+        group: _autoSizeGroup,
       ),
-      trailing: Icon(
+      trailing: const Icon(
         Icons.keyboard_arrow_right,
         color: Colors.white,
         size: 30.0,
@@ -461,17 +444,15 @@ class SecurityPageState extends State<SecurityPage>
     final texts = context.texts();
 
     return ListTile(
-      title: Container(
-        child: AutoSizeText(
-          texts.security_and_backup_change_pin,
-          style: TextStyle(color: Colors.white),
-          maxLines: 1,
-          minFontSize: MinFontSize(context).minFontSize,
-          stepGranularity: 0.1,
-          group: _autoSizeGroup,
-        ),
+      title: AutoSizeText(
+        texts.security_and_backup_change_pin,
+        style: const TextStyle(color: Colors.white),
+        maxLines: 1,
+        minFontSize: MinFontSize(context).minFontSize,
+        stepGranularity: 0.1,
+        group: _autoSizeGroup,
       ),
-      trailing: Icon(
+      trailing: const Icon(
         Icons.keyboard_arrow_right,
         color: Colors.white,
         size: 30.0,
@@ -496,7 +477,7 @@ class SecurityPageState extends State<SecurityPage>
       switchValue: securityModel.isFingerprintEnabled,
       group: securityModel.requiresPin ? _autoSizeGroup : null,
       onChanged: (value) {
-        if (this.mounted) {
+        if (mounted) {
           if (value) {
             _validateBiometrics(
               context,
@@ -554,7 +535,7 @@ class SecurityPageState extends State<SecurityPage>
           : texts.security_and_backup_pin_option_create,
       trailing: securityModel.requiresPin
           ? null
-          : Icon(
+          : const Icon(
               Icons.keyboard_arrow_right,
               color: Colors.white,
               size: 30.0,
@@ -569,7 +550,7 @@ class SecurityPageState extends State<SecurityPage>
                 backupSettings,
               ),
       onChanged: (bool value) {
-        if (this.mounted) {
+        if (mounted) {
           _resetSecurityModel(context);
         }
       },
@@ -589,7 +570,7 @@ class SecurityPageState extends State<SecurityPage>
         builder: (BuildContext context) {
           return withBreezTheme(
             context,
-            ChangePinCode(),
+            const ChangePinCode(),
           );
         },
       ),
