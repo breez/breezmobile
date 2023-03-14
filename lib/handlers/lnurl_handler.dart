@@ -22,8 +22,8 @@ class LNURLHandler {
     final themeData = Theme.of(context);
 
     lnurlBloc.listenLNUrl().listen((response) {
-      if (response.runtimeType == fetchLNUrlState) {
-        _setLoading(context, response == fetchLNUrlState.started);
+      if (response.runtimeType == FetchLNUrlState) {
+        _setLoading(context, response == FetchLNUrlState.started);
       } else {
         return executeLNURLResponse(context, lnurlBloc, response);
       }
@@ -84,7 +84,7 @@ class LNURLHandler {
             text: texts.handler_lnurl_login_anonymously,
             children: [
               TextSpan(
-                text: "${response.host}",
+                text: response.host,
                 style: themeData.dialogTheme.contentTextStyle.copyWith(
                   fontWeight: FontWeight.bold,
                 ),
@@ -152,12 +152,12 @@ class LNURLHandler {
           barrierDismissible: false,
           builder: (BuildContext context) {
             return AlertDialog(
-              content: SyncProgressDialog(closeOnSync: true),
+              content: const SyncProgressDialog(closeOnSync: true),
               actions: [
                 TextButton(
                   child: Text(
                     texts.handler_lnurl_open_channel_action_cancel,
-                    style: themeData.primaryTextTheme.button,
+                    style: themeData.primaryTextTheme.labelLarge,
                   ),
                   onPressed: () => navigator.pop(false),
                 ),

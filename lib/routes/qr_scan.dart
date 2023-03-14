@@ -20,6 +20,7 @@ class QRScanState extends State<QRScan> {
   final GlobalKey qrKey = GlobalKey(debugLabel: 'QR');
   var popped = false;
   MobileScannerController cameraController = MobileScannerController(
+    detectionSpeed: DetectionSpeed.noDuplicates,
     facing: CameraFacing.back,
     torchEnabled: false,
   );
@@ -40,18 +41,20 @@ class QRScanState extends State<QRScan> {
                   flex: 5,
                   child: MobileScanner(
                     key: qrKey,
-                    allowDuplicates: false,
                     controller: cameraController,
-                    onDetect: (barcode, args) {
-                      log.info("Barcode detected: $barcode");
-                      if (popped || !mounted) return;
-                      if (barcode.rawValue == null) {
-                        log.warning("Failed to scan QR code.");
-                      } else {
-                        popped = true;
-                        final String code = barcode.rawValue;
-                        log.info("Popping read QR code $code");
-                        Navigator.of(context).pop(code);
+                    onDetect: (capture) {
+                      final List<Barcode> barcodes = capture.barcodes;
+                      for (final barcode in barcodes) {
+                        log.info("Barcode detected: $barcode");
+                        if (popped || !mounted) return;
+                        if (barcode.rawValue == null) {
+                          log.warning("Failed to scan QR code.");
+                        } else {
+                          popped = true;
+                          final String code = barcode.rawValue;
+                          log.info("Popping read QR code $code");
+                          Navigator.of(context).pop(code);
+                        }
                       }
                     },
                   ),
@@ -95,13 +98,18 @@ class ImagePickerButton extends StatelessWidget {
       padding: const EdgeInsets.fromLTRB(0, 32, 24, 0),
       icon: SvgPicture.asset(
         "src/icon/image.svg",
-        color: Colors.white,
+        colorFilter: const ColorFilter.mode(
+          Colors.white,
+          BlendMode.srcATop,
+        ),
         width: 32,
         height: 32,
       ),
       onPressed: () async {
         final picker = ImagePicker();
-        XFile pickedFile = await picker.pickImage(source: ImageSource.gallery).catchError((err) {
+        XFile pickedFile = await picker
+            .pickImage(source: ImageSource.gallery)
+            .catchError((err) {
           log.warning("Failed to pick image", err);
         });
         log.info("Picked image: ${pickedFile.path}");
@@ -149,7 +157,7 @@ class QRScanCancelButton extends StatelessWidget {
             },
             child: Text(
               texts.qr_scan_action_cancel,
-              style: TextStyle(color: Colors.white),
+              style: const TextStyle(color: Colors.white),
             )),
       ),
     );

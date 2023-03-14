@@ -17,7 +17,7 @@ bool canHandleScheme(String link) {
 /// from the beginning of the payload such as 0x00
 String extractPayloadLink(String payload) {
   try {
-    final scheme = _validSchemes.firstWhere((e) => payload.indexOf(e) >= 0);
+    final scheme = _validSchemes.firstWhere((e) => payload.contains(e));
     return payload.substring(payload.indexOf(scheme));
   } catch (e) {
     return null;

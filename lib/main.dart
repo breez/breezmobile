@@ -47,6 +47,7 @@ void main() async {
       await runMigration(preferences);
       AppBlocs blocs = AppBlocs(repository.backupDatabaseListener);
       runApp(AppBlocsProvider(
+          appBlocs: blocs,
           child: AnytimePodcastApp(
               mobileService,
               repository,
@@ -70,14 +71,13 @@ void main() async {
                                 builder: shareEpisodeButtonBuilder,
                                 child:
                                     UserApp(repository.reloadDatabaseSink))))),
-              )),
-          appBlocs: blocs));
+              ))));
     });
   }, (error, stackTrace) async {
     BreezBridge breezBridge = ServiceInjector().breezBridge;
     if (error is! FlutterErrorDetails) {
       breezBridge.log(
-          error.toString() + '\n' + stackTrace.toString(), "FlutterError");
+          '$error\n$stackTrace', "FlutterError");
     }
   });
 }

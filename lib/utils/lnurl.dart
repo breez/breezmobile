@@ -1,6 +1,8 @@
 import 'package:email_validator/email_validator.dart';
+import 'package:flutter/foundation.dart';
 
-RegExp _lnurlPrefix = new RegExp(",*?((lnurl)([0-9]{1,}[a-z0-9]+){1})");
+RegExp _lnurlPrefix = RegExp(",*?((lnurl)([0-9]{1,}[a-z0-9]+){1})");
+
 /// https://github.com/fiatjaf/lnurl-rfc/blob/luds/17.md
 RegExp _lnurlRfc17Prefix = RegExp("(lnurl)(c|w|p)");
 String _lightningProtocolPrefix = "lightning:";
@@ -24,7 +26,9 @@ bool isLNURL(String url) {
     return lightning != null &&
         (_lnurlPrefix.firstMatch(lightning) != null ||
             _lnurlRfc17Prefix.firstMatch(lightning) != null);
-  } on FormatException {} // do nothing.
+  } on FormatException {
+    // do nothing.
+  }
   return false;
 }
 
@@ -47,7 +51,9 @@ bool isLightningAddressURI(String uri) {
 
 parseLightningAddress(String uri) {
   // Ref. https://github.com/andrerfneves/lightning-address/blob/master/DIY.md
-  print('parseLightningAddress: given "$uri"');
+  if (kDebugMode) {
+    print('parseLightningAddress: given "$uri"');
+  }
 
   String result;
   if (uri != null && uri.isNotEmpty) {
@@ -61,7 +67,9 @@ parseLightningAddress(String uri) {
     if (!EmailValidator.validate(result)) {
       result = null;
     }
-    print('parseLightningAddress: got "$result"');
+    if (kDebugMode) {
+      print('parseLightningAddress: got "$result"');
+    }
   }
   return result;
 }

@@ -78,7 +78,7 @@ class CustomAmountDialogState extends State<CustomAmountDialog> {
         onPressed: () => Navigator.pop(context),
         child: Text(
           texts.podcast_boost_action_cancel,
-          style: themeData.primaryTextTheme.button,
+          style: themeData.primaryTextTheme.labelLarge,
         ),
       ),
     ];
@@ -95,7 +95,7 @@ class CustomAmountDialogState extends State<CustomAmountDialog> {
           },
           child: Text(
             texts.podcast_boost_action_approve,
-            style: themeData.primaryTextTheme.button,
+            style: themeData.primaryTextTheme.labelLarge,
           ),
         ),
       );

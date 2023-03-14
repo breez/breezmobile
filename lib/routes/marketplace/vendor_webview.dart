@@ -3,6 +3,7 @@ import 'dart:convert' as JSON;
 import 'package:breez/bloc/account/account_bloc.dart';
 import 'package:breez/bloc/blocs_provider.dart';
 import 'package:breez/bloc/invoice/invoice_bloc.dart';
+import 'package:breez/utils/webview_controller_util.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:url_launcher/url_launcher_string.dart';
@@ -15,7 +16,7 @@ class VendorWebViewPage extends StatefulWidget {
   final String _url;
   final String _title;
 
-  VendorWebViewPage(
+  const VendorWebViewPage(
     this.accountBloc,
     this._url,
     this._title,
@@ -28,7 +29,7 @@ class VendorWebViewPage extends StatefulWidget {
 }
 
 class VendorWebViewPageState extends State<VendorWebViewPage> {
-  WeblnHandlers _weblnHandlers;
+  WebLNHandlers _weblnHandlers;
   InvoiceBloc _invoiceBloc;
   bool _isInit = false;
 
@@ -38,8 +39,13 @@ class VendorWebViewPageState extends State<VendorWebViewPage> {
   void didChangeDependencies() {
     if (!_isInit) {
       _invoiceBloc = AppBlocsProvider.of<InvoiceBloc>(context);
-      _weblnHandlers = WeblnHandlers(context, widget.accountBloc, _invoiceBloc);
-
+      _weblnHandlers = WebLNHandlers(context, widget.accountBloc, _invoiceBloc);
+      _webViewController = setWebViewController(
+        url: widget._url,
+        onPageFinished: _onPageFinished,
+        onMessageReceived: _onMessageReceived,
+        onNavigationRequest: _handleNavigationRequest,
+      );
       _isInit = true;
     }
     super.didChangeDependencies();
@@ -56,6 +62,8 @@ class VendorWebViewPageState extends State<VendorWebViewPage> {
     return Scaffold(
       resizeToAvoidBottomInset: false,
       appBar: AppBar(
+        automaticallyImplyLeading: false,
+        title: Text(widget._title),
         actions: <Widget>[
           IconButton(
               icon: Icon(
@@ -64,45 +72,13 @@ class VendorWebViewPageState extends State<VendorWebViewPage> {
               ),
               onPressed: () => Navigator.pop(context))
         ],
-        automaticallyImplyLeading: false,
-        iconTheme: Theme.of(context).appBarTheme.iconTheme,
-        textTheme: Theme.of(context).appBarTheme.textTheme,
-        backgroundColor: Theme.of(context).canvasColor,
-        title: Text(
-          widget._title,
-          style: Theme.of(context).appBarTheme.textTheme.headline6,
-        ),
-        elevation: 0.0,
       ),
       body: Listener(
         onPointerDown: (_) {
           // hide keyboard on click
           SystemChannels.textInput.invokeMethod('TextInput.hide');
         },
-        child: WebView(
-            onWebViewCreated: (WebViewController webViewController) {
-              setState(() {
-                _webViewController = webViewController;
-              });
-            },
-            javascriptMode: JavascriptMode.unrestricted,
-            javascriptChannels: <JavascriptChannel>[
-              _breezJavascriptChannel(context),
-            ].toSet(),
-            navigationDelegate: (NavigationRequest request) =>
-                _handleNavigationRequest(request),
-            onPageFinished: (String url) async {
-              // intercept ln link clicks
-              _webViewController.runJavascript(await rootBundle
-                  .loadString('src/scripts/lightningLinkInterceptor.js'));
-              // redirect post messages to javascript channel
-              _webViewController.runJavascript(
-                  'window.onmessage = (message) => window.BreezWebView.postMessage(message.data);');
-              _webViewController
-                  .runJavascript(await _weblnHandlers.initWeblnScript);
-              print('Page finished loading: $url');
-            },
-            initialUrl: widget._url),
+        child: WebViewWidget(controller: _webViewController),
       ),
     );
   }
@@ -110,37 +86,42 @@ class VendorWebViewPageState extends State<VendorWebViewPage> {
   _handleNavigationRequest(NavigationRequest request) {
     if (request.url.startsWith('lightning:')) {
       return NavigationDecision.prevent;
-    } else if (request.url.startsWith('tg:') || request.url.startsWith('fold:')) {
+    } else if (request.url.startsWith('tg:') ||
+        request.url.startsWith('fold:')) {
       launchUrlString(request.url);
       return NavigationDecision.prevent;
     }
     return NavigationDecision.navigate;
   }
 
-  JavascriptChannel _breezJavascriptChannel(BuildContext context) {
-    return JavascriptChannel(
-      name: "BreezWebView",
-      onMessageReceived: (JavascriptMessage message) {
-        if (message != null) {
-          var postMessage = (widget._title == "ln.pizza")
-              ? {"action": "sendPayment", "payReq": message.message}
-              : JSON.jsonDecode(message.message);
-          // handle lightning links and WebLN payments
-          if (postMessage["lightningLink"] != null &&
-              postMessage["lightningLink"]
-                  .toLowerCase()
-                  .startsWith("lightning:")) {
-            _invoiceBloc.newLightningLinkSink
-                .add(postMessage["lightningLink"].substring(10));
-          } else {
-            _weblnHandlers.handleMessage(postMessage).then((resScript) {
-              if (resScript != null) {
-                _webViewController.runJavascript(resScript);
-              }
-            });
+  void _onPageFinished(String url) async {
+    // intercept ln link clicks
+    _webViewController.runJavaScript(
+        await rootBundle.loadString('src/scripts/lightningLinkInterceptor.js'));
+    // redirect post messages to javascript channel
+    _webViewController.runJavaScript(
+        'window.onmessage = (message) => window.BreezWebView.postMessage(message.data);');
+    _webViewController.runJavaScript(await _weblnHandlers.initWebLNScript);
+    print('Page finished loading: $url');
+  }
+
+  _onMessageReceived(JavaScriptMessage message) {
+    if (message != null) {
+      var postMessage = (widget._title == "ln.pizza")
+          ? {"action": "sendPayment", "payReq": message.message}
+          : JSON.jsonDecode(message.message);
+      // handle lightning links and WebLN payments
+      if (postMessage["lightningLink"] != null &&
+          postMessage["lightningLink"].toLowerCase().startsWith("lightning:")) {
+        _invoiceBloc.newLightningLinkSink
+            .add(postMessage["lightningLink"].substring(10));
+      } else {
+        _weblnHandlers.handleMessage(postMessage).then((resScript) {
+          if (resScript != null) {
+            _webViewController.runJavaScript(resScript);
           }
-        }
-      },
-    );
+        });
+      }
+    }
   }
 }

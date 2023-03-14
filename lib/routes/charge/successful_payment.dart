@@ -1,7 +1,6 @@
-import 'package:breez/theme_data.dart' as theme;
 import 'package:breez/widgets/particles_animations.dart';
-import 'package:flutter/material.dart';
 import 'package:breez_translations/breez_translations_locales.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 
 class SuccessfulPaymentRoute extends StatefulWidget {
@@ -67,7 +66,10 @@ class SuccessfulPaymentRouteState extends State<SuccessfulPaymentRoute>
                   color: themeData.appBarTheme.actionsIconTheme.color,
                   icon: SvgPicture.asset(
                     "src/icon/printer.svg",
-                    color: themeData.appBarTheme.actionsIconTheme.color,
+                    colorFilter: ColorFilter.mode(
+                      themeData.appBarTheme.actionsIconTheme.color,
+                      BlendMode.srcATop,
+                    ),
                     fit: BoxFit.contain,
                     width: 24.0,
                     height: 24.0,
@@ -75,7 +77,7 @@ class SuccessfulPaymentRouteState extends State<SuccessfulPaymentRoute>
                   onPressed: widget.onPrint,
                 ),
               )
-            : SizedBox(
+            : const SizedBox(
                 height: 40,
               ),
         titlePadding: const EdgeInsets.symmetric(
@@ -100,14 +102,14 @@ class SuccessfulPaymentRouteState extends State<SuccessfulPaymentRoute>
         Text(
           texts.successful_payment_received,
           textAlign: TextAlign.center,
-          style: themeData.primaryTextTheme.headline4.copyWith(
+          style: themeData.primaryTextTheme.headlineMedium.copyWith(
             fontSize: 16,
           ),
         ),
         Padding(
           padding: const EdgeInsets.only(top: 20, bottom: 40),
           child: Container(
-            decoration: new BoxDecoration(
+            decoration: const BoxDecoration(
               color: Colors.white,
               shape: BoxShape.circle,
             ),

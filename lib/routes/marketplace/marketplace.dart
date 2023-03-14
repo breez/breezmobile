@@ -15,7 +15,7 @@ class MarketplacePage extends StatefulWidget {
 }
 
 class MarketplacePageState extends State<MarketplacePage> {
-  final _scaffoldKey = new GlobalKey<ScaffoldState>();
+  final _scaffoldKey = GlobalKey<ScaffoldState>();
 
   @override
   Widget build(BuildContext context) {
@@ -24,7 +24,7 @@ class MarketplacePageState extends State<MarketplacePage> {
     return Scaffold(
       key: _scaffoldKey,
       backgroundColor: theme.themeId == "BLUE"
-          ? Theme.of(context).backgroundColor
+          ? Theme.of(context).colorScheme.background
           : Theme.of(context).canvasColor,
       body: StreamBuilder(
         stream: marketplaceBloc.vendorsStream,
@@ -48,7 +48,7 @@ class MarketplacePageState extends State<MarketplacePage> {
         child: Text(
           BreezTranslations.of(context).market_place_no_vendors,
           textAlign: TextAlign.center,
-          style: Theme.of(context).textTheme.headline4.copyWith(
+          style: Theme.of(context).textTheme.headlineMedium.copyWith(
                 color: theme.themeId == "BLUE"
                     ? Theme.of(context).canvasColor
                     : Colors.white,
@@ -61,7 +61,7 @@ class MarketplacePageState extends State<MarketplacePage> {
   Widget _buildVendors(List<VendorModel> vendorModel) {
     final accountBloc = AppBlocsProvider.of<AccountBloc>(context);
 
-    return Container(
+    return SizedBox(
       height: MediaQuery.of(context).size.height -
           kToolbarHeight -
           MediaQuery.of(context).padding.top,

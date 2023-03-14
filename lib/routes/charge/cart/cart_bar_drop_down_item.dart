@@ -14,7 +14,7 @@ class CartBarDropDownItem extends DropdownMenuItem<String> {
             currency.shortName.toUpperCase(),
             textAlign: TextAlign.right,
             style: theme.invoiceAmountStyle.copyWith(
-              color: Theme.of(context).textTheme.headline5.color,
+              color: Theme.of(context).textTheme.headlineSmall.color,
             ),
           ),
         );

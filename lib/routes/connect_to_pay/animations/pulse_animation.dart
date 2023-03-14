@@ -6,7 +6,7 @@ class PulseAnimationDecorator extends StatefulWidget {
   final double _maxRadius;
   final double _minRadius;
 
-  PulseAnimationDecorator(this._child, this._maxRadius, this._minRadius);
+  const PulseAnimationDecorator(this._child, this._maxRadius, this._minRadius);
 
   @override
   State<StatefulWidget> createState() {
@@ -23,14 +23,14 @@ class _PulseAnimationDecoratorState extends State<PulseAnimationDecorator>
   void initState() {
     super.initState();
     _animationController =
-        AnimationController(vsync: this, duration: Duration(milliseconds: 500));
+        AnimationController(vsync: this, duration: const Duration(milliseconds: 500));
     _decorationRadius = Tween<double>(
       begin: widget._minRadius,
       end: widget._maxRadius,
     ).animate(
       CurvedAnimation(
         parent: _animationController,
-        curve: Interval(
+        curve: const Interval(
           0.0,
           1.0,
           curve: Curves.easeIn,
@@ -60,9 +60,9 @@ class _PulseAnimationDecoratorState extends State<PulseAnimationDecorator>
   @override
   Widget build(BuildContext context) {
     return AnimatedBuilder(
-      child: widget._child,
       builder: _buildAnimation,
       animation: _animationController,
+      child: widget._child,
     );
   }
 
@@ -71,7 +71,7 @@ class _PulseAnimationDecoratorState extends State<PulseAnimationDecorator>
       alignment: AlignmentDirectional.center,
       children: <Widget>[
         Positioned(
-            child: Container(
+            child: SizedBox(
                 width: widget._maxRadius * 2, height: widget._maxRadius * 2)),
         Positioned(
             top: widget._maxRadius - _decorationRadius.value,
@@ -79,7 +79,7 @@ class _PulseAnimationDecoratorState extends State<PulseAnimationDecorator>
             child: Container(
               height: _decorationRadius.value * 2,
               width: _decorationRadius.value * 2,
-              decoration: BoxDecoration(
+              decoration: const BoxDecoration(
                   shape: BoxShape.circle, color: theme.pulseAnimationColor),
             )),
         Positioned(child: child)

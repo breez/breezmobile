@@ -20,7 +20,7 @@ class NumberPanel extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final stepGranularity = 0.1;
+    const stepGranularity = 0.1;
     var minFontSize = 9.0 / MediaQuery.of(context).textScaleFactor;
     minFontSize = minFontSize - (minFontSize % stepGranularity);
 
@@ -32,13 +32,13 @@ class NumberPanel extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            Container(
+            SizedBox(
               width: innerWidth,
               height: 20,
               child: AutoSizeText(
                 topLabel,
                 textAlign: TextAlign.center,
-                style: TextStyle(
+                style: const TextStyle(
                   fontSize: 14.3,
                   letterSpacing: 1,
                   fontWeight: FontWeight.w600,
@@ -52,7 +52,7 @@ class NumberPanel extends StatelessWidget {
             AutoSizeText(
               bottomLabel,
               textAlign: TextAlign.center,
-              style: TextStyle(
+              style: const TextStyle(
                 fontSize: 10,
                 letterSpacing: 1,
               ),

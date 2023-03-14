@@ -20,7 +20,7 @@ import 'package:provider/provider.dart';
 import 'package:screenshot/screenshot.dart';
 
 class PodcastClipWidget extends StatelessWidget {
-  PodcastClipWidget({Key key}) : super(key: key);
+  const PodcastClipWidget({Key key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -62,8 +62,8 @@ _showClipsBottomSheet(
   if (position != null) {
     podcastClipBloc.setPodcastClipDetails(position: position);
   }
-  bool canBeclipped = podcastClipBloc.isEpisodeClipable();
-  if (!canBeclipped) {
+  bool canBeClipped = podcastClipBloc.isEpisodeClippable();
+  if (!canBeClipped) {
     return;
   }
   podcastClipBloc.setClipSharingStatus(status: true);
@@ -85,7 +85,7 @@ _showClipsBottomSheet(
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              SizedBox(
+                              const SizedBox(
                                 height: 20,
                               ),
                               Align(
@@ -94,7 +94,7 @@ _showClipsBottomSheet(
                                   '${_formatDuration(clipDetailSnapshot.data.startTimeStamp)} - ${_formatDuration(clipDetailSnapshot.data.endTimeStamp)}',
                                   style: Theme.of(context)
                                       .primaryTextTheme
-                                      .headline3
+                                      .displaySmall
                                       .copyWith(
                                         fontSize: 20,
                                         color: Colors.white,
@@ -102,13 +102,13 @@ _showClipsBottomSheet(
                                       ),
                                 ),
                               ),
-                              SizedBox(
+                              const SizedBox(
                                 height: 20,
                               ),
-                              Divider(
+                              const Divider(
                                 color: Colors.white,
                               ),
-                              SizedBox(
+                              const SizedBox(
                                 height: 20,
                               ),
                               Center(
@@ -145,14 +145,14 @@ _showClipsBottomSheet(
                                         .podcast_clips_cancel_button,
                                     style: Theme.of(context)
                                         .primaryTextTheme
-                                        .headline3
+                                        .displaySmall
                                         .copyWith(
                                           fontSize: 16,
                                           color: Colors.white.withOpacity(0.5),
                                           fontWeight: FontWeight.w500,
                                         ),
                                   )),
-                              Spacer(),
+                              const Spacer(),
                               clipDetailSnapshot.data.podcastClipState ==
                                       PodcastClipState.IDLE
                                   ? TextButton(
@@ -161,10 +161,10 @@ _showClipsBottomSheet(
                                             PodcastClipState.FETCHING_IMAGE);
                                         Episode e = clipDetailSnapshot
                                             .data.episodeDetails;
-                                        var _image = NetworkImage(e.imageUrl);
+                                        var image = NetworkImage(e.imageUrl);
 
-                                        _image
-                                            .resolve(ImageConfiguration())
+                                        image
+                                            .resolve(const ImageConfiguration())
                                             .addListener(
                                           ImageStreamListener(
                                             (info, call) async {
@@ -190,7 +190,8 @@ _showClipsBottomSheet(
                                                 log.warning(e);
                                                 showFlushbar(
                                                   context,
-                                                  message: BreezTranslations.of(context)
+                                                  message: BreezTranslations.of(
+                                                          context)
                                                       .podcast_clips_error,
                                                 );
                                               }
@@ -203,13 +204,13 @@ _showClipsBottomSheet(
                                               .podcast_clips_clip_button,
                                           style: Theme.of(context)
                                               .primaryTextTheme
-                                              .headline3
+                                              .displaySmall
                                               .copyWith(
                                                 fontSize: 16,
                                                 color: Colors.white,
                                                 fontWeight: FontWeight.w500,
                                               )))
-                                  : Center(
+                                  : const Center(
                                       child: CircularProgressIndicator(
                                       strokeWidth: 2,
                                     )),
@@ -218,35 +219,34 @@ _showClipsBottomSheet(
                         )
                       ],
                     )
-                  : CircularProgressIndicator();
+                  : const CircularProgressIndicator();
             });
       }).then((value) {
-        podcastClipBloc.setClipSharingStatus(status: false);
+    podcastClipBloc.setClipSharingStatus(status: false);
     _play(audioBloc);
-    
   });
 }
 
-Widget _numberPanel(BuildContext context, int durationInseconds) {
+Widget _numberPanel(BuildContext context, int durationInSeconds) {
   final minFontSize = 9.0 / MediaQuery.of(context).textScaleFactor;
   return GestureDetector(
     onTap: () => showDialog(
         useRootNavigator: true,
         context: context,
-        builder: (c) => CustomClipsDurationDialog()),
+        builder: (c) => const CustomClipsDurationDialog()),
     child: SizedBox(
       width: 56,
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          Container(
+          SizedBox(
             width: 42,
             height: 20,
             child: AutoSizeText(
-              durationInseconds.toString(),
+              durationInSeconds.toString(),
               textAlign: TextAlign.center,
-              style: Theme.of(context).primaryTextTheme.headline3.copyWith(
+              style: Theme.of(context).primaryTextTheme.displaySmall.copyWith(
                   fontSize: 16,
                   color: Colors.white,
                   fontWeight: FontWeight.w500,
@@ -259,7 +259,7 @@ Widget _numberPanel(BuildContext context, int durationInseconds) {
           AutoSizeText(
             BreezTranslations.of(context).podcast_clips_seconds,
             textAlign: TextAlign.center,
-            style: Theme.of(context).primaryTextTheme.headline3.copyWith(
+            style: Theme.of(context).primaryTextTheme.displaySmall.copyWith(
                   fontSize: 16,
                   color: Colors.white.withOpacity(0.7),
                   fontWeight: FontWeight.w500,
@@ -278,7 +278,7 @@ Widget _durationToggleButton(
     BuildContext context, Function() onTap, IconData icon) {
   final themeData = Theme.of(context);
   return GestureDetector(
-    child: Container(
+    child: SizedBox(
       width: 32,
       height: 64,
       child: Material(
@@ -303,7 +303,7 @@ Widget _durationToggleButton(
 Future<PositionState> getPositionDetails(AudioBloc audioBloc) async {
   PositionState position;
   try {
-    position = await audioBloc.playPosition.first.timeout(Duration(seconds: 1));
+    position = await audioBloc.playPosition.first.timeout(const Duration(seconds: 1));
   } catch (e) {
     position = null;
   }
@@ -320,7 +320,7 @@ _imageWidget({BuildContext context, Episode episodeDetails, Image image}) {
           breezTheme.BreezColors.blue[500],
           breezTheme.BreezColors.blue[500].withOpacity(0.5)
         ])),
-    padding: EdgeInsets.only(left: 20, right: 20, top: 20, bottom: 28),
+    padding: const EdgeInsets.only(left: 20, right: 20, top: 20, bottom: 28),
     child: Column(
       mainAxisSize: MainAxisSize.min,
       children: [
@@ -328,13 +328,13 @@ _imageWidget({BuildContext context, Episode episodeDetails, Image image}) {
           episodeDetails.author,
           maxLines: 2,
           overflow: TextOverflow.ellipsis,
-          style: Theme.of(context).primaryTextTheme.headline3.copyWith(
+          style: Theme.of(context).primaryTextTheme.displaySmall.copyWith(
                 fontSize: 12,
                 color: Colors.white,
                 fontWeight: FontWeight.w500,
               ),
         ),
-        SizedBox(
+        const SizedBox(
           height: 8,
         ),
         ClipRRect(
@@ -345,49 +345,51 @@ _imageWidget({BuildContext context, Episode episodeDetails, Image image}) {
             height: 300,
           ),
         ),
-        SizedBox(
+        const SizedBox(
           height: 4,
         ),
         Text(
           episodeDetails.podcast,
           maxLines: 2,
           overflow: TextOverflow.ellipsis,
-          style: Theme.of(context).primaryTextTheme.headline3.copyWith(
+          style: Theme.of(context).primaryTextTheme.displaySmall.copyWith(
                 fontSize: 12,
                 color: Colors.white,
                 fontWeight: FontWeight.w500,
               ),
         ),
-        SizedBox(
+        const SizedBox(
           height: 16,
         ),
         Text(
           episodeDetails.title,
           maxLines: 2,
           overflow: TextOverflow.ellipsis,
-          style: Theme.of(context).primaryTextTheme.headline3.copyWith(
+          style: Theme.of(context).primaryTextTheme.displaySmall.copyWith(
                 fontSize: 16,
                 color: Colors.white,
                 fontWeight: FontWeight.w600,
               ),
         ),
-        SizedBox(
+        const SizedBox(
           height: 60,
         ),
         Row(
           mainAxisAlignment: MainAxisAlignment.end,
           children: [
             Text("Clipped by ",
-                style: Theme.of(context).primaryTextTheme.headline3.copyWith(
+                style: Theme.of(context).primaryTextTheme.displaySmall.copyWith(
                       fontSize: 12,
                       color: Colors.white,
                       fontWeight: FontWeight.w500,
                     )),
             SvgPicture.asset(
               "src/images/logo-color.svg",
-              color: Colors.white,
+              colorFilter: const ColorFilter.mode(
+                Colors.white,
+                BlendMode.srcATop,
+              ),
               width: (MediaQuery.of(context).size.width) / 10,
-              colorBlendMode: BlendMode.srcATop,
             ),
           ],
         ),
@@ -464,7 +466,7 @@ class _CustomClipsDurationDialogState extends State<CustomClipsDurationDialog> {
         onPressed: () => Navigator.pop(context),
         child: Text(
           texts.podcast_boost_action_cancel,
-          style: themeData.primaryTextTheme.button,
+          style: themeData.primaryTextTheme.labelLarge,
         ),
       ),
     ];
@@ -482,7 +484,7 @@ class _CustomClipsDurationDialogState extends State<CustomClipsDurationDialog> {
           },
           child: Text(
             BreezTranslations.of(context).podcast_clips_dialog_done,
-            style: themeData.primaryTextTheme.button,
+            style: themeData.primaryTextTheme.labelLarge,
           ),
         ),
       );

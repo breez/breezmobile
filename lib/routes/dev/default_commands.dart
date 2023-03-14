@@ -10,11 +10,11 @@ class Command extends StatelessWidget {
   Widget build(BuildContext context) {
     return GestureDetector(
         onTap: () {
-          this.onTap(command);
+          onTap(command);
         },
         child: Container(
           alignment: Alignment.centerLeft,
-            padding: EdgeInsets.symmetric(vertical: 8.0, horizontal: 24.0),
+            padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 24.0),
             child: Text(
               command,
               textAlign: TextAlign.left,
@@ -29,17 +29,17 @@ class Category extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Text(name, style: Theme.of(context).textTheme.headline6);
+    return Text(name, style: Theme.of(context).textTheme.titleLarge);
   }
 }
 
 List<Widget> defaultCliCommandsText(Function(String command) onCommand) => [
-      ExpansionTile(title: Text("General"), children: <Widget>[
+      ExpansionTile(title: const Text("General"), children: <Widget>[
         Command("getinfo", onCommand),
         Command("debuglevel", onCommand),
         Command("stop", onCommand),
       ]),
-      ExpansionTile(title: Text("Channels"), children: <Widget>[
+      ExpansionTile(title: const Text("Channels"), children: <Widget>[
         Command("openchannel", onCommand),
         Command("closechannel", onCommand),
         Command("closeallchannels", onCommand),
@@ -53,13 +53,13 @@ List<Widget> defaultCliCommandsText(Function(String command) onCommand) => [
         Command("feereport", onCommand),
         Command("updatechanpolicy", onCommand),
       ]),
-      ExpansionTile(title: Text("On-chain"), children: <Widget>[
+      ExpansionTile(title: const Text("On-chain"), children: <Widget>[
         Command("estimatefee", onCommand),
         Command("sendmany", onCommand),
         Command("listunspent", onCommand),
         Command("listchaintxns", onCommand),
       ]),
-      ExpansionTile(title: Text("Payments"), children: <Widget>[
+      ExpansionTile(title: const Text("Payments"), children: <Widget>[
         Command("sendpayment", onCommand),
         Command("payinvoice", onCommand),
         Command("sendtoroute", onCommand),
@@ -77,14 +77,14 @@ List<Widget> defaultCliCommandsText(Function(String command) onCommand) => [
         Command("addholdinvoice", onCommand),
         Command("settleinvoice", onCommand),
       ]),
-      ExpansionTile(title: Text("Peers"), children: <Widget>[
+      ExpansionTile(title: const Text("Peers"), children: <Widget>[
         Command("connect", onCommand),
         Command("disconnect", onCommand),
         Command("listpeers", onCommand),
         Command("describegraph", onCommand),
         Command("getnodeinfo", onCommand),
       ]),
-      ExpansionTile(title: Text("Wallet"), children: <Widget>[
+      ExpansionTile(title: const Text("Wallet"), children: <Widget>[
         Command("newaddress", onCommand),
         Command("walletbalance", onCommand),
         Command("signmessage", onCommand),

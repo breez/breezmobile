@@ -10,7 +10,7 @@ class NotificationsMock extends Mock implements Notifications {
     return Future<String>.value("dummy token");
   }
 
-  BehaviorSubject<Map<String, dynamic>> notificationsController = new BehaviorSubject<Map<String, dynamic>>();
+  BehaviorSubject<Map<String, dynamic>> notificationsController = BehaviorSubject<Map<String, dynamic>>();
 
   @override
   Stream<Map<String, dynamic>> get notifications => notificationsController.stream;

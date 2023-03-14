@@ -6,6 +6,6 @@ class StaticLoader extends StatelessWidget {
     return Container(
         width: 0.0,
         height: 0.0,
-        decoration: BoxDecoration(color: Color.fromRGBO(5, 93, 235, 1.0)));
+        decoration: const BoxDecoration(color: Color.fromRGBO(5, 93, 235, 1.0)));
   }
 }

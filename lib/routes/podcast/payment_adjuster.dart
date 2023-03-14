@@ -29,7 +29,7 @@ class PaymentAdjuster extends StatelessWidget {
       mainAxisSize: MainAxisSize.max,
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        Container(
+        SizedBox(
           width: 120,
           child: Stack(
             children: [
@@ -49,7 +49,8 @@ class PaymentAdjuster extends StatelessWidget {
                     builder: (c) => CustomAmountDialog(
                       userModel.paymentOptions.customSatsPerMinValue,
                       userModel.paymentOptions.presetSatsPerMinuteAmountsList,
-                      (satsPerMinute) => userBloc.userActionsSink.add(SetPaymentOptions(
+                      (satsPerMinute) =>
+                          userBloc.userActionsSink.add(SetPaymentOptions(
                         userModel.paymentOptions.copyWith(
                           preferredSatsPerMinValue: satsPerMinute,
                           customSatsPerMinValue: satsPerMinute,
@@ -72,7 +73,7 @@ class PaymentAdjuster extends StatelessWidget {
     return Positioned(
       left: 8,
       child: GestureDetector(
-        child: Container(
+        child: SizedBox(
           width: 32,
           height: 64,
           child: Material(
@@ -100,7 +101,7 @@ class PaymentAdjuster extends StatelessWidget {
     return Positioned(
       right: 8,
       child: GestureDetector(
-        child: Container(
+        child: SizedBox(
           width: 32,
           height: 64,
           child: Material(

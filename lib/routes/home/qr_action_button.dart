@@ -43,7 +43,7 @@ class QrActionButton extends StatelessWidget {
 
     return Padding(
       padding: const EdgeInsets.only(top: 32.0),
-      child: Container(
+      child: SizedBox(
         width: 64,
         height: 64,
         child: FloatingActionButton(
@@ -156,7 +156,10 @@ class QrActionButton extends StatelessWidget {
           },
           child: SvgPicture.asset(
             "src/icon/qr_scan.svg",
-            color: theme.BreezColors.white[500],
+            colorFilter: ColorFilter.mode(
+              theme.BreezColors.white[500],
+              BlendMode.srcATop,
+            ),
             fit: BoxFit.contain,
             width: 24.0,
             height: 24.0,
@@ -228,42 +231,40 @@ class QrActionButton extends StatelessWidget {
           scrollable: true,
           title: Container(
             height: 64.0,
-            padding: EdgeInsets.fromLTRB(24.0, 24.0, 24.0, 8.0),
+            padding: const EdgeInsets.fromLTRB(24.0, 24.0, 24.0, 8.0),
             child: Text(
               texts.qr_action_button_open_link,
               style: dialogTheme.titleTextStyle,
               textAlign: TextAlign.center,
             ),
           ),
-          content: Container(
-            child: Padding(
-              padding: EdgeInsets.fromLTRB(16.0, 0.0, 16.0, 0.0),
-              child: Container(
-                width: size.width,
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Text(
-                      url,
-                      style: dialogTheme.contentTextStyle.copyWith(
-                        fontWeight: FontWeight.bold,
-                      ),
-                      maxLines: 2,
-                      overflow: TextOverflow.ellipsis,
-                      textAlign: TextAlign.center,
+          content: Padding(
+            padding: const EdgeInsets.fromLTRB(16.0, 0.0, 16.0, 0.0),
+            child: SizedBox(
+              width: size.width,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text(
+                    url,
+                    style: dialogTheme.contentTextStyle.copyWith(
+                      fontWeight: FontWeight.bold,
                     ),
-                    SizedBox(
-                      width: 0.0,
-                      height: 16.0,
-                    ),
-                    Text(
-                      texts.qr_action_button_open_link_confirmation,
-                      style: dialogTheme.contentTextStyle,
-                      textAlign: TextAlign.center,
-                    ),
-                  ],
-                ),
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
+                    textAlign: TextAlign.center,
+                  ),
+                  const SizedBox(
+                    width: 0.0,
+                    height: 16.0,
+                  ),
+                  Text(
+                    texts.qr_action_button_open_link_confirmation,
+                    style: dialogTheme.contentTextStyle,
+                    textAlign: TextAlign.center,
+                  ),
+                ],
               ),
             ),
           ),
@@ -279,7 +280,7 @@ class QrActionButton extends StatelessWidget {
               ),
               child: Text(
                 texts.qr_action_button_open_link_confirmation_no,
-                style: themeData.primaryTextTheme.button,
+                style: themeData.primaryTextTheme.labelLarge,
               ),
               onPressed: () => Navigator.of(context).pop(),
             ),
@@ -294,7 +295,7 @@ class QrActionButton extends StatelessWidget {
               ),
               child: Text(
                 texts.qr_action_button_open_link_confirmation_yes,
-                style: themeData.primaryTextTheme.button,
+                style: themeData.primaryTextTheme.labelLarge,
               ),
               onPressed: () async {
                 await launchLinkOnExternalBrowser(url);

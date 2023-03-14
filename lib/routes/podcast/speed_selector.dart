@@ -21,10 +21,10 @@ class SpeedSelectorWidget extends StatefulWidget {
   });
 
   @override
-  _SpeedSelectorWidgetState createState() => _SpeedSelectorWidgetState();
+  SpeedSelectorWidgetState createState() => SpeedSelectorWidgetState();
 }
 
-class _SpeedSelectorWidgetState extends State<SpeedSelectorWidget> {
+class SpeedSelectorWidgetState extends State<SpeedSelectorWidget> {
   var speed = 1.0;
 
   @override
@@ -56,11 +56,11 @@ class _SpeedSelectorWidgetState extends State<SpeedSelectorWidget> {
               onTap: () {
                 showModalBottomSheet<void>(
                   context: context,
-                  backgroundColor: themeData.backgroundColor,
+                  backgroundColor: themeData.colorScheme.background,
                   shape: const RoundedRectangleBorder(
-                    borderRadius: const BorderRadius.only(
-                      topLeft: const Radius.circular(10.0),
-                      topRight: const Radius.circular(10.0),
+                    borderRadius: BorderRadius.only(
+                      topLeft: Radius.circular(10.0),
+                      topRight: Radius.circular(10.0),
                     ),
                   ),
                   builder: (context) => SpeedSlider(
@@ -98,10 +98,10 @@ class SpeedSlider extends StatefulWidget {
   }) : super(key: key);
 
   @override
-  _SpeedSliderState createState() => _SpeedSliderState();
+  SpeedSliderState createState() => SpeedSliderState();
 }
 
-class _SpeedSliderState extends State<SpeedSlider> {
+class SpeedSliderState extends State<SpeedSlider> {
   var speed = 1.0;
   var trimSilence = false;
   var volumeBoost = false;
@@ -137,7 +137,7 @@ class _SpeedSliderState extends State<SpeedSlider> {
             decoration: BoxDecoration(
               color: themeData.buttonTheme.colorScheme.onPrimary,
               borderRadius: const BorderRadius.all(
-                const Radius.circular(4.0),
+                Radius.circular(4.0),
               ),
             ),
           ),
@@ -149,10 +149,10 @@ class _SpeedSliderState extends State<SpeedSlider> {
           ),
           child: Text(
             L.of(context).audio_settings_playback_speed_label,
-            style: themeData.primaryTextTheme.headline6,
+            style: themeData.primaryTextTheme.titleLarge,
           ),
         ),
-        Divider(),
+        const Divider(),
         Padding(
           padding: const EdgeInsets.only(top: 16.0),
           child: Text(
@@ -161,7 +161,7 @@ class _SpeedSliderState extends State<SpeedSlider> {
                   ? speed.toStringAsFixed(0).toString()
                   : speed.toString(),
             ),
-            style: themeData.primaryTextTheme.headline5,
+            style: themeData.primaryTextTheme.headlineSmall,
           ),
         ),
         Row(
@@ -171,7 +171,7 @@ class _SpeedSliderState extends State<SpeedSlider> {
             Expanded(
               child: IconButton(
                 iconSize: 28.0,
-                icon: Icon(Icons.remove_circle_outline),
+                icon: const Icon(Icons.remove_circle_outline),
                 color: themeData.buttonTheme.colorScheme.onPrimary,
                 onPressed: (speed <= 0.5)
                     ? null
@@ -209,7 +209,7 @@ class _SpeedSliderState extends State<SpeedSlider> {
             Expanded(
               child: IconButton(
                 iconSize: 28.0,
-                icon: Icon(Icons.add_circle_outline),
+                icon: const Icon(Icons.add_circle_outline),
                 color: themeData.buttonTheme.colorScheme.onPrimary,
                 onPressed: (speed >= 3.0)
                     ? null
@@ -224,10 +224,10 @@ class _SpeedSliderState extends State<SpeedSlider> {
             ),
           ],
         ),
-        SizedBox(
+        const SizedBox(
           height: 8.0,
         ),
-        Divider(),
+        const Divider(),
         if (themeData.platform == TargetPlatform.android) ...[
           /// Disable the trim silence option for now until the positioning bug
           /// in just_audio is resolved.
@@ -258,7 +258,7 @@ class _SpeedSliderState extends State<SpeedSlider> {
             ),
           ),
         ] else
-          SizedBox(
+          const SizedBox(
             width: 0.0,
             height: 0.0,
           ),

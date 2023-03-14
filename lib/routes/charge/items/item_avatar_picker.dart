@@ -17,7 +17,7 @@ class ItemAvatarPicker extends StatefulWidget {
   final Function(String selectedImage) onImageSelected;
   final String itemName;
 
-  ItemAvatarPicker(
+  const ItemAvatarPicker(
     this.itemImage,
     this.onImageSelected, {
     this.itemName,
@@ -30,9 +30,9 @@ class ItemAvatarPicker extends StatefulWidget {
 }
 
 class ItemAvatarPickerState extends State<ItemAvatarPicker> {
-  TextEditingController _imageFilterController = TextEditingController();
+  final TextEditingController _imageFilterController = TextEditingController();
   String _selectedImage;
-  List<ProductIcon> _iconList = [];
+  final List<ProductIcon> _iconList = [];
 
   @override
   void initState() {
@@ -45,33 +45,25 @@ class ItemAvatarPickerState extends State<ItemAvatarPicker> {
 
   @override
   Widget build(BuildContext context) {
-    final themeData = Theme.of(context);
     final texts = context.texts();
 
     return Scaffold(
       appBar: AppBar(
-        iconTheme: themeData.appBarTheme.iconTheme,
-        textTheme: themeData.appBarTheme.textTheme,
-        backgroundColor: themeData.canvasColor,
-        leading: backBtn.BackButton(),
-        title: Text(
-          texts.pos_invoice_item_management_avatar_title,
-          style: themeData.appBarTheme.textTheme.headline6,
-        ),
-        elevation: 0.0,
+        leading: const backBtn.BackButton(),
+        title: Text(texts.pos_invoice_item_management_avatar_title),
       ),
       body: Padding(
-        padding: EdgeInsets.only(top: 16, left: 0.0, right: 0.0),
+        padding: const EdgeInsets.only(top: 16, left: 0.0, right: 0.0),
         child: Column(
           mainAxisSize: MainAxisSize.max,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             _buildItemAvatar(context),
-            SizedBox(height: 16),
+            const SizedBox(height: 16),
             _buildSearchBar(context),
-            SizedBox(height: 8),
+            const SizedBox(height: 8),
             _buildIconGrid(context),
-            SizedBox(height: 8),
+            const SizedBox(height: 8),
           ],
         ),
       ),
@@ -85,8 +77,10 @@ class ItemAvatarPickerState extends State<ItemAvatarPicker> {
     return badges.Badge(
       showBadge: _selectedImage != "",
       position: badges.BadgePosition.topEnd(top: 5, end: -10),
-      animationType: badges.BadgeAnimationType.fade,
-      badgeColor: themeData.primaryTextTheme.subtitle2.color,
+      badgeAnimation: const badges.BadgeAnimation.fade(),
+      badgeStyle: badges.BadgeStyle(
+        badgeColor: themeData.primaryTextTheme.titleSmall.color,
+      ),
       badgeContent: _buildResetIconBadge(context),
       child: _selectedImage == "" && widget.itemName == ""
           ? Container(
@@ -104,7 +98,7 @@ class ItemAvatarPickerState extends State<ItemAvatarPicker> {
                     themeData.primaryColorLight,
                     BlendMode.srcATop,
                   ),
-                  image: AssetImage("src/images/avatarbg.png"),
+                  image: const AssetImage("src/images/avatarbg.png"),
                   fit: BoxFit.cover,
                 ),
               ),
@@ -113,7 +107,7 @@ class ItemAvatarPickerState extends State<ItemAvatarPicker> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: <Widget>[
-                  Icon(Icons.edit, size: 24),
+                  const Icon(Icons.edit, size: 24),
                   Padding(
                     padding: const EdgeInsets.only(left: 8, right: 8),
                     child: AutoSizeText(
@@ -122,7 +116,7 @@ class ItemAvatarPickerState extends State<ItemAvatarPicker> {
                       maxLines: 2,
                       minFontSize: MinFontSize(context).minFontSize,
                       stepGranularity: 0.1,
-                      style: TextStyle(
+                      style: const TextStyle(
                         fontSize: 12.3,
                         color: Color.fromRGBO(255, 255, 255, 0.88),
                         letterSpacing: 0.0,
@@ -146,7 +140,7 @@ class ItemAvatarPickerState extends State<ItemAvatarPicker> {
     final themeData = Theme.of(context);
 
     return GestureDetector(
-      child: Container(
+      child: SizedBox(
         height: 24,
         width: 24,
         child: Icon(
@@ -190,9 +184,9 @@ class ItemAvatarPickerState extends State<ItemAvatarPicker> {
                         _imageFilterController.text = "";
                         FocusScope.of(context).requestFocus(FocusNode());
                       },
-                padding: EdgeInsets.only(right: 24, top: 4),
+                padding: const EdgeInsets.only(right: 24, top: 4),
               ),
-              border: UnderlineInputBorder(),
+              border: const UnderlineInputBorder(),
             ),
           ),
         )
@@ -225,7 +219,13 @@ class ItemAvatarPickerState extends State<ItemAvatarPicker> {
 
   Widget _icon(ProductIcon icon) {
     return IconButton(
-      icon: SvgPicture.asset(icon.assetPath, color: Colors.white),
+      icon: SvgPicture.asset(
+        icon.assetPath,
+        colorFilter: const ColorFilter.mode(
+          Colors.white,
+          BlendMode.srcATop,
+        ),
+      ),
       iconSize: 36,
       onPressed: () => setState(() {
         _selectedImage = "icon:${icon.name}";

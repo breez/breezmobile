@@ -5,8 +5,9 @@ import 'package:breez/utils/min_font_size.dart';
 import 'package:breez/widgets/back_button.dart' as backBtn;
 import 'package:breez/widgets/route.dart';
 import 'package:breez/widgets/single_button_bottom_bar.dart';
-import 'package:flutter/material.dart';
 import 'package:breez_translations/breez_translations_locales.dart';
+import 'package:flutter/material.dart';
+
 import 'verify_backup_phrase_page.dart';
 
 class GenerateBackupPhrasePage extends StatefulWidget {
@@ -33,25 +34,20 @@ class GenerateBackupPhrasePageState extends State<GenerateBackupPhrasePage> {
 
   @override
   Widget build(BuildContext context) {
-    final themeData = Theme.of(context);
     final texts = context.texts();
+
     return WillPopScope(
       onWillPop: () => _onWillPop(context),
       child: Scaffold(
         appBar: AppBar(
-          iconTheme: themeData.appBarTheme.iconTheme,
-          textTheme: themeData.appBarTheme.textTheme,
-          backgroundColor: themeData.canvasColor,
           automaticallyImplyLeading: false,
           leading: backBtn.BackButton(
             onPressed: () => _onWillPop(context),
           ),
           title: AutoSizeText(
             texts.backup_phrase_generation_write_words,
-            style: themeData.appBarTheme.textTheme.headline6,
             maxLines: 1,
           ),
-          elevation: 0.0,
         ),
         body: _buildMnemonicSeedList(context, 0),
         bottomNavigationBar: _buildNextBtn(context),
@@ -68,11 +64,11 @@ class GenerateBackupPhrasePageState extends State<GenerateBackupPhrasePage> {
     return Container(
       height: 48,
       width: 150,
-      padding: EdgeInsets.all(8),
+      padding: const EdgeInsets.all(8),
       decoration: BoxDecoration(
         border: Border.all(color: Colors.white30),
         borderRadius: const BorderRadius.all(
-          const Radius.circular(4),
+          Radius.circular(4),
         ),
       ),
       child: Row(

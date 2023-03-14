@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:breez/theme_data.dart';
 import 'package:flutter/material.dart';
 
 class LoadingAnimatedText extends StatefulWidget {
@@ -8,7 +9,7 @@ class LoadingAnimatedText extends StatefulWidget {
   final TextAlign textAlign;
   final List<TextSpan> textElements;
 
-  LoadingAnimatedText(this._loadingMessage,
+  const LoadingAnimatedText(this._loadingMessage,
       {this.textStyle, this.textAlign, this.textElements = const []});
 
   @override
@@ -24,7 +25,7 @@ class LoadingAnimatedTextState extends State<LoadingAnimatedText> {
   @override
   void initState() {
     super.initState();
-    _loadingTimer = Timer.periodic(Duration(milliseconds: 400), (timer) {
+    _loadingTimer = Timer.periodic(const Duration(milliseconds: 400), (timer) {
       setState(() {
         _timerIteration++;
       });
@@ -42,20 +43,20 @@ class LoadingAnimatedTextState extends State<LoadingAnimatedText> {
     var textElements = widget.textElements.toList();
     return RichText(
         text: TextSpan(
-            style: widget.textStyle ?? Theme.of(context).accentTextTheme.bodyText2,
+            style: widget.textStyle ?? Theme.of(context).statusTextStyle,
             text: widget._loadingMessage,
             children: textElements
               ..addAll(<TextSpan>[
                 TextSpan(text: loadingDots),
                 TextSpan(
                     text: paddingDots,
-                    style: TextStyle(color: Colors.transparent))
+                    style: const TextStyle(color: Colors.transparent))
               ])),
         textAlign:
-            widget.textAlign == null ? TextAlign.center : widget.textAlign);
+            widget.textAlign ?? TextAlign.center);
   }
 
-  String get loadingDots => '${List.filled(_timerIteration % 4, ".").join("")}';
+  String get loadingDots => List.filled(_timerIteration % 4, ".").join("");
   String get paddingDots =>
-      '${List.filled(3 - _timerIteration % 4, ".").join("")}';
+      List.filled(3 - _timerIteration % 4, ".").join("");
 }

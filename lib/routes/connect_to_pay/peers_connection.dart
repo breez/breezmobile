@@ -12,7 +12,7 @@ class PeersConnection extends StatelessWidget {
   final PaymentSessionState _sessionState;
   final Function() _onShareInvite;
 
-  PeersConnection(
+  const PeersConnection(
     this._sessionState, {
     Function() onShareInvite,
   }) : _onShareInvite = onShareInvite;
@@ -90,7 +90,7 @@ class PeersConnection extends StatelessWidget {
                   child: ConnectedPeer(
                     false,
                     _sessionState,
-                    this._onShareInvite,
+                    _onShareInvite,
                   ),
                 ),
               ),
@@ -103,7 +103,7 @@ class PeersConnection extends StatelessWidget {
                   child: ConnectedPeer(
                     true,
                     _sessionState,
-                    this._onShareInvite,
+                    _onShareInvite,
                   ),
                 ),
               ),
@@ -140,7 +140,7 @@ class PeersConnection extends StatelessWidget {
     }
 
     if (!_sessionState.invitationSent) {
-      return SizedBox();
+      return const SizedBox();
     }
     return _UserNameWidget(texts.connect_to_pay_peer_unknown);
   }
@@ -149,7 +149,7 @@ class PeersConnection extends StatelessWidget {
 class _UserNameWidget extends StatelessWidget {
   final String userName;
 
-  _UserNameWidget(
+  const _UserNameWidget(
     this.userName,
   );
 

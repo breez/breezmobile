@@ -21,7 +21,7 @@ class AddFundsMessage extends StatelessWidget {
 
     return Container(
       height: 64,
-      color: themeData.backgroundColor,
+      color: themeData.colorScheme.background,
       child: Padding(
         padding: const EdgeInsets.fromLTRB(24.0, 12.0, 20.0, 12.0),
         child: Row(
@@ -29,7 +29,7 @@ class AddFundsMessage extends StatelessWidget {
             Expanded(
               child: AutoSizeText(
                 texts.podcast_add_funds_title,
-                style: themeData.textTheme.bodyText2.copyWith(
+                style: themeData.textTheme.bodyMedium.copyWith(
                   letterSpacing: 0.25,
                   height: 1.24,
                 ),
@@ -39,19 +39,19 @@ class AddFundsMessage extends StatelessWidget {
                 maxLines: 2,
               ),
             ),
-            SizedBox(width: 16),
-            Container(
+            const SizedBox(width: 16),
+            SizedBox(
               width: 100,
               child: ElevatedButton(
                 style: ElevatedButton.styleFrom(
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(6.0),
                   ),
+                  backgroundColor: themeData.primaryColor,
                   padding: const EdgeInsets.symmetric(
                     vertical: 12,
                     horizontal: 12,
                   ),
-                  backgroundColor: themeData.primaryColor,
                 ),
                 onPressed: () => showReceiveOptions(context, accountModel),
                 child: AutoSizeText(
@@ -59,7 +59,7 @@ class AddFundsMessage extends StatelessWidget {
                   minFontSize: minFontSize,
                   stepGranularity: 0.1,
                   maxLines: 1,
-                  style: themeData.textTheme.bodyText2.copyWith(
+                  style: themeData.textTheme.bodyMedium.copyWith(
                     color: Colors.white,
                     letterSpacing: 1,
                     height: 1.24,

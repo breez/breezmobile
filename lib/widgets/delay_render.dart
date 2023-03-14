@@ -7,7 +7,7 @@ class DelayRender extends StatefulWidget {
   final Widget child;
   final Widget initialChild;
 
-  DelayRender({
+  const DelayRender({
     this.duration,
     this.child,
     this.initialChild = const SizedBox(),

@@ -116,55 +116,55 @@ extension ProfileColorExtension on ProfileColor {
   Color get color {
     switch (this) {
       case ProfileColor.SALMON:
-        return Color(0xFFFA8072);
+        return const Color(0xFFFA8072);
       case ProfileColor.BLUE:
-        return Color(0xFF4169E1);
+        return const Color(0xFF4169E1);
       case ProfileColor.TURQUOISE:
-        return Color(0xFF00CED1);
+        return const Color(0xFF00CED1);
       case ProfileColor.ORCHID:
-        return Color(0xFF9932CC);
+        return const Color(0xFF9932CC);
       case ProfileColor.PURPLE:
-        return Color(0xFF800080);
+        return const Color(0xFF800080);
       case ProfileColor.TOMATO:
-        return Color(0xFFFF6347);
+        return const Color(0xFFFF6347);
       case ProfileColor.CYAN:
-        return Color(0xFF008B8B);
+        return const Color(0xFF008B8B);
       case ProfileColor.CRIMSON:
-        return Color(0xFFDC143C);
+        return const Color(0xFFDC143C);
       case ProfileColor.ORANGE:
-        return Color(0xFFFFA500);
+        return const Color(0xFFFFA500);
       case ProfileColor.LIME:
-        return Color(0xFF32CD32);
+        return const Color(0xFF32CD32);
       case ProfileColor.PINK:
-        return Color(0xFFFF69B4);
+        return const Color(0xFFFF69B4);
       case ProfileColor.GREEN:
-        return Color(0xFF00A644);
+        return const Color(0xFF00A644);
       case ProfileColor.RED:
-        return Color(0xFFFF2727);
+        return const Color(0xFFFF2727);
       case ProfileColor.YELLOW:
-        return Color(0xFFEECA0C);
+        return const Color(0xFFEECA0C);
       case ProfileColor.AZURE:
-        return Color(0xFF00C4FF);
+        return const Color(0xFF00C4FF);
       case ProfileColor.SILVER:
-        return Color(0xFF53687F);
+        return const Color(0xFF53687F);
       case ProfileColor.MAGENTA:
-        return Color(0xFFFF00FF);
+        return const Color(0xFFFF00FF);
       case ProfileColor.OLIVE:
-        return Color(0xFF808000);
+        return const Color(0xFF808000);
       case ProfileColor.VIOLET:
-        return Color(0xFF7F01FF);
+        return const Color(0xFF7F01FF);
       case ProfileColor.ROSE:
-        return Color(0xFFFF0080);
+        return const Color(0xFFFF0080);
       case ProfileColor.WINE:
-        return Color(0xFF950347);
+        return const Color(0xFF950347);
       case ProfileColor.MINT:
-        return Color(0xFF7ADEB8);
+        return const Color(0xFF7ADEB8);
       case ProfileColor.INDIGO:
-        return Color(0xFF4B0082);
+        return const Color(0xFF4B0082);
       case ProfileColor.JADE:
-        return Color(0xFF00B27A);
+        return const Color(0xFF00B27A);
       case ProfileColor.CORAL:
-        return Color(0xFFFF7F50);
+        return const Color(0xFFFF7F50);
       default:
         return Colors.white;
     }

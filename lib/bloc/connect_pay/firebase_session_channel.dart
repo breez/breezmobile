@@ -38,8 +38,8 @@ class PaymentSessionChannel {
   PaymentSessionChannel(this._sessionID, this._payer, {this.interceptor}) {
     _activeChannels++;
     FirebaseDatabase.instance.goOnline();
-    _myKey = this._payer ? "payer" : "payee";
-    _theirKey = this._payer ? "payee" : "payer";
+    _myKey = _payer ? "payer" : "payee";
+    _theirKey = _payer ? "payee" : "payer";
     _listenIncomingMessages();
     Future sessionCreated = !_payer
         ? Future.value(null)
@@ -138,7 +138,7 @@ class PaymentSessionChannel {
         .ref()
         .child('remote-payments/$terminationPath');
     _peerResetListener = terminationRef.onValue
-        .delay(Duration(milliseconds: 500))
+        .delay(const Duration(milliseconds: 500))
         .listen((event) {
       if (event.snapshot.value == null) {
         peerResetStreamController.add(null);

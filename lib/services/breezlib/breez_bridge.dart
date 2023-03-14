@@ -28,8 +28,8 @@ class BreezBridge {
   final Future<SharedPreferences> sharedPreferences;
   String _selectedLspID;
   Completer _readyCompleter = Completer();
-  Completer _startedCompleter = Completer();
-  StreamController _eventsController =
+  final Completer _startedCompleter = Completer();
+  final StreamController _eventsController =
       StreamController<NotificationEvent>.broadcast();
   Stream<NotificationEvent> get notificationStream => _eventsController.stream;
   bool ready = false;
@@ -76,14 +76,14 @@ class BreezBridge {
       return line.contains(graphDBName);
     }, orElse: () => "");
     if (currentVersionLine.isEmpty) {
-      throw new Exception("checksum not found");
+      throw Exception("checksum not found");
     }
     return currentVersionLine.split(" ")[0].trim();
   }
 
   Future syncGraphIfNeeded() async {
     await _readyCompleter.future;
-    await Future.delayed(Duration(seconds: 10));
+    await Future.delayed(const Duration(seconds: 10));
     var downloadURL = await graphURL();
     logger.log.info("GraphDownloader graph download url: $downloadURL");
     if (downloadURL.isNotEmpty) {
@@ -104,7 +104,7 @@ class BreezBridge {
         }
         logger.log.info("GraphDownloader graph synchronization started");
         await syncGraphFromFile(file.path);
-        logger.log.info("GraphDownloader graph synchronized succesfully");
+        logger.log.info("GraphDownloader graph synchronized successfully");
         return DateTime.now();
       }).catchError((err) {
         logger.log.info(
@@ -212,7 +212,7 @@ class BreezBridge {
 
   Future<String> getLogPath() {
     return getApplicationDocumentsDirectory().then((workingDir) {
-      return workingDir.path + "/logs/bitcoin/mainnet/lnd.log";
+      return "${workingDir.path}/logs/bitcoin/mainnet/lnd.log";
     });
   }
 
@@ -366,7 +366,7 @@ class BreezBridge {
       request.tlv.addAll(tlv);
     }
 
-    var payFunc = () => _invokeMethodWhenReady(
+    payFunc() => _invokeMethodWhenReady(
             "sendSpontaneousPayment", {"argument": request.writeToBuffer()})
         .then((res) => PaymentResponse()..mergeFromBuffer(res ?? []));
 
@@ -383,14 +383,12 @@ class BreezBridge {
     Int64 fee,
   }) {
     PayInvoiceRequest invoice = PayInvoiceRequest();
-    if (amount == null) {
-      amount = Int64(0);
-    }
+    amount ??= Int64(0);
     invoice.amount = amount;
     invoice.fee = fee ?? Int64(0);
     invoice.paymentRequest = blankInvoicePaymentRequest;
 
-    var payFunc = () => _invokeMethodWhenReady(
+    payFunc() => _invokeMethodWhenReady(
                 "sendPaymentForRequest", {"argument": invoice.writeToBuffer()})
             .then((value) {
           return PaymentResponse()..mergeFromBuffer(value ?? []);
@@ -400,7 +398,7 @@ class BreezBridge {
   }
 
   Future<PaymentResponse> _invokePaymentWithGraphSyncAndRetry(
-      Future<PaymentResponse> payFunc()) async {
+      Future<PaymentResponse> Function() payFunc) async {
     var startPaymentTime = DateTime.now();
     logger.log.info("payment started at ${startPaymentTime.toString()}");
 
@@ -410,7 +408,7 @@ class BreezBridge {
       }
       logger.log.info("payment failed, checking if graph sync is needed");
       return _inProgressGraphSync
-          .timeout(Duration(seconds: 50))
+          .timeout(const Duration(seconds: 50))
           .then((lastSyncTime) {
         if (lastSyncTime.isAfter(startPaymentTime)) {
           logger.log.info(
@@ -432,7 +430,7 @@ class BreezBridge {
     // } catch (err) {
     //   logger.log.info("payment failed, checking if graph sync is needed");
     //   if (_inProgressGraphSync != null) {
-    //     logger.log.info("has pending graph sync task, wating...");
+    //     logger.log.info("has pending graph sync task, waiting...");
     //     try {
     //       var lastSyncTime = await _inProgressGraphSync.timeout(Duration(seconds: 30));
     //       if (lastSyncTime.isAfter(startPaymentTime)) {
@@ -453,7 +451,7 @@ class BreezBridge {
     return _invokeMethodImmediate("graphURL")
         .then((result) => result as String)
         .catchError((e) {
-      logger.log.info("Error in graphURL:" + e.toString());
+      logger.log.info("Error in graphURL:$e");
     });
   }
 
@@ -462,7 +460,7 @@ class BreezBridge {
         "sendPaymentFailureBugReport", {"argument": traceReport});
   }
 
-  Future populateChannePolicy() {
+  Future populateChannelPolicy() {
     return _invokeMethodWhenReady("populateChannelPolicy");
   }
 
@@ -764,11 +762,11 @@ class BreezBridge {
   Future copyBreezConfig(String workingDir) async {
     logger.log.info("copyBreezConfig started");
 
-    File file = File(workingDir + "/breez.conf");
+    File file = File("$workingDir/breez.conf");
     String configString = await rootBundle.loadString('conf/breez.conf');
     file.writeAsStringSync(configString, flush: true);
 
-    File lndConf = File(workingDir + "/lnd.conf");
+    File lndConf = File("$workingDir/lnd.conf");
     String data = await rootBundle.loadString('conf/lnd.conf');
     lndConf.writeAsStringSync(data, flush: true);
 
@@ -847,7 +845,7 @@ class BreezBridge {
     return _startedCompleter.future.then((completed) {
       if (methodName != "log") {
         logger.log.info(
-            "startCompleted completd: before invoking method immediate $methodName");
+            "startCompleted completed: before invoking method immediate $methodName");
       }
       return _methodChannel
           .invokeMethod(methodName, arguments)
@@ -858,14 +856,14 @@ class BreezBridge {
         }
         if (err.runtimeType == PlatformException) {
           if (methodName != "log") {
-            logger.log.severe("Error in calling method " + methodName);
+            logger.log.severe("Error in calling method $methodName");
           }
 
           logger.log.severe(
               "Error in calling method '$methodName' with arguments: $arguments.");
           logger.log.severe(
               "Error in calling method '$methodName' with error: $err.");
-          throw (err as PlatformException).message + " method: $methodName";
+          throw "${(err as PlatformException).message} method: $methodName";
         }
         throw err;
       });

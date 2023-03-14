@@ -1,6 +1,7 @@
 import 'package:breez/widgets/designsystem/variant.dart';
 import 'package:breez/widgets/preview/preview.dart';
 import 'package:flutter/material.dart';
+import 'package:breez/theme_data.dart' as theme;
 
 const _kDisabledOpacity = 0.8;
 
@@ -35,7 +36,9 @@ class ActionButton extends StatelessWidget {
           _backgroundColor(themeData),
         ),
         padding: MaterialStateProperty.all<EdgeInsetsGeometry>(
-          text != null ? const EdgeInsets.symmetric(horizontal: 16.0) : const EdgeInsets.all(0.0),
+          text != null
+              ? const EdgeInsets.symmetric(horizontal: 16.0)
+              : const EdgeInsets.all(0.0),
         ),
         minimumSize: MaterialStateProperty.all<Size>(
           const Size(40, 40),
@@ -62,15 +65,15 @@ class ActionButton extends StatelessWidget {
               leadingIcon,
               color: _foregroundColor(themeData),
             ),
-          if (leadingIcon != null && text != null) SizedBox(width: 8.0),
+          if (leadingIcon != null && text != null) const SizedBox(width: 8.0),
           if (text != null)
             Text(
               text,
-              style: themeData.textTheme.button.copyWith(
+              style: themeData.textTheme.labelLarge.copyWith(
                 color: _foregroundColor(themeData),
               ),
             ),
-          if (trailingIcon != null && text != null) SizedBox(width: 8.0),
+          if (trailingIcon != null && text != null) const SizedBox(width: 8.0),
           if (trailingIcon != null)
             Icon(
               trailingIcon,
@@ -90,13 +93,17 @@ class ActionButton extends StatelessWidget {
   Color _backgroundColor(ThemeData themeData) {
     switch (variant) {
       case Variant.primary:
-        return enabled ? themeData.primaryColorDark : themeData.primaryColorDark.withOpacity(_kDisabledOpacity);
+        return enabled
+            ? themeData.primaryColorDark
+            : themeData.primaryColorDark.withOpacity(_kDisabledOpacity);
       case Variant.secondary:
         return enabled
             ? themeData.colorScheme.onSurface
             : themeData.colorScheme.onSurface.withOpacity(_kDisabledOpacity);
       case Variant.fab:
-        return enabled ? themeData.buttonColor : themeData.buttonColor.withOpacity(_kDisabledOpacity);
+        return enabled
+            ? theme.buttonColor
+            : theme.buttonColor.withOpacity(_kDisabledOpacity);
     }
     throw Exception('Unknown variant: $variant');
   }
@@ -113,8 +120,9 @@ class ActionButton extends StatelessWidget {
             : themeData.primaryColorDark.withOpacity(_kDisabledOpacity);
       case Variant.fab:
         return enabled
-            ? themeData.textTheme.button.color
-            : themeData.textTheme.button.color.withOpacity(_kDisabledOpacity);
+            ? themeData.textTheme.labelLarge.color
+            : themeData.textTheme.labelLarge.color
+                .withOpacity(_kDisabledOpacity);
     }
     throw Exception('Unknown variant: $variant');
   }
@@ -123,7 +131,7 @@ class ActionButton extends StatelessWidget {
 // Preview
 
 void main() {
-  runApp(Preview([
+  runApp(const Preview([
     ActionButton(
       text: 'Primary',
     ),

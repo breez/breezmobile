@@ -3,7 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:breez_translations/breez_translations_locales.dart';
 
-Future<Null> promptError(
+Future<void> promptError(
   BuildContext context,
   String title,
   Widget body, {
@@ -17,9 +17,9 @@ Future<Null> promptError(
   final themeData = Theme.of(context);
 
   bool canPop = !disableBack;
-  Future<bool> Function() canPopCallback = () => Future.value(canPop);
+  canPopCallback() => Future.value(canPop);
 
-  return showDialog<Null>(
+  return showDialog<void>(
     useRootNavigator: false,
     context: context,
     barrierDismissible: false, // user must tap button!
@@ -27,7 +27,7 @@ Future<Null> promptError(
       return WillPopScope(
         onWillPop: canPopCallback,
         child: AlertDialog(
-          contentPadding: EdgeInsets.fromLTRB(16.0, 16.0, 16.0, 0.0),
+          contentPadding: const EdgeInsets.fromLTRB(16.0, 16.0, 16.0, 0.0),
           title: title == null
               ? null
               : Text(
@@ -59,7 +59,7 @@ Future<Null> promptError(
             TextButton(
               child: Text(
                 okText ?? texts.error_dialog_default_action_ok,
-                style: themeData.primaryTextTheme.button,
+                style: themeData.primaryTextTheme.labelLarge,
               ),
               onPressed: () {
                 canPop = true;
@@ -96,9 +96,9 @@ Future<bool> promptAreYouSure(
           style: themeData.dialogTheme.titleTextStyle,
         );
   if (titleWidget != null && wideTitle) {
-    titleWidget = Container(
-      child: titleWidget,
+    titleWidget = SizedBox(
       width: MediaQuery.of(context).size.width,
+      child: titleWidget,
     );
   }
   return showDialog<bool>(
@@ -115,7 +115,7 @@ Future<bool> promptAreYouSure(
           TextButton(
             child: Text(
               cancelText ?? texts.error_dialog_default_action_no,
-              style: themeData.primaryTextTheme.button,
+              style: themeData.primaryTextTheme.labelLarge,
             ),
             onPressed: () {
               Navigator.of(context).pop(false);
@@ -124,7 +124,7 @@ Future<bool> promptAreYouSure(
           TextButton(
             child: Text(
               okText ?? texts.error_dialog_default_action_yes,
-              style: themeData.primaryTextTheme.button,
+              style: themeData.primaryTextTheme.labelLarge,
             ),
             onPressed: () => Navigator.of(context).pop(true),
           ),
@@ -153,9 +153,9 @@ Future<bool> promptMessage(
           style: themeData.dialogTheme.titleTextStyle,
         );
   if (titleWidget != null && wideTitle) {
-    titleWidget = Container(
-      child: titleWidget,
+    titleWidget = SizedBox(
       width: MediaQuery.of(context).size.width,
+      child: titleWidget,
     );
   }
   return showDialog<bool>(
@@ -172,7 +172,7 @@ Future<bool> promptMessage(
           TextButton(
             child: Text(
               closeText ?? texts.error_dialog_default_action_close,
-              style: themeData.primaryTextTheme.button,
+              style: themeData.primaryTextTheme.labelLarge,
             ),
             onPressed: () => Navigator.of(context).pop(false),
           ),

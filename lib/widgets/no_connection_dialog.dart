@@ -19,7 +19,7 @@ Future<bool> showNoConnectionDialog(BuildContext context) {
       final navigator = Navigator.of(context);
 
       return AlertDialog(
-        contentPadding: EdgeInsets.fromLTRB(16.0, 16.0, 16.0, 0.0),
+        contentPadding: const EdgeInsets.fromLTRB(16.0, 16.0, 16.0, 0.0),
         title: Text(
           texts.no_connection_dialog_title,
           style: dialogTheme.titleTextStyle,
@@ -51,8 +51,11 @@ Future<bool> showNoConnectionDialog(BuildContext context) {
                   style: theme.blueLinkStyle,
                   recognizer: TapGestureRecognizer()
                     ..onTap = () async {
-                      Share.shareFiles(
-                        [await ServiceInjector().breezBridge.getLogPath()],
+                      final logFile = XFile(
+                        await ServiceInjector().breezBridge.getLogPath(),
+                      );
+                      Share.shareXFiles(
+                        [logFile],
                       );
                     },
                 ),
@@ -68,14 +71,14 @@ Future<bool> showNoConnectionDialog(BuildContext context) {
           TextButton(
             child: Text(
               texts.no_connection_dialog_action_cancel,
-              style: themeData.primaryTextTheme.button,
+              style: themeData.primaryTextTheme.labelLarge,
             ),
             onPressed: () => navigator.pop(false),
           ),
           TextButton(
             child: Text(
               texts.no_connection_dialog_action_try_again,
-              style: themeData.primaryTextTheme.button,
+              style: themeData.primaryTextTheme.labelLarge,
             ),
             onPressed: () => navigator.pop(true),
           ),

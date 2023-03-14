@@ -10,7 +10,7 @@ class ItemAvatar extends StatelessWidget {
   final String itemName;
   final bool useDecoration;
 
-  ItemAvatar(this.avatarURL,
+  const ItemAvatar(this.avatarURL,
       {Key key, this.radius = 20.0, this.itemName, this.useDecoration = false})
       : super(key: key);
 
@@ -38,7 +38,7 @@ class _NetworkImageAvatar extends StatelessWidget {
   final double radius;
   final String avatarURL;
 
-  _NetworkImageAvatar(this.radius, this.avatarURL);
+  const _NetworkImageAvatar(this.radius, this.avatarURL);
 
   @override
   Widget build(BuildContext context) {
@@ -56,7 +56,7 @@ class _ColorAvatar extends StatelessWidget {
   final double radius;
   final String color;
 
-  _ColorAvatar(this.radius, this.color);
+  const _ColorAvatar(this.radius, this.color);
 
   @override
   Widget build(BuildContext context) {
@@ -83,7 +83,7 @@ class _IconAvatar extends StatelessWidget {
   final String iconName;
   final bool useDecoration;
 
-  _IconAvatar(this.radius, this.iconName, this.useDecoration);
+  const _IconAvatar(this.radius, this.iconName, this.useDecoration);
 
   @override
   Widget build(BuildContext context) {
@@ -98,7 +98,7 @@ class _IconAvatar extends StatelessWidget {
               image: DecorationImage(
                   colorFilter: ColorFilter.mode(
                       Theme.of(context).primaryColorLight, BlendMode.srcATop),
-                  image: AssetImage("src/images/avatarbg.png"),
+                  image: const AssetImage("src/images/avatarbg.png"),
                   fit: BoxFit.cover))
           : null,
       child: Column(
@@ -106,9 +106,14 @@ class _IconAvatar extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.center,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: <Widget>[
-          SvgPicture.asset("src/pos-icons/$iconName.svg",
-              color: IconTheme.of(context).color,
-              width: useDecoration ? radius : radius * 1.5)
+          SvgPicture.asset(
+            "src/pos-icons/$iconName.svg",
+            colorFilter: ColorFilter.mode(
+              IconTheme.of(context).color,
+              BlendMode.srcATop,
+            ),
+            width: useDecoration ? radius : radius * 1.5,
+          )
         ],
       ),
     );
@@ -119,14 +124,14 @@ class _FileImageAvatar extends StatelessWidget {
   final double radius;
   final String filePath;
 
-  _FileImageAvatar(this.radius, this.filePath);
+  const _FileImageAvatar(this.radius, this.filePath);
 
   @override
   Widget build(BuildContext context) {
     return Container(
       height: radius * 2,
       width: radius * 2,
-      decoration: new BoxDecoration(
+      decoration: BoxDecoration(
         shape: BoxShape.circle,
         image: DecorationImage(
           image: FileImage(
@@ -143,7 +148,7 @@ class _UnknownAvatar extends StatelessWidget {
   final String itemName;
   final bool useDecoration;
 
-  _UnknownAvatar(this.radius, this.itemName, this.useDecoration);
+  const _UnknownAvatar(this.radius, this.itemName, this.useDecoration);
 
   @override
   Widget build(BuildContext context) {
@@ -158,7 +163,7 @@ class _UnknownAvatar extends StatelessWidget {
               image: DecorationImage(
                   colorFilter: ColorFilter.mode(
                       Theme.of(context).primaryColorLight, BlendMode.srcATop),
-                  image: AssetImage("src/images/avatarbg.png"),
+                  image: const AssetImage("src/images/avatarbg.png"),
                   fit: BoxFit.cover))
           : null,
       child: (itemName != null && itemName.isNotEmpty)

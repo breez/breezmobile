@@ -28,6 +28,7 @@ class _PaymentOptionsPageState extends State<PaymentOptionsPage> {
   bool _loadingProportionalFee = false;
   double _proportionalFee = 0.0;
 
+  @override
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -68,20 +69,12 @@ class _PaymentOptionsPageState extends State<PaymentOptionsPage> {
   @override
   Widget build(BuildContext context) {
     final texts = context.texts();
-    final themeData = Theme.of(context);
 
     return Scaffold(
       appBar: AppBar(
-        iconTheme: themeData.appBarTheme.iconTheme,
-        textTheme: themeData.appBarTheme.textTheme,
-        backgroundColor: themeData.canvasColor,
         automaticallyImplyLeading: false,
-        leading: backBtn.BackButton(),
-        title: Text(
-          texts.payment_options_title,
-          style: themeData.appBarTheme.textTheme.headline6,
-        ),
-        elevation: 0.0,
+        leading: const backBtn.BackButton(),
+        title: Text(texts.payment_options_title),
       ),
       body: (_loadingOverride || _loadingBaseFee || _loadingProportionalFee)
           ? Container()
@@ -115,7 +108,7 @@ class _PaymentOptionsPageState extends State<PaymentOptionsPage> {
             padding: const EdgeInsets.fromLTRB(16.0, 16.0, 16.0, 8.0),
             child: Text(
               texts.payment_options_fee_header,
-              style: themeData.primaryTextTheme.headline3.copyWith(
+              style: themeData.primaryTextTheme.displaySmall.copyWith(
                 color: Colors.white,
               ),
             ),
@@ -137,7 +130,7 @@ class _PaymentOptionsPageState extends State<PaymentOptionsPage> {
       onChanged: (value) => setState(() => _overriding = value),
       title: Text(
         texts.payment_options_fee_override_enable,
-        style: themeData.primaryTextTheme.headline3.copyWith(
+        style: themeData.primaryTextTheme.displaySmall.copyWith(
           color: Colors.white,
         ),
       ),
@@ -155,14 +148,14 @@ class _PaymentOptionsPageState extends State<PaymentOptionsPage> {
             child: Form(
               child: TextFormField(
                 enabled: _overriding,
-                keyboardType: TextInputType.numberWithOptions(decimal: false),
+                keyboardType: const TextInputType.numberWithOptions(decimal: false),
                 inputFormatters: [
                   FilteringTextInputFormatter.digitsOnly,
                 ],
                 controller: _baseFeeController,
                 decoration: InputDecoration(
                   labelText: texts.payment_options_base_fee_label,
-                  border: UnderlineInputBorder(),
+                  border: const UnderlineInputBorder(),
                 ),
                 validator: (value) {
                   if (value.isEmpty) {
@@ -198,14 +191,14 @@ class _PaymentOptionsPageState extends State<PaymentOptionsPage> {
             child: Form(
               child: TextFormField(
                 enabled: _overriding,
-                keyboardType: TextInputType.numberWithOptions(decimal: true),
+                keyboardType: const TextInputType.numberWithOptions(decimal: true),
                 inputFormatters: [
                   FilteringTextInputFormatter.allow(RegExp(r'^\d+\.?\d{0,2}')),
                 ],
                 controller: _proportionalFeeController,
                 decoration: InputDecoration(
                   labelText: texts.payment_options_proportional_fee_label,
-                  border: UnderlineInputBorder(),
+                  border: const UnderlineInputBorder(),
                 ),
                 validator: (value) {
                   if (value.isEmpty) {
@@ -240,19 +233,19 @@ class _PaymentOptionsPageState extends State<PaymentOptionsPage> {
         children: [
           OutlinedButton(
             style: OutlinedButton.styleFrom(
-              side: BorderSide(color: Colors.white),
-              primary: Colors.white,
+              foregroundColor: Colors.white,
+              side: const BorderSide(color: Colors.white),
             ),
             child: Text(
               texts.payment_options_fee_action_reset,
             ),
             onPressed: () => _reset(context),
           ),
-          SizedBox(width: 12.0),
+          const SizedBox(width: 12.0),
           OutlinedButton(
             style: OutlinedButton.styleFrom(
-              side: BorderSide(color: Colors.white),
-              primary: Colors.white,
+              foregroundColor: Colors.white,
+              side: const BorderSide(color: Colors.white),
             ),
             child: Text(
               texts.payment_options_fee_action_save,
@@ -290,14 +283,14 @@ class _PaymentOptionsPageState extends State<PaymentOptionsPage> {
         TextButton(
           child: Text(
             texts.payment_options_fee_action_cancel,
-            style: themeData.primaryTextTheme.button,
+            style: themeData.primaryTextTheme.labelLarge,
           ),
           onPressed: () => Navigator.pop(context),
         ),
         TextButton(
           child: Text(
             texts.payment_options_fee_action_save,
-            style: themeData.primaryTextTheme.button,
+            style: themeData.primaryTextTheme.labelLarge,
           ),
           onPressed: () {
             _save(context);
@@ -316,7 +309,7 @@ class _PaymentOptionsPageState extends State<PaymentOptionsPage> {
         children: [
           Text(
             texts.payment_options_fee_warning,
-            style: Theme.of(context).textTheme.headline6,
+            style: Theme.of(context).textTheme.titleLarge,
             textAlign: TextAlign.center,
           ),
         ],

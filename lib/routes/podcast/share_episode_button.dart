@@ -30,8 +30,8 @@ class ShareEpisodeButton extends StatelessWidget {
           ),
         ),
         onPressed: () async {
-          DeepLinksService _deepLinks = ServiceInjector().deepLinks;
-          var podcastShareLink = await _deepLinks.generatePodcastShareLink(
+          DeepLinksService deepLinks = ServiceInjector().deepLinks;
+          var podcastShareLink = await deepLinks.generatePodcastShareLink(
             PodcastShareLinkModel(
               podcastURL,
               episodeID: episodeID,
@@ -49,17 +49,17 @@ class ShareEpisodeButton extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            Icon(
+            const Icon(
               Icons.share_rounded,
               size: 22,
             ),
-            Padding(
-              padding: const EdgeInsets.symmetric(vertical: 2.0),
+            const Padding(
+              padding: EdgeInsets.symmetric(vertical: 2.0),
             ),
             Text(
               texts.podcast_boost_action_share,
               textAlign: TextAlign.center,
-              style: TextStyle(
+              style: const TextStyle(
                 fontWeight: FontWeight.normal,
               ),
             ),

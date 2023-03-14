@@ -13,12 +13,12 @@ class BreezAvatar extends StatelessWidget {
   final double radius;
   final Color backgroundColor;
 
-  BreezAvatar(this.avatarURL, {this.radius = 20.0, this.backgroundColor});
+  const BreezAvatar(this.avatarURL, {this.radius = 20.0, this.backgroundColor});
 
   @override
   Widget build(BuildContext context) {
     Color avatarBgColor =
-        this.backgroundColor ?? theme.sessionAvatarBackgroundColor;
+        backgroundColor ?? theme.sessionAvatarBackgroundColor;
 
     if (avatarURL != null && avatarURL.isNotEmpty) {
       if (avatarURL.startsWith("breez://profile_image?")) {
@@ -54,7 +54,7 @@ class _UnknownAvatar extends StatelessWidget {
   final double radius;
   final Color backgroundColor;
 
-  _UnknownAvatar(this.radius, this.backgroundColor);
+  const _UnknownAvatar(this.radius, this.backgroundColor);
 
   @override
   Widget build(BuildContext context) {
@@ -62,7 +62,10 @@ class _UnknownAvatar extends StatelessWidget {
         backgroundColor: backgroundColor,
         radius: radius,
         child: SvgPicture.asset("src/icon/alien.svg",
-            color: Color.fromARGB(255, 0, 166, 68),
+            colorFilter: const ColorFilter.mode(
+              Color.fromARGB(255, 0, 166, 68),
+              BlendMode.srcATop,
+            ),
             width: 0.70 * radius * 2,
             height: 0.70 *
                 radius *
@@ -77,7 +80,7 @@ class _GeneratedAvatar extends StatelessWidget {
   final String color;
   final Color backgroundColor;
 
-  _GeneratedAvatar(this.radius, this.animal, this.color, this.backgroundColor);
+  const _GeneratedAvatar(this.radius, this.animal, this.color, this.backgroundColor);
 
   @override
   Widget build(BuildContext context) {
@@ -98,7 +101,7 @@ class _FileImageAvatar extends StatelessWidget {
   final double radius;
   final String filePath;
 
-  _FileImageAvatar(this.radius, this.filePath);
+  const _FileImageAvatar(this.radius, this.filePath);
 
   @override
   Widget build(BuildContext context) {
@@ -121,7 +124,7 @@ class _NetworkImageAvatar extends StatelessWidget {
   final double radius;
   final String avatarURL;
 
-  _NetworkImageAvatar(this.avatarURL, this.radius);
+  const _NetworkImageAvatar(this.avatarURL, this.radius);
 
   @override
   Widget build(BuildContext context) {
@@ -139,17 +142,17 @@ class _DataImageAvatar extends StatelessWidget {
   final double radius;
   final String avatarURL;
 
-  _DataImageAvatar(this.avatarURL, this.radius);
+  const _DataImageAvatar(this.avatarURL, this.radius);
 
   @override
   Widget build(BuildContext context) {
-      final uri = UriData.parse(this.avatarURL);
-      final _bytes = uri.contentAsBytes();
+    final uri = UriData.parse(avatarURL);
+    final bytes = uri.contentAsBytes();
     return CircleAvatar(
-        backgroundColor: theme.sessionAvatarBackgroundColor,
+      backgroundColor: theme.sessionAvatarBackgroundColor,
       radius: radius,
       child: ClipOval(
-        child: Image.memory(_bytes) ,
+        child: Image.memory(bytes),
       ),
     );
   }
@@ -159,7 +162,7 @@ class _VendorAvatar extends StatelessWidget {
   final double radius;
   final String avatarURL;
 
-  _VendorAvatar(this.radius, this.avatarURL);
+  const _VendorAvatar(this.radius, this.avatarURL);
 
   Widget _fastbitcoinsAvatar() {
     return CircleAvatar(
@@ -177,20 +180,20 @@ class _VendorAvatar extends StatelessWidget {
   }
 
   Widget _vendorAvatar() {
-    String _vendorName =
-        new RegExp("(?<=vendors/)(.*)(?=_logo)").stringMatch(avatarURL);
-    var _bgColor = theme.vendorTheme[_vendorName]?.iconBgColor ?? Colors.white;
-    var _fgColor =
-        theme.vendorTheme[_vendorName]?.iconFgColor ?? Colors.transparent;
+    String vendorName =
+        RegExp("(?<=vendors/)(.*)(?=_logo)").stringMatch(avatarURL);
+    var bgColor = theme.vendorTheme[vendorName]?.iconBgColor ?? Colors.white;
+    var fgColor =
+        theme.vendorTheme[vendorName]?.iconFgColor ?? Colors.transparent;
     return CircleAvatar(
       radius: radius,
       child: Container(
         decoration: ShapeDecoration(
-            color: _bgColor,
-            shape: CircleBorder(side: BorderSide(color: _bgColor)),
+            color: bgColor,
+            shape: CircleBorder(side: BorderSide(color: bgColor)),
             image: DecorationImage(
                 image: AssetImage(avatarURL),
-                colorFilter: ColorFilter.mode(_fgColor, BlendMode.color))),
+                colorFilter: ColorFilter.mode(fgColor, BlendMode.color))),
       ),
     );
   }
@@ -222,7 +225,10 @@ class _PosSaleAvatar extends StatelessWidget {
       radius: radius,
       child: SvgPicture.asset(
         "src/icon/pos_sale_avatar.svg",
-        color: theme.BreezColors.blue[500],
+        colorFilter: ColorFilter.mode(
+          theme.BreezColors.blue[500],
+          BlendMode.srcATop,
+        ),
         width: size,
         height: size,
       ),

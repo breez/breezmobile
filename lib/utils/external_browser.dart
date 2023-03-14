@@ -5,12 +5,12 @@ Future<void> launchLinkOnExternalBrowser(String linkAddress) async {
   if (await canLaunchUrlString(linkAddress)) {
     await FlutterWebBrowser.openWebPage(
       url: linkAddress,
-      customTabsOptions: CustomTabsOptions(
+      customTabsOptions: const CustomTabsOptions(
         shareState: CustomTabsShareState.on,
         showTitle: true,
         urlBarHidingEnabled: true,
       ),
-      safariVCOptions: SafariViewControllerOptions(
+      safariVCOptions: const SafariViewControllerOptions(
         barCollapsingEnabled: true,
         dismissButtonStyle: SafariViewControllerDismissButtonStyle.close,
         modalPresentationCapturesStatusBarAppearance: true,

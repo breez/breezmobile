@@ -10,35 +10,35 @@ import 'package:share_plus/share_plus.dart';
 
 void showLNURLSuccessAction(BuildContext context, SuccessAction sa) {
   final texts = context.texts();
-  final AutoSizeGroup _labelGroup = AutoSizeGroup();
+  final AutoSizeGroup labelGroup = AutoSizeGroup();
 
   promptMessage(
     context,
     texts.ln_url_success_action_title,
-    Container(
+    SizedBox(
       width: MediaQuery.of(context).size.width,
       child: Column(
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           sa.description?.isNotEmpty != true
-              ? SizedBox(
+              ? const SizedBox(
                   height: 0,
                 )
               : _TextMessage(
                   description: sa.description,
-                  group: _labelGroup,
+                  group: labelGroup,
                 ),
           sa.message?.isNotEmpty != true
-              ? SizedBox(
+              ? const SizedBox(
                   height: 0,
                 )
               : _TextMessage(
                   description: sa.message,
-                  group: _labelGroup,
+                  group: labelGroup,
                 ),
           sa.url?.isNotEmpty != true
-              ? SizedBox(
+              ? const SizedBox(
                   height: 0,
                 )
               : Padding(
@@ -64,7 +64,7 @@ class _TextMessage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: EdgeInsets.only(top: 8.0),
+      padding: const EdgeInsets.only(top: 8.0),
       child: Text(
         description,
         textAlign: TextAlign.left,
@@ -88,15 +88,15 @@ class _URLRow extends StatelessWidget {
     final texts = context.texts();
     final themeData = Theme.of(context);
 
-    final _expansionTileTheme = themeData.copyWith(
-      unselectedWidgetColor: themeData.primaryTextTheme.button.color,
+    final expansionTileTheme = themeData.copyWith(
+      unselectedWidgetColor: themeData.primaryTextTheme.labelLarge.color,
       colorScheme: ColorScheme.dark(
-        secondary: themeData.primaryTextTheme.button.color,
+        secondary: themeData.primaryTextTheme.labelLarge.color,
       ),
-      dividerColor: themeData.backgroundColor,
+      dividerColor: themeData.colorScheme.background,
     );
     return Theme(
-      data: _expansionTileTheme,
+      data: expansionTileTheme,
       child: Row(
         mainAxisSize: MainAxisSize.max,
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -107,7 +107,7 @@ class _URLRow extends StatelessWidget {
               child: GestureDetector(
                 onTap: () => launchLinkOnExternalBrowser(sharedValue),
                 child: Text(
-                  '$sharedValue',
+                  sharedValue,
                   textAlign: TextAlign.left,
                   overflow: TextOverflow.clip,
                   maxLines: 4,
@@ -131,8 +131,8 @@ class _URLRow extends StatelessWidget {
                     alignment: Alignment.centerRight,
                     padding: EdgeInsets.zero,
                     iconSize: 16.0,
-                    color: themeData.primaryTextTheme.button.color,
-                    icon: Icon(
+                    color: themeData.primaryTextTheme.labelLarge.color,
+                    icon: const Icon(
                       IconData(0xe90b, fontFamily: 'icomoon'),
                     ),
                     onPressed: () {
@@ -140,15 +140,15 @@ class _URLRow extends StatelessWidget {
                       showFlushbar(
                         context,
                         message: texts.ln_url_success_action_link_copied,
-                        duration: Duration(seconds: 4),
+                        duration: const Duration(seconds: 4),
                       );
                     },
                   ),
                   IconButton(
                     padding: EdgeInsets.zero,
                     iconSize: 16.0,
-                    color: themeData.primaryTextTheme.button.color,
-                    icon: Icon(Icons.share),
+                    color: themeData.primaryTextTheme.labelLarge.color,
+                    icon: const Icon(Icons.share),
                     onPressed: () {
                       Share.share(sharedValue);
                     },

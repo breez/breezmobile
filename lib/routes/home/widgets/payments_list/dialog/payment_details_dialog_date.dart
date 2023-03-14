@@ -28,7 +28,7 @@ class PaymentDetailsDialogDate extends StatelessWidget {
 
     return Container(
       height: 36.0,
-      padding: EdgeInsets.only(left: 16.0, right: 16.0, top: 8.0),
+      padding: const EdgeInsets.only(left: 16.0, right: 16.0, top: 8.0),
       child: Row(
         mainAxisSize: MainAxisSize.max,
         children: <Widget>[
@@ -36,7 +36,7 @@ class PaymentDetailsDialogDate extends StatelessWidget {
             padding: const EdgeInsets.only(right: 8.0),
             child: AutoSizeText(
               texts.payment_details_dialog_date_and_time,
-              style: themeData.primaryTextTheme.headline4,
+              style: themeData.primaryTextTheme.headlineMedium,
               textAlign: TextAlign.left,
               maxLines: 1,
               group: labelAutoSizeGroup,
@@ -46,14 +46,14 @@ class PaymentDetailsDialogDate extends StatelessWidget {
             child: SingleChildScrollView(
               scrollDirection: Axis.horizontal,
               reverse: true,
-              padding: EdgeInsets.only(left: 8.0),
+              padding: const EdgeInsets.only(left: 8.0),
               child: AutoSizeText(
                 BreezDateUtils.formatYearMonthDayHourMinute(
                   DateTime.fromMillisecondsSinceEpoch(
                     time * 1000,
                   ),
                 ),
-                style: themeData.primaryTextTheme.headline3,
+                style: themeData.primaryTextTheme.displaySmall,
                 textAlign: TextAlign.right,
                 maxLines: 1,
                 group: valueAutoSizeGroup,

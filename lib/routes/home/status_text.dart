@@ -1,5 +1,6 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:breez/bloc/account/account_model.dart';
+import 'package:breez/theme_data.dart';
 import 'package:breez/utils/min_font_size.dart';
 import 'package:breez/widgets/loading_animated_text.dart';
 import 'package:flutter/gestures.dart';
@@ -32,18 +33,18 @@ class StatusText extends StatelessWidget {
         textElements: [
           TextSpan(
             text: texts.status_text_loading_begin,
-            style: themeData.accentTextTheme.bodyText2,
+            style: themeData.statusTextStyle,
           ),
           _LinkTextSpan(
             text: texts.status_text_loading_middle,
             url: account.channelFundingTxUrl,
-            style: themeData.accentTextTheme.bodyText2.copyWith(
+            style: themeData.statusTextStyle.copyWith(
               decoration: TextDecoration.underline,
             ),
           ),
           TextSpan(
             text: texts.status_text_loading_end,
-            style: themeData.accentTextTheme.bodyText2,
+            style: themeData.statusTextStyle,
           ),
         ],
       );
@@ -52,7 +53,7 @@ class StatusText extends StatelessWidget {
     if (account == null || account.statusMessage == null) {
       return AutoSizeText(
         texts.status_text_ready,
-        style: themeData.accentTextTheme.bodyText2,
+        style: themeData.statusTextStyle,
         textAlign: TextAlign.center,
         minFontSize: MinFontSize(context).minFontSize,
         stepGranularity: 0.1,
@@ -65,7 +66,7 @@ class StatusText extends StatelessWidget {
         ? LoadingAnimatedText(account.statusMessage)
         : Text(
             account.statusMessage,
-            style: themeData.accentTextTheme.bodyText2,
+            style: themeData.statusTextStyle,
             textAlign: TextAlign.center,
           );
   }

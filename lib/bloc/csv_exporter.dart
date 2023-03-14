@@ -28,7 +28,7 @@ class CsvExporter {
     log.info("generating payment list started");
     final texts = getSystemAppLocalizations();
     final fiatCurrencies = _fiatCurrencies();
-    List<List<String>> paymentList = List.generate(this.data.length, (index) {
+    List<List<String>> paymentList = List.generate(data.length, (index) {
       List<String> paymentItem = [];
       final data = this.data.elementAt(index);
       final paymentInfo = data.paymentInfo;
@@ -74,7 +74,7 @@ class CsvExporter {
         .map((e) => e?.keys ?? [])
         .map((e) => e.toSet())
         .map((e) => e.difference({"BTC", "SAT"}))
-        .fold(Set<String>(), (p, e) => p.union(e));
+        .fold(<String>{}, (p, e) => p.union(e));
   }
 
   Future<String> _saveCsvFile(String csv) async {
@@ -99,16 +99,16 @@ class CsvExporter {
   String _appendFilterInformation(String filePath) {
     log.info("add filter information to path started");
     if (listEquals(
-        this.filter.paymentType, [PaymentType.SENT, PaymentType.WITHDRAWAL])) {
+        filter.paymentType, [PaymentType.SENT, PaymentType.WITHDRAWAL])) {
       filePath += "_sent";
     } else if (listEquals(
-        this.filter.paymentType, [PaymentType.RECEIVED, PaymentType.DEPOSIT])) {
+        filter.paymentType, [PaymentType.RECEIVED, PaymentType.DEPOSIT])) {
       filePath += "_received";
     }
-    if (this.filter.startDate != null && this.filter.endDate != null) {
+    if (filter.startDate != null && filter.endDate != null) {
       DateFormat dateFilterFormat = DateFormat("d.M.yy");
       String dateFilter =
-          '${dateFilterFormat.format(this.filter.startDate)}-${dateFilterFormat.format(this.filter.endDate)}';
+          '${dateFilterFormat.format(filter.startDate)}-${dateFilterFormat.format(filter.endDate)}';
       filePath += "_$dateFilter";
     }
     log.info("add filter information to path finished");

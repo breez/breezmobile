@@ -7,11 +7,10 @@ import '../../logger.dart';
 class AggregatedPayments {
   static const String AGGREGATED_PAYMENTS_KEY = "AGGREGATED_PAYMENTS_KEY";
 
-  Map<String, double> aggregatedAmount = Map<String, double>();
+  Map<String, double> aggregatedAmount = <String, double>{};
   SharedPreferences sharedPreferences;
 
-  AggregatedPayments(SharedPreferences sharedPreferences) {
-    this.sharedPreferences = sharedPreferences;
+  AggregatedPayments(this.sharedPreferences) {
     var persistedAggregation =
         sharedPreferences.getString(AGGREGATED_PAYMENTS_KEY);
     if (persistedAggregation != null) {
@@ -26,15 +25,14 @@ class AggregatedPayments {
   }
 
   Future<double> addAmount(String destination, double amount) async {
-    this.aggregatedAmount[destination] =
-        (this.aggregatedAmount[destination] ?? 0) + amount;
-    await this
-        .sharedPreferences
-        .setString(AGGREGATED_PAYMENTS_KEY, json.encode(this.aggregatedAmount));
-    return this.aggregatedAmount[destination];
+    aggregatedAmount[destination] =
+        (aggregatedAmount[destination] ?? 0) + amount;
+    await sharedPreferences
+        .setString(AGGREGATED_PAYMENTS_KEY, json.encode(aggregatedAmount));
+    return aggregatedAmount[destination];
   }
 
   double getAmount(String destination) {
-    return this.aggregatedAmount[destination] ?? 0;
+    return aggregatedAmount[destination] ?? 0;
   }
 }

@@ -1,10 +1,10 @@
-final String podcastHistoryTable = 'podcast_history_table';
-final String podcastHistoryTimeRangeTable = 'podcast_history_time_range_table';
+const String podcastHistoryTable = 'podcast_history_table';
+const String podcastHistoryTimeRangeTable = 'podcast_history_time_range_table';
 
 class PodcastHistoryTimeRangeFields {
   static final List<String> values = [fieldId, timeRangeKey];
-  static final String fieldId = '_id';
-  static final String timeRangeKey = 'timeRangeKey';
+  static const String fieldId = '_id';
+  static const String timeRangeKey = 'timeRangeKey';
 }
 
 class PodcastHistoryTimeRangeDbModel {
@@ -39,15 +39,15 @@ class PodcastHistoryFields {
     podcastUrl
   ];
 
-  static final String fieldId = '_id';
-  static final String podcastId = 'podcastId';
-  static final String timeStamp = 'timeStamp';
-  static final String satsSpent = 'satsSpent';
-  static final String boostagramsSent = 'boostagramSent';
-  static final String durationInMins = 'durationInMins';
-  static final String podcastName = 'podcastName';
-  static final String podcastImageUrl = 'podcastImageUrl';
-  static final String podcastUrl = 'podcastUrl';
+  static const String fieldId = '_id';
+  static const String podcastId = 'podcastId';
+  static const String timeStamp = 'timeStamp';
+  static const String satsSpent = 'satsSpent';
+  static const String boostagramsSent = 'boostagramSent';
+  static const String durationInMins = 'durationInMins';
+  static const String podcastName = 'podcastName';
+  static const String podcastImageUrl = 'podcastImageUrl';
+  static const String podcastUrl = 'podcastUrl';
 }
 
 class PodcastHistoryModel {
@@ -76,8 +76,7 @@ class PodcastHistoryModel {
         PodcastHistoryFields.fieldId: fieldId,
         PodcastHistoryFields.podcastId: podcastId,
         PodcastHistoryFields.durationInMins: durationInMins,
-        PodcastHistoryFields.timeStamp:
-            timeStamp != null ? timeStamp.toIso8601String() : null,
+        PodcastHistoryFields.timeStamp: timeStamp?.toIso8601String(),
         PodcastHistoryFields.satsSpent: satsSpent,
         PodcastHistoryFields.boostagramsSent: boostagramsSent,
         PodcastHistoryFields.podcastName: podcastName,
@@ -113,7 +112,7 @@ class PodcastHistoryModel {
           fieldId: fieldId ?? this.fieldId,
           podcastId: podcastId ?? this.podcastId,
           satsSpent: satsSpent ?? this.satsSpent,
-          durationInMins: durationInMins ?? this.durationInMins,
+          durationInMins: durationInMins ?? durationInMins,
           boostagramsSent: boostagramsSent ?? this.boostagramsSent,
           podcastName: podcastName ?? this.podcastName,
           podcastImageUrl: podcastImageUrl ?? this.podcastImageUrl,

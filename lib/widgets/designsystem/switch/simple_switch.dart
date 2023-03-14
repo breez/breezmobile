@@ -25,7 +25,7 @@ class SimpleSwitch extends StatelessWidget {
     return ListTile(
       title: AutoSizeText(
         text,
-        style: TextStyle(
+        style: const TextStyle(
           color: Colors.white,
         ),
         maxLines: 1,

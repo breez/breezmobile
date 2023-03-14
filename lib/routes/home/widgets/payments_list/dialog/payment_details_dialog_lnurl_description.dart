@@ -19,18 +19,17 @@ class PaymentDetailsDialogLnurlDescription extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final texts = context.texts();
-    final action = paymentInfo.lnurlPayInfo?.successAction;
-    final description = action?.description?.trim();
 
-    if (paymentInfo.type != PaymentType.SENT || action?.tag != "url" || description == null || description.isEmpty) {
-      return Container();
-    }
-
-    return ShareablePaymentRow(
-      title: texts.payment_details_dialog_action_for_payment_description,
-      sharedValue: description,
-      labelAutoSizeGroup: labelAutoSizeGroup,
-      valueAutoSizeGroup: valueAutoSizeGroup,
-    );
+    return (paymentInfo.type == PaymentType.SENT &&
+            paymentInfo.lnurlPayInfo != null &&
+            paymentInfo.lnurlPayInfo.successAction != null &&
+            paymentInfo.lnurlPayInfo.successAction.tag == "url")
+        ? ShareablePaymentRow(
+            title: texts.payment_details_dialog_action_for_payment_description,
+            sharedValue: paymentInfo.lnurlPayInfo.successAction.description,
+            labelAutoSizeGroup: labelAutoSizeGroup,
+            valueAutoSizeGroup: valueAutoSizeGroup,
+          )
+        : Container();
   }
 }

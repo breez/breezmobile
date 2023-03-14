@@ -63,9 +63,7 @@ class LSPBloc with AsyncActionsHandler {
 
   Future _connectLSP(ConnectLSP action) async {
     if (_lspsStatusController.value.availableLSPs
-            .where((element) => element.lspID == action.lspID)
-            .length ==
-        0) {
+            .where((element) => element.lspID == action.lspID).isEmpty) {
       final texts = getSystemAppLocalizations();
       throw Exception(texts.lsp_error_provider_do_not_exists);
     }
@@ -81,9 +79,9 @@ class LSPBloc with AsyncActionsHandler {
         var sp = await ServiceInjector().sharedPreferences;
         sp.setString(SELECTED_LSP_PREFERENCES_KEY, selectedLSP);
         action.resolve(await _breezLib.connectToLSPPeer(action.lspID));
-      }, tryLimit: 3, interval: Duration(seconds: 2));
+      }, tryLimit: 3, interval: const Duration(seconds: 2));
     } catch (err) {
-      log.info("Failed to connect to LSP: " + err.toString());
+      log.info("Failed to connect to LSP: $err");
       _lspsStatusController.add(_lspsStatusController.value
           .copyWith(lastConnectionError: err.toString()));
       rethrow;
@@ -102,7 +100,7 @@ class LSPBloc with AsyncActionsHandler {
           var availableLSPs = _lspsStatusController.value.availableLSPs;
           if (availableLSPs.length == 1) {
             log.info("LSP - not selected, selecting default");
-            this.actionsSink.add(ConnectLSP(availableLSPs[0].lspID, null));
+            actionsSink.add(ConnectLSP(availableLSPs[0].lspID, null));
           }
           return;
         }
@@ -123,7 +121,7 @@ class LSPBloc with AsyncActionsHandler {
   void _listenReconnects() {
     Future connectingFuture = Future.value(null);
     _reconnectStreamController.stream
-        .debounceTime(Duration(milliseconds: 500))
+        .debounceTime(const Duration(milliseconds: 500))
         .listen((_) async {
       connectingFuture.whenComplete(() {
         connectingFuture = _ensureLSPConnected();
@@ -164,7 +162,7 @@ class LSPBloc with AsyncActionsHandler {
   }
 
   Future _ensureLSPSFetched() async {
-    if (_lspsStatusController.value.availableLSPs.length == 0) {
+    if (_lspsStatusController.value.availableLSPs.isEmpty) {
       var list = await _breezLib.getLSPList();
       var lspInfoList = list.lsps.entries.map<LSPInfo>((entry) {
         return LSPInfo(entry.value, entry.key);

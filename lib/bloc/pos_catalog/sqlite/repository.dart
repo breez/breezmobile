@@ -20,9 +20,9 @@ class SqliteRepository implements Repository {
     (await getDB()).transaction((txn) async {
       await _emptyTables(txn);
       // Populate DB with items
-      itemList.forEach((item) async {
+      for (var item in itemList) {
         await _addDBItem(txn, "item", item);
-      });
+      }
     });
   }
 
@@ -34,22 +34,25 @@ class SqliteRepository implements Repository {
   /*
    * Images
    */
+  @override
   Future<String> addAsset(List<int> data) async {
     var hash = base64.encode(sha256.convert(data).bytes);
     await _addDBItem(await getDB(), "asset", Asset(hash, data));
     return hash;
   }
 
+  @override
   Future<void> deleteAsset(String url) async {
     return _deleteDBItems(await getDB(), "asset",
         where: "url = ?", whereArgs: [url]);
   }
 
+  @override
   Future<List<int>> fetchAssetByURL(String url) async {
     var assets = await _fetchDBItems(
         await getDB(), "asset", (e) => Asset.fromMap(e),
         where: "url = ?", whereArgs: [url]);
-    return assets.length > 0 ? assets[0].data : null;
+    return assets.isNotEmpty ? assets[0].data : null;
   }
 
   /*
@@ -84,7 +87,7 @@ class SqliteRepository implements Repository {
     var items = await _fetchDBItems(
         await getDB(), "item", (e) => Item.fromMap(e),
         where: "id = ?", whereArgs: [id]);
-    return items.length > 0 ? items[0] : null;
+    return items.isNotEmpty ? items[0] : null;
   }
 
   /*
@@ -94,10 +97,10 @@ class SqliteRepository implements Repository {
   Future<int> addSale(Sale sale, String paymentHash) async {
     return (await getDB()).transaction((txn) async {
       int saleID = await _addDBItem(txn, "sale", sale);
-      sale.saleLines.forEach((sl) async {
+      for (var sl in sale.saleLines) {
         var saleLineWithID = sl.copyWith(saleID: saleID);
         await _addDBItem(txn, "sale_line", saleLineWithID);
-      });
+      }
       await _addSalePayment(txn, saleID, paymentHash);
       return saleID;
     });
@@ -123,7 +126,7 @@ class SqliteRepository implements Repository {
     var items = await _fetchDBItems(
         await getDB(), "sale", (e) => Sale.fromMap(e),
         where: "id = ?", whereArgs: [id]);
-    if (items.length == 0) {
+    if (items.isEmpty) {
       return null;
     }
     Sale s = items[0];
@@ -138,7 +141,7 @@ class SqliteRepository implements Repository {
     int saleID = await (await getDB()).transaction((txn) async {
       var salePayment = await txn.query("sale_payments",
           where: "payment_hash = ?", whereArgs: [paymentHash]);
-      if (salePayment.length == 0) {
+      if (salePayment.isEmpty) {
         return null;
       }
       return salePayment.first["sale_id"];
@@ -204,7 +207,7 @@ class SqliteRepository implements Repository {
     } else {
       items = await executor.query(table, where: where, whereArgs: whereArgs);
     }
-    if (items.length == 0) {
+    if (items.isEmpty) {
       return [];
     }
     return items.map((row) => fromMapFunc(row)).toList();
@@ -256,7 +259,7 @@ class SqliteRepository implements Repository {
       ],
     );
 
-    if (report != null && report.length > 0) {
+    if (report != null && report.isNotEmpty) {
       final reportMap = report.first;
 
       double satValue = reportMap["sat_value"] ?? 0.0;

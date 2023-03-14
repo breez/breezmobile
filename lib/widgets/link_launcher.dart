@@ -23,7 +23,7 @@ class LinkLauncher extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final texts = context.texts();
-    final style = this.textStyle ?? DefaultTextStyle.of(context).style;
+    final style = textStyle ?? DefaultTextStyle.of(context).style;
 
     return Column(
       mainAxisAlignment: MainAxisAlignment.start,
@@ -50,9 +50,9 @@ class LinkLauncher extends StatelessWidget {
                     IconButton(
                       padding: EdgeInsets.zero,
                       alignment: Alignment.centerRight,
-                      iconSize: this.iconSize,
+                      iconSize: iconSize,
                       color: style.color,
-                      icon: Icon(Icons.launch),
+                      icon: const Icon(Icons.launch),
                       onPressed: () => launchLinkOnExternalBrowser(linkAddress),
                     ),
                   ],

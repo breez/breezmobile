@@ -48,7 +48,7 @@ class CheckChannelConnection {
         _readyForPayments();
         _notReadyTimer?.cancel();
       } else {
-        _notReadyTimer = Timer(Duration(seconds: 30), () {
+        _notReadyTimer = Timer(const Duration(seconds: 30), () {
           _notReadyForPayments(context);
         });
       }

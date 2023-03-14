@@ -3,7 +3,7 @@ import 'package:breez/bloc/user_profile/currency.dart';
 import 'package:breez/bloc/user_profile/security_model.dart';
 
 import 'backup_user_preferences.dart';
-import 'business_adress.dart';
+import 'business_address.dart';
 import 'seen_tutorials.dart';
 
 enum AppMode { balance, podcasts, pos, apps }
@@ -124,7 +124,7 @@ class BreezUserModel {
             ? Currency.SAT
             : Currency.fromTickerSymbol(json['currency']),
         fiatCurrency =
-            json['fiatCurrency'] == null ? "USD" : json['fiatCurrency'],
+            json['fiatCurrency'] ?? "USD",
         name = json['name'],
         color = json['color'],
         animal = json['animal'],
@@ -135,13 +135,11 @@ class BreezUserModel {
             : SecurityModel.fromJson(
                 json['securityModel'],
               ),
-        themeId = json['themeId'] == null ? "DARK" : json['themeId'],
+        themeId = json['themeId'] ?? "DARK",
         registrationRequested =
             json['registrationRequested'] ?? json['token'] != null,
         hideBalance = json['hideBalance'] ?? false,
-        cancellationTimeoutValue = json['cancellationTimeoutValue'] == null
-            ? 90.0
-            : json['cancellationTimeoutValue'],
+        cancellationTimeoutValue = json['cancellationTimeoutValue'] ?? 90.0,
         hasAdminPassword = json['hasAdminPassword'] ?? false,
         businessAddress = json['businessAddress'] == null
             ? BusinessAddress.initial()

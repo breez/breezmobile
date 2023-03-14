@@ -3,11 +3,11 @@ import "dart:async";
 import 'package:breez_translations/breez_translations_locales.dart';
 
 Future<dynamic> retry(
-  Future<dynamic> f(), {
+  Future<dynamic> Function() f, {
   int tryLimit = 6,
   Duration interval,
 }) async {
-  if (interval == null) interval = Duration(seconds: 10);
+  interval ??= const Duration(seconds: 10);
 
   for (int t = 0; t < tryLimit; t++) {
     try {
