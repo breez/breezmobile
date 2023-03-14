@@ -25,7 +25,7 @@ class ItemPage extends StatefulWidget {
   final Item item;
   final PosCatalogBloc _posCatalogBloc;
 
-  ItemPage(
+  const ItemPage(
     this._posCatalogBloc, {
     this.item,
   });
@@ -87,7 +87,7 @@ class ItemPageState extends State<ItemPage> {
       });
 
       fetchRatesAction.future.catchError((err) {
-        if (this.mounted) {
+        if (mounted) {
           setState(() {
             showFlushbar(
               context,
@@ -102,6 +102,7 @@ class ItemPageState extends State<ItemPage> {
     super.didChangeDependencies();
   }
 
+  @override
   Widget build(BuildContext context) {
     final themeData = Theme.of(context);
     return _buildScaffold(
@@ -109,7 +110,7 @@ class ItemPageState extends State<ItemPage> {
       ListView(
         children: <Widget>[
           Padding(
-            padding: EdgeInsets.only(top: 16, left: 16.0, right: 16.0),
+            padding: const EdgeInsets.only(top: 16, left: 16.0, right: 16.0),
             child: Form(
               key: _formKey,
               child: Column(
@@ -129,10 +130,10 @@ class ItemPageState extends State<ItemPage> {
                           flex: 1,
                           child: _priceField(context),
                         ),
-                        SizedBox(
+                        const SizedBox(
                           width: 8.0,
                         ),
-                        Container(
+                        SizedBox(
                           width: 80,
                           child: Theme(
                             data: themeData.copyWith(
@@ -175,11 +176,11 @@ class ItemPageState extends State<ItemPage> {
       decoration: InputDecoration(
         labelText: texts.pos_invoice_item_management_field_name_label,
         hintText: texts.pos_invoice_item_management_field_name_hint,
-        border: UnderlineInputBorder(),
+        border: const UnderlineInputBorder(),
       ),
       style: theme.FieldTextStyle.textStyle,
       validator: (value) {
-        if (value.trim().length == 0) {
+        if (value.trim().isEmpty) {
           return texts.pos_invoice_item_management_field_name_error;
         }
         return null;
@@ -190,7 +191,7 @@ class ItemPageState extends State<ItemPage> {
   Widget _priceField(BuildContext context) {
     final texts = context.texts();
     return TextFormField(
-      keyboardType: TextInputType.numberWithOptions(
+      keyboardType: const TextInputType.numberWithOptions(
         decimal: true,
       ),
       inputFormatters: [
@@ -202,11 +203,11 @@ class ItemPageState extends State<ItemPage> {
       decoration: InputDecoration(
         labelText: texts.pos_invoice_item_management_field_price_label,
         hintText: texts.pos_invoice_item_management_field_price_hint,
-        border: UnderlineInputBorder(),
+        border: const UnderlineInputBorder(),
       ),
       style: theme.FieldTextStyle.textStyle,
       validator: (value) {
-        if (value.length == 0) {
+        if (value.isEmpty) {
           return texts.pos_invoice_item_management_field_price_error;
         }
         return null;
@@ -221,7 +222,7 @@ class ItemPageState extends State<ItemPage> {
       decoration: InputDecoration(
         labelText: texts.pos_invoice_item_management_field_sku_label,
         hintText: texts.pos_invoice_item_management_field_sku_hint,
-        border: UnderlineInputBorder(),
+        border: const UnderlineInputBorder(),
       ),
       style: theme.FieldTextStyle.textStyle,
     );
@@ -259,9 +260,9 @@ class ItemPageState extends State<ItemPage> {
           );
         }).toList()
           ..addAll(account.preferredFiatConversionList.map((fiat) {
-            return new DropdownMenuItem<String>(
+            return DropdownMenuItem<String>(
               value: fiat.currencyData.shortName,
-              child: new Text(
+              child: Text(
                 fiat.currencyData.shortName,
                 style: theme.FieldTextStyle.textStyle.copyWith(
                   color: themeData.colorScheme.secondary,
@@ -318,7 +319,7 @@ class ItemPageState extends State<ItemPage> {
             themeData.primaryColorLight,
             BlendMode.srcATop,
           ),
-          image: AssetImage("src/images/avatarbg.png"),
+          image: const AssetImage("src/images/avatarbg.png"),
           fit: BoxFit.cover,
         ),
       ),
@@ -327,7 +328,7 @@ class ItemPageState extends State<ItemPage> {
         mainAxisAlignment: MainAxisAlignment.center,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: <Widget>[
-          Icon(Icons.edit, size: 24),
+          const Icon(Icons.edit, size: 24),
           Padding(
             padding: const EdgeInsets.only(left: 8, right: 8),
             child: AutoSizeText(
@@ -336,7 +337,7 @@ class ItemPageState extends State<ItemPage> {
               maxLines: 2,
               minFontSize: MinFontSize(context).minFontSize,
               stepGranularity: 0.1,
-              style: TextStyle(
+              style: const TextStyle(
                 fontSize: 12.3,
                 color: Color.fromRGBO(255, 255, 255, 0.88),
                 letterSpacing: 0.0,
@@ -383,21 +384,13 @@ class ItemPageState extends State<ItemPage> {
     List<Widget> actions,
   ]) {
     final texts = context.texts();
-    final themeData = Theme.of(context);
 
     return Scaffold(
       key: _scaffoldKey,
       appBar: AppBar(
-        iconTheme: themeData.appBarTheme.iconTheme,
-        textTheme: themeData.appBarTheme.textTheme,
-        backgroundColor: themeData.canvasColor,
-        leading: backBtn.BackButton(),
-        title: Text(
-          _title,
-          style: themeData.appBarTheme.textTheme.headline6,
-        ),
-        actions: actions == null ? <Widget>[] : actions,
-        elevation: 0.0,
+        leading: const backBtn.BackButton(),
+        title: Text(_title),
+        actions: actions ?? <Widget>[],
       ),
       body: body,
       bottomNavigationBar: SingleButtonBottomBar(

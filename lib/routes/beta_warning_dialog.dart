@@ -5,10 +5,10 @@ import 'package:breez_translations/breez_translations_locales.dart';
 
 class BetaWarningDialog extends StatefulWidget {
   @override
-  _BetaWarningDialogState createState() => _BetaWarningDialogState();
+  BetaWarningDialogState createState() => BetaWarningDialogState();
 }
 
-class _BetaWarningDialogState extends State<BetaWarningDialog> {
+class BetaWarningDialogState extends State<BetaWarningDialog> {
   bool _isUnderstood = false;
   bool _showReminderText = false;
 
@@ -27,12 +27,12 @@ class _BetaWarningDialogState extends State<BetaWarningDialog> {
         unselectedWidgetColor: themeData.canvasColor,
       ),
       child: AlertDialog(
-        titlePadding: EdgeInsets.fromLTRB(24.0, 22.0, 0.0, 16.0),
+        titlePadding: const EdgeInsets.fromLTRB(24.0, 22.0, 0.0, 16.0),
         title: Text(
           texts.beta_warning_title,
           style: themeData.dialogTheme.titleTextStyle,
         ),
-        contentPadding: EdgeInsets.fromLTRB(8.0, 8.0, 8.0, 24.0),
+        contentPadding: const EdgeInsets.fromLTRB(8.0, 8.0, 8.0, 24.0),
         content: Column(
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -43,7 +43,7 @@ class _BetaWarningDialogState extends State<BetaWarningDialog> {
             onPressed: () => exit(0),
             child: Text(
               texts.beta_warning_action_exit,
-              style: themeData.primaryTextTheme.button,
+              style: themeData.primaryTextTheme.labelLarge,
             ),
           ),
           TextButton(
@@ -58,7 +58,7 @@ class _BetaWarningDialogState extends State<BetaWarningDialog> {
             }),
             child: Text(
               texts.beta_warning_action_continue,
-              style: themeData.primaryTextTheme.button,
+              style: themeData.primaryTextTheme.labelLarge,
             ),
           ),
         ],
@@ -75,7 +75,7 @@ class _BetaWarningDialogState extends State<BetaWarningDialog> {
         padding: const EdgeInsets.only(left: 15.0, right: 12.0),
         child: Text(
           texts.beta_warning_message,
-          style: themeData.primaryTextTheme.headline3.copyWith(
+          style: themeData.primaryTextTheme.displaySmall.copyWith(
             fontSize: 16,
           ),
         ),
@@ -86,7 +86,7 @@ class _BetaWarningDialogState extends State<BetaWarningDialog> {
           children: [
             Theme(
               data: themeData.copyWith(
-                unselectedWidgetColor: themeData.textTheme.button.color,
+                unselectedWidgetColor: themeData.textTheme.labelLarge.color,
               ),
               child: Checkbox(
                 activeColor: themeData.canvasColor,
@@ -100,7 +100,7 @@ class _BetaWarningDialogState extends State<BetaWarningDialog> {
             ),
             Text(
               texts.beta_warning_understand,
-              style: themeData.primaryTextTheme.headline3.copyWith(
+              style: themeData.primaryTextTheme.displaySmall.copyWith(
                 fontSize: 16,
               ),
             ),
@@ -113,7 +113,7 @@ class _BetaWarningDialogState extends State<BetaWarningDialog> {
           padding: const EdgeInsets.fromLTRB(16.0, 0.0, 16.0, 0.0),
           child: Text(
             texts.beta_warning_understand_confirmation,
-            style: themeData.primaryTextTheme.headline3
+            style: themeData.primaryTextTheme.displaySmall
                 .copyWith(
                   fontSize: 16,
                 )

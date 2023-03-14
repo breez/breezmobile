@@ -37,7 +37,7 @@ class AccountSynchronizer {
   }
 
   void _pollBootstrap() {
-    Timer(Duration(seconds: 1), () {
+    Timer(const Duration(seconds: 1), () {
       _bootstrapProgress = min(_bootstrapProgress + 0.1, 1.0);
       _emitProgress();
       if (_startPollTimestamp == 0 && _bootstrapProgress < 1.0) {
@@ -49,7 +49,7 @@ class AccountSynchronizer {
   }
 
   void _pollSyncStatus() {
-    Timer(Duration(seconds: 1), () {
+    Timer(const Duration(seconds: 1), () {
       if (_dismissed) {
         return;
       }

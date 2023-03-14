@@ -26,9 +26,9 @@ class PosCsvUtils {
     final texts = getSystemAppLocalizations();
     log.info("generating payment list started");
     List<List<dynamic>> paymentList =
-        List.generate(this.itemList.length, (index) {
+        List.generate(itemList.length, (index) {
       List paymentItem = [];
-      Item paymentInfo = this.itemList.elementAt(index);
+      Item paymentInfo = itemList.elementAt(index);
       paymentItem.add(paymentInfo.id.toString());
       paymentItem.add(paymentInfo.name);
       paymentItem.add(paymentInfo.sku ?? "");
@@ -78,7 +78,7 @@ class PosCsvUtils {
       List csvList = await csvFile
           .openRead()
           .transform(utf8.decoder)
-          .transform(new CsvToListConverter(shouldParseNumbers: false))
+          .transform(const CsvToListConverter(shouldParseNumbers: false))
           .toList();
       log.info("header control started");
       List<String> headerRow = List<String>.from(csvList.elementAt(0));
@@ -105,12 +105,13 @@ class PosCsvUtils {
   List<Item> _populateItemListFromCsv(List csvList) {
     try {
       var itemsList = <Item>[];
-      csvList.forEach((csvItem) {
+      for (var csvItem in csvList) {
         List notNullColumns = [0, 1, 4, 5];
-        notNullColumns.forEach((index) {
-          if (csvItem[index].toString().isEmpty)
+        for (var index in notNullColumns) {
+          if (csvItem[index].toString().isEmpty) {
             throw PosCatalogBloc.InvalidData;
-        });
+          }
+        }
         Item item = Item(
           id: int.parse(csvItem[0]),
           name: csvItem[1],
@@ -120,7 +121,7 @@ class PosCsvUtils {
           price: double.parse(csvItem[5]),
         );
         itemsList.add(item);
-      });
+      }
       log.info("retrieving item list from csv finished");
       return itemsList;
     } catch (e) {

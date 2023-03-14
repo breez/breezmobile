@@ -23,7 +23,7 @@ class BarcodeScannerPlaceholder extends StatelessWidget {
 
     return MaterialApp(
       theme: themeData.copyWith(
-        backgroundColor: Colors.red,
+        colorScheme: themeData.colorScheme.copyWith(background: Colors.red),
         primaryColor: Colors.yellow,
         canvasColor: Colors.grey,
       ),
@@ -34,17 +34,11 @@ class BarcodeScannerPlaceholder extends StatelessWidget {
       supportedLocales: supportedLocales(),
       home: Scaffold(
         appBar: AppBar(
-          iconTheme: themeData.appBarTheme.iconTheme,
-          textTheme: themeData.appBarTheme.textTheme,
-          backgroundColor: themeData.canvasColor,
-          leading: backBtn.BackButton(
-            onPressed: () => Navigator.of(context).pop(),
-          ),
-          elevation: 0.0,
+          leading: const backBtn.BackButton(),
         ),
         backgroundColor: Colors.black,
         body: Padding(
-          padding: EdgeInsets.only(left: 16.0, right: 16.0),
+          padding: const EdgeInsets.only(left: 16.0, right: 16.0),
           child: Center(
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
@@ -56,15 +50,15 @@ class BarcodeScannerPlaceholder extends StatelessWidget {
                   ),
                   textAlign: TextAlign.center,
                 ),
-                Padding(
+                const Padding(
                   padding: EdgeInsets.only(top: 16.0),
                 ),
                 ElevatedButton(
                   style: ElevatedButton.styleFrom(
-                    primary: theme.BreezColors.white[500],
+                    backgroundColor: theme.BreezColors.white[500],
                     elevation: 0.0,
                     shape: const StadiumBorder(),
-                    padding: EdgeInsets.fromLTRB(12.0, 8.0, 12.0, 8.0),
+                    padding: const EdgeInsets.fromLTRB(12.0, 8.0, 12.0, 8.0),
                   ),
                   child: Row(
                     mainAxisSize: MainAxisSize.min,
@@ -73,7 +67,7 @@ class BarcodeScannerPlaceholder extends StatelessWidget {
                         Icons.settings,
                         color: theme.buttonStyle.color,
                       ),
-                      Padding(
+                      const Padding(
                         padding: EdgeInsets.only(left: 8.0),
                       ),
                       Text(

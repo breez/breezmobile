@@ -18,5 +18,5 @@ class AnytimeFallbackLocalizationDelegate extends LocalizationsDelegate<L> {
   Future<L> load(Locale locale) => SynchronousFuture(L.load(const Locale('en', ''), null));
 
   @override
-  bool shouldReload(_) => false;
+  bool shouldReload(old) => false;
 }

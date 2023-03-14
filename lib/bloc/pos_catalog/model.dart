@@ -16,6 +16,7 @@ class Asset implements DBItem {
       : url = json["url"],
         data = json["data"];
 
+  @override
   Map<String, dynamic> toMap() {
     return {
       'url': url,
@@ -42,7 +43,7 @@ class Item implements DBItem {
       String currency,
       double price}) {
     return Item(
-        id: this.id,
+        id: id,
         name: name ?? this.name,
         sku: sku ?? this.sku,
         imageURL: imageURL ?? this.imageURL,
@@ -58,6 +59,7 @@ class Item implements DBItem {
         currency = json["currency"],
         price = json["price"];
 
+  @override
   Map<String, dynamic> toMap() {
     return {
       'id': id,
@@ -113,7 +115,7 @@ class SaleLine implements DBItem {
     return SaleLine(
         id: id != null && id < 0 ? null : this.id,
         saleID: saleID ?? this.saleID,
-        itemID: this.itemID,
+        itemID: itemID,
         itemName: itemName ?? this.itemName,
         itemSKU: itemSKU ?? this.itemSKU,
         quantity: quantity ?? this.quantity,
@@ -127,17 +129,15 @@ class SaleLine implements DBItem {
     return copyWith(id: -1);
   }
 
-  SaleLine.fromItem(Item item, int quantity, double satConversionRate)
+  SaleLine.fromItem(Item item, this.quantity, this.satConversionRate)
       : id = null,
         saleID = null,
         itemID = item.id,
         itemName = item.name,
         itemSKU = item.sku,
-        quantity = quantity,
         itemImageURL = item.imageURL,
         pricePerItem = item.price,
-        currency = item.currency,
-        satConversionRate = satConversionRate;
+        currency = item.currency;
 
   SaleLine.fromMap(Map<String, dynamic> json)
       : id = json["id"],
@@ -151,6 +151,7 @@ class SaleLine implements DBItem {
         currency = json["currency"],
         satConversionRate = json["sat_conversion_rate"];
 
+  @override
   Map<String, dynamic> toMap() {
     return {
       'id': id,
@@ -191,7 +192,7 @@ class Sale implements DBItem {
   Sale copyNew() {
     return copyWith(
       id: -1,
-      saleLines: this.saleLines.map((sl) => sl.copyNew()).toList(),
+      saleLines: saleLines.map((sl) => sl.copyNew()).toList(),
       date: DateTime.now(),
     );
   }
@@ -229,20 +230,20 @@ class Sale implements DBItem {
 
     if (!hasSaleLine) {
       saleLines.add(SaleLine.fromItem(item, quantity, satConversionRate)
-          .copyWith(saleID: this.id));
+          .copyWith(saleID: id));
     }
-    return this.copyWith(saleLines: saleLines);
+    return copyWith(saleLines: saleLines);
   }
 
   Sale removeItem(bool Function(SaleLine) predicate) {
     var saleLines = this.saleLines.toList();
-    return this.copyWith(
+    return copyWith(
         saleLines: saleLines..removeWhere((element) => predicate(element)));
   }
 
   Sale updateItems(SaleLine Function(SaleLine) predicate) {
     var saleLines = this.saleLines.toList();
-    return this.copyWith(
+    return copyWith(
         saleLines: saleLines.map((element) {
       return predicate(element);
     }).toList());
@@ -257,34 +258,33 @@ class Sale implements DBItem {
       return sl;
     }).toList();
 
-    return this
-        .copyWith(saleLines: saleLines.where((s) => s.quantity > 0).toList());
+    return copyWith(saleLines: saleLines.where((s) => s.quantity > 0).toList());
   }
 
   Sale addCustomItem(double price, String currency, double satConversionRate) {
     int customItemsCount =
-        this.saleLines.where((element) => element.itemID == null).length;
-    var newSaleLines = this.saleLines.toList()
+        saleLines.where((element) => element.itemID == null).length;
+    var newSaleLines = saleLines.toList()
       ..add(SaleLine(
           itemName: getSystemAppLocalizations().pos_custom_item_name(
             customItemsCount + 1,
           ),
-          saleID: this.id,
+          saleID: id,
           pricePerItem: price,
           quantity: 1,
           currency: currency,
           satConversionRate: satConversionRate));
-    return this.copyWith(saleLines: newSaleLines);
+    return copyWith(saleLines: newSaleLines);
   }
 
   double get totalChargeSat {
     double totalSat = 0;
-    Map<double, double> perCurrency = Map();
-    saleLines.forEach((element) {
+    Map<double, double> perCurrency = {};
+    for (var element in saleLines) {
       perCurrency[element.satConversionRate] =
           (perCurrency[element.satConversionRate] ?? 0) +
               element.pricePerItem * element.quantity;
-    });
+    }
     perCurrency.forEach((rate, value) {
       totalSat += rate * value;
     });
@@ -293,26 +293,26 @@ class Sale implements DBItem {
 
   int get totalNumOfItems {
     int total = 0;
-    saleLines.forEach((sl) {
+    for (var sl in saleLines) {
       total += sl.quantity;
-    });
+    }
     return total;
   }
 
   Map<String, double> get totalAmountInFiat {
     Map<String, double> totals = {};
-    saleLines.forEach((saleLine) {
+    for (var saleLine in saleLines) {
       final previous = totals[saleLine.currency] ?? 0.0;
       totals[saleLine.currency] = previous + saleLine.totalFiat;
-    });
+    }
     return totals;
   }
 
   double get totalAmountInSats {
     var total = 0.0;
-    saleLines.forEach((saleLine) {
+    for (var saleLine in saleLines) {
       total += saleLine.totalSats;
-    });
+    }
     return total;
   }
 }

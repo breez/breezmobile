@@ -4,7 +4,7 @@ class ConnectedWidget extends StatefulWidget {
   final Duration _connectionEmulationDuration;
   final bool _waitingAction;
 
-  ConnectedWidget(this._connectionEmulationDuration, this._waitingAction);
+  const ConnectedWidget(this._connectionEmulationDuration, this._waitingAction);
 
   @override
   State<StatefulWidget> createState() {
@@ -33,7 +33,7 @@ class ConnectedWidgetState extends State<ConnectedWidget>
     ).animate(
       CurvedAnimation(
         parent: _animationController,
-        curve: Interval(
+        curve: const Interval(
           0.0,
           1.0,
           curve: Curves.ease,
@@ -47,7 +47,7 @@ class ConnectedWidgetState extends State<ConnectedWidget>
     ).animate(
       CurvedAnimation(
         parent: _circleController,
-        curve: Interval(
+        curve: const Interval(
           0.0,
           1.0,
           curve: Curves.ease,
@@ -61,7 +61,7 @@ class ConnectedWidgetState extends State<ConnectedWidget>
     ).animate(
       CurvedAnimation(
         parent: _circleController,
-        curve: Interval(
+        curve: const Interval(
           0.0,
           1.0,
           curve: Curves.decelerate,
@@ -85,8 +85,8 @@ class ConnectedWidgetState extends State<ConnectedWidget>
     return CustomPaint(
         painter: _ConnectedCustomPainter(_lineWidthFactor,
             showCircle: widget._waitingAction,
-            circleLocation: this._circleLocation,
-            circleRadius: this._circleRadius));
+            circleLocation: _circleLocation,
+            circleRadius: _circleRadius));
   }
 }
 
@@ -129,7 +129,7 @@ class _ConnectedCustomPainter extends CustomPainter {
         marginBetweenCircles =
             (width - (circleHeight * numberOfCircles)) / (numberOfCircles - 1);
 
-    canvas.drawCircle(size.centerLeft(Offset(2.5, 0.0)), circleHeight / 2,
+    canvas.drawCircle(size.centerLeft(const Offset(2.5, 0.0)), circleHeight / 2,
         Paint()..color = Colors.white.withOpacity(0.3));
     for (var i = 1; i < numberOfCircles; ++i) {
       canvas.drawCircle(

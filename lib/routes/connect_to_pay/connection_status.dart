@@ -11,7 +11,7 @@ class ConnectionStatus extends StatefulWidget {
   final ConnectionState _status;
   final Duration _connectionEmulationDuration;
 
-  ConnectionStatus(this._status, this._connectionEmulationDuration);
+  const ConnectionStatus(this._status, this._connectionEmulationDuration);
 
   @override
   State<StatefulWidget> createState() {
@@ -44,7 +44,7 @@ class _IdleCustomPainter extends CustomPainter {
         marginBetweenCircles =
             (width - (circleHeight * numberOfCircles)) / (numberOfCircles - 1);
 
-    canvas.drawCircle(size.centerLeft(Offset(2.5, 0.0)), circleHeight / 2,
+    canvas.drawCircle(size.centerLeft(const Offset(2.5, 0.0)), circleHeight / 2,
         Paint()..color = Colors.white.withOpacity(0.3));
     for (var i = 1; i < numberOfCircles; ++i) {
       canvas.drawCircle(

@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:io';
+import 'dart:typed_data';
 
 import 'package:breez/logger.dart';
 import 'package:breez/widgets/error_dialog.dart';
@@ -35,7 +36,7 @@ class AvatarPicker extends StatelessWidget {
         _pickImage(context);
       },
       child: Padding(
-        padding: EdgeInsets.only(top: 16.0),
+        padding: const EdgeInsets.only(top: 16.0),
         child: _getPickerWidget(context),
       ),
     );
@@ -45,30 +46,6 @@ class AvatarPicker extends StatelessWidget {
     final texts = context.texts();
 
     return Container(
-      child: Column(
-        mainAxisSize: MainAxisSize.max,
-        mainAxisAlignment: MainAxisAlignment.center,
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          Image(
-            image: AssetImage("src/icon/camera.png"),
-            color: Colors.white,
-            width: 24.0,
-            height: 24.0,
-          ),
-          Text(
-            imagePath == null
-                ? texts.avatar_picker_action_set_photo
-                : texts.avatar_picker_action_change_photo,
-            style: TextStyle(
-              fontSize: 10.0,
-              color: Color.fromRGBO(255, 255, 255, 0.88),
-              letterSpacing: 0.0,
-              fontFamily: "IBMPlexSans",
-            ),
-          ),
-        ],
-      ),
       width: renderedWidth.roundToDouble(),
       height: renderedWidth.roundToDouble(),
       decoration: BoxDecoration(
@@ -83,23 +60,47 @@ class AvatarPicker extends StatelessWidget {
         image: DecorationImage(
           colorFilter: ColorFilter.mode(
             imagePath == null
-                ? Color.fromRGBO(5, 93, 235, 0.8)
-                : Color.fromRGBO(51, 69, 96, 0.4),
+                ? const Color.fromRGBO(5, 93, 235, 0.8)
+                : const Color.fromRGBO(51, 69, 96, 0.4),
             BlendMode.srcATop,
           ),
           image: imagePath == null
-              ? AssetImage("src/images/avatarbg.png")
+              ? const AssetImage("src/images/avatarbg.png")
               : FileImage(File(imagePath)),
           fit: BoxFit.cover,
         ),
+      ),
+      child: Column(
+        mainAxisSize: MainAxisSize.max,
+        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          const Image(
+            image: AssetImage("src/icon/camera.png"),
+            color: Colors.white,
+            width: 24.0,
+            height: 24.0,
+          ),
+          Text(
+            imagePath == null
+                ? texts.avatar_picker_action_set_photo
+                : texts.avatar_picker_action_change_photo,
+            style: const TextStyle(
+              fontSize: 10.0,
+              color: Color.fromRGBO(255, 255, 255, 0.88),
+              letterSpacing: 0.0,
+              fontFamily: "IBMPlexSans",
+            ),
+          ),
+        ],
       ),
     );
   }
 
   Future _pickImage(BuildContext context) async {
-    final _picker = ImagePicker();
+    final picker = ImagePicker();
     XFile pickedFile =
-        await _picker.pickImage(source: ImageSource.gallery).catchError((err) {
+        await picker.pickImage(source: ImageSource.gallery).catchError((err) {
       log.severe(err.toString());
     });
     final File file = File(pickedFile.path);
@@ -107,7 +108,7 @@ class AvatarPicker extends StatelessWidget {
         .cropImage(
           sourcePath: file.path,
           cropStyle: CropStyle.circle,
-          aspectRatio: CropAspectRatio(
+          aspectRatio: const CropAspectRatio(
             ratioX: 1.0,
             ratioY: 1.0,
           ),
@@ -129,22 +130,20 @@ class AvatarPicker extends StatelessWidget {
             ));
   }
 
-  List<int> _scaleAndFormatPNG(List<int> imageBytes) {
-    DartImage.Image image = DartImage.decodeImage(imageBytes);
-    DartImage.Image resized = DartImage.copyResize(
-      image,
-      width: image.width < image.height ? -1 : scaledWidth,
-      height: image.width < image.height ? scaledWidth : -1,
-    );
-    DartImage.Image centered = DartImage.copyInto(
-      DartImage.Image(scaledWidth, scaledWidth),
-      resized,
-      dstX: ((scaledWidth - resized.width) / 2).round(),
-      dstY: ((scaledWidth - resized.height) / 2).round(),
-    );
-    final width = centered.width;
-    final height = centered.height;
-    log.info('trimmed.width $width trimmed.height $height');
-    return DartImage.encodePng(centered);
+  Uint8List _scaleAndFormatPNG(List<int> imageBytes) {
+    const int scaledSize = 200;
+    try {
+      final image = DartImage.decodeImage(imageBytes);
+      final resized = DartImage.copyResize(
+        image,
+        width: image.width < image.height ? -1 : scaledSize,
+        height: image.width < image.height ? scaledSize : -1,
+      );
+      log.info(
+          'trimmed.width ${resized.width} trimmed.height ${resized.height}');
+      return DartImage.encodePng(resized);
+    } catch (e) {
+      rethrow;
+    }
   }
 }

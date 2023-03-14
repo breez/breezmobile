@@ -40,7 +40,6 @@ class PosPaymentDialog extends StatefulWidget {
   final BreezUserModel _user;
   final PaymentRequestModel paymentRequest;
   final double satAmount;
-  final String _note;
 
   const PosPaymentDialog(
     this._invoiceBloc,
@@ -48,23 +47,21 @@ class PosPaymentDialog extends StatefulWidget {
     this._user,
     this.paymentRequest,
     this.satAmount,
-    this._note,
   );
 
   @override
-  _PosPaymentDialogState createState() {
-    return _PosPaymentDialogState();
+  PosPaymentDialogState createState() {
+    return PosPaymentDialogState();
   }
 }
 
-class _PosPaymentDialogState extends State<PosPaymentDialog> {
+class PosPaymentDialogState extends State<PosPaymentDialog> {
   CountDown _paymentTimer;
   StreamSubscription<Duration> _timerSubscription;
   StreamSubscription<PaymentRequestModel> _paidInvoiceSubscription;
   StreamSubscription<NfcWithdrawInvoiceStatus> _nfcInvoiceSubscription;
   String _countdownString = "3:00";
   var _loadingNfc = false;
-  Duration _expiration;
 
   @override
   void initState() {
@@ -76,7 +73,7 @@ class _PosPaymentDialogState extends State<PosPaymentDialog> {
     _timerSubscription = _paymentTimer.stream.listen((d) {
       setState(() {
         final texts = context.texts();
-        _expiration = d;
+
         _countdownString = texts.pos_dialog_clock(
           d.inMinutes.toRadixString(10),
           (d.inSeconds - (d.inMinutes * 60)).toRadixString(10).padLeft(2, "0"),
@@ -85,7 +82,7 @@ class _PosPaymentDialogState extends State<PosPaymentDialog> {
     }, onDone: () {
       final navigator = Navigator.of(context);
       if (navigator.canPop()) {
-        navigator.pop(PosPaymentResult());
+        navigator.pop(const PosPaymentResult());
       }
     });
 
@@ -93,7 +90,7 @@ class _PosPaymentDialogState extends State<PosPaymentDialog> {
         widget._invoiceBloc.paidInvoicesStream.listen((paidRequest) {
       setState(() {
         if (paidRequest.paymentHash == widget.paymentRequest.paymentHash) {
-          Navigator.of(context).pop(PosPaymentResult(paid: true));
+          Navigator.of(context).pop(const PosPaymentResult(paid: true));
         }
       });
     });
@@ -124,7 +121,7 @@ class _PosPaymentDialogState extends State<PosPaymentDialog> {
       builder: (context, snapshot) {
         final account = snapshot.data;
         if (account == null) {
-          return Loader();
+          return const Loader();
         }
 
         return AlertDialog(
@@ -155,33 +152,40 @@ class _PosPaymentDialogState extends State<PosPaymentDialog> {
         ),
         Row(
           children: <Widget>[
-            IconButton(              
+            IconButton(
               padding: EdgeInsets.zero,
-              icon: SvgPicture.asset(                  
-                  "src/icon/nfc.svg",                  
-                  color: Platform.isAndroid ? themeData.dialogTheme.titleTextStyle.color : themeData.primaryTextTheme.button.color,                  
+              icon: SvgPicture.asset(
+                "src/icon/nfc.svg",
+                colorFilter: ColorFilter.mode(
+                  Platform.isAndroid
+                      ? themeData.dialogTheme.titleTextStyle.color
+                      : themeData.primaryTextTheme.labelLarge.color,
+                  BlendMode.srcATop,
                 ),
-              onPressed: Platform.isAndroid ?  null : () {
-                ServiceInjector().nfc.starSession(autoClose: true);
-              },
+              ),
+              onPressed: Platform.isAndroid
+                  ? null
+                  : () {
+                      ServiceInjector().nfc.starSession(autoClose: true);
+                    },
             ),
             IconButton(
               splashColor: Colors.transparent,
               highlightColor: Colors.transparent,
               padding: const EdgeInsets.fromLTRB(0.0, 8.0, 2.0, 8.0),
-              icon: Icon(IconData(0xe917, fontFamily: 'icomoon')),
-              color: themeData.primaryTextTheme.button.color,
+              icon: const Icon(IconData(0xe917, fontFamily: 'icomoon')),
+              color: themeData.primaryTextTheme.labelLarge.color,
               tooltip: texts.pos_dialog_share,
               onPressed: () => Share.share(
-                "lightning:" + widget.paymentRequest.rawPayReq,
+                "lightning:${widget.paymentRequest.rawPayReq}",
               ),
             ),
             IconButton(
               splashColor: Colors.transparent,
               highlightColor: Colors.transparent,
               padding: const EdgeInsets.fromLTRB(2.0, 8.0, 14.0, 8.0),
-              icon: Icon(IconData(0xe90b, fontFamily: 'icomoon')),
-              color: themeData.primaryTextTheme.button.color,
+              icon: const Icon(IconData(0xe90b, fontFamily: 'icomoon')),
+              color: themeData.primaryTextTheme.labelLarge.color,
               tooltip: texts.pos_dialog_invoice_copy,
               onPressed: () {
                 ServiceInjector()
@@ -190,7 +194,7 @@ class _PosPaymentDialogState extends State<PosPaymentDialog> {
                 showFlushbar(
                   context,
                   message: texts.pos_dialog_invoice_copied,
-                  duration: Duration(seconds: 3),
+                  duration: const Duration(seconds: 3),
                 );
               },
             ),
@@ -234,17 +238,17 @@ class _PosPaymentDialogState extends State<PosPaymentDialog> {
                 ) +
                 priceInSaleCurrency,
             textAlign: TextAlign.center,
-            style: themeData.primaryTextTheme.headline4,
+            style: themeData.primaryTextTheme.headlineMedium,
           ),
           Padding(
             padding: const EdgeInsets.symmetric(vertical: 8.0),
             child: AspectRatio(
               aspectRatio: 1.0,
-              child: Container(
+              child: SizedBox(
                 height: 230.0,
                 width: 230.0,
                 child: _loadingNfc
-                    ? Loader()
+                    ? const Loader()
                     : CompactQRImage(
                         data: widget.paymentRequest.rawPayReq,
                       ),
@@ -252,7 +256,7 @@ class _PosPaymentDialogState extends State<PosPaymentDialog> {
             ),
           ),
           lspFee == 0
-              ? SizedBox()
+              ? const SizedBox()
               : Padding(
                   padding: const EdgeInsets.only(bottom: 8.0),
                   child: Text(
@@ -261,13 +265,13 @@ class _PosPaymentDialogState extends State<PosPaymentDialog> {
                       account.fiatCurrency.format(lspFee),
                     ),
                     textAlign: TextAlign.center,
-                    style: themeData.primaryTextTheme.headline4,
+                    style: themeData.primaryTextTheme.headlineMedium,
                   ),
                 ),
           Text(
             _countdownString,
             textAlign: TextAlign.center,
-            style: themeData.primaryTextTheme.headline4.copyWith(
+            style: themeData.primaryTextTheme.headlineMedium.copyWith(
               fontSize: 16,
             ),
           ),
@@ -301,10 +305,10 @@ class _PosPaymentDialogState extends State<PosPaymentDialog> {
       child: Text(
         texts.pos_dialog_clear_sale,
         textAlign: TextAlign.center,
-        style: themeData.primaryTextTheme.button,
+        style: themeData.primaryTextTheme.labelLarge,
       ),
       onPressed: () {
-        Navigator.of(context).pop(PosPaymentResult(clearSale: true));
+        Navigator.of(context).pop(const PosPaymentResult(clearSale: true));
       },
     );
   }
@@ -320,10 +324,10 @@ class _PosPaymentDialogState extends State<PosPaymentDialog> {
       child: Text(
         texts.pos_dialog_cancel,
         textAlign: TextAlign.center,
-        style: themeData.primaryTextTheme.button,
+        style: themeData.primaryTextTheme.labelLarge,
       ),
       onPressed: () {
-        Navigator.of(context).pop(PosPaymentResult());
+        Navigator.of(context).pop(const PosPaymentResult());
       },
     );
   }

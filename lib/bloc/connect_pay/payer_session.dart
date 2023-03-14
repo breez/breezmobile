@@ -28,6 +28,7 @@ class PayerRemoteSession extends RemoteSession with OnlineStatusUpdater {
 
   final StreamController<void> _terminationStreamController =
       StreamController<void>();
+  @override
   Stream<void> get terminationStream => _terminationStreamController.stream;
 
   final _sentInvitesController = StreamController<String>();
@@ -37,28 +38,31 @@ class PayerRemoteSession extends RemoteSession with OnlineStatusUpdater {
   Sink<PaymentDetails> get paymentDetailsSink => _paymentDetailsController.sink;
 
   final _paymentSessionController = BehaviorSubject<PaymentSessionState>();
+  @override
   Stream<PaymentSessionState> get paymentSessionStateStream =>
       _paymentSessionController.stream;
 
   final _sessionErrorsController =
       StreamController<PaymentSessionError>.broadcast();
+  @override
   Stream<PaymentSessionError> get sessionErrors =>
       _sessionErrorsController.stream;
 
-  BreezServer _breezServer = ServiceInjector().breezServer;
+  final BreezServer _breezServer = ServiceInjector().breezServer;
   PaymentSessionChannel _channel;
-  BreezBridge _breezLib = ServiceInjector().breezBridge;
-  Device _device = ServiceInjector().device;
-  DeepLinksService _deepLinks = ServiceInjector().deepLinks;
-  BackgroundTaskService _backgroundService =
+  final BreezBridge _breezLib = ServiceInjector().breezBridge;
+  final Device _device = ServiceInjector().device;
+  final DeepLinksService _deepLinks = ServiceInjector().deepLinks;
+  final BackgroundTaskService _backgroundService =
       ServiceInjector().backgroundTaskService;
-  BreezUserModel _currentUser;
-  var sessionState = Map<String, dynamic>();
+  final BreezUserModel _currentUser;
+  var sessionState = <String, dynamic>{};
   SessionLinkModel sessionLink;
-  Completer _sessionCompleter = Completer();
+  final Completer _sessionCompleter = Completer();
   bool _paymentSent = false;
   Future Function(String paymentRequest, Int64 amount) sendPayment;
 
+  @override
   String get sessionID => sessionLink?.sessionID;
 
   PayerRemoteSession(this._currentUser, this.sendPayment, this.accountActions,
@@ -72,6 +76,7 @@ class PayerRemoteSession extends RemoteSession with OnlineStatusUpdater {
     _paymentSessionController.add(initialState);
   }
 
+  @override
   Future start(SessionLinkModel sessionLink) async {
     log.info("payer session starting...");
     this.sessionLink = sessionLink;
@@ -153,6 +158,7 @@ class PayerRemoteSession extends RemoteSession with OnlineStatusUpdater {
     return _channel.sendStateUpdate(sessionState);
   }
 
+  @override
   Future terminate({bool permanent = false}) async {
     if (_isTerminated) {
       return Future.value(null);
@@ -190,7 +196,7 @@ class PayerRemoteSession extends RemoteSession with OnlineStatusUpdater {
           .add(_currentSession.copyWith(invitationReady: true));
     }).catchError((err) {
       log.info(
-          "payer session generating invite link failed: " + err.toString());
+          "payer session generating invite link failed: $err");
     });
 
     _sentInvitesController.stream.listen((inviteLink) async {
@@ -247,15 +253,15 @@ class PayerRemoteSession extends RemoteSession with OnlineStatusUpdater {
       _backgroundService.runAsTask(_sessionCompleter.future, () {
         log.info("payer session background task finished");
       });
-      return this.sendPayment(paymentRequest, invoice.amount).then((_) {
-        if (!this._paymentSent) {
-          this._paymentSent = true;
+      return sendPayment(paymentRequest, invoice.amount).then((_) {
+        if (!_paymentSent) {
+          _paymentSent = true;
           _onPaymentFulfilled(invoice);
         }
       }).catchError((err) {
         var displayError = err;
         if (err is PaymentError) {
-          displayError = err.toDisplayMessage(this._currentUser.currency);
+          displayError = err.toDisplayMessage(_currentUser.currency);
         }
         _onError(displayError);
       });
@@ -270,7 +276,7 @@ class PayerRemoteSession extends RemoteSession with OnlineStatusUpdater {
             "imageURL": newPayeeData.imageURL,
             "userName": newPayeeData.userName,
           },
-          "paymentSent": this._paymentSent
+          "paymentSent": _paymentSent
         }));
   }
 

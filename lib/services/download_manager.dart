@@ -26,7 +26,7 @@ class DownloadTaskManager {
     DownloadTaskStatus.undefined
   ];
   Timer _downloadTimer;
-  Stream<DownloadStatus> get downloadProgress => downloadController.stream;  
+  Stream<DownloadStatus> get downloadProgress => downloadController.stream;
 
   DownloadTaskManager() {
     _init();
@@ -40,69 +40,66 @@ class DownloadTaskManager {
     log.info("GraphDownloader after Initialize");
 
     bool success = IsolateNameServer.registerPortWithName(
-        _port.sendPort, 'downloader_send_port');    
+        _port.sendPort, 'downloader_send_port');
     _port.listen((dynamic data) {
       final id = data[0] as String;
       final status = data[1] as DownloadTaskStatus;
       final progress = data[2] as int;
-      
+
       print("GraphDownloader2 callback $id, $status, $progress");
       log.info("GraphDownloader2 callback $id, $status, $progress");
-      _updateProgress(id, progress, status);      
+      _updateProgress(id, progress, status);
     });
-    log.info("GraphDownloader reguster success = $success");
+    log.info("GraphDownloader register success = $success");
     FlutterDownloader.registerCallback(downloadCallback);
 
     final allTasks = await loadTasks();
-    allTasks.forEach((t) {
+    for (var t in allTasks) {
       _tasksToPoll.add(t.taskId);
-    });
+    }
     pollTasksStatus();
   }
 
   void pollTasksStatus() {
-    if (_downloadTimer == null) {
-      _downloadTimer = Timer.periodic(Duration(seconds: 3), (timer) async {
+    _downloadTimer ??= Timer.periodic(const Duration(seconds: 3), (timer) async {
         var tasks = await loadTasks();
         final polledTasks = tasks.where((t) => _tasksToPoll.contains(t.taskId));
-        polledTasks.forEach((task) {
+        for (var task in polledTasks) {
           _updateProgress(task.taskId, task.progress, task.status);
-          if (finalTaskStatuses.contains(task.status)) {        
+          if (finalTaskStatuses.contains(task.status)) {
             _tasksToPoll.remove(task.taskId);
           }
-        });
-        if (_tasksToPoll.isEmpty){
+        }
+        if (_tasksToPoll.isEmpty) {
           _downloadTimer?.cancel();
           _downloadTimer = null;
         }
       });
-    }
   }
 
   void _updateProgress(String taskID, int progress, DownloadTaskStatus status) {
     var state = DownloadState.none;
 
-      if (status == DownloadTaskStatus.enqueued) {
-        state = DownloadState.queued;
-      } else if (status == DownloadTaskStatus.canceled) {
-        state = DownloadState.cancelled;
-      } else if (status == DownloadTaskStatus.complete) {
-        state = DownloadState.downloaded;
-      } else if (status == DownloadTaskStatus.running) {
-        state = DownloadState.downloading;
-      } else if (status == DownloadTaskStatus.failed) {
-        state = DownloadState.failed;
-      } else if (status == DownloadTaskStatus.paused) {
-        state = DownloadState.paused;
-      }
+    if (status == DownloadTaskStatus.enqueued) {
+      state = DownloadState.queued;
+    } else if (status == DownloadTaskStatus.canceled) {
+      state = DownloadState.cancelled;
+    } else if (status == DownloadTaskStatus.complete) {
+      state = DownloadState.downloaded;
+    } else if (status == DownloadTaskStatus.running) {
+      state = DownloadState.downloading;
+    } else if (status == DownloadTaskStatus.failed) {
+      state = DownloadState.failed;
+    } else if (status == DownloadTaskStatus.paused) {
+      state = DownloadState.paused;
+    }
 
-      downloadController.add(DownloadStatus(taskID, progress, state));
+    downloadController.add(DownloadStatus(taskID, progress, state));
   }
-
 
   Future<String> enqueTask(String url, String downloadPath, String fileName,
       {showNotification = false}) async {
-    final taskID =  await FlutterDownloader.enqueue(
+    final taskID = await FlutterDownloader.enqueue(
       url: url,
       savedDir: downloadPath,
       fileName: fileName,
@@ -118,7 +115,7 @@ class DownloadTaskManager {
     return await FlutterDownloader.loadTasks();
   }
 
-  Future removeTask(String taskID, {shouldDeleteContent: true}) async {
+  Future removeTask(String taskID, {shouldDeleteContent = true}) async {
     await FlutterDownloader.remove(
         taskId: taskID, shouldDeleteContent: shouldDeleteContent);
     _tasksToPoll.remove(taskID);

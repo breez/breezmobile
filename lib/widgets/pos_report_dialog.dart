@@ -27,7 +27,7 @@ class PosReportDialog extends StatelessWidget {
       stream: accountBloc.accountStream,
       builder: (context, snapshot) {
         final accountModel = snapshot.data;
-        if (accountModel == null) return Loader();
+        if (accountModel == null) return const Loader();
 
         return StreamBuilder<PosReportTimeRange>(
           stream: posCatalogBloc.posReportRange.distinct(),
@@ -69,7 +69,7 @@ class PosReportDialog extends StatelessWidget {
       content: Builder(
         builder: (context) {
           final size = MediaQuery.of(context).size;
-          return Container(
+          return SizedBox(
             height: timeRange is PosReportTimeRangeDaily ? 180 : 220,
             width: size.width - 64,
             child: result is PosReportResultLoad
@@ -82,7 +82,7 @@ class PosReportDialog extends StatelessWidget {
         TextButton(
           child: Text(
             texts.pos_report_dialog_action_close,
-            style: themeData.primaryTextTheme.button.copyWith(
+            style: themeData.primaryTextTheme.labelLarge.copyWith(
               color: _highlight(themeData),
             ),
           ),
@@ -136,7 +136,7 @@ class PosReportDialog extends StatelessWidget {
 
     return Text(
       title,
-      style: themeData.primaryTextTheme.headline6.copyWith(
+      style: themeData.primaryTextTheme.titleLarge.copyWith(
         color: _highlight(themeData),
       ),
     );
@@ -146,13 +146,13 @@ class PosReportDialog extends StatelessWidget {
     BuildContext context,
     PosReportTimeRange timeRange,
   ) {
-    TapDownDetails _details;
+    TapDownDetails details;
     return GestureDetector(
       onTapDown: (details) {
-        _details = details;
+        details = details;
       },
       onTap: () async {
-        final offset = _details?.globalPosition;
+        final offset = details?.globalPosition;
         if (offset == null) return;
         final newOption = await showMenu(
           context: context,
@@ -209,7 +209,10 @@ class PosReportDialog extends StatelessWidget {
       child: Center(
         child: SvgPicture.asset(
           "src/icon/calendar.svg",
-          color: _highlight(themeData),
+          colorFilter: ColorFilter.mode(
+            _highlight(themeData),
+            BlendMode.srcATop,
+          ),
           width: 24.0,
           height: 24.0,
         ),
@@ -255,7 +258,7 @@ class PosReportDialog extends StatelessWidget {
     return Column(
       mainAxisSize: MainAxisSize.max,
       mainAxisAlignment: MainAxisAlignment.center,
-      children: [
+      children: const [
         Loader(),
       ],
     );
@@ -372,7 +375,7 @@ class PosReportDialog extends StatelessWidget {
       padding: const EdgeInsets.all(8.0),
       child: Text(
         text,
-        style: themeData.primaryTextTheme.headline4.copyWith(
+        style: themeData.primaryTextTheme.headlineMedium.copyWith(
           fontSize: 16.0,
         ),
       ),
@@ -387,7 +390,7 @@ class PosReportDialog extends StatelessWidget {
       padding: const EdgeInsets.all(8.0),
       child: Text(
         text,
-        style: themeData.primaryTextTheme.headline3.copyWith(
+        style: themeData.primaryTextTheme.displaySmall.copyWith(
           fontSize: 16.0,
         ),
       ),

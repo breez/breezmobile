@@ -7,7 +7,7 @@ class SessionInstructions extends StatelessWidget {
   final List<String> _disabledActions;
   final Function(String) _onAction;
 
-  SessionInstructions(
+  const SessionInstructions(
     this._child, {
     List<String> actions = const [],
     Function(String) onAction,
@@ -19,7 +19,7 @@ class SessionInstructions extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final themeData = Theme.of(context);
-    final hasActions = _actions != null && _actions.length > 0;
+    final hasActions = _actions != null && _actions.isNotEmpty;
 
     return Stack(
       alignment: AlignmentDirectional.bottomCenter,
@@ -59,15 +59,16 @@ class SessionInstructions extends StatelessWidget {
         ),
         Positioned(
           bottom: 10.0,
-          child: Container(
+          child: SizedBox(
             height: 24.0,
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: (_actions ?? []).map((action) {
                 return Padding(
-                  padding: EdgeInsets.only(left: 4, right: 4),
+                  padding: const EdgeInsets.only(left: 4, right: 4),
                   child: OutlinedButton(
                     style: OutlinedButton.styleFrom(
+                      foregroundColor: theme.BreezColors.white[500],
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(6.0),
                       ),
@@ -75,15 +76,14 @@ class SessionInstructions extends StatelessWidget {
                         color: theme.BreezColors.white[500],
                         style: BorderStyle.solid,
                       ),
-                      primary: theme.BreezColors.white[500],
-                    ),
-                    child: Text(
-                      action.toUpperCase(),
-                      style: theme.sessionActionBtnStyle,
                     ),
                     onPressed: _disabledActions.contains(action)
                         ? null
                         : () => _onAction(action),
+                    child: Text(
+                      action.toUpperCase(),
+                      style: theme.sessionActionBtnStyle,
+                    ),
                   ),
                 );
               }).toList(),

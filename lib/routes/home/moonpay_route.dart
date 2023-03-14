@@ -19,7 +19,7 @@ void showMoonpayWebview(BuildContext context) {
   );
   Navigator.push(context, loaderRoute);
   addFundsBloc.moonpayNextOrderStream.first
-      .timeout(Duration(seconds: 15))
+      .timeout(const Duration(seconds: 15))
       .then((order) {
     if (cancelled) {
       return;

@@ -34,7 +34,7 @@ class RemoteServerAuthData {
   }
 
   bool equal(RemoteServerAuthData other) {
-    return json.encode(this.toJson()) == json.encode(other.toJson());
+    return json.encode(toJson()) == json.encode(other.toJson());
   }
 
   RemoteServerAuthData copyWith({
@@ -63,7 +63,7 @@ class BackupProvider {
 
   @override
   bool operator ==(Object other) {
-    return other is BackupProvider && this.name == other.name;
+    return other is BackupProvider && name == other.name;
   }
 
   @override
@@ -115,7 +115,7 @@ class BackupSettings {
         defaultTargetPlatform == TargetPlatform.android
             ? googleBackupProvider()
             : null,
-        RemoteServerAuthData(null, null, null, null),
+        const RemoteServerAuthData(null, null, null, null),
       );
 
   BackupSettings copyWith({
@@ -126,7 +126,7 @@ class BackupSettings {
   }) {
     return BackupSettings(
       promptOnError ?? this.promptOnError,
-      keyType ?? this.backupKeyType,
+      keyType ?? backupKeyType,
       backupProvider ?? this.backupProvider,
       remoteServerAuthData ?? this.remoteServerAuthData,
     );
@@ -223,6 +223,7 @@ class BackupFailedException implements Exception {
     this.authenticationError,
   );
 
+  @override
   String toString() {
     return getSystemAppLocalizations().backup_model_error_failed;
   }

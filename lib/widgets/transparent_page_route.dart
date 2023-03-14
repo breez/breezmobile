@@ -27,5 +27,5 @@ class TransparentPageRoute<T> extends ModalRoute<T> {
   bool get maintainState => false;
 
   @override
-  Duration get transitionDuration => Duration(seconds: 0);
+  Duration get transitionDuration => const Duration(seconds: 0);
 }

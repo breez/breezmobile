@@ -29,12 +29,12 @@ class PosSaleNfcError extends StatelessWidget {
             style: themeData.dialogTheme.contentTextStyle,
             textAlign: TextAlign.center,
           ),
-          SizedBox(height: 16.0),
+          const SizedBox(height: 16.0),
           TextButton(
             onPressed: () => Navigator.of(context).pop(),
             child: Text(
               texts.pos_payment_nfc_error_action_close,
-              style: themeData.primaryTextTheme.button,
+              style: themeData.primaryTextTheme.labelLarge,
             ),
           )
         ],

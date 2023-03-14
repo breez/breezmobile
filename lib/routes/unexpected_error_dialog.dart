@@ -10,7 +10,8 @@ import 'package:flutter/material.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:breez_translations/breez_translations_locales.dart';
 
-void listenUnexpectedError(BuildContext context, AccountBloc accountBloc) async {
+void listenUnexpectedError(
+    BuildContext context, AccountBloc accountBloc) async {
   final texts = context.texts();
   final themeData = Theme.of(context);
   final torEnabled = await ServiceInjector().breezBridge.getTorActive();
@@ -113,8 +114,11 @@ void listenUnexpectedError(BuildContext context, AccountBloc accountBloc) async 
               style: theme.blueLinkStyle,
               recognizer: TapGestureRecognizer()
                 ..onTap = () async {
-                  Share.shareFiles(
-                      [await ServiceInjector().breezBridge.getLogPath()],
+                  final logFile = XFile(
+                    await ServiceInjector().breezBridge.getLogPath(),
+                  );
+                  Share.shareXFiles(
+                    [logFile],
                   );
                 },
             ),

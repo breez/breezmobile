@@ -115,7 +115,7 @@ class BoostMessageDialogState extends State<BoostMessageDialog> {
         onPressed: () => Navigator.pop(context),
         child: Text(
           texts.podcast_boost_action_cancel,
-          style: theme.primaryTextTheme.button,
+          style: theme.primaryTextTheme.labelLarge,
         ),
       ),
     ];
@@ -134,7 +134,7 @@ class BoostMessageDialogState extends State<BoostMessageDialog> {
           },
           child: Text(
             texts.podcast_boost_action_boost,
-            style: theme.primaryTextTheme.button,
+            style: theme.primaryTextTheme.labelLarge,
           ),
         ),
       );

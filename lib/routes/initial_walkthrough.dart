@@ -44,7 +44,7 @@ class InitialWalkthroughPage extends StatefulWidget {
   final PosCatalogBloc _posCatalogBloc;
   final Sink<bool> _reloadDatabaseSink;
 
-  InitialWalkthroughPage(
+  const InitialWalkthroughPage(
     this._registrationBloc,
     this._backupBloc,
     this._posCatalogBloc,
@@ -63,7 +63,7 @@ class InitialWalkthroughPageState extends State<InitialWalkthroughPage>
   StreamSubscription<bool> _restoreFinishedSubscription;
   StreamSubscription<List<SnapshotInfo>> _multipleRestoreSubscription;
 
-  var _scaffoldKey = GlobalKey<ScaffoldState>();
+  final _scaffoldKey = GlobalKey<ScaffoldState>();
   bool _registered = false;
 
   @override
@@ -97,7 +97,7 @@ class InitialWalkthroughPageState extends State<InitialWalkthroughPage>
       if (error.runtimeType != SignInFailedException) {
         showFlushbar(
           context,
-          duration: Duration(seconds: 3),
+          duration: const Duration(seconds: 3),
           message: error.toString(),
         );
       } else {
@@ -119,7 +119,7 @@ class InitialWalkthroughPageState extends State<InitialWalkthroughPage>
   Future<void> _listenBackupContext(_BackupContext backupContext) async {
     final texts = context.texts();
     final options = backupContext.snapshots;
-    if (options.length == 0) {
+    if (options.isEmpty) {
       popToWalkthrough(
         error: texts.initial_walk_through_error_backup_location,
       );
@@ -179,7 +179,7 @@ class InitialWalkthroughPageState extends State<InitialWalkthroughPage>
   }
 
   void _restore(SnapshotInfo snapshot, List<int> key) {
-    final logKey = "initial_walkthrough.dart.restore";
+    const logKey = "initial_walkthrough.dart.restore";
     log.info('$logKey: snapshotInfo with timestamp: ${snapshot?.modifiedTime}');
     log.info('$logKey: using key with length: ${key?.length}');
 
@@ -258,7 +258,7 @@ class InitialWalkthroughPageState extends State<InitialWalkthroughPage>
     });
     if (error != null) {
       SnackBar snackBar = SnackBar(
-        duration: Duration(seconds: 3),
+        duration: const Duration(seconds: 3),
         content: Text(error.toString()),
       );
       ScaffoldMessenger.of(context).showSnackBar(snackBar);
@@ -303,7 +303,7 @@ class InitialWalkthroughPageState extends State<InitialWalkthroughPage>
         body: WillPopScope(
           onWillPop: _onWillPop,
           child: Padding(
-            padding: EdgeInsets.only(top: 24.0),
+            padding: const EdgeInsets.only(top: 24.0),
             child: Stack(
               children: [
                 Column(
@@ -334,7 +334,7 @@ class InitialWalkthroughPageState extends State<InitialWalkthroughPage>
                     Expanded(
                       flex: 48,
                       child: Padding(
-                        padding: EdgeInsets.only(left: 24, right: 24),
+                        padding: const EdgeInsets.only(left: 24, right: 24),
                         child: AutoSizeText(
                           texts.initial_walk_through_welcome_message,
                           textAlign: TextAlign.center,
@@ -346,19 +346,19 @@ class InitialWalkthroughPageState extends State<InitialWalkthroughPage>
                       flex: 60,
                       child: Container(),
                     ),
-                    Container(
+                    SizedBox(
                       height: 48.0,
                       width: 168.0,
                       child: ElevatedButton(
                         style: ElevatedButton.styleFrom(
-                          padding: EdgeInsets.fromLTRB(16, 4, 16, 4),
-                          primary: themeData.buttonColor,
+                          padding: const EdgeInsets.fromLTRB(16, 4, 16, 4),
+                          backgroundColor: theme.buttonColor,
                           elevation: 0.0,
                           shape: const StadiumBorder(),
                         ),
                         child: Text(
                           texts.initial_walk_through_lets_breeze,
-                          style: themeData.textTheme.button,
+                          style: themeData.textTheme.labelLarge,
                         ),
                         onPressed: () => _letsBreez(context),
                       ),
@@ -366,7 +366,7 @@ class InitialWalkthroughPageState extends State<InitialWalkthroughPage>
                     Expanded(
                       flex: 40,
                       child: Padding(
-                        padding: EdgeInsets.only(top: 10.0),
+                        padding: const EdgeInsets.only(top: 10.0),
                         child: GestureDetector(
                           onTap: () => _restoreFromBackup(context),
                           child: Text(

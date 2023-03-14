@@ -6,9 +6,9 @@ String extractExceptionMessage(
   // pass BreezTranslations if you want to replace the error message with a localized one
   BreezTranslations texts,
 }) {
-  final detailRegex = r'((?<=\"detail\":\")(.*)(?=.*\"}))';
-  final nsLocalizedRegex = r'((?<={NSLocalizedDescription=)(.*)(?=}))';
-  final lnUrlRegex = r'((?<=LNURL:.)(.*)(?=.method:))';
+  const detailRegex = r'((?<=\"detail\":\")(.*)(?=.*\"}))';
+  const nsLocalizedRegex = r'((?<={NSLocalizedDescription=)(.*)(?=}))';
+  const lnUrlRegex = r'((?<=LNURL:.)(.*)(?=.method:))';
   final grouped = RegExp('$nsLocalizedRegex|$lnUrlRegex|$detailRegex');
   var message = grouped.stringMatch(exception.toString()) ?? exception.toString();
   message = message.trim();

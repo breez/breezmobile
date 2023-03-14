@@ -45,7 +45,7 @@ class PaymentAdjustmentState extends State<PaymentAdjustment> {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
-      Future.delayed(Duration(seconds: 1)).then((value) async {
+      Future.delayed(const Duration(seconds: 1)).then((value) async {
         final userBloc = AppBlocsProvider.of<UserProfileBloc>(context);
         final user = await userBloc.userStream.first;
         if (!user.seenTutorials.paymentStripTutorial) {
@@ -99,7 +99,7 @@ class PaymentAdjustmentState extends State<PaymentAdjustment> {
             children: [
               Text(
                 texts.podcast_boost_adjustment_boost,
-                style: TextStyle(
+                style: const TextStyle(
                   fontWeight: FontWeight.bold,
                   color: Colors.white,
                   fontSize: 20.0,
@@ -109,7 +109,7 @@ class PaymentAdjustmentState extends State<PaymentAdjustment> {
                 padding: const EdgeInsets.only(top: 10.0),
                 child: Text(
                   texts.podcast_boost_adjustment_boost_message,
-                  style: TextStyle(
+                  style: const TextStyle(
                     color: Colors.white,
                   ),
                 ),
@@ -135,7 +135,7 @@ class PaymentAdjustmentState extends State<PaymentAdjustment> {
             children: [
               Text(
                 texts.podcast_boost_adjustment_stream_sats,
-                style: TextStyle(
+                style: const TextStyle(
                   fontWeight: FontWeight.bold,
                   color: Colors.white,
                   fontSize: 20.0,
@@ -145,7 +145,7 @@ class PaymentAdjustmentState extends State<PaymentAdjustment> {
                 padding: const EdgeInsets.only(top: 10.0),
                 child: Text(
                   texts.podcast_boost_adjustment_stream_sats_message,
-                  style: TextStyle(
+                  style: const TextStyle(
                     color: Colors.white,
                   ),
                 ),
@@ -171,11 +171,11 @@ class PaymentAdjustmentState extends State<PaymentAdjustment> {
                   context,
                   ElevatedButton(
                     style: ElevatedButton.styleFrom(
-                      primary: Colors.white,
+                      backgroundColor: Colors.white,
                     ),
                     child: Text(
                       texts.tutorial_gotcha,
-                      style: theme.primaryTextTheme.button.copyWith(
+                      style: theme.primaryTextTheme.labelLarge.copyWith(
                         color: theme.primaryColor,
                       ),
                     ),
@@ -210,11 +210,11 @@ class PaymentAdjustmentState extends State<PaymentAdjustment> {
           style: OutlinedButton.styleFrom(
             padding: EdgeInsets.zero,
             side: tutorialStreamSats == sats
-                ? BorderSide(
+                ? const BorderSide(
                     width: 2.0,
                     color: Colors.white,
                   )
-                : BorderSide(
+                : const BorderSide(
                     color: Colors.grey,
                     width: 1.0,
                   ),
@@ -222,17 +222,15 @@ class PaymentAdjustmentState extends State<PaymentAdjustment> {
           onPressed: () => changeState(() {
             tutorialStreamSats = sats;
           }),
-          child: Container(
-            child: Center(
-              child: AutoSizeText(
-                sats.toString(),
-                minFontSize: 0.1,
-                stepGranularity: 0.1,
-                maxLines: 1,
-                group: tutorialOptionGroup,
-                style: TextStyle(
-                  color: Colors.white,
-                ),
+          child: Center(
+            child: AutoSizeText(
+              sats.toString(),
+              minFontSize: 0.1,
+              stepGranularity: 0.1,
+              maxLines: 1,
+              group: tutorialOptionGroup,
+              style: const TextStyle(
+                color: Colors.white,
               ),
             ),
           ),
@@ -256,17 +254,17 @@ class PaymentAdjustmentState extends State<PaymentAdjustment> {
         stream: userProfileBloc.userStream,
         builder: (context, snapshot) {
           if (!snapshot.hasData) {
-            return Center(child: Loader());
+            return const Center(child: Loader());
           }
           var userModel = snapshot.data;
           return Container(
             height: 64,
-            color: themeData.backgroundColor,
+            color: themeData.colorScheme.background,
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 _booster(paymentsBloc, userProfileBloc, userModel),
-                Container(
+                SizedBox(
                   height: 64,
                   width: 1,
                   child: VerticalDivider(
@@ -292,7 +290,7 @@ class PaymentAdjustmentState extends State<PaymentAdjustment> {
       flex: 5,
       child: Padding(
         padding: const EdgeInsets.only(left: 16, right: 0),
-        child: WithConfettyPaymentEffect(
+        child: WithConfettiPaymentEffect(
           type: PaymentEventType.BoostStarted,
           child: BoostWidget(
             key: boostWidgetKey,
@@ -325,7 +323,7 @@ class PaymentAdjustmentState extends State<PaymentAdjustment> {
     return Flexible(
       flex: 3,
       child: Padding(
-        padding: EdgeInsets.only(left: 0, right: 0),
+        padding: const EdgeInsets.only(left: 0, right: 0),
         child: Center(
           child: PaymentAdjuster(
             key: paymentAdjusterKey,

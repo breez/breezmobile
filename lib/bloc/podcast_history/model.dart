@@ -39,7 +39,7 @@ abstract class PodcastHistoryTimeRange {
 class PodcastHistoryTimeRangeWeekly extends PodcastHistoryTimeRange {
   PodcastHistoryTimeRangeWeekly()
       : super._(
-            startDate: DateTime.now().subtract(Duration(days: 7)),
+            startDate: DateTime.now().subtract(const Duration(days: 7)),
             endDate: DateTime.now(),
             timeRangeKey: _podcastHistoryTimeRangeWeekly);
 }
@@ -47,7 +47,7 @@ class PodcastHistoryTimeRangeWeekly extends PodcastHistoryTimeRange {
 class PodcastHistoryTimeRangeMonthly extends PodcastHistoryTimeRange {
   PodcastHistoryTimeRangeMonthly()
       : super._(
-            startDate: DateTime.now().subtract(Duration(days: 30)),
+            startDate: DateTime.now().subtract(const Duration(days: 30)),
             endDate: DateTime.now(),
             timeRangeKey: _podcastHistoryTimeRangeMonthly);
 }
@@ -55,7 +55,7 @@ class PodcastHistoryTimeRangeMonthly extends PodcastHistoryTimeRange {
 class PodcastHistoryTimeRangeYearly extends PodcastHistoryTimeRange {
   PodcastHistoryTimeRangeYearly()
       : super._(
-            startDate: DateTime.now().subtract(Duration(days: 365)),
+            startDate: DateTime.now().subtract(const Duration(days: 365)),
             endDate: DateTime.now(),
             timeRangeKey: _podcastHistoryTimeRangeYearly);
 }

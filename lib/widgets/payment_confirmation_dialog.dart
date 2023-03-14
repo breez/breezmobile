@@ -55,7 +55,7 @@ class PaymentConfirmationDialog extends StatelessWidget {
 
     return Container(
       height: 64.0,
-      padding: EdgeInsets.fromLTRB(24.0, 24.0, 24.0, 8.0),
+      padding: const EdgeInsets.fromLTRB(24.0, 24.0, 24.0, 8.0),
       child: Text(
         texts.payment_confirmation_dialog_title,
         style: themeData.dialogTheme.titleTextStyle,
@@ -69,47 +69,45 @@ class PaymentConfirmationDialog extends StatelessWidget {
     final queryData = MediaQuery.of(context);
     final texts = context.texts();
 
-    return Container(
-      child: Padding(
-        padding: EdgeInsets.fromLTRB(16.0, 0.0, 16.0, 0.0),
-        child: Container(
-          width: queryData.size.width,
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Text(
-                texts.payment_confirmation_dialog_confirmation,
-                style: themeData.dialogTheme.contentTextStyle,
-                textAlign: TextAlign.center,
-              ),
-              AutoSizeText.rich(
-                TextSpan(
-                  children: [
-                    TextSpan(
-                      text: _amountToPayStr,
-                      style: themeData.dialogTheme.contentTextStyle.copyWith(
-                        fontSize: 20.0,
-                        fontWeight: FontWeight.bold,
-                      ),
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(16.0, 0.0, 16.0, 0.0),
+      child: SizedBox(
+        width: queryData.size.width,
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Text(
+              texts.payment_confirmation_dialog_confirmation,
+              style: themeData.dialogTheme.contentTextStyle,
+              textAlign: TextAlign.center,
+            ),
+            AutoSizeText.rich(
+              TextSpan(
+                children: [
+                  TextSpan(
+                    text: _amountToPayStr,
+                    style: themeData.dialogTheme.contentTextStyle.copyWith(
+                      fontSize: 20.0,
+                      fontWeight: FontWeight.bold,
                     ),
-                    TextSpan(
-                      text: texts.payment_confirmation_dialog_confirmation_end,
-                    )
-                  ],
-                ),
-                maxLines: 2,
-                textAlign: TextAlign.center,
-                style: themeData.dialogTheme.contentTextStyle,
+                  ),
+                  TextSpan(
+                    text: texts.payment_confirmation_dialog_confirmation_end,
+                  )
+                ],
               ),
-            ],
-          ),
+              maxLines: 2,
+              textAlign: TextAlign.center,
+              style: themeData.dialogTheme.contentTextStyle,
+            ),
+          ],
         ),
       ),
     );
   }
 
-  Container _buildActions(BuildContext context) {
+  SizedBox _buildActions(BuildContext context) {
     final themeData = Theme.of(context);
     final texts = context.texts();
 
@@ -117,28 +115,30 @@ class PaymentConfirmationDialog extends StatelessWidget {
       TextButton(
         style: ButtonStyle(
           overlayColor: MaterialStateProperty.resolveWith<Color>((states) {
-            if (states.contains(MaterialState.pressed))
+            if (states.contains(MaterialState.pressed)) {
               return Colors.transparent;
+            }
             return null; // Defer to the widget's default.
           }),
         ),
         child: Text(
           texts.payment_confirmation_dialog_action_no,
-          style: themeData.primaryTextTheme.button,
+          style: themeData.primaryTextTheme.labelLarge,
         ),
         onPressed: () => _onCancel(),
       ),
       TextButton(
         style: ButtonStyle(
           overlayColor: MaterialStateProperty.resolveWith<Color>((states) {
-            if (states.contains(MaterialState.pressed))
+            if (states.contains(MaterialState.pressed)) {
               return Colors.transparent;
+            }
             return null; // Defer to the widget's default.
           }),
         ),
         child: Text(
           texts.payment_confirmation_dialog_action_yes,
-          style: themeData.primaryTextTheme.button,
+          style: themeData.primaryTextTheme.labelLarge,
         ),
         onPressed: () {
           _onPaymentApproved(SendPayment(PayRequest(
@@ -149,7 +149,7 @@ class PaymentConfirmationDialog extends StatelessWidget {
       ),
     ];
 
-    return Container(
+    return SizedBox(
       height: 64.0,
       child: Padding(
         padding: const EdgeInsets.only(bottom: 16.0, right: 8.0),

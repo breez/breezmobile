@@ -2,7 +2,6 @@ import 'dart:async';
 
 import 'package:breez/theme_data.dart' as theme;
 import 'package:breez/utils/date.dart';
-import 'package:breez/widgets/breez_date_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:breez_translations/breez_translations_locales.dart';
 
@@ -18,10 +17,10 @@ class CalendarDialog extends StatefulWidget {
   });
 
   @override
-  _CalendarDialogState createState() => _CalendarDialogState();
+  CalendarDialogState createState() => CalendarDialogState();
 }
 
-class _CalendarDialogState extends State<CalendarDialog> {
+class CalendarDialogState extends State<CalendarDialog> {
   final _startDateController = TextEditingController();
   final _endDateController = TextEditingController();
   DateTime _startDate;
@@ -67,19 +66,19 @@ class _CalendarDialogState extends State<CalendarDialog> {
       ),
       actions: [
         TextButton(
+          onPressed: _clearFilter,
           child: Text(
             texts.pos_transactions_range_dialog_clear,
             style: theme.cancelButtonStyle.copyWith(
               color:
-                  theme.themeId == "BLUE" ? Colors.red : themeData.errorColor,
+                  theme.themeId == "BLUE" ? Colors.red : themeData.colorScheme.error,
             ),
           ),
-          onPressed: _clearFilter,
         ),
         TextButton(
           child: Text(
             texts.pos_transactions_range_dialog_apply,
-            style: themeData.primaryTextTheme.button,
+            style: themeData.primaryTextTheme.labelLarge,
           ),
           onPressed: () => _applyFilter(context),
         ),
@@ -102,11 +101,17 @@ class _CalendarDialogState extends State<CalendarDialog> {
     final themeData = Theme.of(context);
 
     return GestureDetector(
+      onTap: () {
+        setState(() {
+          _selectDate(context, isStartBtn);
+        });
+      },
+      behavior: HitTestBehavior.translucent,
       child: Theme(
         data: theme.themeId == "BLUE"
             ? themeData
             : themeData.copyWith(
-                disabledColor: themeData.backgroundColor,
+                disabledColor: themeData.colorScheme.background,
               ),
         child: TextField(
           decoration: InputDecoration(
@@ -118,21 +123,22 @@ class _CalendarDialogState extends State<CalendarDialog> {
           style: themeData.dialogTheme.contentTextStyle,
         ),
       ),
-      onTap: () {
-        setState(() {
-          _selectDate(context, isStartBtn);
-        });
-      },
-      behavior: HitTestBehavior.translucent,
     );
   }
 
-  Future<Null> _selectDate(BuildContext context, bool isStartBtn) async {
-    DateTime selectedDate = await showBreezDatePicker(
+  Future<void> _selectDate(BuildContext context, bool isStartBtn) async {
+    DateTime selectedDate = await showDatePicker(
+      initialEntryMode: DatePickerEntryMode.calendarOnly,
       context: context,
       initialDate: isStartBtn ? _startDate : _endDate,
       firstDate: widget.initialRangeDate ?? widget.firstDate,
       lastDate: _endDate.isAfter(DateTime.now()) ? _endDate : DateTime.now(),
+      builder: (context, child) {
+        return Theme(
+          data: theme.calendarTheme,
+          child: child,
+        );
+      },
     );
     if (selectedDate != null) {
       Duration difference = isStartBtn

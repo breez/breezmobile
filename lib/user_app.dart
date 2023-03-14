@@ -56,8 +56,8 @@ Widget _withTheme(BreezUserModel user, Widget child) {
 
 // ignore: must_be_immutable
 class UserApp extends StatelessWidget {
-  GlobalKey<NavigatorState> _navigatorKey = GlobalKey<NavigatorState>();
-  GlobalKey<NavigatorState> _homeNavigatorKey = GlobalKey<NavigatorState>();
+  final GlobalKey<NavigatorState> _navigatorKey = GlobalKey<NavigatorState>();
+  final GlobalKey<NavigatorState> _homeNavigatorKey = GlobalKey<NavigatorState>();
   Sink<bool> _reloadDatabaseSink;
 
   UserApp(Sink<bool> reloadDatabaseSink) {
@@ -85,7 +85,7 @@ class UserApp extends StatelessWidget {
 
         BreezUserModel user = snapshot.data;
         theme.themeId = user.themeId;
-        SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
+        SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
           statusBarColor: Colors.transparent,
         ));
         return BlocProvider(
@@ -154,7 +154,7 @@ class UserApp extends StatelessWidget {
                                 ? (isValid) async {
                                     if (isValid) {
                                       await Future.delayed(
-                                        Duration(milliseconds: 200),
+                                        const Duration(milliseconds: 200),
                                       );
                                       Navigator.pop(ctx);
                                       userProfileBloc.userActionsSink
@@ -196,14 +196,14 @@ class UserApp extends StatelessWidget {
                               );
                             case '/order_card':
                               return FadeInRoute(
-                                builder: (_) => OrderCardPage(
+                                builder: (_) => const OrderCardPage(
                                   showSkip: false,
                                 ),
                                 settings: settings,
                               );
                             case '/order_card?skip=true':
                               return FadeInRoute(
-                                builder: (_) => OrderCardPage(
+                                builder: (_) => const OrderCardPage(
                                   showSkip: true,
                                 ),
                                 settings: settings,
@@ -212,18 +212,18 @@ class UserApp extends StatelessWidget {
                               return FadeInRoute(
                                 builder: (_) => withBreezTheme(
                                   context,
-                                  DepositToBTCAddressPage(),
+                                  const DepositToBTCAddressPage(),
                                 ),
                                 settings: settings,
                               );
                             case '/buy_bitcoin':
                               return FadeInRoute(
-                                builder: (_) => MoonpayWebView(),
+                                builder: (_) => const MoonpayWebView(),
                                 settings: settings,
                               );
                             case '/withdraw_funds':
                               return FadeInRoute(
-                                builder: (_) => ReverseSwapPage(),
+                                builder: (_) => const ReverseSwapPage(),
                                 settings: settings,
                               );
                             case '/send_coins':
@@ -252,7 +252,7 @@ class UserApp extends StatelessWidget {
                               return FadeInRoute(
                                 builder: (_) => withBreezTheme(
                                   context,
-                                  CreateInvoicePage(),
+                                  const CreateInvoicePage(),
                                 ),
                                 settings: settings,
                               );
@@ -271,7 +271,7 @@ class UserApp extends StatelessWidget {
                               return FadeInRoute(
                                 builder: (_) => withBreezTheme(
                                   context,
-                                  NetworkPage(),
+                                  const NetworkPage(),
                                 ),
                                 settings: settings,
                               );
@@ -279,7 +279,7 @@ class UserApp extends StatelessWidget {
                               return FadeInRoute(
                                 builder: (_) => withBreezTheme(
                                   context,
-                                  PodcastHistoryPage(),
+                                  const PodcastHistoryPage(),
                                 ),
                                 settings: settings,
                               );
@@ -298,7 +298,7 @@ class UserApp extends StatelessWidget {
                               return FadeInRoute(
                                 builder: (_) => withBreezTheme(
                                   context,
-                                  PaymentOptionsPage(),
+                                  const PaymentOptionsPage(),
                                 ),
                                 settings: settings,
                               );
@@ -314,7 +314,7 @@ class UserApp extends StatelessWidget {
                               return FadeInRoute(
                                 builder: (_) => withBreezTheme(
                                   context,
-                                  ConnectToPayPage(null),
+                                  const ConnectToPayPage(null),
                                 ),
                                 settings: settings,
                               );

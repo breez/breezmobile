@@ -20,7 +20,7 @@ class CountDown {
     _refresh = refresh;
     _everyTick = everyTick;
 
-    this._duration = duration;
+    _duration = duration;
     _controller = StreamController<Duration>(
         onListen: _onListen,
         onPause: _onPause,
@@ -49,7 +49,7 @@ class CountDown {
   _onResume() {
     _begin = DateTime.now();
 
-    _duration = this.remainingTime;
+    _duration = remainingTime;
     isPaused = false;
 
     //  lance le timer
@@ -68,8 +68,8 @@ class CountDown {
   void _tick(Timer timer) {
     counter++;
     Duration alreadyConsumed = DateTime.now().difference(_begin);
-    this.remainingTime = this._duration - alreadyConsumed;
-    if (this.remainingTime.isNegative) {
+    remainingTime = _duration - alreadyConsumed;
+    if (remainingTime.isNegative) {
       timer.cancel();
       timer = null;
       // tell the onDone's subscriber that it's finish
@@ -77,7 +77,7 @@ class CountDown {
     } else {
       // here we can control the frequency of sending data
       if (counter % _everyTick == 0) {
-        _controller.add(this.remainingTime);
+        _controller.add(remainingTime);
         counter = 0;
       }
     }

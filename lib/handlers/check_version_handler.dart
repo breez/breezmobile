@@ -25,21 +25,24 @@ void checkVersionDialog(
     bool upgrading = err.contains('upgrading');
     if (upgrading) {
       accBloc.setNodeUpgrading(true);
-      showFlushbar(        
-        context,         
+      showFlushbar(
+        context,
         isDismissible: false,
-        position: FlushbarPosition.TOP,        
+        position: FlushbarPosition.TOP,
         duration: Duration.zero,
         messageWidget: Text(
           "Breez is currently upgrading its servers. You won't be able to send or receive funds during the upgrade. Please try again later.",
           style: theme.snackBarStyle,
           textAlign: TextAlign.left,
         ),
-        buttonText: "",        
+        buttonText: "",
         icon: SvgPicture.asset(
           "src/icon/warning.svg",
-          color: themeData.errorColor,
-        )
+          colorFilter: ColorFilter.mode(
+            themeData.colorScheme.error,
+            BlendMode.srcATop,
+          ),
+        ),
       );
     }
     if (err.contains('connection error')) {
@@ -47,14 +50,13 @@ void checkVersionDialog(
         print("-- showNoConnectionDialog --");
         print(retry);
         if (retry == true) {
-          Future.delayed(Duration(seconds: 1), () {
+          Future.delayed(const Duration(seconds: 1), () {
             checkVersionDialog(context, userProfileBloc);
           });
         }
       });
     } else if (!upgrading && err.contains('bad version')) {
-
-      showFlushbar(        
+      showFlushbar(
         context,
         buttonText: texts.handler_check_version_action_update,
         onDismiss: () {
@@ -66,7 +68,7 @@ void checkVersionDialog(
                 'https://play.google.com/apps/testing/com.breez.client');
           }
           return false;
-        },        
+        },
         position: FlushbarPosition.TOP,
         duration: Duration.zero,
         messageWidget: Text(

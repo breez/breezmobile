@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:breez/bloc/tor/bloc.dart';
 import 'package:breez/services/breez_server/server.dart';
 import 'package:breez/services/breezlib/breez_bridge.dart';
 import 'package:breez/services/currency_service.dart';
@@ -27,6 +28,7 @@ class ServiceInjector {
   DeepLinksService _deepLinksService;
   LightningLinksService _lightningLinksService;
   Device _device;
+  TorBloc _torBloc;
   Future<SharedPreferences> _sharedPreferences =
       SharedPreferences.getInstance();
   Permissions _permissions;
@@ -37,7 +39,7 @@ class ServiceInjector {
   Client _client;
 
   factory ServiceInjector() {
-    return _injector != null ? _injector : _singleton;
+    return _injector ?? _singleton;
   }
 
   ServiceInjector._internal();
@@ -64,6 +66,10 @@ class ServiceInjector {
 
   Device get device {
     return _device ??= Device();
+  }
+
+  TorBloc get torBloc {
+    return _torBloc ?? TorBloc();
   }
 
   DeepLinksService get deepLinks => _deepLinksService ??= DeepLinksService();

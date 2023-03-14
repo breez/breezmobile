@@ -28,10 +28,10 @@ class CartBarDropDownButton extends StatelessWidget {
         alignedDropdown: true,
         child: DropdownButton(
           onChanged: onChanged,
-          iconEnabledColor: textTheme.headline5.color,
+          iconEnabledColor: textTheme.headlineSmall.color,
           value: value,
           style: theme.invoiceAmountStyle.copyWith(
-            color: textTheme.headline5.color,
+            color: textTheme.headlineSmall.color,
           ),
           items: _items(context, accountModel),
         ),

@@ -48,7 +48,7 @@ class AppBlocs {
   }
 
   factory AppBlocs(Stream<bool> backupAnytimeDBStream) {
-    var blocsByType = Map<Type, Object>();
+    var blocsByType = <Type, Object>{};
     final sqliteRepository = SqliteRepository();
     UserProfileBloc userProfileBloc =
         _registerBloc(UserProfileBloc(), blocsByType);

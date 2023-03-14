@@ -106,7 +106,7 @@ class SaleViewState extends State<SaleView> {
       builder: (context, accSnapshot) {
         var accModel = accSnapshot.data;
         if (accModel == null) {
-          return Loader();
+          return const Loader();
         }
 
         CurrencyWrapper saleCurrency =
@@ -121,14 +121,8 @@ class SaleViewState extends State<SaleView> {
         }
         return Scaffold(
           appBar: AppBar(
-            iconTheme: themeData.appBarTheme.iconTheme,
-            textTheme: themeData.appBarTheme.textTheme,
-            backgroundColor: themeData.canvasColor,
-            leading: backBtn.BackButton(),
-            title: Text(
-              title,
-              style: themeData.appBarTheme.textTheme.headline6,
-            ),
+            leading: const backBtn.BackButton(),
+            title: Text(title),
             actions: widget.readOnly
                 ? _buildPrintIcon(context, accModel)
                 : [
@@ -142,10 +136,9 @@ class SaleViewState extends State<SaleView> {
                       },
                     ),
                   ],
-            elevation: 0.0,
           ),
           extendBody: false,
-          backgroundColor: themeData.backgroundColor,
+          backgroundColor: themeData.colorScheme.background,
           body: GestureDetector(
             onTap: () {
               final currentFocus = FocusScope.of(context);
@@ -179,30 +172,28 @@ class SaleViewState extends State<SaleView> {
           bottomNavigationBar: Container(
             decoration: BoxDecoration(
               color: theme.themeId == "BLUE"
-                  ? themeData.backgroundColor
+                  ? themeData.colorScheme.background
                   : themeData.canvasColor,
               boxShadow: [
                 BoxShadow(
                   color: Colors.black.withOpacity(0.3),
-                  offset: Offset(0.5, 0.5),
+                  offset: const Offset(0.5, 0.5),
                   blurRadius: 5.0,
                 ),
                 BoxShadow(
-                  color: themeData.backgroundColor,
+                  color: themeData.colorScheme.background,
                 )
               ],
             ),
             //color: Theme.of(context).canvasColor,
             child: Padding(
               padding: const EdgeInsets.all(36),
-              child: Container(
-                child: _TotalSaleCharge(
-                  salePayment: widget.salePayment,
-                  onCharge: widget.onCharge,
-                  accountModel: accModel,
-                  currentSale: currentSale,
-                  saleCurrency: saleCurrency,
-                ),
+              child: _TotalSaleCharge(
+                salePayment: widget.salePayment,
+                onCharge: widget.onCharge,
+                accountModel: accModel,
+                currentSale: currentSale,
+                saleCurrency: saleCurrency,
               ),
             ),
           ),
@@ -212,7 +203,7 @@ class SaleViewState extends State<SaleView> {
   }
 
   Widget _note(BuildContext context) {
-    if (!showNote) return SizedBox();
+    if (!showNote) return const SizedBox();
 
     final texts = context.texts();
     final themeData = Theme.of(context);
@@ -236,24 +227,24 @@ class SaleViewState extends State<SaleView> {
             bool isFocused,
             int maxLength,
           }) {
-            return SizedBox();
+            return const SizedBox();
           },
           controller: _noteController,
           decoration: InputDecoration(
-            focusedBorder: UnderlineInputBorder(
+            focusedBorder: const UnderlineInputBorder(
               borderSide: BorderSide(
                 style: BorderStyle.solid,
                 color: Color(0xFFc5cedd),
               ),
             ),
-            enabledBorder: UnderlineInputBorder(
+            enabledBorder: const UnderlineInputBorder(
               borderSide: BorderSide(
                 style: BorderStyle.solid,
                 color: Color(0xFFc5cedd),
               ),
             ),
             hintText: texts.sale_view_note_hint,
-            hintStyle: TextStyle(
+            hintStyle: const TextStyle(
               fontSize: 14.0,
             ),
           ),
@@ -276,7 +267,7 @@ class SaleViewState extends State<SaleView> {
         builder: (context, snapshot) {
           var user = snapshot.data;
           if (user == null) {
-            return Loader();
+            return const Loader();
           }
           return Padding(
             padding: const EdgeInsets.only(right: 18.0),
@@ -287,7 +278,10 @@ class SaleViewState extends State<SaleView> {
               color: themeData.iconTheme.color,
               icon: SvgPicture.asset(
                 "src/icon/printer.svg",
-                color: Colors.white,
+                colorFilter: const ColorFilter.mode(
+                  Colors.white,
+                  BlendMode.srcATop,
+                ),
                 fit: BoxFit.contain,
                 width: 24.0,
                 height: 24.0,
@@ -332,8 +326,8 @@ class _TotalSaleCharge extends StatelessWidget {
 
     return ElevatedButton(
       style: ElevatedButton.styleFrom(
-        primary: themeData.primaryColorLight,
-        padding: EdgeInsets.only(top: 14.0, bottom: 14.0),
+        backgroundColor: themeData.primaryColorLight,
+        padding: const EdgeInsets.only(top: 14.0, bottom: 14.0),
       ),
       child: Text(
         _title(context),
@@ -358,10 +352,11 @@ class _TotalSaleCharge extends StatelessWidget {
     final totalAmountInFiat = currentSale.totalAmountInFiat;
 
     final satCurrency = CurrencyWrapper.fromBTC(Currency.SAT);
-    final satMessage = (satCurrency.format(
-      totalAmountInSats,
-      removeTrailingZeros: true,
-    ) + " " + satCurrency.shortName).toUpperCase();
+    final satMessage = ("${satCurrency.format(
+              totalAmountInSats,
+              removeTrailingZeros: true,
+            )} ${satCurrency.shortName}")
+        .toUpperCase();
 
     if (totalAmountInFiat.length == 1) {
       final currency = totalAmountInFiat.entries.first.key;
@@ -371,11 +366,13 @@ class _TotalSaleCharge extends StatelessWidget {
           currency,
           accountModel,
         );
-        final fiatValue = saleCurrency.format(
-          total,
-          removeTrailingZeros: true,
-          includeCurrencySymbol: true,
-        ).toUpperCase();
+        final fiatValue = saleCurrency
+            .format(
+              total,
+              removeTrailingZeros: true,
+              includeCurrencySymbol: true,
+            )
+            .toUpperCase();
         return readOnly
             ? texts.sale_view_total_title_read_only_fiat(satMessage, fiatValue)
             : texts.sale_view_total_title_charge_fiat(satMessage, fiatValue);
@@ -418,10 +415,10 @@ class SaleLinesList extends StatelessWidget {
           return ListTileTheme(
             textColor: theme.themeId == "BLUE"
                 ? themeData.canvasColor
-                : themeData.textTheme.subtitle1.color,
+                : themeData.textTheme.titleMedium.color,
             iconColor: theme.themeId == "BLUE"
                 ? themeData.canvasColor
-                : themeData.textTheme.subtitle1.color,
+                : themeData.textTheme.titleMedium.color,
             child: Column(
               children: [
                 SaleLineWidget(
@@ -468,7 +465,7 @@ class SaleLinesList extends StatelessWidget {
                       ? Colors.white.withOpacity(0.0)
                       : (theme.themeId == "BLUE"
                               ? themeData.canvasColor
-                              : themeData.textTheme.subtitle1.color)
+                              : themeData.textTheme.titleMedium.color)
                           .withOpacity(0.5),
                   indent: 72.0,
                 ),
@@ -527,14 +524,14 @@ class SaleLineWidget extends StatelessWidget {
           mainAxisSize: MainAxisSize.min,
           children: [
             onChangeQuantity == null
-                ? SizedBox()
+                ? const SizedBox()
                 : IconButton(
                     iconSize: 22.0,
                     color: iconColor,
-                    icon: Icon(Icons.add),
+                    icon: const Icon(Icons.add),
                     onPressed: () => onChangeQuantity(1),
                   ),
-            Container(
+            SizedBox(
               width: 40.0,
               child: Center(
                 child: Text(
@@ -549,7 +546,7 @@ class SaleLineWidget extends StatelessWidget {
               ),
             ),
             onDelete == null
-                ? SizedBox()
+                ? const SizedBox()
                 : IconButton(
                     iconSize: 22.0,
                     color: iconColor,

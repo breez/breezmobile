@@ -22,7 +22,7 @@ class CircularProgress extends StatelessWidget {
         Stack(
           alignment: Alignment.center,
           children: <Widget>[
-            Container(
+            SizedBox(
               height: size,
               width: size,
               child: CircularProgressIndicator(
@@ -35,9 +35,9 @@ class CircularProgress extends StatelessWidget {
               ),
             ),
             value == null
-                ? SizedBox()
+                ? const SizedBox()
                 : Center(
-                    child: Container(
+                    child: SizedBox(
                     width: size * 0.6,
                     child: AutoSizeText("${(value * 100).round().toString()}%",
                         textAlign: TextAlign.center,

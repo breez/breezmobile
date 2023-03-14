@@ -56,15 +56,15 @@ class PrintService {
       );
 
       await Printing.layoutPdf(onLayout: (_) async => doc.save());
-    } on PlatformException catch (error) {
-      throw error;
+    } on PlatformException {
+      rethrow;
     }
   }
 
   _buildTitle() {
     return pw.Text(
       printParameters.currentUser.name,
-      style: pw.TextStyle(fontSize: 24, letterSpacing: 0.25),
+      style: const pw.TextStyle(fontSize: 24, letterSpacing: 0.25),
     );
   }
 
@@ -93,7 +93,7 @@ class PrintService {
                         creationTimestamp.toInt() * 1000,
                       ),
                     ),
-                    style: pw.TextStyle(
+                    style: const pw.TextStyle(
                       letterSpacing: 0.5,
                     ),
                   ),
@@ -107,7 +107,7 @@ class PrintService {
   pw.Text _buildAddress() {
     return pw.Text(
       printParameters.currentUser.businessAddress.toString(),
-      style: pw.TextStyle(
+      style: const pw.TextStyle(
         fontSize: 16,
       ),
     );
@@ -120,7 +120,7 @@ class PrintService {
     return pw.Table(
       children: _buildTableContent(texts, fontMap),
       border: pw.TableBorder.all(width: 1),
-      defaultColumnWidth: pw.IntrinsicColumnWidth(),
+      defaultColumnWidth: const pw.IntrinsicColumnWidth(),
     );
   }
 
@@ -147,7 +147,7 @@ class PrintService {
   }
 
   _addSales(List<pw.TableRow> saleLines, Map<String, ByteData> fontMap) {
-    printParameters.submittedSale.saleLines.forEach((saleLine) {
+    for (var saleLine in printParameters.submittedSale.saleLines) {
       CurrencyWrapper saleCurrency = CurrencyWrapper.fromShortName(
         saleLine.currency,
         printParameters.account,
@@ -155,7 +155,7 @@ class PrintService {
       double priceInFiat = saleLine.pricePerItem;
       double totalPriceInFiat = saleLine.totalFiat;
       double totalPriceInSats = saleLine.totalSats;
-      pw.TextStyle textStyle = pw.TextStyle(
+      pw.TextStyle textStyle = const pw.TextStyle(
         fontSize: 12.3,
       );
       saleLines.add(
@@ -179,7 +179,7 @@ class PrintService {
           ],
         ),
       );
-    });
+    }
     return saleLines;
   }
 
@@ -229,7 +229,7 @@ class PrintService {
 
   pw.Padding _buildTableItem(String text, {pw.TextStyle style}) {
     return pw.Padding(
-      padding: pw.EdgeInsets.all(8),
+      padding: const pw.EdgeInsets.all(8),
       child: pw.Text(
         text,
         style: style ??
@@ -256,15 +256,14 @@ class PrintService {
         children: (saleCurrency.rtl)
             ? [
                 pw.Text(
-                  (addParenthesis ? "(" : "") +
-                      "${_buildPriceValue(saleCurrency, amount)} ",
+                  "${addParenthesis ? "(" : ""}${_buildPriceValue(saleCurrency, amount)} ",
                   style: pw.TextStyle(
                     font: pw.Font.ttf(fontMap["ltr"]),
                     fontSize: 12.3,
                   ),
                 ),
                 pw.Text(
-                  "${saleCurrency.shortName}",
+                  saleCurrency.shortName,
                   textDirection: pw.TextDirection.rtl,
                   textAlign: pw.TextAlign.right,
                   style: pw.TextStyle(
@@ -282,9 +281,7 @@ class PrintService {
               ]
             : [
                 pw.Text(
-                  (addParenthesis ? "(" : "") +
-                      "${_buildPriceValue(saleCurrency, amount)}" +
-                      (addParenthesis ? ")" : ""),
+                  "${addParenthesis ? "(" : ""}${_buildPriceValue(saleCurrency, amount)}${addParenthesis ? ")" : ""}",
                   textDirection: saleCurrency.rtl
                       ? pw.TextDirection.rtl
                       : pw.TextDirection.ltr,
@@ -327,7 +324,7 @@ class PrintService {
                 saleCurrency,
                 totalPriceInFiat,
                 fontMap,
-                padding: pw.EdgeInsets.only(
+                padding: const pw.EdgeInsets.only(
                   left: 8,
                   top: 8,
                   bottom: 8,
@@ -338,7 +335,7 @@ class PrintService {
                 totalPriceInSats,
                 fontMap,
                 addParenthesis: true,
-                padding: pw.EdgeInsets.all(8),
+                padding: const pw.EdgeInsets.all(8),
               ),
             ]
           : [

@@ -21,7 +21,7 @@ class FastBitcoinsConfirmWidget extends StatelessWidget {
     final queryData = MediaQuery.of(context);
     final texts = context.texts();
 
-    return Container(
+    return SizedBox(
       width: queryData.size.width,
       child: Column(
         children: [
@@ -77,17 +77,17 @@ class ConfirmationItem extends StatelessWidget {
   Widget build(BuildContext context) {
     final themeData = Theme.of(context);
 
-    return Container(
+    return SizedBox(
       height: 48.0,
       child: ListTile(
         title: Text(
           title,
-          style: themeData.primaryTextTheme.headline4,
+          style: themeData.primaryTextTheme.headlineMedium,
           textAlign: TextAlign.left,
         ),
         trailing: Text(
           details,
-          style: themeData.primaryTextTheme.headline3,
+          style: themeData.primaryTextTheme.displaySmall,
           textAlign: TextAlign.left,
         ),
       ),

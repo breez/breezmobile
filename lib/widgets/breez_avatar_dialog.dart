@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:io';
+import 'dart:typed_data';
 
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:breez/bloc/user_profile/breez_user_model.dart';
@@ -16,24 +17,21 @@ import 'package:image_picker/image_picker.dart';
 
 import 'flushbar.dart';
 
-int scaledWidth = 200;
-var _transparentImage = DartImage.Image(scaledWidth, scaledWidth);
-
 Widget breezAvatarDialog(BuildContext context, UserProfileBloc userBloc) {
-  AutoSizeGroup _autoSizeGroup = AutoSizeGroup();
-  BreezUserModel _currentSettings;
-  File _pickedImage;
-  bool _isUploading = false;
+  AutoSizeGroup autoSizeGroup = AutoSizeGroup();
+  BreezUserModel currentSettings;
+  File pickedImage;
+  bool isUploading = false;
 
-  final _nameInputController = TextEditingController();
+  final nameInputController = TextEditingController();
   userBloc.userPreviewStream.listen((user) {
-    _nameInputController.text = user.name;
-    _currentSettings = user;
+    nameInputController.text = user.name;
+    currentSettings = user;
   });
 
-  Future<File> _pickImage() async {
-    final _picker = ImagePicker();
-    XFile pickedFile = await _picker.pickImage(source: ImageSource.gallery);
+  Future<File> pickImage() async {
+    final picker = ImagePicker();
+    XFile pickedFile = await picker.pickImage(source: ImageSource.gallery);
     final File file = File(pickedFile.path);
     final CroppedFile croppedFile = await ImageCropper().cropImage(
       sourcePath: file.path,
@@ -45,7 +43,7 @@ Widget breezAvatarDialog(BuildContext context, UserProfileBloc userBloc) {
 
   return WillPopScope(
     onWillPop: () {
-      return Future.value(!_isUploading);
+      return Future.value(!isUploading);
     },
     child: StatefulBuilder(
       builder: (context, setState) {
@@ -56,13 +54,13 @@ Widget breezAvatarDialog(BuildContext context, UserProfileBloc userBloc) {
         final minFontSize = MinFontSize(context);
 
         return AlertDialog(
-          titlePadding: EdgeInsets.all(0.0),
+          titlePadding: const EdgeInsets.all(0.0),
           title: Stack(
             children: [
               Container(
                 height: 70.0,
                 decoration: ShapeDecoration(
-                  shape: RoundedRectangleBorder(
+                  shape: const RoundedRectangleBorder(
                     borderRadius: BorderRadius.vertical(
                       top: Radius.circular(12.0),
                     ),
@@ -72,7 +70,7 @@ Widget breezAvatarDialog(BuildContext context, UserProfileBloc userBloc) {
                       : themeData.canvasColor,
                 ),
               ),
-              Container(
+              SizedBox(
                 width: queryData.size.width,
                 height: 100.0,
                 child: Row(
@@ -82,7 +80,7 @@ Widget breezAvatarDialog(BuildContext context, UserProfileBloc userBloc) {
                     Expanded(
                       child: TextButton(
                         style: TextButton.styleFrom(
-                          padding: EdgeInsets.only(
+                          padding: const EdgeInsets.only(
                             bottom: 20.0,
                             top: 26.0,
                           ),
@@ -93,11 +91,11 @@ Widget breezAvatarDialog(BuildContext context, UserProfileBloc userBloc) {
                           maxLines: 1,
                           minFontSize: minFontSize.minFontSize,
                           stepGranularity: 0.1,
-                          group: _autoSizeGroup,
+                          group: autoSizeGroup,
                         ),
                         onPressed: () {
                           userBloc.randomizeSink.add(null);
-                          _pickedImage = null;
+                          pickedImage = null;
                           FocusScope.of(context).requestFocus(FocusNode());
                         },
                       ),
@@ -112,32 +110,32 @@ Widget breezAvatarDialog(BuildContext context, UserProfileBloc userBloc) {
                         } else {
                           return Stack(
                             children: [
-                              _isUploading
+                              isUploading
                                   ? Padding(
+                                      padding: const EdgeInsets.only(top: 26.0),
                                       child: AspectRatio(
                                         aspectRatio: 1,
                                         child: CircularProgressIndicator(
                                           valueColor:
                                               AlwaysStoppedAnimation<Color>(
                                             themeData
-                                                .primaryTextTheme.button.color,
+                                                .primaryTextTheme.labelLarge.color,
                                           ),
                                           backgroundColor:
-                                              themeData.backgroundColor,
+                                              themeData.colorScheme.background,
                                         ),
                                       ),
-                                      padding: EdgeInsets.only(top: 26.0),
                                     )
-                                  : SizedBox(),
+                                  : const SizedBox(),
                               Padding(
+                                padding: const EdgeInsets.only(top: 26.0),
                                 child: AspectRatio(
                                   aspectRatio: 1,
                                   child: BreezAvatar(
-                                    _pickedImage?.path ?? userModel.avatarURL,
+                                    pickedImage?.path ?? userModel.avatarURL,
                                     radius: 36.0,
                                   ),
                                 ),
-                                padding: EdgeInsets.only(top: 26.0),
                               ),
                             ],
                           );
@@ -147,7 +145,7 @@ Widget breezAvatarDialog(BuildContext context, UserProfileBloc userBloc) {
                     Expanded(
                       child: TextButton(
                         style: TextButton.styleFrom(
-                          padding: EdgeInsets.only(
+                          padding: const EdgeInsets.only(
                             bottom: 20.0,
                             top: 26.0,
                           ),
@@ -158,12 +156,12 @@ Widget breezAvatarDialog(BuildContext context, UserProfileBloc userBloc) {
                           maxLines: 1,
                           minFontSize: minFontSize.minFontSize,
                           stepGranularity: 0.1,
-                          group: _autoSizeGroup,
+                          group: autoSizeGroup,
                         ),
                         onPressed: () async {
-                          await _pickImage().then((file) {
+                          await pickImage().then((file) {
                             setState(() {
-                              _pickedImage = file;
+                              pickedImage = file;
                             });
                           });
                         },
@@ -179,13 +177,13 @@ Widget breezAvatarDialog(BuildContext context, UserProfileBloc userBloc) {
               children: [
                 Theme(
                   data: ThemeData(
-                    primaryColor: themeData.primaryTextTheme.bodyText2.color,
-                    hintColor: themeData.primaryTextTheme.bodyText2.color,
+                    primaryColor: themeData.primaryTextTheme.bodyMedium.color,
+                    hintColor: themeData.primaryTextTheme.bodyMedium.color,
                   ),
                   child: TextField(
-                    enabled: !_isUploading,
-                    style: themeData.primaryTextTheme.bodyText2,
-                    controller: _nameInputController,
+                    enabled: !isUploading,
+                    style: themeData.primaryTextTheme.bodyMedium,
+                    controller: nameInputController,
                     decoration: InputDecoration(
                       hintText: texts.breez_avatar_dialog_your_name,
                     ),
@@ -197,40 +195,36 @@ Widget breezAvatarDialog(BuildContext context, UserProfileBloc userBloc) {
           ),
           actions: [
             TextButton(
+              onPressed: isUploading ? null : () => navigator.pop(),
               child: Text(
                 texts.breez_avatar_dialog_action_cancel,
-                style: themeData.primaryTextTheme.button,
+                style: themeData.primaryTextTheme.labelLarge,
               ),
-              onPressed: _isUploading ? null : () => navigator.pop(),
             ),
             TextButton(
-              child: Text(
-                texts.breez_avatar_dialog_action_save,
-                style: themeData.primaryTextTheme.button,
-              ),
-              onPressed: _isUploading
+              onPressed: isUploading
                   ? null
                   : () async {
                       try {
-                        var userName = _nameInputController.text;
-                        if (_pickedImage != null) {
+                        var userName = nameInputController.text;
+                        if (pickedImage != null) {
                           setState(() {
-                            _isUploading = true;
+                            isUploading = true;
                           });
-                          await _uploadImage(_pickedImage, userBloc).then((_) {
+                          await _uploadImage(pickedImage, userBloc).then((_) {
                             setState(() {
-                              _isUploading = false;
+                              isUploading = false;
                             });
                           });
                         }
-                        userBloc.userSink.add(_currentSettings.copyWith(
+                        userBloc.userSink.add(currentSettings.copyWith(
                           name: userName,
                         ));
                         navigator.pop();
                       } catch (e) {
                         setState(() {
-                          _isUploading = false;
-                          _pickedImage = null;
+                          isUploading = false;
+                          pickedImage = null;
                         });
                         showFlushbar(
                           context,
@@ -238,9 +232,13 @@ Widget breezAvatarDialog(BuildContext context, UserProfileBloc userBloc) {
                         );
                       }
                     },
+              child: Text(
+                texts.breez_avatar_dialog_action_save,
+                style: themeData.primaryTextTheme.labelLarge,
+              ),
             ),
           ],
-          shape: RoundedRectangleBorder(
+          shape: const RoundedRectangleBorder(
             borderRadius: BorderRadius.vertical(
               bottom: Radius.circular(12.0),
               top: Radius.circular(13.0),
@@ -252,10 +250,10 @@ Widget breezAvatarDialog(BuildContext context, UserProfileBloc userBloc) {
   );
 }
 
-Future _uploadImage(File _pickedImage, UserProfileBloc userBloc) async {
-  return _pickedImage
+Future _uploadImage(File pickedImage, UserProfileBloc userBloc) async {
+  return pickedImage
       .readAsBytes()
-      .then(scaleAndFormatPNG)
+      .then(_scaleAndFormatPNG)
       .then((imageBytes) async {
     var action = UploadProfilePicture(imageBytes);
     userBloc.userActionsSink.add(action);
@@ -263,13 +261,17 @@ Future _uploadImage(File _pickedImage, UserProfileBloc userBloc) async {
   });
 }
 
-List<int> scaleAndFormatPNG(List<int> imageBytes) {
-  DartImage.Image image = DartImage.decodeImage(imageBytes);
-  DartImage.Image resized = DartImage.copyResize(image,
-      width: image.width < image.height ? -1 : scaledWidth,
-      height: image.width < image.height ? scaledWidth : -1);
-  DartImage.Image centered = DartImage.copyInto(_transparentImage, resized,
-      dstX: ((scaledWidth - resized.width) / 2).round(),
-      dstY: ((scaledWidth - resized.height) / 2).round());
-  return DartImage.encodePng(centered);
+Uint8List _scaleAndFormatPNG(List<int> imageBytes) {
+  const int scaledSize = 200;
+  try {
+    final image = DartImage.decodeImage(imageBytes);
+    final resized = DartImage.copyResize(
+      image,
+      width: image.width < image.height ? -1 : scaledSize,
+      height: image.width < image.height ? scaledSize : -1,
+    );
+    return DartImage.encodePng(resized);
+  } catch (e) {
+    rethrow;
+  }
 }

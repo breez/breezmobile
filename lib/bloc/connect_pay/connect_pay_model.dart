@@ -36,8 +36,8 @@ class PaymentSessionState {
       bool paymentFulfilled,
       int settledAmount}) {
     return PaymentSessionState(
-        this.payer,
-        this.sessionSecret,
+        payer,
+        sessionSecret,
         payerData ?? this.payerData,
         payeeData ?? this.payeeData,
         invitationReady ?? this.invitationReady,
@@ -120,7 +120,7 @@ class PayerSessionData {
         description ?? this.description,
         error: error ?? this.error,
         paymentFulfilled: paymentFulfilled ?? this.paymentFulfilled,
-        cancelled: cancelled ?? this.cancelled,
+        cancelled: cancelled ?? cancelled,
         unconfirmedChannelsProgress:
             unconfirmedChannelsProgress ?? this.unconfirmedChannelsProgress);
   }

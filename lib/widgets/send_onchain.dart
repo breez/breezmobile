@@ -20,7 +20,7 @@ class SendOnchain extends StatefulWidget {
   final String prefixMessage;
   final String originalTransaction;
 
-  SendOnchain(
+  const SendOnchain(
     this._account,
     this._amount,
     this._title,
@@ -96,22 +96,26 @@ class SendOnchainState extends State<SendOnchain> {
         ),
         hintColor: dialogTheme.contentTextStyle.color,
         colorScheme: ColorScheme.dark(
-          primary: themeData.textTheme.button.color,
+          primary: themeData.textTheme.labelLarge.color,
+          error: theme.themeId == "BLUE"
+              ? Colors.red
+              : themeData.colorScheme.error,
         ),
-        primaryColor: themeData.textTheme.button.color,
+        primaryColor: themeData.textTheme.labelLarge.color,
         unselectedWidgetColor: themeData.canvasColor,
-        errorColor: theme.themeId == "BLUE" ? Colors.red : themeData.errorColor,
       ),
       child: Scaffold(
-        backgroundColor: themeData.backgroundColor,
+        backgroundColor: themeData.colorScheme.background,
         appBar: AppBar(
           systemOverlayStyle: theme.themeId == "BLUE"
               ? SystemUiOverlayStyle.dark
               : themeData.appBarTheme.systemOverlayStyle,
-          iconTheme: themeData.appBarTheme.iconTheme,
-          textTheme: themeData.appBarTheme.textTheme,
           automaticallyImplyLeading: false,
-          backgroundColor: themeData.backgroundColor,
+          title: Text(
+            widget._title,
+            style: dialogTheme.titleTextStyle,
+            textAlign: TextAlign.left,
+          ),
           actions: [
             IconButton(
               onPressed: () => Navigator.pop(context),
@@ -121,16 +125,10 @@ class SendOnchainState extends State<SendOnchain> {
               ),
             ),
           ],
-          title: Text(
-            widget._title,
-            style: dialogTheme.titleTextStyle,
-            textAlign: TextAlign.left,
-          ),
-          elevation: 0.0,
         ),
         bottomNavigationBar: BottomAppBar(
           elevation: 0,
-          color: themeData.backgroundColor,
+          color: themeData.colorScheme.background,
           child: Padding(
             padding: const EdgeInsets.only(right: 12.0),
             child: Row(
@@ -152,7 +150,7 @@ class SendOnchainState extends State<SendOnchain> {
                   }),
                   child: Text(
                     texts.send_on_chain_broadcast,
-                    style: themeData.primaryTextTheme.button,
+                    style: themeData.primaryTextTheme.labelLarge,
                   ),
                 ),
               ],
@@ -164,7 +162,7 @@ class SendOnchainState extends State<SendOnchain> {
             child: Form(
               key: _formKey,
               child: Padding(
-                padding: EdgeInsets.fromLTRB(16.0, 12.0, 16.0, 0.0),
+                padding: const EdgeInsets.fromLTRB(16.0, 12.0, 16.0, 0.0),
                 child: Column(
                   mainAxisSize: MainAxisSize.max,
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -178,16 +176,16 @@ class SendOnchainState extends State<SendOnchain> {
                               height: 1.2,
                             ),
                           )
-                        : SizedBox(),
+                        : const SizedBox(),
                     TextFormField(
                       controller: _addressController,
                       decoration: InputDecoration(
                         labelText: texts.send_on_chain_btc_address,
                         suffixIcon: IconButton(
-                          padding: EdgeInsets.only(top: 21.0),
+                          padding: const EdgeInsets.only(top: 21.0),
                           alignment: Alignment.bottomRight,
                           icon: Image(
-                            image: AssetImage("src/icon/qr_scan.png"),
+                            image: const AssetImage("src/icon/qr_scan.png"),
                             color: dialogTheme.contentTextStyle.color,
                             fit: BoxFit.contain,
                             width: 24.0,
@@ -205,12 +203,12 @@ class SendOnchainState extends State<SendOnchain> {
                         return null;
                       },
                     ),
-                    _scannerErrorMessage.length > 0
+                    _scannerErrorMessage.isNotEmpty
                         ? Text(
                             _scannerErrorMessage,
                             style: theme.validatorStyle,
                           )
-                        : SizedBox(),
+                        : const SizedBox(),
                     TextFormField(
                       focusNode: _feeFocusNode,
                       controller: _feeController,
@@ -228,7 +226,7 @@ class SendOnchainState extends State<SendOnchain> {
                       },
                     ),
                     Container(
-                      padding: EdgeInsets.only(top: 12.0),
+                      padding: const EdgeInsets.only(top: 12.0),
                       child: _buildAvailableBTC(context, widget._account),
                     ),
                     widget.originalTransaction != null
@@ -239,7 +237,7 @@ class SendOnchainState extends State<SendOnchain> {
                               fontWeight: FontWeight.normal,
                             ),
                           )
-                        : SizedBox()
+                        : const SizedBox()
                   ],
                 ),
               ),
@@ -261,7 +259,7 @@ class SendOnchainState extends State<SendOnchain> {
           style: themeData.dialogTheme.contentTextStyle,
         ),
         Padding(
-          padding: EdgeInsets.only(left: 3.0),
+          padding: const EdgeInsets.only(left: 3.0),
           child: Text(
             acc.currency.format(widget._amount),
             style: themeData.dialogTheme.contentTextStyle,

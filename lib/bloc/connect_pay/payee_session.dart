@@ -24,6 +24,7 @@ A concrete implementation of RemoteSession from the payee side.
 class PayeeRemoteSession extends RemoteSession with OnlineStatusUpdater {
   final StreamController<void> _terminationStreamController =
       StreamController<void>();
+  @override
   Stream<void> get terminationStream => _terminationStreamController.stream;
 
   final _approvePaymentController = StreamController<BreezUserModel>();
@@ -33,25 +34,28 @@ class PayeeRemoteSession extends RemoteSession with OnlineStatusUpdater {
   Sink<void> get rejectPaymentSink => _rejectPaymentController.sink;
 
   final _paymentSessionController = BehaviorSubject<PaymentSessionState>();
+  @override
   Stream<PaymentSessionState> get paymentSessionStateStream =>
       _paymentSessionController.stream;
 
   final _sessionErrorsController =
       StreamController<PaymentSessionError>.broadcast();
+  @override
   Stream<PaymentSessionError> get sessionErrors =>
       _sessionErrorsController.stream;
 
-  BreezServer _breezServer = ServiceInjector().breezServer;
+  final BreezServer _breezServer = ServiceInjector().breezServer;
   StreamSubscription _invoicesPaidSubscription;
   PaymentSessionChannel _channel;
-  BreezBridge _breezLib = ServiceInjector().breezBridge;
-  BackgroundTaskService _backgroundService =
+  final BreezBridge _breezLib = ServiceInjector().breezBridge;
+  final BackgroundTaskService _backgroundService =
       ServiceInjector().backgroundTaskService;
-  BreezUserModel _currentUser;
-  var sessionState = Map<String, dynamic>();
+  final BreezUserModel _currentUser;
+  var sessionState = <String, dynamic>{};
   SessionLinkModel sessionLink;
+  @override
   String get sessionID => sessionLink?.sessionID;
-  Completer _sessionCompleter = Completer();
+  final Completer _sessionCompleter = Completer();
 
   PayeeRemoteSession(this._currentUser, {PayerSessionData existingPayerData})
       : super(_currentUser) {
@@ -63,6 +67,7 @@ class PayeeRemoteSession extends RemoteSession with OnlineStatusUpdater {
     _paymentSessionController.add(initialState);
   }
 
+  @override
   Future start(SessionLinkModel sessionLink) async {
     this.sessionLink = sessionLink;
     await _loadPersistedPayerDetails();
@@ -162,6 +167,7 @@ class PayeeRemoteSession extends RemoteSession with OnlineStatusUpdater {
     });
   }
 
+  @override
   Future terminate({bool permanent = false}) async {
     if (_isTerminated) {
       return Future.value(null);

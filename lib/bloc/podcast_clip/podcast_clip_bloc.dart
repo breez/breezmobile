@@ -28,7 +28,7 @@ class PodcastClipBloc with AsyncActionsHandler {
   bool enableClipSharing = false;
 
   setPodcastClipDetails({PositionState position}) {
-    Duration endTime = position.position + Duration(seconds: _initialSeconds);
+    Duration endTime = position.position + const Duration(seconds: _initialSeconds);
 
     PodcastClipDetailsModel podcastClipDetails = PodcastClipDetailsModel(
         startTimeStamp: position.position,
@@ -106,7 +106,7 @@ class PodcastClipBloc with AsyncActionsHandler {
 
     String episodeUrl = clipDetails.episodeDetails.contentUrl;
     String audioClipPath = await initClipDirectory(isVideoClip: false);
-    audioClipPath = audioClipPath + '/clip.mp3';
+    audioClipPath = '$audioClipPath/clip.mp3';
 
     //Getting the raw audio clip
     String clippedAudioCommand =
@@ -139,15 +139,15 @@ class PodcastClipBloc with AsyncActionsHandler {
     int height,
   }) async {
     String videoClipPath = await initClipDirectory(isVideoClip: true);
-    videoClipPath = videoClipPath + '/clip.mp4';
+    videoClipPath = '$videoClipPath/clip.mp4';
 
     // https://ffmpeg.org/ffmpeg-filters.html#showwaves
-    final showWaveColor = "colors=0xffffff@0.5";
-    final mode = "mode=cline";
+    const showWaveColor = "colors=0xffffff@0.5";
+    const mode = "mode=cline";
     final size = "size=${_forceEven((width * 0.8).toInt())}x${_forceEven((height * 0.3).toInt())}";
-    final scale = "scale=lin";
+    const scale = "scale=lin";
     final scaleValue = "[1:v]scale=${_forceEven(width)}:${_forceEven(height)}[bg]";
-    final format = "format=yuva420p[v]";
+    const format = "format=yuva420p[v]";
     final overlay = "[bg][v]overlay=(main_w-overlay_w)/2:${_forceEven((height * 0.7).toInt())}[outv]";
     final filterComplex = "[0:a]showwaves=$showWaveColor:$mode:$size:$scale,$format;$scaleValue;$overlay";
     final clippedVideoCommand = '-i  $audioClipPath -i $episodeImagePath -filter_complex $filterComplex -map "[outv]" -map 0:a -c:v libx264 -c:a copy $videoClipPath';
@@ -166,11 +166,11 @@ class PodcastClipBloc with AsyncActionsHandler {
     }
   }
 
-  bool isEpisodeClipable() {
+  bool isEpisodeClippable() {
     var clipDetails = getCurrentPodcastClipDetails();
 
-    // Check if there is time to create a clip of minimun 10 secs
-    if ((clipDetails.endTimeStamp + Duration(seconds: _initialSeconds)) >
+    // Check if there is time to create a clip of minimum 10 secs
+    if ((clipDetails.endTimeStamp + const Duration(seconds: _initialSeconds)) >
         clipDetails.episodeLength) {
       return false;
     }
@@ -214,7 +214,7 @@ class PodcastClipBloc with AsyncActionsHandler {
       if (!enableClipSharing) {
         return;
       } else {
-        Share.shareFiles([videoClipPath]);
+        Share.shareXFiles([XFile(videoClipPath)]);
       }
     } catch (e) {
       log.warning(e);

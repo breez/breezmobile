@@ -32,7 +32,8 @@ class ClosedChannelPaymentDetails extends StatefulWidget {
   }
 }
 
-class ClosedChannelPaymentDetailsState extends State<ClosedChannelPaymentDetails> {
+class ClosedChannelPaymentDetailsState
+    extends State<ClosedChannelPaymentDetails> {
   bool showRefreshChainButton = false;
   bool mismatchChecked = false;
   bool mismatchedLoading = false;
@@ -52,7 +53,10 @@ class ClosedChannelPaymentDetailsState extends State<ClosedChannelPaymentDetails
   void checkMismatch() {
     final channel = widget.closedChannel;
     final lsp = widget.lsp;
-    if (!mismatchChecked && channel.pending && lsp != null && lsp.currentLSP != null) {
+    if (!mismatchChecked &&
+        channel.pending &&
+        lsp != null &&
+        lsp.currentLSP != null) {
       mismatchChecked = true;
       setState(() {
         mismatchedLoading = true;
@@ -64,13 +68,13 @@ class ClosedChannelPaymentDetailsState extends State<ClosedChannelPaymentDetails
       widget.accountBloc.userActionsSink.add(checkChannels);
       checkChannels.future.then((value) {
         var response = value as CheckLSPClosedChannelMismatchResponse;
-        if (response.mismatch && this.mounted) {
+        if (response.mismatch && mounted) {
           setState(() {
             showRefreshChainButton = true;
           });
         }
       }).whenComplete(() {
-        if (this.mounted) {
+        if (mounted) {
           setState(() {
             mismatchedLoading = false;
           });
@@ -184,21 +188,21 @@ class ClosedChannelPaymentDetailsState extends State<ClosedChannelPaymentDetails
             ? Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 mainAxisSize: MainAxisSize.min,
-                children: [
+                children: const [
                   Padding(
-                    padding: const EdgeInsets.only(top: 20.0),
+                    padding: EdgeInsets.only(top: 20.0),
                     child: Loader(),
                   )
                 ],
               )
-            : SizedBox(),
+            : const SizedBox(),
         showRefreshChainButton
             ? Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   Padding(
-                    padding: EdgeInsets.only(top: 20.0),
+                    padding: const EdgeInsets.only(top: 20.0),
                     child: TextButton(
                       onPressed: () {
                         _onResetChainInfoPressed().then((_) {
@@ -216,13 +220,13 @@ class ClosedChannelPaymentDetailsState extends State<ClosedChannelPaymentDetails
                       },
                       child: Text(
                         texts.payment_details_dialog_refresh_information,
-                        style: themeData.primaryTextTheme.button,
+                        style: themeData.primaryTextTheme.labelLarge,
                       ),
                     ),
                   ),
                 ],
               )
-            : SizedBox(),
+            : const SizedBox(),
       ],
     );
   }

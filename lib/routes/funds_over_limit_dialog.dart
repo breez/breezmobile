@@ -39,19 +39,19 @@ class SwapRefundDialogState extends State<SwapRefundDialog> {
     final texts = context.texts();
 
     return AlertDialog(
-      titlePadding: EdgeInsets.fromLTRB(24.0, 22.0, 24.0, 16.0),
+      titlePadding: const EdgeInsets.fromLTRB(24.0, 22.0, 24.0, 16.0),
       title: AutoSizeText(
         texts.funds_over_limit_dialog_on_chain_transaction,
         style: themeData.dialogTheme.titleTextStyle,
         maxLines: 1,
       ),
-      contentPadding: EdgeInsets.fromLTRB(24.0, 8.0, 24.0, 24.0),
+      contentPadding: const EdgeInsets.fromLTRB(24.0, 8.0, 24.0, 24.0),
       content: FutureBuilder(
-        future: this._fetchFuture,
+        future: _fetchFuture,
         initialData: "loading",
         builder: (ctx, loadingSnapshot) {
           if (loadingSnapshot.data == "loading") {
-            return Loader();
+            return const Loader();
           }
 
           return StreamBuilder<AccountModel>(
@@ -59,7 +59,7 @@ class SwapRefundDialogState extends State<SwapRefundDialog> {
             builder: (ctx, snapshot) {
               final swapStatus = snapshot?.data?.swapFundsStatus;
               if (swapStatus == null) {
-                return Loader();
+                return const Loader();
               }
 
               return _build(context, swapStatus);
@@ -72,7 +72,7 @@ class SwapRefundDialogState extends State<SwapRefundDialog> {
           onPressed: () => Navigator.pop(context),
           child: Text(
             texts.funds_over_limit_dialog_action_ok,
-            style: themeData.primaryTextTheme.button,
+            style: themeData.primaryTextTheme.labelLarge,
           ),
         )
       ],

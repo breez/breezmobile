@@ -28,7 +28,7 @@ import 'package:breez/handlers/ctp_join_session_handler.dart';
 import 'package:breez/handlers/lnurl_handler.dart';
 import 'package:breez/handlers/podcast_url_handler.dart';
 import 'package:breez/handlers/received_invoice_notification.dart';
-import 'package:breez/handlers/showPinHandler.dart';
+import 'package:breez/handlers/show_pin_handler.dart';
 import 'package:breez/handlers/sync_ui_handler.dart';
 import 'package:breez/lnurl_success_action_dialog.dart';
 import 'package:breez/routes/account_required_actions.dart';
@@ -88,7 +88,7 @@ class Home extends StatefulWidget {
   );
 
   final List<DrawerItemConfig> _screens = List<DrawerItemConfig>.unmodifiable([
-    DrawerItemConfig("breezHome", "Breez", ""),
+    const DrawerItemConfig("breezHome", "Breez", ""),
   ]);
 
   final Map<String, Widget> _screenBuilders = {};
@@ -102,7 +102,7 @@ class Home extends StatefulWidget {
 class HomeState extends State<Home> with WidgetsBindingObserver {
   final GlobalKey podcastMenuItemKey = GlobalKey();
   String _activeScreen = "breezHome";
-  Set _hiddenRoutes = Set<String>();
+  final Set _hiddenRoutes = <String>{};
   StreamSubscription<String> _accountNotificationsSubscription;
   bool _listensInit = false;
 
@@ -113,7 +113,7 @@ class HomeState extends State<Home> with WidgetsBindingObserver {
     widget.accountBloc.accountStream.listen((acc) {
       setState(() {
         if (acc != null &&
-            acc.swapFundsStatus.maturedRefundableAddresses.length > 0) {
+            acc.swapFundsStatus.maturedRefundableAddresses.isNotEmpty) {
           _hiddenRoutes.remove("/get_refund");
         } else {
           _hiddenRoutes.add("/get_refund");
@@ -130,7 +130,9 @@ class HomeState extends State<Home> with WidgetsBindingObserver {
       Function addOrRemove =
           acc.connected ? _hiddenRoutes.remove : _hiddenRoutes.add;
       setState(() {
-        activeAccountRoutes.forEach((r) => addOrRemove(r));
+        for (var r in activeAccountRoutes) {
+          addOrRemove(r);
+        }
       });
     });
 
@@ -140,7 +142,7 @@ class HomeState extends State<Home> with WidgetsBindingObserver {
       final audioBloc = Provider.of<AudioBloc>(context, listen: false);
       final userModel = await userBloc.userStream.first;
       final nowPlaying = await audioBloc.nowPlaying.first.timeout(
-        Duration(seconds: 1),
+        const Duration(seconds: 1),
       );
       if (nowPlaying != null &&
           !breezPodcast.NowPlayingTransport.nowPlayingVisible) {
@@ -154,7 +156,7 @@ class HomeState extends State<Home> with WidgetsBindingObserver {
     }, onDone: () {
       print("done");
     }, onError: (e) {
-      print("error " + e.toString());
+      print("error $e");
     });
   }
 
@@ -198,7 +200,7 @@ class HomeState extends State<Home> with WidgetsBindingObserver {
             builder: (context, accSnapshot) {
               final account = accSnapshot.data;
               if (account == null) {
-                return SizedBox();
+                return const SizedBox();
               }
 
               return StreamBuilder<AccountSettings>(
@@ -206,7 +208,7 @@ class HomeState extends State<Home> with WidgetsBindingObserver {
                 builder: (context, settingsSnapshot) {
                   final settings = settingsSnapshot.data;
                   if (settings == null) {
-                    return SizedBox();
+                    return const SizedBox();
                   }
 
                   return StreamBuilder<LSPStatus>(
@@ -258,7 +260,7 @@ class HomeState extends State<Home> with WidgetsBindingObserver {
     final themeData = Theme.of(context);
     final mediaSize = MediaQuery.of(context).size;
 
-    return Container(
+    return SizedBox(
       height: mediaSize.height,
       width: mediaSize.width,
       child: FadeInWidget(
@@ -269,7 +271,28 @@ class HomeState extends State<Home> with WidgetsBindingObserver {
             systemOverlayStyle: theme.themeId == "BLUE"
                 ? SystemUiOverlayStyle.dark
                 : themeData.appBarTheme.systemOverlayStyle,
+            iconTheme: const IconThemeData(color: Color.fromARGB(255, 0, 133, 251)),
+            backgroundColor: (user.appMode == AppMode.pos)
+                ? themeData.colorScheme.background
+                : theme.customData[theme.themeId].dashboardBgColor,
+            leading: _buildMenuIcon(context, user.appMode),
             centerTitle: false,
+            title: IconButton(
+              padding: EdgeInsets.zero,
+              icon: SvgPicture.asset(
+                "src/images/logo-color.svg",
+                height: 23.5,
+                width: 62.7,
+                colorFilter: ColorFilter.mode(
+                  themeData.appBarTheme.actionsIconTheme.color,
+                  BlendMode.srcATop,
+                ),
+              ),
+              iconSize: 64,
+              onPressed: () async {
+                _scaffoldKey.currentState.openDrawer();
+              },
+            ),
             actions: [
               Padding(
                 padding: user.appMode == AppMode.podcasts
@@ -288,15 +311,16 @@ class HomeState extends State<Home> with WidgetsBindingObserver {
                     iconSize: 24.0,
                     padding: EdgeInsets.zero,
                     icon: ImageIcon(
-                      AssetImage("assets/icons/layout.png"),
+                      const AssetImage("assets/icons/layout.png"),
                       color: Theme.of(context).primaryIconTheme.color,
                     ),
                     tooltip: 'Layout',
                     onPressed: () async {
                       await showModalBottomSheet<void>(
                         context: context,
-                        backgroundColor: Theme.of(context).backgroundColor,
-                        shape: RoundedRectangleBorder(
+                        backgroundColor:
+                            Theme.of(context).colorScheme.background,
+                        shape: const RoundedRectangleBorder(
                           borderRadius: BorderRadius.only(
                             topLeft: Radius.circular(16.0),
                             topRight: Radius.circular(16.0),
@@ -309,28 +333,6 @@ class HomeState extends State<Home> with WidgetsBindingObserver {
                 )
               ],
             ],
-            leading: _buildMenuIcon(context, user.appMode),
-            title: IconButton(
-              padding: EdgeInsets.zero,
-              icon: SvgPicture.asset(
-                "src/images/logo-color.svg",
-                height: 23.5,
-                width: 62.7,
-                color: themeData.appBarTheme.actionsIconTheme.color,
-                colorBlendMode: BlendMode.srcATop,
-              ),
-              iconSize: 64,
-              onPressed: () async {
-                _scaffoldKey.currentState.openDrawer();
-              },
-            ),
-            iconTheme: IconThemeData(
-              color: Color.fromARGB(255, 0, 133, 251),
-            ),
-            backgroundColor: (user.appMode == AppMode.pos)
-                ? themeData.backgroundColor
-                : theme.customData[theme.themeId].dashboardBgColor,
-            elevation: 0.0,
           ),
           drawerEnableOpenDragGesture: true,
           drawerDragStartBehavior: DragStartBehavior.down,
@@ -435,7 +437,7 @@ class HomeState extends State<Home> with WidgetsBindingObserver {
     BreezUserModel user,
     List<RefundableAddress> refundableAddresses,
   ) {
-    if (refundableAddresses.length == 0) {
+    if (refundableAddresses.isEmpty) {
       return [];
     }
     final texts = context.texts();
@@ -504,7 +506,7 @@ class HomeState extends State<Home> with WidgetsBindingObserver {
       DrawerItemConfigGroup([_drawerItemPodcast(context, user, texts)]),
       DrawerItemConfigGroup([_drawerItemPos(context, user, texts)]),
       DrawerItemConfigGroup([_drawerItemLightningApps(context, user, texts)]),
-      DrawerItemConfigGroup([]),
+      const DrawerItemConfigGroup([]),
     ];
   }
 
@@ -664,7 +666,7 @@ class HomeState extends State<Home> with WidgetsBindingObserver {
     switch (user.appMode) {
       case AppMode.podcasts:
         return Container(
-          color: themeData.bottomAppBarColor,
+          color: themeData.bottomAppBarTheme.color,
           child: SafeArea(
             child: AnytimeHomePage(
               topBarVisible: false,
@@ -675,7 +677,7 @@ class HomeState extends State<Home> with WidgetsBindingObserver {
           ),
         );
       case AppMode.pos:
-        return POSInvoice();
+        return const POSInvoice();
       case AppMode.apps:
         return MarketplacePage();
       default:
@@ -693,7 +695,7 @@ class HomeState extends State<Home> with WidgetsBindingObserver {
         showDialog(
           useRootNavigator: false,
           context: context,
-          builder: (_) => lostCard.LostCardDialog(),
+          builder: (_) => const lostCard.LostCardDialog(),
         );
       } else {
         Navigator.of(context).pushNamed(itemName).then((message) {
@@ -729,7 +731,7 @@ class HomeState extends State<Home> with WidgetsBindingObserver {
         });
         var ctpRoute = FadeInRoute(
           builder: (_) => withBreezTheme(context, ConnectToPayPage(session)),
-          settings: RouteSettings(name: "/connect_to_pay"),
+          settings: const RouteSettings(name: "/connect_to_pay"),
         );
         Navigator.of(context).push(ctpRoute);
       },
@@ -838,13 +840,13 @@ class HomeState extends State<Home> with WidgetsBindingObserver {
           !fulfilledPayment.ignoreGlobalFeedback) {
         await scrollController.animateTo(
           scrollController.position.minScrollExtent,
-          duration: Duration(milliseconds: 10),
+          duration: const Duration(milliseconds: 10),
           curve: Curves.ease,
         );
 
         var action = fulfilledPayment?.paymentItem?.lnurlPayInfo?.successAction;
         if (action?.hasTag() == true) {
-          await Future.delayed(Duration(seconds: 1));
+          await Future.delayed(const Duration(seconds: 1));
           showLNURLSuccessAction(context, action);
         } else {
           showFlushbar(
@@ -871,7 +873,7 @@ class HomeState extends State<Home> with WidgetsBindingObserver {
           errorString.contains("payment is in transition")) {
         return;
       }
-      showFlushbar(context, message: "$errorString");
+      showFlushbar(context, message: errorString);
 
       if (!error.validationError) {
         if (prompt) {
