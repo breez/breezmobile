@@ -25,31 +25,30 @@ dependencies:
   convert: ^3.1.1
   crypto: ^3.0.2
   csv: ^5.0.1
-  dio: ^5.0.1
+  dio: ^5.0.2
   drag_and_drop_lists: ^0.3.3
   duration: ^3.0.12
   email_validator: ^2.1.17
   extended_image: ^7.0.2
   ffmpeg_kit_flutter_https_gpl: ^5.1.0
-  file_picker: ^5.2.5
-  firebase_core: ^2.7.0
-  # Version 4.5.2 breaks, it is necessary to update firebase as a whole
+  file_picker: ^5.2.6
+  firebase_core: ^2.7.1
   firebase_core_platform_interface: ^4.5.3
-  firebase_database: ^10.0.14
-  firebase_dynamic_links: ^5.0.15
-  firebase_messaging: ^14.2.5
+  firebase_database: ^10.0.15
+  firebase_dynamic_links: ^5.0.16
+  firebase_messaging: ^14.2.6
   fixnum: ^1.1.0
   flutter_secure_storage: ^8.0.0
   flutter_spinkit: ^5.1.0
-  flutter_svg: ^2.0.2
+  flutter_svg: ^2.0.3
   flutter_web_browser: ^0.17.1
-  google_api_availability: ^3.0.1
+  google_api_availability: ^4.0.0
   grpc: ^3.1.0
   hex: ^0.2.0
   http: ^0.13.5
   image: ^4.0.15
   image_cropper: ^3.0.1
-  image_picker: ^0.8.6+4
+  image_picker: ^0.8.7
   ini: ^2.1.0
   intl: ^0.18.0
   json_annotation: ^4.8.0
@@ -81,9 +80,9 @@ dependencies:
   shared_preferences: ^2.0.18
   shimmer: ^2.0.0
   simple_animations: ^5.0.0+3
-  sqflite: ^2.2.5
+  sqflite: ^2.2.6
   timeago: ^3.4.0
-  tutorial_coach_mark: ^1.2.6
+  tutorial_coach_mark: ^1.2.7
   uni_links: ^0.5.1
   url_launcher: ^6.1.10
   uuid: ^3.0.7
@@ -132,12 +131,12 @@ dev_dependencies:
   build_runner: ^2.3.3
   json_serializable: ^6.6.1
   mockito: ^5.3.2
-  sqflite_common_ffi: ^2.2.1+1
+  sqflite_common_ffi: ^2.2.2
   test: any
 
 environment:
   sdk: ">=2.10.0 <3.0.0"
-  flutter: ">=3.7.1"
+  flutter: ">=3.7.7"
 
 flutter:
   uses-material-design: true

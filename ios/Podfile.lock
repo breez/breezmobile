@@ -70,18 +70,18 @@ PODS:
   - Firebase/Messaging (10.3.0):
     - Firebase/CoreOnly
     - FirebaseMessaging (~> 10.3.0)
-  - firebase_core (2.7.0):
+  - firebase_core (2.7.1):
     - Firebase/CoreOnly (= 10.3.0)
     - Flutter
-  - firebase_database (10.0.14):
+  - firebase_database (10.0.15):
     - Firebase/Database (= 10.3.0)
     - firebase_core
     - Flutter
-  - firebase_dynamic_links (5.0.15):
+  - firebase_dynamic_links (5.0.16):
     - Firebase/DynamicLinks (= 10.3.0)
     - firebase_core
     - Flutter
-  - firebase_messaging (14.2.5):
+  - firebase_messaging (14.2.6):
     - Firebase/Messaging (= 10.3.0)
     - firebase_core
     - Flutter
@@ -409,10 +409,10 @@ SPEC CHECKSUMS:
   ffmpeg_kit_flutter_https_gpl: 6434a09be0b21b6ee399e855935684f5e81cb5b7
   file_picker: ce3938a0df3cc1ef404671531facef740d03f920
   Firebase: f92fc551ead69c94168d36c2b26188263860acd9
-  firebase_core: 128d8c43c3a453a4a67463314fc3761bedff860b
-  firebase_database: bf91bed526bd1252779a88863c36f48c4d28cd0f
-  firebase_dynamic_links: bb28b0958fd7f9c026611fcc11a61d9a40a0820c
-  firebase_messaging: 8ac28baba96e69a58ad26b4bb5f9ee67c3e5efe2
+  firebase_core: 1ae9f9aa76e6e1edc14fb181637ad466fd6c6fa4
+  firebase_database: bd5b62dcc2cf4f8416cbb27aac830e2742a96338
+  firebase_dynamic_links: 42ab4dd387b07d5c7af2e9aa63a7b5fa3518dd8b
+  firebase_messaging: f8c01f8b540feb4196e8dbe45ae17534747d779d
   FirebaseCore: 988754646ab3bd4bdcb740f1bfe26b9f6c0d5f2a
   FirebaseCoreInternal: c7cd505e2136811096b225ac388d6254a2622362
   FirebaseDatabase: d0732ba8aece0eccfa0cfb3ef540e7ba6fa1c6a6
