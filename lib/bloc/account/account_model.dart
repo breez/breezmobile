@@ -383,14 +383,6 @@ class AccountModel {
         orElse: () => null);
   }
 
-  String validateOutgoingOnChainPayment(Int64 amount) {
-    if (amount > walletBalance) {
-      final texts = getSystemAppLocalizations();
-      return texts.on_chain_payment_error_not_enough_funds;
-    }
-    return null;
-  }
-
   String validateOutgoingPayment(Int64 amount) {
     return validatePayment(amount, true);
   }
