@@ -209,7 +209,7 @@ class PosTransactionsPageState extends State<PosTransactionsPage> {
     Navigator.of(context).push(createLoaderRoute(context));
     action.future.then((filePath) {
       Navigator.of(context).pop();
-      Share.shareXFiles([filePath]);
+      Share.shareXFiles([XFile(filePath)]);
     }).catchError((err) {
       Navigator.of(context).pop();
       showFlushbar(
