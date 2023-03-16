@@ -269,22 +269,23 @@ class AccountModel {
     SyncUIState syncUIState,
   }) {
     return AccountModel(
-        accountResponse ?? _accountResponse,
-        currency ?? this.currency,
-        fiatShortName ?? _fiatShortName,
-        fiatCurrency ?? _fiatCurrency,
-        fiatConversionList ?? _fiatConversionList,
-        preferredCurrencies ?? this.preferredCurrencies,
-        posCurrencyShortName ?? _posCurrencyShortName,
-        addedFundsReply: addedFundsReply ?? this.addedFundsReply,
-        onChainFeeRate: onChainFeeRate ?? this.onChainFeeRate,
-        enableInProgress: enableInProgress ?? this.enableInProgress,
-        syncProgress: syncProgress ?? this.syncProgress,
-        syncedToChain: syncedToChain ?? this.syncedToChain,
-        serverReady: serverReady ?? this.serverReady,
-        syncUIState: syncUIState ?? this.syncUIState,
-        initial: initial ?? this.initial,
-        nodeUpgrading: nodeUpgrading ?? this.nodeUpgrading);
+      accountResponse ?? _accountResponse,
+      currency ?? this.currency,
+      fiatShortName ?? _fiatShortName,
+      fiatCurrency ?? _fiatCurrency,
+      fiatConversionList ?? _fiatConversionList,
+      preferredCurrencies ?? this.preferredCurrencies,
+      posCurrencyShortName ?? _posCurrencyShortName,
+      addedFundsReply: addedFundsReply ?? this.addedFundsReply,
+      onChainFeeRate: onChainFeeRate ?? this.onChainFeeRate,
+      enableInProgress: enableInProgress ?? this.enableInProgress,
+      syncProgress: syncProgress ?? this.syncProgress,
+      syncedToChain: syncedToChain ?? this.syncedToChain,
+      serverReady: serverReady ?? this.serverReady,
+      syncUIState: syncUIState ?? this.syncUIState,
+      initial: initial ?? this.initial,
+      nodeUpgrading: nodeUpgrading ?? this.nodeUpgrading,
+    );
   }
 
   String get id => _accountResponse.id;
@@ -394,11 +395,11 @@ class AccountModel {
   String validatePayment(Int64 amount, bool outgoing) {
     final texts = getSystemAppLocalizations();
     if (maxPaymentAmount != null && amount > maxPaymentAmount) {
-      return texts.valid_payment_error_exceeds_the_limit("");
+      return texts.valid_payment_error_exceeds_limit;
     }
 
     if (!outgoing && amount > maxAllowedToReceive) {
-      return texts.valid_payment_error_exceeds_the_limit("");
+      return texts.valid_payment_error_exceeds_limit;
     }
 
     if (outgoing && amount > maxAllowedToPay) {
