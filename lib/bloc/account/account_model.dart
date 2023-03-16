@@ -284,7 +284,7 @@ class AccountModel {
       serverReady: serverReady ?? this.serverReady,
       syncUIState: syncUIState ?? this.syncUIState,
       initial: initial ?? this.initial,
-      nodeUpgrading: nodeUpgrading ?? this.nodeUpgrading
+      nodeUpgrading: nodeUpgrading ?? this.nodeUpgrading,
     );
   }
 
@@ -384,14 +384,6 @@ class AccountModel {
         orElse: () => null);
   }
 
-  String validateOutgoingOnChainPayment(Int64 amount) {
-    if (amount > walletBalance) {
-      final texts = getSystemAppLocalizations();
-      return texts.on_chain_payment_error_not_enough_funds;
-    }
-    return null;
-  }
-
   String validateOutgoingPayment(Int64 amount) {
     return validatePayment(amount, true);
   }
@@ -403,15 +395,11 @@ class AccountModel {
   String validatePayment(Int64 amount, bool outgoing) {
     final texts = getSystemAppLocalizations();
     if (maxPaymentAmount != null && amount > maxPaymentAmount) {
-      return texts.valid_payment_error_exceeds_the_limit(
-        currency.format(maxPaymentAmount),
-      );
+      return texts.valid_payment_error_exceeds_limit;
     }
 
     if (!outgoing && amount > maxAllowedToReceive) {
-      return texts.valid_payment_error_exceeds_the_limit(
-        currency.format(maxPaymentAmount),
-      );
+      return texts.valid_payment_error_exceeds_limit;
     }
 
     if (outgoing && amount > maxAllowedToPay) {
