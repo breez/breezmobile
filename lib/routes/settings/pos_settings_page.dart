@@ -16,9 +16,9 @@ import 'package:breez/widgets/flushbar.dart';
 import 'package:breez/widgets/loader.dart';
 import 'package:breez/widgets/route.dart';
 import 'package:breez/widgets/static_loader.dart';
+import 'package:breez_translations/breez_translations_locales.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
-import 'package:breez_translations/breez_translations_locales.dart';
 import 'package:path/path.dart' as path;
 import 'package:share_plus/share_plus.dart';
 
@@ -67,7 +67,8 @@ class PosSettingsPageState extends State<_PosSettingsPage> {
     super.initState();
     final user = widget.currentProfile;
     _timeoutValue = user.cancellationTimeoutValue;
-    _cancellationTimeoutController.text = user.cancellationTimeoutValue.toStringAsFixed(0);
+    _cancellationTimeoutController.text =
+        user.cancellationTimeoutValue.toStringAsFixed(0);
     _addressLine1Controller.text = user.businessAddress?.addressLine1 ?? "";
     _addressLine2Controller.text = user.businessAddress?.addressLine2 ?? "";
     _defaultNoteController.text = user.defaultPosNote;
@@ -314,21 +315,26 @@ class PosSettingsPageState extends State<_PosSettingsPage> {
     });
   }
 
-  Future _exportItems(
+  _exportItems(
     BuildContext context,
     PosCatalogBloc posCatalogBloc,
-  ) async {
+  ) {
     final texts = context.texts();
     final navigator = Navigator.of(context);
 
     var action = ExportItems();
     posCatalogBloc.actionsSink.add(action);
-    navigator.push(createLoaderRoute(context));
+    var loaderRoute = createLoaderRoute(context);
+    navigator.push(loaderRoute);
     action.future.then((filePath) {
-      navigator.pop();
-      Share.shareXFiles([filePath]);
+      if (loaderRoute.isActive) {
+        navigator.removeRoute(loaderRoute);
+      }
+      Share.shareXFiles([XFile(filePath)]);
     }).catchError((err) {
-      navigator.pop();
+      if (loaderRoute.isActive) {
+        navigator.removeRoute(loaderRoute);
+      }
       final errorMessage = err.toString() == "EMPTY_LIST"
           ? texts.pos_settings_export_error_no_items
           : texts.pos_settings_export_error_generic;

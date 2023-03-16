@@ -6,9 +6,9 @@ import 'package:breez/widgets/calendar_dialog.dart';
 import 'package:breez/widgets/fixed_sliver_delegate.dart';
 import 'package:breez/widgets/flushbar.dart';
 import 'package:breez/widgets/loader.dart';
+import 'package:breez_translations/breez_translations_locales.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:breez_translations/breez_translations_locales.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:share_plus/share_plus.dart';
 
@@ -338,16 +338,22 @@ class PaymentsFilterState extends State<PaymentsFilter> {
     choice.function();
   }
 
-  Future _exportPayments(BuildContext context) async {
+  _exportPayments(BuildContext context) {
     final texts = context.texts();
+    final navigator = Navigator.of(context);
     var action = ExportPayments();
     widget._accountBloc.userActionsSink.add(action);
-    Navigator.of(context).push(createLoaderRoute(context));
+    var loaderRoute = createLoaderRoute(context);
+    navigator.push(loaderRoute);
     action.future.then((filePath) {
-      Navigator.of(context).pop();
-      Share.shareXFiles([filePath]);
+      if (loaderRoute.isActive) {
+        navigator.removeRoute(loaderRoute);
+      }
+      Share.shareXFiles([XFile(filePath)]);
     }).catchError((err) {
-      Navigator.of(context).pop();
+      if (loaderRoute.isActive) {
+        navigator.removeRoute(loaderRoute);
+      }
       showFlushbar(
         context,
         message: texts.payments_filter_action_export_failed,

@@ -1,5 +1,3 @@
-import 'dart:async';
-
 import 'package:breez/bloc/account/account_actions.dart';
 import 'package:breez/bloc/account/account_bloc.dart';
 import 'package:breez/bloc/account/account_model.dart';
@@ -10,8 +8,8 @@ import 'package:breez/widgets/calendar_dialog.dart';
 import 'package:breez/widgets/flushbar.dart';
 import 'package:breez/widgets/loader.dart';
 import 'package:breez/widgets/pos_report_dialog.dart';
-import 'package:flutter/material.dart';
 import 'package:breez_translations/breez_translations_locales.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:share_plus/share_plus.dart';
 
@@ -202,16 +200,22 @@ class PosTransactionsPageState extends State<PosTransactionsPage> {
     choice.function();
   }
 
-  Future _exportTransactions(BuildContext context) async {
+  _exportTransactions(BuildContext context) {
     final texts = context.texts();
+    final navigator = Navigator.of(context);
     var action = ExportPayments();
     _accountBloc.userActionsSink.add(action);
-    Navigator.of(context).push(createLoaderRoute(context));
+    var loaderRoute = createLoaderRoute(context);
+    navigator.push(loaderRoute);
     action.future.then((filePath) {
-      Navigator.of(context).pop();
-      Share.shareXFiles([filePath]);
+      if (loaderRoute.isActive) {
+        navigator.removeRoute(loaderRoute);
+      }
+      Share.shareXFiles([XFile(filePath)]);
     }).catchError((err) {
-      Navigator.of(context).pop();
+      if (loaderRoute.isActive) {
+        navigator.removeRoute(loaderRoute);
+      }
       showFlushbar(
         context,
         message: texts.pos_transactions_action_export_failed,
