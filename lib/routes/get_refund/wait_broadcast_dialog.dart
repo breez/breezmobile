@@ -5,6 +5,7 @@ import 'package:breez/bloc/account/account_model.dart';
 import 'package:breez/services/injector.dart';
 import 'package:breez/theme_data.dart' as theme;
 import 'package:breez_translations/breez_translations_locales.dart';
+import 'package:breez/utils/exceptions.dart';
 import 'package:fixnum/fixnum.dart';
 import 'package:flutter/material.dart';
 import 'package:share_plus/share_plus.dart';
@@ -112,7 +113,9 @@ class _WaitBroadcastDialog extends State<WaitBroadcastDialog> {
 
     if (_error != null) {
       return Text(
-        texts.waiting_broadcast_dialog_content_error(_error.toString()),
+        texts.waiting_broadcast_dialog_content_error(
+          extractExceptionMessage(_error),
+        ),
         style: themeData.dialogTheme.contentTextStyle,
         textAlign: TextAlign.center,
       );

@@ -7,9 +7,14 @@ import 'package:breez_translations/generated/breez_translations_fr.dart';
 import 'package:breez_translations/generated/breez_translations_it.dart';
 import 'package:breez_translations/generated/breez_translations_pt.dart';
 import 'package:breez_translations/generated/breez_translations_sv.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 
+import '../mocks/unit_logger.dart';
+
 void main() {
+  setUpLogger();
+
   group('extractExceptionMessage on known string', () {
     for (var clearTrailingDot in [true, false]) {
       test('detail message (clearTrailingDot=$clearTrailingDot)', () {
@@ -63,6 +68,26 @@ void main() {
             clearTrailingDot: clearTrailingDot,
           ),
           clearTrailingDot ? 'Max daily limit spent' : 'Max daily limit spent.',
+        );
+      });
+
+      test('high fees (clearTrailingDot=$clearTrailingDot)', () {
+        expect(
+          extractExceptionMessage(
+            PlatformException(
+              code: "Method Error",
+              message: "Error Domain=go Code=1 \"rpc error: code = Unknown desc = fees are too high for the "
+                  "given amount transaction output amount is negative\" UserInfo={NSLocalizedDescription=rpc "
+                  "error: code = Unknown desc = fees are too high for the given amount transaction output "
+                  "amount is negative}",
+              details: "Error Domain=go Code=1 \"rpc error: code = Unknown desc = fees are too high for the "
+                  "given amount transaction output amount is negative\" UserInfo={NSLocalizedDescription=rpc "
+                  "error: code = Unknown desc = fees are too high for the given amount transaction output "
+                  "amount is negative}",
+            ),
+            clearTrailingDot: clearTrailingDot,
+          ),
+          "fees are too high for the given amount transaction output amount is negative",
         );
       });
     }
