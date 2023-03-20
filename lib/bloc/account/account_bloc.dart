@@ -135,7 +135,7 @@ class AccountBloc {
   CurrencyService _currencyService;
   final Completer _onBoardingCompleter = Completer();
   Stream<BreezUserModel> userProfileStream;
-  TorBloc torBloc;
+  TorBloc torBloc = ServiceInjector().torBloc;
   Completer<bool> startDaemonCompleter = Completer<bool>();
   final PaymentOptionsBloc _paymentOptionsBloc;
 
@@ -156,7 +156,6 @@ class AccountBloc {
     _device = injector.device;
     _backgroundService = injector.backgroundTaskService;
     _currencyService = injector.currencyService;
-    torBloc = injector.torBloc;
     _actionHandlers = {
       SendPaymentFailureReport: _handleSendQueryRoute,
       ResetNetwork: _handleResetNetwork,
@@ -185,15 +184,16 @@ class AccountBloc {
     _start();
   }
 
-  void _start() async {
+  void _start() {
     log.info("Account bloc started");
-    torBloc.torConfig = await _startTorIfNeeded();
-    ServiceInjector().sharedPreferences.then((preferences) {
+
+    ServiceInjector().sharedPreferences.then((preferences) async {
       _handleRegisterDeviceNode();
       _refreshAccountAndPayments();
       //listen streams
       _listenAccountActions();
       _handleAccountSettings();
+      torBloc.torConfig = await _startTorIfNeeded();
       _listenUserChanges(userProfileStream);
       _listenFilterChanges();
       _listenAccountChanges();
