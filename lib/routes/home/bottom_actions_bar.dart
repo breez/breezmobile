@@ -91,37 +91,41 @@ class BottomActionsBar extends StatelessWidget {
                   onTap: () async {
                     final navigator = Navigator.of(context);
                     navigator.pop();
-                    await snapshot.data.then((clipboardData) {
-                      if (clipboardData != null) {
-                        if (clipboardData.type == "lnurl" ||
-                            clipboardData.type == "lightning-address") {
-                          lnurlBloc.lnurlInputSink.add(clipboardData.data);
-                        } else if (clipboardData.type == "invoice") {
-                          invoiceBloc.decodeInvoiceSink.add(clipboardData.data);
-                        } else if (clipboardData.type == "nodeID") {
-                          navigator.push(
-                            FadeInRoute(
-                              builder: (_) => SpontaneousPaymentPage(
-                                clipboardData.data,
-                                firstPaymentItemKey,
+                    if (snapshot.hasData) {
+                      await snapshot.data.then((clipboardData) {
+                        if (clipboardData != null) {
+                          if (clipboardData.type == "lnurl" ||
+                              clipboardData.type == "lightning-address") {
+                            lnurlBloc.lnurlInputSink.add(clipboardData.data);
+                          } else if (clipboardData.type == "invoice") {
+                            invoiceBloc.decodeInvoiceSink.add(
+                              clipboardData.data,
+                            );
+                          } else if (clipboardData.type == "nodeID") {
+                            navigator.push(
+                              FadeInRoute(
+                                builder: (_) => SpontaneousPaymentPage(
+                                  clipboardData.data,
+                                  firstPaymentItemKey,
+                                ),
                               ),
-                            ),
-                          );
-                        }
-                      } else {
-                        showDialog(
-                          useRootNavigator: false,
-                          context: context,
-                          barrierDismissible: false,
-                          builder: (_) => EnterPaymentInfoDialog(
+                            );
+                          }
+                        } else {
+                          _showEnterPaymentInfoDialog(
                             context,
                             invoiceBloc,
                             lnurlBloc,
-                            firstPaymentItemKey,
-                          ),
-                        );
-                      }
-                    });
+                          );
+                        }
+                      });
+                    } else {
+                      _showEnterPaymentInfoDialog(
+                        context,
+                        invoiceBloc,
+                        lnurlBloc,
+                      );
+                    }
                   },
                 ),
                 Divider(
@@ -213,6 +217,24 @@ class BottomActionsBar extends StatelessWidget {
           },
         );
       },
+    );
+  }
+
+  Future<dynamic> _showEnterPaymentInfoDialog(
+    BuildContext context,
+    InvoiceBloc invoiceBloc,
+    LNUrlBloc lnurlBloc,
+  ) {
+    return showDialog(
+      useRootNavigator: false,
+      context: context,
+      barrierDismissible: false,
+      builder: (_) => EnterPaymentInfoDialog(
+        context,
+        invoiceBloc,
+        lnurlBloc,
+        firstPaymentItemKey,
+      ),
     );
   }
 }
