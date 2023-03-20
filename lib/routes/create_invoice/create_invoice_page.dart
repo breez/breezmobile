@@ -19,6 +19,7 @@ import 'package:breez/routes/create_invoice/qr_code_dialog.dart';
 import 'package:breez/routes/podcast/theme.dart';
 import 'package:breez/services/injector.dart';
 import 'package:breez/theme_data.dart' as theme;
+import 'package:breez/utils/exceptions.dart';
 import 'package:breez/utils/min_font_size.dart';
 import 'package:breez/widgets/amount_form_field.dart';
 import 'package:breez/widgets/back_button.dart' as backBtn;
@@ -432,8 +433,28 @@ class CreateInvoicePageState extends State<CreateInvoicePage> {
             return;
           }
           navigator.push(loaderRoute);
-          await _handleLNUrlWithdraw(context, account, barcode);
-          navigator.removeRoute(loaderRoute);
+          await _handleLNUrlWithdraw(context, account, barcode).onError(
+            (error, stackTrace) {
+              if (loaderRoute.isActive) {
+                navigator.removeRoute(loaderRoute);
+              }
+              promptError(
+                context,
+                texts.qr_action_button_error_code_not_processed,
+                Text(
+                  texts.invoice_receive_fail_message(
+                      extractExceptionMessage(error)),
+                  style: themeData.dialogTheme.contentTextStyle,
+                ),
+              );
+            },
+          ).whenComplete(
+            () {
+              if (loaderRoute.isActive) {
+                navigator.removeRoute(loaderRoute);
+              }
+            },
+          );
         },
       );
     } catch (e) {
@@ -448,6 +469,10 @@ class CreateInvoicePageState extends State<CreateInvoicePage> {
           style: themeData.dialogTheme.contentTextStyle,
         ),
       );
+    } finally {
+      if (loaderRoute.isActive) {
+        Navigator.of(context).removeRoute(loaderRoute);
+      }
     }
   }
 
