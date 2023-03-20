@@ -29,6 +29,7 @@ Future protectAdminRoute(
   BreezUserModel user,
   String route,
 ) async {
+  final navigator = Navigator.of(context);
   if (user.appMode == AppMode.pos && user.hasAdminPassword) {
     final texts = context.texts();
     bool loggedIn = await showDialog(
@@ -40,7 +41,7 @@ Future protectAdminRoute(
       return Future.error(texts.admin_login_dialog_error_authenticate);
     }
   }
-  Navigator.of(context).pushNamed(route);
+  navigator.pushNamed(route);
 }
 
 class _AdminLoginDialog extends StatefulWidget {
@@ -150,6 +151,7 @@ class _AdminLoginDialogState extends State<_AdminLoginDialog> {
           ),
           onPressed: () async {
             if (_formKey.currentState.validate()) {
+              final navigator = Navigator.of(context);
               try {
                 var action = VerifyAdminPassword(_passwordController.text);
                 userProfileBloc.userActionsSink.add(action);
@@ -157,7 +159,7 @@ class _AdminLoginDialogState extends State<_AdminLoginDialog> {
                 if (!verified) {
                   throw texts.admin_login_dialog_error_password_incorrect;
                 }
-                Navigator.of(context).pop(true);
+                navigator.pop(true);
               } catch (err) {
                 setState(() {
                   _lastError = err.toString();

@@ -421,23 +421,23 @@ class CreateInvoicePageState extends State<CreateInvoicePage> {
     final navigator = Navigator.of(context);
     final themeData = Theme.of(context);
 
-    TransparentPageRoute loaderRoute;
+    TransparentPageRoute loaderRoute = createLoaderRoute(context);
     try {
       FocusScope.of(context).requestFocus(FocusNode());
-      String barcode = await Navigator.pushNamed<String>(context, "/qr_scan");
-      if (barcode == null) {
-        return;
-      }
-      if (barcode.isEmpty) {
-        showFlushbar(context, message: texts.invoice_qr_code_not_detected);
-        return;
-      }
-      loaderRoute = createLoaderRoute(context);
-      navigator.push(loaderRoute);
-      await _handleLNUrlWithdraw(context, account, barcode);
-      navigator.removeRoute(loaderRoute);
+      navigator.pushNamed<String>("/qr_scan").then(
+        (barcode) async {
+          if (barcode == null) return;
+          if (barcode.isEmpty) {
+            showFlushbar(context, message: texts.invoice_qr_code_not_detected);
+            return;
+          }
+          navigator.push(loaderRoute);
+          await _handleLNUrlWithdraw(context, account, barcode);
+          navigator.removeRoute(loaderRoute);
+        },
+      );
     } catch (e) {
-      if (loaderRoute != null) {
+      if (loaderRoute.isActive) {
         navigator.removeRoute(loaderRoute);
       }
       promptError(

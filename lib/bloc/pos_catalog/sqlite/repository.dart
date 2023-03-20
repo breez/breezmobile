@@ -3,6 +3,7 @@ import 'dart:io';
 
 import 'package:breez/bloc/pos_catalog/model.dart';
 import 'package:crypto/crypto.dart';
+import 'package:flutter/foundation.dart';
 import 'package:sqflite/sqflite.dart';
 
 import '../repository.dart';
@@ -13,7 +14,9 @@ class SqliteRepository implements Repository {
     Database db = await getDB();
     await db.close();
     await File(db.path).delete();
-    print("deleted ${db.path}");
+    if (kDebugMode) {
+      print("deleted ${db.path}");
+    }
   }
 
   Future replaceDB(List<Item> itemList) async {
@@ -173,7 +176,10 @@ class SqliteRepository implements Repository {
    * Helpers
    */
   Future<int> _addDBItem(
-      DatabaseExecutor executor, String tableName, DBItem item) async {
+    DatabaseExecutor executor,
+    String tableName,
+    DBItem item,
+  ) async {
     return executor.insert(
       tableName,
       item.toMap(),
@@ -181,9 +187,13 @@ class SqliteRepository implements Repository {
     );
   }
 
-  Future<int> _updateDBItem(DatabaseExecutor executor, String tableName,
-      Map<String, dynamic> toUpdate,
-      {String where, List whereArgs}) async {
+  Future<int> _updateDBItem(
+    DatabaseExecutor executor,
+    String tableName,
+    Map<String, dynamic> toUpdate, {
+    String where,
+    List whereArgs,
+  }) async {
     return executor.update(
       tableName,
       toUpdate,
@@ -193,14 +203,22 @@ class SqliteRepository implements Repository {
     );
   }
 
-  Future<int> _deleteDBItems(DatabaseExecutor executor, String table,
-      {String where, List whereArgs}) async {
+  Future<int> _deleteDBItems(
+    DatabaseExecutor executor,
+    String table, {
+    String where,
+    List whereArgs,
+  }) async {
     return await executor.delete(table, where: where, whereArgs: whereArgs);
   }
 
-  Future<List<T>> _fetchDBItems<T>(DatabaseExecutor executor, String table,
-      T Function(Map<String, dynamic>) fromMapFunc,
-      {String where, List whereArgs}) async {
+  Future<List<T>> _fetchDBItems<T>(
+    DatabaseExecutor executor,
+    String table,
+    T Function(Map<String, dynamic>) fromMapFunc, {
+    String where,
+    List whereArgs,
+  }) async {
     List<Map<String, dynamic>> items;
     if (where == null) {
       items = await executor.query(table);

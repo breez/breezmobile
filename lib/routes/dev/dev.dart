@@ -38,11 +38,15 @@ final _cliInputController = TextEditingController();
 final FocusNode _cliEntryFocusNode = FocusNode();
 
 class Choice {
-  const Choice({this.title, this.icon, this.function});
-
   final String title;
   final IconData icon;
   final Function function;
+
+  const Choice({
+    this.title,
+    this.icon,
+    this.function,
+  });
 }
 
 final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
@@ -86,42 +90,56 @@ class DevViewState extends State<DevView> {
   void _sendCommand(String command) {
     FocusScope.of(context).requestFocus(FocusNode());
     _lastCommand = command;
-    widget._breezBridge.sendCommand(command).then((reply) {
-      setState(() {
-        _showDefaultCommands = false;
-        _cliTextStyle = theme.smallTextStyle;
-        _cliText = reply;
-        _richCliText = <TextSpan>[
-          TextSpan(text: _cliText),
-        ];
-      });
-    }).catchError((error) {
-      setState(() {
-        _showDefaultCommands = false;
-        _cliText = error;
-        _cliTextStyle = theme.warningStyle;
-        _richCliText = <TextSpan>[
-          TextSpan(text: _cliText),
-        ];
-      });
-    });
+    widget._breezBridge.sendCommand(command).then(
+      (reply) {
+        setState(() {
+          _showDefaultCommands = false;
+          _cliTextStyle = theme.smallTextStyle;
+          _cliText = reply;
+          _richCliText = <TextSpan>[
+            TextSpan(text: _cliText),
+          ];
+        });
+      },
+    ).catchError(
+      (error) {
+        setState(() {
+          _showDefaultCommands = false;
+          _cliText = error;
+          _cliTextStyle = theme.warningStyle;
+          _richCliText = <TextSpan>[
+            TextSpan(text: _cliText),
+          ];
+        });
+      },
+    );
   }
 
   Widget _renderBody() {
     if (_showDefaultCommands) {
       return Theme(
-          data: Theme.of(context).copyWith(
-            dividerColor: Colors.transparent,
+        data: Theme.of(context).copyWith(
+          dividerColor: Colors.transparent,
+        ),
+        child: ListView(
+          children: defaultCliCommandsText(
+            (command) {
+              _cliInputController.text = "$command ";
+              FocusScope.of(_scaffoldKey.currentState.context)
+                  .requestFocus(_cliEntryFocusNode);
+            },
           ),
-          child: ListView(children: defaultCliCommandsText((command) {
-            _cliInputController.text = "$command ";
-            FocusScope.of(_scaffoldKey.currentState.context)
-                .requestFocus(_cliEntryFocusNode);
-          })));
+        ),
+      );
     }
     return ListView(
       children: [
-        RichText(text: TextSpan(style: _cliTextStyle, children: _richCliText))
+        RichText(
+          text: TextSpan(
+            style: _cliTextStyle,
+            children: _richCliText,
+          ),
+        )
       ],
     );
   }
@@ -135,261 +153,296 @@ class DevViewState extends State<DevView> {
     return StreamBuilder<BackupState>(
       stream: backupBloc.backupStateStream,
       builder: (ctx, backupSnapshot) => StreamBuilder(
-          stream: accBloc.accountStream,
-          builder: (accCtx, accSnapshot) {
-            AccountModel account = accSnapshot.data;
-            return StreamBuilder(
-                stream: accBloc.accountSettingsStream,
-                builder: (context, settingsSnapshot) {
-                  return StreamBuilder(
-                      stream: addFundsBloc.addFundsSettingsStream,
-                      builder: (context, addFundsSettingsSnapshot) {
-                        return StreamBuilder<BreezUserModel>(
-                            stream: userBloc.userStream,
-                            builder: (context, userSnapshot) {
-                              return Scaffold(
-                                key: _scaffoldKey,
-                                appBar: AppBar(
-                                  leading: const backBtn.BackButton(),
-                                  title: const Text("Developers"),
-                                  actions: <Widget>[
-                                    PopupMenuButton<Choice>(
-                                      onSelected: widget._select,
-                                      color: Theme.of(context)
-                                          .colorScheme
-                                          .background,
-                                      icon: Icon(
-                                        Icons.more_vert,
-                                        color:
-                                            Theme.of(context).iconTheme.color,
+        stream: accBloc.accountStream,
+        builder: (accCtx, accSnapshot) {
+          AccountModel account = accSnapshot.data;
+          return StreamBuilder(
+            stream: accBloc.accountSettingsStream,
+            builder: (context, settingsSnapshot) {
+              return StreamBuilder(
+                stream: addFundsBloc.addFundsSettingsStream,
+                builder: (context, addFundsSettingsSnapshot) {
+                  return StreamBuilder<BreezUserModel>(
+                    stream: userBloc.userStream,
+                    builder: (context, userSnapshot) {
+                      return Scaffold(
+                        key: _scaffoldKey,
+                        appBar: AppBar(
+                          leading: const backBtn.BackButton(),
+                          title: const Text("Developers"),
+                          actions: <Widget>[
+                            PopupMenuButton<Choice>(
+                              onSelected: widget._select,
+                              color: Theme.of(context).colorScheme.background,
+                              icon: Icon(
+                                Icons.more_vert,
+                                color: Theme.of(context).iconTheme.color,
+                              ),
+                              itemBuilder: (BuildContext context) {
+                                return getChoices(
+                                  accBloc,
+                                  settingsSnapshot.data,
+                                  account,
+                                  addFundsBloc,
+                                  addFundsSettingsSnapshot.data,
+                                  userBloc,
+                                  userSnapshot.data,
+                                ).map((Choice choice) {
+                                  return PopupMenuItem<Choice>(
+                                    value: choice,
+                                    child: Text(
+                                      choice.title,
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .labelLarge,
+                                    ),
+                                  );
+                                }).toList();
+                              },
+                            ),
+                          ],
+                        ),
+                        body: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          mainAxisSize: MainAxisSize.max,
+                          children: <Widget>[
+                            Padding(
+                              padding: const EdgeInsets.only(
+                                left: 10.0,
+                              ),
+                              child: Row(
+                                children: <Widget>[
+                                  Flexible(
+                                    child: TextField(
+                                      focusNode: _cliEntryFocusNode,
+                                      controller: _cliInputController,
+                                      decoration: const InputDecoration(
+                                        hintText:
+                                            'Enter a command or use the links below',
                                       ),
-                                      itemBuilder: (BuildContext context) {
-                                        return getChoices(
-                                                accBloc,
-                                                settingsSnapshot.data,
-                                                account,
-                                                addFundsBloc,
-                                                addFundsSettingsSnapshot.data,
-                                                userBloc,
-                                                userSnapshot.data)
-                                            .map((Choice choice) {
-                                          return PopupMenuItem<Choice>(
-                                            value: choice,
-                                            child: Text(choice.title,
-                                                style: Theme.of(context)
-                                                    .textTheme
-                                                    .labelLarge),
-                                          );
-                                        }).toList();
+                                      onSubmitted: (command) {
+                                        _sendCommand(command);
                                       },
                                     ),
-                                  ],
+                                  ),
+                                  IconButton(
+                                    icon: const Icon(
+                                      Icons.play_arrow,
+                                    ),
+                                    tooltip: 'Run',
+                                    onPressed: () {
+                                      _sendCommand(
+                                        _cliInputController.text,
+                                      );
+                                    },
+                                  ),
+                                  IconButton(
+                                    icon: const Icon(Icons.clear),
+                                    tooltip: 'Clear',
+                                    onPressed: () {
+                                      setState(() {
+                                        _cliInputController.clear();
+                                        _showDefaultCommands = true;
+                                        _lastCommand = '';
+                                        _cliText = "";
+                                      });
+                                    },
+                                  ),
+                                ],
+                              ),
+                            ),
+                            Expanded(
+                              flex: 1,
+                              child: Container(
+                                padding: const EdgeInsets.only(
+                                  top: 10.0,
+                                  left: 10.0,
+                                  right: 10.0,
                                 ),
-                                body: Column(
+                                child: Container(
+                                  padding: _showDefaultCommands
+                                      ? const EdgeInsets.all(0.0)
+                                      : const EdgeInsets.all(2.0),
+                                  decoration: BoxDecoration(
+                                    border: _showDefaultCommands
+                                        ? null
+                                        : Border.all(
+                                            width: 1.0,
+                                            color: const Color(0x80FFFFFF),
+                                          ),
+                                  ),
+                                  child: Column(
+                                    mainAxisSize: MainAxisSize.max,
                                     crossAxisAlignment:
                                         CrossAxisAlignment.start,
-                                    mainAxisSize: MainAxisSize.max,
                                     children: <Widget>[
-                                      Padding(
-                                        padding:
-                                            const EdgeInsets.only(left: 10.0),
-                                        child: Row(
-                                          children: <Widget>[
-                                            Flexible(
-                                                child: TextField(
-                                              focusNode: _cliEntryFocusNode,
-                                              controller: _cliInputController,
-                                              decoration: const InputDecoration(
-                                                  hintText:
-                                                      'Enter a command or use the links below'),
-                                              onSubmitted: (command) {
-                                                _sendCommand(command);
-                                              },
-                                            )),
-                                            IconButton(
-                                              icon: const Icon(
-                                                Icons.play_arrow,
-                                              ),
-                                              tooltip: 'Run',
-                                              onPressed: () {
-                                                _sendCommand(
-                                                    _cliInputController.text);
-                                              },
-                                            ),
-                                            IconButton(
-                                              icon: const Icon(Icons.clear),
-                                              tooltip: 'Clear',
-                                              onPressed: () {
-                                                setState(() {
-                                                  _cliInputController.clear();
-                                                  _showDefaultCommands = true;
-                                                  _lastCommand = '';
-                                                  _cliText = "";
-                                                });
-                                              },
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                      Expanded(
-                                          flex: 1,
-                                          child: Container(
-                                            padding: const EdgeInsets.only(
-                                                top: 10.0,
-                                                left: 10.0,
-                                                right: 10.0),
-                                            child: Container(
-                                              padding: _showDefaultCommands
-                                                  ? const EdgeInsets.all(0.0)
-                                                  : const EdgeInsets.all(2.0),
-                                              decoration: BoxDecoration(
-                                                  border: _showDefaultCommands
-                                                      ? null
-                                                      : Border.all(
-                                                          width: 1.0,
-                                                          color: const Color(
-                                                              0x80FFFFFF))),
-                                              child: Column(
-                                                mainAxisSize: MainAxisSize.max,
-                                                crossAxisAlignment:
-                                                    CrossAxisAlignment.start,
-                                                children: <Widget>[
-                                                  _showDefaultCommands
-                                                      ? Container()
-                                                      : Row(
-                                                          mainAxisAlignment:
-                                                              MainAxisAlignment
-                                                                  .end,
-                                                          children: <Widget>[
-                                                            IconButton(
-                                                              icon: const Icon(Icons
-                                                                  .content_copy),
-                                                              tooltip:
-                                                                  'Copy to Clipboard',
-                                                              iconSize: 19.0,
-                                                              onPressed: () {
-                                                                ServiceInjector()
-                                                                    .device
-                                                                    .setClipboardText(
-                                                                        _cliText);
-                                                                ScaffoldMessenger.of(
-                                                                        context)
-                                                                    .showSnackBar(
-                                                                        SnackBar(
-                                                                  content: Text(
-                                                                    'Copied to clipboard.',
-                                                                    style: theme
-                                                                        .snackBarStyle,
-                                                                  ),
-                                                                  backgroundColor:
-                                                                      theme
-                                                                          .snackBarBackgroundColor,
-                                                                  duration:
-                                                                      const Duration(
-                                                                          seconds:
-                                                                              2),
-                                                                ));
-                                                              },
-                                                            ),
-                                                            IconButton(
-                                                              icon: const Icon(
-                                                                  Icons.share),
-                                                              iconSize: 19.0,
-                                                              tooltip: 'Share',
-                                                              onPressed: () {
-                                                                _shareFile(
-                                                                    _lastCommand
-                                                                        .split(
-                                                                            " ")[0],
-                                                                    _cliText);
-                                                              },
-                                                            )
-                                                          ],
+                                      _showDefaultCommands
+                                          ? Container()
+                                          : Row(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.end,
+                                              children: <Widget>[
+                                                IconButton(
+                                                  icon: const Icon(
+                                                    Icons.content_copy,
+                                                  ),
+                                                  tooltip: 'Copy to Clipboard',
+                                                  iconSize: 19.0,
+                                                  onPressed: () {
+                                                    ServiceInjector()
+                                                        .device
+                                                        .setClipboardText(
+                                                            _cliText);
+                                                    ScaffoldMessenger.of(
+                                                            context)
+                                                        .showSnackBar(
+                                                      SnackBar(
+                                                        content: Text(
+                                                          'Copied to clipboard.',
+                                                          style: theme
+                                                              .snackBarStyle,
                                                         ),
-                                                  Expanded(child: _renderBody())
-                                                ],
-                                              ),
+                                                        backgroundColor: theme
+                                                            .snackBarBackgroundColor,
+                                                        duration:
+                                                            const Duration(
+                                                          seconds: 2,
+                                                        ),
+                                                      ),
+                                                    );
+                                                  },
+                                                ),
+                                                IconButton(
+                                                  icon: const Icon(
+                                                    Icons.share,
+                                                  ),
+                                                  iconSize: 19.0,
+                                                  tooltip: 'Share',
+                                                  onPressed: () {
+                                                    _shareFile(
+                                                      _lastCommand
+                                                          .split(" ")[0],
+                                                      _cliText,
+                                                    );
+                                                  },
+                                                )
+                                              ],
                                             ),
-                                          )),
-                                    ]),
-                              );
-                            });
-                      });
-                });
-          }),
+                                      Expanded(child: _renderBody())
+                                    ],
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      );
+                    },
+                  );
+                },
+              );
+            },
+          );
+        },
+      ),
     );
   }
 
   List<Choice> getChoices(
-      AccountBloc accBloc,
-      AccountSettings settings,
-      AccountModel account,
-      AddFundsBloc addFundsBloc,
-      AddFundsSettings addFundsSettings,
-      UserProfileBloc userBloc,
-      BreezUserModel userModel) {
+    AccountBloc accBloc,
+    AccountSettings settings,
+    AccountModel account,
+    AddFundsBloc addFundsBloc,
+    AddFundsSettings addFundsSettings,
+    UserProfileBloc userBloc,
+    BreezUserModel userModel,
+  ) {
     List<Choice> choices = <Choice>[];
-    choices.addAll([
-      const Choice(title: 'Share Logs', icon: Icons.share, function: shareLog),
-      /*
-      Choice(
+    choices.addAll(
+      [
+        const Choice(
+          title: 'Share Logs',
+          icon: Icons.share,
+          function: shareLog,
+        ),
+        /*Choice(
           title: 'Show Initial Screen',
           icon: Icons.phone_android,
-          function: _gotoInitialScreen),
-      Choice(
+          function: _gotoInitialScreen,
+        ),
+        Choice(
           title:
               '${settings.showConnectProgress ? "Hide" : "Show"} Connect Progress',
           icon: Icons.phone_android,
           function: () {
             toggleConnectProgress(accBloc, settings);
-          }),
-          */
-      Choice(
+          },
+        ),*/
+        Choice(
           title: 'Describe Graph',
           icon: Icons.phone_android,
-          function: _describeGraph),
-      Choice(
+          function: _describeGraph,
+        ),
+        Choice(
           title: 'Update Graph',
           icon: Icons.phone_android,
-          function: _refreshGraph),
-      Choice(
+          function: _refreshGraph,
+        ),
+        Choice(
           title: 'Clear Downloads',
           icon: Icons.phone_android,
-          function: _deleteInProgressDownloads)
-    ]);
-
+          function: _deleteInProgressDownloads,
+        )
+      ],
+    );
     if (Platform.isAndroid) {
-      choices.add(Choice(
+      choices.add(
+        Choice(
           title: 'Battery Optimization',
           icon: Icons.phone_android,
-          function: _showOptimizationsSettings));
+          function: _showOptimizationsSettings,
+        ),
+      );
     }
     if (settings.ignoreWalletBalance) {
-      choices.add(Choice(
+      choices.add(
+        Choice(
           title: "Show Excess Funds",
           icon: Icons.phone_android,
-          function: () => _setShowExcessFunds(accBloc, settings)));
+          function: () => _setShowExcessFunds(accBloc, settings),
+        ),
+      );
     }
     if (settings.failedPaymentBehavior != BugReportBehavior.PROMPT) {
-      choices.add(Choice(
+      choices.add(
+        Choice(
           title: 'Reset Payment Report',
           icon: Icons.phone_android,
           function: () {
             _resetBugReportBehavior(accBloc, settings);
-          }));
+          },
+        ),
+      );
     }
-    choices.add(Choice(
+    choices.add(
+      Choice(
         title:
             "${addFundsSettings.moonpayIpCheck ? "Disable" : "Enable"} MoonPay IP Check",
         icon: Icons.network_check,
-        function: () => _enableMoonpayIpCheck(addFundsBloc, addFundsSettings)));
-    choices.add(Choice(
+        function: () => _enableMoonpayIpCheck(addFundsBloc, addFundsSettings),
+      ),
+    );
+    choices.add(
+      Choice(
         title: 'Reset Refunds Status',
         icon: Icons.phone_android,
         function: () {
           allowRebroadcastRefunds = true;
-        }));
-    choices.add(Choice(
+        },
+      ),
+    );
+    choices.add(
+      Choice(
         title: "Recover Chain Information",
         icon: Icons.phone_android,
         function: () async {
@@ -397,23 +450,31 @@ class DevViewState extends State<DevView> {
           accBloc.userActionsSink.add(resetAction);
           await resetAction.future;
           _promptForRestart();
-        }));
-    choices.add(Choice(
+        },
+      ),
+    );
+    choices.add(
+      Choice(
         title: "Refresh Private Channels",
         icon: Icons.phone_android,
         function: () async {
           await widget._breezBridge.populateChannelPolicy();
-        }));
-    choices.add(Choice(
+        },
+      ),
+    );
+    choices.add(
+      Choice(
         title: "Reset Unconfirmed Swap",
         icon: Icons.phone_android,
         function: () async {
           await widget._breezBridge.setNonBlockingUnconfirmedSwaps();
           await widget._breezBridge
               .resetUnconfirmedReverseSwapClaimTransaction();
-        }));
-
-    choices.add(Choice(
+        },
+      ),
+    );
+    choices.add(
+      Choice(
         title: "Export DB Files",
         icon: Icons.phone_android,
         function: () async {
@@ -434,47 +495,54 @@ class DevViewState extends State<DevView> {
           encoder.close();
           final zipFile = XFile(zipFilePath);
           Share.shareXFiles([zipFile]);
-        }));
-
-    choices.add(Choice(
-      title: "Export Product Catalog DB",
-      icon: Icons.file_upload,
-      function: () async {
-        final databasePath = await getDatabasePath();
-        final databaseFile = XFile(databasePath);
-        Share.shareXFiles([databaseFile]);
-      },
-    ));
-
-    choices.add(Choice(
-      title: "Import Product Catalog DB",
-      icon: Icons.file_download,
-      function: () async {
-        final fileResult = await FilePicker.platform.pickFiles(
-          dialogTitle: "Select Product Catalog DB",
-        );
-        if (fileResult != null && fileResult.files.isNotEmpty) {
-          final file = fileResult.files.first;
-          if (file.path.endsWith(".db")) {
-            final databasePath = await getDatabasePath();
-            await File(file.path).copy(databasePath);
+        },
+      ),
+    );
+    choices.add(
+      Choice(
+        title: "Export Product Catalog DB",
+        icon: Icons.file_upload,
+        function: () async {
+          final databasePath = await getDatabasePath();
+          final databaseFile = XFile(databasePath);
+          Share.shareXFiles([databaseFile]);
+        },
+      ),
+    );
+    choices.add(
+      Choice(
+        title: "Import Product Catalog DB",
+        icon: Icons.file_download,
+        function: () async {
+          final fileResult = await FilePicker.platform.pickFiles(
+            dialogTitle: "Select Product Catalog DB",
+          );
+          if (fileResult != null && fileResult.files.isNotEmpty) {
+            final file = fileResult.files.first;
+            if (file.path.endsWith(".db")) {
+              final databasePath = await getDatabasePath();
+              await File(file.path).copy(databasePath);
+            } else {
+              log.warning("Invalid file type for product catalog DB");
+            }
           } else {
-            log.warning("Invalid file type for product catalog DB");
+            log.info("No file selected for product catalog DB");
           }
-        } else {
-          log.info("No file selected for product catalog DB");
-        }
-      },
-    ));
-
-    choices.add(Choice(
+        },
+      ),
+    );
+    choices.add(
+      Choice(
         title: 'Reset POS DB',
         icon: Icons.phone_android,
         function: () {
           PosCatalogBloc bloc = AppBlocsProvider.of<PosCatalogBloc>(context);
           bloc.resetDB();
-        }));
-    choices.add(Choice(
+        },
+      ),
+    );
+    choices.add(
+      Choice(
         title: "Set Height Hint",
         icon: Icons.phone_android,
         function: () async {
@@ -484,38 +552,53 @@ class DevViewState extends State<DevView> {
           if (success == true) {
             _promptForRestart();
           }
-        }));
-    choices.add(Choice(
+        },
+      ),
+    );
+    choices.add(
+      Choice(
         title: "Restore Channels",
         icon: Icons.phone_android,
         function: () async {
           _restoreChannelsBackup();
-        }));
-    choices.add(Choice(
+        },
+      ),
+    );
+    choices.add(
+      Choice(
         title: 'Show Tutorials',
         icon: Icons.phone_android,
         function: () {
           UserProfileBloc bloc = AppBlocsProvider.of<UserProfileBloc>(context);
           bloc.userActionsSink.add(SetSeenPaymentStripTutorial(false));
-        }));
-    choices.add(Choice(
+        },
+      ),
+    );
+    choices.add(
+      Choice(
         title: 'Log Cache',
         icon: Icons.phone_android,
-        function: _printCacheUsage));
-
-    choices.add(Choice(
+        function: _printCacheUsage,
+      ),
+    );
+    choices.add(
+      Choice(
         title: 'Download Backup',
         icon: Icons.phone_android,
         function: () {
           _downloadSnapshot(accBloc);
-        }));
-
-    choices.add(Choice(
+        },
+      ),
+    );
+    choices.add(
+      Choice(
         title: 'Reset Top Podcasts DB',
         icon: Icons.phone_android,
         function: () {
           PodcastHistoryDatabase.instance.resetDatabase();
-        }));
+        },
+      ),
+    );
 
     return choices;
   }
@@ -541,26 +624,43 @@ class DevViewState extends State<DevView> {
     widget._permissionsService.requestOptimizationSettings();
   }
 
-  void toggleConnectProgress(AccountBloc bloc, AccountSettings settings) {
+  void toggleConnectProgress(
+    AccountBloc bloc,
+    AccountSettings settings,
+  ) {
     bloc.accountSettingsSink.add(
-        settings.copyWith(showConnectProgress: !settings.showConnectProgress));
+      settings.copyWith(showConnectProgress: !settings.showConnectProgress),
+    );
   }
 
-  void _resetBugReportBehavior(AccountBloc bloc, AccountSettings settings) {
+  void _resetBugReportBehavior(
+    AccountBloc bloc,
+    AccountSettings settings,
+  ) {
     bloc.accountSettingsSink.add(
-        settings.copyWith(failedPaymentBehavior: BugReportBehavior.PROMPT));
+      settings.copyWith(failedPaymentBehavior: BugReportBehavior.PROMPT),
+    );
   }
 
-  void _setShowExcessFunds(AccountBloc bloc, AccountSettings settings,
-      {bool ignore = false}) {
-    bloc.accountSettingsSink
-        .add(settings.copyWith(ignoreWalletBalance: ignore));
+  void _setShowExcessFunds(
+    AccountBloc bloc,
+    AccountSettings settings, {
+    bool ignore = false,
+  }) {
+    bloc.accountSettingsSink.add(
+      settings.copyWith(ignoreWalletBalance: ignore),
+    );
   }
 
   void _enableMoonpayIpCheck(
-      AddFundsBloc bloc, AddFundsSettings addFundsSettings) {
-    bloc.addFundsSettingsSink.add(addFundsSettings.copyWith(
-        moonpayIpCheck: !addFundsSettings.moonpayIpCheck));
+    AddFundsBloc bloc,
+    AddFundsSettings addFundsSettings,
+  ) {
+    bloc.addFundsSettingsSink.add(
+      addFundsSettings.copyWith(
+        moonpayIpCheck: !addFundsSettings.moonpayIpCheck,
+      ),
+    );
   }
 
   void _restoreChannelsBackup() async {
@@ -569,15 +669,17 @@ class DevViewState extends State<DevView> {
   }
 
   void _describeGraph() async {
+    final navigator = Navigator.of(context);
+    final loaderRoute = createLoaderRoute(
+      context,
+      message: "Generating graph data...",
+      opacity: 0.8,
+    );
     Directory tempDir = await getTemporaryDirectory();
     tempDir = await tempDir.createTemp("graph");
     bool userCancelled = false;
     String filePath = '${tempDir.path}/graph.json';
-    Navigator.push(
-            context,
-            createLoaderRoute(context,
-                message: "Generating graph data...", opacity: 0.8))
-        .whenComplete(() => userCancelled = true);
+    navigator.push(loaderRoute).whenComplete(() => userCancelled = true);
 
     widget._breezBridge
         .sendCommand("describegraph $filePath --include_unannounced")
@@ -619,12 +721,17 @@ class DevViewState extends State<DevView> {
   }
 
   void _refreshGraph() async {
+    final navigator = Navigator.of(context);
+    final loaderRoute = createLoaderRoute(
+      context,
+      message: "Deleting graph...",
+      opacity: 0.8,
+    );
     await FlutterDownloader.cancelAll();
     await widget._breezBridge.deleteDownloads();
-    Navigator.push(context,
-        createLoaderRoute(context, message: "Deleting graph...", opacity: 0.8));
+    navigator.push(loaderRoute);
     widget._breezBridge.deleteGraph().whenComplete(() {
-      Navigator.pop(context);
+      navigator.pop();
       _promptForRestart();
     });
   }
@@ -643,14 +750,16 @@ class DevViewState extends State<DevView> {
       var childStats = await child.stat();
       var idDir = (child is Directory);
       log.info(
-          '${idDir ? "Directory - " : "File - "} path: ${child.path}: ${childStats.size / 1024}kb');
+        '${idDir ? "Directory - " : "File - "} path: ${child.path}: ${childStats.size / 1024}kb',
+      );
       if (child is Directory) {
         var secondLevelChildren = child.listSync();
         for (var secondLevelChild in secondLevelChildren) {
           var idChildDir = (secondLevelChild is Directory);
           var secondLevelChildStats = await secondLevelChild.stat();
           log.info(
-              "\t${idChildDir ? "Directory - " : "File - "} path: ${secondLevelChild.path}: ${secondLevelChildStats.size / 1024}kb");
+            "\t${idChildDir ? "Directory - " : "File - "} path: ${secondLevelChild.path}: ${secondLevelChildStats.size / 1024}kb",
+          );
         }
       }
     }
@@ -658,17 +767,21 @@ class DevViewState extends State<DevView> {
 
   Future _promptForRestart() {
     return promptAreYouSure(
-            context,
-            null,
-            Text("Please restart to resynchronize Breez.",
-                style: Theme.of(context).dialogTheme.contentTextStyle),
-            cancelText: "CANCEL",
-            okText: "EXIT BREEZ")
-        .then((shouldExit) {
-      if (shouldExit) {
-        exit(0);
-      }
-      return;
-    });
+      context,
+      null,
+      Text(
+        "Please restart to resynchronize Breez.",
+        style: Theme.of(context).dialogTheme.contentTextStyle,
+      ),
+      cancelText: "CANCEL",
+      okText: "EXIT BREEZ",
+    ).then(
+      (shouldExit) {
+        if (shouldExit) {
+          exit(0);
+        }
+        return;
+      },
+    );
   }
 }

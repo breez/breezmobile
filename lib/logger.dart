@@ -6,7 +6,7 @@ import 'dart:io';
 import 'package:breez/services/breezlib/breez_bridge.dart';
 import 'package:breez/services/injector.dart';
 import 'package:breez_translations/breez_translations_locales.dart';
-import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
 import 'package:logging/logging.dart';
 import 'package:share_plus/share_plus.dart';
 
@@ -41,12 +41,13 @@ class BreezLogger {
     Logger.root.level = Level.ALL;
     Logger.root.onRecord.listen((LogRecord rec) {
       breezBridge.log(rec.message, rec.level.name);
-      print(rec.message);
     });
     // Log flutter errors
     FlutterError.onError = (FlutterErrorDetails details) {
       if (details == null) {
-        print("Ignore log, details is null");
+        if (kDebugMode) {
+          print("Ignore log, details is null");
+        }
         return;
       }
       FlutterError.presentError(details);
@@ -54,7 +55,6 @@ class BreezLogger {
       final name = details.context?.name ?? "FlutterError";
       final exception = details.exceptionAsString();
       breezBridge.log('$exception\n$stack', name);
-      print("$exception\n$stack --$name");
     };
   }
 }

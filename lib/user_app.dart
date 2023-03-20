@@ -147,20 +147,23 @@ class UserApp extends StatelessWidget {
                           userProfileBloc.userActionsSink.add(validateAction);
                           return validateAction.future.then((_) {
                             Navigator.pop(ctx);
-                            userProfileBloc.userActionsSink
-                                .add(SetLockState(false));
+                            userProfileBloc.userActionsSink.add(
+                              SetLockState(false),
+                            );
                           });
                         },
                         onFingerprintEntered:
                             user.securityModel.isFingerprintEnabled
                                 ? (isValid) async {
                                     if (isValid) {
+                                      final navigator = Navigator.of(ctx);
                                       await Future.delayed(
                                         const Duration(milliseconds: 200),
                                       );
-                                      Navigator.pop(ctx);
-                                      userProfileBloc.userActionsSink
-                                          .add(SetLockState(false));
+                                      navigator.pop();
+                                      userProfileBloc.userActionsSink.add(
+                                        SetLockState(false),
+                                      );
                                     }
                                   }
                                 : null,

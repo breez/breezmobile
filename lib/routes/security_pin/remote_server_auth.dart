@@ -94,161 +94,162 @@ class RemoteServerAuthPageState extends State<RemoteServerAuthPage> {
     final nav = Navigator.of(context);
 
     return StreamBuilder<BackupSettings>(
-        stream: widget._backupBloc.backupSettingsStream,
-        builder: (context, snapshot) {
-          return Scaffold(
-              appBar: AppBar(
-                automaticallyImplyLeading: false,
-                leading: backBtn.BackButton(
-                  onPressed: () {
-                    nav.pop(null);
-                  },
-                ),
-                title: Text(texts.remote_server_title),
-              ),
-              body: SingleChildScrollView(
-                reverse: true,
-                child: StreamBuilder<BackupSettings>(
-                  stream: widget._backupBloc.backupSettingsStream,
-                  builder: (context, snapshot) {
-                    var settings = snapshot.data;
-                    if (settings == null) {
-                      return const Loader();
-                    }
-                    return GestureDetector(
-                      behavior: HitTestBehavior.opaque,
-                      onTap: () =>
-                          FocusScope.of(context).requestFocus(FocusNode()),
-                      child: Form(
-                        key: _formKey,
-                        child: Padding(
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: 16.0,
-                            vertical: 16.0,
-                          ),
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              _formFieldUrl(context),
-                              _formFieldUserName(context),
-                              _formFieldPassword(context),
-                            ],
-                          ),
-                        ),
+      stream: widget._backupBloc.backupSettingsStream,
+      builder: (context, snapshot) {
+        return Scaffold(
+          appBar: AppBar(
+            automaticallyImplyLeading: false,
+            leading: backBtn.BackButton(
+              onPressed: () {
+                nav.pop(null);
+              },
+            ),
+            title: Text(texts.remote_server_title),
+          ),
+          body: SingleChildScrollView(
+            reverse: true,
+            child: StreamBuilder<BackupSettings>(
+              stream: widget._backupBloc.backupSettingsStream,
+              builder: (context, snapshot) {
+                var settings = snapshot.data;
+                if (settings == null) {
+                  return const Loader();
+                }
+                return GestureDetector(
+                  behavior: HitTestBehavior.opaque,
+                  onTap: () => FocusScope.of(context).requestFocus(FocusNode()),
+                  child: Form(
+                    key: _formKey,
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 16.0,
+                        vertical: 16.0,
                       ),
-                    );
-                  },
-                ),
-              ),
-              bottomNavigationBar: Padding(
-                padding: const EdgeInsets.only(bottom: 0.0),
-                child: SingleButtonBottomBar(
-                    stickToBottom: true,
-                    text: widget.restore
-                        ? texts.remote_server_action_restore
-                        : texts.remote_server_action_save,
-                    onPressed: () async {
-                      Uri uri = Uri.parse(_urlController.text);
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          _formFieldUrl(context),
+                          _formFieldUserName(context),
+                          _formFieldPassword(context),
+                        ],
+                      ),
+                    ),
+                  ),
+                );
+              },
+            ),
+          ),
+          bottomNavigationBar: Padding(
+            padding: const EdgeInsets.only(bottom: 0.0),
+            child: SingleButtonBottomBar(
+              stickToBottom: true,
+              text: widget.restore
+                  ? texts.remote_server_action_restore
+                  : texts.remote_server_action_save,
+              onPressed: () async {
+                final navigator = Navigator.of(context);
+                var loader = createLoaderRoute(
+                  context,
+                  message: "Testing connection",
+                  opacity: 0.8,
+                );
+                Uri uri = Uri.parse(_urlController.text);
 
-                      bool connectionWarningResponse = true;
-                      bool isAndroid = Platform.isAndroid;
-                      if (isAndroid) {
-                        if (uri.host.endsWith('onion') &&
-                            widget._torBloc.torConfig == null) {
-                          await promptError(
+                bool connectionWarningResponse = true;
+                bool isAndroid = Platform.isAndroid;
+                if (isAndroid) {
+                  if (uri.host.endsWith('onion') &&
+                      widget._torBloc.torConfig == null) {
+                    await promptError(
+                      context,
+                      texts.remote_server_warning_connection_title,
+                      Text(
+                        texts.remote_server_warning_onion_message,
+                        style: Theme.of(context).dialogTheme.contentTextStyle,
+                      ),
+                      optionText: texts
+                          .remote_server_onion_warning_dialog_default_action_cancel,
+                      optionFunc: () {
+                        connectionWarningResponse = false;
+                        navigator.pop();
+                      },
+                      okText: texts.remote_server_onion_warning_dialog_settings,
+                      okFunc: () async {
+                        connectionWarningResponse = false;
+                        navigator.push(
+                          FadeInRoute(
+                            builder: (_) => withBreezTheme(
                               context,
-                              texts.remote_server_warning_connection_title,
-                              Text(
-                                texts.remote_server_warning_onion_message,
-                                style: Theme.of(context)
-                                    .dialogTheme
-                                    .contentTextStyle,
-                              ),
-                              optionText: texts
-                                  .remote_server_onion_warning_dialog_default_action_cancel,
-                              optionFunc: () {
-                                connectionWarningResponse = false;
-                                Navigator.pop(context);
-                              },
-                              okText: texts
-                                  .remote_server_onion_warning_dialog_settings,
-                              okFunc: () async {
-                                connectionWarningResponse = false;
-                                Navigator.of(context).push(
-                                  FadeInRoute(
-                                    builder: (_) => withBreezTheme(
-                                      context,
-                                      const NetworkPage(),
-                                    ),
-                                  ),
-                                );
-                                return false;
-                              });
-                        }
-                      }
-                      if (!uri.host.endsWith('.onion') &&
-                          uri.scheme == 'http') {
-                        connectionWarningResponse = await promptAreYouSure(
-                          context,
-                          texts.remote_server_warning_connection_title,
-                          Text(
-                            texts.remote_server_warning_connection_message,
+                              const NetworkPage(),
+                            ),
                           ),
                         );
-                      }
-                      if (connectionWarningResponse) {
-                        failDiscoverURL = false;
-                        failAuthenticate = false;
-                        failNoBackupFound = false;
-                        if (_formKey.currentState.validate()) {
-                          final newSettings = snapshot.data.copyWith(
-                            remoteServerAuthData: RemoteServerAuthData(
-                              uri.toString(),
-                              _userController.text,
-                              _passwordController.text,
-                              BREEZ_BACKUP_DIR,
-                            ),
-                          );
+                        return false;
+                      },
+                    );
+                  }
+                }
+                if (!uri.host.endsWith('.onion') && uri.scheme == 'http') {
+                  connectionWarningResponse = await promptAreYouSure(
+                    context,
+                    texts.remote_server_warning_connection_title,
+                    Text(
+                      texts.remote_server_warning_connection_message,
+                    ),
+                  );
+                }
+                if (connectionWarningResponse) {
+                  failDiscoverURL = false;
+                  failAuthenticate = false;
+                  failNoBackupFound = false;
+                  if (_formKey.currentState.validate()) {
+                    final newSettings = snapshot.data.copyWith(
+                      remoteServerAuthData: RemoteServerAuthData(
+                        uri.toString(),
+                        _userController.text,
+                        _passwordController.text,
+                        BREEZ_BACKUP_DIR,
+                      ),
+                    );
+                    navigator.push(loader);
+                    discoverURL(newSettings.remoteServerAuthData).then(
+                      (value) async {
+                        nav.removeRoute(loader);
 
-                          var loader = createLoaderRoute(
-                            context,
-                            message: "Testing connection",
-                            opacity: 0.8,
-                          );
-                          Navigator.push(context, loader);
-                          discoverURL(newSettings.remoteServerAuthData)
-                              .then((value) async {
-                            nav.removeRoute(loader);
-
-                            final error = value.authError;
-                            if (error == DiscoverResult.SUCCESS) {
-                              Navigator.pop(context, value.authData);
-                            }
-                            setState(() {
-                              failDiscoverURL =
-                                  error == DiscoverResult.INVALID_URL;
-                              failAuthenticate =
-                                  error == DiscoverResult.INVALID_AUTH;
-                              failNoBackupFound =
-                                  error == DiscoverResult.BACKUP_NOT_FOUND;
-                            });
-                            _formKey.currentState.validate();
-                          }).catchError((err) {
-                            nav.removeRoute(loader);
-                            promptError(
-                                context,
-                                texts.remote_server_error_remote_server_title,
-                                Text(
-                                  texts
-                                      .remote_server_error_remote_server_message,
-                                ));
-                          });
+                        final error = value.authError;
+                        if (error == DiscoverResult.SUCCESS) {
+                          navigator.pop(value.authData);
                         }
-                      }
-                    }),
-              ));
-        });
+                        setState(() {
+                          failDiscoverURL = error == DiscoverResult.INVALID_URL;
+                          failAuthenticate =
+                              error == DiscoverResult.INVALID_AUTH;
+                          failNoBackupFound =
+                              error == DiscoverResult.BACKUP_NOT_FOUND;
+                        });
+                        _formKey.currentState.validate();
+                      },
+                    ).catchError(
+                      (err) {
+                        nav.removeRoute(loader);
+                        promptError(
+                          context,
+                          texts.remote_server_error_remote_server_title,
+                          Text(
+                            texts.remote_server_error_remote_server_message,
+                          ),
+                        );
+                      },
+                    );
+                  }
+                }
+              },
+            ),
+          ),
+        );
+      },
+    );
   }
 
   Widget _formFieldUrl(BuildContext context) {

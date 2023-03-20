@@ -632,20 +632,27 @@ class POSInvoiceState extends State<POSInvoice> with TickerProviderStateMixin {
       ),
     ).then((res) {
       if (res?.paid == true) {
-        Navigator.of(context).push(TransparentPageRoute((context) {
-          return SuccessfulPaymentRoute(
-            onPrint: () async {
-              PaymentInfo paymentInfo = await _findPayment(payReq.paymentHash);
-              PrintParameters printParameters = PrintParameters(
-                currentUser: user,
-                account: account,
-                submittedSale: submittedSale,
-                paymentInfo: paymentInfo,
+        Navigator.of(context).push(
+          TransparentPageRoute(
+            (context) {
+              return SuccessfulPaymentRoute(
+                onPrint: () async {
+                  return await _findPayment(payReq.paymentHash).then(
+                    (paymentInfo) {
+                      PrintParameters printParameters = PrintParameters(
+                        currentUser: user,
+                        account: account,
+                        submittedSale: submittedSale,
+                        paymentInfo: paymentInfo,
+                      );
+                      return PrintService(printParameters).printAsPDF(context);
+                    },
+                  );
+                },
               );
-              return PrintService(printParameters).printAsPDF(context);
             },
-          );
-        }));
+          ),
+        );
       }
       if (res?.clearSale == true) {
         _clearSale();
@@ -657,10 +664,12 @@ class POSInvoiceState extends State<POSInvoice> with TickerProviderStateMixin {
 
   Future<PaymentInfo> _findPayment(String paymentHash) async {
     AccountBloc accountBloc = AppBlocsProvider.of<AccountBloc>(context);
-    PaymentsModel paymentsModel = await accountBloc.paymentsStream
-        .firstWhere((paymentsModel) => paymentsModel != null);
-    return paymentsModel.paymentsList
-        .firstWhere((paymentInfo) => paymentInfo.paymentHash == paymentHash);
+    PaymentsModel paymentsModel = await accountBloc.paymentsStream.firstWhere(
+      (paymentsModel) => paymentsModel != null,
+    );
+    return paymentsModel.paymentsList.firstWhere(
+      (paymentInfo) => paymentInfo.paymentHash == paymentHash,
+    );
   }
 
   void _addItem(

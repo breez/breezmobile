@@ -79,13 +79,16 @@ class PodcastHistoryBloc with AsyncActionsHandler {
     _podcastHistoryRange.add(action.range);
   }
 
-  fetchPodcastHistory(
-      {DateTime startDate,
-      DateTime endDate,
-      PodcastHistorySortEnum sortOption}) async {
+  fetchPodcastHistory({
+    DateTime startDate,
+    DateTime endDate,
+    PodcastHistorySortEnum sortOption,
+  }) async {
     _showShareButton.add(false);
-    var podcastList = await PodcastHistoryDatabase.instance
-        .readAllHistory(filterStartDate: startDate, filterEndDate: endDate);
+    var podcastList = await PodcastHistoryDatabase.instance.readAllHistory(
+      filterStartDate: startDate,
+      filterEndDate: endDate,
+    );
 
     ///These "total" values contains sum of the respective values present in history list.
     /// In UI these are displayed on top
@@ -100,10 +103,11 @@ class PodcastHistoryBloc with AsyncActionsHandler {
     }
 
     PodcastHistoryRecord podcastHistoryRecord = PodcastHistoryRecord(
-        totalSatsStreamedSum: totalSatsSum,
-        totalBoostagramSentSum: totalBoostagramSum,
-        totalDurationInMinsSum: totalDurationSum,
-        podcastHistoryList: podcastList);
+      totalSatsStreamedSum: totalSatsSum,
+      totalBoostagramSentSum: totalBoostagramSum,
+      totalDurationInMinsSum: totalDurationSum,
+      podcastHistoryList: podcastList,
+    );
     _podcastHistoryRecordBuffer = podcastHistoryRecord;
 
     _sortList(PodcastHistorySortEnum.SORT_RECENTLY_HEARD);

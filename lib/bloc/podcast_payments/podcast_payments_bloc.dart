@@ -128,8 +128,9 @@ class PodcastPaymentsBloc with AsyncActionsHandler {
       }
 
       // if minutes increased
-      print(
-          "nextPaidMinutes = $nextPaidMinutes playbackSpeed=$playbackSpeed time = ${_listeningTime[currentPlayedEpisode.contentUrl].floor()}");
+      log.info(
+        "nextPaidMinutes = $nextPaidMinutes playbackSpeed=$playbackSpeed time = ${_listeningTime[currentPlayedEpisode.contentUrl].floor()}",
+      );
       if (nextPaidMinutes > paidMinutes) {
         log.info("paying recipients $nextPaidMinutes");
         final value = await _getLightningPaymentValue(currentPlayedEpisode);
@@ -368,14 +369,15 @@ class PodcastPaymentsBloc with AsyncActionsHandler {
 
   /// Saves the podcast data to local storage.
   /// If a boostagram is sent then the number of boostagram is incremented
-  Future _addToPodcastHistory(
-      {String podcastId,
-      String podcastName,
-      String podcastImageUrl,
-      int satsSpent,
-      String podcastUrl,
-      double durationInMins,
-      bool isBoost = false}) async {
+  Future _addToPodcastHistory({
+    String podcastId,
+    String podcastName,
+    String podcastImageUrl,
+    int satsSpent,
+    String podcastUrl,
+    double durationInMins,
+    bool isBoost = false,
+  }) async {
     final podcastHistoryItem = PodcastHistoryModel(
         podcastId: podcastId,
         podcastUrl: podcastUrl,

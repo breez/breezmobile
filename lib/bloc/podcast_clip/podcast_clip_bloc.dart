@@ -101,8 +101,9 @@ class PodcastClipBloc with AsyncActionsHandler {
     setPodcastClipDuration(durationInSeconds: decrementedClipDuration);
   }
 
-  Future<String> _getAudioClipPath(
-      {PodcastClipDetailsModel clipDetails}) async {
+  Future<String> _getAudioClipPath({
+    PodcastClipDetailsModel clipDetails,
+  }) async {
     var clipDetails = getCurrentPodcastClipDetails();
 
     String episodeUrl = clipDetails.episodeDetails.contentUrl;
@@ -237,8 +238,10 @@ class PodcastClipBloc with AsyncActionsHandler {
         .add(clipDetails.copy(podcastClipState: clipState));
   }
 
-  Future<String> initClipDirectory(
-      {bool isVideoClip, bool createDirectory = true}) async {
+  Future<String> initClipDirectory({
+    bool isVideoClip,
+    bool createDirectory = true,
+  }) async {
     Directory tempDirectory = await getTemporaryDirectory();
 
     String tempClipPath = isVideoClip ? '/VideoClip' : '/tempAudioClip';

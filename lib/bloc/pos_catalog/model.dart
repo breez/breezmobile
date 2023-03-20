@@ -33,22 +33,30 @@ class Item implements DBItem {
   final String currency;
   final double price;
 
-  Item(
-      {this.id, this.name, this.sku, this.imageURL, this.currency, this.price});
+  Item({
+    this.id,
+    this.name,
+    this.sku,
+    this.imageURL,
+    this.currency,
+    this.price,
+  });
 
-  Item copyWith(
-      {String name,
-      String sku,
-      String imageURL,
-      String currency,
-      double price}) {
+  Item copyWith({
+    String name,
+    String sku,
+    String imageURL,
+    String currency,
+    double price,
+  }) {
     return Item(
-        id: id,
-        name: name ?? this.name,
-        sku: sku ?? this.sku,
-        imageURL: imageURL ?? this.imageURL,
-        currency: currency ?? this.currency,
-        price: price ?? this.price);
+      id: id,
+      name: name ?? this.name,
+      sku: sku ?? this.sku,
+      imageURL: imageURL ?? this.imageURL,
+      currency: currency ?? this.currency,
+      price: price ?? this.price,
+    );
   }
 
   Item.fromMap(Map<String, dynamic> json)
@@ -90,39 +98,42 @@ class SaleLine implements DBItem {
 
   bool get isCustom => itemID == null;
 
-  SaleLine(
-      {this.id,
-      this.saleID,
-      this.itemID,
-      this.itemName,
-      this.itemSKU,
-      this.quantity,
-      this.itemImageURL,
-      this.pricePerItem,
-      this.currency,
-      this.satConversionRate});
+  SaleLine({
+    this.id,
+    this.saleID,
+    this.itemID,
+    this.itemName,
+    this.itemSKU,
+    this.quantity,
+    this.itemImageURL,
+    this.pricePerItem,
+    this.currency,
+    this.satConversionRate,
+  });
 
-  SaleLine copyWith(
-      {int id,
-      int saleID,
-      String itemName,
-      String itemSKU,
-      int quantity,
-      String itemImageURL,
-      double pricePerItem,
-      String currency,
-      double satConversionRate}) {
+  SaleLine copyWith({
+    int id,
+    int saleID,
+    String itemName,
+    String itemSKU,
+    int quantity,
+    String itemImageURL,
+    double pricePerItem,
+    String currency,
+    double satConversionRate,
+  }) {
     return SaleLine(
-        id: id != null && id < 0 ? null : this.id,
-        saleID: saleID ?? this.saleID,
-        itemID: itemID,
-        itemName: itemName ?? this.itemName,
-        itemSKU: itemSKU ?? this.itemSKU,
-        quantity: quantity ?? this.quantity,
-        itemImageURL: itemImageURL ?? this.itemImageURL,
-        pricePerItem: pricePerItem ?? this.pricePerItem,
-        currency: currency ?? this.currency,
-        satConversionRate: satConversionRate ?? this.satConversionRate);
+      id: id != null && id < 0 ? null : this.id,
+      saleID: saleID ?? this.saleID,
+      itemID: itemID,
+      itemName: itemName ?? this.itemName,
+      itemSKU: itemSKU ?? this.itemSKU,
+      quantity: quantity ?? this.quantity,
+      itemImageURL: itemImageURL ?? this.itemImageURL,
+      pricePerItem: pricePerItem ?? this.pricePerItem,
+      currency: currency ?? this.currency,
+      satConversionRate: satConversionRate ?? this.satConversionRate,
+    );
   }
 
   SaleLine copyNew() {
@@ -266,14 +277,15 @@ class Sale implements DBItem {
         saleLines.where((element) => element.itemID == null).length;
     var newSaleLines = saleLines.toList()
       ..add(SaleLine(
-          itemName: getSystemAppLocalizations().pos_custom_item_name(
-            customItemsCount + 1,
-          ),
-          saleID: id,
-          pricePerItem: price,
-          quantity: 1,
-          currency: currency,
-          satConversionRate: satConversionRate));
+        itemName: getSystemAppLocalizations().pos_custom_item_name(
+          customItemsCount + 1,
+        ),
+        saleID: id,
+        pricePerItem: price,
+        quantity: 1,
+        currency: currency,
+        satConversionRate: satConversionRate,
+      ));
     return copyWith(saleLines: newSaleLines);
   }
 
@@ -354,15 +366,20 @@ class ProductIcon {
   ProductIcon(this.tags, this.aliases, this.name);
 
   ProductIcon.fromJson(Map<String, dynamic> json)
-      : this((json["tags"] as List<dynamic>).cast<String>(),
-            (json["aliases"] as List<dynamic>).cast<String>(), json["name"]);
+      : this(
+          (json["tags"] as List<dynamic>).cast<String>(),
+          (json["aliases"] as List<dynamic>).cast<String>(),
+          json["name"],
+        );
 
   bool matches(String searchTerm) {
-    return [...tags, ...aliases, name].any((element) {
-      return element
-          .toLowerCase()
-          .contains(searchTerm.replaceAll(" ", "-").toLowerCase());
-    });
+    return [...tags, ...aliases, name].any(
+      (element) {
+        return element.toLowerCase().contains(
+              searchTerm.replaceAll(" ", "-").toLowerCase(),
+            );
+      },
+    );
   }
 }
 

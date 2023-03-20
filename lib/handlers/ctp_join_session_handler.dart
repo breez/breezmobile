@@ -11,26 +11,35 @@ class CTPJoinSessionHandler {
       BuildContext context,
       Function(RemoteSession session) onValidSession,
       Function(Object error) onError) {
-    ctpBloc.sessionInvites.listen((sessionLink) async {
-      if (ctpBloc.currentSession?.sessionID != sessionLink.sessionID) {
-        var loaderRoute = createLoaderRoute(context);
-        try {
-          Navigator.of(context).push(loaderRoute);
-          var user =
-              await userProfileBloc.userStream.firstWhere((u) => u != null);
-          await protectAdminAction(context, user, () async {
-            var currentSession = await ctpBloc.joinSessionByLink(sessionLink);
-            Navigator.of(context).removeRoute(loaderRoute);
-            onValidSession(currentSession);
-          });
-        } catch (e) {
-          onError(e);
-        } finally {
-          if (loaderRoute.isActive) {
-            Navigator.of(context).removeRoute(loaderRoute);
+    ctpBloc.sessionInvites.listen(
+      (sessionLink) async {
+        if (ctpBloc.currentSession?.sessionID != sessionLink.sessionID) {
+          final navigator = Navigator.of(context);
+          var loaderRoute = createLoaderRoute(context);
+          try {
+            navigator.push(loaderRoute);
+            await userProfileBloc.userStream.firstWhere((u) => u != null).then(
+                  (user) => protectAdminAction(
+                    context,
+                    user,
+                    () async {
+                      var currentSession = await ctpBloc.joinSessionByLink(
+                        sessionLink,
+                      );
+                      navigator.removeRoute(loaderRoute);
+                      onValidSession(currentSession);
+                    },
+                  ),
+                );
+          } catch (e) {
+            onError(e);
+          } finally {
+            if (loaderRoute.isActive) {
+              navigator.removeRoute(loaderRoute);
+            }
           }
         }
-      }
-    });
+      },
+    );
   }
 }

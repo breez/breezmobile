@@ -4,6 +4,7 @@ import 'package:breez/bloc/account/account_bloc.dart';
 import 'package:breez/bloc/blocs_provider.dart';
 import 'package:breez/bloc/invoice/invoice_bloc.dart';
 import 'package:breez/utils/webview_controller_util.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:url_launcher/url_launcher_string.dart';
@@ -102,7 +103,9 @@ class VendorWebViewPageState extends State<VendorWebViewPage> {
     _webViewController.runJavaScript(
         'window.onmessage = (message) => window.BreezWebView.postMessage(message.data);');
     _webViewController.runJavaScript(await _weblnHandlers.initWebLNScript);
-    print('Page finished loading: $url');
+    if (kDebugMode) {
+      print('Page finished loading: $url');
+    }
   }
 
   _onMessageReceived(JavaScriptMessage message) {

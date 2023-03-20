@@ -69,131 +69,151 @@ class BottomActionsBar extends StatelessWidget {
     LNUrlBloc lnurlBloc = AppBlocsProvider.of<LNUrlBloc>(context);
 
     await showModalBottomSheet(
-        context: context,
-        builder: (ctx) {
-          return StreamBuilder<Future<DecodedClipboardData>>(
-              stream: invoiceBloc.decodedClipboardStream,
-              builder: (context, snapshot) {
-                return Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: <Widget>[
-                    const SizedBox(height: 8.0),
-                    ListTile(
-                      enabled: account.connected,
-                      leading: _ActionImage(
-                          iconAssetPath: "src/icon/paste.png",
-                          enabled: account.connected),
-                      title: Text(
-                        texts.bottom_action_bar_paste_invoice,
-                        style: theme.bottomSheetTextStyle,
-                      ),
-                      onTap: () async {
-                        Navigator.of(context).pop();
-                        DecodedClipboardData clipboardData =
-                            await snapshot.data;
-                        if (clipboardData != null) {
-                          if (clipboardData.type == "lnurl" ||
-                              clipboardData.type == "lightning-address") {
-                            lnurlBloc.lnurlInputSink.add(clipboardData.data);
-                          } else if (clipboardData.type == "invoice") {
-                            invoiceBloc.decodeInvoiceSink
-                                .add(clipboardData.data);
-                          } else if (clipboardData.type == "nodeID") {
-                            Navigator.of(context).push(FadeInRoute(
+      context: context,
+      builder: (ctx) {
+        return StreamBuilder<Future<DecodedClipboardData>>(
+          stream: invoiceBloc.decodedClipboardStream,
+          builder: (context, snapshot) {
+            return Column(
+              mainAxisSize: MainAxisSize.min,
+              children: <Widget>[
+                const SizedBox(height: 8.0),
+                ListTile(
+                  enabled: account.connected,
+                  leading: _ActionImage(
+                    iconAssetPath: "src/icon/paste.png",
+                    enabled: account.connected,
+                  ),
+                  title: Text(
+                    texts.bottom_action_bar_paste_invoice,
+                    style: theme.bottomSheetTextStyle,
+                  ),
+                  onTap: () async {
+                    final navigator = Navigator.of(context);
+                    navigator.pop();
+                    await snapshot.data.then((clipboardData) {
+                      if (clipboardData != null) {
+                        if (clipboardData.type == "lnurl" ||
+                            clipboardData.type == "lightning-address") {
+                          lnurlBloc.lnurlInputSink.add(clipboardData.data);
+                        } else if (clipboardData.type == "invoice") {
+                          invoiceBloc.decodeInvoiceSink.add(clipboardData.data);
+                        } else if (clipboardData.type == "nodeID") {
+                          navigator.push(
+                            FadeInRoute(
                               builder: (_) => SpontaneousPaymentPage(
-                                  clipboardData.data, firstPaymentItemKey),
-                            ));
-                          }
-                        } else {
-                          return showDialog(
-                              useRootNavigator: false,
-                              context: context,
-                              barrierDismissible: false,
-                              builder: (_) => EnterPaymentInfoDialog(context,
-                                  invoiceBloc, lnurlBloc, firstPaymentItemKey));
+                                clipboardData.data,
+                                firstPaymentItemKey,
+                              ),
+                            ),
+                          );
                         }
-                      },
-                    ),
-                    Divider(
-                      height: 0.0,
-                      color: Colors.white.withOpacity(0.2),
-                      indent: 72.0,
-                    ),
-                    ListTile(
-                        enabled: account.connected,
-                        leading: _ActionImage(
-                            iconAssetPath: "src/icon/connect_to_pay.png",
-                            enabled: account.connected),
-                        title: Text(
-                          texts.bottom_action_bar_connect_to_pay,
-                          style: theme.bottomSheetTextStyle,
-                        ),
-                        onTap: () {
-                          Navigator.of(context).pop();
-                          Navigator.of(context).pushNamed("/connect_to_pay");
-                        }),
-                    Divider(
-                      height: 0.0,
-                      color: Colors.white.withOpacity(0.2),
-                      indent: 72.0,
-                    ),
-                    ListTile(
-                        enabled: account.connected,
-                        leading: _ActionImage(
-                            iconAssetPath: "src/icon/bitcoin.png",
-                            enabled: account.connected),
-                        title: Text(
-                          texts.bottom_action_bar_send_btc_address,
-                          style: theme.bottomSheetTextStyle,
-                        ),
-                        onTap: () {
-                          Navigator.of(context).pop();
-                          Navigator.of(context).pushNamed("/withdraw_funds");
-                        }),
-                    StreamBuilder(
-                        stream: accBloc.accountSettingsStream,
-                        builder: (context, settingsSnapshot) {
-                          if (!settingsSnapshot.hasData) {
-                            return const SizedBox();
-                          }
-                          AccountSettings settings = settingsSnapshot.data;
-                          if (settings.isEscherEnabled) {
-                            return Column(
-                              children: [
-                                Divider(
-                                  height: 0.0,
-                                  color: Colors.white.withOpacity(0.2),
-                                  indent: 72.0,
+                      } else {
+                        showDialog(
+                          useRootNavigator: false,
+                          context: context,
+                          barrierDismissible: false,
+                          builder: (_) => EnterPaymentInfoDialog(
+                            context,
+                            invoiceBloc,
+                            lnurlBloc,
+                            firstPaymentItemKey,
+                          ),
+                        );
+                      }
+                    });
+                  },
+                ),
+                Divider(
+                  height: 0.0,
+                  color: Colors.white.withOpacity(0.2),
+                  indent: 72.0,
+                ),
+                ListTile(
+                  enabled: account.connected,
+                  leading: _ActionImage(
+                    iconAssetPath: "src/icon/connect_to_pay.png",
+                    enabled: account.connected,
+                  ),
+                  title: Text(
+                    texts.bottom_action_bar_connect_to_pay,
+                    style: theme.bottomSheetTextStyle,
+                  ),
+                  onTap: () {
+                    Navigator.of(context).pop();
+                    Navigator.of(context).pushNamed("/connect_to_pay");
+                  },
+                ),
+                Divider(
+                  height: 0.0,
+                  color: Colors.white.withOpacity(0.2),
+                  indent: 72.0,
+                ),
+                ListTile(
+                  enabled: account.connected,
+                  leading: _ActionImage(
+                      iconAssetPath: "src/icon/bitcoin.png",
+                      enabled: account.connected),
+                  title: Text(
+                    texts.bottom_action_bar_send_btc_address,
+                    style: theme.bottomSheetTextStyle,
+                  ),
+                  onTap: () {
+                    Navigator.of(context).pop();
+                    Navigator.of(context).pushNamed("/withdraw_funds");
+                  },
+                ),
+                StreamBuilder(
+                  stream: accBloc.accountSettingsStream,
+                  builder: (context, settingsSnapshot) {
+                    if (!settingsSnapshot.hasData) {
+                      return const SizedBox();
+                    }
+                    AccountSettings settings = settingsSnapshot.data;
+                    if (settings.isEscherEnabled) {
+                      return Column(
+                        children: [
+                          Divider(
+                            height: 0.0,
+                            color: Colors.white.withOpacity(0.2),
+                            indent: 72.0,
+                          ),
+                          ListTile(
+                            enabled: account.connected,
+                            leading: _ActionImage(
+                                iconAssetPath: "src/icon/escher.png",
+                                enabled: account.connected),
+                            title: Text(
+                              texts.bottom_action_bar_escher,
+                              style: theme.bottomSheetTextStyle,
+                            ),
+                            onTap: () {
+                              Navigator.pop(context);
+                              showDialog(
+                                useRootNavigator: false,
+                                context: context,
+                                barrierDismissible: false,
+                                builder: (_) => EscherDialog(
+                                  context,
+                                  accBloc,
                                 ),
-                                ListTile(
-                                    enabled: account.connected,
-                                    leading: _ActionImage(
-                                        iconAssetPath: "src/icon/escher.png",
-                                        enabled: account.connected),
-                                    title: Text(
-                                      texts.bottom_action_bar_escher,
-                                      style: theme.bottomSheetTextStyle,
-                                    ),
-                                    onTap: () {
-                                      Navigator.pop(context);
-                                      return showDialog(
-                                          useRootNavigator: false,
-                                          context: context,
-                                          barrierDismissible: false,
-                                          builder: (_) =>
-                                              EscherDialog(context, accBloc));
-                                    }),
-                              ],
-                            );
-                          } else {
-                            return const SizedBox();
-                          }
-                        }),
-                    const SizedBox(height: 8.0)
-                  ],
-                );
-              });
-        });
+                              );
+                            },
+                          ),
+                        ],
+                      );
+                    } else {
+                      return const SizedBox();
+                    }
+                  },
+                ),
+                const SizedBox(height: 8.0)
+              ],
+            );
+          },
+        );
+      },
+    );
   }
 }
 
@@ -223,7 +243,8 @@ class _Action extends StatelessWidget {
           text,
           textAlign: TextAlign.center,
           style: theme.bottomAppBarBtnStyle.copyWith(
-              fontSize: 13.5 / MediaQuery.of(context).textScaleFactor),
+            fontSize: 13.5 / MediaQuery.of(context).textScaleFactor,
+          ),
           maxLines: 1,
         ),
       ),
@@ -235,8 +256,11 @@ class _ActionImage extends StatelessWidget {
   final String iconAssetPath;
   final bool enabled;
 
-  const _ActionImage({Key key, this.iconAssetPath, this.enabled = true})
-      : super(key: key);
+  const _ActionImage({
+    Key key,
+    this.iconAssetPath,
+    this.enabled = true,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -250,7 +274,10 @@ class _ActionImage extends StatelessWidget {
   }
 }
 
-Future showReceiveOptions(BuildContext parentContext, AccountModel account) {
+Future showReceiveOptions(
+  BuildContext parentContext,
+  AccountModel account,
+) {
   final texts = parentContext.texts();
   AddFundsBloc addFundsBloc = BlocProvider.of<AddFundsBloc>(parentContext);
   LSPBloc lspBloc = AppBlocsProvider.of<LSPBloc>(parentContext);
@@ -271,21 +298,24 @@ Future showReceiveOptions(BuildContext parentContext, AccountModel account) {
                 }
 
                 List<Widget> children =
-                    snapshot.data.where((v) => v.isAllowed).map((v) {
-                  return Column(
-                    children: [
-                      Divider(
-                        height: 0.0,
-                        color: Theme.of(context).dividerColor.withOpacity(0.2),
-                        indent: 72.0,
-                      ),
-                      ListTile(
+                    snapshot.data.where((v) => v.isAllowed).map(
+                  (v) {
+                    return Column(
+                      children: [
+                        Divider(
+                          height: 0.0,
+                          color:
+                              Theme.of(context).dividerColor.withOpacity(0.2),
+                          indent: 72.0,
+                        ),
+                        ListTile(
                           enabled: v.enabled &&
                               (account.connected || !v.requireActiveChannel),
                           leading: _ActionImage(
-                              iconAssetPath: v.icon,
-                              enabled:
-                                  account.connected || !v.requireActiveChannel),
+                            iconAssetPath: v.icon,
+                            enabled:
+                                account.connected || !v.requireActiveChannel,
+                          ),
                           title: Text(
                             v.shortName ?? v.name,
                             style: theme.bottomSheetTextStyle,
@@ -302,29 +332,32 @@ Future showReceiveOptions(BuildContext parentContext, AccountModel account) {
                             } else {
                               Navigator.of(context).pushNamed(v.route);
                             }
-                          }),
-                    ],
-                  );
-                }).toList();
+                          },
+                        ),
+                      ],
+                    );
+                  },
+                ).toList();
 
                 return Column(
                   mainAxisSize: MainAxisSize.min,
                   children: <Widget>[
                     const SizedBox(height: 8.0),
                     ListTile(
+                      enabled: true,
+                      leading: const _ActionImage(
+                        iconAssetPath: "src/icon/paste.png",
                         enabled: true,
-                        leading: const _ActionImage(
-                          iconAssetPath: "src/icon/paste.png",
-                          enabled: true,
-                        ),
-                        title: Text(
-                          texts.bottom_action_bar_receive_invoice,
-                          style: theme.bottomSheetTextStyle,
-                        ),
-                        onTap: () {
-                          Navigator.of(context).pop();
-                          Navigator.of(context).pushNamed("/create_invoice");
-                        }),
+                      ),
+                      title: Text(
+                        texts.bottom_action_bar_receive_invoice,
+                        style: theme.bottomSheetTextStyle,
+                      ),
+                      onTap: () {
+                        Navigator.of(context).pop();
+                        Navigator.of(context).pushNamed("/create_invoice");
+                      },
+                    ),
                     ...children,
                     account.warningMaxChanReserveAmount == 0
                         ? const SizedBox(height: 8.0)

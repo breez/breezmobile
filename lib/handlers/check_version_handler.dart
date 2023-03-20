@@ -47,8 +47,9 @@ void checkVersionDialog(
     }
     if (err.contains('connection error')) {
       showNoConnectionDialog(context).then((retry) {
-        print("-- showNoConnectionDialog --");
-        print(retry);
+        if (kDebugMode) {
+          print("-- showNoConnectionDialog --\n$retry");
+        }
         if (retry == true) {
           Future.delayed(const Duration(seconds: 1), () {
             checkVersionDialog(context, userProfileBloc);

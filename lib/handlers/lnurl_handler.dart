@@ -145,6 +145,7 @@ class LNURLHandler {
         Uri.parse(response.callback).host,
       )),
     ).then((value) async {
+      var loaderRoute = createLoaderRoute(context);
       if (value) {
         var synced = await showDialog(
           context: context,
@@ -166,7 +167,6 @@ class LNURLHandler {
           },
         );
         if (synced == true) {
-          var loaderRoute = createLoaderRoute(context);
           navigator.push(loaderRoute);
           var action = OpenChannel(
             response.uri,

@@ -47,12 +47,13 @@ class PaymentAdjustmentState extends State<PaymentAdjustment> {
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
       Future.delayed(const Duration(seconds: 1)).then((value) async {
         final userBloc = AppBlocsProvider.of<UserProfileBloc>(context);
-        final user = await userBloc.userStream.first;
-        if (!user.seenTutorials.paymentStripTutorial) {
-          _buildTutorial(context, user);
-          tutorial.show(context: context);
-          setState(() {});
-        }
+        await userBloc.userStream.first.then((user) {
+          if (!user.seenTutorials.paymentStripTutorial) {
+            _buildTutorial(context, user);
+            tutorial.show(context: context);
+            setState(() {});
+          }
+        });
       });
     });
   }

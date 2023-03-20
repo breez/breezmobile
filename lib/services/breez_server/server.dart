@@ -76,8 +76,11 @@ class BreezServer {
   }
 
   Future<JoinCTPSessionResponse> joinSession(
-      bool payer, String userName, String notificationToken,
-      {String sessionID}) async {
+    bool payer,
+    String userName,
+    String notificationToken, {
+    String sessionID,
+  }) async {
     await _ensureValidChannel();
     var ctpClient = CTPClient(_channel, options: defaultCallOptions);
     return await ctpClient.joinCTPSession(JoinCTPSessionRequest()

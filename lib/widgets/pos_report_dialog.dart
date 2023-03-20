@@ -5,7 +5,6 @@ import 'package:breez/bloc/pos_catalog/actions.dart';
 import 'package:breez/bloc/pos_catalog/bloc.dart';
 import 'package:breez/bloc/pos_catalog/model.dart';
 import 'package:breez/bloc/user_profile/currency.dart';
-import 'package:breez/logger.dart';
 import 'package:breez/routes/charge/currency_wrapper.dart';
 import 'package:breez/theme_data.dart' as theme;
 import 'package:breez/utils/date.dart';
@@ -91,9 +90,7 @@ class PosReportDialog extends StatelessWidget {
             Navigator.of(context).pop();
           },
         ),
-        Container(
-          width: 8.0,
-        ),
+        Container(width: 8.0),
       ],
     );
   }
@@ -153,9 +150,10 @@ class PosReportDialog extends StatelessWidget {
         details = newDetails;
       },
       onTap: () async {
+        final posCatalogBloc = AppBlocsProvider.of<PosCatalogBloc>(context);
         final offset = details?.globalPosition;
         if (offset == null) return;
-        final newOption = await showMenu(
+        await showMenu(
           context: context,
           color: Theme.of(context).canvasColor,
           position: RelativeRect.fromLTRB(offset.dx, offset.dy, 0, 0),
@@ -165,35 +163,37 @@ class PosReportDialog extends StatelessWidget {
             PosReportTimeRange.monthly(),
             PosReportTimeRange.custom(timeRange.startDate, timeRange.endDate),
           ].map((e) => _dropdownItem(context, e)).toList(),
-        );
-        if (newOption != null) {
-          if (newOption is PosReportTimeRangeCustom) {
-            showDialog(
-              useRootNavigator: false,
-              context: context,
-              builder: (_) => CalendarDialog(
-                newOption.startDate,
-                endDate: newOption.endDate,
-                initialRangeDate: DateTime(2018),
-              ),
-            ).then((result) {
-              final DateTime startDate = result[0] ?? newOption.startDate;
-              final DateTime endDate = result[1] ?? newOption.endDate;
+        ).then(
+          (newOption) {
+            if (newOption != null) {
+              if (newOption is PosReportTimeRangeCustom) {
+                showDialog(
+                  useRootNavigator: false,
+                  context: context,
+                  builder: (_) => CalendarDialog(
+                    newOption.startDate,
+                    endDate: newOption.endDate,
+                    initialRangeDate: DateTime(2018),
+                  ),
+                ).then((result) {
+                  final DateTime startDate = result[0] ?? newOption.startDate;
+                  final DateTime endDate = result[1] ?? newOption.endDate;
 
-              if (startDate.isBefore(endDate)) {
-                AppBlocsProvider.of<PosCatalogBloc>(context)
-                    .actionsSink
-                    .add(UpdatePosReportTimeRange(
-                      PosReportTimeRange.custom(startDate, endDate),
-                    ));
+                  if (startDate.isBefore(endDate)) {
+                    posCatalogBloc.actionsSink.add(
+                      UpdatePosReportTimeRange(
+                        PosReportTimeRange.custom(startDate, endDate),
+                      ),
+                    );
+                  }
+                });
+              } else {
+                posCatalogBloc.actionsSink
+                    .add(UpdatePosReportTimeRange(newOption));
               }
-            });
-          } else {
-            AppBlocsProvider.of<PosCatalogBloc>(context)
-                .actionsSink
-                .add(UpdatePosReportTimeRange(newOption));
-          }
-        }
+            }
+          },
+        );
       },
       child: _dropdownHandler(context),
     );

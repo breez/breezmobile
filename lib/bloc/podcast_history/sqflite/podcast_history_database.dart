@@ -92,8 +92,10 @@ ${PodcastHistoryFields.durationInMins} 'DECIMAL NOT NULL'
     return PodcastHistoryTimeRangeDbModel.fromJson(localTimeRangeData.first);
   }
 
-  Future<List<PodcastHistoryModel>> readAllHistory(
-      {DateTime filterStartDate, DateTime filterEndDate}) async {
+  Future<List<PodcastHistoryModel>> readAllHistory({
+    DateTime filterStartDate,
+    DateTime filterEndDate,
+  }) async {
     final db = await instance.database;
     List<Map<String, Object>> result;
 

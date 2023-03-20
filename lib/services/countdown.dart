@@ -14,18 +14,21 @@ class CountDown {
   int _everyTick, counter = 0;
 
   /// once you instantiate the CountDown you need to register to receive information
-  CountDown(Duration duration,
-      {Duration refresh = const Duration(milliseconds: 10),
-      int everyTick = 1}) {
+  CountDown(
+    Duration duration, {
+    Duration refresh = const Duration(milliseconds: 10),
+    int everyTick = 1,
+  }) {
     _refresh = refresh;
     _everyTick = everyTick;
 
     _duration = duration;
     _controller = StreamController<Duration>(
-        onListen: _onListen,
-        onPause: _onPause,
-        onResume: _onResume,
-        onCancel: _onCancel);
+      onListen: _onListen,
+      onPause: _onPause,
+      onResume: _onResume,
+      onCancel: _onCancel,
+    );
   }
 
   Stream<Duration> get stream => _controller.stream;
