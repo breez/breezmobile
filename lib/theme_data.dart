@@ -361,6 +361,10 @@ final VendorTheme xsats = VendorTheme(iconBgColor: const Color(0xFF000000));
 final VendorTheme geyser =
     VendorTheme(iconBgColor: const Color.fromRGBO(41, 241, 205, 1));
 final VendorTheme wavlake = VendorTheme(iconBgColor: const Color(0xFF171817));
+final VendorTheme lightsats = VendorTheme(
+  iconBgColor: Colors.black,
+  iconFgColor: Colors.white,
+);
 
 final Map<String, VendorTheme> vendorTheme = {
   "bitrefill": bitrefill,
@@ -376,6 +380,7 @@ final Map<String, VendorTheme> vendorTheme = {
   "geyser": geyser,
   "fold": fold,
   "wavlake": wavlake,
+  "lightsats": lightsats,
 };
 
 const TextStyle drawerItemTextStyle =
