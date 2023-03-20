@@ -205,6 +205,8 @@ class PaymentsFilterState extends State<PaymentsFilter> {
                 bool hasEndDateChanged = result[1] != formattedEndDate;
                 bool hasDateFilterChanged =
                     hasStartDateChanged || hasEndDateChanged;
+                bool hasActiveDateFilter =
+                    widget._paymentsModel.filter.initial == false;
 
                 if (hasDateFilterChanged) {
                   widget._accountBloc.paymentFilterSink.add(
@@ -212,6 +214,15 @@ class PaymentsFilterState extends State<PaymentsFilter> {
                       filter: _getFilterType(_filter),
                       startDate: result[0],
                       endDate: result[1],
+                    ),
+                  );
+                } else if (hasActiveDateFilter) {
+                  // Reset date filter if user chooses the default date range
+                  widget._accountBloc.paymentFilterSink.add(
+                    widget._paymentsModel.filter.copyWith(
+                      filter: _getFilterType(_filter),
+                      startDate: null,
+                      endDate: null,
                     ),
                   );
                 }
