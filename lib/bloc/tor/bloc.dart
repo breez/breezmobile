@@ -1,9 +1,8 @@
 import 'dart:async';
 
-import 'package:flutter/services.dart';
-
 import 'package:breez/logger.dart';
 import 'package:breez/services/breezlib/data/rpc.pb.dart';
+import 'package:flutter/services.dart';
 
 class TorBloc {
   static const platform = MethodChannel('com.breez.client/tor');

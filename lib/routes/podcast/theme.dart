@@ -65,7 +65,8 @@ Widget withPodcastTheme(BreezUserModel user, Widget child) {
                             primary:
                                 currentTheme.primaryTextTheme.labelLarge.color,
                             onPrimary: const Color.fromRGBO(0, 133, 251, 1.0),
-                            onSecondary: const Color.fromRGBO(178, 241, 255, 1.0),
+                            onSecondary:
+                                const Color.fromRGBO(178, 241, 255, 1.0),
                             onSurface: Colors.blueGrey),
                   ),
               primaryTextTheme:
@@ -75,25 +76,24 @@ Widget withPodcastTheme(BreezUserModel user, Widget child) {
                       .copyWith(
                         labelLarge: currentTheme.primaryTextTheme.labelLarge,
                       ),
-              textTheme:
-                  Typography.material2018(platform: TargetPlatform.android)
-                      .black
-                      .apply(
-                        fontFamily: 'IBMPlexSans',
-                      )
-                      .copyWith(
-                        labelLarge: Typography.material2018(
-                                platform: TargetPlatform.android)
-                            .black
-                            .labelLarge
-                            .copyWith(color: const Color.fromRGBO(5, 93, 235, 1.0)),
-                        titleLarge: Typography.material2018(
-                                platform: TargetPlatform.android)
-                            .black
-                            .titleLarge
-                            .copyWith(
-                                fontWeight: FontWeight.w400, fontSize: 14.3),
-                      ),
+              textTheme: Typography.material2018(
+                      platform: TargetPlatform.android)
+                  .black
+                  .apply(
+                    fontFamily: 'IBMPlexSans',
+                  )
+                  .copyWith(
+                    labelLarge: Typography.material2018(
+                            platform: TargetPlatform.android)
+                        .black
+                        .labelLarge
+                        .copyWith(color: const Color.fromRGBO(5, 93, 235, 1.0)),
+                    titleLarge: Typography.material2018(
+                            platform: TargetPlatform.android)
+                        .black
+                        .titleLarge
+                        .copyWith(fontWeight: FontWeight.w400, fontSize: 14.3),
+                  ),
               primaryIconTheme:
                   const IconThemeData(color: Color.fromRGBO(0, 133, 251, 1.0)),
               iconTheme: const IconThemeData(color: Colors.white, size: 32.0),

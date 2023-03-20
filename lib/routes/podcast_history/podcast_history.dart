@@ -175,7 +175,8 @@ class PodcastHistoryPageState extends State<PodcastHistoryPage> {
                             await File('${directory.path}/image.jpg').create();
                         await imagePath.writeAsBytes(image);
                         await Share.shareXFiles([XFile(imagePath.path)],
-                            text: "My ${_getAppBarDisplayString(timeRange, context)} in Breez ⚡ Download here: https://breez.technology");
+                            text:
+                                "My ${_getAppBarDisplayString(timeRange, context)} in Breez ⚡ Download here: https://breez.technology");
                       }
                     });
                   },
@@ -201,8 +202,11 @@ class PodcastHistoryPageState extends State<PodcastHistoryPage> {
             return isListEmptySnapshot.data
                 ? SingleChildScrollView(
                     child: Padding(
-                      padding:
-                          const EdgeInsets.only(top: 16.0, left: 16.0, right: 16.0),
+                      padding: const EdgeInsets.only(
+                        top: 16.0,
+                        left: 16.0,
+                        right: 16.0,
+                      ),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [

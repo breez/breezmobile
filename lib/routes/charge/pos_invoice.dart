@@ -34,9 +34,9 @@ import 'package:breez/widgets/loader.dart';
 import 'package:breez/widgets/print_parameters.dart';
 import 'package:breez/widgets/transparent_page_route.dart';
 import 'package:breez/widgets/view_switch.dart';
+import 'package:breez_translations/breez_translations_locales.dart';
 import 'package:fixnum/fixnum.dart';
 import 'package:flutter/material.dart';
-import 'package:breez_translations/breez_translations_locales.dart';
 
 class POSInvoice extends StatefulWidget {
   const POSInvoice();

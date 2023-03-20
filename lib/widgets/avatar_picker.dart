@@ -4,8 +4,8 @@ import 'dart:typed_data';
 
 import 'package:breez/logger.dart';
 import 'package:breez/widgets/error_dialog.dart';
-import 'package:flutter/material.dart';
 import 'package:breez_translations/breez_translations_locales.dart';
+import 'package:flutter/material.dart';
 import 'package:image/image.dart' as DartImage;
 import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';

@@ -1,4 +1,3 @@
-
 import '../podcast_payments/payment_options.dart';
 import 'business_address.dart';
 
@@ -44,7 +43,7 @@ class BackupUserPreferences {
       themeId: themeId ?? this.themeId,
       preferredCurrencies: preferredCurrencies ?? this.preferredCurrencies,
       cancellationTimeoutValue:
-      cancellationTimeoutValue ?? this.cancellationTimeoutValue,
+          cancellationTimeoutValue ?? this.cancellationTimeoutValue,
       businessAddress: businessAddress ?? this.businessAddress,
       paymentOptions: paymentOptions ?? this.paymentOptions,
     );
@@ -63,13 +62,13 @@ class BackupUserPreferences {
         businessAddress = json['businessAddress'] == null
             ? BusinessAddress.initial()
             : json['businessAddress'].runtimeType == BusinessAddress
-            ? json['businessAddress']
-            : BusinessAddress.fromJson(json['businessAddress']),
+                ? json['businessAddress']
+                : BusinessAddress.fromJson(json['businessAddress']),
         paymentOptions = json["paymentOptions"] == null
             ? PaymentOptions.initial()
             : json["paymentOptions"].runtimeType == PaymentOptions
-            ? json["paymentOptions"]
-            : PaymentOptions.fromJson(json["paymentOptions"]);
+                ? json["paymentOptions"]
+                : PaymentOptions.fromJson(json["paymentOptions"]);
 
   Map<String, dynamic> toJson() => {
         'name': name,

@@ -2,9 +2,9 @@ import 'dart:io';
 
 import 'package:breez/logger.dart';
 import 'package:breez/widgets/scan_overlay.dart';
+import 'package:breez_translations/breez_translations_locales.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:breez_translations/breez_translations_locales.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';

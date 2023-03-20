@@ -49,17 +49,15 @@ class PodcastIndexAPI extends PodcastApi {
 
   static Future<SearchResult> _search(String term) {
     return Search(
-          userAgent: Environment.userAgent(),
-          searchProvider: PodcastIndexProvider(
-            key: 'XXWQEGULBJABVHZUM8NF',
-            secret: 'KZ2uy4upvq4t3e\$m\$3r2TeFS2fEpFTAaF92xcNdX',
-          ),
-        )
-        .search(
-          term,
-          queryParams: {"val": "lightning"},
-        )
-        .timeout(const Duration(seconds: 10));
+      userAgent: Environment.userAgent(),
+      searchProvider: PodcastIndexProvider(
+        key: 'XXWQEGULBJABVHZUM8NF',
+        secret: 'KZ2uy4upvq4t3e\$m\$3r2TeFS2fEpFTAaF92xcNdX',
+      ),
+    ).search(
+      term,
+      queryParams: {"val": "lightning"},
+    ).timeout(const Duration(seconds: 10));
   }
 
   static Future<SearchResult> _charts(int size) {

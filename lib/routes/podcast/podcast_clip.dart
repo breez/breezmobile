@@ -303,7 +303,9 @@ Widget _durationToggleButton(
 Future<PositionState> getPositionDetails(AudioBloc audioBloc) async {
   PositionState position;
   try {
-    position = await audioBloc.playPosition.first.timeout(const Duration(seconds: 1));
+    position = await audioBloc.playPosition.first.timeout(
+      const Duration(seconds: 1),
+    );
   } catch (e) {
     position = null;
   }

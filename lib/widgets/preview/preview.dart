@@ -41,7 +41,9 @@ class _PreviewState extends State<Preview> {
                       final oddRow = (index ~/ cols).isOdd;
                       final oddCol = (index % cols).isOdd;
                       return Container(
-                        color: oddRow == oddCol ? Colors.grey.withAlpha(128) : Colors.blueGrey.withAlpha(128),
+                        color: oddRow == oddCol
+                            ? Colors.grey.withAlpha(128)
+                            : Colors.blueGrey.withAlpha(128),
                       );
                     },
                   );

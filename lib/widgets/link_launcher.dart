@@ -1,6 +1,6 @@
 import 'package:breez/utils/external_browser.dart';
-import 'package:flutter/material.dart';
 import 'package:breez_translations/breez_translations_locales.dart';
+import 'package:flutter/material.dart';
 
 class LinkLauncher extends StatelessWidget {
   final double iconSize;

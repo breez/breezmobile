@@ -10,7 +10,8 @@ String extractExceptionMessage(
   const nsLocalizedRegex = r'((?<={NSLocalizedDescription=)(.*)(?=}))';
   const lnUrlRegex = r'((?<=LNURL:.)(.*)(?=.method:))';
   final grouped = RegExp('$nsLocalizedRegex|$lnUrlRegex|$detailRegex');
-  var message = grouped.stringMatch(exception.toString()) ?? exception.toString();
+  var message =
+      grouped.stringMatch(exception.toString()) ?? exception.toString();
   message = message.trim();
   if (clearTrailingDot) {
     message = message.replaceAll(RegExp(r'([.!?:])\s*$'), '');

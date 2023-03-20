@@ -1,8 +1,8 @@
 import 'package:breez/services/deep_links.dart';
 import 'package:breez/services/injector.dart';
+import 'package:breez_translations/breez_translations_locales.dart';
 import 'package:flutter/material.dart';
 import 'package:share_plus/share_plus.dart';
-import 'package:breez_translations/breez_translations_locales.dart';
 
 class ShareEpisodeButton extends StatelessWidget {
   final String podcastTitle;

@@ -5,8 +5,8 @@ import 'package:breez/services/injector.dart';
 import 'package:breez/widgets/back_button.dart' as backBtn;
 import 'package:breez/widgets/flushbar.dart';
 import 'package:breez/widgets/link_launcher.dart';
-import 'package:flutter/material.dart';
 import 'package:breez_translations/breez_translations_locales.dart';
+import 'package:flutter/material.dart';
 
 class ConditionalDeposit extends StatelessWidget {
   final Widget enabledChild;

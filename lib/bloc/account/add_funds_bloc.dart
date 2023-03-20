@@ -74,10 +74,11 @@ class AddFundsBloc extends Bloc {
       userStream.first.then((user) async {
         var lspStatus = await lspStatusStream.first;
         if (lspStatus.selectedLSP == null) {
-          throw Exception(
-              getSystemAppLocalizations().lsp_error_not_selected);
+          throw Exception(getSystemAppLocalizations().lsp_error_not_selected);
         }
-        breezLib.addFundsInit(user.userID ?? "", lspStatus.selectedLSP).then((reply) {
+        breezLib
+            .addFundsInit(user.userID ?? "", lspStatus.selectedLSP)
+            .then((reply) {
           AddFundResponse response = AddFundResponse(reply);
           if (addFundsInfo.isMoonpay) {
             _attachMoonpayUrl(response, injector.breezServer);
@@ -138,14 +139,14 @@ class AddFundsBloc extends Bloc {
           includeDisplayName: false,
           removeTrailingZeros: true);
       String queryString = "?${[
-            "apiKey=$apiKey",
-            "currencyCode=$currencyCode",
-            "colorCode=$colorCode",
-            "redirectURL=${Uri.encodeComponent(redirectURL)}",
-            "enabledPaymentMethods=credit_debit_card%2Csepa_bank_transfer%2Cgbp_bank_transfer",
-            "walletAddress=$walletAddress",
-            "maxQuoteCurrencyAmount=$maxQuoteCurrencyAmount"
-          ].join("&")}";
+        "apiKey=$apiKey",
+        "currencyCode=$currencyCode",
+        "colorCode=$colorCode",
+        "redirectURL=${Uri.encodeComponent(redirectURL)}",
+        "enabledPaymentMethods=credit_debit_card%2Csepa_bank_transfer%2Cgbp_bank_transfer",
+        "walletAddress=$walletAddress",
+        "maxQuoteCurrencyAmount=$maxQuoteCurrencyAmount"
+      ].join("&")}";
       String moonpayUrl = await breezServer.signUrl(baseUrl, queryString);
       _moonpayNextOrderController
           .add(MoonpayOrder(walletAddress, moonpayUrl, null));

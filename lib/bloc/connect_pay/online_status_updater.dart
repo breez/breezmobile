@@ -16,7 +16,8 @@ class OnlineStatusUpdater {
       Function(PeerStatus) onRemoteStatusChanged) {
     if (_onLocalConnectSubscription != null) {
       final texts = getSystemAppLocalizations();
-      throw Exception(texts.connect_to_pay_error_status_tracking_already_started);
+      throw Exception(
+          texts.connect_to_pay_error_status_tracking_already_started);
     }
     _userStatusPath = FirebaseDatabase.instance.ref().child(localKey);
 

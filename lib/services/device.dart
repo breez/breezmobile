@@ -1,4 +1,5 @@
 import 'dart:async';
+
 import 'package:breez/logger.dart';
 import 'package:clipboard_watcher/clipboard_watcher.dart';
 import 'package:flutter/services.dart';
@@ -18,10 +19,12 @@ class Device extends ClipboardListener {
   Stream<NotificationType> get eventStream => _eventsController.stream;
 
   final _clipboardController = BehaviorSubject<String>();
-  Stream<String> get clipboardStream => _clipboardController.stream.where((e) => e != _lastFromAppClip);
+  Stream<String> get clipboardStream =>
+      _clipboardController.stream.where((e) => e != _lastFromAppClip);
 
   static const String LAST_CLIPPING_PREFERENCES_KEY = "lastClipping";
-  static const String LAST_FROM_APP_CLIPPING_PREFERENCES_KEY = "lastFromAppClipping";
+  static const String LAST_FROM_APP_CLIPPING_PREFERENCES_KEY =
+      "lastFromAppClipping";
 
   String _lastFromAppClip;
 
@@ -30,10 +33,12 @@ class Device extends ClipboardListener {
 
     var sharedPreferences = SharedPreferences.getInstance();
     sharedPreferences.then((preferences) {
-      _lastFromAppClip = preferences.getString(LAST_FROM_APP_CLIPPING_PREFERENCES_KEY);
+      _lastFromAppClip =
+          preferences.getString(LAST_FROM_APP_CLIPPING_PREFERENCES_KEY);
       // Start with the last clipping of the previous session so we can avoid
       // triggering a repeat of the same action handled on the previous session.
-      _clipboardController.add(preferences.getString(LAST_CLIPPING_PREFERENCES_KEY) ?? "");
+      _clipboardController
+          .add(preferences.getString(LAST_CLIPPING_PREFERENCES_KEY) ?? "");
       log.finest("Last clipping: $_lastFromAppClip");
       fetchClipboard(preferences);
     });

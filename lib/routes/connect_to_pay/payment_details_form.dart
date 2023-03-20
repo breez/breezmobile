@@ -6,10 +6,10 @@ import 'package:breez/theme_data.dart' as theme;
 import 'package:breez/widgets/amount_form_field.dart';
 import 'package:breez/widgets/keyboard_done_action.dart';
 import 'package:breez/widgets/single_button_bottom_bar.dart';
+import 'package:breez_translations/breez_translations_locales.dart';
 import 'package:fixnum/fixnum.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:breez_translations/breez_translations_locales.dart';
 
 class PaymentDetailsForm extends StatefulWidget {
   final AccountModel _account;

@@ -9,8 +9,8 @@ import 'package:breez/bloc/lnurl/lnurl_bloc.dart';
 import 'package:breez/theme_data.dart' as theme;
 import 'package:breez/utils/exceptions.dart';
 import 'package:breez/widgets/loading_animated_text.dart';
-import 'package:flutter/material.dart';
 import 'package:breez_translations/breez_translations_locales.dart';
+import 'package:flutter/material.dart';
 
 import '../sync_progress_dialog.dart';
 

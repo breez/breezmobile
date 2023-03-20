@@ -11,9 +11,9 @@ import 'package:breez/theme_data.dart' as theme;
 import 'package:breez/utils/date.dart';
 import 'package:breez/widgets/calendar_dialog.dart';
 import 'package:breez/widgets/loader.dart';
+import 'package:breez_translations/breez_translations_locales.dart';
 import 'package:fixnum/fixnum.dart';
 import 'package:flutter/material.dart';
-import 'package:breez_translations/breez_translations_locales.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
 class PosReportDialog extends StatelessWidget {

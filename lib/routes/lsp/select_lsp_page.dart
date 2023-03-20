@@ -122,7 +122,9 @@ class SelectLSPPageState extends State<SelectLSPPage> {
                       itemBuilder: (BuildContext context, int index) {
                         var selected = _selectedLSP?.lspID == lsps[index].lspID;
                         return ListTile(
-                          contentPadding: const EdgeInsets.symmetric(horizontal: 0.0),
+                          contentPadding: const EdgeInsets.symmetric(
+                            horizontal: 0.0,
+                          ),
                           selected: selected,
                           trailing: selected ? const Icon(Icons.check) : null,
                           title: Text(lsps[index].name),

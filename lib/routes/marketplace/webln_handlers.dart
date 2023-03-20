@@ -85,7 +85,7 @@ class WebLNHandlers {
     }
     String memo;
     int amount = 0;
-    if (invoiceArgs is Map<String, dynamic> ) {
+    if (invoiceArgs is Map<String, dynamic>) {
       memo = invoiceArgs["defaultMemo"];
       amount = invoiceArgs["amount"];
     }

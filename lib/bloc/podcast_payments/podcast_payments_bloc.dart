@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
+
 import 'package:anytime/bloc/podcast/audio_bloc.dart';
 import 'package:anytime/bloc/settings/settings_bloc.dart';
 import 'package:anytime/entities/episode.dart';
@@ -15,6 +16,7 @@ import 'package:breez/logger.dart';
 import 'package:breez/services/breezlib/breez_bridge.dart';
 import 'package:breez/services/injector.dart';
 import 'package:fixnum/fixnum.dart';
+
 import '../podcast_history/sqflite/podcast_history_database.dart';
 import '../podcast_history/sqflite/podcast_history_local_model.dart';
 import 'aggregated_payments.dart';
@@ -126,7 +128,8 @@ class PodcastPaymentsBloc with AsyncActionsHandler {
       }
 
       // if minutes increased
-      print("nextPaidMinutes = $nextPaidMinutes playbackSpeed=$playbackSpeed time = ${_listeningTime[currentPlayedEpisode.contentUrl].floor()}");
+      print(
+          "nextPaidMinutes = $nextPaidMinutes playbackSpeed=$playbackSpeed time = ${_listeningTime[currentPlayedEpisode.contentUrl].floor()}");
       if (nextPaidMinutes > paidMinutes) {
         log.info("paying recipients $nextPaidMinutes");
         final value = await _getLightningPaymentValue(currentPlayedEpisode);
@@ -196,8 +199,8 @@ class PodcastPaymentsBloc with AsyncActionsHandler {
     // get current podcast listening position
     PositionState position;
     try {
-      position =
-          await audioBloc.playPosition.first.timeout(const Duration(seconds: 1));
+      position = await audioBloc.playPosition.first
+          .timeout(const Duration(seconds: 1));
     } catch (e) {
       // do nothing.
     }

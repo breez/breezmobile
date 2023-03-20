@@ -10,7 +10,9 @@ import "package:ini/ini.dart";
 //proto command:
 //protoc --dart_out=grpc:lib/services/breez_server/generated/ -Ilib/services/breez_server/protobuf/ lib/services/breez_server/protobuf/breez.proto
 class BreezServer {
-  static final defaultCallOptions = CallOptions(timeout: const Duration(seconds: 10));
+  static final defaultCallOptions = CallOptions(
+    timeout: const Duration(seconds: 10),
+  );
 
   ClientChannel _channel;
 
@@ -118,8 +120,10 @@ class BreezServer {
     if (hostdetails.length < 2) {
       hostdetails.add("443");
     }
-    return ClientChannel(hostdetails[0],
-        port: int.parse(hostdetails[1]),
-        options: const ChannelOptions(credentials: ChannelCredentials.secure()));
+    return ClientChannel(
+      hostdetails[0],
+      port: int.parse(hostdetails[1]),
+      options: const ChannelOptions(credentials: ChannelCredentials.secure()),
+    );
   }
 }

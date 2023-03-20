@@ -4,8 +4,8 @@ import 'package:breez/bloc/backup/backup_bloc.dart';
 import 'package:breez/bloc/backup/backup_model.dart';
 import 'package:breez/routes/security_pin/remote_server_auth.dart';
 import 'package:breez/utils/min_font_size.dart';
-import 'package:flutter/material.dart';
 import 'package:breez_translations/breez_translations_locales.dart';
+import 'package:flutter/material.dart';
 
 import 'backup_provider_selection_dialog.dart';
 import 'error_dialog.dart';
@@ -139,10 +139,10 @@ class EnableBackupDialogState extends State<EnableBackupDialog> {
                       Navigator.pop(widget.context);
                       var provider = snapshot.data.backupProvider;
                       provider ??= await showDialog(
-                            useRootNavigator: false,
-                            context: context,
-                            builder: (_) => BackupProviderSelectionDialog(
-                                backupBloc: widget.backupBloc));
+                          useRootNavigator: false,
+                          context: context,
+                          builder: (_) => BackupProviderSelectionDialog(
+                              backupBloc: widget.backupBloc));
 
                       if (provider != null) {
                         if (widget.signInNeeded &&

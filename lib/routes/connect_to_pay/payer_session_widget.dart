@@ -7,10 +7,10 @@ import 'package:breez/theme_data.dart' as theme;
 import 'package:breez/widgets/delay_render.dart';
 import 'package:breez/widgets/loading_animated_text.dart';
 import 'package:breez/widgets/sync_loader.dart';
+import 'package:breez_translations/breez_translations_locales.dart';
 import 'package:fixnum/fixnum.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'package:breez_translations/breez_translations_locales.dart';
 import 'package:rxdart/subjects.dart';
 
 import 'payment_details_form.dart';

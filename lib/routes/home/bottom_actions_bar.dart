@@ -19,8 +19,8 @@ import 'package:breez/widgets/escher_dialog.dart';
 import 'package:breez/widgets/lsp_fee.dart';
 import 'package:breez/widgets/route.dart';
 import 'package:breez/widgets/warning_box.dart';
-import 'package:flutter/material.dart';
 import 'package:breez_translations/breez_translations_locales.dart';
+import 'package:flutter/material.dart';
 
 class BottomActionsBar extends StatelessWidget {
   final AccountModel account;

@@ -177,5 +177,6 @@ abstract class RemoteSession {
 
 class SessionExpiredException implements Exception {
   @override
-  String toString() => getSystemAppLocalizations().connect_to_pay_error_link_expired;
+  String toString() =>
+      getSystemAppLocalizations().connect_to_pay_error_link_expired;
 }

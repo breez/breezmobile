@@ -14,8 +14,8 @@ import 'package:breez/routes/podcast/boost.dart';
 import 'package:breez/routes/podcast/payment_adjuster.dart';
 import 'package:breez/routes/podcast/theme.dart';
 import 'package:breez/widgets/loader.dart';
-import 'package:flutter/material.dart';
 import 'package:breez_translations/breez_translations_locales.dart';
+import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:tutorial_coach_mark/tutorial_coach_mark.dart';
 

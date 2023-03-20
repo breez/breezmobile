@@ -57,7 +57,7 @@ class SubmitButton extends StatelessWidget {
         minWidth: 168.0,
       ),
       child: ActionButton(
-        text:  text,
+        text: text,
         onPressed: onPressed,
         enabled: true,
         fill: true,

@@ -15,9 +15,9 @@ import 'package:breez/widgets/keyboard_done_action.dart';
 import 'package:breez/widgets/processing_payment_dialog.dart';
 import 'package:breez/widgets/single_button_bottom_bar.dart';
 import 'package:breez/widgets/static_loader.dart';
+import 'package:breez_translations/breez_translations_locales.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:breez_translations/breez_translations_locales.dart';
 
 class SpontaneousPaymentPage extends StatefulWidget {
   final String nodeID;

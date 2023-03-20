@@ -3,8 +3,8 @@ import 'package:breez/bloc/backup/backup_actions.dart';
 import 'package:breez/bloc/backup/backup_bloc.dart';
 import 'package:breez/bloc/backup/backup_model.dart';
 import 'package:breez/routes/security_pin/remote_server_auth.dart';
-import 'package:flutter/material.dart';
 import 'package:breez_translations/breez_translations_locales.dart';
+import 'package:flutter/material.dart';
 
 class BackupProviderSelectionDialog extends StatefulWidget {
   final BackupBloc backupBloc;
@@ -71,12 +71,14 @@ class BackupProviderSelectionDialogState
                   itemCount: providers.length,
                   itemBuilder: (BuildContext context, int index) {
                     return ListTile(
-                      contentPadding: const EdgeInsets.symmetric(horizontal: 0.0),
+                      contentPadding:
+                          const EdgeInsets.symmetric(horizontal: 0.0),
                       selected: _selectedProviderIndex == index,
                       trailing: _selectedProviderIndex == index
                           ? Icon(
                               Icons.check,
-                              color: themeData.primaryTextTheme.labelLarge.color,
+                              color:
+                                  themeData.primaryTextTheme.labelLarge.color,
                             )
                           : Icon(
                               Icons.check,

@@ -6,9 +6,9 @@ import 'package:breez/bloc/invoice/invoice_model.dart';
 import 'package:breez/theme_data.dart' as theme;
 import 'package:breez/widgets/amount_form_field.dart';
 import 'package:breez/widgets/breez_avatar.dart';
+import 'package:breez_translations/breez_translations_locales.dart';
 import 'package:fixnum/fixnum.dart';
 import 'package:flutter/material.dart';
-import 'package:breez_translations/breez_translations_locales.dart';
 
 import 'keyboard_done_action.dart';
 

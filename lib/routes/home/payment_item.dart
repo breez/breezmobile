@@ -3,12 +3,12 @@ import 'package:breez/bloc/blocs_provider.dart';
 import 'package:breez/bloc/pos_catalog/actions.dart';
 import 'package:breez/bloc/pos_catalog/bloc.dart';
 import 'package:breez/routes/charge/sale_view.dart';
+import 'package:breez/routes/home/widgets/payments_list/payment_details_dialog.dart';
 import 'package:breez/theme_data.dart' as theme;
 import 'package:breez/utils/date.dart';
-import 'package:breez/routes/home/widgets/payments_list/payment_details_dialog.dart';
 import 'package:breez/widgets/route.dart';
-import 'package:flutter/material.dart';
 import 'package:breez_translations/breez_translations_locales.dart';
+import 'package:flutter/material.dart';
 
 import 'flip_transition.dart';
 import 'payment_item_avatar.dart';

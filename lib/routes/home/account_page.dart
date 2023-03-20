@@ -9,8 +9,8 @@ import 'package:breez/bloc/user_profile/user_profile_bloc.dart';
 import 'package:breez/theme_data.dart' as theme;
 import 'package:breez/utils/date.dart';
 import 'package:breez/widgets/fixed_sliver_delegate.dart';
-import 'package:flutter/material.dart';
 import 'package:breez_translations/breez_translations_locales.dart';
+import 'package:flutter/material.dart';
 
 import 'payments_filter.dart';
 import 'payments_list.dart';
@@ -55,7 +55,10 @@ class AccountPageState extends State<AccountPage>
       _accountBloc.paymentFilterStream.listen((event) {
         widget.scrollController.position
             .restoreOffset(widget.scrollController.offset + 1);
-        Future.delayed(const Duration(milliseconds: 150), () => {setState(() {})});
+        Future.delayed(
+          const Duration(milliseconds: 150),
+          () => {setState(() {})},
+        );
       });
       _isInit = true;
     }

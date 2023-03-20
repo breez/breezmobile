@@ -50,17 +50,20 @@ class CartBarDropDownButton extends StatelessWidget {
     );
     log.info('Currencies after first addition: [${_fold(currencies)}]');
     currencies.addAll(
-      accountModel.preferredFiatConversionList.map((f) => CurrencyWrapper.fromFiat(f)),
+      accountModel.preferredFiatConversionList
+          .map((f) => CurrencyWrapper.fromFiat(f)),
     );
     log.info('Currencies after second addition: [${_fold(currencies)}]');
     final dropDownItems = currencies.map(
       (currency) => CartBarDropDownItem(context, currency),
     );
-    log.info('Drop down items: [${dropDownItems.fold("", (p, e) => p.isEmpty ? e.value : "$p, ${e.value}")}]');
+    log.info(
+        'Drop down items: [${dropDownItems.fold("", (p, e) => p.isEmpty ? e.value : "$p, ${e.value}")}]');
     return dropDownItems.toList();
   }
 
   String _fold(List<CurrencyWrapper> currencies) {
-    return currencies.fold("", (p, e) => p.isEmpty ? e.shortName : "$p, ${e.shortName}");
+    return currencies.fold(
+        "", (p, e) => p.isEmpty ? e.shortName : "$p, ${e.shortName}");
   }
 }

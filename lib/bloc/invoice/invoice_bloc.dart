@@ -66,7 +66,8 @@ class InvoiceBloc with AsyncActionsHandler {
     listenActions();
   }
 
-  Stream<Future<DecodedClipboardData>> get decodedClipboardStream => device.clipboardStream
+  Stream<Future<DecodedClipboardData>> get decodedClipboardStream =>
+      device.clipboardStream
           .distinct()
           .skip(1) // Skip previous session clipboard
           .map((clipboardData) async {

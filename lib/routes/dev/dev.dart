@@ -207,7 +207,9 @@ class DevViewState extends State<DevView> {
                                               },
                                             )),
                                             IconButton(
-                                              icon: const Icon(Icons.play_arrow),
+                                              icon: const Icon(
+                                                Icons.play_arrow,
+                                              ),
                                               tooltip: 'Run',
                                               onPressed: () {
                                                 _sendCommand(

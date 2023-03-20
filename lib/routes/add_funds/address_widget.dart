@@ -2,9 +2,9 @@ import 'package:breez/services/injector.dart';
 import 'package:breez/theme_data.dart' as theme;
 import 'package:breez/widgets/compact_qr_image.dart';
 import 'package:breez/widgets/flushbar.dart';
+import 'package:breez_translations/breez_translations_locales.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'package:breez_translations/breez_translations_locales.dart';
 import 'package:share_plus/share_plus.dart';
 
 class AddressWidget extends StatelessWidget {

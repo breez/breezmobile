@@ -10,16 +10,16 @@ import 'package:breez/bloc/user_profile/breez_user_model.dart';
 import 'package:breez/bloc/user_profile/currency.dart';
 import 'package:breez/bloc/user_profile/user_profile_bloc.dart';
 import 'package:breez/routes/charge/currency_wrapper.dart';
+import 'package:breez/routes/home/widgets/payments_list/payment_details_dialog.dart';
 import 'package:breez/theme_data.dart' as theme;
 import 'package:breez/utils/date.dart';
 import 'package:breez/utils/print_pdf.dart';
 import 'package:breez/widgets/back_button.dart' as backBtn;
 import 'package:breez/widgets/loader.dart';
-import 'package:breez/routes/home/widgets/payments_list/payment_details_dialog.dart';
 import 'package:breez/widgets/print_parameters.dart';
+import 'package:breez_translations/breez_translations_locales.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:breez_translations/breez_translations_locales.dart';
 import 'package:flutter_svg/svg.dart';
 
 import 'items/item_avatar.dart';
@@ -353,9 +353,9 @@ class _TotalSaleCharge extends StatelessWidget {
 
     final satCurrency = CurrencyWrapper.fromBTC(Currency.SAT);
     final satMessage = ("${satCurrency.format(
-              totalAmountInSats,
-              removeTrailingZeros: true,
-            )} ${satCurrency.shortName}")
+      totalAmountInSats,
+      removeTrailingZeros: true,
+    )} ${satCurrency.shortName}")
         .toUpperCase();
 
     if (totalAmountInFiat.length == 1) {

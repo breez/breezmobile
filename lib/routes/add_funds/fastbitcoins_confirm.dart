@@ -1,8 +1,8 @@
 import 'package:breez/bloc/fastbitcoins/fastbitcoins_model.dart';
 import 'package:breez/bloc/user_profile/breez_user_model.dart';
+import 'package:breez_translations/breez_translations_locales.dart';
 import 'package:fixnum/fixnum.dart';
 import 'package:flutter/material.dart';
-import 'package:breez_translations/breez_translations_locales.dart';
 
 class FastBitcoinsConfirmWidget extends StatelessWidget {
   final ValidateRequestModel request;

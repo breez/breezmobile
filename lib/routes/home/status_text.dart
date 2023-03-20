@@ -3,9 +3,9 @@ import 'package:breez/bloc/account/account_model.dart';
 import 'package:breez/theme_data.dart';
 import 'package:breez/utils/min_font_size.dart';
 import 'package:breez/widgets/loading_animated_text.dart';
+import 'package:breez_translations/breez_translations_locales.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'package:breez_translations/breez_translations_locales.dart';
 import 'package:url_launcher/url_launcher_string.dart';
 
 class StatusText extends StatelessWidget {
