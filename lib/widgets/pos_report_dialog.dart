@@ -5,6 +5,7 @@ import 'package:breez/bloc/pos_catalog/actions.dart';
 import 'package:breez/bloc/pos_catalog/bloc.dart';
 import 'package:breez/bloc/pos_catalog/model.dart';
 import 'package:breez/bloc/user_profile/currency.dart';
+import 'package:breez/logger.dart';
 import 'package:breez/routes/charge/currency_wrapper.dart';
 import 'package:breez/theme_data.dart' as theme;
 import 'package:breez/utils/date.dart';
@@ -148,8 +149,8 @@ class PosReportDialog extends StatelessWidget {
   ) {
     TapDownDetails details;
     return GestureDetector(
-      onTapDown: (details) {
-        details = details;
+      onTapDown: (newDetails) {
+        details = newDetails;
       },
       onTap: () async {
         final offset = details?.globalPosition;
