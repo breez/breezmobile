@@ -165,16 +165,21 @@ class UserProfileBloc {
         );
       }
       if (!user.registered && Platform.isAndroid) {
-        GooglePlayServicesAvailability availability = await GoogleApiAvailability.instance.checkGooglePlayServicesAvailability();
+        GooglePlayServicesAvailability availability =
+            await GoogleApiAvailability.instance
+                .checkGooglePlayServicesAvailability();
         print("GooglePlayServicesAvailability:$availability");
         if ((availability == GooglePlayServicesAvailability.serviceMissing) ||
-          (availability == GooglePlayServicesAvailability.serviceDisabled) ||
-          (availability == GooglePlayServicesAvailability.serviceInvalid)) {
+            (availability == GooglePlayServicesAvailability.serviceDisabled) ||
+            (availability == GooglePlayServicesAvailability.serviceInvalid)) {
           var uuid = const Uuid();
           user = user.copyWith(userID: "random-${uuid.v4()}");
         }
       }
-      user = user.copyWith(locked: user.securityModel.requiresPin);
+      user = user.copyWith(
+        locked: user.securityModel.requiresPin,
+        appMode: user.hasAdminPassword ? AppMode.pos : user.appMode,
+      );
       print("USER:${user.toJson()}");
       _publishUser(user);
     });
@@ -259,7 +264,8 @@ class UserProfileBloc {
     } catch (e) {
       //  This is a temporary workaround for flutter_secure_storage issues
       //  on apps published in Google Play for Android devices
-      if(e.toString().contains("java.lang.NullPointerException") && Platform.isAndroid){
+      if (e.toString().contains("java.lang.NullPointerException") &&
+          Platform.isAndroid) {
         action.resolve(true);
         return;
       }
@@ -357,7 +363,8 @@ class UserProfileBloc {
     try {
       String token = await _notifications.getToken();
 
-      if (token != null && (token != user.token || user.userID == null || user.userID.isEmpty)) {
+      if (token != null &&
+          (token != user.token || user.userID == null || user.userID.isEmpty)) {
         //var userID = await _breezServer.registerDevice(token);
         var userID = token;
         userToRegister = userToRegister.copyWith(token: token, userID: userID);
@@ -371,7 +378,8 @@ class UserProfileBloc {
   }
 
   Future<BreezUserModel> _restoreUserPreferences(
-      BreezUserModel userModel) async {
+    BreezUserModel userModel,
+  ) async {
     var appDir = await getApplicationDocumentsDirectory();
     var backupAppDataDirPath =
         '${appDir.path}${Platform.pathSeparator}app_data_backup';

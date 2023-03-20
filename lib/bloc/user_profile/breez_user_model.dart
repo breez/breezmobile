@@ -123,8 +123,7 @@ class BreezUserModel {
         currency = json['currency'] == null
             ? Currency.SAT
             : Currency.fromTickerSymbol(json['currency']),
-        fiatCurrency =
-            json['fiatCurrency'] ?? "USD",
+        fiatCurrency = json['fiatCurrency'] ?? "USD",
         name = json['name'],
         color = json['color'],
         animal = json['animal'],
