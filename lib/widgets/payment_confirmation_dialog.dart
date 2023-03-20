@@ -3,9 +3,9 @@ import 'package:breez/bloc/account/account_actions.dart';
 import 'package:breez/bloc/account/account_bloc.dart';
 import 'package:breez/bloc/account/account_model.dart';
 import 'package:breez/bloc/invoice/invoice_model.dart';
+import 'package:breez_translations/breez_translations_locales.dart';
 import 'package:fixnum/fixnum.dart';
 import 'package:flutter/material.dart';
-import 'package:breez_translations/breez_translations_locales.dart';
 
 class PaymentConfirmationDialog extends StatelessWidget {
   final AccountBloc accountBloc;

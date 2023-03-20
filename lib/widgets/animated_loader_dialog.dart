@@ -1,6 +1,6 @@
 import 'package:breez/theme_data.dart' as theme;
-import 'package:flutter/material.dart';
 import 'package:breez_translations/breez_translations_locales.dart';
+import 'package:flutter/material.dart';
 
 import 'loading_animated_text.dart';
 

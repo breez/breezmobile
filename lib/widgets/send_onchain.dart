@@ -5,10 +5,10 @@ import 'package:breez/services/injector.dart';
 import 'package:breez/theme_data.dart' as theme;
 import 'package:breez/widgets/collapsible_list_item.dart';
 import 'package:breez/widgets/keyboard_done_action.dart';
+import 'package:breez_translations/breez_translations_locales.dart';
 import 'package:fixnum/fixnum.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:breez_translations/breez_translations_locales.dart';
 
 import 'flushbar.dart';
 

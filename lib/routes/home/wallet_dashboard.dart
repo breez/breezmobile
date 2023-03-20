@@ -5,8 +5,8 @@ import 'package:breez/bloc/account/fiat_conversion.dart';
 import 'package:breez/bloc/user_profile/breez_user_model.dart';
 import 'package:breez/bloc/user_profile/currency.dart';
 import 'package:breez/theme_data.dart' as theme;
-import 'package:flutter/material.dart';
 import 'package:breez_translations/breez_translations_locales.dart';
+import 'package:flutter/material.dart';
 
 class WalletDashboard extends StatefulWidget {
   final AccountModel _accountModel;

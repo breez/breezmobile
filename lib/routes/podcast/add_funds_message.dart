@@ -2,8 +2,8 @@ import 'package:auto_size_text/auto_size_text.dart';
 import 'package:breez/bloc/account/account_model.dart';
 import 'package:breez/routes/home/bottom_actions_bar.dart';
 import 'package:breez/utils/min_font_size.dart';
-import 'package:flutter/material.dart';
 import 'package:breez_translations/breez_translations_locales.dart';
+import 'package:flutter/material.dart';
 
 class AddFundsMessage extends StatelessWidget {
   final AccountModel accountModel;

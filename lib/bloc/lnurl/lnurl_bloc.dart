@@ -162,7 +162,8 @@ class LNUrlBloc with AsyncActionsHandler {
   ) async {
     if (response.minAmount > action.amount ||
         response.maxAmount < action.amount) {
-      log.info("NFC Payment Request rangeError, requested ${action.amount} but the range is ${response.minAmount} - ${response.maxAmount}");
+      log.info(
+          "NFC Payment Request rangeError, requested ${action.amount} but the range is ${response.minAmount} - ${response.maxAmount}");
       _nfcWithdrawController.add(NfcWithdrawInvoiceStatus.rangeError(
         response.minAmount,
         response.maxAmount,

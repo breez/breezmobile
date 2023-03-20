@@ -1,8 +1,8 @@
 import 'package:breez/theme_data.dart' as theme;
 import 'package:breez/widgets/error_dialog.dart';
+import 'package:breez_translations/breez_translations_locales.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'package:breez_translations/breez_translations_locales.dart';
 
 void showProviderErrorDialog(
   BuildContext context,

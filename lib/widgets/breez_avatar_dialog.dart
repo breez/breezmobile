@@ -9,8 +9,8 @@ import 'package:breez/bloc/user_profile/user_profile_bloc.dart';
 import 'package:breez/theme_data.dart' as theme;
 import 'package:breez/utils/min_font_size.dart';
 import 'package:breez/widgets/breez_avatar.dart';
-import 'package:flutter/material.dart';
 import 'package:breez_translations/breez_translations_locales.dart';
+import 'package:flutter/material.dart';
 import 'package:image/image.dart' as DartImage;
 import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
@@ -118,8 +118,8 @@ Widget breezAvatarDialog(BuildContext context, UserProfileBloc userBloc) {
                                         child: CircularProgressIndicator(
                                           valueColor:
                                               AlwaysStoppedAnimation<Color>(
-                                            themeData
-                                                .primaryTextTheme.labelLarge.color,
+                                            themeData.primaryTextTheme
+                                                .labelLarge.color,
                                           ),
                                           backgroundColor:
                                               themeData.colorScheme.background,

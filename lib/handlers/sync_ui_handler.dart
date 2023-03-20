@@ -3,8 +3,8 @@ import 'package:breez/bloc/account/account_bloc.dart';
 import 'package:breez/bloc/account/account_model.dart';
 import 'package:breez/routes/podcast/theme.dart';
 import 'package:breez/widgets/sync_loader.dart';
-import 'package:flutter/material.dart';
 import 'package:breez_translations/breez_translations_locales.dart';
+import 'package:flutter/material.dart';
 
 class SyncUIHandler {
   final AccountBloc _accountBloc;
@@ -50,7 +50,9 @@ ModalRoute _createSyncRoute(BuildContext context, AccountBloc accBloc) {
       builder: (ctx, snapshot) {
         var account = snapshot.data;
         double progress = account?.syncProgress ?? 0;
-        return withBreezTheme(context, TransparentRouteLoader(
+        return withBreezTheme(
+          context,
+          TransparentRouteLoader(
             message: texts.handler_sync_ui_message,
             value: progress,
             opacity: 0.9,

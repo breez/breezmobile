@@ -1,6 +1,6 @@
+import 'package:breez_translations/breez_translations_locales.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'package:breez_translations/breez_translations_locales.dart';
 import 'package:url_launcher/url_launcher_string.dart';
 
 class CloseWarningDialog extends StatelessWidget {

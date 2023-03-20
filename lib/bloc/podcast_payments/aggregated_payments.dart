@@ -27,8 +27,8 @@ class AggregatedPayments {
   Future<double> addAmount(String destination, double amount) async {
     aggregatedAmount[destination] =
         (aggregatedAmount[destination] ?? 0) + amount;
-    await sharedPreferences
-        .setString(AGGREGATED_PAYMENTS_KEY, json.encode(aggregatedAmount));
+    await sharedPreferences.setString(
+        AGGREGATED_PAYMENTS_KEY, json.encode(aggregatedAmount));
     return aggregatedAmount[destination];
   }
 

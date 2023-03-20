@@ -5,8 +5,8 @@ import 'package:breez/bloc/account/account_model.dart';
 import 'package:breez/theme_data.dart' as theme;
 import 'package:breez/widgets/loading_animated_text.dart';
 import 'package:breez/widgets/payment_request_dialog.dart';
-import 'package:flutter/material.dart';
 import 'package:breez_translations/breez_translations_locales.dart';
+import 'package:flutter/material.dart';
 import 'package:rxdart/rxdart.dart';
 
 const PAYMENT_LIST_ITEM_HEIGHT = 72.0;
@@ -47,45 +47,45 @@ class ProcessingPaymentDialogState extends State<ProcessingPaymentDialog>
   Animation<RelativeRect> transitionAnimation;
   final GlobalKey _dialogKey = GlobalKey();
   StreamSubscription<PaymentInfo> _pendingPaymentSubscription;
-  ModalRoute _currentRoute;  
+  ModalRoute _currentRoute;
 
   bool _isInit = false;
 
   @override
   void initState() {
-    super.initState();    
+    super.initState();
   }
 
   @override
   void didChangeDependencies() {
     if (!_isInit) {
-      Future.value(true).then((_) {        
-          _payAncClose();
-          _currentRoute = ModalRoute.of(context);
-          controller = AnimationController(
-            vsync: this,
-            duration: const Duration(milliseconds: 500),
-          );
-          colorAnimation = ColorTween(
-            begin: Theme.of(context).canvasColor,
-            end: Theme.of(context).colorScheme.background,
-          ).animate(controller)
-            ..addListener(() {
-              setState(() {});
-            });
-          borderAnimation = Tween<double>(begin: 0.0, end: 12.0)
-              .animate(CurvedAnimation(parent: controller, curve: Curves.ease));
-          opacityAnimation = Tween<double>(begin: 0.0, end: 1.0)
-              .animate(CurvedAnimation(parent: controller, curve: Curves.ease));
-          controller.value = 1.0;
-          controller.addStatusListener((status) {
-            if (status == AnimationStatus.dismissed) {
-              if (widget.popOnCompletion) {
-                Navigator.of(context).removeRoute(_currentRoute);
-              }
-              widget._onStateChange(PaymentRequestState.PAYMENT_COMPLETED);
+      Future.value(true).then((_) {
+        _payAncClose();
+        _currentRoute = ModalRoute.of(context);
+        controller = AnimationController(
+          vsync: this,
+          duration: const Duration(milliseconds: 500),
+        );
+        colorAnimation = ColorTween(
+          begin: Theme.of(context).canvasColor,
+          end: Theme.of(context).colorScheme.background,
+        ).animate(controller)
+          ..addListener(() {
+            setState(() {});
+          });
+        borderAnimation = Tween<double>(begin: 0.0, end: 12.0)
+            .animate(CurvedAnimation(parent: controller, curve: Curves.ease));
+        opacityAnimation = Tween<double>(begin: 0.0, end: 1.0)
+            .animate(CurvedAnimation(parent: controller, curve: Curves.ease));
+        controller.value = 1.0;
+        controller.addStatusListener((status) {
+          if (status == AnimationStatus.dismissed) {
+            if (widget.popOnCompletion) {
+              Navigator.of(context).removeRoute(_currentRoute);
             }
-          });        
+            widget._onStateChange(PaymentRequestState.PAYMENT_COMPLETED);
+          }
+        });
       }).catchError((err) {
         _closeDialog();
         return;
@@ -153,7 +153,7 @@ class ProcessingPaymentDialogState extends State<ProcessingPaymentDialog>
   }
 
   @override
-  void dispose() {    
+  void dispose() {
     _pendingPaymentSubscription?.cancel();
     controller?.dispose();
     super.dispose();
@@ -162,8 +162,8 @@ class ProcessingPaymentDialogState extends State<ProcessingPaymentDialog>
   @override
   Widget build(BuildContext context) {
     return _animating
-          ? _createAnimatedContent(context)
-          : _createContentDialog(context);
+        ? _createAnimatedContent(context)
+        : _createContentDialog(context);
   }
 
   List<Widget> _buildProcessingPaymentDialog(BuildContext context) {

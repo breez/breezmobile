@@ -3,9 +3,9 @@ import 'dart:io';
 import 'package:breez/bloc/user_profile/profile_animal.dart';
 import 'package:breez/bloc/user_profile/profile_color.dart';
 import 'package:breez/theme_data.dart' as theme;
+import 'package:breez_translations/breez_translations_locales.dart';
 import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
-import 'package:breez_translations/breez_translations_locales.dart';
 import 'package:flutter_svg/svg.dart';
 
 class BreezAvatar extends StatelessWidget {
@@ -17,8 +17,7 @@ class BreezAvatar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    Color avatarBgColor =
-        backgroundColor ?? theme.sessionAvatarBackgroundColor;
+    Color avatarBgColor = backgroundColor ?? theme.sessionAvatarBackgroundColor;
 
     if (avatarURL != null && avatarURL.isNotEmpty) {
       if (avatarURL.startsWith("breez://profile_image?")) {
@@ -80,7 +79,8 @@ class _GeneratedAvatar extends StatelessWidget {
   final String color;
   final Color backgroundColor;
 
-  const _GeneratedAvatar(this.radius, this.animal, this.color, this.backgroundColor);
+  const _GeneratedAvatar(
+      this.radius, this.animal, this.color, this.backgroundColor);
 
   @override
   Widget build(BuildContext context) {

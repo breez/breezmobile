@@ -10,9 +10,9 @@ import 'package:breez/theme_data.dart' as theme;
 import 'package:breez/utils/min_font_size.dart';
 import 'package:breez/widgets/currency_amount_field_formatter.dart';
 import 'package:breez/widgets/loader.dart';
+import 'package:breez_translations/breez_translations_locales.dart';
 import 'package:fixnum/fixnum.dart';
 import 'package:flutter/material.dart';
-import 'package:breez_translations/breez_translations_locales.dart';
 
 import 'flushbar.dart';
 

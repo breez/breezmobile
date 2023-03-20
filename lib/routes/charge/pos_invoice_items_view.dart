@@ -8,8 +8,8 @@ import 'package:breez/routes/charge/items/items_list.dart';
 import 'package:breez/theme_data.dart' as theme;
 import 'package:breez/utils/min_font_size.dart';
 import 'package:breez/widgets/loader.dart';
-import 'package:flutter/material.dart';
 import 'package:breez_translations/breez_translations_locales.dart';
+import 'package:flutter/material.dart';
 
 class PosInvoiceItemsView extends StatelessWidget {
   final Sale currentSale;

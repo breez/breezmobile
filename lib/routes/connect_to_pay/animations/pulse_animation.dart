@@ -22,8 +22,10 @@ class _PulseAnimationDecoratorState extends State<PulseAnimationDecorator>
   @override
   void initState() {
     super.initState();
-    _animationController =
-        AnimationController(vsync: this, duration: const Duration(milliseconds: 500));
+    _animationController = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 500),
+    );
     _decorationRadius = Tween<double>(
       begin: widget._minRadius,
       end: widget._maxRadius,

@@ -52,11 +52,9 @@ class LoadingAnimatedTextState extends State<LoadingAnimatedText> {
                     text: paddingDots,
                     style: const TextStyle(color: Colors.transparent))
               ])),
-        textAlign:
-            widget.textAlign ?? TextAlign.center);
+        textAlign: widget.textAlign ?? TextAlign.center);
   }
 
   String get loadingDots => List.filled(_timerIteration % 4, ".").join("");
-  String get paddingDots =>
-      List.filled(3 - _timerIteration % 4, ".").join("");
+  String get paddingDots => List.filled(3 - _timerIteration % 4, ".").join("");
 }

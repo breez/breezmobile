@@ -1,5 +1,6 @@
 import 'package:breez/bloc/podcast_history/sqflite/podcast_history_local_model.dart';
 import 'package:sqflite/sqflite.dart';
+
 import '../../pos_catalog/sqlite/db.dart';
 
 class PodcastHistoryDatabase {

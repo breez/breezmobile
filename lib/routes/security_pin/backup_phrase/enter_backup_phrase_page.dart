@@ -6,8 +6,8 @@ import 'package:breez/bloc/user_profile/user_profile_bloc.dart';
 import 'package:breez/theme_data.dart' as theme;
 import 'package:breez/widgets/back_button.dart' as backBtn;
 import 'package:breez/widgets/single_button_bottom_bar.dart';
-import 'package:flutter/material.dart';
 import 'package:breez_translations/breez_translations_locales.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_typeahead/flutter_typeahead.dart';
 
 import 'wordlist.dart';
@@ -121,11 +121,12 @@ class EnterBackupPhrasePageState extends State<EnterBackupPhrasePage> {
     List<Widget> restoreFormContent = [];
     restoreFormContent.add(_buildForm());
     if (_hasError) {
-      restoreFormContent
-        .add(_buildErrorMessage(
+      restoreFormContent.add(
+        _buildErrorMessage(
           context,
           texts.enter_backup_phrase_error,
-        ));
+        ),
+      );
     }
     restoreFormContent.add(_buildBottomBtn(context, userProfileBloc));
     return restoreFormContent;

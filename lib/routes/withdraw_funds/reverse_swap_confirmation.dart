@@ -13,9 +13,9 @@ import 'package:breez/widgets/error_dialog.dart';
 import 'package:breez/widgets/fee_chooser.dart';
 import 'package:breez/widgets/loader.dart';
 import 'package:breez/widgets/single_button_bottom_bar.dart';
+import 'package:breez_translations/breez_translations_locales.dart';
 import 'package:fixnum/fixnum.dart';
 import 'package:flutter/material.dart';
-import 'package:breez_translations/breez_translations_locales.dart';
 
 class ReverseSwapConfirmation extends StatefulWidget {
   final ReverseSwapRequest swap;
@@ -266,7 +266,9 @@ class ReverseSwapConfirmationState extends State<ReverseSwapConfirmation> {
             ),
             trailing: AutoSizeText(
               acc.currency.format(toSend),
-              style: TextStyle(color: themeData.colorScheme.error,),
+              style: TextStyle(
+                color: themeData.colorScheme.error,
+              ),
               maxLines: 1,
               minFontSize: minFont.minFontSize,
               stepGranularity: 0.1,

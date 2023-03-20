@@ -2,8 +2,8 @@ import 'dart:async';
 
 import 'package:breez/theme_data.dart' as theme;
 import 'package:breez/utils/date.dart';
-import 'package:flutter/material.dart';
 import 'package:breez_translations/breez_translations_locales.dart';
+import 'package:flutter/material.dart';
 
 class CalendarDialog extends StatefulWidget {
   final DateTime firstDate;
@@ -70,8 +70,9 @@ class CalendarDialogState extends State<CalendarDialog> {
           child: Text(
             texts.pos_transactions_range_dialog_clear,
             style: theme.cancelButtonStyle.copyWith(
-              color:
-                  theme.themeId == "BLUE" ? Colors.red : themeData.colorScheme.error,
+              color: theme.themeId == "BLUE"
+                  ? Colors.red
+                  : themeData.colorScheme.error,
             ),
           ),
         ),

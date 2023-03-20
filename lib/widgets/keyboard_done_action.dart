@@ -1,7 +1,7 @@
 import 'package:breez/theme_data.dart' as theme;
+import 'package:breez_translations/breez_translations_locales.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:breez_translations/breez_translations_locales.dart';
 
 const double _kBarSize = 45.0;
 

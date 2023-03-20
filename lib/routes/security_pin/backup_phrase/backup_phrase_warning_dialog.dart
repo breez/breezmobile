@@ -1,5 +1,5 @@
-import 'package:flutter/material.dart';
 import 'package:breez_translations/breez_translations_locales.dart';
+import 'package:flutter/material.dart';
 
 class BackupPhraseWarningDialog extends StatelessWidget {
   @override

@@ -24,7 +24,7 @@ import 'package:rxdart/rxdart.dart';
 // A concrete implementation of RemoteSession from the payer side.
 class PayerRemoteSession extends RemoteSession with OnlineStatusUpdater {
   String _currentSessionInvite;
-  Sink<AsyncAction> accountActions;  
+  Sink<AsyncAction> accountActions;
 
   final StreamController<void> _terminationStreamController =
       StreamController<void>();
@@ -162,7 +162,7 @@ class PayerRemoteSession extends RemoteSession with OnlineStatusUpdater {
   Future terminate({bool permanent = false}) async {
     if (_isTerminated) {
       return Future.value(null);
-    }    
+    }
     _sessionCompleter.complete();
 
     await stopStatusUpdates();
@@ -195,8 +195,7 @@ class PayerRemoteSession extends RemoteSession with OnlineStatusUpdater {
       _paymentSessionController
           .add(_currentSession.copyWith(invitationReady: true));
     }).catchError((err) {
-      log.info(
-          "payer session generating invite link failed: $err");
+      log.info("payer session generating invite link failed: $err");
     });
 
     _sentInvitesController.stream.listen((inviteLink) async {

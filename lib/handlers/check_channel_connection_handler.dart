@@ -7,8 +7,8 @@ import 'package:breez/services/device.dart';
 import 'package:breez/services/injector.dart';
 import 'package:breez/theme_data.dart' as theme;
 import 'package:breez/widgets/flushbar.dart';
-import 'package:flutter/widgets.dart';
 import 'package:breez_translations/breez_translations_locales.dart';
+import 'package:flutter/widgets.dart';
 
 class CheckChannelConnection {
   static final _instance = CheckChannelConnection._internal();
@@ -41,7 +41,9 @@ class CheckChannelConnection {
 
   void startSubscription(AccountBloc accountBloc, BuildContext context) {
     _subscription = accountBloc.accountStream
-        .map((acc) => !(acc.connected && !acc.readyForPayments) || acc.nodeUpgrading == true)
+        .map((acc) =>
+            !(acc.connected && !acc.readyForPayments) ||
+            acc.nodeUpgrading == true)
         .distinct()
         .listen((ready) {
       if (ready) {
@@ -74,7 +76,7 @@ class CheckChannelConnection {
     log.info("Account is not ready for payments, Breez is offline");
     if (_flushbar != null) {
       return;
-    }        
+    }
     final texts = context.texts();
     _flushbar = showFlushbar(
       context,

@@ -6,9 +6,9 @@ import 'package:breez/bloc/user_profile/user_profile_bloc.dart';
 import 'package:breez/theme_data.dart' as theme;
 import 'package:breez/widgets/flushbar.dart';
 import 'package:breez/widgets/no_connection_dialog.dart';
+import 'package:breez_translations/breez_translations_locales.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:breez_translations/breez_translations_locales.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:url_launcher/url_launcher_string.dart';
 

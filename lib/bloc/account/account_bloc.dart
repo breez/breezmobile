@@ -2,8 +2,6 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
-import 'package:breez/bloc/tor/bloc.dart';
-
 import 'package:breez/bloc/account/account_actions.dart';
 import 'package:breez/bloc/account/account_permissions_handler.dart';
 import 'package:breez/bloc/account/fiat_conversion.dart';
@@ -12,6 +10,7 @@ import 'package:breez/bloc/csv_exporter.dart';
 import 'package:breez/bloc/payment_options/payment_options_actions.dart';
 import 'package:breez/bloc/payment_options/payment_options_bloc.dart';
 import 'package:breez/bloc/pos_catalog/repository.dart';
+import 'package:breez/bloc/tor/bloc.dart';
 import 'package:breez/bloc/user_profile/breez_user_model.dart';
 import 'package:breez/logger.dart';
 import 'package:breez/services/background_task.dart';

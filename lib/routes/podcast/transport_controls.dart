@@ -20,8 +20,7 @@ import 'speed_selector.dart';
 /// See [NowPlaying].
 class PlayerTransportControls extends StatefulWidget {
   @override
-  PlayerTransportControlsState createState() =>
-      PlayerTransportControlsState();
+  PlayerTransportControlsState createState() => PlayerTransportControlsState();
 }
 
 class PlayerTransportControlsState extends State<PlayerTransportControls>
@@ -36,8 +35,10 @@ class PlayerTransportControlsState extends State<PlayerTransportControls>
 
     final audioBloc = Provider.of<AudioBloc>(context, listen: false);
 
-    _playPauseController =
-        AnimationController(vsync: this, duration: const Duration(milliseconds: 300));
+    _playPauseController = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 300),
+    );
 
     /// Seems a little hacky, but when we load the form we want the play/pause
     /// button to be in the correct state. If we are building the first frame,

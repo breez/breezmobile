@@ -205,7 +205,7 @@ class PosCatalogBloc with AsyncActionsHandler {
       ));
     });
   }
-  
+
   Future _loadItems({String filter, bool backupDB = false}) async {
     final items = await _repository.fetchItems(filter: filter);
     final sort = _posItemSort.valueOrNull ?? PosCatalogItemSort.NONE;

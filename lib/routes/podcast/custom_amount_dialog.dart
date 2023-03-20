@@ -1,7 +1,7 @@
 import 'package:breez/bloc/user_profile/currency.dart';
 import 'package:breez/routes/podcast/custom_amount_form.dart';
-import 'package:flutter/material.dart';
 import 'package:breez_translations/breez_translations_locales.dart';
+import 'package:flutter/material.dart';
 
 class CustomAmountDialog extends StatefulWidget {
   final int customAmount;

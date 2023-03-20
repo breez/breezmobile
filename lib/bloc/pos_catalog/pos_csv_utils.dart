@@ -25,8 +25,7 @@ class PosCsvUtils {
   List _generateList() {
     final texts = getSystemAppLocalizations();
     log.info("generating payment list started");
-    List<List<dynamic>> paymentList =
-        List.generate(itemList.length, (index) {
+    List<List<dynamic>> paymentList = List.generate(itemList.length, (index) {
       List paymentItem = [];
       Item paymentInfo = itemList.elementAt(index);
       paymentItem.add(paymentInfo.id.toString());

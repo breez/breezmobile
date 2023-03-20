@@ -58,7 +58,8 @@ class AmountFormField extends TextFormField {
                       useRootNavigator: false,
                       context: context,
                       builder: (_) => CurrencyConverterDialog(
-                        returnFN ?? (value) =>
+                        returnFN ??
+                            (value) =>
                                 controller.text = accountModel.currency.format(
                                   accountModel.currency.parse(value),
                                   includeCurrencySymbol: false,

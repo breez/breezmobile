@@ -233,7 +233,8 @@ class CreateInvoicePageState extends State<CreateInvoicePage> {
                             validatorFn: validatePayment,
                             style: theme.FieldTextStyle.textStyle,
                           ),
-                          if (_withdrawFetchResponse != null && !_withdrawFetchResponse.isFixedAmount) ...[
+                          if (_withdrawFetchResponse != null &&
+                              !_withdrawFetchResponse.isFixedAmount) ...[
                             Padding(
                               padding: const EdgeInsets.only(top: 8),
                               child: Text(

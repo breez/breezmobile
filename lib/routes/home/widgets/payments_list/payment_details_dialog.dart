@@ -121,7 +121,8 @@ List<Widget> _getPaymentInfoDetails(
   PaymentInfo paymentInfo,
 ) {
   if (paymentInfo is StreamedPaymentInfo) {
-    return groupBy<PaymentInfo, String>(paymentInfo.singlePayments, (p) => p.title)
+    return groupBy<PaymentInfo, String>(
+            paymentInfo.singlePayments, (p) => p.title)
         .entries
         .map((ent) => PaymentDetailsDialogDestination(
               title: ent.key,

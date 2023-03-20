@@ -1,5 +1,4 @@
 import 'package:breez/bloc/account/account_bloc.dart';
-import 'package:breez/bloc/tor/bloc.dart';
 import 'package:breez/bloc/backup/backup_bloc.dart';
 import 'package:breez/bloc/connect_pay/connect_pay_bloc.dart';
 import 'package:breez/bloc/fastbitcoins/fastbitcoins_bloc.dart';
@@ -11,6 +10,7 @@ import 'package:breez/bloc/podcast_history/podcast_history_bloc.dart';
 import 'package:breez/bloc/pos_catalog/bloc.dart';
 import 'package:breez/bloc/pos_catalog/sqlite/repository.dart';
 import 'package:breez/bloc/reverse_swap/reverse_swap_bloc.dart';
+import 'package:breez/bloc/tor/bloc.dart';
 import 'package:breez/bloc/user_profile/user_profile_bloc.dart';
 
 import 'invoice/invoice_bloc.dart';

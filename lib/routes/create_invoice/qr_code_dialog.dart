@@ -12,8 +12,8 @@ import 'package:breez/widgets/circular_progress.dart';
 import 'package:breez/widgets/compact_qr_image.dart';
 import 'package:breez/widgets/flushbar.dart';
 import 'package:breez/widgets/warning_box.dart';
-import 'package:flutter/material.dart';
 import 'package:breez_translations/breez_translations_locales.dart';
+import 'package:flutter/material.dart';
 import 'package:share_plus/share_plus.dart';
 
 class QrCodeDialog extends StatefulWidget {
@@ -157,10 +157,11 @@ class QrCodeDialogState extends State<QrCodeDialog>
                                   0xe917,
                                   fontFamily: "icomoon",
                                 )),
-                                color: themeData.primaryTextTheme.labelLarge.color,
+                                color:
+                                    themeData.primaryTextTheme.labelLarge.color,
                                 onPressed: () {
                                   Share.share(
-                                      "lightning:${requestModel.rawPayReq}",
+                                    "lightning:${requestModel.rawPayReq}",
                                   );
                                 },
                               ),
@@ -180,7 +181,8 @@ class QrCodeDialogState extends State<QrCodeDialog>
                                   0xe90b,
                                   fontFamily: "icomoon",
                                 )),
-                                color: themeData.primaryTextTheme.labelLarge.color,
+                                color:
+                                    themeData.primaryTextTheme.labelLarge.color,
                                 onPressed: () {
                                   ServiceInjector()
                                       .device
@@ -234,7 +236,8 @@ class QrCodeDialogState extends State<QrCodeDialog>
                                   valueColor: AlwaysStoppedAnimation<Color>(
                                     themeData.primaryTextTheme.labelLarge.color,
                                   ),
-                                  backgroundColor: themeData.colorScheme.background,
+                                  backgroundColor:
+                                      themeData.colorScheme.background,
                                 ),
                               ),
                             ),
@@ -259,7 +262,8 @@ class QrCodeDialogState extends State<QrCodeDialog>
                                   ),
                                 ),
                               ),
-                              const Padding(padding: EdgeInsets.only(top: 16.0)),
+                              const Padding(
+                                  padding: EdgeInsets.only(top: 16.0)),
                               SizedBox(
                                 width: MediaQuery.of(context).size.width,
                                 child: _buildExpiryAndFeeMessage(
@@ -311,7 +315,8 @@ class QrCodeDialogState extends State<QrCodeDialog>
             vertical: 12,
             horizontal: 8,
           ),
-          backgroundColor: theme.themeId == "BLUE" ? const Color(0xFFf3f8fc) : null,
+          backgroundColor:
+              theme.themeId == "BLUE" ? const Color(0xFFf3f8fc) : null,
           borderColor: theme.themeId == "BLUE" ? const Color(0xFF0085fb) : null,
           child: Text(
             _warningMessage(context, hasError, snapshot, accSnapshot),
@@ -338,10 +343,9 @@ class QrCodeDialogState extends State<QrCodeDialog>
       final lspFee = snapshot.data.lspFee;
       if (lspFee != 0) {
         var fiatCurrencyString = "";
-        if ( accSnapshot.data.fiatCurrency != null ) {
+        if (accSnapshot.data.fiatCurrency != null) {
           fiatCurrencyString = accSnapshot.data.fiatCurrency.format(lspFee);
-        }
-        else {
+        } else {
           log.info("Failed to format LSP fee as a fiat currency");
         }
         return texts.qr_code_dialog_warning_message_with_lsp(

@@ -4,9 +4,9 @@ import 'package:breez/bloc/payment_options/payment_options_actions.dart';
 import 'package:breez/bloc/payment_options/payment_options_bloc.dart';
 import 'package:breez/widgets/back_button.dart' as backBtn;
 import 'package:breez/widgets/warning_box.dart';
+import 'package:breez_translations/breez_translations_locales.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:breez_translations/breez_translations_locales.dart';
 
 class PaymentOptionsPage extends StatefulWidget {
   const PaymentOptionsPage({
@@ -148,7 +148,8 @@ class _PaymentOptionsPageState extends State<PaymentOptionsPage> {
             child: Form(
               child: TextFormField(
                 enabled: _overriding,
-                keyboardType: const TextInputType.numberWithOptions(decimal: false),
+                keyboardType:
+                    const TextInputType.numberWithOptions(decimal: false),
                 inputFormatters: [
                   FilteringTextInputFormatter.digitsOnly,
                 ],
@@ -191,7 +192,9 @@ class _PaymentOptionsPageState extends State<PaymentOptionsPage> {
             child: Form(
               child: TextFormField(
                 enabled: _overriding,
-                keyboardType: const TextInputType.numberWithOptions(decimal: true),
+                keyboardType: const TextInputType.numberWithOptions(
+                  decimal: true,
+                ),
                 inputFormatters: [
                   FilteringTextInputFormatter.allow(RegExp(r'^\d+\.?\d{0,2}')),
                 ],
@@ -317,8 +320,7 @@ class _PaymentOptionsPageState extends State<PaymentOptionsPage> {
     );
   }
 
-  void _saveProportional(BuildContext context,
-      String value) {
+  void _saveProportional(BuildContext context, String value) {
     double newProportionalFee = 0.0;
     try {
       newProportionalFee = double.parse(value);
@@ -330,8 +332,7 @@ class _PaymentOptionsPageState extends State<PaymentOptionsPage> {
     });
   }
 
-  void _saveBase(BuildContext context,
-      String value) {
+  void _saveBase(BuildContext context, String value) {
     int newBaseFee = 0;
     try {
       newBaseFee = int.parse(value);

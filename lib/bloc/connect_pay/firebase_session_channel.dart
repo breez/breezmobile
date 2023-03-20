@@ -122,9 +122,8 @@ class PaymentSessionChannel {
   }
 
   void _watchSessionTermination() {
-    var sessionRoot = FirebaseDatabase.instance
-        .ref()
-        .child('remote-payments/$_sessionID');
+    var sessionRoot =
+        FirebaseDatabase.instance.ref().child('remote-payments/$_sessionID');
     _sessionRootListener = sessionRoot.onValue.listen((event) {
       if (event.snapshot.value == null) {
         _peerTerminatedController.add(null);

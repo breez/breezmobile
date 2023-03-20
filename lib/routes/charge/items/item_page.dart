@@ -14,9 +14,9 @@ import 'package:breez/widgets/back_button.dart' as backBtn;
 import 'package:breez/widgets/flushbar.dart';
 import 'package:breez/widgets/route.dart';
 import 'package:breez/widgets/single_button_bottom_bar.dart';
+import 'package:breez_translations/breez_translations_locales.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:breez_translations/breez_translations_locales.dart';
 
 import '../currency_wrapper.dart';
 import 'item_avatar_picker.dart';

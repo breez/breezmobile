@@ -3,8 +3,8 @@ import 'package:breez/bloc/account/add_funds_model.dart';
 import 'package:breez/bloc/blocs_provider.dart';
 import 'package:breez/utils/external_browser.dart';
 import 'package:breez/widgets/loader.dart';
-import 'package:flutter/material.dart';
 import 'package:breez_translations/breez_translations_locales.dart';
+import 'package:flutter/material.dart';
 
 void showMoonpayWebview(BuildContext context) {
   final texts = context.texts();

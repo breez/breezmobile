@@ -18,29 +18,29 @@ class GraphDownloader {
     DownloadTaskStatus.undefined
   ];
   bool handlingFile = false;
-  Completer<File> _downloadCompleter;  
+  Completer<File> _downloadCompleter;
 
   GraphDownloader(this.downloadManager, this.preferences);
 
-  Future init() async {    
+  Future init() async {
     downloadManager.downloadProgress.listen((event) async {
       log.info("GraphDownloader event: ${event.id}");
       log.info("GraphDownloader event: ${event.status}");
-      log.info("GraphDownloader event: ${event.percentage}");      
+      log.info("GraphDownloader event: ${event.percentage}");
       var tasks = await downloadManager.loadTasks();
       var downloadURL = (await preferences).getString("graph_url");
       var currentTask = tasks.firstWhere(
           (t) => t.url == downloadURL && t.taskId == event.id,
-          orElse: () => null);                  
+          orElse: () => null);
       if (currentTask != null &&
           finalTaskStatuses.contains(currentTask.status)) {
         log.info("GraphDownloader task status = ${currentTask.status}");
         await _onTaskFinished(currentTask);
       }
-    });    
-  }  
+    });
+  }
 
-  Future _onTaskFinished(DownloadTask currentTask) async {    
+  Future _onTaskFinished(DownloadTask currentTask) async {
     if (_downloadCompleter != null) {
       if (currentTask.status == DownloadTaskStatus.complete) {
         _downloadCompleter.complete(File(currentTask.savedDir +
@@ -52,7 +52,7 @@ class GraphDownloader {
     }
   }
 
-  Future<File> downloadGraph(String downloadURL) async {   
+  Future<File> downloadGraph(String downloadURL) async {
     _downloadCompleter ??= Completer<File>();
     (await preferences).setString("graph_url", downloadURL);
 
@@ -81,7 +81,7 @@ class GraphDownloader {
 
         if (tasks[i].status == DownloadTaskStatus.running) {
           log.info(
-              "Already has graph download task running, not starting another one");          
+              "Already has graph download task running, not starting another one");
           return _downloadCompleter.future;
         }
       }
@@ -92,7 +92,8 @@ class GraphDownloader {
     var downloadDirPath = '${appDir.path}${Platform.pathSeparator}Download';
     var downloadDir = Directory(downloadDirPath);
     downloadDir.createSync(recursive: true);
-    await downloadManager.enqueTask(downloadURL, downloadDir.path, "channel.db");    
+    await downloadManager.enqueTask(
+        downloadURL, downloadDir.path, "channel.db");
     return _downloadCompleter.future;
   }
 
@@ -113,7 +114,7 @@ class GraphDownloader {
   }
 
   Future deleteAllDownloads() async {
-    var tasks = await downloadManager.loadTasks();    
+    var tasks = await downloadManager.loadTasks();
     for (var t in tasks) {
       await downloadManager.removeTask(t.taskId, shouldDeleteContent: true);
     }

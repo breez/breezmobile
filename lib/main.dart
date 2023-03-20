@@ -76,8 +76,7 @@ void main() async {
   }, (error, stackTrace) async {
     BreezBridge breezBridge = ServiceInjector().breezBridge;
     if (error is! FlutterErrorDetails) {
-      breezBridge.log(
-          '$error\n$stackTrace', "FlutterError");
+      breezBridge.log('$error\n$stackTrace', "FlutterError");
     }
   });
 }

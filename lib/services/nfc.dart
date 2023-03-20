@@ -11,7 +11,8 @@ import 'injector.dart';
 
 class NFCService {
   static const _platform = MethodChannel('com.breez.client/nfc');
-  final StreamController<String> _lnLinkController = StreamController<String>.broadcast();
+  final StreamController<String> _lnLinkController =
+      StreamController<String>.broadcast();
   StreamSubscription _lnLinkListener;
   Timer _checkNfcStartedWithTimer;
 
@@ -23,7 +24,8 @@ class NFCService {
     if (Platform.isAndroid) {
       int fnCalls = 0;
       // Wrap with Future.delayed on debug mode.
-      _checkNfcStartedWithTimer = Timer.periodic(const Duration(milliseconds: 100), (Timer t) {
+      _checkNfcStartedWithTimer =
+          Timer.periodic(const Duration(milliseconds: 100), (Timer t) {
         if (fnCalls == 5) {
           _checkNfcStartedWithTimer.cancel();
           return;
@@ -71,12 +73,12 @@ class NFCService {
 
   _startNFCSession({bool autoClose = false}) async {
     await NfcManager.instance.stopSession();
-    NfcManager.instance.startSession(      
+    NfcManager.instance.startSession(
       onDiscovered: (NfcTag tag) async {
         var ndef = Ndef.from(tag);
         log.info("tag data: ${tag.data.toString()}");
         if (ndef != null) {
-          for (var rec in ndef.cachedMessage.records) {           
+          for (var rec in ndef.cachedMessage.records) {
             String payload = String.fromCharCodes(rec.payload);
             final link = extractPayloadLink(payload);
             if (link != null) {

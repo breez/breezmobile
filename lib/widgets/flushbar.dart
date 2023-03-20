@@ -1,7 +1,7 @@
-import 'package:breez/theme_data.dart' as theme;
 import 'package:another_flushbar/flushbar.dart';
-import 'package:flutter/material.dart';
+import 'package:breez/theme_data.dart' as theme;
 import 'package:breez_translations/breez_translations_locales.dart';
+import 'package:flutter/material.dart';
 
 Flushbar showFlushbar(
   BuildContext context, {
@@ -38,20 +38,23 @@ Flushbar showFlushbar(
         ),
     backgroundColor: theme.snackBarBackgroundColor,
     icon: icon,
-    mainButton: button ?? (buttonText == "" ? null : TextButton(
-      onPressed: () {
-        bool dismiss = onDismiss != null ? onDismiss() : true;
-        if (dismiss) {
-          flush.dismiss(true);
-        }
-      },
-      child: Text(
-        buttonText ?? texts.flushbar_default_action,
-        style: theme.snackBarStyle.copyWith(
-          color: themeData.colorScheme.error,
-        ),
-      ),
-    )),
+    mainButton: button ??
+        (buttonText == ""
+            ? null
+            : TextButton(
+                onPressed: () {
+                  bool dismiss = onDismiss != null ? onDismiss() : true;
+                  if (dismiss) {
+                    flush.dismiss(true);
+                  }
+                },
+                child: Text(
+                  buttonText ?? texts.flushbar_default_action,
+                  style: theme.snackBarStyle.copyWith(
+                    color: themeData.colorScheme.error,
+                  ),
+                ),
+              )),
   )..show(context);
 
   return flush;

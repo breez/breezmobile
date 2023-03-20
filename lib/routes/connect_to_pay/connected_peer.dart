@@ -32,60 +32,61 @@ class ConnectedPeer extends StatelessWidget {
 
     return Column(children: <Widget>[
       Stack(alignment: AlignmentDirectional.center, children: <Widget>[
-    Positioned(
-        child: AnimatedOpacity(
-            opacity: showShare && _paymentSessionData.invitationReady
-                ? 1.0
-                : 0.0,
-            duration: const Duration(milliseconds: 1000),
-            child: PulseAnimationDecorator(Container(), 55.0, 45.0))),
-    Positioned(
-        child: AnimatedOpacity(
-            duration: const Duration(milliseconds: 1000),
-            opacity: !showShare ? 1.0 : 0.0,
-            child: AlienAvatar())),
-    Positioned(
-        child: !showShare && !showAlien
-            ? buildPeerAvatar(imageURL)
-            : const SizedBox()),
-    Positioned(
-        child: showShare
-            ? _ShareInviteWidget(
-                !_paymentSessionData.invitationReady ||
-                    _paymentSessionData.sessionSecret == null,
-                _onShareInvite)
-            : const SizedBox()),
-    _paymentSessionData.invitationReady || _renderPayer
-        ? Positioned(
-            bottom: 25.0,
-            right: 25.0,
-            height: 24.0,
-            width: 24.0,
-            child: Container(
-                decoration: BoxDecoration(
-              color: Colors.grey,
-              border: Border.all(color: Colors.white, width: 3.0),
-              borderRadius: const BorderRadius.all(Radius.circular(12.0)),
-            )))
-        : const SizedBox(),
-    _paymentSessionData.invitationReady || _renderPayer || _online
-        ? Positioned(
-            bottom: 25.0,
-            right: 25.0,
-            height: 24.0,
-            width: 24.0,
-            child: _online
-                ? DelayRender(
-                    duration:
-                        PaymentSessionState.connectionEmulationDuration,
-                    child: Container(
-                        decoration: BoxDecoration(
-                      color: Colors.greenAccent[400],
-                      border: Border.all(color: Colors.white, width: 3.0),
-                      borderRadius: const BorderRadius.all(Radius.circular(12.0)),
-                    )))
-                : const SizedBox())
-        : const SizedBox()
+        Positioned(
+            child: AnimatedOpacity(
+                opacity: showShare && _paymentSessionData.invitationReady
+                    ? 1.0
+                    : 0.0,
+                duration: const Duration(milliseconds: 1000),
+                child: PulseAnimationDecorator(Container(), 55.0, 45.0))),
+        Positioned(
+            child: AnimatedOpacity(
+                duration: const Duration(milliseconds: 1000),
+                opacity: !showShare ? 1.0 : 0.0,
+                child: AlienAvatar())),
+        Positioned(
+            child: !showShare && !showAlien
+                ? buildPeerAvatar(imageURL)
+                : const SizedBox()),
+        Positioned(
+            child: showShare
+                ? _ShareInviteWidget(
+                    !_paymentSessionData.invitationReady ||
+                        _paymentSessionData.sessionSecret == null,
+                    _onShareInvite)
+                : const SizedBox()),
+        _paymentSessionData.invitationReady || _renderPayer
+            ? Positioned(
+                bottom: 25.0,
+                right: 25.0,
+                height: 24.0,
+                width: 24.0,
+                child: Container(
+                    decoration: BoxDecoration(
+                  color: Colors.grey,
+                  border: Border.all(color: Colors.white, width: 3.0),
+                  borderRadius: const BorderRadius.all(Radius.circular(12.0)),
+                )))
+            : const SizedBox(),
+        _paymentSessionData.invitationReady || _renderPayer || _online
+            ? Positioned(
+                bottom: 25.0,
+                right: 25.0,
+                height: 24.0,
+                width: 24.0,
+                child: _online
+                    ? DelayRender(
+                        duration:
+                            PaymentSessionState.connectionEmulationDuration,
+                        child: Container(
+                            decoration: BoxDecoration(
+                          color: Colors.greenAccent[400],
+                          border: Border.all(color: Colors.white, width: 3.0),
+                          borderRadius:
+                              const BorderRadius.all(Radius.circular(12.0)),
+                        )))
+                    : const SizedBox())
+            : const SizedBox()
       ])
     ]);
   }

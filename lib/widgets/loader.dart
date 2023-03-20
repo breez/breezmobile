@@ -70,10 +70,7 @@ class FullScreenLoader extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.center,
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: <Widget>[
-                    Loader(
-                        value: value,
-                        label: message,
-                        color: progressColor),
+                    Loader(value: value, label: message, color: progressColor),
                     Padding(
                       padding: const EdgeInsets.only(top: 16.0),
                       child: message != null

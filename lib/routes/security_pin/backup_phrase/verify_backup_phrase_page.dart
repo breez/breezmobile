@@ -10,8 +10,8 @@ import 'package:breez/theme_data.dart' as theme;
 import 'package:breez/widgets/back_button.dart' as backBtn;
 import 'package:breez/widgets/error_dialog.dart';
 import 'package:breez/widgets/single_button_bottom_bar.dart';
-import 'package:flutter/material.dart';
 import 'package:breez_translations/breez_translations_locales.dart';
+import 'package:flutter/material.dart';
 
 class VerifyBackupPhrasePage extends StatefulWidget {
   final String _mnemonics;
@@ -166,13 +166,14 @@ class VerifyBackupPhrasePageState extends State<VerifyBackupPhrasePage> {
       },
     );
     if (_hasError) {
-      selectedWordList
-        .add(Text(
+      selectedWordList.add(
+        Text(
           texts.backup_phrase_generation_verification_failed,
           style: themeData.textTheme.headlineMedium.copyWith(
             fontSize: 12,
           ),
-        ));
+        ),
+      );
     }
     return selectedWordList;
   }

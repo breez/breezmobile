@@ -7,9 +7,9 @@ import 'package:breez/bloc/blocs_provider.dart';
 import 'package:breez/theme_data.dart' as theme;
 import 'package:breez/utils/webview_controller_util.dart';
 import 'package:breez/widgets/loader.dart';
+import 'package:breez_translations/breez_translations_locales.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart' show SystemChannels, rootBundle;
-import 'package:breez_translations/breez_translations_locales.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
 import 'conditional_deposit.dart';

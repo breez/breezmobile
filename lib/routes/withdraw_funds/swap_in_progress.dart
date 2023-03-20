@@ -1,8 +1,8 @@
 import 'package:breez/bloc/reverse_swap/reverse_swap_model.dart';
 import 'package:breez/routes/withdraw_funds/tx_widget_with_info_message.dart';
 import 'package:breez/widgets/back_button.dart' as backBtn;
-import 'package:flutter/material.dart';
 import 'package:breez_translations/breez_translations_locales.dart';
+import 'package:flutter/material.dart';
 
 class SwapInProgress extends StatelessWidget {
   final InProgressReverseSwaps swapInProgress;

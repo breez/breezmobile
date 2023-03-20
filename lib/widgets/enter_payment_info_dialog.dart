@@ -5,8 +5,8 @@ import 'package:breez/theme_data.dart' as theme;
 import 'package:breez/utils/lnurl.dart';
 import 'package:breez/utils/node_id.dart';
 import 'package:breez/widgets/route.dart';
-import 'package:flutter/material.dart';
 import 'package:breez_translations/breez_translations_locales.dart';
+import 'package:flutter/material.dart';
 
 import 'flushbar.dart';
 

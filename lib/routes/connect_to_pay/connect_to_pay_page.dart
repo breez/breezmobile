@@ -11,9 +11,9 @@ import 'package:breez/widgets/back_button.dart' as backBtn;
 import 'package:breez/widgets/error_dialog.dart';
 import 'package:breez/widgets/flushbar.dart';
 import 'package:breez/widgets/loader.dart';
+import 'package:breez_translations/breez_translations_locales.dart';
 import 'package:fixnum/fixnum.dart';
 import 'package:flutter/material.dart';
-import 'package:breez_translations/breez_translations_locales.dart';
 
 import 'payee_session_widget.dart';
 import 'payer_session_widget.dart';
@@ -92,9 +92,8 @@ class ConnectToPayPageState extends State<ConnectToPayPage> {
     _endOfSessionSubscription =
         _currentSession.paymentSessionStateStream.listen(
       (session) {
-        _remoteUserName ??= _payer
-              ? session.payeeData?.userName
-              : session.payerData?.userName;
+        _remoteUserName ??=
+            _payer ? session.payeeData?.userName : session.payerData?.userName;
 
         if (session.remotePartyCancelled) {
           _popWithMessage(

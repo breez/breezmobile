@@ -11,7 +11,8 @@ class ItemsList extends StatelessWidget {
   final List<Item> _items;
   final Function(Item item, GlobalKey avatarKey) _addItem;
 
-  const ItemsList(this.accountModel, this.posCatalogBloc, this._items, this._addItem);
+  const ItemsList(
+      this.accountModel, this.posCatalogBloc, this._items, this._addItem);
 
   @override
   Widget build(BuildContext context) {

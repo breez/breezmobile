@@ -1,7 +1,7 @@
+import 'package:breez/theme_data.dart' as theme;
 import 'package:breez/widgets/designsystem/variant.dart';
 import 'package:breez/widgets/preview/preview.dart';
 import 'package:flutter/material.dart';
-import 'package:breez/theme_data.dart' as theme;
 
 const _kDisabledOpacity = 0.8;
 

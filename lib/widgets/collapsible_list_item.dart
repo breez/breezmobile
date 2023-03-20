@@ -1,8 +1,8 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:breez/services/injector.dart';
 import 'package:breez/widgets/flushbar.dart';
-import 'package:flutter/material.dart';
 import 'package:breez_translations/breez_translations_locales.dart';
+import 'package:flutter/material.dart';
 import 'package:share_plus/share_plus.dart';
 
 class CollapsibleListItem extends StatelessWidget {

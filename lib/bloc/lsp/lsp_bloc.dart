@@ -47,7 +47,7 @@ class LSPBloc with AsyncActionsHandler {
       _breezLib.setSelectedLspID(selectedLSP);
       _listenReconnects();
       _handleAccountChangs(sp);
-      _handleLSPStatusChanges(sp);      
+      _handleLSPStatusChanges(sp);
     });
   }
 
@@ -63,7 +63,8 @@ class LSPBloc with AsyncActionsHandler {
 
   Future _connectLSP(ConnectLSP action) async {
     if (_lspsStatusController.value.availableLSPs
-            .where((element) => element.lspID == action.lspID).isEmpty) {
+        .where((element) => element.lspID == action.lspID)
+        .isEmpty) {
       final texts = getSystemAppLocalizations();
       throw Exception(texts.lsp_error_provider_do_not_exists);
     }

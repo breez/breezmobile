@@ -1,8 +1,8 @@
 import 'dart:io';
 
 import 'package:breez/widgets/error_dialog.dart';
-import 'package:flutter/widgets.dart';
 import 'package:breez_translations/breez_translations_locales.dart';
+import 'package:flutter/widgets.dart';
 
 WillPopCallback willPopCallback(
   BuildContext context, {

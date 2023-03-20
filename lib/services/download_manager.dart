@@ -3,9 +3,9 @@ import 'dart:isolate';
 import 'dart:ui';
 
 import 'package:anytime/entities/downloadable.dart';
+import 'package:breez/logger.dart';
 import 'package:flutter_downloader/flutter_downloader.dart';
 import 'package:rxdart/subjects.dart';
-import 'package:breez/logger.dart';
 
 class DownloadStatus {
   final String id;
@@ -61,20 +61,21 @@ class DownloadTaskManager {
   }
 
   void pollTasksStatus() {
-    _downloadTimer ??= Timer.periodic(const Duration(seconds: 3), (timer) async {
-        var tasks = await loadTasks();
-        final polledTasks = tasks.where((t) => _tasksToPoll.contains(t.taskId));
-        for (var task in polledTasks) {
-          _updateProgress(task.taskId, task.progress, task.status);
-          if (finalTaskStatuses.contains(task.status)) {
-            _tasksToPoll.remove(task.taskId);
-          }
+    _downloadTimer ??=
+        Timer.periodic(const Duration(seconds: 3), (timer) async {
+      var tasks = await loadTasks();
+      final polledTasks = tasks.where((t) => _tasksToPoll.contains(t.taskId));
+      for (var task in polledTasks) {
+        _updateProgress(task.taskId, task.progress, task.status);
+        if (finalTaskStatuses.contains(task.status)) {
+          _tasksToPoll.remove(task.taskId);
         }
-        if (_tasksToPoll.isEmpty) {
-          _downloadTimer?.cancel();
-          _downloadTimer = null;
-        }
-      });
+      }
+      if (_tasksToPoll.isEmpty) {
+        _downloadTimer?.cancel();
+        _downloadTimer = null;
+      }
+    });
   }
 
   void _updateProgress(String taskID, int progress, DownloadTaskStatus status) {

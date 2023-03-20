@@ -44,6 +44,7 @@ import 'package:breez/routes/podcast/theme.dart';
 import 'package:breez/routes/unexpected_error_dialog.dart';
 import 'package:breez/services/injector.dart';
 import 'package:breez/theme_data.dart' as theme;
+import 'package:breez/widgets/breez_navigation_drawer.dart';
 import 'package:breez/widgets/close_popup.dart';
 import 'package:breez/widgets/error_dialog.dart';
 import 'package:breez/widgets/fade_in_widget.dart';
@@ -51,7 +52,6 @@ import 'package:breez/widgets/flushbar.dart';
 import 'package:breez/widgets/loader.dart';
 import 'package:breez/widgets/loading_animated_text.dart';
 import 'package:breez/widgets/lost_card_dialog.dart' as lostCard;
-import 'package:breez/widgets/breez_navigation_drawer.dart';
 import 'package:breez/widgets/payment_failed_report_dialog.dart';
 import 'package:breez/widgets/route.dart';
 import 'package:breez_translations/breez_translations_locales.dart';
@@ -271,7 +271,9 @@ class HomeState extends State<Home> with WidgetsBindingObserver {
             systemOverlayStyle: theme.themeId == "BLUE"
                 ? SystemUiOverlayStyle.dark
                 : themeData.appBarTheme.systemOverlayStyle,
-            iconTheme: const IconThemeData(color: Color.fromARGB(255, 0, 133, 251)),
+            iconTheme: const IconThemeData(
+              color: Color.fromARGB(255, 0, 133, 251),
+            ),
             backgroundColor: (user.appMode == AppMode.pos)
                 ? themeData.colorScheme.background
                 : theme.customData[theme.themeId].dashboardBgColor,

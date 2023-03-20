@@ -6,8 +6,8 @@ import 'package:breez/routes/charge/currency_wrapper.dart';
 import 'package:breez/theme_data.dart';
 import 'package:breez/widgets/flushbar.dart';
 import 'package:breez/widgets/route.dart';
-import 'package:flutter/material.dart';
 import 'package:breez_translations/breez_translations_locales.dart';
+import 'package:flutter/material.dart';
 
 import 'item_avatar.dart';
 import 'item_page.dart';

@@ -10,8 +10,8 @@ import 'package:breez/widgets/breez_avatar.dart';
 import 'package:breez/widgets/breez_avatar_dialog.dart';
 import 'package:breez/widgets/breez_drawer_header.dart';
 import 'package:breez/widgets/error_dialog.dart';
-import 'package:flutter/material.dart';
 import 'package:breez_translations/breez_translations_locales.dart';
+import 'package:flutter/material.dart';
 
 class DrawerItemConfig {
   final GlobalKey key;
@@ -116,12 +116,14 @@ class BreezNavigationDrawer extends StatelessWidget {
                 subTile: true,
               ))
           .toList();
-      groupItems = [_ExpansionTile(
+      groupItems = [
+        _ExpansionTile(
           items: groupItems,
           title: group.groupTitle,
           icon: AssetImage(group.groupAssetImage),
           controller: _scrollController,
-        )];
+        )
+      ];
     }
 
     if (groupItems.isNotEmpty && withDivider && index != 0) {

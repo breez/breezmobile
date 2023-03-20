@@ -2,8 +2,8 @@ import 'package:breez/bloc/user_profile/user_profile_bloc.dart';
 import 'package:breez/widgets/back_button.dart' as backBtn;
 import 'package:breez/widgets/close_popup.dart';
 import 'package:breez/widgets/pin_code_widget.dart';
-import 'package:flutter/material.dart';
 import 'package:breez_translations/breez_translations_locales.dart';
+import 'package:flutter/material.dart';
 
 const PIN_CODE_LENGTH = 6;
 
