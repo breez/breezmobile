@@ -56,7 +56,8 @@ final ThemeData blueTheme = ThemeData(
   primaryColorDark: BreezColors.blue[900],
   primaryColorLight: const Color.fromRGBO(0, 133, 251, 1.0),
   floatingActionButtonTheme: const FloatingActionButtonThemeData(
-      backgroundColor: Color.fromRGBO(0, 133, 251, 1.0)),
+    backgroundColor: Color.fromRGBO(0, 133, 251, 1.0),
+  ),
   canvasColor: BreezColors.blue[500],
   bottomAppBarTheme: const BottomAppBarTheme(
     elevation: 0,
@@ -67,75 +68,112 @@ final ThemeData blueTheme = ThemeData(
     backgroundColor: BreezColors.blue[500],
     iconTheme: const IconThemeData(color: Colors.white),
     systemOverlayStyle: SystemUiOverlayStyle.light,
-    actionsIconTheme: const IconThemeData(color: Color.fromRGBO(0, 120, 253, 1.0)),
+    actionsIconTheme: const IconThemeData(
+      color: Color.fromRGBO(0, 120, 253, 1.0),
+    ),
     toolbarTextStyle: const TextTheme(
-      titleLarge:
-          TextStyle(color: Colors.white, fontSize: 18.0, letterSpacing: 0.22),
+      titleLarge: TextStyle(
+        color: Colors.white,
+        fontSize: 18.0,
+        letterSpacing: 0.22,
+      ),
     ).bodyMedium,
     titleTextStyle: const TextTheme(
-      titleLarge:
-          TextStyle(color: Colors.white, fontSize: 18.0, letterSpacing: 0.22),
+      titleLarge: TextStyle(
+        color: Colors.white,
+        fontSize: 18.0,
+        letterSpacing: 0.22,
+      ),
     ).titleLarge,
   ),
   dialogTheme: DialogTheme(
-      titleTextStyle: TextStyle(
-          color: BreezColors.grey[600], fontSize: 20.5, letterSpacing: 0.25),
-      contentTextStyle:
-          TextStyle(color: BreezColors.grey[500], fontSize: 16.0, height: 1.5),
-      backgroundColor: Colors.white,
-      shape: const RoundedRectangleBorder(
-          borderRadius: BorderRadius.all(Radius.circular(12.0)))),
+    titleTextStyle: TextStyle(
+      color: BreezColors.grey[600],
+      fontSize: 20.5,
+      letterSpacing: 0.25,
+    ),
+    contentTextStyle: TextStyle(
+      color: BreezColors.grey[500],
+      fontSize: 16.0,
+      height: 1.5,
+    ),
+    backgroundColor: Colors.white,
+    shape: const RoundedRectangleBorder(
+      borderRadius: BorderRadius.all(Radius.circular(12.0)),
+    ),
+  ),
   dialogBackgroundColor: Colors.transparent,
   dividerColor: const Color(0x33ffffff),
   cardColor: BreezColors.blue[500],
   highlightColor: BreezColors.blue[200],
   textTheme: TextTheme(
-      titleSmall: TextStyle(
-          color: BreezColors.grey[600], fontSize: 14.3, letterSpacing: 0.2),
-      headlineSmall: TextStyle(color: BreezColors.grey[600], fontSize: 26.0),
-      labelLarge: TextStyle(
-          color: BreezColors.blue[500], fontSize: 14.3, letterSpacing: 1.25),
-      headlineMedium: const TextStyle(
-        color: Color(0xffffe685),
-        fontSize: 18.0,
-      ),
-      titleLarge: const TextStyle(
-          color: Colors.white,
-          fontSize: 12.3,
-          fontWeight: FontWeight.w400,
-          letterSpacing: 0.25,
-          height: 1.22)),
+    titleSmall: TextStyle(
+      color: BreezColors.grey[600],
+      fontSize: 14.3,
+      letterSpacing: 0.2,
+    ),
+    headlineSmall: TextStyle(color: BreezColors.grey[600], fontSize: 26.0),
+    labelLarge: TextStyle(
+      color: BreezColors.blue[500],
+      fontSize: 14.3,
+      letterSpacing: 1.25,
+    ),
+    headlineMedium: const TextStyle(
+      color: Color(0xffffe685),
+      fontSize: 18.0,
+    ),
+    titleLarge: const TextStyle(
+      color: Colors.white,
+      fontSize: 12.3,
+      fontWeight: FontWeight.w400,
+      letterSpacing: 0.25,
+      height: 1.22,
+    ),
+  ),
   primaryTextTheme: TextTheme(
     headlineMedium: TextStyle(
-        color: BreezColors.grey[500],
-        fontSize: 14.0,
-        letterSpacing: 0.0,
-        height: 1.28,
-        fontWeight: FontWeight.w500,
-        fontFamily: 'IBMPlexSans'),
+      color: BreezColors.grey[500],
+      fontSize: 14.0,
+      letterSpacing: 0.0,
+      height: 1.28,
+      fontWeight: FontWeight.w500,
+      fontFamily: 'IBMPlexSans',
+    ),
     displaySmall: TextStyle(
-        color: BreezColors.grey[500],
-        fontSize: 14.0,
-        letterSpacing: 0.0,
-        height: 1.28),
+      color: BreezColors.grey[500],
+      fontSize: 14.0,
+      letterSpacing: 0.0,
+      height: 1.28,
+    ),
     headlineSmall: TextStyle(
-        color: BreezColors.grey[500],
-        fontSize: 24.0,
-        letterSpacing: 0.0,
-        height: 1.28,
-        fontWeight: FontWeight.w500,
-        fontFamily: 'IBMPlexSans'),
+      color: BreezColors.grey[500],
+      fontSize: 24.0,
+      letterSpacing: 0.0,
+      height: 1.28,
+      fontWeight: FontWeight.w500,
+      fontFamily: 'IBMPlexSans',
+    ),
     bodyMedium: TextStyle(
-        color: BreezColors.blue[900],
-        fontSize: 16.4,
-        letterSpacing: 0.15,
-        fontWeight: FontWeight.w500,
-        fontFamily: 'IBMPlexSans'),
+      color: BreezColors.blue[900],
+      fontSize: 16.4,
+      letterSpacing: 0.15,
+      fontWeight: FontWeight.w500,
+      fontFamily: 'IBMPlexSans',
+    ),
     titleSmall: TextStyle(
-        color: BreezColors.white[500], fontSize: 10.0, letterSpacing: 0.09),
+      color: BreezColors.white[500],
+      fontSize: 10.0,
+      letterSpacing: 0.09,
+    ),
     labelLarge: TextStyle(
-        color: BreezColors.blue[500], fontSize: 14.3, letterSpacing: 1.25),
-    bodySmall: TextStyle(color: BreezColors.grey[500], fontSize: 12.0),
+      color: BreezColors.blue[500],
+      fontSize: 14.3,
+      letterSpacing: 1.25,
+    ),
+    bodySmall: TextStyle(
+      color: BreezColors.grey[500],
+      fontSize: 12.0,
+    ),
   ),
   textSelectionTheme: const TextSelectionThemeData(
     selectionColor: Color.fromRGBO(0, 133, 251, 0.25),
@@ -159,13 +197,12 @@ final ThemeData blueTheme = ThemeData(
       },
     ),
   ),
-  colorScheme: const ColorScheme.dark()
-      .copyWith(
-        primary: Colors.white,
-        secondary: Colors.white,
-        background: Colors.white,
-      )
-      .copyWith(error: const Color(0xffffe685)),
+  colorScheme: const ColorScheme.dark().copyWith(
+    primary: Colors.white,
+    secondary: Colors.white,
+    background: Colors.white,
+    error: const Color(0xffffe685),
+  ),
 );
 
 // Color(0xFF121212) values are tbd
@@ -174,8 +211,9 @@ final ThemeData darkTheme = ThemeData(
   primaryColor: const Color(0xFF0085FB),
   primaryColorDark: const Color(0xFF00081C),
   primaryColorLight: const Color(0xFF0085FB),
-  floatingActionButtonTheme:
-      const FloatingActionButtonThemeData(backgroundColor: Color(0xFF0085fb)),
+  floatingActionButtonTheme: const FloatingActionButtonThemeData(
+    backgroundColor: Color(0xFF0085fb),
+  ),
   canvasColor: const Color(0xFF0c2031),
   bottomAppBarTheme: const BottomAppBarTheme(
     elevation: 0,
@@ -197,61 +235,81 @@ final ThemeData darkTheme = ThemeData(
     ).titleLarge,
   ),
   dialogTheme: const DialogTheme(
-      titleTextStyle:
-          TextStyle(color: Colors.white, fontSize: 20.5, letterSpacing: 0.25),
-      contentTextStyle:
-          TextStyle(color: Colors.white70, fontSize: 16.0, height: 1.5),
-      backgroundColor: Color(0xFF152a3d),
-      shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.all(Radius.circular(12.0)))),
+    titleTextStyle:
+        TextStyle(color: Colors.white, fontSize: 20.5, letterSpacing: 0.25),
+    contentTextStyle:
+        TextStyle(color: Colors.white70, fontSize: 16.0, height: 1.5),
+    backgroundColor: Color(0xFF152a3d),
+    shape: RoundedRectangleBorder(
+      borderRadius: BorderRadius.all(Radius.circular(12.0)),
+    ),
+  ),
   dialogBackgroundColor: Colors.transparent,
   dividerColor: const Color(0x337aa5eb),
   cardColor: const Color(0xFF121212),
   highlightColor: const Color(0xFF0085fb),
   textTheme: const TextTheme(
-      titleSmall:
-          TextStyle(color: Colors.white, fontSize: 14.3, letterSpacing: 0.2),
-      headlineSmall: TextStyle(color: Colors.white, fontSize: 26.0),
-      labelLarge:
-          TextStyle(color: Colors.white, fontSize: 14.3, letterSpacing: 1.25),
-      headlineMedium: TextStyle(
-        color: Color(0xffffe685),
-        fontSize: 18.0,
-      ),
-      titleLarge: TextStyle(
-          color: Colors.white,
-          fontSize: 12.3,
-          fontWeight: FontWeight.w400,
-          letterSpacing: 0.25,
-          height: 1.22)),
+    titleSmall:
+        TextStyle(color: Colors.white, fontSize: 14.3, letterSpacing: 0.2),
+    headlineSmall: TextStyle(color: Colors.white, fontSize: 26.0),
+    labelLarge:
+        TextStyle(color: Colors.white, fontSize: 14.3, letterSpacing: 1.25),
+    headlineMedium: TextStyle(
+      color: Color(0xffffe685),
+      fontSize: 18.0,
+    ),
+    titleLarge: TextStyle(
+      color: Colors.white,
+      fontSize: 12.3,
+      fontWeight: FontWeight.w400,
+      letterSpacing: 0.25,
+      height: 1.22,
+    ),
+  ),
   primaryTextTheme: TextTheme(
     headlineMedium: const TextStyle(
-        color: Colors.white,
-        fontSize: 14.0,
-        letterSpacing: 0.0,
-        height: 1.28,
-        fontWeight: FontWeight.w500,
-        fontFamily: 'IBMPlexSans'),
+      color: Colors.white,
+      fontSize: 14.0,
+      letterSpacing: 0.0,
+      height: 1.28,
+      fontWeight: FontWeight.w500,
+      fontFamily: 'IBMPlexSans',
+    ),
     displaySmall: const TextStyle(
-        color: Colors.white, fontSize: 14.0, letterSpacing: 0.0, height: 1.28),
+      color: Colors.white,
+      fontSize: 14.0,
+      letterSpacing: 0.0,
+      height: 1.28,
+    ),
     headlineSmall: const TextStyle(
-        color: Colors.white,
-        fontSize: 24.0,
-        letterSpacing: 0.0,
-        height: 1.28,
-        fontWeight: FontWeight.w500,
-        fontFamily: 'IBMPlexSans'),
+      color: Colors.white,
+      fontSize: 24.0,
+      letterSpacing: 0.0,
+      height: 1.28,
+      fontWeight: FontWeight.w500,
+      fontFamily: 'IBMPlexSans',
+    ),
     bodyMedium: const TextStyle(
-        color: Colors.white,
-        fontSize: 16.4,
-        letterSpacing: 0.15,
-        fontWeight: FontWeight.w500,
-        fontFamily: 'IBMPlexSans'),
-    labelLarge:
-        const TextStyle(color: Colors.white, fontSize: 14.3, letterSpacing: 1.25),
+      color: Colors.white,
+      fontSize: 16.4,
+      letterSpacing: 0.15,
+      fontWeight: FontWeight.w500,
+      fontFamily: 'IBMPlexSans',
+    ),
+    labelLarge: const TextStyle(
+      color: Colors.white,
+      fontSize: 14.3,
+      letterSpacing: 1.25,
+    ),
     titleSmall: TextStyle(
-        color: BreezColors.white[500], fontSize: 10.0, letterSpacing: 0.09),
-    bodySmall: TextStyle(color: BreezColors.white[400], fontSize: 12.0),
+      color: BreezColors.white[500],
+      fontSize: 10.0,
+      letterSpacing: 0.09,
+    ),
+    bodySmall: TextStyle(
+      color: BreezColors.white[400],
+      fontSize: 12.0,
+    ),
   ),
   textSelectionTheme: const TextSelectionThemeData(
     selectionColor: Color.fromRGBO(255, 255, 255, 0.5),
@@ -269,19 +327,22 @@ final ThemeData darkTheme = ThemeData(
       return Colors.white;
     }),
   ),
-  colorScheme: const ColorScheme.dark()
-      .copyWith(
-        primary: Colors.white,
-        secondary: Colors.white,
-        background: const Color(0xFF152a3d),
-      )
-      .copyWith(error: const Color(0xFFeddc97)),
+  colorScheme: const ColorScheme.dark().copyWith(
+    primary: Colors.white,
+    secondary: Colors.white,
+    background: const Color(0xFF152a3d),
+    error: const Color(0xFFeddc97),
+  ),
 );
 
 final VendorTheme bitrefill = VendorTheme(iconBgColor: const Color(0xFF002B28));
-final VendorTheme lnpizza =
-    VendorTheme(iconBgColor: const Color(0xFF000000), iconFgColor: const Color(0xFFf8e71c));
-final VendorTheme fixedfloat = VendorTheme(iconBgColor: const Color(0xFF0B4E7B));
+final VendorTheme lnpizza = VendorTheme(
+  iconBgColor: const Color(0xFF000000),
+  iconFgColor: const Color(0xFFf8e71c),
+);
+final VendorTheme fixedfloat = VendorTheme(
+  iconBgColor: const Color(0xFF0B4E7B),
+);
 final VendorTheme lnmarkets = VendorTheme(iconBgColor: const Color(0xFF384697));
 final VendorTheme fold = VendorTheme(iconBgColor: const Color(0xFFFFCF30));
 final VendorTheme boltz = VendorTheme(iconBgColor: const Color(0xFF001524));
@@ -362,9 +423,10 @@ const TextStyle errorStyle = TextStyle(color: errorColor, fontSize: 12.0);
 final TextStyle textStyle =
     TextStyle(color: BreezColors.white[400], fontSize: 16.0);
 const TextStyle navigationDrawerHandleStyle = TextStyle(
-    fontSize: 16.0,
-    letterSpacing: 0.2,
-    color: Color.fromRGBO(255, 255, 255, 0.6));
+  fontSize: 16.0,
+  letterSpacing: 0.2,
+  color: Color.fromRGBO(255, 255, 255, 0.6),
+);
 const TextStyle warningStyle = TextStyle(color: errorColor, fontSize: 16.0);
 final TextStyle instructionStyle =
     TextStyle(color: BreezColors.white[400], fontSize: 14.3);
@@ -518,10 +580,14 @@ final TextStyle fiatConversionTitleStyle = TextStyle(
 final TextStyle fiatConversionDescriptionStyle =
     TextStyle(color: BreezColors.white[200], fontSize: 14.3);
 final BoxDecoration boxDecoration = BoxDecoration(
-    border:
-        Border(bottom: BorderSide(color: BreezColors.white[500], width: 1.5)));
+  border: Border(
+    bottom: BorderSide(color: BreezColors.white[500], width: 1.5),
+  ),
+);
 final BoxDecoration autoCompleteBoxDecoration = BoxDecoration(
-    color: BreezColors.white[500], borderRadius: BorderRadius.circular(3.0));
+  color: BreezColors.white[500],
+  borderRadius: BorderRadius.circular(3.0),
+);
 final Color whiteColor = BreezColors.white[500];
 const podcastHistoryTileBackGroundColorBlue = Color.fromRGBO(0, 117, 255, 1.0);
 
@@ -538,7 +604,8 @@ final BorderSide greyBorderSide = BorderSide(color: BreezColors.grey[500]);
 ThemeData get calendarTheme =>
     themeId == "BLUE" ? calendarLightTheme : calendarDarkTheme;
 
-Color get buttonColor => themeId == "BLUE" ? Colors.white : const Color(0xFF4B89EB);
+Color get buttonColor =>
+    themeId == "BLUE" ? Colors.white : const Color(0xFF4B89EB);
 
 final ThemeData calendarLightTheme = ThemeData.light().copyWith(
   colorScheme: const ColorScheme.light(
