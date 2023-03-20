@@ -245,7 +245,10 @@ class UserApp extends StatelessWidget {
                               );
                             case '/get_refund':
                               return FadeInRoute(
-                                builder: (_) => GetRefundPage(),
+                                builder: (_) => withBreezTheme(
+                                  context,
+                                  GetRefundPage(),
+                                ),
                                 settings: settings,
                               );
                             case '/create_invoice':
