@@ -423,6 +423,8 @@ class InitialWalkthroughPageState extends State<InitialWalkthroughPage>
 
   void _restoreFromBackup(BuildContext context) {
     widget._backupBloc.backupSettingsStream.first.then((settings) async {
+      final navigator = Navigator.of(context);
+      var loaderRoute = createLoaderRoute(context);
       final providers = BackupSettings.availableBackupProviders();
       var backupProvider = settings.backupProvider;
       if (backupProvider == null || providers.length > 1) {
@@ -437,7 +439,7 @@ class InitialWalkthroughPageState extends State<InitialWalkthroughPage>
       }
       if (backupProvider != null) {
         // Restore then start lightninglib
-        Navigator.push(context, createLoaderRoute(context));
+        navigator.push(loaderRoute);
         widget._backupBloc.restoreRequestSink.add(null);
       }
     });

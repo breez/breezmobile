@@ -33,10 +33,8 @@ class DownloadTaskManager {
   }
 
   Future _init() async {
-    print("GraphDownloader before Initialize");
     log.info("GraphDownloader before Initialize");
     await FlutterDownloader.initialize(ignoreSsl: true, debug: true);
-    print("GraphDownloader after Initialize");
     log.info("GraphDownloader after Initialize");
 
     bool success = IsolateNameServer.registerPortWithName(
@@ -46,7 +44,6 @@ class DownloadTaskManager {
       final status = data[1] as DownloadTaskStatus;
       final progress = data[2] as int;
 
-      print("GraphDownloader2 callback $id, $status, $progress");
       log.info("GraphDownloader2 callback $id, $status, $progress");
       _updateProgress(id, progress, status);
     });
@@ -98,8 +95,12 @@ class DownloadTaskManager {
     downloadController.add(DownloadStatus(taskID, progress, state));
   }
 
-  Future<String> enqueTask(String url, String downloadPath, String fileName,
-      {showNotification = false}) async {
+  Future<String> enqueTask(
+    String url,
+    String downloadPath,
+    String fileName, {
+    showNotification = false,
+  }) async {
     final taskID = await FlutterDownloader.enqueue(
       url: url,
       savedDir: downloadPath,
@@ -125,7 +126,6 @@ class DownloadTaskManager {
   static void downloadCallback(
       String id, DownloadTaskStatus status, int progress) {
     final send = IsolateNameServer.lookupPortByName('downloader_send_port');
-    print("GraphDownloader callback $id, $status, $progress");
     log.info("GraphDownloader callback $id, $status, $progress");
     send.send([id, status, progress]);
   }

@@ -92,7 +92,9 @@ class UserProfileBloc {
       SetPaymentOptions: _setPaymentOptions,
       SetSeenPaymentStripTutorial: _setSeenPaymentStripTutorial,
     };
-    print("UserProfileBloc started");
+    if (kDebugMode) {
+      print("UserProfileBloc started");
+    }
 
     //push already saved user to the stream
     _initializeWithSavedUser(injector).then((_) {
@@ -148,7 +150,7 @@ class UserProfileBloc {
 
   Future _initializeWithSavedUser(ServiceInjector injector) {
     return injector.sharedPreferences.then((preferences) async {
-      print("UserProfileBloc got preferences");
+      log.info("UserProfileBloc got preferences");
       String jsonStr =
           preferences.getString(USER_DETAILS_PREFERENCES_KEY) ?? "{}";
       Map profile = json.decode(jsonStr);
@@ -168,7 +170,7 @@ class UserProfileBloc {
         GooglePlayServicesAvailability availability =
             await GoogleApiAvailability.instance
                 .checkGooglePlayServicesAvailability();
-        print("GooglePlayServicesAvailability:$availability");
+        log.info("GooglePlayServicesAvailability:$availability");
         if ((availability == GooglePlayServicesAvailability.serviceMissing) ||
             (availability == GooglePlayServicesAvailability.serviceDisabled) ||
             (availability == GooglePlayServicesAvailability.serviceInvalid)) {
@@ -180,7 +182,7 @@ class UserProfileBloc {
         locked: user.securityModel.requiresPin,
         appMode: user.hasAdminPassword ? AppMode.pos : user.appMode,
       );
-      print("USER:${user.toJson()}");
+      log.info("USER:${user.toJson()}");
       _publishUser(user);
     });
   }
@@ -453,9 +455,9 @@ class UserProfileBloc {
 
   void _publishUser(BreezUserModel user) {
     if (user?.token == null) {
-      print("UserProfileBloc publish first user null token");
+      log.info("UserProfileBloc publish first user null token");
     } else {
-      print("UserProfileBloc before _publishUser token = ${user.token}");
+      log.info("UserProfileBloc before _publishUser token = ${user.token}");
     }
     _userStreamController.add(user);
     _userStreamPreviewController.add(user);

@@ -221,13 +221,14 @@ class SpontaneousPaymentPageState extends State<SpontaneousPaymentPage> {
     AccountBloc accBloc,
     AccountModel account,
   ) async {
+    final navigator = Navigator.of(context);
     final texts = context.texts();
     final themeData = Theme.of(context);
 
     String tipMessage = _descriptionController.text;
     var amount = account.currency.parse(_amountController.text);
     _amountFocusNode.unfocus();
-    var ok = await promptAreYouSure(
+    await promptAreYouSure(
       context,
       texts.spontaneous_payment_send_payment_title,
       Text(
@@ -238,52 +239,55 @@ class SpontaneousPaymentPageState extends State<SpontaneousPaymentPage> {
       ),
       okText: texts.spontaneous_payment_action_pay,
       cancelText: texts.spontaneous_payment_action_cancel,
-    );
-    if (ok) {
-      var sendAction = SendSpontaneousPayment(
-        widget.nodeID,
-        amount,
-        tipMessage,
-      );
-      try {
-        showDialog(
-          useRootNavigator: false,
-          context: context,
-          barrierDismissible: false,
-          builder: (_) => ProcessingPaymentDialog(
-            context,
-            () {
-              var sendPayment = Future.delayed(
-                const Duration(seconds: 1),
-                () {
-                  accBloc.userActionsSink.add(sendAction);
-                  return sendAction.future;
-                },
-              );
-
-              return sendPayment;
-            },
-            accBloc,
-            widget.firstPaymentItemKey,
-            (_) {},
-            220,
-            popOnCompletion: true,
-          ),
-        );
-        Navigator.of(context).removeRoute(_currentRoute);
-        await sendAction.future;
-      } catch (err) {
-        if (err.runtimeType != PaymentError) {
-          promptError(
-            context,
-            texts.spontaneous_payment_error_title,
-            Text(
-              err.toString(),
-              style: themeData.dialogTheme.contentTextStyle,
-            ),
+    ).then(
+      (ok) async {
+        if (ok) {
+          var sendAction = SendSpontaneousPayment(
+            widget.nodeID,
+            amount,
+            tipMessage,
           );
+          try {
+            showDialog(
+              useRootNavigator: false,
+              context: context,
+              barrierDismissible: false,
+              builder: (_) => ProcessingPaymentDialog(
+                context,
+                () {
+                  var sendPayment = Future.delayed(
+                    const Duration(seconds: 1),
+                    () {
+                      accBloc.userActionsSink.add(sendAction);
+                      return sendAction.future;
+                    },
+                  );
+
+                  return sendPayment;
+                },
+                accBloc,
+                widget.firstPaymentItemKey,
+                (_) {},
+                220,
+                popOnCompletion: true,
+              ),
+            );
+            navigator.removeRoute(_currentRoute);
+            await sendAction.future;
+          } catch (err) {
+            if (err.runtimeType != PaymentError) {
+              promptError(
+                context,
+                texts.spontaneous_payment_error_title,
+                Text(
+                  err.toString(),
+                  style: themeData.dialogTheme.contentTextStyle,
+                ),
+              );
+            }
+          }
         }
-      }
-    }
+      },
+    );
   }
 }

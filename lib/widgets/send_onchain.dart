@@ -278,20 +278,19 @@ class SendOnchainState extends State<SendOnchain> {
   Future _scanBarcode() async {
     final texts = context.texts();
     FocusScope.of(context).requestFocus(FocusNode());
-    String barcode = await Navigator.pushNamed<String>(context, "/qr_scan");
-    if (barcode == null) {
-      return;
-    }
-    if (barcode.isEmpty) {
-      showFlushbar(
-        context,
-        message: texts.send_on_chain_qr_code_not_detected,
-      );
-      return;
-    }
-    setState(() {
-      _addressController.text = barcode;
-      _scannerErrorMessage = "";
+    await Navigator.pushNamed<String>(context, "/qr_scan").then((barcode) {
+      if (barcode == null) return;
+      if (barcode.isEmpty) {
+        showFlushbar(
+          context,
+          message: texts.send_on_chain_qr_code_not_detected,
+        );
+        return;
+      }
+      setState(() {
+        _addressController.text = barcode;
+        _scannerErrorMessage = "";
+      });
     });
   }
 

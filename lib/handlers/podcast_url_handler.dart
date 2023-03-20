@@ -68,13 +68,16 @@ Future handleDeeplink(
   String episodeID,
 ) async {
   final texts = context.texts();
-
+  final navigator = Navigator.of(context);
   if (episodeID != null) {
     try {
       var podcastBloc = Provider.of<PodcastBloc>(context, listen: false);
       var podcast = Podcast.fromUrl(url: podcastURL);
       // Load the details of the Podcast specified in the URL
       podcastBloc.load(Feed(podcast: podcast));
+      final audioBloc = Provider.of<AudioBloc>(context, listen: false);
+      final settingsBloc = Provider.of<SettingsBloc>(context, listen: false);
+
       // Wait for the podcast details to load
       await podcastBloc.details
           .firstWhere((blocState) => blocState is! BlocLoadingState)
@@ -90,19 +93,10 @@ Future handleDeeplink(
             orElse: () => null,
           );
           if (episode != null) {
-            final audioBloc = Provider.of<AudioBloc>(
-              context,
-              listen: false,
-            );
-            final settingsBloc = Provider.of<SettingsBloc>(
-              context,
-              listen: false,
-            );
             audioBloc.play(episode);
             final settings = settingsBloc.currentSettings;
             if (settings.autoOpenNowPlaying) {
-              Navigator.pushAndRemoveUntil(
-                context,
+              navigator.pushAndRemoveUntil(
                 MaterialPageRoute<void>(
                   builder: (context) => NowPlaying(),
                   fullscreenDialog: false,
@@ -111,7 +105,7 @@ Future handleDeeplink(
               );
             }
           } else {
-            await _navigateToPodcast(context, podcastURL);
+            await _navigateToPodcast(navigator, podcastURL);
           }
         }
       });
@@ -120,16 +114,15 @@ Future handleDeeplink(
     }
   } else {
     try {
-      await _navigateToPodcast(context, podcastURL);
+      await _navigateToPodcast(navigator, podcastURL);
     } catch (e) {
       throw Exception(texts.handler_podcast_error_load_episode_fallback);
     }
   }
 }
 
-Future _navigateToPodcast(BuildContext context, String podcastURL) {
-  return Navigator.pushAndRemoveUntil(
-    context,
+Future _navigateToPodcast(NavigatorState navigator, String podcastURL) {
+  return navigator.pushAndRemoveUntil(
     MaterialPageRoute<void>(
       builder: (context) => PodcastDetails(
         Podcast.fromUrl(url: podcastURL),

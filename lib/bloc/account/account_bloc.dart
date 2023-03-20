@@ -147,7 +147,7 @@ class AccountBloc {
   }
 
   init() {
-    print("account bloc init");
+    log.info("Account Bloc init");
     ServiceInjector injector = ServiceInjector();
     _breezServer = injector.breezServer;
     _breezLib = injector.breezBridge;
@@ -283,8 +283,9 @@ class AccountBloc {
     rates.resolve(_accountController.value.fiatConversionList);
   }
 
-  List<FiatConversion> _sortFiatConversionList(
-      {List<FiatConversion> fiatConversionList}) {
+  List<FiatConversion> _sortFiatConversionList({
+    List<FiatConversion> fiatConversionList,
+  }) {
     var toSort = List<FiatConversion>.from(
         (fiatConversionList ?? _accountController.value.fiatConversionList));
 
@@ -739,8 +740,7 @@ class AccountBloc {
 
   _refreshLSPActivity() {
     _breezLib.lspActivity().then((lspActivity) {
-      print("--- LSPActivity --- ");
-      print(lspActivity);
+      log.info("--- LSPActivity ---\n$lspActivity");
       _lspActivityController.add(lspActivity);
     });
   }
@@ -768,7 +768,7 @@ class AccountBloc {
   void _listenAccountChanges() {
     StreamSubscription<NotificationEvent> eventSubscription;
     eventSubscription = _breezLib.notificationStream.listen((event) async {
-      print('_breezLib.notificationStream received: ${event.type}.');
+      log.info('_breezLib.notificationStream received: ${event.type}.');
       if (event.type ==
           NotificationEvent_NotificationType.LIGHTNING_SERVICE_DOWN) {
         _accountController

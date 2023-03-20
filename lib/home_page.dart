@@ -56,6 +56,7 @@ import 'package:breez/widgets/payment_failed_report_dialog.dart';
 import 'package:breez/widgets/route.dart';
 import 'package:breez_translations/breez_translations_locales.dart';
 import 'package:breez_translations/generated/breez_translations.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -138,6 +139,7 @@ class HomeState extends State<Home> with WidgetsBindingObserver {
 
     AudioService.notificationClicked.where((event) => event == true).listen(
         (event) async {
+      final navigator = Navigator.of(context);
       final userBloc = AppBlocsProvider.of<UserProfileBloc>(context);
       final audioBloc = Provider.of<AudioBloc>(context, listen: false);
       final userModel = await userBloc.userStream.first;
@@ -146,7 +148,7 @@ class HomeState extends State<Home> with WidgetsBindingObserver {
       );
       if (nowPlaying != null &&
           !breezPodcast.NowPlayingTransport.nowPlayingVisible) {
-        Navigator.of(context).push(
+        navigator.push(
           MaterialPageRoute<void>(
             builder: (context) => withPodcastTheme(userModel, NowPlaying()),
             fullscreenDialog: false,
@@ -154,9 +156,13 @@ class HomeState extends State<Home> with WidgetsBindingObserver {
         );
       }
     }, onDone: () {
-      print("done");
+      if (kDebugMode) {
+        print("done");
+      }
     }, onError: (e) {
-      print("error $e");
+      if (kDebugMode) {
+        print("error $e");
+      }
     });
   }
 
@@ -732,7 +738,10 @@ class HomeState extends State<Home> with WidgetsBindingObserver {
           return route.settings.name != "/connect_to_pay";
         });
         var ctpRoute = FadeInRoute(
-          builder: (_) => withBreezTheme(context, ConnectToPayPage(session)),
+          builder: (_) => withBreezTheme(
+            context,
+            ConnectToPayPage(session),
+          ),
           settings: const RouteSettings(name: "/connect_to_pay"),
         );
         Navigator.of(context).push(ctpRoute);
@@ -748,29 +757,27 @@ class HomeState extends State<Home> with WidgetsBindingObserver {
         );
       },
     );
-    PodcastURLHandler(widget.userProfileBloc, this.context, (e) {
-      promptError(
-        context,
-        texts.home_error_podcast_link,
-        Text(
-          e.toString(),
-          style: themeData.dialogTheme.contentTextStyle,
-        ),
-      );
-    });
+    PodcastURLHandler(
+      widget.userProfileBloc,
+      this.context,
+      (e) {
+        promptError(
+          context,
+          texts.home_error_podcast_link,
+          Text(
+            e.toString(),
+            style: themeData.dialogTheme.contentTextStyle,
+          ),
+        );
+      },
+    );
     SyncUIHandler(widget.accountBloc, context);
     ShowPinHandler(widget.userProfileBloc, context);
 
     _accountNotificationsSubscription =
         widget.accountBloc.accountNotificationsStream.listen(
-      (data) => showFlushbar(
-        context,
-        message: data,
-      ),
-      onError: (e) => showFlushbar(
-        context,
-        message: e.toString(),
-      ),
+      (data) => showFlushbar(context, message: data),
+      onError: (e) => showFlushbar(context, message: e.toString()),
     );
     widget.reverseSwapBloc.broadcastTxStream.listen((_) {
       showFlushbar(
@@ -790,21 +797,23 @@ class HomeState extends State<Home> with WidgetsBindingObserver {
     final texts = context.texts();
     final themeData = Theme.of(context);
 
-    widget.accountBloc.nodeConflictStream.listen((_) async {
-      Navigator.popUntil(context, (route) {
-        return route.settings.name == "/";
-      });
-      await promptError(
-        context,
-        texts.home_config_error_title,
-        Text(
-          texts.home_config_error_message,
-          style: themeData.dialogTheme.contentTextStyle,
-        ),
-        okText: texts.home_config_error_action_exit,
-        disableBack: true,
-      );
-    });
+    widget.accountBloc.nodeConflictStream.listen(
+      (_) async {
+        Navigator.popUntil(context, (route) {
+          return route.settings.name == "/";
+        });
+        await promptError(
+          context,
+          texts.home_config_error_title,
+          Text(
+            texts.home_config_error_message,
+            style: themeData.dialogTheme.contentTextStyle,
+          ),
+          okText: texts.home_config_error_action_exit,
+          disableBack: true,
+        );
+      },
+    );
   }
 
   void _listenLSPSelectionPrompt(BuildContext context) async {
@@ -834,77 +843,89 @@ class HomeState extends State<Home> with WidgetsBindingObserver {
   void _listenPaymentResults(BuildContext context) {
     final texts = context.texts();
 
-    widget.accountBloc.completedPaymentsStream.listen((fulfilledPayment) async {
-      final paymentHash = fulfilledPayment.paymentHash;
-      print('_listenPaymentResults processing: $paymentHash');
+    widget.accountBloc.completedPaymentsStream.listen(
+      (fulfilledPayment) async {
+        final paymentHash = fulfilledPayment.paymentHash;
+        if (kDebugMode) {
+          print('_listenPaymentResults processing: $paymentHash');
+        }
 
-      if (!fulfilledPayment.cancelled &&
-          !fulfilledPayment.ignoreGlobalFeedback) {
-        await scrollController.animateTo(
-          scrollController.position.minScrollExtent,
-          duration: const Duration(milliseconds: 10),
-          curve: Curves.ease,
+        if (!fulfilledPayment.cancelled &&
+            !fulfilledPayment.ignoreGlobalFeedback) {
+          await scrollController
+              .animateTo(scrollController.position.minScrollExtent,
+                  duration: const Duration(milliseconds: 10),
+                  curve: Curves.ease)
+              .whenComplete(() async {
+            var action =
+                fulfilledPayment?.paymentItem?.lnurlPayInfo?.successAction;
+            if (action?.hasTag() == true) {
+              await Future.delayed(
+                const Duration(seconds: 1),
+                () => showLNURLSuccessAction(context, action),
+              );
+            } else {
+              showFlushbar(
+                context,
+                messageWidget: SingleChildScrollView(
+                  child: Text(texts.home_payment_sent),
+                ),
+              );
+            }
+          });
+        }
+      },
+      onError: (err) async {
+        var error = err as PaymentError;
+        if (error.ignoreGlobalFeedback) {
+          return;
+        }
+        final navigator = Navigator.of(context);
+        var sendAction = SendPaymentFailureReport(error.traceReport);
+        final loaderRoute = createLoaderRoute(
+          context,
+          message: texts.home_report_sending,
+          opacity: 0.8,
+          action: sendAction.future,
         );
+        await widget.accountBloc.accountStream.first.then(
+          (accountModel) async {
+            final errorString = error.toDisplayMessage(accountModel.currency);
+            if (error.validationError &&
+                errorString.contains("payment is in transition")) {
+              return;
+            }
+            showFlushbar(context, message: errorString);
 
-        var action = fulfilledPayment?.paymentItem?.lnurlPayInfo?.successAction;
-        if (action?.hasTag() == true) {
-          await Future.delayed(const Duration(seconds: 1));
-          showLNURLSuccessAction(context, action);
-        } else {
-          showFlushbar(
-            context,
-            messageWidget: SingleChildScrollView(
-              child: Text(texts.home_payment_sent),
-            ),
-          );
-        }
-      }
-    }, onError: (err) async {
-      var error = err as PaymentError;
-      if (error.ignoreGlobalFeedback) {
-        return;
-      }
-      final settings = await widget.accountBloc.accountSettingsStream.first;
-      final behavior = settings.failedPaymentBehavior;
-      bool prompt = behavior == BugReportBehavior.PROMPT;
-      bool send = behavior == BugReportBehavior.SEND_REPORT;
+            if (!error.validationError) {
+              await widget.accountBloc.accountSettingsStream.first.then(
+                (settings) async {
+                  final behavior = settings.failedPaymentBehavior;
+                  bool prompt = behavior == BugReportBehavior.PROMPT;
+                  bool send = behavior == BugReportBehavior.SEND_REPORT;
+                  if (prompt) {
+                    send = await showDialog(
+                      useRootNavigator: false,
+                      context: context,
+                      barrierDismissible: false,
+                      builder: (_) => PaymentFailedReportDialog(
+                        context,
+                        widget.accountBloc,
+                      ),
+                    );
+                  }
 
-      final accountModel = await widget.accountBloc.accountStream.first;
-      final errorString = error.toDisplayMessage(accountModel.currency);
-      if (error.validationError &&
-          errorString.contains("payment is in transition")) {
-        return;
-      }
-      showFlushbar(context, message: errorString);
-
-      if (!error.validationError) {
-        if (prompt) {
-          send = await showDialog(
-            useRootNavigator: false,
-            context: context,
-            barrierDismissible: false,
-            builder: (_) => PaymentFailedReportDialog(
-              context,
-              widget.accountBloc,
-            ),
-          );
-        }
-
-        if (send) {
-          var sendAction = SendPaymentFailureReport(error.traceReport);
-          widget.accountBloc.userActionsSink.add(sendAction);
-          await Navigator.push(
-            context,
-            createLoaderRoute(
-              context,
-              message: texts.home_report_sending,
-              opacity: 0.8,
-              action: sendAction.future,
-            ),
-          );
-        }
-      }
-    });
+                  if (send) {
+                    widget.accountBloc.userActionsSink.add(sendAction);
+                    await navigator.push(loaderRoute);
+                  }
+                },
+              );
+            }
+          },
+        );
+      },
+    );
   }
 
   List<DrawerItemConfig> _filterItems(List<DrawerItemConfig> items) {

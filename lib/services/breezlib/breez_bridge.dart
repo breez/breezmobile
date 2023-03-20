@@ -72,9 +72,10 @@ class BreezBridge {
     logger.log.info("graph checksum url: $checksumURL");
     var response = await Dio().get(checksumURL);
     var content = response.data.toString();
-    var currentVersionLine = LineSplitter.split(content).firstWhere((line) {
-      return line.contains(graphDBName);
-    }, orElse: () => "");
+    var currentVersionLine = LineSplitter.split(content).firstWhere(
+      (line) => line.contains(graphDBName),
+      orElse: () => "",
+    );
     if (currentVersionLine.isEmpty) {
       throw Exception("checksum not found");
     }
@@ -99,7 +100,8 @@ class BreezBridge {
         var hexChecksum = HEX.encode(rawBytes);
         if (hexChecksum != checksum) {
           logger.log.info(
-              "GraphDownloader graph synchronization wrong checksum $fileChecksum != $checksum, skipping file");
+            "GraphDownloader graph synchronization wrong checksum $fileChecksum != $checksum, skipping file",
+          );
           return DateTime.now();
         }
         logger.log.info("GraphDownloader graph synchronization started");
@@ -108,7 +110,8 @@ class BreezBridge {
         return DateTime.now();
       }).catchError((err) {
         logger.log.info(
-            "GraphDownloader graph synchronized failed ${err.toString()}");
+          "GraphDownloader graph synchronized failed ${err.toString()}",
+        );
       }).whenComplete(() {
         _graphDownloader.deleteDownloads();
       });
@@ -126,14 +129,16 @@ class BreezBridge {
   initLightningDir() {
     logger.log.info("initLightningDir started");
 
-    getApplicationDocumentsDirectory().then((workingDir) {
-      return copyBreezConfig(workingDir.path).then((_) async {
-        var tmpDir = await _tempDirFuture;
-        await init(workingDir.path, tmpDir.path);
-        logger.log.info("breez library init finished");
-        _startedCompleter.complete(true);
-      });
-    });
+    getApplicationDocumentsDirectory().then(
+      (workingDir) {
+        return copyBreezConfig(workingDir.path).then((_) async {
+          var tmpDir = await _tempDirFuture;
+          await init(workingDir.path, tmpDir.path);
+          logger.log.info("breez library init finished");
+          _startedCompleter.complete(true);
+        });
+      },
+    );
   }
 
   Future<Directory> getWorkingDir() {
@@ -141,8 +146,10 @@ class BreezBridge {
   }
 
   Future init(String appDir, String tmpDir) {
-    return _methodChannel
-        .invokeMethod("init", {"workingDir": appDir, "tempDir": tmpDir});
+    return _methodChannel.invokeMethod(
+      "init",
+      {"workingDir": appDir, "tempDir": tmpDir},
+    );
   }
 
   Future<bool> launchedByJob() async {
@@ -151,8 +158,9 @@ class BreezBridge {
   }
 
   Future<Rates> rate() {
-    return _invokeMethodImmediate("rate")
-        .then((result) => Rates()..mergeFromBuffer(result ?? []));
+    return _invokeMethodImmediate("rate").then(
+      (result) => Rates()..mergeFromBuffer(result ?? []),
+    );
   }
 
   Future startLightning(TorConfig torConfig) {
@@ -168,10 +176,13 @@ class BreezBridge {
   Future _start(TorConfig torConfig) async {
     logger.log.info("breez_bridge.dart: _start");
 
-    return _invokeMethodImmediate(
-        "start", {"argument": torConfig?.writeToBuffer()}).then((_) {
-      print(" breez bridge - start lightning finished");
-    });
+    return _invokeMethodImmediate("start", {
+      "argument": torConfig?.writeToBuffer(),
+    }).then(
+      (_) {
+        logger.log.info("breez bridge - start lightning finished");
+      },
+    );
   }
 
   Future stop({bool permanent = false}) {
@@ -180,16 +191,22 @@ class BreezBridge {
 
   Future syncGraphFromFile(String sourceFilePath) {
     return _invokeMethodImmediate(
-        "syncGraphFromFile", {"argument": sourceFilePath});
+      "syncGraphFromFile",
+      {"argument": sourceFilePath},
+    );
   }
 
   void log(String msg, String level) {
-    _invokeMethodImmediate("log", {"msg": msg, "lvl": level});
+    _invokeMethodImmediate(
+      "log",
+      {"msg": msg, "lvl": level},
+    );
   }
 
   Future<LNUrlResponse> fetchLNUrl(String lnurl) {
-    var result = _invokeMethodImmediate("fetchLnurl", {"argument": lnurl})
-        .then((result) => LNUrlResponse()..mergeFromBuffer(result ?? []));
+    var result = _invokeMethodImmediate("fetchLnurl", {
+      "argument": lnurl,
+    }).then((result) => LNUrlResponse()..mergeFromBuffer(result ?? []));
     logger.log.info("fetchLNUrl");
     return result;
   }
@@ -200,14 +217,16 @@ class BreezBridge {
 
   Future<String> loginLNUrl(AuthFetchResponse response) {
     return _invokeMethodWhenReady(
-            "finishLNURLAuth", {"argument": response.response.writeToBuffer()})
-        .then((value) => value as String);
+      "finishLNURLAuth",
+      {"argument": response.response.writeToBuffer()},
+    ).then((value) => value as String);
   }
 
   Future<LNUrlPayInfo> fetchLNUrlPayInvoice(PayFetchResponse response) {
     return _invokeMethodWhenReady(
-            "finishLNURLPay", {"argument": response.response.writeToBuffer()})
-        .then((result) => LNUrlPayInfo()..mergeFromBuffer(result ?? []));
+      "finishLNURLPay",
+      {"argument": response.response.writeToBuffer()},
+    ).then((result) => LNUrlPayInfo()..mergeFromBuffer(result ?? []));
   }
 
   Future<String> getLogPath() {
@@ -258,13 +277,16 @@ class BreezBridge {
       ..k1 = k1
       ..callback = callback;
     return _invokeMethodWhenReady(
-        "connectDirectToLnurl", {"argument": channel.writeToBuffer()});
+      "connectDirectToLnurl",
+      {"argument": channel.writeToBuffer()},
+    );
   }
 
   Future<SweepAllCoinsTransactions> sweepAllCoinsTransactions(String address) {
     return _invokeMethodWhenReady(
-            "sweepAllCoinsTransactions", {"argument": address})
-        .then((res) => SweepAllCoinsTransactions()..mergeFromBuffer(res ?? []));
+      "sweepAllCoinsTransactions",
+      {"argument": address},
+    ).then((res) => SweepAllCoinsTransactions()..mergeFromBuffer(res ?? []));
   }
 
   Future publishTransaction(List<int> tx) {
@@ -277,23 +299,31 @@ class BreezBridge {
   }
 
   Future<ReverseSwapInfo> getReverseSwapPolicy() {
-    return _invokeMethodWhenReady("reverseSwapInfo", {})
-        .then((res) => ReverseSwapInfo()..mergeFromBuffer(res ?? []));
+    return _invokeMethodWhenReady("reverseSwapInfo", {}).then(
+      (res) => ReverseSwapInfo()..mergeFromBuffer(res ?? []),
+    );
   }
 
-  Future<String> newReverseSwap(String address, Int64 amount, String feesHash) {
+  Future<String> newReverseSwap(
+    String address,
+    Int64 amount,
+    String feesHash,
+  ) {
     ReverseSwapRequest request = ReverseSwapRequest()
       ..address = address
       ..amount = amount
       ..feesHash = feesHash;
     return _invokeMethodWhenReady(
-            "newReverseSwap", {"argument": request.writeToBuffer()})
-        .then((res) => res as String);
+      "newReverseSwap",
+      {"argument": request.writeToBuffer()},
+    ).then((res) => res as String);
   }
 
   Future<ReverseSwap> fetchReverseSwap(String hash) {
-    return _invokeMethodWhenReady("fetchReverseSwap", {"argument": hash})
-        .then((res) => ReverseSwap()..mergeFromBuffer(res ?? []));
+    return _invokeMethodWhenReady(
+      "fetchReverseSwap",
+      {"argument": hash},
+    ).then((res) => ReverseSwap()..mergeFromBuffer(res ?? []));
   }
 
   Future payReverseSwap(
@@ -312,13 +342,18 @@ class BreezBridge {
       ..hash = hash
       ..fee = Int64(fee);
     return _invokeMethodWhenReady(
-        "payReverseSwap", {"argument": request.writeToBuffer()});
+      "payReverseSwap",
+      {"argument": request.writeToBuffer()},
+    );
   }
 
-  Future<ClaimFeeEstimates> reverseSwapClaimFeeEstimates(String claimAddress) {
+  Future<ClaimFeeEstimates> reverseSwapClaimFeeEstimates(
+    String claimAddress,
+  ) {
     return _invokeMethodWhenReady(
-            "reverseSwapClaimFeeEstimates", {"argument": claimAddress})
-        .then((res) => ClaimFeeEstimates()..mergeFromBuffer(res ?? []));
+      "reverseSwapClaimFeeEstimates",
+      {"argument": claimAddress},
+    ).then((res) => ClaimFeeEstimates()..mergeFromBuffer(res ?? []));
   }
 
   Future setReverseSwapClaimFee(String hash, Int64 fee) {
@@ -326,22 +361,27 @@ class BreezBridge {
       ..fee = fee
       ..hash = hash;
     return _invokeMethodWhenReady(
-        "setReverseSwapClaimFee", {"argument": arg.writeToBuffer()});
+      "setReverseSwapClaimFee",
+      {"argument": arg.writeToBuffer()},
+    );
   }
 
   Future<String> unconfirmedReverseSwapClaimTransaction() {
-    return _invokeMethodWhenReady("unconfirmedReverseSwapClaimTransaction")
-        .then((s) => s as String);
+    return _invokeMethodWhenReady(
+      "unconfirmedReverseSwapClaimTransaction",
+    ).then((s) => s as String);
   }
 
   Future resetUnconfirmedReverseSwapClaimTransaction() {
     return _invokeMethodWhenReady(
-        "resetUnconfirmedReverseSwapClaimTransaction");
+      "resetUnconfirmedReverseSwapClaimTransaction",
+    );
   }
 
   Future<ReverseSwapPaymentStatuses> reverseSwapPayments() {
-    return _invokeMethodWhenReady("reverseSwapPayments")
-        .then((p) => ReverseSwapPaymentStatuses()..mergeFromBuffer(p ?? []));
+    return _invokeMethodWhenReady(
+      "reverseSwapPayments",
+    ).then((p) => ReverseSwapPaymentStatuses()..mergeFromBuffer(p ?? []));
   }
 
   Future<String> receiverNode() {
@@ -367,8 +407,9 @@ class BreezBridge {
     }
 
     payFunc() => _invokeMethodWhenReady(
-            "sendSpontaneousPayment", {"argument": request.writeToBuffer()})
-        .then((res) => PaymentResponse()..mergeFromBuffer(res ?? []));
+          "sendSpontaneousPayment",
+          {"argument": request.writeToBuffer()},
+        ).then((res) => PaymentResponse()..mergeFromBuffer(res ?? []));
 
     return _invokePaymentWithGraphSyncAndRetry(payFunc);
   }
@@ -389,37 +430,42 @@ class BreezBridge {
     invoice.paymentRequest = blankInvoicePaymentRequest;
 
     payFunc() => _invokeMethodWhenReady(
-                "sendPaymentForRequest", {"argument": invoice.writeToBuffer()})
-            .then((value) {
-          return PaymentResponse()..mergeFromBuffer(value ?? []);
-        });
+          "sendPaymentForRequest",
+          {"argument": invoice.writeToBuffer()},
+        ).then((value) => PaymentResponse()..mergeFromBuffer(value ?? []));
 
     return _invokePaymentWithGraphSyncAndRetry(payFunc);
   }
 
   Future<PaymentResponse> _invokePaymentWithGraphSyncAndRetry(
-      Future<PaymentResponse> Function() payFunc) async {
+    Future<PaymentResponse> Function() payFunc,
+  ) async {
     var startPaymentTime = DateTime.now();
     logger.log.info("payment started at ${startPaymentTime.toString()}");
 
-    return payFunc().then((response) {
-      if (response.paymentError.isEmpty || _inProgressGraphSync == null) {
-        return response;
-      }
-      logger.log.info("payment failed, checking if graph sync is needed");
-      return _inProgressGraphSync
-          .timeout(const Duration(seconds: 50))
-          .then((lastSyncTime) {
-        if (lastSyncTime.isAfter(startPaymentTime)) {
-          logger.log.info(
-              "last sync time is newer than payment start, retrying payment...");
-          return payFunc();
+    return payFunc().then(
+      (response) {
+        if (response.paymentError.isEmpty || _inProgressGraphSync == null) {
+          return response;
         }
-        return Future.value(response);
-      }).catchError((err) {
-        return Future.value(response);
-      });
-    });
+        logger.log.info("payment failed, checking if graph sync is needed");
+        return _inProgressGraphSync.timeout(const Duration(seconds: 50)).then(
+          (lastSyncTime) {
+            if (lastSyncTime.isAfter(startPaymentTime)) {
+              logger.log.info(
+                "last sync time is newer than payment start, retrying payment...",
+              );
+              return payFunc();
+            }
+            return Future.value(response);
+          },
+        ).catchError(
+          (err) {
+            return Future.value(response);
+          },
+        );
+      },
+    );
 
     // try {
     //   var response = await payFunc();
@@ -448,16 +494,18 @@ class BreezBridge {
   }
 
   Future<String> graphURL() {
-    return _invokeMethodImmediate("graphURL")
-        .then((result) => result as String)
-        .catchError((e) {
+    return _invokeMethodImmediate(
+      "graphURL",
+    ).then((result) => result as String).catchError((e) {
       logger.log.info("Error in graphURL:$e");
     });
   }
 
   Future sendPaymentFailureBugReport(String traceReport) {
     return _invokeMethodWhenReady(
-        "sendPaymentFailureBugReport", {"argument": traceReport});
+      "sendPaymentFailureBugReport",
+      {"argument": traceReport},
+    );
   }
 
   Future populateChannelPolicy() {
@@ -465,18 +513,21 @@ class BreezBridge {
   }
 
   Future<PaymentsList> getPayments() {
-    return _invokeMethodImmediate("getPayments")
-        .then((result) => PaymentsList()..mergeFromBuffer(result ?? []));
+    return _invokeMethodImmediate(
+      "getPayments",
+    ).then((result) => PaymentsList()..mergeFromBuffer(result ?? []));
   }
 
   Future<LSPActivity> lspActivity() {
-    return _invokeMethodWhenReady("lspActivity")
-        .then((result) => LSPActivity()..mergeFromBuffer(result ?? []));
+    return _invokeMethodWhenReady(
+      "lspActivity",
+    ).then((result) => LSPActivity()..mergeFromBuffer(result ?? []));
   }
 
   Future<Peers> getPeers() {
-    return _invokeMethodImmediate("getPeers")
-        .then((result) => Peers()..mergeFromBuffer(result ?? []));
+    return _invokeMethodImmediate(
+      "getPeers",
+    ).then((result) => Peers()..mergeFromBuffer(result ?? []));
   }
 
   Future setPeers(List<String> peers) {
@@ -499,14 +550,16 @@ class BreezBridge {
     return _invokeMethodImmediate("setNonBlockingUnconfirmedSwaps", {});
   }
 
-  Future<AddInvoiceReply> addInvoice(Int64 amount,
-      {String payeeName,
-      String payeeImageURL,
-      String payerName,
-      String payerImageURL,
-      String description,
-      Int64 expiry,
-      LSPInformation inputLSP}) async {
+  Future<AddInvoiceReply> addInvoice(
+    Int64 amount, {
+    String payeeName,
+    String payeeImageURL,
+    String payerName,
+    String payerImageURL,
+    String description,
+    Int64 expiry,
+    LSPInformation inputLSP,
+  }) async {
     InvoiceMemo invoice = InvoiceMemo();
     invoice.amount = amount;
     if (payeeImageURL != null) {
@@ -555,9 +608,10 @@ class BreezBridge {
     var request = CheckLSPClosedChannelMismatchRequest()
       ..lspInfo = lsp
       ..chanPoint = chanPoint;
-    return _invokeMethodWhenReady("checkLSPClosedChannelMismatch", {
-      "argument": request.writeToBuffer()
-    }).then((res) =>
+    return _invokeMethodWhenReady(
+      "checkLSPClosedChannelMismatch",
+      {"argument": request.writeToBuffer()},
+    ).then((res) =>
         CheckLSPClosedChannelMismatchResponse()..mergeFromBuffer(res ?? []));
   }
 
@@ -566,28 +620,35 @@ class BreezBridge {
     var request = ResetClosedChannelChainInfoRequest()
       ..blockHeight = blockHeight
       ..chanPoint = chanPoint;
-    return _invokeMethodWhenReady("resetClosedChannelChainInfo", {
-      "argument": request.writeToBuffer()
-    }).then((res) =>
+    return _invokeMethodWhenReady(
+      "resetClosedChannelChainInfo",
+      {"argument": request.writeToBuffer()},
+    ).then((res) =>
         ResetClosedChannelChainInfoReply()..mergeFromBuffer(res ?? []));
   }
 
   Future<CreateRatchetSessionReply> createRatchetSession(
-      String sessionID, Int64 expiry,
-      {String secret, String remotePubKey}) {
+    String sessionID,
+    Int64 expiry, {
+    String secret,
+    String remotePubKey,
+  }) {
     var request = CreateRatchetSessionRequest()
       ..sessionID = sessionID
       ..expiry = expiry
       ..secret = secret ?? ""
       ..remotePubKey = remotePubKey ?? "";
     return _invokeMethodImmediate(
-            "createRatchetSession", {"argument": request.writeToBuffer()})
-        .then((res) => CreateRatchetSessionReply()..mergeFromBuffer(res ?? []));
+      "createRatchetSession",
+      {"argument": request.writeToBuffer()},
+    ).then((res) => CreateRatchetSessionReply()..mergeFromBuffer(res ?? []));
   }
 
   Future<RatchetSessionInfoReply> ratchetSessionInfo(String sessionID) {
-    return _invokeMethodImmediate("ratchetSessionInfo", {"argument": sessionID})
-        .then((res) => RatchetSessionInfoReply()..mergeFromBuffer(res ?? []));
+    return _invokeMethodImmediate(
+      "ratchetSessionInfo",
+      {"argument": sessionID},
+    ).then((res) => RatchetSessionInfoReply()..mergeFromBuffer(res ?? []));
   }
 
   Future ratchetSessionSetInfo(String sessionID, String userInfo) {
@@ -595,7 +656,9 @@ class BreezBridge {
       ..sessionID = sessionID
       ..userInfo = userInfo;
     return _invokeMethodImmediate(
-        "ratchetSessionSetInfo", {"argument": request.writeToBuffer()});
+      "ratchetSessionSetInfo",
+      {"argument": request.writeToBuffer()},
+    );
   }
 
   Future<String> ratchetEncrypt(String sessionID, String message) {
@@ -612,38 +675,50 @@ class BreezBridge {
       ..encryptedMessage = encryptedMessage
       ..sessionID = sessionID;
     return _invokeMethodImmediate(
-            "ratchetDecrypt", {"argument": request.writeToBuffer()})
-        .then((res) => res as String);
+      "ratchetDecrypt",
+      {"argument": request.writeToBuffer()},
+    ).then((res) => res as String);
   }
 
   Future<Invoice> getRelatedInvoice(String paymentRequest) {
     return _invokeMethodWhenReady(
-            "getRelatedInvoice", {"argument": paymentRequest})
-        .then((invoiceData) => Invoice()..mergeFromBuffer(invoiceData));
+      "getRelatedInvoice",
+      {"argument": paymentRequest},
+    ).then((invoiceData) => Invoice()..mergeFromBuffer(invoiceData));
   }
 
   Future<InvoiceMemo> decodePaymentRequest(String payReq) {
-    return _invokeMethodWhenReady("decodePaymentRequest", {"argument": payReq})
-        .then((result) => InvoiceMemo()..mergeFromBuffer(result ?? []));
+    return _invokeMethodWhenReady(
+      "decodePaymentRequest",
+      {"argument": payReq},
+    ).then((result) => InvoiceMemo()..mergeFromBuffer(result ?? []));
   }
 
   Future<String> getPaymentRequestHash(String payReq) {
-    return _invokeMethodWhenReady("getPaymentRequestHash", {"argument": payReq})
-        .then((result) => result as String);
+    return _invokeMethodWhenReady(
+      "getPaymentRequestHash",
+      {"argument": payReq},
+    ).then((result) => result as String);
   }
 
   Future<String> newAddress(String breezID) {
-    return _invokeMethodWhenReady("newAddress", {"argument": breezID})
-        .then((address) => address as String);
+    return _invokeMethodWhenReady(
+      "newAddress",
+      {"argument": breezID},
+    ).then((address) => address as String);
   }
 
-  Future<AddFundInitReply> addFundsInit(String breezID, String selectedLSP) {
+  Future<AddFundInitReply> addFundsInit(
+    String breezID,
+    String selectedLSP,
+  ) {
     var initRequest = AddFundInitRequest()
       ..notificationToken = breezID
       ..lspID = selectedLSP;
     return _invokeMethodWhenReady(
-            "addFundsInit", {"argument": initRequest.writeToBuffer()})
-        .then((reply) => AddFundInitReply()..mergeFromBuffer(reply ?? []));
+      "addFundsInit",
+      {"argument": initRequest.writeToBuffer()},
+    ).then((reply) => AddFundInitReply()..mergeFromBuffer(reply ?? []));
   }
 
   Future<String> refund(String address, String refundAddress, Int64 feeRate) {
@@ -652,29 +727,37 @@ class BreezBridge {
       ..address = address
       ..refundAddress = refundAddress;
     return _invokeMethodWhenReady(
-            "refund", {"argument": refundRequest.writeToBuffer()})
-        .then((txID) => txID as String);
+      "refund",
+      {"argument": refundRequest.writeToBuffer()},
+    ).then((txID) => txID as String);
   }
 
   Future<FundStatusReply> getFundStatus(String notificationToken) {
     return _invokeMethodWhenReady(
-            "getFundStatus", {"argument": notificationToken})
-        .then((result) => FundStatusReply()..mergeFromBuffer(result ?? []));
+      "getFundStatus",
+      {"argument": notificationToken},
+    ).then((result) => FundStatusReply()..mergeFromBuffer(result ?? []));
   }
 
   Future registerReceivePaymentReadyNotification(String token) {
     return _invokeMethodWhenReady(
-        "registerReceivePaymentReadyNotification", {"argument": token});
+      "registerReceivePaymentReadyNotification",
+      {"argument": token},
+    );
   }
 
   Future registerChannelOpenedNotification(String token) {
     return _invokeMethodWhenReady(
-        "registerChannelOpenedNotification", {"argument": token});
+      "registerChannelOpenedNotification",
+      {"argument": token},
+    );
   }
 
   Future<String> sendCommand(String command) {
-    return _invokeMethodWhenReady("sendCommand", {"argument": command})
-        .then((response) => response as String);
+    return _invokeMethodWhenReady(
+      "sendCommand",
+      {"argument": command},
+    ).then((response) => response as String);
   }
 
   Future checkVersion() {
@@ -694,8 +777,9 @@ class BreezBridge {
   }
 
   Future<Int64> getDefaultOnChainFeeRate() {
-    return _invokeMethodImmediate("getDefaultOnChainFeeRate")
-        .then((res) => Int64(res as int));
+    return _invokeMethodImmediate(
+      "getDefaultOnChainFeeRate",
+    ).then((res) => Int64(res as int));
   }
 
   Future registerPeriodicSync(String token) {
@@ -719,8 +803,10 @@ class BreezBridge {
   }
 
   Future setBackupProvider(String backupProvider, String backupAuthData) {
-    return _invokeMethodImmediate("setBackupProvider",
-        {"provider": backupProvider, "authData": backupAuthData});
+    return _invokeMethodImmediate(
+      "setBackupProvider",
+      {"provider": backupProvider, "authData": backupAuthData},
+    );
   }
 
   Future<String> getAvailableBackups() async {
@@ -731,15 +817,18 @@ class BreezBridge {
   }
 
   Future<DownloadBackupResponse> downloadBackup(String nodeId) async {
-    return _methodChannel
-        .invokeMethod("downloadBackup", {"argument": nodeId}).then(
-            (reply) => DownloadBackupResponse()..mergeFromBuffer(reply ?? []));
+    return _methodChannel.invokeMethod(
+      "downloadBackup",
+      {"argument": nodeId},
+    ).then((reply) => DownloadBackupResponse()..mergeFromBuffer(reply ?? []));
   }
 
   Future restore(String nodeId, List<int> encryptionKey) async {
     try {
       await _methodChannel.invokeMethod(
-          "restoreBackup", {"nodeID": nodeId, "encryptionKey": encryptionKey});
+        "restoreBackup",
+        {"nodeID": nodeId, "encryptionKey": encryptionKey},
+      );
     } on PlatformException catch (e) {
       throw e.message;
     }
@@ -748,7 +837,9 @@ class BreezBridge {
   Future testBackupAuth(String provider, String authData) {
     logger.log.info('breez_bridge.dart: testBackupAuth');
     return _methodChannel.invokeMethod(
-        'testBackupAuth', {'provider': provider, 'authData': authData});
+      'testBackupAuth',
+      {'provider': provider, 'authData': authData},
+    );
   }
 
   Future<dynamic> signIn(bool force) {
@@ -807,9 +898,10 @@ class BreezBridge {
 
   Future setBackupTorConfig(TorConfig torConfig) {
     return _invokeMethodImmediate(
-            'setBackupTorConfig', {'argument': torConfig?.writeToBuffer()})
-        .then((_) {
-      print(" breez bridge - set backup torcofig");
+      'setBackupTorConfig',
+      {'argument': torConfig?.writeToBuffer()},
+    ).then((_) {
+      logger.log.info("breez bridge - set backup torconfig");
     });
   }
 
@@ -827,9 +919,11 @@ class BreezBridge {
 
         if (err.runtimeType == PlatformException) {
           logger.log.severe(
-              "Error in calling method '$methodName' with arguments: $arguments.");
+            "Error in calling method '$methodName' with arguments: $arguments.",
+          );
           logger.log.severe(
-              "Error in calling method '$methodName' with error: $err.");
+            "Error in calling method '$methodName' with error: $err.",
+          );
 
           throw (err as PlatformException).message;
         }
@@ -842,32 +936,38 @@ class BreezBridge {
     if (methodName != "log") {
       logger.log.info("before invoking method immediate $methodName");
     }
-    return _startedCompleter.future.then((completed) {
-      if (methodName != "log") {
-        logger.log.info(
-            "startCompleted completed: before invoking method immediate $methodName");
-      }
-      return _methodChannel
-          .invokeMethod(methodName, arguments)
-          .catchError((err) {
+    return _startedCompleter.future.then(
+      (completed) {
         if (methodName != "log") {
-          logger.log
-              .severe("error invoking method immediate $methodName : $err");
+          logger.log.info(
+            "startCompleted completed: before invoking method immediate $methodName",
+          );
         }
-        if (err.runtimeType == PlatformException) {
-          if (methodName != "log") {
-            logger.log.severe("Error in calling method $methodName");
-          }
+        return _methodChannel.invokeMethod(methodName, arguments).catchError(
+          (err) {
+            if (methodName != "log") {
+              logger.log.severe(
+                "error invoking method immediate $methodName : $err",
+              );
+            }
+            if (err.runtimeType == PlatformException) {
+              if (methodName != "log") {
+                logger.log.severe("Error in calling method $methodName");
+              }
 
-          logger.log.severe(
-              "Error in calling method '$methodName' with arguments: $arguments.");
-          logger.log.severe(
-              "Error in calling method '$methodName' with error: $err.");
-          throw "${(err as PlatformException).message} method: $methodName";
-        }
-        throw err;
-      });
-    });
+              logger.log.severe(
+                "Error in calling method '$methodName' with arguments: $arguments.",
+              );
+              logger.log.severe(
+                "Error in calling method '$methodName' with error: $err.",
+              );
+              throw "${(err as PlatformException).message} method: $methodName";
+            }
+            throw err;
+          },
+        );
+      },
+    );
   }
 
   Future<String> getChanBackupPath() async {

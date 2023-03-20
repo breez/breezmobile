@@ -19,57 +19,61 @@ class PaymentSessionState {
       payer ? payeeData.cancelled : payerData.cancelled;
 
   PaymentSessionState(
-      this.payer,
-      this.sessionSecret,
-      this.payerData,
-      this.payeeData,
-      this.invitationReady,
-      this.invitationSent,
-      this.paymentFulfilled,
-      this.settledAmount);
+    this.payer,
+    this.sessionSecret,
+    this.payerData,
+    this.payeeData,
+    this.invitationReady,
+    this.invitationSent,
+    this.paymentFulfilled,
+    this.settledAmount,
+  );
 
-  PaymentSessionState copyWith(
-      {PayerSessionData payerData,
-      PayeeSessionData payeeData,
-      bool invitationReady,
-      bool invitationSent,
-      bool paymentFulfilled,
-      int settledAmount}) {
+  PaymentSessionState copyWith({
+    PayerSessionData payerData,
+    PayeeSessionData payeeData,
+    bool invitationReady,
+    bool invitationSent,
+    bool paymentFulfilled,
+    int settledAmount,
+  }) {
     return PaymentSessionState(
-        payer,
-        sessionSecret,
-        payerData ?? this.payerData,
-        payeeData ?? this.payeeData,
-        invitationReady ?? this.invitationReady,
-        invitationSent ?? this.invitationSent,
-        paymentFulfilled ?? this.paymentFulfilled,
-        settledAmount ?? this.settledAmount);
+      payer,
+      sessionSecret,
+      payerData ?? this.payerData,
+      payeeData ?? this.payeeData,
+      invitationReady ?? this.invitationReady,
+      invitationSent ?? this.invitationSent,
+      paymentFulfilled ?? this.paymentFulfilled,
+      settledAmount ?? this.settledAmount,
+    );
   }
 
   PaymentSessionState.payerStart(
       String sessionSecret, String userName, String imageURL)
       : this(
-            true,
-            sessionSecret,
-            PayerSessionData(
-                userName, imageURL, PeerStatus.start(), null, null),
-            PayeeSessionData(null, null, PeerStatus.start(), null, null, false),
-            false,
-            false,
-            false,
-            0);
+          true,
+          sessionSecret,
+          PayerSessionData(userName, imageURL, PeerStatus.start(), null, null),
+          PayeeSessionData(null, null, PeerStatus.start(), null, null, false),
+          false,
+          false,
+          false,
+          0,
+        );
   PaymentSessionState.payeeStart(
       String sessionSecret, String userName, String imageURL)
       : this(
-            false,
-            sessionSecret,
-            PayerSessionData(null, null, PeerStatus.start(), null, null),
-            PayeeSessionData(
-                userName, imageURL, PeerStatus.start(), null, null, false),
-            true,
-            true,
-            false,
-            0);
+          false,
+          sessionSecret,
+          PayerSessionData(null, null, PeerStatus.start(), null, null),
+          PayeeSessionData(
+              userName, imageURL, PeerStatus.start(), null, null, false),
+          true,
+          true,
+          false,
+          0,
+        );
 }
 
 class PayerSessionData {
@@ -103,26 +107,28 @@ class PayerSessionData {
         paymentFulfilled = json["paymentFulfilled"] ?? false,
         unconfirmedChannelsProgress = null;
 
-  PayerSessionData copyWith(
-      {String userName,
-      String imageURL,
-      PeerStatus status,
-      int amount,
-      String description,
-      String error,
-      bool paymentFulfilled,
-      double unconfirmedChannelsProgress}) {
+  PayerSessionData copyWith({
+    String userName,
+    String imageURL,
+    PeerStatus status,
+    int amount,
+    String description,
+    String error,
+    bool paymentFulfilled,
+    double unconfirmedChannelsProgress,
+  }) {
     return PayerSessionData(
-        userName ?? this.userName,
-        imageURL ?? this.imageURL,
-        status ?? this.status,
-        amount ?? this.amount,
-        description ?? this.description,
-        error: error ?? this.error,
-        paymentFulfilled: paymentFulfilled ?? this.paymentFulfilled,
-        cancelled: cancelled ?? cancelled,
-        unconfirmedChannelsProgress:
-            unconfirmedChannelsProgress ?? this.unconfirmedChannelsProgress);
+      userName ?? this.userName,
+      imageURL ?? this.imageURL,
+      status ?? this.status,
+      amount ?? this.amount,
+      description ?? this.description,
+      error: error ?? this.error,
+      paymentFulfilled: paymentFulfilled ?? this.paymentFulfilled,
+      cancelled: cancelled ?? cancelled,
+      unconfirmedChannelsProgress:
+          unconfirmedChannelsProgress ?? this.unconfirmedChannelsProgress,
+    );
   }
 }
 
@@ -147,20 +153,22 @@ class PayeeSessionData {
         cancelled = json["cancelled"] ?? false,
         imageURL = json['imageURL'];
 
-  PayeeSessionData copyWith(
-      {String userName,
-      String imageURL,
-      PeerStatus status,
-      String paymentRequest,
-      String error,
-      bool cancelled}) {
+  PayeeSessionData copyWith({
+    String userName,
+    String imageURL,
+    PeerStatus status,
+    String paymentRequest,
+    String error,
+    bool cancelled,
+  }) {
     return PayeeSessionData(
-        userName ?? this.userName,
-        imageURL ?? this.imageURL,
-        status ?? this.status,
-        paymentRequest ?? this.paymentRequest,
-        error ?? this.error,
-        cancelled ?? this.cancelled);
+      userName ?? this.userName,
+      imageURL ?? this.imageURL,
+      status ?? this.status,
+      paymentRequest ?? this.paymentRequest,
+      error ?? this.error,
+      cancelled ?? this.cancelled,
+    );
   }
 }
 
@@ -193,5 +201,6 @@ class PaymentSessionError {
 
   PaymentSessionError.unknown(this.description)
       : type = PaymentSessionErrorType.UNKNOWN;
+
   PaymentSessionError(this.type, this.description);
 }

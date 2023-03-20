@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:breez/bloc/fastbitcoins/fastbitcoins_bloc.dart';
 import 'package:breez/bloc/fastbitcoins/fastbitcoins_model.dart';
 import 'package:breez/services/injector.dart';
+import 'package:flutter/foundation.dart';
 import 'package:http/http.dart';
 import 'package:test/test.dart';
 
@@ -48,7 +49,9 @@ void main() {
       FastbitcoinsBloc fastBitcoinsBloc = _make();
       var tester = BlocTester<ValidateRequestModel, ValidateResponseModel>(
           fastBitcoinsBloc.validateResponseStream, (res) {
-        print(jsonEncode(res.toJson()));
+        if (kDebugMode) {
+          print(jsonEncode(res.toJson()));
+        }
         expect(res, isNotNull);
         expect(res.error, 1);
       }, fastBitcoinsBloc.validateRequestSink,
@@ -76,7 +79,9 @@ void main() {
                 ValidateResponseModel(0, "", 0, 0, "", 0, 1.0, 1.0, 0, 0.0, 0);
       var tester = BlocTester<RedeemRequestModel, RedeemResponseModel>(
           fastBitcoinsBloc.redeemResponseStream, (res) {
-        print(jsonEncode(res.toJson()));
+        if (kDebugMode) {
+          print(jsonEncode(res.toJson()));
+        }
         expect(res, isNotNull);
         expect(res.error, 0);
       }, fastBitcoinsBloc.redeemRequestSink, redeemRequest);

@@ -37,6 +37,7 @@ class InvoiceNotificationsHandler {
     _receivedInvoicesStream
         .where((payreq) => payreq != null && !_handlingRequest)
         .listen((payreq) async {
+      final navigator = Navigator.of(_context);
       var account = await _accountBloc.accountStream
           .firstWhere((a) => !a.initial, orElse: () => null);
       if (account == null || !account.connected) {
@@ -46,29 +47,39 @@ class InvoiceNotificationsHandler {
         _setLoading(true);
         return;
       }
-      var user = await _userProfileBloc.userStream.firstWhere((u) => u != null);
       _setLoading(false);
       _handlingRequest = true;
 
       // Close the drawer before showing payment request dialog
       if (scaffoldController.currentState.isDrawerOpen) {
-        Navigator.pop(_context);
+        navigator.pop();
       }
 
-      protectAdminAction(_context, user, () {
-        return showDialog(
-            useRootNavigator: false,
-            context: _context,
-            barrierDismissible: false,
-            builder: (_) => paymentRequest.PaymentRequestDialog(
-                    _context,
-                    _accountBloc,
-                    payreq,
-                    firstPaymentItemKey,
-                    scrollController, () {
-                  _handlingRequest = false;
-                }));
-      });
+      await _userProfileBloc.userStream.firstWhere((u) => u != null).then(
+        (user) async {
+          await protectAdminAction(
+            _context,
+            user,
+            () {
+              return showDialog(
+                useRootNavigator: false,
+                context: _context,
+                barrierDismissible: false,
+                builder: (_) => paymentRequest.PaymentRequestDialog(
+                  _context,
+                  _accountBloc,
+                  payreq,
+                  firstPaymentItemKey,
+                  scrollController,
+                  () {
+                    _handlingRequest = false;
+                  },
+                ),
+              );
+            },
+          );
+        },
+      );
     }).onError((error) {
       _setLoading(false);
       if (error is PaymentRequestError) {

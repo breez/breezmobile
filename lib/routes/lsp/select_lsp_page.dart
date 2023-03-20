@@ -164,6 +164,7 @@ class SelectLSPPageState extends State<SelectLSPPage> {
       return SingleButtonBottomBar(
         text: texts.account_page_activation_action_select,
         onPressed: () async {
+          final navigator = Navigator.of(context);
           ConnectLSP connectAction;
           if (url?.isNotEmpty == true) {
             final lnurl = await Navigator.of(context).push<String>(
@@ -183,7 +184,7 @@ class SelectLSPPageState extends State<SelectLSPPage> {
 
           if (connectAction != null) {
             widget.lstBloc.actionsSink.add(connectAction);
-            Navigator.of(context).pop();
+            navigator.pop();
           }
         },
       );

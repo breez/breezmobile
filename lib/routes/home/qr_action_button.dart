@@ -49,110 +49,118 @@ class QrActionButton extends StatelessWidget {
         child: FloatingActionButton(
           onPressed: () async {
             log.finest("Start qr code scan");
-            final scannedString = await Navigator.pushNamed<String>(
-              context,
-              "/qr_scan",
-            );
-            log.finest("Scanned string: '$scannedString'");
-            if (scannedString != null) {
-              if (scannedString.isEmpty) {
-                showFlushbar(
-                  context,
-                  message: texts.qr_action_button_error_code_not_detected,
-                );
-                return;
-              }
-              String lower = scannedString.toLowerCase();
+            final navigator = Navigator.of(context);
+            navigator.pushNamed<String>("/qr_scan").then(
+              (scannedString) async {
+                log.finest("Scanned string: '$scannedString'");
+                if (scannedString != null) {
+                  if (scannedString.isEmpty) {
+                    showFlushbar(
+                      context,
+                      message: texts.qr_action_button_error_code_not_detected,
+                    );
+                    return;
+                  }
+                  String lower = scannedString.toLowerCase();
 
-              // lnurl string
-              if (isLNURL(lower)) {
-                log.finest("Scanned string is a lnurl");
-                await _handleLNUrl(lnurlBloc, context, scannedString);
-                return;
-              }
+                  // lnurl string
+                  if (isLNURL(lower)) {
+                    log.finest("Scanned string is a lnurl");
+                    await _handleLNUrl(lnurlBloc, context, scannedString);
+                    return;
+                  }
 
-              // lightning address
-              final v = parseLightningAddress(scannedString);
-              if (v != null) {
-                log.finest("Scanned string is a lightning address");
-                lnurlBloc.lnurlInputSink.add(v);
-                return;
-              }
+                  // lightning address
+                  final v = parseLightningAddress(scannedString);
+                  if (v != null) {
+                    log.finest("Scanned string is a lightning address");
+                    lnurlBloc.lnurlInputSink.add(v);
+                    return;
+                  }
 
-              // bip 121
-              String lnInvoice = extractBolt11FromBip21(lower);
-              if (lnInvoice != null) {
-                log.finest("Scanned string is a bolt11 extract from bip 21");
-                lower = lnInvoice;
-              }
+                  // bip 121
+                  String lnInvoice = extractBolt11FromBip21(lower);
+                  if (lnInvoice != null) {
+                    log.finest(
+                      "Scanned string is a bolt11 extract from bip 21",
+                    );
+                    lower = lnInvoice;
+                  }
 
-              // regular lightning invoice.
-              if (lower.startsWith("lightning:") || lower.startsWith("ln")) {
-                log.finest("Scanned string is a regular lightning invoice");
-                invoiceBloc.decodeInvoiceSink.add(scannedString);
-                return;
-              }
+                  // regular lightning invoice.
+                  if (lower.startsWith("lightning:") ||
+                      lower.startsWith("ln")) {
+                    log.finest("Scanned string is a regular lightning invoice");
+                    invoiceBloc.decodeInvoiceSink.add(scannedString);
+                    return;
+                  }
 
-              // bitcoin
-              BTCAddressInfo btcInvoice = parseBTCAddress(scannedString);
+                  // bitcoin
+                  BTCAddressInfo btcInvoice = parseBTCAddress(scannedString);
 
-              if (await _isBTCAddress(btcInvoice.address)) {
-                log.finest("Scanned string is a bitcoin address");
-                String requestAmount;
-                if (btcInvoice.satAmount != null) {
-                  requestAmount = account.currency.format(
-                    btcInvoice.satAmount,
-                    userInput: true,
-                    includeDisplayName: false,
-                    removeTrailingZeros: true,
+                  if (await _isBTCAddress(btcInvoice.address)) {
+                    log.finest("Scanned string is a bitcoin address");
+                    String requestAmount;
+                    if (btcInvoice.satAmount != null) {
+                      requestAmount = account.currency.format(
+                        btcInvoice.satAmount,
+                        userInput: true,
+                        includeDisplayName: false,
+                        removeTrailingZeros: true,
+                      );
+                    }
+                    navigator.push(
+                      FadeInRoute(
+                        builder: (_) => ReverseSwapPage(
+                          userAddress: btcInvoice.address,
+                          requestAmount: requestAmount,
+                        ),
+                      ),
+                    );
+                    return;
+                  }
+
+                  var nodeID = parseNodeId(scannedString);
+                  if (nodeID != null) {
+                    log.finest("Scanned string is a node id");
+                    navigator.push(
+                      FadeInRoute(
+                        builder: (_) => SpontaneousPaymentPage(
+                          nodeID,
+                          firstPaymentItemKey,
+                        ),
+                      ),
+                    );
+                    return;
+                  }
+
+                  // Open on whenever app the system links to
+                  if (await canLaunchUrlString(scannedString)) {
+                    log.finest("Scanned string is a launchable url");
+                    _handleWebAddress(context, scannedString);
+                    return;
+                  }
+
+                  // Open on browser
+                  final validUrl = isURL(
+                    scannedString,
+                    requireProtocol: true,
+                    allowUnderscore: true,
+                  );
+                  if (validUrl) {
+                    log.finest("Scanned string is a valid url");
+                    _handleWebAddress(context, scannedString);
+                    return;
+                  }
+
+                  log.finest("Scanned string is unrecognized");
+                  showFlushbar(
+                    context,
+                    message: texts.qr_action_button_error_code_not_processed,
                   );
                 }
-                Navigator.of(context).push(FadeInRoute(
-                  builder: (_) => ReverseSwapPage(
-                    userAddress: btcInvoice.address,
-                    requestAmount: requestAmount,
-                  ),
-                ));
-                return;
-              }
-
-              var nodeID = parseNodeId(scannedString);
-              if (nodeID != null) {
-                log.finest("Scanned string is a node id");
-                Navigator.of(context).push(FadeInRoute(
-                  builder: (_) => SpontaneousPaymentPage(
-                    nodeID,
-                    firstPaymentItemKey,
-                  ),
-                ));
-                return;
-              }
-
-              // Open on whenever app the system links to
-              if (await canLaunchUrlString(scannedString)) {
-                log.finest("Scanned string is a launchable url");
-                _handleWebAddress(context, scannedString);
-                return;
-              }
-
-              // Open on browser
-              final validUrl = isURL(
-                scannedString,
-                requireProtocol: true,
-                allowUnderscore: true,
-              );
-              if (validUrl) {
-                log.finest("Scanned string is a valid url");
-                _handleWebAddress(context, scannedString);
-                return;
-              }
-
-              log.finest("Scanned string is unrecognized");
-              showFlushbar(
-                context,
-                message: texts.qr_action_button_error_code_not_processed,
-              );
-            }
+              },
+            );
           },
           child: SvgPicture.asset(
             "src/icon/qr_scan.svg",
@@ -298,8 +306,9 @@ class QrActionButton extends StatelessWidget {
                 style: themeData.primaryTextTheme.labelLarge,
               ),
               onPressed: () async {
+                final navigator = Navigator.of(context);
                 await launchLinkOnExternalBrowser(url);
-                Navigator.of(context).pop();
+                navigator.pop();
               },
             ),
           ],

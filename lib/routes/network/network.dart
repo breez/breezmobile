@@ -187,26 +187,26 @@ class NetworkPageState extends State<NetworkPage> {
     final texts = context.texts();
     final dialogTheme = Theme.of(context).dialogTheme;
 
-    var error = await showDialog(
+    return await showDialog(
       useRootNavigator: false,
       context: context,
       builder: (ctx) => _TestingPeerDialog(
         peer: peer,
         testFuture: _breezLib.testPeer(peer),
       ),
-    );
-
-    if (error != null) {
-      await promptError(
-        context,
-        null,
-        Text(
-          nodeError ?? texts.network_default_node_error,
-          style: dialogTheme.contentTextStyle,
-        ),
-      );
-    }
-    return error == null;
+    ).then((error) async {
+      if (error != null) {
+        await promptError(
+          context,
+          null,
+          Text(
+            nodeError ?? texts.network_default_node_error,
+            style: dialogTheme.contentTextStyle,
+          ),
+        );
+      }
+      return error == null;
+    });
   }
 
   Future<bool> _promptForRestart() {
@@ -267,37 +267,43 @@ class NetworkPageState extends State<NetworkPage> {
     final texts = context.texts();
     final themeData = Theme.of(context);
 
-    final error = await showDialog(
+    return await showDialog(
       useRootNavigator: false,
       context: context,
       builder: (ctx) => _SetTorActiveDialog(
         testFuture: _breezLib.setTorActive(value),
         enable: value,
       ),
+    ).then(
+      (error) async {
+        if (error != null) {
+          log.info('setTorActive error', error);
+          await promptError(
+            context,
+            null,
+            Text(
+              value
+                  ? texts.network_tor_enable_error
+                  : texts.network_tor_disable,
+              style: themeData.dialogTheme.contentTextStyle,
+            ),
+          );
+          return;
+        } else {
+          !value
+              ? _resetNodes()
+              : _promptForRestart().then(
+                  (didRestart) {
+                    if (!didRestart) {
+                      setState(() {
+                        _data.torIsActive = !value;
+                      });
+                    }
+                  },
+                );
+        }
+      },
     );
-
-    if (error != null) {
-      log.info('setTorActive error', error);
-      await promptError(
-        context,
-        null,
-        Text(
-          value ? texts.network_tor_enable_error : texts.network_tor_disable,
-          style: themeData.dialogTheme.contentTextStyle,
-        ),
-      );
-      return;
-    } else {
-      !value
-          ? _resetNodes()
-          : _promptForRestart().then((didRestart) {
-              if (!didRestart) {
-                setState(() {
-                  _data.torIsActive = !value;
-                });
-              }
-            });
-    }
   }
 }
 

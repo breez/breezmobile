@@ -106,6 +106,7 @@ class ImagePickerButton extends StatelessWidget {
         height: 32,
       ),
       onPressed: () async {
+        final scaffoldMessenger = ScaffoldMessenger.of(context);
         final picker = ImagePicker();
         XFile pickedFile = await picker
             .pickImage(source: ImageSource.gallery)
@@ -118,7 +119,7 @@ class ImagePickerButton extends StatelessWidget {
           final found = await cameraController.analyzeImage(file.path);
           if (!found) {
             log.info("No QR code found in image");
-            ScaffoldMessenger.of(context).showSnackBar(
+            scaffoldMessenger.showSnackBar(
               SnackBar(
                 content: Text(texts.qr_scan_gallery_failed),
               ),

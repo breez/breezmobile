@@ -123,10 +123,11 @@ class _SetAdminPasswordState extends State<SetAdminPasswordPage> {
         text: widget.submitAction,
         onPressed: () async {
           if (_formKey.currentState.validate()) {
+            final navigator = Navigator.of(context);
             final action = SetAdminPassword(_passwordController.text);
             userProfileBloc.userActionsSink.add(action);
             await action.future;
-            Navigator.of(context).pop();
+            navigator.pop();
           }
         },
       ),

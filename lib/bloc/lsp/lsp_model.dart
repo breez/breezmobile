@@ -14,21 +14,24 @@ class LSPStatus {
   LSPStatus._(this.availableLSPs, this.lastConnectionError, this.selectedLSP);
 
   LSPStatus.initial() : this._([], null, null);
-  LSPStatus copyWith(
-      {List<LSPInfo> availableLSPs,
-      String lastConnectionError,
-      String selectedLSP}) {
+  LSPStatus copyWith({
+    List<LSPInfo> availableLSPs,
+    String lastConnectionError,
+    String selectedLSP,
+  }) {
     return LSPStatus._(
-        availableLSPs ?? this.availableLSPs,
-        lastConnectionError ?? this.lastConnectionError,
-        selectedLSP ?? this.selectedLSP);
+      availableLSPs ?? this.availableLSPs,
+      lastConnectionError ?? this.lastConnectionError,
+      selectedLSP ?? this.selectedLSP,
+    );
   }
 
   bool get selectionRequired => currentLSP == null && availableLSPs.length > 1;
 
-  LSPInfo get currentLSP =>
-      availableLSPs.firstWhere((element) => element.lspID == selectedLSP,
-          orElse: () => null);
+  LSPInfo get currentLSP => availableLSPs.firstWhere(
+        (element) => element.lspID == selectedLSP,
+        orElse: () => null,
+      );
 }
 
 class LSPInfo {

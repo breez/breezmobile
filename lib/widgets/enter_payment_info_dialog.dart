@@ -205,20 +205,19 @@ class EnterPaymentInfoDialogState extends State<EnterPaymentInfoDialog> {
     final texts = context.texts();
 
     FocusScope.of(context).requestFocus(FocusNode());
-    String barcode = await Navigator.pushNamed<String>(context, "/qr_scan");
-    if (barcode == null) {
-      return;
-    }
-    if (barcode.isEmpty) {
-      showFlushbar(
-        context,
-        message: texts.payment_info_dialog_error_qrcode,
-      );
-      return;
-    }
-    setState(() {
-      _paymentInfoController.text = barcode;
-      _scannerErrorMessage = "";
+    await Navigator.pushNamed<String>(context, "/qr_scan").then((barcode) {
+      if (barcode == null) return;
+      if (barcode.isEmpty) {
+        showFlushbar(
+          context,
+          message: texts.payment_info_dialog_error_qrcode,
+        );
+        return;
+      }
+      setState(() {
+        _paymentInfoController.text = barcode;
+        _scannerErrorMessage = "";
+      });
     });
   }
 

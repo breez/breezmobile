@@ -194,6 +194,7 @@ class OrderCardPageState extends State<OrderCardPage> {
   }
 
   void _loadData() async {
+    Locale myLocale = Localizations.localeOf(context);
     _specialCountriesShort.add("US");
     _specialCountriesShort.add("CA");
     Uri uri = Uri.http(
@@ -210,7 +211,6 @@ class OrderCardPageState extends State<OrderCardPage> {
       Map data = json.decode(response.body);
       _userCountryShort = data["country_code"];
     } else {
-      Locale myLocale = Localizations.localeOf(context);
       _userCountryShort = myLocale.countryCode;
     }
     await _loadCountries();

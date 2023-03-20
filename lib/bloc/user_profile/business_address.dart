@@ -6,10 +6,14 @@ class BusinessAddress {
 
   BusinessAddress.initial() : this._(addressLine1: "", addressLine2: "");
 
-  BusinessAddress copyWith({String addressLine1, String addressLine2}) {
+  BusinessAddress copyWith({
+    String addressLine1,
+    String addressLine2,
+  }) {
     return BusinessAddress._(
-        addressLine1: addressLine1 ?? this.addressLine1,
-        addressLine2: addressLine2 ?? this.addressLine2);
+      addressLine1: addressLine1 ?? this.addressLine1,
+      addressLine2: addressLine2 ?? this.addressLine2,
+    );
   }
 
   BusinessAddress.fromJson(Map<String, dynamic> json)
