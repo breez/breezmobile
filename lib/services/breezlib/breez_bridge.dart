@@ -810,7 +810,7 @@ class BreezBridge {
   }
 
   Future<String> getAvailableBackups() async {
-    await signIn(true);
+    await signIn(true, false);
     return await _methodChannel
         .invokeMethod("availableSnapshots")
         .then((res) => res as String);
@@ -842,8 +842,11 @@ class BreezBridge {
     );
   }
 
-  Future<dynamic> signIn(bool force) {
-    return _methodChannel.invokeMethod("signIn", {"force": force});
+  Future<dynamic> signIn(bool force, bool recoverEnabled) {
+    return _methodChannel.invokeMethod("signIn", {
+      "force": force,
+      "recoverEnabled": recoverEnabled,
+    });
   }
 
   Future<dynamic> signOut() {

@@ -60,8 +60,8 @@ class BackupBloc {
       _backupSettingsController.stream;
   Sink<BackupSettings> get backupSettingsSink => _backupSettingsController.sink;
 
-  final _backupNowController = StreamController<bool>();
-  Sink<bool> get backupNowSink => _backupNowController.sink;
+  final _backupNowController = StreamController<BackupNowAction>();
+  Sink<BackupNowAction> get backupNowSink => _backupNowController.sink;
 
   final _backupAppDataController = StreamController<bool>.broadcast();
   Sink<bool> get backupAppDataSink => _backupAppDataController.sink;
@@ -369,14 +369,15 @@ class BackupBloc {
   }
 
   void _listenBackupNowRequests() {
-    _backupNowController.stream.listen((_) => _backupNow());
+    _backupNowController.stream.listen(_backupNow);
   }
 
-  Future _backupNow() async {
+  Future _backupNow(BackupNowAction action) async {
+    log.info("backup now requested: $action");
     if (_backupServiceNeedLogin) {
       await _breezLib.signOut();
     }
-    await _breezLib.signIn(_backupServiceNeedLogin);
+    await _breezLib.signIn(_backupServiceNeedLogin, action.recoverEnabled);
     await _saveAppData();
     _breezLib.requestBackup();
   }

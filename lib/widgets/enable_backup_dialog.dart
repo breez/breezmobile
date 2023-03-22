@@ -174,13 +174,13 @@ class EnableBackupDialogState extends State<EnableBackupDialog> {
                             ),
                           );
                           widget.backupBloc.backupActionsSink.add(action);
-                          widget.backupBloc.backupNowSink.add(true);
+                          widget.backupBloc.backupNowSink.add(const BackupNowAction(recoverEnabled: true));
                         }
                       });
                       return;
                     }
 
-                    widget.backupBloc.backupNowSink.add(true);
+                    widget.backupBloc.backupNowSink.add(const BackupNowAction(recoverEnabled: true));
                   }
                 }),
                 child: Text(
