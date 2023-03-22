@@ -677,7 +677,7 @@ class SecurityPageState extends State<SecurityPage>
   }
 
   void triggerBackup() {
-    widget.backupBloc.backupNowSink.add(true);
+    widget.backupBloc.backupNowSink.add(const BackupNowAction(recoverEnabled: true));
     widget.backupBloc.backupStateStream
         .firstWhere((s) => s.inProgress)
         .then((s) {

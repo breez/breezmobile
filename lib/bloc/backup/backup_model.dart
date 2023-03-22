@@ -228,3 +228,16 @@ class BackupFailedException implements Exception {
     return getSystemAppLocalizations().backup_model_error_failed;
   }
 }
+
+class BackupNowAction {
+  final bool recoverEnabled;
+
+  const BackupNowAction({
+    @required this.recoverEnabled,
+  });
+
+  @override
+  String toString() {
+    return 'BackupNowAction{recoverEnabled: $recoverEnabled}';
+  }
+}

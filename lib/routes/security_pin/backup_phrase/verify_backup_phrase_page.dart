@@ -232,7 +232,7 @@ class VerifyBackupPhrasePageState extends State<VerifyBackupPhrasePage> {
     backupBloc.backupActionsSink.add(action);
     Navigator.popUntil(context, ModalRoute.withName("/security"));
     action.future.then((_) {
-      backupBloc.backupNowSink.add(true);
+      backupBloc.backupNowSink.add(const BackupNowAction(recoverEnabled: true));
       backupBloc.backupStateStream.firstWhere((s) => s.inProgress).then((s) {
         if (mounted) {
           showDialog(

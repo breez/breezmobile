@@ -1,23 +1,9 @@
 package com.breez.client.plugins.breez.breezlib;
 
+import static com.breez.client.plugins.breez.breezlib.ChainSync.UNIQUE_WORK_NAME;
+
 import android.content.Context;
 import android.util.Log;
-
-import bindings.Logger;
-import io.flutter.embedding.engine.plugins.FlutterPlugin;
-import io.flutter.embedding.engine.plugins.activity.ActivityAware;
-import io.flutter.embedding.engine.plugins.activity.ActivityPluginBinding;
-import io.flutter.plugin.common.ActivityLifecycleListener;
-import io.flutter.plugin.common.BinaryMessenger;
-import io.flutter.plugin.common.MethodCall;
-import io.flutter.plugin.common.EventChannel;
-import io.flutter.plugin.common.EventChannel.StreamHandler;
-import io.flutter.plugin.common.MethodChannel;
-import bindings.*;
-
-import java.io.File;
-import java.lang.reflect.*;
-import java.util.*;
 
 import androidx.annotation.NonNull;
 import androidx.core.content.ContextCompat;
@@ -25,10 +11,27 @@ import androidx.lifecycle.Lifecycle;
 import androidx.lifecycle.LifecycleObserver;
 import androidx.lifecycle.OnLifecycleEvent;
 import androidx.lifecycle.ProcessLifecycleOwner;
-import androidx.work.*;
-import java.util.concurrent.*;
+import androidx.work.WorkManager;
 
-import static com.breez.client.plugins.breez.breezlib.ChainSync.UNIQUE_WORK_NAME;
+import java.io.File;
+import java.lang.reflect.Method;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.concurrent.Executor;
+import java.util.concurrent.Executors;
+
+import bindings.AppServices;
+import bindings.Bindings;
+import bindings.Logger;
+import io.flutter.embedding.engine.plugins.FlutterPlugin;
+import io.flutter.embedding.engine.plugins.activity.ActivityAware;
+import io.flutter.embedding.engine.plugins.activity.ActivityPluginBinding;
+import io.flutter.plugin.common.ActivityLifecycleListener;
+import io.flutter.plugin.common.BinaryMessenger;
+import io.flutter.plugin.common.EventChannel;
+import io.flutter.plugin.common.EventChannel.StreamHandler;
+import io.flutter.plugin.common.MethodCall;
+import io.flutter.plugin.common.MethodChannel;
 
 public class Breez implements MethodChannel.MethodCallHandler, StreamHandler,
         ActivityLifecycleListener, AppServices, FlutterPlugin, ActivityAware, LifecycleObserver {
@@ -229,20 +232,31 @@ public class Breez implements MethodChannel.MethodCallHandler, StreamHandler,
         }
     }
 
-    private void signIn(MethodCall call, MethodChannel.Result result){
+    private void signIn(MethodCall call, MethodChannel.Result result) {
         if (!_backupProvider.equals("gdrive")) {
-            success(result,true);
+            success(result, true);
             return;
         }
         try {
             Boolean force = call.argument("force");
-            if (force != null && force.booleanValue()) {
+            if (force != null && force) {
                 m_authenticator.signOut();
             }
             m_authenticator.ensureSignedIn(false);
-            success(result,true);
         } catch (Exception e) {
-            fail(result,"AuthError", e.getMessage(), "Failed to signIn breez library");
+            fail(result, "AuthError", e.getMessage(), "Failed to signIn breez library");
+            return;
+        }
+        Boolean recoverEnabled = call.argument("recoverEnabled");
+        if (recoverEnabled == null || !recoverEnabled) {
+            Log.i(TAG, "signIn: recoverEnabled is false, skipping validation (recoverEnabled=" + recoverEnabled + ")");
+            success(result, true);
+            return;
+        }
+        if (m_authenticator.validateAccessTokenAllowingPrompt()) {
+            success(result, true);
+        } else {
+            fail(result, "AuthError", "Failed to validate access token", "Failed to signIn breez library");
         }
     }
 
