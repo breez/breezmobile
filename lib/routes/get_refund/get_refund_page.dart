@@ -2,21 +2,19 @@ import 'package:breez/bloc/account/account_bloc.dart';
 import 'package:breez/bloc/account/account_model.dart';
 import 'package:breez/bloc/blocs_provider.dart';
 import 'package:breez/routes/dev/dev.dart';
+import 'package:breez/routes/get_refund/wait_broadcast_dialog.dart';
+import 'package:breez/routes/get_refund/widget/get_refund_list.dart';
 import 'package:breez/widgets/back_button.dart' as backBtn;
 import 'package:breez/widgets/loader.dart';
 import 'package:breez/widgets/send_onchain.dart';
-import 'package:breez/widgets/single_button_bottom_bar.dart';
 import 'package:breez_translations/breez_translations_locales.dart';
 import 'package:fixnum/fixnum.dart';
 import 'package:flutter/material.dart';
-
-import 'wait_broadcast_dialog.dart';
 
 class GetRefundPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final texts = context.texts();
-
     final accountBloc = AppBlocsProvider.of<AccountBloc>(context);
 
     return Scaffold(
@@ -34,64 +32,15 @@ class GetRefundPage extends StatelessWidget {
             return Text(accSnapshot.error.toString());
           }
           var account = accSnapshot.data;
-          return ListView(
-            children: _children(context, account),
+          return GetRefundList(
+            refundableAddresses: account.swapFundsStatus.maturedRefundableAddresses,
+            currency: account.currency,
+            allowRebroadcastRefunds: allowRebroadcastRefunds,
+            onRefundPressed: (item) => onRefund(context, account, item),
           );
         },
       ),
     );
-  }
-
-  List<Widget> _children(BuildContext context, AccountModel account) {
-    final texts = context.texts();
-
-    return account.swapFundsStatus.maturedRefundableAddresses.map((item) {
-      return Padding(
-        padding: const EdgeInsets.all(12.0),
-        child: Column(
-          children: [
-            Row(
-              mainAxisSize: MainAxisSize.max,
-              children: [
-                Expanded(
-                  child: Text(
-                    texts.get_refund_amount(
-                      account.currency.format(item.confirmedAmount),
-                    ),
-                    textAlign: TextAlign.left,
-                  ),
-                )
-              ],
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Padding(
-                  padding: const EdgeInsets.all(16.0),
-                  child: SizedBox(
-                    height: 36.0,
-                    width: 145.0,
-                    child: SubmitButton(
-                      item.lastRefundTxID.isNotEmpty
-                          ? texts.get_refund_action_broadcasted
-                          : texts.get_refund_action_continue,
-                      item.lastRefundTxID.isNotEmpty && !allowRebroadcastRefunds
-                          ? null
-                          : () => onRefund(context, account, item),
-                    ),
-                  ),
-                ),
-              ],
-            ),
-            const Divider(
-              height: 0.0,
-              color: Color.fromRGBO(255, 255, 255, 0.52),
-            ),
-          ],
-        ),
-      );
-    }).toList();
   }
 
   void onRefund(
