@@ -94,6 +94,9 @@ dependencies {
     implementation('com.google.apis:google-api-services-drive:v3-rev197-1.25.0') {
         exclude group: 'org.apache.httpcomponents'
     }
+    implementation('com.google.http-client:google-http-client-gson:1.43.1') {
+        exclude group: 'org.apache.httpcomponents'
+    }
     implementation('commons-io:commons-io:2.11.0') {
         exclude group: 'com.google.guava', module: 'listenablefuture'
     }
@@ -107,6 +110,7 @@ dependencies {
     implementation 'com.google.android.gms:play-services-auth:20.4.1'
     implementation 'com.google.android.gms:play-services-drive:17.0.0'
     implementation 'com.google.android.material:material:1.7.0'
+    implementation 'com.google.code.gson:gson:2.10.1'
     implementation 'com.theartofdev.edmodo:android-image-cropper:2.8.0'
 
     implementation platform('com.google.firebase:firebase-bom:29.3.1')
