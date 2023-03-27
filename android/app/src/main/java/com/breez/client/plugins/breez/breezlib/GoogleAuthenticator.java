@@ -72,25 +72,9 @@ public class GoogleAuthenticator implements PluginRegistry.ActivityResultListene
     public String getAccessToken() throws Exception {
         Log.d(TAG, "getAccessToken");
         GoogleSignInAccount googleAccount = ensureSignedIn(true);
-
-        GoogleAccountCredential credential;
         try {
-            credential = GoogleAccountCredential.usingOAuth2(
-                    activityBinding.getActivity(),
-                    Collections.singleton(DriveScopes.DRIVE_APPDATA));
-        } catch (Exception e) {
-            Log.w(TAG, "getAccessToken failed", e);
-            throw e;
-        }
-
-        try {
+            GoogleAccountCredential credential = credential();
             credential.setSelectedAccount(googleAccount.getAccount());
-        } catch (Exception e) {
-            Log.w(TAG, "setSelectedAccount failed", e);
-            throw e;
-        }
-
-        try {
             return credential.getToken();
         } catch (Exception e) {
             Log.w(TAG, "getAccessToken failed", e);
@@ -100,29 +84,14 @@ public class GoogleAuthenticator implements PluginRegistry.ActivityResultListene
 
     public boolean validateAccessTokenAllowingPrompt() {
         Log.d(TAG, "getAccessTokenWithPrompt");
-        GoogleSignInAccount googleAccount;
+        GoogleAccountCredential credential;
         try {
-            googleAccount = ensureSignedIn(true);
+            GoogleSignInAccount googleAccount = ensureSignedIn(true);
+            credential = credential();
+            credential.setSelectedAccount(googleAccount.getAccount());
         } catch (Exception e) {
             Log.w(TAG, "ensureSignedIn failed", e);
             return false;
-        }
-
-        GoogleAccountCredential credential;
-        try {
-            credential = GoogleAccountCredential.usingOAuth2(
-                    activityBinding.getActivity(),
-                    Collections.singleton(DriveScopes.DRIVE_APPDATA));
-        } catch (Exception e) {
-            Log.w(TAG, "getAccessTokenWithPrompt failed", e);
-            return false;
-        }
-
-        try {
-            credential.setSelectedAccount(googleAccount.getAccount());
-        } catch (Exception e) {
-            Log.w(TAG, "setSelectedAccount failed", e);
-            throw e;
         }
 
         try {
@@ -131,25 +100,12 @@ public class GoogleAuthenticator implements PluginRegistry.ActivityResultListene
             Log.w(TAG, "getAccessTokenWithPrompt failed", e);
             if (e instanceof UserRecoverableAuthException) {
                 Log.w(TAG, "getAccessTokenWithPrompt failed but it is recoverable, trying to sign in");
-                GoogleSignInAccount signInResult;
                 try {
-                    signInResult = Tasks.await(signIn());
-                } catch (Exception ex) {
-                    Log.w(TAG, "signIn failed in recoverable", ex);
-                    return false;
-                }
-
-                try {
+                    GoogleSignInAccount signInResult = Tasks.await(signIn());
                     credential.setSelectedAccount(signInResult.getAccount());
-                } catch (Exception ex) {
-                    Log.w(TAG, "setSelectedAccount failed in recoverable", ex);
-                    return false;
-                }
-
-                try {
                     return verifyCredentialHasWriteAccess(credential.getToken(), true);
                 } catch (Exception ex) {
-                    Log.w(TAG, "getAccessTokenWithPrompt failed in recoverable", ex);
+                    Log.w(TAG, "signIn failed in recoverable", ex);
                     return false;
                 }
             }
@@ -193,28 +149,15 @@ public class GoogleAuthenticator implements PluginRegistry.ActivityResultListene
 
     private boolean recoverUnauthorizedAccess() {
         Log.d(TAG, "recoverUnauthorizedAccess");
-        try {
-            signOut();
-        } catch (Exception e) {
-            Log.w(TAG, "recover signOut failed", e);
-            return false;
-        }
 
         GoogleSignInAccount googleAccount;
-        try {
-            googleAccount = Tasks.await(signIn());
-        } catch (Exception e) {
-            Log.w(TAG, "recover signIn failed", e);
-            return false;
-        }
-
         GoogleAccountCredential credential;
         try {
-            credential = GoogleAccountCredential.usingOAuth2(
-                    activityBinding.getActivity(),
-                    Collections.singleton(DriveScopes.DRIVE_APPDATA));
+            signOut();
+            googleAccount = Tasks.await(signIn());
+            credential = credential();
         } catch (Exception e) {
-            Log.w(TAG, "recover failed", e);
+            Log.w(TAG, "recoverUnauthorizedAccess failed", e);
             return false;
         }
 
@@ -229,22 +172,10 @@ public class GoogleAuthenticator implements PluginRegistry.ActivityResultListene
                 GoogleSignInAccount signInResult;
                 try {
                     signInResult = Tasks.await(signIn());
-                } catch (Exception ex) {
-                    Log.w(TAG, "recover signIn failed", ex);
-                    return false;
-                }
-
-                try {
                     credential.setSelectedAccount(signInResult.getAccount());
-                } catch (Exception ex) {
-                    Log.w(TAG, "recover setSelectedAccount failed", ex);
-                    return false;
-                }
-
-                try {
                     token = credential.getToken();
                 } catch (Exception ex) {
-                    Log.w(TAG, "recover getToken failed", ex);
+                    Log.w(TAG, "recoverUnauthorizedAccess failed", ex);
                     return false;
                 }
             } else {
@@ -271,6 +202,12 @@ public class GoogleAuthenticator implements PluginRegistry.ActivityResultListene
         m_signInProgressTask = new TaskCompletionSource<>();
         activityBinding.getActivity().startActivityForResult(m_signInClient.getSignInIntent(), AUTHORIZE_ACTIVITY_REQUEST_CODE);
         return m_signInProgressTask.getTask();
+    }
+
+    private GoogleAccountCredential credential() {
+        return GoogleAccountCredential.usingOAuth2(
+                activityBinding.getActivity(),
+                Collections.singleton(DriveScopes.DRIVE_APPDATA));
     }
 
     @Override
