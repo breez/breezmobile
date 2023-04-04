@@ -1,10 +1,10 @@
 import 'dart:async';
 
-import 'package:breez/bloc/account/account_model.dart';
 import 'package:breez/bloc/blocs_provider.dart';
 import 'package:breez/bloc/invoice/invoice_bloc.dart';
 import 'package:breez/bloc/lnurl/lnurl_actions.dart';
 import 'package:breez/bloc/lnurl/lnurl_bloc.dart';
+import 'package:breez/bloc/user_profile/user_profile_bloc.dart';
 import 'package:breez/handlers/lnurl_handler.dart';
 import 'package:breez/logger.dart';
 import 'package:breez/routes/spontaneous_payment/spontaneous_payment_page.dart';
@@ -27,11 +27,9 @@ import 'package:url_launcher/url_launcher_string.dart';
 import 'package:validators/validators.dart';
 
 class QrActionButton extends StatelessWidget {
-  final AccountModel account;
   final GlobalKey firstPaymentItemKey;
 
   const QrActionButton(
-    this.account,
     this.firstPaymentItemKey,
   );
 
@@ -40,6 +38,7 @@ class QrActionButton extends StatelessWidget {
     final texts = context.texts();
     final invoiceBloc = AppBlocsProvider.of<InvoiceBloc>(context);
     final lnurlBloc = AppBlocsProvider.of<LNUrlBloc>(context);
+    final profileBloc = AppBlocsProvider.of<UserProfileBloc>(context);
 
     return Padding(
       padding: const EdgeInsets.only(top: 32.0),
@@ -102,6 +101,7 @@ class QrActionButton extends StatelessWidget {
                     log.finest("Scanned string is a bitcoin address");
                     String requestAmount;
                     if (btcInvoice.satAmount != null) {
+                      final account = await profileBloc.userStream.take(1).first;
                       requestAmount = account.currency.format(
                         btcInvoice.satAmount,
                         userInput: true,
