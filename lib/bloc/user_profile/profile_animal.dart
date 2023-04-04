@@ -7,6 +7,7 @@ import 'package:breez_translations/generated/breez_translations_fr.dart';
 import 'package:breez_translations/generated/breez_translations_it.dart';
 import 'package:breez_translations/generated/breez_translations_pt.dart';
 import 'package:breez_translations/generated/breez_translations_sv.dart';
+import 'package:breez_translations/generated/breez_translations_sk.dart';
 import 'package:flutter/material.dart';
 
 enum ProfileAnimal {
@@ -185,6 +186,7 @@ Map<String, Map<String, ProfileAnimal>> _animalsFromName = {
   "it": _buildAnimalsFromName(BreezTranslationsIt()),
   "pt": _buildAnimalsFromName(BreezTranslationsPt()),
   "sv": _buildAnimalsFromName(BreezTranslationsSv()),
+  "sk": _buildAnimalsFromName(BreezTranslationsSk()),
 };
 
 Map<String, ProfileAnimal> _buildAnimalsFromName(BreezTranslations local) => {
