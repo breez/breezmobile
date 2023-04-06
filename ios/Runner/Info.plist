@@ -7,11 +7,14 @@
 	<key>CFBundleLocalizations</key>
 	<array>
 		<string>en</string>
+		<string>de</string>
 		<string>es</string>
 		<string>fi</string>
 		<string>fr</string>
 		<string>it</string>
 		<string>pt</string>
+		<string>sv</string>
+		<string>sk</string>
 	</array>
 	<key>CFBundleDevelopmentRegion</key>
 	<string>en</string>

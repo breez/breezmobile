@@ -7,6 +7,7 @@ import 'package:breez_translations/generated/breez_translations_fr.dart';
 import 'package:breez_translations/generated/breez_translations_it.dart';
 import 'package:breez_translations/generated/breez_translations_pt.dart';
 import 'package:breez_translations/generated/breez_translations_sv.dart';
+import 'package:breez_translations/generated/breez_translations_sk.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 
@@ -102,6 +103,7 @@ void main() {
     "it": BreezTranslationsIt(),
     "pt": BreezTranslationsPt(),
     "sv": BreezTranslationsSv(),
+    "sk": BreezTranslationsSk(),
   };
   group("localizedExceptionMessage", () {
     for (final locale in locales.values) {
