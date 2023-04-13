@@ -2,6 +2,8 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:breez/bloc/backup/backup_bloc.dart';
+import 'package:breez/bloc/backup/backup_model.dart';
 import 'package:breez/bloc/lnurl/lnurl_model.dart';
 import 'package:breez/logger.dart' as logger;
 import 'package:breez/services/breezlib/data/rpc.pb.dart';
@@ -163,8 +165,10 @@ class BreezBridge {
     );
   }
 
-  Future startLightning(TorConfig torConfig) {
-    return _startedCompleter.future.then((_) => _start(torConfig)).then((_) {
+  Future startLightning(TorConfig torConfig, int latestbackup) {
+    return _startedCompleter.future
+        .then((_) => _start(torConfig, latestbackup))
+        .then((_) {
       syncGraphIfNeeded();
     });
   }
@@ -173,11 +177,12 @@ class BreezBridge {
     return _methodChannel.invokeMethod("restartDaemon");
   }
 
-  Future _start(TorConfig torConfig) async {
+  Future _start(TorConfig torConfig, int backuptime) async {
     logger.log.info("breez_bridge.dart: _start");
 
     return _invokeMethodImmediate("start", {
-      "argument": torConfig?.writeToBuffer(),
+      "torConfig": torConfig?.writeToBuffer(),
+      "latestBackup": backuptime ?? "",
     }).then(
       (_) {
         logger.log.info("breez bridge - start lightning finished");

@@ -18,7 +18,7 @@ public class NativeMethods {
 
 
 fileprivate let calls : [String:BindingExecutor] = [
-    "start": SingleArgBindingExecutor(f: BindingsStart),
+    "start": TwoArgBindingExecutor(f: BindingsStart),
     "stop": VoidBindingExecutor(f: BindingsStop),
     "restartDaemon": EmptyArgsBindingExecutor(f: BindingsRestartDaemon),
     "getTorActive": VoidBindingExecutor(f: BindingsGetTorActive),
@@ -188,6 +188,30 @@ fileprivate class SingleArgBindingExecutor<T,O> : BindingExecutor {
         }
     }
 }
+
+fileprivate class TwoArgBindingExecutor<T, U, O>: BindingExecutor {
+    var bindingFunc: (T, U, NSErrorPointer) -> O
+    
+    init(f: @escaping (T, U, NSErrorPointer) -> O) {
+        self.bindingFunc = f
+    }
+    
+    func execute(call: FlutterMethodCall, result: @escaping FlutterResult) {
+        DispatchQueue.global().async {
+            let args = call.arguments as! Dictionary<String, Any>
+            let arg1 = self.unwrapInputType(arg: args["arg1"])
+            let arg2 = self.unwrapInputType(arg: args["arg2"])
+            var error: NSError?
+            let res = self.bindingFunc(arg1 as! T, arg2 as! U, &error)
+            if let err = error {
+                result(self.wrapOutputType(arg: err))
+            } else {
+                result(self.wrapOutputType(arg: res))
+            }
+        }
+    }
+}
+
 
 fileprivate class EmptyArgsBindingExecutor<O> : BindingExecutor {
     var bindingFunc : (NSErrorPointer) -> O;
