@@ -189,20 +189,20 @@ fileprivate class SingleArgBindingExecutor<T,O> : BindingExecutor {
     }
 }
 
-fileprivate class TwoArgBindingExecutor<T, U, O>: BindingExecutor {
-    var bindingFunc: (T, U, NSErrorPointer) -> O
+fileprivate class TwoArgBindingExecutor<T, O>: BindingExecutor {
+    var bindingFunc: (T, String, NSErrorPointer) -> O
     
-    init(f: @escaping (T, U, NSErrorPointer) -> O) {
+    init(f: @escaping (T, String, NSErrorPointer) -> O) {
         self.bindingFunc = f
     }
     
     func execute(call: FlutterMethodCall, result: @escaping FlutterResult) {
         DispatchQueue.global().async {
             let args = call.arguments as! Dictionary<String, Any>
-            let arg1 = self.unwrapInputType(arg: args["arg1"])
-            let arg2 = self.unwrapInputType(arg: args["arg2"])
+            let arg1 = self.unwrapInputType(arg: args["torConfig"])
+            let arg2 = args["latestBackup"] as? String ?? ""
             var error: NSError?
-            let res = self.bindingFunc(arg1 as! T, arg2 as! U, &error)
+            let res = self.bindingFunc(arg1 as! T, arg2, &error)
             if let err = error {
                 result(self.wrapOutputType(arg: err))
             } else {
