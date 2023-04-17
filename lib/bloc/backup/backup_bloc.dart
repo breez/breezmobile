@@ -46,9 +46,11 @@ class BackupBloc with AsyncActionsHandler {
       BehaviorSubject<BackupState>();
   Stream<BackupState> get backupStateStream => _backupStateController.stream;
 
-  final StreamController<bool> _promptBackupController =
-      StreamController<bool>.broadcast();
+  final StreamController<bool> _promptBackupController = BehaviorSubject<bool>.seeded(false);
   Stream<bool> get promptBackupStream => _promptBackupController.stream;
+
+  final StreamController<bool> _promptBackupDismissedController = BehaviorSubject<bool>.seeded(false);
+  Stream<bool> get promptBackupDismissedStream => _promptBackupDismissedController.stream;
 
   final StreamController<bool> _backupPromptVisibleController =
       BehaviorSubject<bool>.seeded(false);
@@ -570,6 +572,7 @@ class BackupBloc with AsyncActionsHandler {
     ];
 
     _breezLib.notificationStream.listen((event) async {
+      log.info("backup notification: $event");
       if (event.type == NotificationEvent_NotificationType.BACKUP_REQUEST) {
         _backupServiceNeedLogin = false;
         _backupStateController.add(
@@ -614,13 +617,63 @@ class BackupBloc with AsyncActionsHandler {
     });
   }
 
-  _pushPromptIfNeeded() {
-    if (_enableBackupPrompt &&
-        (_backupServiceNeedLogin ||
-            _backupSettingsController.value.backupProvider == null)) {
+  void _pushPromptIfNeeded() {
+    log.info("push prompt if needed: {$_enableBackupPrompt, $_backupServiceNeedLogin}");
+    if (_enableBackupPrompt) {
       _enableBackupPrompt = false;
       _promptBackupController.add(_backupServiceNeedLogin);
     }
+  }
+
+  void promptDismissed() {
+    _promptBackupDismissedController.add(true);
+  }
+
+  void _listenRestoreRequests() {
+    _restoreRequestController.stream.listen((request) {
+      if (request == null) {
+        _breezLib.getAvailableBackups().then((backups) {
+          List snapshotsArray = json.decode(backups) as List;
+          List<SnapshotInfo> snapshots = <SnapshotInfo>[];
+          if (snapshotsArray != null) {
+            snapshots = snapshotsArray.map((s) {
+              return SnapshotInfo.fromJson(s);
+            }).toList();
+          }
+          snapshots
+              .sort((s1, s2) => s2.modifiedTime.compareTo(s1.modifiedTime));
+          _multipleRestoreController.add(snapshots);
+        }).catchError((error) {
+          if (error.runtimeType == PlatformException) {
+            PlatformException e = (error as PlatformException);
+            // the error code equals the message from the go library so
+            // not to confuse the two.
+            if (e.code == _signInFailedMessage ||
+                e.message == _signInFailedCode) {
+              error = SignInFailedException(
+                  _backupSettingsController.value.backupProvider);
+            } else if (e.code == _empty) {
+              error = NoBackupFoundException();
+            } else {
+              error = (error as PlatformException).message;
+            }
+          }
+          _restoreFinishedController.addError(error);
+        });
+        return;
+      }
+
+      if (request.encryptionKey != null && request.encryptionKey.key != null) {
+        assert(request.encryptionKey.key.isNotEmpty || true);
+      }
+      assert(request.snapshot.nodeID.isNotEmpty);
+
+      _breezLib
+          .restore(request.snapshot.nodeID, request.encryptionKey.key)
+          .then((_) => _restoreAppData()
+              .then((value) => _restoreFinishedController.add(true))
+              .catchError(_restoreFinishedController.addError));
+    });
   }
 
   Future testAuth(BackupProvider provider, RemoteServerAuthData authData) {
