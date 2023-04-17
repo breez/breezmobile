@@ -44,9 +44,11 @@ class BackupBloc {
       BehaviorSubject<BackupState>();
   Stream<BackupState> get backupStateStream => _backupStateController.stream;
 
-  final StreamController<bool> _promptBackupController =
-      StreamController<bool>.broadcast();
+  final StreamController<bool> _promptBackupController = BehaviorSubject<bool>.seeded(false);
   Stream<bool> get promptBackupStream => _promptBackupController.stream;
+
+  final StreamController<bool> _promptBackupDismissedController = BehaviorSubject<bool>.seeded(false);
+  Stream<bool> get promptBackupDismissedStream => _promptBackupDismissedController.stream;
 
   final StreamController<bool> _backupPromptVisibleController =
       BehaviorSubject<bool>.seeded(false);
@@ -466,6 +468,7 @@ class BackupBloc {
     ];
 
     _breezLib.notificationStream.listen((event) async {
+      log.info("backup notification: $event");
       if (event.type == NotificationEvent_NotificationType.BACKUP_REQUEST) {
         _backupServiceNeedLogin = false;
         _backupStateController.add((BackupState(
@@ -502,13 +505,16 @@ class BackupBloc {
     });
   }
 
-  _pushPromptIfNeeded() {
-    if (_enableBackupPrompt &&
-        (_backupServiceNeedLogin ||
-            _backupSettingsController.value.backupProvider == null)) {
+  void _pushPromptIfNeeded() {
+    log.info("push prompt if needed: {$_enableBackupPrompt, $_backupServiceNeedLogin}");
+    if (_enableBackupPrompt) {
       _enableBackupPrompt = false;
       _promptBackupController.add(_backupServiceNeedLogin);
     }
+  }
+
+  void promptDismissed() {
+    _promptBackupDismissedController.add(true);
   }
 
   void _listenRestoreRequests() {

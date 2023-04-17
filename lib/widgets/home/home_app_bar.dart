@@ -74,12 +74,7 @@ class HomeAppBar extends StatelessWidget implements PreferredSizeWidget {
               padding: appMode == AppMode.podcasts
                   ? const EdgeInsets.all(14)
                   : const EdgeInsets.fromLTRB(14, 14, 0, 14),
-              // TODO make AccountRequiredActionsIndicator reads its own blocs
-              child: AccountRequiredActionsIndicator(
-                AppBlocsProvider.of<BackupBloc>(context),
-                AppBlocsProvider.of<AccountBloc>(context),
-                AppBlocsProvider.of<LSPBloc>(context),
-              ),
+              child: const AccountRequiredActionsIndicator(),
             ),
             if (appMode == AppMode.podcasts)
               Padding(
