@@ -6,7 +6,7 @@ import 'package:breez/bloc/account/account_actions.dart';
 import 'package:breez/bloc/account/account_permissions_handler.dart';
 import 'package:breez/bloc/account/fiat_conversion.dart';
 import 'package:breez/bloc/async_action.dart';
-import 'package:breez/bloc/backup/backup_model.dart';
+import 'package:breez/bloc/backup/backup_bloc.dart';
 import 'package:breez/bloc/csv_exporter.dart';
 import 'package:breez/bloc/payment_options/payment_options_actions.dart';
 import 'package:breez/bloc/payment_options/payment_options_bloc.dart';
@@ -85,12 +85,8 @@ class AccountBloc {
   Sink<PaymentFilterModel> get paymentFilterSink =>
       _paymentFilterController.sink;
 
-  final _backupStateController = BehaviorSubject<BackupState>();
-  int get latestBackupTimeStamp {
-    var latestTimeStamp = _backupStateController.value.lastBackupTime;
-    log.info("Calling latest timestamp.");
-    return latestTimeStamp.microsecondsSinceEpoch;
-  }
+  final _backupBlocController = BehaviorSubject<BackupBloc>();
+  Stream<BackupBloc> get backupStream => _backupBlocController.stream;
 
   final _lspActivityController = BehaviorSubject<LSPActivity>();
   Stream<LSPActivity> get lspActivityStream => _lspActivityController.stream;
@@ -143,15 +139,11 @@ class AccountBloc {
   final Completer _onBoardingCompleter = Completer();
   Stream<BreezUserModel> userProfileStream;
   TorBloc torBloc = ServiceInjector().torBloc;
-  BackupState _backupState;
   Completer<bool> startDaemonCompleter = Completer<bool>();
   final PaymentOptionsBloc _paymentOptionsBloc;
 
   AccountBloc(
-    this.userProfileStream,
-    this._posRepository,
-    this._paymentOptionsBloc,
-  ) {
+      this.userProfileStream, this._posRepository, this._paymentOptionsBloc) {
     init();
   }
 
@@ -202,7 +194,9 @@ class AccountBloc {
       _listenAccountActions();
       _handleAccountSettings();
       torBloc.torConfig = await _startTorIfNeeded();
-      _listenUserChanges(userProfileStream);
+      _listenUserChanges(
+        userProfileStream,
+      );
       _listenFilterChanges();
       _listenAccountChanges();
       _listenMempoolTransactions();
@@ -576,9 +570,7 @@ class AccountBloc {
     return torBloc.torConfig;
   }
 
-  _listenUserChanges(
-    Stream<BreezUserModel> userProfileStream,
-  ) {
+  _listenUserChanges(Stream<BreezUserModel> userProfileStream) {
     userProfileStream.listen((user) async {
       if (user.token != null && user.token != _currentUser?.token) {
         log.info(
@@ -620,12 +612,11 @@ class AccountBloc {
           log.info("account: starting lightning...");
           try {
             TorConfig c = torBloc.torConfig;
-            int lastBackup = _backupState.lastBackupTime.millisecondsSinceEpoch;
-            log.info("latest backup time is $lastBackup");
             log.info("Starting lightning with $c");
-            var t = latestBackupTimeStamp;
+            DateTime t = DateTime.now();
             log.info("Got timestamp $t");
-            await _breezLib.startLightning(torBloc.torConfig, t);
+            String timestamp = t.toIso8601String();
+            await _breezLib.startLightning(torBloc.torConfig, timestamp);
             log.info("account: lightning started");
             if (user.token != null) {
               _breezLib.registerPeriodicSync(user.token);
