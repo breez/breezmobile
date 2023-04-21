@@ -408,7 +408,8 @@ class PodcastPaymentsBloc with AsyncActionsHandler {
     tlv["action"] = boost ? "boost" : "stream";
     tlv["time"] = _formatDuration(position.position);
     tlv["feedID"] = _getPodcastIndexID(episode);
-    tlv["itemID"] = episode.guid;
+    tlv["itemID"] = episode.id;
+    tlv["episode_guid"] = episode.guid;
     tlv["app_name"] = "Breez";
     tlv["value_msat_total"] = msatTotal;
     tlv["sender_name"] = senderName;
