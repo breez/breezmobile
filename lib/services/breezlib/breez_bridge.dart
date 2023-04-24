@@ -11,6 +11,7 @@ import 'package:fixnum/fixnum.dart';
 import 'package:flutter/services.dart';
 import 'package:hex/hex.dart';
 import 'package:ini/ini.dart';
+import 'package:logging/logging.dart';
 import 'package:md5_file_checksum/md5_file_checksum.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -31,6 +32,7 @@ class BreezBridge {
   final Completer _startedCompleter = Completer();
   final StreamController _eventsController =
       StreamController<NotificationEvent>.broadcast();
+
   Stream<NotificationEvent> get notificationStream => _eventsController.stream;
   bool ready = false;
   Future<Directory> _tempDirFuture;
@@ -40,21 +42,28 @@ class BreezBridge {
   BreezBridge(this.downloadManager, this.sharedPreferences);
 
   initBreezLib() {
+    logger.log.info("CalyxOS - initBreezLib");
     _eventChannel.receiveBroadcastStream().listen((event) async {
       var notification = NotificationEvent()..mergeFromBuffer(event);
       if (notification.type == NotificationEvent_NotificationType.READY) {
         ready = true;
+        logger.log.info("CalyxOS - Notification Type: READY");
         _readyCompleter.complete();
+        logger.log.info("CalyxOS - readyCompleter Complete");
       }
       if (notification.type ==
           NotificationEvent_NotificationType.LIGHTNING_SERVICE_DOWN) {
+        logger.log.info("CalyxOS - Notification Type: LIGHTNING_SERVICE_DOWN");
         _readyCompleter = Completer();
+        logger.log.info("CalyxOS - _readyCompleter reinitialized");
       }
       _eventsController.add(NotificationEvent()..mergeFromBuffer(event));
     });
     _tempDirFuture = getTemporaryDirectory();
     _graphDownloader = GraphDownloader(downloadManager, sharedPreferences);
+    logger.log.info("CalyxOS - initLightningDir");
     _graphDownloader.init().whenComplete(() => initLightningDir());
+    logger.log.info("CalyxOS - LightningDir initialized");
   }
 
   void setSelectedLspID(String lspID) {

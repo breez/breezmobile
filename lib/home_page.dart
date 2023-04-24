@@ -51,11 +51,15 @@ import 'package:breez_translations/breez_translations_locales.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:logging/logging.dart';
 import 'package:provider/provider.dart';
+import 'package:breez/logger.dart';
 
-final GlobalKey firstPaymentItemKey = GlobalKey(debugLabel: "firstPaymentItemKey");
+final GlobalKey firstPaymentItemKey =
+    GlobalKey(debugLabel: "firstPaymentItemKey");
 final ScrollController scrollController = ScrollController();
-final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>(debugLabel: "scaffoldKey");
+final GlobalKey<ScaffoldState> _scaffoldKey =
+    GlobalKey<ScaffoldState>(debugLabel: "scaffoldKey");
 
 class Home extends StatefulWidget {
   final AccountBloc accountBloc;
@@ -99,6 +103,7 @@ class HomeState extends State<Home> with WidgetsBindingObserver {
   @override
   void initState() {
     super.initState();
+    ServiceInjector().breezBridge.initBreezLib();
     _hiddenRoutes.add("/get_refund");
     widget.accountBloc.accountStream.listen((acc) {
       setState(() {
@@ -158,7 +163,7 @@ class HomeState extends State<Home> with WidgetsBindingObserver {
   void _initListens(BuildContext context) {
     if (_listensInit) return;
     _listensInit = true;
-    ServiceInjector().breezBridge.initBreezLib();
+    log.info("CalyxOS - _initListens");
     _registerNotificationHandlers(context);
     listenUnexpectedError(context, widget.accountBloc);
     _listenBackupConflicts(context);
@@ -169,8 +174,15 @@ class HomeState extends State<Home> with WidgetsBindingObserver {
 
   @override
   void dispose() {
+    log.info("CalyxOS - Disposing HomePage, resetting _listensInit");
+    _listensInit = false;
     _accountNotificationsSubscription?.cancel();
     super.dispose();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    log.info("CalyxOS - ${state.name}");
   }
 
   @override
@@ -200,10 +212,16 @@ class HomeState extends State<Home> with WidgetsBindingObserver {
               _onNavigationItemSelected,
               _filterItems,
             ),
-            bottomNavigationBar: appMode == AppMode.balance ? BottomActionsBar(firstPaymentItemKey) : null,
-            floatingActionButton: appMode == AppMode.balance ? QrActionButton(firstPaymentItemKey) : null,
-            floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
-            body: widget._screenBuilders[_activeScreen] ?? _homePage(context, appMode),
+            bottomNavigationBar: appMode == AppMode.balance
+                ? BottomActionsBar(firstPaymentItemKey)
+                : null,
+            floatingActionButton: appMode == AppMode.balance
+                ? QrActionButton(firstPaymentItemKey)
+                : null,
+            floatingActionButtonLocation:
+                FloatingActionButtonLocation.centerDocked,
+            body: widget._screenBuilders[_activeScreen] ??
+                _homePage(context, appMode),
           );
         },
       ),

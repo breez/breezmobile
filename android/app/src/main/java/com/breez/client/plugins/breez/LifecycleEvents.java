@@ -3,12 +3,14 @@ package com.breez.client.plugins.breez;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
-import androidx.lifecycle.Lifecycle;
-import androidx.lifecycle.LifecycleObserver;
-import androidx.lifecycle.OnLifecycleEvent;
+import androidx.lifecycle.DefaultLifecycleObserver;
+import androidx.lifecycle.LifecycleOwner;
 import androidx.lifecycle.ProcessLifecycleOwner;
 
 import com.breez.client.BreezApplication;
+
+import java.util.concurrent.Executor;
+import java.util.concurrent.Executors;
 
 import io.flutter.embedding.engine.plugins.FlutterPlugin;
 import io.flutter.embedding.engine.plugins.activity.ActivityAware;
@@ -16,10 +18,8 @@ import io.flutter.embedding.engine.plugins.activity.ActivityPluginBinding;
 import io.flutter.plugin.common.BinaryMessenger;
 import io.flutter.plugin.common.EventChannel;
 import io.flutter.plugin.common.EventChannel.StreamHandler;
-import java.util.concurrent.Executor;
-import java.util.concurrent.Executors;
 
-public class LifecycleEvents implements StreamHandler, FlutterPlugin, ActivityAware, LifecycleObserver {
+public class LifecycleEvents implements StreamHandler, FlutterPlugin, ActivityAware, DefaultLifecycleObserver {
 
     public static final String EVENTS_STREAM_NAME = "com.breez.client/lifecycle_events_notifications";
 
@@ -66,7 +66,7 @@ public class LifecycleEvents implements StreamHandler, FlutterPlugin, ActivityAw
     }
 
     @Override
-    public void onListen(Object args, final EventChannel.EventSink events){
+    public void onListen(Object args, final EventChannel.EventSink events) {
         m_eventsListener = events;
     }
 
@@ -75,11 +75,11 @@ public class LifecycleEvents implements StreamHandler, FlutterPlugin, ActivityAw
         m_eventsListener = null;
     }
 
-
-    @OnLifecycleEvent(Lifecycle.Event.ON_RESUME)
-    public void onResume() {
+    @Override
+    public void onResume(@NonNull LifecycleOwner owner) {
+        Log.d("CalyxOS", "DefaultLifecycleObserver ON_RESUME");
         BreezApplication.isBackground = false;
-        Log.d("Breez", "App Resumed - OnPostResume called");
+        Log.d("Breez", "App Resumed - onResume called");
         if (m_eventsListener != null) {
             _executor.execute(() -> {
                 binding.getActivity().runOnUiThread(() -> {
@@ -89,10 +89,11 @@ public class LifecycleEvents implements StreamHandler, FlutterPlugin, ActivityAw
         }
     }
 
-    @OnLifecycleEvent(Lifecycle.Event.ON_STOP)
-    public void onStop() {
+    @Override
+    public void onStop(@NonNull LifecycleOwner owner) {
+        Log.i("CalyxOS", "DefaultLifecycleObserver ON_STOP");
         BreezApplication.isBackground = true;
-        Log.d("Breez", "App Paused - onPause called");
+        Log.d("Breez", "App Stopped - onStop called");
         if (m_eventsListener != null) {
             _executor.execute(() -> {
                 binding.getActivity().runOnUiThread(() -> {

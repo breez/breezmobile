@@ -7,9 +7,8 @@ import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.core.content.ContextCompat;
-import androidx.lifecycle.Lifecycle;
-import androidx.lifecycle.LifecycleObserver;
-import androidx.lifecycle.OnLifecycleEvent;
+import androidx.lifecycle.DefaultLifecycleObserver;
+import androidx.lifecycle.LifecycleOwner;
 import androidx.lifecycle.ProcessLifecycleOwner;
 import androidx.work.WorkManager;
 
@@ -34,7 +33,7 @@ import io.flutter.plugin.common.MethodCall;
 import io.flutter.plugin.common.MethodChannel;
 
 public class Breez implements MethodChannel.MethodCallHandler, StreamHandler,
-        ActivityLifecycleListener, AppServices, FlutterPlugin, ActivityAware, LifecycleObserver {
+        ActivityLifecycleListener, AppServices, FlutterPlugin, ActivityAware, DefaultLifecycleObserver {
 
     public static final String BREEZ_CHANNEL_NAME = "com.breez.client/breez_lib";
     public static final String BREEZ_STREAM_NAME = "com.breez.client/breez_lib_notifications";
@@ -124,13 +123,12 @@ public class Breez implements MethodChannel.MethodCallHandler, StreamHandler,
     }
 
     @Override
-    public void onMethodCall(MethodCall call, MethodChannel.Result result) {        
+    public void onMethodCall(MethodCall call, MethodChannel.Result result) {
         if (call.method.equals("init")) {
             _executor.execute(() -> {
                 init(call, result);
             });
-        }
-        else if (call.method.equals("start")) {
+        } else if (call.method.equals("start")) {
             _executor.execute(() -> {
                 start(call, result);
             });
@@ -160,7 +158,7 @@ public class Breez implements MethodChannel.MethodCallHandler, StreamHandler,
             _executor.execute(() -> {
                 try {
                     Bindings.setBackupProvider(_backupProvider, authData);
-                    success(result,true);
+                    success(result, true);
                 } catch (Exception e) {
                     fail(result, "ResultError", e.getMessage(), "Failed to invoke setBackupProvider");
                 }
@@ -171,7 +169,7 @@ public class Breez implements MethodChannel.MethodCallHandler, StreamHandler,
             _executor.execute(() -> {
                 try {
                     Bindings.testBackupAuth(_backupProvider, authData);
-                    success(result,true);
+                    success(result, true);
                 } catch (Exception e) {
                     fail(result, "ResultError", e.getMessage(), "Failed to invoke testBackupAuth");
                 }
@@ -181,18 +179,18 @@ public class Breez implements MethodChannel.MethodCallHandler, StreamHandler,
         }
     }
 
-    private static String getWorkingDir(Context context){
+    private static String getWorkingDir(Context context) {
         return new File(context.getDataDir(), "app_flutter").getAbsolutePath();
     }
 
-    private void start(MethodCall call, MethodChannel.Result result){
+    private void start(MethodCall call, MethodChannel.Result result) {
 
         byte[] torConfig = call.argument("argument");
         Log.d(TAG, "Breez.java: start called with torConfig: " + torConfig);
         try {
-            Bindings.start(torConfig); 
+            Bindings.start(torConfig);
             _started = true;
-            success(result,true);
+            success(result, true);
         } catch (Exception e) {
             fail(result, "ResultError", e.getMessage(), "Failed to Start breez library");
         }
@@ -200,19 +198,19 @@ public class Breez implements MethodChannel.MethodCallHandler, StreamHandler,
         ChainSync.schedule();
     }
 
-    private void init(MethodCall call, MethodChannel.Result result){
+    private void init(MethodCall call, MethodChannel.Result result) {
         String tempDir = call.argument("tempDir").toString();
         String workingDir = call.argument("workingDir").toString();
         Log.i(TAG, "workingDir = " + workingDir);
         try {
             Bindings.init(tempDir, workingDir, this);
-            success(result,true);
+            success(result, true);
         } catch (Exception e) {
             fail(result, "ResultError", e.getMessage(), "Failed to Init breez library");
         }
     }
 
-    private void stop(MethodCall call, MethodChannel.Result result){
+    private void stop(MethodCall call, MethodChannel.Result result) {
         Log.i(TAG, "Stop breez was called on plugin");
         Boolean permanent = call.argument("permanent");
         if (permanent != null && permanent.booleanValue()) {
@@ -222,13 +220,12 @@ public class Breez implements MethodChannel.MethodCallHandler, StreamHandler,
         Bindings.stop();
     }
 
-    private void log(MethodCall call, MethodChannel.Result result){
+    private void log(MethodCall call, MethodChannel.Result result) {
         try {
             Bindings.log(call.argument("msg").toString(), call.argument("lvl").toString());
-            success(result,true);
-        }
-        catch(Exception e) {
-            fail(result,"ResultError", e.getMessage(), "Failed to call breez logger");
+            success(result, true);
+        } catch (Exception e) {
+            fail(result, "ResultError", e.getMessage(), "Failed to call breez logger");
         }
     }
 
@@ -260,44 +257,44 @@ public class Breez implements MethodChannel.MethodCallHandler, StreamHandler,
         }
     }
 
-    private void signOut(MethodCall call, MethodChannel.Result result){
+    private void signOut(MethodCall call, MethodChannel.Result result) {
         if (!_backupProvider.equals("gdrive")) {
-            success(result,true);
+            success(result, true);
             return;
         }
         try {
             m_authenticator.signOut();
-            success(result,true);
+            success(result, true);
         } catch (Exception e) {
-            fail(result,"ResultError", e.getMessage(), "Failed to sign out breez library");
+            fail(result, "ResultError", e.getMessage(), "Failed to sign out breez library");
         }
     }
 
-    private void restoreBackup(MethodCall call, MethodChannel.Result result){
+    private void restoreBackup(MethodCall call, MethodChannel.Result result) {
         try {
             String nodeID = call.argument("nodeID");
             byte[] restoreKey = call.argument("encryptionKey");
             Bindings.restoreBackup(nodeID, restoreKey);
-            success(result,true);
+            success(result, true);
         } catch (Exception e) {
-            fail(result,"ResultError", e.getMessage(), e.getMessage());
+            fail(result, "ResultError", e.getMessage(), e.getMessage());
         }
     }
 
-    private void setBackupEncryptionKey(MethodCall call, MethodChannel.Result result){
+    private void setBackupEncryptionKey(MethodCall call, MethodChannel.Result result) {
         try {
             String encryptionType = call.argument("encryptionType");
             byte[] encryptionKey = call.argument("encryptionKey");
             Bindings.setBackupEncryptionKey(encryptionKey, encryptionType);
-            success(result,true);
+            success(result, true);
         } catch (Exception e) {
-            fail(result,"ResultError", e.getMessage(), e.getMessage());
+            fail(result, "ResultError", e.getMessage(), e.getMessage());
         }
     }
 
 
     @Override
-    public void onListen(Object args, final EventChannel.EventSink events){
+    public void onListen(Object args, final EventChannel.EventSink events) {
         m_eventsListener = events;
     }
 
@@ -317,17 +314,10 @@ public class Breez implements MethodChannel.MethodCallHandler, StreamHandler,
         }
     }
 
-
-    @OnLifecycleEvent(Lifecycle.Event.ON_RESUME)
-    public void onPostResume() {
-       _executor.execute(() -> {
-           try {
-               Thread.sleep(1000);
-           } catch (InterruptedException e) {}
-           if (_started) {
-               Bindings.onResume();
-           }
-       });
+    @Override
+    public void onResume(@NonNull LifecycleOwner owner) {
+        Log.i("CalyxOS", "DefaultLifecycleObserver ON_RESUME");
+        onPostResume();
     }
 
     private void success(MethodChannel.Result res, Object result) {
@@ -338,7 +328,23 @@ public class Breez implements MethodChannel.MethodCallHandler, StreamHandler,
         _uiThreadExecutor.execute(() -> res.error(code, message, err));
     }
 
-    private class BreezTask implements  Runnable {
+    @Override
+    public void onPostResume() {
+        Log.i("CalyxOS", "onPostResume");
+        _executor.execute(() -> {
+            try {
+                Thread.sleep(1000);
+            } catch (InterruptedException e) {
+                Log.i("CalyxOS", "Failed to sleep thread");
+            }
+            if (_started) {
+                Log.i("CalyxOS", "Bindings.onResume");
+                Bindings.onResume();
+            }
+        });
+    }
+
+    private class BreezTask implements Runnable {
         private MethodChannel.Result m_result;
         private MethodCall m_call;
 
@@ -346,6 +352,7 @@ public class Breez implements MethodChannel.MethodCallHandler, StreamHandler,
             m_call = call;
             m_result = result;
         }
+
         public void run() {
             //generic mechanism for calling
             try {
@@ -362,16 +369,14 @@ public class Breez implements MethodChannel.MethodCallHandler, StreamHandler,
                 Object bindingResult;
                 if (method.getParameterTypes().length == 1) {
                     bindingResult = method.invoke(null, arg);
-                }
-                else {
+                } else {
                     bindingResult = method.invoke(null);
                 }
                 Breez.this.success(m_result, bindingResult); //static method with one arg
-            }
-            catch (Exception e) {
+            } catch (Exception e) {
                 Throwable breezError = e.getCause() != null ? e.getCause() : e;
                 Log.e(TAG, "Error in method " + m_call.method + ": " + breezError.getMessage(), breezError);
-                Breez.this.fail(m_result, breezError.getMessage(), breezError.getMessage(),"Failed to invoke method " + m_call.method);
+                Breez.this.fail(m_result, breezError.getMessage(), breezError.getMessage(), "Failed to invoke method " + m_call.method);
             }
         }
     }
