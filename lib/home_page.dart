@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:io';
 
 import 'package:anytime/bloc/podcast/audio_bloc.dart';
 import 'package:anytime/ui/anytime_podcast_app.dart';
@@ -162,6 +163,7 @@ class HomeState extends State<Home> with WidgetsBindingObserver {
     _registerNotificationHandlers(context);
     listenUnexpectedError(context, widget.accountBloc);
     _listenBackupConflicts(context);
+    _listenBackupNotLatestConflicts(context);
     _listenWhitelistPermissionsRequest(context);
     _listenLSPSelectionPrompt(context);
     _listenPaymentResults(context);
@@ -359,6 +361,28 @@ class HomeState extends State<Home> with WidgetsBindingObserver {
           okText: texts.home_config_error_action_exit,
           disableBack: true,
         );
+      },
+    );
+  }
+
+  void _listenBackupNotLatestConflicts(BuildContext context) {
+    final texts = context.texts();
+    final themeData = Theme.of(context);
+    widget.accountBloc.nodeBackupNotLatestStream.listen(
+      (_) async {
+        Navigator.popUntil(context, (route) {
+          return route.settings.name == "/";
+        });
+        await promptError(
+          context,
+          texts.home_config_error_title,
+          Text(
+            texts.home_config_backup_error,
+            style: themeData.dialogTheme.contentTextStyle,
+          ),
+          okText: texts.network_restart_action_confirm,
+          disableBack: true,
+        ).then((shouldExit) => exit(0));
       },
     );
   }
