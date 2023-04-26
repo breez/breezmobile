@@ -825,6 +825,11 @@ class BreezBridge {
         .then((res) => res as String);
   }
 
+  Future<int> getLatestBackupTime() async {
+    return _invokeMethodImmediate("getLatestBackupTime")
+        .then((res) => res as int);
+  }
+
   Future<DownloadBackupResponse> downloadBackup(String nodeId) async {
     return _methodChannel.invokeMethod(
       "downloadBackup",

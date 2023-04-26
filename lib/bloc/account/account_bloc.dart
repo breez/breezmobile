@@ -116,6 +116,10 @@ class AccountBloc {
   final BehaviorSubject<void> _nodeConflictController = BehaviorSubject<void>();
   Stream<void> get nodeConflictStream => _nodeConflictController.stream;
 
+  final _nodeBackupNotLatestController = BehaviorSubject<void>();
+  Stream<void> get nodeBackupNotLatestStream =>
+      _nodeBackupNotLatestController.stream;
+
   final AccountPermissionsHandler _permissionsHandler =
       AccountPermissionsHandler();
   Stream<bool> get optimizationWhitelistExplainStream =>
@@ -797,6 +801,13 @@ class AccountBloc {
           NotificationEvent_NotificationType.BACKUP_NODE_CONFLICT) {
         eventSubscription.cancel();
         _nodeConflictController.add(null);
+      }
+
+      if (event.type ==
+          NotificationEvent_NotificationType.BACKUP_NOT_LATEST_CONFLICT) {
+        log.info("BACKUP_NOT_LATEST_CONFLICT event triggered");
+        eventSubscription.cancel();
+        _nodeBackupNotLatestController.add(null);
       }
 
       if (event.type == NotificationEvent_NotificationType.PAYMENT_SUCCEEDED) {
