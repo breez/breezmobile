@@ -44,13 +44,24 @@ class iCloudBackupProvider : NSObject, BindingsNativeBackupProviderProtocol {
         
         var recordsArray : [Dictionary<String,Any?>] = [];
         for r in resultRecords {
-            recordsArray.append([
-                "ModifiedTime": r.modificationDate?.description,
-                "NodeID": r.recordID.recordName,
-                "BackupID": r["backupID"],
-                "Encrypted": r["backupEncryptionType"] != nil && r["backupEncryptionType"] != "",
-                "EncryptionType": r["backupEncryptionType"],
-                ]);
+            if #available(iOS 15.0, *) {
+                recordsArray.append([
+                    "ModifiedTime": r.modificationDate?.ISO8601Format(),
+                    "NodeID": r.recordID.recordName,
+                    "BackupID": r["backupID"],
+                    "Encrypted": r["backupEncryptionType"] != nil && r["backupEncryptionType"] != "",
+                    "EncryptionType": r["backupEncryptionType"],
+                ])
+            } else {
+                // Fallback on earlier versions
+                recordsArray.append([
+                    "ModifiedTime": formatDateToISO8601(date:r.modificationDate),
+                    "NodeID": r.recordID.recordName,
+                    "BackupID": r["backupID"],
+                    "Encrypted": r["backupEncryptionType"] != nil && r["backupEncryptionType"] != "",
+                    "EncryptionType": r["backupEncryptionType"],
+                ])
+            }
         }
         do {
             let jsonData = try JSONSerialization.data(withJSONObject: recordsArray, options: .prettyPrinted);
@@ -218,6 +229,18 @@ class iCloudBackupProvider : NSObject, BindingsNativeBackupProviderProtocol {
         });
         semaphore.wait();
         return userName;
+    }
+    
+    private func formatDateToISO8601(date: Date?) -> String {
+        var s: String
+        let formatter = ISO8601DateFormatter()
+        s = formatter.string(from: date!)
+        if let GMT = TimeZone(abbreviation: "GMT") {
+            let options: ISO8601DateFormatter.Options = [.withInternetDateTime, .withDashSeparatorInDate, .withColonSeparatorInTime, .withTimeZone]
+            s = ISO8601DateFormatter.string(from: date!, timeZone: GMT, formatOptions: options)
+            return s
+        }
+        return ""
     }
 }
 
