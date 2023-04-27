@@ -358,7 +358,6 @@ class HomeState extends State<Home> with WidgetsBindingObserver {
             texts.home_config_error_message,
             style: themeData.dialogTheme.contentTextStyle,
           ),
-          okText: texts.home_config_error_action_exit,
           disableBack: true,
         );
       },
@@ -380,9 +379,8 @@ class HomeState extends State<Home> with WidgetsBindingObserver {
             texts.home_config_backup_error,
             style: themeData.dialogTheme.contentTextStyle,
           ),
-          okText: texts.network_restart_action_confirm,
           disableBack: true,
-        ).then((shouldExit) => exit(0));
+        );
       },
     );
   }
