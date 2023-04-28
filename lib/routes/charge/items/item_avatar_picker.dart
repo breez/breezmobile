@@ -81,7 +81,20 @@ class ItemAvatarPickerState extends State<ItemAvatarPicker> {
       badgeStyle: badges.BadgeStyle(
         badgeColor: themeData.primaryTextTheme.titleSmall.color,
       ),
-      badgeContent: _buildResetIconBadge(context),
+      badgeContent: Padding(
+        padding: const EdgeInsets.all(2.0),
+        child: Icon(
+          Icons.delete_outline,
+          size: themeData.iconTheme.deleteBadgeIconTheme.size,
+          color: themeData.iconTheme.deleteBadgeIconTheme.color,
+        ),
+      ),
+      onTap: () {
+        setState(() {
+          _selectedImage = "";
+          widget.onImageSelected(_selectedImage);
+        });
+      },
       child: _selectedImage == "" && widget.itemName == ""
           ? Container(
               width: 96,
@@ -133,28 +146,6 @@ class ItemAvatarPickerState extends State<ItemAvatarPicker> {
               radius: 48,
               useDecoration: true,
             ),
-    );
-  }
-
-  Widget _buildResetIconBadge(BuildContext context) {
-    final themeData = Theme.of(context);
-
-    return GestureDetector(
-      child: SizedBox(
-        height: 24,
-        width: 24,
-        child: Icon(
-          Icons.delete_outline,
-          size: themeData.iconTheme.deleteBadgeIconTheme.size,
-          color: themeData.iconTheme.deleteBadgeIconTheme.color,
-        ),
-      ),
-      onTap: () {
-        setState(() {
-          _selectedImage = "";
-          widget.onImageSelected(_selectedImage);
-        });
-      },
     );
   }
 
