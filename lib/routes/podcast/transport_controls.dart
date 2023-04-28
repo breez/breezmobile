@@ -90,39 +90,25 @@ class PlayerTransportControlsState extends State<PlayerTransportControls>
               mainAxisSize: MainAxisSize.max,
               children: <Widget>[
                 Expanded(flex: 1, child: Container()),
-                // Add SleepSelector inside a 37 width sized
-                // box to proper alignment with SpeedSelector
-                SizedBox(
-                  width: 37.0,
-                  height: 24.0,
-                  child: Center(
-                    child: SleepSelector(
-                      padding: const EdgeInsets.all(0.0),
-                      constraints: const BoxConstraints(
-                        maxHeight: 24.0,
-                        minHeight: 24.0,
-                        maxWidth: 24.0,
-                        minWidth: 24.0,
-                      ),
-                      iconOn: SvgPicture.asset(
-                        'assets/icons/sleep_on.svg',
-                        colorFilter: ColorFilter.mode(
-                          theme.buttonTheme.colorScheme.onPrimary,
-                          BlendMode.srcATop,
-                        ),
-                        height: 24.0,
-                        width: 24.0,
-                      ),
-                      iconOff: SvgPicture.asset(
-                        'assets/icons/sleep_off.svg',
-                        colorFilter: ColorFilter.mode(
-                          theme.buttonTheme.colorScheme.onPrimary,
-                          BlendMode.srcATop,
-                        ),
-                        height: 24.0,
-                        width: 24.0,
-                      ),
+                SleepSelector(
+                  //padding: EdgeInsets.zero,
+                  iconOn: SvgPicture.asset(
+                    'assets/icons/sleep_on.svg',
+                    colorFilter: ColorFilter.mode(
+                      theme.buttonTheme.colorScheme.onPrimary,
+                      BlendMode.srcATop,
                     ),
+                    height: 24.0,
+                    width: 24.0,
+                  ),
+                  iconOff: SvgPicture.asset(
+                    'assets/icons/sleep_off.svg',
+                    colorFilter: ColorFilter.mode(
+                      theme.buttonTheme.colorScheme.onPrimary,
+                      BlendMode.srcATop,
+                    ),
+                    height: 24.0,
+                    width: 24.0,
                   ),
                 ),
                 Expanded(flex: 1, child: Container()),
@@ -170,15 +156,8 @@ class PlayerTransportControlsState extends State<PlayerTransportControls>
                   ),
                 ),
                 Expanded(flex: 1, child: Container()),
-                // Speed selector uses 16-37 as width so we use a container with
-                // the maximum size and centers it to proper alignment
-                SizedBox(
-                  width: 37,
-                  child: Center(
-                    child: SpeedSelectorWidget(
-                      onChanged: (value) => audioBloc.playbackSpeed(value),
-                    ),
-                  ),
+                SpeedSelectorWidget(
+                  onChanged: (value) => audioBloc.playbackSpeed(value),
                 ),
                 Expanded(flex: 1, child: Container()),
               ],
