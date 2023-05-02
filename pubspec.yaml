@@ -39,13 +39,13 @@ dependencies:
   firebase_messaging: ^14.4.1
   fixnum: ^1.1.0
   flutter_secure_storage: ^8.0.0
-  flutter_spinkit: ^5.1.0
+  flutter_spinkit: ^5.2.0
   flutter_svg: ^2.0.5
   flutter_web_browser: ^0.17.1
   google_api_availability: ^5.0.0
   grpc: ^3.1.0
   hex: ^0.2.0
-  http: ^0.13.5
+  http: ^0.13.6
   image: ^4.0.16
   image_cropper: ^3.0.3
   image_picker: ^0.8.7+4
