@@ -23,7 +23,7 @@ fileprivate let calls : [String:BindingExecutor] = [
     "restartDaemon": EmptyArgsBindingExecutor(f: BindingsRestartDaemon),
     "getTorActive": VoidBindingExecutor(f: BindingsGetTorActive),
     "setTorActive": SingleArgBindingExecutor(f: BindingsSetTorActive),
-    
+    "latestBackupTime":VoidBindingExecutor(f:BindingsLatestBackupTime),
     "lastSyncedHeaderTimestamp": VoidBindingExecutor(f: BindingsLastSyncedHeaderTimestamp),
     "addFundsInit": SingleArgBindingExecutor(f: BindingsAddFundsInit),
     "addInvoice": SingleArgBindingExecutor(f: BindingsAddInvoice),

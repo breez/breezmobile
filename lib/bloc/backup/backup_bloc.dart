@@ -11,7 +11,6 @@ import 'package:breez/services/breezlib/breez_bridge.dart';
 import 'package:breez/services/breezlib/data/messages.pb.dart';
 import 'package:breez/services/injector.dart';
 import 'package:crypto/crypto.dart';
-import 'package:duration/duration.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:hex/hex.dart';
@@ -486,6 +485,7 @@ class BackupBloc {
       if (event.type == NotificationEvent_NotificationType.BACKUP_SUCCESS) {
         _backupServiceNeedLogin = false;
         _breezLib.getLatestBackupTime().then((timeStamp) {
+          log.info("Timestamp=$timeStamp");
           if (timeStamp > 0) {
             log.info(timeStamp);
             DateTime latestDateTime =
