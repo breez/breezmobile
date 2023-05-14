@@ -82,8 +82,10 @@ class iCloudBackupProvider : NSObject, BindingsNativeBackupProviderProtocol {
         }
         
         guard let backupAsset = record["backup"] as? CKAsset else {
-            return legacyDownloadBackupFiles(record, error: error)
-        }        
+            guard let appDatabackupAsset = record["app_data_backup"] as? CKAsset else{
+                return legacyDownloadBackupFiles(record, error: error);
+            }
+        }
         
         let tempDir = FileManager.default.temporaryDirectory;
         let destBackupFile = tempDir.appendingPathComponent("backup.zip");
