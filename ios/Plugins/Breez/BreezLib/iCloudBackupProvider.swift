@@ -81,8 +81,15 @@ class iCloudBackupProvider : NSObject, BindingsNativeBackupProviderProtocol {
             return "";
         }
         
-        guard let backupAsset = record["backup"] as? CKAsset, let appDatabackupAsset = record["app_data_backup"] as? CKAsset else {            
-            return legacyDownloadBackupFiles(record, error: error);            
+        guard let backupAsset = record["backup"] as? CKAsset else {
+            var keys = "files: "
+            let joined = record.allKeys().joined(separator: ", ")
+            error?.pointee = NSError(domain: joined, code: 0, userInfo: nil);
+            return "";
+            // return legacyDownloadBackupFiles(record, error: error);
+            // // if error.pointee == nil {
+            // //    return files;
+            // // }
         }
         
         let tempDir = FileManager.default.temporaryDirectory;
@@ -115,6 +122,7 @@ class iCloudBackupProvider : NSObject, BindingsNativeBackupProviderProtocol {
         }
         
         guard let walletdbAsset = record["walletdb"] as? CKAsset else {
+            record
             error?.pointee = NSError(domain: "walletdb was not found", code: 0, userInfo: nil);
             return ""
         }
