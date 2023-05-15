@@ -19,7 +19,7 @@ class iCloudBackupProvider : NSObject, BindingsNativeBackupProviderProtocol {
             return "";
         }
         
-        var resultRecords = [CKRecord]()
+        var resultRecords: [CKRecord] = []
         
         let semaphore = DispatchSemaphore(value: 0)
         
@@ -27,10 +27,10 @@ class iCloudBackupProvider : NSObject, BindingsNativeBackupProviderProtocol {
         let query = CKQuery(recordType: "BackupSnapshot", predicate: pred)
         query.sortDescriptors = [NSSortDescriptor(key: "modificationDate", ascending: false)]
         let operation = CKQueryOperation(query: query)
-        operation.desiredKeys = ["modificationDate", "backupID", "backupEncryptionType"]
+        operation.desiredKeys = ["modificationDate", "backupID", "backupEncryptionType","timestamp"]
         operation.resultsLimit = 100;
         operation.recordFetchedBlock = { record in
-            resultRecords.append(record);
+            resultRecords.append(record)
             print("recordFetchedBlock")
         }
         
@@ -46,7 +46,7 @@ class iCloudBackupProvider : NSObject, BindingsNativeBackupProviderProtocol {
         for r in resultRecords {
             if #available(iOS 15.0, *) {
                 recordsArray.append([
-                    "ModifiedTime": r.modificationDate?.ISO8601Format(),
+                    "ModifiedTime":  r["timestamp"] ?? r.modificationDate?.ISO8601Format(),
                     "NodeID": r.recordID.recordName,
                     "BackupID": r["backupID"],
                     "Encrypted": r["backupEncryptionType"] != nil && r["backupEncryptionType"] != "",
@@ -55,7 +55,7 @@ class iCloudBackupProvider : NSObject, BindingsNativeBackupProviderProtocol {
             } else {
                 // Fallback on earlier versions
                 recordsArray.append([
-                    "ModifiedTime": formatDateToISO8601(date:r.modificationDate),
+                    "ModifiedTime": r["timestamp"] ?? formatDateToISO8601(date: r.modificationDate),
                     "NodeID": r.recordID.recordName,
                     "BackupID": r["backupID"],
                     "Encrypted": r["backupEncryptionType"] != nil && r["backupEncryptionType"] != "",
@@ -87,9 +87,10 @@ class iCloudBackupProvider : NSObject, BindingsNativeBackupProviderProtocol {
         guard let record = resultRecord else { return ""; }
         
         record["backupID"] = backupID!;
-        if let err = updateRecord(record: record, savePolicy: .changedKeys) {
-            error?.pointee = NSError(domain: err.localizedDescription, code: 0, userInfo: nil);
-            return "";
+        let (_ ,err) = updateRecord(record: record, savePolicy: .changedKeys)
+        guard err == nil else {
+            error?.pointee = NSError(domain: err!.localizedDescription, code: 0, userInfo: nil)
+            return ""
         }
         
         guard let backupAsset = record["backup"] as? CKAsset else {
@@ -120,9 +121,10 @@ class iCloudBackupProvider : NSObject, BindingsNativeBackupProviderProtocol {
     }
     
     func legacyDownloadBackupFiles(_ record: CKRecord, error: NSErrorPointer) -> String {
-        if let err = updateRecord(record: record, savePolicy: .changedKeys) {
-            error?.pointee = NSError(domain: err.localizedDescription, code: 0, userInfo: nil);
-            return "";
+        let (_, err) = updateRecord(record: record, savePolicy: .changedKeys)
+        guard err == nil else {
+            error?.pointee = NSError(domain: err!.localizedDescription, code: 0, userInfo: nil)
+            return ""
         }
         
         guard let walletdbAsset = record["walletdb"] as? CKAsset else {
@@ -185,16 +187,60 @@ class iCloudBackupProvider : NSObject, BindingsNativeBackupProviderProtocol {
             record["backup"] = CKAsset(fileURL: URL(fileURLWithPath: String(file!)));
         }
         
-        if let err = updateRecord(record: record, savePolicy: .allKeys) {
-            error?.pointee = NSError(domain: err.localizedDescription, code: 0, userInfo: nil);
-            return "";
+        let (_, err) = updateRecord(record: record, savePolicy: .allKeys)
+        guard err == nil else {
+            error?.pointee = NSError(domain: err!.localizedDescription, code: 0, userInfo: nil)
+            return ""
         }
         
         return "";
     }
     
-    func updateRecord(record : CKRecord, savePolicy: CKModifyRecordsOperation.RecordSavePolicy) -> Error? {
+    func getTimestamp(_ nodeID: String?, error: NSErrorPointer) -> String {
+        let accStatus = getAccountStatus()
+        if (accStatus == .noAccount) {
+            error?.pointee = NSError(domain: "AuthError", code: 0, userInfo: [NSLocalizedDescriptionKey: "AuthError"])
+            return ""
+        }
+        let timestamprecord = CKRecord(recordType: "Timestamp")
+        timestamprecord["nodeID"] = nodeID!
+        var modtime: Date?
+        
+        var (records, err) = updateRecord(record: timestamprecord, savePolicy: .allKeys)
+        guard err == nil else {
+            error?.pointee = NSError(domain: err!.localizedDescription, code: 0, userInfo: nil)
+            return ""
+        }
+        
+        for r in records {
+            if r != nil {
+                modtime = r?.modificationDate
+            }
+        }
+        
+        // Now that we have the latest modfied time we can update the snapshots latest modfied time.
+        let record = CKRecord(recordType: "BackupSnapshot", recordID: CKRecord.ID(recordName: nodeID!))
+        if #available(iOS 15.0, *) {
+            record["timestamp"] = modtime?.ISO8601Format()
+        } else {
+            record["timestamp"] = formatDateToISO8601(date: modtime)
+        }
+        (_, err) = updateRecord(record: record, savePolicy: .allKeys)
+        guard err == nil else {
+            error?.pointee = NSError(domain: err!.localizedDescription, code: 0, userInfo: nil)
+            return ""
+        }
+        
+        if #available(iOS 15.0, *) {
+            return modtime?.ISO8601Format() ?? ""
+        } else {
+            return formatDateToISO8601(date: modtime) ?? ""
+        }
+    }
+    
+    func updateRecord(record : CKRecord, savePolicy: CKModifyRecordsOperation.RecordSavePolicy) -> (returnedRecords: [CKRecord?],returnedError: Error?) {
         var resultErr : Error?
+        var returnedRecord: [CKRecord?] = []
         let semaphore = DispatchSemaphore(value: 0)
         let modifyOperation = CKModifyRecordsOperation(recordsToSave: [record], recordIDsToDelete: nil);
         modifyOperation.savePolicy = savePolicy
@@ -202,11 +248,14 @@ class iCloudBackupProvider : NSObject, BindingsNativeBackupProviderProtocol {
         modifyOperation.isAtomic = true;
         modifyOperation.modifyRecordsCompletionBlock = { records, ids, err in
             resultErr = err;
+            if records != nil {
+                returnedRecord = records!
+            }
             semaphore.signal()
         }
         CKContainer.default().privateCloudDatabase.add(modifyOperation);
         semaphore.wait();
-        return resultErr;
+        return (returnedRecord, resultErr)
     }
     
     func getAccountStatus() -> CKAccountStatus {
@@ -231,7 +280,7 @@ class iCloudBackupProvider : NSObject, BindingsNativeBackupProviderProtocol {
         return userName;
     }
     
-    private func formatDateToISO8601(date: Date?) -> String {
+    private func formatDateToISO8601(date: Date?) -> String? {
         var s: String
         let formatter = ISO8601DateFormatter()
         s = formatter.string(from: date!)
@@ -240,7 +289,7 @@ class iCloudBackupProvider : NSObject, BindingsNativeBackupProviderProtocol {
             s = ISO8601DateFormatter.string(from: date!, timeZone: GMT, formatOptions: options)
             return s
         }
-        return ""
+        return nil
     }
 }
 

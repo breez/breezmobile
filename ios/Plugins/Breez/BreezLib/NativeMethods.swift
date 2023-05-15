@@ -30,7 +30,6 @@ fileprivate let calls : [String:BindingExecutor] = [
     "availableSnapshots": EmptyArgsBindingExecutor(f: BindingsAvailableSnapshots),
     "backupFiles": EmptyArgsBindingExecutor(f: BindingsBackupFiles),
     "connectAccount": EmptyArgsBindingExecutor(f: BindingsConnectAccount),
-
     "decodePaymentRequest": SingleArgBindingExecutor(f: BindingsDecodePaymentRequest),
     "getPaymentRequestHash": SingleArgBindingExecutor(f: BindingsGetPaymentRequestHash),
     "getAccountInfo": EmptyArgsBindingExecutor(f: BindingsGetAccountInfo),

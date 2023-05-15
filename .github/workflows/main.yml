@@ -47,9 +47,7 @@ jobs:
           export GOROOT=$(pwd)/go1.19.2/go
           go version
           brew update          
-          git clone https://github.com/breez/breez.git 
-          git checkout ensure-latest-backup
-          gopath/src/github.com/breez/breez
+          git clone --branch ensure-latest-backup https://github.com/breez/breez.git  gopath/src/github.com/breez/breez
           export TMP_GOPATH=$(pwd)/gopath
           pushd gopath/src/github.com/breez/breez
           export GOPRIVATE=github.com/btcsuite/btcd
