@@ -44,7 +44,7 @@ class FiatCurrencySettingsState extends State<FiatCurrencySettings> {
         leading: const backBtn.BackButton(),
         title: Text(texts.fiat_currencies_title),
       ),
-      body: StreamBuilder<AccountModel>(
+      body: StreamBuilder<AccountModel?>(
         stream: widget.accountBloc.accountStream.distinct((acc1, acc2) {
           return listEquals(acc1.preferredCurrencies, acc2.preferredCurrencies);
         }),

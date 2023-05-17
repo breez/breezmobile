@@ -27,18 +27,18 @@ class ConnectPayBloc {
   final BreezBridge _breezLib = ServiceInjector().breezBridge;
   final BreezServer _breezServer = ServiceInjector().breezServer;
   RemoteSession? _currentSession;
-  final StreamController _sessionInvitesController =
+  final StreamController<SessionLinkModel> _sessionInvitesController =
       BehaviorSubject<SessionLinkModel>();
   Stream<SessionLinkModel> get sessionInvites =>
       _sessionInvitesController.stream;
 
-  Sink<AsyncAction> _accountActions;
-  BreezUserModel _currentUser;
+  late Sink<AsyncAction> _accountActions;
+  late BreezUserModel _currentUser;
 
-  ConnectPayBloc(Stream<BreezUserModel> userStream,
-      Stream<AccountModel> accountStream, Sink<AsyncAction> accountActions) {
+  ConnectPayBloc(Stream<BreezUserModel?> userStream,
+      Stream<AccountModel?> accountStream, Sink<AsyncAction> accountActions) {
     _accountActions = accountActions;
-    userStream.listen((user) => _currentUser = user);
+    userStream.listen((user) => _currentUser = user!);
     _monitorSessionInvites();
     _monitorSessionNotifications();
   }
@@ -79,9 +79,9 @@ class ConnectPayBloc {
   Future<RemoteSession> joinSessionByLink(SessionLinkModel sessionLink) async {
     log.info(
         'joinSessionByLink - sessionID = ${sessionLink.sessionID} sessionSecret = ${sessionLink.sessionSecret} initiatorPubKey = ${sessionLink.initiatorPubKey}');
-    RatchetSessionInfoReply sessionInfo =
-        await _breezLib.ratchetSessionInfo(sessionLink.sessionID);
-    bool existingSession = sessionInfo.sessionID.isNotEmpty;
+    RatchetSessionInfoReply? sessionInfo =
+        await _breezLib.ratchetSessionInfo(sessionLink.sessionID!);
+    bool existingSession = sessionInfo!.sessionID.isNotEmpty;
     log.info('joinSessionByLink - existing session = $existingSession');
 
     if (!existingSession &&
@@ -105,7 +105,7 @@ class ConnectPayBloc {
         //otherwise we are payee
         if (!existingSession) {
           await _breezLib.createRatchetSession(
-              sessionLink.sessionID, sessionResponse.expiry,
+              sessionLink.sessionID!, sessionResponse.expiry,
               secret: sessionLink.sessionSecret,
               remotePubKey: sessionLink.initiatorPubKey);
         }
@@ -135,13 +135,13 @@ class ConnectPayBloc {
     return _currentSession = currentSession..start(sessionLink);
   }
 
-  RemoteSession get currentSession => _currentSession;
+  RemoteSession? get currentSession => _currentSession;
 
   _monitorSessionInvites() async {
     DeepLinksService deepLinks = ServiceInjector().deepLinks;
     deepLinks.linksNotifications.listen((link) async {
       SessionLinkModel sessionLink = deepLinks.parseSessionInviteLink(link);
-      if (sessionLink != null && sessionLink.sessionID != null) {
+      if (sessionLink.sessionID != null) {
         _sessionInvitesController.add(sessionLink);
       }
     });
@@ -162,7 +162,7 @@ class ConnectPayBloc {
 }
 
 abstract class RemoteSession {
-  Stream<void> terminationStream;
+  late Stream<void> terminationStream;
   final BreezUserModel _currentUser;
 
   RemoteSession(this._currentUser);

@@ -103,7 +103,7 @@ class BackupBloc {
   static const String LAST_BACKUP_STATE_PREFERENCE_KEY = "backup_last_state";
 
   BackupBloc(
-    Stream<BreezUserModel> userStream,
+    Stream<BreezUserModel?> userStream,
     Stream<bool> backupAnytimeDBStream, {
     ServiceInjector? serviceInjector,
     FlutterSecureStorage? secureStorage,
@@ -253,15 +253,15 @@ class BackupBloc {
     });
   }
 
-  void _listenPinCodeChange(Stream<BreezUserModel> userStream) {
+  void _listenPinCodeChange(Stream<BreezUserModel?> userStream) {
     userStream.listen((user) {
       _setBreezLibBackupKey();
     });
   }
 
-  void _listenUserPreferenceChanges(Stream<BreezUserModel> userStream) {
+  void _listenUserPreferenceChanges(Stream<BreezUserModel?> userStream) {
     userStream.listen((user) async {
-      await _compareUserPreferences(user);
+      await _compareUserPreferences(user!);
     });
   }
 

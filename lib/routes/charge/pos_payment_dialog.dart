@@ -116,7 +116,7 @@ class PosPaymentDialogState extends State<PosPaymentDialog> {
   @override
   Widget build(BuildContext context) {
     final accountBloc = AppBlocsProvider.of<AccountBloc>(context);
-    return StreamBuilder<AccountModel>(
+    return StreamBuilder<AccountModel?>(
       stream: accountBloc.accountStream,
       builder: (context, snapshot) {
         final account = snapshot.data;

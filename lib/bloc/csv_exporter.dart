@@ -23,8 +23,8 @@ class CsvExporter {
 
   Future export() async {
     log.info("export payments started");
-    String tmpFilePath =
-        await _saveCsvFile(const ListToCsvConverter().convert(_generateList()));
+    String tmpFilePath = await _saveCsvFile(const ListToCsvConverter()
+        .convert(_generateList().cast<List?>())); // TODO : Null Handling
     log.info("export payments finished");
     return tmpFilePath;
   }
@@ -116,7 +116,7 @@ class CsvExporter {
     if (filter.startDate != null && filter.endDate != null) {
       DateFormat dateFilterFormat = DateFormat("d.M.yy");
       String dateFilter =
-          '${dateFilterFormat.format(filter.startDate)}-${dateFilterFormat.format(filter.endDate)}';
+          '${dateFilterFormat.format(filter.startDate!)}-${dateFilterFormat.format(filter.endDate!)}';
       filePath += "_$dateFilter";
     }
     log.info("add filter information to path finished");
@@ -126,7 +126,7 @@ class CsvExporter {
 
 class CsvData {
   final PaymentInfo paymentInfo;
-  final Sale sale;
+  final Sale? sale;
 
   const CsvData(
     this.paymentInfo,

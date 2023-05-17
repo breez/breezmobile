@@ -47,14 +47,14 @@ class ItemPageState extends State<ItemPage> {
   late AccountBloc _accountBloc;
   bool _isInit = false;
   String _title = "";
-  late String _itemImage;
+  late String? _itemImage;
   CurrencyWrapper _selectedCurrency = CurrencyWrapper.fromBTC(Currency.SAT);
 
   @override
   void didChangeDependencies() {
     if (!_isInit) {
       final texts = context.texts();
-      _accountBloc = AppBlocsProvider.of<AccountBloc>(context);
+      _accountBloc = AppBlocsProvider.of<AccountBloc>(context)!;
 
       _title = texts.pos_invoice_item_management_title_add;
       FetchRates fetchRatesAction = FetchRates();
@@ -139,13 +139,13 @@ class ItemPageState extends State<ItemPage> {
                             data: themeData.copyWith(
                               canvasColor: themeData.canvasColor,
                             ),
-                            child: StreamBuilder<AccountModel>(
+                            child: StreamBuilder<AccountModel?>(
                               stream: _accountBloc.accountStream,
                               builder: (settingCtx, snapshot) {
-                                AccountModel account = snapshot.data;
                                 if (!snapshot.hasData) {
                                   return Container();
                                 }
+                                AccountModel account = snapshot.data!;
 
                                 return _dropDown(context, account);
                               },
@@ -179,8 +179,8 @@ class ItemPageState extends State<ItemPage> {
         border: const UnderlineInputBorder(),
       ),
       style: theme.FieldTextStyle.textStyle,
-      validator: (value) {
-        if (value.trim().isEmpty) {
+      validator: (String? value) {
+        if (value != null && value.trim().isEmpty) {
           return texts.pos_invoice_item_management_field_name_error;
         }
         return null;
@@ -206,8 +206,8 @@ class ItemPageState extends State<ItemPage> {
         border: const UnderlineInputBorder(),
       ),
       style: theme.FieldTextStyle.textStyle,
-      validator: (value) {
-        if (value.isEmpty) {
+      validator: (String? value) {
+        if (value != null && value.isEmpty) {
           return texts.pos_invoice_item_management_field_price_error;
         }
         return null;
@@ -275,9 +275,9 @@ class ItemPageState extends State<ItemPage> {
   }
 
   Widget _buildItemAvatarPicker(BuildContext context) {
-    final name = _nameController.text?.trim();
+    final name = _nameController.text.trim();
     final missingImage = _itemImage == null || _itemImage == "";
-    final missingName = name == null || name == "";
+    final missingName = name.isEmpty;
 
     return GestureDetector(
       onTap: () => Navigator.of(context).push(
@@ -381,7 +381,7 @@ class ItemPageState extends State<ItemPage> {
   Widget _buildScaffold(
     BuildContext context,
     Widget body, [
-    List<Widget> actions,
+    List<Widget>? actions,
   ]) {
     final texts = context.texts();
 
@@ -398,11 +398,11 @@ class ItemPageState extends State<ItemPage> {
             ? texts.pos_invoice_item_management_title_save
             : _title.toUpperCase(),
         onPressed: () {
-          if (_formKey.currentState.validate()) {
+          if (_formKey.currentState!.validate()) {
             if (widget.item != null) {
               UpdateItem updateItem = UpdateItem(
-                widget.item.copyWith(
-                  imageURL: _itemImage != null && _itemImage.isNotEmpty
+                widget.item!.copyWith(
+                  imageURL: _itemImage != null && _itemImage!.isNotEmpty
                       ? _itemImage
                       : null,
                   name: _nameController.text.trimRight(),

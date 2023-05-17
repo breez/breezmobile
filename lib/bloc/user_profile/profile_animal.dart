@@ -39,17 +39,18 @@ enum ProfileAnimal {
   SNAKE,
 }
 
-ProfileAnimal profileAnimalFromName(String name, BreezTranslations texts) {
+ProfileAnimal? profileAnimalFromName(String name, BreezTranslations texts) {
   final key = name.toLowerCase();
-  final localizedNames = _animalsFromName[texts.locale];
+  final Map<String, ProfileAnimal> localizedNames =
+      _animalsFromName[texts.locale]!; // TODO : Null Handling
 
   if (localizedNames.containsKey(key)) {
-    return localizedNames[key];
+    return localizedNames[key]!;
   }
 
   for (var map in _animalsFromName.values) {
     if (map.containsKey(key)) {
-      return map[key];
+      return map[key]!;
     }
   }
 

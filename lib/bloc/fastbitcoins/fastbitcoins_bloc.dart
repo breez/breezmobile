@@ -35,8 +35,8 @@ class FastbitcoinsBloc {
       _redeemResponseController.stream;
 
   final String baseURL;
-  BreezBridge _breezLib;
-  Client _client;
+  late BreezBridge _breezLib;
+  late Client _client;
 
   FastbitcoinsBloc({
     this.baseURL = PRODUCTION_URL,
@@ -99,7 +99,7 @@ class FastbitcoinsBloc {
 
   void _validateResponse<T>(Response response) {
     if (response.statusCode != 200) {
-      final body = response.body != null && response.body.length > 100
+      final body = response.body.length > 100
           ? response.body.substring(0, 100)
           : response.body;
       log.severe('fastbitcoins response error: $body');

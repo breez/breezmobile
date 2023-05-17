@@ -4,10 +4,11 @@ import 'package:flutter/material.dart';
 class ShowPinHandler {
   ShowPinHandler(UserProfileBloc userProfileBloc, BuildContext context) {
     // wait for first time app is unlocked.
-    userProfileBloc.userStream.firstWhere((u) => u.locked == false).then((_) {
+    userProfileBloc.userStream.firstWhere((u) => u!.locked == false).then((_) {
+      // TODO : Null Handling - User may be null
       // listen to user stream and push pin whenever app is locked.
       userProfileBloc.userStream
-          .map((u) => u.locked)
+          .map((u) => u!.locked)
           .distinct()
           .where((locked) => locked == true)
           .listen((_) {

@@ -240,7 +240,7 @@ class ConnectToPayPageState extends State<ConnectToPayPage> {
         return StreamBuilder<LSPStatus>(
           stream: lspBloc.lspStatusStream,
           builder: (context, lspSnapshot) {
-            return StreamBuilder<AccountModel>(
+            return StreamBuilder<AccountModel?>(
               stream: accountBloc.accountStream,
               builder: (context, snapshot) {
                 if (!snapshot.hasData) {

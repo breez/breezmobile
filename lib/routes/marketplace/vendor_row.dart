@@ -26,23 +26,22 @@ class VendorRow extends StatelessWidget {
     Color vendorTextColor =
         theme.vendorTheme[_vendor.id.toLowerCase()]?.textColor ?? Colors.black;
 
-    final vendorLogo = _vendor.logo != null
-        ? Image(
-            image: AssetImage(_vendor.logo),
-            height: (_vendor.id == 'Wavlake')
-                ? 73
-                : (_vendor.id == 'LNCal')
-                    ? 56
-                    : 48,
-            width: _vendor.onlyShowLogo
-                ? (_vendor.id == 'Bitrefill' || _vendor.id == "Azteco")
-                    ? 156
-                    : 196
-                : null,
-            color: vendorFgColor,
-            colorBlendMode: BlendMode.srcATop,
-          )
-        : Container();
+    final vendorLogo = Image(
+      image: AssetImage(
+          _vendor.logo), // TODO : Null Handling - assetName may be empty
+      height: (_vendor.id == 'Wavlake')
+          ? 73
+          : (_vendor.id == 'LNCal')
+              ? 56
+              : 48,
+      width: _vendor.onlyShowLogo
+          ? (_vendor.id == 'Bitrefill' || _vendor.id == "Azteco")
+              ? 156
+              : 196
+          : null,
+      color: vendorFgColor,
+      colorBlendMode: BlendMode.srcATop,
+    );
 
     final vendorCard = GestureDetector(
         onTap: () {
@@ -53,8 +52,9 @@ class VendorRow extends StatelessWidget {
                 return LNURLWebViewPage(
                   accountBloc: accountBloc,
                   vendorModel: _vendor,
-                  lnurlBloc: lnurlBloc,
-                  endpointURI: Uri.tryParse(_vendor.endpointURI),
+                  lnurlBloc: lnurlBloc!,
+                  endpointURI: Uri.tryParse(
+                      _vendor.endpointURI!)!, // TODO : Null Handling
                   responseID: _vendor.responseID,
                 );
               }
@@ -70,7 +70,7 @@ class VendorRow extends StatelessWidget {
               color: vendorBgColor,
               boxShadow: [
                 BoxShadow(
-                  color: theme.BreezColors.grey[600],
+                  color: theme.BreezColors.grey[600]!,
                   blurRadius: 8.0,
                 )
               ],

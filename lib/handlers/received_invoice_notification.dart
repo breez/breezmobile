@@ -13,12 +13,12 @@ class InvoiceNotificationsHandler {
   final BuildContext _context;
   final UserProfileBloc _userProfileBloc;
   final AccountBloc _accountBloc;
-  final Stream<PaymentRequestModel> _receivedInvoicesStream;
+  final Stream<PaymentRequestModel?> _receivedInvoicesStream;
   final GlobalKey firstPaymentItemKey;
   final ScrollController scrollController;
   final GlobalKey<ScaffoldState> scaffoldController;
 
-  ModalRoute _loaderRoute;
+  late ModalRoute? _loaderRoute;
   bool _handlingRequest = false;
 
   InvoiceNotificationsHandler(
@@ -39,11 +39,11 @@ class InvoiceNotificationsHandler {
         .listen((payreq) async {
       final navigator = Navigator.of(_context);
       var account = await _accountBloc.accountStream
-          .firstWhere((a) => !a.initial, orElse: () => null);
+          .firstWhere((a) => a != null && !a.initial, orElse: () => null);
       if (account == null || !account.connected) {
         return;
       }
-      if (!payreq.loaded) {
+      if (!payreq!.loaded) {
         _setLoading(true);
         return;
       }
@@ -51,7 +51,8 @@ class InvoiceNotificationsHandler {
       _handlingRequest = true;
 
       // Close the drawer before showing payment request dialog
-      if (scaffoldController.currentState.isDrawerOpen) {
+      if (scaffoldController.currentState!.isDrawerOpen) {
+        // TODO : Null Handling - scaffoldController.currentState may be null
         navigator.pop();
       }
 
@@ -59,7 +60,7 @@ class InvoiceNotificationsHandler {
         (user) async {
           await protectAdminAction(
             _context,
-            user,
+            user!,
             () {
               return showDialog(
                 useRootNavigator: false,
@@ -91,12 +92,12 @@ class InvoiceNotificationsHandler {
   _setLoading(bool visible) {
     if (visible && _loaderRoute == null) {
       _loaderRoute = createLoaderRoute(_context);
-      Navigator.of(_context).push(_loaderRoute);
+      Navigator.of(_context).push(_loaderRoute!);
       return;
     }
 
     if (!visible && _loaderRoute != null) {
-      Navigator.removeRoute(_context, _loaderRoute);
+      Navigator.removeRoute(_context, _loaderRoute!);
       _loaderRoute = null;
     }
   }

@@ -13,7 +13,7 @@ import '../../../utils/min_font_size.dart';
 import 'item_avatar.dart';
 
 class ItemAvatarPicker extends StatefulWidget {
-  final String itemImage;
+  final String? itemImage;
   final Function(String selectedImage) onImageSelected;
   final String? itemName;
 
@@ -186,7 +186,7 @@ class ItemAvatarPickerState extends State<ItemAvatarPicker> {
   }
 
   Widget _buildIconGrid(BuildContext context) {
-    final posCatalogBloc = AppBlocsProvider.of<PosCatalogBloc>(context);
+    final posCatalogBloc = AppBlocsProvider.of<PosCatalogBloc>(context)!;
 
     return StreamBuilder<List<ProductIcon>>(
       stream: posCatalogBloc.productIconsStream,

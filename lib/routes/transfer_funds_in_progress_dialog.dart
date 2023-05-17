@@ -7,13 +7,13 @@ import 'package:flutter/material.dart';
 
 Widget buildTransferFundsInProgressDialog(
   BuildContext context,
-  Stream<AccountModel> accountStream,
+  Stream<AccountModel?> accountStream,
 ) {
   return _TransferFundsInProgressDialog(accountStream: accountStream);
 }
 
 class _TransferFundsInProgressDialog extends StatefulWidget {
-  final Stream<AccountModel> accountStream;
+  final Stream<AccountModel?> accountStream;
 
   const _TransferFundsInProgressDialog({
     Key key,

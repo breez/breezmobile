@@ -128,7 +128,7 @@ class QrCodeDialogState extends State<QrCodeDialog>
                   texts.qr_code_dialog_invoice,
                   style: themeData.dialogTheme.titleTextStyle,
                 ),
-                StreamBuilder<AccountModel>(
+                StreamBuilder<AccountModel?>(
                   stream: widget._accountBloc.accountStream,
                   builder: (accCtx, accSnapshot) {
                     bool synced = accSnapshot.data?.synced == true;
@@ -206,7 +206,7 @@ class QrCodeDialogState extends State<QrCodeDialog>
             titlePadding: const EdgeInsets.fromLTRB(20.0, 22.0, 0.0, 8.0),
             contentPadding: const EdgeInsets.fromLTRB(0.0, 0.0, 0.0, 20.0),
             children: [
-              StreamBuilder<AccountModel>(
+              StreamBuilder<AccountModel?>(
                 stream: widget._accountBloc.accountStream,
                 builder: (context, accSnapshot) {
                   final accountModel = accSnapshot.data;
@@ -299,7 +299,7 @@ class QrCodeDialogState extends State<QrCodeDialog>
   ) {
     final themeData = Theme.of(context);
 
-    return StreamBuilder<AccountModel>(
+    return StreamBuilder<AccountModel?>(
       stream: widget._accountBloc.accountStream,
       builder: (context, accSnapshot) {
         bool hasError = accSnapshot.hasError ||

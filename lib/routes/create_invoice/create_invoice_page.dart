@@ -117,7 +117,7 @@ class CreateInvoicePageState extends State<CreateInvoicePage> {
 
     return Scaffold(
       key: _scaffoldKey,
-      bottomNavigationBar: StreamBuilder<AccountModel>(
+      bottomNavigationBar: StreamBuilder<AccountModel?>(
         stream: accountBloc.accountStream,
         builder: (context, snapshot) {
           if (!snapshot.hasData) {
@@ -152,7 +152,7 @@ class CreateInvoicePageState extends State<CreateInvoicePage> {
         leading: const backBtn.BackButton(),
         title: Text(texts.invoice_title),
         actions: [
-          StreamBuilder<AccountModel>(
+          StreamBuilder<AccountModel?>(
             stream: accountBloc.accountStream,
             builder: (context, snapshot) {
               final account = snapshot.data;
@@ -177,7 +177,7 @@ class CreateInvoicePageState extends State<CreateInvoicePage> {
           )
         ],
       ),
-      body: StreamBuilder<AccountModel>(
+      body: StreamBuilder<AccountModel?>(
         stream: accountBloc.accountStream,
         builder: (context, snapshot) {
           if (!snapshot.hasData) {
@@ -251,7 +251,7 @@ class CreateInvoicePageState extends State<CreateInvoicePage> {
                             )
                           ],
                           _buildReceivableBTC(context, acc, lspStatus),
-                          StreamBuilder<AccountModel>(
+                          StreamBuilder<AccountModel?>(
                             stream: accountBloc.accountStream,
                             builder: (context, accSnapshot) {
                               if (!accSnapshot.hasData) {

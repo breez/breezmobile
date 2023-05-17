@@ -67,7 +67,7 @@ class PaymentOptionsBloc with AsyncActionsHandler {
     final prefs = await _injector.sharedPreferences;
     bool paymentFeeEnabled;
     if (prefs.containsKey(_kPaymentOptionOverrideFee)) {
-      paymentFeeEnabled = prefs.getBool(_kPaymentOptionOverrideFee);
+      paymentFeeEnabled = prefs.getBool(_kPaymentOptionOverrideFee)!;
     } else {
       paymentFeeEnabled = _kDefaultOverrideFee;
     }
@@ -87,7 +87,7 @@ class PaymentOptionsBloc with AsyncActionsHandler {
     final prefs = await _injector.sharedPreferences;
     int baseFee;
     if (prefs.containsKey(_kPaymentOptionBaseFee)) {
-      baseFee = prefs.getInt(_kPaymentOptionBaseFee);
+      baseFee = prefs.getInt(_kPaymentOptionBaseFee)!;
     } else {
       baseFee = _kDefaultBaseFee;
     }
@@ -111,7 +111,7 @@ class PaymentOptionsBloc with AsyncActionsHandler {
     final prefs = await _injector.sharedPreferences;
     double proportionalFee;
     if (prefs.containsKey(_kPaymentOptionProportionalFee)) {
-      proportionalFee = prefs.getDouble(_kPaymentOptionProportionalFee);
+      proportionalFee = prefs.getDouble(_kPaymentOptionProportionalFee)!;
     } else {
       proportionalFee = _kDefaultProportionalFee;
     }

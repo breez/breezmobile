@@ -18,7 +18,7 @@ void checkVersionDialog(
 ) {
   final texts = context.texts();
   final themeData = Theme.of(context);
-  AccountBloc accBloc = AppBlocsProvider.of<AccountBloc>(context);
+  AccountBloc accBloc = AppBlocsProvider.of<AccountBloc>(context)!;
   CheckVersion action = CheckVersion();
   userProfileBloc.userActionsSink.add(action);
   action.future.catchError((err) {

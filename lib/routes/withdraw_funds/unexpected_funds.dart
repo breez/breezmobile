@@ -42,7 +42,7 @@ class UnexpectedFundsState extends State<UnexpectedFunds> {
     final texts = context.texts();
     final accountBloc = AppBlocsProvider.of<AccountBloc>(context);
     return Scaffold(
-      body: StreamBuilder<AccountModel>(
+      body: StreamBuilder<AccountModel?>(
         stream: accountBloc.accountStream,
         builder: (context, accSnapshot) {
           if (accSnapshot.data == null) {

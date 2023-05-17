@@ -4,7 +4,8 @@ import 'package:flutter/material.dart';
 class AppBlocsProvider extends InheritedWidget {
   final AppBlocs appBlocs;
 
-  const AppBlocsProvider({Key key, Widget child, this.appBlocs})
+  const AppBlocsProvider(
+      {Key? key, required Widget child, required this.appBlocs})
       : super(key: key, child: child);
 
   @override
@@ -12,8 +13,8 @@ class AppBlocsProvider extends InheritedWidget {
     return true;
   }
 
-  static T of<T>(BuildContext context) {
-    AppBlocsProvider widget =
+  static T? of<T>(BuildContext context) {
+    AppBlocsProvider? widget =
         context.dependOnInheritedWidgetOfExactType<AppBlocsProvider>();
     if (widget == null) {
       return null;
@@ -30,20 +31,21 @@ class BlocProvider<T extends Bloc> extends StatefulWidget {
   final T Function() creator;
   final WidgetBuilder builder;
 
-  const BlocProvider({Key key, this.creator, this.builder}) : super(key: key);
+  const BlocProvider({Key? key, required this.creator, required this.builder})
+      : super(key: key);
 
   @override
   State<StatefulWidget> createState() {
     return _BlocProviderState<T>();
   }
 
-  static T of<T>(BuildContext context) {
+  static T? of<T>(BuildContext context) {
     return _Inherited.of<T>(context);
   }
 }
 
 class _BlocProviderState<T extends Bloc> extends State<BlocProvider<T>> {
-  T _bloc;
+  late T _bloc;
 
   @override
   void initState() {
@@ -66,7 +68,7 @@ class _BlocProviderState<T extends Bloc> extends State<BlocProvider<T>> {
 class _Inherited<T> extends InheritedWidget {
   final T bloc;
 
-  const _Inherited({Key key, Widget child, this.bloc})
+  const _Inherited({Key? key, required Widget child, required this.bloc})
       : super(key: key, child: child);
 
   @override
@@ -74,8 +76,8 @@ class _Inherited<T> extends InheritedWidget {
     return true;
   }
 
-  static T of<T>(BuildContext context) {
-    _Inherited widget =
+  static T? of<T>(BuildContext context) {
+    _Inherited? widget =
         context.dependOnInheritedWidgetOfExactType<_Inherited<T>>();
     if (widget == null) {
       return null;

@@ -22,7 +22,7 @@ class GetRefundPage extends StatelessWidget {
         leading: const backBtn.BackButton(),
         title: Text(texts.get_refund_title),
       ),
-      body: StreamBuilder<AccountModel>(
+      body: StreamBuilder<AccountModel?>(
         stream: accountBloc.accountStream,
         builder: (context, accSnapshot) {
           if (!accSnapshot.hasData || !accSnapshot.hasData) {

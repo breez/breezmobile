@@ -51,7 +51,7 @@ class SqliteRepository implements Repository {
   }
 
   @override
-  Future<List<int>> fetchAssetByURL(String url) async {
+  Future<List<int>?> fetchAssetByURL(String url) async {
     var assets = await _fetchDBItems(
         await getDB(), "asset", (e) => Asset.fromMap(e),
         where: "url = ?", whereArgs: [url]);
@@ -73,7 +73,7 @@ class SqliteRepository implements Repository {
   }
 
   @override
-  Future<List<Item>> fetchItems({String filter}) async {
+  Future<List<Item>> fetchItems({String? filter}) async {
     return _fetchDBItems(await getDB(), "item", (e) => Item.fromMap(e),
         where: filter == null ? null : "name LIKE ? OR sku LIKE ?",
         whereArgs: ['%$filter%', '%$filter%']);
@@ -86,7 +86,7 @@ class SqliteRepository implements Repository {
   }
 
   @override
-  Future<Item> fetchItemByID(int id) async {
+  Future<Item?> fetchItemByID(int id) async {
     var items = await _fetchDBItems(
         await getDB(), "item", (e) => Item.fromMap(e),
         where: "id = ?", whereArgs: [id]);
@@ -125,7 +125,7 @@ class SqliteRepository implements Repository {
   }
 
   @override
-  Future<Sale> fetchSaleByID(int id) async {
+  Future<Sale?> fetchSaleByID(int id) async {
     var items = await _fetchDBItems(
         await getDB(), "sale", (e) => Sale.fromMap(e),
         where: "id = ?", whereArgs: [id]);
@@ -140,14 +140,14 @@ class SqliteRepository implements Repository {
   }
 
   @override
-  Future<Sale> fetchSaleByPaymentHash(String paymentHash) async {
-    int saleID = await (await getDB()).transaction((txn) async {
+  Future<Sale?> fetchSaleByPaymentHash(String paymentHash) async {
+    int? saleID = await (await getDB()).transaction((txn) async {
       var salePayment = await txn.query("sale_payments",
           where: "payment_hash = ?", whereArgs: [paymentHash]);
       if (salePayment.isEmpty) {
         return null;
       }
-      return salePayment.first["sale_id"];
+      return salePayment.first["sale_id"] as int;
     });
 
     if (saleID != null) {
@@ -187,12 +187,13 @@ class SqliteRepository implements Repository {
     );
   }
 
-  Future<int> _updateDBItem(
+  Future _updateDBItem(
+    // TODO : Null Handling - Missing Type
     DatabaseExecutor executor,
     String tableName,
     Map<String, dynamic> toUpdate, {
-    String where,
-    List whereArgs,
+    String? where,
+    List? whereArgs,
   }) async {
     return executor.update(
       tableName,
@@ -203,11 +204,12 @@ class SqliteRepository implements Repository {
     );
   }
 
-  Future<int> _deleteDBItems(
+  Future _deleteDBItems(
+    // TODO : Null Handling - Missing Type
     DatabaseExecutor executor,
     String table, {
-    String where,
-    List whereArgs,
+    String? where,
+    List? whereArgs,
   }) async {
     return await executor.delete(table, where: where, whereArgs: whereArgs);
   }
@@ -216,8 +218,8 @@ class SqliteRepository implements Repository {
     DatabaseExecutor executor,
     String table,
     T Function(Map<String, dynamic>) fromMapFunc, {
-    String where,
-    List whereArgs,
+    String? where,
+    List? whereArgs,
   }) async {
     List<Map<String, dynamic>> items;
     if (where == null) {
@@ -277,14 +279,14 @@ class SqliteRepository implements Repository {
       ],
     );
 
-    if (report != null && report.isNotEmpty) {
+    if (report.isNotEmpty) {
       final reportMap = report.first;
 
-      double satValue = reportMap["sat_value"] ?? 0.0;
-      int totalSales = reportMap["total_sales"] ?? 0;
-      double fiatValue = reportMap["fiat_value"] ?? 0.0;
-      int currencies = reportMap["num_currencies"] ?? 0;
-      String currency = reportMap["currencies"] ?? "";
+      double satValue = (reportMap["sat_value"] ?? 0.0) as double;
+      int totalSales = (reportMap["total_sales"] ?? 0) as int;
+      double fiatValue = (reportMap["fiat_value"] ?? 0.0) as double;
+      int currencies = (reportMap["num_currencies"] ?? 0) as int;
+      String currency = (reportMap["currencies"] ?? "") as String;
 
       Map<String, double> fiatValues = {};
       if (currencies == 1 &&

@@ -13,17 +13,17 @@ class ConditionalDeposit extends StatelessWidget {
   final String title;
 
   const ConditionalDeposit({
-    Key key,
-    this.enabledChild,
-    this.title,
+    Key? key,
+    required this.enabledChild,
+    required this.title,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     final texts = context.texts();
-    final accountBloc = AppBlocsProvider.of<AccountBloc>(context);
+    final accountBloc = AppBlocsProvider.of<AccountBloc>(context)!;
 
-    return StreamBuilder<AccountModel>(
+    return StreamBuilder<AccountModel?>(
       stream: accountBloc.accountStream,
       builder: (ctx, snapshot) {
         final account = snapshot.data;
@@ -33,7 +33,7 @@ class ConditionalDeposit extends StatelessWidget {
 
         final unconfirmedTxID = account.swapFundsStatus.unconfirmedTxID;
         bool waitingDepositConfirmation = unconfirmedTxID?.isNotEmpty == true;
-        String errorMessage;
+        String? errorMessage;
 
         if (unconfirmedTxID?.isNotEmpty == true) {
           if (waitingDepositConfirmation || account.processingConnection) {
@@ -77,7 +77,7 @@ class ConditionalDeposit extends StatelessWidget {
                             left: 30.0,
                             right: 30.0,
                           ),
-                          child: _linkLauncher(context, unconfirmedTxID),
+                          child: _linkLauncher(context, unconfirmedTxID!),
                         ),
                       ],
                     )

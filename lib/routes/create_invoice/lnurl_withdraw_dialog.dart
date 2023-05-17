@@ -119,7 +119,7 @@ class LNUrlWithdrawDialogState extends State<LNURlWithdrawDialog>
           style: themeData.dialogTheme.titleTextStyle,
           textAlign: TextAlign.center,
         ),
-        content: StreamBuilder<AccountModel>(
+        content: StreamBuilder<AccountModel?>(
           stream: widget.accountBloc.accountStream,
           builder: (context, snapshot) {
             return Column(

@@ -75,7 +75,8 @@ class InvoiceBloc with AsyncActionsHandler {
           // TODO : Null Safety - clipboardData may be null
           return DecodedClipboardData(parseNodeId(clipboardData)!, "nodeID");
         }
-        String normalized = clipboardData.toLowerCase(); // TODO : Null Safety - clipboardData may be null
+        String normalized = clipboardData
+            .toLowerCase(); // TODO : Null Safety - clipboardData may be null
         if (normalized.startsWith("lightning:")) {
           normalized = normalized.substring(10);
         }
@@ -97,35 +98,47 @@ class InvoiceBloc with AsyncActionsHandler {
           }
         }
         return null;
-      }).where((event) => event != null);
+      }).where((event) => event != null); // TODO : Null Handling
 
   void _listenInvoiceRequests(BreezBridge breezLib, NFCService nfc) {
     _newInvoiceRequestController.stream.listen((invoiceRequest) {
       _readyInvoicesController.add(null);
       breezLib
-          .addInvoice(invoiceRequest.amount,
-              payeeName: invoiceRequest.payeeName,
-              payeeImageURL: invoiceRequest.logo,
-              description: invoiceRequest.description,
-              expiry: invoiceRequest.expiry)
+          .addInvoice(
+        invoiceRequest.amount,
+        payeeName: invoiceRequest.payeeName,
+        payeeImageURL: invoiceRequest.logo,
+        description: invoiceRequest.description,
+        expiry: invoiceRequest.expiry,
+      )
           .then((payReq) async {
         log.info("Payment Request: ${payReq.paymentRequest}");
         var memo = await _breezLib.decodePaymentRequest(payReq.paymentRequest);
         var paymentHash =
             await _breezLib.getPaymentRequestHash(payReq.paymentRequest);
-        _readyInvoicesController.add(PaymentRequestModel(
-            memo, payReq.paymentRequest, paymentHash, payReq.lspFee));
-      }).catchError(_readyInvoicesController.addError);
+        _readyInvoicesController.add(
+          PaymentRequestModel(
+            memo,
+            payReq.paymentRequest,
+            paymentHash,
+            payReq.lspFee,
+          ),
+        );
+      }).catchError((error) {
+        _readyInvoicesController.addError(error);
+      });
     });
   }
 
   Future _newInvoice(NewInvoice action) async {
     var invoiceRequest = action.request;
-    var payReq = await _breezLib.addInvoice(invoiceRequest.amount,
-        payeeName: invoiceRequest.payeeName,
-        payeeImageURL: invoiceRequest.logo,
-        description: invoiceRequest.description,
-        expiry: invoiceRequest.expiry);
+    var payReq = await _breezLib.addInvoice(
+      invoiceRequest.amount,
+      payeeName: invoiceRequest.payeeName,
+      payeeImageURL: invoiceRequest.logo,
+      description: invoiceRequest.description,
+      expiry: invoiceRequest.expiry,
+    );
     var memo = await _breezLib.decodePaymentRequest(payReq.paymentRequest);
     var paymentHash =
         await _breezLib.getPaymentRequestHash(payReq.paymentRequest);

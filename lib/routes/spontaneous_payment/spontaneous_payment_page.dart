@@ -72,7 +72,7 @@ class SpontaneousPaymentPageState extends State<SpontaneousPaymentPage> {
     final accountBloc = AppBlocsProvider.of<AccountBloc>(context);
 
     return Scaffold(
-      bottomNavigationBar: StreamBuilder<AccountModel>(
+      bottomNavigationBar: StreamBuilder<AccountModel?>(
         stream: accountBloc.accountStream,
         builder: (context, snapshot) {
           if (!snapshot.hasData) {
@@ -97,7 +97,7 @@ class SpontaneousPaymentPageState extends State<SpontaneousPaymentPage> {
         leading: const backBtn.BackButton(),
         title: Text(texts.spontaneous_payment_title),
       ),
-      body: StreamBuilder<AccountModel>(
+      body: StreamBuilder<AccountModel?>(
         stream: accountBloc.accountStream,
         builder: (context, snapshot) {
           if (!snapshot.hasData) {

@@ -23,7 +23,7 @@ class PosReportDialog extends StatelessWidget {
     final posCatalogBloc = AppBlocsProvider.of<PosCatalogBloc>(context);
     final accountBloc = AppBlocsProvider.of<AccountBloc>(context);
 
-    return StreamBuilder<AccountModel>(
+    return StreamBuilder<AccountModel?>(
       stream: accountBloc.accountStream,
       builder: (context, snapshot) {
         final accountModel = snapshot.data;

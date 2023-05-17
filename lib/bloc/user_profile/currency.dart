@@ -38,7 +38,7 @@ class Currency extends Object {
   }) {
     int value;
     try {
-      value = parse(amountStr).toInt() ?? def;
+      value = parse(amountStr).toInt();
     } catch (e) {
       return def;
     }
@@ -93,7 +93,9 @@ class _CurrencyFormatter {
             formattedAmount = amountInBTC.toInt().toString();
           } else {
             formattedAmount = formattedAmount.replaceAllMapped(
-                RegExp(r'^(\d+\.\d*?[1-9])0+$'), (match) => match.group(1));
+              RegExp(r'^(\d+\.\d*?[1-9])0+$'),
+              (match) => match.group(1)!, // TODO : Null Handling - There may be no matches
+            );
           }
         }
         break;

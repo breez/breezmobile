@@ -96,7 +96,7 @@ class PaymentRequestInfoDialogState extends State<PaymentRequestInfoDialog> {
   }
 
   Widget _buildPaymentRequestContent() {
-    return StreamBuilder<AccountModel>(
+    return StreamBuilder<AccountModel?>(
       stream: widget.accountBloc.accountStream,
       builder: (context, snapshot) {
         final account = snapshot.data;

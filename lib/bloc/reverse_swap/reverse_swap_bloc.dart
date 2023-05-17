@@ -29,11 +29,11 @@ class ReverseSwapBloc with AsyncActionsHandler {
   Stream<void> get broadcastTxStream => _broadcastTxStreamController.stream;
 
   final Stream<PaymentsModel> _paymentsStream;
-  final Stream<BreezUserModel> _userStream;
-  BreezBridge _breezLib;
-  BreezUserModel _currentUser;
+  final Stream<BreezUserModel?> _userStream;
+  late BreezBridge _breezLib;
+  late BreezUserModel _currentUser;
   int refreshInProgressIndex = 0;
-  Notifications _notificationsService;
+  late Notifications _notificationsService;
   final PaymentOptionsBloc _paymentOptionsBloc;
 
   ReverseSwapBloc(
@@ -67,7 +67,7 @@ class ReverseSwapBloc with AsyncActionsHandler {
         .listen((_) {
           _refreshInProgressSwaps();
         });
-    _userStream.listen((u) => _currentUser = u);
+    _userStream.listen((u) => _currentUser = u!); // TODO : Null Handling
     listenActions();
     _refreshInProgressSwaps();
     _listenPushNotification();
@@ -130,7 +130,7 @@ class ReverseSwapBloc with AsyncActionsHandler {
     );
 
     var resultCompleter = Completer();
-    onComplete({String error}) {
+    onComplete({String? error}) {
       if (resultCompleter.isCompleted) {
         return;
       }

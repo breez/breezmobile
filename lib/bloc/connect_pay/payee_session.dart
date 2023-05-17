@@ -45,16 +45,16 @@ class PayeeRemoteSession extends RemoteSession with OnlineStatusUpdater {
       _sessionErrorsController.stream;
 
   final BreezServer _breezServer = ServiceInjector().breezServer;
-  StreamSubscription _invoicesPaidSubscription;
-  PaymentSessionChannel _channel;
+  late StreamSubscription _invoicesPaidSubscription;
+  late PaymentSessionChannel _channel;
   final BreezBridge _breezLib = ServiceInjector().breezBridge;
   final BackgroundTaskService _backgroundService =
       ServiceInjector().backgroundTaskService;
   final BreezUserModel _currentUser;
   var sessionState = <String, dynamic>{};
-  SessionLinkModel sessionLink;
+  late SessionLinkModel sessionLink;
   @override
-  String get sessionID => sessionLink?.sessionID;
+  String get sessionID => sessionLink.sessionID!;
   final Completer _sessionCompleter = Completer();
 
   PayeeRemoteSession(this._currentUser, {PayerSessionData? existingPayerData})
@@ -102,7 +102,7 @@ class PayeeRemoteSession extends RemoteSession with OnlineStatusUpdater {
     _approvePaymentController.stream.first.then((request) {
       var payerData = _currentSession.payerData;
       _breezLib
-          .addInvoice(Int64(payerData.amount),
+          .addInvoice(Int64(payerData.amount!),
               payeeName: _currentUser.name,
               payeeImageURL: _currentUser.avatarURL,
               payerName: payerData.userName,
@@ -238,15 +238,21 @@ class PayeeRemoteSession extends RemoteSession with OnlineStatusUpdater {
         .listen((_) {
       if (_currentSession.payeeData.paymentRequest != null) {
         _breezLib
-            .getRelatedInvoice(_currentSession.payeeData.paymentRequest)
+            .getRelatedInvoice(_currentSession.payeeData.paymentRequest!)
             .then((invoice) {
           if (invoice.settled) {
-            _paymentSessionController.add(_currentSession.copyWith(
+            _paymentSessionController.add(
+              _currentSession.copyWith(
                 paymentFulfilled: true,
-                settledAmount: invoice.amtPaid.toInt()));
+                settledAmount: invoice.amtPaid.toInt(),
+              ),
+            );
           }
-        }).catchError((err) => _sessionErrorsController
-                .add(PaymentSessionError.unknown(err.toString())));
+        }).catchError((err) {
+          _sessionErrorsController.add(
+            PaymentSessionError.unknown(err.toString()),
+          );
+        });
       }
     });
   }

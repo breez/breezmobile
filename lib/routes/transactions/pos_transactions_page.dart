@@ -44,7 +44,7 @@ class PosTransactionsPageState extends State<PosTransactionsPage> {
   Widget build(BuildContext context) {
     final texts = context.texts();
 
-    return StreamBuilder<AccountModel>(
+    return StreamBuilder<AccountModel?>(
       stream: _accountBloc.accountStream,
       builder: (context, snapshot) {
         final account = snapshot.data;

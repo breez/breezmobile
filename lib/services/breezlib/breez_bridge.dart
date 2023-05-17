@@ -26,16 +26,16 @@ class BreezBridge {
 
   final DownloadTaskManager downloadManager;
   final Future<SharedPreferences> sharedPreferences;
-  String _selectedLspID;
+  String? _selectedLspID;
   Completer _readyCompleter = Completer();
   final Completer _startedCompleter = Completer();
-  final StreamController _eventsController =
+  final StreamController<NotificationEvent> _eventsController =
       StreamController<NotificationEvent>.broadcast();
   Stream<NotificationEvent> get notificationStream => _eventsController.stream;
   bool ready = false;
-  Future<Directory> _tempDirFuture;
-  GraphDownloader _graphDownloader;
-  Future<DateTime> _inProgressGraphSync;
+  late Future<Directory> _tempDirFuture;
+  late GraphDownloader _graphDownloader;
+  late Future<DateTime>? _inProgressGraphSync;
 
   BreezBridge(this.downloadManager, this.sharedPreferences);
 
@@ -96,7 +96,7 @@ class BreezBridge {
           _graphDownloader.downloadGraph(downloadURL).then((file) async {
         final fileChecksum =
             await Md5FileChecksum.getFileChecksum(filePath: file.path);
-        var rawBytes = base64.decode(fileChecksum);
+        var rawBytes = base64.decode(fileChecksum!); // TODO : Null Handling - fileChecksum may be null
         var hexChecksum = HEX.encode(rawBytes);
         if (hexChecksum != checksum) {
           logger.log.info(
@@ -153,7 +153,7 @@ class BreezBridge {
   }
 
   Future<bool> launchedByJob() async {
-    var values = await _methodChannel.invokeMethod("launchOptions") as Map;
+    var values = await _methodChannel.invokeMethod("launchOptions") as Map?;
     return values != null && values["jobLaunched"] == true;
   }
 
@@ -163,7 +163,7 @@ class BreezBridge {
     );
   }
 
-  Future startLightning(TorConfig torConfig) {
+  Future startLightning(TorConfig? torConfig) {
     return _startedCompleter.future.then((_) => _start(torConfig)).then((_) {
       syncGraphIfNeeded();
     });
@@ -173,7 +173,7 @@ class BreezBridge {
     return _methodChannel.invokeMethod("restartDaemon");
   }
 
-  Future _start(TorConfig torConfig) async {
+  Future _start(TorConfig? torConfig) async {
     logger.log.info("breez_bridge.dart: _start");
 
     return _invokeMethodImmediate("start", {
@@ -393,7 +393,7 @@ class BreezBridge {
       {Int64 feeLimitMsat = Int64.ZERO,
       String groupKey = "",
       String groupName = "",
-      Map<Int64, String> tlv}) {
+      Map<Int64, String>? tlv}) {
     var request = SpontaneousPaymentRequest()
       ..description = description
       ..destNode = destNode
@@ -420,8 +420,8 @@ class BreezBridge {
 
   Future<PaymentResponse> sendPaymentForRequest(
     String blankInvoicePaymentRequest, {
-    Int64 amount,
-    Int64 fee,
+    Int64? amount,
+    Int64? fee,
   }) {
     PayInvoiceRequest invoice = PayInvoiceRequest();
     amount ??= Int64(0);
@@ -449,7 +449,7 @@ class BreezBridge {
           return response;
         }
         logger.log.info("payment failed, checking if graph sync is needed");
-        return _inProgressGraphSync.timeout(const Duration(seconds: 50)).then(
+        return _inProgressGraphSync!.timeout(const Duration(seconds: 50)).then(
           (lastSyncTime) {
             if (lastSyncTime.isAfter(startPaymentTime)) {
               logger.log.info(
@@ -498,6 +498,7 @@ class BreezBridge {
       "graphURL",
     ).then((result) => result as String).catchError((e) {
       logger.log.info("Error in graphURL:$e");
+      return "";
     });
   }
 
@@ -552,13 +553,13 @@ class BreezBridge {
 
   Future<AddInvoiceReply> addInvoice(
     Int64 amount, {
-    String payeeName,
-    String payeeImageURL,
-    String payerName,
-    String payerImageURL,
-    String description,
-    Int64 expiry,
-    LSPInformation inputLSP,
+    String? payeeName,
+    String? payeeImageURL,
+    String? payerName,
+    String? payerImageURL,
+    String? description,
+    Int64? expiry,
+    LSPInformation? inputLSP,
   }) async {
     InvoiceMemo invoice = InvoiceMemo();
     invoice.amount = amount;
@@ -588,12 +589,12 @@ class BreezBridge {
       // if we have a selected lsp, let's use it
       var lsps = await getLSPList();
       if (_selectedLspID != null) {
-        request.lspInfo = lsps.lsps[_selectedLspID];
+        request.lspInfo = lsps.lsps[_selectedLspID]!;
       } else {
         // if we only have one lsp in our options, let's use it.
         var keys = lsps.lsps.keys.toList();
         if (keys.length == 1) {
-          request.lspInfo = lsps.lsps[keys[0]];
+          request.lspInfo = lsps.lsps[keys[0]]!;
         }
       }
     }
@@ -644,7 +645,7 @@ class BreezBridge {
     ).then((res) => CreateRatchetSessionReply()..mergeFromBuffer(res ?? []));
   }
 
-  Future<RatchetSessionInfoReply> ratchetSessionInfo(String sessionID) {
+  Future<RatchetSessionInfoReply?> ratchetSessionInfo(String sessionID) {
     return _invokeMethodImmediate(
       "ratchetSessionInfo",
       {"argument": sessionID},
@@ -816,7 +817,7 @@ class BreezBridge {
         .then((res) => res as String);
   }
 
-  Future<DownloadBackupResponse> downloadBackup(String nodeId) async {
+  Future<DownloadBackupResponse> downloadBackup(String? nodeId) async {
     return _methodChannel.invokeMethod(
       "downloadBackup",
       {"argument": nodeId},
@@ -899,7 +900,7 @@ class BreezBridge {
         .then((result) => result as bool);
   }
 
-  Future setBackupTorConfig(TorConfig torConfig) {
+  Future setBackupTorConfig(TorConfig? torConfig) {
     return _invokeMethodImmediate(
       'setBackupTorConfig',
       {'argument': torConfig?.writeToBuffer()},
@@ -928,7 +929,7 @@ class BreezBridge {
             "Error in calling method '$methodName' with error: $err.",
           );
 
-          throw (err as PlatformException).message;
+          throw (err as PlatformException).message != null ? err.message! : err.toString(); // TODO : Null Handling
         }
         throw err;
       });
@@ -977,7 +978,7 @@ class BreezBridge {
     String lines = await rootBundle.loadString('conf/breez.conf');
     var config = Config.fromString(lines);
     String lndDir = (await getApplicationDocumentsDirectory()).path;
-    String network = config.get('Application Options', 'network');
+    String network = config.get('Application Options', 'network')!; // TODO : Null Handling
     return '$lndDir/data/chain/bitcoin/$network/channel.backup';
   }
 }

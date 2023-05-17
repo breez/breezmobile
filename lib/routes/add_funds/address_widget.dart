@@ -8,8 +8,8 @@ import 'package:flutter/material.dart';
 import 'package:share_plus/share_plus.dart';
 
 class AddressWidget extends StatelessWidget {
-  final String address;
-  final String backupJson;
+  final String? address;
+  final String? backupJson;
 
   const AddressWidget(
     this.address,
@@ -60,7 +60,7 @@ class AddressWidget extends StatelessWidget {
                       padding: const EdgeInsets.only(top: 16.0),
                       child: GestureDetector(
                         onTap: () {
-                          ServiceInjector().device.setClipboardText(address);
+                          ServiceInjector().device.setClipboardText(address!);
                           showFlushbar(
                             context,
                             message: texts
@@ -68,7 +68,7 @@ class AddressWidget extends StatelessWidget {
                           );
                         },
                         child: Text(
-                          address,
+                          address!,
                           style: themeData.primaryTextTheme.titleSmall,
                         ),
                       ),
@@ -106,14 +106,14 @@ class AddressWidget extends StatelessWidget {
     Widget shareIcon = IconButton(
       icon: const Icon(IconData(0xe917, fontFamily: 'icomoon')),
       onPressed: () {
-        final RenderBox box = context.findRenderObject();
+        final RenderBox box = context.findRenderObject() as RenderBox;
         final offset = box.localToGlobal(Offset.zero) & box.size;
         final rect = Rect.fromPoints(
           offset.topLeft,
           offset.bottomRight,
         );
         Share.share(
-          address,
+          address!,
           sharePositionOrigin: rect,
         );
       },
@@ -121,7 +121,7 @@ class AddressWidget extends StatelessWidget {
     Widget copyIcon = IconButton(
       icon: const Icon(IconData(0xe90b, fontFamily: 'icomoon')),
       onPressed: () {
-        ServiceInjector().device.setClipboardText(address);
+        ServiceInjector().device.setClipboardText(address!);
         showFlushbar(
           context,
           message: texts.invoice_btc_address_deposit_address_copied,
@@ -149,14 +149,14 @@ class AddressWidget extends StatelessWidget {
               style: const TextStyle(color: Colors.blue),
               recognizer: TapGestureRecognizer()
                 ..onTap = () {
-                  final RenderBox box = context.findRenderObject();
+                  final RenderBox box = context.findRenderObject() as RenderBox;
                   final offset = box.localToGlobal(Offset.zero) & box.size;
                   final rect = Rect.fromPoints(
                     offset.topLeft,
                     offset.bottomRight,
                   );
                   Share.share(
-                    backupJson,
+                    backupJson!,
                     sharePositionOrigin: rect,
                   );
                 },

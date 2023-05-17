@@ -54,7 +54,7 @@ class SwapRefundDialogState extends State<SwapRefundDialog> {
             return const Loader();
           }
 
-          return StreamBuilder<AccountModel>(
+          return StreamBuilder<AccountModel?>(
             stream: widget.accountBloc.accountStream,
             builder: (ctx, snapshot) {
               final swapStatus = snapshot?.data?.swapFundsStatus;

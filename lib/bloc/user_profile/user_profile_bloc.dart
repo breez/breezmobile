@@ -294,12 +294,12 @@ class UserProfileBloc {
   }
 
   Future _verifyAdminPassword(VerifyAdminPassword action) async {
-    try{
+    try {
       var encodedHash = await _secureStorage.read(key: 'adminPassword');
       var decodedHash = HEX.decode(encodedHash!);
       var hashedPassword = sha256.convert(utf8.encode(action.password)).bytes;
       action.resolve(listEquals(decodedHash, hashedPassword));
-    } catch {
+    } catch (e) {
       action.resolve(false); // TODO : Null Safety - encodedHash can be null
     }
   }
@@ -371,7 +371,7 @@ class UserProfileBloc {
       String? token = await _notifications.getToken();
 
       if (token != null &&
-          (token != user.token || user.userID == null || user.userID.isEmpty)) {
+          (token != user.token || user.userID == null || user.userID!.isEmpty)) {
         //var userID = await _breezServer.registerDevice(token);
         var userID = token;
         userToRegister = userToRegister.copyWith(token: token, userID: userID);
@@ -421,7 +421,7 @@ class UserProfileBloc {
   void _listenUserChange(ServiceInjector injector) {
     _userController.stream.listen((userData) async {
       var preferences = await injector.sharedPreferences;
-      await _saveChanges(preferences, userData);
+      await _saveChanges(preferences, userData!);
     });
   }
 
@@ -458,17 +458,17 @@ class UserProfileBloc {
     return res;
   }
 
-  void _publishUser(BreezUserModel user) {
+  void _publishUser(BreezUserModel? user) {
     if (user?.token == null) {
       log.info("UserProfileBloc publish first user null token");
     } else {
-      log.info("UserProfileBloc before _publishUser token = ${user.token}");
+      log.info("UserProfileBloc before _publishUser token = ${user!.token}");
     }
     _userStreamController.add(user);
     _userStreamPreviewController.add(user);
   }
 
-  BreezUserModel get _currentUser => _userStreamController.value;
+  BreezUserModel get _currentUser => _userStreamController.value!;
 
   close() {
     _registrationController.close();

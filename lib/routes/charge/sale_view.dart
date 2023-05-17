@@ -101,7 +101,7 @@ class SaleViewState extends State<SaleView> {
     final themeData = Theme.of(context);
     final accountBloc = AppBlocsProvider.of<AccountBloc>(context);
 
-    return StreamBuilder<AccountModel>(
+    return StreamBuilder<AccountModel?>(
       stream: accountBloc.accountStream,
       builder: (context, accSnapshot) {
         var accModel = accSnapshot.data;

@@ -6,7 +6,7 @@ class InvoiceRequestModel {
   final String description;
   final String logo;
   final Int64 amount;
-  final Int64 expiry;
+  final Int64? expiry;
 
   InvoiceRequestModel(this.payeeName, this.description, this.logo, this.amount,
       {this.expiry});

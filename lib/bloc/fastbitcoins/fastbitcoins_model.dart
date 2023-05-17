@@ -60,7 +60,7 @@ class ValidateResponseModel {
 @JsonSerializable()
 class RedeemRequestModel {
   @JsonKey(includeFromJson: false, includeToJson: false)
-  ValidateResponseModel validateResponse;
+  late ValidateResponseModel validateResponse;
   @JsonKey(name: 'email_address')
   final String emailAddress;
   final String code;
@@ -72,7 +72,7 @@ class RedeemRequestModel {
   final String quotationSecret;
 
   @JsonKey(name: 'lightning_invoice')
-  String lightningInvoice;
+  late String lightningInvoice;
 
   RedeemRequestModel(this.emailAddress, this.code, this.value, this.currency,
       this.quotationId, this.quotationSecret);

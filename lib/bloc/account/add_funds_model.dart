@@ -1,12 +1,12 @@
 class AddFundsSettings {
   final bool moonpayIpCheck;
 
-  AddFundsSettings({this.moonpayIpCheck});
+  AddFundsSettings({required this.moonpayIpCheck});
 
   AddFundsSettings.start() : this(moonpayIpCheck: true);
 
   AddFundsSettings copyWith({
-    bool moonpayIpCheck,
+    bool? moonpayIpCheck,
   }) {
     return AddFundsSettings(
       moonpayIpCheck: moonpayIpCheck ?? this.moonpayIpCheck,

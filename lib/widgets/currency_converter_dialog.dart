@@ -119,7 +119,7 @@ class CurrencyConverterDialogState extends State<CurrencyConverterDialog>
   Widget build(BuildContext context) {
     final themeData = Theme.of(context);
 
-    return StreamBuilder<AccountModel>(
+    return StreamBuilder<AccountModel?>(
       stream: _accountBloc.accountStream,
       builder: (context, snapshot) {
         if (!snapshot.hasData) {

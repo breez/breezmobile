@@ -225,7 +225,7 @@ class NowPlayingTransportState extends State<NowPlayingTransport> {
             return const SizedBox();
           }
           var userModel = userSnapshot.data!;
-          return StreamBuilder<AccountModel>(
+          return StreamBuilder<AccountModel?>(
             stream: accountBloc.accountStream,
             builder: (context, snapshot) {
               if (!snapshot.hasData) {

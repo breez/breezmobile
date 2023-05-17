@@ -49,7 +49,7 @@ class SyncProgressDialogState extends State<SyncProgressDialog> {
     final themeData = Theme.of(context);
     final accountBloc = AppBlocsProvider.of<AccountBloc>(context);
 
-    return StreamBuilder<AccountModel>(
+    return StreamBuilder<AccountModel?>(
       stream: accountBloc.accountStream,
       builder: (context, snapshot) {
         AccountModel? acc = snapshot.data;

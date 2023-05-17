@@ -35,6 +35,7 @@ import 'package:breez/widgets/print_parameters.dart';
 import 'package:breez/widgets/transparent_page_route.dart';
 import 'package:breez/widgets/view_switch.dart';
 import 'package:breez_translations/breez_translations_locales.dart';
+import 'package:collection/collection.dart';
 import 'package:fixnum/fixnum.dart';
 import 'package:flutter/material.dart';
 
@@ -53,16 +54,16 @@ class POSInvoiceState extends State<POSInvoice> with TickerProviderStateMixin {
   final TextEditingController _itemFilterController = TextEditingController();
 
   bool _useFiat = false;
-  CurrencyWrapper currentCurrency;
+  late CurrencyWrapper currentCurrency;
   bool _isKeypadView = true;
-  SaleLine currentPendingItem;
-  StreamSubscription accountSubscription;
-  StreamSubscription<Sale> currentSaleSubscription;
-  Animation<RelativeRect> _transitionAnimation;
-  Animation<double> _scaleTransition;
-  Animation<double> _opacityTransition;
-  Item _itemInTransition;
-  Future _fetchRatesActionFuture;
+  late SaleLine? currentPendingItem;
+  late StreamSubscription? accountSubscription;
+  late StreamSubscription<Sale>? currentSaleSubscription;
+  late Animation<RelativeRect> _transitionAnimation;
+  late Animation<double> _scaleTransition;
+  late Animation<double> _opacityTransition;
+  late Item? _itemInTransition;
+  late Future _fetchRatesActionFuture;
 
   double get currentAmount => currentPendingItem?.totalFiat ?? 0;
 
@@ -106,9 +107,8 @@ class POSInvoiceState extends State<POSInvoice> with TickerProviderStateMixin {
         }
 
         // if the current pending item does not exist, then it was removed.
-        if (s.saleLines.firstWhere(
-                (s) => s.isCustom && s.itemName == currentPendingItem.itemName,
-                orElse: () => null) ==
+        if (s.saleLines.firstWhereOrNull((s) =>
+                s.isCustom && s.itemName == currentPendingItem!.itemName) ==
             null) {
           setState(() {
             currentPendingItem = null;
@@ -126,7 +126,7 @@ class POSInvoiceState extends State<POSInvoice> with TickerProviderStateMixin {
 
   @override
   void dispose() {
-    accountSubscription.cancel();
+    accountSubscription?.cancel();
     currentSaleSubscription?.cancel();
     super.dispose();
   }
@@ -143,7 +143,7 @@ class POSInvoiceState extends State<POSInvoice> with TickerProviderStateMixin {
       body: StreamBuilder<Sale>(
         stream: posCatalogBloc.currentSaleStream,
         builder: (context, saleSnapshot) {
-          var currentSale = saleSnapshot.data;
+          var currentSale = saleSnapshot.data!;
           return GestureDetector(
             onTap: () {
               // call this method here to hide soft keyboard
@@ -151,7 +151,7 @@ class POSInvoiceState extends State<POSInvoice> with TickerProviderStateMixin {
             },
             child: Builder(
               builder: (BuildContext context) {
-                return StreamBuilder<BreezUserModel>(
+                return StreamBuilder<BreezUserModel?>(
                   stream: userProfileBloc.userStream,
                   builder: (context, snapshot) {
                     final userProfile = snapshot.data;
@@ -159,7 +159,7 @@ class POSInvoiceState extends State<POSInvoice> with TickerProviderStateMixin {
                       return const Center(child: Loader());
                     }
 
-                    return StreamBuilder<AccountModel>(
+                    return StreamBuilder<AccountModel?>(
                       stream: accountBloc.accountStream,
                       builder: (context, snapshot) {
                         final accountModel = snapshot.data;
@@ -295,8 +295,8 @@ class POSInvoiceState extends State<POSInvoice> with TickerProviderStateMixin {
                   child: Opacity(
                     opacity: _opacityTransition.value,
                     child: ItemAvatar(
-                      _itemInTransition.imageURL,
-                      itemName: _itemInTransition.name,
+                      _itemInTransition!.imageURL,
+                      itemName: _itemInTransition!.name,
                     ),
                   ),
                 ),
@@ -358,8 +358,8 @@ class POSInvoiceState extends State<POSInvoice> with TickerProviderStateMixin {
     final texts = context.texts();
     return ViewSwitch(
       selected: _isKeypadView ? 0 : 1,
-      tint: themeData.primaryTextTheme.labelLarge.color,
-      textTint: themeData.textTheme.labelLarge.color,
+      tint: themeData.primaryTextTheme.labelLarge!.color!,
+      textTint: themeData.textTheme.labelLarge!.color!,
       items: [
         ViewSwitchItem(
           texts.pos_invoice_tab_keypad,
@@ -444,7 +444,7 @@ class POSInvoiceState extends State<POSInvoice> with TickerProviderStateMixin {
 
     final errorName = user.name == null;
     final errorAvatar = user.avatarURL == null;
-    String errorMessage;
+    String? errorMessage;
     if (errorName || errorAvatar) {
       errorMessage = texts.pos_invoice_error_submit_name_avatar;
     } else if (errorName) {
@@ -469,7 +469,7 @@ class POSInvoiceState extends State<POSInvoice> with TickerProviderStateMixin {
             contentPadding: const EdgeInsets.fromLTRB(24.0, 8.0, 24.0, 8.0),
             content: SingleChildScrollView(
               child: Text(
-                errorMessage,
+                errorMessage!,
                 style: themeData.dialogTheme.contentTextStyle,
               ),
             ),
@@ -519,7 +519,7 @@ class POSInvoiceState extends State<POSInvoice> with TickerProviderStateMixin {
       }
 
       final maxPaymentAmount = account.maxPaymentAmount;
-      if (satAmount > maxPaymentAmount.toDouble()) {
+      if (maxPaymentAmount != null && satAmount > maxPaymentAmount.toDouble()) {
         promptError(
           context,
           texts.pos_invoice_error_payment_size_header,
@@ -546,9 +546,9 @@ class POSInvoiceState extends State<POSInvoice> with TickerProviderStateMixin {
         lockSale.future.then((value) {
           final newInvoiceAction = NewInvoice(
             InvoiceRequestModel(
-              user.name,
+              user.name!,
               lockSale.currentSale.note,
-              user.avatarURL,
+              user.avatarURL!,
               Int64(satAmount.toInt()),
               expiry: Int64(user.cancellationTimeoutValue.toInt()),
             ),
@@ -556,7 +556,7 @@ class POSInvoiceState extends State<POSInvoice> with TickerProviderStateMixin {
           invoiceBloc.actionsSink.add(newInvoiceAction);
           newInvoiceAction.future.then((value) {
             final payReq = value as PaymentRequestModel;
-            final addSaleAction = SubmitCurrentSale(payReq.paymentHash);
+            final addSaleAction = SubmitCurrentSale(payReq.paymentHash!);
             posCatalogBloc.actionsSink.add(addSaleAction);
             return addSaleAction.future.then((submittedSale) {
               return _showPaymentDialog(
@@ -588,7 +588,7 @@ class POSInvoiceState extends State<POSInvoice> with TickerProviderStateMixin {
     }
   }
 
-  Future<bool> waitForSync(BuildContext context) {
+  Future waitForSync(BuildContext context) {
     final texts = context.texts();
     return showDialog(
       useRootNavigator: false,
@@ -637,7 +637,7 @@ class POSInvoiceState extends State<POSInvoice> with TickerProviderStateMixin {
             (context) {
               return SuccessfulPaymentRoute(
                 onPrint: () async {
-                  return await _findPayment(payReq.paymentHash).then(
+                  return await _findPayment(payReq.paymentHash!).then(
                     (paymentInfo) {
                       PrintParameters printParameters = PrintParameters(
                         currentUser: user,
@@ -664,12 +664,10 @@ class POSInvoiceState extends State<POSInvoice> with TickerProviderStateMixin {
 
   Future<PaymentInfo> _findPayment(String paymentHash) async {
     AccountBloc accountBloc = AppBlocsProvider.of<AccountBloc>(context);
-    PaymentsModel paymentsModel = await accountBloc.paymentsStream.firstWhere(
-      (paymentsModel) => paymentsModel != null,
-    );
-    return paymentsModel.paymentsList.firstWhere(
-      (paymentInfo) => paymentInfo.paymentHash == paymentHash,
-    );
+    PaymentsModel paymentsModel = await accountBloc.paymentsStream
+        .first; // TODO: Null Safety, paymentsStream.first may be null
+    return paymentsModel.paymentsList
+        .firstWhere((paymentInfo) => paymentInfo.paymentHash == paymentHash);
   }
 
   void _addItem(
@@ -691,16 +689,18 @@ class POSInvoiceState extends State<POSInvoice> with TickerProviderStateMixin {
 
   void _animateAddItem(Item item, GlobalKey avatarKey) {
     // start position
-    RenderBox avatarPos = avatarKey.currentContext.findRenderObject();
-    final startPos = avatarPos.localToGlobal(
+    RenderBox? avatarPos =
+        avatarKey.currentContext?.findRenderObject() as RenderBox?;
+    final startPos = avatarPos!.localToGlobal(
       Offset.zero,
       ancestor: context.findRenderObject(),
     );
     final begin = RelativeRect.fromLTRB(startPos.dx, startPos.dy, 0, 0);
 
     // end position
-    RenderBox cartBox = badgeKey.currentContext.findRenderObject();
-    final endPos = cartBox.localToGlobal(
+    RenderBox? cartBox =
+        badgeKey.currentContext?.findRenderObject() as RenderBox?;
+    final endPos = cartBox!.localToGlobal(
       Offset.zero,
       ancestor: context.findRenderObject(),
     );
@@ -825,7 +825,7 @@ class POSInvoiceState extends State<POSInvoice> with TickerProviderStateMixin {
     setState(() {
       if (currentPendingItem != null) {
         currentSale = currentSale.removeItem(
-          (sl) => sl.isCustom && sl.itemName == currentPendingItem.itemName,
+          (sl) => sl.isCustom && sl.itemName == currentPendingItem!.itemName,
         );
         currentPendingItem = null;
         posCatalogBloc.actionsSink.add(SetCurrentSale(currentSale));
@@ -834,15 +834,19 @@ class POSInvoiceState extends State<POSInvoice> with TickerProviderStateMixin {
   }
 
   void _clearSale() async {
-    final posCatalogBloc = AppBlocsProvider.of<PosCatalogBloc>(context);
-    final userProfileBloc = AppBlocsProvider.of<UserProfileBloc>(context);
+    final posCatalogBloc = AppBlocsProvider.of<PosCatalogBloc>(context)!;
+    final userProfileBloc = AppBlocsProvider.of<UserProfileBloc>(context)!;
     final user = await userProfileBloc.userStream.first;
     setState(() {
       currentPendingItem = null;
-      posCatalogBloc.actionsSink.add(SetCurrentSale(Sale(
-        saleLines: [],
-        note: user.defaultPosNote,
-      )));
+      posCatalogBloc.actionsSink.add(
+        SetCurrentSale(
+          Sale(
+            saleLines: [],
+            note: user!.defaultPosNote,
+          ),
+        ),
+      );
     });
   }
 

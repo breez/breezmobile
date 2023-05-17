@@ -21,7 +21,7 @@ class CTPJoinSessionHandler {
             await userProfileBloc.userStream.firstWhere((u) => u != null).then(
                   (user) => protectAdminAction(
                     context,
-                    user,
+                    user!,
                     () async {
                       var currentSession = await ctpBloc.joinSessionByLink(
                         sessionLink,

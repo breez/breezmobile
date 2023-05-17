@@ -12,9 +12,9 @@ The implementation is based on firebase messaging.
 class PaymentSessionChannel {
   static int _activeChannels = 0;
 
-  final StreamController<Map<dynamic, dynamic>> _incomingMessagesController =
-      StreamController<Map<dynamic, dynamic>>.broadcast();
-  Stream<Map<dynamic, dynamic>> get incomingMessagesStream =>
+  final StreamController<Map<dynamic, dynamic>?> _incomingMessagesController =
+      StreamController<Map<dynamic, dynamic>?>.broadcast();
+  Stream<Map<dynamic, dynamic>?> get incomingMessagesStream =>
       _incomingMessagesController.stream;
 
   final StreamController<void> _peerTerminatedController =
@@ -27,13 +27,13 @@ class PaymentSessionChannel {
 
   final String _sessionID;
   final bool _payer;
-  String _myKey;
-  String _theirKey;
-  StreamSubscription _theirDataListener;
-  StreamSubscription _sessionRootListener;
-  StreamSubscription _peerResetListener;
+  late String _myKey;
+  late String _theirKey;
+  late StreamSubscription _theirDataListener;
+  late StreamSubscription _sessionRootListener;
+  late StreamSubscription _peerResetListener;
   bool _terminated = false;
-  MessageInterceptor interceptor;
+  MessageInterceptor? interceptor;
 
   PaymentSessionChannel(this._sessionID, this._payer, {this.interceptor}) {
     _activeChannels++;
@@ -56,7 +56,7 @@ class PaymentSessionChannel {
     String stateString = json.encode(newState);
     Future<String> toSend = Future.value(stateString);
     if (interceptor != null) {
-      toSend = interceptor.transformOutgoingMessage(stateString);
+      toSend = interceptor!.transformOutgoingMessage(stateString);
     }
     return toSend.then((valueToSend) {
       if (!_terminated) {
@@ -110,12 +110,12 @@ class PaymentSessionChannel {
         return;
       }
 
-      if (stateMessage != null && stateMessage.runtimeType == String) {
+      if (stateMessage.runtimeType == String) {
         if (interceptor != null) {
-          stateMessage =
-              await interceptor.transformIncomingMessage(stateMessage);
+          stateMessage = await interceptor!
+              .transformIncomingMessage(stateMessage as String);
         }
-        Map<String, dynamic> decodedState = json.decode(stateMessage);
+        Map<String, dynamic> decodedState = json.decode(stateMessage as String);
         _incomingMessagesController.add(decodedState);
       }
     });

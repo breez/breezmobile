@@ -5,17 +5,18 @@ import 'package:breez/routes/podcast/theme.dart';
 import 'package:breez/widgets/sync_loader.dart';
 import 'package:breez_translations/breez_translations_locales.dart';
 import 'package:flutter/material.dart';
+import 'package:rxdart/rxdart.dart';
 
 class SyncUIHandler {
   final AccountBloc _accountBloc;
   final BuildContext _context;
-  ModalRoute _syncUIRoute;
+  late ModalRoute? _syncUIRoute;
 
   SyncUIHandler(
     this._accountBloc,
     this._context,
   ) {
-    _accountBloc.accountStream.listen((acc) {
+    _accountBloc.accountStream.whereNotNull().listen((acc) { // TODO: Null Safety - accountStream
       showSyncUI(acc);
     });
   }
@@ -25,16 +26,16 @@ class SyncUIHandler {
     if (acc.syncUIState == SyncUIState.BLOCKING) {
       if (_syncUIRoute == null) {
         _syncUIRoute = _createSyncRoute(_context, _accountBloc);
-        navigator.push(_syncUIRoute);
+        navigator.push(_syncUIRoute!);
       }
     } else {
       if (_syncUIRoute != null) {
         // If we are not on top of the stack let's pop to get the animation
-        if (_syncUIRoute.isCurrent) {
+        if (_syncUIRoute!.isCurrent) {
           navigator.pop();
         } else {
           // If we are hidden, just remove the route.
-          navigator.removeRoute(_syncUIRoute);
+          navigator.removeRoute(_syncUIRoute!);
         }
         _syncUIRoute = null;
       }
@@ -45,7 +46,7 @@ class SyncUIHandler {
 ModalRoute _createSyncRoute(BuildContext context, AccountBloc accBloc) {
   final texts = context.texts();
   return SyncUIRoute((context) {
-    return StreamBuilder<AccountModel>(
+    return StreamBuilder<AccountModel?>(
       stream: accBloc.accountStream,
       builder: (ctx, snapshot) {
         var account = snapshot.data;

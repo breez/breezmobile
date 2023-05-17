@@ -17,9 +17,9 @@ class BreezUserModel {
   final String color;
   final String animal;
   final String? image;
-  final SecurityModel? securityModel;
+  final SecurityModel securityModel;
   final String themeId;
-  final bool? locked;
+  final bool locked;
   final bool registrationRequested;
   final bool hideBalance;
   final double cancellationTimeoutValue;
@@ -29,8 +29,8 @@ class BreezUserModel {
   final String posCurrencyShortName;
   final List<String>? preferredCurrencies;
   final AppMode appMode;
-  final PaymentOptions? paymentOptions;
-  final SeenTutorials? seenTutorials;
+  final PaymentOptions paymentOptions;
+  final SeenTutorials seenTutorials;
 
   BreezUserModel._(
     this.userID,
@@ -40,8 +40,8 @@ class BreezUserModel {
     this.currency = Currency.SAT,
     this.fiatCurrency = "USD",
     this.image,
-    this.securityModel,
-    this.locked,
+    required this.securityModel,
+    required this.locked,
     this.token = '',
     this.themeId = "DARK",
     this.registrationRequested = false,
@@ -53,8 +53,8 @@ class BreezUserModel {
     this.posCurrencyShortName = "SAT",
     this.preferredCurrencies,
     this.appMode = AppMode.balance,
-    this.paymentOptions,
-    this.seenTutorials,
+    required this.paymentOptions,
+    required this.seenTutorials,
   });
 
   BreezUserModel copyWith({

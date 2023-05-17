@@ -63,7 +63,7 @@ class DeepLinksService {
 }
 
 class SessionLinkModel {
-  final String sessionID;
+  final String? sessionID;
   final String? sessionSecret;
   final String? initiatorPubKey;
 
@@ -76,7 +76,10 @@ class SessionLinkModel {
   static SessionLinkModel fromLinkQuery(String queryStr) {
     Map<String, String> query = Uri.splitQueryString(queryStr);
     return SessionLinkModel(
-        query["sessionID"]!, query["sessionSecret"], query["pubKey"]);
+      query["sessionID"],
+      query["sessionSecret"],
+      query["pubKey"],
+    );
   }
 }
 

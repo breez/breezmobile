@@ -10,19 +10,20 @@ import 'package:flutter/foundation.dart';
 import 'package:path_provider/path_provider.dart';
 
 class PosCsvUtils {
-  final List itemList;
+  final List? itemList;
 
   PosCsvUtils({this.itemList});
 
   Future export() async {
     log.info("export pos items started");
-    String tmpFilePath =
-        await _saveCsvFile(const ListToCsvConverter().convert(_generateList()));
+    String tmpFilePath = await _saveCsvFile(const ListToCsvConverter().convert(
+        _generateList(itemList!)
+            .cast<List?>())); // TODO : Null Handling - cast may be unnecessary
     log.info("export pos items finished");
     return tmpFilePath;
   }
 
-  List _generateList() {
+  List _generateList(List itemList) {
     final texts = getSystemAppLocalizations();
     log.info("generating payment list started");
     List<List<dynamic>> paymentList = List.generate(itemList.length, (index) {

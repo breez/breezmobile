@@ -7,27 +7,31 @@ class SecurityModel {
   final bool isFingerprintEnabled;
   final int automaticallyLockInterval;
 
-  SecurityModel._(
-      {this.requiresPin,
-      this.isFingerprintEnabled,
-      this.automaticallyLockInterval});
+  SecurityModel._({
+    required this.requiresPin,
+    required this.isFingerprintEnabled,
+    required this.automaticallyLockInterval,
+  });
 
-  SecurityModel copyWith(
-      {bool requiresPin,
-      bool isFingerprintEnabled,
-      int automaticallyLockInterval}) {
+  SecurityModel copyWith({
+    bool? requiresPin,
+    bool? isFingerprintEnabled,
+    int? automaticallyLockInterval,
+  }) {
     return SecurityModel._(
-        requiresPin: requiresPin ?? this.requiresPin,
-        isFingerprintEnabled: isFingerprintEnabled ?? this.isFingerprintEnabled,
-        automaticallyLockInterval:
-            automaticallyLockInterval ?? this.automaticallyLockInterval);
+      requiresPin: requiresPin ?? this.requiresPin,
+      isFingerprintEnabled: isFingerprintEnabled ?? this.isFingerprintEnabled,
+      automaticallyLockInterval:
+          automaticallyLockInterval ?? this.automaticallyLockInterval,
+    );
   }
 
   SecurityModel.initial()
       : this._(
-            requiresPin: false,
-            isFingerprintEnabled: false,
-            automaticallyLockInterval: _defaultLockInterval);
+          requiresPin: false,
+          isFingerprintEnabled: false,
+          automaticallyLockInterval: _defaultLockInterval,
+        );
 
   SecurityModel.fromJson(Map<String, dynamic> json)
       : requiresPin = json['requiresPin'] ?? false,

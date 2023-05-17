@@ -146,7 +146,7 @@ class LNURLHandler {
       )),
     ).then((value) async {
       var loaderRoute = createLoaderRoute(context);
-      if (value) {
+      if (value != null && value) {
         var synced = await showDialog(
           context: context,
           useRootNavigator: false,

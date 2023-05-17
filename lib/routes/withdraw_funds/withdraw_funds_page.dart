@@ -89,7 +89,7 @@ class WithdrawFundsPageState extends State<WithdrawFundsPage> {
         leading: const backBtn.BackButton(),
         title: Text(widget.title),
       ),
-      body: StreamBuilder<AccountModel>(
+      body: StreamBuilder<AccountModel?>(
         stream: accountBloc.accountStream,
         builder: (context, snapshot) {
           if (!snapshot.hasData) return StaticLoader();
@@ -369,7 +369,7 @@ class _NextButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final texts = context.texts();
-    return StreamBuilder<AccountModel>(
+    return StreamBuilder<AccountModel?>(
       stream: accountBloc.accountStream,
       builder: (context, snapshot) {
         final acc = snapshot.data;

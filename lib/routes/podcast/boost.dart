@@ -37,7 +37,7 @@ class BoostWidget extends StatelessWidget {
     final userBloc = AppBlocsProvider.of<UserProfileBloc>(context);
     final accountBloc = AppBlocsProvider.of<AccountBloc>(context);
 
-    return StreamBuilder<AccountModel>(
+    return StreamBuilder<AccountModel?>(
       stream: accountBloc.accountStream,
       builder: (context, acc) {
         if (acc.data == null) {

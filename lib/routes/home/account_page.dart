@@ -70,7 +70,7 @@ class AccountPageState extends State<AccountPage>
     return StreamBuilder<AccountSettings>(
       stream: _accountBloc.accountSettingsStream,
       builder: (settingCtx, settingSnapshot) {
-        return StreamBuilder<AccountModel>(
+        return StreamBuilder<AccountModel?>(
           stream: _accountBloc.accountStream,
           builder: (context, snapshot) {
             AccountModel? account = snapshot.data;
@@ -322,7 +322,7 @@ class WalletDashboardHeaderDelegate extends SliverPersistentHeaderDelegate {
     return StreamBuilder<BreezUserModel?>(
       stream: _userProfileBloc.userStream,
       builder: (settingCtx, userSnapshot) {
-        return StreamBuilder<AccountModel>(
+        return StreamBuilder<AccountModel?>(
           stream: accountBloc.accountStream,
           builder: (context, snapshot) {
             return Stack(

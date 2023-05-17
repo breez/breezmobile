@@ -15,16 +15,16 @@ class VendorModel {
   final String id;
   final String displayName;
   final bool onlyShowLogo;
-  final String endpointURI;
+  final String? endpointURI;
   final String responseID;
 
   const VendorModel(
     this.id,
     this.url,
     this.displayName, {
-    this.onlyShowLogo,
+    this.onlyShowLogo = true,
     this.endpointURI,
-    this.responseID,
+    this.responseID = "lnurl_auth",
   });
 
   String get logo => 'src/icon/vendors/${id.toLowerCase()}_logo_lg.png';

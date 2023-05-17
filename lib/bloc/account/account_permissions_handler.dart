@@ -22,8 +22,8 @@ class AccountPermissionsHandler {
   Stream<bool> get optimizationWhitelistExplainStream =>
       _optimizationWhitelistExplainController.stream;
 
-  Permissions _permissionsService;
-  Future<SharedPreferences> _preferences;
+  late Permissions _permissionsService;
+  late Future<SharedPreferences> _preferences;
 
   AccountPermissionsHandler() {
     var injector = ServiceInjector();

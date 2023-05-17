@@ -10,6 +10,7 @@ import 'package:breez/services/breezlib/data/rpc.pb.dart';
 import 'package:breez/services/injector.dart';
 import 'package:breez/utils/retry.dart';
 import 'package:breez_translations/breez_translations_locales.dart';
+import 'package:collection/collection.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -25,8 +26,8 @@ class LSPBloc with AsyncActionsHandler {
 
   final _reconnectStreamController = StreamController<void>.broadcast();
 
-  final Stream<AccountModel> accountStream;
-  BreezBridge _breezLib;
+  final Stream<AccountModel?> accountStream;
+  late BreezBridge _breezLib;
 
   LSPBloc(this.accountStream) {
     ServiceInjector injector = ServiceInjector();
@@ -41,7 +42,8 @@ class LSPBloc with AsyncActionsHandler {
 
     ServiceInjector().sharedPreferences.then((sp) async {
       // initial status
-      var selectedLSP = sp.getString(SELECTED_LSP_PREFERENCES_KEY);
+      var selectedLSP = sp.getString(
+          SELECTED_LSP_PREFERENCES_KEY)!; // TODO : Null Handling - sp value may be null
       _lspsStatusController
           .add(LSPStatus.initial().copyWith(selectedLSP: selectedLSP));
       _breezLib.setSelectedLspID(selectedLSP);
@@ -130,12 +132,12 @@ class LSPBloc with AsyncActionsHandler {
     });
   }
 
-  Future<LSPInfo> get _selectedLSP async {
+  Future<LSPInfo?> get _selectedLSP async {
     var sp = await ServiceInjector().sharedPreferences;
     var selectedLSP = sp.getString(SELECTED_LSP_PREFERENCES_KEY);
-    var lsp = _lspsStatusController.value.availableLSPs.firstWhere(
-        (element) => element.lspID == selectedLSP,
-        orElse: () => null);
+    var lsp = _lspsStatusController.value.availableLSPs.firstWhereOrNull(
+      (element) => element.lspID == selectedLSP,
+    );
     return lsp;
   }
 

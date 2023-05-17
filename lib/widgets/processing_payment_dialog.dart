@@ -132,7 +132,7 @@ class ProcessingPaymentDialogState extends State<ProcessingPaymentDialog>
     final safeArea = queryData.size.height - statusBarHeight;
     // We subtract dialog size from safe area and divide by half because the dialog
     // is at the center of the screen (distances to top and bottom are equal).
-    RenderBox box = _dialogKey.currentContext.findRenderObject();
+    RenderBox box = _dialogKey.currentContext!.findRenderObject() as RenderBox;
     startHeight = box.size.height;
     double yMargin = (safeArea - box.size.height) / 2;
 
@@ -140,7 +140,7 @@ class ProcessingPaymentDialogState extends State<ProcessingPaymentDialog>
     RelativeRect startPosition = endPosition;
     final paymentCtx = widget.firstPaymentItemKey.currentContext;
     if (paymentCtx != null) {
-      RenderBox paymentTableBox = paymentCtx.findRenderObject();
+      RenderBox paymentTableBox = paymentCtx.findRenderObject() as RenderBox;
       final dy = paymentTableBox.localToGlobal(Offset.zero).dy;
       final start = dy - statusBarHeight;
       final end = safeArea - start - PAYMENT_LIST_ITEM_HEIGHT;

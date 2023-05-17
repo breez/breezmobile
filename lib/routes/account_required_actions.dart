@@ -149,7 +149,7 @@ class AccountRequiredActionsIndicatorState
           builder: (context, settingsSnapshot) {
             final accountSettings = settingsSnapshot.data;
 
-            return StreamBuilder<AccountModel>(
+            return StreamBuilder<AccountModel?>(
               stream: widget._accountBloc.accountStream,
               builder: (context, accountSnapshot) {
                 final accountModel = accountSnapshot.data;

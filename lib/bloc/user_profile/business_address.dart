@@ -1,14 +1,14 @@
 class BusinessAddress {
-  final String addressLine1;
-  final String addressLine2;
+  final String? addressLine1;
+  final String? addressLine2;
 
   BusinessAddress._({this.addressLine1, this.addressLine2});
 
   BusinessAddress.initial() : this._(addressLine1: "", addressLine2: "");
 
   BusinessAddress copyWith({
-    String addressLine1,
-    String addressLine2,
+    String? addressLine1,
+    String? addressLine2,
   }) {
     return BusinessAddress._(
       addressLine1: addressLine1 ?? this.addressLine1,

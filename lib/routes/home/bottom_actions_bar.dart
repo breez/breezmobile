@@ -50,7 +50,7 @@ class BottomActionsBar extends StatelessWidget {
             Container(
               width: 64,
             ),
-            StreamBuilder<AccountModel>(
+            StreamBuilder<AccountModel?>(
               stream: AppBlocsProvider.of<AccountBloc>(context).accountStream,
               builder: (context, accountSnapshot) {
                 final account = accountSnapshot.data;

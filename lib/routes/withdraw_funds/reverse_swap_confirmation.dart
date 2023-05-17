@@ -142,7 +142,7 @@ class ReverseSwapConfirmationState extends State<ReverseSwapConfirmation> {
         }),
         title: Text(texts.reverse_swap_confirmation_speed),
       ),
-      body: StreamBuilder<AccountModel>(
+      body: StreamBuilder<AccountModel?>(
         stream: accountBloc.accountStream,
         builder: (context, snapshot) {
           AccountModel acc = snapshot.data;

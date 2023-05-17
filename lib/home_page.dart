@@ -52,10 +52,13 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:rxdart/rxdart.dart';
 
-final GlobalKey firstPaymentItemKey = GlobalKey(debugLabel: "firstPaymentItemKey");
+final GlobalKey firstPaymentItemKey =
+    GlobalKey(debugLabel: "firstPaymentItemKey");
 final ScrollController scrollController = ScrollController();
-final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>(debugLabel: "scaffoldKey");
+final GlobalKey<ScaffoldState> _scaffoldKey =
+    GlobalKey<ScaffoldState>(debugLabel: "scaffoldKey");
 
 class Home extends StatefulWidget {
   final AccountBloc accountBloc;
@@ -93,7 +96,7 @@ class Home extends StatefulWidget {
 class HomeState extends State<Home> with WidgetsBindingObserver {
   String _activeScreen = "breezHome";
   final Set _hiddenRoutes = <String>{};
-  StreamSubscription<String> _accountNotificationsSubscription;
+  StreamSubscription<String>? _accountNotificationsSubscription;
   bool _listensInit = false;
 
   @override
@@ -111,7 +114,8 @@ class HomeState extends State<Home> with WidgetsBindingObserver {
       });
     });
 
-    widget.accountBloc.accountStream.listen((acc) {
+    widget.accountBloc.accountStream.whereNotNull().listen((acc) {
+      // TODO: Null Safety - accountStream
       var activeAccountRoutes = [
         "/connect_to_pay",
         "/pay_invoice",
@@ -129,13 +133,15 @@ class HomeState extends State<Home> with WidgetsBindingObserver {
     AudioService.notificationClicked.where((event) => event == true).listen(
         (event) async {
       final navigator = Navigator.of(context);
-      final userBloc = AppBlocsProvider.of<UserProfileBloc>(context);
+      final userBloc = AppBlocsProvider.of<UserProfileBloc>(
+          context)!; // TODO: Null Safety - AppBlocsProvider
       final audioBloc = Provider.of<AudioBloc>(context, listen: false);
-      final userModel = await userBloc.userStream.first;
+      final userModel =
+          await userBloc.userStream.first; // TODO: Null Safety - userStream
       final nowPlaying = await audioBloc.nowPlaying.first.timeout(
         const Duration(seconds: 1),
-      );
-      if (nowPlaying != null &&
+      ); // TODO: Null Safety - Make nowPlaying nullable
+      if (userModel != null &&
           !breezPodcast.NowPlayingTransport.nowPlayingVisible) {
         navigator.push(
           MaterialPageRoute<void>(
@@ -176,7 +182,7 @@ class HomeState extends State<Home> with WidgetsBindingObserver {
   @override
   Widget build(BuildContext context) {
     _initListens(context);
-    final userProfileBloc = AppBlocsProvider.of<UserProfileBloc>(context);
+    final userProfileBloc = AppBlocsProvider.of<UserProfileBloc>(context)!;
     final mediaSize = MediaQuery.of(context).size;
 
     return WillPopScope(
@@ -184,7 +190,7 @@ class HomeState extends State<Home> with WidgetsBindingObserver {
         context,
         canCancel: () => _scaffoldKey.currentState?.isDrawerOpen ?? false,
       ),
-      child: StreamBuilder<BreezUserModel>(
+      child: StreamBuilder<BreezUserModel?>(
         stream: userProfileBloc.userStream,
         builder: (context, userSnapshot) {
           final appMode = userSnapshot.data?.appMode;
@@ -200,17 +206,23 @@ class HomeState extends State<Home> with WidgetsBindingObserver {
               _onNavigationItemSelected,
               _filterItems,
             ),
-            bottomNavigationBar: appMode == AppMode.balance ? BottomActionsBar(firstPaymentItemKey) : null,
-            floatingActionButton: appMode == AppMode.balance ? QrActionButton(firstPaymentItemKey) : null,
-            floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
-            body: widget._screenBuilders[_activeScreen] ?? _homePage(context, appMode),
+            bottomNavigationBar: appMode == AppMode.balance
+                ? BottomActionsBar(firstPaymentItemKey)
+                : null,
+            floatingActionButton: appMode == AppMode.balance
+                ? QrActionButton(firstPaymentItemKey)
+                : null,
+            floatingActionButtonLocation:
+                FloatingActionButtonLocation.centerDocked,
+            body: widget._screenBuilders[_activeScreen] ??
+                _homePage(context, appMode),
           );
         },
       ),
     );
   }
 
-  Widget _homePage(BuildContext context, AppMode appMode) {
+  Widget _homePage(BuildContext context, AppMode? appMode) {
     if (appMode == null) {
       return AccountPage(firstPaymentItemKey, scrollController);
     }
@@ -255,7 +267,7 @@ class HomeState extends State<Home> with WidgetsBindingObserver {
       } else {
         Navigator.of(context).pushNamed(itemName).then((message) {
           if (message != null && message.runtimeType == String) {
-            showFlushbar(context, message: message);
+            showFlushbar(context, message: message as String);
           }
         });
       }
@@ -405,11 +417,11 @@ class HomeState extends State<Home> with WidgetsBindingObserver {
                   curve: Curves.ease)
               .whenComplete(() async {
             var action =
-                fulfilledPayment?.paymentItem?.lnurlPayInfo?.successAction;
+                fulfilledPayment.paymentItem?.lnurlPayInfo?.successAction;
             if (action?.hasTag() == true) {
               await Future.delayed(
                 const Duration(seconds: 1),
-                () => showLNURLSuccessAction(context, action),
+                () => showLNURLSuccessAction(context, action!),
               );
             } else {
               showFlushbar(
@@ -428,14 +440,15 @@ class HomeState extends State<Home> with WidgetsBindingObserver {
           return;
         }
         final navigator = Navigator.of(context);
-        var sendAction = SendPaymentFailureReport(error.traceReport);
+        var sendAction = SendPaymentFailureReport(error.traceReport!);
         final loaderRoute = createLoaderRoute(
           context,
           message: texts.home_report_sending,
           opacity: 0.8,
           action: sendAction.future,
         );
-        await widget.accountBloc.accountStream.first.then(
+        await widget.accountBloc.accountStream.whereNotNull().first.then(
+          // TODO: Null Safety - accountStream
           (accountModel) async {
             final errorString = error.toDisplayMessage(accountModel.currency);
             if (error.validationError &&

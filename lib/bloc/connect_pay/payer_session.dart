@@ -23,7 +23,7 @@ import 'package:rxdart/rxdart.dart';
 
 // A concrete implementation of RemoteSession from the payer side.
 class PayerRemoteSession extends RemoteSession with OnlineStatusUpdater {
-  String _currentSessionInvite;
+  late String _currentSessionInvite;
   Sink<AsyncAction> accountActions;
 
   final StreamController<void> _terminationStreamController =
@@ -49,7 +49,7 @@ class PayerRemoteSession extends RemoteSession with OnlineStatusUpdater {
       _sessionErrorsController.stream;
 
   final BreezServer _breezServer = ServiceInjector().breezServer;
-  PaymentSessionChannel _channel;
+  late PaymentSessionChannel _channel;
   final BreezBridge _breezLib = ServiceInjector().breezBridge;
   final Device _device = ServiceInjector().device;
   final DeepLinksService _deepLinks = ServiceInjector().deepLinks;
@@ -57,19 +57,22 @@ class PayerRemoteSession extends RemoteSession with OnlineStatusUpdater {
       ServiceInjector().backgroundTaskService;
   final BreezUserModel _currentUser;
   var sessionState = <String, dynamic>{};
-  SessionLinkModel sessionLink;
+  late SessionLinkModel sessionLink;
   final Completer _sessionCompleter = Completer();
   bool _paymentSent = false;
   Future Function(String paymentRequest, Int64 amount) sendPayment;
 
   @override
-  String get sessionID => sessionLink?.sessionID;
+  String get sessionID => sessionLink.sessionID!;
 
   PayerRemoteSession(this._currentUser, this.sendPayment, this.accountActions,
-      {PayeeSessionData existingPayeeData})
+      {PayeeSessionData? existingPayeeData})
       : super(_currentUser) {
     var initialState = PaymentSessionState.payerStart(
-        sessionID, _currentUser.name, _currentUser.avatarURL);
+      sessionID,
+      _currentUser.name,
+      _currentUser.avatarURL,
+    );
     if (existingPayeeData != null) {
       initialState = initialState.copyWith(payeeData: existingPayeeData);
     }
@@ -202,7 +205,7 @@ class PayerRemoteSession extends RemoteSession with OnlineStatusUpdater {
       final texts = getSystemAppLocalizations();
       var shared = await _device.shareText(
         texts.connect_to_pay_share_text(
-          _currentUser.name,
+          _currentUser.name!,
           Uri.encodeFull(_currentSessionInvite),
         ),
       );
@@ -227,7 +230,7 @@ class PayerRemoteSession extends RemoteSession with OnlineStatusUpdater {
       PaymentSessionState nextState =
           _currentSession.copyWith(payeeData: newPayeeData);
 
-      String paymentRequest = nextState.payeeData.paymentRequest;
+      String? paymentRequest = nextState.payeeData.paymentRequest;
       if (paymentRequest != null) {
         _sendPayment(paymentRequest, nextState);
       } else {

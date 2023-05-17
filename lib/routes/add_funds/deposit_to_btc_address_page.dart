@@ -25,15 +25,15 @@ class DepositToBTCAddressPage extends StatefulWidget {
 }
 
 class DepositToBTCAddressPageState extends State<DepositToBTCAddressPage> {
-  AddFundsBloc _addFundsBloc;
+  AddFundsBloc? _addFundsBloc;
 
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
     if (_addFundsBloc == null) {
       _addFundsBloc = BlocProvider.of<AddFundsBloc>(context);
-      _addFundsBloc.addFundRequestSink.add(AddFundsInfo(false, false));
-      _addFundsBloc.addFundRequestSink.add(AddFundsInfo(true, false));
+      _addFundsBloc!.addFundRequestSink.add(AddFundsInfo(false, false));
+      _addFundsBloc!.addFundRequestSink.add(AddFundsInfo(true, false));
     }
   }
 
@@ -41,19 +41,19 @@ class DepositToBTCAddressPageState extends State<DepositToBTCAddressPage> {
   Widget build(BuildContext context) {
     final texts = context.texts();
 
-    final accountBloc = AppBlocsProvider.of<AccountBloc>(context);
-    final lspBloc = AppBlocsProvider.of<LSPBloc>(context);
+    final accountBloc = AppBlocsProvider.of<AccountBloc>(context)!;
+    final lspBloc = AppBlocsProvider.of<LSPBloc>(context)!;
 
     return ConditionalDeposit(
       title: texts.invoice_btc_address_title,
       enabledChild: StreamBuilder<LSPStatus>(
         stream: lspBloc.lspStatusStream,
         builder: (context, lspSnapshot) {
-          return StreamBuilder(
+          return StreamBuilder<AccountModel?>(
             stream: accountBloc.accountStream,
             builder: (context, accSnapshot) {
-              return StreamBuilder(
-                stream: _addFundsBloc.addFundResponseStream,
+              return StreamBuilder<AddFundResponse?>(
+                stream: _addFundsBloc?.addFundResponseStream,
                 builder: (context, snapshot) {
                   return Material(
                     child: Scaffold(
@@ -89,17 +89,18 @@ class DepositToBTCAddressPageState extends State<DepositToBTCAddressPage> {
 
   Widget getBody(
     BuildContext context,
-    AccountModel account,
-    AddFundResponse response,
-    LSPStatus lspStatus,
-    String error,
+    AccountModel? account,
+    AddFundResponse? response,
+    LSPStatus? lspStatus,
+    String? error,
   ) {
     final texts = context.texts();
 
-    String errorMessage;
+    String? errorMessage;
     if (error != null) {
       errorMessage = error;
-    } else if (response != null && response.errorMessage.isNotEmpty) {
+    } else if (response != null && response.errorMessage!.isNotEmpty) {
+      // TODO: Null Safety
       errorMessage = response.errorMessage;
     }
     if (errorMessage != null) {
@@ -138,8 +139,8 @@ class DepositToBTCAddressPageState extends State<DepositToBTCAddressPage> {
                           texts,
                           account,
                           lspInfo,
-                          minAllowedDeposit,
-                          maxAllowedDeposit,
+                          minAllowedDeposit!,
+                          maxAllowedDeposit!,
                         ),
                         style: Theme.of(context).textTheme.titleLarge,
                         textAlign: TextAlign.center,
@@ -154,62 +155,63 @@ class DepositToBTCAddressPageState extends State<DepositToBTCAddressPage> {
 
   String _sendMessage(
     BreezTranslations texts,
-    AccountModel accountModel,
+    AccountModel? accountModel,
     LSPInfo? lspInfo,
     Int64 minAllowedDeposit,
     Int64 maxAllowedDeposit,
   ) {
-    final connected = accountModel.connected;
+    final connected =
+        accountModel?.connected ?? false; // TODO: Null Safety - accountModel
     final minFees = (lspInfo != null)
         ? Int64(lspInfo.channelMinimumFeeMsat) ~/ 1000
         : Int64(0);
     final showMinFeeMessage = minFees > 0;
-    final minFeeFormatted = accountModel.currency.format(minFees);
-    final minSats = accountModel.currency.format(
+    final minFeeFormatted = accountModel?.currency.format(minFees);
+    final minSats = accountModel?.currency.format(
       _minAllowedDeposit(
         lspInfo,
         minAllowedDeposit,
       ),
       includeDisplayName: true,
     );
-    final maxSats = accountModel.currency.format(
+    final maxSats = accountModel?.currency.format(
       maxAllowedDeposit,
       includeDisplayName: true,
     );
-    final setUpFee = (lspInfo.channelFeePermyriad / 100).toString();
-    final liquidity = accountModel.currency.format(
+    final setUpFee = (lspInfo!.channelFeePermyriad / 100).toString();
+    final liquidity = accountModel?.currency.format(
       connected ? accountModel.maxInboundLiquidity : Int64(0),
     );
 
     if (connected && showMinFeeMessage) {
       return texts.invoice_btc_address_warning_with_min_fee_account_connected(
-        minSats,
-        maxSats,
+        minSats!,
+        maxSats!,
         setUpFee,
-        minFeeFormatted,
-        liquidity,
+        minFeeFormatted!,
+        liquidity!,
       );
     } else if (connected && !showMinFeeMessage) {
       return texts
           .invoice_btc_address_warning_without_min_fee_account_connected(
-        minSats,
-        maxSats,
+        minSats!,
+        maxSats!,
         setUpFee,
-        liquidity,
+        liquidity!,
       );
     } else if (!connected && showMinFeeMessage) {
       return texts
           .invoice_btc_address_warning_with_min_fee_account_not_connected(
-        minSats,
-        maxSats,
+        minSats!,
+        maxSats!,
         setUpFee,
-        minFeeFormatted,
+        minFeeFormatted!,
       );
     } else {
       return texts
           .invoice_btc_address_warning_without_min_fee_account_not_connected(
-        minSats,
-        maxSats,
+        minSats!,
+        maxSats!,
         setUpFee,
       );
     }
@@ -229,8 +231,8 @@ class DepositToBTCAddressPageState extends State<DepositToBTCAddressPage> {
 
   Widget _buildBottomBar(
     BuildContext context,
-    AddFundResponse response,
-    AccountModel account, {
+    AddFundResponse? response,
+    AccountModel? account, {
     hasError = false,
   }) {
     final texts = context.texts();

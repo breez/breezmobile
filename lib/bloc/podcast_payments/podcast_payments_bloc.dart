@@ -394,13 +394,13 @@ class PodcastPaymentsBloc with AsyncActionsHandler {
 
   Map<Int64, String> _getTlv({
     bool boost = false,
-    String customKey,
-    String customValue,
-    String boostMessage,
-    Episode episode,
-    PositionState position,
-    int msatTotal,
-    String senderName,
+    String? customKey,
+    String? customValue,
+    String? boostMessage,
+    Episode? episode,
+    PositionState? position,
+    int? msatTotal,
+    String? senderName,
   }) {
     var tlv = <String, dynamic>{};
     tlv["podcast"] = _getPodcastTitle(episode);
@@ -417,7 +417,7 @@ class PodcastPaymentsBloc with AsyncActionsHandler {
     var records = <Int64, String>{};
     records[Int64(7629169)] = encoded;
     if (customKey != null && customValue != null) {
-      int recordKey = int.tryParse(customKey);
+      int? recordKey = int.tryParse(customKey);
       if (recordKey != null) {
         records[Int64(recordKey)] = customValue;
       }
@@ -425,7 +425,7 @@ class PodcastPaymentsBloc with AsyncActionsHandler {
     return records;
   }
 
-  String _getPodcastTitle(Episode episode) {
+  String _getPodcastTitle(Episode? episode) {
     final metadata = episode?.metadata;
     if (metadata != null && metadata["feed"] != null) {
       return metadata["feed"]["title"];
@@ -433,7 +433,7 @@ class PodcastPaymentsBloc with AsyncActionsHandler {
     return "";
   }
 
-  int _getPodcastIndexID(Episode episode) {
+  int _getPodcastIndexID(Episode? episode) {
     final metadata = episode?.metadata;
     if (metadata != null && metadata["feed"] != null) {
       var id = metadata["feed"]["id"];

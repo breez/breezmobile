@@ -123,7 +123,7 @@ class LNURLFetchInvoicePageState extends State<LNURLFetchInvoicePage> {
 
     return Scaffold(
       key: _scaffoldKey,
-      bottomNavigationBar: StreamBuilder<AccountModel>(
+      bottomNavigationBar: StreamBuilder<AccountModel?>(
           stream: accountBloc.accountStream,
           builder: (context, snapshot) {
             if (!snapshot.hasData) {
@@ -156,7 +156,7 @@ class LNURLFetchInvoicePageState extends State<LNURLFetchInvoicePage> {
         leading: const backBtn.BackButton(),
         title: Text(texts.lnurl_fetch_invoice_pay_to_payee(payee)),
       ),
-      body: StreamBuilder<AccountModel>(
+      body: StreamBuilder<AccountModel?>(
         stream: accountBloc.accountStream,
         builder: (context, snapshot) {
           if (!snapshot.hasData) {

@@ -30,12 +30,12 @@ class PaymentSessionState {
   );
 
   PaymentSessionState copyWith({
-    PayerSessionData payerData,
-    PayeeSessionData payeeData,
-    bool invitationReady,
-    bool invitationSent,
-    bool paymentFulfilled,
-    int settledAmount,
+    PayerSessionData? payerData,
+    PayeeSessionData? payeeData,
+    bool? invitationReady,
+    bool? invitationSent,
+    bool? paymentFulfilled,
+    int? settledAmount,
   }) {
     return PaymentSessionState(
       payer,
@@ -50,7 +50,7 @@ class PaymentSessionState {
   }
 
   PaymentSessionState.payerStart(
-      String sessionSecret, String userName, String imageURL)
+      String sessionSecret, String? userName, String? imageURL)
       : this(
           true,
           sessionSecret,
@@ -79,7 +79,7 @@ class PaymentSessionState {
 class PayerSessionData {
   final String? userName;
   final String? imageURL;
-  final PeerStatus status;
+  final PeerStatus? status;
   final int? amount;
   final String? description;
   final String? error;
@@ -136,14 +136,20 @@ class PayerSessionData {
 class PayeeSessionData {
   final String? userName;
   final String? imageURL;
-  final PeerStatus status;
-  final String paymentRequest;
-  final String error;
+  final PeerStatus? status;
+  final String? paymentRequest;
+  final String? error;
   final bool cancelled;
-  bool get invitationAccepted => status.lastChanged != 0;
+  bool get invitationAccepted => status?.lastChanged != 0;
 
-  PayeeSessionData(this.userName, this.imageURL, this.status,
-      this.paymentRequest, this.error, this.cancelled);
+  PayeeSessionData(
+    this.userName,
+    this.imageURL,
+    this.status,
+    this.paymentRequest,
+    this.error,
+    this.cancelled,
+  );
 
   PayeeSessionData.fromJson(Map<dynamic, dynamic> json)
       : status =

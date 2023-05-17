@@ -1,8 +1,8 @@
 class PaymentOptions {
   final int preferredBoostValue;
   final int preferredSatsPerMinValue;
-  final int customBoostValue;
-  final int customSatsPerMinValue;
+  final int? customBoostValue;
+  final int? customSatsPerMinValue;
 
   PaymentOptions._({
     this.preferredBoostValue = 5000,
@@ -15,10 +15,10 @@ class PaymentOptions {
       : this._(preferredBoostValue: 5000, preferredSatsPerMinValue: 0);
 
   PaymentOptions copyWith({
-    int preferredBoostValue,
-    int preferredSatsPerMinValue,
-    int customBoostValue,
-    int customSatsPerMinValue,
+    int? preferredBoostValue,
+    int? preferredSatsPerMinValue,
+    int? customBoostValue,
+    int? customSatsPerMinValue,
   }) {
     return PaymentOptions._(
       preferredBoostValue: preferredBoostValue ?? this.preferredBoostValue,

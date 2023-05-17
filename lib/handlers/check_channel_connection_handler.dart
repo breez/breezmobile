@@ -9,6 +9,7 @@ import 'package:breez/theme_data.dart' as theme;
 import 'package:breez/widgets/flushbar.dart';
 import 'package:breez_translations/breez_translations_locales.dart';
 import 'package:flutter/widgets.dart';
+import 'package:rxdart/rxdart.dart';
 
 class CheckChannelConnection {
   static final _instance = CheckChannelConnection._internal();
@@ -17,9 +18,9 @@ class CheckChannelConnection {
 
   CheckChannelConnection._internal();
 
-  Timer _notReadyTimer;
-  Flushbar _flushbar;
-  StreamSubscription<bool> _subscription;
+  late Timer? _notReadyTimer;
+  late Flushbar? _flushbar;
+  late StreamSubscription<bool>? _subscription;
 
   void startListen(
     BuildContext context,
@@ -41,6 +42,7 @@ class CheckChannelConnection {
 
   void startSubscription(AccountBloc accountBloc, BuildContext context) {
     _subscription = accountBloc.accountStream
+        .whereNotNull() // TODO: Null Safety - accountStream
         .map((acc) =>
             !(acc.connected && !acc.readyForPayments) ||
             acc.nodeUpgrading == true)

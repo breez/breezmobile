@@ -26,16 +26,16 @@ class PosCatalogBloc with AsyncActionsHandler {
 
   final Repository _repository;
 
-  final Stream<BreezUserModel> _userStream;
+  final Stream<BreezUserModel?> _userStream;
 
   final StreamController<List<Item>> _itemsStreamController =
       BehaviorSubject<List<Item>>();
 
   Stream<List<Item>> get itemsStream => _itemsStreamController.stream;
 
-  final BehaviorSubject<Sale> _currentSaleController = BehaviorSubject<Sale>();
+  final BehaviorSubject<Sale?> _currentSaleController = BehaviorSubject<Sale>();
 
-  Stream<Sale> get currentSaleStream => _currentSaleController.stream;
+  Stream<Sale?> get currentSaleStream => _currentSaleController.stream;
 
   final BehaviorSubject<List<ProductIcon>> _productIconsController =
       BehaviorSubject<List<ProductIcon>>();
@@ -63,13 +63,13 @@ class PosCatalogBloc with AsyncActionsHandler {
 
   Stream<PosReportResult> get posReportResult => _posReportResult.stream;
 
-  Sink<bool> _backupAppDataSink;
+  late Sink<bool> _backupAppDataSink;
 
   final BehaviorSubject<bool> _reloadPosItems = BehaviorSubject();
   Sink<bool> get reloadPosItemsSink => _reloadPosItems.sink;
 
   PosCatalogBloc(
-    Stream<AccountModel> accountStream,
+    Stream<AccountModel?> accountStream,
     this._userStream,
     Sink<bool> backupAppDataSink,
     this._repository,
@@ -125,7 +125,7 @@ class PosCatalogBloc with AsyncActionsHandler {
     final prefs = await ServiceInjector().sharedPreferences;
     String currency;
     if (prefs.containsKey("ITEM_ADDITION_CURRENCY")) {
-      currency = prefs.getString("ITEM_ADDITION_CURRENCY");
+      currency = prefs.getString("ITEM_ADDITION_CURRENCY")!;
     } else {
       currency = "SAT";
     }
@@ -136,7 +136,7 @@ class PosCatalogBloc with AsyncActionsHandler {
     final prefs = await ServiceInjector().sharedPreferences;
     String posTab;
     if (prefs.containsKey("POS_SELECTED_TAB")) {
-      posTab = prefs.getString("POS_SELECTED_TAB");
+      posTab = prefs.getString("POS_SELECTED_TAB")!;
     } else {
       posTab = "KEYPAD";
     }
@@ -147,7 +147,7 @@ class PosCatalogBloc with AsyncActionsHandler {
     final prefs = await ServiceInjector().sharedPreferences;
     PosCatalogItemSort sort;
     if (prefs.containsKey("POS_CATALOG_ITEM_SORT")) {
-      sort = PosCatalogItemSort.values[prefs.getInt("POS_CATALOG_ITEM_SORT")];
+      sort = PosCatalogItemSort.values[prefs.getInt("POS_CATALOG_ITEM_SORT")!];
     } else {
       sort = PosCatalogItemSort.NONE;
     }
@@ -164,22 +164,24 @@ class PosCatalogBloc with AsyncActionsHandler {
       var paymentHash = await breezBridge.getPaymentRequestHash(event.data[0]);
       await _repository.salePaymentCompleted(paymentHash);
       var paidSale = await _repository.fetchSaleByPaymentHash(paymentHash);
-      if (paidSale != null && paidSale.id == _currentSaleController.value.id) {
+      if (paidSale?.id == _currentSaleController.value?.id) {
         final user = await _userStream.first;
-        _currentSaleController.add(Sale(
-          saleLines: [],
-          note: user.defaultPosNote,
-        ));
+        _currentSaleController.add(
+          Sale(
+            saleLines: [],
+            note: user!.defaultPosNote,
+          ),
+        );
       }
     });
   }
 
-  void _trackCurrentSaleRates(Stream<AccountModel> accountStream) {
-    accountStream.listen((acc) {
+  void _trackCurrentSaleRates(Stream<AccountModel?> accountStream) {
+    accountStream.whereNotNull().listen((acc) {
       var currentSale = _currentSaleController.value;
 
       // In case the price is locked we don't calculate the charge.
-      if (currentSale.priceLocked) {
+      if (currentSale!.priceLocked) {
         return;
       }
       _currentSaleController.add(currentSale.copyWith(
@@ -189,7 +191,7 @@ class PosCatalogBloc with AsyncActionsHandler {
         if (curr != null) {
           rate = curr.satConversionRate;
         } else {
-          rate = acc.getFiatCurrencyByShortName(sl.currency).satConversionRate;
+          rate = acc.getFiatCurrencyByShortName(sl.currency)!.satConversionRate;
         }
         return sl.copyWith(satConversionRate: rate);
       }).toList()));
@@ -198,15 +200,15 @@ class PosCatalogBloc with AsyncActionsHandler {
 
   void _trackDefaultSaleNote() {
     _userStream.listen((user) {
-      final defaultSaleNote = user.defaultPosNote;
+      final defaultSaleNote = user!.defaultPosNote;
       final currentSale = _currentSaleController.value;
-      _currentSaleController.add(currentSale.copyWith(
+      _currentSaleController.add(currentSale!.copyWith(
         note: defaultSaleNote,
       ));
     });
   }
 
-  Future _loadItems({String filter, bool backupDB = false}) async {
+  Future _loadItems({String? filter, bool backupDB = false}) async {
     final items = await _repository.fetchItems(filter: filter);
     final sort = _posItemSort.valueOrNull ?? PosCatalogItemSort.NONE;
     _itemsStreamController.add(_sort(items, sort));
@@ -279,7 +281,7 @@ class PosCatalogBloc with AsyncActionsHandler {
   }
 
   Future _submitSale(SubmitCurrentSale action) async {
-    var currentSale = _currentSaleController.value.copyNew();
+    var currentSale = _currentSaleController.value!.copyNew();
     int saleID = await _repository.addSale(currentSale, action.paymentHash);
     var submittedSale = await _repository.fetchSaleByID(saleID);
     _currentSaleController.add(submittedSale);
@@ -288,10 +290,11 @@ class PosCatalogBloc with AsyncActionsHandler {
 
   Future _fetchSale(FetchSale action) async {
     if (action.id != null) {
-      action.resolve(await _repository.fetchSaleByID(action.id));
+      action.resolve(await _repository.fetchSaleByID(action.id!));
     } else {
       action.resolve(
-          await _repository.fetchSaleByPaymentHash(action.paymentHash));
+        await _repository.fetchSaleByPaymentHash(action.paymentHash),
+      );
     }
   }
 
@@ -330,7 +333,7 @@ class PosCatalogBloc with AsyncActionsHandler {
     PosReportTimeRange timeRange;
     if (prefs.containsKey(_kPosReportTimeRangeKey)) {
       timeRange = PosReportTimeRange.fromJson(
-        prefs.getString(_kPosReportTimeRangeKey),
+        prefs.getString(_kPosReportTimeRangeKey)!,
       );
     } else {
       timeRange = PosReportTimeRange.daily();

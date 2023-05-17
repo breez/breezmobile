@@ -14,11 +14,19 @@ class AccountSynchronizer {
   bool _dismissed = false;
   bool bootstrap = false;
 
-  final Function(int startTimestamp, double progress, bool syncedToChain,
-      bool isBootstrap) onProgress;
+  final Function(
+    int startTimestamp,
+    double progress,
+    bool syncedToChain,
+    bool isBootstrap,
+  ) onProgress;
   final Function onComplete;
 
-  AccountSynchronizer(this._breezLib, {this.onProgress, this.onComplete}) {
+  AccountSynchronizer(
+    this._breezLib, {
+    required this.onProgress,
+    required this.onComplete,
+  }) {
     _pollSyncStatus();
     _breezLib.lastSyncedHeaderTimestamp().then((timestamp) {
       if (timestamp > 0) {

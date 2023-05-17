@@ -1,11 +1,11 @@
 class AddFundVendorModel {
   final String name;
-  final String shortName;
   final String icon;
   final String route;
   final bool isAllowed;
   final bool enabled;
   final bool requireActiveChannel;
+  final String? shortName;
   final bool showLSPFee;
 
   AddFundVendorModel(
@@ -20,7 +20,7 @@ class AddFundVendorModel {
   });
 
   AddFundVendorModel copyWith({
-    bool isAllowed,
+    bool? isAllowed,
   }) {
     return AddFundVendorModel(
       name,

@@ -66,7 +66,7 @@ class EscherDialogState extends State<EscherDialog> {
   }
 
   Widget _buildPaymentRequestContent() {
-    return StreamBuilder<AccountModel>(
+    return StreamBuilder<AccountModel?>(
       stream: widget.accountBloc.accountStream,
       builder: (context, snapshot) {
         var account = snapshot.data;

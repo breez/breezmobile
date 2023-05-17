@@ -21,12 +21,12 @@ class LNURLWebViewPage extends StatefulWidget {
   final String responseID;
 
   const LNURLWebViewPage({
-    Key key,
-    this.accountBloc,
-    this.vendorModel,
-    this.lnurlBloc,
-    this.endpointURI,
-    this.responseID,
+    Key? key,
+    required this.accountBloc,
+    required this.vendorModel,
+    required this.lnurlBloc,
+    required this.endpointURI,
+    required this.responseID,
   }) : super(key: key);
 
   @override

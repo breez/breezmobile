@@ -43,9 +43,9 @@ class Choice {
   final Function function;
 
   const Choice({
-    this.title,
-    this.icon,
-    this.function,
+    required this.title,
+    required this.icon,
+    required this.function,
   });
 }
 
@@ -53,8 +53,8 @@ final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
 // ignore: must_be_immutable
 class DevView extends StatefulWidget {
-  BreezBridge _breezBridge;
-  Permissions _permissionsService;
+  late BreezBridge _breezBridge;
+  late Permissions _permissionsService;
 
   DevView() {
     ServiceInjector injector = ServiceInjector();
@@ -125,7 +125,7 @@ class DevViewState extends State<DevView> {
           children: defaultCliCommandsText(
             (command) {
               _cliInputController.text = "$command ";
-              FocusScope.of(_scaffoldKey.currentState.context)
+              FocusScope.of(_scaffoldKey.currentState!.context)
                   .requestFocus(_cliEntryFocusNode);
             },
           ),
@@ -150,19 +150,18 @@ class DevViewState extends State<DevView> {
     BackupBloc backupBloc = AppBlocsProvider.of<BackupBloc>(context);
     AddFundsBloc addFundsBloc = BlocProvider.of<AddFundsBloc>(context);
     UserProfileBloc userBloc = AppBlocsProvider.of<UserProfileBloc>(context);
-    return StreamBuilder<BackupState>(
+    return StreamBuilder<BackupState?>(
       stream: backupBloc.backupStateStream,
-      builder: (ctx, backupSnapshot) => StreamBuilder(
+      builder: (ctx, backupSnapshot) => StreamBuilder<AccountModel?>(
         stream: accBloc.accountStream,
         builder: (accCtx, accSnapshot) {
-          AccountModel account = accSnapshot.data;
-          return StreamBuilder(
+          return StreamBuilder<AccountSettings>(
             stream: accBloc.accountSettingsStream,
             builder: (context, settingsSnapshot) {
-              return StreamBuilder(
+              return StreamBuilder<AddFundsSettings>(
                 stream: addFundsBloc.addFundsSettingsStream,
                 builder: (context, addFundsSettingsSnapshot) {
-                  return StreamBuilder<BreezUserModel>(
+                  return StreamBuilder<BreezUserModel?>(
                     stream: userBloc.userStream,
                     builder: (context, userSnapshot) {
                       return Scaffold(
@@ -179,12 +178,13 @@ class DevViewState extends State<DevView> {
                                 color: Theme.of(context).iconTheme.color,
                               ),
                               itemBuilder: (BuildContext context) {
+                                // TODO : Null Handling - Handle stream values when they have no data
                                 return getChoices(
                                   accBloc,
-                                  settingsSnapshot.data,
-                                  account,
+                                  settingsSnapshot.data!,
+                                  accSnapshot.data,
                                   addFundsBloc,
-                                  addFundsSettingsSnapshot.data,
+                                  addFundsSettingsSnapshot.data!,
                                   userBloc,
                                   userSnapshot.data,
                                 ).map((Choice choice) {
@@ -351,11 +351,11 @@ class DevViewState extends State<DevView> {
   List<Choice> getChoices(
     AccountBloc accBloc,
     AccountSettings settings,
-    AccountModel account,
+    AccountModel? account,
     AddFundsBloc addFundsBloc,
     AddFundsSettings addFundsSettings,
     UserProfileBloc userBloc,
-    BreezUserModel userModel,
+    BreezUserModel? userModel,
   ) {
     List<Choice> choices = <Choice>[];
     choices.addAll(
@@ -519,9 +519,10 @@ class DevViewState extends State<DevView> {
           );
           if (fileResult != null && fileResult.files.isNotEmpty) {
             final file = fileResult.files.first;
-            if (file.path.endsWith(".db")) {
+            if (file.path!.endsWith(".db")) {
+              // TODO: file path may be null(Web)
               final databasePath = await getDatabasePath();
-              await File(file.path).copy(databasePath);
+              await File(file.path!).copy(databasePath);
             } else {
               log.warning("Invalid file type for product catalog DB");
             }
@@ -777,7 +778,7 @@ class DevViewState extends State<DevView> {
       okText: "EXIT BREEZ",
     ).then(
       (shouldExit) {
-        if (shouldExit) {
+        if (shouldExit != null && shouldExit) {
           exit(0);
         }
         return;

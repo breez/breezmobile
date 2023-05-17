@@ -26,28 +26,28 @@ class Asset implements DBItem {
 }
 
 class Item implements DBItem {
-  final int id;
+  final int? id;
   final String name;
-  final String sku;
-  final String imageURL;
+  final String? sku;
+  final String? imageURL;
   final String currency;
   final double price;
 
   Item({
     this.id,
-    this.name,
+    required this.name,
     this.sku,
     this.imageURL,
-    this.currency,
-    this.price,
+    required this.currency,
+    required this.price,
   });
 
   Item copyWith({
-    String name,
-    String sku,
-    String imageURL,
-    String currency,
-    double price,
+    String? name,
+    String? sku,
+    String? imageURL,
+    String? currency,
+    double? price,
   }) {
     return Item(
       id: id,
@@ -81,13 +81,13 @@ class Item implements DBItem {
 }
 
 class SaleLine implements DBItem {
-  final int id;
-  final int saleID;
-  final int itemID;
+  final int? id;
+  final int? saleID;
+  final int? itemID;
   final String itemName;
-  final String itemSKU;
+  final String? itemSKU;
   final int quantity;
-  final String itemImageURL;
+  final String? itemImageURL;
   final double pricePerItem;
   final String currency;
   final double satConversionRate;
@@ -102,25 +102,25 @@ class SaleLine implements DBItem {
     this.id,
     this.saleID,
     this.itemID,
-    this.itemName,
+    required this.itemName,
     this.itemSKU,
-    this.quantity,
+    required this.quantity,
     this.itemImageURL,
-    this.pricePerItem,
-    this.currency,
-    this.satConversionRate,
+    required this.pricePerItem,
+    required this.currency,
+    required this.satConversionRate,
   });
 
   SaleLine copyWith({
-    int id,
-    int saleID,
-    String itemName,
-    String itemSKU,
-    int quantity,
-    String itemImageURL,
-    double pricePerItem,
-    String currency,
-    double satConversionRate,
+    int? id,
+    int? saleID,
+    String? itemName,
+    String? itemSKU,
+    int? quantity,
+    String? itemImageURL,
+    double? pricePerItem,
+    String? currency,
+    double? satConversionRate,
   }) {
     return SaleLine(
       id: id != null && id < 0 ? null : this.id,
@@ -179,18 +179,26 @@ class SaleLine implements DBItem {
   }
 }
 
+// TODO : Null Handling
 class Sale implements DBItem {
-  final int id;
+  final int? id;
   final List<SaleLine> saleLines;
-  final String note;
+  final String? note;
   final bool priceLocked;
 
+  Sale({
+    this.id,
+    required this.saleLines,
+    this.note,
+    this.priceLocked = false,
+  });
+
   Sale copyWith({
-    int id,
-    List<SaleLine> saleLines,
-    bool priceLocked,
-    String note,
-    DateTime date,
+    int? id,
+    List<SaleLine>? saleLines,
+    bool? priceLocked,
+    String? note,
+    DateTime? date,
   }) {
     return Sale(
       id: id != null && id < 0 ? null : this.id,
@@ -207,13 +215,6 @@ class Sale implements DBItem {
       date: DateTime.now(),
     );
   }
-
-  Sale({
-    this.id,
-    this.saleLines,
-    this.note,
-    this.priceLocked = false,
-  });
 
   Sale.fromMap(Map<String, dynamic> json)
       : id = json["id"],
@@ -430,14 +431,16 @@ abstract class PosReportTimeRange {
       case _kPosReportTimeRangeMonthly:
         return PosReportTimeRangeMonthly();
       case _kPosReportTimeRangeCustom:
-        final startDate = DateTime.fromMillisecondsSinceEpoch(
-              jsonMap["startDate"],
-            ) ??
-            DateTime.now();
-        final endDate = DateTime.fromMillisecondsSinceEpoch(
-              jsonMap["endDate"],
-            ) ??
-            DateTime.now();
+        final startDate = jsonMap["startDate"] != null
+            ? DateTime.fromMillisecondsSinceEpoch(
+                jsonMap["startDate"],
+              )
+            : DateTime.now();
+        final endDate = jsonMap["endDate"] != null
+            ? DateTime.fromMillisecondsSinceEpoch(
+                jsonMap["endDate"],
+              )
+            : DateTime.now();
         return PosReportTimeRangeCustom(startDate, endDate);
       default:
         return PosReportTimeRangeDaily();

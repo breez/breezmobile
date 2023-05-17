@@ -1082,9 +1082,9 @@ class PayRequest {
 class CompletedPayment {
   final PayRequest? paymentRequest;
   final String? paymentHash;
-  final bool? cancelled;
+  final PaymentInfo? paymentItem;
+  final bool cancelled;
   final bool ignoreGlobalFeedback;
-  final PaymentInfo paymentItem;
 
   const CompletedPayment(
     this.paymentRequest,
@@ -1096,7 +1096,7 @@ class CompletedPayment {
 }
 
 class PaymentError implements Exception {
-  final PayRequest request;
+  final PayRequest? request;
   final Object error;
   final String? traceReport;
   final bool ignoreGlobalFeedback;

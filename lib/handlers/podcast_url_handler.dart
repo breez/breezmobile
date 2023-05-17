@@ -16,6 +16,7 @@ import 'package:breez/services/injector.dart';
 import 'package:breez/widgets/flushbar.dart';
 import 'package:breez/widgets/loader.dart';
 import 'package:breez_translations/breez_translations_locales.dart';
+import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:rxdart/rxdart.dart';
@@ -35,10 +36,10 @@ class PodcastURLHandler {
         Navigator.of(context).push(loaderRoute);
         await protectAdminAction(
           context,
-          await userProfileBloc.userStream.firstWhere((u) => u != null),
+          (await userProfileBloc.userStream.firstWhere((u) => u != null))!,
           () async {
             final injector = ServiceInjector();
-            final podcastLink = injector.deepLinks.parsePodcastShareLink(link);
+            final podcastLink = injector.deepLinks.parsePodcastShareLink(link!);
             userProfileBloc.userActionsSink.add(
               SetAppMode(AppMode.podcasts),
             );
@@ -65,7 +66,7 @@ class PodcastURLHandler {
 Future handleDeeplink(
   BuildContext context,
   String podcastURL,
-  String episodeID,
+  String? episodeID,
 ) async {
   final texts = context.texts();
   final navigator = Navigator.of(context);
@@ -88,9 +89,8 @@ Future handleDeeplink(
           // Retrieve episode list and play matching episode
           var episodeList = await podcastBloc.episodes
               .firstWhere((episodeList) => episodeList.isNotEmpty);
-          var episode = episodeList.firstWhere(
+          var episode = episodeList.firstWhereOrNull(
             (episode) => episode.guid == episodeID,
-            orElse: () => null,
           );
           if (episode != null) {
             audioBloc.play(episode);

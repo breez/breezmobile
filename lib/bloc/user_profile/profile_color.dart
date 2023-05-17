@@ -38,17 +38,18 @@ enum ProfileColor {
   CORAL,
 }
 
-ProfileColor profileColorFromName(String name, BreezTranslations texts) {
+ProfileColor? profileColorFromName(String name, BreezTranslations texts) {
   final key = name.toLowerCase();
-  final localizedNames = _colorsFromName[texts.locale];
+  final Map<String, ProfileColor> localizedNames =
+      _colorsFromName[texts.locale]!; // TODO : Null Handling
 
   if (localizedNames.containsKey(key)) {
-    return localizedNames[key];
+    return localizedNames[key]!;
   }
 
   for (var map in _colorsFromName.values) {
     if (map.containsKey(key)) {
-      return map[key];
+      return map[key]!;
     }
   }
 

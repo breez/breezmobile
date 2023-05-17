@@ -35,10 +35,10 @@ class SubmitCurrentSale extends AsyncAction {
 }
 
 class FetchSale extends AsyncAction {
-  final int id;
+  final int? id;
   final String paymentHash;
 
-  FetchSale({this.id, this.paymentHash});
+  FetchSale({this.id, required this.paymentHash});
 }
 
 class SetCurrentSale extends AsyncAction {

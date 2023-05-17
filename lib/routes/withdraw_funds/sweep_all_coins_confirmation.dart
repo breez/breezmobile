@@ -97,7 +97,7 @@ class SweepAllCoinsConfirmationState extends State<SweepAllCoinsConfirmation> {
         }),
         title: Text(texts.sweep_all_coins_speed),
       ),
-      body: StreamBuilder<AccountModel>(
+      body: StreamBuilder<AccountModel?>(
         stream: AppBlocsProvider.of<AccountBloc>(context).accountStream,
         builder: (context, snapshot) {
           AccountModel acc = snapshot.data;
