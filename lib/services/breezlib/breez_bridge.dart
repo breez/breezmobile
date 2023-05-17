@@ -4,7 +4,7 @@ import 'dart:io';
 
 import 'package:breez/bloc/lnurl/lnurl_model.dart';
 import 'package:breez/logger.dart' as logger;
-import 'package:breez/services/breezlib/data/rpc.pb.dart';
+import 'package:breez/services/breezlib/data/messages.pb.dart';
 import 'package:breez/services/download_manager.dart';
 import 'package:dio/dio.dart';
 import 'package:fixnum/fixnum.dart';
@@ -17,8 +17,9 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import 'graph_downloader.dart';
 
-// This is the bridge to the native breez library. Protobuf messages are used as the interface and to generate the classes use the bellow command.
-// protoc --dart_out=grpc:lib/services/breezlib/data/ -Ilib/services/breezlib/ lib/services/breezlib/rpc.proto
+// This is the bridge to the native breez library. Protobuf messages are used as the interface and to generate the classes use the command below:
+// protoc --dart_out=grpc:lib/services/breezlib/data/ -Ilib/services/breezlib/protobuf/ lib/services/breezlib/protobuf/messages.proto
+// You may need to activate protoc_plugin. See [here](https://pub.dev/packages/protoc_plugin#how-to-build).
 class BreezBridge {
   static const _methodChannel = MethodChannel('com.breez.client/breez_lib');
   static const _eventChannel =

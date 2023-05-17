@@ -5,7 +5,7 @@ import 'package:breez/bloc/invoice/actions.dart';
 import 'package:breez/bloc/invoice/invoice_model.dart';
 import 'package:breez/logger.dart';
 import 'package:breez/services/breezlib/breez_bridge.dart';
-import 'package:breez/services/breezlib/data/rpc.pb.dart';
+import 'package:breez/services/breezlib/data/messages.pb.dart';
 import 'package:breez/services/device.dart';
 import 'package:breez/services/injector.dart';
 import 'package:breez/services/lightning_links.dart';

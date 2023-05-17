@@ -8,7 +8,7 @@ import 'package:breez/bloc/user_profile/breez_user_model.dart';
 import 'package:breez/logger.dart';
 import 'package:breez/services/background_task.dart';
 import 'package:breez/services/breezlib/breez_bridge.dart';
-import 'package:breez/services/breezlib/data/rpc.pb.dart';
+import 'package:breez/services/breezlib/data/messages.pb.dart';
 import 'package:breez/services/injector.dart';
 import 'package:crypto/crypto.dart';
 import 'package:flutter/services.dart';

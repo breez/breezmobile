@@ -1,11 +1,12 @@
 import 'dart:async';
 
 import 'package:breez/services/breezlib/breez_bridge.dart';
-import 'package:breez/services/breezlib/data/rpc.pb.dart';
+import 'package:breez/services/breezlib/data/messages.pb.dart';
 import 'package:fixnum/fixnum.dart';
 import 'package:mockito/mockito.dart';
 
 class BreezLibMock extends Mock implements BreezBridge {
+  @override
   Future<AddInvoiceReply> addInvoice(
     Int64 amount, {
     String payeeName,
@@ -19,8 +20,10 @@ class BreezLibMock extends Mock implements BreezBridge {
     return Future.value(AddInvoiceReply());
   }
 
-  StreamController eventsController = StreamController<NotificationEvent>.broadcast();
+  StreamController eventsController =
+      StreamController<NotificationEvent>.broadcast();
 
+  @override
   Stream<NotificationEvent> get notificationStream => eventsController.stream;
 
   String backupProviderSet;

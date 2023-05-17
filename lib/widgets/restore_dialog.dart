@@ -4,7 +4,7 @@ import 'package:archive/archive_io.dart';
 import 'package:breez/bloc/backup/backup_actions.dart';
 import 'package:breez/bloc/backup/backup_bloc.dart';
 import 'package:breez/bloc/backup/backup_model.dart';
-import 'package:breez/services/breezlib/data/rpc.pbgrpc.dart';
+import 'package:breez/services/breezlib/data/messages.pbgrpc.dart';
 import 'package:breez/theme_data.dart' as theme;
 import 'package:breez/utils/date.dart';
 import 'package:breez_translations/breez_translations_locales.dart';

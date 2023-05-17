@@ -2,7 +2,7 @@ import 'package:breez/bloc/account/account_model.dart';
 import 'package:breez/bloc/user_profile/currency.dart';
 import 'package:breez/routes/get_refund/widget/get_refund_action.dart';
 import 'package:breez/routes/get_refund/widget/get_refund_title.dart';
-import 'package:breez/services/breezlib/data/rpc.pb.dart';
+import 'package:breez/services/breezlib/data/messages.pb.dart';
 import 'package:breez/theme_data.dart';
 import 'package:fixnum/fixnum.dart';
 import 'package:flutter/foundation.dart';

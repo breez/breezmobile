@@ -6,7 +6,7 @@ import 'package:breez/bloc/lnurl/lnurl_model.dart';
 import 'package:breez/bloc/lnurl/nfc_withdraw_invoice_status.dart';
 import 'package:breez/logger.dart';
 import 'package:breez/services/breezlib/breez_bridge.dart';
-import 'package:breez/services/breezlib/data/rpc.pbserver.dart';
+import 'package:breez/services/breezlib/data/messages.pb.dart';
 import 'package:breez/services/injector.dart';
 import 'package:breez/utils/lnurl.dart';
 import 'package:breez/utils/retry.dart';

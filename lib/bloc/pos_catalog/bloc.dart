@@ -9,7 +9,7 @@ import 'package:breez/bloc/pos_catalog/repository.dart';
 import 'package:breez/bloc/pos_catalog/sqlite/repository.dart';
 import 'package:breez/bloc/user_profile/breez_user_model.dart';
 import 'package:breez/bloc/user_profile/currency.dart';
-import 'package:breez/services/breezlib/data/rpc.pb.dart';
+import 'package:breez/services/breezlib/data/messages.pb.dart';
 import 'package:breez/services/injector.dart';
 import 'package:flutter/services.dart';
 import 'package:rxdart/rxdart.dart';

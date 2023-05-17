@@ -8,7 +8,7 @@ import 'package:breez/bloc/backup/backup_model.dart';
 import 'package:breez/bloc/lsp/lsp_bloc.dart';
 import 'package:breez/bloc/lsp/lsp_model.dart';
 import 'package:breez/routes/close_warning_dialog.dart';
-import 'package:breez/services/breezlib/data/rpc.pb.dart';
+import 'package:breez/services/breezlib/data/messages.pb.dart';
 import 'package:breez/widgets/enable_backup_dialog.dart';
 import 'package:breez/widgets/flushbar.dart';
 import 'package:breez/widgets/rotator.dart';
