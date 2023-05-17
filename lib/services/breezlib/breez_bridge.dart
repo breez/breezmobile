@@ -584,16 +584,21 @@ class BreezBridge {
     // if we got lsp in input let's use it
     if (lspInfo != null) {
       request.lspInfo = lspInfo;
+      request.openingFeeParams = lspInfo.cheapestOpeningFeeParams;
     } else {
       // if we have a selected lsp, let's use it
       var lsps = await getLSPList();
       if (_selectedLspID != null) {
         request.lspInfo = lsps.lsps[_selectedLspID];
+        request.openingFeeParams =
+            lsps.lsps[_selectedLspID].cheapestOpeningFeeParams;
       } else {
         // if we only have one lsp in our options, let's use it.
         var keys = lsps.lsps.keys.toList();
         if (keys.length == 1) {
           request.lspInfo = lsps.lsps[keys[0]];
+          request.openingFeeParams =
+              lsps.lsps[keys[0]].cheapestOpeningFeeParams;
         }
       }
     }
@@ -711,10 +716,13 @@ class BreezBridge {
   Future<AddFundInitReply> addFundsInit(
     String breezID,
     String selectedLSP,
+    OpeningFeeParams openingFeeParams,
   ) {
     var initRequest = AddFundInitRequest()
       ..notificationToken = breezID
-      ..lspID = selectedLSP;
+      ..lspID = selectedLSP
+      ..openingFeeParams = openingFeeParams;
+
     return _invokeMethodWhenReady(
       "addFundsInit",
       {"argument": initRequest.writeToBuffer()},

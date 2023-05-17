@@ -190,9 +190,9 @@ class CreateInvoicePageState extends State<CreateInvoicePage> {
               LSPStatus lspStatus = snapshot.data;
               String validatePayment(Int64 amount) {
                 if (lspStatus?.currentLSP != null) {
-                  final channelMinimumFee = Int64(
-                    lspStatus.currentLSP.channelMinimumFeeMsat ~/ 1000,
-                  );
+                  final channelMinimumFee =
+                      lspStatus.currentLSP.cheapestOpeningFeeParams.minMsat ~/
+                          1000;
                   if (amount > acc.maxInboundLiquidity &&
                       amount <= channelMinimumFee) {
                     return texts.invoice_insufficient_amount_fee(
@@ -383,11 +383,12 @@ class CreateInvoicePageState extends State<CreateInvoicePage> {
   ) {
     final connected = accountModel.connected;
     final minFee = (lspInfo != null)
-        ? Int64(lspInfo.channelMinimumFeeMsat) ~/ 1000
+        ? lspInfo.cheapestOpeningFeeParams.minMsat ~/ 1000
         : Int64(0);
     final minFeeFormatted = accountModel.currency.format(minFee);
     final showMinFeeMessage = minFee > 0;
-    final setUpFee = (lspInfo.channelFeePermyriad / 100).toString();
+    final setUpFee =
+        (lspInfo.cheapestOpeningFeeParams.proportional / 10000).toString();
     final liquidity = accountModel.currency.format(
       connected ? accountModel.maxInboundLiquidity : Int64(0),
     );

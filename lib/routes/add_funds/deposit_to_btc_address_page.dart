@@ -161,7 +161,7 @@ class DepositToBTCAddressPageState extends State<DepositToBTCAddressPage> {
   ) {
     final connected = accountModel.connected;
     final minFees = (lspInfo != null)
-        ? Int64(lspInfo.channelMinimumFeeMsat) ~/ 1000
+        ? lspInfo.longestValidOpeningFeeParams.minMsat ~/ 1000
         : Int64(0);
     final showMinFeeMessage = minFees > 0;
     final minFeeFormatted = accountModel.currency.format(minFees);
@@ -176,7 +176,8 @@ class DepositToBTCAddressPageState extends State<DepositToBTCAddressPage> {
       maxAllowedDeposit,
       includeDisplayName: true,
     );
-    final setUpFee = (lspInfo.channelFeePermyriad / 100).toString();
+    final setUpFee =
+        (lspInfo.longestValidOpeningFeeParams.proportional / 10000).toString();
     final liquidity = accountModel.currency.format(
       connected ? accountModel.maxInboundLiquidity : Int64(0),
     );
@@ -220,7 +221,7 @@ class DepositToBTCAddressPageState extends State<DepositToBTCAddressPage> {
     Int64 minAllowedDeposit,
   ) {
     final minFees = (lspInfo != null)
-        ? Int64(lspInfo.channelMinimumFeeMsat) ~/ 1000
+        ? lspInfo.cheapestOpeningFeeParams.minMsat ~/ 1000
         : Int64(0);
     if (minAllowedDeposit == null) return minFees;
     if (minFees > minAllowedDeposit) return minFees;

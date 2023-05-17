@@ -77,7 +77,8 @@ class AddFundsBloc extends Bloc {
           throw Exception(getSystemAppLocalizations().lsp_error_not_selected);
         }
         breezLib
-            .addFundsInit(user.userID ?? "", lspStatus.selectedLSP)
+            .addFundsInit(user.userID ?? "", lspStatus.selectedLSP,
+                lspStatus.currentLSP.longestValidOpeningFeeParams)
             .then((reply) {
           AddFundResponse response = AddFundResponse(reply);
           if (addFundsInfo.isMoonpay) {
