@@ -125,7 +125,7 @@ class HomeAppBar extends StatelessWidget implements PreferredSizeWidget {
       case (AppMode.balance):
         return "src/icon/balance.png";
       default:
-        return "src/icon/hamburger.svg";
+        return "src/icon/hamburger.png";
     }
   }
 }
