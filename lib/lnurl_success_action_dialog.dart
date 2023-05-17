@@ -1,5 +1,5 @@
 import 'package:auto_size_text/auto_size_text.dart';
-import 'package:breez/services/breezlib/data/rpc.pbgrpc.dart';
+import 'package:breez/services/breezlib/data/messages.pbgrpc.dart';
 import 'package:breez/services/injector.dart';
 import 'package:breez/utils/external_browser.dart';
 import 'package:breez/widgets/error_dialog.dart';

@@ -1,7 +1,7 @@
 import 'dart:async';
 
 import 'package:breez/logger.dart';
-import 'package:breez/services/breezlib/data/rpc.pb.dart';
+import 'package:breez/services/breezlib/data/messages.pb.dart';
 import 'package:flutter/services.dart';
 
 class TorBloc {

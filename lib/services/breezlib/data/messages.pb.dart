@@ -1,6 +1,6 @@
 ///
 //  Generated code. Do not modify.
-//  source: rpc.proto
+//  source: messages.proto
 //
 // @dart = 2.12
 // ignore_for_file: annotate_overrides,camel_case_types,constant_identifier_names,directives_ordering,library_prefixes,non_constant_identifier_names,prefer_final_fields,return_of_invalid_type,unnecessary_const,unnecessary_import,unnecessary_this,unused_import,unused_shown_name
@@ -10,9 +10,9 @@ import 'dart:core' as $core;
 import 'package:fixnum/fixnum.dart' as $fixnum;
 import 'package:protobuf/protobuf.dart' as $pb;
 
-import 'rpc.pbenum.dart';
+import 'messages.pbenum.dart';
 
-export 'rpc.pbenum.dart';
+export 'messages.pbenum.dart';
 
 class ListPaymentsRequest extends $pb.GeneratedMessage {
   static final $pb.BuilderInfo _i = $pb.BuilderInfo(const $core.bool.fromEnvironment('protobuf.omit_message_names') ? '' : 'ListPaymentsRequest', package: const $pb.PackageName(const $core.bool.fromEnvironment('protobuf.omit_message_names') ? '' : 'data'), createEmptyInstance: create)
@@ -105,6 +105,7 @@ class AddFundInitRequest extends $pb.GeneratedMessage {
   static final $pb.BuilderInfo _i = $pb.BuilderInfo(const $core.bool.fromEnvironment('protobuf.omit_message_names') ? '' : 'AddFundInitRequest', package: const $pb.PackageName(const $core.bool.fromEnvironment('protobuf.omit_message_names') ? '' : 'data'), createEmptyInstance: create)
     ..aOS(1, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'notificationToken', protoName: 'notificationToken')
     ..aOS(2, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'lspID', protoName: 'lspID')
+    ..aOM<OpeningFeeParams>(3, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'openingFeeParams', subBuilder: OpeningFeeParams.create)
     ..hasRequiredFields = false
   ;
 
@@ -112,6 +113,7 @@ class AddFundInitRequest extends $pb.GeneratedMessage {
   factory AddFundInitRequest({
     $core.String? notificationToken,
     $core.String? lspID,
+    OpeningFeeParams? openingFeeParams,
   }) {
     final _result = create();
     if (notificationToken != null) {
@@ -119,6 +121,9 @@ class AddFundInitRequest extends $pb.GeneratedMessage {
     }
     if (lspID != null) {
       _result.lspID = lspID;
+    }
+    if (openingFeeParams != null) {
+      _result.openingFeeParams = openingFeeParams;
     }
     return _result;
   }
@@ -160,6 +165,17 @@ class AddFundInitRequest extends $pb.GeneratedMessage {
   $core.bool hasLspID() => $_has(1);
   @$pb.TagNumber(2)
   void clearLspID() => clearField(2);
+
+  @$pb.TagNumber(3)
+  OpeningFeeParams get openingFeeParams => $_getN(2);
+  @$pb.TagNumber(3)
+  set openingFeeParams(OpeningFeeParams v) { setField(3, v); }
+  @$pb.TagNumber(3)
+  $core.bool hasOpeningFeeParams() => $_has(2);
+  @$pb.TagNumber(3)
+  void clearOpeningFeeParams() => clearField(3);
+  @$pb.TagNumber(3)
+  OpeningFeeParams ensureOpeningFeeParams() => $_ensure(2);
 }
 
 class FundStatusRequest extends $pb.GeneratedMessage {
@@ -1447,6 +1463,7 @@ class AddInvoiceRequest extends $pb.GeneratedMessage {
   static final $pb.BuilderInfo _i = $pb.BuilderInfo(const $core.bool.fromEnvironment('protobuf.omit_message_names') ? '' : 'AddInvoiceRequest', package: const $pb.PackageName(const $core.bool.fromEnvironment('protobuf.omit_message_names') ? '' : 'data'), createEmptyInstance: create)
     ..aOM<InvoiceMemo>(1, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'invoiceDetails', protoName: 'invoiceDetails', subBuilder: InvoiceMemo.create)
     ..aOM<LSPInformation>(2, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'lspInfo', protoName: 'lspInfo', subBuilder: LSPInformation.create)
+    ..aOM<OpeningFeeParams>(3, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'openingFeeParams', subBuilder: OpeningFeeParams.create)
     ..hasRequiredFields = false
   ;
 
@@ -1454,6 +1471,7 @@ class AddInvoiceRequest extends $pb.GeneratedMessage {
   factory AddInvoiceRequest({
     InvoiceMemo? invoiceDetails,
     LSPInformation? lspInfo,
+    OpeningFeeParams? openingFeeParams,
   }) {
     final _result = create();
     if (invoiceDetails != null) {
@@ -1461,6 +1479,9 @@ class AddInvoiceRequest extends $pb.GeneratedMessage {
     }
     if (lspInfo != null) {
       _result.lspInfo = lspInfo;
+    }
+    if (openingFeeParams != null) {
+      _result.openingFeeParams = openingFeeParams;
     }
     return _result;
   }
@@ -1506,6 +1527,17 @@ class AddInvoiceRequest extends $pb.GeneratedMessage {
   void clearLspInfo() => clearField(2);
   @$pb.TagNumber(2)
   LSPInformation ensureLspInfo() => $_ensure(1);
+
+  @$pb.TagNumber(3)
+  OpeningFeeParams get openingFeeParams => $_getN(2);
+  @$pb.TagNumber(3)
+  set openingFeeParams(OpeningFeeParams v) { setField(3, v); }
+  @$pb.TagNumber(3)
+  $core.bool hasOpeningFeeParams() => $_has(2);
+  @$pb.TagNumber(3)
+  void clearOpeningFeeParams() => clearField(3);
+  @$pb.TagNumber(3)
+  OpeningFeeParams ensureOpeningFeeParams() => $_ensure(2);
 }
 
 class Invoice extends $pb.GeneratedMessage {
@@ -1583,218 +1615,6 @@ class Invoice extends $pb.GeneratedMessage {
   $core.bool hasAmtPaid() => $_has(2);
   @$pb.TagNumber(3)
   void clearAmtPaid() => clearField(3);
-}
-
-class SyncLSPChannelsRequest extends $pb.GeneratedMessage {
-  static final $pb.BuilderInfo _i = $pb.BuilderInfo(const $core.bool.fromEnvironment('protobuf.omit_message_names') ? '' : 'SyncLSPChannelsRequest', package: const $pb.PackageName(const $core.bool.fromEnvironment('protobuf.omit_message_names') ? '' : 'data'), createEmptyInstance: create)
-    ..aOM<LSPInformation>(1, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'lspInfo', protoName: 'lspInfo', subBuilder: LSPInformation.create)
-    ..hasRequiredFields = false
-  ;
-
-  SyncLSPChannelsRequest._() : super();
-  factory SyncLSPChannelsRequest({
-    LSPInformation? lspInfo,
-  }) {
-    final _result = create();
-    if (lspInfo != null) {
-      _result.lspInfo = lspInfo;
-    }
-    return _result;
-  }
-  factory SyncLSPChannelsRequest.fromBuffer($core.List<$core.int> i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromBuffer(i, r);
-  factory SyncLSPChannelsRequest.fromJson($core.String i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromJson(i, r);
-  @$core.Deprecated(
-  'Using this can add significant overhead to your binary. '
-  'Use [GeneratedMessageGenericExtensions.deepCopy] instead. '
-  'Will be removed in next major version')
-  SyncLSPChannelsRequest clone() => SyncLSPChannelsRequest()..mergeFromMessage(this);
-  @$core.Deprecated(
-  'Using this can add significant overhead to your binary. '
-  'Use [GeneratedMessageGenericExtensions.rebuild] instead. '
-  'Will be removed in next major version')
-  SyncLSPChannelsRequest copyWith(void Function(SyncLSPChannelsRequest) updates) => super.copyWith((message) => updates(message as SyncLSPChannelsRequest)) as SyncLSPChannelsRequest; // ignore: deprecated_member_use
-  $pb.BuilderInfo get info_ => _i;
-  @$core.pragma('dart2js:noInline')
-  static SyncLSPChannelsRequest create() => SyncLSPChannelsRequest._();
-  SyncLSPChannelsRequest createEmptyInstance() => create();
-  static $pb.PbList<SyncLSPChannelsRequest> createRepeated() => $pb.PbList<SyncLSPChannelsRequest>();
-  @$core.pragma('dart2js:noInline')
-  static SyncLSPChannelsRequest getDefault() => _defaultInstance ??= $pb.GeneratedMessage.$_defaultFor<SyncLSPChannelsRequest>(create);
-  static SyncLSPChannelsRequest? _defaultInstance;
-
-  @$pb.TagNumber(1)
-  LSPInformation get lspInfo => $_getN(0);
-  @$pb.TagNumber(1)
-  set lspInfo(LSPInformation v) { setField(1, v); }
-  @$pb.TagNumber(1)
-  $core.bool hasLspInfo() => $_has(0);
-  @$pb.TagNumber(1)
-  void clearLspInfo() => clearField(1);
-  @$pb.TagNumber(1)
-  LSPInformation ensureLspInfo() => $_ensure(0);
-}
-
-class SyncLSPChannelsResponse extends $pb.GeneratedMessage {
-  static final $pb.BuilderInfo _i = $pb.BuilderInfo(const $core.bool.fromEnvironment('protobuf.omit_message_names') ? '' : 'SyncLSPChannelsResponse', package: const $pb.PackageName(const $core.bool.fromEnvironment('protobuf.omit_message_names') ? '' : 'data'), createEmptyInstance: create)
-    ..aOB(1, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'hasMismatch', protoName: 'hasMismatch')
-    ..hasRequiredFields = false
-  ;
-
-  SyncLSPChannelsResponse._() : super();
-  factory SyncLSPChannelsResponse({
-    $core.bool? hasMismatch,
-  }) {
-    final _result = create();
-    if (hasMismatch != null) {
-      _result.hasMismatch = hasMismatch;
-    }
-    return _result;
-  }
-  factory SyncLSPChannelsResponse.fromBuffer($core.List<$core.int> i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromBuffer(i, r);
-  factory SyncLSPChannelsResponse.fromJson($core.String i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromJson(i, r);
-  @$core.Deprecated(
-  'Using this can add significant overhead to your binary. '
-  'Use [GeneratedMessageGenericExtensions.deepCopy] instead. '
-  'Will be removed in next major version')
-  SyncLSPChannelsResponse clone() => SyncLSPChannelsResponse()..mergeFromMessage(this);
-  @$core.Deprecated(
-  'Using this can add significant overhead to your binary. '
-  'Use [GeneratedMessageGenericExtensions.rebuild] instead. '
-  'Will be removed in next major version')
-  SyncLSPChannelsResponse copyWith(void Function(SyncLSPChannelsResponse) updates) => super.copyWith((message) => updates(message as SyncLSPChannelsResponse)) as SyncLSPChannelsResponse; // ignore: deprecated_member_use
-  $pb.BuilderInfo get info_ => _i;
-  @$core.pragma('dart2js:noInline')
-  static SyncLSPChannelsResponse create() => SyncLSPChannelsResponse._();
-  SyncLSPChannelsResponse createEmptyInstance() => create();
-  static $pb.PbList<SyncLSPChannelsResponse> createRepeated() => $pb.PbList<SyncLSPChannelsResponse>();
-  @$core.pragma('dart2js:noInline')
-  static SyncLSPChannelsResponse getDefault() => _defaultInstance ??= $pb.GeneratedMessage.$_defaultFor<SyncLSPChannelsResponse>(create);
-  static SyncLSPChannelsResponse? _defaultInstance;
-
-  @$pb.TagNumber(1)
-  $core.bool get hasMismatch => $_getBF(0);
-  @$pb.TagNumber(1)
-  set hasMismatch($core.bool v) { $_setBool(0, v); }
-  @$pb.TagNumber(1)
-  $core.bool hasHasMismatch() => $_has(0);
-  @$pb.TagNumber(1)
-  void clearHasMismatch() => clearField(1);
-}
-
-class UnconfirmedChannelsStatus extends $pb.GeneratedMessage {
-  static final $pb.BuilderInfo _i = $pb.BuilderInfo(const $core.bool.fromEnvironment('protobuf.omit_message_names') ? '' : 'UnconfirmedChannelsStatus', package: const $pb.PackageName(const $core.bool.fromEnvironment('protobuf.omit_message_names') ? '' : 'data'), createEmptyInstance: create)
-    ..pc<UnconfirmedChannelStatus>(1, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'statuses', $pb.PbFieldType.PM, subBuilder: UnconfirmedChannelStatus.create)
-    ..hasRequiredFields = false
-  ;
-
-  UnconfirmedChannelsStatus._() : super();
-  factory UnconfirmedChannelsStatus({
-    $core.Iterable<UnconfirmedChannelStatus>? statuses,
-  }) {
-    final _result = create();
-    if (statuses != null) {
-      _result.statuses.addAll(statuses);
-    }
-    return _result;
-  }
-  factory UnconfirmedChannelsStatus.fromBuffer($core.List<$core.int> i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromBuffer(i, r);
-  factory UnconfirmedChannelsStatus.fromJson($core.String i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromJson(i, r);
-  @$core.Deprecated(
-  'Using this can add significant overhead to your binary. '
-  'Use [GeneratedMessageGenericExtensions.deepCopy] instead. '
-  'Will be removed in next major version')
-  UnconfirmedChannelsStatus clone() => UnconfirmedChannelsStatus()..mergeFromMessage(this);
-  @$core.Deprecated(
-  'Using this can add significant overhead to your binary. '
-  'Use [GeneratedMessageGenericExtensions.rebuild] instead. '
-  'Will be removed in next major version')
-  UnconfirmedChannelsStatus copyWith(void Function(UnconfirmedChannelsStatus) updates) => super.copyWith((message) => updates(message as UnconfirmedChannelsStatus)) as UnconfirmedChannelsStatus; // ignore: deprecated_member_use
-  $pb.BuilderInfo get info_ => _i;
-  @$core.pragma('dart2js:noInline')
-  static UnconfirmedChannelsStatus create() => UnconfirmedChannelsStatus._();
-  UnconfirmedChannelsStatus createEmptyInstance() => create();
-  static $pb.PbList<UnconfirmedChannelsStatus> createRepeated() => $pb.PbList<UnconfirmedChannelsStatus>();
-  @$core.pragma('dart2js:noInline')
-  static UnconfirmedChannelsStatus getDefault() => _defaultInstance ??= $pb.GeneratedMessage.$_defaultFor<UnconfirmedChannelsStatus>(create);
-  static UnconfirmedChannelsStatus? _defaultInstance;
-
-  @$pb.TagNumber(1)
-  $core.List<UnconfirmedChannelStatus> get statuses => $_getList(0);
-}
-
-class UnconfirmedChannelStatus extends $pb.GeneratedMessage {
-  static final $pb.BuilderInfo _i = $pb.BuilderInfo(const $core.bool.fromEnvironment('protobuf.omit_message_names') ? '' : 'UnconfirmedChannelStatus', package: const $pb.PackageName(const $core.bool.fromEnvironment('protobuf.omit_message_names') ? '' : 'data'), createEmptyInstance: create)
-    ..aOS(1, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'channelPoint', protoName: 'channelPoint')
-    ..aInt64(2, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'heightHint', protoName: 'heightHint')
-    ..aInt64(3, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'lspConfirmedHeight', protoName: 'lspConfirmedHeight')
-    ..hasRequiredFields = false
-  ;
-
-  UnconfirmedChannelStatus._() : super();
-  factory UnconfirmedChannelStatus({
-    $core.String? channelPoint,
-    $fixnum.Int64? heightHint,
-    $fixnum.Int64? lspConfirmedHeight,
-  }) {
-    final _result = create();
-    if (channelPoint != null) {
-      _result.channelPoint = channelPoint;
-    }
-    if (heightHint != null) {
-      _result.heightHint = heightHint;
-    }
-    if (lspConfirmedHeight != null) {
-      _result.lspConfirmedHeight = lspConfirmedHeight;
-    }
-    return _result;
-  }
-  factory UnconfirmedChannelStatus.fromBuffer($core.List<$core.int> i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromBuffer(i, r);
-  factory UnconfirmedChannelStatus.fromJson($core.String i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromJson(i, r);
-  @$core.Deprecated(
-  'Using this can add significant overhead to your binary. '
-  'Use [GeneratedMessageGenericExtensions.deepCopy] instead. '
-  'Will be removed in next major version')
-  UnconfirmedChannelStatus clone() => UnconfirmedChannelStatus()..mergeFromMessage(this);
-  @$core.Deprecated(
-  'Using this can add significant overhead to your binary. '
-  'Use [GeneratedMessageGenericExtensions.rebuild] instead. '
-  'Will be removed in next major version')
-  UnconfirmedChannelStatus copyWith(void Function(UnconfirmedChannelStatus) updates) => super.copyWith((message) => updates(message as UnconfirmedChannelStatus)) as UnconfirmedChannelStatus; // ignore: deprecated_member_use
-  $pb.BuilderInfo get info_ => _i;
-  @$core.pragma('dart2js:noInline')
-  static UnconfirmedChannelStatus create() => UnconfirmedChannelStatus._();
-  UnconfirmedChannelStatus createEmptyInstance() => create();
-  static $pb.PbList<UnconfirmedChannelStatus> createRepeated() => $pb.PbList<UnconfirmedChannelStatus>();
-  @$core.pragma('dart2js:noInline')
-  static UnconfirmedChannelStatus getDefault() => _defaultInstance ??= $pb.GeneratedMessage.$_defaultFor<UnconfirmedChannelStatus>(create);
-  static UnconfirmedChannelStatus? _defaultInstance;
-
-  @$pb.TagNumber(1)
-  $core.String get channelPoint => $_getSZ(0);
-  @$pb.TagNumber(1)
-  set channelPoint($core.String v) { $_setString(0, v); }
-  @$pb.TagNumber(1)
-  $core.bool hasChannelPoint() => $_has(0);
-  @$pb.TagNumber(1)
-  void clearChannelPoint() => clearField(1);
-
-  @$pb.TagNumber(2)
-  $fixnum.Int64 get heightHint => $_getI64(1);
-  @$pb.TagNumber(2)
-  set heightHint($fixnum.Int64 v) { $_setInt64(1, v); }
-  @$pb.TagNumber(2)
-  $core.bool hasHeightHint() => $_has(1);
-  @$pb.TagNumber(2)
-  void clearHeightHint() => clearField(2);
-
-  @$pb.TagNumber(3)
-  $fixnum.Int64 get lspConfirmedHeight => $_getI64(2);
-  @$pb.TagNumber(3)
-  set lspConfirmedHeight($fixnum.Int64 v) { $_setInt64(2, v); }
-  @$pb.TagNumber(3)
-  $core.bool hasLspConfirmedHeight() => $_has(2);
-  @$pb.TagNumber(3)
-  void clearLspConfirmedHeight() => clearField(3);
 }
 
 class CheckLSPClosedChannelMismatchRequest extends $pb.GeneratedMessage {
@@ -3509,6 +3329,8 @@ class LSPInformation extends $pb.GeneratedMessage {
     ..a<$core.List<$core.int>>(13, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'lspPubkey', $pb.PbFieldType.OY)
     ..aInt64(14, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'maxInactiveDuration')
     ..aInt64(15, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'channelMinimumFeeMsat')
+    ..aOM<OpeningFeeParams>(16, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'cheapestOpeningFeeParams', subBuilder: OpeningFeeParams.create)
+    ..aOM<OpeningFeeParams>(17, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'longestValidOpeningFeeParams', subBuilder: OpeningFeeParams.create)
     ..hasRequiredFields = false
   ;
 
@@ -3525,10 +3347,15 @@ class LSPInformation extends $pb.GeneratedMessage {
     $core.double? feeRate,
     $core.int? timeLockDelta,
     $fixnum.Int64? minHtlcMsat,
+  @$core.Deprecated('This field is deprecated.')
     $fixnum.Int64? channelFeePermyriad,
     $core.List<$core.int>? lspPubkey,
+  @$core.Deprecated('This field is deprecated.')
     $fixnum.Int64? maxInactiveDuration,
+  @$core.Deprecated('This field is deprecated.')
     $fixnum.Int64? channelMinimumFeeMsat,
+    OpeningFeeParams? cheapestOpeningFeeParams,
+    OpeningFeeParams? longestValidOpeningFeeParams,
   }) {
     final _result = create();
     if (id != null) {
@@ -3565,16 +3392,25 @@ class LSPInformation extends $pb.GeneratedMessage {
       _result.minHtlcMsat = minHtlcMsat;
     }
     if (channelFeePermyriad != null) {
+      // ignore: deprecated_member_use_from_same_package
       _result.channelFeePermyriad = channelFeePermyriad;
     }
     if (lspPubkey != null) {
       _result.lspPubkey = lspPubkey;
     }
     if (maxInactiveDuration != null) {
+      // ignore: deprecated_member_use_from_same_package
       _result.maxInactiveDuration = maxInactiveDuration;
     }
     if (channelMinimumFeeMsat != null) {
+      // ignore: deprecated_member_use_from_same_package
       _result.channelMinimumFeeMsat = channelMinimumFeeMsat;
+    }
+    if (cheapestOpeningFeeParams != null) {
+      _result.cheapestOpeningFeeParams = cheapestOpeningFeeParams;
+    }
+    if (longestValidOpeningFeeParams != null) {
+      _result.longestValidOpeningFeeParams = longestValidOpeningFeeParams;
     }
     return _result;
   }
@@ -3698,12 +3534,16 @@ class LSPInformation extends $pb.GeneratedMessage {
   @$pb.TagNumber(11)
   void clearMinHtlcMsat() => clearField(11);
 
+  @$core.Deprecated('This field is deprecated.')
   @$pb.TagNumber(12)
   $fixnum.Int64 get channelFeePermyriad => $_getI64(11);
+  @$core.Deprecated('This field is deprecated.')
   @$pb.TagNumber(12)
   set channelFeePermyriad($fixnum.Int64 v) { $_setInt64(11, v); }
+  @$core.Deprecated('This field is deprecated.')
   @$pb.TagNumber(12)
   $core.bool hasChannelFeePermyriad() => $_has(11);
+  @$core.Deprecated('This field is deprecated.')
   @$pb.TagNumber(12)
   void clearChannelFeePermyriad() => clearField(12);
 
@@ -3716,23 +3556,170 @@ class LSPInformation extends $pb.GeneratedMessage {
   @$pb.TagNumber(13)
   void clearLspPubkey() => clearField(13);
 
+  @$core.Deprecated('This field is deprecated.')
   @$pb.TagNumber(14)
   $fixnum.Int64 get maxInactiveDuration => $_getI64(13);
+  @$core.Deprecated('This field is deprecated.')
   @$pb.TagNumber(14)
   set maxInactiveDuration($fixnum.Int64 v) { $_setInt64(13, v); }
+  @$core.Deprecated('This field is deprecated.')
   @$pb.TagNumber(14)
   $core.bool hasMaxInactiveDuration() => $_has(13);
+  @$core.Deprecated('This field is deprecated.')
   @$pb.TagNumber(14)
   void clearMaxInactiveDuration() => clearField(14);
 
+  @$core.Deprecated('This field is deprecated.')
   @$pb.TagNumber(15)
   $fixnum.Int64 get channelMinimumFeeMsat => $_getI64(14);
+  @$core.Deprecated('This field is deprecated.')
   @$pb.TagNumber(15)
   set channelMinimumFeeMsat($fixnum.Int64 v) { $_setInt64(14, v); }
+  @$core.Deprecated('This field is deprecated.')
   @$pb.TagNumber(15)
   $core.bool hasChannelMinimumFeeMsat() => $_has(14);
+  @$core.Deprecated('This field is deprecated.')
   @$pb.TagNumber(15)
   void clearChannelMinimumFeeMsat() => clearField(15);
+
+  @$pb.TagNumber(16)
+  OpeningFeeParams get cheapestOpeningFeeParams => $_getN(15);
+  @$pb.TagNumber(16)
+  set cheapestOpeningFeeParams(OpeningFeeParams v) { setField(16, v); }
+  @$pb.TagNumber(16)
+  $core.bool hasCheapestOpeningFeeParams() => $_has(15);
+  @$pb.TagNumber(16)
+  void clearCheapestOpeningFeeParams() => clearField(16);
+  @$pb.TagNumber(16)
+  OpeningFeeParams ensureCheapestOpeningFeeParams() => $_ensure(15);
+
+  @$pb.TagNumber(17)
+  OpeningFeeParams get longestValidOpeningFeeParams => $_getN(16);
+  @$pb.TagNumber(17)
+  set longestValidOpeningFeeParams(OpeningFeeParams v) { setField(17, v); }
+  @$pb.TagNumber(17)
+  $core.bool hasLongestValidOpeningFeeParams() => $_has(16);
+  @$pb.TagNumber(17)
+  void clearLongestValidOpeningFeeParams() => clearField(17);
+  @$pb.TagNumber(17)
+  OpeningFeeParams ensureLongestValidOpeningFeeParams() => $_ensure(16);
+}
+
+class OpeningFeeParams extends $pb.GeneratedMessage {
+  static final $pb.BuilderInfo _i = $pb.BuilderInfo(const $core.bool.fromEnvironment('protobuf.omit_message_names') ? '' : 'OpeningFeeParams', package: const $pb.PackageName(const $core.bool.fromEnvironment('protobuf.omit_message_names') ? '' : 'data'), createEmptyInstance: create)
+    ..a<$fixnum.Int64>(1, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'minMsat', $pb.PbFieldType.OU6, defaultOrMaker: $fixnum.Int64.ZERO)
+    ..a<$core.int>(2, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'proportional', $pb.PbFieldType.OU3)
+    ..aOS(3, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'validUntil')
+    ..a<$core.int>(4, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'maxIdleTime', $pb.PbFieldType.OU3)
+    ..a<$core.int>(5, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'maxClientToSelfDelay', $pb.PbFieldType.OU3)
+    ..aOS(6, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'promise')
+    ..hasRequiredFields = false
+  ;
+
+  OpeningFeeParams._() : super();
+  factory OpeningFeeParams({
+    $fixnum.Int64? minMsat,
+    $core.int? proportional,
+    $core.String? validUntil,
+    $core.int? maxIdleTime,
+    $core.int? maxClientToSelfDelay,
+    $core.String? promise,
+  }) {
+    final _result = create();
+    if (minMsat != null) {
+      _result.minMsat = minMsat;
+    }
+    if (proportional != null) {
+      _result.proportional = proportional;
+    }
+    if (validUntil != null) {
+      _result.validUntil = validUntil;
+    }
+    if (maxIdleTime != null) {
+      _result.maxIdleTime = maxIdleTime;
+    }
+    if (maxClientToSelfDelay != null) {
+      _result.maxClientToSelfDelay = maxClientToSelfDelay;
+    }
+    if (promise != null) {
+      _result.promise = promise;
+    }
+    return _result;
+  }
+  factory OpeningFeeParams.fromBuffer($core.List<$core.int> i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromBuffer(i, r);
+  factory OpeningFeeParams.fromJson($core.String i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromJson(i, r);
+  @$core.Deprecated(
+  'Using this can add significant overhead to your binary. '
+  'Use [GeneratedMessageGenericExtensions.deepCopy] instead. '
+  'Will be removed in next major version')
+  OpeningFeeParams clone() => OpeningFeeParams()..mergeFromMessage(this);
+  @$core.Deprecated(
+  'Using this can add significant overhead to your binary. '
+  'Use [GeneratedMessageGenericExtensions.rebuild] instead. '
+  'Will be removed in next major version')
+  OpeningFeeParams copyWith(void Function(OpeningFeeParams) updates) => super.copyWith((message) => updates(message as OpeningFeeParams)) as OpeningFeeParams; // ignore: deprecated_member_use
+  $pb.BuilderInfo get info_ => _i;
+  @$core.pragma('dart2js:noInline')
+  static OpeningFeeParams create() => OpeningFeeParams._();
+  OpeningFeeParams createEmptyInstance() => create();
+  static $pb.PbList<OpeningFeeParams> createRepeated() => $pb.PbList<OpeningFeeParams>();
+  @$core.pragma('dart2js:noInline')
+  static OpeningFeeParams getDefault() => _defaultInstance ??= $pb.GeneratedMessage.$_defaultFor<OpeningFeeParams>(create);
+  static OpeningFeeParams? _defaultInstance;
+
+  @$pb.TagNumber(1)
+  $fixnum.Int64 get minMsat => $_getI64(0);
+  @$pb.TagNumber(1)
+  set minMsat($fixnum.Int64 v) { $_setInt64(0, v); }
+  @$pb.TagNumber(1)
+  $core.bool hasMinMsat() => $_has(0);
+  @$pb.TagNumber(1)
+  void clearMinMsat() => clearField(1);
+
+  @$pb.TagNumber(2)
+  $core.int get proportional => $_getIZ(1);
+  @$pb.TagNumber(2)
+  set proportional($core.int v) { $_setUnsignedInt32(1, v); }
+  @$pb.TagNumber(2)
+  $core.bool hasProportional() => $_has(1);
+  @$pb.TagNumber(2)
+  void clearProportional() => clearField(2);
+
+  @$pb.TagNumber(3)
+  $core.String get validUntil => $_getSZ(2);
+  @$pb.TagNumber(3)
+  set validUntil($core.String v) { $_setString(2, v); }
+  @$pb.TagNumber(3)
+  $core.bool hasValidUntil() => $_has(2);
+  @$pb.TagNumber(3)
+  void clearValidUntil() => clearField(3);
+
+  @$pb.TagNumber(4)
+  $core.int get maxIdleTime => $_getIZ(3);
+  @$pb.TagNumber(4)
+  set maxIdleTime($core.int v) { $_setUnsignedInt32(3, v); }
+  @$pb.TagNumber(4)
+  $core.bool hasMaxIdleTime() => $_has(3);
+  @$pb.TagNumber(4)
+  void clearMaxIdleTime() => clearField(4);
+
+  @$pb.TagNumber(5)
+  $core.int get maxClientToSelfDelay => $_getIZ(4);
+  @$pb.TagNumber(5)
+  set maxClientToSelfDelay($core.int v) { $_setUnsignedInt32(4, v); }
+  @$pb.TagNumber(5)
+  $core.bool hasMaxClientToSelfDelay() => $_has(4);
+  @$pb.TagNumber(5)
+  void clearMaxClientToSelfDelay() => clearField(5);
+
+  @$pb.TagNumber(6)
+  $core.String get promise => $_getSZ(5);
+  @$pb.TagNumber(6)
+  set promise($core.String v) { $_setString(5, v); }
+  @$pb.TagNumber(6)
+  $core.bool hasPromise() => $_has(5);
+  @$pb.TagNumber(6)
+  void clearPromise() => clearField(6);
 }
 
 class LSPListRequest extends $pb.GeneratedMessage {

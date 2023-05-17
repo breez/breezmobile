@@ -6,7 +6,7 @@ import 'package:breez/bloc/lsp/lsp_actions.dart';
 import 'package:breez/bloc/lsp/lsp_model.dart';
 import 'package:breez/logger.dart';
 import 'package:breez/services/breezlib/breez_bridge.dart';
-import 'package:breez/services/breezlib/data/rpc.pb.dart';
+import 'package:breez/services/breezlib/data/messages.pb.dart';
 import 'package:breez/services/injector.dart';
 import 'package:breez/utils/retry.dart';
 import 'package:breez_translations/breez_translations_locales.dart';

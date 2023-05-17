@@ -1,5 +1,5 @@
 import 'package:breez/bloc/async_action.dart';
-import 'package:breez/services/breezlib/data/rpc.pbgrpc.dart';
+import 'package:breez/services/breezlib/data/messages.pbgrpc.dart';
 import 'package:fixnum/fixnum.dart';
 
 import 'account_model.dart';
