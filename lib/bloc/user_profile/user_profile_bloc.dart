@@ -32,12 +32,12 @@ class UserProfileBloc {
   static const String USER_DETAILS_PREFERENCES_KEY = "BreezUserModel.userID";
 
   final FlutterSecureStorage _secureStorage = const FlutterSecureStorage();
-  BreezServer _breezServer;
-  Notifications _notifications;
-  Device _deviceService;
-  LocalAuthenticationService _localAuthService;
-  Future<SharedPreferences> _preferences;
-  BreezBridge _breezBridge;
+  late BreezServer _breezServer;
+  late Notifications _notifications;
+  late Device _deviceService;
+  late LocalAuthenticationService _localAuthService;
+  late Future<SharedPreferences> _preferences;
+  late BreezBridge _breezBridge;
 
   Map<Type, Function> _actionHandlers = {};
   final _userActionsController = StreamController<AsyncAction>.broadcast();
@@ -45,11 +45,11 @@ class UserProfileBloc {
   final _registrationController = StreamController<void>();
   Sink<void> get registerSink => _registrationController.sink;
 
-  final _userStreamController = BehaviorSubject<BreezUserModel>();
-  Stream<BreezUserModel> get userStream => _userStreamController.stream;
+  final _userStreamController = BehaviorSubject<BreezUserModel?>();
+  Stream<BreezUserModel?> get userStream => _userStreamController.stream;
 
-  final _userStreamPreviewController = BehaviorSubject<BreezUserModel>();
-  Stream<BreezUserModel> get userPreviewStream =>
+  final _userStreamPreviewController = BehaviorSubject<BreezUserModel?>();
+  Stream<BreezUserModel?> get userPreviewStream =>
       _userStreamPreviewController.stream;
 
   final _currencyController = BehaviorSubject<Currency>();
@@ -58,8 +58,8 @@ class UserProfileBloc {
   final _fiatConversionController = BehaviorSubject<String>();
   Sink<String> get fiatConversionSink => _fiatConversionController.sink;
 
-  final _userController = BehaviorSubject<BreezUserModel>();
-  Sink<BreezUserModel> get userSink => _userController.sink;
+  final _userController = BehaviorSubject<BreezUserModel?>();
+  Sink<BreezUserModel?> get userSink => _userController.sink;
 
   final _randomizeController = BehaviorSubject<void>();
   Sink<void> get randomizeSink => _randomizeController.sink;
@@ -118,24 +118,25 @@ class UserProfileBloc {
 
       _userStreamController.firstWhere((u) => u != null).then((user) {
         // automatic refresh registration on startup if we already passed the walkthrough.
-        if (user.registrationRequested) {
-          _refreshRegistration(_userStreamController.value);
+        if (user!.registrationRequested) {
+          _refreshRegistration(_userStreamController.value!);
         }
       });
     });
   }
 
   void startPINIntervalWatcher() {
-    Timer watcher;
+    Timer? watcher;
 
     _deviceService.eventStream.listen((e) {
       if (e == NotificationType.PAUSE) {
         watcher?.cancel();
         watcher = Timer(
             Duration(
-                seconds: _userStreamController
-                    .value.securityModel.automaticallyLockInterval), () {
-          var currentUser = _userStreamController.value;
+              seconds: _userStreamController
+                  .value!.securityModel.automaticallyLockInterval,
+            ), () {
+          var currentUser = _userStreamController.value!;
           if (currentUser.securityModel.requiresPin && !currentUser.locked) {
             _userStreamController.add(currentUser.copyWith(locked: true));
           }
@@ -153,7 +154,7 @@ class UserProfileBloc {
       log.info("UserProfileBloc got preferences");
       String jsonStr =
           preferences.getString(USER_DETAILS_PREFERENCES_KEY) ?? "{}";
-      Map profile = json.decode(jsonStr);
+      Map<String, dynamic> profile = json.decode(jsonStr);
       BreezUserModel user = BreezUserModel.fromJson(profile);
 
       // First time we create a user, initialize with random data.
@@ -260,7 +261,7 @@ class UserProfileBloc {
   }
 
   Future _validatePinCode(ValidatePinCode action) async {
-    String pinCode;
+    String? pinCode;
     try {
       pinCode = await _secureStorage.read(key: 'pinCode');
     } catch (e) {
@@ -283,7 +284,7 @@ class UserProfileBloc {
     if (action.password == null) {
       await _secureStorage.delete(key: 'adminPassword');
     } else {
-      var hashedPassword = sha256.convert(utf8.encode(action.password)).bytes;
+      var hashedPassword = sha256.convert(utf8.encode(action.password!)).bytes;
       String hexHash = HEX.encode(hashedPassword);
       await _secureStorage.write(key: 'adminPassword', value: hexHash);
     }
@@ -293,10 +294,14 @@ class UserProfileBloc {
   }
 
   Future _verifyAdminPassword(VerifyAdminPassword action) async {
-    var encodedHash = await _secureStorage.read(key: 'adminPassword');
-    var decodedHash = HEX.decode(encodedHash);
-    var hashedPassword = sha256.convert(utf8.encode(action.password)).bytes;
-    action.resolve(listEquals(decodedHash, hashedPassword));
+    try{
+      var encodedHash = await _secureStorage.read(key: 'adminPassword');
+      var decodedHash = HEX.decode(encodedHash!);
+      var hashedPassword = sha256.convert(utf8.encode(action.password)).bytes;
+      action.resolve(listEquals(decodedHash, hashedPassword));
+    } catch {
+      action.resolve(false); // TODO : Null Safety - encodedHash can be null
+    }
   }
 
   Future _updateSecurityModelAction(
@@ -355,7 +360,7 @@ class UserProfileBloc {
 
   void _listenRegistrationRequests(ServiceInjector injector) {
     _registrationController.stream.listen((request) async {
-      _refreshRegistration(_userStreamController.value);
+      _refreshRegistration(_userStreamController.value!);
     });
   }
 
@@ -363,7 +368,7 @@ class UserProfileBloc {
     var userToRegister = user;
     SharedPreferences preferences = await _preferences;
     try {
-      String token = await _notifications.getToken();
+      String? token = await _notifications.getToken();
 
       if (token != null &&
           (token != user.token || user.userID == null || user.userID.isEmpty)) {

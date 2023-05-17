@@ -79,7 +79,7 @@ class BreezServer {
     bool payer,
     String userName,
     String notificationToken, {
-    String sessionID,
+    String? sessionID,
   }) async {
     await _ensureValidChannel();
     var ctpClient = CTPClient(_channel, options: defaultCallOptions);

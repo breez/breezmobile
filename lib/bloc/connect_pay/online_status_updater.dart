@@ -5,9 +5,9 @@ import 'package:breez_translations/breez_translations_locales.dart';
 import 'package:firebase_database/firebase_database.dart';
 
 class OnlineStatusUpdater {
-  StreamSubscription _onLocalConnectSubscription;
-  StreamSubscription _onRemoteConnectSubscription;
-  DatabaseReference _userStatusPath;
+  late StreamSubscription? _onLocalConnectSubscription;
+  late StreamSubscription? _onRemoteConnectSubscription;
+  late DatabaseReference _userStatusPath;
 
   void startStatusUpdates(
       String localKey,
@@ -25,10 +25,12 @@ class OnlineStatusUpdater {
         .ref()
         .child('.info/connected')
         .onValue
-        .listen((event) {
-      onLocalStatusChanged(PeerStatus(
-          event.snapshot.value, DateTime.now().millisecondsSinceEpoch));
-      if (event.snapshot.value) {
+        .listen((DatabaseEvent event) {
+      var connected = (event.snapshot.value as Map)["online"] ?? false;
+      onLocalStatusChanged(
+        PeerStatus(connected, DateTime.now().millisecondsSinceEpoch),
+      );
+      if (connected) {
         pushOnline();
       }
     });
@@ -57,9 +59,11 @@ class OnlineStatusUpdater {
     }
     _userStatusPath.onDisconnect().remove();
     return Future.wait([
-      _onRemoteConnectSubscription.cancel(),
-      _onLocalConnectSubscription.cancel()
-    ]).then((_) {
+      _onRemoteConnectSubscription?.cancel(),
+      _onLocalConnectSubscription?.cancel()
+    ] as Iterable<Future>)
+        .then((_) {
+      // TODO : Null Safety - cast
       _onLocalConnectSubscription = null;
       _onRemoteConnectSubscription = null;
     });

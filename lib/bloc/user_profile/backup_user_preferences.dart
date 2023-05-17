@@ -2,15 +2,15 @@ import '../podcast_payments/payment_options.dart';
 import 'business_address.dart';
 
 class BackupUserPreferences {
-  final String name;
-  final String color;
-  final String animal;
-  final String image;
-  final String themeId;
-  final List<String> preferredCurrencies;
-  final double cancellationTimeoutValue;
-  final BusinessAddress businessAddress;
-  final PaymentOptions paymentOptions;
+  final String? name;
+  final String? color;
+  final String? animal;
+  final String? image;
+  final String? themeId; // TODO : Null Safety - Made nullable for Backwards Compatibility
+  final List<String>? preferredCurrencies;
+  final double? cancellationTimeoutValue; // TODO : Null Safety - Made nullable for Backwards Compatibility
+  final BusinessAddress? businessAddress;
+  final PaymentOptions? paymentOptions;
 
   BackupUserPreferences._(
     this.name,
@@ -25,15 +25,15 @@ class BackupUserPreferences {
   });
 
   BackupUserPreferences copyWith({
-    String name,
-    String color,
-    String animal,
-    String image,
-    String themeId,
-    List<String> preferredCurrencies,
-    double cancellationTimeoutValue,
-    BusinessAddress businessAddress,
-    PaymentOptions paymentOptions,
+    String? name,
+    String? color,
+    String? animal,
+    String? image,
+    String? themeId,
+    List<String>? preferredCurrencies,
+    double? cancellationTimeoutValue,
+    BusinessAddress? businessAddress,
+    PaymentOptions? paymentOptions,
   }) {
     return BackupUserPreferences._(
       name ?? this.name,
@@ -56,7 +56,7 @@ class BackupUserPreferences {
         image = json['image'],
         themeId = json['themeId'] ?? "DARK",
         preferredCurrencies =
-            (json['preferredCurrencies'] as List<dynamic>)?.cast<String>() ??
+            (json['preferredCurrencies'] as List<dynamic>?)?.cast<String>() ??
                 <String>['USD', 'EUR', 'GBP', 'JPY'],
         cancellationTimeoutValue = json['cancellationTimeoutValue'] ?? 90.0,
         businessAddress = json['businessAddress'] == null
@@ -78,7 +78,7 @@ class BackupUserPreferences {
         'themeId': themeId,
         'preferredCurrencies': preferredCurrencies,
         'cancellationTimeoutValue': cancellationTimeoutValue,
-        'businessAddress': businessAddress.toJson(),
-        'paymentOptions': paymentOptions.toJson(),
+        'businessAddress': businessAddress?.toJson(),
+        'paymentOptions': paymentOptions?.toJson(),
       };
 }

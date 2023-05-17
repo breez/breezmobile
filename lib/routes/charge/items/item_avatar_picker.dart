@@ -15,7 +15,7 @@ import 'item_avatar.dart';
 class ItemAvatarPicker extends StatefulWidget {
   final String itemImage;
   final Function(String selectedImage) onImageSelected;
-  final String itemName;
+  final String? itemName;
 
   const ItemAvatarPicker(
     this.itemImage,
@@ -31,7 +31,7 @@ class ItemAvatarPicker extends StatefulWidget {
 
 class ItemAvatarPickerState extends State<ItemAvatarPicker> {
   final TextEditingController _imageFilterController = TextEditingController();
-  String _selectedImage;
+  late String _selectedImage;
   final List<ProductIcon> _iconList = [];
 
   @override
@@ -79,7 +79,7 @@ class ItemAvatarPickerState extends State<ItemAvatarPicker> {
       position: badges.BadgePosition.topEnd(top: 5, end: -10),
       badgeAnimation: const badges.BadgeAnimation.fade(),
       badgeStyle: badges.BadgeStyle(
-        badgeColor: themeData.primaryTextTheme.titleSmall.color,
+        badgeColor: themeData.primaryTextTheme.titleSmall!.color!,
       ),
       badgeContent: Padding(
         padding: const EdgeInsets.all(2.0),
@@ -158,7 +158,7 @@ class ItemAvatarPickerState extends State<ItemAvatarPicker> {
           child: TextField(
             textCapitalization: TextCapitalization.none,
             controller: _imageFilterController,
-            enabled: _iconList != null,
+            enabled: _iconList.isNotEmpty,
             decoration: InputDecoration(
               hintText: texts.pos_invoice_item_management_avatar_search,
               contentPadding: const EdgeInsets.only(top: 16, left: 16),

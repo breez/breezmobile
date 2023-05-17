@@ -13,15 +13,16 @@ class CustomData {
   Color navigationDrawerHeaderBgColor;
   Color navigationDrawerBgColor;
 
-  CustomData(
-      {this.loaderColorBlendMode,
-      this.loaderAssetPath,
-      this.pendingTextColor,
-      this.dashboardBgColor,
-      this.paymentListBgColor,
-      this.paymentListDividerColor,
-      this.navigationDrawerHeaderBgColor,
-      this.navigationDrawerBgColor});
+  CustomData({
+    required this.loaderColorBlendMode,
+    required this.loaderAssetPath,
+    required this.pendingTextColor,
+    required this.dashboardBgColor,
+    required this.paymentListBgColor,
+    required this.paymentListDividerColor,
+    required this.navigationDrawerHeaderBgColor,
+    required this.navigationDrawerBgColor,
+  });
 }
 
 final Map<String, ThemeData> themeMap = {"BLUE": blueTheme, "DARK": darkTheme};
@@ -32,7 +33,7 @@ final CustomData blueThemeCustomData = CustomData(
   pendingTextColor: const Color(0xff4D88EC),
   paymentListBgColor: const Color(0xFFf9f9f9),
   paymentListDividerColor: const Color.fromRGBO(0, 0, 0, 0.12),
-  navigationDrawerBgColor: BreezColors.blue[500],
+  navigationDrawerBgColor: BreezColors.blue[500]!,
   navigationDrawerHeaderBgColor: const Color.fromRGBO(0, 103, 255, 1),
 );
 final CustomData darkThemeCustomData = CustomData(
@@ -586,25 +587,25 @@ final TextStyle fiatConversionDescriptionStyle =
     TextStyle(color: BreezColors.white[200], fontSize: 14.3);
 final BoxDecoration boxDecoration = BoxDecoration(
   border: Border(
-    bottom: BorderSide(color: BreezColors.white[500], width: 1.5),
+    bottom: BorderSide(color: BreezColors.white[500]!, width: 1.5),
   ),
 );
 final BoxDecoration autoCompleteBoxDecoration = BoxDecoration(
   color: BreezColors.white[500],
   borderRadius: BorderRadius.circular(3.0),
 );
-final Color whiteColor = BreezColors.white[500];
+final Color whiteColor = BreezColors.white[500]!;
 const podcastHistoryTileBackGroundColorBlue = Color.fromRGBO(0, 117, 255, 1.0);
 
-final Color snackBarBackgroundColor = BreezColors.blue[300];
-final Color avatarBackgroundColor = BreezColors.blue[500];
-final Color sessionAvatarBackgroundColor = BreezColors.white[500];
+final Color snackBarBackgroundColor = BreezColors.blue[300]!;
+final Color avatarBackgroundColor = BreezColors.blue[500]!;
+final Color sessionAvatarBackgroundColor = BreezColors.white[500]!;
 const Color pulseAnimationColor = Color.fromRGBO(100, 155, 230, 1.0);
 const Color marketplaceButtonColor = Color.fromRGBO(229, 238, 251, 0.09);
 const Color errorColor = Color(0xffffe685);
-final Color circularLoaderColor = BreezColors.blue[200].withOpacity(0.7);
+final Color circularLoaderColor = BreezColors.blue[200]!.withOpacity(0.7);
 const Color warningBoxColor = Color.fromRGBO(251, 233, 148, 0.1);
-final BorderSide greyBorderSide = BorderSide(color: BreezColors.grey[500]);
+final BorderSide greyBorderSide = BorderSide(color: BreezColors.grey[500]!);
 
 ThemeData get calendarTheme =>
     themeId == "BLUE" ? calendarLightTheme : calendarDarkTheme;
@@ -691,9 +692,9 @@ class BreezColors {
 }
 
 class VendorTheme {
-  final Color iconBgColor;
-  final Color iconFgColor;
-  final Color textColor;
+  final Color? iconBgColor;
+  final Color? iconFgColor;
+  final Color? textColor;
 
   VendorTheme({this.iconBgColor, this.iconFgColor, this.textColor});
 }

@@ -9,8 +9,8 @@ import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher_string.dart';
 
 class StatusText extends StatelessWidget {
-  final AccountModel account;
-  final String message;
+  final AccountModel? account;
+  final String? message;
 
   const StatusText(
     this.account, {
@@ -23,10 +23,10 @@ class StatusText extends StatelessWidget {
     final texts = context.texts();
 
     if (message != null) {
-      return LoadingAnimatedText(message);
+      return LoadingAnimatedText(message!);
     }
 
-    if (account.processingConnection) {
+    if (account != null && account!.processingConnection) {
       return LoadingAnimatedText(
         "",
         textAlign: TextAlign.center,
@@ -37,7 +37,8 @@ class StatusText extends StatelessWidget {
           ),
           _LinkTextSpan(
             text: texts.status_text_loading_middle,
-            url: account.channelFundingTxUrl,
+            url: account!
+                .channelFundingTxUrl!, // TODO : Null Safety - Can be null
             style: themeData.statusTextStyle.copyWith(
               decoration: TextDecoration.underline,
             ),
@@ -50,7 +51,7 @@ class StatusText extends StatelessWidget {
       );
     }
 
-    if (account == null || account.statusMessage == null) {
+    if (account == null || account!.statusMessage == null) {
       return AutoSizeText(
         texts.status_text_ready,
         style: themeData.statusTextStyle,
@@ -60,12 +61,12 @@ class StatusText extends StatelessWidget {
       );
     }
 
-    var swapError = account.swapFundsStatus?.error;
+    var swapError = account!.swapFundsStatus.error;
     bool loading = swapError == null || swapError.isEmpty;
     return loading
-        ? LoadingAnimatedText(account.statusMessage)
+        ? LoadingAnimatedText(account!.statusMessage!)
         : Text(
-            account.statusMessage,
+            account!.statusMessage!,
             style: themeData.statusTextStyle,
             textAlign: TextAlign.center,
           );
@@ -74,9 +75,9 @@ class StatusText extends StatelessWidget {
 
 class _LinkTextSpan extends TextSpan {
   _LinkTextSpan({
-    TextStyle style,
-    String url,
-    String text,
+    required TextStyle style,
+    required String url,
+    String? text,
   }) : super(
           style: style,
           text: text ?? url,

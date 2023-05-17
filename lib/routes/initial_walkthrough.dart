@@ -57,11 +57,10 @@ class InitialWalkthroughPage extends StatefulWidget {
 
 class InitialWalkthroughPageState extends State<InitialWalkthroughPage>
     with TickerProviderStateMixin {
-  AnimationController _controller;
-  Animation<int> _animation;
+  late AnimationController _controller;
+  late Animation<int> _animation;
 
-  StreamSubscription<bool> _restoreFinishedSubscription;
-  StreamSubscription<List<SnapshotInfo>> _multipleRestoreSubscription;
+  late StreamSubscription<bool> _restoreFinishedSubscription;
 
   final _scaffoldKey = GlobalKey<ScaffoldState>();
   bool _registered = false;
@@ -126,7 +125,7 @@ class InitialWalkthroughPageState extends State<InitialWalkthroughPage>
       return;
     }
 
-    SnapshotInfo toRestore;
+    SnapshotInfo? toRestore;
     if (options.length == 1) {
       toRestore = options.first;
     } else {
@@ -155,7 +154,7 @@ class InitialWalkthroughPageState extends State<InitialWalkthroughPage>
               );
               widget._backupBloc.backupActionsSink.add(updateAction);
               updateAction.future.then((_) => _restore(
-                    toRestore,
+                    toRestore!,
                     HEX.decode(entropy),
                   ));
             },
@@ -169,7 +168,7 @@ class InitialWalkthroughPageState extends State<InitialWalkthroughPage>
           );
           final key = sha256.convert(utf8.encode(pin));
           widget._backupBloc.backupActionsSink.add(updateAction);
-          updateAction.future.then((_) => _restore(toRestore, key.bytes));
+          updateAction.future.then((_) => _restore(toRestore!, key.bytes));
         });
         return;
       }
@@ -178,9 +177,9 @@ class InitialWalkthroughPageState extends State<InitialWalkthroughPage>
     }
   }
 
-  void _restore(SnapshotInfo snapshot, List<int> key) {
+  void _restore(SnapshotInfo snapshot, List<int>? key) {
     const logKey = "initial_walkthrough.dart.restore";
-    log.info('$logKey: snapshotInfo with timestamp: ${snapshot?.modifiedTime}');
+    log.info('$logKey: snapshotInfo with timestamp: ${snapshot.modifiedTime}');
     log.info('$logKey: using key with length: ${key?.length}');
 
     final texts = context.texts();
@@ -213,18 +212,20 @@ class InitialWalkthroughPageState extends State<InitialWalkthroughPage>
     }
   }
 
-  Future<String> restoreUsingPhrase(
+  Future restoreUsingPhrase(
     bool is24Word,
     Function(String key) onKeySubmitted,
   ) {
-    return Navigator.of(context).push(FadeInRoute(
-      builder: (BuildContext context) {
-        return EnterBackupPhrasePage(
-          is24Word: is24Word,
-          onPhraseSubmitted: onKeySubmitted,
-        );
-      },
-    ));
+    return Navigator.of(context).push(
+      FadeInRoute(
+        builder: (BuildContext context) {
+          return EnterBackupPhrasePage(
+            is24Word: is24Word,
+            onPhraseSubmitted: onKeySubmitted,
+          );
+        },
+      ),
+    );
   }
 
   Future _createBackupPhrase(String entropy) async {
@@ -244,15 +245,17 @@ class InitialWalkthroughPageState extends State<InitialWalkthroughPage>
     });
   }
 
-  Future<String> restoreUsingPIN(Function(String key) onKeySubmitted) {
-    return Navigator.of(context).push(FadeInRoute(
-      builder: (BuildContext context) {
-        return RestorePinCode(onPinCodeSubmitted: onKeySubmitted);
-      },
-    ));
+  Future restoreUsingPIN(Function(String key) onKeySubmitted) {
+    return Navigator.of(context).push(
+      FadeInRoute(
+        builder: (BuildContext context) {
+          return RestorePinCode(onPinCodeSubmitted: onKeySubmitted);
+        },
+      ),
+    );
   }
 
-  void popToWalkthrough({String error}) {
+  void popToWalkthrough({String? error}) {
     Navigator.popUntil(context, (route) {
       return route.settings.name == "/intro";
     });
@@ -272,7 +275,6 @@ class InitialWalkthroughPageState extends State<InitialWalkthroughPage>
 
   @override
   void dispose() {
-    _multipleRestoreSubscription?.cancel();
     _restoreFinishedSubscription.cancel();
     _controller.dispose();
     super.dispose();
@@ -316,7 +318,7 @@ class InitialWalkthroughPageState extends State<InitialWalkthroughPage>
                       flex: 171,
                       child: AnimatedBuilder(
                         animation: _animation,
-                        builder: (BuildContext context, Widget child) {
+                        builder: (BuildContext context, Widget? child) {
                           String frame =
                               _animation.value.toString().padLeft(2, '0');
                           return Image.asset(

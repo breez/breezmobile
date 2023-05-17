@@ -6,16 +6,16 @@ import 'package:flutter/material.dart';
 const _kDisabledOpacity = 0.8;
 
 class ActionButton extends StatelessWidget {
-  final String text;
-  final IconData leadingIcon;
-  final IconData trailingIcon;
+  final String? text;
+  final IconData? leadingIcon;
+  final IconData? trailingIcon;
   final bool enabled;
   final bool fill;
   final Variant variant;
-  final VoidCallback onPressed;
+  final VoidCallback? onPressed;
 
   const ActionButton({
-    Key key,
+    Key? key,
     this.text,
     this.leadingIcon,
     this.trailingIcon,
@@ -68,8 +68,8 @@ class ActionButton extends StatelessWidget {
           if (leadingIcon != null && text != null) const SizedBox(width: 8.0),
           if (text != null)
             Text(
-              text,
-              style: themeData.textTheme.labelLarge.copyWith(
+              text!,
+              style: themeData.textTheme.labelLarge!.copyWith(
                 color: _foregroundColor(themeData),
               ),
             ),
@@ -104,8 +104,9 @@ class ActionButton extends StatelessWidget {
         return enabled
             ? theme.buttonColor
             : theme.buttonColor.withOpacity(_kDisabledOpacity);
+      default:
+        throw Exception('Unknown variant: $variant');
     }
-    throw Exception('Unknown variant: $variant');
   }
 
   Color _foregroundColor(ThemeData themeData) {
@@ -120,11 +121,12 @@ class ActionButton extends StatelessWidget {
             : themeData.primaryColorDark.withOpacity(_kDisabledOpacity);
       case Variant.fab:
         return enabled
-            ? themeData.textTheme.labelLarge.color
-            : themeData.textTheme.labelLarge.color
+            ? themeData.textTheme.labelLarge!.color!
+            : themeData.textTheme.labelLarge!.color!
                 .withOpacity(_kDisabledOpacity);
+      default:
+        throw Exception('Unknown variant: $variant');
     }
-    throw Exception('Unknown variant: $variant');
   }
 }
 

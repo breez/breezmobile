@@ -5,7 +5,7 @@ String extractExceptionMessage(
   Object exception, {
   bool clearTrailingDot = false,
   // pass BreezTranslations if you want to replace the error message with a localized one
-  BreezTranslations texts,
+  BreezTranslations? texts,
 }) {
   const detailRegex = r'((?<=\"detail\":\")(.*)(?=.*\"}))';
   const nsLocalizedRegex = r'((?<={NSLocalizedDescription=)(.*)(?=}))';

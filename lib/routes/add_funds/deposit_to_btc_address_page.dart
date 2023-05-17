@@ -155,7 +155,7 @@ class DepositToBTCAddressPageState extends State<DepositToBTCAddressPage> {
   String _sendMessage(
     BreezTranslations texts,
     AccountModel accountModel,
-    LSPInfo lspInfo,
+    LSPInfo? lspInfo,
     Int64 minAllowedDeposit,
     Int64 maxAllowedDeposit,
   ) {
@@ -216,8 +216,8 @@ class DepositToBTCAddressPageState extends State<DepositToBTCAddressPage> {
   }
 
   Int64 _minAllowedDeposit(
-    LSPInfo lspInfo,
-    Int64 minAllowedDeposit,
+    LSPInfo? lspInfo,
+    Int64? minAllowedDeposit,
   ) {
     final minFees = (lspInfo != null)
         ? Int64(lspInfo.channelMinimumFeeMsat) ~/ 1000

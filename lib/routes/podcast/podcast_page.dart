@@ -52,12 +52,12 @@ class AnytimePodcastApp extends StatefulWidget {
   final Repository repository;
   final PodcastApi podcastApi;
   final Widget child;
-  DownloadService downloadService;
-  PodcastService podcastService;
-  AudioPlayerService audioPlayerService;
-  SettingsBloc settingsBloc;
-  MobileSettingsService mobileSettingsService;
-  OPMLService opmlService;
+  late DownloadService downloadService;
+  late PodcastService podcastService;
+  late AudioPlayerService audioPlayerService;
+  late SettingsBloc settingsBloc;
+  late MobileSettingsService mobileSettingsService;
+  late OPMLService opmlService;
 
   AnytimePodcastApp(this.mobileSettingsService, this.repository, this.child)
       : podcastApi = PodcastIndexAPI() {
@@ -82,7 +82,7 @@ class AnytimePodcastApp extends StatefulWidget {
 }
 
 class AnytimePodcastAppState extends State<AnytimePodcastApp> {
-  ThemeData theme;
+  late ThemeData theme;
 
   @override
   void initState() {
@@ -191,7 +191,8 @@ class NowPlayingTransport extends StatefulWidget {
   static bool nowPlayingVisible = false;
   final int duration;
 
-  const NowPlayingTransport({Key key, this.duration}) : super(key: key);
+  const NowPlayingTransport({Key? key, required this.duration})
+      : super(key: key);
 
   @override
   State<StatefulWidget> createState() {
@@ -217,26 +218,26 @@ class NowPlayingTransportState extends State<NowPlayingTransport> {
     final accountBloc = AppBlocsProvider.of<AccountBloc>(context);
     final userBloc = AppBlocsProvider.of<UserProfileBloc>(context);
 
-    return StreamBuilder<BreezUserModel>(
+    return StreamBuilder<BreezUserModel?>(
         stream: userBloc.userStream,
         builder: (context, userSnapshot) {
           if (!userSnapshot.hasData) {
             return const SizedBox();
           }
-          var userModel = userSnapshot.data;
+          var userModel = userSnapshot.data!;
           return StreamBuilder<AccountModel>(
             stream: accountBloc.accountStream,
             builder: (context, snapshot) {
               if (!snapshot.hasData) {
                 return const SizedBox();
               }
-
+              var accountModel = snapshot.data!;
               List<Widget> widgets = [];
               widgets.add(const Divider(height: 0.0, thickness: 1));
               // We'll also show add funds message if user tries to boost and has no balance
-              if (snapshot.data.balance <
-                  userModel.paymentOptions.preferredSatsPerMinValue) {
-                widgets.add(AddFundsMessage(accountModel: snapshot.data));
+              if (accountModel.balance <
+                  userModel.paymentOptions!.preferredSatsPerMinValue) {
+                widgets.add(AddFundsMessage(accountModel: accountModel));
                 widgets.add(const Divider(height: 0.0, thickness: 1));
               }
               widgets.add(WithConfettiPaymentEffect(

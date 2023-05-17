@@ -9,7 +9,7 @@ import 'package:breez_translations/breez_translations_locales.dart';
 import 'package:flutter/material.dart';
 
 class WalletDashboard extends StatefulWidget {
-  final AccountModel _accountModel;
+  final AccountModel? _accountModel;
   final BreezUserModel _userModel;
   final double _height;
   final double _offsetFactor;
@@ -42,8 +42,8 @@ class WalletDashboardState extends State<WalletDashboard> {
     final themeData = Theme.of(context);
     final headlineMedium = themeData.walletDashboardHeaderTextStyle;
 
-    double startHeaderSize = headlineMedium.fontSize;
-    double endHeaderFontSize = headlineMedium.fontSize - 8.0;
+    double startHeaderSize = headlineMedium.fontSize!;
+    double endHeaderFontSize = startHeaderSize - 8.0;
 
     return GestureDetector(
       behavior: HitTestBehavior.translucent,
@@ -64,63 +64,64 @@ class WalletDashboardState extends State<WalletDashboard> {
             width: MediaQuery.of(context).size.width,
             height: widget._height,
             decoration: BoxDecoration(
-              color: theme.customData[theme.themeId].dashboardBgColor,
+              color: theme.customData[theme.themeId]!.dashboardBgColor,
             ),
           ),
           Positioned(
             top: 60 - BALANCE_OFFSET_TRANSITION * widget._offsetFactor,
             child: Center(
-              child:
-                  widget._accountModel != null && !widget._accountModel.initial
-                      ? TextButton(
-                          style: _balanceStyle(),
-                          onPressed: () {
-                            if (widget._userModel.hideBalance) {
-                              widget._onPrivacyChange(false);
-                              return;
-                            }
-                            final list = Currency.currencies;
-                            final index = list.indexOf(
-                              widget._accountModel.currency,
-                            );
-                            final nextCurrencyIndex = (index + 1) % list.length;
-                            if (nextCurrencyIndex == 1) {
-                              widget._onPrivacyChange(true);
-                            }
-                            widget._onCurrencyChange(
-                              list[nextCurrencyIndex],
-                            );
-                          },
-                          child: widget._userModel.hideBalance
-                              ? _balanceHide(
+              child: widget._accountModel != null &&
+                      !widget._accountModel!.initial
+                  ? TextButton(
+                      style: _balanceStyle(),
+                      onPressed: () {
+                        if (widget._userModel.hideBalance) {
+                          widget._onPrivacyChange(false);
+                          return;
+                        }
+                        final list = Currency.currencies;
+                        final index = list.indexOf(
+                          widget._accountModel!.currency,
+                        );
+                        final nextCurrencyIndex = (index + 1) % list.length;
+                        if (nextCurrencyIndex == 1) {
+                          widget._onPrivacyChange(true);
+                        }
+                        widget._onCurrencyChange(
+                          list[nextCurrencyIndex],
+                        );
+                      },
+                      child: widget._userModel.hideBalance
+                          ? _balanceHide(
+                              context,
+                              startHeaderSize,
+                              endHeaderFontSize,
+                            )
+                          : (widget._offsetFactor > 0.8 &&
+                                  _showFiatCurrency &&
+                                  widget._accountModel!.fiatCurrency != null)
+                              ? _balanceText(
                                   context,
                                   startHeaderSize,
                                   endHeaderFontSize,
                                 )
-                              : (widget._offsetFactor > 0.8 &&
-                                      _showFiatCurrency &&
-                                      widget._accountModel.fiatCurrency != null)
-                                  ? _balanceText(
-                                      context,
-                                      startHeaderSize,
-                                      endHeaderFontSize,
-                                    )
-                                  : _balanceRichText(
-                                      context,
-                                      startHeaderSize,
-                                      endHeaderFontSize,
-                                    ),
-                        )
-                      : const SizedBox(),
+                              : _balanceRichText(
+                                  context,
+                                  startHeaderSize,
+                                  endHeaderFontSize,
+                                ),
+                    )
+                  : const SizedBox(),
             ),
           ),
           Positioned(
             top: 100 - BALANCE_OFFSET_TRANSITION * widget._offsetFactor,
             child: Center(
               child: widget._accountModel != null &&
-                      !widget._accountModel.initial &&
-                      widget._accountModel.fiatConversionList.isNotEmpty &&
-                      isAboveMinAmount(widget._accountModel?.fiatCurrency) &&
+                      !widget._accountModel!.initial &&
+                      widget._accountModel!.fiatConversionList.isNotEmpty &&
+                      isAboveMinAmount(widget._accountModel!
+                          .fiatCurrency!) && // TODO : Null Safety
                       !widget._userModel.hideBalance
                   ? _fiatButton(context)
                   : const SizedBox(),
@@ -133,13 +134,13 @@ class WalletDashboardState extends State<WalletDashboard> {
 
   ButtonStyle _balanceStyle() {
     return ButtonStyle(
-      overlayColor: MaterialStateProperty.resolveWith<Color>((states) {
+      overlayColor: MaterialStateProperty.resolveWith<Color?>((states) {
         final customData = theme.customData[theme.themeId];
         if (states.contains(MaterialState.focused)) {
-          return customData.paymentListBgColor;
+          return customData!.paymentListBgColor;
         }
         if (states.contains(MaterialState.hovered)) {
-          return customData.paymentListBgColor;
+          return customData!.paymentListBgColor;
         }
         return null;
       }),
@@ -154,7 +155,7 @@ class WalletDashboardState extends State<WalletDashboard> {
     final themeData = Theme.of(context);
 
     return Text(
-      widget._accountModel.formattedFiatBalance,
+      widget._accountModel!.formattedFiatBalance,
       style: themeData.walletDashboardHeaderTextStyle.copyWith(
         fontSize: startHeaderSize -
             (startHeaderSize - endHeaderFontSize) * widget._offsetFactor,
@@ -176,14 +177,14 @@ class WalletDashboardState extends State<WalletDashboard> {
           fontSize: startHeaderSize -
               (startHeaderSize - endHeaderFontSize) * widget._offsetFactor,
         ),
-        text: widget._accountModel.currency.format(
-          widget._accountModel.balance,
+        text: widget._accountModel!.currency.format(
+          widget._accountModel!.balance,
           removeTrailingZeros: true,
           includeDisplayName: false,
         ),
         children: [
           TextSpan(
-            text: " ${widget._accountModel.currency.displayName}",
+            text: " ${widget._accountModel!.currency.displayName}",
             style: headlineMedium.copyWith(
               fontSize: startHeaderSize * 0.6 -
                   (startHeaderSize * 0.6 - endHeaderFontSize) *
@@ -218,13 +219,13 @@ class WalletDashboardState extends State<WalletDashboard> {
 
     return TextButton(
       style: ButtonStyle(
-        overlayColor: MaterialStateProperty.resolveWith<Color>((states) {
+        overlayColor: MaterialStateProperty.resolveWith<Color?>((states) {
           final customData = theme.customData[theme.themeId];
           if (states.contains(MaterialState.focused)) {
-            return customData.paymentListBgColor;
+            return customData!.paymentListBgColor;
           }
           if (states.contains(MaterialState.hovered)) {
-            return customData.paymentListBgColor;
+            return customData!.paymentListBgColor;
           }
           return null;
         }),
@@ -238,21 +239,20 @@ class WalletDashboardState extends State<WalletDashboard> {
         }
       },
       child: Text(
-        widget._accountModel.formattedFiatBalance,
+        widget._accountModel!.formattedFiatBalance,
         style: titleMedium.copyWith(
-          color: titleMedium.color.withOpacity(
-            pow(1.00 - widget._offsetFactor, 2),
+          color: titleMedium.color!.withOpacity(
+            pow(1.00 - widget._offsetFactor, 2).toDouble(), // TODO : Null Safety
           ),
         ),
       ),
     );
   }
 
-  FiatConversion nextValidFiatConversion() {
-    final fiatConversions = widget._accountModel.preferredFiatConversionList;
-    final currentIndex = fiatConversions.indexOf(
-      widget._accountModel.fiatCurrency,
-    );
+  FiatConversion? nextValidFiatConversion() {
+    final fiatConversions = widget._accountModel!.preferredFiatConversionList;
+    final currentIndex =
+        fiatConversions.indexOf(widget._accountModel!.fiatCurrency!);
     for (var i = 1; i < fiatConversions.length; i++) {
       var nextIndex = (i + currentIndex) % fiatConversions.length;
       if (isAboveMinAmount(fiatConversions[nextIndex])) {
@@ -263,7 +263,7 @@ class WalletDashboardState extends State<WalletDashboard> {
   }
 
   bool isAboveMinAmount(FiatConversion fiatConversion) {
-    double fiatValue = fiatConversion.satToFiat(widget._accountModel.balance);
+    double fiatValue = fiatConversion.satToFiat(widget._accountModel!.balance);
     int fractionSize = fiatConversion.currencyData.fractionSize;
     double minimumAmount = 1 / (pow(10, fractionSize));
 

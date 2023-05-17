@@ -5,8 +5,8 @@ import 'package:flutter/material.dart';
 
 class LoadingAnimatedText extends StatefulWidget {
   final String _loadingMessage;
-  final TextStyle textStyle;
-  final TextAlign textAlign;
+  final TextStyle? textStyle;
+  final TextAlign? textAlign;
   final List<TextSpan> textElements;
 
   const LoadingAnimatedText(this._loadingMessage,
@@ -19,7 +19,7 @@ class LoadingAnimatedText extends StatefulWidget {
 }
 
 class LoadingAnimatedTextState extends State<LoadingAnimatedText> {
-  Timer _loadingTimer;
+  late Timer _loadingTimer;
   int _timerIteration = 0;
 
   @override

@@ -9,9 +9,9 @@ class SharePodcastButton extends StatelessWidget {
   final String podcastURL;
 
   const SharePodcastButton({
-    Key key,
-    this.podcastTitle,
-    this.podcastURL,
+    Key? key,
+    required this.podcastTitle,
+    required this.podcastURL,
   }) : super(key: key);
 
   @override
@@ -24,7 +24,7 @@ class SharePodcastButton extends StatelessWidget {
         child: IconButton(
           icon: Icon(
             Icons.share_rounded,
-            color: themeData.buttonTheme.colorScheme.onPrimary,
+            color: themeData.buttonTheme.colorScheme!.onPrimary,
             size: 22,
           ),
           onPressed: () async {

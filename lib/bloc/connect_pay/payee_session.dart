@@ -57,7 +57,7 @@ class PayeeRemoteSession extends RemoteSession with OnlineStatusUpdater {
   String get sessionID => sessionLink?.sessionID;
   final Completer _sessionCompleter = Completer();
 
-  PayeeRemoteSession(this._currentUser, {PayerSessionData existingPayerData})
+  PayeeRemoteSession(this._currentUser, {PayerSessionData? existingPayerData})
       : super(_currentUser) {
     var initialState = PaymentSessionState.payeeStart(
         sessionID, _currentUser.name, _currentUser.avatarURL);

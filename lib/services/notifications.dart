@@ -5,7 +5,7 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:rxdart/rxdart.dart';
 
 abstract class Notifications {
-  Future<String> getToken();
+  Future<String?> getToken();
   Stream<Map<dynamic, dynamic>> get notifications;
 }
 

@@ -16,9 +16,9 @@ import 'package:rxdart/rxdart.dart';
 enum FetchLNUrlState { started, completed }
 
 class LNUrlBloc with AsyncActionsHandler {
-  BreezBridge _breezLib;
+  late BreezBridge _breezLib;
 
-  StreamController _lnUrlStreamController;
+  late StreamController? _lnUrlStreamController;
 
   final StreamController<String> _lnurlInputController =
       StreamController<String>.broadcast();
@@ -28,7 +28,7 @@ class LNUrlBloc with AsyncActionsHandler {
       StreamController<NfcWithdrawInvoiceStatus>.broadcast();
   Stream<NfcWithdrawInvoiceStatus> get nfcWithdrawStream =>
       _nfcWithdrawController.stream;
-  RegisterNfcSaleRequest _nfcSaleRequest;
+  late RegisterNfcSaleRequest? _nfcSaleRequest;
 
   LNUrlBloc() {
     ServiceInjector injector = ServiceInjector();
@@ -66,16 +66,16 @@ class LNUrlBloc with AsyncActionsHandler {
           return result;
         })
       ])
-          .where((l) => l != null && (isLNURL(l) || isLightningAddress(l)))
+          .where((l) => l.isNotEmpty && (isLNURL(l) || isLightningAddress(l)))
           .asyncMap((l) {
         var v = parseLightningAddress(l);
         v ??= l;
-        _lnUrlStreamController.add(FetchLNUrlState.started);
+        _lnUrlStreamController!.add(FetchLNUrlState.started);
         return _breezLib.fetchLNUrl(v).catchError((error) {
           throw error.toString();
         });
       }).map((response) {
-        _lnUrlStreamController.add(FetchLNUrlState.completed);
+        _lnUrlStreamController!.add(FetchLNUrlState.completed);
         if (response.runtimeType == LNUrlResponse) {
           if (response.hasWithdraw()) {
             final withdrawResponse = WithdrawFetchResponse(response.withdraw);
@@ -83,25 +83,26 @@ class LNUrlBloc with AsyncActionsHandler {
             if (nfcSaleRequest != null) {
               _withdrawNfc(nfcSaleRequest, withdrawResponse);
             } else {
-              _lnUrlStreamController.add(withdrawResponse);
+              _lnUrlStreamController!.add(withdrawResponse);
             }
           } else if (response.hasChannel()) {
-            _lnUrlStreamController.add(ChannelFetchResponse(response.channel));
+            _lnUrlStreamController!.add(ChannelFetchResponse(response.channel));
           } else if (response.hasAuth()) {
-            _lnUrlStreamController.add(AuthFetchResponse(response.auth));
+            _lnUrlStreamController!.add(AuthFetchResponse(response.auth));
           } else if (response.hasPayResponse1()) {
-            _lnUrlStreamController.add(PayFetchResponse(response.payResponse1));
+            _lnUrlStreamController!
+                .add(PayFetchResponse(response.payResponse1));
           } else {
             final texts = getSystemAppLocalizations();
-            _lnUrlStreamController.addError(texts.lnurl_error_unsupported);
+            _lnUrlStreamController!.addError(texts.lnurl_error_unsupported);
           }
         }
       }).handleError((error) {
-        _lnUrlStreamController.add(FetchLNUrlState.completed);
-        _lnUrlStreamController.addError(error.toString());
+        _lnUrlStreamController!.add(FetchLNUrlState.completed);
+        _lnUrlStreamController!.addError(error.toString());
       }).listen((_) {});
     }
-    return _lnUrlStreamController.stream;
+    return _lnUrlStreamController!.stream;
   }
 
   Future _fetch(Fetch action) async {
@@ -176,14 +177,15 @@ class LNUrlBloc with AsyncActionsHandler {
         _nfcWithdrawController.add(NfcWithdrawInvoiceStatus.completed());
       } catch (error) {
         log.info("NFC Payment Request error: $error");
-        _nfcWithdrawController.add(NfcWithdrawInvoiceStatus.error(error));
+        _nfcWithdrawController
+            .add(NfcWithdrawInvoiceStatus.error(error.toString()));
       }
     }
   }
 
   @override
   Future dispose() {
-    _lnUrlStreamController.close();
+    _lnUrlStreamController?.close();
     _lnurlInputController.close();
     _nfcWithdrawController.close();
     return super.dispose();

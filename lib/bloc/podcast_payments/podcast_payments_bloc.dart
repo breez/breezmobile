@@ -37,10 +37,10 @@ class PodcastPaymentsBloc with AsyncActionsHandler {
   Stream<PaymentEvent> get paymentEventsStream =>
       _paymentEventsController.stream;
 
-  BreezBridge _breezLib;
-  AggregatedPayments _aggregatedPayments;
-  BreezUserModel user;
-  String breezReceiverNode;
+  late BreezBridge _breezLib;
+  late AggregatedPayments _aggregatedPayments;
+  late BreezUserModel user;
+  late String breezReceiverNode;
   Map<String, bool> paidPositions = <String, bool>{};
 
   PodcastPaymentsBloc(this.userProfile, this.accountBloc, this.settingsBloc,
@@ -73,7 +73,7 @@ class PodcastPaymentsBloc with AsyncActionsHandler {
           value.recipients,
           action.sats,
           boost: true,
-          boostMessage: action.boostMessage,
+          boostMessage: action.boostMessage!,
           senderName: action.senderName,
         );
       }

@@ -15,7 +15,7 @@ import 'package:flutter/material.dart';
 
 class LNURLHandler {
   final LNUrlBloc lnurlBloc;
-  ModalRoute _loaderRoute;
+  late ModalRoute? _loaderRoute;
 
   LNURLHandler(BuildContext context, this.lnurlBloc) {
     final texts = context.texts();
@@ -85,7 +85,7 @@ class LNURLHandler {
             children: [
               TextSpan(
                 text: response.host,
-                style: themeData.dialogTheme.contentTextStyle.copyWith(
+                style: themeData.dialogTheme.contentTextStyle!.copyWith(
                   fontWeight: FontWeight.bold,
                 ),
               ),
@@ -193,12 +193,12 @@ class LNURLHandler {
   _setLoading(BuildContext context, bool visible) {
     if (visible && _loaderRoute == null) {
       _loaderRoute = createLoaderRoute(context);
-      Navigator.of(context).push(_loaderRoute);
+      Navigator.of(context).push(_loaderRoute!);
       return;
     }
 
     if (!visible && _loaderRoute != null) {
-      Navigator.removeRoute(context, _loaderRoute);
+      Navigator.removeRoute(context, _loaderRoute!);
       _loaderRoute = null;
     }
   }

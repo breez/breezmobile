@@ -41,7 +41,7 @@ class SingleButtonBottomBar extends StatelessWidget {
 }
 
 class SubmitButton extends StatelessWidget {
-  final VoidCallback onPressed;
+  final VoidCallback? onPressed;
   final String text;
 
   const SubmitButton(

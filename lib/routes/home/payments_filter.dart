@@ -199,7 +199,7 @@ class PaymentsFilterState extends State<PaymentsFilter> {
             ? showDialog(
                 useRootNavigator: false,
                 context: context,
-                builder: (_) => CalendarDialog(widget._paymentsModel.firstDate),
+                builder: (_) => CalendarDialog(widget._paymentsModel.firstDate!),
               ).then((result) {
                 bool hasStartDateChanged = result[0] != formattedStartDate;
                 bool hasEndDateChanged = result[1] != formattedEndDate;

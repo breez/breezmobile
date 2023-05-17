@@ -3,8 +3,8 @@ import 'package:breez/bloc/account/fiat_conversion.dart';
 import 'package:breez/bloc/user_profile/currency.dart';
 
 class CurrencyWrapper {
-  final Currency btc;
-  final FiatConversion fiat;
+  final Currency? btc;
+  final FiatConversion? fiat;
 
   CurrencyWrapper._internal(this.btc, this.fiat);
 
@@ -30,30 +30,31 @@ class CurrencyWrapper {
 
   bool get isFiat => fiat != null;
 
-  String get shortName => btc?.tickerSymbol ?? fiat.currencyData.shortName;
+  String get shortName => btc?.tickerSymbol ?? fiat!.currencyData.shortName;
 
-  String get symbol => btc?.symbol ?? fiat.currencyData.symbol;
+  String get symbol => btc?.symbol ?? fiat!.currencyData.symbol;
 
-  bool get rtl => fiat?.currencyData?.rtl ?? false;
+  // TODO : Null Safety - currencyData is never null
+  bool get rtl => fiat?.currencyData.rtl ?? false;
 
-  String get chargeSuffix => btc?.displayName ?? fiat.currencyData.shortName;
+  String get chargeSuffix => btc?.displayName ?? fiat!.currencyData.shortName;
 
   int get fractionSize {
     if (btc != null) {
       return btc == Currency.SAT ? 0 : 8;
     }
-    return fiat.currencyData.fractionSize;
+    return fiat!.currencyData.fractionSize;
   }
 
   double get satConversionRate {
     if (btc != null) {
-      return btc.satConversionRate;
+      return btc!.satConversionRate;
     }
-    return fiat.satConversionRate;
+    return fiat!.satConversionRate;
   }
 
   RegExp get whitelistedPattern =>
-      btc?.whitelistedPattern ?? fiat.whitelistedPattern;
+      btc?.whitelistedPattern ?? fiat!.whitelistedPattern;
 
   String format(
     double value, {
@@ -63,14 +64,14 @@ class CurrencyWrapper {
     removeTrailingZeros = false,
   }) {
     if (btc != null) {
-      var satValue = btc.toSats(value);
-      return btc.format(satValue,
+      var satValue = btc!.toSats(value);
+      return btc!.format(satValue,
           userInput: userInput,
           includeDisplayName: includeDisplayName,
           includeCurrencySymbol: includeCurrencySymbol,
           removeTrailingZeros: removeTrailingZeros);
     }
-    return fiat.formatFiat(value,
+    return fiat!.formatFiat(value,
         includeDisplayName: includeDisplayName,
         addCurrencySymbol: includeCurrencySymbol,
         allowBelowMin: true,

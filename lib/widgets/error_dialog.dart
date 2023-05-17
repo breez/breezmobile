@@ -5,12 +5,12 @@ import 'package:flutter/material.dart';
 
 Future<void> promptError(
   BuildContext context,
-  String title,
+  String? title,
   Widget body, {
-  String okText,
-  String optionText,
-  Function optionFunc,
-  Function okFunc,
+  String? okText,
+  String? optionText,
+  Function? optionFunc,
+  Function? okFunc,
   bool disableBack = false,
 }) {
   final texts = context.texts();
@@ -47,12 +47,12 @@ Future<void> promptError(
                         fontFamily: 'IBMPlexSans',
                         fontSize: 16.4,
                         letterSpacing: 0.0,
-                        color: themeData.dialogTheme.titleTextStyle.color,
+                        color: themeData.dialogTheme.titleTextStyle!.color,
                       ),
                     ),
                     onPressed: () {
                       canPop = true;
-                      optionFunc();
+                      optionFunc!();
                     },
                   )
                 : Container(),
@@ -76,20 +76,20 @@ Future<void> promptError(
   );
 }
 
-Future<bool> promptAreYouSure(
+Future<bool?> promptAreYouSure(
   BuildContext context,
-  String title,
+  String? title,
   Widget body, {
   contentPadding = const EdgeInsets.only(top: 32.0, left: 32.0, right: 32.0),
   bool wideTitle = false,
-  String okText,
-  String cancelText,
+  String? okText,
+  String? cancelText,
   TextStyle textStyle = const TextStyle(color: Colors.white),
 }) {
   final texts = context.texts();
   final themeData = Theme.of(context);
 
-  Widget titleWidget = title == null
+  Widget? titleWidget = title == null
       ? null
       : Text(
           title,
@@ -134,19 +134,19 @@ Future<bool> promptAreYouSure(
   );
 }
 
-Future<bool> promptMessage(
+Future<bool?> promptMessage(
   BuildContext context,
-  String title,
+  String? title,
   Widget body, {
   contentPadding = const EdgeInsets.only(top: 32.0, left: 32.0, right: 32.0),
   bool wideTitle = false,
-  String closeText,
+  String? closeText,
   TextStyle textStyle = const TextStyle(color: Colors.white),
 }) {
   final texts = context.texts();
   final themeData = Theme.of(context);
 
-  Widget titleWidget = title == null
+  Widget? titleWidget = title == null
       ? null
       : Text(
           title,

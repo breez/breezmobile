@@ -14,13 +14,13 @@ import 'package:breez_translations/breez_translations_locales.dart';
 import 'package:flutter/material.dart';
 
 class DrawerItemConfig {
-  final GlobalKey key;
   final String name;
   final String title;
   final String icon;
+  final GlobalKey? key;
+  final void Function(String name)? onItemSelected;
   final bool disabled;
-  final void Function(String name) onItemSelected;
-  final Widget switchWidget;
+  final Widget? switchWidget;
   final bool isSelected;
 
   const DrawerItemConfig(
@@ -37,8 +37,8 @@ class DrawerItemConfig {
 
 class DrawerItemConfigGroup {
   final List<DrawerItemConfig> items;
-  final String groupTitle;
-  final String groupAssetImage;
+  final String? groupTitle;
+  final String? groupAssetImage;
   final bool withDivider;
 
   const DrawerItemConfigGroup(
@@ -81,7 +81,7 @@ class BreezNavigationDrawer extends StatelessWidget {
 
     return Theme(
       data: themeData.copyWith(
-        canvasColor: theme.customData[theme.themeId].navigationDrawerBgColor,
+        canvasColor: theme.customData[theme.themeId]?.navigationDrawerBgColor,
       ),
       child: Drawer(
         child: ListView(
@@ -119,8 +119,9 @@ class BreezNavigationDrawer extends StatelessWidget {
       groupItems = [
         _ExpansionTile(
           items: groupItems,
-          title: group.groupTitle,
-          icon: AssetImage(group.groupAssetImage),
+          title: group.groupTitle!,
+          icon: AssetImage(group
+              .groupAssetImage!), // TODO : Null Safety - group.groupAssetImage may be null
           controller: _scrollController,
         )
       ];
@@ -145,7 +146,7 @@ class _ListDivider extends StatelessWidget {
 
 Widget _breezDrawerHeader(UserProfileBloc user, bool drawAvatar) {
   return Container(
-    color: theme.customData[theme.themeId].navigationDrawerHeaderBgColor,
+    color: theme.customData[theme.themeId]!.navigationDrawerHeaderBgColor,
     child: BreezDrawerHeader(
       padding: const EdgeInsets.only(left: 16.0),
       child: _buildDrawerHeaderContent(user, drawAvatar),
@@ -153,22 +154,23 @@ Widget _breezDrawerHeader(UserProfileBloc user, bool drawAvatar) {
   );
 }
 
-StreamBuilder<BreezUserModel> _buildDrawerHeaderContent(
+StreamBuilder<BreezUserModel?> _buildDrawerHeaderContent(
   UserProfileBloc user,
   bool drawAvatar,
 ) {
-  return StreamBuilder<BreezUserModel>(
+  return StreamBuilder<BreezUserModel?>(
     stream: user.userStream,
     builder: (context, snapshot) {
       if (!snapshot.hasData) {
         return Container();
       } else {
         List<Widget> drawerHeaderContent = [];
-        drawerHeaderContent.add(_buildThemeSwitch(snapshot, user, context));
+        drawerHeaderContent
+            .add(_buildThemeSwitch(snapshot.data!, user, context));
         if (drawAvatar) {
           drawerHeaderContent
-            ..add(_buildAvatarButton(snapshot))
-            ..add(_buildBottomRow(snapshot, context));
+            ..add(_buildAvatarButton(snapshot.data!))
+            ..add(_buildBottomRow(snapshot.data!, context));
         }
         return GestureDetector(
           onTap: drawAvatar
@@ -189,13 +191,13 @@ StreamBuilder<BreezUserModel> _buildDrawerHeaderContent(
 }
 
 GestureDetector _buildThemeSwitch(
-  AsyncSnapshot<BreezUserModel> snapshot,
+  BreezUserModel userModel,
   UserProfileBloc user,
   BuildContext context,
 ) {
   return GestureDetector(
     onTap: () => _changeTheme(
-      snapshot.data.themeId == "BLUE" ? "DARK" : "BLUE",
+      userModel.themeId == "BLUE" ? "DARK" : "BLUE",
       user,
       context,
     ),
@@ -220,7 +222,7 @@ GestureDetector _buildThemeSwitch(
                   "src/icon/ic_lightmode.png",
                   height: 24,
                   width: 24,
-                  color: snapshot.data.themeId == "BLUE"
+                  color: userModel.themeId == "BLUE"
                       ? Colors.white
                       : Colors.white30,
                 ),
@@ -233,7 +235,7 @@ GestureDetector _buildThemeSwitch(
                 ),
                 ImageIcon(
                   const AssetImage("src/icon/ic_darkmode.png"),
-                  color: snapshot.data.themeId == "DARK"
+                  color: userModel.themeId == "DARK"
                       ? Colors.white
                       : Colors.white30,
                   size: 24.0,
@@ -269,36 +271,37 @@ Future _changeTheme(
   });
 }
 
-Row _buildAvatarButton(AsyncSnapshot<BreezUserModel> snapshot) {
+Row _buildAvatarButton(BreezUserModel userModel) {
   return Row(
     children: [
-      BreezAvatar(snapshot.data.avatarURL, radius: 24.0),
+      BreezAvatar(userModel.avatarURL!,
+          radius: 24.0), // TODO : Null Safety - avatarURL may be null
     ],
   );
 }
 
 Row _buildBottomRow(
-  AsyncSnapshot<BreezUserModel> snapshot,
+  BreezUserModel userModel,
   BuildContext context,
 ) {
   return Row(
     mainAxisAlignment: MainAxisAlignment.spaceBetween,
     children: [
-      _buildUsername(context, snapshot),
+      _buildUsername(context, userModel),
     ],
   );
 }
 
 Padding _buildUsername(
   BuildContext context,
-  AsyncSnapshot<BreezUserModel> snapshot,
+  BreezUserModel userModel,
 ) {
   final texts = context.texts();
 
   return Padding(
     padding: const EdgeInsets.only(top: 8.0),
     child: AutoSizeText(
-      snapshot.data.name ?? texts.home_drawer_error_no_name,
+      userModel.name ?? texts.home_drawer_error_no_name,
       style: theme.navigationDrawerHandleStyle,
     ),
   );
@@ -308,12 +311,12 @@ Widget _actionTile(
   DrawerItemConfig action,
   BuildContext context,
   Function onItemSelected, {
-  bool subTile,
+  bool? subTile,
 }) {
   final themeData = Theme.of(context);
   TextStyle itemStyle = theme.drawerItemTextStyle;
 
-  Color color;
+  Color? color;
   if (action.disabled) {
     color = themeData.disabledColor;
     itemStyle = itemStyle.copyWith(color: color);
@@ -379,11 +382,11 @@ class _ExpansionTile extends StatelessWidget {
   final ScrollController controller;
 
   const _ExpansionTile({
-    Key key,
-    this.items,
-    this.title,
-    this.icon,
-    this.controller,
+    Key? key,
+    required this.items,
+    required this.title,
+    required this.icon,
+    required this.controller,
   }) : super(key: key);
 
   @override

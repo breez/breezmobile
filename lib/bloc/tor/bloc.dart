@@ -6,10 +6,10 @@ import 'package:flutter/services.dart';
 
 class TorBloc {
   static const platform = MethodChannel('com.breez.client/tor');
-  TorConfig torConfig;
+  late TorConfig? torConfig;
   // backgroundService?
 
-  Future<TorConfig> startTor() async {
+  Future<TorConfig?> startTor() async {
     log.info('TorBloc.startTor');
     try {
       final response = await platform.invokeMethod('startTorService');
@@ -24,20 +24,20 @@ class TorBloc {
         var url = "wxyz://${response['Control']}".replaceAll('"', '');
         var port = Uri.parse(url).port;
         assert(port > 0);
-        torConfig.control = "$port";
-        log.info('torBloc.startTor: torConfig.control: ${torConfig.control}');
+        torConfig!.control = "$port";
+        log.info('torBloc.startTor: torConfig.control: ${torConfig!.control}');
 
         url = "socks://${response['SOCKS']}".replaceAll('"', '');
         port = Uri.parse(url).port;
         assert(port > 0);
-        torConfig.socks = "$port";
-        log.info('torBloc.startTor: torConfig.socks: ${torConfig.socks}');
+        torConfig!.socks = "$port";
+        log.info('torBloc.startTor: torConfig.socks: ${torConfig!.socks}');
 
         url = "http://${response['HTTP']}".replaceAll('"', '');
         port = Uri.parse(url).port;
         assert(port > 0);
-        torConfig.http = "$port";
-        log.info('torBloc.startTor: torConfig.http: ${torConfig.http}');
+        torConfig!.http = "$port";
+        log.info('torBloc.startTor: torConfig.http: ${torConfig!.http}');
 
         log.info('TorBloc.startTor: tor has started with config : $torConfig');
       }

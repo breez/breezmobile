@@ -1,4 +1,5 @@
 import 'package:breez/services/breezlib/data/rpc.pb.dart';
+import 'package:collection/collection.dart';
 
 enum LSPConnectionStatus {
   InProgress,
@@ -8,16 +9,16 @@ enum LSPConnectionStatus {
 
 class LSPStatus {
   final List<LSPInfo> availableLSPs;
-  final String selectedLSP;
-  final String lastConnectionError;
+  final String? selectedLSP;
+  final String? lastConnectionError;
 
   LSPStatus._(this.availableLSPs, this.lastConnectionError, this.selectedLSP);
 
   LSPStatus.initial() : this._([], null, null);
   LSPStatus copyWith({
-    List<LSPInfo> availableLSPs,
-    String lastConnectionError,
-    String selectedLSP,
+    List<LSPInfo>? availableLSPs,
+    String? lastConnectionError,
+    String? selectedLSP,
   }) {
     return LSPStatus._(
       availableLSPs ?? this.availableLSPs,
@@ -28,10 +29,8 @@ class LSPStatus {
 
   bool get selectionRequired => currentLSP == null && availableLSPs.length > 1;
 
-  LSPInfo get currentLSP => availableLSPs.firstWhere(
-        (element) => element.lspID == selectedLSP,
-        orElse: () => null,
-      );
+  LSPInfo? get currentLSP =>
+      availableLSPs.firstWhereOrNull((element) => element.lspID == selectedLSP);
 }
 
 class LSPInfo {

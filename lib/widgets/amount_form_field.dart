@@ -10,13 +10,13 @@ import 'package:flutter/services.dart';
 
 class AmountFormField extends TextFormField {
   final AccountModel accountModel;
-  final String Function(Int64 amount) validatorFn;
+  final String? Function(Int64 amount) validatorFn;
   final BreezTranslations texts;
 
   AmountFormField({
-    this.accountModel,
-    this.validatorFn,
-    this.texts,
+    required this.accountModel,
+    required this.validatorFn,
+    required this.texts,
     BuildContext context,
     Color iconColor,
     Function(String amount) returnFN,

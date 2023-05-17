@@ -21,12 +21,12 @@ import 'package:flutter/material.dart';
 import 'package:rxdart/subjects.dart';
 
 class ReverseSwapPage extends StatefulWidget {
-  final String userAddress;
-  final String requestAmount;
-  final bool isMax;
+  final String? userAddress;
+  final String? requestAmount;
+  final bool? isMax;
 
   const ReverseSwapPage({
-    Key key,
+    Key? key,
     this.userAddress,
     this.requestAmount,
     this.isMax,
@@ -39,12 +39,12 @@ class ReverseSwapPage extends StatefulWidget {
 }
 
 class ReverseSwapPageState extends State<ReverseSwapPage> {
-  final _reverseSwapsStream = BehaviorSubject<ReverseSwapRequest>();
+  final _reverseSwapsStream = BehaviorSubject<ReverseSwapRequest?>();
   final _pageController = PageController();
   final _policyCompleter = Completer();
 
-  ReverseSwapBloc _reverseSwapBloc;
-  Object _loadingError;
+  late ReverseSwapBloc? _reverseSwapBloc;
+  late Object? _loadingError;
 
   @override
   void initState() {
@@ -65,9 +65,9 @@ class ReverseSwapPageState extends State<ReverseSwapPage> {
     super.didChangeDependencies();
     if (_reverseSwapBloc == null) {
       _reverseSwapBloc = AppBlocsProvider.of<ReverseSwapBloc>(context);
-      _reverseSwapBloc.actionsSink.add(FetchInProgressSwap());
+      _reverseSwapBloc!.actionsSink.add(FetchInProgressSwap());
       var getPolicyAction = GetReverseSwapPolicy();
-      _reverseSwapBloc.actionsSink.add(getPolicyAction);
+      _reverseSwapBloc!.actionsSink.add(getPolicyAction);
       getPolicyAction.future.then((res) {
         setState(() {
           _policyCompleter.complete(res);
@@ -92,7 +92,10 @@ class ReverseSwapPageState extends State<ReverseSwapPage> {
     return StreamBuilder<AccountModel>(
       stream: accountBloc.accountStream,
       builder: (context, accSnapshot) {
-        final accountModel = accSnapshot.data;
+        final accountModel = (accSnapshot.hasData)
+            ? accSnapshot.data
+            : AccountModel
+                .initial(); // TODO : Null Safety - accSnapshot may be null
 
         return Scaffold(
           appBar: !_policyCompleter.isCompleted || _loadingError != null
@@ -103,7 +106,7 @@ class ReverseSwapPageState extends State<ReverseSwapPage> {
                   title: Text(texts.reverse_swap_title),
                 )
               : null,
-          body: FutureBuilder<Object>(
+          body: FutureBuilder(
             future: _policyCompleter.future,
             builder: (context, snapshot) {
               if (snapshot.error != null) {
@@ -113,7 +116,7 @@ class ReverseSwapPageState extends State<ReverseSwapPage> {
                     child: Text(
                       texts.reverse_swap_upstream_generic_error_message(
                         extractExceptionMessage(
-                          snapshot.error,
+                          snapshot.error!,
                           clearTrailingDot: true,
                         ),
                       ),
@@ -139,24 +142,25 @@ class ReverseSwapPageState extends State<ReverseSwapPage> {
                     return SwapInProgress(swapInProgress: swapInProgress);
                   }
 
-                  return StreamBuilder<ReverseSwapRequest>(
+                  return StreamBuilder<ReverseSwapRequest?>(
                     stream: _reverseSwapsStream.stream,
                     builder: (context, swapSnapshot) {
-                      String initialAddress, initialAmount;
-                      bool initialIsMax;
+                      String? initialAddress, initialAmount;
+                      bool? initialIsMax;
                       final currentSwap = swapSnapshot.data;
                       if (widget.userAddress != null) {
-                        initialAddress = widget.userAddress;
+                        initialAddress = widget.userAddress!;
                       }
                       if (widget.requestAmount != null) {
-                        initialAmount = widget.requestAmount;
+                        initialAmount = widget.requestAmount!;
                       }
                       if (widget.isMax != null) {
-                        initialIsMax = widget.isMax;
+                        initialIsMax = widget.isMax!;
                       }
                       if (currentSwap != null) {
                         initialAddress = currentSwap.claimAddress;
-                        initialAmount = accountModel.currency.format(
+                        initialAmount = accountModel!.currency.format(
+                          // TODO : Null Safety - accountModel may be null
                           currentSwap.amount,
                           userInput: true,
                           includeDisplayName: false,
@@ -168,7 +172,7 @@ class ReverseSwapPageState extends State<ReverseSwapPage> {
                         context,
                         reverseSwapBloc,
                         policy,
-                        accountModel,
+                        accountModel!,
                         initialAddress,
                         initialAmount,
                         initialIsMax,
@@ -190,10 +194,10 @@ class ReverseSwapPageState extends State<ReverseSwapPage> {
     ReverseSwapBloc reverseSwapBloc,
     ReverseSwapPolicy policy,
     AccountModel accountModel,
-    String initialAddress,
-    String initialAmount,
-    bool initialIsMax,
-    ReverseSwapRequest currentSwap,
+    String? initialAddress,
+    String? initialAmount,
+    bool? initialIsMax,
+    ReverseSwapRequest? currentSwap,
   ) {
     final texts = context.texts();
 
@@ -256,7 +260,7 @@ class ReverseSwapPageState extends State<ReverseSwapPage> {
     String feesHash,
   ) {
     final swap = NewReverseSwap(toSend, address, feesHash, claimFees, received);
-    _reverseSwapBloc.actionsSink.add(swap);
+    _reverseSwapBloc!.actionsSink.add(swap);
     return swap.future.then((value) {
       Navigator.of(context).pop();
     }).catchError((err) async {
@@ -270,9 +274,9 @@ class UnconfirmedChannels extends StatelessWidget {
   final List<String> unconfirmedChannels;
 
   const UnconfirmedChannels({
-    Key key,
-    this.accountModel,
-    this.unconfirmedChannels,
+    Key? key,
+    required this.accountModel,
+    required this.unconfirmedChannels,
   }) : super(key: key);
 
   @override

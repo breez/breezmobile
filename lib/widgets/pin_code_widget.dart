@@ -15,12 +15,11 @@ const PIN_CODE_LENGTH = 6;
 class PinCodeWidget extends StatefulWidget {
   final String label;
   final Future Function(String pinEntered) onPinEntered;
-  final Function(bool isValid) onFingerprintEntered;
-  final UserProfileBloc userProfileBloc;
-  final String localizedReason;
+  final Function(bool isValid)? onFingerprintEntered;
+  final UserProfileBloc? userProfileBloc;
 
   const PinCodeWidget(this.label, this.onPinEntered,
-      {this.onFingerprintEntered, this.userProfileBloc, this.localizedReason});
+      {this.onFingerprintEntered, this.userProfileBloc});
 
   @override
   State<StatefulWidget> createState() {
@@ -30,9 +29,9 @@ class PinCodeWidget extends StatefulWidget {
 
 class PinCodeWidgetState extends State<PinCodeWidget>
     with WidgetsBindingObserver {
-  String _enteredPinCode;
-  String _errorMessage;
-  LocalAuthenticationOption _enrolledBiometrics;
+  late String _enteredPinCode;
+  late String _errorMessage;
+  late LocalAuthenticationOption _enrolledBiometrics;
   bool biometricsValidated = false;
 
   bool _inputEnabled = true;
@@ -57,7 +56,7 @@ class PinCodeWidgetState extends State<PinCodeWidget>
       }
       if (state == AppLifecycleState.paused) {
         var stopAction = StopBiometrics();
-        widget.userProfileBloc.userActionsSink.add(stopAction);
+        widget.userProfileBloc?.userActionsSink.add(stopAction);
         stopAction.future.then((_) => biometricsValidated = false);
       }
     }
@@ -66,7 +65,7 @@ class PinCodeWidgetState extends State<PinCodeWidget>
   @override
   void dispose() {
     if (widget.userProfileBloc != null) {
-      widget.userProfileBloc.userActionsSink.add(StopBiometrics());
+      widget.userProfileBloc!.userActionsSink.add(StopBiometrics());
     }
     WidgetsBinding.instance.removeObserver(this);
     super.dispose();
@@ -82,20 +81,19 @@ class PinCodeWidgetState extends State<PinCodeWidget>
 
   Future _getEnrolledBiometrics() async {
     var getEnrolledBiometricsAction = GetEnrolledBiometrics();
-    widget.userProfileBloc.userActionsSink.add(getEnrolledBiometricsAction);
+    widget.userProfileBloc?.userActionsSink.add(getEnrolledBiometricsAction);
     return getEnrolledBiometricsAction.future;
   }
 
   void _validateBiometrics({bool force = false}) async {
     if (mounted && (!biometricsValidated || force)) {
       biometricsValidated = true;
-      var validateBiometricsAction =
-          ValidateBiometrics(localizedReason: widget.localizedReason);
-      widget.userProfileBloc.userActionsSink.add(validateBiometricsAction);
+      var validateBiometricsAction = ValidateBiometrics();
+      widget.userProfileBloc?.userActionsSink.add(validateBiometricsAction);
       validateBiometricsAction.future.then((isValid) async {
         setState(() => _enteredPinCode = (isValid) ? "123456" : "");
         Future.delayed(const Duration(milliseconds: 160), () {
-          return widget.onFingerprintEntered(isValid);
+          return widget.onFingerprintEntered!(isValid);
         });
       }, onError: (error) {
         setState(() => _enteredPinCode = "");
@@ -182,14 +180,14 @@ class PinCodeWidgetState extends State<PinCodeWidget>
             _errorMessage,
             style: Theme.of(context)
                 .textTheme
-                .headlineMedium
+                .headlineMedium!
                 .copyWith(fontSize: 12),
           )
         : Text(
             "",
             style: Theme.of(context)
                 .textTheme
-                .headlineMedium
+                .headlineMedium!
                 .copyWith(fontSize: 12),
           );
   }
@@ -238,8 +236,8 @@ class PinCodeWidgetState extends State<PinCodeWidget>
                       ((widget.onFingerprintEntered != null) &&
                           _enteredPinCode.isNotEmpty)
                   ? _buildEraseButton()
-                  : StreamBuilder<BreezUserModel>(
-                      stream: widget.userProfileBloc.userStream,
+                  : StreamBuilder<BreezUserModel?>(
+                      stream: widget.userProfileBloc?.userStream,
                       builder: (context, snapshot) {
                         if (!snapshot.hasData ||
                             _enrolledBiometrics ==
@@ -258,7 +256,7 @@ class PinCodeWidgetState extends State<PinCodeWidget>
   }
 
   Widget _buildBiometricsButton(
-      AsyncSnapshot<BreezUserModel> snapshot, BuildContext context) {
+      AsyncSnapshot<BreezUserModel?> snapshot, BuildContext context) {
     return CircularButton(
       onTap: _inputEnabled ? () => _validateBiometrics(force: true) : null,
       child: Icon(
@@ -277,6 +275,7 @@ class PinCodeWidgetState extends State<PinCodeWidget>
       onTap: _inputEnabled ? () => _setPinCodeInput("") : null,
       child: TextButton(
         style: TextButton.styleFrom(padding: const EdgeInsets.all(0)),
+        onPressed: () {},
         child: const Icon(
           Icons.delete_forever,
           color: Colors.white,
@@ -294,6 +293,7 @@ class PinCodeWidgetState extends State<PinCodeWidget>
           : null,
       child: TextButton(
         style: TextButton.styleFrom(padding: const EdgeInsets.all(0)),
+        onPressed: () {},
         child: const Icon(
           Icons.backspace,
           color: Colors.white,
@@ -308,6 +308,7 @@ class PinCodeWidgetState extends State<PinCodeWidget>
       onTap: _inputEnabled ? () => _onNumButtonPressed(number) : null,
       child: TextButton(
         style: TextButton.styleFrom(padding: const EdgeInsets.all(0)),
+        onPressed: () {},
         child: Text(
           number,
           textAlign: TextAlign.center,

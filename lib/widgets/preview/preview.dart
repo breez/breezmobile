@@ -7,7 +7,7 @@ class Preview extends StatefulWidget {
 
   const Preview(
     this.children, {
-    Key key,
+    Key? key,
   }) : super(key: key);
 
   @override
@@ -15,7 +15,7 @@ class Preview extends StatefulWidget {
 }
 
 class _PreviewState extends State<Preview> {
-  ThemeData theme;
+  late ThemeData? theme;
 
   @override
   Widget build(BuildContext context) {
@@ -84,7 +84,7 @@ class _PreviewState extends State<Preview> {
     );
   }
 
-  void _changeTheme(ThemeData theme) {
+  void _changeTheme(ThemeData? theme) {
     setState(() {
       this.theme = theme;
     });

@@ -28,7 +28,7 @@ class PosTransactionsPageState extends State<PosTransactionsPage> {
   final _scaffoldKey = GlobalKey<ScaffoldState>();
   final _scrollController = ScrollController();
 
-  AccountBloc _accountBloc;
+  late AccountBloc _accountBloc;
   bool _isInit = false;
 
   @override
@@ -57,9 +57,8 @@ class PosTransactionsPageState extends State<PosTransactionsPage> {
 
             if (account == null || paymentsModel == null) return Container();
 
-            if ((account != null && !account.initial) &&
-                (paymentsModel != null &&
-                    paymentsModel.paymentsList.isEmpty &&
+            if ((!account.initial) &&
+                (paymentsModel.paymentsList.isEmpty &&
                     paymentsModel.filter == PaymentFilterModel.initial())) {
               return _buildScaffold(
                 context,
@@ -87,7 +86,7 @@ class PosTransactionsPageState extends State<PosTransactionsPage> {
   Widget _buildScaffold(
     BuildContext context,
     Widget body, [
-    List<Widget> actions,
+    List<Widget>? actions,
   ]) {
     final texts = context.texts();
 
@@ -110,7 +109,7 @@ class PosTransactionsPageState extends State<PosTransactionsPage> {
       icon: SvgPicture.asset(
         "src/icon/pos_report.svg",
         colorFilter: ColorFilter.mode(
-          themeData.iconTheme.color,
+          themeData.iconTheme.color!,
           BlendMode.srcATop,
         ),
         width: 24.0,
@@ -130,7 +129,7 @@ class PosTransactionsPageState extends State<PosTransactionsPage> {
       icon: SvgPicture.asset(
         "src/icon/calendar.svg",
         colorFilter: ColorFilter.mode(
-          themeData.iconTheme.color,
+          themeData.iconTheme.color!,
           BlendMode.srcATop,
         ),
         width: 24.0,
@@ -139,7 +138,7 @@ class PosTransactionsPageState extends State<PosTransactionsPage> {
       onPressed: () => showDialog(
         useRootNavigator: false,
         context: context,
-        builder: (_) => CalendarDialog(paymentsModel.firstDate),
+        builder: (_) => CalendarDialog(paymentsModel.firstDate!),
       ).then(
         (result) => _accountBloc.paymentFilterSink.add(
           paymentsModel.filter.copyWith(
@@ -289,8 +288,8 @@ class PosTransactionsPageState extends State<PosTransactionsPage> {
           child: Chip(
             label: Text(
               BreezDateUtils.formatFilterDateRange(
-                filter.startDate,
-                filter.endDate,
+                filter.startDate!,
+                filter.endDate!,
               ),
             ),
             onDeleted: () => _accountBloc.paymentFilterSink.add(

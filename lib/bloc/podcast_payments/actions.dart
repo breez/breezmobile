@@ -7,8 +7,8 @@ class PayBoost extends AsyncAction {
 
   PayBoost(
     this.sats, {
-    this.boostMessage,
-    this.senderName,
+    this.boostMessage = '',
+    required this.senderName,
   });
 }
 

@@ -35,9 +35,9 @@ class LNURlWithdrawDialog extends StatefulWidget {
 
 class LNUrlWithdrawDialogState extends State<LNURlWithdrawDialog>
     with SingleTickerProviderStateMixin {
-  String _error;
-  Animation<double> _opacityAnimation;
-  ModalRoute _currentRoute;
+  late String? _error;
+  late Animation<double> _opacityAnimation;
+  late ModalRoute? _currentRoute;
 
   @override
   void initState() {
@@ -64,7 +64,9 @@ class LNUrlWithdrawDialogState extends State<LNURlWithdrawDialog>
         .firstWhere((e) => e != null, orElse: () => null)
         .then((payReqModel) {
       return widget.accountBloc.accountStream
-          .firstWhere((a) => a != null && a.syncedToChain == true)
+          .firstWhere((a) =>
+              a.syncedToChain ==
+              true) // TODO : Null Safety - accountModel may be null
           .then((_) {
         if (mounted && payReqModel != null) {
           Withdraw withdrawAction = Withdraw(payReqModel.rawPayReq);
@@ -86,7 +88,7 @@ class LNUrlWithdrawDialogState extends State<LNURlWithdrawDialog>
     AnimationController controller,
   ) async {
     var payreq = await widget.invoiceBloc.paidInvoicesStream.firstWhere(
-      (payreq) => payreq.paymentHash == payReqModel.paymentHash,
+      (payreq) => payreq?.paymentHash == payReqModel.paymentHash,
       orElse: () => null,
     );
     if (payreq != null) {
@@ -126,11 +128,11 @@ class LNUrlWithdrawDialogState extends State<LNURlWithdrawDialog>
               children: [
                 _error != null
                     ? Text(
-                        texts.lnurl_withdraw_dialog_error(_error),
+                        texts.lnurl_withdraw_dialog_error(_error!),
                         style: themeData.dialogTheme.contentTextStyle,
                         textAlign: TextAlign.center,
                       )
-                    : snapshot.hasData && snapshot.data.syncedToChain != true
+                    : snapshot.hasData && snapshot.data!.syncedToChain != true
                         ? const SizedBox()
                         : LoadingAnimatedText(
                             texts.lnurl_withdraw_dialog_wait,
@@ -139,7 +141,7 @@ class LNUrlWithdrawDialogState extends State<LNURlWithdrawDialog>
                           ),
                 _error != null
                     ? const SizedBox(height: 16.0)
-                    : snapshot.hasData && snapshot.data.syncedToChain != true
+                    : snapshot.hasData && snapshot.data!.syncedToChain != true
                         ? const Padding(
                             padding: EdgeInsets.only(bottom: 12.0),
                             child: SyncProgressDialog(closeOnSync: false),
@@ -147,7 +149,7 @@ class LNUrlWithdrawDialogState extends State<LNURlWithdrawDialog>
                         : Padding(
                             padding: const EdgeInsets.only(top: 8.0),
                             child: Image.asset(
-                              theme.customData[theme.themeId].loaderAssetPath,
+                              theme.customData[theme.themeId]!.loaderAssetPath,
                               gaplessPlayback: true,
                             ),
                           ),
@@ -167,7 +169,7 @@ class LNUrlWithdrawDialogState extends State<LNURlWithdrawDialog>
   }
 
   onFinish(dynamic result) {
-    Navigator.removeRoute(context, _currentRoute);
+    Navigator.removeRoute(context, _currentRoute as Route);
     widget._onFinish(result);
   }
 }

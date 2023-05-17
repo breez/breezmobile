@@ -3,9 +3,9 @@ import 'package:breez/widgets/transparent_page_route.dart';
 import 'package:flutter/material.dart';
 
 class Loader extends StatelessWidget {
-  final double value;
-  final String label;
-  final Color color;
+  final double? value;
+  final String? label;
+  final Color? color;
   final double strokeWidth;
 
   const Loader({
@@ -35,10 +35,10 @@ class Loader extends StatelessWidget {
 
 TransparentPageRoute createLoaderRoute(
   BuildContext context, {
-  String message,
+  String? message,
   double opacity = 0.5,
-  Future action,
-  Function onClose,
+  Future? action,
+  Function? onClose,
 }) {
   return TransparentPageRoute(
     (context) {
@@ -53,15 +53,15 @@ TransparentPageRoute createLoaderRoute(
 }
 
 class FullScreenLoader extends StatelessWidget {
-  final String message;
+  final String? message;
   final double opacity;
-  final double value;
-  final Color progressColor;
+  final double? value;
+  final Color? progressColor;
   final Color bgColor;
-  final Function onClose;
+  final Function? onClose;
 
   const FullScreenLoader({
-    Key key,
+    Key? key,
     this.message,
     this.opacity = 0.5,
     this.value,
@@ -93,7 +93,7 @@ class FullScreenLoader extends StatelessWidget {
                   Padding(
                     padding: const EdgeInsets.only(top: 16.0),
                     child: message != null
-                        ? Text(message, textAlign: TextAlign.center)
+                        ? Text(message!, textAlign: TextAlign.center)
                         : const SizedBox(),
                   )
                 ],
@@ -108,7 +108,7 @@ class FullScreenLoader extends StatelessWidget {
                     alignment: Alignment.topRight,
                     child: IconButton(
                       color: Colors.white,
-                      onPressed: () => onClose(),
+                      onPressed: () => onClose,
                       icon: Icon(
                         Icons.close,
                         color: Theme.of(context).iconTheme.color,
@@ -124,13 +124,13 @@ class FullScreenLoader extends StatelessWidget {
 }
 
 class TransparentRouteLoader extends StatefulWidget {
-  final String message;
+  final String? message;
   final double opacity;
-  final Future action;
-  final Function onClose;
+  final Future? action;
+  final Function? onClose;
 
   const TransparentRouteLoader({
-    Key key,
+    Key? key,
     this.message,
     this.opacity = 0.5,
     this.action,
@@ -148,7 +148,7 @@ class TransparentRouteLoaderState extends State<TransparentRouteLoader> {
   void initState() {
     super.initState();
     if (widget.action != null) {
-      widget.action.whenComplete(() {
+      widget.action!.whenComplete(() {
         if (mounted) {
           Navigator.pop(context);
         }

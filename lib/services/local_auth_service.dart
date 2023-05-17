@@ -29,7 +29,7 @@ class LocalAuthenticationService {
     return LocalAuthenticationOption.NONE;
   }
 
-  Future<bool> authenticate({String localizedReason}) async {
+  Future<bool> authenticate({String? localizedReason}) async {
     try {
       return await _auth.authenticate(
           biometricOnly: true,
@@ -37,8 +37,9 @@ class LocalAuthenticationService {
           useErrorDialogs: false,
           androidAuthStrings: const AndroidAuthMessages(biometricHint: ""));
     } on PlatformException catch (error) {
-      if (error.code == "LockedOut" || error.code == "PermanentlyLockedOut") {
-        throw error.message;
+      if ((error.code == "LockedOut" || error.code == "PermanentlyLockedOut") &&
+          error.message != null) {
+        throw error.message!;
       }
       log.severe("Error Code: ${error.code} - Message: ${error.message}");
       await _auth.stopAuthentication();

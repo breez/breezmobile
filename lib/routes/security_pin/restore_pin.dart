@@ -7,8 +7,8 @@ class RestorePinCode extends StatelessWidget {
   final Function(String phrase) onPinCodeSubmitted;
 
   const RestorePinCode({
-    Key key,
-    @required this.onPinCodeSubmitted,
+    Key? key,
+    required this.onPinCodeSubmitted,
   }) : super(key: key);
 
   @override

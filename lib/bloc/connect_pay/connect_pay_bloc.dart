@@ -26,7 +26,7 @@ The handling of the session itself is not done here but within the concrete sess
 class ConnectPayBloc {
   final BreezBridge _breezLib = ServiceInjector().breezBridge;
   final BreezServer _breezServer = ServiceInjector().breezServer;
-  RemoteSession _currentSession;
+  RemoteSession? _currentSession;
   final StreamController _sessionInvitesController =
       BehaviorSubject<SessionLinkModel>();
   Stream<SessionLinkModel> get sessionInvites =>
@@ -64,7 +64,7 @@ class ConnectPayBloc {
     });
     _currentSession = currentSession;
     return _breezServer
-        .joinSession(true, _currentUser.name, _currentUser.token)
+        .joinSession(true, _currentUser.name!, _currentUser.token!)
         .then((newSessionReply) async {
       log.info("successfullly joined to a remote session");
       CreateRatchetSessionReply session = await _breezLib.createRatchetSession(
@@ -95,7 +95,7 @@ class ConnectPayBloc {
     RemoteSession currentSession;
     try {
       var sessionResponse = await _breezServer.joinSession(
-          sessionInfo.initiated, _currentUser.name, _currentUser.token,
+          sessionInfo.initiated, _currentUser.name!, _currentUser.token!,
           sessionID: sessionLink.sessionID);
       //if we have already a session and it is our initiated then we are a returning payer
       if (sessionInfo.initiated) {

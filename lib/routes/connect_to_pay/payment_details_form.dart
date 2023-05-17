@@ -35,7 +35,7 @@ class _PaymentDetailsFormState extends State<PaymentDetailsForm> {
   final _amountFocusNode = FocusNode();
 
   double _maxHeight = 0.0;
-  KeyboardDoneAction _doneAction;
+  late KeyboardDoneAction _doneAction;
 
   @override
   void initState() {
@@ -79,7 +79,7 @@ class _PaymentDetailsFormState extends State<PaymentDetailsForm> {
                         accountModel: widget._account,
                         focusNode: _amountFocusNode,
                         controller: _amountController,
-                        validatorFn: widget._account.validateOutgoingPayment,
+                        validatorFn: (amount) => widget._account.validateOutgoingPayment(amount),
                       ),
                       TextFormField(
                         controller: _invoiceDescriptionController,
@@ -128,7 +128,7 @@ class _PaymentDetailsFormState extends State<PaymentDetailsForm> {
                   if (widget._sessionState.paymentFulfilled) {
                     Navigator.pop(context);
                   } else {
-                    if (_formKey.currentState.validate()) {
+                    if (_formKey.currentState!.validate()) {
                       widget._onSubmitPaymentDetails(
                         widget._account.currency.parse(
                           _amountController.text,

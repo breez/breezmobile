@@ -78,7 +78,7 @@ class QrActionButton extends StatelessWidget {
                   }
 
                   // bip 121
-                  String lnInvoice = extractBolt11FromBip21(lower);
+                  String? lnInvoice = extractBolt11FromBip21(lower);
                   if (lnInvoice != null) {
                     log.finest(
                       "Scanned string is a bolt11 extract from bip 21",
@@ -97,13 +97,13 @@ class QrActionButton extends StatelessWidget {
                   // bitcoin
                   BTCAddressInfo btcInvoice = parseBTCAddress(scannedString);
 
-                  if (await _isBTCAddress(btcInvoice.address)) {
+                  if (btcInvoice.address != null && await _isBTCAddress(btcInvoice.address!)) {
                     log.finest("Scanned string is a bitcoin address");
-                    String requestAmount;
+                    String? requestAmount;
                     if (btcInvoice.satAmount != null) {
                       final account = await profileBloc.userStream.take(1).first;
-                      requestAmount = account.currency.format(
-                        btcInvoice.satAmount,
+                      requestAmount = account!.currency.format(
+                        btcInvoice.satAmount!,
                         userInput: true,
                         includeDisplayName: false,
                         removeTrailingZeros: true,
@@ -112,7 +112,7 @@ class QrActionButton extends StatelessWidget {
                     navigator.push(
                       FadeInRoute(
                         builder: (_) => ReverseSwapPage(
-                          userAddress: btcInvoice.address,
+                          userAddress: btcInvoice.address!,
                           requestAmount: requestAmount,
                         ),
                       ),

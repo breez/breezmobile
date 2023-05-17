@@ -56,7 +56,7 @@ class _AdminLoginDialogState extends State<_AdminLoginDialog> {
   final _passwordFocus = FocusNode();
   final _formKey = GlobalKey<FormState>();
   bool _passwordObscured = true;
-  String _lastError;
+  late String? _lastError;
 
   @override
   void initState() {
@@ -81,14 +81,14 @@ class _AdminLoginDialogState extends State<_AdminLoginDialog> {
               borderSide: theme.greyBorderSide,
             ),
           ),
-          hintColor: themeData.dialogTheme.contentTextStyle.color,
+          hintColor: themeData.dialogTheme.contentTextStyle!.color,
           colorScheme: ColorScheme.dark(
-            primary: themeData.textTheme.labelLarge.color,
+            primary: themeData.textTheme.labelLarge!.color!,
             error: theme.themeId == "BLUE"
                 ? Colors.red
                 : themeData.colorScheme.error,
           ),
-          primaryColor: themeData.textTheme.labelLarge.color,
+          primaryColor: themeData.textTheme.labelLarge!.color,
         ),
         child: SizedBox(
           width: MediaQuery.of(context).size.width,
@@ -100,7 +100,7 @@ class _AdminLoginDialogState extends State<_AdminLoginDialog> {
                 key: _formKey,
                 child: TextFormField(
                   style: TextStyle(
-                    color: themeData.primaryTextTheme.headlineMedium.color,
+                    color: themeData.primaryTextTheme.headlineMedium!.color,
                   ),
                   focusNode: _passwordFocus,
                   obscureText: _passwordObscured,
@@ -113,8 +113,8 @@ class _AdminLoginDialogState extends State<_AdminLoginDialog> {
                       });
                     }
                   },
-                  validator: (value) {
-                    if (value.isEmpty) {
+                  validator: (String? value) {
+                    if (value != null && value.isEmpty) {
                       return texts.admin_login_dialog_error_password_required;
                     }
                     return _lastError;
@@ -150,7 +150,7 @@ class _AdminLoginDialogState extends State<_AdminLoginDialog> {
             style: themeData.primaryTextTheme.labelLarge,
           ),
           onPressed: () async {
-            if (_formKey.currentState.validate()) {
+            if (_formKey.currentState!.validate()) {
               final navigator = Navigator.of(context);
               try {
                 var action = VerifyAdminPassword(_passwordController.text);
@@ -163,7 +163,7 @@ class _AdminLoginDialogState extends State<_AdminLoginDialog> {
               } catch (err) {
                 setState(() {
                   _lastError = err.toString();
-                  _formKey.currentState.validate();
+                  _formKey.currentState!.validate();
                 });
               }
             }

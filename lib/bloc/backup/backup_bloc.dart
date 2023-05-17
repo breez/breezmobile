@@ -40,9 +40,9 @@ class BackupBloc {
   static const _kPaymentOptionProportionalFee =
       "PAYMENT_OPTIONS_PROPORTIONAL_FEE";
 
-  final BehaviorSubject<BackupState> _backupStateController =
-      BehaviorSubject<BackupState>();
-  Stream<BackupState> get backupStateStream => _backupStateController.stream;
+  final BehaviorSubject<BackupState?> _backupStateController =
+      BehaviorSubject<BackupState?>();
+  Stream<BackupState?> get backupStateStream => _backupStateController.stream;
 
   final StreamController<bool> _promptBackupController =
       StreamController<bool>.broadcast();
@@ -73,8 +73,9 @@ class BackupBloc {
   Stream<Map<String, dynamic>> get restoreLightningFeesStream =>
       _restoreLightningFeesController.stream;
 
-  final _restoreRequestController = StreamController<RestoreRequest>();
-  Sink<RestoreRequest> get restoreRequestSink => _restoreRequestController.sink;
+  final _restoreRequestController = StreamController<RestoreRequest?>();
+  Sink<RestoreRequest?> get restoreRequestSink =>
+      _restoreRequestController.sink;
 
   final _multipleRestoreController =
       StreamController<List<SnapshotInfo>>.broadcast();
@@ -87,15 +88,15 @@ class BackupBloc {
   final _backupActionsController = StreamController<AsyncAction>.broadcast();
   Sink<AsyncAction> get backupActionsSink => _backupActionsController.sink;
 
-  BreezBridge _breezLib;
-  BackgroundTaskService _tasksService;
-  SharedPreferences _sharedPreferences;
+  late BreezBridge _breezLib;
+  late BackgroundTaskService _tasksService;
+  late SharedPreferences _sharedPreferences;
   bool _backupServiceNeedLogin = false;
   bool _enableBackupPrompt = false;
   Map<Type, Function> _actionHandlers = {};
-  FlutterSecureStorage _secureStorage;
-  String _appDirPath;
-  String _backupAppDataDirPath;
+  late FlutterSecureStorage _secureStorage;
+  late String _appDirPath;
+  late String _backupAppDataDirPath;
 
   static const String BACKUP_SETTINGS_PREFERENCES_KEY = "backup_settings";
   static const String LAST_BACKUP_TIME_PREFERENCE_KEY = "backup_last_time";
@@ -104,8 +105,8 @@ class BackupBloc {
   BackupBloc(
     Stream<BreezUserModel> userStream,
     Stream<bool> backupAnytimeDBStream, {
-    ServiceInjector serviceInjector,
-    FlutterSecureStorage secureStorage,
+    ServiceInjector? serviceInjector,
+    FlutterSecureStorage? secureStorage,
   }) {
     _initAppDataPathAndDir();
     _secureStorage = secureStorage ?? const FlutterSecureStorage();
@@ -168,8 +169,8 @@ class BackupBloc {
       log.info("backup key type continue to be the same");
     }
     if (newSettings.backupProvider != oldSettings.backupProvider ||
-        !oldSettings.remoteServerAuthData
-            .equal(newSettings.remoteServerAuthData)) {
+        !oldSettings.remoteServerAuthData!
+            .equal(newSettings.remoteServerAuthData!)) {
       log.info("update backup provider");
       await _updateBackupProvider(newSettings);
     } else {
@@ -179,22 +180,22 @@ class BackupBloc {
   }
 
   Future _updateBackupProvider(BackupSettings settings) async {
-    String authData;
-    if (settings.backupProvider.name ==
+    String? authData;
+    if (settings.backupProvider?.name ==
         BackupSettings.remoteServerBackupProvider().name) {
       log.info("update backup provider auth data as a remote server");
-      var map = settings.remoteServerAuthData.toJson();
+      var map = settings.remoteServerAuthData?.toJson();
       authData = json.encode(map);
     } else {
       log.info(
-          "update backup provider auth data as ${settings.backupProvider.name} server");
+          "update backup provider auth data as ${settings.backupProvider?.name} server");
     }
-    await _breezLib.setBackupProvider(settings.backupProvider.name, authData);
+    await _breezLib.setBackupProvider(settings.backupProvider?.name, authData);
   }
 
   Future _initializePersistentData() async {
     //last backup time persistency
-    String backupStateJson =
+    String? backupStateJson =
         _sharedPreferences.getString(LAST_BACKUP_STATE_PREFERENCE_KEY);
     BackupState backupState = const BackupState(null, false, null);
     if (backupStateJson != null) {
@@ -204,7 +205,7 @@ class BackupBloc {
     _backupStateController.add(backupState);
     _backupStateController.stream.listen((state) {
       _sharedPreferences.setString(
-          LAST_BACKUP_STATE_PREFERENCE_KEY, json.encode(state.toJson()));
+          LAST_BACKUP_STATE_PREFERENCE_KEY, json.encode(state?.toJson()));
     }, onError: (e) {
       _pushPromptIfNeeded();
     });
@@ -218,18 +219,18 @@ class BackupBloc {
       // For backward compatibility migrate backup provider by assigning "Google Drive"
       // in case we had backup and the provider is not set.
       if (backupSettingsModel.backupProvider == null &&
-          backupState?.lastBackupTime != null) {
+          backupState.lastBackupTime != null) {
         backupSettingsModel = backupSettingsModel.copyWith(
           backupProvider: BackupSettings.googleBackupProvider(),
         );
       }
       if (backupSettingsModel.backupProvider?.name ==
           BackupSettings.remoteServerBackupProvider().name) {
-        String authdata =
+        String? authData =
             await _secureStorage.read(key: "remoteServerAuthData");
-        if (authdata != null) {
+        if (authData != null) {
           RemoteServerAuthData auth =
-              RemoteServerAuthData.fromJson(json.decode(authdata));
+              RemoteServerAuthData.fromJson(json.decode(authData));
           backupSettingsModel =
               backupSettingsModel.copyWith(remoteServerAuthData: auth);
         }
@@ -243,7 +244,7 @@ class BackupBloc {
           BACKUP_SETTINGS_PREFERENCES_KEY, json.encode(settings.toJson()));
       if (settings.remoteServerAuthData != null) {
         String secureValue =
-            json.encode(settings.remoteServerAuthData.toJson());
+            json.encode(settings.remoteServerAuthData!.toJson());
         await _secureStorage.write(
             key: "remoteServerAuthData",
             value: secureValue,
@@ -333,13 +334,15 @@ class BackupBloc {
     action.resolve(await _breezLib.downloadBackup(action.nodeID));
   }
 
-  Future _setBreezLibBackupKey({BackupKeyType backupKeyType}) async {
+  Future _setBreezLibBackupKey({BackupKeyType? backupKeyType}) async {
     backupKeyType ??= _backupSettingsController.value.backupKeyType;
     var encryptionKey =
         await BreezLibBackupKey.fromSettings(_secureStorage, backupKeyType);
 
     return _breezLib.setBackupEncryptionKey(
-        encryptionKey?.key, encryptionKey?.type);
+      encryptionKey?.key,
+      encryptionKey?.type,
+    );
   }
 
   _scheduleBackgroundTasks() {
@@ -348,13 +351,13 @@ class BackupBloc {
       NotificationEvent_NotificationType.BACKUP_AUTH_FAILED,
       NotificationEvent_NotificationType.BACKUP_FAILED
     ];
-    Completer taskCompleter;
+    Completer? taskCompleter;
 
     _breezLib.notificationStream.listen((event) {
       if (taskCompleter == null &&
           event.type == NotificationEvent_NotificationType.BACKUP_REQUEST) {
         taskCompleter = Completer();
-        _tasksService.runAsTask(taskCompleter.future, () {
+        _tasksService.runAsTask(taskCompleter!.future, () {
           taskCompleter?.complete();
           taskCompleter = null;
         });
@@ -415,13 +418,14 @@ class BackupBloc {
 
   Future<Map<String, dynamic>> _getLightningFeesPreferences() async {
     var preferences = await ServiceInjector().sharedPreferences;
-    bool paymentFeeEnabled = preferences.containsKey(_kPaymentOptionOverrideFee)
-        ? preferences.getBool(_kPaymentOptionOverrideFee)
-        : _kDefaultOverrideFee;
-    int baseFee = preferences.containsKey(_kPaymentOptionBaseFee)
+    bool? paymentFeeEnabled =
+        preferences.containsKey(_kPaymentOptionOverrideFee)
+            ? preferences.getBool(_kPaymentOptionOverrideFee)
+            : _kDefaultOverrideFee;
+    int? baseFee = preferences.containsKey(_kPaymentOptionBaseFee)
         ? preferences.getInt(_kPaymentOptionBaseFee)
         : _kDefaultBaseFee;
-    double proportionalFee =
+    double? proportionalFee =
         preferences.containsKey(_kPaymentOptionProportionalFee)
             ? preferences.getDouble(_kPaymentOptionProportionalFee)
             : _kDefaultProportionalFee;
@@ -475,12 +479,20 @@ class BackupBloc {
       }
       if (event.type == NotificationEvent_NotificationType.BACKUP_AUTH_FAILED) {
         _backupServiceNeedLogin = true;
-        _backupStateController.addError(BackupFailedException(
-            _backupSettingsController.value.backupProvider, true));
+        _backupStateController.addError(
+          BackupFailedException(
+            _backupSettingsController.value.backupProvider,
+            true,
+          ),
+        );
       }
       if (event.type == NotificationEvent_NotificationType.BACKUP_FAILED) {
-        _backupStateController.addError(BackupFailedException(
-            _backupSettingsController.value.backupProvider, false));
+        _backupStateController.addError(
+          BackupFailedException(
+            _backupSettingsController.value.backupProvider,
+            false,
+          ),
+        );
       }
       if (event.type == NotificationEvent_NotificationType.BACKUP_SUCCESS) {
         _backupServiceNeedLogin = false;
@@ -509,7 +521,7 @@ class BackupBloc {
         _breezLib.getAvailableBackups().then((backups) {
           List snapshotsArray = json.decode(backups) as List;
           List<SnapshotInfo> snapshots = <SnapshotInfo>[];
-          if (snapshotsArray != null) {
+          if (snapshotsArray.isNotEmpty) {
             snapshots = snapshotsArray.map((s) {
               return SnapshotInfo.fromJson(s);
             }).toList();
@@ -529,7 +541,7 @@ class BackupBloc {
             } else if (e.code == _empty) {
               error = NoBackupFoundException();
             } else {
-              error = (error as PlatformException).message;
+              error = error.message;
             }
           }
           _restoreFinishedController.addError(error);
@@ -537,13 +549,13 @@ class BackupBloc {
         return;
       }
 
-      if (request.encryptionKey != null && request.encryptionKey.key != null) {
-        assert(request.encryptionKey.key.isNotEmpty || true);
+      if (request.encryptionKey != null && request.encryptionKey!.key != null) {
+        assert(request.encryptionKey!.key!.isNotEmpty || true);
       }
       assert(request.snapshot.nodeID.isNotEmpty);
 
       _breezLib
-          .restore(request.snapshot.nodeID, request.encryptionKey.key)
+          .restore(request.snapshot.nodeID, request.encryptionKey!.key!)
           .then((_) => _restoreAppData()
               .then((value) => _restoreFinishedController.add(true))
               .catchError(_restoreFinishedController.addError));
@@ -562,19 +574,14 @@ class BackupBloc {
           switch (e.message) {
             case _signInFailedCode:
               throw SignInFailedException(provider);
-              break;
             case _signInFailedMessage:
               throw SignInFailedException(provider);
-              break;
             case _methodNotFound:
               throw MethodNotFoundException();
-              break;
             case _noAccess:
               throw NoBackupFoundException();
-              break;
             case _notFoundMessage:
               throw RemoteServerNotFoundException();
-              break;
             case _empty:
               throw NoBackupFoundException();
           }
@@ -665,13 +672,13 @@ class SnapshotInfo {
 
 class RestoreRequest {
   final SnapshotInfo snapshot;
-  final BreezLibBackupKey encryptionKey;
+  final BreezLibBackupKey? encryptionKey;
 
   RestoreRequest(this.snapshot, this.encryptionKey);
 }
 
 class SignInFailedException implements Exception {
-  final BackupProvider provider;
+  final BackupProvider? provider;
 
   SignInFailedException(this.provider);
 
@@ -708,21 +715,21 @@ class BreezLibBackupKey {
   static const KEYLENGTH = 32;
   static const ENTROPY_LENGTH = 16 * 2; // 2 hex characters == 1 byte.
 
-  BackupKeyType backupKeyType;
-  String entropy;
+  String? entropy;
+  late BackupKeyType backupKeyType;
 
-  List<int> _key;
-  set key(List<int> v) => _key = v;
+  List<int>? _key;
+  set key(List<int>? v) => _key = v;
 
-  List<int> get key {
+  List<int>? get key {
     var entropyBytes = _key;
     if (entropyBytes == null) {
       /*
       assert(entropy != null);
       assert(entropy.isNotEmpty);
       */
-      if (entropy != null && entropy.isNotEmpty) {
-        entropyBytes = HEX.decode(entropy);
+      if (entropy != null && entropy!.isNotEmpty) {
+        entropyBytes = HEX.decode(entropy!);
       }
     }
 
@@ -741,10 +748,10 @@ class BreezLibBackupKey {
     if (key != null) {
       switch (backupKeyType) {
         case BackupKeyType.PHRASE:
-          assert(entropy.length == ENTROPY_LENGTH ||
-              entropy.length == ENTROPY_LENGTH * 2);
+          assert(entropy?.length == ENTROPY_LENGTH ||
+              entropy?.length == ENTROPY_LENGTH * 2);
           result =
-              entropy.length == ENTROPY_LENGTH ? 'Mnemonics12' : 'Mnemonics';
+              entropy?.length == ENTROPY_LENGTH ? 'Mnemonics12' : 'Mnemonics';
           break;
         case BackupKeyType.PIN:
           result = 'Pin';
@@ -756,20 +763,23 @@ class BreezLibBackupKey {
     return result;
   }
 
-  BreezLibBackupKey({this.entropy, List<int> key}) : _key = key;
+  BreezLibBackupKey({this.entropy, List<int>? key}) : _key = key;
 
-  static Future<BreezLibBackupKey> fromSettings(
-      FlutterSecureStorage store, BackupKeyType backupKeyType) async {
+  static Future<BreezLibBackupKey?> fromSettings(
+      FlutterSecureStorage? store, BackupKeyType backupKeyType) async {
     assert(store != null);
 
-    BreezLibBackupKey result;
+    BreezLibBackupKey? result;
     switch (backupKeyType) {
       case BackupKeyType.PIN:
-        var pinCode = await store.read(key: 'pinCode');
-        result = BreezLibBackupKey(key: utf8.encode(pinCode));
+        var pinCode = await store!.read(key: 'pinCode');
+        if (pinCode != null) {
+          result = BreezLibBackupKey(key: utf8.encode(pinCode));
+        }
         break;
       case BackupKeyType.PHRASE:
-        result = BreezLibBackupKey(entropy: await store.read(key: 'backupKey'));
+        result =
+            BreezLibBackupKey(entropy: await store!.read(key: 'backupKey'));
         break;
       default:
     }

@@ -5,29 +5,29 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 
 class ItemAvatar extends StatelessWidget {
-  final String avatarURL;
+  final String? avatarURL;
   final double radius;
-  final String itemName;
+  final String? itemName;
   final bool useDecoration;
 
   const ItemAvatar(this.avatarURL,
-      {Key key, this.radius = 20.0, this.itemName, this.useDecoration = false})
+      {Key? key, this.radius = 20.0, this.itemName, this.useDecoration = false})
       : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    if (avatarURL != null && avatarURL.isNotEmpty) {
-      if (Uri.tryParse(avatarURL)?.scheme?.startsWith("http") ?? false) {
-        return _NetworkImageAvatar(radius, avatarURL);
+    if (avatarURL != null && avatarURL!.isNotEmpty) {
+      if (Uri.tryParse(avatarURL!)?.scheme.startsWith("http") ?? false) {
+        return _NetworkImageAvatar(radius, avatarURL!);
       }
-      if (avatarURL.startsWith("#")) {
-        return _ColorAvatar(radius, avatarURL);
+      if (avatarURL!.startsWith("#")) {
+        return _ColorAvatar(radius, avatarURL!);
       }
-      if (avatarURL.startsWith("icon:")) {
-        return _IconAvatar(radius, avatarURL.substring(5), useDecoration);
+      if (avatarURL!.startsWith("icon:")) {
+        return _IconAvatar(radius, avatarURL!.substring(5), useDecoration);
       }
 
-      return _FileImageAvatar(radius, avatarURL);
+      return _FileImageAvatar(radius, avatarURL!);
     }
 
     return _UnknownAvatar(radius, itemName, useDecoration);
@@ -109,7 +109,7 @@ class _IconAvatar extends StatelessWidget {
           SvgPicture.asset(
             "src/pos-icons/$iconName.svg",
             colorFilter: ColorFilter.mode(
-              IconTheme.of(context).color,
+              IconTheme.of(context).color!,
               BlendMode.srcATop,
             ),
             width: useDecoration ? radius : radius * 1.5,
@@ -145,7 +145,7 @@ class _FileImageAvatar extends StatelessWidget {
 
 class _UnknownAvatar extends StatelessWidget {
   final double radius;
-  final String itemName;
+  final String? itemName;
   final bool useDecoration;
 
   const _UnknownAvatar(this.radius, this.itemName, this.useDecoration);
@@ -166,13 +166,13 @@ class _UnknownAvatar extends StatelessWidget {
                   image: const AssetImage("src/images/avatarbg.png"),
                   fit: BoxFit.cover))
           : null,
-      child: (itemName != null && itemName.isNotEmpty)
+      child: (itemName != null && itemName!.isNotEmpty)
           ? Center(
               child: Text(
               _getFirstTwoLetters(),
               style: TextStyle(
                   fontSize: useDecoration ? 48 : radius,
-                  color: IconTheme.of(context).color.withOpacity(0.88),
+                  color: IconTheme.of(context).color!.withOpacity(0.88),
                   decoration: TextDecoration.underline,
                   letterSpacing: 0.0,
                   fontFamily: "IBMPlexSans"),
@@ -182,7 +182,7 @@ class _UnknownAvatar extends StatelessWidget {
   }
 
   String _getFirstTwoLetters() {
-    var whitespaceRemovedName = itemName.replaceAll(RegExp(r"\s+\b|\b\s"), "");
+    var whitespaceRemovedName = itemName!.replaceAll(RegExp(r"\s+\b|\b\s"), "");
     return whitespaceRemovedName
         .substring(
             0,

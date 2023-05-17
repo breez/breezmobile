@@ -191,20 +191,20 @@ class RemoteServerAuthPageState extends State<RemoteServerAuthPage> {
                   }
                 }
                 if (!uri.host.endsWith('.onion') && uri.scheme == 'http') {
-                  connectionWarningResponse = await promptAreYouSure(
+                  connectionWarningResponse = (await promptAreYouSure(
                     context,
                     texts.remote_server_warning_connection_title,
                     Text(
                       texts.remote_server_warning_connection_message,
                     ),
-                  );
+                  ))!;
                 }
                 if (connectionWarningResponse) {
                   failDiscoverURL = false;
                   failAuthenticate = false;
                   failNoBackupFound = false;
-                  if (_formKey.currentState.validate()) {
-                    final newSettings = snapshot.data.copyWith(
+                  if (_formKey.currentState!.validate()) {
+                    final newSettings = snapshot.data!.copyWith(
                       remoteServerAuthData: RemoteServerAuthData(
                         uri.toString(),
                         _userController.text,
@@ -213,7 +213,7 @@ class RemoteServerAuthPageState extends State<RemoteServerAuthPage> {
                       ),
                     );
                     navigator.push(loader);
-                    discoverURL(newSettings.remoteServerAuthData).then(
+                    discoverURL(newSettings.remoteServerAuthData!).then(
                       (value) async {
                         nav.removeRoute(loader);
 
@@ -228,7 +228,7 @@ class RemoteServerAuthPageState extends State<RemoteServerAuthPage> {
                           failNoBackupFound =
                               error == DiscoverResult.BACKUP_NOT_FOUND;
                         });
-                        _formKey.currentState.validate();
+                        _formKey.currentState!.validate();
                       },
                     ).catchError(
                       (err) {
@@ -336,7 +336,7 @@ class RemoteServerAuthPageState extends State<RemoteServerAuthPage> {
   Future<DiscoveryResult> discoverURL(RemoteServerAuthData authData) async {
     RemoteServerAuthData testedAuthData = authData;
     while (true) {
-      var testedUrl = Uri.parse(testedAuthData.url);
+      var testedUrl = Uri.parse(testedAuthData.url!);
       var result = await discoverURLInternal(testedAuthData);
       if (result.authError == DiscoverResult.SUCCESS ||
           result.authError == DiscoverResult.INVALID_AUTH) {
@@ -381,7 +381,7 @@ class RemoteServerAuthPageState extends State<RemoteServerAuthPage> {
     // Backwards compatibility
     // since the user might accidentally insert a wrong path we'll reconstruct
     // the url to be the short url+remote.php/webdav.
-    Uri uri = Uri.parse(authData.url); // + "remote.php/webdav/";
+    Uri uri = Uri.parse(authData.url!); // + "remote.php/webdav/";
     final nextCloudURL = Uri(
             scheme: uri.scheme,
             host: uri.host,

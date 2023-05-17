@@ -11,7 +11,7 @@ class DeepLinksService {
       BehaviorSubject<String>();
   Stream<String> get linksNotifications => _linksNotificationsController.stream;
 
-  FirebaseDynamicLinks _dynamicLinks;
+  late FirebaseDynamicLinks _dynamicLinks;
 
   DeepLinksService() {
     _dynamicLinks = FirebaseDynamicLinks.instance;
@@ -19,8 +19,8 @@ class DeepLinksService {
   }
 
   void listen() async {
-    publishLink(PendingDynamicLinkData data) async {
-      final Uri uri = data?.link;
+    publishLink(PendingDynamicLinkData? data) async {
+      final Uri? uri = data?.link;
       if (uri != null) {
         _linksNotificationsController.add(uri.toString());
       }
@@ -64,8 +64,8 @@ class DeepLinksService {
 
 class SessionLinkModel {
   final String sessionID;
-  final String sessionSecret;
-  final String initiatorPubKey;
+  final String? sessionSecret;
+  final String? initiatorPubKey;
 
   SessionLinkModel(this.sessionID, this.sessionSecret, this.initiatorPubKey);
 
@@ -76,25 +76,25 @@ class SessionLinkModel {
   static SessionLinkModel fromLinkQuery(String queryStr) {
     Map<String, String> query = Uri.splitQueryString(queryStr);
     return SessionLinkModel(
-        query["sessionID"], query["sessionSecret"], query["pubKey"]);
+        query["sessionID"]!, query["sessionSecret"], query["pubKey"]);
   }
 }
 
 class PodcastShareLinkModel {
   final String feedURL;
-  final String episodeID;
+  final String? episodeID;
 
   PodcastShareLinkModel(this.feedURL, {this.episodeID});
 
   String toLinkQuery() {
-    return 'feedURL=${Uri.encodeQueryComponent(feedURL)}${episodeID != null ? '&episodeID=${Uri.encodeQueryComponent(episodeID)}' : ''}';
+    return 'feedURL=${Uri.encodeQueryComponent(feedURL)}${episodeID != null ? '&episodeID=${Uri.encodeQueryComponent(episodeID!)}' : ''}';
   }
 
   static PodcastShareLinkModel fromLinkQuery(String queryStr) {
     Map<String, String> query = Uri.splitQueryString(queryStr);
-    return PodcastShareLinkModel(Uri.decodeComponent(query["feedURL"]),
+    return PodcastShareLinkModel(Uri.decodeComponent(query["feedURL"]!),
         episodeID: query["episodeID"] == null
             ? null
-            : Uri.decodeComponent(query["episodeID"]));
+            : Uri.decodeComponent(query["episodeID"]!));
   }
 }

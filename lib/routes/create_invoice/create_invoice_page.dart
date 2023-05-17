@@ -38,7 +38,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 class CreateInvoicePage extends StatefulWidget {
-  final WithdrawFetchResponse lnurlWithdraw;
+  final WithdrawFetchResponse? lnurlWithdraw;
 
   const CreateInvoicePage({
     this.lnurlWithdraw,
@@ -59,9 +59,9 @@ class CreateInvoicePageState extends State<CreateInvoicePage> {
   final _bgService = ServiceInjector().backgroundTaskService;
 
   bool _isInit = false;
-  KeyboardDoneAction _doneAction;
-  WithdrawFetchResponse _withdrawFetchResponse;
-  StreamSubscription<PaymentRequestModel> _paidInvoicesSubscription;
+  late KeyboardDoneAction _doneAction;
+  late WithdrawFetchResponse? _withdrawFetchResponse;
+  late StreamSubscription<PaymentRequestModel?>? _paidInvoicesSubscription;
 
   @override
   void didChangeDependencies() {
@@ -76,7 +76,7 @@ class CreateInvoicePageState extends State<CreateInvoicePage> {
       if (widget.lnurlWithdraw != null) {
         accBloc.accountStream.first.then((account) {
           setState(() {
-            applyWithdrawFetchResponse(widget.lnurlWithdraw, account);
+            applyWithdrawFetchResponse(widget.lnurlWithdraw!, account);
           });
         });
       }
@@ -123,7 +123,7 @@ class CreateInvoicePageState extends State<CreateInvoicePage> {
           if (!snapshot.hasData) {
             return StaticLoader();
           }
-          final account = snapshot.data;
+          final account = snapshot.data!;
           return Padding(
             padding: EdgeInsets.only(
               bottom: Platform.isIOS && _amountFocusNode.hasFocus ? 40.0 : 0.0,
@@ -134,7 +134,7 @@ class CreateInvoicePageState extends State<CreateInvoicePage> {
                   ? texts.invoice_action_create
                   : texts.invoice_action_redeem,
               onPressed: () {
-                if (_formKey.currentState.validate()) {
+                if (_formKey.currentState!.validate()) {
                   _createInvoice(
                     context,
                     invoiceBloc,
@@ -152,7 +152,7 @@ class CreateInvoicePageState extends State<CreateInvoicePage> {
         leading: const backBtn.BackButton(),
         title: Text(texts.invoice_title),
         actions: [
-          StreamBuilder<Object>(
+          StreamBuilder<AccountModel>(
             stream: accountBloc.accountStream,
             builder: (context, snapshot) {
               final account = snapshot.data;
@@ -183,15 +183,15 @@ class CreateInvoicePageState extends State<CreateInvoicePage> {
           if (!snapshot.hasData) {
             return StaticLoader();
           }
-          final acc = snapshot.data;
+          final acc = snapshot.data!;
           return StreamBuilder<LSPStatus>(
             stream: lspBloc.lspStatusStream,
             builder: (context, snapshot) {
-              LSPStatus lspStatus = snapshot.data;
-              String validatePayment(Int64 amount) {
+              LSPStatus? lspStatus = snapshot.data;
+              String? validatePayment(Int64 amount) {
                 if (lspStatus?.currentLSP != null) {
                   final channelMinimumFee = Int64(
-                    lspStatus.currentLSP.channelMinimumFeeMsat ~/ 1000,
+                    lspStatus!.currentLSP!.channelMinimumFeeMsat ~/ 1000,
                   );
                   if (amount > acc.maxInboundLiquidity &&
                       amount <= channelMinimumFee) {
@@ -379,7 +379,7 @@ class CreateInvoicePageState extends State<CreateInvoicePage> {
   String formatFeeMessage(
     BreezTranslations texts,
     AccountModel accountModel,
-    LSPInfo lspInfo,
+    LSPInfo? lspInfo,
   ) {
     final connected = accountModel.connected;
     final minFee = (lspInfo != null)
@@ -387,7 +387,7 @@ class CreateInvoicePageState extends State<CreateInvoicePage> {
         : Int64(0);
     final minFeeFormatted = accountModel.currency.format(minFee);
     final showMinFeeMessage = minFee > 0;
-    final setUpFee = (lspInfo.channelFeePermyriad / 100).toString();
+    final setUpFee = (lspInfo!.channelFeePermyriad / 100).toString();
     final liquidity = accountModel.currency.format(
       connected ? accountModel.maxInboundLiquidity : Int64(0),
     );
@@ -443,7 +443,7 @@ class CreateInvoicePageState extends State<CreateInvoicePage> {
                 texts.qr_action_button_error_code_not_processed,
                 Text(
                   texts.invoice_receive_fail_message(
-                      extractExceptionMessage(error)),
+                      extractExceptionMessage(error!)),
                   style: themeData.dialogTheme.contentTextStyle,
                 ),
               );

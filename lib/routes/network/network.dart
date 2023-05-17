@@ -27,7 +27,7 @@ class _NetworkData {
 
 class NetworkPage extends StatefulWidget {
   const NetworkPage({
-    Key key,
+    Key? key,
   }) : super(key: key);
 
   @override
@@ -38,12 +38,12 @@ class NetworkPage extends StatefulWidget {
 
 class NetworkPageState extends State<NetworkPage> {
   final _formKey = GlobalKey<FormState>();
-  BreezBridge _breezLib;
+  late BreezBridge _breezLib;
   final _NetworkData _data = _NetworkData();
   List<TextEditingController> peerControllers =
       List<TextEditingController>.generate(2, (_) => TextEditingController());
 
-  Completer loadPeersAction;
+  late Completer loadPeersAction;
 
   @override
   void initState() {
@@ -110,8 +110,8 @@ class NetworkPageState extends State<NetworkPage> {
                       children: [
                         PeerWidget(
                           peerController: peerControllers[0],
-                          validator: (value) {
-                            if (value.isEmpty) {
+                          validator: (String? value) {
+                            if (value != null && value.isEmpty) {
                               return texts.network_bitcoin_node_required_error;
                             }
                             return null;
@@ -120,8 +120,8 @@ class NetworkPageState extends State<NetworkPage> {
                         PeerWidget(
                           label: texts.network_optional_node,
                           peerController: peerControllers[1],
-                          validator: (value) {
-                            if (_areNodesDistinct(value)) {
+                          validator: (String? value) {
+                            if (value != null && _areNodesDistinct(value)) {
                               return texts.network_distinct_node_hint;
                             }
                             return null;
@@ -183,7 +183,7 @@ class NetworkPageState extends State<NetworkPage> {
     }
   }
 
-  Future<bool> _testNode({String peer = "", String nodeError}) async {
+  Future<bool> _testNode({String peer = "", String? nodeError}) async {
     final texts = context.texts();
     final dialogTheme = Theme.of(context).dialogTheme;
 
@@ -222,8 +222,8 @@ class NetworkPageState extends State<NetworkPage> {
       ),
       cancelText: texts.network_restart_action_cancel,
       okText: texts.network_restart_action_confirm,
-    ).then((shouldExit) {
-      if (shouldExit) {
+    ).then((bool? shouldExit) {
+      if (shouldExit != null && shouldExit) {
         exit(0);
       }
       return false;
@@ -232,7 +232,7 @@ class NetworkPageState extends State<NetworkPage> {
 
   void saveNodes() async {
     final texts = context.texts();
-    if (_formKey.currentState.validate()) {
+    if (_formKey.currentState!.validate()) {
       final nodeSet = <String>{};
       for (var peerData in peerControllers) {
         if (peerData.text.isNotEmpty) {
@@ -243,7 +243,7 @@ class NetworkPageState extends State<NetworkPage> {
       try {
         if (nodeSet.isNotEmpty) {
           // Validate nodes sequentially
-          await Future.forEach(nodeSet, (node) async {
+          await Future.forEach(nodeSet, (String node) async {
             final nodeIsValid = await _testNode(
               peer: node,
               nodeError: texts.network_custom_node_error,
@@ -309,14 +309,14 @@ class NetworkPageState extends State<NetworkPage> {
 
 class PeerWidget extends StatelessWidget {
   final TextEditingController peerController;
-  final String label;
+  final String? label;
   final FormFieldValidator<String> validator;
 
   const PeerWidget({
-    Key key,
-    @required this.peerController,
+    Key? key,
+    required this.peerController,
     this.label,
-    @required this.validator,
+    required this.validator,
   }) : super(key: key);
 
   @override
@@ -342,9 +342,9 @@ class _TestingPeerDialog extends StatefulWidget {
   final Future testFuture;
 
   const _TestingPeerDialog({
-    Key key,
-    this.peer,
-    this.testFuture,
+    Key? key,
+    required this.peer,
+    required this.testFuture,
   }) : super(key: key);
 
   @override
@@ -385,8 +385,11 @@ class _SetTorActiveDialog extends StatefulWidget {
   final Future testFuture;
   final bool enable;
 
-  const _SetTorActiveDialog({Key key, this.testFuture, this.enable})
-      : super(key: key);
+  const _SetTorActiveDialog({
+    Key? key,
+    required this.testFuture,
+    required this.enable,
+  }) : super(key: key);
 
   @override
   State<StatefulWidget> createState() {

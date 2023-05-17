@@ -1,13 +1,14 @@
 import 'dart:convert';
 
 import 'package:breez_translations/breez_translations_locales.dart';
+import 'package:collection/collection.dart';
 import 'package:flutter/foundation.dart';
 
 class RemoteServerAuthData {
-  final String url;
-  final String user;
-  final String password;
-  final String breezDir;
+  final String? url;
+  final String? user;
+  final String? password;
+  final String? breezDir;
 
   const RemoteServerAuthData(
     this.url,
@@ -38,10 +39,10 @@ class RemoteServerAuthData {
   }
 
   RemoteServerAuthData copyWith({
-    String url,
-    String user,
-    String password,
-    String breezDir,
+    String? url,
+    String? user,
+    String? password,
+    String? breezDir,
   }) {
     return RemoteServerAuthData(
       url ?? this.url,
@@ -99,8 +100,8 @@ class BackupSettings {
 
   final bool promptOnError;
   final BackupKeyType backupKeyType;
-  final BackupProvider backupProvider;
-  final RemoteServerAuthData remoteServerAuthData;
+  final BackupProvider? backupProvider;
+  final RemoteServerAuthData? remoteServerAuthData;
 
   BackupSettings(
     this.promptOnError,
@@ -119,10 +120,10 @@ class BackupSettings {
       );
 
   BackupSettings copyWith({
-    bool promptOnError,
-    BackupKeyType keyType,
-    BackupProvider backupProvider,
-    RemoteServerAuthData remoteServerAuthData,
+    bool? promptOnError,
+    BackupKeyType? keyType,
+    BackupProvider? backupProvider,
+    RemoteServerAuthData? remoteServerAuthData,
   }) {
     return BackupSettings(
       promptOnError ?? this.promptOnError,
@@ -136,9 +137,9 @@ class BackupSettings {
       : this(
           json["promptOnError"] ?? false,
           BackupKeyType.values[json["backupKeyType"] ?? 0],
-          BackupSettings.availableBackupProviders().firstWhere(
-              (p) => p.name == json["backupProvider"],
-              orElse: () => null),
+          BackupSettings.availableBackupProviders().firstWhereOrNull(
+            (p) => p.name == json["backupProvider"],
+          ),
           RemoteServerAuthData.fromJson(json["remoteServerAuthData"] ?? {}),
         );
 
@@ -147,7 +148,7 @@ class BackupSettings {
       "promptOnError": promptOnError,
       "backupKeyType": backupKeyType.index,
       "backupProvider": backupProvider?.name,
-      "remoteServerAuthData": remoteServerAuthData.toJson(),
+      "remoteServerAuthData": remoteServerAuthData?.toJson(),
     };
   }
 
@@ -187,9 +188,9 @@ class BackupSettings {
 }
 
 class BackupState {
-  final DateTime lastBackupTime;
+  final DateTime? lastBackupTime;
   final bool inProgress;
-  final String lastBackupAccountName;
+  final String? lastBackupAccountName;
 
   const BackupState(
     this.lastBackupTime,
@@ -215,7 +216,7 @@ class BackupState {
 }
 
 class BackupFailedException implements Exception {
-  final BackupProvider provider;
+  final BackupProvider? provider;
   final bool authenticationError;
 
   const BackupFailedException(
@@ -233,7 +234,7 @@ class BackupNowAction {
   final bool recoverEnabled;
 
   const BackupNowAction({
-    @required this.recoverEnabled,
+    required this.recoverEnabled,
   });
 
   @override

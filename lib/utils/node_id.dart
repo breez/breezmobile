@@ -1,8 +1,8 @@
 const NODE_URI_SEPARATOR = "@";
 const NODE_ID_LENGTH = 66;
 
-String parseNodeId(String nodeID) {
-  if (nodeID == null) {
+String? parseNodeId(String nodeID) {
+  if (nodeID.isEmpty) {
     return null;
   }
   if (nodeID.length == NODE_ID_LENGTH) {

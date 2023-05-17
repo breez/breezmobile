@@ -11,6 +11,7 @@ import 'package:breez/utils/min_font_size.dart';
 import 'package:breez/widgets/currency_amount_field_formatter.dart';
 import 'package:breez/widgets/loader.dart';
 import 'package:breez_translations/breez_translations_locales.dart';
+import 'package:collection/collection.dart';
 import 'package:fixnum/fixnum.dart';
 import 'package:flutter/material.dart';
 
@@ -18,7 +19,7 @@ import 'flushbar.dart';
 
 class CurrencyConverterDialog extends StatefulWidget {
   final Function(String string) _onConvert;
-  final String Function(Int64 amount) validatorFn;
+  final String Function(Int64 amount)? validatorFn;
 
   const CurrencyConverterDialog(
     this._onConvert,
@@ -37,13 +38,13 @@ class CurrencyConverterDialogState extends State<CurrencyConverterDialog>
   final TextEditingController _fiatAmountController = TextEditingController();
   final FocusNode _fiatAmountFocusNode = FocusNode();
 
-  AnimationController _controller;
-  Animation<Color> _colorAnimation;
+  late AnimationController? _controller;
+  late Animation<Color?> _colorAnimation;
 
-  AccountBloc _accountBloc;
-  UserProfileBloc _userProfileBloc;
+  late AccountBloc _accountBloc;
+  late UserProfileBloc _userProfileBloc;
 
-  double _exchangeRate;
+  late double? _exchangeRate;
 
   final AutoSizeGroup _autoSizeGroup = AutoSizeGroup();
 
@@ -58,11 +59,11 @@ class CurrencyConverterDialogState extends State<CurrencyConverterDialog>
       duration: const Duration(milliseconds: 400),
     );
     // Loop back to start and stop
-    _controller.addStatusListener((status) {
+    _controller!.addStatusListener((status) {
       if (status == AnimationStatus.completed) {
-        _controller.reverse();
+        _controller!.reverse();
       } else if (status == AnimationStatus.dismissed) {
-        _controller.stop();
+        _controller!.stop();
       }
     });
   }
@@ -79,7 +80,7 @@ class CurrencyConverterDialogState extends State<CurrencyConverterDialog>
       _accountBloc.userActionsSink.add(fetchRatesAction);
 
       _accountBloc.accountStream.first.then((account) {
-        _fiatAmountController.text = account.fiatCurrency.currencyData.symbol;
+        _fiatAmountController.text = account.fiatCurrency!.currencyData.symbol;
       });
 
       fetchRatesAction.future.catchError((err) {
@@ -96,9 +97,9 @@ class CurrencyConverterDialogState extends State<CurrencyConverterDialog>
 
       _colorAnimation = ColorTween(
         // change to white according to theme
-        begin: themeData.primaryTextTheme.headlineMedium.color,
-        end: themeData.primaryTextTheme.labelLarge.color,
-      ).animate(_controller)
+        begin: themeData.primaryTextTheme.headlineMedium!.color,
+        end: themeData.primaryTextTheme.labelLarge!.color,
+      ).animate(_controller!)
         ..addListener(() {
           setState(() {});
         });
@@ -121,23 +122,23 @@ class CurrencyConverterDialogState extends State<CurrencyConverterDialog>
     return StreamBuilder<AccountModel>(
       stream: _accountBloc.accountStream,
       builder: (context, snapshot) {
-        AccountModel account = snapshot.data;
         if (!snapshot.hasData) {
           return Container();
         }
+        AccountModel account = snapshot.data!;
 
         if (account.preferredFiatConversionList.isEmpty ||
             account.fiatCurrency == null) {
           return const Loader();
         }
 
-        double exchangeRate = account.preferredFiatConversionList
-            .firstWhere(
+        double exchangeRate = account
+            .preferredFiatConversionList // TODO : Null Safety - preferredFiatConversionList may be null
+            .firstWhereOrNull(
               (fiatConversion) =>
                   fiatConversion.currencyData.symbol ==
-                  account.fiatCurrency.currencyData.symbol,
-              orElse: () => null,
-            )
+                  account.fiatCurrency!.currencyData.symbol,
+            )!
             .exchangeRate;
         _updateExchangeLabel(exchangeRate);
 
@@ -207,9 +208,9 @@ class CurrencyConverterDialogState extends State<CurrencyConverterDialog>
               child: ButtonTheme(
                 alignedDropdown: true,
                 child: DropdownButton(
-                  onChanged: (value) => _selectFiatCurrency(value),
-                  value: account.fiatCurrency.currencyData.shortName,
-                  iconEnabledColor: themeData.dialogTheme.titleTextStyle.color,
+                  onChanged: (String? value) => _selectFiatCurrency(value!),
+                  value: account.fiatCurrency!.currencyData.shortName,
+                  iconEnabledColor: themeData.dialogTheme.titleTextStyle!.color,
                   style: themeData.dialogTheme.titleTextStyle,
                   items: items.toList(),
                 ),
@@ -250,13 +251,13 @@ class CurrencyConverterDialogState extends State<CurrencyConverterDialog>
                 ),
               ),
               errorMaxLines: 2,
-              errorStyle: themeData.primaryTextTheme.bodySmall.copyWith(
+              errorStyle: themeData.primaryTextTheme.bodySmall!.copyWith(
                 color: isBlue ? Colors.red : themeData.colorScheme.error,
               ),
             ),
             // Do not allow '.' when fractionSize is 0 and only allow fiat currencies fractionSize number of digits after decimal point
             inputFormatters: [
-              CurrencyAmountFieldFormatter(account.fiatCurrency),
+              CurrencyAmountFieldFormatter(account.fiatCurrency!),
             ],
             keyboardType: const TextInputType.numberWithOptions(decimal: true),
             focusNode: _fiatAmountFocusNode,
@@ -265,7 +266,7 @@ class CurrencyConverterDialogState extends State<CurrencyConverterDialog>
             controller: _fiatAmountController,
             validator: (_) {
               if (widget.validatorFn != null) {
-                return widget.validatorFn(_convertedSatoshies(account));
+                return widget.validatorFn!(_convertedSatoshies(account));
               }
               return null;
             },
@@ -278,11 +279,11 @@ class CurrencyConverterDialogState extends State<CurrencyConverterDialog>
             children: [
               Text(
                 _contentMessage(context, account),
-                style: themeData.textTheme.headlineSmall.copyWith(
+                style: themeData.textTheme.headlineSmall!.copyWith(
                   fontSize: 16.0,
                 ),
               ),
-              _buildExchangeRateLabel(context, account.fiatCurrency),
+              _buildExchangeRateLabel(context, account.fiatCurrency!),
             ],
           ),
         ),
@@ -310,7 +311,7 @@ class CurrencyConverterDialogState extends State<CurrencyConverterDialog>
       actions.add(
         TextButton(
           onPressed: () {
-            if (_formKey.currentState.validate()) {
+            if (_formKey.currentState!.validate()) {
               widget._onConvert(
                 account.currency.format(
                   _convertedSatoshies(account),
@@ -345,8 +346,8 @@ class CurrencyConverterDialogState extends State<CurrencyConverterDialog>
   void _updateExchangeLabel(double exchangeRate) {
     if (_exchangeRate != exchangeRate) {
       // Blink exchange rate label when exchange rate changes (also switches between fiat currencies)
-      if (_exchangeRate != null && !_controller.isAnimating) {
-        _controller.forward();
+      if (_exchangeRate != null && !_controller!.isAnimating) {
+        _controller!.forward();
       }
       _exchangeRate = exchangeRate;
     }
@@ -355,8 +356,8 @@ class CurrencyConverterDialogState extends State<CurrencyConverterDialog>
   Int64 _convertedSatoshies(AccountModel account) {
     final texts = _fiatAmountController.text.replaceAll(RegExp("[^0-9.]"), "");
     return texts.isNotEmpty
-        ? account.fiatCurrency.fiatToSat(
-            double.parse(texts ?? 0),
+        ? account.fiatCurrency!.fiatToSat(
+            double.parse(texts), // TODO : Null Safety
           )
         : Int64(0);
   }
@@ -378,12 +379,12 @@ class CurrencyConverterDialogState extends State<CurrencyConverterDialog>
         : Text(
             texts.currency_converter_dialog_rate(
               currency.format(
-                _exchangeRate,
+                _exchangeRate!,
                 removeTrailingZeros: true,
               ),
               fiatConversion.currencyData.shortName,
             ),
-            style: themeData.primaryTextTheme.titleSmall.copyWith(
+            style: themeData.primaryTextTheme.titleSmall!.copyWith(
               color: _colorAnimation.value,
             ),
           );
@@ -391,7 +392,7 @@ class CurrencyConverterDialogState extends State<CurrencyConverterDialog>
 
   void _selectFiatCurrency(String shortName) {
     _accountBloc.accountStream.skip(1).first.then((accountModel) {
-      final currencyData = accountModel.fiatCurrency.currencyData;
+      final currencyData = accountModel.fiatCurrency!.currencyData;
       final symbol = currencyData.symbol;
       final rightSide = currencyData.rightSideSymbol;
       final raw = _fiatAmountController.text.replaceAll(RegExp("[^0-9.]"), "");
@@ -405,7 +406,7 @@ class CurrencyConverterDialogState extends State<CurrencyConverterDialog>
         }
       }
       _fiatAmountController.text = formatted;
-      _updateExchangeLabel(_exchangeRate);
+      _updateExchangeLabel(_exchangeRate!);
     });
     _userProfileBloc.fiatConversionSink.add(shortName);
   }

@@ -7,10 +7,10 @@ import 'package:flutter/material.dart';
 
 class SyncProgressDialog extends StatefulWidget {
   final bool closeOnSync;
-  final Color progressColor;
+  final Color? progressColor;
 
   const SyncProgressDialog({
-    Key key,
+    Key? key,
     this.closeOnSync = true,
     this.progressColor,
   }) : super(key: key);
@@ -22,15 +22,18 @@ class SyncProgressDialog extends StatefulWidget {
 }
 
 class SyncProgressDialogState extends State<SyncProgressDialog> {
-  AccountBloc _accountBloc;
+  late AccountBloc? _accountBloc;
 
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
     if (_accountBloc == null && widget.closeOnSync) {
       _accountBloc = AppBlocsProvider.of<AccountBloc>(context);
-      _accountBloc.accountStream
-          .firstWhere((a) => a?.syncedToChain == true && a.serverReady,
+      _accountBloc!.accountStream
+          .firstWhere(
+              (a) =>
+                  a.syncedToChain == true &&
+                  a.serverReady, // TODO : Null Safety - accountModel may be null
               orElse: () => null)
           .then((a) {
         if (mounted) {
@@ -49,16 +52,17 @@ class SyncProgressDialogState extends State<SyncProgressDialog> {
     return StreamBuilder<AccountModel>(
       stream: accountBloc.accountStream,
       builder: (context, snapshot) {
-        AccountModel acc = snapshot.data;
+        AccountModel? acc = snapshot.data;
         if (acc == null) return const SizedBox();
 
         return SizedBox(
           width: MediaQuery.of(context).size.width,
           height: 150.0,
           child: CircularProgress(
-            color: widget.progressColor ?? themeData.textTheme.labelLarge.color,
+            color:
+                widget.progressColor ?? themeData.textTheme.labelLarge!.color!,
             size: 100.0,
-            value: acc.serverReady ? acc.syncProgress : null,
+            value: acc.serverReady ? acc.syncProgress : 0,
             title: acc.serverReady
                 ? texts.sync_progress_server_ready
                 : texts.sync_progress_waiting_network,

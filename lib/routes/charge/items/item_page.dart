@@ -22,7 +22,7 @@ import '../currency_wrapper.dart';
 import 'item_avatar_picker.dart';
 
 class ItemPage extends StatefulWidget {
-  final Item item;
+  final Item? item;
   final PosCatalogBloc _posCatalogBloc;
 
   const ItemPage(
@@ -44,10 +44,10 @@ class ItemPageState extends State<ItemPage> {
   final _priceController = TextEditingController();
   final _skuController = TextEditingController();
 
-  AccountBloc _accountBloc;
+  late AccountBloc _accountBloc;
   bool _isInit = false;
   String _title = "";
-  String _itemImage;
+  late String _itemImage;
   CurrencyWrapper _selectedCurrency = CurrencyWrapper.fromBTC(Currency.SAT);
 
   @override
@@ -63,15 +63,15 @@ class ItemPageState extends State<ItemPage> {
         if (widget.item != null) {
           setState(() {
             _title = texts.pos_invoice_item_management_title_edit;
-            _itemImage = widget.item.imageURL;
-            _nameController.text = widget.item.name;
-            _skuController.text = widget.item.sku;
+            _itemImage = widget.item!.imageURL;
+            _nameController.text = widget.item!.name;
+            _skuController.text = widget.item!.sku;
             _selectedCurrency = CurrencyWrapper.fromShortName(
-                  widget.item.currency,
+                  widget.item!.currency,
                   accountModel,
                 ) ??
                 _selectedCurrency;
-            _priceController.text = _formattedPrice(widget.item.price);
+            _priceController.text = _formattedPrice(widget.item!.price);
           });
         } else {
           widget._posCatalogBloc.selectedCurrencyStream.listen((currency) {

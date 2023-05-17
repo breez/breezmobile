@@ -82,7 +82,7 @@ class PosReportDialog extends StatelessWidget {
         TextButton(
           child: Text(
             texts.pos_report_dialog_action_close,
-            style: themeData.primaryTextTheme.labelLarge.copyWith(
+            style: themeData.primaryTextTheme.labelLarge!.copyWith(
               color: _highlight(themeData),
             ),
           ),
@@ -134,7 +134,7 @@ class PosReportDialog extends StatelessWidget {
 
     return Text(
       title,
-      style: themeData.primaryTextTheme.titleLarge.copyWith(
+      style: themeData.primaryTextTheme.titleLarge!.copyWith(
         color: _highlight(themeData),
       ),
     );
@@ -144,7 +144,7 @@ class PosReportDialog extends StatelessWidget {
     BuildContext context,
     PosReportTimeRange timeRange,
   ) {
-    TapDownDetails details;
+    TapDownDetails? details;
     return GestureDetector(
       onTapDown: (newDetails) {
         details = newDetails;
@@ -246,7 +246,7 @@ class PosReportDialog extends StatelessWidget {
       child: Text(
         title,
         textAlign: TextAlign.end,
-        style: themeData.textTheme.titleSmall.copyWith(
+        style: themeData.textTheme.titleSmall!.copyWith(
           color: Colors.white,
         ),
       ),
@@ -376,7 +376,7 @@ class PosReportDialog extends StatelessWidget {
       padding: const EdgeInsets.all(8.0),
       child: Text(
         text,
-        style: themeData.primaryTextTheme.headlineMedium.copyWith(
+        style: themeData.primaryTextTheme.headlineMedium!.copyWith(
           fontSize: 16.0,
         ),
       ),
@@ -391,7 +391,7 @@ class PosReportDialog extends StatelessWidget {
       padding: const EdgeInsets.all(8.0),
       child: Text(
         text,
-        style: themeData.primaryTextTheme.displaySmall.copyWith(
+        style: themeData.primaryTextTheme.displaySmall!.copyWith(
           fontSize: 16.0,
         ),
       ),

@@ -62,7 +62,7 @@ class PaymentSessionState {
           0,
         );
   PaymentSessionState.payeeStart(
-      String sessionSecret, String userName, String imageURL)
+      String sessionSecret, String? userName, String? imageURL)
       : this(
           false,
           sessionSecret,
@@ -77,15 +77,15 @@ class PaymentSessionState {
 }
 
 class PayerSessionData {
-  final String userName;
-  final String imageURL;
+  final String? userName;
+  final String? imageURL;
   final PeerStatus status;
-  final int amount;
-  final String description;
-  final String error;
+  final int? amount;
+  final String? description;
+  final String? error;
   final bool cancelled;
   final bool paymentFulfilled;
-  final double unconfirmedChannelsProgress;
+  final double? unconfirmedChannelsProgress;
 
   PayerSessionData(
       this.userName, this.imageURL, this.status, this.amount, this.description,
@@ -108,14 +108,15 @@ class PayerSessionData {
         unconfirmedChannelsProgress = null;
 
   PayerSessionData copyWith({
-    String userName,
-    String imageURL,
-    PeerStatus status,
-    int amount,
-    String description,
-    String error,
-    bool paymentFulfilled,
-    double unconfirmedChannelsProgress,
+    String? userName,
+    String? imageURL,
+    PeerStatus? status,
+    int? amount,
+    String? description,
+    String? error,
+    bool? cancelled,
+    bool? paymentFulfilled,
+    double? unconfirmedChannelsProgress,
   }) {
     return PayerSessionData(
       userName ?? this.userName,
@@ -125,7 +126,7 @@ class PayerSessionData {
       description ?? this.description,
       error: error ?? this.error,
       paymentFulfilled: paymentFulfilled ?? this.paymentFulfilled,
-      cancelled: cancelled ?? cancelled,
+      cancelled: cancelled ?? this.cancelled,
       unconfirmedChannelsProgress:
           unconfirmedChannelsProgress ?? this.unconfirmedChannelsProgress,
     );
@@ -133,8 +134,8 @@ class PayerSessionData {
 }
 
 class PayeeSessionData {
-  final String userName;
-  final String imageURL;
+  final String? userName;
+  final String? imageURL;
   final PeerStatus status;
   final String paymentRequest;
   final String error;
@@ -154,12 +155,12 @@ class PayeeSessionData {
         imageURL = json['imageURL'];
 
   PayeeSessionData copyWith({
-    String userName,
-    String imageURL,
-    PeerStatus status,
-    String paymentRequest,
-    String error,
-    bool cancelled,
+    String? userName,
+    String? imageURL,
+    PeerStatus? status,
+    String? paymentRequest,
+    String? error,
+    bool? cancelled,
   }) {
     return PayeeSessionData(
       userName ?? this.userName,

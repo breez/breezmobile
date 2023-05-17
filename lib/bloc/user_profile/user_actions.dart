@@ -37,7 +37,7 @@ class ChangeTheme extends AsyncAction {
 }
 
 class ValidateBiometrics extends AsyncAction {
-  final String localizedReason;
+  final String? localizedReason;
 
   ValidateBiometrics({this.localizedReason});
 }
@@ -61,7 +61,7 @@ class SetAppMode extends AsyncAction {
 }
 
 class SetAdminPassword extends AsyncAction {
-  final String password;
+  final String? password;
 
   SetAdminPassword(this.password);
 }

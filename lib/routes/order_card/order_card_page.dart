@@ -25,8 +25,8 @@ class OrderCardPage extends StatefulWidget {
   final bool showSkip;
 
   const OrderCardPage({
-    Key key,
-    this.showSkip,
+    Key? key,
+    this.showSkip = false,
   }) : super(key: key);
 
   @override
@@ -61,7 +61,7 @@ class OrderCardPageState extends State<OrderCardPage> {
 
   final _CustomerData _data = _CustomerData();
 
-  BreezServer _breezServer;
+  late BreezServer _breezServer;
 
   @override
   void initState() {
@@ -211,7 +211,7 @@ class OrderCardPageState extends State<OrderCardPage> {
       Map data = json.decode(response.body);
       _userCountryShort = data["country_code"];
     } else {
-      _userCountryShort = myLocale.countryCode;
+      _userCountryShort = myLocale.countryCode!;
     }
     await _loadCountries();
     await _loadStates();
@@ -259,12 +259,12 @@ class OrderCardPageState extends State<OrderCardPage> {
 
   bool _validateEmail(String value) {
     return RegExp(
-            r"^[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?")
+            r"^[a-z\d!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z\d!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z\d](?:[a-z\d-]*[a-z\d])?\.)+[a-z\d](?:[a-z\d-]*[a-z\d])?")
         .hasMatch(value);
   }
 
   bool _validateZip(String value) {
-    return RegExp(r"^(?!0{3})[0-9]{3,10}$").hasMatch(value);
+    return RegExp(r"^(?!0{3})\d{3,10}$").hasMatch(value);
   }
 
   Widget _getFutureWidgetStates() {
@@ -374,7 +374,7 @@ class OrderCardPageState extends State<OrderCardPage> {
     );
   }
 
-  Widget _showLeadingButton(bool showSkip) {
+  Widget? _showLeadingButton(bool showSkip) {
     if (!showSkip) {
       return const backBtn.BackButton();
     } else {
@@ -386,17 +386,16 @@ class OrderCardPageState extends State<OrderCardPage> {
   Widget build(BuildContext context) {
     final texts = context.texts();
 
-    bool showSkip = widget.showSkip ?? false;
     return Scaffold(
       appBar: AppBar(
         automaticallyImplyLeading: false,
-        leading: _showLeadingButton(showSkip),
+        leading: _showLeadingButton(widget.showSkip),
         title: Text(
-          showSkip
+          widget.showSkip
               ? texts.order_card_action_order_breez_card
               : texts.order_card_action_order_card,
         ),
-        actions: _showSkipButton(context, showSkip),
+        actions: _showSkipButton(context, widget.showSkip),
       ),
       body: Padding(
         padding: const EdgeInsets.only(top: 16.0, left: 16.0, right: 16.0),
@@ -460,8 +459,8 @@ class OrderCardPageState extends State<OrderCardPage> {
       bottomNavigationBar: SingleButtonBottomBar(
         text: texts.order_card_action_order,
         onPressed: () {
-          if (_formKey.currentState.validate()) {
-            _formKey.currentState.save();
+          if (_formKey.currentState?.validate() ?? false) {
+            _formKey.currentState!.save();
             _breezServer
                 .orderCard(
                   _data.fullName,
@@ -498,11 +497,11 @@ class OrderCardPageState extends State<OrderCardPage> {
         ),
         style: theme.FieldTextStyle.textStyle,
         textCapitalization: TextCapitalization.words,
-        onSaved: (String value) {
-          _data.fullName = value;
+        onSaved: (String? value) {
+          if (value != null) _data.fullName = value;
         },
-        validator: (value) {
-          if (value.isEmpty) {
+        validator: (String? value) {
+          if (value != null && value.isEmpty) {
             return texts.order_card_full_name_error;
           }
           return null;
@@ -521,15 +520,18 @@ class OrderCardPageState extends State<OrderCardPage> {
         ),
         style: theme.FieldTextStyle.textStyle,
         textCapitalization: TextCapitalization.none,
-        onSaved: (String value) {
-          _data.email = value;
+        onSaved: (String? value) {
+          if (value != null) _data.email = value;
         },
         validator: (value) {
-          if (value.isEmpty) {
-            return texts.order_card_country_email_empty;
-          } else if (!_validateEmail(value)) {
-            return texts.order_card_country_email_invalid;
+          if (value != null) {
+            if (value.isEmpty) {
+              return texts.order_card_country_email_empty;
+            } else if (!_validateEmail(value)) {
+              return texts.order_card_country_email_invalid;
+            }
           }
+
           return null;
         },
       ),
@@ -546,11 +548,11 @@ class OrderCardPageState extends State<OrderCardPage> {
         ),
         style: theme.FieldTextStyle.textStyle,
         textCapitalization: TextCapitalization.words,
-        onSaved: (String value) {
-          _data.address = value;
+        onSaved: (String? value) {
+          if (value != null) _data.address = value;
         },
         validator: (value) {
-          if (value.isEmpty) {
+          if (value != null && value.isEmpty) {
             return texts.order_card_address_error;
           }
           return null;
@@ -570,11 +572,11 @@ class OrderCardPageState extends State<OrderCardPage> {
         ),
         style: theme.FieldTextStyle.textStyle,
         textCapitalization: TextCapitalization.words,
-        onSaved: (String value) {
-          _data.city = value;
+        onSaved: (String? value) {
+          if (value != null) _data.city = value;
         },
         validator: (value) {
-          if (value.isEmpty) {
+          if (value != null && value.isEmpty) {
             return texts.order_card_city_error;
           }
           return null;
@@ -598,17 +600,20 @@ class OrderCardPageState extends State<OrderCardPage> {
           ),
           style: theme.FieldTextStyle.textStyle,
           textCapitalization: TextCapitalization.words,
-          onSaved: (String value) {
-            _data.state = value;
+          onSaved: (String? value) {
+            if (value != null) _data.state = value;
           },
           validator: (value) {
-            if (value.isEmpty &&
-                _specialCountriesShort.contains(_userCountryShort)) {
-              return texts.order_card_country_state_empty;
-            } else if (_specialCountriesShort.contains(_userCountryShort) &&
-                _checkStates(value)) {
-              return texts.order_card_country_state_invalid;
+            if (value != null) {
+              if (value.isEmpty &&
+                  _specialCountriesShort.contains(_userCountryShort)) {
+                return texts.order_card_country_state_empty;
+              } else if (_specialCountriesShort.contains(_userCountryShort) &&
+                  _checkStates(value)) {
+                return texts.order_card_country_state_invalid;
+              }
             }
+
             return null;
           },
         ),
@@ -629,15 +634,18 @@ class OrderCardPageState extends State<OrderCardPage> {
         ),
         style: theme.FieldTextStyle.textStyle,
         textCapitalization: TextCapitalization.words,
-        onSaved: (String value) {
-          _data.country = value;
+        onSaved: (String? value) {
+          if (value != null) _data.country = value;
         },
         validator: (value) {
-          if (value.isEmpty) {
-            return texts.order_card_country_error_empty;
-          } else if (!_checkCountry(value)) {
-            return texts.order_card_country_error_invalid;
+          if (value != null) {
+            if (value.isEmpty) {
+              return texts.order_card_country_error_empty;
+            } else if (!_checkCountry(value)) {
+              return texts.order_card_country_error_invalid;
+            }
           }
+
           return null;
         },
       ),
@@ -659,11 +667,11 @@ class OrderCardPageState extends State<OrderCardPage> {
           ),
           style: theme.FieldTextStyle.textStyle,
           keyboardType: TextInputType.number,
-          onSaved: (String value) {
-            _data.zip = value;
+          onSaved: (String? value) {
+            if (value != null) _data.zip = value;
           },
           validator: (value) {
-            if (value.isNotEmpty && !_validateZip(value)) {
+            if (value != null && value.isNotEmpty && !_validateZip(value)) {
               return texts.order_card_zip_code_error;
             }
             return null;

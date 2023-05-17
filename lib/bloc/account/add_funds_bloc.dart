@@ -27,16 +27,16 @@ class AddFundsBloc extends Bloc {
 
   bool _isMoonpayAllowed = false;
 
-  final Stream<AccountModel> accountStream;
+  final Stream<AccountModel?> accountStream;
   final Stream<LSPStatus> lspStatusStream;
   final _addFundRequestController = StreamController<AddFundsInfo>.broadcast();
 
   Sink<AddFundsInfo> get addFundRequestSink => _addFundRequestController.sink;
 
   final _addFundResponseController =
-      StreamController<AddFundResponse>.broadcast();
+      StreamController<AddFundResponse?>.broadcast();
 
-  Stream<AddFundResponse> get addFundResponseStream =>
+  Stream<AddFundResponse?> get addFundResponseStream =>
       _addFundResponseController.stream;
 
   final _moonpayNextOrderController =
@@ -44,10 +44,10 @@ class AddFundsBloc extends Bloc {
   Stream<MoonpayOrder> get moonpayNextOrderStream =>
       _moonpayNextOrderController.stream;
 
-  final _completedMoonpayOrderController = BehaviorSubject<MoonpayOrder>();
-  Stream<MoonpayOrder> get completedMoonpayOrderStream =>
+  final _completedMoonpayOrderController = BehaviorSubject<MoonpayOrder?>();
+  Stream<MoonpayOrder?> get completedMoonpayOrderStream =>
       _completedMoonpayOrderController.stream;
-  Sink<MoonpayOrder> get completedMoonpayOrderSink =>
+  Sink<MoonpayOrder?> get completedMoonpayOrderSink =>
       _completedMoonpayOrderController.sink;
 
   final _availableVendorsController =
@@ -77,7 +77,7 @@ class AddFundsBloc extends Bloc {
           throw Exception(getSystemAppLocalizations().lsp_error_not_selected);
         }
         breezLib
-            .addFundsInit(user.userID ?? "", lspStatus.selectedLSP)
+            .addFundsInit(user.userID ?? "", lspStatus.selectedLSP!)
             .then((reply) {
           AddFundResponse response = AddFundResponse(reply);
           if (addFundsInfo.isMoonpay) {
@@ -126,13 +126,14 @@ class AddFundsBloc extends Bloc {
 
   Future _attachMoonpayUrl(
       AddFundResponse response, BreezServer breezServer) async {
-    if (response.errorMessage == null || response.errorMessage.isEmpty) {
+    if (response.errorMessage == null || response.errorMessage!.isEmpty) {
       Config config = await _readConfig();
-      String baseUrl = config.get("MoonPay Parameters", 'baseUrl');
-      String apiKey = config.get("MoonPay Parameters", 'apiKey');
-      String currencyCode = config.get("MoonPay Parameters", 'currencyCode');
-      String colorCode = config.get("MoonPay Parameters", 'colorCode');
-      String redirectURL = config.get("MoonPay Parameters", 'redirectURL');
+      String baseUrl = config.get("MoonPay Parameters",
+          'baseUrl')!; // TODO : Null Safety - Assume moonpay.conf is never null
+      String apiKey = config.get("MoonPay Parameters", 'apiKey')!;
+      String currencyCode = config.get("MoonPay Parameters", 'currencyCode')!;
+      String colorCode = config.get("MoonPay Parameters", 'colorCode')!;
+      String redirectURL = config.get("MoonPay Parameters", 'redirectURL')!;
       String walletAddress = response.address;
       String maxQuoteCurrencyAmount = Currency.BTC.format(
           response.maxAllowedDeposit,
@@ -148,8 +149,9 @@ class AddFundsBloc extends Bloc {
         "maxQuoteCurrencyAmount=$maxQuoteCurrencyAmount"
       ].join("&")}";
       String moonpayUrl = await breezServer.signUrl(baseUrl, queryString);
-      _moonpayNextOrderController
-          .add(MoonpayOrder(walletAddress, moonpayUrl, null));
+      _moonpayNextOrderController.add(
+        MoonpayOrder(walletAddress, moonpayUrl, null),
+      );
     }
   }
 
@@ -189,8 +191,8 @@ class AddFundsBloc extends Bloc {
       );
       var response = await http.get(uri);
       final body = response.body;
-      if (response.statusCode != 200 || body == null) {
-        String msg = (body?.length ?? 0) > 100 ? body.substring(0, 100) : body;
+      if (response.statusCode != 200 || body.isEmpty) {
+        String msg = body.length > 100 ? body.substring(0, 100) : body;
         log.severe('moonpay response error: $msg');
         throw getSystemAppLocalizations()
             .add_funds_moonpay_error_service_unavailable;
@@ -213,7 +215,7 @@ class AddFundsBloc extends Bloc {
       _completedMoonpayOrderController.add(MoonpayOrder.fromJson(settings));
     }
 
-    Timer checkOrderTimer;
+    Timer? checkOrderTimer;
     _completedMoonpayOrderController.stream.listen((order) async {
       _populateAvailableVendors();
 
@@ -227,16 +229,15 @@ class AddFundsBloc extends Bloc {
     });
 
     accountStream.where((acc) => acc != null).listen((acc) {
-      var fundsStatus = acc.swapFundsStatus;
-      if (fundsStatus != null) {
-        var allAddresses = fundsStatus.unConfirmedAddresses.toList()
-          ..addAll(fundsStatus.confirmedAddresses);
-        if (_completedMoonpayOrderController.hasValue &&
-            allAddresses
-                .contains(_completedMoonpayOrderController.value.address)) {
-          preferences.remove(PENDING_MOONPAY_ORDER_KEY);
-          _completedMoonpayOrderController.add(null);
-        }
+      var fundsStatus = acc!.swapFundsStatus;
+      // TODO : Null Safety - swapFundsStatus is never null
+      var allAddresses = fundsStatus.unConfirmedAddresses.toList()
+        ..addAll(fundsStatus.confirmedAddresses);
+      if (_completedMoonpayOrderController.hasValue &&
+          allAddresses
+              .contains(_completedMoonpayOrderController.value!.address)) {
+        preferences.remove(PENDING_MOONPAY_ORDER_KEY);
+        _completedMoonpayOrderController.add(null);
       }
     });
   }

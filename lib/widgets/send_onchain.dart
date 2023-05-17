@@ -17,8 +17,8 @@ class SendOnchain extends StatefulWidget {
   final Future<String> Function(String address, Int64 fee) _onBroadcast;
   final Int64 _amount;
   final String _title;
-  final String prefixMessage;
-  final String originalTransaction;
+  final String? prefixMessage;
+  final String? originalTransaction;
 
   const SendOnchain(
     this._account,
@@ -43,8 +43,8 @@ class SendOnchainState extends State<SendOnchain> {
   final _feeFocusNode = FocusNode();
 
   String _scannerErrorMessage = "";
-  String _addressValidated;
-  KeyboardDoneAction _doneAction;
+  late String _addressValidated;
+  late KeyboardDoneAction _doneAction;
   bool feeUpdated = false;
 
   @override
@@ -62,7 +62,7 @@ class SendOnchainState extends State<SendOnchain> {
   @override
   void didUpdateWidget(Widget oldWidget) {
     _updateFee();
-    super.didUpdateWidget(oldWidget);
+    super.didUpdateWidget(oldWidget as SendOnchain);
   }
 
   void _updateFee() {
@@ -297,10 +297,10 @@ class SendOnchainState extends State<SendOnchain> {
   Future<bool> _asyncValidate() {
     return _breezLib.validateAddress(_addressController.text).then((data) {
       _addressValidated = data;
-      return _formKey.currentState.validate();
+      return _formKey.currentState!.validate();
     }).catchError((err) {
       _addressValidated = null;
-      return _formKey.currentState.validate();
+      return _formKey.currentState!.validate();
     });
   }
 }

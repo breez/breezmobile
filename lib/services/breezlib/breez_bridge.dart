@@ -630,8 +630,8 @@ class BreezBridge {
   Future<CreateRatchetSessionReply> createRatchetSession(
     String sessionID,
     Int64 expiry, {
-    String secret,
-    String remotePubKey,
+    String? secret,
+    String? remotePubKey,
   }) {
     var request = CreateRatchetSessionRequest()
       ..sessionID = sessionID
@@ -764,11 +764,11 @@ class BreezBridge {
     return _invokeMethodImmediate("checkVersion");
   }
 
-  Future<String> validateAddress(String address) {
-    String addr = address;
+  Future<String> validateAddress(String? address) {
     if (address == null) {
       return Future.error("empty address");
     }
+    String addr = address;
     if (addr.toLowerCase().startsWith("bitcoin:")) {
       addr = addr.substring(8);
     }
@@ -795,14 +795,14 @@ class BreezBridge {
   }
 
   Future setBackupEncryptionKey(
-      List<int> encryptionKey, String encryptionType) {
+      List<int>? encryptionKey, String? encryptionType) {
     return _invokeMethodImmediate("setBackupEncryptionKey", {
       "encryptionKey": encryptionKey,
       "encryptionType": encryptionType ?? ""
     });
   }
 
-  Future setBackupProvider(String backupProvider, String backupAuthData) {
+  Future setBackupProvider(String? backupProvider, String? backupAuthData) {
     return _invokeMethodImmediate(
       "setBackupProvider",
       {"provider": backupProvider, "authData": backupAuthData},
@@ -830,7 +830,7 @@ class BreezBridge {
         {"nodeID": nodeId, "encryptionKey": encryptionKey},
       );
     } on PlatformException catch (e) {
-      throw e.message;
+      throw e.message != null ? e.message! : e.toString();
     }
   }
 
@@ -880,10 +880,10 @@ class BreezBridge {
     var config = Config.fromString(lines);
     String lndDir = (await getApplicationDocumentsDirectory()).path;
     List<String> result = [];
-    String network = config.get('Application Options', 'network');
+    String? network = config.get('Application Options', 'network');
     String reply = await backupFiles();
     List files = json.decode(reply);
-    if (files != null) {
+    if (files.isNotEmpty) {
       result.addAll(files.map((e) => e as String));
     }
     result.add('$lndDir/data/chain/bitcoin/$network/wallet.db');

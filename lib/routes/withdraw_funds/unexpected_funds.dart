@@ -52,7 +52,7 @@ class UnexpectedFundsState extends State<UnexpectedFunds> {
               ),
             );
           }
-          final balance = accSnapshot.data.walletBalance;
+          final balance = accSnapshot.data!.walletBalance;
           return PageView(
             controller: _pageController,
             physics: const NeverScrollableScrollPhysics(),
@@ -62,7 +62,7 @@ class UnexpectedFundsState extends State<UnexpectedFunds> {
                 optionalMessage: texts.unexpected_funds_message,
                 policy: WithdrawFundsPolicy(balance, balance, balance, balance),
                 initialAddress: _destAddress,
-                initialAmount: accSnapshot.data.currency.format(
+                initialAmount: accSnapshot.data!.currency.format(
                   balance,
                   userInput: true,
                   includeDisplayName: false,

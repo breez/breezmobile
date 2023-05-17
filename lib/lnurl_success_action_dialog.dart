@@ -1,4 +1,3 @@
-import 'package:auto_size_text/auto_size_text.dart';
 import 'package:breez/services/breezlib/data/rpc.pbgrpc.dart';
 import 'package:breez/services/injector.dart';
 import 'package:breez/utils/external_browser.dart';
@@ -10,7 +9,6 @@ import 'package:share_plus/share_plus.dart';
 
 void showLNURLSuccessAction(BuildContext context, SuccessAction sa) {
   final texts = context.texts();
-  final AutoSizeGroup labelGroup = AutoSizeGroup();
 
   promptMessage(
     context,
@@ -21,23 +19,22 @@ void showLNURLSuccessAction(BuildContext context, SuccessAction sa) {
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          sa.description?.isNotEmpty != true
+          sa.description.isNotEmpty !=
+                  true // TODO : Null Safety - SuccessAction fields may be null
               ? const SizedBox(
                   height: 0,
                 )
               : _TextMessage(
                   description: sa.description,
-                  group: labelGroup,
                 ),
-          sa.message?.isNotEmpty != true
+          sa.message.isNotEmpty != true
               ? const SizedBox(
                   height: 0,
                 )
               : _TextMessage(
                   description: sa.message,
-                  group: labelGroup,
                 ),
-          sa.url?.isNotEmpty != true
+          sa.url.isNotEmpty != true
               ? const SizedBox(
                   height: 0,
                 )
@@ -53,12 +50,10 @@ void showLNURLSuccessAction(BuildContext context, SuccessAction sa) {
 
 class _TextMessage extends StatelessWidget {
   final String description;
-  final AutoSizeGroup group;
 
   const _TextMessage({
-    Key key,
-    this.description,
-    this.group,
+    Key? key,
+    required this.description,
   }) : super(key: key);
 
   @override
@@ -79,8 +74,8 @@ class _URLRow extends StatelessWidget {
   final String sharedValue;
 
   const _URLRow({
-    Key key,
-    this.sharedValue,
+    Key? key,
+    required this.sharedValue,
   }) : super(key: key);
 
   @override
@@ -89,9 +84,9 @@ class _URLRow extends StatelessWidget {
     final themeData = Theme.of(context);
 
     final expansionTileTheme = themeData.copyWith(
-      unselectedWidgetColor: themeData.primaryTextTheme.labelLarge.color,
+      unselectedWidgetColor: themeData.primaryTextTheme.labelLarge!.color,
       colorScheme: ColorScheme.dark(
-        secondary: themeData.primaryTextTheme.labelLarge.color,
+        secondary: themeData.primaryTextTheme.labelLarge!.color!,
       ),
       dividerColor: themeData.colorScheme.background,
     );
@@ -131,7 +126,7 @@ class _URLRow extends StatelessWidget {
                     alignment: Alignment.centerRight,
                     padding: EdgeInsets.zero,
                     iconSize: 16.0,
-                    color: themeData.primaryTextTheme.labelLarge.color,
+                    color: themeData.primaryTextTheme.labelLarge!.color,
                     icon: const Icon(
                       IconData(0xe90b, fontFamily: 'icomoon'),
                     ),
@@ -147,7 +142,7 @@ class _URLRow extends StatelessWidget {
                   IconButton(
                     padding: EdgeInsets.zero,
                     iconSize: 16.0,
-                    color: themeData.primaryTextTheme.labelLarge.color,
+                    color: themeData.primaryTextTheme.labelLarge!.color,
                     icon: const Icon(Icons.share),
                     onPressed: () {
                       Share.share(sharedValue);

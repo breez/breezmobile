@@ -8,7 +8,7 @@ Map<String, CurrencyData> currencyDataFromJson(String str) =>
 
 Map<String, CurrencyDataOverride> currencyDataOverrideFromJson(
   CurrencyData base,
-  Map<String, dynamic> src,
+  Map<String, dynamic>? src,
 ) {
   if (src == null || src.isEmpty) return {};
   return src.map((locale, json) => MapEntry<String, CurrencyDataOverride>(
@@ -18,35 +18,35 @@ Map<String, CurrencyDataOverride> currencyDataOverrideFromJson(
 }
 
 class CurrencyData {
-  String name;
-  Map<String, String> localizedName;
+  String name; // TODO : Null Safety
+  Map<String, String>? localizedName; // TODO : Null Safety
   String shortName;
   int fractionSize;
   String symbol;
-  bool rtl;
-  int position;
+  bool? rtl;
+  int? position;
   int spacing;
   Map<String, CurrencyDataOverride> localeOverrides = {};
 
   CurrencyData({
-    this.name,
+    required this.name,
     this.localizedName,
-    this.shortName,
-    this.fractionSize,
-    this.symbol,
+    required this.shortName,
+    required this.fractionSize,
+    required this.symbol,
     this.rtl,
     this.position,
-    this.spacing,
+    required this.spacing,
   });
 
   CurrencyData localeAware() {
     if (localeOverrides.isEmpty) return this;
     final locale = getSystemLocale();
     if (localeOverrides.containsKey(locale.toLanguageTag())) {
-      return localeOverrides[locale.toLanguageTag()];
+      return localeOverrides[locale.toLanguageTag()]!;
     }
     if (localeOverrides.containsKey(locale.languageCode)) {
-      return localeOverrides[locale.languageCode];
+      return localeOverrides[locale.languageCode]!;
     }
     return this;
   }
@@ -78,9 +78,9 @@ class CurrencyData {
 
 class CurrencyDataOverride extends CurrencyData {
   CurrencyDataOverride({
-    CurrencyData base,
-    int position,
-    int spacing,
+    required CurrencyData base,
+    int? position,
+    int? spacing,
   }) : super(
           name: base.name,
           shortName: base.shortName,

@@ -105,16 +105,18 @@ class UserApp extends StatelessWidget {
                 const AnytimeFallbackLocalizationDelegate(),
               ]),
             supportedLocales: supportedLocales(),
-            builder: (BuildContext context, Widget child) {
-              final MediaQueryData data = MediaQuery.of(context);
-              return MediaQuery(
-                data: data.copyWith(
-                  textScaleFactor: (data.textScaleFactor >= 1.3)
-                      ? 1.3
-                      : data.textScaleFactor,
-                ),
-                child: _withTheme(user, child),
-              );
+            builder: (BuildContext context, Widget? child) {
+              if (child != null) {
+                final MediaQueryData data = MediaQuery.of(context);
+                return MediaQuery(
+                  data: data.copyWith(
+                    textScaleFactor: (data.textScaleFactor >= 1.3)
+                        ? 1.3
+                        : data.textScaleFactor,
+                  ),
+                  child: _withTheme(user, child),
+                );
+              }
             },
             initialRoute: user.registrationRequested
                 ? (user.locked ? '/lockscreen' : "/")
@@ -355,6 +357,7 @@ class UserApp extends StatelessWidget {
                               );
                           }
                           assert(false);
+                          return null;
                         },
                       ),
                     ),
@@ -362,6 +365,7 @@ class UserApp extends StatelessWidget {
                   );
               }
               assert(false);
+              return null;
             },
           ),
         );

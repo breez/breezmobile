@@ -1,11 +1,11 @@
 class SeenTutorials {
   final bool paymentStripTutorial;
 
-  SeenTutorials._({this.paymentStripTutorial});
+  SeenTutorials._({required this.paymentStripTutorial});
 
   SeenTutorials.initial() : this._(paymentStripTutorial: false);
 
-  SeenTutorials copyWith({bool paymentStripTutorial}) {
+  SeenTutorials copyWith({bool? paymentStripTutorial}) {
     return SeenTutorials._(
         paymentStripTutorial:
             paymentStripTutorial ?? this.paymentStripTutorial);

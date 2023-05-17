@@ -1,7 +1,7 @@
 class MoonpayOrder {
   final String address;
   final String url;
-  final int orderTimestamp;
+  final int? orderTimestamp;
 
   MoonpayOrder(this.address, this.url, this.orderTimestamp);
 
@@ -16,7 +16,7 @@ class MoonpayOrder {
     };
   }
 
-  MoonpayOrder copyWith({int orderTimestamp}) {
+  MoonpayOrder copyWith({int? orderTimestamp}) {
     return MoonpayOrder(address, url, orderTimestamp);
   }
 }

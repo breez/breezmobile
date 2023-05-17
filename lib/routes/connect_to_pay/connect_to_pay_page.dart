@@ -1,9 +1,11 @@
 import 'dart:async';
 
 import 'package:breez/bloc/account/account_bloc.dart';
+import 'package:breez/bloc/account/account_model.dart';
 import 'package:breez/bloc/blocs_provider.dart';
 import 'package:breez/bloc/connect_pay/connect_pay_bloc.dart';
 import 'package:breez/bloc/connect_pay/connect_pay_model.dart';
+import 'package:breez/bloc/connect_pay/payee_session.dart';
 import 'package:breez/bloc/connect_pay/payer_session.dart';
 import 'package:breez/bloc/lsp/lsp_bloc.dart';
 import 'package:breez/bloc/lsp/lsp_model.dart';
@@ -33,14 +35,14 @@ class ConnectToPayPage extends StatefulWidget {
 
 class ConnectToPayPageState extends State<ConnectToPayPage> {
   final _key = GlobalKey<ScaffoldState>();
-  bool _payer;
-  String _remoteUserName;
+  late bool _payer;
+  late String? _remoteUserName;
   String _title = "";
-  StreamSubscription _errorsSubscription;
-  StreamSubscription _remotePartyErrorSubscription;
-  StreamSubscription _endOfSessionSubscription;
-  RemoteSession _currentSession;
-  Object _error;
+  late StreamSubscription _errorsSubscription;
+  late StreamSubscription _remotePartyErrorSubscription;
+  late StreamSubscription _endOfSessionSubscription;
+  late RemoteSession? _currentSession;
+  late Object? _error;
   bool _destroySessionOnTerminate = true;
   bool _isInit = false;
 
@@ -57,7 +59,7 @@ class ConnectToPayPageState extends State<ConnectToPayPage> {
       try {
         if (_currentSession == null) {
           _currentSession = ctpBloc.createPayerRemoteSession();
-          ctpBloc.startSession(_currentSession);
+          ctpBloc.startSession(_currentSession! as PayerRemoteSession);
         }
         _payer = _currentSession.runtimeType == PayerRemoteSession;
         _title = _payer
@@ -74,13 +76,15 @@ class ConnectToPayPageState extends State<ConnectToPayPage> {
   }
 
   void registerErrorsListener() async {
-    _errorsSubscription = _currentSession.sessionErrors.listen((error) {
+    _errorsSubscription = _currentSession!.sessionErrors.listen((error) {
       _popWithMessage(error.description);
     });
 
     _remotePartyErrorSubscription =
-        _currentSession.paymentSessionStateStream.listen((s) {
-      final error = !_payer ? s.payerData?.error : s.payeeData?.error;
+        _currentSession!.paymentSessionStateStream.listen((s) {
+      final error = !_payer
+          ? s.payerData.error
+          : s.payeeData.error; // TODO : Null Safety - payerData may be null
       if (error != null) {
         _popWithMessage(error);
       }
@@ -90,15 +94,15 @@ class ConnectToPayPageState extends State<ConnectToPayPage> {
   void registerEndOfSessionListener(BuildContext context) async {
     final texts = context.texts();
     _endOfSessionSubscription =
-        _currentSession.paymentSessionStateStream.listen(
+        _currentSession!.paymentSessionStateStream.listen(
       (session) {
         _remoteUserName ??=
-            _payer ? session.payeeData?.userName : session.payerData?.userName;
+            _payer ? session.payeeData.userName : session.payerData.userName;
 
         if (session.remotePartyCancelled) {
           _popWithMessage(
             _remoteUserName != null
-                ? texts.connect_to_pay_canceled_remote_user(_remoteUserName)
+                ? texts.connect_to_pay_canceled_remote_user(_remoteUserName!)
                 : _payer
                     ? texts.connect_to_pay_canceled_payee
                     : texts.connect_to_pay_canceled_payer,
@@ -107,16 +111,16 @@ class ConnectToPayPageState extends State<ConnectToPayPage> {
         }
 
         if (session.paymentFulfilled) {
-          final formattedAmount = _currentSession.currentUser.currency
+          final formattedAmount = _currentSession!.currentUser.currency
               .format(Int64(session.settledAmount));
           _popWithMessage(
             _payer
                 ? texts.connect_to_pay_success_payer(
-                    _remoteUserName,
+                    _remoteUserName!,
                     formattedAmount,
                   )
                 : texts.connect_to_pay_success_payee(
-                    _remoteUserName,
+                    _remoteUserName!,
                     formattedAmount,
                   ),
             destroySession: _payer,
@@ -132,10 +136,11 @@ class ConnectToPayPageState extends State<ConnectToPayPage> {
 
   void _popWithMessage(message, {destroySession = true}) {
     _destroySessionOnTerminate = destroySession;
-    Navigator.pop(_key.currentContext);
+    Navigator.pop(_key
+        .currentContext!); // TODO : Null Safety - _key.currentContext may be null
     if (message != null) {
       showFlushbar(
-        _key.currentContext,
+        _key.currentContext!,
         message: message,
       );
     }
@@ -151,7 +156,7 @@ class ConnectToPayPageState extends State<ConnectToPayPage> {
   @override
   void dispose() {
     if (_currentSession != null) {
-      _currentSession.terminate(
+      _currentSession?.terminate(
         permanent: _destroySessionOnTerminate,
       );
       _clearSession();
@@ -163,15 +168,15 @@ class ConnectToPayPageState extends State<ConnectToPayPage> {
     final texts = context.texts();
     final themeData = Theme.of(context);
 
-    bool cancel = await promptAreYouSure(
-      _key.currentContext,
+    bool cancel = (await promptAreYouSure(
+      _key.currentContext!,
       null,
       Text(
         texts.connect_to_pay_exit_warning,
         style: themeData.dialogTheme.contentTextStyle,
       ),
-      textStyle: themeData.dialogTheme.contentTextStyle,
-    );
+      textStyle: themeData.dialogTheme.contentTextStyle!,
+    ))!;
     if (cancel) {
       _popWithMessage(null);
     }
@@ -211,7 +216,7 @@ class ConnectToPayPageState extends State<ConnectToPayPage> {
 
   Widget buildBody() {
     if (_error != null) {
-      return SessionErrorWidget(_error);
+      return SessionErrorWidget(_error!);
     }
 
     if (_currentSession == null) {
@@ -226,7 +231,7 @@ class ConnectToPayPageState extends State<ConnectToPayPage> {
     var lspBloc = AppBlocsProvider.of<LSPBloc>(context);
 
     return StreamBuilder<PaymentSessionState>(
-      stream: _currentSession.paymentSessionStateStream,
+      stream: _currentSession?.paymentSessionStateStream,
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.done) {
           return const Center(child: Loader());
@@ -235,22 +240,23 @@ class ConnectToPayPageState extends State<ConnectToPayPage> {
         return StreamBuilder<LSPStatus>(
           stream: lspBloc.lspStatusStream,
           builder: (context, lspSnapshot) {
-            return StreamBuilder(
+            return StreamBuilder<AccountModel>(
               stream: accountBloc.accountStream,
               builder: (context, snapshot) {
                 if (!snapshot.hasData) {
                   return const Center(child: Loader());
                 }
+                AccountModel accountModel = snapshot.data!;
                 if (_currentSession.runtimeType == PayerRemoteSession) {
                   return PayerSessionWidget(
-                    _currentSession,
-                    snapshot.data,
+                    _currentSession! as PayerRemoteSession,
+                    accountModel,
                   );
                 } else {
                   return PayeeSessionWidget(
-                    _currentSession,
-                    snapshot.data,
-                    lspSnapshot.data,
+                    _currentSession! as PayeeRemoteSession,
+                    accountModel,
+                    lspSnapshot.data!,
                   );
                 }
               },

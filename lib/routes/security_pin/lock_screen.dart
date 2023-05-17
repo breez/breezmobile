@@ -10,17 +10,15 @@ const PIN_CODE_LENGTH = 6;
 class AppLockScreen extends StatelessWidget {
   final bool canCancel;
   final Future Function(String pinCode) onPinEntered;
-  final Function(bool isValid) onFingerprintEntered;
-  final UserProfileBloc userProfileBloc;
-  final String localizedReason;
+  final Function(bool isValid)? onFingerprintEntered;
+  final UserProfileBloc? userProfileBloc;
 
   const AppLockScreen(
     this.onPinEntered, {
-    Key key,
+    Key? key,
     this.canCancel = false,
     this.onFingerprintEntered,
     this.userProfileBloc,
-    this.localizedReason,
   }) : super(key: key);
 
   @override
@@ -46,7 +44,6 @@ class AppLockScreen extends StatelessWidget {
           onPinEntered,
           onFingerprintEntered: onFingerprintEntered,
           userProfileBloc: userProfileBloc,
-          localizedReason: localizedReason,
         ),
       ),
     );

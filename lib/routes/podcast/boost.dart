@@ -23,10 +23,10 @@ class BoostWidget extends StatelessWidget {
   final ValueChanged<int> onChanged;
 
   const BoostWidget({
-    Key key,
-    this.userModel,
-    this.onBoost,
-    this.onChanged,
+    Key? key,
+    required this.userModel,
+    required this.onBoost,
+    required this.onChanged,
   }) : super(key: key);
 
   @override

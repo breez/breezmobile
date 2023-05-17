@@ -73,17 +73,17 @@ class AccountPageState extends State<AccountPage>
         return StreamBuilder<AccountModel>(
           stream: _accountBloc.accountStream,
           builder: (context, snapshot) {
-            AccountModel account = snapshot.data;
+            AccountModel? account = snapshot.data;
             return StreamBuilder<PaymentsModel>(
               stream: _accountBloc.paymentsStream,
               builder: (context, snapshot) {
                 final paymentsModel = snapshot.data ?? PaymentsModel.initial();
-                return StreamBuilder<BreezUserModel>(
+                return StreamBuilder<BreezUserModel?>(
                   stream: _userProfileBloc.userStream,
                   builder: (context, snapshot) {
                     final userModel = snapshot.data;
                     return Container(
-                      color: theme.customData[theme.themeId].dashboardBgColor,
+                      color: theme.customData[theme.themeId]!.dashboardBgColor,
                       child: _buildBalanceAndPayments(
                         context,
                         paymentsModel,
@@ -104,7 +104,7 @@ class AccountPageState extends State<AccountPage>
   Widget _buildBalanceAndPayments(
     BuildContext context,
     PaymentsModel paymentsModel,
-    AccountModel account,
+    AccountModel? account,
     BreezUserModel userModel,
   ) {
     final lspBloc = AppBlocsProvider.of<LSPBloc>(context);
@@ -115,18 +115,18 @@ class AccountPageState extends State<AccountPage>
         kToolbarHeight -
         FILTER_MAX_SIZE -
         25.0;
-    final startDate = paymentsModel?.filter?.startDate;
-    final endDate = paymentsModel?.filter?.endDate;
+    final startDate = paymentsModel.filter.startDate;
+    final endDate = paymentsModel.filter.endDate;
     final dateFilterSpace = startDate != null && endDate != null ? 0.65 : 0.0;
     final payments = paymentsModel.paymentsList;
-    final bottomPlaceholderSpace = payments == null || payments.isEmpty
+    final bottomPlaceholderSpace = payments.isEmpty
         ? 0.0
         : (listHeightSpace -
                 (PAYMENT_LIST_ITEM_HEIGHT + 8) *
                     (payments.length + 1 + dateFilterSpace))
             .clamp(0.0, listHeightSpace);
 
-    String message;
+    String? message; // TODO : Null Safety - Uninitialized Variable
     bool showMessage = account?.syncUIState != SyncUIState.BLOCKING &&
         (account != null && !account.initial);
 
@@ -156,7 +156,7 @@ class AccountPageState extends State<AccountPage>
               return Container(
                 padding: const EdgeInsets.only(bottom: 8),
                 height: FILTER_MAX_SIZE / 1.2,
-                color: theme.customData[theme.themeId].dashboardBgColor,
+                color: theme.customData[theme.themeId]!.dashboardBgColor,
                 child: _buildDateFilterChip(context, paymentsModel.filter),
               );
             },
@@ -187,11 +187,11 @@ class AccountPageState extends State<AccountPage>
             return StreamBuilder<LSPStatus>(
               stream: lspBloc.lspStatusStream,
               builder: (context, snapshot) {
-                if (snapshot.hasData && snapshot.data.selectionRequired) {
+                if (snapshot.hasData && snapshot.data!.selectionRequired) {
                   return Padding(
                     padding: const EdgeInsets.only(top: 120.0),
                     child: NoLSPWidget(
-                      error: snapshot.data.lastConnectionError,
+                      error: snapshot.data!.lastConnectionError,
                     ),
                   );
                 }
@@ -237,7 +237,7 @@ class AccountPageState extends State<AccountPage>
     return ClipRRect(
       borderRadius: BorderRadius.circular(5),
       child: Container(
-        color: theme.customData[theme.themeId].paymentListBgColor,
+        color: theme.customData[theme.themeId]!.paymentListBgColor,
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.center,
           mainAxisAlignment: MainAxisAlignment.start,
@@ -247,8 +247,8 @@ class AccountPageState extends State<AccountPage>
               child: Chip(
                 backgroundColor: Theme.of(context).bottomAppBarTheme.color,
                 label: Text(BreezDateUtils.formatFilterDateRange(
-                  filter.startDate,
-                  filter.endDate,
+                  filter.startDate!,
+                  filter.endDate!,
                 )),
                 onDeleted: () => _accountBloc.paymentFilterSink
                     .add(PaymentFilterModel(filter.paymentType, null, null)),
@@ -319,7 +319,7 @@ class WalletDashboardHeaderDelegate extends SliverPersistentHeaderDelegate {
     double shrinkOffset,
     bool overlapsContent,
   ) {
-    return StreamBuilder<BreezUserModel>(
+    return StreamBuilder<BreezUserModel?>(
       stream: _userProfileBloc.userStream,
       builder: (settingCtx, userSnapshot) {
         return StreamBuilder<AccountModel>(
@@ -328,17 +328,19 @@ class WalletDashboardHeaderDelegate extends SliverPersistentHeaderDelegate {
             return Stack(
               clipBehavior: Clip.none,
               children: [
-                WalletDashboard(
-                  userSnapshot.data,
-                  snapshot.data,
-                  (maxExtent - shrinkOffset).clamp(minExtent, maxExtent),
-                  (shrinkOffset / (maxExtent - minExtent)).clamp(0.0, 1.0),
-                  _userProfileBloc.currencySink.add,
-                  _userProfileBloc.fiatConversionSink.add,
-                  (hideBalance) => _userProfileBloc.userSink.add(
-                    userSnapshot.data.copyWith(hideBalance: hideBalance),
+                if (userSnapshot.hasData) ...[
+                  WalletDashboard(
+                    userSnapshot.data!,
+                    snapshot.data,
+                    (maxExtent - shrinkOffset).clamp(minExtent, maxExtent),
+                    (shrinkOffset / (maxExtent - minExtent)).clamp(0.0, 1.0),
+                    _userProfileBloc.currencySink.add,
+                    _userProfileBloc.fiatConversionSink.add,
+                    (hideBalance) => _userProfileBloc.userSink.add(
+                      userSnapshot.data!.copyWith(hideBalance: hideBalance),
+                    ),
                   ),
-                ),
+                ]
               ],
             );
           },
@@ -358,11 +360,11 @@ class WalletDashboardHeaderDelegate extends SliverPersistentHeaderDelegate {
 }
 
 class NoLSPWidget extends StatelessWidget {
-  final String error;
+  final String error; // TODO : Null Safety - Unused variable
 
   const NoLSPWidget({
-    Key key,
-    this.error,
+    Key? key,
+    required this.error,
   }) : super(key: key);
 
   @override
@@ -396,7 +398,7 @@ class NoLSPWidget extends StatelessWidget {
                     borderRadius: BorderRadius.circular(6.0),
                   ),
                   side: BorderSide(
-                    color: themeData.textTheme.labelLarge.color,
+                    color: themeData.textTheme.labelLarge!.color!,
                     style: BorderStyle.solid,
                   ),
                 ),
@@ -404,7 +406,7 @@ class NoLSPWidget extends StatelessWidget {
                   texts.account_page_activation_provider_action_select,
                   style: TextStyle(
                     fontSize: 12.3,
-                    color: themeData.textTheme.labelLarge.color,
+                    color: themeData.textTheme.labelLarge!.color,
                   ),
                 ),
                 onPressed: () => Navigator.of(context).pushNamed("/select_lsp"),

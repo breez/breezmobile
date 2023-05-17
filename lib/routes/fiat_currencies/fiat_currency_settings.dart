@@ -52,7 +52,7 @@ class FiatCurrencySettingsState extends State<FiatCurrencySettings> {
           if (!snapshot.hasData) return Container();
           final account = snapshot.data;
 
-          if (account.fiatConversionList.isEmpty ||
+          if (account!.fiatConversionList.isEmpty ||
               account.fiatCurrency == null) {
             return const Center(
               child: Loader(
@@ -168,9 +168,9 @@ class FiatCurrencySettingsState extends State<FiatCurrencySettings> {
       activeColor: Colors.white,
       checkColor: themeData.canvasColor,
       value: prefCurrencies.contains(currencyData.shortName),
-      onChanged: (bool checked) {
+      onChanged: (bool? checked) {
         setState(() {
-          if (checked) {
+          if (checked != null && checked) {
             prefCurrencies.add(currencyData.shortName);
             // center item in viewport
             if (_scrollController.offset >=
@@ -211,7 +211,7 @@ class FiatCurrencySettingsState extends State<FiatCurrencySettings> {
   }
 
   String _subtitle(BreezTranslations texts, CurrencyData currencyData) {
-    final localizedName = currencyData.localizedName[texts.locale];
+    final localizedName = currencyData.localizedName![texts.locale];
     return localizedName ?? currencyData.name;
   }
 

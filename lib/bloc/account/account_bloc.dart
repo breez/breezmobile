@@ -38,11 +38,11 @@ class AccountBloc {
 
   final Repository _posRepository;
 
-  Timer _exchangeRateTimer;
-  Map<String, CurrencyData> _currencyData;
+  late Timer _exchangeRateTimer;
+  late Map<String, CurrencyData> _currencyData;
 
   final _userActionsController = StreamController<AsyncAction>.broadcast();
-  AccountSynchronizer _accountSynchronizer;
+  late AccountSynchronizer _accountSynchronizer;
   Sink<AsyncAction> get userActionsSink => _userActionsController.sink;
   Map<Type, Function> _actionHandlers = {};
 
@@ -107,7 +107,8 @@ class AccountBloc {
             p.pending &&
             p.type == PaymentType.SENT))
         .expand((ps) => ps)
-        .distinct((p1, p2) => p1?.paymentHash == p2?.paymentHash);
+        .distinct(
+            (p1, p2) => p1.paymentHash == p2.paymentHash); // TODO : Null Safety
   }
 
   final _lightningDownController = StreamController<bool>.broadcast();
@@ -123,17 +124,17 @@ class AccountBloc {
   Sink get optimizationWhitelistRequestSink =>
       _permissionsHandler.optimizationWhitelistRequestSink;
 
-  BreezUserModel _currentUser;
+  late BreezUserModel _currentUser;
   bool _startedLightning = false;
   bool _retryingLightningService = false;
-  BreezServer _breezServer;
-  BreezBridge _breezLib;
-  Notifications _notificationsService;
-  Device _device;
-  BackgroundTaskService _backgroundService;
-  CurrencyService _currencyService;
+  late BreezServer _breezServer;
+  late BreezBridge _breezLib;
+  late Notifications _notificationsService;
+  late Device _device;
+  late BackgroundTaskService _backgroundService;
+  late CurrencyService _currencyService;
   final Completer _onBoardingCompleter = Completer();
-  Stream<BreezUserModel> userProfileStream;
+  late Stream<BreezUserModel> userProfileStream;
   TorBloc torBloc = ServiceInjector().torBloc;
   Completer<bool> startDaemonCompleter = Completer<bool>();
   final PaymentOptionsBloc _paymentOptionsBloc;
@@ -231,10 +232,10 @@ class AccountBloc {
   Future _handleRegisterDeviceNode() async {
     userProfileStream.listen((user) async {
       if (user.token != null) {
-        var acc =
-            await _accountController.firstWhere((acc) => acc.id?.isNotEmpty);
+        var acc = await _accountController
+            .firstWhere((acc) => acc.id.isNotEmpty); // TODO : Null Safety
         try {
-          await _breezServer.registerDevice(user.token, acc.id);
+          await _breezServer.registerDevice(user.token!, acc.id);
         } catch (e) {
           log.severe("failed to register device ", e);
         }
@@ -284,7 +285,7 @@ class AccountBloc {
   }
 
   List<FiatConversion> _sortFiatConversionList({
-    List<FiatConversion> fiatConversionList,
+    List<FiatConversion>? fiatConversionList,
   }) {
     var toSort = List<FiatConversion>.from(
         (fiatConversionList ?? _accountController.value.fiatConversionList));
@@ -295,8 +296,8 @@ class AccountBloc {
 
     // Then give precedence to the preferred items.
     for (var p in _currentUser.preferredCurrencies.reversed) {
-      var preferred = toSort.firstWhere((e) => e.currencyData.shortName == p,
-          orElse: () => null);
+      var preferred =
+          toSort.firstWhereOrNull((e) => e.currencyData.shortName == p);
       if (preferred != null) {
         toSort.remove(preferred);
         toSort.insert(0, preferred);
@@ -546,7 +547,7 @@ class AccountBloc {
     });
   }
 
-  Future<TorConfig> _startTorIfNeeded() async {
+  Future<TorConfig?> _startTorIfNeeded() async {
     if (Platform.isAndroid) {
       // Start tor
       final useTor = await _breezLib.getTorActive();
@@ -560,7 +561,7 @@ class AccountBloc {
         }
         // throw error
         if (torBloc.torConfig != null) {
-          _breezLib.setBackupTorConfig(torBloc.torConfig);
+          _breezLib.setBackupTorConfig(torBloc.torConfig!);
         }
       }
     }
@@ -569,10 +570,10 @@ class AccountBloc {
 
   _listenUserChanges(Stream<BreezUserModel> userProfileStream) {
     userProfileStream.listen((user) async {
-      if (user.token != null && user.token != _currentUser?.token) {
+      if (user.token != null && user.token != _currentUser.token) {
         log.info(
             "user profile bloc registering for channel open notifications");
-        _breezLib.registerChannelOpenedNotification(user.token);
+        _breezLib.registerChannelOpenedNotification(user.token!);
       }
       _currentUser = user;
       log.info("account: got new user $user");

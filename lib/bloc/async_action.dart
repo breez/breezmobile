@@ -5,7 +5,7 @@ class AsyncAction {
 
   Future get future => _completer.future;
 
-  void resolve(Object value) {
+  void resolve(Object? value) {
     _completer.complete(value);
   }
 

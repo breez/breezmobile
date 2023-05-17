@@ -24,21 +24,21 @@ import 'package:fixnum/fixnum.dart';
 import 'package:flutter/material.dart';
 
 class WithdrawFundsPage extends StatefulWidget {
-  final Future Function(Int64 amount, String destAddress, bool isMax) onNext;
-  final String initialAddress;
-  final String initialAmount;
-  final bool initialIsMax;
+  final Future Function(Int64 amount, String? destAddress, bool isMax) onNext;
+  final String? initialAddress;
+  final String? initialAmount;
+  final bool? initialIsMax;
   final WithdrawFundsPolicy policy;
   final String title;
-  final String optionalMessage;
+  final String? optionalMessage;
 
   const WithdrawFundsPage({
-    this.onNext,
+    required this.onNext,
     this.initialAddress,
     this.initialAmount,
     this.initialIsMax,
-    this.policy,
-    this.title,
+    required this.policy,
+    required this.title,
     this.optionalMessage,
   });
 
@@ -56,8 +56,8 @@ class WithdrawFundsPageState extends State<WithdrawFundsPage> {
 
   String _scannerErrorMessage = "";
   bool _isMax = false;
-  BreezBridge _breezLib;
-  String _addressValidated;
+  late BreezBridge _breezLib;
+  late String? _addressValidated;
   int selectedFeeIndex = 1;
   bool fetching = false;
 
@@ -66,13 +66,13 @@ class WithdrawFundsPageState extends State<WithdrawFundsPage> {
     super.initState();
     _breezLib = ServiceInjector().breezBridge;
     if (widget.initialAddress != null) {
-      _addressController.text = widget.initialAddress;
+      _addressController.text = widget.initialAddress!;
     }
     if (widget.initialAmount != null) {
-      _amountController.text = widget.initialAmount;
+      _amountController.text = widget.initialAmount!;
     }
     if (widget.initialIsMax != null) {
-      _isMax = widget.initialIsMax;
+      _isMax = widget.initialIsMax!;
     }
   }
 
@@ -94,7 +94,7 @@ class WithdrawFundsPageState extends State<WithdrawFundsPage> {
         builder: (context, snapshot) {
           if (!snapshot.hasData) return StaticLoader();
 
-          final acc = snapshot.data;
+          final acc = snapshot.data!;
           Widget optionalMessage = widget.optionalMessage == null
               ? const SizedBox()
               : WarningBox(
@@ -104,7 +104,7 @@ class WithdrawFundsPageState extends State<WithdrawFundsPage> {
                     horizontal: 8,
                   ),
                   child: Text(
-                    widget.optionalMessage,
+                    widget.optionalMessage!,
                     style: themeData.textTheme.titleLarge,
                   ),
                 );
@@ -118,7 +118,8 @@ class WithdrawFundsPageState extends State<WithdrawFundsPage> {
               focusNode: _amountFocusNode,
               controller: _amountController,
               validatorFn: (amount) {
-                String err = acc.validateOutgoingPayment(amount, autoFilled: _isMax);
+                String? err =
+                    acc.validateOutgoingPayment(amount, autoFilled: _isMax);
                 if (err == null) {
                   if (amount < widget.policy.minValue) {
                     err = texts.withdraw_funds_error_min_value(
@@ -269,7 +270,7 @@ class WithdrawFundsPageState extends State<WithdrawFundsPage> {
     }
     _asyncValidate().then((validated) {
       if (validated) {
-        _formKey.currentState.save();
+        _formKey.currentState!.save();
         setState(() {
           fetching = true;
         });
@@ -289,6 +290,7 @@ class WithdrawFundsPageState extends State<WithdrawFundsPage> {
           style: Theme.of(context).dialogTheme.contentTextStyle,
         ),
       );
+      return null; // TODO : Null Safety
     }).whenComplete(() {
       setState(() {
         fetching = false;
@@ -299,26 +301,27 @@ class WithdrawFundsPageState extends State<WithdrawFundsPage> {
   Future _scanBarcode(BuildContext context, AccountModel account) async {
     final texts = context.texts();
     FocusScope.of(context).requestFocus(FocusNode());
-    await Navigator.pushNamed<String>(context, "/qr_scan").then((barcode) {
-      if (barcode.isEmpty) {
+    await Navigator.pushNamed<String>(context, "/qr_scan")
+        .then((String? barcode) {
+      if (barcode == null && barcode != null && barcode.isEmpty) {
         showFlushbar(
           context,
           message: texts.withdraw_funds_error_qr_code_not_detected,
         );
         return;
       }
-      BTCAddressInfo btcInvoice = parseBTCAddress(barcode);
-      String amount;
+      BTCAddressInfo btcInvoice = parseBTCAddress(barcode!);
+      String? amount;
       if (btcInvoice.satAmount != null) {
         amount = account.currency.format(
-          btcInvoice.satAmount,
+          btcInvoice.satAmount!,
           userInput: true,
           includeDisplayName: false,
           removeTrailingZeros: true,
         );
       }
       setState(() {
-        _addressController.text = btcInvoice.address;
+        _addressController.text = btcInvoice.address!;
         _amountController.text = amount ?? _amountController.text;
         _scannerErrorMessage = "";
       });
@@ -328,11 +331,11 @@ class WithdrawFundsPageState extends State<WithdrawFundsPage> {
   Future<bool> _asyncValidate() {
     return _breezLib.validateAddress(_addressController.text).then((data) {
       _addressValidated = data;
-      var v = _formKey.currentState.validate();
+      var v = _formKey.currentState!.validate();
       return v;
     }).catchError((err) {
       _addressValidated = null;
-      return _formKey.currentState.validate();
+      return _formKey.currentState!.validate();
     });
   }
 }
@@ -357,7 +360,7 @@ class _NextButton extends StatelessWidget {
   final Function(AccountModel acc) onPressed;
 
   const _NextButton({
-    Key key,
+    Key? key,
     this.accountBloc,
     this.fetching,
     this.onPressed,

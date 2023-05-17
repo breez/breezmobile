@@ -25,8 +25,8 @@ class InvoiceBloc with AsyncActionsHandler {
   final _newLightningLinkController = StreamController<String>();
   Sink<String> get newLightningLinkSink => _newLightningLinkController.sink;
 
-  final _readyInvoicesController = BehaviorSubject<PaymentRequestModel>();
-  Stream<PaymentRequestModel> get readyInvoicesStream =>
+  final _readyInvoicesController = BehaviorSubject<PaymentRequestModel?>();
+  Stream<PaymentRequestModel?> get readyInvoicesStream =>
       _readyInvoicesController.stream;
 
   final _sentInvoicesController = StreamController<String>.broadcast();
@@ -35,18 +35,18 @@ class InvoiceBloc with AsyncActionsHandler {
   final _decodeInvoiceController = StreamController<String>();
   Sink<String> get decodeInvoiceSink => _decodeInvoiceController.sink;
 
-  final _receivedInvoicesController = BehaviorSubject<PaymentRequestModel>();
-  Stream<PaymentRequestModel> get receivedInvoicesStream =>
+  final _receivedInvoicesController = BehaviorSubject<PaymentRequestModel?>();
+  Stream<PaymentRequestModel?> get receivedInvoicesStream =>
       _receivedInvoicesController.stream;
 
   final _paidInvoicesController =
       StreamController<PaymentRequestModel>.broadcast();
-  Stream<PaymentRequestModel> get paidInvoicesStream =>
+  Stream<PaymentRequestModel?> get paidInvoicesStream =>
       _paidInvoicesController.stream;
 
   Int64 payBlankAmount = Int64(-1);
-  BreezBridge _breezLib;
-  Device device;
+  late BreezBridge _breezLib;
+  late Device device;
 
   InvoiceBloc() {
     ServiceInjector injector = ServiceInjector();
@@ -66,18 +66,16 @@ class InvoiceBloc with AsyncActionsHandler {
     listenActions();
   }
 
-  Stream<Future<DecodedClipboardData>> get decodedClipboardStream =>
+  Stream<Future<DecodedClipboardData?>> get decodedClipboardStream =>
       device.clipboardStream
           .distinct()
           .skip(1) // Skip previous session clipboard
           .map((clipboardData) async {
-        if (clipboardData != null && parseNodeId(clipboardData) != null) {
-          return DecodedClipboardData(parseNodeId(clipboardData), "nodeID");
+        if (clipboardData.isNotEmpty && parseNodeId(clipboardData) != null) {
+          // TODO : Null Safety - clipboardData may be null
+          return DecodedClipboardData(parseNodeId(clipboardData)!, "nodeID");
         }
-        String normalized = clipboardData?.toLowerCase();
-        if (normalized == null) {
-          return null;
-        }
+        String normalized = clipboardData.toLowerCase(); // TODO : Null Safety - clipboardData may be null
         if (normalized.startsWith("lightning:")) {
           normalized = normalized.substring(10);
         }
@@ -169,7 +167,7 @@ class InvoiceBloc with AsyncActionsHandler {
           }
 
           // check bip21 with bolt11
-          String bolt11 = extractBolt11FromBip21(lower);
+          String? bolt11 = extractBolt11FromBip21(lower);
           if (bolt11 != null) {
             return bolt11;
           }

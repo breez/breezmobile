@@ -9,28 +9,28 @@ import 'seen_tutorials.dart';
 enum AppMode { balance, podcasts, pos, apps }
 
 class BreezUserModel {
-  final String userID;
+  final String? userID;
   final Currency currency;
   final String fiatCurrency;
-  final String token;
-  final String name;
+  final String? token;
+  final String? name;
   final String color;
   final String animal;
-  final String image;
-  final SecurityModel securityModel;
+  final String? image;
+  final SecurityModel? securityModel;
   final String themeId;
-  final bool locked;
+  final bool? locked;
   final bool registrationRequested;
   final bool hideBalance;
   final double cancellationTimeoutValue;
   final bool hasAdminPassword;
-  final BusinessAddress businessAddress;
+  final BusinessAddress? businessAddress;
   final String defaultPosNote;
   final String posCurrencyShortName;
-  final List<String> preferredCurrencies;
+  final List<String>? preferredCurrencies;
   final AppMode appMode;
-  final PaymentOptions paymentOptions;
-  final SeenTutorials seenTutorials;
+  final PaymentOptions? paymentOptions;
+  final SeenTutorials? seenTutorials;
 
   BreezUserModel._(
     this.userID,
@@ -58,28 +58,28 @@ class BreezUserModel {
   });
 
   BreezUserModel copyWith({
-    String name,
-    String color,
-    String animal,
-    Currency currency,
-    String fiatCurrency,
-    String image,
-    SecurityModel securityModel,
-    bool locked,
-    String token,
-    String userID,
-    String themeId,
-    bool registrationRequested,
-    bool hideBalance,
-    double cancellationTimeoutValue,
-    bool hasAdminPassword,
-    BusinessAddress businessAddress,
-    String defaultPosNote,
-    String posCurrencyShortName,
-    List<String> preferredCurrencies,
-    AppMode appMode,
-    PaymentOptions paymentOptions,
-    SeenTutorials seenTutorials,
+    String? name,
+    String? color,
+    String? animal,
+    Currency? currency,
+    String? fiatCurrency,
+    String? image,
+    SecurityModel? securityModel,
+    bool? locked,
+    String? token,
+    String? userID,
+    String? themeId,
+    bool? registrationRequested,
+    bool? hideBalance,
+    double? cancellationTimeoutValue,
+    bool? hasAdminPassword,
+    BusinessAddress? businessAddress,
+    String? defaultPosNote,
+    String? posCurrencyShortName,
+    List<String>? preferredCurrencies,
+    AppMode? appMode,
+    PaymentOptions? paymentOptions,
+    SeenTutorials? seenTutorials,
   }) {
     return BreezUserModel._(
       userID ?? this.userID,
@@ -113,7 +113,7 @@ class BreezUserModel {
     return userID != null;
   }
 
-  String get avatarURL => image == null || image.isEmpty
+  String? get avatarURL => image == null || image!.isEmpty
       ? 'breez://profile_image?animal=$animal&color=$color'
       : image;
 
@@ -146,7 +146,7 @@ class BreezUserModel {
         defaultPosNote = json['defaultPosNote'] ?? "",
         posCurrencyShortName = json['posCurrencyShortName'] ?? "SAT",
         preferredCurrencies =
-            (json['preferredCurrencies'] as List<dynamic>)?.cast<String>() ??
+            (json['preferredCurrencies'] as List<dynamic>?)?.cast<String>() ??
                 <String>['USD', 'EUR', 'GBP', 'JPY'],
         appMode = AppMode.values[json["appMode"] ?? 0],
         paymentOptions = json["paymentOptions"] == null
@@ -187,8 +187,9 @@ class BreezUserModel {
       userPreferences.color ?? color,
       userPreferences.animal ?? animal,
       currency: currency,
-      fiatCurrency: !userPreferences.preferredCurrencies.contains(fiatCurrency)
-          ? userPreferences.preferredCurrencies.first
+      fiatCurrency: userPreferences.preferredCurrencies != null &&
+              !userPreferences.preferredCurrencies!.contains(fiatCurrency)
+          ? userPreferences.preferredCurrencies!.first
           : fiatCurrency,
       image: userPreferences.image ?? image,
       securityModel: securityModel,

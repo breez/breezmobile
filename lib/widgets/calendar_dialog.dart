@@ -7,8 +7,8 @@ import 'package:flutter/material.dart';
 
 class CalendarDialog extends StatefulWidget {
   final DateTime firstDate;
-  final DateTime endDate;
-  final DateTime initialRangeDate;
+  final DateTime? endDate;
+  final DateTime? initialRangeDate;
 
   const CalendarDialog(
     this.firstDate, {
@@ -23,8 +23,8 @@ class CalendarDialog extends StatefulWidget {
 class CalendarDialogState extends State<CalendarDialog> {
   final _startDateController = TextEditingController();
   final _endDateController = TextEditingController();
-  DateTime _startDate;
-  DateTime _endDate;
+  late DateTime _startDate;
+  late DateTime _endDate;
 
   @override
   void initState() {
@@ -128,7 +128,7 @@ class CalendarDialogState extends State<CalendarDialog> {
   }
 
   Future<void> _selectDate(BuildContext context, bool isStartBtn) async {
-    DateTime selectedDate = await showDatePicker(
+    DateTime? selectedDate = await showDatePicker(
       initialEntryMode: DatePickerEntryMode.calendarOnly,
       context: context,
       initialDate: isStartBtn ? _startDate : _endDate,
@@ -137,7 +137,7 @@ class CalendarDialogState extends State<CalendarDialog> {
       builder: (context, child) {
         return Theme(
           data: theme.calendarTheme,
-          child: child,
+          child: child!,
         );
       },
     );
@@ -164,9 +164,8 @@ class CalendarDialogState extends State<CalendarDialog> {
   }
 
   void _applyControllers() {
-    if (_startDate != null &&
-        _endDate != null &&
-        _endDate.isBefore(_startDate)) {
+    // TODO : Null Safety - _startDate & _endDate may be null
+    if (_endDate.isBefore(_startDate)) {
       final temp = _endDate;
       _endDate = _startDate;
       _startDate = temp;
