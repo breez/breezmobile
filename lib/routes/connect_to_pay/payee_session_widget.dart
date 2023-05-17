@@ -125,19 +125,19 @@ class PayeeSessionWidget extends StatelessWidget {
   ) {
     final texts = context.texts();
     final lsp = lspStatus.currentLSP;
-    num feeSats = 0;
+    int minFee = (lsp.cheapestOpeningFeeParams.minMsat.toInt() ~/ 1000);
+    int feeSats = 0;
     if (amount > acc.maxInboundLiquidity.toInt()) {
-      feeSats = (amount * lsp.channelFeePermyriad / 10000);
-      if (feeSats < lsp.channelMinimumFeeMsat / 1000) {
-        feeSats = lsp.channelMinimumFeeMsat / 1000;
+      feeSats = (amount * lsp.cheapestOpeningFeeParams.proportional ~/ 1000000);
+      if (feeSats < minFee) {
+        feeSats = minFee;
       }
     }
-    var intSats = feeSats.toInt();
-    if (intSats == 0) {
+    if (feeSats == 0) {
       return "";
     }
-    var feeFiat = acc.fiatCurrency.format(Int64(intSats));
-    var formattedSats = Currency.SAT.format(Int64(intSats));
+    var feeFiat = acc.fiatCurrency.format(Int64(feeSats));
+    var formattedSats = Currency.SAT.format(Int64(feeSats));
     return texts.connect_to_pay_payee_setup_fee(formattedSats, feeFiat);
   }
 }

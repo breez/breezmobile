@@ -2,7 +2,6 @@ import 'package:breez/bloc/account/account_model.dart';
 import 'package:breez/bloc/lsp/lsp_model.dart';
 import 'package:breez/routes/home/moonpay_route.dart';
 import 'package:breez_translations/breez_translations_locales.dart';
-import 'package:fixnum/fixnum.dart';
 import 'package:flutter/material.dart';
 
 import 'error_dialog.dart';
@@ -44,14 +43,15 @@ String _formatFeeMessage(
 ) {
   if (lsp == null) return "";
   final texts = context.texts();
-
-  final showMinFeeMessage = lsp.channelMinimumFeeMsat > 0;
+  final int minFee = (lsp.cheapestOpeningFeeParams.minMsat.toInt() ~/ 1000);
+  final showMinFeeMessage = minFee > 0;
   final connected = acc.connected;
 
   final minFeeFormatted = acc.currency.format(
-    Int64(lsp.channelMinimumFeeMsat ?? 0) ~/ 1000,
+    lsp.cheapestOpeningFeeParams.minMsat ~/ 1000,
   );
-  final setUpFee = (lsp.channelFeePermyriad / 100).toString();
+  final setUpFee =
+      (lsp.cheapestOpeningFeeParams.proportional / 10000).toString();
   final liquidity = acc.currency.format(acc.maxInboundLiquidity);
 
   if (connected && showMinFeeMessage) {
