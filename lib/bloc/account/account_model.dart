@@ -7,6 +7,7 @@ import 'package:breez/bloc/user_profile/currency.dart';
 import 'package:breez/logger.dart';
 import 'package:breez/services/breezlib/data/messages.pb.dart';
 import 'package:breez/utils/date.dart';
+import 'package:breez/utils/exceptions.dart';
 import 'package:breez_translations/breez_translations_locales.dart';
 import 'package:fixnum/fixnum.dart';
 
@@ -370,7 +371,7 @@ class AccountModel {
     }
 
     if (swapStatus.error?.isNotEmpty == true) {
-      return texts.status_failed_to_add_funds(swapStatus.error);
+      return texts.status_failed_to_add_funds(extractExceptionMessage(swapStatus.error));
     }
 
     return null;
