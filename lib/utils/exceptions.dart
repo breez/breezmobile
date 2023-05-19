@@ -27,7 +27,7 @@ String extractExceptionMessage(
 
 String _extractInnerErrorMessage(String originalMessage) {
   log.info('extractInnerErrorMessage: $originalMessage');
-  const descRegex = r'((?<=desc = )(.*)(?=.*}))';
+  const descRegex = r'(?<=desc = )(.*)(?=})|(?<=desc = )(.*)';
   final grouped = RegExp(descRegex);
   return grouped.stringMatch(originalMessage)?.trim() ?? originalMessage;
 }
