@@ -587,12 +587,13 @@ class CreateInvoicePageState extends State<CreateInvoicePage> {
 
   Future<bool> validateFees(String validUntil) async {
     // Our invoices are created for 15 minutes and fees should be valid to the invoice expiration
-    final isFeeParamsInvalid =
-        DateTime.now().difference(DateTime.parse(validUntil)) >
-            const Duration(minutes: 15);
+    final expirationDifference = DateTime.parse(validUntil).difference(
+      DateTime.now(),
+    );
+    final isFeeParamsValid = expirationDifference.inMinutes > 15;
     // Refresh fees if they are invalid
-    if (isFeeParamsInvalid) await _fetchLSPList();
-    return isFeeParamsInvalid;
+    if (!isFeeParamsValid) await _fetchLSPList();
+    return isFeeParamsValid;
   }
 
   Future _fetchLSPList() async {
