@@ -17,11 +17,11 @@ dependencies:
   breez_translations:
     git:
       url: https://github.com/breez/Breez-Translations.git
-      ref: b610d54ad7c105258afb6dd8da0075ccba765cd6
+      ref: e01261e4359277126d4599f8de8dcb678653eb74
   clipboard_watcher: ^0.2.0
   collection: ^1.17.2
   confetti: ^0.7.0
-  connectivity_plus: ^4.0.0
+  connectivity_plus: ^4.0.1
   convert: ^3.1.1
   crypto: ^3.0.3
   csv: ^5.0.2
@@ -40,7 +40,7 @@ dependencies:
   fixnum: ^1.1.0
   flutter_secure_storage: ^8.0.0
   flutter_spinkit: ^5.2.0
-  flutter_svg: ^2.0.5
+  flutter_svg: ^2.0.6
   flutter_web_browser: ^0.17.1
   google_api_availability: ^5.0.0
   grpc: ^3.1.0
@@ -58,7 +58,7 @@ dependencies:
     git:
       url: https://github.com/breez/md5_file_checksum.git
   nfc_manager: ^3.2.0
-  package_info_plus: ^4.0.0
+  package_info_plus: ^4.0.1
   path: ^1.8.3
   path_provider: ^2.0.15
   path_provider_platform_interface: ^2.0.6
@@ -78,9 +78,9 @@ dependencies:
       ref: 1fc6e38c198a76a6fd60b7bd3b4c190cd6c9330b
   rxdart: ^0.27.7
   screenshot: <2.0.0 # Requires Flutter 3.10
-  share_plus: ^7.0.0
+  share_plus: ^7.0.1
   shared_preferences: ^2.1.1
-  shimmer: ^2.0.0
+  shimmer: ^3.0.0
   simple_animations: ^5.0.0+3
   sqflite: ^2.2.8+4
   timeago: ^3.4.0
