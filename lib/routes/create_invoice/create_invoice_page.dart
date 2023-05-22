@@ -547,9 +547,15 @@ class CreateInvoicePageState extends State<CreateInvoicePage> {
         ? LNURlWithdrawDialog(invoiceBloc, accountBloc, lnurlBloc, (result) {
             onPaymentFinished(result, currentRoute, navigator);
           })
-        : QrCodeDialog(context, invoiceBloc, accountBloc, (result) {
-            onPaymentFinished(result, currentRoute, navigator);
-          });
+        : QrCodeDialog(
+            context,
+            invoiceBloc,
+            accountBloc,
+            (result) {
+              onPaymentFinished(result, currentRoute, navigator);
+            },
+            hasFeesChanged: !wasFeeParamsValid,
+          );
     return _bgService.runAsTask(
         showDialog(
           useRootNavigator: false,
