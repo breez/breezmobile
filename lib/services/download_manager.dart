@@ -40,8 +40,8 @@ class DownloadTaskManager {
     bool success = IsolateNameServer.registerPortWithName(
         _port.sendPort, 'downloader_send_port');
     _port.listen((dynamic data) {
-      final id = data[0] as String;
-      final status = data[1] as DownloadTaskStatus;
+      final id = (data as List<dynamic>)[0] as String;
+      final status = DownloadTaskStatus(data[1] as int);
       final progress = data[2] as int;
 
       log.info("GraphDownloader2 callback $id, $status, $progress");
@@ -123,8 +123,7 @@ class DownloadTaskManager {
     _tasksToPoll.remove(taskID);
   }
 
-  static void downloadCallback(
-      String id, DownloadTaskStatus status, int progress) {
+  static void downloadCallback(String id, int status, int progress) {
     final send = IsolateNameServer.lookupPortByName('downloader_send_port');
     log.info("GraphDownloader callback $id, $status, $progress");
     send.send([id, status, progress]);

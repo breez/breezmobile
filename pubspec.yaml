@@ -90,7 +90,7 @@ dependencies:
   uuid: ^3.0.7
   validators: ^3.0.0
   webdav_client: ^1.2.1
-  webview_flutter: ^4.2.0
+  webview_flutter: ^4.2.1
 
   anytime:
     git:
@@ -99,7 +99,7 @@ dependencies:
   flutter_downloader:
     git:
       url: https://github.com/breez/flutter_downloader.git
-      ref: fe2331610fe6ec3b0f2962683d7caceb907b015c
+      ref: c9cbc56c6d1c8bb434301757be84ac1e65d046c6
   flutter_typeahead:
     git:
       url: https://github.com/breez/flutter_typeahead.git
@@ -121,7 +121,7 @@ dependency_overrides:
   flutter_downloader:
     git:
       url: https://github.com/breez/flutter_downloader.git
-      ref: 7a90641a687e27cc3cb451389f1281faceeef56f
+      ref: c9cbc56c6d1c8bb434301757be84ac1e65d046c6
   podcast_search:
     git:
       url: https://github.com/breez/podcast_search.git
