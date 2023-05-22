@@ -53,7 +53,7 @@ class LSPBloc with AsyncActionsHandler {
 
   Future _fetchLSPList(FetchLSPList action) async {
     try {
-      await _ensureLSPSFetched();
+      action.resolve(await _ensureLSPSFetched());
     } catch (err) {
       _lspsStatusController.add(_lspsStatusController.value
           .copyWith(lastConnectionError: err.toString()));
@@ -162,7 +162,7 @@ class LSPBloc with AsyncActionsHandler {
     await _lspPromptController.close();
   }
 
-  Future _ensureLSPSFetched() async {
+  Future<List<LSPInfo>> _ensureLSPSFetched() async {
     var list = await _breezLib.getLSPList();
     var lspInfoList = list.lsps.entries.map<LSPInfo>((entry) {
       return LSPInfo(entry.value, entry.key);
@@ -170,5 +170,6 @@ class LSPBloc with AsyncActionsHandler {
     _lspsStatusController.add(
       _lspsStatusController.value.copyWith(availableLSPs: lspInfoList),
     );
+    return lspInfoList;
   }
 }
