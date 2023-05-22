@@ -63,6 +63,7 @@ class CreateInvoicePageState extends State<CreateInvoicePage> {
   final _bgService = ServiceInjector().backgroundTaskService;
 
   bool _isInit = false;
+  bool _isInProgress = false;
   KeyboardDoneAction _doneAction;
   WithdrawFetchResponse _withdrawFetchResponse;
   StreamSubscription<PaymentRequestModel> _paidInvoicesSubscription;
@@ -142,36 +143,50 @@ class CreateInvoicePageState extends State<CreateInvoicePage> {
                   text: _withdrawFetchResponse == null
                       ? texts.invoice_action_create
                       : texts.invoice_action_redeem,
-                  onPressed: () {
-                    if (_formKey.currentState.validate()) {
-                      final tempFees =
-                          lspStatus.currentLSP.cheapestOpeningFeeParams;
-                      _fetchLSPList().then(
-                        (_) {
-                          // Show fee dialog if necessary and create invoice dialog
-                          showSetupFeesDialog(
-                            context,
-                            hasFeesChanged(
-                              tempFees,
-                              lspStatus.currentLSP.cheapestOpeningFeeParams,
-                            ),
-                            () => _createInvoice(
-                              context,
-                              accountBloc,
-                              account,
-                              lspStatus.currentLSP.raw,
-                            ),
-                          );
+                  onPressed: _isInProgress
+                      ? null
+                      : () {
+                          if (_formKey.currentState.validate()) {
+                            setState(() {
+                              _isInProgress = true;
+                            });
+                            final tempFees =
+                                lspStatus.currentLSP.cheapestOpeningFeeParams;
+                            _fetchLSPList().then(
+                              (_) {
+                                // Show fee dialog if necessary and create invoice dialog
+                                showSetupFeesDialog(
+                                  context,
+                                  hasFeesChanged(
+                                    tempFees,
+                                    lspStatus
+                                        .currentLSP.cheapestOpeningFeeParams,
+                                  ),
+                                  () => _createInvoice(
+                                    context,
+                                    accountBloc,
+                                    account,
+                                    lspStatus.currentLSP.raw,
+                                  ),
+                                ).then((_) {
+                                  setState(() {
+                                    _isInProgress = false;
+                                  });
+                                });
+                              },
+                              onError: (e) {
+                                setState(() {
+                                  _isInProgress = false;
+                                });
+                                showFlushbar(
+                                  context,
+                                  message:
+                                      texts.qr_code_dialog_error(e.toString()),
+                                );
+                              },
+                            );
+                          }
                         },
-                        onError: (e) {
-                          showFlushbar(
-                            context,
-                            message: texts.qr_code_dialog_error(e.toString()),
-                          );
-                        },
-                      );
-                    }
-                  },
                 ),
               );
             },
