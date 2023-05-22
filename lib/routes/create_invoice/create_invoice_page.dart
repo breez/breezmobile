@@ -142,20 +142,16 @@ class CreateInvoicePageState extends State<CreateInvoicePage> {
                       : texts.invoice_action_redeem,
                   onPressed: () {
                     if (_formKey.currentState.validate()) {
-                      final tempFees =
-                          lspStatus.currentLSP.cheapestOpeningFeeParams;
-                      _fetchLSPList().then((_) {
-                        _createInvoice(
-                          context,
-                          accountBloc,
-                          account,
-                          lspStatus.currentLSP.raw,
-                          hasFeeChanged(
-                            tempFees,
-                            lspStatus.currentLSP.cheapestOpeningFeeParams,
-                          ),
-                        );
-                      });
+                      _fetchLSPList().then(
+                        (_) {
+                          _createInvoice(
+                            context,
+                            accountBloc,
+                            account,
+                            lspStatus.currentLSP.raw,
+                          );
+                        },
+                      );
                     }
                   },
                 ),
@@ -528,7 +524,6 @@ class CreateInvoicePageState extends State<CreateInvoicePage> {
     AccountBloc accountBloc,
     AccountModel account,
     LSPInformation lspInformation,
-    bool hasFeeChanged,
   ) {
     final invoiceBloc = AppBlocsProvider.of<InvoiceBloc>(context);
     final lnurlBloc = AppBlocsProvider.of<LNUrlBloc>(context);
@@ -556,7 +551,6 @@ class CreateInvoicePageState extends State<CreateInvoicePage> {
             (result) {
               onPaymentFinished(result, currentRoute, navigator);
             },
-            hasFeeChanged: hasFeeChanged,
           );
     return _bgService.runAsTask(
         showDialog(
