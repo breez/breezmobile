@@ -142,16 +142,18 @@ class CreateInvoicePageState extends State<CreateInvoicePage> {
                       : texts.invoice_action_redeem,
                   onPressed: () {
                     if (_formKey.currentState.validate()) {
-                      validateFees(
-                        lspStatus
-                            .currentLSP.cheapestOpeningFeeParams.validUntil,
-                      ).then((wasFeeParamsValid) {
+                      final tempFees =
+                          lspStatus.currentLSP.cheapestOpeningFeeParams;
+                      _fetchLSPList().then((_) {
                         _createInvoice(
                           context,
                           accountBloc,
                           account,
                           lspStatus.currentLSP.raw,
-                          wasFeeParamsValid,
+                          hasFeeChanged(
+                            tempFees,
+                            lspStatus.currentLSP.cheapestOpeningFeeParams,
+                          ),
                         );
                       });
                     }
@@ -526,7 +528,7 @@ class CreateInvoicePageState extends State<CreateInvoicePage> {
     AccountBloc accountBloc,
     AccountModel account,
     LSPInformation lspInformation,
-    bool wasFeeParamsValid,
+    bool hasFeeChanged,
   ) {
     final invoiceBloc = AppBlocsProvider.of<InvoiceBloc>(context);
     final lnurlBloc = AppBlocsProvider.of<LNUrlBloc>(context);
@@ -554,7 +556,7 @@ class CreateInvoicePageState extends State<CreateInvoicePage> {
             (result) {
               onPaymentFinished(result, currentRoute, navigator);
             },
-            hasFeesChanged: !wasFeeParamsValid,
+            hasFeeChanged: hasFeeChanged,
           );
     return _bgService.runAsTask(
         showDialog(
@@ -585,21 +587,16 @@ class CreateInvoicePageState extends State<CreateInvoicePage> {
     }
   }
 
-  Future<bool> validateFees(String validUntil) async {
-    // Our invoices are created for 15 minutes and fees should be valid to the invoice expiration
-    final expirationDifference = DateTime.parse(validUntil).difference(
-      DateTime.now(),
-    );
-    final isFeeParamsValid = expirationDifference.inMinutes > 15;
-    // Refresh fees if they are invalid
-    if (!isFeeParamsValid) await _fetchLSPList();
-    return isFeeParamsValid;
-  }
-
   Future _fetchLSPList() async {
     final lspBloc = AppBlocsProvider.of<LSPBloc>(context);
     var fetchAction = FetchLSPList();
     lspBloc.actionsSink.add(fetchAction);
     return await fetchAction.future;
   }
+}
+
+bool hasFeeChanged(OpeningFeeParams oldFees, OpeningFeeParams newFees) {
+  // Mark fee as changed only if new fees are higher
+  return (newFees.minMsat > oldFees.minMsat) ||
+      (newFees.proportional > oldFees.proportional);
 }
