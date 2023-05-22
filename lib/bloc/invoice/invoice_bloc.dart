@@ -109,7 +109,8 @@ class InvoiceBloc with AsyncActionsHandler {
               payeeName: invoiceRequest.payeeName,
               payeeImageURL: invoiceRequest.logo,
               description: invoiceRequest.description,
-              expiry: invoiceRequest.expiry)
+              expiry: invoiceRequest.expiry,
+              inputLSP: invoiceRequest.lspInformation)
           .then((payReq) async {
         log.info("Payment Request: ${payReq.paymentRequest}");
         var memo = await _breezLib.decodePaymentRequest(payReq.paymentRequest);
