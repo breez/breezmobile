@@ -7,9 +7,10 @@ class InvoiceRequestModel {
   final String logo;
   final Int64 amount;
   final Int64 expiry;
+  final LSPInformation lspInformation;
 
   InvoiceRequestModel(this.payeeName, this.description, this.logo, this.amount,
-      {this.expiry});
+      {this.expiry, this.lspInformation});
 }
 
 class PaymentRequestModel {
