@@ -39,6 +39,8 @@ import 'package:fixnum/fixnum.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
+import 'setup_fees_dialog.dart';
+
 class CreateInvoicePage extends StatefulWidget {
   final WithdrawFetchResponse lnurlWithdraw;
 
@@ -147,7 +149,7 @@ class CreateInvoicePageState extends State<CreateInvoicePage> {
                       _fetchLSPList().then(
                         (_) {
                           // Show fee dialog if necessary and create invoice dialog
-                          _showFeeDialog(
+                          showSetupFeesDialog(
                             context,
                             hasFeesChanged(
                               tempFees,
@@ -609,30 +611,4 @@ bool hasFeesChanged(OpeningFeeParams oldFees, OpeningFeeParams newFees) {
   // Mark fee as changed only if new fees are higher
   return (newFees.minMsat > oldFees.minMsat) ||
       (newFees.proportional > oldFees.proportional);
-}
-
-Future _showFeeDialog(
-  BuildContext context,
-  bool hasFeesChanged,
-  Future Function() onNext,
-) async {
-  if (hasFeesChanged) {
-    await showDialog(
-      context: context,
-      builder: (context) {
-        return AlertDialog(
-          title: const Text('Setup Fees'),
-          content: const Text(
-              'Please notice the updated setup fees under the QR code before receiving a payment.'),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.of(context).pop(),
-              child: const Text('OK'),
-            )
-          ],
-        );
-      },
-    );
-  }
-  return onNext();
 }
