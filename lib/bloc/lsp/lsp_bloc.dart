@@ -163,13 +163,12 @@ class LSPBloc with AsyncActionsHandler {
   }
 
   Future _ensureLSPSFetched() async {
-    if (_lspsStatusController.value.availableLSPs.isEmpty) {
-      var list = await _breezLib.getLSPList();
-      var lspInfoList = list.lsps.entries.map<LSPInfo>((entry) {
-        return LSPInfo(entry.value, entry.key);
-      }).toList();
-      _lspsStatusController.add(
-          _lspsStatusController.value.copyWith(availableLSPs: lspInfoList));
-    }
+    var list = await _breezLib.getLSPList();
+    var lspInfoList = list.lsps.entries.map<LSPInfo>((entry) {
+      return LSPInfo(entry.value, entry.key);
+    }).toList();
+    _lspsStatusController.add(
+      _lspsStatusController.value.copyWith(availableLSPs: lspInfoList),
+    );
   }
 }
