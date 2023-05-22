@@ -21,15 +21,13 @@ class QrCodeDialog extends StatefulWidget {
   final InvoiceBloc _invoiceBloc;
   final AccountBloc _accountBloc;
   final Function(dynamic result) _onFinish;
-  final bool hasFeeChanged;
 
   const QrCodeDialog(
     this.context,
     this._invoiceBloc,
     this._accountBloc,
-    this._onFinish, {
-    this.hasFeeChanged = false,
-  });
+    this._onFinish,
+  );
 
   @override
   State<StatefulWidget> createState() {
@@ -266,13 +264,6 @@ class QrCodeDialogState extends State<QrCodeDialog>
                               ),
                               const Padding(
                                   padding: EdgeInsets.only(top: 16.0)),
-                              if (widget.hasFeeChanged) ...[
-                                Text(
-                                  "Setup fees were updated.",
-                                  textAlign: TextAlign.center,
-                                  style: themeData.primaryTextTheme.bodySmall,
-                                )
-                              ],
                               SizedBox(
                                 width: MediaQuery.of(context).size.width,
                                 child: _buildExpiryAndFeeMessage(
