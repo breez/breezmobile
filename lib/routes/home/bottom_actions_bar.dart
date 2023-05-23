@@ -355,7 +355,7 @@ Future showReceiveOptions(
                           ),
                           onTap: () {
                             Navigator.of(context).pop();
-                            if (v.showLSPFee) {
+                            if (v.refreshLSP || v.showLSPFee) {
                               final currentLSP = lspSnapshot.data.currentLSP;
                               final tempFees =
                                   currentLSP.longestValidOpeningFeeParams;
@@ -364,19 +364,23 @@ Future showReceiveOptions(
                                   var refreshedLSP = lspList.firstWhere(
                                     (lsp) => lsp.lspID == currentLSP.lspID,
                                   );
-                                  // Show fee dialog if necessary and create invoice dialog
+                                  // Show fee dialog if necessary and navigate to route
                                   showSetupFeesDialog(
                                     context,
                                     hasFeesChanged(
                                       tempFees,
                                       refreshedLSP.longestValidOpeningFeeParams,
                                     ),
-                                    () => promptLSPFeeAndNavigate(
-                                      parentContext,
-                                      account,
-                                      refreshedLSP.longestValidOpeningFeeParams,
-                                      v.route,
-                                    ),
+                                    () => (v.showLSPFee)
+                                        ? promptLSPFeeAndNavigate(
+                                            parentContext,
+                                            account,
+                                            refreshedLSP
+                                                .longestValidOpeningFeeParams,
+                                            v.route,
+                                          )
+                                        : Navigator.of(context)
+                                            .pushNamed(v.route),
                                   );
                                 },
                               );
