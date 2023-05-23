@@ -153,20 +153,22 @@ class CreateInvoicePageState extends State<CreateInvoicePage> {
                             final tempFees =
                                 lspStatus.currentLSP.cheapestOpeningFeeParams;
                             _fetchLSPList().then(
-                              (_) {
+                              (lspList) {                                
+                                var refreshedLSP = lspList.firstWhere(
+                                  (lsp) =>lsp.id == lspStatus.currentLSP.lspID,
+                                );
                                 // Show fee dialog if necessary and create invoice dialog
                                 showSetupFeesDialog(
                                   context,
                                   hasFeesChanged(
                                     tempFees,
-                                    lspStatus
-                                        .currentLSP.cheapestOpeningFeeParams,
+                                    refreshedLSP.cheapestOpeningFeeParams,
                                   ),
                                   () => _createInvoice(
                                     context,
                                     accountBloc,
                                     account,
-                                    lspStatus.currentLSP.raw,
+                                    refreshedLSP,
                                   ),
                                 ).then((_) {
                                   setState(() {
@@ -614,7 +616,7 @@ class CreateInvoicePageState extends State<CreateInvoicePage> {
     }
   }
 
-  Future _fetchLSPList() async {
+  Future<List<LSPInformation>> _fetchLSPList() async {
     final lspBloc = AppBlocsProvider.of<LSPBloc>(context);
     var fetchAction = FetchLSPList();
     lspBloc.actionsSink.add(fetchAction);
