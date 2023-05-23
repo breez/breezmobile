@@ -112,6 +112,7 @@ class AddFundsBloc extends Bloc {
       texts.bottom_action_bar_receive_btc_address,
       "src/icon/bitcoin.png",
       "/deposit_btc_address",
+      refreshLSP: true,
       enabled: !hasPendingOrder,
     ));
     vendorList.add(AddFundVendorModel(

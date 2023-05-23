@@ -7,6 +7,8 @@ import 'package:breez/bloc/lsp/lsp_bloc.dart';
 import 'package:breez/bloc/lsp/lsp_model.dart';
 import 'package:breez/routes/add_funds/address_widget.dart';
 import 'package:breez/routes/add_funds/conditional_deposit.dart';
+import 'package:breez/routes/create_invoice/setup_fees_dialog.dart';
+import 'package:breez/utils/dynamic_fees.dart';
 import 'package:breez/widgets/back_button.dart' as backBtn;
 import 'package:breez/widgets/single_button_bottom_bar.dart';
 import 'package:breez/widgets/warning_box.dart';

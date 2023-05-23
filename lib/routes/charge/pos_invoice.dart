@@ -265,7 +265,7 @@ class POSInvoiceState extends State<POSInvoice> with TickerProviderStateMixin {
                             var refreshedLSP = lspList.firstWhere(
                               (lsp) => lsp.lspID == lspStatus.currentLSP.lspID,
                             );
-                            // Show fee dialog if necessary and create invoice dialog
+                            // Show fee dialog if necessary and submit invoice
                             showSetupFeesDialog(
                               context,
                               hasFeesChanged(
@@ -381,7 +381,7 @@ class POSInvoiceState extends State<POSInvoice> with TickerProviderStateMixin {
                   var refreshedLSP = lspList.firstWhere(
                     (lsp) => lsp.lspID == lspStatus.currentLSP.lspID,
                   );
-                  // Show fee dialog if necessary and create invoice dialog
+                  // Show fee dialog if necessary and submit invoice
                   showSetupFeesDialog(
                     context,
                     hasFeesChanged(
