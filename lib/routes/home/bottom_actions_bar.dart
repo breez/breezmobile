@@ -11,9 +11,11 @@ import 'package:breez/bloc/invoice/invoice_model.dart';
 import 'package:breez/bloc/lnurl/lnurl_bloc.dart';
 import 'package:breez/bloc/lsp/lsp_bloc.dart';
 import 'package:breez/bloc/lsp/lsp_model.dart';
+import 'package:breez/routes/create_invoice/setup_fees_dialog.dart';
 import 'package:breez/routes/podcast/theme.dart';
 import 'package:breez/routes/spontaneous_payment/spontaneous_payment_page.dart';
 import 'package:breez/theme_data.dart' as theme;
+import 'package:breez/utils/dynamic_fees.dart';
 import 'package:breez/utils/stream_builder_extensions.dart';
 import 'package:breez/widgets/enter_payment_info_dialog.dart';
 import 'package:breez/widgets/escher_dialog.dart';
@@ -354,11 +356,29 @@ Future showReceiveOptions(
                           onTap: () {
                             Navigator.of(context).pop();
                             if (v.showLSPFee) {
-                              promptLSPFeeAndNavigate(
-                                parentContext,
-                                account,
-                                lspSnapshot.data.currentLSP,
-                                v.route,
+                              final currentLSP = lspSnapshot.data.currentLSP;
+                              final tempFees =
+                                  currentLSP.longestValidOpeningFeeParams;
+                              fetchLSPList(lspBloc).then(
+                                (lspList) {
+                                  var refreshedLSP = lspList.firstWhere(
+                                    (lsp) => lsp.lspID == currentLSP.lspID,
+                                  );
+                                  // Show fee dialog if necessary and create invoice dialog
+                                  showSetupFeesDialog(
+                                    context,
+                                    hasFeesChanged(
+                                      tempFees,
+                                      refreshedLSP.longestValidOpeningFeeParams,
+                                    ),
+                                    () => promptLSPFeeAndNavigate(
+                                      parentContext,
+                                      account,
+                                      refreshedLSP.longestValidOpeningFeeParams,
+                                      v.route,
+                                    ),
+                                  );
+                                },
                               );
                             } else {
                               Navigator.of(context).pushNamed(v.route);
