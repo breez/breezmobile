@@ -124,11 +124,14 @@ class InvoiceBloc with AsyncActionsHandler {
 
   Future _newInvoice(NewInvoice action) async {
     var invoiceRequest = action.request;
-    var payReq = await _breezLib.addInvoice(invoiceRequest.amount,
-        payeeName: invoiceRequest.payeeName,
-        payeeImageURL: invoiceRequest.logo,
-        description: invoiceRequest.description,
-        expiry: invoiceRequest.expiry);
+    var payReq = await _breezLib.addInvoice(
+      invoiceRequest.amount,
+      payeeName: invoiceRequest.payeeName,
+      payeeImageURL: invoiceRequest.logo,
+      description: invoiceRequest.description,
+      expiry: invoiceRequest.expiry,
+      inputLSP: invoiceRequest.lspInformation,
+    );
     var memo = await _breezLib.decodePaymentRequest(payReq.paymentRequest);
     var paymentHash =
         await _breezLib.getPaymentRequestHash(payReq.paymentRequest);

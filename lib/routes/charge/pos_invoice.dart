@@ -10,6 +10,8 @@ import 'package:breez/bloc/invoice/actions.dart';
 import 'package:breez/bloc/invoice/invoice_bloc.dart';
 import 'package:breez/bloc/invoice/invoice_model.dart';
 import 'package:breez/bloc/lnurl/lnurl_bloc.dart';
+import 'package:breez/bloc/lsp/lsp_bloc.dart';
+import 'package:breez/bloc/lsp/lsp_model.dart';
 import 'package:breez/bloc/pos_catalog/actions.dart';
 import 'package:breez/bloc/pos_catalog/bloc.dart';
 import 'package:breez/bloc/pos_catalog/model.dart';
@@ -25,8 +27,11 @@ import 'package:breez/routes/charge/pos_invoice_items_view.dart';
 import 'package:breez/routes/charge/pos_invoice_num_pad.dart';
 import 'package:breez/routes/charge/pos_payment_dialog.dart';
 import 'package:breez/routes/charge/successful_payment.dart';
+import 'package:breez/routes/create_invoice/setup_fees_dialog.dart';
 import 'package:breez/routes/sync_progress_dialog.dart';
+import 'package:breez/services/breezlib/data/messages.pb.dart';
 import 'package:breez/theme_data.dart' as theme;
+import 'package:breez/utils/dynamic_fees.dart';
 import 'package:breez/utils/print_pdf.dart';
 import 'package:breez/widgets/error_dialog.dart';
 import 'package:breez/widgets/flushbar.dart';
@@ -217,6 +222,7 @@ class POSInvoiceState extends State<POSInvoice> with TickerProviderStateMixin {
     Sale currentSale,
     List<FiatConversion> rates,
   ) {
+    final lspBloc = AppBlocsProvider.of<LSPBloc>(context);
     final themeData = Theme.of(context);
     final persistedCurrency = CurrencyWrapper.fromShortName(
       accountModel.posCurrencyShortName,
@@ -230,62 +236,89 @@ class POSInvoiceState extends State<POSInvoice> with TickerProviderStateMixin {
 
     return Stack(
       children: [
-        Column(
-          mainAxisSize: MainAxisSize.min,
-          children: <Widget>[
-            Container(
-              color: themeData.colorScheme.background,
-              child: _buildViewSwitch(context),
-            ),
-            Container(
-              color: themeData.colorScheme.background,
-              child: PosInvoiceCartBar(
-                badgeKey: badgeKey,
-                totalNumOfItems: currentSale.totalNumOfItems,
-                accountModel: accountModel,
-                currentCurrency: currentCurrency,
-                isKeypadView: _isKeypadView,
-                currentAmount: currentAmount,
-                onInvoiceSubmit: () => _onInvoiceSubmitted(
-                  context,
-                  currentSale,
-                  invoiceBloc,
-                  lnUrlBloc,
-                  userProfile,
-                  accountModel,
-                ),
-                approveClear: () => _approveClear(
-                  context,
-                  currentSale,
-                ),
-                changeCurrency: (currency) => _changeCurrency(
-                  currentSale,
-                  currency,
-                  userProfileBloc,
-                  currentCurrency,
-                ),
-              ),
-            ),
-            _tabBody(
-              context,
-              posCatalogBloc,
-              accountModel,
-              currentSale,
-            ),
-            Container(
-              color: themeData.colorScheme.background,
-              child: _chargeButton(
-                context,
-                invoiceBloc,
-                lnUrlBloc,
-                userProfile,
-                accountModel,
-                currentSale,
-                totalAmount,
-              ),
-            ),
-          ],
-        ),
+        StreamBuilder<LSPStatus>(
+            stream: lspBloc.lspStatusStream,
+            builder: (context, snapshot) {
+              LSPStatus lspStatus = snapshot.data;
+
+              return Column(
+                mainAxisSize: MainAxisSize.min,
+                children: <Widget>[
+                  Container(
+                    color: themeData.colorScheme.background,
+                    child: _buildViewSwitch(context),
+                  ),
+                  Container(
+                    color: themeData.colorScheme.background,
+                    child: PosInvoiceCartBar(
+                      badgeKey: badgeKey,
+                      totalNumOfItems: currentSale.totalNumOfItems,
+                      accountModel: accountModel,
+                      currentCurrency: currentCurrency,
+                      isKeypadView: _isKeypadView,
+                      currentAmount: currentAmount,
+                      onInvoiceSubmit: () {
+                        final tempFees =
+                            lspStatus.currentLSP.cheapestOpeningFeeParams;
+                        fetchLSPList(lspBloc).then(
+                          (lspList) {
+                            var refreshedLSP = lspList.firstWhere(
+                              (lsp) => lsp.lspID == lspStatus.currentLSP.lspID,
+                            );
+                            // Show fee dialog if necessary and create invoice dialog
+                            showSetupFeesDialog(
+                              context,
+                              hasFeesChanged(
+                                tempFees,
+                                refreshedLSP.cheapestOpeningFeeParams,
+                              ),
+                              () => _onInvoiceSubmitted(
+                                context,
+                                currentSale,
+                                invoiceBloc,
+                                lnUrlBloc,
+                                userProfile,
+                                accountModel,
+                                refreshedLSP.raw,
+                              ),
+                            );
+                          },
+                        );
+                      },
+                      approveClear: () => _approveClear(
+                        context,
+                        currentSale,
+                      ),
+                      changeCurrency: (currency) => _changeCurrency(
+                        currentSale,
+                        currency,
+                        userProfileBloc,
+                        currentCurrency,
+                      ),
+                    ),
+                  ),
+                  _tabBody(
+                    context,
+                    posCatalogBloc,
+                    accountModel,
+                    currentSale,
+                  ),
+                  Container(
+                    color: themeData.colorScheme.background,
+                    child: _chargeButton(
+                      context,
+                      invoiceBloc,
+                      lnUrlBloc,
+                      userProfile,
+                      accountModel,
+                      currentSale,
+                      totalAmount,
+                      lspStatus,
+                    ),
+                  ),
+                ],
+              );
+            }),
         _itemInTransition != null
             ? Positioned(
                 left: _transitionAnimation.value.left,
@@ -314,7 +347,9 @@ class POSInvoiceState extends State<POSInvoice> with TickerProviderStateMixin {
     AccountModel accountModel,
     Sale currentSale,
     double totalAmount,
+    LSPStatus lspStatus,
   ) {
+    final lspBloc = AppBlocsProvider.of<LSPBloc>(context);
     final themeData = Theme.of(context);
     final texts = context.texts();
     final amount = currentCurrency.format(totalAmount).toUpperCase();
@@ -339,14 +374,33 @@ class POSInvoiceState extends State<POSInvoice> with TickerProviderStateMixin {
               textAlign: TextAlign.center,
               style: theme.invoiceChargeAmountStyle,
             ),
-            onPressed: () => _onInvoiceSubmitted(
-              context,
-              currentSale,
-              invoiceBloc,
-              lnUrlBloc,
-              userProfile,
-              accountModel,
-            ),
+            onPressed: () => () {
+              final tempFees = lspStatus.currentLSP.cheapestOpeningFeeParams;
+              fetchLSPList(lspBloc).then(
+                (lspList) {
+                  var refreshedLSP = lspList.firstWhere(
+                    (lsp) => lsp.lspID == lspStatus.currentLSP.lspID,
+                  );
+                  // Show fee dialog if necessary and create invoice dialog
+                  showSetupFeesDialog(
+                    context,
+                    hasFeesChanged(
+                      tempFees,
+                      refreshedLSP.cheapestOpeningFeeParams,
+                    ),
+                    () => _onInvoiceSubmitted(
+                      context,
+                      currentSale,
+                      invoiceBloc,
+                      lnUrlBloc,
+                      userProfile,
+                      accountModel,
+                      refreshedLSP.raw,
+                    ),
+                  );
+                },
+              );
+            },
           ),
         ),
       ),
@@ -438,6 +492,7 @@ class POSInvoiceState extends State<POSInvoice> with TickerProviderStateMixin {
     LNUrlBloc lnUrlBloc,
     BreezUserModel user,
     AccountModel account,
+    LSPInformation lspInformation,
   ) {
     final texts = context.texts();
     final themeData = Theme.of(context);
@@ -551,6 +606,7 @@ class POSInvoiceState extends State<POSInvoice> with TickerProviderStateMixin {
               user.avatarURL,
               Int64(satAmount.toInt()),
               expiry: Int64(user.cancellationTimeoutValue.toInt()),
+              lspInformation: lspInformation,
             ),
           );
           invoiceBloc.actionsSink.add(newInvoiceAction);
