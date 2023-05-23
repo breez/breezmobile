@@ -10,7 +10,6 @@ import 'package:breez/bloc/invoice/invoice_model.dart';
 import 'package:breez/bloc/lnurl/lnurl_actions.dart';
 import 'package:breez/bloc/lnurl/lnurl_bloc.dart';
 import 'package:breez/bloc/lnurl/lnurl_model.dart';
-import 'package:breez/bloc/lsp/lsp_actions.dart';
 import 'package:breez/bloc/lsp/lsp_bloc.dart';
 import 'package:breez/bloc/lsp/lsp_model.dart';
 import 'package:breez/logger.dart';
@@ -21,6 +20,7 @@ import 'package:breez/routes/podcast/theme.dart';
 import 'package:breez/services/breezlib/data/messages.pb.dart';
 import 'package:breez/services/injector.dart';
 import 'package:breez/theme_data.dart' as theme;
+import 'package:breez/utils/dynamic_fees.dart';
 import 'package:breez/utils/exceptions.dart';
 import 'package:breez/utils/min_font_size.dart';
 import 'package:breez/widgets/amount_form_field.dart';
@@ -152,10 +152,11 @@ class CreateInvoicePageState extends State<CreateInvoicePage> {
                             });
                             final tempFees =
                                 lspStatus.currentLSP.cheapestOpeningFeeParams;
-                            _fetchLSPList().then(
-                              (lspList) {                                
+                            fetchLSPList(lspBloc).then(
+                              (lspList) {
                                 var refreshedLSP = lspList.firstWhere(
-                                  (lsp) =>lsp.lspID == lspStatus.currentLSP.lspID,
+                                  (lsp) =>
+                                      lsp.lspID == lspStatus.currentLSP.lspID,
                                 );
                                 // Show fee dialog if necessary and create invoice dialog
                                 showSetupFeesDialog(
@@ -615,17 +616,4 @@ class CreateInvoicePageState extends State<CreateInvoicePage> {
       }
     }
   }
-
-  Future<List<LSPInfo>> _fetchLSPList() async {
-    final lspBloc = AppBlocsProvider.of<LSPBloc>(context);
-    var fetchAction = FetchLSPList();
-    lspBloc.actionsSink.add(fetchAction);
-    return await fetchAction.future;
-  }
-}
-
-bool hasFeesChanged(OpeningFeeParams oldFees, OpeningFeeParams newFees) {
-  // Mark fee as changed only if new fees are higher
-  return (newFees.minMsat > oldFees.minMsat) ||
-      (newFees.proportional > oldFees.proportional);
 }
