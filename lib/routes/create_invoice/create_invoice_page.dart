@@ -70,11 +70,13 @@ class CreateInvoicePageState extends State<CreateInvoicePage> {
 
   @override
   void didChangeDependencies() {
-    final texts = context.texts();
-    final invoiceBloc = AppBlocsProvider.of<InvoiceBloc>(context);
-    final accBloc = AppBlocsProvider.of<AccountBloc>(context);
-
     if (!_isInit) {
+      final texts = context.texts();
+      final invoiceBloc = AppBlocsProvider.of<InvoiceBloc>(context);
+      final accBloc = AppBlocsProvider.of<AccountBloc>(context);
+      final lspBloc = AppBlocsProvider.of<LSPBloc>(context);
+
+      fetchLSPList(lspBloc);
       _paidInvoicesSubscription = invoiceBloc.paidInvoicesStream.listen((paid) {
         Navigator.pop(context, texts.invoice_payment_success);
       });
