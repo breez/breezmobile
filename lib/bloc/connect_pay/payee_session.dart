@@ -27,8 +27,8 @@ class PayeeRemoteSession extends RemoteSession with OnlineStatusUpdater {
   @override
   Stream<void> get terminationStream => _terminationStreamController.stream;
 
-  final _approvePaymentController = StreamController<BreezUserModel>();
-  Sink<BreezUserModel> get approvePaymentSink => _approvePaymentController.sink;
+  final _approvePaymentController = StreamController<LSPInformation>();
+  Sink<LSPInformation> get approvePaymentSink => _approvePaymentController.sink;
 
   final _rejectPaymentController = StreamController<void>();
   Sink<void> get rejectPaymentSink => _rejectPaymentController.sink;
@@ -99,15 +99,18 @@ class PayeeRemoteSession extends RemoteSession with OnlineStatusUpdater {
   }
 
   _handleIncomingMessages() {
-    _approvePaymentController.stream.first.then((request) {
+    _approvePaymentController.stream.first.then((lspInformation) {
       var payerData = _currentSession.payerData;
       _breezLib
-          .addInvoice(Int64(payerData.amount),
-              payeeName: _currentUser.name,
-              payeeImageURL: _currentUser.avatarURL,
-              payerName: payerData.userName,
-              payerImageURL: payerData.imageURL,
-              description: payerData.description)
+          .addInvoice(
+            Int64(payerData.amount),
+            payeeName: _currentUser.name,
+            payeeImageURL: _currentUser.avatarURL,
+            payerName: payerData.userName,
+            payerImageURL: payerData.imageURL,
+            description: payerData.description,
+            inputLSP: lspInformation,
+          )
           .then((payReq) => _sendPaymentRequest(payReq.paymentRequest))
           .then((_) {
         _backgroundService.runAsTask(_sessionCompleter.future, () {
