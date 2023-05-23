@@ -7,6 +7,7 @@ import 'package:breez/bloc/lsp/lsp_model.dart';
 import 'package:breez/logger.dart';
 import 'package:breez/services/breezlib/breez_bridge.dart';
 import 'package:breez/services/breezlib/data/messages.pb.dart';
+import 'package:breez/services/device.dart';
 import 'package:breez/services/injector.dart';
 import 'package:breez/utils/retry.dart';
 import 'package:breez_translations/breez_translations_locales.dart';
@@ -27,10 +28,12 @@ class LSPBloc with AsyncActionsHandler {
 
   final Stream<AccountModel> accountStream;
   BreezBridge _breezLib;
+  Device _device;
 
   LSPBloc(this.accountStream) {
     ServiceInjector injector = ServiceInjector();
     _breezLib = injector.breezBridge;
+    _device = injector.device;
 
     registerAsyncHandlers({
       FetchLSPList: _fetchLSPList,
@@ -48,6 +51,7 @@ class LSPBloc with AsyncActionsHandler {
       _listenReconnects();
       _handleAccountChangs(sp);
       _handleLSPStatusChanges(sp);
+      _listenLifecycleEvents();
     });
   }
 
@@ -116,6 +120,15 @@ class LSPBloc with AsyncActionsHandler {
     _lspsStatusController.stream.listen((status) {
       log.info("LSP - status changed adding reconnect request");
       _reconnectStreamController.add(null);
+    });
+  }
+
+  void _listenLifecycleEvents() {
+    _device.eventStream
+        .where((e) => e == NotificationType.RESUME)
+        .listen((e) async {
+      log.info("App Resumed - flutter resume called, refreshing LSPs");
+      await _ensureLSPSFetched();
     });
   }
 
