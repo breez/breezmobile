@@ -57,6 +57,7 @@ class POSInvoiceState extends State<POSInvoice> with TickerProviderStateMixin {
 
   final TextEditingController _itemFilterController = TextEditingController();
 
+  bool _isInit = false;
   bool _useFiat = false;
   CurrencyWrapper currentCurrency;
   bool _isKeypadView = true;
@@ -75,6 +76,12 @@ class POSInvoiceState extends State<POSInvoice> with TickerProviderStateMixin {
   void didChangeDependencies() {
     final texts = context.texts();
     final posCatalogBloc = AppBlocsProvider.of<PosCatalogBloc>(context);
+    final lspBloc = AppBlocsProvider.of<LSPBloc>(context);
+
+    if (!_isInit) {
+      fetchLSPList(lspBloc);
+      _isInit = true;
+    }
 
     if (accountSubscription == null) {
       AccountBloc accountBloc = AppBlocsProvider.of<AccountBloc>(context);
