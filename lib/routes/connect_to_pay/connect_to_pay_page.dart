@@ -5,6 +5,8 @@ import 'package:breez/bloc/blocs_provider.dart';
 import 'package:breez/bloc/connect_pay/connect_pay_bloc.dart';
 import 'package:breez/bloc/connect_pay/connect_pay_model.dart';
 import 'package:breez/bloc/connect_pay/payer_session.dart';
+import 'package:breez/bloc/lsp/lsp_bloc.dart';
+import 'package:breez/utils/dynamic_fees.dart';
 import 'package:breez/widgets/back_button.dart' as backBtn;
 import 'package:breez/widgets/error_dialog.dart';
 import 'package:breez/widgets/flushbar.dart';
@@ -51,7 +53,9 @@ class ConnectToPayPageState extends State<ConnectToPayPage> {
     if (!_isInit) {
       final texts = context.texts();
       final ctpBloc = AppBlocsProvider.of<ConnectPayBloc>(context);
+      final lspBloc = AppBlocsProvider.of<LSPBloc>(context);
 
+      fetchLSPList(lspBloc);
       try {
         if (_currentSession == null) {
           _currentSession = ctpBloc.createPayerRemoteSession();
