@@ -45,7 +45,7 @@ dependencies:
   google_api_availability: ^5.0.0
   grpc: ^3.1.0
   hex: ^0.2.0
-  http: ^0.13.6
+  http: <1.0.0 # Requires Flutter 3.10
   image: ^4.0.17
   image_cropper: ^4.0.1
   image_picker: ^0.8.7+5
@@ -90,16 +90,16 @@ dependencies:
   uuid: ^3.0.7
   validators: ^3.0.0
   webdav_client: ^1.2.1
-  webview_flutter: ^4.2.0
+  webview_flutter: ^4.2.1
 
   anytime:
     git:
       url: https://github.com/breez/anytime_podcast_player.git
-      ref: ba46f9438fb14765689ac124eb5f55b1d425f5ce
+      ref: c9a97586b9f116014675a2c856b55f29731b93e2
   flutter_downloader:
     git:
       url: https://github.com/breez/flutter_downloader.git
-      ref: fe2331610fe6ec3b0f2962683d7caceb907b015c
+      ref: c9cbc56c6d1c8bb434301757be84ac1e65d046c6
   flutter_typeahead:
     git:
       url: https://github.com/breez/flutter_typeahead.git
@@ -121,7 +121,7 @@ dependency_overrides:
   flutter_downloader:
     git:
       url: https://github.com/breez/flutter_downloader.git
-      ref: 7a90641a687e27cc3cb451389f1281faceeef56f
+      ref: c9cbc56c6d1c8bb434301757be84ac1e65d046c6
   podcast_search:
     git:
       url: https://github.com/breez/podcast_search.git

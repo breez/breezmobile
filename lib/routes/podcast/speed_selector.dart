@@ -66,8 +66,8 @@ class SpeedSelectorWidgetState extends State<SpeedSelectorWidget> {
           style: ElevatedButton.styleFrom(
             elevation: 0,
             padding: const EdgeInsets.all(8.0),
-            foregroundColor: themeData.primaryColor,
-            backgroundColor: themeData.canvasColor,
+            foregroundColor: themeData.buttonTheme.colorScheme.onPrimary,
+            backgroundColor: themeData.scaffoldBackgroundColor,
             fixedSize: const Size(48.0, 48.0),
             shape: const CircleBorder(),
           ),
