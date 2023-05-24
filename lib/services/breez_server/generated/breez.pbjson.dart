@@ -116,15 +116,52 @@ const LSPInformation$json = const {
     const {'1': 'fee_rate', '3': 8, '4': 1, '5': 1, '10': 'fee_rate'},
     const {'1': 'time_lock_delta', '3': 9, '4': 1, '5': 13, '10': 'time_lock_delta'},
     const {'1': 'min_htlc_msat', '3': 10, '4': 1, '5': 3, '10': 'min_htlc_msat'},
-    const {'1': 'channel_fee_permyriad', '3': 11, '4': 1, '5': 3, '10': 'channelFeePermyriad'},
+    const {
+      '1': 'channel_fee_permyriad',
+      '3': 11,
+      '4': 1,
+      '5': 3,
+      '8': const {'3': true},
+      '10': 'channelFeePermyriad',
+    },
     const {'1': 'lsp_pubkey', '3': 12, '4': 1, '5': 12, '10': 'lspPubkey'},
-    const {'1': 'max_inactive_duration', '3': 13, '4': 1, '5': 3, '10': 'maxInactiveDuration'},
-    const {'1': 'channel_minimum_fee_msat', '3': 14, '4': 1, '5': 3, '10': 'channelMinimumFeeMsat'},
+    const {
+      '1': 'max_inactive_duration',
+      '3': 13,
+      '4': 1,
+      '5': 3,
+      '8': const {'3': true},
+      '10': 'maxInactiveDuration',
+    },
+    const {
+      '1': 'channel_minimum_fee_msat',
+      '3': 14,
+      '4': 1,
+      '5': 3,
+      '8': const {'3': true},
+      '10': 'channelMinimumFeeMsat',
+    },
+    const {'1': 'opening_fee_params_menu', '3': 15, '4': 3, '5': 11, '6': '.breez.OpeningFeeParams', '10': 'openingFeeParamsMenu'},
   ],
 };
 
 /// Descriptor for `LSPInformation`. Decode as a `google.protobuf.DescriptorProto`.
-final $typed_data.Uint8List lSPInformationDescriptor = $convert.base64Decode('Cg5MU1BJbmZvcm1hdGlvbhISCgRuYW1lGAEgASgJUgRuYW1lEh4KCndpZGdldF91cmwYAiABKAlSCndpZGdldF91cmwSFgoGcHVia2V5GAMgASgJUgZwdWJrZXkSEgoEaG9zdBgEIAEoCVIEaG9zdBIqChBjaGFubmVsX2NhcGFjaXR5GAUgASgDUhBjaGFubmVsX2NhcGFjaXR5EiAKC3RhcmdldF9jb25mGAYgASgFUgt0YXJnZXRfY29uZhIkCg1iYXNlX2ZlZV9tc2F0GAcgASgDUg1iYXNlX2ZlZV9tc2F0EhoKCGZlZV9yYXRlGAggASgBUghmZWVfcmF0ZRIoCg90aW1lX2xvY2tfZGVsdGEYCSABKA1SD3RpbWVfbG9ja19kZWx0YRIkCg1taW5faHRsY19tc2F0GAogASgDUg1taW5faHRsY19tc2F0EjIKFWNoYW5uZWxfZmVlX3Blcm15cmlhZBgLIAEoA1ITY2hhbm5lbEZlZVBlcm15cmlhZBIdCgpsc3BfcHVia2V5GAwgASgMUglsc3BQdWJrZXkSMgoVbWF4X2luYWN0aXZlX2R1cmF0aW9uGA0gASgDUhNtYXhJbmFjdGl2ZUR1cmF0aW9uEjcKGGNoYW5uZWxfbWluaW11bV9mZWVfbXNhdBgOIAEoA1IVY2hhbm5lbE1pbmltdW1GZWVNc2F0');
+final $typed_data.Uint8List lSPInformationDescriptor = $convert.base64Decode('Cg5MU1BJbmZvcm1hdGlvbhISCgRuYW1lGAEgASgJUgRuYW1lEh4KCndpZGdldF91cmwYAiABKAlSCndpZGdldF91cmwSFgoGcHVia2V5GAMgASgJUgZwdWJrZXkSEgoEaG9zdBgEIAEoCVIEaG9zdBIqChBjaGFubmVsX2NhcGFjaXR5GAUgASgDUhBjaGFubmVsX2NhcGFjaXR5EiAKC3RhcmdldF9jb25mGAYgASgFUgt0YXJnZXRfY29uZhIkCg1iYXNlX2ZlZV9tc2F0GAcgASgDUg1iYXNlX2ZlZV9tc2F0EhoKCGZlZV9yYXRlGAggASgBUghmZWVfcmF0ZRIoCg90aW1lX2xvY2tfZGVsdGEYCSABKA1SD3RpbWVfbG9ja19kZWx0YRIkCg1taW5faHRsY19tc2F0GAogASgDUg1taW5faHRsY19tc2F0EjYKFWNoYW5uZWxfZmVlX3Blcm15cmlhZBgLIAEoA0ICGAFSE2NoYW5uZWxGZWVQZXJteXJpYWQSHQoKbHNwX3B1YmtleRgMIAEoDFIJbHNwUHVia2V5EjYKFW1heF9pbmFjdGl2ZV9kdXJhdGlvbhgNIAEoA0ICGAFSE21heEluYWN0aXZlRHVyYXRpb24SOwoYY2hhbm5lbF9taW5pbXVtX2ZlZV9tc2F0GA4gASgDQgIYAVIVY2hhbm5lbE1pbmltdW1GZWVNc2F0Ek4KF29wZW5pbmdfZmVlX3BhcmFtc19tZW51GA8gAygLMhcuYnJlZXouT3BlbmluZ0ZlZVBhcmFtc1IUb3BlbmluZ0ZlZVBhcmFtc01lbnU=');
+@$core.Deprecated('Use openingFeeParamsDescriptor instead')
+const OpeningFeeParams$json = const {
+  '1': 'OpeningFeeParams',
+  '2': const [
+    const {'1': 'min_msat', '3': 1, '4': 1, '5': 4, '10': 'minMsat'},
+    const {'1': 'proportional', '3': 2, '4': 1, '5': 13, '10': 'proportional'},
+    const {'1': 'valid_until', '3': 3, '4': 1, '5': 9, '10': 'validUntil'},
+    const {'1': 'max_idle_time', '3': 4, '4': 1, '5': 13, '10': 'maxIdleTime'},
+    const {'1': 'max_client_to_self_delay', '3': 5, '4': 1, '5': 13, '10': 'maxClientToSelfDelay'},
+    const {'1': 'promise', '3': 6, '4': 1, '5': 9, '10': 'promise'},
+  ],
+};
+
+/// Descriptor for `OpeningFeeParams`. Decode as a `google.protobuf.DescriptorProto`.
+final $typed_data.Uint8List openingFeeParamsDescriptor = $convert.base64Decode('ChBPcGVuaW5nRmVlUGFyYW1zEhkKCG1pbl9tc2F0GAEgASgEUgdtaW5Nc2F0EiIKDHByb3BvcnRpb25hbBgCIAEoDVIMcHJvcG9ydGlvbmFsEh8KC3ZhbGlkX3VudGlsGAMgASgJUgp2YWxpZFVudGlsEiIKDW1heF9pZGxlX3RpbWUYBCABKA1SC21heElkbGVUaW1lEjYKGG1heF9jbGllbnRfdG9fc2VsZl9kZWxheRgFIAEoDVIUbWF4Q2xpZW50VG9TZWxmRGVsYXkSGAoHcHJvbWlzZRgGIAEoCVIHcHJvbWlzZQ==');
 @$core.Deprecated('Use lSPListReplyDescriptor instead')
 const LSPListReply$json = const {
   '1': 'LSPListReply',
