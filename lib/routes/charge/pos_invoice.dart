@@ -265,10 +265,17 @@ class POSInvoiceState extends State<POSInvoice> with TickerProviderStateMixin {
                       isKeypadView: _isKeypadView,
                       currentAmount: currentAmount,
                       onInvoiceSubmit: () {
+                        final navigator = Navigator.of(context);
+                        var loaderRoute = createLoaderRoute(context);
+                        navigator.push(loaderRoute);
+
                         final tempFees =
                             lspStatus.currentLSP.cheapestOpeningFeeParams;
                         fetchLSPList(lspBloc).then(
                           (lspList) {
+                            if (loaderRoute.isActive) {
+                              navigator.removeRoute(loaderRoute);
+                            }
                             var refreshedLSP = lspList.firstWhere(
                               (lsp) => lsp.lspID == lspStatus.currentLSP.lspID,
                             );
@@ -289,6 +296,11 @@ class POSInvoiceState extends State<POSInvoice> with TickerProviderStateMixin {
                                 refreshedLSP.raw,
                               ),
                             );
+                          },
+                          onError: (_) {
+                            if (loaderRoute.isActive) {
+                              navigator.removeRoute(loaderRoute);
+                            }
                           },
                         );
                       },
@@ -382,9 +394,16 @@ class POSInvoiceState extends State<POSInvoice> with TickerProviderStateMixin {
               style: theme.invoiceChargeAmountStyle,
             ),
             onPressed: () {
+              final navigator = Navigator.of(context);
+              var loaderRoute = createLoaderRoute(context);
+              navigator.push(loaderRoute);
+
               final tempFees = lspStatus.currentLSP.cheapestOpeningFeeParams;
               fetchLSPList(lspBloc).then(
                 (lspList) {
+                  if (loaderRoute.isActive) {
+                    navigator.removeRoute(loaderRoute);
+                  }
                   var refreshedLSP = lspList.firstWhere(
                     (lsp) => lsp.lspID == lspStatus.currentLSP.lspID,
                   );
@@ -405,6 +424,11 @@ class POSInvoiceState extends State<POSInvoice> with TickerProviderStateMixin {
                       refreshedLSP.raw,
                     ),
                   );
+                },
+                onError: (_) {
+                  if (loaderRoute.isActive) {
+                    navigator.removeRoute(loaderRoute);
+                  }
                 },
               );
             },
