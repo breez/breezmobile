@@ -18,6 +18,7 @@ import 'package:breez/utils/dynamic_fees.dart';
 import 'package:breez/utils/stream_builder_extensions.dart';
 import 'package:breez/widgets/enter_payment_info_dialog.dart';
 import 'package:breez/widgets/escher_dialog.dart';
+import 'package:breez/widgets/loader.dart';
 import 'package:breez/widgets/lsp_fee.dart';
 import 'package:breez/widgets/route.dart';
 import 'package:breez/widgets/warning_box.dart';
@@ -355,9 +356,16 @@ Future showReceiveOptions(
                           onTap: () {
                             Navigator.of(context).pop();
                             if (v.refreshLSP || v.showLSPFee) {
+                              final navigator = Navigator.of(context);
+                              var loaderRoute = createLoaderRoute(context);
+                              navigator.push(loaderRoute);
+
                               final currentLSP = lspSnapshot.data.currentLSP;
                               fetchLSPList(lspBloc).then(
                                 (lspList) {
+                                  if (loaderRoute.isActive) {
+                                    navigator.removeRoute(loaderRoute);
+                                  }
                                   var refreshedLSP = lspList.firstWhere(
                                     (lsp) => lsp.lspID == currentLSP.lspID,
                                   );
@@ -371,6 +379,11 @@ Future showReceiveOptions(
                                         )
                                       : Navigator.of(context)
                                           .pushNamed(v.route);
+                                },
+                                onError: (_) {
+                                  if (loaderRoute.isActive) {
+                                    navigator.removeRoute(loaderRoute);
+                                  }
                                 },
                               );
                             } else {

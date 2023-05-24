@@ -62,9 +62,16 @@ class PayeeSessionWidget extends StatelessWidget {
                     if (action == texts.connect_to_pay_payee_action_reject) {
                       _currentSession.rejectPaymentSink.add(null);
                     } else {
+                      final navigator = Navigator.of(context);
+                      var loaderRoute = createLoaderRoute(context);
+                      navigator.push(loaderRoute);
+
                       final currentLSP = lspSnapshot.data.currentLSP;
                       final tempFees = currentLSP.cheapestOpeningFeeParams;
                       fetchLSPList(lspBloc).then((lspList) {
+                        if (loaderRoute.isActive) {
+                          navigator.removeRoute(loaderRoute);
+                        }
                         var refreshedLSP = lspList.firstWhere(
                           (lsp) => lsp.lspID == currentLSP.lspID,
                         );
@@ -80,6 +87,10 @@ class PayeeSessionWidget extends StatelessWidget {
                             return;
                           },
                         );
+                      }, onError: (_) {
+                        if (loaderRoute.isActive) {
+                          navigator.removeRoute(loaderRoute);
+                        }
                       });
                     }
                   },
