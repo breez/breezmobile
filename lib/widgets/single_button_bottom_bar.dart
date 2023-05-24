@@ -59,7 +59,7 @@ class SubmitButton extends StatelessWidget {
       child: ActionButton(
         text: text,
         onPressed: onPressed,
-        enabled: true,
+        enabled: onPressed != null ?? true,
         fill: true,
         variant: Variant.fab,
       ),

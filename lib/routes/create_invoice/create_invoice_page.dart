@@ -144,49 +144,58 @@ class CreateInvoicePageState extends State<CreateInvoicePage> {
                   text: _withdrawFetchResponse == null
                       ? texts.invoice_action_create
                       : texts.invoice_action_redeem,
-                  onPressed: () {
-                    if (_formKey.currentState.validate()) {
-                      final navigator = Navigator.of(context);
-                      var loaderRoute = createLoaderRoute(context);
-                      navigator.push(loaderRoute);
-
-                      final tempFees =
-                          lspStatus.currentLSP.cheapestOpeningFeeParams;
-                      fetchLSPList(lspBloc).then(
-                        (lspList) {
-                          if (loaderRoute.isActive) {
-                            navigator.removeRoute(loaderRoute);
+                  onPressed: !snapshot.hasData
+                      ? null
+                      : () {
+                          if (_formKey.currentState.validate()) {
+                            final navigator = Navigator.of(context);
+                            var loaderRoute = createLoaderRoute(context);
+                            try {
+                              navigator.push(loaderRoute);
+                              final tempFees =
+                                  lspStatus.currentLSP.cheapestOpeningFeeParams;
+                              fetchLSPList(lspBloc).then(
+                                (lspList) {
+                                  if (loaderRoute.isActive) {
+                                    navigator.removeRoute(loaderRoute);
+                                  }
+                                  var refreshedLSP = lspList.firstWhere(
+                                    (lsp) =>
+                                        lsp.lspID == lspStatus.currentLSP.lspID,
+                                  );
+                                  // Show fee dialog if necessary and create invoice dialog
+                                  showSetupFeesDialog(
+                                    context,
+                                    hasFeesChanged(
+                                      tempFees,
+                                      refreshedLSP.cheapestOpeningFeeParams,
+                                    ),
+                                    () => _createInvoice(
+                                      context,
+                                      accountBloc,
+                                      account,
+                                      refreshedLSP.raw,
+                                    ),
+                                  );
+                                },
+                                onError: (e) {
+                                  if (loaderRoute.isActive) {
+                                    navigator.removeRoute(loaderRoute);
+                                  }
+                                  showFlushbar(
+                                    context,
+                                    message: texts
+                                        .qr_code_dialog_error(e.toString()),
+                                  );
+                                },
+                              );
+                            } catch (e) {
+                              if (loaderRoute.isActive) {
+                                navigator.removeRoute(loaderRoute);
+                              }
+                            }
                           }
-                          var refreshedLSP = lspList.firstWhere(
-                            (lsp) => lsp.lspID == lspStatus.currentLSP.lspID,
-                          );
-                          // Show fee dialog if necessary and create invoice dialog
-                          showSetupFeesDialog(
-                            context,
-                            hasFeesChanged(
-                              tempFees,
-                              refreshedLSP.cheapestOpeningFeeParams,
-                            ),
-                            () => _createInvoice(
-                              context,
-                              accountBloc,
-                              account,
-                              refreshedLSP.raw,
-                            ),
-                          );
                         },
-                        onError: (e) {
-                          if (loaderRoute.isActive) {
-                            navigator.removeRoute(loaderRoute);
-                          }
-                          showFlushbar(
-                            context,
-                            message: texts.qr_code_dialog_error(e.toString()),
-                          );
-                        },
-                      );
-                    }
-                  },
                 ),
               );
             },
