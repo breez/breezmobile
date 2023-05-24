@@ -381,7 +381,7 @@ class POSInvoiceState extends State<POSInvoice> with TickerProviderStateMixin {
               textAlign: TextAlign.center,
               style: theme.invoiceChargeAmountStyle,
             ),
-            onPressed: () => () {
+            onPressed: () {
               final tempFees = lspStatus.currentLSP.cheapestOpeningFeeParams;
               fetchLSPList(lspBloc).then(
                 (lspList) {
