@@ -64,34 +64,40 @@ class PayeeSessionWidget extends StatelessWidget {
                     } else {
                       final navigator = Navigator.of(context);
                       var loaderRoute = createLoaderRoute(context);
-                      navigator.push(loaderRoute);
+                      try {
+                        navigator.push(loaderRoute);
 
-                      final currentLSP = lspSnapshot.data.currentLSP;
-                      final tempFees = currentLSP.cheapestOpeningFeeParams;
-                      fetchLSPList(lspBloc).then((lspList) {
+                        final currentLSP = lspSnapshot.data.currentLSP;
+                        final tempFees = currentLSP.cheapestOpeningFeeParams;
+                        fetchLSPList(lspBloc).then((lspList) {
+                          if (loaderRoute.isActive) {
+                            navigator.removeRoute(loaderRoute);
+                          }
+                          var refreshedLSP = lspList.firstWhere(
+                            (lsp) => lsp.lspID == currentLSP.lspID,
+                          );
+                          showSetupFeesDialog(
+                            context,
+                            hasFeesChanged(
+                              tempFees,
+                              refreshedLSP.cheapestOpeningFeeParams,
+                            ),
+                            () {
+                              _currentSession.approvePaymentSink
+                                  .add(refreshedLSP.raw);
+                              return;
+                            },
+                          );
+                        }, onError: (_) {
+                          if (loaderRoute.isActive) {
+                            navigator.removeRoute(loaderRoute);
+                          }
+                        });
+                      } catch (e) {
                         if (loaderRoute.isActive) {
                           navigator.removeRoute(loaderRoute);
                         }
-                        var refreshedLSP = lspList.firstWhere(
-                          (lsp) => lsp.lspID == currentLSP.lspID,
-                        );
-                        showSetupFeesDialog(
-                          context,
-                          hasFeesChanged(
-                            tempFees,
-                            refreshedLSP.cheapestOpeningFeeParams,
-                          ),
-                          () {
-                            _currentSession.approvePaymentSink
-                                .add(refreshedLSP.raw);
-                            return;
-                          },
-                        );
-                      }, onError: (_) {
-                        if (loaderRoute.isActive) {
-                          navigator.removeRoute(loaderRoute);
-                        }
-                      });
+                      }
                     }
                   },
                   disabledActions: _getDisabledActions(context, sessionState),

@@ -152,6 +152,7 @@ class CreateInvoicePageState extends State<CreateInvoicePage> {
                             var loaderRoute = createLoaderRoute(context);
                             try {
                               navigator.push(loaderRoute);
+
                               final tempFees =
                                   lspStatus.currentLSP.cheapestOpeningFeeParams;
                               fetchLSPList(lspBloc).then(

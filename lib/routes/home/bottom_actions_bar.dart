@@ -358,34 +358,40 @@ Future showReceiveOptions(
                             if (v.refreshLSP || v.showLSPFee) {
                               final navigator = Navigator.of(context);
                               var loaderRoute = createLoaderRoute(context);
-                              navigator.push(loaderRoute);
+                              try {
+                                navigator.push(loaderRoute);
 
-                              final currentLSP = lspSnapshot.data.currentLSP;
-                              fetchLSPList(lspBloc).then(
-                                (lspList) {
-                                  if (loaderRoute.isActive) {
-                                    navigator.removeRoute(loaderRoute);
-                                  }
-                                  var refreshedLSP = lspList.firstWhere(
-                                    (lsp) => lsp.lspID == currentLSP.lspID,
-                                  );
-                                  (v.showLSPFee)
-                                      ? promptLSPFeeAndNavigate(
-                                          parentContext,
-                                          account,
-                                          refreshedLSP
-                                              .longestValidOpeningFeeParams,
-                                          v.route,
-                                        )
-                                      : Navigator.of(context)
-                                          .pushNamed(v.route);
-                                },
-                                onError: (_) {
-                                  if (loaderRoute.isActive) {
-                                    navigator.removeRoute(loaderRoute);
-                                  }
-                                },
-                              );
+                                final currentLSP = lspSnapshot.data.currentLSP;
+                                fetchLSPList(lspBloc).then(
+                                  (lspList) {
+                                    if (loaderRoute.isActive) {
+                                      navigator.removeRoute(loaderRoute);
+                                    }
+                                    var refreshedLSP = lspList.firstWhere(
+                                      (lsp) => lsp.lspID == currentLSP.lspID,
+                                    );
+                                    (v.showLSPFee)
+                                        ? promptLSPFeeAndNavigate(
+                                            parentContext,
+                                            account,
+                                            refreshedLSP
+                                                .longestValidOpeningFeeParams,
+                                            v.route,
+                                          )
+                                        : Navigator.of(context)
+                                            .pushNamed(v.route);
+                                  },
+                                  onError: (_) {
+                                    if (loaderRoute.isActive) {
+                                      navigator.removeRoute(loaderRoute);
+                                    }
+                                  },
+                                );
+                              } catch (e) {
+                                if (loaderRoute.isActive) {
+                                  navigator.removeRoute(loaderRoute);
+                                }
+                              }
                             } else {
                               Navigator.of(context).pushNamed(v.route);
                             }

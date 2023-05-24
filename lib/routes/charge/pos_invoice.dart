@@ -267,42 +267,49 @@ class POSInvoiceState extends State<POSInvoice> with TickerProviderStateMixin {
                       onInvoiceSubmit: () {
                         final navigator = Navigator.of(context);
                         var loaderRoute = createLoaderRoute(context);
-                        navigator.push(loaderRoute);
+                        try {
+                          navigator.push(loaderRoute);
 
-                        final tempFees =
-                            lspStatus.currentLSP.cheapestOpeningFeeParams;
-                        fetchLSPList(lspBloc).then(
-                          (lspList) {
-                            if (loaderRoute.isActive) {
-                              navigator.removeRoute(loaderRoute);
-                            }
-                            var refreshedLSP = lspList.firstWhere(
-                              (lsp) => lsp.lspID == lspStatus.currentLSP.lspID,
-                            );
-                            // Show fee dialog if necessary and submit invoice
-                            showSetupFeesDialog(
-                              context,
-                              hasFeesChanged(
-                                tempFees,
-                                refreshedLSP.cheapestOpeningFeeParams,
-                              ),
-                              () => _onInvoiceSubmitted(
+                          final tempFees =
+                              lspStatus.currentLSP.cheapestOpeningFeeParams;
+                          fetchLSPList(lspBloc).then(
+                            (lspList) {
+                              if (loaderRoute.isActive) {
+                                navigator.removeRoute(loaderRoute);
+                              }
+                              var refreshedLSP = lspList.firstWhere(
+                                (lsp) =>
+                                    lsp.lspID == lspStatus.currentLSP.lspID,
+                              );
+                              // Show fee dialog if necessary and submit invoice
+                              showSetupFeesDialog(
                                 context,
-                                currentSale,
-                                invoiceBloc,
-                                lnUrlBloc,
-                                userProfile,
-                                accountModel,
-                                refreshedLSP.raw,
-                              ),
-                            );
-                          },
-                          onError: (_) {
-                            if (loaderRoute.isActive) {
-                              navigator.removeRoute(loaderRoute);
-                            }
-                          },
-                        );
+                                hasFeesChanged(
+                                  tempFees,
+                                  refreshedLSP.cheapestOpeningFeeParams,
+                                ),
+                                () => _onInvoiceSubmitted(
+                                  context,
+                                  currentSale,
+                                  invoiceBloc,
+                                  lnUrlBloc,
+                                  userProfile,
+                                  accountModel,
+                                  refreshedLSP.raw,
+                                ),
+                              );
+                            },
+                            onError: (_) {
+                              if (loaderRoute.isActive) {
+                                navigator.removeRoute(loaderRoute);
+                              }
+                            },
+                          );
+                        } catch (e) {
+                          if (loaderRoute.isActive) {
+                            navigator.removeRoute(loaderRoute);
+                          }
+                        }
                       },
                       approveClear: () => _approveClear(
                         context,
@@ -396,41 +403,47 @@ class POSInvoiceState extends State<POSInvoice> with TickerProviderStateMixin {
             onPressed: () {
               final navigator = Navigator.of(context);
               var loaderRoute = createLoaderRoute(context);
-              navigator.push(loaderRoute);
+              try {
+                navigator.push(loaderRoute);
 
-              final tempFees = lspStatus.currentLSP.cheapestOpeningFeeParams;
-              fetchLSPList(lspBloc).then(
-                (lspList) {
-                  if (loaderRoute.isActive) {
-                    navigator.removeRoute(loaderRoute);
-                  }
-                  var refreshedLSP = lspList.firstWhere(
-                    (lsp) => lsp.lspID == lspStatus.currentLSP.lspID,
-                  );
-                  // Show fee dialog if necessary and submit invoice
-                  showSetupFeesDialog(
-                    context,
-                    hasFeesChanged(
-                      tempFees,
-                      refreshedLSP.cheapestOpeningFeeParams,
-                    ),
-                    () => _onInvoiceSubmitted(
+                final tempFees = lspStatus.currentLSP.cheapestOpeningFeeParams;
+                fetchLSPList(lspBloc).then(
+                  (lspList) {
+                    if (loaderRoute.isActive) {
+                      navigator.removeRoute(loaderRoute);
+                    }
+                    var refreshedLSP = lspList.firstWhere(
+                      (lsp) => lsp.lspID == lspStatus.currentLSP.lspID,
+                    );
+                    // Show fee dialog if necessary and submit invoice
+                    showSetupFeesDialog(
                       context,
-                      currentSale,
-                      invoiceBloc,
-                      lnUrlBloc,
-                      userProfile,
-                      accountModel,
-                      refreshedLSP.raw,
-                    ),
-                  );
-                },
-                onError: (_) {
-                  if (loaderRoute.isActive) {
-                    navigator.removeRoute(loaderRoute);
-                  }
-                },
-              );
+                      hasFeesChanged(
+                        tempFees,
+                        refreshedLSP.cheapestOpeningFeeParams,
+                      ),
+                      () => _onInvoiceSubmitted(
+                        context,
+                        currentSale,
+                        invoiceBloc,
+                        lnUrlBloc,
+                        userProfile,
+                        accountModel,
+                        refreshedLSP.raw,
+                      ),
+                    );
+                  },
+                  onError: (_) {
+                    if (loaderRoute.isActive) {
+                      navigator.removeRoute(loaderRoute);
+                    }
+                  },
+                );
+              } catch (e) {
+                if (loaderRoute.isActive) {
+                  navigator.removeRoute(loaderRoute);
+                }
+              }
             },
           ),
         ),
