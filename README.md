@@ -82,7 +82,7 @@ To learn more about it, please read [Introducing Breez](https://doc.breez.techno
 
 ## System Requirements
 
-- Android 7+ 64bit
+- Android 9+ 64bit
 - iPhone 6+
 
 ## Setting up the environment
