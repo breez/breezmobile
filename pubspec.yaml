@@ -23,6 +23,8 @@ dependencies:
   confetti: ^0.7.0
   connectivity_plus: ^4.0.2
   convert: ^3.1.1
+  cktap_protocol:
+    path: ../cktap-protocol-flutter/
   crypto: ^3.0.3
   csv: ^5.0.2
   device_info_plus: ^9.1.0

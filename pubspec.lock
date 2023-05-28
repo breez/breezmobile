@@ -283,6 +283,13 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.0.3"
+  cktap_protocol:
+    dependency: "direct main"
+    description:
+      path: "../cktap-protocol-flutter"
+      relative: true
+    source: path
+    version: "0.0.1"
   cli_util:
     dependency: transitive
     description:
