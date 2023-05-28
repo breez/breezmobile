@@ -4,6 +4,7 @@ import 'dart:io';
 import 'package:breez/services/device.dart';
 import 'package:breez/services/injector.dart';
 import 'package:breez/services/supported_schemes.dart';
+import 'package:cktap_protocol/cktap_protocol.dart';
 import 'package:flutter/services.dart';
 import 'package:logging/logging.dart';
 import 'package:nfc_manager/nfc_manager.dart';
@@ -76,6 +77,12 @@ class NFCService {
     await NfcManager.instance.stopSession();
     NfcManager.instance.startSession(
       onDiscovered: (NfcTag tag) async {
+        if (!autoClose) {
+          var wasHandled = await _handleSatscard(tag);
+          if (wasHandled) {
+            return;
+          }
+        }
         var ndef = Ndef.from(tag);
         _log.info("tag data: ${tag.data.toString()}");
         if (ndef != null) {
@@ -95,6 +102,23 @@ class NFCService {
         }
       },
     );
+  }
+
+  Future<bool> _handleSatscard(NfcTag tag) async {
+    var card = await CKTapCardProtocol.instance.createCKTapCard(tag);
+    if (card.isTapsigner) {
+      // we don't care
+      var tapsigner = card.toTapsigner();
+      assert(tapsigner != null); // serious library error if this ever triggers
+      return false;
+    }
+
+    var satscard = card.toSatscard();
+    if (satscard != null) {
+      return true;
+    }
+
+    return false;
   }
 
   close() {
