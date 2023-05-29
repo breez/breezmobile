@@ -172,15 +172,18 @@ class iCloudBackupProvider : NSObject, BindingsNativeBackupProviderProtocol {
         return filesArray.joined(separator: ",");
     }
     
-    func uploadBackupFiles(_ file: String?, nodeID: String?, encryptionType: String?, error: NSErrorPointer) -> String {
+    func uploadBackupFiles(_ file: String?, nodeID: String?, encryptionType: String?,timestamp: String?, error: NSErrorPointer) -> String {
         let accStatus = getAccountStatus();
         if (accStatus == .noAccount) {
             error?.pointee = NSError(domain: "AuthError", code: 0, userInfo: [NSLocalizedDescriptionKey: "AuthError"]);
             return "";
         }
         
-        let record = CKRecord(recordType: "BackupSnapshot", recordID: CKRecord.ID(recordName: nodeID!));
-        record["backupEncryptionType"] = encryptionType;
+        // Now that we have the latest modfied time we can update the snapshots latest modfied time.
+        let record = CKRecord(recordType: "BackupSnapshot", recordID: CKRecord.ID(recordName: nodeID!))
+        record["backupEncryptionType"] = encryptionType
+        record["timestamp"] = timestamp
+        
         if (URL(fileURLWithPath: String(file!)).lastPathComponent == "app_data_backup.zip") {
             record["app_data_backup"] = CKAsset(fileURL: URL(fileURLWithPath: String(file!)));
         } else {
@@ -206,7 +209,7 @@ class iCloudBackupProvider : NSObject, BindingsNativeBackupProviderProtocol {
         timestamprecord["nodeID"] = nodeID!
         var modtime: Date?
         
-        var (records, err) = updateRecord(record: timestamprecord, savePolicy: .allKeys)
+        var (records, err) = updateRecord(record: timestamprecord, savePolicy: .changedKeys)
         guard err == nil else {
             error?.pointee = NSError(domain: err!.localizedDescription, code: 0, userInfo: nil)
             return ""
@@ -216,19 +219,6 @@ class iCloudBackupProvider : NSObject, BindingsNativeBackupProviderProtocol {
             if r != nil {
                 modtime = r?.modificationDate
             }
-        }
-        
-        // Now that we have the latest modfied time we can update the snapshots latest modfied time.
-        let record = CKRecord(recordType: "BackupSnapshot", recordID: CKRecord.ID(recordName: nodeID!))
-        if #available(iOS 15.0, *) {
-            record["timestamp"] = modtime?.ISO8601Format()
-        } else {
-            record["timestamp"] = formatDateToISO8601(date: modtime)
-        }
-        (_, err) = updateRecord(record: record, savePolicy: .allKeys)
-        guard err == nil else {
-            error?.pointee = NSError(domain: err!.localizedDescription, code: 0, userInfo: nil)
-            return ""
         }
         
         if #available(iOS 15.0, *) {
