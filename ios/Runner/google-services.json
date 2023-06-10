@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "882385107067",
+    "project_id": "breez-2869f",
+    "storage_bucket": "breez-2869f.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:882385107067:android:4f9c852e6c3a71eb758ade",
+        "android_client_info": {
+          "package_name": "com.breez.client.debug"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "882385107067-llgtlanp33rbbclaja0fnab9kmpgo16o.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAHvLGLA8ICW5xK5mUWabRRjrIH63rhdsU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "882385107067-llgtlanp33rbbclaja0fnab9kmpgo16o.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

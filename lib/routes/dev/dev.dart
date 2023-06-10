@@ -9,6 +9,8 @@ import 'package:breez/bloc/account/add_funds_model.dart';
 import 'package:breez/bloc/backup/backup_bloc.dart';
 import 'package:breez/bloc/backup/backup_model.dart';
 import 'package:breez/bloc/blocs_provider.dart';
+import 'package:breez/bloc/marketplace/marketplace_bloc.dart';
+import 'package:breez/bloc/marketplace/vendor_model.dart';
 import 'package:breez/bloc/podcast_history/sqflite/podcast_history_database.dart';
 import 'package:breez/bloc/pos_catalog/bloc.dart';
 import 'package:breez/bloc/pos_catalog/sqlite/db.dart';
@@ -150,6 +152,8 @@ class DevViewState extends State<DevView> {
     BackupBloc backupBloc = AppBlocsProvider.of<BackupBloc>(context);
     AddFundsBloc addFundsBloc = BlocProvider.of<AddFundsBloc>(context);
     UserProfileBloc userBloc = AppBlocsProvider.of<UserProfileBloc>(context);
+    MarketplaceBloc marketplaceBloc =
+        AppBlocsProvider.of<MarketplaceBloc>(context);
     return StreamBuilder<BackupState>(
       stream: backupBloc.backupStateStream,
       builder: (ctx, backupSnapshot) => StreamBuilder(
@@ -187,6 +191,7 @@ class DevViewState extends State<DevView> {
                                   addFundsSettingsSnapshot.data,
                                   userBloc,
                                   userSnapshot.data,
+                                  marketplaceBloc,
                                 ).map((Choice choice) {
                                   return PopupMenuItem<Choice>(
                                     value: choice,
@@ -356,6 +361,7 @@ class DevViewState extends State<DevView> {
     AddFundsSettings addFundsSettings,
     UserProfileBloc userBloc,
     BreezUserModel userModel,
+    MarketplaceBloc marketplaceBloc,
   ) {
     List<Choice> choices = <Choice>[];
     choices.addAll(
@@ -599,6 +605,15 @@ class DevViewState extends State<DevView> {
         },
       ),
     );
+    choices.add(Choice(
+      title: marketplaceBloc.isVendorToggle == true
+          ? 'Display Snort'
+          : 'Hide Snort',
+      icon: Icons.phone_android,
+      function: () {
+        _toggleVendor(marketplaceBloc);
+      },
+    ));
 
     return choices;
   }
@@ -609,6 +624,12 @@ class DevViewState extends State<DevView> {
     Navigator.of(_scaffoldKey.currentState.context)
         .pushReplacementNamed("/splash");
   }*/
+
+  void _toggleVendor(MarketplaceBloc marketplaceBloc) async {
+    marketplaceBloc.isVendorToggle = !marketplaceBloc.isVendorToggle;
+
+    await marketplaceBloc.loadVendors();
+  }
 
   void _shareFile(String command, String text) async {
     Directory tempDir = await getTemporaryDirectory();
