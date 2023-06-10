@@ -4,8 +4,10 @@ import 'dart:math';
 import 'package:breez/bloc/account/fiat_conversion.dart';
 import 'package:breez/bloc/pos_catalog/model.dart';
 import 'package:breez/bloc/user_profile/currency.dart';
-import 'package:breez/services/breezlib/data/rpc.pb.dart';
+import 'package:breez/logger.dart';
+import 'package:breez/services/breezlib/data/messages.pb.dart';
 import 'package:breez/utils/date.dart';
+import 'package:breez/utils/exceptions.dart';
 import 'package:breez_translations/breez_translations_locales.dart';
 import 'package:fixnum/fixnum.dart';
 
@@ -369,7 +371,7 @@ class AccountModel {
     }
 
     if (swapStatus.error?.isNotEmpty == true) {
-      return texts.status_failed_to_add_funds(swapStatus.error);
+      return texts.status_failed_to_add_funds(extractExceptionMessage(swapStatus.error));
     }
 
     return null;
@@ -384,15 +386,27 @@ class AccountModel {
         orElse: () => null);
   }
 
-  String validateOutgoingPayment(Int64 amount) {
-    return validatePayment(amount, true);
+  String validateOutgoingPayment(
+    Int64 amount, {
+    /* TODO remove this auto-filled flag when we have a solution to decimals round at our library */
+    bool autoFilled = false,
+  }) {
+    return validatePayment(amount, true, autoFilled);
   }
 
   String validateIncomingPayment(Int64 amount) {
-    return validatePayment(amount, false);
+    return validatePayment(amount, false, false);
   }
 
-  String validatePayment(Int64 amount, bool outgoing) {
+  String validatePayment(
+    Int64 amount,
+    bool outgoing,
+    /* TODO remove this auto-filled flag when we have a solution to decimals round at our library */
+    bool autoFilled,
+  ) {
+    log.info("validatePayment amount: $amount, outgoing: $outgoing where "
+        "maxAllowedToReceive: $maxAllowedToReceive, maxAllowedToPay: $maxAllowedToPay, "
+        "maxPaymentAmount: $maxPaymentAmount, reserveAmount: $reserveAmount");
     final texts = getSystemAppLocalizations();
     if (maxPaymentAmount != null && amount > maxPaymentAmount) {
       return texts.valid_payment_error_exceeds_limit;
@@ -404,6 +418,9 @@ class AccountModel {
 
     if (outgoing && amount > maxAllowedToPay) {
       if (reserveAmount > 0) {
+        if (autoFilled) {
+          return null; // TODO: remove this workaround when we have a solution to decimal round at our library
+        }
         return texts.valid_payment_error_keep_balance(
           currency.format(reserveAmount),
         );

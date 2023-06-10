@@ -14,7 +14,7 @@ security unlock-keychain -p travis ios-build.keychain
 # see http://www.egeek.me/2013/02/23/jenkins-and-xcode-user-interaction-is-not-allowed/
 security set-keychain-settings -t 3600 -l ~/Library/Keychains/ios-build.keychain
 
-sftp builderfiles@packages.breez.technology:config/conf/cert_github.p12 ~/ios_distribution.p12
+sftp builderfiles@packages.breez.technology:config/conf/ios_distribution.p12 ~/ios_distribution.p12
 sftp builderfiles@packages.breez.technology:config/conf/ios_distribution_github.cer ~/ios_distribution.cer
 sftp builderfiles@packages.breez.technology:config/conf/apple.cer ~/apple.cer
 sftp builderfiles@packages.breez.technology:config/conf/brez_dist_github.mobileprovision ~/brez_dist_github.mobileprovision

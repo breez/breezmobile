@@ -3,7 +3,7 @@
 //  source: breez.proto
 //
 // @dart = 2.12
-// ignore_for_file: annotate_overrides,camel_case_types,unnecessary_const,non_constant_identifier_names,library_prefixes,unused_import,unused_shown_name,return_of_invalid_type,unnecessary_this,prefer_final_fields
+// ignore_for_file: annotate_overrides,camel_case_types,constant_identifier_names,directives_ordering,library_prefixes,non_constant_identifier_names,prefer_final_fields,return_of_invalid_type,unnecessary_const,unnecessary_import,unnecessary_this,unused_import,unused_shown_name
 
 import 'dart:core' as $core;
 
@@ -482,6 +482,7 @@ class LSPInformation extends $pb.GeneratedMessage {
     ..a<$core.List<$core.int>>(12, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'lspPubkey', $pb.PbFieldType.OY)
     ..aInt64(13, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'maxInactiveDuration')
     ..aInt64(14, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'channelMinimumFeeMsat')
+    ..pc<OpeningFeeParams>(15, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'openingFeeParamsMenu', $pb.PbFieldType.PM, subBuilder: OpeningFeeParams.create)
     ..hasRequiredFields = false
   ;
 
@@ -497,10 +498,14 @@ class LSPInformation extends $pb.GeneratedMessage {
     $core.double? feeRate,
     $core.int? timeLockDelta,
     $fixnum.Int64? minHtlcMsat,
+  @$core.Deprecated('This field is deprecated.')
     $fixnum.Int64? channelFeePermyriad,
     $core.List<$core.int>? lspPubkey,
+  @$core.Deprecated('This field is deprecated.')
     $fixnum.Int64? maxInactiveDuration,
+  @$core.Deprecated('This field is deprecated.')
     $fixnum.Int64? channelMinimumFeeMsat,
+    $core.Iterable<OpeningFeeParams>? openingFeeParamsMenu,
   }) {
     final _result = create();
     if (name != null) {
@@ -534,16 +539,22 @@ class LSPInformation extends $pb.GeneratedMessage {
       _result.minHtlcMsat = minHtlcMsat;
     }
     if (channelFeePermyriad != null) {
+      // ignore: deprecated_member_use_from_same_package
       _result.channelFeePermyriad = channelFeePermyriad;
     }
     if (lspPubkey != null) {
       _result.lspPubkey = lspPubkey;
     }
     if (maxInactiveDuration != null) {
+      // ignore: deprecated_member_use_from_same_package
       _result.maxInactiveDuration = maxInactiveDuration;
     }
     if (channelMinimumFeeMsat != null) {
+      // ignore: deprecated_member_use_from_same_package
       _result.channelMinimumFeeMsat = channelMinimumFeeMsat;
+    }
+    if (openingFeeParamsMenu != null) {
+      _result.openingFeeParamsMenu.addAll(openingFeeParamsMenu);
     }
     return _result;
   }
@@ -658,12 +669,16 @@ class LSPInformation extends $pb.GeneratedMessage {
   @$pb.TagNumber(10)
   void clearMinHtlcMsat() => clearField(10);
 
+  @$core.Deprecated('This field is deprecated.')
   @$pb.TagNumber(11)
   $fixnum.Int64 get channelFeePermyriad => $_getI64(10);
+  @$core.Deprecated('This field is deprecated.')
   @$pb.TagNumber(11)
   set channelFeePermyriad($fixnum.Int64 v) { $_setInt64(10, v); }
+  @$core.Deprecated('This field is deprecated.')
   @$pb.TagNumber(11)
   $core.bool hasChannelFeePermyriad() => $_has(10);
+  @$core.Deprecated('This field is deprecated.')
   @$pb.TagNumber(11)
   void clearChannelFeePermyriad() => clearField(11);
 
@@ -676,23 +691,151 @@ class LSPInformation extends $pb.GeneratedMessage {
   @$pb.TagNumber(12)
   void clearLspPubkey() => clearField(12);
 
+  @$core.Deprecated('This field is deprecated.')
   @$pb.TagNumber(13)
   $fixnum.Int64 get maxInactiveDuration => $_getI64(12);
+  @$core.Deprecated('This field is deprecated.')
   @$pb.TagNumber(13)
   set maxInactiveDuration($fixnum.Int64 v) { $_setInt64(12, v); }
+  @$core.Deprecated('This field is deprecated.')
   @$pb.TagNumber(13)
   $core.bool hasMaxInactiveDuration() => $_has(12);
+  @$core.Deprecated('This field is deprecated.')
   @$pb.TagNumber(13)
   void clearMaxInactiveDuration() => clearField(13);
 
+  @$core.Deprecated('This field is deprecated.')
   @$pb.TagNumber(14)
   $fixnum.Int64 get channelMinimumFeeMsat => $_getI64(13);
+  @$core.Deprecated('This field is deprecated.')
   @$pb.TagNumber(14)
   set channelMinimumFeeMsat($fixnum.Int64 v) { $_setInt64(13, v); }
+  @$core.Deprecated('This field is deprecated.')
   @$pb.TagNumber(14)
   $core.bool hasChannelMinimumFeeMsat() => $_has(13);
+  @$core.Deprecated('This field is deprecated.')
   @$pb.TagNumber(14)
   void clearChannelMinimumFeeMsat() => clearField(14);
+
+  @$pb.TagNumber(15)
+  $core.List<OpeningFeeParams> get openingFeeParamsMenu => $_getList(14);
+}
+
+class OpeningFeeParams extends $pb.GeneratedMessage {
+  static final $pb.BuilderInfo _i = $pb.BuilderInfo(const $core.bool.fromEnvironment('protobuf.omit_message_names') ? '' : 'OpeningFeeParams', package: const $pb.PackageName(const $core.bool.fromEnvironment('protobuf.omit_message_names') ? '' : 'breez'), createEmptyInstance: create)
+    ..a<$fixnum.Int64>(1, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'minMsat', $pb.PbFieldType.OU6, defaultOrMaker: $fixnum.Int64.ZERO)
+    ..a<$core.int>(2, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'proportional', $pb.PbFieldType.OU3)
+    ..aOS(3, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'validUntil')
+    ..a<$core.int>(4, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'maxIdleTime', $pb.PbFieldType.OU3)
+    ..a<$core.int>(5, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'maxClientToSelfDelay', $pb.PbFieldType.OU3)
+    ..aOS(6, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'promise')
+    ..hasRequiredFields = false
+  ;
+
+  OpeningFeeParams._() : super();
+  factory OpeningFeeParams({
+    $fixnum.Int64? minMsat,
+    $core.int? proportional,
+    $core.String? validUntil,
+    $core.int? maxIdleTime,
+    $core.int? maxClientToSelfDelay,
+    $core.String? promise,
+  }) {
+    final _result = create();
+    if (minMsat != null) {
+      _result.minMsat = minMsat;
+    }
+    if (proportional != null) {
+      _result.proportional = proportional;
+    }
+    if (validUntil != null) {
+      _result.validUntil = validUntil;
+    }
+    if (maxIdleTime != null) {
+      _result.maxIdleTime = maxIdleTime;
+    }
+    if (maxClientToSelfDelay != null) {
+      _result.maxClientToSelfDelay = maxClientToSelfDelay;
+    }
+    if (promise != null) {
+      _result.promise = promise;
+    }
+    return _result;
+  }
+  factory OpeningFeeParams.fromBuffer($core.List<$core.int> i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromBuffer(i, r);
+  factory OpeningFeeParams.fromJson($core.String i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromJson(i, r);
+  @$core.Deprecated(
+  'Using this can add significant overhead to your binary. '
+  'Use [GeneratedMessageGenericExtensions.deepCopy] instead. '
+  'Will be removed in next major version')
+  OpeningFeeParams clone() => OpeningFeeParams()..mergeFromMessage(this);
+  @$core.Deprecated(
+  'Using this can add significant overhead to your binary. '
+  'Use [GeneratedMessageGenericExtensions.rebuild] instead. '
+  'Will be removed in next major version')
+  OpeningFeeParams copyWith(void Function(OpeningFeeParams) updates) => super.copyWith((message) => updates(message as OpeningFeeParams)) as OpeningFeeParams; // ignore: deprecated_member_use
+  $pb.BuilderInfo get info_ => _i;
+  @$core.pragma('dart2js:noInline')
+  static OpeningFeeParams create() => OpeningFeeParams._();
+  OpeningFeeParams createEmptyInstance() => create();
+  static $pb.PbList<OpeningFeeParams> createRepeated() => $pb.PbList<OpeningFeeParams>();
+  @$core.pragma('dart2js:noInline')
+  static OpeningFeeParams getDefault() => _defaultInstance ??= $pb.GeneratedMessage.$_defaultFor<OpeningFeeParams>(create);
+  static OpeningFeeParams? _defaultInstance;
+
+  @$pb.TagNumber(1)
+  $fixnum.Int64 get minMsat => $_getI64(0);
+  @$pb.TagNumber(1)
+  set minMsat($fixnum.Int64 v) { $_setInt64(0, v); }
+  @$pb.TagNumber(1)
+  $core.bool hasMinMsat() => $_has(0);
+  @$pb.TagNumber(1)
+  void clearMinMsat() => clearField(1);
+
+  @$pb.TagNumber(2)
+  $core.int get proportional => $_getIZ(1);
+  @$pb.TagNumber(2)
+  set proportional($core.int v) { $_setUnsignedInt32(1, v); }
+  @$pb.TagNumber(2)
+  $core.bool hasProportional() => $_has(1);
+  @$pb.TagNumber(2)
+  void clearProportional() => clearField(2);
+
+  @$pb.TagNumber(3)
+  $core.String get validUntil => $_getSZ(2);
+  @$pb.TagNumber(3)
+  set validUntil($core.String v) { $_setString(2, v); }
+  @$pb.TagNumber(3)
+  $core.bool hasValidUntil() => $_has(2);
+  @$pb.TagNumber(3)
+  void clearValidUntil() => clearField(3);
+
+  @$pb.TagNumber(4)
+  $core.int get maxIdleTime => $_getIZ(3);
+  @$pb.TagNumber(4)
+  set maxIdleTime($core.int v) { $_setUnsignedInt32(3, v); }
+  @$pb.TagNumber(4)
+  $core.bool hasMaxIdleTime() => $_has(3);
+  @$pb.TagNumber(4)
+  void clearMaxIdleTime() => clearField(4);
+
+  @$pb.TagNumber(5)
+  $core.int get maxClientToSelfDelay => $_getIZ(4);
+  @$pb.TagNumber(5)
+  set maxClientToSelfDelay($core.int v) { $_setUnsignedInt32(4, v); }
+  @$pb.TagNumber(5)
+  $core.bool hasMaxClientToSelfDelay() => $_has(4);
+  @$pb.TagNumber(5)
+  void clearMaxClientToSelfDelay() => clearField(5);
+
+  @$pb.TagNumber(6)
+  $core.String get promise => $_getSZ(5);
+  @$pb.TagNumber(6)
+  set promise($core.String v) { $_setString(5, v); }
+  @$pb.TagNumber(6)
+  $core.bool hasPromise() => $_has(5);
+  @$pb.TagNumber(6)
+  void clearPromise() => clearField(6);
 }
 
 class LSPListReply extends $pb.GeneratedMessage {

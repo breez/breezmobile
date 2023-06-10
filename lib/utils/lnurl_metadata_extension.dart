@@ -1,6 +1,6 @@
 import 'dart:typed_data';
 
-import 'package:breez/services/breezlib/data/rpc.pb.dart';
+import 'package:breez/services/breezlib/data/messages.pb.dart';
 import 'package:flutter/cupertino.dart';
 
 Map<List<LNUrlPayMetadata>, Image> _imageCache = {};

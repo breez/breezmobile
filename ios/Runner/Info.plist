@@ -7,11 +7,14 @@
 	<key>CFBundleLocalizations</key>
 	<array>
 		<string>en</string>
+		<string>de</string>
 		<string>es</string>
 		<string>fi</string>
 		<string>fr</string>
 		<string>it</string>
 		<string>pt</string>
+		<string>sv</string>
+		<string>sk</string>
 	</array>
 	<key>CFBundleDevelopmentRegion</key>
 	<string>en</string>
@@ -28,7 +31,7 @@
 	<key>CFBundlePackageType</key>
 	<string>APPL</string>
 	<key>CFBundleShortVersionString</key>
-	<string>0.15.8</string>
+	<string>0.15.10</string>
 	<key>CFBundleSignature</key>
 	<string>????</string>
 	<key>CFBundleURLTypes</key>
@@ -405,6 +408,7 @@
         <string>D27600002545500100</string>
         <string>D27600002547410100</string>
         <string>D276000060</string>
+        <string>D2760000850101</string>
         <string>D276000118</string>
         <string>D2760001180101</string>
         <string>D27600012401</string>

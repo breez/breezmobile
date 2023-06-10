@@ -1,9 +1,13 @@
 import 'package:breez/bloc/account/account_model.dart';
+import 'package:breez/bloc/blocs_provider.dart';
 import 'package:breez/bloc/connect_pay/connect_pay_model.dart';
 import 'package:breez/bloc/connect_pay/payee_session.dart';
+import 'package:breez/bloc/lsp/lsp_bloc.dart';
 import 'package:breez/bloc/lsp/lsp_model.dart';
 import 'package:breez/bloc/user_profile/currency.dart';
+import 'package:breez/routes/create_invoice/setup_fees_dialog.dart';
 import 'package:breez/theme_data.dart' as theme;
+import 'package:breez/utils/dynamic_fees.dart';
 import 'package:breez/widgets/loader.dart';
 import 'package:breez/widgets/loading_animated_text.dart';
 import 'package:breez/widgets/warning_box.dart';
@@ -19,16 +23,16 @@ import 'session_instructions.dart';
 class PayeeSessionWidget extends StatelessWidget {
   final PayeeRemoteSession _currentSession;
   final AccountModel _account;
-  final LSPStatus _lspStatus;
 
   const PayeeSessionWidget(
     this._currentSession,
     this._account,
-    this._lspStatus,
   );
 
   @override
   Widget build(BuildContext context) {
+    final lspBloc = AppBlocsProvider.of<LSPBloc>(context);
+
     return StreamBuilder<PaymentSessionState>(
       stream: _currentSession.paymentSessionStateStream,
       builder: (context, snapshot) {
@@ -37,52 +41,93 @@ class PayeeSessionWidget extends StatelessWidget {
         final sessionState = snapshot.data;
         final payerAmount = snapshot?.data?.payerData?.amount;
 
-        return Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          mainAxisAlignment: MainAxisAlignment.start,
-          mainAxisSize: MainAxisSize.max,
-          children: [
-            SessionInstructions(
-              _PayeeInstructions(
-                sessionState,
-                _account,
-              ),
-              actions: _getActions(context, sessionState),
-              onAction: (action) => _onAction(context, action),
-              disabledActions: _getDisabledActions(context, sessionState),
-            ),
-            Padding(
-              padding: const EdgeInsets.fromLTRB(25.0, 25.0, 25.0, 21.0),
-              child: PeersConnection(sessionState),
-            ),
-            payerAmount == null || _account.maxInboundLiquidity >= payerAmount
-                ? const SizedBox()
-                : WarningBox(
-                    contentPadding: const EdgeInsets.all(8),
-                    child: Text(
-                      _formatFeeMessage(
-                        context,
-                        _account,
-                        _lspStatus,
-                        snapshot.data.payerData.amount,
-                      ),
-                      style: Theme.of(context).textTheme.titleLarge,
-                      textAlign: TextAlign.center,
-                    ),
+        return StreamBuilder<LSPStatus>(
+          stream: lspBloc.lspStatusStream,
+          builder: (context, lspSnapshot) {
+            LSPStatus lspStatus = lspSnapshot.data;
+
+            return Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              mainAxisAlignment: MainAxisAlignment.start,
+              mainAxisSize: MainAxisSize.max,
+              children: [
+                SessionInstructions(
+                  _PayeeInstructions(
+                    sessionState,
+                    _account,
                   ),
-          ],
+                  actions: _getActions(context, sessionState),
+                  onAction: (action) {
+                    final texts = context.texts();
+                    if (action == texts.connect_to_pay_payee_action_reject) {
+                      _currentSession.rejectPaymentSink.add(null);
+                    } else {
+                      final navigator = Navigator.of(context);
+                      var loaderRoute = createLoaderRoute(context);
+                      try {
+                        navigator.push(loaderRoute);
+
+                        final currentLSP = lspSnapshot.data.currentLSP;
+                        final tempFees = currentLSP.cheapestOpeningFeeParams;
+                        fetchLSPList(lspBloc).then((lspList) {
+                          if (loaderRoute.isActive) {
+                            navigator.removeRoute(loaderRoute);
+                          }
+                          var refreshedLSP = lspList.firstWhere(
+                            (lsp) => lsp.lspID == currentLSP.lspID,
+                          );
+                          showSetupFeesDialog(
+                            context,
+                            hasFeesChanged(
+                              tempFees,
+                              refreshedLSP.cheapestOpeningFeeParams,
+                            ),
+                            () {
+                              _currentSession.approvePaymentSink
+                                  .add(refreshedLSP.raw);
+                              return;
+                            },
+                          );
+                        }, onError: (_) {
+                          if (loaderRoute.isActive) {
+                            navigator.removeRoute(loaderRoute);
+                          }
+                        });
+                      } catch (e) {
+                        if (loaderRoute.isActive) {
+                          navigator.removeRoute(loaderRoute);
+                        }
+                      }
+                    }
+                  },
+                  disabledActions: _getDisabledActions(context, sessionState),
+                ),
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(25.0, 25.0, 25.0, 21.0),
+                  child: PeersConnection(sessionState),
+                ),
+                payerAmount == null ||
+                        _account.maxInboundLiquidity >= payerAmount
+                    ? const SizedBox()
+                    : WarningBox(
+                        contentPadding: const EdgeInsets.all(8),
+                        child: Text(
+                          _formatFeeMessage(
+                            context,
+                            _account,
+                            lspStatus,
+                            snapshot.data.payerData.amount,
+                          ),
+                          style: Theme.of(context).textTheme.titleLarge,
+                          textAlign: TextAlign.center,
+                        ),
+                      ),
+              ],
+            );
+          },
         );
       },
     );
-  }
-
-  void _onAction(BuildContext context, String action) {
-    final texts = context.texts();
-    if (action == texts.connect_to_pay_payee_action_reject) {
-      _currentSession.rejectPaymentSink.add(null);
-    } else {
-      _currentSession.approvePaymentSink.add(null);
-    }
   }
 
   List<String> _getActions(
@@ -125,19 +170,19 @@ class PayeeSessionWidget extends StatelessWidget {
   ) {
     final texts = context.texts();
     final lsp = lspStatus.currentLSP;
-    num feeSats = 0;
+    int minFee = (lsp.cheapestOpeningFeeParams.minMsat.toInt() ~/ 1000);
+    int feeSats = 0;
     if (amount > acc.maxInboundLiquidity.toInt()) {
-      feeSats = (amount * lsp.channelFeePermyriad / 10000);
-      if (feeSats < lsp.channelMinimumFeeMsat / 1000) {
-        feeSats = lsp.channelMinimumFeeMsat / 1000;
+      feeSats = (amount * lsp.cheapestOpeningFeeParams.proportional ~/ 1000000);
+      if (feeSats < minFee) {
+        feeSats = minFee;
       }
     }
-    var intSats = feeSats.toInt();
-    if (intSats == 0) {
+    if (feeSats == 0) {
       return "";
     }
-    var feeFiat = acc.fiatCurrency.format(Int64(intSats));
-    var formattedSats = Currency.SAT.format(Int64(intSats));
+    var feeFiat = acc.fiatCurrency.format(Int64(feeSats));
+    var formattedSats = Currency.SAT.format(Int64(feeSats));
     return texts.connect_to_pay_payee_setup_fee(formattedSats, feeFiat);
   }
 }

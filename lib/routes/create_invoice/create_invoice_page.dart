@@ -17,8 +17,10 @@ import 'package:breez/routes/charge/successful_payment.dart';
 import 'package:breez/routes/create_invoice/lnurl_withdraw_dialog.dart';
 import 'package:breez/routes/create_invoice/qr_code_dialog.dart';
 import 'package:breez/routes/podcast/theme.dart';
+import 'package:breez/services/breezlib/data/messages.pb.dart';
 import 'package:breez/services/injector.dart';
 import 'package:breez/theme_data.dart' as theme;
+import 'package:breez/utils/dynamic_fees.dart';
 import 'package:breez/utils/exceptions.dart';
 import 'package:breez/utils/min_font_size.dart';
 import 'package:breez/widgets/amount_form_field.dart';
@@ -36,6 +38,8 @@ import 'package:breez_translations/generated/breez_translations.dart';
 import 'package:fixnum/fixnum.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+
+import 'setup_fees_dialog.dart';
 
 class CreateInvoicePage extends StatefulWidget {
   final WithdrawFetchResponse lnurlWithdraw;
@@ -65,11 +69,13 @@ class CreateInvoicePageState extends State<CreateInvoicePage> {
 
   @override
   void didChangeDependencies() {
-    final texts = context.texts();
-    final invoiceBloc = AppBlocsProvider.of<InvoiceBloc>(context);
-    final accBloc = AppBlocsProvider.of<AccountBloc>(context);
-
     if (!_isInit) {
+      final texts = context.texts();
+      final invoiceBloc = AppBlocsProvider.of<InvoiceBloc>(context);
+      final accBloc = AppBlocsProvider.of<AccountBloc>(context);
+      final lspBloc = AppBlocsProvider.of<LSPBloc>(context);
+
+      fetchLSPList(lspBloc);
       _paidInvoicesSubscription = invoiceBloc.paidInvoicesStream.listen((paid) {
         Navigator.pop(context, texts.invoice_payment_success);
       });
@@ -111,8 +117,7 @@ class CreateInvoicePageState extends State<CreateInvoicePage> {
     final themeData = Theme.of(context);
 
     final accountBloc = AppBlocsProvider.of<AccountBloc>(context);
-    final invoiceBloc = AppBlocsProvider.of<InvoiceBloc>(context);
-    final lnurlBloc = AppBlocsProvider.of<LNUrlBloc>(context);
+
     final lspBloc = AppBlocsProvider.of<LSPBloc>(context);
 
     return Scaffold(
@@ -124,27 +129,77 @@ class CreateInvoicePageState extends State<CreateInvoicePage> {
             return StaticLoader();
           }
           final account = snapshot.data;
-          return Padding(
-            padding: EdgeInsets.only(
-              bottom: Platform.isIOS && _amountFocusNode.hasFocus ? 40.0 : 0.0,
-            ),
-            child: SingleButtonBottomBar(
-              stickToBottom: true,
-              text: _withdrawFetchResponse == null
-                  ? texts.invoice_action_create
-                  : texts.invoice_action_redeem,
-              onPressed: () {
-                if (_formKey.currentState.validate()) {
-                  _createInvoice(
-                    context,
-                    invoiceBloc,
-                    accountBloc,
-                    lnurlBloc,
-                    account,
-                  );
-                }
-              },
-            ),
+          return StreamBuilder<LSPStatus>(
+            stream: lspBloc.lspStatusStream,
+            builder: (context, snapshot) {
+              LSPStatus lspStatus = snapshot.data;
+
+              return Padding(
+                padding: EdgeInsets.only(
+                  bottom:
+                      Platform.isIOS && _amountFocusNode.hasFocus ? 40.0 : 0.0,
+                ),
+                child: SingleButtonBottomBar(
+                  stickToBottom: true,
+                  text: _withdrawFetchResponse == null
+                      ? texts.invoice_action_create
+                      : texts.invoice_action_redeem,
+                  onPressed: !snapshot.hasData
+                      ? null
+                      : () {
+                          if (_formKey.currentState.validate()) {
+                            final navigator = Navigator.of(context);
+                            var loaderRoute = createLoaderRoute(context);
+                            try {
+                              navigator.push(loaderRoute);
+
+                              final tempFees =
+                                  lspStatus.currentLSP.cheapestOpeningFeeParams;
+                              fetchLSPList(lspBloc).then(
+                                (lspList) {
+                                  if (loaderRoute.isActive) {
+                                    navigator.removeRoute(loaderRoute);
+                                  }
+                                  var refreshedLSP = lspList.firstWhere(
+                                    (lsp) =>
+                                        lsp.lspID == lspStatus.currentLSP.lspID,
+                                  );
+                                  // Show fee dialog if necessary and create invoice dialog
+                                  showSetupFeesDialog(
+                                    context,
+                                    hasFeesChanged(
+                                      tempFees,
+                                      refreshedLSP.cheapestOpeningFeeParams,
+                                    ),
+                                    () => _createInvoice(
+                                      context,
+                                      accountBloc,
+                                      account,
+                                      refreshedLSP.raw,
+                                    ),
+                                  );
+                                },
+                                onError: (e) {
+                                  if (loaderRoute.isActive) {
+                                    navigator.removeRoute(loaderRoute);
+                                  }
+                                  showFlushbar(
+                                    context,
+                                    message: texts
+                                        .qr_code_dialog_error(e.toString()),
+                                  );
+                                },
+                              );
+                            } catch (e) {
+                              if (loaderRoute.isActive) {
+                                navigator.removeRoute(loaderRoute);
+                              }
+                            }
+                          }
+                        },
+                ),
+              );
+            },
           );
         },
       ),
@@ -190,9 +245,9 @@ class CreateInvoicePageState extends State<CreateInvoicePage> {
               LSPStatus lspStatus = snapshot.data;
               String validatePayment(Int64 amount) {
                 if (lspStatus?.currentLSP != null) {
-                  final channelMinimumFee = Int64(
-                    lspStatus.currentLSP.channelMinimumFeeMsat ~/ 1000,
-                  );
+                  final channelMinimumFee =
+                      lspStatus.currentLSP.cheapestOpeningFeeParams.minMsat ~/
+                          1000;
                   if (amount > acc.maxInboundLiquidity &&
                       amount <= channelMinimumFee) {
                     return texts.invoice_insufficient_amount_fee(
@@ -383,11 +438,12 @@ class CreateInvoicePageState extends State<CreateInvoicePage> {
   ) {
     final connected = accountModel.connected;
     final minFee = (lspInfo != null)
-        ? Int64(lspInfo.channelMinimumFeeMsat) ~/ 1000
+        ? lspInfo.cheapestOpeningFeeParams.minMsat ~/ 1000
         : Int64(0);
     final minFeeFormatted = accountModel.currency.format(minFee);
     final showMinFeeMessage = minFee > 0;
-    final setUpFee = (lspInfo.channelFeePermyriad / 100).toString();
+    final setUpFee =
+        (lspInfo.cheapestOpeningFeeParams.proportional / 10000).toString();
     final liquidity = accountModel.currency.format(
       connected ? accountModel.maxInboundLiquidity : Int64(0),
     );
@@ -508,17 +564,20 @@ class CreateInvoicePageState extends State<CreateInvoicePage> {
 
   Future _createInvoice(
     BuildContext context,
-    InvoiceBloc invoiceBloc,
     AccountBloc accountBloc,
-    LNUrlBloc lnurlBloc,
     AccountModel account,
+    LSPInformation lspInformation,
   ) {
+    final invoiceBloc = AppBlocsProvider.of<InvoiceBloc>(context);
+    final lnurlBloc = AppBlocsProvider.of<LNUrlBloc>(context);
+
     invoiceBloc.newInvoiceRequestSink.add(
       InvoiceRequestModel(
         null,
         _descriptionController.text,
         null,
         account.currency.parse(_amountController.text),
+        lspInformation: lspInformation,
       ),
     );
     final navigator = Navigator.of(context);
@@ -528,9 +587,14 @@ class CreateInvoicePageState extends State<CreateInvoicePage> {
         ? LNURlWithdrawDialog(invoiceBloc, accountBloc, lnurlBloc, (result) {
             onPaymentFinished(result, currentRoute, navigator);
           })
-        : QrCodeDialog(context, invoiceBloc, accountBloc, (result) {
-            onPaymentFinished(result, currentRoute, navigator);
-          });
+        : QrCodeDialog(
+            context,
+            invoiceBloc,
+            accountBloc,
+            (result) {
+              onPaymentFinished(result, currentRoute, navigator);
+            },
+          );
     return _bgService.runAsTask(
         showDialog(
           useRootNavigator: false,

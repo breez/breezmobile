@@ -8,7 +8,7 @@ import 'dart:io';
 
 import 'package:breez/logger.dart';
 import 'package:breez/services/breezlib/breez_bridge.dart';
-import 'package:breez/services/breezlib/data/rpc.pb.dart';
+import 'package:breez/services/breezlib/data/messages.pb.dart';
 import 'package:breez/services/injector.dart';
 import 'package:breez/theme_data.dart' as theme;
 import 'package:breez/widgets/animated_loader_dialog.dart';

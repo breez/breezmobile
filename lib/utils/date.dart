@@ -48,5 +48,6 @@ class BreezDateUtils {
     timeago.setLocaleMessages('it', timeago.ItMessages());
     timeago.setLocaleMessages('pt', timeago.PtBrMessages());
     timeago.setLocaleMessages('sv', timeago.SvMessages());
+    timeago.setLocaleMessages('sk', timeago.EnMessages()); // TODO: add sk locale
   }
 }
