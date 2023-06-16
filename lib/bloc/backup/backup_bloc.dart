@@ -465,7 +465,7 @@ class BackupBloc {
       NotificationEvent_NotificationType.FUND_ADDRESS_CREATED
     ];
 
-    _breezLib.notificationStream.listen((event) {
+    _breezLib.notificationStream.listen((event) async {
       if (event.type == NotificationEvent_NotificationType.BACKUP_REQUEST) {
         _backupServiceNeedLogin = false;
         _backupStateController.add((BackupState(
@@ -484,8 +484,16 @@ class BackupBloc {
       }
       if (event.type == NotificationEvent_NotificationType.BACKUP_SUCCESS) {
         _backupServiceNeedLogin = false;
-        _backupStateController
-            .add(BackupState(DateTime.now(), false, event.data[0]));
+        _breezLib.getLatestBackupTime().then((timeStamp) {
+          log.info("Timestamp=$timeStamp");
+          if (timeStamp > 0) {
+            log.info(timeStamp);
+            DateTime latestDateTime =
+                DateTime.fromMillisecondsSinceEpoch(timeStamp);
+            _backupStateController
+                .add(BackupState(latestDateTime, false, event.data[0]));
+          }
+        });
       }
       if (backupOperations.contains(event.type)) {
         _enableBackupPrompt = true;

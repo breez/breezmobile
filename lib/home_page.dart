@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:io';
 
 import 'package:anytime/bloc/podcast/audio_bloc.dart';
 import 'package:anytime/ui/anytime_podcast_app.dart';
@@ -8,6 +9,7 @@ import 'package:breez/bloc/account/account_actions.dart';
 import 'package:breez/bloc/account/account_bloc.dart';
 import 'package:breez/bloc/account/account_model.dart';
 import 'package:breez/bloc/backup/backup_bloc.dart';
+import 'package:breez/bloc/backup/backup_model.dart';
 import 'package:breez/bloc/blocs_provider.dart';
 import 'package:breez/bloc/connect_pay/connect_pay_bloc.dart';
 import 'package:breez/bloc/invoice/invoice_bloc.dart';
@@ -162,6 +164,7 @@ class HomeState extends State<Home> with WidgetsBindingObserver {
     _registerNotificationHandlers(context);
     listenUnexpectedError(context, widget.accountBloc);
     _listenBackupConflicts(context);
+    _listenBackupNotLatestConflicts(context);
     _listenWhitelistPermissionsRequest(context);
     _listenLSPSelectionPrompt(context);
     _listenPaymentResults(context);
@@ -343,24 +346,56 @@ class HomeState extends State<Home> with WidgetsBindingObserver {
   void _listenBackupConflicts(BuildContext context) {
     final texts = context.texts();
     final themeData = Theme.of(context);
+    BackupSettings currentsettings;
+    widget.backupBloc.backupSettingsStream.listen((settings) {
+      currentsettings = settings;
+      var encrypted = currentsettings?.backupKeyType == BackupKeyType.PHRASE;
+      var provider = currentsettings?.backupProvider?.displayName;
+      widget.accountBloc.nodeConflictStream.listen(
+        (_) async {
+          Navigator.popUntil(context, (route) {
+            return route.settings.name == "/";
+          });
+          await promptError(
+            context,
+            texts.home_config_error_title,
+            Text(
+              encrypted
+                  ? texts.home_config_backup_error_encrypted(provider)
+                  : texts.home_config_backup_error(provider),
+              style: themeData.dialogTheme.contentTextStyle,
+            ),
+          );
+        },
+      );
+    });
+  }
 
-    widget.accountBloc.nodeConflictStream.listen(
-      (_) async {
-        Navigator.popUntil(context, (route) {
-          return route.settings.name == "/";
-        });
-        await promptError(
-          context,
-          texts.home_config_error_title,
-          Text(
-            texts.home_config_error_message,
-            style: themeData.dialogTheme.contentTextStyle,
-          ),
-          okText: texts.home_config_error_action_exit,
-          disableBack: true,
-        );
-      },
-    );
+  void _listenBackupNotLatestConflicts(BuildContext context) {
+    final texts = context.texts();
+    final themeData = Theme.of(context);
+
+    widget.backupBloc.backupSettingsStream.listen((settings) {
+      var encrypted = settings?.backupKeyType == BackupKeyType.PHRASE;
+      var provider = settings?.backupProvider?.displayName;
+      widget.accountBloc.nodeBackupNotLatestStream.listen(
+        (_) async {
+          Navigator.popUntil(context, (route) {
+            return route.settings.name == "/";
+          });
+          await promptError(
+            context,
+            texts.home_config_error_title,
+            Text(
+              encrypted
+                  ? texts.home_config_backup_error_encrypted(provider)
+                  : texts.home_config_backup_error(provider),
+              style: themeData.dialogTheme.contentTextStyle,
+            ),
+          );
+        },
+      );
+    });
   }
 
   void _listenLSPSelectionPrompt(BuildContext context) async {
