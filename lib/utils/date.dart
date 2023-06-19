@@ -42,6 +42,7 @@ class BreezDateUtils {
   static void setupLocales() {
     timeago.setLocaleMessages('de', timeago.DeMessages());
     timeago.setLocaleMessages('en', timeago.EnMessages());
+    timeago.setLocaleMessages('el', timeago.GrMessages());
     timeago.setLocaleMessages('es', timeago.EsMessages());
     timeago.setLocaleMessages('fi', timeago.FiMessages());
     timeago.setLocaleMessages('fr', timeago.FrMessages());
