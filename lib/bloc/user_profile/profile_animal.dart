@@ -1,6 +1,7 @@
 import 'package:breez_translations/generated/breez_translations.dart';
 import 'package:breez_translations/generated/breez_translations_de.dart';
 import 'package:breez_translations/generated/breez_translations_en.dart';
+import 'package:breez_translations/generated/breez_translations_el.dart';
 import 'package:breez_translations/generated/breez_translations_es.dart';
 import 'package:breez_translations/generated/breez_translations_fi.dart';
 import 'package:breez_translations/generated/breez_translations_fr.dart';
@@ -180,6 +181,7 @@ extension ProfileAnimalExtension on ProfileAnimal {
 Map<String, Map<String, ProfileAnimal>> _animalsFromName = {
   "de": _buildAnimalsFromName(BreezTranslationsDe()),
   "en": _buildAnimalsFromName(BreezTranslationsEn()),
+  "el": _buildAnimalsFromName(BreezTranslationsEl()),
   "es": _buildAnimalsFromName(BreezTranslationsEs()),
   "fi": _buildAnimalsFromName(BreezTranslationsFi()),
   "fr": _buildAnimalsFromName(BreezTranslationsFr()),
