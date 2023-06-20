@@ -1,6 +1,6 @@
 ///
 //  Generated code. Do not modify.
-//  source: rpc.proto
+//  source: messages.proto
 //
 // @dart = 2.12
 // ignore_for_file: annotate_overrides,camel_case_types,constant_identifier_names,deprecated_member_use_from_same_package,directives_ordering,library_prefixes,non_constant_identifier_names,prefer_final_fields,return_of_invalid_type,unnecessary_const,unnecessary_import,unnecessary_this,unused_import,unused_shown_name
@@ -49,11 +49,12 @@ const AddFundInitRequest$json = const {
   '2': const [
     const {'1': 'notificationToken', '3': 1, '4': 1, '5': 9, '10': 'notificationToken'},
     const {'1': 'lspID', '3': 2, '4': 1, '5': 9, '10': 'lspID'},
+    const {'1': 'opening_fee_params', '3': 3, '4': 1, '5': 11, '6': '.data.OpeningFeeParams', '10': 'openingFeeParams'},
   ],
 };
 
 /// Descriptor for `AddFundInitRequest`. Decode as a `google.protobuf.DescriptorProto`.
-final $typed_data.Uint8List addFundInitRequestDescriptor = $convert.base64Decode('ChJBZGRGdW5kSW5pdFJlcXVlc3QSLAoRbm90aWZpY2F0aW9uVG9rZW4YASABKAlSEW5vdGlmaWNhdGlvblRva2VuEhQKBWxzcElEGAIgASgJUgVsc3BJRA==');
+final $typed_data.Uint8List addFundInitRequestDescriptor = $convert.base64Decode('ChJBZGRGdW5kSW5pdFJlcXVlc3QSLAoRbm90aWZpY2F0aW9uVG9rZW4YASABKAlSEW5vdGlmaWNhdGlvblRva2VuEhQKBWxzcElEGAIgASgJUgVsc3BJRBJEChJvcGVuaW5nX2ZlZV9wYXJhbXMYAyABKAsyFi5kYXRhLk9wZW5pbmdGZWVQYXJhbXNSEG9wZW5pbmdGZWVQYXJhbXM=');
 @$core.Deprecated('Use fundStatusRequestDescriptor instead')
 const FundStatusRequest$json = const {
   '1': 'FundStatusRequest',
@@ -262,11 +263,12 @@ const AddInvoiceRequest$json = const {
   '2': const [
     const {'1': 'invoiceDetails', '3': 1, '4': 1, '5': 11, '6': '.data.InvoiceMemo', '10': 'invoiceDetails'},
     const {'1': 'lspInfo', '3': 2, '4': 1, '5': 11, '6': '.data.LSPInformation', '10': 'lspInfo'},
+    const {'1': 'opening_fee_params', '3': 3, '4': 1, '5': 11, '6': '.data.OpeningFeeParams', '10': 'openingFeeParams'},
   ],
 };
 
 /// Descriptor for `AddInvoiceRequest`. Decode as a `google.protobuf.DescriptorProto`.
-final $typed_data.Uint8List addInvoiceRequestDescriptor = $convert.base64Decode('ChFBZGRJbnZvaWNlUmVxdWVzdBI5Cg5pbnZvaWNlRGV0YWlscxgBIAEoCzIRLmRhdGEuSW52b2ljZU1lbW9SDmludm9pY2VEZXRhaWxzEi4KB2xzcEluZm8YAiABKAsyFC5kYXRhLkxTUEluZm9ybWF0aW9uUgdsc3BJbmZv');
+final $typed_data.Uint8List addInvoiceRequestDescriptor = $convert.base64Decode('ChFBZGRJbnZvaWNlUmVxdWVzdBI5Cg5pbnZvaWNlRGV0YWlscxgBIAEoCzIRLmRhdGEuSW52b2ljZU1lbW9SDmludm9pY2VEZXRhaWxzEi4KB2xzcEluZm8YAiABKAsyFC5kYXRhLkxTUEluZm9ybWF0aW9uUgdsc3BJbmZvEkQKEm9wZW5pbmdfZmVlX3BhcmFtcxgDIAEoCzIWLmRhdGEuT3BlbmluZ0ZlZVBhcmFtc1IQb3BlbmluZ0ZlZVBhcmFtcw==');
 @$core.Deprecated('Use invoiceDescriptor instead')
 const Invoice$json = const {
   '1': 'Invoice',
@@ -279,48 +281,6 @@ const Invoice$json = const {
 
 /// Descriptor for `Invoice`. Decode as a `google.protobuf.DescriptorProto`.
 final $typed_data.Uint8List invoiceDescriptor = $convert.base64Decode('CgdJbnZvaWNlEiUKBG1lbW8YASABKAsyES5kYXRhLkludm9pY2VNZW1vUgRtZW1vEhgKB3NldHRsZWQYAiABKAhSB3NldHRsZWQSGAoHYW10UGFpZBgDIAEoA1IHYW10UGFpZA==');
-@$core.Deprecated('Use syncLSPChannelsRequestDescriptor instead')
-const SyncLSPChannelsRequest$json = const {
-  '1': 'SyncLSPChannelsRequest',
-  '2': const [
-    const {'1': 'lspInfo', '3': 1, '4': 1, '5': 11, '6': '.data.LSPInformation', '10': 'lspInfo'},
-  ],
-};
-
-/// Descriptor for `SyncLSPChannelsRequest`. Decode as a `google.protobuf.DescriptorProto`.
-final $typed_data.Uint8List syncLSPChannelsRequestDescriptor = $convert.base64Decode('ChZTeW5jTFNQQ2hhbm5lbHNSZXF1ZXN0Ei4KB2xzcEluZm8YASABKAsyFC5kYXRhLkxTUEluZm9ybWF0aW9uUgdsc3BJbmZv');
-@$core.Deprecated('Use syncLSPChannelsResponseDescriptor instead')
-const SyncLSPChannelsResponse$json = const {
-  '1': 'SyncLSPChannelsResponse',
-  '2': const [
-    const {'1': 'hasMismatch', '3': 1, '4': 1, '5': 8, '10': 'hasMismatch'},
-  ],
-};
-
-/// Descriptor for `SyncLSPChannelsResponse`. Decode as a `google.protobuf.DescriptorProto`.
-final $typed_data.Uint8List syncLSPChannelsResponseDescriptor = $convert.base64Decode('ChdTeW5jTFNQQ2hhbm5lbHNSZXNwb25zZRIgCgtoYXNNaXNtYXRjaBgBIAEoCFILaGFzTWlzbWF0Y2g=');
-@$core.Deprecated('Use unconfirmedChannelsStatusDescriptor instead')
-const UnconfirmedChannelsStatus$json = const {
-  '1': 'UnconfirmedChannelsStatus',
-  '2': const [
-    const {'1': 'statuses', '3': 1, '4': 3, '5': 11, '6': '.data.UnconfirmedChannelStatus', '10': 'statuses'},
-  ],
-};
-
-/// Descriptor for `UnconfirmedChannelsStatus`. Decode as a `google.protobuf.DescriptorProto`.
-final $typed_data.Uint8List unconfirmedChannelsStatusDescriptor = $convert.base64Decode('ChlVbmNvbmZpcm1lZENoYW5uZWxzU3RhdHVzEjoKCHN0YXR1c2VzGAEgAygLMh4uZGF0YS5VbmNvbmZpcm1lZENoYW5uZWxTdGF0dXNSCHN0YXR1c2Vz');
-@$core.Deprecated('Use unconfirmedChannelStatusDescriptor instead')
-const UnconfirmedChannelStatus$json = const {
-  '1': 'UnconfirmedChannelStatus',
-  '2': const [
-    const {'1': 'channelPoint', '3': 1, '4': 1, '5': 9, '10': 'channelPoint'},
-    const {'1': 'heightHint', '3': 2, '4': 1, '5': 3, '10': 'heightHint'},
-    const {'1': 'lspConfirmedHeight', '3': 3, '4': 1, '5': 3, '10': 'lspConfirmedHeight'},
-  ],
-};
-
-/// Descriptor for `UnconfirmedChannelStatus`. Decode as a `google.protobuf.DescriptorProto`.
-final $typed_data.Uint8List unconfirmedChannelStatusDescriptor = $convert.base64Decode('ChhVbmNvbmZpcm1lZENoYW5uZWxTdGF0dXMSIgoMY2hhbm5lbFBvaW50GAEgASgJUgxjaGFubmVsUG9pbnQSHgoKaGVpZ2h0SGludBgCIAEoA1IKaGVpZ2h0SGludBIuChJsc3BDb25maXJtZWRIZWlnaHQYAyABKANSEmxzcENvbmZpcm1lZEhlaWdodA==');
 @$core.Deprecated('Use checkLSPClosedChannelMismatchRequestDescriptor instead')
 const CheckLSPClosedChannelMismatchRequest$json = const {
   '1': 'CheckLSPClosedChannelMismatchRequest',
@@ -394,11 +354,12 @@ const NotificationEvent_NotificationType$json = const {
     const {'1': 'REVERSE_SWAP_CLAIM_FAILED', '2': 17},
     const {'1': 'REVERSE_SWAP_CLAIM_CONFIRMED', '2': 18},
     const {'1': 'LSP_CHANNEL_OPENED', '2': 19},
+    const {'1': 'BACKUP_NOT_LATEST_CONFLICT', '2': 20},
   ],
 };
 
 /// Descriptor for `NotificationEvent`. Decode as a `google.protobuf.DescriptorProto`.
-final $typed_data.Uint8List notificationEventDescriptor = $convert.base64Decode('ChFOb3RpZmljYXRpb25FdmVudBI8CgR0eXBlGAEgASgOMiguZGF0YS5Ob3RpZmljYXRpb25FdmVudC5Ob3RpZmljYXRpb25UeXBlUgR0eXBlEhIKBGRhdGEYAiADKAlSBGRhdGEi/AMKEE5vdGlmaWNhdGlvblR5cGUSCQoFUkVBRFkQABIZChVJTklUSUFMSVpBVElPTl9GQUlMRUQQARITCg9BQ0NPVU5UX0NIQU5HRUQQAhIQCgxQQVlNRU5UX1NFTlQQAxIQCgxJTlZPSUNFX1BBSUQQBBIaChZMSUdIVE5JTkdfU0VSVklDRV9ET1dOEAUSGAoURlVORF9BRERSRVNTX0NSRUFURUQQBhIgChxGVU5EX0FERFJFU1NfVU5TUEVOVF9DSEFOR0VEEAcSEgoOQkFDS1VQX1NVQ0NFU1MQCBIRCg1CQUNLVVBfRkFJTEVEEAkSFgoSQkFDS1VQX0FVVEhfRkFJTEVEEAoSGAoUQkFDS1VQX05PREVfQ09ORkxJQ1QQCxISCg5CQUNLVVBfUkVRVUVTVBAMEhIKDlBBWU1FTlRfRkFJTEVEEA0SFQoRUEFZTUVOVF9TVUNDRUVERUQQDhIeChpSRVZFUlNFX1NXQVBfQ0xBSU1fU1RBUlRFRBAPEiAKHFJFVkVSU0VfU1dBUF9DTEFJTV9TVUNDRUVERUQQEBIdChlSRVZFUlNFX1NXQVBfQ0xBSU1fRkFJTEVEEBESIAocUkVWRVJTRV9TV0FQX0NMQUlNX0NPTkZJUk1FRBASEhYKEkxTUF9DSEFOTkVMX09QRU5FRBAT');
+final $typed_data.Uint8List notificationEventDescriptor = $convert.base64Decode('ChFOb3RpZmljYXRpb25FdmVudBI8CgR0eXBlGAEgASgOMiguZGF0YS5Ob3RpZmljYXRpb25FdmVudC5Ob3RpZmljYXRpb25UeXBlUgR0eXBlEhIKBGRhdGEYAiADKAlSBGRhdGEinAQKEE5vdGlmaWNhdGlvblR5cGUSCQoFUkVBRFkQABIZChVJTklUSUFMSVpBVElPTl9GQUlMRUQQARITCg9BQ0NPVU5UX0NIQU5HRUQQAhIQCgxQQVlNRU5UX1NFTlQQAxIQCgxJTlZPSUNFX1BBSUQQBBIaChZMSUdIVE5JTkdfU0VSVklDRV9ET1dOEAUSGAoURlVORF9BRERSRVNTX0NSRUFURUQQBhIgChxGVU5EX0FERFJFU1NfVU5TUEVOVF9DSEFOR0VEEAcSEgoOQkFDS1VQX1NVQ0NFU1MQCBIRCg1CQUNLVVBfRkFJTEVEEAkSFgoSQkFDS1VQX0FVVEhfRkFJTEVEEAoSGAoUQkFDS1VQX05PREVfQ09ORkxJQ1QQCxISCg5CQUNLVVBfUkVRVUVTVBAMEhIKDlBBWU1FTlRfRkFJTEVEEA0SFQoRUEFZTUVOVF9TVUNDRUVERUQQDhIeChpSRVZFUlNFX1NXQVBfQ0xBSU1fU1RBUlRFRBAPEiAKHFJFVkVSU0VfU1dBUF9DTEFJTV9TVUNDRUVERUQQEBIdChlSRVZFUlNFX1NXQVBfQ0xBSU1fRkFJTEVEEBESIAocUkVWRVJTRV9TV0FQX0NMQUlNX0NPTkZJUk1FRBASEhYKEkxTUF9DSEFOTkVMX09QRU5FRBATEh4KGkJBQ0tVUF9OT1RfTEFURVNUX0NPTkZMSUNUEBQ=');
 @$core.Deprecated('Use addFundInitReplyDescriptor instead')
 const AddFundInitReply$json = const {
   '1': 'AddFundInitReply',
@@ -653,15 +614,53 @@ const LSPInformation$json = const {
     const {'1': 'fee_rate', '3': 9, '4': 1, '5': 1, '10': 'feeRate'},
     const {'1': 'time_lock_delta', '3': 10, '4': 1, '5': 13, '10': 'timeLockDelta'},
     const {'1': 'min_htlc_msat', '3': 11, '4': 1, '5': 3, '10': 'minHtlcMsat'},
-    const {'1': 'channel_fee_permyriad', '3': 12, '4': 1, '5': 3, '10': 'channelFeePermyriad'},
+    const {
+      '1': 'channel_fee_permyriad',
+      '3': 12,
+      '4': 1,
+      '5': 3,
+      '8': const {'3': true},
+      '10': 'channelFeePermyriad',
+    },
     const {'1': 'lsp_pubkey', '3': 13, '4': 1, '5': 12, '10': 'lspPubkey'},
-    const {'1': 'max_inactive_duration', '3': 14, '4': 1, '5': 3, '10': 'maxInactiveDuration'},
-    const {'1': 'channel_minimum_fee_msat', '3': 15, '4': 1, '5': 3, '10': 'channelMinimumFeeMsat'},
+    const {
+      '1': 'max_inactive_duration',
+      '3': 14,
+      '4': 1,
+      '5': 3,
+      '8': const {'3': true},
+      '10': 'maxInactiveDuration',
+    },
+    const {
+      '1': 'channel_minimum_fee_msat',
+      '3': 15,
+      '4': 1,
+      '5': 3,
+      '8': const {'3': true},
+      '10': 'channelMinimumFeeMsat',
+    },
+    const {'1': 'cheapest_opening_fee_params', '3': 16, '4': 1, '5': 11, '6': '.data.OpeningFeeParams', '10': 'cheapestOpeningFeeParams'},
+    const {'1': 'longest_valid_opening_fee_params', '3': 17, '4': 1, '5': 11, '6': '.data.OpeningFeeParams', '10': 'longestValidOpeningFeeParams'},
   ],
 };
 
 /// Descriptor for `LSPInformation`. Decode as a `google.protobuf.DescriptorProto`.
-final $typed_data.Uint8List lSPInformationDescriptor = $convert.base64Decode('Cg5MU1BJbmZvcm1hdGlvbhIOCgJpZBgBIAEoCVICaWQSEgoEbmFtZRgCIAEoCVIEbmFtZRIdCgp3aWRnZXRfdXJsGAMgASgJUgl3aWRnZXRVcmwSFgoGcHVia2V5GAQgASgJUgZwdWJrZXkSEgoEaG9zdBgFIAEoCVIEaG9zdBIpChBjaGFubmVsX2NhcGFjaXR5GAYgASgDUg9jaGFubmVsQ2FwYWNpdHkSHwoLdGFyZ2V0X2NvbmYYByABKAVSCnRhcmdldENvbmYSIgoNYmFzZV9mZWVfbXNhdBgIIAEoA1ILYmFzZUZlZU1zYXQSGQoIZmVlX3JhdGUYCSABKAFSB2ZlZVJhdGUSJgoPdGltZV9sb2NrX2RlbHRhGAogASgNUg10aW1lTG9ja0RlbHRhEiIKDW1pbl9odGxjX21zYXQYCyABKANSC21pbkh0bGNNc2F0EjIKFWNoYW5uZWxfZmVlX3Blcm15cmlhZBgMIAEoA1ITY2hhbm5lbEZlZVBlcm15cmlhZBIdCgpsc3BfcHVia2V5GA0gASgMUglsc3BQdWJrZXkSMgoVbWF4X2luYWN0aXZlX2R1cmF0aW9uGA4gASgDUhNtYXhJbmFjdGl2ZUR1cmF0aW9uEjcKGGNoYW5uZWxfbWluaW11bV9mZWVfbXNhdBgPIAEoA1IVY2hhbm5lbE1pbmltdW1GZWVNc2F0');
+final $typed_data.Uint8List lSPInformationDescriptor = $convert.base64Decode('Cg5MU1BJbmZvcm1hdGlvbhIOCgJpZBgBIAEoCVICaWQSEgoEbmFtZRgCIAEoCVIEbmFtZRIdCgp3aWRnZXRfdXJsGAMgASgJUgl3aWRnZXRVcmwSFgoGcHVia2V5GAQgASgJUgZwdWJrZXkSEgoEaG9zdBgFIAEoCVIEaG9zdBIpChBjaGFubmVsX2NhcGFjaXR5GAYgASgDUg9jaGFubmVsQ2FwYWNpdHkSHwoLdGFyZ2V0X2NvbmYYByABKAVSCnRhcmdldENvbmYSIgoNYmFzZV9mZWVfbXNhdBgIIAEoA1ILYmFzZUZlZU1zYXQSGQoIZmVlX3JhdGUYCSABKAFSB2ZlZVJhdGUSJgoPdGltZV9sb2NrX2RlbHRhGAogASgNUg10aW1lTG9ja0RlbHRhEiIKDW1pbl9odGxjX21zYXQYCyABKANSC21pbkh0bGNNc2F0EjYKFWNoYW5uZWxfZmVlX3Blcm15cmlhZBgMIAEoA0ICGAFSE2NoYW5uZWxGZWVQZXJteXJpYWQSHQoKbHNwX3B1YmtleRgNIAEoDFIJbHNwUHVia2V5EjYKFW1heF9pbmFjdGl2ZV9kdXJhdGlvbhgOIAEoA0ICGAFSE21heEluYWN0aXZlRHVyYXRpb24SOwoYY2hhbm5lbF9taW5pbXVtX2ZlZV9tc2F0GA8gASgDQgIYAVIVY2hhbm5lbE1pbmltdW1GZWVNc2F0ElUKG2NoZWFwZXN0X29wZW5pbmdfZmVlX3BhcmFtcxgQIAEoCzIWLmRhdGEuT3BlbmluZ0ZlZVBhcmFtc1IYY2hlYXBlc3RPcGVuaW5nRmVlUGFyYW1zEl4KIGxvbmdlc3RfdmFsaWRfb3BlbmluZ19mZWVfcGFyYW1zGBEgASgLMhYuZGF0YS5PcGVuaW5nRmVlUGFyYW1zUhxsb25nZXN0VmFsaWRPcGVuaW5nRmVlUGFyYW1z');
+@$core.Deprecated('Use openingFeeParamsDescriptor instead')
+const OpeningFeeParams$json = const {
+  '1': 'OpeningFeeParams',
+  '2': const [
+    const {'1': 'min_msat', '3': 1, '4': 1, '5': 4, '10': 'minMsat'},
+    const {'1': 'proportional', '3': 2, '4': 1, '5': 13, '10': 'proportional'},
+    const {'1': 'valid_until', '3': 3, '4': 1, '5': 9, '10': 'validUntil'},
+    const {'1': 'max_idle_time', '3': 4, '4': 1, '5': 13, '10': 'maxIdleTime'},
+    const {'1': 'max_client_to_self_delay', '3': 5, '4': 1, '5': 13, '10': 'maxClientToSelfDelay'},
+    const {'1': 'promise', '3': 6, '4': 1, '5': 9, '10': 'promise'},
+  ],
+};
+
+/// Descriptor for `OpeningFeeParams`. Decode as a `google.protobuf.DescriptorProto`.
+final $typed_data.Uint8List openingFeeParamsDescriptor = $convert.base64Decode('ChBPcGVuaW5nRmVlUGFyYW1zEhkKCG1pbl9tc2F0GAEgASgEUgdtaW5Nc2F0EiIKDHByb3BvcnRpb25hbBgCIAEoDVIMcHJvcG9ydGlvbmFsEh8KC3ZhbGlkX3VudGlsGAMgASgJUgp2YWxpZFVudGlsEiIKDW1heF9pZGxlX3RpbWUYBCABKA1SC21heElkbGVUaW1lEjYKGG1heF9jbGllbnRfdG9fc2VsZl9kZWxheRgFIAEoDVIUbWF4Q2xpZW50VG9TZWxmRGVsYXkSGAoHcHJvbWlzZRgGIAEoCVIHcHJvbWlzZQ==');
 @$core.Deprecated('Use lSPListRequestDescriptor instead')
 const LSPListRequest$json = const {
   '1': 'LSPListRequest',

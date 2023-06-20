@@ -4,7 +4,7 @@ import 'package:breez/bloc/account/account_model.dart';
 import 'package:breez/bloc/csv_exporter.dart';
 import 'package:breez/bloc/pos_catalog/model.dart';
 import 'package:breez/bloc/user_profile/currency.dart';
-import 'package:breez/services/breezlib/data/rpc.pb.dart';
+import 'package:breez/services/breezlib/data/messages.pb.dart';
 import 'package:fixnum/fixnum.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:path_provider_platform_interface/path_provider_platform_interface.dart';
@@ -32,13 +32,15 @@ void main() {
     test('csv file should have header', () async {
       final filePath = await _make().export();
       final lines = await File(filePath).readAsLines();
-      expect(lines[0], "Date & Time,Title,Description,Node ID,Amount,Preimage,TX Hash,Fee,USD");
+      expect(lines[0],
+          "Date & Time,Title,Description,Node ID,Amount,Preimage,TX Hash,Fee,USD");
     });
 
     test('csv file should have item line', () async {
       final filePath = await _make().export();
       final lines = await File(filePath).readAsLines();
-      expect(lines[1], "9/13/2020 12:26 PM,A title,A description,A destination,1234,A preimage,A payment hash,5,10.0");
+      expect(lines[1],
+          "9/13/2020 12:26 PM,A title,A description,A destination,1234,A preimage,A payment hash,5,10.0");
     });
   });
 }

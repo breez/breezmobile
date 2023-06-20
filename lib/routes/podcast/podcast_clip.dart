@@ -27,29 +27,26 @@ class PodcastClipWidget extends StatelessWidget {
     final theme = Theme.of(context);
     final audioBloc = Provider.of<AudioBloc>(context, listen: false);
     final podcastClipBloc = AppBlocsProvider.of<PodcastClipBloc>(context);
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 16),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          GestureDetector(
-            onTap: () async {
-              _showClipsBottomSheet(
-                audioBloc: audioBloc,
-                podcastClipBloc: podcastClipBloc,
-                context: context,
-              );
-            },
-            child: Align(
-              alignment: Alignment.centerLeft,
-              child: Icon(
-                Icons.cut_outlined,
-                color: theme.buttonTheme.colorScheme.onPrimary,
-                size: 16,
-              ),
-            ),
+
+    return Align(
+      alignment: Alignment.centerLeft,
+      child: InkWell(
+        borderRadius: BorderRadius.circular(4),
+        onTap: () async {
+          _showClipsBottomSheet(
+            audioBloc: audioBloc,
+            podcastClipBloc: podcastClipBloc,
+            context: context,
+          );
+        },
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16),
+          child: Icon(
+            Icons.cut_outlined,
+            color: theme.buttonTheme.colorScheme.onPrimary,
+            size: 16,
           ),
-        ],
+        ),
       ),
     );
   }

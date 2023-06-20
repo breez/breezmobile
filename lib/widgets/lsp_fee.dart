@@ -1,8 +1,7 @@
 import 'package:breez/bloc/account/account_model.dart';
-import 'package:breez/bloc/lsp/lsp_model.dart';
 import 'package:breez/routes/home/moonpay_route.dart';
+import 'package:breez/services/breezlib/data/messages.pb.dart';
 import 'package:breez_translations/breez_translations_locales.dart';
-import 'package:fixnum/fixnum.dart';
 import 'package:flutter/material.dart';
 
 import 'error_dialog.dart';
@@ -10,7 +9,7 @@ import 'error_dialog.dart';
 promptLSPFeeAndNavigate(
   BuildContext context,
   AccountModel account,
-  LSPInfo lsp,
+  OpeningFeeParams longestValidOpeningFeeParams,
   String route,
 ) {
   final themeData = Theme.of(context);
@@ -21,7 +20,7 @@ promptLSPFeeAndNavigate(
     context,
     texts.lsp_fee_warning_title,
     Text(
-      _formatFeeMessage(context, account, lsp),
+      _formatFeeMessage(context, account, longestValidOpeningFeeParams),
       style: themeData.dialogTheme.contentTextStyle,
     ),
     cancelText: texts.lsp_fee_warning_action_cancel,
@@ -40,18 +39,19 @@ promptLSPFeeAndNavigate(
 String _formatFeeMessage(
   BuildContext context,
   AccountModel acc,
-  LSPInfo lsp,
+  OpeningFeeParams longestValidOpeningFeeParams,
 ) {
-  if (lsp == null) return "";
+  if (longestValidOpeningFeeParams == null) return "";
   final texts = context.texts();
-
-  final showMinFeeMessage = lsp.channelMinimumFeeMsat > 0;
+  final int minFee = (longestValidOpeningFeeParams.minMsat.toInt() ~/ 1000);
+  final showMinFeeMessage = minFee > 0;
   final connected = acc.connected;
 
   final minFeeFormatted = acc.currency.format(
-    Int64(lsp.channelMinimumFeeMsat ?? 0) ~/ 1000,
+    longestValidOpeningFeeParams.minMsat ~/ 1000,
   );
-  final setUpFee = (lsp.channelFeePermyriad / 100).toString();
+  final setUpFee =
+      (longestValidOpeningFeeParams.proportional / 10000).toString();
   final liquidity = acc.currency.format(acc.maxInboundLiquidity);
 
   if (connected && showMinFeeMessage) {

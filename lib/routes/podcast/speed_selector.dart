@@ -47,42 +47,41 @@ class SpeedSelectorWidgetState extends State<SpeedSelectorWidget> {
       initialData: AppSettings.sensibleDefaults(),
       builder: (context, snapshot) {
         final speed = snapshot.data.playbackSpeed;
-        return Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            InkWell(
-              onTap: () {
-                showModalBottomSheet<void>(
-                  context: context,
-                  backgroundColor: themeData.colorScheme.background,
-                  shape: const RoundedRectangleBorder(
-                    borderRadius: BorderRadius.only(
-                      topLeft: Radius.circular(10.0),
-                      topRight: Radius.circular(10.0),
-                    ),
-                  ),
-                  builder: (context) => SpeedSlider(
-                    onChanged: widget.onChanged,
-                  ),
-                );
-              },
-              child: Center(
-                child: Text(
-                  texts.podcast_speed_selector_speed(
-                    speed % 1 == 0
-                        ? speed.toStringAsFixed(0).toString()
-                        : speed.toString(),
-                  ),
-                  style: TextStyle(
-                    fontSize: 14.0,
-                    color: themeData.buttonTheme.colorScheme.onPrimary,
-                  ),
+        return ElevatedButton(
+          onPressed: () {
+            showModalBottomSheet<void>(
+              context: context,
+              backgroundColor: themeData.colorScheme.background,
+              shape: const RoundedRectangleBorder(
+                borderRadius: BorderRadius.only(
+                  topLeft: Radius.circular(10.0),
+                  topRight: Radius.circular(10.0),
                 ),
               ),
+              builder: (context) => SpeedSlider(
+                onChanged: widget.onChanged,
+              ),
+            );
+          },
+          style: ElevatedButton.styleFrom(
+            elevation: 0,
+            padding: const EdgeInsets.all(8.0),
+            foregroundColor: themeData.buttonTheme.colorScheme.onPrimary,
+            backgroundColor: themeData.scaffoldBackgroundColor,
+            fixedSize: const Size(48.0, 48.0),
+            shape: const CircleBorder(),
+          ),
+          child: Text(
+            texts.podcast_speed_selector_speed(
+              speed % 1 == 0
+                  ? speed.toStringAsFixed(0).toString()
+                  : speed.toString(),
             ),
-          ],
+            style: TextStyle(
+              fontSize: 14.0,
+              color: themeData.buttonTheme.colorScheme.onPrimary,
+            ),
+          ),
         );
       },
     );

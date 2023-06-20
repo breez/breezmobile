@@ -16,7 +16,7 @@ import 'package:breez/logger.dart';
 import 'package:breez/services/background_task.dart';
 import 'package:breez/services/breez_server/server.dart';
 import 'package:breez/services/breezlib/breez_bridge.dart';
-import 'package:breez/services/breezlib/data/rpc.pb.dart';
+import 'package:breez/services/breezlib/data/messages.pb.dart';
 import 'package:breez/services/currency_data.dart';
 import 'package:breez/services/currency_service.dart';
 import 'package:breez/services/device.dart';
@@ -115,6 +115,10 @@ class AccountBloc {
 
   final BehaviorSubject<void> _nodeConflictController = BehaviorSubject<void>();
   Stream<void> get nodeConflictStream => _nodeConflictController.stream;
+
+  final _nodeBackupNotLatestController = BehaviorSubject<void>();
+  Stream<void> get nodeBackupNotLatestStream =>
+      _nodeBackupNotLatestController.stream;
 
   final AccountPermissionsHandler _permissionsHandler =
       AccountPermissionsHandler();
@@ -797,6 +801,13 @@ class AccountBloc {
           NotificationEvent_NotificationType.BACKUP_NODE_CONFLICT) {
         eventSubscription.cancel();
         _nodeConflictController.add(null);
+      }
+
+      if (event.type ==
+          NotificationEvent_NotificationType.BACKUP_NOT_LATEST_CONFLICT) {
+        log.info("BACKUP_NOT_LATEST_CONFLICT event triggered");
+        eventSubscription.cancel();
+        _nodeBackupNotLatestController.add(null);
       }
 
       if (event.type == NotificationEvent_NotificationType.PAYMENT_SUCCEEDED) {

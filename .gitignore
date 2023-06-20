@@ -1,4 +1,5 @@
 lib/services/breez_server/protobuf/breez.proto
+lib/services/breezlib/protobuf/messages.proto
 .DS_Store
 .atom/
 .dart_tool/
@@ -16,7 +17,6 @@ packages
 /conf/staging
 /android/app/src/pos/google-services.json
 /android/app/src/client/google-services.json
-lib/services/breezlib/rpc.proto
 /android/app/libs/breez.aar
 ios/Runner/GoogleService-Info.plist
 ios/bindings.framework/*
@@ -28,3 +28,4 @@ manual-build/
 ios/.symlinks/
 coverage/
 untranslated_messages.txt
+ios/Flutter/Flutter.podspec

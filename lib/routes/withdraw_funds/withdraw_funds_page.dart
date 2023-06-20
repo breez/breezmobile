@@ -118,7 +118,7 @@ class WithdrawFundsPageState extends State<WithdrawFundsPage> {
               focusNode: _amountFocusNode,
               controller: _amountController,
               validatorFn: (amount) {
-                String err = acc.validateOutgoingPayment(amount);
+                String err = acc.validateOutgoingPayment(amount, autoFilled: _isMax);
                 if (err == null) {
                   if (amount < widget.policy.minValue) {
                     err = texts.withdraw_funds_error_min_value(

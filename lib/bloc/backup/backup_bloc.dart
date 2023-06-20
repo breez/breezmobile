@@ -8,7 +8,7 @@ import 'package:breez/bloc/user_profile/breez_user_model.dart';
 import 'package:breez/logger.dart';
 import 'package:breez/services/background_task.dart';
 import 'package:breez/services/breezlib/breez_bridge.dart';
-import 'package:breez/services/breezlib/data/rpc.pb.dart';
+import 'package:breez/services/breezlib/data/messages.pb.dart';
 import 'package:breez/services/injector.dart';
 import 'package:crypto/crypto.dart';
 import 'package:flutter/services.dart';
@@ -465,7 +465,7 @@ class BackupBloc {
       NotificationEvent_NotificationType.FUND_ADDRESS_CREATED
     ];
 
-    _breezLib.notificationStream.listen((event) {
+    _breezLib.notificationStream.listen((event) async {
       if (event.type == NotificationEvent_NotificationType.BACKUP_REQUEST) {
         _backupServiceNeedLogin = false;
         _backupStateController.add((BackupState(
@@ -484,8 +484,16 @@ class BackupBloc {
       }
       if (event.type == NotificationEvent_NotificationType.BACKUP_SUCCESS) {
         _backupServiceNeedLogin = false;
-        _backupStateController
-            .add(BackupState(DateTime.now(), false, event.data[0]));
+        _breezLib.getLatestBackupTime().then((timeStamp) {
+          log.info("Timestamp=$timeStamp");
+          if (timeStamp > 0) {
+            log.info(timeStamp);
+            DateTime latestDateTime =
+                DateTime.fromMillisecondsSinceEpoch(timeStamp);
+            _backupStateController
+                .add(BackupState(latestDateTime, false, event.data[0]));
+          }
+        });
       }
       if (backupOperations.contains(event.type)) {
         _enableBackupPrompt = true;

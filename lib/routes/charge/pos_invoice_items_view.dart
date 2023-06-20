@@ -127,8 +127,8 @@ class PosInvoiceItemsView extends StatelessWidget {
 
     TapDownDetails details;
     return GestureDetector(
-      onTapDown: (details) {
-        details = details;
+      onTapDown: (d) {
+        details = d;
       },
       onTap: () async {
         final offset = details?.globalPosition;

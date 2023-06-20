@@ -198,6 +198,8 @@ class ItemPageState extends State<ItemPage> {
         FilteringTextInputFormatter.allow(
           _selectedCurrency.whitelistedPattern,
         ),
+        TextInputFormatter.withFunction((oldValue, newValue) =>
+            newValue.copyWith(text: newValue.text.replaceAll(',', '.'))),
       ],
       controller: _priceController,
       decoration: InputDecoration(

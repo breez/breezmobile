@@ -1,6 +1,6 @@
 ///
 //  Generated code. Do not modify.
-//  source: rpc.proto
+//  source: messages.proto
 //
 // @dart = 2.12
 // ignore_for_file: annotate_overrides,camel_case_types,constant_identifier_names,directives_ordering,library_prefixes,non_constant_identifier_names,prefer_final_fields,return_of_invalid_type,unnecessary_const,unnecessary_import,unnecessary_this,unused_import,unused_shown_name
@@ -91,6 +91,7 @@ class NotificationEvent_NotificationType extends $pb.ProtobufEnum {
   static const NotificationEvent_NotificationType REVERSE_SWAP_CLAIM_FAILED = NotificationEvent_NotificationType._(17, const $core.bool.fromEnvironment('protobuf.omit_enum_names') ? '' : 'REVERSE_SWAP_CLAIM_FAILED');
   static const NotificationEvent_NotificationType REVERSE_SWAP_CLAIM_CONFIRMED = NotificationEvent_NotificationType._(18, const $core.bool.fromEnvironment('protobuf.omit_enum_names') ? '' : 'REVERSE_SWAP_CLAIM_CONFIRMED');
   static const NotificationEvent_NotificationType LSP_CHANNEL_OPENED = NotificationEvent_NotificationType._(19, const $core.bool.fromEnvironment('protobuf.omit_enum_names') ? '' : 'LSP_CHANNEL_OPENED');
+  static const NotificationEvent_NotificationType BACKUP_NOT_LATEST_CONFLICT = NotificationEvent_NotificationType._(20, const $core.bool.fromEnvironment('protobuf.omit_enum_names') ? '' : 'BACKUP_NOT_LATEST_CONFLICT');
 
   static const $core.List<NotificationEvent_NotificationType> values = <NotificationEvent_NotificationType> [
     READY,
@@ -113,6 +114,7 @@ class NotificationEvent_NotificationType extends $pb.ProtobufEnum {
     REVERSE_SWAP_CLAIM_FAILED,
     REVERSE_SWAP_CLAIM_CONFIRMED,
     LSP_CHANNEL_OPENED,
+    BACKUP_NOT_LATEST_CONFLICT,
   ];
 
   static final $core.Map<$core.int, NotificationEvent_NotificationType> _byValue = $pb.ProtobufEnum.initByValue(values);

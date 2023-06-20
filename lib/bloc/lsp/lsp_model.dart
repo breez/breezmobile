@@ -1,4 +1,4 @@
-import 'package:breez/services/breezlib/data/rpc.pb.dart';
+import 'package:breez/services/breezlib/data/messages.pb.dart';
 
 enum LSPConnectionStatus {
   InProgress,
@@ -54,5 +54,9 @@ class LSPInfo {
   int get maxInactiveDuration => _lspInformation.maxInactiveDuration.toInt();
   int get channelMinimumFeeMsat =>
       _lspInformation.channelMinimumFeeMsat.toInt();
+  OpeningFeeParams get cheapestOpeningFeeParams =>
+      _lspInformation.cheapestOpeningFeeParams;
+  OpeningFeeParams get longestValidOpeningFeeParams =>
+      _lspInformation.longestValidOpeningFeeParams;
   LSPInformation get raw => _lspInformation;
 }

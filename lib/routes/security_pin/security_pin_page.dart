@@ -388,12 +388,14 @@ class SecurityPageState extends State<SecurityPage>
     final locales = {
       "de": const GermanDurationLocale(),
       "en": enLocale,
+      "el": enLocale, // TODO add GreekDurationLocale
       "es": const SpanishDurationLanguage(),
       "fi": const FinnishDurationLocale(),
       "fr": const FrenchDurationLocale(),
       "it": const ItalianDurationLocale(),
       "pt": const PortugueseBRDurationLanguage(),
       "sv": const SwedishDurationLanguage(),
+      "sk": enLocale, // TODO add SlovakDurationLocale
     };
     return printDuration(
       Duration(seconds: seconds),

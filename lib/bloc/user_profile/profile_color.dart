@@ -1,12 +1,14 @@
 import 'package:breez_translations/generated/breez_translations.dart';
 import 'package:breez_translations/generated/breez_translations_de.dart';
 import 'package:breez_translations/generated/breez_translations_en.dart';
+import 'package:breez_translations/generated/breez_translations_el.dart';
 import 'package:breez_translations/generated/breez_translations_es.dart';
 import 'package:breez_translations/generated/breez_translations_fi.dart';
 import 'package:breez_translations/generated/breez_translations_fr.dart';
 import 'package:breez_translations/generated/breez_translations_it.dart';
 import 'package:breez_translations/generated/breez_translations_pt.dart';
 import 'package:breez_translations/generated/breez_translations_sv.dart';
+import 'package:breez_translations/generated/breez_translations_sk.dart';
 import 'package:flutter/material.dart';
 
 enum ProfileColor {
@@ -174,12 +176,14 @@ extension ProfileColorExtension on ProfileColor {
 Map<String, Map<String, ProfileColor>> _colorsFromName = {
   "de": _buildColorsFromName(BreezTranslationsDe()),
   "en": _buildColorsFromName(BreezTranslationsEn()),
+  "el": _buildColorsFromName(BreezTranslationsEl()),
   "es": _buildColorsFromName(BreezTranslationsEs()),
   "fi": _buildColorsFromName(BreezTranslationsFi()),
   "fr": _buildColorsFromName(BreezTranslationsFr()),
   "it": _buildColorsFromName(BreezTranslationsIt()),
   "pt": _buildColorsFromName(BreezTranslationsPt()),
   "sv": _buildColorsFromName(BreezTranslationsSv()),
+  "sk": _buildColorsFromName(BreezTranslationsSk()),
 };
 
 Map<String, ProfileColor> _buildColorsFromName(BreezTranslations local) => {

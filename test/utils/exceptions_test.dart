@@ -1,5 +1,6 @@
 import 'package:breez/utils/exceptions.dart';
 import 'package:breez_translations/generated/breez_translations_de.dart';
+import 'package:breez_translations/generated/breez_translations_el.dart';
 import 'package:breez_translations/generated/breez_translations_en.dart';
 import 'package:breez_translations/generated/breez_translations_es.dart';
 import 'package:breez_translations/generated/breez_translations_fi.dart';
@@ -7,6 +8,7 @@ import 'package:breez_translations/generated/breez_translations_fr.dart';
 import 'package:breez_translations/generated/breez_translations_it.dart';
 import 'package:breez_translations/generated/breez_translations_pt.dart';
 import 'package:breez_translations/generated/breez_translations_sv.dart';
+import 'package:breez_translations/generated/breez_translations_sk.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 
@@ -25,7 +27,9 @@ void main() {
             '"Withdraw link does not exist."} method: fetchLnurl',
             clearTrailingDot: clearTrailingDot,
           ),
-          clearTrailingDot ? 'Withdraw link does not exist' : 'Withdraw link does not exist.',
+          clearTrailingDot
+              ? 'Withdraw link does not exist'
+              : 'Withdraw link does not exist.',
         );
       });
 
@@ -76,11 +80,13 @@ void main() {
           extractExceptionMessage(
             PlatformException(
               code: "Method Error",
-              message: "Error Domain=go Code=1 \"rpc error: code = Unknown desc = fees are too high for the "
+              message:
+                  "Error Domain=go Code=1 \"rpc error: code = Unknown desc = fees are too high for the "
                   "given amount transaction output amount is negative\" UserInfo={NSLocalizedDescription=rpc "
                   "error: code = Unknown desc = fees are too high for the given amount transaction output "
                   "amount is negative}",
-              details: "Error Domain=go Code=1 \"rpc error: code = Unknown desc = fees are too high for the "
+              details:
+                  "Error Domain=go Code=1 \"rpc error: code = Unknown desc = fees are too high for the "
                   "given amount transaction output amount is negative\" UserInfo={NSLocalizedDescription=rpc "
                   "error: code = Unknown desc = fees are too high for the given amount transaction output "
                   "amount is negative}",
@@ -90,18 +96,29 @@ void main() {
           "fees are too high for the given amount transaction output amount is negative",
         );
       });
+
+      test('_extractInnerErrorMessage from error message', () {
+        expect(
+          extractExceptionMessage(
+            "rpc error: code = Unknown desc = error in payment response: payment is in transition",
+          ),
+          "error in payment response: payment is in transition",
+        );
+      });
     }
   });
 
   final locales = {
     "de": BreezTranslationsDe(),
     "en": BreezTranslationsEn(),
+    "el": BreezTranslationsEl(),
     "es": BreezTranslationsEs(),
     "fi": BreezTranslationsFi(),
     "fr": BreezTranslationsFr(),
     "it": BreezTranslationsIt(),
     "pt": BreezTranslationsPt(),
     "sv": BreezTranslationsSv(),
+    "sk": BreezTranslationsSk(),
   };
   group("localizedExceptionMessage", () {
     for (final locale in locales.values) {

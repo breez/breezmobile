@@ -6,7 +6,8 @@ import 'package:breez/bloc/lsp/lsp_actions.dart';
 import 'package:breez/bloc/lsp/lsp_model.dart';
 import 'package:breez/logger.dart';
 import 'package:breez/services/breezlib/breez_bridge.dart';
-import 'package:breez/services/breezlib/data/rpc.pb.dart';
+import 'package:breez/services/breezlib/data/messages.pb.dart';
+import 'package:breez/services/device.dart';
 import 'package:breez/services/injector.dart';
 import 'package:breez/utils/retry.dart';
 import 'package:breez_translations/breez_translations_locales.dart';
@@ -27,10 +28,12 @@ class LSPBloc with AsyncActionsHandler {
 
   final Stream<AccountModel> accountStream;
   BreezBridge _breezLib;
+  Device _device;
 
   LSPBloc(this.accountStream) {
     ServiceInjector injector = ServiceInjector();
     _breezLib = injector.breezBridge;
+    _device = injector.device;
 
     registerAsyncHandlers({
       FetchLSPList: _fetchLSPList,
@@ -48,12 +51,13 @@ class LSPBloc with AsyncActionsHandler {
       _listenReconnects();
       _handleAccountChangs(sp);
       _handleLSPStatusChanges(sp);
+      _listenLifecycleEvents();
     });
   }
 
   Future _fetchLSPList(FetchLSPList action) async {
     try {
-      await _ensureLSPSFetched();
+      action.resolve(await _ensureLSPSFetched());
     } catch (err) {
       _lspsStatusController.add(_lspsStatusController.value
           .copyWith(lastConnectionError: err.toString()));
@@ -119,6 +123,15 @@ class LSPBloc with AsyncActionsHandler {
     });
   }
 
+  void _listenLifecycleEvents() {
+    _device.eventStream
+        .where((e) => e == NotificationType.RESUME)
+        .listen((e) async {
+      log.info("App Resumed - flutter resume called, refreshing LSPs");
+      await _ensureLSPSFetched();
+    });
+  }
+
   void _listenReconnects() {
     Future connectingFuture = Future.value(null);
     _reconnectStreamController.stream
@@ -162,14 +175,14 @@ class LSPBloc with AsyncActionsHandler {
     await _lspPromptController.close();
   }
 
-  Future _ensureLSPSFetched() async {
-    if (_lspsStatusController.value.availableLSPs.isEmpty) {
-      var list = await _breezLib.getLSPList();
-      var lspInfoList = list.lsps.entries.map<LSPInfo>((entry) {
-        return LSPInfo(entry.value, entry.key);
-      }).toList();
-      _lspsStatusController.add(
-          _lspsStatusController.value.copyWith(availableLSPs: lspInfoList));
-    }
+  Future<List<LSPInfo>> _ensureLSPSFetched() async {
+    var list = await _breezLib.getLSPList();
+    var lspInfoList = list.lsps.entries.map<LSPInfo>((entry) {
+      return LSPInfo(entry.value, entry.key);
+    }).toList();
+    _lspsStatusController.add(
+      _lspsStatusController.value.copyWith(availableLSPs: lspInfoList),
+    );
+    return lspInfoList;
   }
 }

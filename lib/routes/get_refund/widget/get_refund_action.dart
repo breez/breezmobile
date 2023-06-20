@@ -36,7 +36,7 @@ class GetRefundAction extends StatelessWidget {
                   ? texts.get_refund_action_broadcasted
                   : texts.get_refund_action_continue,
               onPressed: onActionPressed,
-              enabled: refundTxId.isEmpty && allowRebroadcastRefunds,
+              enabled: refundTxId.isEmpty || allowRebroadcastRefunds,
               fill: true,
               variant: Variant.secondary,
             ),

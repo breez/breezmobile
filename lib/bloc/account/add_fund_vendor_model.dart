@@ -6,6 +6,7 @@ class AddFundVendorModel {
   final bool isAllowed;
   final bool enabled;
   final bool requireActiveChannel;
+  final bool refreshLSP;
   final bool showLSPFee;
 
   AddFundVendorModel(
@@ -16,6 +17,7 @@ class AddFundVendorModel {
     this.enabled = true,
     this.requireActiveChannel = false,
     this.shortName,
+    this.refreshLSP = false,
     this.showLSPFee = false,
   });
 

@@ -14,8 +14,11 @@ import 'package:breez/bloc/lsp/lsp_model.dart';
 import 'package:breez/routes/podcast/theme.dart';
 import 'package:breez/routes/spontaneous_payment/spontaneous_payment_page.dart';
 import 'package:breez/theme_data.dart' as theme;
+import 'package:breez/utils/dynamic_fees.dart';
+import 'package:breez/utils/stream_builder_extensions.dart';
 import 'package:breez/widgets/enter_payment_info_dialog.dart';
 import 'package:breez/widgets/escher_dialog.dart';
+import 'package:breez/widgets/loader.dart';
 import 'package:breez/widgets/lsp_fee.dart';
 import 'package:breez/widgets/route.dart';
 import 'package:breez/widgets/warning_box.dart';
@@ -23,10 +26,9 @@ import 'package:breez_translations/breez_translations_locales.dart';
 import 'package:flutter/material.dart';
 
 class BottomActionsBar extends StatelessWidget {
-  final AccountModel account;
   final GlobalKey firstPaymentItemKey;
 
-  const BottomActionsBar(this.account, this.firstPaymentItemKey);
+  const BottomActionsBar(this.firstPaymentItemKey);
 
   @override
   Widget build(BuildContext context) {
@@ -50,11 +52,17 @@ class BottomActionsBar extends StatelessWidget {
             Container(
               width: 64,
             ),
-            _Action(
-              onPress: () => showReceiveOptions(context, account),
-              group: actionsGroup,
-              text: texts.bottom_action_bar_receive,
-              iconAssetPath: "src/icon/receive-action.png",
+            StreamBuilder<AccountModel>(
+              stream: AppBlocsProvider.of<AccountBloc>(context).accountStream,
+              builder: (context, accountSnapshot) {
+                final account = accountSnapshot.data;
+                return _Action(
+                  onPress: () => showReceiveOptions(context, account),
+                  group: actionsGroup,
+                  text: texts.bottom_action_bar_receive,
+                  iconAssetPath: "src/icon/receive-action.png",
+                );
+              },
             ),
           ],
         ),
@@ -64,16 +72,19 @@ class BottomActionsBar extends StatelessWidget {
 
   Future _showSendOptions(BuildContext context) async {
     final texts = context.texts();
-    InvoiceBloc invoiceBloc = AppBlocsProvider.of<InvoiceBloc>(context);
-    AccountBloc accBloc = AppBlocsProvider.of<AccountBloc>(context);
-    LNUrlBloc lnurlBloc = AppBlocsProvider.of<LNUrlBloc>(context);
+    final invoiceBloc = AppBlocsProvider.of<InvoiceBloc>(context);
+    final accBloc = AppBlocsProvider.of<AccountBloc>(context);
+    final lnurlBloc = AppBlocsProvider.of<LNUrlBloc>(context);
+    final accountBloc = AppBlocsProvider.of<AccountBloc>(context);
 
     await showModalBottomSheet(
       context: context,
       builder: (ctx) {
-        return StreamBuilder<Future<DecodedClipboardData>>(
-          stream: invoiceBloc.decodedClipboardStream,
-          builder: (context, snapshot) {
+        return StreamBuilder2<Future<DecodedClipboardData>, AccountModel>(
+          streamA: invoiceBloc.decodedClipboardStream,
+          streamB: accountBloc.accountStream,
+          builder: (context, clipBoardSnapshot, accountSnapshot) {
+            final account = accountSnapshot.data;
             return Column(
               mainAxisSize: MainAxisSize.min,
               children: <Widget>[
@@ -91,8 +102,8 @@ class BottomActionsBar extends StatelessWidget {
                   onTap: () async {
                     final navigator = Navigator.of(context);
                     navigator.pop();
-                    if (snapshot.hasData) {
-                      await snapshot.data.then((clipboardData) {
+                    if (clipBoardSnapshot.hasData) {
+                      await clipBoardSnapshot.data.then((clipboardData) {
                         if (clipboardData != null) {
                           if (clipboardData.type == "lnurl" ||
                               clipboardData.type == "lightning-address") {
@@ -344,13 +355,43 @@ Future showReceiveOptions(
                           ),
                           onTap: () {
                             Navigator.of(context).pop();
-                            if (v.showLSPFee) {
-                              promptLSPFeeAndNavigate(
-                                parentContext,
-                                account,
-                                lspSnapshot.data.currentLSP,
-                                v.route,
-                              );
+                            if (v.refreshLSP || v.showLSPFee) {
+                              final navigator = Navigator.of(context);
+                              var loaderRoute = createLoaderRoute(context);
+                              try {
+                                navigator.push(loaderRoute);
+
+                                final currentLSP = lspSnapshot.data.currentLSP;
+                                fetchLSPList(lspBloc).then(
+                                  (lspList) {
+                                    if (loaderRoute.isActive) {
+                                      navigator.removeRoute(loaderRoute);
+                                    }
+                                    var refreshedLSP = lspList.firstWhere(
+                                      (lsp) => lsp.lspID == currentLSP.lspID,
+                                    );
+                                    (v.showLSPFee)
+                                        ? promptLSPFeeAndNavigate(
+                                            parentContext,
+                                            account,
+                                            refreshedLSP
+                                                .longestValidOpeningFeeParams,
+                                            v.route,
+                                          )
+                                        : Navigator.of(context)
+                                            .pushNamed(v.route);
+                                  },
+                                  onError: (_) {
+                                    if (loaderRoute.isActive) {
+                                      navigator.removeRoute(loaderRoute);
+                                    }
+                                  },
+                                );
+                              } catch (e) {
+                                if (loaderRoute.isActive) {
+                                  navigator.removeRoute(loaderRoute);
+                                }
+                              }
                             } else {
                               Navigator.of(context).pushNamed(v.route);
                             }
