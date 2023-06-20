@@ -3,12 +3,16 @@ import 'dart:convert' as JSON;
 import 'package:breez/bloc/account/account_bloc.dart';
 import 'package:breez/bloc/blocs_provider.dart';
 import 'package:breez/bloc/invoice/invoice_bloc.dart';
+import 'package:breez/routes/marketplace/nostrEvent_handlers.dart';
 import 'package:breez/utils/webview_controller_util.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:url_launcher/url_launcher_string.dart';
 import 'package:webview_flutter/webview_flutter.dart';
+
+// Import for Android features.
+import 'package:webview_flutter_android/webview_flutter_android.dart';
 
 import 'webln_handlers.dart';
 
@@ -33,6 +37,7 @@ class VendorWebViewPageState extends State<VendorWebViewPage> {
   WebLNHandlers _weblnHandlers;
   InvoiceBloc _invoiceBloc;
   bool _isInit = false;
+  NostrEventHandler _nostrEventHandler;
 
   WebViewController _webViewController;
 
@@ -47,7 +52,12 @@ class VendorWebViewPageState extends State<VendorWebViewPage> {
         onMessageReceived: _onMessageReceived,
         onNavigationRequest: _handleNavigationRequest,
       );
+      _nostrEventHandler = NostrEventHandler(context, widget._title);
       _isInit = true;
+    }
+
+    if (_webViewController.platform is AndroidWebViewController) {
+      AndroidWebViewController.enableDebugging(true);
     }
     super.didChangeDependencies();
   }
@@ -102,7 +112,15 @@ class VendorWebViewPageState extends State<VendorWebViewPage> {
     // redirect post messages to javascript channel
     _webViewController.runJavaScript(
         'window.onmessage = (message) => window.BreezWebView.postMessage(message.data);');
+
     _webViewController.runJavaScript(await _weblnHandlers.initWebLNScript);
+
+    // inject nostr-provider for Snort
+    if (widget._title == "Snort") {
+      _webViewController
+          .runJavaScript(await _nostrEventHandler.initNostrProvider);
+    }
+
     if (kDebugMode) {
       print('Page finished loading: $url');
     }
@@ -113,6 +131,16 @@ class VendorWebViewPageState extends State<VendorWebViewPage> {
       var postMessage = (widget._title == "ln.pizza")
           ? {"action": "sendPayment", "payReq": message.message}
           : JSON.jsonDecode(message.message);
+
+      // handle nostr-events
+      if (postMessage['from'] != null && postMessage['from'] == 'nostr') {
+        _nostrEventHandler.handleNostrEventMessage(postMessage).then((value) {
+          if (value != null) {
+            _webViewController.runJavaScript(value);
+          }
+        });
+      }
+
       // handle lightning links and WebLN payments
       if (postMessage["lightningLink"] != null &&
           postMessage["lightningLink"].toLowerCase().startsWith("lightning:")) {

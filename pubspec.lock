@@ -130,6 +130,22 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.2.3"
+  base58check:
+    dependency: transitive
+    description:
+      name: base58check
+      sha256: "6c300dfc33e598d2fe26319e13f6243fea81eaf8204cb4c6b69ef20a625319a5"
+      url: "https://pub.dev"
+    source: hosted
+    version: "2.0.0"
+  bech32:
+    dependency: transitive
+    description:
+      name: bech32
+      sha256: "156cbace936f7720c79a79d16a03efad343b1ef17106716e04b8b8e39f99f7f7"
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.2.2"
   bidi:
     dependency: transitive
     description:
@@ -138,6 +154,22 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.0.6"
+  bip32:
+    dependency: transitive
+    description:
+      name: bip32
+      sha256: "54787cd7a111e9d37394aabbf53d1fc5e2e0e0af2cd01c459147a97c0e3f8a97"
+      url: "https://pub.dev"
+    source: hosted
+    version: "2.0.0"
+  bip340:
+    dependency: transitive
+    description:
+      name: bip340
+      sha256: "9a2f454d3f5e2d67a1b21494203132786d95bde8784e7ada74adac00df3ddc11"
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.1.0"
   bip39:
     dependency: "direct main"
     description:
@@ -163,6 +195,14 @@ packages:
       url: "https://github.com/breez/Breez-Translations.git"
     source: git
     version: "1.0.0"
+  bs58check:
+    dependency: transitive
+    description:
+      name: bs58check
+      sha256: c4a164d42b25c2f6bc88a8beccb9fc7d01440f3c60ba23663a20a70faf484ea9
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.0.2"
   build:
     dependency: transitive
     description:
@@ -1050,6 +1090,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "0.4.7"
+  kepler:
+    dependency: transitive
+    description:
+      name: kepler
+      sha256: "8cf9f7df525bd4e5b192d91e52f1c75832b1fefb27fb4f4a09b1412b0f4f23d0"
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.0.3"
   lints:
     dependency: transitive
     description:
@@ -1179,6 +1227,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.0.2"
+  nostr_tools:
+    dependency: "direct main"
+    description:
+      name: nostr_tools
+      sha256: "5536c4017419bcef7777f44f61884a22f864a7a937a3b10254e889ed284757d3"
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.0.7"
   numerus:
     dependency: transitive
     description:
@@ -1376,10 +1432,10 @@ packages:
     dependency: transitive
     description:
       name: pointycastle
-      sha256: "57b6b78df14175658f09c5dfcfc51a46ad9561a3504fe679913dab404d0cc0f2"
+      sha256: "7c1e5f0d23c9016c5bbd8b1473d0d3fb3fc851b876046039509e18e0c7485f2c"
       url: "https://pub.dev"
     source: hosted
-    version: "3.7.0"
+    version: "3.7.3"
   pool:
     dependency: transitive
     description:
@@ -1971,21 +2027,21 @@ packages:
     source: hosted
     version: "4.0.7"
   webview_flutter_android:
-    dependency: transitive
+    dependency: "direct main"
     description:
       name: webview_flutter_android
-      sha256: "34f83c2f0f64c75ad75c77a2ccfc8d2e531afbe8ad41af1fd787d6d33336aa90"
+      sha256: "57a22c86065375c1598b57224f92d6008141be0c877c64100de8bfb6f71083d8"
       url: "https://pub.dev"
     source: hosted
-    version: "3.4.3"
+    version: "3.7.1"
   webview_flutter_platform_interface:
     dependency: transitive
     description:
       name: webview_flutter_platform_interface
-      sha256: "1939c39e2150fb4d30fd3cc59a891a49fed9935db53007df633ed83581b6117b"
+      sha256: "656e2aeaef318900fffd21468b6ddc7958c7092a642f0e7220bac328b70d4a81"
       url: "https://pub.dev"
     source: hosted
-    version: "2.1.0"
+    version: "2.3.1"
   webview_flutter_wkwebview:
     dependency: transitive
     description:
