@@ -114,7 +114,8 @@ class EnterPaymentInfoDialogState extends State<EnterPaymentInfoDialog> {
                 validator: (value) {
                   if (parseNodeId(value) == null &&
                       _decodeInvoice(value) == null &&
-                      !isLightningAddress(value)) {
+                      !isLightningAddress(value) &&
+                      !isLNURL(value)) {
                     return texts.payment_info_dialog_error;
                   }
                   return null;
@@ -189,6 +190,9 @@ class EnterPaymentInfoDialogState extends State<EnterPaymentInfoDialog> {
             if (_decodeInvoice(_paymentInfoController.text) != null) {
               widget.invoiceBloc.decodeInvoiceSink
                   .add(_paymentInfoController.text);
+            }
+            if (isLNURL(_paymentInfoController.text)) {
+              widget.lnurlBloc.lnurlInputSink.add(_paymentInfoController.text);
             }
           }
         }),
