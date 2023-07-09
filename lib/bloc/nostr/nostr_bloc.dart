@@ -2,11 +2,15 @@ import 'dart:async';
 
 import 'package:breez/bloc/async_actions_handler.dart';
 import 'package:breez/bloc/nostr/nostr_actions.dart';
+import 'package:breez/services/breezlib/breez_bridge.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:nostr_tools/nostr_tools.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../../services/injector.dart';
+
 class NostrBloc with AsyncActionsHandler {
+  BreezBridge _breezLib;
   String nostrPublicKey;
   String nostrPrivateKey;
 
@@ -14,6 +18,8 @@ class NostrBloc with AsyncActionsHandler {
   SharedPreferences sharedPreferences;
 
   NostrBloc() {
+    ServiceInjector injector = ServiceInjector();
+    _breezLib = injector.breezBridge;
     _secureStorage = const FlutterSecureStorage();
 
     initNostr();
@@ -29,9 +35,10 @@ class NostrBloc with AsyncActionsHandler {
   }
 
   void initNostr() async {
-    nostrPublicKey = await _secureStorage.read(key: 'nostrPublicKey');
-    nostrPrivateKey = await _secureStorage.read(key: 'nostrPrivateKey');
     SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
+
+    nostrPublicKey = await _secureStorage.read(key: "nostrPublicKey");
+    nostrPrivateKey = await _secureStorage.read(key: "nostrPrivateKey");
 
     if (nostrPublicKey == null) {
       sharedPreferences.setBool('rememberGetPubKeyChoice', false);
@@ -87,19 +94,22 @@ class NostrBloc with AsyncActionsHandler {
   // Methods to simulate the actual logic
 
   Future<String> _fetchPublicKey() async {
-    // check if key pair already exists otherwise generate it
-
     if (nostrPublicKey == null) {
-      final keyGenerator = KeyApi();
-      nostrPrivateKey = keyGenerator.generatePrivateKey();
-      nostrPublicKey = keyGenerator.getPublicKey(nostrPrivateKey);
+      // check if key pair already exists otherwise generate it
+      String nostrKeyPair;
+
+      nostrKeyPair = await _breezLib.getNostrKeyPair().catchError((error) {
+        throw error.toString();
+      });
+
+      int index = nostrKeyPair.indexOf('_');
+      nostrPrivateKey = nostrKeyPair.substring(0, index);
+      nostrPublicKey = nostrKeyPair.substring(index + 1);
 
       // Write value
       await _secureStorage.write(
           key: 'nostrPrivateKey', value: nostrPrivateKey);
       await _secureStorage.write(key: 'nostrPublicKey', value: nostrPublicKey);
-
-      Future.delayed(const Duration(seconds: 1));
     }
 
     return nostrPublicKey;
@@ -137,25 +147,21 @@ class NostrBloc with AsyncActionsHandler {
     if (eventApi.verifySignature(event)) {
       eventObject['sig'] = event.sig;
     }
-    await Future.delayed(const Duration(seconds: 1));
 
     return eventObject;
   }
 
   Future<List<String>> _fetchRelays() async {
-    await Future.delayed(const Duration(seconds: 1));
     return ['Relay1', 'Relay2', 'Relay3'];
   }
 
   Future<String> _encryptData(String data, String publicKey) async {
     // Simulating an encryption operation
-    await Future.delayed(const Duration(seconds: 1));
     return 'EncryptedData';
   }
 
   Future<String> _decryptData(String encryptedData, String privateKey) async {
     // Simulating a decryption operation
-    await Future.delayed(const Duration(seconds: 1));
     return 'DecryptedData';
   }
 
