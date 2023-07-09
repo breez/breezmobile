@@ -1,4 +1,3 @@
-import 'package:convert/convert.dart';
 import 'package:hex/hex.dart';
 
 const NODE_URI_SEPARATOR = "@";
