@@ -116,7 +116,6 @@ dependencies {
     implementation platform('com.google.firebase:firebase-bom:31.5.0')
     implementation 'com.google.firebase:firebase-messaging'
 
-    implementation 'com.google.firebase:firebase-analytics-ktx'
 
     implementation 'info.guardianproject:tor-android:0.4.7.8'
     implementation 'info.guardianproject:jtorctl:0.4.5.7'

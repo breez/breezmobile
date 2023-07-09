@@ -366,6 +366,11 @@ final VendorTheme lightsats = VendorTheme(
   iconFgColor: Colors.white,
 );
 
+final VendorTheme snort = VendorTheme(
+  iconBgColor: Colors.black,
+  // iconFgColor: Colors.white,
+);
+
 final Map<String, VendorTheme> vendorTheme = {
   "bitrefill": bitrefill,
   "ln.pizza": lnpizza,
@@ -381,6 +386,7 @@ final Map<String, VendorTheme> vendorTheme = {
   "fold": fold,
   "wavlake": wavlake,
   "lightsats": lightsats,
+  "snort": snort,
 };
 
 const TextStyle drawerItemTextStyle =
