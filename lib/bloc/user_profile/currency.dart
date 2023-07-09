@@ -27,7 +27,6 @@ class Currency extends Object {
       _CurrencyFormatter().format(sat, this,
           addCurrencySymbol: includeCurrencySymbol,
           addCurrencySuffix: includeDisplayName,
-          removeTrailingZeros: removeTrailingZeros,
           userInput: userInput);
 
   Int64 parse(String amountStr) => _CurrencyFormatter().parse(amountStr, this);
@@ -81,21 +80,12 @@ class _CurrencyFormatter {
   String format(satoshies, Currency currency,
       {bool addCurrencySuffix = true,
       bool addCurrencySymbol = false,
-      removeTrailingZeros = false,
       userInput = false}) {
     String formattedAmount = formatter.format(satoshies);
     switch (currency) {
       case Currency.BTC:
         double amountInBTC = (satoshies.toInt() / 100000000);
         formattedAmount = amountInBTC.toStringAsFixed(8);
-        if (removeTrailingZeros) {
-          if (amountInBTC.truncateToDouble() == amountInBTC) {
-            formattedAmount = amountInBTC.toInt().toString();
-          } else {
-            formattedAmount = formattedAmount.replaceAllMapped(
-                RegExp(r'^(\d+\.\d*?[1-9])0+$'), (match) => match.group(1));
-          }
-        }
         break;
       case Currency.SAT:
         formattedAmount = formatter.format(satoshies);
