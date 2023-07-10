@@ -135,6 +135,7 @@ dev_dependencies:
   mockito: <5.4.1
   sqflite_common_ffi: ^2.2.5
   test: any
+  flutter_lints: ^2.0.2
 
 environment:
   sdk: ">=2.10.0 <3.0.0"
