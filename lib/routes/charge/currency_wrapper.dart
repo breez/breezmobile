@@ -64,11 +64,12 @@ class CurrencyWrapper {
   }) {
     if (btc != null) {
       var satValue = btc.toSats(value);
-      return btc.format(satValue,
-          userInput: userInput,
-          includeDisplayName: includeDisplayName,
-          includeCurrencySymbol: includeCurrencySymbol,
-          removeTrailingZeros: removeTrailingZeros);
+      return btc.format(
+        satValue,
+        userInput: userInput,
+        includeDisplayName: includeDisplayName,
+        includeCurrencySymbol: includeCurrencySymbol,
+      );
     }
     return fiat.formatFiat(value,
         includeDisplayName: includeDisplayName,

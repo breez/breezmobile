@@ -21,7 +21,6 @@ class Currency extends Object {
     Int64 sat, {
     includeCurrencySymbol = false,
     includeDisplayName = true,
-    removeTrailingZeros = false,
     userInput = false,
   }) =>
       _CurrencyFormatter().format(sat, this,

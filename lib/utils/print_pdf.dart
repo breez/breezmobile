@@ -190,7 +190,7 @@ class PrintService {
     final sale = printParameters.submittedSale;
     final totalAmount = sale.totalAmountInSats;
 
-    var totalMsg = _satCurrency.format(totalAmount, removeTrailingZeros: true);
+    var totalMsg = _satCurrency.format(totalAmount);
     totalMsg = "$totalMsg ${_satCurrency.shortName}";
     final totalAmountInFiat = sale.totalAmountInFiat;
     if (totalAmountInFiat.length == 1) {
@@ -204,7 +204,6 @@ class PrintService {
         );
         final fiatTotalMsg = saleCurrency.format(
           total,
-          removeTrailingZeros: true,
           includeDisplayName: true,
         );
         totalMsg = "$totalMsg ($fiatTotalMsg)";
@@ -299,7 +298,7 @@ class PrintService {
 
   String _buildPriceValue(CurrencyWrapper saleCurrency, double amount) {
     if (saleCurrency.shortName == _satCurrency.shortName) {
-      final value = _satCurrency.format(amount, removeTrailingZeros: true);
+      final value = _satCurrency.format(amount);
       return "$value ${_satCurrency.shortName}";
     }
     return saleCurrency.format(
