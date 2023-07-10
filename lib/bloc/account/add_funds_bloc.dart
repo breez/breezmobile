@@ -137,9 +137,9 @@ class AddFundsBloc extends Bloc {
       String redirectURL = config.get("MoonPay Parameters", 'redirectURL');
       String walletAddress = response.address;
       String maxQuoteCurrencyAmount = Currency.BTC.format(
-          response.maxAllowedDeposit,
-          includeDisplayName: false,
-          removeTrailingZeros: true);
+        response.maxAllowedDeposit,
+        includeDisplayName: false,
+      );
       String queryString = "?${[
         "apiKey=$apiKey",
         "currencyCode=$currencyCode",
