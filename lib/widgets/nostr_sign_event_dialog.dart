@@ -1,7 +1,6 @@
 import 'package:breez_translations/breez_translations_locales.dart';
 import 'package:flutter/material.dart';
 
-// import 'package:nostr_tools/nostr_tools.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class NostrSignEventDialog extends StatefulWidget {
@@ -23,15 +22,7 @@ class NostrSignEventDialog extends StatefulWidget {
 }
 
 class _NostrSignEventDialogState extends State<NostrSignEventDialog> {
-  // bool _isTextVisible = false;
-
   bool _rememberChoice = false;
-
-  // void toggleTextVisibility() {
-  //   setState(() {
-  //     _isTextVisible = !_isTextVisible;
-  //   });
-  // }
 
   void _handleRememberMe(bool value) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -40,16 +31,6 @@ class _NostrSignEventDialogState extends State<NostrSignEventDialog> {
       _rememberChoice = value;
     });
   }
-
-  // Widget _details() {
-  //   return Column(
-  //     children: widget.eventData.entries.map(
-  //       (entry) {
-  //         return Text('${entry.key}:${entry.value}');
-  //       },
-  //     ).toList(),
-  //   );
-  // }
 
   @override
   Widget build(BuildContext context) {
@@ -137,24 +118,3 @@ class _NostrSignEventDialogState extends State<NostrSignEventDialog> {
     ];
   }
 }
-
-            // TextButton(
-            //   onPressed: toggleTextVisibility,
-            //   child: Text(
-            //     _isTextVisible == false ? 'View Details' : 'Hide Details',
-            //   ),
-            // ),
-            // const SizedBox(
-            //   height: 15,
-            // ),
-            // Visibility(
-            //   visible: _isTextVisible,
-            //   child: _details(),
-            //   // child: Text(
-            //   //   widget.eventData['id'],
-            //   //   style: themeData.dialogTheme.contentTextStyle,
-            //   // ),
-            // ),
-            // const SizedBox(
-            //   height: 20,
-            // ),

@@ -151,23 +151,26 @@ class NostrBloc with AsyncActionsHandler {
     return eventObject;
   }
 
+  // this method is created for future use
   Future<List<String>> _fetchRelays() async {
     return ['Relay1', 'Relay2', 'Relay3'];
   }
 
+  // this method is created for future use
   Future<String> _encryptData(String data, String publicKey) async {
     // Simulating an encryption operation
-    return 'EncryptedData';
+
+    throw Exception("HandleNip04Encrypt not supported");
   }
 
+  // this method is created for future use
   Future<String> _decryptData(String encryptedData, String privateKey) async {
     // Simulating a decryption operation
-    return 'DecryptedData';
+    throw Exception("HandleNip04Decrypt not supported");
   }
 
   @override
   Future dispose() {
-    // _actionsHandler.dispose();
     _publicKeyController.close();
     return super.dispose();
   }
