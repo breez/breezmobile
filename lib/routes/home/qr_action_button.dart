@@ -106,7 +106,6 @@ class QrActionButton extends StatelessWidget {
                         btcInvoice.satAmount,
                         userInput: true,
                         includeDisplayName: false,
-                        removeTrailingZeros: true,
                       );
                     }
                     navigator.push(
