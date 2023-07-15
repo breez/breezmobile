@@ -365,6 +365,10 @@ final VendorTheme lightsats = VendorTheme(
   iconBgColor: Colors.black,
   iconFgColor: Colors.white,
 );
+final VendorTheme tbc = VendorTheme(
+  iconFgColor: const Color(0xFFffffff),
+  iconBgColor: const Color(0xFF000000),
+);
 
 final VendorTheme snort = VendorTheme(
   iconBgColor: Colors.black,
@@ -387,6 +391,7 @@ final Map<String, VendorTheme> vendorTheme = {
   "wavlake": wavlake,
   "lightsats": lightsats,
   "snort": snort,
+  "tbc": tbc,
 };
 
 const TextStyle drawerItemTextStyle =
