@@ -18,10 +18,11 @@
     "url": "https://widget.fixedfloat.com/?from=BTCLN&to=LTC&cciesRcvNot=BTCLN",
     "logo": "src/icon/vendors/bitrefill_logo_lg.png"
   },
-  "Kollider": {
-    "url": "https://light.kollider.xyz/auth/login",
-    "endpointURI": "https://api.kollider.xyz/v1/auth/external/lnurl_auth",
-    "onlyShowLogo" : false
+  "tbc" : {
+    "displayName": "The Bitcoin Company",
+    "url": "https://app.thebitcoincompany.com",
+    "endpointURI": "https://api.thebitcoincompany.com/auth/auth-lnurl?flatResponse=true",
+    "responseID": "lnurl"
   },
   "Azteco": {
     "url": "https://azte.co/breezmap.php"
@@ -49,5 +50,10 @@
   "Snort":{
     "url" : "https://snort.social",
     "logo" : "src/icon/vendors/snort_logo_lg.png"
+  },
+  "Kollider": {
+    "url": "https://light.kollider.xyz/auth/login",
+    "endpointURI": "https://api.kollider.xyz/v1/auth/external/lnurl_auth",
+    "onlyShowLogo" : false
   }
 }
