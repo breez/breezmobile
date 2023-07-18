@@ -84,8 +84,25 @@ class LNURLWebViewPageState extends State<LNURLWebViewPage> {
   @override
   Widget build(BuildContext context) {
     if (jwtToken == null) {
-      return const Material(child: Loader());
+      return Material(
+        child: Scaffold(
+          appBar: AppBar(
+            automaticallyImplyLeading: false,
+            title: Text(widget.vendorModel.displayName),
+            actions: <Widget>[
+              IconButton(
+                  icon: Icon(
+                    Icons.close,
+                    color: Theme.of(context).iconTheme.color,
+                  ),
+                  onPressed: () => Navigator.pop(context))
+            ],
+          ),
+          body: const Center(child: Loader()),
+        ),
+      );
     }
+
     return VendorWebViewPage(
       widget.accountBloc,
       "${widget.vendorModel.url}?token=$jwtToken",
