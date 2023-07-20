@@ -33,6 +33,7 @@ import 'package:flutter_downloader/flutter_downloader.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:share_plus/share_plus.dart';
 
+import '../../bloc/marketplace/nostr_settings.dart';
 import 'default_commands.dart';
 
 bool allowRebroadcastRefunds = false;
@@ -169,178 +170,186 @@ class DevViewState extends State<DevView> {
                   return StreamBuilder<BreezUserModel>(
                     stream: userBloc.userStream,
                     builder: (context, userSnapshot) {
-                      return Scaffold(
-                        key: _scaffoldKey,
-                        appBar: AppBar(
-                          leading: const backBtn.BackButton(),
-                          title: const Text("Developers"),
-                          actions: <Widget>[
-                            PopupMenuButton<Choice>(
-                              onSelected: widget._select,
-                              color: Theme.of(context).colorScheme.background,
-                              icon: Icon(
-                                Icons.more_vert,
-                                color: Theme.of(context).iconTheme.color,
-                              ),
-                              itemBuilder: (BuildContext context) {
-                                return getChoices(
-                                  accBloc,
-                                  settingsSnapshot.data,
-                                  account,
-                                  addFundsBloc,
-                                  addFundsSettingsSnapshot.data,
-                                  userBloc,
-                                  userSnapshot.data,
-                                  marketplaceBloc,
-                                ).map((Choice choice) {
-                                  return PopupMenuItem<Choice>(
-                                    value: choice,
-                                    child: Text(
-                                      choice.title,
-                                      style: Theme.of(context)
-                                          .textTheme
-                                          .labelLarge,
-                                    ),
-                                  );
-                                }).toList();
-                              },
-                            ),
-                          ],
-                        ),
-                        body: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          mainAxisSize: MainAxisSize.max,
-                          children: <Widget>[
-                            Padding(
-                              padding: const EdgeInsets.only(
-                                left: 10.0,
-                              ),
-                              child: Row(
-                                children: <Widget>[
-                                  Flexible(
-                                    child: TextField(
-                                      focusNode: _cliEntryFocusNode,
-                                      controller: _cliInputController,
-                                      decoration: const InputDecoration(
-                                        hintText:
-                                            'Enter a command or use the links below',
-                                      ),
-                                      onSubmitted: (command) {
-                                        _sendCommand(command);
-                                      },
-                                    ),
+                      return StreamBuilder(
+                        stream: marketplaceBloc.nostrSettingsStream,
+                        builder: (context, nostrSettingsSnapshot) {
+                          return Scaffold(
+                            key: _scaffoldKey,
+                            appBar: AppBar(
+                              leading: const backBtn.BackButton(),
+                              title: const Text("Developers"),
+                              actions: <Widget>[
+                                PopupMenuButton<Choice>(
+                                  onSelected: widget._select,
+                                  color:
+                                      Theme.of(context).colorScheme.background,
+                                  icon: Icon(
+                                    Icons.more_vert,
+                                    color: Theme.of(context).iconTheme.color,
                                   ),
-                                  IconButton(
-                                    icon: const Icon(
-                                      Icons.play_arrow,
-                                    ),
-                                    tooltip: 'Run',
-                                    onPressed: () {
-                                      _sendCommand(
-                                        _cliInputController.text,
+                                  itemBuilder: (BuildContext context) {
+                                    return getChoices(
+                                      accBloc,
+                                      settingsSnapshot.data,
+                                      account,
+                                      addFundsBloc,
+                                      addFundsSettingsSnapshot.data,
+                                      userBloc,
+                                      userSnapshot.data,
+                                      marketplaceBloc,
+                                      nostrSettingsSnapshot.data,
+                                    ).map((Choice choice) {
+                                      return PopupMenuItem<Choice>(
+                                        value: choice,
+                                        child: Text(
+                                          choice.title,
+                                          style: Theme.of(context)
+                                              .textTheme
+                                              .labelLarge,
+                                        ),
                                       );
-                                    },
-                                  ),
-                                  IconButton(
-                                    icon: const Icon(Icons.clear),
-                                    tooltip: 'Clear',
-                                    onPressed: () {
-                                      setState(() {
-                                        _cliInputController.clear();
-                                        _showDefaultCommands = true;
-                                        _lastCommand = '';
-                                        _cliText = "";
-                                      });
-                                    },
-                                  ),
-                                ],
-                              ),
-                            ),
-                            Expanded(
-                              flex: 1,
-                              child: Container(
-                                padding: const EdgeInsets.only(
-                                  top: 10.0,
-                                  left: 10.0,
-                                  right: 10.0,
+                                    }).toList();
+                                  },
                                 ),
-                                child: Container(
-                                  padding: _showDefaultCommands
-                                      ? const EdgeInsets.all(0.0)
-                                      : const EdgeInsets.all(2.0),
-                                  decoration: BoxDecoration(
-                                    border: _showDefaultCommands
-                                        ? null
-                                        : Border.all(
-                                            width: 1.0,
-                                            color: const Color(0x80FFFFFF),
-                                          ),
+                              ],
+                            ),
+                            body: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              mainAxisSize: MainAxisSize.max,
+                              children: <Widget>[
+                                Padding(
+                                  padding: const EdgeInsets.only(
+                                    left: 10.0,
                                   ),
-                                  child: Column(
-                                    mainAxisSize: MainAxisSize.max,
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
+                                  child: Row(
                                     children: <Widget>[
-                                      _showDefaultCommands
-                                          ? Container()
-                                          : Row(
-                                              mainAxisAlignment:
-                                                  MainAxisAlignment.end,
-                                              children: <Widget>[
-                                                IconButton(
-                                                  icon: const Icon(
-                                                    Icons.content_copy,
-                                                  ),
-                                                  tooltip: 'Copy to Clipboard',
-                                                  iconSize: 19.0,
-                                                  onPressed: () {
-                                                    ServiceInjector()
-                                                        .device
-                                                        .setClipboardText(
-                                                            _cliText);
-                                                    ScaffoldMessenger.of(
-                                                            context)
-                                                        .showSnackBar(
-                                                      SnackBar(
-                                                        content: Text(
-                                                          'Copied to clipboard.',
-                                                          style: theme
-                                                              .snackBarStyle,
-                                                        ),
-                                                        backgroundColor: theme
-                                                            .snackBarBackgroundColor,
-                                                        duration:
-                                                            const Duration(
-                                                          seconds: 2,
-                                                        ),
-                                                      ),
-                                                    );
-                                                  },
-                                                ),
-                                                IconButton(
-                                                  icon: const Icon(
-                                                    Icons.share,
-                                                  ),
-                                                  iconSize: 19.0,
-                                                  tooltip: 'Share',
-                                                  onPressed: () {
-                                                    _shareFile(
-                                                      _lastCommand
-                                                          .split(" ")[0],
-                                                      _cliText,
-                                                    );
-                                                  },
-                                                )
-                                              ],
-                                            ),
-                                      Expanded(child: _renderBody())
+                                      Flexible(
+                                        child: TextField(
+                                          focusNode: _cliEntryFocusNode,
+                                          controller: _cliInputController,
+                                          decoration: const InputDecoration(
+                                            hintText:
+                                                'Enter a command or use the links below',
+                                          ),
+                                          onSubmitted: (command) {
+                                            _sendCommand(command);
+                                          },
+                                        ),
+                                      ),
+                                      IconButton(
+                                        icon: const Icon(
+                                          Icons.play_arrow,
+                                        ),
+                                        tooltip: 'Run',
+                                        onPressed: () {
+                                          _sendCommand(
+                                            _cliInputController.text,
+                                          );
+                                        },
+                                      ),
+                                      IconButton(
+                                        icon: const Icon(Icons.clear),
+                                        tooltip: 'Clear',
+                                        onPressed: () {
+                                          setState(() {
+                                            _cliInputController.clear();
+                                            _showDefaultCommands = true;
+                                            _lastCommand = '';
+                                            _cliText = "";
+                                          });
+                                        },
+                                      ),
                                     ],
                                   ),
                                 ),
-                              ),
+                                Expanded(
+                                  flex: 1,
+                                  child: Container(
+                                    padding: const EdgeInsets.only(
+                                      top: 10.0,
+                                      left: 10.0,
+                                      right: 10.0,
+                                    ),
+                                    child: Container(
+                                      padding: _showDefaultCommands
+                                          ? const EdgeInsets.all(0.0)
+                                          : const EdgeInsets.all(2.0),
+                                      decoration: BoxDecoration(
+                                        border: _showDefaultCommands
+                                            ? null
+                                            : Border.all(
+                                                width: 1.0,
+                                                color: const Color(0x80FFFFFF),
+                                              ),
+                                      ),
+                                      child: Column(
+                                        mainAxisSize: MainAxisSize.max,
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: <Widget>[
+                                          _showDefaultCommands
+                                              ? Container()
+                                              : Row(
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment.end,
+                                                  children: <Widget>[
+                                                    IconButton(
+                                                      icon: const Icon(
+                                                        Icons.content_copy,
+                                                      ),
+                                                      tooltip:
+                                                          'Copy to Clipboard',
+                                                      iconSize: 19.0,
+                                                      onPressed: () {
+                                                        ServiceInjector()
+                                                            .device
+                                                            .setClipboardText(
+                                                                _cliText);
+                                                        ScaffoldMessenger.of(
+                                                                context)
+                                                            .showSnackBar(
+                                                          SnackBar(
+                                                            content: Text(
+                                                              'Copied to clipboard.',
+                                                              style: theme
+                                                                  .snackBarStyle,
+                                                            ),
+                                                            backgroundColor: theme
+                                                                .snackBarBackgroundColor,
+                                                            duration:
+                                                                const Duration(
+                                                              seconds: 2,
+                                                            ),
+                                                          ),
+                                                        );
+                                                      },
+                                                    ),
+                                                    IconButton(
+                                                      icon: const Icon(
+                                                        Icons.share,
+                                                      ),
+                                                      iconSize: 19.0,
+                                                      tooltip: 'Share',
+                                                      onPressed: () {
+                                                        _shareFile(
+                                                          _lastCommand
+                                                              .split(" ")[0],
+                                                          _cliText,
+                                                        );
+                                                      },
+                                                    )
+                                                  ],
+                                                ),
+                                          Expanded(child: _renderBody())
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ],
                             ),
-                          ],
-                        ),
+                          );
+                        },
                       );
                     },
                   );
@@ -362,6 +371,7 @@ class DevViewState extends State<DevView> {
     UserProfileBloc userBloc,
     BreezUserModel userModel,
     MarketplaceBloc marketplaceBloc,
+    NostrSettings nostrSettings,
   ) {
     List<Choice> choices = <Choice>[];
     choices.addAll(
@@ -606,12 +616,12 @@ class DevViewState extends State<DevView> {
       ),
     );
     choices.add(Choice(
-      title: marketplaceBloc.isVendorToggle == true
-          ? 'Display Snort'
-          : 'Hide Snort',
+      title: "${marketplaceBloc.isSnortToggle ? "Display" : "Hide"} Snort",
       icon: Icons.phone_android,
       function: () {
-        _toggleVendor(marketplaceBloc);
+        // NostrSettings nostrSettings = NostrSettings();
+        // the instance of nostrSettings is null correct it
+        _toggleSnort(marketplaceBloc, nostrSettings);
       },
     ));
 
@@ -625,10 +635,15 @@ class DevViewState extends State<DevView> {
         .pushReplacementNamed("/splash");
   }*/
 
-  void _toggleVendor(MarketplaceBloc marketplaceBloc) async {
-    marketplaceBloc.isVendorToggle = !marketplaceBloc.isVendorToggle;
-
-    await marketplaceBloc.loadVendors();
+  void _toggleSnort(
+    MarketplaceBloc bloc,
+    NostrSettings nostrSettings,
+  ) {
+    bloc.nostrSettingsSettingsSink.add(
+      nostrSettings.copyWith(
+        showSnort: !nostrSettings.showSnort,
+      ),
+    );
   }
 
   void _shareFile(String command, String text) async {

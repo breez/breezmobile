@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:breez/bloc/nostr/nostr_bloc.dart';
+import 'package:breez/widgets/nostr_requests_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'dart:convert' as JSON;
@@ -9,8 +10,6 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../bloc/nostr/nostr_actions.dart';
 import '../../bloc/nostr/nostr_model.dart';
-import '../../widgets/nostr_get_pubKey_dialog.dart';
-import '../../widgets/nostr_sign_event_dialog.dart';
 
 class NostrEventHandler {
   final BuildContext context;
@@ -66,9 +65,7 @@ class NostrEventHandler {
 
     _nostrBloc.actionsSink.add(GetPublicKey());
 
-    final publicKey = await _nostrBloc.publicKeyStream.first;
-
-    return publicKey;
+    return await _nostrBloc.publicKeyStream.first;
   }
 
   Future<dynamic> _signEvent(postMessage) async {
@@ -94,12 +91,10 @@ class NostrEventHandler {
 
     _nostrBloc.actionsSink.add(SignEvent(eventData, nostrPrivateKey));
 
-    final Map<String, dynamic> signedEventObject =
-        await _nostrBloc.eventStream.first;
-
-    return signedEventObject;
+    return await _nostrBloc.eventStream.first;
   }
 
+  // these functions are not implemented but kept for future use
   Future<dynamic> _getRelays(postMessage) {
     return Future(() => null);
   }
@@ -118,26 +113,31 @@ class NostrEventHandler {
 
   Future _showDialogForSignEvent(Map<String, dynamic> eventData,
       String eventContent, String messageKind) async {
+    String textContent =
+        '$appName requires you to sign this $messageKind with your nostr key.';
     return showDialog(
         context: context,
         barrierDismissible: false,
         builder: (context) {
-          return NostrSignEventDialog(
+          return NostrRequestsDialog(
             appName: appName,
-            eventData: eventData,
-            eventContent: eventContent,
+            choiceType: "SignEvent",
+            textContent: textContent,
             messageKind: messageKind,
           );
         });
   }
 
   Future<dynamic> _showDialogWhenKeyPairFound() async {
+    String textContent = 'Allow $appName to use your nostr public key.';
     return showDialog(
       context: context,
       barrierDismissible: false,
       builder: (context) {
-        return NostrGetPublicKeyDialog(
+        return NostrRequestsDialog(
           appName: appName,
+          choiceType: "GetPubKey",
+          textContent: textContent,
         );
       },
     );

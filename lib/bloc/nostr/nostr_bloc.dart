@@ -22,7 +22,7 @@ class NostrBloc with AsyncActionsHandler {
     _breezLib = injector.breezBridge;
     _secureStorage = const FlutterSecureStorage();
 
-    initNostr();
+    _initNostr();
 
     registerAsyncHandlers({
       GetPublicKey: _handleGetPublicKey,
@@ -34,7 +34,7 @@ class NostrBloc with AsyncActionsHandler {
     listenActions();
   }
 
-  void initNostr() async {
+  void _initNostr() async {
     SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
 
     nostrPublicKey = await _secureStorage.read(key: "nostrPublicKey");
