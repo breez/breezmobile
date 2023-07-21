@@ -14,24 +14,23 @@ String extractBolt11FromBip21(String bip21) {
   return null;
 }
 
-String extractBitcoinAddressFromBip21(String bip21) {
-  String urnScheme = "bitcoin";
-  if (bip21.startsWith("bitcoin:") || bip21.startsWith("BITCOIN:")) {
+const String URN_SCHEME = "bitcoin:";
+
+String extractBitcoinAddress(String address) {
+  if (address.toLowerCase().startsWith(URN_SCHEME)) {
     try {
-      int split = bip21.indexOf("?");
-      String address =
-          bip21.substring(urnScheme.length + 1, split == -1 ? null : split);
-      if (address.isNotEmpty) {
-        isLegacyOrNestedSegwit(address)
-            ? address
-            : address = address.toLowerCase();
-        return address;
+      int split = address.indexOf("?");
+      String addr =
+          address.substring(URN_SCHEME.length, split == -1 ? null : split);
+      if (addr.isNotEmpty) {
+        isLegacyOrNestedSegwit(addr) ? addr : addr = addr.toLowerCase();
+        return addr;
       }
     } on FormatException {
       // do nothing.
     }
   }
-  return null;
+  return address;
 }
 
 bool isLegacyOrNestedSegwit(String address) {
