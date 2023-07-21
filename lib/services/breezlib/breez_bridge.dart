@@ -775,18 +775,9 @@ class BreezBridge {
   }
 
   Future<String> validateAddress(String address) {
-    String addr = address;
-    if (address == null) {
-      return Future.error("empty address");
-    }
-    addr = extractBitcoinAddressFromBip21(address) ?? addr;
-
-    if (addr.startsWith("bitcoin:") || addr.startsWith("BITCOIN:")) {
-      addr = addr.substring(8);
-      isLegacyOrNestedSegwit(addr) ? addr : addr.toLowerCase();
-    }
-    return _invokeMethodWhenReady("validateAddress", {"argument": addr})
-        .then((response) => addr);
+    address = extractBitcoinAddress(address);
+    return _invokeMethodWhenReady("validateAddress", {"argument": address})
+        .then((response) => address);
   }
 
   Future<Int64> getDefaultOnChainFeeRate() {
