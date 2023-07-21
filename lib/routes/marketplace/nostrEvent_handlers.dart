@@ -1,5 +1,7 @@
 import 'dart:async';
+import 'dart:convert';
 
+import 'package:breez/bloc/marketplace/nostr_settings.dart';
 import 'package:breez/bloc/nostr/nostr_bloc.dart';
 import 'package:breez/widgets/nostr_requests_dialog.dart';
 import 'package:flutter/material.dart';
@@ -54,7 +56,15 @@ class NostrEventHandler {
   Future<String> _getPublicKey(postMessage) async {
     // getting prompt choice
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    final rememberChoice = prefs.getBool('rememberGetPubKeyChoice');
+
+    final nostrSettings =
+        prefs.getString(NostrSettings.NOSTR_SETTINGS_PREFERENCES_KEY);
+
+    Map<String, dynamic> settings = json.decode(nostrSettings);
+    var nostrSettingsModel = NostrSettings.fromJson(settings);
+
+    final rememberChoice = nostrSettingsModel.isRememberPubKey;
+
     if (rememberChoice == false || rememberChoice == null) {
       final shouldReturnPubkey = await _showDialogWhenKeyPairFound();
 
@@ -76,7 +86,13 @@ class NostrEventHandler {
 
     SharedPreferences prefs = await SharedPreferences.getInstance();
 
-    final rememberChoice = prefs.getBool('rememberSignEventChoice');
+    final nostrSettings =
+        prefs.getString(NostrSettings.NOSTR_SETTINGS_PREFERENCES_KEY);
+
+    Map<String, dynamic> settings = json.decode(nostrSettings);
+    var nostrSettingsModel = NostrSettings.fromJson(settings);
+
+    final rememberChoice = nostrSettingsModel.isRememberSignEvent;
 
     if (rememberChoice == false || rememberChoice == null) {
       final shouldSignEvent = await _showDialogForSignEvent(

@@ -35,15 +35,8 @@ class NostrBloc with AsyncActionsHandler {
   }
 
   void _initNostr() async {
-    SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
-
     nostrPublicKey = await _secureStorage.read(key: "nostrPublicKey");
     nostrPrivateKey = await _secureStorage.read(key: "nostrPrivateKey");
-
-    if (nostrPublicKey == null) {
-      sharedPreferences.setBool('rememberGetPubKeyChoice', false);
-      sharedPreferences.setBool('rememberSignEventChoice', false);
-    }
   }
 
   final StreamController<String> _publicKeyController =

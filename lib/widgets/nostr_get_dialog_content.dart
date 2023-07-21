@@ -1,12 +1,20 @@
+import 'package:breez/bloc/marketplace/marketplace_bloc.dart';
+import 'package:breez/bloc/marketplace/nostr_settings.dart';
 import 'package:breez_translations/breez_translations_locales.dart';
 import 'package:flutter/material.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 class NostrGetDialogContent extends StatefulWidget {
   final String textContent;
   final String choiceType;
+  final AsyncSnapshot<NostrSettings> streamSnapshot;
+  final MarketplaceBloc bloc;
 
-  const NostrGetDialogContent({Key key, this.textContent, this.choiceType})
+  const NostrGetDialogContent(
+      {Key key,
+      this.textContent,
+      this.choiceType,
+      this.streamSnapshot,
+      this.bloc})
       : super(key: key);
 
   @override
@@ -14,16 +22,6 @@ class NostrGetDialogContent extends StatefulWidget {
 }
 
 class _NostrGetDialogContentState extends State<NostrGetDialogContent> {
-  bool _rememberChoice = false;
-
-  void _handleRememberMe(bool value) async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    prefs.setBool('remember${widget.choiceType}Choice', value);
-    setState(() {
-      _rememberChoice = value;
-    });
-  }
-
   @override
   Widget build(BuildContext context) {
     final texts = context.texts();
@@ -51,8 +49,23 @@ class _NostrGetDialogContentState extends State<NostrGetDialogContent> {
                 ),
                 child: Checkbox(
                   activeColor: themeData.canvasColor,
-                  value: _rememberChoice,
-                  onChanged: _handleRememberMe,
+                  value: widget.choiceType == "GetPubKey"
+                      ? widget.streamSnapshot.data.isRememberPubKey
+                      : widget.streamSnapshot.data.isRememberSignEvent,
+                  onChanged: (value) {
+                    var currentSettings = widget.streamSnapshot.data;
+                    if (widget.choiceType == "GetPubKey") {
+                      widget.bloc.nostrSettingsSettingsSink
+                          .add(currentSettings.copyWith(
+                        isRememberPubKey: value,
+                      ));
+                    } else if (widget.choiceType == "SignEvent") {
+                      widget.bloc.nostrSettingsSettingsSink
+                          .add(currentSettings.copyWith(
+                        isRememberSignEvent: value,
+                      ));
+                    }
+                  },
                 ),
               ),
               Text(

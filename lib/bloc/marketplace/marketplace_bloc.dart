@@ -1,8 +1,10 @@
 import 'dart:async';
+import 'dart:convert';
 
 import 'package:breez/bloc/marketplace/vendor_model.dart';
 import 'package:flutter/services.dart';
 import 'package:rxdart/rxdart.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import 'nostr_settings.dart';
 
@@ -10,7 +12,7 @@ class MarketplaceBloc {
   final _vendorController = BehaviorSubject<List<VendorModel>>();
   Stream<List<VendorModel>> get vendorsStream => _vendorController.stream;
 
-  bool isSnortToggle;
+  bool _isSnortToggled;
 
   final _nostrSettingsController = BehaviorSubject<NostrSettings>();
   Stream<NostrSettings> get nostrSettingsStream =>
@@ -30,8 +32,11 @@ class MarketplaceBloc {
   }
 
   _listenNostrSettings() async {
+    SharedPreferences pref = await SharedPreferences.getInstance();
     nostrSettingsStream.listen((settings) async {
-      isSnortToggle = settings.showSnort;
+      _isSnortToggled = settings.showSnort;
+      pref.setString(NostrSettings.NOSTR_SETTINGS_PREFERENCES_KEY,
+          json.encode(settings.toJson()));
       await loadVendors();
     });
   }
@@ -41,7 +46,7 @@ class MarketplaceBloc {
 
     // To display and hide Snort
     List<VendorModel> vendorList = vendorListFromJson(jsonVendors);
-    if (isSnortToggle) {
+    if (_isSnortToggled) {
       vendorList.removeWhere((element) => element.displayName == "Snort");
       _vendorController.add(vendorList);
     } else {

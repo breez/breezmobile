@@ -616,11 +616,9 @@ class DevViewState extends State<DevView> {
       ),
     );
     choices.add(Choice(
-      title: "${marketplaceBloc.isSnortToggle ? "Display" : "Hide"} Snort",
+      title: "${nostrSettings.showSnort ? "Display" : "Hide"} Snort",
       icon: Icons.phone_android,
       function: () {
-        // NostrSettings nostrSettings = NostrSettings();
-        // the instance of nostrSettings is null correct it
         _toggleSnort(marketplaceBloc, nostrSettings);
       },
     ));
