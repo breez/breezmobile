@@ -7,6 +7,7 @@ import 'package:breez/bloc/connect_pay/connect_pay_bloc.dart';
 import 'package:breez/bloc/invoice/invoice_bloc.dart';
 import 'package:breez/bloc/lnurl/lnurl_bloc.dart';
 import 'package:breez/bloc/lsp/lsp_bloc.dart';
+import 'package:breez/bloc/nostr/nostr_bloc.dart';
 import 'package:breez/bloc/pos_catalog/bloc.dart';
 import 'package:breez/bloc/reverse_swap/reverse_swap_bloc.dart';
 import 'package:breez/bloc/user_profile/breez_user_model.dart';
@@ -76,6 +77,7 @@ class UserApp extends StatelessWidget {
     var reverseSwapBloc = AppBlocsProvider.of<ReverseSwapBloc>(context);
     var lnurlBloc = AppBlocsProvider.of<LNUrlBloc>(context);
     var posCatalogBloc = AppBlocsProvider.of<PosCatalogBloc>(context);
+    var nostrBloc = AppBlocsProvider.of<NostrBloc>(context);
 
     return StreamBuilder(
       stream: userProfileBloc.userStream,
@@ -196,6 +198,7 @@ class UserApp extends StatelessWidget {
                                   lspBloc,
                                   reverseSwapBloc,
                                   lnurlBloc,
+                                  nostrBloc,
                                 ),
                                 settings: settings,
                               );
