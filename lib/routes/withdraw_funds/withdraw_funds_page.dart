@@ -314,7 +314,6 @@ class WithdrawFundsPageState extends State<WithdrawFundsPage> {
           btcInvoice.satAmount,
           userInput: true,
           includeDisplayName: false,
-          removeTrailingZeros: true,
         );
       }
       setState(() {

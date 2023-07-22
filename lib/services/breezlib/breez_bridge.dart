@@ -223,6 +223,11 @@ class BreezBridge {
     ).then((value) => value as String);
   }
 
+  Future<String> getNostrKeyPair() {
+    return _invokeMethodWhenReady("getNostrKeyPair")
+        .then((value) => value as String);
+  }
+
   Future<LNUrlPayInfo> fetchLNUrlPayInvoice(PayFetchResponse response) {
     return _invokeMethodWhenReady(
       "finishLNURLPay",

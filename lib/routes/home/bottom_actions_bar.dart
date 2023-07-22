@@ -431,7 +431,6 @@ Future showReceiveOptions(
                               texts.bottom_action_bar_warning_balance_title(
                                 account.currency.format(
                                   account.warningMaxChanReserveAmount,
-                                  removeTrailingZeros: true,
                                 ),
                               ),
                               maxFontSize: Theme.of(context)
