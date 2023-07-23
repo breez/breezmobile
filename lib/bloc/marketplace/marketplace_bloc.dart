@@ -34,7 +34,7 @@ class MarketplaceBloc {
   _listenNostrSettings() async {
     SharedPreferences pref = await SharedPreferences.getInstance();
     nostrSettingsStream.listen((settings) async {
-      _isSnortToggled = settings.showSnort;
+      _isSnortToggled = settings.enableNostr;
       pref.setString(NostrSettings.NOSTR_SETTINGS_PREFERENCES_KEY,
           json.encode(settings.toJson()));
       await loadVendors();

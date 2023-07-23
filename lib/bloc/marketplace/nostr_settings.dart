@@ -1,12 +1,10 @@
-import 'package:shared_preferences/shared_preferences.dart';
-
 class NostrSettings {
-  final bool showSnort;
+  final bool enableNostr;
   final bool isRememberPubKey;
   final bool isRememberSignEvent;
 
   NostrSettings(
-      {this.showSnort = true,
+      {this.enableNostr = true,
       this.isRememberPubKey = false,
       this.isRememberSignEvent = false});
 
@@ -14,15 +12,15 @@ class NostrSettings {
 
   NostrSettings.start()
       : this(
-          showSnort: true,
+          enableNostr: true,
           isRememberPubKey: false,
           isRememberSignEvent: false,
         );
 
   NostrSettings copyWith(
-      {bool showSnort, bool isRememberPubKey, bool isRememberSignEvent}) {
+      {bool enableNostr, bool isRememberPubKey, bool isRememberSignEvent}) {
     return NostrSettings(
-      showSnort: showSnort ?? this.showSnort,
+      enableNostr: enableNostr ?? this.enableNostr,
       isRememberPubKey: isRememberPubKey ?? this.isRememberPubKey,
       isRememberSignEvent: isRememberSignEvent ?? this.isRememberSignEvent,
     );
@@ -30,13 +28,13 @@ class NostrSettings {
 
   NostrSettings.fromJson(Map<String, dynamic> json)
       : this(
-          showSnort: json["showSnort"] ?? true,
+          enableNostr: json["enableNostr"] ?? true,
           isRememberPubKey: json["isRememberPubKey"] ?? false,
           isRememberSignEvent: json["isRememberSignEvent"] ?? false,
         );
 
   Map<String, dynamic> toJson() => {
-        "showSnort": showSnort,
+        "enableNostr": enableNostr,
         "isRememberPubKey": isRememberPubKey,
         "isRememberSignEvent": isRememberSignEvent,
       };
