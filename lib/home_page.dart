@@ -54,9 +54,11 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-final GlobalKey firstPaymentItemKey = GlobalKey(debugLabel: "firstPaymentItemKey");
+final GlobalKey firstPaymentItemKey =
+    GlobalKey(debugLabel: "firstPaymentItemKey");
 final ScrollController scrollController = ScrollController();
-final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>(debugLabel: "scaffoldKey");
+final GlobalKey<ScaffoldState> _scaffoldKey =
+    GlobalKey<ScaffoldState>(debugLabel: "scaffoldKey");
 
 class Home extends StatefulWidget {
   final AccountBloc accountBloc;
@@ -159,7 +161,7 @@ class HomeState extends State<Home> with WidgetsBindingObserver {
   void _initListens(BuildContext context) {
     if (_listensInit) return;
     _listensInit = true;
-    ServiceInjector().breezBridge.initBreezLib();
+    //ServiceInjector().breezBridge.initBreezLib();
     _registerNotificationHandlers(context);
     listenUnexpectedError(context, widget.accountBloc);
     _listenBackupConflicts(context);
@@ -202,10 +204,16 @@ class HomeState extends State<Home> with WidgetsBindingObserver {
               _onNavigationItemSelected,
               _filterItems,
             ),
-            bottomNavigationBar: appMode == AppMode.balance ? BottomActionsBar(firstPaymentItemKey) : null,
-            floatingActionButton: appMode == AppMode.balance ? QrActionButton(firstPaymentItemKey) : null,
-            floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
-            body: widget._screenBuilders[_activeScreen] ?? _homePage(context, appMode),
+            bottomNavigationBar: appMode == AppMode.balance
+                ? BottomActionsBar(firstPaymentItemKey)
+                : null,
+            floatingActionButton: appMode == AppMode.balance
+                ? QrActionButton(firstPaymentItemKey)
+                : null,
+            floatingActionButtonLocation:
+                FloatingActionButtonLocation.centerDocked,
+            body: widget._screenBuilders[_activeScreen] ??
+                _homePage(context, appMode),
           );
         },
       ),
