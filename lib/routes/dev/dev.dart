@@ -616,10 +616,10 @@ class DevViewState extends State<DevView> {
       ),
     );
     choices.add(Choice(
-      title: "${nostrSettings.showSnort ? "Display" : "Hide"} Snort",
+      title: "${nostrSettings.enableNostr ? "Enable" : "Diable"} Nostr",
       icon: Icons.phone_android,
       function: () {
-        _toggleSnort(marketplaceBloc, nostrSettings);
+        _toggleNostr(marketplaceBloc, nostrSettings);
       },
     ));
 
@@ -633,13 +633,13 @@ class DevViewState extends State<DevView> {
         .pushReplacementNamed("/splash");
   }*/
 
-  void _toggleSnort(
+  void _toggleNostr(
     MarketplaceBloc bloc,
     NostrSettings nostrSettings,
   ) {
     bloc.nostrSettingsSettingsSink.add(
       nostrSettings.copyWith(
-        showSnort: !nostrSettings.showSnort,
+        enableNostr: !nostrSettings.enableNostr,
       ),
     );
   }
