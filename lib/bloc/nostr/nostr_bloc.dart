@@ -72,7 +72,7 @@ class NostrBloc with AsyncActionsHandler {
   }
 
   Future<void> _handleNip04Encrypt(Nip04Encrypt action) async {
-    // to encrypt the data`
+    // to encrypt the data
     String encryptedData = await _encryptData(action.data, action.publicKey);
     action.resolve(encryptedData);
   }
