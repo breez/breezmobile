@@ -616,7 +616,7 @@ class DevViewState extends State<DevView> {
       ),
     );
     choices.add(Choice(
-      title: "${nostrSettings.enableNostr ? "Enable" : "Diable"} Nostr",
+      title: "${nostrSettings.enableNostr ? "Enable" : "Disable"} Nostr",
       icon: Icons.phone_android,
       function: () {
         _toggleNostr(marketplaceBloc, nostrSettings);
