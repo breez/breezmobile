@@ -42,14 +42,6 @@ packages:
       url: "https://github.com/breez/anytime_podcast_player.git"
     source: git
     version: "1.2.1+74-breez"
-  app_settings:
-    dependency: "direct main"
-    description:
-      name: app_settings
-      sha256: "34c6b7dbf493d486b082f9538ea11b2ee665e7125618660555d5415592e78667"
-      url: "https://pub.dev"
-    source: hosted
-    version: "4.3.0"
   archive:
     dependency: "direct main"
     description:
