@@ -1,17 +1,15 @@
 import 'dart:async';
 import 'dart:convert';
+import 'dart:convert' as JSON;
 
 import 'package:breez/bloc/marketplace/nostr_settings.dart';
+import 'package:breez/bloc/nostr/nostr_actions.dart';
 import 'package:breez/bloc/nostr/nostr_bloc.dart';
+import 'package:breez/bloc/nostr/nostr_model.dart';
 import 'package:breez/widgets/nostr_requests_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'dart:convert' as JSON;
-
 import 'package:shared_preferences/shared_preferences.dart';
-
-import '../../bloc/nostr/nostr_actions.dart';
-import '../../bloc/nostr/nostr_model.dart';
 
 class NostrEventHandler {
   final BuildContext context;
