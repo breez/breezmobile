@@ -10,7 +10,6 @@ dependencies:
   nostr_tools: ^1.0.7 
   webview_flutter_android: ^3.7.1
   another_flushbar: ^1.12.30
-  app_settings: ^4.2.0
   archive: ^3.3.7
   audio_service: ^0.18.9
   auto_size_text: ^3.0.0
