@@ -75,11 +75,14 @@ class RemoteServerAuthPageState extends State<RemoteServerAuthPage> {
       (value) {
         var data = value.remoteServerAuthData;
         if (data != null) {
-          var backupDirPathSegments = data.breezDir.split("/");
-          _urlController.text = data.url;
-          if (backupDirPathSegments.length > 1) {
-            backupDirPathSegments.removeLast();
-            _urlController.text = appendPath(data.url, backupDirPathSegments);
+          var breezDir = data.breezDir;
+          if (breezDir != null) {
+            var backupDirPathSegments = breezDir.split("/");
+            _urlController.text = data.url;
+            if (backupDirPathSegments.length > 1) {
+              backupDirPathSegments.removeLast();
+              _urlController.text = appendPath(data.url, backupDirPathSegments);
+            }
           }
           _userController.text = data.user;
           _passwordController.text = data.password;

@@ -160,7 +160,8 @@ class InvoiceBloc with AsyncActionsHandler {
           .skip(1) // Skip previous session clipboard
           .where((s) =>
               s.toLowerCase().startsWith("ln") ||
-              s.toLowerCase().startsWith("lightning:")),
+              s.toLowerCase().startsWith("lightning:") ||
+              extractBolt11FromBip21(s) != null),
     ])
         .map((s) {
           if (isLightningAddress(s)) {
