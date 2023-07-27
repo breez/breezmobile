@@ -9,6 +9,8 @@ import 'package:breez/bloc/account/add_funds_model.dart';
 import 'package:breez/bloc/backup/backup_bloc.dart';
 import 'package:breez/bloc/backup/backup_model.dart';
 import 'package:breez/bloc/blocs_provider.dart';
+import 'package:breez/bloc/marketplace/marketplace_bloc.dart';
+import 'package:breez/bloc/marketplace/vendor_model.dart';
 import 'package:breez/bloc/podcast_history/sqflite/podcast_history_database.dart';
 import 'package:breez/bloc/pos_catalog/bloc.dart';
 import 'package:breez/bloc/pos_catalog/sqlite/db.dart';
@@ -31,6 +33,7 @@ import 'package:flutter_downloader/flutter_downloader.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:share_plus/share_plus.dart';
 
+import '../../bloc/marketplace/nostr_settings.dart';
 import 'default_commands.dart';
 
 bool allowRebroadcastRefunds = false;
@@ -150,6 +153,8 @@ class DevViewState extends State<DevView> {
     BackupBloc backupBloc = AppBlocsProvider.of<BackupBloc>(context);
     AddFundsBloc addFundsBloc = BlocProvider.of<AddFundsBloc>(context);
     UserProfileBloc userBloc = AppBlocsProvider.of<UserProfileBloc>(context);
+    MarketplaceBloc marketplaceBloc =
+        AppBlocsProvider.of<MarketplaceBloc>(context);
     return StreamBuilder<BackupState>(
       stream: backupBloc.backupStateStream,
       builder: (ctx, backupSnapshot) => StreamBuilder(
@@ -165,177 +170,186 @@ class DevViewState extends State<DevView> {
                   return StreamBuilder<BreezUserModel>(
                     stream: userBloc.userStream,
                     builder: (context, userSnapshot) {
-                      return Scaffold(
-                        key: _scaffoldKey,
-                        appBar: AppBar(
-                          leading: const backBtn.BackButton(),
-                          title: const Text("Developers"),
-                          actions: <Widget>[
-                            PopupMenuButton<Choice>(
-                              onSelected: widget._select,
-                              color: Theme.of(context).colorScheme.background,
-                              icon: Icon(
-                                Icons.more_vert,
-                                color: Theme.of(context).iconTheme.color,
-                              ),
-                              itemBuilder: (BuildContext context) {
-                                return getChoices(
-                                  accBloc,
-                                  settingsSnapshot.data,
-                                  account,
-                                  addFundsBloc,
-                                  addFundsSettingsSnapshot.data,
-                                  userBloc,
-                                  userSnapshot.data,
-                                ).map((Choice choice) {
-                                  return PopupMenuItem<Choice>(
-                                    value: choice,
-                                    child: Text(
-                                      choice.title,
-                                      style: Theme.of(context)
-                                          .textTheme
-                                          .labelLarge,
-                                    ),
-                                  );
-                                }).toList();
-                              },
-                            ),
-                          ],
-                        ),
-                        body: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          mainAxisSize: MainAxisSize.max,
-                          children: <Widget>[
-                            Padding(
-                              padding: const EdgeInsets.only(
-                                left: 10.0,
-                              ),
-                              child: Row(
-                                children: <Widget>[
-                                  Flexible(
-                                    child: TextField(
-                                      focusNode: _cliEntryFocusNode,
-                                      controller: _cliInputController,
-                                      decoration: const InputDecoration(
-                                        hintText:
-                                            'Enter a command or use the links below',
-                                      ),
-                                      onSubmitted: (command) {
-                                        _sendCommand(command);
-                                      },
-                                    ),
+                      return StreamBuilder(
+                        stream: marketplaceBloc.nostrSettingsStream,
+                        builder: (context, nostrSettingsSnapshot) {
+                          return Scaffold(
+                            key: _scaffoldKey,
+                            appBar: AppBar(
+                              leading: const backBtn.BackButton(),
+                              title: const Text("Developers"),
+                              actions: <Widget>[
+                                PopupMenuButton<Choice>(
+                                  onSelected: widget._select,
+                                  color:
+                                      Theme.of(context).colorScheme.background,
+                                  icon: Icon(
+                                    Icons.more_vert,
+                                    color: Theme.of(context).iconTheme.color,
                                   ),
-                                  IconButton(
-                                    icon: const Icon(
-                                      Icons.play_arrow,
-                                    ),
-                                    tooltip: 'Run',
-                                    onPressed: () {
-                                      _sendCommand(
-                                        _cliInputController.text,
+                                  itemBuilder: (BuildContext context) {
+                                    return getChoices(
+                                      accBloc,
+                                      settingsSnapshot.data,
+                                      account,
+                                      addFundsBloc,
+                                      addFundsSettingsSnapshot.data,
+                                      userBloc,
+                                      userSnapshot.data,
+                                      marketplaceBloc,
+                                      nostrSettingsSnapshot.data,
+                                    ).map((Choice choice) {
+                                      return PopupMenuItem<Choice>(
+                                        value: choice,
+                                        child: Text(
+                                          choice.title,
+                                          style: Theme.of(context)
+                                              .textTheme
+                                              .labelLarge,
+                                        ),
                                       );
-                                    },
-                                  ),
-                                  IconButton(
-                                    icon: const Icon(Icons.clear),
-                                    tooltip: 'Clear',
-                                    onPressed: () {
-                                      setState(() {
-                                        _cliInputController.clear();
-                                        _showDefaultCommands = true;
-                                        _lastCommand = '';
-                                        _cliText = "";
-                                      });
-                                    },
-                                  ),
-                                ],
-                              ),
-                            ),
-                            Expanded(
-                              flex: 1,
-                              child: Container(
-                                padding: const EdgeInsets.only(
-                                  top: 10.0,
-                                  left: 10.0,
-                                  right: 10.0,
+                                    }).toList();
+                                  },
                                 ),
-                                child: Container(
-                                  padding: _showDefaultCommands
-                                      ? const EdgeInsets.all(0.0)
-                                      : const EdgeInsets.all(2.0),
-                                  decoration: BoxDecoration(
-                                    border: _showDefaultCommands
-                                        ? null
-                                        : Border.all(
-                                            width: 1.0,
-                                            color: const Color(0x80FFFFFF),
-                                          ),
+                              ],
+                            ),
+                            body: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              mainAxisSize: MainAxisSize.max,
+                              children: <Widget>[
+                                Padding(
+                                  padding: const EdgeInsets.only(
+                                    left: 10.0,
                                   ),
-                                  child: Column(
-                                    mainAxisSize: MainAxisSize.max,
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
+                                  child: Row(
                                     children: <Widget>[
-                                      _showDefaultCommands
-                                          ? Container()
-                                          : Row(
-                                              mainAxisAlignment:
-                                                  MainAxisAlignment.end,
-                                              children: <Widget>[
-                                                IconButton(
-                                                  icon: const Icon(
-                                                    Icons.content_copy,
-                                                  ),
-                                                  tooltip: 'Copy to Clipboard',
-                                                  iconSize: 19.0,
-                                                  onPressed: () {
-                                                    ServiceInjector()
-                                                        .device
-                                                        .setClipboardText(
-                                                            _cliText);
-                                                    ScaffoldMessenger.of(
-                                                            context)
-                                                        .showSnackBar(
-                                                      SnackBar(
-                                                        content: Text(
-                                                          'Copied to clipboard.',
-                                                          style: theme
-                                                              .snackBarStyle,
-                                                        ),
-                                                        backgroundColor: theme
-                                                            .snackBarBackgroundColor,
-                                                        duration:
-                                                            const Duration(
-                                                          seconds: 2,
-                                                        ),
-                                                      ),
-                                                    );
-                                                  },
-                                                ),
-                                                IconButton(
-                                                  icon: const Icon(
-                                                    Icons.share,
-                                                  ),
-                                                  iconSize: 19.0,
-                                                  tooltip: 'Share',
-                                                  onPressed: () {
-                                                    _shareFile(
-                                                      _lastCommand
-                                                          .split(" ")[0],
-                                                      _cliText,
-                                                    );
-                                                  },
-                                                )
-                                              ],
-                                            ),
-                                      Expanded(child: _renderBody())
+                                      Flexible(
+                                        child: TextField(
+                                          focusNode: _cliEntryFocusNode,
+                                          controller: _cliInputController,
+                                          decoration: const InputDecoration(
+                                            hintText:
+                                                'Enter a command or use the links below',
+                                          ),
+                                          onSubmitted: (command) {
+                                            _sendCommand(command);
+                                          },
+                                        ),
+                                      ),
+                                      IconButton(
+                                        icon: const Icon(
+                                          Icons.play_arrow,
+                                        ),
+                                        tooltip: 'Run',
+                                        onPressed: () {
+                                          _sendCommand(
+                                            _cliInputController.text,
+                                          );
+                                        },
+                                      ),
+                                      IconButton(
+                                        icon: const Icon(Icons.clear),
+                                        tooltip: 'Clear',
+                                        onPressed: () {
+                                          setState(() {
+                                            _cliInputController.clear();
+                                            _showDefaultCommands = true;
+                                            _lastCommand = '';
+                                            _cliText = "";
+                                          });
+                                        },
+                                      ),
                                     ],
                                   ),
                                 ),
-                              ),
+                                Expanded(
+                                  flex: 1,
+                                  child: Container(
+                                    padding: const EdgeInsets.only(
+                                      top: 10.0,
+                                      left: 10.0,
+                                      right: 10.0,
+                                    ),
+                                    child: Container(
+                                      padding: _showDefaultCommands
+                                          ? const EdgeInsets.all(0.0)
+                                          : const EdgeInsets.all(2.0),
+                                      decoration: BoxDecoration(
+                                        border: _showDefaultCommands
+                                            ? null
+                                            : Border.all(
+                                                width: 1.0,
+                                                color: const Color(0x80FFFFFF),
+                                              ),
+                                      ),
+                                      child: Column(
+                                        mainAxisSize: MainAxisSize.max,
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: <Widget>[
+                                          _showDefaultCommands
+                                              ? Container()
+                                              : Row(
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment.end,
+                                                  children: <Widget>[
+                                                    IconButton(
+                                                      icon: const Icon(
+                                                        Icons.content_copy,
+                                                      ),
+                                                      tooltip:
+                                                          'Copy to Clipboard',
+                                                      iconSize: 19.0,
+                                                      onPressed: () {
+                                                        ServiceInjector()
+                                                            .device
+                                                            .setClipboardText(
+                                                                _cliText);
+                                                        ScaffoldMessenger.of(
+                                                                context)
+                                                            .showSnackBar(
+                                                          SnackBar(
+                                                            content: Text(
+                                                              'Copied to clipboard.',
+                                                              style: theme
+                                                                  .snackBarStyle,
+                                                            ),
+                                                            backgroundColor: theme
+                                                                .snackBarBackgroundColor,
+                                                            duration:
+                                                                const Duration(
+                                                              seconds: 2,
+                                                            ),
+                                                          ),
+                                                        );
+                                                      },
+                                                    ),
+                                                    IconButton(
+                                                      icon: const Icon(
+                                                        Icons.share,
+                                                      ),
+                                                      iconSize: 19.0,
+                                                      tooltip: 'Share',
+                                                      onPressed: () {
+                                                        _shareFile(
+                                                          _lastCommand
+                                                              .split(" ")[0],
+                                                          _cliText,
+                                                        );
+                                                      },
+                                                    )
+                                                  ],
+                                                ),
+                                          Expanded(child: _renderBody())
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ],
                             ),
-                          ],
-                        ),
+                          );
+                        },
                       );
                     },
                   );
@@ -356,6 +370,8 @@ class DevViewState extends State<DevView> {
     AddFundsSettings addFundsSettings,
     UserProfileBloc userBloc,
     BreezUserModel userModel,
+    MarketplaceBloc marketplaceBloc,
+    NostrSettings nostrSettings,
   ) {
     List<Choice> choices = <Choice>[];
     choices.addAll(
@@ -599,6 +615,13 @@ class DevViewState extends State<DevView> {
         },
       ),
     );
+    choices.add(Choice(
+      title: "${nostrSettings.showSnort ? "Display" : "Hide"} Snort",
+      icon: Icons.phone_android,
+      function: () {
+        _toggleSnort(marketplaceBloc, nostrSettings);
+      },
+    ));
 
     return choices;
   }
@@ -609,6 +632,17 @@ class DevViewState extends State<DevView> {
     Navigator.of(_scaffoldKey.currentState.context)
         .pushReplacementNamed("/splash");
   }*/
+
+  void _toggleSnort(
+    MarketplaceBloc bloc,
+    NostrSettings nostrSettings,
+  ) {
+    bloc.nostrSettingsSettingsSink.add(
+      nostrSettings.copyWith(
+        showSnort: !nostrSettings.showSnort,
+      ),
+    );
+  }
 
   void _shareFile(String command, String text) async {
     Directory tempDir = await getTemporaryDirectory();

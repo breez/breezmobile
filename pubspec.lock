@@ -130,6 +130,22 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.2.4"
+  base58check:
+    dependency: transitive
+    description:
+      name: base58check
+      sha256: "6c300dfc33e598d2fe26319e13f6243fea81eaf8204cb4c6b69ef20a625319a5"
+      url: "https://pub.dev"
+    source: hosted
+    version: "2.0.0"
+  bech32:
+    dependency: transitive
+    description:
+      name: bech32
+      sha256: "156cbace936f7720c79a79d16a03efad343b1ef17106716e04b8b8e39f99f7f7"
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.2.2"
   bidi:
     dependency: transitive
     description:
@@ -137,7 +153,24 @@ packages:
       sha256: "6794b226bc939731308b8539c49bb6c2fdbf0e78c3a65e9b9e81e727c256dfe6"
       url: "https://pub.dev"
     source: hosted
-    version: "2.0.7"
+    version: "2.0.6"
+  bip32:
+    dependency: transitive
+    description:
+      name: bip32
+      sha256: "54787cd7a111e9d37394aabbf53d1fc5e2e0e0af2cd01c459147a97c0e3f8a97"
+      url: "https://pub.dev"
+    source: hosted
+    version: "2.0.0"
+  bip340:
+    dependency: transitive
+    description:
+      name: bip340
+      sha256: "9a2f454d3f5e2d67a1b21494203132786d95bde8784e7ada74adac00df3ddc11"
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.1.0"
+
   bip39:
     dependency: "direct main"
     description:
@@ -163,6 +196,14 @@ packages:
       url: "https://github.com/breez/Breez-Translations.git"
     source: git
     version: "1.0.0"
+  bs58check:
+    dependency: transitive
+    description:
+      name: bs58check
+      sha256: c4a164d42b25c2f6bc88a8beccb9fc7d01440f3c60ba23663a20a70faf484ea9
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.0.2"
   build:
     dependency: transitive
     description:
@@ -670,10 +711,10 @@ packages:
     dependency: transitive
     description:
       name: flutter_keyboard_visibility
-      sha256: be41db80ab7156d893878ca48a7520d667075c4841a0435d5544fd836197b55a
+      sha256: "4983655c26ab5b959252ee204c2fffa4afeb4413cd030455194ec0caa3b8e7cb"
       url: "https://pub.dev"
     source: hosted
-    version: "5.4.3"
+    version: "5.4.1"
   flutter_keyboard_visibility_linux:
     dependency: transitive
     description:
@@ -722,6 +763,7 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "0.13.1"
+
   flutter_lints:
     dependency: "direct dev"
     description:
@@ -1034,6 +1076,7 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "0.2.1"
+
   image_picker_platform_interface:
     dependency: transitive
     description:
@@ -1122,14 +1165,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "0.4.8"
-  lints:
+  kepler:
     dependency: transitive
     description:
-      name: lints
-      sha256: "5e4a9cd06d447758280a8ac2405101e0e2094d2a1dbdd3756aec3fe7775ba593"
+      name: kepler
+      sha256: "8cf9f7df525bd4e5b192d91e52f1c75832b1fefb27fb4f4a09b1412b0f4f23d0"
       url: "https://pub.dev"
     source: hosted
-    version: "2.0.1"
+    version: "1.0.3"
   list_counter:
     dependency: transitive
     description:
@@ -1260,6 +1303,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.0.2"
+  nostr_tools:
+    dependency: "direct main"
+    description:
+      name: nostr_tools
+      sha256: "5536c4017419bcef7777f44f61884a22f864a7a937a3b10254e889ed284757d3"
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.0.7"
   package_config:
     dependency: transitive
     description:
@@ -1376,6 +1427,7 @@ packages:
     dependency: transitive
     description:
       name: permission_handler
+
       sha256: "415af30ba76a84faccfe1eb251fe1e4fdc790f876924c65ad7d6ed7a1404bcd6"
       url: "https://pub.dev"
     source: hosted
@@ -1392,6 +1444,7 @@ packages:
     dependency: transitive
     description:
       name: permission_handler_apple
+
       sha256: "7a187b671a39919462af2b5e813148365b71a615979165a119868d667fe90c03"
       url: "https://pub.dev"
     source: hosted
@@ -1400,6 +1453,7 @@ packages:
     dependency: transitive
     description:
       name: permission_handler_platform_interface
+
       sha256: "463a07cb7cc6c758a7a1c7da36ce666bb80a0b4b5e92df0fa36872e0ed456993"
       url: "https://pub.dev"
     source: hosted
@@ -1594,6 +1648,7 @@ packages:
     dependency: transitive
     description:
       name: shared_preferences_foundation
+
       sha256: b046999bf0ff58f04c364491bb803dcfa8f42e47b19c75478f53d323684a8cc1
       url: "https://pub.dev"
     source: hosted
@@ -2044,9 +2099,10 @@ packages:
     source: hosted
     version: "4.2.2"
   webview_flutter_android:
-    dependency: transitive
+    dependency: "direct main"
     description:
       name: webview_flutter_android
+
       sha256: "1c93e96f3069bacdc734fad6b7e1d3a480fd516a3ae5b8858becf7f07515a2f3"
       url: "https://pub.dev"
     source: hosted
@@ -2063,6 +2119,7 @@ packages:
     dependency: transitive
     description:
       name: webview_flutter_wkwebview
+
       sha256: a8d7e8b4be2a79e83b70235369971ec97d14df4cdbb40d305a8eeae67d8e6432
       url: "https://pub.dev"
     source: hosted

@@ -45,5 +45,9 @@
   "LNCal": {
     "url": "https://lncal.com/",
     "endpointURI": "https://lncal.com/lnurl/breez"
+  },
+  "Snort":{
+    "url" : "https://snort.social",
+    "logo" : "src/icon/vendors/snort_logo_lg.png"
   }
 }
