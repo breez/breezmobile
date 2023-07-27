@@ -47,18 +47,14 @@ class AccountRequiredActionsIndicatorState
     super.didChangeDependencies();
     final backupBloc = AppBlocsProvider.of<BackupBloc>(context);
     _promptBackupSubscription?.cancel();
-    _promptBackupSubscription = Rx.combineLatestList([
-      backupBloc.backupSettingsStream,
-      backupBloc.promptBackupStream,
-      backupBloc.promptBackupDismissedStream,
-    ]).delay(const Duration(seconds: 4)).listen((list) {
-      final settings = list[0] as BackupSettings;
-      final needSignIn = list[1] as bool;
-      final dismissed = list[2] as bool;
-      log.info("prompt backup: {needSignIn: $needSignIn, dismissed: $dismissed, "
-          "promptOnError: ${settings.promptOnError}, showingBackupDialog: $showingBackupDialog}");
+    _promptBackupSubscription = backupBloc
+        .promptBackupSubscription
+        .delay(const Duration(seconds: 4))
+        .listen((needSignIn) {
+      log.info("prompt backup: {needSignIn: $needSignIn, "
+          "showingBackupDialog: $showingBackupDialog}");
 
-      if (settings.promptOnError && !showingBackupDialog && !dismissed) {
+      if (!showingBackupDialog) {
         showingBackupDialog = true;
         backupBloc.backupPromptVisibleSink.add(true);
         popFlushbars(context);
