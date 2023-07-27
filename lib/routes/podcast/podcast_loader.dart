@@ -60,20 +60,20 @@ class PodcastIndexClient {
     }).then((res) {
       return res.data as Map<String, dynamic>;
     }).catchError((e) {
-      if (e is DioError) {
+      if (e is DioException) {
         switch (e.type) {
-          case DioErrorType.connectionError:
-          case DioErrorType.connectionTimeout:
-          case DioErrorType.sendTimeout:
-          case DioErrorType.receiveTimeout:
-          case DioErrorType.unknown:
+          case DioExceptionType.connectionError:
+          case DioExceptionType.connectionTimeout:
+          case DioExceptionType.sendTimeout:
+          case DioExceptionType.receiveTimeout:
+          case DioExceptionType.unknown:
             throw PodcastTimeoutException(e.message);
             break;
-          case DioErrorType.badCertificate:
-          case DioErrorType.badResponse:
+          case DioExceptionType.badCertificate:
+          case DioExceptionType.badResponse:
             throw PodcastFailedException(e.message);
             break;
-          case DioErrorType.cancel:
+          case DioExceptionType.cancel:
             throw PodcastCancelledException(e.message);
             break;
         }
@@ -94,20 +94,20 @@ class PodcastIndexClient {
     }).then((res) {
       return res.data as Map<String, dynamic>;
     }).catchError((e) {
-      if (e is DioError) {
+      if (e is DioException) {
         switch (e.type) {
-          case DioErrorType.connectionError:
-          case DioErrorType.connectionTimeout:
-          case DioErrorType.sendTimeout:
-          case DioErrorType.receiveTimeout:
-          case DioErrorType.unknown:
+          case DioExceptionType.connectionError:
+          case DioExceptionType.connectionTimeout:
+          case DioExceptionType.sendTimeout:
+          case DioExceptionType.receiveTimeout:
+          case DioExceptionType.unknown:
             throw PodcastTimeoutException(e.message);
             break;
-          case DioErrorType.badCertificate:
-          case DioErrorType.badResponse:
+          case DioExceptionType.badCertificate:
+          case DioExceptionType.badResponse:
             throw PodcastFailedException(e.message);
             break;
-          case DioErrorType.cancel:
+          case DioExceptionType.cancel:
             throw PodcastCancelledException(e.message);
             break;
         }
@@ -129,20 +129,20 @@ class PodcastIndexClient {
     }).then((res) {
       return res.data as Map<String, dynamic>;
     }).catchError((e) {
-      if (e is DioError) {
+      if (e is DioException) {
         switch (e.type) {
-          case DioErrorType.connectionError:
-          case DioErrorType.connectionTimeout:
-          case DioErrorType.sendTimeout:
-          case DioErrorType.receiveTimeout:
-          case DioErrorType.unknown:
+          case DioExceptionType.connectionError:
+          case DioExceptionType.connectionTimeout:
+          case DioExceptionType.sendTimeout:
+          case DioExceptionType.receiveTimeout:
+          case DioExceptionType.unknown:
             throw PodcastTimeoutException(e.message);
             break;
-          case DioErrorType.badCertificate:
-          case DioErrorType.badResponse:
+          case DioExceptionType.badCertificate:
+          case DioExceptionType.badResponse:
             throw PodcastFailedException(e.message);
             break;
-          case DioErrorType.cancel:
+          case DioExceptionType.cancel:
             throw PodcastCancelledException(e.message);
             break;
         }

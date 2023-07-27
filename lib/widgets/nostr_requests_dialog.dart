@@ -1,9 +1,8 @@
+import 'package:breez/bloc/blocs_provider.dart';
+import 'package:breez/bloc/marketplace/marketplace_bloc.dart';
 import 'package:breez/bloc/marketplace/nostr_settings.dart';
-import 'package:breez_translations/breez_translations_locales.dart';
+import 'package:breez/widgets/nostr_get_dialog_content.dart';
 import 'package:flutter/material.dart';
-import '../bloc/blocs_provider.dart';
-import '../bloc/marketplace/marketplace_bloc.dart';
-import 'nostr_get_dialog_content.dart';
 
 class NostrRequestsDialog extends StatefulWidget {
   final String messageKind;
@@ -25,10 +24,8 @@ class NostrRequestsDialog extends StatefulWidget {
 class _NostrRequestsDialogState extends State<NostrRequestsDialog> {
   @override
   Widget build(BuildContext context) {
+    final marketplaceBloc = AppBlocsProvider.of<MarketplaceBloc>(context);
     final themeData = Theme.of(context);
-    final texts = context.texts();
-    MarketplaceBloc marketplaceBloc =
-        AppBlocsProvider.of<MarketplaceBloc>(context);
 
     return Theme(
       data: themeData.copyWith(

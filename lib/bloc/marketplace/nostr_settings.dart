@@ -1,4 +1,4 @@
-import 'package:shared_preferences/shared_preferences.dart';
+
 
 class NostrSettings {
   final bool showSnort;
