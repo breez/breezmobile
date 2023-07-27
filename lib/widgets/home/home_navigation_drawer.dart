@@ -190,6 +190,13 @@ class HomeNavigationDrawer extends StatelessWidget {
                         "/payment_options",
                       ),
                     ),
+                    DrawerItemConfig(
+                      "",
+                      "Nostr",
+                      "src/icon/nostr_key1.png",
+                      onItemSelected: (_) =>
+                          protectAdminRoute(context, user, "/nostr_screen"),
+                    ),
                     user.appMode == AppMode.pos
                         ? DrawerItemConfig(
                             "",
@@ -203,13 +210,6 @@ class HomeNavigationDrawer extends StatelessWidget {
                             texts.home_drawer_item_title_developers,
                             "src/icon/developers.png",
                           ),
-                    DrawerItemConfig(
-                      "",
-                      "Nostr",
-                      "src/icon/nostr_keys.png",
-                      onItemSelected: (_) =>
-                          protectAdminRoute(context, user, "/nostr_screen"),
-                    )
                   ],
                 ),
                 groupTitle: texts.home_drawer_item_title_preferences,

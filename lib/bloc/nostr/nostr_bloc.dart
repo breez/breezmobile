@@ -30,6 +30,8 @@ class NostrBloc with AsyncActionsHandler {
       GetRelays: _handleGetRelays,
       Nip04Encrypt: _handleNip04Encrypt,
       Nip04Decrypt: _handleNip04Decrypt,
+      StoreImportedPrivateKey: _handleStoreImportedPrivateKey,
+      DeleteKey: _handleDeleteKey,
     });
     listenActions();
   }
@@ -84,26 +86,52 @@ class NostrBloc with AsyncActionsHandler {
     action.resolve(decryptedData);
   }
 
+  Future<void> _handleStoreImportedPrivateKey(
+      StoreImportedPrivateKey action) async {
+    await _breezLib
+        .loginWithImportedNostrKey(action.privateKey)
+        .catchError((error) {
+      throw error.toString();
+    });
+
+    action.resolve(true);
+  }
+
+  Future<void> _handleDeleteKey(DeleteKey action) async {
+    await _secureStorage.delete(key: "nostrPublicKey");
+    await _secureStorage.delete(key: "nostrPrivateKey");
+
+    await _breezLib.deleteNostrKey().catchError((error) {
+      throw error.toString();
+    });
+
+    action.resolve(true);
+  }
+
   // Methods to simulate the actual logic
 
   Future<String> _fetchPublicKey() async {
-    if (nostrPublicKey == null) {
-      // check if key pair already exists otherwise generate it
-      String nostrKeyPair;
+    // if (nostrPublicKey == null) {
 
+    // check if key pair already exists otherwise generate it
+    String nostrKeyPair;
+
+    try {
       nostrKeyPair = await _breezLib.getNostrKeyPair().catchError((error) {
         throw error.toString();
       });
-
-      int index = nostrKeyPair.indexOf('_');
-      nostrPrivateKey = nostrKeyPair.substring(0, index);
-      nostrPublicKey = nostrKeyPair.substring(index + 1);
-
-      // Write value
-      await _secureStorage.write(
-          key: 'nostrPrivateKey', value: nostrPrivateKey);
-      await _secureStorage.write(key: 'nostrPublicKey', value: nostrPublicKey);
+    } catch (e) {
+      throw Exception(e);
     }
+
+    int index = nostrKeyPair.indexOf('_');
+    nostrPrivateKey = nostrKeyPair.substring(0, index);
+    nostrPublicKey = nostrKeyPair.substring(index + 1);
+
+    // Write value
+    await _secureStorage.write(key: 'nostrPrivateKey', value: nostrPrivateKey);
+    await _secureStorage.write(key: 'nostrPublicKey', value: nostrPublicKey);
+    // }
 
     return nostrPublicKey;
   }

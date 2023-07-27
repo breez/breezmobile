@@ -363,7 +363,10 @@ class UserApp extends StatelessWidget {
                               );
                             case '/nostr_screen':
                               return FadeInRoute(
-                                builder: (_) => const NostrScreen(),
+                                builder: (_) => NostrScreen(
+                                  nostrBloc: nostrBloc,
+                                  marketplaceBloc: marketplaceBloc,
+                                ),
                                 settings: settings,
                               );
                           }
