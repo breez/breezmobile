@@ -15,6 +15,7 @@ import 'package:breez/bloc/connect_pay/connect_pay_bloc.dart';
 import 'package:breez/bloc/invoice/invoice_bloc.dart';
 import 'package:breez/bloc/lnurl/lnurl_bloc.dart';
 import 'package:breez/bloc/lsp/lsp_bloc.dart';
+import 'package:breez/bloc/marketplace/marketplace_bloc.dart';
 import 'package:breez/bloc/nostr/nostr_bloc.dart';
 import 'package:breez/bloc/reverse_swap/reverse_swap_bloc.dart';
 import 'package:breez/bloc/user_profile/breez_user_model.dart';
@@ -74,6 +75,7 @@ class Home extends StatefulWidget {
   final ReverseSwapBloc reverseSwapBloc;
   final LNUrlBloc lnurlBloc;
   final NostrBloc nostrBloc;
+  final MarketplaceBloc marketplaceBloc;
 
   Home(
     this.accountBloc,
@@ -85,6 +87,7 @@ class Home extends StatefulWidget {
     this.reverseSwapBloc,
     this.lnurlBloc,
     this.nostrBloc,
+    this.marketplaceBloc,
   );
 
   final List<DrawerItemConfig> _screens = List<DrawerItemConfig>.unmodifiable([
@@ -135,7 +138,12 @@ class HomeState extends State<Home> with WidgetsBindingObserver {
         }
       });
     });
+
     commentBloc = Provider.of<CommentBloc>(context, listen: false);
+
+    widget.marketplaceBloc.nostrSettingsStream.listen((event) {
+      commentBloc.toggleCommentController.add(!event.enableNostr);
+    });
 
     commentBloc.pubKeyStream.listen((event) async {
       widget.nostrBloc.actionsSink.add(GetPublicKey());
