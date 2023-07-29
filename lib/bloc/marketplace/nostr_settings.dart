@@ -1,43 +1,51 @@
-import 'package:shared_preferences/shared_preferences.dart';
-
 class NostrSettings {
-  final bool showSnort;
+  final bool enableNostr;
   final bool isRememberPubKey;
   final bool isRememberSignEvent;
+  final bool isLoggedIn;
 
   NostrSettings(
-      {this.showSnort = true,
+      {this.enableNostr = true,
       this.isRememberPubKey = false,
-      this.isRememberSignEvent = false});
+      this.isRememberSignEvent = false,
+      this.isLoggedIn = false});
 
   static const String NOSTR_SETTINGS_PREFERENCES_KEY = "nostr_settings";
 
   NostrSettings.start()
       : this(
-          showSnort: true,
+          enableNostr: true,
           isRememberPubKey: false,
           isRememberSignEvent: false,
+          isLoggedIn: false,
         );
 
-  NostrSettings copyWith(
-      {bool showSnort, bool isRememberPubKey, bool isRememberSignEvent}) {
+  NostrSettings copyWith({
+    bool enableNostr,
+    bool isRememberPubKey,
+    bool isRememberSignEvent,
+    bool isLoggedIn,
+  }) {
     return NostrSettings(
-      showSnort: showSnort ?? this.showSnort,
+      enableNostr: enableNostr ?? this.enableNostr,
       isRememberPubKey: isRememberPubKey ?? this.isRememberPubKey,
       isRememberSignEvent: isRememberSignEvent ?? this.isRememberSignEvent,
+      isLoggedIn: isLoggedIn ?? this.isLoggedIn,
     );
   }
 
   NostrSettings.fromJson(Map<String, dynamic> json)
       : this(
-          showSnort: json["showSnort"] ?? true,
+          enableNostr: json["enableNostr"] ?? true,
           isRememberPubKey: json["isRememberPubKey"] ?? false,
           isRememberSignEvent: json["isRememberSignEvent"] ?? false,
+          isLoggedIn: json["isLoggedIn"] ?? false,
         );
 
   Map<String, dynamic> toJson() => {
-        "showSnort": showSnort,
+        "enableNostr": enableNostr,
         "isRememberPubKey": isRememberPubKey,
         "isRememberSignEvent": isRememberSignEvent,
+        "isLoggedIn": isLoggedIn,
       };
 }

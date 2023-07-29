@@ -26,3 +26,12 @@ class Nip04Decrypt extends AsyncAction {
 
   Nip04Decrypt(this.encryptedData, this.privateKey);
 }
+
+class StoreImportedPrivateKey extends AsyncAction {
+  final String privateKey;
+  StoreImportedPrivateKey({this.privateKey});
+}
+
+class DeleteKey extends AsyncAction {
+  DeleteKey();
+}

@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:anytime/bloc/comments/comments_bloc.dart';
 import 'package:anytime/bloc/podcast/audio_bloc.dart';
 import 'package:anytime/ui/anytime_podcast_app.dart';
 import 'package:anytime/ui/podcast/now_playing.dart';
@@ -14,6 +15,8 @@ import 'package:breez/bloc/connect_pay/connect_pay_bloc.dart';
 import 'package:breez/bloc/invoice/invoice_bloc.dart';
 import 'package:breez/bloc/lnurl/lnurl_bloc.dart';
 import 'package:breez/bloc/lsp/lsp_bloc.dart';
+import 'package:breez/bloc/marketplace/marketplace_bloc.dart';
+import 'package:breez/bloc/nostr/nostr_bloc.dart';
 import 'package:breez/bloc/reverse_swap/reverse_swap_bloc.dart';
 import 'package:breez/bloc/user_profile/breez_user_model.dart';
 import 'package:breez/bloc/user_profile/user_profile_bloc.dart';
@@ -54,9 +57,13 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-final GlobalKey firstPaymentItemKey = GlobalKey(debugLabel: "firstPaymentItemKey");
+import 'bloc/nostr/nostr_actions.dart';
+
+final GlobalKey firstPaymentItemKey =
+    GlobalKey(debugLabel: "firstPaymentItemKey");
 final ScrollController scrollController = ScrollController();
-final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>(debugLabel: "scaffoldKey");
+final GlobalKey<ScaffoldState> _scaffoldKey =
+    GlobalKey<ScaffoldState>(debugLabel: "scaffoldKey");
 
 class Home extends StatefulWidget {
   final AccountBloc accountBloc;
@@ -67,6 +74,8 @@ class Home extends StatefulWidget {
   final LSPBloc lspBloc;
   final ReverseSwapBloc reverseSwapBloc;
   final LNUrlBloc lnurlBloc;
+  final NostrBloc nostrBloc;
+  final MarketplaceBloc marketplaceBloc;
 
   Home(
     this.accountBloc,
@@ -77,6 +86,8 @@ class Home extends StatefulWidget {
     this.lspBloc,
     this.reverseSwapBloc,
     this.lnurlBloc,
+    this.nostrBloc,
+    this.marketplaceBloc,
   );
 
   final List<DrawerItemConfig> _screens = List<DrawerItemConfig>.unmodifiable([
@@ -96,6 +107,7 @@ class HomeState extends State<Home> with WidgetsBindingObserver {
   final Set _hiddenRoutes = <String>{};
   StreamSubscription<String> _accountNotificationsSubscription;
   bool _listensInit = false;
+  CommentBloc commentBloc;
 
   @override
   void initState() {
@@ -125,6 +137,30 @@ class HomeState extends State<Home> with WidgetsBindingObserver {
           addOrRemove(r);
         }
       });
+    });
+
+    commentBloc = Provider.of<CommentBloc>(context, listen: false);
+
+    // widget.marketplaceBloc.nostrSettingsStream.listen((event) {
+    //   commentBloc.toggleCommentController.add(event.enableNostr);
+    // });
+
+    commentBloc.pubKeyStream.listen((event) async {
+      widget.nostrBloc.actionsSink.add(GetPublicKey());
+
+      final publicKey = await widget.nostrBloc.publicKeyStream.first;
+      commentBloc.getPubKeyResult(publicKey);
+    });
+
+    // Listener for signing the comment
+    commentBloc.signEventStream.listen((event) async {
+      final nostrPrivateKey = widget.nostrBloc.nostrPrivateKey;
+
+      widget.nostrBloc.actionsSink.add(SignEvent(event, nostrPrivateKey));
+
+      final Map<String, dynamic> signedEventObject =
+          await widget.nostrBloc.eventStream.first;
+      commentBloc.signEventResult(signedEventObject);
     });
 
     AudioService.notificationClicked.where((event) => event == true).listen(
@@ -190,7 +226,6 @@ class HomeState extends State<Home> with WidgetsBindingObserver {
         stream: userProfileBloc.userStream,
         builder: (context, userSnapshot) {
           final appMode = userSnapshot.data?.appMode;
-
           return Scaffold(
             resizeToAvoidBottomInset: false,
             key: _scaffoldKey,
@@ -202,10 +237,16 @@ class HomeState extends State<Home> with WidgetsBindingObserver {
               _onNavigationItemSelected,
               _filterItems,
             ),
-            bottomNavigationBar: appMode == AppMode.balance ? BottomActionsBar(firstPaymentItemKey) : null,
-            floatingActionButton: appMode == AppMode.balance ? QrActionButton(firstPaymentItemKey) : null,
-            floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
-            body: widget._screenBuilders[_activeScreen] ?? _homePage(context, appMode),
+            bottomNavigationBar: appMode == AppMode.balance
+                ? BottomActionsBar(firstPaymentItemKey)
+                : null,
+            floatingActionButton: appMode == AppMode.balance
+                ? QrActionButton(firstPaymentItemKey)
+                : null,
+            floatingActionButtonLocation:
+                FloatingActionButtonLocation.centerDocked,
+            body: widget._screenBuilders[_activeScreen] ??
+                _homePage(context, appMode),
           );
         },
       ),
@@ -216,7 +257,6 @@ class HomeState extends State<Home> with WidgetsBindingObserver {
     if (appMode == null) {
       return AccountPage(firstPaymentItemKey, scrollController);
     }
-
     final texts = context.texts();
     final themeData = Theme.of(context);
 

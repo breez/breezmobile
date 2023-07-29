@@ -1,90 +1,94 @@
-import 'package:breez/bloc/blocs_provider.dart';
-import 'package:breez/bloc/nostr/nostr_bloc.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'dart:async';
 
-import '../../bloc/app_blocs.dart';
+import 'package:breez/bloc/marketplace/marketplace_bloc.dart';
+import 'package:breez/bloc/marketplace/nostr_settings.dart';
+import 'package:breez/bloc/nostr/nostr_bloc.dart';
+import 'package:breez/widgets/loader.dart';
+import 'package:flutter/material.dart';
+
 import '../../bloc/nostr/nostr_actions.dart';
+import 'import_private_key.dart';
 import 'nostr_keys_page.dart';
 
 class NostrScreen extends StatefulWidget {
-  const NostrScreen({Key key}) : super(key: key);
+  final NostrBloc nostrBloc;
+  final MarketplaceBloc marketplaceBloc;
+  const NostrScreen({Key key, this.nostrBloc, this.marketplaceBloc})
+      : super(key: key);
 
   @override
   State<NostrScreen> createState() => _NostrScreenState();
 }
 
 class _NostrScreenState extends State<NostrScreen> {
-  NostrBloc _nostrBloc;
-  final FlutterSecureStorage _secureStorage = const FlutterSecureStorage();
-  String _nostrPublicKey;
-  String _nostrPrivateKey;
-
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      _nostrBloc = AppBlocsProvider.of<NostrBloc>(context);
-    });
   }
 
-  void _fetchKeys() async {
-    _nostrPublicKey = await _secureStorage.read(key: "nostrPublicKey");
-
-    if (_nostrPublicKey == null) {
-      _nostrBloc.actionsSink.add(GetPublicKey());
-      _nostrPublicKey = await _nostrBloc.publicKeyStream.first;
-    }
-
-    _nostrPrivateKey = await _secureStorage.read(key: "nostrPrivateKey");
+  Future<void> _deleteKeys() async {
+    widget.nostrBloc.actionsSink.add(DeleteKey());
   }
 
-  void _generateKeys(BuildContext context) {
-    // check whether keys exist
-
-    _fetchKeys();
-
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (_) => NostrKeysPage(
-          publicKey: _nostrPublicKey,
-          privateKey: _nostrPrivateKey,
-        ),
-      ),
-    );
-    // call nostr_bloc method to generate keys
+  Future<void> _login(NostrSettings settings) async {
+    await _deleteKeys().then((value) => {
+          widget.marketplaceBloc.nostrSettingsSettingsSink.add(
+            settings.copyWith(isLoggedIn: true),
+          )
+        });
   }
-
-  void _importKeys() {}
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text("Nostr"),
-      ),
-      body: ListView(
-        children: [
-          // connect to generate keys to get the keyPair
-
-          // will have to connect to the backend go to store the keys
-          // just take the private key
-
-          // clicking will open up a texfield with private key as hint text
-
-          ListTile(
-            title: const Text("Create New Account"),
-            onTap: () => _generateKeys(context),
-          ),
-          const Divider(),
-          ListTile(
-            title: const Text("Import Keys"),
-            onTap: () => _importKeys(),
-          ),
-          const Divider(),
-        ],
-      ),
-    );
+    return StreamBuilder<NostrSettings>(
+        stream: widget.marketplaceBloc.nostrSettingsStream,
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return const Loader();
+          }
+          if (snapshot.connectionState == ConnectionState.active &&
+              snapshot.data.isLoggedIn) {
+            return NostrKeysPage(
+              nostrBloc: widget.nostrBloc,
+              marketplaceBloc: widget.marketplaceBloc,
+              settings: snapshot.data,
+            );
+          }
+          return Scaffold(
+            appBar: AppBar(
+              title: const Text("Nostr"),
+            ),
+            body: ListView(
+              children: [
+                ListTile(
+                    title: const Text("Create New Account"),
+                    onTap: () {
+                      _login(snapshot.data);
+                    }),
+                const Divider(),
+                ListTile(
+                  title: const Text("Import Existing Key"),
+                  onTap: () {
+                    Navigator.of(context).push(
+                      MaterialPageRoute(
+                        builder: (_) => ImportPrivateKeyPage(
+                          marketplaceBloc: widget.marketplaceBloc,
+                          nostrBloc: widget.nostrBloc,
+                          settings: snapshot.data,
+                          // login: _login(snapshot.data),
+                        ),
+                      ),
+                    );
+                  },
+                  trailing: const Icon(
+                    Icons.keyboard_arrow_right,
+                    color: Colors.white,
+                    size: 30.0,
+                  ),
+                ),
+              ],
+            ),
+          );
+        });
   }
 }
