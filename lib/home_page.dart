@@ -57,6 +57,7 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import 'bloc/marketplace/nostr_settings.dart';
 import 'bloc/nostr/nostr_actions.dart';
 
 final GlobalKey firstPaymentItemKey =
@@ -143,6 +144,17 @@ class HomeState extends State<Home> with WidgetsBindingObserver {
 
     widget.marketplaceBloc.nostrSettingsStream.listen((event) {
       commentBloc.toggleCommentController.add(!event.enableNostr);
+    });
+
+    commentBloc.commentsLoginStream.listen((event) async {
+      NostrSettings settings =
+          await widget.marketplaceBloc.nostrSettingsStream.first;
+
+      if (settings.isLoggedIn == false) {
+        widget.marketplaceBloc.nostrSettingsSettingsSink.add(settings.copyWith(
+          isLoggedIn: true,
+        ));
+      }
     });
 
     commentBloc.pubKeyStream.listen((event) async {
