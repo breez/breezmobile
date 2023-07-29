@@ -2,6 +2,7 @@ import 'package:breez/bloc/invoice/invoice_bloc.dart';
 import 'package:breez/bloc/lnurl/lnurl_bloc.dart';
 import 'package:breez/routes/spontaneous_payment/spontaneous_payment_page.dart';
 import 'package:breez/theme_data.dart' as theme;
+import 'package:breez/utils/bip21.dart';
 import 'package:breez/utils/lnurl.dart';
 import 'package:breez/utils/node_id.dart';
 import 'package:breez/widgets/route.dart';
@@ -115,7 +116,8 @@ class EnterPaymentInfoDialogState extends State<EnterPaymentInfoDialog> {
                   if (parseNodeId(value) == null &&
                       _decodeInvoice(value) == null &&
                       !isLightningAddress(value) &&
-                      !isLNURL(value)) {
+                      !isLNURL(value) &&
+                      extractBolt11FromBip21(value) == null) {
                     return texts.payment_info_dialog_error;
                   }
                   return null;
@@ -226,10 +228,12 @@ class EnterPaymentInfoDialogState extends State<EnterPaymentInfoDialog> {
   }
 
   String _decodeInvoice(String invoiceString) {
-    String normalized = invoiceString?.toLowerCase();
+    String normalized =
+        extractBolt11FromBip21(invoiceString) ?? invoiceString?.toLowerCase();
     if (normalized == null) {
       return null;
     }
+
     if (normalized.startsWith("lightning:")) {
       normalized = normalized.substring(10);
     }

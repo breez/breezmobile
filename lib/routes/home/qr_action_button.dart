@@ -77,7 +77,7 @@ class QrActionButton extends StatelessWidget {
                     return;
                   }
 
-                  // bip 121
+                  // bip 21
                   String lnInvoice = extractBolt11FromBip21(lower);
                   if (lnInvoice != null) {
                     log.finest(
@@ -101,7 +101,8 @@ class QrActionButton extends StatelessWidget {
                     log.finest("Scanned string is a bitcoin address");
                     String requestAmount;
                     if (btcInvoice.satAmount != null) {
-                      final account = await profileBloc.userStream.take(1).first;
+                      final account =
+                          await profileBloc.userStream.take(1).first;
                       requestAmount = account.currency.format(
                         btcInvoice.satAmount,
                         userInput: true,

@@ -49,8 +49,8 @@ class BackgroundTask : NSObject, FlutterPlugin, FlutterStreamHandler {
     func stopBackgroundTask(identifier: UIBackgroundTaskIdentifier) {
         let remaining = UIApplication.shared.backgroundTimeRemaining;
         UIApplication.shared.endBackgroundTask(identifier);
-        Breez.logger.log(String(format:"background task ended, time renaining=%f", remaining), lvl: "INFO");
-        print("time ramaining %f", remaining);
+        Breez.logger.log(String(format:"background task ended, time remaining=%f", remaining), lvl: "INFO");
+        print("time remaining %f", remaining);
         if let sink = self.eventSink {
             sink(identifier.rawValue);
         }

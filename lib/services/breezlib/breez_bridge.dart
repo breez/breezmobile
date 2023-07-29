@@ -6,6 +6,7 @@ import 'package:breez/bloc/lnurl/lnurl_model.dart';
 import 'package:breez/logger.dart' as logger;
 import 'package:breez/services/breezlib/data/messages.pb.dart';
 import 'package:breez/services/download_manager.dart';
+import 'package:breez/utils/bip21.dart';
 import 'package:dio/dio.dart';
 import 'package:fixnum/fixnum.dart';
 import 'package:flutter/services.dart';
@@ -779,15 +780,9 @@ class BreezBridge {
   }
 
   Future<String> validateAddress(String address) {
-    String addr = address;
-    if (address == null) {
-      return Future.error("empty address");
-    }
-    if (addr.toLowerCase().startsWith("bitcoin:")) {
-      addr = addr.substring(8);
-    }
-    return _invokeMethodWhenReady("validateAddress", {"argument": addr})
-        .then((response) => addr);
+    address = extractBitcoinAddress(address);
+    return _invokeMethodWhenReady("validateAddress", {"argument": address})
+        .then((response) => address);
   }
 
   Future<Int64> getDefaultOnChainFeeRate() {
