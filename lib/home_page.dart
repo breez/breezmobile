@@ -141,9 +141,9 @@ class HomeState extends State<Home> with WidgetsBindingObserver {
 
     commentBloc = Provider.of<CommentBloc>(context, listen: false);
 
-    // widget.marketplaceBloc.nostrSettingsStream.listen((event) {
-    //   commentBloc.toggleCommentController.add(event.enableNostr);
-    // });
+    widget.marketplaceBloc.nostrSettingsStream.listen((event) {
+      commentBloc.toggleCommentController.add(!event.enableNostr);
+    });
 
     commentBloc.pubKeyStream.listen((event) async {
       widget.nostrBloc.actionsSink.add(GetPublicKey());
