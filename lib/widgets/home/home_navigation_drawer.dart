@@ -13,7 +13,8 @@ import 'package:breez/widgets/breez_navigation_drawer.dart';
 import 'package:breez_translations/breez_translations_locales.dart';
 import 'package:flutter/material.dart';
 
-final GlobalKey _podcastMenuItemKey = GlobalKey(debugLabel: "podcastMenuItemKey");
+final GlobalKey _podcastMenuItemKey =
+    GlobalKey(debugLabel: "podcastMenuItemKey");
 
 class HomeNavigationDrawer extends StatelessWidget {
   final Function(String) _onNavigationItemSelected;
@@ -38,10 +39,12 @@ class HomeNavigationDrawer extends StatelessWidget {
         final user = userSnapshot.data;
         final account = accountSnapshot.data;
         if (user == null || account == null) {
-          return BreezNavigationDrawer(false, const [], _onNavigationItemSelected);
+          return BreezNavigationDrawer(
+              false, const [], _onNavigationItemSelected);
         }
 
-        final refundableAddresses = account.swapFundsStatus.maturedRefundableAddresses;
+        final refundableAddresses =
+            account.swapFundsStatus.maturedRefundableAddresses;
 
         return Theme(
           data: theme.themeMap[user.themeId],
@@ -128,7 +131,8 @@ class HomeNavigationDrawer extends StatelessWidget {
                       context,
                       user,
                       () {
-                        userProfileBloc.userActionsSink.add(SetAppMode(AppMode.apps));
+                        userProfileBloc.userActionsSink
+                            .add(SetAppMode(AppMode.apps));
                         return Future.value(null);
                       },
                     );
@@ -173,7 +177,8 @@ class HomeNavigationDrawer extends StatelessWidget {
                       "",
                       texts.home_drawer_item_title_security_and_backup,
                       "src/icon/security.png",
-                      onItemSelected: (_) => protectAdminRoute(context, user, "/security"),
+                      onItemSelected: (_) =>
+                          protectAdminRoute(context, user, "/security"),
                     ),
                     DrawerItemConfig(
                       "",
@@ -190,13 +195,21 @@ class HomeNavigationDrawer extends StatelessWidget {
                             "",
                             texts.home_drawer_item_title_pos_settings,
                             "src/icon/settings.png",
-                            onItemSelected: (_) => protectAdminRoute(context, user, "/settings"),
+                            onItemSelected: (_) =>
+                                protectAdminRoute(context, user, "/settings"),
                           )
                         : DrawerItemConfig(
                             "/developers",
                             texts.home_drawer_item_title_developers,
                             "src/icon/developers.png",
                           ),
+                    DrawerItemConfig(
+                      "",
+                      "Nostr",
+                      "src/icon/nostr_keys.png",
+                      onItemSelected: (_) =>
+                          protectAdminRoute(context, user, "/nostr_screen"),
+                    )
                   ],
                 ),
                 groupTitle: texts.home_drawer_item_title_preferences,

@@ -27,6 +27,7 @@ import 'package:breez/routes/initial_walkthrough.dart';
 import 'package:breez/routes/lsp/select_lsp_page.dart';
 import 'package:breez/routes/marketplace/marketplace.dart';
 import 'package:breez/routes/network/network.dart';
+import 'package:breez/routes/nostr/nostr_screen.dart';
 import 'package:breez/routes/order_card/order_card_page.dart';
 import 'package:breez/routes/payment_options/payment_options_page.dart';
 import 'package:breez/routes/podcast/theme.dart';
@@ -358,6 +359,11 @@ class UserApp extends StatelessWidget {
                               return MaterialPageRoute<String>(
                                 fullscreenDialog: true,
                                 builder: (_) => QRScan(),
+                                settings: settings,
+                              );
+                            case '/nostr_screen':
+                              return FadeInRoute(
+                                builder: (_) => const NostrScreen(),
                                 settings: settings,
                               );
                           }
