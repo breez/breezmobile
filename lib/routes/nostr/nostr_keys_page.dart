@@ -1,12 +1,21 @@
+import 'package:auto_size_text/auto_size_text.dart';
+import 'package:breez/bloc/marketplace/marketplace_bloc.dart';
+import 'package:breez/bloc/marketplace/nostr_settings.dart';
+import 'package:breez/bloc/nostr/nostr_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
+import '../../bloc/nostr/nostr_actions.dart';
+import '../../utils/min_font_size.dart';
 import '../../widgets/logout_warning_dialog.dart';
 
 class NostrKeysPage extends StatefulWidget {
-  final String publicKey;
-  final String privateKey;
-  const NostrKeysPage({Key key, this.publicKey, this.privateKey})
+  final NostrBloc nostrBloc;
+  final MarketplaceBloc marketplaceBloc;
+  final NostrSettings settings;
+  const NostrKeysPage(
+      {Key key, this.nostrBloc, this.marketplaceBloc, this.settings})
       : super(key: key);
 
   @override
@@ -14,41 +23,119 @@ class NostrKeysPage extends StatefulWidget {
 }
 
 class _NostrKeysPageState extends State<NostrKeysPage> {
-  Future<void> _logout() {}
+  final _autoSizeGroup = AutoSizeGroup();
+  String _nostrPublicKey;
+  String _nostrPrivateKey;
+  final FlutterSecureStorage _secureStorage = const FlutterSecureStorage();
+
+  @override
+  void initState() {
+    super.initState();
+    _fetchKeys();
+  }
+
+  Future<void> _fetchKeys() async {
+    try {
+      // call nostr_bloc method to get keys
+      widget.nostrBloc.actionsSink.add(GetPublicKey());
+      // await Future.delayed(const Duration(seconds: 10));
+      _nostrPublicKey = await widget.nostrBloc.publicKeyStream.first;
+      // because getPublicKey stores the keypair in secure storage
+      _nostrPrivateKey = await _secureStorage.read(key: "nostrPrivateKey");
+    } catch (e) {
+      throw Exception(e);
+    }
+  }
+
+  Future<void> _logout() async {
+    bool isLogout = await _showLogoutWarningDialog();
+
+    if (isLogout) {
+      widget.marketplaceBloc.nostrSettingsSettingsSink.add(
+        widget.settings.copyWith(isLoggedIn: false),
+      );
+
+      // check if context is to be passed through the method
+      if (context.mounted) Navigator.pop(context);
+    }
+  }
+
+  Future _showLogoutWarningDialog() async {
+    return showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder: (context) {
+          return LogoutWarningDialog(
+            logout: _logout,
+          );
+        });
+  }
+
   @override
   Widget build(BuildContext context) {
-    return ListView(
-      children: [
-        ListTile(
-          title: const Text("Export Public Key >"),
-          subtitle: Text(widget.publicKey),
-          trailing: IconButton(
-            icon: const Icon(Icons.copy),
-            onPressed: () async {
-              await Clipboard.setData(
-                ClipboardData(text: widget.publicKey),
-              );
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text("Nostr"),
+      ),
+      body: ListView(
+        children: [
+          ListTile(
+            title: AutoSizeText(
+              "Export Public Key",
+              style: const TextStyle(color: Colors.white),
+              maxLines: 1,
+              minFontSize: MinFontSize(context).minFontSize,
+              stepGranularity: 0.1,
+              group: _autoSizeGroup,
+            ),
+            trailing: IconButton(
+              icon: const Icon(Icons.copy),
+              onPressed: () async {
+                await Clipboard.setData(
+                  ClipboardData(
+                    text: _nostrPublicKey,
+                  ),
+                );
+              },
+            ),
+          ),
+          const Divider(),
+          ListTile(
+            title: AutoSizeText(
+              "Export Private Key",
+              style: const TextStyle(color: Colors.white),
+              maxLines: 1,
+              minFontSize: MinFontSize(context).minFontSize,
+              stepGranularity: 0.1,
+              group: _autoSizeGroup,
+            ),
+            trailing: IconButton(
+              icon: const Icon(Icons.copy),
+              onPressed: () async {
+                await Clipboard.setData(
+                  ClipboardData(
+                    text: _nostrPrivateKey,
+                  ),
+                );
+              },
+            ),
+          ),
+          const Divider(),
+          ListTile(
+            title: AutoSizeText(
+              "Logout",
+              style: const TextStyle(color: Colors.white),
+              maxLines: 1,
+              minFontSize: MinFontSize(context).minFontSize,
+              stepGranularity: 0.1,
+              group: _autoSizeGroup,
+            ),
+            onTap: () {
+              _logout();
             },
           ),
-        ),
-        ListTile(
-          title: const Text("Export Private Key >"),
-          subtitle: Text(widget.publicKey),
-          trailing: IconButton(
-            icon: const Icon(Icons.copy),
-            onPressed: () async {
-              await Clipboard.setData(
-                ClipboardData(text: widget.privateKey),
-              );
-            },
-          ),
-        ),
-        TextButton(
-            onPressed: () {
-              LogoutWarningDialog(logout: _logout);
-            },
-            child: const Text("Logout"))
-      ],
+        ],
+      ),
     );
   }
 }
