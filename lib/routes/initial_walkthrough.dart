@@ -95,10 +95,14 @@ class InitialWalkthroughPageState extends State<InitialWalkthroughPage>
     }, onError: (error) {
       Navigator.of(context).pop();
       if (error.runtimeType != SignInFailedException) {
+        String errorMessage = error.toString();
+        if(errorMessage.contains("FileSystemException")) {
+          errorMessage = context.texts().enter_backup_phrase_error;
+        }
         showFlushbar(
           context,
           duration: const Duration(seconds: 3),
-          message: error.toString(),
+          message: errorMessage,
         );
       } else {
         _handleSignInException(error as SignInFailedException);
@@ -184,10 +188,12 @@ class InitialWalkthroughPageState extends State<InitialWalkthroughPage>
     log.info('$logKey: using key with length: ${key?.length}');
 
     final texts = context.texts();
-    widget._backupBloc.restoreRequestSink.add(RestoreRequest(
-      snapshot,
-      BreezLibBackupKey(key: key),
-    ));
+    widget._backupBloc.restoreRequestSink.add(
+      RestoreRequest(
+        snapshot,
+        BreezLibBackupKey(key: key),
+      ),
+    );
     Navigator.push(
       context,
       createLoaderRoute(
