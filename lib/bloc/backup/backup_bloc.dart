@@ -552,9 +552,16 @@ class BackupBloc {
 
       _breezLib
           .restore(request.snapshot.nodeID, request.encryptionKey.key)
-          .then((_) => _restoreAppData()
-              .then((value) => _restoreFinishedController.add(true))
-              .catchError(_restoreFinishedController.addError));
+          .then(
+            (_) => _restoreAppData()
+                .then((value) => _restoreFinishedController.add(true))
+                .catchError((error) {
+              _restoreFinishedController.addError(error);
+            }),
+          )
+          .catchError((error) {
+        _restoreFinishedController.addError(error);
+      });
     });
   }
 
