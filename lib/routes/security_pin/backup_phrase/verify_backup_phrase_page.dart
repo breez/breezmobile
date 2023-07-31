@@ -196,7 +196,7 @@ class VerifyBackupPhrasePageState extends State<VerifyBackupPhrasePage> {
           keyType: BackupKeyType.PHRASE,
         ),
         backupBloc,
-      );
+      ).then((value) => triggerBackup());
     }).catchError((err) {
       promptError(
         context,
@@ -255,6 +255,24 @@ class VerifyBackupPhrasePageState extends State<VerifyBackupPhrasePage> {
           style: themeData.dialogTheme.contentTextStyle,
         ),
       );
+    });
+  }
+
+  void triggerBackup() {
+    final backupBloc = AppBlocsProvider.of<BackupBloc>(context);
+    backupBloc.backupNowSink.add(const BackupNowAction(recoverEnabled: true));
+    backupBloc.backupStateStream.firstWhere((s) => s.inProgress).then((s) {
+      if (mounted) {
+        showDialog(
+          useRootNavigator: false,
+          barrierDismissible: false,
+          context: context,
+          builder: (ctx) => buildBackupInProgressDialog(
+            ctx,
+            backupBloc.backupStateStream,
+          ),
+        );
+      }
     });
   }
 }
