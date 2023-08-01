@@ -550,12 +550,15 @@ class BackupBloc {
       }
       assert(request.snapshot.nodeID.isNotEmpty);
 
+      _clearAppData();
+
       _breezLib
           .restore(request.snapshot.nodeID, request.encryptionKey.key)
           .then(
             (_) => _restoreAppData()
                 .then((value) => _restoreFinishedController.add(true))
                 .catchError((error) {
+              _clearAppData();
               _restoreFinishedController.addError(error);
             }),
           )
@@ -641,6 +644,16 @@ class BackupBloc {
       await File(backupAnytimeDbPath).copy(anytimeDbPath).catchError((err) {
         throw Exception("Failed to restore podcast library.");
       });
+    }
+  }
+
+  void _clearAppData() {
+    try {
+      Directory(_backupAppDataDirPath)
+          .list(recursive: true)
+          .listen((file) => file.deleteSync());
+    } on Exception {
+      rethrow;
     }
   }
 
