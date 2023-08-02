@@ -86,15 +86,27 @@ class _SnapshotInfoTileState extends State<SnapshotInfoTile> {
       context,
       texts.restore_dialog_download_backup,
       Text(texts.restore_dialog_download_backup_for_node(nodeID)),
+      contentPadding: const EdgeInsets.fromLTRB(24.0, 8.0, 24.0, 8.0),
     ).then((yes) {
       if (yes) {
+        // TODO add translation
+        EasyLoading.show(
+          indicator: const LoaderIndicator(
+            message: 'Downloading Backup',
+          ),
+        );
+
         var downloadAction = DownloadSnapshot(nodeID);
         backupBloc.backupActionsSink.add(downloadAction);
         downloadAction.future.then((value) {
+          EasyLoading.dismiss();
+
           _shareSnapshot(
             (value as DownloadBackupResponse).files,
           );
         }).catchError((err) {
+          EasyLoading.dismiss();
+
           promptError(
             context,
             texts.restore_dialog_download_backup_error,
