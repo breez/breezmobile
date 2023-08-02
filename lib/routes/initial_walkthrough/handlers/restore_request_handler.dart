@@ -80,16 +80,20 @@ class RestoreRequestHandler extends Handler {
     BuildContext context,
     List<SnapshotInfo> snapshots,
   ) async {
-    EasyLoading.dismiss();
+    if (snapshots.length == 1) {
+      return snapshots.first;
+    } else {
+      EasyLoading.dismiss();
 
-    Navigator.popUntil(context, (route) {
-      return route.settings.name == "/intro";
-    });
-    return await showDialog<SnapshotInfo>(
-      useRootNavigator: false,
-      context: context,
-      builder: (_) => RestoreDialog(snapshots),
-    );
+      Navigator.popUntil(context, (route) {
+        return route.settings.name == "/intro";
+      });
+      return await showDialog<SnapshotInfo>(
+        useRootNavigator: false,
+        context: context,
+        builder: (_) => RestoreDialog(snapshots),
+      );
+    }
   }
 
   void _restoreSnapshot(
@@ -219,7 +223,6 @@ class RestoreRequestHandler extends Handler {
       ),
     );
     final texts = context.texts();
-    // TODO Remove ... from translation
     EasyLoading.show(
       indicator: LoaderIndicator(
         message: texts.initial_walk_through_restoring,
