@@ -219,6 +219,7 @@ class RestoreRequestHandler extends Handler {
       ),
     );
     final texts = context.texts();
+    // TODO Remove ... from translation
     EasyLoading.show(
       indicator: LoaderIndicator(
         message: texts.initial_walk_through_restoring,
