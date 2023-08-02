@@ -4,11 +4,13 @@ import 'package:archive/archive_io.dart';
 import 'package:breez/bloc/backup/backup_actions.dart';
 import 'package:breez/bloc/backup/backup_bloc.dart';
 import 'package:breez/bloc/blocs_provider.dart';
+import 'package:breez/routes/initial_walkthrough/loaders/loader_indicator.dart';
 import 'package:breez/services/breezlib/data/messages.pbgrpc.dart';
 import 'package:breez/utils/date.dart';
 import 'package:breez/widgets/error_dialog.dart';
 import 'package:breez_translations/breez_translations_locales.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:share_plus/share_plus.dart';
 
@@ -43,7 +45,11 @@ class _SnapshotInfoTileState extends State<SnapshotInfoTile> {
     }
 
     return ListTile(
-      contentPadding: const EdgeInsets.symmetric(horizontal: 0.0),
+      dense: true,
+      contentPadding: const EdgeInsets.symmetric(
+        horizontal: 0.0,
+        vertical: 8.0,
+      ),
       selected: isSelected,
       trailing: isSelected
           ? Icon(
@@ -61,7 +67,10 @@ class _SnapshotInfoTileState extends State<SnapshotInfoTile> {
       ),
       subtitle: Text(
         widget.snapshotInfo.nodeID,
-        style: themeData.primaryTextTheme.bodySmall.copyWith(fontSize: 9),
+        style: themeData.primaryTextTheme.bodySmall.copyWith(
+          fontSize: 9,
+          color: themeData.primaryTextTheme.bodySmall.color.withOpacity(0.6),
+        ),
       ),
       onLongPress: () => _downloadAndShareSnapshot(),
       onTap: () => widget.onSnapshotSelected(widget.snapshotInfo),
