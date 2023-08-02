@@ -242,7 +242,6 @@ class _InitialWalkthroughPageState extends State<InitialWalkthroughPage>
             backupSettings: backupSettings,
             backupProviders: backupProviders,
             onProviderSelected: (_) {
-              // TODO add translation
               EasyLoading.show(
                 indicator: const LoaderIndicator(
                   message: 'Loading Backups',
