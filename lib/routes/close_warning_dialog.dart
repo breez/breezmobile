@@ -1,7 +1,6 @@
+import 'package:breez/widgets/link_text_span.dart';
 import 'package:breez_translations/breez_translations_locales.dart';
-import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'package:url_launcher/url_launcher_string.dart';
 
 class CloseWarningDialog extends StatelessWidget {
   final int inactiveDuration;
@@ -64,7 +63,7 @@ class CloseWarningDialog extends StatelessWidget {
                   fontSize: 16,
                 ),
               ),
-              _LinkTextSpan(
+              LinkTextSpan(
                 text: texts.close_warning_dialog_message_middle,
                 url: texts.close_warning_dialog_url,
                 style: themeData.primaryTextTheme.displaySmall.copyWith(
@@ -84,19 +83,4 @@ class CloseWarningDialog extends StatelessWidget {
       ),
     ];
   }
-}
-
-class _LinkTextSpan extends TextSpan {
-  _LinkTextSpan({
-    TextStyle style,
-    String url,
-    String text,
-  }) : super(
-          style: style,
-          text: text ?? url,
-          recognizer: TapGestureRecognizer()
-            ..onTap = () {
-              launchUrlString(url);
-            },
-        );
 }
