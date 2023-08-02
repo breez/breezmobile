@@ -5,6 +5,7 @@ import 'package:breez/bloc/backup/backup_model.dart';
 import 'package:breez/bloc/blocs_provider.dart';
 import 'package:breez/bloc/tor/bloc.dart';
 import 'package:breez/logger.dart';
+import 'package:breez/routes/initial_walkthrough/loaders/loader_indicator.dart';
 import 'package:breez/routes/network/network.dart';
 import 'package:breez/routes/podcast/theme.dart';
 import 'package:breez/services/injector.dart';
@@ -15,6 +16,7 @@ import 'package:breez/widgets/route.dart';
 import 'package:breez/widgets/single_button_bottom_bar.dart';
 import 'package:breez_translations/breez_translations_locales.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:validators/validators.dart';
 
 Future<RemoteServerAuthData> promptAuthData(
@@ -94,7 +96,6 @@ class RemoteServerAuthPageState extends State<RemoteServerAuthPage> {
   @override
   Widget build(BuildContext context) {
     final texts = context.texts();
-    final nav = Navigator.of(context);
 
     return StreamBuilder<BackupSettings>(
       stream: widget._backupBloc.backupSettingsStream,
@@ -102,11 +103,7 @@ class RemoteServerAuthPageState extends State<RemoteServerAuthPage> {
         return Scaffold(
           appBar: AppBar(
             automaticallyImplyLeading: false,
-            leading: backBtn.BackButton(
-              onPressed: () {
-                nav.pop(null);
-              },
-            ),
+            leading: const backBtn.BackButton(),
             title: Text(texts.remote_server_title),
           ),
           body: SingleChildScrollView(
@@ -152,11 +149,7 @@ class RemoteServerAuthPageState extends State<RemoteServerAuthPage> {
                   : texts.remote_server_action_save,
               onPressed: () async {
                 final navigator = Navigator.of(context);
-                var loader = createLoaderRoute(
-                  context,
-                  message: "Testing connection",
-                  opacity: 0.8,
-                );
+
                 Uri uri = Uri.parse(_urlController.text);
 
                 bool connectionWarningResponse = true;
@@ -215,10 +208,14 @@ class RemoteServerAuthPageState extends State<RemoteServerAuthPage> {
                         BREEZ_BACKUP_DIR,
                       ),
                     );
-                    navigator.push(loader);
+                    EasyLoading.show(
+                      indicator: const LoaderIndicator(
+                        message: 'Testing Connection',
+                      ),
+                    );
                     discoverURL(newSettings.remoteServerAuthData).then(
                       (value) async {
-                        nav.removeRoute(loader);
+                        EasyLoading.dismiss();
 
                         final error = value.authError;
                         if (error == DiscoverResult.SUCCESS) {
@@ -235,7 +232,7 @@ class RemoteServerAuthPageState extends State<RemoteServerAuthPage> {
                       },
                     ).catchError(
                       (err) {
-                        nav.removeRoute(loader);
+                        EasyLoading.dismiss();
                         promptError(
                           context,
                           texts.remote_server_error_remote_server_title,

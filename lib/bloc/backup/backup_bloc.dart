@@ -161,20 +161,9 @@ class BackupBloc {
     final newSettings = action.settings;
     log.info("update backup from:\n$oldSettings to:\n$newSettings");
     _backupSettingsController.add(newSettings);
-    if (newSettings.backupKeyType != oldSettings.backupKeyType) {
-      log.info("update backup key type");
-      await _setBreezLibBackupKey(backupKeyType: newSettings.backupKeyType);
-    } else {
-      log.info("backup key type continue to be the same");
-    }
-    if (newSettings.backupProvider != oldSettings.backupProvider ||
-        !oldSettings.remoteServerAuthData
-            .equal(newSettings.remoteServerAuthData)) {
-      log.info("update backup provider");
-      await _updateBackupProvider(newSettings);
-    } else {
-      log.info("backup provider continue to be the same");
-    }
+    // Always update settings
+    await _setBreezLibBackupKey(backupKeyType: newSettings.backupKeyType);
+    await _updateBackupProvider(newSettings);
     action.resolve(newSettings);
   }
 
@@ -369,7 +358,7 @@ class BackupBloc {
   }
 
   void _listenBackupNowRequests() {
-    _backupNowController.stream.listen(_backupNow);
+    _backupNowController.stream.listen((action) => _backupNow(action));
   }
 
   Future _backupNow(BackupNowAction action) async {
@@ -555,9 +544,15 @@ class BackupBloc {
       _breezLib
           .restore(request.snapshot.nodeID, request.encryptionKey.key)
           .then(
-            (_) => _restoreAppData()
-                .then((value) => _restoreFinishedController.add(true))
-                .catchError((error) {
+            (_) => _restoreAppData().then((_) {
+              BackupState backupState = BackupState(
+                DateTime.tryParse(request.snapshot.modifiedTime),
+                false,
+                _backupStateController.value?.lastBackupAccountName,
+              );
+              _backupStateController.add(backupState);
+              _restoreFinishedController.add(true);
+            }).catchError((error) {
               _clearAppData();
               _restoreFinishedController.addError(error);
             }),
