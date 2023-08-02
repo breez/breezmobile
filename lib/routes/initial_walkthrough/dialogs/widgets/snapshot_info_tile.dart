@@ -4,13 +4,11 @@ import 'package:archive/archive_io.dart';
 import 'package:breez/bloc/backup/backup_actions.dart';
 import 'package:breez/bloc/backup/backup_bloc.dart';
 import 'package:breez/bloc/blocs_provider.dart';
-import 'package:breez/routes/initial_walkthrough/loaders/loader_indicator.dart';
 import 'package:breez/services/breezlib/data/messages.pbgrpc.dart';
 import 'package:breez/utils/date.dart';
 import 'package:breez/widgets/error_dialog.dart';
 import 'package:breez_translations/breez_translations_locales.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:share_plus/share_plus.dart';
 
@@ -45,11 +43,7 @@ class _SnapshotInfoTileState extends State<SnapshotInfoTile> {
     }
 
     return ListTile(
-      dense: true,
-      contentPadding: const EdgeInsets.symmetric(
-        horizontal: 0.0,
-        vertical: 8.0,
-      ),
+      contentPadding: const EdgeInsets.symmetric(horizontal: 0.0),
       selected: isSelected,
       trailing: isSelected
           ? Icon(
@@ -67,10 +61,7 @@ class _SnapshotInfoTileState extends State<SnapshotInfoTile> {
       ),
       subtitle: Text(
         widget.snapshotInfo.nodeID,
-        style: themeData.primaryTextTheme.bodySmall.copyWith(
-          fontSize: 9,
-          color: themeData.primaryTextTheme.bodySmall.color.withOpacity(0.6),
-        ),
+        style: themeData.primaryTextTheme.bodySmall.copyWith(fontSize: 9),
       ),
       onLongPress: () => _downloadAndShareSnapshot(),
       onTap: () => widget.onSnapshotSelected(widget.snapshotInfo),
@@ -86,27 +77,15 @@ class _SnapshotInfoTileState extends State<SnapshotInfoTile> {
       context,
       texts.restore_dialog_download_backup,
       Text(texts.restore_dialog_download_backup_for_node(nodeID)),
-      contentPadding: const EdgeInsets.fromLTRB(24.0, 8.0, 24.0, 8.0),
     ).then((yes) {
       if (yes) {
-        // TODO add translation
-        EasyLoading.show(
-          indicator: const LoaderIndicator(
-            message: 'Downloading Backup',
-          ),
-        );
-
         var downloadAction = DownloadSnapshot(nodeID);
         backupBloc.backupActionsSink.add(downloadAction);
         downloadAction.future.then((value) {
-          EasyLoading.dismiss();
-
           _shareSnapshot(
             (value as DownloadBackupResponse).files,
           );
         }).catchError((err) {
-          EasyLoading.dismiss();
-
           promptError(
             context,
             texts.restore_dialog_download_backup_error,

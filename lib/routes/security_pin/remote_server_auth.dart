@@ -208,7 +208,6 @@ class RemoteServerAuthPageState extends State<RemoteServerAuthPage> {
                         BREEZ_BACKUP_DIR,
                       ),
                     );
-                    // TODO add translation
                     EasyLoading.show(
                       indicator: const LoaderIndicator(
                         message: 'Testing Connection',
