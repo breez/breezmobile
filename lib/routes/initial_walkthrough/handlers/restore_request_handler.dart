@@ -80,20 +80,16 @@ class RestoreRequestHandler extends Handler {
     BuildContext context,
     List<SnapshotInfo> snapshots,
   ) async {
-    if (snapshots.length == 1) {
-      return snapshots.first;
-    } else {
-      EasyLoading.dismiss();
+    EasyLoading.dismiss();
 
-      Navigator.popUntil(context, (route) {
-        return route.settings.name == "/intro";
-      });
-      return await showDialog<SnapshotInfo>(
-        useRootNavigator: false,
-        context: context,
-        builder: (_) => RestoreDialog(snapshots),
-      );
-    }
+    Navigator.popUntil(context, (route) {
+      return route.settings.name == "/intro";
+    });
+    return await showDialog<SnapshotInfo>(
+      useRootNavigator: false,
+      context: context,
+      builder: (_) => RestoreDialog(snapshots),
+    );
   }
 
   void _restoreSnapshot(
