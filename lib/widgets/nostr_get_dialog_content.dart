@@ -1,6 +1,5 @@
 import 'package:breez/bloc/marketplace/marketplace_bloc.dart';
 import 'package:breez/bloc/marketplace/nostr_settings.dart';
-import 'package:breez_translations/breez_translations_locales.dart';
 import 'package:flutter/material.dart';
 
 class NostrGetDialogContent extends StatefulWidget {
@@ -24,8 +23,8 @@ class NostrGetDialogContent extends StatefulWidget {
 class _NostrGetDialogContentState extends State<NostrGetDialogContent> {
   @override
   Widget build(BuildContext context) {
-    final texts = context.texts();
     final themeData = Theme.of(context);
+
     return Column(
       mainAxisSize: MainAxisSize.min,
       crossAxisAlignment: CrossAxisAlignment.stretch,

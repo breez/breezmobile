@@ -1,5 +1,3 @@
-import 'dart:math';
-
 import 'package:breez/utils/bip21.dart';
 import 'package:flutter_test/flutter_test.dart';
 
