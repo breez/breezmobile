@@ -159,7 +159,7 @@ class HomeState extends State<Home> with WidgetsBindingObserver {
   void _initListens(BuildContext context) {
     if (_listensInit) return;
     _listensInit = true;
-    ServiceInjector().breezBridge.initBreezLib();
+    //ServiceInjector().breezBridge.initBreezLib();
     _registerNotificationHandlers(context);
     listenUnexpectedError(context, widget.accountBloc);
     _listenBackupConflicts(context);
