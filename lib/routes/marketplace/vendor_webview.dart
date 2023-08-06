@@ -4,7 +4,6 @@ import 'package:breez/bloc/account/account_bloc.dart';
 import 'package:breez/bloc/blocs_provider.dart';
 import 'package:breez/bloc/invoice/invoice_bloc.dart';
 import 'package:breez/bloc/marketplace/marketplace_bloc.dart';
-import 'package:breez/routes/marketplace/nostrEvent_handlers.dart';
 import 'package:breez/utils/webview_controller_util.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -15,6 +14,7 @@ import 'package:webview_flutter/webview_flutter.dart';
 import 'package:webview_flutter_android/webview_flutter_android.dart';
 
 import '../../bloc/marketplace/nostr_settings.dart';
+import 'nostr_event_handlers.dart';
 import 'webln_handlers.dart';
 
 class VendorWebViewPage extends StatefulWidget {
