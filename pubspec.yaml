@@ -7,12 +7,10 @@ dependencies:
   flutter_localizations:
     sdk: flutter
 
-  nostr_tools: ^1.0.7 
-  webview_flutter_android: ^3.7.1
   another_flushbar: ^1.12.30
-  app_settings: ^4.2.0
+  app_settings: ^5.0.0
   archive: ^3.3.7
-  audio_service: ^0.18.9
+  audio_service: ^0.18.10
   auto_size_text: ^3.0.0
   badges: ^3.1.1
   bip39: ^1.0.6
@@ -21,7 +19,7 @@ dependencies:
       url: https://github.com/breez/Breez-Translations.git
       ref: 1360928cfe6d7b7c3ed876267dcabb6e6522d58f
   clipboard_watcher: ^0.2.0
-  collection: ^1.17.2
+  collection: ^1.18.0
   confetti: ^0.7.0
   connectivity_plus: ^4.0.1
   convert: ^3.1.1
@@ -29,28 +27,28 @@ dependencies:
   csv: ^5.0.2
   dio: ^5.1.2
   drag_and_drop_lists: ^0.3.3
-  duration: ^3.0.12
+  duration: ^3.0.13
   email_validator: ^2.1.17
   extended_image: <8.0.0 # Requires Flutter 3.10
   ffmpeg_kit_flutter_https_gpl: ^5.1.0
-  file_picker: <5.3.2
-  firebase_core: ^2.13.0
+  file_picker: <5.3.2 # Requires Flutter 3.10
+  firebase_core: ^2.15.0
   firebase_core_platform_interface: ^4.8.0
-  firebase_database: ^10.2.1
-  firebase_dynamic_links: ^5.3.1
-  firebase_messaging: ^14.6.1
+  firebase_database: ^10.2.4
+  firebase_dynamic_links: ^5.3.4
+  firebase_messaging: ^14.6.5
   fixnum: ^1.1.0
   flutter_secure_storage: ^8.0.0
   flutter_spinkit: ^5.2.0
-  flutter_svg: ^2.0.6
+  flutter_svg: ^2.0.7
   flutter_web_browser: ^0.17.1
   google_api_availability: ^5.0.0
-  grpc: ^3.1.0
+  grpc: <3.2.0 # Requires Flutter 3.10
   hex: ^0.2.0
   http: <1.0.0 # Requires Flutter 3.10
   image: ^4.0.17
-  image_cropper: ^4.0.1
-  image_picker: ^0.8.7+5
+  image_cropper: <5.0.0 # Requires Flutter 3.10
+  image_picker: ^1.0.1
   ini: ^2.1.0
   intl: ^0.18.1
   json_annotation: ^4.8.1
@@ -59,18 +57,19 @@ dependencies:
   md5_file_checksum:
     git:
       url: https://github.com/breez/md5_file_checksum.git
-  nfc_manager: ^3.2.0
-  package_info_plus: ^4.0.1
+  nfc_manager: ^3.3.0
+  nostr_tools: ^1.0.7
+  package_info_plus: ^4.0.2
   path: ^1.8.3
   path_provider: ^2.0.15
   path_provider_platform_interface: ^2.0.6
   pdf: ^3.10.4
-  plugin_platform_interface: ^2.1.4
+  plugin_platform_interface: ^2.1.5
   printing: <5.11.0
-  protobuf: ^2.1.0
+  protobuf: <3.0.0 # Requires Flutter 3.10
   provider: ^6.0.5
   meta: ^1.9.1
-  mobile_scanner: ^3.2.0
+  mobile_scanner: ^3.3.0
   # qr_flutter has already fixed the build issue with the qr package but did not publish an updated
   # version, they will publish as 4.0.1 for now they recommend to use the master but instead of that
   # we are using an specific commit to avoid unexpected behaviour in future builds.
@@ -80,19 +79,20 @@ dependencies:
       ref: 1fc6e38c198a76a6fd60b7bd3b4c190cd6c9330b
   rxdart: ^0.27.7
   screenshot: <2.0.0 # Requires Flutter 3.10
-  share_plus: ^7.0.1
-  shared_preferences: ^2.1.1
+  share_plus: ^7.0.2
+  shared_preferences: ^2.2.0
   shimmer: ^3.0.0
-  simple_animations: ^5.0.0+3
-  sqflite: ^2.2.8+4
-  timeago: ^3.4.0
-  tutorial_coach_mark: ^1.2.8
+  simple_animations: ^5.0.2
+  sqflite: <2.3.0 # Requires Flutter 3.10
+  timeago: ^3.5.0
+  tutorial_coach_mark: ^1.2.9
   uni_links: ^0.5.1
-  url_launcher: ^6.1.11
+  url_launcher: <6.1.12 # Requires Flutter 3.10
   uuid: ^3.0.7
   validators: ^3.0.0
   webdav_client: ^1.2.1
-  webview_flutter: ^4.2.1
+  webview_flutter: ^4.2.2
+  webview_flutter_android: ^3.9.2
 
   anytime:
     # git:
@@ -117,7 +117,7 @@ dependencies:
       ref: 97f610be82bfe42d5ce86c348d931d61949fa517
 
 dependency_overrides:
-  collection: ^1.17.2
+  collection: ^1.18.0
   intl: ^0.18.1
   meta: ^1.9.1
   path: ^1.8.3
@@ -136,7 +136,7 @@ dev_dependencies:
   build_runner: <2.4.0 # Requires Flutter 3.10
   json_serializable: <6.7.0 # Requires Flutter 3.10
   mockito: <5.4.1
-  sqflite_common_ffi: ^2.2.5
+  sqflite_common_ffi: <2.3.0 # Requires Flutter 3.10
   test: any
   flutter_lints: ^2.0.2
 
