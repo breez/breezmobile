@@ -374,6 +374,10 @@ final VendorTheme snort = VendorTheme(
   iconBgColor: Colors.black,
   // iconFgColor: Colors.white,
 );
+final VendorTheme primal = VendorTheme(
+  iconBgColor: Colors.black,
+  // iconFgColor: Colors.white,
+);
 
 final Map<String, VendorTheme> vendorTheme = {
   "bitrefill": bitrefill,
@@ -391,6 +395,7 @@ final Map<String, VendorTheme> vendorTheme = {
   "wavlake": wavlake,
   "lightsats": lightsats,
   "snort": snort,
+  "primal": primal,
   "tbc": tbc,
 };
 

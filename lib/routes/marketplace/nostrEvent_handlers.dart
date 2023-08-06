@@ -111,7 +111,7 @@ class NostrEventHandler {
   }
 
   // these functions are not implemented but kept for future use
-  Future<dynamic> _getRelays(postMessage) {
+  Future<List<String>> _getRelays(postMessage) async {
     return Future(() => null);
   }
 

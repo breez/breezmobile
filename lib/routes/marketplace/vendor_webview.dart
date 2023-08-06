@@ -120,7 +120,7 @@ class VendorWebViewPageState extends State<VendorWebViewPage> {
     _webViewController.runJavaScript(await _weblnHandlers.initWebLNScript);
 
     // inject nostr-provider for Snort
-    if (widget._title == "Snort") {
+    if (widget._title == "Snort" || widget._title == "Primal") {
       _webViewController
           .runJavaScript(await _nostrEventHandler.initNostrProvider);
       // logging in the user

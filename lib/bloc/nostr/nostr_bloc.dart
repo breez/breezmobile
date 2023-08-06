@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:breez/bloc/async_actions_handler.dart';
 import 'package:breez/bloc/nostr/nostr_actions.dart';
+import 'package:breez/bloc/nostr/nostr_model.dart';
 import 'package:breez/services/breezlib/breez_bridge.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:nostr_tools/nostr_tools.dart';
@@ -13,6 +14,17 @@ class NostrBloc with AsyncActionsHandler {
   BreezBridge _breezLib;
   String nostrPublicKey;
   String nostrPrivateKey;
+
+  final defaultRelaysList = [
+    "wss://relay.damus.io",
+    "wss://nostr1.tunnelsats.com",
+    "wss://nostr-pub.wellorder.net",
+    "wss://relay.nostr.info",
+    "wss://nostr-relay.wlvs.space",
+    "wss://nostr.bitcoiner.social",
+    "wss://nostr-01.bolt.observer",
+    "wss://relayer.fiatjaf.com",
+  ];
 
   FlutterSecureStorage _secureStorage;
   SharedPreferences sharedPreferences;
@@ -32,6 +44,7 @@ class NostrBloc with AsyncActionsHandler {
       Nip04Decrypt: _handleNip04Decrypt,
       StoreImportedPrivateKey: _handleStoreImportedPrivateKey,
       DeleteKey: _handleDeleteKey,
+      PublishRelays: _handlePublishRelays,
     });
     listenActions();
   }
@@ -111,27 +124,32 @@ class NostrBloc with AsyncActionsHandler {
   // Methods to simulate the actual logic
 
   Future<String> _fetchPublicKey() async {
-    // if (nostrPublicKey == null) {
+    if (nostrPublicKey == null) {
+      // check if key pair already exists otherwise generate it
+      String nostrKeyPair;
 
-    // check if key pair already exists otherwise generate it
-    String nostrKeyPair;
+      try {
+        nostrKeyPair = await _breezLib.getNostrKeyPair().catchError((error) {
+          throw error.toString();
+        });
+      } catch (e) {
+        throw Exception(e);
+      }
 
-    try {
-      nostrKeyPair = await _breezLib.getNostrKeyPair().catchError((error) {
-        throw error.toString();
-      });
-    } catch (e) {
-      throw Exception(e);
+      int index = nostrKeyPair.indexOf('_');
+      nostrPrivateKey = nostrKeyPair.substring(0, index);
+      nostrPublicKey = nostrKeyPair.substring(index + 1);
+
+      // Write value
+      await _secureStorage.write(
+          key: 'nostrPrivateKey', value: nostrPrivateKey);
+      await _secureStorage.write(key: 'nostrPublicKey', value: nostrPublicKey);
+      // }
+      // }
+
+      // need to fetch relays before publishing thems
+      _publishRelays(defaultRelaysList);
     }
-
-    int index = nostrKeyPair.indexOf('_');
-    nostrPrivateKey = nostrKeyPair.substring(0, index);
-    nostrPublicKey = nostrKeyPair.substring(index + 1);
-
-    // Write value
-    await _secureStorage.write(key: 'nostrPrivateKey', value: nostrPrivateKey);
-    await _secureStorage.write(key: 'nostrPublicKey', value: nostrPublicKey);
-    // }
 
     return nostrPublicKey;
   }
@@ -170,6 +188,62 @@ class NostrBloc with AsyncActionsHandler {
     }
 
     return eventObject;
+  }
+
+  Future<void> _handlePublishRelays(PublishRelays action) async {
+    await _publishRelays(action.userRelayList);
+    action.resolve(true);
+  }
+
+  Future<void> _publishRelays(List<String> userRelayList) async {
+    RelayPoolApi relayPool = RelayPoolApi(relaysList: userRelayList);
+    Stream<Message> streamConnect = await relayPool.connect();
+
+    // relayPool.on((event) {
+    //   if (event == RelayEvent.connect) {
+    //     // if relay is connected add this to _isConnectedController
+    //   } else if (event == RelayEvent.error || event == RelayEvent.disconnect) {}
+    // });
+    // relayPool.sub([
+    //   Filter(
+    //     authors: [nostrPublicKey],
+    //     kinds: [3, 10002],
+    //   ),
+    // ]);
+    // streamConnect.listen((message) {
+    //   if (message.type == 'EVENT') {
+    //     Event event = message.message as Event;
+    //   }
+    // });
+
+    Event relayPublishEvent = Event(
+      content: null,
+      kind: 10002,
+      created_at: DateTime.now().millisecondsSinceEpoch ~/ 1000,
+      tags: [
+        ['r', userRelayList[0]],
+        ['r', userRelayList[0]],
+        ['r', userRelayList[1]],
+        ['r', userRelayList[2]],
+        ['r', userRelayList[3]],
+        ['r', userRelayList[4]],
+        ['r', userRelayList[5]],
+        ['r', userRelayList[6]],
+        ['r', userRelayList[7]],
+      ],
+      pubkey: nostrPublicKey,
+    );
+
+    Map<String, dynamic> eventObject = eventToMap(relayPublishEvent);
+    Map<String, dynamic> signedEventObject =
+        await _signEvent(eventObject, nostrPrivateKey);
+
+    Event signedNostrEvent = mapToEvent(signedEventObject);
+    try {
+      relayPool.publish(signedNostrEvent);
+    } catch (e) {
+      throw Exception(e);
+    }
   }
 
   // this method is created for future use

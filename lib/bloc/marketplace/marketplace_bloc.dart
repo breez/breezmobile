@@ -13,8 +13,10 @@ class MarketplaceBloc {
   Stream<List<VendorModel>> get vendorsStream => _vendorController.stream;
 
   bool _isSnortToggled;
+  SharedPreferences pref;
 
-  final _nostrSettingsController = BehaviorSubject<NostrSettings>();
+  final _nostrSettingsController =
+      BehaviorSubject<NostrSettings>.seeded(NostrSettings.start());
   Stream<NostrSettings> get nostrSettingsStream =>
       _nostrSettingsController.stream;
   Sink<NostrSettings> get nostrSettingsSettingsSink =>
@@ -28,11 +30,24 @@ class MarketplaceBloc {
   }
 
   _initNostrSettings() async {
-    _nostrSettingsController.add(NostrSettings.start());
+    pref = await SharedPreferences.getInstance();
+    var nostrSettings =
+        pref.getString(NostrSettings.NOSTR_SETTINGS_PREFERENCES_KEY);
+    if (nostrSettings != null) {
+      Map<String, dynamic> settings = json.decode(nostrSettings);
+      var nostrSetttingsModel = NostrSettings.fromJson(settings);
+      _nostrSettingsController.add(nostrSetttingsModel.copyWith(
+        enableNostr: nostrSetttingsModel.enableNostr,
+        isRememberPubKey: nostrSetttingsModel.isRememberPubKey,
+        isRememberSignEvent: nostrSetttingsModel.isRememberSignEvent,
+        isLoggedIn: nostrSetttingsModel.isLoggedIn,
+        relayList: nostrSetttingsModel.relayList,
+      ));
+    }
   }
 
   _listenNostrSettings() async {
-    SharedPreferences pref = await SharedPreferences.getInstance();
+    pref = await SharedPreferences.getInstance();
     nostrSettingsStream.listen((settings) async {
       _isSnortToggled = settings.enableNostr;
       pref.setString(NostrSettings.NOSTR_SETTINGS_PREFERENCES_KEY,
@@ -48,6 +63,7 @@ class MarketplaceBloc {
     List<VendorModel> vendorList = vendorListFromJson(jsonVendors);
     if (_isSnortToggled) {
       vendorList.removeWhere((element) => element.displayName == "Snort");
+      vendorList.removeWhere((element) => element.displayName == "Primal");
       _vendorController.add(vendorList);
     } else {
       _vendorController.add(vendorListFromJson(jsonVendors));

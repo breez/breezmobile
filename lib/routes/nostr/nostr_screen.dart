@@ -27,6 +27,8 @@ class _NostrScreenState extends State<NostrScreen> {
   }
 
   Future<void> _deleteKeys() async {
+    widget.nostrBloc.nostrPublicKey = null;
+    widget.nostrBloc.nostrPrivateKey = null;
     widget.nostrBloc.actionsSink.add(DeleteKey());
   }
 

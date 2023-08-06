@@ -9,6 +9,7 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import '../../bloc/nostr/nostr_actions.dart';
 import '../../utils/min_font_size.dart';
 import '../../widgets/logout_warning_dialog.dart';
+import 'nostr_relays.dart';
 
 class NostrKeysPage extends StatefulWidget {
   final NostrBloc nostrBloc;
@@ -38,9 +39,7 @@ class _NostrKeysPageState extends State<NostrKeysPage> {
     try {
       // call nostr_bloc method to get keys
       widget.nostrBloc.actionsSink.add(GetPublicKey());
-      // await Future.delayed(const Duration(seconds: 10));
       _nostrPublicKey = await widget.nostrBloc.publicKeyStream.first;
-      // because getPublicKey stores the keypair in secure storage
       _nostrPrivateKey = await _secureStorage.read(key: "nostrPrivateKey");
     } catch (e) {
       throw Exception(e);
@@ -118,6 +117,34 @@ class _NostrKeysPageState extends State<NostrKeysPage> {
                   ),
                 );
               },
+            ),
+          ),
+          const Divider(),
+          ListTile(
+            title: AutoSizeText(
+              "Relays",
+              style: const TextStyle(color: Colors.white),
+              maxLines: 1,
+              minFontSize: MinFontSize(context).minFontSize,
+              stepGranularity: 0.1,
+              group: _autoSizeGroup,
+            ),
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (_) => NostrRelays(
+                    settings: widget.settings,
+                    marketplaceBloc: widget.marketplaceBloc,
+                    nostrBloc: widget.nostrBloc,
+                  ),
+                ),
+              );
+            },
+            trailing: const Icon(
+              Icons.keyboard_arrow_right,
+              color: Colors.white,
+              size: 30.0,
             ),
           ),
           const Divider(),

@@ -35,3 +35,8 @@ class StoreImportedPrivateKey extends AsyncAction {
 class DeleteKey extends AsyncAction {
   DeleteKey();
 }
+
+class PublishRelays extends AsyncAction {
+  final List<String> userRelayList;
+  PublishRelays({this.userRelayList});
+}

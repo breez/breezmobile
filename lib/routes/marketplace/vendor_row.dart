@@ -5,6 +5,7 @@ import 'package:breez/bloc/marketplace/vendor_model.dart';
 import 'package:breez/theme_data.dart' as theme;
 import 'package:breez/widgets/route.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
 
 import 'lnurl_webview.dart';
 import 'vendor_webview.dart';
@@ -26,25 +27,31 @@ class VendorRow extends StatelessWidget {
     Color vendorTextColor =
         theme.vendorTheme[_vendor.id.toLowerCase()]?.textColor ?? Colors.black;
 
-    final vendorLogo = _vendor.logo != null
-        ? Image(
-            image: AssetImage(_vendor.logo),
-            height: (_vendor.id == 'Wavlake')
-                ? 73
-                : (_vendor.id == 'LNCal')
-                    ? 56
-                    : (_vendor.id == 'Snort')
-                        ? 100
-                        : 48,
-            width: _vendor.onlyShowLogo
-                ? (_vendor.id == 'Bitrefill' || _vendor.id == "Azteco")
-                    ? 156
-                    : 196
-                : null,
-            color: vendorFgColor,
-            colorBlendMode: BlendMode.srcATop,
+    final vendorLogo = _vendor.id == 'Primal'
+        ? SvgPicture.asset(
+            "./src/icon/vendors/primal-fire-wave.svg",
+            // width: 100,
+            height: 50,
           )
-        : Container();
+        : _vendor.logo != null
+            ? Image(
+                image: AssetImage(_vendor.logo),
+                height: (_vendor.id == 'Wavlake')
+                    ? 73
+                    : (_vendor.id == 'LNCal')
+                        ? 56
+                        : (_vendor.id == 'Snort')
+                            ? 100
+                            : 48,
+                width: _vendor.onlyShowLogo
+                    ? (_vendor.id == 'Bitrefill' || _vendor.id == "Azteco")
+                        ? 156
+                        : 196
+                    : null,
+                color: vendorFgColor,
+                colorBlendMode: BlendMode.srcATop,
+              )
+            : Container();
 
     final vendorCard = GestureDetector(
         onTap: () {

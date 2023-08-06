@@ -1,22 +1,24 @@
-class Event {
-  String id;
-  int kind;
-  String pubKey;
-  String content;
-  List<List<String>> tags;
-  int created_at;
-  String sig;
+// class Event {
+//   String id;
+//   int kind;
+//   String pubKey;
+//   String content;
+//   List<List<String>> tags;
+//   int created_at;
+//   String sig;
 
-  Event({
-    this.id,
-    this.kind,
-    this.pubKey,
-    this.content,
-    this.tags,
-    this.created_at,
-    this.sig,
-  });
-}
+//   Event({
+//     this.id,
+//     this.kind,
+//     this.pubKey,
+//     this.content,
+//     this.tags,
+//     this.created_at,
+//     this.sig,
+//   });
+// }
+
+import 'package:nostr_tools/nostr_tools.dart';
 
 Map<int, String> eventKind = {
   0: 'metadata',
@@ -32,3 +34,29 @@ Map<int, String> eventKind = {
   10002: 'RelayList',
   30078: 'Application Specific Data'
 };
+
+Event mapToEvent(Map<String, dynamic> eventObject) {
+  return Event(
+    kind: eventObject['kind'] as int,
+    tags: eventObject['tags'] as List<List<String>>,
+    content: eventObject['content'] as String,
+    created_at: eventObject['created_at'] as int,
+    id: eventObject['id'] as String,
+    sig: eventObject['sig'] as String,
+    pubkey: eventObject['pubkey'] as String,
+  );
+}
+
+Map<String, dynamic> eventToMap(Event event) {
+  Map<String, dynamic> eventObject;
+  eventObject = {
+    'kind': event.kind,
+    'tags': event.tags,
+    'content': event.content,
+    'created_at': event.created_at,
+    'id': event.id,
+    'sig': event.sig,
+    'pubkey': event.pubkey,
+  };
+  return eventObject;
+}
