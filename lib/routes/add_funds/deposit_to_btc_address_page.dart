@@ -181,8 +181,12 @@ class DepositToBTCAddressPageState extends State<DepositToBTCAddressPage> {
     final liquidity = accountModel.currency.format(
       connected ? accountModel.maxInboundLiquidity : Int64(0),
     );
+    final bool showFeeMessage =
+        maxAllowedDeposit > accountModel.maxInboundLiquidity;
 
-    if (connected && showMinFeeMessage) {
+    if (!showFeeMessage) {
+      return texts.invoice_btc_address_channel_not_needed(minSats, maxSats);
+    } else if (connected && showMinFeeMessage) {
       return texts.invoice_btc_address_warning_with_min_fee_account_connected(
         minSats,
         maxSats,
