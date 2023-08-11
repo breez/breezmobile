@@ -26,6 +26,8 @@ import 'package:flutter_svg/svg.dart';
 import 'package:url_launcher/url_launcher_string.dart';
 import 'package:validators/validators.dart';
 
+import '../../utils/nostrConnect.dart';
+
 class QrActionButton extends StatelessWidget {
   final GlobalKey firstPaymentItemKey;
 
@@ -61,6 +63,13 @@ class QrActionButton extends StatelessWidget {
                     return;
                   }
                   String lower = scannedString.toLowerCase();
+
+                  // nostr connect
+                  // if (isNostrConnect(lower)) {
+                  //   log.finest("Scanned string is a nostr connect request");
+                  //   await _handleNostrConnect();
+                  //   return;
+                  // }
 
                   // lnurl string
                   if (isLNURL(lower)) {
@@ -184,6 +193,10 @@ class QrActionButton extends StatelessWidget {
         .then((_) => true)
         .catchError((err) => false);
   }
+
+  // Future _handleNostrConnect() async {
+  //   // fetch the details from the uri like pubkey and construct a dialog to connect
+  // }
 
   Future _handleLNUrl(
     LNUrlBloc lnurlBloc,
