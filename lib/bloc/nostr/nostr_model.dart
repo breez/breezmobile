@@ -1,23 +1,3 @@
-// class Event {
-//   String id;
-//   int kind;
-//   String pubKey;
-//   String content;
-//   List<List<String>> tags;
-//   int created_at;
-//   String sig;
-
-//   Event({
-//     this.id,
-//     this.kind,
-//     this.pubKey,
-//     this.content,
-//     this.tags,
-//     this.created_at,
-//     this.sig,
-//   });
-// }
-
 import 'package:nostr_tools/nostr_tools.dart';
 
 Map<int, String> eventKind = {

@@ -153,8 +153,7 @@ class NostrBloc with AsyncActionsHandler {
       await _secureStorage.write(
           key: 'nostrPrivateKey', value: nostrPrivateKey);
       await _secureStorage.write(key: 'nostrPublicKey', value: nostrPublicKey);
-
-      // need to fetch relays before publishing thems
+      // publishing the default relayList when creating the account for the first time
       _publishRelays(defaultRelaysList);
     }
 
