@@ -50,14 +50,16 @@ class _NostrRelaysState extends State<NostrRelays> {
   }
 
   Future<void> _saveNewRelays(List<String> newRelays) async {
-    widget.settings.copyWith(
-      relayList: newRelays,
-    );
-    await _fetchRelays();
-    // call publish relays from here
+    // only after relays are published will be saved in the preferences
     widget.nostrBloc.actionsSink.add(PublishRelays(
       userRelayList: newRelays,
     ));
+    widget.marketplaceBloc.nostrSettingsSettingsSink
+        .add(widget.settings.copyWith(
+      relayList: newRelays,
+    ));
+
+    await _fetchRelays();
   }
 
   Future<void> _addRelay(String relay) async {
@@ -124,9 +126,15 @@ class _NostrRelaysState extends State<NostrRelays> {
                       controller: _textEditingController,
                       focusNode: _focusNode,
                       autovalidateMode: AutovalidateMode.onUserInteraction,
-                      // validator: (value) {
-                      //   return value == null ? value : "please enter a value";
-                      // },
+                      validator: (value) {
+                        if (value.isEmpty) {
+                          return 'This field cannot be empty';
+                        }
+                        if (value.substring(0, 6) != "wss://") {
+                          return 'relay name does not start with wss://';
+                        }
+                        return "null";
+                      },
                       onTapOutside: (value) {
                         _focusNode.unfocus();
                       },

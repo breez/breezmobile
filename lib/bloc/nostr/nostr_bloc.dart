@@ -202,34 +202,35 @@ class NostrBloc with AsyncActionsHandler {
     action.resolve(true);
   }
 
+  List<List<String>> _formRelayPublishEventTagList(List<String> userRelayList) {
+    List<List<String>> tagList = [];
+
+    for (int i = 0; i < userRelayList.length; i++) {
+      tagList.add(['r', userRelayList[i]]);
+    }
+
+    return tagList;
+  }
+
   Future<void> _publishRelays(List<String> userRelayList) async {
     RelayPoolApi relayPool = RelayPoolApi(relaysList: userRelayList);
-    Stream<Message> streamConnect = await relayPool.connect();
+
+    List<List<String>> tagList = _formRelayPublishEventTagList(userRelayList);
 
     Event relayPublishEvent = Event(
       content: null,
       kind: 10002,
       created_at: DateTime.now().millisecondsSinceEpoch ~/ 1000,
-      tags: [
-        ['r', userRelayList[0]],
-        ['r', userRelayList[0]],
-        ['r', userRelayList[1]],
-        ['r', userRelayList[2]],
-        ['r', userRelayList[3]],
-        ['r', userRelayList[4]],
-        ['r', userRelayList[5]],
-        ['r', userRelayList[6]],
-        ['r', userRelayList[7]],
-      ],
+      tags: tagList,
       pubkey: nostrPublicKey,
     );
 
     Map<String, dynamic> eventObject = eventToMap(relayPublishEvent);
-    Map<String, dynamic> signedEventObject =
-        await _signEvent(eventObject, nostrPrivateKey);
 
-    Event signedNostrEvent = mapToEvent(signedEventObject);
     try {
+      Map<String, dynamic> signedEventObject =
+          await _signEvent(eventObject, nostrPrivateKey);
+      Event signedNostrEvent = mapToEvent(signedEventObject);
       relayPool.publish(signedNostrEvent);
     } catch (e) {
       throw Exception(e);
