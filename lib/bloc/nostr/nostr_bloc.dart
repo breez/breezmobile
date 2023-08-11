@@ -54,6 +54,14 @@ class NostrBloc with AsyncActionsHandler {
     nostrPrivateKey = await _secureStorage.read(key: "nostrPrivateKey");
   }
 
+  final StreamController<String> _encryptDataController =
+      StreamController<String>.broadcast();
+  Stream<String> get encryptDataStream => _encryptDataController.stream;
+
+  final StreamController<String> _decryptDataController =
+      StreamController<String>.broadcast();
+  Stream<String> get decryptDataStream => _decryptDataController.stream;
+
   final StreamController<String> _publicKeyController =
       StreamController<String>.broadcast();
   Stream<String> get publicKeyStream => _publicKeyController.stream;
@@ -88,14 +96,15 @@ class NostrBloc with AsyncActionsHandler {
 
   Future<void> _handleNip04Encrypt(Nip04Encrypt action) async {
     // to encrypt the data
-    String encryptedData = await _encryptData(action.data, action.publicKey);
+    String encryptedData = await _encryptData(action.data);
+    _encryptDataController.add(encryptedData);
     action.resolve(encryptedData);
   }
 
   Future<void> _handleNip04Decrypt(Nip04Decrypt action) async {
     // to decrypt the data
-    String decryptedData =
-        await _decryptData(action.encryptedData, action.privateKey);
+    String decryptedData = await _decryptData(action.encryptedData);
+    _decryptDataController.add(decryptedData);
     action.resolve(decryptedData);
   }
 
@@ -144,8 +153,6 @@ class NostrBloc with AsyncActionsHandler {
       await _secureStorage.write(
           key: 'nostrPrivateKey', value: nostrPrivateKey);
       await _secureStorage.write(key: 'nostrPublicKey', value: nostrPublicKey);
-      // }
-      // }
 
       // need to fetch relays before publishing thems
       _publishRelays(defaultRelaysList);
@@ -199,23 +206,6 @@ class NostrBloc with AsyncActionsHandler {
     RelayPoolApi relayPool = RelayPoolApi(relaysList: userRelayList);
     Stream<Message> streamConnect = await relayPool.connect();
 
-    // relayPool.on((event) {
-    //   if (event == RelayEvent.connect) {
-    //     // if relay is connected add this to _isConnectedController
-    //   } else if (event == RelayEvent.error || event == RelayEvent.disconnect) {}
-    // });
-    // relayPool.sub([
-    //   Filter(
-    //     authors: [nostrPublicKey],
-    //     kinds: [3, 10002],
-    //   ),
-    // ]);
-    // streamConnect.listen((message) {
-    //   if (message.type == 'EVENT') {
-    //     Event event = message.message as Event;
-    //   }
-    // });
-
     Event relayPublishEvent = Event(
       content: null,
       kind: 10002,
@@ -251,17 +241,14 @@ class NostrBloc with AsyncActionsHandler {
     return ['Relay1', 'Relay2', 'Relay3'];
   }
 
-  // this method is created for future use
-  Future<String> _encryptData(String data, String publicKey) async {
+  Future<String> _encryptData(String data) async {
     // Simulating an encryption operation
-
-    throw Exception("HandleNip04Encrypt not supported");
+    return Nip04().encrypt(nostrPrivateKey, nostrPublicKey, data);
   }
 
-  // this method is created for future use
-  Future<String> _decryptData(String encryptedData, String privateKey) async {
+  Future<String> _decryptData(String encryptedData) async {
     // Simulating a decryption operation
-    throw Exception("HandleNip04Decrypt not supported");
+    return Nip04().decrypt(nostrPrivateKey, nostrPublicKey, encryptedData);
   }
 
   @override

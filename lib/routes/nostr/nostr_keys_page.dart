@@ -9,6 +9,7 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import '../../bloc/nostr/nostr_actions.dart';
 import '../../utils/min_font_size.dart';
 import '../../widgets/logout_warning_dialog.dart';
+import 'nostr_connect.dart';
 import 'nostr_relays.dart';
 
 class NostrKeysPage extends StatefulWidget {
@@ -136,6 +137,32 @@ class _NostrKeysPageState extends State<NostrKeysPage> {
                   builder: (_) => NostrRelays(
                     settings: widget.settings,
                     marketplaceBloc: widget.marketplaceBloc,
+                    nostrBloc: widget.nostrBloc,
+                  ),
+                ),
+              );
+            },
+            trailing: const Icon(
+              Icons.keyboard_arrow_right,
+              color: Colors.white,
+              size: 30.0,
+            ),
+          ),
+          const Divider(),
+          ListTile(
+            title: AutoSizeText(
+              "Nostr Connect",
+              style: const TextStyle(color: Colors.white),
+              maxLines: 1,
+              minFontSize: MinFontSize(context).minFontSize,
+              stepGranularity: 0.1,
+              group: _autoSizeGroup,
+            ),
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (_) => NostrConnect(
                     nostrBloc: widget.nostrBloc,
                   ),
                 ),
