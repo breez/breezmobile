@@ -1,7 +1,7 @@
 import 'package:anytime/api/podcast/podcast_api.dart';
-import 'package:anytime/bloc/comments/comments_bloc.dart';
 import 'package:anytime/bloc/discovery/discovery_bloc.dart';
 import 'package:anytime/bloc/new_podcasts/new_podcasts_bloc.dart';
+import 'package:anytime/bloc/nostr_comments/nostr_comments_bloc.dart';
 import 'package:anytime/bloc/podcast/audio_bloc.dart';
 import 'package:anytime/bloc/podcast/episode_bloc.dart';
 import 'package:anytime/bloc/podcast/opml_bloc.dart';
@@ -182,8 +182,8 @@ class AnytimePodcastAppState extends State<AnytimePodcastApp> {
           ),
           dispose: (_, value) => value.dispose(),
         ),
-        Provider<CommentBloc>(
-          create: (_) => CommentBloc(
+        Provider<NostrCommentBloc>(
+          create: (_) => NostrCommentBloc(
               episodeStream: widget.audioPlayerService.episodeEvent),
           dispose: (_, value) => value.dispose(),
         ),

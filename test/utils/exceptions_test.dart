@@ -1,4 +1,5 @@
 import 'package:breez/utils/exceptions.dart';
+import 'package:breez_translations/generated/breez_translations_cs.dart';
 import 'package:breez_translations/generated/breez_translations_de.dart';
 import 'package:breez_translations/generated/breez_translations_el.dart';
 import 'package:breez_translations/generated/breez_translations_en.dart';
@@ -109,16 +110,17 @@ void main() {
   });
 
   final locales = {
+    "cs": BreezTranslationsCs(),
     "de": BreezTranslationsDe(),
-    "en": BreezTranslationsEn(),
     "el": BreezTranslationsEl(),
+    "en": BreezTranslationsEn(),
     "es": BreezTranslationsEs(),
     "fi": BreezTranslationsFi(),
     "fr": BreezTranslationsFr(),
     "it": BreezTranslationsIt(),
     "pt": BreezTranslationsPt(),
-    "sv": BreezTranslationsSv(),
     "sk": BreezTranslationsSk(),
+    "sv": BreezTranslationsSv(),
   };
   group("localizedExceptionMessage", () {
     for (final locale in locales.values) {

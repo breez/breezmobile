@@ -17,15 +17,15 @@ dependencies:
   breez_translations:
     git:
       url: https://github.com/breez/Breez-Translations.git
-      ref: 1360928cfe6d7b7c3ed876267dcabb6e6522d58f
+      ref: 077a94046e0b7ff9bd1aff225616541dea0ba208
   clipboard_watcher: ^0.2.0
   collection: ^1.18.0
   confetti: ^0.7.0
-  connectivity_plus: ^4.0.1
+  connectivity_plus: ^4.0.2
   convert: ^3.1.1
   crypto: ^3.0.3
   csv: ^5.0.2
-  dio: ^5.1.2
+  dio: ^5.3.2
   drag_and_drop_lists: ^0.3.3
   duration: ^3.0.13
   email_validator: ^2.1.17
@@ -48,7 +48,7 @@ dependencies:
   http: <1.0.0 # Requires Flutter 3.10
   image: ^4.0.17
   image_cropper: <5.0.0 # Requires Flutter 3.10
-  image_picker: ^1.0.1
+  image_picker: ^1.0.2
   ini: ^2.1.0
   intl: ^0.18.1
   json_annotation: ^4.8.1
@@ -59,17 +59,17 @@ dependencies:
       url: https://github.com/breez/md5_file_checksum.git
   nfc_manager: ^3.3.0
   nostr_tools: ^1.0.7
-  package_info_plus: ^4.0.2
+  package_info_plus: ^4.1.0
   path: ^1.8.3
   path_provider: ^2.0.15
-  path_provider_platform_interface: ^2.0.6
+  path_provider_platform_interface: ^2.1.0
   pdf: ^3.10.4
   plugin_platform_interface: ^2.1.5
   printing: <5.11.0
   protobuf: <3.0.0 # Requires Flutter 3.10
   provider: ^6.0.5
   meta: ^1.9.1
-  mobile_scanner: ^3.3.0
+  mobile_scanner: ^3.4.1
   # qr_flutter has already fixed the build issue with the qr package but did not publish an updated
   # version, they will publish as 4.0.1 for now they recommend to use the master but instead of that
   # we are using an specific commit to avoid unexpected behaviour in future builds.
@@ -79,7 +79,7 @@ dependencies:
       ref: 1fc6e38c198a76a6fd60b7bd3b4c190cd6c9330b
   rxdart: ^0.27.7
   screenshot: <2.0.0 # Requires Flutter 3.10
-  share_plus: ^7.0.2
+  share_plus: ^7.1.0
   shared_preferences: ^2.2.0
   shimmer: ^3.0.0
   simple_animations: ^5.0.2
