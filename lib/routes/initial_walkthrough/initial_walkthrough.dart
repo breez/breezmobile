@@ -9,18 +9,11 @@ import 'package:breez/bloc/user_profile/user_profile_bloc.dart';
 import 'package:breez/logger.dart';
 import 'package:breez/routes/initial_walkthrough/dialogs/beta_warning_dialog.dart';
 import 'package:breez/routes/initial_walkthrough/dialogs/select_backup_provider_dialog.dart';
-import 'package:breez/routes/initial_walkthrough/handlers/backup_restore_handler.dart';
-import 'package:breez/routes/initial_walkthrough/handlers/models/handler.dart';
-import 'package:breez/routes/initial_walkthrough/handlers/models/handler_context_provider.dart';
-import 'package:breez/routes/initial_walkthrough/handlers/restore_request_handler.dart';
-import 'package:breez/routes/initial_walkthrough/loaders/loader_indicator.dart';
 import 'package:breez/theme_data.dart' as theme;
 import 'package:breez/theme_data.dart';
 import 'package:breez/widgets/error_dialog.dart';
 import 'package:breez_translations/breez_translations_locales.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/scheduler.dart';
-import 'package:flutter_easyloading/flutter_easyloading.dart';
 
 class InitialWalkthroughPage extends StatefulWidget {
   final Sink<bool> reloadDatabaseSink;
@@ -32,12 +25,10 @@ class InitialWalkthroughPage extends StatefulWidget {
 }
 
 class _InitialWalkthroughPageState extends State<InitialWalkthroughPage>
-    with HandlerContextProvider, SingleTickerProviderStateMixin {
+    with SingleTickerProviderStateMixin {
   final GlobalKey scaffoldKey = GlobalKey<ScaffoldState>();
   AnimationController controller;
   Animation<int> animation;
-
-  final handlers = <Handler>[];
 
   bool _registered = false;
 
@@ -57,19 +48,6 @@ class _InitialWalkthroughPageState extends State<InitialWalkthroughPage>
         });
       });
     controller.forward();
-
-    SchedulerBinding.instance.addPostFrameCallback((_) {
-      /// Backup Request & Restore Handlers
-      handlers.addAll([
-        RestoreRequestHandler(),
-        BackupRestoreHandler(
-          widget.reloadDatabaseSink,
-        ),
-      ]);
-      for (var handler in handlers) {
-        handler.init(this);
-      }
-    });
   }
 
   @override
@@ -241,14 +219,7 @@ class _InitialWalkthroughPageState extends State<InitialWalkthroughPage>
           builder: (_) => SelectBackupProviderDialog(
             backupSettings: backupSettings,
             backupProviders: backupProviders,
-            onProviderSelected: (_) {
-              EasyLoading.show(
-                indicator: const LoaderIndicator(
-                  message: 'Loading Backups',
-                ),
-              );
-              backupBloc.restoreRequestSink.add(null);
-            },
+            reloadDatabaseSink: widget.reloadDatabaseSink,
           ),
         );
       }

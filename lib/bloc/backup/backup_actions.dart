@@ -1,5 +1,6 @@
-import '../async_action.dart';
-import 'backup_model.dart';
+import 'package:breez/bloc/async_action.dart';
+import 'package:breez/bloc/backup/backup_bloc.dart';
+import 'package:breez/bloc/backup/backup_model.dart';
 
 class SaveBackupKey extends AsyncAction {
   final String backupPhrase;
@@ -17,4 +18,14 @@ class DownloadSnapshot extends AsyncAction {
   final String nodeID;
 
   DownloadSnapshot(this.nodeID);
+}
+
+class ListSnapshots extends AsyncAction {
+  ListSnapshots();
+}
+
+class RestoreBackup extends AsyncAction {
+  final RestoreRequest restoreRequest;
+
+  RestoreBackup(this.restoreRequest);
 }
