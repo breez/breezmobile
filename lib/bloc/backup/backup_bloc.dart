@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:breez/bloc/async_actions_handler.dart';
 import 'package:breez/bloc/backup/backup_model.dart';
 import 'package:breez/bloc/user_profile/backup_user_preferences.dart';
 import 'package:breez/bloc/user_profile/breez_user_model.dart';
@@ -22,7 +23,7 @@ import 'package:sqflite/sqflite.dart';
 import '../async_action.dart';
 import 'backup_actions.dart';
 
-class BackupBloc {
+class BackupBloc with AsyncActionsHandler {
   static const String _signInFailedCode = "401";
   static const String _signInFailedMessage = "AuthError";
   static const String _methodNotFound = "405";
@@ -73,17 +74,6 @@ class BackupBloc {
   Stream<Map<String, dynamic>> get restoreLightningFeesStream =>
       _restoreLightningFeesController.stream;
 
-  final _restoreRequestController = StreamController<RestoreRequest>();
-  Sink<RestoreRequest> get restoreRequestSink => _restoreRequestController.sink;
-
-  final _multipleRestoreController =
-      StreamController<List<SnapshotInfo>>.broadcast();
-  Stream<List<SnapshotInfo>> get multipleRestoreStream =>
-      _multipleRestoreController.stream;
-
-  final _restoreFinishedController = StreamController<bool>.broadcast();
-  Stream<bool> get restoreFinishedStream => _restoreFinishedController.stream;
-
   final _backupActionsController = StreamController<AsyncAction>.broadcast();
   Sink<AsyncAction> get backupActionsSink => _backupActionsController.sink;
 
@@ -116,6 +106,8 @@ class BackupBloc {
       SaveBackupKey: _saveBackupKey,
       UpdateBackupSettings: _updateBackupSettings,
       DownloadSnapshot: _downloadSnapshot,
+      ListSnapshots: _listSnapshots,
+      RestoreBackup: _restoreBackup,
     };
 
     SharedPreferences.getInstance().then((sp) async {
@@ -125,7 +117,6 @@ class BackupBloc {
       _listenBackupPaths();
       _listenBackupNowRequests();
       _listenAppDataBackupRequests(backupAnytimeDBStream);
-      _listenRestoreRequests();
       _scheduleBackgroundTasks();
 
       // Read the backupKey from the secure storage and initialize the breez user model appropriately
@@ -331,6 +322,69 @@ class BackupBloc {
         encryptionKey?.key, encryptionKey?.type);
   }
 
+  Future _listSnapshots(ListSnapshots action) async {
+    String backups = await _breezLib.getAvailableBackups().catchError(
+      (error) {
+        if (error.runtimeType == PlatformException) {
+          PlatformException e = (error as PlatformException);
+          // the error code equals the message from the go library so
+          // not to confuse the two.
+          if (e.code == _signInFailedMessage ||
+              e.message == _signInFailedCode) {
+            error = SignInFailedException(
+                _backupSettingsController.value.backupProvider);
+          } else if (e.code == _empty) {
+            error = NoBackupFoundException();
+          } else {
+            error = (error as PlatformException).message;
+          }
+        }
+        action.resolveError(error);
+      },
+    );
+
+    List snapshotsArray = json.decode(backups) as List;
+    List<SnapshotInfo> snapshots = <SnapshotInfo>[];
+    if (snapshotsArray != null) {
+      snapshots = snapshotsArray.map((s) {
+        return SnapshotInfo.fromJson(s);
+      }).toList();
+    }
+    snapshots.sort((s1, s2) => s2.modifiedTime.compareTo(s1.modifiedTime));
+    action.resolve(snapshots);
+  }
+
+  Future _restoreBackup(RestoreBackup action) async {
+    if (action.restoreRequest.encryptionKey != null &&
+        action.restoreRequest.encryptionKey.key != null) {
+      assert(action.restoreRequest.encryptionKey.key.isNotEmpty || true);
+    }
+    assert(action.restoreRequest.snapshot.nodeID.isNotEmpty);
+
+    _clearAppData();
+
+    _breezLib
+        .restore(action.restoreRequest.snapshot.nodeID,
+            action.restoreRequest.encryptionKey.key)
+        .then(
+          (_) => _restoreAppData().then((_) {
+            BackupState backupState = BackupState(
+              DateTime.tryParse(action.restoreRequest.snapshot.modifiedTime),
+              false,
+              _backupStateController.value?.lastBackupAccountName,
+            );
+            _backupStateController.add(backupState);
+            action.resolve(true);
+          }).catchError((error) {
+            _clearAppData();
+            action.resolveError(error);
+          }),
+        )
+        .catchError((error) {
+      action.resolveError(error);
+    });
+  }
+
   _scheduleBackgroundTasks() {
     var backupFinishedEvents = [
       NotificationEvent_NotificationType.BACKUP_SUCCESS,
@@ -500,69 +554,6 @@ class BackupBloc {
     }
   }
 
-  void _listenRestoreRequests() {
-    _restoreRequestController.stream.listen((request) {
-      if (request == null) {
-        _breezLib.getAvailableBackups().then((backups) {
-          List snapshotsArray = json.decode(backups) as List;
-          List<SnapshotInfo> snapshots = <SnapshotInfo>[];
-          if (snapshotsArray != null) {
-            snapshots = snapshotsArray.map((s) {
-              return SnapshotInfo.fromJson(s);
-            }).toList();
-          }
-          snapshots
-              .sort((s1, s2) => s2.modifiedTime.compareTo(s1.modifiedTime));
-          _multipleRestoreController.add(snapshots);
-        }).catchError((error) {
-          if (error.runtimeType == PlatformException) {
-            PlatformException e = (error as PlatformException);
-            // the error code equals the message from the go library so
-            // not to confuse the two.
-            if (e.code == _signInFailedMessage ||
-                e.message == _signInFailedCode) {
-              error = SignInFailedException(
-                  _backupSettingsController.value.backupProvider);
-            } else if (e.code == _empty) {
-              error = NoBackupFoundException();
-            } else {
-              error = (error as PlatformException).message;
-            }
-          }
-          _restoreFinishedController.addError(error);
-        });
-        return;
-      }
-
-      if (request.encryptionKey != null && request.encryptionKey.key != null) {
-        assert(request.encryptionKey.key.isNotEmpty || true);
-      }
-      assert(request.snapshot.nodeID.isNotEmpty);
-
-      _clearAppData();
-
-      _breezLib
-          .restore(request.snapshot.nodeID, request.encryptionKey.key)
-          .then(
-            (_) => _restoreAppData().then((_) {
-              BackupState backupState = BackupState(
-                DateTime.tryParse(request.snapshot.modifiedTime),
-                false,
-                _backupStateController.value?.lastBackupAccountName,
-              );
-              _backupStateController.add(backupState);
-              _restoreFinishedController.add(true);
-            }).catchError((error) {
-              _clearAppData();
-              _restoreFinishedController.addError(error);
-            }),
-          )
-          .catchError((error) {
-        _restoreFinishedController.addError(error);
-      });
-    });
-  }
-
   Future testAuth(BackupProvider provider, RemoteServerAuthData authData) {
     return _breezLib
         .testBackupAuth(provider.name, json.encode(authData.toJson()))
@@ -656,9 +647,6 @@ class BackupBloc {
     _backupNowController.close();
     _backupAppDataController.close();
     _restoreLightningFeesController.close();
-    _restoreRequestController.close();
-    _multipleRestoreController.close();
-    _restoreFinishedController.close();
     _backupSettingsController.close();
     _backupPromptVisibleController.close();
     _backupActionsController.close();
