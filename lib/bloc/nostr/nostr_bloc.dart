@@ -9,6 +9,7 @@ import 'package:nostr_tools/nostr_tools.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../services/injector.dart';
+import '../../utils/nostrConnect.dart';
 
 class NostrBloc with AsyncActionsHandler {
   BreezBridge _breezLib;
@@ -45,6 +46,7 @@ class NostrBloc with AsyncActionsHandler {
       StoreImportedPrivateKey: _handleStoreImportedPrivateKey,
       DeleteKey: _handleDeleteKey,
       PublishRelays: _handlePublishRelays,
+      Nip47Connect: _handleNip47Connect,
     });
     listenActions();
   }
@@ -53,6 +55,11 @@ class NostrBloc with AsyncActionsHandler {
     nostrPublicKey = await _secureStorage.read(key: "nostrPublicKey");
     nostrPrivateKey = await _secureStorage.read(key: "nostrPrivateKey");
   }
+
+  final StreamController<String> nip47ConnectController =
+      StreamController<String>.broadcast();
+
+  Stream<String> get nip47ConnectStream => nip47ConnectController.stream;
 
   final StreamController<String> _encryptDataController =
       StreamController<String>.broadcast();
@@ -96,14 +103,22 @@ class NostrBloc with AsyncActionsHandler {
 
   Future<void> _handleNip04Encrypt(Nip04Encrypt action) async {
     // to encrypt the data
-    String encryptedData = await _encryptData(action.data);
+    String encryptedData = await _encryptData(
+      action.data,
+      action.publicKey,
+      action.privateKey,
+    );
     _encryptDataController.add(encryptedData);
     action.resolve(encryptedData);
   }
 
   Future<void> _handleNip04Decrypt(Nip04Decrypt action) async {
     // to decrypt the data
-    String decryptedData = await _decryptData(action.encryptedData);
+    String decryptedData = await _decryptData(
+      action.encryptedData,
+      action.publicKey,
+      action.privateKey,
+    );
     _decryptDataController.add(decryptedData);
     action.resolve(decryptedData);
   }
@@ -241,19 +256,50 @@ class NostrBloc with AsyncActionsHandler {
     return ['Relay1', 'Relay2', 'Relay3'];
   }
 
-  Future<String> _encryptData(String data) async {
+  Future<String> _encryptData(
+    String data,
+    String publicKey,
+    String privateKey,
+  ) async {
     // Simulating an encryption operation
-    return Nip04().encrypt(nostrPrivateKey, nostrPublicKey, data);
+
+    String encryptedString;
+    try {
+      encryptedString = Nip04().encrypt(privateKey, publicKey, data);
+    } catch (e) {
+      throw Exception(e);
+    }
+    return encryptedString;
   }
 
-  Future<String> _decryptData(String encryptedData) async {
+  Future<String> _decryptData(
+    String encryptedData,
+    String publicKey,
+    String privateKey,
+  ) async {
     // Simulating a decryption operation
-    return Nip04().decrypt(nostrPrivateKey, nostrPublicKey, encryptedData);
+    return Nip04().decrypt(
+      privateKey,
+      publicKey,
+      encryptedData,
+    );
+  }
+
+  Future<void> _handleNip47Connect(Nip47Connect action) async {
+    final rpc = NostrRpc(
+      relay: action.connectUri.relay,
+      nostrBloc: action.nostrBloc,
+    );
+    await rpc.call(action.connectUri.target,
+        method: 'connect', params: [action.nostrBloc.nostrPublicKey]);
   }
 
   @override
   Future dispose() {
     _publicKeyController.close();
+    _encryptDataController.close();
+    _decryptDataController.close();
+    _eventController.close();
     return super.dispose();
   }
 }

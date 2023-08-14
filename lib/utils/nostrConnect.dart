@@ -5,8 +5,12 @@ import 'dart:math';
 import 'package:breez/bloc/nostr/nostr_actions.dart';
 import 'package:breez/bloc/nostr/nostr_bloc.dart';
 import 'package:breez/bloc/nostr/nostr_model.dart';
+import 'package:flutter/material.dart';
 import 'package:nostr_tools/nostr_tools.dart';
 import 'package:uuid/uuid.dart';
+
+import '../widgets/nostr_connect_dialog.dart';
+import '../widgets/nostr_requests_dialog.dart';
 
 String _nostrConnectProtocolPrefix = "nostrconnect:";
 
@@ -165,15 +169,19 @@ bool isValidResponse(Map<String, dynamic> payload) {
 }
 
 Future<Map<String, dynamic>> prepareEvent(
-    String pubkey, String request, NostrBloc nostrBloc) async {
-  nostrBloc.actionsSink.add(Nip04Encrypt(request));
+  String target,
+  String request,
+  NostrBloc nostrBloc,
+) async {
+  nostrBloc.actionsSink
+      .add(Nip04Encrypt(request, target, nostrBloc.nostrPrivateKey));
   final cipherText = await nostrBloc.encryptDataStream.first;
 
   Map<String, dynamic> connectEvent = {
     'kind': 24133,
     'created_at': DateTime.now().millisecondsSinceEpoch ~/ 1000,
     'tags': [
-      ['p', pubkey]
+      ['p', target]
     ],
     'content': cipherText,
   };
@@ -186,8 +194,12 @@ String getRandomId() {
 }
 
 Future<Map<String, dynamic>> getPayload(
-    String content, NostrBloc nostrBloc) async {
-  nostrBloc.actionsSink.add(Nip04Decrypt(content));
+  String content,
+  NostrBloc nostrBloc,
+  String target,
+) async {
+  nostrBloc.actionsSink
+      .add(Nip04Decrypt(content, target, nostrBloc.nostrPrivateKey));
   return jsonDecode(await nostrBloc.decryptDataStream.first);
 }
 
@@ -209,9 +221,11 @@ class NostrRpc {
     List<dynamic> params = const [],
   }) async {
     id ??= getRandomId();
+    // id = '1';
 
     // connect to relay
     final relay = RelayApi(relayUrl: this.relay);
+    // final relay = RelayApi(relayUrl: "wss://relay.damus.io");
     final stream = await relay.connect();
     relay.on((event) {
       if (event == RelayEvent.connect) {
@@ -227,15 +241,13 @@ class NostrRpc {
 
     event = await nostrBloc.eventStream.first;
 
-    final Completer<dynamic> completer = Completer<dynamic>();
-
     relay.sub([
       Filter(
         kinds: [24133],
         authors: [target],
         p: [nostrBloc.nostrPublicKey],
         limit: 1,
-      )
+      ),
     ]);
 
     // publish the event
@@ -245,47 +257,84 @@ class NostrRpc {
       throw Exception(e);
     }
 
-    stream.listen((message) {
-      try {
-        if (message.type == 'EVENT') {
-          Event event = message.message as Event;
-          // final String payload = jsonEncode(getPayload(event.content, nostrBloc));
-          getPayload(event.content, nostrBloc).then((payload) {
-            // ignore all the events that are not NostrRPCResponse events
-            if (!isValidResponse(payload)) return;
+    return await _listenToResponse(nostrBloc, target, id, stream);
+  }
 
-            // ignore all the events that are not for this request
-            if (payload['id'] != id) return;
-
-            // if the response is an error, reject the promise
-            if (payload['error']) {
-              completer.completeError(payload['error']);
-            }
-
-            // Resolve the promise with the result if available
-            if (payload['result'] != null) {
-              completer.complete(payload['result']);
-            }
-          });
-        }
-      } catch (e) {
-        completer.completeError(e);
-      }
-    });
-
-    return completer.future;
+  Future<dynamic> listenRequest() async {
+    final relay = RelayApi(relayUrl: this.relay);
   }
 }
 
-Future<void> approveConnectApp(
-    ConnectUri nostrConnectUri, NostrBloc nostrBloc) async {
-  final rpc = NostrRpc(relay: nostrConnectUri.relay, nostrBloc: nostrBloc);
-  rpc.call(nostrConnectUri.target,
-      method: 'connect', params: [nostrBloc.nostrPublicKey]);
+Future<dynamic> _listenToResponse(
+  NostrBloc nostrBloc,
+  String target,
+  String id,
+  Stream<Message> stream,
+) async {
+  stream.listen((message) {
+    try {
+      if (message.type == 'EVENT') {
+        Event event = message.message as Event;
+        // final String payload = jsonEncode(getPayload(event.content, nostrBloc));
+        getPayload(event.content, nostrBloc, target).then((payload) {
+          // ignore all the events that are not NostrRPCResponse events
+          if (!isValidResponse(payload)) return false;
+
+          // ignore all the events that are not for this request
+          if (payload['id'] != id) return false;
+
+          // if the response is an error, reject the promise
+          if (payload['error'] != null) {
+            if (payload['error'] == "this[method] is not a function" &&
+                payload['result'] == null) {
+              // its a connect request
+              nostrBloc.nip47ConnectController.add(target);
+            }
+            return false;
+          }
+
+          if (payload['method'] != null) {
+            if (payload['method'] == 'get_public_key') {
+            } else if (payload['method'] == 'sign_event') {
+            } else if (payload['method'] == 'disconnect') {
+            } else if (payload['method'] == 'connect') {}
+          }
+
+          // Resolve the promise with the result if available
+          // it will be a connection request
+          if (payload['result'] != null) {
+            return true;
+          }
+        });
+      }
+    } catch (e) {
+      throw Exception(e);
+    }
+  });
+  return false;
 }
+
+approveConnectModal(BuildContext context, ConnectUri nostrConnectUri) {
+  return showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (context) {
+        return NostrConnectDialog(
+          metadata: nostrConnectUri.metadata,
+        );
+      });
+}
+
+// Future<bool> approveConnectApp(
+//     ConnectUri nostrConnectUri, NostrBloc nostrBloc) async {
+//   final rpc = NostrRpc(relay: nostrConnectUri.relay, nostrBloc: nostrBloc);
+//   await rpc.call(nostrConnectUri.target,
+//       method: 'connect', params: [nostrBloc.nostrPublicKey]);
+// }
 
 Future<void> rejectConnectApp(
     ConnectUri nostrConnectUri, NostrBloc nostrBloc) async {
   final rpc = NostrRpc(relay: nostrConnectUri.relay, nostrBloc: nostrBloc);
-  rpc.call(nostrConnectUri.target, method: 'disconnect', params: []);
+  bool connect =
+      await rpc.call(nostrConnectUri.target, method: 'disconnect', params: []);
 }

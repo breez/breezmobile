@@ -10,7 +10,7 @@ import '../../bloc/nostr/nostr_actions.dart';
 import '../../utils/min_font_size.dart';
 import '../../widgets/logout_warning_dialog.dart';
 import 'nostr_relays.dart';
-import 'nostr_connect.dart';
+import 'nostr_connect_page.dart';
 
 class NostrKeysPage extends StatefulWidget {
   final NostrBloc nostrBloc;
@@ -165,7 +165,7 @@ class _NostrKeysPageState extends State<NostrKeysPage> {
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (_) => NostrConnect(
+                  builder: (_) => NostrConnectPage(
                     nostrBloc: widget.nostrBloc,
                   ),
                 ),
