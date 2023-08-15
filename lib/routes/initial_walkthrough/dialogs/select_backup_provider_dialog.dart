@@ -3,7 +3,6 @@ import 'package:breez/bloc/backup/backup_actions.dart';
 import 'package:breez/bloc/backup/backup_bloc.dart';
 import 'package:breez/bloc/backup/backup_model.dart';
 import 'package:breez/bloc/blocs_provider.dart';
-import 'package:breez/routes/initial_walkthrough/dialogs/restore_dialog.dart';
 import 'package:breez/routes/initial_walkthrough/loaders/loader_indicator.dart';
 import 'package:breez/routes/security_pin/remote_server_auth.dart';
 import 'package:breez/widgets/error_dialog.dart';
@@ -13,15 +12,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 
 class SelectBackupProviderDialog extends StatefulWidget {
-  final BackupSettings backupSettings;
   final List<BackupProvider> backupProviders;
-  final Sink<bool> reloadDatabaseSink;
 
   const SelectBackupProviderDialog({
     Key key,
-    this.backupSettings,
     this.backupProviders,
-    this.reloadDatabaseSink,
   }) : super(key: key);
 
   @override
@@ -111,7 +106,6 @@ class SelectBackupProviderDialogState
             foregroundColor: themeData.primaryTextTheme.labelLarge.color,
           ),
           onPressed: () => _selectProvider(
-            widget.backupSettings,
             widget.backupProviders[_selectedProviderIndex],
           ),
           child: Text(texts.backup_provider_dialog_action_ok),
@@ -124,32 +118,34 @@ class SelectBackupProviderDialogState
   }
 
   Future<void> _selectProvider(
-    BackupSettings backupSettings,
     BackupProvider selectedProvider,
   ) async {
     final backupBloc = AppBlocsProvider.of<BackupBloc>(context);
-
-    if (selectedProvider.name == "remoteserver") {
-      final auth = await promptAuthData(
-        context,
-        restore: true,
-      );
-      if (auth == null) {
-        return;
-      }
-      backupSettings = backupSettings.copyWith(
-        remoteServerAuthData: auth,
-      );
-    }
-    final updateBackupSettingsAction = UpdateBackupSettings(
-      backupSettings.copyWith(backupProvider: selectedProvider),
+    backupBloc.backupSettingsStream.first.then(
+      (backupSettings) async {
+        if (selectedProvider.name == "remoteserver") {
+          final auth = await promptAuthData(
+            context,
+            restore: true,
+          );
+          if (auth == null) {
+            return;
+          }
+          backupSettings = backupSettings.copyWith(
+            remoteServerAuthData: auth,
+          );
+        }
+        final updateBackupSettingsAction = UpdateBackupSettings(
+          backupSettings.copyWith(backupProvider: selectedProvider),
+        );
+        backupBloc.backupActionsSink.add(updateBackupSettingsAction);
+        updateBackupSettingsAction.future.then((updatedBackupSettings) {
+          _listSnapshots(backupBloc);
+        }).catchError((err) {
+          Navigator.pop(context);
+        });
+      },
     );
-    backupBloc.backupActionsSink.add(updateBackupSettingsAction);
-    updateBackupSettingsAction.future.then((updatedBackupSettings) {
-      _listSnapshots(backupBloc);
-    }).catchError((err) {
-      Navigator.pop(context);
-    });
   }
 
   Future _listSnapshots(BackupBloc backupBloc) {
@@ -164,7 +160,7 @@ class SelectBackupProviderDialogState
     backupBloc.backupActionsSink.add(listBackupsAction);
     return listBackupsAction.future
         .then((snapshots) {
-          _handleRestoreRequest(snapshots);
+          Navigator.pop(context, snapshots);
         })
         .catchError((error) => _handleError(error))
         .whenComplete(() {
@@ -210,41 +206,5 @@ class SelectBackupProviderDialogState
         message: "Failed to sign into Google Drive.",
       );
     }
-  }
-
-  void _handleRestoreRequest(List<SnapshotInfo> snapshots) async {
-    if (snapshots.isEmpty) {
-      _handleEmptySnapshot();
-      return;
-    }
-    _selectSnapshotToRestore(snapshots);
-  }
-
-  void _handleEmptySnapshot() {
-    Navigator.popUntil(context, (route) {
-      return route.settings.name == "/intro";
-    });
-    final texts = context.texts();
-    SnackBar snackBar = SnackBar(
-      duration: const Duration(seconds: 3),
-      content: Text(texts.initial_walk_through_error_backup_location),
-    );
-    ScaffoldMessenger.of(context).showSnackBar(snackBar);
-  }
-
-  void _selectSnapshotToRestore(
-    List<SnapshotInfo> snapshots,
-  ) async {
-    Navigator.popUntil(context, (route) {
-      return route.settings.name == "/intro";
-    });
-    showDialog<SnapshotInfo>(
-      useRootNavigator: false,
-      context: context,
-      builder: (_) => RestoreDialog(
-        snapshots,
-        widget.reloadDatabaseSink,
-      ),
-    );
   }
 }
