@@ -27,7 +27,7 @@ class NostrSettings {
   static const String NOSTR_SETTINGS_PREFERENCES_KEY = "nostr_settings";
 
 // start should be done by retrieving the values set in sharedPreferences
-  NostrSettings.start({
+  NostrSettings.initial({
     bool enableNostr,
     bool isRememberPubKey,
     bool isRememberSignEvent,

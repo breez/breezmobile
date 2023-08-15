@@ -1,12 +1,11 @@
 import 'dart:async';
 import 'dart:convert';
 
+import 'package:breez/bloc/marketplace/nostr_settings.dart';
 import 'package:breez/bloc/marketplace/vendor_model.dart';
 import 'package:flutter/services.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-
-import 'nostr_settings.dart';
 
 class MarketplaceBloc {
   final _vendorController = BehaviorSubject<List<VendorModel>>();
@@ -16,7 +15,7 @@ class MarketplaceBloc {
   SharedPreferences pref;
 
   final _nostrSettingsController =
-      BehaviorSubject<NostrSettings>.seeded(NostrSettings.start());
+      BehaviorSubject<NostrSettings>.seeded(NostrSettings.initial());
   Stream<NostrSettings> get nostrSettingsStream =>
       _nostrSettingsController.stream;
   Sink<NostrSettings> get nostrSettingsSettingsSink =>
@@ -31,18 +30,13 @@ class MarketplaceBloc {
 
   _initNostrSettings() async {
     pref = await SharedPreferences.getInstance();
+
     var nostrSettings =
         pref.getString(NostrSettings.NOSTR_SETTINGS_PREFERENCES_KEY);
+
     if (nostrSettings != null) {
       Map<String, dynamic> settings = json.decode(nostrSettings);
-      var nostrSetttingsModel = NostrSettings.fromJson(settings);
-      _nostrSettingsController.add(nostrSetttingsModel.copyWith(
-        enableNostr: nostrSetttingsModel.enableNostr,
-        isRememberPubKey: nostrSetttingsModel.isRememberPubKey,
-        isRememberSignEvent: nostrSetttingsModel.isRememberSignEvent,
-        isLoggedIn: nostrSetttingsModel.isLoggedIn,
-        relayList: nostrSetttingsModel.relayList,
-      ));
+      _nostrSettingsController.add(NostrSettings.fromJson(settings));
     }
   }
 

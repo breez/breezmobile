@@ -130,10 +130,8 @@ class _NostrRelaysState extends State<NostrRelays> {
                         if (value.isEmpty) {
                           return 'This field cannot be empty';
                         }
-                        if (value.substring(0, 6) != "wss://") {
-                          return 'relay name does not start with wss://';
-                        }
-                        return "null";
+
+                        return null;
                       },
                       onTapOutside: (value) {
                         _focusNode.unfocus();

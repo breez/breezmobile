@@ -16,6 +16,8 @@ import 'package:breez/bloc/invoice/invoice_bloc.dart';
 import 'package:breez/bloc/lnurl/lnurl_bloc.dart';
 import 'package:breez/bloc/lsp/lsp_bloc.dart';
 import 'package:breez/bloc/marketplace/marketplace_bloc.dart';
+import 'package:breez/bloc/marketplace/nostr_settings.dart';
+import 'package:breez/bloc/nostr/nostr_actions.dart';
 import 'package:breez/bloc/nostr/nostr_bloc.dart';
 import 'package:breez/bloc/reverse_swap/reverse_swap_bloc.dart';
 import 'package:breez/bloc/user_profile/breez_user_model.dart';
@@ -56,9 +58,6 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-
-import 'bloc/marketplace/nostr_settings.dart';
-import 'bloc/nostr/nostr_actions.dart';
 
 final GlobalKey firstPaymentItemKey =
     GlobalKey(debugLabel: "firstPaymentItemKey");

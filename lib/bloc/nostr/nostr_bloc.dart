@@ -1,6 +1,9 @@
 import 'dart:async';
+import 'dart:convert';
 
 import 'package:breez/bloc/async_actions_handler.dart';
+import 'package:breez/bloc/blocs_provider.dart';
+import 'package:breez/bloc/marketplace/marketplace_bloc.dart';
 import 'package:breez/bloc/nostr/nostr_actions.dart';
 import 'package:breez/bloc/nostr/nostr_model.dart';
 import 'package:breez/services/breezlib/breez_bridge.dart';
@@ -9,25 +12,18 @@ import 'package:nostr_tools/nostr_tools.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../services/injector.dart';
+import '../marketplace/nostr_settings.dart';
 
 class NostrBloc with AsyncActionsHandler {
   BreezBridge _breezLib;
   String nostrPublicKey;
   String nostrPrivateKey;
 
-  final defaultRelaysList = [
-    "wss://relay.damus.io",
-    "wss://nostr1.tunnelsats.com",
-    "wss://nostr-pub.wellorder.net",
-    "wss://relay.nostr.info",
-    "wss://nostr-relay.wlvs.space",
-    "wss://nostr.bitcoiner.social",
-    "wss://nostr-01.bolt.observer",
-    "wss://relayer.fiatjaf.com",
-  ];
+  List<String> defaultRelaysList = [];
 
   FlutterSecureStorage _secureStorage;
   SharedPreferences sharedPreferences;
+  SharedPreferences pref;
 
   NostrBloc() {
     ServiceInjector injector = ServiceInjector();
@@ -50,6 +46,7 @@ class NostrBloc with AsyncActionsHandler {
   }
 
   void _initNostr() async {
+    pref = await SharedPreferences.getInstance();
     nostrPublicKey = await _secureStorage.read(key: "nostrPublicKey");
     nostrPrivateKey = await _secureStorage.read(key: "nostrPrivateKey");
   }
@@ -132,6 +129,20 @@ class NostrBloc with AsyncActionsHandler {
 
   // Methods to simulate the actual logic
 
+  Future<List<String>> _fetchDefaultRelayList() async {
+    pref = await SharedPreferences.getInstance();
+
+    var nostrSettings =
+        pref.getString(NostrSettings.NOSTR_SETTINGS_PREFERENCES_KEY);
+
+    if (nostrSettings != null) {
+      Map<String, dynamic> settings = json.decode(nostrSettings);
+      var nostrSetttingsModel = NostrSettings.fromJson(settings);
+      defaultRelaysList = nostrSetttingsModel.relayList;
+    }
+    return defaultRelaysList;
+  }
+
   Future<String> _fetchPublicKey() async {
     if (nostrPublicKey == null) {
       // check if key pair already exists otherwise generate it
@@ -154,6 +165,8 @@ class NostrBloc with AsyncActionsHandler {
           key: 'nostrPrivateKey', value: nostrPrivateKey);
       await _secureStorage.write(key: 'nostrPublicKey', value: nostrPublicKey);
       // publishing the default relayList when creating the account for the first time
+
+      _fetchDefaultRelayList();
       _publishRelays(defaultRelaysList);
     }
 
