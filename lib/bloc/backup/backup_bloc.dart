@@ -2,7 +2,9 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:breez/bloc/async_action.dart';
 import 'package:breez/bloc/async_actions_handler.dart';
+import 'package:breez/bloc/backup/backup_actions.dart';
 import 'package:breez/bloc/backup/backup_model.dart';
 import 'package:breez/bloc/user_profile/backup_user_preferences.dart';
 import 'package:breez/bloc/user_profile/breez_user_model.dart';
@@ -11,17 +13,12 @@ import 'package:breez/services/background_task.dart';
 import 'package:breez/services/breezlib/breez_bridge.dart';
 import 'package:breez/services/breezlib/data/messages.pb.dart';
 import 'package:breez/services/injector.dart';
-import 'package:crypto/crypto.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
-import 'package:hex/hex.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sqflite/sqflite.dart';
-
-import '../async_action.dart';
-import 'backup_actions.dart';
 
 class BackupBloc with AsyncActionsHandler {
   static const String _signInFailedCode = "401";
@@ -650,146 +647,5 @@ class BackupBloc with AsyncActionsHandler {
     _backupSettingsController.close();
     _backupPromptVisibleController.close();
     _backupActionsController.close();
-  }
-}
-
-class SnapshotInfo {
-  final String nodeID;
-  final String modifiedTime;
-  final bool encrypted;
-  final String encryptionType;
-
-  SnapshotInfo(
-      this.nodeID, this.modifiedTime, this.encrypted, this.encryptionType) {
-    log.info(
-        "New Snapshot encrypted = $encrypted encryptionType = $encryptionType");
-  }
-
-  SnapshotInfo.fromJson(Map<String, dynamic> json)
-      : this(
-          json["NodeID"],
-          json["ModifiedTime"],
-          json["Encrypted"] == true,
-          json["EncryptionType"],
-        );
-}
-
-class RestoreRequest {
-  final SnapshotInfo snapshot;
-  final BreezLibBackupKey encryptionKey;
-
-  RestoreRequest(this.snapshot, this.encryptionKey);
-}
-
-class SignInFailedException implements Exception {
-  final BackupProvider provider;
-
-  SignInFailedException(this.provider);
-
-  @override
-  String toString() {
-    return "Sign in failed";
-  }
-}
-
-class MethodNotFoundException implements Exception {
-  MethodNotFoundException();
-
-  @override
-  String toString() {
-    return "Method not found";
-  }
-}
-
-class NoBackupFoundException implements Exception {
-  @override
-  String toString() {
-    return "No backup found";
-  }
-}
-
-class RemoteServerNotFoundException implements Exception {
-  @override
-  String toString() {
-    return "The server was not found. Please check the address";
-  }
-}
-
-class BreezLibBackupKey {
-  static const KEYLENGTH = 32;
-  static const ENTROPY_LENGTH = 16 * 2; // 2 hex characters == 1 byte.
-
-  BackupKeyType backupKeyType;
-  String entropy;
-
-  List<int> _key;
-  set key(List<int> v) => _key = v;
-
-  List<int> get key {
-    var entropyBytes = _key;
-    if (entropyBytes == null) {
-      /*
-      assert(entropy != null);
-      assert(entropy.isNotEmpty);
-      */
-      if (entropy != null && entropy.isNotEmpty) {
-        entropyBytes = HEX.decode(entropy);
-      }
-    }
-
-    if (entropyBytes != null && entropyBytes.length != KEYLENGTH) {
-      // The length of a "Mnemonics" entropy hex string in bytes is 32.
-      // The length of a "Mnemonics12" entropy hex string in bytes is 16.
-
-      entropyBytes = sha256.convert(entropyBytes).bytes;
-    }
-
-    return entropyBytes;
-  }
-
-  String get type {
-    var result = '';
-    if (key != null) {
-      switch (backupKeyType) {
-        case BackupKeyType.PHRASE:
-          assert(entropy.length == ENTROPY_LENGTH ||
-              entropy.length == ENTROPY_LENGTH * 2);
-          result =
-              entropy.length == ENTROPY_LENGTH ? 'Mnemonics12' : 'Mnemonics';
-          break;
-        case BackupKeyType.PIN:
-          result = 'Pin';
-          break;
-        default:
-      }
-    }
-
-    return result;
-  }
-
-  BreezLibBackupKey({this.entropy, List<int> key}) : _key = key;
-
-  static Future<BreezLibBackupKey> fromSettings(
-      FlutterSecureStorage store, BackupKeyType backupKeyType) async {
-    assert(store != null);
-
-    BreezLibBackupKey result;
-    switch (backupKeyType) {
-      case BackupKeyType.PIN:
-        var pinCode = await store.read(key: 'pinCode');
-        result = BreezLibBackupKey(key: utf8.encode(pinCode));
-        break;
-      case BackupKeyType.PHRASE:
-        result = BreezLibBackupKey(entropy: await store.read(key: 'backupKey'));
-        break;
-      default:
-    }
-    result?.backupKeyType = backupKeyType;
-
-    return result;
-  }
-
-  static Future save(FlutterSecureStorage store, String key) async {
-    await store.write(key: 'backupKey', value: key);
   }
 }
