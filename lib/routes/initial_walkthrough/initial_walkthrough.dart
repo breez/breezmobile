@@ -1,19 +1,25 @@
 import 'dart:io';
 
 import 'package:auto_size_text/auto_size_text.dart';
+import 'package:breez/bloc/backup/backup_actions.dart';
 import 'package:breez/bloc/backup/backup_bloc.dart';
 import 'package:breez/bloc/backup/backup_model.dart';
 import 'package:breez/bloc/blocs_provider.dart';
+import 'package:breez/bloc/pos_catalog/bloc.dart';
 import 'package:breez/bloc/user_profile/user_actions.dart';
 import 'package:breez/bloc/user_profile/user_profile_bloc.dart';
 import 'package:breez/logger.dart';
 import 'package:breez/routes/initial_walkthrough/dialogs/beta_warning_dialog.dart';
+import 'package:breez/routes/initial_walkthrough/dialogs/restore_dialog.dart';
 import 'package:breez/routes/initial_walkthrough/dialogs/select_backup_provider_dialog.dart';
+import 'package:breez/routes/initial_walkthrough/loaders/loader_indicator.dart';
 import 'package:breez/theme_data.dart' as theme;
 import 'package:breez/theme_data.dart';
 import 'package:breez/widgets/error_dialog.dart';
+import 'package:breez/widgets/flushbar.dart';
 import 'package:breez_translations/breez_translations_locales.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 
 class InitialWalkthroughPage extends StatefulWidget {
   final Sink<bool> reloadDatabaseSink;
@@ -201,28 +207,135 @@ class _InitialWalkthroughPageState extends State<InitialWalkthroughPage>
     });
   }
 
-  void _restoreFromBackup() {
+  void _restoreFromBackup() async {
     log.info("Restore from Backup");
-    _getAvailableBackupProviders();
+    final backupProviders = BackupSettings.availableBackupProviders();
+    if (backupProviders.length > 1) {
+      _showSelectProviderDialog(backupProviders).then((snapshots) {
+        _showRestoreDialog(snapshots).then((restoreRequest) {
+          _restore(restoreRequest);
+        });
+      });
+    }
   }
 
-  void _getAvailableBackupProviders() {
+  Future<List<SnapshotInfo>> _showSelectProviderDialog(
+      List<BackupProvider> backupProviders) {
+    return showDialog<List<SnapshotInfo>>(
+      useRootNavigator: false,
+      context: context,
+      builder: (_) => SelectBackupProviderDialog(
+        backupProviders: backupProviders,
+      ),
+    );
+  }
+
+  Future<RestoreRequest> _showRestoreDialog(
+      List<SnapshotInfo> snapshots) async {
+    if (snapshots != null) {
+      return _selectSnapshotToRestore(snapshots);
+    } else if (snapshots.isEmpty) {
+      _handleEmptySnapshots();
+    }
+    return null;
+  }
+
+  Future<RestoreRequest> _selectSnapshotToRestore(
+      List<SnapshotInfo> snapshots) async {
+    return showDialog<RestoreRequest>(
+      useRootNavigator: false,
+      context: context,
+      builder: (_) => RestoreDialog(
+        snapshots,
+        widget.reloadDatabaseSink,
+      ),
+    );
+  }
+
+  void _handleEmptySnapshots() {
+    final texts = context.texts();
+    SnackBar snackBar = SnackBar(
+      duration: const Duration(seconds: 3),
+      content: Text(texts.initial_walk_through_error_backup_location),
+    );
+    ScaffoldMessenger.of(context).showSnackBar(snackBar);
+  }
+
+  Future<void> _restore(RestoreRequest restoreRequest) {
+    if (restoreRequest == null) {
+      return null;
+    }
+
     final backupBloc = AppBlocsProvider.of<BackupBloc>(context);
 
-    backupBloc.backupSettingsStream.first.then((backupSettings) async {
-      final backupProviders = BackupSettings.availableBackupProviders();
+    var restoreBackupAction = RestoreBackup(restoreRequest);
+    backupBloc.backupActionsSink.add(restoreBackupAction);
+    final texts = context.texts();
+    // TODO Remove ... from translation
+    EasyLoading.show(
+      indicator: LoaderIndicator(
+        message: texts.initial_walk_through_restoring,
+      ),
+    );
+    return restoreBackupAction.future
+        .then(
+          (isRestored) => _completeRestoration(isRestored),
+          onError: (error) => _handleError(error),
+        )
+        .whenComplete(() => EasyLoading.dismiss());
+  }
 
-      if (backupProviders.length > 1) {
-        await showDialog(
-          useRootNavigator: false,
-          context: context,
-          builder: (_) => SelectBackupProviderDialog(
-            backupSettings: backupSettings,
-            backupProviders: backupProviders,
-            reloadDatabaseSink: widget.reloadDatabaseSink,
-          ),
-        );
+  void _completeRestoration(bool isRestored) async {
+    if (isRestored) {
+      final posCatalogBloc = AppBlocsProvider.of<PosCatalogBloc>(context);
+      posCatalogBloc.reloadPosItemsSink.add(true);
+      widget.reloadDatabaseSink.add(true);
+      Navigator.popUntil(context, (route) {
+        return route.settings.name == "/intro";
+      });
+      final userProfileBloc = AppBlocsProvider.of<UserProfileBloc>(context);
+      userProfileBloc.registerSink.add(null);
+      Navigator.of(context).pop();
+    }
+  }
+
+  void _handleError(error) {
+    EasyLoading.dismiss();
+
+    if (error.runtimeType != SignInFailedException) {
+      String errorMessage = error.toString();
+      if (errorMessage.contains("FileSystemException")) {
+        errorMessage = context.texts().enter_backup_phrase_error;
       }
-    });
+      showFlushbar(
+        context,
+        duration: const Duration(seconds: 3),
+        message: errorMessage,
+      );
+    } else {
+      _handleSignInException(error as SignInFailedException);
+    }
+  }
+
+  Future _handleSignInException(SignInFailedException e) async {
+    final texts = context.texts();
+    if (e.provider == BackupSettings.icloudBackupProvider()) {
+      final themeData = Theme.of(context);
+
+      await promptError(
+        context,
+        texts.initial_walk_through_sign_in_icloud_title,
+        Text(
+          texts.initial_walk_through_sign_in_icloud_message,
+          style: themeData.dialogTheme.contentTextStyle,
+        ),
+      );
+    } else if (e.provider == BackupSettings.googleBackupProvider()) {
+      showFlushbar(
+        context,
+        duration: const Duration(seconds: 3),
+        message: "Failed to sign into Google Drive.",
+      );
+    }
   }
 }
