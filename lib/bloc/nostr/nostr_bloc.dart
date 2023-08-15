@@ -47,6 +47,7 @@ class NostrBloc with AsyncActionsHandler {
       DeleteKey: _handleDeleteKey,
       PublishRelays: _handlePublishRelays,
       Nip47Connect: _handleNip47Connect,
+      Nip47Disconnect: _handleNip47Disconnect,
     });
     listenActions();
   }
@@ -59,7 +60,12 @@ class NostrBloc with AsyncActionsHandler {
   final StreamController<String> nip47ConnectController =
       StreamController<String>.broadcast();
 
+  final StreamController<String> nip47DisconnectController =
+      StreamController<String>.broadcast();
+
   Stream<String> get nip47ConnectStream => nip47ConnectController.stream;
+
+  Stream<String> get nip47DisconnectStream => nip47DisconnectController.stream;
 
   final StreamController<String> _encryptDataController =
       StreamController<String>.broadcast();
@@ -290,8 +296,23 @@ class NostrBloc with AsyncActionsHandler {
       relay: action.connectUri.relay,
       nostrBloc: action.nostrBloc,
     );
-    await rpc.call(action.connectUri.target,
-        method: 'connect', params: [action.nostrBloc.nostrPublicKey]);
+    await rpc.call(
+      action.connectUri.target,
+      method: 'connect',
+      params: [action.nostrBloc.nostrPublicKey],
+    );
+  }
+
+  Future<void> _handleNip47Disconnect(Nip47Disconnect action) async {
+    final rpc = NostrRpc(
+      relay: action.connectUri.relay,
+      nostrBloc: action.nostrBloc,
+    );
+    await rpc.call(
+      action.connectUri.target,
+      method: 'disconnect',
+      params: [],
+    );
   }
 
   @override

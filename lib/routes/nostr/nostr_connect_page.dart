@@ -2,6 +2,7 @@ import 'package:auto_size_text/auto_size_text.dart';
 import 'package:breez/utils/nostrConnect.dart';
 import 'package:flutter/material.dart';
 import 'package:breez/theme_data.dart' as theme;
+import 'package:flutter_svg/svg.dart';
 
 import '../../bloc/nostr/nostr_actions.dart';
 import '../../bloc/nostr/nostr_bloc.dart';
@@ -26,9 +27,15 @@ class _NostrConnectPageState extends State<NostrConnectPage> {
   void initState() {
     super.initState();
     // calling a method via nostr Bloc to listen to requests (NIP47)
+    // _setNip47Listener();
   }
 
-  Future<void> _addApp(String connectUrl, NostrBloc nostrBloc) async {
+  // Future<void> _setNip47Listener() async {
+  //   final rpc = NostrRpc(nostrBloc: widget.nostrBloc);
+  //   await rpc.listenToRequest(widget.nostrBloc);
+  // }
+
+  Future<void> _connectApp(String connectUrl, NostrBloc nostrBloc) async {
     // app to be added
     ConnectUri nostrConnectUri = fromConnectUri(connectUrl);
 
@@ -36,7 +43,7 @@ class _NostrConnectPageState extends State<NostrConnectPage> {
 
     // add a nostr bloc method here
 
-    bool connect = await approveConnectModal(context, nostrConnectUri);
+    bool connect = await approveConnectDialog(context, nostrConnectUri);
 
     if (!connect) return;
 
@@ -51,6 +58,25 @@ class _NostrConnectPageState extends State<NostrConnectPage> {
         !connectedApps.contains(nostrConnectUri)) {
       setState(() {
         connectedApps.add(nostrConnectUri);
+      });
+    }
+  }
+
+  Future<void> _disconnectApp(
+      ConnectUri nostrConnectUri, NostrBloc nostrBloc) async {
+    bool disconnect = await approveDisconnectDialog(context, nostrConnectUri);
+    if (!disconnect) return;
+    nostrBloc.actionsSink.add(Nip47Disconnect(
+      connectUri: nostrConnectUri,
+      nostrBloc: nostrBloc,
+    ));
+
+    String connectAppId = await nostrBloc.nip47DisconnectStream.first;
+
+    if (connectAppId == nostrConnectUri.target &&
+        connectedApps.contains(nostrConnectUri)) {
+      setState(() {
+        connectedApps.remove(nostrConnectUri);
       });
     }
   }
@@ -93,7 +119,7 @@ class _NostrConnectPageState extends State<NostrConnectPage> {
                   side: const BorderSide(color: Colors.white),
                 ),
                 onPressed: () async {
-                  await _addApp(
+                  await _connectApp(
                       _textEditingController.text.trim(), widget.nostrBloc);
                   _textEditingController.clear();
                 },
@@ -117,10 +143,15 @@ class _NostrConnectPageState extends State<NostrConnectPage> {
                           stepGranularity: 0.1,
                           group: _autoSizeGroup,
                         ),
-                        trailing: const Icon(
-                          Icons.keyboard_arrow_right,
-                          color: Colors.white,
-                          size: 30.0,
+                        trailing: IconButton(
+                          onPressed: () {
+                            ConnectUri connectUri = connectedApps[ind];
+                            _disconnectApp(connectUri, widget.nostrBloc);
+                          },
+                          icon: SvgPicture.asset(
+                            "src/icon/trash_icon.svg",
+                            color: Colors.white,
+                          ),
                         ),
                       ),
                       const Divider(),
@@ -132,5 +163,11 @@ class _NostrConnectPageState extends State<NostrConnectPage> {
         ),
       ),
     );
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    _textEditingController.clear();
   }
 }

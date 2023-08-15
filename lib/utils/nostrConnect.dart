@@ -203,17 +203,62 @@ Future<Map<String, dynamic>> getPayload(
   return jsonDecode(await nostrBloc.decryptDataStream.first);
 }
 
+Future<List<String>> _describe() async {
+  return ["describe", "get_public_key", "sign_event"];
+}
+
+Future<Map<String, dynamic>> _signEvent(
+    List<dynamic> event, NostrBloc nostrBloc) async {
+  Map<String, dynamic> requestEvent = event[0];
+  nostrBloc.actionsSink.add(SignEvent(requestEvent, nostrBloc.nostrPrivateKey));
+  Map<String, dynamic> signedEvent = await nostrBloc.eventStream.first;
+  return signedEvent;
+}
+
+Future<Map<String, dynamic>> _handleRequest(
+  Map<String, dynamic> payload,
+  Event event,
+  NostrBloc nostrBloc,
+) async {
+  // now handle the request according to the method called and return a response
+
+  // handle describe method , get_public_key , sign_event
+  var result;
+  switch (payload['method']) {
+    case "describe":
+      result = _describe();
+      break;
+    case "get_public_key":
+      result = nostrBloc.nostrPublicKey;
+      break;
+    case "sign_event":
+      result = await _signEvent(payload['params'], nostrBloc);
+      break;
+    // case "disconnect":
+    //   result = _disconnect();
+    //   break;
+    // case "connnect":
+    //   result = _connect();
+    //   break;
+  }
+  return {
+    'id': payload['id'],
+    'result': result,
+    'error': null,
+  };
+}
+
 class NostrRpc {
   final String relay;
   final Event event;
   final NostrBloc nostrBloc;
-
+  RelayApi relayConnect;
   NostrRpc({
     this.relay,
     this.event,
     this.nostrBloc,
+    this.relayConnect,
   });
-
   Future<dynamic> call(
     String target, {
     String id,
@@ -224,14 +269,14 @@ class NostrRpc {
     // id = '1';
 
     // connect to relay
-    final relay = RelayApi(relayUrl: this.relay);
+    relayConnect = RelayApi(relayUrl: relay);
     // final relay = RelayApi(relayUrl: "wss://relay.damus.io");
-    final stream = await relay.connect();
-    relay.on((event) {
+    final stream = await relayConnect.connect();
+    relayConnect.on((event) {
       if (event == RelayEvent.connect) {
-        print('[+] connected to ${relay.relayUrl}');
+        // print('[+] connected to ${relay.relayUrl}');
       } else if (event == RelayEvent.error) {
-        print('[!] failed to connect to ${relay.relayUrl}');
+        // print('[!] failed to connect to ${relay.relayUrl}');
       }
     });
 
@@ -241,100 +286,171 @@ class NostrRpc {
 
     event = await nostrBloc.eventStream.first;
 
-    relay.sub([
+    relayConnect.sub([
       Filter(
         kinds: [24133],
         authors: [target],
         p: [nostrBloc.nostrPublicKey],
         limit: 1,
+        since: DateTime.now().minute,
       ),
     ]);
 
     // publish the event
     try {
-      relay.publish(mapToEvent(event));
+      relayConnect.publish(mapToEvent(event));
     } catch (e) {
       throw Exception(e);
     }
 
-    return await _listenToResponse(nostrBloc, target, id, stream);
+    return await _listen(nostrBloc, target, id, method, stream);
   }
 
-  Future<dynamic> listenRequest() async {
-    final relay = RelayApi(relayUrl: this.relay);
-  }
-}
+  // Future<dynamic> listenToRequest(
+  //   NostrBloc nostrBloc,
+  // ) async {
+  //   final relayConnect = RelayApi(relayUrl: relay);
 
-Future<dynamic> _listenToResponse(
-  NostrBloc nostrBloc,
-  String target,
-  String id,
-  Stream<Message> stream,
-) async {
-  stream.listen((message) {
-    try {
-      if (message.type == 'EVENT') {
-        Event event = message.message as Event;
-        // final String payload = jsonEncode(getPayload(event.content, nostrBloc));
-        getPayload(event.content, nostrBloc, target).then((payload) {
-          // ignore all the events that are not NostrRPCResponse events
-          if (!isValidResponse(payload)) return false;
+  //   final stream = await relayConnect.connect();
 
-          // ignore all the events that are not for this request
-          if (payload['id'] != id) return false;
+  //   relayConnect.sub([
+  //     Filter(
+  //       kinds: [24133],
+  //       p: [nostrBloc.nostrPublicKey],
+  //       limit: 1,
+  //       since: DateTime.now() as int,
+  //     ),
+  //   ]);
 
-          // if the response is an error, reject the promise
-          if (payload['error'] != null) {
-            if (payload['error'] == "this[method] is not a function" &&
-                payload['result'] == null) {
-              // its a connect request
-              nostrBloc.nip47ConnectController.add(target);
+  //   stream.listen((message) {
+  //     try {
+  //       if (message.type == 'EVENT') {
+  //         Event event = message.message as Event;
+  //         getPayload(event.content, nostrBloc, event.pubkey)
+  //             .then((payload) async {
+  //           // ignore all the events that are not NostrRPCResponse events
+  //           if (!isValidRequest(payload)) return false;
+
+  //           Map<String, dynamic> response =
+  //               await _handleRequest(payload, event, nostrBloc);
+
+  //           String responseString = prepareResponse(
+  //               response['id'], response['result'], response['error']);
+
+  //           Map<String, dynamic> responseEvent =
+  //               await prepareEvent(event.pubkey, responseString, nostrBloc);
+  //           nostrBloc.actionsSink
+  //               .add(SignEvent(responseEvent, nostrBloc.nostrPrivateKey));
+  //           responseEvent = await nostrBloc.eventStream.first;
+
+  //           try {
+  //             relayConnect.publish(mapToEvent(responseEvent));
+  //           } catch (e) {
+  //             throw Exception(e);
+  //           }
+
+  //           // switch (payload['method']) {
+  //           //   case "get_public_key":
+  //           //     return _getPublicKey();
+  //           //   case "sign_event":
+  //           //     return _signEvent();
+  //           //   case "disconnect":
+  //           //     return _disconnect();
+  //           //   case "connnect":
+  //           //     return _connect();
+  //           // }
+
+  //           // if (payload['method'] == 'get_public_key') {
+  //           // } else if (payload['method'] == 'sign_event') {
+  //           // } else if (payload['method'] == 'disconnect') {
+  //           // } else if (payload['method'] == 'connect') {}
+  //         });
+  //       }
+  //     } catch (e) {
+  //       throw Exception(e);
+  //     }
+  //   });
+  // }
+
+  Future<dynamic> _listen(
+    NostrBloc nostrBloc,
+    String target,
+    String id,
+    String method,
+    Stream<Message> stream,
+  ) async {
+    stream.listen((message) {
+      try {
+        if (message.type == 'EVENT') {
+          Event event = message.message as Event;
+          getPayload(event.content, nostrBloc, target).then((payload) async {
+            // ignore all the events that are not NostrRPCResponse events
+            if (isValidResponse(payload)) {
+              // ignore all the events that are not for this response
+              if (payload['id'] != id) return false;
+
+              // if the response is an error, reject the promise
+              if (payload['error'] != null) {
+                if (payload['error'] == "this[method] is not a function" &&
+                    payload['result'] == null) {
+                  // its a connect request
+                  if (method == 'connect') {
+                    nostrBloc.nip47ConnectController.add(target);
+                  } else if (method == 'disconnect') {
+                    nostrBloc.nip47DisconnectController.add(target);
+                  }
+                }
+                return false;
+              }
+            } else if (isValidRequest(payload)) {
+              Map<String, dynamic> response =
+                  await _handleRequest(payload, event, nostrBloc);
+
+              String responseString = prepareResponse(
+                  response['id'], response['result'], response['error']);
+
+              Map<String, dynamic> responseEvent =
+                  await prepareEvent(event.pubkey, responseString, nostrBloc);
+              nostrBloc.actionsSink
+                  .add(SignEvent(responseEvent, nostrBloc.nostrPrivateKey));
+              responseEvent = await nostrBloc.eventStream.first;
+
+              try {
+                relayConnect.publish(mapToEvent(responseEvent));
+              } catch (e) {
+                throw Exception(e);
+              }
             }
-            return false;
-          }
-
-          if (payload['method'] != null) {
-            if (payload['method'] == 'get_public_key') {
-            } else if (payload['method'] == 'sign_event') {
-            } else if (payload['method'] == 'disconnect') {
-            } else if (payload['method'] == 'connect') {}
-          }
-
-          // Resolve the promise with the result if available
-          // it will be a connection request
-          if (payload['result'] != null) {
-            return true;
-          }
-        });
+          });
+        }
+      } catch (e) {
+        throw Exception(e);
       }
-    } catch (e) {
-      throw Exception(e);
-    }
-  });
-  return false;
+    });
+    return false;
+  }
 }
 
-approveConnectModal(BuildContext context, ConnectUri nostrConnectUri) {
+approveConnectDialog(BuildContext context, ConnectUri nostrConnectUri) {
   return showDialog(
       context: context,
       barrierDismissible: false,
       builder: (context) {
         return NostrConnectDialog(
+          connect: true,
           metadata: nostrConnectUri.metadata,
         );
       });
 }
 
-// Future<bool> approveConnectApp(
-//     ConnectUri nostrConnectUri, NostrBloc nostrBloc) async {
-//   final rpc = NostrRpc(relay: nostrConnectUri.relay, nostrBloc: nostrBloc);
-//   await rpc.call(nostrConnectUri.target,
-//       method: 'connect', params: [nostrBloc.nostrPublicKey]);
-// }
-
-Future<void> rejectConnectApp(
-    ConnectUri nostrConnectUri, NostrBloc nostrBloc) async {
-  final rpc = NostrRpc(relay: nostrConnectUri.relay, nostrBloc: nostrBloc);
-  bool connect =
-      await rpc.call(nostrConnectUri.target, method: 'disconnect', params: []);
+approveDisconnectDialog(BuildContext context, ConnectUri nostrConnectUri) {
+  return showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (context) {
+        return NostrConnectDialog(
+          connect: false,
+          metadata: nostrConnectUri.metadata,
+        );
+      });
 }

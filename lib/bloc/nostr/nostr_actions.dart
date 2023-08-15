@@ -69,3 +69,12 @@ class Nip47Connect extends AsyncAction {
     this.nostrBloc,
   });
 }
+
+class Nip47Disconnect extends AsyncAction {
+  final ConnectUri connectUri;
+  final NostrBloc nostrBloc;
+  Nip47Disconnect({
+    this.connectUri,
+    this.nostrBloc,
+  });
+}

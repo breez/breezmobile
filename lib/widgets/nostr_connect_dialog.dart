@@ -2,9 +2,11 @@ import 'package:flutter/material.dart';
 
 class NostrConnectDialog extends StatefulWidget {
   final Map<String, dynamic> metadata;
+  final bool connect;
   const NostrConnectDialog({
     Key key,
     this.metadata,
+    this.connect,
   }) : super(key: key);
 
   @override
@@ -29,7 +31,9 @@ class _NostrConnectDialogState extends State<NostrConnectDialog> {
         content: Padding(
           padding: const EdgeInsets.only(left: 15.0, right: 12.0),
           child: Text(
-            'Do you want to connect to ${widget.metadata['name']} using your Nostr credentials?',
+            widget.connect
+                ? 'Do you want to connect to ${widget.metadata['name']} using your Nostr credentials?'
+                : 'Do you want to disconnect from ${widget.metadata['name']}',
             style: themeData.primaryTextTheme.displaySmall.copyWith(
               fontSize: 16,
             ),
