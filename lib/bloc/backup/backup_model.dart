@@ -201,6 +201,20 @@ class BackupState {
     this.lastBackupAccountName,
   );
 
+  static BackupState start() => const BackupState(null, false, null);
+
+  BackupState copyWith({
+    DateTime lastBackupTime,
+    bool inProgress,
+    String lastBackupAccountName,
+  }) {
+    return BackupState(
+      lastBackupTime ?? this.lastBackupTime,
+      inProgress ?? this.inProgress,
+      lastBackupAccountName ?? this.lastBackupAccountName,
+    );
+  }
+
   BackupState.fromJson(Map<String, dynamic> json)
       : this(
           json["lastBackupTime"] != null

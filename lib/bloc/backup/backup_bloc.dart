@@ -173,7 +173,7 @@ class BackupBloc with AsyncActionsHandler {
     //last backup time persistency
     String backupStateJson =
         _sharedPreferences.getString(LAST_BACKUP_STATE_PREFERENCE_KEY);
-    BackupState backupState = const BackupState(null, false, null);
+    BackupState backupState = BackupState.start();
     if (backupStateJson != null) {
       backupState = BackupState.fromJson(json.decode(backupStateJson));
     }
@@ -508,19 +508,26 @@ class BackupBloc with AsyncActionsHandler {
     _breezLib.notificationStream.listen((event) async {
       if (event.type == NotificationEvent_NotificationType.BACKUP_REQUEST) {
         _backupServiceNeedLogin = false;
-        _backupStateController.add((BackupState(
-            _backupStateController.value?.lastBackupTime,
-            true,
-            _backupStateController.value?.lastBackupAccountName)));
+        _backupStateController.add(
+          _backupStateController.value?.copyWith(inProgress: true),
+        );
       }
       if (event.type == NotificationEvent_NotificationType.BACKUP_AUTH_FAILED) {
         _backupServiceNeedLogin = true;
-        _backupStateController.addError(BackupFailedException(
-            _backupSettingsController.value.backupProvider, true));
+        _backupStateController.addError(
+          BackupFailedException(
+            _backupSettingsController.value.backupProvider,
+            true,
+          ),
+        );
       }
       if (event.type == NotificationEvent_NotificationType.BACKUP_FAILED) {
-        _backupStateController.addError(BackupFailedException(
-            _backupSettingsController.value.backupProvider, false));
+        _backupStateController.addError(
+          BackupFailedException(
+            _backupSettingsController.value.backupProvider,
+            false,
+          ),
+        );
       }
       if (event.type == NotificationEvent_NotificationType.BACKUP_SUCCESS) {
         _backupServiceNeedLogin = false;
@@ -530,8 +537,9 @@ class BackupBloc with AsyncActionsHandler {
             log.info(timeStamp);
             DateTime latestDateTime =
                 DateTime.fromMillisecondsSinceEpoch(timeStamp);
-            _backupStateController
-                .add(BackupState(latestDateTime, false, event.data[0]));
+            _backupStateController.add(
+              BackupState(latestDateTime, false, event.data[0]),
+            );
           }
         });
       }
