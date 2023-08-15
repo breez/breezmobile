@@ -352,34 +352,43 @@ class BackupBloc with AsyncActionsHandler {
   }
 
   Future _restoreBackup(RestoreBackup action) async {
+    assert(action.restoreRequest.snapshot.nodeID.isNotEmpty);
+    log.info(
+        'snapshotInfo with timestamp: ${action.restoreRequest.snapshot.modifiedTime}');
     if (action.restoreRequest.encryptionKey != null &&
         action.restoreRequest.encryptionKey.key != null) {
       assert(action.restoreRequest.encryptionKey.key.isNotEmpty || true);
+      log.info(
+        'using key with length: ${action.restoreRequest.encryptionKey.key.length}',
+      );
     }
-    assert(action.restoreRequest.snapshot.nodeID.isNotEmpty);
 
     _clearAppData();
 
-    _breezLib
-        .restore(action.restoreRequest.snapshot.nodeID,
-            action.restoreRequest.encryptionKey.key)
-        .then(
-          (_) => _restoreAppData().then((_) {
-            BackupState backupState = BackupState(
-              DateTime.tryParse(action.restoreRequest.snapshot.modifiedTime),
-              false,
-              _backupStateController.value?.lastBackupAccountName,
-            );
-            _backupStateController.add(backupState);
-            action.resolve(true);
-          }).catchError((error) {
-            _clearAppData();
-            action.resolveError(error);
-          }),
+    await _breezLib
+        .restore(
+          action.restoreRequest.snapshot.nodeID,
+          action.restoreRequest.encryptionKey.key,
         )
-        .catchError((error) {
+        .catchError(
+          (error) => action.resolveError(error),
+        );
+
+    await _restoreAppData().catchError((error) {
+      _clearAppData();
       action.resolveError(error);
     });
+    _updateLastBackupTime(action);
+    action.resolve(true);
+  }
+
+  void _updateLastBackupTime(RestoreBackup action) {
+    _backupStateController.add(
+      _backupStateController.value?.copyWith(
+        lastBackupTime:
+            DateTime.tryParse(action.restoreRequest.snapshot.modifiedTime),
+      ),
+    );
   }
 
   _scheduleBackgroundTasks() {
@@ -593,7 +602,7 @@ class BackupBloc with AsyncActionsHandler {
     );
   }
 
-  _restoreAppData() async {
+  Future<void> _restoreAppData() async {
     try {
       await _restoreLightningFees();
       await _restorePosDB();
