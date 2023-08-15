@@ -1,7 +1,11 @@
 import 'dart:convert';
 
+import 'package:breez/logger.dart';
 import 'package:breez_translations/breez_translations_locales.dart';
+import 'package:crypto/crypto.dart';
 import 'package:flutter/foundation.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:hex/hex.dart';
 
 class RemoteServerAuthData {
   final String url;
@@ -240,4 +244,145 @@ class BackupNowAction {
   String toString() {
     return 'BackupNowAction{recoverEnabled: $recoverEnabled}';
   }
+}
+
+class SnapshotInfo {
+  final String nodeID;
+  final String modifiedTime;
+  final bool encrypted;
+  final String encryptionType;
+
+  SnapshotInfo(
+      this.nodeID, this.modifiedTime, this.encrypted, this.encryptionType) {
+    log.info(
+        "New Snapshot encrypted = $encrypted encryptionType = $encryptionType");
+  }
+
+  SnapshotInfo.fromJson(Map<String, dynamic> json)
+      : this(
+          json["NodeID"],
+          json["ModifiedTime"],
+          json["Encrypted"] == true,
+          json["EncryptionType"],
+        );
+}
+
+class SignInFailedException implements Exception {
+  final BackupProvider provider;
+
+  SignInFailedException(this.provider);
+
+  @override
+  String toString() {
+    return "Sign in failed";
+  }
+}
+
+class MethodNotFoundException implements Exception {
+  MethodNotFoundException();
+
+  @override
+  String toString() {
+    return "Method not found";
+  }
+}
+
+class NoBackupFoundException implements Exception {
+  @override
+  String toString() {
+    return "No backup found";
+  }
+}
+
+class RemoteServerNotFoundException implements Exception {
+  @override
+  String toString() {
+    return "The server was not found. Please check the address";
+  }
+}
+
+class BreezLibBackupKey {
+  static const KEYLENGTH = 32;
+  static const ENTROPY_LENGTH = 16 * 2; // 2 hex characters == 1 byte.
+
+  BackupKeyType backupKeyType;
+  String entropy;
+
+  List<int> _key;
+  set key(List<int> v) => _key = v;
+
+  List<int> get key {
+    var entropyBytes = _key;
+    if (entropyBytes == null) {
+      /*
+      assert(entropy != null);
+      assert(entropy.isNotEmpty);
+      */
+      if (entropy != null && entropy.isNotEmpty) {
+        entropyBytes = HEX.decode(entropy);
+      }
+    }
+
+    if (entropyBytes != null && entropyBytes.length != KEYLENGTH) {
+      // The length of a "Mnemonics" entropy hex string in bytes is 32.
+      // The length of a "Mnemonics12" entropy hex string in bytes is 16.
+
+      entropyBytes = sha256.convert(entropyBytes).bytes;
+    }
+
+    return entropyBytes;
+  }
+
+  String get type {
+    var result = '';
+    if (key != null) {
+      switch (backupKeyType) {
+        case BackupKeyType.PHRASE:
+          assert(entropy.length == ENTROPY_LENGTH ||
+              entropy.length == ENTROPY_LENGTH * 2);
+          result =
+              entropy.length == ENTROPY_LENGTH ? 'Mnemonics12' : 'Mnemonics';
+          break;
+        case BackupKeyType.PIN:
+          result = 'Pin';
+          break;
+        default:
+      }
+    }
+
+    return result;
+  }
+
+  BreezLibBackupKey({this.entropy, List<int> key}) : _key = key;
+
+  static Future<BreezLibBackupKey> fromSettings(
+      FlutterSecureStorage store, BackupKeyType backupKeyType) async {
+    assert(store != null);
+
+    BreezLibBackupKey result;
+    switch (backupKeyType) {
+      case BackupKeyType.PIN:
+        var pinCode = await store.read(key: 'pinCode');
+        result = BreezLibBackupKey(key: utf8.encode(pinCode));
+        break;
+      case BackupKeyType.PHRASE:
+        result = BreezLibBackupKey(entropy: await store.read(key: 'backupKey'));
+        break;
+      default:
+    }
+    result?.backupKeyType = backupKeyType;
+
+    return result;
+  }
+
+  static Future save(FlutterSecureStorage store, String key) async {
+    await store.write(key: 'backupKey', value: key);
+  }
+}
+
+class RestoreRequest {
+  final SnapshotInfo snapshot;
+  final BreezLibBackupKey encryptionKey;
+
+  RestoreRequest(this.snapshot, this.encryptionKey);
 }
