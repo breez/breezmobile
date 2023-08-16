@@ -129,6 +129,7 @@ class UserApp extends StatelessWidget {
                 case '/intro':
                   return FadeInRoute(
                     builder: (_) => InitialWalkthroughPage(
+                      backupBloc,
                       reloadDatabaseSink: _reloadDatabaseSink,
                     ),
                     settings: settings,

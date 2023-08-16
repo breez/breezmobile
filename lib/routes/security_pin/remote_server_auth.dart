@@ -233,6 +233,7 @@ class RemoteServerAuthPageState extends State<RemoteServerAuthPage> {
                     ).catchError(
                       (err) {
                         EasyLoading.dismiss();
+
                         promptError(
                           context,
                           texts.remote_server_error_remote_server_title,
