@@ -5,6 +5,7 @@ import 'package:breez/bloc/backup/backup_model.dart';
 import 'package:breez/bloc/blocs_provider.dart';
 import 'package:breez/routes/initial_walkthrough/loaders/loader_indicator.dart';
 import 'package:breez/routes/security_pin/remote_server_auth.dart';
+import 'package:breez/utils/exceptions.dart';
 import 'package:breez/widgets/error_dialog.dart';
 import 'package:breez/widgets/flushbar.dart';
 import 'package:breez_translations/breez_translations_locales.dart';
@@ -139,10 +140,21 @@ class SelectBackupProviderDialogState
           backupSettings.copyWith(backupProvider: selectedProvider),
         );
         backupBloc.backupActionsSink.add(updateBackupSettingsAction);
+        EasyLoading.show();
+
         updateBackupSettingsAction.future.then((updatedBackupSettings) {
+          EasyLoading.dismiss();
+
           _listSnapshots(backupBloc);
         }).catchError((err) {
+          EasyLoading.dismiss();
+
           Navigator.pop(context);
+          showFlushbar(
+            context,
+            duration: const Duration(seconds: 3),
+            message: err.toString(),
+          );
         });
       },
     );
@@ -158,29 +170,43 @@ class SelectBackupProviderDialogState
     );
 
     backupBloc.backupActionsSink.add(listBackupsAction);
-    return listBackupsAction.future
-        .then((snapshots) {
+    return listBackupsAction.future.then((snapshots) {
+      EasyLoading.dismiss();
+
+      if (snapshots != null && snapshots is List<SnapshotInfo>) {
+        if (snapshots.isEmpty) {
+          _handleEmptySnapshot();
+        } else {
           Navigator.pop(context, snapshots);
-        })
-        .catchError((error) => _handleError(error))
-        .whenComplete(() {
-          Navigator.pop(context);
-          EasyLoading.dismiss();
-        });
+        }
+      }
+    }).catchError(
+      (error) => _handleError(error),
+    );
+  }
+
+  void _handleEmptySnapshot() {
+    Navigator.pop(context);
+    final texts = context.texts();
+    showFlushbar(
+      context,
+      duration: const Duration(seconds: 3),
+      message: texts.initial_walk_through_error_backup_location,
+    );
   }
 
   void _handleError(error) {
     EasyLoading.dismiss();
 
-    Navigator.popUntil(context, (route) {
-      return route.settings.name == "/intro";
-    });
+    Navigator.pop(context);
     if (error.runtimeType != SignInFailedException) {
-      SnackBar snackBar = SnackBar(
+      final texts = context.texts();
+      final message = extractExceptionMessage(error.toString(), texts: texts);
+      showFlushbar(
+        context,
         duration: const Duration(seconds: 3),
-        content: Text(error.toString()),
+        message: message,
       );
-      ScaffoldMessenger.of(context).showSnackBar(snackBar);
     } else {
       _handleSignInException(error as SignInFailedException);
     }
