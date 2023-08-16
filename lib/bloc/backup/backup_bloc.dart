@@ -353,7 +353,7 @@ class BackupBloc with AsyncActionsHandler {
       final snapshot = action.restoreRequest.snapshot;
       final key = action.restoreRequest.encryptionKey.key;
       log.info('snapshotInfo with timestamp: ${snapshot.modifiedTime}');
-      log.info('using key with length: ${key.length}');
+      if (key != null) log.info('using key with length: ${key.length}');
 
       _clearAppData();
 
