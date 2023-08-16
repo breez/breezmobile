@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:io';
 
 import 'package:auto_size_text/auto_size_text.dart';
@@ -22,9 +23,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 
 class InitialWalkthroughPage extends StatefulWidget {
+  final BackupBloc backupBloc;
   final Sink<bool> reloadDatabaseSink;
 
-  const InitialWalkthroughPage({this.reloadDatabaseSink});
+  const InitialWalkthroughPage(this.backupBloc, {this.reloadDatabaseSink});
 
   @override
   State<InitialWalkthroughPage> createState() => _InitialWalkthroughPageState();
@@ -35,6 +37,9 @@ class _InitialWalkthroughPageState extends State<InitialWalkthroughPage>
   final GlobalKey scaffoldKey = GlobalKey<ScaffoldState>();
   AnimationController controller;
   Animation<int> animation;
+
+  StreamSubscription<BackupSettings> _backupSettingsSubscription;
+  BackupSettings _backupSettings;
 
   bool _registered = false;
 
@@ -54,11 +59,20 @@ class _InitialWalkthroughPageState extends State<InitialWalkthroughPage>
         });
       });
     controller.forward();
+
+    _backupSettingsSubscription = widget.backupBloc.backupSettingsStream.listen(
+      (backupSettings) {
+        setState(() {
+          _backupSettings = backupSettings;
+        });
+      },
+    );
   }
 
   @override
   void dispose() {
     controller.dispose();
+    _backupSettingsSubscription?.cancel();
     super.dispose();
   }
 
@@ -210,13 +224,11 @@ class _InitialWalkthroughPageState extends State<InitialWalkthroughPage>
   void _restoreFromBackup() async {
     log.info("Restore from Backup");
     final backupProviders = BackupSettings.availableBackupProviders();
-    if (backupProviders.length > 1) {
-      _showSelectProviderDialog(backupProviders).then((snapshots) {
-        _showRestoreDialog(snapshots).then((restoreRequest) {
-          _restore(restoreRequest);
-        });
+    _showSelectProviderDialog(backupProviders).then((snapshots) {
+      _showRestoreDialog(snapshots).then((restoreRequest) {
+        _restore(restoreRequest);
       });
-    }
+    });
   }
 
   Future<List<SnapshotInfo>> _showSelectProviderDialog(
@@ -231,45 +243,35 @@ class _InitialWalkthroughPageState extends State<InitialWalkthroughPage>
   }
 
   Future<RestoreRequest> _showRestoreDialog(
-      List<SnapshotInfo> snapshots) async {
-    if (snapshots != null) {
+    List<SnapshotInfo> snapshots,
+  ) async {
+    if (snapshots != null && snapshots.isNotEmpty) {
       return _selectSnapshotToRestore(snapshots);
-    } else if (snapshots.isEmpty) {
-      _handleEmptySnapshots();
+    } else {
+      return null;
     }
-    return null;
   }
 
   Future<RestoreRequest> _selectSnapshotToRestore(
-      List<SnapshotInfo> snapshots) async {
+    List<SnapshotInfo> snapshots,
+  ) async {
     return showDialog<RestoreRequest>(
       useRootNavigator: false,
       context: context,
       builder: (_) => RestoreDialog(
         snapshots,
+        _backupSettings,
         widget.reloadDatabaseSink,
       ),
     );
-  }
-
-  void _handleEmptySnapshots() {
-    final texts = context.texts();
-    SnackBar snackBar = SnackBar(
-      duration: const Duration(seconds: 3),
-      content: Text(texts.initial_walk_through_error_backup_location),
-    );
-    ScaffoldMessenger.of(context).showSnackBar(snackBar);
   }
 
   Future<void> _restore(RestoreRequest restoreRequest) {
     if (restoreRequest == null) {
       return null;
     }
-
-    final backupBloc = AppBlocsProvider.of<BackupBloc>(context);
-
     var restoreBackupAction = RestoreBackup(restoreRequest);
-    backupBloc.backupActionsSink.add(restoreBackupAction);
+    widget.backupBloc.backupActionsSink.add(restoreBackupAction);
     final texts = context.texts();
     // TODO Remove ... from translation
     EasyLoading.show(
@@ -277,65 +279,36 @@ class _InitialWalkthroughPageState extends State<InitialWalkthroughPage>
         message: texts.initial_walk_through_restoring,
       ),
     );
-    return restoreBackupAction.future
-        .then(
-          (isRestored) => _completeRestoration(isRestored),
-          onError: (error) => _handleError(error),
-        )
-        .whenComplete(() => EasyLoading.dismiss());
+    return restoreBackupAction.future.then(
+      (isRestored) => _completeRestoration(isRestored),
+      onError: (error) => _handleRestoreBackupError(error),
+    );
   }
 
   void _completeRestoration(bool isRestored) async {
+    EasyLoading.dismiss();
+
     if (isRestored) {
       final posCatalogBloc = AppBlocsProvider.of<PosCatalogBloc>(context);
       posCatalogBloc.reloadPosItemsSink.add(true);
       widget.reloadDatabaseSink.add(true);
-      Navigator.popUntil(context, (route) {
-        return route.settings.name == "/intro";
-      });
       final userProfileBloc = AppBlocsProvider.of<UserProfileBloc>(context);
       userProfileBloc.registerSink.add(null);
-      Navigator.of(context).pop();
+      Navigator.popUntil(context, (route) => route.settings.name == "/");
     }
   }
 
-  void _handleError(error) {
+  void _handleRestoreBackupError(error) {
     EasyLoading.dismiss();
 
-    if (error.runtimeType != SignInFailedException) {
-      String errorMessage = error.toString();
-      if (errorMessage.contains("FileSystemException")) {
-        errorMessage = context.texts().enter_backup_phrase_error;
-      }
-      showFlushbar(
-        context,
-        duration: const Duration(seconds: 3),
-        message: errorMessage,
-      );
-    } else {
-      _handleSignInException(error as SignInFailedException);
+    String errorMessage = error.toString();
+    if (errorMessage.contains("FileSystemException")) {
+      errorMessage = context.texts().enter_backup_phrase_error;
     }
-  }
-
-  Future _handleSignInException(SignInFailedException e) async {
-    final texts = context.texts();
-    if (e.provider == BackupSettings.icloudBackupProvider()) {
-      final themeData = Theme.of(context);
-
-      await promptError(
-        context,
-        texts.initial_walk_through_sign_in_icloud_title,
-        Text(
-          texts.initial_walk_through_sign_in_icloud_message,
-          style: themeData.dialogTheme.contentTextStyle,
-        ),
-      );
-    } else if (e.provider == BackupSettings.googleBackupProvider()) {
-      showFlushbar(
-        context,
-        duration: const Duration(seconds: 3),
-        message: "Failed to sign into Google Drive.",
-      );
-    }
+    showFlushbar(
+      context,
+      duration: const Duration(seconds: 3),
+      message: errorMessage,
+    );
   }
 }
