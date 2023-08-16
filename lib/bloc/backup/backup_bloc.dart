@@ -320,73 +320,59 @@ class BackupBloc with AsyncActionsHandler {
   }
 
   Future _listSnapshots(ListSnapshots action) async {
-    String backups = await _breezLib.getAvailableBackups().catchError(
-      (error) {
-        if (error.runtimeType == PlatformException) {
-          PlatformException e = (error as PlatformException);
-          // the error code equals the message from the go library so
-          // not to confuse the two.
-          if (e.code == _signInFailedMessage ||
-              e.message == _signInFailedCode) {
-            error = SignInFailedException(
-                _backupSettingsController.value.backupProvider);
-          } else if (e.code == _empty) {
-            error = NoBackupFoundException();
-          } else {
-            error = (error as PlatformException).message;
-          }
-        }
-        action.resolveError(error);
-      },
-    );
-
-    List snapshotsArray = json.decode(backups) as List;
-    List<SnapshotInfo> snapshots = <SnapshotInfo>[];
-    if (snapshotsArray != null) {
-      snapshots = snapshotsArray.map((s) {
-        return SnapshotInfo.fromJson(s);
-      }).toList();
+    try {
+      String backups = await _breezLib.getAvailableBackups();
+      List snapshotsArray = json.decode(backups) as List;
+      List<SnapshotInfo> snapshots = <SnapshotInfo>[];
+      if (snapshotsArray != null) {
+        snapshots = snapshotsArray.map((s) {
+          return SnapshotInfo.fromJson(s);
+        }).toList();
+      }
+      snapshots.sort((s1, s2) => s2.modifiedTime.compareTo(s1.modifiedTime));
+      action.resolve(snapshots);
+    } on PlatformException catch (e) {
+      dynamic exception = e.message;
+      // the error code equals the message from the go library so
+      // not to confuse the two.
+      if (e.code == _signInFailedMessage || e.message == _signInFailedCode) {
+        exception = SignInFailedException(
+          _backupSettingsController.value.backupProvider,
+        );
+      } else if (e.code == _empty) {
+        exception = NoBackupFoundException();
+      }
+      action.resolveError(exception);
+    } catch (error) {
+      action.resolveError(error);
     }
-    snapshots.sort((s1, s2) => s2.modifiedTime.compareTo(s1.modifiedTime));
-    action.resolve(snapshots);
   }
 
   Future _restoreBackup(RestoreBackup action) async {
-    assert(action.restoreRequest.snapshot.nodeID.isNotEmpty);
-    log.info(
-        'snapshotInfo with timestamp: ${action.restoreRequest.snapshot.modifiedTime}');
-    if (action.restoreRequest.encryptionKey != null &&
-        action.restoreRequest.encryptionKey.key != null) {
-      assert(action.restoreRequest.encryptionKey.key.isNotEmpty || true);
-      log.info(
-        'using key with length: ${action.restoreRequest.encryptionKey.key.length}',
-      );
-    }
+    try {
+      final snapshot = action.restoreRequest.snapshot;
+      final key = action.restoreRequest.encryptionKey.key;
+      log.info('snapshotInfo with timestamp: ${snapshot.modifiedTime}');
+      log.info('using key with length: ${key.length}');
 
-    _clearAppData();
+      _clearAppData();
 
-    await _breezLib
-        .restore(
-          action.restoreRequest.snapshot.nodeID,
-          action.restoreRequest.encryptionKey.key,
-        )
-        .catchError(
-          (error) => action.resolveError(error),
-        );
+      await _breezLib.restore(snapshot.nodeID, key);
+      await _restoreAppData();
 
-    await _restoreAppData().catchError((error) {
+      _updateLastBackupTime(snapshot.modifiedTime);
+
+      action.resolve(true);
+    } catch (error) {
       _clearAppData();
       action.resolveError(error);
-    });
-    _updateLastBackupTime(action);
-    action.resolve(true);
+    }
   }
 
-  void _updateLastBackupTime(RestoreBackup action) {
+  void _updateLastBackupTime(String modifiedTime) {
     _backupStateController.add(
       _backupStateController.value?.copyWith(
-        lastBackupTime:
-            DateTime.tryParse(action.restoreRequest.snapshot.modifiedTime),
+        lastBackupTime: DateTime.tryParse(modifiedTime),
       ),
     );
   }
