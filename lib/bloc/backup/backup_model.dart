@@ -398,5 +398,14 @@ class RestoreRequest {
   final SnapshotInfo snapshot;
   final BreezLibBackupKey encryptionKey;
 
-  RestoreRequest(this.snapshot, this.encryptionKey);
+  RestoreRequest(this.snapshot, this.encryptionKey)
+      : assert(
+          snapshot.nodeID != null && snapshot.nodeID.isNotEmpty,
+          "Node ID mustn't be empty for restore request.",
+        ),
+        assert(
+          !(encryptionKey != null && encryptionKey.key != null) ||
+              encryptionKey.key.isNotEmpty,
+          "Encryption key mustn't be empty for encrypted backup.",
+        );
 }
