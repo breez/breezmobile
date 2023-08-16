@@ -565,8 +565,6 @@ class BackupBloc with AsyncActionsHandler {
           var e = error;
           switch (e.message) {
             case _signInFailedCode:
-              throw SignInFailedException(provider);
-              break;
             case _signInFailedMessage:
               throw SignInFailedException(provider);
               break;
@@ -574,13 +572,12 @@ class BackupBloc with AsyncActionsHandler {
               throw MethodNotFoundException();
               break;
             case _noAccess:
+            case _empty:
               throw NoBackupFoundException();
               break;
             case _notFoundMessage:
               throw RemoteServerNotFoundException();
               break;
-            case _empty:
-              throw NoBackupFoundException();
           }
         }
         throw error;
