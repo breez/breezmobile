@@ -9,6 +9,7 @@ import 'package:breez/logger.dart';
 import 'package:breez/routes/initial_walkthrough/dialogs/widgets/restore_pin_code.dart';
 import 'package:breez/routes/initial_walkthrough/dialogs/widgets/snapshot_info_tile.dart';
 import 'package:breez/widgets/error_dialog.dart';
+import 'package:breez/widgets/flushbar.dart';
 import 'package:breez/widgets/route.dart';
 import 'package:breez_translations/breez_translations_locales.dart';
 import 'package:crypto/crypto.dart';
@@ -17,9 +18,14 @@ import 'package:hex/hex.dart';
 
 class RestoreDialog extends StatefulWidget {
   final List<SnapshotInfo> snapshots;
+  final BackupSettings backupSettings;
   final Sink<bool> reloadDatabaseSink;
 
-  const RestoreDialog(this.snapshots, this.reloadDatabaseSink);
+  const RestoreDialog(
+    this.snapshots,
+    this.backupSettings,
+    this.reloadDatabaseSink,
+  );
 
   @override
   RestoreDialogState createState() {
@@ -32,8 +38,6 @@ class RestoreDialogState extends State<RestoreDialog> {
 
   @override
   Widget build(BuildContext context) {
-    final backupBloc = AppBlocsProvider.of<BackupBloc>(context);
-
     final texts = context.texts();
     final themeData = Theme.of(context);
 
@@ -48,23 +52,16 @@ class RestoreDialogState extends State<RestoreDialog> {
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          StreamBuilder<BackupSettings>(
-            stream: backupBloc.backupSettingsStream,
-            builder: (context, snapshot) {
-              if (!snapshot.hasData) {
-                return const SizedBox();
-              }
-
-              return Text(
-                texts.restore_dialog_multiple_accounts(
-                  snapshot.data.backupProvider.displayName,
-                ),
-                style: themeData.primaryTextTheme.displaySmall.copyWith(
-                  fontSize: 16,
-                ),
-              );
-            },
-          ),
+          if (widget.backupSettings?.backupProvider != null) ...[
+            Text(
+              texts.restore_dialog_multiple_accounts(
+                widget.backupSettings.backupProvider.displayName,
+              ),
+              style: themeData.primaryTextTheme.displaySmall.copyWith(
+                fontSize: 16,
+              ),
+            )
+          ],
           Padding(
             padding: const EdgeInsets.only(top: 16.0),
             child: SizedBox(
@@ -101,37 +98,35 @@ class RestoreDialogState extends State<RestoreDialog> {
           style: TextButton.styleFrom(
             foregroundColor: themeData.primaryColor,
           ),
-          onPressed: _selectedSnapshot == null ? null : () => _restoreSnapshot,
+          onPressed: () => _restoreSnapshot(),
           child: Text(texts.restore_dialog_action_ok),
         ),
       ],
     );
   }
 
-  void _restoreSnapshot(
-    SnapshotInfo snapshotInfo,
-    BackupSettings backupSettings,
-  ) {
-    if (snapshotInfo.encrypted) {
-      if (snapshotInfo.encryptionType.startsWith("Mnemonics")) {
+  void _restoreSnapshot() {
+    if (_selectedSnapshot == null) {
+      showFlushbar(context, message: "Please select a snapshot to restore.");
+      return;
+    }
+    if (_selectedSnapshot.encrypted) {
+      if (_selectedSnapshot.encryptionType.startsWith("Mnemonics")) {
         log.info(
-            'restore_request_handler.dart: restoring backup with mnemonic of type "${snapshotInfo.encryptionType}"');
-        _restoreNodeFromMnemonicSeed(context, snapshotInfo, backupSettings);
+          'restoring backup with mnemonic of type ${_selectedSnapshot.encryptionType}',
+        );
+        _restoreNodeFromMnemonicSeed();
       } else {
-        log.info('restore_request_handler.dart: restoring backup with pin"');
-        _restoreNodeUsingPIN(context, snapshotInfo, backupSettings);
+        log.info('restoring backup with pin"');
+        _restoreNodeUsingPIN();
         return;
       }
     } else {
-      _restore(snapshotInfo, null);
+      _restore(_selectedSnapshot, null);
     }
   }
 
-  void _restoreNodeFromMnemonicSeed(
-    BuildContext context,
-    SnapshotInfo snapshot,
-    BackupSettings backupSettings,
-  ) async {
+  void _restoreNodeFromMnemonicSeed() async {
     final backupBloc = AppBlocsProvider.of<BackupBloc>(context);
 
     final texts = context.texts();
@@ -155,15 +150,24 @@ class RestoreDialogState extends State<RestoreDialog> {
       });
       // Update Backup Settings
       final updateAction = UpdateBackupSettings(
-        backupSettings.copyWith(
+        widget.backupSettings.copyWith(
           keyType: BackupKeyType.PHRASE,
         ),
       );
       backupBloc.backupActionsSink.add(updateAction);
       updateAction.future.then((_) {
         _restore(
-          snapshot,
+          _selectedSnapshot,
           HEX.decode(entropy),
+        );
+      }).catchError((err) {
+        promptError(
+          context,
+          texts.initial_walk_through_error_internal,
+          Text(
+            err.toString(),
+            style: themeData.dialogTheme.contentTextStyle,
+          ),
         );
       });
     }
@@ -173,22 +177,34 @@ class RestoreDialogState extends State<RestoreDialog> {
     return Navigator.of(context).pushNamed('/enter_mnemonics');
   }
 
-  void _restoreNodeUsingPIN(
-    BuildContext context,
-    SnapshotInfo snapshot,
-    BackupSettings backupSettings,
-  ) async {
+  void _restoreNodeUsingPIN() async {
     final backupBloc = AppBlocsProvider.of<BackupBloc>(context);
 
     String pin = await _getPIN(context);
     if (pin != null) {
       log.info("Restore Node using PIN: $pin");
       final updateAction = UpdateBackupSettings(
-        backupSettings.copyWith(keyType: BackupKeyType.NONE),
+        widget.backupSettings.copyWith(keyType: BackupKeyType.NONE),
       );
       final key = sha256.convert(utf8.encode(pin));
       backupBloc.backupActionsSink.add(updateAction);
-      updateAction.future.then((_) => _restore(snapshot, key.bytes));
+      updateAction.future
+          .then((_) => _restore(_selectedSnapshot, key.bytes))
+          .catchError(
+        (err) {
+          final texts = context.texts();
+          final themeData = Theme.of(context);
+
+          promptError(
+            context,
+            texts.initial_walk_through_error_internal,
+            Text(
+              err.toString(),
+              style: themeData.dialogTheme.contentTextStyle,
+            ),
+          );
+        },
+      );
     }
   }
 
