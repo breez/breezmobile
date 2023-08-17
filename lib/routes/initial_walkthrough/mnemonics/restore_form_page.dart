@@ -7,16 +7,20 @@ import 'package:breez_translations/breez_translations_locales.dart';
 import 'package:flutter/material.dart';
 
 class RestoreFormPage extends StatefulWidget {
+  final List<TextEditingController> textEditingControllers;
   final int currentPage;
   final int lastPage;
   final VoidCallback changePage;
   final bool is24Word;
+  final List<String> initialWords;
 
   const RestoreFormPage({
+    this.textEditingControllers,
     this.currentPage,
     this.lastPage,
     this.changePage,
     this.is24Word = false,
+    this.initialWords = const [],
   });
 
   @override
@@ -26,8 +30,6 @@ class RestoreFormPage extends StatefulWidget {
 class RestoreFormPageState extends State<RestoreFormPage> {
   final _formKey = GlobalKey<FormState>();
 
-  List<TextEditingController> textEditingControllers;
-
   AutovalidateMode _autoValidateMode;
   bool _hasError;
 
@@ -36,8 +38,6 @@ class RestoreFormPageState extends State<RestoreFormPage> {
     super.initState();
     _autoValidateMode = AutovalidateMode.disabled;
     _hasError = false;
-    textEditingControllers = List<TextEditingController>.generate(
-        widget.is24Word ? 24 : 12, (_) => TextEditingController());
   }
 
   @override
@@ -52,7 +52,7 @@ class RestoreFormPageState extends State<RestoreFormPage> {
           currentPage: widget.currentPage,
           lastPage: widget.lastPage,
           is24Word: widget.is24Word,
-          textEditingControllers: textEditingControllers,
+          textEditingControllers: widget.textEditingControllers,
           autoValidateMode: _autoValidateMode,
         ),
         if (_hasError) ...[
@@ -92,7 +92,7 @@ class RestoreFormPageState extends State<RestoreFormPage> {
 
   Future _validateMnemonics() async {
     final texts = context.texts();
-    final mnemonic = textEditingControllers
+    final mnemonic = widget.textEditingControllers
         .map((controller) => controller.text.toLowerCase().trim())
         .toList()
         .join(" ");

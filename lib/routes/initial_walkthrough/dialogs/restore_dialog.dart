@@ -9,6 +9,7 @@ import 'package:breez/bloc/blocs_provider.dart';
 import 'package:breez/logger.dart';
 import 'package:breez/routes/initial_walkthrough/dialogs/widgets/restore_pin_code.dart';
 import 'package:breez/routes/initial_walkthrough/dialogs/widgets/snapshot_info_tile.dart';
+import 'package:breez/routes/initial_walkthrough/mnemonics/enter_mnemonics.dart';
 import 'package:breez/widgets/error_dialog.dart';
 import 'package:breez/widgets/flushbar.dart';
 import 'package:breez/widgets/route.dart';
@@ -36,6 +37,7 @@ class RestoreDialog extends StatefulWidget {
 
 class RestoreDialogState extends State<RestoreDialog> {
   SnapshotInfo _selectedSnapshot;
+  List<String> _initialWords = [];
 
   @override
   Widget build(BuildContext context) {
@@ -133,8 +135,11 @@ class RestoreDialogState extends State<RestoreDialog> {
     final texts = context.texts();
     final themeData = Theme.of(context);
 
-    String mnemonic = await _getMnemonic(context);
+    String mnemonic = await _getMnemonic();
     if (mnemonic != null) {
+      setState(() {
+        _initialWords = mnemonic.split(" ");
+      });
       String entropy = mnemonicToEntropy(mnemonic);
       // Save Backup Key
       final saveBackupKeyAction = SaveBackupKey(entropy);
@@ -174,14 +179,20 @@ class RestoreDialogState extends State<RestoreDialog> {
     }
   }
 
-  Future<String> _getMnemonic(BuildContext context) async {
-    return Navigator.of(context).pushNamed('/enter_mnemonics');
+  Future<String> _getMnemonic() async {
+    return Navigator.of(context).push(
+      FadeInRoute<String>(
+        builder: (_) => EnterMnemonicsPage(
+          initialWords: _initialWords,
+        ),
+      ),
+    );
   }
 
   void _restoreNodeUsingPIN() async {
     final backupBloc = AppBlocsProvider.of<BackupBloc>(context);
 
-    String pin = await _getPIN(context);
+    String pin = await _getPIN();
     if (pin != null) {
       log.info("Restore Node using PIN: $pin");
       final updateAction = UpdateBackupSettings(
@@ -209,9 +220,7 @@ class RestoreDialogState extends State<RestoreDialog> {
     }
   }
 
-  Future<String> _getPIN(
-    BuildContext context,
-  ) async {
+  Future<String> _getPIN() async {
     return await Navigator.of(context).push(
       FadeInRoute(
         builder: (BuildContext context) {
