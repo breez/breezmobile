@@ -65,14 +65,11 @@ class AccountRequiredActionsIndicatorState
           widget._backupBloc.backupPromptVisibleSink.add(true);
           popFlushbars(context);
           showDialog(
-              useRootNavigator: false,
-              barrierDismissible: false,
-              context: context,
-              builder: (_) => EnableBackupDialog(
-                    context,
-                    widget._backupBloc,
-                    signInNeeded: needSignIn,
-                  )).then((_) {
+            useRootNavigator: false,
+            barrierDismissible: false,
+            context: context,
+            builder: (_) => EnableBackupDialog(signInNeeded: needSignIn),
+          ).then((_) {
             showingBackupDialog = false;
             widget._backupBloc.backupPromptVisibleSink.add(false);
           });
@@ -234,18 +231,20 @@ class AccountRequiredActionsIndicatorState
         signInNeeded =
             (backupError as BackupFailedException).authenticationError;
       }
-      warnings.add(WarningAction(() async {
-        showDialog(
-          useRootNavigator: false,
-          barrierDismissible: false,
-          context: context,
-          builder: (_) => EnableBackupDialog(
-            context,
-            widget._backupBloc,
-            signInNeeded: signInNeeded,
-          ),
-        );
-      }));
+      warnings.add(
+        WarningAction(
+          () async {
+            showDialog(
+              useRootNavigator: false,
+              barrierDismissible: false,
+              context: context,
+              builder: (_) => EnableBackupDialog(
+                signInNeeded: signInNeeded,
+              ),
+            );
+          },
+        ),
+      );
     }
 
     final availableLSPs = lspStatus?.availableLSPs ?? [];

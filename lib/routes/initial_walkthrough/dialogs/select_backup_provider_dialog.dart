@@ -4,7 +4,7 @@ import 'package:breez/bloc/backup/backup_bloc.dart';
 import 'package:breez/bloc/backup/backup_model.dart';
 import 'package:breez/bloc/blocs_provider.dart';
 import 'package:breez/routes/initial_walkthrough/loaders/loader_indicator.dart';
-import 'package:breez/routes/security_pin/remote_server_auth.dart';
+import 'package:breez/routes/security_pin/remote_server_auth/remote_server_auth.dart';
 import 'package:breez/widgets/error_dialog.dart';
 import 'package:breez/widgets/flushbar.dart';
 import 'package:breez_translations/breez_translations_locales.dart';
@@ -137,6 +137,7 @@ class SelectBackupProviderDialogState
     if (selectedProvider.name == "remoteserver") {
       final auth = await promptAuthData(
         context,
+        backupSettings,
         restore: true,
       );
       if (auth == null) {
