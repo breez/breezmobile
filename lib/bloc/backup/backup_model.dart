@@ -267,9 +267,16 @@ class SnapshotInfo {
   final String encryptionType;
 
   SnapshotInfo(
-      this.nodeID, this.modifiedTime, this.encrypted, this.encryptionType) {
+    this.nodeID,
+    this.modifiedTime,
+    this.encrypted,
+    this.encryptionType,
+  ) {
+    assert(nodeID != null);
+    assert(modifiedTime != null);
     log.info(
-        "New Snapshot encrypted = $encrypted encryptionType = $encryptionType");
+      "New Snapshot encrypted = $encrypted encryptionType = $encryptionType",
+    );
   }
 
   SnapshotInfo.fromJson(Map<String, dynamic> json)
