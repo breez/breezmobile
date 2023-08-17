@@ -311,7 +311,7 @@ class InvalidCredentialsException implements Exception {
 class InsufficientPermissionException implements Exception {
   @override
   String toString() {
-    return "Request had insufficient authentication scopes.";
+    return "Please give Breez required permissions and try again";
   }
 }
 

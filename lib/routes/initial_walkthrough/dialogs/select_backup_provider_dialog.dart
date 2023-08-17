@@ -155,7 +155,7 @@ class SelectBackupProviderDialogState
     updateBackupSettingsAction.future.then((updatedBackupSettings) {
       EasyLoading.dismiss();
 
-      _listSnapshots(backupBloc);
+      _listSnapshots();
     }).catchError((err) {
       EasyLoading.dismiss();
 
@@ -168,7 +168,7 @@ class SelectBackupProviderDialogState
     });
   }
 
-  Future _listSnapshots(BackupBloc backupBloc) {
+  Future _listSnapshots() {
     var listBackupsAction = ListSnapshots();
 
     EasyLoading.show(
@@ -177,6 +177,7 @@ class SelectBackupProviderDialogState
       ),
     );
 
+    final backupBloc = AppBlocsProvider.of<BackupBloc>(context);
     backupBloc.backupActionsSink.add(listBackupsAction);
     return listBackupsAction.future.then((snapshots) {
       EasyLoading.dismiss();
@@ -208,7 +209,12 @@ class SelectBackupProviderDialogState
 
     switch (error.runtimeType) {
       case InsufficientPermissionException:
-        return;
+        showFlushbar(
+          context,
+          duration: const Duration(seconds: 3),
+          message: error.toString(),
+        );
+        break;
       case SignInFailedException:
         Navigator.pop(context);
         _handleSignInException(error);
