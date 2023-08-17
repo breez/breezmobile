@@ -6,10 +6,12 @@ import 'package:breez_translations/breez_translations_locales.dart';
 import 'package:flutter/material.dart';
 
 class EnterMnemonicsPage extends StatefulWidget {
+  final List<String> initialWords;
   final bool is24Word;
 
   const EnterMnemonicsPage({
     this.is24Word = false,
+    this.initialWords = const [],
   });
 
   @override
@@ -20,11 +22,21 @@ class EnterMnemonicsPageState extends State<EnterMnemonicsPage> {
   int _currentPage = 1;
   int _lastPage = 2;
 
+  List<TextEditingController> textEditingControllers;
+
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     _lastPage = widget.is24Word ? 4 : 2;
+    textEditingControllers = List<TextEditingController>.generate(
+      widget.is24Word ? 24 : 12,
+      (_) => TextEditingController(),
+    );
+    for (var i = 0;
+        i < textEditingControllers.length && i < widget.initialWords.length;
+        i++) {
+      textEditingControllers[i].text = widget.initialWords[i];
+    }
   }
 
   @override
@@ -40,7 +52,11 @@ class EnterMnemonicsPageState extends State<EnterMnemonicsPage> {
           leading: back_button.BackButton(
             onPressed: () {
               if (_currentPage == 1) {
-                Navigator.pop(context);
+                final mnemonic = textEditingControllers
+                    .map((controller) => controller.text.toLowerCase().trim())
+                    .toList()
+                    .join(" ");
+                Navigator.pop(context, mnemonic);
               } else if (_currentPage > 1) {
                 FocusScope.of(context).requestFocus(FocusNode());
                 setState(() {
@@ -63,6 +79,8 @@ class EnterMnemonicsPageState extends State<EnterMnemonicsPage> {
               currentPage: _currentPage,
               lastPage: _lastPage,
               is24Word: widget.is24Word,
+              textEditingControllers: textEditingControllers,
+              initialWords: widget.initialWords,
               changePage: () {
                 setState(() {
                   _currentPage++;
