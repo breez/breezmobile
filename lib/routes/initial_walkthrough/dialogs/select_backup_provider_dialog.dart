@@ -12,13 +12,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 
 class SelectBackupProviderDialog extends StatefulWidget {
-  final List<BackupProvider> backupProviders;
   final BackupSettings backupSettings;
+  final bool isRestoreFlow;
 
   const SelectBackupProviderDialog({
     Key key,
-    this.backupProviders,
-    this.backupSettings,
+    @required this.backupSettings,
+    this.isRestoreFlow = false,
   }) : super(key: key);
 
   @override
@@ -30,12 +30,13 @@ class SelectBackupProviderDialog extends StatefulWidget {
 class SelectBackupProviderDialogState
     extends State<SelectBackupProviderDialog> {
   int _selectedProviderIndex = 0;
-
+  List<BackupProvider> _backupProviders;
   @override
   void initState() {
     super.initState();
     setState(() {
-      _selectedProviderIndex = widget.backupProviders.indexOf(
+      _backupProviders = BackupSettings.availableBackupProviders();
+      _selectedProviderIndex = _backupProviders.indexOf(
         widget.backupSettings.backupProvider,
       );
     });
@@ -63,17 +64,19 @@ class SelectBackupProviderDialogState
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           Text(
-            texts.backup_provider_dialog_message_restore,
+            widget.isRestoreFlow
+                ? texts.backup_provider_dialog_message_restore
+                : texts.backup_provider_dialog_message_store,
             style: themeData.primaryTextTheme.displaySmall.copyWith(
               fontSize: 16,
             ),
           ),
           SizedBox(
             width: 150.0,
-            height: widget.backupProviders.length * 50.0,
+            height: _backupProviders.length * 50.0,
             child: ListView.builder(
               shrinkWrap: false,
-              itemCount: widget.backupProviders.length,
+              itemCount: _backupProviders.length,
               itemBuilder: (BuildContext context, int index) {
                 return ListTile(
                   contentPadding: const EdgeInsets.symmetric(horizontal: 0.0),
@@ -88,7 +91,7 @@ class SelectBackupProviderDialogState
                           color: themeData.colorScheme.background,
                         ),
                   title: Text(
-                    widget.backupProviders[index].displayName,
+                    _backupProviders[index].displayName,
                     style: themeData.dialogTheme.titleTextStyle.copyWith(
                       fontSize: 14.3,
                       height: 1.2,
@@ -118,7 +121,7 @@ class SelectBackupProviderDialogState
             foregroundColor: themeData.primaryTextTheme.labelLarge.color,
           ),
           onPressed: () => _selectProvider(
-            widget.backupProviders[_selectedProviderIndex],
+            _backupProviders[_selectedProviderIndex],
           ),
           child: Text(texts.backup_provider_dialog_action_ok),
         ),
@@ -134,7 +137,9 @@ class SelectBackupProviderDialogState
   ) async {
     final backupBloc = AppBlocsProvider.of<BackupBloc>(context);
     BackupSettings backupSettings = widget.backupSettings;
-    if (selectedProvider.name == "remoteserver") {
+
+    final remoteServerProvider = BackupSettings.remoteServerBackupProvider();
+    if (selectedProvider.name == remoteServerProvider.name) {
       final auth = await promptAuthData(
         context,
         backupSettings,
@@ -156,7 +161,11 @@ class SelectBackupProviderDialogState
     updateBackupSettingsAction.future.then((updatedBackupSettings) {
       EasyLoading.dismiss();
 
-      _listSnapshots();
+      if (widget.isRestoreFlow) {
+        _listSnapshots();
+      } else {
+        Navigator.pop(context, selectedProvider);
+      }
     }).catchError((err) {
       EasyLoading.dismiss();
 

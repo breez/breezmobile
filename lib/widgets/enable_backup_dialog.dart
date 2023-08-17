@@ -3,9 +3,9 @@ import 'package:breez/bloc/backup/backup_actions.dart';
 import 'package:breez/bloc/backup/backup_bloc.dart';
 import 'package:breez/bloc/backup/backup_model.dart';
 import 'package:breez/bloc/blocs_provider.dart';
+import 'package:breez/routes/initial_walkthrough/dialogs/select_backup_provider_dialog.dart';
 import 'package:breez/routes/security_pin/remote_server_auth/remote_server_auth.dart';
 import 'package:breez/utils/min_font_size.dart';
-import 'package:breez/widgets/backup_provider_selection_dialog.dart';
 import 'package:breez/widgets/error_dialog.dart';
 import 'package:breez_translations/breez_translations_locales.dart';
 import 'package:flutter/material.dart';
@@ -216,7 +216,7 @@ class _BackupNowButtonState extends State<_BackupNowButton> {
     return showDialog<BackupProvider>(
       useRootNavigator: false,
       context: context,
-      builder: (_) => BackupProviderSelectionDialog(
+      builder: (_) => SelectBackupProviderDialog(
         backupSettings: backupSettings,
       ),
     );

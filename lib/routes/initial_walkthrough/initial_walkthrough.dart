@@ -223,22 +223,21 @@ class _InitialWalkthroughPageState extends State<InitialWalkthroughPage>
 
   void _restoreFromBackup() async {
     log.info("Restore from Backup");
-    final backupProviders = BackupSettings.availableBackupProviders();
-    _showSelectProviderDialog(backupProviders).then((snapshots) {
+
+    _showSelectProviderDialog().then((snapshots) {
       _showRestoreDialog(snapshots).then((restoreRequest) {
         _restore(restoreRequest);
       });
     });
   }
 
-  Future<List<SnapshotInfo>> _showSelectProviderDialog(
-      List<BackupProvider> backupProviders) {
+  Future<List<SnapshotInfo>> _showSelectProviderDialog() {
     return showDialog<List<SnapshotInfo>>(
       useRootNavigator: false,
       context: context,
       builder: (_) => SelectBackupProviderDialog(
-        backupProviders: backupProviders,
         backupSettings: _backupSettings,
+        isRestoreFlow: true,
       ),
     );
   }
