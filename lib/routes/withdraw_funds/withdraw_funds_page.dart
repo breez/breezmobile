@@ -118,7 +118,8 @@ class WithdrawFundsPageState extends State<WithdrawFundsPage> {
               focusNode: _amountFocusNode,
               controller: _amountController,
               validatorFn: (amount) {
-                String err = acc.validateOutgoingPayment(amount, autoFilled: _isMax);
+                String err =
+                    acc.validateOutgoingPayment(amount, autoFilled: _isMax);
                 if (err == null) {
                   if (amount < widget.policy.minValue) {
                     err = texts.withdraw_funds_error_min_value(
@@ -190,7 +191,7 @@ class WithdrawFundsPageState extends State<WithdrawFundsPage> {
                             height: 24.0,
                           ),
                           tooltip: texts.withdraw_funds_scan_barcode,
-                          onPressed: () => _scanBarcode(context, acc),
+                          onPressed: () => _scanBarcode(acc),
                         ),
                       ),
                       style: theme.FieldTextStyle.textStyle,
@@ -296,7 +297,7 @@ class WithdrawFundsPageState extends State<WithdrawFundsPage> {
     });
   }
 
-  Future _scanBarcode(BuildContext context, AccountModel account) async {
+  Future _scanBarcode(AccountModel account) async {
     final texts = context.texts();
     FocusScope.of(context).requestFocus(FocusNode());
     await Navigator.pushNamed<String>(context, "/qr_scan").then((barcode) {
