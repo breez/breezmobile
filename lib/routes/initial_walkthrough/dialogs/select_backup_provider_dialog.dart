@@ -198,17 +198,20 @@ class SelectBackupProviderDialogState
   void _handleError(error) {
     EasyLoading.dismiss();
 
-    Navigator.pop(context);
-    if (error.runtimeType != SignInFailedException) {
-      final texts = context.texts();
-      final message = extractExceptionMessage(error.toString(), texts: texts);
-      showFlushbar(
-        context,
-        duration: const Duration(seconds: 3),
-        message: message,
-      );
-    } else {
-      _handleSignInException(error as SignInFailedException);
+    switch (error.runtimeType) {
+      case InsufficientPermissionException:
+        return;
+      case SignInFailedException:
+        Navigator.pop(context);
+        _handleSignInException(error);
+        break;
+      default:
+        Navigator.pop(context);
+        showFlushbar(
+          context,
+          duration: const Duration(seconds: 3),
+          message: error.toString(),
+        );
     }
   }
 
