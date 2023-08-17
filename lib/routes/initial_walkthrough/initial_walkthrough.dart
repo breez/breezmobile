@@ -238,6 +238,7 @@ class _InitialWalkthroughPageState extends State<InitialWalkthroughPage>
       context: context,
       builder: (_) => SelectBackupProviderDialog(
         backupProviders: backupProviders,
+        backupSettings: _backupSettings,
       ),
     );
   }

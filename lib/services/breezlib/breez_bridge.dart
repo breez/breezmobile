@@ -804,7 +804,9 @@ class BreezBridge {
   }
 
   Future setBackupEncryptionKey(
-      List<int> encryptionKey, String encryptionType) {
+    List<int> encryptionKey,
+    String encryptionType,
+  ) {
     return _invokeMethodImmediate("setBackupEncryptionKey", {
       "encryptionKey": encryptionKey,
       "encryptionType": encryptionType ?? ""
