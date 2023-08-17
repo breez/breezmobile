@@ -317,8 +317,12 @@ class BackupBloc with AsyncActionsHandler {
   }
 
   Future _saveBackupKey(SaveBackupKey action) async {
-    await BreezLibBackupKey.save(_secureStorage, action.backupPhrase);
-    action.resolve(null);
+    try {
+      await BreezLibBackupKey.save(_secureStorage, action.backupPhrase);
+      action.resolve(null);
+    } catch (error) {
+      action.resolveError(error);
+    }
   }
 
   Future _downloadSnapshot(DownloadSnapshot action) async {
@@ -403,7 +407,7 @@ class BackupBloc with AsyncActionsHandler {
       action.resolve(true);
     } catch (error) {
       _clearAppData();
-      action.resolveError(error);
+      action.resolveError("Failed to restore backup.");
     }
   }
 
@@ -670,9 +674,9 @@ class BackupBloc with AsyncActionsHandler {
 
   void _clearAppData() {
     try {
-      Directory(_backupAppDataDirPath)
-          .list(recursive: true)
-          .listen((file) => file.deleteSync());
+      Directory(_backupAppDataDirPath).list(recursive: true).listen(
+            (file) => file.deleteSync(),
+          );
     } on Exception {
       rethrow;
     }
