@@ -5,7 +5,6 @@ import 'package:breez/bloc/backup/backup_model.dart';
 import 'package:breez/bloc/blocs_provider.dart';
 import 'package:breez/routes/initial_walkthrough/loaders/loader_indicator.dart';
 import 'package:breez/routes/security_pin/remote_server_auth.dart';
-import 'package:breez/utils/exceptions.dart';
 import 'package:breez/widgets/error_dialog.dart';
 import 'package:breez/widgets/flushbar.dart';
 import 'package:breez_translations/breez_translations_locales.dart';
@@ -14,10 +13,12 @@ import 'package:flutter_easyloading/flutter_easyloading.dart';
 
 class SelectBackupProviderDialog extends StatefulWidget {
   final List<BackupProvider> backupProviders;
+  final BackupSettings backupSettings;
 
   const SelectBackupProviderDialog({
     Key key,
     this.backupProviders,
+    this.backupSettings,
   }) : super(key: key);
 
   @override
@@ -29,6 +30,16 @@ class SelectBackupProviderDialog extends StatefulWidget {
 class SelectBackupProviderDialogState
     extends State<SelectBackupProviderDialog> {
   int _selectedProviderIndex = 0;
+
+  @override
+  void initState() {
+    super.initState();
+    setState(() {
+      _selectedProviderIndex = widget.backupProviders.indexOf(
+        widget.backupSettings.backupProvider,
+      );
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -122,42 +133,39 @@ class SelectBackupProviderDialogState
     BackupProvider selectedProvider,
   ) async {
     final backupBloc = AppBlocsProvider.of<BackupBloc>(context);
-    backupBloc.backupSettingsStream.first.then(
-      (backupSettings) async {
-        if (selectedProvider.name == "remoteserver") {
-          final auth = await promptAuthData(
-            context,
-            restore: true,
-          );
-          if (auth == null) {
-            return;
-          }
-          backupSettings = backupSettings.copyWith(
-            remoteServerAuthData: auth,
-          );
-        }
-        final updateBackupSettingsAction = UpdateBackupSettings(
-          backupSettings.copyWith(backupProvider: selectedProvider),
-        );
-        backupBloc.backupActionsSink.add(updateBackupSettingsAction);
-        EasyLoading.show();
-
-        updateBackupSettingsAction.future.then((updatedBackupSettings) {
-          EasyLoading.dismiss();
-
-          _listSnapshots(backupBloc);
-        }).catchError((err) {
-          EasyLoading.dismiss();
-
-          Navigator.pop(context);
-          showFlushbar(
-            context,
-            duration: const Duration(seconds: 3),
-            message: err.toString(),
-          );
-        });
-      },
+    BackupSettings backupSettings = widget.backupSettings;
+    if (selectedProvider.name == "remoteserver") {
+      final auth = await promptAuthData(
+        context,
+        restore: true,
+      );
+      if (auth == null) {
+        return;
+      }
+      backupSettings = backupSettings.copyWith(
+        remoteServerAuthData: auth,
+      );
+    }
+    final updateBackupSettingsAction = UpdateBackupSettings(
+      backupSettings.copyWith(backupProvider: selectedProvider),
     );
+    backupBloc.backupActionsSink.add(updateBackupSettingsAction);
+    EasyLoading.show();
+
+    updateBackupSettingsAction.future.then((updatedBackupSettings) {
+      EasyLoading.dismiss();
+
+      _listSnapshots(backupBloc);
+    }).catchError((err) {
+      EasyLoading.dismiss();
+
+      Navigator.pop(context);
+      showFlushbar(
+        context,
+        duration: const Duration(seconds: 3),
+        message: err.toString(),
+      );
+    });
   }
 
   Future _listSnapshots(BackupBloc backupBloc) {
