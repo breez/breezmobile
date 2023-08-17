@@ -2,7 +2,7 @@ import 'package:auto_size_text/auto_size_text.dart';
 import 'package:breez/bloc/backup/backup_actions.dart';
 import 'package:breez/bloc/backup/backup_bloc.dart';
 import 'package:breez/bloc/backup/backup_model.dart';
-import 'package:breez/routes/security_pin/remote_server_auth.dart';
+import 'package:breez/routes/security_pin/remote_server_auth/remote_server_auth.dart';
 import 'package:breez_translations/breez_translations_locales.dart';
 import 'package:flutter/material.dart';
 
@@ -138,20 +138,20 @@ class BackupProviderSelectionDialogState
     final provider = BackupSettings.remoteServerBackupProvider();
     final selectedProvider = providers[_selectedProviderIndex];
 
-    var settings = backupSettings;
     if (selectedProvider.name == provider.name) {
       final auth = await promptAuthData(
         context,
+        backupSettings,
         restore: true,
       );
       if (auth == null) {
         return;
       }
-      settings = settings.copyWith(
+      backupSettings = backupSettings.copyWith(
         remoteServerAuthData: auth,
       );
     }
-    final setAction = UpdateBackupSettings(settings.copyWith(
+    final setAction = UpdateBackupSettings(backupSettings.copyWith(
       backupProvider: selectedProvider,
     ));
     widget.backupBloc.backupActionsSink.add(setAction);
