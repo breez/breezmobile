@@ -13,6 +13,7 @@ import 'package:breez/services/background_task.dart';
 import 'package:breez/services/breezlib/breez_bridge.dart';
 import 'package:breez/services/breezlib/data/messages.pb.dart';
 import 'package:breez/services/injector.dart';
+import 'package:breez/utils/exceptions.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:path_provider/path_provider.dart';
@@ -27,6 +28,8 @@ class BackupBloc with AsyncActionsHandler {
   static const String _notFoundMessage = "404";
   static const String _noAccess = "403";
   static const String _empty = "empty";
+  static const String _insufficientPermission =
+      "ACCESS_TOKEN_SCOPE_INSUFFICIENT";
   static const String USER_DETAILS_PREFERENCES_KEY = "BreezUserModel.userID";
 
   static const _kDefaultOverrideFee = false;
@@ -321,26 +324,38 @@ class BackupBloc with AsyncActionsHandler {
 
   Future _listSnapshots(ListSnapshots action) async {
     try {
-      String backups = await _breezLib.getAvailableBackups();
-      List snapshotsArray = json.decode(backups) as List;
-      List<SnapshotInfo> snapshots = <SnapshotInfo>[];
-      if (snapshotsArray != null) {
-        snapshots = snapshotsArray.map((s) {
-          return SnapshotInfo.fromJson(s);
-        }).toList();
+      bool signedIn = await _breezLib.signIn(true, false);
+      if (signedIn) {
+        String backups = await _breezLib.getAvailableBackups();
+        List snapshotsArray = json.decode(backups) as List;
+        List<SnapshotInfo> snapshots = <SnapshotInfo>[];
+        if (snapshotsArray != null) {
+          snapshots = snapshotsArray.map((s) {
+            return SnapshotInfo.fromJson(s);
+          }).toList();
+        }
+        snapshots.sort((s1, s2) => s2.modifiedTime.compareTo(s1.modifiedTime));
+        action.resolve(snapshots);
+      } else {
+        action.resolveError(
+          SignInFailedException(
+            _backupSettingsController.value.backupProvider,
+          ),
+        );
       }
-      snapshots.sort((s1, s2) => s2.modifiedTime.compareTo(s1.modifiedTime));
-      action.resolve(snapshots);
     } on PlatformException catch (e) {
-      dynamic exception = e.message;
+      dynamic exception = extractExceptionMessage(e.message);
       // the error code equals the message from the go library so
       // not to confuse the two.
       if (e.code == _signInFailedMessage || e.message == _signInFailedCode) {
         exception = SignInFailedException(
           _backupSettingsController.value.backupProvider,
         );
-      } else if (e.code == _empty) {
+      } else if (e.code == _empty || exception == _empty) {
         exception = NoBackupFoundException();
+      } else if (exception.contains(_insufficientPermission)) {
+        // TODO: Handle Insufficient Permissions error properly
+        exception = InsufficientPermissionException();
       }
       action.resolveError(exception);
     } catch (error) {
