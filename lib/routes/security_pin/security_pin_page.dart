@@ -12,7 +12,7 @@ import 'package:breez/routes/security_pin/backup_phrase/backup_phrase_confirmati
 import 'package:breez/routes/security_pin/backup_phrase/backup_phrase_warning_dialog.dart';
 import 'package:breez/routes/security_pin/change_pin_code.dart';
 import 'package:breez/routes/security_pin/lock_screen.dart';
-import 'package:breez/routes/security_pin/remote_server_auth.dart';
+import 'package:breez/routes/security_pin/remote_server_auth/remote_server_auth.dart';
 import 'package:breez/services/local_auth_service.dart';
 import 'package:breez/theme_data.dart' as theme;
 import 'package:breez/utils/date.dart';
@@ -292,7 +292,7 @@ class SecurityPageState extends State<SecurityPage>
           onChanged: (BackupProvider newValue) {
             if (newValue.name ==
                 BackupSettings.remoteServerBackupProvider().name) {
-              promptAuthData(context).then((auth) {
+              promptAuthData(context, backupSettings).then((auth) {
                 if (auth == null) {
                   return;
                 }
@@ -424,7 +424,7 @@ class SecurityPageState extends State<SecurityPage>
         size: 30.0,
       ),
       onTap: () {
-        promptAuthData(context).then((auth) {
+        promptAuthData(context, backupSettings).then((auth) {
           if (auth != null) {
             _updateBackupSettings(
               context,
@@ -680,7 +680,8 @@ class SecurityPageState extends State<SecurityPage>
   }
 
   void triggerBackup() {
-    widget.backupBloc.backupNowSink.add(const BackupNowAction(recoverEnabled: true));
+    widget.backupBloc.backupNowSink
+        .add(const BackupNowAction(recoverEnabled: true));
     widget.backupBloc.backupStateStream
         .firstWhere((s) => s.inProgress)
         .then((s) {
