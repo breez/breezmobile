@@ -148,28 +148,39 @@ class BackupBloc with AsyncActionsHandler {
   }
 
   Future _updateBackupSettings(UpdateBackupSettings action) async {
-    final oldSettings = _backupSettingsController.value;
-    final newSettings = action.settings;
-    log.info("update backup from:\n$oldSettings to:\n$newSettings");
-    _backupSettingsController.add(newSettings);
-    // Always update settings
-    await _setBreezLibBackupKey(backupKeyType: newSettings.backupKeyType);
-    await _updateBackupProvider(newSettings);
-    action.resolve(newSettings);
+    try {
+      final oldSettings = _backupSettingsController.value;
+      final newSettings = action.settings;
+      if (oldSettings != newSettings) {
+        log.info("update backup from:\n$oldSettings to:\n$newSettings");
+        _backupSettingsController.add(newSettings);
+        // Always update settings
+        await _setBreezLibBackupKey(backupKeyType: newSettings.backupKeyType);
+        await _updateBackupProvider(newSettings);
+      }
+      action.resolve(oldSettings);
+    } catch (error) {
+      action.resolveError("Failed to update backup settings.");
+    }
   }
 
   Future _updateBackupProvider(BackupSettings settings) async {
-    String authData;
-    if (settings.backupProvider.name ==
-        BackupSettings.remoteServerBackupProvider().name) {
-      log.info("update backup provider auth data as a remote server");
-      var map = settings.remoteServerAuthData.toJson();
-      authData = json.encode(map);
-    } else {
-      log.info(
-          "update backup provider auth data as ${settings.backupProvider.name} server");
+    try {
+      String authData;
+      if (settings.backupProvider.name ==
+          BackupSettings.remoteServerBackupProvider().name) {
+        log.info("update backup provider auth data as a remote server");
+        var map = settings.remoteServerAuthData.toJson();
+        authData = json.encode(map);
+      } else {
+        log.info(
+          "update backup provider auth data as ${settings.backupProvider.name} server",
+        );
+      }
+      await _breezLib.setBackupProvider(settings.backupProvider.name, authData);
+    } catch (error) {
+      throw Exception("Failed to update backup provider.");
     }
-    await _breezLib.setBackupProvider(settings.backupProvider.name, authData);
   }
 
   Future _initializePersistentData() async {
@@ -315,11 +326,15 @@ class BackupBloc with AsyncActionsHandler {
 
   Future _setBreezLibBackupKey({BackupKeyType backupKeyType}) async {
     backupKeyType ??= _backupSettingsController.value.backupKeyType;
-    var encryptionKey =
-        await BreezLibBackupKey.fromSettings(_secureStorage, backupKeyType);
+    var encryptionKey = await BreezLibBackupKey.fromSettings(
+      _secureStorage,
+      backupKeyType,
+    );
 
     return _breezLib.setBackupEncryptionKey(
-        encryptionKey?.key, encryptionKey?.type);
+      encryptionKey?.key,
+      encryptionKey?.type,
+    );
   }
 
   Future _listSnapshots(ListSnapshots action) async {
@@ -359,7 +374,7 @@ class BackupBloc with AsyncActionsHandler {
       }
       action.resolveError(exception);
     } catch (error) {
-      action.resolveError(error);
+      action.resolveError("Failed to list snapshots.");
     }
   }
 
