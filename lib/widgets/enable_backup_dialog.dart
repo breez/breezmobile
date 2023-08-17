@@ -187,10 +187,12 @@ class _BackupNowButtonState extends State<_BackupNowButton> {
             if (provider != null) {
               if (widget.signInNeeded &&
                   provider == BackupSettings.icloudBackupProvider()) {
-                return await _showSignInNeededDialog();
+                await _showSignInNeededDialog();
+                return;
               }
               if (provider == BackupSettings.remoteServerBackupProvider()) {
-                return await _enterRemoteServerCredentials(backupBloc);
+                await _enterRemoteServerCredentials(backupBloc);
+                return;
               }
 
               backupBloc.backupNowSink.add(
@@ -234,7 +236,6 @@ class _BackupNowButtonState extends State<_BackupNowButton> {
         style: themeData.dialogTheme.contentTextStyle,
       ),
     );
-    return;
   }
 
   Future<void> _enterRemoteServerCredentials(BackupBloc backupBloc) async {
@@ -257,6 +258,5 @@ class _BackupNowButtonState extends State<_BackupNowButton> {
         }
       },
     );
-    return;
   }
 }
