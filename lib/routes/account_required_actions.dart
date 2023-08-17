@@ -45,8 +45,8 @@ class AccountRequiredActionsIndicator extends StatefulWidget {
 class AccountRequiredActionsIndicatorState
     extends State<AccountRequiredActionsIndicator> {
   StreamSubscription<void> _promptEnableSubscription;
-  StreamSubscription<BackupSettings> _settingsSubscription;
-  BackupSettings _currentSettings;
+  StreamSubscription<BackupSettings> _backupSettingsSubscription;
+  BackupSettings _backupSettings;
   bool showingBackupDialog = false;
   bool _init = false;
 
@@ -54,35 +54,46 @@ class AccountRequiredActionsIndicatorState
   void didChangeDependencies() {
     super.didChangeDependencies();
     if (!_init) {
-      _settingsSubscription = widget._backupBloc.backupSettingsStream
-          .listen((settings) => _currentSettings = settings);
+      _backupSettingsSubscription =
+          widget._backupBloc.backupSettingsStream.listen(
+        (backupSettings) {
+          setState(() {
+            _backupSettings = backupSettings;
+          });
+        },
+      );
 
       _promptEnableSubscription = widget._backupBloc.promptBackupStream
           .delay(const Duration(seconds: 4))
-          .listen((needSignIn) async {
-        if (_currentSettings.promptOnError && !showingBackupDialog) {
-          showingBackupDialog = true;
-          widget._backupBloc.backupPromptVisibleSink.add(true);
-          popFlushbars(context);
-          showDialog(
-            useRootNavigator: false,
-            barrierDismissible: false,
-            context: context,
-            builder: (_) => EnableBackupDialog(signInNeeded: needSignIn),
-          ).then((_) {
-            showingBackupDialog = false;
-            widget._backupBloc.backupPromptVisibleSink.add(false);
-          });
-        }
-      });
+          .listen((signInNeeded) => _promptBackup(signInNeeded));
       _init = true;
+    }
+  }
+
+  void _promptBackup(bool signInNeeded) async {
+    if (_backupSettings.promptOnError && !showingBackupDialog) {
+      showingBackupDialog = true;
+      widget._backupBloc.backupPromptVisibleSink.add(true);
+      popFlushbars(context);
+      showDialog(
+        useRootNavigator: false,
+        barrierDismissible: false,
+        context: context,
+        builder: (_) => EnableBackupDialog(
+          backupSettings: _backupSettings,
+          signInNeeded: signInNeeded,
+        ),
+      ).then((_) {
+        showingBackupDialog = false;
+        widget._backupBloc.backupPromptVisibleSink.add(false);
+      });
     }
   }
 
   @override
   void dispose() {
-    _promptEnableSubscription.cancel();
-    _settingsSubscription.cancel();
+    _promptEnableSubscription?.cancel();
+    _backupSettingsSubscription?.cancel();
     super.dispose();
   }
 
@@ -239,6 +250,7 @@ class AccountRequiredActionsIndicatorState
               barrierDismissible: false,
               context: context,
               builder: (_) => EnableBackupDialog(
+                backupSettings: _backupSettings,
                 signInNeeded: signInNeeded,
               ),
             );
