@@ -32,11 +32,11 @@ dependencies:
   extended_image: <8.0.0 # Requires Flutter 3.10
   ffmpeg_kit_flutter_https_gpl: ^5.1.0
   file_picker: <5.3.2 # Requires Flutter 3.10
-  firebase_core: ^2.15.0
+  firebase_core: ^2.15.1
   firebase_core_platform_interface: ^4.8.0
-  firebase_database: ^10.2.4
-  firebase_dynamic_links: ^5.3.4
-  firebase_messaging: ^14.6.5
+  firebase_database: ^10.2.5
+  firebase_dynamic_links: ^5.3.5
+  firebase_messaging: ^14.6.6
   fixnum: ^1.1.0
   flutter_easyloading: ^3.0.5
   flutter_secure_storage: ^8.0.0
@@ -62,7 +62,7 @@ dependencies:
   nostr_tools: ^1.0.7
   package_info_plus: ^4.1.0
   path: ^1.8.3
-  path_provider: ^2.0.15
+  path_provider: ^2.1.0
   path_provider_platform_interface: ^2.1.0
   pdf: ^3.10.4
   plugin_platform_interface: ^2.1.5
@@ -93,7 +93,7 @@ dependencies:
   validators: ^3.0.0
   webdav_client: ^1.2.1
   webview_flutter: ^4.2.2
-  webview_flutter_android: ^3.9.2
+  webview_flutter_android: ^3.9.3
 
   anytime:
     git:
@@ -214,7 +214,7 @@ flutter:
     - family: ComfortaaBold
       fonts:
         - asset: fonts/Comfortaa-Bold.ttf
-    - family: IBMPlexSansRegular
+    - family: IBMPlexSansRegularEnableBackupDialog
       fonts:
         - asset: fonts/IBMPlexSans-Regular.ttf
     - family: HacenTunisia
