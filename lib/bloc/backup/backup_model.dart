@@ -301,6 +301,13 @@ class MethodNotFoundException implements Exception {
   }
 }
 
+class InsufficientPermissionException implements Exception {
+  @override
+  String toString() {
+    return "Request had insufficient authentication scopes.";
+  }
+}
+
 class NoBackupFoundException implements Exception {
   @override
   String toString() {

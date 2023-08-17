@@ -819,7 +819,6 @@ class BreezBridge {
   }
 
   Future<String> getAvailableBackups() async {
-    await signIn(true, false);
     return await _methodChannel
         .invokeMethod("availableSnapshots")
         .then((res) => res as String);
