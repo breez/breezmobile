@@ -183,6 +183,7 @@ class RestoreDialogState extends State<RestoreDialog> {
     return Navigator.of(context).push(
       FadeInRoute<String>(
         builder: (_) => EnterMnemonicsPage(
+          is24Word: _selectedSnapshot.encryptionType == "Mnemonics",
           initialWords: _initialWords,
         ),
       ),
