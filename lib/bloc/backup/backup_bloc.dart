@@ -30,6 +30,7 @@ class BackupBloc with AsyncActionsHandler {
   static const String _empty = "empty";
   static const String _insufficientPermission =
       "ACCESS_TOKEN_SCOPE_INSUFFICIENT";
+  static const String _invalidCredentials = "Invalid Credentials";
   static const String USER_DETAILS_PREFERENCES_KEY = "BreezUserModel.userID";
 
   static const _kDefaultOverrideFee = false;
@@ -371,6 +372,13 @@ class BackupBloc with AsyncActionsHandler {
       } else if (exception.contains(_insufficientPermission)) {
         // TODO: Handle Insufficient Permissions error properly
         exception = InsufficientPermissionException();
+      } else if (exception.contains(_invalidCredentials)) {
+        // If user revokes Breez permissions from their GDrive account during a
+        // session. They won't be able to sign in again.
+        // This is a work around for not having force arg on signIn() on iOS
+        // TODO: Handle Invalid CredentialsException error properly
+        await _breezLib.signOut();
+        exception = InvalidCredentialsException();
       }
       action.resolveError(exception);
     } catch (error) {
