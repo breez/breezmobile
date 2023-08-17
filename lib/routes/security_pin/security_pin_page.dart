@@ -253,7 +253,6 @@ class SecurityPageState extends State<SecurityPage>
               (approved) {
                 if (approved) {
                   _updateBackupSettings(
-                    context,
                     backupSettings,
                     backupSettings.copyWith(
                       keyType: BackupKeyType.NONE,
@@ -297,7 +296,6 @@ class SecurityPageState extends State<SecurityPage>
                   return;
                 }
                 _updateBackupSettings(
-                  context,
                   backupSettings,
                   backupSettings.copyWith(
                     backupProvider: newValue,
@@ -308,7 +306,6 @@ class SecurityPageState extends State<SecurityPage>
               return;
             }
             _updateBackupSettings(
-              context,
               backupSettings,
               backupSettings.copyWith(
                 backupProvider: newValue,
@@ -427,7 +424,6 @@ class SecurityPageState extends State<SecurityPage>
         promptAuthData(context, backupSettings).then((auth) {
           if (auth != null) {
             _updateBackupSettings(
-              context,
               backupSettings,
               backupSettings.copyWith(
                 remoteServerAuthData: auth,
@@ -657,7 +653,6 @@ class SecurityPageState extends State<SecurityPage>
   }
 
   Future _updateBackupSettings(
-    BuildContext context,
     BackupSettings oldBackupSettings,
     BackupSettings newBackupSettings,
   ) async {

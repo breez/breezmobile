@@ -104,7 +104,7 @@ class CalendarDialogState extends State<CalendarDialog> {
     return GestureDetector(
       onTap: () {
         setState(() {
-          _selectDate(context, isStartBtn);
+          _selectDate(isStartBtn);
         });
       },
       behavior: HitTestBehavior.translucent,
@@ -127,7 +127,7 @@ class CalendarDialogState extends State<CalendarDialog> {
     );
   }
 
-  Future<void> _selectDate(BuildContext context, bool isStartBtn) async {
+  Future<void> _selectDate(bool isStartBtn) async {
     DateTime selectedDate = await showDatePicker(
       initialEntryMode: DatePickerEntryMode.calendarOnly,
       context: context,

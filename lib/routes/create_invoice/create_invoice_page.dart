@@ -227,12 +227,7 @@ class CreateInvoicePageState extends State<CreateInvoicePage> {
                   height: 24.0,
                 ),
                 tooltip: texts.invoice_action_scan_barcode,
-                onPressed: () => account != null
-                    ? _scanBarcode(
-                        context,
-                        account,
-                      )
-                    : null,
+                onPressed: () => account != null ? _scanBarcode(account) : null,
               );
             },
           )
@@ -508,7 +503,7 @@ class CreateInvoicePageState extends State<CreateInvoicePage> {
     });
   }
 
-  Future _scanBarcode(BuildContext context, AccountModel account) async {
+  Future _scanBarcode(AccountModel account) async {
     final texts = context.texts();
     final navigator = Navigator.of(context);
     final themeData = Theme.of(context);

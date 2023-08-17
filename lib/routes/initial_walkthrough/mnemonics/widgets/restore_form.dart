@@ -67,7 +67,7 @@ class RestoreFormState extends State<RestoreForm> {
                 style: theme.FieldTextStyle.textStyle,
               ),
               autovalidateMode: _autoValidateMode,
-              validator: (text) => _onValidate(context, text),
+              validator: (text) => _onValidate(text),
               suggestionsCallback: _getSuggestions,
               hideOnEmpty: true,
               autoFlipDirection: true,
@@ -111,7 +111,7 @@ class RestoreFormState extends State<RestoreForm> {
     );
   }
 
-  String _onValidate(BuildContext context, String text) {
+  String _onValidate(String text) {
     final texts = context.texts();
     if (text.isEmpty) {
       return texts.enter_backup_phrase_missing_word;

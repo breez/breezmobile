@@ -4,7 +4,7 @@ import 'package:breez/theme_data.dart' as theme;
 import 'package:breez_translations/breez_translations_locales.dart';
 import 'package:flutter/material.dart';
 
-class PosInvoiceNumPad extends StatelessWidget {
+class PosInvoiceNumPad extends StatefulWidget {
   final Sale currentSale;
   final double width;
   final double height;
@@ -25,10 +25,15 @@ class PosInvoiceNumPad extends StatelessWidget {
   }) : super(key: key);
 
   @override
+  State<PosInvoiceNumPad> createState() => _PosInvoiceNumPadState();
+}
+
+class _PosInvoiceNumPadState extends State<PosInvoiceNumPad> {
+  @override
   Widget build(BuildContext context) {
     return SizedBox(
-      width: width,
-      height: height,
+      width: widget.width,
+      height: widget.height,
       child: Column(
         mainAxisSize: MainAxisSize.max,
         crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -38,9 +43,9 @@ class PosInvoiceNumPad extends StatelessWidget {
               mainAxisSize: MainAxisSize.max,
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                _numberButton(context, "1"),
-                _numberButton(context, "2"),
-                _numberButton(context, "3"),
+                _numberButton("1"),
+                _numberButton("2"),
+                _numberButton("3"),
               ],
             ),
           ),
@@ -49,9 +54,9 @@ class PosInvoiceNumPad extends StatelessWidget {
               mainAxisSize: MainAxisSize.max,
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                _numberButton(context, "4"),
-                _numberButton(context, "5"),
-                _numberButton(context, "6"),
+                _numberButton("4"),
+                _numberButton("5"),
+                _numberButton("6"),
               ],
             ),
           ),
@@ -60,9 +65,9 @@ class PosInvoiceNumPad extends StatelessWidget {
               mainAxisSize: MainAxisSize.max,
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                _numberButton(context, "7"),
-                _numberButton(context, "8"),
-                _numberButton(context, "9"),
+                _numberButton("7"),
+                _numberButton("8"),
+                _numberButton("9"),
               ],
             ),
           ),
@@ -71,9 +76,9 @@ class PosInvoiceNumPad extends StatelessWidget {
               mainAxisSize: MainAxisSize.max,
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                _clearButton(context),
-                _numberButton(context, "0"),
-                _additionButton(context),
+                _clearButton(),
+                _numberButton("0"),
+                _additionButton(),
               ],
             ),
           ),
@@ -82,14 +87,11 @@ class PosInvoiceNumPad extends StatelessWidget {
     );
   }
 
-  Widget _numberButton(
-    BuildContext context,
-    String number,
-  ) {
+  Widget _numberButton(String number) {
     final themeData = Theme.of(context);
     return Container(
-      width: width / 3.0,
-      height: height / 4.0,
+      width: widget.width / 3.0,
+      height: widget.height / 4.0,
       decoration: BoxDecoration(
         border: Border.all(
           color: themeData.colorScheme.background,
@@ -101,7 +103,7 @@ class PosInvoiceNumPad extends StatelessWidget {
           padding: EdgeInsets.zero,
           alignment: Alignment.center,
         ),
-        onPressed: () => onNumberPressed(number),
+        onPressed: () => widget.onNumberPressed(number),
         child: Text(
           number,
           textAlign: TextAlign.center,
@@ -111,12 +113,12 @@ class PosInvoiceNumPad extends StatelessWidget {
     );
   }
 
-  Widget _clearButton(BuildContext context) {
+  Widget _clearButton() {
     final texts = context.texts();
     final themeData = Theme.of(context);
     return Container(
-      width: width / 3.0,
-      height: height / 4.0,
+      width: widget.width / 3.0,
+      height: widget.height / 4.0,
       decoration: BoxDecoration(
         border: Border.all(
           color: themeData.colorScheme.background,
@@ -124,9 +126,9 @@ class PosInvoiceNumPad extends StatelessWidget {
         ),
       ),
       child: GestureDetector(
-        onLongPress: approveClear,
+        onLongPress: widget.approveClear,
         child: TextButton(
-          onPressed: clearAmounts,
+          onPressed: widget.clearAmounts,
           style: TextButton.styleFrom(
             padding: EdgeInsets.zero,
             alignment: Alignment.center,
@@ -140,12 +142,12 @@ class PosInvoiceNumPad extends StatelessWidget {
     );
   }
 
-  Widget _additionButton(BuildContext context) {
+  Widget _additionButton() {
     final texts = context.texts();
     final themeData = Theme.of(context);
     return Container(
-      width: width / 3.0,
-      height: height / 4.0,
+      width: widget.width / 3.0,
+      height: widget.height / 4.0,
       decoration: BoxDecoration(
         border: Border.all(
           color: themeData.colorScheme.background,
@@ -153,7 +155,7 @@ class PosInvoiceNumPad extends StatelessWidget {
         ),
       ),
       child: TextButton(
-        onPressed: onAddition,
+        onPressed: widget.onAddition,
         style: TextButton.styleFrom(
           padding: EdgeInsets.zero,
           alignment: Alignment.center,
