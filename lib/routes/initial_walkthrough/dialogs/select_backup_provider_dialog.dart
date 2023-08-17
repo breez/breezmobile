@@ -182,25 +182,15 @@ class SelectBackupProviderDialogState
     return listBackupsAction.future.then((snapshots) {
       EasyLoading.dismiss();
 
-      if (snapshots != null && snapshots is List<SnapshotInfo>) {
-        if (snapshots.isEmpty) {
-          _handleEmptySnapshot();
-        } else {
-          Navigator.pop(context, snapshots);
-        }
+      if (snapshots != null &&
+          snapshots.isNotEmpty &&
+          snapshots is List<SnapshotInfo>) {
+        Navigator.pop(context, snapshots);
+      } else {
+        throw context.texts().initial_walk_through_error_backup_location;
       }
     }).catchError(
       (error) => _handleError(error),
-    );
-  }
-
-  void _handleEmptySnapshot() {
-    Navigator.pop(context);
-    final texts = context.texts();
-    showFlushbar(
-      context,
-      duration: const Duration(seconds: 3),
-      message: texts.initial_walk_through_error_backup_location,
     );
   }
 
