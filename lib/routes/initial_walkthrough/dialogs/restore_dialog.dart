@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:math';
 
 import 'package:bip39/bip39.dart';
 import 'package:breez/bloc/backup/backup_actions.dart';
@@ -66,7 +67,7 @@ class RestoreDialogState extends State<RestoreDialog> {
             padding: const EdgeInsets.only(top: 16.0),
             child: SizedBox(
               width: 150.0,
-              height: 200.0,
+              height: min(widget.snapshots.length * 50.0, 200.0),
               child: ListView.builder(
                 shrinkWrap: false,
                 itemCount: widget.snapshots.length,
