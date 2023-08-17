@@ -2,7 +2,8 @@ import 'package:auto_size_text/auto_size_text.dart';
 import 'package:breez/bloc/backup/backup_actions.dart';
 import 'package:breez/bloc/backup/backup_bloc.dart';
 import 'package:breez/bloc/backup/backup_model.dart';
-import 'package:breez/routes/security_pin/remote_server_auth.dart';
+import 'package:breez/bloc/blocs_provider.dart';
+import 'package:breez/routes/security_pin/remote_server_auth/remote_server_auth.dart';
 import 'package:breez/utils/min_font_size.dart';
 import 'package:breez_translations/breez_translations_locales.dart';
 import 'package:flutter/material.dart';
@@ -11,12 +12,9 @@ import 'backup_provider_selection_dialog.dart';
 import 'error_dialog.dart';
 
 class EnableBackupDialog extends StatefulWidget {
-  final BuildContext context;
-  final BackupBloc backupBloc;
   final bool signInNeeded;
 
-  const EnableBackupDialog(this.context, this.backupBloc,
-      {this.signInNeeded = false});
+  const EnableBackupDialog({this.signInNeeded = false});
 
   @override
   EnableBackupDialogState createState() {
@@ -32,6 +30,7 @@ class EnableBackupDialogState extends State<EnableBackupDialog> {
   }
 
   Widget createEnableBackupDialog(BuildContext context) {
+    final backupBloc = AppBlocsProvider.of<BackupBloc>(context);
     final texts = context.texts();
     return Theme(
       data: Theme.of(context).copyWith(
@@ -45,12 +44,14 @@ class EnableBackupDialogState extends State<EnableBackupDialog> {
         ),
         contentPadding: const EdgeInsets.fromLTRB(8.0, 8.0, 8.0, 24.0),
         content: StreamBuilder<BackupSettings>(
-          stream: widget.backupBloc.backupSettingsStream,
+          stream: backupBloc.backupSettingsStream,
           builder: (context, snapshot) {
             if (!snapshot.hasData) {
               return Container();
             }
-            bool isRemoteServer = snapshot.data.backupProvider ==
+            final backupSettings = snapshot.data;
+
+            bool isRemoteServer = backupSettings.backupProvider ==
                 BackupSettings.remoteServerBackupProvider();
             return SizedBox(
               width: MediaQuery.of(context).size.width,
@@ -89,11 +90,10 @@ class EnableBackupDialogState extends State<EnableBackupDialog> {
                                 child: Checkbox(
                                   activeColor: Colors.white,
                                   checkColor: Theme.of(context).canvasColor,
-                                  value: !snapshot.data.promptOnError,
+                                  value: !backupSettings.promptOnError,
                                   onChanged: (v) {
-                                    var currentSettings = snapshot.data;
-                                    widget.backupBloc.backupSettingsSink.add(
-                                      currentSettings.copyWith(
+                                    backupBloc.backupSettingsSink.add(
+                                      backupSettings.copyWith(
                                         promptOnError: !v,
                                       ),
                                     );
@@ -123,7 +123,7 @@ class EnableBackupDialogState extends State<EnableBackupDialog> {
         ),
         actions: [
           TextButton(
-            onPressed: () => Navigator.pop(widget.context),
+            onPressed: () => Navigator.pop(context),
             child: Text(
               texts.backup_dialog_option_cancel,
               style: Theme.of(context).primaryTextTheme.labelLarge,
@@ -131,23 +131,24 @@ class EnableBackupDialogState extends State<EnableBackupDialog> {
             ),
           ),
           StreamBuilder<BackupSettings>(
-            stream: widget.backupBloc.backupSettingsStream,
+            stream: backupBloc.backupSettingsStream,
             builder: (context, snapshot) {
               if (snapshot.data == null) {
                 return Container();
               }
-              bool isRemoteServer = snapshot.data.backupProvider ==
+              final backupSettings = snapshot.data;
+              bool isRemoteServer = backupSettings.backupProvider ==
                   BackupSettings.remoteServerBackupProvider();
               return TextButton(
                 onPressed: (() async {
                   final themeData = Theme.of(context);
-                  Navigator.pop(widget.context);
-                  var provider = snapshot.data.backupProvider;
+                  Navigator.pop(context);
+                  var provider = backupSettings.backupProvider;
                   provider ??= await showDialog(
                     useRootNavigator: false,
                     context: context,
                     builder: (_) => BackupProviderSelectionDialog(
-                      backupBloc: widget.backupBloc,
+                      backupBloc: backupBloc,
                     ),
                   );
 
@@ -166,21 +167,24 @@ class EnableBackupDialogState extends State<EnableBackupDialog> {
                     }
                     if (provider ==
                         BackupSettings.remoteServerBackupProvider()) {
-                      promptAuthData(context, restore: false).then((auth) {
+                      promptAuthData(context, backupSettings, restore: false)
+                          .then((auth) {
                         if (auth != null) {
                           var action = UpdateBackupSettings(
-                            snapshot.data.copyWith(
+                            backupSettings.copyWith(
                               remoteServerAuthData: auth,
                             ),
                           );
-                          widget.backupBloc.backupActionsSink.add(action);
-                          widget.backupBloc.backupNowSink.add(const BackupNowAction(recoverEnabled: true));
+                          backupBloc.backupActionsSink.add(action);
+                          backupBloc.backupNowSink
+                              .add(const BackupNowAction(recoverEnabled: true));
                         }
                       });
                       return;
                     }
 
-                    widget.backupBloc.backupNowSink.add(const BackupNowAction(recoverEnabled: true));
+                    backupBloc.backupNowSink
+                        .add(const BackupNowAction(recoverEnabled: true));
                   }
                 }),
                 child: Text(
