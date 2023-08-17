@@ -167,19 +167,18 @@ class PaymentsFilterState extends State<PaymentsFilter> {
         ],
       };
       _filter = _getFilterTypeString(
-        context,
         widget._paymentsModel.filter.paymentType,
       );
     }
 
     return Row(children: [
-      _buildExportButton(context),
-      _buildCalendarButton(context),
-      _buildFilterDropdown(context)
+      _buildExportButton(),
+      _buildCalendarButton(),
+      _buildFilterDropdown()
     ]);
   }
 
-  Padding _buildCalendarButton(BuildContext context) {
+  Padding _buildCalendarButton() {
     final texts = context.texts();
     final themeData = Theme.of(context);
 
@@ -238,7 +237,7 @@ class PaymentsFilterState extends State<PaymentsFilter> {
     );
   }
 
-  Theme _buildFilterDropdown(BuildContext context) {
+  Theme _buildFilterDropdown() {
     final texts = context.texts();
     final themeData = Theme.of(context);
 
@@ -289,7 +288,6 @@ class PaymentsFilterState extends State<PaymentsFilter> {
   }
 
   String _getFilterTypeString(
-    BuildContext context,
     List<PaymentType> filterList,
   ) {
     for (var entry in _filterMap.entries) {
@@ -301,7 +299,7 @@ class PaymentsFilterState extends State<PaymentsFilter> {
     return texts.payments_filter_option_all;
   }
 
-  Padding _buildExportButton(BuildContext context) {
+  Padding _buildExportButton() {
     final themeData = Theme.of(context);
     final texts = context.texts();
 
@@ -320,7 +318,7 @@ class PaymentsFilterState extends State<PaymentsFilter> {
           itemBuilder: (context) => [
             PopupMenuItem(
               height: 36,
-              value: Choice(() => _exportPayments(context)),
+              value: Choice(() => _exportPayments()),
               child: Text(
                 texts.payments_filter_action_export,
                 style: themeData.textTheme.labelLarge,
@@ -349,7 +347,7 @@ class PaymentsFilterState extends State<PaymentsFilter> {
     choice.function();
   }
 
-  _exportPayments(BuildContext context) {
+  _exportPayments() {
     final texts = context.texts();
     final navigator = Navigator.of(context);
     var action = ExportPayments();
