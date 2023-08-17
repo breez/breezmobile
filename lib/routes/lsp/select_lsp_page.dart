@@ -141,11 +141,11 @@ class SelectLSPPageState extends State<SelectLSPPage> {
           );
         },
       ),
-      bottomNavigationBar: _buildBottomButton(context),
+      bottomNavigationBar: _buildBottomButton(),
     );
   }
 
-  Widget _buildBottomButton(BuildContext context) {
+  Widget _buildBottomButton() {
     final texts = context.texts();
 
     if (_error != null) {

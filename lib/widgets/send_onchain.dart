@@ -220,7 +220,7 @@ class SendOnchainState extends State<SendOnchain> {
                     ),
                     Container(
                       padding: const EdgeInsets.only(top: 12.0),
-                      child: _buildAvailableBTC(context, widget._account),
+                      child: _buildAvailableBTC(),
                     ),
                     widget.originalTransaction != null
                         ? CollapsibleListItem(
@@ -241,7 +241,7 @@ class SendOnchainState extends State<SendOnchain> {
     );
   }
 
-  Widget _buildAvailableBTC(BuildContext context, AccountModel acc) {
+  Widget _buildAvailableBTC() {
     final themeData = Theme.of(context);
     final texts = context.texts();
 
@@ -254,7 +254,7 @@ class SendOnchainState extends State<SendOnchain> {
         Padding(
           padding: const EdgeInsets.only(left: 3.0),
           child: Text(
-            acc.currency.format(widget._amount),
+            widget._account.currency.format(widget._amount),
             style: themeData.dialogTheme.contentTextStyle,
           ),
         ),

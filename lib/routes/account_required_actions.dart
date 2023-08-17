@@ -185,7 +185,6 @@ class AccountRequiredActionsIndicatorState
                                 final backupError = backupSnapshot.error;
 
                                 return _build(
-                                  context,
                                   lspStatus,
                                   accountSettings,
                                   accountModel,
@@ -213,7 +212,6 @@ class AccountRequiredActionsIndicatorState
   }
 
   Widget _build(
-    BuildContext context,
     LSPStatus lspStatus,
     AccountSettings accountSettings,
     AccountModel accountModel,

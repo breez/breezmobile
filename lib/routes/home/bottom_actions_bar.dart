@@ -25,11 +25,16 @@ import 'package:breez/widgets/warning_box.dart';
 import 'package:breez_translations/breez_translations_locales.dart';
 import 'package:flutter/material.dart';
 
-class BottomActionsBar extends StatelessWidget {
+class BottomActionsBar extends StatefulWidget {
   final GlobalKey firstPaymentItemKey;
 
   const BottomActionsBar(this.firstPaymentItemKey);
 
+  @override
+  State<BottomActionsBar> createState() => _BottomActionsBarState();
+}
+
+class _BottomActionsBarState extends State<BottomActionsBar> {
   @override
   Widget build(BuildContext context) {
     final texts = context.texts();
@@ -44,7 +49,7 @@ class BottomActionsBar extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: <Widget>[
             _Action(
-              onPress: () => _showSendOptions(context),
+              onPress: () => _showSendOptions(),
               group: actionsGroup,
               text: texts.bottom_action_bar_send,
               iconAssetPath: "src/icon/send-action.png",
@@ -70,7 +75,7 @@ class BottomActionsBar extends StatelessWidget {
     );
   }
 
-  Future _showSendOptions(BuildContext context) async {
+  Future _showSendOptions() async {
     final texts = context.texts();
     final invoiceBloc = AppBlocsProvider.of<InvoiceBloc>(context);
     final accBloc = AppBlocsProvider.of<AccountBloc>(context);
@@ -117,25 +122,17 @@ class BottomActionsBar extends StatelessWidget {
                               FadeInRoute(
                                 builder: (_) => SpontaneousPaymentPage(
                                   clipboardData.data,
-                                  firstPaymentItemKey,
+                                  widget.firstPaymentItemKey,
                                 ),
                               ),
                             );
                           }
                         } else {
-                          _showEnterPaymentInfoDialog(
-                            context,
-                            invoiceBloc,
-                            lnurlBloc,
-                          );
+                          _showEnterPaymentInfoDialog();
                         }
                       });
                     } else {
-                      _showEnterPaymentInfoDialog(
-                        context,
-                        invoiceBloc,
-                        lnurlBloc,
-                      );
+                      _showEnterPaymentInfoDialog();
                     }
                   },
                 ),
@@ -231,11 +228,9 @@ class BottomActionsBar extends StatelessWidget {
     );
   }
 
-  Future<dynamic> _showEnterPaymentInfoDialog(
-    BuildContext context,
-    InvoiceBloc invoiceBloc,
-    LNUrlBloc lnurlBloc,
-  ) {
+  Future<dynamic> _showEnterPaymentInfoDialog() {
+    final invoiceBloc = AppBlocsProvider.of<InvoiceBloc>(context);
+    final lnurlBloc = AppBlocsProvider.of<LNUrlBloc>(context);
     return showDialog(
       useRootNavigator: false,
       context: context,
@@ -244,7 +239,7 @@ class BottomActionsBar extends StatelessWidget {
         context,
         invoiceBloc,
         lnurlBloc,
-        firstPaymentItemKey,
+        widget.firstPaymentItemKey,
       ),
     );
   }

@@ -62,7 +62,7 @@ class SwapRefundDialogState extends State<SwapRefundDialog> {
                 return const Loader();
               }
 
-              return _build(context, swapStatus);
+              return _build(swapStatus);
             },
           );
         },
@@ -80,7 +80,6 @@ class SwapRefundDialogState extends State<SwapRefundDialog> {
   }
 
   Widget _build(
-    BuildContext context,
     SwapFundStatus swapStatus,
   ) {
     final themeData = Theme.of(context);
