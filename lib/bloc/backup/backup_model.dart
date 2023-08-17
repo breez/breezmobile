@@ -301,6 +301,13 @@ class MethodNotFoundException implements Exception {
   }
 }
 
+class InvalidCredentialsException implements Exception {
+  @override
+  String toString() {
+    return "Sign in failed. Please try again";
+  }
+}
+
 class InsufficientPermissionException implements Exception {
   @override
   String toString() {
