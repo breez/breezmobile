@@ -327,7 +327,7 @@ class OrderCardPageState extends State<OrderCardPage> {
     );
   }
 
-  List<Widget> _showSkipButton(BuildContext context, bool showSkip) {
+  List<Widget> _showSkipButton(bool showSkip) {
     final texts = context.texts();
 
     if (showSkip) {
@@ -396,7 +396,7 @@ class OrderCardPageState extends State<OrderCardPage> {
               ? texts.order_card_action_order_breez_card
               : texts.order_card_action_order_card,
         ),
-        actions: _showSkipButton(context, showSkip),
+        actions: _showSkipButton(showSkip),
       ),
       body: Padding(
         padding: const EdgeInsets.only(top: 16.0, left: 16.0, right: 16.0),
