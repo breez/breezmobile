@@ -23,7 +23,6 @@ import 'package:breez/routes/dev/dev.dart';
 import 'package:breez/routes/fiat_currencies/fiat_currency_settings.dart';
 import 'package:breez/routes/get_refund/get_refund_page.dart';
 import 'package:breez/routes/initial_walkthrough/initial_walkthrough.dart';
-import 'package:breez/routes/initial_walkthrough/mnemonics/enter_mnemonics.dart';
 import 'package:breez/routes/lsp/select_lsp_page.dart';
 import 'package:breez/routes/marketplace/marketplace.dart';
 import 'package:breez/routes/network/network.dart';
@@ -137,11 +136,6 @@ class UserApp extends StatelessWidget {
                 case '/splash':
                   return FadeInRoute(
                     builder: (_) => SplashPage(user),
-                    settings: settings,
-                  );
-                case '/enter_mnemonics':
-                  return FadeInRoute<String>(
-                    builder: (_) => const EnterMnemonicsPage(),
                     settings: settings,
                   );
                 case '/lockscreen':
