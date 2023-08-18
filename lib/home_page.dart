@@ -165,9 +165,7 @@ class HomeState extends State<Home> with WidgetsBindingObserver {
 
     // Listener for signing the comment
     commentBloc.signEventStream.listen((event) async {
-      final nostrPrivateKey = widget.nostrBloc.nostrPrivateKey;
-
-      widget.nostrBloc.actionsSink.add(SignEvent(event, nostrPrivateKey));
+      widget.nostrBloc.actionsSink.add(SignEvent(event));
 
       final Map<String, dynamic> signedEventObject =
           await widget.nostrBloc.eventStream.first;

@@ -6,11 +6,9 @@ class GetPublicKey extends AsyncAction {
 
 class SignEvent extends AsyncAction {
   final Map<String, dynamic> eventObject;
-  final String privateKey;
 
   SignEvent(
     this.eventObject,
-    this.privateKey,
   );
 }
 

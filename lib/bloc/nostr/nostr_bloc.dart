@@ -2,8 +2,6 @@ import 'dart:async';
 import 'dart:convert';
 
 import 'package:breez/bloc/async_actions_handler.dart';
-import 'package:breez/bloc/blocs_provider.dart';
-import 'package:breez/bloc/marketplace/marketplace_bloc.dart';
 import 'package:breez/bloc/nostr/nostr_actions.dart';
 import 'package:breez/bloc/nostr/nostr_model.dart';
 import 'package:breez/services/breezlib/breez_bridge.dart';
@@ -17,7 +15,7 @@ import '../marketplace/nostr_settings.dart';
 class NostrBloc with AsyncActionsHandler {
   BreezBridge _breezLib;
   String nostrPublicKey;
-  String nostrPrivateKey;
+  String _nostrPrivateKey;
 
   List<String> defaultRelaysList = [];
 
@@ -48,7 +46,7 @@ class NostrBloc with AsyncActionsHandler {
   void _initNostr() async {
     pref = await SharedPreferences.getInstance();
     nostrPublicKey = await _secureStorage.read(key: "nostrPublicKey");
-    nostrPrivateKey = await _secureStorage.read(key: "nostrPrivateKey");
+    _nostrPrivateKey = await _secureStorage.read(key: "_nostrPrivateKey");
   }
 
   final StreamController<String> _encryptDataController =
@@ -77,8 +75,7 @@ class NostrBloc with AsyncActionsHandler {
 
   Future<void> _handleSignEvent(SignEvent action) async {
     //  to sign the event
-    Map<String, dynamic> signedEvent =
-        await _signEvent(action.eventObject, action.privateKey);
+    Map<String, dynamic> signedEvent = await _signEvent(action.eventObject);
 
     _eventController.add(signedEvent);
     action.resolve(signedEvent);
@@ -117,8 +114,8 @@ class NostrBloc with AsyncActionsHandler {
   }
 
   Future<void> _handleDeleteKey(DeleteKey action) async {
-    await _secureStorage.delete(key: "nostrPublicKey");
-    await _secureStorage.delete(key: "nostrPrivateKey");
+    nostrPublicKey = null;
+    _nostrPrivateKey = null;
 
     await _breezLib.deleteNostrKey().catchError((error) {
       throw error.toString();
@@ -157,12 +154,12 @@ class NostrBloc with AsyncActionsHandler {
       }
 
       int index = nostrKeyPair.indexOf('_');
-      nostrPrivateKey = nostrKeyPair.substring(0, index);
+      _nostrPrivateKey = nostrKeyPair.substring(0, index);
       nostrPublicKey = nostrKeyPair.substring(index + 1);
 
       // Write value
       await _secureStorage.write(
-          key: 'nostrPrivateKey', value: nostrPrivateKey);
+          key: '_nostrPrivateKey', value: _nostrPrivateKey);
       await _secureStorage.write(key: 'nostrPublicKey', value: nostrPublicKey);
       // publishing the default relayList when creating the account for the first time
 
@@ -174,7 +171,8 @@ class NostrBloc with AsyncActionsHandler {
   }
 
   Future<Map<String, dynamic>> _signEvent(
-      Map<String, dynamic> eventObject, String nostrPrivateKey) async {
+    Map<String, dynamic> eventObject,
+  ) async {
     final eventApi = EventApi();
 
     if (eventObject['pubkey'] == null) {
@@ -200,7 +198,7 @@ class NostrBloc with AsyncActionsHandler {
       event.id = eventObject['id'];
     }
 
-    event.sig = eventApi.signEvent(event, nostrPrivateKey);
+    event.sig = eventApi.signEvent(event, _nostrPrivateKey);
 
     if (eventApi.verifySignature(event)) {
       eventObject['sig'] = event.sig;
@@ -240,8 +238,7 @@ class NostrBloc with AsyncActionsHandler {
     Map<String, dynamic> eventObject = eventToMap(relayPublishEvent);
 
     try {
-      Map<String, dynamic> signedEventObject =
-          await _signEvent(eventObject, nostrPrivateKey);
+      Map<String, dynamic> signedEventObject = await _signEvent(eventObject);
       Event signedNostrEvent = mapToEvent(signedEventObject);
       relayPool.publish(signedNostrEvent);
     } catch (e) {
@@ -256,12 +253,12 @@ class NostrBloc with AsyncActionsHandler {
 
   Future<String> _encryptData(String data) async {
     // Simulating an encryption operation
-    return Nip04().encrypt(nostrPrivateKey, nostrPublicKey, data);
+    return Nip04().encrypt(_nostrPrivateKey, nostrPublicKey, data);
   }
 
   Future<String> _decryptData(String encryptedData) async {
     // Simulating a decryption operation
-    return Nip04().decrypt(nostrPrivateKey, nostrPublicKey, encryptedData);
+    return Nip04().decrypt(_nostrPrivateKey, nostrPublicKey, encryptedData);
   }
 
   @override

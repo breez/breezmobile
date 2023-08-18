@@ -27,8 +27,6 @@ class _NostrScreenState extends State<NostrScreen> {
   }
 
   Future<void> _deleteKeys() async {
-    widget.nostrBloc.nostrPublicKey = null;
-    widget.nostrBloc.nostrPrivateKey = null;
     widget.nostrBloc.actionsSink.add(DeleteKey());
   }
 
@@ -77,7 +75,6 @@ class _NostrScreenState extends State<NostrScreen> {
                           marketplaceBloc: widget.marketplaceBloc,
                           nostrBloc: widget.nostrBloc,
                           settings: snapshot.data,
-                          // login: _login(snapshot.data),
                         ),
                       ),
                     );

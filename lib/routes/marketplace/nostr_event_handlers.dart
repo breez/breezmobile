@@ -101,9 +101,7 @@ class NostrEventHandler {
       }
     }
 
-    final nostrPrivateKey = _nostrBloc.nostrPrivateKey;
-
-    _nostrBloc.actionsSink.add(SignEvent(eventData, nostrPrivateKey));
+    _nostrBloc.actionsSink.add(SignEvent(eventData));
 
     return await _nostrBloc.eventStream.first;
   }
