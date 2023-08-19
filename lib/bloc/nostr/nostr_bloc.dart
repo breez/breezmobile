@@ -45,9 +45,9 @@ class NostrBloc with AsyncActionsHandler {
 
   void _initNostr() async {
     pref = await SharedPreferences.getInstance();
-    nostrPublicKey = await _secureStorage.read(key: "nostrPublicKey");
-    _nostrPrivateKey = await _secureStorage.read(key: "_nostrPrivateKey");
   }
+
+  String get nostrPrivateKey => _nostrPrivateKey;
 
   final StreamController<String> _encryptDataController =
       StreamController<String>.broadcast();
@@ -141,7 +141,7 @@ class NostrBloc with AsyncActionsHandler {
   }
 
   Future<String> _fetchPublicKey() async {
-    if (nostrPublicKey == null) {
+    if (nostrPublicKey == null || _nostrPrivateKey == null) {
       // check if key pair already exists otherwise generate it
       String nostrKeyPair;
 
@@ -157,12 +157,7 @@ class NostrBloc with AsyncActionsHandler {
       _nostrPrivateKey = nostrKeyPair.substring(0, index);
       nostrPublicKey = nostrKeyPair.substring(index + 1);
 
-      // Write value
-      await _secureStorage.write(
-          key: '_nostrPrivateKey', value: _nostrPrivateKey);
-      await _secureStorage.write(key: 'nostrPublicKey', value: nostrPublicKey);
       // publishing the default relayList when creating the account for the first time
-
       _fetchDefaultRelayList();
       _publishRelays(defaultRelaysList);
     }

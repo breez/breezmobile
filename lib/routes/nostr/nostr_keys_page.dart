@@ -4,7 +4,6 @@ import 'package:breez/bloc/marketplace/nostr_settings.dart';
 import 'package:breez/bloc/nostr/nostr_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 import '../../bloc/nostr/nostr_actions.dart';
 import '../../utils/min_font_size.dart';
@@ -30,7 +29,6 @@ class _NostrKeysPageState extends State<NostrKeysPage> {
   final _autoSizeGroup = AutoSizeGroup();
   String _nostrPublicKey;
   String _nostrPrivateKey;
-  final FlutterSecureStorage _secureStorage = const FlutterSecureStorage();
 
   @override
   void initState() {
@@ -43,7 +41,7 @@ class _NostrKeysPageState extends State<NostrKeysPage> {
       // call nostr_bloc method to get keys
       widget.nostrBloc.actionsSink.add(GetPublicKey());
       _nostrPublicKey = await widget.nostrBloc.publicKeyStream.first;
-      _nostrPrivateKey = await _secureStorage.read(key: "nostrPrivateKey");
+      _nostrPrivateKey = widget.nostrBloc.nostrPrivateKey;
     } catch (e) {
       throw Exception(e);
     }
