@@ -49,26 +49,29 @@ class AccountRequiredActionsIndicatorState
   StreamSubscription<BackupSettings> _backupSettingsSubscription;
   BackupSettings _backupSettings;
   bool showingBackupDialog = false;
-  bool _init = false;
 
   @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-    if (!_init) {
-      _backupSettingsSubscription =
-          widget._backupBloc.backupSettingsStream.listen(
-        (backupSettings) {
-          setState(() {
-            _backupSettings = backupSettings;
-          });
-        },
-      );
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _initListeners();
+    });
+  }
 
-      _promptBackupSubscription?.cancel();
-      _promptBackupSubscription = widget._backupBloc.promptBackupSubscription
-          .delay(const Duration(seconds: 4))
-          .listen((signInNeeded) => _promptBackup(signInNeeded));
-    }
+  void _initListeners() {
+    _backupSettingsSubscription =
+        widget._backupBloc.backupSettingsStream.listen(
+      (backupSettings) {
+        setState(() {
+          _backupSettings = backupSettings;
+        });
+      },
+    );
+
+    _promptBackupSubscription?.cancel();
+    _promptBackupSubscription = widget._backupBloc.promptBackupSubscription
+        .delay(const Duration(seconds: 4))
+        .listen((signInNeeded) => _promptBackup(signInNeeded));
   }
 
   void _promptBackup(bool signInNeeded) async {
