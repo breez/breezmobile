@@ -36,8 +36,6 @@ class AccountRequiredActionsIndicator extends StatefulWidget {
 class AccountRequiredActionsIndicatorState
     extends State<AccountRequiredActionsIndicator> {
   StreamSubscription<dynamic> _promptBackupSubscription;
-  StreamSubscription<BackupSettings> _backupSettingsSubscription;
-  BackupSettings _backupSettings;
   bool showingBackupDialog = false;
 
   @override
@@ -50,13 +48,6 @@ class AccountRequiredActionsIndicatorState
 
   void _initListeners() {
     final backupBloc = AppBlocsProvider.of<BackupBloc>(context);
-    _backupSettingsSubscription = backupBloc.backupSettingsStream.listen(
-      (backupSettings) {
-        setState(() {
-          _backupSettings = backupSettings;
-        });
-      },
-    );
 
     _promptBackupSubscription?.cancel();
     _promptBackupSubscription = backupBloc.promptBackupSubscription
@@ -79,7 +70,6 @@ class AccountRequiredActionsIndicatorState
         barrierDismissible: false,
         context: context,
         builder: (_) => EnableBackupDialog(
-          backupSettings: _backupSettings,
           signInNeeded: signInNeeded,
         ),
       ).then((_) {
@@ -93,7 +83,6 @@ class AccountRequiredActionsIndicatorState
   @override
   void dispose() {
     _promptBackupSubscription?.cancel();
-    _backupSettingsSubscription?.cancel();
     super.dispose();
   }
 
@@ -250,7 +239,6 @@ class AccountRequiredActionsIndicatorState
               barrierDismissible: false,
               context: context,
               builder: (_) => EnableBackupDialog(
-                backupSettings: _backupSettings,
                 signInNeeded: signInNeeded,
               ),
             );
