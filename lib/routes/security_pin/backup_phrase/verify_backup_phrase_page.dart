@@ -12,6 +12,7 @@ import 'package:breez/widgets/error_dialog.dart';
 import 'package:breez/widgets/single_button_bottom_bar.dart';
 import 'package:breez_translations/breez_translations_locales.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 
 class VerifyBackupPhrasePage extends StatefulWidget {
   final String _mnemonics;
@@ -60,7 +61,7 @@ class VerifyBackupPhrasePageState extends State<VerifyBackupPhrasePage> {
                       ),
                     );
                   }
-                  return _buildBackupBtn(context, snapshot.data, backupBloc);
+                  return _buildBackupBtn(snapshot.data);
                 },
               )
             ],
@@ -79,9 +80,7 @@ class VerifyBackupPhrasePageState extends State<VerifyBackupPhrasePage> {
   }
 
   Widget _buildBackupBtn(
-    BuildContext context,
     BackupSettings backupSettings,
-    BackupBloc backupBloc,
   ) {
     final texts = context.texts();
     return SingleButtonBottomBar(
@@ -91,7 +90,7 @@ class VerifyBackupPhrasePageState extends State<VerifyBackupPhrasePage> {
           _hasError = false;
         });
         if (_formKey.currentState.validate() && !_hasError) {
-          _createBackupPhrase(context, backupSettings, backupBloc);
+          _createBackupPhrase(backupSettings);
         }
       },
     );
@@ -179,24 +178,28 @@ class VerifyBackupPhrasePageState extends State<VerifyBackupPhrasePage> {
   }
 
   Future _createBackupPhrase(
-    BuildContext context,
     BackupSettings backupSettings,
-    BackupBloc backupBloc,
   ) async {
+    final backupBloc = AppBlocsProvider.of<BackupBloc>(context);
     final themeData = Theme.of(context);
     final texts = context.texts();
+
     final saveBackupKey = SaveBackupKey(
       bip39.mnemonicToEntropy(widget._mnemonics),
     );
     backupBloc.backupActionsSink.add(saveBackupKey);
-    saveBackupKey.future.then((_) {
-      _updateBackupSettings(
-        context,
-        backupSettings.copyWith(
-          keyType: BackupKeyType.PHRASE,
-        ),
-        backupBloc,
-      ).then((value) => triggerBackup());
+    saveBackupKey.future.then((_) async {
+      try {
+        EasyLoading.show();
+
+        await _updateBackupSettings(
+          backupSettings.copyWith(keyType: BackupKeyType.PHRASE),
+        );
+
+        _triggerBackup();
+      } finally {
+        EasyLoading.dismiss();
+      }
     }).catchError((err) {
       promptError(
         context,
@@ -222,31 +225,37 @@ class VerifyBackupPhrasePageState extends State<VerifyBackupPhrasePage> {
   }
 
   Future _updateBackupSettings(
-    BuildContext context,
     BackupSettings backupSettings,
-    BackupBloc backupBloc,
   ) async {
+    final backupBloc = AppBlocsProvider.of<BackupBloc>(context);
     final themeData = Theme.of(context);
     final texts = context.texts();
+
     var action = UpdateBackupSettings(backupSettings);
     backupBloc.backupActionsSink.add(action);
     Navigator.popUntil(context, ModalRoute.withName("/security"));
-    action.future.then((_) {
-      backupBloc.backupNowSink.add(const BackupNowAction(recoverEnabled: true));
-      backupBloc.backupStateStream.firstWhere((s) => s.inProgress).then((s) {
-        if (mounted) {
-          showDialog(
-            useRootNavigator: false,
-            barrierDismissible: false,
-            context: context,
-            builder: (ctx) => buildBackupInProgressDialog(
-              ctx,
-              backupBloc.backupStateStream,
-            ),
-          );
-        }
-      });
-    }).catchError((err) {
+    return action.future.then(
+      (_) {
+        backupBloc.backupNowSink.add(
+          const BackupNowAction(recoverEnabled: true),
+        );
+        backupBloc.backupStateStream.firstWhere((s) => s.inProgress).then(
+          (s) {
+            if (mounted) {
+              showDialog(
+                useRootNavigator: false,
+                barrierDismissible: false,
+                context: context,
+                builder: (ctx) => buildBackupInProgressDialog(
+                  ctx,
+                  backupBloc.backupStateStream,
+                ),
+              );
+            }
+          },
+        );
+      },
+    ).catchError((err) {
       promptError(
         context,
         texts.backup_phrase_generation_generic_error,
@@ -258,21 +267,25 @@ class VerifyBackupPhrasePageState extends State<VerifyBackupPhrasePage> {
     });
   }
 
-  void triggerBackup() {
+  void _triggerBackup() {
     final backupBloc = AppBlocsProvider.of<BackupBloc>(context);
-    backupBloc.backupNowSink.add(const BackupNowAction(recoverEnabled: true));
-    backupBloc.backupStateStream.firstWhere((s) => s.inProgress).then((s) {
-      if (mounted) {
-        showDialog(
-          useRootNavigator: false,
-          barrierDismissible: false,
-          context: context,
-          builder: (ctx) => buildBackupInProgressDialog(
-            ctx,
-            backupBloc.backupStateStream,
-          ),
-        );
-      }
-    });
+    backupBloc.backupNowSink.add(
+      const BackupNowAction(recoverEnabled: true),
+    );
+    backupBloc.backupStateStream.firstWhere((s) => s.inProgress).then(
+      (s) {
+        if (mounted) {
+          showDialog(
+            useRootNavigator: false,
+            barrierDismissible: false,
+            context: context,
+            builder: (ctx) => buildBackupInProgressDialog(
+              ctx,
+              backupBloc.backupStateStream,
+            ),
+          );
+        }
+      },
+    );
   }
 }

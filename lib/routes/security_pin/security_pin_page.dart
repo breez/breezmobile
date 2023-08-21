@@ -27,6 +27,7 @@ import 'package:breez_translations/generated/breez_translations.dart';
 import 'package:duration/duration.dart';
 import 'package:duration/locale.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 
 class SecurityPage extends StatefulWidget {
   final UserProfileBloc userProfileBloc;
@@ -250,14 +251,21 @@ class SecurityPageState extends State<SecurityPage>
                 return BackupPhraseWarningDialog();
               },
             ).then(
-              (approved) {
+              (approved) async {
                 if (approved) {
-                  _updateBackupSettings(
-                    backupSettings,
-                    backupSettings.copyWith(
-                      keyType: BackupKeyType.NONE,
-                    ),
-                  ).then((value) => triggerBackup());
+                  try {
+                    EasyLoading.show();
+
+                    await _updateBackupSettings(
+                      backupSettings,
+                      backupSettings.copyWith(
+                        keyType: BackupKeyType.NONE,
+                      ),
+                    );
+                    _triggerBackup();
+                  } finally {
+                    EasyLoading.dismiss();
+                  }
                 }
               },
             );
@@ -288,29 +296,43 @@ class SecurityPageState extends State<SecurityPage>
           iconEnabledColor: Colors.white,
           value: backupSettings.backupProvider,
           isDense: true,
-          onChanged: (BackupProvider newValue) {
+          onChanged: (BackupProvider newValue) async {
             if (newValue.name ==
                 BackupSettings.remoteServerBackupProvider().name) {
-              promptAuthData(context, backupSettings).then((auth) {
+              promptAuthData(context, backupSettings).then((auth) async {
                 if (auth == null) {
                   return;
                 }
-                _updateBackupSettings(
-                  backupSettings,
-                  backupSettings.copyWith(
-                    backupProvider: newValue,
-                    remoteServerAuthData: auth,
-                  ),
-                ).then((value) => triggerBackup());
+                try {
+                  EasyLoading.show();
+
+                  await _updateBackupSettings(
+                    backupSettings,
+                    backupSettings.copyWith(
+                      backupProvider: newValue,
+                      remoteServerAuthData: auth,
+                    ),
+                  );
+                  _triggerBackup();
+                } finally {
+                  EasyLoading.dismiss();
+                }
               });
               return;
             }
-            _updateBackupSettings(
-              backupSettings,
-              backupSettings.copyWith(
-                backupProvider: newValue,
-              ),
-            ).then((value) => triggerBackup());
+            try {
+              EasyLoading.show();
+
+              await _updateBackupSettings(
+                backupSettings,
+                backupSettings.copyWith(
+                  backupProvider: newValue,
+                ),
+              );
+              _triggerBackup();
+            } finally {
+              EasyLoading.dismiss();
+            }
           },
           items: BackupSettings.availableBackupProviders().map((provider) {
             return DropdownMenuItem(
@@ -421,14 +443,21 @@ class SecurityPageState extends State<SecurityPage>
         size: 30.0,
       ),
       onTap: () {
-        promptAuthData(context, backupSettings).then((auth) {
+        promptAuthData(context, backupSettings).then((auth) async {
           if (auth != null) {
-            _updateBackupSettings(
-              backupSettings,
-              backupSettings.copyWith(
-                remoteServerAuthData: auth,
-              ),
-            ).then((value) => triggerBackup());
+            try {
+              EasyLoading.show();
+
+              await _updateBackupSettings(
+                backupSettings,
+                backupSettings.copyWith(
+                  remoteServerAuthData: auth,
+                ),
+              );
+              _triggerBackup();
+            } finally {
+              EasyLoading.dismiss();
+            }
           }
         });
       },
@@ -475,16 +504,16 @@ class SecurityPageState extends State<SecurityPage>
       text: _localAuthenticationOptionLabel(texts),
       switchValue: securityModel.isFingerprintEnabled,
       group: securityModel.requiresPin ? _autoSizeGroup : null,
-      onChanged: (value) {
+      onChanged: (value) async {
         if (mounted) {
           if (value) {
-            _validateBiometrics(
+            await _validateBiometrics(
               context,
               securityModel,
               backupSettings,
             );
           } else {
-            _updateSecurityModel(
+            await _updateSecurityModel(
               context,
               securityModel,
               securityModel.copyWith(isFingerprintEnabled: false),
@@ -626,9 +655,10 @@ class SecurityPageState extends State<SecurityPage>
     return action.future.catchError((err) => _handleError(err.toString()));
   }
 
-  void triggerBackup() {
-    widget.backupBloc.backupNowSink
-        .add(const BackupNowAction(recoverEnabled: true));
+  void _triggerBackup() {
+    widget.backupBloc.backupNowSink.add(
+      const BackupNowAction(recoverEnabled: true),
+    );
     widget.backupBloc.backupStateStream
         .firstWhere((s) => s.inProgress)
         .then((s) {
