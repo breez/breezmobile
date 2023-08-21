@@ -19,14 +19,20 @@ import 'package:breez/theme_data.dart';
 import 'package:breez/widgets/error_dialog.dart';
 import 'package:breez/widgets/flushbar.dart';
 import 'package:breez_translations/breez_translations_locales.dart';
+import 'package:breez_translations/generated/breez_translations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 
 class InitialWalkthroughPage extends StatefulWidget {
   final BackupBloc backupBloc;
+  final UserProfileBloc userProfileBloc;
   final Sink<bool> reloadDatabaseSink;
 
-  const InitialWalkthroughPage(this.backupBloc, {this.reloadDatabaseSink});
+  const InitialWalkthroughPage({
+    @required this.backupBloc,
+    @required this.userProfileBloc,
+    @required this.reloadDatabaseSink,
+  });
 
   @override
   State<InitialWalkthroughPage> createState() => _InitialWalkthroughPageState();
@@ -201,48 +207,39 @@ class _InitialWalkthroughPageState extends State<InitialWalkthroughPage>
   }
 
   Future _resetBackupSettings() {
-    final texts = context.texts();
-    final themeData = Theme.of(context);
     var updateAction = UpdateBackupSettings(BackupSettings.start());
     widget.backupBloc.backupActionsSink.add(updateAction);
-    return updateAction.future.catchError((err) {
-      promptError(
-        context,
-        texts.security_and_backup_internal_error,
-        Text(
-          err.toString(),
-          style: themeData.dialogTheme.contentTextStyle,
-        ),
-      );
-    });
+    return updateAction.future.catchError(
+      (err) => _handleError(err.toString()),
+    );
+  }
+
+  void _handleError(String error) {
+    final texts = context.texts();
+    final themeData = Theme.of(context);
+    promptError(
+      context,
+      texts.security_and_backup_internal_error,
+      Text(
+        error,
+        style: themeData.dialogTheme.contentTextStyle,
+      ),
+    );
   }
 
   Future _resetSecurityModel() async {
-    final userProfileBloc = AppBlocsProvider.of<UserProfileBloc>(context);
-
-    final texts = context.texts();
-    final themeData = Theme.of(context);
-
     var action = ResetSecurityModel();
-    userProfileBloc.userActionsSink.add(action);
-    return action.future.catchError((err) {
-      promptError(
-        context,
-        texts.security_and_backup_internal_error,
-        Text(
-          err.toString(),
-          style: themeData.dialogTheme.contentTextStyle,
-        ),
-      );
-    });
+    widget.userProfileBloc.userActionsSink.add(action);
+    return action.future.catchError(
+      (err) => _handleError(err.toString()),
+    );
   }
 
   void _register() {
     setState(() {
       _registered = true;
     });
-    final userProfileBloc = AppBlocsProvider.of<UserProfileBloc>(context);
-    userProfileBloc.registerSink.add(null);
+    widget.userProfileBloc.registerSink.add(null);
     Navigator.of(context).pop();
   }
 
@@ -317,8 +314,7 @@ class _InitialWalkthroughPageState extends State<InitialWalkthroughPage>
       final posCatalogBloc = AppBlocsProvider.of<PosCatalogBloc>(context);
       posCatalogBloc.reloadPosItemsSink.add(true);
       widget.reloadDatabaseSink.add(true);
-      final userProfileBloc = AppBlocsProvider.of<UserProfileBloc>(context);
-      userProfileBloc.registerSink.add(null);
+      widget.userProfileBloc.registerSink.add(null);
       Navigator.popUntil(context, (route) => route.settings.name == "/");
     }
   }
