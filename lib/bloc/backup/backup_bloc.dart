@@ -122,9 +122,7 @@ class BackupBloc with AsyncActionsHandler {
 
       // Read the backupKey from the secure storage and initialize the breez user model appropriately
       _setBreezLibBackupKey();
-      if (_backupSettingsController.value.backupProvider != null) {
-        await _updateBackupProvider(_backupSettingsController.value);
-      }
+      await _updateBackupProvider(_backupSettingsController.value);
       _listenPinCodeChange(userStream);
       _listenUserPreferenceChanges(userStream);
       _listenActions();
@@ -178,18 +176,25 @@ class BackupBloc with AsyncActionsHandler {
 
   Future _updateBackupProvider(BackupSettings settings) async {
     try {
-      String authData;
-      if (settings.backupProvider.name ==
-          BackupSettings.remoteServerBackupProvider().name) {
-        log.info("update backup provider auth data as a remote server");
-        var map = settings.remoteServerAuthData.toJson();
-        authData = json.encode(map);
-      } else {
-        log.info(
-          "update backup provider auth data as ${settings.backupProvider.name} server",
+      if (settings.backupProvider != null) {
+        String authData;
+        if (settings.backupProvider.name ==
+            BackupSettings.remoteServerBackupProvider().name) {
+          log.info("update backup provider auth data as a remote server");
+          var map = settings.remoteServerAuthData.toJson();
+          authData = json.encode(map);
+        } else {
+          log.info(
+            "update backup provider auth data as ${settings.backupProvider.name} server",
+          );
+        }
+        await _breezLib.setBackupProvider(
+          settings.backupProvider.name,
+          authData,
         );
+      } else {
+        log.info("new backup provider is empty");
       }
-      await _breezLib.setBackupProvider(settings.backupProvider.name, authData);
     } catch (error) {
       throw Exception("Failed to update backup provider.");
     }
