@@ -155,11 +155,22 @@ class BackupBloc with AsyncActionsHandler {
       if (oldSettings != newSettings) {
         log.info("update backup from:\n$oldSettings to:\n$newSettings");
         _backupSettingsController.add(newSettings);
-        // Always update settings
-        await _setBreezLibBackupKey(backupKeyType: newSettings.backupKeyType);
-        await _updateBackupProvider(newSettings);
+        if (newSettings.backupKeyType != oldSettings.backupKeyType) {
+          log.info("update backup key type");
+          await _setBreezLibBackupKey(backupKeyType: newSettings.backupKeyType);
+        } else {
+          log.info("backup key type continue to be the same");
+        }
+        if (newSettings.backupProvider != oldSettings.backupProvider ||
+            !oldSettings.remoteServerAuthData
+                .equal(newSettings.remoteServerAuthData)) {
+          log.info("update backup provider");
+          await _updateBackupProvider(newSettings);
+        } else {
+          log.info("backup provider continue to be the same");
+        }
       }
-      action.resolve(oldSettings);
+      action.resolve(newSettings);
     } catch (error) {
       action.resolveError("Failed to update backup settings.");
     }
