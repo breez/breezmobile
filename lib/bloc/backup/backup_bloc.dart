@@ -129,6 +129,8 @@ class BackupBloc with AsyncActionsHandler {
       RestoreBackup: _restoreBackup,
     };
 
+    _listenPaidInvoices();
+
     SharedPreferences.getInstance().then((sp) async {
       _sharedPreferences = sp;
       // Read the backupKey from the secure storage and initialize the breez user model appropriately
@@ -162,6 +164,13 @@ class BackupBloc with AsyncActionsHandler {
         handler(action).catchError((e) => action.resolveError(e));
       }
     });
+  }
+
+  void _listenPaidInvoices() {
+    _breezLib.notificationStream
+        .where((event) =>
+            event.type == NotificationEvent_NotificationType.INVOICE_PAID)
+        .listen((invoice) => _promptBackupDismissedController.add(false));
   }
 
   Future _updateBackupSettings(UpdateBackupSettings action) async {
