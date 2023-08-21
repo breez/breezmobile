@@ -167,6 +167,17 @@ class BackupBloc with AsyncActionsHandler {
         } else {
           log.info("backup provider continue to be the same");
         }
+        if (newSettings == BackupSettings.start()) {
+          log.info("signing out of gdrive");
+          // Sign out of GDrive if settings are being reset
+          await _breezLib.signOut().catchError((_) {
+            // We're resolving because we can't identify
+            // if GDrive is already signed in
+            // TODO: Resolve this only if that error is caught
+            action.resolve(newSettings);
+            return;
+          });
+        }
       }
       action.resolve(newSettings);
     } catch (error) {
