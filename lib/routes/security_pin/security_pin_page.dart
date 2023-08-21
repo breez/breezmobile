@@ -561,9 +561,6 @@ class SecurityPageState extends State<SecurityPage>
     SecurityModel securityModel,
     BackupSettings backupSettings,
   ) {
-    final texts = context.texts();
-    final themeData = Theme.of(context);
-
     Navigator.of(context).push(
       FadeInRoute(
         builder: (BuildContext context) {
@@ -577,7 +574,7 @@ class SecurityPageState extends State<SecurityPage>
       if (newPIN != null) {
         var updatePinAction = UpdatePinCode(newPIN);
         widget.userProfileBloc.userActionsSink.add(updatePinAction);
-        updatePinAction.future
+        return updatePinAction.future
             .then((_) => _updateSecurityModel(
                   context,
                   securityModel,
@@ -585,16 +582,7 @@ class SecurityPageState extends State<SecurityPage>
                   backupSettings,
                   pinCodeChanged: true,
                 ))
-            .catchError(
-              (err) => promptError(
-                context,
-                texts.security_and_backup_internal_error,
-                Text(
-                  err.toString(),
-                  style: themeData.dialogTheme.contentTextStyle,
-                ),
-              ),
-            );
+            .catchError((err) => _handleError(err.toString()));
       }
     });
   }
@@ -610,21 +598,9 @@ class SecurityPageState extends State<SecurityPage>
   }
 
   Future _resetSecurityModel(BuildContext context) async {
-    final texts = context.texts();
-    final themeData = Theme.of(context);
-
     var action = ResetSecurityModel();
     widget.userProfileBloc.userActionsSink.add(action);
-    action.future.catchError((err) {
-      promptError(
-        context,
-        texts.security_and_backup_internal_error,
-        Text(
-          err.toString(),
-          style: themeData.dialogTheme.contentTextStyle,
-        ),
-      );
-    });
+    return action.future.catchError((err) => _handleError(err.toString()));
   }
 
   Future _updateSecurityModel(
@@ -634,44 +610,20 @@ class SecurityPageState extends State<SecurityPage>
     BackupSettings backupSettings, {
     bool pinCodeChanged = false,
   }) async {
-    final texts = context.texts();
-    final themeData = Theme.of(context);
-
     _screenLocked = false;
     var action = UpdateSecurityModel(newModel);
     widget.userProfileBloc.userActionsSink.add(action);
-    return action.future.catchError((err) {
-      promptError(
-        context,
-        texts.security_and_backup_internal_error,
-        Text(
-          err.toString(),
-          style: themeData.dialogTheme.contentTextStyle,
-        ),
-      );
-    });
+    return action.future.catchError((err) => _handleError(err.toString()));
   }
 
   Future _updateBackupSettings(
     BackupSettings oldBackupSettings,
     BackupSettings newBackupSettings,
   ) async {
-    final texts = context.texts();
-    final themeData = Theme.of(context);
-
     _screenLocked = false;
     var action = UpdateBackupSettings(newBackupSettings);
     widget.backupBloc.backupActionsSink.add(action);
-    return action.future.catchError((err) {
-      promptError(
-        context,
-        texts.security_and_backup_internal_error,
-        Text(
-          err.toString(),
-          style: themeData.dialogTheme.contentTextStyle,
-        ),
-      );
-    });
+    return action.future.catchError((err) => _handleError(err.toString()));
   }
 
   void triggerBackup() {
@@ -708,5 +660,18 @@ class SecurityPageState extends State<SecurityPage>
       default:
         return texts.security_and_backup_enable_biometric_option_none;
     }
+  }
+
+  Future<void> _handleError(String error) {
+    final texts = context.texts();
+    final themeData = Theme.of(context);
+    return promptError(
+      context,
+      texts.security_and_backup_internal_error,
+      Text(
+        error,
+        style: themeData.dialogTheme.contentTextStyle,
+      ),
+    );
   }
 }
