@@ -1,20 +1,17 @@
+import 'package:breez/bloc/blocs_provider.dart';
 import 'package:breez/bloc/lsp/lsp_actions.dart';
 import 'package:breez/bloc/lsp/lsp_bloc.dart';
 import 'package:breez/bloc/lsp/lsp_model.dart';
+import 'package:breez/routes/lsp/lsp_webview.dart';
 import 'package:breez/widgets/loader.dart';
 import 'package:breez/widgets/route.dart';
 import 'package:breez/widgets/single_button_bottom_bar.dart';
 import 'package:breez_translations/breez_translations_locales.dart';
 import 'package:flutter/material.dart';
 
-import 'lsp_webview.dart';
-
 class SelectLSPPage extends StatefulWidget {
-  final LSPBloc lstBloc;
-
   const SelectLSPPage({
     Key key,
-    this.lstBloc,
   }) : super(key: key);
 
   @override
@@ -30,12 +27,15 @@ class SelectLSPPageState extends State<SelectLSPPage> {
   @override
   void initState() {
     super.initState();
-    _fetchLSPS();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _fetchLSPS();
+    });
   }
 
   void _fetchLSPS() {
+    final lspBloc = AppBlocsProvider.of<LSPBloc>(context);
     var fetchAction = FetchLSPList();
-    widget.lstBloc.actionsSink.add(fetchAction);
+    lspBloc.actionsSink.add(fetchAction);
     fetchAction.future.then((result) {
       List<LSPInfo> lspList = result as List<LSPInfo>;
       var breezLSP = lspList.firstWhere(
@@ -56,6 +56,8 @@ class SelectLSPPageState extends State<SelectLSPPage> {
 
   @override
   Widget build(BuildContext context) {
+    final lspBloc = AppBlocsProvider.of<LSPBloc>(context);
+
     final themeData = Theme.of(context);
     final texts = context.texts();
 
@@ -75,7 +77,7 @@ class SelectLSPPageState extends State<SelectLSPPage> {
         ],
       ),
       body: StreamBuilder<LSPStatus>(
-        stream: widget.lstBloc.lspStatusStream,
+        stream: lspBloc.lspStatusStream,
         builder: (ctx, snapshot) {
           if (_error != null) {
             return Padding(
@@ -164,6 +166,7 @@ class SelectLSPPageState extends State<SelectLSPPage> {
       return SingleButtonBottomBar(
         text: texts.account_page_activation_action_select,
         onPressed: () async {
+          final lspBloc = AppBlocsProvider.of<LSPBloc>(context);
           final navigator = Navigator.of(context);
           ConnectLSP connectAction;
           if (url?.isNotEmpty == true) {
@@ -183,7 +186,7 @@ class SelectLSPPageState extends State<SelectLSPPage> {
           }
 
           if (connectAction != null) {
-            widget.lstBloc.actionsSink.add(connectAction);
+            lspBloc.actionsSink.add(connectAction);
             navigator.pop();
           }
         },
