@@ -2,6 +2,7 @@ import 'package:auto_size_text/auto_size_text.dart';
 import 'package:breez/bloc/account/account_actions.dart';
 import 'package:breez/bloc/account/account_bloc.dart';
 import 'package:breez/bloc/account/account_model.dart';
+import 'package:breez/bloc/blocs_provider.dart';
 import 'package:breez/theme_data.dart' as theme;
 import 'package:breez/widgets/loader.dart';
 import 'package:breez_translations/breez_translations_locales.dart';
@@ -9,11 +10,8 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 
 class SwapRefundDialog extends StatefulWidget {
-  final AccountBloc accountBloc;
-
   const SwapRefundDialog({
     Key key,
-    this.accountBloc,
   }) : super(key: key);
 
   @override
@@ -28,13 +26,22 @@ class SwapRefundDialogState extends State<SwapRefundDialog> {
   @override
   void initState() {
     super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _fetchSwapFundStatus();
+    });
+  }
+
+  void _fetchSwapFundStatus() {
+    final accountBloc = AppBlocsProvider.of<AccountBloc>(context);
     var fetchAction = FetchSwapFundStatus();
     _fetchFuture = fetchAction.future;
-    widget.accountBloc.userActionsSink.add(fetchAction);
+    accountBloc.userActionsSink.add(fetchAction);
   }
 
   @override
   Widget build(BuildContext context) {
+    final accountBloc = AppBlocsProvider.of<AccountBloc>(context);
+
     final themeData = Theme.of(context);
     final texts = context.texts();
 
@@ -55,7 +62,7 @@ class SwapRefundDialogState extends State<SwapRefundDialog> {
           }
 
           return StreamBuilder<AccountModel>(
-            stream: widget.accountBloc.accountStream,
+            stream: accountBloc.accountStream,
             builder: (ctx, snapshot) {
               final swapStatus = snapshot?.data?.swapFundsStatus;
               if (swapStatus == null) {
