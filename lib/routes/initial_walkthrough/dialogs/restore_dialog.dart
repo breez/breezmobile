@@ -119,6 +119,7 @@ class RestoreDialogState extends State<RestoreDialog> {
           'restoring backup with mnemonic of type ${_selectedSnapshot.encryptionType}',
         );
         _restoreNodeFromMnemonicSeed();
+        return;
       } else {
         log.info('restoring backup with pin"');
         _restoreNodeUsingPIN();
