@@ -99,7 +99,6 @@ class RemoteServerAuthPageState extends State<RemoteServerAuthPage> {
   @override
   Widget build(BuildContext context) {
     final texts = context.texts();
-    final torBloc = AppBlocsProvider.of<TorBloc>(context);
 
     return Scaffold(
       appBar: AppBar(
@@ -131,64 +130,13 @@ class RemoteServerAuthPageState extends State<RemoteServerAuthPage> {
               ? texts.remote_server_action_restore
               : texts.remote_server_action_save,
           onPressed: () async {
-            final navigator = Navigator.of(context);
-
             Uri uri = Uri.parse(_urlController.text);
-
-            bool connectionWarningResponse = true;
-            bool isAndroid = Platform.isAndroid;
-            if (isAndroid) {
-              if (uri.host.endsWith('onion') && torBloc.torConfig == null) {
-                await promptError(
-                  context,
-                  texts.remote_server_warning_connection_title,
-                  Text(
-                    texts.remote_server_warning_onion_message,
-                    style: Theme.of(context).dialogTheme.contentTextStyle,
-                  ),
-                  optionText: texts
-                      .remote_server_onion_warning_dialog_default_action_cancel,
-                  optionFunc: () {
-                    connectionWarningResponse = false;
-                    navigator.pop();
-                  },
-                  okText: texts.remote_server_onion_warning_dialog_settings,
-                  okFunc: () async {
-                    connectionWarningResponse = false;
-                    navigator.push(
-                      FadeInRoute(
-                        builder: (_) => withBreezTheme(
-                          context,
-                          const NetworkPage(),
-                        ),
-                      ),
-                    );
-                    return false;
-                  },
-                );
-              }
-            }
-            if (!uri.host.endsWith('.onion') && uri.scheme == 'http') {
-              promptAreYouSure(
-                context,
-                texts.remote_server_warning_connection_title,
-                Text(
-                  texts.remote_server_warning_connection_message,
-                ),
-              ).then((value) => connectionWarningResponse == value);
-            }
-            if (connectionWarningResponse) {
-              failDiscoverURL = false;
-              failAuthenticate = false;
-              failNoBackupFound = false;
+            bool hasError = (await _handleConnectionWarnings(uri) == false);
+            if (!hasError) {
+              _resetErrors();
               if (_formKey.currentState.validate()) {
-                final newSettings = widget.backupSettings.copyWith(
-                  remoteServerAuthData: RemoteServerAuthData(
-                    uri.toString(),
-                    _userController.text,
-                    _passwordController.text,
-                    BREEZ_BACKUP_DIR,
-                  ),
+                BackupSettings newSettings = _updateBackupSettings(
+                  url: uri.toString(),
                 );
                 // TODO add translation
                 EasyLoading.show(
@@ -196,39 +144,125 @@ class RemoteServerAuthPageState extends State<RemoteServerAuthPage> {
                     message: 'Testing Connection',
                   ),
                 );
-                discoverURL(newSettings.remoteServerAuthData).then(
+                await discoverURL(newSettings.remoteServerAuthData).then(
                   (value) async {
-                    EasyLoading.dismiss();
-
-                    final error = value.authError;
-                    if (error == DiscoverResult.SUCCESS) {
-                      navigator.pop(value.authData);
-                    }
-                    setState(() {
-                      failDiscoverURL = error == DiscoverResult.INVALID_URL;
-                      failAuthenticate = error == DiscoverResult.INVALID_AUTH;
-                      failNoBackupFound =
-                          error == DiscoverResult.BACKUP_NOT_FOUND;
-                    });
+                    _handleDiscoveryResult(value);
                     _formKey.currentState.validate();
                   },
-                ).catchError(
-                  (err) {
-                    EasyLoading.dismiss();
-
-                    promptError(
-                      context,
-                      texts.remote_server_error_remote_server_title,
-                      Text(
-                        texts.remote_server_error_remote_server_message,
-                      ),
-                    );
-                  },
-                );
+                ).catchError((err) => _handleConnectionError());
               }
             }
           },
         ),
+      ),
+    );
+  }
+
+  Future<bool> _handleConnectionWarnings(Uri uri) async {
+    final torBloc = AppBlocsProvider.of<TorBloc>(context);
+
+    bool isAndroid = Platform.isAndroid;
+    bool resolvedConnectionWarnings = true;
+    if (isAndroid && uri.host.endsWith('onion') && torBloc.torConfig == null) {
+      resolvedConnectionWarnings =
+          await _handleEnableTor(resolvedConnectionWarnings);
+    }
+    if ((!uri.host.endsWith('.onion') && uri.scheme == 'http')) {
+      resolvedConnectionWarnings = await _handleNonSecureConnection();
+    }
+    return resolvedConnectionWarnings;
+  }
+
+  Future<bool> _handleEnableTor(bool resolvedConnectionWarnings) async {
+    final texts = context.texts();
+
+    await promptError(
+      context,
+      texts.remote_server_warning_connection_title,
+      Text(
+        texts.remote_server_warning_onion_message,
+        style: Theme.of(context).dialogTheme.contentTextStyle,
+      ),
+      optionText:
+          texts.remote_server_onion_warning_dialog_default_action_cancel,
+      optionFunc: () {
+        resolvedConnectionWarnings = false;
+        Navigator.pop(context);
+      },
+      okText: texts.remote_server_onion_warning_dialog_settings,
+      okFunc: () async {
+        resolvedConnectionWarnings = false;
+        Navigator.push(
+          context,
+          FadeInRoute(
+            builder: (_) => withBreezTheme(
+              context,
+              const NetworkPage(),
+            ),
+          ),
+        );
+        return false;
+      },
+    );
+
+    return resolvedConnectionWarnings;
+  }
+
+  Future<bool> _handleNonSecureConnection() async {
+    final texts = context.texts();
+
+    return await promptAreYouSure(
+      context,
+      texts.remote_server_warning_connection_title,
+      Text(
+        texts.remote_server_warning_connection_message,
+      ),
+    );
+  }
+
+  void _resetErrors() {
+    setState(() {
+      failDiscoverURL = false;
+      failAuthenticate = false;
+      failNoBackupFound = false;
+    });
+  }
+
+  BackupSettings _updateBackupSettings({String url}) {
+    final newSettings = widget.backupSettings.copyWith(
+      remoteServerAuthData: RemoteServerAuthData(
+        url,
+        _userController.text,
+        _passwordController.text,
+        BREEZ_BACKUP_DIR,
+      ),
+    );
+    return newSettings;
+  }
+
+  void _handleDiscoveryResult(DiscoveryResult result) {
+    EasyLoading.dismiss();
+
+    final error = result.authError;
+    if (error == DiscoverResult.SUCCESS) {
+      Navigator.pop(context, result.authData);
+    }
+    setState(() {
+      failDiscoverURL = error == DiscoverResult.INVALID_URL;
+      failAuthenticate = error == DiscoverResult.INVALID_AUTH;
+      failNoBackupFound = error == DiscoverResult.BACKUP_NOT_FOUND;
+    });
+  }
+
+  void _handleConnectionError() async {
+    final texts = context.texts();
+    EasyLoading.dismiss();
+
+    await promptError(
+      context,
+      texts.remote_server_error_remote_server_title,
+      Text(
+        texts.remote_server_error_remote_server_message,
       ),
     );
   }
