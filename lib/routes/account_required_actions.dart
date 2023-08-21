@@ -181,30 +181,22 @@ class AccountRequiredActionsIndicatorState
                       builder: (context, lspActivitySnapshot) {
                         final lspActivity = lspActivitySnapshot.data;
 
-                        return StreamBuilder<BackupSettings>(
-                          stream: widget._backupBloc.backupSettingsStream,
-                          builder: (context, backupSettingsSnapshot) {
-                            final backupSettings = backupSettingsSnapshot.data;
+                        return StreamBuilder<BackupState>(
+                          stream: widget._backupBloc.backupStateStream,
+                          builder: (context, backupSnapshot) {
+                            final backup = backupSnapshot.data;
+                            final hasError = backupSnapshot.hasError;
+                            final backupError = backupSnapshot.error;
 
-                            return StreamBuilder<BackupState>(
-                              stream: widget._backupBloc.backupStateStream,
-                              builder: (context, backupSnapshot) {
-                                final backup = backupSnapshot.data;
-                                final hasError = backupSnapshot.hasError;
-                                final backupError = backupSnapshot.error;
-
-                                return _build(
-                                  lspStatus,
-                                  accountSettings,
-                                  accountModel,
-                                  pendingChannels,
-                                  lspActivity,
-                                  backupSettings,
-                                  backup,
-                                  hasError,
-                                  backupError,
-                                );
-                              },
+                            return _build(
+                              lspStatus,
+                              accountSettings,
+                              accountModel,
+                              pendingChannels,
+                              lspActivity,
+                              backup,
+                              hasError,
+                              backupError,
                             );
                           },
                         );
@@ -226,7 +218,6 @@ class AccountRequiredActionsIndicatorState
     AccountModel accountModel,
     List<PaymentInfo> pendingChannels,
     LSPActivity lspActivity,
-    BackupSettings backupSettings,
     BackupState backup,
     bool hasError,
     Object backupError,
@@ -273,13 +264,18 @@ class AccountRequiredActionsIndicatorState
         lspActivity.activity,
       );
       if (inactiveWarningDuration > 0) {
-        warnings.add(WarningAction(() async {
-          showDialog(
-              useRootNavigator: false,
-              barrierDismissible: false,
-              context: context,
-              builder: (_) => CloseWarningDialog(inactiveWarningDuration));
-        }));
+        warnings.add(
+          WarningAction(
+            () async {
+              showDialog(
+                useRootNavigator: false,
+                barrierDismissible: false,
+                context: context,
+                builder: (_) => CloseWarningDialog(inactiveWarningDuration),
+              );
+            },
+          ),
+        );
       }
     }
 
@@ -291,41 +287,55 @@ class AccountRequiredActionsIndicatorState
     final swapStatus = accountModel?.swapFundsStatus;
     // only warn on refundable addresses that weren't refunded in the past.
     if (swapStatus != null && swapStatus.waitingRefundAddresses.isNotEmpty) {
-      warnings.add(WarningAction(() => showDialog(
+      warnings.add(
+        WarningAction(
+          () => showDialog(
             useRootNavigator: false,
             barrierDismissible: false,
             context: context,
             builder: (_) => SwapRefundDialog(
               accountBloc: widget._accountBloc,
             ),
-          )));
+          ),
+        ),
+      );
     }
 
     if (accountModel?.syncUIState == SyncUIState.COLLAPSED) {
-      warnings.add(WarningAction(
-        () => widget._accountBloc.userActionsSink.add(
-          ChangeSyncUIState(SyncUIState.BLOCKING),
-        ),
-        iconWidget: Rotator(
+      warnings.add(
+        WarningAction(
+          () => widget._accountBloc.userActionsSink.add(
+            ChangeSyncUIState(SyncUIState.BLOCKING),
+          ),
+          iconWidget: Rotator(
             child: Image(
-          image: const AssetImage("src/icon/sync.png"),
-          color: themeData.appBarTheme.actionsIconTheme.color,
-        )),
-      ));
+              image: const AssetImage("src/icon/sync.png"),
+              color: themeData.appBarTheme.actionsIconTheme.color,
+            ),
+          ),
+        ),
+      );
     }
 
     if (lspStatus?.selectionRequired == true) {
-      warnings.add(WarningAction(() {
-        if (lspStatus?.lastConnectionError != null) {
-          showProviderErrorDialog(context, lspStatus?.lastConnectionError, () {
-            navigatorState.push(FadeInRoute(
-              builder: (_) => SelectLSPPage(lstBloc: widget.lspBloc),
-            ));
-          });
-        } else {
-          navigatorState.pushNamed("/select_lsp");
-        }
-      }));
+      warnings.add(
+        WarningAction(
+          () {
+            if (lspStatus?.lastConnectionError != null) {
+              showProviderErrorDialog(context, lspStatus?.lastConnectionError,
+                  () {
+                navigatorState.push(
+                  FadeInRoute(
+                    builder: (_) => SelectLSPPage(lstBloc: widget.lspBloc),
+                  ),
+                );
+              });
+            } else {
+              navigatorState.pushNamed("/select_lsp");
+            }
+          },
+        ),
+      );
     }
 
     if (warnings.isEmpty) {
