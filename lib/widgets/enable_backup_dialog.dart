@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:breez/bloc/backup/backup_actions.dart';
 import 'package:breez/bloc/backup/backup_bloc.dart';
@@ -11,11 +13,9 @@ import 'package:breez_translations/breez_translations_locales.dart';
 import 'package:flutter/material.dart';
 
 class EnableBackupDialog extends StatefulWidget {
-  final BackupSettings backupSettings;
   final bool signInNeeded;
 
   const EnableBackupDialog({
-    @required this.backupSettings,
     this.signInNeeded = false,
   });
 
@@ -26,7 +26,35 @@ class EnableBackupDialog extends StatefulWidget {
 }
 
 class EnableBackupDialogState extends State<EnableBackupDialog> {
+  StreamSubscription<BackupSettings> _backupSettingsSubscription;
+  BackupSettings _backupSettings;
+
   final AutoSizeGroup _autoSizeGroup = AutoSizeGroup();
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _initListeners();
+    });
+  }
+
+  void _initListeners() {
+    final backupBloc = AppBlocsProvider.of<BackupBloc>(context);
+    _backupSettingsSubscription = backupBloc.backupSettingsStream.listen(
+      (backupSettings) {
+        setState(() {
+          _backupSettings = backupSettings;
+        });
+      },
+    );
+  }
+
+  @override
+  void dispose() {
+    _backupSettingsSubscription?.cancel();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -36,7 +64,7 @@ class EnableBackupDialogState extends State<EnableBackupDialog> {
       fontSize: 16,
     );
 
-    bool isRemoteServer = widget.backupSettings.backupProvider ==
+    bool isRemoteServer = _backupSettings?.backupProvider ==
         BackupSettings.remoteServerBackupProvider();
 
     return Theme(
@@ -70,7 +98,7 @@ class EnableBackupDialogState extends State<EnableBackupDialog> {
               ),
               if (!isRemoteServer) ...[
                 _DoNotPromptAgainCheckbox(
-                  backupSettings: widget.backupSettings,
+                  backupSettings: _backupSettings,
                   autoSizeGroup: _autoSizeGroup,
                 ),
               ],
@@ -87,7 +115,7 @@ class EnableBackupDialogState extends State<EnableBackupDialog> {
             ),
           ),
           _BackupNowButton(
-            backupSettings: widget.backupSettings,
+            backupSettings: _backupSettings,
             signInNeeded: widget.signInNeeded,
           ),
         ],
@@ -129,26 +157,18 @@ class _DoNotPromptAgainCheckboxState extends State<_DoNotPromptAgainCheckbox> {
             data: themeData.copyWith(
               unselectedWidgetColor: themeData.textTheme.labelLarge.color,
             ),
-            child: StreamBuilder<BackupSettings>(
-                stream: backupBloc.backupSettingsStream,
-                builder: (context, snapshot) {
-                  if (!snapshot.hasData) {
-                    return Container();
-                  }
-                  final backupSettings = snapshot.data;
-                  return Checkbox(
-                    activeColor: Colors.white,
-                    checkColor: themeData.canvasColor,
-                    value: !backupSettings.promptOnError,
-                    onChanged: (v) {
-                      backupBloc.backupSettingsSink.add(
-                        backupSettings.copyWith(
-                          promptOnError: !v,
-                        ),
-                      );
-                    },
-                  );
-                }),
+            child: Checkbox(
+              activeColor: Colors.white,
+              checkColor: themeData.canvasColor,
+              value: !widget.backupSettings.promptOnError,
+              onChanged: (v) {
+                backupBloc.backupSettingsSink.add(
+                  widget.backupSettings.copyWith(
+                    promptOnError: !v,
+                  ),
+                );
+              },
+            ),
           ),
           Expanded(
             child: AutoSizeText(
