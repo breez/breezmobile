@@ -16,10 +16,10 @@ import 'package:breez/routes/initial_walkthrough/dialogs/select_backup_provider_
 import 'package:breez/routes/initial_walkthrough/loaders/loader_indicator.dart';
 import 'package:breez/theme_data.dart' as theme;
 import 'package:breez/theme_data.dart';
+import 'package:breez/utils/exceptions.dart';
 import 'package:breez/widgets/error_dialog.dart';
 import 'package:breez/widgets/flushbar.dart';
 import 'package:breez_translations/breez_translations_locales.dart';
-import 'package:breez_translations/generated/breez_translations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 
@@ -188,6 +188,8 @@ class _InitialWalkthroughPageState extends State<InitialWalkthroughPage>
     );
   }
 
+  /* Let's Breez */
+
   void _letsBreez() async {
     log.info("Registering new node");
     await showDialog(
@@ -197,11 +199,17 @@ class _InitialWalkthroughPageState extends State<InitialWalkthroughPage>
       builder: (BuildContext context) => BetaWarningDialog(),
     ).then((approved) async {
       if (approved) {
-        await _resetBackupSettings().then(
-          (_) async => await _resetSecurityModel().then(
-            (_) => _register(),
-          ),
-        );
+        try {
+          EasyLoading.show(indicator: const LoaderIndicator());
+
+          await _resetBackupSettings();
+          await _resetSecurityModel();
+          _register();
+        } catch (error) {
+          EasyLoading.dismiss();
+
+          _handleError(error);
+        }
       }
     });
   }
@@ -209,39 +217,39 @@ class _InitialWalkthroughPageState extends State<InitialWalkthroughPage>
   Future _resetBackupSettings() {
     var updateAction = UpdateBackupSettings(BackupSettings.start());
     widget.backupBloc.backupActionsSink.add(updateAction);
-    return updateAction.future.catchError(
-      (err) => _handleError(err.toString()),
-    );
-  }
-
-  void _handleError(String error) {
-    final texts = context.texts();
-    final themeData = Theme.of(context);
-    promptError(
-      context,
-      texts.security_and_backup_internal_error,
-      Text(
-        error,
-        style: themeData.dialogTheme.contentTextStyle,
-      ),
-    );
+    return updateAction.future;
   }
 
   Future _resetSecurityModel() async {
-    var action = ResetSecurityModel();
-    widget.userProfileBloc.userActionsSink.add(action);
-    return action.future.catchError(
-      (err) => _handleError(err.toString()),
-    );
+    var resetAction = ResetSecurityModel();
+    widget.userProfileBloc.userActionsSink.add(resetAction);
+    return resetAction.future;
   }
 
   void _register() {
+    EasyLoading.dismiss();
+
     setState(() {
       _registered = true;
     });
     widget.userProfileBloc.registerSink.add(null);
     Navigator.of(context).pop();
   }
+
+  void _handleError(dynamic exception) {
+    final texts = context.texts();
+    final themeData = Theme.of(context);
+    promptError(
+      context,
+      texts.security_and_backup_internal_error,
+      Text(
+        extractExceptionMessage(exception, texts: texts),
+        style: themeData.dialogTheme.contentTextStyle,
+      ),
+    );
+  }
+
+  /* Restore From Backup */
 
   void _restoreFromBackup() async {
     log.info("Restore from Backup");
