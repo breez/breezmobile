@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:bip39/bip39.dart';
 import 'package:breez/routes/initial_walkthrough/mnemonics/widgets/restore_form.dart';
 import 'package:breez/utils/exceptions.dart';
 import 'package:breez/widgets/single_button_bottom_bar.dart';
@@ -91,17 +92,19 @@ class RestoreFormPageState extends State<RestoreFormPage> {
   }
 
   Future _validateMnemonics() async {
-    final texts = context.texts();
-    final mnemonic = widget.textEditingControllers
-        .map((controller) => controller.text.toLowerCase().trim())
-        .toList()
-        .join(" ");
     try {
+      final mnemonic = widget.textEditingControllers
+          .map((controller) => controller.text.toLowerCase().trim())
+          .toList()
+          .join(" ");
+      // Validate mnemonic first
+      mnemonicToEntropy(mnemonic);
       Navigator.pop(context, mnemonic);
     } catch (e) {
       setState(() {
         _hasError = true;
       });
+      final texts = context.texts();
       throw Exception(extractExceptionMessage(e, texts: texts));
     }
   }
