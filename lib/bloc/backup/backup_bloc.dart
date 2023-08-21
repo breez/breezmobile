@@ -47,8 +47,13 @@ class BackupBloc with AsyncActionsHandler {
   Stream<BackupState> get backupStateStream => _backupStateController.stream;
 
   final StreamController<bool> _promptBackupController =
-      StreamController<bool>.broadcast();
+      BehaviorSubject<bool>.seeded(false);
   Stream<bool> get promptBackupStream => _promptBackupController.stream;
+
+  final StreamController<bool> _promptBackupDismissedController =
+      BehaviorSubject<bool>.seeded(false);
+  Stream<bool> get promptBackupDismissedStream =>
+      _promptBackupDismissedController.stream;
 
   final StreamController<bool> _backupPromptVisibleController =
       BehaviorSubject<bool>.seeded(false);
@@ -77,6 +82,19 @@ class BackupBloc with AsyncActionsHandler {
 
   final _backupActionsController = StreamController<AsyncAction>.broadcast();
   Sink<AsyncAction> get backupActionsSink => _backupActionsController.sink;
+
+  Stream<bool> get promptBackupSubscription => Rx.combineLatestList([
+        backupSettingsStream,
+        promptBackupStream,
+        promptBackupDismissedStream,
+      ]).where((list) {
+        final settings = list[0] as BackupSettings;
+        final dismissed = list[2] as bool;
+        return settings.promptOnError && !dismissed;
+      }).map((list) {
+        final needSignIn = list[1] as bool;
+        return needSignIn;
+      });
 
   BreezBridge _breezLib;
   BackgroundTaskService _tasksService;
@@ -570,6 +588,7 @@ class BackupBloc with AsyncActionsHandler {
     ];
 
     _breezLib.notificationStream.listen((event) async {
+      log.info("backup notification: $event");
       if (event.type == NotificationEvent_NotificationType.BACKUP_REQUEST) {
         _backupServiceNeedLogin = false;
         _backupStateController.add(
@@ -614,13 +633,18 @@ class BackupBloc with AsyncActionsHandler {
     });
   }
 
-  _pushPromptIfNeeded() {
-    if (_enableBackupPrompt &&
-        (_backupServiceNeedLogin ||
-            _backupSettingsController.value.backupProvider == null)) {
+  void _pushPromptIfNeeded() {
+    log.info(
+      "push prompt if needed: {$_enableBackupPrompt, $_backupServiceNeedLogin}",
+    );
+    if (_enableBackupPrompt) {
       _enableBackupPrompt = false;
       _promptBackupController.add(_backupServiceNeedLogin);
     }
+  }
+
+  void promptDismissed() {
+    _promptBackupDismissedController.add(true);
   }
 
   Future testAuth(BackupProvider provider, RemoteServerAuthData authData) {
