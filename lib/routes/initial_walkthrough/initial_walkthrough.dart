@@ -191,13 +191,29 @@ class _InitialWalkthroughPageState extends State<InitialWalkthroughPage>
       builder: (BuildContext context) => BetaWarningDialog(),
     ).then((approved) async {
       if (approved) {
-        final userProfileBloc = AppBlocsProvider.of<UserProfileBloc>(context);
-        await _resetSecurityModel().then((_) {
-          _registered = true;
-          userProfileBloc.registerSink.add(null);
-          Navigator.of(context).pop();
-        });
+        await _resetBackupSettings().then(
+          (_) async => await _resetSecurityModel().then(
+            (_) => _register(),
+          ),
+        );
       }
+    });
+  }
+
+  Future _resetBackupSettings() {
+    final texts = context.texts();
+    final themeData = Theme.of(context);
+    var updateAction = UpdateBackupSettings(BackupSettings.start());
+    widget.backupBloc.backupActionsSink.add(updateAction);
+    return updateAction.future.catchError((err) {
+      promptError(
+        context,
+        texts.security_and_backup_internal_error,
+        Text(
+          err.toString(),
+          style: themeData.dialogTheme.contentTextStyle,
+        ),
+      );
     });
   }
 
@@ -209,7 +225,7 @@ class _InitialWalkthroughPageState extends State<InitialWalkthroughPage>
 
     var action = ResetSecurityModel();
     userProfileBloc.userActionsSink.add(action);
-    action.future.catchError((err) {
+    return action.future.catchError((err) {
       promptError(
         context,
         texts.security_and_backup_internal_error,
@@ -219,6 +235,15 @@ class _InitialWalkthroughPageState extends State<InitialWalkthroughPage>
         ),
       );
     });
+  }
+
+  void _register() {
+    setState(() {
+      _registered = true;
+    });
+    final userProfileBloc = AppBlocsProvider.of<UserProfileBloc>(context);
+    userProfileBloc.registerSink.add(null);
+    Navigator.of(context).pop();
   }
 
   void _restoreFromBackup() async {
