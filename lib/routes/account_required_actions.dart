@@ -5,10 +5,16 @@ import 'package:breez/bloc/account/account_bloc.dart';
 import 'package:breez/bloc/account/account_model.dart';
 import 'package:breez/bloc/backup/backup_bloc.dart';
 import 'package:breez/bloc/backup/backup_model.dart';
+import 'package:breez/bloc/blocs_provider.dart';
 import 'package:breez/bloc/lsp/lsp_bloc.dart';
 import 'package:breez/bloc/lsp/lsp_model.dart';
 import 'package:breez/logger.dart';
+import 'package:breez/routes/backup_in_progress_dialog.dart';
 import 'package:breez/routes/close_warning_dialog.dart';
+import 'package:breez/routes/funds_over_limit_dialog.dart';
+import 'package:breez/routes/lsp/select_lsp_page.dart';
+import 'package:breez/routes/select_provider_error_dialog.dart';
+import 'package:breez/routes/transfer_funds_in_progress_dialog.dart';
 import 'package:breez/services/breezlib/data/messages.pb.dart';
 import 'package:breez/widgets/enable_backup_dialog.dart';
 import 'package:breez/widgets/flushbar.dart';
@@ -20,23 +26,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:rxdart/rxdart.dart';
 
-import 'backup_in_progress_dialog.dart';
-import 'funds_over_limit_dialog.dart';
-import 'lsp/select_lsp_page.dart';
-import 'select_provider_error_dialog.dart';
-import 'transfer_funds_in_progress_dialog.dart';
-
 class AccountRequiredActionsIndicator extends StatefulWidget {
-  final BackupBloc _backupBloc;
-  final AccountBloc _accountBloc;
-  final LSPBloc lspBloc;
-
-  const AccountRequiredActionsIndicator(
-    this._backupBloc,
-    this._accountBloc,
-    this.lspBloc,
-  );
-
   @override
   AccountRequiredActionsIndicatorState createState() {
     return AccountRequiredActionsIndicatorState();
@@ -59,8 +49,8 @@ class AccountRequiredActionsIndicatorState
   }
 
   void _initListeners() {
-    _backupSettingsSubscription =
-        widget._backupBloc.backupSettingsStream.listen(
+    final backupBloc = AppBlocsProvider.of<BackupBloc>(context);
+    _backupSettingsSubscription = backupBloc.backupSettingsStream.listen(
       (backupSettings) {
         setState(() {
           _backupSettings = backupSettings;
@@ -69,19 +59,20 @@ class AccountRequiredActionsIndicatorState
     );
 
     _promptBackupSubscription?.cancel();
-    _promptBackupSubscription = widget._backupBloc.promptBackupSubscription
+    _promptBackupSubscription = backupBloc.promptBackupSubscription
         .delay(const Duration(seconds: 4))
         .listen((signInNeeded) => _promptBackup(signInNeeded));
   }
 
   void _promptBackup(bool signInNeeded) async {
+    final backupBloc = AppBlocsProvider.of<BackupBloc>(context);
     log.info(
       "prompt backup: {signInNeeded: $signInNeeded, "
       "showingBackupDialog: $showingBackupDialog}",
     );
     if (!showingBackupDialog) {
       showingBackupDialog = true;
-      widget._backupBloc.backupPromptVisibleSink.add(true);
+      backupBloc.backupPromptVisibleSink.add(true);
       popFlushbars(context);
       showDialog(
         useRootNavigator: false,
@@ -93,8 +84,8 @@ class AccountRequiredActionsIndicatorState
         ),
       ).then((_) {
         showingBackupDialog = false;
-        widget._backupBloc.backupPromptVisibleSink.add(false);
-        widget._backupBloc.promptDismissed();
+        backupBloc.backupPromptVisibleSink.add(false);
+        backupBloc.promptDismissed();
       });
     }
   }
@@ -107,14 +98,21 @@ class AccountRequiredActionsIndicatorState
   }
 
   Widget _buildLoader(BackupState backupState, AccountModel account) {
+    final backupBloc = AppBlocsProvider.of<BackupBloc>(context);
+    final accountBloc = AppBlocsProvider.of<AccountBloc>(context);
+
     Widget Function(BuildContext) dialogBuilder;
 
     if (backupState?.inProgress == true) {
       dialogBuilder = (_) => buildBackupInProgressDialog(
-          context, widget._backupBloc.backupStateStream);
+            context,
+            backupBloc.backupStateStream,
+          );
     } else if (account?.transferringOnChainDeposit == true) {
       dialogBuilder = (_) => buildTransferFundsInProgressDialog(
-          context, widget._accountBloc.accountStream);
+            context,
+            accountBloc.accountStream,
+          );
     }
 
     if (dialogBuilder != null) {
@@ -156,33 +154,37 @@ class AccountRequiredActionsIndicatorState
 
   @override
   Widget build(BuildContext context) {
+    final backupBloc = AppBlocsProvider.of<BackupBloc>(context);
+    final accountBloc = AppBlocsProvider.of<AccountBloc>(context);
+    final lspBloc = AppBlocsProvider.of<LSPBloc>(context);
+
     return StreamBuilder<LSPStatus>(
-      stream: widget.lspBloc.lspStatusStream,
+      stream: lspBloc.lspStatusStream,
       builder: (ctx, lspStatusSnapshot) {
         final lspStatus = lspStatusSnapshot.data;
 
         return StreamBuilder<AccountSettings>(
-          stream: widget._accountBloc.accountSettingsStream,
+          stream: accountBloc.accountSettingsStream,
           builder: (context, settingsSnapshot) {
             final accountSettings = settingsSnapshot.data;
 
             return StreamBuilder<AccountModel>(
-              stream: widget._accountBloc.accountStream,
+              stream: accountBloc.accountStream,
               builder: (context, accountSnapshot) {
                 final accountModel = accountSnapshot.data;
 
                 return StreamBuilder<List<PaymentInfo>>(
-                  stream: widget._accountBloc.pendingChannelsStream,
+                  stream: accountBloc.pendingChannelsStream,
                   builder: (ctx, pendingChannelsSnapshot) {
                     final pendingChannels = pendingChannelsSnapshot.data;
 
                     return StreamBuilder<LSPActivity>(
-                      stream: widget._accountBloc.lspActivityStream,
+                      stream: accountBloc.lspActivityStream,
                       builder: (context, lspActivitySnapshot) {
                         final lspActivity = lspActivitySnapshot.data;
 
                         return StreamBuilder<BackupState>(
-                          stream: widget._backupBloc.backupStateStream,
+                          stream: backupBloc.backupStateStream,
                           builder: (context, backupSnapshot) {
                             final backup = backupSnapshot.data;
                             final hasError = backupSnapshot.hasError;
@@ -293,18 +295,17 @@ class AccountRequiredActionsIndicatorState
             useRootNavigator: false,
             barrierDismissible: false,
             context: context,
-            builder: (_) => SwapRefundDialog(
-              accountBloc: widget._accountBloc,
-            ),
+            builder: (_) => const SwapRefundDialog(),
           ),
         ),
       );
     }
 
     if (accountModel?.syncUIState == SyncUIState.COLLAPSED) {
+      final accountBloc = AppBlocsProvider.of<AccountBloc>(context);
       warnings.add(
         WarningAction(
-          () => widget._accountBloc.userActionsSink.add(
+          () => accountBloc.userActionsSink.add(
             ChangeSyncUIState(SyncUIState.BLOCKING),
           ),
           iconWidget: Rotator(
@@ -326,7 +327,7 @@ class AccountRequiredActionsIndicatorState
                   () {
                 navigatorState.push(
                   FadeInRoute(
-                    builder: (_) => SelectLSPPage(lstBloc: widget.lspBloc),
+                    builder: (_) => const SelectLSPPage(),
                   ),
                 );
               });

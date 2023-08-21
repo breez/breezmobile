@@ -245,9 +245,7 @@ class UserApp extends StatelessWidget {
                             case '/select_lsp':
                               return MaterialPageRoute(
                                 fullscreenDialog: true,
-                                builder: (_) => SelectLSPPage(
-                                  lstBloc: lspBloc,
-                                ),
+                                builder: (_) => const SelectLSPPage(),
                                 settings: settings,
                               );
                             case '/get_refund':
