@@ -96,7 +96,7 @@ class EnableBackupDialogState extends State<EnableBackupDialog> {
   }
 }
 
-class _DoNotPromptAgainCheckbox extends StatelessWidget {
+class _DoNotPromptAgainCheckbox extends StatefulWidget {
   final BackupSettings backupSettings;
   final AutoSizeGroup autoSizeGroup;
 
@@ -106,6 +106,12 @@ class _DoNotPromptAgainCheckbox extends StatelessWidget {
     @required this.backupSettings,
   }) : super(key: key);
 
+  @override
+  State<_DoNotPromptAgainCheckbox> createState() =>
+      _DoNotPromptAgainCheckboxState();
+}
+
+class _DoNotPromptAgainCheckboxState extends State<_DoNotPromptAgainCheckbox> {
   @override
   Widget build(BuildContext context) {
     final backupBloc = AppBlocsProvider.of<BackupBloc>(context);
@@ -123,18 +129,26 @@ class _DoNotPromptAgainCheckbox extends StatelessWidget {
             data: themeData.copyWith(
               unselectedWidgetColor: themeData.textTheme.labelLarge.color,
             ),
-            child: Checkbox(
-              activeColor: Colors.white,
-              checkColor: themeData.canvasColor,
-              value: !backupSettings.promptOnError,
-              onChanged: (v) {
-                backupBloc.backupSettingsSink.add(
-                  backupSettings.copyWith(
-                    promptOnError: !v,
-                  ),
-                );
-              },
-            ),
+            child: StreamBuilder<BackupSettings>(
+                stream: backupBloc.backupSettingsStream,
+                builder: (context, snapshot) {
+                  if (!snapshot.hasData) {
+                    return Container();
+                  }
+                  final backupSettings = snapshot.data;
+                  return Checkbox(
+                    activeColor: Colors.white,
+                    checkColor: themeData.canvasColor,
+                    value: !backupSettings.promptOnError,
+                    onChanged: (v) {
+                      backupBloc.backupSettingsSink.add(
+                        backupSettings.copyWith(
+                          promptOnError: !v,
+                        ),
+                      );
+                    },
+                  );
+                }),
           ),
           Expanded(
             child: AutoSizeText(
@@ -143,7 +157,7 @@ class _DoNotPromptAgainCheckbox extends StatelessWidget {
               maxLines: 1,
               minFontSize: MinFontSize(context).minFontSize,
               stepGranularity: 0.1,
-              group: autoSizeGroup,
+              group: widget.autoSizeGroup,
             ),
           )
         ],
