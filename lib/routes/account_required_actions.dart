@@ -43,8 +43,14 @@ class AccountRequiredActionsIndicatorState
   bool showingBackupDialog = false;
 
   @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      initListener();
+    });
+  }
+
+  void initListener() {
     final backupBloc = AppBlocsProvider.of<BackupBloc>(context);
     _promptBackupSubscription?.cancel();
     _promptBackupSubscription = backupBloc
