@@ -889,14 +889,21 @@ class BreezBridge {
     return _invokeMethodWhenReady("backupFiles").then((res) => res as String);
   }
 
-  Future<List<String>> getWalletDBpFilePath() async {
+  Future<List<String>> getWalletDBpFilePath({bool untouched = false}) async {
     String lines = await rootBundle.loadString('conf/breez.conf');
     var config = Config.fromString(lines);
     String lndDir = (await getApplicationDocumentsDirectory()).path;
     List<String> result = [];
     String network = config.get('Application Options', 'network');
-    String reply = await backupFiles();
-    List files = json.decode(reply);
+    List files;
+    if (untouched) {
+      result.add('$lndDir/breez.db');
+      result.add('$lndDir/data/graph/$network/channel.db');
+      result.add('$lndDir/data/chain/bitcoin/$network/channel.backup');
+    } else {
+      String reply = await backupFiles();
+      files = json.decode(reply);
+    }
     if (files != null) {
       result.addAll(files.map((e) => e as String));
     }

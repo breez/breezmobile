@@ -495,17 +495,18 @@ class DevViewState extends State<DevView> {
         function: () async {
           Directory tempDir = await getTemporaryDirectory();
           tempDir = await tempDir.createTemp("graph");
-          var walletFiles =
-              await ServiceInjector().breezBridge.getWalletDBpFilePath();
+          var walletFiles = await ServiceInjector()
+              .breezBridge
+              .getWalletDBpFilePath(untouched: true);
           var encoder = ZipFileEncoder();
           var zipFilePath = '${tempDir.path}/wallet-files.zip';
           encoder.create(zipFilePath);
-          var i = 1;
           for (var f in walletFiles) {
             var file = File(f);
-            encoder.addFile(file,
-                "${i.toString()}_${file.path.split(Platform.pathSeparator).last}");
-            i += 1;
+            if (file.existsSync()) {
+              encoder.addFile(
+                  file, file.path.split(Platform.pathSeparator).last);
+            }
           }
           encoder.close();
           final zipFile = XFile(zipFilePath);
