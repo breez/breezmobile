@@ -116,11 +116,20 @@ class BackupSettings {
   static BackupSettings start() => BackupSettings(
         true,
         BackupKeyType.NONE,
-        defaultTargetPlatform == TargetPlatform.android
-            ? googleBackupProvider()
-            : null,
+        _defaultBackupProvider(),
         const RemoteServerAuthData(null, null, null, null),
       );
+
+  static BackupProvider _defaultBackupProvider() {
+    switch (defaultTargetPlatform) {
+      case TargetPlatform.android:
+        return googleBackupProvider();
+      case TargetPlatform.iOS:
+        return icloudBackupProvider();
+      default:
+        return null;
+    }
+  }
 
   BackupSettings copyWith({
     bool promptOnError,
