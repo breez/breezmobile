@@ -7,6 +7,7 @@ import 'package:breez/bloc/backup/backup_bloc.dart';
 import 'package:breez/bloc/backup/backup_model.dart';
 import 'package:breez/bloc/lsp/lsp_bloc.dart';
 import 'package:breez/bloc/lsp/lsp_model.dart';
+import 'package:breez/logger.dart';
 import 'package:breez/routes/close_warning_dialog.dart';
 import 'package:breez/services/breezlib/data/messages.pb.dart';
 import 'package:breez/widgets/enable_backup_dialog.dart';
@@ -44,7 +45,7 @@ class AccountRequiredActionsIndicator extends StatefulWidget {
 
 class AccountRequiredActionsIndicatorState
     extends State<AccountRequiredActionsIndicator> {
-  StreamSubscription<void> _promptEnableSubscription;
+  StreamSubscription<dynamic> _promptBackupSubscription;
   StreamSubscription<BackupSettings> _backupSettingsSubscription;
   BackupSettings _backupSettings;
   bool showingBackupDialog = false;
@@ -63,15 +64,19 @@ class AccountRequiredActionsIndicatorState
         },
       );
 
-      _promptEnableSubscription = widget._backupBloc.promptBackupStream
+      _promptBackupSubscription?.cancel();
+      _promptBackupSubscription = widget._backupBloc.promptBackupSubscription
           .delay(const Duration(seconds: 4))
           .listen((signInNeeded) => _promptBackup(signInNeeded));
-      _init = true;
     }
   }
 
   void _promptBackup(bool signInNeeded) async {
-    if (_backupSettings.promptOnError && !showingBackupDialog) {
+    log.info(
+      "prompt backup: {signInNeeded: $signInNeeded, "
+      "showingBackupDialog: $showingBackupDialog}",
+    );
+    if (!showingBackupDialog) {
       showingBackupDialog = true;
       widget._backupBloc.backupPromptVisibleSink.add(true);
       popFlushbars(context);
@@ -86,13 +91,14 @@ class AccountRequiredActionsIndicatorState
       ).then((_) {
         showingBackupDialog = false;
         widget._backupBloc.backupPromptVisibleSink.add(false);
+        widget._backupBloc.promptDismissed();
       });
     }
   }
 
   @override
   void dispose() {
-    _promptEnableSubscription?.cancel();
+    _promptBackupSubscription?.cancel();
     _backupSettingsSubscription?.cancel();
     super.dispose();
   }
