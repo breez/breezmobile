@@ -439,3 +439,13 @@ class RestoreRequest {
           "Encryption key mustn't be empty for encrypted backup.",
         );
 }
+
+class PromptBackupData {
+  final BackupSettings settings;
+  final bool needsSignIn;
+
+  const PromptBackupData({
+    @required this.settings,
+    @required this.needsSignIn,
+  });
+}

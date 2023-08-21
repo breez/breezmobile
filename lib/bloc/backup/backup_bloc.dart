@@ -80,7 +80,8 @@ class BackupBloc with AsyncActionsHandler {
   final _backupActionsController = StreamController<AsyncAction>.broadcast();
   Sink<AsyncAction> get backupActionsSink => _backupActionsController.sink;
 
-  Stream<bool> get promptBackupSubscription => Rx.combineLatestList([
+  Stream<PromptBackupData> get promptBackupSubscription =>
+      Rx.combineLatestList([
         backupSettingsStream,
         promptBackupStream,
         promptBackupDismissedStream,
@@ -88,10 +89,10 @@ class BackupBloc with AsyncActionsHandler {
         final settings = list[0] as BackupSettings;
         final dismissed = list[2] as bool;
         return settings.promptOnError && !dismissed;
-      }).map((list) {
-        final needSignIn = list[1] as bool;
-        return needSignIn;
-      });
+      }).map((list) => PromptBackupData(
+            settings: list[0],
+            needsSignIn: list[1],
+          ));
 
   BreezBridge _breezLib;
   BackgroundTaskService _tasksService;
@@ -640,53 +641,6 @@ class BackupBloc with AsyncActionsHandler {
 
   void promptDismissed() {
     _promptBackupDismissedController.add(true);
-  }
-
-  void _listenRestoreRequests() {
-    _restoreRequestController.stream.listen((request) {
-      if (request == null) {
-        _breezLib.getAvailableBackups().then((backups) {
-          List snapshotsArray = json.decode(backups) as List;
-          List<SnapshotInfo> snapshots = <SnapshotInfo>[];
-          if (snapshotsArray != null) {
-            snapshots = snapshotsArray.map((s) {
-              return SnapshotInfo.fromJson(s);
-            }).toList();
-          }
-          snapshots
-              .sort((s1, s2) => s2.modifiedTime.compareTo(s1.modifiedTime));
-          _multipleRestoreController.add(snapshots);
-        }).catchError((error) {
-          if (error.runtimeType == PlatformException) {
-            PlatformException e = (error as PlatformException);
-            // the error code equals the message from the go library so
-            // not to confuse the two.
-            if (e.code == _signInFailedMessage ||
-                e.message == _signInFailedCode) {
-              error = SignInFailedException(
-                  _backupSettingsController.value.backupProvider);
-            } else if (e.code == _empty) {
-              error = NoBackupFoundException();
-            } else {
-              error = (error as PlatformException).message;
-            }
-          }
-          _restoreFinishedController.addError(error);
-        });
-        return;
-      }
-
-      if (request.encryptionKey != null && request.encryptionKey.key != null) {
-        assert(request.encryptionKey.key.isNotEmpty || true);
-      }
-      assert(request.snapshot.nodeID.isNotEmpty);
-
-      _breezLib
-          .restore(request.snapshot.nodeID, request.encryptionKey.key)
-          .then((_) => _restoreAppData()
-              .then((value) => _restoreFinishedController.add(true))
-              .catchError(_restoreFinishedController.addError));
-    });
   }
 
   Future testAuth(BackupProvider provider, RemoteServerAuthData authData) {

@@ -50,8 +50,8 @@ class AccountRequiredActionsIndicatorState
     _promptBackupSubscription = backupBloc
         .promptBackupSubscription
         .delay(const Duration(seconds: 4))
-        .listen((needSignIn) {
-      log.info("prompt backup: {needSignIn: $needSignIn, "
+        .listen((data) {
+      log.info("prompt backup: {data: $data, "
           "showingBackupDialog: $showingBackupDialog}");
 
       if (!showingBackupDialog) {
@@ -63,8 +63,8 @@ class AccountRequiredActionsIndicatorState
             barrierDismissible: false,
             context: context,
             builder: (_) => EnableBackupDialog(
-              backupSettings: settings,
-              signInNeeded: needSignIn,
+              backupSettings: data.settings,
+              signInNeeded: data.needsSignIn,
             )).then((_) {
           showingBackupDialog = false;
           backupBloc.backupPromptVisibleSink.add(false);
@@ -233,8 +233,7 @@ class AccountRequiredActionsIndicatorState
           barrierDismissible: false,
           context: context,
           builder: (_) => EnableBackupDialog(
-            context,
-            AppBlocsProvider.of<BackupBloc>(context),
+            backupSettings: backupSettings,
             signInNeeded: signInNeeded,
           ),
         );
