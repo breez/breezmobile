@@ -10,36 +10,36 @@ import 'package:breez/bloc/user_profile/user_profile_bloc.dart';
 import 'package:breez/routes/backup_in_progress_dialog.dart';
 import 'package:breez/routes/security_pin/lock_screen.dart';
 import 'package:breez/routes/security_pin/remote_server_auth/remote_server_auth.dart';
-import 'package:breez/routes/security_pin/security_and_backup/security_pin_tiles/backup_provider_tile.dart';
-import 'package:breez/routes/security_pin/security_and_backup/security_pin_tiles/change_pin_tile.dart';
-import 'package:breez/routes/security_pin/security_and_backup/security_pin_tiles/disable_pin_tile.dart';
-import 'package:breez/routes/security_pin/security_and_backup/security_pin_tiles/enable_biometric_auth_tile.dart';
-import 'package:breez/routes/security_pin/security_and_backup/security_pin_tiles/generate_backup_phrase_tile.dart';
-import 'package:breez/routes/security_pin/security_and_backup/security_pin_tiles/pin_interval_tile.dart';
-import 'package:breez/routes/security_pin/security_and_backup/security_pin_tiles/remote_server_credentials_tile.dart';
+import 'package:breez/routes/security_pin/security_and_backup/backup_tiles/backup_provider_tile.dart';
+import 'package:breez/routes/security_pin/security_and_backup/backup_tiles/generate_backup_phrase_tile.dart';
+import 'package:breez/routes/security_pin/security_and_backup/backup_tiles/remote_server_credentials_tile.dart';
+import 'package:breez/routes/security_pin/security_and_backup/security_tiles/change_pin_tile.dart';
+import 'package:breez/routes/security_pin/security_and_backup/security_tiles/disable_pin_tile.dart';
+import 'package:breez/routes/security_pin/security_and_backup/security_tiles/enable_biometric_auth_tile.dart';
+import 'package:breez/routes/security_pin/security_and_backup/security_tiles/pin_interval_tile.dart';
 import 'package:breez/routes/security_pin/security_and_backup/widgets/last_backup_text.dart';
 import 'package:breez/widgets/back_button.dart' as backBtn;
 import 'package:breez_translations/breez_translations_locales.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 
-class SecurityPage extends StatefulWidget {
+class SecurityAndBackupPage extends StatefulWidget {
   final UserProfileBloc userProfileBloc;
   final BackupBloc backupBloc;
 
-  const SecurityPage(
+  const SecurityAndBackupPage(
     this.userProfileBloc,
     this.backupBloc, {
     Key key,
   }) : super(key: key);
 
   @override
-  SecurityPageState createState() {
-    return SecurityPageState();
+  SecurityAndBackupPageState createState() {
+    return SecurityAndBackupPageState();
   }
 }
 
-class SecurityPageState extends State<SecurityPage>
+class SecurityAndBackupPageState extends State<SecurityAndBackupPage>
     with WidgetsBindingObserver {
   StreamSubscription<BackupState> _backupInProgressSubscription;
   final _autoSizeGroup = AutoSizeGroup();
