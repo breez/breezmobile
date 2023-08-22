@@ -36,6 +36,7 @@ import 'package:breez/widgets/warning_box.dart';
 import 'package:breez_translations/breez_translations_locales.dart';
 import 'package:breez_translations/generated/breez_translations.dart';
 import 'package:fixnum/fixnum.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -292,18 +293,38 @@ class CreateInvoicePageState extends State<CreateInvoicePage> {
                           if (_withdrawFetchResponse != null &&
                               !_withdrawFetchResponse.isFixedAmount) ...[
                             Padding(
-                              padding: const EdgeInsets.only(top: 8),
-                              child: Text(
-                                texts.lnurl_fetch_invoice_limit(
-                                  acc.currency
-                                      .format(_withdrawFetchResponse.minAmount),
-                                  acc.currency
-                                      .format(_withdrawFetchResponse.maxAmount),
-                                ),
-                                textAlign: TextAlign.left,
-                                style: theme.FieldTextStyle.labelStyle,
-                              ),
-                            )
+                                padding: const EdgeInsets.only(top: 8),
+                                child: RichText(
+                                    text: TextSpan(
+                                        style: theme.FieldTextStyle.labelStyle,
+                                        children: <TextSpan>[
+                                      TextSpan(
+                                          text: texts.lnurl_fetch_invoice_min(
+                                              acc.currency.format(
+                                                  _withdrawFetchResponse
+                                                      .minAmount)),
+                                          recognizer: TapGestureRecognizer()
+                                            ..onTap = () => _amountController
+                                                    .text =
+                                                acc.currency.format(
+                                                    _withdrawFetchResponse
+                                                        .minAmount,
+                                                    includeDisplayName: false,
+                                                    userInput: true)),
+                                      TextSpan(
+                                          text: texts.lnurl_fetch_invoice_and(
+                                              acc.currency.format(
+                                                  _withdrawFetchResponse
+                                                      .maxAmount)),
+                                          recognizer: TapGestureRecognizer()
+                                            ..onTap = () => _amountController
+                                                    .text =
+                                                acc.currency.format(
+                                                    _withdrawFetchResponse
+                                                        .maxAmount,
+                                                    includeDisplayName: false,
+                                                    userInput: true)),
+                                    ]))),
                           ],
                           _buildReceivableBTC(context, acc, lspStatus),
                           StreamBuilder<AccountModel>(

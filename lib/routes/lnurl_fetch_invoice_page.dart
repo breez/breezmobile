@@ -21,6 +21,7 @@ import 'package:breez/widgets/loader.dart';
 import 'package:breez/widgets/single_button_bottom_bar.dart';
 import 'package:breez/widgets/static_loader.dart';
 import 'package:breez_translations/breez_translations_locales.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -213,16 +214,28 @@ class LNURLFetchInvoicePageState extends State<LNURLFetchInvoicePage> {
                   ),
                   if (!response.isFixedAmount) ...[
                     Padding(
-                      padding: const EdgeInsets.only(top: 8),
-                      child: Text(
-                        texts.lnurl_fetch_invoice_limit(
-                          acc.currency.format(response.minAmount),
-                          acc.currency.format(response.maxAmount),
-                        ),
-                        textAlign: TextAlign.left,
-                        style: theme.FieldTextStyle.labelStyle,
-                      ),
-                    )
+                        padding: const EdgeInsets.only(top: 8),
+                        child: RichText(
+                            text: TextSpan(
+                                style: theme.FieldTextStyle.labelStyle,
+                                children: <TextSpan>[
+                              TextSpan(
+                                  text: texts.lnurl_fetch_invoice_min(
+                                      acc.currency.format(response.minAmount)),
+                                  recognizer: TapGestureRecognizer()
+                                    ..onTap = () => _amountController.text =
+                                        acc.currency.format(response.minAmount,
+                                            includeDisplayName: false,
+                                            userInput: true)),
+                              TextSpan(
+                                  text: texts.lnurl_fetch_invoice_and(
+                                      acc.currency.format(response.maxAmount)),
+                                  recognizer: TapGestureRecognizer()
+                                    ..onTap = () => _amountController.text =
+                                        acc.currency.format(response.maxAmount,
+                                            includeDisplayName: false,
+                                            userInput: true)),
+                            ]))),
                   ],
                   Container(
                     width: MediaQuery.of(context).size.width,
