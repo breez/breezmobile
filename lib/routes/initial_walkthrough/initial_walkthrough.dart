@@ -202,6 +202,7 @@ class _InitialWalkthroughPageState extends State<InitialWalkthroughPage>
         try {
           EasyLoading.show(indicator: const LoaderIndicator());
 
+          await _signOut();
           await _resetBackupSettings();
           await _resetSecurityModel();
           _register();
