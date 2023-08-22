@@ -28,3 +28,7 @@ class RestoreBackup extends AsyncAction {
 
   RestoreBackup(this.restoreRequest);
 }
+
+class SignOut extends AsyncAction {
+  SignOut();
+}

@@ -253,12 +253,18 @@ class _InitialWalkthroughPageState extends State<InitialWalkthroughPage>
 
   void _restoreFromBackup() async {
     log.info("Restore from Backup");
-
+    await _signOut();
     _showSelectProviderDialog().then((snapshots) {
       _showRestoreDialog(snapshots).then((restoreRequest) {
         _restore(restoreRequest);
       });
     });
+  }
+
+  Future _signOut() {
+    var signOutAction = SignOut();
+    widget.backupBloc.backupActionsSink.add(signOutAction);
+    return signOutAction.future;
   }
 
   Future<List<SnapshotInfo>> _showSelectProviderDialog() {
