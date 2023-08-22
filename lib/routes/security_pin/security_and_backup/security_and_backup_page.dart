@@ -100,7 +100,8 @@ class SecurityAndBackupPageState extends State<SecurityAndBackupPage>
           }
 
           final requiresPin = userSnapshot.data.securityModel.requiresPin;
-          final backupProvider = backupSnapshot.data.backupProvider;
+          final backupSettings = backupSnapshot.data;
+          final backupProvider = backupSettings.backupProvider;
           final isRemoteServer = backupProvider?.name ==
               BackupSettings.remoteServerBackupProvider().name;
 
@@ -143,22 +144,30 @@ class SecurityAndBackupPageState extends State<SecurityAndBackupPage>
                 ],
                 const Divider(),
                 BackupProviderTile(
-                  backupBloc: widget.backupBloc,
+                  backupSettings: backupSettings,
                   autoSizeGroup: _autoSizeGroup,
-                  enterRemoteServerCredentials: _enterRemoteServerCredentials,
+                  enterRemoteServerCredentials: (selectedProvider) async {
+                    await _enterRemoteServerCredentials(
+                      backupSettings,
+                      backupProvider: selectedProvider,
+                    );
+                  },
                   backupNow: _backupNow,
                 ),
                 if (isRemoteServer) ...[
                   const Divider(),
                   RemoteServerCredentialsTile(
-                    backupBloc: widget.backupBloc,
                     autoSizeGroup: _autoSizeGroup,
-                    enterRemoteServerCredentials: _enterRemoteServerCredentials,
+                    enterRemoteServerCredentials: () async {
+                      await _enterRemoteServerCredentials(
+                        backupSettings,
+                      );
+                    },
                   ),
                 ],
                 const Divider(),
                 GenerateBackupPhraseTile(
-                  backupBloc: widget.backupBloc,
+                  backupSettings: backupSettings,
                   autoSizeGroup: _autoSizeGroup,
                   backupNow: _backupNow,
                 ),
