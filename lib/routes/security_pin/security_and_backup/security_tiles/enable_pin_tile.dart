@@ -11,22 +11,22 @@ import 'package:breez/widgets/route.dart';
 import 'package:breez_translations/breez_translations_locales.dart';
 import 'package:flutter/material.dart';
 
-class DisablePinTile extends StatefulWidget {
+class EnablePinTile extends StatefulWidget {
   final UserProfileBloc userProfileBloc;
   final AutoSizeGroup autoSizeGroup;
-  final Future Function(SecurityModel securityModel) updateSecurityModel;
+  final Future Function(SecurityModel securityModel) enablePin;
 
-  const DisablePinTile({
+  const EnablePinTile({
     @required this.userProfileBloc,
     @required this.autoSizeGroup,
-    @required this.updateSecurityModel,
+    @required this.enablePin,
   });
 
   @override
-  State<DisablePinTile> createState() => _DisablePinTileState();
+  State<EnablePinTile> createState() => _EnablePinTileState();
 }
 
-class _DisablePinTileState extends State<DisablePinTile> {
+class _EnablePinTileState extends State<EnablePinTile> {
   @override
   Widget build(BuildContext context) {
     final texts = context.texts();
@@ -89,9 +89,7 @@ class _DisablePinTileState extends State<DisablePinTile> {
     var updatePinAction = UpdatePinCode(newPIN);
     widget.userProfileBloc.userActionsSink.add(updatePinAction);
     return updatePinAction.future.then((_) async {
-      await widget.updateSecurityModel(
-        securityModel.copyWith(requiresPin: true),
-      );
+      await widget.enablePin(securityModel.copyWith(requiresPin: true));
     }).catchError((err) => _handleError(err.toString()));
   }
 
@@ -104,6 +102,7 @@ class _DisablePinTileState extends State<DisablePinTile> {
   Future<void> _handleError(String error) {
     final texts = context.texts();
     final themeData = Theme.of(context);
+
     return promptError(
       context,
       texts.security_and_backup_internal_error,

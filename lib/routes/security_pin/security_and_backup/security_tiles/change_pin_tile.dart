@@ -14,12 +14,12 @@ import 'package:flutter/material.dart';
 class ChangePinTile extends StatefulWidget {
   final UserProfileBloc userProfileBloc;
   final AutoSizeGroup autoSizeGroup;
-  final Future Function(SecurityModel securityModel) updateSecurityModel;
+  final Future Function(SecurityModel securityModel) changePin;
 
   const ChangePinTile({
     @required this.userProfileBloc,
     @required this.autoSizeGroup,
-    @required this.updateSecurityModel,
+    @required this.changePin,
   });
 
   @override
@@ -31,31 +31,32 @@ class _ChangePinTileState extends State<ChangePinTile> {
   Widget build(BuildContext context) {
     final texts = context.texts();
     return StreamBuilder<BreezUserModel>(
-        stream: widget.userProfileBloc.userStream,
-        builder: (context, snapshot) {
-          if (!snapshot.hasData) {
-            return Container();
-          }
+      stream: widget.userProfileBloc.userStream,
+      builder: (context, snapshot) {
+        if (!snapshot.hasData) {
+          return Container();
+        }
 
-          final securityModel = snapshot.data.securityModel;
+        final securityModel = snapshot.data.securityModel;
 
-          return ListTile(
-            title: AutoSizeText(
-              texts.security_and_backup_change_pin,
-              style: const TextStyle(color: Colors.white),
-              maxLines: 1,
-              minFontSize: MinFontSize(context).minFontSize,
-              stepGranularity: 0.1,
-              group: widget.autoSizeGroup,
-            ),
-            trailing: const Icon(
-              Icons.keyboard_arrow_right,
-              color: Colors.white,
-              size: 30.0,
-            ),
-            onTap: () => _onChangePinSelected(securityModel),
-          );
-        });
+        return ListTile(
+          title: AutoSizeText(
+            texts.security_and_backup_change_pin,
+            style: const TextStyle(color: Colors.white),
+            maxLines: 1,
+            minFontSize: MinFontSize(context).minFontSize,
+            stepGranularity: 0.1,
+            group: widget.autoSizeGroup,
+          ),
+          trailing: const Icon(
+            Icons.keyboard_arrow_right,
+            color: Colors.white,
+            size: 30.0,
+          ),
+          onTap: () => _onChangePinSelected(securityModel),
+        );
+      },
+    );
   }
 
   void _onChangePinSelected(SecurityModel securityModel) {
@@ -83,15 +84,14 @@ class _ChangePinTileState extends State<ChangePinTile> {
     var updatePinAction = UpdatePinCode(newPIN);
     widget.userProfileBloc.userActionsSink.add(updatePinAction);
     return updatePinAction.future.then((_) async {
-      await widget.updateSecurityModel(
-        securityModel.copyWith(requiresPin: true),
-      );
+      await widget.changePin(securityModel.copyWith(requiresPin: true));
     }).catchError((err) => _handleError(err.toString()));
   }
 
   Future<void> _handleError(String error) {
     final texts = context.texts();
     final themeData = Theme.of(context);
+
     return promptError(
       context,
       texts.security_and_backup_internal_error,

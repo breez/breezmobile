@@ -12,12 +12,12 @@ import 'package:flutter/material.dart';
 class EnableBiometricAuthTile extends StatefulWidget {
   final UserProfileBloc userProfileBloc;
   final AutoSizeGroup autoSizeGroup;
-  final Future Function(SecurityModel securityModel) updateSecurityModel;
+  final Future Function(SecurityModel securityModel) changeBiometricAuth;
 
   const EnableBiometricAuthTile({
     @required this.userProfileBloc,
     @required this.autoSizeGroup,
-    @required this.updateSecurityModel,
+    @required this.changeBiometricAuth,
   });
 
   @override
@@ -59,33 +59,32 @@ class _EnableBiometricAuthTileState extends State<EnableBiometricAuthTile>
       return null;
     } else {
       return StreamBuilder<BreezUserModel>(
-          stream: widget.userProfileBloc.userStream,
-          builder: (context, snapshot) {
-            if (!snapshot.hasData) {
-              return Container();
-            }
+        stream: widget.userProfileBloc.userStream,
+        builder: (context, snapshot) {
+          if (!snapshot.hasData) {
+            return Container();
+          }
 
-            final securityModel = snapshot.data.securityModel;
+          final securityModel = snapshot.data.securityModel;
 
-            return SimpleSwitch(
-              text: _localAuthenticationOptionLabel(),
-              switchValue: securityModel.isFingerprintEnabled,
-              group: securityModel.requiresPin ? widget.autoSizeGroup : null,
-              onChanged: (value) async {
-                if (mounted) {
-                  if (value) {
-                    await _validateBiometrics(
-                      securityModel,
-                    );
-                  } else {
-                    await widget.updateSecurityModel(
-                      securityModel.copyWith(isFingerprintEnabled: false),
-                    );
-                  }
+          return SimpleSwitch(
+            text: _localAuthenticationOptionLabel(),
+            switchValue: securityModel.isFingerprintEnabled,
+            group: securityModel.requiresPin ? widget.autoSizeGroup : null,
+            onChanged: (value) async {
+              if (mounted) {
+                if (value) {
+                  await _validateBiometrics(securityModel);
+                } else {
+                  await widget.changeBiometricAuth(
+                    securityModel.copyWith(isFingerprintEnabled: false),
+                  );
                 }
-              },
-            );
-          });
+              }
+            },
+          );
+        },
+      );
     }
   }
 
@@ -115,7 +114,7 @@ class _EnableBiometricAuthTileState extends State<EnableBiometricAuthTile>
     widget.userProfileBloc.userActionsSink.add(validateBiometricsAction);
     validateBiometricsAction.future.then(
       (isValid) async {
-        widget.updateSecurityModel(
+        widget.changeBiometricAuth(
           securityModel.copyWith(isFingerprintEnabled: isValid),
         );
       },
