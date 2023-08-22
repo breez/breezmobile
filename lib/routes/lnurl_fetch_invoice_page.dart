@@ -9,6 +9,7 @@ import 'package:breez/bloc/invoice/invoice_bloc.dart';
 import 'package:breez/bloc/lnurl/lnurl_actions.dart';
 import 'package:breez/bloc/lnurl/lnurl_bloc.dart';
 import 'package:breez/bloc/lnurl/lnurl_model.dart';
+import 'package:breez/bloc/user_profile/currency.dart';
 import 'package:breez/logger.dart';
 import 'package:breez/theme_data.dart' as theme;
 import 'package:breez/utils/lnurl_metadata_extension.dart';
@@ -21,6 +22,7 @@ import 'package:breez/widgets/loader.dart';
 import 'package:breez/widgets/single_button_bottom_bar.dart';
 import 'package:breez/widgets/static_loader.dart';
 import 'package:breez_translations/breez_translations_locales.dart';
+import 'package:fixnum/fixnum.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -214,28 +216,33 @@ class LNURLFetchInvoicePageState extends State<LNURLFetchInvoicePage> {
                   ),
                   if (!response.isFixedAmount) ...[
                     Padding(
-                        padding: const EdgeInsets.only(top: 8),
-                        child: RichText(
-                            text: TextSpan(
-                                style: theme.FieldTextStyle.labelStyle,
-                                children: <TextSpan>[
-                              TextSpan(
-                                  text: texts.lnurl_fetch_invoice_min(
-                                      acc.currency.format(response.minAmount)),
-                                  recognizer: TapGestureRecognizer()
-                                    ..onTap = () => _amountController.text =
-                                        acc.currency.format(response.minAmount,
-                                            includeDisplayName: false,
-                                            userInput: true)),
-                              TextSpan(
-                                  text: texts.lnurl_fetch_invoice_and(
-                                      acc.currency.format(response.maxAmount)),
-                                  recognizer: TapGestureRecognizer()
-                                    ..onTap = () => _amountController.text =
-                                        acc.currency.format(response.maxAmount,
-                                            includeDisplayName: false,
-                                            userInput: true)),
-                            ]))),
+                      padding: const EdgeInsets.only(top: 8),
+                      child: RichText(
+                        text: TextSpan(
+                          style: theme.FieldTextStyle.labelStyle,
+                          children: <TextSpan>[
+                            TextSpan(
+                              text: texts.lnurl_fetch_invoice_min(
+                                  acc.currency.format(response.minAmount)),
+                              recognizer: TapGestureRecognizer()
+                                ..onTap = () => _pasteAmount(
+                                      acc.currency,
+                                      response.minAmount,
+                                    ),
+                            ),
+                            TextSpan(
+                              text: texts.lnurl_fetch_invoice_and(
+                                  acc.currency.format(response.maxAmount)),
+                              recognizer: TapGestureRecognizer()
+                                ..onTap = () => _pasteAmount(
+                                      acc.currency,
+                                      response.maxAmount,
+                                    ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
                   ],
                   Container(
                     width: MediaQuery.of(context).size.width,
@@ -337,12 +344,18 @@ class LNURLFetchInvoicePageState extends State<LNURLFetchInvoicePage> {
     _payFetchResponse = response;
     _commentController.text = response.comment;
     if (response.isFixedAmount) {
-      _amountController.text = account.currency.format(
-        response.maxAmount,
+      _pasteAmount(account.currency, response.maxAmount);
+    }
+  }
+
+  void _pasteAmount(Currency currency, Int64 amount) {
+    setState(() {
+      _amountController.text = currency.format(
+        amount,
         includeDisplayName: false,
         userInput: true,
       );
-    }
+    });
   }
 
   void _getInvoice(
