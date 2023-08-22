@@ -20,6 +20,7 @@ import 'package:breez/routes/security_pin/security_and_backup/security_tiles/ena
 import 'package:breez/routes/security_pin/security_and_backup/security_tiles/pin_interval_tile.dart';
 import 'package:breez/routes/security_pin/security_and_backup/widgets/last_backup_text.dart';
 import 'package:breez/widgets/back_button.dart' as backBtn;
+import 'package:breez/widgets/loader.dart';
 import 'package:breez_translations/breez_translations_locales.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
@@ -90,32 +91,32 @@ class SecurityAndBackupPageState extends State<SecurityAndBackupPage>
   Widget build(BuildContext context) {
     final texts = context.texts();
 
-    return StreamBuilder<BackupSettings>(
-      stream: widget.backupBloc.backupSettingsStream,
-      builder: (context, backupSnapshot) => StreamBuilder<BreezUserModel>(
-        stream: widget.userProfileBloc.userStream,
-        builder: (context, userSnapshot) {
-          if (!userSnapshot.hasData || !backupSnapshot.hasData) {
-            return Container();
-          }
+    return Scaffold(
+      appBar: AppBar(
+        automaticallyImplyLeading: false,
+        leading: const backBtn.BackButton(),
+        title: Text(texts.security_and_backup_title),
+      ),
+      body: StreamBuilder<BackupSettings>(
+        stream: widget.backupBloc.backupSettingsStream,
+        builder: (context, backupSnapshot) => StreamBuilder<BreezUserModel>(
+          stream: widget.userProfileBloc.userStream,
+          builder: (context, userSnapshot) {
+            if (!userSnapshot.hasData || !backupSnapshot.hasData) {
+              return const Loader();
+            }
 
-          final requiresPin = userSnapshot.data.securityModel.requiresPin;
-          final backupSettings = backupSnapshot.data;
-          final backupProvider = backupSettings.backupProvider;
-          final isRemoteServer = backupProvider?.name ==
-              BackupSettings.remoteServerBackupProvider().name;
+            final requiresPin = userSnapshot.data.securityModel.requiresPin;
+            final backupSettings = backupSnapshot.data;
+            final backupProvider = backupSettings.backupProvider;
+            final isRemoteServer = backupProvider?.name ==
+                BackupSettings.remoteServerBackupProvider().name;
 
-          if (requiresPin && _screenLocked) {
-            return AppLockScreen(_validatePinCode, canCancel: true);
-          }
+            if (requiresPin && _screenLocked) {
+              return AppLockScreen(_validatePinCode, canCancel: true);
+            }
 
-          return Scaffold(
-            appBar: AppBar(
-              automaticallyImplyLeading: false,
-              leading: const backBtn.BackButton(),
-              title: Text(texts.security_and_backup_title),
-            ),
-            body: ListView(
+            return ListView(
               children: [
                 EnablePinTile(
                   userProfileBloc: widget.userProfileBloc,
@@ -172,17 +173,17 @@ class SecurityAndBackupPageState extends State<SecurityAndBackupPage>
                   backupNow: _backupNow,
                 ),
               ],
-            ),
-            bottomNavigationBar: const Padding(
-              padding: EdgeInsets.only(
-                bottom: 20.0,
-                left: 20.0,
-                top: 20.0,
-              ),
-              child: LastBackupText(),
-            ),
-          );
-        },
+            );
+          },
+        ),
+      ),
+      bottomNavigationBar: const Padding(
+        padding: EdgeInsets.only(
+          bottom: 20.0,
+          left: 20.0,
+          top: 20.0,
+        ),
+        child: LastBackupText(),
       ),
     );
   }
