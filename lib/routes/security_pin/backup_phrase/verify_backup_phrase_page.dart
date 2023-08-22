@@ -180,36 +180,27 @@ class VerifyBackupPhrasePageState extends State<VerifyBackupPhrasePage> {
   Future _createBackupPhrase(
     BackupSettings backupSettings,
   ) async {
-    final backupBloc = AppBlocsProvider.of<BackupBloc>(context);
-    final themeData = Theme.of(context);
-    final texts = context.texts();
+    try {
+      final backupBloc = AppBlocsProvider.of<BackupBloc>(context);
 
-    final saveBackupKey = SaveBackupKey(
-      bip39.mnemonicToEntropy(widget._mnemonics),
-    );
-    backupBloc.backupActionsSink.add(saveBackupKey);
-    saveBackupKey.future.then((_) async {
-      try {
-        EasyLoading.show();
+      EasyLoading.show();
 
+      final saveBackupKey = SaveBackupKey(
+        bip39.mnemonicToEntropy(widget._mnemonics),
+      );
+      backupBloc.backupActionsSink.add(saveBackupKey);
+      await saveBackupKey.future.then((_) async {
         await _updateBackupSettings(
           backupSettings.copyWith(keyType: BackupKeyType.PHRASE),
-        );
+        ).then((_) {
+          EasyLoading.dismiss();
 
-        _triggerBackup();
-      } finally {
-        EasyLoading.dismiss();
-      }
-    }).catchError((err) {
-      promptError(
-        context,
-        texts.backup_phrase_generation_generic_error,
-        Text(
-          err.toString(),
-          style: themeData.dialogTheme.contentTextStyle,
-        ),
-      );
-    });
+          _triggerBackup();
+        });
+      }).catchError((err) => _handleError(err.toString()));
+    } finally {
+      EasyLoading.dismiss();
+    }
   }
 
   _selectIndexes() {
@@ -230,7 +221,6 @@ class VerifyBackupPhrasePageState extends State<VerifyBackupPhrasePage> {
     final backupBloc = AppBlocsProvider.of<BackupBloc>(context);
     var action = UpdateBackupSettings(backupSettings);
     backupBloc.backupActionsSink.add(action);
-    Navigator.popUntil(context, ModalRoute.withName("/security"));
     return action.future.catchError((err) => _handleError(err.toString()));
   }
 
@@ -242,23 +232,27 @@ class VerifyBackupPhrasePageState extends State<VerifyBackupPhrasePage> {
       backupBloc.backupNowSink.add(
         const BackupNowAction(recoverEnabled: true),
       );
-      backupBloc.backupStateStream.firstWhere((s) => s.inProgress).then(
-        (s) {
-          if (mounted) {
-            EasyLoading.dismiss();
+      backupBloc.backupStateStream
+          .firstWhere((s) => s.inProgress)
+          .then((s) async {
+        if (mounted) {
+          EasyLoading.dismiss();
 
-            showDialog(
-              useRootNavigator: false,
-              barrierDismissible: false,
-              context: context,
-              builder: (ctx) => buildBackupInProgressDialog(
-                ctx,
-                backupBloc.backupStateStream,
-              ),
-            );
-          }
-        },
-      );
+          await showDialog(
+            useRootNavigator: false,
+            barrierDismissible: false,
+            context: context,
+            builder: (ctx) => buildBackupInProgressDialog(
+              ctx,
+              backupBloc.backupStateStream,
+            ),
+          ).then(
+            (_) => Navigator.of(context).popUntil(
+              ModalRoute.withName("/security"),
+            ),
+          );
+        }
+      });
     } finally {
       EasyLoading.dismiss();
     }
@@ -267,6 +261,9 @@ class VerifyBackupPhrasePageState extends State<VerifyBackupPhrasePage> {
   Future<void> _handleError(String error) {
     final texts = context.texts();
     final themeData = Theme.of(context);
+
+    EasyLoading.dismiss();
+
     return promptError(
       context,
       texts.backup_phrase_generation_generic_error,
