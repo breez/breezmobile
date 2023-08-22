@@ -228,6 +228,7 @@ class BackupState {
       : this(
           json["lastBackupTime"] != null
               ? DateTime.fromMillisecondsSinceEpoch(json["lastBackupTime"])
+                  .toLocal()
               : null,
           false,
           json["lastBackupAccountName"],
