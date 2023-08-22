@@ -9,9 +9,8 @@ class SaveBackupKey extends AsyncAction {
 
 class UpdateBackupSettings extends AsyncAction {
   final BackupSettings settings;
-  final bool signOut;
 
-  UpdateBackupSettings(this.settings, {this.signOut = false});
+  UpdateBackupSettings(this.settings);
 }
 
 class DownloadSnapshot extends AsyncAction {
