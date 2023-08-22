@@ -15,7 +15,7 @@ import 'package:breez/routes/security_pin/security_and_backup/backup_tiles/backu
 import 'package:breez/routes/security_pin/security_and_backup/backup_tiles/generate_backup_phrase_tile.dart';
 import 'package:breez/routes/security_pin/security_and_backup/backup_tiles/remote_server_credentials_tile.dart';
 import 'package:breez/routes/security_pin/security_and_backup/security_tiles/change_pin_tile.dart';
-import 'package:breez/routes/security_pin/security_and_backup/security_tiles/disable_pin_tile.dart';
+import 'package:breez/routes/security_pin/security_and_backup/security_tiles/enable_pin_tile.dart';
 import 'package:breez/routes/security_pin/security_and_backup/security_tiles/enable_biometric_auth_tile.dart';
 import 'package:breez/routes/security_pin/security_and_backup/security_tiles/pin_interval_tile.dart';
 import 'package:breez/routes/security_pin/security_and_backup/widgets/last_backup_text.dart';
@@ -116,29 +116,29 @@ class SecurityAndBackupPageState extends State<SecurityAndBackupPage>
             ),
             body: ListView(
               children: [
-                DisablePinTile(
+                EnablePinTile(
                   userProfileBloc: widget.userProfileBloc,
                   autoSizeGroup: _autoSizeGroup,
-                  updateSecurityModel: _updateSecurityModel,
+                  enablePin: _updateSecurityModel,
                 ),
                 if (requiresPin) ...[
                   const Divider(),
                   PinIntervalTile(
                     userProfileBloc: widget.userProfileBloc,
                     autoSizeGroup: _autoSizeGroup,
-                    updateSecurityModel: _updateSecurityModel,
+                    changePinInterval: _updateSecurityModel,
                   ),
                   const Divider(),
                   ChangePinTile(
                     userProfileBloc: widget.userProfileBloc,
                     autoSizeGroup: _autoSizeGroup,
-                    updateSecurityModel: _updateSecurityModel,
+                    changePin: _updateSecurityModel,
                   ),
                   const Divider(),
                   EnableBiometricAuthTile(
                     userProfileBloc: widget.userProfileBloc,
                     autoSizeGroup: _autoSizeGroup,
-                    updateSecurityModel: _updateSecurityModel,
+                    changeBiometricAuth: _updateSecurityModel,
                   ),
                 ],
                 const Divider(),
