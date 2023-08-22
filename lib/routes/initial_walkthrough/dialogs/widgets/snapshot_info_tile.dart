@@ -38,7 +38,7 @@ class _SnapshotInfoTileState extends State<SnapshotInfoTile> {
         (widget.selectedSnapshot?.nodeID == widget.snapshotInfo.nodeID);
 
     var date = widget.snapshotInfo.modifiedTime;
-    var parsedDate = DateTime.tryParse(widget.snapshotInfo.modifiedTime);
+    var parsedDate = DateTime.tryParse(widget.snapshotInfo.modifiedTime).toLocal();
     if (parsedDate != null) {
       date = BreezDateUtils.formatYearMonthDayHourMinute(parsedDate);
     }
