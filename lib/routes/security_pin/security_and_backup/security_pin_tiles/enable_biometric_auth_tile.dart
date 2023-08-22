@@ -16,8 +16,8 @@ class EnableBiometricAuthTile extends StatefulWidget {
 
   const EnableBiometricAuthTile({
     @required this.userProfileBloc,
-    @required this.unlockScreen,
     @required this.autoSizeGroup,
+    @required this.unlockScreen,
   });
 
   @override

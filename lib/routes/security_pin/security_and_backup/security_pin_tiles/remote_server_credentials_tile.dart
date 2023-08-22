@@ -1,18 +1,21 @@
 import 'package:auto_size_text/auto_size_text.dart';
-import 'package:breez/bloc/backup/backup_actions.dart';
 import 'package:breez/bloc/backup/backup_bloc.dart';
 import 'package:breez/bloc/backup/backup_model.dart';
-import 'package:breez/routes/security_pin/remote_server_auth/remote_server_auth.dart';
 import 'package:breez/utils/min_font_size.dart';
 import 'package:flutter/material.dart';
 
 class RemoteServerCredentialsTile extends StatefulWidget {
   final BackupBloc backupBloc;
   final AutoSizeGroup autoSizeGroup;
+  final Future Function(
+    BackupSettings backupSettings, {
+    BackupProvider backupProvider,
+  }) enterRemoteServerCredentials;
 
   const RemoteServerCredentialsTile({
     @required this.backupBloc,
     @required this.autoSizeGroup,
+    @required this.enterRemoteServerCredentials,
   });
 
   @override
@@ -48,38 +51,10 @@ class _RemoteServerCredentialsTileState
             size: 30.0,
           ),
           onTap: () async {
-            await _enterRemoteServerCredentials(backupSettings);
+            await widget.enterRemoteServerCredentials(backupSettings);
           },
         );
       },
     );
-  }
-
-  Future<void> _enterRemoteServerCredentials(
-    BackupSettings backupSettings, {
-    BackupProvider backupProvider,
-  }) async {
-    await promptAuthData(
-      context,
-      backupSettings,
-    ).then(
-      (auth) async {
-        if (auth != null) {
-          await _backupNow(
-            backupSettings.copyWith(
-              backupProvider: backupProvider ?? backupSettings.backupProvider,
-              remoteServerAuthData: auth,
-            ),
-          );
-        }
-      },
-    );
-  }
-
-  Future _backupNow(BackupSettings backupSettings) async {
-    final updateBackupSettings = UpdateBackupSettings(backupSettings);
-    final backupAction = BackupNow(updateBackupSettings, recoverEnabled: true);
-    widget.backupBloc.backupActionsSink.add(backupAction);
-    return backupAction.future;
   }
 }

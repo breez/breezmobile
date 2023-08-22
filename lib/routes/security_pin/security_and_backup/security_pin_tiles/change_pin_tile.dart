@@ -18,8 +18,8 @@ class ChangePinTile extends StatefulWidget {
 
   const ChangePinTile({
     @required this.userProfileBloc,
-    @required this.unlockScreen,
     @required this.autoSizeGroup,
+    @required this.unlockScreen,
   });
 
   @override
