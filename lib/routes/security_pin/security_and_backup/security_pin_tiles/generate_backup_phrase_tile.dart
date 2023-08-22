@@ -1,5 +1,4 @@
 import 'package:auto_size_text/auto_size_text.dart';
-import 'package:breez/bloc/backup/backup_actions.dart';
 import 'package:breez/bloc/backup/backup_bloc.dart';
 import 'package:breez/bloc/backup/backup_model.dart';
 import 'package:breez/routes/podcast/theme.dart';
@@ -14,10 +13,12 @@ import 'package:flutter_easyloading/flutter_easyloading.dart';
 class GenerateBackupPhraseTile extends StatefulWidget {
   final BackupBloc backupBloc;
   final AutoSizeGroup autoSizeGroup;
+  final Future Function(BackupSettings backupSettings) backupNow;
 
   const GenerateBackupPhraseTile({
     @required this.backupBloc,
     @required this.autoSizeGroup,
+    @required this.backupNow,
   });
 
   @override
@@ -80,18 +81,11 @@ class _GenerateBackupPhraseTileState extends State<GenerateBackupPhraseTile> {
     try {
       EasyLoading.show();
 
-      await _backupNow(
+      await widget.backupNow(
         backupSettings.copyWith(keyType: BackupKeyType.NONE),
       );
     } finally {
       EasyLoading.dismiss();
     }
-  }
-
-  Future _backupNow(BackupSettings backupSettings) async {
-    final updateBackupSettings = UpdateBackupSettings(backupSettings);
-    final backupAction = BackupNow(updateBackupSettings, recoverEnabled: true);
-    widget.backupBloc.backupActionsSink.add(backupAction);
-    return backupAction.future;
   }
 }
