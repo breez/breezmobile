@@ -257,7 +257,6 @@ class SecurityPageState extends State<SecurityPage>
                     EasyLoading.show();
 
                     await _updateBackupSettings(
-                      backupSettings,
                       backupSettings.copyWith(
                         keyType: BackupKeyType.NONE,
                       ),
@@ -307,7 +306,6 @@ class SecurityPageState extends State<SecurityPage>
                   EasyLoading.show();
 
                   await _updateBackupSettings(
-                    backupSettings,
                     backupSettings.copyWith(
                       backupProvider: newValue,
                       remoteServerAuthData: auth,
@@ -324,7 +322,6 @@ class SecurityPageState extends State<SecurityPage>
               EasyLoading.show();
 
               await _updateBackupSettings(
-                backupSettings,
                 backupSettings.copyWith(
                   backupProvider: newValue,
                 ),
@@ -449,7 +446,6 @@ class SecurityPageState extends State<SecurityPage>
               EasyLoading.show();
 
               await _updateBackupSettings(
-                backupSettings,
                 backupSettings.copyWith(
                   remoteServerAuthData: auth,
                 ),
@@ -646,7 +642,6 @@ class SecurityPageState extends State<SecurityPage>
   }
 
   Future _updateBackupSettings(
-    BackupSettings oldBackupSettings,
     BackupSettings newBackupSettings,
   ) async {
     _screenLocked = false;
