@@ -12,6 +12,7 @@ import 'package:breez/widgets/error_dialog.dart';
 import 'package:breez/widgets/loader.dart';
 import 'package:breez_translations/breez_translations_locales.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 
 class EnableBackupDialog extends StatefulWidget {
   final bool signInNeeded;
@@ -214,7 +215,13 @@ class _BackupNowButtonState extends State<_BackupNowButton> {
                 return;
               }
 
-              await _backupNow(widget.backupSettings);
+              try {
+                EasyLoading.show();
+
+                await _backupNow(widget.backupSettings);
+              } finally {
+                EasyLoading.dismiss();
+              }
             }
           },
         );
@@ -263,11 +270,17 @@ class _BackupNowButtonState extends State<_BackupNowButton> {
     ).then(
       (auth) async {
         if (auth != null) {
-          await _backupNow(
-            widget.backupSettings.copyWith(
-              remoteServerAuthData: auth,
-            ),
-          );
+          try {
+            EasyLoading.show();
+
+            await _backupNow(
+              widget.backupSettings.copyWith(
+                remoteServerAuthData: auth,
+              ),
+            );
+          } finally {
+            EasyLoading.dismiss();
+          }
         }
       },
     );
