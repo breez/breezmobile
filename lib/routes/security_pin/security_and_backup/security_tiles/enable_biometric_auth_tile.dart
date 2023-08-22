@@ -12,12 +12,12 @@ import 'package:flutter/material.dart';
 class EnableBiometricAuthTile extends StatefulWidget {
   final UserProfileBloc userProfileBloc;
   final AutoSizeGroup autoSizeGroup;
-  final Function(bool) unlockScreen;
+  final Future Function(SecurityModel securityModel) updateSecurityModel;
 
   const EnableBiometricAuthTile({
     @required this.userProfileBloc,
     @required this.autoSizeGroup,
-    @required this.unlockScreen,
+    @required this.updateSecurityModel,
   });
 
   @override
@@ -78,7 +78,7 @@ class _EnableBiometricAuthTileState extends State<EnableBiometricAuthTile>
                       securityModel,
                     );
                   } else {
-                    await _updateSecurityModel(
+                    await widget.updateSecurityModel(
                       securityModel.copyWith(isFingerprintEnabled: false),
                     );
                   }
@@ -115,18 +115,11 @@ class _EnableBiometricAuthTileState extends State<EnableBiometricAuthTile>
     widget.userProfileBloc.userActionsSink.add(validateBiometricsAction);
     validateBiometricsAction.future.then(
       (isValid) async {
-        _updateSecurityModel(
+        widget.updateSecurityModel(
           securityModel.copyWith(isFingerprintEnabled: isValid),
         );
       },
       onError: (error) => showFlushbar(context, message: error),
     );
-  }
-
-  Future _updateSecurityModel(SecurityModel newModel) async {
-    widget.unlockScreen(false);
-    var action = UpdateSecurityModel(newModel);
-    widget.userProfileBloc.userActionsSink.add(action);
-    return action.future;
   }
 }

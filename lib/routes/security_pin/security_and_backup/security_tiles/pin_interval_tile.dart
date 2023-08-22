@@ -1,7 +1,6 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:breez/bloc/user_profile/breez_user_model.dart';
 import 'package:breez/bloc/user_profile/security_model.dart';
-import 'package:breez/bloc/user_profile/user_actions.dart';
 import 'package:breez/bloc/user_profile/user_profile_bloc.dart';
 import 'package:breez/theme_data.dart' as theme;
 import 'package:breez/utils/min_font_size.dart';
@@ -13,12 +12,12 @@ import 'package:flutter/material.dart';
 class PinIntervalTile extends StatefulWidget {
   final UserProfileBloc userProfileBloc;
   final AutoSizeGroup autoSizeGroup;
-  final Function(bool) unlockScreen;
+  final Future Function(SecurityModel securityModel) updateSecurityModel;
 
   const PinIntervalTile({
     @required this.userProfileBloc,
     @required this.autoSizeGroup,
-    @required this.unlockScreen,
+    @required this.updateSecurityModel,
   });
 
   @override
@@ -54,7 +53,7 @@ class _PinIntervalTileState extends State<PinIntervalTile> {
                 value: securityModel.automaticallyLockInterval,
                 isDense: true,
                 onChanged: (int newValue) async {
-                  await _updateSecurityModel(
+                  await widget.updateSecurityModel(
                     securityModel.copyWith(automaticallyLockInterval: newValue),
                   );
                 },
@@ -100,12 +99,5 @@ class _PinIntervalTileState extends State<PinIntervalTile> {
       Duration(seconds: seconds),
       locale: locales[texts.locale] ?? enLocale,
     );
-  }
-
-  Future _updateSecurityModel(SecurityModel newModel) async {
-    widget.unlockScreen(false);
-    var action = UpdateSecurityModel(newModel);
-    widget.userProfileBloc.userActionsSink.add(action);
-    return action.future;
   }
 }

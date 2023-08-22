@@ -5,6 +5,7 @@ import 'package:breez/bloc/backup/backup_actions.dart';
 import 'package:breez/bloc/backup/backup_bloc.dart';
 import 'package:breez/bloc/backup/backup_model.dart';
 import 'package:breez/bloc/user_profile/breez_user_model.dart';
+import 'package:breez/bloc/user_profile/security_model.dart';
 import 'package:breez/bloc/user_profile/user_actions.dart';
 import 'package:breez/bloc/user_profile/user_profile_bloc.dart';
 import 'package:breez/routes/backup_in_progress_dialog.dart';
@@ -118,26 +119,26 @@ class SecurityAndBackupPageState extends State<SecurityAndBackupPage>
                 DisablePinTile(
                   userProfileBloc: widget.userProfileBloc,
                   autoSizeGroup: _autoSizeGroup,
-                  unlockScreen: _setScreenLocked,
+                  updateSecurityModel: _updateSecurityModel,
                 ),
                 if (requiresPin) ...[
                   const Divider(),
                   PinIntervalTile(
                     userProfileBloc: widget.userProfileBloc,
                     autoSizeGroup: _autoSizeGroup,
-                    unlockScreen: _setScreenLocked,
+                    updateSecurityModel: _updateSecurityModel,
                   ),
                   const Divider(),
                   ChangePinTile(
                     userProfileBloc: widget.userProfileBloc,
                     autoSizeGroup: _autoSizeGroup,
-                    unlockScreen: _setScreenLocked,
+                    updateSecurityModel: _updateSecurityModel,
                   ),
                   const Divider(),
                   EnableBiometricAuthTile(
                     userProfileBloc: widget.userProfileBloc,
                     autoSizeGroup: _autoSizeGroup,
-                    unlockScreen: _setScreenLocked,
+                    updateSecurityModel: _updateSecurityModel,
                   ),
                 ],
                 const Divider(),
@@ -175,6 +176,13 @@ class SecurityAndBackupPageState extends State<SecurityAndBackupPage>
         },
       ),
     );
+  }
+
+  Future _updateSecurityModel(SecurityModel newModel) async {
+    _setScreenLocked(false);
+    var action = UpdateSecurityModel(newModel);
+    widget.userProfileBloc.userActionsSink.add(action);
+    return action.future;
   }
 
   Future<dynamic> _validatePinCode(pinEntered) {
