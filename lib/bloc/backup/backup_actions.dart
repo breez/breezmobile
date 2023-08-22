@@ -32,3 +32,10 @@ class RestoreBackup extends AsyncAction {
 class SignOut extends AsyncAction {
   SignOut();
 }
+
+class BackupNow extends AsyncAction {
+  final UpdateBackupSettings updateBackupSettings;
+  final bool recoverEnabled;
+
+  BackupNow(this.updateBackupSettings, {this.recoverEnabled});
+}

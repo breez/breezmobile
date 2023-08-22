@@ -229,9 +229,7 @@ class _BackupNowButtonState extends State<_BackupNowButton> {
                 return;
               }
 
-              backupBloc.backupNowSink.add(
-                const BackupNowAction(recoverEnabled: true),
-              );
+              await _backupNow(widget.backupSettings);
             }
           },
         );
@@ -278,19 +276,24 @@ class _BackupNowButtonState extends State<_BackupNowButton> {
       widget.backupSettings,
       restore: false,
     ).then(
-      (auth) {
+      (auth) async {
         if (auth != null) {
-          var action = UpdateBackupSettings(
+          await _backupNow(
             widget.backupSettings.copyWith(
               remoteServerAuthData: auth,
             ),
           );
-          backupBloc.backupActionsSink.add(action);
-          backupBloc.backupNowSink.add(
-            const BackupNowAction(recoverEnabled: true),
-          );
         }
       },
     );
+  }
+
+  Future _backupNow(BackupSettings backupSettings) async {
+    final backupBloc = AppBlocsProvider.of<BackupBloc>(context);
+
+    final updateBackupSettings = UpdateBackupSettings(backupSettings);
+    final backupAction = BackupNow(updateBackupSettings, recoverEnabled: true);
+    backupBloc.backupActionsSink.add(backupAction);
+    return backupAction.future;
   }
 }
