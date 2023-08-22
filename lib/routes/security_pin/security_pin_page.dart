@@ -656,24 +656,32 @@ class SecurityPageState extends State<SecurityPage>
   }
 
   void _triggerBackup() {
-    widget.backupBloc.backupNowSink.add(
-      const BackupNowAction(recoverEnabled: true),
-    );
-    widget.backupBloc.backupStateStream
-        .firstWhere((s) => s.inProgress)
-        .then((s) {
-      if (mounted) {
-        showDialog(
-          useRootNavigator: false,
-          barrierDismissible: false,
-          context: context,
-          builder: (ctx) => buildBackupInProgressDialog(
-            ctx,
-            widget.backupBloc.backupStateStream,
-          ),
-        );
-      }
-    });
+    try {
+      EasyLoading.show();
+
+      widget.backupBloc.backupNowSink.add(
+        const BackupNowAction(recoverEnabled: true),
+      );
+      widget.backupBloc.backupStateStream
+          .firstWhere((s) => s.inProgress)
+          .then((s) async {
+        if (mounted) {
+          EasyLoading.dismiss();
+
+          await showDialog(
+            useRootNavigator: false,
+            barrierDismissible: false,
+            context: context,
+            builder: (ctx) => buildBackupInProgressDialog(
+              ctx,
+              widget.backupBloc.backupStateStream,
+            ),
+          );
+        }
+      });
+    } finally {
+      EasyLoading.dismiss();
+    }
   }
 
   String _localAuthenticationOptionLabel(BreezTranslations texts) {
