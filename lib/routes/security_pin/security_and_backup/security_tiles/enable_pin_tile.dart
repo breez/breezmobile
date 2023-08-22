@@ -31,37 +31,38 @@ class _EnablePinTileState extends State<EnablePinTile> {
   Widget build(BuildContext context) {
     final texts = context.texts();
     return StreamBuilder<BreezUserModel>(
-        stream: widget.userProfileBloc.userStream,
-        builder: (context, snapshot) {
-          if (!snapshot.hasData) {
-            return Container();
-          }
+      stream: widget.userProfileBloc.userStream,
+      builder: (context, snapshot) {
+        if (!snapshot.hasData) {
+          return Container();
+        }
 
-          final securityModel = snapshot.data.securityModel;
+        final securityModel = snapshot.data.securityModel;
 
-          return SimpleSwitch(
-            text: securityModel.requiresPin
-                ? texts.security_and_backup_pin_option_deactivate
-                : texts.security_and_backup_pin_option_create,
-            trailing: securityModel.requiresPin
-                ? null
-                : const Icon(
-                    Icons.keyboard_arrow_right,
-                    color: Colors.white,
-                    size: 30.0,
-                  ),
-            switchValue: securityModel.requiresPin,
-            group: securityModel.requiresPin ? widget.autoSizeGroup : null,
-            onTap: securityModel.requiresPin
-                ? null
-                : () => _onChangePinSelected(securityModel),
-            onChanged: (bool value) async {
-              if (mounted) {
-                await _resetSecurityModel();
-              }
-            },
-          );
-        });
+        return SimpleSwitch(
+          text: securityModel.requiresPin
+              ? texts.security_and_backup_pin_option_deactivate
+              : texts.security_and_backup_pin_option_create,
+          trailing: securityModel.requiresPin
+              ? null
+              : const Icon(
+                  Icons.keyboard_arrow_right,
+                  color: Colors.white,
+                  size: 30.0,
+                ),
+          switchValue: securityModel.requiresPin,
+          group: securityModel.requiresPin ? widget.autoSizeGroup : null,
+          onTap: securityModel.requiresPin
+              ? null
+              : () => _onChangePinSelected(securityModel),
+          onChanged: (bool value) async {
+            if (mounted) {
+              await _resetSecurityModel();
+            }
+          },
+        );
+      },
+    );
   }
 
   void _onChangePinSelected(SecurityModel securityModel) {
