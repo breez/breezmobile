@@ -61,7 +61,7 @@ class AccountRequiredActionsIndicatorState
       "prompt backup: {signInNeeded: $signInNeeded, "
       "showingBackupDialog: $showingBackupDialog}",
     );
-    if (!showingBackupDialog) {
+    if (signInNeeded && !showingBackupDialog) {
       showingBackupDialog = true;
       backupBloc.backupPromptVisibleSink.add(true);
       popFlushbars(context);
