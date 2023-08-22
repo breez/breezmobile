@@ -12,12 +12,12 @@ import 'package:flutter/material.dart';
 class PinIntervalTile extends StatefulWidget {
   final UserProfileBloc userProfileBloc;
   final AutoSizeGroup autoSizeGroup;
-  final Future Function(SecurityModel securityModel) updateSecurityModel;
+  final Future Function(SecurityModel securityModel) changePinInterval;
 
   const PinIntervalTile({
     @required this.userProfileBloc,
     @required this.autoSizeGroup,
-    @required this.updateSecurityModel,
+    @required this.changePinInterval,
   });
 
   @override
@@ -53,7 +53,7 @@ class _PinIntervalTileState extends State<PinIntervalTile> {
                 value: securityModel.automaticallyLockInterval,
                 isDense: true,
                 onChanged: (int newValue) async {
-                  await widget.updateSecurityModel(
+                  await widget.changePinInterval(
                     securityModel.copyWith(automaticallyLockInterval: newValue),
                   );
                 },
