@@ -257,19 +257,6 @@ class BackupFailedException implements Exception {
   }
 }
 
-class BackupNowAction {
-  final bool recoverEnabled;
-
-  const BackupNowAction({
-    @required this.recoverEnabled,
-  });
-
-  @override
-  String toString() {
-    return 'BackupNowAction{recoverEnabled: $recoverEnabled}';
-  }
-}
-
 class SnapshotInfo {
   final String nodeID;
   final String modifiedTime;
