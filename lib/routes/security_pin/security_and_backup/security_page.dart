@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:auto_size_text/auto_size_text.dart';
+import 'package:breez/bloc/backup/backup_actions.dart';
 import 'package:breez/bloc/backup/backup_bloc.dart';
 import 'package:breez/bloc/backup/backup_model.dart';
 import 'package:breez/bloc/user_profile/breez_user_model.dart';
@@ -8,6 +9,7 @@ import 'package:breez/bloc/user_profile/user_actions.dart';
 import 'package:breez/bloc/user_profile/user_profile_bloc.dart';
 import 'package:breez/routes/backup_in_progress_dialog.dart';
 import 'package:breez/routes/security_pin/lock_screen.dart';
+import 'package:breez/routes/security_pin/remote_server_auth/remote_server_auth.dart';
 import 'package:breez/routes/security_pin/security_and_backup/security_pin_tiles/backup_provider_tile.dart';
 import 'package:breez/routes/security_pin/security_and_backup/security_pin_tiles/change_pin_tile.dart';
 import 'package:breez/routes/security_pin/security_and_backup/security_pin_tiles/disable_pin_tile.dart';
@@ -115,45 +117,49 @@ class SecurityPageState extends State<SecurityPage>
               children: [
                 DisablePinTile(
                   userProfileBloc: widget.userProfileBloc,
-                  unlockScreen: _setScreenLocked,
                   autoSizeGroup: _autoSizeGroup,
+                  unlockScreen: _setScreenLocked,
                 ),
                 if (requiresPin) ...[
                   const Divider(),
                   PinIntervalTile(
                     userProfileBloc: widget.userProfileBloc,
-                    unlockScreen: _setScreenLocked,
                     autoSizeGroup: _autoSizeGroup,
+                    unlockScreen: _setScreenLocked,
                   ),
                   const Divider(),
                   ChangePinTile(
                     userProfileBloc: widget.userProfileBloc,
-                    unlockScreen: _setScreenLocked,
                     autoSizeGroup: _autoSizeGroup,
+                    unlockScreen: _setScreenLocked,
                   ),
                   const Divider(),
                   EnableBiometricAuthTile(
                     userProfileBloc: widget.userProfileBloc,
-                    unlockScreen: _setScreenLocked,
                     autoSizeGroup: _autoSizeGroup,
+                    unlockScreen: _setScreenLocked,
                   ),
                 ],
                 const Divider(),
                 BackupProviderTile(
                   backupBloc: widget.backupBloc,
                   autoSizeGroup: _autoSizeGroup,
+                  enterRemoteServerCredentials: _enterRemoteServerCredentials,
+                  backupNow: _backupNow,
                 ),
                 if (isRemoteServer) ...[
                   const Divider(),
                   RemoteServerCredentialsTile(
                     backupBloc: widget.backupBloc,
                     autoSizeGroup: _autoSizeGroup,
+                    enterRemoteServerCredentials: _enterRemoteServerCredentials,
                   ),
                 ],
                 const Divider(),
                 GenerateBackupPhraseTile(
                   backupBloc: widget.backupBloc,
                   autoSizeGroup: _autoSizeGroup,
+                  backupNow: _backupNow,
                 ),
               ],
             ),
@@ -181,5 +187,33 @@ class SecurityPageState extends State<SecurityPage>
     setState(() {
       _screenLocked = value;
     });
+  }
+
+  Future<void> _enterRemoteServerCredentials(
+    BackupSettings backupSettings, {
+    BackupProvider backupProvider,
+  }) async {
+    await promptAuthData(
+      context,
+      backupSettings,
+    ).then(
+      (auth) async {
+        if (auth != null) {
+          await _backupNow(
+            backupSettings.copyWith(
+              backupProvider: backupProvider ?? backupSettings.backupProvider,
+              remoteServerAuthData: auth,
+            ),
+          );
+        }
+      },
+    );
+  }
+
+  Future _backupNow(BackupSettings backupSettings) async {
+    final updateBackupSettings = UpdateBackupSettings(backupSettings);
+    final backupAction = BackupNow(updateBackupSettings, recoverEnabled: true);
+    widget.backupBloc.backupActionsSink.add(backupAction);
+    return backupAction.future;
   }
 }
