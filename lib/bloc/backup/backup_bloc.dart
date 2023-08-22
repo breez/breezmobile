@@ -91,7 +91,6 @@ class BackupBloc with AsyncActionsHandler {
         promptBackupStream,
         promptBackupDismissedStream,
         (settings, signInNeeded, dismissed) {
-          // If prompt is not dismissed or promptOnError is enabled
           return (settings.promptOnError && !dismissed) ? signInNeeded : false;
         },
       );
