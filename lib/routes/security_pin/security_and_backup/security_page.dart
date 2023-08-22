@@ -15,7 +15,7 @@ import 'package:breez/routes/security_pin/security_and_backup/security_pin_tiles
 import 'package:breez/routes/security_pin/security_and_backup/security_pin_tiles/generate_backup_phrase_tile.dart';
 import 'package:breez/routes/security_pin/security_and_backup/security_pin_tiles/pin_interval_tile.dart';
 import 'package:breez/routes/security_pin/security_and_backup/security_pin_tiles/remote_server_credentials_tile.dart';
-import 'package:breez/utils/date.dart';
+import 'package:breez/routes/security_pin/security_and_backup/widgets/last_backup_text.dart';
 import 'package:breez/widgets/back_button.dart' as backBtn;
 import 'package:breez_translations/breez_translations_locales.dart';
 import 'package:flutter/material.dart';
@@ -87,129 +87,99 @@ class SecurityPageState extends State<SecurityPage>
   Widget build(BuildContext context) {
     final texts = context.texts();
 
-    return StreamBuilder<BackupState>(
-      stream: widget.backupBloc.backupStateStream,
-      builder: (ctx, backupStateSnapshot) => StreamBuilder<BackupSettings>(
-        stream: widget.backupBloc.backupSettingsStream,
-        builder: (context, backupSnapshot) => StreamBuilder<BreezUserModel>(
-          stream: widget.userProfileBloc.userStream,
-          builder: (context, userSnapshot) {
-            if (!userSnapshot.hasData) {
-              return Container();
-            }
+    return StreamBuilder<BackupSettings>(
+      stream: widget.backupBloc.backupSettingsStream,
+      builder: (context, backupSnapshot) => StreamBuilder<BreezUserModel>(
+        stream: widget.userProfileBloc.userStream,
+        builder: (context, userSnapshot) {
+          if (!userSnapshot.hasData || !backupSnapshot.hasData) {
+            return Container();
+          }
 
-            final requiresPin = userSnapshot.data.securityModel.requiresPin;
-            final backupProvider = backupSnapshot.data.backupProvider;
-            final backupState = backupStateSnapshot.data;
+          final requiresPin = userSnapshot.data.securityModel.requiresPin;
+          final backupProvider = backupSnapshot.data.backupProvider;
+          final isRemoteServer = backupProvider?.name ==
+              BackupSettings.remoteServerBackupProvider().name;
 
-            if (requiresPin && _screenLocked) {
-              return AppLockScreen(
-                (pinEntered) {
-                  final validateAction = ValidatePinCode(pinEntered);
-                  widget.userProfileBloc.userActionsSink.add(validateAction);
-                  return validateAction.future.then((_) {
-                    setState(() {
-                      _screenLocked = false;
-                    });
-                  });
-                },
-                canCancel: true,
-              );
-            }
+          if (requiresPin && _screenLocked) {
+            return AppLockScreen(_validatePinCode, canCancel: true);
+          }
 
-            return Scaffold(
-              appBar: AppBar(
-                automaticallyImplyLeading: false,
-                leading: const backBtn.BackButton(),
-                title: Text(texts.security_and_backup_title),
-              ),
-              body: ListView(
-                children: [
-                  DisablePinTile(
+          return Scaffold(
+            appBar: AppBar(
+              automaticallyImplyLeading: false,
+              leading: const backBtn.BackButton(),
+              title: Text(texts.security_and_backup_title),
+            ),
+            body: ListView(
+              children: [
+                DisablePinTile(
+                  userProfileBloc: widget.userProfileBloc,
+                  unlockScreen: _setScreenLocked,
+                  autoSizeGroup: _autoSizeGroup,
+                ),
+                if (requiresPin) ...[
+                  const Divider(),
+                  PinIntervalTile(
                     userProfileBloc: widget.userProfileBloc,
                     unlockScreen: _setScreenLocked,
                     autoSizeGroup: _autoSizeGroup,
                   ),
-                  if (requiresPin) ...[
-                    const Divider(),
-                    PinIntervalTile(
-                      userProfileBloc: widget.userProfileBloc,
-                      unlockScreen: _setScreenLocked,
-                      autoSizeGroup: _autoSizeGroup,
-                    ),
-                    const Divider(),
-                    ChangePinTile(
-                      userProfileBloc: widget.userProfileBloc,
-                      unlockScreen: _setScreenLocked,
-                      autoSizeGroup: _autoSizeGroup,
-                    ),
-                    const Divider(),
-                    EnableBiometricAuthTile(
-                      userProfileBloc: widget.userProfileBloc,
-                      unlockScreen: _setScreenLocked,
-                      autoSizeGroup: _autoSizeGroup,
-                    ),
-                  ],
                   const Divider(),
-                  BackupProviderTile(
-                    backupBloc: widget.backupBloc,
+                  ChangePinTile(
+                    userProfileBloc: widget.userProfileBloc,
+                    unlockScreen: _setScreenLocked,
                     autoSizeGroup: _autoSizeGroup,
                   ),
-                  if (backupProvider?.name ==
-                      BackupSettings.remoteServerBackupProvider().name) ...[
-                    const Divider(),
-                    RemoteServerCredentialsTile(
-                      backupBloc: widget.backupBloc,
-                      autoSizeGroup: _autoSizeGroup,
-                    ),
-                  ],
                   const Divider(),
-                  GenerateBackupPhraseTile(
+                  EnableBiometricAuthTile(
+                    userProfileBloc: widget.userProfileBloc,
+                    unlockScreen: _setScreenLocked,
+                    autoSizeGroup: _autoSizeGroup,
+                  ),
+                ],
+                const Divider(),
+                BackupProviderTile(
+                  backupBloc: widget.backupBloc,
+                  autoSizeGroup: _autoSizeGroup,
+                ),
+                if (isRemoteServer) ...[
+                  const Divider(),
+                  RemoteServerCredentialsTile(
                     backupBloc: widget.backupBloc,
                     autoSizeGroup: _autoSizeGroup,
                   ),
                 ],
-              ),
-              bottomNavigationBar: Padding(
-                padding: const EdgeInsets.only(
-                  bottom: 20.0,
-                  left: 20.0,
-                  top: 20.0,
+                const Divider(),
+                GenerateBackupPhraseTile(
+                  backupBloc: widget.backupBloc,
+                  autoSizeGroup: _autoSizeGroup,
                 ),
-                child: _lastBackup(backupState),
+              ],
+            ),
+            bottomNavigationBar: const Padding(
+              padding: EdgeInsets.only(
+                bottom: 20.0,
+                left: 20.0,
+                top: 20.0,
               ),
-            );
-          },
-        ),
+              child: LastBackupText(),
+            ),
+          );
+        },
       ),
     );
   }
 
-  void _setScreenLocked(value) {
+  Future<dynamic> _validatePinCode(pinEntered) {
+    final validateAction = ValidatePinCode(pinEntered);
+    widget.userProfileBloc.userActionsSink.add(validateAction);
+    return validateAction.future.then((_) => _setScreenLocked(false));
+  }
+
+  void _setScreenLocked(bool value) {
     setState(() {
       _screenLocked = value;
     });
-  }
-
-  Widget _lastBackup(BackupState backupState) {
-    if (backupState == null) return const SizedBox();
-    final lastBackupTime = backupState.lastBackupTime;
-    if (lastBackupTime == null) return const SizedBox();
-
-    final texts = context.texts();
-    final accountName = backupState.lastBackupAccountName;
-    final lastBackup = BreezDateUtils.formatYearMonthDayHourMinute(
-      lastBackupTime,
-    );
-
-    return Text(
-      accountName == null || accountName.isEmpty
-          ? texts.security_and_backup_last_backup_no_account(lastBackup)
-          : texts.security_and_backup_last_backup_with_account(
-              lastBackup,
-              accountName,
-            ),
-      textAlign: TextAlign.left,
-    );
   }
 }
