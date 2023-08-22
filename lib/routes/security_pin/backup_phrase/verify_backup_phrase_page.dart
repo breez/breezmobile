@@ -228,43 +228,52 @@ class VerifyBackupPhrasePageState extends State<VerifyBackupPhrasePage> {
     BackupSettings backupSettings,
   ) async {
     final backupBloc = AppBlocsProvider.of<BackupBloc>(context);
-    final themeData = Theme.of(context);
-    final texts = context.texts();
-
     var action = UpdateBackupSettings(backupSettings);
     backupBloc.backupActionsSink.add(action);
     Navigator.popUntil(context, ModalRoute.withName("/security"));
-    return action.future.catchError((err) {
-      promptError(
-        context,
-        texts.backup_phrase_generation_generic_error,
-        Text(
-          err.toString(),
-          style: themeData.dialogTheme.contentTextStyle,
-        ),
-      );
-    });
+    return action.future.catchError((err) => _handleError(err.toString()));
   }
 
   void _triggerBackup() {
-    final backupBloc = AppBlocsProvider.of<BackupBloc>(context);
-    backupBloc.backupNowSink.add(
-      const BackupNowAction(recoverEnabled: true),
-    );
-    backupBloc.backupStateStream.firstWhere((s) => s.inProgress).then(
-      (s) {
-        if (mounted) {
-          showDialog(
-            useRootNavigator: false,
-            barrierDismissible: false,
-            context: context,
-            builder: (ctx) => buildBackupInProgressDialog(
-              ctx,
-              backupBloc.backupStateStream,
-            ),
-          );
-        }
-      },
+    try {
+      EasyLoading.show();
+
+      final backupBloc = AppBlocsProvider.of<BackupBloc>(context);
+      backupBloc.backupNowSink.add(
+        const BackupNowAction(recoverEnabled: true),
+      );
+      backupBloc.backupStateStream.firstWhere((s) => s.inProgress).then(
+        (s) {
+          if (mounted) {
+            EasyLoading.dismiss();
+
+            showDialog(
+              useRootNavigator: false,
+              barrierDismissible: false,
+              context: context,
+              builder: (ctx) => buildBackupInProgressDialog(
+                ctx,
+                backupBloc.backupStateStream,
+              ),
+            );
+          }
+        },
+      );
+    } finally {
+      EasyLoading.dismiss();
+    }
+  }
+
+  Future<void> _handleError(String error) {
+    final texts = context.texts();
+    final themeData = Theme.of(context);
+    return promptError(
+      context,
+      texts.backup_phrase_generation_generic_error,
+      Text(
+        error,
+        style: themeData.dialogTheme.contentTextStyle,
+      ),
     );
   }
 }
