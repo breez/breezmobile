@@ -5,7 +5,6 @@ import 'package:breez/bloc/backup/backup_actions.dart';
 import 'package:breez/bloc/backup/backup_bloc.dart';
 import 'package:breez/bloc/backup/backup_model.dart';
 import 'package:breez/bloc/blocs_provider.dart';
-import 'package:breez/routes/backup_in_progress_dialog.dart';
 import 'package:breez/theme_data.dart' as theme;
 import 'package:breez/widgets/back_button.dart' as backBtn;
 import 'package:breez/widgets/error_dialog.dart';
@@ -33,9 +32,9 @@ class VerifyBackupPhrasePageState extends State<VerifyBackupPhrasePage> {
 
   @override
   Widget build(BuildContext context) {
+    final backupBloc = AppBlocsProvider.of<BackupBloc>(context);
     final query = MediaQuery.of(context);
     final texts = context.texts();
-    final backupBloc = AppBlocsProvider.of<BackupBloc>(context);
 
     return Scaffold(
       appBar: AppBar(
@@ -56,9 +55,7 @@ class VerifyBackupPhrasePageState extends State<VerifyBackupPhrasePage> {
                 builder: (context, snapshot) {
                   if (!snapshot.hasData) {
                     return Container(
-                      padding: const EdgeInsets.only(
-                        bottom: 88,
-                      ),
+                      padding: const EdgeInsets.only(bottom: 88),
                     );
                   }
                   return _buildBackupBtn(snapshot.data);
@@ -189,15 +186,17 @@ class VerifyBackupPhrasePageState extends State<VerifyBackupPhrasePage> {
         bip39.mnemonicToEntropy(widget._mnemonics),
       );
       backupBloc.backupActionsSink.add(saveBackupKey);
-      await saveBackupKey.future.then((_) async {
-        await _updateBackupSettings(
-          backupSettings.copyWith(keyType: BackupKeyType.PHRASE),
-        ).then((_) {
-          EasyLoading.dismiss();
-
-          _triggerBackup();
-        });
-      }).catchError((err) => _handleError(err.toString()));
+      await saveBackupKey.future.then(
+        (_) async {
+          await _backupNow(
+            backupSettings.copyWith(keyType: BackupKeyType.PHRASE),
+          ).then((_) {
+            Navigator.of(context).popUntil(ModalRoute.withName("/security"));
+          });
+        },
+      );
+    } catch (err) {
+      return _handleError(err.toString());
     } finally {
       EasyLoading.dismiss();
     }
@@ -215,47 +214,13 @@ class VerifyBackupPhrasePageState extends State<VerifyBackupPhrasePage> {
     _randomlySelectedIndexes.sort();
   }
 
-  Future _updateBackupSettings(
-    BackupSettings backupSettings,
-  ) async {
+  Future _backupNow(BackupSettings backupSettings) async {
     final backupBloc = AppBlocsProvider.of<BackupBloc>(context);
-    var action = UpdateBackupSettings(backupSettings);
-    backupBloc.backupActionsSink.add(action);
-    return action.future.catchError((err) => _handleError(err.toString()));
-  }
 
-  void _triggerBackup() {
-    try {
-      EasyLoading.show();
-
-      final backupBloc = AppBlocsProvider.of<BackupBloc>(context);
-      backupBloc.backupNowSink.add(
-        const BackupNowAction(recoverEnabled: true),
-      );
-      backupBloc.backupStateStream
-          .firstWhere((s) => s.inProgress)
-          .then((s) async {
-        if (mounted) {
-          EasyLoading.dismiss();
-
-          await showDialog(
-            useRootNavigator: false,
-            barrierDismissible: false,
-            context: context,
-            builder: (ctx) => buildBackupInProgressDialog(
-              ctx,
-              backupBloc.backupStateStream,
-            ),
-          ).then(
-            (_) => Navigator.of(context).popUntil(
-              ModalRoute.withName("/security"),
-            ),
-          );
-        }
-      });
-    } finally {
-      EasyLoading.dismiss();
-    }
+    final updateBackupSettings = UpdateBackupSettings(backupSettings);
+    final backupAction = BackupNow(updateBackupSettings, recoverEnabled: true);
+    backupBloc.backupActionsSink.add(backupAction);
+    return backupAction.future;
   }
 
   Future<void> _handleError(String error) {

@@ -69,9 +69,6 @@ class BackupBloc with AsyncActionsHandler {
       _backupSettingsController.stream;
   Sink<BackupSettings> get backupSettingsSink => _backupSettingsController.sink;
 
-  final _backupNowController = StreamController<BackupNowAction>();
-  Sink<BackupNowAction> get backupNowSink => _backupNowController.sink;
-
   final _backupAppDataController = StreamController<bool>.broadcast();
   Sink<bool> get backupAppDataSink => _backupAppDataController.sink;
 
@@ -127,6 +124,7 @@ class BackupBloc with AsyncActionsHandler {
       ListSnapshots: _listSnapshots,
       RestoreBackup: _restoreBackup,
       SignOut: _signOut,
+      BackupNow: _backupNow,
     };
 
     _listenPaidInvoices();
@@ -136,7 +134,6 @@ class BackupBloc with AsyncActionsHandler {
       // Read the backupKey from the secure storage and initialize the breez user model appropriately
       await _initializePersistentData();
       _listenBackupPaths();
-      _listenBackupNowRequests();
       _listenAppDataBackupRequests(backupAnytimeDBStream);
       _scheduleBackgroundTasks();
 
@@ -492,18 +489,20 @@ class BackupBloc with AsyncActionsHandler {
     });
   }
 
-  void _listenBackupNowRequests() {
-    _backupNowController.stream.listen((action) => _backupNow(action));
-  }
-
-  Future _backupNow(BackupNowAction action) async {
-    log.info("backup now requested: $action");
-    if (_backupServiceNeedLogin) {
-      await _breezLib.signOut();
+  Future _backupNow(BackupNow action) async {
+    try {
+      log.info("backup now requested: $action");
+      await _updateBackupSettings(action.updateBackupSettings);
+      if (_backupServiceNeedLogin) {
+        await _breezLib.signOut();
+      }
+      await _breezLib.signIn(_backupServiceNeedLogin, action.recoverEnabled);
+      await _saveAppData();
+      await _breezLib.requestBackup();
+      action.resolve(true);
+    } catch (e) {
+      action.resolveError(e);
     }
-    await _breezLib.signIn(_backupServiceNeedLogin, action.recoverEnabled);
-    await _saveAppData();
-    _breezLib.requestBackup();
   }
 
   void _listenAppDataBackupRequests(Stream backupAnytimeDBStream) {
@@ -732,7 +731,6 @@ class BackupBloc with AsyncActionsHandler {
   }
 
   close() {
-    _backupNowController.close();
     _backupAppDataController.close();
     _restoreLightningFeesController.close();
     _backupSettingsController.close();
