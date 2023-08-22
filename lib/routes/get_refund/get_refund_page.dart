@@ -4,6 +4,7 @@ import 'package:breez/bloc/blocs_provider.dart';
 import 'package:breez/routes/dev/dev.dart';
 import 'package:breez/routes/get_refund/wait_broadcast_dialog.dart';
 import 'package:breez/routes/get_refund/widget/get_refund_list.dart';
+import 'package:breez/routes/podcast/theme.dart';
 import 'package:breez/widgets/back_button.dart' as backBtn;
 import 'package:breez/widgets/loader.dart';
 import 'package:breez/widgets/send_onchain.dart';
@@ -33,7 +34,8 @@ class GetRefundPage extends StatelessWidget {
           }
           var account = accSnapshot.data;
           return GetRefundList(
-            refundableAddresses: account.swapFundsStatus.maturedRefundableAddresses,
+            refundableAddresses:
+                account.swapFundsStatus.maturedRefundableAddresses,
             currency: account.currency,
             allowRebroadcastRefunds: allowRebroadcastRefunds,
             onRefundPressed: (item) => onRefund(context, account, item),
@@ -60,22 +62,25 @@ class GetRefundPage extends StatelessWidget {
       context,
       MaterialPageRoute(
         fullscreenDialog: true,
-        builder: (_) => SendOnchain(
-          account,
-          item.confirmedAmount,
-          texts.get_refund_transaction,
-          (destAddress, feeRate) {
-            return broadcastAndWait(
-              context,
-              item.address,
-              destAddress,
-              feeRate,
-            ).then((str) {
-              Navigator.of(context).pop();
-              return str;
-            });
-          },
-          originalTransaction: originalTransaction,
+        builder: (_) => withBreezTheme(
+          context,
+          SendOnchain(
+            account,
+            item.confirmedAmount,
+            texts.get_refund_transaction,
+            (destAddress, feeRate) {
+              return broadcastAndWait(
+                context,
+                item.address,
+                destAddress,
+                feeRate,
+              ).then((str) {
+                Navigator.of(context).pop();
+                return str;
+              });
+            },
+            originalTransaction: originalTransaction,
+          ),
         ),
       ),
     );
