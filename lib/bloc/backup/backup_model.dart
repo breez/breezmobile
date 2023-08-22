@@ -86,21 +86,6 @@ enum BackupKeyType {
 }
 
 class BackupSettings {
-  static BackupProvider icloudBackupProvider() => BackupProvider(
-        "icloud",
-        getSystemAppLocalizations().backup_model_name_apple_icloud,
-      );
-
-  static BackupProvider googleBackupProvider() => BackupProvider(
-        "gdrive",
-        getSystemAppLocalizations().backup_model_name_google_drive,
-      );
-
-  static BackupProvider remoteServerBackupProvider() => BackupProvider(
-        "remoteserver",
-        getSystemAppLocalizations().backup_model_name_remote_server,
-      );
-
   final bool promptOnError;
   final BackupKeyType backupKeyType;
   final BackupProvider backupProvider;
@@ -119,17 +104,6 @@ class BackupSettings {
         _defaultBackupProvider(),
         const RemoteServerAuthData(null, null, null, null),
       );
-
-  static BackupProvider _defaultBackupProvider() {
-    switch (defaultTargetPlatform) {
-      case TargetPlatform.android:
-        return googleBackupProvider();
-      case TargetPlatform.iOS:
-        return icloudBackupProvider();
-      default:
-        return null;
-    }
-  }
 
   BackupSettings copyWith({
     bool promptOnError,
@@ -164,17 +138,6 @@ class BackupSettings {
     };
   }
 
-  static List<BackupProvider> availableBackupProviders() {
-    List<BackupProvider> providers = [
-      googleBackupProvider(),
-      remoteServerBackupProvider()
-    ];
-    if (defaultTargetPlatform == TargetPlatform.iOS) {
-      providers.insert(0, icloudBackupProvider());
-    }
-    return providers;
-  }
-
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
@@ -197,6 +160,43 @@ class BackupSettings {
     return 'BackupSettings{promptOnError: $promptOnError, backupKeyType: $backupKeyType, '
         'backupProvider: $backupProvider, remoteServerAuthData: $remoteServerAuthData}';
   }
+
+  static BackupProvider _defaultBackupProvider() {
+    switch (defaultTargetPlatform) {
+      case TargetPlatform.android:
+        return googleBackupProvider();
+      case TargetPlatform.iOS:
+        return icloudBackupProvider();
+      default:
+        return null;
+    }
+  }
+
+  static List<BackupProvider> availableBackupProviders() {
+    List<BackupProvider> providers = [
+      googleBackupProvider(),
+      remoteServerBackupProvider()
+    ];
+    if (defaultTargetPlatform == TargetPlatform.iOS) {
+      providers.insert(0, icloudBackupProvider());
+    }
+    return providers;
+  }
+
+  static BackupProvider icloudBackupProvider() => BackupProvider(
+        "icloud",
+        getSystemAppLocalizations().backup_model_name_apple_icloud,
+      );
+
+  static BackupProvider googleBackupProvider() => BackupProvider(
+        "gdrive",
+        getSystemAppLocalizations().backup_model_name_google_drive,
+      );
+
+  static BackupProvider remoteServerBackupProvider() => BackupProvider(
+        "remoteserver",
+        getSystemAppLocalizations().backup_model_name_remote_server,
+      );
 }
 
 class BackupState {
