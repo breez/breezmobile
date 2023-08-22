@@ -126,6 +126,7 @@ class BackupBloc with AsyncActionsHandler {
       DownloadSnapshot: _downloadSnapshot,
       ListSnapshots: _listSnapshots,
       RestoreBackup: _restoreBackup,
+      SignOut: _signOut,
     };
 
     _listenPaidInvoices();
@@ -470,6 +471,10 @@ class BackupBloc with AsyncActionsHandler {
         lastBackupTime: DateTime.tryParse(modifiedTime).toLocal(),
       ),
     );
+  }
+
+  Future _signOut(SignOut action) async {
+    action.resolve(await _breezLib.signOut().catchError((_) => null));
   }
 
   _scheduleBackgroundTasks() {
