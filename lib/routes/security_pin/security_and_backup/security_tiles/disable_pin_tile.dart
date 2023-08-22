@@ -14,12 +14,12 @@ import 'package:flutter/material.dart';
 class DisablePinTile extends StatefulWidget {
   final UserProfileBloc userProfileBloc;
   final AutoSizeGroup autoSizeGroup;
-  final Function(bool) unlockScreen;
+  final Future Function(SecurityModel securityModel) updateSecurityModel;
 
   const DisablePinTile({
     @required this.userProfileBloc,
     @required this.autoSizeGroup,
-    @required this.unlockScreen,
+    @required this.updateSecurityModel,
   });
 
   @override
@@ -89,17 +89,10 @@ class _DisablePinTileState extends State<DisablePinTile> {
     var updatePinAction = UpdatePinCode(newPIN);
     widget.userProfileBloc.userActionsSink.add(updatePinAction);
     return updatePinAction.future.then((_) async {
-      await _updateSecurityModel(
+      await widget.updateSecurityModel(
         securityModel.copyWith(requiresPin: true),
       );
     }).catchError((err) => _handleError(err.toString()));
-  }
-
-  Future _updateSecurityModel(SecurityModel newModel) async {
-    widget.unlockScreen(false);
-    var action = UpdateSecurityModel(newModel);
-    widget.userProfileBloc.userActionsSink.add(action);
-    return action.future;
   }
 
   Future _resetSecurityModel() async {
