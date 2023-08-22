@@ -30,49 +30,50 @@ class _PinIntervalTileState extends State<PinIntervalTile> {
     final texts = context.texts();
 
     return StreamBuilder<BreezUserModel>(
-        stream: widget.userProfileBloc.userStream,
-        builder: (context, snapshot) {
-          if (!snapshot.hasData) {
-            return Container();
-          }
+      stream: widget.userProfileBloc.userStream,
+      builder: (context, snapshot) {
+        if (!snapshot.hasData) {
+          return Container();
+        }
 
-          final securityModel = snapshot.data.securityModel;
+        final securityModel = snapshot.data.securityModel;
 
-          return ListTile(
-            title: AutoSizeText(
-              texts.security_and_backup_lock_automatically,
-              style: const TextStyle(color: Colors.white),
-              maxLines: 1,
-              minFontSize: MinFontSize(context).minFontSize,
-              stepGranularity: 0.1,
-              group: widget.autoSizeGroup,
+        return ListTile(
+          title: AutoSizeText(
+            texts.security_and_backup_lock_automatically,
+            style: const TextStyle(color: Colors.white),
+            maxLines: 1,
+            minFontSize: MinFontSize(context).minFontSize,
+            stepGranularity: 0.1,
+            group: widget.autoSizeGroup,
+          ),
+          trailing: DropdownButtonHideUnderline(
+            child: DropdownButton(
+              iconEnabledColor: Colors.white,
+              value: securityModel.automaticallyLockInterval,
+              isDense: true,
+              onChanged: (int newValue) async {
+                await widget.changePinInterval(
+                  securityModel.copyWith(automaticallyLockInterval: newValue),
+                );
+              },
+              items: SecurityModel.lockIntervals.map((int seconds) {
+                return DropdownMenuItem(
+                  value: seconds,
+                  child: AutoSizeText(
+                    _formatSeconds(seconds),
+                    style: theme.FieldTextStyle.textStyle,
+                    maxLines: 1,
+                    minFontSize: MinFontSize(context).minFontSize,
+                    stepGranularity: 0.1,
+                  ),
+                );
+              }).toList(),
             ),
-            trailing: DropdownButtonHideUnderline(
-              child: DropdownButton(
-                iconEnabledColor: Colors.white,
-                value: securityModel.automaticallyLockInterval,
-                isDense: true,
-                onChanged: (int newValue) async {
-                  await widget.changePinInterval(
-                    securityModel.copyWith(automaticallyLockInterval: newValue),
-                  );
-                },
-                items: SecurityModel.lockIntervals.map((int seconds) {
-                  return DropdownMenuItem(
-                    value: seconds,
-                    child: AutoSizeText(
-                      _formatSeconds(seconds),
-                      style: theme.FieldTextStyle.textStyle,
-                      maxLines: 1,
-                      minFontSize: MinFontSize(context).minFontSize,
-                      stepGranularity: 0.1,
-                    ),
-                  );
-                }).toList(),
-              ),
-            ),
-          );
-        });
+          ),
+        );
+      },
+    );
   }
 
   String _formatSeconds(int seconds) {

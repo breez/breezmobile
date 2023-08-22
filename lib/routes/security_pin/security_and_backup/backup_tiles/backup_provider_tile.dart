@@ -32,33 +32,33 @@ class _BackupProviderTileState extends State<BackupProviderTile> {
   Widget build(BuildContext context) {
     final texts = context.texts();
     return StreamBuilder<BackupSettings>(
-        stream: widget.backupBloc.backupSettingsStream,
-        builder: (context, snapshot) {
-          if (!snapshot.hasData) {
-            return Container();
-          }
+      stream: widget.backupBloc.backupSettingsStream,
+      builder: (context, snapshot) {
+        if (!snapshot.hasData) {
+          return Container();
+        }
 
-          final backupSettings = snapshot.data;
+        final backupSettings = snapshot.data;
 
-          return ListTile(
-            title: AutoSizeText(
-              texts.security_and_backup_store_location,
-              style: const TextStyle(color: Colors.white),
-              maxLines: 1,
-              minFontSize: MinFontSize(context).minFontSize,
-              stepGranularity: 0.1,
-              group: widget.autoSizeGroup,
-            ),
-            trailing: DropdownButtonHideUnderline(
-              child: DropdownButton<BackupProvider>(
-                iconEnabledColor: Colors.white,
-                value: backupSettings.backupProvider,
-                isDense: true,
-                onChanged: (BackupProvider selectedProvider) async {
-                  await _updateBackupProvider(selectedProvider, backupSettings);
-                },
-                items:
-                    BackupSettings.availableBackupProviders().map((provider) {
+        return ListTile(
+          title: AutoSizeText(
+            texts.security_and_backup_store_location,
+            style: const TextStyle(color: Colors.white),
+            maxLines: 1,
+            minFontSize: MinFontSize(context).minFontSize,
+            stepGranularity: 0.1,
+            group: widget.autoSizeGroup,
+          ),
+          trailing: DropdownButtonHideUnderline(
+            child: DropdownButton<BackupProvider>(
+              iconEnabledColor: Colors.white,
+              value: backupSettings.backupProvider,
+              isDense: true,
+              onChanged: (BackupProvider selectedProvider) async {
+                await _updateBackupProvider(selectedProvider, backupSettings);
+              },
+              items: BackupSettings.availableBackupProviders().map(
+                (provider) {
                   return DropdownMenuItem(
                     value: provider,
                     child: AutoSizeText(
@@ -69,11 +69,13 @@ class _BackupProviderTileState extends State<BackupProviderTile> {
                       stepGranularity: 0.1,
                     ),
                   );
-                }).toList(),
-              ),
+                },
+              ).toList(),
             ),
-          );
-        });
+          ),
+        );
+      },
+    );
   }
 
   Future<void> _updateBackupProvider(

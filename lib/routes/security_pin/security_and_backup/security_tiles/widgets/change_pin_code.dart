@@ -1,7 +1,6 @@
 import 'package:breez/widgets/back_button.dart' as backBtn;
 import 'package:breez/widgets/pin_code_widget.dart';
 import 'package:breez_translations/breez_translations_locales.dart';
-import 'package:breez_translations/generated/breez_translations.dart';
 import 'package:flutter/material.dart';
 
 const PIN_CODE_LENGTH = 6;
@@ -33,15 +32,14 @@ class ChangePinCodeState extends State<ChangePinCode> {
       ),
       body: PinCodeWidget(
         _label,
-        (enteredPinCode) => _onPinEntered(texts, enteredPinCode),
+        (enteredPinCode) => _onPinEntered(enteredPinCode),
       ),
     );
   }
 
-  Future _onPinEntered(
-    BreezTranslations texts,
-    String enteredPinCode,
-  ) async {
+  Future _onPinEntered(String enteredPinCode) async {
+    final texts = context.texts();
+
     if (_tmpPinCode.isEmpty) {
       setState(() {
         _tmpPinCode = enteredPinCode;
