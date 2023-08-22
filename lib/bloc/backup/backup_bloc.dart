@@ -467,7 +467,7 @@ class BackupBloc with AsyncActionsHandler {
   void _updateLastBackupTime(String modifiedTime) {
     _backupStateController.add(
       _backupStateController.value?.copyWith(
-        lastBackupTime: DateTime.tryParse(modifiedTime),
+        lastBackupTime: DateTime.tryParse(modifiedTime).toLocal(),
       ),
     );
   }
