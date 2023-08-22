@@ -32,7 +32,7 @@ import 'package:breez/routes/podcast/theme.dart';
 import 'package:breez/routes/podcast_history/podcast_history.dart';
 import 'package:breez/routes/qr_scan.dart';
 import 'package:breez/routes/security_pin/lock_screen.dart';
-import 'package:breez/routes/security_pin/security_pin_page.dart';
+import 'package:breez/routes/security_pin/security_and_backup/security_page.dart';
 import 'package:breez/routes/settings/pos_settings_page.dart';
 import 'package:breez/routes/splash_page.dart';
 import 'package:breez/routes/transactions/pos_transactions_page.dart';
