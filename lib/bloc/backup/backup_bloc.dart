@@ -85,18 +85,16 @@ class BackupBloc with AsyncActionsHandler {
   final _backupActionsController = StreamController<AsyncAction>.broadcast();
   Sink<AsyncAction> get backupActionsSink => _backupActionsController.sink;
 
-  Stream<bool> get promptBackupSubscription => Rx.combineLatestList([
+  Stream<bool> get promptBackupSubscription =>
+      Rx.combineLatest3<BackupSettings, bool, bool, bool>(
         backupSettingsStream,
         promptBackupStream,
         promptBackupDismissedStream,
-      ]).where((list) {
-        final settings = list[0] as BackupSettings;
-        final dismissed = list[2] as bool;
-        return settings.promptOnError && !dismissed;
-      }).map((list) {
-        final needSignIn = list[1] as bool;
-        return needSignIn;
-      });
+        (settings, signInNeeded, dismissed) {
+          // If prompt is not dismissed or promptOnError is enabled
+          return (settings.promptOnError && !dismissed) ? signInNeeded : false;
+        },
+      );
 
   BreezBridge _breezLib;
   BackgroundTaskService _tasksService;
