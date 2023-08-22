@@ -75,7 +75,7 @@ class AccountRequiredActionsIndicatorState
       ).then((_) {
         showingBackupDialog = false;
         backupBloc.backupPromptVisibleSink.add(false);
-        backupBloc.promptDismissed();
+        backupBloc.promptBackupDismissedSink.add(true);
       });
     }
   }

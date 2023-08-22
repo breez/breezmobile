@@ -54,6 +54,8 @@ class BackupBloc with AsyncActionsHandler {
       BehaviorSubject<bool>.seeded(false);
   Stream<bool> get promptBackupDismissedStream =>
       _promptBackupDismissedController.stream;
+  Sink<bool> get promptBackupDismissedSink =>
+      _promptBackupDismissedController.sink;
 
   final StreamController<bool> _backupPromptVisibleController =
       BehaviorSubject<bool>.seeded(false);
@@ -650,10 +652,6 @@ class BackupBloc with AsyncActionsHandler {
       _enableBackupPrompt = false;
       _promptBackupController.add(_backupServiceNeedLogin);
     }
-  }
-
-  void promptDismissed() {
-    _promptBackupDismissedController.add(true);
   }
 
   Future testAuth(BackupProvider provider, RemoteServerAuthData authData) {
