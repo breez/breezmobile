@@ -234,28 +234,7 @@ class VerifyBackupPhrasePageState extends State<VerifyBackupPhrasePage> {
     var action = UpdateBackupSettings(backupSettings);
     backupBloc.backupActionsSink.add(action);
     Navigator.popUntil(context, ModalRoute.withName("/security"));
-    return action.future.then(
-      (_) {
-        backupBloc.backupNowSink.add(
-          const BackupNowAction(recoverEnabled: true),
-        );
-        backupBloc.backupStateStream.firstWhere((s) => s.inProgress).then(
-          (s) {
-            if (mounted) {
-              showDialog(
-                useRootNavigator: false,
-                barrierDismissible: false,
-                context: context,
-                builder: (ctx) => buildBackupInProgressDialog(
-                  ctx,
-                  backupBloc.backupStateStream,
-                ),
-              );
-            }
-          },
-        );
-      },
-    ).catchError((err) {
+    return action.future.catchError((err) {
       promptError(
         context,
         texts.backup_phrase_generation_generic_error,
