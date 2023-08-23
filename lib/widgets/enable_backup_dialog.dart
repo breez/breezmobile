@@ -264,7 +264,7 @@ class _BackupNowButtonState extends State<_BackupNowButton> {
       } else {
         await _backupNow(
           widget.backupSettings.copyWith(backupProvider: selectedProvider),
-        );
+        ).then((_) => Navigator.pop(context));
       }
     } catch (error) {
       _handleError(error);
