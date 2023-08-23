@@ -138,7 +138,7 @@ class SelectBackupProviderDialogState
     final backupBloc = AppBlocsProvider.of<BackupBloc>(context);
     BackupSettings backupSettings = widget.backupSettings;
 
-    final remoteServerProvider = BackupSettings.remoteServerBackupProvider();
+    final remoteServerProvider = BackupProvider.remoteServer();
     if (selectedProvider.name == remoteServerProvider.name) {
       final auth = await promptAuthData(
         context,
@@ -230,7 +230,7 @@ class SelectBackupProviderDialogState
   }
 
   Future _handleSignInException(SignInFailedException e) async {
-    if (e.provider == BackupSettings.icloudBackupProvider()) {
+    if (e.provider == BackupProvider.iCloud()) {
       final texts = context.texts();
       final themeData = Theme.of(context);
 
@@ -242,7 +242,7 @@ class SelectBackupProviderDialogState
           style: themeData.dialogTheme.contentTextStyle,
         ),
       );
-    } else if (e.provider == BackupSettings.googleBackupProvider()) {
+    } else if (e.provider == BackupProvider.googleDrive()) {
       showFlushbar(
         context,
         duration: const Duration(seconds: 3),

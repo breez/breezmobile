@@ -9,10 +9,10 @@ import 'package:breez/routes/initial_walkthrough/dialogs/select_backup_provider_
 import 'package:breez/routes/security_pin/remote_server_auth/remote_server_auth.dart';
 import 'package:breez/utils/min_font_size.dart';
 import 'package:breez/widgets/error_dialog.dart';
+import 'package:breez/widgets/flushbar.dart';
 import 'package:breez/widgets/loader.dart';
 import 'package:breez_translations/breez_translations_locales.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_easyloading/flutter_easyloading.dart';
 
 class EnableBackupDialog extends StatefulWidget {
   final bool signInNeeded;
@@ -199,39 +199,20 @@ class _BackupNowButtonState extends State<_BackupNowButton> {
 
         await _showSelectProviderDialog(widget.backupSettings).then(
           (selectedProvider) async {
-            provider ??= selectedProvider;
-            if (provider != null) {
+            if (selectedProvider != null) {
               if (widget.signInNeeded) {
                 // Sign out if the user switches to GDrive from another provider
-                if (!widget.backupSettings.backupProvider.isGDrive &&
-                    provider.isGDrive) {
+                if (!provider.isGDrive && selectedProvider.isGDrive) {
                   await _signOut();
                   await _signIn();
                 }
 
-                if (provider.isICloud) {
-                  await _showSignInNeededDialog();
+                if (selectedProvider.isICloud) {
+                  await _showSignInNeededDialog(selectedProvider);
                   return;
                 }
               }
-              if (provider.isRemoteServer) {
-                await _enterRemoteServerCredentials(backupBloc);
-                return;
-              }
-
-              try {
-                EasyLoading.show();
-
-                await _backupNow(
-                  widget.backupSettings.copyWith(
-                    backupProvider: provider,
-                  ),
-                ).then((_) {
-                  Navigator.pop(context);
-                });
-              } finally {
-                EasyLoading.dismiss();
-              }
+              await _updateBackupProvider(selectedProvider);
             }
           },
         );
@@ -258,38 +239,52 @@ class _BackupNowButtonState extends State<_BackupNowButton> {
     );
   }
 
-  Future<void> _showSignInNeededDialog() async {
-    final texts = context.texts();
-    final themeData = Theme.of(context);
+  Future _showSignInNeededDialog(BackupProvider provider) async {
+    if (provider.isICloud) {
+      final texts = context.texts();
+      final themeData = Theme.of(context);
 
-    await promptError(
-      context,
-      texts.backup_dialog_icloud_error_title,
-      Text(
-        texts.backup_dialog_icloud_error_message,
-        style: themeData.dialogTheme.contentTextStyle,
-      ),
-    );
+      await promptError(
+        context,
+        texts.initial_walk_through_sign_in_icloud_title,
+        Text(
+          texts.initial_walk_through_sign_in_icloud_message,
+          style: themeData.dialogTheme.contentTextStyle,
+        ),
+      );
+    }
   }
 
-  Future<void> _enterRemoteServerCredentials(BackupBloc backupBloc) async {
+  Future<void> _updateBackupProvider(
+    BackupProvider selectedProvider,
+  ) async {
+    try {
+      if (selectedProvider.isRemoteServer) {
+        await _enterRemoteServerCredentials();
+      } else {
+        await _backupNow(
+          widget.backupSettings.copyWith(backupProvider: selectedProvider),
+        );
+      }
+    } catch (error) {
+      _handleError(error);
+      rethrow;
+    }
+  }
+
+  Future<void> _enterRemoteServerCredentials() async {
     await promptAuthData(
       context,
       widget.backupSettings,
     ).then(
       (auth) async {
         if (auth != null) {
-          try {
-            EasyLoading.show();
-
-            await _backupNow(
-              widget.backupSettings.copyWith(
-                remoteServerAuthData: auth,
-              ),
-            );
-          } finally {
-            EasyLoading.dismiss();
-          }
+          await _backupNow(
+            widget.backupSettings.copyWith(
+              backupProvider: BackupProvider.remoteServer(),
+              remoteServerAuthData: auth,
+            ),
+          ).then((_) => Navigator.pop(context));
         }
       },
     );
@@ -302,9 +297,9 @@ class _BackupNowButtonState extends State<_BackupNowButton> {
     return signOutAction.future;
   }
 
-  Future _signIn() {
+  Future _signIn({bool force = false}) {
     final backupBloc = AppBlocsProvider.of<BackupBloc>(context);
-    var signInAction = SignIn(force: false);
+    var signInAction = SignIn(force: force);
     backupBloc.backupActionsSink.add(signInAction);
     return signInAction.future;
   }
@@ -316,5 +311,20 @@ class _BackupNowButtonState extends State<_BackupNowButton> {
     final backupAction = BackupNow(updateBackupSettings, recoverEnabled: true);
     backupBloc.backupActionsSink.add(backupAction);
     return backupAction.future;
+  }
+
+  void _handleError(dynamic error) async {
+    Navigator.of(context).pop();
+
+    switch (error.runtimeType) {
+      case InsufficientPermissionException:
+      case SignInFailedException:
+      default:
+        showFlushbar(
+          context,
+          duration: const Duration(seconds: 3),
+          message: error.toString(),
+        );
+    }
   }
 }

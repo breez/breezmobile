@@ -78,10 +78,24 @@ class BackupProvider {
     return 'BackupProvider{name: $name, displayName: $displayName}';
   }
 
-  bool get isICloud => this == BackupSettings.icloudBackupProvider();
-  bool get isGDrive => this == BackupSettings.googleBackupProvider();
-  bool get isRemoteServer =>
-      this == BackupSettings.remoteServerBackupProvider();
+  static BackupProvider iCloud() => BackupProvider(
+        "icloud",
+        getSystemAppLocalizations().backup_model_name_apple_icloud,
+      );
+
+  static BackupProvider googleDrive() => BackupProvider(
+        "gdrive",
+        getSystemAppLocalizations().backup_model_name_google_drive,
+      );
+
+  static BackupProvider remoteServer() => BackupProvider(
+        "remoteserver",
+        getSystemAppLocalizations().backup_model_name_remote_server,
+      );
+
+  bool get isICloud => this == iCloud();
+  bool get isGDrive => this == googleDrive();
+  bool get isRemoteServer => this == remoteServer();
 }
 
 enum BackupKeyType {
@@ -169,9 +183,9 @@ class BackupSettings {
   static BackupProvider _defaultBackupProvider() {
     switch (defaultTargetPlatform) {
       case TargetPlatform.android:
-        return googleBackupProvider();
+        return BackupProvider.googleDrive();
       case TargetPlatform.iOS:
-        return icloudBackupProvider();
+        return BackupProvider.iCloud();
       default:
         return null;
     }
@@ -179,29 +193,14 @@ class BackupSettings {
 
   static List<BackupProvider> availableBackupProviders() {
     List<BackupProvider> providers = [
-      googleBackupProvider(),
-      remoteServerBackupProvider()
+      BackupProvider.googleDrive(),
+      BackupProvider.remoteServer()
     ];
     if (defaultTargetPlatform == TargetPlatform.iOS) {
-      providers.insert(0, icloudBackupProvider());
+      providers.insert(0, BackupProvider.iCloud());
     }
     return providers;
   }
-
-  static BackupProvider icloudBackupProvider() => BackupProvider(
-        "icloud",
-        getSystemAppLocalizations().backup_model_name_apple_icloud,
-      );
-
-  static BackupProvider googleBackupProvider() => BackupProvider(
-        "gdrive",
-        getSystemAppLocalizations().backup_model_name_google_drive,
-      );
-
-  static BackupProvider remoteServerBackupProvider() => BackupProvider(
-        "remoteserver",
-        getSystemAppLocalizations().backup_model_name_remote_server,
-      );
 }
 
 class BackupState {
