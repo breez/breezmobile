@@ -50,6 +50,7 @@ class _BackupProviderTileState extends State<BackupProviderTile> {
             if (!widget.backupSettings.backupProvider.isGDrive &&
                 selectedProvider.isGDrive) {
               await _signOut();
+              await _signIn();
             }
             await _updateBackupProvider(selectedProvider);
           },
@@ -77,6 +78,13 @@ class _BackupProviderTileState extends State<BackupProviderTile> {
     var signOutAction = SignOut();
     backupBloc.backupActionsSink.add(signOutAction);
     return signOutAction.future;
+  }
+
+  Future _signIn() {
+    final backupBloc = AppBlocsProvider.of<BackupBloc>(context);
+    var signInAction = SignIn(force: false);
+    backupBloc.backupActionsSink.add(signInAction);
+    return signInAction.future;
   }
 
   Future<void> _updateBackupProvider(
