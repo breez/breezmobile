@@ -202,8 +202,7 @@ class BackupBloc with AsyncActionsHandler {
     try {
       if (settings.backupProvider != null) {
         String authData;
-        if (settings.backupProvider.name ==
-            BackupSettings.remoteServerBackupProvider().name) {
+        if (settings.backupProvider.isRemoteServer) {
           log.info("update backup provider auth data as a remote server");
           var map = settings.remoteServerAuthData.toJson();
           authData = json.encode(map);
@@ -255,8 +254,8 @@ class BackupBloc with AsyncActionsHandler {
           backupProvider: BackupSettings.googleBackupProvider(),
         );
       }
-      if (backupSettingsModel.backupProvider?.name ==
-          BackupSettings.remoteServerBackupProvider().name) {
+      if (backupSettingsModel.backupProvider != null &&
+          backupSettingsModel.backupProvider.isRemoteServer) {
         String authdata =
             await _secureStorage.read(key: "remoteServerAuthData");
         if (authdata != null) {

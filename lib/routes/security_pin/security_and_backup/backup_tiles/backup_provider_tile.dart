@@ -72,8 +72,7 @@ class _BackupProviderTileState extends State<BackupProviderTile> {
     try {
       EasyLoading.show();
 
-      if (selectedProvider.name ==
-          BackupSettings.remoteServerBackupProvider().name) {
+      if (selectedProvider.isRemoteServer) {
         EasyLoading.dismiss();
 
         await widget.enterRemoteServerCredentials(selectedProvider);
