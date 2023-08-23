@@ -22,6 +22,7 @@ import 'package:breez/routes/security_pin/security_and_backup/widgets/last_backu
 import 'package:breez/services/local_auth_service.dart';
 import 'package:breez/utils/exceptions.dart';
 import 'package:breez/widgets/back_button.dart' as backBtn;
+import 'package:breez/widgets/error_dialog.dart';
 import 'package:breez/widgets/flushbar.dart';
 import 'package:breez/widgets/loader.dart';
 import 'package:breez_translations/breez_translations_locales.dart';
@@ -283,14 +284,38 @@ class SecurityAndBackupPageState extends State<SecurityAndBackupPage>
     final texts = context.texts();
 
     switch (exception.runtimeType) {
-      case InsufficientPermissionException:
       case SignInFailedException:
+        _handleSignInException(exception);
+        return;
+      case InsufficientPermissionException:
       default:
         showFlushbar(
           context,
           duration: const Duration(seconds: 3),
           message: extractExceptionMessage(exception, texts: texts),
         );
+    }
+  }
+
+  Future _handleSignInException(SignInFailedException e) async {
+    if (e.provider == BackupSettings.icloudBackupProvider()) {
+      final texts = context.texts();
+      final themeData = Theme.of(context);
+
+      await promptError(
+        context,
+        texts.initial_walk_through_sign_in_icloud_title,
+        Text(
+          texts.initial_walk_through_sign_in_icloud_message,
+          style: themeData.dialogTheme.contentTextStyle,
+        ),
+      );
+    } else if (e.provider == BackupSettings.googleBackupProvider()) {
+      showFlushbar(
+        context,
+        duration: const Duration(seconds: 3),
+        message: "Failed to sign into Google Drive.",
+      );
     }
   }
 }

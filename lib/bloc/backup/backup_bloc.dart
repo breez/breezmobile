@@ -523,6 +523,28 @@ class BackupBloc with AsyncActionsHandler {
       await _saveAppData();
       await _breezLib.requestBackup();
       action.resolve(true);
+    } on PlatformException catch (e) {
+      dynamic exception = extractExceptionMessage(e.message);
+      // the error code equals the message from the go library so
+      // not to confuse the two.
+      if (e.code == _signInFailedMessage || e.message == _signInFailedCode) {
+        exception = SignInFailedException(
+          _backupSettingsController.value.backupProvider,
+        );
+      } else if (e.code == _empty || exception == _empty) {
+        exception = NoBackupFoundException();
+      } else if (exception.contains(_insufficientPermission)) {
+        // TODO: Handle Insufficient Permissions error properly
+        exception = InsufficientPermissionException();
+      } else if (exception.contains(_invalidCredentials)) {
+        // If user revokes Breez permissions from their GDrive account during a
+        // session. They won't be able to sign in again.
+        // This is a work around for not having force arg on signIn() on iOS
+        // TODO: Handle Invalid CredentialsException error properly
+        await _breezLib.signOut();
+        exception = InvalidCredentialsException();
+      }
+      action.resolveError(exception);
     } catch (e) {
       action.resolveError(e);
     }
