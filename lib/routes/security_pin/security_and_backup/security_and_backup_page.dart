@@ -19,6 +19,7 @@ import 'package:breez/routes/security_pin/security_and_backup/security_tiles/ena
 import 'package:breez/routes/security_pin/security_and_backup/security_tiles/enable_pin_tile.dart';
 import 'package:breez/routes/security_pin/security_and_backup/security_tiles/pin_interval_tile.dart';
 import 'package:breez/routes/security_pin/security_and_backup/widgets/last_backup_text.dart';
+import 'package:breez/services/local_auth_service.dart';
 import 'package:breez/widgets/back_button.dart' as backBtn;
 import 'package:breez/widgets/loader.dart';
 import 'package:breez_translations/breez_translations_locales.dart';
@@ -46,13 +47,33 @@ class SecurityAndBackupPageState extends State<SecurityAndBackupPage>
   StreamSubscription<BackupState> _backupInProgressSubscription;
   final _autoSizeGroup = AutoSizeGroup();
   bool _screenLocked = true;
+  LocalAuthenticationOption _localAuthenticationOption;
 
   @override
   void initState() {
     super.initState();
     WidgetsBinding.instance.addObserver(this);
+    _localAuthenticationOption = LocalAuthenticationOption.NONE;
+    _getEnrolledBiometrics();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _initListeners();
+    });
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.resumed) {
+      _getEnrolledBiometrics();
+    }
+  }
+
+  Future _getEnrolledBiometrics() async {
+    var getEnrolledBiometricsAction = GetEnrolledBiometrics();
+    widget.userProfileBloc.userActionsSink.add(getEnrolledBiometricsAction);
+    return getEnrolledBiometricsAction.future.then((enrolledBiometrics) {
+      setState(() {
+        _localAuthenticationOption = enrolledBiometrics;
+      });
     });
   }
 
@@ -136,12 +157,16 @@ class SecurityAndBackupPageState extends State<SecurityAndBackupPage>
                     autoSizeGroup: _autoSizeGroup,
                     changePin: _updateSecurityModel,
                   ),
-                  const Divider(),
-                  EnableBiometricAuthTile(
-                    userProfileBloc: widget.userProfileBloc,
-                    autoSizeGroup: _autoSizeGroup,
-                    changeBiometricAuth: _updateSecurityModel,
-                  ),
+                  if (_localAuthenticationOption !=
+                      LocalAuthenticationOption.NONE) ...[
+                    const Divider(),
+                    EnableBiometricAuthTile(
+                      userProfileBloc: widget.userProfileBloc,
+                      autoSizeGroup: _autoSizeGroup,
+                      localAuthenticationOption: _localAuthenticationOption,
+                      changeBiometricAuth: _updateSecurityModel,
+                    ),
+                  ]
                 ],
                 const Divider(),
                 BackupProviderTile(
