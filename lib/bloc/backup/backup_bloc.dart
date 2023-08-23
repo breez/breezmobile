@@ -459,6 +459,7 @@ class BackupBloc with AsyncActionsHandler {
   }
 
   Future _signOut(SignOut action) async {
+    log.info("Signing out of Google Drive");
     action.resolve(await _breezLib.signOut().catchError((_) => null));
   }
 
