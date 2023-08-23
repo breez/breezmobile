@@ -195,16 +195,23 @@ class _BackupNowButtonState extends State<_BackupNowButton> {
 
     return TextButton(
       onPressed: (() async {
-        Navigator.pop(context);
         var provider = widget.backupSettings.backupProvider;
 
-        _showSelectProviderDialog(widget.backupSettings).then(
+        await _showSelectProviderDialog(widget.backupSettings).then(
           (selectedProvider) async {
             provider ??= selectedProvider;
             if (provider != null) {
-              if (widget.signInNeeded && provider.isICloud) {
-                await _showSignInNeededDialog();
-                return;
+              if (widget.signInNeeded) {
+                // Sign out if the user switches to GDrive from another provider
+                if (!widget.backupSettings.backupProvider.isGDrive &&
+                    provider.isGDrive) {
+                  await _signOut();
+                }
+
+                if (provider.isICloud) {
+                  await _showSignInNeededDialog();
+                  return;
+                }
               }
               if (provider.isRemoteServer) {
                 await _enterRemoteServerCredentials(backupBloc);
@@ -214,7 +221,13 @@ class _BackupNowButtonState extends State<_BackupNowButton> {
               try {
                 EasyLoading.show();
 
-                await _backupNow(widget.backupSettings);
+                await _backupNow(
+                  widget.backupSettings.copyWith(
+                    backupProvider: provider,
+                  ),
+                ).then((_) {
+                  Navigator.pop(context);
+                });
               } finally {
                 EasyLoading.dismiss();
               }
@@ -280,6 +293,13 @@ class _BackupNowButtonState extends State<_BackupNowButton> {
         }
       },
     );
+  }
+
+  Future _signOut() {
+    final backupBloc = AppBlocsProvider.of<BackupBloc>(context);
+    var signOutAction = SignOut();
+    backupBloc.backupActionsSink.add(signOutAction);
+    return signOutAction.future;
   }
 
   Future _backupNow(BackupSettings backupSettings) async {
