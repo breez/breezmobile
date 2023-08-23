@@ -12,11 +12,13 @@ import 'package:flutter/material.dart';
 class EnableBiometricAuthTile extends StatefulWidget {
   final UserProfileBloc userProfileBloc;
   final AutoSizeGroup autoSizeGroup;
+  final LocalAuthenticationOption localAuthenticationOption;
   final Future Function(SecurityModel securityModel) changeBiometricAuth;
 
   const EnableBiometricAuthTile({
     @required this.userProfileBloc,
     @required this.autoSizeGroup,
+    @required this.localAuthenticationOption,
     @required this.changeBiometricAuth,
   });
 
@@ -25,72 +27,41 @@ class EnableBiometricAuthTile extends StatefulWidget {
       _EnableBiometricAuthTileState();
 }
 
-class _EnableBiometricAuthTileState extends State<EnableBiometricAuthTile>
-    with WidgetsBindingObserver {
-  LocalAuthenticationOption _localAuthenticationOption;
-
-  @override
-  void initState() {
-    super.initState();
-    _localAuthenticationOption = LocalAuthenticationOption.NONE;
-    _getEnrolledBiometrics();
-  }
-
-  @override
-  void didChangeAppLifecycleState(AppLifecycleState state) {
-    if (state == AppLifecycleState.resumed) {
-      _getEnrolledBiometrics();
-    }
-  }
-
-  Future _getEnrolledBiometrics() async {
-    var getEnrolledBiometricsAction = GetEnrolledBiometrics();
-    widget.userProfileBloc.userActionsSink.add(getEnrolledBiometricsAction);
-    return getEnrolledBiometricsAction.future.then((enrolledBiometrics) {
-      setState(() {
-        _localAuthenticationOption = enrolledBiometrics;
-      });
-    });
-  }
-
+class _EnableBiometricAuthTileState extends State<EnableBiometricAuthTile> {
   @override
   Widget build(BuildContext context) {
-    if (_localAuthenticationOption == LocalAuthenticationOption.NONE) {
-      return null;
-    } else {
-      return StreamBuilder<BreezUserModel>(
-        stream: widget.userProfileBloc.userStream,
-        builder: (context, snapshot) {
-          if (!snapshot.hasData) {
-            return Container();
-          }
+    return StreamBuilder<BreezUserModel>(
+      stream: widget.userProfileBloc.userStream,
+      builder: (context, snapshot) {
+        if (!snapshot.hasData) {
+          return Container();
+        }
 
-          final securityModel = snapshot.data.securityModel;
+        final securityModel = snapshot.data.securityModel;
 
-          return SimpleSwitch(
-            text: _localAuthenticationOptionLabel(),
-            switchValue: securityModel.isFingerprintEnabled,
-            group: securityModel.requiresPin ? widget.autoSizeGroup : null,
-            onChanged: (value) async {
-              if (mounted) {
-                if (value) {
-                  await _validateBiometrics(securityModel);
-                } else {
-                  await widget.changeBiometricAuth(
-                    securityModel.copyWith(isFingerprintEnabled: false),
-                  );
-                }
+        return SimpleSwitch(
+          text: _localAuthenticationOptionLabel(),
+          switchValue: securityModel.isFingerprintEnabled,
+          group: securityModel.requiresPin ? widget.autoSizeGroup : null,
+          onChanged: (value) async {
+            if (mounted) {
+              if (value) {
+                await _validateBiometrics(securityModel);
+              } else {
+                await widget.changeBiometricAuth(
+                  securityModel.copyWith(isFingerprintEnabled: false),
+                );
               }
-            },
-          );
-        },
-      );
-    }
+            }
+          },
+        );
+      },
+    );
   }
 
   String _localAuthenticationOptionLabel() {
     final texts = context.texts();
-    switch (_localAuthenticationOption) {
+    switch (widget.localAuthenticationOption) {
       case LocalAuthenticationOption.FACE:
         return texts.security_and_backup_enable_biometric_option_face;
       case LocalAuthenticationOption.FACE_ID:
