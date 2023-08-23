@@ -340,8 +340,7 @@ class RemoteServerAuthPageState extends State<RemoteServerAuthPage> {
     log.info('remote_server_auth.dart: testAuthData');
     try {
       final backupBloc = AppBlocsProvider.of<BackupBloc>(context);
-      await backupBloc.testAuth(
-          BackupSettings.remoteServerBackupProvider(), authData);
+      await backupBloc.testAuth(BackupProvider.remoteServer(), authData);
     } on SignInFailedException catch (e) {
       log.warning('remote_server_auth.dart: testAuthData: $e');
       return DiscoverResult.INVALID_AUTH;

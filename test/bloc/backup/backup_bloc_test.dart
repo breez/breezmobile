@@ -71,7 +71,7 @@ void main() {
 
       final startSettings = BackupSettings.start();
       final googleSettings = startSettings.copyWith(
-        backupProvider: BackupSettings.googleBackupProvider(),
+        backupProvider: BackupProvider.googleDrive(),
       );
       final action = UpdateBackupSettings(googleSettings);
       bloc.backupActionsSink.add(action);
