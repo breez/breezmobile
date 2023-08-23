@@ -258,12 +258,18 @@ class SecurityAndBackupPageState extends State<SecurityAndBackupPage>
     ).then(
       (auth) async {
         if (auth != null) {
-          await _backupNow(
-            backupSettings.copyWith(
-              backupProvider: backupProvider ?? backupSettings.backupProvider,
-              remoteServerAuthData: auth,
-            ),
-          );
+          try {
+            EasyLoading.show();
+
+            await _backupNow(
+              backupSettings.copyWith(
+                backupProvider: backupProvider ?? backupSettings.backupProvider,
+                remoteServerAuthData: auth,
+              ),
+            );
+          } catch (e) {
+            EasyLoading.dismiss();
+          }
         }
       },
     );

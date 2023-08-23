@@ -197,8 +197,6 @@ class VerifyBackupPhrasePageState extends State<VerifyBackupPhrasePage> {
       );
     } catch (err) {
       return _handleError(err.toString());
-    } finally {
-      EasyLoading.dismiss();
     }
   }
 

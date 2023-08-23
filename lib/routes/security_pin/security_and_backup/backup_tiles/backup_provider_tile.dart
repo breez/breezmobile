@@ -82,8 +82,9 @@ class _BackupProviderTileState extends State<BackupProviderTile> {
           widget.backupSettings.copyWith(backupProvider: selectedProvider),
         );
       }
-    } finally {
+    } catch (e) {
       EasyLoading.dismiss();
+      rethrow;
     }
   }
 }
