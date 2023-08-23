@@ -59,7 +59,7 @@ dependencies:
     git:
       url: https://github.com/breez/md5_file_checksum.git
   nfc_manager: ^3.3.0
-  nostr_tools: ^1.0.7
+  nostr_tools: <1.0.8 # Requires Flutter 3.10(depends on http ^1.1.0)
   package_info_plus: ^4.1.0
   path: ^1.8.3
   path_provider: ^2.1.0
@@ -92,7 +92,7 @@ dependencies:
   uuid: ^3.0.7
   validators: ^3.0.0
   webdav_client: ^1.2.1
-  webview_flutter: ^4.2.2
+  webview_flutter: ^4.2.3
   webview_flutter_android: ^3.9.3
 
   anytime:
