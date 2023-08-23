@@ -7,17 +7,23 @@ import 'package:flutter/material.dart';
 
 Widget buildBackupInProgressDialog(
   BuildContext context,
-  Stream<BackupState> backupStateStream,
-) {
-  return _BackupInProgressDialog(backupStateStream: backupStateStream);
+  Stream<BackupState> backupStateStream, {
+  bool barrierDismissible = true,
+}) {
+  return _BackupInProgressDialog(
+    backupStateStream: backupStateStream,
+    barrierDismissible: barrierDismissible,
+  );
 }
 
 class _BackupInProgressDialog extends StatefulWidget {
   final Stream<BackupState> backupStateStream;
+  final bool barrierDismissible;
 
   const _BackupInProgressDialog({
     Key key,
-    this.backupStateStream,
+    @required this.backupStateStream,
+    this.barrierDismissible,
   }) : super(key: key);
 
   @override
@@ -34,9 +40,11 @@ class _BackupInProgressDialogState extends State<_BackupInProgressDialog> {
     super.initState();
     _stateSubscription = widget.backupStateStream.listen((state) {
       if (state.inProgress != true) {
-        _pop();
+        Navigator.of(context).pop();
       }
-    }, onError: (err) => _pop());
+    }, onError: (err) {
+      Navigator.of(context).pop();
+    });
   }
 
   @override
@@ -45,13 +53,14 @@ class _BackupInProgressDialogState extends State<_BackupInProgressDialog> {
     super.dispose();
   }
 
-  _pop() {
-    Navigator.of(context).pop();
-  }
-
   @override
   Widget build(BuildContext context) {
     final texts = context.texts();
-    return createAnimatedLoaderDialog(context, texts.backup_in_progress);
+
+    return createAnimatedLoaderDialog(
+      context,
+      texts.backup_in_progress,
+      withOKButton: widget.barrierDismissible,
+    );
   }
 }
