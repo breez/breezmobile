@@ -230,8 +230,7 @@ class BreezBridge {
   }
 
   Future loginWithImportedNostrKey(String privateKey) {
-    return _invokeMethodWhenReady(
-        "loginWithImportedNostrKey", {"argument": privateKey});
+    return _invokeMethodWhenReady("storeNostrKey", {"argument": privateKey});
   }
 
   Future deleteNostrKey() {
