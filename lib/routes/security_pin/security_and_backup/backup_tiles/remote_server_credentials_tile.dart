@@ -23,7 +23,7 @@ class _RemoteServerCredentialsTileState
   Widget build(BuildContext context) {
     return ListTile(
       title: AutoSizeText(
-        BackupSettings.remoteServerBackupProvider().displayName,
+        BackupProvider.remoteServer().displayName,
         style: const TextStyle(color: Colors.white),
         maxLines: 1,
         minFontSize: MinFontSize(context).minFontSize,

@@ -57,12 +57,6 @@ class BackupBloc with AsyncActionsHandler {
   Sink<bool> get promptBackupDismissedSink =>
       _promptBackupDismissedController.sink;
 
-  final StreamController<bool> _backupPromptVisibleController =
-      BehaviorSubject<bool>.seeded(false);
-  Stream<bool> get backupPromptVisibleStream =>
-      _backupPromptVisibleController.stream;
-  Sink<bool> get backupPromptVisibleSink => _backupPromptVisibleController.sink;
-
   final BehaviorSubject<BackupSettings> _backupSettingsController =
       BehaviorSubject<BackupSettings>.seeded(BackupSettings.start());
   Stream<BackupSettings> get backupSettingsStream =>
@@ -252,7 +246,7 @@ class BackupBloc with AsyncActionsHandler {
       if (backupSettingsModel.backupProvider == null &&
           backupState?.lastBackupTime != null) {
         backupSettingsModel = backupSettingsModel.copyWith(
-          backupProvider: BackupSettings.googleBackupProvider(),
+          backupProvider: BackupProvider.googleDrive(),
         );
       }
       if (backupSettingsModel.backupProvider != null &&
@@ -466,6 +460,7 @@ class BackupBloc with AsyncActionsHandler {
         log.warning(error.toString());
       },
     );
+    _promptBackupController.add(true);
     action.resolve(null);
   }
 
@@ -476,6 +471,27 @@ class BackupBloc with AsyncActionsHandler {
         action.recoverEnabled,
       );
       action.resolve(signedIn);
+    } on PlatformException catch (e) {
+      dynamic exception = extractExceptionMessage(e.message);
+      // the error code equals the message from the go library so
+      // not to confuse the two.
+      if (e.code == _signInFailedMessage || e.message == _signInFailedCode) {
+        exception = SignInFailedException(
+          _backupSettingsController.value.backupProvider,
+        );
+      } else if (exception.contains(_insufficientPermission)) {
+        // TODO: Handle Insufficient Permissions error properly
+        exception = InsufficientPermissionException();
+      } else if (exception.contains(_invalidCredentials)) {
+        // If user revokes Breez permissions from their GDrive account during a
+        // session. They won't be able to sign in again.
+        // This is a work around for not having force arg on signIn() on iOS
+        // TODO: Handle Invalid CredentialsException error properly
+        await _breezLib.signOut();
+        exception = InvalidCredentialsException();
+      }
+      _promptBackupController.add(true);
+      action.resolveError(exception);
     } catch (error) {
       log.warning(error.toString());
       action.resolveError(
@@ -531,6 +547,7 @@ class BackupBloc with AsyncActionsHandler {
         exception = SignInFailedException(
           _backupSettingsController.value.backupProvider,
         );
+        _promptBackupController.add(true);
       } else if (e.code == _empty || exception == _empty) {
         exception = NoBackupFoundException();
       } else if (exception.contains(_insufficientPermission)) {
@@ -543,6 +560,7 @@ class BackupBloc with AsyncActionsHandler {
         // TODO: Handle Invalid CredentialsException error properly
         await _breezLib.signOut();
         exception = InvalidCredentialsException();
+        _promptBackupController.add(true);
       }
       action.resolveError(exception);
     } catch (e) {
@@ -779,7 +797,6 @@ class BackupBloc with AsyncActionsHandler {
     _backupAppDataController.close();
     _restoreLightningFeesController.close();
     _backupSettingsController.close();
-    _backupPromptVisibleController.close();
     _backupActionsController.close();
   }
 }

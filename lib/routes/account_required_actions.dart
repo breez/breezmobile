@@ -63,7 +63,6 @@ class AccountRequiredActionsIndicatorState
     );
     if (signInNeeded && !showingBackupDialog) {
       showingBackupDialog = true;
-      backupBloc.backupPromptVisibleSink.add(true);
       popFlushbars(context);
       showDialog(
         useRootNavigator: false,
@@ -74,7 +73,6 @@ class AccountRequiredActionsIndicatorState
         ),
       ).then((_) {
         showingBackupDialog = false;
-        backupBloc.backupPromptVisibleSink.add(false);
         backupBloc.promptBackupDismissedSink.add(true);
       });
     }
