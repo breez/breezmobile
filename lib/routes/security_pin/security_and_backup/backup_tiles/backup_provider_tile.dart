@@ -1,5 +1,8 @@
 import 'package:auto_size_text/auto_size_text.dart';
+import 'package:breez/bloc/backup/backup_actions.dart';
+import 'package:breez/bloc/backup/backup_bloc.dart';
 import 'package:breez/bloc/backup/backup_model.dart';
+import 'package:breez/bloc/blocs_provider.dart';
 import 'package:breez/theme_data.dart' as theme;
 import 'package:breez/utils/min_font_size.dart';
 import 'package:breez_translations/breez_translations_locales.dart';
@@ -45,6 +48,11 @@ class _BackupProviderTileState extends State<BackupProviderTile> {
           value: widget.backupSettings.backupProvider,
           isDense: true,
           onChanged: (BackupProvider selectedProvider) async {
+            // Sign out if the user switches to GDrive from another provider
+            if (!widget.backupSettings.backupProvider.isGDrive &&
+                selectedProvider.isGDrive) {
+              await _signOut();
+            }
             await _updateBackupProvider(selectedProvider);
           },
           items: BackupSettings.availableBackupProviders().map(
@@ -64,6 +72,13 @@ class _BackupProviderTileState extends State<BackupProviderTile> {
         ),
       ),
     );
+  }
+
+  Future _signOut() {
+    final backupBloc = AppBlocsProvider.of<BackupBloc>(context);
+    var signOutAction = SignOut();
+    backupBloc.backupActionsSink.add(signOutAction);
+    return signOutAction.future;
   }
 
   Future<void> _updateBackupProvider(
