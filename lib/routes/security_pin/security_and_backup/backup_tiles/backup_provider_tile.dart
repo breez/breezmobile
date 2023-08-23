@@ -12,9 +12,7 @@ import 'package:flutter_easyloading/flutter_easyloading.dart';
 class BackupProviderTile extends StatefulWidget {
   final BackupSettings backupSettings;
   final AutoSizeGroup autoSizeGroup;
-  final Future Function(
-    BackupProvider backupProvider,
-  ) enterRemoteServerCredentials;
+  final Future Function() enterRemoteServerCredentials;
   final Future Function(BackupSettings backupSettings) backupNow;
 
   const BackupProviderTile({
@@ -90,7 +88,7 @@ class _BackupProviderTileState extends State<BackupProviderTile> {
       if (selectedProvider.isRemoteServer) {
         EasyLoading.dismiss();
 
-        await widget.enterRemoteServerCredentials(selectedProvider);
+        await widget.enterRemoteServerCredentials();
       } else {
         await widget.backupNow(
           widget.backupSettings.copyWith(backupProvider: selectedProvider),

@@ -188,11 +188,8 @@ class SecurityAndBackupPageState extends State<SecurityAndBackupPage>
                       BackupProviderTile(
                         backupSettings: backupSettings,
                         autoSizeGroup: _autoSizeGroup,
-                        enterRemoteServerCredentials: (selectedProvider) async {
-                          await _enterRemoteServerCredentials(
-                            backupSettings,
-                            backupProvider: selectedProvider,
-                          );
+                        enterRemoteServerCredentials: () async {
+                          await _enterRemoteServerCredentials(backupSettings);
                         },
                         backupNow: _backupNow,
                       ),
@@ -201,9 +198,7 @@ class SecurityAndBackupPageState extends State<SecurityAndBackupPage>
                         RemoteServerCredentialsTile(
                           autoSizeGroup: _autoSizeGroup,
                           enterRemoteServerCredentials: () async {
-                            await _enterRemoteServerCredentials(
-                              backupSettings,
-                            );
+                            await _enterRemoteServerCredentials(backupSettings);
                           },
                         ),
                       ],
@@ -248,9 +243,8 @@ class SecurityAndBackupPageState extends State<SecurityAndBackupPage>
   }
 
   Future<void> _enterRemoteServerCredentials(
-    BackupSettings backupSettings, {
-    BackupProvider backupProvider,
-  }) async {
+    BackupSettings backupSettings,
+  ) async {
     await promptAuthData(
       context,
       backupSettings,
@@ -262,7 +256,7 @@ class SecurityAndBackupPageState extends State<SecurityAndBackupPage>
 
             await _backupNow(
               backupSettings.copyWith(
-                backupProvider: backupProvider ?? backupSettings.backupProvider,
+                backupProvider: BackupSettings.remoteServerBackupProvider(),
                 remoteServerAuthData: auth,
               ),
             );
