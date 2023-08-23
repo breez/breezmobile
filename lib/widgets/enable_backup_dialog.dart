@@ -206,6 +206,7 @@ class _BackupNowButtonState extends State<_BackupNowButton> {
                 if (!widget.backupSettings.backupProvider.isGDrive &&
                     provider.isGDrive) {
                   await _signOut();
+                  await _signIn();
                 }
 
                 if (provider.isICloud) {
@@ -299,6 +300,13 @@ class _BackupNowButtonState extends State<_BackupNowButton> {
     var signOutAction = SignOut();
     backupBloc.backupActionsSink.add(signOutAction);
     return signOutAction.future;
+  }
+
+  Future _signIn() {
+    final backupBloc = AppBlocsProvider.of<BackupBloc>(context);
+    var signInAction = SignIn(force: false);
+    backupBloc.backupActionsSink.add(signInAction);
+    return signInAction.future;
   }
 
   Future _backupNow(BackupSettings backupSettings) async {
