@@ -18,6 +18,10 @@
 		<string>sk</string>
 		<string>sv</string>
 	</array>
+	<key>com.apple.developer.icloud-services</key>
+    <array>
+        <string>CloudKit</string>
+    </array>
 	<key>CFBundleDevelopmentRegion</key>
 	<string>en</string>
 	<key>CFBundleDisplayName</key>

@@ -27,7 +27,8 @@ Future<void> promptError(
       return WillPopScope(
         onWillPop: canPopCallback,
         child: AlertDialog(
-          contentPadding: const EdgeInsets.fromLTRB(16.0, 16.0, 16.0, 0.0),
+          titlePadding: const EdgeInsets.fromLTRB(24.0, 22.0, 0.0, 16.0),
+          contentPadding: const EdgeInsets.fromLTRB(24.0, 8.0, 24.0, 8.0),
           title: title == null
               ? null
               : Text(
