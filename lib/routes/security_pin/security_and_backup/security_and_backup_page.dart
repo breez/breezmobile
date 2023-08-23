@@ -45,6 +45,7 @@ class SecurityAndBackupPage extends StatefulWidget {
 class SecurityAndBackupPageState extends State<SecurityAndBackupPage>
     with WidgetsBindingObserver {
   StreamSubscription<BackupState> _backupInProgressSubscription;
+  bool showingBackupDialog = false;
   final _autoSizeGroup = AutoSizeGroup();
   bool _screenLocked = true;
   LocalAuthenticationOption _localAuthenticationOption;
@@ -95,15 +96,25 @@ class SecurityAndBackupPageState extends State<SecurityAndBackupPage>
       if (mounted) {
         EasyLoading.dismiss();
 
-        await showDialog(
-          useRootNavigator: false,
-          barrierDismissible: false,
-          context: context,
-          builder: (context) => buildBackupInProgressDialog(
-            context,
-            widget.backupBloc.backupStateStream,
-          ),
-        );
+        if (!showingBackupDialog) {
+          setState(() {
+            showingBackupDialog = true;
+          });
+          await showDialog(
+            useRootNavigator: false,
+            barrierDismissible: false,
+            context: context,
+            builder: (context) => buildBackupInProgressDialog(
+              context,
+              widget.backupBloc.backupStateStream,
+              barrierDismissible: false,
+            ),
+          ).then((_) {
+            setState(() {
+              showingBackupDialog = false;
+            });
+          });
+        }
       }
     });
   }
