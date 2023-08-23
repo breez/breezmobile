@@ -51,9 +51,7 @@ class EnableBackupDialogState extends State<EnableBackupDialog> {
           }
 
           final backupSettings = snapshot.data;
-
-          bool isRemoteServer = backupSettings?.backupProvider ==
-              BackupSettings.remoteServerBackupProvider();
+          bool isRemoteServer = backupSettings.backupProvider?.isRemoteServer;
 
           return AlertDialog(
             titlePadding: const EdgeInsets.fromLTRB(24.0, 22.0, 0.0, 16.0),
@@ -193,8 +191,7 @@ class _BackupNowButtonState extends State<_BackupNowButton> {
     final texts = context.texts();
     final themeData = Theme.of(context);
 
-    bool isRemoteServer = widget.backupSettings.backupProvider ==
-        BackupSettings.remoteServerBackupProvider();
+    bool isRemoteServer = widget.backupSettings.backupProvider?.isRemoteServer;
 
     return TextButton(
       onPressed: (() async {
@@ -205,12 +202,11 @@ class _BackupNowButtonState extends State<_BackupNowButton> {
           (selectedProvider) async {
             provider ??= selectedProvider;
             if (provider != null) {
-              if (widget.signInNeeded &&
-                  provider == BackupSettings.icloudBackupProvider()) {
+              if (widget.signInNeeded && provider.isICloud) {
                 await _showSignInNeededDialog();
                 return;
               }
-              if (provider == BackupSettings.remoteServerBackupProvider()) {
+              if (provider.isRemoteServer) {
                 await _enterRemoteServerCredentials(backupBloc);
                 return;
               }
