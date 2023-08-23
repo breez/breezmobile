@@ -183,12 +183,15 @@ class Breez : NSObject, FlutterPlugin, BindingsAppServicesProtocol, FlutterStrea
                 result(FlutterError(code: "AuthError", message: "Failed to signIn breez library", details: ""));
                 return;
             }
-            var _ = self.backupAuthenticators[provider]?.backupProviderSignIn(silent: false, in: &errorPtr);
-            if let _ = errorPtr {
-                result(FlutterError(code: "AuthError", message: "Failed to sign in breez library", details: ""));
-                return;
+            if let args = call.arguments as? Dictionary<String, Any> {
+                let silent : Bool = args["force"] as! Bool;
+                
+                var _ = self.backupAuthenticators[provider]?.backupProviderSignIn(silent: silent, in: &errorPtr);
+                if let _ = errorPtr {
+                    result(FlutterError(code: "AuthError", message: "Failed to sign in breez library", details: ""));
+                    return;
+                }
             }
-            
             result(true);
         }
     }
