@@ -71,8 +71,9 @@ class _GenerateBackupPhraseTileState extends State<GenerateBackupPhraseTile> {
       await widget.backupNow(
         widget.backupSettings.copyWith(keyType: BackupKeyType.NONE),
       );
-    } finally {
+    } catch (e) {
       EasyLoading.dismiss();
+      rethrow;
     }
   }
 }
