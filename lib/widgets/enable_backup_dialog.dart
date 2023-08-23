@@ -275,7 +275,6 @@ class _BackupNowButtonState extends State<_BackupNowButton> {
     await promptAuthData(
       context,
       widget.backupSettings,
-      restore: false,
     ).then(
       (auth) async {
         if (auth != null) {

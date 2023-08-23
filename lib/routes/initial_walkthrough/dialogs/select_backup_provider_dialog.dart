@@ -143,7 +143,7 @@ class SelectBackupProviderDialogState
       final auth = await promptAuthData(
         context,
         backupSettings,
-        restore: true,
+        restore: widget.isRestoreFlow,
       );
       if (auth == null) {
         return;
