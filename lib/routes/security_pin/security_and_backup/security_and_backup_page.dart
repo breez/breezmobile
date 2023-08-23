@@ -259,7 +259,7 @@ class SecurityAndBackupPageState extends State<SecurityAndBackupPage>
 
             await _backupNow(
               backupSettings.copyWith(
-                backupProvider: BackupSettings.remoteServerBackupProvider(),
+                backupProvider: BackupProvider.remoteServer(),
                 remoteServerAuthData: auth,
               ),
             );
@@ -298,7 +298,7 @@ class SecurityAndBackupPageState extends State<SecurityAndBackupPage>
   }
 
   Future _handleSignInException(SignInFailedException e) async {
-    if (e.provider == BackupSettings.icloudBackupProvider()) {
+    if (e.provider.isICloud) {
       final texts = context.texts();
       final themeData = Theme.of(context);
 
@@ -310,7 +310,7 @@ class SecurityAndBackupPageState extends State<SecurityAndBackupPage>
           style: themeData.dialogTheme.contentTextStyle,
         ),
       );
-    } else if (e.provider == BackupSettings.googleBackupProvider()) {
+    } else if (e.provider.isGDrive) {
       showFlushbar(
         context,
         duration: const Duration(seconds: 3),
