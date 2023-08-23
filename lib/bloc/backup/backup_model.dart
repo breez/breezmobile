@@ -77,6 +77,11 @@ class BackupProvider {
   String toString() {
     return 'BackupProvider{name: $name, displayName: $displayName}';
   }
+
+  bool get isICloud => this == BackupSettings.icloudBackupProvider();
+  bool get isGDrive => this == BackupSettings.googleBackupProvider();
+  bool get isRemoteServer =>
+      this == BackupSettings.remoteServerBackupProvider();
 }
 
 enum BackupKeyType {

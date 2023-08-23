@@ -149,9 +149,8 @@ class SecurityAndBackupPageState extends State<SecurityAndBackupPage>
                   }
 
                   final backupSettings = backupSnapshot.data;
-                  final backupProvider = backupSettings.backupProvider;
-                  final isRemoteServer = backupProvider?.name ==
-                      BackupSettings.remoteServerBackupProvider().name;
+                  final isRemoteServer =
+                      backupSettings.backupProvider?.isRemoteServer;
 
                   return ListView(
                     children: [
