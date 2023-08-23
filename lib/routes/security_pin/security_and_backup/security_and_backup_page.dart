@@ -20,7 +20,9 @@ import 'package:breez/routes/security_pin/security_and_backup/security_tiles/ena
 import 'package:breez/routes/security_pin/security_and_backup/security_tiles/pin_interval_tile.dart';
 import 'package:breez/routes/security_pin/security_and_backup/widgets/last_backup_text.dart';
 import 'package:breez/services/local_auth_service.dart';
+import 'package:breez/utils/exceptions.dart';
 import 'package:breez/widgets/back_button.dart' as backBtn;
+import 'package:breez/widgets/flushbar.dart';
 import 'package:breez/widgets/loader.dart';
 import 'package:breez_translations/breez_translations_locales.dart';
 import 'package:flutter/material.dart';
@@ -272,6 +274,23 @@ class SecurityAndBackupPageState extends State<SecurityAndBackupPage>
     final updateBackupSettings = UpdateBackupSettings(backupSettings);
     final backupAction = BackupNow(updateBackupSettings, recoverEnabled: true);
     widget.backupBloc.backupActionsSink.add(backupAction);
-    return backupAction.future;
+    return backupAction.future.catchError((error) => _handleError(error));
+  }
+
+  void _handleError(dynamic exception) async {
+    EasyLoading.dismiss();
+
+    final texts = context.texts();
+
+    switch (exception.runtimeType) {
+      case InsufficientPermissionException:
+      case SignInFailedException:
+      default:
+        showFlushbar(
+          context,
+          duration: const Duration(seconds: 3),
+          message: extractExceptionMessage(exception, texts: texts),
+        );
+    }
   }
 }
