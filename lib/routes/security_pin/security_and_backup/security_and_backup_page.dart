@@ -112,105 +112,110 @@ class SecurityAndBackupPageState extends State<SecurityAndBackupPage>
   Widget build(BuildContext context) {
     final texts = context.texts();
 
-    return Scaffold(
-      appBar: AppBar(
-        automaticallyImplyLeading: false,
-        leading: const backBtn.BackButton(),
-        title: Text(texts.security_and_backup_title),
-      ),
-      body: StreamBuilder<BackupSettings>(
-        stream: widget.backupBloc.backupSettingsStream,
-        builder: (context, backupSnapshot) => StreamBuilder<BreezUserModel>(
-          stream: widget.userProfileBloc.userStream,
-          builder: (context, userSnapshot) {
-            if (!userSnapshot.hasData || !backupSnapshot.hasData) {
-              return const Loader();
-            }
+    return StreamBuilder<BreezUserModel>(
+        stream: widget.userProfileBloc.userStream,
+        builder: (context, userSnapshot) {
+          if (!userSnapshot.hasData) {
+            return const SizedBox();
+          }
 
-            final requiresPin = userSnapshot.data.securityModel.requiresPin;
-            final backupSettings = backupSnapshot.data;
-            final backupProvider = backupSettings.backupProvider;
-            final isRemoteServer = backupProvider?.name ==
-                BackupSettings.remoteServerBackupProvider().name;
+          final requiresPin = userSnapshot.data.securityModel.requiresPin;
+          if (requiresPin && _screenLocked) {
+            return AppLockScreen(_validatePinCode, canCancel: true);
+          }
 
-            if (requiresPin && _screenLocked) {
-              return AppLockScreen(_validatePinCode, canCancel: true);
-            }
+          return Scaffold(
+            appBar: AppBar(
+              automaticallyImplyLeading: false,
+              leading: const backBtn.BackButton(),
+              title: Text(texts.security_and_backup_title),
+            ),
+            body: StreamBuilder<BackupSettings>(
+                stream: widget.backupBloc.backupSettingsStream,
+                builder: (context, backupSnapshot) {
+                  if (!backupSnapshot.hasData) {
+                    return const Center(child: Loader());
+                  }
 
-            return ListView(
-              children: [
-                EnablePinTile(
-                  userProfileBloc: widget.userProfileBloc,
-                  autoSizeGroup: _autoSizeGroup,
-                  enablePin: _updateSecurityModel,
-                ),
-                if (requiresPin) ...[
-                  const Divider(),
-                  PinIntervalTile(
-                    userProfileBloc: widget.userProfileBloc,
-                    autoSizeGroup: _autoSizeGroup,
-                    changePinInterval: _updateSecurityModel,
-                  ),
-                  const Divider(),
-                  ChangePinTile(
-                    userProfileBloc: widget.userProfileBloc,
-                    autoSizeGroup: _autoSizeGroup,
-                    changePin: _updateSecurityModel,
-                  ),
-                  if (_localAuthenticationOption !=
-                      LocalAuthenticationOption.NONE) ...[
-                    const Divider(),
-                    EnableBiometricAuthTile(
-                      userProfileBloc: widget.userProfileBloc,
-                      autoSizeGroup: _autoSizeGroup,
-                      localAuthenticationOption: _localAuthenticationOption,
-                      changeBiometricAuth: _updateSecurityModel,
-                    ),
-                  ]
-                ],
-                const Divider(),
-                BackupProviderTile(
-                  backupSettings: backupSettings,
-                  autoSizeGroup: _autoSizeGroup,
-                  enterRemoteServerCredentials: (selectedProvider) async {
-                    await _enterRemoteServerCredentials(
-                      backupSettings,
-                      backupProvider: selectedProvider,
-                    );
-                  },
-                  backupNow: _backupNow,
-                ),
-                if (isRemoteServer) ...[
-                  const Divider(),
-                  RemoteServerCredentialsTile(
-                    autoSizeGroup: _autoSizeGroup,
-                    enterRemoteServerCredentials: () async {
-                      await _enterRemoteServerCredentials(
-                        backupSettings,
-                      );
-                    },
-                  ),
-                ],
-                const Divider(),
-                GenerateBackupPhraseTile(
-                  backupSettings: backupSettings,
-                  autoSizeGroup: _autoSizeGroup,
-                  backupNow: _backupNow,
-                ),
-              ],
-            );
-          },
-        ),
-      ),
-      bottomNavigationBar: const Padding(
-        padding: EdgeInsets.only(
-          bottom: 20.0,
-          left: 20.0,
-          top: 20.0,
-        ),
-        child: LastBackupText(),
-      ),
-    );
+                  final backupSettings = backupSnapshot.data;
+                  final backupProvider = backupSettings.backupProvider;
+                  final isRemoteServer = backupProvider?.name ==
+                      BackupSettings.remoteServerBackupProvider().name;
+
+                  return ListView(
+                    children: [
+                      EnablePinTile(
+                        userProfileBloc: widget.userProfileBloc,
+                        autoSizeGroup: _autoSizeGroup,
+                        enablePin: _updateSecurityModel,
+                      ),
+                      if (requiresPin) ...[
+                        const Divider(),
+                        PinIntervalTile(
+                          userProfileBloc: widget.userProfileBloc,
+                          autoSizeGroup: _autoSizeGroup,
+                          changePinInterval: _updateSecurityModel,
+                        ),
+                        const Divider(),
+                        ChangePinTile(
+                          userProfileBloc: widget.userProfileBloc,
+                          autoSizeGroup: _autoSizeGroup,
+                          changePin: _updateSecurityModel,
+                        ),
+                        if (_localAuthenticationOption !=
+                            LocalAuthenticationOption.NONE) ...[
+                          const Divider(),
+                          EnableBiometricAuthTile(
+                            userProfileBloc: widget.userProfileBloc,
+                            autoSizeGroup: _autoSizeGroup,
+                            localAuthenticationOption:
+                                _localAuthenticationOption,
+                            changeBiometricAuth: _updateSecurityModel,
+                          ),
+                        ]
+                      ],
+                      const Divider(),
+                      BackupProviderTile(
+                        backupSettings: backupSettings,
+                        autoSizeGroup: _autoSizeGroup,
+                        enterRemoteServerCredentials: (selectedProvider) async {
+                          await _enterRemoteServerCredentials(
+                            backupSettings,
+                            backupProvider: selectedProvider,
+                          );
+                        },
+                        backupNow: _backupNow,
+                      ),
+                      if (isRemoteServer) ...[
+                        const Divider(),
+                        RemoteServerCredentialsTile(
+                          autoSizeGroup: _autoSizeGroup,
+                          enterRemoteServerCredentials: () async {
+                            await _enterRemoteServerCredentials(
+                              backupSettings,
+                            );
+                          },
+                        ),
+                      ],
+                      const Divider(),
+                      GenerateBackupPhraseTile(
+                        backupSettings: backupSettings,
+                        autoSizeGroup: _autoSizeGroup,
+                        backupNow: _backupNow,
+                      ),
+                    ],
+                  );
+                }),
+            bottomNavigationBar: const Padding(
+              padding: EdgeInsets.only(
+                bottom: 20.0,
+                left: 20.0,
+                top: 20.0,
+              ),
+              child: LastBackupText(),
+            ),
+          );
+        });
   }
 
   Future _updateSecurityModel(SecurityModel newModel) async {
