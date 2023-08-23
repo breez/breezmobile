@@ -124,6 +124,7 @@ class BackupBloc with AsyncActionsHandler {
       ListSnapshots: _listSnapshots,
       RestoreBackup: _restoreBackup,
       SignOut: _signOut,
+      SignIn: _signIn,
       BackupNow: _backupNow,
     };
 
@@ -460,7 +461,29 @@ class BackupBloc with AsyncActionsHandler {
 
   Future _signOut(SignOut action) async {
     log.info("Signing out of Google Drive");
-    action.resolve(await _breezLib.signOut().catchError((_) => null));
+    await _breezLib.signOut().catchError(
+      (error) {
+        log.warning(error.toString());
+      },
+    );
+    action.resolve(null);
+  }
+
+  Future _signIn(SignIn action) async {
+    try {
+      bool signedIn = await _breezLib.signIn(
+        action.force,
+        action.recoverEnabled,
+      );
+      action.resolve(signedIn);
+    } catch (error) {
+      log.warning(error.toString());
+      action.resolveError(
+        SignInFailedException(
+          _backupSettingsController.value.backupProvider,
+        ),
+      );
+    }
   }
 
   _scheduleBackgroundTasks() {
