@@ -317,14 +317,32 @@ class _BackupNowButtonState extends State<_BackupNowButton> {
     Navigator.of(context).pop();
 
     switch (error.runtimeType) {
-      case InsufficientPermissionException:
       case SignInFailedException:
+        _handleSignInException(error);
+        return;
+      case InsufficientPermissionException:
       default:
         showFlushbar(
           context,
           duration: const Duration(seconds: 3),
           message: error.toString(),
         );
+    }
+  }
+
+  Future _handleSignInException(SignInFailedException e) async {
+    if (e.provider == BackupProvider.iCloud()) {
+      final texts = context.texts();
+      final themeData = Theme.of(context);
+
+      await promptError(
+        context,
+        texts.initial_walk_through_sign_in_icloud_title,
+        Text(
+          texts.initial_walk_through_sign_in_icloud_message,
+          style: themeData.dialogTheme.contentTextStyle,
+        ),
+      );
     }
   }
 }
