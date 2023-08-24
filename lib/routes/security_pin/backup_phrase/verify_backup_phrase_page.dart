@@ -216,7 +216,7 @@ class VerifyBackupPhrasePageState extends State<VerifyBackupPhrasePage> {
     final backupBloc = AppBlocsProvider.of<BackupBloc>(context);
 
     final updateBackupSettings = UpdateBackupSettings(backupSettings);
-    final backupAction = BackupNow(updateBackupSettings, recoverEnabled: true);
+    final backupAction = BackupNow(updateBackupSettings);
     backupBloc.backupActionsSink.add(backupAction);
     return backupAction.future;
   }

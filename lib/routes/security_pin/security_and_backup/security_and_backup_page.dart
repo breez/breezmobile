@@ -277,7 +277,7 @@ class SecurityAndBackupPageState extends State<SecurityAndBackupPage>
 
   Future _backupNow(BackupSettings backupSettings) async {
     final updateBackupSettings = UpdateBackupSettings(backupSettings);
-    final backupAction = BackupNow(updateBackupSettings, recoverEnabled: true);
+    final backupAction = BackupNow(updateBackupSettings);
     widget.backupBloc.backupActionsSink.add(backupAction);
     return backupAction.future
         .catchError((error) => _handleError(error))
