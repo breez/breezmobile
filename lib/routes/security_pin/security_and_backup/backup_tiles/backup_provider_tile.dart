@@ -82,7 +82,7 @@ class _BackupProviderTileState extends State<BackupProviderTile> {
 
   Future _signIn() {
     final backupBloc = AppBlocsProvider.of<BackupBloc>(context);
-    var signInAction = SignIn(force: false);
+    var signInAction = SignIn();
     backupBloc.backupActionsSink.add(signInAction);
     return signInAction.future;
   }
