@@ -96,9 +96,9 @@ class SecurityAndBackupPageState extends State<SecurityAndBackupPage>
     _backupInProgressSubscription = widget.backupBloc.backupStateStream
         .where((s) => s.inProgress)
         .listen((s) async {
-      if (mounted) {
-        EasyLoading.dismiss();
+      EasyLoading.dismiss();
 
+      if (mounted) {
         if (!showingBackupDialog) {
           setState(() {
             showingBackupDialog = true;
@@ -275,7 +275,9 @@ class SecurityAndBackupPageState extends State<SecurityAndBackupPage>
     final updateBackupSettings = UpdateBackupSettings(backupSettings);
     final backupAction = BackupNow(updateBackupSettings, recoverEnabled: true);
     widget.backupBloc.backupActionsSink.add(backupAction);
-    return backupAction.future.catchError((error) => _handleError(error));
+    return backupAction.future
+        .catchError((error) => _handleError(error))
+        .whenComplete(() => EasyLoading.dismiss());
   }
 
   void _handleError(dynamic exception) async {
