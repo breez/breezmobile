@@ -57,6 +57,8 @@ class SecurityAndBackupPageState extends State<SecurityAndBackupPage>
   void initState() {
     super.initState();
     WidgetsBinding.instance.addObserver(this);
+    // Disable showing Backup Prompt dialog on Security & Backup page
+    widget.backupBloc.backupPromptVisibleSink.add(true);
     _localAuthenticationOption = LocalAuthenticationOption.NONE;
     _getEnrolledBiometrics();
     WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -83,6 +85,8 @@ class SecurityAndBackupPageState extends State<SecurityAndBackupPage>
 
   @override
   void dispose() {
+    // Enable showing Backup Prompt dialog again upon leaving Security & Backup page
+    widget.backupBloc.backupPromptVisibleSink.add(false);
     widget.userProfileBloc.userActionsSink.add(StopBiometrics());
     WidgetsBinding.instance.removeObserver(this);
     _backupInProgressSubscription?.cancel();
