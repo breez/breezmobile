@@ -263,7 +263,7 @@ class _InitialWalkthroughPageState extends State<InitialWalkthroughPage>
   }
 
   Future _signOut() {
-    var signOutAction = SignOut();
+    var signOutAction = SignOut(promptOnError: false);
     widget.backupBloc.backupActionsSink.add(signOutAction);
     return signOutAction.future;
   }
