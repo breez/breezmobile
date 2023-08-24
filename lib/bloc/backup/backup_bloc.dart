@@ -50,6 +50,12 @@ class BackupBloc with AsyncActionsHandler {
       BehaviorSubject<bool>.seeded(false);
   Stream<bool> get promptBackupStream => _promptBackupController.stream;
 
+  final StreamController<bool> _backupPromptVisibleController =
+      BehaviorSubject<bool>.seeded(false);
+  Stream<bool> get backupPromptVisibleStream =>
+      _backupPromptVisibleController.stream;
+  Sink<bool> get backupPromptVisibleSink => _backupPromptVisibleController.sink;
+
   final StreamController<bool> _promptBackupDismissedController =
       BehaviorSubject<bool>.seeded(false);
   Stream<bool> get promptBackupDismissedStream =>
@@ -77,12 +83,15 @@ class BackupBloc with AsyncActionsHandler {
   Sink<AsyncAction> get backupActionsSink => _backupActionsController.sink;
 
   Stream<bool> get promptBackupSubscription =>
-      Rx.combineLatest3<BackupSettings, bool, bool, bool>(
+      Rx.combineLatest4<BackupSettings, bool, bool, bool, bool>(
         backupSettingsStream,
         promptBackupStream,
         promptBackupDismissedStream,
-        (settings, signInNeeded, dismissed) {
-          return (settings.promptOnError && !dismissed) ? signInNeeded : false;
+        backupPromptVisibleStream,
+        (settings, signInNeeded, dismissed, isVisible) {
+          return (settings.promptOnError && !dismissed && !isVisible)
+              ? signInNeeded
+              : false;
         },
       );
 
