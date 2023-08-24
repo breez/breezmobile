@@ -460,7 +460,7 @@ class BackupBloc with AsyncActionsHandler {
         log.warning(error.toString());
       },
     );
-    _promptBackupController.add(true);
+    _promptBackupController.add(action.promptOnError);
     action.resolve(null);
   }
 
