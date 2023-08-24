@@ -11,6 +11,11 @@ class UpdateBackupSettings extends AsyncAction {
   final BackupSettings settings;
 
   UpdateBackupSettings(this.settings);
+
+  @override
+  String toString() {
+    return 'UpdateBackupSettings{settings: $settings}';
+  }
 }
 
 class DownloadSnapshot extends AsyncAction {
@@ -47,4 +52,9 @@ class BackupNow extends AsyncAction {
   final bool recoverEnabled;
 
   BackupNow(this.updateBackupSettings, {this.recoverEnabled = true});
+
+  @override
+  String toString() {
+    return 'BackupNow{updateBackupSettings: $updateBackupSettings, recoverEnabled: $recoverEnabled}';
+  }
 }
