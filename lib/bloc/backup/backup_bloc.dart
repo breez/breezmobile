@@ -539,17 +539,26 @@ class BackupBloc with AsyncActionsHandler {
 
   Future _backupNow(BackupNow action) async {
     try {
-      log.info("backup now requested: $action");
+      log.info("Backup Now requested: $action");
+      final backupProviderName =
+          action.updateBackupSettings.settings.backupProvider.displayName;
+
       await _updateBackupSettings(action.updateBackupSettings);
+      log.info("Does backup service need login $_backupServiceNeedLogin");
       if (_backupServiceNeedLogin) {
+        log.info("Signing out of $backupProviderName");
         await _breezLib.signOut();
+        log.info("Signed out of $backupProviderName");
       }
+      log.info("Signing into $backupProviderName");
       await _breezLib.signIn(_backupServiceNeedLogin, action.recoverEnabled);
+      log.info("Signing out of $backupProviderName");
       await _saveAppData();
       await _breezLib.requestBackup();
       action.resolve(true);
     } on PlatformException catch (e) {
       dynamic exception = extractExceptionMessage(e.message);
+      log.warning(exception, e);
       // the error code equals the message from the go library so
       // not to confuse the two.
       if (e.code == _signInFailedMessage || e.message == _signInFailedCode) {
