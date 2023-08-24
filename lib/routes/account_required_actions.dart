@@ -57,12 +57,9 @@ class AccountRequiredActionsIndicatorState
 
   void _promptBackup(bool signInNeeded) async {
     final backupBloc = AppBlocsProvider.of<BackupBloc>(context);
-    log.info(
-      "prompt backup: {signInNeeded: $signInNeeded, "
-      "showingBackupDialog: $showingBackupDialog}",
-    );
-    if (signInNeeded && !showingBackupDialog) {
-      showingBackupDialog = true;
+    log.info("prompt backup: {signInNeeded: $signInNeeded }");
+    if (signInNeeded) {
+      backupBloc.backupPromptVisibleSink.add(true);
       popFlushbars(context);
       showDialog(
         useRootNavigator: false,
@@ -72,8 +69,8 @@ class AccountRequiredActionsIndicatorState
           signInNeeded: signInNeeded,
         ),
       ).then((_) {
-        showingBackupDialog = false;
         backupBloc.promptBackupDismissedSink.add(true);
+        backupBloc.backupPromptVisibleSink.add(false);
       });
     }
   }
