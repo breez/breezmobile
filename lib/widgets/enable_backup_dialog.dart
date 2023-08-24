@@ -187,7 +187,6 @@ class _BackupNowButton extends StatefulWidget {
 class _BackupNowButtonState extends State<_BackupNowButton> {
   @override
   Widget build(BuildContext context) {
-    final backupBloc = AppBlocsProvider.of<BackupBloc>(context);
     final texts = context.texts();
     final themeData = Theme.of(context);
 
@@ -308,7 +307,7 @@ class _BackupNowButtonState extends State<_BackupNowButton> {
     final backupBloc = AppBlocsProvider.of<BackupBloc>(context);
 
     final updateBackupSettings = UpdateBackupSettings(backupSettings);
-    final backupAction = BackupNow(updateBackupSettings, recoverEnabled: true);
+    final backupAction = BackupNow(updateBackupSettings);
     backupBloc.backupActionsSink.add(backupAction);
     return backupAction.future;
   }
