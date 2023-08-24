@@ -297,9 +297,9 @@ class _BackupNowButtonState extends State<_BackupNowButton> {
     return signOutAction.future;
   }
 
-  Future _signIn({bool force = false}) {
+  Future _signIn() {
     final backupBloc = AppBlocsProvider.of<BackupBloc>(context);
-    var signInAction = SignIn(force: force);
+    var signInAction = SignIn();
     backupBloc.backupActionsSink.add(signInAction);
     return signInAction.future;
   }
