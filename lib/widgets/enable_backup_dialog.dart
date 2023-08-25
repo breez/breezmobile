@@ -6,7 +6,6 @@ import 'package:breez/bloc/backup/backup_bloc.dart';
 import 'package:breez/bloc/backup/backup_model.dart';
 import 'package:breez/bloc/blocs_provider.dart';
 import 'package:breez/routes/initial_walkthrough/dialogs/select_backup_provider_dialog.dart';
-import 'package:breez/routes/security_pin/remote_server_auth/remote_server_auth.dart';
 import 'package:breez/utils/min_font_size.dart';
 import 'package:breez/widgets/error_dialog.dart';
 import 'package:breez/widgets/flushbar.dart';
@@ -275,35 +274,13 @@ class _BackupNowButtonState extends State<_BackupNowButton> {
     BackupProvider selectedProvider,
   ) async {
     try {
-      if (selectedProvider.isRemoteServer) {
-        await _enterRemoteServerCredentials();
-      } else {
-        await _backupNow(
-          widget.backupSettings.copyWith(backupProvider: selectedProvider),
-        ).then((_) => Navigator.pop(context));
-      }
+      await _backupNow(
+        widget.backupSettings.copyWith(backupProvider: selectedProvider),
+      ).then((_) => Navigator.pop(context));
     } catch (error) {
       _handleError(error);
       rethrow;
     }
-  }
-
-  Future<void> _enterRemoteServerCredentials() async {
-    await promptAuthData(
-      context,
-      widget.backupSettings,
-    ).then(
-      (auth) async {
-        if (auth != null) {
-          await _backupNow(
-            widget.backupSettings.copyWith(
-              backupProvider: BackupProvider.remoteServer(),
-              remoteServerAuthData: auth,
-            ),
-          ).then((_) => Navigator.pop(context));
-        }
-      },
-    );
   }
 
   Future _signOut() {
