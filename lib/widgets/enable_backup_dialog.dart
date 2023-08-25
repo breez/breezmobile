@@ -194,16 +194,21 @@ class _BackupNowButtonState extends State<_BackupNowButton> {
 
     return TextButton(
       onPressed: (() async {
-        var provider = widget.backupSettings.backupProvider;
+        final currentProvider = widget.backupSettings.backupProvider;
 
         await _showSelectProviderDialog(widget.backupSettings).then(
           (selectedProvider) async {
             if (selectedProvider != null) {
               if (widget.signInNeeded) {
-                // Sign out if the user switches to GDrive from another provider
-                if (!provider.isGDrive && selectedProvider.isGDrive) {
-                  await _signOut();
-                  await _signIn();
+                if (selectedProvider.isGDrive) {
+                  await _logoutWarningDialog(currentProvider).then((ok) async {
+                    if (ok) {
+                      await _signOut();
+                      await _signIn();
+                    } else {
+                      return;
+                    }
+                  });
                 }
 
                 if (selectedProvider.isICloud) {
@@ -236,6 +241,18 @@ class _BackupNowButtonState extends State<_BackupNowButton> {
         backupSettings: backupSettings,
       ),
     );
+  }
+
+  Future _logoutWarningDialog(BackupProvider previousProvider) async {
+    if (previousProvider.isGDrive) {
+      return await promptAreYouSure(
+        context,
+        "Logout Warning",
+        const Text("Do you want to switch to another account?"),
+        contentPadding: const EdgeInsets.fromLTRB(24, 16, 24, 8),
+      ).then((ok) => ok);
+    }
+    return true;
   }
 
   Future _showSignInNeededDialog(BackupProvider provider) async {
