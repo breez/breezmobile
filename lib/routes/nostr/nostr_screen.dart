@@ -1,12 +1,12 @@
 import 'dart:async';
 
 import 'package:breez/bloc/marketplace/marketplace_bloc.dart';
-import 'package:breez/bloc/marketplace/nostr_settings.dart';
+import 'package:breez/bloc/nostr/nostr_actions.dart';
 import 'package:breez/bloc/nostr/nostr_bloc.dart';
+import 'package:breez/bloc/nostr/nostr_model.dart';
 import 'package:breez/widgets/loader.dart';
 import 'package:flutter/material.dart';
 
-import '../../bloc/nostr/nostr_actions.dart';
 import 'import_private_key.dart';
 import 'nostr_keys_page.dart';
 

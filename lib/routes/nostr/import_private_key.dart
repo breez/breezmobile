@@ -1,13 +1,12 @@
+import 'package:breez/bloc/marketplace/marketplace_bloc.dart';
+import 'package:breez/bloc/nostr/nostr_actions.dart';
 import 'package:breez/bloc/nostr/nostr_bloc.dart';
+import 'package:breez/bloc/nostr/nostr_model.dart';
 import 'package:breez/routes/nostr/nostr_keys_page.dart';
 import 'package:flutter/material.dart';
 
 import 'package:breez/theme_data.dart' as theme;
 import 'package:nostr_tools/nostr_tools.dart';
-
-import '../../bloc/marketplace/marketplace_bloc.dart';
-import '../../bloc/marketplace/nostr_settings.dart';
-import '../../bloc/nostr/nostr_actions.dart';
 
 class ImportPrivateKeyPage extends StatefulWidget {
   final MarketplaceBloc marketplaceBloc;

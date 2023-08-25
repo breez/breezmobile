@@ -1,5 +1,5 @@
 import 'package:breez/bloc/marketplace/marketplace_bloc.dart';
-import 'package:breez/bloc/marketplace/nostr_settings.dart';
+import 'package:breez/bloc/nostr/nostr_model.dart';
 import 'package:flutter/material.dart';
 
 class NostrGetDialogContent extends StatefulWidget {

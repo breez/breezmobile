@@ -1,8 +1,8 @@
 import 'dart:async';
 import 'dart:convert';
 
-import 'package:breez/bloc/marketplace/nostr_settings.dart';
 import 'package:breez/bloc/marketplace/vendor_model.dart';
+import 'package:breez/bloc/nostr/nostr_model.dart';
 import 'package:flutter/services.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:shared_preferences/shared_preferences.dart';

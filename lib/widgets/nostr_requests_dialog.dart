@@ -1,6 +1,6 @@
 import 'package:breez/bloc/blocs_provider.dart';
 import 'package:breez/bloc/marketplace/marketplace_bloc.dart';
-import 'package:breez/bloc/marketplace/nostr_settings.dart';
+import 'package:breez/bloc/nostr/nostr_model.dart';
 import 'package:breez/widgets/nostr_get_dialog_content.dart';
 import 'package:flutter/material.dart';
 

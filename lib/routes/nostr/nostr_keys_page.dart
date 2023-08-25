@@ -1,14 +1,13 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:breez/bloc/marketplace/marketplace_bloc.dart';
-import 'package:breez/bloc/marketplace/nostr_settings.dart';
+import 'package:breez/bloc/nostr/nostr_actions.dart';
 import 'package:breez/bloc/nostr/nostr_bloc.dart';
+import 'package:breez/bloc/nostr/nostr_model.dart';
+import 'package:breez/routes/nostr/nostr_relays.dart';
+import 'package:breez/utils/min_font_size.dart';
+import 'package:breez/widgets/logout_warning_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-
-import '../../bloc/nostr/nostr_actions.dart';
-import '../../utils/min_font_size.dart';
-import '../../widgets/logout_warning_dialog.dart';
-import 'nostr_relays.dart';
 
 class NostrKeysPage extends StatefulWidget {
   final NostrBloc nostrBloc;

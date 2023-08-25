@@ -1,13 +1,12 @@
 import "package:auto_size_text/auto_size_text.dart";
-import "package:breez/bloc/marketplace/nostr_settings.dart";
+import "package:breez/bloc/marketplace/marketplace_bloc.dart";
 import "package:breez/bloc/nostr/nostr_actions.dart";
 import "package:breez/bloc/nostr/nostr_bloc.dart";
+import "package:breez/bloc/nostr/nostr_model.dart";
+import "package:breez/utils/min_font_size.dart";
 import "package:flutter/material.dart";
 import 'package:breez/theme_data.dart' as theme;
 import "package:flutter_svg/svg.dart";
-
-import "../../bloc/marketplace/marketplace_bloc.dart";
-import "../../utils/min_font_size.dart";
 
 class NostrRelays extends StatefulWidget {
   final NostrSettings settings;

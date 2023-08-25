@@ -10,6 +10,7 @@ import 'package:breez/bloc/backup/backup_bloc.dart';
 import 'package:breez/bloc/backup/backup_model.dart';
 import 'package:breez/bloc/blocs_provider.dart';
 import 'package:breez/bloc/marketplace/marketplace_bloc.dart';
+import 'package:breez/bloc/nostr/nostr_model.dart';
 import 'package:breez/bloc/podcast_history/sqflite/podcast_history_database.dart';
 import 'package:breez/bloc/pos_catalog/bloc.dart';
 import 'package:breez/bloc/pos_catalog/sqlite/db.dart';
@@ -32,7 +33,6 @@ import 'package:flutter_downloader/flutter_downloader.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:share_plus/share_plus.dart';
 
-import '../../bloc/marketplace/nostr_settings.dart';
 import 'default_commands.dart';
 
 bool allowRebroadcastRefunds = false;
