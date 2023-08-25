@@ -254,6 +254,9 @@ class _InitialWalkthroughPageState extends State<InitialWalkthroughPage>
 
   void _restoreFromBackup() async {
     log.info("Restore from Backup");
+    // Timeout is added for Graphene/CalyxOS devices
+    await _signOut().timeout(const Duration(seconds: 8),
+        onTimeout: () => log.info("sign out timed out"));
     _showSelectProviderDialog().then((snapshots) {
       _showRestoreDialog(snapshots).then((restoreRequest) {
         _restore(restoreRequest);
