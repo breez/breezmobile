@@ -110,12 +110,16 @@ class NostrEventHandler {
     return Future(() => null);
   }
 
-  Future<dynamic> _nip04Encrypt(postMessage) async {
-    return Future(() => null);
+  Future<String> _nip04Encrypt(postMessage) async {
+    _nostrBloc.actionsSink.add(Nip04Encrypt(
+        postMessage["params"]["plaintext"], postMessage["params"]["pubkey"]));
+    return await _nostrBloc.encryptDataStream.first;
   }
 
-  Future<dynamic> _nip04Decrypt(postMessage) async {
-    return Future(() => null);
+  Future<String> _nip04Decrypt(postMessage) async {
+    _nostrBloc.actionsSink.add(Nip04Decrypt(
+        postMessage["params"]["ciphertext"], postMessage["params"]["pubkey"]));
+    return await _nostrBloc.decryptDataStream.first;
   }
 
   Future<dynamic> _nip26Delegate(postMessage) async {

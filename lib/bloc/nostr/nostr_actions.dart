@@ -16,17 +16,21 @@ class GetRelays extends AsyncAction {}
 
 class Nip04Encrypt extends AsyncAction {
   final String data;
+  final String publicKey;
 
   Nip04Encrypt(
     this.data,
+    this.publicKey,
   );
 }
 
 class Nip04Decrypt extends AsyncAction {
   final String encryptedData;
+  final String publicKey;
 
   Nip04Decrypt(
     this.encryptedData,
+    this.publicKey,
   );
 }
 
