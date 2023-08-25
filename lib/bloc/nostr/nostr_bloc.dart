@@ -5,12 +5,11 @@ import 'package:breez/bloc/async_actions_handler.dart';
 import 'package:breez/bloc/nostr/nostr_actions.dart';
 import 'package:breez/bloc/nostr/nostr_model.dart';
 import 'package:breez/services/breezlib/breez_bridge.dart';
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:nostr_tools/nostr_tools.dart';
+import 'package:rxdart/rxdart.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../services/injector.dart';
-import '../marketplace/nostr_settings.dart';
 
 class NostrBloc with AsyncActionsHandler {
   BreezBridge _breezLib;
@@ -19,16 +18,15 @@ class NostrBloc with AsyncActionsHandler {
 
   List<String> defaultRelaysList = [];
 
-  FlutterSecureStorage _secureStorage;
   SharedPreferences sharedPreferences;
   SharedPreferences pref;
 
   NostrBloc() {
     ServiceInjector injector = ServiceInjector();
     _breezLib = injector.breezBridge;
-    _secureStorage = const FlutterSecureStorage();
 
     _initNostr();
+    _listenNostrSettings();
 
     registerAsyncHandlers({
       GetPublicKey: _handleGetPublicKey,
@@ -42,9 +40,31 @@ class NostrBloc with AsyncActionsHandler {
     });
     listenActions();
   }
+  final _nostrSettingsController =
+      BehaviorSubject<NostrSettings>.seeded(NostrSettings.initial());
+  Stream<NostrSettings> get nostrSettingsStream =>
+      _nostrSettingsController.stream;
+  Sink<NostrSettings> get nostrSettingsSettingsSink =>
+      _nostrSettingsController.sink;
 
   void _initNostr() async {
     pref = await SharedPreferences.getInstance();
+
+    var nostrSettings =
+        pref.getString(NostrSettings.NOSTR_SETTINGS_PREFERENCES_KEY);
+
+    if (nostrSettings != null) {
+      Map<String, dynamic> settings = json.decode(nostrSettings);
+      _nostrSettingsController.add(NostrSettings.fromJson(settings));
+    }
+  }
+
+  _listenNostrSettings() async {
+    pref = await SharedPreferences.getInstance();
+    nostrSettingsStream.listen((settings) async {
+      pref.setString(NostrSettings.NOSTR_SETTINGS_PREFERENCES_KEY,
+          json.encode(settings.toJson()));
+    });
   }
 
   String get nostrPrivateKey => _nostrPrivateKey;

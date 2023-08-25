@@ -1,16 +1,17 @@
-import 'package:breez/bloc/blocs_provider.dart';
-import 'package:breez/bloc/marketplace/marketplace_bloc.dart';
+import 'package:breez/bloc/nostr/nostr_bloc.dart';
 import 'package:breez/bloc/nostr/nostr_model.dart';
 import 'package:breez/widgets/nostr_get_dialog_content.dart';
 import 'package:flutter/material.dart';
 
 class NostrRequestsDialog extends StatefulWidget {
+  final NostrBloc nostrBloc;
   final String messageKind;
   final String appName;
   final String textContent;
   final String choiceType;
   const NostrRequestsDialog({
     Key key,
+    this.nostrBloc,
     this.messageKind,
     this.appName,
     this.choiceType,
@@ -24,7 +25,6 @@ class NostrRequestsDialog extends StatefulWidget {
 class _NostrRequestsDialogState extends State<NostrRequestsDialog> {
   @override
   Widget build(BuildContext context) {
-    final marketplaceBloc = AppBlocsProvider.of<MarketplaceBloc>(context);
     final themeData = Theme.of(context);
 
     return Theme(
@@ -39,11 +39,11 @@ class _NostrRequestsDialogState extends State<NostrRequestsDialog> {
         ),
         contentPadding: const EdgeInsets.fromLTRB(8.0, 8.0, 8.0, 24.0),
         content: StreamBuilder<NostrSettings>(
-            stream: marketplaceBloc.nostrSettingsStream,
+            stream: widget.nostrBloc.nostrSettingsStream,
             builder: (context, snapshot) {
               if (snapshot.data == null) return Container();
               return NostrGetDialogContent(
-                bloc: marketplaceBloc,
+                nostrBloc: widget.nostrBloc,
                 streamSnapshot: snapshot,
                 textContent: widget.textContent,
                 choiceType: widget.choiceType,

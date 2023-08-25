@@ -9,7 +9,7 @@ import 'package:breez/bloc/account/add_funds_model.dart';
 import 'package:breez/bloc/backup/backup_bloc.dart';
 import 'package:breez/bloc/backup/backup_model.dart';
 import 'package:breez/bloc/blocs_provider.dart';
-import 'package:breez/bloc/marketplace/marketplace_bloc.dart';
+import 'package:breez/bloc/nostr/nostr_bloc.dart';
 import 'package:breez/bloc/nostr/nostr_model.dart';
 import 'package:breez/bloc/podcast_history/sqflite/podcast_history_database.dart';
 import 'package:breez/bloc/pos_catalog/bloc.dart';
@@ -152,8 +152,7 @@ class DevViewState extends State<DevView> {
     BackupBloc backupBloc = AppBlocsProvider.of<BackupBloc>(context);
     AddFundsBloc addFundsBloc = BlocProvider.of<AddFundsBloc>(context);
     UserProfileBloc userBloc = AppBlocsProvider.of<UserProfileBloc>(context);
-    MarketplaceBloc marketplaceBloc =
-        AppBlocsProvider.of<MarketplaceBloc>(context);
+    NostrBloc nostrBloc = AppBlocsProvider.of<NostrBloc>(context);
     return StreamBuilder<BackupState>(
       stream: backupBloc.backupStateStream,
       builder: (ctx, backupSnapshot) => StreamBuilder(
@@ -170,7 +169,7 @@ class DevViewState extends State<DevView> {
                     stream: userBloc.userStream,
                     builder: (context, userSnapshot) {
                       return StreamBuilder(
-                        stream: marketplaceBloc.nostrSettingsStream,
+                        stream: nostrBloc.nostrSettingsStream,
                         builder: (context, nostrSettingsSnapshot) {
                           return Scaffold(
                             key: _scaffoldKey,
@@ -195,7 +194,7 @@ class DevViewState extends State<DevView> {
                                       addFundsSettingsSnapshot.data,
                                       userBloc,
                                       userSnapshot.data,
-                                      marketplaceBloc,
+                                      nostrBloc,
                                       nostrSettingsSnapshot.data,
                                     ).map((Choice choice) {
                                       return PopupMenuItem<Choice>(
@@ -369,7 +368,7 @@ class DevViewState extends State<DevView> {
     AddFundsSettings addFundsSettings,
     UserProfileBloc userBloc,
     BreezUserModel userModel,
-    MarketplaceBloc marketplaceBloc,
+    NostrBloc nostrBloc,
     NostrSettings nostrSettings,
   ) {
     List<Choice> choices = <Choice>[];
@@ -618,7 +617,7 @@ class DevViewState extends State<DevView> {
       title: "${nostrSettings.enableNostr ? "Enable" : "Disable"} Nostr",
       icon: Icons.phone_android,
       function: () {
-        _toggleNostr(marketplaceBloc, nostrSettings);
+        _toggleNostr(nostrBloc, nostrSettings);
       },
     ));
 
@@ -633,7 +632,7 @@ class DevViewState extends State<DevView> {
   }*/
 
   void _toggleNostr(
-    MarketplaceBloc bloc,
+    NostrBloc bloc,
     NostrSettings nostrSettings,
   ) {
     bloc.nostrSettingsSettingsSink.add(

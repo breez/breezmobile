@@ -1,24 +1,18 @@
-import 'package:breez/bloc/marketplace/marketplace_bloc.dart';
 import 'package:breez/bloc/nostr/nostr_actions.dart';
 import 'package:breez/bloc/nostr/nostr_bloc.dart';
 import 'package:breez/bloc/nostr/nostr_model.dart';
-import 'package:breez/routes/nostr/nostr_keys_page.dart';
 import 'package:flutter/material.dart';
 
 import 'package:breez/theme_data.dart' as theme;
 import 'package:nostr_tools/nostr_tools.dart';
 
 class ImportPrivateKeyPage extends StatefulWidget {
-  final MarketplaceBloc marketplaceBloc;
   final NostrBloc nostrBloc;
   final NostrSettings settings;
-  // final Future login;
   const ImportPrivateKeyPage({
     Key key,
-    this.marketplaceBloc,
     this.nostrBloc,
     this.settings,
-    // this.login,
   }) : super(key: key);
 
   @override
@@ -37,7 +31,7 @@ class _ImportPrivateKeyPageState extends State<ImportPrivateKeyPage> {
     widget.nostrBloc.actionsSink
         .add(StoreImportedPrivateKey(privateKey: privateKey));
 
-    widget.marketplaceBloc.nostrSettingsSettingsSink.add(
+    widget.nostrBloc.nostrSettingsSettingsSink.add(
       widget.settings.copyWith(isLoggedIn: true),
     );
   }

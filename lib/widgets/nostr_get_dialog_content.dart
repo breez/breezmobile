@@ -1,4 +1,4 @@
-import 'package:breez/bloc/marketplace/marketplace_bloc.dart';
+import 'package:breez/bloc/nostr/nostr_bloc.dart';
 import 'package:breez/bloc/nostr/nostr_model.dart';
 import 'package:flutter/material.dart';
 
@@ -6,14 +6,14 @@ class NostrGetDialogContent extends StatefulWidget {
   final String textContent;
   final String choiceType;
   final AsyncSnapshot<NostrSettings> streamSnapshot;
-  final MarketplaceBloc bloc;
+  final NostrBloc nostrBloc;
 
   const NostrGetDialogContent(
       {Key key,
       this.textContent,
       this.choiceType,
       this.streamSnapshot,
-      this.bloc})
+      this.nostrBloc})
       : super(key: key);
 
   @override
@@ -54,12 +54,12 @@ class _NostrGetDialogContentState extends State<NostrGetDialogContent> {
                   onChanged: (value) {
                     var currentSettings = widget.streamSnapshot.data;
                     if (widget.choiceType == "GetPubKey") {
-                      widget.bloc.nostrSettingsSettingsSink
+                      widget.nostrBloc.nostrSettingsSettingsSink
                           .add(currentSettings.copyWith(
                         isRememberPubKey: value,
                       ));
                     } else if (widget.choiceType == "SignEvent") {
-                      widget.bloc.nostrSettingsSettingsSink
+                      widget.nostrBloc.nostrSettingsSettingsSink
                           .add(currentSettings.copyWith(
                         isRememberSignEvent: value,
                       ));

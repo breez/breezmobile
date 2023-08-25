@@ -1,5 +1,4 @@
 import 'package:auto_size_text/auto_size_text.dart';
-import 'package:breez/bloc/marketplace/marketplace_bloc.dart';
 import 'package:breez/bloc/nostr/nostr_actions.dart';
 import 'package:breez/bloc/nostr/nostr_bloc.dart';
 import 'package:breez/bloc/nostr/nostr_model.dart';
@@ -11,12 +10,10 @@ import 'package:flutter/services.dart';
 
 class NostrKeysPage extends StatefulWidget {
   final NostrBloc nostrBloc;
-  final MarketplaceBloc marketplaceBloc;
   final NostrSettings settings;
   const NostrKeysPage({
     Key key,
     this.nostrBloc,
-    this.marketplaceBloc,
     this.settings,
   }) : super(key: key);
 
@@ -50,11 +47,10 @@ class _NostrKeysPageState extends State<NostrKeysPage> {
     bool isLogout = await _showLogoutWarningDialog();
 
     if (isLogout) {
-      widget.marketplaceBloc.nostrSettingsSettingsSink.add(
+      widget.nostrBloc.nostrSettingsSettingsSink.add(
         widget.settings.copyWith(isLoggedIn: false),
       );
 
-      // check if context is to be passed through the method
       if (context.mounted) Navigator.pop(context);
     }
   }
@@ -135,7 +131,6 @@ class _NostrKeysPageState extends State<NostrKeysPage> {
                 MaterialPageRoute(
                   builder: (_) => NostrRelays(
                     settings: widget.settings,
-                    marketplaceBloc: widget.marketplaceBloc,
                     nostrBloc: widget.nostrBloc,
                   ),
                 ),

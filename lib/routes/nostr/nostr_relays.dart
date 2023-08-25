@@ -1,5 +1,4 @@
 import "package:auto_size_text/auto_size_text.dart";
-import "package:breez/bloc/marketplace/marketplace_bloc.dart";
 import "package:breez/bloc/nostr/nostr_actions.dart";
 import "package:breez/bloc/nostr/nostr_bloc.dart";
 import "package:breez/bloc/nostr/nostr_model.dart";
@@ -10,12 +9,10 @@ import "package:flutter_svg/svg.dart";
 
 class NostrRelays extends StatefulWidget {
   final NostrSettings settings;
-  final MarketplaceBloc marketplaceBloc;
   final NostrBloc nostrBloc;
   const NostrRelays({
     Key key,
     this.settings,
-    this.marketplaceBloc,
     this.nostrBloc,
   }) : super(key: key);
 
@@ -53,8 +50,7 @@ class _NostrRelaysState extends State<NostrRelays> {
     widget.nostrBloc.actionsSink.add(PublishRelays(
       userRelayList: newRelays,
     ));
-    widget.marketplaceBloc.nostrSettingsSettingsSink
-        .add(widget.settings.copyWith(
+    widget.nostrBloc.nostrSettingsSettingsSink.add(widget.settings.copyWith(
       relayList: newRelays,
     ));
 

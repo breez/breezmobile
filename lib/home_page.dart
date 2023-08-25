@@ -15,7 +15,6 @@ import 'package:breez/bloc/connect_pay/connect_pay_bloc.dart';
 import 'package:breez/bloc/invoice/invoice_bloc.dart';
 import 'package:breez/bloc/lnurl/lnurl_bloc.dart';
 import 'package:breez/bloc/lsp/lsp_bloc.dart';
-import 'package:breez/bloc/marketplace/marketplace_bloc.dart';
 import 'package:breez/bloc/nostr/nostr_actions.dart';
 import 'package:breez/bloc/nostr/nostr_bloc.dart';
 import 'package:breez/bloc/nostr/nostr_model.dart';
@@ -75,7 +74,6 @@ class Home extends StatefulWidget {
   final ReverseSwapBloc reverseSwapBloc;
   final LNUrlBloc lnurlBloc;
   final NostrBloc nostrBloc;
-  final MarketplaceBloc marketplaceBloc;
 
   Home(
     this.accountBloc,
@@ -87,7 +85,6 @@ class Home extends StatefulWidget {
     this.reverseSwapBloc,
     this.lnurlBloc,
     this.nostrBloc,
-    this.marketplaceBloc,
   );
 
   final List<DrawerItemConfig> _screens = List<DrawerItemConfig>.unmodifiable([
@@ -141,16 +138,15 @@ class HomeState extends State<Home> with WidgetsBindingObserver {
 
     commentBloc = Provider.of<NostrCommentBloc>(context, listen: false);
 
-    widget.marketplaceBloc.nostrSettingsStream.listen((event) {
+    widget.nostrBloc.nostrSettingsStream.listen((event) {
       commentBloc.toggleCommentController.add(!event.enableNostr);
     });
 
     commentBloc.commentsLoginStream.listen((event) async {
-      NostrSettings settings =
-          await widget.marketplaceBloc.nostrSettingsStream.first;
+      NostrSettings settings = await widget.nostrBloc.nostrSettingsStream.first;
 
       if (settings.isLoggedIn == false) {
-        widget.marketplaceBloc.nostrSettingsSettingsSink.add(settings.copyWith(
+        widget.nostrBloc.nostrSettingsSettingsSink.add(settings.copyWith(
           isLoggedIn: true,
         ));
       }

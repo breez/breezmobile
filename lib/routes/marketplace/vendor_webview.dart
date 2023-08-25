@@ -3,7 +3,7 @@ import 'dart:convert' as JSON;
 import 'package:breez/bloc/account/account_bloc.dart';
 import 'package:breez/bloc/blocs_provider.dart';
 import 'package:breez/bloc/invoice/invoice_bloc.dart';
-import 'package:breez/bloc/marketplace/marketplace_bloc.dart';
+import 'package:breez/bloc/nostr/nostr_bloc.dart';
 import 'package:breez/bloc/nostr/nostr_model.dart';
 import 'package:breez/utils/webview_controller_util.dart';
 import 'package:flutter/foundation.dart';
@@ -37,9 +37,9 @@ class VendorWebViewPage extends StatefulWidget {
 class VendorWebViewPageState extends State<VendorWebViewPage> {
   WebLNHandlers _weblnHandlers;
   InvoiceBloc _invoiceBloc;
-  MarketplaceBloc _marketplaceBloc;
   bool _isInit = false;
   NostrEventHandler _nostrEventHandler;
+  NostrBloc _nostrBloc;
 
   WebViewController _webViewController;
 
@@ -47,15 +47,16 @@ class VendorWebViewPageState extends State<VendorWebViewPage> {
   void didChangeDependencies() {
     if (!_isInit) {
       _invoiceBloc = AppBlocsProvider.of<InvoiceBloc>(context);
-      _marketplaceBloc = AppBlocsProvider.of<MarketplaceBloc>(context);
       _weblnHandlers = WebLNHandlers(context, widget.accountBloc, _invoiceBloc);
+      _nostrBloc = AppBlocsProvider.of<NostrBloc>(context);
       _webViewController = setWebViewController(
         url: widget._url,
         onPageFinished: _onPageFinished,
         onMessageReceived: _onMessageReceived,
         onNavigationRequest: _handleNavigationRequest,
       );
-      _nostrEventHandler = NostrEventHandler(context, widget._title);
+      _nostrEventHandler =
+          NostrEventHandler(_nostrBloc, context, widget._title);
       _isInit = true;
     }
 
@@ -123,9 +124,9 @@ class VendorWebViewPageState extends State<VendorWebViewPage> {
       _webViewController
           .runJavaScript(await _nostrEventHandler.initNostrProvider);
       // logging in the user
-      NostrSettings settings = await _marketplaceBloc.nostrSettingsStream.first;
+      NostrSettings settings = await _nostrBloc.nostrSettingsStream.first;
       if (!settings.isLoggedIn) {
-        _marketplaceBloc.nostrSettingsSettingsSink.add(settings.copyWith(
+        _nostrBloc.nostrSettingsSettingsSink.add(settings.copyWith(
           isLoggedIn: true,
         ));
       }

@@ -47,8 +47,6 @@ import 'package:breez_translations/breez_translations_locales.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
-import 'bloc/marketplace/marketplace_bloc.dart';
-
 final routeObserver = RouteObserver();
 
 Widget _withTheme(BreezUserModel user, Widget child) {
@@ -81,7 +79,6 @@ class UserApp extends StatelessWidget {
     var lnurlBloc = AppBlocsProvider.of<LNUrlBloc>(context);
     var posCatalogBloc = AppBlocsProvider.of<PosCatalogBloc>(context);
     var nostrBloc = AppBlocsProvider.of<NostrBloc>(context);
-    var marketplaceBloc = AppBlocsProvider.of<MarketplaceBloc>(context);
 
     return StreamBuilder(
       stream: userProfileBloc.userStream,
@@ -203,7 +200,6 @@ class UserApp extends StatelessWidget {
                                   reverseSwapBloc,
                                   lnurlBloc,
                                   nostrBloc,
-                                  marketplaceBloc,
                                 ),
                                 settings: settings,
                               );
@@ -365,7 +361,6 @@ class UserApp extends StatelessWidget {
                               return FadeInRoute(
                                 builder: (_) => NostrScreen(
                                   nostrBloc: nostrBloc,
-                                  marketplaceBloc: marketplaceBloc,
                                 ),
                                 settings: settings,
                               );

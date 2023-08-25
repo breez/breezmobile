@@ -74,9 +74,12 @@ class AppBlocs {
         ConnectPayBloc(userProfileBloc.userStream, accountBloc.accountStream,
             accountBloc.userActionsSink),
         blocsByType);
-    MarketplaceBloc marketplaceBloc =
-        _registerBloc(MarketplaceBloc(), blocsByType);
     NostrBloc nostrBloc = _registerBloc(NostrBloc(), blocsByType);
+    MarketplaceBloc marketplaceBloc = _registerBloc(
+        MarketplaceBloc(
+          nostrBloc.nostrSettingsStream,
+        ),
+        blocsByType);
     LSPBloc lspBloc =
         _registerBloc(LSPBloc(accountBloc.accountStream), blocsByType);
     LNUrlBloc lnurlBloc = _registerBloc(LNUrlBloc(), blocsByType);
