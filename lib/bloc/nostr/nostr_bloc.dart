@@ -110,14 +110,20 @@ class NostrBloc with AsyncActionsHandler {
 
   Future<void> _handleNip04Encrypt(Nip04Encrypt action) async {
     // to encrypt the data
-    String encryptedData = await _encryptData(action.data);
+    String encryptedData = await _encryptData(
+      action.data,
+      action.publicKey,
+    );
     _encryptDataController.add(encryptedData);
     action.resolve(encryptedData);
   }
 
   Future<void> _handleNip04Decrypt(Nip04Decrypt action) async {
     // to decrypt the data
-    String decryptedData = await _decryptData(action.encryptedData);
+    String decryptedData = await _decryptData(
+      action.encryptedData,
+      action.publicKey,
+    );
     _decryptDataController.add(decryptedData);
     action.resolve(decryptedData);
   }
@@ -266,14 +272,14 @@ class NostrBloc with AsyncActionsHandler {
     return ['Relay1', 'Relay2', 'Relay3'];
   }
 
-  Future<String> _encryptData(String data) async {
+  Future<String> _encryptData(String data, String publicKey) async {
     // Simulating an encryption operation
-    return Nip04().encrypt(_nostrPrivateKey, nostrPublicKey, data);
+    return Nip04().encrypt(_nostrPrivateKey, publicKey, data);
   }
 
-  Future<String> _decryptData(String encryptedData) async {
+  Future<String> _decryptData(String encryptedData, String publicKey) async {
     // Simulating a decryption operation
-    return Nip04().decrypt(_nostrPrivateKey, nostrPublicKey, encryptedData);
+    return Nip04().decrypt(_nostrPrivateKey, publicKey, encryptedData);
   }
 
   @override
