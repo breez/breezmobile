@@ -552,7 +552,7 @@ class BackupBloc with AsyncActionsHandler {
       }
       log.info("Signing into $backupProviderName");
       await _breezLib.signIn(_backupServiceNeedLogin, action.recoverEnabled);
-      log.info("Signing out of $backupProviderName");
+      log.info("Signed into $backupProviderName");
       await _saveAppData();
       await _breezLib.requestBackup();
       action.resolve(true);
