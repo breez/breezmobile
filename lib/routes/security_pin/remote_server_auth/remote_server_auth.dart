@@ -138,10 +138,9 @@ class RemoteServerAuthPageState extends State<RemoteServerAuthPage> {
                 BackupSettings newSettings = _updateBackupSettings(
                   url: uri.toString(),
                 );
-                // TODO add translation
                 EasyLoading.show(
-                  indicator: const LoaderIndicator(
-                    message: 'Testing Connection',
+                  indicator: LoaderIndicator(
+                    message: texts.remote_server_testing_connection,
                   ),
                 );
                 await discoverURL(newSettings.remoteServerAuthData).then(
