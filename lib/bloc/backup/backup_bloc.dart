@@ -476,7 +476,7 @@ class BackupBloc with AsyncActionsHandler {
   Future _signIn(SignIn action) async {
     try {
       bool signedIn = await _breezLib.signIn(
-        action.force,
+        action.force ?? _backupServiceNeedLogin,
         action.recoverEnabled,
       );
       action.resolve(signedIn);
