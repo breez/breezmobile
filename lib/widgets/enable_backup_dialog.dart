@@ -12,6 +12,7 @@ import 'package:breez/widgets/flushbar.dart';
 import 'package:breez/widgets/loader.dart';
 import 'package:breez_translations/breez_translations_locales.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 
 class EnableBackupDialog extends StatefulWidget {
   final bool signInNeeded;
@@ -277,6 +278,8 @@ class _BackupNowButtonState extends State<_BackupNowButton> {
     BackupProvider selectedProvider,
   ) async {
     try {
+      EasyLoading.show();
+
       await _backupNow(
         widget.backupSettings.copyWith(backupProvider: selectedProvider),
       ).then((_) => Navigator.pop(context));
@@ -306,10 +309,12 @@ class _BackupNowButtonState extends State<_BackupNowButton> {
     final updateBackupSettings = UpdateBackupSettings(backupSettings);
     final backupAction = BackupNow(updateBackupSettings);
     backupBloc.backupActionsSink.add(backupAction);
-    return backupAction.future;
+    return backupAction.future.whenComplete(() => EasyLoading.dismiss());
   }
 
   void _handleError(dynamic error) async {
+    EasyLoading.dismiss();
+
     Navigator.of(context).pop();
 
     switch (error.runtimeType) {
