@@ -51,7 +51,7 @@ class BackupNow extends AsyncAction {
   final UpdateBackupSettings updateBackupSettings;
   final bool recoverEnabled;
 
-  BackupNow(this.updateBackupSettings, {this.recoverEnabled = true});
+  BackupNow(this.updateBackupSettings, {this.recoverEnabled = false});
 
   @override
   String toString() {
