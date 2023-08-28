@@ -21,6 +21,7 @@ import com.google.api.services.drive.Drive;
 import com.google.api.services.drive.DriveScopes;
 import com.google.api.services.drive.model.FileList;
 
+import java.io.IOException;
 import java.util.Collections;
 
 import io.flutter.embedding.engine.plugins.activity.ActivityPluginBinding;
@@ -82,7 +83,7 @@ public class GoogleAuthenticator implements PluginRegistry.ActivityResultListene
         }
     }
 
-    public boolean validateAccessTokenAllowingPrompt() {
+    public boolean validateAccessTokenAllowingPrompt() throws Exception {
         Log.d(TAG, "getAccessTokenWithPrompt");
         GoogleAccountCredential credential;
         try {
@@ -91,7 +92,7 @@ public class GoogleAuthenticator implements PluginRegistry.ActivityResultListene
             credential.setSelectedAccount(googleAccount.getAccount());
         } catch (Exception e) {
             Log.w(TAG, "ensureSignedIn failed", e);
-            return false;
+            throw e;
         }
 
         try {
@@ -106,14 +107,14 @@ public class GoogleAuthenticator implements PluginRegistry.ActivityResultListene
                     return verifyCredentialHasWriteAccess(credential.getToken(), true);
                 } catch (Exception ex) {
                     Log.w(TAG, "signIn failed in recoverable", ex);
-                    return false;
+                    throw e;
                 }
             }
-            return false;
+            throw e;
         }
     }
 
-    private boolean verifyCredentialHasWriteAccess(String token, boolean allowRecover) {
+    private boolean verifyCredentialHasWriteAccess(String token, boolean allowRecover) throws Exception {
         Log.d(TAG, "verifyCredentialHasWriteAccess token = " + token);
         if (token == null || token.isEmpty()) {
             return false;
@@ -136,18 +137,18 @@ public class GoogleAuthenticator implements PluginRegistry.ActivityResultListene
                     return recoverUnauthorizedAccess();
                 } else {
                     Log.w(TAG, "verifyCredentialHasWriteAccess failed with 401, but not allowed to recover");
-                    return false;
+                    throw e;
                 }
             } else {
                 Log.w(TAG, "verifyCredentialHasWriteAccess failed", e);
-                return false;
+                throw e;
             }
         }
 
         return true;
     }
 
-    private boolean recoverUnauthorizedAccess() {
+    private boolean recoverUnauthorizedAccess() throws Exception {
         Log.d(TAG, "recoverUnauthorizedAccess");
 
         GoogleSignInAccount googleAccount;
@@ -158,7 +159,7 @@ public class GoogleAuthenticator implements PluginRegistry.ActivityResultListene
             credential = credential();
         } catch (Exception e) {
             Log.w(TAG, "recoverUnauthorizedAccess failed", e);
-            return false;
+            throw e;
         }
 
         String token;
@@ -176,11 +177,11 @@ public class GoogleAuthenticator implements PluginRegistry.ActivityResultListene
                     token = credential.getToken();
                 } catch (Exception ex) {
                     Log.w(TAG, "recoverUnauthorizedAccess failed", ex);
-                    return false;
+                    throw e;
                 }
             } else {
                 Log.w(TAG, "recover failed", e);
-                return false;
+                throw e;
             }
         }
 

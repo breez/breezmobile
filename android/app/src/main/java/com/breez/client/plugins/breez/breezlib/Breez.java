@@ -253,10 +253,12 @@ public class Breez implements MethodChannel.MethodCallHandler, StreamHandler,
             success(result, true);
             return;
         }
-        if (m_authenticator.validateAccessTokenAllowingPrompt()) {
-            success(result, true);
-        } else {
-            fail(result, "AuthError", "Failed to validate access token", "Failed to signIn breez library");
+        try {
+            if(m_authenticator.validateAccessTokenAllowingPrompt()) {
+                success(result, true);
+            }
+        } catch (Exception e) {
+            fail(result, "AuthError", e.getMessage(), "Failed to signIn breez library");
         }
     }
 
