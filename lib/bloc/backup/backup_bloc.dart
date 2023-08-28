@@ -83,13 +83,14 @@ class BackupBloc with AsyncActionsHandler {
   Sink<AsyncAction> get backupActionsSink => _backupActionsController.sink;
 
   Stream<bool> get promptBackupSubscription =>
-      Rx.combineLatest4<BackupSettings, bool, bool, bool, bool>(
+      Rx.combineLatest5<BackupSettings, bool, bool, bool, BackupState, bool>(
         backupSettingsStream,
         promptBackupStream,
         promptBackupDismissedStream,
         backupPromptVisibleStream,
-        (settings, signInNeeded, dismissed, isVisible) {
-          return (settings.promptOnError && !dismissed && !isVisible)
+        backupStateStream,
+        (settings, signInNeeded, dismissed, isVisible, backupState) {
+          return (!backupState.inProgress && settings.promptOnError && !dismissed && !isVisible)
               ? signInNeeded
               : false;
         },
