@@ -44,7 +44,7 @@ class SignIn extends AsyncAction {
   final bool force;
   final bool recoverEnabled;
 
-  SignIn({this.force, this.recoverEnabled = true});
+  SignIn({this.force, this.recoverEnabled = false});
 }
 
 class BackupNow extends AsyncAction {
