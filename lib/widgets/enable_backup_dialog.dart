@@ -243,15 +243,18 @@ class _BackupNowButtonState extends State<_BackupNowButton> {
   }
 
   Future _logoutWarningDialog(BackupProvider previousProvider) async {
-    if (previousProvider.isGDrive) {
-      return await promptAreYouSure(
-        context,
-        "Logout Warning",
-        const Text("Do you want to switch to another account?"),
-        contentPadding: const EdgeInsets.fromLTRB(24, 16, 24, 8),
-      ).then((ok) => ok);
-    }
-    return true;
+    final backupBloc = AppBlocsProvider.of<BackupBloc>(context);
+    return await backupBloc.backupStateStream.first.then((backupState) async {
+      if (backupState != BackupState.start() && previousProvider.isGDrive) {
+        return await promptAreYouSure(
+          context,
+          "Logout Warning",
+          const Text("Do you want to switch to another account?"),
+          contentPadding: const EdgeInsets.fromLTRB(24, 16, 24, 8),
+        ).then((ok) => ok);
+      }
+      return true;
+    });
   }
 
   Future _showSignInNeededDialog(BackupProvider provider) async {
