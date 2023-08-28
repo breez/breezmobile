@@ -49,16 +49,25 @@ class _BackupProviderTileState extends State<BackupProviderTile> {
           isDense: true,
           onChanged: (BackupProvider selectedProvider) async {
             if (selectedProvider.isGDrive) {
-              final accountChanged = await _logoutWarningDialog(currentProvider).then((ok) async {
+              final accountChanged =
+                  await _logoutWarningDialog(currentProvider).then((ok) async {
                 if (ok) {
-                  await _signOut();
-                  await _signIn();
-                  return true;
+                  try {
+                    EasyLoading.show();
+
+                    await _signOut();
+                    await _signIn();
+                    return true;
+                  } catch (e) {
+                    rethrow;
+                  } finally {
+                    EasyLoading.dismiss();
+                  }
                 } else {
                   return false;
                 }
               });
-              if(!accountChanged){
+              if (!accountChanged) {
                 return;
               }
             }
