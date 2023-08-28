@@ -545,7 +545,7 @@ class BackupBloc with AsyncActionsHandler {
           action.updateBackupSettings.settings.backupProvider.displayName;
 
       await _updateBackupSettings(action.updateBackupSettings);
-      log.info("Does backup service need login $_backupServiceNeedLogin");
+      log.info("Does backup service need relogin $_backupServiceNeedLogin");
       if (_backupServiceNeedLogin) {
         log.info("Signing out of $backupProviderName");
         await _breezLib.signOut();
