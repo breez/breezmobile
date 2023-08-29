@@ -305,6 +305,13 @@ class SignInFailedException implements Exception {
   }
 }
 
+class GoogleSignNotAvailableException implements Exception {
+  @override
+  String toString() {
+    return getSystemAppLocalizations().google_sign_not_available_exception;
+  }
+}
+
 class MethodNotFoundException implements Exception {
   MethodNotFoundException();
 

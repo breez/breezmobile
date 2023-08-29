@@ -8,8 +8,11 @@ import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
+import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.ApiException;
+import com.google.android.gms.common.api.CommonStatusCodes;
 import com.google.android.gms.common.api.Scope;
+import com.google.android.gms.common.api.Status;
 import com.google.android.gms.tasks.Task;
 import com.google.android.gms.tasks.TaskCompletionSource;
 import com.google.android.gms.tasks.Tasks;
@@ -21,8 +24,8 @@ import com.google.api.services.drive.Drive;
 import com.google.api.services.drive.DriveScopes;
 import com.google.api.services.drive.model.FileList;
 
-import java.io.IOException;
 import java.util.Collections;
+import java.util.concurrent.ExecutionException;
 
 import io.flutter.embedding.engine.plugins.activity.ActivityPluginBinding;
 import io.flutter.plugin.common.PluginRegistry;
@@ -64,6 +67,9 @@ public class GoogleAuthenticator implements PluginRegistry.ActivityResultListene
             Log.w(TAG, "silentSignIn failed", e);
             if (silent) {
                 throw new Exception("AuthError");
+            }
+            if (googleSignNotAvailable(e)) {
+                throw new Exception("GoogleSignNotAvailable");
             }
             Log.i(TAG, "silentSignIn continue to activity");
             return Tasks.await(signIn());
@@ -209,6 +215,34 @@ public class GoogleAuthenticator implements PluginRegistry.ActivityResultListene
         return GoogleAccountCredential.usingOAuth2(
                 activityBinding.getActivity(),
                 Collections.singleton(DriveScopes.DRIVE_APPDATA));
+    }
+
+    private boolean googleSignNotAvailable(Exception e) {
+        if (!(e instanceof ExecutionException)) {
+            Log.v(TAG, "checkSignIsPossible not ExecutionException");
+            return false;
+        }
+        Throwable cause = e.getCause();
+        if (!(cause instanceof ApiException)) {
+            Log.v(TAG, "checkSignIsPossible not ApiException");
+            return false;
+        }
+        ApiException apiException = (ApiException) cause;
+        if (apiException.getStatusCode() != CommonStatusCodes.API_NOT_CONNECTED) {
+            Log.v(TAG, "checkSignIsPossible not API_NOT_CONNECTED");
+            return false;
+        }
+        ConnectionResult result = apiException.getStatus().getConnectionResult();
+        if (result == null) {
+            Log.v(TAG, "checkSignIsPossible result is null");
+            return false;
+        }
+        if (result.getErrorCode() == ConnectionResult.SERVICE_INVALID) {
+            Log.v(TAG, "checkSignIsPossible SERVICE_INVALID");
+            return true;
+        }
+        Log.v(TAG, "checkSignIsPossible error code not handled " + result.getErrorCode());
+        return false;
     }
 
     @Override
