@@ -218,7 +218,7 @@ class VerifyBackupPhrasePageState extends State<VerifyBackupPhrasePage> {
     final updateBackupSettings = UpdateBackupSettings(backupSettings);
     final backupAction = BackupNow(updateBackupSettings);
     backupBloc.backupActionsSink.add(backupAction);
-    return backupAction.future.whenComplete(() => EasyLoading.dismiss());
+    return backupAction.future;
   }
 
   Future<void> _handleError(String error) {
