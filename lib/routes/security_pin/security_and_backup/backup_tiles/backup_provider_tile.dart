@@ -49,8 +49,7 @@ class _BackupProviderTileState extends State<BackupProviderTile> {
           isDense: true,
           onChanged: (BackupProvider selectedProvider) async {
             if (selectedProvider.isGDrive) {
-              final accountChanged =
-                  await _logoutWarningDialog(currentProvider).then(
+              await _logoutWarningDialog(currentProvider).then(
                 (logoutApproved) async {
                   if (logoutApproved) {
                     try {
@@ -69,9 +68,6 @@ class _BackupProviderTileState extends State<BackupProviderTile> {
                   }
                 },
               );
-              if (!accountChanged) {
-                return;
-              }
             }
             if (selectedProvider.isICloud) {
               await _showSignInNeededDialog(selectedProvider);
