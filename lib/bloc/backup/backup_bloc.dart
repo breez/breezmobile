@@ -722,6 +722,9 @@ class BackupBloc with AsyncActionsHandler {
           }
         });
       }
+      if (event.type == NotificationEvent_NotificationType.ACCOUNT_CHANGED) {
+        backupServiceNeedLoginSink.add(false);
+      }
       if (backupOperations.contains(event.type)) {
         _enableBackupPrompt = true;
         _pushPromptIfNeeded();
