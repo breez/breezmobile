@@ -123,7 +123,7 @@ class SecurityAndBackupPageState extends State<SecurityAndBackupPage>
           });
         }
       }
-    });
+    }, onError: (error) => _handleError(error));
   }
 
   @override
