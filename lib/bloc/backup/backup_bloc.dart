@@ -90,16 +90,23 @@ class BackupBloc with AsyncActionsHandler {
         backupPromptVisibleStream,
         backupStateStream,
         (settings, signInNeeded, dismissed, isVisible, backupState) {
-          return (!backupState.inProgress && settings.promptOnError && !dismissed && !isVisible)
+          return (!backupState.inProgress &&
+                  settings.promptOnError &&
+                  !dismissed &&
+                  !isVisible)
               ? signInNeeded
               : false;
         },
       );
 
+  final BehaviorSubject<bool> _backupServiceNeedLoginController =
+      BehaviorSubject<bool>.seeded(false);
+  StreamSink<bool> get backupServiceNeedLoginSink =>
+      _backupServiceNeedLoginController.sink;
+
   BreezBridge _breezLib;
   BackgroundTaskService _tasksService;
   SharedPreferences _sharedPreferences;
-  bool _backupServiceNeedLogin = false;
   bool _enableBackupPrompt = false;
   Map<Type, Function> _actionHandlers = {};
   FlutterSecureStorage _secureStorage;
@@ -471,15 +478,17 @@ class BackupBloc with AsyncActionsHandler {
       },
     );
     _promptBackupController.add(action.promptOnError);
+    backupServiceNeedLoginSink.add(true);
     action.resolve(null);
   }
 
   Future _signIn(SignIn action) async {
     try {
       bool signedIn = await _breezLib.signIn(
-        action.force ?? _backupServiceNeedLogin,
-        action.recoverEnabled,
+        action.force ?? _backupServiceNeedLoginController.value,
+        action.recoverEnabled ?? _backupServiceNeedLoginController.value,
       );
+      if (signedIn) backupServiceNeedLoginSink.add(false);
       action.resolve(signedIn);
     } on PlatformException catch (e) {
       dynamic exception = extractExceptionMessage(e.message);
@@ -545,14 +554,18 @@ class BackupBloc with AsyncActionsHandler {
           action.updateBackupSettings.settings.backupProvider.displayName;
 
       await _updateBackupSettings(action.updateBackupSettings);
-      log.info("Does backup service need relogin $_backupServiceNeedLogin");
-      if (_backupServiceNeedLogin) {
+      log.info(
+          "Does backup service need relogin ${_backupServiceNeedLoginController.value}");
+      if (_backupServiceNeedLoginController.value) {
         log.info("Signing out of $backupProviderName");
         await _breezLib.signOut();
         log.info("Signed out of $backupProviderName");
       }
       log.info("Signing into $backupProviderName");
-      await _breezLib.signIn(_backupServiceNeedLogin, action.recoverEnabled);
+      await _breezLib.signIn(
+        _backupServiceNeedLoginController.value,
+        _backupServiceNeedLoginController.value,
+      );
       log.info("Signed into $backupProviderName");
       await _saveAppData();
       await _breezLib.requestBackup();
@@ -673,13 +686,13 @@ class BackupBloc with AsyncActionsHandler {
     _breezLib.notificationStream.listen((event) async {
       log.info("backup notification: $event");
       if (event.type == NotificationEvent_NotificationType.BACKUP_REQUEST) {
-        _backupServiceNeedLogin = false;
+        backupServiceNeedLoginSink.add(false);
         _backupStateController.add(
           _backupStateController.value?.copyWith(inProgress: true),
         );
       }
       if (event.type == NotificationEvent_NotificationType.BACKUP_AUTH_FAILED) {
-        _backupServiceNeedLogin = true;
+        backupServiceNeedLoginSink.add(true);
         _backupStateController.addError(
           BackupFailedException(
             _backupSettingsController.value.backupProvider,
@@ -696,7 +709,7 @@ class BackupBloc with AsyncActionsHandler {
         );
       }
       if (event.type == NotificationEvent_NotificationType.BACKUP_SUCCESS) {
-        _backupServiceNeedLogin = false;
+        backupServiceNeedLoginSink.add(false);
         _breezLib.getLatestBackupTime().then((timeStamp) {
           log.info("Timestamp=$timeStamp");
           if (timeStamp > 0) {
@@ -718,11 +731,11 @@ class BackupBloc with AsyncActionsHandler {
 
   void _pushPromptIfNeeded() {
     log.info(
-      "push prompt if needed: {$_enableBackupPrompt, $_backupServiceNeedLogin}",
+      "push prompt if needed: {$_enableBackupPrompt, ${_backupServiceNeedLoginController.value}}",
     );
     if (_enableBackupPrompt) {
       _enableBackupPrompt = false;
-      _promptBackupController.add(_backupServiceNeedLogin);
+      _promptBackupController.add(_backupServiceNeedLoginController.value);
     }
   }
 
