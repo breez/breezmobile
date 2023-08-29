@@ -24,7 +24,6 @@ import 'package:breez_translations/breez_translations_locales.dart';
 import 'package:fixnum/fixnum.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:rxdart/rxdart.dart';
 
 class AccountRequiredActionsIndicator extends StatefulWidget {
   @override
@@ -51,7 +50,6 @@ class AccountRequiredActionsIndicatorState
 
     _promptBackupSubscription?.cancel();
     _promptBackupSubscription = backupBloc.promptBackupSubscription
-        .delay(const Duration(seconds: 4))
         .listen((signInNeeded) => _promptBackup(signInNeeded));
   }
 
