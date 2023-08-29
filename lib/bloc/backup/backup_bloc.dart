@@ -90,7 +90,10 @@ class BackupBloc with AsyncActionsHandler {
         backupPromptVisibleStream,
         backupStateStream,
         (settings, signInNeeded, dismissed, isVisible, backupState) {
-          return (!backupState.inProgress && settings.promptOnError && !dismissed && !isVisible)
+          return (!backupState.inProgress &&
+                  settings.promptOnError &&
+                  !dismissed &&
+                  !isVisible)
               ? signInNeeded
               : false;
         },
@@ -99,7 +102,6 @@ class BackupBloc with AsyncActionsHandler {
   BreezBridge _breezLib;
   BackgroundTaskService _tasksService;
   SharedPreferences _sharedPreferences;
-  bool _backupServiceNeedLogin = false;
   bool _enableBackupPrompt = false;
   Map<Type, Function> _actionHandlers = {};
   FlutterSecureStorage _secureStorage;
@@ -242,6 +244,7 @@ class BackupBloc with AsyncActionsHandler {
       _sharedPreferences.setString(
           LAST_BACKUP_STATE_PREFERENCE_KEY, json.encode(state.toJson()));
     }, onError: (e) {
+      log.info("Backup error $e");
       _pushPromptIfNeeded();
     });
 
@@ -477,7 +480,7 @@ class BackupBloc with AsyncActionsHandler {
   Future _signIn(SignIn action) async {
     try {
       bool signedIn = await _breezLib.signIn(
-        action.force ?? _backupServiceNeedLogin,
+        action.force,
         action.recoverEnabled,
       );
       action.resolve(signedIn);
@@ -545,14 +548,8 @@ class BackupBloc with AsyncActionsHandler {
           action.updateBackupSettings.settings.backupProvider.displayName;
 
       await _updateBackupSettings(action.updateBackupSettings);
-      log.info("Does backup service need relogin $_backupServiceNeedLogin");
-      if (_backupServiceNeedLogin) {
-        log.info("Signing out of $backupProviderName");
-        await _breezLib.signOut();
-        log.info("Signed out of $backupProviderName");
-      }
       log.info("Signing into $backupProviderName");
-      await _breezLib.signIn(_backupServiceNeedLogin, action.recoverEnabled);
+      await _breezLib.signIn(true, action.recoverEnabled);
       log.info("Signed into $backupProviderName");
       await _saveAppData();
       await _breezLib.requestBackup();
@@ -673,13 +670,11 @@ class BackupBloc with AsyncActionsHandler {
     _breezLib.notificationStream.listen((event) async {
       log.info("backup notification: $event");
       if (event.type == NotificationEvent_NotificationType.BACKUP_REQUEST) {
-        _backupServiceNeedLogin = false;
         _backupStateController.add(
           _backupStateController.value?.copyWith(inProgress: true),
         );
       }
       if (event.type == NotificationEvent_NotificationType.BACKUP_AUTH_FAILED) {
-        _backupServiceNeedLogin = true;
         _backupStateController.addError(
           BackupFailedException(
             _backupSettingsController.value.backupProvider,
@@ -696,7 +691,6 @@ class BackupBloc with AsyncActionsHandler {
         );
       }
       if (event.type == NotificationEvent_NotificationType.BACKUP_SUCCESS) {
-        _backupServiceNeedLogin = false;
         _breezLib.getLatestBackupTime().then((timeStamp) {
           log.info("Timestamp=$timeStamp");
           if (timeStamp > 0) {
@@ -709,20 +703,13 @@ class BackupBloc with AsyncActionsHandler {
           }
         });
       }
-      if (backupOperations.contains(event.type)) {
-        _enableBackupPrompt = true;
-        _pushPromptIfNeeded();
-      }
     });
   }
 
   void _pushPromptIfNeeded() {
-    log.info(
-      "push prompt if needed: {$_enableBackupPrompt, $_backupServiceNeedLogin}",
-    );
     if (_enableBackupPrompt) {
       _enableBackupPrompt = false;
-      _promptBackupController.add(_backupServiceNeedLogin);
+      _promptBackupController.add(true);
     }
   }
 
