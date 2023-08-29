@@ -279,9 +279,7 @@ class SecurityAndBackupPageState extends State<SecurityAndBackupPage>
     final updateBackupSettings = UpdateBackupSettings(backupSettings);
     final backupAction = BackupNow(updateBackupSettings);
     widget.backupBloc.backupActionsSink.add(backupAction);
-    return backupAction.future
-        .catchError((error) => _handleError(error))
-        .whenComplete(() => EasyLoading.dismiss());
+    return backupAction.future.catchError((error) => _handleError(error));
   }
 
   void _handleError(dynamic exception) async {
