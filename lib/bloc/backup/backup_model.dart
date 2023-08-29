@@ -54,6 +54,11 @@ class RemoteServerAuthData {
       breezDir ?? this.breezDir,
     );
   }
+
+  @override
+  String toString() {
+    return 'RemoteServerAuthData{url: $url, user: $user, password: ****, breezDir: $breezDir}';
+  }
 }
 
 class BackupProvider {
