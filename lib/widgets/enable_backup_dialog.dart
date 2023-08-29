@@ -264,6 +264,8 @@ class _BackupNowButtonState extends State<_BackupNowButton> {
             const Text("Do you want to switch to another account?"),
             contentPadding: const EdgeInsets.fromLTRB(24, 16, 24, 8),
           ).then((ok) => ok);
+        } else if (!previousProvider.isGDrive) {
+          return true;
         }
         return false;
       },
