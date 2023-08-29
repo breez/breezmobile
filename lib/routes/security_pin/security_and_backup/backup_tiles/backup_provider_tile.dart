@@ -121,6 +121,8 @@ class _BackupProviderTileState extends State<BackupProviderTile> {
             ),
             contentPadding: const EdgeInsets.fromLTRB(24, 16, 24, 8),
           ).then((ok) => ok);
+        } else if (!previousProvider.isGDrive){
+          return true;
         }
         return false;
       },
