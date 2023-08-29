@@ -24,6 +24,7 @@ import 'package:sqflite/sqflite.dart';
 class BackupBloc with AsyncActionsHandler {
   static const String _signInFailedCode = "401";
   static const String _signInFailedMessage = "AuthError";
+  static const String _googleSignNotAvailable = "GoogleSignNotAvailable";
   static const String _methodNotFound = "405";
   static const String _notFoundMessage = "404";
   static const String _noAccess = "403";
@@ -418,7 +419,9 @@ class BackupBloc with AsyncActionsHandler {
       dynamic exception = extractExceptionMessage(e.message);
       // the error code equals the message from the go library so
       // not to confuse the two.
-      if (e.code == _signInFailedMessage || e.message == _signInFailedCode) {
+      if (e.message == _googleSignNotAvailable) {
+        exception = GoogleSignNotAvailableException();
+      } else if (e.code == _signInFailedMessage || e.message == _signInFailedCode) {
         exception = SignInFailedException(
           _backupSettingsController.value.backupProvider,
         );
@@ -497,7 +500,9 @@ class BackupBloc with AsyncActionsHandler {
       dynamic exception = extractExceptionMessage(e.message);
       // the error code equals the message from the go library so
       // not to confuse the two.
-      if (e.code == _signInFailedMessage || e.message == _signInFailedCode) {
+      if (e.message == _googleSignNotAvailable) {
+        exception = GoogleSignNotAvailableException();
+      } else if (e.code == _signInFailedMessage || e.message == _signInFailedCode) {
         exception = SignInFailedException(
           _backupSettingsController.value.backupProvider,
         );
@@ -578,7 +583,9 @@ class BackupBloc with AsyncActionsHandler {
       log.warning(exception, e);
       // the error code equals the message from the go library so
       // not to confuse the two.
-      if (e.code == _signInFailedMessage || e.message == _signInFailedCode) {
+      if (e.message == _googleSignNotAvailable) {
+        exception = GoogleSignNotAvailableException();
+      } else if (e.code == _signInFailedMessage || e.message == _signInFailedCode) {
         exception = SignInFailedException(
           _backupSettingsController.value.backupProvider,
         );
