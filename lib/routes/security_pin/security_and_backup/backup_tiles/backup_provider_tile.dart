@@ -60,6 +60,8 @@ class _BackupProviderTileState extends State<BackupProviderTile> {
                       await _signIn();
                       return true;
                     } catch (e) {
+                      log.info("backup_provider received error "
+                          "$e when attempting to sign out");
                       rethrow;
                     } finally {
                       EasyLoading.dismiss();
@@ -109,7 +111,7 @@ class _BackupProviderTileState extends State<BackupProviderTile> {
     final backupBloc = AppBlocsProvider.of<BackupBloc>(context);
     return await backupBloc.backupStateStream.first.then(
       (backupState) async {
-        if (backupState != BackupState.start() && previousProvider.isGDrive) {
+        if (backupState != BackupState.start() || previousProvider.isGDrive) {
           return await promptAreYouSure(
             context,
             "Logout Warning",

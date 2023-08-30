@@ -269,6 +269,8 @@ class SecurityAndBackupPageState extends State<SecurityAndBackupPage>
             );
           } catch (e) {
             EasyLoading.dismiss();
+          } finally {
+            EasyLoading.dismiss();
           }
         }
       },
@@ -295,7 +297,6 @@ class SecurityAndBackupPageState extends State<SecurityAndBackupPage>
       default:
         showFlushbar(
           context,
-          duration: const Duration(seconds: 3),
           message: extractExceptionMessage(exception, texts: texts),
         );
     }
@@ -317,7 +318,6 @@ class SecurityAndBackupPageState extends State<SecurityAndBackupPage>
     } else if (e.provider.isGDrive) {
       showFlushbar(
         context,
-        duration: const Duration(seconds: 3),
         message: "Failed to sign into Google Drive.",
       );
     }
