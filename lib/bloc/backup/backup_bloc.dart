@@ -421,7 +421,8 @@ class BackupBloc with AsyncActionsHandler {
       // not to confuse the two.
       if (e.message == _googleSignNotAvailable) {
         exception = GoogleSignNotAvailableException();
-      } else if (e.code == _signInFailedMessage || e.message == _signInFailedCode) {
+      } else if (e.code == _signInFailedMessage ||
+          e.message == _signInFailedCode) {
         exception = SignInFailedException(
           _backupSettingsController.value.backupProvider,
         );
@@ -478,9 +479,10 @@ class BackupBloc with AsyncActionsHandler {
     await _breezLib.signOut().catchError(
       (error) {
         log.warning(error.toString());
+        _promptBackupController.add(action.promptOnError);
       },
     );
-    _promptBackupController.add(action.promptOnError);
+
     backupServiceNeedLoginSink.add(true);
     action.resolve(null);
   }
@@ -502,7 +504,8 @@ class BackupBloc with AsyncActionsHandler {
       // not to confuse the two.
       if (e.message == _googleSignNotAvailable) {
         exception = GoogleSignNotAvailableException();
-      } else if (e.code == _signInFailedMessage || e.message == _signInFailedCode) {
+      } else if (e.code == _signInFailedMessage ||
+          e.message == _signInFailedCode) {
         exception = SignInFailedException(
           _backupSettingsController.value.backupProvider,
         );
@@ -585,7 +588,8 @@ class BackupBloc with AsyncActionsHandler {
       // not to confuse the two.
       if (e.message == _googleSignNotAvailable) {
         exception = GoogleSignNotAvailableException();
-      } else if (e.code == _signInFailedMessage || e.message == _signInFailedCode) {
+      } else if (e.code == _signInFailedMessage ||
+          e.message == _signInFailedCode) {
         exception = SignInFailedException(
           _backupSettingsController.value.backupProvider,
         );
@@ -720,6 +724,7 @@ class BackupBloc with AsyncActionsHandler {
       }
       if (event.type == NotificationEvent_NotificationType.BACKUP_SUCCESS) {
         backupServiceNeedLoginSink.add(false);
+        _enableBackupPrompt = false;
         _breezLib.getLatestBackupTime().then((timeStamp) {
           log.info("Timestamp=$timeStamp");
           if (timeStamp > 0) {
@@ -736,6 +741,7 @@ class BackupBloc with AsyncActionsHandler {
         backupServiceNeedLoginSink.add(false);
       }
       if (backupOperations.contains(event.type)) {
+        log.info("no backup provider set.");
         _enableBackupPrompt = true;
         _pushPromptIfNeeded();
       }
