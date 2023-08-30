@@ -3,6 +3,7 @@ import 'package:breez/bloc/backup/backup_actions.dart';
 import 'package:breez/bloc/backup/backup_bloc.dart';
 import 'package:breez/bloc/backup/backup_model.dart';
 import 'package:breez/bloc/blocs_provider.dart';
+import 'package:breez/logger.dart';
 import 'package:breez/theme_data.dart' as theme;
 import 'package:breez/utils/min_font_size.dart';
 import 'package:breez/widgets/error_dialog.dart';
@@ -69,10 +70,6 @@ class _BackupProviderTileState extends State<BackupProviderTile> {
                 },
               );
             }
-            if (selectedProvider.isICloud) {
-              await _showSignInNeededDialog(selectedProvider);
-              return;
-            }
             await _updateBackupProvider(selectedProvider);
           },
           items: BackupSettings.availableBackupProviders().map(
@@ -121,29 +118,16 @@ class _BackupProviderTileState extends State<BackupProviderTile> {
             ),
             contentPadding: const EdgeInsets.fromLTRB(24, 16, 24, 8),
           ).then((ok) => ok);
-        } else if (!previousProvider.isGDrive){
+        } else if (!previousProvider.isGDrive) {
           return true;
         }
         return false;
       },
-      onError: (_) => false,
+      onError: (e) {
+        log.info("backup_provider received error when switching provider $e");
+        return false;
+      },
     );
-  }
-
-  Future _showSignInNeededDialog(BackupProvider provider) async {
-    if (provider.isICloud) {
-      final texts = context.texts();
-      final themeData = Theme.of(context);
-
-      await promptError(
-        context,
-        texts.initial_walk_through_sign_in_icloud_title,
-        Text(
-          texts.initial_walk_through_sign_in_icloud_message,
-          style: themeData.dialogTheme.contentTextStyle,
-        ),
-      );
-    }
   }
 
   Future<void> _updateBackupProvider(
@@ -162,6 +146,7 @@ class _BackupProviderTileState extends State<BackupProviderTile> {
         );
       }
     } catch (e) {
+      log.info("backup_provider got error $e");
       EasyLoading.dismiss();
       rethrow;
     }
