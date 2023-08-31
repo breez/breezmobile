@@ -58,21 +58,19 @@ class _BackupProviderTileState extends State<BackupProviderTile> {
 
                       await _signOut();
                       await _signIn();
-                      return true;
+                      await _updateBackupProvider(selectedProvider);
                     } catch (e) {
-                      log.info("backup_provider received error "
-                          "$e when attempting to sign out");
+                      log.info("backup_provider received error $e "
+                          "when switching account");
                       rethrow;
-                    } finally {
-                      EasyLoading.dismiss();
                     }
-                  } else {
-                    return false;
                   }
                 },
               );
             }
-            await _updateBackupProvider(selectedProvider);
+            if (currentProvider != selectedProvider) {
+              await _updateBackupProvider(selectedProvider);
+            }
           },
           items: BackupSettings.availableBackupProviders().map(
             (provider) {
@@ -111,7 +109,8 @@ class _BackupProviderTileState extends State<BackupProviderTile> {
     final backupBloc = AppBlocsProvider.of<BackupBloc>(context);
     return await backupBloc.backupStateStream.first.then(
       (backupState) async {
-        if (backupState != BackupState.start() || previousProvider.isGDrive) {
+        if ((backupState != BackupState.start() && previousProvider.isGDrive) ||
+            previousProvider.isGDrive) {
           return await promptAreYouSure(
             context,
             "Logout Warning",
