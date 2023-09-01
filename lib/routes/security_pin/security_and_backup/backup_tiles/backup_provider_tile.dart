@@ -128,7 +128,15 @@ class _BackupProviderTileState extends State<BackupProviderTile> {
         return false;
       },
       onError: (e) {
-        log.info("backup_provider received error when switching provider $e");
+        log.warning("_logoutWarningDialog error: $e");
+        // If GDrive backup has failed with an authentication error.
+        // Mostly for new accounts on Android(where GDrive is default provider)
+        // where a backup was triggered before setting up a backup provider
+        if (e is BackupFailedException &&
+            e.authenticationError &&
+            previousProvider.isGDrive) {
+          return true;
+        }
         return false;
       },
     );
