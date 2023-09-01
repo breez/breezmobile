@@ -417,6 +417,7 @@ class BackupBloc with AsyncActionsHandler {
       }
     } on PlatformException catch (e) {
       dynamic exception = extractExceptionMessage(e.message);
+      log.warning(exception, e);
       // the error code equals the message from the go library so
       // not to confuse the two.
       if (e.message == _googleSignNotAvailable) {
@@ -441,6 +442,7 @@ class BackupBloc with AsyncActionsHandler {
       }
       action.resolveError(exception);
     } catch (error) {
+      log.warning("Failed to list snapshots.", error);
       action.resolveError("Failed to list snapshots.");
     }
   }
@@ -461,6 +463,7 @@ class BackupBloc with AsyncActionsHandler {
 
       action.resolve(true);
     } catch (error) {
+      log.warning("Failed to restore backup.", error);
       _clearAppData();
       action.resolveError("Failed to restore backup.");
     }
@@ -478,7 +481,7 @@ class BackupBloc with AsyncActionsHandler {
     log.info("Signing out of Google Drive");
     await _breezLib.signOut().catchError(
       (error) {
-        log.warning(error.toString());
+        log.warning("Failed to sign out.", error);
         _promptBackupController.add(action.promptOnError);
       },
     );
@@ -496,10 +499,19 @@ class BackupBloc with AsyncActionsHandler {
         "Signing in, { force: $force, recoverEnabled: $recoverEnabled }",
       );
       bool signedIn = await _breezLib.signIn(force, recoverEnabled);
-      if (signedIn) backupServiceNeedLoginSink.add(false);
-      action.resolve(signedIn);
+      if (signedIn) {
+        backupServiceNeedLoginSink.add(false);
+        action.resolve(signedIn);
+      } else {
+        action.resolveError(
+          SignInFailedException(
+            _backupSettingsController.value.backupProvider,
+          ),
+        );
+      }
     } on PlatformException catch (e) {
       dynamic exception = extractExceptionMessage(e.message);
+      log.warning(exception, e);
       // the error code equals the message from the go library so
       // not to confuse the two.
       if (e.message == _googleSignNotAvailable) {
@@ -523,7 +535,7 @@ class BackupBloc with AsyncActionsHandler {
       _promptBackupController.add(true);
       action.resolveError(exception);
     } catch (error) {
-      log.warning(error.toString());
+      log.warning("Failed to sign in.", error);
       action.resolveError(
         SignInFailedException(
           _backupSettingsController.value.backupProvider,
@@ -561,25 +573,36 @@ class BackupBloc with AsyncActionsHandler {
   Future _backupNow(BackupNow action) async {
     try {
       log.info("Backup Now requested: $action");
+      bool signInNeeded = _backupServiceNeedLoginController.value;
       final backupProviderName =
           action.updateBackupSettings.settings.backupProvider.displayName;
 
       await _updateBackupSettings(action.updateBackupSettings);
-      log.info(
-          "Does backup service need relogin ${_backupServiceNeedLoginController.value}");
-      if (_backupServiceNeedLoginController.value) {
+      log.info("Does backup service need relogin $signInNeeded");
+      if (signInNeeded) {
         log.info("Signing out of $backupProviderName");
         await _breezLib.signOut();
         log.info("Signed out of $backupProviderName");
+        log.info("Signing into $backupProviderName");
+        bool signedIn = await _breezLib.signIn(
+          _backupServiceNeedLoginController.value,
+          _backupServiceNeedLoginController.value,
+        );
+        if (signedIn) {
+          log.info("Signed into $backupProviderName");
+        } else {
+          action.resolveError(
+            SignInFailedException(
+              _backupSettingsController.value.backupProvider,
+            ),
+          );
+        }
+        backupServiceNeedLoginSink.add(!signedIn);
       }
-      log.info("Signing into $backupProviderName");
-      await _breezLib.signIn(
-        _backupServiceNeedLoginController.value,
-        _backupServiceNeedLoginController.value,
-      );
-      log.info("Signed into $backupProviderName");
+
       await _saveAppData();
       await _breezLib.requestBackup();
+
       action.resolve(true);
     } on PlatformException catch (e) {
       dynamic exception = extractExceptionMessage(e.message);
