@@ -199,6 +199,7 @@ class SecurityAndBackupPageState extends State<SecurityAndBackupPage>
                           await _enterRemoteServerCredentials(backupSettings);
                         },
                         backupNow: _backupNow,
+                        onError: _handleError,
                       ),
                       if (isRemoteServer) ...[
                         const Divider(),
