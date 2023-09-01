@@ -136,7 +136,6 @@ class BackupBloc with AsyncActionsHandler {
       ListSnapshots: _listSnapshots,
       RestoreBackup: _restoreBackup,
       SignOut: _signOut,
-      SignIn: _signIn,
       BackupNow: _backupNow,
     };
 
@@ -490,23 +489,19 @@ class BackupBloc with AsyncActionsHandler {
     action.resolve(null);
   }
 
-  Future _signIn(SignIn action) async {
+  Future _signIn() async {
     try {
-      bool force = action.force ?? _backupServiceNeedLoginController.value;
-      bool recoverEnabled =
-          action.recoverEnabled ?? _backupServiceNeedLoginController.value;
+      bool signInNeeded = _backupServiceNeedLoginController.value;
       log.info(
-        "Signing in, { force: $force, recoverEnabled: $recoverEnabled }",
+        "Signing in, { force: $signInNeeded, recoverEnabled: $signInNeeded }",
       );
-      bool signedIn = await _breezLib.signIn(force, recoverEnabled);
+      bool signedIn = await _breezLib.signIn(signInNeeded, signInNeeded);
       if (signedIn) {
         backupServiceNeedLoginSink.add(false);
-        action.resolve(signedIn);
+        return true;
       } else {
-        action.resolveError(
-          SignInFailedException(
-            _backupSettingsController.value.backupProvider,
-          ),
+        throw SignInFailedException(
+          _backupSettingsController.value.backupProvider,
         );
       }
     } on PlatformException catch (e) {
@@ -533,13 +528,11 @@ class BackupBloc with AsyncActionsHandler {
         exception = InvalidCredentialsException();
       }
       _promptBackupController.add(true);
-      action.resolveError(exception);
+      throw exception;
     } catch (error) {
       log.warning("Failed to sign in.", error);
-      action.resolveError(
-        SignInFailedException(
-          _backupSettingsController.value.backupProvider,
-        ),
+      throw SignInFailedException(
+        _backupSettingsController.value.backupProvider,
       );
     }
   }
@@ -584,19 +577,7 @@ class BackupBloc with AsyncActionsHandler {
         await _breezLib.signOut();
         log.info("Signed out of $backupProviderName");
         log.info("Signing into $backupProviderName");
-        bool signedIn = await _breezLib.signIn(
-          _backupServiceNeedLoginController.value,
-          _backupServiceNeedLoginController.value,
-        );
-        if (signedIn) {
-          log.info("Signed into $backupProviderName");
-        } else {
-          action.resolveError(
-            SignInFailedException(
-              _backupSettingsController.value.backupProvider,
-            ),
-          );
-        }
+        bool signedIn = await _signIn();
         backupServiceNeedLoginSink.add(!signedIn);
       }
 
