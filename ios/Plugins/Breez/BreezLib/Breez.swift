@@ -273,7 +273,12 @@ class Breez : NSObject, FlutterPlugin, BindingsAppServicesProtocol, FlutterStrea
             err?.pointee = NSError(domain: "AuthError", code: 0, userInfo: nil);
             return "";
         }
-        return self.backupAuthenticators[provider]!.backupProviderSignIn(silent: true, in: err);
+        var result = self.backupAuthenticators[provider]!.backupProviderSignIn(silent: true, in: err);
+        if let result = err {
+            err?.pointee = NSError(domain: "AuthError", code: 0, userInfo: nil);
+            return "";
+        }
+        return result;
     }
     
     func notify(_ notificationEvent: Data?) {
