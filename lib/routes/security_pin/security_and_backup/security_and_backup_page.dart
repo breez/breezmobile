@@ -270,8 +270,6 @@ class SecurityAndBackupPageState extends State<SecurityAndBackupPage>
             );
           } catch (e) {
             EasyLoading.dismiss();
-          } finally {
-            EasyLoading.dismiss();
           }
         }
       },
