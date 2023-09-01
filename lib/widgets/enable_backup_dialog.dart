@@ -188,6 +188,8 @@ class _BackupNowButton extends StatefulWidget {
 class _BackupNowButtonState extends State<_BackupNowButton> {
   @override
   Widget build(BuildContext context) {
+    final backupBloc = AppBlocsProvider.of<BackupBloc>(context);
+
     final texts = context.texts();
     final themeData = Theme.of(context);
 
@@ -208,8 +210,7 @@ class _BackupNowButtonState extends State<_BackupNowButton> {
                         try {
                           EasyLoading.show();
 
-                          await _signOut();
-                          await _signIn();
+                          backupBloc.backupServiceNeedLoginSink.add(true);
                         } catch (e) {
                           log.warning("Failed to re-login & backup.", e);
                           _handleError(e);
@@ -305,20 +306,6 @@ class _BackupNowButtonState extends State<_BackupNowButton> {
       _handleError(error);
       rethrow;
     }
-  }
-
-  Future _signOut() {
-    final backupBloc = AppBlocsProvider.of<BackupBloc>(context);
-    var signOutAction = SignOut();
-    backupBloc.backupActionsSink.add(signOutAction);
-    return signOutAction.future;
-  }
-
-  Future _signIn() {
-    final backupBloc = AppBlocsProvider.of<BackupBloc>(context);
-    var signInAction = SignIn();
-    backupBloc.backupActionsSink.add(signInAction);
-    return signInAction.future;
   }
 
   Future _backupNow(BackupSettings backupSettings) async {

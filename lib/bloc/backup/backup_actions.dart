@@ -40,13 +40,6 @@ class SignOut extends AsyncAction {
   SignOut({this.promptOnError = true});
 }
 
-class SignIn extends AsyncAction {
-  final bool force;
-  final bool recoverEnabled;
-
-  SignIn({this.force, this.recoverEnabled});
-}
-
 class BackupNow extends AsyncAction {
   final UpdateBackupSettings updateBackupSettings;
   final bool recoverEnabled;
