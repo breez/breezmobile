@@ -16,12 +16,14 @@ class BackupProviderTile extends StatefulWidget {
   final AutoSizeGroup autoSizeGroup;
   final Future Function() enterRemoteServerCredentials;
   final Future Function(BackupSettings backupSettings) backupNow;
+  final Function(dynamic exception) onError;
 
   const BackupProviderTile({
     @required this.backupSettings,
     @required this.autoSizeGroup,
     @required this.enterRemoteServerCredentials,
     @required this.backupNow,
+    @required this.onError,
   });
 
   @override
@@ -60,9 +62,8 @@ class _BackupProviderTileState extends State<BackupProviderTile> {
                       await _signIn();
                       await _updateBackupProvider(selectedProvider);
                     } catch (e) {
-                      log.info("backup_provider received error $e "
-                          "when switching account");
-                      rethrow;
+                      log.warning("Failed to re-login & backup.", e);
+                      widget.onError(e);
                     }
                   }
                 },
@@ -128,7 +129,7 @@ class _BackupProviderTileState extends State<BackupProviderTile> {
         return false;
       },
       onError: (e) {
-        log.warning("_logoutWarningDialog error: $e");
+        log.warning("Failed to get backup state.", e);
         // If GDrive backup has failed.
         // Mostly for new accounts on Android(where GDrive is default provider)
         // where a backup was triggered before setting up a backup provider.
@@ -156,7 +157,7 @@ class _BackupProviderTileState extends State<BackupProviderTile> {
         );
       }
     } catch (e) {
-      log.info("backup_provider got error $e");
+      log.warning("Failed to update backup provider.", e);
       EasyLoading.dismiss();
       rethrow;
     }

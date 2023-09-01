@@ -5,6 +5,7 @@ import 'package:breez/bloc/backup/backup_actions.dart';
 import 'package:breez/bloc/backup/backup_bloc.dart';
 import 'package:breez/bloc/backup/backup_model.dart';
 import 'package:breez/bloc/blocs_provider.dart';
+import 'package:breez/logger.dart';
 import 'package:breez/routes/initial_walkthrough/dialogs/select_backup_provider_dialog.dart';
 import 'package:breez/utils/min_font_size.dart';
 import 'package:breez/widgets/error_dialog.dart';
@@ -210,7 +211,8 @@ class _BackupNowButtonState extends State<_BackupNowButton> {
                           await _signOut();
                           await _signIn();
                         } catch (e) {
-                          rethrow;
+                          log.warning("Failed to re-login & backup.", e);
+                          _handleError(e);
                         } finally {
                           EasyLoading.dismiss();
                         }
@@ -299,6 +301,7 @@ class _BackupNowButtonState extends State<_BackupNowButton> {
         widget.backupSettings.copyWith(backupProvider: selectedProvider),
       ).then((_) => Navigator.pop(context));
     } catch (error) {
+      log.warning("Failed to update backup provider.", error);
       _handleError(error);
       rethrow;
     }
