@@ -1,5 +1,4 @@
 import 'package:auto_size_text/auto_size_text.dart';
-import 'package:breez/bloc/backup/backup_actions.dart';
 import 'package:breez/bloc/backup/backup_bloc.dart';
 import 'package:breez/bloc/backup/backup_model.dart';
 import 'package:breez/bloc/blocs_provider.dart';
@@ -33,6 +32,8 @@ class BackupProviderTile extends StatefulWidget {
 class _BackupProviderTileState extends State<BackupProviderTile> {
   @override
   Widget build(BuildContext context) {
+    final backupBloc = AppBlocsProvider.of<BackupBloc>(context);
+
     final texts = context.texts();
     final currentProvider = widget.backupSettings.backupProvider;
 
@@ -58,8 +59,7 @@ class _BackupProviderTileState extends State<BackupProviderTile> {
                     try {
                       EasyLoading.show();
 
-                      await _signOut();
-                      await _signIn();
+                      backupBloc.backupServiceNeedLoginSink.add(true);
                       await _updateBackupProvider(selectedProvider);
                     } catch (e) {
                       log.warning("Failed to re-login & backup.", e);
@@ -90,20 +90,6 @@ class _BackupProviderTileState extends State<BackupProviderTile> {
         ),
       ),
     );
-  }
-
-  Future _signOut() {
-    final backupBloc = AppBlocsProvider.of<BackupBloc>(context);
-    var signOutAction = SignOut();
-    backupBloc.backupActionsSink.add(signOutAction);
-    return signOutAction.future;
-  }
-
-  Future _signIn() {
-    final backupBloc = AppBlocsProvider.of<BackupBloc>(context);
-    var signInAction = SignIn();
-    backupBloc.backupActionsSink.add(signInAction);
-    return signInAction.future;
   }
 
   Future _logoutWarningDialog(BackupProvider previousProvider) async {
