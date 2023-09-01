@@ -119,7 +119,10 @@ class _BackupProviderTileState extends State<BackupProviderTile> {
             ),
             contentPadding: const EdgeInsets.fromLTRB(24, 16, 24, 8),
           ).then((ok) => ok);
-        } else if (!previousProvider.isGDrive) {
+        } else if (!previousProvider.isGDrive ||
+            backupState == BackupState.start()) {
+          // When switching from another provider,
+          // On a new account on Android(where GDrive is default provider)
           return true;
         }
         return false;
