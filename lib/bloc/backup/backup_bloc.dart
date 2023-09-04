@@ -452,6 +452,7 @@ class BackupBloc with AsyncActionsHandler {
       final key = action.restoreRequest.encryptionKey.key;
       log.info('snapshotInfo with timestamp: ${snapshot.modifiedTime}');
       if (key != null) log.info('using key with length: ${key.length}');
+      _setBackupKeyType(snapshot);
 
       _clearAppData();
 
@@ -466,6 +467,18 @@ class BackupBloc with AsyncActionsHandler {
       _clearAppData();
       action.resolveError("Failed to restore backup.");
     }
+  }
+
+  void _setBackupKeyType(SnapshotInfo snapshot) {
+    BackupSettings backupSettings = _backupSettingsController.value;
+    if (snapshot.encrypted && snapshot.encryptionType.startsWith("Mnemonics")) {
+      backupSettings = backupSettings.copyWith(keyType: BackupKeyType.PHRASE);
+    } else if (backupSettings.backupKeyType != BackupKeyType.NONE) {
+      /// This also sets keyType of backups encrypted with PIN to
+      /// BackupKeyType.NON as they are are non-secure & deprecated
+      backupSettings = backupSettings.copyWith(keyType: BackupKeyType.NONE);
+    }
+    _backupSettingsController.add(backupSettings);
   }
 
   void _updateLastBackupTime(String modifiedTime) {
