@@ -155,28 +155,10 @@ class RestoreDialogState extends State<RestoreDialog> {
           ),
         );
       });
-      // Update Backup Settings
-      final updateAction = UpdateBackupSettings(
-        widget.backupSettings.copyWith(
-          keyType: BackupKeyType.PHRASE,
-        ),
+      _restore(
+        _selectedSnapshot,
+        HEX.decode(entropy),
       );
-      backupBloc.backupActionsSink.add(updateAction);
-      updateAction.future.then((_) {
-        _restore(
-          _selectedSnapshot,
-          HEX.decode(entropy),
-        );
-      }).catchError((err) {
-        promptError(
-          context,
-          texts.initial_walk_through_error_internal,
-          Text(
-            err.toString(),
-            style: themeData.dialogTheme.contentTextStyle,
-          ),
-        );
-      });
     }
   }
 
@@ -192,33 +174,11 @@ class RestoreDialogState extends State<RestoreDialog> {
   }
 
   void _restoreNodeUsingPIN() async {
-    final backupBloc = AppBlocsProvider.of<BackupBloc>(context);
-
     String pin = await _getPIN();
     if (pin != null) {
       log.info("Restore Node using PIN: $pin");
-      final updateAction = UpdateBackupSettings(
-        widget.backupSettings.copyWith(keyType: BackupKeyType.NONE),
-      );
       final key = sha256.convert(utf8.encode(pin));
-      backupBloc.backupActionsSink.add(updateAction);
-      updateAction.future
-          .then((_) => _restore(_selectedSnapshot, key.bytes))
-          .catchError(
-        (err) {
-          final texts = context.texts();
-          final themeData = Theme.of(context);
-
-          promptError(
-            context,
-            texts.initial_walk_through_error_internal,
-            Text(
-              err.toString(),
-              style: themeData.dialogTheme.contentTextStyle,
-            ),
-          );
-        },
-      );
+      _restore(_selectedSnapshot, key.bytes);
     }
   }
 
