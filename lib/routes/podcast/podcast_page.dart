@@ -1,7 +1,6 @@
 import 'package:anytime/api/podcast/podcast_api.dart';
 import 'package:anytime/bloc/discovery/discovery_bloc.dart';
 import 'package:anytime/bloc/new_podcasts/new_podcasts_bloc.dart';
-import 'package:anytime/bloc/nostr_comments/nostr_comments_bloc.dart';
 import 'package:anytime/bloc/podcast/audio_bloc.dart';
 import 'package:anytime/bloc/podcast/episode_bloc.dart';
 import 'package:anytime/bloc/podcast/opml_bloc.dart';
@@ -10,6 +9,7 @@ import 'package:anytime/bloc/podcast/queue_bloc.dart';
 import 'package:anytime/bloc/search/search_bloc.dart';
 import 'package:anytime/bloc/settings/settings_bloc.dart';
 import 'package:anytime/bloc/ui/pager_bloc.dart';
+import 'package:anytime/entities/episode.dart';
 import 'package:anytime/repository/repository.dart';
 import 'package:anytime/services/audio/audio_player_service.dart';
 import 'package:anytime/services/audio/default_audio_player_service.dart';
@@ -24,10 +24,13 @@ import 'package:anytime/ui/themes.dart';
 import 'package:breez/bloc/account/account_bloc.dart';
 import 'package:breez/bloc/account/account_model.dart';
 import 'package:breez/bloc/blocs_provider.dart';
+import 'package:breez/bloc/nostr/nostr_bloc.dart';
+import 'package:breez/bloc/nostr/nostr_comments/nostr_comments_bloc.dart';
 import 'package:breez/bloc/podcast_payments/model.dart';
 import 'package:breez/bloc/user_profile/breez_user_model.dart';
 import 'package:breez/bloc/user_profile/user_profile_bloc.dart';
 import 'package:breez/routes/podcast/add_funds_message.dart';
+import 'package:breez/routes/podcast/episode_comments.dart';
 import 'package:breez/routes/podcast/episode_metadata_loader.dart';
 import 'package:breez/routes/podcast/payment_adjustment.dart';
 import 'package:breez/routes/podcast/podcast_index_api.dart';
@@ -84,11 +87,11 @@ class AnytimePodcastApp extends StatefulWidget {
 
 class AnytimePodcastAppState extends State<AnytimePodcastApp> {
   ThemeData theme;
+  NostrBloc nostrBloc;
 
   @override
   void initState() {
     super.initState();
-
     widget.settingsBloc.settings.listen((event) {
       setState(() {
         var newTheme = event.theme == 'dark'
@@ -111,6 +114,8 @@ class AnytimePodcastAppState extends State<AnytimePodcastApp> {
 
   @override
   Widget build(BuildContext context) {
+    nostrBloc = AppBlocsProvider.of<NostrBloc>(context);
+
     return MultiProvider(
       providers: [
         Provider<SearchBloc>(
@@ -184,7 +189,9 @@ class AnytimePodcastAppState extends State<AnytimePodcastApp> {
         ),
         Provider<NostrCommentBloc>(
           create: (_) => NostrCommentBloc(
-              episodeStream: widget.audioPlayerService.episodeEvent),
+            episodeStream: widget.audioPlayerService.episodeEvent,
+            nostrBloc: nostrBloc,
+          ),
           dispose: (_, value) => value.dispose(),
         ),
       ],
@@ -261,6 +268,11 @@ class NowPlayingTransportState extends State<NowPlayingTransport> {
           );
         });
   }
+}
+
+WidgetBuilder nostrCommentsBuilder(Episode episode) {
+  builder(BuildContext context) => EpisodeComments(episode: episode);
+  return builder;
 }
 
 WidgetBuilder playerBuilder(int duration) {

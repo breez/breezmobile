@@ -69,8 +69,10 @@ void main() async {
                             builder: sharePodcastButtonBuilder,
                             child: ShareEpisodeButtonBuilder(
                                 builder: shareEpisodeButtonBuilder,
-                                child:
-                                    UserApp(repository.reloadDatabaseSink))))),
+                                child: NostrCommentsBuilder(
+                                    builder: nostrCommentsBuilder,
+                                    child: UserApp(
+                                        repository.reloadDatabaseSink)))))),
               ))));
     });
   }, (error, stackTrace) async {

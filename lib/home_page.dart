@@ -1,6 +1,5 @@
 import 'dart:async';
 
-import 'package:anytime/bloc/nostr_comments/nostr_comments_bloc.dart';
 import 'package:anytime/bloc/podcast/audio_bloc.dart';
 import 'package:anytime/ui/anytime_podcast_app.dart';
 import 'package:anytime/ui/podcast/now_playing.dart';
@@ -107,7 +106,6 @@ class HomeState extends State<Home> with WidgetsBindingObserver {
   final Set _hiddenRoutes = <String>{};
   StreamSubscription<String> _accountNotificationsSubscription;
   bool _listensInit = false;
-  NostrCommentBloc commentBloc;
 
   @override
   void initState() {
@@ -137,30 +135,6 @@ class HomeState extends State<Home> with WidgetsBindingObserver {
           addOrRemove(r);
         }
       });
-    });
-
-    commentBloc = Provider.of<NostrCommentBloc>(context, listen: false);
-
-    widget.marketplaceBloc.nostrSettingsStream.listen((event) {
-      commentBloc.toggleCommentController.add(!event.enableNostr);
-    });
-
-    commentBloc.pubKeyStream.listen((event) async {
-      widget.nostrBloc.actionsSink.add(GetPublicKey());
-
-      final publicKey = await widget.nostrBloc.publicKeyStream.first;
-      commentBloc.getPubKeyResult(publicKey);
-    });
-
-    // Listener for signing the comment
-    commentBloc.signEventStream.listen((event) async {
-      final nostrPrivateKey = widget.nostrBloc.nostrPrivateKey;
-
-      widget.nostrBloc.actionsSink.add(SignEvent(event, nostrPrivateKey));
-
-      final Map<String, dynamic> signedEventObject =
-          await widget.nostrBloc.eventStream.first;
-      commentBloc.signEventResult(signedEventObject);
     });
 
     AudioService.notificationClicked.where((event) => event == true).listen(
