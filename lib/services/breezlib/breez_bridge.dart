@@ -857,10 +857,9 @@ class BreezBridge {
     );
   }
 
-  Future<dynamic> signIn(bool force, bool recoverEnabled) {
+  Future<dynamic> signIn(bool force) {
     return _methodChannel.invokeMethod("signIn", {
       "force": force,
-      "recoverEnabled": recoverEnabled,
     });
   }
 
