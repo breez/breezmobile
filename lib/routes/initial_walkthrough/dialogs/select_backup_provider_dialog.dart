@@ -138,8 +138,7 @@ class SelectBackupProviderDialogState
     final backupBloc = AppBlocsProvider.of<BackupBloc>(context);
     BackupSettings backupSettings = widget.backupSettings;
 
-    final remoteServerProvider = BackupProvider.remoteServer();
-    if (selectedProvider.name == remoteServerProvider.name) {
+    if (selectedProvider.isRemoteServer) {
       final auth = await promptAuthData(
         context,
         backupSettings,

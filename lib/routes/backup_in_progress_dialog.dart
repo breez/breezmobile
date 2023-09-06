@@ -9,21 +9,25 @@ Widget buildBackupInProgressDialog(
   BuildContext context,
   Stream<BackupState> backupStateStream, {
   bool barrierDismissible = true,
+  VoidCallback onFinished,
 }) {
   return _BackupInProgressDialog(
     backupStateStream: backupStateStream,
     barrierDismissible: barrierDismissible,
+    onFinished: onFinished,
   );
 }
 
 class _BackupInProgressDialog extends StatefulWidget {
   final Stream<BackupState> backupStateStream;
   final bool barrierDismissible;
+  final VoidCallback onFinished;
 
   const _BackupInProgressDialog({
     Key key,
     @required this.backupStateStream,
     this.barrierDismissible,
+    this.onFinished,
   }) : super(key: key);
 
   @override
@@ -34,17 +38,28 @@ class _BackupInProgressDialog extends StatefulWidget {
 
 class _BackupInProgressDialogState extends State<_BackupInProgressDialog> {
   StreamSubscription<BackupState> _stateSubscription;
+  ModalRoute _currentRoute;
 
   @override
   void initState() {
     super.initState();
     _stateSubscription = widget.backupStateStream.listen((state) {
-      if (state.inProgress != true) {
-        Navigator.of(context).pop();
+      if (state.inProgress != true && _currentRoute.isActive) {
+        widget.onFinished();
+        Navigator.of(context).removeRoute(_currentRoute);
       }
     }, onError: (err) {
-      Navigator.of(context).pop();
+      if (_currentRoute.isActive) {
+        widget.onFinished();
+        Navigator.of(context).removeRoute(_currentRoute);
+      }
     });
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    _currentRoute ??= ModalRoute.of(context);
   }
 
   @override
