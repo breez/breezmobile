@@ -31,9 +31,12 @@ import io.flutter.plugin.common.PluginRegistry;
 public class GoogleAuthenticator implements PluginRegistry.ActivityResultListener {
     private static final String TAG = "BreezGAuthenticator";
     private static final int AUTHORIZE_ACTIVITY_REQUEST_CODE = 84;
+    private static final int RC_REQUEST_PERMISSION_APP_DATA = 83;
     private static final int SIGN_IN_CANCELLED = 12501;
+    private static final Scope appDataScope = new Scope(DriveScopes.DRIVE_APPDATA);
     private final ActivityPluginBinding activityBinding;
     TaskCompletionSource<GoogleSignInAccount> m_signInProgressTask;
+    TaskCompletionSource<Boolean> m_scopeRequestTask;
     private GoogleSignInClient m_signInClient;
 
     public GoogleAuthenticator(ActivityPluginBinding binding) {
@@ -98,6 +101,11 @@ public class GoogleAuthenticator implements PluginRegistry.ActivityResultListene
             credential.setSelectedAccount(googleAccount.getAccount());
             return credential.getToken();
         } catch (Exception e) {
+            // TODO Handle NEED_REMOTE_CONSENT error
+           /* if (e.getMessage().contains("NEED_REMOTE_CONSENT")) {
+                Tasks.await(requestAppDataScope());
+                return getAccessToken();
+            }*/
             Log.w(TAG, "getAccessToken failed", e);
             throw e;
         }
@@ -108,7 +116,7 @@ public class GoogleAuthenticator implements PluginRegistry.ActivityResultListene
         final Activity context = activityBinding.getActivity();
         GoogleSignInOptions signInOptions =
                 new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-                        .requestScopes(new Scope(DriveScopes.DRIVE_APPDATA))
+                        .requestScopes(appDataScope)
                         .requestEmail()
                         .requestIdToken(context.getString(R.string.default_web_client_id))
                         .build();
@@ -158,14 +166,19 @@ public class GoogleAuthenticator implements PluginRegistry.ActivityResultListene
 
     @Override
     public boolean onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == AUTHORIZE_ACTIVITY_REQUEST_CODE && m_signInProgressTask != null) {
-            Log.i(TAG, "onActivityResult requestCode = " + requestCode + " resultCode = " + resultCode + " intent came back with result");
-
-            // The Task returned from this call is always completed, no need to attach
-            // a listener.
-            Task<GoogleSignInAccount> task = GoogleSignIn.getSignedInAccountFromIntent(data);
-            handleSignInResult(task);
-            return true;
+        Log.i(TAG, "onActivityResult requestCode = " + requestCode + " resultCode = " + resultCode + " intent came back with result");
+        switch (requestCode) {
+            case RC_REQUEST_PERMISSION_APP_DATA:
+                handleScopeRequestResult(resultCode);
+                return true;
+            case AUTHORIZE_ACTIVITY_REQUEST_CODE:
+                if (m_signInProgressTask != null) {
+                    // The Task returned from this call is always completed, no need to attach
+                    // a listener.
+                    Task<GoogleSignInAccount> task = GoogleSignIn.getSignedInAccountFromIntent(data);
+                    handleSignInResult(task);
+                    return true;
+                }
         }
         return false;
     }
@@ -198,5 +211,35 @@ public class GoogleAuthenticator implements PluginRegistry.ActivityResultListene
         }
 
         return account != null;
+    }
+
+    public boolean hasWritePermissions(@Nullable GoogleSignInAccount account) throws Exception {
+        boolean accountHasWritePermissions = account.getGrantedScopes().contains(appDataScope);
+        if (!accountHasWritePermissions) {
+            Log.i(TAG, "Account has not given permission to Breez to view and manage its " + "own configuration data in your Google Drive.");
+            return Tasks.await(requestAppDataScope());
+        }
+
+        return true;
+    }
+
+    private Task<Boolean> requestAppDataScope() {
+        Log.i(TAG, "Requesting app data scope");
+        m_scopeRequestTask = new TaskCompletionSource<>();
+        GoogleSignIn.requestPermissions(
+                activityBinding.getActivity(),
+                RC_REQUEST_PERMISSION_APP_DATA,
+                GoogleSignIn.getLastSignedInAccount(activityBinding.getActivity()),
+                appDataScope);
+        return m_scopeRequestTask.getTask();
+    }
+
+    private void handleScopeRequestResult(int resultCode) {
+        if (resultCode == Activity.RESULT_OK) {
+            Log.i(TAG, "requestPermissions:success");
+            m_scopeRequestTask.setResult(true);
+        } else {
+            m_scopeRequestTask.setException(new Exception("ACCESS_TOKEN_SCOPE_INSUFFICIENT"));
+        }
     }
 }
