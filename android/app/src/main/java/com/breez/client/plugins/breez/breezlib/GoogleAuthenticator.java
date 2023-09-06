@@ -15,7 +15,6 @@ import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.common.api.CommonStatusCodes;
 import com.google.android.gms.common.api.Scope;
-import com.google.android.gms.common.api.Status;
 import com.google.android.gms.tasks.Task;
 import com.google.android.gms.tasks.TaskCompletionSource;
 import com.google.android.gms.tasks.Tasks;
@@ -68,7 +67,7 @@ public class GoogleAuthenticator implements PluginRegistry.ActivityResultListene
                     Log.d(TAG, "Google silentSignIn isSuccessful.");
                     // There's immediate result available.
                     signedInAccount = task.getResult(ApiException.class);
-                    Log.d(TAG, "signedInAccount: {\n    expired = " + signedInAccount.isExpired() + ",\n    token = " + signedInAccount.getIdToken() + ",\n authCode = " + signedInAccount.getServerAuthCode() + ",\n   grantedScopes = " + signedInAccount.getGrantedScopes() + "\n}");
+                    Log.d(TAG, "signedInAccount: {\n    expired = " + signedInAccount.isExpired() + ",\n    grantedScopes = " + signedInAccount.getGrantedScopes() + "\n}");
                     Log.d(TAG, "Google silentSignIn succeed.");
                     return signedInAccount;
                 } else {
@@ -103,7 +102,7 @@ public class GoogleAuthenticator implements PluginRegistry.ActivityResultListene
         }
     }
 
-    public boolean validateAccessTokenAllowingPrompt() throws Exception {
+    public boolean validateAccessTokenAllowingPrompt() {
         Log.d(TAG, "getAccessTokenWithPrompt");
         GoogleAccountCredential credential;
         try {
@@ -112,7 +111,7 @@ public class GoogleAuthenticator implements PluginRegistry.ActivityResultListene
             credential.setSelectedAccount(googleAccount.getAccount());
         } catch (Exception e) {
             Log.w(TAG, "ensureSignedIn failed", e);
-            throw e;
+            return false;
         }
 
         try {
@@ -127,22 +126,27 @@ public class GoogleAuthenticator implements PluginRegistry.ActivityResultListene
                     return verifyCredentialHasWriteAccess(credential.getToken(), true);
                 } catch (Exception ex) {
                     Log.w(TAG, "signIn failed in recoverable", ex);
-                    throw e;
+                    return false;
                 }
             }
-            throw e;
+            return false;
         }
     }
 
-    private boolean verifyCredentialHasWriteAccess(String token, boolean allowRecover) throws Exception {
+    private boolean verifyCredentialHasWriteAccess(String token, boolean allowRecover) {
         Log.d(TAG, "verifyCredentialHasWriteAccess token = " + token);
         if (token == null || token.isEmpty()) {
             return false;
         }
 
         try {
-            Drive driveService = new Drive.Builder(new NetHttpTransport.Builder().build(), new GsonFactory(), request -> {
-            }).setHttpRequestInitializer(req -> req.getHeaders().setAuthorization("Bearer " + token)).setApplicationName("Breez").build();
+            Drive driveService = new Drive.Builder(
+                    new NetHttpTransport.Builder().build(),
+                    new GsonFactory(),
+                    request -> {
+                    })
+                    .setHttpRequestInitializer(req -> req.getHeaders().setAuthorization("Bearer " + token))
+                    .setApplicationName("Breez").build();
             FileList result = driveService.files().list().setSpaces("appDataFolder").execute();
             Log.d(TAG, "verifyCredentialHasWriteAccess result = " + result);
         } catch (Exception e) {
@@ -152,18 +156,18 @@ public class GoogleAuthenticator implements PluginRegistry.ActivityResultListene
                     return recoverUnauthorizedAccess();
                 } else {
                     Log.w(TAG, "verifyCredentialHasWriteAccess failed with 401, but not allowed to recover");
-                    throw e;
+                    return false;
                 }
             } else {
                 Log.w(TAG, "verifyCredentialHasWriteAccess failed", e);
-                throw e;
+                return false;
             }
         }
 
         return true;
     }
 
-    private boolean recoverUnauthorizedAccess() throws Exception {
+    private boolean recoverUnauthorizedAccess() {
         Log.d(TAG, "recoverUnauthorizedAccess");
 
         GoogleSignInAccount googleAccount;
@@ -174,7 +178,7 @@ public class GoogleAuthenticator implements PluginRegistry.ActivityResultListene
             credential = credential();
         } catch (Exception e) {
             Log.w(TAG, "recoverUnauthorizedAccess failed", e);
-            throw e;
+            return false;
         }
 
         String token;
@@ -192,11 +196,11 @@ public class GoogleAuthenticator implements PluginRegistry.ActivityResultListene
                     token = credential.getToken();
                 } catch (Exception ex) {
                     Log.w(TAG, "recoverUnauthorizedAccess failed", ex);
-                    throw e;
+                    return false;
                 }
             } else {
                 Log.w(TAG, "recover failed", e);
-                throw e;
+                return false;
             }
         }
 
@@ -205,7 +209,11 @@ public class GoogleAuthenticator implements PluginRegistry.ActivityResultListene
 
     private GoogleSignInClient createSignInClient() {
         Log.d(TAG, "createSignInClient");
-        GoogleSignInOptions signInOptions = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN).requestScopes(new Scope(DriveScopes.DRIVE_APPDATA)).requestEmail().build();
+        GoogleSignInOptions signInOptions =
+                new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                        .requestScopes(new Scope(DriveScopes.DRIVE_APPDATA))
+                        .requestEmail()
+                        .build();
         return GoogleSignIn.getClient(activityBinding.getActivity(), signInOptions);
     }
 
@@ -217,7 +225,9 @@ public class GoogleAuthenticator implements PluginRegistry.ActivityResultListene
     }
 
     private GoogleAccountCredential credential() {
-        return GoogleAccountCredential.usingOAuth2(activityBinding.getActivity(), Collections.singleton(DriveScopes.DRIVE_APPDATA));
+        return GoogleAccountCredential.usingOAuth2(
+                activityBinding.getActivity(),
+                Collections.singleton(DriveScopes.DRIVE_APPDATA));
     }
 
     private boolean googleSignNotAvailable(Exception e) {
