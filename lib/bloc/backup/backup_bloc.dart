@@ -24,6 +24,7 @@ import 'package:sqflite/sqflite.dart';
 class BackupBloc with AsyncActionsHandler {
   static const String _signInFailedCode = "401";
   static const String _signInFailedMessage = "AuthError";
+  static const String _signInCancelledMessage = "SignInCancelled";
   static const String _googleSignNotAvailable = "GoogleSignNotAvailable";
   static const String _methodNotFound = "405";
   static const String _notFoundMessage = "404";
@@ -443,6 +444,8 @@ class BackupBloc with AsyncActionsHandler {
         // TODO: Handle Invalid CredentialsException error properly
         await _breezLib.signOut();
         exception = InvalidCredentialsException();
+      } else if (e.message == _signInCancelledMessage) {
+        exception = SignInCancelledException();
       }
       action.resolveError(exception);
     } catch (error) {
@@ -544,6 +547,8 @@ class BackupBloc with AsyncActionsHandler {
         // TODO: Handle Invalid CredentialsException error properly
         await _breezLib.signOut();
         exception = InvalidCredentialsException();
+      } else if (e.code == _signInCancelledMessage) {
+        exception = SignInCancelledException();
       }
       _promptBackupController.add(true);
       throw exception;
@@ -631,6 +636,8 @@ class BackupBloc with AsyncActionsHandler {
         await _breezLib.signOut();
         exception = InvalidCredentialsException();
         _promptBackupController.add(true);
+      } else if (e.code == _signInCancelledMessage) {
+        exception = SignInCancelledException();
       }
       action.resolveError(exception);
     } catch (e) {

@@ -218,6 +218,9 @@ class SelectBackupProviderDialogState
         Navigator.pop(context);
         _handleSignInException(error);
         break;
+      case SignInCancelledException:
+        Navigator.pop(context);
+        break;
       default:
         Navigator.pop(context);
         showFlushbar(

@@ -304,6 +304,8 @@ class SecurityAndBackupPageState extends State<SecurityAndBackupPage>
         case SignInFailedException:
           _handleSignInException(exception);
           return;
+        case SignInCancelledException:
+          return;
         case InsufficientPermissionException:
         default:
           showFlushbar(

@@ -31,6 +31,7 @@ import io.flutter.plugin.common.PluginRegistry;
 public class GoogleAuthenticator implements PluginRegistry.ActivityResultListener {
     private static final String TAG = "BreezGAuthenticator";
     private static final int AUTHORIZE_ACTIVITY_REQUEST_CODE = 84;
+    private static final int SIGN_IN_CANCELLED = 12501;
     private final ActivityPluginBinding activityBinding;
     TaskCompletionSource<GoogleSignInAccount> m_signInProgressTask;
     private GoogleSignInClient m_signInClient;
@@ -74,6 +75,9 @@ public class GoogleAuthenticator implements PluginRegistry.ActivityResultListene
             return signedInAccount;
         } catch (Exception e) {
             Log.w(TAG, "silentSignIn failed", e);
+            if (e.getMessage().contains("SignInCancelled")) {
+                throw new Exception("SignInCancelled");
+            }
             if (silent) {
                 throw new Exception("AuthError");
             }
@@ -174,9 +178,13 @@ public class GoogleAuthenticator implements PluginRegistry.ActivityResultListene
             Log.i(TAG, "signInResult:success token = " + account.getIdToken());
             m_signInProgressTask.setResult(account);
         } catch (ApiException e) {
-            m_signInProgressTask.setException(new Exception("AuthError"));
             Log.w(TAG, "signInResult:failed\n" + GoogleSignInStatusCodes.getStatusCodeString(e.getStatusCode()));
             Log.w(TAG, "code=" + e.getStatusCode() + "\nmessage=" + e.getMessage(), e);
+            if (e.getStatusCode() == SIGN_IN_CANCELLED) { /*12501*/
+                m_signInProgressTask.setException(new Exception("SignInCancelled"));
+            } else {
+                m_signInProgressTask.setException(new Exception("AuthError"));
+            }
         }
     }
 
