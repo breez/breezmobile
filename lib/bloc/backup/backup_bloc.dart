@@ -596,7 +596,9 @@ class BackupBloc with AsyncActionsHandler {
 
       await _saveAppData();
       await _breezLib.requestBackup();
-
+      _backupStateController.add(
+        _backupStateController.value?.copyWith(inProgress: true),
+      );
       action.resolve(true);
     } on PlatformException catch (e) {
       dynamic exception = extractExceptionMessage(e.message);
@@ -732,6 +734,7 @@ class BackupBloc with AsyncActionsHandler {
         );
       }
       if (event.type == NotificationEvent_NotificationType.BACKUP_FAILED) {
+        backupServiceNeedLoginSink.add(true);
         _backupStateController.addError(
           BackupFailedException(
             _backupSettingsController.value.backupProvider,
@@ -746,16 +749,14 @@ class BackupBloc with AsyncActionsHandler {
           log.info("Timestamp=$timeStamp");
           if (timeStamp > 0) {
             log.info(timeStamp);
-            DateTime latestDateTime =
-                DateTime.fromMillisecondsSinceEpoch(timeStamp);
+            DateTime latestDateTime = DateTime.fromMillisecondsSinceEpoch(
+              timeStamp,
+            );
             _backupStateController.add(
               BackupState(latestDateTime, false, event.data[0]),
             );
           }
         });
-      }
-      if (event.type == NotificationEvent_NotificationType.ACCOUNT_CHANGED) {
-        backupServiceNeedLoginSink.add(false);
       }
       if (backupOperations.contains(event.type)) {
         log.info("no backup provider set.");
