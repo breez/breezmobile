@@ -326,6 +326,8 @@ class _BackupNowButtonState extends State<_BackupNowButton> {
       case SignInFailedException:
         _handleSignInException(error);
         return;
+      case SignInCancelledException:
+        break;
       case InsufficientPermissionException:
       default:
         showFlushbar(
