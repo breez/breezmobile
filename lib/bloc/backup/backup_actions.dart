@@ -42,12 +42,11 @@ class SignOut extends AsyncAction {
 
 class BackupNow extends AsyncAction {
   final UpdateBackupSettings updateBackupSettings;
-  final bool recoverEnabled;
 
-  BackupNow(this.updateBackupSettings, {this.recoverEnabled});
+  BackupNow(this.updateBackupSettings);
 
   @override
   String toString() {
-    return 'BackupNow{updateBackupSettings: $updateBackupSettings, recoverEnabled: $recoverEnabled}';
+    return 'BackupNow{updateBackupSettings: $updateBackupSettings }';
   }
 }

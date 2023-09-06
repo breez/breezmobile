@@ -1,11 +1,12 @@
 package com.breez.client.plugins.breez.breezlib;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.util.Log;
 
 import androidx.annotation.Nullable;
 
-import com.google.android.gms.auth.UserRecoverableAuthException;
+import com.breez.client.R;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
@@ -19,12 +20,7 @@ import com.google.android.gms.tasks.Task;
 import com.google.android.gms.tasks.TaskCompletionSource;
 import com.google.android.gms.tasks.Tasks;
 import com.google.api.client.googleapis.extensions.android.gms.auth.GoogleAccountCredential;
-import com.google.api.client.googleapis.json.GoogleJsonResponseException;
-import com.google.api.client.http.javanet.NetHttpTransport;
-import com.google.api.client.json.gson.GsonFactory;
-import com.google.api.services.drive.Drive;
 import com.google.api.services.drive.DriveScopes;
-import com.google.api.services.drive.model.FileList;
 
 import java.util.Collections;
 import java.util.concurrent.ExecutionException;
@@ -67,7 +63,7 @@ public class GoogleAuthenticator implements PluginRegistry.ActivityResultListene
                     Log.d(TAG, "Google silentSignIn isSuccessful.");
                     // There's immediate result available.
                     signedInAccount = task.getResult(ApiException.class);
-                    Log.d(TAG, "signedInAccount: {\n    expired = " + signedInAccount.isExpired() + ",\n    grantedScopes = " + signedInAccount.getGrantedScopes() + "\n}");
+                    Log.d(TAG, "signedInAccount: {\n    expired = " + signedInAccount.isExpired() + ",\n    token = " + signedInAccount.getIdToken() + ",\n    grantedScopes = " + signedInAccount.getGrantedScopes() + "\n}");
                     Log.d(TAG, "Google silentSignIn succeed.");
                     return signedInAccount;
                 } else {
@@ -91,6 +87,7 @@ public class GoogleAuthenticator implements PluginRegistry.ActivityResultListene
 
     public String getAccessToken() throws Exception {
         Log.d(TAG, "getAccessToken");
+        m_signInClient = createSignInClient();
         GoogleSignInAccount googleAccount = ensureSignedIn(true);
         try {
             GoogleAccountCredential credential = credential();
@@ -102,119 +99,16 @@ public class GoogleAuthenticator implements PluginRegistry.ActivityResultListene
         }
     }
 
-    public boolean validateAccessTokenAllowingPrompt() {
-        Log.d(TAG, "getAccessTokenWithPrompt");
-        GoogleAccountCredential credential;
-        try {
-            GoogleSignInAccount googleAccount = ensureSignedIn(true);
-            credential = credential();
-            credential.setSelectedAccount(googleAccount.getAccount());
-        } catch (Exception e) {
-            Log.w(TAG, "ensureSignedIn failed", e);
-            return false;
-        }
-
-        try {
-            return verifyCredentialHasWriteAccess(credential.getToken(), true);
-        } catch (Exception e) {
-            Log.w(TAG, "getAccessTokenWithPrompt failed", e);
-            if (e instanceof UserRecoverableAuthException) {
-                Log.w(TAG, "getAccessTokenWithPrompt failed but it is recoverable, trying to sign in");
-                try {
-                    GoogleSignInAccount signInResult = Tasks.await(signIn());
-                    credential.setSelectedAccount(signInResult.getAccount());
-                    return verifyCredentialHasWriteAccess(credential.getToken(), true);
-                } catch (Exception ex) {
-                    Log.w(TAG, "signIn failed in recoverable", ex);
-                    return false;
-                }
-            }
-            return false;
-        }
-    }
-
-    private boolean verifyCredentialHasWriteAccess(String token, boolean allowRecover) {
-        Log.d(TAG, "verifyCredentialHasWriteAccess token = " + token);
-        if (token == null || token.isEmpty()) {
-            return false;
-        }
-
-        try {
-            Drive driveService = new Drive.Builder(
-                    new NetHttpTransport.Builder().build(),
-                    new GsonFactory(),
-                    request -> {
-                    })
-                    .setHttpRequestInitializer(req -> req.getHeaders().setAuthorization("Bearer " + token))
-                    .setApplicationName("Breez").build();
-            FileList result = driveService.files().list().setSpaces("appDataFolder").execute();
-            Log.d(TAG, "verifyCredentialHasWriteAccess result = " + result);
-        } catch (Exception e) {
-            if (e instanceof GoogleJsonResponseException && ((GoogleJsonResponseException) e).getStatusCode() == 401) {
-                if (allowRecover) {
-                    Log.d(TAG, "verifyCredentialHasWriteAccess failed with 401, trying to sign in to recovery write permission");
-                    return recoverUnauthorizedAccess();
-                } else {
-                    Log.w(TAG, "verifyCredentialHasWriteAccess failed with 401, but not allowed to recover");
-                    return false;
-                }
-            } else {
-                Log.w(TAG, "verifyCredentialHasWriteAccess failed", e);
-                return false;
-            }
-        }
-
-        return true;
-    }
-
-    private boolean recoverUnauthorizedAccess() {
-        Log.d(TAG, "recoverUnauthorizedAccess");
-
-        GoogleSignInAccount googleAccount;
-        GoogleAccountCredential credential;
-        try {
-            signOut();
-            googleAccount = Tasks.await(signIn());
-            credential = credential();
-        } catch (Exception e) {
-            Log.w(TAG, "recoverUnauthorizedAccess failed", e);
-            return false;
-        }
-
-        String token;
-        try {
-            credential.setSelectedAccount(googleAccount.getAccount());
-            token = credential.getToken();
-        } catch (Exception e) {
-            // For some reason, on this flow google throws an UserRecoverableAuthException despite of the user
-            // be on the auth fow, so we just trigger it again to the user give us the auth on both pages
-            if (e instanceof UserRecoverableAuthException) {
-                GoogleSignInAccount signInResult;
-                try {
-                    signInResult = Tasks.await(signIn());
-                    credential.setSelectedAccount(signInResult.getAccount());
-                    token = credential.getToken();
-                } catch (Exception ex) {
-                    Log.w(TAG, "recoverUnauthorizedAccess failed", ex);
-                    return false;
-                }
-            } else {
-                Log.w(TAG, "recover failed", e);
-                return false;
-            }
-        }
-
-        return verifyCredentialHasWriteAccess(token, false);
-    }
-
     private GoogleSignInClient createSignInClient() {
         Log.d(TAG, "createSignInClient");
+        final Activity context = activityBinding.getActivity();
         GoogleSignInOptions signInOptions =
                 new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                         .requestScopes(new Scope(DriveScopes.DRIVE_APPDATA))
                         .requestEmail()
+                        .requestIdToken(context.getString(R.string.default_web_client_id))
                         .build();
-        return GoogleSignIn.getClient(activityBinding.getActivity(), signInOptions);
+        return GoogleSignIn.getClient(context, signInOptions);
     }
 
     private Task<GoogleSignInAccount> signIn() {

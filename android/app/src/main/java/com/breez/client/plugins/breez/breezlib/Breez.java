@@ -247,19 +247,7 @@ public class Breez implements MethodChannel.MethodCallHandler, StreamHandler,
             fail(result, "AuthError", e.getMessage(), "Failed to signIn breez library");
             return;
         }
-        Boolean recoverEnabled = call.argument("recoverEnabled");
-        if (recoverEnabled == null || !recoverEnabled) {
-            Log.i(TAG, "signIn: recoverEnabled is false, skipping validation (recoverEnabled=" + recoverEnabled + ")");
-            success(result, true);
-            return;
-        }
-        try {
-            if(m_authenticator.validateAccessTokenAllowingPrompt()) {
-                success(result, true);
-            }
-        } catch (Exception e) {
-            fail(result, "AuthError", e.getMessage(), "Failed to signIn breez library");
-        }
+        success(result, true);
     }
 
     private void signOut(MethodCall call, MethodChannel.Result result){
