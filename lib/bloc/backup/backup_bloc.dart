@@ -434,7 +434,7 @@ class BackupBloc with AsyncActionsHandler {
         );
       } else if (e.code == _empty || exception == _empty) {
         exception = NoBackupFoundException();
-      } else if (exception.contains(_insufficientPermission)) {
+      } else if (e.code == _insufficientPermission || exception.contains(_insufficientPermission)) {
         // TODO: Handle Insufficient Permissions error properly
         exception = InsufficientPermissionException();
       } else if (exception.contains(_invalidCredentials)) {
@@ -537,7 +537,7 @@ class BackupBloc with AsyncActionsHandler {
         exception = SignInFailedException(
           _backupSettingsController.value.backupProvider,
         );
-      } else if (exception.contains(_insufficientPermission)) {
+      } else if (e.code == _insufficientPermission || exception.contains(_insufficientPermission)) {
         // TODO: Handle Insufficient Permissions error properly
         exception = InsufficientPermissionException();
       } else if (exception.contains(_invalidCredentials)) {
@@ -625,7 +625,7 @@ class BackupBloc with AsyncActionsHandler {
         _promptBackupController.add(true);
       } else if (e.code == _empty || exception == _empty) {
         exception = NoBackupFoundException();
-      } else if (exception.contains(_insufficientPermission)) {
+      } else if (e.code == _insufficientPermission || exception.contains(_insufficientPermission)) {
         // TODO: Handle Insufficient Permissions error properly
         exception = InsufficientPermissionException();
       } else if (exception.contains(_invalidCredentials)) {

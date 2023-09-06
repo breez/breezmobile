@@ -13,6 +13,8 @@ import androidx.lifecycle.OnLifecycleEvent;
 import androidx.lifecycle.ProcessLifecycleOwner;
 import androidx.work.WorkManager;
 
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
+
 import java.io.File;
 import java.lang.reflect.Method;
 import java.util.HashMap;
@@ -237,12 +239,13 @@ public class Breez implements MethodChannel.MethodCallHandler, StreamHandler,
             success(result, true);
             return;
         }
+        GoogleSignInAccount signedInAccount;
         try {
             Boolean force = call.argument("force");
             if (force != null && force) {
                 m_authenticator.signOut();
             }
-            m_authenticator.ensureSignedIn(false);
+            signedInAccount = m_authenticator.ensureSignedIn(false);
         } catch (Exception e) {
             final String errorMessage = e.getMessage();
             if (errorMessage.contains("SignInCancelled")) {
@@ -252,7 +255,15 @@ public class Breez implements MethodChannel.MethodCallHandler, StreamHandler,
             }
             return;
         }
-        success(result, true);
+        try {
+            if (m_authenticator.hasWritePermissions(signedInAccount)) {
+                success(result, true);
+            } else {
+                fail(result, "ACCESS_TOKEN_SCOPE_INSUFFICIENT", "Failed to validate access token", "Failed to signIn breez library");
+            }
+        } catch (Exception e) {
+            fail(result, "ACCESS_TOKEN_SCOPE_INSUFFICIENT", "Failed to validate access token", "Failed to signIn breez library");
+        }
     }
 
     private void signOut(MethodCall call, MethodChannel.Result result){
