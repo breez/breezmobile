@@ -24,6 +24,7 @@ import 'package:anytime/ui/themes.dart';
 import 'package:breez/bloc/account/account_bloc.dart';
 import 'package:breez/bloc/account/account_model.dart';
 import 'package:breez/bloc/blocs_provider.dart';
+import 'package:breez/bloc/marketplace/marketplace_bloc.dart';
 import 'package:breez/bloc/nostr/nostr_bloc.dart';
 import 'package:breez/bloc/nostr/nostr_comments/nostr_comments_bloc.dart';
 import 'package:breez/bloc/podcast_payments/model.dart';
@@ -62,8 +63,10 @@ class AnytimePodcastApp extends StatefulWidget {
   SettingsBloc settingsBloc;
   MobileSettingsService mobileSettingsService;
   OPMLService opmlService;
+  MarketplaceBloc marketplaceBloc;
 
-  AnytimePodcastApp(this.mobileSettingsService, this.repository, this.child)
+  AnytimePodcastApp(this.mobileSettingsService, this.repository,
+      this.marketplaceBloc, this.child)
       : podcastApi = PodcastIndexAPI() {
     downloadService = MobileDownloadService(
         repository: repository, downloadManager: AnytimeDownloadManager());
@@ -88,6 +91,7 @@ class AnytimePodcastApp extends StatefulWidget {
 class AnytimePodcastAppState extends State<AnytimePodcastApp> {
   ThemeData theme;
   NostrBloc nostrBloc;
+  static bool showComments = false;
 
   @override
   void initState() {
@@ -110,6 +114,16 @@ class AnytimePodcastAppState extends State<AnytimePodcastApp> {
     } else {
       theme = Themes.lightTheme().themeData;
     }
+
+    _listenToggle();
+  }
+
+  void _listenToggle() {
+    widget.marketplaceBloc.nostrSettingsStream.listen((settings) {
+      setState(() {
+        showComments = !settings.enableNostr;
+      });
+    });
   }
 
   @override
@@ -271,7 +285,12 @@ class NowPlayingTransportState extends State<NowPlayingTransport> {
 }
 
 WidgetBuilder nostrCommentsBuilder(Episode episode) {
-  builder(BuildContext context) => EpisodeComments(episode: episode);
+  builder(BuildContext context) {
+    return AnytimePodcastAppState.showComments == true
+        ? EpisodeComments(episode: episode)
+        : null;
+  }
+
   return builder;
 }
 
