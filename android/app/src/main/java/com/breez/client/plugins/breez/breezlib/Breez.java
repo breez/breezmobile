@@ -244,7 +244,12 @@ public class Breez implements MethodChannel.MethodCallHandler, StreamHandler,
             }
             m_authenticator.ensureSignedIn(false);
         } catch (Exception e) {
-            fail(result, "AuthError", e.getMessage(), "Failed to signIn breez library");
+            final String errorMessage = e.getMessage();
+            if (errorMessage.contains("SignInCancelled")) {
+                fail(result, "SignInCancelled", errorMessage, "Failed to signIn breez library");
+            } else {
+                fail(result, "AuthError", errorMessage, "Failed to signIn breez library");
+            }
             return;
         }
         success(result, true);

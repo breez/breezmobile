@@ -321,6 +321,13 @@ class MethodNotFoundException implements Exception {
   }
 }
 
+class SignInCancelledException implements Exception {
+  @override
+  String toString() {
+    return "Sign in cancelled";
+  }
+}
+
 class InvalidCredentialsException implements Exception {
   @override
   String toString() {
