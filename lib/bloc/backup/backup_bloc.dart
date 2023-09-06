@@ -395,8 +395,13 @@ class BackupBloc with AsyncActionsHandler {
 
   Future _listSnapshots(ListSnapshots action) async {
     try {
-      bool signedIn = await _breezLib.signIn(true, false);
+      bool signInNeeded = _backupServiceNeedLoginController.value;
+      log.info(
+        "Signing in, { force: $signInNeeded }",
+      );
+      bool signedIn = await _breezLib.signIn(signInNeeded);
       if (signedIn) {
+        backupServiceNeedLoginSink.add(false);
         String backups = await _breezLib.getAvailableBackups();
         List snapshotsArray = json.decode(backups) as List;
         List<SnapshotInfo> snapshots = <SnapshotInfo>[];
@@ -506,9 +511,9 @@ class BackupBloc with AsyncActionsHandler {
     try {
       bool signInNeeded = _backupServiceNeedLoginController.value;
       log.info(
-        "Signing in, { force: $signInNeeded, recoverEnabled: $signInNeeded }",
+        "Signing in, { force: $signInNeeded }",
       );
-      bool signedIn = await _breezLib.signIn(signInNeeded, signInNeeded);
+      bool signedIn = await _breezLib.signIn(signInNeeded);
       if (signedIn) {
         backupServiceNeedLoginSink.add(false);
         return true;
