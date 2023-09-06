@@ -48,9 +48,10 @@ class SecurityAndBackupPage extends StatefulWidget {
 class SecurityAndBackupPageState extends State<SecurityAndBackupPage>
     with WidgetsBindingObserver {
   StreamSubscription<BackupState> _backupInProgressSubscription;
-  bool showingBackupDialog = false;
+  bool _showingBackupDialog = false;
   final _autoSizeGroup = AutoSizeGroup();
   bool _screenLocked = true;
+  bool _subscribedToBackupState = false;
   LocalAuthenticationOption _localAuthenticationOption;
 
   @override
@@ -100,12 +101,16 @@ class SecurityAndBackupPageState extends State<SecurityAndBackupPage>
     _backupInProgressSubscription = widget.backupBloc.backupStateStream
         .where((s) => s.inProgress)
         .listen((s) async {
+      setState(() {
+        _subscribedToBackupState = true;
+      });
+
       EasyLoading.dismiss();
 
       if (mounted) {
-        if (!showingBackupDialog) {
+        if (!_showingBackupDialog) {
           setState(() {
-            showingBackupDialog = true;
+            _showingBackupDialog = true;
           });
           await showDialog(
             useRootNavigator: false,
@@ -115,15 +120,21 @@ class SecurityAndBackupPageState extends State<SecurityAndBackupPage>
               context,
               widget.backupBloc.backupStateStream,
               barrierDismissible: false,
+              onFinished: () {
+                setState(() {
+                  _showingBackupDialog = false;
+                });
+              },
             ),
-          ).then((_) {
-            setState(() {
-              showingBackupDialog = false;
-            });
-          });
+          );
         }
       }
-    }, onError: (error) => _handleError(error));
+    }, onError: (error) {
+      setState(() {
+        _showingBackupDialog = false;
+      });
+      _handleError(error);
+    });
   }
 
   @override
@@ -286,18 +297,20 @@ class SecurityAndBackupPageState extends State<SecurityAndBackupPage>
   void _handleError(dynamic exception) async {
     EasyLoading.dismiss();
 
-    final texts = context.texts();
+    if (_subscribedToBackupState) {
+      final texts = context.texts();
 
-    switch (exception.runtimeType) {
-      case SignInFailedException:
-        _handleSignInException(exception);
-        return;
-      case InsufficientPermissionException:
-      default:
-        showFlushbar(
-          context,
-          message: extractExceptionMessage(exception, texts: texts),
-        );
+      switch (exception.runtimeType) {
+        case SignInFailedException:
+          _handleSignInException(exception);
+          return;
+        case InsufficientPermissionException:
+        default:
+          showFlushbar(
+            context,
+            message: extractExceptionMessage(exception, texts: texts),
+          );
+      }
     }
   }
 
