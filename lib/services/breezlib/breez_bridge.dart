@@ -901,6 +901,7 @@ class BreezBridge {
       result.addAll(files.map((e) => e as String));
     }
     result.add('$lndDir/data/chain/bitcoin/$network/wallet.db');
+    result.add('$lndDir/breez.db');
     return result;
   }
 
