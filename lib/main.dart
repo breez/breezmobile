@@ -51,6 +51,7 @@ void main() async {
           child: AnytimePodcastApp(
               mobileService,
               repository,
+              blocs.marketplaceBloc,
               Provider<PodcastPaymentsBloc>(
                 lazy: false,
                 create: (ctx) => PodcastPaymentsBloc(
@@ -69,8 +70,10 @@ void main() async {
                             builder: sharePodcastButtonBuilder,
                             child: ShareEpisodeButtonBuilder(
                                 builder: shareEpisodeButtonBuilder,
-                                child:
-                                    UserApp(repository.reloadDatabaseSink))))),
+                                child: NostrCommentsBuilder(
+                                    builder: nostrCommentsBuilder,
+                                    child: UserApp(
+                                        repository.reloadDatabaseSink)))))),
               ))));
     });
   }, (error, stackTrace) async {

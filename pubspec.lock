@@ -190,8 +190,8 @@ packages:
     dependency: "direct main"
     description:
       path: "."
-      ref: "077a94046e0b7ff9bd1aff225616541dea0ba208"
-      resolved-ref: "077a94046e0b7ff9bd1aff225616541dea0ba208"
+      ref: "12c0f8736cb9a3184d1a9836b0d44f5eccf95a67"
+      resolved-ref: "12c0f8736cb9a3184d1a9836b0d44f5eccf95a67"
       url: "https://github.com/breez/Breez-Translations.git"
     source: git
     version: "1.0.0"
@@ -2095,7 +2095,9 @@ packages:
     dependency: "direct main"
     description:
       name: webview_flutter_android
+
       sha256: bca797abba472868655b5f1a6029c1132385685ee9db4713cb0e7f33076210c6
+
       url: "https://pub.dev"
     source: hosted
     version: "3.9.3"
@@ -2111,6 +2113,7 @@ packages:
     dependency: transitive
     description:
       name: webview_flutter_wkwebview
+
       sha256: ed749f94ac9e814d04a258a9255cf69cfa4cc6006ff59542aea7fb4590144972
       url: "https://pub.dev"
     source: hosted
