@@ -63,10 +63,10 @@ class AnytimePodcastApp extends StatefulWidget {
   SettingsBloc settingsBloc;
   MobileSettingsService mobileSettingsService;
   OPMLService opmlService;
-  MarketplaceBloc marketplaceBloc;
+  NostrBloc nostrBloc;
 
-  AnytimePodcastApp(this.mobileSettingsService, this.repository,
-      this.marketplaceBloc, this.child)
+  AnytimePodcastApp(
+      this.mobileSettingsService, this.repository, this.nostrBloc, this.child)
       : podcastApi = PodcastIndexAPI() {
     downloadService = MobileDownloadService(
         repository: repository, downloadManager: AnytimeDownloadManager());
@@ -119,7 +119,7 @@ class AnytimePodcastAppState extends State<AnytimePodcastApp> {
   }
 
   void _listenToggle() {
-    widget.marketplaceBloc.nostrSettingsStream.listen((settings) {
+    widget.nostrBloc.nostrSettingsStream.listen((settings) {
       setState(() {
         showComments = !settings.enableNostr;
       });
@@ -204,7 +204,7 @@ class AnytimePodcastAppState extends State<AnytimePodcastApp> {
         Provider<NostrCommentBloc>(
           create: (_) => NostrCommentBloc(
             episodeStream: widget.audioPlayerService.episodeEvent,
-            nostrBloc: nostrBloc,
+            nostrBloc: widget.nostrBloc,
           ),
           dispose: (_, value) => value.dispose(),
         ),

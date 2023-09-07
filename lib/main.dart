@@ -51,7 +51,7 @@ void main() async {
           child: AnytimePodcastApp(
               mobileService,
               repository,
-              blocs.marketplaceBloc,
+              blocs.nostrBloc,
               Provider<PodcastPaymentsBloc>(
                 lazy: false,
                 create: (ctx) => PodcastPaymentsBloc(

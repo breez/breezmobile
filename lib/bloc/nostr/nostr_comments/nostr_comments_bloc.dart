@@ -7,6 +7,7 @@ import 'package:breez/bloc/nostr/nostr_actions.dart';
 import 'package:breez/bloc/nostr/nostr_bloc.dart';
 import 'package:breez/bloc/nostr/nostr_comments/nostr_comments_model.dart';
 import 'package:breez/bloc/nostr/nostr_comments/nostr_comments_state_event.dart';
+import 'package:breez/bloc/nostr/nostr_model.dart';
 import 'package:nostr_tools/nostr_tools.dart';
 
 class NostrCommentBloc extends Bloc {
@@ -349,13 +350,20 @@ class NostrCommentBloc extends Bloc {
 
   // this method is to make sure keyPair is made before signing the sortedEvents
   Future<void> _getPubKey() async {
+    // will log the user via nostrComments
+    NostrSettings settings = await nostrBloc.nostrSettingsStream.first;
+    if (!settings.isLoggedIn) {
+      nostrBloc.nostrSettingsSettingsSink.add(settings.copyWith(
+        isLoggedIn: true,
+      ));
+    }
     nostrBloc.actionsSink.add(GetPublicKey());
   }
 
   Future<void> signEvent(Map<String, dynamic> eventData) async {
     // _signEventController.add(eventData);
 
-    nostrBloc.actionsSink.add(SignEvent(eventData, nostrBloc.nostrPrivateKey));
+    nostrBloc.actionsSink.add(SignEvent(eventData));
     Map<String, dynamic> signedEvent = await nostrBloc.eventStream.first;
     final signedNostrEvent = CommentEvent.mapToEvent(signedEvent);
     await _publishNewEvent(signedNostrEvent);
