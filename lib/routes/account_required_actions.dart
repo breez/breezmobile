@@ -91,6 +91,7 @@ class AccountRequiredActionsIndicatorState
       dialogBuilder = (_) => buildBackupInProgressDialog(
             context,
             backupBloc.backupStateStream,
+            onFinished: () {},
           );
     } else if (account?.transferringOnChainDeposit == true) {
       dialogBuilder = (_) => buildTransferFundsInProgressDialog(
