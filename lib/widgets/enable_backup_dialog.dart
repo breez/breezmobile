@@ -300,7 +300,10 @@ class _BackupNowButtonState extends State<_BackupNowButton> {
 
       await _backupNow(
         widget.backupSettings.copyWith(backupProvider: selectedProvider),
-      ).then((_) => Navigator.pop(context));
+      ).then((_) {
+        EasyLoading.dismiss();
+        Navigator.pop(context);
+      });
     } catch (error) {
       log.warning("Failed to update backup provider.", error);
       _handleError(error);
@@ -328,7 +331,7 @@ class _BackupNowButtonState extends State<_BackupNowButton> {
         return;
       case SignInCancelledException:
         break;
-      case InsufficientPermissionException:
+      case InsufficientScopeException:
       default:
         showFlushbar(
           context,

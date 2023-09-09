@@ -306,7 +306,7 @@ class SecurityAndBackupPageState extends State<SecurityAndBackupPage>
           return;
         case SignInCancelledException:
           return;
-        case InsufficientPermissionException:
+        case InsufficientScopeException:
         default:
           showFlushbar(
             context,

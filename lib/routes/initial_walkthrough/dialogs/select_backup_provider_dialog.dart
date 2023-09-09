@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:breez/bloc/backup/backup_actions.dart';
 import 'package:breez/bloc/backup/backup_bloc.dart';
@@ -207,7 +209,10 @@ class SelectBackupProviderDialogState
     EasyLoading.dismiss();
 
     switch (error.runtimeType) {
-      case InsufficientPermissionException:
+      case InsufficientScopeException:
+        if(Platform.isIOS){
+          Navigator.pop(context);
+        }
         showFlushbar(
           context,
           duration: const Duration(seconds: 3),
