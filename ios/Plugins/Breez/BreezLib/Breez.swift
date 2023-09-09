@@ -183,9 +183,9 @@ class Breez : NSObject, FlutterPlugin, BindingsAppServicesProtocol, FlutterStrea
                 result(FlutterError(code: "AuthError", message: "Failed to signIn breez library", details: ""));
                 return;
             }
-            var _ = self.backupAuthenticators[provider]?.backupProviderSignIn(silent: false, in: &errorPtr);
-            if let _ = errorPtr {
-                result(FlutterError(code: "AuthError", message: "Failed to sign in breez library", details: ""));
+            self.backupAuthenticators[provider]?.backupProviderSignIn(silent: false, in: &errorPtr);
+            if let err = errorPtr {
+                result(FlutterError(code: "AuthError", message: err.localizedDescription, details: ""));
                 return;
                 
             }
@@ -264,7 +264,7 @@ class Breez : NSObject, FlutterPlugin, BindingsAppServicesProtocol, FlutterStrea
     func backupProviderName() -> String {
         guard let provider = self.backupProvider else {
             return "";
-        }
+        }  
         return provider;
     }
     
@@ -273,11 +273,7 @@ class Breez : NSObject, FlutterPlugin, BindingsAppServicesProtocol, FlutterStrea
             err?.pointee = NSError(domain: "AuthError", code: 0, userInfo: nil);
             return "";
         }
-        var result = self.backupAuthenticators[provider]!.backupProviderSignIn(silent: true, in: err);
-        if let result = err {
-            err?.pointee = NSError(domain: "AuthError", code: 0, userInfo: nil);
-            return "";
-        }
+        let result = self.backupAuthenticators[provider]!.backupProviderSignIn(silent: true, in: err);
         return result;
     }
     

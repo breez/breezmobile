@@ -30,8 +30,7 @@ class BackupBloc with AsyncActionsHandler {
   static const String _notFoundMessage = "404";
   static const String _noAccess = "403";
   static const String _empty = "empty";
-  static const String _insufficientPermission =
-      "ACCESS_TOKEN_SCOPE_INSUFFICIENT";
+  static const String _insufficientScope = "InsufficientScope";
   static const String _invalidCredentials = "Invalid Credentials";
   static const String USER_DETAILS_PREFERENCES_KEY = "BreezUserModel.userID";
 
@@ -427,16 +426,9 @@ class BackupBloc with AsyncActionsHandler {
       // not to confuse the two.
       if (e.message == _googleSignNotAvailable) {
         exception = GoogleSignNotAvailableException();
-      } else if (e.code == _signInFailedMessage ||
-          e.message == _signInFailedCode) {
-        exception = SignInFailedException(
-          _backupSettingsController.value.backupProvider,
-        );
-      } else if (e.code == _empty || exception == _empty) {
-        exception = NoBackupFoundException();
-      } else if (e.code == _insufficientPermission || exception.contains(_insufficientPermission)) {
-        // TODO: Handle Insufficient Permissions error properly
-        exception = InsufficientPermissionException();
+      } else if (e.code == _insufficientScope ||
+          exception.contains(_insufficientScope)) {
+        exception = InsufficientScopeException();
       } else if (exception.contains(_invalidCredentials)) {
         // If user revokes Breez permissions from their GDrive account during a
         // session. They won't be able to sign in again.
@@ -446,6 +438,13 @@ class BackupBloc with AsyncActionsHandler {
         exception = InvalidCredentialsException();
       } else if (e.message == _signInCancelledMessage) {
         exception = SignInCancelledException();
+      } else if (e.code == _signInFailedMessage ||
+          e.message == _signInFailedCode) {
+        exception = SignInFailedException(
+          _backupSettingsController.value.backupProvider,
+        );
+      } else if (e.code == _empty || exception == _empty) {
+        exception = NoBackupFoundException();
       }
       action.resolveError(exception);
     } catch (error) {
@@ -532,14 +531,9 @@ class BackupBloc with AsyncActionsHandler {
       // not to confuse the two.
       if (e.message == _googleSignNotAvailable) {
         exception = GoogleSignNotAvailableException();
-      } else if (e.code == _signInFailedMessage ||
-          e.message == _signInFailedCode) {
-        exception = SignInFailedException(
-          _backupSettingsController.value.backupProvider,
-        );
-      } else if (e.code == _insufficientPermission || exception.contains(_insufficientPermission)) {
-        // TODO: Handle Insufficient Permissions error properly
-        exception = InsufficientPermissionException();
+      } else if (e.code == _insufficientScope ||
+          exception.contains(_insufficientScope)) {
+        exception = InsufficientScopeException();
       } else if (exception.contains(_invalidCredentials)) {
         // If user revokes Breez permissions from their GDrive account during a
         // session. They won't be able to sign in again.
@@ -549,6 +543,11 @@ class BackupBloc with AsyncActionsHandler {
         exception = InvalidCredentialsException();
       } else if (e.code == _signInCancelledMessage) {
         exception = SignInCancelledException();
+      } else if (e.code == _signInFailedMessage ||
+          e.message == _signInFailedCode) {
+        exception = SignInFailedException(
+          _backupSettingsController.value.backupProvider,
+        );
       }
       _promptBackupController.add(true);
       throw exception;
@@ -617,17 +616,9 @@ class BackupBloc with AsyncActionsHandler {
       // not to confuse the two.
       if (e.message == _googleSignNotAvailable) {
         exception = GoogleSignNotAvailableException();
-      } else if (e.code == _signInFailedMessage ||
-          e.message == _signInFailedCode) {
-        exception = SignInFailedException(
-          _backupSettingsController.value.backupProvider,
-        );
-        _promptBackupController.add(true);
-      } else if (e.code == _empty || exception == _empty) {
-        exception = NoBackupFoundException();
-      } else if (e.code == _insufficientPermission || exception.contains(_insufficientPermission)) {
-        // TODO: Handle Insufficient Permissions error properly
-        exception = InsufficientPermissionException();
+      } else if (e.code == _insufficientScope ||
+          exception.contains(_insufficientScope)) {
+        exception = InsufficientScopeException();
       } else if (exception.contains(_invalidCredentials)) {
         // If user revokes Breez permissions from their GDrive account during a
         // session. They won't be able to sign in again.
@@ -638,6 +629,14 @@ class BackupBloc with AsyncActionsHandler {
         _promptBackupController.add(true);
       } else if (e.code == _signInCancelledMessage) {
         exception = SignInCancelledException();
+      } else if (e.code == _signInFailedMessage ||
+          e.message == _signInFailedCode) {
+        exception = SignInFailedException(
+          _backupSettingsController.value.backupProvider,
+        );
+        _promptBackupController.add(true);
+      } else if (e.code == _empty || exception == _empty) {
+        exception = NoBackupFoundException();
       }
       action.resolveError(exception);
     } catch (e) {

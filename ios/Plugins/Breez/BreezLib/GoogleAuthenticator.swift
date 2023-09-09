@@ -32,13 +32,13 @@ class GoogleAuthenticator : NSObject, BackupAuthenticatorProtocol {
         GIDSignIn.sharedInstance.signOut();
     }
     
-    func getAccessToken(silentOnly: Bool) throws -> String{        
+    func getAccessToken(silentOnly: Bool) throws -> String{
         let signInOperation = startSignInOperation(silentOnly: silentOnly);
         signInOperation.waitUntilFinished();
         queue.sync{
             inProgressOperation = nil;
         }
-
+        
         if (signInOperation.error != nil) {
             throw signInOperation.error!;
         }
@@ -72,11 +72,18 @@ class SignInOperation : Operation {
     var error : Error?;
     private var configuration: GIDConfiguration = GIDConfiguration(clientID: "")
     
+    private var appDataScope = "https://www.googleapis.com/auth/drive.appdata";
+    private var authScopes: [String] {
+        [
+            appDataScope,
+        ]
+    }
+    
     init(silentOnly: Bool){
         super.init();
-        self.silentOnly = silentOnly;        
+        self.silentOnly = silentOnly;
     }
-
+    
     override var isAsynchronous: Bool {
         return true;
     }
@@ -94,34 +101,88 @@ class SignInOperation : Operation {
     }
     
     override func start() {
-        if let path = Bundle.main.path(forResource: "GoogleService-Info", ofType: "plist") {
-            if let plist = NSMutableDictionary.init(contentsOfFile: path) {
-                if let window = UIApplication.shared.keyWindow {
-                    if let rootViewController = window.rootViewController {
-                        self.configuration = GIDConfiguration(clientID: plist["CLIENT_ID"] as! String)
-                        GIDSignIn.sharedInstance.addScopes(["https://www.googleapis.com/auth/drive.appdata"], presenting: rootViewController);
-                        state = .executing;
-                        GIDSignIn.sharedInstance.restorePreviousSignIn { user, error in
-                            
-                            if let error = error {
-                                if !self.silentOnly {
-                                    GIDSignIn.sharedInstance.signIn(with: self.configuration, presenting: UIApplication.shared.keyWindow!.rootViewController!) { user, error in
-                                        self.onFinish(withToken: user?.authentication.accessToken, error: error)
-                                    };
-                                    return
-                                }
+        guard let path = Bundle.main.path(forResource: "GoogleService-Info", ofType: "plist") else {
+            self.onFinish(withToken: nil, error: NSError(domain: "ConfigError", code: 0, userInfo: nil));
+            return
+        }
+        guard let plist = NSMutableDictionary(contentsOfFile: path) else {
+            self.onFinish(withToken: nil, error: NSError(domain: "ConfigError", code: 0, userInfo: nil));
+            return
+        }
+        guard let presenting = UIApplication.shared.keyWindow?.rootViewController else {
+            return
+        }
+        let CLIENT_ID = plist["CLIENT_ID"] as! String;
+        self.configuration = GIDConfiguration(clientID: CLIENT_ID)
+        GIDSignIn.sharedInstance.addScopes(authScopes, presenting: presenting);
+        state = .executing;
+        
+        if(GIDSignIn.sharedInstance.hasPreviousSignIn()){
+            GIDSignIn.sharedInstance.restorePreviousSignIn { currentUser, error in
+                if error == nil {
+                    print("Managed to restore previous sign in!\nScopes: \(String(describing: currentUser?.grantedScopes))")
+                    if !self.silentOnly {
+                        self.handleSignIn(presenting: presenting);
+                    } else {
+                        self.requestScopes(user: currentUser!, presenting: presenting) { success in
+                            if success == true {
+                                self.onFinish(withToken: currentUser?.authentication.accessToken, error: error)
+                            } else {
+                                self.onFinish(withToken: nil, error: NSError(domain: "InsufficientScope", code: 0, userInfo: nil))
                             }
-                            
-                            self.onFinish(withToken: user?.authentication.accessToken, error: error)
-                            
-                          }
-                        return;
+                        }
                     }
+                } else {
+                    print("No previous user!\nThis is the error: \(String(describing: error?.localizedDescription))")
+                    self.handleSignIn(presenting: presenting)
                 }
             }
+        } else {
+            self.handleSignIn(presenting: presenting)
         }
-        
-        self.onFinish(withToken: nil, error: NSError(domain: "AuthError", code: 0, userInfo: nil));
+    }
+    
+    private func handleSignIn(presenting: UIViewController) {
+        GIDSignIn.sharedInstance.signIn(with: self.configuration, presenting: presenting) { gUser, signInError in
+            if signInError == nil {
+                self.requestScopes(user: gUser!,presenting: presenting) { signInSuccess in
+                    if signInSuccess == true {
+                        self.onFinish(withToken: gUser?.authentication.accessToken, error: signInError)
+                    } else {
+                        self.onFinish(withToken: nil, error: NSError(domain: "InsufficientScope", code: 0, userInfo: nil))
+                    }
+                }
+            } else {
+                print("error with signing in: \(String(describing: signInError)) ")
+                self.onFinish(withToken: nil, error: NSError(domain: "AuthError", code: 0, userInfo: nil))
+            }
+        }
+    }
+    
+    private func requestScopes(user: GIDGoogleUser, presenting: UIViewController, completionHandler: @escaping (Bool) -> Void) {
+        let grantedScopes = user.grantedScopes
+        if grantedScopes == nil || !grantedScopes!.contains(appDataScope) {
+            // Request additional Drive scope.
+            GIDSignIn.sharedInstance.addScopes(authScopes, presenting: presenting) { user, scopeError in
+                if scopeError == nil {
+                    user?.authentication.do { authentication, err in
+                        if err == nil {
+                            completionHandler(true)
+                        } else {
+                            print("Error with auth: \(String(describing: err?.localizedDescription))")
+                            completionHandler(false)
+                        }
+                    }
+                    completionHandler(true);
+                } else {
+                    print("Error with adding scopes: \(String(describing: scopeError?.localizedDescription))")
+                    completionHandler(false)
+                }
+            }
+        } else {
+            print("Already contains the scopes!")
+            completionHandler(true)
+        }
     }
     
     func onFinish(withToken : String?, error: Error?){
