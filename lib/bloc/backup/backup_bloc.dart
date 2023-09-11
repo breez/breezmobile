@@ -482,7 +482,7 @@ class BackupBloc with AsyncActionsHandler {
       backupSettings = backupSettings.copyWith(keyType: BackupKeyType.PHRASE);
     } else if (backupSettings.backupKeyType != BackupKeyType.NONE) {
       /// This also sets keyType of backups encrypted with PIN to
-      /// BackupKeyType.NON as they are are non-secure & deprecated
+      /// BackupKeyType.NONE as they are are non-secure & deprecated
       backupSettings = backupSettings.copyWith(keyType: BackupKeyType.NONE);
     }
     _backupSettingsController.add(backupSettings);
@@ -586,6 +586,7 @@ class BackupBloc with AsyncActionsHandler {
   }
 
   Future _backupNow(BackupNow action) async {
+    final initialBackupSettings = _backupSettingsController.value;
     try {
       log.info("Backup Now requested: $action");
       bool signInNeeded = _backupServiceNeedLoginController.value;
@@ -610,6 +611,11 @@ class BackupBloc with AsyncActionsHandler {
       );
       action.resolve(true);
     } on PlatformException catch (e) {
+      // Reset backup settings to previous state on error
+      log.info(
+        "Resetting backup settings to it's previous state: $initialBackupSettings from ${_backupSettingsController.value}",
+      );
+      await _updateBackupSettings(UpdateBackupSettings(initialBackupSettings));
       dynamic exception = extractExceptionMessage(e.message);
       log.warning(exception, e);
       // the error code equals the message from the go library so
@@ -640,6 +646,11 @@ class BackupBloc with AsyncActionsHandler {
       }
       action.resolveError(exception);
     } catch (e) {
+      // Reset backup settings to previous state on error
+      log.info(
+        "Resetting backup settings to it's previous state: $initialBackupSettings from ${_backupSettingsController.value}",
+      );
+      await _updateBackupSettings(UpdateBackupSettings(initialBackupSettings));
       action.resolveError(e);
     }
   }
