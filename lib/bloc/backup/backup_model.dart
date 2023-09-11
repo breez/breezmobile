@@ -170,7 +170,7 @@ class BackupSettings {
           promptOnError == other.promptOnError &&
           backupKeyType == other.backupKeyType &&
           backupProvider == other.backupProvider &&
-          remoteServerAuthData == other.remoteServerAuthData;
+          remoteServerAuthData.equal(other.remoteServerAuthData);
 
   @override
   int get hashCode =>
