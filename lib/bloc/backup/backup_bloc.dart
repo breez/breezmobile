@@ -14,6 +14,7 @@ import 'package:breez/services/breezlib/breez_bridge.dart';
 import 'package:breez/services/breezlib/data/messages.pb.dart';
 import 'package:breez/services/injector.dart';
 import 'package:breez/utils/exceptions.dart';
+import 'package:breez_translations/breez_translations_locales.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:path_provider/path_provider.dart';
@@ -376,11 +377,32 @@ class BackupBloc with AsyncActionsHandler {
     }
   }
 
+  Future _resetBackupKey() async {
+    try {
+      // Delete backup key from secure storage
+      await _secureStorage.delete(key: 'backupKey');
+      // Reset key type of backup settings to NONE
+      _backupSettingsController.add(
+        _backupSettingsController.value.copyWith(keyType: BackupKeyType.NONE),
+      );
+      // Set Backup Encryption Key used on Breez Library to null
+      await _breezLib.setBackupEncryptionKey(null, null);
+      return;
+    } catch (error) {
+      throw Exception("Failed to reset backup key");
+    }
+  }
+
   Future _downloadSnapshot(DownloadSnapshot action) async {
     action.resolve(await _breezLib.downloadBackup(action.nodeID));
   }
 
   Future _setBreezLibBackupKey({BackupKeyType backupKeyType}) async {
+    // Reset backup key if backup key type is set to NONE
+    if (backupKeyType != null && backupKeyType == BackupKeyType.NONE) {
+      await _resetBackupKey();
+      return;
+    }
     backupKeyType ??= _backupSettingsController.value.backupKeyType;
     var encryptionKey = await BreezLibBackupKey.fromSettings(
       _secureStorage,
@@ -469,9 +491,20 @@ class BackupBloc with AsyncActionsHandler {
       _updateLastBackupTime(snapshot.modifiedTime);
 
       action.resolve(true);
+    } on FileSystemException catch (error) {
+      if (error.message.contains("Failed to decode data using encoding")) {
+        log.warning(
+            "Failed to restore backup. Incorrect mnemonic phrase.", error);
+        _clearAppData();
+        await _resetBackupKey();
+        action.resolveError(
+          getSystemAppLocalizations().enter_backup_phrase_error,
+        );
+      }
     } catch (error) {
       log.warning("Failed to restore backup.", error);
       _clearAppData();
+      await _resetBackupKey();
       action.resolveError("Failed to restore backup.");
     }
   }
