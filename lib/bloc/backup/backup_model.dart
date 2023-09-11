@@ -399,7 +399,9 @@ class BreezLibBackupKey {
               entropy.length == ENTROPY_LENGTH ? 'Mnemonics12' : 'Mnemonics';
           break;
         case BackupKeyType.PIN:
-          result = 'Pin';
+          /// Sets type of backups encrypted with PIN to
+          /// BackupKeyType.NONE as they are are non-secure & deprecated
+          result = '';
           break;
         default:
       }
@@ -411,14 +413,19 @@ class BreezLibBackupKey {
   BreezLibBackupKey({this.entropy, List<int> key}) : _key = key;
 
   static Future<BreezLibBackupKey> fromSettings(
-      FlutterSecureStorage store, BackupKeyType backupKeyType) async {
+    FlutterSecureStorage store,
+    BackupKeyType backupKeyType,
+  ) async {
     assert(store != null);
 
     BreezLibBackupKey result;
     switch (backupKeyType) {
+      case BackupKeyType.NONE:
       case BackupKeyType.PIN:
-        var pinCode = await store.read(key: 'pinCode');
-        result = BreezLibBackupKey(key: utf8.encode(pinCode));
+        /// Sets backup key type of backups encrypted with PIN to
+        /// BackupKeyType.NONE as they are are non-secure & deprecated
+        result = BreezLibBackupKey(entropy: null, key: null);
+        backupKeyType = BackupKeyType.NONE;
         break;
       case BackupKeyType.PHRASE:
         result = BreezLibBackupKey(entropy: await store.read(key: 'backupKey'));
