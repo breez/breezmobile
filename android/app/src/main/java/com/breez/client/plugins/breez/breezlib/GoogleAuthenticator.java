@@ -101,11 +101,6 @@ public class GoogleAuthenticator implements PluginRegistry.ActivityResultListene
             credential.setSelectedAccount(googleAccount.getAccount());
             return credential.getToken();
         } catch (Exception e) {
-            // TODO Handle NEED_REMOTE_CONSENT error
-           /* if (e.getMessage().contains("NEED_REMOTE_CONSENT")) {
-                Tasks.await(requestAppDataScope());
-                return getAccessToken();
-            }*/
             Log.w(TAG, "getAccessToken failed", e);
             throw e;
         }
