@@ -107,21 +107,14 @@ class SendOnchainState extends State<SendOnchain> {
       child: Scaffold(
         backgroundColor: themeData.colorScheme.background,
         appBar: AppBar(
-          systemOverlayStyle: theme.themeId == "BLUE"
-              ? SystemUiOverlayStyle.dark
-              : themeData.appBarTheme.systemOverlayStyle,
           automaticallyImplyLeading: false,
-          title: Text(
-            widget._title,
-            style: dialogTheme.titleTextStyle,
-            textAlign: TextAlign.left,
-          ),
+          title: Text(widget._title),
           actions: [
             IconButton(
               onPressed: () => Navigator.pop(context),
               icon: Icon(
                 Icons.close,
-                color: themeData.appBarTheme.actionsIconTheme.color,
+                color: themeData.iconTheme.color,
               ),
             ),
           ],
