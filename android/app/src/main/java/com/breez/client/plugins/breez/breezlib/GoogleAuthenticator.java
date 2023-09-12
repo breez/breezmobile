@@ -71,6 +71,9 @@ public class GoogleAuthenticator implements PluginRegistry.ActivityResultListene
                     Log.d(TAG, "Google silentSignIn succeed.");
                     return signedInAccount;
                 } else {
+                    if(silent){
+                        throw new Exception("AuthError");
+                    }
                     // There's no immediate result ready
                     return Tasks.await(signIn());
                 }
