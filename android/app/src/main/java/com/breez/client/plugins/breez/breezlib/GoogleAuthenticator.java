@@ -94,7 +94,6 @@ public class GoogleAuthenticator implements PluginRegistry.ActivityResultListene
 
     public String getAccessToken() throws Exception {
         Log.d(TAG, "getAccessToken");
-        m_signInClient = createSignInClient();
         GoogleSignInAccount googleAccount = ensureSignedIn(true);
         try {
             GoogleAccountCredential credential = credential();
