@@ -264,7 +264,7 @@ class Breez : NSObject, FlutterPlugin, BindingsAppServicesProtocol, FlutterStrea
     func backupProviderName() -> String {
         guard let provider = self.backupProvider else {
             return "";
-        }  
+        }
         return provider;
     }
     
@@ -273,8 +273,7 @@ class Breez : NSObject, FlutterPlugin, BindingsAppServicesProtocol, FlutterStrea
             err?.pointee = NSError(domain: "AuthError", code: 0, userInfo: nil);
             return "";
         }
-        let result = self.backupAuthenticators[provider]!.backupProviderSignIn(silent: true, in: err);
-        return result;
+        return self.backupAuthenticators[provider]!.backupProviderSignIn(silent: true, in: err);
     }
     
     func notify(_ notificationEvent: Data?) {
