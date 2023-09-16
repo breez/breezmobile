@@ -105,12 +105,12 @@ class PaymentRequestInfoDialogState extends State<PaymentRequestInfoDialog> {
         }
 
         List<Widget> children = [];
-        _addIfNotNull(children, _buildPayeeNameWidget(context));
-        _addIfNotNull(children, _buildRequestPayTextWidget(context));
-        _addIfNotNull(children, _buildAmountWidget(context, account));
-        _addIfNotNull(children, _buildDescriptionWidget(context));
-        _addIfNotNull(children, _buildErrorMessage(context, account));
-        _addIfNotNull(children, _buildActions(context, account));
+        _addIfNotNull(children, _buildPayeeNameWidget());
+        _addIfNotNull(children, _buildRequestPayTextWidget());
+        _addIfNotNull(children, _buildAmountWidget(account));
+        _addIfNotNull(children, _buildDescriptionWidget());
+        _addIfNotNull(children, _buildErrorMessage(account));
+        _addIfNotNull(children, _buildActions(account));
 
         return Container(
           padding: const EdgeInsets.fromLTRB(8.0, 0.0, 8.0, 16.0),
@@ -131,7 +131,7 @@ class PaymentRequestInfoDialogState extends State<PaymentRequestInfoDialog> {
     }
   }
 
-  Widget _buildPayeeNameWidget(BuildContext context) {
+  Widget _buildPayeeNameWidget() {
     return widget.invoice.payeeName == null
         ? null
         : Text(
@@ -144,7 +144,7 @@ class PaymentRequestInfoDialogState extends State<PaymentRequestInfoDialog> {
           );
   }
 
-  Widget _buildRequestPayTextWidget(BuildContext context) {
+  Widget _buildRequestPayTextWidget() {
     final themeData = Theme.of(context);
     final texts = context.texts();
     final payeeName = widget.invoice.payeeName;
@@ -158,7 +158,7 @@ class PaymentRequestInfoDialogState extends State<PaymentRequestInfoDialog> {
     );
   }
 
-  Widget _buildAmountWidget(BuildContext context, AccountModel account) {
+  Widget _buildAmountWidget(AccountModel account) {
     final themeData = Theme.of(context);
     final texts = context.texts();
 
@@ -230,7 +230,7 @@ class PaymentRequestInfoDialogState extends State<PaymentRequestInfoDialog> {
     );
   }
 
-  Widget _buildDescriptionWidget(BuildContext context) {
+  Widget _buildDescriptionWidget() {
     final themeData = Theme.of(context);
     final description = widget.invoice.description;
 
@@ -260,7 +260,7 @@ class PaymentRequestInfoDialogState extends State<PaymentRequestInfoDialog> {
           );
   }
 
-  Widget _buildErrorMessage(BuildContext context, AccountModel account) {
+  Widget _buildErrorMessage(AccountModel account) {
     final validationError = account.validateOutgoingPayment(
       amountToPay(account),
     );
@@ -286,7 +286,7 @@ class PaymentRequestInfoDialogState extends State<PaymentRequestInfoDialog> {
     );
   }
 
-  Widget _buildActions(BuildContext context, AccountModel account) {
+  Widget _buildActions(AccountModel account) {
     final themeData = Theme.of(context);
     final texts = context.texts();
 

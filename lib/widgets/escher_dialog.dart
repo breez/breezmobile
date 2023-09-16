@@ -75,9 +75,9 @@ class EscherDialogState extends State<EscherDialog> {
         }
 
         List<Widget> children = [];
-        _addIfNotNull(children, _buildRequestPayTextWidget(context));
-        _addIfNotNull(children, _buildAmountWidget(context, account));
-        _addIfNotNull(children, _buildActions(context, account));
+        _addIfNotNull(children, _buildRequestPayTextWidget());
+        _addIfNotNull(children, _buildAmountWidget(account));
+        _addIfNotNull(children, _buildActions(account));
 
         return Container(
           padding: const EdgeInsets.fromLTRB(8.0, 0.0, 8.0, 16.0),
@@ -98,7 +98,7 @@ class EscherDialogState extends State<EscherDialog> {
     }
   }
 
-  Widget _buildRequestPayTextWidget(BuildContext context) {
+  Widget _buildRequestPayTextWidget() {
     final themeData = Theme.of(context);
     final texts = context.texts();
 
@@ -114,7 +114,7 @@ class EscherDialogState extends State<EscherDialog> {
     );
   }
 
-  Widget _buildAmountWidget(BuildContext context, AccountModel account) {
+  Widget _buildAmountWidget(AccountModel account) {
     final texts = context.texts();
     final themeData = Theme.of(context);
 
@@ -159,7 +159,7 @@ class EscherDialogState extends State<EscherDialog> {
     );
   }
 
-  Widget _buildActions(BuildContext context, AccountModel account) {
+  Widget _buildActions(AccountModel account) {
     final texts = context.texts();
     final themeData = Theme.of(context);
 

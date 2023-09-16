@@ -285,7 +285,23 @@ class iCloudBackupProvider : NSObject, BindingsNativeBackupProviderProtocol {
 
 class iCloudAuthenticator : BackupAuthenticatorProtocol {
     func backupProviderSignIn(silent: Bool, in err: NSErrorPointer) -> String {
-         return "";
+        // Checking for iCloud availability
+        let token = FileManager.default.ubiquityIdentityToken
+        if token == nil {
+            err?.pointee = NSError(domain: "AuthError", code: 0, userInfo: [NSLocalizedDescriptionKey: "The device doesn’t have an iCloud account."])
+        } else {
+            print("iCloud is available")
+        }
+        // Check iCloud account status (access to the apps private database)
+        CKContainer.default().accountStatus { (accountStatus, error) in
+            if accountStatus == .available {
+                print("The user’s iCloud account is available.")
+            } else {
+                print("The user’s iCloud account is unavailable. \(String(describing: error?.localizedDescription))")
+                err?.pointee = NSError(domain: "AuthError", code: 0, userInfo: [NSLocalizedDescriptionKey: error?.localizedDescription ?? "The user’s iCloud account is unavailable"])
+            }
+        }
+        return "";
     }
     
     func signOut(){}

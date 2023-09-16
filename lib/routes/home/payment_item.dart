@@ -21,7 +21,7 @@ const PAYMENT_LIST_ITEM_HEIGHT = 72.0;
 const BOTTOM_PADDING = 8.0;
 const AVATAR_DIAMETER = 24.0;
 
-class PaymentItem extends StatelessWidget {
+class PaymentItem extends StatefulWidget {
   final PaymentInfo _paymentInfo;
   final bool _firstItem;
   final bool _hideBalance;
@@ -34,6 +34,11 @@ class PaymentItem extends StatelessWidget {
     this.firstPaymentItemKey,
   );
 
+  @override
+  State<PaymentItem> createState() => _PaymentItemState();
+}
+
+class _PaymentItemState extends State<PaymentItem> {
   @override
   Widget build(BuildContext context) {
     final themeData = Theme.of(context);
@@ -65,11 +70,11 @@ class PaymentItem extends StatelessWidget {
                       : null,
                   child: _buildPaymentItemAvatar(),
                 ),
-                key: _firstItem ? firstPaymentItemKey : null,
+                key: widget._firstItem ? widget.firstPaymentItemKey : null,
                 title: Transform.translate(
                   offset: const Offset(-8, 0),
                   child: Text(
-                    _title(context),
+                    _title(),
                     style: themeData.paymentItemTitleTextStyle,
                     overflow: TextOverflow.ellipsis,
                   ),
@@ -84,30 +89,31 @@ class PaymentItem extends StatelessWidget {
                       Text(
                         BreezDateUtils.formatTimelineRelative(
                           DateTime.fromMillisecondsSinceEpoch(
-                            _paymentInfo.creationTimestamp.toInt() * 1000,
+                            widget._paymentInfo.creationTimestamp.toInt() *
+                                1000,
                           ),
                         ),
                         style: themeData.paymentItemSubtitleTextStyle,
                       ),
-                      _pendingSuffix(context),
+                      _pendingSuffix(),
                     ],
                   ),
                 ),
                 trailing: SizedBox(
                   height: 44,
                   child: Column(
-                    mainAxisAlignment:
-                        _paymentInfo.fee == 0 || _paymentInfo.pending
-                            ? MainAxisAlignment.center
-                            : MainAxisAlignment.spaceAround,
+                    mainAxisAlignment: widget._paymentInfo.fee == 0 ||
+                            widget._paymentInfo.pending
+                        ? MainAxisAlignment.center
+                        : MainAxisAlignment.spaceAround,
                     crossAxisAlignment: CrossAxisAlignment.end,
                     children: [
-                      _paymentAmount(context),
-                      _paymentFee(context),
+                      _paymentAmount(),
+                      _paymentFee(),
                     ],
                   ),
                 ),
-                onTap: () => _showDetail(context),
+                onTap: () => _showDetail(),
               ),
             ],
           ),
@@ -116,20 +122,20 @@ class PaymentItem extends StatelessWidget {
     );
   }
 
-  String _title(BuildContext context) {
-    final info = _paymentInfo.lnurlPayInfo;
+  String _title() {
+    final info = widget._paymentInfo.lnurlPayInfo;
     if (info != null && info.lightningAddress.isNotEmpty) {
       return info.lightningAddress;
     } else {
-      return _paymentInfo.title.replaceAll("\n", " ");
+      return widget._paymentInfo.title.replaceAll("\n", " ");
     }
   }
 
-  Widget _pendingSuffix(BuildContext context) {
+  Widget _pendingSuffix() {
     final texts = context.texts();
     final themeData = Theme.of(context);
 
-    return _paymentInfo.pending
+    return widget._paymentInfo.pending
         ? Text(
             texts.wallet_dashboard_payment_item_balance_pending_suffix,
             style: themeData.paymentItemSubtitleTextStyle.copyWith(
@@ -139,21 +145,21 @@ class PaymentItem extends StatelessWidget {
         : const SizedBox();
   }
 
-  Widget _paymentAmount(BuildContext context) {
+  Widget _paymentAmount() {
     final texts = context.texts();
     final themeData = Theme.of(context);
 
-    final type = _paymentInfo.type;
+    final type = widget._paymentInfo.type;
     final negative = type == PaymentType.SENT ||
         type == PaymentType.WITHDRAWAL ||
         type == PaymentType.CLOSED_CHANNEL;
-    final amount = _paymentInfo.currency.format(
-      _paymentInfo.amount,
+    final amount = widget._paymentInfo.currency.format(
+      widget._paymentInfo.amount,
       includeDisplayName: false,
     );
 
     return Text(
-      _hideBalance
+      widget._hideBalance
           ? texts.wallet_dashboard_payment_item_balance_hide
           : negative
               ? texts.wallet_dashboard_payment_item_balance_negative(amount)
@@ -162,19 +168,19 @@ class PaymentItem extends StatelessWidget {
     );
   }
 
-  Widget _paymentFee(BuildContext context) {
+  Widget _paymentFee() {
     final texts = context.texts();
     final themeData = Theme.of(context);
 
-    final fee = _paymentInfo.fee;
-    if (fee == 0 || _paymentInfo.pending) return const SizedBox();
-    final feeFormatted = _paymentInfo.currency.format(
+    final fee = widget._paymentInfo.fee;
+    if (fee == 0 || widget._paymentInfo.pending) return const SizedBox();
+    final feeFormatted = widget._paymentInfo.currency.format(
       fee,
       includeDisplayName: false,
     );
 
     return Text(
-      _hideBalance
+      widget._hideBalance
           ? texts.wallet_dashboard_payment_item_balance_hide
           : texts.wallet_dashboard_payment_item_balance_fee(feeFormatted),
       style: themeData.paymentItemSubtitleTextStyle,
@@ -184,11 +190,11 @@ class PaymentItem extends StatelessWidget {
   Widget _buildPaymentItemAvatar() {
     // Show Flip Transition if the payment item is created within last 10 seconds
     if (_createdWithin(const Duration(seconds: 10))) {
-      return PaymentItemAvatar(_paymentInfo, radius: 16);
+      return PaymentItemAvatar(widget._paymentInfo, radius: 16);
     } else {
       return FlipTransition(
         PaymentItemAvatar(
-          _paymentInfo,
+          widget._paymentInfo,
           radius: 16,
         ),
         const SuccessAvatar(radius: 16),
@@ -199,7 +205,7 @@ class PaymentItem extends StatelessWidget {
 
   bool _createdWithin(Duration duration) {
     final diff = DateTime.fromMillisecondsSinceEpoch(
-      _paymentInfo.creationTimestamp.toInt() * 1000,
+      widget._paymentInfo.creationTimestamp.toInt() * 1000,
     ).difference(
       DateTime.fromMillisecondsSinceEpoch(
         DateTime.now().millisecondsSinceEpoch,
@@ -208,8 +214,8 @@ class PaymentItem extends StatelessWidget {
     return diff < -duration;
   }
 
-  void _showDetail(BuildContext context) {
-    final action = FetchSale(paymentHash: _paymentInfo.paymentHash);
+  void _showDetail() {
+    final action = FetchSale(paymentHash: widget._paymentInfo.paymentHash);
     PosCatalogBloc posBloc = AppBlocsProvider.of<PosCatalogBloc>(context);
     posBloc.actionsSink.add(action);
     action.future.then((sale) {
@@ -217,11 +223,11 @@ class PaymentItem extends StatelessWidget {
         Navigator.of(context).push(FadeInRoute(
           builder: (context) => SaleView(
             readOnlySale: sale,
-            salePayment: _paymentInfo,
+            salePayment: widget._paymentInfo,
           ),
         ));
       } else {
-        showPaymentDetailsDialog(context, _paymentInfo);
+        showPaymentDetailsDialog(context, widget._paymentInfo);
       }
     });
   }

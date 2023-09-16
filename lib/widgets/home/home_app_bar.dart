@@ -1,8 +1,5 @@
 import 'package:anytime/ui/widgets/layout_selector.dart';
-import 'package:breez/bloc/account/account_bloc.dart';
-import 'package:breez/bloc/backup/backup_bloc.dart';
 import 'package:breez/bloc/blocs_provider.dart';
-import 'package:breez/bloc/lsp/lsp_bloc.dart';
 import 'package:breez/bloc/user_profile/breez_user_model.dart';
 import 'package:breez/bloc/user_profile/user_profile_bloc.dart';
 import 'package:breez/routes/account_required_actions.dart';
@@ -34,7 +31,9 @@ class HomeAppBar extends StatelessWidget implements PreferredSizeWidget {
         final appMode = userSnapshot.data?.appMode;
 
         return AppBar(
-          systemOverlayStyle: theme.themeId == "BLUE" ? SystemUiOverlayStyle.dark : appBar.systemOverlayStyle,
+          systemOverlayStyle: theme.themeId == "BLUE"
+              ? SystemUiOverlayStyle.dark
+              : appBar.systemOverlayStyle,
           iconTheme: const IconThemeData(
             color: Color.fromARGB(255, 0, 133, 251),
           ),
@@ -74,12 +73,7 @@ class HomeAppBar extends StatelessWidget implements PreferredSizeWidget {
               padding: appMode == AppMode.podcasts
                   ? const EdgeInsets.all(14)
                   : const EdgeInsets.fromLTRB(14, 14, 0, 14),
-              // TODO make AccountRequiredActionsIndicator reads its own blocs
-              child: AccountRequiredActionsIndicator(
-                AppBlocsProvider.of<BackupBloc>(context),
-                AppBlocsProvider.of<AccountBloc>(context),
-                AppBlocsProvider.of<LSPBloc>(context),
-              ),
+              child: AccountRequiredActionsIndicator(),
             ),
             if (appMode == AppMode.podcasts)
               Padding(

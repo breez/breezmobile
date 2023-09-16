@@ -40,6 +40,10 @@ String _localizedExceptionMessage(
     case "invalid pair hash":
       return texts.localized_error_message_invalid_pair_hash;
     default:
+      if (originalMessage.startsWith("connection error: desc = \"transport:") ||
+          originalMessage.contains("dial tcp: lookup")) {
+        return texts.generic_network_error;
+      }
       return originalMessage;
   }
 }
