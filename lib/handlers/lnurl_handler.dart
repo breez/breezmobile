@@ -45,7 +45,7 @@ class LNURLHandler {
       case "GIFT_SPENT":
         return texts.handler_lnurl_error_gift;
       default:
-        return extractExceptionMessage(error);
+        return extractExceptionMessage(error, texts: texts);
     }
   }
 

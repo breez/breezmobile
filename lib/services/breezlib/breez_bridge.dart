@@ -804,7 +804,9 @@ class BreezBridge {
   }
 
   Future setBackupEncryptionKey(
-      List<int> encryptionKey, String encryptionType) {
+    List<int> encryptionKey,
+    String encryptionType,
+  ) {
     return _invokeMethodImmediate("setBackupEncryptionKey", {
       "encryptionKey": encryptionKey,
       "encryptionType": encryptionType ?? ""
@@ -819,7 +821,6 @@ class BreezBridge {
   }
 
   Future<String> getAvailableBackups() async {
-    await signIn(true, false);
     return await _methodChannel
         .invokeMethod("availableSnapshots")
         .then((res) => res as String);
@@ -856,10 +857,9 @@ class BreezBridge {
     );
   }
 
-  Future<dynamic> signIn(bool force, bool recoverEnabled) {
+  Future<dynamic> signIn(bool force) {
     return _methodChannel.invokeMethod("signIn", {
       "force": force,
-      "recoverEnabled": recoverEnabled,
     });
   }
 

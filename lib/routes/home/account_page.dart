@@ -85,7 +85,6 @@ class AccountPageState extends State<AccountPage>
                     return Container(
                       color: theme.customData[theme.themeId].dashboardBgColor,
                       child: _buildBalanceAndPayments(
-                        context,
                         paymentsModel,
                         account,
                         userModel,
@@ -102,7 +101,6 @@ class AccountPageState extends State<AccountPage>
   }
 
   Widget _buildBalanceAndPayments(
-    BuildContext context,
     PaymentsModel paymentsModel,
     AccountModel account,
     BreezUserModel userModel,
@@ -157,7 +155,7 @@ class AccountPageState extends State<AccountPage>
                 padding: const EdgeInsets.only(bottom: 8),
                 height: FILTER_MAX_SIZE / 1.2,
                 color: theme.customData[theme.themeId].dashboardBgColor,
-                child: _buildDateFilterChip(context, paymentsModel.filter),
+                child: _FilterChip(filter: paymentsModel.filter),
               );
             },
           ),
@@ -220,20 +218,20 @@ class AccountPageState extends State<AccountPage>
       ],
     );
   }
+}
 
-  Widget _buildDateFilterChip(
-    BuildContext context,
-    PaymentFilterModel filter,
-  ) {
-    return (filter.startDate != null && filter.endDate != null)
-        ? _filterChip(context, filter)
-        : Container();
-  }
+class _FilterChip extends StatelessWidget {
+  final PaymentFilterModel filter;
+  const _FilterChip({Key key, @required this.filter}) : super(key: key);
 
-  Widget _filterChip(
-    BuildContext context,
-    PaymentFilterModel filter,
-  ) {
+  @override
+  Widget build(BuildContext context) {
+    final accountBloc = AppBlocsProvider.of<AccountBloc>(context);
+
+    if (filter.startDate != null && filter.endDate != null) {
+      return Container();
+    }
+
     return ClipRRect(
       borderRadius: BorderRadius.circular(5),
       child: Container(
@@ -250,8 +248,9 @@ class AccountPageState extends State<AccountPage>
                   filter.startDate,
                   filter.endDate,
                 )),
-                onDeleted: () => _accountBloc.paymentFilterSink
-                    .add(PaymentFilterModel(filter.paymentType, null, null)),
+                onDeleted: () => accountBloc.paymentFilterSink.add(
+                  PaymentFilterModel(filter.paymentType, null, null),
+                ),
               ),
             ),
           ],

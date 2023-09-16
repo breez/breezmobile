@@ -27,7 +27,8 @@ Future<void> promptError(
       return WillPopScope(
         onWillPop: canPopCallback,
         child: AlertDialog(
-          contentPadding: const EdgeInsets.fromLTRB(16.0, 16.0, 16.0, 0.0),
+          titlePadding: const EdgeInsets.fromLTRB(24.0, 22.0, 0.0, 16.0),
+          contentPadding: const EdgeInsets.fromLTRB(24.0, 8.0, 24.0, 8.0),
           title: title == null
               ? null
               : Text(
@@ -84,7 +85,6 @@ Future<bool> promptAreYouSure(
   bool wideTitle = false,
   String okText,
   String cancelText,
-  TextStyle textStyle = const TextStyle(color: Colors.white),
 }) {
   final texts = context.texts();
   final themeData = Theme.of(context);
@@ -108,9 +108,7 @@ Future<bool> promptAreYouSure(
       return AlertDialog(
         contentPadding: contentPadding,
         title: titleWidget,
-        content: SingleChildScrollView(
-          child: body,
-        ),
+        content: SingleChildScrollView(child: body),
         actions: [
           TextButton(
             child: Text(
@@ -141,7 +139,6 @@ Future<bool> promptMessage(
   contentPadding = const EdgeInsets.only(top: 32.0, left: 32.0, right: 32.0),
   bool wideTitle = false,
   String closeText,
-  TextStyle textStyle = const TextStyle(color: Colors.white),
 }) {
   final texts = context.texts();
   final themeData = Theme.of(context);

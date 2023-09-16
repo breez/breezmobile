@@ -2,6 +2,9 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:breez/bloc/async_action.dart';
+import 'package:breez/bloc/async_actions_handler.dart';
+import 'package:breez/bloc/backup/backup_actions.dart';
 import 'package:breez/bloc/backup/backup_model.dart';
 import 'package:breez/bloc/user_profile/backup_user_preferences.dart';
 import 'package:breez/bloc/user_profile/breez_user_model.dart';
@@ -10,25 +13,26 @@ import 'package:breez/services/background_task.dart';
 import 'package:breez/services/breezlib/breez_bridge.dart';
 import 'package:breez/services/breezlib/data/messages.pb.dart';
 import 'package:breez/services/injector.dart';
-import 'package:crypto/crypto.dart';
+import 'package:breez/utils/exceptions.dart';
+import 'package:breez_translations/breez_translations_locales.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
-import 'package:hex/hex.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sqflite/sqflite.dart';
 
-import '../async_action.dart';
-import 'backup_actions.dart';
-
-class BackupBloc {
+class BackupBloc with AsyncActionsHandler {
   static const String _signInFailedCode = "401";
   static const String _signInFailedMessage = "AuthError";
+  static const String _signInCancelledMessage = "SignInCancelled";
+  static const String _googleSignNotAvailable = "GoogleSignNotAvailable";
   static const String _methodNotFound = "405";
   static const String _notFoundMessage = "404";
   static const String _noAccess = "403";
   static const String _empty = "empty";
+  static const String _insufficientScope = "InsufficientScope";
+  static const String _invalidCredentials = "Invalid Credentials";
   static const String USER_DETAILS_PREFERENCES_KEY = "BreezUserModel.userID";
 
   static const _kDefaultOverrideFee = false;
@@ -45,7 +49,7 @@ class BackupBloc {
   Stream<BackupState> get backupStateStream => _backupStateController.stream;
 
   final StreamController<bool> _promptBackupController =
-      StreamController<bool>.broadcast();
+      BehaviorSubject<bool>.seeded(false);
   Stream<bool> get promptBackupStream => _promptBackupController.stream;
 
   final StreamController<bool> _backupPromptVisibleController =
@@ -54,14 +58,18 @@ class BackupBloc {
       _backupPromptVisibleController.stream;
   Sink<bool> get backupPromptVisibleSink => _backupPromptVisibleController.sink;
 
+  final StreamController<bool> _promptBackupDismissedController =
+      BehaviorSubject<bool>.seeded(false);
+  Stream<bool> get promptBackupDismissedStream =>
+      _promptBackupDismissedController.stream;
+  Sink<bool> get promptBackupDismissedSink =>
+      _promptBackupDismissedController.sink;
+
   final BehaviorSubject<BackupSettings> _backupSettingsController =
       BehaviorSubject<BackupSettings>.seeded(BackupSettings.start());
   Stream<BackupSettings> get backupSettingsStream =>
       _backupSettingsController.stream;
   Sink<BackupSettings> get backupSettingsSink => _backupSettingsController.sink;
-
-  final _backupNowController = StreamController<BackupNowAction>();
-  Sink<BackupNowAction> get backupNowSink => _backupNowController.sink;
 
   final _backupAppDataController = StreamController<bool>.broadcast();
   Sink<bool> get backupAppDataSink => _backupAppDataController.sink;
@@ -73,24 +81,34 @@ class BackupBloc {
   Stream<Map<String, dynamic>> get restoreLightningFeesStream =>
       _restoreLightningFeesController.stream;
 
-  final _restoreRequestController = StreamController<RestoreRequest>();
-  Sink<RestoreRequest> get restoreRequestSink => _restoreRequestController.sink;
-
-  final _multipleRestoreController =
-      StreamController<List<SnapshotInfo>>.broadcast();
-  Stream<List<SnapshotInfo>> get multipleRestoreStream =>
-      _multipleRestoreController.stream;
-
-  final _restoreFinishedController = StreamController<bool>.broadcast();
-  Stream<bool> get restoreFinishedStream => _restoreFinishedController.stream;
-
   final _backupActionsController = StreamController<AsyncAction>.broadcast();
   Sink<AsyncAction> get backupActionsSink => _backupActionsController.sink;
+
+  Stream<bool> get promptBackupSubscription =>
+      Rx.combineLatest5<BackupSettings, bool, bool, bool, BackupState, bool>(
+        backupSettingsStream,
+        promptBackupStream,
+        promptBackupDismissedStream,
+        backupPromptVisibleStream,
+        backupStateStream,
+        (settings, signInNeeded, dismissed, isVisible, backupState) {
+          return (!backupState.inProgress &&
+                  settings.promptOnError &&
+                  !dismissed &&
+                  !isVisible)
+              ? signInNeeded
+              : false;
+        },
+      );
+
+  final BehaviorSubject<bool> _backupServiceNeedLoginController =
+      BehaviorSubject<bool>.seeded(false);
+  StreamSink<bool> get backupServiceNeedLoginSink =>
+      _backupServiceNeedLoginController.sink;
 
   BreezBridge _breezLib;
   BackgroundTaskService _tasksService;
   SharedPreferences _sharedPreferences;
-  bool _backupServiceNeedLogin = false;
   bool _enableBackupPrompt = false;
   Map<Type, Function> _actionHandlers = {};
   FlutterSecureStorage _secureStorage;
@@ -116,23 +134,25 @@ class BackupBloc {
       SaveBackupKey: _saveBackupKey,
       UpdateBackupSettings: _updateBackupSettings,
       DownloadSnapshot: _downloadSnapshot,
+      ListSnapshots: _listSnapshots,
+      RestoreBackup: _restoreBackup,
+      SignOut: _signOut,
+      BackupNow: _backupNow,
     };
+
+    _listenPaidInvoices();
 
     SharedPreferences.getInstance().then((sp) async {
       _sharedPreferences = sp;
       // Read the backupKey from the secure storage and initialize the breez user model appropriately
       await _initializePersistentData();
       _listenBackupPaths();
-      _listenBackupNowRequests();
       _listenAppDataBackupRequests(backupAnytimeDBStream);
-      _listenRestoreRequests();
       _scheduleBackgroundTasks();
 
       // Read the backupKey from the secure storage and initialize the breez user model appropriately
       _setBreezLibBackupKey();
-      if (_backupSettingsController.value.backupProvider != null) {
-        await _updateBackupProvider(_backupSettingsController.value);
-      }
+      await _updateBackupProvider(_backupSettingsController.value);
       _listenPinCodeChange(userStream);
       _listenUserPreferenceChanges(userStream);
       _listenActions();
@@ -156,47 +176,71 @@ class BackupBloc {
     });
   }
 
+  void _listenPaidInvoices() {
+    _breezLib.notificationStream
+        .where((event) =>
+            event.type == NotificationEvent_NotificationType.INVOICE_PAID)
+        .listen((invoice) => _promptBackupDismissedController.add(false));
+  }
+
   Future _updateBackupSettings(UpdateBackupSettings action) async {
-    final oldSettings = _backupSettingsController.value;
-    final newSettings = action.settings;
-    log.info("update backup from:\n$oldSettings to:\n$newSettings");
-    _backupSettingsController.add(newSettings);
-    if (newSettings.backupKeyType != oldSettings.backupKeyType) {
-      log.info("update backup key type");
-      await _setBreezLibBackupKey(backupKeyType: newSettings.backupKeyType);
-    } else {
-      log.info("backup key type continue to be the same");
+    try {
+      final oldSettings = _backupSettingsController.value;
+      final newSettings = action.settings;
+      if (oldSettings != newSettings) {
+        log.info("update backup from:\n$oldSettings to:\n$newSettings");
+        _backupSettingsController.add(newSettings);
+        if (newSettings.backupKeyType != oldSettings.backupKeyType) {
+          log.info("update backup key type");
+          await _setBreezLibBackupKey(backupKeyType: newSettings.backupKeyType);
+        } else {
+          log.info("backup key type continue to be the same");
+        }
+        if (newSettings.backupProvider != oldSettings.backupProvider ||
+            !oldSettings.remoteServerAuthData
+                .equal(newSettings.remoteServerAuthData)) {
+          log.info("update backup provider");
+          await _updateBackupProvider(newSettings);
+        } else {
+          log.info("backup provider continue to be the same");
+        }
+      }
+      action.resolve(newSettings);
+    } catch (error) {
+      action.resolveError("Failed to update backup settings.");
     }
-    if (newSettings.backupProvider != oldSettings.backupProvider ||
-        !oldSettings.remoteServerAuthData
-            .equal(newSettings.remoteServerAuthData)) {
-      log.info("update backup provider");
-      await _updateBackupProvider(newSettings);
-    } else {
-      log.info("backup provider continue to be the same");
-    }
-    action.resolve(newSettings);
   }
 
   Future _updateBackupProvider(BackupSettings settings) async {
-    String authData;
-    if (settings.backupProvider.name ==
-        BackupSettings.remoteServerBackupProvider().name) {
-      log.info("update backup provider auth data as a remote server");
-      var map = settings.remoteServerAuthData.toJson();
-      authData = json.encode(map);
-    } else {
-      log.info(
-          "update backup provider auth data as ${settings.backupProvider.name} server");
+    try {
+      if (settings.backupProvider != null) {
+        String authData;
+        if (settings.backupProvider.isRemoteServer) {
+          log.info("update backup provider auth data as a remote server");
+          var map = settings.remoteServerAuthData.toJson();
+          authData = json.encode(map);
+        } else {
+          log.info(
+            "update backup provider auth data as ${settings.backupProvider.name} server",
+          );
+        }
+        await _breezLib.setBackupProvider(
+          settings.backupProvider.name,
+          authData,
+        );
+      } else {
+        log.info("new backup provider is empty");
+      }
+    } catch (error) {
+      throw Exception("Failed to update backup provider.");
     }
-    await _breezLib.setBackupProvider(settings.backupProvider.name, authData);
   }
 
   Future _initializePersistentData() async {
     //last backup time persistency
     String backupStateJson =
         _sharedPreferences.getString(LAST_BACKUP_STATE_PREFERENCE_KEY);
-    BackupState backupState = const BackupState(null, false, null);
+    BackupState backupState = BackupState.start();
     if (backupStateJson != null) {
       backupState = BackupState.fromJson(json.decode(backupStateJson));
     }
@@ -220,11 +264,11 @@ class BackupBloc {
       if (backupSettingsModel.backupProvider == null &&
           backupState?.lastBackupTime != null) {
         backupSettingsModel = backupSettingsModel.copyWith(
-          backupProvider: BackupSettings.googleBackupProvider(),
+          backupProvider: BackupProvider.googleDrive(),
         );
       }
-      if (backupSettingsModel.backupProvider?.name ==
-          BackupSettings.remoteServerBackupProvider().name) {
+      if (backupSettingsModel.backupProvider != null &&
+          backupSettingsModel.backupProvider.isRemoteServer) {
         String authdata =
             await _secureStorage.read(key: "remoteServerAuthData");
         if (authdata != null) {
@@ -325,8 +369,28 @@ class BackupBloc {
   }
 
   Future _saveBackupKey(SaveBackupKey action) async {
-    await BreezLibBackupKey.save(_secureStorage, action.backupPhrase);
-    action.resolve(null);
+    try {
+      await BreezLibBackupKey.save(_secureStorage, action.backupPhrase);
+      action.resolve(null);
+    } catch (error) {
+      action.resolveError(error);
+    }
+  }
+
+  Future _resetBackupKey() async {
+    try {
+      // Delete backup key from secure storage
+      await _secureStorage.delete(key: 'backupKey');
+      // Reset key type of backup settings to NONE
+      _backupSettingsController.add(
+        _backupSettingsController.value.copyWith(keyType: BackupKeyType.NONE),
+      );
+      // Set Backup Encryption Key used on Breez Library to null
+      await _breezLib.setBackupEncryptionKey(null, null);
+      return;
+    } catch (error) {
+      throw Exception("Failed to reset backup key");
+    }
   }
 
   Future _downloadSnapshot(DownloadSnapshot action) async {
@@ -334,12 +398,198 @@ class BackupBloc {
   }
 
   Future _setBreezLibBackupKey({BackupKeyType backupKeyType}) async {
+    // Reset backup key if backup key type is set to NONE
+    if (backupKeyType != null && backupKeyType == BackupKeyType.NONE) {
+      await _resetBackupKey();
+      return;
+    }
     backupKeyType ??= _backupSettingsController.value.backupKeyType;
-    var encryptionKey =
-        await BreezLibBackupKey.fromSettings(_secureStorage, backupKeyType);
+    var encryptionKey = await BreezLibBackupKey.fromSettings(
+      _secureStorage,
+      backupKeyType,
+    );
 
     return _breezLib.setBackupEncryptionKey(
-        encryptionKey?.key, encryptionKey?.type);
+      encryptionKey?.key,
+      encryptionKey?.type,
+    );
+  }
+
+  Future _listSnapshots(ListSnapshots action) async {
+    try {
+      bool signInNeeded = _backupServiceNeedLoginController.value;
+      log.info(
+        "Signing in, { force: $signInNeeded }",
+      );
+      bool signedIn = await _breezLib.signIn(signInNeeded);
+      if (signedIn) {
+        backupServiceNeedLoginSink.add(false);
+        String backups = await _breezLib.getAvailableBackups();
+        List snapshotsArray = json.decode(backups) as List;
+        List<SnapshotInfo> snapshots = <SnapshotInfo>[];
+        if (snapshotsArray != null) {
+          snapshots = snapshotsArray.map((s) {
+            return SnapshotInfo.fromJson(s);
+          }).toList();
+        }
+        snapshots.sort((s1, s2) => s2.modifiedTime.compareTo(s1.modifiedTime));
+        action.resolve(snapshots);
+      } else {
+        action.resolveError(
+          SignInFailedException(
+            _backupSettingsController.value.backupProvider,
+          ),
+        );
+      }
+    } on PlatformException catch (e) {
+      dynamic exception = extractExceptionMessage(e.message);
+      log.warning(exception, e);
+      // the error code equals the message from the go library so
+      // not to confuse the two.
+      if (e.message == _googleSignNotAvailable) {
+        exception = GoogleSignNotAvailableException();
+      } else if (e.code == _insufficientScope ||
+          exception.contains(_insufficientScope)) {
+        exception = InsufficientScopeException();
+      } else if (exception.contains(_invalidCredentials)) {
+        // If user revokes Breez permissions from their GDrive account during a
+        // session. They won't be able to sign in again.
+        // This is a work around for not having force arg on signIn() on iOS
+        // TODO: Handle Invalid CredentialsException error properly
+        await _breezLib.signOut();
+        exception = InvalidCredentialsException();
+      } else if (e.message == _signInCancelledMessage) {
+        exception = SignInCancelledException();
+      } else if (e.code == _signInFailedMessage ||
+          e.message == _signInFailedCode) {
+        exception = SignInFailedException(
+          _backupSettingsController.value.backupProvider,
+        );
+      } else if (e.code == _empty || exception == _empty) {
+        exception = NoBackupFoundException();
+      }
+      action.resolveError(exception);
+    } catch (error) {
+      log.warning("Failed to list snapshots.", error);
+      action.resolveError("Failed to list snapshots.");
+    }
+  }
+
+  Future _restoreBackup(RestoreBackup action) async {
+    try {
+      final snapshot = action.restoreRequest.snapshot;
+      final key = action.restoreRequest.encryptionKey.key;
+      log.info('snapshotInfo with timestamp: ${snapshot.modifiedTime}');
+      if (key != null) log.info('using key with length: ${key.length}');
+      _setBackupKeyType(snapshot);
+
+      _clearAppData();
+
+      await _breezLib.restore(snapshot.nodeID, key);
+      await _restoreAppData();
+
+      _updateLastBackupTime(snapshot.modifiedTime);
+
+      action.resolve(true);
+    } on FileSystemException catch (error) {
+      if (error.message.contains("Failed to decode data using encoding")) {
+        log.warning(
+            "Failed to restore backup. Incorrect mnemonic phrase.", error);
+        _clearAppData();
+        await _resetBackupKey();
+        action.resolveError(
+          getSystemAppLocalizations().enter_backup_phrase_error,
+        );
+      }
+    } catch (error) {
+      log.warning("Failed to restore backup.", error);
+      _clearAppData();
+      await _resetBackupKey();
+      action.resolveError("Failed to restore backup.");
+    }
+  }
+
+  void _setBackupKeyType(SnapshotInfo snapshot) {
+    BackupSettings backupSettings = _backupSettingsController.value;
+    if (snapshot.encrypted && snapshot.encryptionType.startsWith("Mnemonics")) {
+      backupSettings = backupSettings.copyWith(keyType: BackupKeyType.PHRASE);
+    } else if (backupSettings.backupKeyType != BackupKeyType.NONE) {
+      /// This also sets keyType of backups encrypted with PIN to
+      /// BackupKeyType.NONE as they are are non-secure & deprecated
+      backupSettings = backupSettings.copyWith(keyType: BackupKeyType.NONE);
+    }
+    _backupSettingsController.add(backupSettings);
+  }
+
+  void _updateLastBackupTime(String modifiedTime) {
+    _backupStateController.add(
+      _backupStateController.value?.copyWith(
+        lastBackupTime: DateTime.tryParse(modifiedTime).toLocal(),
+      ),
+    );
+  }
+
+  Future _signOut(SignOut action) async {
+    log.info("Signing out of Google Drive");
+    await _breezLib.signOut().catchError(
+      (error) {
+        log.warning("Failed to sign out.", error);
+        _promptBackupController.add(action.promptOnError);
+      },
+    );
+
+    backupServiceNeedLoginSink.add(true);
+    action.resolve(null);
+  }
+
+  Future _signIn() async {
+    try {
+      bool signInNeeded = _backupServiceNeedLoginController.value;
+      log.info(
+        "Signing in, { force: $signInNeeded }",
+      );
+      bool signedIn = await _breezLib.signIn(signInNeeded);
+      if (signedIn) {
+        backupServiceNeedLoginSink.add(false);
+        return true;
+      } else {
+        throw SignInFailedException(
+          _backupSettingsController.value.backupProvider,
+        );
+      }
+    } on PlatformException catch (e) {
+      dynamic exception = extractExceptionMessage(e.message);
+      log.warning(exception, e);
+      // the error code equals the message from the go library so
+      // not to confuse the two.
+      if (e.message == _googleSignNotAvailable) {
+        exception = GoogleSignNotAvailableException();
+      } else if (e.code == _insufficientScope ||
+          exception.contains(_insufficientScope)) {
+        exception = InsufficientScopeException();
+      } else if (exception.contains(_invalidCredentials)) {
+        // If user revokes Breez permissions from their GDrive account during a
+        // session. They won't be able to sign in again.
+        // This is a work around for not having force arg on signIn() on iOS
+        // TODO: Handle Invalid CredentialsException error properly
+        await _breezLib.signOut();
+        exception = InvalidCredentialsException();
+      } else if (e.code == _signInCancelledMessage) {
+        exception = SignInCancelledException();
+      } else if (e.code == _signInFailedMessage ||
+          e.message == _signInFailedCode) {
+        exception = SignInFailedException(
+          _backupSettingsController.value.backupProvider,
+        );
+      }
+      _promptBackupController.add(true);
+      throw exception;
+    } catch (error) {
+      log.warning("Failed to sign in.", error);
+      throw SignInFailedException(
+        _backupSettingsController.value.backupProvider,
+      );
+    }
   }
 
   _scheduleBackgroundTasks() {
@@ -368,18 +618,74 @@ class BackupBloc {
     });
   }
 
-  void _listenBackupNowRequests() {
-    _backupNowController.stream.listen(_backupNow);
-  }
+  Future _backupNow(BackupNow action) async {
+    final initialBackupSettings = _backupSettingsController.value;
+    try {
+      log.info("Backup Now requested: $action");
+      bool signInNeeded = _backupServiceNeedLoginController.value;
+      final backupProviderName =
+          action.updateBackupSettings.settings.backupProvider.displayName;
 
-  Future _backupNow(BackupNowAction action) async {
-    log.info("backup now requested: $action");
-    if (_backupServiceNeedLogin) {
-      await _breezLib.signOut();
+      await _updateBackupSettings(action.updateBackupSettings);
+      log.info("Does backup service need relogin $signInNeeded");
+      if (signInNeeded) {
+        log.info("Signing out of $backupProviderName");
+        await _breezLib.signOut();
+        log.info("Signed out of $backupProviderName");
+        log.info("Signing into $backupProviderName");
+        bool signedIn = await _signIn();
+        backupServiceNeedLoginSink.add(!signedIn);
+      }
+
+      await _saveAppData();
+      await _breezLib.requestBackup();
+      _backupStateController.add(
+        _backupStateController.value?.copyWith(inProgress: true),
+      );
+      action.resolve(true);
+    } on PlatformException catch (e) {
+      // Reset backup settings to previous state on error
+      log.info(
+        "Resetting backup settings to it's previous state: $initialBackupSettings from ${_backupSettingsController.value}",
+      );
+      await _updateBackupSettings(UpdateBackupSettings(initialBackupSettings));
+      dynamic exception = extractExceptionMessage(e.message);
+      log.warning(exception, e);
+      // the error code equals the message from the go library so
+      // not to confuse the two.
+      if (e.message == _googleSignNotAvailable) {
+        exception = GoogleSignNotAvailableException();
+      } else if (e.code == _insufficientScope ||
+          exception.contains(_insufficientScope)) {
+        exception = InsufficientScopeException();
+      } else if (exception.contains(_invalidCredentials)) {
+        // If user revokes Breez permissions from their GDrive account during a
+        // session. They won't be able to sign in again.
+        // This is a work around for not having force arg on signIn() on iOS
+        // TODO: Handle Invalid CredentialsException error properly
+        await _breezLib.signOut();
+        exception = InvalidCredentialsException();
+        _promptBackupController.add(true);
+      } else if (e.code == _signInCancelledMessage) {
+        exception = SignInCancelledException();
+      } else if (e.code == _signInFailedMessage ||
+          e.message == _signInFailedCode) {
+        exception = SignInFailedException(
+          _backupSettingsController.value.backupProvider,
+        );
+        _promptBackupController.add(true);
+      } else if (e.code == _empty || exception == _empty) {
+        exception = NoBackupFoundException();
+      }
+      action.resolveError(exception);
+    } catch (e) {
+      // Reset backup settings to previous state on error
+      log.info(
+        "Resetting backup settings to it's previous state: $initialBackupSettings from ${_backupSettingsController.value}",
+      );
+      await _updateBackupSettings(UpdateBackupSettings(initialBackupSettings));
+      action.resolveError(e);
     }
-    await _breezLib.signIn(_backupServiceNeedLogin, action.recoverEnabled);
-    await _saveAppData();
-    _breezLib.requestBackup();
   }
 
   void _listenAppDataBackupRequests(Stream backupAnytimeDBStream) {
@@ -466,96 +772,63 @@ class BackupBloc {
     ];
 
     _breezLib.notificationStream.listen((event) async {
+      log.info("backup notification: $event");
       if (event.type == NotificationEvent_NotificationType.BACKUP_REQUEST) {
-        _backupServiceNeedLogin = false;
-        _backupStateController.add((BackupState(
-            _backupStateController.value?.lastBackupTime,
-            true,
-            _backupStateController.value?.lastBackupAccountName)));
+        backupServiceNeedLoginSink.add(false);
+        _backupStateController.add(
+          _backupStateController.value?.copyWith(inProgress: true),
+        );
       }
       if (event.type == NotificationEvent_NotificationType.BACKUP_AUTH_FAILED) {
-        _backupServiceNeedLogin = true;
-        _backupStateController.addError(BackupFailedException(
-            _backupSettingsController.value.backupProvider, true));
+        backupServiceNeedLoginSink.add(true);
+        _backupStateController.addError(
+          BackupFailedException(
+            _backupSettingsController.value.backupProvider,
+            true,
+          ),
+        );
       }
       if (event.type == NotificationEvent_NotificationType.BACKUP_FAILED) {
-        _backupStateController.addError(BackupFailedException(
-            _backupSettingsController.value.backupProvider, false));
+        backupServiceNeedLoginSink.add(true);
+        _backupStateController.addError(
+          BackupFailedException(
+            _backupSettingsController.value.backupProvider,
+            false,
+          ),
+        );
       }
       if (event.type == NotificationEvent_NotificationType.BACKUP_SUCCESS) {
-        _backupServiceNeedLogin = false;
+        backupServiceNeedLoginSink.add(false);
+        _enableBackupPrompt = false;
         _breezLib.getLatestBackupTime().then((timeStamp) {
           log.info("Timestamp=$timeStamp");
           if (timeStamp > 0) {
             log.info(timeStamp);
-            DateTime latestDateTime =
-                DateTime.fromMillisecondsSinceEpoch(timeStamp);
-            _backupStateController
-                .add(BackupState(latestDateTime, false, event.data[0]));
+            DateTime latestDateTime = DateTime.fromMillisecondsSinceEpoch(
+              timeStamp,
+            );
+            _backupStateController.add(
+              BackupState(latestDateTime, false, event.data[0]),
+            );
           }
         });
       }
       if (backupOperations.contains(event.type)) {
+        log.info("no backup provider set.");
         _enableBackupPrompt = true;
         _pushPromptIfNeeded();
       }
     });
   }
 
-  _pushPromptIfNeeded() {
-    if (_enableBackupPrompt &&
-        (_backupServiceNeedLogin ||
-            _backupSettingsController.value.backupProvider == null)) {
+  void _pushPromptIfNeeded() {
+    log.info(
+      "push prompt if needed: {$_enableBackupPrompt, ${_backupServiceNeedLoginController.value}}",
+    );
+    if (_enableBackupPrompt) {
       _enableBackupPrompt = false;
-      _promptBackupController.add(_backupServiceNeedLogin);
+      _promptBackupController.add(_backupServiceNeedLoginController.value);
     }
-  }
-
-  void _listenRestoreRequests() {
-    _restoreRequestController.stream.listen((request) {
-      if (request == null) {
-        _breezLib.getAvailableBackups().then((backups) {
-          List snapshotsArray = json.decode(backups) as List;
-          List<SnapshotInfo> snapshots = <SnapshotInfo>[];
-          if (snapshotsArray != null) {
-            snapshots = snapshotsArray.map((s) {
-              return SnapshotInfo.fromJson(s);
-            }).toList();
-          }
-          snapshots
-              .sort((s1, s2) => s2.modifiedTime.compareTo(s1.modifiedTime));
-          _multipleRestoreController.add(snapshots);
-        }).catchError((error) {
-          if (error.runtimeType == PlatformException) {
-            PlatformException e = (error as PlatformException);
-            // the error code equals the message from the go library so
-            // not to confuse the two.
-            if (e.code == _signInFailedMessage ||
-                e.message == _signInFailedCode) {
-              error = SignInFailedException(
-                  _backupSettingsController.value.backupProvider);
-            } else if (e.code == _empty) {
-              error = NoBackupFoundException();
-            } else {
-              error = (error as PlatformException).message;
-            }
-          }
-          _restoreFinishedController.addError(error);
-        });
-        return;
-      }
-
-      if (request.encryptionKey != null && request.encryptionKey.key != null) {
-        assert(request.encryptionKey.key.isNotEmpty || true);
-      }
-      assert(request.snapshot.nodeID.isNotEmpty);
-
-      _breezLib
-          .restore(request.snapshot.nodeID, request.encryptionKey.key)
-          .then((_) => _restoreAppData()
-              .then((value) => _restoreFinishedController.add(true))
-              .catchError(_restoreFinishedController.addError));
-    });
   }
 
   Future testAuth(BackupProvider provider, RemoteServerAuthData authData) {
@@ -569,8 +842,6 @@ class BackupBloc {
           var e = error;
           switch (e.message) {
             case _signInFailedCode:
-              throw SignInFailedException(provider);
-              break;
             case _signInFailedMessage:
               throw SignInFailedException(provider);
               break;
@@ -578,13 +849,12 @@ class BackupBloc {
               throw MethodNotFoundException();
               break;
             case _noAccess:
+            case _empty:
               throw NoBackupFoundException();
               break;
             case _notFoundMessage:
               throw RemoteServerNotFoundException();
               break;
-            case _empty:
-              throw NoBackupFoundException();
           }
         }
         throw error;
@@ -592,7 +862,7 @@ class BackupBloc {
     );
   }
 
-  _restoreAppData() async {
+  Future<void> _restoreAppData() async {
     try {
       await _restoreLightningFees();
       await _restorePosDB();
@@ -637,156 +907,20 @@ class BackupBloc {
     }
   }
 
+  void _clearAppData() {
+    try {
+      Directory(_backupAppDataDirPath).list(recursive: true).listen(
+            (file) => file.deleteSync(),
+          );
+    } on Exception {
+      rethrow;
+    }
+  }
+
   close() {
-    _backupNowController.close();
     _backupAppDataController.close();
     _restoreLightningFeesController.close();
-    _restoreRequestController.close();
-    _multipleRestoreController.close();
-    _restoreFinishedController.close();
     _backupSettingsController.close();
-    _backupPromptVisibleController.close();
     _backupActionsController.close();
-  }
-}
-
-class SnapshotInfo {
-  final String nodeID;
-  final String modifiedTime;
-  final bool encrypted;
-  final String encryptionType;
-
-  SnapshotInfo(
-      this.nodeID, this.modifiedTime, this.encrypted, this.encryptionType) {
-    log.info(
-        "New Snapshot encrypted = $encrypted encryptionType = $encryptionType");
-  }
-
-  SnapshotInfo.fromJson(Map<String, dynamic> json)
-      : this(
-          json["NodeID"],
-          json["ModifiedTime"],
-          json["Encrypted"] == true,
-          json["EncryptionType"],
-        );
-}
-
-class RestoreRequest {
-  final SnapshotInfo snapshot;
-  final BreezLibBackupKey encryptionKey;
-
-  RestoreRequest(this.snapshot, this.encryptionKey);
-}
-
-class SignInFailedException implements Exception {
-  final BackupProvider provider;
-
-  SignInFailedException(this.provider);
-
-  @override
-  String toString() {
-    return "Sign in failed";
-  }
-}
-
-class MethodNotFoundException implements Exception {
-  MethodNotFoundException();
-
-  @override
-  String toString() {
-    return "Method not found";
-  }
-}
-
-class NoBackupFoundException implements Exception {
-  @override
-  String toString() {
-    return "No backup found";
-  }
-}
-
-class RemoteServerNotFoundException implements Exception {
-  @override
-  String toString() {
-    return "The server was not found. Please check the address";
-  }
-}
-
-class BreezLibBackupKey {
-  static const KEYLENGTH = 32;
-  static const ENTROPY_LENGTH = 16 * 2; // 2 hex characters == 1 byte.
-
-  BackupKeyType backupKeyType;
-  String entropy;
-
-  List<int> _key;
-  set key(List<int> v) => _key = v;
-
-  List<int> get key {
-    var entropyBytes = _key;
-    if (entropyBytes == null) {
-      /*
-      assert(entropy != null);
-      assert(entropy.isNotEmpty);
-      */
-      if (entropy != null && entropy.isNotEmpty) {
-        entropyBytes = HEX.decode(entropy);
-      }
-    }
-
-    if (entropyBytes != null && entropyBytes.length != KEYLENGTH) {
-      // The length of a "Mnemonics" entropy hex string in bytes is 32.
-      // The length of a "Mnemonics12" entropy hex string in bytes is 16.
-
-      entropyBytes = sha256.convert(entropyBytes).bytes;
-    }
-
-    return entropyBytes;
-  }
-
-  String get type {
-    var result = '';
-    if (key != null) {
-      switch (backupKeyType) {
-        case BackupKeyType.PHRASE:
-          assert(entropy.length == ENTROPY_LENGTH ||
-              entropy.length == ENTROPY_LENGTH * 2);
-          result =
-              entropy.length == ENTROPY_LENGTH ? 'Mnemonics12' : 'Mnemonics';
-          break;
-        case BackupKeyType.PIN:
-          result = 'Pin';
-          break;
-        default:
-      }
-    }
-
-    return result;
-  }
-
-  BreezLibBackupKey({this.entropy, List<int> key}) : _key = key;
-
-  static Future<BreezLibBackupKey> fromSettings(
-      FlutterSecureStorage store, BackupKeyType backupKeyType) async {
-    assert(store != null);
-
-    BreezLibBackupKey result;
-    switch (backupKeyType) {
-      case BackupKeyType.PIN:
-        var pinCode = await store.read(key: 'pinCode');
-        result = BreezLibBackupKey(key: utf8.encode(pinCode));
-        break;
-      case BackupKeyType.PHRASE:
-        result = BreezLibBackupKey(entropy: await store.read(key: 'backupKey'));
-        break;
-      default:
-    }
-    result?.backupKeyType = backupKeyType;
-
-    return result;
-  }
-
-  static Future save(FlutterSecureStorage store, String key) async {
-    await store.write(key: 'backupKey', value: key);
   }
 }

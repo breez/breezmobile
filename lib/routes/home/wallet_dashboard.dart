@@ -93,7 +93,6 @@ class WalletDashboardState extends State<WalletDashboard> {
                           },
                           child: widget._userModel.hideBalance
                               ? _balanceHide(
-                                  context,
                                   startHeaderSize,
                                   endHeaderFontSize,
                                 )
@@ -101,12 +100,10 @@ class WalletDashboardState extends State<WalletDashboard> {
                                       _showFiatCurrency &&
                                       widget._accountModel.fiatCurrency != null)
                                   ? _balanceText(
-                                      context,
                                       startHeaderSize,
                                       endHeaderFontSize,
                                     )
                                   : _balanceRichText(
-                                      context,
                                       startHeaderSize,
                                       endHeaderFontSize,
                                     ),
@@ -122,7 +119,7 @@ class WalletDashboardState extends State<WalletDashboard> {
                       widget._accountModel.fiatConversionList.isNotEmpty &&
                       isAboveMinAmount(widget._accountModel?.fiatCurrency) &&
                       !widget._userModel.hideBalance
-                  ? _fiatButton(context)
+                  ? _fiatButton()
                   : const SizedBox(),
             ),
           ),
@@ -147,7 +144,6 @@ class WalletDashboardState extends State<WalletDashboard> {
   }
 
   Widget _balanceText(
-    BuildContext context,
     double startHeaderSize,
     double endHeaderFontSize,
   ) {
@@ -163,7 +159,6 @@ class WalletDashboardState extends State<WalletDashboard> {
   }
 
   Widget _balanceRichText(
-    BuildContext context,
     double startHeaderSize,
     double endHeaderFontSize,
   ) {
@@ -195,7 +190,6 @@ class WalletDashboardState extends State<WalletDashboard> {
   }
 
   Widget _balanceHide(
-    BuildContext context,
     double startHeaderSize,
     double endHeaderFontSize,
   ) {
@@ -211,7 +205,7 @@ class WalletDashboardState extends State<WalletDashboard> {
     );
   }
 
-  Widget _fiatButton(BuildContext context) {
+  Widget _fiatButton() {
     final themeData = Theme.of(context);
     final titleMedium = themeData.walletDashboardFiatTextStyle;
 

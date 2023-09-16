@@ -18,7 +18,6 @@ import 'package:breez/widgets/loader.dart';
 import 'package:breez/widgets/network_image_builder.dart';
 import 'package:breez/widgets/single_button_bottom_bar.dart';
 import 'package:breez_translations/breez_translations_locales.dart';
-import 'package:breez_translations/generated/breez_translations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:intl/intl.dart';
@@ -58,6 +57,9 @@ class PodcastHistoryPageState extends State<PodcastHistoryPage> {
   @override
   Widget build(BuildContext context) {
     final podcastHistoryBloc = AppBlocsProvider.of<PodcastHistoryBloc>(context);
+    final texts = context.texts();
+    final themeData = Theme.of(context);
+
     return StreamBuilder<PodcastHistoryTimeRange>(
       stream: podcastHistoryBloc.posReportRange.distinct(),
       initialData: PodcastHistoryTimeRange.monthly(),
@@ -65,7 +67,223 @@ class PodcastHistoryPageState extends State<PodcastHistoryPage> {
         if (snapshot.hasData) {
           final timeRange = snapshot.data ?? PodcastHistoryTimeRange.monthly();
 
-          return _build(context, timeRange, podcastHistoryBloc);
+          return Scaffold(
+            appBar: AppBar(
+              automaticallyImplyLeading: false,
+              leading: const backBtn.BackButton(),
+              title: Text(_getAppBarDisplayString(timeRange, context)),
+              actions: [
+                PopupMenuButton<PodcastHistoryTimeRange>(
+                  color: themeData.canvasColor,
+                  icon: SvgPicture.asset(
+                    "src/icon/calendar.svg",
+                    colorFilter: ColorFilter.mode(
+                      themeData.iconTheme.color,
+                      BlendMode.srcATop,
+                    ),
+                    width: 24.0,
+                    height: 24.0,
+                  ),
+                  onSelected: (value) {
+                    podcastHistoryBloc.actionsSink
+                        .add(UpdatePodcastHistoryTimeRange(value));
+                  },
+                  itemBuilder: (ctx) => [
+                    PodcastHistoryTimeRange.weekly(),
+                    PodcastHistoryTimeRange.monthly(),
+                    PodcastHistoryTimeRange.yearly(),
+                  ].map((e) => _timeRangeDropdownItem(context, e)).toList(),
+                )
+              ],
+            ),
+            floatingActionButton: StreamBuilder<bool>(
+              stream: podcastHistoryBloc.showShareButton,
+              builder: (context, snapshot) {
+                if (!snapshot.hasData) {
+                  return const SizedBox();
+                }
+
+                return snapshot.data
+                    ? FloatingActionButton.extended(
+                        onPressed: () async {
+                          _takeClip(timeRange).then(
+                            (screenshot) {
+                              _shareClip(timeRange, screenshot);
+                            },
+                          );
+                        },
+                        icon: const Icon(
+                          Icons.share_outlined,
+                          color: Colors.white,
+                        ),
+                        label: Text(
+                          texts.podcast_history_share_text,
+                          style: const TextStyle(color: Colors.white),
+                        ),
+                      )
+                    : const SizedBox();
+              },
+            ),
+            body: StreamBuilder<bool>(
+              stream: podcastHistoryBloc.showShareButton,
+              builder: (context, isListEmptySnapshot) {
+                if (!isListEmptySnapshot.hasData) {
+                  return const Center(child: Loader());
+                }
+
+                return isListEmptySnapshot.data
+                    ? SingleChildScrollView(
+                        child: Padding(
+                          padding: const EdgeInsets.only(
+                            top: 16.0,
+                            left: 16.0,
+                            right: 16.0,
+                          ),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              StreamBuilder<PodcastHistoryRecord>(
+                                stream: podcastHistoryBloc.podcastHistoryRecord,
+                                initialData: PodcastHistoryRecord(
+                                  totalBoostagramSentSum: 0,
+                                  totalDurationInMinsSum: 0,
+                                  totalSatsStreamedSum: 0,
+                                  podcastHistoryList: [],
+                                ),
+                                builder: (context, snapshot) {
+                                  return snapshot.data != null
+                                      ? Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.spaceBetween,
+                                          children: [
+                                            _PodcastStatItem(
+                                              svg: "src/icon/schedule_icon.svg",
+                                              label:
+                                                  '${_podcastListingTimeMap(durationInMins: snapshot.data.totalDurationInMinsSum)["unit"]} listened',
+                                              value: _podcastListingTimeMap(
+                                                durationInMins: snapshot.data
+                                                    .totalDurationInMinsSum,
+                                              )["value"],
+                                            ),
+                                            _PodcastStatItem(
+                                              svg: "src/icon/satoshi_icon.svg",
+                                              label: texts
+                                                  .podcast_history_sats_streamed,
+                                              value: _getCompactNumber(
+                                                snapshot
+                                                    .data.totalSatsStreamedSum,
+                                              ),
+                                            ),
+                                            _PodcastStatItem(
+                                              svg:
+                                                  "src/icon/rocket_launch_icon.svg",
+                                              label: texts
+                                                  .podcast_history_boostagrams_sent,
+                                              value: _getCompactNumber(snapshot
+                                                  .data.totalBoostagramSentSum),
+                                            ),
+                                          ],
+                                        )
+                                      : const SizedBox();
+                                },
+                              ),
+                              const SizedBox(height: 16),
+                              const Divider(thickness: 2),
+                              const SizedBox(height: 16),
+                              Row(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  const Text("PODCASTS"),
+                                  const Spacer(),
+                                  PopupMenuButton<PodcastHistorySortEnum>(
+                                    color: themeData.canvasColor,
+                                    padding: const EdgeInsets.all(0),
+                                    enableFeedback: true,
+                                    child: Icon(
+                                      Icons.filter_list,
+                                      color: theme.themeId != "BLUE"
+                                          ? Colors.white
+                                          : theme.BreezColors.white[400],
+                                    ),
+                                    onSelected: (value) {
+                                      podcastHistoryBloc
+                                          .updateSortOption(value);
+                                    },
+                                    itemBuilder: (ctx) => [
+                                      PodcastHistorySortEnum
+                                          .SORT_RECENTLY_HEARD,
+                                      PodcastHistorySortEnum
+                                          .SORT_DURATION_DESCENDING,
+                                      PodcastHistorySortEnum
+                                          .SORT_SATS_DESCENDING,
+                                      PodcastHistorySortEnum
+                                          .SORT_BOOSTS_DESCENDING,
+                                    ]
+                                        .map(
+                                          (e) => _listSortDropdownItem(
+                                            context,
+                                            e,
+                                          ),
+                                        )
+                                        .toList(),
+                                  )
+                                ],
+                              ),
+                              const SizedBox(height: 12),
+                              _getPodcastHistoryList(
+                                context: context,
+                                getScreenshotWidget: false,
+                                timeRange: timeRange,
+                              ),
+                              const SizedBox(
+                                height: 40,
+                              )
+                            ],
+                          ),
+                        ),
+                      )
+                    : Stack(
+                        children: [
+                          Positioned(
+                            child: CustomPaint(
+                              painter: _BubblePainterPodcastHistory(context),
+                            ),
+                          ),
+                          Center(
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.end,
+                              children: [
+                                AutoSizeText(
+                                  texts.podcast_history_empty_text,
+                                  style: themeData.statusTextStyle.copyWith(
+                                    color: Colors.white,
+                                  ),
+                                  textAlign: TextAlign.center,
+                                  minFontSize: MinFontSize(context).minFontSize,
+                                  stepGranularity: 0.1,
+                                ),
+                                Padding(
+                                  padding: EdgeInsets.only(
+                                    bottom:
+                                        MediaQuery.of(context).size.height / 25,
+                                    top: MediaQuery.of(context).size.height /
+                                        2.82,
+                                  ),
+                                  child: SubmitButton(
+                                    texts.podcast_history_open_podcast_button,
+                                    () {
+                                      Navigator.of(context).pop();
+                                    },
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
+                      );
+              },
+            ),
+          );
         } else {
           return const Text('Empty data');
         }
@@ -73,286 +291,89 @@ class PodcastHistoryPageState extends State<PodcastHistoryPage> {
     );
   }
 
-  _build(BuildContext context, PodcastHistoryTimeRange timeRange,
-      PodcastHistoryBloc podcastHistoryBloc) {
+  Future<Uint8List> _takeClip(PodcastHistoryTimeRange timeRange) async {
+    return await _screenshotController.captureFromWidget(
+      _CapturedWidget(timeRange: timeRange),
+      context: context,
+      delay: const Duration(
+        milliseconds: 10,
+      ),
+    );
+  }
+
+  void _shareClip(PodcastHistoryTimeRange timeRange, Uint8List image) async {
+    final appBarDisplayString = _getAppBarDisplayString(
+      timeRange,
+      context,
+    );
+    if (image != null) {
+      final directory = await getApplicationDocumentsDirectory();
+      final imagePath = await File(
+        '${directory.path}/image.jpg',
+      ).create();
+      await imagePath.writeAsBytes(image);
+      await Share.shareXFiles(
+        [XFile(imagePath.path)],
+        text:
+            "My $appBarDisplayString in Breez ⚡ Download here: https://breez.technology",
+      );
+    }
+  }
+}
+
+class _CapturedWidget extends StatelessWidget {
+  final PodcastHistoryTimeRange timeRange;
+  const _CapturedWidget({
+    Key key,
+    @required this.timeRange,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
     final themeData = Theme.of(context);
-    return Scaffold(
-      appBar: AppBar(
-        automaticallyImplyLeading: false,
-        leading: const backBtn.BackButton(),
-        title: Text(_getAppBarDisplayString(timeRange, context)),
-        actions: [
-          PopupMenuButton<PodcastHistoryTimeRange>(
-            color: themeData.canvasColor,
-            icon: SvgPicture.asset(
-              "src/icon/calendar.svg",
-              colorFilter: ColorFilter.mode(
-                themeData.iconTheme.color,
+
+    return Container(
+      color: themeData.canvasColor,
+      child: Padding(
+        padding: const EdgeInsets.only(
+          bottom: 16,
+          left: 16,
+          right: 16,
+        ),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const SizedBox(height: 20),
+            SvgPicture.asset(
+              "src/images/logo-color.svg",
+              width: (MediaQuery.of(context).size.width) / 6,
+              colorFilter: const ColorFilter.mode(
+                Colors.white,
                 BlendMode.srcATop,
               ),
-              width: 24.0,
-              height: 24.0,
             ),
-            onSelected: (value) {
-              AppBlocsProvider.of<PodcastHistoryBloc>(context)
-                  .actionsSink
-                  .add(UpdatePodcastHistoryTimeRange(value));
-            },
-            itemBuilder: (ctx) => [
-              PodcastHistoryTimeRange.weekly(),
-              PodcastHistoryTimeRange.monthly(),
-              PodcastHistoryTimeRange.yearly(),
-            ].map((e) => _timeRangeDropdownItem(context, e)).toList(),
-          )
-        ],
-      ),
-      floatingActionButton: StreamBuilder<bool>(
-        stream: podcastHistoryBloc.showShareButton,
-        builder: (context, snapshot) {
-          if (!snapshot.hasData) {
-            return const SizedBox();
-          }
-
-          return snapshot.data
-              ? FloatingActionButton.extended(
-                  onPressed: () async {
-                    await _screenshotController
-                        .captureFromWidget(
-                            Container(
-                              color: themeData.canvasColor,
-                              child: Padding(
-                                padding: const EdgeInsets.only(
-                                  bottom: 16,
-                                  left: 16,
-                                  right: 16,
-                                ),
-                                child: Column(
-                                  mainAxisSize: MainAxisSize.min,
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    const SizedBox(height: 20),
-                                    SvgPicture.asset(
-                                      "src/images/logo-color.svg",
-                                      width:
-                                          (MediaQuery.of(context).size.width) /
-                                              6,
-                                      colorFilter: const ColorFilter.mode(
-                                        Colors.white,
-                                        BlendMode.srcATop,
-                                      ),
-                                    ),
-                                    const SizedBox(height: 32),
-                                    Center(
-                                      child: Text(
-                                        "My ${_getAppBarDisplayString(timeRange, context)}",
-                                        style: Theme.of(context)
-                                            .primaryTextTheme
-                                            .displaySmall
-                                            .copyWith(
-                                              fontSize: 16,
-                                              color: Colors.white,
-                                              fontWeight: FontWeight.w600,
-                                            ),
-                                      ),
-                                    ),
-                                    const SizedBox(
-                                      height: 32,
-                                    ),
-                                    _getPodcastHistoryList(
-                                      context: context,
-                                      getScreenshotWidget: true,
-                                      timeRange: timeRange,
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ),
-                            context: context,
-                            delay: const Duration(milliseconds: 10))
-                        .then((Uint8List image) async {
-                      final appBarDisplayString = _getAppBarDisplayString(
-                        timeRange,
-                        context,
-                      );
-                      if (image != null) {
-                        final directory =
-                            await getApplicationDocumentsDirectory();
-                        final imagePath = await File(
-                          '${directory.path}/image.jpg',
-                        ).create();
-                        await imagePath.writeAsBytes(image);
-                        await Share.shareXFiles(
-                          [XFile(imagePath.path)],
-                          text:
-                              "My $appBarDisplayString in Breez ⚡ Download here: https://breez.technology",
-                        );
-                      }
-                    });
-                  },
-                  icon: const Icon(
-                    Icons.share_outlined,
-                    color: Colors.white,
-                  ),
-                  label: Text(
-                    BreezTranslations.of(context).podcast_history_share_text,
-                    style: const TextStyle(color: Colors.white),
-                  ),
-                )
-              : const SizedBox();
-        },
-      ),
-      body: StreamBuilder<bool>(
-        stream: podcastHistoryBloc.showShareButton,
-        builder: (context, isListEmptySnapshot) {
-          if (!isListEmptySnapshot.hasData) {
-            return const Center(child: Loader());
-          }
-
-          return isListEmptySnapshot.data
-              ? SingleChildScrollView(
-                  child: Padding(
-                    padding: const EdgeInsets.only(
-                      top: 16.0,
-                      left: 16.0,
-                      right: 16.0,
-                    ),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        StreamBuilder<PodcastHistoryRecord>(
-                          stream: podcastHistoryBloc.podcastHistoryRecord,
-                          initialData: PodcastHistoryRecord(
-                            totalBoostagramSentSum: 0,
-                            totalDurationInMinsSum: 0,
-                            totalSatsStreamedSum: 0,
-                            podcastHistoryList: [],
-                          ),
-                          builder: (context, snapshot) {
-                            return snapshot.data != null
-                                ? Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      _PodcastStatItem(
-                                        svg: "src/icon/schedule_icon.svg",
-                                        label:
-                                            '${_podcastListingTimeMap(durationInMins: snapshot.data.totalDurationInMinsSum)["unit"]} listened',
-                                        value: _podcastListingTimeMap(
-                                          durationInMins: snapshot
-                                              .data.totalDurationInMinsSum,
-                                        )["value"],
-                                      ),
-                                      _PodcastStatItem(
-                                        svg: "src/icon/satoshi_icon.svg",
-                                        label: BreezTranslations.of(context)
-                                            .podcast_history_sats_streamed,
-                                        value: _getCompactNumber(
-                                          snapshot.data.totalSatsStreamedSum,
-                                        ),
-                                      ),
-                                      _PodcastStatItem(
-                                        svg: "src/icon/rocket_launch_icon.svg",
-                                        label: BreezTranslations.of(context)
-                                            .podcast_history_boostagrams_sent,
-                                        value: _getCompactNumber(snapshot
-                                            .data.totalBoostagramSentSum),
-                                      ),
-                                    ],
-                                  )
-                                : const SizedBox();
-                          },
-                        ),
-                        const SizedBox(height: 16),
-                        const Divider(thickness: 2),
-                        const SizedBox(height: 16),
-                        Row(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            const Text("PODCASTS"),
-                            const Spacer(),
-                            PopupMenuButton<PodcastHistorySortEnum>(
-                              color: themeData.canvasColor,
-                              padding: const EdgeInsets.all(0),
-                              enableFeedback: true,
-                              child: Icon(
-                                Icons.filter_list,
-                                color: theme.themeId != "BLUE"
-                                    ? Colors.white
-                                    : theme.BreezColors.white[400],
-                              ),
-                              onSelected: (value) {
-                                AppBlocsProvider.of<PodcastHistoryBloc>(context)
-                                    .updateSortOption(value);
-                              },
-                              itemBuilder: (ctx) => [
-                                PodcastHistorySortEnum.SORT_RECENTLY_HEARD,
-                                PodcastHistorySortEnum.SORT_DURATION_DESCENDING,
-                                PodcastHistorySortEnum.SORT_SATS_DESCENDING,
-                                PodcastHistorySortEnum.SORT_BOOSTS_DESCENDING,
-                              ]
-                                  .map(
-                                    (e) => _listSortDropdownItem(
-                                      context,
-                                      e,
-                                    ),
-                                  )
-                                  .toList(),
-                            )
-                          ],
-                        ),
-                        const SizedBox(height: 12),
-                        _getPodcastHistoryList(
-                          context: context,
-                          getScreenshotWidget: false,
-                          timeRange: timeRange,
-                        ),
-                        const SizedBox(
-                          height: 40,
-                        )
-                      ],
-                    ),
-                  ),
-                )
-              : Stack(
-                  children: [
-                    Positioned(
-                      child: CustomPaint(
-                        painter: _BubblePainterPodcastHistory(context),
-                      ),
-                    ),
-                    Center(
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.end,
-                        children: [
-                          AutoSizeText(
-                            BreezTranslations.of(context)
-                                .podcast_history_empty_text,
-                            style: themeData.statusTextStyle.copyWith(
-                              color: Colors.white,
-                            ),
-                            textAlign: TextAlign.center,
-                            minFontSize: MinFontSize(context).minFontSize,
-                            stepGranularity: 0.1,
-                          ),
-                          Padding(
-                            padding: EdgeInsets.only(
-                              bottom: MediaQuery.of(context).size.height / 25,
-                              top: MediaQuery.of(context).size.height / 2.82,
-                            ),
-                            child: SubmitButton(
-                              BreezTranslations.of(context)
-                                  .podcast_history_open_podcast_button,
-                              () {
-                                Navigator.of(context).pop();
-                              },
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ],
-                );
-        },
+            const SizedBox(height: 32),
+            Center(
+              child: Text(
+                "My ${_getAppBarDisplayString(timeRange, context)}",
+                style: themeData.primaryTextTheme.displaySmall.copyWith(
+                  fontSize: 16,
+                  color: Colors.white,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+            ),
+            const SizedBox(
+              height: 32,
+            ),
+            _getPodcastHistoryList(
+              context: context,
+              getScreenshotWidget: true,
+              timeRange: timeRange,
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -561,11 +582,13 @@ class _PodcastListTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final themeData = Theme.of(context);
+
     return ClipRRect(
       borderRadius: BorderRadius.circular(10),
       child: Container(
         color: theme.themeId != "BLUE"
-            ? Theme.of(context).colorScheme.background
+            ? themeData.colorScheme.background
             : theme.podcastHistoryTileBackGroundColorBlue,
         height: 100,
         child: Row(
@@ -601,14 +624,11 @@ class _PodcastListTile extends StatelessWidget {
                       width: MediaQuery.of(context).size.width * 0.5,
                       child: Text(
                         title,
-                        style: Theme.of(context)
-                            .primaryTextTheme
-                            .displaySmall
-                            .copyWith(
-                              fontSize: 16,
-                              color: Colors.white,
-                              fontWeight: FontWeight.w600,
-                            ),
+                        style: themeData.primaryTextTheme.displaySmall.copyWith(
+                          fontSize: 16,
+                          color: Colors.white,
+                          fontWeight: FontWeight.w600,
+                        ),
                         overflow: TextOverflow.ellipsis,
                         maxLines: 1,
                       ),
@@ -655,14 +675,12 @@ class _PodcastListTile extends StatelessWidget {
                           padding: const EdgeInsets.only(right: 16),
                           child: Text(
                             "$sats sats",
-                            style: Theme.of(context)
-                                .primaryTextTheme
-                                .displaySmall
+                            style: themeData.primaryTextTheme.displaySmall
                                 .copyWith(
-                                  fontSize: 16,
-                                  color: Colors.white,
-                                  fontWeight: FontWeight.w500,
-                                ),
+                              fontSize: 16,
+                              color: Colors.white,
+                              fontWeight: FontWeight.w500,
+                            ),
                           ),
                         )
                       ],

@@ -56,8 +56,6 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import 'bloc/nostr/nostr_actions.dart';
-
 final GlobalKey firstPaymentItemKey =
     GlobalKey(debugLabel: "firstPaymentItemKey");
 final ScrollController scrollController = ScrollController();
@@ -166,17 +164,17 @@ class HomeState extends State<Home> with WidgetsBindingObserver {
     });
   }
 
-  void _initListens(BuildContext context) {
+  void _initListens() {
     if (_listensInit) return;
     _listensInit = true;
     ServiceInjector().breezBridge.initBreezLib();
-    _registerNotificationHandlers(context);
+    _registerNotificationHandlers();
     listenUnexpectedError(context, widget.accountBloc);
-    _listenBackupConflicts(context);
-    _listenBackupNotLatestConflicts(context);
-    _listenWhitelistPermissionsRequest(context);
-    _listenLSPSelectionPrompt(context);
-    _listenPaymentResults(context);
+    _listenBackupConflicts();
+    _listenBackupNotLatestConflicts();
+    _listenWhitelistPermissionsRequest();
+    _listenLSPSelectionPrompt();
+    _listenPaymentResults();
   }
 
   @override
@@ -187,7 +185,7 @@ class HomeState extends State<Home> with WidgetsBindingObserver {
 
   @override
   Widget build(BuildContext context) {
-    _initListens(context);
+    _initListens();
     final userProfileBloc = AppBlocsProvider.of<UserProfileBloc>(context);
     final mediaSize = MediaQuery.of(context).size;
 
@@ -219,15 +217,16 @@ class HomeState extends State<Home> with WidgetsBindingObserver {
                 : null,
             floatingActionButtonLocation:
                 FloatingActionButtonLocation.centerDocked,
-            body: widget._screenBuilders[_activeScreen] ??
-                _homePage(context, appMode),
+
+            body: widget._screenBuilders[_activeScreen] ?? _homePage(appMode),
+
           );
         },
       ),
     );
   }
 
-  Widget _homePage(BuildContext context, AppMode appMode) {
+  Widget _homePage(AppMode appMode) {
     if (appMode == null) {
       return AccountPage(firstPaymentItemKey, scrollController);
     }
@@ -278,7 +277,7 @@ class HomeState extends State<Home> with WidgetsBindingObserver {
     }
   }
 
-  void _registerNotificationHandlers(BuildContext context) {
+  void _registerNotificationHandlers() {
     final themeData = Theme.of(context);
     final texts = context.texts();
 
@@ -295,7 +294,7 @@ class HomeState extends State<Home> with WidgetsBindingObserver {
     CTPJoinSessionHandler(
       widget.userProfileBloc,
       widget.ctpBloc,
-      this.context,
+      context,
       (session) {
         Navigator.popUntil(context, (route) {
           return route.settings.name != "/connect_to_pay";
@@ -322,7 +321,7 @@ class HomeState extends State<Home> with WidgetsBindingObserver {
     );
     PodcastURLHandler(
       widget.userProfileBloc,
-      this.context,
+      context,
       (e) {
         promptError(
           context,
@@ -356,14 +355,14 @@ class HomeState extends State<Home> with WidgetsBindingObserver {
     CheckChannelConnection().startListen(context, widget.accountBloc);
   }
 
-  void _listenBackupConflicts(BuildContext context) {
+  void _listenBackupConflicts() {
     final texts = context.texts();
     final themeData = Theme.of(context);
-    BackupSettings currentsettings;
+    BackupSettings currentSettings;
     widget.backupBloc.backupSettingsStream.listen((settings) {
-      currentsettings = settings;
-      var encrypted = currentsettings?.backupKeyType == BackupKeyType.PHRASE;
-      var provider = currentsettings?.backupProvider?.displayName;
+      currentSettings = settings;
+      var encrypted = currentSettings?.backupKeyType == BackupKeyType.PHRASE;
+      var provider = currentSettings?.backupProvider?.displayName;
       widget.accountBloc.nodeConflictStream.listen(
         (_) async {
           Navigator.popUntil(context, (route) {
@@ -384,7 +383,7 @@ class HomeState extends State<Home> with WidgetsBindingObserver {
     });
   }
 
-  void _listenBackupNotLatestConflicts(BuildContext context) {
+  void _listenBackupNotLatestConflicts() {
     final texts = context.texts();
     final themeData = Theme.of(context);
 
@@ -411,12 +410,13 @@ class HomeState extends State<Home> with WidgetsBindingObserver {
     });
   }
 
-  void _listenLSPSelectionPrompt(BuildContext context) async {
-    widget.lspBloc.lspPromptStream.first
-        .then((_) => Navigator.of(context).pushNamed("/select_lsp"));
+  void _listenLSPSelectionPrompt() async {
+    widget.lspBloc.lspPromptStream.first.then(
+      (_) => Navigator.of(context).pushNamed("/select_lsp"),
+    );
   }
 
-  void _listenWhitelistPermissionsRequest(BuildContext context) {
+  void _listenWhitelistPermissionsRequest() {
     final texts = context.texts();
     final themeData = Theme.of(context);
 
@@ -435,7 +435,7 @@ class HomeState extends State<Home> with WidgetsBindingObserver {
     });
   }
 
-  void _listenPaymentResults(BuildContext context) {
+  void _listenPaymentResults() {
     final texts = context.texts();
 
     widget.accountBloc.completedPaymentsStream.listen(

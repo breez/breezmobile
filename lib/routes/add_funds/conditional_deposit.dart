@@ -8,7 +8,7 @@ import 'package:breez/widgets/link_launcher.dart';
 import 'package:breez_translations/breez_translations_locales.dart';
 import 'package:flutter/material.dart';
 
-class ConditionalDeposit extends StatelessWidget {
+class ConditionalDeposit extends StatefulWidget {
   final Widget enabledChild;
   final String title;
 
@@ -18,6 +18,11 @@ class ConditionalDeposit extends StatelessWidget {
     this.title,
   }) : super(key: key);
 
+  @override
+  State<ConditionalDeposit> createState() => _ConditionalDepositState();
+}
+
+class _ConditionalDepositState extends State<ConditionalDeposit> {
   @override
   Widget build(BuildContext context) {
     final texts = context.texts();
@@ -44,13 +49,13 @@ class ConditionalDeposit extends StatelessWidget {
         }
 
         if (errorMessage == null) {
-          return enabledChild;
+          return widget.enabledChild;
         }
 
         return Scaffold(
           appBar: AppBar(
             leading: const backBtn.BackButton(),
-            title: Text(title),
+            title: Text(widget.title),
           ),
           body: Column(
             mainAxisSize: MainAxisSize.max,
@@ -77,7 +82,7 @@ class ConditionalDeposit extends StatelessWidget {
                             left: 30.0,
                             right: 30.0,
                           ),
-                          child: _linkLauncher(context, unconfirmedTxID),
+                          child: _linkLauncher(unconfirmedTxID),
                         ),
                       ],
                     )
@@ -89,7 +94,7 @@ class ConditionalDeposit extends StatelessWidget {
     );
   }
 
-  Widget _linkLauncher(BuildContext context, String unconfirmedTxID) {
+  Widget _linkLauncher(String unconfirmedTxID) {
     final texts = context.texts();
     return LinkLauncher(
       linkName: unconfirmedTxID,

@@ -2,11 +2,10 @@ import 'package:auto_size_text/auto_size_text.dart';
 import 'package:breez/bloc/account/account_model.dart';
 import 'package:breez/theme_data.dart';
 import 'package:breez/utils/min_font_size.dart';
+import 'package:breez/widgets/link_text_span.dart';
 import 'package:breez/widgets/loading_animated_text.dart';
 import 'package:breez_translations/breez_translations_locales.dart';
-import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'package:url_launcher/url_launcher_string.dart';
 
 class StatusText extends StatelessWidget {
   final AccountModel account;
@@ -35,7 +34,7 @@ class StatusText extends StatelessWidget {
             text: texts.status_text_loading_begin,
             style: themeData.statusTextStyle,
           ),
-          _LinkTextSpan(
+          LinkTextSpan(
             text: texts.status_text_loading_middle,
             url: account.channelFundingTxUrl,
             style: themeData.statusTextStyle.copyWith(
@@ -70,19 +69,4 @@ class StatusText extends StatelessWidget {
             textAlign: TextAlign.center,
           );
   }
-}
-
-class _LinkTextSpan extends TextSpan {
-  _LinkTextSpan({
-    TextStyle style,
-    String url,
-    String text,
-  }) : super(
-          style: style,
-          text: text ?? url,
-          recognizer: TapGestureRecognizer()
-            ..onTap = () {
-              launchUrlString(url);
-            },
-        );
 }

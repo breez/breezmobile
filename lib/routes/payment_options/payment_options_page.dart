@@ -172,7 +172,7 @@ class _PaymentOptionsPageState extends State<PaymentOptionsPage> {
                   }
                   return null;
                 },
-                onChanged: (value) => _saveBase(context, value),
+                onChanged: (value) => _saveBase(value),
               ),
             ),
           ),
@@ -217,7 +217,7 @@ class _PaymentOptionsPageState extends State<PaymentOptionsPage> {
                   }
                   return null;
                 },
-                onChanged: (value) => _saveProportional(context, value),
+                onChanged: (value) => _saveProportional(value),
               ),
             ),
           ),
@@ -260,7 +260,7 @@ class _PaymentOptionsPageState extends State<PaymentOptionsPage> {
                   builder: (context) => _saveDialog(context),
                 );
               } else {
-                _save(context);
+                _save();
               }
             },
           ),
@@ -296,7 +296,7 @@ class _PaymentOptionsPageState extends State<PaymentOptionsPage> {
             style: themeData.primaryTextTheme.labelLarge,
           ),
           onPressed: () {
-            _save(context);
+            _save();
             Navigator.pop(context);
           },
         ),
@@ -320,7 +320,7 @@ class _PaymentOptionsPageState extends State<PaymentOptionsPage> {
     );
   }
 
-  void _saveProportional(BuildContext context, String value) {
+  void _saveProportional(String value) {
     double newProportionalFee = 0.0;
     try {
       newProportionalFee = double.parse(value);
@@ -332,7 +332,7 @@ class _PaymentOptionsPageState extends State<PaymentOptionsPage> {
     });
   }
 
-  void _saveBase(BuildContext context, String value) {
+  void _saveBase(String value) {
     int newBaseFee = 0;
     try {
       newBaseFee = int.parse(value);
@@ -356,9 +356,9 @@ class _PaymentOptionsPageState extends State<PaymentOptionsPage> {
     _closeKeyboard();
   }
 
-  void _save(BuildContext context) async {
-    _saveProportional(context, _proportionalFeeController.text);
-    _saveBase(context, _baseFeeController.text);
+  void _save() async {
+    _saveProportional(_proportionalFeeController.text);
+    _saveBase(_baseFeeController.text);
     _closeKeyboard();
 
     final options = AppBlocsProvider.of<PaymentOptionsBloc>(context);

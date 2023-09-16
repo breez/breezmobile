@@ -172,7 +172,6 @@ class ConnectToPayPageState extends State<ConnectToPayPage> {
         texts.connect_to_pay_exit_warning,
         style: themeData.dialogTheme.contentTextStyle,
       ),
-      textStyle: themeData.dialogTheme.contentTextStyle,
     );
     if (cancel) {
       _popWithMessage(null);

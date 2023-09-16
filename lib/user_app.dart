@@ -23,7 +23,7 @@ import 'package:breez/routes/create_invoice/create_invoice_page.dart';
 import 'package:breez/routes/dev/dev.dart';
 import 'package:breez/routes/fiat_currencies/fiat_currency_settings.dart';
 import 'package:breez/routes/get_refund/get_refund_page.dart';
-import 'package:breez/routes/initial_walkthrough.dart';
+import 'package:breez/routes/initial_walkthrough/initial_walkthrough.dart';
 import 'package:breez/routes/lsp/select_lsp_page.dart';
 import 'package:breez/routes/marketplace/marketplace.dart';
 import 'package:breez/routes/network/network.dart';
@@ -33,7 +33,7 @@ import 'package:breez/routes/podcast/theme.dart';
 import 'package:breez/routes/podcast_history/podcast_history.dart';
 import 'package:breez/routes/qr_scan.dart';
 import 'package:breez/routes/security_pin/lock_screen.dart';
-import 'package:breez/routes/security_pin/security_pin_page.dart';
+import 'package:breez/routes/security_pin/security_and_backup/security_and_backup_page.dart';
 import 'package:breez/routes/settings/pos_settings_page.dart';
 import 'package:breez/routes/splash_page.dart';
 import 'package:breez/routes/transactions/pos_transactions_page.dart';
@@ -45,6 +45,7 @@ import 'package:breez/widgets/static_loader.dart';
 import 'package:breez_translations/breez_translations_locales.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 
 import 'bloc/marketplace/marketplace_bloc.dart';
 
@@ -110,17 +111,19 @@ class UserApp extends StatelessWidget {
                 const AnytimeFallbackLocalizationDelegate(),
               ]),
             supportedLocales: supportedLocales(),
-            builder: (BuildContext context, Widget child) {
-              final MediaQueryData data = MediaQuery.of(context);
-              return MediaQuery(
-                data: data.copyWith(
-                  textScaleFactor: (data.textScaleFactor >= 1.3)
-                      ? 1.3
-                      : data.textScaleFactor,
-                ),
-                child: _withTheme(user, child),
-              );
-            },
+            builder: EasyLoading.init(
+              builder: (BuildContext context, Widget child) {
+                final MediaQueryData data = MediaQuery.of(context);
+                return MediaQuery(
+                  data: data.copyWith(
+                    textScaleFactor: (data.textScaleFactor >= 1.3)
+                        ? 1.3
+                        : data.textScaleFactor,
+                  ),
+                  child: _withTheme(user, child),
+                );
+              },
+            ),
             initialRoute: user.registrationRequested
                 ? (user.locked ? '/lockscreen' : "/")
                 : '/splash',
@@ -130,10 +133,9 @@ class UserApp extends StatelessWidget {
                 case '/intro':
                   return FadeInRoute(
                     builder: (_) => InitialWalkthroughPage(
-                      userProfileBloc,
-                      backupBloc,
-                      posCatalogBloc,
-                      _reloadDatabaseSink,
+                      backupBloc: backupBloc,
+                      userProfileBloc: userProfileBloc,
+                      reloadDatabaseSink: _reloadDatabaseSink,
                     ),
                     settings: settings,
                   );
@@ -250,9 +252,7 @@ class UserApp extends StatelessWidget {
                             case '/select_lsp':
                               return MaterialPageRoute(
                                 fullscreenDialog: true,
-                                builder: (_) => SelectLSPPage(
-                                  lstBloc: lspBloc,
-                                ),
+                                builder: (_) => const SelectLSPPage(),
                                 settings: settings,
                               );
                             case '/get_refund':
@@ -302,7 +302,7 @@ class UserApp extends StatelessWidget {
                               return FadeInRoute(
                                 builder: (_) => withBreezTheme(
                                   context,
-                                  SecurityPage(
+                                  SecurityAndBackupPage(
                                     userProfileBloc,
                                     backupBloc,
                                   ),
