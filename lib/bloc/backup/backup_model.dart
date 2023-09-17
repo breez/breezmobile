@@ -1,7 +1,11 @@
 import 'dart:convert';
 
+import 'package:breez/logger.dart';
 import 'package:breez_translations/breez_translations_locales.dart';
+import 'package:crypto/crypto.dart';
 import 'package:flutter/foundation.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:hex/hex.dart';
 
 class RemoteServerAuthData {
   final String url;
@@ -50,6 +54,11 @@ class RemoteServerAuthData {
       breezDir ?? this.breezDir,
     );
   }
+
+  @override
+  String toString() {
+    return 'RemoteServerAuthData{url: $url, user: $user, password: ****, breezDir: $breezDir}';
+  }
 }
 
 class BackupProvider {
@@ -73,6 +82,25 @@ class BackupProvider {
   String toString() {
     return 'BackupProvider{name: $name, displayName: $displayName}';
   }
+
+  static BackupProvider iCloud() => BackupProvider(
+        "icloud",
+        getSystemAppLocalizations().backup_model_name_apple_icloud,
+      );
+
+  static BackupProvider googleDrive() => BackupProvider(
+        "gdrive",
+        getSystemAppLocalizations().backup_model_name_google_drive,
+      );
+
+  static BackupProvider remoteServer() => BackupProvider(
+        "remoteserver",
+        getSystemAppLocalizations().backup_model_name_remote_server,
+      );
+
+  bool get isICloud => this == iCloud();
+  bool get isGDrive => this == googleDrive();
+  bool get isRemoteServer => this == remoteServer();
 }
 
 enum BackupKeyType {
@@ -82,21 +110,6 @@ enum BackupKeyType {
 }
 
 class BackupSettings {
-  static BackupProvider icloudBackupProvider() => BackupProvider(
-        "icloud",
-        getSystemAppLocalizations().backup_model_name_apple_icloud,
-      );
-
-  static BackupProvider googleBackupProvider() => BackupProvider(
-        "gdrive",
-        getSystemAppLocalizations().backup_model_name_google_drive,
-      );
-
-  static BackupProvider remoteServerBackupProvider() => BackupProvider(
-        "remoteserver",
-        getSystemAppLocalizations().backup_model_name_remote_server,
-      );
-
   final bool promptOnError;
   final BackupKeyType backupKeyType;
   final BackupProvider backupProvider;
@@ -112,9 +125,7 @@ class BackupSettings {
   static BackupSettings start() => BackupSettings(
         true,
         BackupKeyType.NONE,
-        defaultTargetPlatform == TargetPlatform.android
-            ? googleBackupProvider()
-            : null,
+        _defaultBackupProvider(),
         const RemoteServerAuthData(null, null, null, null),
       );
 
@@ -151,17 +162,6 @@ class BackupSettings {
     };
   }
 
-  static List<BackupProvider> availableBackupProviders() {
-    List<BackupProvider> providers = [
-      googleBackupProvider(),
-      remoteServerBackupProvider()
-    ];
-    if (defaultTargetPlatform == TargetPlatform.iOS) {
-      providers.insert(0, icloudBackupProvider());
-    }
-    return providers;
-  }
-
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
@@ -170,7 +170,7 @@ class BackupSettings {
           promptOnError == other.promptOnError &&
           backupKeyType == other.backupKeyType &&
           backupProvider == other.backupProvider &&
-          remoteServerAuthData == other.remoteServerAuthData;
+          remoteServerAuthData.equal(other.remoteServerAuthData);
 
   @override
   int get hashCode =>
@@ -183,6 +183,28 @@ class BackupSettings {
   String toString() {
     return 'BackupSettings{promptOnError: $promptOnError, backupKeyType: $backupKeyType, '
         'backupProvider: $backupProvider, remoteServerAuthData: $remoteServerAuthData}';
+  }
+
+  static BackupProvider _defaultBackupProvider() {
+    switch (defaultTargetPlatform) {
+      case TargetPlatform.android:
+        return BackupProvider.googleDrive();
+      case TargetPlatform.iOS:
+        return BackupProvider.iCloud();
+      default:
+        return null;
+    }
+  }
+
+  static List<BackupProvider> availableBackupProviders() {
+    List<BackupProvider> providers = [
+      BackupProvider.googleDrive(),
+      BackupProvider.remoteServer()
+    ];
+    if (defaultTargetPlatform == TargetPlatform.iOS) {
+      providers.insert(0, BackupProvider.iCloud());
+    }
+    return providers;
   }
 }
 
@@ -197,10 +219,25 @@ class BackupState {
     this.lastBackupAccountName,
   );
 
+  static BackupState start() => const BackupState(null, false, null);
+
+  BackupState copyWith({
+    DateTime lastBackupTime,
+    bool inProgress,
+    String lastBackupAccountName,
+  }) {
+    return BackupState(
+      lastBackupTime ?? this.lastBackupTime,
+      inProgress ?? this.inProgress,
+      lastBackupAccountName ?? this.lastBackupAccountName,
+    );
+  }
+
   BackupState.fromJson(Map<String, dynamic> json)
       : this(
           json["lastBackupTime"] != null
               ? DateTime.fromMillisecondsSinceEpoch(json["lastBackupTime"])
+                  .toLocal()
               : null,
           false,
           json["lastBackupAccountName"],
@@ -229,15 +266,194 @@ class BackupFailedException implements Exception {
   }
 }
 
-class BackupNowAction {
-  final bool recoverEnabled;
+class SnapshotInfo {
+  final String nodeID;
+  final String modifiedTime;
+  final bool encrypted;
+  final String encryptionType;
 
-  const BackupNowAction({
-    @required this.recoverEnabled,
-  });
+  SnapshotInfo(
+    this.nodeID,
+    this.modifiedTime,
+    this.encrypted,
+    this.encryptionType,
+  ) {
+    assert(nodeID != null);
+    assert(modifiedTime != null);
+    log.info(
+      "New Snapshot encrypted = $encrypted encryptionType = $encryptionType",
+    );
+  }
+
+  SnapshotInfo.fromJson(Map<String, dynamic> json)
+      : this(
+          json["NodeID"],
+          json["ModifiedTime"],
+          json["Encrypted"] == true,
+          json["EncryptionType"],
+        );
+}
+
+class SignInFailedException implements Exception {
+  final BackupProvider provider;
+
+  SignInFailedException(this.provider);
 
   @override
   String toString() {
-    return 'BackupNowAction{recoverEnabled: $recoverEnabled}';
+    return "Sign in failed";
   }
+}
+
+class GoogleSignNotAvailableException implements Exception {
+  @override
+  String toString() {
+    return getSystemAppLocalizations().google_sign_not_available_exception;
+  }
+}
+
+class MethodNotFoundException implements Exception {
+  MethodNotFoundException();
+
+  @override
+  String toString() {
+    return "Method not found";
+  }
+}
+
+class SignInCancelledException implements Exception {
+  @override
+  String toString() {
+    return "Sign in cancelled";
+  }
+}
+
+class InvalidCredentialsException implements Exception {
+  @override
+  String toString() {
+    return "Sign in failed. Please try again";
+  }
+}
+
+class InsufficientScopeException implements Exception {
+  @override
+  String toString() {
+    return "Please give Breez required permissions and try again";
+  }
+}
+
+class NoBackupFoundException implements Exception {
+  @override
+  String toString() {
+    return "No backup found";
+  }
+}
+
+class RemoteServerNotFoundException implements Exception {
+  @override
+  String toString() {
+    return "The server was not found. Please check the address";
+  }
+}
+
+class BreezLibBackupKey {
+  static const KEYLENGTH = 32;
+  static const ENTROPY_LENGTH = 16 * 2; // 2 hex characters == 1 byte.
+
+  BackupKeyType backupKeyType;
+  String entropy;
+
+  List<int> _key;
+  set key(List<int> v) => _key = v;
+
+  List<int> get key {
+    var entropyBytes = _key;
+    if (entropyBytes == null) {
+      /*
+      assert(entropy != null);
+      assert(entropy.isNotEmpty);
+      */
+      if (entropy != null && entropy.isNotEmpty) {
+        entropyBytes = HEX.decode(entropy);
+      }
+    }
+
+    if (entropyBytes != null && entropyBytes.length != KEYLENGTH) {
+      // The length of a "Mnemonics" entropy hex string in bytes is 32.
+      // The length of a "Mnemonics12" entropy hex string in bytes is 16.
+
+      entropyBytes = sha256.convert(entropyBytes).bytes;
+    }
+
+    return entropyBytes;
+  }
+
+  String get type {
+    var result = '';
+    if (key != null) {
+      switch (backupKeyType) {
+        case BackupKeyType.PHRASE:
+          assert(entropy.length == ENTROPY_LENGTH ||
+              entropy.length == ENTROPY_LENGTH * 2);
+          result =
+              entropy.length == ENTROPY_LENGTH ? 'Mnemonics12' : 'Mnemonics';
+          break;
+        case BackupKeyType.PIN:
+          /// Sets type of backups encrypted with PIN to
+          /// BackupKeyType.NONE as they are are non-secure & deprecated
+          result = '';
+          break;
+        default:
+      }
+    }
+
+    return result;
+  }
+
+  BreezLibBackupKey({this.entropy, List<int> key}) : _key = key;
+
+  static Future<BreezLibBackupKey> fromSettings(
+    FlutterSecureStorage store,
+    BackupKeyType backupKeyType,
+  ) async {
+    assert(store != null);
+
+    BreezLibBackupKey result;
+    switch (backupKeyType) {
+      case BackupKeyType.NONE:
+      case BackupKeyType.PIN:
+        /// Sets backup key type of backups encrypted with PIN to
+        /// BackupKeyType.NONE as they are are non-secure & deprecated
+        result = BreezLibBackupKey(entropy: null, key: null);
+        backupKeyType = BackupKeyType.NONE;
+        break;
+      case BackupKeyType.PHRASE:
+        result = BreezLibBackupKey(entropy: await store.read(key: 'backupKey'));
+        break;
+      default:
+    }
+    result?.backupKeyType = backupKeyType;
+
+    return result;
+  }
+
+  static Future save(FlutterSecureStorage store, String key) async {
+    await store.write(key: 'backupKey', value: key);
+  }
+}
+
+class RestoreRequest {
+  final SnapshotInfo snapshot;
+  final BreezLibBackupKey encryptionKey;
+
+  RestoreRequest(this.snapshot, this.encryptionKey)
+      : assert(
+          snapshot.nodeID != null && snapshot.nodeID.isNotEmpty,
+          "Node ID mustn't be empty for restore request.",
+        ),
+        assert(
+          !(encryptionKey != null && encryptionKey.key != null) ||
+              encryptionKey.key.isNotEmpty,
+          "Encryption key mustn't be empty for encrypted backup.",
+        );
 }

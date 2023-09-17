@@ -17,7 +17,7 @@ dependencies:
   breez_translations:
     git:
       url: https://github.com/breez/Breez-Translations.git
-      ref: 077a94046e0b7ff9bd1aff225616541dea0ba208
+      ref: 53262f5517217f095acc47b221d25a7002672d9a
   clipboard_watcher: ^0.2.0
   collection: ^1.18.0
   confetti: ^0.7.0
@@ -32,12 +32,13 @@ dependencies:
   extended_image: <8.0.0 # Requires Flutter 3.10
   ffmpeg_kit_flutter_https_gpl: ^5.1.0
   file_picker: <5.3.2 # Requires Flutter 3.10
-  firebase_core: ^2.15.0
+  firebase_core: ^2.15.1
   firebase_core_platform_interface: ^4.8.0
-  firebase_database: ^10.2.4
-  firebase_dynamic_links: ^5.3.4
-  firebase_messaging: ^14.6.5
+  firebase_database: ^10.2.5
+  firebase_dynamic_links: ^5.3.5
+  firebase_messaging: ^14.6.6
   fixnum: ^1.1.0
+  flutter_easyloading: ^3.0.5
   flutter_secure_storage: ^8.0.0
   flutter_spinkit: ^5.2.0
   flutter_svg: ^2.0.7
@@ -58,10 +59,10 @@ dependencies:
     git:
       url: https://github.com/breez/md5_file_checksum.git
   nfc_manager: ^3.3.0
-  nostr_tools: ^1.0.7
+  nostr_tools: <1.0.8 # Requires Flutter 3.10(depends on http ^1.1.0)
   package_info_plus: ^4.1.0
   path: ^1.8.3
-  path_provider: ^2.0.15
+  path_provider: ^2.1.0
   path_provider_platform_interface: ^2.1.0
   pdf: ^3.10.4
   plugin_platform_interface: ^2.1.5
@@ -69,6 +70,8 @@ dependencies:
   protobuf: <3.0.0 # Requires Flutter 3.10
   provider: ^6.0.5
   meta: ^1.9.1
+
+  mobile_scanner: <3.4.0 # Requires Flutter 3.10 / Kotlin upgrade
   # qr_flutter has already fixed the build issue with the qr package but did not publish an updated
   # version, they will publish as 4.0.1 for now they recommend to use the master but instead of that
   # we are using an specific commit to avoid unexpected behaviour in future builds.
@@ -90,8 +93,8 @@ dependencies:
   uuid: ^3.0.7
   validators: ^3.0.0
   webdav_client: ^1.2.1
-  webview_flutter: ^4.2.2
-  webview_flutter_android: ^3.9.2
+  webview_flutter: ^4.2.3
+  webview_flutter_android: ^3.9.3
 
   anytime:
     # git:
@@ -114,7 +117,6 @@ dependencies:
     git:
       url: https://github.com/breez/nfc_in_flutter.git
       ref: 97f610be82bfe42d5ce86c348d931d61949fa517
-  mobile_scanner: 3.3.0
 
 dependency_overrides:
   collection: ^1.18.0
@@ -214,7 +216,7 @@ flutter:
     - family: ComfortaaBold
       fonts:
         - asset: fonts/Comfortaa-Bold.ttf
-    - family: IBMPlexSansRegular
+    - family: IBMPlexSansRegularEnableBackupDialog
       fonts:
         - asset: fonts/IBMPlexSans-Regular.ttf
     - family: HacenTunisia

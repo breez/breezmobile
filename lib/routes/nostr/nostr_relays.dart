@@ -1,22 +1,18 @@
 import "package:auto_size_text/auto_size_text.dart";
-import "package:breez/bloc/marketplace/nostr_settings.dart";
 import "package:breez/bloc/nostr/nostr_actions.dart";
 import "package:breez/bloc/nostr/nostr_bloc.dart";
+import "package:breez/bloc/nostr/nostr_model.dart";
+import "package:breez/utils/min_font_size.dart";
 import "package:flutter/material.dart";
 import 'package:breez/theme_data.dart' as theme;
 import "package:flutter_svg/svg.dart";
 
-import "../../bloc/marketplace/marketplace_bloc.dart";
-import "../../utils/min_font_size.dart";
-
 class NostrRelays extends StatefulWidget {
   final NostrSettings settings;
-  final MarketplaceBloc marketplaceBloc;
   final NostrBloc nostrBloc;
   const NostrRelays({
     Key key,
     this.settings,
-    this.marketplaceBloc,
     this.nostrBloc,
   }) : super(key: key);
 
@@ -54,8 +50,7 @@ class _NostrRelaysState extends State<NostrRelays> {
     widget.nostrBloc.actionsSink.add(PublishRelays(
       userRelayList: newRelays,
     ));
-    widget.marketplaceBloc.nostrSettingsSettingsSink
-        .add(widget.settings.copyWith(
+    widget.nostrBloc.nostrSettingsSettingsSink.add(widget.settings.copyWith(
       relayList: newRelays,
     ));
 
@@ -130,10 +125,8 @@ class _NostrRelaysState extends State<NostrRelays> {
                         if (value.isEmpty) {
                           return 'This field cannot be empty';
                         }
-                        if (value.substring(0, 6) != "wss://") {
-                          return 'relay name does not start with wss://';
-                        }
-                        return "null";
+
+                        return null;
                       },
                       onTapOutside: (value) {
                         _focusNode.unfocus();

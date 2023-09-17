@@ -139,7 +139,7 @@ class SweepAllCoinsConfirmationState extends State<SweepAllCoinsConfirmation> {
                       }),
                     ),
                     const SizedBox(height: 36.0),
-                    buildSummary(context, acc),
+                    buildSummary(acc),
                   ],
                 ),
               );
@@ -174,7 +174,7 @@ class SweepAllCoinsConfirmationState extends State<SweepAllCoinsConfirmation> {
     );
   }
 
-  Widget buildSummary(BuildContext context, AccountModel acc) {
+  Widget buildSummary(AccountModel acc) {
     final themeData = Theme.of(context);
     final texts = context.texts();
     final receive = _sweepAmount - feeOptions[selectedFeeIndex].sats;

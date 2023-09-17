@@ -1,7 +1,10 @@
 import 'package:auto_size_text/auto_size_text.dart';
-import 'package:breez/bloc/marketplace/marketplace_bloc.dart';
-import 'package:breez/bloc/marketplace/nostr_settings.dart';
+import 'package:breez/bloc/nostr/nostr_actions.dart';
 import 'package:breez/bloc/nostr/nostr_bloc.dart';
+import 'package:breez/bloc/nostr/nostr_model.dart';
+import 'package:breez/routes/nostr/nostr_relays.dart';
+import 'package:breez/utils/min_font_size.dart';
+import 'package:breez/widgets/logout_warning_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
@@ -14,12 +17,10 @@ import 'nostr_connect_page.dart';
 
 class NostrKeysPage extends StatefulWidget {
   final NostrBloc nostrBloc;
-  final MarketplaceBloc marketplaceBloc;
   final NostrSettings settings;
   const NostrKeysPage({
     Key key,
     this.nostrBloc,
-    this.marketplaceBloc,
     this.settings,
   }) : super(key: key);
 
@@ -31,7 +32,6 @@ class _NostrKeysPageState extends State<NostrKeysPage> {
   final _autoSizeGroup = AutoSizeGroup();
   String _nostrPublicKey;
   String _nostrPrivateKey;
-  final FlutterSecureStorage _secureStorage = const FlutterSecureStorage();
 
   @override
   void initState() {
@@ -44,7 +44,7 @@ class _NostrKeysPageState extends State<NostrKeysPage> {
       // call nostr_bloc method to get keys
       widget.nostrBloc.actionsSink.add(GetPublicKey());
       _nostrPublicKey = await widget.nostrBloc.publicKeyStream.first;
-      _nostrPrivateKey = await _secureStorage.read(key: "nostrPrivateKey");
+      _nostrPrivateKey = widget.nostrBloc.nostrPrivateKey;
     } catch (e) {
       throw Exception(e);
     }
@@ -54,11 +54,10 @@ class _NostrKeysPageState extends State<NostrKeysPage> {
     bool isLogout = await _showLogoutWarningDialog();
 
     if (isLogout) {
-      widget.marketplaceBloc.nostrSettingsSettingsSink.add(
+      widget.nostrBloc.nostrSettingsSettingsSink.add(
         widget.settings.copyWith(isLoggedIn: false),
       );
 
-      // check if context is to be passed through the method
       if (context.mounted) Navigator.pop(context);
     }
   }
@@ -139,7 +138,32 @@ class _NostrKeysPageState extends State<NostrKeysPage> {
                 MaterialPageRoute(
                   builder: (_) => NostrRelays(
                     settings: widget.settings,
-                    marketplaceBloc: widget.marketplaceBloc,
+                    nostrBloc: widget.nostrBloc,
+                  ),
+                ),
+              );
+            },
+            trailing: const Icon(
+              Icons.keyboard_arrow_right,
+              color: Colors.white,
+              size: 30.0,
+            ),
+          ),
+          const Divider(),
+          ListTile(
+            title: AutoSizeText(
+              "Nostr Connect",
+              style: const TextStyle(color: Colors.white),
+              maxLines: 1,
+              minFontSize: MinFontSize(context).minFontSize,
+              stepGranularity: 0.1,
+              group: _autoSizeGroup,
+            ),
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (_) => NostrConnectPage(
                     nostrBloc: widget.nostrBloc,
                   ),
                 ),

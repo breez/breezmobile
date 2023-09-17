@@ -36,6 +36,11 @@ class QrActionButton extends StatelessWidget {
   );
 
   @override
+  State<QrActionButton> createState() => _QrActionButtonState();
+}
+
+class _QrActionButtonState extends State<QrActionButton> {
+  @override
   Widget build(BuildContext context) {
     final texts = context.texts();
     final invoiceBloc = AppBlocsProvider.of<InvoiceBloc>(context);
@@ -74,7 +79,7 @@ class QrActionButton extends StatelessWidget {
                   // lnurl string
                   if (isLNURL(lower)) {
                     log.finest("Scanned string is a lnurl");
-                    await _handleLNUrl(lnurlBloc, context, scannedString);
+                    await _handleLNUrl(lnurlBloc, scannedString);
                     return;
                   }
 
@@ -136,7 +141,7 @@ class QrActionButton extends StatelessWidget {
                       FadeInRoute(
                         builder: (_) => SpontaneousPaymentPage(
                           nodeID,
-                          firstPaymentItemKey,
+                          widget.firstPaymentItemKey,
                         ),
                       ),
                     );
@@ -146,7 +151,7 @@ class QrActionButton extends StatelessWidget {
                   // Open on whenever app the system links to
                   if (await canLaunchUrlString(scannedString)) {
                     log.finest("Scanned string is a launchable url");
-                    _handleWebAddress(context, scannedString);
+                    _handleWebAddress(scannedString);
                     return;
                   }
 
@@ -158,7 +163,7 @@ class QrActionButton extends StatelessWidget {
                   );
                   if (validUrl) {
                     log.finest("Scanned string is a valid url");
-                    _handleWebAddress(context, scannedString);
+                    _handleWebAddress(scannedString);
                     return;
                   }
 
@@ -200,7 +205,6 @@ class QrActionButton extends StatelessWidget {
 
   Future _handleLNUrl(
     LNUrlBloc lnurlBloc,
-    BuildContext context,
     String lnurl,
   ) async {
     final texts = context.texts();
@@ -239,7 +243,7 @@ class QrActionButton extends StatelessWidget {
     });
   }
 
-  void _handleWebAddress(BuildContext context, String url) {
+  void _handleWebAddress(String url) {
     final texts = context.texts();
     final themeData = Theme.of(context);
     final dialogTheme = themeData.dialogTheme;

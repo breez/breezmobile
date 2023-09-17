@@ -2,7 +2,6 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:convert' as JSON;
 
-import 'package:breez/bloc/marketplace/nostr_settings.dart';
 import 'package:breez/bloc/nostr/nostr_actions.dart';
 import 'package:breez/bloc/nostr/nostr_bloc.dart';
 import 'package:breez/bloc/nostr/nostr_model.dart';
@@ -12,12 +11,12 @@ import 'package:flutter/services.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class NostrEventHandler {
+  final NostrBloc _nostrBloc;
   final BuildContext context;
   final String appName;
   String nostrPublicKey, nostrPrivateKey;
 
-  final NostrBloc _nostrBloc = NostrBloc();
-  NostrEventHandler(this.context, this.appName);
+  NostrEventHandler(this._nostrBloc, this.context, this.appName);
 
   Future<String> get initNostrProvider =>
       rootBundle.loadString('src/scripts/nostr-provider.js');
@@ -101,9 +100,7 @@ class NostrEventHandler {
       }
     }
 
-    final nostrPrivateKey = _nostrBloc.nostrPrivateKey;
-
-    _nostrBloc.actionsSink.add(SignEvent(eventData, nostrPrivateKey));
+    _nostrBloc.actionsSink.add(SignEvent(eventData));
 
     return await _nostrBloc.eventStream.first;
   }
@@ -113,12 +110,16 @@ class NostrEventHandler {
     return Future(() => null);
   }
 
-  Future<dynamic> _nip04Encrypt(postMessage) async {
-    return Future(() => null);
+  Future<String> _nip04Encrypt(postMessage) async {
+    _nostrBloc.actionsSink.add(Nip04Encrypt(
+        postMessage["params"]["plaintext"], postMessage["params"]["pubkey"]));
+    return await _nostrBloc.encryptDataStream.first;
   }
 
-  Future<dynamic> _nip04Decrypt(postMessage) async {
-    return Future(() => null);
+  Future<String> _nip04Decrypt(postMessage) async {
+    _nostrBloc.actionsSink.add(Nip04Decrypt(
+        postMessage["params"]["ciphertext"], postMessage["params"]["pubkey"]));
+    return await _nostrBloc.decryptDataStream.first;
   }
 
   Future<dynamic> _nip26Delegate(postMessage) async {
@@ -134,6 +135,7 @@ class NostrEventHandler {
         barrierDismissible: false,
         builder: (context) {
           return NostrRequestsDialog(
+            nostrBloc: _nostrBloc,
             appName: appName,
             choiceType: "SignEvent",
             textContent: textContent,
@@ -149,6 +151,7 @@ class NostrEventHandler {
       barrierDismissible: false,
       builder: (context) {
         return NostrRequestsDialog(
+          nostrBloc: _nostrBloc,
           appName: appName,
           choiceType: "GetPubKey",
           textContent: textContent,

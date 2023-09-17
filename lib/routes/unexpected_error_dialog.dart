@@ -14,141 +14,143 @@ void listenUnexpectedError(
   BuildContext context,
   AccountBloc accountBloc,
 ) async {
-  final texts = context.texts();
-  final themeData = Theme.of(context);
-  final torEnabled = await ServiceInjector().breezBridge.getTorActive();
   accountBloc.lightningDownStream.listen(
     (allowRetry) {
-      promptError(
-        context,
-        texts.unexpected_error_title,
-        RichText(
-          text: TextSpan(
-            style: themeData.dialogTheme.contentTextStyle,
-            text: texts.unexpected_error_suggestions,
-            children: <TextSpan>[
-              TextSpan(
-                text: texts.unexpected_error_airplane,
-                style: themeData.dialogTheme.contentTextStyle,
-              ),
-              TextSpan(
-                text: texts.unexpected_error_wifi,
-                style: themeData.dialogTheme.contentTextStyle,
-              ),
-              TextSpan(
-                text: texts.unexpected_error_signal,
-                style: themeData.dialogTheme.contentTextStyle,
-              ),
-              if (torEnabled) ...<TextSpan>[
+      ServiceInjector().breezBridge.getTorActive().then((torEnabled) {
+        final texts = context.texts();
+        final themeData = Theme.of(context);
+
+        promptError(
+          context,
+          texts.unexpected_error_title,
+          RichText(
+            text: TextSpan(
+              style: themeData.dialogTheme.contentTextStyle,
+              text: texts.unexpected_error_suggestions,
+              children: <TextSpan>[
                 TextSpan(
-                  text: texts.unexpected_error_bullet,
-                  style: Theme.of(context).dialogTheme.contentTextStyle,
+                  text: texts.unexpected_error_airplane,
+                  style: themeData.dialogTheme.contentTextStyle,
                 ),
                 TextSpan(
-                    text: '${texts.unexpected_error_deactivate_tor} ',
-                    style: theme.blueLinkStyle,
-                    recognizer: TapGestureRecognizer()
-                      ..onTap = () async {
-                        final navigator = Navigator.of(context);
-                        _promptForRestart(context).then((ok) async {
+                  text: texts.unexpected_error_wifi,
+                  style: themeData.dialogTheme.contentTextStyle,
+                ),
+                TextSpan(
+                  text: texts.unexpected_error_signal,
+                  style: themeData.dialogTheme.contentTextStyle,
+                ),
+                if (torEnabled) ...<TextSpan>[
+                  TextSpan(
+                    text: texts.unexpected_error_bullet,
+                    style: Theme.of(context).dialogTheme.contentTextStyle,
+                  ),
+                  TextSpan(
+                      text: '${texts.unexpected_error_deactivate_tor} ',
+                      style: theme.blueLinkStyle,
+                      recognizer: TapGestureRecognizer()
+                        ..onTap = () async {
+                          final navigator = Navigator.of(context);
+                          _promptForRestart(context).then((ok) async {
+                            if (ok) {
+                              await ServiceInjector().breezBridge.setTorActive(
+                                    false,
+                                  );
+                              ResetNetwork resetAction = ResetNetwork();
+                              accountBloc.userActionsSink.add(resetAction);
+                              await resetAction.future;
+                              navigator.pop();
+                              accountBloc.userActionsSink.add(RestartDaemon());
+                            }
+                          });
+                        }),
+                  TextSpan(
+                    text: "Tor\n",
+                    style: Theme.of(context).dialogTheme.contentTextStyle,
+                  )
+                ],
+                TextSpan(
+                  text: texts.unexpected_error_bullet,
+                  style: themeData.dialogTheme.contentTextStyle,
+                ),
+                TextSpan(
+                  text: texts.unexpected_error_recover,
+                  style: theme.blueLinkStyle,
+                  recognizer: TapGestureRecognizer()
+                    ..onTap = () async {
+                      _promptForRestart(context).then(
+                        (ok) async {
                           if (ok) {
-                            await ServiceInjector().breezBridge.setTorActive(
-                                  false,
-                                );
-                            ResetNetwork resetAction = ResetNetwork();
+                            ResetChainService resetAction = ResetChainService();
                             accountBloc.userActionsSink.add(resetAction);
                             await resetAction.future;
-                            navigator.pop();
-                            accountBloc.userActionsSink.add(RestartDaemon());
+                            exit(0);
                           }
-                        });
-                      }),
+                        },
+                      );
+                    },
+                ),
                 TextSpan(
-                  text: "Tor\n",
-                  style: Theme.of(context).dialogTheme.contentTextStyle,
-                )
+                  text: texts.unexpected_error_chain_information,
+                  style: themeData.dialogTheme.contentTextStyle,
+                ),
+                TextSpan(
+                  text: texts.unexpected_error_bullet,
+                  style: themeData.dialogTheme.contentTextStyle,
+                ),
+                TextSpan(
+                  text: texts.unexpected_error_reset,
+                  style: theme.blueLinkStyle,
+                  recognizer: TapGestureRecognizer()
+                    ..onTap = () async {
+                      final navigator = Navigator.of(context);
+                      ResetNetwork resetAction = ResetNetwork();
+                      accountBloc.userActionsSink.add(resetAction);
+                      await resetAction.future;
+                      navigator.pop();
+                      accountBloc.userActionsSink.add(RestartDaemon());
+                    },
+                ),
+                TextSpan(
+                  text: texts.unexpected_error_bitcoin_node,
+                  style: themeData.dialogTheme.contentTextStyle,
+                ),
+                TextSpan(
+                  text: texts.unexpected_error_bullet,
+                  style: themeData.dialogTheme.contentTextStyle,
+                ),
+                TextSpan(
+                  text: texts.unexpected_error_view,
+                  style: theme.blueLinkStyle,
+                  recognizer: TapGestureRecognizer()
+                    ..onTap = () async {
+                      final logFile = XFile(
+                        await ServiceInjector().breezBridge.getLogPath(),
+                      );
+                      Share.shareXFiles(
+                        [logFile],
+                      );
+                    },
+                ),
+                TextSpan(
+                  text: texts.unexpected_error_logs,
+                  style: themeData.dialogTheme.contentTextStyle,
+                ),
               ],
-              TextSpan(
-                text: texts.unexpected_error_bullet,
-                style: themeData.dialogTheme.contentTextStyle,
-              ),
-              TextSpan(
-                text: texts.unexpected_error_recover,
-                style: theme.blueLinkStyle,
-                recognizer: TapGestureRecognizer()
-                  ..onTap = () async {
-                    _promptForRestart(context).then(
-                      (ok) async {
-                        if (ok) {
-                          ResetChainService resetAction = ResetChainService();
-                          accountBloc.userActionsSink.add(resetAction);
-                          await resetAction.future;
-                          exit(0);
-                        }
-                      },
-                    );
-                  },
-              ),
-              TextSpan(
-                text: texts.unexpected_error_chain_information,
-                style: themeData.dialogTheme.contentTextStyle,
-              ),
-              TextSpan(
-                text: texts.unexpected_error_bullet,
-                style: themeData.dialogTheme.contentTextStyle,
-              ),
-              TextSpan(
-                text: texts.unexpected_error_reset,
-                style: theme.blueLinkStyle,
-                recognizer: TapGestureRecognizer()
-                  ..onTap = () async {
-                    final navigator = Navigator.of(context);
-                    ResetNetwork resetAction = ResetNetwork();
-                    accountBloc.userActionsSink.add(resetAction);
-                    await resetAction.future;
-                    navigator.pop();
-                    accountBloc.userActionsSink.add(RestartDaemon());
-                  },
-              ),
-              TextSpan(
-                text: texts.unexpected_error_bitcoin_node,
-                style: themeData.dialogTheme.contentTextStyle,
-              ),
-              TextSpan(
-                text: texts.unexpected_error_bullet,
-                style: themeData.dialogTheme.contentTextStyle,
-              ),
-              TextSpan(
-                text: texts.unexpected_error_view,
-                style: theme.blueLinkStyle,
-                recognizer: TapGestureRecognizer()
-                  ..onTap = () async {
-                    final logFile = XFile(
-                      await ServiceInjector().breezBridge.getLogPath(),
-                    );
-                    Share.shareXFiles(
-                      [logFile],
-                    );
-                  },
-              ),
-              TextSpan(
-                text: texts.unexpected_error_logs,
-                style: themeData.dialogTheme.contentTextStyle,
-              ),
-            ],
+            ),
           ),
-        ),
-        okText: allowRetry
-            ? texts.unexpected_error_action_try_again
-            : texts.unexpected_error_action_just_exit,
-        okFunc: allowRetry
-            ? () => accountBloc.userActionsSink.add(RestartDaemon())
-            : () => exit(0),
-        optionText:
-            allowRetry ? texts.unexpected_error_action_exit_for_retry : null,
-        optionFunc: () => exit(0),
-        disableBack: true,
-      );
+          okText: allowRetry
+              ? texts.unexpected_error_action_try_again
+              : texts.unexpected_error_action_just_exit,
+          okFunc: allowRetry
+              ? () => accountBloc.userActionsSink.add(RestartDaemon())
+              : () => exit(0),
+          optionText:
+              allowRetry ? texts.unexpected_error_action_exit_for_retry : null,
+          optionFunc: () => exit(0),
+          disableBack: true,
+        );
+      });
     },
   );
 }

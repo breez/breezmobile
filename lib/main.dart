@@ -16,15 +16,16 @@ import 'package:breez/bloc/blocs_provider.dart';
 import 'package:breez/bloc/podcast_payments/podcast_payments_bloc.dart';
 import 'package:breez/bloc/user_profile/user_profile_bloc.dart';
 import 'package:breez/logger.dart';
+import 'package:breez/routes/initial_walkthrough/loaders/loader_indicator.dart';
 import 'package:breez/routes/podcast/podcast_page.dart';
 import 'package:breez/services/breezlib/breez_bridge.dart';
 import 'package:breez/services/injector.dart';
 import 'package:breez/user_app.dart';
 import 'package:breez/utils/date.dart';
 import 'package:firebase_core/firebase_core.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -43,6 +44,7 @@ void main() async {
     mobileService.searchProvider = 'podcastindex';
     final repository = SembastRepository();
     await Firebase.initializeApp();
+    _configureEasyLoading();
     SharedPreferences.getInstance().then((preferences) async {
       await runMigration(preferences);
       AppBlocs blocs = AppBlocs(repository.backupDatabaseListener);
@@ -51,6 +53,7 @@ void main() async {
           child: AnytimePodcastApp(
               mobileService,
               repository,
+              blocs.nostrBloc,
               Provider<PodcastPaymentsBloc>(
                 lazy: false,
                 create: (ctx) => PodcastPaymentsBloc(
@@ -69,8 +72,10 @@ void main() async {
                             builder: sharePodcastButtonBuilder,
                             child: ShareEpisodeButtonBuilder(
                                 builder: shareEpisodeButtonBuilder,
-                                child:
-                                    UserApp(repository.reloadDatabaseSink))))),
+                                child: NostrCommentsBuilder(
+                                    builder: nostrCommentsBuilder,
+                                    child: UserApp(
+                                        repository.reloadDatabaseSink)))))),
               ))));
     });
   }, (error, stackTrace) async {
@@ -79,6 +84,21 @@ void main() async {
       breezBridge.log('$error\n$stackTrace', "FlutterError");
     }
   });
+}
+
+void _configureEasyLoading() {
+  EasyLoading.instance
+    ..loadingStyle = EasyLoadingStyle.custom
+    ..backgroundColor = Colors.transparent
+    ..maskType = EasyLoadingMaskType.custom
+    ..boxShadow = []
+    ..indicatorWidget = const LoaderIndicator()
+    ..indicatorColor = Colors.white
+    ..maskColor = Colors.black.withOpacity(0.5)
+    ..textColor = Colors.white
+    ..textPadding = const EdgeInsets.only(top: 16.0)
+    ..userInteractions = false
+    ..dismissOnTap = false;
 }
 
 Future runMigration(SharedPreferences preferences) async {

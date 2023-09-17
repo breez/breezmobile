@@ -2,51 +2,24 @@ import 'dart:async';
 import 'dart:convert';
 
 import 'package:breez/bloc/marketplace/vendor_model.dart';
+import 'package:breez/bloc/nostr/nostr_model.dart';
 import 'package:flutter/services.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import 'nostr_settings.dart';
-
 class MarketplaceBloc {
   final _vendorController = BehaviorSubject<List<VendorModel>>();
   Stream<List<VendorModel>> get vendorsStream => _vendorController.stream;
-
   bool _isSnortToggled;
   SharedPreferences pref;
 
-  final _nostrSettingsController =
-      BehaviorSubject<NostrSettings>.seeded(NostrSettings.start());
-  Stream<NostrSettings> get nostrSettingsStream =>
-      _nostrSettingsController.stream;
-  Sink<NostrSettings> get nostrSettingsSettingsSink =>
-      _nostrSettingsController.sink;
-
-  MarketplaceBloc() {
+  MarketplaceBloc(Stream<NostrSettings> nostrSettingsStream) {
     loadVendors();
 
-    _listenNostrSettings();
-    _initNostrSettings();
+    _listenNostrSettings(nostrSettingsStream);
   }
 
-  _initNostrSettings() async {
-    pref = await SharedPreferences.getInstance();
-    var nostrSettings =
-        pref.getString(NostrSettings.NOSTR_SETTINGS_PREFERENCES_KEY);
-    if (nostrSettings != null) {
-      Map<String, dynamic> settings = json.decode(nostrSettings);
-      var nostrSetttingsModel = NostrSettings.fromJson(settings);
-      _nostrSettingsController.add(nostrSetttingsModel.copyWith(
-        enableNostr: nostrSetttingsModel.enableNostr,
-        isRememberPubKey: nostrSetttingsModel.isRememberPubKey,
-        isRememberSignEvent: nostrSetttingsModel.isRememberSignEvent,
-        isLoggedIn: nostrSetttingsModel.isLoggedIn,
-        relayList: nostrSetttingsModel.relayList,
-      ));
-    }
-  }
-
-  _listenNostrSettings() async {
+  _listenNostrSettings(Stream<NostrSettings> nostrSettingsStream) async {
     pref = await SharedPreferences.getInstance();
     nostrSettingsStream.listen((settings) async {
       _isSnortToggled = settings.enableNostr;
@@ -73,6 +46,5 @@ class MarketplaceBloc {
 
   close() {
     _vendorController.close();
-    _nostrSettingsController.close();
   }
 }

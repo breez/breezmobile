@@ -192,7 +192,6 @@ class POSInvoiceState extends State<POSInvoice> with TickerProviderStateMixin {
                             }
 
                             return _body(
-                              context,
                               accountBloc,
                               userProfileBloc,
                               posCatalogBloc,
@@ -218,7 +217,6 @@ class POSInvoiceState extends State<POSInvoice> with TickerProviderStateMixin {
   }
 
   Widget _body(
-    BuildContext context,
     AccountBloc accountBloc,
     UserProfileBloc userProfileBloc,
     PosCatalogBloc posCatalogBloc,
@@ -253,7 +251,7 @@ class POSInvoiceState extends State<POSInvoice> with TickerProviderStateMixin {
                 children: <Widget>[
                   Container(
                     color: themeData.colorScheme.background,
-                    child: _buildViewSwitch(context),
+                    child: _buildViewSwitch(),
                   ),
                   Container(
                     color: themeData.colorScheme.background,
@@ -289,7 +287,6 @@ class POSInvoiceState extends State<POSInvoice> with TickerProviderStateMixin {
                                   refreshedLSP.cheapestOpeningFeeParams,
                                 ),
                                 () => _onInvoiceSubmitted(
-                                  context,
                                   currentSale,
                                   invoiceBloc,
                                   lnUrlBloc,
@@ -311,10 +308,7 @@ class POSInvoiceState extends State<POSInvoice> with TickerProviderStateMixin {
                           }
                         }
                       },
-                      approveClear: () => _approveClear(
-                        context,
-                        currentSale,
-                      ),
+                      approveClear: () => _approveClear(currentSale),
                       changeCurrency: (currency) => _changeCurrency(
                         currentSale,
                         currency,
@@ -324,7 +318,6 @@ class POSInvoiceState extends State<POSInvoice> with TickerProviderStateMixin {
                     ),
                   ),
                   _tabBody(
-                    context,
                     posCatalogBloc,
                     accountModel,
                     currentSale,
@@ -332,7 +325,6 @@ class POSInvoiceState extends State<POSInvoice> with TickerProviderStateMixin {
                   Container(
                     color: themeData.colorScheme.background,
                     child: _chargeButton(
-                      context,
                       invoiceBloc,
                       lnUrlBloc,
                       userProfile,
@@ -366,7 +358,6 @@ class POSInvoiceState extends State<POSInvoice> with TickerProviderStateMixin {
   }
 
   Widget _chargeButton(
-    BuildContext context,
     InvoiceBloc invoiceBloc,
     LNUrlBloc lnUrlBloc,
     BreezUserModel userProfile,
@@ -423,7 +414,6 @@ class POSInvoiceState extends State<POSInvoice> with TickerProviderStateMixin {
                         refreshedLSP.cheapestOpeningFeeParams,
                       ),
                       () => _onInvoiceSubmitted(
-                        context,
                         currentSale,
                         invoiceBloc,
                         lnUrlBloc,
@@ -451,7 +441,7 @@ class POSInvoiceState extends State<POSInvoice> with TickerProviderStateMixin {
     );
   }
 
-  Widget _buildViewSwitch(BuildContext context) {
+  Widget _buildViewSwitch() {
     final themeData = Theme.of(context);
     final texts = context.texts();
     return ViewSwitch(
@@ -478,7 +468,6 @@ class POSInvoiceState extends State<POSInvoice> with TickerProviderStateMixin {
   }
 
   Widget _tabBody(
-    BuildContext context,
     PosCatalogBloc posCatalogBloc,
     AccountModel accountModel,
     Sale currentSale,
@@ -493,7 +482,7 @@ class POSInvoiceState extends State<POSInvoice> with TickerProviderStateMixin {
             child: _isKeypadView
                 ? PosInvoiceNumPad(
                     currentSale: currentSale,
-                    approveClear: () => _approveClear(context, currentSale),
+                    approveClear: () => _approveClear(currentSale),
                     clearAmounts: () => _clearAmounts(currentSale),
                     onAddition: () => setState(() {
                       currentPendingItem = null;
@@ -530,7 +519,6 @@ class POSInvoiceState extends State<POSInvoice> with TickerProviderStateMixin {
   }
 
   _onInvoiceSubmitted(
-    BuildContext context,
     Sale currentSale,
     InvoiceBloc invoiceBloc,
     LNUrlBloc lnUrlBloc,
@@ -638,7 +626,7 @@ class POSInvoiceState extends State<POSInvoice> with TickerProviderStateMixin {
       final posCatalogBloc = AppBlocsProvider.of<PosCatalogBloc>(context);
       final lockSale = SetCurrentSale(currentSale.copyWith(priceLocked: true));
       posCatalogBloc.actionsSink.add(lockSale);
-      waitForSync(context).then((value) {
+      waitForSync().then((value) {
         if (!value) {
           return;
         }
@@ -688,7 +676,7 @@ class POSInvoiceState extends State<POSInvoice> with TickerProviderStateMixin {
     }
   }
 
-  Future<bool> waitForSync(BuildContext context) {
+  Future<bool> waitForSync() {
     final texts = context.texts();
     return showDialog(
       useRootNavigator: false,
@@ -946,7 +934,7 @@ class POSInvoiceState extends State<POSInvoice> with TickerProviderStateMixin {
     });
   }
 
-  void _approveClear(BuildContext context, Sale currentSale) {
+  void _approveClear(Sale currentSale) {
     final texts = context.texts();
     final themeData = Theme.of(context);
 

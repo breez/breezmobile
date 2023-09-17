@@ -1,11 +1,12 @@
 import 'dart:async';
+import 'dart:convert';
 
 import 'package:breez/bloc/async_actions_handler.dart';
 import 'package:breez/bloc/nostr/nostr_actions.dart';
 import 'package:breez/bloc/nostr/nostr_model.dart';
 import 'package:breez/services/breezlib/breez_bridge.dart';
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:nostr_tools/nostr_tools.dart';
+import 'package:rxdart/rxdart.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../services/injector.dart';
@@ -14,28 +15,19 @@ import '../../utils/nostrConnect.dart';
 class NostrBloc with AsyncActionsHandler {
   BreezBridge _breezLib;
   String nostrPublicKey;
-  String nostrPrivateKey;
+  String _nostrPrivateKey;
 
-  final defaultRelaysList = [
-    "wss://relay.damus.io",
-    "wss://nostr1.tunnelsats.com",
-    "wss://nostr-pub.wellorder.net",
-    "wss://relay.nostr.info",
-    "wss://nostr-relay.wlvs.space",
-    "wss://nostr.bitcoiner.social",
-    "wss://nostr-01.bolt.observer",
-    "wss://relayer.fiatjaf.com",
-  ];
+  List<String> defaultRelaysList = [];
 
-  FlutterSecureStorage _secureStorage;
   SharedPreferences sharedPreferences;
+  SharedPreferences pref;
 
   NostrBloc() {
     ServiceInjector injector = ServiceInjector();
     _breezLib = injector.breezBridge;
-    _secureStorage = const FlutterSecureStorage();
 
     _initNostr();
+    _listenNostrSettings();
 
     registerAsyncHandlers({
       GetPublicKey: _handleGetPublicKey,
@@ -51,11 +43,34 @@ class NostrBloc with AsyncActionsHandler {
     });
     listenActions();
   }
+  final _nostrSettingsController =
+      BehaviorSubject<NostrSettings>.seeded(NostrSettings.initial());
+  Stream<NostrSettings> get nostrSettingsStream =>
+      _nostrSettingsController.stream;
+  Sink<NostrSettings> get nostrSettingsSettingsSink =>
+      _nostrSettingsController.sink;
 
   void _initNostr() async {
-    nostrPublicKey = await _secureStorage.read(key: "nostrPublicKey");
-    nostrPrivateKey = await _secureStorage.read(key: "nostrPrivateKey");
+    pref = await SharedPreferences.getInstance();
+
+    var nostrSettings =
+        pref.getString(NostrSettings.NOSTR_SETTINGS_PREFERENCES_KEY);
+
+    if (nostrSettings != null) {
+      Map<String, dynamic> settings = json.decode(nostrSettings);
+      _nostrSettingsController.add(NostrSettings.fromJson(settings));
+    }
   }
+
+  _listenNostrSettings() async {
+    pref = await SharedPreferences.getInstance();
+    nostrSettingsStream.listen((settings) async {
+      pref.setString(NostrSettings.NOSTR_SETTINGS_PREFERENCES_KEY,
+          json.encode(settings.toJson()));
+    });
+  }
+
+  String get nostrPrivateKey => _nostrPrivateKey;
 
   final StreamController<String> nip47ConnectController =
       StreamController<String>.broadcast();
@@ -93,8 +108,7 @@ class NostrBloc with AsyncActionsHandler {
 
   Future<void> _handleSignEvent(SignEvent action) async {
     //  to sign the event
-    Map<String, dynamic> signedEvent =
-        await _signEvent(action.eventObject, action.privateKey);
+    Map<String, dynamic> signedEvent = await _signEvent(action.eventObject);
 
     _eventController.add(signedEvent);
     action.resolve(signedEvent);
@@ -112,7 +126,6 @@ class NostrBloc with AsyncActionsHandler {
     String encryptedData = await _encryptData(
       action.data,
       action.publicKey,
-      action.privateKey,
     );
     _encryptDataController.add(encryptedData);
     action.resolve(encryptedData);
@@ -123,7 +136,6 @@ class NostrBloc with AsyncActionsHandler {
     String decryptedData = await _decryptData(
       action.encryptedData,
       action.publicKey,
-      action.privateKey,
     );
     _decryptDataController.add(decryptedData);
     action.resolve(decryptedData);
@@ -141,8 +153,8 @@ class NostrBloc with AsyncActionsHandler {
   }
 
   Future<void> _handleDeleteKey(DeleteKey action) async {
-    await _secureStorage.delete(key: "nostrPublicKey");
-    await _secureStorage.delete(key: "nostrPrivateKey");
+    nostrPublicKey = null;
+    _nostrPrivateKey = null;
 
     await _breezLib.deleteNostrKey().catchError((error) {
       throw error.toString();
@@ -153,8 +165,22 @@ class NostrBloc with AsyncActionsHandler {
 
   // Methods to simulate the actual logic
 
+  Future<List<String>> _fetchDefaultRelayList() async {
+    pref = await SharedPreferences.getInstance();
+
+    var nostrSettings =
+        pref.getString(NostrSettings.NOSTR_SETTINGS_PREFERENCES_KEY);
+
+    if (nostrSettings != null) {
+      Map<String, dynamic> settings = json.decode(nostrSettings);
+      var nostrSetttingsModel = NostrSettings.fromJson(settings);
+      defaultRelaysList = nostrSetttingsModel.relayList;
+    }
+    return defaultRelaysList;
+  }
+
   Future<String> _fetchPublicKey() async {
-    if (nostrPublicKey == null) {
+    if (nostrPublicKey == null || _nostrPrivateKey == null) {
       // check if key pair already exists otherwise generate it
       String nostrKeyPair;
 
@@ -167,14 +193,11 @@ class NostrBloc with AsyncActionsHandler {
       }
 
       int index = nostrKeyPair.indexOf('_');
-      nostrPrivateKey = nostrKeyPair.substring(0, index);
+      _nostrPrivateKey = nostrKeyPair.substring(0, index);
       nostrPublicKey = nostrKeyPair.substring(index + 1);
 
-      // Write value
-      await _secureStorage.write(
-          key: 'nostrPrivateKey', value: nostrPrivateKey);
-      await _secureStorage.write(key: 'nostrPublicKey', value: nostrPublicKey);
       // publishing the default relayList when creating the account for the first time
+      _fetchDefaultRelayList();
       _publishRelays(defaultRelaysList);
     }
 
@@ -182,7 +205,8 @@ class NostrBloc with AsyncActionsHandler {
   }
 
   Future<Map<String, dynamic>> _signEvent(
-      Map<String, dynamic> eventObject, String nostrPrivateKey) async {
+    Map<String, dynamic> eventObject,
+  ) async {
     final eventApi = EventApi();
 
     if (eventObject['pubkey'] == null) {
@@ -208,7 +232,7 @@ class NostrBloc with AsyncActionsHandler {
       event.id = eventObject['id'];
     }
 
-    event.sig = eventApi.signEvent(event, nostrPrivateKey);
+    event.sig = eventApi.signEvent(event, _nostrPrivateKey);
 
     if (eventApi.verifySignature(event)) {
       eventObject['sig'] = event.sig;
@@ -248,8 +272,7 @@ class NostrBloc with AsyncActionsHandler {
     Map<String, dynamic> eventObject = eventToMap(relayPublishEvent);
 
     try {
-      Map<String, dynamic> signedEventObject =
-          await _signEvent(eventObject, nostrPrivateKey);
+      Map<String, dynamic> signedEventObject = await _signEvent(eventObject);
       Event signedNostrEvent = mapToEvent(signedEventObject);
       relayPool.publish(signedNostrEvent);
     } catch (e) {
@@ -262,57 +285,14 @@ class NostrBloc with AsyncActionsHandler {
     return ['Relay1', 'Relay2', 'Relay3'];
   }
 
-  Future<String> _encryptData(
-    String data,
-    String publicKey,
-    String privateKey,
-  ) async {
+  Future<String> _encryptData(String data, String publicKey) async {
     // Simulating an encryption operation
-
-    String encryptedString;
-    try {
-      encryptedString = Nip04().encrypt(privateKey, publicKey, data);
-    } catch (e) {
-      throw Exception(e);
-    }
-    return encryptedString;
+    return Nip04().encrypt(_nostrPrivateKey, publicKey, data);
   }
 
-  Future<String> _decryptData(
-    String encryptedData,
-    String publicKey,
-    String privateKey,
-  ) async {
+  Future<String> _decryptData(String encryptedData, String publicKey) async {
     // Simulating a decryption operation
-    return Nip04().decrypt(
-      privateKey,
-      publicKey,
-      encryptedData,
-    );
-  }
-
-  Future<void> _handleNip47Connect(Nip47Connect action) async {
-    final rpc = NostrRpc(
-      relay: action.connectUri.relay,
-      nostrBloc: action.nostrBloc,
-    );
-    await rpc.call(
-      action.connectUri.target,
-      method: 'connect',
-      params: [action.nostrBloc.nostrPublicKey],
-    );
-  }
-
-  Future<void> _handleNip47Disconnect(Nip47Disconnect action) async {
-    final rpc = NostrRpc(
-      relay: action.connectUri.relay,
-      nostrBloc: action.nostrBloc,
-    );
-    await rpc.call(
-      action.connectUri.target,
-      method: 'disconnect',
-      params: [],
-    );
+    return Nip04().decrypt(_nostrPrivateKey, publicKey, encryptedData);
   }
 
   @override

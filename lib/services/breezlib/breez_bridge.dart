@@ -230,8 +230,7 @@ class BreezBridge {
   }
 
   Future loginWithImportedNostrKey(String privateKey) {
-    return _invokeMethodWhenReady(
-        "loginWithImportedNostrKey", {"argument": privateKey});
+    return _invokeMethodWhenReady("storeNostrKey", {"argument": privateKey});
   }
 
   Future deleteNostrKey() {
@@ -813,7 +812,9 @@ class BreezBridge {
   }
 
   Future setBackupEncryptionKey(
-      List<int> encryptionKey, String encryptionType) {
+    List<int> encryptionKey,
+    String encryptionType,
+  ) {
     return _invokeMethodImmediate("setBackupEncryptionKey", {
       "encryptionKey": encryptionKey,
       "encryptionType": encryptionType ?? ""
@@ -828,7 +829,6 @@ class BreezBridge {
   }
 
   Future<String> getAvailableBackups() async {
-    await signIn(true, false);
     return await _methodChannel
         .invokeMethod("availableSnapshots")
         .then((res) => res as String);
@@ -865,10 +865,9 @@ class BreezBridge {
     );
   }
 
-  Future<dynamic> signIn(bool force, bool recoverEnabled) {
+  Future<dynamic> signIn(bool force) {
     return _methodChannel.invokeMethod("signIn", {
       "force": force,
-      "recoverEnabled": recoverEnabled,
     });
   }
 
@@ -910,6 +909,7 @@ class BreezBridge {
       result.addAll(files.map((e) => e as String));
     }
     result.add('$lndDir/data/chain/bitcoin/$network/wallet.db');
+    result.add('$lndDir/breez.db');
     return result;
   }
 

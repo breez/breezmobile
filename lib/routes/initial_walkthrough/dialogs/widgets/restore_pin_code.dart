@@ -3,14 +3,16 @@ import 'package:breez/widgets/pin_code_widget.dart';
 import 'package:breez_translations/breez_translations_locales.dart';
 import 'package:flutter/material.dart';
 
-class RestorePinCode extends StatelessWidget {
-  final Function(String phrase) onPinCodeSubmitted;
-
+class RestorePinCode extends StatefulWidget {
   const RestorePinCode({
     Key key,
-    @required this.onPinCodeSubmitted,
   }) : super(key: key);
 
+  @override
+  State<RestorePinCode> createState() => _RestorePinCodeState();
+}
+
+class _RestorePinCodeState extends State<RestorePinCode> {
   @override
   Widget build(BuildContext context) {
     final texts = context.texts();
@@ -34,7 +36,7 @@ class RestorePinCode extends StatelessWidget {
   }
 
   Future _onPinEntered(String enteredPinCode) {
-    onPinCodeSubmitted(enteredPinCode);
-    return Future.value(null);
+    Navigator.pop(context, enteredPinCode);
+    return Future.value(enteredPinCode);
   }
 }

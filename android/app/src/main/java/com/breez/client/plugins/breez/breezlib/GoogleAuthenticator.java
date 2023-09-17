@@ -1,27 +1,29 @@
 package com.breez.client.plugins.breez.breezlib;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.util.Log;
 
-import com.google.android.gms.auth.UserRecoverableAuthException;
+import androidx.annotation.Nullable;
+
+import com.breez.client.R;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
+import com.google.android.gms.auth.api.signin.GoogleSignInStatusCodes;
+import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.ApiException;
+import com.google.android.gms.common.api.CommonStatusCodes;
 import com.google.android.gms.common.api.Scope;
 import com.google.android.gms.tasks.Task;
 import com.google.android.gms.tasks.TaskCompletionSource;
 import com.google.android.gms.tasks.Tasks;
 import com.google.api.client.googleapis.extensions.android.gms.auth.GoogleAccountCredential;
-import com.google.api.client.googleapis.json.GoogleJsonResponseException;
-import com.google.api.client.http.javanet.NetHttpTransport;
-import com.google.api.client.json.gson.GsonFactory;
-import com.google.api.services.drive.Drive;
 import com.google.api.services.drive.DriveScopes;
-import com.google.api.services.drive.model.FileList;
 
 import java.util.Collections;
+import java.util.concurrent.ExecutionException;
 
 import io.flutter.embedding.engine.plugins.activity.ActivityPluginBinding;
 import io.flutter.plugin.common.PluginRegistry;
@@ -29,10 +31,13 @@ import io.flutter.plugin.common.PluginRegistry;
 public class GoogleAuthenticator implements PluginRegistry.ActivityResultListener {
     private static final String TAG = "BreezGAuthenticator";
     private static final int AUTHORIZE_ACTIVITY_REQUEST_CODE = 84;
-
-    TaskCompletionSource<GoogleSignInAccount> m_signInProgressTask;
-    private GoogleSignInClient m_signInClient;
+    private static final int RC_REQUEST_PERMISSION_APP_DATA = 83;
+    private static final int SIGN_IN_CANCELLED = 12501;
+    private static final Scope appDataScope = new Scope(DriveScopes.DRIVE_APPDATA);
     private final ActivityPluginBinding activityBinding;
+    TaskCompletionSource<GoogleSignInAccount> m_signInProgressTask;
+    TaskCompletionSource<Boolean> m_scopeRequestTask;
+    private GoogleSignInClient m_signInClient;
 
     public GoogleAuthenticator(ActivityPluginBinding binding) {
         activityBinding = binding;
@@ -55,14 +60,35 @@ public class GoogleAuthenticator implements PluginRegistry.ActivityResultListene
     public GoogleSignInAccount ensureSignedIn(final boolean silent) throws Exception {
         Log.d(TAG, "ensureSignedIn silent = " + silent);
         try {
-            Task<GoogleSignInAccount> task = m_signInClient.silentSignIn();
-            GoogleSignInAccount result = Tasks.await(task);
-            Log.d(TAG, "silentSignIn task successful: " + task.isSuccessful() + ", expired = " + result.isExpired());
-            return result;
+            GoogleSignInAccount signedInAccount = GoogleSignIn.getLastSignedInAccount(activityBinding.getActivity());
+            if (!isAuthenticated(signedInAccount)) {
+                Task<GoogleSignInAccount> task = m_signInClient.silentSignIn();
+                if (task.isSuccessful()) {
+                    Log.d(TAG, "Google silentSignIn isSuccessful.");
+                    // There's immediate result available.
+                    signedInAccount = task.getResult(ApiException.class);
+                    Log.d(TAG, "signedInAccount: {\n    expired = " + signedInAccount.isExpired() + ",\n    token = " + signedInAccount.getIdToken() + ",\n    grantedScopes = " + signedInAccount.getGrantedScopes() + "\n}");
+                    Log.d(TAG, "Google silentSignIn succeed.");
+                    return signedInAccount;
+                } else {
+                    if(silent){
+                        throw new Exception("AuthError");
+                    }
+                    // There's no immediate result ready
+                    return Tasks.await(signIn());
+                }
+            }
+            return signedInAccount;
         } catch (Exception e) {
             Log.w(TAG, "silentSignIn failed", e);
+            if (e.getMessage().contains("SignInCancelled")) {
+                throw new Exception("SignInCancelled");
+            }
             if (silent) {
                 throw new Exception("AuthError");
+            }
+            if (googleSignNotAvailable(e)) {
+                throw new Exception("GoogleSignNotAvailable");
             }
             Log.i(TAG, "silentSignIn continue to activity");
             return Tasks.await(signIn());
@@ -82,119 +108,16 @@ public class GoogleAuthenticator implements PluginRegistry.ActivityResultListene
         }
     }
 
-    public boolean validateAccessTokenAllowingPrompt() {
-        Log.d(TAG, "getAccessTokenWithPrompt");
-        GoogleAccountCredential credential;
-        try {
-            GoogleSignInAccount googleAccount = ensureSignedIn(true);
-            credential = credential();
-            credential.setSelectedAccount(googleAccount.getAccount());
-        } catch (Exception e) {
-            Log.w(TAG, "ensureSignedIn failed", e);
-            return false;
-        }
-
-        try {
-            return verifyCredentialHasWriteAccess(credential.getToken(), true);
-        } catch (Exception e) {
-            Log.w(TAG, "getAccessTokenWithPrompt failed", e);
-            if (e instanceof UserRecoverableAuthException) {
-                Log.w(TAG, "getAccessTokenWithPrompt failed but it is recoverable, trying to sign in");
-                try {
-                    GoogleSignInAccount signInResult = Tasks.await(signIn());
-                    credential.setSelectedAccount(signInResult.getAccount());
-                    return verifyCredentialHasWriteAccess(credential.getToken(), true);
-                } catch (Exception ex) {
-                    Log.w(TAG, "signIn failed in recoverable", ex);
-                    return false;
-                }
-            }
-            return false;
-        }
-    }
-
-    private boolean verifyCredentialHasWriteAccess(String token, boolean allowRecover) {
-        Log.d(TAG, "verifyCredentialHasWriteAccess token = " + token);
-        if (token == null || token.isEmpty()) {
-            return false;
-        }
-
-        try {
-            Drive driveService = new Drive.Builder(
-                    new NetHttpTransport.Builder().build(),
-                    new GsonFactory(),
-                    request -> {
-                    })
-                    .setHttpRequestInitializer(req -> req.getHeaders().setAuthorization("Bearer " + token))
-                    .setApplicationName("Breez").build();
-            FileList result = driveService.files().list().setSpaces("appDataFolder").execute();
-            Log.d(TAG, "verifyCredentialHasWriteAccess result = " + result);
-        } catch (Exception e) {
-            if (e instanceof GoogleJsonResponseException && ((GoogleJsonResponseException) e).getStatusCode() == 401) {
-                if (allowRecover) {
-                    Log.d(TAG, "verifyCredentialHasWriteAccess failed with 401, trying to sign in to recovery write permission");
-                    return recoverUnauthorizedAccess();
-                } else {
-                    Log.w(TAG, "verifyCredentialHasWriteAccess failed with 401, but not allowed to recover");
-                    return false;
-                }
-            } else {
-                Log.w(TAG, "verifyCredentialHasWriteAccess failed", e);
-                return false;
-            }
-        }
-
-        return true;
-    }
-
-    private boolean recoverUnauthorizedAccess() {
-        Log.d(TAG, "recoverUnauthorizedAccess");
-
-        GoogleSignInAccount googleAccount;
-        GoogleAccountCredential credential;
-        try {
-            signOut();
-            googleAccount = Tasks.await(signIn());
-            credential = credential();
-        } catch (Exception e) {
-            Log.w(TAG, "recoverUnauthorizedAccess failed", e);
-            return false;
-        }
-
-        String token;
-        try {
-            credential.setSelectedAccount(googleAccount.getAccount());
-            token = credential.getToken();
-        } catch (Exception e) {
-            // For some reason, on this flow google throws an UserRecoverableAuthException despite of the user
-            // be on the auth fow, so we just trigger it again to the user give us the auth on both pages
-            if (e instanceof UserRecoverableAuthException) {
-                GoogleSignInAccount signInResult;
-                try {
-                    signInResult = Tasks.await(signIn());
-                    credential.setSelectedAccount(signInResult.getAccount());
-                    token = credential.getToken();
-                } catch (Exception ex) {
-                    Log.w(TAG, "recoverUnauthorizedAccess failed", ex);
-                    return false;
-                }
-            } else {
-                Log.w(TAG, "recover failed", e);
-                return false;
-            }
-        }
-
-        return verifyCredentialHasWriteAccess(token, false);
-    }
-
     private GoogleSignInClient createSignInClient() {
         Log.d(TAG, "createSignInClient");
+        final Activity context = activityBinding.getActivity();
         GoogleSignInOptions signInOptions =
                 new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-                        .requestScopes(new Scope(DriveScopes.DRIVE_APPDATA))
+                        .requestScopes(appDataScope)
                         .requestEmail()
+                        .requestIdToken(context.getString(R.string.default_web_client_id))
                         .build();
-        return GoogleSignIn.getClient(activityBinding.getActivity(), signInOptions);
+        return GoogleSignIn.getClient(context, signInOptions);
     }
 
     private Task<GoogleSignInAccount> signIn() {
@@ -210,24 +133,110 @@ public class GoogleAuthenticator implements PluginRegistry.ActivityResultListene
                 Collections.singleton(DriveScopes.DRIVE_APPDATA));
     }
 
-    @Override
-    public boolean onActivityResult(int requestCode, int resultCode, Intent intent) {
-        if (requestCode == AUTHORIZE_ACTIVITY_REQUEST_CODE && m_signInProgressTask != null) {
-            Log.i(TAG, "onActivityResult requestCode = " + requestCode + " resultCode = " + resultCode + " intent came back with result");
-            GoogleSignIn.getSignedInAccountFromIntent(intent).addOnCompleteListener(task -> {
-                try {
-                    task.getResult(ApiException.class);
-                    GoogleSignInAccount res = task.getResult();
-
-                    Log.i(TAG, "Sign in intent success, token = " + res.getAccount());
-                    m_signInProgressTask.setResult(task.getResult());
-                } catch (ApiException e) {
-                    m_signInProgressTask.setException(new Exception("AuthError"));
-                    Log.w(TAG, "Sign in Failed… " + e.getMessage(), e);
-                }
-            });
+    private boolean googleSignNotAvailable(Exception e) {
+        if (!(e instanceof ExecutionException)) {
+            Log.v(TAG, "checkSignIsPossible not ExecutionException");
+            return false;
+        }
+        Throwable cause = e.getCause();
+        if (!(cause instanceof ApiException)) {
+            Log.v(TAG, "checkSignIsPossible not ApiException");
+            return false;
+        }
+        ApiException apiException = (ApiException) cause;
+        if (apiException.getStatusCode() != CommonStatusCodes.API_NOT_CONNECTED) {
+            Log.v(TAG, "checkSignIsPossible not API_NOT_CONNECTED");
+            return false;
+        }
+        ConnectionResult result = apiException.getStatus().getConnectionResult();
+        if (result == null) {
+            Log.v(TAG, "checkSignIsPossible result is null");
+            return false;
+        }
+        if (result.getErrorCode() == ConnectionResult.SERVICE_INVALID) {
+            Log.v(TAG, "checkSignIsPossible SERVICE_INVALID");
             return true;
         }
+        Log.v(TAG, "checkSignIsPossible error code not handled " + result.getErrorCode());
         return false;
+    }
+
+    @Override
+    public boolean onActivityResult(int requestCode, int resultCode, Intent data) {
+        Log.i(TAG, "onActivityResult requestCode = " + requestCode + " resultCode = " + resultCode + " intent came back with result");
+        switch (requestCode) {
+            case RC_REQUEST_PERMISSION_APP_DATA:
+                handleScopeRequestResult(resultCode);
+                return true;
+            case AUTHORIZE_ACTIVITY_REQUEST_CODE:
+                if (m_signInProgressTask != null) {
+                    // The Task returned from this call is always completed, no need to attach
+                    // a listener.
+                    Task<GoogleSignInAccount> task = GoogleSignIn.getSignedInAccountFromIntent(data);
+                    handleSignInResult(task);
+                    return true;
+                }
+        }
+        return false;
+    }
+
+    private void handleSignInResult(Task<GoogleSignInAccount> completedTask) {
+        try {
+            GoogleSignInAccount account = completedTask.getResult(ApiException.class);
+
+            // Signed in successfully
+            Log.i(TAG, "signInResult:success token = " + account.getIdToken());
+            m_signInProgressTask.setResult(account);
+        } catch (ApiException e) {
+            Log.w(TAG, "signInResult:failed\n" + GoogleSignInStatusCodes.getStatusCodeString(e.getStatusCode()));
+            Log.w(TAG, "code=" + e.getStatusCode() + "\nmessage=" + e.getMessage(), e);
+            if (e.getStatusCode() == SIGN_IN_CANCELLED) { /*12501*/
+                m_signInProgressTask.setException(new Exception("SignInCancelled"));
+            } else {
+                m_signInProgressTask.setException(new Exception("AuthError"));
+            }
+        }
+    }
+
+    public boolean isAuthenticated(@Nullable GoogleSignInAccount account) {
+        if (account != null) {
+            if (account.getIdToken() == null) {
+                Log.d(TAG, "Google account found, but there is no token to check or refresh.");
+
+                return false;
+            }
+        }
+
+        return account != null;
+    }
+
+    public boolean hasWritePermissions(@Nullable GoogleSignInAccount account) throws Exception {
+        boolean accountHasWritePermissions = account.getGrantedScopes().contains(appDataScope);
+        if (!accountHasWritePermissions) {
+            Log.i(TAG, "Account has not given permission to Breez to view and manage its " + "own configuration data in your Google Drive.");
+            return Tasks.await(requestAppDataScope());
+        }
+
+        return true;
+    }
+
+    private Task<Boolean> requestAppDataScope() {
+        Log.i(TAG, "Requesting app data scope");
+        m_scopeRequestTask = new TaskCompletionSource<>();
+        GoogleSignIn.requestPermissions(
+                activityBinding.getActivity(),
+                RC_REQUEST_PERMISSION_APP_DATA,
+                GoogleSignIn.getLastSignedInAccount(activityBinding.getActivity()),
+                appDataScope);
+        return m_scopeRequestTask.getTask();
+    }
+
+    private void handleScopeRequestResult(int resultCode) {
+        if (resultCode == Activity.RESULT_OK) {
+            Log.i(TAG, "requestPermissions:success");
+            m_scopeRequestTask.setResult(true);
+        } else {
+            m_scopeRequestTask.setException(new Exception("ACCESS_TOKEN_SCOPE_INSUFFICIENT"));
+        }
     }
 }

@@ -9,6 +9,7 @@ import 'package:breez/bloc/invoice/invoice_bloc.dart';
 import 'package:breez/bloc/lnurl/lnurl_actions.dart';
 import 'package:breez/bloc/lnurl/lnurl_bloc.dart';
 import 'package:breez/bloc/lnurl/lnurl_model.dart';
+import 'package:breez/bloc/user_profile/currency.dart';
 import 'package:breez/logger.dart';
 import 'package:breez/theme_data.dart' as theme;
 import 'package:breez/utils/lnurl_metadata_extension.dart';
@@ -21,6 +22,8 @@ import 'package:breez/widgets/loader.dart';
 import 'package:breez/widgets/single_button_bottom_bar.dart';
 import 'package:breez/widgets/static_loader.dart';
 import 'package:breez_translations/breez_translations_locales.dart';
+import 'package:fixnum/fixnum.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -94,8 +97,6 @@ class LNURLFetchInvoicePageState extends State<LNURLFetchInvoicePage> {
     final themeData = Theme.of(context);
     final texts = context.texts();
     final accountBloc = AppBlocsProvider.of<AccountBloc>(context);
-    final invoiceBloc = AppBlocsProvider.of<InvoiceBloc>(context);
-    final lnurlBloc = AppBlocsProvider.of<LNUrlBloc>(context);
 
     /*
          4. `LN WALLET` displays a payment dialog where user can specify an exact sum to be sent which would be bounded by:
@@ -140,13 +141,7 @@ class LNURLFetchInvoicePageState extends State<LNURLFetchInvoicePage> {
                 text: texts.lnurl_fetch_invoice_action_continue,
                 onPressed: () {
                   if (_formKey.currentState.validate()) {
-                    _getInvoice(
-                      context,
-                      invoiceBloc,
-                      accountBloc,
-                      lnurlBloc,
-                      account,
-                    );
+                    _getInvoice(accountBloc, account);
                   }
                 },
               ),
@@ -214,21 +209,38 @@ class LNURLFetchInvoicePageState extends State<LNURLFetchInvoicePage> {
                   if (!response.isFixedAmount) ...[
                     Padding(
                       padding: const EdgeInsets.only(top: 8),
-                      child: Text(
-                        texts.lnurl_fetch_invoice_limit(
-                          acc.currency.format(response.minAmount),
-                          acc.currency.format(response.maxAmount),
+                      child: RichText(
+                        text: TextSpan(
+                          style: theme.FieldTextStyle.labelStyle,
+                          children: <TextSpan>[
+                            TextSpan(
+                              text: texts.lnurl_fetch_invoice_min(
+                                  acc.currency.format(response.minAmount)),
+                              recognizer: TapGestureRecognizer()
+                                ..onTap = () => _pasteAmount(
+                                      acc.currency,
+                                      response.minAmount,
+                                    ),
+                            ),
+                            TextSpan(
+                              text: texts.lnurl_fetch_invoice_and(
+                                  acc.currency.format(response.maxAmount)),
+                              recognizer: TapGestureRecognizer()
+                                ..onTap = () => _pasteAmount(
+                                      acc.currency,
+                                      response.maxAmount,
+                                    ),
+                            ),
+                          ],
                         ),
-                        textAlign: TextAlign.left,
-                        style: theme.FieldTextStyle.labelStyle,
                       ),
-                    )
+                    ),
                   ],
                   Container(
                     width: MediaQuery.of(context).size.width,
                     height: 48,
                     padding: const EdgeInsets.only(top: 16.0),
-                    child: _buildDescription(context, acc),
+                    child: _buildDescription(acc),
                   ),
                   StreamBuilder(
                     stream: accountBloc.accountStream,
@@ -273,7 +285,7 @@ class LNURLFetchInvoicePageState extends State<LNURLFetchInvoicePage> {
                   Expanded(
                     child: Padding(
                       padding: const EdgeInsets.fromLTRB(0, 10, 0, 22),
-                      child: _buildImage(context),
+                      child: _buildImage(),
                     ),
                   ),
                 ],
@@ -286,7 +298,6 @@ class LNURLFetchInvoicePageState extends State<LNURLFetchInvoicePage> {
   }
 
   Widget _buildDescription(
-    BuildContext context,
     AccountModel acc,
   ) {
     return GestureDetector(
@@ -299,7 +310,7 @@ class LNURLFetchInvoicePageState extends State<LNURLFetchInvoicePage> {
     );
   }
 
-  Widget _buildImage(BuildContext context) {
+  Widget _buildImage() {
     final image = _payFetchResponse.metadata.metadataImage();
     if (image == null) return Container();
 
@@ -324,21 +335,26 @@ class LNURLFetchInvoicePageState extends State<LNURLFetchInvoicePage> {
     _payFetchResponse = response;
     _commentController.text = response.comment;
     if (response.isFixedAmount) {
-      _amountController.text = account.currency.format(
-        response.maxAmount,
-        includeDisplayName: false,
-        userInput: true,
-      );
+      _pasteAmount(account.currency, response.maxAmount);
     }
   }
 
+  void _pasteAmount(Currency currency, Int64 amount) {
+    setState(() {
+      _amountController.text = currency.format(
+        amount,
+        includeDisplayName: false,
+        userInput: true,
+      );
+    });
+  }
+
   void _getInvoice(
-    BuildContext context,
-    InvoiceBloc invoiceBloc,
     AccountBloc accountBloc,
-    LNUrlBloc lnurlBloc,
     AccountModel account,
   ) async {
+    final invoiceBloc = AppBlocsProvider.of<InvoiceBloc>(context);
+    final lnurlBloc = AppBlocsProvider.of<LNUrlBloc>(context);
     log.info('_getInvoice.');
     /*
          5. LN WALLET makes a GET request using callback with the following query parameters:
