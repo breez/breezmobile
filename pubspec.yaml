@@ -115,7 +115,6 @@ dependencies:
     git:
       url: https://github.com/breez/nfc_in_flutter.git
       ref: 97f610be82bfe42d5ce86c348d931d61949fa517
-  mobile_scanner: 3.3.0
 
 dependency_overrides:
   collection: ^1.18.0
