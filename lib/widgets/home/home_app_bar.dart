@@ -85,14 +85,14 @@ class HomeAppBar extends StatelessWidget implements PreferredSizeWidget {
                   padding: EdgeInsets.zero,
                   icon: ImageIcon(
                     const AssetImage("assets/icons/layout.png"),
-                    color: Theme.of(context).primaryIconTheme.color,
+                    color: themeData.primaryIconTheme.color,
                   ),
                   // TODO extract layout to breez translations
                   tooltip: 'Layout',
                   onPressed: () async {
                     await showModalBottomSheet<void>(
                       context: context,
-                      backgroundColor: Theme.of(context).colorScheme.background,
+                      backgroundColor: themeData.colorScheme.background,
                       shape: const RoundedRectangleBorder(
                         borderRadius: BorderRadius.only(
                           topLeft: Radius.circular(16.0),

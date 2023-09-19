@@ -122,6 +122,7 @@ class SpeedSliderState extends State<SpeedSlider> {
     final texts = context.texts();
     final audioBloc = Provider.of<AudioBloc>(context, listen: false);
     final settingsBloc = Provider.of<SettingsBloc>(context, listen: false);
+    final localizations = L.of(context);
 
     return Column(
       mainAxisSize: MainAxisSize.min,
@@ -147,7 +148,7 @@ class SpeedSliderState extends State<SpeedSlider> {
             bottom: 8.0,
           ),
           child: Text(
-            L.of(context).audio_settings_playback_speed_label,
+            localizations.audio_settings_playback_speed_label,
             style: themeData.primaryTextTheme.titleLarge,
           ),
         ),
@@ -244,7 +245,7 @@ class SpeedSliderState extends State<SpeedSlider> {
           //   ),
           // ),
           ListTile(
-            title: Text(L.of(context).audio_effect_volume_boost_label),
+            title: Text(localizations.audio_effect_volume_boost_label),
             trailing: Switch.adaptive(
               value: volumeBoost,
               onChanged: (boost) {

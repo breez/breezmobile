@@ -133,11 +133,13 @@ class PosInvoiceItemsView extends StatelessWidget {
       onTap: () async {
         final offset = details?.globalPosition;
         if (offset == null) return;
+
+        final themeData = Theme.of(context);
         final newOption = await showMenu(
           context: context,
           color: theme.themeId == "BLUE"
-              ? Theme.of(context).canvasColor
-              : Theme.of(context).colorScheme.background,
+              ? themeData.canvasColor
+              : themeData.colorScheme.background,
           position: RelativeRect.fromLTRB(offset.dx, offset.dy, 0, 0),
           items: items.map((e) => _dropdownItem(context, e, sort)).toList(),
         );
