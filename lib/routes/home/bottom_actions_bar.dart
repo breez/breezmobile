@@ -366,14 +366,15 @@ Future showReceiveOptions(
                               try {
                                 navigator.push(loaderRoute);
 
-                                final currentLSP = lspSnapshot.data.currentLSP;
                                 fetchLSPList(lspBloc).then(
                                   (lspList) {
                                     if (loaderRoute.isActive) {
                                       navigator.removeRoute(loaderRoute);
                                     }
                                     var refreshedLSP = lspList.firstWhere(
-                                      (lsp) => lsp.lspID == currentLSP.lspID,
+                                      (lsp) =>
+                                          lsp.lspID ==
+                                          lspSnapshot.data.selectedLSP,
                                     );
                                     (v.showLSPFee)
                                         ? promptLSPFeeAndNavigate(
@@ -383,8 +384,7 @@ Future showReceiveOptions(
                                                 .longestValidOpeningFeeParams,
                                             v.route,
                                           )
-                                        : Navigator.of(context)
-                                            .pushNamed(v.route);
+                                        : navigator.pushNamed(v.route);
                                   },
                                   onError: (_) {
                                     if (loaderRoute.isActive) {
