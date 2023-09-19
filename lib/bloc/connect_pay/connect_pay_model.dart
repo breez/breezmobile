@@ -54,8 +54,8 @@ class PaymentSessionState {
       : this(
           true,
           sessionSecret,
-          PayerSessionData(userName, imageURL, PeerStatus.start(), null, null),
-          PayeeSessionData(null, null, PeerStatus.start(), null, null, false),
+          PayerSessionData(userName, imageURL, PeerStatus.initial(), null, null),
+          PayeeSessionData(null, null, PeerStatus.initial(), null, null, false),
           false,
           false,
           false,
@@ -66,9 +66,9 @@ class PaymentSessionState {
       : this(
           false,
           sessionSecret,
-          PayerSessionData(null, null, PeerStatus.start(), null, null),
+          PayerSessionData(null, null, PeerStatus.initial(), null, null),
           PayeeSessionData(
-              userName, imageURL, PeerStatus.start(), null, null, false),
+              userName, imageURL, PeerStatus.initial(), null, null, false),
           true,
           true,
           false,
@@ -177,7 +177,7 @@ class PeerStatus {
   final int lastChanged;
 
   PeerStatus(this.online, this.lastChanged);
-  PeerStatus.start()
+  PeerStatus.initial()
       : online = false,
         lastChanged = 0;
 
