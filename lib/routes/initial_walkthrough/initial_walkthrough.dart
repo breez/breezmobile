@@ -223,7 +223,7 @@ class _InitialWalkthroughPageState extends State<InitialWalkthroughPage>
   }
 
   Future _resetBackupSettings() {
-    var updateAction = UpdateBackupSettings(BackupSettings.start());
+    var updateAction = UpdateBackupSettings(BackupSettings.initial());
     widget.backupBloc.backupActionsSink.add(updateAction);
     return updateAction.future;
   }

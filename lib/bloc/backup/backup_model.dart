@@ -122,12 +122,13 @@ class BackupSettings {
     this.remoteServerAuthData,
   );
 
-  static BackupSettings start() => BackupSettings(
-        true,
-        BackupKeyType.NONE,
-        _defaultBackupProvider(),
-        const RemoteServerAuthData(null, null, null, null),
-      );
+  BackupSettings.initial()
+      : this(
+          true,
+          BackupKeyType.NONE,
+          _defaultBackupProvider(),
+          const RemoteServerAuthData(null, null, null, null),
+        );
 
   BackupSettings copyWith({
     bool promptOnError,
@@ -219,7 +220,7 @@ class BackupState {
     this.lastBackupAccountName,
   );
 
-  static BackupState start() => const BackupState(null, false, null);
+  BackupState.initial() : this(null, false, null);
 
   BackupState copyWith({
     DateTime lastBackupTime,
@@ -249,6 +250,8 @@ class BackupState {
       "lastBackupAccountName": lastBackupAccountName
     };
   }
+
+  bool get isInitial => this != null && this == BackupState.initial();
 }
 
 class BackupFailedException implements Exception {

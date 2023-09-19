@@ -92,7 +92,7 @@ class AddFundsBloc extends Bloc {
       });
     });
     _populateAvailableVendors();
-    _addFundsSettingsController.add(AddFundsSettings.start());
+    _addFundsSettingsController.add(AddFundsSettings.initial());
     _handleAddFundsSettings(injector);
     _handleMoonpayOrders(injector);
   }

@@ -52,7 +52,7 @@ class AccountSettings {
     this.isEscherEnabled = false,
   });
 
-  AccountSettings.start() : this(false);
+  AccountSettings.initial() : this(false);
 
   AccountSettings copyWith({
     bool ignoreWalletBalance,

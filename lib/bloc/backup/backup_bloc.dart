@@ -66,7 +66,7 @@ class BackupBloc with AsyncActionsHandler {
       _promptBackupDismissedController.sink;
 
   final BehaviorSubject<BackupSettings> _backupSettingsController =
-      BehaviorSubject<BackupSettings>.seeded(BackupSettings.start());
+      BehaviorSubject<BackupSettings>.seeded(BackupSettings.initial());
   Stream<BackupSettings> get backupSettingsStream =>
       _backupSettingsController.stream;
   Sink<BackupSettings> get backupSettingsSink => _backupSettingsController.sink;
@@ -240,7 +240,7 @@ class BackupBloc with AsyncActionsHandler {
     //last backup time persistency
     String backupStateJson =
         _sharedPreferences.getString(LAST_BACKUP_STATE_PREFERENCE_KEY);
-    BackupState backupState = BackupState.start();
+    BackupState backupState = BackupState.initial();
     if (backupStateJson != null) {
       backupState = BackupState.fromJson(json.decode(backupStateJson));
     }
