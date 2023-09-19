@@ -32,12 +32,13 @@ class HomeNavigationDrawer extends StatelessWidget {
     final texts = context.texts();
     final accountBloc = AppBlocsProvider.of<AccountBloc>(context);
     final userProfileBloc = AppBlocsProvider.of<UserProfileBloc>(context);
+    final themeData = Theme.of(context);
 
     return AnnotatedRegion<SystemUiOverlayStyle>(
-      value: Theme.of(context).appBarTheme.systemOverlayStyle.copyWith(
-            systemNavigationBarColor:
-                theme.customData[theme.themeId].navigationDrawerBgColor,
-          ),
+      value: themeData.appBarTheme.systemOverlayStyle.copyWith(
+        systemNavigationBarColor:
+            theme.customData[theme.themeId].navigationDrawerBgColor,
+      ),
       child: StreamBuilder2<BreezUserModel, AccountModel>(
         streamA: userProfileBloc.userStream,
         streamB: accountBloc.accountStream,
