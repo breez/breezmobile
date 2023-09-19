@@ -282,7 +282,7 @@ class _BackupNowButtonState extends State<_BackupNowButton> {
     final backupBloc = AppBlocsProvider.of<BackupBloc>(context);
     return await backupBloc.backupStateStream.first.then(
       (backupState) async {
-        if (backupState != BackupState.start() && previousProvider.isGDrive) {
+        if (!backupState.isInitial && previousProvider.isGDrive) {
           return await promptAreYouSure(
             context,
             "Logout Warning",
