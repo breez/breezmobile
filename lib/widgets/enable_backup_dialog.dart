@@ -7,6 +7,7 @@ import 'package:breez/bloc/backup/backup_model.dart';
 import 'package:breez/bloc/blocs_provider.dart';
 import 'package:breez/logger.dart';
 import 'package:breez/routes/initial_walkthrough/dialogs/select_backup_provider_dialog.dart';
+import 'package:breez/services/injector.dart';
 import 'package:breez/utils/min_font_size.dart';
 import 'package:breez/widgets/error_dialog.dart';
 import 'package:breez/widgets/flushbar.dart';
@@ -199,43 +200,50 @@ class _BackupNowButtonState extends State<_BackupNowButton> {
       onPressed: (() async {
         final currentProvider = widget.backupSettings.backupProvider;
 
-        await _showSelectProviderDialog(widget.backupSettings).then(
-          (selectedProvider) async {
-            if (selectedProvider != null) {
-              if (widget.signInNeeded) {
-                if (selectedProvider.isGDrive) {
-                  await _logoutWarningDialog(currentProvider).then(
-                    (logoutApproved) async {
-                      if (logoutApproved) {
-                        try {
-                          EasyLoading.show();
+        // First we wish to attempt to backup before making the user manually
+        // having to select a backup provider.
+        if (widget.signInNeeded == false && currentProvider != null) {
+          Navigator.pop(context);
+          await ServiceInjector().breezBridge.requestBackup();
+        } else {
+          await _showSelectProviderDialog(widget.backupSettings).then(
+            (selectedProvider) async {
+              if (selectedProvider != null) {
+                if (widget.signInNeeded) {
+                  if (selectedProvider.isGDrive) {
+                    await _logoutWarningDialog(currentProvider).then(
+                      (logoutApproved) async {
+                        if (logoutApproved) {
+                          try {
+                            EasyLoading.show();
 
-                          backupBloc.backupServiceNeedLoginSink.add(true);
-                        } catch (e) {
-                          log.warning("Failed to re-login & backup.", e);
-                          _handleError(e);
-                        } finally {
-                          EasyLoading.dismiss();
+                            backupBloc.backupServiceNeedLoginSink.add(true);
+                          } catch (e) {
+                            log.warning("Failed to re-login & backup.", e);
+                            _handleError(e);
+                          } finally {
+                            EasyLoading.dismiss();
+                          }
+                        } else {
+                          return;
                         }
-                      } else {
-                        return;
-                      }
-                    },
-                  );
-                }
+                      },
+                    );
+                  }
 
-                if (selectedProvider.isICloud) {
-                  await _showSignInNeededDialog(selectedProvider);
-                  return;
+                  if (selectedProvider.isICloud) {
+                    await _showSignInNeededDialog(selectedProvider);
+                    return;
+                  }
                 }
+                await _updateBackupProvider(selectedProvider);
               }
-              await _updateBackupProvider(selectedProvider);
-            }
-          },
-        );
+            },
+          );
+        }
       }),
       child: Text(
-        isRemoteServer
+        (isRemoteServer && widget.signInNeeded)
             ? texts.backup_dialog_option_ok_remote_server
             : texts.backup_dialog_option_ok_default,
         style: themeData.primaryTextTheme.labelLarge,
