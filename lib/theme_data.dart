@@ -67,7 +67,14 @@ final ThemeData blueTheme = ThemeData(
     elevation: 0.0,
     backgroundColor: BreezColors.blue[500],
     iconTheme: const IconThemeData(color: Colors.white),
-    systemOverlayStyle: SystemUiOverlayStyle.light,
+    systemOverlayStyle: SystemUiOverlayStyle(
+      statusBarColor: Colors.transparent,
+      statusBarBrightness: Brightness.dark, // iOS
+      statusBarIconBrightness: Brightness.light, // Android
+      systemStatusBarContrastEnforced: false,
+      systemNavigationBarColor: BreezColors.blue[500],
+      systemNavigationBarContrastEnforced: false,
+    ),
     actionsIconTheme: const IconThemeData(
       color: Color.fromRGBO(0, 120, 253, 1.0),
     ),
@@ -223,7 +230,14 @@ final ThemeData darkTheme = ThemeData(
     elevation: 0.0,
     backgroundColor: const Color(0xFF0c2031),
     iconTheme: const IconThemeData(color: Colors.white),
-    systemOverlayStyle: SystemUiOverlayStyle.light,
+    systemOverlayStyle: const SystemUiOverlayStyle(
+      statusBarColor: Colors.transparent,
+      statusBarBrightness: Brightness.dark, // iOS
+      statusBarIconBrightness: Brightness.light, // Android
+      systemStatusBarContrastEnforced: false,
+      systemNavigationBarColor: Color(0xFF0c2031),
+      systemNavigationBarContrastEnforced: false,
+    ),
     actionsIconTheme: const IconThemeData(color: Colors.white),
     toolbarTextStyle: const TextTheme(
       titleLarge:

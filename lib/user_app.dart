@@ -8,6 +8,7 @@ import 'package:breez/bloc/invoice/invoice_bloc.dart';
 import 'package:breez/bloc/lnurl/lnurl_bloc.dart';
 import 'package:breez/bloc/lsp/lsp_bloc.dart';
 import 'package:breez/bloc/pos_catalog/bloc.dart';
+import 'package:breez/bloc/pos_catalog/model.dart';
 import 'package:breez/bloc/reverse_swap/reverse_swap_bloc.dart';
 import 'package:breez/bloc/user_profile/breez_user_model.dart';
 import 'package:breez/bloc/user_profile/user_actions.dart';
@@ -87,9 +88,16 @@ class UserApp extends StatelessWidget {
 
         BreezUserModel user = snapshot.data;
         theme.themeId = user.themeId;
-        SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
-          statusBarColor: Colors.transparent,
-        ));
+        SystemChrome.setSystemUIOverlayStyle(
+          SystemUiOverlayStyle(
+            systemNavigationBarColor: theme.themeMap[user.themeId].canvasColor,
+            statusBarColor: Colors.transparent,
+            statusBarBrightness: Brightness.dark, // iOS
+            statusBarIconBrightness: Brightness.light, // Android
+            systemNavigationBarContrastEnforced: false,
+            systemStatusBarContrastEnforced: false,
+          ),
+        );
         return BlocProvider(
           creator: () => AddFundsBloc(
             userProfileBloc.userStream,
@@ -334,7 +342,10 @@ class UserApp extends StatelessWidget {
                             // POS routes
                             case '/add_item':
                               return FadeInRoute(
-                                builder: (_) => ItemPage(posCatalogBloc),
+                                builder: (_) => ItemPage(
+                                  posCatalogBloc,
+                                  item: settings.arguments as Item,
+                                ),
                                 settings: settings,
                               );
                             case '/transactions':

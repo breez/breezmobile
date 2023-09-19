@@ -5,7 +5,6 @@ import 'package:breez/bloc/user_profile/user_profile_bloc.dart';
 import 'package:breez/routes/account_required_actions.dart';
 import 'package:breez/theme_data.dart' as theme;
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_svg/svg.dart';
 
 class HomeAppBar extends StatelessWidget implements PreferredSizeWidget {
@@ -32,7 +31,10 @@ class HomeAppBar extends StatelessWidget implements PreferredSizeWidget {
 
         return AppBar(
           systemOverlayStyle: theme.themeId == "BLUE"
-              ? SystemUiOverlayStyle.dark
+              ? appBar.systemOverlayStyle.copyWith(
+                  statusBarBrightness: Brightness.light, // iOS
+                  statusBarIconBrightness: Brightness.dark, // Android
+                )
               : appBar.systemOverlayStyle,
           iconTheme: const IconThemeData(
             color: Color.fromARGB(255, 0, 133, 251),

@@ -6,6 +6,7 @@ import 'package:breez/routes/marketplace/vendor_row.dart';
 import 'package:breez/theme_data.dart' as theme;
 import 'package:breez_translations/generated/breez_translations.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 class MarketplacePage extends StatefulWidget {
   @override
@@ -19,24 +20,30 @@ class MarketplacePageState extends State<MarketplacePage> {
 
   @override
   Widget build(BuildContext context) {
+    final themeData = Theme.of(context);
     final marketplaceBloc = AppBlocsProvider.of<MarketplaceBloc>(context);
 
-    return Scaffold(
-      key: _scaffoldKey,
-      backgroundColor: theme.themeId == "BLUE"
-          ? Theme.of(context).colorScheme.background
-          : Theme.of(context).canvasColor,
-      body: StreamBuilder(
-        stream: marketplaceBloc.vendorsStream,
-        builder: (context, snapshot) {
-          List<VendorModel> vendorsModel = snapshot.data;
+    return AnnotatedRegion<SystemUiOverlayStyle>(
+      value: themeData.appBarTheme.systemOverlayStyle.copyWith(
+        systemNavigationBarColor: themeData.colorScheme.background,
+      ),
+      child: Scaffold(
+        key: _scaffoldKey,
+        backgroundColor: theme.themeId == "BLUE"
+            ? Theme.of(context).colorScheme.background
+            : Theme.of(context).canvasColor,
+        body: StreamBuilder(
+          stream: marketplaceBloc.vendorsStream,
+          builder: (context, snapshot) {
+            List<VendorModel> vendorsModel = snapshot.data;
 
-          if (vendorsModel == null || vendorsModel.isEmpty) {
-            return _buildNoVendorsMessage(context);
-          }
+            if (vendorsModel == null || vendorsModel.isEmpty) {
+              return _buildNoVendorsMessage(context);
+            }
 
-          return _buildVendors(vendorsModel);
-        },
+            return _buildVendors(vendorsModel);
+          },
+        ),
       ),
     );
   }
