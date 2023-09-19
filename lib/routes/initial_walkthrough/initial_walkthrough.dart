@@ -21,6 +21,7 @@ import 'package:breez/widgets/error_dialog.dart';
 import 'package:breez/widgets/flushbar.dart';
 import 'package:breez_translations/breez_translations_locales.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 
 class InitialWalkthroughPage extends StatefulWidget {
@@ -94,93 +95,96 @@ class _InitialWalkthroughPageState extends State<InitialWalkthroughPage>
     final texts = context.texts();
     final themeData = Theme.of(context);
 
-    return Theme(
-      data: blueTheme,
-      child: WillPopScope(
-        onWillPop: () => _onWillPop(),
-        child: Scaffold(
-          key: scaffoldKey,
-          body: Padding(
-            padding: const EdgeInsets.only(top: 24.0),
-            child: Stack(
-              children: [
-                Column(
-                  children: [
-                    Expanded(
-                      flex: 200,
-                      child: Container(),
-                    ),
-                    Expanded(
-                      flex: 171,
-                      child: AnimatedBuilder(
-                        animation: animation,
-                        builder: (BuildContext context, Widget child) {
-                          String frame =
-                              animation.value.toString().padLeft(2, '0');
-                          return Image.asset(
-                            'src/animations/welcome/frame_${frame}_delay-0.04s.png',
-                            gaplessPlayback: true,
-                            fit: BoxFit.cover,
-                          );
-                        },
+    return AnnotatedRegion<SystemUiOverlayStyle>(
+      value: blueTheme.appBarTheme.systemOverlayStyle,
+      child: Theme(
+        data: blueTheme,
+        child: WillPopScope(
+          onWillPop: () => _onWillPop(),
+          child: Scaffold(
+            key: scaffoldKey,
+            body: Padding(
+              padding: const EdgeInsets.only(top: 24.0),
+              child: Stack(
+                children: [
+                  Column(
+                    children: [
+                      Expanded(
+                        flex: 200,
+                        child: Container(),
                       ),
-                    ),
-                    Expanded(
-                      flex: 200,
-                      child: Container(),
-                    ),
-                    Expanded(
-                      flex: 48,
-                      child: Padding(
-                        padding: const EdgeInsets.only(left: 24, right: 24),
-                        child: AutoSizeText(
-                          texts.initial_walk_through_welcome_message,
-                          textAlign: TextAlign.center,
-                          style: theme.welcomeTextStyle,
+                      Expanded(
+                        flex: 171,
+                        child: AnimatedBuilder(
+                          animation: animation,
+                          builder: (BuildContext context, Widget child) {
+                            String frame =
+                                animation.value.toString().padLeft(2, '0');
+                            return Image.asset(
+                              'src/animations/welcome/frame_${frame}_delay-0.04s.png',
+                              gaplessPlayback: true,
+                              fit: BoxFit.cover,
+                            );
+                          },
                         ),
                       ),
-                    ),
-                    Expanded(
-                      flex: 60,
-                      child: Container(),
-                    ),
-                    SizedBox(
-                      height: 48.0,
-                      width: 168.0,
-                      child: ElevatedButton(
-                        style: ElevatedButton.styleFrom(
-                          padding: const EdgeInsets.fromLTRB(16, 4, 16, 4),
-                          backgroundColor: themeData.primaryColor,
-                          elevation: 0.0,
-                          shape: const StadiumBorder(),
-                        ),
-                        child: Text(
-                          texts.initial_walk_through_lets_breeze,
-                          style: themeData.textTheme.labelLarge,
-                        ),
-                        onPressed: () => _letsBreez(),
+                      Expanded(
+                        flex: 200,
+                        child: Container(),
                       ),
-                    ),
-                    Expanded(
-                      flex: 40,
-                      child: Padding(
-                        padding: const EdgeInsets.only(top: 10.0),
-                        child: GestureDetector(
-                          onTap: () => _restoreFromBackup(),
-                          child: Text(
-                            texts.initial_walk_through_restore_from_backup,
-                            style: theme.restoreLinkStyle,
+                      Expanded(
+                        flex: 48,
+                        child: Padding(
+                          padding: const EdgeInsets.only(left: 24, right: 24),
+                          child: AutoSizeText(
+                            texts.initial_walk_through_welcome_message,
+                            textAlign: TextAlign.center,
+                            style: theme.welcomeTextStyle,
                           ),
                         ),
                       ),
-                    ),
-                    Expanded(
-                      flex: 120,
-                      child: Container(),
-                    ),
-                  ],
-                ),
-              ],
+                      Expanded(
+                        flex: 60,
+                        child: Container(),
+                      ),
+                      SizedBox(
+                        height: 48.0,
+                        width: 168.0,
+                        child: ElevatedButton(
+                          style: ElevatedButton.styleFrom(
+                            padding: const EdgeInsets.fromLTRB(16, 4, 16, 4),
+                            backgroundColor: themeData.primaryColor,
+                            elevation: 0.0,
+                            shape: const StadiumBorder(),
+                          ),
+                          child: Text(
+                            texts.initial_walk_through_lets_breeze,
+                            style: themeData.textTheme.labelLarge,
+                          ),
+                          onPressed: () => _letsBreez(),
+                        ),
+                      ),
+                      Expanded(
+                        flex: 40,
+                        child: Padding(
+                          padding: const EdgeInsets.only(top: 10.0),
+                          child: GestureDetector(
+                            onTap: () => _restoreFromBackup(),
+                            child: Text(
+                              texts.initial_walk_through_restore_from_backup,
+                              style: theme.restoreLinkStyle,
+                            ),
+                          ),
+                        ),
+                      ),
+                      Expanded(
+                        flex: 120,
+                        child: Container(),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
             ),
           ),
         ),
