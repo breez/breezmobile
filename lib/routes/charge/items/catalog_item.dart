@@ -3,14 +3,11 @@ import 'package:breez/bloc/pos_catalog/actions.dart';
 import 'package:breez/bloc/pos_catalog/bloc.dart';
 import 'package:breez/bloc/pos_catalog/model.dart';
 import 'package:breez/routes/charge/currency_wrapper.dart';
+import 'package:breez/routes/charge/items/item_avatar.dart';
 import 'package:breez/theme_data.dart';
 import 'package:breez/widgets/flushbar.dart';
-import 'package:breez/widgets/route.dart';
 import 'package:breez_translations/breez_translations_locales.dart';
 import 'package:flutter/material.dart';
-
-import 'item_avatar.dart';
-import 'item_page.dart';
 
 class CatalogItem extends StatelessWidget {
   final AccountModel accountModel;
@@ -57,12 +54,7 @@ class CatalogItem extends StatelessWidget {
                   onPressed: () {
                     final navigatorState = Navigator.of(context);
                     navigatorState.pop();
-                    navigatorState.push(FadeInRoute(
-                      builder: (_) => ItemPage(
-                        posCatalogBloc,
-                        item: _itemInfo,
-                      ),
-                    ));
+                    navigatorState.pushNamed('/add_item', arguments: _itemInfo);
                   },
                 ),
               ),

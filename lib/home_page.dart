@@ -52,6 +52,7 @@ import 'package:breez_translations/breez_translations_locales.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 
 final GlobalKey firstPaymentItemKey =
@@ -183,38 +184,43 @@ class HomeState extends State<Home> with WidgetsBindingObserver {
     final userProfileBloc = AppBlocsProvider.of<UserProfileBloc>(context);
     final mediaSize = MediaQuery.of(context).size;
 
-    return WillPopScope(
-      onWillPop: willPopCallback(
-        context,
-        canCancel: () => _scaffoldKey.currentState?.isDrawerOpen ?? false,
-      ),
-      child: StreamBuilder<BreezUserModel>(
-        stream: userProfileBloc.userStream,
-        builder: (context, userSnapshot) {
-          final appMode = userSnapshot.data?.appMode;
+    return AnnotatedRegion<SystemUiOverlayStyle>(
+      value: Theme.of(context).appBarTheme.systemOverlayStyle.copyWith(
+            systemNavigationBarColor: Theme.of(context).bottomAppBarTheme.color,
+          ),
+      child: WillPopScope(
+        onWillPop: willPopCallback(
+          context,
+          canCancel: () => _scaffoldKey.currentState?.isDrawerOpen ?? false,
+        ),
+        child: StreamBuilder<BreezUserModel>(
+          stream: userProfileBloc.userStream,
+          builder: (context, userSnapshot) {
+            final appMode = userSnapshot.data?.appMode;
 
-          return Scaffold(
-            resizeToAvoidBottomInset: false,
-            key: _scaffoldKey,
-            appBar: HomeAppBar(_scaffoldKey),
-            drawerEnableOpenDragGesture: true,
-            drawerDragStartBehavior: DragStartBehavior.down,
-            drawerEdgeDragWidth: mediaSize.width,
-            drawer: HomeNavigationDrawer(
-              _onNavigationItemSelected,
-              _filterItems,
-            ),
-            bottomNavigationBar: appMode == AppMode.balance
-                ? BottomActionsBar(firstPaymentItemKey)
-                : null,
-            floatingActionButton: appMode == AppMode.balance
-                ? QrActionButton(firstPaymentItemKey)
-                : null,
-            floatingActionButtonLocation:
-                FloatingActionButtonLocation.centerDocked,
-            body: widget._screenBuilders[_activeScreen] ?? _homePage(appMode),
-          );
-        },
+            return Scaffold(
+              resizeToAvoidBottomInset: false,
+              key: _scaffoldKey,
+              appBar: HomeAppBar(_scaffoldKey),
+              drawerEnableOpenDragGesture: true,
+              drawerDragStartBehavior: DragStartBehavior.down,
+              drawerEdgeDragWidth: mediaSize.width,
+              drawer: HomeNavigationDrawer(
+                _onNavigationItemSelected,
+                _filterItems,
+              ),
+              bottomNavigationBar: appMode == AppMode.balance
+                  ? BottomActionsBar(firstPaymentItemKey)
+                  : null,
+              floatingActionButton: appMode == AppMode.balance
+                  ? QrActionButton(firstPaymentItemKey)
+                  : null,
+              floatingActionButtonLocation:
+                  FloatingActionButtonLocation.centerDocked,
+              body: widget._screenBuilders[_activeScreen] ?? _homePage(appMode),
+            );
+          },
+        ),
       ),
     );
   }
