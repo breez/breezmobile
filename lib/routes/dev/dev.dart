@@ -172,6 +172,8 @@ class DevViewState extends State<DevView> {
                       return StreamBuilder(
                         stream: marketplaceBloc.nostrSettingsStream,
                         builder: (context, nostrSettingsSnapshot) {
+                          final themeData = Theme.of(context);
+
                           return Scaffold(
                             key: _scaffoldKey,
                             appBar: AppBar(
@@ -180,11 +182,10 @@ class DevViewState extends State<DevView> {
                               actions: <Widget>[
                                 PopupMenuButton<Choice>(
                                   onSelected: widget._select,
-                                  color:
-                                      Theme.of(context).colorScheme.background,
+                                  color: themeData.colorScheme.background,
                                   icon: Icon(
                                     Icons.more_vert,
-                                    color: Theme.of(context).iconTheme.color,
+                                    color: themeData.iconTheme.color,
                                   ),
                                   itemBuilder: (BuildContext context) {
                                     return getChoices(
@@ -202,9 +203,7 @@ class DevViewState extends State<DevView> {
                                         value: choice,
                                         child: Text(
                                           choice.title,
-                                          style: Theme.of(context)
-                                              .textTheme
-                                              .labelLarge,
+                                          style: themeData.textTheme.labelLarge,
                                         ),
                                       );
                                     }).toList();
