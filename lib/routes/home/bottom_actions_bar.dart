@@ -85,10 +85,12 @@ class _BottomActionsBarState extends State<BottomActionsBar> {
     await showModalBottomSheet(
       context: context,
       builder: (ctx) {
+        final themeData = Theme.of(ctx);
+
         return AnnotatedRegion<SystemUiOverlayStyle>(
-          value: Theme.of(ctx).appBarTheme.systemOverlayStyle.copyWith(
-                systemNavigationBarColor: Theme.of(ctx).canvasColor,
-              ),
+          value: themeData.appBarTheme.systemOverlayStyle.copyWith(
+            systemNavigationBarColor: themeData.canvasColor,
+          ),
           child: StreamBuilder2<Future<DecodedClipboardData>, AccountModel>(
             streamA: invoiceBloc.decodedClipboardStream,
             streamB: accountBloc.accountStream,
@@ -321,16 +323,20 @@ Future showReceiveOptions(
   return showModalBottomSheet(
     context: parentContext,
     builder: (ctx) {
+      final themeData = Theme.of(ctx);
+
       return AnnotatedRegion<SystemUiOverlayStyle>(
-        value: Theme.of(ctx).appBarTheme.systemOverlayStyle.copyWith(
-              systemNavigationBarColor: Theme.of(ctx).canvasColor,
-            ),
+        value: themeData.appBarTheme.systemOverlayStyle.copyWith(
+          systemNavigationBarColor: themeData.canvasColor,
+        ),
         child: StreamBuilder<LSPStatus>(
           stream: lspBloc.lspStatusStream,
           builder: (context, lspSnapshot) {
             return StreamBuilder<List<AddFundVendorModel>>(
               stream: addFundsBloc.availableVendorsStream,
               builder: (context, snapshot) {
+                final themeData = Theme.of(context);
+
                 if (snapshot.data == null) {
                   return const SizedBox();
                 }
@@ -342,8 +348,7 @@ Future showReceiveOptions(
                       children: [
                         Divider(
                           height: 0.0,
-                          color:
-                              Theme.of(context).dividerColor.withOpacity(0.2),
+                          color: themeData.dividerColor.withOpacity(0.2),
                           indent: 72.0,
                         ),
                         ListTile(
@@ -438,11 +443,9 @@ Future showReceiveOptions(
                                   account.warningMaxChanReserveAmount,
                                 ),
                               ),
-                              maxFontSize: Theme.of(context)
-                                  .textTheme
-                                  .titleMedium
-                                  .fontSize,
-                              style: Theme.of(context).textTheme.titleLarge,
+                              maxFontSize:
+                                  themeData.textTheme.titleMedium.fontSize,
+                              style: themeData.textTheme.titleLarge,
                               textAlign: TextAlign.center,
                             ),
                           ),

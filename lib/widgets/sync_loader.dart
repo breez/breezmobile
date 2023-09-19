@@ -46,6 +46,8 @@ class TransparentRouteLoaderState extends State<TransparentRouteLoader> {
 
   @override
   Widget build(BuildContext context) {
+    final themeData = Theme.of(context);
+
     return Material(
       type: MaterialType.transparency,
       child: Stack(
@@ -56,13 +58,12 @@ class TransparentRouteLoaderState extends State<TransparentRouteLoader> {
             left: 0.0,
             right: 0.0,
             child: Container(
-                color:
-                    Theme.of(context).canvasColor.withOpacity(widget.opacity),
+                color: themeData.canvasColor.withOpacity(widget.opacity),
                 height: MediaQuery.of(context).size.height,
                 width: MediaQuery.of(context).size.width,
                 child: CircularProgress(
                     size: 160.0,
-                    color: Theme.of(context).colorScheme.secondary,
+                    color: themeData.colorScheme.secondary,
                     value: widget.value,
                     title: widget.message)),
           ),
