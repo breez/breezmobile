@@ -9,7 +9,7 @@ dependencies:
 
   another_flushbar: ^1.12.30
   app_settings: ^5.0.0
-  archive: ^3.3.7
+  archive: ^3.3.9
   audio_service: ^0.18.10
   auto_size_text: ^3.0.0
   badges: ^3.1.1
