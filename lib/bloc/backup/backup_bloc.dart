@@ -789,7 +789,6 @@ class BackupBloc with AsyncActionsHandler {
         );
       }
       if (event.type == NotificationEvent_NotificationType.BACKUP_FAILED) {
-        backupServiceNeedLoginSink.add(true);
         _backupStateController.addError(
           BackupFailedException(
             _backupSettingsController.value.backupProvider,
