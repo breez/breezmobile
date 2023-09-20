@@ -65,9 +65,7 @@ class AccountRequiredActionsIndicatorState
         useRootNavigator: false,
         barrierDismissible: false,
         context: context,
-        builder: (_) => EnableBackupDialog(
-          signInNeeded: signInNeeded,
-        ),
+        builder: (_) => const EnableBackupDialog(),
       ).then((_) {
         backupBloc.promptBackupDismissedSink.add(true);
         backupBloc.backupPromptVisibleSink.add(false);
@@ -222,11 +220,6 @@ class AccountRequiredActionsIndicatorState
     }
 
     if (hasError) {
-      bool signInNeeded = false;
-      if (backupError.runtimeType == BackupFailedException) {
-        signInNeeded =
-            (backupError as BackupFailedException).authenticationError;
-      }
       warnings.add(
         WarningAction(
           () async {
@@ -234,9 +227,7 @@ class AccountRequiredActionsIndicatorState
               useRootNavigator: false,
               barrierDismissible: false,
               context: context,
-              builder: (_) => EnableBackupDialog(
-                signInNeeded: signInNeeded,
-              ),
+              builder: (_) => const EnableBackupDialog(),
             );
           },
         ),

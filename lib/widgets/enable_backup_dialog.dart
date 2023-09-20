@@ -7,7 +7,6 @@ import 'package:breez/bloc/backup/backup_model.dart';
 import 'package:breez/bloc/blocs_provider.dart';
 import 'package:breez/logger.dart';
 import 'package:breez/routes/initial_walkthrough/dialogs/select_backup_provider_dialog.dart';
-import 'package:breez/services/injector.dart';
 import 'package:breez/utils/min_font_size.dart';
 import 'package:breez/widgets/error_dialog.dart';
 import 'package:breez/widgets/flushbar.dart';
@@ -17,11 +16,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 
 class EnableBackupDialog extends StatefulWidget {
-  final bool signInNeeded;
-
-  const EnableBackupDialog({
-    this.signInNeeded = false,
-  });
+  const EnableBackupDialog();
 
   @override
   EnableBackupDialogState createState() {
@@ -100,7 +95,6 @@ class EnableBackupDialogState extends State<EnableBackupDialog> {
               ),
               _BackupNowButton(
                 backupSettings: backupSettings,
-                signInNeeded: widget.signInNeeded,
               ),
             ],
           );
@@ -174,12 +168,10 @@ class _DoNotPromptAgainCheckboxState extends State<_DoNotPromptAgainCheckbox> {
 
 class _BackupNowButton extends StatefulWidget {
   final BackupSettings backupSettings;
-  final bool signInNeeded;
 
   const _BackupNowButton({
     Key key,
     @required this.backupSettings,
-    @required this.signInNeeded,
   }) : super(key: key);
 
   @override
@@ -196,59 +188,82 @@ class _BackupNowButtonState extends State<_BackupNowButton> {
 
     bool isRemoteServer = widget.backupSettings.backupProvider?.isRemoteServer;
 
-    return TextButton(
-      onPressed: (() async {
-        final currentProvider = widget.backupSettings.backupProvider;
-
-        // First we wish to attempt to backup before making the user manually
-        // having to select a backup provider.
-        if (widget.signInNeeded == false && currentProvider != null) {
-          Navigator.pop(context);
-          await ServiceInjector().breezBridge.requestBackup();
-        } else {
-          await _showSelectProviderDialog(widget.backupSettings).then(
-            (selectedProvider) async {
-              if (selectedProvider != null) {
-                if (widget.signInNeeded) {
-                  if (selectedProvider.isGDrive) {
-                    await _logoutWarningDialog(currentProvider).then(
-                      (logoutApproved) async {
-                        if (logoutApproved) {
-                          try {
-                            EasyLoading.show();
-
-                            backupBloc.backupServiceNeedLoginSink.add(true);
-                          } catch (e) {
-                            log.warning("Failed to re-login & backup.", e);
-                            _handleError(e);
-                          } finally {
-                            EasyLoading.dismiss();
-                          }
-                        } else {
-                          return;
-                        }
-                      },
-                    );
-                  }
-
-                  if (selectedProvider.isICloud) {
-                    await _showSignInNeededDialog(selectedProvider);
-                    return;
-                  }
-                }
-                await _updateBackupProvider(selectedProvider);
-              }
-            },
-          );
+    return StreamBuilder<BackupState>(
+      stream: backupBloc.backupStateStream,
+      builder: (context, backupStateSnapshot) {
+        if (backupStateSnapshot.connectionState == ConnectionState.done) {
+          return const Loader();
         }
-      }),
-      child: Text(
-        (isRemoteServer && widget.signInNeeded)
-            ? texts.backup_dialog_option_ok_remote_server
-            : texts.backup_dialog_option_ok_default,
-        style: themeData.primaryTextTheme.labelLarge,
-        maxLines: 1,
-      ),
+
+        final backupState = backupStateSnapshot.data;
+        bool hasAuthError = false;
+        final backupError = backupStateSnapshot.error;
+        if (backupError.runtimeType == BackupFailedException) {
+          hasAuthError =
+              (backupError as BackupFailedException).authenticationError;
+        }
+
+        return TextButton(
+          onPressed: () async {
+            final currentProvider = widget.backupSettings.backupProvider;
+
+            final activeBackupHasAuthError =
+                hasAuthError && !currentProvider.isNull;
+
+            /// Attempt backup before prompting the user to select a backup provider.
+            /// That is unless there was an authentication failure
+            /// TODO: and the user has not set up a backup provider on a new account on Android.
+            if (!activeBackupHasAuthError) {
+              await _updateBackupProvider(
+                currentProvider,
+                dismissOnError: false,
+              );
+            } else {
+              await _showSelectProviderDialog(widget.backupSettings).then(
+                (selectedProvider) async {
+                  if (selectedProvider != null) {
+                    if (hasAuthError) {
+                      if (selectedProvider.isGDrive) {
+                        await _logoutWarningDialog(currentProvider).then(
+                          (logoutApproved) async {
+                            if (logoutApproved) {
+                              try {
+                                EasyLoading.show();
+
+                                backupBloc.backupServiceNeedLoginSink.add(true);
+                              } catch (e) {
+                                log.warning("Failed to re-login & backup.", e);
+                                _handleError(e);
+                              } finally {
+                                EasyLoading.dismiss();
+                              }
+                            } else {
+                              return;
+                            }
+                          },
+                        );
+                      }
+
+                      if (selectedProvider.isICloud) {
+                        await _showSignInNeededDialog(selectedProvider);
+                        return;
+                      }
+                    }
+                    await _updateBackupProvider(selectedProvider);
+                  }
+                },
+              );
+            }
+          },
+          child: Text(
+            (isRemoteServer && hasAuthError)
+                ? texts.backup_dialog_option_ok_remote_server
+                : texts.backup_dialog_option_ok_default,
+            style: themeData.primaryTextTheme.labelLarge,
+            maxLines: 1,
+          ),
+        );
+      },
     );
   }
 
@@ -301,8 +316,9 @@ class _BackupNowButtonState extends State<_BackupNowButton> {
   }
 
   Future<void> _updateBackupProvider(
-    BackupProvider selectedProvider,
-  ) async {
+    BackupProvider selectedProvider, {
+    bool dismissOnError = true,
+  }) async {
     try {
       EasyLoading.show();
 
@@ -310,11 +326,12 @@ class _BackupNowButtonState extends State<_BackupNowButton> {
         widget.backupSettings.copyWith(backupProvider: selectedProvider),
       ).then((_) {
         EasyLoading.dismiss();
+
         Navigator.pop(context);
       });
     } catch (error) {
       log.warning("Failed to update backup provider.", error);
-      _handleError(error);
+      _handleError(error, dismissOnError: dismissOnError);
       rethrow;
     }
   }
@@ -328,10 +345,12 @@ class _BackupNowButtonState extends State<_BackupNowButton> {
     return backupAction.future.whenComplete(() => EasyLoading.dismiss());
   }
 
-  void _handleError(dynamic error) async {
+  void _handleError(dynamic error, {bool dismissOnError = true}) async {
     EasyLoading.dismiss();
 
-    Navigator.of(context).pop();
+    if (dismissOnError) {
+      Navigator.of(context).pop();
+    }
 
     switch (error.runtimeType) {
       case SignInFailedException:

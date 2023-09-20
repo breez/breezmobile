@@ -101,6 +101,7 @@ class BackupProvider {
   bool get isICloud => this == iCloud();
   bool get isGDrive => this == googleDrive();
   bool get isRemoteServer => this == remoteServer();
+  bool get isNull => this == null;
 }
 
 enum BackupKeyType {
@@ -399,6 +400,7 @@ class BreezLibBackupKey {
               entropy.length == ENTROPY_LENGTH ? 'Mnemonics12' : 'Mnemonics';
           break;
         case BackupKeyType.PIN:
+
           /// Sets type of backups encrypted with PIN to
           /// BackupKeyType.NONE as they are are non-secure & deprecated
           result = '';
@@ -422,6 +424,7 @@ class BreezLibBackupKey {
     switch (backupKeyType) {
       case BackupKeyType.NONE:
       case BackupKeyType.PIN:
+
         /// Sets backup key type of backups encrypted with PIN to
         /// BackupKeyType.NONE as they are are non-secure & deprecated
         result = BreezLibBackupKey(entropy: null, key: null);
