@@ -101,7 +101,6 @@ class BackupProvider {
   bool get isICloud => this == iCloud();
   bool get isGDrive => this == googleDrive();
   bool get isRemoteServer => this == remoteServer();
-  bool get isNull => this == null;
 }
 
 enum BackupKeyType {

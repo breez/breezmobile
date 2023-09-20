@@ -195,7 +195,6 @@ class _BackupNowButtonState extends State<_BackupNowButton> {
           return const Loader();
         }
 
-        final backupState = backupStateSnapshot.data;
         bool hasAuthError = false;
         final backupError = backupStateSnapshot.error;
         if (backupError.runtimeType == BackupFailedException) {
@@ -207,12 +206,9 @@ class _BackupNowButtonState extends State<_BackupNowButton> {
           onPressed: () async {
             final currentProvider = widget.backupSettings.backupProvider;
 
-            final activeBackupHasAuthError =
-                hasAuthError && !currentProvider.isNull;
-
             /// Trigger backup before prompting the user to select a backup provider
             /// unless there was an authentication failure on previous backup attempt.
-            if (!activeBackupHasAuthError) {
+            if (currentProvider != null && hasAuthError == false) {
               await _updateBackupProvider(
                 currentProvider,
                 dismissOnError: false,
