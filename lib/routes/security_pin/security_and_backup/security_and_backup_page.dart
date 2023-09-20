@@ -121,9 +121,11 @@ class SecurityAndBackupPageState extends State<SecurityAndBackupPage>
               widget.backupBloc.backupStateStream,
               barrierDismissible: false,
               onFinished: () {
-                setState(() {
-                  _showingBackupDialog = false;
-                });
+                if (mounted) {
+                  setState(() {
+                    _showingBackupDialog = false;
+                  });
+                }
               },
             ),
           );
