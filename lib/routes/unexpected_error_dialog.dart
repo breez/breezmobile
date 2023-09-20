@@ -18,32 +18,32 @@ void listenUnexpectedError(
     (allowRetry) {
       ServiceInjector().breezBridge.getTorActive().then((torEnabled) {
         final texts = context.texts();
-        final themeData = Theme.of(context);
+        final contentTextStyle = Theme.of(context).dialogTheme.contentTextStyle;
 
         promptError(
           context,
           texts.unexpected_error_title,
           RichText(
             text: TextSpan(
-              style: themeData.dialogTheme.contentTextStyle,
+              style: contentTextStyle,
               text: texts.unexpected_error_suggestions,
               children: <TextSpan>[
                 TextSpan(
                   text: texts.unexpected_error_airplane,
-                  style: themeData.dialogTheme.contentTextStyle,
+                  style: contentTextStyle,
                 ),
                 TextSpan(
                   text: texts.unexpected_error_wifi,
-                  style: themeData.dialogTheme.contentTextStyle,
+                  style: contentTextStyle,
                 ),
                 TextSpan(
                   text: texts.unexpected_error_signal,
-                  style: themeData.dialogTheme.contentTextStyle,
+                  style: contentTextStyle,
                 ),
                 if (torEnabled) ...<TextSpan>[
                   TextSpan(
                     text: texts.unexpected_error_bullet,
-                    style: Theme.of(context).dialogTheme.contentTextStyle,
+                    style: contentTextStyle,
                   ),
                   TextSpan(
                       text: '${texts.unexpected_error_deactivate_tor} ',
@@ -66,12 +66,12 @@ void listenUnexpectedError(
                         }),
                   TextSpan(
                     text: "Tor\n",
-                    style: Theme.of(context).dialogTheme.contentTextStyle,
+                    style: contentTextStyle,
                   )
                 ],
                 TextSpan(
                   text: texts.unexpected_error_bullet,
-                  style: themeData.dialogTheme.contentTextStyle,
+                  style: contentTextStyle,
                 ),
                 TextSpan(
                   text: texts.unexpected_error_recover,
@@ -92,11 +92,11 @@ void listenUnexpectedError(
                 ),
                 TextSpan(
                   text: texts.unexpected_error_chain_information,
-                  style: themeData.dialogTheme.contentTextStyle,
+                  style: contentTextStyle,
                 ),
                 TextSpan(
                   text: texts.unexpected_error_bullet,
-                  style: themeData.dialogTheme.contentTextStyle,
+                  style: contentTextStyle,
                 ),
                 TextSpan(
                   text: texts.unexpected_error_reset,
@@ -113,11 +113,11 @@ void listenUnexpectedError(
                 ),
                 TextSpan(
                   text: texts.unexpected_error_bitcoin_node,
-                  style: themeData.dialogTheme.contentTextStyle,
+                  style: contentTextStyle,
                 ),
                 TextSpan(
                   text: texts.unexpected_error_bullet,
-                  style: themeData.dialogTheme.contentTextStyle,
+                  style: contentTextStyle,
                 ),
                 TextSpan(
                   text: texts.unexpected_error_view,
@@ -134,7 +134,7 @@ void listenUnexpectedError(
                 ),
                 TextSpan(
                   text: texts.unexpected_error_logs,
-                  style: themeData.dialogTheme.contentTextStyle,
+                  style: contentTextStyle,
                 ),
               ],
             ),

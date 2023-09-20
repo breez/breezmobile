@@ -4,7 +4,7 @@ import 'package:breez/bloc/marketplace/marketplace_bloc.dart';
 import 'package:breez/bloc/marketplace/vendor_model.dart';
 import 'package:breez/routes/marketplace/vendor_row.dart';
 import 'package:breez/theme_data.dart' as theme;
-import 'package:breez_translations/generated/breez_translations.dart';
+import 'package:breez_translations/breez_translations_locales.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -30,8 +30,8 @@ class MarketplacePageState extends State<MarketplacePage> {
       child: Scaffold(
         key: _scaffoldKey,
         backgroundColor: theme.themeId == "BLUE"
-            ? Theme.of(context).colorScheme.background
-            : Theme.of(context).canvasColor,
+            ? themeData.colorScheme.background
+            : themeData.canvasColor,
         body: StreamBuilder(
           stream: marketplaceBloc.vendorsStream,
           builder: (context, snapshot) {
@@ -49,17 +49,18 @@ class MarketplacePageState extends State<MarketplacePage> {
   }
 
   Center _buildNoVendorsMessage(BuildContext context) {
+    final texts = context.texts();
+    final themeData = Theme.of(context);
     return Center(
       child: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Text(
-          BreezTranslations.of(context).market_place_no_vendors,
+          texts.market_place_no_vendors,
           textAlign: TextAlign.center,
-          style: Theme.of(context).textTheme.headlineMedium.copyWith(
-                color: theme.themeId == "BLUE"
-                    ? Theme.of(context).canvasColor
-                    : Colors.white,
-              ),
+          style: themeData.textTheme.headlineMedium.copyWith(
+            color:
+                theme.themeId == "BLUE" ? themeData.canvasColor : Colors.white,
+          ),
         ),
       ),
     );

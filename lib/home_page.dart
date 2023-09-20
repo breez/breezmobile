@@ -183,11 +183,12 @@ class HomeState extends State<Home> with WidgetsBindingObserver {
     _initListens();
     final userProfileBloc = AppBlocsProvider.of<UserProfileBloc>(context);
     final mediaSize = MediaQuery.of(context).size;
+    final themeData = Theme.of(context);
 
     return AnnotatedRegion<SystemUiOverlayStyle>(
-      value: Theme.of(context).appBarTheme.systemOverlayStyle.copyWith(
-            systemNavigationBarColor: Theme.of(context).bottomAppBarTheme.color,
-          ),
+      value: themeData.appBarTheme.systemOverlayStyle.copyWith(
+        systemNavigationBarColor: themeData.bottomAppBarTheme.color,
+      ),
       child: WillPopScope(
         onWillPop: willPopCallback(
           context,

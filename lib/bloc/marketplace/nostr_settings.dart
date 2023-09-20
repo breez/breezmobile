@@ -12,7 +12,7 @@ class NostrSettings {
 
   static const String NOSTR_SETTINGS_PREFERENCES_KEY = "nostr_settings";
 
-  NostrSettings.start()
+  NostrSettings.initial()
       : this(
           showSnort: true,
           isRememberPubKey: false,

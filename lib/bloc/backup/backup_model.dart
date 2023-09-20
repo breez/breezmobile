@@ -122,12 +122,13 @@ class BackupSettings {
     this.remoteServerAuthData,
   );
 
-  static BackupSettings start() => BackupSettings(
-        true,
-        BackupKeyType.NONE,
-        _defaultBackupProvider(),
-        const RemoteServerAuthData(null, null, null, null),
-      );
+  BackupSettings.initial()
+      : this(
+          true,
+          BackupKeyType.NONE,
+          _defaultBackupProvider(),
+          const RemoteServerAuthData(null, null, null, null),
+        );
 
   BackupSettings copyWith({
     bool promptOnError,
@@ -219,7 +220,7 @@ class BackupState {
     this.lastBackupAccountName,
   );
 
-  static BackupState start() => const BackupState(null, false, null);
+  BackupState.initial() : this(null, false, null);
 
   BackupState copyWith({
     DateTime lastBackupTime,
@@ -249,6 +250,8 @@ class BackupState {
       "lastBackupAccountName": lastBackupAccountName
     };
   }
+
+  bool get isInitial => this != null && this == BackupState.initial();
 }
 
 class BackupFailedException implements Exception {
@@ -399,6 +402,7 @@ class BreezLibBackupKey {
               entropy.length == ENTROPY_LENGTH ? 'Mnemonics12' : 'Mnemonics';
           break;
         case BackupKeyType.PIN:
+
           /// Sets type of backups encrypted with PIN to
           /// BackupKeyType.NONE as they are are non-secure & deprecated
           result = '';
@@ -422,6 +426,7 @@ class BreezLibBackupKey {
     switch (backupKeyType) {
       case BackupKeyType.NONE:
       case BackupKeyType.PIN:
+
         /// Sets backup key type of backups encrypted with PIN to
         /// BackupKeyType.NONE as they are are non-secure & deprecated
         result = BreezLibBackupKey(entropy: null, key: null);
