@@ -813,7 +813,6 @@ class BackupBloc with AsyncActionsHandler {
         });
       }
       if (backupOperations.contains(event.type)) {
-        log.info("no backup provider set.");
         _enableBackupPrompt = true;
         _pushPromptIfNeeded();
       }
@@ -822,7 +821,7 @@ class BackupBloc with AsyncActionsHandler {
 
   void _pushPromptIfNeeded() {
     log.info(
-      "push prompt if needed: {$_enableBackupPrompt, ${_backupServiceNeedLoginController.value}}",
+      "push prompt if needed: {_enableBackupPrompt: $_enableBackupPrompt, signInNeeded: ${_backupServiceNeedLoginController.value}}",
     );
     if (_enableBackupPrompt) {
       _enableBackupPrompt = false;
