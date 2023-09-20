@@ -210,9 +210,8 @@ class _BackupNowButtonState extends State<_BackupNowButton> {
             final activeBackupHasAuthError =
                 hasAuthError && !currentProvider.isNull;
 
-            /// Attempt backup before prompting the user to select a backup provider.
-            /// That is unless there was an authentication failure
-            /// TODO: and the user has not set up a backup provider on a new account on Android.
+            /// Trigger backup before prompting the user to select a backup provider
+            /// unless there was an authentication failure on previous backup attempt.
             if (!activeBackupHasAuthError) {
               await _updateBackupProvider(
                 currentProvider,

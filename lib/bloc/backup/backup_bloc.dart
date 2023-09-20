@@ -538,7 +538,7 @@ class BackupBloc with AsyncActionsHandler {
       },
     );
 
-    backupServiceNeedLoginSink.add(true);
+    backupServiceNeedLoginSink.add(action.promptOnError);
     action.resolve(null);
   }
 
