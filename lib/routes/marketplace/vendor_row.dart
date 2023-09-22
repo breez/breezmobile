@@ -53,29 +53,24 @@ class VendorRow extends StatelessWidget {
 
     final vendorCard = GestureDetector(
         onTap: () async {
-         
-         // iOS only
+          // iOS only
           if (defaultTargetPlatform == TargetPlatform.iOS) {
             try {
               var url = _vendor.url;
               if (_vendor.id == "lnmarkets" || _vendor.id == "Kollider") {
                 final endpointURI = _vendor.id == "lnmarkets"
-                      ? Uri.https("api.lnmarkets.com", "v1/lnurl/auth")
-                      : Uri.https(
-                          "api.kollider.xyz", "v1/auth/external/lnurl_auth");
-                var responseID = 
-                        _vendor.id == "lnmarkets" ? "lnurl" : "lnurl_auth";
-                var jwtToken = await handleLNUrlAuth(context, _vendor, endpointURI, lnurlBloc, responseID);
-                url = url + "?token=$jwtToken";
+                    ? Uri.https("api.lnmarkets.com", "v1/lnurl/auth")
+                    : Uri.https(
+                        "api.kollider.xyz", "v1/auth/external/lnurl_auth");
+                var responseID =
+                    _vendor.id == "lnmarkets" ? "lnurl" : "lnurl_auth";
+                var jwtToken = await handleLNUrlAuth(
+                    context, _vendor, endpointURI, lnurlBloc, responseID);
+                url = "$url?token=$jwtToken";
               }
-              launch(url);
-            } 
-            catch(err) {
-              promptError(
-                context,
-                "Error",
-                Text(err.toString())                
-              );
+              launchUrl(Uri.parse(url));
+            } catch (err) {
+              promptError(context, "Error", Text(err.toString()));
             }
             return;
           }

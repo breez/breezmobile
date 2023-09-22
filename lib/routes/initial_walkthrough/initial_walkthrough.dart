@@ -9,7 +9,6 @@ import 'package:breez/bloc/blocs_provider.dart';
 import 'package:breez/bloc/pos_catalog/bloc.dart';
 import 'package:breez/bloc/user_profile/user_actions.dart';
 import 'package:breez/bloc/user_profile/user_profile_bloc.dart';
-import 'package:breez/routes/initial_walkthrough/dialogs/beta_warning_dialog.dart';
 import 'package:breez/routes/initial_walkthrough/dialogs/restore_dialog.dart';
 import 'package:breez/routes/initial_walkthrough/dialogs/select_backup_provider_dialog.dart';
 import 'package:breez/routes/initial_walkthrough/loaders/loader_indicator.dart';
