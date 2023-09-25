@@ -587,7 +587,10 @@ class CreateInvoicePageState extends State<CreateInvoicePage> {
     _withdrawFetchResponse = response;
     _descriptionController.text = response.defaultDescription;
     if (response.isFixedAmount) {
-      _amountController.text = "${response.minAmount}";
+      _amountController.text = account.currency.format(
+        response.minAmount,
+        includeDisplayName: false,
+      );
     }
   }
 
