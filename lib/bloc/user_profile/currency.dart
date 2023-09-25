@@ -71,6 +71,11 @@ class Currency extends Object {
   }
 
   double get satConversionRate => this == SAT ? 1.0 : 100000000;
+
+  @override
+  String toString() {
+    return 'Currency{tickerSymbol: $tickerSymbol}';
+  }
 }
 
 class _CurrencyFormatter {
