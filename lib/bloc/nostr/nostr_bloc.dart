@@ -295,6 +295,30 @@ class NostrBloc with AsyncActionsHandler {
     return Nip04().decrypt(_nostrPrivateKey, publicKey, encryptedData);
   }
 
+  Future<void> _handleNip47Connect(Nip47Connect action) async {
+    final rpc = NostrRpc(
+      relay: action.connectUri.relay,
+      nostrBloc: action.nostrBloc,
+    );
+    await rpc.call(
+      action.connectUri.target,
+      method: 'connect',
+      params: [action.nostrBloc.nostrPublicKey],
+    );
+  }
+
+  Future<void> _handleNip47Disconnect(Nip47Disconnect action) async {
+    final rpc = NostrRpc(
+      relay: action.connectUri.relay,
+      nostrBloc: action.nostrBloc,
+    );
+    await rpc.call(
+      action.connectUri.target,
+      method: 'disconnect',
+      params: [],
+    );
+  }
+
   @override
   Future dispose() {
     _publicKeyController.close();
