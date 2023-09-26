@@ -26,9 +26,7 @@ import 'package:flutter_svg/svg.dart';
 import 'package:url_launcher/url_launcher_string.dart';
 import 'package:validators/validators.dart';
 
-import '../../utils/nostrConnect.dart';
-
-class QrActionButton extends StatelessWidget {
+class QrActionButton extends StatefulWidget {
   final GlobalKey firstPaymentItemKey;
 
   const QrActionButton(

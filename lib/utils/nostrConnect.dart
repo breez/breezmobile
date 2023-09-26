@@ -1,16 +1,13 @@
 import 'dart:async';
 import 'dart:convert';
-import 'dart:math';
 
 import 'package:breez/bloc/nostr/nostr_actions.dart';
 import 'package:breez/bloc/nostr/nostr_bloc.dart';
 import 'package:breez/bloc/nostr/nostr_model.dart';
+import 'package:breez/widgets/nostr_connect_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:nostr_tools/nostr_tools.dart';
 import 'package:uuid/uuid.dart';
-
-import '../widgets/nostr_connect_dialog.dart';
-import '../widgets/nostr_requests_dialog.dart';
 
 String _nostrConnectProtocolPrefix = "nostrconnect:";
 
