@@ -173,8 +173,7 @@ Future<Map<String, dynamic>> prepareEvent(
   String request,
   NostrBloc nostrBloc,
 ) async {
-  nostrBloc.actionsSink
-      .add(Nip04Encrypt(request, target, nostrBloc.nostrPrivateKey));
+  nostrBloc.actionsSink.add(Nip04Encrypt(request, target));
   final cipherText = await nostrBloc.encryptDataStream.first;
 
   Map<String, dynamic> connectEvent = {
@@ -198,8 +197,7 @@ Future<Map<String, dynamic>> getPayload(
   NostrBloc nostrBloc,
   String target,
 ) async {
-  nostrBloc.actionsSink
-      .add(Nip04Decrypt(content, target, nostrBloc.nostrPrivateKey));
+  nostrBloc.actionsSink.add(Nip04Decrypt(content, target));
   return jsonDecode(await nostrBloc.decryptDataStream.first);
 }
 
@@ -210,7 +208,7 @@ Future<List<String>> _describe() async {
 Future<Map<String, dynamic>> _signEvent(
     List<dynamic> event, NostrBloc nostrBloc) async {
   Map<String, dynamic> requestEvent = event[0];
-  nostrBloc.actionsSink.add(SignEvent(requestEvent, nostrBloc.nostrPrivateKey));
+  nostrBloc.actionsSink.add(SignEvent(requestEvent));
   Map<String, dynamic> signedEvent = await nostrBloc.eventStream.first;
   return signedEvent;
 }
@@ -282,7 +280,7 @@ class NostrRpc {
 
     final request = prepareRequest(id, method, params);
     Map<String, dynamic> event = await prepareEvent(target, request, nostrBloc);
-    nostrBloc.actionsSink.add(SignEvent(event, nostrBloc.nostrPrivateKey));
+    nostrBloc.actionsSink.add(SignEvent(event));
 
     event = await nostrBloc.eventStream.first;
 
@@ -411,8 +409,7 @@ class NostrRpc {
 
               Map<String, dynamic> responseEvent =
                   await prepareEvent(event.pubkey, responseString, nostrBloc);
-              nostrBloc.actionsSink
-                  .add(SignEvent(responseEvent, nostrBloc.nostrPrivateKey));
+              nostrBloc.actionsSink.add(SignEvent(responseEvent));
               responseEvent = await nostrBloc.eventStream.first;
 
               try {
