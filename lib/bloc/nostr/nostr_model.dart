@@ -1,3 +1,4 @@
+import 'package:breez/utils/nostrConnect.dart';
 import 'package:nostr_tools/nostr_tools.dart';
 
 Map<int, String> eventKind = {
@@ -47,6 +48,7 @@ class NostrSettings {
   final bool isRememberSignEvent;
   final bool isLoggedIn;
   List<String> relayList;
+  List<ConnectUri> connectedAppsList;
 
   static List<String> defaultRelayList = [
     "wss://relay.damus.io",
@@ -58,6 +60,7 @@ class NostrSettings {
     "wss://nostr-01.bolt.observer",
     "wss://relayer.fiatjaf.com",
   ];
+  static List<ConnectUri> defaultConnectedAppsList = [];
 
   NostrSettings({
     this.enableNostr = true,
@@ -65,6 +68,7 @@ class NostrSettings {
     this.isRememberSignEvent = false,
     this.isLoggedIn = false,
     this.relayList = const [],
+    this.connectedAppsList = const [],
   });
 
   static const String NOSTR_SETTINGS_PREFERENCES_KEY = "nostr_settings";
@@ -76,12 +80,14 @@ class NostrSettings {
     bool isRememberSignEvent,
     bool isLoggedIn,
     List<String> relayList,
+    List<ConnectUri> connectedAppsList,
   }) : this(
           enableNostr: enableNostr ?? true,
           isRememberPubKey: isRememberPubKey ?? false,
           isRememberSignEvent: isRememberSignEvent ?? false,
           isLoggedIn: isLoggedIn ?? false,
           relayList: relayList ?? defaultRelayList,
+          connectedAppsList: connectedAppsList ?? defaultConnectedAppsList,
         );
 
   NostrSettings copyWith({
@@ -90,6 +96,7 @@ class NostrSettings {
     bool isRememberSignEvent,
     bool isLoggedIn,
     List<String> relayList,
+    List<ConnectUri> connectedAppsList,
   }) {
     return NostrSettings(
       enableNostr: enableNostr ?? this.enableNostr,
@@ -97,6 +104,7 @@ class NostrSettings {
       isRememberSignEvent: isRememberSignEvent ?? this.isRememberSignEvent,
       isLoggedIn: isLoggedIn ?? this.isLoggedIn,
       relayList: relayList ?? this.relayList,
+      connectedAppsList: connectedAppsList ?? defaultConnectedAppsList,
     );
   }
 
@@ -110,6 +118,10 @@ class NostrSettings {
                   .map((item) => item.toString())
                   .toList() ??
               defaultRelayList,
+          connectedAppsList: (json["connectedAppsList"] as List<dynamic>)
+                  .map((item) => ConnectUri.fromJson(item))
+                  .toList() ??
+              defaultConnectedAppsList,
         );
 
   Map<String, dynamic> toJson() => {
@@ -118,5 +130,6 @@ class NostrSettings {
         "isRememberSignEvent": isRememberSignEvent,
         "isLoggedIn": isLoggedIn,
         "relayList": relayList,
+        "connectedAppsList": connectedAppsList,
       };
 }

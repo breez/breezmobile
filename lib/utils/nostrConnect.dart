@@ -20,6 +20,14 @@ class ConnectUri {
     this.relay,
     this.metadata,
   });
+
+  factory ConnectUri.fromJson(Map<String, dynamic> json) {
+    return ConnectUri(
+      target: json['target'] as String,
+      relay: json['relay'] as String,
+      metadata: json['metadata'] as Map<String, dynamic>,
+    );
+  }
 }
 
 // bool isNostrConnect(String url) {

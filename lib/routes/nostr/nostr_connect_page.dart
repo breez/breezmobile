@@ -1,16 +1,18 @@
 import 'package:auto_size_text/auto_size_text.dart';
+import 'package:breez/bloc/nostr/nostr_actions.dart';
+import 'package:breez/bloc/nostr/nostr_bloc.dart';
+import 'package:breez/bloc/nostr/nostr_model.dart';
+import 'package:breez/utils/min_font_size.dart';
 import 'package:breez/utils/nostrConnect.dart';
 import 'package:flutter/material.dart';
 import 'package:breez/theme_data.dart' as theme;
 import 'package:flutter_svg/svg.dart';
 
-import '../../bloc/nostr/nostr_actions.dart';
-import '../../bloc/nostr/nostr_bloc.dart';
-import '../../utils/min_font_size.dart';
-
 class NostrConnectPage extends StatefulWidget {
   final NostrBloc nostrBloc;
-  const NostrConnectPage({Key key, this.nostrBloc}) : super(key: key);
+  final NostrSettings settings;
+  const NostrConnectPage({Key key, this.settings, this.nostrBloc})
+      : super(key: key);
 
   @override
   State<NostrConnectPage> createState() => _NostrConnectPageState();
@@ -28,6 +30,19 @@ class _NostrConnectPageState extends State<NostrConnectPage> {
     super.initState();
     // calling a method via nostr Bloc to listen to requests (NIP47)
     // _setNip47Listener();
+    _fetchConnectedApps();
+  }
+
+  void _fetchConnectedApps() {
+    setState(() {
+      connectedApps = widget.settings.connectedAppsList;
+    });
+  }
+
+  void _saveConnectedAppsList() {
+    widget.nostrBloc.nostrSettingsSettingsSink.add(widget.settings.copyWith(
+      connectedAppsList: connectedApps,
+    ));
   }
 
   // Future<void> _setNip47Listener() async {
@@ -54,10 +69,13 @@ class _NostrConnectPageState extends State<NostrConnectPage> {
 
     String connectAppId = await nostrBloc.nip47ConnectStream.first;
 
+    // adding the app into shared preferences from here
+    // add the new list in the pref as done for relays
     if (connectAppId == nostrConnectUri.target &&
         !connectedApps.contains(nostrConnectUri)) {
       setState(() {
         connectedApps.add(nostrConnectUri);
+        _saveConnectedAppsList();
       });
     }
   }
@@ -77,6 +95,7 @@ class _NostrConnectPageState extends State<NostrConnectPage> {
         connectedApps.contains(nostrConnectUri)) {
       setState(() {
         connectedApps.remove(nostrConnectUri);
+        _saveConnectedAppsList();
       });
     }
   }
@@ -119,9 +138,10 @@ class _NostrConnectPageState extends State<NostrConnectPage> {
                   side: const BorderSide(color: Colors.white),
                 ),
                 onPressed: () async {
-                  await _connectApp(
-                      _textEditingController.text.trim(), widget.nostrBloc);
+                  String value = _textEditingController.text.trim();
                   _textEditingController.clear();
+
+                  await _connectApp(value, widget.nostrBloc);
                 },
                 child: const Text("Connect"),
               ),

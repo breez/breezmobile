@@ -2,18 +2,12 @@ import 'package:auto_size_text/auto_size_text.dart';
 import 'package:breez/bloc/nostr/nostr_actions.dart';
 import 'package:breez/bloc/nostr/nostr_bloc.dart';
 import 'package:breez/bloc/nostr/nostr_model.dart';
+import 'package:breez/routes/nostr/nostr_connect_page.dart';
 import 'package:breez/routes/nostr/nostr_relays.dart';
 import 'package:breez/utils/min_font_size.dart';
 import 'package:breez/widgets/logout_warning_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
-
-import '../../bloc/nostr/nostr_actions.dart';
-import '../../utils/min_font_size.dart';
-import '../../widgets/logout_warning_dialog.dart';
-import 'nostr_relays.dart';
-import 'nostr_connect_page.dart';
 
 class NostrKeysPage extends StatefulWidget {
   final NostrBloc nostrBloc;
@@ -165,32 +159,7 @@ class _NostrKeysPageState extends State<NostrKeysPage> {
                 MaterialPageRoute(
                   builder: (_) => NostrConnectPage(
                     nostrBloc: widget.nostrBloc,
-                  ),
-                ),
-              );
-            },
-            trailing: const Icon(
-              Icons.keyboard_arrow_right,
-              color: Colors.white,
-              size: 30.0,
-            ),
-          ),
-          const Divider(),
-          ListTile(
-            title: AutoSizeText(
-              "Nostr Connect",
-              style: const TextStyle(color: Colors.white),
-              maxLines: 1,
-              minFontSize: MinFontSize(context).minFontSize,
-              stepGranularity: 0.1,
-              group: _autoSizeGroup,
-            ),
-            onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (_) => NostrConnectPage(
-                    nostrBloc: widget.nostrBloc,
+                    settings: widget.settings,
                   ),
                 ),
               );
