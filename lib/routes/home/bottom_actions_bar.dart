@@ -14,6 +14,7 @@ import 'package:breez/bloc/lsp/lsp_model.dart';
 import 'package:breez/routes/spontaneous_payment/spontaneous_payment_page.dart';
 import 'package:breez/theme_data.dart' as theme;
 import 'package:breez/utils/dynamic_fees.dart';
+import 'package:breez/utils/exceptions.dart';
 import 'package:breez/utils/stream_builder_extensions.dart';
 import 'package:breez/widgets/enter_payment_info_dialog.dart';
 import 'package:breez/widgets/escher_dialog.dart';
@@ -391,16 +392,18 @@ Future showReceiveOptions(
                                           )
                                         : navigator.pushNamed(v.route);
                                   },
-                                  onError: (_) {
+                                  onError: (e) {
                                     if (loaderRoute.isActive) {
                                       navigator.removeRoute(loaderRoute);
                                     }
+                                    _showError(parentContext, e);
                                   },
                                 );
                               } catch (e) {
                                 if (loaderRoute.isActive) {
                                   navigator.removeRoute(loaderRoute);
                                 }
+                                _showError(parentContext, e);
                               }
                             } else {
                               Navigator.of(context).pushNamed(v.route);
@@ -457,5 +460,27 @@ Future showReceiveOptions(
         ),
       );
     },
+  );
+}
+
+void _showError(BuildContext context, Object e) {
+  final texts = context.texts();
+  final themeData = Theme.of(context);
+  showDialog(
+    context: context,
+    builder: (context) => AlertDialog(
+      content: Text(extractExceptionMessage(e, texts: texts)),
+      actions: [
+        TextButton(
+          child: Text(
+            texts.flushbar_default_action,
+            style: themeData.primaryTextTheme.labelLarge,
+          ),
+          onPressed: () {
+            Navigator.of(context).pop();
+          },
+        ),
+      ],
+    ),
   );
 }
