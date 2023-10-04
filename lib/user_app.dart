@@ -7,6 +7,7 @@ import 'package:breez/bloc/connect_pay/connect_pay_bloc.dart';
 import 'package:breez/bloc/invoice/invoice_bloc.dart';
 import 'package:breez/bloc/lnurl/lnurl_bloc.dart';
 import 'package:breez/bloc/lsp/lsp_bloc.dart';
+import 'package:breez/bloc/navigator/breez_navigator_observer.dart';
 import 'package:breez/bloc/pos_catalog/bloc.dart';
 import 'package:breez/bloc/pos_catalog/model.dart';
 import 'package:breez/bloc/reverse_swap/reverse_swap_bloc.dart';
@@ -190,7 +191,7 @@ class UserApp extends StatelessWidget {
                       },
                       child: Navigator(
                         key: _homeNavigatorKey,
-                        observers: [routeObserver],
+                        observers: [routeObserver, BreezNavigatorObserver()],
                         initialRoute: "/",
                         // ignore: missing_return
                         onGenerateRoute: (RouteSettings settings) {
